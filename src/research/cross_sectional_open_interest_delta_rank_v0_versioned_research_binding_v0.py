@@ -65,12 +65,27 @@ ADMISSIBILITY_MANIFEST_REF = (
     f"pit_cross_sectional_research_dataset_envelope.v0:{DATASET_ID}:{DATASET_EXTENSION}"
 )
 
-RATIFIED_PANEL_DATASET_DIGEST = "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687"
+PRIOR_RATIFIED_PANEL_DATASET_DIGEST = (
+    "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687"
+)
+PRIOR_RATIFIED_BOUND_DATA_DIGEST = (
+    "fd2a020f055120eaa67e0087423333a41cb32b99b95076b18e3c1b50f543844a"
+)
+PRIOR_RATIFIED_ARCHIVE_SOURCE_DIGEST = (
+    "12647433643badc0944d71a1268969845d32f7d6b52bd4ad843ea557c8ef2cf0"
+)
+PRIOR_BINDING_DIGEST = "c17b68949726fc340575070adb8572e26e63a30c569e73ffc8ca801fe28577ed"
+
+RATIFIED_PANEL_DATASET_DIGEST = "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1"
 RATIFIED_INSTRUMENT_UNIVERSE_DIGEST = (
     "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791"
 )
-RATIFIED_BOUND_DATA_DIGEST = "fd2a020f055120eaa67e0087423333a41cb32b99b95076b18e3c1b50f543844a"
-RATIFIED_ARCHIVE_SOURCE_DIGEST = "12647433643badc0944d71a1268969845d32f7d6b52bd4ad843ea557c8ef2cf0"
+RATIFIED_BOUND_DATA_DIGEST = "82e8787c0cc19c15c120de4ee24821bba85b5c5a938b802cfa3f7bcd40f13a4d"
+RATIFIED_ARCHIVE_SOURCE_DIGEST = "cb10e99d7cd5fa158a38aec24e095dbd051f447a0665a7fce47bcc13cb44860a"
+OBSERVED_PANEL_WINDOW_START_UTC = "2026-07-09T12:00:00Z"
+OBSERVED_PANEL_WINDOW_END_UTC = "2026-07-11T23:00:00Z"
+OBSERVED_PANEL_HISTORY_DEPTH = 60
+BINDING_SUPERSESSION_MODE = "EXTENDED_PANEL_DATASET_DIGEST_REFRESH_V0"
 
 FEE_MODEL_VERSION = "backtest_fee_taker_symmetric_v0"
 FEE_BPS_PER_SIDE = 10.0
@@ -327,6 +342,9 @@ def build_dataset_binding_v0() -> dict[str, Any]:
         "panel_dataset_digest": RATIFIED_PANEL_DATASET_DIGEST,
         "bound_data_digest": RATIFIED_BOUND_DATA_DIGEST,
         "archive_source_digest": RATIFIED_ARCHIVE_SOURCE_DIGEST,
+        "observed_panel_window_start_utc": OBSERVED_PANEL_WINDOW_START_UTC,
+        "observed_panel_window_end_utc": OBSERVED_PANEL_WINDOW_END_UTC,
+        "observed_panel_history_depth": OBSERVED_PANEL_HISTORY_DEPTH,
     }
 
 
@@ -407,6 +425,16 @@ def materialize_versioned_research_binding_v0() -> dict[str, Any]:
         "dataset_binding": dataset_binding,
         "period_binding": period_binding,
         "instrument_binding": instrument_binding,
+        "binding_supersession": {
+            "supersession_mode": BINDING_SUPERSESSION_MODE,
+            "predecessor_binding_digest": PRIOR_BINDING_DIGEST,
+            "predecessor_data_digest": PRIOR_RATIFIED_PANEL_DATASET_DIGEST,
+            "predecessor_bound_data_digest": PRIOR_RATIFIED_BOUND_DATA_DIGEST,
+            "predecessor_archive_source_digest": PRIOR_RATIFIED_ARCHIVE_SOURCE_DIGEST,
+            "supersedes_binding_digest": PRIOR_BINDING_DIGEST,
+            "historical_evidence_preserved": True,
+            "prior_inconclusive_economic_evidence_preserved": True,
+        },
     }
 
     return {
@@ -431,6 +459,21 @@ def materialize_versioned_research_binding_v0() -> dict[str, Any]:
         "orchestrator_owner": ORCHESTRATOR_OWNER,
         "runner_binding": RUNNER_BINDING_REF,
         "harness_binding": HARNESS_BINDING_REF,
+        "extended_panel_dataset_ratification": {
+            "binding_classification": (
+                "UNCHANGED_STRATEGY_RANKING_SEMANTICS_MATERIAL_DATASET_IDENTITY_CHANGE"
+            ),
+            "semantic_binding_fields_changed": False,
+            "cryptographic_dataset_identity_changed": True,
+            "cryptographic_binding_identity_changed": binding_digest != PRIOR_BINDING_DIGEST,
+            "history_depth_before": 6,
+            "history_depth_after": OBSERVED_PANEL_HISTORY_DEPTH,
+            "expected_rankable_epoch_count": OBSERVED_PANEL_HISTORY_DEPTH
+            - (LOOKBACK_K + SIGNAL_LAG_BARS),
+            "economic_evaluation_executed": False,
+            "economic_validity_offline_gate_pass": False,
+            "runtime_rewire_admissible": False,
+        },
         "system_constraints": {
             "futures_only": True,
             "bitcoin_direction_allowed": False,
@@ -441,8 +484,9 @@ def materialize_versioned_research_binding_v0() -> dict[str, Any]:
             "no_parameter_optimization": True,
             "no_policy_rescue": True,
             "no_signal_logic_change": True,
-            "no_dataset_change": True,
             "no_universe_change": True,
+            "dataset_identity_refresh_only": True,
+            "no_dataset_semantic_change": True,
         },
         "data_digest": RATIFIED_PANEL_DATASET_DIGEST,
         "instrument_universe_digest": RATIFIED_INSTRUMENT_UNIVERSE_DIGEST,
@@ -450,6 +494,17 @@ def materialize_versioned_research_binding_v0() -> dict[str, Any]:
         "runtime_effect": RUNTIME_EFFECT,
         "order_effect": ORDER_EFFECT,
     }
+
+
+def validate_stale_prior_binding_rejected_v0(
+    envelope: Mapping[str, Any],
+) -> tuple[bool, tuple[str, ...]]:
+    reasons: list[str] = []
+    if envelope.get("data_digest") == PRIOR_RATIFIED_PANEL_DATASET_DIGEST:
+        reasons.append("STALE_DATASET_DIGEST")
+    if envelope.get("binding_digest") == PRIOR_BINDING_DIGEST:
+        reasons.append("STALE_BINDING_DIGEST")
+    return not reasons, tuple(reasons)
 
 
 def validate_versioned_research_binding_v0(

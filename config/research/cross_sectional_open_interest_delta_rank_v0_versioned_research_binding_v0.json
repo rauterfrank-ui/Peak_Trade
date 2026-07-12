@@ -13,16 +13,29 @@
       "policy_classes_status": "BOUND",
       "universe_binding_status": "BOUND"
     },
+    "binding_supersession": {
+      "historical_evidence_preserved": true,
+      "predecessor_archive_source_digest": "12647433643badc0944d71a1268969845d32f7d6b52bd4ad843ea557c8ef2cf0",
+      "predecessor_binding_digest": "c17b68949726fc340575070adb8572e26e63a30c569e73ffc8ca801fe28577ed",
+      "predecessor_bound_data_digest": "fd2a020f055120eaa67e0087423333a41cb32b99b95076b18e3c1b50f543844a",
+      "predecessor_data_digest": "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687",
+      "prior_inconclusive_economic_evidence_preserved": true,
+      "supersedes_binding_digest": "c17b68949726fc340575070adb8572e26e63a30c569e73ffc8ca801fe28577ed",
+      "supersession_mode": "EXTENDED_PANEL_DATASET_DIGEST_REFRESH_V0"
+    },
     "dataset_binding": {
       "admissibility_manifest_ref": "pit_cross_sectional_research_dataset_envelope.v0:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0:self_accumulated_forward_accrual_v0",
-      "archive_source_digest": "12647433643badc0944d71a1268969845d32f7d6b52bd4ad843ea557c8ef2cf0",
+      "archive_source_digest": "cb10e99d7cd5fa158a38aec24e095dbd051f447a0665a7fce47bcc13cb44860a",
       "binding_version": "v0",
-      "bound_data_digest": "fd2a020f055120eaa67e0087423333a41cb32b99b95076b18e3c1b50f543844a",
+      "bound_data_digest": "82e8787c0cc19c15c120de4ee24821bba85b5c5a938b802cfa3f7bcd40f13a4d",
       "dataset_extension": "self_accumulated_forward_accrual_v0",
       "dataset_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0",
       "materializer_owner": "okx_self_accumulated_forward_open_interest_bound_panel_dataset_materialization.v0",
       "no_fallback_to_399_instrument_dataset": true,
-      "panel_dataset_digest": "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687",
+      "observed_panel_history_depth": 60,
+      "observed_panel_window_end_utc": "2026-07-11T23:00:00Z",
+      "observed_panel_window_start_utc": "2026-07-09T12:00:00Z",
+      "panel_dataset_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
       "panel_dataset_schema": "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1",
       "panel_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel",
       "panel_open_interest_manifest_ref": "pit_okx_pt1h_panel_open_interest_dataset_v1:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel:self_accumulated_forward_accrual_v0",
@@ -31,15 +44,15 @@
     "digest_bindings": {
       "bound_data_digest": {
         "status": "BOUND",
-        "value": "fd2a020f055120eaa67e0087423333a41cb32b99b95076b18e3c1b50f543844a"
+        "value": "82e8787c0cc19c15c120de4ee24821bba85b5c5a938b802cfa3f7bcd40f13a4d"
       },
       "config_digest": {
         "status": "BOUND",
-        "value": "8023e1a25810f59e9e36128da6e6f1e4d2a6153fd6a02995a80925cd8f381371"
+        "value": "331b20aaf66d5ae32f55f310ebb1775e18c8bb7aef079e9c406fcef6a9eca4c9"
       },
       "data_digest": {
         "status": "BOUND",
-        "value": "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687"
+        "value": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1"
       },
       "implementation_digest": {
         "status": "BOUND",
@@ -192,8 +205,8 @@
       "venue": "OKX"
     }
   },
-  "binding_digest": "c17b68949726fc340575070adb8572e26e63a30c569e73ffc8ca801fe28577ed",
-  "config_digest": "8023e1a25810f59e9e36128da6e6f1e4d2a6153fd6a02995a80925cd8f381371",
+  "binding_digest": "49e444fddf31c2da877e2c30eb0135848a657d58febfbb1827affcb6154dfb64",
+  "config_digest": "331b20aaf66d5ae32f55f310ebb1775e18c8bb7aef079e9c406fcef6a9eca4c9",
   "cost_execution_binding": {
     "binding_version": "v0",
     "execution_model_binding": {
@@ -221,7 +234,7 @@
       "spread_model_version": "research_conservative_bps_v1"
     }
   },
-  "data_digest": "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687",
+  "data_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
   "economic_policy_binding": {
     "binding_version": "v1",
     "economic_validity_policy_version": "economic_validity_policy_v1",
@@ -229,7 +242,21 @@
     "policy_lowering_forbidden": true,
     "promising_is_not_pass": true
   },
-  "harness_binding": "src/research/cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_execution_v0.py",
+  "extended_panel_dataset_ratification": {
+    "binding_classification": "UNCHANGED_STRATEGY_RANKING_SEMANTICS_MATERIAL_DATASET_IDENTITY_CHANGE",
+    "cryptographic_binding_identity_changed": true,
+    "cryptographic_dataset_identity_changed": true,
+    "economic_evaluation_executed": false,
+    "economic_validity_offline_gate_pass": false,
+    "expected_rankable_epoch_count": 55,
+    "history_depth_after": 60,
+    "history_depth_before": 6,
+    "observed_materialization_manifest": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_20260712T004937Z/materialization/run_a/panel/panel_open_interest_dataset_manifest.json",
+    "operator_go": "GO_CROSS_SECTIONAL_OPEN_INTEREST_DELTA_RANK_V0_EXTENDED_PANEL_DATASET_DIGEST_RATIFICATION_V0",
+    "ratification_owner": "cross_sectional_open_interest_delta_rank_v0_extended_panel_dataset_digest_ratification.v0",
+    "runtime_rewire_admissible": false,
+    "semantic_binding_fields_changed": false
+  },
   "instrument_binding": {
     "binding_version": "v0",
     "bitcoin_excluded": true,
@@ -241,18 +268,20 @@
     "synthetic_spot_excluded": true
   },
   "instrument_universe_digest": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791",
-  "orchestrator_owner": "cross_sectional_open_interest_delta_rank_single_slot_research_orchestrator_v0",
   "order_effect": "NONE",
   "panel_dataset_binding": {
     "admissibility_manifest_ref": "pit_cross_sectional_research_dataset_envelope.v0:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0:self_accumulated_forward_accrual_v0",
-    "archive_source_digest": "12647433643badc0944d71a1268969845d32f7d6b52bd4ad843ea557c8ef2cf0",
+    "archive_source_digest": "cb10e99d7cd5fa158a38aec24e095dbd051f447a0665a7fce47bcc13cb44860a",
     "binding_version": "v0",
-    "bound_data_digest": "fd2a020f055120eaa67e0087423333a41cb32b99b95076b18e3c1b50f543844a",
+    "bound_data_digest": "82e8787c0cc19c15c120de4ee24821bba85b5c5a938b802cfa3f7bcd40f13a4d",
     "dataset_extension": "self_accumulated_forward_accrual_v0",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0",
     "materializer_owner": "okx_self_accumulated_forward_open_interest_bound_panel_dataset_materialization.v0",
     "no_fallback_to_399_instrument_dataset": true,
-    "panel_dataset_digest": "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687",
+    "observed_panel_history_depth": 60,
+    "observed_panel_window_end_utc": "2026-07-11T23:00:00Z",
+    "observed_panel_window_start_utc": "2026-07-09T12:00:00Z",
+    "panel_dataset_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
     "panel_dataset_schema": "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1",
     "panel_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel",
     "panel_open_interest_manifest_ref": "pit_okx_pt1h_panel_open_interest_dataset_v1:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel:self_accumulated_forward_accrual_v0",
@@ -361,15 +390,15 @@
   },
   "research_hypothesis_id": "cross_sectional_open_interest_delta_rank_v0",
   "research_scope": "cross_sectional_open_interest_delta_rank/v0",
-  "runner_binding": "scripts/ops/run_cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_execution_v0.py",
   "runtime_effect": "NONE",
   "schema_version": "cross_sectional_open_interest_delta_rank_v0_versioned_research_binding.v0",
   "strategy_id": "cross_sectional_open_interest_delta_rank",
   "strategy_version": "v0",
   "system_constraints": {
     "bitcoin_direction_allowed": false,
+    "dataset_identity_refresh_only": true,
     "futures_only": true,
-    "no_dataset_change": true,
+    "no_dataset_semantic_change": true,
     "no_parameter_optimization": true,
     "no_policy_rescue": true,
     "no_runtime": true,

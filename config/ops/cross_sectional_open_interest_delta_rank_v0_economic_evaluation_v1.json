@@ -1,15 +1,15 @@
 {
-  "binding_digest": "c17b68949726fc340575070adb8572e26e63a30c569e73ffc8ca801fe28577ed",
+  "binding_digest": "49e444fddf31c2da877e2c30eb0135848a657d58febfbb1827affcb6154dfb64",
   "config_digest": "ad98477ea6d04e30d904a19409b99a8396a0a58ca0cdba2839585ea345300f76",
   "config_schema_version": "cross_sectional_open_interest_delta_rank_v0_economic_evaluation_admissibility_v1",
   "config_version": "v1",
   "cross_sectional_evaluation_binding_v1": {
-    "binding_digest": "c17b68949726fc340575070adb8572e26e63a30c569e73ffc8ca801fe28577ed",
+    "binding_digest": "49e444fddf31c2da877e2c30eb0135848a657d58febfbb1827affcb6154dfb64",
     "candidate_binding_ref": "config/research/cross_sectional_open_interest_delta_rank_v0_versioned_research_binding_v0.json",
     "candidate_id": "cross_sectional_open_interest_delta_rank/v0",
     "config_digest": "8023e1a25810f59e9e36128da6e6f1e4d2a6153fd6a02995a80925cd8f381371",
-    "data_contract_digest": "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687",
-    "data_digest": "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687",
+    "data_contract_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+    "data_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
     "dataset_binding": {
       "bar_interval": "PT1H",
       "binding_version": "v0",
