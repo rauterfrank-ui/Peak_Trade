@@ -1,9 +1,9 @@
-# Peak Trade — Kanonisches Vollautonomie-Runbook v4.4.10  
+# Peak Trade — Kanonisches Vollautonomie-Runbook v4.4.11
 ## Core-System-Konsistenz, Reuse-First-Integration & Economic Viability
 
-**Status:** Kanonisches strategisches und operatives Implementierungsrunbook  
-**Version:** 4.4.10-core-trading-ssot-state-independent-implementation-contract  
-**Stand:** 10. Juli 2026  
+**Status:** Kanonisches strategisches und operatives Implementierungsrunbook
+**Version:** 4.4.11-full-canonical-system-parity-before-system-economic-evidence
+**Stand:** 12. Juli 2026
 **Operator:** Frank Rauter  
 **Systemziel:** Vollautonomes, futures-only Peak-Trade-System mit deterministischer, konsistenter und auditierbarer Handelslogik; realistischer Profitabilitätsvalidierung; unabhängiger Safety Authority; gefenceter Single-Writer-Runtime; vollständiger Reconciliation; sicherer Restart-/Recovery-Semantik; einer durchgängigen Research→Validation→Promotion→Runtime→Feedback-Kette; und einem klar getrennten Pfad von initialer Single-Future-Safety-Phase zu späterer Multi-Future-Portfolio-Runtime nach separaten Gates.  
 **Keine Anlageberatung.**
@@ -256,6 +256,73 @@ Die bestätigten Lücken sind primär:
 - fehlende persistierte Netto-Performance-Evidence,
 - fehlende technische Profitabilitäts-/Robustness-Gates in Promotion,
 - fehlender manifestierter Nachweis, dass Economic Validation bereits die vollständige kanonische Systemkette und nicht nur isolierte Research-/Signal-Archetypen bewertet.
+
+---
+
+# 0.1A Vollständige kanonische Systemparität vor System-Economic-Evidence
+
+Die Economic Validation bewertet ausschließlich die tatsächlich ausgeführte kanonische Systemkette. Negative oder nicht aussagekräftige wirtschaftliche Ergebnisse dürfen daher nicht automatisch der kanonischen Peak-Trade-Handelslogik zugeschrieben werden.
+
+Vor jeder fachlichen Interpretation von Economic-Ergebnissen ist nachzuweisen, dass die vollständige kanonische Systemkette tatsächlich verdrahtet und in der Evaluation verwendet wurde. Vorhandener Code genügt nicht; die vollständige Kette muss tatsächlich verdrahtet sein. Backtest-, Offline- und Runtime-Entscheidungskette müssen dieselbe kanonische Decision Chain verwenden.
+
+```text
+FULL_CANONICAL_SYSTEM_PARITY_REQUIRED=true
+FULL_CANONICAL_SYSTEM_WIRING_REQUIRED=true
+BACKTEST_RUNTIME_DECISION_PARITY_REQUIRED=true
+RESEARCH_RUNTIME_DRIFT_ALLOWED=false
+
+FULL_CANONICAL_SYSTEM_COMPLETION_BEFORE_SYSTEM_ECONOMIC_EVIDENCE=true
+FULL_CANONICAL_SYSTEM_COMPLETION_BEFORE_RUNTIME_EVIDENCE=true
+
+RAW_SIGNAL_EVALUATION_IS_NOT_SYSTEM_ECONOMIC_EVIDENCE=true
+PARTIAL_PIPELINE_EVALUATION_IS_NOT_SYSTEM_ECONOMIC_EVIDENCE=true
+ISOLATED_RESEARCH_EVIDENCE_IS_NOT_CANONICAL_SYSTEM_EVIDENCE=true
+```
+
+Zur kanonischen Systemkette gehören mindestens:
+
+```text
+Canonical Market Context
+→ Scope Initialization
+→ Scope Event Generation
+→ Bull/Bear Directional Assessment
+→ Bull/Bear State Switch
+→ Survival
+→ Suitability
+→ Double Play
+→ Entry
+→ Position Management
+→ Exit / Reversal
+→ Capital
+→ Risk
+→ Position Sizing
+→ Safety
+→ KillSwitch
+→ Reconciliation
+→ Economic Validation
+```
+
+System-Economic-Evidence ist ausschließlich zulässig, wenn die vollständige kanonische Peak-Trade-Systemkette evaluiert wurde. Research-only-, Raw-Signal- oder Partial-Pipeline-Evaluationen dürfen nicht als kanonische System-Economic-Evidence interpretiert werden.
+
+Ergibt eine Offline-Economic-Evaluation nur eine geringe Stichprobe oder ein wirtschaftlich negatives Resultat, ist zunächst read-only zu prüfen, ob die vollständige kanonische Systemkette tatsächlich evaluiert wurde und vollständige kanonische Parität sowie Verdrahtung vorlagen. Fehlende Wiring-Pfade oder semantische Completion sind zuerst reuse-first und semantikneutral zu schließen. Erst anschließend ist eine erneute Economic Evaluation fachlich belastbar und dürfen Economic-Ergebnisse fachlich interpretiert werden.
+
+Dieser Abschnitt erzeugt keine neue Runtime-, Trading-, Promotion- oder Authority-Semantik.
+
+```text
+IMPLEMENTATION_CONTRACT_ADDITIVE_ONLY=true
+CORE_TRADING_SEMANTICS_CHANGED=false
+CANONICAL_TRADING_LOGIC_CHANGED=false
+MASTER_V2_SEMANTICS_CHANGED=false
+DOUBLE_PLAY_SEMANTICS_CHANGED=false
+SCOPE_ENTRY_EXIT_REVERSAL_SEMANTICS_CHANGED=false
+RISK_SIZING_SEMANTICS_CHANGED=false
+SAFETY_SEMANTICS_CHANGED=false
+KILLSWITCH_SEMANTICS_CHANGED=false
+RECONCILIATION_SEMANTICS_CHANGED=false
+AUTHORITY_SEMANTICS_CHANGED=false
+PROMOTION_GATE_SEMANTICS_CHANGED=false
+ECONOMIC_VALIDITY_GATE_CHANGED=false
+```
 
 ---
 
@@ -4219,6 +4286,35 @@ MANIFEST_VERIFY_RC=0
 ```
 
 Dieser Current-State-Anhang ist Fortschritts- und Governance-Evidence. Er ersetzt keine versionierten Repo-Owner, keine Strategy-Bindings und keine EconomicViabilityEvidenceV1.
+
+---
+
+# 44. v4.4.11 Änderungsprotokoll
+
+Gegenüber v4.4.10 wurde ausschließlich der additive Governance-Abschnitt §0.1A ergänzt. Die bestehende Handelslogik, Safety-, Risk-/Sizing-, KillSwitch-, Reconciliation-, Promotion-, Evidence- und Authority-Semantik bleibt unverändert.
+
+Ergänzt wurden:
+
+1. §0.1A — Vollständige kanonische Systemparität vor System-Economic-Evidence,
+2. maschinenlesbare Flags für Parity-, Wiring- und Backtest-/Runtime-Decision-Parity-Anforderungen,
+3. explizite Abgrenzung: Raw-Signal-, Partial-Pipeline- und isolierte Research-Evidence sind keine kanonische System-Economic-Evidence,
+4. verbindliche Reihenfolge: bei negativen oder schwachen Economic-Ergebnissen zuerst read-only Paritäts- und Verdrahtungsprüfung, dann reuse-first Wiring-Closure, erst danach fachliche Interpretation.
+
+```text
+IMPLEMENTATION_CONTRACT_ADDITIVE_ONLY=true
+CORE_TRADING_SEMANTICS_CHANGED=false
+CANONICAL_TRADING_LOGIC_CHANGED=false
+MASTER_V2_SEMANTICS_CHANGED=false
+DOUBLE_PLAY_SEMANTICS_CHANGED=false
+SCOPE_ENTRY_EXIT_REVERSAL_SEMANTICS_CHANGED=false
+RISK_SIZING_SEMANTICS_CHANGED=false
+SAFETY_SEMANTICS_CHANGED=false
+KILLSWITCH_SEMANTICS_CHANGED=false
+RECONCILIATION_SEMANTICS_CHANGED=false
+AUTHORITY_SEMANTICS_CHANGED=false
+PROMOTION_GATE_SEMANTICS_CHANGED=false
+ECONOMIC_VALIDITY_GATE_CHANGED=false
+```
 
 ---
 

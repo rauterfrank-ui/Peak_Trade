@@ -24,8 +24,12 @@ DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 CI_AUDIT = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 
 RUNBOOK_MARKERS: tuple[str, ...] = (
-    "Kanonisches Vollautonomie-Runbook v4.4.10",
-    "4.4.10-core-trading-ssot-state-independent-implementation-contract",
+    "Kanonisches Vollautonomie-Runbook v4.4.11",
+    "4.4.11-full-canonical-system-parity-before-system-economic-evidence",
+    "# 0.1A Vollständige kanonische Systemparität vor System-Economic-Evidence",
+    "FULL_CANONICAL_SYSTEM_PARITY_REQUIRED=true",
+    "PARTIAL_PIPELINE_EVALUATION_IS_NOT_SYSTEM_ECONOMIC_EVIDENCE=true",
+    "ISOLATED_RESEARCH_EVIDENCE_IS_NOT_CANONICAL_SYSTEM_EVIDENCE=true",
     "RUNBOOK_CANONICAL_NORMS_ARE_STATE_INDEPENDENT=true",
     "FUTURES_ONLY=true",
     "LIVE_AUTHORIZED=false",
