@@ -1,0 +1,38 @@
+{
+  "artifact_kind": "cross_sectional_open_interest_zscore_reversion_v0_transitive_source_reference_integrity_attestation_v0",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "config_ref": "config/research/cross_sectional_open_interest_zscore_reversion_v0_transitive_source_reference_integrity_attestation_v0.json",
+  "historical_evidence_preserved": true,
+  "manifest_owner": "scripts.ops.primary_evidence_retention_v0",
+  "operator_go": "GO_CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_INFRASTRUCTURE_IMPLEMENTATION_V0",
+  "repair_action": "CLASSIFY_AND_ATTEST_WITHOUT_HISTORICAL_MUTATION",
+  "runtime_effect": "NONE",
+  "schema_version": "cross_sectional_open_interest_zscore_reversion_v0_transitive_source_reference_integrity_attestation.v0",
+  "transitive_reference_cases": [
+    {
+      "bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_terminal_classification_bundle_read_only_v0_20260712T135127Z",
+      "classification": "READ_ONLY_REFERENCE_BUNDLE_WITHOUT_MANIFEST_BY_DESIGN",
+      "field_class": "OBSERVED_HISTORICAL_REFERENCE",
+      "historical_evidence_preserved": true,
+      "manifest_present": false,
+      "manifest_verify_rc": null,
+      "referencing_owner": "src.research.cross_sectional_open_interest_zscore_reversion_v0_versioned_hypothesis_binding_v0",
+      "repair_required": false,
+      "status": "EXPLICITLY_ATTESTED_REFERENCE_ONLY"
+    },
+    {
+      "bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
+      "classification": "HISTORICAL_TERMINAL_BASELINE_MANIFEST_DRIFT",
+      "field_class": "OBSERVED_HISTORICAL_EVIDENCE",
+      "historical_evidence_preserved": true,
+      "manifest_present": true,
+      "manifest_verify_rc": 1,
+      "mismatch_file": "final_report.txt",
+      "referencing_owner": "config/research/cross_sectional_open_interest_delta_rank_v0_terminal_baseline_bundle_superseding_integrity_attestation_v0.json",
+      "repair_required": false,
+      "status": "COVERED_BY_EXISTING_SUPERSEDING_INTEGRITY_ATTESTATION"
+    }
+  ],
+  "verdict": "TRANSITIVE_MANIFEST_FAILURE_CLASSIFIED_AND_ATTESTED"
+}
