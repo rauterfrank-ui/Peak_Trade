@@ -4,7 +4,7 @@
 
 `BOUNDED_FUTURES_ONLY_VERSIONED_HYPOTHESIS_BINDING_V0`
 
-Research-only binding for `cross_sectional_open_interest_level_rank/v0`. Binds a distinct
+Research-only binding for `cross_sectional_open_interest_level_rank&#47;v0`. Binds a distinct
 point-in-time open-interest level ranking hypothesis before any economic evaluation.
 
 ## Operator GO
@@ -21,7 +21,7 @@ point-in-time open-interest level ranking hypothesis before any economic evaluat
 
 ## Material difference from prior scope
 
-| Field | Prior (`cross_sectional_open_interest_delta_rank/v0`) | New (`cross_sectional_open_interest_level_rank/v0`) |
+| Field | Prior (`cross_sectional_open_interest_delta_rank&#47;v0`) | New (`cross_sectional_open_interest_level_rank&#47;v0`) |
 |---|---|---|
 | Feature | `delta_or_change_in_open_interest` | `point_in_time_open_interest_level` |
 | Ranking input | OI delta over lookback K | Lagged OI level |
