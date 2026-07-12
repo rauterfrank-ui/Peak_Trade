@@ -165,6 +165,22 @@ REASON_NON_ALIGNED_PANEL = "NON_ALIGNED_PANEL_REJECTED"
 REASON_PANEL_MANIFEST_MISSING = "PANEL_MANIFEST_MISSING"
 REASON_PANEL_BARS_MISSING = "PANEL_BARS_MISSING"
 REASON_ECONOMIC_EXECUTION_FORBIDDEN = "ECONOMIC_EXECUTION_FORBIDDEN_IN_ADAPTER_SCOPE"
+REASON_INSTRUMENT_BINDING_MISSING = "INSTRUMENT_BINDING_MISSING"
+REASON_FEE_BINDING_MISSING = "FEE_BINDING_MISSING"
+REASON_SLIPPAGE_BINDING_MISSING = "SLIPPAGE_BINDING_MISSING"
+REASON_FUNDING_BINDING_MISSING = "FUNDING_BINDING_MISSING"
+REASON_CONFLICTING_INSTRUMENT_BINDINGS = "CONFLICTING_INSTRUMENT_BINDINGS"
+REASON_CONFLICTING_FEE_BINDINGS = "CONFLICTING_FEE_BINDINGS"
+REASON_CONFLICTING_SLIPPAGE_BINDINGS = "CONFLICTING_SLIPPAGE_BINDINGS"
+REASON_CONFLICTING_FUNDING_BINDINGS = "CONFLICTING_FUNDING_BINDINGS"
+
+
+class EconomicViabilityEvidenceBindingResolutionError(ValueError):
+    def __init__(self, reason_code: str, *, detail: str = "") -> None:
+        self.reason_code = reason_code
+        self.detail = detail
+        message = reason_code if not detail else f"{reason_code}:{detail}"
+        super().__init__(message)
 
 
 class PrecheckTerminalStatus(str, Enum):
@@ -545,6 +561,91 @@ def _normalize_cost_execution_binding_for_backtest_v0(
         "slippage_model_binding": cost_execution_binding.get("slippage_binding", {}),
         "funding_model_binding": cost_execution_binding.get("funding_binding", {}),
     }
+
+
+def _resolve_binding_reference_field_v0(
+    *,
+    container: Mapping[str, Any],
+    legacy_key: str,
+    level_rank_key: str,
+    missing_reason: str,
+    conflict_reason: str,
+) -> dict[str, Any]:
+    legacy_value = container.get(legacy_key)
+    level_rank_value = container.get(level_rank_key)
+    if legacy_value is not None and level_rank_value is not None:
+        if _stable_digest(legacy_value) != _stable_digest(level_rank_value):
+            raise EconomicViabilityEvidenceBindingResolutionError(
+                conflict_reason,
+                detail=f"{legacy_key}!={level_rank_key}",
+            )
+    if legacy_value is not None:
+        return dict(legacy_value)
+    if level_rank_value is not None:
+        return dict(level_rank_value)
+    raise EconomicViabilityEvidenceBindingResolutionError(missing_reason)
+
+
+def resolve_economic_viability_binding_references_v0(
+    envelope: Mapping[str, Any],
+) -> dict[str, Any]:
+    universe_binding = _resolve_binding_reference_field_v0(
+        container=envelope,
+        legacy_key="instrument_binding",
+        level_rank_key="pit_universe_binding",
+        missing_reason=REASON_INSTRUMENT_BINDING_MISSING,
+        conflict_reason=REASON_CONFLICTING_INSTRUMENT_BINDINGS,
+    )
+    cost_binding = envelope.get("cost_execution_binding")
+    if not isinstance(cost_binding, Mapping):
+        raise EconomicViabilityEvidenceBindingResolutionError(
+            REASON_BINDING_INCOMPLETE,
+            detail="cost_execution_binding_missing",
+        )
+    fee_model_binding = _resolve_binding_reference_field_v0(
+        container=cost_binding,
+        legacy_key="fee_model_binding",
+        level_rank_key="fee_binding",
+        missing_reason=REASON_FEE_BINDING_MISSING,
+        conflict_reason=REASON_CONFLICTING_FEE_BINDINGS,
+    )
+    slippage_model_binding = _resolve_binding_reference_field_v0(
+        container=cost_binding,
+        legacy_key="slippage_model_binding",
+        level_rank_key="slippage_binding",
+        missing_reason=REASON_SLIPPAGE_BINDING_MISSING,
+        conflict_reason=REASON_CONFLICTING_SLIPPAGE_BINDINGS,
+    )
+    funding_model_binding = _resolve_binding_reference_field_v0(
+        container=cost_binding,
+        legacy_key="funding_model_binding",
+        level_rank_key="funding_binding",
+        missing_reason=REASON_FUNDING_BINDING_MISSING,
+        conflict_reason=REASON_CONFLICTING_FUNDING_BINDINGS,
+    )
+    execution_model_binding = cost_binding.get("execution_model_binding")
+    if not isinstance(execution_model_binding, Mapping):
+        raise EconomicViabilityEvidenceBindingResolutionError(
+            REASON_BINDING_INCOMPLETE,
+            detail="execution_model_binding_missing",
+        )
+
+    references: dict[str, Any] = {
+        "instrument_binding": universe_binding,
+        "fee_model_binding": fee_model_binding,
+        "slippage_model_binding": slippage_model_binding,
+        "funding_model_binding": funding_model_binding,
+        "execution_model_binding": dict(execution_model_binding),
+    }
+    if "pit_universe_binding" in envelope and "instrument_binding" not in envelope:
+        references["pit_universe_binding"] = universe_binding
+    if "fee_binding" in cost_binding and "fee_model_binding" not in cost_binding:
+        references["fee_binding"] = fee_model_binding
+    if "slippage_binding" in cost_binding and "slippage_model_binding" not in cost_binding:
+        references["slippage_binding"] = slippage_model_binding
+    if "funding_binding" in cost_binding and "funding_model_binding" not in cost_binding:
+        references["funding_binding"] = funding_model_binding
+    return references
 
 
 def load_ops_evaluation_config_v0(repo_root: Path) -> dict[str, Any]:
@@ -1395,6 +1496,7 @@ def materialize_economic_viability_evidence(
     long_contrib, short_contrib = _compute_long_short_contribution(backtest)
     single_trade_val = _compute_single_trade_contribution(backtest)
     single_regime_val = _compute_single_regime_contribution(backtest)
+    resolved_bindings = resolve_economic_viability_binding_references_v0(envelope)
 
     body: dict[str, Any] = {
         "schema_version": "economic_viability_evidence_cross_sectional_open_interest_level_rank_v0",
@@ -1444,19 +1546,29 @@ def materialize_economic_viability_evidence(
             "parameter_binding": envelope["parameter_binding"],
             "dataset_binding": envelope["panel_dataset_binding"],
             "period_binding": envelope["period_binding"],
-            "instrument_binding": envelope["instrument_binding"],
-            "fee_model_binding": envelope["cost_execution_binding"]["fee_model_binding"],
-            "slippage_model_binding": envelope["cost_execution_binding"]["slippage_model_binding"],
-            "funding_model_binding": envelope["cost_execution_binding"]["funding_model_binding"],
-            "execution_model_binding": envelope["cost_execution_binding"][
-                "execution_model_binding"
-            ],
+            "instrument_binding": resolved_bindings["instrument_binding"],
+            "fee_model_binding": resolved_bindings["fee_model_binding"],
+            "slippage_model_binding": resolved_bindings["slippage_model_binding"],
+            "funding_model_binding": resolved_bindings["funding_model_binding"],
+            "execution_model_binding": resolved_bindings["execution_model_binding"],
             "economic_policy_binding": envelope["economic_policy_binding"],
             "implementation_digest": envelope.get("implementation_digest"),
             "config_digest": envelope["config_digest"],
             "data_digest": panel_data_digest,
             "ratification_digest": ratification.get("ratification_digest"),
             "ops_config_digest": ops_config.get("config_digest"),
+            **{
+                key: value
+                for key, value in resolved_bindings.items()
+                if key
+                not in {
+                    "instrument_binding",
+                    "fee_model_binding",
+                    "slippage_model_binding",
+                    "funding_model_binding",
+                    "execution_model_binding",
+                }
+            },
         },
         "materialization_root": str(materialization_root),
         "fixture_data_digest_excluded": FIXTURE_DATA_DIGEST,
