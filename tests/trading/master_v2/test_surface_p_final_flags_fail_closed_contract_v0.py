@@ -18,14 +18,29 @@ from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
     CONTRACT_SLICE_ID,
     DIRECT_TRUE_FLAG_ASSIGNMENT,
     PACKAGE_MARKER,
+    PROMOTION_SLICE_ID,
+    REASON_ELIGIBILITY_HEAD_STALE,
+    REASON_ELIGIBILITY_MANIFEST_UNVERIFIED,
     REQUIRED_SEMANTIC_BINDING_CONFIRMATIONS_V0,
     SurfacePFinalFlagsEvidenceInputV0,
+    build_surface_p_final_flags_evidence_from_eligibility_gate_v0,
     current_head_default_final_flags_evidence_input_v0,
     derive_targeted_semantic_binding_confirmations_from_gap_assessment_v0,
     evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0,
     evaluate_surface_p_final_flags_fail_closed_contract_v0,
+    evaluate_surface_p_final_flags_manifest_verified_promotion_v0,
     reject_direct_true_flag_assignment_v0,
     surface_p_final_flags_evidence_input_field_names_v0,
+    verify_evidence_dir_manifest_sha256_v0,
+)
+
+ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+DEFAULT_SOURCE_CLOSEOUT = (
+    ARCHIVE_ROOT
+    / "research/pr5133_merge_closeout_full_canonical_parity_pass_eligibility_gate_v0_20260712T224903Z"
+)
+DEFAULT_ELIGIBILITY_EVIDENCE = (
+    ARCHIVE_ROOT / "planning/full_canonical_parity_pass_eligibility_gate_v0_20260712T222708Z"
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -249,3 +264,107 @@ def test_slice_changed_paths_allowed_v0() -> None:
         [p.replace(REPO_ROOT.as_posix() + "/", "") for p in map(str, _SLICE_SOURCE_PATHS)]
     )
     assert ok, violations
+
+
+def test_promotion_slice_constant_v0() -> None:
+    assert PROMOTION_SLICE_ID == "SURFACE_P_FINAL_FLAGS_MANIFEST_VERIFIED_PROMOTION_V0"
+
+
+def test_manifest_verified_promotion_passes_with_source_closeout_and_eligibility_v0() -> None:
+    if not DEFAULT_SOURCE_CLOSEOUT.is_dir() or not DEFAULT_ELIGIBILITY_EVIDENCE.is_dir():
+        return
+    promotion = evaluate_surface_p_final_flags_manifest_verified_promotion_v0(
+        eligibility_evidence_dir=DEFAULT_ELIGIBILITY_EVIDENCE,
+        closeout_evidence_dir=DEFAULT_SOURCE_CLOSEOUT,
+        repo_root=REPO_ROOT,
+    )
+    assert promotion.transitive_manifest_verify_rc == 0
+    assert promotion.eligibility_head_binding_ok is True
+    assert promotion.promoted is True
+    assert promotion.after_flags.full_canonical_chain_wired is True
+    assert promotion.after_flags.backtest_runtime_decision_parity_pass is True
+    assert promotion.after_flags.system_economic_evidence_admissible is False
+    assert promotion.before_flags.full_canonical_chain_wired is False
+
+
+def test_manifest_tamper_blocks_promotion_v0(tmp_path: Path) -> None:
+    eligibility = tmp_path / "eligibility"
+    closeout = tmp_path / "closeout"
+    eligibility.mkdir()
+    closeout.mkdir()
+    (eligibility / "eligibility_gate_result.json").write_text(
+        '{"assessment_verdict":"PASS_FULL_CANONICAL_PARITY_PASS_ELIGIBILITY_GATE_V0","full_canonical_parity_pass_eligible":true,"current_head":"deadbeef","runtime_bridge_boundary_status":"BOUND_NOT_ACTIVATED"}',
+        encoding="utf-8",
+    )
+    (closeout / "final_report.txt").write_text("VERDICT=PASS\n", encoding="utf-8")
+    promotion = evaluate_surface_p_final_flags_manifest_verified_promotion_v0(
+        eligibility_evidence_dir=eligibility,
+        closeout_evidence_dir=closeout,
+        repo_root=REPO_ROOT,
+        current_head="deadbeef",
+    )
+    assert promotion.promoted is False
+    assert promotion.promotion_blocker in {
+        REASON_ELIGIBILITY_MANIFEST_UNVERIFIED,
+        REASON_ELIGIBILITY_HEAD_STALE,
+    }
+
+
+def test_stale_eligibility_head_blocks_promotion_v0(tmp_path: Path) -> None:
+    from scripts.research.full_canonical_parity_pass_eligibility_gate_v0 import write_manifest
+
+    eligibility = tmp_path / "eligibility"
+    closeout = tmp_path / "closeout"
+    proof = tmp_path / "proof"
+    for directory in (eligibility, closeout, proof):
+        directory.mkdir()
+    stale_head = "0" * 40
+    (eligibility / "eligibility_gate_result.json").write_text(
+        (
+            '{"assessment_verdict":"PASS_FULL_CANONICAL_PARITY_PASS_ELIGIBILITY_GATE_V0",'
+            '"full_canonical_parity_pass_eligible":true,'
+            f'"current_head":"{stale_head}",'
+            '"runtime_bridge_boundary_status":"BOUND_NOT_ACTIVATED"}'
+        ),
+        encoding="utf-8",
+    )
+    (eligibility / "eligibility_gate_inputs.json").write_text(
+        f'{{"proof_bundle_dir":"{proof}"}}',
+        encoding="utf-8",
+    )
+    (eligibility / "current_head_proof_binding.json").write_text(
+        (f'{{"manifest_verified_full_parity_proof_bundle":true,"proof_bundle_dir":"{proof}"}}'),
+        encoding="utf-8",
+    )
+    (proof / "proof_bundle.json").write_text(
+        '{"full_parity_proof_bundle_status":"PROVEN_MANIFEST_VERIFIED"}',
+        encoding="utf-8",
+    )
+    (closeout / "final_report.txt").write_text("VERDICT=PASS\n", encoding="utf-8")
+    assert write_manifest(eligibility) == 0
+    assert write_manifest(closeout) == 0
+    assert write_manifest(proof) == 0
+    promotion = evaluate_surface_p_final_flags_manifest_verified_promotion_v0(
+        eligibility_evidence_dir=eligibility,
+        closeout_evidence_dir=closeout,
+        repo_root=REPO_ROOT,
+    )
+    assert promotion.promoted is False
+    assert promotion.promotion_blocker == REASON_ELIGIBILITY_HEAD_STALE
+
+
+def test_promotion_materialization_is_deterministic_v0() -> None:
+    if not DEFAULT_SOURCE_CLOSEOUT.is_dir() or not DEFAULT_ELIGIBILITY_EVIDENCE.is_dir():
+        return
+    first = evaluate_surface_p_final_flags_manifest_verified_promotion_v0(
+        eligibility_evidence_dir=DEFAULT_ELIGIBILITY_EVIDENCE,
+        closeout_evidence_dir=DEFAULT_SOURCE_CLOSEOUT,
+        repo_root=REPO_ROOT,
+    )
+    second = evaluate_surface_p_final_flags_manifest_verified_promotion_v0(
+        eligibility_evidence_dir=DEFAULT_ELIGIBILITY_EVIDENCE,
+        closeout_evidence_dir=DEFAULT_SOURCE_CLOSEOUT,
+        repo_root=REPO_ROOT,
+    )
+    assert first.promoted == second.promoted
+    assert first.after_flags == second.after_flags
