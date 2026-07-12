@@ -9,13 +9,13 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Ratifies the versioned offline research binding for `cross_sectional_futures_lead_lag_information_diffusion/v0`. No economic evaluation, no runtime authority, no promotion.
+> **Non-authorizing:** Ratifies the versioned offline research binding for `cross_sectional_futures_lead_lag_information_diffusion&#47;v0`. No economic evaluation, no runtime authority, no promotion.
 
 ## Binding Summary
 
 | Field | Value |
 |---|---|
-| `RESEARCH_SCOPE` | `cross_sectional_futures_lead_lag_information_diffusion/v0` |
+| `RESEARCH_SCOPE` | `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` |
 | `HYPOTHESIS_ID` | `CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_NON_BITCOIN_PERPETUALS_V0` |
 | `SCORE_FAMILY_POLICY` | `panel_median_benchmark_lagged_return_diffusion_v0` |
 | `DEFAULT_LAG_WINDOW_L` | `8` |
