@@ -150,13 +150,20 @@ MV2_WIRING_ADAPTER_OWNER = (
 )
 MV2_CANONICAL_BACKTEST_OWNER = "backtest.mv2_research_wiring_v1"
 
-ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
-    INFRASTRUCTURE_GO_TOKEN: "INFRASTRUCTURE_V0",
-    GO_TOKEN: "EXECUTION_V0",
-    REEVALUATION_GO_TOKEN: "REEVALUATION_V0",
-    MV2_WIRING_ADAPTER_GO_TOKEN: "MV2_WIRING_ADAPTER_V0",
-    SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN: "MV2_BINDING_V0",
-}
+_BRANCH_INFRASTRUCTURE_V0 = "INFRASTRUCTURE_V0"
+_BRANCH_EXECUTION_V0 = "EXECUTION_V0"
+_BRANCH_REEVALUATION_V0 = "REEVALUATION_V0"
+_BRANCH_MV2_WIRING_ADAPTER_V0 = "MV2_WIRING_ADAPTER_V0"
+_BRANCH_MV2_BINDING_V0 = "MV2_BINDING_V0"
+
+_ENTRY_POINT_DISPATCH_PAIRS: tuple[tuple[str, str], ...] = (
+    (INFRASTRUCTURE_GO_TOKEN, _BRANCH_INFRASTRUCTURE_V0),
+    (GO_TOKEN, _BRANCH_EXECUTION_V0),
+    (REEVALUATION_GO_TOKEN, _BRANCH_REEVALUATION_V0),
+    (MV2_WIRING_ADAPTER_GO_TOKEN, _BRANCH_MV2_WIRING_ADAPTER_V0),
+    (SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN, _BRANCH_MV2_BINDING_V0),
+)
+ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = dict(_ENTRY_POINT_DISPATCH_PAIRS)
 
 REASON_BINDING_INCOMPLETE = "BINDING_INCOMPLETE"
 REASON_RATIFICATION_INVALID = "RATIFICATION_INVALID"
@@ -188,7 +195,7 @@ class InfrastructureTerminalStatus(str, Enum):
 @dataclass(frozen=True)
 class OfflineEconomicEvaluationRunnerEnvelopeV0:
     requested_operator_go: str
-    dispatched_go_token: str
+    dispatched_operator_go: str
     dispatch_rc: int
     dispatch_successful: bool
     preexecution_parity_guard_pass: bool
@@ -539,14 +546,14 @@ def validate_entry_point_go_token_v0(go_token: str) -> tuple[bool, str | None]:
     return True, branch
 
 
-def resolve_dispatch_go_token_v0(requested_operator_go: str) -> str:
+def resolve_identity_operator_go_v0(requested_operator_go: str) -> str:
     return requested_operator_go
 
 
 def materialize_runner_envelope_v0(
     *,
     requested_operator_go: str,
-    dispatched_go_token: str,
+    dispatched_operator_go: str,
     dispatch_rc: int,
     preexecution_parity_guard_pass: bool,
     full_canonical_chain_wired: bool,
@@ -555,7 +562,7 @@ def materialize_runner_envelope_v0(
     dispatch_successful = dispatch_rc == 0
     body: dict[str, Any] = {
         "requested_operator_go": requested_operator_go,
-        "dispatched_go_token": dispatched_go_token,
+        "dispatched_operator_go": dispatched_operator_go,
         "dispatch_rc": dispatch_rc,
         "dispatch_successful": dispatch_successful,
         "preexecution_parity_guard_pass": preexecution_parity_guard_pass,
@@ -564,7 +571,7 @@ def materialize_runner_envelope_v0(
     }
     return OfflineEconomicEvaluationRunnerEnvelopeV0(
         requested_operator_go=requested_operator_go,
-        dispatched_go_token=dispatched_go_token,
+        dispatched_operator_go=dispatched_operator_go,
         dispatch_rc=dispatch_rc,
         dispatch_successful=dispatch_successful,
         preexecution_parity_guard_pass=preexecution_parity_guard_pass,
@@ -577,16 +584,19 @@ def materialize_runner_envelope_v0(
 def verify_runner_envelope_v0(
     envelope: OfflineEconomicEvaluationRunnerEnvelopeV0 | None,
     *,
-    expected_dispatched_go: str | None = None,
+    expected_dispatched_operator_go: str | None = None,
 ) -> tuple[bool, tuple[str, ...]]:
     if envelope is None:
         return False, (REASON_RUNNER_ENVELOPE_REQUIRED,)
     reasons: list[str] = []
     if envelope.dispatch_rc != 0 or not envelope.dispatch_successful:
         reasons.append(REASON_DISPATCH_NOT_SUCCESSFUL)
-    if envelope.requested_operator_go != envelope.dispatched_go_token:
+    if envelope.requested_operator_go != envelope.dispatched_operator_go:
         reasons.append(REASON_DISPATCH_GO_MISMATCH)
-    if expected_dispatched_go and envelope.dispatched_go_token != expected_dispatched_go:
+    if (
+        expected_dispatched_operator_go
+        and envelope.dispatched_operator_go != expected_dispatched_operator_go
+    ):
         reasons.append(REASON_DISPATCH_GO_MISMATCH)
     if not envelope.preexecution_parity_guard_pass:
         reasons.append(REASON_PREEXECUTION_PARITY_GUARD_FAIL)
@@ -630,7 +640,7 @@ def verify_full_evaluation_precheck_v1(
         else:
             env_ok, env_reasons = verify_runner_envelope_v0(
                 runner_envelope,
-                expected_dispatched_go=go_token,
+                expected_dispatched_operator_go=go_token,
             )
             if not env_ok:
                 reasons.extend(env_reasons)
@@ -1234,7 +1244,7 @@ def run_full_offline_economic_evaluation_v0(
 
     env_ok, env_reasons = verify_runner_envelope_v0(
         runner_envelope,
-        expected_dispatched_go=go_token,
+        expected_dispatched_operator_go=go_token,
     )
     if not env_ok:
         return FullEconomicEvaluationResultV0(

@@ -27,7 +27,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     ExecutionTerminalStatus,
     materialize_preexecution_fail_closed_block_v0,
     materialize_runner_envelope_v0,
-    resolve_dispatch_go_token_v0,
+    resolve_identity_operator_go_v0,
     run_full_offline_economic_evaluation_v0,
     verify_full_evaluation_precheck_v1,
 )
@@ -87,7 +87,7 @@ def fixture_bound_staging() -> Path:
 def _make_envelope(*, go_token: str, parity: bool) -> object:
     return materialize_runner_envelope_v0(
         requested_operator_go=go_token,
-        dispatched_go_token=resolve_dispatch_go_token_v0(go_token),
+        dispatched_operator_go=resolve_identity_operator_go_v0(go_token),
         dispatch_rc=0,
         preexecution_parity_guard_pass=parity,
         full_canonical_chain_wired=parity,
@@ -96,8 +96,8 @@ def _make_envelope(*, go_token: str, parity: bool) -> object:
 
 
 def test_requested_execution_go_not_rewritten_to_reevaluation() -> None:
-    assert resolve_dispatch_go_token_v0(GO_TOKEN) == GO_TOKEN
-    assert resolve_dispatch_go_token_v0(GO_TOKEN) != REEVALUATION_GO_TOKEN
+    assert resolve_identity_operator_go_v0(GO_TOKEN) == GO_TOKEN
+    assert resolve_identity_operator_go_v0(GO_TOKEN) != REEVALUATION_GO_TOKEN
 
 
 def test_unknown_go_token_blocked_before_entry_point_dispatch() -> None:
@@ -148,7 +148,7 @@ def test_backtest_runtime_decision_parity_false_blocks_before_evaluation(
 ) -> None:
     envelope = materialize_runner_envelope_v0(
         requested_operator_go=GO_TOKEN,
-        dispatched_go_token=GO_TOKEN,
+        dispatched_operator_go=GO_TOKEN,
         dispatch_rc=0,
         preexecution_parity_guard_pass=False,
         full_canonical_chain_wired=True,
@@ -235,7 +235,7 @@ def test_direct_runner_call_without_dispatch_success_blocked(
 ) -> None:
     envelope = materialize_runner_envelope_v0(
         requested_operator_go=GO_TOKEN,
-        dispatched_go_token=GO_TOKEN,
+        dispatched_operator_go=GO_TOKEN,
         dispatch_rc=2,
         preexecution_parity_guard_pass=False,
         full_canonical_chain_wired=False,
@@ -329,12 +329,13 @@ def test_infrastructure_go_path_remains_compatible(
     scope_ratification: dict,
     complete_binding: dict,
 ) -> None:
+    infra_go = INFRASTRUCTURE_GO_TOKEN
     ok, reasons, _ = verify_full_evaluation_precheck_v1(
         repo_root=REPO_ROOT,
         ratification=scope_ratification,
         staging_root=bound_staging,
         versioned_binding=complete_binding,
-        go_token=INFRASTRUCTURE_GO_TOKEN,
+        go_token=infra_go,
         require_execution_go=False,
         materialize_dataset=False,
     )

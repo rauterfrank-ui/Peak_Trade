@@ -36,7 +36,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     execution_result_to_dict,
     materialize_execution_contract_v0,
     materialize_runner_envelope_v0,
-    resolve_dispatch_go_token_v0,
+    resolve_identity_operator_go_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_full_offline_economic_evaluation_v0,
     verify_execution_start_state_v0,
@@ -116,7 +116,7 @@ def fixture_bound_staging() -> Path:
 def _make_runner_envelope(*, go_token: str, parity: bool = False) -> object:
     return materialize_runner_envelope_v0(
         requested_operator_go=go_token,
-        dispatched_go_token=resolve_dispatch_go_token_v0(go_token),
+        dispatched_operator_go=resolve_identity_operator_go_v0(go_token),
         dispatch_rc=0,
         preexecution_parity_guard_pass=parity,
         full_canonical_chain_wired=parity,
@@ -218,6 +218,7 @@ def test_full_eval_rejects_stale_binding_digest(
 ) -> None:
     stale = deepcopy(complete_binding)
     stale["binding_digest"] = "f" * 64
+    reeval_go = REEVALUATION_GO_TOKEN
     with (
         patch(
             "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
@@ -235,9 +236,9 @@ def test_full_eval_rejects_stale_binding_digest(
             ratification=scope_ratification,
             staging_root=bound_staging,
             versioned_binding=stale,
-            go_token=REEVALUATION_GO_TOKEN,
+            go_token=reeval_go,
             require_execution_go=True,
-            runner_envelope=_make_runner_envelope(go_token=REEVALUATION_GO_TOKEN, parity=True),
+            runner_envelope=_make_runner_envelope(go_token=reeval_go, parity=True),
             materialize_dataset=False,
         )
     assert ok is False
@@ -251,6 +252,7 @@ def test_full_eval_rejects_wrong_dataset_digest(
 ) -> None:
     stale = deepcopy(complete_binding)
     stale["dataset_digest"] = "f" * 64
+    reeval_go = REEVALUATION_GO_TOKEN
     with (
         patch(
             "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
@@ -268,9 +270,9 @@ def test_full_eval_rejects_wrong_dataset_digest(
             ratification=scope_ratification,
             staging_root=bound_staging,
             versioned_binding=stale,
-            go_token=REEVALUATION_GO_TOKEN,
+            go_token=reeval_go,
             require_execution_go=True,
-            runner_envelope=_make_runner_envelope(go_token=REEVALUATION_GO_TOKEN, parity=True),
+            runner_envelope=_make_runner_envelope(go_token=reeval_go, parity=True),
             materialize_dataset=False,
         )
     assert ok is False

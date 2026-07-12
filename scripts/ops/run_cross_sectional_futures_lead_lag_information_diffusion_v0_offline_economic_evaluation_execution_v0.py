@@ -44,7 +44,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     materialize_preexecution_fail_closed_block_v0,
     materialize_runner_envelope_v0,
     materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0,
-    resolve_dispatch_go_token_v0,
+    resolve_identity_operator_go_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_full_offline_economic_evaluation_v0,
     run_mv2_system_evidence_wiring_dispatch_v0,
@@ -314,14 +314,14 @@ def run_bounded_full_evaluation_dispatch_v0(
         )
 
     requested_go = confirm
-    dispatched_go = resolve_dispatch_go_token_v0(requested_go)
+    dispatched_go = resolve_identity_operator_go_v0(requested_go)
     if dispatched_go != requested_go:
         _die("ERR:dispatch_go_token_rewrite_forbidden")
 
     full_chain_wired, parity_pass = load_evaluation_path_parity_status_v0(_REPO_ROOT)
     runner_envelope = materialize_runner_envelope_v0(
         requested_operator_go=requested_go,
-        dispatched_go_token=dispatched_go,
+        dispatched_operator_go=dispatched_go,
         dispatch_rc=0,
         preexecution_parity_guard_pass=full_chain_wired and parity_pass,
         full_canonical_chain_wired=full_chain_wired,
@@ -372,8 +372,8 @@ def run_bounded_full_evaluation_dispatch_v0(
                 f"PRIMARY_HEAD_BEFORE={primary_before['head']}",
                 f"START_STATE_VALID={start_state.valid}",
                 f"REQUESTED_OPERATOR_GO={requested_go}",
-                f"DISPATCH_GO_TOKEN={dispatched_go}",
-                f"GO_TOKEN={dispatched_go}",
+                f"DISPATCH_OPERATOR_GO={dispatched_go}",
+                f"OPERATOR_GO={dispatched_go}",
                 f"SCOPE_CLASSIFICATION={scope_classification}",
                 f"FULL_CANONICAL_CHAIN_WIRED={str(full_chain_wired).lower()}",
                 f"BACKTEST_RUNTIME_DECISION_PARITY_PASS={str(parity_pass).lower()}",
@@ -386,7 +386,7 @@ def run_bounded_full_evaluation_dispatch_v0(
         json.dumps(
             {
                 "requested_operator_go": runner_envelope.requested_operator_go,
-                "dispatched_go_token": runner_envelope.dispatched_go_token,
+                "dispatched_operator_go": runner_envelope.dispatched_operator_go,
                 "dispatch_rc": runner_envelope.dispatch_rc,
                 "dispatch_successful": runner_envelope.dispatch_successful,
                 "preexecution_parity_guard_pass": runner_envelope.preexecution_parity_guard_pass,
@@ -432,7 +432,7 @@ def run_bounded_full_evaluation_dispatch_v0(
             "origin_main": origin_main,
             "start_state_valid": start_state.valid,
             "requested_operator_go": requested_go,
-            "dispatched_go_token": dispatched_go,
+            "dispatched_operator_go": dispatched_go,
             "precheck_passed": False,
             "precheck_reason_codes": list(precheck_reasons),
             "economic_evaluation_executed": False,
@@ -483,7 +483,7 @@ def run_bounded_full_evaluation_dispatch_v0(
         "origin_main": origin_main,
         "start_state_valid": start_state.valid,
         "requested_operator_go": requested_go,
-        "dispatched_go_token": dispatched_go,
+        "dispatched_operator_go": dispatched_go,
         "evaluation": evaluation_payload,
         "economic_evaluation_executed": economic_executed,
         "authority_effect": AUTHORITY_EFFECT,
@@ -648,7 +648,7 @@ def run_system_evidence_mv2_binding_dispatch_v0(
     full_chain_wired, parity_pass = load_evaluation_path_parity_status_v0(_REPO_ROOT)
     runner_envelope = materialize_runner_envelope_v0(
         requested_operator_go=confirm,
-        dispatched_go_token=resolve_dispatch_go_token_v0(confirm),
+        dispatched_operator_go=resolve_identity_operator_go_v0(confirm),
         dispatch_rc=0,
         preexecution_parity_guard_pass=full_chain_wired and parity_pass,
         full_canonical_chain_wired=full_chain_wired,
