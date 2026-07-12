@@ -4,8 +4,10 @@
 
 `BOUNDED_FUTURES_ONLY_VERSIONED_HYPOTHESIS_BINDING_V0`
 
-Research-only binding for `cross_sectional_open_interest_level_rank/v0` (`RESEARCH_SCOPE=cross_sectional_open_interest_level_rank/v0`). Binds a distinct
+Research-only binding for `cross_sectional_open_interest_level_rank&#47;v0` (`RESEARCH_SCOPE=cross_sectional_open_interest_level_rank&#47;v0`). Binds a distinct
 point-in-time open-interest level ranking hypothesis before any economic evaluation.
+
+RESEARCH_SCOPE: cross_sectional_open_interest_level_rank/v0
 
 ## Operator GO
 
