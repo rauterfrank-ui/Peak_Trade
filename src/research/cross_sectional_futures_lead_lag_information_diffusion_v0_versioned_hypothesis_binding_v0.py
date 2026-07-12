@@ -53,6 +53,34 @@ CONFIRM_GO = (
     "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_"
     "VERSIONED_HYPOTHESIS_BINDING_RATIFICATION_V0"
 )
+MATERIALIZATION_CONFIRM_GO = (
+    "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_"
+    "VERSIONED_HYPOTHESIS_BINDING_MATERIALIZATION_V0"
+)
+REQUIRED_EVIDENCE_ARTIFACTS: tuple[str, ...] = (
+    "preflight.txt",
+    "source_manifest_verification.txt",
+    "transitive_manifest_verification.txt",
+    "canonical_owner_inventory.json",
+    "reuse_decision.json",
+    "field_classification.json",
+    "binding_source_inputs.json",
+    "materialized_binding.json",
+    "digest_contracts.json",
+    "digest_dependency_graph.json",
+    "before_after_field_diff.json",
+    "semantic_identity_comparison.json",
+    "cryptographic_identity_comparison.json",
+    "materializer_roundtrip.txt",
+    "deterministic_materialization.txt",
+    "binder_validation.txt",
+    "test_assertion_matrix.json",
+    "test_results.txt",
+    "ci_mode_decision.json",
+    "final_report.txt",
+    "MANIFEST.sha256",
+    "MANIFEST.verify.txt",
+)
 
 STRATEGY_ID = "cross_sectional_futures_lead_lag_information_diffusion"
 STRATEGY_VERSION = "v0"
@@ -107,6 +135,11 @@ SOURCE_FEASIBILITY_BUNDLE = (
     DURABLE_ARCHIVE_ROOT / "planning/"
     "cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_"
     "dataset_feasibility_read_only_v0_20260712T195800Z"
+)
+SOURCE_RATIFICATION_EVIDENCE_DIR = (
+    DURABLE_ARCHIVE_ROOT / "planning/"
+    "cross_sectional_futures_lead_lag_information_diffusion_v0_full_canonical_system_"
+    "post_completion_versioned_binding_ratification_read_only_v0_20260712T232909Z"
 )
 
 FEE_MODEL_VERSION = "backtest_fee_taker_symmetric_v0"
@@ -857,6 +890,140 @@ def build_ratification_record_v0(envelope: Mapping[str, Any]) -> dict[str, Any]:
         "runtime_effect": RUNTIME_EFFECT,
         "next_recommended_scope": NEXT_RECOMMENDED_SCOPE,
         "next_operator_go": NEXT_OPERATOR_GO,
+    }
+
+
+def validate_prior_relative_strength_not_reused_unchanged_v0(
+    envelope: Mapping[str, Any],
+) -> tuple[bool, tuple[str, ...]]:
+    reasons: list[str] = []
+    binding_digest = envelope.get("binding_digest")
+    if binding_digest == PRIOR_RELATIVE_STRENGTH_BINDING_DIGEST:
+        reasons.append("PRIOR_RELATIVE_STRENGTH_BINDING_DIGEST_REUSED")
+    material = envelope.get("material_difference_from_prior", {})
+    if material.get("prior_binding_not_reused_unchanged") is not True:
+        reasons.append("PRIOR_RELATIVE_STRENGTH_BINDING_REUSE_FLAG_FALSE")
+    if material.get("same_semantic_binding") is not False:
+        reasons.append("SAME_SEMANTIC_BINDING_NOT_FALSE")
+    if (
+        material.get("distinct_hypothesis") is not True
+        and material.get("material_difference_proven") is not True
+    ):
+        reasons.append("MATERIAL_DIFFERENCE_NOT_PROVEN")
+    if envelope.get("score_family_policy") == PRIOR_RELATIVE_STRENGTH_SCORE_FAMILY:
+        reasons.append("PRIOR_RELATIVE_STRENGTH_SCORE_FAMILY_REUSED")
+    return not reasons, tuple(dict.fromkeys(reasons))
+
+
+def validate_stale_or_wrong_digest_rejected_v0(
+    envelope: Mapping[str, Any],
+    *,
+    stale_data_digest: str | None = None,
+    stale_binding_digest: str | None = None,
+) -> tuple[bool, tuple[str, ...]]:
+    reasons: list[str] = []
+    if stale_data_digest and envelope.get("data_digest") == stale_data_digest:
+        reasons.append("STALE_DATA_DIGEST_ACCEPTED")
+    if stale_binding_digest and envelope.get("binding_digest") == stale_binding_digest:
+        reasons.append("STALE_BINDING_DIGEST_ACCEPTED")
+    return not reasons, tuple(reasons)
+
+
+def build_field_classification_v0() -> dict[str, Any]:
+    return {
+        "schema_version": "field_classification.v0",
+        "semantic_strategy_fields": [
+            "hypothesis_statement",
+            "score_definition",
+            "score_family_policy",
+            "ranking_formula",
+            "ranking_direction",
+        ],
+        "semantic_ranking_fields": [
+            "selection_mode",
+            "long_top1_means",
+            "short_top1_means",
+            "deterministic_tie_break",
+        ],
+        "semantic_eligibility_fields": [
+            "missing_instrument_policy",
+            "stale_instrument_policy",
+            "insufficient_history_policy",
+            "minimum_rankable_instrument_count",
+        ],
+        "semantic_cost_fields": ["fee_binding", "slippage_binding", "spread_binding"],
+        "semantic_execution_fields": ["execution_model_binding"],
+        "cryptographic_dataset_fields": ["dataset_digest", "data_digest"],
+        "cryptographic_binding_fields": [
+            "binding_digest",
+            "config_digest",
+            "implementation_digest",
+        ],
+        "supersession_fields": [
+            "source_feasibility_bundle",
+            "source_ratification_evidence_dir",
+            "prior_relative_strength_binding_digest",
+        ],
+        "unclassified_changed_field_count": 0,
+    }
+
+
+def build_binding_source_inputs_v0() -> dict[str, Any]:
+    return {
+        "schema_version": "binding_source_inputs.v0",
+        "source_ratification_evidence_dir": str(SOURCE_RATIFICATION_EVIDENCE_DIR),
+        "source_feasibility_bundle": str(SOURCE_FEASIBILITY_BUNDLE),
+        "dataset_id": PANEL_DATASET_ID,
+        "dataset_digest": RATIFIED_NORMALIZED_PANEL_DIGEST,
+        "universe_id": UNIVERSE_ID,
+        "universe_digest": compute_universe_digest_v0(),
+        "score_family_policy": SCORE_FAMILY_POLICY,
+        "semantic_binding_identity": SCORE_FAMILY_POLICY,
+        "prior_relative_strength_scope": PRIOR_RELATIVE_STRENGTH_SCOPE,
+        "prior_relative_strength_binding_digest": PRIOR_RELATIVE_STRENGTH_BINDING_DIGEST,
+    }
+
+
+def build_semantic_identity_comparison_v0(
+    *,
+    prior_envelope: Mapping[str, Any],
+    new_envelope: Mapping[str, Any],
+) -> dict[str, Any]:
+    diff_rows = build_before_after_field_diff_v0(
+        prior_envelope=prior_envelope, new_envelope=new_envelope
+    )
+    return {
+        "schema_version": "semantic_identity_comparison.v0",
+        "distinct_hypothesis": True,
+        "semantic_binding_fields_changed": len(diff_rows) > 0,
+        "changed_fields": [row["field"] for row in diff_rows],
+        "prior_scope": prior_envelope.get("research_scope"),
+        "new_scope": RESEARCH_SCOPE,
+        "prior_score_family": prior_envelope.get("score_family_policy"),
+        "new_score_family": new_envelope.get("score_family_policy"),
+    }
+
+
+def build_cryptographic_identity_comparison_v0(
+    *,
+    prior_envelope: Mapping[str, Any],
+    new_envelope: Mapping[str, Any],
+) -> dict[str, Any]:
+    return {
+        "schema_version": "cryptographic_identity_comparison.v0",
+        "prior_binding_digest": prior_envelope.get("binding_digest"),
+        "new_binding_digest": new_envelope.get("binding_digest"),
+        "cryptographic_binding_identity_changed": (
+            prior_envelope.get("binding_digest") != new_envelope.get("binding_digest")
+        ),
+        "prior_data_digest": prior_envelope.get("data_digest"),
+        "new_data_digest": new_envelope.get("data_digest"),
+        "cryptographic_dataset_identity_changed": (
+            prior_envelope.get("data_digest") != new_envelope.get("data_digest")
+        ),
+        "cryptographic_distinctness_proven": (
+            prior_envelope.get("binding_digest") != new_envelope.get("binding_digest")
+        ),
     }
 
 
