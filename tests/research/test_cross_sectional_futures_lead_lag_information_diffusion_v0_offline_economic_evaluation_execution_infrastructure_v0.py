@@ -65,6 +65,7 @@ from tests.research.fixtures.cross_sectional_relative_strength_v0.staging_builde
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+_INFRA_GO = INFRASTRUCTURE_GO_TOKEN
 EXECUTION_MODULE = (
     REPO_ROOT / "src/research/"
     "cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_"
@@ -291,7 +292,7 @@ def test_full_evaluation_entrypoint_dry_run_stops_before_execution(
         staging_root=bound_staging,
         panel_series=panel,
         versioned_binding=complete_binding,
-        go_token=INFRASTRUCTURE_GO_TOKEN,
+        go_token=_INFRA_GO,
     )
     assert result.economic_evaluation_executed is False
     assert result.dry_run_stopped_before_execution is True
