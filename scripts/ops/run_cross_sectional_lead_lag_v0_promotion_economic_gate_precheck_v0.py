@@ -100,7 +100,7 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
     )
     from src.research.cross_sectional_lead_lag_v0_promotion_economic_gate_precheck_v0 import (
         CONTRACT_OWNER,
-        GO_TOKEN,
+        OPERATOR_GO,
         build_input_binding_matrix_v0,
         evaluate_deterministic_double_execution_v0,
         evaluate_negative_path_matrix_v0,
@@ -221,10 +221,11 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
         encoding="utf-8",
     )
 
+    requested_go = PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN
     dispatch_payload = run_promotion_economic_gate_precheck_dispatch_v0(
         repo_root=REPO_ROOT,
         versioned_binding=binding,
-        go_token=PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN,
+        go_token=requested_go,
     )
     precheck = dispatch_payload["precheck"]
 
@@ -233,7 +234,7 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
     final_report = "\n".join(
         [
             f"VERDICT={'PROMOTION_ECONOMIC_GATE_PRECHECK_PASS' if precheck['precheck_complete'] else 'FAIL_CLOSED'}",
-            f"OPERATOR_GO={GO_TOKEN}",
+            f"OPERATOR_GO={OPERATOR_GO}",
             "SCOPE=CROSS_SECTIONAL_LEAD_LAG_V0_PROMOTION_ECONOMIC_GATE_PRECHECK_V0",
             f"REPO={REPO_ROOT}",
             f"CURRENT_BRANCH={branch}",

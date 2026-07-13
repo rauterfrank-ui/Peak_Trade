@@ -15,7 +15,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
 )
 from src.research.cross_sectional_lead_lag_v0_promotion_economic_gate_precheck_v0 import (
     CANONICAL_PROMOTION_GATE_OWNER,
-    GO_TOKEN,
+    OPERATOR_GO,
     NEGATIVE_PATH_CASES,
     build_lead_lag_promotion_gate_precheck_context_v0,
     evaluate_deterministic_double_execution_v0,
@@ -61,7 +61,7 @@ def test_go_token_registered_in_entry_point_dispatch() -> None:
 
 def test_precheck_contract_declares_canonical_promotion_gate_owner() -> None:
     contract = materialize_promotion_gate_precheck_contract_v0()
-    assert contract["go_token"] == GO_TOKEN
+    assert contract["operator_go"] == OPERATOR_GO
     assert contract["canonical_promotion_gate_owner"] == CANONICAL_PROMOTION_GATE_OWNER
     assert contract["canonical_promotion_gate_owner"] == gate.PROMOTION_ECONOMIC_GATE_POLICY_OWNER
     assert contract["reuse_decision"] == "REUSE_WITH_NARROW_ADAPTER"
@@ -84,7 +84,7 @@ def test_config_json_matches_contract() -> None:
     )
     assert config_path.is_file()
     config = json.loads(config_path.read_text(encoding="utf-8"))
-    assert config["go_token"] == GO_TOKEN
+    assert config["operator_go"] == OPERATOR_GO
     assert config["canonical_promotion_gate_owner"] == CANONICAL_PROMOTION_GATE_OWNER
 
 
@@ -155,7 +155,7 @@ def test_dispatch_wrapper_reports_precheck_complete() -> None:
     payload = run_precheck_dispatch(
         repo_root=REPO_ROOT,
         versioned_binding=binding,
-        go_token=GO_TOKEN,
+        operator_go=OPERATOR_GO,
     )
     assert payload["promotion_economic_gate_precheck_complete"] is True
     assert payload["promotion_economic_gate_v1_real_owner_executed"] is True
@@ -169,10 +169,11 @@ def test_dispatch_wrapper_reports_precheck_complete() -> None:
 
 def test_execution_owner_dispatch_wrapper() -> None:
     binding = load_versioned_hypothesis_binding_v0(REPO_ROOT)
+    requested_go = PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN
     payload = run_promotion_economic_gate_precheck_dispatch_v0(
         repo_root=REPO_ROOT,
         versioned_binding=binding,
-        go_token=PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN,
+        go_token=requested_go,
     )
     assert payload["dispatch_rc"] == 0
     assert payload["promotion_economic_gate_precheck_complete"] is True

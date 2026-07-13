@@ -44,8 +44,8 @@ CONTRACT_VERSION = "v0"
 CONTRACT_OWNER = "research.cross_sectional_lead_lag_v0_promotion_economic_gate_precheck_v0"
 CONTRACT_MODULE = "src/research/cross_sectional_lead_lag_v0_promotion_economic_gate_precheck_v0.py"
 
-GO_TOKEN = "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PROMOTION_ECONOMIC_GATE_PRECHECK_V0"
-ALLOWED_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN})
+OPERATOR_GO = "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PROMOTION_ECONOMIC_GATE_PRECHECK_V0"
+ALLOWED_OPERATOR_GOS: frozenset[str] = frozenset({OPERATOR_GO})
 
 CANONICAL_PROMOTION_GATE_OWNER = PROMOTION_ECONOMIC_GATE_POLICY_OWNER
 CANONICAL_PROMOTION_GATE_POLICY_VERSION = PROMOTION_ECONOMIC_GATE_POLICY_VERSION
@@ -578,8 +578,8 @@ def materialize_promotion_gate_precheck_contract_v0() -> dict[str, Any]:
         "contract_version": CONTRACT_VERSION,
         "contract_owner": CONTRACT_OWNER,
         "contract_module": CONTRACT_MODULE,
-        "go_token": GO_TOKEN,
-        "allowed_go_tokens": sorted(ALLOWED_GO_TOKENS),
+        "operator_go": OPERATOR_GO,
+        "allowed_operator_gos": sorted(ALLOWED_OPERATOR_GOS),
         "canonical_promotion_gate_owner": CANONICAL_PROMOTION_GATE_OWNER,
         "canonical_promotion_gate_policy_version": CANONICAL_PROMOTION_GATE_POLICY_VERSION,
         "canonical_promotion_gate_callable": CANONICAL_PROMOTION_GATE_CALLABLE,
@@ -653,13 +653,13 @@ def run_promotion_economic_gate_precheck_dispatch_v0(
     versioned_binding: Mapping[str, Any] | None = None,
     source_closeout_ref: str = DEFAULT_SOURCE_CLOSEOUT_REF,
     research_eval_decision_parity_suite_pass: bool = True,
-    go_token: str = GO_TOKEN,
+    operator_go: str = OPERATOR_GO,
 ) -> dict[str, Any]:
-    if go_token not in ALLOWED_GO_TOKENS:
+    if operator_go not in ALLOWED_OPERATOR_GOS:
         return {
             "dispatch_rc": 1,
             "promotion_economic_gate_precheck_complete": False,
-            "reason_codes": ["unsupported_go_token"],
+            "reason_codes": ["unsupported_operator_go"],
         }
     from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0 import (
         load_versioned_hypothesis_binding_v0,
@@ -674,7 +674,7 @@ def run_promotion_economic_gate_precheck_dispatch_v0(
     contract = materialize_promotion_gate_precheck_contract_v0()
     return {
         "dispatch_rc": 0 if result.precheck_complete else 1,
-        "go_token": go_token,
+        "operator_go": operator_go,
         "promotion_economic_gate_precheck_complete": result.precheck_complete,
         "promotion_economic_gate_v1_real_owner_executed": (
             result.promotion_economic_gate_v1_real_owner_executed

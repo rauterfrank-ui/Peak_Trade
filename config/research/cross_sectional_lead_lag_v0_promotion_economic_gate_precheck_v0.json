@@ -12,7 +12,7 @@
   "default_source_closeout_ref": "research/pr5140_merge_closeout_cross_sectional_lead_lag_v0_research_eval_decision_parity_contract_suite_v0_20260713T010633Z",
   "economic_evaluation_executed": false,
   "full_canonical_chain_wired": false,
-  "go_token": "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PROMOTION_ECONOMIC_GATE_PRECHECK_V0",
+  "operator_go": "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PROMOTION_ECONOMIC_GATE_PRECHECK_V0",
   "offline_only": true,
   "reuse_decision": "REUSE_WITH_NARROW_ADAPTER",
   "runtime_effect": "NONE",

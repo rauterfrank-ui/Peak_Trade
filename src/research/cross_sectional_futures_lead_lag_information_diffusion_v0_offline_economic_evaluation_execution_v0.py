@@ -1885,16 +1885,17 @@ def run_promotion_economic_gate_precheck_dispatch_v0(
     """Dispatch lead-lag promotion economic gate precheck (no economic evaluation)."""
     from src.research.cross_sectional_lead_lag_v0_promotion_economic_gate_precheck_v0 import (
         DEFAULT_SOURCE_CLOSEOUT_REF,
-        GO_TOKEN as PRECHECK_GO_TOKEN,
+        OPERATOR_GO as PRECHECK_OPERATOR_GO,
         run_promotion_economic_gate_precheck_dispatch_v0 as _run_precheck,
     )
 
+    requested_go = go_token or PRECHECK_OPERATOR_GO
     return _run_precheck(
         repo_root=repo_root,
         versioned_binding=versioned_binding,
         source_closeout_ref=source_closeout_ref or DEFAULT_SOURCE_CLOSEOUT_REF,
         research_eval_decision_parity_suite_pass=research_eval_decision_parity_suite_pass,
-        go_token=go_token or PRECHECK_GO_TOKEN,
+        operator_go=requested_go,
     )
 
 
