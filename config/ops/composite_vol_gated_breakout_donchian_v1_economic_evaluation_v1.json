@@ -71,6 +71,7 @@
     "slippage_bps": 5.0,
     "slippage_model_version": "backtest_slippage_symmetric_v0"
   },
+  "candidate_binding_id": "composite_vol_gated_breakout_donchian_v1",
   "config_schema_version": "composite_vol_gated_breakout_donchian_v1_economic_evaluation_admissibility_v1",
   "economic_evaluation_v1": {
     "economic_validity_policy_version": "economic_validity_policy_v1",
@@ -84,24 +85,24 @@
     "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
     "strategy_id": "composite",
     "strategy_params": {
+      "aggregation": "weighted",
       "composite_type": "filter_gated_signal_v1",
       "composition_rule": "signal_times_filter_mask",
-      "signal_strategy_id": "breakout_donchian",
       "filter_strategy_id": "vol_regime_filter",
+      "filter_strategy_params": {
+        "lookback_percentile": 100,
+        "min_bars": 30,
+        "regime_mode": false,
+        "vol_method": "atr",
+        "vol_percentile_high": 75,
+        "vol_percentile_low": 25,
+        "vol_window": 20
+      },
+      "signal_strategy_id": "breakout_donchian",
       "signal_strategy_params": {
         "lookback": 20,
         "price_col": "close"
       },
-      "filter_strategy_params": {
-        "vol_window": 20,
-        "vol_method": "atr",
-        "vol_percentile_low": 25,
-        "vol_percentile_high": 75,
-        "min_bars": 30,
-        "lookback_percentile": 100,
-        "regime_mode": false
-      },
-      "aggregation": "weighted",
       "signal_threshold": 0.3
     },
     "strategy_version": "v1",
@@ -118,8 +119,8 @@
     }
   },
   "offline_evaluation_sizing_contract_v1": {
-    "config_digest": "a961ad403d2da3746c4766689bb79571c9332c6ed188a2dcddc4141a7b3cc0de",
-    "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "config_digest": "046e2f6fa8b1fd970f277a965c449b47dab4010c8d5c9b4c2d4ba9e3f98a2e8a",
+    "dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
     "initial_equity": 10000.0,
     "instrument_metadata_source": "versioned_dataset_manifest_v1",
     "max_position_pct": 0.25,
@@ -145,9 +146,9 @@
     "effective_entry_cost_bps": 20.0,
     "effective_exit_cost_bps": 20.0,
     "execution_model_version": "backtest_execution_v0",
-    "expected_dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "expected_dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
     "expected_l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED",
-    "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+    "expected_manifest_digest": "f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059",
     "native_instrument_id": "ETH-USDT-SWAP",
     "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
     "require_dataset_admissible": true,
@@ -163,6 +164,5 @@
     "min_position_value": 10.0,
     "min_stop_distance": 0.0001,
     "risk_per_trade": 0.005
-  },
-  "candidate_binding_id": "composite_vol_gated_breakout_donchian_v1"
+  }
 }

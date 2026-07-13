@@ -85,10 +85,10 @@
     "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
     "strategy_id": "el_karoui_vol_model",
     "strategy_params": {
-      "vol_window": 20,
+      "high_threshold": 0.7,
       "lookback_window": 252,
       "low_threshold": 0.3,
-      "high_threshold": 0.7
+      "vol_window": 20
     },
     "strategy_version": "v1",
     "stress": {
@@ -104,8 +104,8 @@
     }
   },
   "offline_evaluation_sizing_contract_v1": {
-    "config_digest": "dd9152621c58c1ed283c7b42601d66cf4fdcd1bb009f439d8583ebef64dc4516",
-    "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "config_digest": "6775b41eefc348205f976f35cf3f9f93dba226099d4af6f666de05031672c61e",
+    "dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
     "initial_equity": 10000.0,
     "instrument_metadata_source": "versioned_dataset_manifest_v1",
     "max_position_pct": 0.25,
@@ -131,9 +131,9 @@
     "effective_entry_cost_bps": 20.0,
     "effective_exit_cost_bps": 20.0,
     "execution_model_version": "backtest_execution_v0",
-    "expected_dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "expected_dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
     "expected_l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED",
-    "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+    "expected_manifest_digest": "f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059",
     "native_instrument_id": "ETH-USDT-SWAP",
     "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
     "require_dataset_admissible": true,

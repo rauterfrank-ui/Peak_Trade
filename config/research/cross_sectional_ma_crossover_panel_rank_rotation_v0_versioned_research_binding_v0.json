@@ -469,7 +469,7 @@
   "terminal_failure_class": "NEGATIVE_ECONOMIC_BASELINE_AND_INSUFFICIENT_TRADE_SAMPLE",
   "terminal_negative_evidence_for_unchanged_binding": true,
   "terminal_underlying_config_digest": "301231ab06d6fa52f09dee6812104b164c79b92dee765e50ee9247701ad45ffd",
-  "terminal_underlying_dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+  "terminal_underlying_dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
   "terminal_underlying_signal_binding": "ma_crossover/v1@inst-eth-usdt-perp",
   "trade_count": 4,
   "validation_verdict": "ACCEPTED_COMPLETE",

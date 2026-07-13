@@ -152,8 +152,8 @@ def test_config_digest_semantics_classification() -> None:
     cfg = load_step31f_evaluation_config_v0(REPO_ROOT, strategy_id)
     raw_digest = compute_raw_file_config_digest_v0(path.read_bytes())
     canonical_digest = compute_config_digest_v1(cfg)
-    assert raw_digest == "889b2c568e913750de95f5759674c58e7e38113275a28f0fc7c2a68d51d4518a"
-    assert canonical_digest == "dbb246f649709e370c69a63cf3e741878a29bb053374134e702d2c344cbe71d0"
+    assert raw_digest == "913055ac06973219412aa1440bef4f680f2c62a55237469f0aa52c06403d9986"
+    assert canonical_digest == "136edb238aef61e8303b8d2d5b4a013dbf3ce6484c3f2aa966a4a1bbf2f1af20"
     assert raw_digest != canonical_digest
 
 

@@ -35,7 +35,7 @@ from src.research.step29m_armstrong_cycle_v1_offline_economic_baseline_materiali
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STALE_RATIFIED_BINDING_DIGEST = "d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c"
 REPAIRED_BINDING_DIGEST = "bf0a125325692836b71ab00a775d412ecf275483769f5906e1251f68361a9896"
-DATASET_DIGEST = "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78"
+DATASET_DIGEST = "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087"
 UNIVERSE_DIGEST = "be6ea12f6e883de596e8e7987be071bcb4ebc3d32bff15ec933643dcf74f9ee2"
 EVAL_CONFIG_PATH = (
     "config/ops/step29m_okx_inst_eth_usdt_perp_armstrong_cycle_v1_economic_evaluation_v1.json"
