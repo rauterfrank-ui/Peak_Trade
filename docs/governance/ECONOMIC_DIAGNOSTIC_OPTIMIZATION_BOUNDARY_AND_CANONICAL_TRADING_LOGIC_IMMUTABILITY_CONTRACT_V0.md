@@ -74,7 +74,7 @@ AUTHORITY_EFFECT=NONE
 
 Verbindlich über die versionierte Owner-Map — **kein Pfad-Raten**:
 
-- `src/trading/master_v2/**`
+- `src&#47;trading&#47;master_v2&#47;**`
 - alle kanonischen Bull-/Bear-Assessment-Owner
 - alle Double-Play-Composition-Owner
 - alle Scope-Initialization-, Scope-Event-, adverse-exit- und reversal-Owner
