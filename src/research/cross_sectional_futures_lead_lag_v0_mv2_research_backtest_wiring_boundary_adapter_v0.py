@@ -30,6 +30,10 @@ from src.backtest.mv2_research_wiring_v1 import (
     run_mv2_research_backtest_wiring_v1,
 )
 from src.backtest.strategy_signal_binding_v1 import ENGINE_SIGNAL_SOURCE_MV2_REPLAY
+from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0 import (
+    GO_TOKEN as FULL_EVALUATION_EXECUTION_GO_TOKEN,
+    REEVALUATION_GO_TOKEN,
+)
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_score_v0 import (
     SCORE_FORMULA_VERSION,
 )
@@ -70,6 +74,8 @@ RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN = (
 ALLOWED_ADAPTER_GO_TOKENS: frozenset[str] = frozenset(
     {
         GO_TOKEN,
+        FULL_EVALUATION_EXECUTION_GO_TOKEN,
+        REEVALUATION_GO_TOKEN,
         SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
         PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
         BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
@@ -178,6 +184,8 @@ def materialize_adapter_contract_v0() -> dict[str, Any]:
         "adapter_owner": ADAPTER_OWNER,
         "adapter_module": ADAPTER_MODULE,
         "go_token": GO_TOKEN,
+        "full_evaluation_execution_go_token": FULL_EVALUATION_EXECUTION_GO_TOKEN,
+        "reevaluation_go_token": REEVALUATION_GO_TOKEN,
         "system_evidence_mv2_binding_go_token": SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
         "productive_research_eval_backtest_lane_mv2_rewire_go_token": (
             PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN
