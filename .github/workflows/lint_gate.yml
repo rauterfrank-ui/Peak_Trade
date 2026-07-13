@@ -129,6 +129,12 @@ jobs:
 
           echo "✅ Code formatting check passed"
 
+      - name: Economic diagnostic optimization boundary guard v0
+        run: |
+          set -euo pipefail
+          echo "🛡️  Checking economic/diagnostic optimization boundary guard..."
+          python scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py --base origin/main
+
       - name: Governance AI matrix consistency gate
         run: |
           bash scripts/governance/ai_matrix_consistency_gate.sh

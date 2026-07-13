@@ -250,7 +250,42 @@ final_report.txt
 MANIFEST.sha256
 ```
 
-## 12. Repo-Integration
+## 12. Economic/Diagnostic Optimization Boundary (v0)
+
+Additive Erweiterung — **keine Parallel-SSOT**:
+
+```text
+ECONOMIC_AND_DIAGNOSTIC_OPTIMIZATION_ALLOWED=true
+CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false
+MASTER_V2_MUTATION_ALLOWED=false
+BULL_BEAR_MUTATION_ALLOWED=false
+DOUBLE_PLAY_MUTATION_ALLOWED=false
+SCOPE_ENTRY_EXIT_REVERSAL_MUTATION_ALLOWED=false
+CAPITAL_RISK_SIZING_MUTATION_ALLOWED=false
+SAFETY_KERNEL_MUTATION_ALLOWED=false
+KILLSWITCH_MUTATION_ALLOWED=false
+RECONCILIATION_MUTATION_ALLOWED=false
+PROMOTION_AUTHORITY_MUTATION_ALLOWED=false
+RUNTIME_AUTHORITY_MUTATION_ALLOWED=false
+ECONOMIC_RESULT_MAY_NOT_JUSTIFY_CANONICAL_LOGIC_CHANGE=true
+NEGATIVE_RESULT_MAY_NOT_TRIGGER_CANONICAL_FILTER_RELAXATION=true
+LOW_TRADE_COUNT_MAY_NOT_TRIGGER_CANONICAL_LOGIC_RELAXATION=true
+POSITIVE_RESULT_MAY_NOT_BYPASS_ROBUSTNESS_SAFETY_OR_PROMOTION_GATES=true
+```
+
+Verbindlicher Owner:
+
+```text
+docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
+config/governance/economic_diagnostic_optimization_boundary_v0.json
+config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json
+src/governance/economic_diagnostic_optimization_boundary_v0.py
+scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py
+```
+
+Jeder Research-/Economic-/Diagnostics-/Cost-/Target-/Feature-/Parameter-PR benötigt einen maschinenlesbaren Boundary-Report. Verbotene Owner-Mutationen sind fail-closed.
+
+## 13. Repo-Integration
 
 Vor Ablage dieser Datei prüfen, ob bereits ein näherer kanonischer Governance-/Implementation-Contract-Owner existiert. Dann diesen erweitern, statt eine Parallel-SSOT anzulegen.
 
