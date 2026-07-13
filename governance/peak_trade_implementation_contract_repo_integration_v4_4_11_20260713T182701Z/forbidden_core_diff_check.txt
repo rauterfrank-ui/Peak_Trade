@@ -1,0 +1,22 @@
+FORBIDDEN_CORE_SURFACES_POLICY
+
+Hard boundaries (must remain unchanged in this PR):
+- src/trading/** (including master_v2, bull/bear, double play)
+- src/risk/**
+- src/governance/**
+- src/execution/**
+- core semantics: Scope, Entry, Exit, Reversal, Risk, Sizing, Safety, KillSwitch, Reconciliation, Authority
+
+DIFF_INSPECTION_RESULT
+CHANGED_FILE_COUNT_TOTAL=2
+FORBIDDEN_CORE_FILE_CHANGE_COUNT=0
+CORE_TRADING_SEMANTICS_CHANGED=false
+MASTER_V2_SEMANTICS_CHANGED=false
+DOUBLE_PLAY_SEMANTICS_CHANGED=false
+SCOPE_ENTRY_EXIT_REVERSAL_SEMANTICS_CHANGED=false
+RISK_SIZING_SEMANTICS_CHANGED=false
+SAFETY_SEMANTICS_CHANGED=false
+KILLSWITCH_SEMANTICS_CHANGED=false
+RECONCILIATION_SEMANTICS_CHANGED=false
+AUTHORITY_SEMANTICS_CHANGED=false
+
