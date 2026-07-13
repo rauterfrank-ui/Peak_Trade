@@ -32,8 +32,9 @@ from src.strategies.registry import (
 STRATEGY_SIGNAL_BINDING_LAYER_VERSION = "v1"
 STRATEGY_SIGNAL_BINDING_OWNER = "backtest.strategy_signal_binding_v1"
 ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY = "configured_strategy_signal"
+ENGINE_SIGNAL_SOURCE_MV2_REPLAY = "mv2_decision_replay_series"
 STRATEGY_SIGNAL_SOURCE_CANONICAL = "canonical_strategy_signal_series"
-MV2_REPLAY_SIGNAL_SOURCE = "mv2_decision_replay_series"
+MV2_REPLAY_SIGNAL_SOURCE = ENGINE_SIGNAL_SOURCE_MV2_REPLAY
 
 _ALLOWED_SIGNAL_VALUES = frozenset({-1, 0, 1})
 
@@ -926,6 +927,100 @@ def validate_strategy_signal_contract_v1(
         all_flat_signal_reason=all_flat_reason,
     )
     return int_signals, provenance
+
+
+MV2_RESEARCH_WIRING_OWNER_FOR_REPLAY = "backtest.mv2_research_wiring_v1"
+
+
+def validate_mv2_replay_engine_signal_contract_v1(
+    signals: pd.Series,
+    *,
+    bars_index: pd.Index,
+    strategy_id: str,
+    mv2_replay_signal_digest: str,
+    expected_mv2_replay_signal_digest: str = "",
+) -> tuple[pd.Series, StrategySignalProvenanceV1]:
+    """Validate canonical MV2 replay series before BacktestEngine ingestion."""
+    _fail_closed(len(signals) == 0, "mv2_replay_signals_empty")
+    _fail_closed(
+        not isinstance(signals.index, pd.DatetimeIndex),
+        "mv2_replay_signals_index_not_datetime",
+    )
+    _fail_closed(
+        not signals.index.is_monotonic_increasing,
+        "mv2_replay_signals_index_not_monotonic",
+    )
+    _fail_closed(signals.index.has_duplicates, "mv2_replay_signals_duplicate_timestamps")
+    if not signals.index.equals(bars_index):
+        _fail_closed(
+            len(signals.index) != len(bars_index), "mv2_replay_signal_index_length_mismatch"
+        )
+        _fail_closed(not signals.index.equals(bars_index), "mv2_replay_signal_index_mismatch")
+    if signals.isna().any():
+        raise StrategySignalBindingError("mv2_replay_signals_contain_nan")
+    if expected_mv2_replay_signal_digest and (
+        mv2_replay_signal_digest != expected_mv2_replay_signal_digest
+    ):
+        raise StrategySignalBindingError("mv2_replay_signal_digest_mismatch")
+
+    int_signals = signals.astype(int)
+    unique_values = {int(v) for v in int_signals.unique()}
+    unknown = unique_values - _ALLOWED_SIGNAL_VALUES
+    _fail_closed(bool(unknown), f"unknown_mv2_replay_signal_encoding:{sorted(unknown)}")
+
+    transition_count = int((int_signals.diff().fillna(0) != 0).sum())
+    nonzero_count = int((int_signals != 0).sum())
+    all_flat_reason = AllFlatSignalReason.NONE
+    if nonzero_count == 0:
+        all_flat_reason = AllFlatSignalReason.LEGITIMATE_STRATEGY_OUTPUT
+
+    entry = get_strategy_registry_entry(strategy_id)
+    provenance = StrategySignalProvenanceV1(
+        configured_strategy_id=strategy_id,
+        executed_strategy_id=strategy_id,
+        strategy_version=entry.strategy_version,
+        strategy_owner=MV2_RESEARCH_WIRING_OWNER_FOR_REPLAY,
+        configured_strategy_params={},
+        effective_strategy_params={},
+        strategy_params_digest=_stable_digest(
+            {"source": MV2_REPLAY_SIGNAL_SOURCE, "strategy_id": strategy_id}
+        ),
+        strategy_execution_status=StrategyExecutionStatus.EXECUTED,
+        strategy_signal_source=MV2_REPLAY_SIGNAL_SOURCE,
+        strategy_signal_digest=mv2_replay_signal_digest,
+        strategy_signal_count=len(int_signals),
+        strategy_nonzero_signal_count=nonzero_count,
+        strategy_signal_transition_count=transition_count,
+        engine_signal_source=ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
+        engine_signal_digest=mv2_replay_signal_digest,
+        engine_input_nonzero_signal_count=nonzero_count,
+        signal_alignment_status=SignalAlignmentStatus.ALIGNED,
+        signal_contract_status=SignalContractStatus.PASS,
+        all_flat_signal_reason=all_flat_reason,
+    )
+    return int_signals, provenance
+
+
+def assert_backtest_engine_mv2_replay_signal_parity_v1(
+    *,
+    mv2_replay_signals: pd.Series,
+    bar_outcomes: Sequence[Any],
+    backtest_engine_signal_source: str,
+    backtest_engine_signal_digest: str,
+    mv2_replay_signal_digest: str,
+) -> None:
+    """Fail-closed parity guard: BacktestEngine must consume canonical MV2 replay output."""
+    _fail_closed(
+        backtest_engine_signal_source != ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
+        "backtest_engine_signal_source_not_mv2_replay",
+    )
+    _fail_closed(
+        backtest_engine_signal_digest != mv2_replay_signal_digest,
+        "backtest_engine_signal_digest_mismatch",
+    )
+    replay_values = [int(v) for v in mv2_replay_signals.astype(int).tolist()]
+    outcome_values = [int(outcome.position_signal) for outcome in bar_outcomes]
+    _fail_closed(replay_values != outcome_values, "mv2_replay_bar_outcome_signal_mismatch")
 
 
 def execute_configured_strategy_signal_series_v1(

@@ -29,6 +29,7 @@ from src.backtest.mv2_research_wiring_v1 import (
     SafetyKernelBacktestStateFileBindingConfigV1,
     run_mv2_research_backtest_wiring_v1,
 )
+from src.backtest.strategy_signal_binding_v1 import ENGINE_SIGNAL_SOURCE_MV2_REPLAY
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_score_v0 import (
     SCORE_FORMULA_VERSION,
 )
@@ -60,11 +61,15 @@ SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN = (
 PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_V0"
 )
+BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_LEAD_LAG_V0_BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0"
+)
 ALLOWED_ADAPTER_GO_TOKENS: frozenset[str] = frozenset(
     {
         GO_TOKEN,
         SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
         PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
+        BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
     }
 )
 
@@ -92,6 +97,9 @@ REASON_MANDATORY_STATE_FILE_BINDING_MISSING = "MANDATORY_STATE_FILE_BINDING_MISS
 REASON_MANDATORY_STATE_FILE_PATH_UNREADABLE = "MANDATORY_STATE_FILE_PATH_UNREADABLE"
 REASON_MANDATORY_STATE_FILE_VALIDATION_FAILED = "MANDATORY_STATE_FILE_VALIDATION_FAILED"
 REASON_LEGACY_RESEARCH_BACKTEST_BYPASS_BLOCKED = "LEGACY_RESEARCH_BACKTEST_BYPASS_BLOCKED"
+REASON_LEGACY_RAW_ENGINE_SIGNAL_BYPASS_BLOCKED = "LEGACY_RAW_ENGINE_SIGNAL_BYPASS_BLOCKED"
+
+PRODUCTIVE_BACKTEST_ENGINE_SIGNAL_SOURCE = ENGINE_SIGNAL_SOURCE_MV2_REPLAY
 
 MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION = (
     "mv2_research_backtest_mandatory_boundary_state_file_binding_v0"
@@ -167,6 +175,14 @@ def materialize_adapter_contract_v0() -> dict[str, Any]:
         "adapter_module": ADAPTER_MODULE,
         "go_token": GO_TOKEN,
         "system_evidence_mv2_binding_go_token": SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+        "productive_research_eval_backtest_lane_mv2_rewire_go_token": (
+            PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN
+        ),
+        "backtest_engine_mv2_replay_signal_parity_go_token": (
+            BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN
+        ),
+        "productive_backtest_engine_signal_source": PRODUCTIVE_BACKTEST_ENGINE_SIGNAL_SOURCE,
+        "legacy_raw_engine_signal_bypass_blocked": True,
         "allowed_adapter_go_tokens": sorted(ALLOWED_ADAPTER_GO_TOKENS),
         "canonical_mv2_owner": MV2_CANONICAL_OWNER,
         "canonical_mv2_callable": MV2_CANONICAL_CALLABLE,
@@ -365,6 +381,16 @@ def reject_legacy_research_evaluation_path_mode_v0(
     """Fail-closed guard: productive adapter path must not accept legacy research bypass."""
     if evaluation_path_mode == LEGACY_RESEARCH_PATH_MODE:
         return False, (REASON_LEGACY_RESEARCH_BACKTEST_BYPASS_BLOCKED,)
+    return True, ()
+
+
+def reject_legacy_raw_engine_signal_bypass_v0(
+    *,
+    backtest_engine_signal_source: str,
+) -> tuple[bool, tuple[str, ...]]:
+    """Fail-closed guard: productive lead-lag path must consume MV2 replay signals."""
+    if backtest_engine_signal_source != PRODUCTIVE_BACKTEST_ENGINE_SIGNAL_SOURCE:
+        return False, (REASON_LEGACY_RAW_ENGINE_SIGNAL_BYPASS_BLOCKED,)
     return True, ()
 
 
@@ -749,6 +775,7 @@ def run_lead_lag_mv2_research_backtest_wiring_boundary_v0(
         cfg=cfg,
         instrument_id=MV2_REQUIRED_INSTRUMENT_ID,
         profile_binding=profile_binding,
+        backtest_engine_signal_source=PRODUCTIVE_BACKTEST_ENGINE_SIGNAL_SOURCE,
         **mandatory_bindings_to_mv2_wiring_kwargs_v0(mandatory_bindings),
     )
 
@@ -789,6 +816,13 @@ def adapter_result_to_dict(result: LeadLagMv2WiringAdapterResultV0) -> dict[str,
         "mv2_replay_nonzero_signal_count": (
             wiring.mv2_replay_nonzero_signal_count if wiring is not None else 0
         ),
+        "backtest_engine_signal_source": (
+            wiring.backtest_engine_signal_source if wiring is not None else ""
+        ),
+        "backtest_engine_signal_digest": (
+            wiring.backtest_engine_signal_digest if wiring is not None else ""
+        ),
+        "legacy_raw_engine_signal_bypass_blocked": True,
         "trade_count": (
             int(wiring.backtest_result.stats.get("total_trades", 0)) if wiring is not None else 0
         ),
