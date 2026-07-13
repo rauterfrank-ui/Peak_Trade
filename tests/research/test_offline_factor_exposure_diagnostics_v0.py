@@ -17,6 +17,7 @@ from research.linear_evidence.factor_exposure import (
     REASON_NON_MONOTONIC_TIME_ORDER,
     REASON_PERFECT_COLLINEARITY_DETECTED,
     REASON_PRODUCTIVE_BINDING_MISSING,
+    REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED,
     REASON_ZERO_VARIANCE_FACTOR,
     FactorExposureConfigV1,
     FactorExposureInputV1,
@@ -196,9 +197,131 @@ def test_zero_variance_blocked_before_fit() -> None:
         for i in range(1, 12)
     ]
     evidence = fit_factor_exposure(records)
-    assert any(str(code).startswith(REASON_ZERO_VARIANCE_FACTOR) for code in evidence.reason_codes)
-    assert evidence.coefficients == {}
+    assert f"{REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED}:market_beta" in evidence.reason_codes
+    assert evidence.excluded_factor_names == ("market_beta",)
+    assert evidence.excluded_factor_count == 1
+    assert evidence.original_feature_names == ("liquidity_beta", "market_beta", "volatility_beta")
+    assert evidence.effective_feature_names == ("liquidity_beta", "volatility_beta")
+    assert evidence.original_n_features == 3
+    assert evidence.effective_n_features == 2
+    assert evidence.diagnostics["computed"] is True
+    assert set(evidence.coefficients.keys()) == {"intercept", "liquidity_beta", "volatility_beta"}
+
+
+def test_strict_zero_variance_exclusion_multiple_factors_order_stable() -> None:
+    records = [
+        _record(
+            timestamp=i,
+            factor_values={
+                "a_const": 2.0,
+                "b_const": -1.0,
+                "c_var": float(i),
+            },
+        )
+        for i in range(1, 12)
+    ]
+    evidence = fit_factor_exposure(records)
+    assert evidence.original_feature_names == ("a_const", "b_const", "c_var")
+    assert evidence.excluded_factor_names == ("a_const", "b_const")
+    assert evidence.excluded_factor_count == 2
+    assert evidence.effective_feature_names == ("c_var",)
+    assert evidence.original_n_features == 3
+    assert evidence.effective_n_features == 1
+    assert evidence.reason_codes == (
+        f"{REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED}:a_const",
+        f"{REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED}:b_const",
+    )
+    assert evidence.diagnostics["computed"] is True
+    assert set(evidence.coefficients.keys()) == {"intercept", "c_var"}
+
+
+def test_all_factors_excluded_blocks_before_solver_invocation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called = {"lstsq": 0}
+
+    def _boom(*_args, **_kwargs):  # type: ignore[no-untyped-def]
+        called["lstsq"] += 1
+        raise AssertionError("SOLVER_SHOULD_NOT_BE_CALLED_WHEN_ALL_FACTORS_EXCLUDED")
+
+    monkeypatch.setattr(np.linalg, "lstsq", _boom)
+    records = [
+        _record(
+            timestamp=i,
+            factor_values={
+                "a_const": 1.0,
+                "b_const": 1.0,
+                "c_const": 1.0,
+            },
+        )
+        for i in range(1, 12)
+    ]
+    evidence = fit_factor_exposure(records)
+    assert called["lstsq"] == 0
     assert evidence.diagnostics["computed"] is False
+    assert evidence.coefficients == {}
+    assert evidence.status == "RANK_DEFICIENT_BLOCKED"
+    assert evidence.original_feature_names == ("a_const", "b_const", "c_const")
+    assert evidence.effective_feature_names == ()
+    assert evidence.original_n_features == 3
+    assert evidence.effective_n_features == 0
+    assert evidence.excluded_factor_names == ("a_const", "b_const", "c_const")
+    assert evidence.excluded_factor_count == 3
+    assert evidence.reason_codes == (
+        f"{REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED}:a_const",
+        f"{REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED}:b_const",
+        f"{REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED}:c_const",
+        "RANK_DEFICIENT_FEATURE_MATRIX",
+    )
+
+
+def test_near_zero_variance_not_excluded(monkeypatch: pytest.MonkeyPatch) -> None:
+    # variance strictly > 0 after canonical float normalization
+    records = [
+        _record(
+            timestamp=i,
+            factor_values={
+                "near_zero": 1e-12 if i % 2 == 0 else 0.0,
+                "var": float(i),
+            },
+        )
+        for i in range(1, 12)
+    ]
+    evidence = fit_factor_exposure(records)
+    assert evidence.diagnostics["computed"] is True
+    assert evidence.effective_feature_names == ("near_zero", "var")
+    assert evidence.excluded_factor_names == ()
+    assert evidence.excluded_factor_count == 0
+    assert not any(
+        str(code).startswith(f"{REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED}:near_zero")
+        for code in evidence.reason_codes
+    )
+
+
+def test_exclusion_stage_before_prechecks(monkeypatch: pytest.MonkeyPatch) -> None:
+    import research.linear_evidence.factor_exposure as owner
+
+    seen = {"shape": None}
+    orig = owner.compute_factor_exposure_precheck_v0
+
+    def _wrapped(matrix, factor_names, *, min_samples):  # type: ignore[no-untyped-def]
+        seen["shape"] = (int(matrix.shape[0]), int(matrix.shape[1]), tuple(factor_names))
+        return orig(matrix, factor_names, min_samples=min_samples)
+
+    monkeypatch.setattr(owner, "compute_factor_exposure_precheck_v0", _wrapped)
+    records = [
+        _record(
+            timestamp=i,
+            factor_values={
+                "a_const": 1.0,
+                "b_var": float(i),
+            },
+        )
+        for i in range(1, 12)
+    ]
+    evidence = fit_factor_exposure(records)
+    assert evidence.diagnostics["computed"] is True
+    assert seen["shape"] == (11, 1, ("b_var",))
 
 
 def test_perfect_collinearity_detected_deterministically() -> None:
