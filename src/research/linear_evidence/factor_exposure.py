@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from math import isfinite
 from typing import Dict, List, Mapping, Sequence, Tuple
 
+from .factor_exposure_productive_contract_v0 import FactorExposureProductiveProvenanceV0
+
 import numpy as np
 
 from .fitters import REASON_ZERO_VARIANCE_FEATURE
@@ -100,9 +102,10 @@ class FactorExposureEvidenceV1:
     reason_codes: Tuple[str, ...]
     authority_effect: str
     runtime_effect: str
+    productive_provenance: FactorExposureProductiveProvenanceV0 | None = None
 
     def to_dict(self) -> Dict[str, object]:
-        return {
+        payload: Dict[str, object] = {
             "evidence_type": self.evidence_type,
             "model_family": self.model_family,
             "target_name": self.target_name,
@@ -122,6 +125,9 @@ class FactorExposureEvidenceV1:
             "authority_effect": self.authority_effect,
             "runtime_effect": self.runtime_effect,
         }
+        if self.productive_provenance is not None:
+            payload.update(self.productive_provenance.to_dict())
+        return payload
 
 
 def _stable_digest(payload: object) -> str:

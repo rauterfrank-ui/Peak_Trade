@@ -195,6 +195,7 @@ class EconomicViabilityEvidenceV1:
     observed_l1_used: bool = False
     strategy_signal_binding: Mapping[str, Any] = field(default_factory=dict)
     sizing_provenance: Mapping[str, Any] = field(default_factory=dict)
+    factor_exposure_ref: Optional[str] = None
 
     def to_semantic_dict(self) -> dict[str, Any]:
         payload = {
@@ -267,6 +268,8 @@ class EconomicViabilityEvidenceV1:
             "strategy_signal_binding": dict(self.strategy_signal_binding),
             "sizing_provenance": dict(self.sizing_provenance),
         }
+        if self.factor_exposure_ref is not None:
+            payload["factor_exposure_ref"] = self.factor_exposure_ref
         return payload
 
     def to_dict(self) -> dict[str, Any]:

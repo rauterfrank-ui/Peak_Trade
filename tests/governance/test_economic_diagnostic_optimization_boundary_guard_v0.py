@@ -156,6 +156,25 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
         assert "ALLOWED_OPTIMIZATION_SURFACE_ONLY" in report.reason_codes
         assert forbidden_surface_changed_count(report) == 0
 
+    def test_factor_exposure_productive_contract_surfaces_classified(self) -> None:
+        changed_files = [
+            "src/backtest/economic_viability_evidence_v1.py",
+            "src/research/linear_evidence/factor_exposure.py",
+            "src/research/linear_evidence/factor_exposure_productive_contract_v0.py",
+            "tests/research/test_offline_factor_exposure_productive_contract_v0.py",
+            "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+        ]
+        report = build_boundary_report(changed_files, repo_root=REPO_ROOT)
+        assert report.admissible is True
+        assert report.impact_unknown is False
+        assert "ALLOWED_OPTIMIZATION_SURFACE_ONLY" in report.reason_codes
+        assert forbidden_surface_changed_count(report) == 0
+        assert set(report.allowed_surface_classification) >= {
+            "COST_MODEL_DIAGNOSTICS",
+            "FEATURE_SCALING_OR_NUMERICAL_CONDITIONING_WITHOUT_TRADING_SEMANTIC_EFFECT",
+            "TARGET_BINDING_REPAIR",
+        }
+
 
 class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
     @pytest.mark.parametrize(
