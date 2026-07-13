@@ -627,3 +627,153 @@ def test_backtest_engine_default_risk_limits_regression() -> None:
 
     engine = BacktestEngine(use_execution_pipeline=False)
     assert engine.risk_limits.config.max_position_pct == RiskLimitsConfig().max_position_pct == 10.0
+
+
+def test_bar_sequence_state_carrier_initial_state_created_once(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = 0
+    original = wiring.build_initial_mv2_integrated_replay_bar_sequence_state_v1
+
+    def _counting_initial(*, trading_epoch: int) -> wiring.MV2IntegratedReplayBarSequenceStateV1:
+        nonlocal calls
+        calls += 1
+        return original(trading_epoch=trading_epoch)
+
+    monkeypatch.setattr(
+        "src.backtest.mv2_research_wiring_v1.build_initial_mv2_integrated_replay_bar_sequence_state_v1",
+        _counting_initial,
+    )
+    _run(bars=_bars(5))
+    assert calls == 1
+
+
+def test_bar_sequence_state_carrier_second_bar_consumes_first_bar_intermediate_state() -> None:
+    result = _run(bars=_bars(4))
+    first = result.bar_outcomes[0].evidence
+    second = result.bar_outcomes[1].evidence
+    assert second.previous_direction_state == first.next_direction_state
+
+
+def test_bar_sequence_state_carrier_multi_bar_state_is_carried_forward_in_order() -> None:
+    result = _run(bars=_bars(6))
+    pairs = zip(result.bar_outcomes, result.bar_outcomes[1:])
+    for prior, nxt in pairs:
+        assert nxt.evidence.previous_direction_state == prior.evidence.next_direction_state
+
+
+def test_bar_sequence_state_carrier_no_state_leakage_between_separate_runs() -> None:
+    bars = _bars(4)
+    result_a = _run(bars=bars)
+    result_b = _run(bars=bars)
+    for outcome_a, outcome_b in zip(result_a.bar_outcomes, result_b.bar_outcomes):
+        assert outcome_a.evidence.semantic_digest == outcome_b.evidence.semantic_digest
+        assert outcome_a.position_signal == outcome_b.position_signal
+
+
+def test_bar_sequence_state_carrier_empty_input_remains_deterministic() -> None:
+    with pytest.raises(ValueError, match="bars_empty"):
+        _run(bars=_bars(0))
+
+
+def test_bar_sequence_state_carrier_single_bar_behavior_remains_valid() -> None:
+    initial_a = wiring.build_initial_mv2_integrated_replay_bar_sequence_state_v1(trading_epoch=0)
+    initial_b = wiring.build_initial_mv2_integrated_replay_bar_sequence_state_v1(trading_epoch=0)
+    assert initial_a == initial_b
+    result = _run(bars=_bars(3))
+    assert len(result.bar_outcomes) == 3
+    assert result.bar_outcomes[0].replay_pass
+
+
+def test_bar_sequence_state_carrier_canonical_replay_callable_is_still_used(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = 0
+    original = wiring.run_integrated_offline_trading_logic_replay_v1
+
+    def _spy(*args: object, **kwargs: object):
+        nonlocal calls
+        calls += 1
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(
+        "src.backtest.mv2_research_wiring_v1.run_integrated_offline_trading_logic_replay_v1",
+        _spy,
+    )
+    _run(bars=_bars(3))
+    assert calls == 3
+
+
+def test_bar_sequence_state_carrier_synthetic_initial_state_is_not_recreated_per_bar(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    build_calls = 0
+    project_calls = 0
+    original_build = wiring.build_initial_mv2_integrated_replay_bar_sequence_state_v1
+    original_project = wiring.project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1
+
+    def _count_build(*, trading_epoch: int) -> wiring.MV2IntegratedReplayBarSequenceStateV1:
+        nonlocal build_calls
+        build_calls += 1
+        return original_build(trading_epoch=trading_epoch)
+
+    def _count_project(**kwargs: object) -> wiring.MV2IntegratedReplayBarSequenceStateV1:
+        nonlocal project_calls
+        project_calls += 1
+        return original_project(**kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(
+        "src.backtest.mv2_research_wiring_v1.build_initial_mv2_integrated_replay_bar_sequence_state_v1",
+        _count_build,
+    )
+    monkeypatch.setattr(
+        "src.backtest.mv2_research_wiring_v1.project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1",
+        _count_project,
+    )
+    _run(bars=_bars(4))
+    assert build_calls == 1
+    assert project_calls == 4
+
+
+def test_bar_sequence_state_carrier_existing_signal_mapping_behavior_unchanged() -> None:
+    result = _run(bars=_bars(3))
+    for outcome in result.bar_outcomes:
+        expected = wiring.map_decision_evidence_to_position_signal_v1(outcome.evidence)
+        assert outcome.position_signal == expected
+
+
+def test_bar_sequence_state_carrier_runtime_effect_none() -> None:
+    result = _run(bars=_bars(3))
+    for outcome in result.bar_outcomes:
+        assert outcome.evidence.runtime_effect == "NONE"
+        assert outcome.evidence.authority_effect == "NONE"
+
+
+def test_bar_sequence_state_carrier_authority_effect_none() -> None:
+    result = _run(bars=_bars(3))
+    for outcome in result.bar_outcomes:
+        assert outcome.evidence.order_effect == "NONE"
+
+
+def test_bar_sequence_state_carrier_parity_flags_remain_false() -> None:
+    import json
+    from pathlib import Path
+
+    ops_cfg = json.loads(
+        (
+            Path(
+                "config/ops/cross_sectional_futures_lead_lag_information_diffusion_v0_economic_evaluation_v1.json"
+            )
+        ).read_text(encoding="utf-8")
+    )
+    parity = ops_cfg["evaluation_path_parity_binding_v0"]
+    assert parity["full_canonical_chain_wired"] is False
+    assert parity["backtest_runtime_decision_parity_pass"] is False
+
+
+def test_bar_sequence_state_carrier_futures_only_and_no_bitcoin_boundaries_unchanged() -> None:
+    with pytest.raises(ValueError, match="instrument_not_supported_for_step29l"):
+        _run(instrument_id="inst-btc-usdt-perp")
+    with pytest.raises(ValueError, match="instrument_not_supported_for_step29l"):
+        _run(instrument_id="inst-eth-usdt-spot")
+    assert wiring.MV2_REQUIRED_INSTRUMENT_ID == "inst-eth-usdt-perp"
