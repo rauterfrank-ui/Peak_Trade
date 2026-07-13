@@ -12,6 +12,17 @@ CURSOR_MUST_READ_CANONICAL_RUNBOOK_FIRST=true
 
 **Kanonischer Parent:** [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md)
 
+## 0. Externe kanonische Quelle (v4.4.11) — Referenz, keine Kopie
+
+```text
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_FILENAME=Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.11_IMPLEMENTATION_CONTRACT.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_VERSION=v4.4.11
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_PATH=/Users/frnkhrz/Desktop/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.11_IMPLEMENTATION_CONTRACT.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_SHA256=fe24efc4d9fdc7c610d74d681b415399ba79151828c93671e1eea9c3ffd1fb99
+NORMATIVE_REFERENCE_ONLY=true
+PROGRESS_METADATA_COPIED=false
+```
+
 ## 1. Unveränderliche Grenzen
 
 ```text
@@ -38,6 +49,7 @@ NO_GUESSING_ABOUT_DIGEST_PAYLOADS=true
 NO_GUESSING_ABOUT_BINDING_IDENTITY=true
 NO_GUESSING_ABOUT_RUNNER_REQUIREMENT=true
 NO_GUESSING_ABOUT_SUPERSESSION=true
+UNKNOWN_REQUIRES_REPO_EVIDENCE=true
 ```
 
 Unklarheit bedeutet:
@@ -248,6 +260,25 @@ runner_decision.json
 test_assertion_matrix.json
 final_report.txt
 MANIFEST.sha256
+```
+
+Evidence ist append-only in Bundles: historische Evidence darf nicht “umgeschrieben” werden.
+
+```text
+HISTORICAL_EVIDENCE_MUST_NOT_BE_REWRITTEN=true
+SOURCE_EVIDENCE_REVERIFY_REQUIRED=true
+POST_MERGE_MAIN_SYNC_REQUIRED=true
+```
+
+MANIFEST-Regel (hart, fail-closed):
+
+```text
+FINAL_REPORT_FINALIZED_BEFORE_MANIFEST=true
+MANIFEST_SHA256_IS_LAST_BUNDLE_FILE=true
+NO_WRITES_AFTER_MANIFEST_GENERATION=true
+MANIFEST_MAY_NOT_INCLUDE_ITSELF=true
+IMMEDIATE_MANIFEST_VERIFY_REQUIRED=true
+MANIFEST_VERIFY_COMMAND=shasum -a 256 -c MANIFEST.sha256
 ```
 
 ## 12. Economic/Diagnostic Optimization Boundary (v0)
