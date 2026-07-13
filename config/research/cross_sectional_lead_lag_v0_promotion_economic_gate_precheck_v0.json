@@ -1,0 +1,24 @@
+{
+  "adapter_id": "cross_sectional_lead_lag_v0_promotion_economic_gate_precheck_v0",
+  "adapter_version": "v0",
+  "allowed_go_tokens": [
+    "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PROMOTION_ECONOMIC_GATE_PRECHECK_V0"
+  ],
+  "authority_effect": "NONE",
+  "backtest_runtime_decision_parity_pass": false,
+  "canonical_promotion_gate_callable": "governance.promotion_loop.promotion_economic_gate_v1.evaluate_promotion_economic_gate_v1",
+  "canonical_promotion_gate_owner": "governance.promotion_loop.promotion_economic_gate_v1",
+  "canonical_promotion_gate_policy_version": "promotion_economic_gate_v1",
+  "default_source_closeout_ref": "research/pr5140_merge_closeout_cross_sectional_lead_lag_v0_research_eval_decision_parity_contract_suite_v0_20260713T010633Z",
+  "economic_evaluation_executed": false,
+  "full_canonical_chain_wired": false,
+  "operator_go": "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PROMOTION_ECONOMIC_GATE_PRECHECK_V0",
+  "offline_only": true,
+  "reuse_decision": "REUSE_WITH_NARROW_ADAPTER",
+  "runtime_effect": "NONE",
+  "schema_version": "cross_sectional_lead_lag_v0_promotion_economic_gate_precheck.v0",
+  "strategy_id": "cross_sectional_futures_lead_lag_information_diffusion",
+  "strategy_version": "v0",
+  "system_economic_evidence_admissible": false,
+  "versioned_binding_config": "config/research/cross_sectional_futures_lead_lag_information_diffusion_v0_versioned_hypothesis_binding_v0.json"
+}
