@@ -10,13 +10,17 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 import pandas as pd
 
+from src.research.cross_sectional_offline_economic_evaluation_decision_funnel_v0 import (
+    DecisionFunnelAccumulatorV0,
+    build_decision_funnel_bundle_v0,
+)
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_scope_ratification_v0 import (
     ValidationVerdictEnum,
     validate_lead_lag_offline_economic_evaluation_scope_ratification_v0,
@@ -1099,6 +1103,9 @@ class FullEconomicEvaluationResultV0:
     reason_codes: tuple[str, ...]
     authority_effect: str
     runtime_effect: str
+    compact_decision_funnel: Mapping[str, Any] = field(default_factory=dict)
+    canonical_decision_funnel: Mapping[str, Any] = field(default_factory=dict)
+    block_reason_counts: Mapping[str, int] = field(default_factory=dict)
 
 
 def load_ohlcv_panel_series_for_backtest(
@@ -1106,6 +1113,48 @@ def load_ohlcv_panel_series_for_backtest(
 ) -> tuple[InstrumentPanelSeriesV1, ...]:
     panel_series, _ = load_panel_series_from_staging(staging_root)
     return panel_series
+
+
+def _decision_funnel_accumulator_from_wiring_result_v0(
+    wiring_result: Any,
+    *,
+    orchestrator: Any | None = None,
+) -> DecisionFunnelAccumulatorV0:
+    from src.backtest.mv2_research_wiring_v1 import MV2ResearchWiringResultV1
+
+    accumulator = DecisionFunnelAccumulatorV0()
+    if isinstance(wiring_result, MV2ResearchWiringResultV1):
+        for field_name in accumulator.counts_dict():
+            setattr(
+                accumulator,
+                field_name,
+                int(wiring_result.decision_funnel_counts.get(field_name, 0)),
+            )
+        accumulator.block_reason_counts.update(dict(wiring_result.block_reason_counts))
+    accumulator.merge_orchestrator_block_reasons(orchestrator)
+    return accumulator
+
+
+def _materialize_evaluation_decision_funnel_v0(
+    *,
+    wiring_result: Any | None,
+    orchestrator: Any | None,
+    evaluation_status: str,
+    precheck_passed: bool,
+    economic_evaluation_executed: bool,
+    reason_codes: Sequence[str],
+) -> dict[str, Any]:
+    accumulator = _decision_funnel_accumulator_from_wiring_result_v0(
+        wiring_result,
+        orchestrator=orchestrator,
+    )
+    return build_decision_funnel_bundle_v0(
+        accumulator=accumulator,
+        evaluation_status=evaluation_status,
+        precheck_passed=precheck_passed,
+        economic_evaluation_executed=economic_evaluation_executed,
+        reason_codes=reason_codes,
+    )
 
 
 def _compute_walk_forward_pass_ratio(
@@ -1684,6 +1733,15 @@ def run_full_offline_economic_evaluation_v0(
         ops_config=ops_config,
     )
 
+    funnel_bundle = _materialize_evaluation_decision_funnel_v0(
+        wiring_result=adapter_result.wiring_result,
+        orchestrator=orchestrator,
+        evaluation_status=ExecutionTerminalStatus.ECONOMIC_EVALUATION_COMPLETE.value,
+        precheck_passed=True,
+        economic_evaluation_executed=True,
+        reason_codes=reason_codes,
+    )
+
     return FullEconomicEvaluationResultV0(
         status=ExecutionTerminalStatus.ECONOMIC_EVALUATION_COMPLETE,
         precheck_passed=True,
@@ -1703,6 +1761,9 @@ def run_full_offline_economic_evaluation_v0(
         reason_codes=tuple(reason_codes),
         authority_effect=AUTHORITY_EFFECT,
         runtime_effect=RUNTIME_EFFECT,
+        compact_decision_funnel=funnel_bundle["compact_decision_funnel"],
+        canonical_decision_funnel=funnel_bundle["canonical_decision_funnel"],
+        block_reason_counts=funnel_bundle["block_reason_counts"],
     )
 
 
@@ -2033,6 +2094,9 @@ def execution_result_to_dict(result: FullEconomicEvaluationResultV0) -> dict[str
         ),
         "economic_viability_evidence": result.economic_viability_evidence,
         "reason_codes": list(result.reason_codes),
+        "compact_decision_funnel": dict(result.compact_decision_funnel),
+        "canonical_decision_funnel": dict(result.canonical_decision_funnel),
+        "block_reason_counts": dict(result.block_reason_counts),
         "authority_effect": result.authority_effect,
         "runtime_effect": result.runtime_effect,
         "execution_version": EXECUTION_VERSION,

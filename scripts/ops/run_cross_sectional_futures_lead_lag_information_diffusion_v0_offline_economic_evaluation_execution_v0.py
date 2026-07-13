@@ -476,6 +476,21 @@ def run_bounded_full_evaluation_dispatch_v0(
         json.dumps(evaluation_payload, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    if evaluation.compact_decision_funnel:
+        (bundle_dir / "compact_decision_funnel.json").write_text(
+            json.dumps(evaluation.compact_decision_funnel, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+    if evaluation.canonical_decision_funnel:
+        (bundle_dir / "canonical_decision_funnel.json").write_text(
+            json.dumps(evaluation.canonical_decision_funnel, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+    if evaluation.block_reason_counts:
+        (bundle_dir / "block_reason_counts.json").write_text(
+            json.dumps(evaluation.block_reason_counts, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
     (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
         f"ECONOMIC_EVALUATION_EXECUTED={'true' if economic_executed else 'false'}\n",
         encoding="utf-8",
