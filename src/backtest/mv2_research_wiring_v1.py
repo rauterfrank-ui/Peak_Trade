@@ -12,7 +12,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field, fields, replace
 from datetime import timedelta
 from enum import Enum
 from pathlib import Path
@@ -84,6 +84,7 @@ from src.trading.master_v2.canonical_market_context_v1 import (
 from src.trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
     CanonicalScopeInitializationPolicyV1,
+    CanonicalScopeSnapshotV1,
     ScopeInitializationPrerequisitesV1,
     ScopeReinitializationGuardV1,
     SCOPE_INITIALIZATION_POLICY_VERSION,
@@ -110,8 +111,13 @@ from src.trading.master_v2.double_play_composition_matrix_v1 import (
     BothCandidateOutcome,
     BothInvalidOutcome,
     CompositionDirectionState,
+    CompositionSelectedSide,
     DoublePlayCompositionPolicyV1,
+    DoublePlayCompositionResultV1,
     PositionManagementContext,
+)
+from src.trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
+    side_state_to_entry_exit_direction,
 )
 from src.trading.master_v2.double_play_entry_exit_policy_v0 import (
     ENTRY_EXIT_POLICY_VERSION,
@@ -129,6 +135,7 @@ from src.trading.master_v2.double_play_state import SideState
 from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
     IntegratedOfflineReplayInputV1,
+    IntegratedOfflineReplayIntermediateV1,
     IntegratedOfflineReplayPoliciesV1,
     run_integrated_offline_trading_logic_replay_v1,
 )
@@ -310,6 +317,36 @@ class FeedbackLearningBacktestStateFileBindingConfigV1:
     state_file_record: FeedbackLearningBacktestStateFileRecordV0 | None = None
     expected_state_file_digest_ref: str = ""
     require_state_file: bool = False
+
+
+@dataclass(frozen=True)
+class MV2IntegratedReplayBarSequenceStateV1:
+    """Deterministic per-run bar-sequence carrier for integrated offline replay inputs."""
+
+    existing_scope: CanonicalScopeSnapshotV1 | None
+    scope_direction_state: ScopeDirectionState
+    scope_confirmation_state: ScopeConfirmationStateV1
+    scope_cooldown_state: ScopeCooldownStateV1
+    directional_confirmation_state: DirectionalConfirmationStateV1
+    previous_composition_direction_state: CompositionDirectionState
+    position_management_context: PositionManagementContext
+    last_evaluated_trading_epoch: int
+    side_state: SideState
+    direction_state: EntryExitDirectionState
+    position_state: PositionState
+    reconciliation_state: ReconciliationState
+    trading_gate: TradingGate
+    safety_mode: SafetyMode
+    existing_position_side: ExistingPositionSide
+    venue_flat: bool
+    cooldown_pass: bool
+    scope_adverse_exit_signal: PolicySignalV0
+    profit_protection_signal: PolicySignalV0
+    time_exit_signal: PolicySignalV0
+    strategy_invalidation_signal: PolicySignalV0
+    hard_risk_reduction_signal: PolicySignalV0
+    safety_exit_signal: PolicySignalV0
+    now_tick: int
 
 
 @dataclass(frozen=True)
@@ -857,30 +894,68 @@ def compute_mv2_backtest_metrics_v1(result: BacktestResult) -> Mapping[str, floa
     return compute_backtest_stats(trades=trades, equity_curve=result.equity_curve)
 
 
-def _build_replay_input(
+def _advance_scope_cooldown_state_v1(
+    state: ScopeCooldownStateV1,
+) -> ScopeCooldownStateV1:
+    if not state.active or state.remaining_epochs <= 0:
+        return ScopeCooldownStateV1(
+            active=False,
+            remaining_epochs=0,
+            policy_version=state.policy_version,
+        )
+    remaining = state.remaining_epochs - 1
+    return ScopeCooldownStateV1(
+        active=remaining > 0,
+        remaining_epochs=max(0, remaining),
+        policy_version=state.policy_version,
+    )
+
+
+def _composition_direction_from_result_v1(
+    composition_result: DoublePlayCompositionResultV1,
+) -> CompositionDirectionState:
+    if composition_result.selected_side is CompositionSelectedSide.LONG:
+        return CompositionDirectionState.LONG
+    if composition_result.selected_side is CompositionSelectedSide.SHORT:
+        return CompositionDirectionState.SHORT
+    return composition_result.previous_direction_state
+
+
+def _derive_existing_position_side_and_venue_flat_v1(
     *,
-    replay_id: str,
-    instrument_id: str,
+    side_state: SideState,
+    position_state: PositionState,
+) -> tuple[ExistingPositionSide, bool]:
+    if position_state is PositionState.FLAT_RECONCILED:
+        return ExistingPositionSide.NONE, True
+    open_states = {
+        PositionState.OPEN_FULL,
+        PositionState.OPEN_PARTIAL,
+        PositionState.REDUCING_PARTIAL,
+        PositionState.EXIT_PENDING,
+    }
+    if position_state in open_states:
+        if side_state in (
+            SideState.LONG_ACTIVE,
+            SideState.LONG_ARMED,
+            SideState.SWITCH_SHORT_TO_LONG_PENDING,
+        ):
+            return ExistingPositionSide.LONG, False
+        if side_state in (
+            SideState.SHORT_ACTIVE,
+            SideState.SHORT_ARMED,
+            SideState.SWITCH_LONG_TO_SHORT_PENDING,
+        ):
+            return ExistingPositionSide.SHORT, False
+    return ExistingPositionSide.NONE, True
+
+
+def build_initial_mv2_integrated_replay_bar_sequence_state_v1(
+    *,
     trading_epoch: int,
-    context: CanonicalMarketContextV1,
-    strategy_registry: Any,
-    config_digest: str,
-    implementation_digest: str,
-    input_digest: str,
-) -> IntegratedOfflineReplayInputV1:
-    price_path = (float(context.mark_price), float(context.mark_price + 5.0))
-    return IntegratedOfflineReplayInputV1(
-        replay_id=replay_id,
-        instrument_id=instrument_id,
-        trading_epoch=trading_epoch,
-        canonical_market_context=context,
-        market_context_binding_state=CanonicalMarketContextBindingStateV1(),
-        scope_prerequisites=ScopeInitializationPrerequisitesV1(
-            required_window_complete=True,
-            instrument_metadata_valid=True,
-            finalized_market_context=True,
-        ),
-        scope_reinitialization_guard=ScopeReinitializationGuardV1(),
+) -> MV2IntegratedReplayBarSequenceStateV1:
+    """Create the canonical MV2 integrated-replay initial state exactly once per wiring run."""
+    return MV2IntegratedReplayBarSequenceStateV1(
         existing_scope=None,
         scope_direction_state=ScopeDirectionState.LONG,
         scope_confirmation_state=ScopeConfirmationStateV1(
@@ -893,20 +968,11 @@ def _build_replay_input(
             remaining_epochs=0,
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
-        up_distance=120.0,
-        adverse_exit_distance=60.0,
-        reversal_distance=90.0,
-        confirmation_epochs=2,
-        current_price=float(context.mark_price),
-        price_path=price_path,
         directional_confirmation_state=DirectionalConfirmationStateV1(
             candidate_count=1,
             last_evaluated_trading_epoch=trading_epoch - 1,
             last_signal_strength=0.02,
         ),
-        strategy_registry=strategy_registry,
-        regime_id="trending",
-        regime_status=SuitabilityRegimeStatus.KNOWN,
         previous_composition_direction_state=CompositionDirectionState.NEUTRAL,
         position_management_context=PositionManagementContext.FLAT,
         last_evaluated_trading_epoch=trading_epoch - 1,
@@ -925,6 +991,359 @@ def _build_replay_input(
         strategy_invalidation_signal=PolicySignalV0(triggered=False),
         hard_risk_reduction_signal=PolicySignalV0(triggered=False),
         safety_exit_signal=PolicySignalV0(triggered=False),
+        now_tick=trading_epoch,
+    )
+
+
+def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
+    *,
+    intermediate: IntegratedOfflineReplayIntermediateV1,
+    previous: MV2IntegratedReplayBarSequenceStateV1,
+    next_trading_epoch: int,
+) -> MV2IntegratedReplayBarSequenceStateV1:
+    """Project canonical integrated replay intermediate outputs into the next bar input state."""
+    side_state = SideState(intermediate.state_switch.next_side_state)
+    direction_state = side_state_to_entry_exit_direction(side_state)
+    entry_exit = intermediate.entry_exit_decision
+    composition = intermediate.composition_result
+    existing_position_side, venue_flat = _derive_existing_position_side_and_venue_flat_v1(
+        side_state=side_state,
+        position_state=entry_exit.position_state,
+    )
+    scope_confirmation = intermediate.scope_event.next_confirmation_state
+    return MV2IntegratedReplayBarSequenceStateV1(
+        existing_scope=intermediate.current_scope,
+        scope_direction_state=previous.scope_direction_state,
+        scope_confirmation_state=scope_confirmation,
+        scope_cooldown_state=_advance_scope_cooldown_state_v1(previous.scope_cooldown_state),
+        directional_confirmation_state=DirectionalConfirmationStateV1(
+            candidate_count=scope_confirmation.candidate_count,
+            last_evaluated_trading_epoch=next_trading_epoch - 1,
+            last_signal_strength=previous.directional_confirmation_state.last_signal_strength,
+        ),
+        previous_composition_direction_state=_composition_direction_from_result_v1(composition),
+        position_management_context=composition.position_management_context,
+        last_evaluated_trading_epoch=next_trading_epoch - 1,
+        side_state=side_state,
+        direction_state=direction_state,
+        position_state=entry_exit.position_state,
+        reconciliation_state=entry_exit.reconciliation_state,
+        trading_gate=previous.trading_gate,
+        safety_mode=previous.safety_mode,
+        existing_position_side=existing_position_side,
+        venue_flat=venue_flat,
+        cooldown_pass=previous.cooldown_pass,
+        scope_adverse_exit_signal=PolicySignalV0(triggered=False),
+        profit_protection_signal=PolicySignalV0(triggered=False),
+        time_exit_signal=PolicySignalV0(triggered=False),
+        strategy_invalidation_signal=PolicySignalV0(triggered=False),
+        hard_risk_reduction_signal=PolicySignalV0(triggered=False),
+        safety_exit_signal=PolicySignalV0(triggered=False),
+        now_tick=next_trading_epoch,
+    )
+
+
+def _coerce_canonical_market_context_for_integrated_replay_v1(
+    context: CanonicalMarketContextV1,
+) -> CanonicalMarketContextV1:
+    """Align enum identities with trading.master_v2 imports consumed by integrated replay."""
+    from trading.master_v2.canonical_market_context_v1 import (
+        BarFinalityStatus as IntegratedBarFinalityStatus,
+        CanonicalMarketContextV1 as IntegratedCanonicalMarketContextV1,
+        ClockTrustStatus as IntegratedClockTrustStatus,
+        DataIntegrityStatus as IntegratedDataIntegrityStatus,
+        WarmupStatus as IntegratedWarmupStatus,
+    )
+    from trading.master_v2.double_play_futures_input import (
+        FuturesMarketType as IntegratedFuturesMarketType,
+    )
+
+    return IntegratedCanonicalMarketContextV1(
+        context_id=context.context_id,
+        instrument_id=context.instrument_id,
+        market_type=IntegratedFuturesMarketType(context.market_type.value),
+        trading_epoch=context.trading_epoch,
+        market_event_time=context.market_event_time,
+        decision_time=context.decision_time,
+        bar_interval=context.bar_interval,
+        bar_finality_status=IntegratedBarFinalityStatus(context.bar_finality_status.value),
+        mark_price=context.mark_price,
+        index_price=context.index_price,
+        best_bid=context.best_bid,
+        best_ask=context.best_ask,
+        spread=context.spread,
+        volume=context.volume,
+        open_interest=context.open_interest,
+        funding_rate=context.funding_rate,
+        volatility_estimate=context.volatility_estimate,
+        trend_feature_set=dict(context.trend_feature_set),
+        momentum_feature_set=dict(context.momentum_feature_set),
+        liquidity_feature_set=dict(context.liquidity_feature_set),
+        market_structure_feature_set=dict(context.market_structure_feature_set),
+        data_integrity_status=IntegratedDataIntegrityStatus(context.data_integrity_status.value),
+        clock_trust_status=IntegratedClockTrustStatus(context.clock_trust_status.value),
+        warmup_status=IntegratedWarmupStatus(context.warmup_status.value),
+        feature_contract_version=context.feature_contract_version,
+        input_digest=context.input_digest,
+    )
+
+
+def _coerce_scope_snapshot_for_integrated_replay_v1(
+    scope: CanonicalScopeSnapshotV1,
+) -> CanonicalScopeSnapshotV1:
+    from trading.master_v2.canonical_scope_initialization_v1 import (
+        CanonicalScopeLifecycleState as IntegratedScopeLifecycleState,
+        CanonicalScopeSnapshotV1 as IntegratedCanonicalScopeSnapshotV1,
+    )
+
+    payload = {item.name: getattr(scope, item.name) for item in fields(scope)}
+    payload["lifecycle_state"] = IntegratedScopeLifecycleState(scope.lifecycle_state.value)
+    return IntegratedCanonicalScopeSnapshotV1(**payload)
+
+
+def _coerce_replay_input_enums_for_integrated_replay_v1(
+    replay_input: IntegratedOfflineReplayInputV1,
+) -> IntegratedOfflineReplayInputV1:
+    from trading.master_v2.canonical_market_context_v1 import (
+        CanonicalMarketContextBindingStateV1 as IntegratedMarketContextBindingStateV1,
+    )
+    from trading.master_v2.canonical_scope_initialization_v1 import (
+        CanonicalScopeInitializationPolicyV1 as IntegratedScopeInitializationPolicyV1,
+        ScopeInitializationPrerequisitesV1 as IntegratedScopeInitializationPrerequisitesV1,
+        ScopeReinitializationGuardV1 as IntegratedScopeReinitializationGuardV1,
+    )
+    from trading.master_v2.deterministic_scope_event_generator_v1 import (
+        ScopeConfirmationStateV1 as IntegratedScopeConfirmationStateV1,
+        ScopeCooldownStateV1 as IntegratedScopeCooldownStateV1,
+        ScopeDirectionState as IntegratedScopeDirectionState,
+        ScopeEventGeneratorPolicyV1 as IntegratedScopeEventGeneratorPolicyV1,
+    )
+    from trading.master_v2.directional_assessment_v1 import (
+        DirectionalAssessmentPolicyV1 as IntegratedDirectionalAssessmentPolicyV1,
+        DirectionalConfirmationStateV1 as IntegratedDirectionalConfirmationStateV1,
+    )
+    from trading.master_v2.double_play_composition_matrix_v1 import (
+        CompositionDirectionState as IntegratedCompositionDirectionState,
+        DoublePlayCompositionPolicyV1 as IntegratedDoublePlayCompositionPolicyV1,
+        PositionManagementContext as IntegratedPositionManagementContext,
+    )
+    from trading.master_v2.double_play_entry_exit_policy_v0 import (
+        DoublePlayEntryExitPolicyV0 as IntegratedDoublePlayEntryExitPolicyV0,
+        EntryExitDirectionState as IntegratedEntryExitDirectionState,
+        ExistingPositionSide as IntegratedExistingPositionSide,
+        PolicySignalV0 as IntegratedPolicySignalV0,
+        PositionState as IntegratedPositionState,
+        ReconciliationState as IntegratedReconciliationState,
+        SafetyMode as IntegratedSafetyMode,
+        TradingGate as IntegratedTradingGate,
+    )
+    from trading.master_v2.double_play_state import SideState as IntegratedSideState
+    from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+        IntegratedOfflineReplayInputV1 as IntegratedOfflineReplayInputV1Integrated,
+        IntegratedOfflineReplayPoliciesV1 as IntegratedOfflineReplayPoliciesV1Integrated,
+    )
+    from trading.master_v2.suitability_binding_v1 import (
+        SuitabilityRankingPolicyV1 as IntegratedSuitabilityRankingPolicyV1,
+        SuitabilityRegimeStatus as IntegratedSuitabilityRegimeStatus,
+    )
+    from trading.master_v2.survival_assessment_v1 import (
+        SurvivalAssessmentPolicyV1 as IntegratedSurvivalAssessmentPolicyV1,
+    )
+
+    policies = replay_input.policies
+    coerced_policies = IntegratedOfflineReplayPoliciesV1Integrated(
+        scope_initialization=IntegratedScopeInitializationPolicyV1(
+            min_scope_band=policies.scope_initialization.min_scope_band,
+            max_scope_band=policies.scope_initialization.max_scope_band,
+            policy_version=policies.scope_initialization.policy_version,
+        ),
+        scope_event_generator=IntegratedScopeEventGeneratorPolicyV1(
+            hard_max_scope_distance=policies.scope_event_generator.hard_max_scope_distance,
+            hard_max_adverse_distance=policies.scope_event_generator.hard_max_adverse_distance,
+            hard_max_reversal_distance=policies.scope_event_generator.hard_max_reversal_distance,
+            policy_version=policies.scope_event_generator.policy_version,
+        ),
+        directional=IntegratedDirectionalAssessmentPolicyV1(
+            observe_signal_threshold=policies.directional.observe_signal_threshold,
+            candidate_signal_threshold=policies.directional.candidate_signal_threshold,
+            confirmation_signal_threshold=policies.directional.confirmation_signal_threshold,
+            confirmation_epochs=policies.directional.confirmation_epochs,
+            validity_epochs=policies.directional.validity_epochs,
+            policy_version=policies.directional.policy_version,
+        ),
+        survival=IntegratedSurvivalAssessmentPolicyV1(
+            min_net_edge=policies.survival.min_net_edge,
+            min_volatility_survival_ratio=policies.survival.min_volatility_survival_ratio,
+            min_sequence_survival_ratio=policies.survival.min_sequence_survival_ratio,
+            min_drawdown_survival_ratio=policies.survival.min_drawdown_survival_ratio,
+            min_liquidation_buffer_ratio=policies.survival.min_liquidation_buffer_ratio,
+            validity_epochs=policies.survival.validity_epochs,
+            policy_version=policies.survival.policy_version,
+        ),
+        suitability=IntegratedSuitabilityRankingPolicyV1(
+            validity_epochs=policies.suitability.validity_epochs,
+            no_match_status=policies.suitability.no_match_status,
+            policy_version=policies.suitability.policy_version,
+        ),
+        composition=IntegratedDoublePlayCompositionPolicyV1(
+            validity_epochs=policies.composition.validity_epochs,
+            both_candidate_outcome=policies.composition.both_candidate_outcome,
+            both_invalid_outcome=policies.composition.both_invalid_outcome,
+            policy_version=policies.composition.policy_version,
+        ),
+        entry_exit=IntegratedDoublePlayEntryExitPolicyV0(
+            policy_version=policies.entry_exit.policy_version,
+        ),
+    )
+    scope_confirmation = replay_input.scope_confirmation_state
+    coerced_scope_confirmation = IntegratedScopeConfirmationStateV1(
+        candidate_kind=scope_confirmation.candidate_kind,
+        candidate_count=scope_confirmation.candidate_count,
+        last_evaluated_trading_epoch=scope_confirmation.last_evaluated_trading_epoch,
+    )
+    scope_cooldown = replay_input.scope_cooldown_state
+    coerced_scope_cooldown = IntegratedScopeCooldownStateV1(
+        active=scope_cooldown.active,
+        remaining_epochs=scope_cooldown.remaining_epochs,
+        policy_version=scope_cooldown.policy_version,
+    )
+    directional_confirmation = replay_input.directional_confirmation_state
+    coerced_directional_confirmation = IntegratedDirectionalConfirmationStateV1(
+        candidate_count=directional_confirmation.candidate_count,
+        last_evaluated_trading_epoch=directional_confirmation.last_evaluated_trading_epoch,
+        last_signal_strength=directional_confirmation.last_signal_strength,
+    )
+
+    def _signal(signal: PolicySignalV0) -> IntegratedPolicySignalV0:
+        return IntegratedPolicySignalV0(triggered=signal.triggered)
+
+    return IntegratedOfflineReplayInputV1Integrated(
+        replay_id=replay_input.replay_id,
+        instrument_id=replay_input.instrument_id,
+        trading_epoch=replay_input.trading_epoch,
+        canonical_market_context=_coerce_canonical_market_context_for_integrated_replay_v1(
+            replay_input.canonical_market_context
+        ),
+        market_context_binding_state=IntegratedMarketContextBindingStateV1(),
+        scope_prerequisites=IntegratedScopeInitializationPrerequisitesV1(
+            required_window_complete=replay_input.scope_prerequisites.required_window_complete,
+            instrument_metadata_valid=replay_input.scope_prerequisites.instrument_metadata_valid,
+            finalized_market_context=replay_input.scope_prerequisites.finalized_market_context,
+        ),
+        scope_reinitialization_guard=IntegratedScopeReinitializationGuardV1(),
+        existing_scope=(
+            _coerce_scope_snapshot_for_integrated_replay_v1(replay_input.existing_scope)
+            if replay_input.existing_scope is not None
+            else None
+        ),
+        scope_direction_state=IntegratedScopeDirectionState(
+            replay_input.scope_direction_state.value
+        ),
+        scope_confirmation_state=coerced_scope_confirmation,
+        scope_cooldown_state=coerced_scope_cooldown,
+        up_distance=replay_input.up_distance,
+        adverse_exit_distance=replay_input.adverse_exit_distance,
+        reversal_distance=replay_input.reversal_distance,
+        confirmation_epochs=replay_input.confirmation_epochs,
+        current_price=replay_input.current_price,
+        price_path=replay_input.price_path,
+        directional_confirmation_state=coerced_directional_confirmation,
+        strategy_registry=replay_input.strategy_registry,
+        regime_id=replay_input.regime_id,
+        regime_status=IntegratedSuitabilityRegimeStatus(replay_input.regime_status.value),
+        previous_composition_direction_state=IntegratedCompositionDirectionState(
+            replay_input.previous_composition_direction_state.value
+        ),
+        position_management_context=IntegratedPositionManagementContext(
+            replay_input.position_management_context.value
+        ),
+        last_evaluated_trading_epoch=replay_input.last_evaluated_trading_epoch,
+        side_state=IntegratedSideState(replay_input.side_state.value),
+        direction_state=IntegratedEntryExitDirectionState(replay_input.direction_state.value),
+        position_state=IntegratedPositionState(replay_input.position_state.value),
+        reconciliation_state=IntegratedReconciliationState(replay_input.reconciliation_state.value),
+        trading_gate=IntegratedTradingGate(replay_input.trading_gate.value),
+        safety_mode=IntegratedSafetyMode(replay_input.safety_mode.value),
+        existing_position_side=IntegratedExistingPositionSide(
+            replay_input.existing_position_side.value
+        ),
+        venue_flat=replay_input.venue_flat,
+        cooldown_pass=replay_input.cooldown_pass,
+        scope_adverse_exit_signal=_signal(replay_input.scope_adverse_exit_signal),
+        profit_protection_signal=_signal(replay_input.profit_protection_signal),
+        time_exit_signal=_signal(replay_input.time_exit_signal),
+        strategy_invalidation_signal=_signal(replay_input.strategy_invalidation_signal),
+        hard_risk_reduction_signal=_signal(replay_input.hard_risk_reduction_signal),
+        safety_exit_signal=_signal(replay_input.safety_exit_signal),
+        policies=coerced_policies,
+        component_versions=dict(replay_input.component_versions),
+        policy_versions=dict(replay_input.policy_versions),
+        config_digest=replay_input.config_digest,
+        implementation_digest=replay_input.implementation_digest,
+        input_digest=replay_input.input_digest,
+        expected_component_contracts=dict(replay_input.expected_component_contracts),
+        context_reference=replay_input.context_reference,
+        now_tick=replay_input.now_tick,
+    )
+
+
+def _build_replay_input(
+    *,
+    replay_id: str,
+    instrument_id: str,
+    trading_epoch: int,
+    context: CanonicalMarketContextV1,
+    strategy_registry: Any,
+    config_digest: str,
+    implementation_digest: str,
+    input_digest: str,
+    sequence_state: MV2IntegratedReplayBarSequenceStateV1,
+) -> IntegratedOfflineReplayInputV1:
+    price_path = (float(context.mark_price), float(context.mark_price + 5.0))
+    return IntegratedOfflineReplayInputV1(
+        replay_id=replay_id,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        canonical_market_context=context,
+        market_context_binding_state=CanonicalMarketContextBindingStateV1(),
+        scope_prerequisites=ScopeInitializationPrerequisitesV1(
+            required_window_complete=True,
+            instrument_metadata_valid=True,
+            finalized_market_context=True,
+        ),
+        scope_reinitialization_guard=ScopeReinitializationGuardV1(),
+        existing_scope=sequence_state.existing_scope,
+        scope_direction_state=sequence_state.scope_direction_state,
+        scope_confirmation_state=sequence_state.scope_confirmation_state,
+        scope_cooldown_state=sequence_state.scope_cooldown_state,
+        up_distance=120.0,
+        adverse_exit_distance=60.0,
+        reversal_distance=90.0,
+        confirmation_epochs=2,
+        current_price=float(context.mark_price),
+        price_path=price_path,
+        directional_confirmation_state=sequence_state.directional_confirmation_state,
+        strategy_registry=strategy_registry,
+        regime_id="trending",
+        regime_status=SuitabilityRegimeStatus.KNOWN,
+        previous_composition_direction_state=sequence_state.previous_composition_direction_state,
+        position_management_context=sequence_state.position_management_context,
+        last_evaluated_trading_epoch=sequence_state.last_evaluated_trading_epoch,
+        side_state=sequence_state.side_state,
+        direction_state=sequence_state.direction_state,
+        position_state=sequence_state.position_state,
+        reconciliation_state=sequence_state.reconciliation_state,
+        trading_gate=sequence_state.trading_gate,
+        safety_mode=sequence_state.safety_mode,
+        existing_position_side=sequence_state.existing_position_side,
+        venue_flat=sequence_state.venue_flat,
+        cooldown_pass=sequence_state.cooldown_pass,
+        scope_adverse_exit_signal=sequence_state.scope_adverse_exit_signal,
+        profit_protection_signal=sequence_state.profit_protection_signal,
+        time_exit_signal=sequence_state.time_exit_signal,
+        strategy_invalidation_signal=sequence_state.strategy_invalidation_signal,
+        hard_risk_reduction_signal=sequence_state.hard_risk_reduction_signal,
+        safety_exit_signal=sequence_state.safety_exit_signal,
         policies=_default_policies(),
         component_versions=_default_component_versions(),
         policy_versions=_default_policy_versions(),
@@ -933,7 +1352,7 @@ def _build_replay_input(
         input_digest=input_digest,
         expected_component_contracts=_default_component_versions(),
         context_reference=f"mv2-research-{trading_epoch}",
-        now_tick=trading_epoch,
+        now_tick=sequence_state.now_tick,
     )
 
 
@@ -1308,7 +1727,12 @@ def run_mv2_research_backtest_wiring_v1(
     outcomes: list[MV2ReplayBarOutcomeV1] = []
     replay_signals: list[int] = []
     signal_index: list[pd.Timestamp] = []
+    sequence_state: MV2IntegratedReplayBarSequenceStateV1 | None = None
     for i, (_, row) in enumerate(bars.iterrows()):
+        if sequence_state is None:
+            sequence_state = build_initial_mv2_integrated_replay_bar_sequence_state_v1(
+                trading_epoch=i,
+            )
         context, l1_status, observed_l1_used = bind_bar_for_mv2_wiring_v1(
             bar=row,
             instrument_id=instrument_id,
@@ -1327,17 +1751,26 @@ def run_mv2_research_backtest_wiring_v1(
                 "observed_l1_used": observed_l1_used,
             }
         )
-        replay_input = _build_replay_input(
-            replay_id=replay_id,
-            instrument_id=instrument_id,
-            trading_epoch=i,
-            context=context,
-            strategy_registry=suitability_registry,
-            config_digest=config_digest,
-            implementation_digest=implementation_digest,
-            input_digest=input_digest,
+        replay_input = _coerce_replay_input_enums_for_integrated_replay_v1(
+            _build_replay_input(
+                replay_id=replay_id,
+                instrument_id=instrument_id,
+                trading_epoch=i,
+                context=context,
+                strategy_registry=suitability_registry,
+                config_digest=config_digest,
+                implementation_digest=implementation_digest,
+                input_digest=input_digest,
+                sequence_state=sequence_state,
+            )
         )
         replay_result = run_integrated_offline_trading_logic_replay_v1(replay_input)
+        if replay_result.intermediate is not None:
+            sequence_state = project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
+                intermediate=replay_result.intermediate,
+                previous=sequence_state,
+                next_trading_epoch=i + 1,
+            )
         signal = map_decision_evidence_to_position_signal_v1(replay_result.evidence)
         killswitch_evidence: KillSwitchBoundaryBacktestStateFileEvidenceV0 | None = None
         if killswitch_state_file_record is not None:
