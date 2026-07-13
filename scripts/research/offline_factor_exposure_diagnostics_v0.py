@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 _SCRIPT_PATH = Path(__file__).resolve()
@@ -47,6 +48,10 @@ from src.research.linear_evidence.factor_exposure import (  # noqa: E402
     FactorExposureInputV1,
     fit_factor_exposure,
     make_deterministic_factor_exposure_fixture,
+)
+from src.research.offline_factor_exposure_productive_input_join_materializer_v0 import (  # noqa: E402
+    MaterializationStatus,
+    materialize_from_manifest_paths_v0,
 )
 
 AUTHORITY_EFFECT = "NONE"
@@ -139,6 +144,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Offline factor exposure diagnostics v0")
     parser.add_argument("--out", required=True)
     parser.add_argument("--input-jsonl", type=Path, default=None)
+    parser.add_argument("--trade-ledger", type=Path, default=None)
+    parser.add_argument("--factor-snapshots", type=Path, default=None)
     parser.add_argument("--fixture-scaffold", action="store_true")
     parser.add_argument("--repo-root", type=Path, default=None)
     parser.add_argument("--correlation-threshold", type=float, default=0.85)
@@ -151,12 +158,34 @@ def main() -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
-    productive_binding_requested = args.input_jsonl is not None
+    productive_binding_requested = (
+        args.input_jsonl is not None
+        or args.trade_ledger is not None
+        or args.factor_snapshots is not None
+    )
     productive_binding_resolved = False
     fixture_scaffold_used = False
     input_mode = "UNBOUND"
+    materialization_status: str | None = None
+    materialization_digest: str | None = None
+    productive_provenance = None
 
-    if args.input_jsonl is not None:
+    if args.trade_ledger is not None or args.factor_snapshots is not None:
+        if args.trade_ledger is None or args.factor_snapshots is None:
+            raise SystemExit(
+                "PRODUCTIVE_JOIN_BINDING_INCOMPLETE: both --trade-ledger and --factor-snapshots required"
+            )
+        materialization = materialize_from_manifest_paths_v0(
+            trade_ledger_path=args.trade_ledger,
+            factor_snapshot_path=args.factor_snapshots,
+        )
+        records = list(materialization.records)
+        productive_binding_resolved = bool(records)
+        input_mode = "PRODUCTIVE_JOIN_MATERIALIZED"
+        materialization_status = materialization.status.value
+        materialization_digest = materialization.materialization_digest
+        productive_provenance = materialization.provenance
+    elif args.input_jsonl is not None:
         records = _load_jsonl(args.input_jsonl)
         productive_binding_resolved = bool(records)
         input_mode = "PRODUCTIVE_BINDING"
@@ -180,6 +209,8 @@ def main() -> int:
         productive_binding_gap=productive_binding_requested and not productive_binding_resolved,
         fixture_scaffold=fixture_scaffold_used,
     )
+    if productive_provenance is not None:
+        evidence = replace(evidence, productive_provenance=productive_provenance)
     payload = _report_fields(
         evidence_dict=evidence.to_dict(),
         input_mode=input_mode,
@@ -188,6 +219,12 @@ def main() -> int:
         fixture_scaffold_used=fixture_scaffold_used,
     )
     payload["repo_root"] = str(repo_root)
+    if materialization_status is not None:
+        payload["MATERIALIZATION_STATUS"] = materialization_status
+        payload["MATERIALIZATION_DIGEST"] = materialization_digest
+        payload["PRODUCTIVE_JOIN_MATERIALIZER_PASS"] = (
+            materialization_status == MaterializationStatus.PASS.value
+        )
 
     report_json = out / "factor_exposure_evidence_v1.json"
     report_txt = out / "factor_exposure_report.txt"
