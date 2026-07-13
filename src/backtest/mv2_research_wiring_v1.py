@@ -588,6 +588,24 @@ def _resolve_warmup_status(bar: pd.Series) -> WarmupStatus:
     return WarmupStatus.WARMUP_COMPLETE
 
 
+def _resolve_volatility_estimate_for_economic_research_wiring_v1(
+    bar: pd.Series,
+    *,
+    warmup_status: WarmupStatus,
+) -> float:
+    """Fail-closed volatility binding for economic_research_v1 MV2 wiring."""
+    _fail_closed(warmup_status is not WarmupStatus.WARMUP_COMPLETE, "warmup_status_not_complete")
+    if "volatility_estimate" not in bar.index:
+        _fail_closed(True, "volatility_estimate_missing")
+    raw = bar["volatility_estimate"]
+    if raw is None or pd.isna(raw):
+        _fail_closed(True, "volatility_estimate_null")
+    value = float(raw)
+    _fail_closed(not math.isfinite(value), "volatility_estimate_non_finite")
+    _fail_closed(value <= 0.0, "volatility_estimate_non_positive")
+    return value
+
+
 def _period_digest(bars: pd.DataFrame) -> str:
     if bars.empty:
         return _stable_digest({"empty": True})
@@ -677,6 +695,12 @@ def bind_bar_for_mv2_wiring_v1(
             half_spread_bps=research_execution_cost.conservative_half_spread_bps,
         )
 
+    warmup_status = _resolve_warmup_status(bar)
+    volatility_estimate = _resolve_volatility_estimate_for_economic_research_wiring_v1(
+        bar,
+        warmup_status=warmup_status,
+    )
+
     context = CanonicalMarketContextV1(
         context_id=f"mv2-ctx-{instrument_id}-{trading_epoch}",
         instrument_id=instrument_id,
@@ -696,14 +720,14 @@ def bind_bar_for_mv2_wiring_v1(
         volume=float(bar.get("volume", 0.0)),
         open_interest=float(bar.get("open_interest", 0.0)),
         funding_rate=float(bar.get("funding_rate", 0.0)),
-        volatility_estimate=float(bar.get("volatility_estimate", 0.2)),
+        volatility_estimate=volatility_estimate,
         trend_feature_set={"trend_slope": float(bar.get("trend_slope", 0.01))},
         momentum_feature_set={"momentum": float(bar.get("momentum", 0.01))},
         liquidity_feature_set={"liq_score": float(bar.get("liq_score", 0.9))},
         market_structure_feature_set={"range_ratio": float(bar.get("range_ratio", 0.4))},
         data_integrity_status=DataIntegrityStatus.TRUSTED,
         clock_trust_status=ClockTrustStatus.TRUSTED,
-        warmup_status=_resolve_warmup_status(bar),
+        warmup_status=warmup_status,
         feature_contract_version=FEATURE_CONTRACT_VERSION,
     )
     return with_computed_input_digest(context), outcome_l1_status, observed_l1_used
