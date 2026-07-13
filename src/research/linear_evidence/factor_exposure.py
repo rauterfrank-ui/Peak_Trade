@@ -457,9 +457,9 @@ def fit_factor_exposure(
 
     rank = _rank(x)
     condition_number = _condition_number(x)
-    corr = _pairwise_correlations(factor_names, x)
-    redundant = _redundant_pairs(factor_names, corr, cfg.correlation_threshold)
-    vif = _vif_scores(factor_names, x)
+    corr = _pairwise_correlations(factor_names, x) if len(factor_names) >= 2 else {}
+    redundant = _redundant_pairs(factor_names, corr, cfg.correlation_threshold) if corr else []
+    vif = _vif_scores(factor_names, x) if len(factor_names) >= 2 else {}
 
     reason_codes: list[str] = []
     perfect_collinearity_count = sum(1 for value in vif.values() if value == float("inf"))
