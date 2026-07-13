@@ -1,12 +1,56 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, Iterable, List, Mapping, Sequence, Tuple
+import hashlib
 import json
 import math
-import hashlib
+from dataclasses import dataclass
+from math import isfinite
+from typing import Dict, List, Mapping, Sequence, Tuple
 
 import numpy as np
+
+from .fitters import REASON_ZERO_VARIANCE_FEATURE
+from .signal_orthogonality import (
+    _condition_number,
+    _pairwise_correlations,
+    _rank,
+    _redundant_pairs,
+    _vif_scores,
+)
+
+REASON_INSUFFICIENT_SAMPLE_COUNT = "INSUFFICIENT_SAMPLE_COUNT"
+REASON_FACTOR_TIME_BINDING_MISSING = "FACTOR_TIME_BINDING_MISSING"
+REASON_FACTOR_LOOKAHEAD_DETECTED = "FACTOR_LOOKAHEAD_DETECTED"
+REASON_NON_MONOTONIC_TIME_ORDER = "NON_MONOTONIC_TIME_ORDER"
+REASON_ZERO_VARIANCE_FACTOR = "ZERO_VARIANCE_FACTOR"
+REASON_PERFECT_COLLINEARITY_DETECTED = "PERFECT_COLLINEARITY_DETECTED"
+REASON_HIGH_PAIRWISE_CORRELATION = "HIGH_PAIRWISE_CORRELATION"
+REASON_HIGH_VIF = "HIGH_VIF"
+REASON_HIGH_CONDITION_NUMBER = "HIGH_CONDITION_NUMBER"
+REASON_PRODUCTIVE_BINDING_MISSING = "PRODUCTIVE_BINDING_MISSING"
+REASON_FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY = "FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY"
+REASON_RANK_DEFICIENT = "RANK_DEFICIENT_FEATURE_MATRIX"
+
+_AUTHORITY_EFFECT = "NONE"
+_RUNTIME_EFFECT = "NONE"
+
+
+@dataclass(frozen=True)
+class FactorExposureConfigV1:
+    correlation_threshold: float = 0.85
+    vif_threshold: float = 10.0
+    condition_number_threshold: float = 1000.0
+    min_samples: int = 8
+
+    def validate(self) -> None:
+        if not 0.0 < self.correlation_threshold < 1.0:
+            raise ValueError("correlation_threshold must be between 0 and 1")
+        if self.vif_threshold <= 0:
+            raise ValueError("vif_threshold must be positive")
+        if self.condition_number_threshold <= 0:
+            raise ValueError("condition_number_threshold must be positive")
+        if self.min_samples < 3:
+            raise ValueError("min_samples must be at least 3")
 
 
 @dataclass(frozen=True)
@@ -15,6 +59,25 @@ class FactorExposureInputV1:
     timestamp: int
     target_return: float
     factor_values: Mapping[str, float]
+    factor_time: str | None = None
+    decision_time: str | None = None
+
+    def resolved_factor_time(self) -> str:
+        if self.factor_time is not None:
+            return self.factor_time
+        return f"2026-01-01T{self.timestamp:02d}:00:00Z"
+
+    def resolved_decision_time(self) -> str:
+        if self.decision_time is not None:
+            return self.decision_time
+        return f"2026-01-01T{self.timestamp + 1:02d}:00:00Z"
+
+
+@dataclass(frozen=True)
+class FactorExposurePrecheckV0:
+    zero_variance_factor_names: tuple[str, ...]
+    reason_codes: tuple[str, ...]
+    blocking: bool
 
 
 @dataclass(frozen=True)
@@ -28,9 +91,10 @@ class FactorExposureEvidenceV1:
     solver: str
     fit_intercept: bool
     coefficients: Dict[str, float]
-    diagnostics: Dict[str, float]
+    diagnostics: Dict[str, object]
     feature_matrix_digest: str
     target_digest: str
+    config_digest: str
     validation_policy: str
     status: str
     reason_codes: Tuple[str, ...]
@@ -51,6 +115,7 @@ class FactorExposureEvidenceV1:
             "diagnostics": dict(self.diagnostics),
             "feature_matrix_digest": self.feature_matrix_digest,
             "target_digest": self.target_digest,
+            "config_digest": self.config_digest,
             "validation_policy": self.validation_policy,
             "status": self.status,
             "reason_codes": list(self.reason_codes),
@@ -64,23 +129,49 @@ def _stable_digest(payload: object) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
-def build_factor_matrix(
+def _sorted_unique_factor_names(factor_names: Sequence[str]) -> tuple[str, ...]:
+    names = tuple(sorted(str(name) for name in factor_names))
+    if not names:
+        raise ValueError("TARGET_BINDING_MISSING")
+    if len(set(names)) != len(names):
+        raise ValueError("FEATURE_SCHEMA_DRIFT")
+    return names
+
+
+def _validate_temporal_bindings(
     records: Sequence[FactorExposureInputV1],
-) -> Tuple[np.ndarray, np.ndarray, Tuple[str, ...], str, str]:
+) -> list[FactorExposureInputV1]:
     if not records:
         raise ValueError("INSUFFICIENT_DATA")
 
-    timestamps = [r.timestamp for r in records]
-    if timestamps != sorted(timestamps):
-        raise ValueError("RANDOM_VALIDATION_SPLIT_BLOCKED")
+    decision_times = [record.resolved_decision_time() for record in records]
+    if any(not value for value in decision_times):
+        raise ValueError(REASON_FACTOR_TIME_BINDING_MISSING)
+    if decision_times != sorted(decision_times):
+        raise ValueError(REASON_NON_MONOTONIC_TIME_ORDER)
 
-    feature_names = tuple(sorted(records[0].factor_values.keys()))
-    if not feature_names:
-        raise ValueError("TARGET_BINDING_MISSING")
+    ordered = sorted(records, key=lambda record: record.resolved_decision_time())
+
+    for record in ordered:
+        factor_time = record.resolved_factor_time()
+        decision_time = record.resolved_decision_time()
+        if not factor_time:
+            raise ValueError(REASON_FACTOR_TIME_BINDING_MISSING)
+        if factor_time >= decision_time:
+            raise ValueError(REASON_FACTOR_LOOKAHEAD_DETECTED)
+
+    return ordered
+
+
+def build_factor_matrix(
+    records: Sequence[FactorExposureInputV1],
+) -> Tuple[np.ndarray, np.ndarray, Tuple[str, ...], str, str]:
+    ordered = _validate_temporal_bindings(records)
+    feature_names = _sorted_unique_factor_names(ordered[0].factor_values.keys())
 
     rows: List[List[float]] = []
     targets: List[float] = []
-    for record in records:
+    for record in ordered:
         if tuple(sorted(record.factor_values.keys())) != feature_names:
             raise ValueError("FEATURE_SCHEMA_DRIFT")
         row = [float(record.factor_values[name]) for name in feature_names]
@@ -94,51 +185,198 @@ def build_factor_matrix(
     return x, y, feature_names, _stable_digest(rows), _stable_digest(targets)
 
 
+def compute_factor_exposure_precheck_v0(
+    matrix: np.ndarray,
+    factor_names: Sequence[str],
+    *,
+    min_samples: int,
+) -> FactorExposurePrecheckV0:
+    reason_codes: list[str] = []
+    if matrix.shape[0] < min_samples:
+        reason_codes.append(REASON_INSUFFICIENT_SAMPLE_COUNT)
+
+    zero_variance_factor_names: list[str] = []
+    if matrix.size:
+        for index, name in enumerate(factor_names):
+            if float(np.var(matrix[:, index])) == 0.0:
+                zero_variance_factor_names.append(str(name))
+                reason_codes.append(f"{REASON_ZERO_VARIANCE_FACTOR}:{name}")
+
+    blocking = bool(matrix.shape[0] < min_samples or zero_variance_factor_names)
+    return FactorExposurePrecheckV0(
+        zero_variance_factor_names=tuple(sorted(zero_variance_factor_names)),
+        reason_codes=tuple(dict.fromkeys(reason_codes)),
+        blocking=blocking,
+    )
+
+
+def _blocked_diagnostics(*, computed: bool = False) -> dict[str, object]:
+    return {
+        "computed": computed,
+        "rank": 0,
+        "condition_number": None,
+        "pairwise_correlation": {},
+        "redundant_pairs": [],
+        "vif_scores": {},
+        "perfect_collinearity_count": 0,
+        "sample_sufficiency": {"sufficient": False},
+    }
+
+
+def _blocked_evidence(
+    *,
+    factor_names: tuple[str, ...],
+    matrix: np.ndarray,
+    target_digest: str,
+    feature_matrix_digest: str,
+    cfg: FactorExposureConfigV1,
+    precheck: FactorExposurePrecheckV0,
+    extra_reasons: Sequence[str] = (),
+    productive_binding_gap: bool = False,
+    fixture_scaffold: bool = False,
+) -> FactorExposureEvidenceV1:
+    reasons = list(precheck.reason_codes)
+    reasons.extend(extra_reasons)
+    if productive_binding_gap and REASON_PRODUCTIVE_BINDING_MISSING not in reasons:
+        reasons.append(REASON_PRODUCTIVE_BINDING_MISSING)
+    if fixture_scaffold and REASON_FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY not in reasons:
+        reasons.append(REASON_FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY)
+    if precheck.zero_variance_factor_names and REASON_RANK_DEFICIENT not in reasons:
+        reasons.append(REASON_RANK_DEFICIENT)
+
+    status = "INSUFFICIENT_DATA"
+    if precheck.zero_variance_factor_names or REASON_PERFECT_COLLINEARITY_DETECTED in reasons:
+        status = "RANK_DEFICIENT_BLOCKED"
+    elif REASON_HIGH_CONDITION_NUMBER in reasons:
+        status = "RANK_DEFICIENT_BLOCKED"
+
+    return FactorExposureEvidenceV1(
+        evidence_type="factor_exposure",
+        model_family="ordinary_least_squares",
+        target_name="target_return",
+        feature_names=factor_names if factor_names else ("",),
+        n_samples=int(matrix.shape[0]),
+        n_features=len(factor_names) if factor_names else 0,
+        solver="numpy.linalg.lstsq",
+        fit_intercept=True,
+        coefficients={},
+        diagnostics=_blocked_diagnostics(computed=False),
+        feature_matrix_digest=feature_matrix_digest,
+        target_digest=target_digest,
+        config_digest=_stable_digest(
+            [
+                cfg.correlation_threshold,
+                cfg.vif_threshold,
+                cfg.condition_number_threshold,
+                cfg.min_samples,
+            ]
+        ),
+        validation_policy="time_ordered",
+        status=status,
+        reason_codes=tuple(dict.fromkeys(reasons)),
+        authority_effect=_AUTHORITY_EFFECT,
+        runtime_effect=_RUNTIME_EFFECT,
+    )
+
+
 def fit_factor_exposure(
     records: Sequence[FactorExposureInputV1],
     *,
-    min_samples: int = 8,
-    max_condition_number: float = 1_000_000.0,
+    config: FactorExposureConfigV1 | None = None,
+    productive_binding_gap: bool = False,
+    fixture_scaffold: bool = False,
+    min_samples: int | None = None,
+    max_condition_number: float | None = None,
 ) -> FactorExposureEvidenceV1:
-    x, y, feature_names, x_digest, y_digest = build_factor_matrix(records)
+    cfg = config or FactorExposureConfigV1()
+    if min_samples is not None:
+        cfg = FactorExposureConfigV1(
+            correlation_threshold=cfg.correlation_threshold,
+            vif_threshold=cfg.vif_threshold,
+            condition_number_threshold=max_condition_number or cfg.condition_number_threshold,
+            min_samples=min_samples,
+        )
+    elif max_condition_number is not None:
+        cfg = FactorExposureConfigV1(
+            correlation_threshold=cfg.correlation_threshold,
+            vif_threshold=cfg.vif_threshold,
+            condition_number_threshold=max_condition_number,
+            min_samples=cfg.min_samples,
+        )
+    cfg.validate()
+
+    if not records:
+        precheck = FactorExposurePrecheckV0(
+            zero_variance_factor_names=(),
+            reason_codes=(REASON_INSUFFICIENT_SAMPLE_COUNT,),
+            blocking=True,
+        )
+        return _blocked_evidence(
+            factor_names=(),
+            matrix=np.empty((0, 0), dtype=float),
+            target_digest=_stable_digest([]),
+            feature_matrix_digest=_stable_digest([]),
+            cfg=cfg,
+            precheck=precheck,
+            productive_binding_gap=productive_binding_gap,
+            fixture_scaffold=fixture_scaffold,
+        )
+
+    x, y, factor_names, x_digest, y_digest = build_factor_matrix(records)
     n_samples, n_features = x.shape
 
-    reason_codes: List[str] = []
-    if n_samples < min_samples:
-        return FactorExposureEvidenceV1(
-            evidence_type="factor_exposure",
-            model_family="ordinary_least_squares",
-            target_name="target_return",
-            feature_names=feature_names,
-            n_samples=n_samples,
-            n_features=n_features,
-            solver="numpy.linalg.lstsq",
-            fit_intercept=True,
-            coefficients={},
-            diagnostics={},
-            feature_matrix_digest=x_digest,
+    precheck = compute_factor_exposure_precheck_v0(x, factor_names, min_samples=cfg.min_samples)
+    if precheck.blocking or productive_binding_gap:
+        return _blocked_evidence(
+            factor_names=factor_names,
+            matrix=x,
             target_digest=y_digest,
-            validation_policy="time_ordered",
-            status="INSUFFICIENT_DATA",
-            reason_codes=("INSUFFICIENT_SAMPLE_COUNT",),
-            authority_effect="NONE",
-            runtime_effect="NONE",
+            feature_matrix_digest=x_digest,
+            cfg=cfg,
+            precheck=precheck,
+            productive_binding_gap=productive_binding_gap,
+            fixture_scaffold=fixture_scaffold,
+        )
+
+    rank = _rank(x)
+    condition_number = _condition_number(x)
+    corr = _pairwise_correlations(factor_names, x)
+    redundant = _redundant_pairs(factor_names, corr, cfg.correlation_threshold)
+    vif = _vif_scores(factor_names, x)
+
+    reason_codes: list[str] = []
+    perfect_collinearity_count = sum(1 for value in vif.values() if value == float("inf"))
+
+    if rank < len(factor_names):
+        reason_codes.append(REASON_PERFECT_COLLINEARITY_DETECTED)
+        reason_codes.append(REASON_RANK_DEFICIENT)
+    if perfect_collinearity_count:
+        reason_codes.append(REASON_PERFECT_COLLINEARITY_DETECTED)
+    if redundant:
+        reason_codes.append(REASON_HIGH_PAIRWISE_CORRELATION)
+    if any(value > cfg.vif_threshold for value in vif.values() if isfinite(value)):
+        reason_codes.append(REASON_HIGH_VIF)
+    if not isfinite(condition_number) or condition_number > cfg.condition_number_threshold:
+        reason_codes.append(REASON_HIGH_CONDITION_NUMBER)
+
+    if (
+        REASON_PERFECT_COLLINEARITY_DETECTED in reason_codes
+        or REASON_RANK_DEFICIENT in reason_codes
+        or REASON_HIGH_CONDITION_NUMBER in reason_codes
+    ):
+        return _blocked_evidence(
+            factor_names=factor_names,
+            matrix=x,
+            target_digest=y_digest,
+            feature_matrix_digest=x_digest,
+            cfg=cfg,
+            precheck=precheck,
+            extra_reasons=reason_codes,
+            fixture_scaffold=fixture_scaffold,
         )
 
     design = np.column_stack([np.ones(n_samples), x])
-    rank = int(np.linalg.matrix_rank(design))
-    condition_number = float(np.linalg.cond(design))
-
-    if rank < design.shape[1]:
-        status = "RANK_DEFICIENT_BLOCKED"
-        reason_codes.append("HIGH_CONDITION_NUMBER")
-    elif condition_number > max_condition_number:
-        status = "ROBUSTNESS_FAILED"
-        reason_codes.append("HIGH_CONDITION_NUMBER")
-    else:
-        status = "DIAGNOSTIC_ONLY"
-
-    beta, residuals, _, _ = np.linalg.lstsq(design, y, rcond=None)
+    beta, _, _, _ = np.linalg.lstsq(design, y, rcond=None)
     predictions = design @ beta
     errors = y - predictions
 
@@ -147,22 +385,36 @@ def fit_factor_exposure(
     r2 = 0.0 if ss_tot == 0.0 else float(1.0 - ss_res / ss_tot)
 
     coefficients = {"intercept": float(beta[0])}
-    coefficients.update({name: float(value) for name, value in zip(feature_names, beta[1:])})
+    coefficients.update({name: float(value) for name, value in zip(factor_names, beta[1:])})
 
-    diagnostics = {
-        "rank": float(rank),
+    diagnostics: dict[str, object] = {
+        "computed": True,
+        "rank": rank,
         "condition_number": condition_number,
+        "pairwise_correlation": corr,
+        "redundant_pairs": redundant,
+        "vif_scores": vif,
+        "perfect_collinearity_count": perfect_collinearity_count,
         "rmse": float(np.sqrt(np.mean(errors**2))),
         "mae": float(np.mean(np.abs(errors))),
         "r2": r2,
         "max_abs_error": float(np.max(np.abs(errors))),
+        "sample_sufficiency": {
+            "sufficient": n_samples >= cfg.min_samples,
+            "min_samples": cfg.min_samples,
+            "actual_samples": n_samples,
+        },
     }
+
+    final_reasons = list(reason_codes)
+    if fixture_scaffold:
+        final_reasons.append(REASON_FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY)
 
     return FactorExposureEvidenceV1(
         evidence_type="factor_exposure",
         model_family="ordinary_least_squares",
         target_name="target_return",
-        feature_names=feature_names,
+        feature_names=factor_names,
         n_samples=n_samples,
         n_features=n_features,
         solver="numpy.linalg.lstsq",
@@ -171,9 +423,95 @@ def fit_factor_exposure(
         diagnostics=diagnostics,
         feature_matrix_digest=x_digest,
         target_digest=y_digest,
+        config_digest=_stable_digest(
+            [
+                cfg.correlation_threshold,
+                cfg.vif_threshold,
+                cfg.condition_number_threshold,
+                cfg.min_samples,
+            ]
+        ),
         validation_policy="time_ordered",
-        status=status,
-        reason_codes=tuple(reason_codes),
-        authority_effect="NONE",
-        runtime_effect="NONE",
+        status="DIAGNOSTIC_ONLY",
+        reason_codes=tuple(dict.fromkeys(final_reasons)),
+        authority_effect=_AUTHORITY_EFFECT,
+        runtime_effect=_RUNTIME_EFFECT,
     )
+
+
+def make_deterministic_factor_exposure_fixture() -> list[FactorExposureInputV1]:
+    records: list[FactorExposureInputV1] = []
+    fixtures = [
+        (
+            "PF_ETHUSD",
+            1,
+            0.010,
+            {"market_beta": 0.10, "liquidity_beta": 0.05, "volatility_beta": 0.20},
+        ),
+        (
+            "PF_ETHUSD",
+            2,
+            0.012,
+            {"market_beta": 0.11, "liquidity_beta": 0.04, "volatility_beta": 0.19},
+        ),
+        (
+            "PF_ETHUSD",
+            3,
+            0.009,
+            {"market_beta": 0.09, "liquidity_beta": 0.06, "volatility_beta": 0.21},
+        ),
+        (
+            "PF_SOLUSD",
+            4,
+            -0.004,
+            {"market_beta": -0.02, "liquidity_beta": 0.03, "volatility_beta": 0.25},
+        ),
+        (
+            "PF_SOLUSD",
+            5,
+            -0.006,
+            {"market_beta": -0.03, "liquidity_beta": 0.02, "volatility_beta": 0.26},
+        ),
+        (
+            "PF_SOLUSD",
+            6,
+            0.003,
+            {"market_beta": 0.04, "liquidity_beta": 0.08, "volatility_beta": 0.18},
+        ),
+        (
+            "PF_AVAXUSD",
+            7,
+            0.007,
+            {"market_beta": 0.08, "liquidity_beta": 0.07, "volatility_beta": 0.17},
+        ),
+        (
+            "PF_AVAXUSD",
+            8,
+            0.006,
+            {"market_beta": 0.07, "liquidity_beta": 0.07, "volatility_beta": 0.16},
+        ),
+        (
+            "PF_DOTUSD",
+            9,
+            -0.002,
+            {"market_beta": 0.01, "liquidity_beta": 0.01, "volatility_beta": 0.22},
+        ),
+        (
+            "PF_DOTUSD",
+            10,
+            0.001,
+            {"market_beta": 0.03, "liquidity_beta": 0.02, "volatility_beta": 0.20},
+        ),
+    ]
+    for instrument_id, timestamp, target_return, factor_values in fixtures:
+        records.append(
+            FactorExposureInputV1(
+                instrument_id=instrument_id,
+                timestamp=timestamp,
+                target_return=target_return,
+                factor_values=factor_values,
+                factor_time=f"2026-01-01T{timestamp:02d}:00:00Z",
+                decision_time=f"2026-01-01T{timestamp + 1:02d}:00:00Z",
+            )
+        )
+    return records
