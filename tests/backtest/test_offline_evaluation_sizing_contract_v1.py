@@ -83,7 +83,7 @@ def _base_sizing_section() -> dict:
         "sizing_owner": CONTRACT_OWNER,
         "sizing_mode": "fixed_fractional_risk_per_trade_v1",
         "strategy_params_digest": "4742e4dbed66dd6a8078d09803234a468261ed444f16c533b8cd70f78f869c00",
-        "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+        "dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
         "config_digest": "",
     }
 

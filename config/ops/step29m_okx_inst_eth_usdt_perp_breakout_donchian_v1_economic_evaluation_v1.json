@@ -101,8 +101,8 @@
     }
   },
   "offline_evaluation_sizing_contract_v1": {
-    "config_digest": "82ea17f10de2b3b0164b9e557dcbd219b7ce18c2588ee2ca3c8eeaffab25a266",
-    "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "config_digest": "09bab5484b7c6f7f6638fff32f2d40e993328590c38c6c71c2da79c137395d1a",
+    "dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
     "initial_equity": 10000.0,
     "instrument_metadata_source": "versioned_dataset_manifest_v1",
     "max_position_pct": 0.25,
@@ -128,9 +128,9 @@
     "effective_entry_cost_bps": 20.0,
     "effective_exit_cost_bps": 20.0,
     "execution_model_version": "backtest_execution_v0",
-    "expected_dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "expected_dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
     "expected_l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED",
-    "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+    "expected_manifest_digest": "f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059",
     "native_instrument_id": "ETH-USDT-SWAP",
     "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
     "require_dataset_admissible": true,

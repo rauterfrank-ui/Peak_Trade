@@ -57,12 +57,12 @@
     "dataset_binding": {
       "binding_version": "v1",
       "canonical_instrument_id": "inst-eth-usdt-perp",
-      "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+      "dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
       "dataset_id": "inst-eth-usdt-perp_v1",
       "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
       "dataset_profile": "economic_research_v1",
       "dataset_version": "v1",
-      "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+      "expected_manifest_digest": "f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059",
       "native_instrument_id": "ETH-USDT-SWAP",
       "no_lookahead_semantics": "point_in_time_bar_close_v1",
       "point_in_time_binding": true,
@@ -76,7 +76,7 @@
       },
       "data_digest": {
         "status": "BOUND",
-        "value": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78"
+        "value": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087"
       },
       "implementation_digest": {
         "status": "BOUND",
