@@ -83,7 +83,7 @@ def fit_ols_lstsq(
     reasons: list[str] = []
     if rank < design_train.shape[1]:
         status = "RANK_DEFICIENT_BLOCKED"
-        reasons.append("HIGH_CONDITION_NUMBER")
+        reasons.append("RANK_DEFICIENT_FEATURE_MATRIX")
     elif condition_number > 1_000_000:
         status = "ROBUSTNESS_FAILED"
         reasons.append("HIGH_CONDITION_NUMBER")

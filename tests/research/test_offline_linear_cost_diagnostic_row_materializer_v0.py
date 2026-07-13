@@ -13,10 +13,12 @@ from src.research.linear_evidence.import_boundary import scan_file_import_bounda
 from src.research.offline_linear_cost_diagnostic_row_materializer_v0 import (
     AUTHORITY_EFFECT,
     RUNTIME_EFFECT,
+    CANONICAL_FILL_OWNER,
     MaterializationStatus,
     RejectionReason,
     TARGET_NAME,
     TARGET_PROVENANCE_CLASS,
+    compute_simulated_backtest_fill_price_v0,
     compute_simulated_backtest_slippage_bps,
     materialize_offline_linear_cost_diagnostic_rows_v0,
     serialize_materialized_rows_v0,
@@ -405,3 +407,109 @@ def test_zero_admissible_rows_status() -> None:
     )
     assert result.status == MaterializationStatus.INSUFFICIENT_DATA
     assert result.admissible_count == 0
+
+
+def test_identity_binding_uses_canonical_simulated_fill_owner() -> None:
+    trade = _trade(entry_price=100.0)
+    snapshot = _snapshot(close=100.0)
+    result = materialize_offline_linear_cost_diagnostic_rows_v0(
+        trade_ledger_rows=[trade],
+        entry_bar_reference_snapshots=[snapshot],
+        entry_slippage_bps=5.0,
+    )
+    assert result.admissible_count == 1
+    row = result.rows[0]
+    assert row["fill_price_owner"] == CANONICAL_FILL_OWNER
+    assert row["simulated_or_realized_fill_price"] == pytest.approx(100.05)
+    assert row[TARGET_NAME] == pytest.approx(5.0)
+
+
+def test_identity_binding_rejected_without_slippage_binding() -> None:
+    trade = _trade(entry_price=100.0)
+    snapshot = _snapshot(close=100.0)
+    result = materialize_offline_linear_cost_diagnostic_rows_v0(
+        trade_ledger_rows=[trade],
+        entry_bar_reference_snapshots=[snapshot],
+    )
+    assert result.admissible_count == 0
+    assert result.rejected[0].reason == RejectionReason.ENTRY_SLIPPAGE_BINDING_MISSING
+
+
+def test_truth_pack_target_not_constant_or_all_zero() -> None:
+    trades = [
+        _trade(trade_id="t-identity", entry_price=100.0),
+        _trade(trade_id="t-observed", entry_price=100.5, entry_time="2026-01-01T01:00:00+00:00"),
+    ]
+    snapshots = [
+        _snapshot(bar_timestamp="2026-01-01T00:00:00+00:00", close=100.0),
+        _snapshot(bar_timestamp="2026-01-01T01:00:00+00:00", close=100.0),
+    ]
+    result = materialize_offline_linear_cost_diagnostic_rows_v0(
+        trade_ledger_rows=trades,
+        entry_bar_reference_snapshots=snapshots,
+        entry_slippage_bps=5.0,
+    )
+    targets = [row[TARGET_NAME] for row in result.rows]
+    assert len(set(targets)) > 1
+    assert all(value != 0.0 for value in targets)
+
+
+def test_zero_slippage_only_when_binding_explicitly_zero() -> None:
+    trade = _trade(entry_price=100.0)
+    snapshot = _snapshot(close=100.0)
+    result = materialize_offline_linear_cost_diagnostic_rows_v0(
+        trade_ledger_rows=[trade],
+        entry_bar_reference_snapshots=[snapshot],
+        entry_slippage_bps=0.0,
+    )
+    assert result.rows[0][TARGET_NAME] == 0.0
+
+
+def test_simulated_fill_price_formula_long_short() -> None:
+    assert compute_simulated_backtest_fill_price_v0(
+        side="long", execution_reference_price=100.0, entry_slippage_bps=5.0
+    ) == pytest.approx(100.05)
+    assert compute_simulated_backtest_fill_price_v0(
+        side="short", execution_reference_price=100.0, entry_slippage_bps=5.0
+    ) == pytest.approx(99.95)
+
+
+def test_trend_following_archive_rows_remain_joinable_with_repo_binding() -> None:
+    archive_root = Path(
+        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
+    )
+    ledger_path = (
+        archive_root
+        / "trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z"
+        / "TRADE_LEDGER_V1.jsonl"
+    )
+    snapshot_path = (
+        archive_root
+        / "research/offline_linear_cost_entry_bar_reference_snapshot_materialization_v0_for_trend_following_v1_trade_ledger_binding_20260713T055132Z"
+        / "entry_bar_snapshots.jsonl"
+    )
+    if not ledger_path.is_file() or not snapshot_path.is_file():
+        pytest.skip("archive evidence unavailable in this environment")
+
+    ledger_rows = [
+        json.loads(line)
+        for line in ledger_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    snapshots = [
+        json.loads(line)
+        for line in snapshot_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    result = materialize_offline_linear_cost_diagnostic_rows_v0(
+        trade_ledger_rows=ledger_rows,
+        entry_bar_reference_snapshots=snapshots,
+        repo_root=REPO_ROOT,
+    )
+    assert result.admissible_count == 219
+    assert result.rejected == ()
+    targets = [row[TARGET_NAME] for row in result.rows]
+    assert all(value > 0.0 for value in targets)
+    assert all(value == pytest.approx(5.0, rel=1e-9, abs=1e-9) for value in targets)
+    assert all(row.get("market_type", "perp") == "perp" for row in ledger_rows)
+    assert not any("btc" in str(row.get("instrument_id", "")).lower() for row in ledger_rows)
