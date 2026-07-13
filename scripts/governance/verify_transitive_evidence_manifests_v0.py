@@ -262,7 +262,9 @@ def canonicalize_bundle_reference(
 _ABS_PATH_CANDIDATE_RE = re.compile(r"(/[^\s'\"`<>\)\]]+)")
 
 
-def _supported_reference_files(bundle_dir: Path, reference_files: tuple[str, ...] | None) -> list[Path]:
+def _supported_reference_files(
+    bundle_dir: Path, reference_files: tuple[str, ...] | None
+) -> list[Path]:
     files: list[Path] = []
     if reference_files:
         for name in reference_files:
@@ -317,7 +319,9 @@ def extract_bundle_references(
             raise RuntimeError(f"stat_failed: {p}: {exc}") from exc
         if size > max_file_size_bytes:
             detail["blocked_reason_codes"].append("FILE_SIZE_LIMIT_EXCEEDED")
-            raise ValueError(f"FILE_SIZE_LIMIT_EXCEEDED file={p} size={size} limit={max_file_size_bytes}")
+            raise ValueError(
+                f"FILE_SIZE_LIMIT_EXCEEDED file={p} size={size} limit={max_file_size_bytes}"
+            )
 
         try:
             text = p.read_text(encoding="utf-8", errors="replace")
@@ -585,7 +589,9 @@ def _write_run_contract(path: Path, *, run_id: str, config: RunConfig, implement
             "per_bundle_timeout_seconds": config.per_bundle_timeout_seconds,
         },
         "checkpoint_resume": {
-            "resume_checkpoint": str(config.resume_checkpoint) if config.resume_checkpoint else None,
+            "resume_checkpoint": str(config.resume_checkpoint)
+            if config.resume_checkpoint
+            else None,
         },
         "progress_log": {
             "path": str(config.progress_log) if config.progress_log else None,
@@ -657,7 +663,9 @@ def verify_transitively(config: RunConfig) -> tuple[int, dict[str, Any]]:
         if _is_within(rb, config.output_dir):
             return 2, {"error": "unsafe output-dir (inside root bundle)", "exit_code": 2}
 
-    _write_run_contract(run_contract_path, run_id=run_id, config=config, implementation=implementation)
+    _write_run_contract(
+        run_contract_path, run_id=run_id, config=config, implementation=implementation
+    )
 
     try:
         progress = ProgressLog(progress_path, run_id=run_id)
@@ -783,7 +791,9 @@ def verify_transitively(config: RunConfig) -> tuple[int, dict[str, Any]]:
         except ValueError as exc:
             # guard exceeded (file size / max refs)
             bounded_guard_triggered = True
-            guard_reason = "FILE_SIZE_LIMIT_EXCEEDED" if "FILE_SIZE_LIMIT_EXCEEDED" in str(exc) else None
+            guard_reason = (
+                "FILE_SIZE_LIMIT_EXCEEDED" if "FILE_SIZE_LIMIT_EXCEEDED" in str(exc) else None
+            )
             if guard_reason is None and "MAX_REFERENCES_PER_BUNDLE_EXCEEDED" in str(exc):
                 guard_reason = "MAX_REFERENCES_PER_BUNDLE_EXCEEDED"
             blocked = BundleResult(
@@ -829,7 +839,9 @@ def verify_transitively(config: RunConfig) -> tuple[int, dict[str, Any]]:
         blocked_reason_codes: list[str] = []
 
         for raw in raw_refs:
-            decision = canonicalize_bundle_reference(raw, archive_root=config.archive_root, base_dir=bundle_dir)
+            decision = canonicalize_bundle_reference(
+                raw, archive_root=config.archive_root, base_dir=bundle_dir
+            )
             if decision.canonical_dir is None:
                 blocked_here += 1
                 blocked_reason_codes.append(decision.reason_code)
@@ -960,7 +972,11 @@ def verify_transitively(config: RunConfig) -> tuple[int, dict[str, Any]]:
         )
 
     discovered = len(visited) + len(queue)
-    verdict = "PASS" if (total_failed == 0 and total_blocked == 0 and not bounded_guard_triggered) else "FAIL"
+    verdict = (
+        "PASS"
+        if (total_failed == 0 and total_blocked == 0 and not bounded_guard_triggered)
+        else "FAIL"
+    )
     report_summary = {
         "VERDICT": verdict,
         "RUN_ID": run_id,
@@ -1008,7 +1024,12 @@ def verify_transitively(config: RunConfig) -> tuple[int, dict[str, Any]]:
     )
 
     if bounded_guard_triggered:
-        return 3, {"exit_code": 3, "run_id": run_id, "guard_reason": guard_reason, "summary": report_summary}
+        return 3, {
+            "exit_code": 3,
+            "run_id": run_id,
+            "guard_reason": guard_reason,
+            "summary": report_summary,
+        }
     if verdict != "PASS":
         return 1, {"exit_code": 1, "run_id": run_id, "summary": report_summary}
     return 0, {"exit_code": 0, "run_id": run_id, "summary": report_summary}
@@ -1025,11 +1046,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=Path,
         help="Absolute path to a root bundle directory (repeatable).",
     )
-    p.add_argument("--archive-root", required=True, type=Path, help="Absolute archive root containing bundles.")
-    p.add_argument("--output-dir", required=True, type=Path, help="Absolute output directory (must not be source).")
+    p.add_argument(
+        "--archive-root", required=True, type=Path, help="Absolute archive root containing bundles."
+    )
+    p.add_argument(
+        "--output-dir",
+        required=True,
+        type=Path,
+        help="Absolute output directory (must not be source).",
+    )
     p.add_argument("--max-unique-bundles", type=int, default=DEFAULT_MAX_UNIQUE_BUNDLES)
     p.add_argument("--max-queue-size", type=int, default=DEFAULT_MAX_QUEUE_SIZE)
-    p.add_argument("--max-references-per-bundle", type=int, default=DEFAULT_MAX_REFERENCES_PER_BUNDLE)
+    p.add_argument(
+        "--max-references-per-bundle", type=int, default=DEFAULT_MAX_REFERENCES_PER_BUNDLE
+    )
     p.add_argument("--resume-checkpoint", type=Path, default=None)
     p.add_argument("--progress-log", type=Path, default=None)
     p.add_argument(

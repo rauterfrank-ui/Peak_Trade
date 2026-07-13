@@ -26,7 +26,9 @@ def _write_manifest(root: Path) -> None:
     for p in sorted([p for p in root.rglob("*") if p.is_file() and p.name != "MANIFEST.sha256"]):
         rel = p.relative_to(root).as_posix()
         lines.append(f"{_sha256(p)}  {rel}")
-    (root / "MANIFEST.sha256").write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+    (root / "MANIFEST.sha256").write_text(
+        "\n".join(lines) + ("\n" if lines else ""), encoding="utf-8"
+    )
 
 
 def _bundle(archive_root: Path, name: str) -> Path:
@@ -52,7 +54,11 @@ def _assert_snapshot_unchanged(before: dict[str, bytes], after_root: Path) -> No
 def test_import_side_effect_free() -> None:
     # Import must not execute subprocesses or write files.
     proc = subprocess.run(
-        [sys.executable, "-c", "import scripts.governance.verify_transitive_evidence_manifests_v0 as m; print('OK')"],
+        [
+            sys.executable,
+            "-c",
+            "import scripts.governance.verify_transitive_evidence_manifests_v0 as m; print('OK')",
+        ],
         cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,
@@ -63,7 +69,9 @@ def test_import_side_effect_free() -> None:
 
 
 def test_canonicalize_bundle_reference_normalizations(tmp_path: Path) -> None:
-    from scripts.governance.verify_transitive_evidence_manifests_v0 import canonicalize_bundle_reference
+    from scripts.governance.verify_transitive_evidence_manifests_v0 import (
+        canonicalize_bundle_reference,
+    )
 
     archive = tmp_path / "archive"
     archive.mkdir()
@@ -78,7 +86,7 @@ def test_canonicalize_bundle_reference_normalizations(tmp_path: Path) -> None:
     assert d.canonical_dir == str(a.absolute())
 
     # quotes + whitespace
-    d = canonicalize_bundle_reference(f"  \"{a}\"  ", archive_root=archive)
+    d = canonicalize_bundle_reference(f'  "{a}"  ', archive_root=archive)
     assert d.canonical_dir == str(a.absolute())
 
     # trailing punctuation (non-existing with punctuation, existing without)
@@ -137,7 +145,7 @@ def test_cli_fixture_smoke_bfs_checkpoint_resume_and_append_only_log(tmp_path: P
             [
                 str(b) + "/",
                 f"`{b}`",
-                f"\"{d}\"",
+                f'"{d}"',
                 str(e) + ").",
             ]
         )
@@ -197,7 +205,11 @@ def test_cli_fixture_smoke_bfs_checkpoint_resume_and_append_only_log(tmp_path: P
     assert (out / "final_report.txt").is_file()
 
     # BFS determinism: A then B then D then E then C (A references sorted: B, D, E; then B enqueues C)
-    keys = [json.loads(line)["canonical_key"] for line in (out / "bundle_results.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
+    keys = [
+        json.loads(line)["canonical_key"]
+        for line in (out / "bundle_results.jsonl").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
     assert keys[0].endswith("/A")
     assert keys[1].endswith("/B")
     assert keys[2].endswith("/D")
@@ -210,7 +222,9 @@ def test_cli_fixture_smoke_bfs_checkpoint_resume_and_append_only_log(tmp_path: P
     # Append-only progress has RUN_BEGIN and RUN_FAILED
     prog_lines = progress.read_text(encoding="utf-8").splitlines()
     assert any('"event_type": "RUN_BEGIN"' in l for l in prog_lines)
-    assert any('"event_type": "RUN_FAILED"' in l or '"event_type": "RUN_COMPLETE"' in l for l in prog_lines)
+    assert any(
+        '"event_type": "RUN_FAILED"' in l or '"event_type": "RUN_COMPLETE"' in l for l in prog_lines
+    )
 
     # Source unchanged
     _assert_snapshot_unchanged(before, archive)
@@ -292,4 +306,3 @@ def test_guard_file_size_limit_fail_closed(tmp_path: Path) -> None:
 def test_no_shell_true_in_script_source() -> None:
     text = SCRIPT.read_text(encoding="utf-8")
     assert "shell=True" not in text
-

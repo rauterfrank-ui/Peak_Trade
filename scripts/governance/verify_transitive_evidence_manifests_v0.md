@@ -133,8 +133,8 @@ Fail-closed:
 ## Manifest verification
 
 - `MANIFEST.sha256` muss im Bundle-Verzeichnis existieren, sonst `MANIFEST_MISSING`.
-- Verifikation pro Bundle via repo-kanonischer Primitive:
-  - `scripts/ops/primary_evidence_retention_v0.verify_manifest_sha256`
+- Verifikation pro Bundle via repo-kanonischer Primitive in `scripts/ops/primary_evidence_retention_v0.py`
+  (Funktion: `verify_manifest_sha256`).
 - Keine Manifest-Regeneration, kein Repair.
 
 ## Limits and fail-closed behavior
