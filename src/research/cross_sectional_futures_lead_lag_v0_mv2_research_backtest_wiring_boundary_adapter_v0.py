@@ -57,8 +57,15 @@ SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_SYSTEM_EVIDENCE_MV2_OFFLINE_ECONOMIC_"
     "EVALUATION_BINDING_V0"
 )
+PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_V0"
+)
 ALLOWED_ADAPTER_GO_TOKENS: frozenset[str] = frozenset(
-    {GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
+    {
+        GO_TOKEN,
+        SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+        PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
+    }
 )
 
 LEGACY_RESEARCH_PATH_MODE = "LEGACY_RESEARCH"
@@ -84,6 +91,7 @@ REASON_MANDATORY_STATE_FILE_BINDING_SECTION_MISSING = "MANDATORY_STATE_FILE_BIND
 REASON_MANDATORY_STATE_FILE_BINDING_MISSING = "MANDATORY_STATE_FILE_BINDING_MISSING"
 REASON_MANDATORY_STATE_FILE_PATH_UNREADABLE = "MANDATORY_STATE_FILE_PATH_UNREADABLE"
 REASON_MANDATORY_STATE_FILE_VALIDATION_FAILED = "MANDATORY_STATE_FILE_VALIDATION_FAILED"
+REASON_LEGACY_RESEARCH_BACKTEST_BYPASS_BLOCKED = "LEGACY_RESEARCH_BACKTEST_BYPASS_BLOCKED"
 
 MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION = (
     "mv2_research_backtest_mandatory_boundary_state_file_binding_v0"
@@ -350,6 +358,16 @@ def verify_binding_digests_unchanged_v0(
     return not reasons, tuple(reasons)
 
 
+def reject_legacy_research_evaluation_path_mode_v0(
+    *,
+    evaluation_path_mode: str,
+) -> tuple[bool, tuple[str, ...]]:
+    """Fail-closed guard: productive adapter path must not accept legacy research bypass."""
+    if evaluation_path_mode == LEGACY_RESEARCH_PATH_MODE:
+        return False, (REASON_LEGACY_RESEARCH_BACKTEST_BYPASS_BLOCKED,)
+    return True, ()
+
+
 def reject_score_to_final_side_shortcut_v0(
     *,
     evaluation_path_mode: str,
@@ -497,6 +515,29 @@ def run_lead_lag_mv2_research_backtest_wiring_boundary_v0(
         .get("pit_universe_binding", {})
         .get("universe_digest", "")
     )
+
+    legacy_ok, legacy_reasons = reject_legacy_research_evaluation_path_mode_v0(
+        evaluation_path_mode=evaluation_path_mode,
+    )
+    if not legacy_ok:
+        return LeadLagMv2WiringAdapterResultV0(
+            status=AdapterTerminalStatus.FAIL_CLOSED,
+            evaluation_path_mode=evaluation_path_mode,
+            wiring_result=None,
+            orchestrator_result=None,
+            score_feature_rows=(),
+            selected_panel_member_id="",
+            mv2_bars_row_count=0,
+            binding_digest=binding_digest,
+            dataset_digest=dataset_digest,
+            universe_digest=universe_digest,
+            research_binding_strategy_id=research_strategy_id,
+            mv2_engine_signal_strategy_id=MV2_ENGINE_SIGNAL_STRATEGY_ID,
+            reason_codes=legacy_reasons,
+            authority_effect=authority,
+            runtime_effect=runtime,
+            economic_evaluation_executed=False,
+        )
 
     go_ok, go_reasons = verify_adapter_go_token_v0(go_token)
     if not go_ok:

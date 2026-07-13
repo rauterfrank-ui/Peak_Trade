@@ -271,6 +271,7 @@ def test_precheck_rejects_invalid_go_token(
 def test_contract_smoke_evaluation_no_economic_execution(complete_binding: dict) -> None:
     panel = build_synthetic_panel_series_v0()
     result = run_contract_smoke_evaluation_v0(
+        repo_root=REPO_ROOT,
         panel_series=panel,
         versioned_binding=complete_binding,
         staging_root=Path("."),

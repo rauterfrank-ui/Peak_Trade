@@ -30,6 +30,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     EXECUTION_VERSION,
     GO_TOKEN,
     INFRASTRUCTURE_GO_TOKEN,
+    PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
     REASON_FULL_CANONICAL_PARITY_NOT_PROVEN,
     REEVALUATION_GO_TOKEN,
     RUNTIME_EFFECT,
@@ -42,12 +43,14 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     load_versioned_hypothesis_binding_v0,
     materialize_infrastructure_summary_v0,
     materialize_preexecution_fail_closed_block_v0,
+    materialize_productive_research_eval_backtest_lane_mv2_rewire_contract_v0,
     materialize_runner_envelope_v0,
     materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0,
     resolve_identity_operator_go_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_full_offline_economic_evaluation_v0,
     run_mv2_system_evidence_wiring_dispatch_v0,
+    run_productive_research_eval_backtest_lane_mv2_rewire_dispatch_v0,
     validate_entry_point_go_token_v0,
     verify_execution_start_state_v0,
     verify_full_evaluation_precheck_v1,
@@ -95,6 +98,9 @@ MV2_WIRING_ADAPTER_SCOPE_CLASSIFICATION = (
 MV2_BINDING_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_SYSTEM_EVIDENCE_MV2_OFFLINE_"
     "ECONOMIC_EVALUATION_BINDING_V0"
+)
+PRODUCTIVE_MV2_REWIRE_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_LEAD_LAG_V0_PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_V0"
 )
 
 
@@ -772,6 +778,107 @@ def run_system_evidence_mv2_binding_dispatch_v0(
     return payload
 
 
+def run_productive_research_eval_backtest_lane_mv2_rewire_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    start_monotonic = time.monotonic()
+    if confirm != PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN:
+        _die(
+            "ERR:confirm_go_token_required:"
+            f"{PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN}"
+        )
+
+    origin_main = _resolve_origin_main(_REPO_ROOT)
+    primary_before = _primary_worktree_snapshot(primary_worktree)
+    ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bundle_dir = (
+        durable_evidence_root
+        / "research"
+        / (
+            "cross_sectional_lead_lag_v0_productive_research_eval_backtest_lane_mv2_"
+            f"rewire_v0_{ts_slug}"
+        )
+    )
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+
+    versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
+    ratification = materialize_lead_lag_offline_economic_evaluation_scope_ratification_v0(
+        repo_root=_REPO_ROOT,
+        versioned_binding=versioned_binding,
+    )
+    start_state = verify_execution_start_state_v0(
+        repo_root=_REPO_ROOT,
+        ratification=ratification,
+        versioned_binding=versioned_binding,
+        origin_main_sha=origin_main,
+    )
+    rewire_contract = materialize_productive_research_eval_backtest_lane_mv2_rewire_contract_v0()
+    panel_series = load_ohlcv_panel_series_for_backtest(staging_root)
+    dispatch = run_productive_research_eval_backtest_lane_mv2_rewire_dispatch_v0(
+        repo_root=_REPO_ROOT,
+        panel_series=panel_series,
+        versioned_binding=versioned_binding,
+        go_token=confirm,
+    )
+
+    (bundle_dir / "PREFLIGHT.txt").write_text(
+        "\n".join(
+            [
+                f"ORIGIN_MAIN={origin_main}",
+                f"PRIMARY_HEAD_BEFORE={primary_before['head']}",
+                f"GO_TOKEN={confirm}",
+                f"SCOPE_CLASSIFICATION={PRODUCTIVE_MV2_REWIRE_SCOPE_CLASSIFICATION}",
+                f"EVALUATION_PATH_MODE={SYSTEM_EVIDENCE_MV2_PATH_MODE}",
+                "ECONOMIC_EVALUATION_EXECUTED=false",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "REWIRE_CONTRACT.json").write_text(
+        json.dumps(rewire_contract, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "PRODUCTIVE_MV2_REWIRE_DISPATCH.json").write_text(
+        json.dumps(dispatch, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
+        "ECONOMIC_EVALUATION_EXECUTED=false\n",
+        encoding="utf-8",
+    )
+
+    manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+    payload: dict[str, Any] = {
+        "verdict": dispatch["adapter"]["status"] if dispatch.get("adapter") else "FAIL_CLOSED",
+        "process_classification": PRODUCTIVE_MV2_REWIRE_SCOPE_CLASSIFICATION,
+        "execution_version": EXECUTION_VERSION,
+        "origin_main": origin_main,
+        "start_state_valid": start_state.valid,
+        "rewire_contract": rewire_contract,
+        "dispatch": dispatch,
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "primary_worktree": str(primary_worktree),
+        "staging_root": str(staging_root),
+        "durable_evidence_path": str(bundle_dir),
+        "manifest_verify_rc": manifest_rc,
+        "manifest_verify_msg": manifest_msg,
+        "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+    }
+    (bundle_dir / "EXECUTION_RESULT.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _guard_timeout(start_monotonic)
+    return payload
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm", required=True)
@@ -808,11 +915,19 @@ def main() -> None:
             primary_worktree=args.primary_worktree,
             staging_root=args.staging_root,
         )
+    elif args.confirm == PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN:
+        result = run_productive_research_eval_backtest_lane_mv2_rewire_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
     else:
         _die(
             "ERR:confirm_go_token_required:"
             f"{INFRASTRUCTURE_GO}|{GO_TOKEN}|{REEVALUATION_GO}|{MV2_WIRING_ADAPTER_GO_TOKEN}|"
-            f"{SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}"
+            f"{SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}|"
+            f"{PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN}"
         )
     print(json.dumps(result, indent=2, sort_keys=True))
 

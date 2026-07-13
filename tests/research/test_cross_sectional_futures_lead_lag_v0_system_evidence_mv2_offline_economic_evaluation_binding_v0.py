@@ -16,6 +16,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     SYSTEM_EVIDENCE_MV2_PATH_MODE,
     load_ops_evaluation_config_v0,
     load_versioned_hypothesis_binding_v0,
+    materialize_runner_envelope_v0,
     materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0,
     run_full_offline_economic_evaluation_v0,
     single_slot_backtest_from_mv2_wiring_v0,
@@ -205,6 +206,14 @@ def test_mv2_binding_evaluation_executes_on_synthetic_panel(
                         panel_series=panel,
                         versioned_binding=complete_binding,
                         go_token=SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+                        runner_envelope=materialize_runner_envelope_v0(
+                            requested_operator_go=SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+                            dispatched_operator_go=SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+                            dispatch_rc=0,
+                            preexecution_parity_guard_pass=True,
+                            full_canonical_chain_wired=True,
+                            backtest_runtime_decision_parity_pass=True,
+                        ),
                     )
     assert result.economic_evaluation_executed is True
     assert result.backtest is not None
