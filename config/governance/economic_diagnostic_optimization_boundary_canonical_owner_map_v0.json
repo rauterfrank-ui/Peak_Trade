@@ -180,10 +180,12 @@
       "path_prefixes": [
         "src/research/offline_linear_cost_diagnostic_row_materializer_v0.py",
         "src/research/linear_evidence/feature_matrix.py",
-        "src/research/linear_evidence/sensitivity.py"
+        "src/research/linear_evidence/sensitivity.py",
+        "src/research/linear_evidence/factor_exposure_productive_contract_v0.py"
       ],
       "path_globs": [
-        "tests/research/test_offline_linear_cost_diagnostic_row_materializer_*"
+        "tests/research/test_offline_linear_cost_diagnostic_row_materializer_*",
+        "tests/research/test_offline_factor_exposure_productive_contract_v0.py"
       ]
     },
     "COST_MODEL_DIAGNOSTICS": {
@@ -191,6 +193,7 @@
         "src/research/linear_evidence/cost_model.py",
         "src/research/linear_evidence/diagnostics.py",
         "src/research/linear_evidence/fitters.py",
+        "src/research/linear_evidence/factor_exposure_productive_contract_v0.py",
         "scripts/research/offline_linear_cost_model_diagnostics_v0.py",
         "scripts/research/offline_signal_orthogonality_diagnostics_v0.py",
         "scripts/research/offline_factor_exposure_diagnostics_v0.py"
@@ -199,6 +202,7 @@
         "tests/research/test_offline_linear_cost_model_diagnostics_*",
         "tests/research/test_offline_signal_orthogonality_diagnostics_*",
         "tests/research/test_offline_factor_exposure_diagnostics_*",
+        "tests/research/test_offline_factor_exposure_productive_contract_v0.py",
         "tests/research/test_linear_evidence_*"
       ]
     },
@@ -207,7 +211,8 @@
         "src/research/linear_evidence/feature_matrix.py",
         "src/research/linear_evidence/contracts.py",
         "src/research/linear_evidence/signal_orthogonality.py",
-        "src/research/linear_evidence/factor_exposure.py"
+        "src/research/linear_evidence/factor_exposure.py",
+        "src/research/linear_evidence/factor_exposure_productive_contract_v0.py"
       ]
     },
     "REPORTING_AND_EVIDENCE_REPAIR": {
