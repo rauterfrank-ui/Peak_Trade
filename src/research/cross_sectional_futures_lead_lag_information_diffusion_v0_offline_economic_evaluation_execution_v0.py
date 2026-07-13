@@ -110,6 +110,9 @@ SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN = (
 PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_V0"
 )
+BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_LEAD_LAG_V0_BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0"
+)
 ALLOWED_FULL_EVALUATION_GO_TOKENS: frozenset[str] = frozenset(
     {GO_TOKEN, REEVALUATION_GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
 )
@@ -158,6 +161,7 @@ PRODUCTIVE_BACKTEST_LANE_GO_TOKENS: frozenset[str] = frozenset(
         REEVALUATION_GO_TOKEN,
         SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
         PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
+        BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
         INFRASTRUCTURE_GO_TOKEN,
     }
 )
@@ -168,6 +172,7 @@ _BRANCH_REEVALUATION_V0 = "REEVALUATION_V0"
 _BRANCH_MV2_WIRING_ADAPTER_V0 = "MV2_WIRING_ADAPTER_V0"
 _BRANCH_MV2_BINDING_V0 = "MV2_BINDING_V0"
 _BRANCH_PRODUCTIVE_MV2_REWIRE_V0 = "PRODUCTIVE_MV2_REWIRE_V0"
+_BRANCH_BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0 = "BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0"
 
 _ENTRY_POINT_DISPATCH_PAIRS: tuple[tuple[str, str], ...] = (
     (INFRASTRUCTURE_GO_TOKEN, _BRANCH_INFRASTRUCTURE_V0),
@@ -176,6 +181,10 @@ _ENTRY_POINT_DISPATCH_PAIRS: tuple[tuple[str, str], ...] = (
     (MV2_WIRING_ADAPTER_GO_TOKEN, _BRANCH_MV2_WIRING_ADAPTER_V0),
     (SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN, _BRANCH_MV2_BINDING_V0),
     (PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN, _BRANCH_PRODUCTIVE_MV2_REWIRE_V0),
+    (
+        BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
+        _BRANCH_BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0,
+    ),
 )
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = dict(_ENTRY_POINT_DISPATCH_PAIRS)
 
@@ -199,6 +208,7 @@ REASON_DISPATCH_GO_MISMATCH = "DISPATCH_GO_TOKEN_MISMATCH"
 REASON_DISPATCH_NOT_SUCCESSFUL = "DISPATCH_NOT_SUCCESSFUL"
 REASON_ENTRY_POINT_GO_TOKEN_UNKNOWN = "ENTRY_POINT_GO_TOKEN_UNKNOWN"
 REASON_LEGACY_RESEARCH_BACKTEST_BYPASS_BLOCKED = "LEGACY_RESEARCH_BACKTEST_BYPASS_BLOCKED"
+REASON_LEGACY_RAW_ENGINE_SIGNAL_BYPASS_BLOCKED = "LEGACY_RAW_ENGINE_SIGNAL_BYPASS_BLOCKED"
 
 
 class InfrastructureTerminalStatus(str, Enum):
@@ -585,6 +595,11 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "productive_research_eval_backtest_lane_mv2_rewire_go_token": (
             PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN
         ),
+        "backtest_engine_mv2_replay_signal_parity_go_token": (
+            BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN
+        ),
+        "productive_backtest_engine_signal_source": "mv2_decision_replay_series",
+        "legacy_raw_engine_signal_bypass_blocked": True,
         "evaluation_path_modes": [LEGACY_RESEARCH_PATH_MODE, SYSTEM_EVIDENCE_MV2_PATH_MODE],
         "productive_evaluation_path_mode": SYSTEM_EVIDENCE_MV2_PATH_MODE,
         "legacy_research_backtest_bypass_blocked": True,
@@ -654,6 +669,16 @@ def reject_legacy_research_backtest_bypass_v0(
     return True, ()
 
 
+def reject_legacy_raw_engine_signal_bypass_v0(
+    *,
+    backtest_engine_signal_source: str,
+    expected_source: str = "mv2_decision_replay_series",
+) -> tuple[bool, tuple[str, ...]]:
+    if backtest_engine_signal_source != expected_source:
+        return False, (REASON_LEGACY_RAW_ENGINE_SIGNAL_BYPASS_BLOCKED,)
+    return True, ()
+
+
 def resolve_adapter_go_token_for_productive_lane_v0(*, go_token: str) -> str:
     """Map productive lane GO tokens to adapter-accepted tokens."""
     if go_token == INFRASTRUCTURE_GO_TOKEN:
@@ -663,6 +688,7 @@ def resolve_adapter_go_token_for_productive_lane_v0(*, go_token: str) -> str:
         REEVALUATION_GO_TOKEN,
         SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
         PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
+        BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
     }:
         return go_token
     return go_token
@@ -1727,6 +1753,99 @@ def run_productive_research_eval_backtest_lane_mv2_rewire_dispatch_v0(
         "legacy_research_bypass_blocked": True,
         "mv2_wiring_adapter_go_token": MV2_WIRING_ADAPTER_GO_TOKEN,
         "adapter": adapter_result_to_dict(adapter_result),
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+    }
+
+
+def materialize_backtest_engine_mv2_replay_signal_parity_contract_v0() -> dict[str, Any]:
+    return {
+        "parity_version": "v0",
+        "parity_owner": EXECUTION_ID,
+        "backtest_engine_mv2_replay_signal_parity_go_token": (
+            BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN
+        ),
+        "canonical_backtest_engine_owner": MV2_CANONICAL_BACKTEST_OWNER,
+        "canonical_mv2_replay_signal_owner": MV2_CANONICAL_BACKTEST_OWNER,
+        "productive_backtest_engine_signal_source": "mv2_decision_replay_series",
+        "legacy_raw_engine_signal_bypass_blocked": True,
+        "mv2_wiring_adapter_owner": MV2_WIRING_ADAPTER_OWNER,
+        "canonical_mv2_decision_chain_owner": CANONICAL_MV2_DECISION_CHAIN_OWNER,
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+    }
+
+
+def run_backtest_engine_mv2_replay_signal_parity_dispatch_v0(
+    *,
+    repo_root: Path,
+    panel_series: Sequence[InstrumentPanelSeriesV1],
+    versioned_binding: Mapping[str, Any] | None = None,
+    go_token: str,
+) -> dict[str, Any]:
+    """Dispatch lead-lag BacktestEngine MV2 replay signal parity path (no economic evaluation)."""
+    from src.backtest.strategy_signal_binding_v1 import ENGINE_SIGNAL_SOURCE_MV2_REPLAY
+    from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+        AdapterTerminalStatus,
+        adapter_result_to_dict,
+        run_lead_lag_mv2_research_backtest_wiring_boundary_v0,
+    )
+
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
+    ops_config = load_ops_evaluation_config_v0(repo_root)
+    evaluation_path_mode = resolve_productive_evaluation_path_mode_v0(go_token=go_token)
+    legacy_ok, legacy_reasons = reject_legacy_research_backtest_bypass_v0(
+        evaluation_path_mode=evaluation_path_mode,
+    )
+    if not legacy_ok:
+        return {
+            "evaluation_path_mode": evaluation_path_mode,
+            "backtest_engine_mv2_replay_signal_parity_pass": False,
+            "legacy_research_bypass_blocked": True,
+            "legacy_raw_engine_signal_bypass_blocked": True,
+            "reason_codes": list(legacy_reasons),
+            "adapter": None,
+            "economic_evaluation_executed": False,
+            "authority_effect": AUTHORITY_EFFECT,
+            "runtime_effect": RUNTIME_EFFECT,
+        }
+
+    adapter_go_token = resolve_adapter_go_token_for_productive_lane_v0(go_token=go_token)
+    adapter_result = run_lead_lag_mv2_research_backtest_wiring_boundary_v0(
+        repo_root=repo_root,
+        panel_series=panel_series,
+        versioned_binding=envelope,
+        ops_config=ops_config,
+        go_token=adapter_go_token,
+        evaluation_path_mode=evaluation_path_mode,
+    )
+    wiring = adapter_result.wiring_result
+    signal_source = wiring.backtest_engine_signal_source if wiring is not None else ""
+    raw_ok, raw_reasons = reject_legacy_raw_engine_signal_bypass_v0(
+        backtest_engine_signal_source=signal_source,
+    )
+    parity_pass = (
+        adapter_result.status is AdapterTerminalStatus.MV2_WIRING_BOUNDARY_COMPLETE
+        and raw_ok
+        and wiring is not None
+        and wiring.backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY
+        and wiring.backtest_engine_signal_digest == wiring.mv2_replay_signal_digest
+    )
+    reason_codes = list(adapter_result.reason_codes)
+    if not raw_ok:
+        reason_codes.extend(raw_reasons)
+    return {
+        "evaluation_path_mode": evaluation_path_mode,
+        "backtest_engine_mv2_replay_signal_parity_pass": parity_pass,
+        "legacy_research_bypass_blocked": True,
+        "legacy_raw_engine_signal_bypass_blocked": True,
+        "backtest_engine_signal_source": signal_source,
+        "mv2_replay_signal_digest": wiring.mv2_replay_signal_digest if wiring else "",
+        "backtest_engine_signal_digest": wiring.backtest_engine_signal_digest if wiring else "",
+        "adapter": adapter_result_to_dict(adapter_result),
+        "reason_codes": reason_codes,
         "economic_evaluation_executed": False,
         "authority_effect": AUTHORITY_EFFECT,
         "runtime_effect": RUNTIME_EFFECT,

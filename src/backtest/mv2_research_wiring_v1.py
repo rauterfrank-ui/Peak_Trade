@@ -36,12 +36,16 @@ from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 from src.backtest.stats import compute_backtest_stats
 from src.backtest.strategy_signal_binding_v1 import (
+    ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+    ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
     MV2_REPLAY_SIGNAL_SOURCE,
     StrategySignalBindingError,
     StrategySignalProvenanceV1,
     assert_engine_signal_provenance_consistency_v1,
+    assert_backtest_engine_mv2_replay_signal_parity_v1,
     compute_strategy_signal_digest_v1,
     execute_configured_strategy_signal_series_v1,
+    validate_mv2_replay_engine_signal_contract_v1,
 )
 from src.backtest.offline_evaluation_sizing_contract_v1 import (
     OfflineEvaluationSizingError,
@@ -357,6 +361,8 @@ class MV2ResearchWiringResultV1:
     mv2_replay_signal_digest: str
     mv2_replay_nonzero_signal_count: int
     sizing_provenance: Mapping[str, Any] = field(default_factory=dict)
+    backtest_engine_signal_source: str = ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
+    backtest_engine_signal_digest: str = ""
 
 
 @dataclass(frozen=True)
@@ -1176,6 +1182,8 @@ def run_mv2_research_backtest_wiring_v1(
     | None = None,
     feedback_learning_state_file_binding: FeedbackLearningBacktestStateFileBindingConfigV1
     | None = None,
+    backtest_engine_signal_source: str = ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+    expected_mv2_replay_signal_digest: Optional[str] = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
@@ -1474,6 +1482,26 @@ def run_mv2_research_backtest_wiring_v1(
     )
     mv2_replay_nonzero = int((mv2_replay_series != 0).sum())
 
+    if backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY:
+        try:
+            engine_signal_series, engine_provenance = validate_mv2_replay_engine_signal_contract_v1(
+                mv2_replay_series,
+                bars_index=bars.index,
+                strategy_id=strategy_id,
+                mv2_replay_signal_digest=mv2_replay_digest,
+                expected_mv2_replay_signal_digest=expected_mv2_replay_signal_digest or "",
+            )
+        except StrategySignalBindingError as exc:
+            raise ValueError(f"mv2_replay_engine_signal_binding_failed:{exc}") from exc
+        backtest_engine_signal_digest = mv2_replay_digest
+    elif backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY:
+        engine_provenance = strategy_binding.provenance
+        backtest_engine_signal_digest = engine_provenance.engine_signal_digest
+    else:
+        raise ValueError(
+            f"backtest_engine_signal_source_unsupported:{backtest_engine_signal_source}"
+        )
+
     def _signal_fn(df: pd.DataFrame, params: Mapping[str, Any]) -> pd.Series:  # noqa: ARG001
         aligned = engine_signal_series.reindex(df.index)
         if aligned.isna().any():
@@ -1529,6 +1557,15 @@ def run_mv2_research_backtest_wiring_v1(
             raise ValueError("offline_sizing_accounting_missing")
         sizing_provenance = serialize_sizing_provenance_v1(contract, accounting)
 
+    if backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY:
+        assert_backtest_engine_mv2_replay_signal_parity_v1(
+            mv2_replay_signals=mv2_replay_series,
+            bar_outcomes=tuple(outcomes),
+            backtest_engine_signal_source=backtest_engine_signal_source,
+            backtest_engine_signal_digest=backtest_engine_signal_digest,
+            mv2_replay_signal_digest=mv2_replay_digest,
+        )
+
     return MV2ResearchWiringResultV1(
         instrument_id=instrument_id,
         registry_snapshot=snapshot,
@@ -1541,6 +1578,8 @@ def run_mv2_research_backtest_wiring_v1(
         mv2_replay_signal_digest=mv2_replay_digest,
         mv2_replay_nonzero_signal_count=mv2_replay_nonzero,
         sizing_provenance=sizing_provenance,
+        backtest_engine_signal_source=backtest_engine_signal_source,
+        backtest_engine_signal_digest=backtest_engine_signal_digest,
     )
 
 
