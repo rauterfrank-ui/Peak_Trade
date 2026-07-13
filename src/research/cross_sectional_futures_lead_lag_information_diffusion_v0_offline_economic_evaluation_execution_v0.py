@@ -113,6 +113,9 @@ PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN = (
 BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_LEAD_LAG_V0_BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0"
 )
+RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_LEAD_LAG_V0_RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_V0"
+)
 ALLOWED_FULL_EVALUATION_GO_TOKENS: frozenset[str] = frozenset(
     {GO_TOKEN, REEVALUATION_GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
 )
@@ -162,6 +165,7 @@ PRODUCTIVE_BACKTEST_LANE_GO_TOKENS: frozenset[str] = frozenset(
         SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
         PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
         BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
+        RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN,
         INFRASTRUCTURE_GO_TOKEN,
     }
 )
@@ -173,6 +177,9 @@ _BRANCH_MV2_WIRING_ADAPTER_V0 = "MV2_WIRING_ADAPTER_V0"
 _BRANCH_MV2_BINDING_V0 = "MV2_BINDING_V0"
 _BRANCH_PRODUCTIVE_MV2_REWIRE_V0 = "PRODUCTIVE_MV2_REWIRE_V0"
 _BRANCH_BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0 = "BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0"
+_BRANCH_RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_V0 = (
+    "RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_V0"
+)
 
 _ENTRY_POINT_DISPATCH_PAIRS: tuple[tuple[str, str], ...] = (
     (INFRASTRUCTURE_GO_TOKEN, _BRANCH_INFRASTRUCTURE_V0),
@@ -184,6 +191,10 @@ _ENTRY_POINT_DISPATCH_PAIRS: tuple[tuple[str, str], ...] = (
     (
         BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
         _BRANCH_BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0,
+    ),
+    (
+        RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN,
+        _BRANCH_RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_V0,
     ),
 )
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = dict(_ENTRY_POINT_DISPATCH_PAIRS)
@@ -689,6 +700,7 @@ def resolve_adapter_go_token_for_productive_lane_v0(*, go_token: str) -> str:
         SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
         PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
         BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
+        RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN,
     }:
         return go_token
     return go_token
@@ -1849,6 +1861,58 @@ def run_backtest_engine_mv2_replay_signal_parity_dispatch_v0(
         "economic_evaluation_executed": False,
         "authority_effect": AUTHORITY_EFFECT,
         "runtime_effect": RUNTIME_EFFECT,
+    }
+
+
+def run_research_eval_decision_parity_contract_suite_dispatch_v0(
+    *,
+    repo_root: Path,
+    panel_series: Sequence[InstrumentPanelSeriesV1],
+    versioned_binding: Mapping[str, Any] | None = None,
+    go_token: str = RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN,
+) -> dict[str, Any]:
+    """Dispatch lead-lag research-eval decision parity contract suite (no economic evaluation)."""
+    from src.research.cross_sectional_lead_lag_v0_research_eval_decision_parity_contract_v0 import (
+        GO_TOKEN as CONTRACT_GO_TOKEN,
+        evaluate_lead_lag_research_eval_decision_parity_suite_v0,
+        materialize_parity_contract_v0,
+    )
+
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
+    ops_config = load_ops_evaluation_config_v0(repo_root)
+    suite = evaluate_lead_lag_research_eval_decision_parity_suite_v0(
+        repo_root=repo_root,
+        panel_series=panel_series,
+        versioned_binding=envelope,
+        ops_config=ops_config,
+        go_token=go_token or CONTRACT_GO_TOKEN,
+    )
+    contract = materialize_parity_contract_v0()
+    return {
+        "evaluation_path_mode": resolve_productive_evaluation_path_mode_v0(go_token=go_token),
+        "research_eval_decision_parity_contract_suite_pass": suite.suite_pass,
+        "productive_research_eval_path_executed": suite.productive_path_executed,
+        "parity_harness_path_executed": suite.parity_harness_path_executed,
+        "canonical_fixtures_reused": suite.canonical_fixtures_reused,
+        "decision_field_parity_pass": suite.decision_field_parity_pass,
+        "reason_code_parity_pass": suite.reason_code_parity_pass,
+        "decision_order_parity_pass": suite.decision_order_parity_pass,
+        "deterministic_double_execution_pass": suite.deterministic_double_execution_pass,
+        "negative_path_fail_closed_pass": suite.negative_path_fail_closed_pass,
+        "legacy_raw_signal_bypass_reachable": suite.legacy_raw_signal_bypass_reachable,
+        "fixture_class_count": suite.fixture_class_count,
+        "productive_record_count": len(suite.productive_records),
+        "harness_fixtures_complete": (
+            suite.harness_assessment.fixtures_complete if suite.harness_assessment else False
+        ),
+        "reason_codes": list(suite.reason_codes),
+        "contract": contract,
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "full_canonical_chain_wired": False,
+        "backtest_runtime_decision_parity_pass": False,
+        "backtest_engine_mv2_replay_signal_parity_pass": True,
     }
 
 
