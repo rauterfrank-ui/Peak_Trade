@@ -755,7 +755,7 @@ def test_bar_sequence_state_carrier_authority_effect_none() -> None:
         assert outcome.evidence.order_effect == "NONE"
 
 
-def test_bar_sequence_state_carrier_parity_flags_remain_false() -> None:
+def test_bar_sequence_state_carrier_parity_flags_ratified_true() -> None:
     import json
     from pathlib import Path
 
@@ -767,8 +767,9 @@ def test_bar_sequence_state_carrier_parity_flags_remain_false() -> None:
         ).read_text(encoding="utf-8")
     )
     parity = ops_cfg["evaluation_path_parity_binding_v0"]
-    assert parity["full_canonical_chain_wired"] is False
-    assert parity["backtest_runtime_decision_parity_pass"] is False
+    assert parity["full_canonical_chain_wired"] is True
+    assert parity["backtest_runtime_decision_parity_pass"] is True
+    assert parity["evaluation_path_parity_ratified"] is True
 
 
 def test_bar_sequence_state_carrier_futures_only_and_no_bitcoin_boundaries_unchanged() -> None:
