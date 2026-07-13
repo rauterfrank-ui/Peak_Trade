@@ -41,7 +41,9 @@ def test_ols_evidence_is_authority_neutral() -> None:
     assert evidence.validation_policy == "TIME_ORDERED"
 
 
-def test_offline_linear_cost_model_diagnostics_cli(tmp_path: Path) -> None:
+def test_offline_linear_cost_model_diagnostics_cli_fail_closed_without_materialized_rows(
+    tmp_path: Path,
+) -> None:
     result = subprocess.run(
         [
             sys.executable,
@@ -61,4 +63,28 @@ def test_offline_linear_cost_model_diagnostics_cli(tmp_path: Path) -> None:
     assert report["order_authority"] is False
     assert report["promotion_pass_authority"] is False
     assert report["backtest_cost_default_change"] is False
+    assert report["n_productive_samples"] == 0
+    assert report["ols_executed"] is False
+    assert report["verdict"] == "OFFLINE_LINEAR_COST_MODEL_DIAGNOSTICS_V0_FAIL_CLOSED"
+
+
+def test_offline_linear_cost_model_diagnostics_fixture_scaffold_cli(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/research/offline_linear_cost_model_diagnostics_v0.py",
+            "--out",
+            str(tmp_path),
+            "--fixture-scaffold",
+        ],
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+
+    assert result.returncode == 0, result.stderr
+    report = json.loads((tmp_path / "offline_linear_cost_model_diagnostics_v0.json").read_text())
+    assert report["offline_only"] is True
+    assert report["fixture_scaffold_only"] is True
+    assert report["n_productive_samples"] == 0
     assert report["calibration"]["calibrated_cost_policy"] == "CONSERVATIVE_NOT_MEAN"
