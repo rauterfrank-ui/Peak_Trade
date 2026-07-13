@@ -353,11 +353,18 @@ def test_guard_runs_before_dataset_materialization_on_parity_fail(
     scope_ratification: dict,
     complete_binding: dict,
 ) -> None:
-    envelope = _make_envelope(go_token=GO_TOKEN, parity=False)
-    with patch(
-        "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
-        "economic_evaluation_execution_v0.materialize_bound_panel_dataset_v0",
-    ) as materialize:
+    envelope = _make_envelope(go_token=GO_TOKEN, parity=True)
+    with (
+        patch(
+            "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+            "economic_evaluation_execution_v0.load_evaluation_path_parity_status_v0",
+            return_value=(False, False),
+        ),
+        patch(
+            "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+            "economic_evaluation_execution_v0.materialize_bound_panel_dataset_v0",
+        ) as materialize,
+    ):
         ok, reasons, materialization = verify_full_evaluation_precheck_v1(
             repo_root=REPO_ROOT,
             ratification=scope_ratification,

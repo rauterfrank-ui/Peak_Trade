@@ -18,9 +18,9 @@
     "parameter_sensitivity": {
       "bind": true,
       "grid_version": "v1",
+      "parameter_search_forbidden": true,
       "policy_version": "parameter_sensitivity_v1",
-      "primary_binding_only": true,
-      "parameter_search_forbidden": true
+      "primary_binding_only": true
     },
     "slippage_bps": 5.0,
     "slippage_model_version": "backtest_slippage_symmetric_v0"
@@ -78,19 +78,31 @@
     }
   },
   "evaluation_path_parity_binding_v0": {
-    "backtest_runtime_decision_parity_pass": false,
-    "full_canonical_chain_wired": false,
-    "parity_proof_ref": "planning/cross_sectional_futures_lead_lag_information_diffusion_v0_full_canonical_evaluation_path_parity_proof_read_only_v0_20260712T205902Z",
-    "ratified_read_only": true
+    "backtest_runtime_decision_parity_pass": true,
+    "evaluation_path_parity_ratified": true,
+    "full_canonical_chain_wired": true,
+    "parity_proof_ref": "planning/cross_sectional_lead_lag_v0_full_canonical_chain_and_runtime_decision_parity_post_position_feedback_gap_assessment_read_only_v0_20260713T020952Z",
+    "proof_input_refs": [
+      "planning/cross_sectional_futures_lead_lag_information_diffusion_v0_full_canonical_evaluation_path_parity_proof_read_only_v0_20260712T205902Z",
+      "planning/cross_sectional_lead_lag_v0_full_canonical_chain_and_runtime_decision_parity_post_position_feedback_gap_assessment_read_only_v0_20260713T020952Z"
+    ],
+    "ratification_digest": "3932e86aba3bcbc593dcc7d79fd389b6616795554aef710fa25fda0820e792d7",
+    "ratification_evidence_ref": "research/cross_sectional_lead_lag_v0_evaluation_path_parity_flag_ratification_v1_20260713T021801Z",
+    "ratification_id": "cross_sectional_lead_lag_v0_evaluation_path_parity_flag_ratification_v1",
+    "ratification_version": "v1",
+    "ratified_read_only": true,
+    "source_manifest_verify_rc": 0
   },
+  "evidence_schema_version": "economic_viability_evidence_schema_v1.json",
+  "implementation_digest": "612b431acc3833ed364b66de58b06ce15268edb30e1c5d82db50258cedd6c949",
   "mv2_research_backtest_mandatory_boundary_state_file_binding_v0": {
-    "capital_risk_sizing": {
-      "expected_state_file_digest_ref": "82a8b8ae2f38a90c93915c97c912243b3fca64b68e1e1490e062049cdff728a7",
-      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/capital_risk_sizing.json"
-    },
     "canonical_order_intent": {
       "expected_state_file_digest_ref": "3fc5a99ca38101b3017b00260b2bdbbd7a0fb96e7f2c600333e40876c98e06b5",
       "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/canonical_order_intent.json"
+    },
+    "capital_risk_sizing": {
+      "expected_state_file_digest_ref": "82a8b8ae2f38a90c93915c97c912243b3fca64b68e1e1490e062049cdff728a7",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/capital_risk_sizing.json"
     },
     "killswitch": {
       "expected_state_file_digest_ref": "e8acdea6f07b3e5e232aef82ad9e6ce0e2dbf1bf09f7c1395a13e5cb176f9aeb",
@@ -106,8 +118,6 @@
     },
     "schema_version": "mv2_research_backtest_mandatory_boundary_state_file_binding_v0"
   },
-  "evidence_schema_version": "economic_viability_evidence_schema_v1.json",
-  "implementation_digest": "612b431acc3833ed364b66de58b06ce15268edb30e1c5d82db50258cedd6c949",
   "offline_evaluation_sizing_contract_v1": {
     "initial_equity": 10000.0,
     "max_position_pct": 1.0,
