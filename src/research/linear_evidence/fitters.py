@@ -2,11 +2,30 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 
 import numpy as np
 
 from .contracts import FeatureMatrixBindingV1, LinearModelDiagnosticsV1, LinearModelEvidenceV1
+
+_UNIQUE_ROUND_DECIMALS = 12
+REASON_CONSTANT_TARGET = "CONSTANT_TARGET"
+REASON_ZERO_VARIANCE_FEATURE = "ZERO_VARIANCE_FEATURE"
+REASON_CONSTANT_FEATURE_COLLINEAR_WITH_INTERCEPT = "CONSTANT_FEATURE_COLLINEAR_WITH_INTERCEPT"
+REASON_RANK_DEFICIENT_FEATURE_MATRIX = "RANK_DEFICIENT_FEATURE_MATRIX"
+
+
+@dataclass(frozen=True)
+class OlsFitPrecheckDiagnosticsV0:
+    target_variance: float
+    target_unique_value_count: int
+    target_is_constant: bool
+    feature_variances: Mapping[str, float]
+    feature_unique_value_counts: Mapping[str, int]
+    zero_variance_feature_names: tuple[str, ...]
+    intercept_collinear_feature_names: tuple[str, ...]
+    reason_codes: tuple[str, ...]
 
 
 def _digest(payload: object) -> str:
@@ -20,6 +39,101 @@ def _r2(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     if denom == 0.0:
         return 0.0
     return 1.0 - float(np.sum((y_true - y_pred) ** 2)) / denom
+
+
+def _target_is_constant(y: np.ndarray) -> bool:
+    if y.size == 0:
+        return False
+    if float(np.var(y)) == 0.0:
+        return True
+    if int(len(np.unique(np.round(y, _UNIQUE_ROUND_DECIMALS)))) == 1:
+        return True
+    return float(np.max(y) - np.min(y)) <= 1e-9
+
+
+def _feature_unique_value_count(column: np.ndarray) -> int:
+    return int(len(np.unique(np.round(column, _UNIQUE_ROUND_DECIMALS))))
+
+
+def _zero_variance_feature_names(x: np.ndarray, feature_names: Sequence[str]) -> tuple[str, ...]:
+    names: list[str] = []
+    for index, name in enumerate(feature_names):
+        if float(np.var(x[:, index])) == 0.0:
+            names.append(str(name))
+    return tuple(sorted(names))
+
+
+def _intercept_collinear_feature_names(
+    x: np.ndarray,
+    feature_names: Sequence[str],
+) -> tuple[str, ...]:
+    if x.shape[0] == 0:
+        return ()
+    ones = np.ones(x.shape[0])
+    names: list[str] = []
+    for index, name in enumerate(feature_names):
+        column = x[:, index]
+        if float(np.var(column)) == 0.0 and np.allclose(column, float(column[0]) * ones):
+            names.append(str(name))
+    return tuple(sorted(names))
+
+
+def compose_ols_precheck_reason_codes_v0(
+    *,
+    target_is_constant: bool,
+    zero_variance_feature_names: Sequence[str],
+    intercept_collinear_feature_names: Sequence[str],
+) -> tuple[str, ...]:
+    reason_codes: list[str] = []
+    if target_is_constant:
+        reason_codes.append(REASON_CONSTANT_TARGET)
+    for name in sorted(str(value) for value in zero_variance_feature_names):
+        reason_codes.append(f"{REASON_ZERO_VARIANCE_FEATURE}:{name}")
+    for name in sorted(str(value) for value in intercept_collinear_feature_names):
+        reason_codes.append(f"{REASON_CONSTANT_FEATURE_COLLINEAR_WITH_INTERCEPT}:{name}")
+    return tuple(reason_codes)
+
+
+def compute_ols_fit_precheck_v0(
+    x: np.ndarray,
+    y: np.ndarray,
+    feature_names: Sequence[str],
+    *,
+    fit_intercept: bool = True,
+) -> OlsFitPrecheckDiagnosticsV0:
+    if x.ndim != 2 or y.ndim != 1:
+        raise ValueError("FEATURE_TARGET_SHAPE_MISMATCH")
+    if x.shape[0] != y.shape[0]:
+        raise ValueError("FEATURE_TARGET_ROW_MISMATCH")
+    if x.shape[1] != len(feature_names):
+        raise ValueError("FEATURE_COUNT_MISMATCH")
+
+    zero_variance_feature_names = _zero_variance_feature_names(x, feature_names)
+    intercept_collinear_feature_names = (
+        _intercept_collinear_feature_names(x, feature_names) if fit_intercept else ()
+    )
+    target_is_constant = _target_is_constant(y)
+    feature_variances = {
+        str(name): float(np.var(x[:, index])) for index, name in enumerate(feature_names)
+    }
+    feature_unique_value_counts = {
+        str(name): _feature_unique_value_count(x[:, index])
+        for index, name in enumerate(feature_names)
+    }
+    return OlsFitPrecheckDiagnosticsV0(
+        target_variance=float(np.var(y)),
+        target_unique_value_count=_feature_unique_value_count(y),
+        target_is_constant=target_is_constant,
+        feature_variances=feature_variances,
+        feature_unique_value_counts=feature_unique_value_counts,
+        zero_variance_feature_names=zero_variance_feature_names,
+        intercept_collinear_feature_names=intercept_collinear_feature_names,
+        reason_codes=compose_ols_precheck_reason_codes_v0(
+            target_is_constant=target_is_constant,
+            zero_variance_feature_names=zero_variance_feature_names,
+            intercept_collinear_feature_names=intercept_collinear_feature_names,
+        ),
+    )
 
 
 def fit_ols_lstsq(
@@ -38,6 +152,13 @@ def fit_ols_lstsq(
         raise ValueError("FEATURE_TARGET_ROW_MISMATCH")
     if x.shape[0] < max(4, x.shape[1] + 2):
         raise ValueError("INSUFFICIENT_DATA")
+
+    precheck = compute_ols_fit_precheck_v0(
+        x,
+        y,
+        binding.feature_names,
+        fit_intercept=fit_intercept,
+    )
 
     n = x.shape[0]
     split = max(1, min(n - 1, int(round(n * (1.0 - validation_fraction)))))
@@ -80,10 +201,11 @@ def fit_ols_lstsq(
     validation_r2 = _r2(y_validation, validation_pred) if len(y_validation) else None
 
     status = "CALIBRATION_CANDIDATE"
-    reasons: list[str] = []
+    reasons = list(precheck.reason_codes)
     if rank < design_train.shape[1]:
         status = "RANK_DEFICIENT_BLOCKED"
-        reasons.append("RANK_DEFICIENT_FEATURE_MATRIX")
+        if REASON_RANK_DEFICIENT_FEATURE_MATRIX not in reasons:
+            reasons.append(REASON_RANK_DEFICIENT_FEATURE_MATRIX)
     elif condition_number > 1_000_000:
         status = "ROBUSTNESS_FAILED"
         reasons.append("HIGH_CONDITION_NUMBER")
