@@ -1,0 +1,19 @@
+{
+  "account_equity": "10000",
+  "canonical_order_intent_owner_digest_ref": "v1",
+  "current_reconciled_exposure": "0",
+  "daily_loss_remaining_budget": "25",
+  "instrument_id": "inst-eth-usdt-perp",
+  "lot_size": "0.01",
+  "maximum_quantity": "100",
+  "minimum_notional": "5",
+  "minimum_quantity": "0.01",
+  "per_trade_risk_limit": "25",
+  "protective_stop_price": "3400",
+  "reference_price": "3500",
+  "schema_version": "canonical_order_intent_boundary_backtest_state_file_v0",
+  "scope_capital_limit": "500",
+  "state_file_digest_ref": "3fc5a99ca38101b3017b00260b2bdbbd7a0fb96e7f2c600333e40876c98e06b5",
+  "tick_size": "0.01",
+  "total_capital_limit": "500"
+}

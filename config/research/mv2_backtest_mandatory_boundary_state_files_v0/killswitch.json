@@ -1,0 +1,7 @@
+{
+  "fencing_digest_ref": "killswitch_owner_contract_digest_v1_7f3c9a2e1b4d6f8051a9c3e7d2b4f6089a1c3e5d7b9f0123456789abcdef0123",
+  "killswitch_boundary_mode": "block_new",
+  "prior_killswitch_active": false,
+  "schema_version": "killswitch_boundary_backtest_state_file_v0",
+  "state_file_digest_ref": "e8acdea6f07b3e5e232aef82ad9e6ce0e2dbf1bf09f7c1395a13e5cb176f9aeb"
+}
