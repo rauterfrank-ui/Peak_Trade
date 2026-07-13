@@ -67,6 +67,24 @@ class TestNormalization:
         assert required.issubset(set(bars.columns))
         assert bars["is_final"].all()
 
+    def test_normalize_materializes_volatility_estimate(self, tmp_path: Path) -> None:
+        raw_root = _minimal_raw_tree(tmp_path)
+        config = json.loads((raw_root / "INGESTION_CONFIG.json").read_text())
+        bars, report = staging.normalize_economic_research_bars(
+            raw_dir=raw_root / "raw",
+            start_utc=config["data_period"]["start_utc"],
+            end_utc=config["data_period"]["end_utc"],
+        )
+        assert report.passed
+        result = staging.vol_materializer.materialize_volatility_estimate_on_bars_v1(bars)
+        frame = result.bars
+        assert "volatility_estimate" in frame.columns
+        assert frame["volatility_estimate"].notna().any()
+        assert (
+            frame["volatility_estimate_contract_version"].iloc[-1]
+            == staging.vol_contract.CONTRACT_VERSION
+        )
+
 
 class TestCostBinding:
     def test_positive_cost_binding_no_zero_cost(self) -> None:

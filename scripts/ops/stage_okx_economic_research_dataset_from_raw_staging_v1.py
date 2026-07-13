@@ -29,6 +29,8 @@ from scripts.ops import (
     ingest_okx_futures_public_market_data_canonical_dataset_staging_v1 as okx_ingest,
 )
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
+from src.trading.master_v2 import canonical_volatility_estimate_feature_contract_v1 as vol_contract
+from src.trading.master_v2 import canonical_volatility_estimate_materializer_v1 as vol_materializer
 from src.backtest import cost_config_v0 as cost
 
 CONFIRM_GO = "GO_OKX_ECONOMIC_RESEARCH_DATASET_STAGING_V1"
@@ -468,6 +470,9 @@ def run_economic_research_staging_from_raw(
             "manifest_verify_rc": 1,
         }
 
+    materialization = vol_materializer.materialize_volatility_estimate_on_bars_v1(bars)
+    bars = materialization.bars
+
     cost_binding = build_cost_model_binding()
     profile_binding = build_profile_binding(cost_binding)
     field_bindings = ds.field_bindings_for_profile(ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1)
@@ -634,7 +639,18 @@ def run_economic_research_staging_from_raw(
         "required_columns": sorted(
             ds.required_bar_columns_for_profile(ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1)
         ),
-        "optional_columns": [],
+        "optional_columns": sorted(
+            {
+                vol_contract.FEATURE_NAME,
+                vol_materializer.WARMUP_STATUS_COLUMN,
+                vol_materializer.VOLATILITY_CONTRACT_VERSION_COLUMN,
+            }
+        ),
+        "feature_contract_bindings": {
+            "volatility_estimate_contract_version": materialization.contract_version,
+            "volatility_estimate_materializer_owner": vol_materializer.MATERIALIZER_OWNER,
+            "volatility_estimate_materializer_digest": materialization.materializer_digest,
+        },
         "l1_observation_status": L1_OBSERVATION_STATUS,
         "observed_l1_used": False,
         "execution_cost_binding": cost_binding["execution_cost_binding"],

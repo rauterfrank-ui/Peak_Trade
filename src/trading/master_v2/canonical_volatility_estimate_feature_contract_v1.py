@@ -270,7 +270,9 @@ def validate_contract_config_v1(payload: Mapping[str, Any]) -> None:
         payload, "deterministic_serialization_required", DETERMINISTIC_SERIALIZATION_REQUIRED
     )
     _require_exact(payload, "owner_ratification_complete", True)
-    _require_exact(payload, "implementation_admissible", False)
+    if payload.get("implementation_admissible") not in {True, False}:
+        msg = "contract_field_mismatch:implementation_admissible:expected=bool:actual=invalid"
+        raise CanonicalVolatilityFeatureContractError(msg)
     _require_exact(payload, "runtime_effect", False)
     _require_exact(payload, "authority_effect", "NONE")
     _require_exact(payload, "verdict", RATIFIED_VERDICT)
@@ -424,11 +426,16 @@ def assert_ratification_complete_v1() -> CanonicalVolatilityFeatureContractV1:
     if not contract.owner_ratification_complete:
         msg = "owner_ratification_incomplete"
         raise CanonicalVolatilityFeatureContractError(msg)
-    if contract.implementation_admissible:
-        msg = "implementation_must_remain_inadmissible_in_ratification_scope"
-        raise CanonicalVolatilityFeatureContractError(msg)
     if contract.verdict != RATIFIED_VERDICT:
         msg = f"unexpected_verdict:{contract.verdict}"
+        raise CanonicalVolatilityFeatureContractError(msg)
+    return contract
+
+
+def assert_implementation_admissible_v1() -> CanonicalVolatilityFeatureContractV1:
+    contract = assert_ratification_complete_v1()
+    if not contract.implementation_admissible:
+        msg = "implementation_not_admissible"
         raise CanonicalVolatilityFeatureContractError(msg)
     return contract
 
@@ -448,6 +455,7 @@ __all__ = [
     "RATIFICATION_ID",
     "RATIFICATION_SCOPE",
     "RATIFIED_VERDICT",
+    "assert_implementation_admissible_v1",
     "assert_ratification_complete_v1",
     "compute_contract_digest_v1",
     "contract_config_path",

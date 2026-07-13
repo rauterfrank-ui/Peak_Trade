@@ -13,7 +13,7 @@
   "finalized_bar_only": true,
   "floor_policy": "NONE",
   "implicit_default_allowed": false,
-  "implementation_admissible": false,
+  "implementation_admissible": true,
   "implementation_reuse_decision": "REUSE_WITH_NARROW_ADAPTER",
   "lookback_bars": 60,
   "min_periods": 60,
