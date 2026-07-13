@@ -205,6 +205,17 @@ from src.trading.master_v2.feedback_learning_boundary_backtest_state_file_bindin
     bind_feedback_learning_boundary_backtest_state_file_evidence_v0,
     load_feedback_learning_backtest_state_file_record_v0,
 )
+from src.backtest.backtest_engine_position_feedback_adapter_v1 import (
+    BACKTEST_ENGINE_POSITION_FEEDBACK_ADAPTER_OWNER,
+    CANONICAL_BACKTEST_POSITION_OWNER,
+    BacktestEnginePositionFeedbackV1,
+    LegacyRealisticBarLoopStateV1,
+    capture_backtest_engine_position_feedback_v1,
+    coerce_backtest_position_state_v1,
+    finalize_legacy_realistic_bar_loop_v1,
+    init_legacy_realistic_bar_loop_state_v1,
+    step_legacy_realistic_bar_v1,
+)
 
 MV2_RESEARCH_WIRING_LAYER_VERSION = "v1"
 MV2_RESEARCH_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
@@ -1043,6 +1054,24 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
     )
 
 
+def apply_backtest_engine_position_feedback_to_mv2_sequence_state_v1(
+    sequence_state: MV2IntegratedReplayBarSequenceStateV1,
+    feedback: BacktestEnginePositionFeedbackV1,
+) -> MV2IntegratedReplayBarSequenceStateV1:
+    """Overlay canonical backtest execution position onto the next MV2 replay bar input."""
+    position_state = coerce_backtest_position_state_v1(feedback.position_state)
+    return replace(
+        sequence_state,
+        side_state=feedback.side_state,
+        direction_state=feedback.direction_state,
+        position_state=position_state,
+        reconciliation_state=feedback.reconciliation_state,
+        existing_position_side=feedback.existing_position_side,
+        venue_flat=feedback.venue_flat,
+        position_management_context=feedback.position_management_context,
+    )
+
+
 def _coerce_canonical_market_context_for_integrated_replay_v1(
     context: CanonicalMarketContextV1,
 ) -> CanonicalMarketContextV1:
@@ -1724,6 +1753,39 @@ def run_mv2_research_backtest_wiring_v1(
     assert_engine_signal_provenance_consistency_v1(strategy_binding.provenance)
     engine_signal_series = strategy_binding.signals
 
+    position_feedback_bound = backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY
+    engine_cfg = dict(cfg)
+    sizing_provenance: dict[str, Any] = {}
+    strategy_params = {
+        **dict(strategy_binding.provenance.effective_strategy_params),
+        "strategy_id": strategy_id,
+    }
+    if offline_evaluation_sizing_contract_requested(cfg):
+        binding = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
+        dataset_digest = ""
+        if isinstance(binding, Mapping):
+            dataset_digest = str(binding.get("expected_dataset_digest", ""))
+        try:
+            contract, _accounting = bind_offline_evaluation_sizing_v1(
+                engine_cfg,
+                strategy_params_digest=strategy_binding.provenance.strategy_params_digest,
+                dataset_digest=dataset_digest,
+            )
+        except OfflineEvaluationSizingError as exc:
+            raise ValueError(f"offline_evaluation_sizing_contract_invalid:{exc}") from exc
+        strategy_params["stop_pct"] = contract.stop_pct
+        engine_cfg["offline_evaluation_sizing_contract_v1"] = contract.to_dict()
+
+    backtest_engine: BacktestEngine | None = None
+    bar_loop_state: LegacyRealisticBarLoopStateV1 | None = None
+    if position_feedback_bound:
+        backtest_engine = BacktestEngine(
+            use_execution_pipeline=False,
+            risk_limits=build_mv2_research_risk_limits_v1(cfg),
+        )
+        backtest_engine.config = engine_cfg
+        backtest_engine.data = bars
+
     outcomes: list[MV2ReplayBarOutcomeV1] = []
     replay_signals: list[int] = []
     signal_index: list[pd.Timestamp] = []
@@ -1732,6 +1794,15 @@ def run_mv2_research_backtest_wiring_v1(
         if sequence_state is None:
             sequence_state = build_initial_mv2_integrated_replay_bar_sequence_state_v1(
                 trading_epoch=i,
+            )
+        if position_feedback_bound and i > 0 and bar_loop_state is not None:
+            feedback = capture_backtest_engine_position_feedback_v1(
+                state=bar_loop_state,
+                feedback_source_bar_epoch=i - 1,
+            )
+            sequence_state = apply_backtest_engine_position_feedback_to_mv2_sequence_state_v1(
+                sequence_state,
+                feedback,
             )
         context, l1_status, observed_l1_used = bind_bar_for_mv2_wiring_v1(
             bar=row,
@@ -1882,6 +1953,22 @@ def run_mv2_research_backtest_wiring_v1(
             )
         if context.warmup_status is not WarmupStatus.WARMUP_COMPLETE:
             signal = 0
+        if position_feedback_bound:
+            if backtest_engine is None:
+                raise ValueError("backtest_engine_position_feedback_engine_missing")
+            if bar_loop_state is None:
+                bar_loop_state = init_legacy_realistic_bar_loop_state_v1(
+                    backtest_engine,
+                    strategy_params=strategy_params,
+                )
+            bar_loop_state = step_legacy_realistic_bar_v1(
+                backtest_engine,
+                bar_loop_state,
+                bar=row,
+                signal=signal,
+                symbol=instrument_id,
+                effective_cost=effective_cost,
+            )
         outcomes.append(
             MV2ReplayBarOutcomeV1(
                 trading_epoch=i,
@@ -1941,41 +2028,30 @@ def run_mv2_research_backtest_wiring_v1(
             raise ValueError("engine_strategy_signal_index_mismatch")
         return aligned.astype(int)
 
-    engine_cfg = dict(cfg)
-    sizing_provenance: dict[str, Any] = {}
-    strategy_params = {
-        **dict(strategy_binding.provenance.effective_strategy_params),
-        "strategy_id": strategy_id,
-    }
-    if offline_evaluation_sizing_contract_requested(cfg):
-        binding = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
-        dataset_digest = ""
-        if isinstance(binding, Mapping):
-            dataset_digest = str(binding.get("expected_dataset_digest", ""))
-        try:
-            contract, _accounting = bind_offline_evaluation_sizing_v1(
-                engine_cfg,
-                strategy_params_digest=strategy_binding.provenance.strategy_params_digest,
-                dataset_digest=dataset_digest,
-            )
-        except OfflineEvaluationSizingError as exc:
-            raise ValueError(f"offline_evaluation_sizing_contract_invalid:{exc}") from exc
-        strategy_params["stop_pct"] = contract.stop_pct
-        engine_cfg["offline_evaluation_sizing_contract_v1"] = contract.to_dict()
-
-    engine = BacktestEngine(
-        use_execution_pipeline=False,
-        risk_limits=build_mv2_research_risk_limits_v1(cfg),
-    )
-    engine.config = engine_cfg
-    backtest_result = engine.run_realistic(
-        df=bars,
-        strategy_signal_fn=_signal_fn,
-        strategy_params=strategy_params,
-        symbol=instrument_id,
-        cost_config=effective_cost,
-        explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
-    )
+    if position_feedback_bound:
+        if backtest_engine is None or bar_loop_state is None:
+            raise ValueError("backtest_engine_position_feedback_loop_incomplete")
+        backtest_result = finalize_legacy_realistic_bar_loop_v1(
+            backtest_engine,
+            bar_loop_state,
+            df=bars,
+            effective_cost=effective_cost,
+            symbol=instrument_id,
+        )
+    else:
+        engine = BacktestEngine(
+            use_execution_pipeline=False,
+            risk_limits=build_mv2_research_risk_limits_v1(cfg),
+        )
+        engine.config = engine_cfg
+        backtest_result = engine.run_realistic(
+            df=bars,
+            strategy_signal_fn=_signal_fn,
+            strategy_params=strategy_params,
+            symbol=instrument_id,
+            cost_config=effective_cost,
+            explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+        )
 
     if offline_evaluation_sizing_contract_requested(cfg):
         from src.backtest.offline_evaluation_sizing_contract_v1 import (
