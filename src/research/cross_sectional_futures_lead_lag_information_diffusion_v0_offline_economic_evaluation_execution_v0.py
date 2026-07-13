@@ -116,6 +116,9 @@ BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN = (
 RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_LEAD_LAG_V0_RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_V0"
 )
+PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_LEAD_LAG_V0_PROMOTION_ECONOMIC_GATE_PRECHECK_V0"
+)
 ALLOWED_FULL_EVALUATION_GO_TOKENS: frozenset[str] = frozenset(
     {GO_TOKEN, REEVALUATION_GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
 )
@@ -166,6 +169,7 @@ PRODUCTIVE_BACKTEST_LANE_GO_TOKENS: frozenset[str] = frozenset(
         PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
         BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
         RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN,
+        PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN,
         INFRASTRUCTURE_GO_TOKEN,
     }
 )
@@ -180,6 +184,7 @@ _BRANCH_BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_V0 = "BACKTEST_ENGINE_MV2_REPLA
 _BRANCH_RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_V0 = (
     "RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_V0"
 )
+_BRANCH_PROMOTION_ECONOMIC_GATE_PRECHECK_V0 = "PROMOTION_ECONOMIC_GATE_PRECHECK_V0"
 
 _ENTRY_POINT_DISPATCH_PAIRS: tuple[tuple[str, str], ...] = (
     (INFRASTRUCTURE_GO_TOKEN, _BRANCH_INFRASTRUCTURE_V0),
@@ -195,6 +200,10 @@ _ENTRY_POINT_DISPATCH_PAIRS: tuple[tuple[str, str], ...] = (
     (
         RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN,
         _BRANCH_RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_V0,
+    ),
+    (
+        PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN,
+        _BRANCH_PROMOTION_ECONOMIC_GATE_PRECHECK_V0,
     ),
 )
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = dict(_ENTRY_POINT_DISPATCH_PAIRS)
@@ -701,6 +710,7 @@ def resolve_adapter_go_token_for_productive_lane_v0(*, go_token: str) -> str:
         PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
         BACKTEST_ENGINE_MV2_REPLAY_SIGNAL_PARITY_GO_TOKEN,
         RESEARCH_EVAL_DECISION_PARITY_CONTRACT_SUITE_GO_TOKEN,
+        PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN,
     }:
         return go_token
     return go_token
@@ -1862,6 +1872,30 @@ def run_backtest_engine_mv2_replay_signal_parity_dispatch_v0(
         "authority_effect": AUTHORITY_EFFECT,
         "runtime_effect": RUNTIME_EFFECT,
     }
+
+
+def run_promotion_economic_gate_precheck_dispatch_v0(
+    *,
+    repo_root: Path,
+    versioned_binding: Mapping[str, Any] | None = None,
+    source_closeout_ref: str = "",
+    research_eval_decision_parity_suite_pass: bool = True,
+    go_token: str = PROMOTION_ECONOMIC_GATE_PRECHECK_GO_TOKEN,
+) -> dict[str, Any]:
+    """Dispatch lead-lag promotion economic gate precheck (no economic evaluation)."""
+    from src.research.cross_sectional_lead_lag_v0_promotion_economic_gate_precheck_v0 import (
+        DEFAULT_SOURCE_CLOSEOUT_REF,
+        GO_TOKEN as PRECHECK_GO_TOKEN,
+        run_promotion_economic_gate_precheck_dispatch_v0 as _run_precheck,
+    )
+
+    return _run_precheck(
+        repo_root=repo_root,
+        versioned_binding=versioned_binding,
+        source_closeout_ref=source_closeout_ref or DEFAULT_SOURCE_CLOSEOUT_REF,
+        research_eval_decision_parity_suite_pass=research_eval_decision_parity_suite_pass,
+        go_token=go_token or PRECHECK_GO_TOKEN,
+    )
 
 
 def run_research_eval_decision_parity_contract_suite_dispatch_v0(
