@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from math import isfinite
 from typing import Dict, List, Mapping, Sequence, Tuple
 
@@ -32,6 +32,7 @@ REASON_HIGH_CONDITION_NUMBER = "HIGH_CONDITION_NUMBER"
 REASON_PRODUCTIVE_BINDING_MISSING = "PRODUCTIVE_BINDING_MISSING"
 REASON_FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY = "FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY"
 REASON_RANK_DEFICIENT = "RANK_DEFICIENT_FEATURE_MATRIX"
+REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED = "STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED"
 
 _AUTHORITY_EFFECT = "NONE"
 _RUNTIME_EFFECT = "NONE"
@@ -103,6 +104,12 @@ class FactorExposureEvidenceV1:
     authority_effect: str
     runtime_effect: str
     productive_provenance: FactorExposureProductiveProvenanceV0 | None = None
+    original_feature_names: Tuple[str, ...] | None = None
+    effective_feature_names: Tuple[str, ...] | None = None
+    original_n_features: int | None = None
+    effective_n_features: int | None = None
+    excluded_factor_names: Tuple[str, ...] | None = None
+    excluded_factor_count: int | None = None
 
     def to_dict(self) -> Dict[str, object]:
         payload: Dict[str, object] = {
@@ -125,6 +132,18 @@ class FactorExposureEvidenceV1:
             "authority_effect": self.authority_effect,
             "runtime_effect": self.runtime_effect,
         }
+        if self.original_feature_names is not None:
+            payload["original_feature_names"] = list(self.original_feature_names)
+        if self.effective_feature_names is not None:
+            payload["effective_feature_names"] = list(self.effective_feature_names)
+        if self.original_n_features is not None:
+            payload["original_n_features"] = int(self.original_n_features)
+        if self.effective_n_features is not None:
+            payload["effective_n_features"] = int(self.effective_n_features)
+        if self.excluded_factor_names is not None:
+            payload["excluded_factor_names"] = list(self.excluded_factor_names)
+        if self.excluded_factor_count is not None:
+            payload["excluded_factor_count"] = int(self.excluded_factor_count)
         if self.productive_provenance is not None:
             payload.update(self.productive_provenance.to_dict())
         return payload
@@ -216,6 +235,33 @@ def compute_factor_exposure_precheck_v0(
     )
 
 
+def _exclude_strict_zero_variance_factors_v0(
+    matrix: np.ndarray,
+    factor_names: tuple[str, ...],
+) -> tuple[np.ndarray, tuple[str, ...], tuple[str, ...]]:
+    """Deterministically exclude strictly zero-variance factor columns.
+
+    Predicate: exact float(np.var(column)) == 0.0 on the canonical float matrix.
+    Exclusion order is stable w.r.t. factor_names.
+    """
+    if matrix.size == 0 or not factor_names:
+        return matrix, factor_names, ()
+    excluded: list[str] = []
+    keep_indices: list[int] = []
+    for idx, name in enumerate(factor_names):
+        if float(np.var(matrix[:, idx])) == 0.0:
+            excluded.append(str(name))
+        else:
+            keep_indices.append(idx)
+    if not excluded:
+        return matrix, factor_names, ()
+    if not keep_indices:
+        return np.empty((matrix.shape[0], 0), dtype=float), (), tuple(excluded)
+    kept = matrix[:, keep_indices]
+    kept_names = tuple(factor_names[i] for i in keep_indices)
+    return kept, kept_names, tuple(excluded)
+
+
 def _blocked_diagnostics(*, computed: bool = False) -> dict[str, object]:
     return {
         "computed": computed,
@@ -253,6 +299,8 @@ def _blocked_evidence(
     status = "INSUFFICIENT_DATA"
     if precheck.zero_variance_factor_names or REASON_PERFECT_COLLINEARITY_DETECTED in reasons:
         status = "RANK_DEFICIENT_BLOCKED"
+    elif REASON_RANK_DEFICIENT in reasons:
+        status = "RANK_DEFICIENT_BLOCKED"
     elif REASON_HIGH_CONDITION_NUMBER in reasons:
         status = "RANK_DEFICIENT_BLOCKED"
 
@@ -282,6 +330,12 @@ def _blocked_evidence(
         reason_codes=tuple(dict.fromkeys(reasons)),
         authority_effect=_AUTHORITY_EFFECT,
         runtime_effect=_RUNTIME_EFFECT,
+        original_feature_names=factor_names,
+        effective_feature_names=factor_names,
+        original_n_features=len(factor_names) if factor_names else 0,
+        effective_n_features=len(factor_names) if factor_names else 0,
+        excluded_factor_names=(),
+        excluded_factor_count=0,
     )
 
 
@@ -329,11 +383,48 @@ def fit_factor_exposure(
         )
 
     x, y, factor_names, x_digest, y_digest = build_factor_matrix(records)
+    original_factor_names = factor_names
+    original_n_features = len(original_factor_names)
+
+    x, factor_names, excluded_factor_names = _exclude_strict_zero_variance_factors_v0(
+        x, factor_names
+    )
+    strict_exclusion_reason_codes = tuple(
+        f"{REASON_STRICT_ZERO_VARIANCE_FACTOR_EXCLUDED}:{name}" for name in excluded_factor_names
+    )
+    strict_exclusion_applied = bool(excluded_factor_names)
     n_samples, n_features = x.shape
+
+    if strict_exclusion_applied and not factor_names:
+        precheck = FactorExposurePrecheckV0(
+            zero_variance_factor_names=(),
+            reason_codes=(),
+            blocking=True,
+        )
+        blocked = _blocked_evidence(
+            factor_names=original_factor_names,
+            matrix=x,
+            target_digest=y_digest,
+            feature_matrix_digest=x_digest,
+            cfg=cfg,
+            precheck=precheck,
+            extra_reasons=[*strict_exclusion_reason_codes, REASON_RANK_DEFICIENT],
+            productive_binding_gap=productive_binding_gap,
+            fixture_scaffold=fixture_scaffold,
+        )
+        return replace(
+            blocked,
+            original_feature_names=original_factor_names,
+            effective_feature_names=(),
+            original_n_features=original_n_features,
+            effective_n_features=0,
+            excluded_factor_names=excluded_factor_names,
+            excluded_factor_count=len(excluded_factor_names),
+        )
 
     precheck = compute_factor_exposure_precheck_v0(x, factor_names, min_samples=cfg.min_samples)
     if precheck.blocking or productive_binding_gap:
-        return _blocked_evidence(
+        blocked = _blocked_evidence(
             factor_names=factor_names,
             matrix=x,
             target_digest=y_digest,
@@ -342,6 +433,26 @@ def fit_factor_exposure(
             precheck=precheck,
             productive_binding_gap=productive_binding_gap,
             fixture_scaffold=fixture_scaffold,
+        )
+        if not strict_exclusion_applied:
+            return replace(
+                blocked,
+                original_feature_names=original_factor_names,
+                effective_feature_names=factor_names,
+                original_n_features=original_n_features,
+                effective_n_features=len(factor_names),
+            )
+        return replace(
+            blocked,
+            reason_codes=tuple(
+                dict.fromkeys([*strict_exclusion_reason_codes, *blocked.reason_codes])
+            ),
+            original_feature_names=original_factor_names,
+            effective_feature_names=factor_names,
+            original_n_features=original_n_features,
+            effective_n_features=len(factor_names),
+            excluded_factor_names=excluded_factor_names,
+            excluded_factor_count=len(excluded_factor_names),
         )
 
     rank = _rank(x)
@@ -370,7 +481,7 @@ def fit_factor_exposure(
         or REASON_RANK_DEFICIENT in reason_codes
         or REASON_HIGH_CONDITION_NUMBER in reason_codes
     ):
-        return _blocked_evidence(
+        blocked = _blocked_evidence(
             factor_names=factor_names,
             matrix=x,
             target_digest=y_digest,
@@ -379,6 +490,26 @@ def fit_factor_exposure(
             precheck=precheck,
             extra_reasons=reason_codes,
             fixture_scaffold=fixture_scaffold,
+        )
+        if not strict_exclusion_applied:
+            return replace(
+                blocked,
+                original_feature_names=original_factor_names,
+                effective_feature_names=factor_names,
+                original_n_features=original_n_features,
+                effective_n_features=len(factor_names),
+            )
+        return replace(
+            blocked,
+            reason_codes=tuple(
+                dict.fromkeys([*strict_exclusion_reason_codes, *blocked.reason_codes])
+            ),
+            original_feature_names=original_factor_names,
+            effective_feature_names=factor_names,
+            original_n_features=original_n_features,
+            effective_n_features=len(factor_names),
+            excluded_factor_names=excluded_factor_names,
+            excluded_factor_count=len(excluded_factor_names),
         )
 
     design = np.column_stack([np.ones(n_samples), x])
@@ -413,6 +544,8 @@ def fit_factor_exposure(
     }
 
     final_reasons = list(reason_codes)
+    if strict_exclusion_applied:
+        final_reasons.extend(strict_exclusion_reason_codes)
     if fixture_scaffold:
         final_reasons.append(REASON_FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY)
 
@@ -442,6 +575,12 @@ def fit_factor_exposure(
         reason_codes=tuple(dict.fromkeys(final_reasons)),
         authority_effect=_AUTHORITY_EFFECT,
         runtime_effect=_RUNTIME_EFFECT,
+        original_feature_names=original_factor_names,
+        effective_feature_names=factor_names,
+        original_n_features=original_n_features,
+        effective_n_features=len(factor_names),
+        excluded_factor_names=excluded_factor_names if strict_exclusion_applied else (),
+        excluded_factor_count=len(excluded_factor_names) if strict_exclusion_applied else 0,
     )
 
 

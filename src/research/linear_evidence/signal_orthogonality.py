@@ -281,6 +281,9 @@ def _pairwise_correlations(
 ) -> Dict[str, Dict[str, float]]:
     if matrix.shape[0] < 2:
         return {name: {other: 0.0 for other in feature_names} for name in feature_names}
+    if len(feature_names) == 1:
+        name = str(feature_names[0])
+        return {name: {name: 1.0}}
     corr = np.corrcoef(matrix, rowvar=False)
     corr = np.nan_to_num(corr, nan=0.0, posinf=0.0, neginf=0.0)
     return {
@@ -330,6 +333,8 @@ def _rank(matrix: np.ndarray) -> int:
 
 def _vif_scores(feature_names: Sequence[str], matrix: np.ndarray) -> Dict[str, float]:
     scores: Dict[str, float] = {}
+    if matrix.shape[1] < 2:
+        return {str(name): 1.0 for name in feature_names}
     if matrix.shape[0] <= matrix.shape[1] or matrix.shape[1] < 2:
         return {name: float("inf") for name in feature_names}
     x = _standardize(matrix)
