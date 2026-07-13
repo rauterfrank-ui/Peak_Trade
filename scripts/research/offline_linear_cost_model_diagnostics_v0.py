@@ -217,15 +217,16 @@ def main() -> int:
             target_name=TARGET_NAME,
         )
         model = fit_ols_lstsq(x, y, binding)
-        design_all = np.column_stack([np.ones(x.shape[0]), x])
-        coeff_values = np.asarray(list(model.coefficients.values()), dtype=float)
-        predicted = design_all @ coeff_values
-        calibration_payload = to_jsonable(
-            build_cost_model_calibration_evidence(
-                model, observed_target_bps=y, predicted_target_bps=predicted
+        if model.coefficients:
+            design_all = np.column_stack([np.ones(x.shape[0]), x])
+            coeff_values = np.asarray(list(model.coefficients.values()), dtype=float)
+            predicted = design_all @ coeff_values
+            calibration_payload = to_jsonable(
+                build_cost_model_calibration_evidence(
+                    model, observed_target_bps=y, predicted_target_bps=predicted
+                )
             )
-        )
-        ols_executed = True
+            ols_executed = True
     elif fixture_scaffold_only:
         x, y, binding = build_feature_matrix_binding(
             FIXTURE_ROWS,
@@ -239,15 +240,16 @@ def main() -> int:
             target_name="realized_slippage_bps",
         )
         model = fit_ols_lstsq(x, y, binding)
-        design_all = np.column_stack([np.ones(x.shape[0]), x])
-        coeff_values = np.asarray(list(model.coefficients.values()), dtype=float)
-        predicted = design_all @ coeff_values
-        calibration_payload = to_jsonable(
-            build_cost_model_calibration_evidence(
-                model, observed_target_bps=y, predicted_target_bps=predicted
+        if model.coefficients:
+            design_all = np.column_stack([np.ones(x.shape[0]), x])
+            coeff_values = np.asarray(list(model.coefficients.values()), dtype=float)
+            predicted = design_all @ coeff_values
+            calibration_payload = to_jsonable(
+                build_cost_model_calibration_evidence(
+                    model, observed_target_bps=y, predicted_target_bps=predicted
+                )
             )
-        )
-        ols_executed = True
+            ols_executed = True
 
     if n_productive_samples == 0 and not fixture_scaffold_only:
         verdict = "OFFLINE_LINEAR_COST_MODEL_DIAGNOSTICS_V0_FAIL_CLOSED"

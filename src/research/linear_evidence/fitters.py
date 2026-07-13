@@ -136,6 +136,63 @@ def compute_ols_fit_precheck_v0(
     )
 
 
+def _blocked_constant_target_evidence_v0(
+    precheck: OlsFitPrecheckDiagnosticsV0,
+    binding: FeatureMatrixBindingV1,
+    *,
+    fit_intercept: bool,
+    validation_fraction: float,
+    evidence_type: str,
+    instrument_universe_digest: str,
+) -> LinearModelEvidenceV1:
+    has_co_degeneracy = bool(
+        precheck.zero_variance_feature_names or precheck.intercept_collinear_feature_names
+    )
+    status = "RANK_DEFICIENT_BLOCKED" if has_co_degeneracy else "INSUFFICIENT_DATA"
+    reasons = list(precheck.reason_codes)
+    if has_co_degeneracy and REASON_RANK_DEFICIENT_FEATURE_MATRIX not in reasons:
+        reasons.append(REASON_RANK_DEFICIENT_FEATURE_MATRIX)
+
+    diagnostics = LinearModelDiagnosticsV1(
+        rank=0,
+        condition_number=0.0,
+        rmse=0.0,
+        mae=0.0,
+        max_abs_error=0.0,
+        r2_train=0.0,
+        r2_validation=None,
+        residual_mean=0.0,
+        residual_std=0.0,
+        outlier_count=0,
+    )
+    return LinearModelEvidenceV1(
+        evidence_type=evidence_type,
+        model_family="OLS",
+        target_name=binding.target_name,
+        feature_names=binding.feature_names,
+        n_samples=binding.n_samples,
+        n_features=binding.n_features,
+        solver="numpy.linalg.lstsq",
+        fit_intercept=fit_intercept,
+        coefficients={},
+        diagnostics=diagnostics,
+        feature_matrix_digest=binding.feature_matrix_digest,
+        target_digest=binding.target_digest,
+        config_digest=_digest(
+            {"fit_intercept": fit_intercept, "validation_fraction": validation_fraction}
+        ),
+        time_range=binding.time_range,
+        instrument_universe_digest=instrument_universe_digest,
+        row_count_before_filter=binding.row_count_before_filter,
+        row_count_after_filter=binding.row_count_after_filter,
+        dropped_rows_by_reason=binding.dropped_rows_by_reason,
+        validation_policy=binding.validation_policy,
+        cost_policy_output="diagnostic_only",
+        status=status,
+        reason_codes=tuple(reasons),
+    )
+
+
 def fit_ols_lstsq(
     x: np.ndarray,
     y: np.ndarray,
@@ -159,6 +216,16 @@ def fit_ols_lstsq(
         binding.feature_names,
         fit_intercept=fit_intercept,
     )
+
+    if precheck.target_is_constant:
+        return _blocked_constant_target_evidence_v0(
+            precheck,
+            binding,
+            fit_intercept=fit_intercept,
+            validation_fraction=validation_fraction,
+            evidence_type=evidence_type,
+            instrument_universe_digest=instrument_universe_digest,
+        )
 
     n = x.shape[0]
     split = max(1, min(n - 1, int(round(n * (1.0 - validation_fraction)))))
