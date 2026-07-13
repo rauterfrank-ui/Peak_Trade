@@ -191,23 +191,28 @@
         "src/research/linear_evidence/cost_model.py",
         "src/research/linear_evidence/diagnostics.py",
         "src/research/linear_evidence/fitters.py",
-        "scripts/research/offline_linear_cost_model_diagnostics_v0.py"
+        "scripts/research/offline_linear_cost_model_diagnostics_v0.py",
+        "scripts/research/offline_signal_orthogonality_diagnostics_v0.py"
       ],
       "path_globs": [
         "tests/research/test_offline_linear_cost_model_diagnostics_*",
+        "tests/research/test_offline_signal_orthogonality_diagnostics_*",
         "tests/research/test_linear_evidence_*"
       ]
     },
     "FEATURE_SCALING_OR_NUMERICAL_CONDITIONING_WITHOUT_TRADING_SEMANTIC_EFFECT": {
       "path_prefixes": [
         "src/research/linear_evidence/feature_matrix.py",
-        "src/research/linear_evidence/contracts.py"
+        "src/research/linear_evidence/contracts.py",
+        "src/research/linear_evidence/signal_orthogonality.py"
       ]
     },
     "REPORTING_AND_EVIDENCE_REPAIR": {
       "path_prefixes": [
         "scripts/ops/primary_evidence_retention_v0.py",
-        "scripts/ops/verify_pre_pr_validation_result_v0.py"
+        "scripts/ops/verify_pre_pr_validation_result_v0.py",
+        "scripts/research/classify_step29l2_offline_linear_evidence_status_after_pr5044_v0.py",
+        "tests/research/test_step29l2_import_boundary_classification_v0.py"
       ],
       "path_globs": [
         "scripts/ops/*evidence*",

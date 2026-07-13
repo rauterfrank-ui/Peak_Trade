@@ -107,15 +107,11 @@ def test_classification_runner_emits_expected_artifacts(tmp_path: Path) -> None:
     boundary_text = (tmp_path / "import_boundary_classification.txt").read_text(encoding="utf-8")
     assert "IMPORT_BOUNDARY_STATUS=PASS_DOCSTRING_FALSE_POSITIVE_IGNORED" in boundary_text
     assert "false_positive_docstring_ignored=true" in boundary_text
-    assert "STEP29L2_SURFACE_STATUS=PARTIAL" in (tmp_path / "classification.txt").read_text(
+    assert "STEP29L2_SURFACE_STATUS=COMPLETE" in (tmp_path / "classification.txt").read_text(
         encoding="utf-8"
     )
-    assert "MISSING_SURFACE=offline_signal_orthogonality_diagnostics_v0" in (
-        tmp_path / "classification.txt"
-    ).read_text(encoding="utf-8")
-    assert "NEXT_GAP_CLASS=MISSING_REQUIRED_DIAGNOSTIC_SURFACE" in (
-        tmp_path / "final_report.txt"
-    ).read_text(encoding="utf-8")
+    assert "MISSING_SURFACE=NONE" in (tmp_path / "classification.txt").read_text(encoding="utf-8")
+    assert "NEXT_GAP_CLASS=NONE" in (tmp_path / "final_report.txt").read_text(encoding="utf-8")
 
     ok, _msg = verify_manifest_sha256(tmp_path)
     assert ok

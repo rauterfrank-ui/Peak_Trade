@@ -30,12 +30,14 @@ RESEARCH_SCRIPT_NAMES = (
     "offline_linear_cost_model_diagnostics_v0.py",
     "offline_parameter_sensitivity_surface_v0.py",
     "offline_rolling_linear_drift_diagnostics_v0.py",
+    "offline_signal_orthogonality_diagnostics_v0.py",
 )
 RESEARCH_TEST_NAMES = (
     "test_offline_factor_exposure_diagnostics_v0.py",
     "test_offline_linear_cost_model_diagnostics_v0.py",
     "test_offline_parameter_sensitivity_surface_v0.py",
     "test_offline_rolling_linear_drift_diagnostics_v0.py",
+    "test_offline_signal_orthogonality_diagnostics_v0.py",
 )
 
 
@@ -123,7 +125,9 @@ def _write_context(output_dir: Path, *, head: str, origin_main: str) -> None:
 
 
 def _write_surface_classification(output_dir: Path) -> None:
-    orthogonality_module = (REPO_ROOT / "src/research/linear_evidence/orthogonality.py").is_file()
+    orthogonality_module = (
+        REPO_ROOT / "src/research/linear_evidence/signal_orthogonality.py"
+    ).is_file()
     orthogonality_cli = (
         REPO_ROOT / "scripts/research/offline_signal_orthogonality_diagnostics_v0.py"
     ).is_file()
@@ -134,11 +138,12 @@ def _write_surface_classification(output_dir: Path) -> None:
     missing_clis: list[str] = []
     missing_tests: list[str] = []
     if not orthogonality_module:
-        missing_modules.extend(["orthogonality_module", "diagnostics"])
+        missing_modules.append("signal_orthogonality_module")
     if not orthogonality_cli:
         missing_clis.append("orthogonality_cli")
     if not orthogonality_tests:
         missing_tests.append("orthogonality_tests")
+    surface_complete = not missing_modules and not missing_clis and not missing_tests
     (output_dir / "classification.txt").write_text(
         "\n".join(
             [
@@ -148,9 +153,13 @@ def _write_surface_classification(output_dir: Path) -> None:
                 f"MISSING_REQUIRED_MODULES={','.join(missing_modules) if missing_modules else 'NONE'}",
                 f"MISSING_REQUIRED_CLIS={','.join(missing_clis) if missing_clis else 'NONE'}",
                 f"MISSING_REQUIRED_TESTS={','.join(missing_tests) if missing_tests else 'NONE'}",
-                "STEP29L2_SURFACE_STATUS=PARTIAL",
-                "NEXT_GAP_CLASS=MISSING_REQUIRED_DIAGNOSTIC_SURFACE",
-                f"MISSING_SURFACE={MISSING_SURFACE}",
+                f"STEP29L2_SURFACE_STATUS={'COMPLETE' if surface_complete else 'PARTIAL'}",
+                (
+                    "NEXT_GAP_CLASS=NONE"
+                    if surface_complete
+                    else "NEXT_GAP_CLASS=MISSING_REQUIRED_DIAGNOSTIC_SURFACE"
+                ),
+                f"MISSING_SURFACE={'NONE' if surface_complete else MISSING_SURFACE}",
             ]
         )
         + "\n",
@@ -200,6 +209,7 @@ def _write_final_report(
     origin_main: str,
     classification: dict[str, str | int | bool],
     manifest_verify_rc: int,
+    surface_complete: bool,
 ) -> None:
     (output_dir / "final_report.txt").write_text(
         "\n".join(
@@ -216,9 +226,13 @@ def _write_final_report(
                     "false_positive_docstring_ignored="
                     f"{str(classification['false_positive_docstring_ignored']).lower()}"
                 ),
-                "STEP29L2_SURFACE_STATUS=PARTIAL",
-                "NEXT_GAP_CLASS=MISSING_REQUIRED_DIAGNOSTIC_SURFACE",
-                f"MISSING_SURFACE={MISSING_SURFACE}",
+                f"STEP29L2_SURFACE_STATUS={'COMPLETE' if surface_complete else 'PARTIAL'}",
+                (
+                    "NEXT_GAP_CLASS=NONE"
+                    if surface_complete
+                    else "NEXT_GAP_CLASS=MISSING_REQUIRED_DIAGNOSTIC_SURFACE"
+                ),
+                f"MISSING_SURFACE={'NONE' if surface_complete else MISSING_SURFACE}",
                 f"MANIFEST_VERIFY_RC={manifest_verify_rc}",
             ]
         )
@@ -237,6 +251,9 @@ def run_classification(*, output_dir: Path, repo_root: Path | None = None) -> in
     _write_inventory(root, output_dir)
     _write_context(output_dir, head=head, origin_main=origin_main)
     _write_surface_classification(output_dir)
+    surface_complete = "STEP29L2_SURFACE_STATUS=COMPLETE" in (
+        output_dir / "classification.txt"
+    ).read_text(encoding="utf-8")
 
     scan_paths = _collect_scan_paths(root)
     hits, docstring_comment_probes = scan_paths_import_boundary(
@@ -260,6 +277,7 @@ def run_classification(*, output_dir: Path, repo_root: Path | None = None) -> in
         origin_main=origin_main,
         classification=boundary_classification,
         manifest_verify_rc=0,
+        surface_complete=surface_complete,
     )
 
     write_manifest_sha256(output_dir)
@@ -284,9 +302,13 @@ def run_classification(*, output_dir: Path, repo_root: Path | None = None) -> in
                     "false_positive_docstring_ignored="
                     f"{str(boundary_classification['false_positive_docstring_ignored']).lower()}"
                 ),
-                "STEP29L2_SURFACE_STATUS=PARTIAL",
-                "NEXT_GAP_CLASS=MISSING_REQUIRED_DIAGNOSTIC_SURFACE",
-                f"MISSING_SURFACE={MISSING_SURFACE}",
+                f"STEP29L2_SURFACE_STATUS={'COMPLETE' if surface_complete else 'PARTIAL'}",
+                (
+                    "NEXT_GAP_CLASS=NONE"
+                    if surface_complete
+                    else "NEXT_GAP_CLASS=MISSING_REQUIRED_DIAGNOSTIC_SURFACE"
+                ),
+                f"MISSING_SURFACE={'NONE' if surface_complete else MISSING_SURFACE}",
                 f"MANIFEST_VERIFY_RC={manifest_verify_rc}",
             ]
         )
