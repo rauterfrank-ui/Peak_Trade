@@ -1,0 +1,96 @@
+{
+  "scope": "PEAK_TRADE_IMPLEMENTATION_CONTRACT_REPO_INTEGRATION_V4_4_11",
+  "integrated_into": [
+    "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
+    "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT_REPO_SHORT.md"
+  ],
+  "runbook_reference": {
+    "external_filename": "Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.11_IMPLEMENTATION_CONTRACT.md",
+    "external_sha256": "fe24efc4d9fdc7c610d74d681b415399ba79151828c93671e1eea9c3ffd1fb99",
+    "repo_canonical_path": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md",
+    "normative_reference_only": true
+  },
+  "contracts": [
+    {
+      "name": "NO_GUESSING",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#2.-Keine-Vermutungen"
+    },
+    {
+      "name": "UNKNOWN_REQUIRES_REPO_EVIDENCE",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#2.-Keine-Vermutungen"
+    },
+    {
+      "name": "owner_discovery_before_mutation",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#3.-Pflichtreihenfolge-vor-Implementierung"
+    },
+    {
+      "name": "authored_observed_derived_field_classification",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#3.-Pflichtreihenfolge-vor-Implementierung + #11.-Evidence"
+    },
+    {
+      "name": "canonical_digest_owner_and_transitive_dependency_graph",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#5.-Digest--und-Binding-Regeln"
+    },
+    {
+      "name": "semantic_vs_cryptographic_binding_identity",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#5.-Digest--und-Binding-Regeln"
+    },
+    {
+      "name": "historical_evidence_must_not_be_rewritten",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#11.-Evidence"
+    },
+    {
+      "name": "materializer_to_binder_roundtrip",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#6.-Materializer--/Binder-Vertrag"
+    },
+    {
+      "name": "deterministic_rematerialization",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#6.-Materializer--/Binder-Vertrag"
+    },
+    {
+      "name": "repair_vs_reevaluation_separate_authority_slices",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#7.-Repair-und-Reevaluation-trennen"
+    },
+    {
+      "name": "final_report_before_manifest",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#11.-Evidence"
+    },
+    {
+      "name": "manifest_last_bundle_file_no_writes_after",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#11.-Evidence"
+    },
+    {
+      "name": "immediate_shasum_c_verification_required",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#11.-Evidence"
+    },
+    {
+      "name": "source_evidence_reverify_requirement",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#11.-Evidence"
+    },
+    {
+      "name": "post_merge_main_sync_requirement",
+      "required": true,
+      "location": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md#11.-Evidence"
+    },
+    {
+      "name": "full_canonical_system_parity_before_system_economic_evidence",
+      "required": true,
+      "location": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md (marker: FULL_CANONICAL_SYSTEM_PARITY_REQUIRED=true)"
+    }
+  ]
+}
+

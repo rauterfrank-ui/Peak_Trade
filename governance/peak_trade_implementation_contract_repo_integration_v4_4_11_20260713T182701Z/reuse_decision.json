@@ -1,0 +1,23 @@
+{
+  "scope": "PEAK_TRADE_IMPLEMENTATION_CONTRACT_REPO_INTEGRATION_V4_4_11",
+  "decision": "REUSE_EXISTING_CANONICAL_OWNER_EXTEND_MINIMALLY",
+  "canonical_repo_owner": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
+  "parallel_ssot_created": false,
+  "mutations": [
+    {
+      "type": "doc_extension",
+      "target": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
+      "reason": "Add external canonical runbook v4.4.11 reference (filename/version/path/sha256) + explicitly encode missing repo-relevant invariants (manifest/evidence order, no guessing, unknown requires repo evidence) without creating a new SSOT."
+    },
+    {
+      "type": "doc_extension",
+      "target": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT_REPO_SHORT.md",
+      "reason": "Keep repo-short navigation variant consistent with canonical navigation owner; no new authority."
+    }
+  ],
+  "non_actions": [
+    "No new runbook file copy added to docs/governance/ (avoid blind full copy).",
+    "No changes to trading, runtime, promotion, safety, risk, sizing, master_v2, bull/bear, double_play, scope, entry, exit, reversal, killswitch, reconciliation, or authority surfaces."
+  ]
+}
+

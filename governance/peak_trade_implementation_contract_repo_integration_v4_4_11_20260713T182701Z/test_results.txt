@@ -1,0 +1,19 @@
+ACTUAL_CI_MODE=FOCUSED
+
+DOCS_TOKEN_POLICY_GUARD
+command=./scripts/ops/preflight_docs_token_policy_changed.sh origin/main
+result=PASS
+note=No changed Markdown files detected by base diff selector.
+
+DOCS_REFERENCE_TARGETS_GUARD
+command=./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+result=PASS
+note=Not applicable (no changed Markdown files detected).
+
+FOCUSED_PYTEST_CONTRACT
+command=python3 -m pytest -q tests/ops/test_canonical_vollautonomie_runbook_v4_4_10_and_implementation_contract_static_crosslink_contract_v0.py
+result=PASS
+details=6 passed
+
+TESTS_PASS=true
+

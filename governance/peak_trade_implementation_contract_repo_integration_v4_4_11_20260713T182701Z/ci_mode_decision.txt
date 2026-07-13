@@ -1,0 +1,5 @@
+ACTUAL_CI_MODE=FOCUSED
+SELECTOR_MODE=FOCUSED
+SELECTOR_REASON=Docs-only navigation-owner extension; no trading/runtime/governance code surfaces modified; existing docs/tests crosslink contract verified locally.
+FULL_CI_TRIGGERED=false
+
