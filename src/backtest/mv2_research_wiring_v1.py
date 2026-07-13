@@ -64,6 +64,10 @@ from src.experiments.stress_tests import (
     run_stress_test_suite,
 )
 from src.risk.limits import RiskLimits, RiskLimitsConfig
+from src.research.cross_sectional_offline_economic_evaluation_decision_funnel_v0 import (
+    DecisionFunnelAccumulatorV0,
+    materialize_block_reason_counts_v0,
+)
 from src.strategies.registry import (
     REGISTRY_SCHEMA_VERSION,
     StrategyRegistrySnapshotV1,
@@ -411,6 +415,8 @@ class MV2ResearchWiringResultV1:
     sizing_provenance: Mapping[str, Any] = field(default_factory=dict)
     backtest_engine_signal_source: str = ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
     backtest_engine_signal_digest: str = ""
+    decision_funnel_counts: Mapping[str, int] = field(default_factory=dict)
+    block_reason_counts: Mapping[str, int] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -1790,6 +1796,7 @@ def run_mv2_research_backtest_wiring_v1(
     replay_signals: list[int] = []
     signal_index: list[pd.Timestamp] = []
     sequence_state: MV2IntegratedReplayBarSequenceStateV1 | None = None
+    decision_funnel_accumulator = DecisionFunnelAccumulatorV0()
     for i, (_, row) in enumerate(bars.iterrows()):
         if sequence_state is None:
             sequence_state = build_initial_mv2_integrated_replay_bar_sequence_state_v1(
@@ -1836,6 +1843,10 @@ def run_mv2_research_backtest_wiring_v1(
             )
         )
         replay_result = run_integrated_offline_trading_logic_replay_v1(replay_input)
+        decision_funnel_accumulator.accumulate_from_replay(
+            intermediate=replay_result.intermediate,
+            evidence_reason_codes=replay_result.evidence.reason_codes,
+        )
         if replay_result.intermediate is not None:
             sequence_state = project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
                 intermediate=replay_result.intermediate,
@@ -2075,6 +2086,12 @@ def run_mv2_research_backtest_wiring_v1(
             mv2_replay_signal_digest=mv2_replay_digest,
         )
 
+    trades_df = backtest_result.trades
+    trade_count_fallback = len(trades_df) if trades_df is not None else 0
+    decision_funnel_accumulator.set_trades_opened_count(
+        int(backtest_result.stats.get("total_trades", trade_count_fallback))
+    )
+
     return MV2ResearchWiringResultV1(
         instrument_id=instrument_id,
         registry_snapshot=snapshot,
@@ -2087,6 +2104,8 @@ def run_mv2_research_backtest_wiring_v1(
         mv2_replay_signal_digest=mv2_replay_digest,
         mv2_replay_nonzero_signal_count=mv2_replay_nonzero,
         sizing_provenance=sizing_provenance,
+        decision_funnel_counts=decision_funnel_accumulator.counts_dict(),
+        block_reason_counts=materialize_block_reason_counts_v0(decision_funnel_accumulator),
         backtest_engine_signal_source=backtest_engine_signal_source,
         backtest_engine_signal_digest=backtest_engine_signal_digest,
     )
