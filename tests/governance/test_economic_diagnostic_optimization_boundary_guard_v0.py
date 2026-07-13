@@ -103,6 +103,13 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "config/governance/economic_diagnostic_optimization_boundary_v0.json",
                 "tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py",
             ],
+            [
+                "src/research/linear_evidence/signal_orthogonality.py",
+                "scripts/research/offline_signal_orthogonality_diagnostics_v0.py",
+                "scripts/research/classify_step29l2_offline_linear_evidence_status_after_pr5044_v0.py",
+                "tests/research/test_offline_signal_orthogonality_diagnostics_v0.py",
+                "tests/research/test_step29l2_import_boundary_classification_v0.py",
+            ],
         ],
     )
     def test_positive_cases_admissible(self, changed_files: list[str]) -> None:
@@ -111,6 +118,30 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
         assert report.fail_closed is False
         assert forbidden_surface_changed_count(report) == 0
         assert report.canonical_trading_semantics_changed is False
+
+    def test_pr5157_offline_signal_orthogonality_surfaces_classified(self) -> None:
+        changed_files = [
+            "src/research/linear_evidence/signal_orthogonality.py",
+            "scripts/research/offline_signal_orthogonality_diagnostics_v0.py",
+            "scripts/research/classify_step29l2_offline_linear_evidence_status_after_pr5044_v0.py",
+            "tests/research/test_offline_signal_orthogonality_diagnostics_v0.py",
+            "tests/research/test_step29l2_import_boundary_classification_v0.py",
+        ]
+        report = build_boundary_report(changed_files, repo_root=REPO_ROOT)
+        assert report.admissible is True
+        assert report.economic_or_diagnostic_only is True
+        assert report.impact_unknown is False
+        assert "ALLOWED_OPTIMIZATION_SURFACE_ONLY" in report.reason_codes
+        assert forbidden_surface_changed_count(report) == 0
+        assert report.master_v2_changed is False
+        assert report.promotion_runtime_authority_changed is False
+        assert report.risk_sizing_changed is False
+        assert report.safety_killswitch_reconciliation_changed is False
+        assert set(report.allowed_surface_classification) >= {
+            "COST_MODEL_DIAGNOSTICS",
+            "FEATURE_SCALING_OR_NUMERICAL_CONDITIONING_WITHOUT_TRADING_SEMANTIC_EFFECT",
+            "REPORTING_AND_EVIDENCE_REPAIR",
+        }
 
 
 class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
@@ -157,6 +188,15 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
         assert report.admissible is False
         assert report.impact_unknown is True
         assert "IMPACT_UNKNOWN_MUTATION_BLOCKED" in report.reason_codes
+
+    def test_no_directory_wide_research_exemption(self) -> None:
+        report = build_boundary_report(
+            ["src/research/unregistered_offline_diagnostic_owner_v0.py"],
+            repo_root=REPO_ROOT,
+        )
+        assert report.admissible is False
+        assert report.impact_unknown is True
+        assert forbidden_surface_changed_count(report) == 0
 
     def test_boundary_report_serializes_required_fields(self) -> None:
         report = build_boundary_report(
