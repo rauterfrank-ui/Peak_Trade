@@ -140,6 +140,7 @@ class DatasetFieldBindingsV1:
     bid_ask_field_binding: str
     funding_field_binding: str
     ohlcv_field_binding: str
+    volatility_estimate_field_binding: str = "volatility_estimate"
 
     def to_dict(self) -> dict[str, str]:
         return {
@@ -148,6 +149,7 @@ class DatasetFieldBindingsV1:
             "bid_ask_field_binding": self.bid_ask_field_binding,
             "funding_field_binding": self.funding_field_binding,
             "ohlcv_field_binding": self.ohlcv_field_binding,
+            "volatility_estimate_field_binding": self.volatility_estimate_field_binding,
         }
 
 
@@ -395,7 +397,32 @@ def research_field_bindings_v1() -> DatasetFieldBindingsV1:
         bid_ask_field_binding="",
         funding_field_binding="funding_rate",
         ohlcv_field_binding="open,high,low,close,volume",
+        volatility_estimate_field_binding="volatility_estimate",
     )
+
+
+def validate_volatility_estimate_contract_column_v1(
+    bars: pd.DataFrame,
+    reason_codes: list[str],
+) -> bool:
+    column = "volatility_estimate"
+    contract_column = "volatility_estimate_contract_version"
+    if column not in bars.columns:
+        reason_codes.append("volatility_estimate_column_missing")
+        return False
+    ok = True
+    if contract_column in bars.columns:
+        expected = "canonical_volatility_estimate_feature_contract/v1"
+        actual = bars[contract_column].dropna().unique().tolist()
+        if actual and any(str(value) != expected for value in actual):
+            reason_codes.append("volatility_estimate_contract_version_mismatch")
+            ok = False
+    series = bars[column]
+    non_null = series.dropna()
+    if not non_null.empty and (non_null.astype(float) < 0).any():
+        reason_codes.append("volatility_estimate_negative_value")
+        ok = False
+    return ok
 
 
 def required_bar_columns_for_profile(profile: DatasetProfileV1) -> frozenset[str]:
@@ -1092,6 +1119,12 @@ def evaluate_admissible_versioned_futures_dataset_v1(
         if profile_binding.dataset_profile is DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1:
             if not _validate_runtime_l1_present(bars, reason_codes):
                 status = AdmissibilityStatus.BLOCKED_L1_REQUIRED_FOR_RUNTIME
+        if profile_binding.dataset_profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1:
+            if (
+                "volatility_estimate" in bars.columns
+                and not validate_volatility_estimate_contract_column_v1(bars, reason_codes)
+            ):
+                status = AdmissibilityStatus.BLOCKED_SCHEMA_MISMATCH
         split_ok, leakage_status, _ = _validate_splits(bars, descriptor, reason_codes)
         if not split_ok:
             if "split_index_overlap" in reason_codes:
