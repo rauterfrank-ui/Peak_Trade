@@ -120,6 +120,53 @@ def _archive_inputs_available() -> bool:
     return LEDGER_PATH.is_file() and SNAPSHOT_PATH.is_file()
 
 
+def _fit_with_lstsq_spy(
+    x: np.ndarray,
+    y: np.ndarray,
+    binding: object,
+    **kwargs: object,
+) -> tuple[object, bool]:
+    import numpy.linalg as npla
+
+    called = False
+    original_lstsq = npla.lstsq
+
+    def _spy_lstsq(*args, **kwargs_inner):  # type: ignore[no-untyped-def]
+        nonlocal called
+        called = True
+        return original_lstsq(*args, **kwargs_inner)
+
+    npla.lstsq = _spy_lstsq
+    try:
+        evidence = fit_ols_lstsq(x, y, binding, **kwargs)
+    finally:
+        npla.lstsq = original_lstsq
+    return evidence, called
+
+
+def test_constant_target_blocks_before_solver_with_fail_closed_evidence() -> None:
+    x, y, binding = _binding(_rows(constant_target=True), ("spread_bps", "volatility_estimate"))
+    precheck = compute_ols_fit_precheck_v0(x, y, binding.feature_names)
+    evidence, lstsq_called = _fit_with_lstsq_spy(x, y, binding)
+
+    assert precheck.target_is_constant is True
+    assert lstsq_called is False
+    assert evidence.reason_codes[0] == REASON_CONSTANT_TARGET
+    assert evidence.status == "INSUFFICIENT_DATA"
+    assert evidence.coefficients == {}
+    assert evidence.diagnostics.rank == 0
+    assert evidence.diagnostics.condition_number == 0.0
+    assert evidence.authority_effect == "NONE"
+    assert evidence.runtime_effect == "NONE"
+
+
+def test_non_constant_target_still_calls_solver() -> None:
+    x, y, binding = _binding(_rows(), ("spread_bps", "volatility_estimate", "order_notional"))
+    _, lstsq_called = _fit_with_lstsq_spy(x, y, binding)
+
+    assert lstsq_called is True
+
+
 def test_constant_target_only_emits_constant_target_reason_code() -> None:
     x, y, binding = _binding(_rows(constant_target=True), ("spread_bps", "volatility_estimate"))
     precheck = compute_ols_fit_precheck_v0(x, y, binding.feature_names)
@@ -127,7 +174,8 @@ def test_constant_target_only_emits_constant_target_reason_code() -> None:
 
     assert precheck.target_is_constant is True
     assert evidence.reason_codes[0] == REASON_CONSTANT_TARGET
-    assert evidence.status == "CALIBRATION_CANDIDATE"
+    assert evidence.status == "INSUFFICIENT_DATA"
+    assert evidence.coefficients == {}
 
 
 def test_zero_variance_feature_without_intercept_emits_feature_reason_only() -> None:
@@ -266,6 +314,8 @@ def test_archive_fixture_digests_unchanged_and_precheck_reason_codes_present(
     report = json.loads((tmp_path / "offline_linear_cost_model_diagnostics_v0.json").read_text())
     assert report["materialization_digest"] == EXPECTED_MATERIALIZATION_DIGEST
     assert report["n_productive_samples"] == 219
+    assert report["ols_executed"] is False
+    assert report["calibration"] is None
 
     trade_rows = [
         json.loads(line)
@@ -301,11 +351,33 @@ def test_archive_fixture_digests_unchanged_and_precheck_reason_codes_present(
 
     assert binding.target_digest == EXPECTED_TARGET_DIGEST
     assert binding.feature_matrix_digest == EXPECTED_FEATURE_MATRIX_DIGEST
+    assert evidence.status == "RANK_DEFICIENT_BLOCKED"
+    assert evidence.coefficients == {}
     assert evidence.reason_codes == (
         REASON_CONSTANT_TARGET,
         f"{REASON_ZERO_VARIANCE_FEATURE}:spread_bps",
         f"{REASON_CONSTANT_FEATURE_COLLINEAR_WITH_INTERCEPT}:spread_bps",
         REASON_RANK_DEFICIENT_FEATURE_MATRIX,
     )
-    calibration = report["calibration"]
-    assert calibration["linear_model_evidence"]["reason_codes"] == list(evidence.reason_codes)
+
+
+@pytest.mark.skipif(not _archive_inputs_available(), reason="archive evidence unavailable")
+def test_archive_fixture_entry_point_skips_calibration_when_constant_target_blocked(
+    tmp_path: Path,
+) -> None:
+    result = _run_cli(
+        tmp_path,
+        extra_args=[
+            "--trade-ledger",
+            str(LEDGER_PATH),
+            "--entry-bar-snapshots",
+            str(SNAPSHOT_PATH),
+            "--repo-root",
+            str(REPO_ROOT),
+        ],
+    )
+    assert result.returncode == 0, result.stderr
+    report = json.loads((tmp_path / "offline_linear_cost_model_diagnostics_v0.json").read_text())
+    assert report["ols_executed"] is False
+    assert report["calibration"] is None
+    assert "OLS_EXECUTED=false" in result.stdout
