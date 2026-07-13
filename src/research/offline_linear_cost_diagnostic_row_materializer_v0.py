@@ -12,6 +12,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 AUTHORITY_EFFECT = "NONE"
@@ -21,7 +22,9 @@ SCHEMA_VERSION = "offline_linear_cost_diagnostic_row_materializer.v0"
 TARGET_NAME = "simulated_backtest_slippage_bps"
 TARGET_PROVENANCE_CLASS = "SIMULATED_BACKTEST_SLIPPAGE"
 CANONICAL_REFERENCE_PRICE_OWNER = "close_for_execution_reference_only"
+CANONICAL_FILL_OWNER = "backtest_slippage_symmetric_v0"
 CANONICAL_JOIN_KEY = "trade_id + instrument_id + entry_time"
+_PRICE_IDENTITY_EPSILON_REL = 1e-12
 
 INCONCLUSIVE_SENTINEL = "INCONCLUSIVE"
 
@@ -63,6 +66,7 @@ class RejectionReason(str, Enum):
     MISSING_ORDER_NOTIONAL = "MISSING_ORDER_NOTIONAL"
     MISSING_SPREAD_BPS = "MISSING_SPREAD_BPS"
     MISSING_VOLATILITY_ESTIMATE = "MISSING_VOLATILITY_ESTIMATE"
+    ENTRY_SLIPPAGE_BINDING_MISSING = "ENTRY_SLIPPAGE_BINDING_MISSING"
 
 
 class MaterializationStatus(str, Enum):
@@ -106,6 +110,24 @@ def _side_to_execution_side(side: str) -> str:
     if normalized == "short":
         return "sell"
     raise ValueError(RejectionReason.INVALID_SIDE.value)
+
+
+def compute_simulated_backtest_fill_price_v0(
+    *,
+    side: str,
+    execution_reference_price: float,
+    entry_slippage_bps: float,
+) -> float:
+    """Deterministic simulated fill per backtest_slippage_symmetric_v0 contract."""
+    if execution_reference_price <= 0:
+        raise ValueError(RejectionReason.NONPOSITIVE_REFERENCE_PRICE.value)
+    if entry_slippage_bps < 0:
+        raise ValueError(RejectionReason.INCONCLUSIVE_FIELD.value)
+    slip_factor = entry_slippage_bps / 10000.0
+    execution_side = _side_to_execution_side(side)
+    if execution_side == "buy":
+        return execution_reference_price * (1.0 + slip_factor)
+    return execution_reference_price * (1.0 - slip_factor)
 
 
 def compute_simulated_backtest_slippage_bps(
@@ -205,10 +227,90 @@ def _as_required_float(
         return None, reason
 
 
+def _resolve_entry_slippage_bps_v0(
+    trade: Mapping[str, Any],
+    *,
+    default_entry_slippage_bps: float | None,
+    binding_cache: Mapping[str, float],
+    repo_root: Path | None,
+) -> float | None:
+    if default_entry_slippage_bps is not None:
+        return default_entry_slippage_bps
+    raw = trade.get("entry_slippage_bps")
+    if not _is_inconclusive(raw):
+        try:
+            return float(raw)
+        except (TypeError, ValueError):
+            return None
+    binding_id = str(trade.get("parameter_binding_id", "")).strip()
+    if binding_id and binding_id in binding_cache:
+        return binding_cache[binding_id]
+    if binding_id and repo_root is not None:
+        binding_path = repo_root / binding_id
+        if binding_path.is_file():
+            payload = json.loads(binding_path.read_text(encoding="utf-8"))
+            slip_raw = payload.get("backtest", {}).get("slippage_bps")
+            if slip_raw is not None:
+                value = float(slip_raw)
+                binding_cache[binding_id] = value
+                return value
+    return None
+
+
+def _resolve_fill_price_v0(
+    *,
+    trade: Mapping[str, Any],
+    execution_reference_price: float,
+    side: str,
+    default_entry_slippage_bps: float | None,
+    binding_cache: dict[str, float],
+    repo_root: Path | None,
+) -> tuple[float | None, RejectionReason | None]:
+    ledger_entry, entry_reason = _as_positive_float(
+        trade.get("entry_price"),
+        reason=RejectionReason.MISSING_FILL_PRICE,
+    )
+    if entry_reason is not None or ledger_entry is None:
+        return None, entry_reason or RejectionReason.MISSING_FILL_PRICE
+
+    rel_delta = abs(ledger_entry - execution_reference_price) / execution_reference_price
+    if rel_delta > _PRICE_IDENTITY_EPSILON_REL:
+        return ledger_entry, None
+
+    entry_slippage_bps = _resolve_entry_slippage_bps_v0(
+        trade,
+        default_entry_slippage_bps=default_entry_slippage_bps,
+        binding_cache=binding_cache,
+        repo_root=repo_root,
+    )
+    if entry_slippage_bps is None:
+        return None, RejectionReason.ENTRY_SLIPPAGE_BINDING_MISSING
+    if entry_slippage_bps == 0.0:
+        return ledger_entry, None
+
+    try:
+        return (
+            compute_simulated_backtest_fill_price_v0(
+                side=side,
+                execution_reference_price=execution_reference_price,
+                entry_slippage_bps=entry_slippage_bps,
+            ),
+            None,
+        )
+    except ValueError as exc:
+        reason_name = str(exc)
+        if reason_name in RejectionReason.__members__:
+            return None, RejectionReason(reason_name)
+        return None, RejectionReason.INVALID_SIDE
+
+
 def _materialize_single_row(
     *,
     trade: Mapping[str, Any],
     snapshot: Mapping[str, Any],
+    default_entry_slippage_bps: float | None = None,
+    binding_cache: dict[str, float] | None = None,
+    repo_root: Path | None = None,
 ) -> tuple[dict[str, Any] | None, RejectionReason | None]:
     trade_id = str(trade.get("trade_id", ""))
     if not trade_id:
@@ -233,9 +335,17 @@ def _materialize_single_row(
     if ref_reason is not None or execution_reference_price is None:
         return None, ref_reason or RejectionReason.NONPOSITIVE_REFERENCE_PRICE
 
-    fill_price, fill_reason = _as_positive_float(
-        trade.get("entry_price"),
-        reason=RejectionReason.MISSING_FILL_PRICE,
+    side = str(trade.get("side", ""))
+    if side in ("", INCONCLUSIVE_SENTINEL):
+        return None, RejectionReason.INVALID_SIDE
+
+    fill_price, fill_reason = _resolve_fill_price_v0(
+        trade=trade,
+        execution_reference_price=execution_reference_price,
+        side=side,
+        default_entry_slippage_bps=default_entry_slippage_bps,
+        binding_cache=binding_cache if binding_cache is not None else {},
+        repo_root=repo_root,
     )
     if fill_reason is not None or fill_price is None:
         return None, fill_reason or RejectionReason.MISSING_FILL_PRICE
@@ -246,10 +356,6 @@ def _materialize_single_row(
     )
     if notional_reason is not None or order_notional is None:
         return None, notional_reason or RejectionReason.MISSING_ORDER_NOTIONAL
-
-    side = str(trade.get("side", ""))
-    if side in ("", INCONCLUSIVE_SENTINEL):
-        return None, RejectionReason.INVALID_SIDE
 
     spread_bps, spread_reason = _as_required_float(
         snapshot.get("spread_bps"),
@@ -291,6 +397,7 @@ def _materialize_single_row(
         "target_provenance_class": TARGET_PROVENANCE_CLASS,
         "target_name": TARGET_NAME,
         "reference_price_owner": CANONICAL_REFERENCE_PRICE_OWNER,
+        "fill_price_owner": CANONICAL_FILL_OWNER,
     }
 
     for optional in OPTIONAL_DIAGNOSTIC_FIELDS:
@@ -305,10 +412,14 @@ def materialize_offline_linear_cost_diagnostic_rows_v0(
     *,
     trade_ledger_rows: Sequence[Mapping[str, Any]],
     entry_bar_reference_snapshots: Sequence[Mapping[str, Any]] | None = None,
+    entry_slippage_bps: float | None = None,
+    repo_root: Path | str | None = None,
 ) -> MaterializationResultV0:
     """Materialize admissible diagnostic rows from ledger rows and bar snapshots."""
     snapshots = list(entry_bar_reference_snapshots or ())
     snapshot_index, snapshot_counts = _build_snapshot_index(snapshots)
+    resolved_repo_root = Path(repo_root) if repo_root is not None else None
+    binding_cache: dict[str, float] = {}
 
     seen_trade_ids: set[str] = set()
     admissible: list[dict[str, Any]] = []
@@ -349,7 +460,13 @@ def materialize_offline_linear_cost_diagnostic_rows_v0(
             )
             continue
 
-        row, row_reason = _materialize_single_row(trade=trade, snapshot=snapshot)
+        row, row_reason = _materialize_single_row(
+            trade=trade,
+            snapshot=snapshot,
+            default_entry_slippage_bps=entry_slippage_bps,
+            binding_cache=binding_cache,
+            repo_root=resolved_repo_root,
+        )
         if row_reason is not None or row is None:
             rejected.append(
                 RejectedRowV0(
@@ -409,11 +526,13 @@ __all__ = [
     "TARGET_NAME",
     "TARGET_PROVENANCE_CLASS",
     "CANONICAL_REFERENCE_PRICE_OWNER",
+    "CANONICAL_FILL_OWNER",
     "CANONICAL_JOIN_KEY",
     "MaterializationResultV0",
     "MaterializationStatus",
     "RejectionReason",
     "RejectedRowV0",
+    "compute_simulated_backtest_fill_price_v0",
     "compute_simulated_backtest_slippage_bps",
     "materialize_offline_linear_cost_diagnostic_rows_v0",
     "serialize_materialized_rows_v0",
