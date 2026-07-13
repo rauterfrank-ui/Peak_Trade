@@ -311,6 +311,47 @@ def _iso_ts(value: Any) -> str:
     return str(value)
 
 
+def _lookup_entry_bar_reference_snapshot_v0(
+    *,
+    instrument_id: str,
+    entry_time: Any,
+    bars: pd.DataFrame | None,
+    spread_half_bps: float | None,
+) -> dict[str, Any] | None:
+    """Deterministic entry-time bar snapshot for offline cost diagnostic materializer v0."""
+    if bars is None or bars.empty or entry_time is None:
+        return None
+    try:
+        stamp = pd.Timestamp(entry_time)
+    except (TypeError, ValueError):
+        return None
+    if stamp not in bars.index:
+        return None
+    matched = bars.loc[stamp]
+    if isinstance(matched, pd.DataFrame):
+        return None
+    close_raw = matched.get("close")
+    if close_raw is None or pd.isna(close_raw):
+        return None
+    close = float(close_raw)
+    if close <= 0:
+        return None
+    vol_raw = matched.get("volatility_estimate")
+    volatility_estimate = float(vol_raw) if vol_raw is not None and not pd.isna(vol_raw) else None
+    spread_bps = (2.0 * float(spread_half_bps)) if spread_half_bps is not None else None
+    if spread_bps is None or volatility_estimate is None:
+        return None
+    return {
+        "instrument_id": instrument_id,
+        "bar_timestamp": stamp.isoformat(),
+        "close": close,
+        "spread_bps": spread_bps,
+        "volatility_estimate": volatility_estimate,
+        "is_finalized": True,
+        "feature_timestamp": stamp.isoformat(),
+    }
+
+
 def _equity_at_time(equity_curve: pd.Series, ts: Any) -> Any:
     if ts is None or equity_curve.empty:
         return INCONCLUSIVE_SENTINEL
@@ -338,6 +379,8 @@ def materialize_trade_ledger_v1_records_v0(
     config_digest: str,
     implementation_digest: str,
     required_fields: Sequence[str],
+    bars: pd.DataFrame | None = None,
+    spread_half_bps: float | None = None,
 ) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     if trades_df is None or trades_df.empty:
@@ -433,6 +476,14 @@ def materialize_trade_ledger_v1_records_v0(
             "config_digest": config_digest,
             "implementation_digest": implementation_digest,
         }
+        entry_snapshot = _lookup_entry_bar_reference_snapshot_v0(
+            instrument_id=instrument_id,
+            entry_time=entry_time,
+            bars=bars,
+            spread_half_bps=spread_half_bps,
+        )
+        if entry_snapshot is not None:
+            record["entry_bar_reference_snapshot"] = entry_snapshot
         for field in required_fields:
             record.setdefault(field, INCONCLUSIVE_SENTINEL)
         records.append(record)
@@ -633,6 +684,12 @@ def run_execution_v0(
     input_digest = str(binding_set.get("data_digest", ""))
     config_digest = str(binding_set.get("config_digest", ""))
     implementation_digest = str(binding_set.get("implementation_digest", ""))
+    spread_half_bps_raw = (
+        cfg.get("backtest", {})
+        .get("economic_research_execution_cost", {})
+        .get("conservative_half_spread_bps")
+    )
+    spread_half_bps = float(spread_half_bps_raw) if spread_half_bps_raw is not None else None
 
     trade_records = materialize_trade_ledger_v1_records_v0(
         trades_df=trades_df,
@@ -648,6 +705,8 @@ def run_execution_v0(
         config_digest=config_digest,
         implementation_digest=implementation_digest,
         required_fields=trade_ledger_fields,
+        bars=bars,
+        spread_half_bps=spread_half_bps,
     )
     equity_records = materialize_equity_curve_v1_records_v0(
         equity_curve=equity_curve,
