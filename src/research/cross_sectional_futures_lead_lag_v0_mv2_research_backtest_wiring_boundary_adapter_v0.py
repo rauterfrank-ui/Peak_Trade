@@ -22,6 +22,11 @@ from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 from src.backtest.mv2_research_wiring_v1 import (
     MV2_REQUIRED_INSTRUMENT_ID,
     MV2ResearchWiringResultV1,
+    CanonicalOrderIntentBacktestStateFileBindingConfigV1,
+    CapitalRiskSizingBacktestStateFileBindingConfigV1,
+    KillSwitchBacktestStateFileBindingConfigV1,
+    ReconciliationBacktestStateFileBindingConfigV1,
+    SafetyKernelBacktestStateFileBindingConfigV1,
     run_mv2_research_backtest_wiring_v1,
 )
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_score_v0 import (
@@ -75,6 +80,28 @@ REASON_SCORE_SIDE_SHORTCUT_FORBIDDEN = (
 REASON_ORCHESTRATOR_EMPTY = "ORCHESTRATOR_EMPTY"
 REASON_PANEL_MEMBER_MISSING = "PANEL_MEMBER_MISSING"
 REASON_MV2_BARS_EMPTY = "MV2_BARS_EMPTY"
+REASON_MANDATORY_STATE_FILE_BINDING_SECTION_MISSING = "MANDATORY_STATE_FILE_BINDING_SECTION_MISSING"
+REASON_MANDATORY_STATE_FILE_BINDING_MISSING = "MANDATORY_STATE_FILE_BINDING_MISSING"
+REASON_MANDATORY_STATE_FILE_PATH_UNREADABLE = "MANDATORY_STATE_FILE_PATH_UNREADABLE"
+REASON_MANDATORY_STATE_FILE_VALIDATION_FAILED = "MANDATORY_STATE_FILE_VALIDATION_FAILED"
+
+MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION = (
+    "mv2_research_backtest_mandatory_boundary_state_file_binding_v0"
+)
+MANDATORY_BOUNDARY_STATE_FILE_BINDING_KEYS: tuple[str, ...] = (
+    "capital_risk_sizing",
+    "canonical_order_intent",
+    "safety_kernel",
+    "killswitch",
+    "reconciliation",
+)
+_MANDATORY_BINDING_KEY_TO_MV2_KWARG: dict[str, str] = {
+    "capital_risk_sizing": "capital_risk_sizing_state_file_binding",
+    "canonical_order_intent": "canonical_order_intent_state_file_binding",
+    "safety_kernel": "safety_kernel_state_file_binding",
+    "killswitch": "killswitch_state_file_binding",
+    "reconciliation": "reconciliation_state_file_binding",
+}
 
 
 class AdapterTerminalStatus(str, Enum):
@@ -89,6 +116,15 @@ class LeadLagScoreFeatureRowV0:
     diffusion_score: float
     panel_median_return: float
     lagged_return: float
+
+
+@dataclass(frozen=True)
+class MandatoryMv2BacktestBoundaryStateFileBindingsV0:
+    capital_risk_sizing: CapitalRiskSizingBacktestStateFileBindingConfigV1
+    canonical_order_intent: CanonicalOrderIntentBacktestStateFileBindingConfigV1
+    safety_kernel: SafetyKernelBacktestStateFileBindingConfigV1
+    killswitch: KillSwitchBacktestStateFileBindingConfigV1
+    reconciliation: ReconciliationBacktestStateFileBindingConfigV1
 
 
 @dataclass(frozen=True)
@@ -132,9 +168,155 @@ def materialize_adapter_contract_v0() -> dict[str, Any]:
         "mv2_required_instrument_id": MV2_REQUIRED_INSTRUMENT_ID,
         "score_family_policy": SCORE_FORMULA_VERSION,
         "score_to_final_side_shortcut_allowed": False,
+        "mandatory_boundary_state_file_binding_section": (
+            MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION
+        ),
+        "mandatory_boundary_state_file_binding_keys": list(
+            MANDATORY_BOUNDARY_STATE_FILE_BINDING_KEYS
+        ),
+        "mandatory_boundary_state_file_binding_count": len(
+            MANDATORY_BOUNDARY_STATE_FILE_BINDING_KEYS
+        ),
+        "synthetic_defaults_allowed": False,
         "economic_evaluation_executed": False,
         "authority_effect": "NONE",
         "runtime_effect": "NONE",
+    }
+
+
+def _resolve_single_mandatory_state_file_binding_v0(
+    repo_root: Path,
+    binding_section: Mapping[str, Any],
+    binding_key: str,
+) -> tuple[Path, str]:
+    entry = binding_section.get(binding_key)
+    if not isinstance(entry, Mapping):
+        raise ValueError(f"{REASON_MANDATORY_STATE_FILE_BINDING_MISSING}:{binding_key}")
+    rel_path = entry.get("state_file_path")
+    digest_ref = entry.get("expected_state_file_digest_ref")
+    if not isinstance(rel_path, str) or not rel_path.strip():
+        raise ValueError(f"{REASON_MANDATORY_STATE_FILE_BINDING_MISSING}:{binding_key}")
+    if not isinstance(digest_ref, str) or not digest_ref.strip():
+        raise ValueError(f"{REASON_MANDATORY_STATE_FILE_BINDING_MISSING}:{binding_key}")
+    resolved = (repo_root / rel_path).resolve()
+    if not resolved.is_file():
+        raise ValueError(f"{REASON_MANDATORY_STATE_FILE_PATH_UNREADABLE}:{binding_key}")
+    return resolved, digest_ref
+
+
+def resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0(
+    repo_root: Path,
+    ops_config: Mapping[str, Any],
+) -> tuple[MandatoryMv2BacktestBoundaryStateFileBindingsV0 | None, tuple[str, ...]]:
+    """Resolve and canonically validate mandatory MV2 backtest boundary state-file bindings."""
+    section = ops_config.get(MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION)
+    if not isinstance(section, Mapping):
+        return None, (REASON_MANDATORY_STATE_FILE_BINDING_SECTION_MISSING,)
+
+    reasons: list[str] = []
+    resolved_paths: dict[str, tuple[Path, str]] = {}
+    for binding_key in MANDATORY_BOUNDARY_STATE_FILE_BINDING_KEYS:
+        try:
+            resolved_paths[binding_key] = _resolve_single_mandatory_state_file_binding_v0(
+                repo_root,
+                section,
+                binding_key,
+            )
+        except ValueError as exc:
+            reasons.append(str(exc.args[0]))
+
+    if reasons:
+        return None, tuple(reasons)
+
+    try:
+        from src.trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0 import (
+            load_capital_risk_sizing_backtest_state_file_record_v0,
+        )
+        from src.trading.master_v2.canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0 import (
+            load_canonical_order_intent_backtest_state_file_record_v0,
+        )
+        from src.trading.master_v2.killswitch_boundary_backtest_state_file_binding_adapter_v0 import (
+            load_killswitch_backtest_state_file_record_v0,
+        )
+        from src.trading.master_v2.reconciliation_boundary_backtest_state_file_binding_adapter_v0 import (
+            load_reconciliation_backtest_state_file_record_v0,
+        )
+        from src.trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_adapter_v0 import (
+            load_safety_kernel_backtest_state_file_record_v0,
+        )
+
+        crs_path, crs_digest = resolved_paths["capital_risk_sizing"]
+        coi_path, coi_digest = resolved_paths["canonical_order_intent"]
+        sk_path, sk_digest = resolved_paths["safety_kernel"]
+        ks_path, ks_digest = resolved_paths["killswitch"]
+        rec_path, rec_digest = resolved_paths["reconciliation"]
+
+        load_capital_risk_sizing_backtest_state_file_record_v0(
+            crs_path,
+            expected_digest_ref=crs_digest,
+        )
+        load_canonical_order_intent_backtest_state_file_record_v0(
+            coi_path,
+            expected_digest_ref=coi_digest,
+        )
+        load_safety_kernel_backtest_state_file_record_v0(
+            sk_path,
+            expected_digest_ref=sk_digest,
+        )
+        load_killswitch_backtest_state_file_record_v0(
+            ks_path,
+            expected_digest_ref=ks_digest,
+        )
+        load_reconciliation_backtest_state_file_record_v0(
+            rec_path,
+            expected_digest_ref=rec_digest,
+        )
+    except ValueError as exc:
+        return None, (f"{REASON_MANDATORY_STATE_FILE_VALIDATION_FAILED}:{exc.args[0]}",)
+
+    return (
+        MandatoryMv2BacktestBoundaryStateFileBindingsV0(
+            capital_risk_sizing=CapitalRiskSizingBacktestStateFileBindingConfigV1(
+                state_file_path=crs_path,
+                expected_state_file_digest_ref=crs_digest,
+                require_state_file=True,
+            ),
+            canonical_order_intent=CanonicalOrderIntentBacktestStateFileBindingConfigV1(
+                state_file_path=coi_path,
+                expected_state_file_digest_ref=coi_digest,
+                require_state_file=True,
+            ),
+            safety_kernel=SafetyKernelBacktestStateFileBindingConfigV1(
+                state_file_path=sk_path,
+                expected_state_file_digest_ref=sk_digest,
+                require_state_file=True,
+            ),
+            killswitch=KillSwitchBacktestStateFileBindingConfigV1(
+                state_file_path=ks_path,
+                expected_state_file_digest_ref=ks_digest,
+                require_state_file=True,
+            ),
+            reconciliation=ReconciliationBacktestStateFileBindingConfigV1(
+                state_file_path=rec_path,
+                expected_state_file_digest_ref=rec_digest,
+                require_state_file=True,
+            ),
+        ),
+        (),
+    )
+
+
+def mandatory_bindings_to_mv2_wiring_kwargs_v0(
+    bindings: MandatoryMv2BacktestBoundaryStateFileBindingsV0,
+) -> dict[str, Any]:
+    return {
+        _MANDATORY_BINDING_KEY_TO_MV2_KWARG["capital_risk_sizing"]: bindings.capital_risk_sizing,
+        _MANDATORY_BINDING_KEY_TO_MV2_KWARG["canonical_order_intent"]: (
+            bindings.canonical_order_intent
+        ),
+        _MANDATORY_BINDING_KEY_TO_MV2_KWARG["safety_kernel"]: bindings.safety_kernel,
+        _MANDATORY_BINDING_KEY_TO_MV2_KWARG["killswitch"]: bindings.killswitch,
+        _MANDATORY_BINDING_KEY_TO_MV2_KWARG["reconciliation"]: bindings.reconciliation,
     }
 
 
@@ -301,7 +483,6 @@ def run_lead_lag_mv2_research_backtest_wiring_boundary_v0(
     evaluation_path_mode: str = SYSTEM_EVIDENCE_MV2_PATH_MODE,
 ) -> LeadLagMv2WiringAdapterResultV0:
     """Bind lead-lag research scores to canonical MV2 research backtest wiring."""
-    _ = repo_root
     authority = "NONE"
     runtime = "NONE"
     research_strategy_id = str(
@@ -495,12 +676,39 @@ def run_lead_lag_mv2_research_backtest_wiring_boundary_v0(
         l1_observation_status=ds.L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED,
     )
 
+    mandatory_bindings, binding_reasons = (
+        resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0(
+            repo_root,
+            ops_config,
+        )
+    )
+    if mandatory_bindings is None:
+        return LeadLagMv2WiringAdapterResultV0(
+            status=AdapterTerminalStatus.FAIL_CLOSED,
+            evaluation_path_mode=evaluation_path_mode,
+            wiring_result=None,
+            orchestrator_result=orchestrator,
+            score_feature_rows=score_rows,
+            selected_panel_member_id=selected_member,
+            mv2_bars_row_count=len(bars),
+            binding_digest=binding_digest,
+            dataset_digest=dataset_digest,
+            universe_digest=universe_digest,
+            research_binding_strategy_id=research_strategy_id,
+            mv2_engine_signal_strategy_id=MV2_ENGINE_SIGNAL_STRATEGY_ID,
+            reason_codes=binding_reasons,
+            authority_effect=authority,
+            runtime_effect=runtime,
+            economic_evaluation_executed=False,
+        )
+
     wiring = run_mv2_research_backtest_wiring_v1(
         bars,
         strategy_id=MV2_ENGINE_SIGNAL_STRATEGY_ID,
         cfg=cfg,
         instrument_id=MV2_REQUIRED_INSTRUMENT_ID,
         profile_binding=profile_binding,
+        **mandatory_bindings_to_mv2_wiring_kwargs_v0(mandatory_bindings),
     )
 
     return LeadLagMv2WiringAdapterResultV0(

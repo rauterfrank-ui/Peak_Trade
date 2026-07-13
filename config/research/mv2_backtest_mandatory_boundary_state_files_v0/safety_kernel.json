@@ -1,0 +1,14 @@
+{
+  "killswitch_blocked": false,
+  "killswitch_fencing_digest_ref": "killswitch_owner_contract_digest_v1_7f3c9a2e1b4d6f8051a9c3e7d2b4f6089a1c3e5d7b9f0123456789abcdef0123",
+  "position_state": "flat_reconciled",
+  "reconciliation_state": "reconciled",
+  "safety_decision_allowed": true,
+  "safety_exit_signal_reason_code": "",
+  "safety_exit_signal_triggered": false,
+  "safety_kernel_owner_digest_ref": "runtime_eligibility_evidence_v1",
+  "safety_mode": "normal",
+  "schema_version": "safety_kernel_boundary_backtest_state_file_v0",
+  "state_file_digest_ref": "21e11676f47a579032cfb594cc003271483e342f6edd49dd5e573c06da7bd30b",
+  "trading_gate": "entry_allowed"
+}
