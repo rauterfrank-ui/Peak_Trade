@@ -5,13 +5,41 @@ import json
 import sys
 from pathlib import Path
 
-_SCRIPT_ROOT = Path(__file__).resolve()
-for parent in [_SCRIPT_ROOT, *_SCRIPT_ROOT.parents]:
-    if (parent / "src").is_dir() and (parent / ".git").exists():
-        repo_s = str(parent)
-        if repo_s not in sys.path:
-            sys.path.insert(0, repo_s)
-        break
+_SCRIPT_PATH = Path(__file__).resolve()
+
+
+def discover_repo_root_from_script() -> Path | None:
+    for parent in [_SCRIPT_PATH, *_SCRIPT_PATH.parents]:
+        if (parent / "src").is_dir() and (parent / ".git").exists():
+            return parent.resolve()
+    return None
+
+
+def validate_peak_trade_repo_root(repo_root: Path) -> Path:
+    resolved = repo_root.expanduser().resolve()
+    if not resolved.is_dir():
+        raise SystemExit(f"REPO_ROOT_INVALID_NOT_DIRECTORY: {resolved}")
+    if not (resolved / "src").is_dir():
+        raise SystemExit(f"REPO_ROOT_INVALID_MISSING_SRC: {resolved}")
+    if not (resolved / ".git").exists():
+        raise SystemExit(f"REPO_ROOT_INVALID_MISSING_GIT: {resolved}")
+    return resolved
+
+
+def resolve_repo_root(explicit: Path | None) -> Path:
+    if explicit is not None:
+        return validate_peak_trade_repo_root(explicit)
+    discovered = discover_repo_root_from_script()
+    if discovered is None:
+        raise SystemExit("REPO_ROOT_DISCOVERY_FAILED: not inside Peak_Trade repo")
+    return discovered
+
+
+_discovered_repo_root = discover_repo_root_from_script()
+if _discovered_repo_root is not None:
+    repo_s = str(_discovered_repo_root)
+    if repo_s not in sys.path:
+        sys.path.insert(0, repo_s)
 
 import numpy as np
 
@@ -145,7 +173,15 @@ def main() -> int:
         action="store_true",
         help="Scaffolding-only fixture rows; never counted as productive samples.",
     )
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=None,
+        help="Peak_Trade repo root for parameter_binding_id resolution; defaults to script discovery.",
+    )
     args = parser.parse_args()
+
+    repo_root = resolve_repo_root(args.repo_root)
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -161,6 +197,7 @@ def main() -> int:
     materialization = materialize_offline_linear_cost_diagnostic_rows_v0(
         trade_ledger_rows=trade_ledger_rows,
         entry_bar_reference_snapshots=entry_bar_snapshots,
+        repo_root=repo_root,
     )
     productive_rows = _materializer_rows_to_feature_rows(materialization.rows)
     n_productive_samples = len(productive_rows)
