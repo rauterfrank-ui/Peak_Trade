@@ -778,3 +778,75 @@ def test_bar_sequence_state_carrier_futures_only_and_no_bitcoin_boundaries_uncha
     with pytest.raises(ValueError, match="instrument_not_supported_for_step29l"):
         _run(instrument_id="inst-eth-usdt-spot")
     assert wiring.MV2_REQUIRED_INSTRUMENT_ID == "inst-eth-usdt-perp"
+
+
+def _bind_research_bar(
+    bar: pd.Series, *, trading_epoch: int = 0
+) -> wiring.CanonicalMarketContextV1:
+    context, _, _ = wiring.bind_bar_for_mv2_wiring_v1(
+        bar=bar,
+        instrument_id="inst-eth-usdt-perp",
+        trading_epoch=trading_epoch,
+        profile_binding=_research_profile_binding(),
+        research_execution_cost=cost.resolve_economic_research_execution_cost_binding(
+            _research_cfg()
+        ),
+    )
+    return context
+
+
+def _research_bind_bar(**overrides: Any) -> pd.Series:
+    frame = _research_bars(1)
+    row = frame.iloc[0].copy()
+    for key, value in overrides.items():
+        if value is ...:
+            row = row.drop(labels=[key])
+        else:
+            row[key] = value
+    row.name = frame.index[0]
+    return row
+
+
+class TestVolatilityEstimateFailClosedWiringRepairV0:
+    def test_missing_volatility_estimate_does_not_default_to_0_2(self) -> None:
+        bar = _research_bind_bar(volatility_estimate=...)
+        with pytest.raises(ValueError, match="volatility_estimate_missing"):
+            _bind_research_bar(bar)
+
+    def test_explicit_null_volatility_fail_closed(self) -> None:
+        bar = _research_bind_bar(volatility_estimate=None, warmup_status="WARMUP_COMPLETE")
+        with pytest.raises(ValueError, match="volatility_estimate_null"):
+            _bind_research_bar(bar)
+
+    @pytest.mark.parametrize("invalid", [float("inf"), float("-inf")])
+    def test_nonfinite_volatility_fail_closed(self, invalid: float) -> None:
+        bar = _research_bind_bar(volatility_estimate=invalid, warmup_status="WARMUP_COMPLETE")
+        with pytest.raises(ValueError, match="volatility_estimate_non_finite"):
+            _bind_research_bar(bar)
+
+    def test_nan_volatility_fail_closed(self) -> None:
+        bar = _research_bind_bar(volatility_estimate=float("nan"), warmup_status="WARMUP_COMPLETE")
+        with pytest.raises(ValueError, match="volatility_estimate_null"):
+            _bind_research_bar(bar)
+
+    def test_warmup_required_with_present_value_fail_closed(self) -> None:
+        bar = _research_bind_bar(volatility_estimate=0.15, warmup_status="WARMUP_REQUIRED")
+        with pytest.raises(ValueError, match="warmup_status_not_complete"):
+            _bind_research_bar(bar)
+
+    def test_warmup_complete_positive_value_bound_exactly(self) -> None:
+        bar = _research_bind_bar(volatility_estimate=0.123456, warmup_status="WARMUP_COMPLETE")
+        context = _bind_research_bar(bar)
+        assert context.volatility_estimate == pytest.approx(0.123456)
+        assert context.warmup_status is WarmupStatus.WARMUP_COMPLETE
+
+    def test_runtime_warmup_signal_path_remains_signal_zero(self) -> None:
+        bars = _bars()
+        bars["warmup_complete"] = [False] + [True] * (len(bars) - 1)
+        result = _run(bars=bars)
+        assert result.bar_outcomes[0].position_signal == 0
+        assert result.bar_outcomes[0].context.warmup_status == WarmupStatus.WARMUP_REQUIRED
+
+    def test_no_runtime_or_authority_effect_constants_unchanged(self) -> None:
+        assert wiring.MV2_RESEARCH_WIRING_OWNER == "backtest.mv2_research_wiring_v1"
+        assert wiring.MV2_RESEARCH_WIRING_LAYER_VERSION == "v1"
