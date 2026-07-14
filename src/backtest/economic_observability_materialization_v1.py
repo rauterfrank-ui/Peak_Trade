@@ -53,6 +53,11 @@ from src.backtest.economic_observability_snapshot_v1 import (
     materialize_empty_snapshot_v1,
     serialize_canonical_json,
 )
+from src.backtest.economic_observability_report_consumer_v1 import (
+    EconomicReportVerdictRefV1,
+    ReportConsumerError,
+    render_canonical_economic_report_v1,
+)
 from src.backtest.trade_ledger_equity_curve_persistence_v0 import (
     TRADE_LEDGER_OWNER,
     CanonicalObservabilityBundleV0,
@@ -961,6 +966,9 @@ def materialize_observability_bundle_v1(
     source_refs: Sequence[str] | None = None,
     validate_reconciliation: bool = True,
     final_report: str = "",
+    economic_verdict_status: str | None = None,
+    economic_verdict_source_refs: Sequence[str] | None = None,
+    render_canonical_report: bool = False,
 ) -> tuple[CanonicalObservabilityBundleV0, MaterializationSummaryV1]:
     """Materialize snapshot plus deterministic offline observability bundle artifacts."""
     resolved_registry = registry or get_canonical_metric_registry_v1()
@@ -1181,5 +1189,25 @@ def materialize_observability_bundle_v1(
         final_report=final_report,
         advanced_capability_payloads=advanced_payloads,
     )
+
+    if render_canonical_report:
+        if not economic_verdict_status:
+            raise ReportConsumerError(
+                "VERDICT_SOURCE_MISSING:render_canonical_report requires economic_verdict_status"
+            )
+        report_artifacts = render_canonical_economic_report_v1(
+            snapshot,
+            verdict_ref=EconomicReportVerdictRefV1(
+                status=economic_verdict_status,
+                source_evidence_refs=tuple(sorted(economic_verdict_source_refs or ())),
+            ),
+            reconciliation_payload=reconciliation_payload,
+        )
+        bundle.final_report = report_artifacts.final_report_txt
+        bundle.final_report_md = report_artifacts.final_report_md
+        bundle.report_summary_json = report_artifacts.report_summary_json
+    elif final_report:
+        bundle.final_report = final_report
+
     bundle.compute_digest()
     return bundle, summary
