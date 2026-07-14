@@ -128,14 +128,14 @@ OWNER_BY_METRIC: dict[str, str] = {
     "regime_breakdown": "backtest.compute_single_regime_profit_contribution_v1",
     "instrument_breakdown": "backtest.mv2_research_wiring_v1",
     "portfolio_contribution": "experiments.portfolio_robustness",
-    "MAE": "future_capability.trade_excursion_analytics_v0",
-    "MFE": "future_capability.trade_excursion_analytics_v0",
+    "MAE": "backtest.economic_observability_advanced_capabilities_v1",
+    "MFE": "backtest.economic_observability_advanced_capabilities_v1",
     "profit_factor_gross": "future_capability.gross_net_cost_decomposition_v0",
-    "break_even_cost": "future_capability.break_even_solver_v0",
-    "break_even_cost_bps": "future_capability.break_even_solver_v0",
+    "break_even_cost": "backtest.economic_observability_advanced_capabilities_v1",
+    "break_even_cost_bps": "backtest.economic_observability_advanced_capabilities_v1",
     "VaR": "future_capability.tail_risk_analytics_v0",
     "CVaR": "future_capability.tail_risk_analytics_v0",
-    "required_gross_edge_for_break_even": "future_capability.break_even_solver_v0",
+    "required_gross_edge_for_break_even": "backtest.economic_observability_advanced_capabilities_v1",
 }
 
 CATEGORY_DEFAULT_OWNER = {

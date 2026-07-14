@@ -28,6 +28,13 @@ from src.backtest.decision_funnel_v0 import (
     DecisionFunnelPersistenceV0,
     materialize_decision_funnel_persistence_v0,
 )
+from src.backtest.economic_observability_advanced_capabilities_v1 import (
+    ADVANCED_CAPABILITIES_OWNER,
+    AdvancedCapabilitiesInputsV1,
+    advanced_capability_artifact_payloads_v1,
+    bind_advanced_capabilities_to_snapshot_v1,
+    materialize_advanced_economic_capabilities_v1,
+)
 from src.backtest.economic_observability_derived_metrics_v1 import (
     DERIVED_METRICS_OWNER,
     bind_derived_metrics_to_snapshot_v1,
@@ -137,6 +144,7 @@ class BacktestObservabilityInputsV1:
     strategy_ref: Optional[str] = None
     funnel_counts: Optional[Mapping[str, int]] = None
     block_reason_counts: Optional[Mapping[str, int]] = None
+    offline_market_volume: Optional[float] = None
 
 
 @dataclass(frozen=True)
@@ -970,6 +978,8 @@ def materialize_observability_bundle_v1(
     )
     _bind_funnel_metrics_v1(snapshot, funnel=funnel, registry=resolved_registry)
     trades = list(inputs.trades or [])
+    derived_bundle = None
+    advanced_payloads: dict[str, dict[str, Any]] = {}
     if trades:
         trade_agg = _aggregate_trade_metrics(trades)
         derived_bundle = derive_all_metrics_v1(
@@ -990,6 +1000,45 @@ def materialize_observability_bundle_v1(
             derived_bundle,
             registry=resolved_registry,
         )
+        advanced_inputs = AdvancedCapabilitiesInputsV1(
+            trades=trades,
+            stats=dict(inputs.stats),
+            gross_profit=float(trade_agg.get("gross_profit", 0.0)),
+            gross_pnl=_metric_numeric_value(snapshot, "economic", "gross_pnl"),
+            net_pnl=_metric_numeric_value(snapshot, "economic", "net_pnl"),
+            total_cost=_metric_numeric_value(snapshot, "costs", "total_cost"),
+            initial_equity=inputs.initial_equity,
+            total_notional=inputs.total_notional,
+            effective_cost=inputs.effective_cost,
+            spread_half_bps=inputs.spread_half_bps,
+            equity_curve=inputs.equity_curve,
+            offline_market_volume=inputs.offline_market_volume,
+            derived_bundle=derived_bundle,
+        )
+        advanced_bundle = materialize_advanced_economic_capabilities_v1(advanced_inputs)
+        bind_advanced_capabilities_to_snapshot_v1(
+            snapshot,
+            advanced_bundle,
+            registry=resolved_registry,
+        )
+        advanced_payloads = advanced_capability_artifact_payloads_v1(advanced_bundle)
+    else:
+        empty_advanced = materialize_advanced_economic_capabilities_v1(
+            AdvancedCapabilitiesInputsV1(
+                trades=[],
+                stats=dict(inputs.stats),
+                gross_profit=0.0,
+                gross_pnl=0.0,
+                net_pnl=0.0,
+                total_cost=0.0,
+                initial_equity=inputs.initial_equity,
+                total_notional=inputs.total_notional,
+                effective_cost=inputs.effective_cost,
+                spread_half_bps=inputs.spread_half_bps,
+                offline_market_volume=inputs.offline_market_volume,
+            )
+        )
+        advanced_payloads = advanced_capability_artifact_payloads_v1(empty_advanced)
     snapshot_payload = snapshot.to_dict()
     snapshot.manifest_digest = compute_snapshot_digest(snapshot_payload)
     snapshot_payload["manifest_digest"] = snapshot.manifest_digest
@@ -1100,6 +1149,7 @@ def materialize_observability_bundle_v1(
         "schema_version": "canonical_observability_provenance.v0",
         "snapshot_owner": SNAPSHOT_OWNER,
         "materialization_owner": MATERIALIZATION_OWNER,
+        "advanced_capabilities_owner": ADVANCED_CAPABILITIES_OWNER,
         "trade_record_source": "backtest.engine:Trade",
         "trade_ledger_owner": TRADE_LEDGER_OWNER,
         "research_funnel_owner": RESEARCH_FUNNEL_OWNER,
@@ -1129,6 +1179,7 @@ def materialize_observability_bundle_v1(
         provenance_payload=provenance_payload,
         reconciliation_payload=reconciliation_payload,
         final_report=final_report,
+        advanced_capability_payloads=advanced_payloads,
     )
     bundle.compute_digest()
     return bundle, summary
