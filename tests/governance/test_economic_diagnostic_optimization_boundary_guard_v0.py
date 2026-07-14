@@ -275,6 +275,24 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
             "WALK_FORWARD_MONTE_CARLO_STRESS_AND_PARAMETER_SENSITIVITY",
         }
 
+    def test_productive_rolling_linear_drift_surfaces_classified(self) -> None:
+        changed_files = [
+            "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
+            "scripts/ops/materialize_offline_productive_rolling_linear_drift_diagnostics_v0.py",
+            "tests/research/test_offline_productive_rolling_linear_drift_diagnostics_v0.py",
+            "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+        ]
+        report = build_boundary_report(changed_files, repo_root=REPO_ROOT)
+        assert report.admissible is True
+        assert report.impact_unknown is False
+        assert "ALLOWED_OPTIMIZATION_SURFACE_ONLY" in report.reason_codes
+        assert forbidden_surface_changed_count(report) == 0
+        assert set(report.allowed_surface_classification) >= {
+            "COST_MODEL_DIAGNOSTICS",
+            "WALK_FORWARD_MONTE_CARLO_STRESS_AND_PARAMETER_SENSITIVITY",
+            "REPORTING_AND_EVIDENCE_REPAIR",
+        }
+
     def test_outlier_window_robustness_surfaces_classified(self) -> None:
         changed_files = [
             "src/research/linear_evidence/window_robustness.py",
