@@ -476,6 +476,14 @@ def test_existing_output_fail_closed(runner, tmp_path: Path) -> None:
     assert rc != 0
 
 
+def test_empty_existing_output_fail_closed_even_with_allow_existing(runner, tmp_path: Path) -> None:
+    paths = _stage_run_inputs(tmp_path)
+    paths["output_dir"].mkdir()
+    rc = runner.main(_argv(paths, allow_existing_output=True))
+    assert rc != 0
+    assert not (paths["output_dir"] / "run_summary.env").exists()
+
+
 def test_runner_uses_existing_library_owners(runner, tmp_path: Path) -> None:
     paths = _stage_run_inputs(tmp_path)
     parser = runner.build_arg_parser()
