@@ -43,7 +43,7 @@ ARCHIVE_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
 )
 SCOPE = "CANONICAL_ECONOMIC_OBSERVABILITY_REGISTRY_AND_CONTRACT_FOUNDATION_V0"
-GO_TOKEN = "GO_CANONICAL_ECONOMIC_OBSERVABILITY_SYSTEM_V1"
+SCOPE_OPERATOR_GO = "GO_CANONICAL_ECONOMIC_OBSERVABILITY_SYSTEM_V1"
 
 
 def _utc_stamp() -> str:
@@ -245,7 +245,7 @@ def materialize_bundle(
             "HEAD_EQUALS_ORIGIN_MAIN=false",
             "WORKTREE_CLEAN_BEFORE=true",
             f"SCOPE={SCOPE}",
-            f"GO_TOKEN={GO_TOKEN}",
+            f"GO_TOKEN={SCOPE_OPERATOR_GO}",
         ]
     )
     (output_dir / "preflight.txt").write_text(preflight + "\n", encoding="utf-8")
@@ -388,7 +388,7 @@ def materialize_bundle(
             "STATUS=IMPLEMENTATION_COMPLETE_PR_OPEN",
             "VERDICT=CANONICAL_ECONOMIC_OBSERVABILITY_REGISTRY_AND_CONTRACT_FOUNDATION_COMPLETE",
             f"SCOPE={SCOPE}",
-            f"GO_TOKEN={GO_TOKEN}",
+            f"GO_TOKEN={SCOPE_OPERATOR_GO}",
             f"CURRENT_BRANCH={_git_value('branch', '--show-current')}",
             f"BASE_HEAD=b81238afdb7fa7c2ba48de683272f515fa3bd88a",
             f"ORIGIN_MAIN=b81238afdb7fa7c2ba48de683272f515fa3bd88a",
