@@ -18,7 +18,7 @@ REGISTRY_OWNER = "backtest.economic_observability_registry_v1"
 DEFAULT_REGISTRY_PATH = (
     Path(__file__).resolve().parents[2] / "config/economic_observability_metric_registry_v1.json"
 )
-DISCOVERY_METRIC_COUNT = 148
+DISCOVERY_METRIC_COUNT = 178
 
 
 class AvailabilityStatus(str, Enum):

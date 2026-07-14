@@ -544,6 +544,7 @@ class CanonicalObservabilityBundleV0:
     provenance_payload: dict[str, Any]
     reconciliation_payload: dict[str, Any]
     final_report: str
+    advanced_capability_payloads: dict[str, dict[str, Any]] = field(default_factory=dict)
     bundle_digest: str = field(default="", init=False)
 
     def artifact_payloads(self) -> dict[str, str | dict[str, Any]]:
@@ -562,6 +563,7 @@ class CanonicalObservabilityBundleV0:
             artifacts["DRAWDOWN_CURVE.not_applicable.json"] = self.drawdown_not_applicable_payload
         else:
             artifacts["DRAWDOWN_CURVE.csv"] = self.drawdown_curve_csv
+        artifacts.update(self.advanced_capability_payloads)
         return artifacts
 
     def compute_digest(self) -> str:
