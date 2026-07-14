@@ -29,7 +29,7 @@ from src.research.linear_evidence.signal_orthogonality_results_interpretation_v0
 
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
 SCOPE = "OFFLINE_PRODUCTIVE_SIGNAL_ORTHOGONALITY_RESULTS_INTERPRETATION_V0"
-GO_TOKEN = "GO_OFFLINE_PRODUCTIVE_SIGNAL_ORTHOGONALITY_RESULTS_INTERPRETATION_V0"
+SCOPE_OPERATOR_GO = "GO_OFFLINE_PRODUCTIVE_SIGNAL_ORTHOGONALITY_RESULTS_INTERPRETATION_V0"
 CANONICAL_OWNER = "src/research/linear_evidence/signal_orthogonality_results_interpretation_v0.py"
 MATERIALIZER = (
     "scripts/ops/materialize_offline_productive_signal_orthogonality_results_interpretation_v0.py"
@@ -154,7 +154,8 @@ def main() -> int:
     preflight = "\n".join(
         [
             f"SCOPE={SCOPE}",
-            f"GO_TOKEN={GO_TOKEN}",
+            f"REQUIRED_OPERATOR_SIGNAL={SCOPE_OPERATOR_GO}",
+            f"OPERATOR_GO={SCOPE_OPERATOR_GO}",
             f"CURRENT_BRANCH={branch}",
             f"HEAD={head}",
             f"ORIGIN_MAIN={origin_main}",
@@ -356,7 +357,8 @@ def main() -> int:
         "STATUS=PASS",
         "VERDICT=OFFLINE_PRODUCTIVE_SIGNAL_ORTHOGONALITY_RESULTS_INTERPRETATION_V0_COMPLETE",
         f"SCOPE={SCOPE}",
-        f"GO_TOKEN={GO_TOKEN}",
+        f"REQUIRED_OPERATOR_SIGNAL={SCOPE_OPERATOR_GO}",
+        f"OPERATOR_GO={SCOPE_OPERATOR_GO}",
         f"CURRENT_BRANCH={branch}",
         f"BASE_HEAD={head}",
         f"ORIGIN_MAIN={origin_main}",
