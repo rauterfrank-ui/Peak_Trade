@@ -185,6 +185,7 @@
         "src/research/offline_productive_point_in_time_factor_snapshot_rematerializer_v0.py",
         "src/research/linear_evidence/feature_matrix.py",
         "src/research/linear_evidence/sensitivity.py",
+        "src/research/linear_evidence/drift.py",
         "src/research/linear_evidence/factor_exposure_productive_contract_v0.py",
         "src/research/linear_evidence/signal_matrix_productive_contract_v0.py",
         "src/research/linear_evidence/parameter_sensitivity_productive_contract_v0.py"
@@ -204,6 +205,7 @@
         "src/research/linear_evidence/cost_model.py",
         "src/research/linear_evidence/diagnostics.py",
         "src/research/linear_evidence/fitters.py",
+        "src/research/linear_evidence/drift.py",
         "src/research/linear_evidence/factor_exposure_productive_contract_v0.py",
         "src/research/linear_evidence/signal_matrix_productive_contract_v0.py",
         "src/research/offline_factor_exposure_productive_input_join_materializer_v0.py",
@@ -215,7 +217,8 @@
         "scripts/research/offline_factor_exposure_productive_input_join_materializer_v0.py",
         "scripts/research/offline_final_research_fleet_signal_matrix_productive_input_join_materializer_v0.py",
         "scripts/research/offline_parameter_sensitivity_productive_input_join_materializer_v0.py",
-        "scripts/research/offline_productive_point_in_time_factor_snapshot_rematerializer_v0.py"
+        "scripts/research/offline_productive_point_in_time_factor_snapshot_rematerializer_v0.py",
+        "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py"
       ],
       "path_globs": [
         "tests/research/test_offline_linear_cost_model_diagnostics_*",
@@ -229,6 +232,7 @@
         "tests/research/test_offline_parameter_sensitivity_surface_v0.py",
         "tests/research/test_offline_parameter_sensitivity_model_spec_alignment_*",
         "tests/research/test_offline_productive_point_in_time_factor_snapshot_rematerializer_*",
+        "tests/research/test_offline_rolling_linear_drift_diagnostics_v0.py",
         "tests/research/test_linear_evidence_*"
       ]
     },
@@ -276,6 +280,7 @@
     "EXPLICITLY_CALIBRATABLE_RESEARCH_PARAMETERS_WITHIN_PREDECLARED_RANGES": {
       "path_prefixes": [
         "src/research/linear_evidence/sensitivity.py",
+        "src/research/linear_evidence/drift.py",
         "src/research/linear_evidence/parameter_sensitivity_productive_contract_v0.py",
         "scripts/research/offline_parameter_sensitivity_surface_v0.py",
         "scripts/research/offline_parameter_sensitivity_productive_input_join_materializer_v0.py"
@@ -292,11 +297,13 @@
         "src/experiments/monte_carlo.py",
         "src/experiments/stress_tests.py",
         "src/experiments/portfolio_robustness.py",
-        "scripts/research/offline_parameter_sensitivity_surface_v0.py"
+        "scripts/research/offline_parameter_sensitivity_surface_v0.py",
+        "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py"
       ],
       "path_globs": [
         "tests/research/test_offline_parameter_sensitivity_surface_v0.py",
-        "tests/research/test_offline_parameter_sensitivity_model_spec_alignment_*"
+        "tests/research/test_offline_parameter_sensitivity_model_spec_alignment_*",
+        "tests/research/test_offline_rolling_linear_drift_diagnostics_v0.py"
       ]
     },
     "PORTFOLIO_RESEARCH_AND_ECONOMIC_ATTRIBUTION_WITHOUT_RUNTIME_AUTHORITY": {
