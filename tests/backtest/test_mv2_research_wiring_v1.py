@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from dataclasses import replace
 from typing import Any, Mapping
 
@@ -9,6 +10,7 @@ import pytest
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 from src.backtest import cost_config_v0 as cost
 from src.backtest import mv2_research_wiring_v1 as wiring
+from src.backtest.strategy_signal_binding_v1 import ENGINE_SIGNAL_SOURCE_MV2_REPLAY
 from src.experiments.stress_tests import StressScenarioResult
 from src.trading.master_v2.canonical_market_context_v1 import WarmupStatus
 from src.trading.master_v2.canonical_trading_decision_evidence_v1 import (
@@ -850,3 +852,120 @@ class TestVolatilityEstimateFailClosedWiringRepairV0:
     def test_no_runtime_or_authority_effect_constants_unchanged(self) -> None:
         assert wiring.MV2_RESEARCH_WIRING_OWNER == "backtest.mv2_research_wiring_v1"
         assert wiring.MV2_RESEARCH_WIRING_LAYER_VERSION == "v1"
+
+
+def _research_warmup_bars(*, warmup_count: int = 2, complete_count: int = 3) -> pd.DataFrame:
+    n = warmup_count + complete_count
+    idx = pd.date_range("2026-06-01", periods=n, freq="1h", tz="UTC")
+    close = [100.0 + float(i) for i in range(n)]
+    warmup_status = ["WARMUP_REQUIRED"] * warmup_count + ["WARMUP_COMPLETE"] * complete_count
+    volatility = [None] * warmup_count + [0.15] * complete_count
+    return pd.DataFrame(
+        {
+            "open": close,
+            "high": [v + 0.5 for v in close],
+            "low": [v - 0.5 for v in close],
+            "close": close,
+            "mark_price": close,
+            "index_price": [v - 0.1 for v in close],
+            "volume": [1000.0 for _ in close],
+            "open_interest": [10000.0 for _ in close],
+            "funding_rate": [0.0001 for _ in close],
+            "volatility_estimate": volatility,
+            "warmup_status": warmup_status,
+            "is_final": [True for _ in close],
+            "bar_interval": ["1m" for _ in close],
+        },
+        index=idx,
+    )
+
+
+def _run_research_warmup(**kwargs: Any) -> wiring.MV2ResearchWiringResultV1:
+    return wiring.run_mv2_research_backtest_wiring_v1(
+        bars=kwargs.pop("bars", _research_warmup_bars()),
+        strategy_id=kwargs.pop("strategy_id", "ma_crossover"),
+        cfg=kwargs.pop("cfg", _research_cfg()),
+        profile_binding=kwargs.pop("profile_binding", _research_profile_binding()),
+        backtest_engine_signal_source=kwargs.pop(
+            "backtest_engine_signal_source",
+            ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
+        ),
+        **kwargs,
+    )
+
+
+class TestEconomicResearchWarmupGatingRepairV0:
+    def test_warmup_required_bars_skip_decision_chain_without_crash(self) -> None:
+        bars = _research_warmup_bars(warmup_count=2, complete_count=3)
+        result = _run_research_warmup(bars=bars)
+        assert len(result.bar_outcomes) == len(bars)
+        assert result.bar_outcomes[0].context.warmup_status == WarmupStatus.WARMUP_REQUIRED
+        assert result.bar_outcomes[1].context.warmup_status == WarmupStatus.WARMUP_REQUIRED
+        assert result.bar_outcomes[2].context.warmup_status == WarmupStatus.WARMUP_COMPLETE
+        assert all(outcome.position_signal == 0 for outcome in result.bar_outcomes[:2])
+        assert math.isnan(result.bar_outcomes[0].context.volatility_estimate)
+        assert result.bar_outcomes[2].context.volatility_estimate == pytest.approx(0.15)
+
+    def test_warmup_required_bars_do_not_run_integrated_replay(self) -> None:
+        result = _run_research_warmup()
+        for outcome in result.bar_outcomes[:2]:
+            assert outcome.replay_pass is False
+            assert wiring.ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON in outcome.fail_reasons
+            assert outcome.evidence.decision_outcome == "observe"
+            assert (
+                wiring.ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON
+                in outcome.evidence.reason_codes
+            )
+            assert outcome.evidence.scope_event_ref == ""
+            assert outcome.evidence.bull_assessment_ref == ""
+            assert outcome.evidence.bear_assessment_ref == ""
+
+    def test_warmup_required_bars_produce_no_engine_signals_or_trades(self) -> None:
+        result = _run_research_warmup()
+        assert list(result.mv2_replay_signals[:2]) == [0, 0]
+        assert list(result.signals[:2]) == [0, 0]
+        trades = result.backtest_result.trades
+        trade_count = 0 if trades is None else len(trades)
+        assert trade_count == 0
+
+    def test_first_warmup_complete_bar_processed_once(self) -> None:
+        bars = _research_warmup_bars(warmup_count=2, complete_count=2)
+        result = _run_research_warmup(bars=bars)
+        complete_outcomes = [
+            outcome
+            for outcome in result.bar_outcomes
+            if outcome.context.warmup_status is WarmupStatus.WARMUP_COMPLETE
+        ]
+        assert len(complete_outcomes) == 2
+        assert complete_outcomes[0].trading_epoch == 2
+        assert complete_outcomes[0].replay_pass is True
+        assert complete_outcomes[0].evidence.trading_epoch == 2
+
+    def test_epochs_and_provenance_remain_contiguous(self) -> None:
+        result = _run_research_warmup()
+        for i, outcome in enumerate(result.bar_outcomes):
+            assert outcome.trading_epoch == i
+            assert outcome.evidence.trading_epoch == i
+            assert outcome.evidence.decision_id
+
+    def test_warmup_invalid_fail_closed(self) -> None:
+        bars = _research_warmup_bars(warmup_count=1, complete_count=2)
+        bars.loc[bars.index[0], "warmup_status"] = "WARMUP_INVALID"
+        with pytest.raises(ValueError, match="warmup_invalid_blocked"):
+            _run_research_warmup(bars=bars)
+
+    def test_no_warmup_complete_bar_fail_closed(self) -> None:
+        bars = _research_warmup_bars(warmup_count=3, complete_count=0)
+        bars["warmup_status"] = "WARMUP_REQUIRED"
+        bars["volatility_estimate"] = None
+        with pytest.raises(ValueError, match="no_warmup_complete_bar"):
+            _run_research_warmup(bars=bars)
+
+    def test_bind_bar_still_rejects_warmup_required_volatility_resolution(self) -> None:
+        bar = _research_bind_bar(volatility_estimate=0.15, warmup_status="WARMUP_REQUIRED")
+        with pytest.raises(ValueError, match="warmup_status_not_complete"):
+            _bind_research_bar(bar)
+
+    def test_block_reason_counts_include_warmup_required_skips(self) -> None:
+        result = _run_research_warmup(bars=_research_warmup_bars(warmup_count=2, complete_count=1))
+        assert result.block_reason_counts[wiring.ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON] == 2
