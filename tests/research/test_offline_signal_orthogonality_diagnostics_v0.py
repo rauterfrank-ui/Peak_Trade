@@ -16,10 +16,17 @@ from research.linear_evidence.fitters import (
 from research.linear_evidence.feature_matrix import build_feature_matrix_binding
 from research.linear_evidence.import_boundary import scan_file_import_boundary
 from research.linear_evidence.signal_orthogonality import (
+    REASON_DUPLICATE_SIGNAL,
+    REASON_HIGH_PAIRWISE_CORRELATION,
+    REASON_INSUFFICIENT_OVERLAP,
     REASON_INSUFFICIENT_SAMPLE_COUNT,
+    REASON_NEAR_DUPLICATE_SIGNAL,
     REASON_SIGNAL_REDUNDANCY_REPORTED,
+    REASON_ZERO_VARIANCE_FEATURE,
     SignalOrthogonalityConfigV1,
+    SignalOrthogonalityScopePolicyV0,
     analyze_signal_orthogonality,
+    build_signal_orthogonality_scope_artifacts_v0,
     compute_signal_orthogonality_precheck_v0,
     evidence_to_dict,
     make_deterministic_signal_fixture,
@@ -240,3 +247,167 @@ def test_existing_cost_model_constant_target_behavior_remains_green() -> None:
     evidence = fit_ols_lstsq(x, y, binding)
     assert REASON_CONSTANT_TARGET in evidence.reason_codes
     assert evidence.coefficients == {}
+
+
+def test_scope_artifacts_byte_identical_on_repeat() -> None:
+    rows, features = make_deterministic_signal_fixture()
+    policy = SignalOrthogonalityScopePolicyV0(min_samples=8, min_overlap_count=8)
+    first = build_signal_orthogonality_scope_artifacts_v0(
+        rows,
+        features,
+        policy=policy,
+        fixture_truth_pack_used=True,
+    )
+    second = build_signal_orthogonality_scope_artifacts_v0(
+        rows,
+        features,
+        policy=policy,
+        fixture_truth_pack_used=True,
+    )
+    assert first["output_digest"] == second["output_digest"]
+
+
+def test_duplicate_signals_detected_in_scope_artifacts() -> None:
+    rows = _rows()
+    for row in rows:
+        row["copy_alpha"] = row["alpha"]
+    artifacts = build_signal_orthogonality_scope_artifacts_v0(
+        rows,
+        ("alpha", "copy_alpha", "beta"),
+        policy=SignalOrthogonalityScopePolicyV0(min_samples=4, min_overlap_count=4),
+        fixture_truth_pack_used=True,
+    )
+    pair = next(
+        item
+        for item in artifacts["pairwise_correlations"]
+        if {item["signal_a"], item["signal_b"]} == {"alpha", "copy_alpha"}
+    )
+    assert REASON_DUPLICATE_SIGNAL in pair["reason_codes"]
+    assert artifacts["duplicate_groups"]["groups"]
+
+
+def test_linear_scaled_signals_near_duplicate_or_high_correlation() -> None:
+    rows = _rows()
+    for row in rows:
+        row["scaled_beta"] = float(row["beta"]) * 2.0
+    artifacts = build_signal_orthogonality_scope_artifacts_v0(
+        rows,
+        ("beta", "scaled_beta", "gamma"),
+        policy=SignalOrthogonalityScopePolicyV0(
+            min_samples=4,
+            min_overlap_count=4,
+            near_duplicate_correlation_threshold=0.999,
+        ),
+        fixture_truth_pack_used=True,
+    )
+    pair = next(
+        item
+        for item in artifacts["pairwise_correlations"]
+        if {item["signal_a"], item["signal_b"]} == {"beta", "scaled_beta"}
+    )
+    assert REASON_NEAR_DUPLICATE_SIGNAL in pair["reason_codes"]
+    assert REASON_HIGH_PAIRWISE_CORRELATION in pair["reason_codes"]
+
+
+def test_orthogonal_fixture_not_falsely_redundant() -> None:
+    rows, features = make_deterministic_signal_fixture()
+    artifacts = build_signal_orthogonality_scope_artifacts_v0(
+        rows,
+        ("bollinger_bands", "liquidity_context"),
+        policy=SignalOrthogonalityScopePolicyV0(
+            correlation_threshold=0.95,
+            near_duplicate_correlation_threshold=0.999,
+        ),
+        fixture_truth_pack_used=True,
+    )
+    assert artifacts["signal_summary"]["duplicate_groups"] == []
+    assert artifacts["signal_summary"]["near_duplicate_groups"] == []
+
+
+def test_insufficient_overlap_classified() -> None:
+    rows: list[dict[str, object]] = []
+    for idx in range(12):
+        rows.append(
+            {
+                "decision_time": f"2026-01-01T{idx + 1:02d}:00:00Z",
+                "feature_time": f"2026-01-01T{idx:02d}:00:00Z",
+                "alpha": float(idx) if idx < 2 else float("nan"),
+                "beta": float(idx),
+            }
+        )
+    artifacts = build_signal_orthogonality_scope_artifacts_v0(
+        rows,
+        ("alpha", "beta"),
+        policy=SignalOrthogonalityScopePolicyV0(min_samples=4, min_overlap_count=8),
+        fixture_truth_pack_used=True,
+    )
+    pair = artifacts["pairwise_correlations"][0]
+    assert REASON_INSUFFICIENT_OVERLAP in pair["reason_codes"]
+    assert pair["status"] == "BLOCKED"
+
+
+def test_nan_and_inf_blocked_deterministically() -> None:
+    rows = _rows()
+    rows[2]["gamma"] = float("nan")
+    rows[4]["gamma"] = float("inf")
+    evidence = analyze_signal_orthogonality(rows, ("alpha", "beta", "gamma"))
+    assert evidence.row_count_after_filter < evidence.row_count_before_filter
+    assert "non_finite_feature" in evidence.dropped_rows_by_reason
+
+
+def test_matrix_rank_and_condition_number_reproducible() -> None:
+    rows, features = make_deterministic_signal_fixture()
+    first = build_signal_orthogonality_scope_artifacts_v0(
+        rows, features, fixture_truth_pack_used=True
+    )
+    second = build_signal_orthogonality_scope_artifacts_v0(
+        rows, features, fixture_truth_pack_used=True
+    )
+    assert first["signal_summary"]["matrix_rank"] == second["signal_summary"]["matrix_rank"]
+    assert (
+        first["signal_summary"]["condition_number"] == second["signal_summary"]["condition_number"]
+    )
+
+
+def test_temporal_instability_visible_in_rolling_stability() -> None:
+    rows: list[dict[str, object]] = []
+    for idx in range(24):
+        rows.append(
+            {
+                "decision_time": f"2026-01-01T{idx + 1:02d}:00:00Z",
+                "feature_time": f"2026-01-01T{idx:02d}:00:00Z",
+                "alpha": float(idx) if idx < 12 else float(-idx),
+                "beta": float(idx),
+            }
+        )
+    artifacts = build_signal_orthogonality_scope_artifacts_v0(
+        rows,
+        ("alpha", "beta"),
+        policy=SignalOrthogonalityScopePolicyV0(
+            min_samples=8,
+            min_overlap_count=8,
+            rolling_stability_instability_threshold=0.5,
+            rolling_time_slice_count=2,
+        ),
+        fixture_truth_pack_used=True,
+    )
+    assert artifacts["rolling_stability"]["unstable_pairs"]
+
+
+def test_scope_pairwise_record_required_fields_present() -> None:
+    rows, features = make_deterministic_signal_fixture()
+    artifacts = build_signal_orthogonality_scope_artifacts_v0(
+        rows, features, fixture_truth_pack_used=True
+    )
+    record = artifacts["pairwise_correlations"][0]
+    for key in (
+        "signal_a",
+        "signal_b",
+        "sample_count",
+        "overlap_count",
+        "pearson_correlation",
+        "absolute_pearson_correlation",
+        "status",
+        "reason_codes",
+    ):
+        assert key in record

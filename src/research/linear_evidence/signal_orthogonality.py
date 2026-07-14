@@ -520,3 +520,549 @@ def evidence_to_dict(evidence: SignalOrthogonalityEvidenceV1) -> Dict[str, objec
         "runtime_effect": evidence.runtime_effect,
         "reason_codes": list(evidence.reason_codes),
     }
+
+
+SCOPE_POLICY_VERSION = "signal_orthogonality_diagnostic_policy.v0"
+SCOPE_ROLE = "DIAGNOSTIC_ONLY"
+
+REASON_INSUFFICIENT_DATA = "INSUFFICIENT_DATA"
+REASON_INSUFFICIENT_OVERLAP = "INSUFFICIENT_OVERLAP"
+REASON_NEAR_ZERO_VARIANCE_SIGNAL = "NEAR_ZERO_VARIANCE_SIGNAL"
+REASON_DUPLICATE_SIGNAL = "DUPLICATE_SIGNAL"
+REASON_NEAR_DUPLICATE_SIGNAL = "NEAR_DUPLICATE_SIGNAL"
+REASON_HIGH_PAIRWISE_CORRELATION = "HIGH_PAIRWISE_CORRELATION"
+REASON_FEATURE_ALIGNMENT_ERROR = "FEATURE_ALIGNMENT_ERROR"
+REASON_TIMESTAMP_ALIGNMENT_ERROR = "TIMESTAMP_ALIGNMENT_ERROR"
+REASON_INSTRUMENT_ALIGNMENT_ERROR = "INSTRUMENT_ALIGNMENT_ERROR"
+REASON_NON_FINITE_VALUE_DETECTED = "NON_FINITE_VALUE_DETECTED"
+REASON_FEATURE_LEAKAGE_RISK = "FEATURE_LEAKAGE_RISK"
+REASON_INPUT_DIGEST_MISMATCH = "INPUT_DIGEST_MISMATCH"
+REASON_NONDETERMINISTIC_OUTPUT = "NONDETERMINISTIC_OUTPUT"
+REASON_RUNTIME_IMPORT_BOUNDARY_VIOLATION = "RUNTIME_IMPORT_BOUNDARY_VIOLATION"
+REASON_ORDER_ADAPTER_IMPORT_BOUNDARY_VIOLATION = "ORDER_ADAPTER_IMPORT_BOUNDARY_VIOLATION"
+REASON_SCHEDULER_IMPORT_BOUNDARY_VIOLATION = "SCHEDULER_IMPORT_BOUNDARY_VIOLATION"
+
+FAILURE_TAXONOMY_V0: Dict[str, str] = {
+    REASON_INSUFFICIENT_DATA: "Sample count below policy minimum; diagnostics blocked.",
+    REASON_INSUFFICIENT_OVERLAP: "Pairwise overlap below policy minimum; pair blocked.",
+    REASON_ZERO_VARIANCE_FEATURE: "Exact zero variance; signal excluded fail-closed.",
+    REASON_NEAR_ZERO_VARIANCE_SIGNAL: "Variance below near-zero threshold; signal excluded.",
+    REASON_DUPLICATE_SIGNAL: "Exact duplicate column detected.",
+    REASON_NEAR_DUPLICATE_SIGNAL: "Near-linear duplicate detected via correlation threshold.",
+    REASON_HIGH_PAIRWISE_CORRELATION: "Pairwise Pearson correlation exceeds policy threshold.",
+    REASON_RANK_DEFICIENT_FEATURE_MATRIX: "Matrix rank below feature count.",
+    _REASON_HIGH_CONDITION_NUMBER: "Condition number exceeds policy threshold.",
+    REASON_FEATURE_ALIGNMENT_ERROR: "Feature column missing or misaligned in input rows.",
+    REASON_TIMESTAMP_ALIGNMENT_ERROR: "Timestamp ordering or binding failed.",
+    REASON_INSTRUMENT_ALIGNMENT_ERROR: "Instrument grain inconsistent across rows.",
+    REASON_NON_FINITE_VALUE_DETECTED: "NaN or Inf detected in signal values.",
+    REASON_FEATURE_LEAKAGE_RISK: "Feature time not strictly before decision time.",
+    REASON_INPUT_DIGEST_MISMATCH: "Input digest mismatch on rematerialization.",
+    REASON_NONDETERMINISTIC_OUTPUT: "Repeated run produced differing output digest.",
+    REASON_RUNTIME_IMPORT_BOUNDARY_VIOLATION: "Forbidden runtime import detected.",
+    REASON_ORDER_ADAPTER_IMPORT_BOUNDARY_VIOLATION: "Forbidden order adapter import detected.",
+    REASON_SCHEDULER_IMPORT_BOUNDARY_VIOLATION: "Forbidden scheduler import detected.",
+    REASON_INSUFFICIENT_SAMPLE_COUNT: "Row count below min_samples after filtering.",
+    _REASON_SIGNAL_REDUNDANCY_REPORTED: "Redundant pairs reported; diagnostic only.",
+    _REASON_PRODUCTIVE_BINDING_GAP: "No manifest-verified productive input bound.",
+}
+
+
+@dataclass(frozen=True)
+class SignalOrthogonalityScopePolicyV0:
+    version: str = SCOPE_POLICY_VERSION
+    correlation_threshold: float = 0.85
+    near_duplicate_correlation_threshold: float = 0.999
+    condition_number_threshold: float = 1000.0
+    min_samples: int = 8
+    min_overlap_count: int = 8
+    near_zero_variance_threshold: float = 1e-12
+    rolling_stability_instability_threshold: float = 0.25
+    rolling_time_slice_count: int = 4
+    spearman_enabled: bool = True
+
+    def validate(self) -> None:
+        if self.version != SCOPE_POLICY_VERSION:
+            raise ValueError("unsupported policy version")
+        SignalOrthogonalityConfigV1(
+            correlation_threshold=self.correlation_threshold,
+            condition_number_threshold=self.condition_number_threshold,
+            min_samples=self.min_samples,
+        ).validate()
+        if not 0.0 < self.near_duplicate_correlation_threshold <= 1.0:
+            raise ValueError("near_duplicate_correlation_threshold must be in (0, 1]")
+        if self.min_overlap_count < 3:
+            raise ValueError("min_overlap_count must be at least 3")
+        if self.rolling_time_slice_count < 2:
+            raise ValueError("rolling_time_slice_count must be at least 2")
+
+    def config_digest(self) -> str:
+        return _stable_digest(
+            [
+                self.version,
+                self.correlation_threshold,
+                self.near_duplicate_correlation_threshold,
+                self.condition_number_threshold,
+                self.min_samples,
+                self.min_overlap_count,
+                self.near_zero_variance_threshold,
+                self.rolling_stability_instability_threshold,
+                self.rolling_time_slice_count,
+                self.spearman_enabled,
+            ]
+        )
+
+    def to_dict(self) -> Dict[str, object]:
+        return {
+            "version": self.version,
+            "correlation_threshold": self.correlation_threshold,
+            "near_duplicate_correlation_threshold": self.near_duplicate_correlation_threshold,
+            "condition_number_threshold": self.condition_number_threshold,
+            "min_samples": self.min_samples,
+            "min_overlap_count": self.min_overlap_count,
+            "near_zero_variance_threshold": self.near_zero_variance_threshold,
+            "rolling_stability_instability_threshold": self.rolling_stability_instability_threshold,
+            "rolling_time_slice_count": self.rolling_time_slice_count,
+            "spearman_enabled": self.spearman_enabled,
+            "diagnostic_only": True,
+            "promotion_wirksam": False,
+            "trading_wirksam": False,
+        }
+
+
+def _ordinal_ranks(values: np.ndarray) -> np.ndarray:
+    order = np.argsort(values, kind="mergesort")
+    ranks = np.empty(values.shape[0], dtype=float)
+    ranks[order] = np.arange(values.shape[0], dtype=float)
+    return ranks
+
+
+def _pairwise_pearson(a: np.ndarray, b: np.ndarray) -> float:
+    if a.shape[0] < 2:
+        return 0.0
+    corr = np.corrcoef(a, b)[0, 1]
+    if not isfinite(float(corr)):
+        return 0.0
+    return float(corr)
+
+
+def _pairwise_spearman(a: np.ndarray, b: np.ndarray) -> float:
+    if a.shape[0] < 2:
+        return 0.0
+    return _pairwise_pearson(_ordinal_ranks(a), _ordinal_ranks(b))
+
+
+def _extract_signal_column(
+    rows: Sequence[Mapping[str, object]], name: str
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Return (values, valid_mask) aligned to row order."""
+    values: List[float] = []
+    valid: List[bool] = []
+    for row in rows:
+        raw = row.get(name)
+        try:
+            value = float(raw)
+        except (TypeError, ValueError):
+            values.append(float("nan"))
+            valid.append(False)
+            continue
+        if not isfinite(value):
+            values.append(float("nan"))
+            valid.append(False)
+        else:
+            values.append(value)
+            valid.append(True)
+    return np.asarray(values, dtype=float), np.asarray(valid, dtype=bool)
+
+
+def _pairwise_overlap_count(valid_a: np.ndarray, valid_b: np.ndarray) -> int:
+    return int(np.sum(valid_a & valid_b))
+
+
+def _classify_signal_variance(
+    matrix: np.ndarray, names: Sequence[str], *, policy: SignalOrthogonalityScopePolicyV0
+) -> tuple[tuple[str, ...], dict[str, int]]:
+    dropped: dict[str, int] = {}
+    keep: list[str] = []
+    for index, name in enumerate(names):
+        column = matrix[:, index]
+        variance = float(np.var(column)) if column.size else 0.0
+        if variance == 0.0:
+            dropped[f"{REASON_ZERO_VARIANCE_FEATURE}:{name}"] = (
+                dropped.get(f"{REASON_ZERO_VARIANCE_FEATURE}:{name}", 0) + 1
+            )
+        elif variance < policy.near_zero_variance_threshold:
+            dropped[f"{REASON_NEAR_ZERO_VARIANCE_SIGNAL}:{name}"] = (
+                dropped.get(f"{REASON_NEAR_ZERO_VARIANCE_SIGNAL}:{name}", 0) + 1
+            )
+        else:
+            keep.append(str(name))
+    return tuple(keep), dropped
+
+
+def _build_pairwise_records(
+    rows: Sequence[Mapping[str, object]],
+    feature_names: Sequence[str],
+    *,
+    policy: SignalOrthogonalityScopePolicyV0,
+    sample_count: int,
+) -> List[Dict[str, object]]:
+    columns = {name: _extract_signal_column(rows, name) for name in feature_names}
+    records: List[Dict[str, object]] = []
+    for i, left in enumerate(feature_names):
+        for right in feature_names[i + 1 :]:
+            left_values, left_valid = columns[left]
+            right_values, right_valid = columns[right]
+            overlap_mask = left_valid & right_valid
+            overlap_count = int(np.sum(overlap_mask))
+            reason_codes: list[str] = []
+            status = "OK"
+            pearson = 0.0
+            spearman: float | None = None
+            if overlap_count < policy.min_overlap_count:
+                reason_codes.append(REASON_INSUFFICIENT_OVERLAP)
+                status = "BLOCKED"
+            else:
+                a = left_values[overlap_mask]
+                b = right_values[overlap_mask]
+                pearson = _pairwise_pearson(a, b)
+                if policy.spearman_enabled:
+                    spearman = _pairwise_spearman(a, b)
+                if abs(pearson) >= policy.correlation_threshold:
+                    reason_codes.append(REASON_HIGH_PAIRWISE_CORRELATION)
+                if abs(pearson) >= policy.near_duplicate_correlation_threshold:
+                    reason_codes.append(REASON_NEAR_DUPLICATE_SIGNAL)
+                if np.allclose(a, b, rtol=0.0, atol=0.0):
+                    reason_codes.append(REASON_DUPLICATE_SIGNAL)
+                elif overlap_count < policy.min_samples:
+                    reason_codes.append(REASON_INSUFFICIENT_DATA)
+                    status = "INDICATIVE"
+            records.append(
+                {
+                    "signal_a": left,
+                    "signal_b": right,
+                    "sample_count": sample_count,
+                    "overlap_count": overlap_count,
+                    "pearson_correlation": pearson,
+                    "absolute_pearson_correlation": abs(pearson),
+                    "spearman_correlation": spearman,
+                    "status": status,
+                    "reason_codes": reason_codes,
+                }
+            )
+    records.sort(key=lambda item: (str(item["signal_a"]), str(item["signal_b"])))
+    return records
+
+
+def _build_overlap_matrix(
+    rows: Sequence[Mapping[str, object]], feature_names: Sequence[str]
+) -> Dict[str, Dict[str, int]]:
+    columns = {name: _extract_signal_column(rows, name)[1] for name in feature_names}
+    return {
+        left: {
+            right: _pairwise_overlap_count(columns[left], columns[right]) for right in feature_names
+        }
+        for left in feature_names
+    }
+
+
+def _build_correlation_matrix(
+    feature_names: Sequence[str], matrix: np.ndarray
+) -> Dict[str, Dict[str, float]]:
+    return _pairwise_correlations(feature_names, matrix)
+
+
+def _duplicate_groups(feature_names: Sequence[str], matrix: np.ndarray) -> List[List[str]]:
+    groups: List[List[str]] = []
+    assigned: set[str] = set()
+    index_by_name = {name: idx for idx, name in enumerate(feature_names)}
+    for i, left in enumerate(feature_names):
+        if left in assigned:
+            continue
+        group = [left]
+        for right in feature_names[i + 1 :]:
+            if right in assigned:
+                continue
+            if np.allclose(
+                matrix[:, i],
+                matrix[:, index_by_name[right]],
+                rtol=0.0,
+                atol=0.0,
+            ):
+                group.append(right)
+        if len(group) > 1:
+            groups.append(sorted(group))
+            assigned.update(group)
+    return groups
+
+
+def _near_duplicate_groups(
+    pairwise_records: Sequence[Mapping[str, object]],
+    *,
+    threshold: float,
+) -> List[List[str]]:
+    graph: Dict[str, set[str]] = {}
+    for record in pairwise_records:
+        if REASON_NEAR_DUPLICATE_SIGNAL not in record.get("reason_codes", ()):
+            continue
+        left = str(record["signal_a"])
+        right = str(record["signal_b"])
+        graph.setdefault(left, set()).add(right)
+        graph.setdefault(right, set()).add(left)
+    groups: List[List[str]] = []
+    seen: set[str] = set()
+    for node in sorted(graph):
+        if node in seen:
+            continue
+        stack = [node]
+        component: set[str] = set()
+        while stack:
+            current = stack.pop()
+            if current in seen:
+                continue
+            seen.add(current)
+            component.add(current)
+            stack.extend(sorted(graph.get(current, ())))
+        if len(component) > 1:
+            groups.append(sorted(component))
+    groups.sort()
+    return groups
+
+
+def _rolling_stability(
+    rows: Sequence[Mapping[str, object]],
+    feature_names: Sequence[str],
+    *,
+    policy: SignalOrthogonalityScopePolicyV0,
+    time_name: str,
+) -> Dict[str, object]:
+    if len(rows) < policy.min_samples:
+        return {
+            "status": "BLOCKED",
+            "reason_codes": [REASON_INSUFFICIENT_DATA],
+            "time_slice_count": 0,
+            "pair_stability": [],
+            "stable_pairs": [],
+            "unstable_pairs": [],
+        }
+    ordered = _time_order_rows(list(rows), time_name=time_name)
+    slice_size = max(1, len(ordered) // policy.rolling_time_slice_count)
+    slices: List[List[Mapping[str, object]]] = []
+    for index in range(policy.rolling_time_slice_count):
+        start = index * slice_size
+        end = (
+            len(ordered)
+            if index == policy.rolling_time_slice_count - 1
+            else (index + 1) * slice_size
+        )
+        chunk = ordered[start:end]
+        if chunk:
+            slices.append(chunk)
+    pair_stability: List[Dict[str, object]] = []
+    stable_pairs: List[Dict[str, str]] = []
+    unstable_pairs: List[Dict[str, object]] = []
+    for i, left in enumerate(feature_names):
+        for right in feature_names[i + 1 :]:
+            slice_corrs: List[float] = []
+            for chunk in slices:
+                left_values, left_valid = _extract_signal_column(chunk, left)
+                right_values, right_valid = _extract_signal_column(chunk, right)
+                mask = left_valid & right_valid
+                if int(np.sum(mask)) >= 3:
+                    slice_corrs.append(_pairwise_pearson(left_values[mask], right_values[mask]))
+            if len(slice_corrs) < 2:
+                continue
+            spread = max(slice_corrs) - min(slice_corrs)
+            unstable = spread >= policy.rolling_stability_instability_threshold
+            entry = {
+                "signal_a": left,
+                "signal_b": right,
+                "slice_correlations": slice_corrs,
+                "abs_correlation_spread": spread,
+                "stable": not unstable,
+            }
+            pair_stability.append(entry)
+            if unstable:
+                unstable_pairs.append(entry)
+            else:
+                stable_pairs.append({"signal_a": left, "signal_b": right})
+    return {
+        "status": "COMPUTED",
+        "reason_codes": [],
+        "time_slice_count": len(slices),
+        "pair_stability": pair_stability,
+        "stable_pairs": stable_pairs,
+        "unstable_pairs": unstable_pairs,
+    }
+
+
+def build_signal_orthogonality_scope_artifacts_v0(
+    rows: Sequence[Mapping[str, object]],
+    feature_names: Sequence[str],
+    *,
+    policy: SignalOrthogonalityScopePolicyV0 | None = None,
+    time_name: str = _DEFAULT_TIME_NAME,
+    feature_time_name: str = _DEFAULT_FEATURE_TIME_NAME,
+    instrument_key: str = "instrument_id",
+    input_digest: str | None = None,
+    fixture_truth_pack_used: bool = False,
+    productive_binding_found: bool = False,
+) -> Dict[str, object]:
+    """Build deterministic scope-v0 diagnostic artifacts (diagnostic-only)."""
+    cfg_policy = policy or SignalOrthogonalityScopePolicyV0()
+    cfg_policy.validate()
+    cfg = SignalOrthogonalityConfigV1(
+        correlation_threshold=cfg_policy.correlation_threshold,
+        condition_number_threshold=cfg_policy.condition_number_threshold,
+        min_samples=cfg_policy.min_samples,
+    )
+
+    names_before = _sorted_unique_feature_names(feature_names)
+    ordered_rows = _time_order_rows(list(rows), time_name=time_name)
+    try:
+        _assert_feature_time_before_target_time(
+            ordered_rows,
+            feature_time_name=feature_time_name,
+            target_time_name=time_name,
+        )
+    except ValueError as exc:
+        reason = str(exc)
+        if reason == _REASON_LOOKAHEAD_BLOCKED:
+            reason = REASON_FEATURE_LEAKAGE_RISK
+        raise ValueError(reason) from exc
+
+    instruments = sorted(
+        {str(row[instrument_key]) for row in ordered_rows if row.get(instrument_key) is not None}
+    )
+    if ordered_rows and any(instrument_key in row for row in ordered_rows):
+        per_instrument_counts = {
+            instrument: sum(1 for row in ordered_rows if str(row.get(instrument_key)) == instrument)
+            for instrument in instruments
+        }
+        if len(set(per_instrument_counts.values())) > 1 and len(instruments) > 1:
+            instrument_alignment_note = "instrument_row_counts_vary_by_design"
+        else:
+            instrument_alignment_note = "aligned"
+    else:
+        instrument_alignment_note = "NOT_APPLICABLE_WITH_REASON:no_instrument_key_in_rows"
+
+    matrix, dropped_rows = _as_float_matrix(ordered_rows, names_before)
+    sample_count = int(matrix.shape[0])
+    kept_names, dropped_signals = _classify_signal_variance(matrix, names_before, policy=cfg_policy)
+    keep_indices = [names_before.index(name) for name in kept_names]
+    filtered_matrix = matrix[:, keep_indices] if keep_indices else np.empty((sample_count, 0))
+
+    active_names = kept_names if kept_names else names_before
+    evidence = analyze_signal_orthogonality(
+        ordered_rows,
+        active_names,
+        config=cfg,
+        time_name=time_name,
+        feature_time_name=feature_time_name,
+        productive_binding_gap=not productive_binding_found and not fixture_truth_pack_used,
+    )
+
+    pairwise_records = _build_pairwise_records(
+        ordered_rows,
+        active_names,
+        policy=cfg_policy,
+        sample_count=sample_count,
+    )
+    overlap_matrix = _build_overlap_matrix(ordered_rows, active_names)
+    correlation_matrix = (
+        _build_correlation_matrix(kept_names, filtered_matrix) if filtered_matrix.size else {}
+    )
+    duplicate_groups = (
+        _duplicate_groups(kept_names, filtered_matrix) if filtered_matrix.size else []
+    )
+    near_duplicate_groups = _near_duplicate_groups(
+        pairwise_records,
+        threshold=cfg_policy.near_duplicate_correlation_threshold,
+    )
+    high_correlation_pairs = [
+        {
+            "signal_a": record["signal_a"],
+            "signal_b": record["signal_b"],
+            "pearson_correlation": record["pearson_correlation"],
+            "absolute_pearson_correlation": record["absolute_pearson_correlation"],
+        }
+        for record in pairwise_records
+        if REASON_HIGH_PAIRWISE_CORRELATION in record["reason_codes"]
+    ]
+    rolling = _rolling_stability(
+        ordered_rows,
+        active_names,
+        policy=cfg_policy,
+        time_name=time_name,
+    )
+
+    matrix_rank = (
+        int(evidence.diagnostics.get("rank", 0)) if evidence.diagnostics.get("computed") else 0
+    )
+    condition_number = evidence.diagnostics.get("condition_number")
+    config_digest = cfg_policy.config_digest()
+    bound_input_digest = input_digest or evidence.feature_matrix_digest
+    output_digest = _stable_digest(
+        {
+            "pairwise_records": pairwise_records,
+            "correlation_matrix": correlation_matrix,
+            "overlap_matrix": overlap_matrix,
+            "duplicate_groups": duplicate_groups,
+            "near_duplicate_groups": near_duplicate_groups,
+            "matrix_rank": matrix_rank,
+            "condition_number": condition_number,
+            "config_digest": config_digest,
+            "input_digest": bound_input_digest,
+        }
+    )
+
+    signal_summary = {
+        "signal_count_before_filter": len(names_before),
+        "signal_count_after_filter": len(kept_names),
+        "dropped_signals_by_reason": dropped_signals,
+        "matrix_rank": matrix_rank,
+        "condition_number": condition_number,
+        "duplicate_groups": duplicate_groups,
+        "near_duplicate_groups": near_duplicate_groups,
+        "high_correlation_pairs": high_correlation_pairs,
+        "stable_pairs": rolling.get("stable_pairs", []),
+        "unstable_pairs": rolling.get("unstable_pairs", []),
+        "time_slice_count": rolling.get("time_slice_count", 0),
+        "instrument_count": len(instruments),
+        "instrument_alignment_note": instrument_alignment_note,
+        "input_digest": bound_input_digest,
+        "config_digest": config_digest,
+        "output_digest": output_digest,
+        "pair_count": len(pairwise_records),
+        "authority_effect": _AUTHORITY_EFFECT,
+        "runtime_effect": _RUNTIME_EFFECT,
+        "diagnostic_role": SCOPE_ROLE,
+    }
+
+    diagnostic_status = str(evidence.status)
+    if not kept_names:
+        diagnostic_status = "RANK_DEFICIENT_BLOCKED"
+
+    return {
+        "diagnostic_policy": cfg_policy.to_dict(),
+        "failure_taxonomy": FAILURE_TAXONOMY_V0,
+        "signal_summary": signal_summary,
+        "pairwise_correlations": pairwise_records,
+        "correlation_matrix": correlation_matrix,
+        "overlap_matrix": overlap_matrix,
+        "duplicate_groups": {"groups": duplicate_groups},
+        "matrix_diagnostics": {
+            "rank": matrix_rank,
+            "condition_number": condition_number,
+            "vif_scores": evidence.diagnostics.get("vif_scores", {}),
+            "computed": evidence.diagnostics.get("computed", False),
+            "reason_codes": list(evidence.reason_codes),
+            "dropped_rows_by_reason": dict(dropped_rows),
+        },
+        "rolling_stability": rolling,
+        "evidence": evidence_to_dict(evidence),
+        "diagnostic_status": diagnostic_status,
+        "output_digest": output_digest,
+        "config_digest": config_digest,
+        "input_digest": bound_input_digest,
+    }
