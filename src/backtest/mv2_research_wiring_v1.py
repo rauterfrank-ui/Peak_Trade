@@ -36,15 +36,18 @@ from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 from src.backtest.stats import compute_backtest_stats
 from src.backtest.strategy_signal_binding_v1 import (
+    CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
     ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
     MV2_REPLAY_SIGNAL_SOURCE,
     StrategySignalBindingError,
     StrategySignalProvenanceV1,
+    assert_decision_funnel_trade_alignment_v1,
     assert_engine_signal_provenance_consistency_v1,
     assert_backtest_engine_mv2_replay_signal_parity_v1,
     compute_strategy_signal_digest_v1,
     execute_configured_strategy_signal_series_v1,
+    resolve_mv2_research_engine_signal_source_v1,
     validate_mv2_replay_engine_signal_contract_v1,
 )
 from src.backtest.offline_evaluation_sizing_contract_v1 import (
@@ -413,7 +416,7 @@ class MV2ResearchWiringResultV1:
     mv2_replay_signal_digest: str
     mv2_replay_nonzero_signal_count: int
     sizing_provenance: Mapping[str, Any] = field(default_factory=dict)
-    backtest_engine_signal_source: str = ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
+    backtest_engine_signal_source: str = CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE
     backtest_engine_signal_digest: str = ""
     decision_funnel_counts: Mapping[str, int] = field(default_factory=dict)
     block_reason_counts: Mapping[str, int] = field(default_factory=dict)
@@ -1660,12 +1663,17 @@ def run_mv2_research_backtest_wiring_v1(
     | None = None,
     feedback_learning_state_file_binding: FeedbackLearningBacktestStateFileBindingConfigV1
     | None = None,
-    backtest_engine_signal_source: str = ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+    backtest_engine_signal_source: str | None = None,
     expected_mv2_replay_signal_digest: Optional[str] = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
     _ensure_no_lookahead(bars)
+
+    resolved_engine_signal_source = resolve_mv2_research_engine_signal_source_v1(
+        explicit_source=backtest_engine_signal_source,
+        cfg=cfg,
+    )
 
     effective_profile = profile_binding or default_runtime_profile_binding_v1()
     if effective_profile.dataset_profile is DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1:
@@ -1783,7 +1791,7 @@ def run_mv2_research_backtest_wiring_v1(
     assert_engine_signal_provenance_consistency_v1(strategy_binding.provenance)
     engine_signal_series = strategy_binding.signals
 
-    position_feedback_bound = backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY
+    position_feedback_bound = resolved_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY
     engine_cfg = dict(cfg)
     sizing_provenance: dict[str, Any] = {}
     strategy_params = {
@@ -2037,7 +2045,7 @@ def run_mv2_research_backtest_wiring_v1(
     )
     mv2_replay_nonzero = int((mv2_replay_series != 0).sum())
 
-    if backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY:
+    if resolved_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY:
         try:
             engine_signal_series, engine_provenance = validate_mv2_replay_engine_signal_contract_v1(
                 mv2_replay_series,
@@ -2049,12 +2057,12 @@ def run_mv2_research_backtest_wiring_v1(
         except StrategySignalBindingError as exc:
             raise ValueError(f"mv2_replay_engine_signal_binding_failed:{exc}") from exc
         backtest_engine_signal_digest = mv2_replay_digest
-    elif backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY:
+    elif resolved_engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY:
         engine_provenance = strategy_binding.provenance
         backtest_engine_signal_digest = engine_provenance.engine_signal_digest
     else:
         raise ValueError(
-            f"backtest_engine_signal_source_unsupported:{backtest_engine_signal_source}"
+            f"backtest_engine_signal_source_unsupported:{resolved_engine_signal_source}"
         )
 
     def _signal_fn(df: pd.DataFrame, params: Mapping[str, Any]) -> pd.Series:  # noqa: ARG001
@@ -2101,13 +2109,19 @@ def run_mv2_research_backtest_wiring_v1(
             raise ValueError("offline_sizing_accounting_missing")
         sizing_provenance = serialize_sizing_provenance_v1(contract, accounting)
 
-    if backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY:
+    if resolved_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY:
         assert_backtest_engine_mv2_replay_signal_parity_v1(
             mv2_replay_signals=mv2_replay_series,
             bar_outcomes=tuple(outcomes),
-            backtest_engine_signal_source=backtest_engine_signal_source,
+            backtest_engine_signal_source=resolved_engine_signal_source,
             backtest_engine_signal_digest=backtest_engine_signal_digest,
             mv2_replay_signal_digest=mv2_replay_digest,
+        )
+        assert_decision_funnel_trade_alignment_v1(
+            bar_outcomes=tuple(outcomes),
+            engine_signals=engine_signal_series,
+            backtest_engine_signal_source=resolved_engine_signal_source,
+            backtest_result=backtest_result,
         )
 
     trades_df = backtest_result.trades
@@ -2130,7 +2144,7 @@ def run_mv2_research_backtest_wiring_v1(
         sizing_provenance=sizing_provenance,
         decision_funnel_counts=decision_funnel_accumulator.counts_dict(),
         block_reason_counts=materialize_block_reason_counts_v0(decision_funnel_accumulator),
-        backtest_engine_signal_source=backtest_engine_signal_source,
+        backtest_engine_signal_source=resolved_engine_signal_source,
         backtest_engine_signal_digest=backtest_engine_signal_digest,
     )
 

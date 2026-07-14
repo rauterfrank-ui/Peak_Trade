@@ -24,6 +24,7 @@ from src.backtest.strategy_signal_binding_v1 import (
     COMPOSITE_STRATEGY_ID,
     COMPOSITION_RULE_CONFIRMED_SIGNAL_TIMES_FILTER_MASK,
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+    CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
     StrategySignalBindingError,
     collect_configured_strategy_params_v1,
     compute_composite_required_warmup_rows_v1,
@@ -251,7 +252,7 @@ def verify_composite_breakout_confirmation_vol_gated_donchian_v1_config_schema_v
         reasons.append("config_strategy_id_mismatch")
     if eval_section.get("strategy_version") != COMPOSITE_V1_STRATEGY_VERSION:
         reasons.append("config_strategy_version_mismatch")
-    if eval_section.get("engine_signal_source") != ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY:
+    if eval_section.get("engine_signal_source") != CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE:
         reasons.append("engine_signal_source_not_bound")
 
     for required_section in ("walk_forward", "monte_carlo", "stress"):

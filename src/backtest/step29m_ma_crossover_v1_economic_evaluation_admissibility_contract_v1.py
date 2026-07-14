@@ -20,6 +20,7 @@ from src.backtest.step29m_macd_v1_economic_evaluation_admissibility_contract_v1 
 )
 from src.backtest.strategy_signal_binding_v1 import (
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+    CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
     StrategySignalBindingError,
     collect_configured_strategy_params_v1,
     compute_required_warmup_rows_v1,
@@ -325,7 +326,7 @@ def verify_ma_crossover_v1_config_schema_v1(cfg: Mapping[str, Any]) -> tuple[str
         reasons.append("config_strategy_id_mismatch")
     if eval_section.get("strategy_version") != MA_CROSSOVER_V1_STRATEGY_VERSION:
         reasons.append("config_strategy_version_mismatch")
-    if eval_section.get("engine_signal_source") != ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY:
+    if eval_section.get("engine_signal_source") != CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE:
         reasons.append("engine_signal_source_not_bound")
     if eval_section.get("economic_validity_policy_version") != "economic_validity_policy_v1":
         reasons.append("economic_validity_policy_version_mismatch")

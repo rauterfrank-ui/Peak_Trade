@@ -35,6 +35,16 @@ ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY = "configured_strategy_signal"
 ENGINE_SIGNAL_SOURCE_MV2_REPLAY = "mv2_decision_replay_series"
 STRATEGY_SIGNAL_SOURCE_CANONICAL = "canonical_strategy_signal_series"
 MV2_REPLAY_SIGNAL_SOURCE = ENGINE_SIGNAL_SOURCE_MV2_REPLAY
+CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE = ENGINE_SIGNAL_SOURCE_MV2_REPLAY
+LEGACY_RAW_SIGNAL_RESEARCH_ENGINE_SIGNAL_SOURCE = ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
+RUN_BACKTEST_PATH_CLASSIFICATION = "RAW_SIGNAL_RESEARCH"
+CANONICAL_MV2_SYSTEM_PATH_CLASSIFICATION = "CANONICAL_SYSTEM_REPLAY"
+_ALLOWED_ENGINE_SIGNAL_SOURCES = frozenset(
+    {
+        ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
+        ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+    }
+)
 
 _ALLOWED_SIGNAL_VALUES = frozenset({-1, 0, 1})
 
@@ -999,6 +1009,118 @@ def validate_mv2_replay_engine_signal_contract_v1(
         all_flat_signal_reason=all_flat_reason,
     )
     return int_signals, provenance
+
+
+def resolve_engine_signal_source_from_cfg_v1(cfg: Mapping[str, Any]) -> str | None:
+    """Read optional engine_signal_source from economic_evaluation_v1 config section."""
+    eval_section = cfg.get("economic_evaluation_v1")
+    if not isinstance(eval_section, Mapping):
+        return None
+    raw = eval_section.get("engine_signal_source")
+    if raw is None:
+        return None
+    return str(raw).strip()
+
+
+def validate_engine_signal_source_v1(engine_signal_source: str) -> str:
+    """Fail-closed validation for known engine signal sources."""
+    normalized = str(engine_signal_source).strip()
+    _fail_closed(
+        normalized not in _ALLOWED_ENGINE_SIGNAL_SOURCES,
+        f"engine_signal_source_unsupported:{normalized or 'missing'}",
+    )
+    return normalized
+
+
+def resolve_mv2_research_engine_signal_source_v1(
+    *,
+    explicit_source: str | None = None,
+    cfg: Mapping[str, Any] | None = None,
+) -> str:
+    """Resolve canonical MV2 research engine signal source without silent fallback."""
+    if cfg is not None:
+        configured = resolve_engine_signal_source_from_cfg_v1(cfg)
+        if configured is not None:
+            return validate_engine_signal_source_v1(configured)
+    if explicit_source is not None:
+        return validate_engine_signal_source_v1(explicit_source)
+    return CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE
+
+
+def assert_canonical_mv2_config_engine_signal_source_bound_v1(
+    eval_section: Mapping[str, Any],
+) -> None:
+    """Require canonical MV2 configs to bind mv2_decision_replay_series."""
+    bound = eval_section.get("engine_signal_source")
+    _fail_closed(
+        bound != CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
+        "canonical_mv2_engine_signal_source_not_bound",
+    )
+
+
+def assert_decision_funnel_trade_alignment_v1(
+    *,
+    bar_outcomes: Sequence[Any],
+    engine_signals: pd.Series,
+    backtest_engine_signal_source: str,
+    backtest_result: Any,
+) -> None:
+    """Fail-closed alignment between funnel evidence, mapped replay signals, and engine input."""
+    _fail_closed(
+        backtest_engine_signal_source != CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
+        "decision_funnel_trade_alignment_requires_mv2_replay_source",
+    )
+    _fail_closed(
+        len(bar_outcomes) != len(engine_signals), "decision_funnel_engine_signal_length_mismatch"
+    )
+    replay_values = [int(outcome.position_signal) for outcome in bar_outcomes]
+    engine_values = [int(v) for v in engine_signals.astype(int).tolist()]
+    _fail_closed(replay_values != engine_values, "decision_funnel_engine_signal_value_mismatch")
+    for i, outcome in enumerate(bar_outcomes):
+        _fail_closed(
+            int(outcome.trading_epoch) != i,
+            f"decision_funnel_epoch_order_mismatch:{i}",
+        )
+        _fail_closed(
+            outcome.evidence.trading_epoch != outcome.trading_epoch,
+            f"decision_funnel_evidence_epoch_mismatch:{i}",
+        )
+        _fail_closed(
+            not getattr(outcome.evidence, "decision_id", ""),
+            f"decision_funnel_missing_decision_id:{i}",
+        )
+    trades_df = getattr(backtest_result, "trades", None)
+    trade_count = len(trades_df) if trades_df is not None else 0
+    if trade_count == 0:
+        return
+    _fail_closed(
+        not any(value != 0 for value in engine_values),
+        "decision_funnel_nonzero_engine_signal_missing_for_trades",
+    )
+
+
+def assert_parallel_strategy_signal_does_not_control_engine_v1(
+    *,
+    strategy_signals: pd.Series,
+    engine_signals: pd.Series,
+    mv2_replay_signals: pd.Series,
+    backtest_engine_signal_source: str,
+) -> None:
+    """Configured strategy diagnostics must not override canonical MV2 engine consumption."""
+    _fail_closed(
+        backtest_engine_signal_source != CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
+        "parallel_truth_prevention_requires_mv2_replay_source",
+    )
+    replay_values = [int(v) for v in mv2_replay_signals.astype(int).tolist()]
+    engine_values = [int(v) for v in engine_signals.astype(int).tolist()]
+    _fail_closed(replay_values != engine_values, "parallel_truth_engine_not_replay_aligned")
+    strategy_values = [int(v) for v in strategy_signals.astype(int).tolist()]
+    if strategy_values == replay_values:
+        return
+    _fail_closed(
+        engine_values == strategy_values,
+        "parallel_strategy_signal_controls_engine_output",
+    )
 
 
 def assert_backtest_engine_mv2_replay_signal_parity_v1(

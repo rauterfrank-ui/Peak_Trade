@@ -93,7 +93,7 @@ def test_macd_warmup_contract() -> None:
 
 def test_config_schema_and_engine_signal_source(cfg: dict) -> None:
     assert cfg["config_schema_version"] == "step29m_macd_v1_economic_evaluation_admissibility_v1"
-    assert cfg["economic_evaluation_v1"]["engine_signal_source"] == "configured_strategy_signal"
+    assert cfg["economic_evaluation_v1"]["engine_signal_source"] == "mv2_decision_replay_series"
 
 
 def test_config_digest_stable(cfg: dict) -> None:

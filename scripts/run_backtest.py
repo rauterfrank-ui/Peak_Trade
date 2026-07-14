@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """
-Peak_Trade – Zentrales Backtest-Script
-======================================
-Einziger Standard-Einstiegspunkt für Backtests.
+Peak_Trade – Legacy Raw-Signal Research Backtest Entry
+======================================================
+Bewusst separater Legacy-/Raw-Signal-Research-Einstiegspunkt — **nicht** der
+kanonische Full-System-/MV2-Replay-Entry und **kein** System-Economic-Evidence-Pfad.
+
+Path classification: ``RAW_SIGNAL_RESEARCH`` (``configured_strategy_signal``).
+Kanonischer Systempfad: ``run_mv2_research_backtest_wiring_v1`` mit
+``mv2_decision_replay_series`` (``CANONICAL_SYSTEM_REPLAY``).
 
 NO-LIVE: nur Backtest / Evidence-Artefakte — keine Order-Ausführung, kein Live- oder
 Execution-Scope. Das Handelssymbol für Metadaten kommt aus der Config über
