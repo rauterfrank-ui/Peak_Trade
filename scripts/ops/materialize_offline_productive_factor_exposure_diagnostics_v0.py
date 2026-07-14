@@ -144,6 +144,17 @@ def main() -> int:
         action="store_true",
         help="Skip embedded pytest invocation (for materializer roundtrip tests)",
     )
+    parser.add_argument(
+        "--previous-defective-source-bundle",
+        type=Path,
+        default=None,
+        help="Optional repair lineage reference to a prior defective source bundle",
+    )
+    parser.add_argument(
+        "--defect-class",
+        default=None,
+        help="Optional repair lineage defect class for rematerialized source bundles",
+    )
     args = parser.parse_args()
     output_dir = args.out.expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -371,21 +382,24 @@ def main() -> int:
         ),
         f"BOUNDARY_GUARD={'PASS' if import_boundary_rc == 0 else 'FAIL'}",
         f"RUFF_STATUS={'PASS' if ruff_pass else 'FAIL'}",
-        "MANIFEST_VERIFY_RC=PENDING",
         f"DURABLE_EVIDENCE_DIR={output_dir}",
         f"DIAGNOSTICS_SCOPE_VERSION={DIAGNOSTICS_SCOPE_VERSION}",
         "NEXT_ACTION=WAIT_FOR_REQUIRED_PR_CHECKS_AND_EXPLICIT_OPERATOR_MERGE_SCOPE",
-        "",
     ]
+    if args.previous_defective_source_bundle is not None:
+        final_report_fields.extend(
+            [
+                f"PREVIOUS_DEFECTIVE_SOURCE_BUNDLE={args.previous_defective_source_bundle}",
+                f"DEFECT_CLASS={args.defect_class or 'POST_MANIFEST_FINAL_REPORT_MUTATION'}",
+                "HISTORICAL_EVIDENCE_PRESERVED=true",
+            ]
+        )
+    final_report_fields.append("")
     final_report = "\n".join(final_report_fields)
     (output_dir / "final_report.txt").write_text(final_report, encoding="utf-8")
 
     manifest_verify_rc, _ = finalize_durable_bundle_manifest(output_dir)
-    updated_report = final_report.replace(
-        "MANIFEST_VERIFY_RC=PENDING", f"MANIFEST_VERIFY_RC={manifest_verify_rc}"
-    )
-    (output_dir / "final_report.txt").write_text(updated_report, encoding="utf-8")
-    print(updated_report, end="")
+    print(final_report, end="")
 
     if test_proc.returncode != 0 or not ruff_pass or manifest_verify_rc != 0:
         return 1

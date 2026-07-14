@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
+
+from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256
 
 from research.linear_evidence.factor_exposure import (
     REASON_FACTOR_LOOKAHEAD_DETECTED,
@@ -57,6 +60,49 @@ ORTHOGONALITY_INTERPRETATION = (
     ARCHIVE_ROOT
     / "research/offline_productive_signal_orthogonality_results_interpretation_v0_20260714T213029Z"
 )
+SEMANTIC_ARTIFACTS = (
+    "factor_exposure_results.json",
+    "beta_stability.json",
+    "exposure_similarity_matrix.json",
+    "cluster_risk_diagnostics.json",
+    "deterministic_materialization.txt",
+)
+
+
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _manifest_digest_for(path: Path, bundle: Path) -> str | None:
+    rel = path.relative_to(bundle).as_posix()
+    for line in (bundle / "MANIFEST.sha256").read_text(encoding="utf-8").splitlines():
+        parts = line.split(None, 1)
+        if len(parts) == 2 and parts[1] == rel:
+            return parts[0]
+    return None
+
+
+def _run_materializer(out_dir: Path) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [
+            sys.executable,
+            str(MATERIALIZER),
+            "--out",
+            str(out_dir),
+            "--trade-ledger",
+            str(TRADE_LEDGER),
+            "--factor-snapshots",
+            str(FACTOR_SNAPSHOTS),
+            "--orthogonality-interpretation-bundle",
+            str(ORTHOGONALITY_INTERPRETATION),
+            "--skip-focused-tests",
+        ],
+        cwd=str(REPO_ROOT),
+        check=False,
+        text=True,
+        capture_output=True,
+        env={"PYTHONPATH": f"{REPO_ROOT / 'src'}:{REPO_ROOT}"},
+    )
 
 
 def _record(
@@ -322,25 +368,32 @@ def test_materializer_roundtrip(tmp_path: Path) -> None:
         pytest.skip("archive productive inputs unavailable")
     if not ORTHOGONALITY_INTERPRETATION.is_dir():
         pytest.skip("interpretation bundle unavailable")
-    result = subprocess.run(
-        [
-            sys.executable,
-            str(MATERIALIZER),
-            "--out",
-            str(tmp_path / "evidence"),
-            "--trade-ledger",
-            str(TRADE_LEDGER),
-            "--factor-snapshots",
-            str(FACTOR_SNAPSHOTS),
-            "--orthogonality-interpretation-bundle",
-            str(ORTHOGONALITY_INTERPRETATION),
-            "--skip-focused-tests",
-        ],
-        cwd=str(REPO_ROOT),
-        check=False,
-        text=True,
-        capture_output=True,
-        env={"PYTHONPATH": f"{REPO_ROOT / 'src'}:{REPO_ROOT}"},
-    )
-    assert result.returncode == 0, result.stderr
-    assert (tmp_path / "evidence" / "MANIFEST.sha256").is_file()
+
+    first_dir = tmp_path / "evidence_a"
+    second_dir = tmp_path / "evidence_b"
+    first = _run_materializer(first_dir)
+    second = _run_materializer(second_dir)
+    assert first.returncode == 0, first.stderr
+    assert second.returncode == 0, second.stderr
+
+    for bundle in (first_dir, second_dir):
+        final_report = bundle / "final_report.txt"
+        manifest = bundle / "MANIFEST.sha256"
+        assert final_report.is_file()
+        assert manifest.is_file()
+        ok, msg = verify_manifest_sha256(bundle)
+        assert ok, msg
+        manifest_digest = _manifest_digest_for(final_report, bundle)
+        assert manifest_digest is not None
+        assert manifest_digest == _sha256_file(final_report)
+        manifest_verify_log = bundle / "MANIFEST_VERIFY.log"
+        assert manifest_verify_log.is_file()
+        assert "MANIFEST_VERIFY_RC=0" in manifest_verify_log.read_text(encoding="utf-8")
+
+    first_semantic = {
+        name: (first_dir / name).read_text(encoding="utf-8") for name in SEMANTIC_ARTIFACTS
+    }
+    second_semantic = {
+        name: (second_dir / name).read_text(encoding="utf-8") for name in SEMANTIC_ARTIFACTS
+    }
+    assert first_semantic == second_semantic
