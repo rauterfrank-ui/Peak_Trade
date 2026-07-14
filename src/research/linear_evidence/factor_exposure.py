@@ -584,6 +584,803 @@ def fit_factor_exposure(
     )
 
 
+REASON_VALIDATION_ERROR_TOO_HIGH = "VALIDATION_ERROR_TOO_HIGH"
+REASON_COEFFICIENT_SIGN_UNSTABLE = "COEFFICIENT_SIGN_UNSTABLE"
+REASON_BETA_INSTABILITY = "BETA_INSTABILITY"
+REASON_DOMINANT_COMMON_FACTOR_EXPOSURE = "DOMINANT_COMMON_FACTOR_EXPOSURE"
+REASON_CLUSTER_CONCENTRATION_HIGH = "CLUSTER_CONCENTRATION_HIGH"
+REASON_FEATURE_LEAKAGE_RISK = "FEATURE_LEAKAGE_RISK"
+REASON_TARGET_BINDING_MISSING = "TARGET_BINDING_MISSING"
+REASON_FACTOR_INPUT_MISSING = "FACTOR_INPUT_MISSING"
+REASON_TIME_ALIGNMENT_INVALID = "TIME_ALIGNMENT_INVALID"
+REASON_RANDOM_VALIDATION_SPLIT_BLOCKED = "RANDOM_VALIDATION_SPLIT_BLOCKED"
+REASON_OUTLIER_DOMINATED = "OUTLIER_DOMINATED"
+
+PRODUCTIVE_FACTOR_GROUPS_V0: dict[str, str] = {
+    "funding_rate_abs": "funding",
+    "spread_bps": "liquidity_spread",
+    "volatility_estimate": "volatility",
+}
+
+_DEFAULT_VALIDATION_FRACTION = 0.25
+_DEFAULT_STABILITY_WINDOW_COUNT = 3
+_EXPOSURE_SIMILARITY_THRESHOLD = 0.85
+_VALIDATION_RMSE_MULTIPLIER = 3.0
+
+
+@dataclass(frozen=True)
+class FactorExposureDiagnosticsConfigV0:
+    correlation_threshold: float = 0.85
+    vif_threshold: float = 10.0
+    condition_number_threshold: float = 1000.0
+    min_samples: int = 8
+    validation_fraction: float = _DEFAULT_VALIDATION_FRACTION
+    stability_window_count: int = _DEFAULT_STABILITY_WINDOW_COUNT
+    exposure_similarity_threshold: float = _EXPOSURE_SIMILARITY_THRESHOLD
+    validation_rmse_multiplier: float = _VALIDATION_RMSE_MULTIPLIER
+
+    def validate(self) -> None:
+        base = FactorExposureConfigV1(
+            correlation_threshold=self.correlation_threshold,
+            vif_threshold=self.vif_threshold,
+            condition_number_threshold=self.condition_number_threshold,
+            min_samples=self.min_samples,
+        )
+        base.validate()
+        if not 0.0 < self.validation_fraction < 1.0:
+            raise ValueError("validation_fraction must be between 0 and 1")
+        if self.stability_window_count < 2:
+            raise ValueError("stability_window_count must be at least 2")
+
+
+@dataclass(frozen=True)
+class FactorExposureDiagnosticsEvidenceV0:
+    evidence_type: str
+    model_family: str
+    target_name: str
+    strategy_or_signal_id: str
+    feature_names: Tuple[str, ...]
+    factor_groups: Dict[str, str]
+    n_samples: int
+    n_features: int
+    solver: str
+    fit_intercept: bool
+    coefficients: Dict[str, float]
+    coefficient_signs: Dict[str, str]
+    n_samples_train: int
+    n_samples_validation: int
+    train_r2: float
+    validation_r2: float | None
+    train_rmse: float
+    validation_rmse: float | None
+    train_mae: float
+    validation_mae: float | None
+    condition_number: float | None
+    matrix_rank: int
+    rank_deficient: bool
+    residual_diagnostics: Dict[str, object]
+    beta_stability: Dict[str, object]
+    dominant_factor_exposures: Tuple[str, ...]
+    common_exposure_similarity_matrix: Dict[str, Dict[str, float]]
+    exposure_cluster_assignments: Dict[str, int]
+    cluster_concentration_diagnostics: Dict[str, object]
+    unexplained_residual_share: float
+    dropped_rows_by_reason: Dict[str, int]
+    missing_factor_groups: Tuple[str, ...]
+    feature_matrix_digest: str
+    target_digest: str
+    config_digest: str
+    source_evidence_refs: Tuple[str, ...]
+    time_range: Dict[str, str]
+    instrument_universe_digest: str
+    validation_policy: str
+    status: str
+    reason_codes: Tuple[str, ...]
+    authority_effect: str
+    runtime_effect: str
+
+    def to_dict(self) -> Dict[str, object]:
+        return {
+            "evidence_type": self.evidence_type,
+            "model_family": self.model_family,
+            "target_name": self.target_name,
+            "strategy_or_signal_id": self.strategy_or_signal_id,
+            "feature_names": list(self.feature_names),
+            "factor_groups": dict(self.factor_groups),
+            "n_samples": self.n_samples,
+            "n_features": self.n_features,
+            "solver": self.solver,
+            "fit_intercept": self.fit_intercept,
+            "coefficients": dict(self.coefficients),
+            "coefficient_signs": dict(self.coefficient_signs),
+            "n_samples_train": self.n_samples_train,
+            "n_samples_validation": self.n_samples_validation,
+            "train_r2": self.train_r2,
+            "validation_r2": self.validation_r2,
+            "train_rmse": self.train_rmse,
+            "validation_rmse": self.validation_rmse,
+            "train_mae": self.train_mae,
+            "validation_mae": self.validation_mae,
+            "condition_number": self.condition_number,
+            "matrix_rank": self.matrix_rank,
+            "rank_deficient": self.rank_deficient,
+            "residual_diagnostics": dict(self.residual_diagnostics),
+            "beta_stability": dict(self.beta_stability),
+            "dominant_factor_exposures": list(self.dominant_factor_exposures),
+            "common_exposure_similarity_matrix": self.common_exposure_similarity_matrix,
+            "exposure_cluster_assignments": dict(self.exposure_cluster_assignments),
+            "cluster_concentration_diagnostics": dict(self.cluster_concentration_diagnostics),
+            "unexplained_residual_share": self.unexplained_residual_share,
+            "dropped_rows_by_reason": dict(self.dropped_rows_by_reason),
+            "missing_factor_groups": list(self.missing_factor_groups),
+            "feature_matrix_digest": self.feature_matrix_digest,
+            "target_digest": self.target_digest,
+            "config_digest": self.config_digest,
+            "source_evidence_refs": list(self.source_evidence_refs),
+            "time_range": dict(self.time_range),
+            "instrument_universe_digest": self.instrument_universe_digest,
+            "validation_policy": self.validation_policy,
+            "status": self.status,
+            "reason_codes": list(self.reason_codes),
+            "authority_effect": self.authority_effect,
+            "runtime_effect": self.runtime_effect,
+        }
+
+
+def _r2_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    ss_tot = float(np.sum((y_true - float(np.mean(y_true))) ** 2))
+    if ss_tot == 0.0:
+        return 0.0
+    ss_res = float(np.sum((y_true - y_pred) ** 2))
+    return float(1.0 - ss_res / ss_tot)
+
+
+def _coefficient_signs(coefficients: Mapping[str, float]) -> Dict[str, str]:
+    signs: Dict[str, str] = {}
+    for name, value in sorted(coefficients.items()):
+        if name == "intercept":
+            continue
+        if value > 0:
+            signs[name] = "positive"
+        elif value < 0:
+            signs[name] = "negative"
+        else:
+            signs[name] = "zero"
+    return signs
+
+
+def _resolve_factor_groups(feature_names: Sequence[str]) -> tuple[Dict[str, str], tuple[str, ...]]:
+    groups = {
+        name: PRODUCTIVE_FACTOR_GROUPS_V0.get(name, "NOT_AVAILABLE")
+        for name in sorted(feature_names)
+    }
+    missing = tuple(
+        sorted(
+            {
+                group
+                for group in (
+                    "market_common_return",
+                    "volatility",
+                    "trend",
+                    "momentum",
+                    "liquidity_spread",
+                    "funding",
+                    "regime",
+                    "instrument_common_cluster",
+                )
+                if group not in groups.values()
+            }
+        )
+    )
+    return groups, missing
+
+
+def _time_ordered_split(n: int, validation_fraction: float) -> int:
+    if validation_fraction <= 0.0 or validation_fraction >= 1.0:
+        raise ValueError(REASON_RANDOM_VALIDATION_SPLIT_BLOCKED)
+    split = max(1, min(n - 1, int(round(n * (1.0 - validation_fraction)))))
+    return split
+
+
+def _fit_ols_split_metrics(
+    x: np.ndarray,
+    y: np.ndarray,
+    factor_names: tuple[str, ...],
+    *,
+    validation_fraction: float,
+) -> tuple[
+    Dict[str, float],
+    int,
+    int,
+    float,
+    float | None,
+    float,
+    float | None,
+    float,
+    float | None,
+    np.ndarray,
+    int,
+    float,
+]:
+    n = x.shape[0]
+    split = _time_ordered_split(n, validation_fraction)
+    x_train = x[:split]
+    y_train = y[:split]
+    x_val = x[split:]
+    y_val = y[split:]
+
+    design_train = np.column_stack([np.ones(x_train.shape[0]), x_train])
+    design_all = np.column_stack([np.ones(x.shape[0]), x])
+    design_val = (
+        np.column_stack([np.ones(x_val.shape[0]), x_val]) if len(x_val) else np.empty((0, 0))
+    )
+
+    beta, _, rank, _ = np.linalg.lstsq(design_train, y_train, rcond=None)
+    y_pred_train = design_train @ beta
+    y_pred_val = design_val @ beta if len(x_val) else np.asarray([], dtype=float)
+    y_pred_all = design_all @ beta
+    residuals = y - y_pred_all
+
+    coefficients = {"intercept": float(beta[0])}
+    coefficients.update({name: float(value) for name, value in zip(factor_names, beta[1:])})
+
+    train_r2 = _r2_score(y_train, y_pred_train)
+    val_r2 = _r2_score(y_val, y_pred_val) if len(y_val) else None
+    train_rmse = float(np.sqrt(np.mean((y_train - y_pred_train) ** 2)))
+    val_rmse = float(np.sqrt(np.mean((y_val - y_pred_val) ** 2))) if len(y_val) else None
+    train_mae = float(np.mean(np.abs(y_train - y_pred_train)))
+    val_mae = float(np.mean(np.abs(y_val - y_pred_val))) if len(y_val) else None
+    condition_number = float(np.linalg.cond(design_train))
+    return (
+        coefficients,
+        split,
+        n - split,
+        train_r2,
+        val_r2,
+        train_rmse,
+        val_rmse,
+        train_mae,
+        val_mae,
+        residuals,
+        int(rank),
+        condition_number,
+    )
+
+
+def compute_beta_stability_v0(
+    records: Sequence[FactorExposureInputV1],
+    *,
+    factor_names: tuple[str, ...],
+    window_count: int,
+    min_samples: int,
+) -> dict[str, object]:
+    if window_count < 2:
+        return {"computed": False, "reason": "INSUFFICIENT_WINDOW_COUNT"}
+    ordered = _validate_temporal_bindings(records)
+    n = len(ordered)
+    if n < min_samples:
+        return {"computed": False, "reason": REASON_INSUFFICIENT_SAMPLE_COUNT}
+
+    windows: list[dict[str, object]] = []
+    per_factor_values: dict[str, list[float]] = {name: [] for name in factor_names}
+
+    window_size = max(3, n // window_count)
+    min_window_samples = max(3, min(min_samples, window_size))
+
+    for start in range(0, n, window_size):
+        chunk = ordered[start : start + window_size]
+        if len(chunk) < min_window_samples:
+            continue
+        x, y, names, _, _ = build_factor_matrix(chunk)
+        if names != factor_names:
+            continue
+        x, names, _ = _exclude_strict_zero_variance_factors_v0(x, names)
+        if not names or x.shape[0] < min_window_samples:
+            continue
+        design = np.column_stack([np.ones(x.shape[0]), x])
+        beta, _, _, _ = np.linalg.lstsq(design, y, rcond=None)
+        coeffs = {name: float(value) for name, value in zip(names, beta[1:])}
+        windows.append(
+            {
+                "start_index": start,
+                "end_index": start + len(chunk) - 1,
+                "n_samples": len(chunk),
+                "coefficients": coeffs,
+            }
+        )
+        for name, value in coeffs.items():
+            per_factor_values.setdefault(name, []).append(value)
+
+    if len(windows) < 2:
+        return {"computed": False, "reason": REASON_INSUFFICIENT_SAMPLE_COUNT, "windows": windows}
+
+    sign_unstable: list[str] = []
+    beta_dispersion: dict[str, float] = {}
+    for name, values in sorted(per_factor_values.items()):
+        if len(values) < 2:
+            continue
+        signs = {1 if v > 0 else (-1 if v < 0 else 0) for v in values}
+        if len(signs) > 1:
+            sign_unstable.append(name)
+        beta_dispersion[name] = float(np.std(values))
+
+    return {
+        "computed": True,
+        "window_count": len(windows),
+        "windows": windows,
+        "sign_unstable_factors": tuple(sign_unstable),
+        "beta_dispersion": beta_dispersion,
+        "stable": not sign_unstable,
+    }
+
+
+def compute_exposure_similarity_matrix_v0(
+    exposure_vectors: Mapping[str, Mapping[str, float]],
+) -> dict[str, dict[str, float]]:
+    ids = sorted(exposure_vectors.keys())
+    names = factor_names_from_vectors(exposure_vectors)
+    matrix: dict[str, dict[str, float]] = {}
+    for left in ids:
+        matrix[left] = {}
+        left_vec = np.asarray(
+            [exposure_vectors[left].get(name, 0.0) for name in names], dtype=float
+        )
+        left_norm = float(np.linalg.norm(left_vec))
+        for right in ids:
+            right_vec = np.asarray(
+                [exposure_vectors[right].get(name, 0.0) for name in names], dtype=float
+            )
+            right_norm = float(np.linalg.norm(right_vec))
+            if left_norm == 0.0 or right_norm == 0.0:
+                matrix[left][right] = 1.0 if left == right else 0.0
+            else:
+                matrix[left][right] = float(np.dot(left_vec, right_vec) / (left_norm * right_norm))
+    return matrix
+
+
+def factor_names_from_vectors(
+    exposure_vectors: Mapping[str, Mapping[str, float]],
+) -> tuple[str, ...]:
+    names: set[str] = set()
+    for vector in exposure_vectors.values():
+        names.update(vector.keys())
+    return tuple(sorted(names))
+
+
+def classify_exposure_clusters_v0(
+    similarity_matrix: Mapping[str, Mapping[str, float | int]],
+    *,
+    threshold: float,
+) -> tuple[dict[str, int], dict[str, object]]:
+    ids = sorted(similarity_matrix.keys())
+    if len(ids) <= 1:
+        return {ids[0]: 0} if ids else {}, {
+            "cluster_count": len(ids),
+            "max_pairwise_similarity": 0.0,
+        }
+
+    parent = {item: item for item in ids}
+
+    def find(node: str) -> str:
+        while parent[node] != node:
+            parent[node] = parent[parent[node]]
+            node = parent[node]
+        return node
+
+    def union(a: str, b: str) -> None:
+        root_a = find(a)
+        root_b = find(b)
+        if root_a != root_b:
+            parent[root_b] = root_a
+
+    max_similarity = 0.0
+    high_pairs: list[tuple[str, str, float]] = []
+    for index, left in enumerate(ids):
+        for right in ids[index + 1 :]:
+            value = float(similarity_matrix[left][right])
+            max_similarity = max(max_similarity, abs(value))
+            if abs(value) >= threshold:
+                high_pairs.append((left, right, value))
+                union(left, right)
+
+    cluster_map: dict[str, int] = {}
+    cluster_ids: dict[str, int] = {}
+    next_cluster = 0
+    for item in ids:
+        root = find(item)
+        if root not in cluster_ids:
+            cluster_ids[root] = next_cluster
+            next_cluster += 1
+        cluster_map[item] = cluster_ids[root]
+
+    cluster_sizes: dict[int, int] = {}
+    for cluster in cluster_map.values():
+        cluster_sizes[cluster] = cluster_sizes.get(cluster, 0) + 1
+    max_cluster_size = max(cluster_sizes.values()) if cluster_sizes else 0
+    concentration_ratio = max_cluster_size / len(ids) if ids else 0.0
+
+    return cluster_map, {
+        "cluster_count": next_cluster,
+        "max_pairwise_similarity": max_similarity,
+        "high_similarity_pairs": high_pairs,
+        "cluster_sizes": cluster_sizes,
+        "cluster_concentration_ratio": concentration_ratio,
+        "cluster_concentration_high": concentration_ratio >= 0.67 and next_cluster <= 2,
+    }
+
+
+def fit_factor_exposure_diagnostics_v0(
+    records: Sequence[FactorExposureInputV1],
+    *,
+    strategy_or_signal_id: str = "pooled",
+    config: FactorExposureDiagnosticsConfigV0 | None = None,
+    source_evidence_refs: Sequence[str] = (),
+    instrument_universe_digest: str = "",
+    time_range: Mapping[str, str] | None = None,
+    dropped_rows_by_reason: Mapping[str, int] | None = None,
+    productive_binding_gap: bool = False,
+    fixture_scaffold: bool = False,
+) -> FactorExposureDiagnosticsEvidenceV0:
+    cfg = config or FactorExposureDiagnosticsConfigV0()
+    cfg.validate()
+    base_config = FactorExposureConfigV1(
+        correlation_threshold=cfg.correlation_threshold,
+        vif_threshold=cfg.vif_threshold,
+        condition_number_threshold=cfg.condition_number_threshold,
+        min_samples=cfg.min_samples,
+    )
+
+    empty_time_range: dict[str, str] = {}
+    if not records:
+        base = fit_factor_exposure(
+            [],
+            config=base_config,
+            productive_binding_gap=productive_binding_gap,
+            fixture_scaffold=fixture_scaffold,
+        )
+        return FactorExposureDiagnosticsEvidenceV0(
+            evidence_type="factor_exposure_diagnostics",
+            model_family="ordinary_least_squares",
+            target_name=base.target_name,
+            strategy_or_signal_id=strategy_or_signal_id,
+            feature_names=(),
+            factor_groups={},
+            n_samples=0,
+            n_features=0,
+            solver="numpy.linalg.lstsq",
+            fit_intercept=True,
+            coefficients={},
+            coefficient_signs={},
+            n_samples_train=0,
+            n_samples_validation=0,
+            train_r2=0.0,
+            validation_r2=None,
+            train_rmse=0.0,
+            validation_rmse=None,
+            train_mae=0.0,
+            validation_mae=None,
+            condition_number=None,
+            matrix_rank=0,
+            rank_deficient=True,
+            residual_diagnostics={"computed": False},
+            beta_stability={"computed": False},
+            dominant_factor_exposures=(),
+            common_exposure_similarity_matrix={},
+            exposure_cluster_assignments={},
+            cluster_concentration_diagnostics={"computed": False},
+            unexplained_residual_share=1.0,
+            dropped_rows_by_reason=dict(dropped_rows_by_reason or {}),
+            missing_factor_groups=tuple(
+                sorted(
+                    {
+                        "market_common_return",
+                        "volatility",
+                        "trend",
+                        "momentum",
+                        "liquidity_spread",
+                        "funding",
+                        "regime",
+                        "instrument_common_cluster",
+                    }
+                )
+            ),
+            feature_matrix_digest=base.feature_matrix_digest,
+            target_digest=base.target_digest,
+            config_digest=_stable_digest(
+                [
+                    cfg.correlation_threshold,
+                    cfg.vif_threshold,
+                    cfg.condition_number_threshold,
+                    cfg.min_samples,
+                    cfg.validation_fraction,
+                    cfg.stability_window_count,
+                ]
+            ),
+            source_evidence_refs=tuple(source_evidence_refs),
+            time_range=dict(time_range or empty_time_range),
+            instrument_universe_digest=instrument_universe_digest,
+            validation_policy="time_ordered",
+            status=base.status,
+            reason_codes=base.reason_codes,
+            authority_effect=_AUTHORITY_EFFECT,
+            runtime_effect=_RUNTIME_EFFECT,
+        )
+
+    base = fit_factor_exposure(
+        records,
+        config=base_config,
+        productive_binding_gap=productive_binding_gap,
+        fixture_scaffold=fixture_scaffold,
+    )
+    reason_codes = list(base.reason_codes)
+    if fixture_scaffold and REASON_FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY not in reason_codes:
+        reason_codes.append(REASON_FIXTURE_SCAFFOLD_DIAGNOSTIC_ONLY)
+
+    x, y, factor_names, x_digest, y_digest = build_factor_matrix(records)
+    x, factor_names, excluded = _exclude_strict_zero_variance_factors_v0(x, factor_names)
+    factor_groups, missing_groups = _resolve_factor_groups(factor_names)
+
+    if base.status != "DIAGNOSTIC_ONLY" or not factor_names:
+        return FactorExposureDiagnosticsEvidenceV0(
+            evidence_type="factor_exposure_diagnostics",
+            model_family="ordinary_least_squares",
+            target_name=base.target_name,
+            strategy_or_signal_id=strategy_or_signal_id,
+            feature_names=factor_names,
+            factor_groups=factor_groups,
+            n_samples=int(x.shape[0]),
+            n_features=len(factor_names),
+            solver="numpy.linalg.lstsq",
+            fit_intercept=True,
+            coefficients=dict(base.coefficients),
+            coefficient_signs=_coefficient_signs(base.coefficients),
+            n_samples_train=0,
+            n_samples_validation=0,
+            train_r2=float(base.diagnostics.get("r2", 0.0))
+            if base.diagnostics.get("computed")
+            else 0.0,
+            validation_r2=None,
+            train_rmse=float(base.diagnostics.get("rmse", 0.0))
+            if base.diagnostics.get("computed")
+            else 0.0,
+            validation_rmse=None,
+            train_mae=float(base.diagnostics.get("mae", 0.0))
+            if base.diagnostics.get("computed")
+            else 0.0,
+            validation_mae=None,
+            condition_number=(
+                float(base.diagnostics["condition_number"])
+                if base.diagnostics.get("condition_number") is not None
+                else None
+            ),
+            matrix_rank=int(base.diagnostics.get("rank", 0)),
+            rank_deficient=base.status == "RANK_DEFICIENT_BLOCKED",
+            residual_diagnostics={"computed": bool(base.diagnostics.get("computed"))},
+            beta_stability={"computed": False},
+            dominant_factor_exposures=(),
+            common_exposure_similarity_matrix={},
+            exposure_cluster_assignments={},
+            cluster_concentration_diagnostics={"computed": False},
+            unexplained_residual_share=1.0,
+            dropped_rows_by_reason=dict(dropped_rows_by_reason or {}),
+            missing_factor_groups=missing_groups,
+            feature_matrix_digest=x_digest,
+            target_digest=y_digest,
+            config_digest=_stable_digest(
+                [
+                    cfg.correlation_threshold,
+                    cfg.vif_threshold,
+                    cfg.condition_number_threshold,
+                    cfg.min_samples,
+                    cfg.validation_fraction,
+                    cfg.stability_window_count,
+                ]
+            ),
+            source_evidence_refs=tuple(source_evidence_refs),
+            time_range=dict(time_range or empty_time_range),
+            instrument_universe_digest=instrument_universe_digest,
+            validation_policy="time_ordered",
+            status=base.status,
+            reason_codes=tuple(reason_codes),
+            authority_effect=_AUTHORITY_EFFECT,
+            runtime_effect=_RUNTIME_EFFECT,
+        )
+
+    (
+        coefficients,
+        n_train,
+        n_val,
+        train_r2,
+        val_r2,
+        train_rmse,
+        val_rmse,
+        train_mae,
+        val_mae,
+        residuals,
+        matrix_rank,
+        condition_number,
+    ) = _fit_ols_split_metrics(
+        x,
+        y,
+        factor_names,
+        validation_fraction=cfg.validation_fraction,
+    )
+
+    if not isfinite(condition_number) or condition_number > cfg.condition_number_threshold:
+        reason_codes.append(REASON_HIGH_CONDITION_NUMBER)
+    if matrix_rank < len(factor_names) + 1:
+        reason_codes.append(REASON_RANK_DEFICIENT)
+
+    residual_std = float(np.std(residuals))
+    outlier_count = int(np.sum(np.abs(residuals) > 3.0 * residual_std)) if residual_std > 0 else 0
+    if outlier_count > max(1, int(0.1 * len(residuals))):
+        reason_codes.append(REASON_OUTLIER_DOMINATED)
+
+    if (
+        val_rmse is not None
+        and train_rmse > 0
+        and val_rmse > cfg.validation_rmse_multiplier * train_rmse
+    ):
+        reason_codes.append(REASON_VALIDATION_ERROR_TOO_HIGH)
+
+    beta_stability = compute_beta_stability_v0(
+        records,
+        factor_names=factor_names,
+        window_count=cfg.stability_window_count,
+        min_samples=cfg.min_samples,
+    )
+    if beta_stability.get("computed") and beta_stability.get("sign_unstable_factors"):
+        reason_codes.append(REASON_COEFFICIENT_SIGN_UNSTABLE)
+        reason_codes.append(REASON_BETA_INSTABILITY)
+
+    abs_coeffs = [
+        (name, abs(float(value))) for name, value in coefficients.items() if name != "intercept"
+    ]
+    abs_coeffs.sort(key=lambda item: (-item[1], item[0]))
+    dominant = tuple(name for name, _ in abs_coeffs[: min(2, len(abs_coeffs))])
+
+    ss_tot = float(np.sum((y - float(np.mean(y))) ** 2))
+    unexplained = 1.0 if ss_tot == 0.0 else float(np.sum(residuals**2) / ss_tot)
+
+    status = "DIAGNOSTIC_ONLY"
+    if REASON_RANK_DEFICIENT in reason_codes or REASON_HIGH_CONDITION_NUMBER in reason_codes:
+        status = "RANK_DEFICIENT_BLOCKED"
+    elif (
+        REASON_VALIDATION_ERROR_TOO_HIGH in reason_codes or REASON_BETA_INSTABILITY in reason_codes
+    ):
+        status = "ROBUSTNESS_FAILED"
+
+    return FactorExposureDiagnosticsEvidenceV0(
+        evidence_type="factor_exposure_diagnostics",
+        model_family="ordinary_least_squares",
+        target_name=base.target_name,
+        strategy_or_signal_id=strategy_or_signal_id,
+        feature_names=factor_names,
+        factor_groups=factor_groups,
+        n_samples=int(x.shape[0]),
+        n_features=len(factor_names),
+        solver="numpy.linalg.lstsq",
+        fit_intercept=True,
+        coefficients=coefficients,
+        coefficient_signs=_coefficient_signs(coefficients),
+        n_samples_train=n_train,
+        n_samples_validation=n_val,
+        train_r2=train_r2,
+        validation_r2=val_r2,
+        train_rmse=train_rmse,
+        validation_rmse=val_rmse,
+        train_mae=train_mae,
+        validation_mae=val_mae,
+        condition_number=condition_number,
+        matrix_rank=matrix_rank,
+        rank_deficient=matrix_rank < len(factor_names) + 1,
+        residual_diagnostics={
+            "computed": True,
+            "residual_mean": float(np.mean(residuals)),
+            "residual_std": residual_std,
+            "outlier_count": outlier_count,
+            "max_abs_error": float(np.max(np.abs(residuals))),
+        },
+        beta_stability=beta_stability,
+        dominant_factor_exposures=dominant,
+        common_exposure_similarity_matrix={},
+        exposure_cluster_assignments={},
+        cluster_concentration_diagnostics={"computed": False},
+        unexplained_residual_share=unexplained,
+        dropped_rows_by_reason=dict(dropped_rows_by_reason or {}),
+        missing_factor_groups=missing_groups,
+        feature_matrix_digest=x_digest,
+        target_digest=y_digest,
+        config_digest=_stable_digest(
+            [
+                cfg.correlation_threshold,
+                cfg.vif_threshold,
+                cfg.condition_number_threshold,
+                cfg.min_samples,
+                cfg.validation_fraction,
+                cfg.stability_window_count,
+            ]
+        ),
+        source_evidence_refs=tuple(source_evidence_refs),
+        time_range=dict(time_range or empty_time_range),
+        instrument_universe_digest=instrument_universe_digest,
+        validation_policy="time_ordered",
+        status=status,
+        reason_codes=tuple(dict.fromkeys(reason_codes)),
+        authority_effect=_AUTHORITY_EFFECT,
+        runtime_effect=_RUNTIME_EFFECT,
+    )
+
+
+def build_cross_entity_exposure_diagnostics_v0(
+    grouped_records: Mapping[str, Sequence[FactorExposureInputV1]],
+    *,
+    config: FactorExposureDiagnosticsConfigV0 | None = None,
+    source_evidence_refs: Sequence[str] = (),
+    instrument_universe_digest: str = "",
+    time_range: Mapping[str, str] | None = None,
+    dropped_rows_by_reason: Mapping[str, int] | None = None,
+) -> tuple[
+    dict[str, FactorExposureDiagnosticsEvidenceV0],
+    dict[str, dict[str, float]],
+    dict[str, int],
+    dict[str, object],
+]:
+    """Fit per-entity diagnostics and derive exposure similarity / cluster flags."""
+    cfg = config or FactorExposureDiagnosticsConfigV0()
+    per_entity: dict[str, FactorExposureDiagnosticsEvidenceV0] = {}
+    exposure_vectors: dict[str, dict[str, float]] = {}
+
+    for entity_id in sorted(grouped_records.keys()):
+        entity_records = grouped_records[entity_id]
+        evidence = fit_factor_exposure_diagnostics_v0(
+            entity_records,
+            strategy_or_signal_id=entity_id,
+            config=cfg,
+            source_evidence_refs=source_evidence_refs,
+            instrument_universe_digest=instrument_universe_digest,
+            time_range=time_range,
+            dropped_rows_by_reason=dropped_rows_by_reason,
+        )
+        per_entity[entity_id] = evidence
+        if evidence.coefficients:
+            exposure_vectors[entity_id] = {
+                name: float(value)
+                for name, value in evidence.coefficients.items()
+                if name != "intercept"
+            }
+
+    similarity = compute_exposure_similarity_matrix_v0(exposure_vectors)
+    cluster_assignments, cluster_diag = classify_exposure_clusters_v0(
+        similarity,
+        threshold=cfg.exposure_similarity_threshold,
+    )
+
+    cluster_reasons: list[str] = []
+    if cluster_diag.get("cluster_concentration_high"):
+        cluster_reasons.append(REASON_CLUSTER_CONCENTRATION_HIGH)
+    if float(cluster_diag.get("max_pairwise_similarity", 0.0)) >= cfg.exposure_similarity_threshold:
+        cluster_reasons.append(REASON_DOMINANT_COMMON_FACTOR_EXPOSURE)
+
+    updated: dict[str, FactorExposureDiagnosticsEvidenceV0] = {}
+    for entity_id, evidence in per_entity.items():
+        reasons = list(evidence.reason_codes)
+        reasons.extend(cluster_reasons)
+        status = evidence.status
+        if cluster_reasons and status == "DIAGNOSTIC_ONLY":
+            status = "ROBUSTNESS_FAILED"
+        updated[entity_id] = replace(
+            evidence,
+            common_exposure_similarity_matrix=similarity,
+            exposure_cluster_assignments=cluster_assignments,
+            cluster_concentration_diagnostics={**cluster_diag, "computed": True},
+            reason_codes=tuple(dict.fromkeys(reasons)),
+            status=status,
+        )
+
+    return updated, similarity, cluster_assignments, cluster_diag
+
+
 def make_deterministic_factor_exposure_fixture() -> list[FactorExposureInputV1]:
     records: list[FactorExposureInputV1] = []
     fixtures = [
