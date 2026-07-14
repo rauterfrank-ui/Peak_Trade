@@ -40,7 +40,7 @@
   "config_schema_version": "composite_breakout_confirmation_vol_gated_donchian_v1_architecture_binding_v1",
   "economic_evaluation_v1": {
     "economic_validity_policy_version": "economic_validity_policy_v1",
-    "engine_signal_source": "configured_strategy_signal",
+    "engine_signal_source": "mv2_decision_replay_series",
     "strategy_id": "composite",
     "strategy_params": {
       "aggregation": "weighted",

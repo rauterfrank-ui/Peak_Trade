@@ -75,7 +75,7 @@
   "config_schema_version": "step29m_composite_breakout_confirmation_vol_gated_donchian_v1_economic_evaluation_admissibility_v1",
   "economic_evaluation_v1": {
     "economic_validity_policy_version": "economic_validity_policy_v1",
-    "engine_signal_source": "configured_strategy_signal",
+    "engine_signal_source": "mv2_decision_replay_series",
     "monte_carlo": {
       "bind": true,
       "policy_version": "monte_carlo_v1",

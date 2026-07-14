@@ -282,7 +282,7 @@ def test_unrelated_mv2_wiring_path_unchanged() -> None:
         strategy_id="ma_crossover",
         cfg=cfg,
     )
-    assert result.backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
+    assert result.backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY
 
 
 def test_contract_module_has_no_forbidden_runtime_imports() -> None:

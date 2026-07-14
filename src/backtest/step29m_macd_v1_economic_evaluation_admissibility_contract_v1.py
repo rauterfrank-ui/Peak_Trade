@@ -25,6 +25,7 @@ from src.backtest.offline_evaluation_sizing_contract_v1 import (
 )
 from src.backtest.strategy_signal_binding_v1 import (
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+    CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
     MV2_REPLAY_SIGNAL_SOURCE,
     SignalAlignmentStatus,
     SignalContractStatus,
@@ -567,7 +568,7 @@ def evaluate_macd_v1_admissibility_contract_v1(
             blocking.append("config_strategy_id_mismatch")
         if eval_section.get("strategy_version") != MACD_V1_STRATEGY_VERSION:
             blocking.append("config_strategy_version_mismatch")
-        if eval_section.get("engine_signal_source") != ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY:
+        if eval_section.get("engine_signal_source") != CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE:
             blocking.append("engine_signal_source_not_bound")
 
     if offline_evaluation_sizing_contract_requested(cfg):
