@@ -11,6 +11,8 @@ import math
 from dataclasses import dataclass
 from typing import Any, Mapping, Optional, Sequence
 
+import pandas as pd
+
 from src.backtest.cost_config_v0 import (
     COST_MODEL_VERSION,
     EffectiveBacktestCostConfigV0,
@@ -21,6 +23,11 @@ from src.backtest.economic_observability_registry_v1 import (
     MetricRegistryEntryV1,
     get_canonical_metric_registry_v1,
 )
+from src.backtest.decision_funnel_v0 import (
+    DECISION_FUNNEL_OWNER,
+    DecisionFunnelPersistenceV0,
+    materialize_decision_funnel_persistence_v0,
+)
 from src.backtest.economic_observability_snapshot_v1 import (
     SNAPSHOT_OWNER,
     CanonicalEconomicObservabilitySnapshotV1,
@@ -30,6 +37,26 @@ from src.backtest.economic_observability_snapshot_v1 import (
     SnapshotContractError,
     compute_snapshot_digest,
     materialize_empty_snapshot_v1,
+    serialize_canonical_json,
+)
+from src.backtest.trade_ledger_equity_curve_persistence_v0 import (
+    TRADE_LEDGER_OWNER,
+    CanonicalObservabilityBundleV0,
+    DrawdownCurveStatus,
+    EquityCurvePersistenceV0,
+    materialize_drawdown_curve_v0,
+    materialize_equity_curve_rows_v0,
+    materialize_trade_ledger_rows_v0,
+    serialize_drawdown_curve_csv,
+    serialize_equity_curve_csv,
+    serialize_trade_ledger_jsonl,
+    validate_drawdown_reconciliation_v0,
+    validate_equity_final_value_reconciliation_v0,
+    validate_trade_ledger_reconciliation_v0,
+)
+from src.research.cross_sectional_offline_economic_evaluation_decision_funnel_v0 import (
+    FUNNEL_OWNER as RESEARCH_FUNNEL_OWNER,
+    RUNBOOK_FUNNEL_FIELDS,
 )
 
 STATS_OWNER = "backtest.stats"
@@ -95,6 +122,13 @@ class BacktestObservabilityInputsV1:
     funding_drag: Optional[float] = None
     funding_bound: bool = False
     spread_half_bps: Optional[float] = None
+    equity_curve: Optional[pd.Series] = None
+    drawdown_curve: Optional[pd.Series] = None
+    instrument_id: str = "UNKNOWN"
+    run_id: str = "offline-run-v0"
+    strategy_ref: Optional[str] = None
+    funnel_counts: Optional[Mapping[str, int]] = None
+    block_reason_counts: Optional[Mapping[str, int]] = None
 
 
 @dataclass(frozen=True)
@@ -747,3 +781,273 @@ def existing_cost_field_keys_v0() -> tuple[str, ...]:
         "slippage_impact",
         "funding_drag_or_status",
     )
+
+
+_FUNNEL_METRIC_IDS: frozenset[str] = frozenset(RUNBOOK_FUNNEL_FIELDS)
+
+
+def _bind_funnel_metrics_v1(
+    snapshot: CanonicalEconomicObservabilitySnapshotV1,
+    *,
+    funnel: DecisionFunnelPersistenceV0,
+    registry: EconomicObservabilityMetricRegistryV1,
+) -> None:
+    for entry in registry.entries:
+        if entry.metric_id not in _FUNNEL_METRIC_IDS:
+            continue
+        if entry.metric_id in funnel.unavailable_stages:
+            snapshot.decision_funnel[entry.metric_id] = _status_metric(
+                unit=entry.unit,
+                status=MetricMaterializationStatus.SOURCE_MISSING,
+                owner=RESEARCH_FUNNEL_OWNER,
+                source=entry.source_field_or_formula,
+                formula_version="decision_funnel_persistence_v0",
+                reason_codes=(funnel.unavailable_stages[entry.metric_id],),
+            )
+            snapshot.metric_statuses[entry.metric_id] = (
+                MetricMaterializationStatus.SOURCE_MISSING.value
+            )
+            continue
+        value = float(funnel.stage_counts.get(entry.metric_id, 0))
+        snapshot.decision_funnel[entry.metric_id] = _computed_metric(
+            value=value,
+            unit=entry.unit,
+            owner=RESEARCH_FUNNEL_OWNER,
+            source=entry.source_field_or_formula,
+            formula_version="decision_funnel_persistence_v0",
+            sample_count=int(funnel.stage_counts.get("market_epochs_total", 0)),
+        )
+        snapshot.metric_statuses[entry.metric_id] = MetricMaterializationStatus.COMPUTED.value
+
+    for metric_id, source, owner in (
+        ("top_block_reasons", f"{RESEARCH_FUNNEL_OWNER}:top_block_reasons", RESEARCH_FUNNEL_OWNER),
+        (
+            "zero_trade_causal_classification",
+            f"{RESEARCH_FUNNEL_OWNER}:zero_trade_causal_classification",
+            RESEARCH_FUNNEL_OWNER,
+        ),
+    ):
+        entry = next((item for item in registry.entries if item.metric_id == metric_id), None)
+        if entry is None:
+            continue
+        if metric_id == "top_block_reasons":
+            if funnel.top_block_reasons:
+                snapshot.decision_funnel[metric_id] = _computed_metric(
+                    value=float(len(funnel.top_block_reasons)),
+                    unit=entry.unit,
+                    owner=owner,
+                    source=source,
+                    formula_version="decision_funnel_persistence_v0",
+                )
+            else:
+                snapshot.decision_funnel[metric_id] = _status_metric(
+                    unit=entry.unit,
+                    status=MetricMaterializationStatus.SOURCE_MISSING,
+                    owner=owner,
+                    source=source,
+                    formula_version="decision_funnel_persistence_v0",
+                    reason_codes=("NO_BLOCK_REASONS",),
+                )
+        else:
+            zero_status = funnel.zero_trade_causal_classification.get("status")
+            if zero_status == MetricMaterializationStatus.COMPUTED.value:
+                snapshot.decision_funnel[metric_id] = _computed_metric(
+                    value=1.0,
+                    unit=entry.unit,
+                    owner=owner,
+                    source=source,
+                    formula_version="decision_funnel_persistence_v0",
+                )
+            elif zero_status == MetricMaterializationStatus.NOT_APPLICABLE.value:
+                snapshot.decision_funnel[metric_id] = _status_metric(
+                    unit=entry.unit,
+                    status=MetricMaterializationStatus.NOT_APPLICABLE,
+                    owner=owner,
+                    source=source,
+                    formula_version="decision_funnel_persistence_v0",
+                    reason_codes=tuple(
+                        funnel.zero_trade_causal_classification.get("reason_codes", ())
+                    ),
+                )
+            else:
+                snapshot.decision_funnel[metric_id] = _status_metric(
+                    unit=entry.unit,
+                    status=MetricMaterializationStatus.SOURCE_MISSING,
+                    owner=owner,
+                    source=source,
+                    formula_version="decision_funnel_persistence_v0",
+                    reason_codes=tuple(
+                        funnel.zero_trade_causal_classification.get(
+                            "reason_codes", ("FUNNEL_UNAVAILABLE",)
+                        )
+                    ),
+                )
+        snapshot.metric_statuses[metric_id] = snapshot.decision_funnel[metric_id].status.value
+
+
+def materialize_observability_bundle_v1(
+    inputs: BacktestObservabilityInputsV1,
+    *,
+    registry: EconomicObservabilityMetricRegistryV1 | None = None,
+    run_identity: Mapping[str, Any] | None = None,
+    source_refs: Sequence[str] | None = None,
+    validate_reconciliation: bool = True,
+    final_report: str = "",
+) -> tuple[CanonicalObservabilityBundleV0, MaterializationSummaryV1]:
+    """Materialize snapshot plus deterministic offline observability bundle artifacts."""
+    resolved_registry = registry or get_canonical_metric_registry_v1()
+    snapshot, summary = materialize_snapshot_from_backtest_stats_v1(
+        inputs,
+        registry=resolved_registry,
+        run_identity=run_identity,
+        source_refs=source_refs,
+        validate_reconciliation=validate_reconciliation,
+    )
+
+    funnel = materialize_decision_funnel_persistence_v0(
+        funnel_counts=inputs.funnel_counts,
+        block_reason_counts=inputs.block_reason_counts,
+    )
+    _bind_funnel_metrics_v1(snapshot, funnel=funnel, registry=resolved_registry)
+    snapshot_payload = snapshot.to_dict()
+    snapshot.manifest_digest = compute_snapshot_digest(snapshot_payload)
+    snapshot_payload["manifest_digest"] = snapshot.manifest_digest
+
+    trades = list(inputs.trades or [])
+    trade_rows = materialize_trade_ledger_rows_v0(
+        trades,
+        instrument_id=inputs.instrument_id,
+        run_id=inputs.run_id,
+        strategy_ref=inputs.strategy_ref,
+    )
+    trade_ledger_jsonl = serialize_trade_ledger_jsonl(trade_rows)
+
+    equity_series = (
+        inputs.equity_curve if inputs.equity_curve is not None else pd.Series(dtype=float)
+    )
+    equity_rows = materialize_equity_curve_rows_v0(equity_series)
+    equity_curve_csv = serialize_equity_curve_csv(equity_rows)
+    equity_persistence = EquityCurvePersistenceV0(
+        owner=TRADE_LEDGER_OWNER,
+        point_count=len(equity_rows),
+        final_value=float(equity_rows[-1]["equity"]) if equity_rows else 0.0,
+        rows=equity_rows,
+    )
+
+    drawdown = materialize_drawdown_curve_v0(
+        equity_curve=equity_series,
+        drawdown_curve=inputs.drawdown_curve,
+    )
+    drawdown_not_applicable_payload: Optional[dict[str, Any]] = None
+    drawdown_curve_csv = ""
+    if drawdown.status is DrawdownCurveStatus.SOURCE_MISSING and drawdown.point_count == 0:
+        drawdown_not_applicable_payload = {
+            "status": drawdown.status.value,
+            "reason_codes": list(drawdown.reason_codes),
+            "owner": drawdown.owner,
+        }
+    else:
+        drawdown_curve_csv = serialize_drawdown_curve_csv(drawdown.rows)
+        if equity_series is not None and not equity_series.empty:
+            validate_drawdown_reconciliation_v0(equity_curve=equity_series, drawdown=drawdown)
+
+    canonical_trade_count = int(
+        snapshot.trade_analytics["trade_count"].value
+        if snapshot.trade_analytics.get("trade_count") is not None
+        and snapshot.trade_analytics["trade_count"].value is not None
+        else len(trades)
+    )
+    gross_pnl_metric = snapshot.economic.get("gross_pnl")
+    net_pnl_metric = snapshot.economic.get("net_pnl")
+    total_cost_metric = snapshot.costs.get("total_cost")
+    snapshot_gross_pnl = float(
+        gross_pnl_metric.value if gross_pnl_metric and gross_pnl_metric.value is not None else 0.0
+    )
+    snapshot_net_pnl = float(
+        net_pnl_metric.value if net_pnl_metric and net_pnl_metric.value is not None else 0.0
+    )
+    snapshot_total_cost = float(
+        total_cost_metric.value
+        if total_cost_metric and total_cost_metric.value is not None
+        else 0.0
+    )
+    final_equity_metric = snapshot.trade_analytics.get("final_equity") or snapshot.economic.get(
+        "final_equity"
+    )
+    final_equity = float(
+        final_equity_metric.value
+        if final_equity_metric and final_equity_metric.value is not None
+        else inputs.initial_equity
+    )
+
+    reconciliation = validate_trade_ledger_reconciliation_v0(
+        rows=trade_rows,
+        canonical_trade_count=canonical_trade_count,
+        snapshot_gross_pnl=snapshot_gross_pnl,
+        snapshot_net_pnl=snapshot_net_pnl,
+        snapshot_total_cost=snapshot_total_cost,
+    )
+    if equity_rows:
+        validate_equity_final_value_reconciliation_v0(
+            equity_curve=equity_persistence,
+            final_equity=final_equity,
+        )
+
+    trades_opened = int(funnel.stage_counts.get("trades_opened_count", 0))
+    if inputs.funnel_counts is not None and trades_opened != canonical_trade_count:
+        raise SnapshotContractError(
+            "trades_opened_count_reconciliation_failed:"
+            f"funnel={trades_opened}:trade_count={canonical_trade_count}"
+        )
+
+    data_quality_payload = {
+        "schema_version": "canonical_observability_data_quality.v0",
+        "trade_ledger_owner": TRADE_LEDGER_OWNER,
+        "equity_curve_owner": TRADE_LEDGER_OWNER,
+        "drawdown_curve_owner": TRADE_LEDGER_OWNER,
+        "decision_funnel_owner": DECISION_FUNNEL_OWNER,
+        "unresolved_trade_field_count": sum(
+            1
+            for row in trade_rows
+            for field in row.fields.values()
+            if field.status is MetricMaterializationStatus.SOURCE_MISSING
+        ),
+        "unresolved_funnel_field_count": len(funnel.unavailable_stages),
+        "legacy_projection_status": "COMPATIBLE",
+    }
+    provenance_payload = {
+        "schema_version": "canonical_observability_provenance.v0",
+        "snapshot_owner": SNAPSHOT_OWNER,
+        "materialization_owner": MATERIALIZATION_OWNER,
+        "trade_record_source": "backtest.engine:Trade",
+        "trade_ledger_owner": TRADE_LEDGER_OWNER,
+        "research_funnel_owner": RESEARCH_FUNNEL_OWNER,
+        "source_refs": sorted(source_refs or []),
+        "run_identity": dict(run_identity or {}),
+    }
+    reconciliation_payload = {
+        "schema_version": "canonical_observability_reconciliation.v0",
+        **reconciliation.__dict__,
+        "equity_reconciliation_pass": equity_persistence.final_value == final_equity,
+        "trades_opened_count": trades_opened,
+        "trade_count": canonical_trade_count,
+        "trades_opened_reconciliation_pass": trades_opened == canonical_trade_count
+        if inputs.funnel_counts is not None
+        else None,
+    }
+
+    bundle = CanonicalObservabilityBundleV0(
+        snapshot_payload=snapshot_payload,
+        registry_payload=resolved_registry.to_dict(),
+        trade_ledger_jsonl=trade_ledger_jsonl,
+        equity_curve_csv=equity_curve_csv,
+        drawdown_curve_csv=drawdown_curve_csv,
+        drawdown_not_applicable_payload=drawdown_not_applicable_payload,
+        decision_funnel_payload=funnel.to_dict(),
+        data_quality_payload=data_quality_payload,
+        provenance_payload=provenance_payload,
+        reconciliation_payload=reconciliation_payload,
+        final_report=final_report,
+    )
+    bundle.compute_digest()
+    return bundle, summary
