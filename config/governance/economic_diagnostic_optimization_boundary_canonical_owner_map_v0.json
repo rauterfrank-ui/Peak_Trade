@@ -322,7 +322,13 @@
     },
     "SIMULATED_FILL_BINDING_USING_EXISTING_CANONICAL_EXECUTION_OWNER": {
       "path_prefixes": [
-        "src/backtest/mv2_research_wiring_v1.py"
+        "src/backtest/mv2_research_wiring_v1.py",
+        "src/backtest/strategy_signal_binding_v1.py"
+      ],
+      "path_globs": [
+        "tests/backtest/test_engine_signal_source_mv2_replay_binding_contract_v0.py",
+        "tests/research/test_cross_sectional_lead_lag_v0_backtest_engine_mv2_replay_signal_parity_v0.py",
+        "tests/research/test_cross_sectional_lead_lag_v0_research_eval_decision_parity_contract_suite_v0.py"
       ],
       "note": "Simulated fill binding must reuse existing canonical execution owners; no new runtime authority."
     },
