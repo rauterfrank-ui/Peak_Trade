@@ -571,12 +571,27 @@ def _resolve_policy(cfg: Mapping[str, Any]) -> policy_mod.EconomicValidityPolicy
     return policy
 
 
-def _validate_output_dir(path: Path, *, allow_existing: bool) -> None:
+def _validate_output_dir(path: Path, *, allow_existing_parent: bool) -> None:
+    """Fail-closed output directory contract aligned with persist owner.
+
+    The final bundle directory (``path``) must not exist so
+    ``persist_economic_viability_evidence_bundle_v1`` can create it atomically.
+    ``allow_existing_parent`` (CLI: ``--allow-existing-output``) only documents
+    that an existing parent workspace directory is acceptable; it does not permit
+    a pre-created final persist target and does not authorize overwrite.
+    """
     if path.exists():
-        if not allow_existing:
-            raise RunnerError(f"output_dir_exists:{path}")
-        if any(path.iterdir()):
-            raise RunnerError(f"output_dir_nonempty:{path}")
+        raise RunnerError(f"output_dir_exists:{path}")
+    if not allow_existing_parent:
+        return
+    parent = path.parent
+    if parent.exists() and not parent.is_dir():
+        raise RunnerError(f"output_parent_not_directory:{parent}")
+
+
+def _resolve_persist_output_dir(path: Path, *, allow_existing_parent: bool) -> Path:
+    _validate_output_dir(path, allow_existing_parent=allow_existing_parent)
+    return path
 
 
 def _map_validity_result(status: EconomicValidityEvaluationStatus) -> str:
@@ -713,7 +728,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--allow-existing-output",
         action="store_true",
-        help="Allow writing to an existing empty output directory.",
+        help=(
+            "Allow an existing parent workspace directory for --output-dir. "
+            "The final output directory itself must not already exist."
+        ),
     )
     parser.add_argument(
         "--json", action="store_true", help="Emit machine-readable plan/result JSON."
@@ -773,7 +791,10 @@ def build_validation_plan(args: argparse.Namespace) -> ValidationPlanV1:
         config_digest=config_digest,
         policy_digest=policy.policy_digest(),
     )
-    _validate_output_dir(output_dir, allow_existing=bool(args.allow_existing_output))
+    _resolve_persist_output_dir(
+        output_dir,
+        allow_existing_parent=bool(args.allow_existing_output),
+    )
 
     return ValidationPlanV1(
         run_id=run_id,
@@ -823,7 +844,10 @@ def execute_evaluation(args: argparse.Namespace) -> RunOutcomeV1:
     dataset_path = Path(plan.dataset_path)
     manifest_path = Path(plan.dataset_manifest_path)
     config_path = Path(plan.config_path)
-    output_dir = Path(plan.output_dir)
+    output_dir = _resolve_persist_output_dir(
+        Path(plan.output_dir),
+        allow_existing_parent=bool(args.allow_existing_output),
+    )
     policy_path = Path(plan.policy_path) if plan.policy_path else None
 
     manifest = _load_dataset_manifest(manifest_path)

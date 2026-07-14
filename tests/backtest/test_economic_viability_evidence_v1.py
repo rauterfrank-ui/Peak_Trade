@@ -254,6 +254,20 @@ def test_persist_bundle_manifest_verify(tmp_path) -> None:
     assert loaded["status"] == "RESEARCH_ONLY"
 
 
+def test_persist_existing_output_dir_fail_closed(tmp_path) -> None:
+    result = _build()
+    out = tmp_path / "evidence"
+    out.mkdir()
+    with pytest.raises(ev.EconomicViabilityEvidenceError, match="output directory already exists"):
+        ev.persist_economic_viability_evidence_bundle_v1(
+            out,
+            result,
+            config_snapshot={"cfg": dict(_cfg())},
+            metrics={"total_return": result.gross_return.value},
+            input_provenance={"source": "synthetic_fixture"},
+        )
+
+
 def test_inadmissible_data_source_reason_code() -> None:
     bars = _bars()
     adm = ev.DataAdmissibilityV1(
