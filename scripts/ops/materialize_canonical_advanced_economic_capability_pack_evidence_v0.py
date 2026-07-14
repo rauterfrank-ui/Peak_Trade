@@ -64,7 +64,7 @@ PR5174_CLOSEOUT = ARCHIVE_ROOT / (
     "20260714T192427Z"
 )
 SCOPE = "CANONICAL_ADVANCED_ECONOMIC_CAPABILITY_PACK_V0"
-GO_TOKEN = "GO_CANONICAL_ADVANCED_ECONOMIC_CAPABILITY_PACK_V0"
+SCOPE_OPERATOR_GO = "GO_CANONICAL_ADVANCED_ECONOMIC_CAPABILITY_PACK_V0"
 
 
 def _utc_stamp() -> str:
@@ -319,7 +319,7 @@ def materialize_bundle(output_dir: Path) -> int:
             f"HEAD={_git_value('rev-parse', 'HEAD')}",
             f"ORIGIN_MAIN={_git_value('rev-parse', 'origin/main')}",
             f"SCOPE={SCOPE}",
-            f"GO_TOKEN={GO_TOKEN}",
+            f"GO_TOKEN={SCOPE_OPERATOR_GO}",
             f"SOURCE_MANIFEST_VERIFY_RC={source_rc}",
             "ECONOMIC_EVALUATION_EXECUTED=false",
             "RUNTIME_EFFECT=NONE",
@@ -480,7 +480,7 @@ def materialize_bundle(output_dir: Path) -> int:
             "STATUS=IMPLEMENTATION_COMPLETE",
             "VERDICT=PRE_PR_VALIDATION_PASS",
             f"SCOPE={SCOPE}",
-            f"REQUIRED_OPERATOR_SIGNAL={GO_TOKEN}",
+            f"REQUIRED_OPERATOR_SIGNAL={SCOPE_OPERATOR_GO}",
             "OPERATOR_SIGNAL_RECEIVED=true",
             f"CANONICAL_REGISTRY_OWNER={REGISTRY_OWNER}",
             f"CANONICAL_SNAPSHOT_OWNER={SNAPSHOT_OWNER}",
