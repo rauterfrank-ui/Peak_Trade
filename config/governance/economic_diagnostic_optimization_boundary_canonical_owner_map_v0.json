@@ -225,7 +225,9 @@
         "scripts/ops/materialize_offline_productive_signal_orthogonality_results_interpretation_v0.py",
         "scripts/ops/materialize_offline_productive_factor_exposure_diagnostics_v0.py",
         "scripts/ops/materialize_offline_productive_parameter_sensitivity_diagnostics_v0.py",
-        "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py"
+        "scripts/ops/materialize_offline_productive_rolling_linear_drift_diagnostics_v0.py",
+        "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py"
       ],
       "path_globs": [
         "tests/research/test_offline_linear_cost_model_diagnostics_*",
@@ -233,6 +235,7 @@
         "tests/research/test_offline_productive_signal_orthogonality_results_interpretation_v0.py",
         "tests/research/test_offline_productive_factor_exposure_diagnostics_v0.py",
         "tests/research/test_offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "tests/research/test_offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "tests/research/test_offline_factor_exposure_diagnostics_*",
         "tests/research/test_offline_factor_exposure_productive_contract_v0.py",
         "tests/research/test_offline_factor_exposure_productive_input_join_materializer_*",
@@ -255,6 +258,7 @@
         "src/research/linear_evidence/signal_orthogonality_results_interpretation_v0.py",
         "src/research/linear_evidence/offline_productive_factor_exposure_diagnostics_v0.py",
         "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "src/research/linear_evidence/factor_exposure.py",
         "src/research/linear_evidence/factor_exposure_productive_contract_v0.py",
         "src/research/linear_evidence/signal_matrix_productive_contract_v0.py",
@@ -268,6 +272,7 @@
         "scripts/ops/materialize_offline_productive_signal_orthogonality_results_interpretation_v0.py",
         "scripts/ops/materialize_offline_productive_factor_exposure_diagnostics_v0.py",
         "scripts/ops/materialize_offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "scripts/ops/materialize_offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/classify_step29l2_offline_linear_evidence_status_after_pr5044_v0.py",
         "tests/research/test_step29l2_import_boundary_classification_v0.py"
       ],
@@ -301,9 +306,11 @@
         "src/research/linear_evidence/window_robustness.py",
         "src/research/linear_evidence/parameter_sensitivity_productive_contract_v0.py",
         "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_parameter_sensitivity_surface_v0.py",
         "scripts/research/offline_parameter_sensitivity_productive_input_join_materializer_v0.py",
-        "scripts/ops/materialize_offline_productive_parameter_sensitivity_diagnostics_v0.py"
+        "scripts/ops/materialize_offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "scripts/ops/materialize_offline_productive_rolling_linear_drift_diagnostics_v0.py"
       ]
     },
     "TIME_ORDERED_VALIDATION": {
@@ -319,13 +326,16 @@
         "src/experiments/portfolio_robustness.py",
         "scripts/research/offline_parameter_sensitivity_surface_v0.py",
         "scripts/ops/materialize_offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "scripts/ops/materialize_offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
       ],
       "path_globs": [
         "tests/research/test_offline_parameter_sensitivity_surface_v0.py",
         "tests/research/test_offline_productive_parameter_sensitivity_diagnostics_v0.py",
+        "tests/research/test_offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "tests/research/test_offline_parameter_sensitivity_model_spec_alignment_*",
         "tests/research/test_offline_rolling_linear_drift_diagnostics_v0.py",
         "tests/research/test_offline_outlier_and_window_robustness_diagnostic_v0.py"
