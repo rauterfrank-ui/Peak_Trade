@@ -14,6 +14,7 @@ REASON_CONSTANT_TARGET = "CONSTANT_TARGET"
 REASON_ZERO_VARIANCE_FEATURE = "ZERO_VARIANCE_FEATURE"
 REASON_CONSTANT_FEATURE_COLLINEAR_WITH_INTERCEPT = "CONSTANT_FEATURE_COLLINEAR_WITH_INTERCEPT"
 REASON_RANK_DEFICIENT_FEATURE_MATRIX = "RANK_DEFICIENT_FEATURE_MATRIX"
+REASON_STRICT_ZERO_VARIANCE_FEATURE_EXCLUDED = "STRICT_ZERO_VARIANCE_FEATURE_EXCLUDED"
 
 
 @dataclass(frozen=True)
@@ -53,6 +54,41 @@ def _target_is_constant(y: np.ndarray) -> bool:
 
 def _feature_unique_value_count(column: np.ndarray) -> int:
     return int(len(np.unique(np.round(column, _UNIQUE_ROUND_DECIMALS))))
+
+
+def exclude_strict_zero_variance_features_v0(
+    x: np.ndarray,
+    feature_names: Sequence[str],
+) -> tuple[np.ndarray, tuple[str, ...], tuple[str, ...]]:
+    """Deterministically exclude strictly zero-variance feature columns.
+
+    Predicate: exact float(np.var(column)) == 0.0 on the canonical float matrix.
+    Exclusion order is stable w.r.t. feature_names.
+    """
+    if x.size == 0 or not feature_names:
+        return x, tuple(feature_names), ()
+    excluded: list[str] = []
+    keep_indices: list[int] = []
+    for index, name in enumerate(feature_names):
+        if float(np.var(x[:, index])) == 0.0:
+            excluded.append(str(name))
+        else:
+            keep_indices.append(index)
+    if not excluded:
+        return x, tuple(feature_names), ()
+    if not keep_indices:
+        return np.empty((x.shape[0], 0), dtype=float), (), tuple(excluded)
+    kept = x[:, keep_indices]
+    kept_names = tuple(feature_names[index] for index in keep_indices)
+    return kept, kept_names, tuple(excluded)
+
+
+def strict_zero_variance_feature_exclusion_reason_codes_v0(
+    excluded_feature_names: Sequence[str],
+) -> tuple[str, ...]:
+    return tuple(
+        f"{REASON_STRICT_ZERO_VARIANCE_FEATURE_EXCLUDED}:{name}" for name in excluded_feature_names
+    )
 
 
 def _zero_variance_feature_names(x: np.ndarray, feature_names: Sequence[str]) -> tuple[str, ...]:
