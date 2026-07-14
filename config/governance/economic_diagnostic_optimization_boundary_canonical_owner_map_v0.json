@@ -227,6 +227,7 @@
         "tests/research/test_offline_parameter_sensitivity_productive_contract_v0.py",
         "tests/research/test_offline_parameter_sensitivity_productive_input_join_materializer_*",
         "tests/research/test_offline_parameter_sensitivity_surface_v0.py",
+        "tests/research/test_offline_parameter_sensitivity_model_spec_alignment_*",
         "tests/research/test_offline_productive_point_in_time_factor_snapshot_rematerializer_*",
         "tests/research/test_linear_evidence_*"
       ]
@@ -294,7 +295,8 @@
         "scripts/research/offline_parameter_sensitivity_surface_v0.py"
       ],
       "path_globs": [
-        "tests/research/test_offline_parameter_sensitivity_surface_v0.py"
+        "tests/research/test_offline_parameter_sensitivity_surface_v0.py",
+        "tests/research/test_offline_parameter_sensitivity_model_spec_alignment_*"
       ]
     },
     "PORTFOLIO_RESEARCH_AND_ECONOMIC_ATTRIBUTION_WITHOUT_RUNTIME_AUTHORITY": {

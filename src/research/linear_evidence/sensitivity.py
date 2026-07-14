@@ -8,9 +8,54 @@ import math
 
 import numpy as np
 
-from .contracts import LinearModelEvidenceV1
+from .contracts import FeatureMatrixBindingV1, LinearModelDiagnosticsV1, LinearModelEvidenceV1
 from .feature_matrix import build_feature_matrix_binding
-from .fitters import fit_ols_lstsq
+from .fitters import (
+    REASON_RANK_DEFICIENT_FEATURE_MATRIX,
+    REASON_STRICT_ZERO_VARIANCE_FEATURE_EXCLUDED,
+    exclude_strict_zero_variance_features_v0,
+    fit_ols_lstsq,
+    strict_zero_variance_feature_exclusion_reason_codes_v0,
+)
+
+MODEL_SPEC_VERSION = "parameter_sensitivity_active_feature_subset_v0"
+EXCLUSION_REASON_ZERO_VARIANCE = "ZERO_VARIANCE_WITHIN_1D_SURFACE_FIT"
+
+
+@dataclass(frozen=True)
+class ParameterSensitivityGridPointModelSpecV1:
+    parameter_value: float
+    requested_feature_names: Tuple[str, ...]
+    active_feature_names: Tuple[str, ...]
+    excluded_feature_names: Tuple[str, ...]
+    exclusion_reason_codes: Tuple[str, ...]
+    design_matrix_rows: int
+    requested_design_matrix_columns: int
+    active_design_matrix_columns: int
+    requested_rank: int
+    active_rank: int
+    required_active_rank: int
+    condition_number: float
+    fit_status: str
+    fit_reason_codes: Tuple[str, ...]
+
+    def to_dict(self) -> Dict[str, object]:
+        return {
+            "parameter_value": self.parameter_value,
+            "requested_feature_names": list(self.requested_feature_names),
+            "active_feature_names": list(self.active_feature_names),
+            "excluded_feature_names": list(self.excluded_feature_names),
+            "exclusion_reason_codes": list(self.exclusion_reason_codes),
+            "design_matrix_rows": self.design_matrix_rows,
+            "requested_design_matrix_columns": self.requested_design_matrix_columns,
+            "active_design_matrix_columns": self.active_design_matrix_columns,
+            "requested_rank": self.requested_rank,
+            "active_rank": self.active_rank,
+            "required_active_rank": self.required_active_rank,
+            "condition_number": self.condition_number,
+            "fit_status": self.fit_status,
+            "fit_reason_codes": list(self.fit_reason_codes),
+        }
 
 
 @dataclass(frozen=True)
@@ -54,6 +99,23 @@ class ParameterSensitivitySurfaceEvidenceV1:
     reason_codes: Tuple[str, ...]
     authority_effect: str
     runtime_effect: str
+    model_spec_version: str = MODEL_SPEC_VERSION
+    requested_feature_names: Tuple[str, ...] = ()
+    active_feature_names: Tuple[str, ...] = ()
+    excluded_feature_names: Tuple[str, ...] = ()
+    exclusion_reason_codes: Tuple[str, ...] = ()
+    requested_design_matrix_columns: int = 0
+    active_design_matrix_columns: int = 0
+    requested_rank: int = 0
+    active_rank: int = 0
+    required_active_rank: int = 0
+    condition_number: float = float("inf")
+    fit_status: str = "DIAGNOSTIC_ONLY"
+    fit_reason_codes: Tuple[str, ...] = ()
+    grid_point_model_specs: Tuple[ParameterSensitivityGridPointModelSpecV1, ...] = ()
+    plateau_detection_admissible: bool = False
+    fragility_detection_admissible: bool = False
+    economic_interpretation_admissible: bool = False
 
     def to_dict(self) -> Dict[str, object]:
         return {
@@ -78,8 +140,15 @@ class ParameterSensitivitySurfaceEvidenceV1:
                         "r2_train": evidence.diagnostics.r2_train,
                         "r2_validation": evidence.diagnostics.r2_validation,
                     },
+                    "model_spec": (
+                        self.grid_point_model_specs[index].to_dict()
+                        if index < len(self.grid_point_model_specs)
+                        else {}
+                    ),
                 }
-                for parameter_value, evidence in zip(self.parameter_values, self.grid_evidence)
+                for index, (parameter_value, evidence) in enumerate(
+                    zip(self.parameter_values, self.grid_evidence)
+                )
             ],
             "surface_diagnostics": dict(self.surface_diagnostics),
             "plateau_detected": self.plateau_detected,
@@ -94,6 +163,23 @@ class ParameterSensitivitySurfaceEvidenceV1:
             "reason_codes": list(self.reason_codes),
             "authority_effect": self.authority_effect,
             "runtime_effect": self.runtime_effect,
+            "model_spec_version": self.model_spec_version,
+            "requested_feature_names": list(self.requested_feature_names),
+            "active_feature_names": list(self.active_feature_names),
+            "excluded_feature_names": list(self.excluded_feature_names),
+            "exclusion_reason_codes": list(self.exclusion_reason_codes),
+            "design_matrix_rows": self.n_samples,
+            "requested_design_matrix_columns": self.requested_design_matrix_columns,
+            "active_design_matrix_columns": self.active_design_matrix_columns,
+            "requested_rank": self.requested_rank,
+            "active_rank": self.active_rank,
+            "required_active_rank": self.required_active_rank,
+            "condition_number": self.condition_number,
+            "fit_status": self.fit_status,
+            "fit_reason_codes": list(self.fit_reason_codes),
+            "plateau_detection_admissible": self.plateau_detection_admissible,
+            "fragility_detection_admissible": self.fragility_detection_admissible,
+            "economic_interpretation_admissible": self.economic_interpretation_admissible,
         }
 
 
@@ -157,6 +243,198 @@ def _scale_rows(
         scaled[scaled_feature_name] = float(row[scaled_feature_name]) * float(parameter_value)
         scaled_rows.append(scaled)
     return scaled_rows
+
+
+def _active_feature_binding_v0(
+    binding: FeatureMatrixBindingV1,
+    *,
+    active_feature_names: Sequence[str],
+) -> FeatureMatrixBindingV1:
+    return FeatureMatrixBindingV1(
+        target_name=binding.target_name,
+        feature_names=tuple(active_feature_names),
+        n_samples=binding.n_samples,
+        n_features=len(active_feature_names),
+        feature_matrix_digest=binding.feature_matrix_digest,
+        target_digest=binding.target_digest,
+        validation_policy=binding.validation_policy,
+        time_range=binding.time_range,
+        row_count_before_filter=binding.row_count_before_filter,
+        row_count_after_filter=binding.row_count_after_filter,
+        dropped_rows_by_reason=binding.dropped_rows_by_reason,
+        status=binding.status,
+        reason_codes=binding.reason_codes,
+    )
+
+
+def _blocked_grid_point_model_spec_v0(
+    *,
+    parameter_value: float,
+    requested_feature_names: Sequence[str],
+    excluded_feature_names: Sequence[str],
+    exclusion_reason_codes: Sequence[str],
+    design_matrix_rows: int,
+    binding: FeatureMatrixBindingV1,
+) -> tuple[LinearModelEvidenceV1, ParameterSensitivityGridPointModelSpecV1]:
+    requested_columns = len(requested_feature_names) + 1
+    reasons = tuple(dict.fromkeys([*exclusion_reason_codes, REASON_RANK_DEFICIENT_FEATURE_MATRIX]))
+    blocked = LinearModelEvidenceV1(
+        evidence_type="parameter_sensitivity_surface_point",
+        model_family="OLS",
+        target_name=binding.target_name,
+        feature_names=tuple(requested_feature_names),
+        n_samples=design_matrix_rows,
+        n_features=len(requested_feature_names),
+        solver="numpy.linalg.lstsq",
+        fit_intercept=True,
+        coefficients={},
+        diagnostics=LinearModelDiagnosticsV1(
+            rank=0,
+            condition_number=0.0,
+            rmse=0.0,
+            mae=0.0,
+            max_abs_error=0.0,
+            r2_train=0.0,
+            r2_validation=None,
+            residual_mean=0.0,
+            residual_std=0.0,
+            outlier_count=0,
+        ),
+        feature_matrix_digest=binding.feature_matrix_digest,
+        target_digest=binding.target_digest,
+        config_digest="",
+        time_range=binding.time_range,
+        instrument_universe_digest="fixture_universe",
+        row_count_before_filter=binding.row_count_before_filter,
+        row_count_after_filter=binding.row_count_after_filter,
+        dropped_rows_by_reason=binding.dropped_rows_by_reason,
+        validation_policy=binding.validation_policy,
+        cost_policy_output="diagnostic_only",
+        status="RANK_DEFICIENT_BLOCKED",
+        reason_codes=reasons,
+    )
+    model_spec = ParameterSensitivityGridPointModelSpecV1(
+        parameter_value=float(parameter_value),
+        requested_feature_names=tuple(requested_feature_names),
+        active_feature_names=(),
+        excluded_feature_names=tuple(excluded_feature_names),
+        exclusion_reason_codes=tuple(exclusion_reason_codes),
+        design_matrix_rows=design_matrix_rows,
+        requested_design_matrix_columns=requested_columns,
+        active_design_matrix_columns=0,
+        requested_rank=requested_columns,
+        active_rank=0,
+        required_active_rank=0,
+        condition_number=0.0,
+        fit_status="RANK_DEFICIENT_BLOCKED",
+        fit_reason_codes=reasons,
+    )
+    return blocked, model_spec
+
+
+def _compose_exclusion_reason_codes_v0(
+    excluded_feature_names: Sequence[str],
+) -> tuple[str, ...]:
+    return tuple(
+        dict.fromkeys(
+            [
+                *strict_zero_variance_feature_exclusion_reason_codes_v0(excluded_feature_names),
+                *(f"{EXCLUSION_REASON_ZERO_VARIANCE}:{name}" for name in excluded_feature_names),
+            ]
+        )
+    )
+
+
+def _fit_grid_point_with_active_feature_subset_v0(
+    *,
+    parameter_value: float,
+    scaled_rows: Sequence[Mapping[str, object]],
+    feature_names: Sequence[str],
+    target_name: str,
+    validation_fraction: float,
+) -> tuple[LinearModelEvidenceV1, ParameterSensitivityGridPointModelSpecV1]:
+    x, y, binding = build_feature_matrix_binding(
+        scaled_rows,
+        feature_names=feature_names,
+        target_name=target_name,
+        time_name="decision_time",
+        validation_policy="TIME_ORDERED",
+    )
+    requested_feature_names = binding.feature_names
+    requested_columns = len(requested_feature_names) + 1
+    x_active, active_feature_names, excluded_feature_names = (
+        exclude_strict_zero_variance_features_v0(x, requested_feature_names)
+    )
+    exclusion_reason_codes = _compose_exclusion_reason_codes_v0(excluded_feature_names)
+
+    if not active_feature_names:
+        return _blocked_grid_point_model_spec_v0(
+            parameter_value=parameter_value,
+            requested_feature_names=requested_feature_names,
+            excluded_feature_names=excluded_feature_names,
+            exclusion_reason_codes=exclusion_reason_codes,
+            design_matrix_rows=int(x.shape[0]),
+            binding=binding,
+        )
+
+    active_binding = _active_feature_binding_v0(
+        binding,
+        active_feature_names=active_feature_names,
+    )
+    evidence = fit_ols_lstsq(
+        x_active,
+        y,
+        active_binding,
+        fit_intercept=True,
+        validation_fraction=validation_fraction,
+        evidence_type="parameter_sensitivity_surface_point",
+    )
+    active_columns = len(active_feature_names) + 1
+    required_active_rank = active_columns
+    merged_reasons = tuple(dict.fromkeys([*exclusion_reason_codes, *evidence.reason_codes]))
+    evidence = LinearModelEvidenceV1(
+        evidence_type=evidence.evidence_type,
+        model_family=evidence.model_family,
+        target_name=evidence.target_name,
+        feature_names=requested_feature_names,
+        n_samples=evidence.n_samples,
+        n_features=len(requested_feature_names),
+        solver=evidence.solver,
+        fit_intercept=evidence.fit_intercept,
+        coefficients=evidence.coefficients,
+        diagnostics=evidence.diagnostics,
+        feature_matrix_digest=binding.feature_matrix_digest,
+        target_digest=evidence.target_digest,
+        config_digest=evidence.config_digest,
+        time_range=evidence.time_range,
+        instrument_universe_digest=evidence.instrument_universe_digest,
+        row_count_before_filter=evidence.row_count_before_filter,
+        row_count_after_filter=evidence.row_count_after_filter,
+        dropped_rows_by_reason=evidence.dropped_rows_by_reason,
+        validation_policy=evidence.validation_policy,
+        cost_policy_output=evidence.cost_policy_output,
+        status=evidence.status,
+        reason_codes=merged_reasons,
+        authority_effect=evidence.authority_effect,
+        runtime_effect=evidence.runtime_effect,
+    )
+    model_spec = ParameterSensitivityGridPointModelSpecV1(
+        parameter_value=float(parameter_value),
+        requested_feature_names=requested_feature_names,
+        active_feature_names=active_feature_names,
+        excluded_feature_names=excluded_feature_names,
+        exclusion_reason_codes=exclusion_reason_codes,
+        design_matrix_rows=int(x.shape[0]),
+        requested_design_matrix_columns=requested_columns,
+        active_design_matrix_columns=active_columns,
+        requested_rank=requested_columns,
+        active_rank=int(evidence.diagnostics.rank),
+        required_active_rank=required_active_rank,
+        condition_number=float(evidence.diagnostics.condition_number),
+        fit_status=evidence.status,
+        fit_reason_codes=merged_reasons,
+    )
+    return evidence, model_spec
 
 
 def _validation_rmse(evidence: LinearModelEvidenceV1) -> float:
@@ -364,6 +642,7 @@ def fit_parameter_sensitivity_surface(
         )
 
     grid_evidence: List[LinearModelEvidenceV1] = []
+    grid_point_model_specs: List[ParameterSensitivityGridPointModelSpecV1] = []
     validation_errors: List[float] = []
 
     for parameter_value in grid.parameter_values:
@@ -372,22 +651,15 @@ def fit_parameter_sensitivity_surface(
             scaled_feature_name=grid.scaled_feature_name,
             parameter_value=parameter_value,
         )
-        x, y, binding = build_feature_matrix_binding(
-            scaled_rows,
+        evidence, model_spec = _fit_grid_point_with_active_feature_subset_v0(
+            parameter_value=float(parameter_value),
+            scaled_rows=scaled_rows,
             feature_names=feature_names,
             target_name=target_name,
-            time_name="decision_time",
-            validation_policy="TIME_ORDERED",
-        )
-        evidence = fit_ols_lstsq(
-            x,
-            y,
-            binding,
-            fit_intercept=True,
             validation_fraction=validation_fraction,
-            evidence_type="parameter_sensitivity_surface_point",
         )
         grid_evidence.append(evidence)
+        grid_point_model_specs.append(model_spec)
         validation_errors.append(_validation_rmse(evidence))
 
     (
@@ -418,7 +690,43 @@ def fit_parameter_sensitivity_surface(
         elif evidence.status == "ROBUSTNESS_FAILED" and aggregate_status == "DIAGNOSTIC_ONLY":
             aggregate_status = "ROBUSTNESS_FAILED"
 
+    for model_spec in grid_point_model_specs:
+        for reason in model_spec.exclusion_reason_codes:
+            if reason not in aggregate_reasons:
+                aggregate_reasons.append(reason)
+
     surface_diagnostics["grid_point_count"] = float(len(grid.parameter_values))
+
+    requested_columns = len(feature_names) + 1
+    active_feature_names = (
+        grid_point_model_specs[0].active_feature_names if grid_point_model_specs else ()
+    )
+    excluded_feature_names = (
+        grid_point_model_specs[0].excluded_feature_names if grid_point_model_specs else ()
+    )
+    exclusion_reason_codes = (
+        grid_point_model_specs[0].exclusion_reason_codes if grid_point_model_specs else ()
+    )
+    active_columns = len(active_feature_names) + 1 if active_feature_names else 0
+    active_ranks = [spec.active_rank for spec in grid_point_model_specs]
+    active_rank = min(active_ranks) if active_ranks else 0
+    condition_numbers = [
+        spec.condition_number
+        for spec in grid_point_model_specs
+        if math.isfinite(spec.condition_number)
+    ]
+    condition_number = float(max(condition_numbers, default=float("inf")))
+    active_design_full_rank = bool(
+        grid_point_model_specs
+        and all(
+            spec.active_rank == spec.required_active_rank and spec.active_rank > 0
+            for spec in grid_point_model_specs
+        )
+    )
+    plateau_detection_admissible = (
+        active_design_full_rank and aggregate_status != "RANK_DEFICIENT_BLOCKED"
+    )
+    fragility_detection_admissible = plateau_detection_admissible
 
     return ParameterSensitivitySurfaceEvidenceV1(
         evidence_type="parameter_sensitivity_surface",
@@ -444,4 +752,21 @@ def fit_parameter_sensitivity_surface(
         reason_codes=tuple(dict.fromkeys(aggregate_reasons)),
         authority_effect="NONE",
         runtime_effect="NONE",
+        model_spec_version=MODEL_SPEC_VERSION,
+        requested_feature_names=feature_names,
+        active_feature_names=active_feature_names,
+        excluded_feature_names=excluded_feature_names,
+        exclusion_reason_codes=exclusion_reason_codes,
+        requested_design_matrix_columns=requested_columns,
+        active_design_matrix_columns=active_columns,
+        requested_rank=requested_columns,
+        active_rank=active_rank,
+        required_active_rank=active_columns,
+        condition_number=condition_number,
+        fit_status=aggregate_status,
+        fit_reason_codes=tuple(dict.fromkeys(aggregate_reasons)),
+        grid_point_model_specs=tuple(grid_point_model_specs),
+        plateau_detection_admissible=plateau_detection_admissible,
+        fragility_detection_admissible=fragility_detection_admissible,
+        economic_interpretation_admissible=False,
     )
