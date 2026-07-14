@@ -28,6 +28,13 @@ from src.backtest.decision_funnel_v0 import (
     DecisionFunnelPersistenceV0,
     materialize_decision_funnel_persistence_v0,
 )
+from src.backtest.economic_observability_derived_metrics_v1 import (
+    DERIVED_METRICS_OWNER,
+    bind_derived_metrics_to_snapshot_v1,
+    derive_all_metrics_v1,
+    validate_gross_cost_net_trade_reconciliation_v1,
+    validate_pnl_breakdown_reconciliation_v1,
+)
 from src.backtest.economic_observability_snapshot_v1 import (
     SNAPSHOT_OWNER,
     CanonicalEconomicObservabilitySnapshotV1,
@@ -64,6 +71,7 @@ COST_OWNER = "backtest.cost_config_v0"
 ENGINE_OWNER = "backtest.engine"
 FUNDING_OWNER = "backtest.funding_model_v1"
 MATERIALIZATION_OWNER = "backtest.economic_observability_materialization_v1"
+CANONICAL_DERIVED_METRICS_OWNER = DERIVED_METRICS_OWNER
 FORMULA_STATS_V0 = "compute_backtest_stats_v0"
 FORMULA_COST_V0 = "append_cost_accounting_fields_v0"
 FORMULA_ENGINE_AGGREGATE_V0 = "engine_trade_aggregate_v0"
@@ -256,8 +264,10 @@ def _aggregate_trade_metrics(trades: Sequence[Mapping[str, Any]]) -> dict[str, f
     winners = [p for p in pnls if p > 0]
     losers = [p for p in pnls if p < 0]
     flats = [p for p in pnls if p == 0]
-    gross_profit = sum(winners) if winners else 0.0
-    gross_loss = sum(losers) if losers else 0.0
+    gross_winners = [p for p in gross_pnls if p > 0]
+    gross_losers = [p for p in gross_pnls if p < 0]
+    gross_profit = sum(gross_winners) if gross_winners else 0.0
+    gross_loss = sum(gross_losers) if gross_losers else 0.0
     entry_fees = sum(float(t.get("entry_cost", 0.0) or 0.0) for t in trades)
     exit_fees = sum(float(t.get("exit_cost", 0.0) or 0.0) for t in trades)
     max_win = max(pnls) if pnls else 0.0
@@ -684,6 +694,43 @@ def materialize_snapshot_from_backtest_stats_v1(
         )
     )
 
+    trades = list(inputs.trades or [])
+    if trades:
+        derived_bundle = derive_all_metrics_v1(
+            trades=trades,
+            stats=stats,
+            gross_profit=float(trade_derived.get("gross_profit", 0.0)),
+            gross_pnl=float(equity_derived["gross_pnl"]),
+            net_pnl=float(equity_derived["net_pnl"]),
+            total_cost=float(cost_derived.get("total_cost", 0.0)),
+            effective_cost=inputs.effective_cost,
+            spread_half_bps=inputs.spread_half_bps,
+            equity_curve=inputs.equity_curve,
+            default_instrument_id=inputs.instrument_id,
+        )
+        gross_profit_value = float(derived_bundle.trade_aggregates["gross_profit"].value or 0.0)
+        gross_loss_value = float(derived_bundle.trade_aggregates["gross_loss"].value or 0.0)
+        trade_gross_pnl = float(trade_derived.get("gross_pnl", 0.0))
+        validate_gross_cost_net_trade_reconciliation_v1(
+            gross_profit=gross_profit_value,
+            gross_loss=gross_loss_value,
+            trade_gross_pnl=trade_gross_pnl,
+            gross_pnl=float(equity_derived["gross_pnl"]),
+            net_pnl=float(equity_derived["net_pnl"]),
+            total_cost=float(cost_derived.get("total_cost", 0.0)),
+        )
+        if derived_bundle.pnl_by_side and "unknown" not in derived_bundle.pnl_by_side:
+            validate_pnl_breakdown_reconciliation_v1(
+                pnl_by_side=derived_bundle.pnl_by_side,
+                pnl_by_instrument=derived_bundle.pnl_by_instrument,
+                total_net_pnl=float(sum(float(trade["pnl"]) for trade in trades)),
+            )
+        bind_derived_metrics_to_snapshot_v1(
+            snapshot,
+            derived_bundle,
+            registry=resolved_registry,
+        )
+
     payload = snapshot.to_dict()
     snapshot.manifest_digest = compute_snapshot_digest(payload)
 
@@ -885,6 +932,19 @@ def _bind_funnel_metrics_v1(
         snapshot.metric_statuses[metric_id] = snapshot.decision_funnel[metric_id].status.value
 
 
+def _metric_numeric_value(
+    snapshot: CanonicalEconomicObservabilitySnapshotV1,
+    domain: str,
+    metric_id: str,
+    default: float = 0.0,
+) -> float:
+    bucket = getattr(snapshot, domain)
+    metric = bucket.get(metric_id)
+    if metric is not None and metric.value is not None:
+        return float(metric.value)
+    return default
+
+
 def materialize_observability_bundle_v1(
     inputs: BacktestObservabilityInputsV1,
     *,
@@ -909,6 +969,27 @@ def materialize_observability_bundle_v1(
         block_reason_counts=inputs.block_reason_counts,
     )
     _bind_funnel_metrics_v1(snapshot, funnel=funnel, registry=resolved_registry)
+    trades = list(inputs.trades or [])
+    if trades:
+        trade_agg = _aggregate_trade_metrics(trades)
+        derived_bundle = derive_all_metrics_v1(
+            trades=trades,
+            stats=dict(inputs.stats),
+            gross_profit=float(trade_agg.get("gross_profit", 0.0)),
+            gross_pnl=_metric_numeric_value(snapshot, "economic", "gross_pnl"),
+            net_pnl=_metric_numeric_value(snapshot, "economic", "net_pnl"),
+            total_cost=_metric_numeric_value(snapshot, "costs", "total_cost"),
+            effective_cost=inputs.effective_cost,
+            spread_half_bps=inputs.spread_half_bps,
+            equity_curve=inputs.equity_curve,
+            funnel=funnel,
+            default_instrument_id=inputs.instrument_id,
+        )
+        bind_derived_metrics_to_snapshot_v1(
+            snapshot,
+            derived_bundle,
+            registry=resolved_registry,
+        )
     snapshot_payload = snapshot.to_dict()
     snapshot.manifest_digest = compute_snapshot_digest(snapshot_payload)
     snapshot_payload["manifest_digest"] = snapshot.manifest_digest
