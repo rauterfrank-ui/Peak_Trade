@@ -544,6 +544,8 @@ class CanonicalObservabilityBundleV0:
     provenance_payload: dict[str, Any]
     reconciliation_payload: dict[str, Any]
     final_report: str
+    final_report_md: str = ""
+    report_summary_json: dict[str, Any] = field(default_factory=dict)
     advanced_capability_payloads: dict[str, dict[str, Any]] = field(default_factory=dict)
     bundle_digest: str = field(default="", init=False)
 
@@ -559,6 +561,10 @@ class CanonicalObservabilityBundleV0:
             "reconciliation_matrix.json": self.reconciliation_payload,
             "final_report.txt": self.final_report,
         }
+        if self.final_report_md:
+            artifacts["final_report.md"] = self.final_report_md
+        if self.report_summary_json:
+            artifacts["report_summary.json"] = self.report_summary_json
         if self.drawdown_not_applicable_payload is not None:
             artifacts["DRAWDOWN_CURVE.not_applicable.json"] = self.drawdown_not_applicable_payload
         else:
