@@ -297,6 +297,7 @@ def test_materializer_to_contract_roundtrip_pass() -> None:
             trade_id=f"t-{i}",
             entry_time=f"2026-01-01T{i:02d}:00:00+00:00",
             exit_time=f"2026-01-01T{i + 1:02d}:00:00+00:00",
+            net_pnl=float(i),
         )
         for i in range(1, 12)
     ]
@@ -306,6 +307,9 @@ def test_materializer_to_contract_roundtrip_pass() -> None:
             entry_time=f"2026-01-01T{i:02d}:00:00+00:00",
             bar_timestamp=f"2026-01-01T{i:02d}:00:00+00:00",
             feature_timestamp=f"2026-01-01T{i - 1:02d}:00:00+00:00",
+            spread_bps=float(i % 3) + 1.0,
+            funding_rate=-0.0001 * float(i),
+            volatility_estimate=0.01 + float(i % 5) * 0.001,
         )
         for i in range(1, 12)
     ]
@@ -314,6 +318,10 @@ def test_materializer_to_contract_roundtrip_pass() -> None:
     assert len(result.records) == 11
     evidence = fit_factor_exposure(result.records)
     assert evidence.status in {"DIAGNOSTIC_ONLY", "INSUFFICIENT_DATA", "RANK_DEFICIENT_BLOCKED"}
+    assert evidence.original_feature_names == EXPECTED_PRODUCTIVE_FACTOR_ORDER
+    assert evidence.effective_feature_names == EXPECTED_PRODUCTIVE_FACTOR_ORDER
+    assert evidence.excluded_factor_names == ()
+    assert evidence.excluded_factor_count == 0
     assert evidence.feature_names == EXPECTED_PRODUCTIVE_FACTOR_ORDER
 
 
