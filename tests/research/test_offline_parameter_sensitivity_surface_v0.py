@@ -195,6 +195,7 @@ def test_parameter_sensitivity_surface_cli_writes_manifestable_report(tmp_path: 
             "scripts/research/offline_parameter_sensitivity_surface_v0.py",
             "--out",
             str(tmp_path),
+            "--fixture",
         ],
         check=False,
         text=True,
