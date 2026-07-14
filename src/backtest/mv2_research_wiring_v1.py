@@ -99,6 +99,8 @@ from src.trading.master_v2.canonical_scope_initialization_v1 import (
 from src.trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
     CanonicalTradingDecisionEvidenceV1,
+    derive_decision_id,
+    with_computed_evidence_semantic_digest,
 )
 from src.trading.master_v2.deterministic_scope_event_generator_v1 import (
     DETERMINISTIC_SCOPE_EVENT_GENERATOR_LAYER_VERSION,
@@ -226,6 +228,9 @@ from src.backtest.backtest_engine_position_feedback_adapter_v1 import (
 
 MV2_RESEARCH_WIRING_LAYER_VERSION = "v1"
 MV2_RESEARCH_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
+ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON = "warmup_required"
+ECONOMIC_RESEARCH_WARMUP_INVALID_BLOCK_REASON = "warmup_invalid_blocked"
+ECONOMIC_RESEARCH_NO_WARMUP_COMPLETE_BAR_REASON = "no_warmup_complete_bar"
 MV2_REQUIRED_INSTRUMENT_ID = "inst-eth-usdt-perp"
 
 _REPLAY_IMPLEMENTATION_DIGEST = hashlib.sha256(
@@ -609,6 +614,150 @@ def _resolve_volatility_estimate_for_economic_research_wiring_v1(
     return value
 
 
+def _validate_economic_research_bar_structural_contract_v1(bar: pd.Series) -> None:
+    """Structural finalized-bar contract for economic_research_v1 observation-only bars."""
+    is_final = bool(bar.get("is_final", True))
+    _fail_closed(not is_final, "bar_unfinalized")
+    ts = pd.Timestamp(bar.name)
+    decision_ts = pd.Timestamp(bar.get("decision_time", ts + timedelta(seconds=1)))
+    _fail_closed(decision_ts < ts, "decision_time_before_market_event")
+    _price(bar, "mark_price")
+
+
+def _bind_economic_research_l1_fields_v1(
+    *,
+    bar: pd.Series,
+    mark_price: float,
+    research_execution_cost: Optional[EconomicResearchExecutionCostBindingV0],
+) -> tuple[float, float, float, L1ObservationStatusV1, bool]:
+    if _has_observed_l1(bar):
+        best_bid = float(bar["best_bid"])
+        best_ask = float(bar["best_ask"])
+        spread = float(bar.get("spread", best_ask - best_bid))
+        return (
+            best_bid,
+            best_ask,
+            spread,
+            L1ObservationStatusV1.OBSERVED_HISTORICAL_L1,
+            True,
+        )
+    if research_execution_cost is None:
+        raise ValueError("research_execution_cost_binding_missing")
+    best_bid, best_ask, spread = _model_bound_l1_from_mark_price(
+        mark_price,
+        half_spread_bps=research_execution_cost.conservative_half_spread_bps,
+    )
+    return (
+        best_bid,
+        best_ask,
+        spread,
+        L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED,
+        False,
+    )
+
+
+def _bind_economic_research_warmup_observation_bar_v1(
+    *,
+    bar: pd.Series,
+    instrument_id: str,
+    trading_epoch: int,
+    research_execution_cost: Optional[EconomicResearchExecutionCostBindingV0],
+) -> tuple[CanonicalMarketContextV1, L1ObservationStatusV1, bool]:
+    """Observation-only economic_research_v1 binding for WARMUP_REQUIRED bars."""
+    _ensure_supported_instrument(instrument_id)
+    _validate_economic_research_bar_structural_contract_v1(bar)
+    ts = pd.Timestamp(bar.name)
+    market_event_time = ts.isoformat()
+    decision_ts = pd.Timestamp(bar.get("decision_time", ts + timedelta(seconds=1)))
+    mark_price = _price(bar, "mark_price")
+    best_bid, best_ask, spread, l1_status, observed_l1_used = _bind_economic_research_l1_fields_v1(
+        bar=bar,
+        mark_price=mark_price,
+        research_execution_cost=research_execution_cost,
+    )
+    context = CanonicalMarketContextV1(
+        context_id=f"mv2-ctx-{instrument_id}-{trading_epoch}",
+        instrument_id=instrument_id,
+        market_type=FuturesMarketType.PERPETUAL,
+        trading_epoch=trading_epoch,
+        market_event_time=market_event_time,
+        decision_time=decision_ts.isoformat(),
+        bar_interval=str(bar.get("bar_interval", "1m")),
+        bar_finality_status=BarFinalityStatus.FINALIZED,
+        mark_price=mark_price,
+        index_price=_price(bar, "index_price"),
+        best_bid=best_bid,
+        best_ask=best_ask,
+        spread=spread,
+        volume=float(bar.get("volume", 0.0)),
+        open_interest=float(bar.get("open_interest", 0.0)),
+        funding_rate=float(bar.get("funding_rate", 0.0)),
+        volatility_estimate=float("nan"),
+        trend_feature_set={"trend_slope": float(bar.get("trend_slope", 0.01))},
+        momentum_feature_set={"momentum": float(bar.get("momentum", 0.01))},
+        liquidity_feature_set={"liq_score": float(bar.get("liq_score", 0.9))},
+        market_structure_feature_set={"range_ratio": float(bar.get("range_ratio", 0.4))},
+        data_integrity_status=DataIntegrityStatus.TRUSTED,
+        clock_trust_status=ClockTrustStatus.TRUSTED,
+        warmup_status=WarmupStatus.WARMUP_REQUIRED,
+        feature_contract_version=FEATURE_CONTRACT_VERSION,
+    )
+    return with_computed_input_digest(context), l1_status, observed_l1_used
+
+
+def _build_economic_research_warmup_required_skip_evidence_v1(
+    *,
+    replay_id: str,
+    instrument_id: str,
+    trading_epoch: int,
+    config_digest: str,
+    implementation_digest: str,
+    input_digest: str,
+    direction_state: EntryExitDirectionState,
+) -> CanonicalTradingDecisionEvidenceV1:
+    decision_id = derive_decision_id(
+        replay_id=replay_id,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        input_digest=input_digest,
+    )
+    evidence = CanonicalTradingDecisionEvidenceV1(
+        decision_id=decision_id,
+        replay_id=replay_id,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        market_context_ref="",
+        scope_initialization_ref="",
+        scope_event_ref="",
+        bull_assessment_ref="",
+        bear_assessment_ref="",
+        state_switch_ref="",
+        bull_survival_ref="",
+        bear_survival_ref="",
+        bull_suitability_ref="",
+        bear_suitability_ref="",
+        composition_result_ref="",
+        entry_exit_policy_ref="",
+        current_scope_ref="",
+        next_scope_ref="",
+        previous_direction_state=direction_state.value,
+        next_direction_state=direction_state.value,
+        selected_side=CompositionSelectedSide.NONE.value,
+        selected_strategy_ref="",
+        decision_outcome="observe",
+        entry_or_exit_policy_ref="",
+        reason_codes=(ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON,),
+        decision_precedence_trace=(),
+        component_versions=_default_component_versions(),
+        policy_versions=_default_policy_versions(),
+        config_digest=config_digest,
+        implementation_digest=implementation_digest,
+        input_digest=input_digest,
+        semantic_digest="",
+    )
+    return with_computed_evidence_semantic_digest(evidence)
+
+
 def _period_digest(bars: pd.DataFrame) -> str:
     if bars.empty:
         return _stable_digest({"empty": True})
@@ -681,22 +830,13 @@ def bind_bar_for_mv2_wiring_v1(
     _fail_closed(decision_ts < ts, "decision_time_before_market_event")
 
     mark_price = _price(bar, "mark_price")
-    observed_l1_used = False
-    outcome_l1_status = L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED
-
-    if _has_observed_l1(bar):
-        best_bid = float(bar["best_bid"])
-        best_ask = float(bar["best_ask"])
-        spread = float(bar.get("spread", best_ask - best_bid))
-        observed_l1_used = True
-        outcome_l1_status = L1ObservationStatusV1.OBSERVED_HISTORICAL_L1
-    else:
-        if research_execution_cost is None:
-            raise ValueError("research_execution_cost_binding_missing")
-        best_bid, best_ask, spread = _model_bound_l1_from_mark_price(
-            mark_price,
-            half_spread_bps=research_execution_cost.conservative_half_spread_bps,
+    best_bid, best_ask, spread, outcome_l1_status, observed_l1_used = (
+        _bind_economic_research_l1_fields_v1(
+            bar=bar,
+            mark_price=mark_price,
+            research_execution_cost=research_execution_cost,
         )
+    )
 
     warmup_status = _resolve_warmup_status(bar)
     volatility_estimate = _resolve_volatility_estimate_for_economic_research_wiring_v1(
@@ -1829,6 +1969,17 @@ def run_mv2_research_backtest_wiring_v1(
     signal_index: list[pd.Timestamp] = []
     sequence_state: MV2IntegratedReplayBarSequenceStateV1 | None = None
     decision_funnel_accumulator = DecisionFunnelAccumulatorV0()
+    economic_research_profile = (
+        effective_profile.dataset_profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1
+    )
+    if economic_research_profile:
+        _fail_closed(
+            not any(
+                _resolve_warmup_status(row) is WarmupStatus.WARMUP_COMPLETE
+                for _, row in bars.iterrows()
+            ),
+            ECONOMIC_RESEARCH_NO_WARMUP_COMPLETE_BAR_REASON,
+        )
     for i, (_, row) in enumerate(bars.iterrows()):
         if sequence_state is None:
             sequence_state = build_initial_mv2_integrated_replay_bar_sequence_state_v1(
@@ -1843,6 +1994,75 @@ def run_mv2_research_backtest_wiring_v1(
                 sequence_state,
                 feedback,
             )
+        bar_warmup_status = _resolve_warmup_status(row)
+        if economic_research_profile:
+            if bar_warmup_status is WarmupStatus.WARMUP_INVALID:
+                _fail_closed(True, ECONOMIC_RESEARCH_WARMUP_INVALID_BLOCK_REASON)
+            if bar_warmup_status is WarmupStatus.WARMUP_REQUIRED:
+                context, l1_status, observed_l1_used = (
+                    _bind_economic_research_warmup_observation_bar_v1(
+                        bar=row,
+                        instrument_id=instrument_id,
+                        trading_epoch=i,
+                        research_execution_cost=research_execution_cost,
+                    )
+                )
+                input_digest = _stable_digest(
+                    {
+                        "context_digest": context.input_digest,
+                        "epoch": i,
+                        "registry_input_digest": snapshot.input_digest,
+                        "cost_digest": effective_cost.config_digest,
+                        "profile_binding": effective_profile.to_dict(),
+                        "l1_observation_status": l1_status.value,
+                        "observed_l1_used": observed_l1_used,
+                        "warmup_skip_reason": ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON,
+                    }
+                )
+                skip_evidence = _build_economic_research_warmup_required_skip_evidence_v1(
+                    replay_id=replay_id,
+                    instrument_id=instrument_id,
+                    trading_epoch=i,
+                    config_digest=config_digest,
+                    implementation_digest=implementation_digest,
+                    input_digest=input_digest,
+                    direction_state=sequence_state.direction_state,
+                )
+                decision_funnel_accumulator.block_reason_counts[
+                    ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON
+                ] += 1
+                signal = 0
+                if position_feedback_bound:
+                    if backtest_engine is None:
+                        raise ValueError("backtest_engine_position_feedback_engine_missing")
+                    if bar_loop_state is None:
+                        bar_loop_state = init_legacy_realistic_bar_loop_state_v1(
+                            backtest_engine,
+                            strategy_params=strategy_params,
+                        )
+                    bar_loop_state = step_legacy_realistic_bar_v1(
+                        backtest_engine,
+                        bar_loop_state,
+                        bar=row,
+                        signal=signal,
+                        symbol=instrument_id,
+                        effective_cost=effective_cost,
+                    )
+                outcomes.append(
+                    MV2ReplayBarOutcomeV1(
+                        trading_epoch=i,
+                        context=context,
+                        evidence=skip_evidence,
+                        position_signal=signal,
+                        replay_pass=False,
+                        fail_reasons=(ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON,),
+                        l1_observation_status=l1_status,
+                        observed_l1_used=observed_l1_used,
+                    )
+                )
+                replay_signals.append(signal)
+                signal_index.append(pd.Timestamp(row.name))
+                continue
         context, l1_status, observed_l1_used = bind_bar_for_mv2_wiring_v1(
             bar=row,
             instrument_id=instrument_id,
