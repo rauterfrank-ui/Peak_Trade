@@ -227,9 +227,13 @@
         "scripts/ops/materialize_offline_productive_parameter_sensitivity_diagnostics_v0.py",
         "scripts/ops/materialize_offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/ops/materialize_offline_productive_linear_diagnostics_support_bundle_v0.py",
+        "scripts/ops/materialize_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
+        "scripts/ops/materialize_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
         "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py",
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
-        "src/research/linear_evidence/offline_productive_linear_diagnostics_support_bundle_v0.py"
+        "src/research/linear_evidence/offline_productive_linear_diagnostics_support_bundle_v0.py",
+        "src/research/linear_evidence/offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
+        "src/research/linear_evidence/offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py"
       ],
       "path_globs": [
         "tests/research/test_offline_linear_cost_model_diagnostics_*",
@@ -239,6 +243,7 @@
         "tests/research/test_offline_productive_parameter_sensitivity_diagnostics_v0.py",
         "tests/research/test_offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "tests/research/test_offline_productive_linear_diagnostics_support_bundle_v0.py",
+        "tests/research/test_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
         "tests/research/test_offline_factor_exposure_diagnostics_*",
         "tests/research/test_offline_factor_exposure_productive_contract_v0.py",
         "tests/research/test_offline_factor_exposure_productive_input_join_materializer_*",
@@ -263,6 +268,7 @@
         "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py",
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "src/research/linear_evidence/offline_productive_linear_diagnostics_support_bundle_v0.py",
+        "src/research/linear_evidence/offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
         "src/research/linear_evidence/factor_exposure.py",
         "src/research/linear_evidence/factor_exposure_productive_contract_v0.py",
         "src/research/linear_evidence/signal_matrix_productive_contract_v0.py",
@@ -278,6 +284,7 @@
         "scripts/ops/materialize_offline_productive_parameter_sensitivity_diagnostics_v0.py",
         "scripts/ops/materialize_offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/ops/materialize_offline_productive_linear_diagnostics_support_bundle_v0.py",
+        "scripts/ops/materialize_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
         "scripts/research/classify_step29l2_offline_linear_evidence_status_after_pr5044_v0.py",
         "tests/research/test_step29l2_import_boundary_classification_v0.py"
       ],
