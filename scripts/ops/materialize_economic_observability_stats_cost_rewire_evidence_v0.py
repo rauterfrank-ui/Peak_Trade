@@ -112,7 +112,9 @@ def _fixture_stats() -> dict:
         {"pnl": -40.0, "gross_pnl": -30.0, "entry_cost": 5.0, "exit_cost": 5.0},
         {"pnl": 55.0, "gross_pnl": 65.0, "entry_cost": 5.0, "exit_cost": 5.0},
     ]
-    equity = pd.Series([10_000.0, 10_120.0, 10_080.0, 10_135.0, 10_095.0, 10_150.0, 10_110.0, 10_165.0])
+    equity = pd.Series(
+        [10_000.0, 10_120.0, 10_080.0, 10_135.0, 10_095.0, 10_150.0, 10_110.0, 10_165.0]
+    )
     cfg = {
         "backtest": {
             "initial_cash": 10_000.0,
@@ -183,7 +185,9 @@ def materialize_bundle(
         ]
     )
     (output_dir / "preflight.txt").write_text(preflight + "\n", encoding="utf-8")
-    (output_dir / "source_manifest_verification.txt").write_text(source_manifest_text, encoding="utf-8")
+    (output_dir / "source_manifest_verification.txt").write_text(
+        source_manifest_text, encoding="utf-8"
+    )
 
     _write_json(
         output_dir / "source_owner_inventory.json",
@@ -220,7 +224,13 @@ def materialize_bundle(
         )
         writer.writeheader()
         for entry in registry.entries:
-            if entry.domain not in {"economic", "costs", "strategy_quality", "risk", "trade_analytics"}:
+            if entry.domain not in {
+                "economic",
+                "costs",
+                "strategy_quality",
+                "risk",
+                "trade_analytics",
+            }:
                 continue
             bucket = getattr(snapshot, entry.domain)
             metric = bucket.get(entry.metric_id)
@@ -338,8 +348,12 @@ def materialize_bundle(
     _write_json(
         output_dir / "sample_metrics_core.json",
         {
-            "economic": {k: v.to_dict() for k, v in snapshot.economic.items() if v.status.value == "COMPUTED"},
-            "risk": {k: v.to_dict() for k, v in snapshot.risk.items() if v.status.value == "COMPUTED"},
+            "economic": {
+                k: v.to_dict() for k, v in snapshot.economic.items() if v.status.value == "COMPUTED"
+            },
+            "risk": {
+                k: v.to_dict() for k, v in snapshot.risk.items() if v.status.value == "COMPUTED"
+            },
         },
     )
     _write_json(
