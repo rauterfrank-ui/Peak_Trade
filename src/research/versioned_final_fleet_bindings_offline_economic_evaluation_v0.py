@@ -111,6 +111,10 @@ SLIPPAGE_BPS = 5.0
 CONSERVATIVE_HALF_SPREAD_BPS = 5.0
 ROUNDTRIP_COST_BPS = 40.0
 
+TREND_FOLLOWING_V2_OPS_EVALUATION_CONFIG_PATH = (
+    "config/ops/trend_following_v2_economic_evaluation_v1.json"
+)
+
 STEP31F_TEMPLATE_CONFIG_PATHS: dict[str, str] = {
     "trend_following": (
         "config/ops/step31f_okx_inst_eth_usdt_perp_trend_following_v1_economic_evaluation_v1.json"
@@ -839,6 +843,25 @@ def validate_binding_completion_v0(
     )
 
 
+def _overlay_trend_following_v2_mandatory_boundary_state_file_binding_v0(
+    *,
+    repo_root: Path,
+    cfg: dict[str, Any],
+) -> None:
+    """Propagate mandatory MV2 boundary bindings from the v2 ops template."""
+    from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+        MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION,
+    )
+
+    v2_ops_path = repo_root / TREND_FOLLOWING_V2_OPS_EVALUATION_CONFIG_PATH
+    if not v2_ops_path.is_file():
+        return
+    v2_cfg = json.loads(v2_ops_path.read_text(encoding="utf-8"))
+    section = v2_cfg.get(MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION)
+    if isinstance(section, dict):
+        cfg[MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION] = dict(section)
+
+
 def build_runtime_step31f_config_v0(
     *,
     repo_root: Path,
@@ -870,6 +893,11 @@ def build_runtime_step31f_config_v0(
             wf["train_bars"] = 1200
             wf["test_bars"] = 300
             wf["step_bars"] = 300
+    if strategy_id == "trend_following":
+        _overlay_trend_following_v2_mandatory_boundary_state_file_binding_v0(
+            repo_root=repo_root,
+            cfg=cfg,
+        )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(cfg, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return output_path

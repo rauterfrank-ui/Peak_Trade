@@ -282,6 +282,42 @@ class EconomicViabilityEvidenceError(ValueError):
     """Fail-closed economic viability evidence error."""
 
 
+def _resolve_repo_root_v1(repo_root: Optional[Path]) -> Path:
+    if repo_root is not None:
+        return repo_root
+    return Path(__file__).resolve().parents[2]
+
+
+def _mv2_mandatory_boundary_wiring_kwargs_v0(
+    *,
+    cfg: Mapping[str, Any],
+    repo_root: Path,
+) -> dict[str, Any]:
+    """Reuse canonical mandatory MV2 backtest boundary state-file bindings for wiring."""
+    from src.backtest.strategy_signal_binding_v1 import (
+        ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
+        resolve_mv2_research_engine_signal_source_v1,
+    )
+    from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+        mandatory_bindings_to_mv2_wiring_kwargs_v0,
+        resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0,
+    )
+
+    engine_source = resolve_mv2_research_engine_signal_source_v1(cfg=cfg)
+    if engine_source != ENGINE_SIGNAL_SOURCE_MV2_REPLAY:
+        return {}
+
+    bindings, reasons = resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0(
+        repo_root,
+        cfg,
+    )
+    if bindings is None:
+        raise EconomicViabilityEvidenceError(
+            f"mandatory_mv2_boundary_state_file_binding_failed:{','.join(reasons)}"
+        )
+    return mandatory_bindings_to_mv2_wiring_kwargs_v0(bindings)
+
+
 def _stable_digest(payload: Mapping[str, Any]) -> str:
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
@@ -652,6 +688,7 @@ def build_economic_viability_evidence_v1(
     monte_carlo_seed: int = 42,
     explicit_zero_cost_non_economic: bool = False,
     profile_binding: Optional[DatasetProfileBindingV1] = None,
+    repo_root: Optional[Path] = None,
 ) -> EconomicViabilityEvidenceV1:
     _reject_forbidden_instrument(instrument_id)
     _fail_closed(bars.empty, "bars_empty")
@@ -670,6 +707,12 @@ def build_economic_viability_evidence_v1(
     if effective_profile is None:
         effective_profile = default_runtime_profile_binding_v1()
 
+    resolved_repo_root = _resolve_repo_root_v1(repo_root)
+    mandatory_boundary_kwargs = _mv2_mandatory_boundary_wiring_kwargs_v0(
+        cfg=cfg,
+        repo_root=resolved_repo_root,
+    )
+
     wiring_result = mv2_wiring.run_mv2_research_backtest_wiring_v1(
         bars,
         strategy_id=strategy_id,
@@ -677,6 +720,7 @@ def build_economic_viability_evidence_v1(
         instrument_id=instrument_id,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
         profile_binding=effective_profile,
+        **mandatory_boundary_kwargs,
     )
     stats = mv2_wiring.compute_mv2_backtest_metrics_v1(wiring_result.backtest_result)
     cost = wiring_result.effective_cost_config
@@ -1461,6 +1505,7 @@ def build_and_persist_economic_viability_evidence_bundle_v1(
     monte_carlo_seed: int = 42,
     explicit_zero_cost_non_economic: bool = False,
     verify_reproducibility: bool = True,
+    repo_root: Optional[Path] = None,
 ) -> tuple[PersistedEconomicViabilityEvidenceBundleV1, ReproducibilityVerificationResultV1]:
     evidence = build_economic_viability_evidence_v1(
         bars=bars,
@@ -1474,6 +1519,7 @@ def build_and_persist_economic_viability_evidence_bundle_v1(
         monte_carlo_runs=monte_carlo_runs,
         monte_carlo_seed=monte_carlo_seed,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+        repo_root=repo_root,
     )
     metrics = {
         key: field.to_dict()
@@ -1508,6 +1554,7 @@ def build_and_persist_economic_viability_evidence_bundle_v1(
         monte_carlo_runs=monte_carlo_runs,
         monte_carlo_seed=monte_carlo_seed,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+        repo_root=repo_root,
     )
     repro = verify_economic_viability_evidence_reproducibility_v1(
         persisted=evidence,

@@ -316,7 +316,32 @@ scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py
 
 Jeder Research-/Economic-/Diagnostics-/Cost-/Target-/Feature-/Parameter-PR benötigt einen maschinenlesbaren Boundary-Report. Verbotene Owner-Mutationen sind fail-closed.
 
-## 13. Repo-Integration
+## 13. Trend Following v2 Recovery Wiring (v0)
+
+Additive Navigationserweiterung — **keine Parallel-SSOT**:
+
+```text
+CURRENT_RECOVERY_SCOPE=TREND_FOLLOWING_V2_MANDATORY_BOUNDARY_STATE_FILE_BINDING_REWIRE
+RECOVERY_RUNBOOK=external:Peak_Trade_Trend_Following_V2_Full_Canonical_Chain_Recovery_Runbook_v1.0
+WIRING_MAP_MD=docs/architecture/TREND_FOLLOWING_V2_CANONICAL_WIRING.md
+WIRING_MAP_JSON=docs/architecture/trend_following_v2_canonical_wiring_v0.json
+IMPLEMENTATION_PLAN=docs/governance/implementation_plan_v0.json
+PROGRESS_METADATA_MAY_NOT_WEAKEN_NORMS=true
+LATEST_MANIFEST_VERIFIED_EVIDENCE_SUPERSEDES_EMBEDDED_PROGRESS_ONLY=true
+```
+
+Pflicht vor weiterer Recovery-Implementierung:
+
+```text
+CANONICAL_OWNER_INVENTORY_COMPLETE
+CANONICAL_WIRING_MAP_COMPLETE
+RUNBOOK_RECONCILIATION_COMPLETE
+IMPLEMENTATION_SEQUENCE_FROZEN
+UNKNOWN_MATERIAL_CONTRACT_COUNT=0
+CONTRADICTION_COUNT=0
+```
+
+## 14. Repo-Integration
 
 Vor Ablage dieser Datei prüfen, ob bereits ein näherer kanonischer Governance-/Implementation-Contract-Owner existiert. Dann diesen erweitern, statt eine Parallel-SSOT anzulegen.
 
