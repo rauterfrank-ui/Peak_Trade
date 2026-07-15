@@ -279,8 +279,12 @@
     "RECONCILIATION_GATE_EXECUTED": true,
     "REAL_MEMBER_E2E_EXECUTED": true,
     "FULL_MANDATORY_BOUNDARY_CHAIN_EXECUTED": true,
-    "FULL_CANONICAL_CHAIN_WIRED": "requires_post_rewire_audit",
-    "BACKTEST_RUNTIME_DECISION_PARITY_PASS": "requires_post_rewire_audit",
+    "FULL_CANONICAL_CHAIN_WIRED": true,
+    "BACKTEST_RUNTIME_DECISION_PARITY_PASS": true,
+    "POST_MERGE_FULL_CHAIN_REVALIDATION_RESULT": "PASS",
+    "POST_REPAIR_BASELINE_ECONOMIC_REEVALUATION_COMPLETE": true,
+    "POST_REPAIR_ECONOMIC_RESULT": "FAIL",
+    "ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_COMPLETE": true,
     "BOUNDARY_BYPASS_REMAINING_COUNT": 0,
     "MISSING_OR_BYPASSED_STAGE_COUNT": 0,
     "RUNTIME_EFFECT": "NONE",
@@ -301,6 +305,19 @@
   "current_gap_classification": {
     "pre_rewire": "mandatory_boundary_bindings_missing_and_zero_productive_gate_calls",
     "post_rewire": "binding_propagated_and_productive_gate_calls_proven_in_bounded_e2e",
-    "remaining": "full_system_chain_parity_reaudit_after_merge"
+    "post_merge_reaudit": "full_canonical_system_chain_e2e_parity_pass",
+    "post_repair_economic_reevaluation": "terminal_zero_trade_economic_fail_no_canonical_market_opportunity",
+    "remaining": "none_without_new_operator_ratification"
+  },
+  "recovery_progress": {
+    "CURRENT_PHASE": "TERMINAL_ECONOMIC_FAIL_CLOSEOUT",
+    "NEXT_ADMISSIBLE_SCOPE": "NONE_WITHOUT_NEW_OPERATOR_RATIFICATION",
+    "repair_implementation": "COMPLETE",
+    "repair_merge": "COMPLETE",
+    "post_merge_full_chain_revalidation": "PASS",
+    "separate_baseline_economic_reevaluation": "COMPLETE",
+    "economic_adjudication": "FAIL",
+    "robustness": "NOT_STARTED_NOT_ADMISSIBLE",
+    "recovery_path": "COMPLETE_WITH_ECONOMIC_FAIL"
   }
 }

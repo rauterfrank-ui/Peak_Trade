@@ -432,7 +432,10 @@
         "tests/research/test_*versioned_research_binding_v0_contract.py",
         "tests/research/test_*score_and_ranking_contract_v0_contract.py",
         "tests/research/test_*portfolio_binding_implementation_v0_contract.py",
-        "tests/research/test_*offline_economic_evaluation_authorization_ratification_v0_contract.py"
+        "tests/research/test_*offline_economic_evaluation_authorization_ratification_v0_contract.py",
+        "config/research/*governance_closeout_v0.json",
+        "docs/governance/*GOVERNANCE_CLOSEOUT_V0.md",
+        "tests/ops/test_*governance_closeout_v0_contract.py"
       ],
       "note": "Governance-only operator ratification and research scope definition without trading semantic mutation or runtime authority."
     },

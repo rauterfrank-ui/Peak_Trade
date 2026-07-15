@@ -77,7 +77,7 @@ Alle fünf mandatory Gates müssen `call_count > 0` haben. Fail-Closed bei fehle
 
 ## F. Definition of Done
 
-Siehe `definition_of_done` in der JSON-Map. `FULL_CANONICAL_CHAIN_WIRED` und `BACKTEST_RUNTIME_DECISION_PARITY_PASS` erfordern Post-Merge-Reaudit; mandatory Boundary-Rewire ist Voraussetzung, nicht Abschluss der gesamten Systemkette.
+Siehe `definition_of_done` in der JSON-Map. Post-Merge-Reaudit und Post-Repair-Baseline-Economic-Reevaluation sind abgeschlossen (`PASS` bzw. terminal `FAIL`). Recovery-Pfad: `COMPLETE_WITH_ECONOMIC_FAIL`; `CURRENT_PHASE=TERMINAL_ECONOMIC_FAIL_CLOSEOUT`; `NEXT_ADMISSIBLE_SCOPE=NONE_WITHOUT_NEW_OPERATOR_RATIFICATION`.
 
 ## G. Verbote
 
