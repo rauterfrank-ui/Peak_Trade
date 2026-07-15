@@ -1,0 +1,306 @@
+{
+  "schema_version": "trend_following_v2_canonical_wiring_v0",
+  "scope": "TREND_FOLLOWING_V2_MANDATORY_BOUNDARY_STATE_FILE_BINDING_REWIRE",
+  "source_runbook_refs": [
+    {
+      "title": "Peak Trade — Kanonisches Vollautonomie-Runbook v4.4.11",
+      "role": "constitutional_and_architecture_norm_ssot",
+      "external_source_sha256": "fe24efc4d9fdc7c610d74d681b415399ba79151828c93671e1eea9c3ffd1fb99"
+    },
+    {
+      "title": "Peak Trade — Trend Following v2 Full Canonical Chain Recovery Runbook v1.0",
+      "role": "recovery_wiring_implementation_path",
+      "external_source_sha256": "a85f63a74e4a98b9e414292ba624b148f637cbee3d41783121feaf3b2271988e"
+    }
+  ],
+  "canonical_norm_owner_ref": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
+  "recovery_runbook_ref": "external:Peak_Trade_Trend_Following_V2_Full_Canonical_Chain_Recovery_Runbook_v1.0.md",
+  "nodes": [
+    {
+      "stage_id": "config_source",
+      "canonical_owner_path": "config/ops/trend_following_v2_economic_evaluation_v1.json",
+      "canonical_symbol": "mv2_research_backtest_mandatory_boundary_state_file_binding_v0",
+      "input_contract": "trend_following_v2_economic_evaluation_admissibility_v1",
+      "output_contract": "ops_evaluation_config_with_mandatory_boundary_bindings",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestConfigBindingContract"
+      ],
+      "required_proof": "BINDING_PRESENT_AT_SOURCE"
+    },
+    {
+      "stage_id": "sparse_signal_materializer",
+      "canonical_owner_path": "src/research/panel_sequential_signal_density_research_adapter_v0.py",
+      "canonical_symbol": "build_sparse_signal_runtime_step31f_config_v0",
+      "input_contract": "panel_staging_root + instrument_id + strategy_id",
+      "output_contract": "runtime_step31f_config_json_with_binding_section",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestConfigPropagation::test_sparse_signal_materializer_preserves_binding_section"
+      ],
+      "required_proof": "BINDING_PRESENT_AFTER_MATERIALIZATION"
+    },
+    {
+      "stage_id": "runtime_config_materializer",
+      "canonical_owner_path": "src/research/versioned_final_fleet_bindings_offline_economic_evaluation_v0.py",
+      "canonical_symbol": "build_runtime_step31f_config_v0",
+      "input_contract": "narrow_dataset + step31f_template",
+      "output_contract": "runtime_config_with_overlayed_mandatory_bindings",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestConfigPropagation::test_runtime_config_materializer_preserves_binding_section"
+      ],
+      "required_proof": "BINDING_PRESENT_AFTER_NORMALIZATION"
+    },
+    {
+      "stage_id": "baseline_owner",
+      "canonical_owner_path": "src/research/trend_following_v2_offline_economic_evaluation_execution_v0.py",
+      "canonical_symbol": "_run_candidate_with_runtime_config_v0",
+      "input_contract": "runtime_config_json_path",
+      "output_contract": "economic_viability_evidence_bundle_v1",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestBoundedSingleMemberMandatoryBoundaryE2E"
+      ],
+      "required_proof": "BINDING_PRESENT_AT_BASELINE_OWNER"
+    },
+    {
+      "stage_id": "evidence_builder",
+      "canonical_owner_path": "src/backtest/economic_viability_evidence_v1.py",
+      "canonical_symbol": "build_economic_viability_evidence_v1",
+      "input_contract": "bars + cfg + instrument_id + repo_root",
+      "output_contract": "EconomicViabilityEvidenceV1",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestBuilderFailClosed"
+      ],
+      "required_proof": "BINDING_PRESENT_AT_EVIDENCE_BUILDER"
+    },
+    {
+      "stage_id": "mv2_wiring",
+      "canonical_owner_path": "src/backtest/mv2_research_wiring_v1.py",
+      "canonical_symbol": "run_mv2_research_backtest_wiring_v1",
+      "input_contract": "bars + cfg + mandatory_boundary_state_file_bindings",
+      "output_contract": "MV2ResearchBacktestWiringResultV1",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestBoundedSingleMemberMandatoryBoundaryE2E"
+      ],
+      "required_proof": "BINDING_PRESENT_AT_MV2_WIRING_OWNER"
+    },
+    {
+      "stage_id": "integrated_replay",
+      "canonical_owner_path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "canonical_symbol": "run_integrated_offline_trading_logic_replay_v1",
+      "input_contract": "mv2_decision_replay_series",
+      "output_contract": "replay_decisions_with_trading_logic_chain",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_baseline_owner_single_member_end_to_end_repair_v0.py"
+      ],
+      "required_proof": "REAL_MEMBER_E2E_EXECUTED"
+    },
+    {
+      "stage_id": "mandatory_boundary_resolver",
+      "canonical_owner_path": "src/research/cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0.py",
+      "canonical_symbol": "resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0",
+      "input_contract": "repo_root + ops_config",
+      "output_contract": "MandatoryMv2BacktestBoundaryStateFileBindingsV0",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py"
+      ],
+      "required_proof": "BINDING_PRESENT_AT_BOUNDARY_PROCESSOR"
+    },
+    {
+      "stage_id": "capital_risk_sizing_gate",
+      "canonical_owner_path": "src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py",
+      "canonical_symbol": "apply_backtest_capital_risk_sizing_exposure_gate_v0",
+      "input_contract": "CapitalRiskSizingBacktestStateFileBindingConfigV1",
+      "output_contract": "exposure_gate_outcome",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestBoundedSingleMemberMandatoryBoundaryE2E"
+      ],
+      "required_proof": "CAPITAL_RISK_SIZING_GATE_EXECUTED"
+    },
+    {
+      "stage_id": "canonical_order_intent_gate",
+      "canonical_owner_path": "src/trading/master_v2/canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0.py",
+      "canonical_symbol": "apply_backtest_canonical_order_intent_exposure_gate_v0",
+      "input_contract": "CanonicalOrderIntentBacktestStateFileBindingConfigV1",
+      "output_contract": "exposure_gate_outcome",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestBoundedSingleMemberMandatoryBoundaryE2E"
+      ],
+      "required_proof": "CANONICAL_ORDER_INTENT_GATE_EXECUTED"
+    },
+    {
+      "stage_id": "safety_kernel_gate",
+      "canonical_owner_path": "src/trading/master_v2/safety_kernel_boundary_backtest_state_file_binding_adapter_v0.py",
+      "canonical_symbol": "apply_backtest_safety_kernel_exposure_gate_v0",
+      "input_contract": "SafetyKernelBacktestStateFileBindingConfigV1",
+      "output_contract": "exposure_gate_outcome",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestBoundedSingleMemberMandatoryBoundaryE2E"
+      ],
+      "required_proof": "SAFETY_KERNEL_GATE_EXECUTED"
+    },
+    {
+      "stage_id": "killswitch_gate",
+      "canonical_owner_path": "src/trading/master_v2/killswitch_boundary_backtest_state_file_binding_adapter_v0.py",
+      "canonical_symbol": "apply_backtest_killswitch_exposure_gate_v0",
+      "input_contract": "KillSwitchBacktestStateFileBindingConfigV1",
+      "output_contract": "exposure_gate_outcome",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestBoundedSingleMemberMandatoryBoundaryE2E"
+      ],
+      "required_proof": "KILLSWITCH_GATE_EXECUTED"
+    },
+    {
+      "stage_id": "reconciliation_gate",
+      "canonical_owner_path": "src/trading/master_v2/reconciliation_boundary_backtest_state_file_binding_adapter_v0.py",
+      "canonical_symbol": "apply_backtest_reconciliation_exposure_gate_v0",
+      "input_contract": "ReconciliationBacktestStateFileBindingConfigV1",
+      "output_contract": "exposure_gate_outcome",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "existing_tests": [
+        "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py::TestBoundedSingleMemberMandatoryBoundaryE2E"
+      ],
+      "required_proof": "RECONCILIATION_GATE_EXECUTED"
+    }
+  ],
+  "edges": [
+    {
+      "producer": "config_source",
+      "consumer": "runtime_config_materializer",
+      "field_or_contract_transferred": "mv2_research_backtest_mandatory_boundary_state_file_binding_v0",
+      "required_identity_semantics": "exact_section_parity_with_reference_config",
+      "allowed_transformation": "deep_copy_overlay_for_trend_following_strategy_id",
+      "forbidden_transformation": "drop_fields,rename_keys,silent_defaults,optionalize_required",
+      "fail_closed_behavior": "missing_section_blocks_evidence_builder",
+      "proof_test": "TestConfigPropagation",
+      "productive_call_requirement": false
+    },
+    {
+      "producer": "evidence_builder",
+      "consumer": "mv2_wiring",
+      "field_or_contract_transferred": "capital_risk_sizing_state_file_binding,canonical_order_intent_state_file_binding,safety_kernel_state_file_binding,killswitch_state_file_binding,reconciliation_state_file_binding",
+      "required_identity_semantics": "resolved_MandatoryMv2BacktestBoundaryStateFileBindingsV0",
+      "allowed_transformation": "mandatory_bindings_to_mv2_wiring_kwargs_v0",
+      "forbidden_transformation": "unbound_research_mode_fallback",
+      "fail_closed_behavior": "EconomicViabilityEvidenceError_on_resolve_failure",
+      "proof_test": "TestBuilderFailClosed",
+      "productive_call_requirement": true
+    },
+    {
+      "producer": "mv2_wiring",
+      "consumer": "mandatory_boundary_gates",
+      "field_or_contract_transferred": "state_file_binding_configs",
+      "required_identity_semantics": "canonical_precedence_capital_risk_sizing_before_order_intent_before_safety_before_killswitch_before_reconciliation",
+      "allowed_transformation": "apply_backtest_*_exposure_gate_v0",
+      "forbidden_transformation": "gate_bypass,zero_call_count_pass",
+      "fail_closed_behavior": "blocked_gate_prevents_downstream_exposure",
+      "proof_test": "TestBoundedSingleMemberMandatoryBoundaryE2E",
+      "productive_call_requirement": true
+    }
+  ],
+  "mandatory_bindings": {
+    "section_key": "mv2_research_backtest_mandatory_boundary_state_file_binding_v0",
+    "schema_version": "mv2_research_backtest_mandatory_boundary_state_file_binding_v0",
+    "reference_config_path": "config/ops/cross_sectional_futures_lead_lag_information_diffusion_v0_economic_evaluation_v1.json",
+    "target_config_path": "config/ops/trend_following_v2_economic_evaluation_v1.json",
+    "state_file_root": "config/research/mv2_backtest_mandatory_boundary_state_files_v0",
+    "subdomains": {
+      "capital_risk_sizing": {
+        "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/capital_risk_sizing.json",
+        "expected_state_file_digest_ref": "82a8b8ae2f38a90c93915c97c912243b3fca64b68e1e1490e062049cdff728a7"
+      },
+      "canonical_order_intent": {
+        "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/canonical_order_intent.json",
+        "expected_state_file_digest_ref": "3fc5a99ca38101b3017b00260b2bdbbd7a0fb96e7f2c600333e40876c98e06b5"
+      },
+      "safety_kernel": {
+        "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/safety_kernel.json",
+        "expected_state_file_digest_ref": "21e11676f47a579032cfb594cc003271483e342f6edd49dd5e573c06da7bd30b"
+      },
+      "killswitch": {
+        "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/killswitch.json",
+        "expected_state_file_digest_ref": "e8acdea6f07b3e5e232aef82ad9e6ce0e2dbf1bf09f7c1395a13e5cb176f9aeb"
+      },
+      "reconciliation": {
+        "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/reconciliation.json",
+        "expected_state_file_digest_ref": "3475daedda9ec7d490f395972fd82356ac81288379fa708b43fc0a6c4870dcaf"
+      }
+    }
+  },
+  "fail_closed_contracts": [
+    "missing_entire_binding_section",
+    "missing_capital_risk_sizing_entry",
+    "missing_canonical_order_intent_entry",
+    "missing_safety_kernel_entry",
+    "missing_killswitch_entry",
+    "missing_reconciliation_entry",
+    "state_file_path_missing",
+    "state_file_schema_invalid",
+    "state_file_digest_invalid",
+    "binding_dropped_by_materializer",
+    "binding_dropped_by_evidence_builder",
+    "mandatory_gate_not_called"
+  ],
+  "proof_tests": [
+    "tests/research/test_trend_following_v2_mandatory_boundary_state_file_binding_rewire_v0.py",
+    "tests/research/test_trend_following_v2_canonical_wiring_map_contract_v0.py"
+  ],
+  "definition_of_done": {
+    "TREND_FOLLOWING_V2_MANDATORY_BOUNDARY_BINDING_PRESENT": true,
+    "BINDING_PROPAGATION_COMPLETE": true,
+    "FAIL_CLOSED_ON_MISSING_BINDING": true,
+    "CAPITAL_RISK_SIZING_GATE_EXECUTED": true,
+    "CANONICAL_ORDER_INTENT_GATE_EXECUTED": true,
+    "SAFETY_KERNEL_GATE_EXECUTED": true,
+    "KILLSWITCH_GATE_EXECUTED": true,
+    "RECONCILIATION_GATE_EXECUTED": true,
+    "REAL_MEMBER_E2E_EXECUTED": true,
+    "FULL_MANDATORY_BOUNDARY_CHAIN_EXECUTED": true,
+    "FULL_CANONICAL_CHAIN_WIRED": "requires_post_rewire_audit",
+    "BACKTEST_RUNTIME_DECISION_PARITY_PASS": "requires_post_rewire_audit",
+    "BOUNDARY_BYPASS_REMAINING_COUNT": 0,
+    "MISSING_OR_BYPASSED_STAGE_COUNT": 0,
+    "RUNTIME_EFFECT": "NONE",
+    "AUTHORITY_EFFECT": "NONE"
+  },
+  "forbidden_changes": [
+    "strategy_parameter_change",
+    "signal_change",
+    "dataset_or_universe_change",
+    "cost_policy_change",
+    "risk_sizing_semantic_change",
+    "safety_semantic_change",
+    "new_backtest_owner",
+    "new_boundary_gate_owner",
+    "economic_adjudication",
+    "runtime_work"
+  ],
+  "current_gap_classification": {
+    "pre_rewire": "mandatory_boundary_bindings_missing_and_zero_productive_gate_calls",
+    "post_rewire": "binding_propagated_and_productive_gate_calls_proven_in_bounded_e2e",
+    "remaining": "full_system_chain_parity_reaudit_after_merge"
+  }
+}

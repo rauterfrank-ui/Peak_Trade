@@ -911,6 +911,7 @@ def execute_evaluation(args: argparse.Namespace) -> RunOutcomeV1:
         cfg=cfg,
         input_provenance=input_provenance,
         instrument_id=descriptor.instrument_id,
+        repo_root=_REPO_ROOT,
         **params,
     )
     loaded = ev.load_economic_viability_evidence_bundle_v1(output_dir)

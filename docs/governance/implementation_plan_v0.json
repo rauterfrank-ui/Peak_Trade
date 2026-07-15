@@ -1,0 +1,136 @@
+{
+  "schema_version": "implementation_plan_v0",
+  "scope": "TREND_FOLLOWING_V2_MANDATORY_BOUNDARY_STATE_FILE_BINDING_REWIRE",
+  "frozen": true,
+  "wiring_map_ref": "docs/architecture/trend_following_v2_canonical_wiring_v0.json",
+  "implementation_contract_ref": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
+  "steps": [
+    {
+      "step_id": "01_config_binding_source",
+      "goal": "Add mv2_research_backtest_mandatory_boundary_state_file_binding_v0 to trend_following_v2 ops config with reference parity",
+      "files_expected": ["config/ops/trend_following_v2_economic_evaluation_v1.json"],
+      "canonical_owner": "config/ops/trend_following_v2_economic_evaluation_v1.json",
+      "preconditions": ["reference_config_verified", "state_files_digest_verified"],
+      "mutation": "CONFIG_BINDING_ADDITION",
+      "tests": ["TestConfigBindingContract"],
+      "evidence": "config_binding_contract.json",
+      "success_condition": "BINDING_PRESENT_AT_SOURCE",
+      "failure_condition": "section_missing_or_not_reference_parity",
+      "rollback_or_fail_closed_behavior": "no_merge",
+      "dependencies": []
+    },
+    {
+      "step_id": "02_materializer_propagation",
+      "goal": "Overlay binding from v2 ops template in build_runtime_step31f_config_v0 for trend_following",
+      "files_expected": ["src/research/versioned_final_fleet_bindings_offline_economic_evaluation_v0.py"],
+      "canonical_owner": "build_runtime_step31f_config_v0",
+      "preconditions": ["step_01"],
+      "mutation": "PROPAGATION_REPAIR",
+      "tests": ["TestConfigPropagation::test_runtime_config_materializer_preserves_binding_section"],
+      "success_condition": "BINDING_PRESENT_AFTER_MATERIALIZATION",
+      "failure_condition": "binding_dropped",
+      "rollback_or_fail_closed_behavior": "fail_closed",
+      "dependencies": ["01_config_binding_source"]
+    },
+    {
+      "step_id": "03_normalizer_propagation",
+      "goal": "Sparse-signal materializer delegates to runtime config builder preserving binding",
+      "files_expected": ["src/research/panel_sequential_signal_density_research_adapter_v0.py"],
+      "canonical_owner": "build_sparse_signal_runtime_step31f_config_v0",
+      "preconditions": ["step_02"],
+      "mutation": "PROPAGATION_REPAIR",
+      "tests": ["TestConfigPropagation::test_sparse_signal_materializer_preserves_binding_section"],
+      "success_condition": "BINDING_PRESENT_AFTER_NORMALIZATION",
+      "failure_condition": "binding_dropped",
+      "rollback_or_fail_closed_behavior": "fail_closed",
+      "dependencies": ["02_materializer_propagation"]
+    },
+    {
+      "step_id": "04_runtime_config_preservation",
+      "goal": "Baseline owner loads runtime config with binding intact",
+      "canonical_owner": "trend_following_v2_offline_economic_evaluation_execution_v0._run_candidate_with_runtime_config_v0",
+      "preconditions": ["step_03"],
+      "mutation": "PROPAGATION_REPAIR",
+      "tests": ["TestBoundedSingleMemberMandatoryBoundaryE2E"],
+      "success_condition": "BINDING_PRESENT_AT_RUNTIME_CONFIG",
+      "failure_condition": "binding_absent_at_runtime",
+      "rollback_or_fail_closed_behavior": "fail_closed",
+      "dependencies": ["03_normalizer_propagation"]
+    },
+    {
+      "step_id": "05_evidence_builder_propagation",
+      "goal": "build_economic_viability_evidence_v1 resolves and forwards mandatory bindings to MV2 wiring",
+      "files_expected": ["src/backtest/economic_viability_evidence_v1.py"],
+      "canonical_owner": "build_economic_viability_evidence_v1",
+      "preconditions": ["step_04"],
+      "mutation": "PROPAGATION_REPAIR",
+      "tests": ["TestBuilderFailClosed"],
+      "success_condition": "BINDING_PRESENT_AT_EVIDENCE_BUILDER",
+      "failure_condition": "silent_unbound_mode",
+      "rollback_or_fail_closed_behavior": "EconomicViabilityEvidenceError",
+      "dependencies": ["04_runtime_config_preservation"]
+    },
+    {
+      "step_id": "06_mv2_wiring_propagation",
+      "goal": "run_mv2_research_backtest_wiring_v1 receives state file binding kwargs",
+      "canonical_owner": "run_mv2_research_backtest_wiring_v1",
+      "preconditions": ["step_05"],
+      "mutation": "PROPAGATION_REPAIR",
+      "tests": ["TestBoundedSingleMemberMandatoryBoundaryE2E"],
+      "success_condition": "BINDING_PRESENT_AT_MV2_WIRING_OWNER",
+      "failure_condition": "gates_not_invoked",
+      "rollback_or_fail_closed_behavior": "fail_closed",
+      "dependencies": ["05_evidence_builder_propagation"]
+    },
+    {
+      "step_id": "07_fail_closed_missing_binding",
+      "goal": "Reject evidence when entire binding section missing",
+      "tests": ["TestBuilderFailClosed"],
+      "success_condition": "FAIL_CLOSED",
+      "failure_condition": "evidence_materialized_without_binding",
+      "dependencies": ["05_evidence_builder_propagation"]
+    },
+    {
+      "step_id": "08_fail_closed_per_subdomain",
+      "goal": "Reject when any mandatory subdomain entry missing",
+      "tests": ["test_resolve_fail_closed_on_each_missing_binding_key"],
+      "success_condition": "FAIL_CLOSED",
+      "dependencies": ["05_evidence_builder_propagation"]
+    },
+    {
+      "step_id": "09_productive_boundary_gates",
+      "goal": "All five mandatory gates called in bounded RVN/240 E2E",
+      "tests": ["TestBoundedSingleMemberMandatoryBoundaryE2E"],
+      "success_condition": "all_gate_call_counts_gt_0",
+      "failure_condition": "any_gate_call_count_eq_0",
+      "dependencies": ["06_mv2_wiring_propagation"]
+    },
+    {
+      "step_id": "10_wiring_map_and_contract_tests",
+      "goal": "Repo-side SSOT map validated by contract tests",
+      "files_expected": [
+        "docs/architecture/trend_following_v2_canonical_wiring_v0.json",
+        "tests/research/test_trend_following_v2_canonical_wiring_map_contract_v0.py"
+      ],
+      "tests": ["test_trend_following_v2_canonical_wiring_map_contract_v0.py"],
+      "success_condition": "all_contract_tests_pass",
+      "dependencies": ["09_productive_boundary_gates"]
+    },
+    {
+      "step_id": "11_durable_evidence",
+      "goal": "Manifest-verified evidence bundle",
+      "success_condition": "MANIFEST_VERIFY_RC=0",
+      "dependencies": ["10_wiring_map_and_contract_tests"]
+    },
+    {
+      "step_id": "12_pr_open_stop_before_merge",
+      "goal": "Single implementation PR opened; no merge without separate operator GO",
+      "success_condition": "PR_OPENED",
+      "dependencies": ["11_durable_evidence"]
+    }
+  ],
+  "MATERIAL_UNKNOWN_COUNT": 0,
+  "UNRESOLVED_OWNER_COUNT": 0,
+  "UNRESOLVED_CONTRACT_COUNT": 0,
+  "IMPLEMENTATION_SEQUENCE_FROZEN": true
+}
