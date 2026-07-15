@@ -17,9 +17,11 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256
+from src.backtest.economic_viability_evidence_v1 import ARTIFACT_FILENAME
 from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (
     CandidateExecutionResultV0,
-    CandidateTerminalStatus,
+    REASON_CANDIDATE_EVIDENCE_MISSING,
+    REASON_CANDIDATE_RUN_FAILED,
 )
 from src.research.panel_sequential_signal_density_research_adapter_v0 import (
     ADAPTER_KIND,
@@ -146,6 +148,9 @@ REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION = (
 REASON_BASELINE_WIRING_VERIFIED = "BASELINE_WIRING_VERIFIED"
 REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED = "BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED"
 REASON_BASELINE_BACKTEST_OWNER_INVOKED = "BASELINE_BACKTEST_OWNER_INVOKED"
+REASON_BASELINE_OWNER_RUN_FAILED = "BASELINE_OWNER_RUN_FAILED"
+REASON_BASELINE_CANONICAL_EVIDENCE_MISSING = "BASELINE_CANONICAL_EVIDENCE_MISSING"
+REASON_BASELINE_ECONOMIC_EVALUATION_COMPLETE = "BASELINE_ECONOMIC_EVALUATION_COMPLETE"
 REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE = "BASELINE_EXECUTION_DATA_UNAVAILABLE"
 REASON_CANONICAL_OWNER_UNREACHABLE = "CANONICAL_OWNER_UNREACHABLE"
 REASON_BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE = "BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE"
@@ -162,6 +167,11 @@ class PhaseExecutionBlockedResultV0:
     canonical_owner: str = ""
     actual_baseline_backtest_call_present: bool = False
     baseline_backtest_owner_call_count: int = 0
+    baseline_backtest_owner_invoked: bool = False
+    backtest_engine_entered: bool = False
+    backtest_engine_completed: bool = False
+    economic_evidence_persisted: bool = False
+    economic_evaluation_executed: bool = False
     reason_codes: tuple[str, ...] = ()
     authority_effect: str = AUTHORITY_EFFECT
     runtime_effect: str = RUNTIME_EFFECT
@@ -954,6 +964,109 @@ def _validate_baseline_execution_guards_v0(
     return not reasons, tuple(dict.fromkeys(reasons)), envelope
 
 
+def _canonical_baseline_evidence_present_v0(output_dir: Path) -> bool:
+    return (output_dir / ARTIFACT_FILENAME).is_file()
+
+
+def _baseline_phase_result_from_candidate_v0(
+    *,
+    candidate_result: CandidateExecutionResultV0,
+    canonical_owner: str,
+    output_dir: Path,
+) -> PhaseExecutionBlockedResultV0:
+    """Map canonical owner return to fail-closed baseline phase semantics."""
+    owner_invoked = True
+    engine_completed = candidate_result.runner_execution_success
+    engine_entered = engine_completed
+    evidence_persisted = engine_completed and _canonical_baseline_evidence_present_v0(output_dir)
+
+    base_reasons: list[str] = [REASON_BASELINE_BACKTEST_OWNER_INVOKED]
+    if candidate_result.reason_codes:
+        base_reasons.extend(candidate_result.reason_codes)
+
+    if not candidate_result.runner_execution_success:
+        failure_reasons = tuple(
+            dict.fromkeys(
+                (
+                    *base_reasons,
+                    REASON_BASELINE_OWNER_RUN_FAILED,
+                    REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE,
+                )
+            )
+        )
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            wiring_verified=True,
+            canonical_owner=canonical_owner,
+            actual_baseline_backtest_call_present=True,
+            baseline_backtest_owner_call_count=1,
+            baseline_backtest_owner_invoked=owner_invoked,
+            backtest_engine_entered=engine_entered,
+            backtest_engine_completed=engine_completed,
+            economic_evidence_persisted=False,
+            economic_evaluation_executed=False,
+            reason_codes=failure_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    if not evidence_persisted:
+        missing_reasons = tuple(
+            dict.fromkeys(
+                (
+                    *base_reasons,
+                    REASON_BASELINE_CANONICAL_EVIDENCE_MISSING,
+                    REASON_CANDIDATE_EVIDENCE_MISSING,
+                )
+            )
+        )
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            wiring_verified=True,
+            canonical_owner=canonical_owner,
+            actual_baseline_backtest_call_present=True,
+            baseline_backtest_owner_call_count=1,
+            baseline_backtest_owner_invoked=owner_invoked,
+            backtest_engine_entered=engine_entered,
+            backtest_engine_completed=engine_completed,
+            economic_evidence_persisted=False,
+            economic_evaluation_executed=False,
+            reason_codes=missing_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    success_reasons = tuple(
+        dict.fromkeys(
+            (
+                REASON_BASELINE_BACKTEST_OWNER_INVOKED,
+                REASON_BASELINE_ECONOMIC_EVALUATION_COMPLETE,
+            )
+        )
+    )
+    return PhaseExecutionBlockedResultV0(
+        phase="BASELINE",
+        executed=True,
+        blocked=False,
+        wiring_verified=True,
+        canonical_owner=canonical_owner,
+        actual_baseline_backtest_call_present=True,
+        baseline_backtest_owner_call_count=1,
+        baseline_backtest_owner_invoked=owner_invoked,
+        backtest_engine_entered=engine_entered,
+        backtest_engine_completed=engine_completed,
+        economic_evidence_persisted=True,
+        economic_evaluation_executed=True,
+        reason_codes=success_reasons,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
+
+
 def run_baseline_offline_economic_evaluation_v0(
     *,
     go_token: str,
@@ -1067,8 +1180,7 @@ def run_baseline_offline_economic_evaluation_v0(
             output_path=active_scratch / "step31f_trend_following_v2_economic_evaluation_v1.json",
         )
         output_dir = active_scratch / "baseline_candidate_output"
-        output_dir.mkdir(parents=True, exist_ok=True)
-        _ = _run_candidate_with_runtime_config_v0(
+        candidate_result = _run_candidate_with_runtime_config_v0(
             repo_root=active_root,
             strategy_id=STRATEGY_ID,
             strategy_version=STRATEGY_VERSION,
@@ -1076,6 +1188,11 @@ def run_baseline_offline_economic_evaluation_v0(
             output_dir=output_dir,
         )
         backtest_invoked = True
+        return _baseline_phase_result_from_candidate_v0(
+            candidate_result=candidate_result,
+            canonical_owner=owner_ref,
+            output_dir=output_dir,
+        )
     except Exception:
         return PhaseExecutionBlockedResultV0(
             phase="BASELINE",
@@ -1085,23 +1202,11 @@ def run_baseline_offline_economic_evaluation_v0(
             canonical_owner=owner_ref,
             actual_baseline_backtest_call_present=backtest_invoked,
             baseline_backtest_owner_call_count=1 if backtest_invoked else 0,
+            baseline_backtest_owner_invoked=backtest_invoked,
             reason_codes=(REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE,),
             authority_effect=AUTHORITY_EFFECT,
             runtime_effect=RUNTIME_EFFECT,
         )
-
-    return PhaseExecutionBlockedResultV0(
-        phase="BASELINE",
-        executed=False,
-        blocked=False,
-        wiring_verified=True,
-        canonical_owner=owner_ref,
-        actual_baseline_backtest_call_present=True,
-        baseline_backtest_owner_call_count=1,
-        reason_codes=(REASON_BASELINE_BACKTEST_OWNER_INVOKED,),
-        authority_effect=AUTHORITY_EFFECT,
-        runtime_effect=RUNTIME_EFFECT,
-    )
 
 
 def run_baseline_execution_preflight_v0(
@@ -1214,10 +1319,14 @@ def phase_result_to_dict(result: PhaseExecutionBlockedResultV0) -> dict[str, Any
         "canonical_owner": result.canonical_owner,
         "actual_baseline_backtest_call_present": result.actual_baseline_backtest_call_present,
         "baseline_backtest_owner_call_count": result.baseline_backtest_owner_call_count,
+        "baseline_backtest_owner_invoked": result.baseline_backtest_owner_invoked,
+        "backtest_engine_entered": result.backtest_engine_entered,
+        "backtest_engine_completed": result.backtest_engine_completed,
+        "economic_evidence_persisted": result.economic_evidence_persisted,
+        "economic_evaluation_executed": result.economic_evaluation_executed,
         "reason_codes": list(result.reason_codes),
         "authority_effect": result.authority_effect,
         "runtime_effect": result.runtime_effect,
-        "economic_evaluation_executed": False,
     }
 
 
@@ -1497,6 +1606,9 @@ __all__ = [
     "RATIFIED_BINDING_DIGEST",
     "RATIFIED_DATASET_DIGEST",
     "REASON_BASELINE_BACKTEST_OWNER_INVOKED",
+    "REASON_BASELINE_CANONICAL_EVIDENCE_MISSING",
+    "REASON_BASELINE_ECONOMIC_EVALUATION_COMPLETE",
+    "REASON_BASELINE_OWNER_RUN_FAILED",
     "REASON_BINDING_DIGEST_MISMATCH",
     "REASON_DATASET_DIGEST_MISMATCH",
     "REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION",
