@@ -16,8 +16,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import numpy as np
 import pandas as pd
 
+from src.analytics.regimes import _compute_log_returns
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 from src.backtest.mv2_research_wiring_v1 import run_mv2_research_backtest_wiring_v1
 from src.research.bounded_offline_funding_fetch_for_materialized_panel_v0 import (
@@ -45,6 +47,7 @@ from src.research.versioned_final_fleet_bindings_offline_economic_evaluation_v0 
     NarrowDatasetMaterializationV0,
     build_runtime_step31f_config_v0,
 )
+from src.trading.master_v2 import canonical_volatility_estimate_feature_contract_v1 as vol_contract
 
 PACKAGE_MARKER = "PANEL_SEQUENTIAL_SIGNAL_DENSITY_RESEARCH_ADAPTER_V0=true"
 ADAPTER_KIND = "PANEL_SEQUENTIAL_SIGNAL_DENSITY_RESEARCH_ADAPTER_v0"
@@ -52,6 +55,8 @@ ROTATION_POLICY = "deterministic_instrument_id_asc"
 
 REASON_STAGING_MISSING = "STAGING_MISSING"
 REASON_PANEL_MEMBER_MISSING = "PANEL_MEMBER_MISSING"
+WARMUP_STATUS_COLUMN = "warmup_status"
+VOLATILITY_CONTRACT_VERSION_COLUMN = "volatility_estimate_contract_version"
 
 
 def _utc_now_z() -> str:
@@ -61,6 +66,42 @@ def _utc_now_z() -> str:
 def _stable_digest(payload: Mapping[str, Any]) -> str:
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _materialize_research_panel_volatility_estimate_columns_v0(frame: pd.DataFrame) -> pd.DataFrame:
+    """Materialize contract-bound volatility columns for 1h research panel bars."""
+    result = frame.copy()
+    mark_prices = result["mark_price"].sort_index().astype(float)
+    if mark_prices.isna().any() or (mark_prices <= 0.0).any():
+        raise ValueError("invalid_mark_price_for_volatility_materialization")
+    log_returns = _compute_log_returns(mark_prices)
+    rolling_std = log_returns.rolling(
+        window=vol_contract.LOOKBACK_BARS,
+        min_periods=vol_contract.MIN_PERIODS,
+    ).std(ddof=vol_contract.DDOF)
+    result[vol_contract.FEATURE_NAME] = rolling_std
+    result[WARMUP_STATUS_COLUMN] = np.where(
+        rolling_std.isna(),
+        vol_contract.WARMUP_INCOMPLETE_STATUS,
+        "WARMUP_COMPLETE",
+    )
+    result[VOLATILITY_CONTRACT_VERSION_COLUMN] = vol_contract.CONTRACT_VERSION
+    return result
+
+
+def _resolve_panel_member_native_instrument_id_v0(
+    *,
+    staging_root: Path,
+    instrument_id: str,
+    native_instrument_id: str | None,
+) -> str:
+    if native_instrument_id:
+        return native_instrument_id
+    binding = load_panel_member_binding_v0(staging_root)
+    if instrument_id not in binding.instrument_ids:
+        raise ValueError(f"{REASON_PANEL_MEMBER_MISSING}:{instrument_id}")
+    index = binding.instrument_ids.index(instrument_id)
+    return binding.native_instrument_ids[index]
 
 
 @dataclass(frozen=True)
@@ -118,6 +159,7 @@ def materialize_panel_member_evaluation_dataset_v0(
     staging_root: Path,
     instrument_id: str,
     output_root: Path,
+    native_instrument_id: str | None = None,
 ) -> NarrowDatasetMaterializationV0:
     funding_series, _panel_ref, _manifest_path = load_funding_panel_from_staging(staging_root)
     selected = None
@@ -127,6 +169,14 @@ def materialize_panel_member_evaluation_dataset_v0(
             break
     if selected is None:
         raise ValueError(f"{REASON_PANEL_MEMBER_MISSING}:{instrument_id}")
+
+    resolved_native = _resolve_panel_member_native_instrument_id_v0(
+        staging_root=staging_root,
+        instrument_id=instrument_id,
+        native_instrument_id=native_instrument_id,
+    )
+    canonical_instrument_id = CANONICAL_INSTRUMENT_ID
+    runtime_native_instrument_id = NATIVE_INSTRUMENT_ID
 
     rows: list[dict[str, Any]] = []
     for bar in selected.bars:
@@ -148,6 +198,7 @@ def materialize_panel_member_evaluation_dataset_v0(
     frame = pd.DataFrame(rows).set_index("timestamp").sort_index()
     if frame.empty:
         raise ValueError(f"empty_panel_member_dataset:{instrument_id}")
+    frame = _materialize_research_panel_volatility_estimate_columns_v0(frame)
 
     field_bindings = ds.field_bindings_for_profile(ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1)
     dataset_digest = ds.compute_versioned_dataset_digest(frame, field_bindings=field_bindings)
@@ -165,11 +216,11 @@ def materialize_panel_member_evaluation_dataset_v0(
         provenance_ref=str(staging_root / "panel" / "panel_funding_dataset_manifest.json"),
     )
     descriptor = ds.VersionedFuturesDatasetDescriptorV1(
-        dataset_id=f"{CANONICAL_INSTRUMENT_ID}_{ds.DEFAULT_DATASET_VERSION}",
+        dataset_id=f"{canonical_instrument_id}_{ds.DEFAULT_DATASET_VERSION}",
         dataset_version=ds.DEFAULT_DATASET_VERSION,
         dataset_schema_version=ds.DATASET_SCHEMA_VERSION,
         dataset_digest=dataset_digest,
-        instrument_id=CANONICAL_INSTRUMENT_ID,
+        instrument_id=canonical_instrument_id,
         contract_type="perpetual",
         futures_only=True,
         bitcoin_direction_allowed=False,
@@ -201,7 +252,7 @@ def materialize_panel_member_evaluation_dataset_v0(
         bars=frame,
         descriptor=descriptor,
         provenance=provenance,
-        instrument_id=CANONICAL_INSTRUMENT_ID,
+        instrument_id=canonical_instrument_id,
         profile_binding=profile_binding,
     )
     manifest_body = bind_step31f_promotion_metric_materialization_dataset_manifest_v0(
@@ -213,7 +264,7 @@ def materialize_panel_member_evaluation_dataset_v0(
             "adapter_kind": ADAPTER_KIND,
             "bar_granularity": "1h",
             "bitcoin_direction_allowed": False,
-            "canonical_instrument_id": CANONICAL_INSTRUMENT_ID,
+            "canonical_instrument_id": canonical_instrument_id,
             "contract_type": "perpetual",
             "data_period": {"end_utc": str(frame.index[-1]), "start_utc": str(frame.index[0])},
             "dataset_profile": ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1.value,
@@ -227,13 +278,13 @@ def materialize_panel_member_evaluation_dataset_v0(
             "fee_model_version": "backtest_fee_taker_symmetric_v0",
             "funding_model_version": "backtest_funding_perpetual_interval_v1",
             "futures_only": True,
-            "instrument_id": CANONICAL_INSTRUMENT_ID,
+            "instrument_id": canonical_instrument_id,
             "integrity_results": {
                 "dataset_admissible": admissibility.is_admissible(),
                 "integrity_pass": admissibility.is_admissible(),
                 "leakage_check_status": admissibility.leakage_check_status,
             },
-            "native_instrument_id": NATIVE_INSTRUMENT_ID,
+            "native_instrument_id": runtime_native_instrument_id,
             "normalized_dataset_digest": dataset_digest,
             "out_of_sample_period": oos,
             "panel_source_binding": {
@@ -270,6 +321,10 @@ def materialize_panel_member_evaluation_dataset_v0(
         training_period=training,
         validation_period=validation,
         out_of_sample_period=oos,
+        canonical_instrument_id=canonical_instrument_id,
+        native_instrument_id=runtime_native_instrument_id,
+        panel_member_instrument_id=instrument_id,
+        panel_member_native_instrument_id=resolved_native,
     )
 
 
@@ -304,21 +359,27 @@ def compute_sparse_signal_density_metrics_v0(
     strategy_id: str,
     staging_root: Path | None = None,
     scratch_root: Path,
+    instrument_ids: Sequence[str] | None = None,
+    skip_member_trade_count_backtest_v0: bool = False,
 ) -> SparseSignalDensityMetricsV0:
     root = resolve_panel_staging_root(staging_root)
     binding = load_sorted_panel_binding(root)
+    target_ids = tuple(instrument_ids) if instrument_ids else binding.instrument_ids
     member_trade_counts: dict[str, int] = {}
-    for instrument_id in binding.instrument_ids:
-        member_trade_counts[instrument_id] = _count_trades_for_member_v0(
-            repo_root=repo_root,
-            strategy_id=strategy_id,
-            staging_root=root,
-            instrument_id=instrument_id,
-            scratch_root=scratch_root,
-        )
+    if skip_member_trade_count_backtest_v0:
+        member_trade_counts = {instrument_id: 0 for instrument_id in target_ids}
+    else:
+        for instrument_id in target_ids:
+            member_trade_counts[instrument_id] = _count_trades_for_member_v0(
+                repo_root=repo_root,
+                strategy_id=strategy_id,
+                staging_root=root,
+                instrument_id=instrument_id,
+                scratch_root=scratch_root,
+            )
     nonzero = [item for item in member_trade_counts.values() if item > 0]
     max_trade_count = max(member_trade_counts.values()) if member_trade_counts else 0
-    evaluation_instrument_id = binding.instrument_ids[0]
+    evaluation_instrument_id = target_ids[0] if target_ids else binding.instrument_ids[0]
     if max_trade_count > 0:
         evaluation_instrument_id = max(member_trade_counts, key=member_trade_counts.get)
     native_index = binding.instrument_ids.index(evaluation_instrument_id)
@@ -361,6 +422,7 @@ __all__ = [
     "ADAPTER_KIND",
     "ROTATION_POLICY",
     "SparseSignalDensityMetricsV0",
+    "_materialize_research_panel_volatility_estimate_columns_v0",
     "build_sparse_signal_runtime_step31f_config_v0",
     "compute_sparse_signal_density_metrics_v0",
     "load_sorted_panel_binding",
