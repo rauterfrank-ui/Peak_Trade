@@ -14,6 +14,7 @@ AUTHORITY_EFFECT=NONE
 **Kanonischer Parent:** [`PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md)  
 **Maschinenlesbarer Owner:** [`config/governance/economic_diagnostic_optimization_boundary_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_v0.json)  
 **Owner-Map:** [`config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json)  
+**Technical Wiring Authorization:** [`config/governance/technical_canonical_wiring_authorization_v1.json`](../../config/governance/technical_canonical_wiring_authorization_v1.json)  
 **Guard:** [`src/governance/economic_diagnostic_optimization_boundary_v0.py`](../../src/governance/economic_diagnostic_optimization_boundary_v0.py)
 
 ## 1. Unveränderliche Flags
@@ -95,11 +96,43 @@ IF change_affects_only_allowed_optimization_surface
 THEN admissible_for_bounded_review=true
 
 IF change_affects_any_forbidden_mutation_surface
+   AND NOT valid_technical_canonical_wiring_authorization
 THEN admissible=false AND fail_closed=true
+
+IF forbidden_surface_match
+   AND valid_technical_canonical_wiring_authorization_covers_all_matched_paths
+   AND required_semantic_invariants_bound
+THEN admissible=true
+     authorized_scope_class=TECHNICAL_CANONICAL_WIRING_ONLY
+     MASTER_V2_MUTATION_ALLOWED default remains false
 
 IF impact_unknown
 THEN read_only_owner_and_semantic_diff_required=true AND mutation_blocked=true
 ```
+
+## 5.1 Technical Canonical Wiring Authorization (v1)
+
+Eng begrenzte, versionierte Authorization-Kategorie:
+
+```text
+AUTHORIZED_SCOPE_CLASS=TECHNICAL_CANONICAL_WIRING_ONLY
+MASTER_V2_MUTATION_ALLOWED=false  (Default bleibt unverändert)
+```
+
+Joint validation (Token allein reicht nicht):
+
+- contract version
+- scope id
+- authorization token
+- exact allowed paths / surface classes
+- mutation purpose class
+- forbidden effects = NONE
+- required semantic invariants
+- fail-closed validation rules
+- no PR-/Branch-Hardcode
+- no broad MASTER_V2 directory grant
+
+Owner: [`config/governance/technical_canonical_wiring_authorization_v1.json`](../../config/governance/technical_canonical_wiring_authorization_v1.json)
 
 ## 6. Boundary-Report (Pflicht für Research/Economic/Diagnostics/Cost/Target/Feature/Parameter-PRs)
 
@@ -120,6 +153,8 @@ Maschinenlesbar via Guard-CLI. Pflichtfelder:
 - `economic_or_diagnostic_only`
 - `admissible`
 - `reason_codes`
+- `technical_wiring_authorization_applied`
+- `technical_wiring_authorization_version`
 
 ## 7. Guard
 
@@ -129,7 +164,10 @@ Lokal:
 python scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py --base origin/main
 ```
 
-CI: Lint Gate (always-run). Positiv- und Negativtests: `tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py`.
+CI: Lint Gate (always-run). Positiv- und Negativtests:
+
+- `tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py`
+- `tests/governance/test_technical_canonical_wiring_authorization_bound_to_boundary_guard_v1.py`
 
 ## 8. Normative Referenz
 

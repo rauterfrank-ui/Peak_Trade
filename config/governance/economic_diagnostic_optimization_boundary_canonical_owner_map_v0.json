@@ -10,8 +10,14 @@
     "tests/governance/test_capital_risk_sizing_mathematics_consolidation_contract_v0.py",
     "config/research/mv2_backtest_mandatory_boundary_state_files_v0/MANIFEST.json",
     "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
-    "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md"
+    "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md",
+    "config/governance/technical_canonical_wiring_authorization_v1.json"
   ],
+  "technical_canonical_wiring_authorization": {
+    "contract_path": "config/governance/technical_canonical_wiring_authorization_v1.json",
+    "authorized_scope_class": "TECHNICAL_CANONICAL_WIRING_ONLY",
+    "note": "Narrow fail-closed override for versioned technical wiring paths only; does not waive MASTER_V2_MUTATION_ALLOWED=false."
+  },
   "forbidden_mutation_surfaces": {
     "MASTER_V2": {
       "description": "All canonical Master V2 trading logic owners",
