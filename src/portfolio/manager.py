@@ -14,6 +14,10 @@ import logging
 from ..core.config_pydantic import get_config, get_strategy_cfg
 from ..backtest.engine import BacktestEngine, BacktestResult
 from ..backtest.stats import compute_basic_stats, compute_sharpe_ratio
+from ..backtest.strategy_signal_binding_v1 import (
+    RUN_BACKTEST_PATH_CLASSIFICATION,
+    declare_legacy_raw_signal_research_path_v1,
+)
 from ..core.resilience_helpers import with_resilience, create_module_circuit_breaker
 
 logger = logging.getLogger(__name__)
@@ -122,9 +126,19 @@ class PortfolioManager:
         else:
             raise ValueError(f"Unbekannte Allocation-Methode: {method}")
 
-    def run_backtest(self, df: pd.DataFrame, allocation_method: str = "equal") -> PortfolioResult:
+    def run_backtest(
+        self,
+        df: pd.DataFrame,
+        allocation_method: str = "equal",
+        *,
+        system_economic_evidence_requested: bool = False,
+    ) -> PortfolioResult:
         """
         Führt Portfolio-Backtest durch.
+
+        Path classification: RAW_SIGNAL_RESEARCH / LEGACY_NON_AUTHORITATIVE.
+        Not a canonical MV2 system-evidence path — system economic evidence requests
+        fail closed. Does not rewrite capital-allocation semantics.
 
         Args:
             df: OHLCV-DataFrame
@@ -133,6 +147,11 @@ class PortfolioManager:
         Returns:
             PortfolioResult mit kombinierter Equity-Curve
         """
+        declare_legacy_raw_signal_research_path_v1(
+            system_economic_evidence_requested=system_economic_evidence_requested,
+            path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+        )
+
         # 1. Capital Allocation
         self._allocate_capital(method=allocation_method)
 

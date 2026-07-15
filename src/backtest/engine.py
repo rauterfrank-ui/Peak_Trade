@@ -56,6 +56,10 @@ from .cost_config_v0 import (
     compute_effective_exit_cost_bps,
     resolve_effective_backtest_cost_config,
 )
+from .strategy_signal_binding_v1 import (
+    RUN_BACKTEST_PATH_CLASSIFICATION,
+    declare_legacy_raw_signal_research_path_v1,
+)
 
 # Order-Layer Imports (Phase 16)
 from ..orders.base import OrderRequest, OrderExecutionResult, OrderFill
@@ -1426,9 +1430,15 @@ def run_single_strategy_from_registry(
     risk_limits: Optional[RiskLimits] = None,
     core_position_sizer: Optional[BasePositionSizer] = None,
     risk_manager: Optional[BaseRiskManager] = None,
+    *,
+    system_economic_evidence_requested: bool = False,
 ) -> BacktestResult:
     """
     Führt Backtest für EINE Strategie aus der Registry aus.
+
+    Path classification: RAW_SIGNAL_RESEARCH / LEGACY_NON_AUTHORITATIVE.
+    Not a canonical MV2 system-evidence path — system economic evidence requests
+    fail closed.
 
     Workflow:
     1. Lädt Strategie-Config aus Registry (mit Defaults-Merging)
@@ -1460,6 +1470,11 @@ def run_single_strategy_from_registry(
         ... )
         >>> print(f"{result.strategy_name}: Sharpe={result.stats['sharpe']:.2f}")
     """
+    declare_legacy_raw_signal_research_path_v1(
+        system_economic_evidence_requested=system_economic_evidence_requested,
+        path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+    )
+
     # 1. Config aus Registry laden
     strategy_cfg = get_strategy_config(strategy_name)
 
@@ -1535,9 +1550,15 @@ def run_portfolio_from_config(
     risk_limits: Optional[RiskLimits] = None,
     core_position_sizer: Optional[BasePositionSizer] = None,
     risk_manager: Optional[BaseRiskManager] = None,
+    *,
+    system_economic_evidence_requested: bool = False,
 ) -> PortfolioResult:
     """
     Führt Portfolio-Backtest mit mehreren Strategien aus.
+
+    Path classification: RAW_SIGNAL_RESEARCH / LEGACY_NON_AUTHORITATIVE.
+    Not a canonical MV2 system-evidence path — system economic evidence requests
+    fail closed. Does not silently rewrite portfolio allocation semantics.
 
     Workflow:
     1. Lädt aktive Strategien aus Registry
@@ -1574,6 +1595,11 @@ def run_portfolio_from_config(
         ...     strategy_filter=["ma_crossover", "momentum_1h"]
         ... )
     """
+    declare_legacy_raw_signal_research_path_v1(
+        system_economic_evidence_requested=system_economic_evidence_requested,
+        path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+    )
+
     # 1. Config laden
     if cfg is None:
         cfg = get_config()

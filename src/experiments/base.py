@@ -748,9 +748,19 @@ class ExperimentRunner:
         """
         try:
             from src.backtest.engine import run_single_strategy_from_registry
+            from src.backtest.strategy_signal_binding_v1 import (
+                RUN_BACKTEST_PATH_CLASSIFICATION,
+                declare_legacy_raw_signal_research_path_v1,
+            )
             from src.data.kraken import fetch_ohlcv_df
             from src.core.config_registry import get_config
             import pandas as pd
+
+            # Inherit C3 boundary: RAW_SIGNAL_RESEARCH / LEGACY_NON_AUTHORITATIVE.
+            declare_legacy_raw_signal_research_path_v1(
+                system_economic_evidence_requested=False,
+                path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+            )
 
             # Setze initial_capital in der Config
             cfg = get_config()

@@ -462,9 +462,19 @@ def run_single_strategy_smoke(
         # Imports hier, um Fehler abzufangen
         from src.strategies import load_strategy
         from src.backtest.engine import BacktestEngine
+        from src.backtest.strategy_signal_binding_v1 import (
+            RUN_BACKTEST_PATH_CLASSIFICATION,
+            declare_legacy_raw_signal_research_path_v1,
+        )
         from src.core.peak_config import load_config
         from src.core.position_sizing import build_position_sizer_from_config
         from src.core.risk import build_risk_manager_from_config
+
+        # Smoke/diagnostics are non-authoritative RAW_SIGNAL_RESEARCH paths.
+        declare_legacy_raw_signal_research_path_v1(
+            system_economic_evidence_requested=False,
+            path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+        )
 
         # Strategie-Defaults aus Config laden
         defaults = get_strategy_defaults(strategy_name, config_path)
