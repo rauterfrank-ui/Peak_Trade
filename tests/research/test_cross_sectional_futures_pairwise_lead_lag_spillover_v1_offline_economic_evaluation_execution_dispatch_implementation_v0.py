@@ -27,11 +27,11 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline
     RATIFIED_UNIVERSE_DIGEST,
     REASON_BINDING_DIGEST_MISMATCH,
     REASON_DATASET_DIGEST_MISMATCH,
-    REASON_ECONOMIC_EVALUATION_BLOCKED,
     REASON_ECONOMIC_EXECUTION_FORBIDDEN,
     REASON_GO_TOKEN_INVALID,
     REASON_PORTFOLIO_BINDING_DIGEST_MISMATCH,
     REASON_PORTFOLIO_BINDING_PENDING,
+    REASON_REEVALUATION_GO_REQUIRED,
     REASON_UNIVERSE_DIGEST_MISMATCH,
     RUNNER_SCRIPT,
     RUNTIME_EFFECT,
@@ -280,50 +280,23 @@ class TestDispatchWithoutEvaluation:
         assert result.executed is False
         assert any(REASON_PORTFOLIO_BINDING_PENDING in item for item in result.reason_codes)
 
-    def test_bound_portfolio_still_blocks_evaluation_until_separate_authorization(
+    def test_bound_portfolio_reaches_wiring_and_requires_reevaluation_go(
         self,
         authorization_ratification: dict,
         complete_binding: dict,
     ) -> None:
-        from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0 import (
-            ExecutionDispatchTerminalStatus,
-            OfflineEconomicEvaluationDispatchResultV0,
+        result = run_full_offline_economic_evaluation_v0(
+            go_token=_EXEC_GO,
+            repo_root=REPO_ROOT,
+            authorization_ratification=authorization_ratification,
+            versioned_binding=complete_binding,
+            verify_source_manifests=False,
+            materialize_dataset=False,
         )
-
-        accepted_dispatch = OfflineEconomicEvaluationDispatchResultV0(
-            status=ExecutionDispatchTerminalStatus.DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION,
-            dispatch_accepted=True,
-            precheck_passed=True,
-            portfolio_bindings_valid=True,
-            source_manifests_verified=True,
-            bound_dataset_materialized=True,
-            dataset_period_match=True,
-            panel_data_digest="a" * 64,
-            reason_codes=(),
-            baseline_executed=False,
-            robustness_executed=False,
-            economic_evaluation_executed=False,
-            authority_effect=AUTHORITY_EFFECT,
-            runtime_effect=RUNTIME_EFFECT,
-            dispatcher_owner="test.dispatch",
-            baseline_phase_owner="test.baseline",
-            robustness_phase_owner="test.robustness",
-        )
-        with patch(
-            "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_"
-            "economic_evaluation_execution_v0.run_offline_economic_evaluation_execution_dispatch_v0",
-            return_value=accepted_dispatch,
-        ):
-            result = run_full_offline_economic_evaluation_v0(
-                go_token=_EXEC_GO,
-                repo_root=REPO_ROOT,
-                authorization_ratification=authorization_ratification,
-                versioned_binding=complete_binding,
-                verify_source_manifests=False,
-                materialize_dataset=False,
-            )
         assert result.executed is False
-        assert REASON_ECONOMIC_EVALUATION_BLOCKED in result.reason_codes
+        assert result.wiring_verified is True
+        assert result.blocked is False
+        assert REASON_REEVALUATION_GO_REQUIRED in result.reason_codes
 
 
 class TestRunnerEntryPoint:

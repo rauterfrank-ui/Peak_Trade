@@ -192,7 +192,7 @@ class TestExecutionDispatchReadiness:
         result = run_full_offline_economic_evaluation_v0(go_token=IMPLEMENTATION_GO_TOKEN)
         assert result.executed is False
 
-    def test_baseline_still_blocked_pending_separate_authorization(self) -> None:
+    def test_baseline_wiring_verified_without_execution(self) -> None:
         binding = materialize_versioned_hypothesis_binding_v0()
         result = run_baseline_offline_economic_evaluation_v0(
             go_token=EXECUTION_GO_TOKEN,
@@ -200,6 +200,8 @@ class TestExecutionDispatchReadiness:
             versioned_binding=binding,
         )
         assert result.executed is False
+        assert result.wiring_verified is True
+        assert result.blocked is False
 
     def test_portfolio_contract_reports_complete(self) -> None:
         binding = materialize_versioned_hypothesis_binding_v0()

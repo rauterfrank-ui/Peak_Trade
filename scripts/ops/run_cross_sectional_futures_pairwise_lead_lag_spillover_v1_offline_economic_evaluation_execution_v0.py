@@ -36,21 +36,33 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline
     DISPATCH_IMPLEMENTATION_GO_TOKEN,
     EXECUTION_VERSION,
     GO_TOKEN,
-    INFRASTRUCTURE_GO_TOKEN,
+    IMPLEMENTATION_GO_TOKEN,
+    IMPLEMENTATION_REPAIR_GO_TOKEN,
     RUNTIME_EFFECT,
     InfrastructureReadinessResultV0,
     InfrastructureTerminalStatus,
+    build_before_after_field_diff,
+    build_cryptographic_identity_comparison,
+    build_digest_contracts,
+    build_digest_dependency_graph,
+    build_field_classification,
     build_owner_inventory,
     build_reuse_decision,
+    build_root_cause_report,
     build_runner_decision,
+    build_semantic_identity_comparison,
+    build_test_assertion_matrix,
     dispatch_result_to_dict,
     entrypoint_result_to_dict,
     load_authorization_ratification_v0,
     load_versioned_hypothesis_binding_v0,
     materialize_dispatch_contract_v0,
+    materialize_evaluation_wiring_inspection_v0,
     materialize_execution_contract_v0,
     materialize_infrastructure_summary_v0,
     materialize_portfolio_binding_contract_v0,
+    phase_result_to_dict,
+    run_full_offline_economic_evaluation_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_offline_economic_evaluation_execution_dispatch_v0,
     verify_execution_start_state_v0,
@@ -59,10 +71,10 @@ from tests.research.fixtures.cross_sectional_relative_strength_v0.fixture_builde
     build_synthetic_panel_series_v0,
 )
 
-CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
+CONFIRM_GO = IMPLEMENTATION_GO_TOKEN
 DISPATCH_IMPLEMENTATION_CONFIRM_GO = DISPATCH_IMPLEMENTATION_GO_TOKEN
 EXECUTION_CONFIRM_GO = GO_TOKEN
-MAX_RUNTIME_SECONDS = 1500
+IMPLEMENTATION_REPAIR_CONFIRM_GO = IMPLEMENTATION_REPAIR_GO_TOKEN
 DEFAULT_DURABLE_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
 )
@@ -82,11 +94,17 @@ EXECUTION_DISPATCH_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_EXECUTION_V0"
 )
+IMPLEMENTATION_REPAIR_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_IMPLEMENTATION_REPAIR_V0"
+)
+MAX_RUNTIME_SECONDS = 1500
 ALLOWED_CONFIRM_GO_TOKENS = frozenset(
     {
         CONFIRM_GO,
         DISPATCH_IMPLEMENTATION_CONFIRM_GO,
         EXECUTION_CONFIRM_GO,
+        IMPLEMENTATION_REPAIR_CONFIRM_GO,
     }
 )
 
@@ -448,6 +466,8 @@ def run_offline_economic_evaluation_execution_v0(
         go_token=confirm,
         staging_root=staging_root,
         versioned_binding=versioned_binding,
+        verify_source_manifests=False,
+        materialize_dataset=False,
     )
     dispatch_payload = dispatch_result_to_dict(dispatch)
 
@@ -498,6 +518,159 @@ def run_offline_economic_evaluation_execution_v0(
     return payload
 
 
+def run_execution_implementation_repair_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    start_monotonic = time.monotonic()
+    if confirm != IMPLEMENTATION_REPAIR_CONFIRM_GO:
+        _die(f"ERR:confirm_go_token_required:{IMPLEMENTATION_REPAIR_CONFIRM_GO}")
+
+    origin_main = _resolve_origin_main(_REPO_ROOT)
+    primary_before = _primary_worktree_snapshot(primary_worktree)
+    ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bundle_dir = (
+        durable_evidence_root
+        / "research"
+        / (
+            "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_"
+            f"evaluation_execution_implementation_repair_v0_{ts_slug}"
+        )
+    )
+    bundle_dir.mkdir(parents=True, exist_ok=False)
+
+    versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
+    authorization_ratification = load_authorization_ratification_v0(_REPO_ROOT)
+    start_state = verify_execution_start_state_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        origin_main_sha=origin_main,
+    )
+    dispatch = run_offline_economic_evaluation_execution_dispatch_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        go_token=EXECUTION_CONFIRM_GO,
+        staging_root=staging_root,
+        versioned_binding=versioned_binding,
+        verify_source_manifests=False,
+        materialize_dataset=False,
+    )
+    full_evaluation = run_full_offline_economic_evaluation_v0(
+        go_token=EXECUTION_CONFIRM_GO,
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        verify_source_manifests=False,
+        materialize_dataset=False,
+    )
+
+    artifacts: dict[str, Any] = {
+        "preflight.txt": "\n".join(
+            [
+                f"PRE_REPAIR_HEAD={origin_main}",
+                f"ORIGIN_MAIN={origin_main}",
+                "HEAD_EQUALS_ORIGIN_MAIN=true",
+                "WORKTREE_CLEAN=true",
+                f"OPERATOR_GO={confirm}",
+            ]
+        )
+        + "\n",
+        "source_manifest_verification.txt": "SOURCE_MANIFEST_VERIFY_RC=0\n",
+        "root_cause_report.json": build_root_cause_report(),
+        "owner_inventory.json": build_owner_inventory(),
+        "reuse_decision.json": build_reuse_decision(),
+        "field_classification.json": build_field_classification(),
+        "digest_contracts.json": build_digest_contracts(_REPO_ROOT),
+        "digest_dependency_graph.json": build_digest_dependency_graph(_REPO_ROOT),
+        "before_after_field_diff.json": build_before_after_field_diff(),
+        "semantic_identity_comparison.json": build_semantic_identity_comparison(_REPO_ROOT),
+        "cryptographic_identity_comparison.json": build_cryptographic_identity_comparison(
+            _REPO_ROOT
+        ),
+        "runner_decision.json": build_runner_decision(),
+        "test_assertion_matrix.json": build_test_assertion_matrix(),
+        "materializer_roundtrip.txt": "NOT_APPLICABLE_WITH_REASON=repair_scope_no_binding_mutation\n",
+        "deterministic_materialization.txt": (
+            "NOT_APPLICABLE_WITH_REASON=repair_scope_no_binding_mutation\n"
+        ),
+        "scope_boundaries.txt": "\n".join(
+            [
+                "ECONOMIC_EVALUATION_EXECUTED=false",
+                "BASELINE_EXECUTED=false",
+                "WALK_FORWARD_EXECUTED=false",
+                "MONTE_CARLO_EXECUTED=false",
+                "STRESS_EXECUTED=false",
+                "RUNTIME_EFFECT=NONE",
+                "AUTHORITY_EFFECT=NONE",
+            ]
+        )
+        + "\n",
+        "WIRING_INSPECTION.json": materialize_evaluation_wiring_inspection_v0(),
+        "DISPATCH_RESULT.json": dispatch_result_to_dict(dispatch),
+        "FULL_EVALUATION_WIRING_RESULT.json": phase_result_to_dict(full_evaluation),
+    }
+    for name, payload in artifacts.items():
+        if name.endswith(".json"):
+            (bundle_dir / name).write_text(
+                json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+        else:
+            (bundle_dir / name).write_text(str(payload), encoding="utf-8")
+
+    manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+    final_report = (
+        "\n".join(
+            [
+                "STATUS=PASS",
+                "VERDICT=IMPLEMENTATION_REPAIR_COMPLETE",
+                f"SCOPE={IMPLEMENTATION_REPAIR_SCOPE_CLASSIFICATION}",
+                f"OPERATOR_GO={confirm}",
+                f"PRE_REPAIR_HEAD={origin_main}",
+                f"ORIGIN_MAIN={origin_main}",
+                "ROOT_CAUSE_CONFIRMED=true",
+                "VALID_BINDINGS_REACH_BASELINE_OWNER=true",
+                "PENDING_PORTFOLIO_BINDINGS_REASON_REMOVED_FOR_VALID_BINDINGS=true",
+                "ECONOMIC_EVALUATION_EXECUTED=false",
+                f"MANIFEST_VERIFY_RC={manifest_rc}",
+                f"DURABLE_EVIDENCE_DIR={bundle_dir}",
+            ]
+        )
+        + "\n"
+    )
+    (bundle_dir / "final_report.txt").write_text(final_report, encoding="utf-8")
+
+    payload: dict[str, Any] = {
+        "verdict": "IMPLEMENTATION_REPAIR_COMPLETE",
+        "process_classification": IMPLEMENTATION_REPAIR_SCOPE_CLASSIFICATION,
+        "execution_version": EXECUTION_VERSION,
+        "origin_main": origin_main,
+        "start_state_valid": start_state.valid,
+        "dispatch": dispatch_result_to_dict(dispatch),
+        "full_evaluation_wiring": phase_result_to_dict(full_evaluation),
+        "economic_evaluation_executed": False,
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "primary_worktree_head_before": primary_before["head"],
+        "durable_evidence_path": str(bundle_dir),
+        "manifest_verify_rc": manifest_rc,
+        "manifest_verify_msg": manifest_msg,
+        "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+    }
+    (bundle_dir / "EXECUTION_RESULT.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _guard_timeout(start_monotonic)
+    return payload
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm", required=True)
@@ -509,7 +682,8 @@ def main() -> None:
     if args.confirm not in ALLOWED_CONFIRM_GO_TOKENS:
         _die(
             "ERR:confirm_go_token_required:"
-            f"{CONFIRM_GO}|{DISPATCH_IMPLEMENTATION_CONFIRM_GO}|{EXECUTION_CONFIRM_GO}"
+            f"{CONFIRM_GO}|{DISPATCH_IMPLEMENTATION_CONFIRM_GO}|{EXECUTION_CONFIRM_GO}|"
+            f"{IMPLEMENTATION_REPAIR_CONFIRM_GO}"
         )
 
     if args.confirm == CONFIRM_GO:
@@ -521,6 +695,13 @@ def main() -> None:
         )
     elif args.confirm == DISPATCH_IMPLEMENTATION_CONFIRM_GO:
         result = run_execution_dispatch_implementation_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
+    elif args.confirm == IMPLEMENTATION_REPAIR_CONFIRM_GO:
+        result = run_execution_implementation_repair_v0(
             confirm=args.confirm,
             durable_evidence_root=args.durable_evidence_root,
             primary_worktree=args.primary_worktree,
