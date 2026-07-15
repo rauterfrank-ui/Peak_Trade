@@ -23,6 +23,7 @@ from src.research.cross_sectional_offline_economic_evaluation_decision_funnel_v0
 )
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_scope_ratification_v0 import (
     ValidationVerdictEnum,
+    evaluate_invocation_bound_economic_evaluation_authorization_v0,
     validate_lead_lag_offline_economic_evaluation_scope_ratification_v0,
 )
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_score_v0 import (
@@ -817,8 +818,6 @@ def verify_full_evaluation_precheck_v1(
         reasons.append(REASON_PARAMETER_SEARCH_FORBIDDEN_VIOLATION)
 
     if require_execution_go:
-        if ratification.get("economic_evaluation_authorized") is not True:
-            reasons.append(REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED)
         if go_token not in ALLOWED_FULL_EVALUATION_GO_TOKENS:
             reasons.append(REASON_GO_TOKEN_INVALID)
         entry_ok, _ = validate_entry_point_go_token_v0(str(go_token or ""))
@@ -858,6 +857,17 @@ def verify_full_evaluation_precheck_v1(
             reasons.append(REASON_FULL_CANONICAL_PARITY_NOT_PROVEN)
         if not parity_pass:
             reasons.append(REASON_BACKTEST_RUNTIME_DECISION_PARITY_FAIL)
+        auth_result = evaluate_invocation_bound_economic_evaluation_authorization_v0(
+            ratification=ratification,
+            versioned_binding=envelope,
+            go_token=go_token,
+            allowed_execution_go_tokens=ALLOWED_FULL_EVALUATION_GO_TOKENS,
+            ops_config=ops_cfg,
+            full_chain_wired=full_chain_wired,
+            parity_pass=parity_pass,
+        )
+        if not auth_result.authorized:
+            reasons.extend(auth_result.reason_codes)
 
     if reasons:
         return False, tuple(dict.fromkeys(reasons)), None
