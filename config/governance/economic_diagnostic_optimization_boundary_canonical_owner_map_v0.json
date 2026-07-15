@@ -415,11 +415,15 @@
         "src/research/*terminal_insufficient_sample_and_distinct_futures_research_scope_ratification_v0.py",
         "src/research/*research_scope_ratification_v0.py",
         "src/research/*versioned_hypothesis_binding_v0.py",
+        "src/research/*score_and_ranking_contract_v0.py",
+        "src/research/cross_sectional_futures_pairwise_lead_lag_spillover_*_score_v0.py",
         "scripts/research/materialize_*operator_ratification*",
         "scripts/research/materialize_*scope_ratification*",
         "scripts/research/materialize_*terminal_*research_scope*",
         "scripts/research/materialize_*versioned_hypothesis_binding_v0.py",
-        "tests/research/test_*versioned_hypothesis_binding_v0_contract.py"
+        "scripts/research/materialize_*score_and_ranking_contract_v0.py",
+        "tests/research/test_*versioned_hypothesis_binding_v0_contract.py",
+        "tests/research/test_*score_and_ranking_contract_v0_contract.py"
       ],
       "note": "Governance-only operator ratification and research scope definition without trading semantic mutation or runtime authority."
     },

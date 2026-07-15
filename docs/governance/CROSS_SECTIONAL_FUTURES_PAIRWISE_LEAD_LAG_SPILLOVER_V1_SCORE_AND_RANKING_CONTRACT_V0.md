@@ -1,12 +1,12 @@
 # Cross-Sectional Futures Pairwise Lead-Lag Spillover V1 Score-and-Ranking Contract V0
 
-> **Non-authorizing:** Implementiert den kanonischen Score- und Ranking-Contract für `cross_sectional_futures_pairwise_lead_lag_spillover/v1` als Ergänzung zum ratifizierten Hypothesis Binding. Keine Economic Evaluation, keine Selection-/Aggregation-Policy-Bindung, keine Runtime, keine Promotion.
+> **Non-authorizing:** Implementiert den kanonischen Score- und Ranking-Contract für `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1` als Ergänzung zum ratifizierten Hypothesis Binding. Keine Economic Evaluation, keine Selection-/Aggregation-Policy-Bindung, keine Runtime, keine Promotion.
 
 ## Scope
 
 | Feld | Wert |
 |------|------|
-| `research_scope` | `cross_sectional_futures_pairwise_lead_lag_spillover/v1` |
+| `research_scope` | `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1` |
 | `score_family` | `pairwise_spillover_graph_v1` |
 | `hypothesis_binding_digest` | `6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438` |
 | `GO_TOKEN` | `GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_IMPLEMENTATION_V0` |
