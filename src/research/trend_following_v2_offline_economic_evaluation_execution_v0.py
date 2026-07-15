@@ -14,7 +14,7 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256
 from src.backtest.economic_viability_evidence_v1 import ARTIFACT_FILENAME
@@ -1077,6 +1077,8 @@ def run_baseline_offline_economic_evaluation_v0(
     scratch_root: Path | None = None,
     invoke_baseline_owner: bool = False,
     verify_source_manifests: bool = False,
+    panel_member_instrument_ids: Sequence[str] | None = None,
+    skip_member_trade_count_backtest_v0: bool = False,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
     """Fail-closed baseline entry point wiring to canonical sparse-signal backtest owner."""
@@ -1171,6 +1173,8 @@ def run_baseline_offline_economic_evaluation_v0(
             strategy_id=STRATEGY_ID,
             staging_root=staging_root,
             scratch_root=active_scratch,
+            instrument_ids=panel_member_instrument_ids,
+            skip_member_trade_count_backtest_v0=skip_member_trade_count_backtest_v0,
         )
         config_path = build_sparse_signal_runtime_step31f_config_v0(
             repo_root=active_root,

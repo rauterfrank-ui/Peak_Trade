@@ -16,6 +16,7 @@ import json
 import re
 import shutil
 import subprocess
+import traceback
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
@@ -180,6 +181,10 @@ class NarrowDatasetMaterializationV0:
     training_period: str
     validation_period: str
     out_of_sample_period: str
+    canonical_instrument_id: str = CANONICAL_INSTRUMENT_ID
+    native_instrument_id: str = NATIVE_INSTRUMENT_ID
+    panel_member_instrument_id: str = ""
+    panel_member_native_instrument_id: str = ""
 
 
 @dataclass(frozen=True)
@@ -851,8 +856,12 @@ def build_runtime_step31f_config_v0(
     binding["training_period"] = narrow_dataset.training_period
     binding["validation_period"] = narrow_dataset.validation_period
     binding["out_of_sample_period"] = narrow_dataset.out_of_sample_period
-    binding["native_instrument_id"] = EVALUATION_NATIVE_INSTRUMENT_ID
-    binding["canonical_instrument_id"] = CANONICAL_INSTRUMENT_ID
+    binding["native_instrument_id"] = (
+        narrow_dataset.native_instrument_id or EVALUATION_NATIVE_INSTRUMENT_ID
+    )
+    binding["canonical_instrument_id"] = (
+        narrow_dataset.canonical_instrument_id or CANONICAL_INSTRUMENT_ID
+    )
     cfg["real_admissible_futures_evaluation_binding_v1"] = binding
     eval_block = cfg.setdefault("economic_evaluation_v1", {})
     if isinstance(eval_block, dict):
@@ -1047,6 +1056,36 @@ def _write_evidence_bundle(
     (evidence_root / "SAFETY_FLAGS.md").write_text("\n".join(safety_lines) + "\n", encoding="utf-8")
 
 
+def _build_owner_failure_provenance_v0(
+    *,
+    exc: BaseException,
+    config_path: Path,
+    failed_stage: str = "economic_viability_runner",
+) -> dict[str, Any]:
+    provenance: dict[str, Any] = {
+        "failed_stage": failed_stage,
+        "exception_type": type(exc).__name__,
+        "exception_message": str(exc),
+        "traceback": traceback.format_exc(),
+        "traceback_captured": True,
+    }
+    try:
+        cfg = json.loads(config_path.read_text(encoding="utf-8"))
+        provenance["config_digest"] = compute_config_digest_v1(cfg)
+        binding = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
+        if isinstance(binding, Mapping):
+            provenance["dataset_digest"] = binding.get("expected_dataset_digest")
+            provenance["manifest_digest"] = binding.get("expected_manifest_digest")
+            provenance["canonical_instrument_id"] = binding.get("canonical_instrument_id")
+            provenance["native_instrument_id"] = binding.get("native_instrument_id")
+            panel_binding = binding.get("panel_source_binding", {})
+            if isinstance(panel_binding, Mapping):
+                provenance["panel_member_id"] = panel_binding.get("panel_member_instrument_id")
+    except Exception:
+        pass
+    return provenance
+
+
 def _run_candidate_with_runtime_config_v0(
     *,
     repo_root: Path,
@@ -1095,7 +1134,7 @@ def _run_candidate_with_runtime_config_v0(
     stage_return_codes: dict[str, int] = {"economic_viability_runner": 0}
     try:
         outcome = execute_evaluation(args)
-    except (RunnerError, Exception):
+    except (RunnerError, Exception) as exc:
         stage_return_codes["economic_viability_runner"] = 1
         return CandidateExecutionResultV0(
             strategy_id=strategy_id,
@@ -1112,10 +1151,20 @@ def _run_candidate_with_runtime_config_v0(
             reason_codes=(REASON_CANDIDATE_RUN_FAILED,),
             stage_return_codes=stage_return_codes,
             runner_execution_success=False,
+            failure_provenance=_build_owner_failure_provenance_v0(
+                exc=exc,
+                config_path=config_path,
+            ),
         )
 
     if not outcome.runner_execution_success:
         stage_return_codes["economic_viability_runner"] = 1
+        failure_message = str(getattr(outcome, "failure_message", "") or "")
+        failure_exc = (
+            RunnerError(failure_message)
+            if failure_message
+            else RunnerError("economic_viability_runner_failed")
+        )
         return CandidateExecutionResultV0(
             strategy_id=strategy_id,
             strategy_version=strategy_version,
@@ -1131,6 +1180,10 @@ def _run_candidate_with_runtime_config_v0(
             reason_codes=(REASON_CANDIDATE_RUN_FAILED,),
             stage_return_codes=stage_return_codes,
             runner_execution_success=False,
+            failure_provenance=_build_owner_failure_provenance_v0(
+                exc=failure_exc,
+                config_path=config_path,
+            ),
         )
 
     economic_validity_result = str(outcome.economic_validity_result or "BLOCKED")

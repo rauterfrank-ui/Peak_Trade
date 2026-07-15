@@ -222,6 +222,7 @@ class CandidateExecutionResultV0:
     reason_codes: tuple[str, ...]
     stage_return_codes: dict[str, int]
     runner_execution_success: bool
+    failure_provenance: Mapping[str, Any] | None = None
 
 
 def _stable_digest(payload: Mapping[str, Any]) -> str:
