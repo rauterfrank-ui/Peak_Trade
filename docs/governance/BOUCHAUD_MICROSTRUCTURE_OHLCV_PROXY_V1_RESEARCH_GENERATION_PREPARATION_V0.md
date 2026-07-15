@@ -2,7 +2,7 @@
 
 ## Scope
 
-Offline-only research generation preparation for `bouchaud_microstructure_ohlcv_proxy/v1`.
+Offline-only research generation preparation for `bouchaud_microstructure_ohlcv_proxy&#47;v1`.
 This slice binds a deterministic OHLCV microstructure proxy feature matrix hypothesis for
 later linear-evidence diagnostics. It does **not** execute economic evaluation, walk-forward,
 Monte Carlo, stress, promotion, or any runtime authority action.
