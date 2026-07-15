@@ -1,9 +1,14 @@
 # src/trading/master_v2/offline_double_play_scenario_replay_v0.py
 """
-Offline Master V2 Double Play scenario replay v0 — pure orchestrator only.
+Offline Master V2 Double Play scenario replay v0 — technical comparison orchestrator.
 
-Deterministic multi-tick synthetic futures price stream → canonical pure-stack owners
+Deterministic multi-tick synthetic futures price stream → pure-stack component owners
 → decision/state digests → zero-order boundary. No I/O, network, orders, or live authority.
+
+Authority (Slice 4): ``LEGACY_NON_AUTHORITATIVE``. This path remains available for
+parity harnesses, fixtures, and technical comparison only. It must not produce
+canonical / system economic evidence. Total decision authority for system-relevant
+evidence is ``run_integrated_offline_trading_logic_replay_v1``.
 """
 
 from __future__ import annotations
@@ -142,6 +147,11 @@ from trading.master_v2.double_play_survival import (
     StateSwitchSurvivalLimits,
     evaluate_survival_envelope,
 )
+from trading.master_v2.evaluate_double_play_authority_boundary_v0 import (
+    OFFLINE_SCENARIO_REPLAY_AUTHORITY,
+    OFFLINE_SCENARIO_REPLAY_CALLABLE,
+    declare_legacy_duplicate_decision_path_v0,
+)
 from trading.master_v2.local_evaluator_v1 import evaluate_master_v2_local_flow_v1
 from trading.master_v2.staged_execution_enablement_v1 import (
     ExecutionStageV1,
@@ -152,6 +162,8 @@ OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_LAYER_VERSION = "v0"
 OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER = (
     "trading.master_v2.offline_double_play_scenario_replay_v0"
 )
+OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_PATH_AUTHORITY = OFFLINE_SCENARIO_REPLAY_AUTHORITY
+OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE = False
 MASTER_V2_RUNTIME_ADAPTER_PROJECTION_OWNER = OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER
 OFFLINE_REPLAY_STATE_EVENT_PROJECTION_LAYER_VERSION = "v0"
 SYNTHETIC_FUTURES_INSTRUMENT = "ETH-PERP"
@@ -705,7 +717,18 @@ def _detect_proof_events(
 
 def run_offline_double_play_scenario_replay_v0(
     inp: OfflineDoublePlayScenarioReplayInputV0,
+    *,
+    system_economic_evidence_requested: bool = False,
 ) -> OfflineDoublePlayScenarioReplayResultV0:
+    """Run technical non-authoritative offline scenario replay.
+
+    ``system_economic_evidence_requested=True`` is fail-closed. Canonical system
+    evidence must use ``run_integrated_offline_trading_logic_replay_v1``.
+    """
+    declare_legacy_duplicate_decision_path_v0(
+        path_id=OFFLINE_SCENARIO_REPLAY_CALLABLE,
+        system_economic_evidence_requested=system_economic_evidence_requested,
+    )
     validation = validate_offline_double_play_scenario_replay_input_v0(inp)
     if validation:
         summary = OfflineDoublePlayScenarioReplaySummaryV0(

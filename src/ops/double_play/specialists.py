@@ -4,6 +4,11 @@ from dataclasses import dataclass
 from typing import Any, Dict, Tuple
 
 from src.ops.gates.switch_gate import SwitchGateConfig, SwitchGateState, step_switch_gate
+from trading.master_v2.evaluate_double_play_authority_boundary_v0 import (
+    OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY,
+    OPS_EVALUATE_DOUBLE_PLAY_CALLABLE,
+    declare_legacy_duplicate_decision_path_v0,
+)
 
 
 @dataclass(frozen=True)
@@ -21,12 +26,24 @@ def evaluate_double_play(*, context: Dict[str, Any]) -> DoublePlayDecision:
     When enabled: update switch-gate state and return active specialist.
     This module does not execute trades; it only selects/annotates.
 
-    Authority (Slice E): ``LEGACY_NON_AUTHORITATIVE``. Canonical offline Double-Play
-    decision authority is ``trading.master_v2.double_play_composition_matrix_v1``.
-    live_gates uses this callable for non-authorizing annotation only.
+    Authority (Slice E / Slice 4): ``LEGACY_NON_AUTHORITATIVE``. Canonical offline
+    Double-Play decision authority is
+    ``trading.master_v2.double_play_composition_matrix_v1`` /
+    ``run_integrated_offline_trading_logic_replay_v1``. live_gates uses this
+    callable for non-authorizing annotation only. System economic evidence is
+    fail-closed via ``declare_legacy_duplicate_decision_path_v0``.
     """
+    declare_legacy_duplicate_decision_path_v0(
+        path_id=OPS_EVALUATE_DOUBLE_PLAY_CALLABLE,
+        system_economic_evidence_requested=bool(
+            context.get("system_economic_evidence_requested", False)
+        ),
+    )
     reasons = []
-    details: Dict[str, Any] = {}
+    details: Dict[str, Any] = {
+        "path_authority": OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY,
+        "system_economic_evidence_admissible": False,
+    }
 
     enabled = bool(context.get("double_play_enabled", False))
     sg = context.get("switch_gate", {}) or {}
