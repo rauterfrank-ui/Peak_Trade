@@ -14,6 +14,9 @@ Bounded modes:
 - Reevaluation execution implementation:
   GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_
   EVALUATION_REEVALUATION_EXECUTION_IMPLEMENTATION_V0
+- Reevaluation execution dispatch (fail-closed before economic evaluation):
+  GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_
+  EVALUATION_REEVALUATION_EXECUTION_V0
 
 No economic evaluation execution, runtime, order, or authority effect.
 """
@@ -109,6 +112,10 @@ REEVALUATION_EXECUTION_IMPLEMENTATION_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_REEVALUATION_EXECUTION_IMPLEMENTATION_V0"
 )
+REEVALUATION_EXECUTION_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_REEVALUATION_EXECUTION_V0"
+)
 MAX_RUNTIME_SECONDS = 1500
 ALLOWED_CONFIRM_GO_TOKENS = frozenset(
     {
@@ -116,6 +123,7 @@ ALLOWED_CONFIRM_GO_TOKENS = frozenset(
         DISPATCH_IMPLEMENTATION_CONFIRM_GO,
         EXECUTION_CONFIRM_GO,
         IMPLEMENTATION_REPAIR_CONFIRM_GO,
+        REEVALUATION_EXECUTION_CONFIRM_GO,
         REEVALUATION_EXECUTION_IMPLEMENTATION_CONFIRM_GO,
     }
 )
@@ -683,6 +691,116 @@ def run_execution_implementation_repair_v0(
     return payload
 
 
+def run_reevaluation_execution_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    start_monotonic = time.monotonic()
+    if confirm != REEVALUATION_EXECUTION_CONFIRM_GO:
+        _die(f"ERR:confirm_go_token_required:{REEVALUATION_EXECUTION_CONFIRM_GO}")
+
+    origin_main = _resolve_origin_main(_REPO_ROOT)
+    primary_before = _primary_worktree_snapshot(primary_worktree)
+    ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bundle_dir = (
+        durable_evidence_root
+        / "research"
+        / (
+            "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_"
+            f"evaluation_reevaluation_execution_v0_{ts_slug}"
+        )
+    )
+    bundle_dir.mkdir(parents=True, exist_ok=False)
+
+    versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
+    authorization_ratification = load_authorization_ratification_v0(_REPO_ROOT)
+    start_state = verify_execution_start_state_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        origin_main_sha=origin_main,
+    )
+    dispatch = run_offline_economic_evaluation_execution_dispatch_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        go_token=confirm,
+        staging_root=staging_root,
+        versioned_binding=versioned_binding,
+        verify_source_manifests=False,
+        materialize_dataset=False,
+    )
+    full_evaluation = run_full_offline_economic_evaluation_v0(
+        go_token=confirm,
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        verify_source_manifests=False,
+        materialize_dataset=False,
+    )
+    dispatch_payload = dispatch_result_to_dict(dispatch)
+    full_evaluation_payload = phase_result_to_dict(full_evaluation)
+
+    (bundle_dir / "DISPATCH_RESULT.json").write_text(
+        json.dumps(dispatch_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "FULL_EVALUATION_WIRING_RESULT.json").write_text(
+        json.dumps(full_evaluation_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "portfolio_binding_contract.json").write_text(
+        json.dumps(
+            materialize_portfolio_binding_contract_v0(versioned_binding, repo_root=_REPO_ROOT),
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
+        "ECONOMIC_EVALUATION_EXECUTED=false\n",
+        encoding="utf-8",
+    )
+
+    manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+    payload: dict[str, Any] = {
+        "verdict": (
+            "REEVALUATION_EXECUTION_DISPATCH_COMPLETE"
+            if dispatch.dispatch_accepted and full_evaluation.wiring_verified
+            else "FAIL_CLOSED"
+        ),
+        "process_classification": REEVALUATION_EXECUTION_SCOPE_CLASSIFICATION,
+        "execution_version": EXECUTION_VERSION,
+        "origin_main": origin_main,
+        "staging_root": str(staging_root),
+        "start_state_valid": start_state.valid,
+        "go_token_forwarded": confirm,
+        "harness_dispatch_branch": "REEVALUATION_EXECUTION_V0",
+        "dispatch": dispatch_payload,
+        "full_evaluation_wiring": full_evaluation_payload,
+        "economic_evaluation_executed": False,
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "primary_worktree_head_before": primary_before["head"],
+        "primary_worktree_dirty_count_before": primary_before["dirty_count"],
+        "durable_evidence_path": str(bundle_dir),
+        "manifest_verify_rc": manifest_rc,
+        "manifest_verify_msg": manifest_msg,
+        "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+    }
+    (bundle_dir / "EXECUTION_RESULT.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _guard_timeout(start_monotonic)
+    return payload
+
+
 def run_reevaluation_execution_implementation_v0(
     *,
     confirm: str,
@@ -835,6 +953,7 @@ def main() -> None:
             "ERR:confirm_go_token_required:"
             f"{CONFIRM_GO}|{DISPATCH_IMPLEMENTATION_CONFIRM_GO}|{EXECUTION_CONFIRM_GO}|"
             f"{IMPLEMENTATION_REPAIR_CONFIRM_GO}|"
+            f"{REEVALUATION_EXECUTION_CONFIRM_GO}|"
             f"{REEVALUATION_EXECUTION_IMPLEMENTATION_CONFIRM_GO}"
         )
 
@@ -861,6 +980,13 @@ def main() -> None:
         )
     elif args.confirm == REEVALUATION_EXECUTION_IMPLEMENTATION_CONFIRM_GO:
         result = run_reevaluation_execution_implementation_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
+    elif args.confirm == REEVALUATION_EXECUTION_CONFIRM_GO:
+        result = run_reevaluation_execution_v0(
             confirm=args.confirm,
             durable_evidence_root=args.durable_evidence_root,
             primary_worktree=args.primary_worktree,

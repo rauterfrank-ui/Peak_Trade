@@ -81,7 +81,7 @@ class TestReevaluationGoTokenRegistration:
 
     def test_reevaluation_execution_go_token_registered_in_allowed_tokens(self) -> None:
         assert _REEVAL_IMPL_GO in ALLOWED_CONFIRM_GO_TOKENS
-        assert _REEVAL_EXEC_GO not in ALLOWED_CONFIRM_GO_TOKENS
+        assert _REEVAL_EXEC_GO in ALLOWED_CONFIRM_GO_TOKENS
 
     def test_reevaluation_execution_go_token_registered_in_dispatch_registry(self) -> None:
         assert ENTRY_POINT_DISPATCH_REGISTRY[_REEVAL_EXEC_GO] == "REEVALUATION_EXECUTION_V0"
@@ -234,23 +234,6 @@ class TestEntryPointContract:
         assert contract["reevaluation_execution_implementation_go_token"] == _REEVAL_IMPL_GO
         assert contract["entry_point_status"] == "REEVALUATION_EXECUTION_WIRING_V0"
         assert contract["baseline_evaluator_owner"] == BASELINE_EVALUATOR_OWNER
-
-    def test_runner_rejects_reevaluation_execution_go_without_implementation_branch(self) -> None:
-        proc = subprocess.run(
-            [
-                sys.executable,
-                str(RUNNER_MODULE),
-                "--confirm",
-                _REEVAL_EXEC_GO,
-                "--primary-worktree",
-                str(REPO_ROOT),
-            ],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        assert proc.returncode == 2
-        assert "ERR:confirm_go_token_required" in proc.stderr
 
     def test_runner_accepts_reevaluation_implementation_go_token(self) -> None:
         ok, branch = validate_entry_point_go_token_v0(_REEVAL_IMPL_GO)
