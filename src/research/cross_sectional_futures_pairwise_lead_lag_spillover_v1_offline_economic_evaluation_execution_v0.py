@@ -278,9 +278,9 @@ def validate_execution_go_token_v0(go_token: str | None) -> tuple[bool, tuple[st
 
 
 def validate_entry_point_go_token_v0(go_token: str) -> tuple[bool, str | None]:
-    if go_token == IMPLEMENTATION_GO_TOKEN:
+    if go_token in ALLOWED_IMPLEMENTATION_GO_TOKENS:
         return True, "IMPLEMENTATION_V0"
-    if go_token == EXECUTION_GO_TOKEN:
+    if go_token in ALLOWED_EXECUTION_GO_TOKENS:
         return True, "EXECUTION_V0"
     return False, None
 
@@ -573,7 +573,7 @@ def verify_full_evaluation_precheck_v1(
         if not token_ok:
             reasons.extend(token_reasons)
 
-    if go_token == EXECUTION_GO_TOKEN and not require_execution_go:
+    if go_token in ALLOWED_EXECUTION_GO_TOKENS and not require_execution_go:
         reasons.append(REASON_ECONOMIC_EXECUTION_FORBIDDEN)
 
     ops_cfg = load_ops_evaluation_config_v0(repo_root)
@@ -610,7 +610,7 @@ def run_full_evaluation_entrypoint_dry_run_v1(
 ) -> FullEvaluationEntrypointResultV1:
     """Validate full evaluation entrypoint wiring; stop before economic classification."""
     active_go = go_token if go_token is not None else IMPLEMENTATION_GO_TOKEN
-    if active_go == EXECUTION_GO_TOKEN:
+    if active_go in ALLOWED_EXECUTION_GO_TOKENS:
         return FullEvaluationEntrypointResultV1(
             status=EvaluationEntrypointTerminalStatus.FAIL_CLOSED_PRECHECK,
             precheck_passed=False,
@@ -693,7 +693,7 @@ def run_baseline_offline_economic_evaluation_v0(
     go_token: str,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token != EXECUTION_GO_TOKEN:
+    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(phase="BASELINE", reason=REASON_GO_TOKEN_INVALID)
     return _blocked_phase_result_v0(
         phase="BASELINE",
@@ -704,7 +704,7 @@ def run_baseline_offline_economic_evaluation_v0(
 def run_walk_forward_evaluation_v0(
     *, go_token: str, **_kwargs: Any
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token != EXECUTION_GO_TOKEN:
+    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(phase="WALK_FORWARD", reason=REASON_GO_TOKEN_INVALID)
     return _blocked_phase_result_v0(
         phase="WALK_FORWARD",
@@ -715,7 +715,7 @@ def run_walk_forward_evaluation_v0(
 def run_monte_carlo_evaluation_v0(
     *, go_token: str, **_kwargs: Any
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token != EXECUTION_GO_TOKEN:
+    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(phase="MONTE_CARLO", reason=REASON_GO_TOKEN_INVALID)
     return _blocked_phase_result_v0(
         phase="MONTE_CARLO",
@@ -724,7 +724,7 @@ def run_monte_carlo_evaluation_v0(
 
 
 def run_stress_evaluation_v0(*, go_token: str, **_kwargs: Any) -> PhaseExecutionBlockedResultV0:
-    if go_token != EXECUTION_GO_TOKEN:
+    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(phase="STRESS", reason=REASON_GO_TOKEN_INVALID)
     return _blocked_phase_result_v0(phase="STRESS", reason=REASON_ECONOMIC_EXECUTION_FORBIDDEN)
 
@@ -734,7 +734,7 @@ def run_full_offline_economic_evaluation_v0(
     go_token: str,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token != EXECUTION_GO_TOKEN:
+    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(
             phase="FULL_OFFLINE_ECONOMIC_EVALUATION",
             reason=REASON_GO_TOKEN_INVALID,
