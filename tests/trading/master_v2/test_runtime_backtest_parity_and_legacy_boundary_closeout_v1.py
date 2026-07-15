@@ -44,6 +44,9 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     build_default_bull_bear_bull_scenario_ticks,
     run_offline_double_play_scenario_replay_v0,
 )
+from tests.trading.master_v2.test_canonical_replay_input_builder_ssot_contract_v1 import (
+    assert_exactly_one_authorized_src_wide_productive_direct_replay_input_constructor,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 OWNER_MODULE = REPO_ROOT / "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
@@ -254,6 +257,12 @@ def test_legacy_paths_cannot_produce_system_economic_evidence() -> None:
 
 
 def test_productive_direct_replay_input_constructor_count_remains_one() -> None:
+    # Reuse src-wide SSOT authority boundary (no divergent fixed-file allowlist).
+    sole = assert_exactly_one_authorized_src_wide_productive_direct_replay_input_constructor()
+    assert (
+        sole.relative_path == "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
+    )
+    assert sole.enclosing_function == _PUBLIC_BUILDER
     owner_tree = _parse(OWNER_MODULE)
     assert len(_direct_input_constructions(owner_tree)) == 1
     for path in (MV2_MODULE, BRIDGE_MODULE):

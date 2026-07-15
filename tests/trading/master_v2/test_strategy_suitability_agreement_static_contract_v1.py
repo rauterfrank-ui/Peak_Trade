@@ -4,9 +4,13 @@
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parents[3]
+SRC_ROOT = REPO_ROOT / "src"
 MASTER_V2_ROOT = REPO_ROOT / "src" / "trading" / "master_v2"
 BACKTEST_ROOT = REPO_ROOT / "src" / "backtest"
 
@@ -15,6 +19,11 @@ _OWNER_SUITABILITY = MASTER_V2_ROOT / "suitability_binding_v1.py"
 _OWNER_MATERIAL = MASTER_V2_ROOT / "strategy_suitability_agreement_material_v1.py"
 _ADAPTER = BACKTEST_ROOT / "strategy_signal_suitability_agreement_adapter_v1.py"
 _WIRING = BACKTEST_ROOT / "mv2_research_wiring_v1.py"
+
+_TOTAL_DECISION_OWNER_NAME = "run_integrated_offline_trading_logic_replay_v1"
+_AUTHORIZED_TOTAL_DECISION_OWNER_REL_PATH = (
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
+)
 
 _FORBIDDEN_BACKTEST_SIGNAL_TYPES = frozenset(
     {
@@ -27,6 +36,16 @@ _FORBIDDEN_AUTHORITY_PATHS = (
     REPO_ROOT / "src" / "risk",
     REPO_ROOT / "src" / "governance" / "capital_risk_sizing_v1.py",
 )
+
+
+@dataclass(frozen=True, order=True)
+class TotalDecisionOwnerDefinitionHit:
+    relative_path: str
+    lineno: int
+    kind: str
+
+    def report_line(self) -> str:
+        return f"{self.relative_path}:{self.lineno} ({self.kind})"
 
 
 def _imported_names(path: Path) -> set[str]:
@@ -46,6 +65,53 @@ def _source_mentions(path: Path, needle: str) -> bool:
     return needle in path.read_text(encoding="utf-8")
 
 
+def collect_total_decision_owner_definitions(
+    *,
+    scan_root: Path,
+    path_root: Path,
+) -> list[TotalDecisionOwnerDefinitionHit]:
+    """AST-scan ``scan_root`` for sync/async defs of the total decision owner."""
+    hits: list[TotalDecisionOwnerDefinitionHit] = []
+    for path in sorted(p for p in scan_root.rglob("*.py") if p.is_file()):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        rel = path.resolve().relative_to(path_root.resolve()).as_posix()
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            if node.name != _TOTAL_DECISION_OWNER_NAME:
+                continue
+            kind = "async" if isinstance(node, ast.AsyncFunctionDef) else "sync"
+            hits.append(
+                TotalDecisionOwnerDefinitionHit(
+                    relative_path=rel,
+                    lineno=int(getattr(node, "lineno", 0) or 0),
+                    kind=kind,
+                )
+            )
+    return sorted(hits)
+
+
+def assert_exactly_one_canonical_total_decision_owner_definition(
+    *,
+    scan_root: Path | None = None,
+    path_root: Path | None = None,
+) -> TotalDecisionOwnerDefinitionHit:
+    """Enforce CANONICAL_TOTAL_DECISION_OWNER_COUNT=1 across scan_root."""
+    root = scan_root if scan_root is not None else SRC_ROOT
+    base = path_root if path_root is not None else REPO_ROOT
+    hits = collect_total_decision_owner_definitions(scan_root=root, path_root=base)
+    assert len(hits) == 1, (
+        "CANONICAL_TOTAL_DECISION_OWNER_COUNT must be 1; found "
+        f"{len(hits)} definition(s):\n" + "\n".join(hit.report_line() for hit in hits)
+    )
+    sole = hits[0]
+    assert sole.relative_path == _AUTHORIZED_TOTAL_DECISION_OWNER_REL_PATH, (
+        "total decision owner must remain in "
+        f"{_AUTHORIZED_TOTAL_DECISION_OWNER_REL_PATH}; found {sole.report_line()}"
+    )
+    return sole
+
+
 def test_master_v2_does_not_import_backtest_signal_types() -> None:
     for path in MASTER_V2_ROOT.rglob("*.py"):
         imported = _imported_names(path)
@@ -58,6 +124,9 @@ def test_canonical_total_decision_owner_unchanged() -> None:
     assert "def run_integrated_offline_trading_logic_replay_v1(" in source
     assert "def build_integrated_offline_replay_input_v1(" in source
     assert source.count("def run_integrated_offline_trading_logic_replay_v1(") == 1
+    sole = assert_exactly_one_canonical_total_decision_owner_definition()
+    assert sole.relative_path == _AUTHORIZED_TOTAL_DECISION_OWNER_REL_PATH
+    assert sole.kind == "sync"
 
 
 def test_no_parallel_decision_stage_symbol_introduced() -> None:
@@ -122,3 +191,21 @@ def test_productive_direct_constructor_count_remains_one() -> None:
         )
     ]
     assert len(hits) == 1
+
+
+def test_src_wide_total_decision_owner_scanner_rejects_non_owner_definition_fixture(
+    tmp_path: Path,
+) -> None:
+    rogue = tmp_path / "rogue_total_decision_owner_v0.py"
+    rogue.write_text(
+        "def run_integrated_offline_trading_logic_replay_v1(replay_input):\n    return None\n",
+        encoding="utf-8",
+    )
+    hits = collect_total_decision_owner_definitions(scan_root=tmp_path, path_root=tmp_path)
+    assert len(hits) == 1
+    assert hits[0].relative_path.endswith("rogue_total_decision_owner_v0.py")
+    with pytest.raises(AssertionError, match="total decision owner must remain"):
+        assert_exactly_one_canonical_total_decision_owner_definition(
+            scan_root=tmp_path,
+            path_root=tmp_path,
+        )
