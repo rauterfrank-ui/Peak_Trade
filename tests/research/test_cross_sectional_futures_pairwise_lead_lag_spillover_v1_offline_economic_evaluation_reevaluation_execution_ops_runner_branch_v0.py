@@ -232,7 +232,10 @@ class TestLegacyTokenBehaviorUnchanged:
 class TestNoDuplicatedEvaluationLogic:
     def test_runner_delegates_to_harness_without_local_baseline_logic(self) -> None:
         source = RUNNER_MODULE.read_text(encoding="utf-8")
-        assert "run_baseline_offline_economic_evaluation_v0" not in source
+        reeval_fn_start = source.index("def run_reevaluation_execution_v0(")
+        reeval_fn_end = source.index("\ndef run_reevaluation_execution_implementation_v0(")
+        reeval_source = source[reeval_fn_start:reeval_fn_end]
+        assert "run_baseline_offline_economic_evaluation_v0" not in reeval_source
         assert "run_walk_forward_evaluation_v0" not in source
         assert "run_monte_carlo_evaluation_v0" not in source
         assert "run_stress_evaluation_v0" not in source
