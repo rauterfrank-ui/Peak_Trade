@@ -440,6 +440,7 @@
         "tests/research/test_*offline_economic_evaluation_execution_infrastructure_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_dispatch_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_implementation_repair_v0.py",
+        "tests/research/test_*offline_economic_evaluation_reevaluation_execution_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_authorization_ratification_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_full_runner_v0.py"

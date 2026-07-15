@@ -120,6 +120,14 @@ IMPLEMENTATION_REPAIR_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_EXECUTION_IMPLEMENTATION_REPAIR_V0"
 )
+REEVALUATION_EXECUTION_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_REEVALUATION_EXECUTION_V0"
+)
+REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_REEVALUATION_EXECUTION_IMPLEMENTATION_V0"
+)
 
 ALLOWED_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset({IMPLEMENTATION_GO_TOKEN})
 ALLOWED_IMPLEMENTATION_REPAIR_GO_TOKENS: frozenset[str] = frozenset(
@@ -129,16 +137,31 @@ ALLOWED_DISPATCH_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
     {DISPATCH_IMPLEMENTATION_GO_TOKEN}
 )
 ALLOWED_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({EXECUTION_GO_TOKEN})
+ALLOWED_REEVALUATION_EXECUTION_GO_TOKENS: frozenset[str] = frozenset(
+    {REEVALUATION_EXECUTION_GO_TOKEN}
+)
+ALLOWED_REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
+    {REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN}
+)
+ALLOWED_EVALUATION_DISPATCH_GO_TOKENS: frozenset[str] = (
+    ALLOWED_EXECUTION_GO_TOKENS | ALLOWED_REEVALUATION_EXECUTION_GO_TOKENS
+)
 
 _BRANCH_IMPLEMENTATION_V0 = "IMPLEMENTATION_V0"
 _BRANCH_DISPATCH_IMPLEMENTATION_V0 = "DISPATCH_IMPLEMENTATION_V0"
 _BRANCH_EXECUTION_V0 = "EXECUTION_V0"
 _BRANCH_IMPLEMENTATION_REPAIR_V0 = "IMPLEMENTATION_REPAIR_V0"
+_BRANCH_REEVALUATION_EXECUTION_V0 = "REEVALUATION_EXECUTION_V0"
+_BRANCH_REEVALUATION_EXECUTION_IMPLEMENTATION_V0 = "REEVALUATION_EXECUTION_IMPLEMENTATION_V0"
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     IMPLEMENTATION_GO_TOKEN: _BRANCH_IMPLEMENTATION_V0,
     DISPATCH_IMPLEMENTATION_GO_TOKEN: _BRANCH_DISPATCH_IMPLEMENTATION_V0,
     EXECUTION_GO_TOKEN: _BRANCH_EXECUTION_V0,
     IMPLEMENTATION_REPAIR_GO_TOKEN: _BRANCH_IMPLEMENTATION_REPAIR_V0,
+    REEVALUATION_EXECUTION_GO_TOKEN: _BRANCH_REEVALUATION_EXECUTION_V0,
+    REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN: (
+        _BRANCH_REEVALUATION_EXECUTION_IMPLEMENTATION_V0
+    ),
 }
 
 RATIFIED_BINDING_DIGEST = RATIFIED_HYPOTHESIS_BINDING_DIGEST
@@ -177,7 +200,7 @@ PORTFOLIO_BINDING_OWNER = (
     "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_"
     "hypothesis_binding_v0"
 )
-ENTRY_POINT_STATUS = "EXECUTION_DISPATCH_BOUND_V0"
+ENTRY_POINT_STATUS = "REEVALUATION_EXECUTION_WIRING_V0"
 
 PORTFOLIO_BINDING_REQUIRED_FIELDS: tuple[str, ...] = (
     "aggregation_policy",
@@ -251,6 +274,9 @@ REASON_BASELINE_EXECUTION_BLOCKED = "BASELINE_EXECUTION_BLOCKED_PENDING_PORTFOLI
 REASON_ROBUSTNESS_EXECUTION_BLOCKED = "ROBUSTNESS_EXECUTION_BLOCKED_PENDING_PORTFOLIO_BINDINGS"
 REASON_ECONOMIC_EVALUATION_BLOCKED = "ECONOMIC_EVALUATION_BLOCKED_PENDING_PORTFOLIO_BINDINGS"
 REASON_REEVALUATION_GO_REQUIRED = "REEVALUATION_GO_REQUIRED_STOPPED_BEFORE_EXECUTION"
+REASON_REEVALUATION_EXECUTION_WIRING_VERIFIED = (
+    "REEVALUATION_EXECUTION_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
+)
 REASON_BASELINE_WIRING_VERIFIED = "BASELINE_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
 REASON_DOWNSTREAM_WIRING_VERIFIED = "DOWNSTREAM_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
 REASON_BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM = (
@@ -405,6 +431,40 @@ def validate_execution_go_token_v0(go_token: str | None) -> tuple[bool, tuple[st
     return True, ()
 
 
+def validate_reevaluation_execution_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_REEVALUATION_EXECUTION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def validate_reevaluation_execution_implementation_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def validate_evaluation_dispatch_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_EVALUATION_DISPATCH_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def _is_reevaluation_execution_go_token_v0(go_token: str) -> bool:
+    return go_token in ALLOWED_REEVALUATION_EXECUTION_GO_TOKENS
+
+
 def validate_dispatch_implementation_go_token_v0(
     go_token: str | None,
 ) -> tuple[bool, tuple[str, ...]]:
@@ -514,6 +574,10 @@ def materialize_dispatch_contract_v0() -> dict[str, Any]:
         "implementation_go_token": IMPLEMENTATION_GO_TOKEN,
         "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
+        "reevaluation_execution_go_token": REEVALUATION_EXECUTION_GO_TOKEN,
+        "reevaluation_execution_implementation_go_token": (
+            REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN
+        ),
         "entry_point_dispatch_registry": dict(ENTRY_POINT_DISPATCH_REGISTRY),
         "baseline_executed": False,
         "robustness_executed": False,
@@ -561,7 +625,7 @@ def run_offline_economic_evaluation_execution_dispatch_v0(
     envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
     score_ranking_contract = materialize_score_and_ranking_contract_v0(envelope)
 
-    token_ok, token_reasons = validate_execution_go_token_v0(go_token)
+    token_ok, token_reasons = validate_evaluation_dispatch_go_token_v0(go_token)
     if not token_ok:
         reasons.extend(token_reasons)
 
@@ -1171,7 +1235,7 @@ def _validate_phase_execution_prerequisites_v0(
     repo_root: Path,
     versioned_binding: Mapping[str, Any] | None,
 ) -> tuple[bool, tuple[str, ...], dict[str, Any]]:
-    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
+    if go_token not in ALLOWED_EVALUATION_DISPATCH_GO_TOKENS:
         return False, (REASON_GO_TOKEN_INVALID,), {}
     envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
     portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
@@ -1434,7 +1498,7 @@ def run_full_offline_economic_evaluation_v0(
     force_baseline_adjudication_failure: bool = False,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
+    if go_token not in ALLOWED_EVALUATION_DISPATCH_GO_TOKENS:
         return _blocked_phase_result_v0(
             phase="FULL_OFFLINE_ECONOMIC_EVALUATION",
             reason=REASON_GO_TOKEN_INVALID,
@@ -1508,13 +1572,18 @@ def run_full_offline_economic_evaluation_v0(
         repo_root=active_root,
         versioned_binding=versioned_binding,
     )
+    terminal_reason = (
+        REASON_REEVALUATION_EXECUTION_WIRING_VERIFIED
+        if _is_reevaluation_execution_go_token_v0(go_token)
+        else REASON_REEVALUATION_GO_REQUIRED
+    )
     downstream_reasons = tuple(
         dict.fromkeys(
             [
                 *walk_forward.reason_codes,
                 *monte_carlo.reason_codes,
                 *stress.reason_codes,
-                REASON_REEVALUATION_GO_REQUIRED,
+                terminal_reason,
             ]
         )
     )
@@ -1549,7 +1618,11 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
         "implementation_repair_go_token": IMPLEMENTATION_REPAIR_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
-        "entry_point_status": "EXECUTION_WIRING_REPAIR_V0",
+        "reevaluation_execution_go_token": REEVALUATION_EXECUTION_GO_TOKEN,
+        "reevaluation_execution_implementation_go_token": (
+            REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN
+        ),
+        "entry_point_status": ENTRY_POINT_STATUS,
         "entry_point_dispatch_registry": dict(ENTRY_POINT_DISPATCH_REGISTRY),
         "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
         "baseline_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
@@ -1731,6 +1804,14 @@ def build_reuse_decision() -> dict[str, Any]:
                 "decision": "REUSE_AS_IS",
                 "owner": PORTFOLIO_BINDING_OWNER,
             },
+            {
+                "component": "reevaluation_execution_dispatch",
+                "decision": "REWIRE_EXISTING_COMPONENT",
+                "owner": f"{HARNESS_OWNER}.{CANONICAL_FULL_EVALUATION_CALLABLE}",
+                "justification": (
+                    "register_reevaluation_execution_go_token_on_existing_full_evaluation_owner"
+                ),
+            },
         ],
     }
 
@@ -1747,14 +1828,19 @@ def build_runner_decision() -> dict[str, Any]:
         "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
         "implementation_repair_go_token": IMPLEMENTATION_REPAIR_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
+        "reevaluation_execution_go_token": REEVALUATION_EXECUTION_GO_TOKEN,
+        "reevaluation_execution_implementation_go_token": (
+            REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN
+        ),
         "execution_go_dispatch_bound": True,
+        "reevaluation_execution_dispatch_bound": True,
         "wiring_inspection_only": True,
         "next_recommended_scope": (
             "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
-            "EVALUATION_EXECUTION_V0"
+            "EVALUATION_REEVALUATION_EXECUTION_V0"
         ),
-        "next_operator_go": EXECUTION_GO_TOKEN,
-        "reevaluation_requires_separate_go": True,
+        "next_operator_go": REEVALUATION_EXECUTION_GO_TOKEN,
+        "reevaluation_requires_separate_go": False,
     }
 
 
@@ -1822,10 +1908,14 @@ def build_before_after_field_diff() -> dict[str, Any]:
         "schema_version": "before_after_field_diff.v0",
         "repair_scope": (
             "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
-            "EVALUATION_EXECUTION_IMPLEMENTATION_REPAIR_V0"
+            "EVALUATION_REEVALUATION_EXECUTION_IMPLEMENTATION_V0"
         ),
-        "removed_stale_block_reason_for_valid_bindings": REASON_ECONOMIC_EVALUATION_BLOCKED,
-        "replacement_stop_reason": REASON_REEVALUATION_GO_REQUIRED,
+        "added_dispatch_registry_entries": [
+            REEVALUATION_EXECUTION_GO_TOKEN,
+            REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN,
+        ],
+        "removed_stale_block_reason_for_valid_bindings": REASON_REEVALUATION_GO_REQUIRED,
+        "replacement_stop_reason": REASON_REEVALUATION_EXECUTION_WIRING_VERIFIED,
         "semantic_binding_fields_changed": False,
         "changed_fields": [],
     }
@@ -1881,27 +1971,24 @@ def build_root_cause_report() -> dict[str, Any]:
 
 def build_test_assertion_matrix() -> dict[str, Any]:
     assertions = [
-        "valid_portfolio_bindings_reach_canonical_baseline_owner",
-        "valid_bindings_do_not_emit_pending_portfolio_bindings_reason",
-        "missing_portfolio_bindings_fail_closed",
-        "invalid_portfolio_bindings_fail_closed",
-        "baseline_failure_stops_downstream_robustness_when_policy_requires",
-        "baseline_success_allows_policy_governed_downstream_sequence",
-        "walk_forward_owner_is_reused",
-        "monte_carlo_owner_is_reused",
-        "stress_owner_is_reused",
-        "economic_evaluation_not_executed_by_repair_tests",
-        "no_runtime_effect",
-        "no_authority_effect",
-        "no_strategy_semantic_change",
-        "no_dataset_change",
-        "no_universe_change",
-        "no_cost_policy_change",
-        "no_risk_sizing_change",
-        "deterministic_result_schema_serialization",
-        "existing_entry_point_go_token_rejection_remains_fail_closed",
-        "wrong_go_token_remains_rejected",
-        "implementation_go_does_not_authorize_reevaluation",
+        "reevaluation_execution_go_token_accepted",
+        "reevaluation_execution_go_token_registered_in_allowed_tokens",
+        "reevaluation_execution_go_token_registered_in_dispatch_registry",
+        "reevaluation_dispatch_selects_explicit_reevaluation_branch",
+        "reevaluation_branch_reuses_canonical_evaluation_owner",
+        "reevaluation_branch_can_pass_required_reevaluation_stop",
+        "normal_execution_go_does_not_gain_reevaluation_authority",
+        "unknown_go_token_rejected",
+        "missing_go_token_rejected",
+        "offline_boundary_preserved",
+        "no_runtime_import_boundary_violation",
+        "no_order_adapter_import_boundary_violation",
+        "no_scheduler_import_boundary_violation",
+        "no_binding_semantic_change",
+        "no_binding_digest_change",
+        "economic_evaluation_not_executed_in_implementation_tests",
+        "runtime_effect_none",
+        "authority_effect_none",
     ]
     return {
         "schema_version": "test_assertion_matrix.v0",
