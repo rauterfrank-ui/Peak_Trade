@@ -22,7 +22,10 @@ PARALLEL_CANONICAL_STAGE_ALLOWED=false
 SLICE_2_IMPLEMENTATION_READY=false
 SLICE_2_IMPLEMENTATION_BLOCKED=true
 NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
-SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=true
+SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=false
+SEPARATE_ARCHITECTURE_AUTHORIZATION_EXECUTED=true
+ARCHITECTURE_AUTHORIZATION_DECISION=C
+SLICE_2_IMPLEMENTATION_AUTHORIZED=false
 
 CANONICAL_CORE_REMAINS_SINGLE_TRADING_TRUTH=true
 STRATEGY_LAYER_MUST_EVENTUALLY_FEED_CANONICAL_CORE=true
@@ -38,6 +41,10 @@ PROMOTION_CLAIMED=false
 DOCUMENTATION_ONLY=true
 CORE_CODE_EFFECT=NONE
 ```
+
+Follow-on authorization (does **not** lift the Slice-2 block):
+[`STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md`](STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md)
+(`ARCHITECTURE_AUTHORIZATION_DECISION=C`).
 
 ## Scope
 
@@ -88,7 +95,11 @@ Rejected. Provenance without a real canonical consumer does not feed the Core an
 
 ### D. No safe existing canonical consumer; separate future architecture authorization required
 
-Selected and ratified negative.
+Selected and ratified negative at closeout time. The required separate
+authorization has since been executed under
+[`STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md`](STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md)
+with Decision **C** (`NO_SAFE_ARCHITECTURE_AUTHORIZABLE`). The Slice-2
+implementation block remains.
 
 ```text
 ARCHITECTURE_RATIFICATION_SELECTION=D
@@ -98,6 +109,11 @@ PARALLEL_CANONICAL_STAGE_ALLOWED=false
 SLICE_2_IMPLEMENTATION_BLOCKED=true
 NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
 SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=true
+# post-authorization status (see document header):
+# SEPARATE_ARCHITECTURE_AUTHORIZATION_EXECUTED=true
+# ARCHITECTURE_AUTHORIZATION_DECISION=C
+# SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=false
+# SLICE_2_IMPLEMENTATION_AUTHORIZED=false
 ```
 
 ## Binding invariants that remain true
@@ -113,7 +129,9 @@ AUTHORITY_EFFECT=NONE
 ORDER_EFFECT=NONE
 ```
 
-No technical solution is invented here. This closeout freezes the negative ratification so subsequent agents do not re-open Slice 2 or invent an artificial consumer without a new, separate architecture authorization.
+This closeout freezes the negative ratification. The separate authorization
+in [`STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md`](STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md)
+does **not** invent a consumer and does **not** authorize Slice 2.
 
 ## Non-claims
 
