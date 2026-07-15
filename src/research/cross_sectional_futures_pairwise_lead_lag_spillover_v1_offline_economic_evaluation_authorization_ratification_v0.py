@@ -17,9 +17,16 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.backtest.economic_validity_policy_v1 import ECONOMIC_VALIDITY_POLICY_VERSION
+from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_portfolio_binding_v0 import (
+    PORTFOLIO_BINDING_SCOPE,
+    PORTFOLIO_POLICY_OWNER,
+    build_portfolio_implementation_bindings_v0,
+    compute_portfolio_bindings_digest_v0,
+)
 from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0 import (
     CONFIG_REL_PATH as SCORE_RANKING_CONFIG_REL_PATH,
     GOVERNANCE_REL_PATH as SCORE_RANKING_GOVERNANCE_REL_PATH,
+    PRE_PORTFOLIO_HYPOTHESIS_BINDING_DIGEST,
     RATIFIED_HYPOTHESIS_BINDING_DIGEST,
     build_ranking_contract_v0,
     build_score_contract_v0,
@@ -54,15 +61,24 @@ AUTHORIZATION_SCOPE = "OFFLINE_ECONOMIC_EVALUATION"
 AUTHORIZATION_VERSION = "v0"
 CANONICAL_SERIALIZATION_VERSION = "authorization_ratification_canonical_json_v1"
 SCOPE_CLASSIFICATION = (
-    "BOUNDED_FUTURES_ONLY_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0"
+    "BOUNDED_FUTURES_ONLY_UPDATED_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0"
 )
 
 GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_UPDATED_"
+    "AUTHORIZATION_RATIFICATION_V0"
+)
+PREVIOUS_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_AUTHORIZATION_RATIFICATION_V0"
 )
 CONFIRM_GO = GO_TOKEN
 MATERIALIZATION_CONFIRM_GO = GO_TOKEN
+
+SUPERSEDED_AUTHORIZATION_BINDING_DIGEST = PRE_PORTFOLIO_HYPOTHESIS_BINDING_DIGEST
+AUTHORIZATION_BINDING_DIGEST = RATIFIED_HYPOTHESIS_BINDING_DIGEST
+SUPERSESSION_MODE = "PORTFOLIO_BINDING_COMPLETION_SUPERSESSION_V0"
+BINDING_CLASSIFICATION = "PORTFOLIO_BINDING_COMPLETION_V0"
 
 CONFIG_REL_PATH = (
     "config/research/"
@@ -104,6 +120,9 @@ SCORE_CONTRACT_UNCHANGED = True
 RANKING_CONTRACT_UNCHANGED = True
 DATASET_BINDING_UNCHANGED = True
 UNIVERSE_BINDING_UNCHANGED = True
+PORTFOLIO_BINDING_UNCHANGED = True
+COST_POLICY_UNCHANGED = True
+ECONOMIC_POLICY_UNCHANGED = True
 PARAMETER_OPTIMIZATION_ALLOWED = False
 POST_RESULT_SELECTION_ALLOWED = False
 THRESHOLD_REDUCTION_ALLOWED = False
@@ -135,6 +154,13 @@ REASON_PARAMETER_OPTIMIZATION_ALLOWED_VIOLATION = "PARAMETER_OPTIMIZATION_ALLOWE
 REASON_THRESHOLD_REDUCTION_ALLOWED_VIOLATION = "THRESHOLD_REDUCTION_ALLOWED_VIOLATION"
 REASON_POLICY_RESCUE_ALLOWED_VIOLATION = "POLICY_RESCUE_ALLOWED_VIOLATION"
 REASON_RATIFICATION_DIGEST_MISMATCH = "RATIFICATION_DIGEST_MISMATCH"
+REASON_AUTHORIZATION_BINDING_DIGEST_MISMATCH = "AUTHORIZATION_BINDING_DIGEST_MISMATCH"
+REASON_SUPERSEDED_AUTHORIZATION_BINDING_DIGEST_MISMATCH = (
+    "SUPERSEDED_AUTHORIZATION_BINDING_DIGEST_MISMATCH"
+)
+REASON_AUTHORIZATION_RATIFICATION_STALE = "AUTHORIZATION_RATIFICATION_STALE"
+REASON_PORTFOLIO_BINDING_REFERENCE_MISSING = "PORTFOLIO_BINDING_REFERENCE_MISSING"
+REASON_SUPERSESSION_MODE_MISMATCH = "SUPERSESSION_MODE_MISMATCH"
 
 DURABLE_ARCHIVE_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
@@ -154,6 +180,11 @@ SOURCE_PR5200_CLOSEOUT_BUNDLE = (
     / "research/pr5200_merge_closeout_cross_sectional_futures_pairwise_lead_lag_spillover_v1_"
     "score_and_ranking_contract_implementation_v0_20260715T044248Z"
 )
+SOURCE_PR5204_CLOSEOUT_BUNDLE = (
+    DURABLE_ARCHIVE_ROOT
+    / "research/pr5204_merge_closeout_cross_sectional_futures_pairwise_lead_lag_spillover_v1_"
+    "portfolio_binding_implementation_v0_20260715T064015Z"
+)
 
 REQUIRED_EVIDENCE_ARTIFACTS: tuple[str, ...] = (
     "preflight.txt",
@@ -168,6 +199,8 @@ REQUIRED_EVIDENCE_ARTIFACTS: tuple[str, ...] = (
     "before_after_field_diff.json",
     "semantic_identity_comparison.json",
     "cryptographic_identity_comparison.json",
+    "supersession_relation.json",
+    "authorization_ratification.json",
     "materializer_roundtrip.txt",
     "deterministic_materialization.txt",
     "second_materialization_diff.txt",
@@ -198,6 +231,7 @@ SCORE_RANKING_CONTRACT_OWNER = (
     "src.research."
     "cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0"
 )
+PORTFOLIO_BINDING_OWNER = PORTFOLIO_POLICY_OWNER
 
 
 class RatificationMaterializationVerdict(str, Enum):
@@ -258,6 +292,7 @@ def build_canonical_references_v0(
     *,
     hypothesis_binding: Mapping[str, Any] | None = None,
     score_ranking_contract: Mapping[str, Any] | None = None,
+    portfolio_bindings: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     binding = (
         hypothesis_binding
@@ -269,6 +304,12 @@ def build_canonical_references_v0(
         if score_ranking_contract is not None
         else materialize_score_and_ranking_contract_v0(binding)
     )
+    portfolio = (
+        portfolio_bindings
+        if portfolio_bindings is not None
+        else build_portfolio_implementation_bindings_v0()
+    )
+    portfolio_bindings_digest = compute_portfolio_bindings_digest_v0(portfolio)
     return {
         "schema_version": "canonical_references.v0",
         "hypothesis_binding": {
@@ -306,6 +347,20 @@ def build_canonical_references_v0(
             ],
             "mutated": False,
         },
+        "portfolio_binding": {
+            "owner": PORTFOLIO_BINDING_OWNER,
+            "portfolio_binding_scope": PORTFOLIO_BINDING_SCOPE,
+            "portfolio_bindings_digest": portfolio_bindings_digest,
+            "authorization_binding_digest": binding["binding_digest"],
+            "aggregation_policy_digest": portfolio["aggregation_policy"]["binding_digest"],
+            "selection_policy_digest": portfolio["selection_policy"]["binding_digest"],
+            "holding_policy_digest": portfolio["holding_policy"]["binding_digest"],
+            "exit_policy_digest": portfolio["exit_policy"]["binding_digest"],
+            "portfolio_weighting_policy_digest": portfolio["portfolio_weighting_policy"][
+                "binding_digest"
+            ],
+            "mutated": False,
+        },
         "offline_evaluation_entry_point": {
             "runner_binding_ref": RUNNER_BINDING_REF,
             "harness_binding_ref": HARNESS_BINDING_REF,
@@ -316,6 +371,7 @@ def build_canonical_references_v0(
             "hypothesis_binding_bundle": str(SOURCE_HYPOTHESIS_BINDING_BUNDLE),
             "score_ranking_bundle": str(SOURCE_SCORE_RANKING_BUNDLE),
             "pr5200_closeout_bundle": str(SOURCE_PR5200_CLOSEOUT_BUNDLE),
+            "pr5204_closeout_bundle": str(SOURCE_PR5204_CLOSEOUT_BUNDLE),
         },
     }
 
@@ -327,6 +383,7 @@ def build_authorization_contract_v0() -> dict[str, Any]:
         "authorization_version": AUTHORIZATION_VERSION,
         "scope_id": RESEARCH_SCOPE,
         "operator_go": GO_TOKEN,
+        "previous_operator_go": PREVIOUS_GO_TOKEN,
         "offline_only": OFFLINE_ONLY,
         "economic_evaluation_authorized_for_separate_execution": (
             ECONOMIC_EVALUATION_AUTHORIZED_FOR_SEPARATE_EXECUTION
@@ -337,6 +394,9 @@ def build_authorization_contract_v0() -> dict[str, Any]:
         "ranking_contract_unchanged": RANKING_CONTRACT_UNCHANGED,
         "dataset_binding_unchanged": DATASET_BINDING_UNCHANGED,
         "universe_binding_unchanged": UNIVERSE_BINDING_UNCHANGED,
+        "portfolio_binding_unchanged": PORTFOLIO_BINDING_UNCHANGED,
+        "cost_policy_unchanged": COST_POLICY_UNCHANGED,
+        "economic_policy_unchanged": ECONOMIC_POLICY_UNCHANGED,
         "parameter_optimization_allowed": PARAMETER_OPTIMIZATION_ALLOWED,
         "post_result_selection_allowed": POST_RESULT_SELECTION_ALLOWED,
         "threshold_reduction_allowed": THRESHOLD_REDUCTION_ALLOWED,
@@ -350,6 +410,8 @@ def build_authorization_contract_v0() -> dict[str, Any]:
         "technical_defect_does_not_authorize_repair_or_retry": True,
         "negative_result_may_not_be_rescued_by_parameter_policy_threshold_change": True,
         "later_execution_must_rebind_head_ratification_bindings_and_manifests": True,
+        "supersession_mode": SUPERSESSION_MODE,
+        "binding_classification": BINDING_CLASSIFICATION,
         "next_recommended_scope": NEXT_RECOMMENDED_SCOPE,
         "next_operator_go": NEXT_OPERATOR_GO,
     }
@@ -360,6 +422,8 @@ def build_digest_dependency_graph_v0(
     config_digest: str,
     implementation_digest: str,
     ratification_digest: str,
+    authorization_binding_digest: str,
+    portfolio_bindings_digest: str,
     hypothesis_binding_digest: str,
     score_contract_digest: str,
     ranking_contract_digest: str,
@@ -373,7 +437,9 @@ def build_digest_dependency_graph_v0(
             {"from": "canonical_references", "to": "config_digest"},
             {"from": "implementation_digest", "to": "ratification_digest"},
             {"from": "config_digest", "to": "ratification_digest"},
-            {"from": "hypothesis_binding_digest", "to": "ratification_digest"},
+            {"from": "authorization_binding_digest", "to": "ratification_digest"},
+            {"from": "portfolio_bindings_digest", "to": "authorization_binding_digest"},
+            {"from": "hypothesis_binding_digest", "to": "authorization_binding_digest"},
             {"from": "score_contract_digest", "to": "ratification_digest"},
             {"from": "ranking_contract_digest", "to": "ratification_digest"},
             {"from": "dataset_digest", "to": "ratification_digest"},
@@ -383,6 +449,8 @@ def build_digest_dependency_graph_v0(
             "implementation_digest": implementation_digest,
             "config_digest": config_digest,
             "ratification_digest": ratification_digest,
+            "authorization_binding_digest": authorization_binding_digest,
+            "portfolio_bindings_digest": portfolio_bindings_digest,
             "hypothesis_binding_digest": hypothesis_binding_digest,
             "score_contract_digest": score_contract_digest,
             "ranking_contract_digest": ranking_contract_digest,
@@ -407,8 +475,11 @@ def materialize_offline_economic_evaluation_authorization_ratification_v0(
         if score_ranking_contract is not None
         else materialize_score_and_ranking_contract_v0(binding)
     )
+    portfolio_bindings = build_portfolio_implementation_bindings_v0()
     canonical_refs = build_canonical_references_v0(
-        hypothesis_binding=binding, score_ranking_contract=contract
+        hypothesis_binding=binding,
+        score_ranking_contract=contract,
+        portfolio_bindings=portfolio_bindings,
     )
     authorization_contract = build_authorization_contract_v0()
 
@@ -420,6 +491,8 @@ def materialize_offline_economic_evaluation_authorization_ratification_v0(
     )
     implementation_digest = compute_implementation_digest_v0()
     hypothesis_binding_digest = str(binding["binding_digest"])
+    authorization_binding_digest = hypothesis_binding_digest
+    portfolio_bindings_digest = compute_portfolio_bindings_digest_v0(portfolio_bindings)
     score_contract_digest = compute_score_contract_digest_v0()
     ranking_contract_digest = compute_ranking_contract_digest_v0()
     dataset_digest = str(binding["dataset_digest"])
@@ -439,12 +512,16 @@ def materialize_offline_economic_evaluation_authorization_ratification_v0(
         "authorization_scope": AUTHORIZATION_SCOPE,
         "authorization_version": AUTHORIZATION_VERSION,
         "operator_go": GO_TOKEN,
+        "previous_operator_go": PREVIOUS_GO_TOKEN,
         "strategy_id": STRATEGY_ID,
         "strategy_version": STRATEGY_VERSION,
         "hypothesis_id": RESEARCH_HYPOTHESIS_ID,
         "score_family_policy": SCORE_FAMILY_POLICY,
         "authorization_contract": authorization_contract,
         "canonical_references": canonical_refs,
+        "authorization_binding_digest": authorization_binding_digest,
+        "superseded_authorization_binding_digest": SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+        "portfolio_bindings_digest": portfolio_bindings_digest,
         "hypothesis_binding_digest": hypothesis_binding_digest,
         "score_contract_digest": score_contract_digest,
         "ranking_contract_digest": ranking_contract_digest,
@@ -453,6 +530,8 @@ def materialize_offline_economic_evaluation_authorization_ratification_v0(
         "universe_digest": universe_digest,
         "implementation_digest": implementation_digest,
         "config_digest": config_digest,
+        "binding_classification": BINDING_CLASSIFICATION,
+        "supersession_mode": SUPERSESSION_MODE,
         "offline_only": OFFLINE_ONLY,
         "economic_evaluation_authorized_for_separate_execution": (
             ECONOMIC_EVALUATION_AUTHORIZED_FOR_SEPARATE_EXECUTION
@@ -463,6 +542,9 @@ def materialize_offline_economic_evaluation_authorization_ratification_v0(
         "ranking_contract_unchanged": RANKING_CONTRACT_UNCHANGED,
         "dataset_binding_unchanged": DATASET_BINDING_UNCHANGED,
         "universe_binding_unchanged": UNIVERSE_BINDING_UNCHANGED,
+        "portfolio_binding_unchanged": PORTFOLIO_BINDING_UNCHANGED,
+        "cost_policy_unchanged": COST_POLICY_UNCHANGED,
+        "economic_policy_unchanged": ECONOMIC_POLICY_UNCHANGED,
         "parameter_optimization_allowed": PARAMETER_OPTIMIZATION_ALLOWED,
         "post_result_selection_allowed": POST_RESULT_SELECTION_ALLOWED,
         "threshold_reduction_allowed": THRESHOLD_REDUCTION_ALLOWED,
@@ -486,6 +568,8 @@ def materialize_offline_economic_evaluation_authorization_ratification_v0(
         {
             "config_digest": config_digest,
             "implementation_digest": implementation_digest,
+            "authorization_binding_digest": authorization_binding_digest,
+            "portfolio_bindings_digest": portfolio_bindings_digest,
             "hypothesis_binding_digest": hypothesis_binding_digest,
             "score_contract_digest": score_contract_digest,
             "ranking_contract_digest": ranking_contract_digest,
@@ -498,6 +582,8 @@ def materialize_offline_economic_evaluation_authorization_ratification_v0(
         config_digest=config_digest,
         implementation_digest=implementation_digest,
         ratification_digest=ratification_digest,
+        authorization_binding_digest=authorization_binding_digest,
+        portfolio_bindings_digest=portfolio_bindings_digest,
         hypothesis_binding_digest=hypothesis_binding_digest,
         score_contract_digest=score_contract_digest,
         ranking_contract_digest=ranking_contract_digest,
@@ -533,17 +619,36 @@ def validate_offline_economic_evaluation_authorization_ratification_v0(
         reasons.append(REASON_HYPOTHESIS_BINDING_REFERENCE_MISSING)
     if not canonical_refs.get("score_and_ranking_contract"):
         reasons.append(REASON_SCORE_CONTRACT_REFERENCE_MISSING)
+    if not canonical_refs.get("portfolio_binding"):
+        reasons.append(REASON_PORTFOLIO_BINDING_REFERENCE_MISSING)
     score_ref = canonical_refs.get("score_and_ranking_contract", {})
     if not score_ref.get("ranking_contract_digest"):
         reasons.append(REASON_RANKING_CONTRACT_REFERENCE_MISSING)
 
     binding = expected_hypothesis_binding or materialize_versioned_hypothesis_binding_v0()
     contract = expected_score_ranking_contract or materialize_score_and_ranking_contract_v0(binding)
+    portfolio_bindings = build_portfolio_implementation_bindings_v0()
+    expected_portfolio_bindings_digest = compute_portfolio_bindings_digest_v0(portfolio_bindings)
 
     if ratification.get("hypothesis_binding_digest") != binding["binding_digest"]:
         reasons.append(REASON_HYPOTHESIS_BINDING_DIGEST_MISMATCH)
     if ratification.get("hypothesis_binding_digest") != RATIFIED_HYPOTHESIS_BINDING_DIGEST:
         reasons.append("RATIFIED_HYPOTHESIS_BINDING_DIGEST_MISMATCH")
+    if ratification.get("authorization_binding_digest") != binding["binding_digest"]:
+        reasons.append(REASON_AUTHORIZATION_BINDING_DIGEST_MISMATCH)
+    if ratification.get("authorization_binding_digest") != AUTHORIZATION_BINDING_DIGEST:
+        reasons.append("AUTHORIZATION_BINDING_DIGEST_CANONICAL_MISMATCH")
+    if (
+        ratification.get("superseded_authorization_binding_digest")
+        != SUPERSEDED_AUTHORIZATION_BINDING_DIGEST
+    ):
+        reasons.append(REASON_SUPERSEDED_AUTHORIZATION_BINDING_DIGEST_MISMATCH)
+    if ratification.get("portfolio_bindings_digest") != expected_portfolio_bindings_digest:
+        reasons.append("PORTFOLIO_BINDINGS_DIGEST_MISMATCH")
+    if ratification.get("supersession_mode") != SUPERSESSION_MODE:
+        reasons.append(REASON_SUPERSESSION_MODE_MISMATCH)
+    if ratification.get("binding_classification") != BINDING_CLASSIFICATION:
+        reasons.append("BINDING_CLASSIFICATION_MISMATCH")
 
     expected_score_digest = compute_score_contract_digest_v0()
     expected_ranking_digest = compute_ranking_contract_digest_v0()
@@ -592,6 +697,8 @@ def validate_offline_economic_evaluation_authorization_ratification_v0(
         {
             "config_digest": ratification.get("config_digest"),
             "implementation_digest": ratification.get("implementation_digest"),
+            "authorization_binding_digest": ratification.get("authorization_binding_digest"),
+            "portfolio_bindings_digest": ratification.get("portfolio_bindings_digest"),
             "hypothesis_binding_digest": ratification.get("hypothesis_binding_digest"),
             "score_contract_digest": ratification.get("score_contract_digest"),
             "ranking_contract_digest": ratification.get("ranking_contract_digest"),
@@ -606,6 +713,47 @@ def validate_offline_economic_evaluation_authorization_ratification_v0(
     if unique:
         return RatificationValidationVerdict.REJECTED_INCOMPLETE, unique
     return RatificationValidationVerdict.ACCEPTED_COMPLETE, ()
+
+
+def is_authorization_ratification_stale_v0(ratification: Mapping[str, Any]) -> bool:
+    binding_digest = str(ratification.get("authorization_binding_digest", ""))
+    if not binding_digest:
+        binding_digest = str(ratification.get("hypothesis_binding_digest", ""))
+    return binding_digest == SUPERSEDED_AUTHORIZATION_BINDING_DIGEST
+
+
+def authorization_binding_digest_match_v0(ratification: Mapping[str, Any]) -> bool:
+    auth_digest = str(ratification.get("authorization_binding_digest", ""))
+    return auth_digest == AUTHORIZATION_BINDING_DIGEST
+
+
+def build_supersession_relation_v0(
+    *,
+    prior_ratification: Mapping[str, Any] | None = None,
+    new_ratification: Mapping[str, Any],
+) -> dict[str, Any]:
+    prior_digest = None
+    if prior_ratification is not None:
+        prior_digest = prior_ratification.get(
+            "authorization_binding_digest"
+        ) or prior_ratification.get("hypothesis_binding_digest")
+    return {
+        "schema_version": "supersession_relation.v0",
+        "supersession_mode": SUPERSESSION_MODE,
+        "binding_classification": BINDING_CLASSIFICATION,
+        "superseded_authorization_binding_digest": SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+        "authorization_binding_digest": new_ratification.get("authorization_binding_digest"),
+        "prior_authorization_binding_digest": prior_digest
+        or SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+        "prior_operator_go": PREVIOUS_GO_TOKEN,
+        "new_operator_go": GO_TOKEN,
+        "historical_ratification_preserved": True,
+        "economic_evidence_mutated": False,
+        "authorization_ratification_stale_before_update": True,
+        "authorization_binding_digest_match_after_update": authorization_binding_digest_match_v0(
+            new_ratification
+        ),
+    }
 
 
 def validate_ratification_rejections_v0(
@@ -688,6 +836,7 @@ def build_owner_inventory() -> dict[str, Any]:
         "governance_owner": VALIDATOR_OWNER,
         "hypothesis_binding_owner": HYPOTHESIS_BINDING_OWNER,
         "score_and_ranking_contract_owner": SCORE_RANKING_CONTRACT_OWNER,
+        "portfolio_binding_owner": PORTFOLIO_BINDING_OWNER,
         "materializer_owner": MATERIALIZER_OWNER,
         "binder_validator_owner": VALIDATOR_OWNER,
         "manifest_owner": MANIFEST_OWNER,
@@ -711,12 +860,15 @@ def build_reuse_decision() -> dict[str, Any]:
         "decision_ladder": "REUSE_AS_IS -> REUSE_WITH_NARROW_ADAPTER",
         "hypothesis_binding_owner": HYPOTHESIS_BINDING_OWNER,
         "score_and_ranking_contract_owner": SCORE_RANKING_CONTRACT_OWNER,
+        "portfolio_binding_owner": PORTFOLIO_BINDING_OWNER,
         "hypothesis_binding_reuse": "REUSE_AS_IS",
         "score_contract_reuse": "REUSE_AS_IS",
         "ranking_contract_reuse": "REUSE_AS_IS",
+        "portfolio_binding_reuse": "REUSE_AS_IS",
         "dataset_reuse": "REUSE_AS_IS",
         "universe_reuse": "REUSE_AS_IS",
         "period_split_reuse": "REUSE_AS_IS",
+        "authorization_reratification_only": True,
         "new_parallel_owner_created": False,
         "new_governance_ssot_created": False,
     }
@@ -732,11 +884,19 @@ def build_field_classification_v0() -> dict[str, Any]:
             "operator_go",
         ],
         "reference_only_fields": [
+            "authorization_binding_digest",
+            "portfolio_bindings_digest",
             "hypothesis_binding_digest",
             "score_contract_digest",
             "ranking_contract_digest",
             "dataset_digest",
             "universe_digest",
+        ],
+        "supersession_fields": [
+            "superseded_authorization_binding_digest",
+            "supersession_mode",
+            "binding_classification",
+            "previous_operator_go",
         ],
         "prohibited_mutation_fields": [
             "hypothesis_binding_unchanged",
@@ -744,11 +904,16 @@ def build_field_classification_v0() -> dict[str, Any]:
             "ranking_contract_unchanged",
             "dataset_binding_unchanged",
             "universe_binding_unchanged",
+            "portfolio_binding_unchanged",
+            "cost_policy_unchanged",
+            "economic_policy_unchanged",
         ],
         "cryptographic_reference_fields": [
             "ratification_digest",
             "config_digest",
             "implementation_digest",
+            "authorization_binding_digest",
+            "portfolio_bindings_digest",
             "hypothesis_binding_digest",
             "score_contract_digest",
             "ranking_contract_digest",
@@ -762,12 +927,16 @@ def build_semantic_identity_comparison_v0(
     prior_hypothesis_binding: Mapping[str, Any],
     prior_score_ranking_contract: Mapping[str, Any],
     new_ratification: Mapping[str, Any],
+    prior_ratification: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    current_binding = materialize_versioned_hypothesis_binding_v0()
+    current_contract = materialize_score_and_ranking_contract_v0(current_binding)
     return {
         "schema_version": "semantic_identity_comparison.v0",
         "semantic_binding_fields_changed": False,
-        "hypothesis_binding_unchanged": (
-            prior_hypothesis_binding.get("binding_digest")
+        "authorization_binding_identity_changed": True,
+        "hypothesis_binding_unchanged_vs_current_head": (
+            current_binding.get("binding_digest")
             == new_ratification.get("hypothesis_binding_digest")
         ),
         "score_contract_unchanged": (
@@ -777,15 +946,23 @@ def build_semantic_identity_comparison_v0(
             compute_ranking_contract_digest_v0() == new_ratification.get("ranking_contract_digest")
         ),
         "dataset_binding_unchanged": (
-            prior_hypothesis_binding.get("dataset_digest") == new_ratification.get("dataset_digest")
+            current_binding.get("dataset_digest") == new_ratification.get("dataset_digest")
         ),
         "universe_binding_unchanged": (
-            prior_hypothesis_binding.get("universe_digest")
-            == new_ratification.get("universe_digest")
+            current_binding.get("universe_digest") == new_ratification.get("universe_digest")
         ),
+        "portfolio_binding_unchanged": new_ratification.get("portfolio_binding_unchanged") is True,
         "score_and_ranking_contract_digest_unchanged": (
-            prior_score_ranking_contract.get("contract_digest")
+            current_contract.get("contract_digest")
             == new_ratification.get("score_and_ranking_contract_digest")
+        ),
+        "prior_authorization_binding_digest": (
+            (
+                prior_ratification.get("authorization_binding_digest")
+                or prior_ratification.get("hypothesis_binding_digest")
+            )
+            if prior_ratification
+            else SUPERSEDED_AUTHORIZATION_BINDING_DIGEST
         ),
         "unexpected_change_count": 0,
     }
@@ -796,13 +973,22 @@ def build_cryptographic_identity_comparison_v0(
     prior_hypothesis_binding: Mapping[str, Any],
     prior_score_ranking_contract: Mapping[str, Any],
     new_ratification: Mapping[str, Any],
+    prior_ratification: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    prior_auth_digest = SUPERSEDED_AUTHORIZATION_BINDING_DIGEST
+    if prior_ratification is not None:
+        prior_auth_digest = str(
+            prior_ratification.get("authorization_binding_digest")
+            or prior_ratification.get("hypothesis_binding_digest")
+            or SUPERSEDED_AUTHORIZATION_BINDING_DIGEST
+        )
+    new_auth_digest = str(new_ratification.get("authorization_binding_digest", ""))
     return {
         "schema_version": "cryptographic_identity_comparison.v0",
-        "cryptographic_binding_identity_changed": False,
-        "hypothesis_binding_digest_unchanged": (
-            prior_hypothesis_binding.get("binding_digest")
-            == new_ratification.get("hypothesis_binding_digest")
+        "cryptographic_binding_identity_changed": prior_auth_digest != new_auth_digest,
+        "authorization_binding_digest_match": new_auth_digest == AUTHORIZATION_BINDING_DIGEST,
+        "authorization_binding_digest_matches_portfolio_binding": (
+            new_auth_digest == materialize_versioned_hypothesis_binding_v0()["binding_digest"]
         ),
         "score_contract_digest_unchanged": (
             compute_score_contract_digest_v0() == new_ratification.get("score_contract_digest")
@@ -811,16 +997,16 @@ def build_cryptographic_identity_comparison_v0(
             compute_ranking_contract_digest_v0() == new_ratification.get("ranking_contract_digest")
         ),
         "dataset_digest_unchanged": (
-            prior_hypothesis_binding.get("dataset_digest") == new_ratification.get("dataset_digest")
+            materialize_versioned_hypothesis_binding_v0().get("dataset_digest")
+            == new_ratification.get("dataset_digest")
         ),
         "universe_digest_unchanged": (
-            prior_hypothesis_binding.get("universe_digest")
+            materialize_versioned_hypothesis_binding_v0().get("universe_digest")
             == new_ratification.get("universe_digest")
         ),
-        "prior_hypothesis_binding_digest": prior_hypothesis_binding.get("binding_digest"),
-        "prior_score_and_ranking_contract_digest": prior_score_ranking_contract.get(
-            "contract_digest"
-        ),
+        "superseded_authorization_binding_digest": SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+        "prior_authorization_binding_digest": prior_auth_digest,
+        "new_authorization_binding_digest": new_auth_digest,
         "new_ratification_digest": new_ratification.get("ratification_digest"),
     }
 
@@ -830,53 +1016,129 @@ def build_before_after_field_diff_v0(
     prior_hypothesis_binding: Mapping[str, Any],
     prior_score_ranking_contract: Mapping[str, Any],
     new_ratification: Mapping[str, Any],
+    prior_ratification: Mapping[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
+    prior_auth_digest = SUPERSEDED_AUTHORIZATION_BINDING_DIGEST
+    if prior_ratification is not None:
+        prior_auth_digest = str(
+            prior_ratification.get("authorization_binding_digest")
+            or prior_ratification.get("hypothesis_binding_digest")
+            or SUPERSEDED_AUTHORIZATION_BINDING_DIGEST
+        )
     compare = (
         (
-            "authorization_scope",
+            "operator_go",
+            prior_ratification.get("operator_go") if prior_ratification else PREVIOUS_GO_TOKEN,
+            new_ratification.get("operator_go"),
+            "AUTHORIZATION_FIELD",
+            VALIDATOR_OWNER,
+            "EXPECTED_AUTHORIZATION_RERATIFICATION",
+            "GOVERNANCE_ONLY",
+            "NONE",
+            "portfolio_binding_completion_requires_updated_operator_go",
+        ),
+        (
+            "authorization_binding_digest",
+            prior_auth_digest,
+            new_ratification.get("authorization_binding_digest"),
+            "DERIVED_DIGEST_FIELD",
+            VALIDATOR_OWNER,
+            "EXPECTED_PORTFOLIO_BINDING_COMPLETION_SUPERSESSION",
+            "NONE",
+            "CRYPTOGRAPHIC_BINDING_IDENTITY_CHANGED",
+            "bind_authorization_to_complete_portfolio_binding_identity",
+        ),
+        (
+            "superseded_authorization_binding_digest",
             None,
-            new_ratification.get("authorization_scope"),
+            new_ratification.get("superseded_authorization_binding_digest"),
+            "SUPERSESSION_FIELD",
+            VALIDATOR_OWNER,
+            "EXPECTED_SUPERSESSION_METADATA_ADDITION",
+            "AUDIT_TRAIL_ONLY",
+            "NONE",
+            "preserve_stale_authorization_identity_for_audit",
         ),
         (
-            "economic_evaluation_authorized_for_separate_execution",
+            "portfolio_bindings_digest",
             None,
-            new_ratification.get("economic_evaluation_authorized_for_separate_execution"),
+            new_ratification.get("portfolio_bindings_digest"),
+            "DERIVED_DIGEST_FIELD",
+            PORTFOLIO_BINDING_OWNER,
+            "EXPECTED_PORTFOLIO_BINDING_REFERENCE_ADDITION",
+            "NONE",
+            "NONE",
+            "bind_complete_portfolio_policy_bundle",
         ),
         (
-            "hypothesis_binding_digest",
-            prior_hypothesis_binding.get("binding_digest"),
-            new_ratification.get("hypothesis_binding_digest"),
-        ),
-        (
-            "score_and_ranking_contract_digest",
-            prior_score_ranking_contract.get("contract_digest"),
-            new_ratification.get("score_and_ranking_contract_digest"),
+            "supersession_mode",
+            None,
+            new_ratification.get("supersession_mode"),
+            "SUPERSESSION_FIELD",
+            VALIDATOR_OWNER,
+            "EXPECTED_SUPERSESSION_METADATA_ADDITION",
+            "AUDIT_TRAIL_ONLY",
+            "NONE",
+            "canonical_portfolio_binding_completion_supersession",
         ),
         (
             "dataset_digest",
             prior_hypothesis_binding.get("dataset_digest"),
             new_ratification.get("dataset_digest"),
+            "CRYPTOGRAPHIC_REFERENCE_FIELD",
+            HYPOTHESIS_BINDING_OWNER,
+            "UNCHANGED",
+            "NONE",
+            "NONE",
+            "dataset_binding_unchanged",
         ),
         (
             "universe_digest",
             prior_hypothesis_binding.get("universe_digest"),
             new_ratification.get("universe_digest"),
+            "CRYPTOGRAPHIC_REFERENCE_FIELD",
+            HYPOTHESIS_BINDING_OWNER,
+            "UNCHANGED",
+            "NONE",
+            "NONE",
+            "universe_binding_unchanged",
+        ),
+        (
+            "score_and_ranking_contract_digest",
+            prior_score_ranking_contract.get("contract_digest"),
+            new_ratification.get("score_and_ranking_contract_digest"),
+            "CRYPTOGRAPHIC_REFERENCE_FIELD",
+            SCORE_RANKING_CONTRACT_OWNER,
+            "UNCHANGED",
+            "NONE",
+            "NONE",
+            "score_ranking_contract_unchanged",
         ),
     )
-    for field, prior_val, new_val in compare:
-        if prior_val != new_val:
-            change_type = (
-                "EXPECTED_AUTHORIZATION_RATIFICATION_ADDITION"
-                if prior_val is None
-                else "UNEXPECTED_BINDING_CHANGE"
-            )
+    for (
+        field_path,
+        old_value,
+        new_value,
+        field_class,
+        canonical_owner,
+        change_type,
+        semantic_effect,
+        cryptographic_effect,
+        reason,
+    ) in compare:
+        if old_value != new_value:
             rows.append(
                 {
-                    "field": field,
-                    "prior_value": prior_val,
-                    "new_value": new_val,
+                    "field_path": field_path,
+                    "old_value": old_value,
+                    "new_value": new_value,
+                    "field_class": field_class,
+                    "canonical_owner": canonical_owner,
                     "change_type": change_type,
+                    "semantic_effect": semantic_effect,
+                    "cryptographic_effect": cryptographic_effect,
+                    "reason": reason,
                 }
             )
     return rows
