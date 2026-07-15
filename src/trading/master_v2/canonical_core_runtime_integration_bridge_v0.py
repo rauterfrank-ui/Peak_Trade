@@ -74,6 +74,7 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayInputV1,
     IntegratedOfflineReplayPoliciesV1,
     IntegratedOfflineReplayResultV1,
+    build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
 )
 from trading.master_v2.suitability_binding_v1 import (
@@ -363,7 +364,7 @@ def build_integrated_offline_replay_input_from_harness_v0(
         warmup_status=inp.warmup_status,
     )
 
-    replay_input = IntegratedOfflineReplayInputV1(
+    replay_input = build_integrated_offline_replay_input_v1(
         replay_id=replay_id,
         instrument_id=canonical_instrument_id,
         trading_epoch=trading_epoch,

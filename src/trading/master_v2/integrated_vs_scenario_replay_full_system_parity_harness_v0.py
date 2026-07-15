@@ -189,6 +189,7 @@ from trading.master_v2.double_play_state import (
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER,
     IntegratedOfflineReplayResultV1,
+    build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
 )
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
@@ -2448,7 +2449,6 @@ def build_surface_p_integrated_replay_result_v0(
     from trading.master_v2.double_play_futures_input import FuturesMarketType
     from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
         INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
-        IntegratedOfflineReplayInputV1,
         IntegratedOfflineReplayPoliciesV1,
     )
     from trading.master_v2.suitability_binding_v1 import (
@@ -2496,7 +2496,7 @@ def build_surface_p_integrated_replay_result_v0(
             input_digest="",
         )
     )
-    replay_input = IntegratedOfflineReplayInputV1(
+    replay_input = build_integrated_offline_replay_input_v1(
         replay_id=_SURFACE_P_REPLAY_ID,
         instrument_id=_SURFACE_P_INTEGRATED_INSTRUMENT,
         trading_epoch=fixture.trading_epoch,

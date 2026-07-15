@@ -271,6 +271,305 @@ def _valid_sha256_hex(value: str) -> bool:
     return bool(re.fullmatch(r"[0-9a-f]{64}", value))
 
 
+def _builder_type_name_ok(value: object, *expected_type_names: str) -> bool:
+    """Dual-import-safe class identity check (trading.* vs src.trading.*)."""
+    return type(value).__name__ in expected_type_names
+
+
+def _builder_enum_ok(value: object, enum_cls: type) -> bool:
+    """Dual-import-safe enum membership by value (not class identity)."""
+    try:
+        return getattr(value, "value") in {member.value for member in enum_cls}
+    except (AttributeError, TypeError):
+        return False
+
+
+def _builder_mapping_str_str_ok(value: object) -> bool:
+    if not isinstance(value, Mapping):
+        return False
+    for key, item in value.items():
+        if not isinstance(key, str) or not key:
+            return False
+        if not isinstance(item, str) or not item:
+            return False
+    return True
+
+
+def _builder_finite_number(value: object) -> bool:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return False
+    return value == value and value not in (float("inf"), float("-inf"))
+
+
+def build_integrated_offline_replay_input_v1(
+    *,
+    replay_id: str,
+    instrument_id: str,
+    trading_epoch: int,
+    canonical_market_context: CanonicalMarketContextV1,
+    market_context_binding_state: CanonicalMarketContextBindingStateV1,
+    scope_prerequisites: ScopeInitializationPrerequisitesV1,
+    scope_reinitialization_guard: ScopeReinitializationGuardV1,
+    existing_scope: Optional[CanonicalScopeSnapshotV1],
+    scope_direction_state: ScopeDirectionState,
+    scope_confirmation_state: ScopeConfirmationStateV1,
+    scope_cooldown_state: ScopeCooldownStateV1,
+    up_distance: float,
+    adverse_exit_distance: float,
+    reversal_distance: float,
+    confirmation_epochs: int,
+    current_price: float,
+    price_path: Tuple[float, ...],
+    directional_confirmation_state: DirectionalConfirmationStateV1,
+    strategy_registry: SuitabilityStrategyRegistryV1,
+    regime_id: str,
+    regime_status: SuitabilityRegimeStatus,
+    previous_composition_direction_state: CompositionDirectionState,
+    position_management_context: PositionManagementContext,
+    last_evaluated_trading_epoch: int,
+    side_state: SideState,
+    direction_state: EntryExitDirectionState,
+    position_state: PositionState,
+    reconciliation_state: ReconciliationState,
+    trading_gate: TradingGate,
+    safety_mode: SafetyMode,
+    existing_position_side: ExistingPositionSide,
+    venue_flat: bool,
+    cooldown_pass: bool,
+    scope_adverse_exit_signal: PolicySignalV0,
+    profit_protection_signal: PolicySignalV0,
+    time_exit_signal: PolicySignalV0,
+    strategy_invalidation_signal: PolicySignalV0,
+    hard_risk_reduction_signal: PolicySignalV0,
+    safety_exit_signal: PolicySignalV0,
+    policies: IntegratedOfflineReplayPoliciesV1,
+    component_versions: Mapping[str, str],
+    policy_versions: Mapping[str, str],
+    config_digest: str,
+    implementation_digest: str,
+    input_digest: str,
+    expected_component_contracts: Mapping[str, str],
+    context_reference: str,
+    now_tick: int = 0,
+) -> IntegratedOfflineReplayInputV1:
+    """Single canonical productive constructor for IntegratedOfflineReplayInputV1.
+
+    Source adapters must pass fully prepared field values. This builder validates
+    contracts and constructs the dataclass exactly once. It does not invent
+    source-specific defaults, policies, registries, digests, or distance/path values.
+    """
+    errors: list[str] = []
+
+    if not isinstance(replay_id, str) or not replay_id.strip():
+        errors.append("replay_id_invalid")
+    if not isinstance(instrument_id, str) or not instrument_id.strip():
+        errors.append("instrument_id_invalid")
+    if not isinstance(trading_epoch, int) or isinstance(trading_epoch, bool):
+        errors.append("trading_epoch_invalid")
+    if not _builder_type_name_ok(canonical_market_context, "CanonicalMarketContextV1"):
+        errors.append("canonical_market_context_type_invalid")
+    else:
+        ctx_instrument = getattr(canonical_market_context, "instrument_id", None)
+        ctx_epoch = getattr(canonical_market_context, "trading_epoch", None)
+        if instrument_id != ctx_instrument:
+            errors.append("instrument_mismatch")
+        if trading_epoch != ctx_epoch:
+            errors.append("trading_epoch_mismatch")
+
+    if not _builder_type_name_ok(
+        market_context_binding_state, "CanonicalMarketContextBindingStateV1"
+    ):
+        errors.append("market_context_binding_state_type_invalid")
+    if not _builder_type_name_ok(scope_prerequisites, "ScopeInitializationPrerequisitesV1"):
+        errors.append("scope_prerequisites_type_invalid")
+    if not _builder_type_name_ok(scope_reinitialization_guard, "ScopeReinitializationGuardV1"):
+        errors.append("scope_reinitialization_guard_type_invalid")
+    if existing_scope is not None and not _builder_type_name_ok(
+        existing_scope, "CanonicalScopeSnapshotV1"
+    ):
+        errors.append("existing_scope_type_invalid")
+    if not _builder_enum_ok(scope_direction_state, ScopeDirectionState):
+        errors.append("scope_direction_state_invalid")
+    if not _builder_type_name_ok(scope_confirmation_state, "ScopeConfirmationStateV1"):
+        errors.append("scope_confirmation_state_type_invalid")
+    if not _builder_type_name_ok(scope_cooldown_state, "ScopeCooldownStateV1"):
+        errors.append("scope_cooldown_state_type_invalid")
+
+    for name, distance in (
+        ("up_distance", up_distance),
+        ("adverse_exit_distance", adverse_exit_distance),
+        ("reversal_distance", reversal_distance),
+        ("current_price", current_price),
+    ):
+        if not _builder_finite_number(distance):
+            errors.append(f"{name}_invalid")
+
+    if not isinstance(confirmation_epochs, int) or isinstance(confirmation_epochs, bool):
+        errors.append("confirmation_epochs_invalid")
+    elif confirmation_epochs < 1:
+        errors.append("confirmation_epochs_invalid")
+
+    if not isinstance(price_path, tuple) or len(price_path) < 2:
+        errors.append("price_path_invalid")
+    else:
+        if any(not _builder_finite_number(point) for point in price_path):
+            errors.append("price_path_invalid")
+
+    if not _builder_type_name_ok(directional_confirmation_state, "DirectionalConfirmationStateV1"):
+        errors.append("directional_confirmation_state_type_invalid")
+    if not _builder_type_name_ok(strategy_registry, "SuitabilityStrategyRegistryV1"):
+        errors.append("strategy_registry_type_invalid")
+    if not isinstance(regime_id, str) or not regime_id.strip():
+        errors.append("regime_id_invalid")
+    if not _builder_enum_ok(regime_status, SuitabilityRegimeStatus):
+        errors.append("regime_status_invalid")
+    if not _builder_enum_ok(previous_composition_direction_state, CompositionDirectionState):
+        errors.append("previous_composition_direction_state_invalid")
+    if not _builder_enum_ok(position_management_context, PositionManagementContext):
+        errors.append("position_management_context_invalid")
+    if not isinstance(last_evaluated_trading_epoch, int) or isinstance(
+        last_evaluated_trading_epoch, bool
+    ):
+        errors.append("last_evaluated_trading_epoch_invalid")
+    if not _builder_enum_ok(side_state, SideState):
+        errors.append("side_state_invalid")
+    if not _builder_enum_ok(direction_state, EntryExitDirectionState):
+        errors.append("direction_state_invalid")
+    if not _builder_enum_ok(position_state, PositionState):
+        errors.append("position_state_invalid")
+    if not _builder_enum_ok(reconciliation_state, ReconciliationState):
+        errors.append("reconciliation_state_invalid")
+    if not _builder_enum_ok(trading_gate, TradingGate):
+        errors.append("trading_gate_invalid")
+    if not _builder_enum_ok(safety_mode, SafetyMode):
+        errors.append("safety_mode_invalid")
+    if not _builder_enum_ok(existing_position_side, ExistingPositionSide):
+        errors.append("existing_position_side_invalid")
+    if not isinstance(venue_flat, bool):
+        errors.append("venue_flat_invalid")
+    if not isinstance(cooldown_pass, bool):
+        errors.append("cooldown_pass_invalid")
+
+    for name, signal in (
+        ("scope_adverse_exit_signal", scope_adverse_exit_signal),
+        ("profit_protection_signal", profit_protection_signal),
+        ("time_exit_signal", time_exit_signal),
+        ("strategy_invalidation_signal", strategy_invalidation_signal),
+        ("hard_risk_reduction_signal", hard_risk_reduction_signal),
+        ("safety_exit_signal", safety_exit_signal),
+    ):
+        if not _builder_type_name_ok(signal, "PolicySignalV0"):
+            errors.append(f"{name}_type_invalid")
+
+    if not _builder_type_name_ok(policies, "IntegratedOfflineReplayPoliciesV1"):
+        errors.append("policies_type_invalid")
+    if not _builder_mapping_str_str_ok(component_versions):
+        errors.append("component_versions_invalid")
+    if not _builder_mapping_str_str_ok(policy_versions):
+        errors.append("policy_versions_invalid")
+    if not _builder_mapping_str_str_ok(expected_component_contracts):
+        errors.append("expected_component_contracts_invalid")
+    else:
+        for key, expected_version in expected_component_contracts.items():
+            actual_version = (
+                component_versions.get(key) if isinstance(component_versions, Mapping) else None
+            )
+            if actual_version != expected_version:
+                errors.append(
+                    f"component_version_mismatch:{key}:{actual_version}!={expected_version}"
+                )
+
+    if _builder_type_name_ok(policies, "IntegratedOfflineReplayPoliciesV1") and isinstance(
+        policy_versions, Mapping
+    ):
+        policy_attr_map = {
+            "scope_initialization": getattr(
+                getattr(policies, "scope_initialization", None), "policy_version", None
+            ),
+            "scope_event_generator": getattr(
+                getattr(policies, "scope_event_generator", None), "policy_version", None
+            ),
+            "directional": getattr(getattr(policies, "directional", None), "policy_version", None),
+            "survival": getattr(getattr(policies, "survival", None), "policy_version", None),
+            "suitability": getattr(getattr(policies, "suitability", None), "policy_version", None),
+            "composition": getattr(getattr(policies, "composition", None), "policy_version", None),
+            "entry_exit": getattr(getattr(policies, "entry_exit", None), "policy_version", None),
+        }
+        for key, expected_version in policy_versions.items():
+            policy_attr = policy_attr_map.get(key)
+            if policy_attr is not None and policy_attr != expected_version:
+                errors.append(f"policy_version_mismatch:{key}:{policy_attr}!={expected_version}")
+
+    for name, digest in (
+        ("config_digest", config_digest),
+        ("implementation_digest", implementation_digest),
+        ("input_digest", input_digest),
+    ):
+        if not isinstance(digest, str):
+            errors.append(f"{name}_invalid")
+        elif digest and not _valid_sha256_hex(digest):
+            errors.append(f"{name}_invalid")
+
+    if not isinstance(context_reference, str) or not context_reference.strip():
+        errors.append("context_reference_invalid")
+    if not isinstance(now_tick, int) or isinstance(now_tick, bool) or now_tick < 0:
+        errors.append("now_tick_invalid")
+
+    if errors:
+        raise ValueError(";".join(sorted(set(errors))))
+
+    return IntegratedOfflineReplayInputV1(
+        replay_id=replay_id,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        canonical_market_context=canonical_market_context,
+        market_context_binding_state=market_context_binding_state,
+        scope_prerequisites=scope_prerequisites,
+        scope_reinitialization_guard=scope_reinitialization_guard,
+        existing_scope=existing_scope,
+        scope_direction_state=scope_direction_state,
+        scope_confirmation_state=scope_confirmation_state,
+        scope_cooldown_state=scope_cooldown_state,
+        up_distance=up_distance,
+        adverse_exit_distance=adverse_exit_distance,
+        reversal_distance=reversal_distance,
+        confirmation_epochs=confirmation_epochs,
+        current_price=current_price,
+        price_path=price_path,
+        directional_confirmation_state=directional_confirmation_state,
+        strategy_registry=strategy_registry,
+        regime_id=regime_id,
+        regime_status=regime_status,
+        previous_composition_direction_state=previous_composition_direction_state,
+        position_management_context=position_management_context,
+        last_evaluated_trading_epoch=last_evaluated_trading_epoch,
+        side_state=side_state,
+        direction_state=direction_state,
+        position_state=position_state,
+        reconciliation_state=reconciliation_state,
+        trading_gate=trading_gate,
+        safety_mode=safety_mode,
+        existing_position_side=existing_position_side,
+        venue_flat=venue_flat,
+        cooldown_pass=cooldown_pass,
+        scope_adverse_exit_signal=scope_adverse_exit_signal,
+        profit_protection_signal=profit_protection_signal,
+        time_exit_signal=time_exit_signal,
+        strategy_invalidation_signal=strategy_invalidation_signal,
+        hard_risk_reduction_signal=hard_risk_reduction_signal,
+        safety_exit_signal=safety_exit_signal,
+        policies=policies,
+        component_versions=component_versions,
+        policy_versions=policy_versions,
+        config_digest=config_digest,
+        implementation_digest=implementation_digest,
+        input_digest=input_digest,
+        expected_component_contracts=expected_component_contracts,
+        context_reference=context_reference,
+        now_tick=now_tick,
+    )
+
+
 def _instrument_allowed(instrument_id: str) -> bool:
     lowered = instrument_id.lower()
     return not any(token in lowered for token in _FORBIDDEN_INSTRUMENT_SUBSTRINGS)
