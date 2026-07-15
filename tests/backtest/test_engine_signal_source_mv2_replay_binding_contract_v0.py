@@ -142,12 +142,22 @@ def test_parallel_strategy_signal_does_not_control_engine_when_divergent() -> No
 def test_legacy_configured_strategy_source_still_available_explicitly() -> None:
     result = _run(
         cfg=_cfg(engine_signal_source=ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY),
+        allow_legacy_raw_signal_research_engine_source=True,
+        system_economic_evidence_requested=False,
     )
     assert result.backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
     assert (
         result.strategy_signal_provenance.engine_signal_source
         == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
     )
+
+
+def test_configured_strategy_cannot_override_replay_as_system_engine_source() -> None:
+    with pytest.raises(
+        StrategySignalBindingError,
+        match="legacy_raw_signal_path_system_economic_evidence_blocked",
+    ):
+        _run(cfg=_cfg(engine_signal_source=ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY))
 
 
 def test_artificial_strategy_signal_mutation_does_not_change_engine_output(

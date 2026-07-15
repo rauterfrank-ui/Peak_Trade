@@ -54,10 +54,21 @@ from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
+from src.backtest.strategy_signal_binding_v1 import (
+    LEGACY_NON_AUTHORITATIVE,
+    RUN_BACKTEST_PATH_CLASSIFICATION,
+    declare_legacy_raw_signal_research_path_v1,
+)
 from src.backtest.cost_config_v0 import (
     resolve_effective_backtest_cost_config,
     BacktestCostConfigError,
 )
+
+# C11: explicit classic script classification for static contracts.
+PATH_CLASSIFICATION = RUN_BACKTEST_PATH_CLASSIFICATION
+LEGACY_NON_AUTHORITATIVE_PATH = LEGACY_NON_AUTHORITATIVE
+SYSTEM_ECONOMIC_EVIDENCE_BLOCKED = True
+LEGACY_NON_AUTHORITATIVE_FLAG = True
 from src.backtest.stats import compute_backtest_stats, validate_for_live_trading
 from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
 from src.core.experiments import log_backtest_result
@@ -596,6 +607,11 @@ def main() -> int:
         if args.verbose:
             print(f"  Strategie-Key: {strategy_name}")
             print(f"  Strategy-Params: {strategy_params}")
+
+        declare_legacy_raw_signal_research_path_v1(
+            system_economic_evidence_requested=False,
+            path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+        )
 
         engine = BacktestEngine(
             core_position_sizer=position_sizer,

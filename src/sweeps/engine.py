@@ -37,6 +37,10 @@ from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
+from src.backtest.strategy_signal_binding_v1 import (
+    RUN_BACKTEST_PATH_CLASSIFICATION,
+    declare_legacy_raw_signal_research_path_v1,
+)
 from scripts.run_backtest import _build_strategy_params_from_config
 from src.strategies import STRATEGY_REGISTRY, load_strategy
 from src.strategies.registry import (
@@ -682,9 +686,15 @@ class SweepEngine:
         strategy_key: str,
         params: Dict[str, Any],
         cfg: PeakConfig,
+        *,
+        system_economic_evidence_requested: bool = False,
     ) -> Tuple[Dict[str, Any], BacktestResult]:
         """
         Führt einen einzelnen Backtest mit spezifischen Parametern aus.
+
+        Path classification: RAW_SIGNAL_RESEARCH / LEGACY_NON_AUTHORITATIVE.
+        Not a canonical MV2 system-evidence path — system economic evidence requests
+        fail closed.
 
         Args:
             data: OHLCV-DataFrame
@@ -695,6 +705,11 @@ class SweepEngine:
         Returns:
             Tuple aus Stats-Dict und BacktestResult
         """
+        declare_legacy_raw_signal_research_path_v1(
+            system_economic_evidence_requested=system_economic_evidence_requested,
+            path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+        )
+
         # Position-Sizer und Risk-Manager aus Config
         position_sizer = build_position_sizer_from_config(cfg)
         risk_manager = build_risk_manager_from_config(cfg, section="risk_management")

@@ -36,15 +36,19 @@ from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 from src.backtest.stats import compute_backtest_stats
 from src.backtest.strategy_signal_binding_v1 import (
+    CANONICAL_MV2_SYSTEM_PATH_CLASSIFICATION,
     CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
+    CANONICAL_SYSTEM_REPLAY,
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
     ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
     MV2_REPLAY_SIGNAL_SOURCE,
+    RUN_BACKTEST_PATH_CLASSIFICATION,
     StrategySignalBindingError,
     StrategySignalProvenanceV1,
     assert_decision_funnel_trade_alignment_v1,
     assert_engine_signal_provenance_consistency_v1,
     assert_backtest_engine_mv2_replay_signal_parity_v1,
+    assert_legacy_raw_signal_path_blocks_system_economic_evidence_v1,
     compute_strategy_signal_digest_v1,
     execute_configured_strategy_signal_series_v1,
     resolve_mv2_research_engine_signal_source_v1,
@@ -1820,6 +1824,8 @@ def run_mv2_research_backtest_wiring_v1(
     | None = None,
     backtest_engine_signal_source: str | None = None,
     expected_mv2_replay_signal_digest: Optional[str] = None,
+    allow_legacy_raw_signal_research_engine_source: bool = False,
+    system_economic_evidence_requested: bool | None = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
@@ -1829,6 +1835,28 @@ def run_mv2_research_backtest_wiring_v1(
         explicit_source=backtest_engine_signal_source,
         cfg=cfg,
     )
+    # C8 lock: configured_strategy cannot override replay as system engine source.
+    # Legacy raw-signal research overrides require an explicit non-authoritative grant.
+    if resolved_engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY:
+        system_evidence = (
+            True
+            if system_economic_evidence_requested is None
+            else bool(system_economic_evidence_requested)
+        )
+        if not allow_legacy_raw_signal_research_engine_source:
+            raise StrategySignalBindingError(
+                "legacy_raw_signal_path_system_economic_evidence_blocked"
+            )
+        assert_legacy_raw_signal_path_blocks_system_economic_evidence_v1(
+            path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+            system_economic_evidence_requested=system_evidence,
+        )
+    else:
+        # Canonical system MV2 wiring path classification (replay engine authority).
+        if CANONICAL_MV2_SYSTEM_PATH_CLASSIFICATION != CANONICAL_SYSTEM_REPLAY:
+            raise StrategySignalBindingError(
+                "legacy_raw_signal_path_system_economic_evidence_blocked"
+            )
 
     effective_profile = profile_binding or default_runtime_profile_binding_v1()
     if effective_profile.dataset_profile is DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1:

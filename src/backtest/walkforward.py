@@ -40,6 +40,10 @@ import pandas as pd
 
 from .engine import BacktestEngine
 from .result import BacktestResult
+from .strategy_signal_binding_v1 import (
+    RUN_BACKTEST_PATH_CLASSIFICATION,
+    declare_legacy_raw_signal_research_path_v1,
+)
 from ..strategies import load_strategy
 from ..core.config_registry import get_config
 
@@ -363,9 +367,14 @@ def run_walkforward_for_config(
     param_grid: Optional[Union[Mapping[str, Sequence[Any]], Sequence[Mapping[str, Any]]]] = None,
     optimization_metric: str = "sharpe",
     logger: Optional[logging.Logger] = None,
+    system_economic_evidence_requested: bool = False,
 ) -> WalkForwardResult:
     """
     Führt einen Walk-Forward-Backtest für eine gegebene Strategiekonfiguration aus.
+
+    Path classification: RAW_SIGNAL_RESEARCH / LEGACY_NON_AUTHORITATIVE.
+    Not a canonical MV2 system-evidence path — system economic evidence requests
+    fail closed.
 
     Workflow:
     1. Lädt Strategie-Parameter (aus strategy_params oder config)
@@ -408,6 +417,11 @@ def run_walkforward_for_config(
         ... )
         >>> print(f"Durchschnitts-Sharpe: {result.aggregate_metrics.get('avg_sharpe', 0):.2f}")
     """
+    declare_legacy_raw_signal_research_path_v1(
+        system_economic_evidence_requested=system_economic_evidence_requested,
+        path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+    )
+
     if logger is None:
         logger = logging.getLogger(__name__)
 

@@ -39,6 +39,16 @@ CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE = ENGINE_SIGNAL_SOURCE_MV2_REPLAY
 LEGACY_RAW_SIGNAL_RESEARCH_ENGINE_SIGNAL_SOURCE = ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
 RUN_BACKTEST_PATH_CLASSIFICATION = "RAW_SIGNAL_RESEARCH"
 CANONICAL_MV2_SYSTEM_PATH_CLASSIFICATION = "CANONICAL_SYSTEM_REPLAY"
+LEGACY_NON_AUTHORITATIVE = "LEGACY_NON_AUTHORITATIVE"
+RAW_SIGNAL_RESEARCH = RUN_BACKTEST_PATH_CLASSIFICATION
+CANONICAL_SYSTEM_REPLAY = CANONICAL_MV2_SYSTEM_PATH_CLASSIFICATION
+_LEGACY_RAW_SIGNAL_PATH_CLASSIFICATIONS = frozenset(
+    {
+        RUN_BACKTEST_PATH_CLASSIFICATION,
+        RAW_SIGNAL_RESEARCH,
+        LEGACY_NON_AUTHORITATIVE,
+    }
+)
 _ALLOWED_ENGINE_SIGNAL_SOURCES = frozenset(
     {
         ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
@@ -269,6 +279,47 @@ def _stable_digest(payload: Mapping[str, Any]) -> str:
 def _fail_closed(condition: bool, reason: str) -> None:
     if condition:
         raise StrategySignalBindingError(reason)
+
+
+def assert_legacy_raw_signal_path_blocks_system_economic_evidence_v1(
+    *,
+    path_classification: str,
+    system_economic_evidence_requested: bool,
+) -> None:
+    """Fail-closed guard: legacy/raw-signal paths cannot emit system economic evidence.
+
+    Legacy / raw-signal research paths remain usable for isolated unit, smoke, demo,
+    and non-authoritative research execution. They must never be classified as the
+    canonical system replay path and must never produce system-relevant economic
+    evidence. Missing or unknown classification with system evidence requested is
+    fail-closed.
+    """
+    normalized = str(path_classification or "").strip()
+    _fail_closed(
+        normalized in {CANONICAL_MV2_SYSTEM_PATH_CLASSIFICATION, CANONICAL_SYSTEM_REPLAY},
+        "legacy_raw_signal_path_system_economic_evidence_blocked",
+    )
+    if not system_economic_evidence_requested:
+        _fail_closed(
+            bool(normalized) and normalized not in _LEGACY_RAW_SIGNAL_PATH_CLASSIFICATIONS,
+            "legacy_raw_signal_path_system_economic_evidence_blocked",
+        )
+        return
+    raise StrategySignalBindingError("legacy_raw_signal_path_system_economic_evidence_blocked")
+
+
+def declare_legacy_raw_signal_research_path_v1(
+    *,
+    system_economic_evidence_requested: bool = False,
+    path_classification: str = RUN_BACKTEST_PATH_CLASSIFICATION,
+) -> str:
+    """Mark a classic caller as non-authoritative raw-signal research and enforce the guard."""
+    normalized = str(path_classification or "").strip() or RUN_BACKTEST_PATH_CLASSIFICATION
+    assert_legacy_raw_signal_path_blocks_system_economic_evidence_v1(
+        path_classification=normalized,
+        system_economic_evidence_requested=system_economic_evidence_requested,
+    )
+    return LEGACY_NON_AUTHORITATIVE
 
 
 def compute_strategy_signal_digest_v1(
