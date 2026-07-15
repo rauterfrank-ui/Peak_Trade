@@ -1,12 +1,12 @@
 # Cross-Sectional Futures Pairwise Lead-Lag Spillover V1 Offline Economic Evaluation Authorization Ratification V0
 
-> **Authorization-only:** Ratifiziert die offline-only Autorisierung für eine spätere separate Economic Evaluation von `cross_sectional_futures_pairwise_lead_lag_spillover/v1`. Keine Evaluation-Ausführung, keine Hypothesis-/Score-/Ranking-Mutation, keine Runtime, keine Promotion.
+> **Authorization-only:** Ratifiziert die offline-only Autorisierung für eine spätere separate Economic Evaluation von `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1`. Keine Evaluation-Ausführung, keine Hypothesis-/Score-/Ranking-Mutation, keine Runtime, keine Promotion.
 
 ## Scope
 
 | Feld | Wert |
 |------|------|
-| `scope_id` | `cross_sectional_futures_pairwise_lead_lag_spillover/v1` |
+| `scope_id` | `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1` |
 | `authorization_scope` | `OFFLINE_ECONOMIC_EVALUATION` |
 | `authorization_version` | `v0` |
 | `operator_go` | `GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0` |
@@ -48,7 +48,7 @@
 | Tests | `tests/research/test_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification_v0_contract.py` |
 | Hypothesis binding (unchanged) | `src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0.py` |
 | Score/ranking contract (unchanged) | `src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0.py` |
-| Offline evaluation entry point (deferred) | `scripts/ops/run_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py` |
+| Offline evaluation entry point (deferred) | `scripts&#47;ops&#47;run_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py` (`PENDING_SEPARATE_EXECUTION_SCOPE`) <!-- pt:ref-target-ignore --> |
 
 ## Source Evidence
 
