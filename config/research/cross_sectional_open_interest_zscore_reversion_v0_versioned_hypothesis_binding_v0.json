@@ -3,6 +3,7 @@
   "artifact_version": "v0",
   "authority_effect": "NONE",
   "bar_interval": "PT1H",
+  "baseline_verdict": "FAIL",
   "binding": {
     "binding_status": {
       "cost_model_binding_status": "BOUND",
@@ -300,9 +301,13 @@
       "weighting_policy": "equal_weight_single_slot_v0"
     }
   },
+  "binding_changed": false,
   "binding_classification": "NEW_DISTINCT_HYPOTHESIS_MATERIAL_RANKING_INPUT_CHANGE",
   "binding_digest": "11173f7db78710e7ca9684e295185ffe4f95bfccec77ec53141139776f4bea19",
+  "binding_digest_at_terminal_registration": "11173f7db78710e7ca9684e295185ffe4f95bfccec77ec53141139776f4bea19",
   "bitcoin_present": false,
+  "canonical_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_zscore_reversion_v0_offline_economic_evaluation_execution_v0_20260715T020351Z",
+  "canonical_evaluation_timestamp": "20260715T020351Z",
   "config_digest": "39358d4682cd2d247bc01c636fa3b2030719045aab027aa3fd472e71c3da67c5",
   "cost_execution_binding": {
     "binding_version": "v0",
@@ -401,6 +406,8 @@
     "schema_version": "digest_dependency_graph.v0",
     "self_reference_excluded": true
   },
+  "distinct_scope_required": true,
+  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_zscore_reversion_v0_offline_economic_evaluation_execution_v0_20260715T020351Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/operator_ratification_distinct_robustness_or_new_research_scope_decision_post_pr5194_v0_20260715T015805Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5194_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_and_promotion_binding_completion_reconciliation_v0_20260715T015047Z (MANIFEST_VERIFY_RC=0)",
   "economic_and_robustness_contract": {
     "binding_version": "v0",
     "economic_policy_binding": {
@@ -444,13 +451,19 @@
       "policy_version": "walk_forward_v1"
     }
   },
-  "economic_evaluation_executed": false,
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": true,
+  "economic_evaluation_status": "COMPLETE_FAIL_INSUFFICIENT_SAMPLE",
   "economic_policy_binding": {
     "economic_validity_policy_version": "economic_validity_policy_v1",
     "minimum_trade_count": 50,
     "policy_lowering_forbidden": true,
     "promising_is_not_pass": true
   },
+  "economic_validity_offline_gate_pass": false,
+  "economic_viability_evidence_manifest_digest": "42fa31a517916dd58a460c9ccae269a139c416feca190338de2533bf194354e0",
+  "economic_viability_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_zscore_reversion_v0_offline_economic_evaluation_execution_v0_20260715T020351Z (MANIFEST_VERIFY_RC=0)",
+  "evaluation_authorized": false,
   "execution_model_binding": {
     "effective_entry_cost_bps": 20.0,
     "effective_exit_cost_bps": 20.0,
@@ -479,12 +492,14 @@
   },
   "futures_only": true,
   "gross_exposure_policy": "unit_notional_single_slot_v0",
+  "historical_economic_result": "FAIL",
   "hold_semantics": "until_next_rebalance",
   "hypothesis_class": "CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION",
   "hypothesis_id": "cross_sectional_open_interest_zscore_reversion_v0",
   "hypothesis_statement": "Cross-sectional open-interest z-score mean-reversion hypothesis: normalize lagged point-in-time open-interest levels by population cross-sectional standard deviation at each epoch; rotate a single slot toward low-z (long) versus high-z (short) extremes as a crowding reversion hypothesis distinct from raw level rank and OI delta flow.",
   "hypothesis_version": "v0",
   "implementation_digest": "4b8e2f0ec33137ff444165b7a22a3654e610fc15e99146ae2c4e203d2a0e58ee",
+  "implementation_digest_at_terminal_registration": "4b8e2f0ec33137ff444165b7a22a3654e610fc15e99146ae2c4e203d2a0e58ee",
   "instrument_universe": [
     "okx:linear_perpetual:AVAX:USDT:USDT:perp",
     "okx:linear_perpetual:ETH:USDT:USDT:perp",
@@ -530,7 +545,9 @@
     "runs": 64,
     "seed": 42
   },
+  "monte_carlo_status": "NOT_EXECUTED_BASELINE_INSUFFICIENT_SAMPLE",
   "net_exposure_policy": "directional_single_slot_v0",
+  "net_return": -0.004188946023513163,
   "open_interest_level_definition": "point_in_time_open_interest_level_at_lagged_observation",
   "order_effect": "NONE",
   "panel_dataset_binding": {
@@ -668,9 +685,12 @@
     "venue": "OKX"
   },
   "point_in_time_semantics": "point_in_time_open_interest_level_at_lagged_observation",
+  "policy_or_threshold_changed": false,
   "portfolio_cap": 1.0,
+  "primary_cause_class": "SIGNAL_STARVATION_BY_CANONICAL_LOGIC_WITH_INSUFFICIENT_TRADE_SAMPLE",
   "prior_delta_terminal_baseline_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
   "prior_level_rank_terminal_baseline_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0_20260712T130230Z",
+  "promotion_eligible": false,
   "ranking_direction": "long_min_zscore_short_max_zscore_single_slot_rotation_v0",
   "ranking_formula": "rank_by_lagged_cross_sectional_open_interest_zscore_v0",
   "ranking_policy_binding": {
@@ -690,9 +710,11 @@
     "zero_dispersion_policy": "fail_closed_flat_no_fallback",
     "zscore_normalization": "population_std_cross_sectional_at_epoch"
   },
+  "re_evaluation_allowed": false,
   "rebalance_cadence": "PT1H_every_finalized_bar_epoch",
   "research_hypothesis_id": "cross_sectional_open_interest_zscore_reversion_v0",
   "research_scope": "cross_sectional_open_interest_zscore_reversion/v0",
+  "retry_unchanged_binding_allowed": false,
   "rotation_semantics": "single_slot_extreme_zscore_rotation_v0",
   "runner_decision": {
     "canonical_entry_point": null,
@@ -706,13 +728,17 @@
     "schema_version": "runner_decision.v0"
   },
   "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
   "sample_sufficiency_contract": {
     "minimum_panel_history_depth": 60,
     "minimum_rankable_epoch_count": 59,
     "minimum_trade_count": 50,
     "sample_sufficiency_evaluated_in_binding_scope": false
   },
+  "sample_sufficiency_status": "INSUFFICIENT_TRADE_SAMPLE",
   "schema_version": "cross_sectional_open_interest_zscore_reversion_v0_versioned_hypothesis_binding.v0",
+  "selected_distinct_scope": "cross_sectional_futures_lead_lag_information_diffusion/v0",
+  "selected_distinct_scope_ratified": true,
   "selection_count": 1,
   "selection_hold_exit_rotation_binding": {
     "binding_version": "v0",
@@ -753,6 +779,7 @@
     "execution_forbidden_in_binding_scope": true,
     "policy_version": "stress_class_suite_v1"
   },
+  "stress_status": "NOT_EXECUTED_BASELINE_INSUFFICIENT_SAMPLE",
   "superseding_integrity_attestation_ref": "config/research/cross_sectional_open_interest_delta_rank_v0_terminal_baseline_bundle_superseding_integrity_attestation_v0.json",
   "system_constraints": {
     "bitcoin_direction_allowed": false,
@@ -770,7 +797,14 @@
     "spot_excluded": true,
     "synthetic_spot_excluded": true
   },
+  "terminal_failure_class": "INSUFFICIENT_TRADE_SAMPLE",
+  "terminal_insufficient_sample_evidence_for_unchanged_binding": true,
+  "terminal_negative_evidence_for_unchanged_binding": false,
+  "terminal_status": "TERMINAL_INSUFFICIENT_SAMPLE",
+  "terminal_verdict": "FAIL_ECONOMIC_VALIDITY_OFFLINE_INSUFFICIENT_TRADE_SAMPLE",
+  "trade_count": 1,
   "turnover_control_semantics": "switch_entry_delay_one_epoch_no_cooldown",
+  "unchanged_retry_blocked": true,
   "unchanged_retry_policy": {
     "prior_binding_digest_unchanged_retry_forbidden": true,
     "prior_inconclusive_baseline_unchanged_retry_forbidden": true,
@@ -781,6 +815,7 @@
     "execution_forbidden_in_binding_scope": true,
     "policy_version": "walk_forward_v1"
   },
+  "walk_forward_status": "NOT_EXECUTED_BASELINE_INSUFFICIENT_SAMPLE",
   "weighting_policy": "equal_weight_single_slot_v0",
   "zero_dispersion_policy": "fail_closed_flat_no_fallback",
   "zscore_normalization": "population_std_cross_sectional_at_epoch"
