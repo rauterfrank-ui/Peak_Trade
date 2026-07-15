@@ -45,6 +45,7 @@ from src.research.momentum_1h_v2_offline_economic_evaluation_execution_v0 import
     build_baseline_test_assertion_matrix,
     dispatch_result_to_dict,
     entrypoint_result_to_dict,
+    full_evaluation_result_to_dict,
     load_authorization_ratification_v0,
     load_versioned_research_binding_v0,
     materialize_baseline_implementation_contract_v0,
@@ -399,39 +400,31 @@ def run_execution_dispatch_v0(
         versioned_binding=versioned_binding,
         verify_source_manifests=True,
     )
+    evaluation_payload = full_evaluation_result_to_dict(evaluation)
+    economic_evaluation_executed = evaluation.economic_evaluation_executed
     (bundle_dir / "EXECUTION_LOG.txt").write_text(
         "\n".join(
             [
-                "ECONOMIC_EVALUATION_EXECUTED=false",
+                f"ECONOMIC_EVALUATION_EXECUTED={str(economic_evaluation_executed).lower()}",
                 f"EXECUTION_SCOPE={EXECUTION_DISPATCH_SCOPE_CLASSIFICATION}",
                 f"GO_TOKEN={confirm}",
                 "GO_TOKEN_CONSUMPTION=CONSUMED_ONCE",
                 f"BLOCKED={str(evaluation.blocked).lower()}",
                 f"WIRING_VERIFIED={str(evaluation.wiring_verified).lower()}",
                 f"REASON_CODES={list(evaluation.reason_codes)}",
+                f"BASELINE_BACKTEST_OWNER_CALL_COUNT={evaluation.baseline_backtest_owner_call_count}",
+                f"CANONICAL_OWNER={evaluation.canonical_owner}",
             ]
         )
         + "\n",
         encoding="utf-8",
     )
     (bundle_dir / "FULL_EVALUATION_DISPATCH_RESULT.json").write_text(
-        json.dumps(
-            {
-                "executed": evaluation.executed,
-                "blocked": evaluation.blocked,
-                "wiring_verified": evaluation.wiring_verified,
-                "reason_codes": list(evaluation.reason_codes),
-                "authority_effect": evaluation.authority_effect,
-                "runtime_effect": evaluation.runtime_effect,
-            },
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n",
+        json.dumps(evaluation_payload, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
-        "ECONOMIC_EVALUATION_EXECUTED=false\n",
+        f"ECONOMIC_EVALUATION_EXECUTED={str(economic_evaluation_executed).lower()}\n",
         encoding="utf-8",
     )
     manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
@@ -440,13 +433,8 @@ def run_execution_dispatch_v0(
         "process_classification": EXECUTION_DISPATCH_SCOPE_CLASSIFICATION,
         "execution_version": EXECUTION_VERSION,
         "origin_main": origin_main,
-        "evaluation": {
-            "executed": evaluation.executed,
-            "blocked": evaluation.blocked,
-            "wiring_verified": evaluation.wiring_verified,
-            "reason_codes": list(evaluation.reason_codes),
-        },
-        "economic_evaluation_executed": False,
+        "evaluation": evaluation_payload,
+        "economic_evaluation_executed": economic_evaluation_executed,
         "authority_effect": AUTHORITY_EFFECT,
         "runtime_effect": RUNTIME_EFFECT,
         "primary_worktree_head_before": primary_before["head"],
