@@ -18,14 +18,24 @@
     "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
     "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
     "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+    "src/trading/master_v2/strategy_suitability_agreement_material_v1.py",
+    "src/trading/master_v2/suitability_binding_v1.py",
     "src/backtest/mv2_research_wiring_v1.py",
-    "tests/trading/master_v2/test_canonical_replay_input_builder_ssot_contract_v1.py"
+    "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py",
+    "tests/trading/master_v2/test_canonical_replay_input_builder_ssot_contract_v1.py",
+    "tests/trading/master_v2/test_strategy_suitability_agreement_consumer_contract_v1.py",
+    "tests/trading/master_v2/test_strategy_suitability_agreement_static_contract_v1.py",
+    "tests/backtest/test_strategy_signal_suitability_agreement_adapter_v1.py"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
     "TECHNICAL_CANONICAL_PARITY_HARNESS_WIRING",
     "TECHNICAL_MV2_RESEARCH_WIRING_CONSUMER",
-    "TECHNICAL_SSOT_CONTRACT_TEST"
+    "TECHNICAL_SSOT_CONTRACT_TEST",
+    "TECHNICAL_STRATEGY_SUITABILITY_AGREEMENT_MATERIAL",
+    "TECHNICAL_STRATEGY_SUITABILITY_AGREEMENT_CONSUMER",
+    "TECHNICAL_STRATEGY_SUITABILITY_AGREEMENT_ADAPTER",
+    "TECHNICAL_STRATEGY_SUITABILITY_AGREEMENT_CONTRACT_TEST"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -57,6 +67,7 @@
   "notes": [
     "Versioned authorization for semantics-neutral technical canonical wiring only.",
     "Does not waive MASTER_V2_MUTATION_ALLOWED default prohibition.",
-    "Does not infer semantic invariance from path names alone; invariants are contract-bound."
+    "Does not infer semantic invariance from path names alone; invariants are contract-bound.",
+    "Includes family-scoped strategy suitability agreement consumer/adapter paths for Decision-D binding under runtime/authority/order NONE invariants."
   ]
 }

@@ -121,6 +121,10 @@ from trading.master_v2.suitability_binding_v1 import (
     SuitabilityStrategyRegistryV1,
     evaluate_suitability_binding_v1,
 )
+from trading.master_v2.strategy_suitability_agreement_material_v1 import (
+    StrategySuitabilityAgreementMaterialV1,
+    fold_strategy_suitability_agreement_into_input_digest_v1,
+)
 from trading.master_v2.survival_assessment_v1 import (
     SURVIVAL_ASSESSMENT_LAYER_VERSION,
     SurvivalAssessmentInputV1,
@@ -224,6 +228,7 @@ class IntegratedOfflineReplayInputV1:
     expected_component_contracts: Mapping[str, str]
     context_reference: str
     now_tick: int = 0
+    strategy_suitability_agreement_material: Optional[StrategySuitabilityAgreementMaterialV1] = None
 
 
 @dataclass(frozen=True)
@@ -351,6 +356,9 @@ def build_integrated_offline_replay_input_v1(
     expected_component_contracts: Mapping[str, str],
     context_reference: str,
     now_tick: int = 0,
+    strategy_suitability_agreement_material: Optional[
+        StrategySuitabilityAgreementMaterialV1
+    ] = None,
 ) -> IntegratedOfflineReplayInputV1:
     """Single canonical productive constructor for IntegratedOfflineReplayInputV1.
 
@@ -515,8 +523,27 @@ def build_integrated_offline_replay_input_v1(
     if not isinstance(now_tick, int) or isinstance(now_tick, bool) or now_tick < 0:
         errors.append("now_tick_invalid")
 
+    if strategy_suitability_agreement_material is not None:
+        if not _builder_type_name_ok(
+            strategy_suitability_agreement_material,
+            "StrategySuitabilityAgreementMaterialV1",
+        ):
+            errors.append("strategy_suitability_agreement_material_type_invalid")
+        else:
+            mat_instrument = getattr(strategy_suitability_agreement_material, "instrument_id", None)
+            mat_epoch = getattr(strategy_suitability_agreement_material, "trading_epoch", None)
+            if mat_instrument != instrument_id:
+                errors.append("instrument_mismatch")
+            if mat_epoch != trading_epoch:
+                errors.append("trading_epoch_mismatch")
+
     if errors:
         raise ValueError(";".join(sorted(set(errors))))
+
+    effective_input_digest = fold_strategy_suitability_agreement_into_input_digest_v1(
+        input_digest,
+        strategy_suitability_agreement_material,
+    )
 
     return IntegratedOfflineReplayInputV1(
         replay_id=replay_id,
@@ -563,10 +590,11 @@ def build_integrated_offline_replay_input_v1(
         policy_versions=policy_versions,
         config_digest=config_digest,
         implementation_digest=implementation_digest,
-        input_digest=input_digest,
+        input_digest=effective_input_digest,
         expected_component_contracts=expected_component_contracts,
         context_reference=context_reference,
         now_tick=now_tick,
+        strategy_suitability_agreement_material=strategy_suitability_agreement_material,
     )
 
 
@@ -831,6 +859,7 @@ def _suitability_input_for_assessment(
         explicit_hard_block_reasons=(),
         explicit_blocked_reasons=(),
         ranking_policy_version=inp.policies.suitability.policy_version,
+        strategy_suitability_agreement_material=inp.strategy_suitability_agreement_material,
     )
 
 
@@ -882,6 +911,23 @@ def run_integrated_offline_trading_logic_replay_v1(
         fail_reasons.append("trading_epoch_mismatch")
     if inp.input_digest and not _valid_sha256_hex(inp.input_digest):
         fail_reasons.append("input_digest_invalid")
+
+    material = inp.strategy_suitability_agreement_material
+    if material is not None:
+        if material.instrument_id != inp.instrument_id:
+            fail_reasons.append("instrument_mismatch")
+        if material.trading_epoch != inp.trading_epoch:
+            fail_reasons.append("trading_epoch_mismatch")
+        if material.instrument_id != inp.canonical_market_context.instrument_id:
+            fail_reasons.append("instrument_mismatch")
+        if material.trading_epoch != inp.canonical_market_context.trading_epoch:
+            fail_reasons.append("trading_epoch_mismatch")
+        cmc = inp.canonical_market_context
+        trusted = getattr(cmc.data_integrity_status, "value", None) == "trusted"
+        clock_ok = getattr(cmc.clock_trust_status, "value", None) == "trusted"
+        final_ok = getattr(cmc.bar_finality_status, "value", None) == "finalized"
+        if not (trusted and clock_ok and final_ok):
+            fail_reasons.append("cmc_untrusted_or_nonfinal")
 
     contract_errors = _validate_contract_versions(inp)
     fail_reasons.extend(contract_errors)

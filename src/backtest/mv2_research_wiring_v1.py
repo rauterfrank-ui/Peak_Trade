@@ -50,6 +50,13 @@ from src.backtest.strategy_signal_binding_v1 import (
     resolve_mv2_research_engine_signal_source_v1,
     validate_mv2_replay_engine_signal_contract_v1,
 )
+from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
+    normalize_strategy_signal_to_suitability_agreement_material_v1,
+)
+from trading.master_v2.strategy_suitability_agreement_material_v1 import (
+    StrategySuitabilityAgreementErrorV1,
+    StrategySuitabilityAgreementMaterialV1,
+)
 from src.backtest.offline_evaluation_sizing_contract_v1 import (
     OfflineEvaluationSizingError,
     bind_offline_evaluation_sizing_v1,
@@ -1487,6 +1494,9 @@ def _coerce_replay_input_enums_for_integrated_replay_v1(
         expected_component_contracts=dict(replay_input.expected_component_contracts),
         context_reference=replay_input.context_reference,
         now_tick=replay_input.now_tick,
+        strategy_suitability_agreement_material=(
+            replay_input.strategy_suitability_agreement_material
+        ),
     )
 
 
@@ -1501,6 +1511,9 @@ def _build_replay_input(
     implementation_digest: str,
     input_digest: str,
     sequence_state: MV2IntegratedReplayBarSequenceStateV1,
+    strategy_suitability_agreement_material: Optional[
+        StrategySuitabilityAgreementMaterialV1
+    ] = None,
 ) -> IntegratedOfflineReplayInputV1:
     price_path = (float(context.mark_price), float(context.mark_price + 5.0))
     return build_integrated_offline_replay_input_v1(
@@ -1556,6 +1569,7 @@ def _build_replay_input(
         expected_component_contracts=_default_component_versions(),
         context_reference=f"mv2-research-{trading_epoch}",
         now_tick=sequence_state.now_tick,
+        strategy_suitability_agreement_material=strategy_suitability_agreement_material,
     )
 
 
@@ -2082,6 +2096,17 @@ def run_mv2_research_backtest_wiring_v1(
                 "observed_l1_used": observed_l1_used,
             }
         )
+        try:
+            agreement_material = normalize_strategy_signal_to_suitability_agreement_material_v1(
+                strategy_binding,
+                instrument_id=instrument_id,
+                trading_epoch=i,
+                expected_configured_strategy_id=strategy_id,
+            )
+        except StrategySuitabilityAgreementErrorV1 as exc:
+            raise ValueError(
+                f"missing_agreement_material_on_canonical_strategy_path:{exc}"
+            ) from exc
         replay_input = _coerce_replay_input_enums_for_integrated_replay_v1(
             _build_replay_input(
                 replay_id=replay_id,
@@ -2093,6 +2118,7 @@ def run_mv2_research_backtest_wiring_v1(
                 implementation_digest=implementation_digest,
                 input_digest=input_digest,
                 sequence_state=sequence_state,
+                strategy_suitability_agreement_material=agreement_material,
             )
         )
         replay_result = run_integrated_offline_trading_logic_replay_v1(replay_input)

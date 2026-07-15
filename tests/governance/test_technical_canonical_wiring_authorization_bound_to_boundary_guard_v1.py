@@ -30,6 +30,17 @@ AUTHORIZED_TECHNICAL_WIRING_FIXTURE = [
     "tests/trading/master_v2/test_canonical_replay_input_builder_ssot_contract_v1.py",
 ]
 
+AUTHORIZED_STRATEGY_SUITABILITY_AGREEMENT_FIXTURE = [
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "src/trading/master_v2/strategy_suitability_agreement_material_v1.py",
+    "src/trading/master_v2/suitability_binding_v1.py",
+    "src/backtest/mv2_research_wiring_v1.py",
+    "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py",
+    "tests/trading/master_v2/test_strategy_suitability_agreement_consumer_contract_v1.py",
+    "tests/trading/master_v2/test_strategy_suitability_agreement_static_contract_v1.py",
+    "tests/backtest/test_strategy_signal_suitability_agreement_adapter_v1.py",
+]
+
 
 def _load_auth() -> dict:
     payload = json.loads(AUTH_PATH.read_text(encoding="utf-8"))
@@ -224,6 +235,21 @@ class TestTechnicalCanonicalWiringAuthorizationPositiveV1:
         assert report.safety_killswitch_reconciliation_changed is False
         # Forbidden matches remain visible for audit, but are authorized.
         assert len(report.forbidden_surface_matches) >= 1
+
+    def test_authorized_strategy_suitability_agreement_fixture_passes(self) -> None:
+        report = build_boundary_report(
+            AUTHORIZED_STRATEGY_SUITABILITY_AGREEMENT_FIXTURE,
+            repo_root=REPO_ROOT,
+        )
+        assert report.admissible is True
+        assert report.fail_closed is False
+        assert report.technical_wiring_authorization_applied is True
+        assert "TECHNICAL_CANONICAL_WIRING_AUTHORIZED" in report.reason_codes
+        assert forbidden_surface_changed_count(report) == 0
+        assert report.canonical_trading_semantics_changed is False
+        assert report.promotion_runtime_authority_changed is False
+        assert report.risk_sizing_changed is False
+        assert report.safety_killswitch_reconciliation_changed is False
 
     def test_existing_allowed_research_surfaces_still_pass(self) -> None:
         report = build_boundary_report(

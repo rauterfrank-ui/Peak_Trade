@@ -20,6 +20,13 @@ from trading.master_v2.directional_assessment_v1 import (
     DirectionalAssessmentSide,
     DirectionalAssessmentV1,
 )
+from trading.master_v2.strategy_suitability_agreement_material_v1 import (
+    StrategyAgreementEventKindV1,
+    StrategySideAgreementV1,
+    StrategySignalEncodingClassV1,
+    StrategySuitabilityAgreementErrorV1,
+    StrategySuitabilityAgreementMaterialV1,
+)
 from trading.master_v2.survival_assessment_v1 import (
     SurvivalAssessmentStatus,
     SurvivalResultV1,
@@ -57,6 +64,9 @@ class SuitabilityHardBlockReason(str, Enum):
     NO_SUITABLE_STRATEGY = "no_suitable_strategy"
     SURVIVAL_NOT_PASS = "survival_not_pass"
     EXPLICIT_HARD_BLOCK = "explicit_hard_block"
+    STRATEGY_SIGNAL_AGREEMENT_DISAGREE = "strategy_signal_agreement_disagree"
+    STRATEGY_SIGNAL_FILTER_BLOCKED = "strategy_signal_filter_blocked"
+    STRATEGY_SIGNAL_AGREEMENT_INVALID = "strategy_signal_agreement_invalid"
 
 
 class SuitabilityBlockedReason(str, Enum):
@@ -77,6 +87,10 @@ class SuitabilityBlockedReason(str, Enum):
     SURVIVAL_RESULT_REF_STALE = "survival_result_ref_stale"
     TRADING_EPOCH_OUT_OF_ORDER = "trading_epoch_out_of_order"
     EXPLICIT_BLOCKED = "explicit_blocked"
+    STRATEGY_SIGNAL_AGREEMENT_INVALID = "strategy_signal_agreement_invalid"
+    STRATEGY_SIGNAL_AGREEMENT_DISAGREE = "strategy_signal_agreement_disagree"
+    STRATEGY_SIGNAL_FILTER_BLOCKED = "strategy_signal_filter_blocked"
+    STRATEGY_SIGNAL_EXIT_DEMOTION = "strategy_signal_exit_demotion"
 
 
 @dataclass(frozen=True)
@@ -155,6 +169,7 @@ class SuitabilityBindingInputV1:
     explicit_hard_block_reasons: Tuple[SuitabilityHardBlockReason, ...]
     explicit_blocked_reasons: Tuple[SuitabilityBlockedReason, ...]
     ranking_policy_version: str
+    strategy_suitability_agreement_material: Optional[StrategySuitabilityAgreementMaterialV1] = None
 
 
 @dataclass(frozen=True)
@@ -395,6 +410,144 @@ def with_computed_suitability_result_digest(result: SuitabilityResultV1) -> Suit
     )
 
 
+def derive_effective_strategy_side_agreement_v1(
+    material: StrategySuitabilityAgreementMaterialV1,
+    side: DirectionalAssessmentSide,
+) -> StrategySideAgreementV1:
+    """Derive DA-relative side agreement inside the Suitability consumer."""
+    encoding = material.encoding_class
+    value = material.cycle_signal_value
+    if encoding is StrategySignalEncodingClassV1.FILTER_MASK01_V1:
+        return StrategySideAgreementV1.NOT_APPLICABLE
+    if encoding is StrategySignalEncodingClassV1.ENTRY_EXIT_EVENT_V1:
+        if material.event_kind is StrategyAgreementEventKindV1.EXIT or value == -1:
+            return StrategySideAgreementV1.NOT_APPLICABLE
+        if material.event_kind is StrategyAgreementEventKindV1.NONE or value == 0:
+            return StrategySideAgreementV1.NEUTRAL
+        # ENTRY impulse: agrees only with LONG directional assessment for v1 families
+        if side is DirectionalAssessmentSide.LONG:
+            return StrategySideAgreementV1.AGREE
+        return StrategySideAgreementV1.DISAGREE
+    if encoding is StrategySignalEncodingClassV1.POSITIONAL_LONG01_STATE_V1:
+        if value == -1:
+            raise StrategySuitabilityAgreementErrorV1("cross_family_coercion_attempted")
+        if value == 0:
+            return StrategySideAgreementV1.NEUTRAL
+        if side is DirectionalAssessmentSide.LONG:
+            return StrategySideAgreementV1.AGREE
+        return StrategySideAgreementV1.DISAGREE
+    if encoding is StrategySignalEncodingClassV1.POSITIONAL_LS_STATE_V1:
+        if value == 0:
+            return StrategySideAgreementV1.NEUTRAL
+        if value == 1:
+            return (
+                StrategySideAgreementV1.AGREE
+                if side is DirectionalAssessmentSide.LONG
+                else StrategySideAgreementV1.DISAGREE
+            )
+        return (
+            StrategySideAgreementV1.AGREE
+            if side is DirectionalAssessmentSide.SHORT
+            else StrategySideAgreementV1.DISAGREE
+        )
+    raise StrategySuitabilityAgreementErrorV1("encoding_class_unknown")
+
+
+def validate_strategy_suitability_agreement_material_binding_v1(
+    inp: SuitabilityBindingInputV1,
+) -> Optional[str]:
+    """Return fail-closed reason code or None when material binds consistently."""
+    material = inp.strategy_suitability_agreement_material
+    if material is None:
+        return None
+    if material.instrument_id != inp.instrument_id:
+        return "instrument_mismatch"
+    if material.trading_epoch != inp.trading_epoch:
+        return "trading_epoch_mismatch"
+    if material.encoding_class is StrategySignalEncodingClassV1.UNKNOWN_OR_STUB_V1:
+        return "stub_or_unknown_strategy_semantics"
+    return None
+
+
+def apply_strategy_suitability_agreement_material_v1(
+    eligible: Tuple[SuitabilityStrategyEntryV1, ...],
+    *,
+    material: StrategySuitabilityAgreementMaterialV1,
+    side: DirectionalAssessmentSide,
+) -> Tuple[
+    Tuple[SuitabilityStrategyEntryV1, ...],
+    Tuple[str, ...],
+    Tuple[str, ...],
+    Optional[SuitabilityBlockedReason],
+]:
+    """
+    Apply family-scoped agreement inside existing Suitability eligibility.
+
+    DISAGREE / filter_pass=false / EXIT demote executed_strategy_id only.
+    Never invents position, exit, reversal, sizing, or order authority.
+    """
+    reason_codes: list[str] = []
+    hard_codes: list[str] = []
+    try:
+        effective_agreement = derive_effective_strategy_side_agreement_v1(material, side)
+    except StrategySuitabilityAgreementErrorV1 as exc:
+        return (
+            (),
+            (str(exc),),
+            (SuitabilityHardBlockReason.STRATEGY_SIGNAL_AGREEMENT_INVALID.value,),
+            SuitabilityBlockedReason.STRATEGY_SIGNAL_AGREEMENT_INVALID,
+        )
+
+    demote_id = material.executed_strategy_id
+    remaining = eligible
+
+    if material.encoding_class is StrategySignalEncodingClassV1.FILTER_MASK01_V1:
+        if material.filter_pass is False:
+            remaining = tuple(e for e in eligible if e.strategy_id != demote_id)
+            reason_codes.append("strategy_signal_filter_blocked")
+            hard_codes.append(SuitabilityHardBlockReason.STRATEGY_SIGNAL_FILTER_BLOCKED.value)
+            return (
+                remaining,
+                tuple(reason_codes),
+                tuple(hard_codes),
+                SuitabilityBlockedReason.STRATEGY_SIGNAL_FILTER_BLOCKED,
+            )
+        reason_codes.append("strategy_signal_filter_pass")
+        return remaining, tuple(reason_codes), (), None
+
+    if material.encoding_class is StrategySignalEncodingClassV1.ENTRY_EXIT_EVENT_V1 and (
+        material.event_kind is StrategyAgreementEventKindV1.EXIT
+        or material.cycle_signal_value == -1
+    ):
+        remaining = tuple(e for e in eligible if e.strategy_id != demote_id)
+        reason_codes.append("strategy_signal_exit_demotion")
+        return (
+            remaining,
+            tuple(reason_codes),
+            (),
+            SuitabilityBlockedReason.STRATEGY_SIGNAL_EXIT_DEMOTION,
+        )
+
+    if effective_agreement is StrategySideAgreementV1.DISAGREE:
+        remaining = tuple(e for e in eligible if e.strategy_id != demote_id)
+        reason_codes.append("strategy_signal_agreement_disagree")
+        hard_codes.append(SuitabilityHardBlockReason.STRATEGY_SIGNAL_AGREEMENT_DISAGREE.value)
+        return (
+            remaining,
+            tuple(reason_codes),
+            tuple(hard_codes),
+            SuitabilityBlockedReason.STRATEGY_SIGNAL_AGREEMENT_DISAGREE,
+        )
+
+    if effective_agreement is StrategySideAgreementV1.AGREE:
+        reason_codes.append("strategy_signal_agreement_agree")
+    elif effective_agreement is StrategySideAgreementV1.NEUTRAL:
+        reason_codes.append("strategy_signal_agreement_neutral")
+    else:
+        reason_codes.append("strategy_signal_agreement_not_applicable")
+    return remaining, tuple(reason_codes), (), None
+
+
 def _resolve_epoch_semantics(
     *,
     trading_epoch: int,
@@ -607,6 +760,34 @@ def evaluate_suitability_binding_v1(
         side=inp.side,
         regime_id=inp.regime_id,
     )
+    agreement_reason_codes: Tuple[str, ...] = ()
+    agreement_hard: Tuple[str, ...] = ()
+    agreement_block: Optional[SuitabilityBlockedReason] = None
+    if inp.strategy_suitability_agreement_material is not None:
+        bind_error = validate_strategy_suitability_agreement_material_binding_v1(inp)
+        if bind_error is not None:
+            return blocked(
+                SuitabilityBlockedReason.STRATEGY_SIGNAL_AGREEMENT_INVALID,
+                reason_code=bind_error,
+                hard=(SuitabilityHardBlockReason.STRATEGY_SIGNAL_AGREEMENT_INVALID.value,),
+            )
+        try:
+            (
+                eligible_entries,
+                agreement_reason_codes,
+                agreement_hard,
+                agreement_block,
+            ) = apply_strategy_suitability_agreement_material_v1(
+                eligible_entries,
+                material=inp.strategy_suitability_agreement_material,
+                side=inp.side,
+            )
+        except StrategySuitabilityAgreementErrorV1 as exc:
+            return blocked(
+                SuitabilityBlockedReason.STRATEGY_SIGNAL_AGREEMENT_INVALID,
+                reason_code=str(exc),
+                hard=(SuitabilityHardBlockReason.STRATEGY_SIGNAL_AGREEMENT_INVALID.value,),
+            )
     eligible_ids = tuple(e.strategy_id for e in eligible_entries)
 
     if not eligible_entries:
@@ -614,6 +795,11 @@ def evaluate_suitability_binding_v1(
         hard: Tuple[str, ...] = ()
         if status is SuitabilityBindingStatus.FAIL:
             hard = (SuitabilityHardBlockReason.NO_SUITABLE_STRATEGY.value,)
+        if agreement_hard:
+            hard = tuple(dict.fromkeys(list(hard) + list(agreement_hard)))
+        reason_codes = ("no_suitable_strategy",) + agreement_reason_codes
+        if agreement_block is not None:
+            reason_codes = reason_codes + (agreement_block.value,)
         return _finalize_result(
             inp,
             policy,
@@ -622,7 +808,7 @@ def evaluate_suitability_binding_v1(
             selected_strategy_id=None,
             tie_break_trace=("no_eligible_strategies",),
             hard_block_reasons=hard,
-            reason_codes=("no_suitable_strategy",),
+            reason_codes=reason_codes,
         )
 
     if inp.explicit_hard_block_reasons:
@@ -634,7 +820,7 @@ def evaluate_suitability_binding_v1(
             selected_strategy_id=None,
             tie_break_trace=(),
             hard_block_reasons=tuple(sorted(r.value for r in inp.explicit_hard_block_reasons)),
-            reason_codes=("explicit_hard_block",),
+            reason_codes=("explicit_hard_block",) + agreement_reason_codes,
         )
 
     selected_id, tie_trace = select_strategy_deterministic(eligible_entries, policy=policy)
@@ -647,7 +833,7 @@ def evaluate_suitability_binding_v1(
         selected_strategy_id=selected_id,
         tie_break_trace=tie_trace,
         hard_block_reasons=(),
-        reason_codes=("strategy_selected",),
+        reason_codes=("strategy_selected",) + agreement_reason_codes,
     )
 
 
@@ -685,7 +871,9 @@ __all__ = [
     "SuitabilityResultV1",
     "SuitabilityStrategyEntryV1",
     "SuitabilityStrategyRegistryV1",
+    "apply_strategy_suitability_agreement_material_v1",
     "compute_suitability_result_semantic_digest",
+    "derive_effective_strategy_side_agreement_v1",
     "directional_assessment_ref_from_assessment_v1",
     "evaluate_suitability_binding_v1",
     "filter_eligible_strategies",
@@ -694,6 +882,7 @@ __all__ = [
     "select_strategy_deterministic",
     "serialize_suitability_result_canonical",
     "survival_result_ref_from_result",
+    "validate_strategy_suitability_agreement_material_binding_v1",
     "validate_suitability_ranking_policy",
     "with_computed_suitability_result_digest",
 ]
