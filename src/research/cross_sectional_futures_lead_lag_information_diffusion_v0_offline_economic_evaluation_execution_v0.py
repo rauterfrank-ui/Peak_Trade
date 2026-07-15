@@ -336,14 +336,11 @@ def load_ops_evaluation_config_v0(repo_root: Path) -> dict[str, Any]:
 def _normalize_cost_execution_binding_for_backtest_v0(
     cost_execution_binding: Mapping[str, Any],
 ) -> dict[str, Any]:
-    if "fee_model_binding" in cost_execution_binding:
-        return dict(cost_execution_binding)
-    return {
-        **dict(cost_execution_binding),
-        "fee_model_binding": cost_execution_binding.get("fee_binding", {}),
-        "slippage_model_binding": cost_execution_binding.get("slippage_binding", {}),
-        "funding_model_binding": cost_execution_binding.get("funding_binding", {}),
-    }
+    from src.research.cross_sectional_cost_execution_binding_normalization_v0 import (
+        normalize_cost_execution_binding_for_backtest_v0,
+    )
+
+    return normalize_cost_execution_binding_for_backtest_v0(cost_execution_binding)
 
 
 def _resolve_economic_policy_binding_v0(envelope: Mapping[str, Any]) -> dict[str, Any]:
