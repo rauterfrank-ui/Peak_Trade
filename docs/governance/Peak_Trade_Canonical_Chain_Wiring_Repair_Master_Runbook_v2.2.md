@@ -5,15 +5,18 @@
 ```text
 DOCUMENT_TYPE=IMPLEMENTATION_CONTRACT_AND_HANDOFF_RUNBOOK
 DOCUMENT_VERSION=2.2
-STATUS=COMPLETE
+STATUS=TECHNICAL_IMPLEMENTATION_COMPLETE
 IMPLEMENTATION_COMPLETE=true
+CLOSEOUT_COMPLETE=true
 TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
 FULL_CANONICAL_CHAIN_WIRED=true
 BACKTEST_RUNTIME_DECISION_PARITY=true
 FINAL_CLOSEOUT_COMPLETE=true
-FINAL_CLOSEOUT_HEAD=81222f4e4227a98f93d0456d28db28aa075d4f80
+FINAL_CLOSEOUT_HEAD=a1890a3402f7686ba43309f00b0e5998245dafea
 FINAL_IMPLEMENTATION_PR=5233
 FINAL_IMPLEMENTATION_SQUASH_COMMIT=81222f4e4227a98f93d0456d28db28aa075d4f80
+FINAL_DURABLE_STATIC_GUARD_PR=5235
+FINAL_DURABLE_STATIC_GUARD_SQUASH_COMMIT=a1890a3402f7686ba43309f00b0e5998245dafea
 DISCOVERY_COMPLETE=true
 SEMANTIC_AUTHORITY_RESOLVED=true
 BUILDER_OWNERSHIP_RESOLVED=true
@@ -32,20 +35,32 @@ CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
 RUNTIME_EFFECT=NONE
 AUTHORITY_EFFECT=NONE
 ORDER_EFFECT=NONE
+ECONOMIC_EFFECT=NONE
 NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
 MISSION_STATUS=TECHNICALLY_COMPLETE
+CANONICAL_CHAIN_WIRING_REPAIR_MISSION_STATUS=COMPLETE
+FURTHER_CHAIN_WIRING_MUTATION_REQUIRED=false
 FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
+NEW_SCOPE_REQUIRES_NEW_UNCERTAINTY_OR_SEPARATE_AUTHORIZATION=true
+READ_ONLY_CHAINING_WITHOUT_NEW_UNCERTAINTY=false
 READ_ONLY_CHAINING_REQUIRED=false
 MISSION_COMPLETE=false
+ECONOMIC_VALIDITY_PASS=false
 ECONOMIC_VALIDITY_CLAIMED=false
+PROMOTION_ELIGIBLE=false
 PROMOTION_CLAIMED=false
+RUNTIME_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
 REPO=/Users/frnkhrz/Peak_Trade
 ```
 
 Hinweis: `MISSION_COMPLETE=false` bleibt bewusst gesetzt — Economic Validity,
 Promotion und Runtime-/Live-Authority sind **nicht** Teil dieses Closeouts.
-`MISSION_STATUS=TECHNICALLY_COMPLETE` und `STATUS=COMPLETE` beziehen sich
-ausschließlich auf die technische Canonical-Chain-Wiring-Reparatur.
+`MISSION_STATUS=TECHNICALLY_COMPLETE` und
+`STATUS=TECHNICAL_IMPLEMENTATION_COMPLETE` beziehen sich ausschließlich auf die
+technische Canonical-Chain-Wiring-Reparatur und den Durable-Static-Guard-Closeout
+durch PRs bis einschließlich #5235.
 
 ### 0.1 Historischer Discovery-/Slice-1-Startzustand (superseded als aktueller Repo-Ist)
 
@@ -194,9 +209,19 @@ Positive Architecture Decision **D** (family-scoped suitability agreement; Slice
 
 ### 0.4 CANONICAL_CHAIN_WIRING_REPAIR_FINAL_CLOSEOUT_V1
 
-> **FINAL / BINDING CURRENT STATE.** Technical Canonical Chain Wiring Repair is
-> complete after squash-merge of PR #5233. No Economic Evaluation, no runtime
-> activation, no orders, no authority expansion.
+> **HISTORICAL IMPLEMENTATION CLOSEOUT (PR #5233) — superseded as absolute final
+> repo head by PRs through #5235.** Technical Canonical Chain Wiring Repair
+> implementation landed via squash-merge of PR #5233. Durable static-guard
+> closeout and current technical baseline are recorded in
+> `# Final Technical Closeout — PRs through #5235`. No Economic Evaluation, no
+> runtime activation, no orders, no authority expansion.
+>
+> ```text
+> HISTORICAL_EXECUTED_SCOPE=true
+> NO_LONGER_CURRENT_NEXT_ACTION=true
+> HISTORICAL_IMPLEMENTATION_PR=5233
+> SUPERSEDED_AS_ABSOLUTE_FINAL_HEAD_BY_PR=5235
+> ```
 
 ```text
 PR_NUMBER=5233
@@ -273,6 +298,90 @@ FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
 NEW_READ_ONLY_CHAIN_CREATED=false
 ```
 
+# Final Technical Closeout — PRs through #5235
+
+> **BINDING CURRENT TECHNICAL CLOSEOUT.** Append-only final technical closeout
+> after squash-merge of durable static-guard PR #5235 on top of implementation
+> PR #5233. Documentation-only recognition of already-merged repo truth.
+> Not an Economic Evaluation, promotion, runtime, order, or live authorization.
+
+```text
+STATUS=TECHNICAL_IMPLEMENTATION_COMPLETE
+IMPLEMENTATION_COMPLETE=true
+CLOSEOUT_COMPLETE=true
+
+FINAL_BASELINE_HEAD=
+a1890a3402f7686ba43309f00b0e5998245dafea
+
+FINAL_MERGED_PR=5235
+FINAL_MERGED_PR_HEAD=
+ff4569b62eb9b4192c893e3d218665ab7910469f
+FINAL_SQUASH_COMMIT=
+a1890a3402f7686ba43309f00b0e5998245dafea
+
+PR5235_FINAL_DIFF_SHA256=
+a1002cd41cf4cb26736a0e4d806cf08a0321df4bd27c227182e49f0768467a30
+
+PR5235_FILES=
+tests/trading/master_v2/test_canonical_replay_input_builder_ssot_contract_v1.py
+tests/trading/master_v2/test_runtime_backtest_parity_and_legacy_boundary_closeout_v1.py
+tests/trading/master_v2/test_strategy_suitability_agreement_static_contract_v1.py
+
+SRC_FILES_CHANGED_BY_PR5235=false
+DURABLE_STATIC_GUARDS_PRESENT=true
+
+TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
+FULL_CANONICAL_CHAIN_WIRED=true
+BACKTEST_RUNTIME_DECISION_PARITY=true
+
+CANONICAL_REPLAY_INPUT_BUILDER_SINGLE_OWNER=true
+PRODUCTIVE_DIRECT_REPLAY_INPUT_CONSTRUCTOR_COUNT=1
+
+CANONICAL_ORCHESTRATOR_SINGLE_DECISION_OWNER=true
+CANONICAL_TOTAL_DECISION_OWNER_COUNT=1
+
+STRATEGY_LAYER_FEEDS_CANONICAL_CORE=true
+STRATEGY_SIGNAL_IS_EFFECTIVE_CANONICAL_INPUT=true
+STRATEGY_SIGNAL_PROVENANCE_BOUND=true
+STRATEGY_SIGNAL_DIGEST_BOUND=true
+STRATEGY_USES_CANONICAL_MARKET_CONTEXT=true
+STRATEGY_SIGNAL_HAS_REAL_CANONICAL_CONSUMER=true
+STRATEGY_SIGNAL_IS_PROVENANCE_ONLY=false
+
+DIRECT_STRATEGY_TO_POSITION_PATH_COUNT=0
+DIRECT_STRATEGY_TO_ORDER_INTENT_PATH_COUNT=0
+SYSTEM_RELEVANT_DIRECT_STRATEGY_TO_TRADE_PATH_COUNT=0
+CLASSIC_ENGINE_BYPASS_COUNT=0
+
+BACKTEST_ENGINE_DECISION_AUTHORITY=false
+RUNTIME_BRIDGE_DECISION_AUTHORITY=false
+CLASSIC_ENGINE_CANONICAL_ORCHESTRATOR_BOUND=true
+RUNTIME_BRIDGE_CANONICAL_ORCHESTRATOR_BOUND=true
+
+CORE_SEMANTICS_CHANGED=false
+RISK_SIZING_SEMANTICS_CHANGED=false
+SAFETY_SEMANTICS_CHANGED=false
+
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+ORDER_EFFECT=NONE
+ECONOMIC_EFFECT=NONE
+
+ECONOMIC_VALIDITY_PASS=false
+PROMOTION_ELIGIBLE=false
+RUNTIME_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
+
+CANONICAL_CHAIN_WIRING_REPAIR_MISSION_STATUS=COMPLETE
+FURTHER_CHAIN_WIRING_MUTATION_REQUIRED=false
+NEW_SCOPE_REQUIRES_NEW_UNCERTAINTY_OR_SEPARATE_AUTHORIZATION=true
+READ_ONLY_CHAINING_WITHOUT_NEW_UNCERTAINTY=false
+```
+
+Der technische Wiring-Abschluss (PRs durch #5235) ist **keine** Economic-
+oder Promotion-Freigabe und **keine** Runtime-/Live-/Order-Freigabe.
+
 **Zweck:** Dieses Runbook ist der vollständige technische Implementierungsvertrag (jetzt final closed) für die Reparatur der bestätigten Chain-Wiring-Defekte zwischen Strategy Layer, kanonischem Master-V2-Core, Backtest, Offline Replay und Runtime-Parity-Bridge.
 
 Es ist so aufgebaut, dass es:
@@ -285,7 +394,7 @@ Es ist so aufgebaut, dass es:
 6. den Core als einzige fachliche Gesamtwahrheit erhält,
 7. keine Runtime-, Order- oder Live-Authority aktiviert.
 
-**Bindend weiterhin:** Operator-Absicht (§1), Safety-Grenzen (§2), kanonische Architektur (§4), Single-Truth-Regel, Strategy-Signal-Authoritätsgrenzen, die PR-#5229-Decision-C-Historie (§0.3), die Decision-D-Ratifikation unter `GO_DECISION_D_STRATEGY_SIGNAL_CANONICAL_CONSUMER_BINDING_V1` mit Consumer-Pfad `evaluate_suitability_binding_v1`, und der finale Closeout-Block `CANONICAL_CHAIN_WIRING_REPAIR_FINAL_CLOSEOUT_V1` (§0.4) nach PR #5233. **Historisch / superseded als aktueller Ist:** Discovery-Baseline-HEAD `6e8c5889…`, Post-Slice-1-Baseline `6a37df8a…` (§0.2), Multiple-Builder-Discovery-Befund, §8.1 Builder-Defekt als aktueller Defekt, §8.3 Builder nur als Implementierungsziel, offene Slice-2-/Slice-3-/Slice-4-Aufträge, früherer „Nächster Cursor-Auftrag“-Text, sowie der frühere automatische Read-Only-Consumer-Design-Gate vor Slice 2.
+**Bindend weiterhin:** Operator-Absicht (§1), Safety-Grenzen (§2), kanonische Architektur (§4), Single-Truth-Regel, Strategy-Signal-Authoritätsgrenzen, die PR-#5229-Decision-C-Historie (§0.3), die Decision-D-Ratifikation unter `GO_DECISION_D_STRATEGY_SIGNAL_CANONICAL_CONSUMER_BINDING_V1` mit Consumer-Pfad `evaluate_suitability_binding_v1`, und der finale technische Closeout `# Final Technical Closeout — PRs through #5235`. **Historisch / superseded als aktueller Ist:** Discovery-Baseline-HEAD `6e8c5889…`, Post-Slice-1-Baseline `6a37df8a…` (§0.2), Implementation-Closeout PR #5233 (§0.4), Multiple-Builder-Discovery-Befund, §8.1 Builder-Defekt als aktueller Defekt, §8.3 Builder nur als Implementierungsziel, offene Slice-2-/Slice-3-/Slice-4-Aufträge, früherer „Nächster Cursor-Auftrag“-Text, sowie der frühere automatische Read-Only-Consumer-Design-Gate vor Slice 2.
 
 ---
 
@@ -1128,8 +1237,14 @@ Nicht im Chain-Wiring-PR improvisieren.
 # 16. Empfohlene bounded Implementierungssequenz
 
 > **HISTORICALLY COMPLETE.** Die Slice-Sequenz 1–4 ist durch die Implementation
-> PRs und final PR #5233 (`81222f4e…`) technisch abgeschlossen. Die Slice-Texte
-> bleiben als auditierbarer Vertrag erhalten und sind **keine** offenen Aufträge.
+> PRs und final PR #5233 (`81222f4e…`) technisch abgeschlossen; Durable Static
+> Guards landed in PR #5235. Die Slice-Texte bleiben als auditierbarer Vertrag
+> erhalten und sind **keine** offenen Aufträge.
+>
+> ```text
+> HISTORICAL_EXECUTED_SCOPE=true
+> NO_LONGER_CURRENT_NEXT_ACTION=true
+> ```
 
 Ein einzelner großer Rewire über Builder, MV2, Bridge, Parity, fünf Classic Caller und Legacy Guards wäre risikoreich. Die technische Gesamtmission wurde deshalb in überprüfbare Slices geteilt.
 
@@ -1138,6 +1253,11 @@ Ein einzelner großer Rewire über Builder, MV2, Bridge, Parity, fünf Classic C
 > **HISTORICALLY COMPLETE — SLICE_1_COMPLETE=true** (PR #5226 squash-merged).
 > Ziele und Acceptance unten sind erfüllt. Historischer Auftragstext bleibt als
 > Vertrag auditierbar. Keine erneute Slice-1-Implementierung.
+>
+> ```text
+> HISTORICAL_EXECUTED_SCOPE=true
+> NO_LONGER_CURRENT_NEXT_ACTION=true
+> ```
 
 ### Ziel
 
@@ -1190,8 +1310,13 @@ CORE_DECISION_SEMANTICS_CHANGED=false
 > Decision **D** ratifiziert
 > `FAMILY_SCOPED_STRATEGY_AGREEMENT_INTO_EXISTING_SUITABILITY_V1`.
 > `AUTHORIZED_CANONICAL_CONSUMER_STAGE=evaluate_suitability_binding_v1`.
-> Technical Chain Wiring Mission final closed via PR #5233
-> (`CANONICAL_CHAIN_WIRING_REPAIR_FINAL_CLOSEOUT_V1`).
+> Technical Chain Wiring Mission closed via PRs through #5235
+> (implementation PR #5233; durable static guards PR #5235).
+>
+> ```text
+> HISTORICAL_EXECUTED_SCOPE=true
+> NO_LONGER_CURRENT_NEXT_ACTION=true
+> ```
 
 ### Ziel
 
@@ -1270,6 +1395,11 @@ CANONICAL_TOTAL_DECISION_OWNER_UNCHANGED=true
 > **HISTORICALLY COMPLETE — SLICE_3_COMPLETE=true.** Acceptance unten ist
 > im finalen Closeout bestätigt
 > (`CLASSIC_ENGINE_DECISION_AUTHORITY_BYPASS_COUNT=0`). Kein offener Auftrag.
+>
+> ```text
+> HISTORICAL_EXECUTED_SCOPE=true
+> NO_LONGER_CURRENT_NEXT_ACTION=true
+> ```
 
 ### Ziel
 
@@ -1298,10 +1428,16 @@ CLASSIC_ENGINE_DECISION_AUTHORITY_BYPASS_COUNT=0
 ## Slice 4 — Runtime/Backtest Parity and Legacy Boundary Closeout
 
 > **HISTORICALLY COMPLETE — SLICE_4_COMPLETE=true** (final implementation PR #5233
-> squash-merged as `81222f4e4227a98f93d0456d28db28aa075d4f80`).
+> squash-merged as `81222f4e4227a98f93d0456d28db28aa075d4f80`; durable static
+> guards PR #5235 as `a1890a3402f7686ba43309f00b0e5998245dafea`).
 > `BACKTEST_RUNTIME_DECISION_PARITY=true`;
 > `CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED`.
 > Kein offener Auftrag.
+>
+> ```text
+> HISTORICAL_EXECUTED_SCOPE=true
+> NO_LONGER_CURRENT_NEXT_ACTION=true
+> ```
 
 ### Ziel
 
@@ -1690,18 +1826,20 @@ Das Ergebnis bedeutet ausschließlich:
 
 ```text
 TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
-STATUS=COMPLETE
+STATUS=TECHNICAL_IMPLEMENTATION_COMPLETE
 MISSION_STATUS=TECHNICALLY_COMPLETE
 ```
 
-Es bedeutet nicht:
+Es bedeutet **nicht** Economic-/Promotion-/Runtime-/Live-Freigabe. Explizite
+Nicht-Aussagen bleiben:
 
 ```text
-ECONOMIC_VALIDITY_PASS=true
-PROMOTION_ELIGIBLE=true
-RUNTIME_AUTHORIZED=true
-LIVE_AUTHORIZED=true
-MISSION_COMPLETE=true
+ECONOMIC_VALIDITY_PASS=false
+PROMOTION_ELIGIBLE=false
+RUNTIME_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
+MISSION_COMPLETE=false
 ```
 
 ---
@@ -1719,19 +1857,31 @@ Das beigefügte Dokument
 "Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md"
 ist der verbindliche Implementierungsvertrag.
 
-STATUS=COMPLETE
+STATUS=TECHNICAL_IMPLEMENTATION_COMPLETE
+IMPLEMENTATION_COMPLETE=true
+CLOSEOUT_COMPLETE=true
 TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
 FULL_CANONICAL_CHAIN_WIRED=true
 BACKTEST_RUNTIME_DECISION_PARITY=true
 FINAL_CLOSEOUT_COMPLETE=true
 FINAL_IMPLEMENTATION_PR=5233
 FINAL_IMPLEMENTATION_SQUASH_COMMIT=81222f4e4227a98f93d0456d28db28aa075d4f80
-FINAL_CLOSEOUT_HEAD=81222f4e4227a98f93d0456d28db28aa075d4f80
+FINAL_DURABLE_STATIC_GUARD_PR=5235
+FINAL_CLOSEOUT_HEAD=a1890a3402f7686ba43309f00b0e5998245dafea
 CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
 NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
 MISSION_STATUS=TECHNICALLY_COMPLETE
+CANONICAL_CHAIN_WIRING_REPAIR_MISSION_STATUS=COMPLETE
+FURTHER_CHAIN_WIRING_MUTATION_REQUIRED=false
 FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
+NEW_SCOPE_REQUIRES_NEW_UNCERTAINTY_OR_SEPARATE_AUTHORIZATION=true
+READ_ONLY_CHAINING_WITHOUT_NEW_UNCERTAINTY=false
 MISSION_COMPLETE=false
+ECONOMIC_VALIDITY_PASS=false
+PROMOTION_ELIGIBLE=false
+RUNTIME_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
 
 Bestätigte Wahrheiten (aktueller Post-Closeout-Ist):
 
@@ -1744,12 +1894,14 @@ Bestätigte Wahrheiten (aktueller Post-Closeout-Ist):
 - Canonical Replay Input Builder ist Single-Owner
   (`PRODUCTIVE_DIRECT_REPLAY_INPUT_CONSTRUCTOR_COUNT=1`).
 - Classic-Engine Decision-Authority-Bypass-Count ist 0.
+- Durable Static Guards vorhanden (PR #5235).
 - BacktestEngine bleibt Fill-/Execution-Simulator.
 - Runtime bleibt BOUND_NOT_ACTIVATED.
 - Keine Economic Evaluation, keine Runtime-Aktivierung, keine Orders.
-- Slice 1–4 historisch abgeschlossen; finaler Implementierungs-Merge PR #5233.
-- Discovery-/Decision-C-/Post-Slice-1-Baselines bleiben historische Audit-Info
-  und sind nicht der aktuelle Ist.
+- Slice 1–4 historisch abgeschlossen; Implementierungs-Merge PR #5233;
+  Durable-Static-Guard-Closeout PR #5235.
+- Discovery-/Decision-C-/Post-Slice-1-/PR-#5233-Baselines bleiben historische
+  Audit-Info und sind nicht der absolute aktuelle HEAD-Ist.
 
 Keine neue Discovery. Keine neue Read-Only-Kette. Keine Mutation ohne
 separaten neuen Scope und neues Operator-GO.
@@ -1761,25 +1913,38 @@ Ein neuer Chat darf nicht wieder bei hypothetischen Klassen wie `StrategySignalV
 
 Er muss die realen Repo-Symbole verwenden.
 
-**Nach Final Closeout (PR #5233) gilt verbindlich:**
+**Nach Final Technical Closeout (PRs through #5235) gilt verbindlich:**
 
 ```text
 FINAL_CLOSEOUT_COMPLETE=true
+CLOSEOUT_COMPLETE=true
 FINAL_IMPLEMENTATION_PR=5233
-FINAL_IMPLEMENTATION_SQUASH_COMMIT=81222f4e4227a98f93d0456d28db28aa075d4f80
+FINAL_DURABLE_STATIC_GUARD_PR=5235
+FINAL_CLOSEOUT_HEAD=a1890a3402f7686ba43309f00b0e5998245dafea
 TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
 FULL_CANONICAL_CHAIN_WIRED=true
 BACKTEST_RUNTIME_DECISION_PARITY=true
+DURABLE_STATIC_GUARDS_PRESENT=true
 CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
 NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
 MISSION_STATUS=TECHNICALLY_COMPLETE
+CANONICAL_CHAIN_WIRING_REPAIR_MISSION_STATUS=COMPLETE
+FURTHER_CHAIN_WIRING_MUTATION_REQUIRED=false
 FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
+NEW_SCOPE_REQUIRES_NEW_UNCERTAINTY_OR_SEPARATE_AUTHORIZATION=true
+READ_ONLY_CHAINING_WITHOUT_NEW_UNCERTAINTY=false
 READ_ONLY_CHAINING_REQUIRED=false
 NEW_READ_ONLY_CHAIN_CREATED=false
 MISSION_COMPLETE=false
+ECONOMIC_VALIDITY_PASS=false
+PROMOTION_ELIGIBLE=false
+RUNTIME_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
 RUNTIME_EFFECT=NONE
 AUTHORITY_EFFECT=NONE
 ORDER_EFFECT=NONE
+ECONOMIC_EFFECT=NONE
 ```
 
 **Historische Decision-D-/Decision-C-Audit-Felder (nicht aktueller offener Auftrag):**
@@ -1816,8 +1981,17 @@ separaten Operator-Scope, Runtime-Aktivierung, Economic Evaluation, Orders.
 ```text
 NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
 MISSION_STATUS=TECHNICALLY_COMPLETE
+CANONICAL_CHAIN_WIRING_REPAIR_MISSION_STATUS=COMPLETE
+FURTHER_CHAIN_WIRING_MUTATION_REQUIRED=false
 FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
+NEW_SCOPE_REQUIRES_NEW_UNCERTAINTY_OR_SEPARATE_AUTHORIZATION=true
+READ_ONLY_CHAINING_WITHOUT_NEW_UNCERTAINTY=false
 NEW_READ_ONLY_CHAIN_CREATED=false
+ECONOMIC_VALIDITY_PASS=false
+PROMOTION_ELIGIBLE=false
+RUNTIME_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
 ```
 
 Keine neue Read-Only-Kette. Kein weiterer automatischer Cursor-Auftrag für
@@ -1830,6 +2004,11 @@ ein neues Operator-GO.
 > Slice-1-Readiness-Auftrag zum Discovery-Baseline `6e8c5889…`. Slice 1 ist per PR #5226
 > abgeschlossen (`SLICE_1_COMPLETE=true`). Nicht erneut ausführen. Inhalt bleibt als
 > historischer Vertrag erhalten.
+>
+> ```text
+> HISTORICAL_EXECUTED_SCOPE=true
+> NO_LONGER_CURRENT_NEXT_ACTION=true
+> ```
 
 Dieser Auftrag war read-only. Er prüfte nur Drift seit dem Discovery-Baseline-Commit und erzeugte den exakten bounded Implementierungsvertrag für Slice 1.
 
@@ -2040,6 +2219,11 @@ Stop nach dem Report.
 > **HISTORICAL / SUPERSEDED — ALREADY EXECUTED.** Dieses Template wurde im Slice-1-Pfad
 > (PR #5226) vollzogen. Nicht erneut als offener Implementierungsauftrag behandeln.
 > Post-Slice-1-Ist: §0.2. Inhalt bleibt als historisches Template erhalten.
+>
+> ```text
+> HISTORICAL_EXECUTED_SCOPE=true
+> NO_LONGER_CURRENT_NEXT_ACTION=true
+> ```
 
 Nur nach erfolgreichem Readiness-Report und separatem Operator-GO verwenden.
 
