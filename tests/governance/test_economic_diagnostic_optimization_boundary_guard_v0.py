@@ -146,6 +146,13 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
             ],
             [
+                "src/research/momentum_1h_v2_versioned_research_binding_v0.py",
+                "src/research/momentum_1h_v2_offline_economic_evaluation_authorization_ratification_v0.py",
+                "scripts/research/materialize_momentum_1h_v2_offline_economic_evaluation_authorization_ratification_v0.py",
+                "tests/research/test_momentum_1h_v2_offline_economic_evaluation_authorization_ratification_v0_contract.py",
+                "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+            ],
+            [
                 "src/research/trend_following_v2_offline_economic_evaluation_execution_v0.py",
                 "scripts/ops/run_trend_following_v2_offline_economic_evaluation_execution_v0.py",
                 "tests/research/test_trend_following_v2_offline_economic_evaluation_execution_infrastructure_v0.py",
