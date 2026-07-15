@@ -191,7 +191,8 @@
         "src/research/linear_evidence/signal_matrix_productive_contract_v0.py",
         "src/research/linear_evidence/parameter_sensitivity_productive_contract_v0.py",
         "src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py",
-        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py"
+        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py",
+        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0.py"
       ],
       "path_globs": [
         "tests/research/test_offline_linear_cost_diagnostic_row_materializer_*",
@@ -250,6 +251,7 @@
         "tests/research/test_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
         "tests/research/test_offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0.py",
         "tests/research/test_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py",
+        "tests/research/test_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0.py",
         "tests/research/test_offline_factor_exposure_diagnostics_*",
         "tests/research/test_offline_factor_exposure_productive_contract_v0.py",
         "tests/research/test_offline_factor_exposure_productive_input_join_materializer_*",
@@ -281,7 +283,8 @@
         "src/research/linear_evidence/signal_matrix_productive_contract_v0.py",
         "src/research/linear_evidence/parameter_sensitivity_productive_contract_v0.py",
         "src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py",
-        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py"
+        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py",
+        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0.py"
       ]
     },
     "REPORTING_AND_EVIDENCE_REPAIR": {
@@ -298,6 +301,7 @@
         "scripts/research/classify_step29l2_offline_linear_evidence_status_after_pr5044_v0.py",
         "scripts/research/materialize_bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py",
         "scripts/ops/materialize_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py",
+        "scripts/ops/materialize_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0.py",
         "tests/research/test_step29l2_import_boundary_classification_v0.py"
       ],
       "path_globs": [
@@ -322,7 +326,8 @@
         "src/research/offline_parameter_sensitivity_productive_input_join_materializer_v0.py",
         "src/research/offline_productive_point_in_time_factor_snapshot_rematerializer_v0.py",
         "src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py",
-        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py"
+        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py",
+        "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0.py"
       ]
     },
     "EXPLICITLY_CALIBRATABLE_RESEARCH_PARAMETERS_WITHIN_PREDECLARED_RANGES": {
