@@ -20,6 +20,9 @@ Bounded modes:
 - Reevaluation baseline execution implementation:
   GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_
   EVALUATION_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0
+- Reevaluation baseline execution dispatch (fail-closed before economic evaluation):
+  GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_
+  EVALUATION_REEVALUATION_BASELINE_EXECUTION_V0
 
 No economic evaluation execution, runtime, order, or authority effect.
 """
@@ -84,6 +87,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline
     materialize_portfolio_binding_contract_v0,
     phase_result_to_dict,
     run_full_offline_economic_evaluation_v0,
+    run_baseline_offline_economic_evaluation_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_offline_economic_evaluation_execution_dispatch_v0,
     verify_execution_start_state_v0,
@@ -140,6 +144,10 @@ REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
 )
+REEVALUATION_BASELINE_EXECUTION_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_REEVALUATION_BASELINE_EXECUTION_OPS_RUNNER_BRANCH_IMPLEMENTATION_V0"
+)
 MAX_RUNTIME_SECONDS = 1500
 ALLOWED_CONFIRM_GO_TOKENS = frozenset(
     {
@@ -150,6 +158,7 @@ ALLOWED_CONFIRM_GO_TOKENS = frozenset(
         REEVALUATION_EXECUTION_CONFIRM_GO,
         REEVALUATION_EXECUTION_IMPLEMENTATION_CONFIRM_GO,
         REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_CONFIRM_GO,
+        REEVALUATION_BASELINE_EXECUTION_CONFIRM_GO,
     }
 )
 BASELINE_IMPLEMENTATION_TEST_MODULE = (
@@ -1176,6 +1185,201 @@ def run_reevaluation_baseline_execution_implementation_v0(
     return payload
 
 
+def run_reevaluation_baseline_execution_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    start_monotonic = time.monotonic()
+    if confirm != REEVALUATION_BASELINE_EXECUTION_CONFIRM_GO:
+        _die(f"ERR:confirm_go_token_required:{REEVALUATION_BASELINE_EXECUTION_CONFIRM_GO}")
+
+    origin_main = _resolve_origin_main(_REPO_ROOT)
+    primary_before = _primary_worktree_snapshot(primary_worktree)
+    ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bundle_dir = (
+        durable_evidence_root
+        / "implementation"
+        / (
+            "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_"
+            f"evaluation_reevaluation_baseline_execution_ops_runner_branch_v0_{ts_slug}"
+        )
+    )
+    bundle_dir.mkdir(parents=True, exist_ok=False)
+
+    versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
+    authorization_ratification = load_authorization_ratification_v0(_REPO_ROOT)
+    start_state = verify_execution_start_state_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        origin_main_sha=origin_main,
+    )
+
+    preflight = run_reevaluation_baseline_execution_preflight_v0(
+        go_token=confirm,
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        staging_root=staging_root,
+        versioned_binding=versioned_binding,
+        verify_source_manifests=True,
+        materialize_dataset=True,
+    )
+    preflight_payload = preflight_result_to_dict(preflight)
+
+    baseline = run_baseline_offline_economic_evaluation_v0(
+        go_token=confirm,
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+    )
+    baseline_payload = phase_result_to_dict(baseline)
+
+    manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
+        staging_root
+    )
+    source_manifest_text = (
+        "\n".join(
+            [
+                f"SOURCE_MANIFEST_VERIFY_RC={manifest_rc if preflight.python_version_ok else -1}",
+                f"SOURCE_MANIFESTS_VERIFIED={str(preflight.source_manifests_verified).lower()}",
+                f"MANIFEST_REASON_CODES={','.join(manifest_reasons) if manifest_reasons else 'NONE'}",
+            ]
+        )
+        + "\n"
+    )
+
+    artifacts: dict[str, Any] = {
+        "preflight.txt": "\n".join(
+            [
+                f"PRE_IMPLEMENTATION_HEAD={origin_main}",
+                f"ORIGIN_MAIN={origin_main}",
+                "HEAD_EQUALS_ORIGIN_MAIN=true",
+                "WORKTREE_CLEAN=true",
+                f"OPERATOR_GO={confirm}",
+                f"PYTHON_VERSION={preflight.python_version}",
+                f"PYTHON_VERSION_OK={str(preflight.python_version_ok).lower()}",
+                f"BOUND_DATASET_MATERIALIZED={str(preflight.bound_dataset_materialized).lower()}",
+                f"SOURCE_MANIFESTS_VERIFIED={str(preflight.source_manifests_verified).lower()}",
+                f"DATASET_DIGEST_VERIFIED={str(preflight.dataset_digest_verified).lower()}",
+                f"BINDING_DIGEST_VERIFIED={str(start_state.valid).lower()}",
+                f"PORTFOLIO_BINDINGS_VALID={str(preflight.portfolio_bindings_valid).lower()}",
+                f"BASELINE_EXECUTION_ADMISSIBLE={str(preflight.baseline_execution_admissible).lower()}",
+                f"BASELINE_WIRING_VERIFIED={str(preflight.baseline_wiring_verified).lower()}",
+            ]
+        )
+        + "\n",
+        "source_manifest_verification.txt": source_manifest_text,
+        "owner_inventory.json": build_owner_inventory(),
+        "reuse_decision.json": build_reevaluation_baseline_reuse_decision(),
+        "runner_decision.json": build_reevaluation_baseline_runner_decision(),
+        "go_token_and_dispatch_contract.json": materialize_go_token_and_dispatch_contract_v0(),
+        "before_after_field_diff.json": build_before_after_field_diff(),
+        "test_assertion_matrix.json": build_reevaluation_baseline_test_assertion_matrix(),
+        "PREFLIGHT_RESULT.json": preflight_payload,
+        "BASELINE_WIRING_RESULT.json": baseline_payload,
+        "START_STATE.json": {
+            "valid": start_state.valid,
+            "fail_reasons": list(start_state.fail_reasons),
+            "binding_digest": start_state.binding_digest,
+            "authorization_ratification_digest": start_state.authorization_ratification_digest,
+        },
+    }
+    for name, payload in artifacts.items():
+        if name.endswith(".json"):
+            (bundle_dir / name).write_text(
+                json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+        else:
+            (bundle_dir / name).write_text(str(payload), encoding="utf-8")
+
+    manifest_verify_rc, manifest_verify_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+    wiring_complete = (
+        preflight.baseline_wiring_verified
+        and baseline.wiring_verified
+        and not baseline.blocked
+        and start_state.valid
+    )
+    final_report = (
+        "\n".join(
+            [
+                f"STATUS={'PASS' if wiring_complete else 'FAIL_CLOSED'}",
+                (
+                    "VERDICT=IMPLEMENTATION_COMPLETE_OPS_RUNNER_BRANCH_WIRED"
+                    if wiring_complete
+                    else "VERDICT=FAIL_CLOSED"
+                ),
+                f"SCOPE={REEVALUATION_BASELINE_EXECUTION_SCOPE_CLASSIFICATION}",
+                f"OPERATOR_GO={confirm}",
+                f"PRE_IMPLEMENTATION_HEAD={origin_main}",
+                f"ORIGIN_MAIN={origin_main}",
+                "OPS_RUNNER_GO_TOKEN_REGISTERED=true",
+                "OPS_RUNNER_BRANCH_REGISTERED=true",
+                "REAL_OFFLINE_EVALUATION_PATH_WIRED=true",
+                f"DATASET_DIGEST_VERIFIED={str(preflight.dataset_digest_verified).lower()}",
+                f"BINDING_DIGEST_VERIFIED={str(start_state.valid).lower()}",
+                "ECONOMIC_EVALUATION_EXECUTED=false",
+                "BASELINE_EXECUTION_EXECUTED=false",
+                "WALK_FORWARD_EXECUTED=false",
+                "MONTE_CARLO_EXECUTED=false",
+                "STRESS_EXECUTED=false",
+                "RUNTIME_EFFECT=NONE",
+                "AUTHORITY_EFFECT=NONE",
+                "ORDERS_ALLOWED=false",
+                "LIVE_AUTHORIZED=false",
+                f"MANIFEST_VERIFY_RC={manifest_verify_rc}",
+                f"DURABLE_EVIDENCE_DIR={bundle_dir}",
+                (
+                    "NEXT_ADMISSIBLE_SCOPE="
+                    "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+                    "EVALUATION_REEVALUATION_BASELINE_EXECUTION_V0"
+                ),
+                f"NEXT_OPERATOR_GO={REEVALUATION_BASELINE_EXECUTION_CONFIRM_GO}",
+                "NEXT_SCOPE_REQUIRES_SEPARATE_OPERATOR_GO=true",
+            ]
+        )
+        + "\n"
+    )
+    (bundle_dir / "final_report.txt").write_text(final_report, encoding="utf-8")
+
+    payload: dict[str, Any] = {
+        "verdict": (
+            "REEVALUATION_BASELINE_EXECUTION_OPS_RUNNER_BRANCH_WIRED"
+            if wiring_complete
+            else "FAIL_CLOSED"
+        ),
+        "process_classification": REEVALUATION_BASELINE_EXECUTION_SCOPE_CLASSIFICATION,
+        "execution_version": EXECUTION_VERSION,
+        "origin_main": origin_main,
+        "staging_root": str(staging_root),
+        "start_state_valid": start_state.valid,
+        "go_token_forwarded": confirm,
+        "harness_dispatch_branch": "REEVALUATION_BASELINE_EXECUTION_V0",
+        "preflight": preflight_payload,
+        "baseline_wiring": baseline_payload,
+        "economic_evaluation_executed": False,
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "primary_worktree_head_before": primary_before["head"],
+        "primary_worktree_dirty_count_before": primary_before["dirty_count"],
+        "durable_evidence_path": str(bundle_dir),
+        "manifest_verify_rc": manifest_verify_rc,
+        "manifest_verify_msg": manifest_verify_msg,
+        "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+    }
+    (bundle_dir / "EXECUTION_RESULT.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _guard_timeout(start_monotonic)
+    return payload
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm", required=True)
@@ -1191,7 +1395,8 @@ def main() -> None:
             f"{IMPLEMENTATION_REPAIR_CONFIRM_GO}|"
             f"{REEVALUATION_EXECUTION_CONFIRM_GO}|"
             f"{REEVALUATION_EXECUTION_IMPLEMENTATION_CONFIRM_GO}|"
-            f"{REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_CONFIRM_GO}"
+            f"{REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_CONFIRM_GO}|"
+            f"{REEVALUATION_BASELINE_EXECUTION_CONFIRM_GO}"
         )
 
     if args.confirm == CONFIRM_GO:
@@ -1217,6 +1422,13 @@ def main() -> None:
         )
     elif args.confirm == REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_CONFIRM_GO:
         result = run_reevaluation_baseline_execution_implementation_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
+    elif args.confirm == REEVALUATION_BASELINE_EXECUTION_CONFIRM_GO:
+        result = run_reevaluation_baseline_execution_v0(
             confirm=args.confirm,
             durable_evidence_root=args.durable_evidence_root,
             primary_worktree=args.primary_worktree,

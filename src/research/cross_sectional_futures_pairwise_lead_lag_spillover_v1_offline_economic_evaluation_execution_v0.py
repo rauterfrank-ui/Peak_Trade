@@ -635,13 +635,16 @@ def run_reevaluation_baseline_execution_preflight_v0(
     verify_source_manifests: bool = True,
     materialize_dataset: bool = True,
 ) -> ReevaluationBaselineExecutionPreflightResultV0:
-    """Fail-closed baseline-execution preflight for implementation and future execution GO."""
+    """Fail-closed baseline-execution preflight for implementation and execution GO."""
     reasons: list[str] = []
+    baseline_exec_ok, baseline_exec_reasons = validate_reevaluation_baseline_execution_go_token_v0(
+        go_token
+    )
     impl_ok, impl_reasons = validate_reevaluation_baseline_execution_implementation_go_token_v0(
         go_token
     )
-    if not impl_ok:
-        reasons.extend(impl_reasons)
+    if not baseline_exec_ok and not impl_ok:
+        reasons.extend(baseline_exec_reasons)
 
     python_ok, python_version = verify_python_version_for_baseline_preflight_v0()
     if not python_ok:
@@ -705,7 +708,8 @@ def run_reevaluation_baseline_execution_preflight_v0(
 
     baseline_wiring_verified = False
     baseline_callable_wiring_only = False
-    if impl_ok and python_ok and portfolio_ok and all(identity.values()):
+    token_ok_for_wiring_probe = baseline_exec_ok or impl_ok
+    if token_ok_for_wiring_probe and python_ok and portfolio_ok and all(identity.values()):
         baseline_probe = run_baseline_offline_economic_evaluation_v0(
             go_token=REEVALUATION_BASELINE_EXECUTION_GO_TOKEN,
             repo_root=repo_root,
@@ -721,14 +725,15 @@ def run_reevaluation_baseline_execution_preflight_v0(
         if not baseline_wiring_verified:
             reasons.extend(baseline_probe.reason_codes)
 
-    impl_exec_blocked = run_baseline_offline_economic_evaluation_v0(
-        go_token=go_token,
-        repo_root=repo_root,
-        authorization_ratification=auth,
-        versioned_binding=envelope,
-    )
-    if impl_exec_blocked.blocked and REASON_GO_TOKEN_INVALID in impl_exec_blocked.reason_codes:
-        reasons.append(REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION)
+    if impl_ok:
+        impl_exec_blocked = run_baseline_offline_economic_evaluation_v0(
+            go_token=go_token,
+            repo_root=repo_root,
+            authorization_ratification=auth,
+            versioned_binding=envelope,
+        )
+        if impl_exec_blocked.blocked and REASON_GO_TOKEN_INVALID in impl_exec_blocked.reason_codes:
+            reasons.append(REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION)
 
     unique_reasons = tuple(dict.fromkeys(reasons))
     implementation_wiring_verified = (
@@ -740,8 +745,16 @@ def run_reevaluation_baseline_execution_preflight_v0(
         and baseline_callable_wiring_only
         and REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION in unique_reasons
     )
+    execution_preflight_passed = (
+        baseline_exec_ok
+        and python_ok
+        and portfolio_ok
+        and all(identity.values())
+        and baseline_wiring_verified
+        and baseline_callable_wiring_only
+    )
     baseline_execution_admissible = (
-        implementation_wiring_verified
+        (implementation_wiring_verified or execution_preflight_passed)
         and bound_dataset_materialized
         and source_manifests_verified
         and dataset_digest_verified
@@ -750,15 +763,17 @@ def run_reevaluation_baseline_execution_preflight_v0(
         REASON_DATASET_DIGEST_NOT_VERIFIED in unique_reasons
         or REASON_SOURCE_MANIFEST_VERIFY_FAILED in unique_reasons
         or REASON_PYTHON_VERSION_TOO_LOW in unique_reasons
-        or not impl_ok
+        or (not baseline_exec_ok and not impl_ok)
         or not portfolio_ok
     )
-    preflight_passed = implementation_wiring_verified
-    if preflight_passed:
+    preflight_passed = implementation_wiring_verified or execution_preflight_passed
+    if implementation_wiring_verified:
         terminal_reasons = (
             *unique_reasons,
             REASON_REEVALUATION_BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE,
         )
+    elif execution_preflight_passed:
+        terminal_reasons = unique_reasons
     else:
         terminal_reasons = unique_reasons
 

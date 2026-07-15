@@ -88,8 +88,8 @@ class TestBaselineGoTokenRegistration:
     def test_implementation_go_in_runner_allowed_confirm_tokens(self) -> None:
         assert _IMPL_GO in ALLOWED_CONFIRM_GO_TOKENS
 
-    def test_baseline_execution_go_not_in_runner_allowed_confirm_tokens(self) -> None:
-        assert _BASELINE_EXEC_GO not in ALLOWED_CONFIRM_GO_TOKENS
+    def test_baseline_execution_go_in_runner_allowed_confirm_tokens(self) -> None:
+        assert _BASELINE_EXEC_GO in ALLOWED_CONFIRM_GO_TOKENS
 
     def test_baseline_execution_go_separately_gated(self) -> None:
         contract = materialize_go_token_and_dispatch_contract_v0()
