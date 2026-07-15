@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import importlib
 import json
+import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -128,6 +129,18 @@ REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_REEVALUATION_EXECUTION_IMPLEMENTATION_V0"
 )
+REEVALUATION_BASELINE_EXECUTION_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_REEVALUATION_BASELINE_EXECUTION_V0"
+)
+REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
+)
+
+MINIMUM_PYTHON_VERSION_MAJOR = 3
+MINIMUM_PYTHON_VERSION_MINOR = 10
+PREFERRED_PYTHON_VERSION_MINOR = 11
 
 ALLOWED_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset({IMPLEMENTATION_GO_TOKEN})
 ALLOWED_IMPLEMENTATION_REPAIR_GO_TOKENS: frozenset[str] = frozenset(
@@ -143,8 +156,16 @@ ALLOWED_REEVALUATION_EXECUTION_GO_TOKENS: frozenset[str] = frozenset(
 ALLOWED_REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
     {REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN}
 )
+ALLOWED_REEVALUATION_BASELINE_EXECUTION_GO_TOKENS: frozenset[str] = frozenset(
+    {REEVALUATION_BASELINE_EXECUTION_GO_TOKEN}
+)
+ALLOWED_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
+    {REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN}
+)
 ALLOWED_EVALUATION_DISPATCH_GO_TOKENS: frozenset[str] = (
-    ALLOWED_EXECUTION_GO_TOKENS | ALLOWED_REEVALUATION_EXECUTION_GO_TOKENS
+    ALLOWED_EXECUTION_GO_TOKENS
+    | ALLOWED_REEVALUATION_EXECUTION_GO_TOKENS
+    | ALLOWED_REEVALUATION_BASELINE_EXECUTION_GO_TOKENS
 )
 
 _BRANCH_IMPLEMENTATION_V0 = "IMPLEMENTATION_V0"
@@ -153,6 +174,10 @@ _BRANCH_EXECUTION_V0 = "EXECUTION_V0"
 _BRANCH_IMPLEMENTATION_REPAIR_V0 = "IMPLEMENTATION_REPAIR_V0"
 _BRANCH_REEVALUATION_EXECUTION_V0 = "REEVALUATION_EXECUTION_V0"
 _BRANCH_REEVALUATION_EXECUTION_IMPLEMENTATION_V0 = "REEVALUATION_EXECUTION_IMPLEMENTATION_V0"
+_BRANCH_REEVALUATION_BASELINE_EXECUTION_V0 = "REEVALUATION_BASELINE_EXECUTION_V0"
+_BRANCH_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0 = (
+    "REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
+)
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     IMPLEMENTATION_GO_TOKEN: _BRANCH_IMPLEMENTATION_V0,
     DISPATCH_IMPLEMENTATION_GO_TOKEN: _BRANCH_DISPATCH_IMPLEMENTATION_V0,
@@ -161,6 +186,10 @@ ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     REEVALUATION_EXECUTION_GO_TOKEN: _BRANCH_REEVALUATION_EXECUTION_V0,
     REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN: (
         _BRANCH_REEVALUATION_EXECUTION_IMPLEMENTATION_V0
+    ),
+    REEVALUATION_BASELINE_EXECUTION_GO_TOKEN: _BRANCH_REEVALUATION_BASELINE_EXECUTION_V0,
+    REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN: (
+        _BRANCH_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0
     ),
 }
 
@@ -283,6 +312,17 @@ REASON_BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM = (
     "BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM_ROBUSTNESS"
 )
 REASON_CANONICAL_OWNER_UNREACHABLE = "CANONICAL_OWNER_UNREACHABLE"
+REASON_PYTHON_VERSION_TOO_LOW = "PYTHON_VERSION_TOO_LOW_BLOCKED_BASELINE_PREFLIGHT"
+REASON_DATASET_DIGEST_NOT_VERIFIED = "DATASET_DIGEST_NOT_VERIFIED_FAIL_CLOSED"
+REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED = (
+    "BASELINE_CALLABLE_WIRING_ONLY_STOPPED_BEFORE_EXECUTION"
+)
+REASON_REEVALUATION_BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE = (
+    "REEVALUATION_BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE_STOPPED_BEFORE_EXECUTION"
+)
+REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION = (
+    "IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION"
+)
 
 
 class InfrastructureTerminalStatus(str, Enum):
@@ -362,6 +402,35 @@ class PhaseExecutionBlockedResultV0:
     wiring_verified: bool = False
     canonical_owner: str = ""
     downstream_sequence_allowed: bool | None = None
+
+
+@dataclass(frozen=True)
+class ReevaluationBaselineExecutionPreflightResultV0:
+    preflight_passed: bool
+    blocked: bool
+    baseline_execution_admissible: bool
+    implementation_wiring_verified: bool
+    reason_codes: tuple[str, ...]
+    python_version_ok: bool
+    python_version: str
+    bound_dataset_materialized: bool
+    source_manifests_verified: bool
+    dataset_digest_verified: bool
+    portfolio_bindings_valid: bool
+    same_dataset: bool
+    same_universe: bool
+    same_strategy_parameters: bool
+    same_cost_policy: bool
+    same_risk_sizing_semantics: bool
+    panel_data_digest: str
+    ratified_dataset_digest: str
+    baseline_wiring_verified: bool
+    baseline_executed: bool
+    baseline_callable_wiring_only: bool
+    economic_evaluation_executed: bool
+    dataset_digest_repaired: bool
+    authority_effect: str
+    runtime_effect: str
 
 
 @dataclass(frozen=True)
@@ -449,6 +518,246 @@ def validate_reevaluation_execution_implementation_go_token_v0(
     if go_token not in ALLOWED_REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKENS:
         return False, (REASON_GO_TOKEN_INVALID,)
     return True, ()
+
+
+def validate_reevaluation_baseline_execution_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_REEVALUATION_BASELINE_EXECUTION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def validate_reevaluation_baseline_execution_implementation_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def verify_python_version_for_baseline_preflight_v0() -> tuple[bool, str]:
+    version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    ok = sys.version_info.major > MINIMUM_PYTHON_VERSION_MAJOR or (
+        sys.version_info.major == MINIMUM_PYTHON_VERSION_MAJOR
+        and sys.version_info.minor >= MINIMUM_PYTHON_VERSION_MINOR
+    )
+    return ok, version
+
+
+def build_identity_invariant_contract_v0(
+    authorization_ratification: Mapping[str, Any],
+    envelope: Mapping[str, Any],
+) -> dict[str, bool]:
+    return {
+        "same_dataset": str(authorization_ratification.get("dataset_digest", ""))
+        == RATIFIED_DATASET_DIGEST
+        and str(envelope.get("dataset_digest", "")) == RATIFIED_DATASET_DIGEST,
+        "same_universe": str(authorization_ratification.get("universe_digest", ""))
+        == RATIFIED_UNIVERSE_DIGEST,
+        "same_strategy_parameters": authorization_ratification.get("hypothesis_binding_unchanged")
+        is True,
+        "same_cost_policy": authorization_ratification.get("cost_policy_unchanged") is True,
+        "same_risk_sizing_semantics": authorization_ratification.get("portfolio_binding_unchanged")
+        is True,
+    }
+
+
+def preflight_result_to_dict(
+    result: ReevaluationBaselineExecutionPreflightResultV0,
+) -> dict[str, Any]:
+    return {
+        "preflight_passed": result.preflight_passed,
+        "blocked": result.blocked,
+        "baseline_execution_admissible": result.baseline_execution_admissible,
+        "implementation_wiring_verified": result.implementation_wiring_verified,
+        "reason_codes": list(result.reason_codes),
+        "python_version_ok": result.python_version_ok,
+        "python_version": result.python_version,
+        "bound_dataset_materialized": result.bound_dataset_materialized,
+        "source_manifests_verified": result.source_manifests_verified,
+        "dataset_digest_verified": result.dataset_digest_verified,
+        "portfolio_bindings_valid": result.portfolio_bindings_valid,
+        "same_dataset": result.same_dataset,
+        "same_universe": result.same_universe,
+        "same_strategy_parameters": result.same_strategy_parameters,
+        "same_cost_policy": result.same_cost_policy,
+        "same_risk_sizing_semantics": result.same_risk_sizing_semantics,
+        "panel_data_digest": result.panel_data_digest,
+        "ratified_dataset_digest": result.ratified_dataset_digest,
+        "baseline_wiring_verified": result.baseline_wiring_verified,
+        "baseline_executed": result.baseline_executed,
+        "baseline_callable_wiring_only": result.baseline_callable_wiring_only,
+        "economic_evaluation_executed": result.economic_evaluation_executed,
+        "dataset_digest_repaired": result.dataset_digest_repaired,
+        "authority_effect": result.authority_effect,
+        "runtime_effect": result.runtime_effect,
+    }
+
+
+def run_reevaluation_baseline_execution_preflight_v0(
+    *,
+    go_token: str,
+    repo_root: Path,
+    authorization_ratification: Mapping[str, Any] | None = None,
+    staging_root: Path | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
+    verify_source_manifests: bool = True,
+    materialize_dataset: bool = True,
+) -> ReevaluationBaselineExecutionPreflightResultV0:
+    """Fail-closed baseline-execution preflight for implementation and future execution GO."""
+    reasons: list[str] = []
+    impl_ok, impl_reasons = validate_reevaluation_baseline_execution_implementation_go_token_v0(
+        go_token
+    )
+    if not impl_ok:
+        reasons.extend(impl_reasons)
+
+    python_ok, python_version = verify_python_version_for_baseline_preflight_v0()
+    if not python_ok:
+        reasons.append(REASON_PYTHON_VERSION_TOO_LOW)
+
+    auth = authorization_ratification or load_authorization_ratification_v0(repo_root)
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
+    identity = build_identity_invariant_contract_v0(auth, envelope)
+    if not all(identity.values()):
+        reasons.append(REASON_SEMANTIC_BINDING_MUTATION)
+
+    start_state = verify_execution_start_state_v0(
+        repo_root=repo_root,
+        authorization_ratification=auth,
+        versioned_binding=envelope,
+    )
+    if not start_state.valid:
+        reasons.extend(start_state.fail_reasons)
+
+    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
+        envelope,
+        materialize_score_and_ranking_contract_v0(envelope),
+    )
+    if not portfolio_ok:
+        reasons.extend(portfolio_reasons)
+
+    source_manifests_verified = False
+    if verify_source_manifests and staging_root is not None and python_ok:
+        manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
+            staging_root
+        )
+        source_manifests_verified = manifest_ok and manifest_rc == 0
+        if not source_manifests_verified:
+            reasons.append(REASON_SOURCE_MANIFEST_VERIFY_FAILED)
+            reasons.extend(manifest_reasons)
+
+    bound_dataset_materialized = False
+    panel_data_digest = "0" * 64
+    if materialize_dataset and staging_root is not None and python_ok and not reasons:
+        materialization = materialize_bound_panel_dataset_v0(
+            staging_root,
+            period_binding=envelope["period_binding"],
+        )
+        panel_data_digest = materialization.panel_data_digest
+        bound_dataset_materialized = (
+            materialization.status is MaterializationTerminalStatus.DATASET_MATERIALIZATION_COMPLETE
+        )
+        if not bound_dataset_materialized:
+            reasons.extend(materialization.reason_codes)
+
+    dataset_digest_verified = (
+        bound_dataset_materialized and panel_data_digest == RATIFIED_DATASET_DIGEST
+    )
+    if bound_dataset_materialized and not dataset_digest_verified:
+        reasons.append(REASON_DATASET_DIGEST_NOT_VERIFIED)
+
+    baseline_wiring_verified = False
+    baseline_callable_wiring_only = False
+    if impl_ok and python_ok and portfolio_ok and all(identity.values()):
+        baseline_probe = run_baseline_offline_economic_evaluation_v0(
+            go_token=REEVALUATION_BASELINE_EXECUTION_GO_TOKEN,
+            repo_root=repo_root,
+            authorization_ratification=auth,
+            versioned_binding=envelope,
+        )
+        baseline_wiring_verified = baseline_probe.wiring_verified and not baseline_probe.blocked
+        baseline_callable_wiring_only = (
+            baseline_probe.executed is False and baseline_wiring_verified
+        )
+        if baseline_callable_wiring_only:
+            reasons.append(REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED)
+        if not baseline_wiring_verified:
+            reasons.extend(baseline_probe.reason_codes)
+
+    impl_exec_blocked = run_baseline_offline_economic_evaluation_v0(
+        go_token=go_token,
+        repo_root=repo_root,
+        authorization_ratification=auth,
+        versioned_binding=envelope,
+    )
+    if impl_exec_blocked.blocked and REASON_GO_TOKEN_INVALID in impl_exec_blocked.reason_codes:
+        reasons.append(REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION)
+
+    unique_reasons = tuple(dict.fromkeys(reasons))
+    implementation_wiring_verified = (
+        impl_ok
+        and python_ok
+        and portfolio_ok
+        and all(identity.values())
+        and baseline_wiring_verified
+        and baseline_callable_wiring_only
+        and REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION in unique_reasons
+    )
+    baseline_execution_admissible = (
+        implementation_wiring_verified
+        and bound_dataset_materialized
+        and source_manifests_verified
+        and dataset_digest_verified
+    )
+    blocked = not baseline_execution_admissible and (
+        REASON_DATASET_DIGEST_NOT_VERIFIED in unique_reasons
+        or REASON_SOURCE_MANIFEST_VERIFY_FAILED in unique_reasons
+        or REASON_PYTHON_VERSION_TOO_LOW in unique_reasons
+        or not impl_ok
+        or not portfolio_ok
+    )
+    preflight_passed = implementation_wiring_verified
+    if preflight_passed:
+        terminal_reasons = (
+            *unique_reasons,
+            REASON_REEVALUATION_BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE,
+        )
+    else:
+        terminal_reasons = unique_reasons
+
+    return ReevaluationBaselineExecutionPreflightResultV0(
+        preflight_passed=preflight_passed,
+        blocked=blocked,
+        baseline_execution_admissible=baseline_execution_admissible,
+        implementation_wiring_verified=implementation_wiring_verified,
+        reason_codes=tuple(dict.fromkeys(terminal_reasons)),
+        python_version_ok=python_ok,
+        python_version=python_version,
+        bound_dataset_materialized=bound_dataset_materialized,
+        source_manifests_verified=source_manifests_verified,
+        dataset_digest_verified=dataset_digest_verified,
+        portfolio_bindings_valid=portfolio_ok,
+        same_dataset=identity["same_dataset"],
+        same_universe=identity["same_universe"],
+        same_strategy_parameters=identity["same_strategy_parameters"],
+        same_cost_policy=identity["same_cost_policy"],
+        same_risk_sizing_semantics=identity["same_risk_sizing_semantics"],
+        panel_data_digest=panel_data_digest,
+        ratified_dataset_digest=RATIFIED_DATASET_DIGEST,
+        baseline_wiring_verified=baseline_wiring_verified,
+        baseline_executed=False,
+        baseline_callable_wiring_only=baseline_callable_wiring_only,
+        economic_evaluation_executed=False,
+        dataset_digest_repaired=False,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
 
 
 def validate_evaluation_dispatch_go_token_v0(
@@ -577,6 +886,10 @@ def materialize_dispatch_contract_v0() -> dict[str, Any]:
         "reevaluation_execution_go_token": REEVALUATION_EXECUTION_GO_TOKEN,
         "reevaluation_execution_implementation_go_token": (
             REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN
+        ),
+        "reevaluation_baseline_execution_go_token": REEVALUATION_BASELINE_EXECUTION_GO_TOKEN,
+        "reevaluation_baseline_execution_implementation_go_token": (
+            REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN
         ),
         "entry_point_dispatch_registry": dict(ENTRY_POINT_DISPATCH_REGISTRY),
         "baseline_executed": False,
@@ -1622,6 +1935,11 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "reevaluation_execution_implementation_go_token": (
             REEVALUATION_EXECUTION_IMPLEMENTATION_GO_TOKEN
         ),
+        "reevaluation_baseline_execution_go_token": REEVALUATION_BASELINE_EXECUTION_GO_TOKEN,
+        "reevaluation_baseline_execution_implementation_go_token": (
+            REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN
+        ),
+        "baseline_execution_entry_point_status": "REEVALUATION_BASELINE_EXECUTION_PREFLIGHT_V0",
         "entry_point_status": ENTRY_POINT_STATUS,
         "entry_point_dispatch_registry": dict(ENTRY_POINT_DISPATCH_REGISTRY),
         "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
@@ -1992,6 +2310,131 @@ def build_test_assertion_matrix() -> dict[str, Any]:
     ]
     return {
         "schema_version": "test_assertion_matrix.v0",
+        "assertions": assertions,
+        "assertion_count": len(assertions),
+    }
+
+
+def materialize_python_version_contract_v0() -> dict[str, Any]:
+    python_ok, python_version = verify_python_version_for_baseline_preflight_v0()
+    return {
+        "schema_version": "python_version_contract.v0",
+        "minimum_python_version": f"{MINIMUM_PYTHON_VERSION_MAJOR}.{MINIMUM_PYTHON_VERSION_MINOR}",
+        "preferred_python_version": (
+            f"{MINIMUM_PYTHON_VERSION_MAJOR}.{PREFERRED_PYTHON_VERSION_MINOR}"
+        ),
+        "active_python_version": python_version,
+        "python_version_ok": python_ok,
+        "fail_closed_reason_code": REASON_PYTHON_VERSION_TOO_LOW,
+    }
+
+
+def materialize_dataset_preflight_contract_v0(
+    preflight: ReevaluationBaselineExecutionPreflightResultV0,
+) -> dict[str, Any]:
+    return {
+        "schema_version": "dataset_preflight_contract.v0",
+        "ratified_dataset_digest": preflight.ratified_dataset_digest,
+        "panel_data_digest": preflight.panel_data_digest,
+        "bound_dataset_materialized": preflight.bound_dataset_materialized,
+        "source_manifests_verified": preflight.source_manifests_verified,
+        "dataset_digest_verified": preflight.dataset_digest_verified,
+        "dataset_digest_repaired": preflight.dataset_digest_repaired,
+        "dataset_materialization_owner": (
+            "cross_sectional_relative_strength_v0_bound_panel_dataset_materialization_v0"
+        ),
+        "panel_staging_manifest_owner": "cross_sectional_panel_staging_source_manifest_v1",
+        "fail_closed_reason_code": REASON_DATASET_DIGEST_NOT_VERIFIED,
+    }
+
+
+def materialize_go_token_and_dispatch_contract_v0() -> dict[str, Any]:
+    return {
+        "schema_version": "go_token_and_dispatch_contract.v0",
+        "entry_point_dispatch_registry": dict(ENTRY_POINT_DISPATCH_REGISTRY),
+        "reevaluation_baseline_execution_go_token": REEVALUATION_BASELINE_EXECUTION_GO_TOKEN,
+        "reevaluation_baseline_execution_implementation_go_token": (
+            REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN
+        ),
+        "baseline_execution_go_separately_gated": True,
+        "implementation_go_authorizes_baseline_execution": False,
+        "implementation_go_authorizes_economic_evaluation": False,
+        "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
+        "baseline_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
+        "baseline_execution_branch": _BRANCH_REEVALUATION_BASELINE_EXECUTION_V0,
+        "baseline_implementation_branch": _BRANCH_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0,
+    }
+
+
+def build_reevaluation_baseline_reuse_decision() -> dict[str, Any]:
+    base = build_reuse_decision()
+    base["decisions"].extend(
+        [
+            {
+                "component": "reevaluation_baseline_execution_preflight",
+                "decision": "REWIRE_EXISTING_COMPONENT",
+                "owner": f"{HARNESS_OWNER}.run_reevaluation_baseline_execution_preflight_v0",
+                "justification": (
+                    "register_baseline_execution_go_tokens_and_fail_closed_preflight_on_existing_harness"
+                ),
+            },
+            {
+                "component": "baseline_evaluator_wiring_probe",
+                "decision": "REUSE_AS_IS",
+                "owner": BASELINE_EVALUATOR_OWNER,
+            },
+        ]
+    )
+    return base
+
+
+def build_reevaluation_baseline_runner_decision() -> dict[str, Any]:
+    return {
+        "schema_version": "runner_decision.v0",
+        "runner_required": True,
+        "runner_action": "THIN_OPS_DELEGATION_TO_BASELINE_PREFLIGHT_HARNESS",
+        "economic_evaluation_executed": False,
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "dataset_digest_repaired": False,
+        "implementation_go_token": REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN,
+        "execution_go_token": REEVALUATION_BASELINE_EXECUTION_GO_TOKEN,
+        "implementation_go_authorizes_baseline_execution": False,
+        "baseline_execution_requires_separate_go": True,
+        "wiring_inspection_only": True,
+        "next_recommended_scope": (
+            "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+            "EVALUATION_REEVALUATION_BASELINE_EXECUTION_V0"
+        ),
+        "next_operator_go": REEVALUATION_BASELINE_EXECUTION_GO_TOKEN,
+    }
+
+
+def build_reevaluation_baseline_test_assertion_matrix() -> dict[str, Any]:
+    assertions = [
+        "reevaluation_baseline_execution_implementation_go_token_accepted",
+        "reevaluation_baseline_execution_go_token_registered_in_dispatch_registry",
+        "reevaluation_baseline_execution_go_token_separately_gated",
+        "implementation_go_does_not_authorize_baseline_execution",
+        "python_version_too_low_blocks",
+        "dataset_digest_mismatch_blocks_baseline_execution_admissible",
+        "baseline_callable_wiring_only_acknowledged",
+        "economic_evaluation_not_executed",
+        "baseline_not_executed",
+        "dataset_digest_not_repaired",
+        "unknown_go_token_rejected",
+        "missing_go_token_rejected",
+        "offline_boundary_preserved",
+        "no_runtime_import_boundary_violation",
+        "runtime_effect_none",
+        "authority_effect_none",
+    ]
+    return {
+        "schema_version": "test_assertion_matrix.v0",
+        "scope": (
+            "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+            "EVALUATION_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
+        ),
         "assertions": assertions,
         "assertion_count": len(assertions),
     }
