@@ -1,12 +1,12 @@
 # Cross-Sectional Futures Pairwise Lead-Lag Spillover V1 Offline Economic Evaluation Authorization Ratification V0
 
-> **Authorization-only:** Reratifiziert die offline-only Autorisierung für eine spätere separate Economic Evaluation von `cross_sectional_futures_pairwise_lead_lag_spillover/v1` auf die nach PR #5204 vollständig materialisierte Portfolio-Binding-Identität. Keine Evaluation-Ausführung, keine Hypothesis-/Score-/Ranking-Mutation, keine Runtime, keine Promotion.
+> **Authorization-only:** Reratifiziert die offline-only Autorisierung für eine spätere separate Economic Evaluation von `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1` auf die nach PR #5204 vollständig materialisierte Portfolio-Binding-Identität. Keine Evaluation-Ausführung, keine Hypothesis-/Score-/Ranking-Mutation, keine Runtime, keine Promotion.
 
 ## Scope
 
 | Feld | Wert |
 |------|------|
-| `scope_id` | `cross_sectional_futures_pairwise_lead_lag_spillover/v1` |
+| `scope_id` | `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1` |
 | `authorization_scope` | `OFFLINE_ECONOMIC_EVALUATION` |
 | `authorization_version` | `v0` |
 | `operator_go` | `GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_UPDATED_AUTHORIZATION_RATIFICATION_V0` |
