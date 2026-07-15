@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 """Ops runner for cross-sectional pairwise spillover v1 offline economic evaluation.
 
-Bounded infrastructure mode only:
-GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_IMPLEMENTATION_V0
+Bounded modes:
+- Infrastructure dry-run:
+  GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_
+  EVALUATION_EXECUTION_IMPLEMENTATION_V0
+- Execution dispatch implementation:
+  GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_
+  EVALUATION_EXECUTION_DISPATCH_IMPLEMENTATION_V0
+- Execution dispatch (fail-closed until portfolio bindings are bound):
+  GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_
+  EVALUATION_EXECUTION_V0
 
 No economic evaluation execution, runtime, order, or authority effect.
 """
@@ -25,17 +33,26 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.ops import primary_evidence_retention_v0 as retention  # noqa: E402
 from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     AUTHORITY_EFFECT,
+    DISPATCH_IMPLEMENTATION_GO_TOKEN,
     EXECUTION_VERSION,
     GO_TOKEN,
     INFRASTRUCTURE_GO_TOKEN,
     RUNTIME_EFFECT,
     InfrastructureReadinessResultV0,
     InfrastructureTerminalStatus,
+    build_owner_inventory,
+    build_reuse_decision,
+    build_runner_decision,
+    dispatch_result_to_dict,
     entrypoint_result_to_dict,
     load_authorization_ratification_v0,
     load_versioned_hypothesis_binding_v0,
+    materialize_dispatch_contract_v0,
+    materialize_execution_contract_v0,
     materialize_infrastructure_summary_v0,
+    materialize_portfolio_binding_contract_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
+    run_offline_economic_evaluation_execution_dispatch_v0,
     verify_execution_start_state_v0,
 )
 from tests.research.fixtures.cross_sectional_relative_strength_v0.fixture_builder import (  # noqa: E402
@@ -43,6 +60,7 @@ from tests.research.fixtures.cross_sectional_relative_strength_v0.fixture_builde
 )
 
 CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
+DISPATCH_IMPLEMENTATION_CONFIRM_GO = DISPATCH_IMPLEMENTATION_GO_TOKEN
 EXECUTION_CONFIRM_GO = GO_TOKEN
 MAX_RUNTIME_SECONDS = 1500
 DEFAULT_DURABLE_ROOT = Path(
@@ -52,9 +70,24 @@ DEFAULT_STAGING_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/v1"
 )
-SCOPE_CLASSIFICATION = (
+INFRASTRUCTURE_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_EXECUTION_IMPLEMENTATION_V0"
+)
+DISPATCH_IMPLEMENTATION_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_DISPATCH_IMPLEMENTATION_V0"
+)
+EXECUTION_DISPATCH_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_V0"
+)
+ALLOWED_CONFIRM_GO_TOKENS = frozenset(
+    {
+        CONFIRM_GO,
+        DISPATCH_IMPLEMENTATION_CONFIRM_GO,
+        EXECUTION_CONFIRM_GO,
+    }
 )
 
 
@@ -107,10 +140,8 @@ def run_execution_infrastructure_v0(
     panel_series: tuple[Any, ...] | None = None,
 ) -> dict[str, Any]:
     start_monotonic = time.monotonic()
-    if confirm not in {CONFIRM_GO, EXECUTION_CONFIRM_GO}:
+    if confirm != CONFIRM_GO:
         _die(f"ERR:confirm_go_token_required:{CONFIRM_GO}")
-    if confirm == EXECUTION_CONFIRM_GO:
-        _die("ERR:full_economic_evaluation_not_authorized_in_implementation_runner")
 
     origin_main = _resolve_origin_main(_REPO_ROOT)
     primary_before = _primary_worktree_snapshot(primary_worktree)
@@ -191,7 +222,7 @@ def run_execution_infrastructure_v0(
                 "EXECUTION_SCOPE=IMPLEMENTATION_ONLY_V0",
                 f"GO_TOKEN={confirm}",
                 "GO_TOKEN_CONSUMPTION=CONSUMED_ONCE",
-                f"SCOPE_CLASSIFICATION={SCOPE_CLASSIFICATION}",
+                f"SCOPE_CLASSIFICATION={INFRASTRUCTURE_SCOPE_CLASSIFICATION}",
                 "ECONOMIC_EVALUATION_EXECUTED=false",
                 "BASELINE_EXECUTED=false",
                 "ROBUSTNESS_EXECUTED=false",
@@ -234,7 +265,7 @@ def run_execution_infrastructure_v0(
             if entrypoint.precheck_passed and start_state.valid
             else "FAIL_CLOSED"
         ),
-        "process_classification": SCOPE_CLASSIFICATION,
+        "process_classification": INFRASTRUCTURE_SCOPE_CLASSIFICATION,
         "execution_version": EXECUTION_VERSION,
         "origin_main": origin_main,
         "staging_root": str(staging_root),
@@ -260,6 +291,213 @@ def run_execution_infrastructure_v0(
     return payload
 
 
+def run_execution_dispatch_implementation_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    start_monotonic = time.monotonic()
+    if confirm != DISPATCH_IMPLEMENTATION_CONFIRM_GO:
+        _die(f"ERR:confirm_go_token_required:{DISPATCH_IMPLEMENTATION_CONFIRM_GO}")
+
+    origin_main = _resolve_origin_main(_REPO_ROOT)
+    primary_before = _primary_worktree_snapshot(primary_worktree)
+    ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bundle_dir = (
+        durable_evidence_root
+        / "implementation"
+        / (
+            "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_"
+            f"evaluation_execution_dispatch_implementation_v0_{ts_slug}"
+        )
+    )
+    bundle_dir.mkdir(parents=True, exist_ok=False)
+
+    versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
+    authorization_ratification = load_authorization_ratification_v0(_REPO_ROOT)
+    start_state = verify_execution_start_state_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        origin_main_sha=origin_main,
+    )
+
+    dispatch = run_offline_economic_evaluation_execution_dispatch_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        go_token=EXECUTION_CONFIRM_GO,
+        staging_root=staging_root,
+        versioned_binding=versioned_binding,
+        verify_source_manifests=False,
+        materialize_dataset=False,
+    )
+    dispatch_payload = dispatch_result_to_dict(dispatch)
+
+    owner_inventory = build_owner_inventory()
+    reuse_decision = build_reuse_decision()
+    runner_decision = build_runner_decision()
+    runner_contract = materialize_execution_contract_v0()
+    portfolio_binding_contract = materialize_portfolio_binding_contract_v0(
+        versioned_binding,
+        repo_root=_REPO_ROOT,
+    )
+    dispatch_contract = materialize_dispatch_contract_v0()
+
+    (bundle_dir / "owner_inventory.json").write_text(
+        json.dumps(owner_inventory, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "reuse_decision.json").write_text(
+        json.dumps(reuse_decision, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "runner_contract.json").write_text(
+        json.dumps(runner_contract, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "portfolio_binding_contract.json").write_text(
+        json.dumps(portfolio_binding_contract, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "dispatch_contract.json").write_text(
+        json.dumps(dispatch_contract, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "DISPATCH_RESULT.json").write_text(
+        json.dumps(dispatch_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "RUNNER_DECISION.json").write_text(
+        json.dumps(runner_decision, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
+        "ECONOMIC_EVALUATION_EXECUTED=false\n",
+        encoding="utf-8",
+    )
+
+    manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+    payload: dict[str, Any] = {
+        "verdict": "EXECUTION_DISPATCH_IMPLEMENTATION_COMPLETE",
+        "process_classification": DISPATCH_IMPLEMENTATION_SCOPE_CLASSIFICATION,
+        "execution_version": EXECUTION_VERSION,
+        "origin_main": origin_main,
+        "staging_root": str(staging_root),
+        "start_state_valid": start_state.valid,
+        "dispatch": dispatch_payload,
+        "runner_decision": runner_decision,
+        "economic_evaluation_executed": False,
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "execution_go_dispatch_bound": True,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "primary_worktree_head_before": primary_before["head"],
+        "primary_worktree_dirty_count_before": primary_before["dirty_count"],
+        "durable_evidence_path": str(bundle_dir),
+        "manifest_verify_rc": manifest_rc,
+        "manifest_verify_msg": manifest_msg,
+        "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+    }
+    (bundle_dir / "EXECUTION_DISPATCH_IMPLEMENTATION_RESULT.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _guard_timeout(start_monotonic)
+    return payload
+
+
+def run_offline_economic_evaluation_execution_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    start_monotonic = time.monotonic()
+    if confirm != EXECUTION_CONFIRM_GO:
+        _die(f"ERR:confirm_go_token_required:{EXECUTION_CONFIRM_GO}")
+
+    origin_main = _resolve_origin_main(_REPO_ROOT)
+    primary_before = _primary_worktree_snapshot(primary_worktree)
+    ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bundle_dir = (
+        durable_evidence_root
+        / "research"
+        / (
+            "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_"
+            f"evaluation_execution_v0_{ts_slug}"
+        )
+    )
+    bundle_dir.mkdir(parents=True, exist_ok=False)
+
+    versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
+    authorization_ratification = load_authorization_ratification_v0(_REPO_ROOT)
+    start_state = verify_execution_start_state_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        origin_main_sha=origin_main,
+    )
+
+    dispatch = run_offline_economic_evaluation_execution_dispatch_v0(
+        repo_root=_REPO_ROOT,
+        authorization_ratification=authorization_ratification,
+        go_token=confirm,
+        staging_root=staging_root,
+        versioned_binding=versioned_binding,
+    )
+    dispatch_payload = dispatch_result_to_dict(dispatch)
+
+    (bundle_dir / "DISPATCH_RESULT.json").write_text(
+        json.dumps(dispatch_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "portfolio_binding_contract.json").write_text(
+        json.dumps(
+            materialize_portfolio_binding_contract_v0(versioned_binding, repo_root=_REPO_ROOT),
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
+        "ECONOMIC_EVALUATION_EXECUTED=false\n",
+        encoding="utf-8",
+    )
+
+    manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+    payload: dict[str, Any] = {
+        "verdict": dispatch_payload["status"],
+        "process_classification": EXECUTION_DISPATCH_SCOPE_CLASSIFICATION,
+        "execution_version": EXECUTION_VERSION,
+        "origin_main": origin_main,
+        "staging_root": str(staging_root),
+        "start_state_valid": start_state.valid,
+        "dispatch": dispatch_payload,
+        "economic_evaluation_executed": False,
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "primary_worktree_head_before": primary_before["head"],
+        "primary_worktree_dirty_count_before": primary_before["dirty_count"],
+        "durable_evidence_path": str(bundle_dir),
+        "manifest_verify_rc": manifest_rc,
+        "manifest_verify_msg": manifest_msg,
+        "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+    }
+    (bundle_dir / "EXECUTION_RESULT.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _guard_timeout(start_monotonic)
+    return payload
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm", required=True)
@@ -267,12 +505,34 @@ def main() -> None:
     parser.add_argument("--primary-worktree", type=Path, required=True)
     parser.add_argument("--staging-root", type=Path, default=DEFAULT_STAGING_ROOT)
     args = parser.parse_args()
-    result = run_execution_infrastructure_v0(
-        confirm=args.confirm,
-        durable_evidence_root=args.durable_evidence_root,
-        primary_worktree=args.primary_worktree,
-        staging_root=args.staging_root,
-    )
+
+    if args.confirm not in ALLOWED_CONFIRM_GO_TOKENS:
+        _die(
+            "ERR:confirm_go_token_required:"
+            f"{CONFIRM_GO}|{DISPATCH_IMPLEMENTATION_CONFIRM_GO}|{EXECUTION_CONFIRM_GO}"
+        )
+
+    if args.confirm == CONFIRM_GO:
+        result = run_execution_infrastructure_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
+    elif args.confirm == DISPATCH_IMPLEMENTATION_CONFIRM_GO:
+        result = run_execution_dispatch_implementation_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
+    else:
+        result = run_offline_economic_evaluation_execution_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
     print(json.dumps(result, indent=2, sort_keys=True))
 
 
