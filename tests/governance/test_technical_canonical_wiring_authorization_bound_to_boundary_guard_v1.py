@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from src.governance.economic_diagnostic_optimization_boundary_v0 import (
-    TECHNICAL_WIRING_AUTH_TOKEN,
+    TECHNICAL_WIRING_AUTHORIZATION_ID,
     TECHNICAL_WIRING_AUTH_VERSION,
     TECHNICAL_WIRING_SCOPE_CLASS,
     build_boundary_report,
@@ -47,7 +47,7 @@ class TestTechnicalCanonicalWiringAuthorizationContractV1:
         assert reasons == ()
         assert auth["contract_version"] == TECHNICAL_WIRING_AUTH_VERSION
         assert auth["authorized_scope_class"] == TECHNICAL_WIRING_SCOPE_CLASS
-        assert auth["authorization_token"] == TECHNICAL_WIRING_AUTH_TOKEN
+        assert auth["authorization_token"] == TECHNICAL_WIRING_AUTHORIZATION_ID
         assert auth["pr_specific_exception"] is False
         assert auth["branch_specific_exception"] is False
         assert auth["broad_master_v2_grant"] is False
@@ -62,7 +62,7 @@ class TestTechnicalCanonicalWiringAuthorizationContractV1:
 
     def test_authorization_not_token_alone(self) -> None:
         token_only = {
-            "authorization_token": TECHNICAL_WIRING_AUTH_TOKEN,
+            "authorization_token": TECHNICAL_WIRING_AUTHORIZATION_ID,
             "contract_version": TECHNICAL_WIRING_AUTH_VERSION,
         }
         valid, reasons = validate_technical_wiring_authorization(token_only)
