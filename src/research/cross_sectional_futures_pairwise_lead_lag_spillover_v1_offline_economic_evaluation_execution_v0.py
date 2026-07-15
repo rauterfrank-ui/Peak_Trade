@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import hashlib
 import importlib
+import inspect
 import json
+import math
 import sys
 from dataclasses import dataclass
 from enum import Enum
@@ -32,7 +34,9 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_v
     DEFAULT_FORWARD_LAG_BARS,
     DEFAULT_LAG_WINDOW_L,
     DEFAULT_SIGNAL_LAG_BARS,
+    MIN_ELIGIBLE_MEMBERS,
     SCORE_FORMULA_VERSION,
+    InstrumentNetSpilloverScoreResultV0,
     compute_instrument_net_spillover_scores_v0,
     compute_panel_pairwise_spillover_scores_v0,
     rank_instrument_net_spillover_scores_deterministic_v0,
@@ -79,8 +83,12 @@ from src.research.cross_sectional_single_slot_backtest_wiring_v0 import (
     run_single_slot_panel_backtest_v0,
 )
 from src.research.cross_sectional_single_slot_research_orchestrator_v0 import (
+    OrchestratorEpochResultV0,
     OrchestratorRunResultV0,
+    SingleSlotSelectionEventV0,
     SlotSide,
+    _SlotState,
+    _apply_rotation_state_machine,
 )
 from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import InstrumentPanelSeriesV1
 
@@ -140,6 +148,10 @@ REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
 )
+REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_V0"
+)
 REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_V0"
@@ -169,6 +181,9 @@ ALLOWED_REEVALUATION_BASELINE_EXECUTION_GO_TOKENS: frozenset[str] = frozenset(
 ALLOWED_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
     {REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN}
 )
+ALLOWED_REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_GO_TOKENS: frozenset[str] = (
+    frozenset({REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_GO_TOKEN})
+)
 ALLOWED_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKENS: frozenset[str] = (
     frozenset({REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKEN})
 )
@@ -188,6 +203,9 @@ _BRANCH_REEVALUATION_BASELINE_EXECUTION_V0 = "REEVALUATION_BASELINE_EXECUTION_V0
 _BRANCH_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0 = (
     "REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
 )
+_BRANCH_REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_V0 = (
+    "REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_V0"
+)
 _BRANCH_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_V0 = (
     "REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_V0"
 )
@@ -203,6 +221,9 @@ ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     REEVALUATION_BASELINE_EXECUTION_GO_TOKEN: _BRANCH_REEVALUATION_BASELINE_EXECUTION_V0,
     REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN: (
         _BRANCH_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0
+    ),
+    REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_GO_TOKEN: (
+        _BRANCH_REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_V0
     ),
     REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKEN: (
         _BRANCH_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_V0
@@ -323,6 +344,9 @@ REASON_REEVALUATION_EXECUTION_WIRING_VERIFIED = (
     "REEVALUATION_EXECUTION_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
 )
 REASON_BASELINE_WIRING_VERIFIED = "BASELINE_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
+REASON_BASELINE_BACKTEST_OWNER_INVOKED = "BASELINE_BACKTEST_OWNER_INVOKED_STOPPED_BEFORE_EVIDENCE"
+REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE = "BASELINE_EXECUTION_DATA_UNAVAILABLE_FAIL_CLOSED"
+REASON_BASELINE_BACKTEST_ALREADY_INVOKED = "BASELINE_BACKTEST_ALREADY_INVOKED_FAIL_CLOSED"
 REASON_DOWNSTREAM_WIRING_VERIFIED = "DOWNSTREAM_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
 REASON_BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM = (
     "BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM_ROBUSTNESS"
@@ -418,6 +442,8 @@ class PhaseExecutionBlockedResultV0:
     wiring_verified: bool = False
     canonical_owner: str = ""
     downstream_sequence_allowed: bool | None = None
+    actual_baseline_backtest_call_present: bool = False
+    baseline_backtest_owner_call_count: int = 0
 
 
 @dataclass(frozen=True)
@@ -562,6 +588,19 @@ def validate_reevaluation_baseline_execution_implementation_go_token_v0(
     if not go_token:
         return False, (REASON_GO_TOKEN_MISSING,)
     if go_token not in ALLOWED_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def validate_reevaluation_baseline_actual_execution_owner_implementation_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if (
+        go_token
+        not in ALLOWED_REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_GO_TOKENS
+    ):
         return False, (REASON_GO_TOKEN_INVALID,)
     return True, ()
 
@@ -1645,13 +1684,10 @@ def _build_downstream_adapter_contracts_v0(
 
 
 def _verify_baseline_owner_wiring_v0() -> tuple[bool, str]:
-    owners = (CANONICAL_BASELINE_BACKTEST_OWNER,)
-    for owner in owners:
-        if not verify_canonical_owner_reachable_v0(owner):
-            return False, owner
-    if run_single_slot_panel_backtest_v0 is not _resolve_canonical_owner_callable_v0(
-        CANONICAL_BASELINE_BACKTEST_OWNER
-    ):
+    if not verify_canonical_owner_reachable_v0(CANONICAL_BASELINE_BACKTEST_OWNER):
+        return False, CANONICAL_BASELINE_BACKTEST_OWNER
+    resolved = _resolve_canonical_owner_callable_v0(CANONICAL_BASELINE_BACKTEST_OWNER)
+    if not callable(resolved):
         return False, CANONICAL_BASELINE_BACKTEST_OWNER
     return True, CANONICAL_BASELINE_BACKTEST_OWNER
 
@@ -1693,11 +1729,213 @@ def phase_result_to_dict(result: PhaseExecutionBlockedResultV0) -> dict[str, Any
         "wiring_verified": result.wiring_verified,
         "canonical_owner": result.canonical_owner,
         "downstream_sequence_allowed": result.downstream_sequence_allowed,
+        "actual_baseline_backtest_call_present": result.actual_baseline_backtest_call_present,
+        "baseline_backtest_owner_call_count": result.baseline_backtest_owner_call_count,
         "reason_codes": list(result.reason_codes),
         "authority_effect": result.authority_effect,
         "runtime_effect": result.runtime_effect,
         "economic_evaluation_executed": False,
     }
+
+
+def verify_actual_baseline_backtest_call_present_in_production_source_v0() -> bool:
+    source = inspect.getsource(run_baseline_offline_economic_evaluation_v0)
+    return "run_single_slot_panel_backtest_v0(" in source
+
+
+def _target_side_from_instrument_net_score_v0(score: float | None) -> SlotSide:
+    if score is None or not math.isfinite(score) or score == 0:
+        return SlotSide.FLAT
+    if score > 0:
+        return SlotSide.LONG
+    return SlotSide.SHORT
+
+
+def _resolve_pairwise_spillover_switch_entry_delay_v0(
+    envelope: Mapping[str, Any],
+) -> int:
+    pending = envelope.get("pending_implementation_bindings", {})
+    exit_binding = pending.get("exit_policy", {})
+    if isinstance(exit_binding, Mapping):
+        policy = exit_binding.get("policy", {})
+        if isinstance(policy, Mapping):
+            delay = policy.get("switch_entry_delay_epochs")
+            if isinstance(delay, int) and delay >= 0:
+                return delay
+    return 1
+
+
+def _run_pairwise_spillover_single_slot_orchestrator_v0(
+    *,
+    panel_series: Sequence[InstrumentPanelSeriesV1],
+    versioned_binding: Mapping[str, Any],
+    lag_window_l: int = DEFAULT_LAG_WINDOW_L,
+    signal_lag_bars: int = DEFAULT_SIGNAL_LAG_BARS,
+    forward_lag_bars: int = DEFAULT_FORWARD_LAG_BARS,
+) -> OrchestratorRunResultV0:
+    """Narrow adapter from pairwise spillover score/ranking to single-slot orchestrator output."""
+    instrument_closes = _panel_to_instrument_closes(panel_series)
+    if not instrument_closes:
+        return OrchestratorRunResultV0(
+            orchestrator_version="pairwise_spillover_single_slot_orchestrator_adapter.v0",
+            score_formula_version=SCORE_FORMULA_VERSION,
+            epochs=(),
+            final_slot_side=SlotSide.FLAT,
+            final_instrument_id=None,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+            order_effect=ORDER_EFFECT,
+        )
+
+    reference_series = max(panel_series, key=lambda item: len(item.bars))
+    bar_count = len(reference_series.bars)
+    switch_delay = _resolve_pairwise_spillover_switch_entry_delay_v0(versioned_binding)
+    state = _SlotState()
+    epoch_results: list[OrchestratorEpochResultV0] = []
+
+    for epoch_index in range(bar_count):
+        timestamp_utc = reference_series.bars[epoch_index].timestamp_utc
+        pair_scores = compute_panel_pairwise_spillover_scores_v0(
+            instrument_closes,
+            lag_window_l=lag_window_l,
+            signal_lag_bars=signal_lag_bars,
+            forward_lag_bars=forward_lag_bars,
+            epoch_index=epoch_index,
+        )
+        error_codes: list[str] = []
+        if pair_scores is None:
+            target_side = SlotSide.FLAT
+            target_instrument_id = None
+            top_score = None
+            ranked_ids: tuple[str, ...] = ()
+            error_codes.append("INSUFFICIENT_ELIGIBLE_MEMBERS")
+        else:
+            instrument_scores = compute_instrument_net_spillover_scores_v0(pair_scores)
+            ranked_instruments = rank_instrument_net_spillover_scores_deterministic_v0(
+                instrument_scores
+            )
+            ranked_ids = tuple(item.instrument_id for item in ranked_instruments)
+            if len(ranked_instruments) < MIN_ELIGIBLE_MEMBERS:
+                target_side = SlotSide.FLAT
+                target_instrument_id = None
+                top_score = None
+                error_codes.append("INSUFFICIENT_ELIGIBLE_MEMBERS")
+            else:
+                top = ranked_instruments[0]
+                top_score = top.score
+                target_side = _target_side_from_instrument_net_score_v0(top_score)
+                target_instrument_id = top.instrument_id if target_side != SlotSide.FLAT else None
+
+        slot_side, selected_id, pending = _apply_rotation_state_machine(
+            state,
+            target_side=target_side,
+            target_instrument_id=target_instrument_id,
+            switch_entry_delay_epochs=switch_delay,
+        )
+        selection = SingleSlotSelectionEventV0(
+            epoch_index=epoch_index,
+            timestamp_utc=timestamp_utc,
+            ranked_instrument_ids=ranked_ids,
+            top_score=top_score,
+            selected_instrument_id=selected_id,
+            slot_side=slot_side,
+            pending_switch=pending,
+            eligible_member_count=len(ranked_ids),
+        )
+        epoch_results.append(
+            OrchestratorEpochResultV0(
+                epoch_index=epoch_index,
+                timestamp_utc=timestamp_utc,
+                scores=(),
+                selection=selection,
+                error_codes=tuple(sorted(set(error_codes))),
+            )
+        )
+
+    return OrchestratorRunResultV0(
+        orchestrator_version="pairwise_spillover_single_slot_orchestrator_adapter.v0",
+        score_formula_version=SCORE_FORMULA_VERSION,
+        epochs=tuple(epoch_results),
+        final_slot_side=state.current_side,
+        final_instrument_id=state.current_instrument_id,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+        order_effect=ORDER_EFFECT,
+    )
+
+
+def _validate_baseline_execution_guards_v0(
+    *,
+    go_token: str,
+    repo_root: Path,
+    authorization_ratification: Mapping[str, Any] | None,
+    versioned_binding: Mapping[str, Any] | None,
+    staging_root: Path | None,
+    panel_series: Sequence[InstrumentPanelSeriesV1] | None,
+    verify_source_manifests: bool,
+    materialize_dataset: bool,
+) -> tuple[bool, tuple[str, ...], dict[str, Any]]:
+    reasons: list[str] = []
+    if go_token not in ALLOWED_REEVALUATION_BASELINE_EXECUTION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,), {}
+
+    prereq_ok, prereq_reasons, envelope = _validate_phase_execution_prerequisites_v0(
+        go_token=go_token,
+        repo_root=repo_root,
+        versioned_binding=versioned_binding,
+    )
+    if not prereq_ok:
+        return False, prereq_reasons, envelope
+
+    auth = authorization_ratification or load_authorization_ratification_v0(repo_root)
+    start_state = verify_execution_start_state_v0(
+        repo_root=repo_root,
+        authorization_ratification=auth,
+        versioned_binding=envelope,
+    )
+    if not start_state.valid:
+        reasons.extend(start_state.fail_reasons)
+
+    identity = build_identity_invariant_contract_v0(auth, envelope)
+    if not all(identity.values()):
+        reasons.append(REASON_SEMANTIC_BINDING_MUTATION)
+
+    ops_cfg = load_ops_evaluation_config_v0(repo_root)
+    digest_ok, digest_reasons = verify_ratified_digests_v0(
+        envelope,
+        expected_binding_digest=str(ops_cfg.get("binding_digest", "")),
+        expected_dataset_digest=str(
+            ops_cfg.get("cross_sectional_evaluation_binding_v1", {})
+            .get("dataset_binding", {})
+            .get("dataset_digest", RATIFIED_DATASET_DIGEST)
+        ),
+    )
+    if not digest_ok:
+        reasons.extend(digest_reasons)
+
+    if panel_series is not None:
+        if verify_source_manifests and staging_root is not None:
+            manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
+                staging_root
+            )
+            if not manifest_ok or manifest_rc != 0:
+                reasons.append(REASON_SOURCE_MANIFEST_VERIFY_FAILED)
+                reasons.extend(manifest_reasons)
+
+        if materialize_dataset and staging_root is not None and not reasons:
+            materialization = materialize_bound_panel_dataset_v0(
+                staging_root,
+                period_binding=envelope["period_binding"],
+            )
+            if (
+                materialization.status
+                is not MaterializationTerminalStatus.DATASET_MATERIALIZATION_COMPLETE
+            ):
+                reasons.extend(materialization.reason_codes)
+            elif materialization.panel_data_digest != RATIFIED_DATASET_DIGEST:
+                reasons.append(REASON_DATASET_DIGEST_NOT_VERIFIED)
+
+    return not reasons, tuple(dict.fromkeys(reasons)), envelope
 
 
 def run_baseline_offline_economic_evaluation_v0(
@@ -1706,10 +1944,29 @@ def run_baseline_offline_economic_evaluation_v0(
     repo_root: Path | None = None,
     authorization_ratification: Mapping[str, Any] | None = None,
     versioned_binding: Mapping[str, Any] | None = None,
+    staging_root: Path | None = None,
+    panel_series: Sequence[InstrumentPanelSeriesV1] | None = None,
+    verify_source_manifests: bool = False,
+    materialize_dataset: bool = False,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
-    _ = authorization_ratification
     active_root = repo_root or Path(".")
+    if (
+        go_token in ALLOWED_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS
+        or go_token in ALLOWED_REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_GO_TOKENS
+    ):
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            reason_codes=(
+                REASON_GO_TOKEN_INVALID,
+                REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION,
+            ),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
     prereq_ok, prereq_reasons, _envelope = _validate_phase_execution_prerequisites_v0(
         go_token=go_token,
         repo_root=active_root,
@@ -1724,16 +1981,97 @@ def run_baseline_offline_economic_evaluation_v0(
             authority_effect=AUTHORITY_EFFECT,
             runtime_effect=RUNTIME_EFFECT,
         )
+
     owner_ok, owner_ref = _verify_baseline_owner_wiring_v0()
     if not owner_ok:
         return _blocked_phase_result_v0(
             phase="BASELINE",
             reason=REASON_CANONICAL_OWNER_UNREACHABLE,
         )
-    return _wiring_verified_phase_result_v0(
+
+    if go_token not in ALLOWED_REEVALUATION_BASELINE_EXECUTION_GO_TOKENS:
+        return _wiring_verified_phase_result_v0(
+            phase="BASELINE",
+            canonical_owner=owner_ref,
+            reason=REASON_BASELINE_WIRING_VERIFIED,
+        )
+
+    guards_ok, guard_reasons, envelope = _validate_baseline_execution_guards_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        staging_root=staging_root,
+        panel_series=panel_series,
+        verify_source_manifests=verify_source_manifests,
+        materialize_dataset=materialize_dataset,
+    )
+    if not guards_ok:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            wiring_verified=False,
+            canonical_owner=owner_ref,
+            reason_codes=guard_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    if panel_series is None:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=False,
+            wiring_verified=True,
+            canonical_owner=owner_ref,
+            actual_baseline_backtest_call_present=False,
+            baseline_backtest_owner_call_count=0,
+            reason_codes=(
+                REASON_BASELINE_WIRING_VERIFIED,
+                REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED,
+            ),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    orchestrator = _run_pairwise_spillover_single_slot_orchestrator_v0(
+        panel_series=panel_series,
+        versioned_binding=envelope,
+    )
+    backtest_invoked = False
+    try:
+        _ = run_single_slot_panel_backtest_v0(
+            orchestrator,
+            panel_series,
+            cost_execution_binding=envelope["cost_execution_binding"],
+        )
+        backtest_invoked = True
+    except Exception:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            wiring_verified=True,
+            canonical_owner=owner_ref,
+            actual_baseline_backtest_call_present=backtest_invoked,
+            baseline_backtest_owner_call_count=1 if backtest_invoked else 0,
+            reason_codes=(REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE,),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    return PhaseExecutionBlockedResultV0(
         phase="BASELINE",
+        executed=False,
+        blocked=False,
+        wiring_verified=True,
         canonical_owner=owner_ref,
-        reason=REASON_BASELINE_WIRING_VERIFIED,
+        actual_baseline_backtest_call_present=True,
+        baseline_backtest_owner_call_count=1,
+        reason_codes=(REASON_BASELINE_BACKTEST_OWNER_INVOKED,),
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
     )
 
 
@@ -2402,8 +2740,12 @@ def materialize_go_token_and_dispatch_contract_v0() -> dict[str, Any]:
         "reevaluation_baseline_execution_implementation_go_token": (
             REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN
         ),
+        "reevaluation_baseline_actual_execution_owner_implementation_go_token": (
+            REEVALUATION_BASELINE_ACTUAL_EXECUTION_OWNER_IMPLEMENTATION_GO_TOKEN
+        ),
         "baseline_execution_go_separately_gated": True,
         "implementation_go_authorizes_baseline_execution": False,
+        "actual_execution_owner_implementation_go_authorizes_baseline_execution": False,
         "implementation_go_authorizes_economic_evaluation": False,
         "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
         "baseline_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
