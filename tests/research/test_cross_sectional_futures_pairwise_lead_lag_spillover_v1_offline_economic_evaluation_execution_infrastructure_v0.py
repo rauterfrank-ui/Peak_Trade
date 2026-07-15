@@ -27,6 +27,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline
     REASON_ECONOMIC_EXECUTION_FORBIDDEN,
     REASON_GO_TOKEN_INVALID,
     REASON_PORTFOLIO_BINDING_PENDING,
+    REASON_REEVALUATION_GO_REQUIRED,
     REASON_UNIVERSE_DIGEST_MISMATCH,
     RUNNER_SCRIPT,
     RUNTIME_EFFECT,
@@ -354,7 +355,7 @@ class TestNoExecutionDuringImplementation:
         assert result.executed is False
         assert result.blocked is True
 
-    def test_full_evaluation_blocked_on_pending_portfolio_bindings(self) -> None:
+    def test_full_evaluation_with_valid_bindings_requires_reevaluation_go(self) -> None:
         result = run_full_offline_economic_evaluation_v0(
             go_token=_EXEC_GO,
             repo_root=REPO_ROOT,
@@ -364,7 +365,8 @@ class TestNoExecutionDuringImplementation:
             materialize_dataset=False,
         )
         assert result.executed is False
-        assert any(REASON_PORTFOLIO_BINDING_PENDING in item for item in result.reason_codes)
+        assert result.wiring_verified is True
+        assert REASON_REEVALUATION_GO_REQUIRED in result.reason_codes
 
 
 class TestMaterializationRoundtrip:
@@ -392,7 +394,7 @@ class TestMaterializationRoundtrip:
         contract = materialize_execution_contract_v0()
         assert contract["economic_evaluation_executed"] is False
         assert contract["binding_digest"] == RATIFIED_BINDING_DIGEST
-        assert contract["entry_point_status"] == "EXECUTION_DISPATCH_BOUND_V0"
+        assert contract["entry_point_status"] == "EXECUTION_WIRING_REPAIR_V0"
 
 
 class TestOpsConfigAndGovernanceArtifacts:

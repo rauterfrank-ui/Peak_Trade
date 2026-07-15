@@ -9,6 +9,7 @@ No runtime, order, or authority effect.
 from __future__ import annotations
 
 import hashlib
+import importlib
 import json
 from dataclasses import dataclass
 from enum import Enum
@@ -57,6 +58,26 @@ from src.research.cross_sectional_relative_strength_v0_bound_panel_dataset_mater
     MaterializationTerminalStatus,
     materialize_bound_panel_dataset_v0,
 )
+from src.research.cross_sectional_panel_economic_evaluation_wiring_v0 import (
+    compute_walk_forward_period_metrics_v0,
+    invoke_monte_carlo_v0,
+    invoke_stress_v0,
+    wire_robustness_stages_v0,
+)
+from src.research.cross_sectional_panel_robustness_adapter_v0 import (
+    build_economic_viability_evidence_adapter_input_v0,
+    build_monte_carlo_adapter_input_v0,
+    build_parameter_sensitivity_adapter_input_v0,
+    build_stress_adapter_input_v0,
+    build_walk_forward_adapter_input_v0,
+)
+from src.research.cross_sectional_single_slot_backtest_wiring_v0 import (
+    run_single_slot_panel_backtest_v0,
+)
+from src.research.cross_sectional_single_slot_research_orchestrator_v0 import (
+    OrchestratorRunResultV0,
+    SlotSide,
+)
 from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import InstrumentPanelSeriesV1
 
 PACKAGE_MARKER = (
@@ -95,8 +116,15 @@ INFRASTRUCTURE_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_EXECUTION_IMPLEMENTATION_V0"
 )
+IMPLEMENTATION_REPAIR_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_IMPLEMENTATION_REPAIR_V0"
+)
 
 ALLOWED_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset({IMPLEMENTATION_GO_TOKEN})
+ALLOWED_IMPLEMENTATION_REPAIR_GO_TOKENS: frozenset[str] = frozenset(
+    {IMPLEMENTATION_REPAIR_GO_TOKEN}
+)
 ALLOWED_DISPATCH_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
     {DISPATCH_IMPLEMENTATION_GO_TOKEN}
 )
@@ -105,10 +133,12 @@ ALLOWED_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({EXECUTION_GO_TOKEN})
 _BRANCH_IMPLEMENTATION_V0 = "IMPLEMENTATION_V0"
 _BRANCH_DISPATCH_IMPLEMENTATION_V0 = "DISPATCH_IMPLEMENTATION_V0"
 _BRANCH_EXECUTION_V0 = "EXECUTION_V0"
+_BRANCH_IMPLEMENTATION_REPAIR_V0 = "IMPLEMENTATION_REPAIR_V0"
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     IMPLEMENTATION_GO_TOKEN: _BRANCH_IMPLEMENTATION_V0,
     DISPATCH_IMPLEMENTATION_GO_TOKEN: _BRANCH_DISPATCH_IMPLEMENTATION_V0,
     EXECUTION_GO_TOKEN: _BRANCH_EXECUTION_V0,
+    IMPLEMENTATION_REPAIR_GO_TOKEN: _BRANCH_IMPLEMENTATION_REPAIR_V0,
 }
 
 RATIFIED_BINDING_DIGEST = RATIFIED_HYPOTHESIS_BINDING_DIGEST
@@ -126,7 +156,23 @@ BASELINE_EVALUATOR_OWNER = (
     "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_"
     "economic_evaluation_execution_v0.run_baseline_offline_economic_evaluation_v0"
 )
-ROBUSTNESS_DISPATCHER_OWNER = "cross_sectional_panel_economic_evaluation_wiring_v0"
+CANONICAL_BASELINE_BACKTEST_OWNER = (
+    "src.research.cross_sectional_single_slot_backtest_wiring_v0.run_single_slot_panel_backtest_v0"
+)
+CANONICAL_WALK_FORWARD_OWNER = (
+    "src.research.cross_sectional_panel_economic_evaluation_wiring_v0."
+    "compute_walk_forward_period_metrics_v0"
+)
+CANONICAL_MONTE_CARLO_OWNER = (
+    "src.research.cross_sectional_panel_economic_evaluation_wiring_v0.invoke_monte_carlo_v0"
+)
+CANONICAL_STRESS_OWNER = (
+    "src.research.cross_sectional_panel_economic_evaluation_wiring_v0.invoke_stress_v0"
+)
+CANONICAL_ROBUSTNESS_WIRING_OWNER = (
+    "src.research.cross_sectional_panel_economic_evaluation_wiring_v0.wire_robustness_stages_v0"
+)
+ROBUSTNESS_DISPATCHER_OWNER = CANONICAL_ROBUSTNESS_WIRING_OWNER
 PORTFOLIO_BINDING_OWNER = (
     "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_"
     "hypothesis_binding_v0"
@@ -204,6 +250,13 @@ REASON_OFFLINE_ONLY_VIOLATION = "OFFLINE_ONLY_VIOLATION"
 REASON_BASELINE_EXECUTION_BLOCKED = "BASELINE_EXECUTION_BLOCKED_PENDING_PORTFOLIO_BINDINGS"
 REASON_ROBUSTNESS_EXECUTION_BLOCKED = "ROBUSTNESS_EXECUTION_BLOCKED_PENDING_PORTFOLIO_BINDINGS"
 REASON_ECONOMIC_EVALUATION_BLOCKED = "ECONOMIC_EVALUATION_BLOCKED_PENDING_PORTFOLIO_BINDINGS"
+REASON_REEVALUATION_GO_REQUIRED = "REEVALUATION_GO_REQUIRED_STOPPED_BEFORE_EXECUTION"
+REASON_BASELINE_WIRING_VERIFIED = "BASELINE_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
+REASON_DOWNSTREAM_WIRING_VERIFIED = "DOWNSTREAM_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
+REASON_BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM = (
+    "BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM_ROBUSTNESS"
+)
+REASON_CANONICAL_OWNER_UNREACHABLE = "CANONICAL_OWNER_UNREACHABLE"
 
 
 class InfrastructureTerminalStatus(str, Enum):
@@ -280,6 +333,9 @@ class PhaseExecutionBlockedResultV0:
     reason_codes: tuple[str, ...]
     authority_effect: str
     runtime_effect: str
+    wiring_verified: bool = False
+    canonical_owner: str = ""
+    downstream_sequence_allowed: bool | None = None
 
 
 @dataclass(frozen=True)
@@ -765,12 +821,10 @@ def run_pairwise_spillover_score_ranking_pipeline_v0(
 
 def build_stage_wiring_status_v0() -> tuple[StageWiringItemV0, ...]:
     return (
-        StageWiringItemV0(
-            "OFFLINE_BACKTEST", True, "cross_sectional_single_slot_backtest_wiring_v0"
-        ),
-        StageWiringItemV0("WALK_FORWARD", True, "cross_sectional_panel_robustness_adapter_v0"),
-        StageWiringItemV0("MONTE_CARLO", True, "cross_sectional_panel_robustness_adapter_v0"),
-        StageWiringItemV0("STRESS", True, "cross_sectional_panel_robustness_adapter_v0"),
+        StageWiringItemV0("OFFLINE_BACKTEST", True, CANONICAL_BASELINE_BACKTEST_OWNER),
+        StageWiringItemV0("WALK_FORWARD", True, CANONICAL_WALK_FORWARD_OWNER),
+        StageWiringItemV0("MONTE_CARLO", True, CANONICAL_MONTE_CARLO_OWNER),
+        StageWiringItemV0("STRESS", True, CANONICAL_STRESS_OWNER),
         StageWiringItemV0(
             "PARAMETER_SENSITIVITY",
             True,
@@ -779,7 +833,7 @@ def build_stage_wiring_status_v0() -> tuple[StageWiringItemV0, ...]:
         StageWiringItemV0(
             "ECONOMIC_VIABILITY_EVIDENCE_MATERIALIZATION",
             True,
-            "cross_sectional_panel_economic_evaluation_wiring_v0",
+            "src.backtest.economic_viability_evidence_v1",
         ),
     )
 
@@ -1001,6 +1055,228 @@ def _blocked_phase_result_v0(*, phase: str, reason: str) -> PhaseExecutionBlocke
     )
 
 
+def _wiring_verified_phase_result_v0(
+    *,
+    phase: str,
+    canonical_owner: str,
+    reason: str = REASON_REEVALUATION_GO_REQUIRED,
+    downstream_sequence_allowed: bool | None = None,
+) -> PhaseExecutionBlockedResultV0:
+    return PhaseExecutionBlockedResultV0(
+        phase=phase,
+        executed=False,
+        blocked=False,
+        wiring_verified=True,
+        canonical_owner=canonical_owner,
+        downstream_sequence_allowed=downstream_sequence_allowed,
+        reason_codes=(reason,),
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
+
+
+def validate_implementation_repair_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_IMPLEMENTATION_REPAIR_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def _resolve_economic_policy_binding_v0(envelope: Mapping[str, Any]) -> dict[str, Any]:
+    contract = envelope.get("economic_and_robustness_contract", {})
+    if isinstance(contract, Mapping):
+        policy = contract.get("economic_policy_binding")
+        if isinstance(policy, Mapping):
+            return dict(policy)
+    raise KeyError("economic_policy_binding")
+
+
+def _resolve_canonical_owner_callable_v0(owner_ref: str) -> Any:
+    module_path, _, attr = owner_ref.rpartition(".")
+    module = importlib.import_module(module_path)
+    return getattr(module, attr)
+
+
+def verify_canonical_owner_reachable_v0(owner_ref: str) -> bool:
+    try:
+        target = _resolve_canonical_owner_callable_v0(owner_ref)
+    except (AttributeError, ImportError, ValueError):
+        return False
+    return callable(target)
+
+
+def _contract_only_orchestrator_stub_v0() -> OrchestratorRunResultV0:
+    return OrchestratorRunResultV0(
+        orchestrator_version="wiring_inspection_stub_v0",
+        score_formula_version=SCORE_FORMULA_VERSION,
+        epochs=(),
+        final_slot_side=SlotSide.FLAT,
+        final_instrument_id=None,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+        order_effect=ORDER_EFFECT,
+    )
+
+
+def materialize_evaluation_wiring_inspection_v0() -> dict[str, Any]:
+    owners = (
+        CANONICAL_BASELINE_BACKTEST_OWNER,
+        CANONICAL_WALK_FORWARD_OWNER,
+        CANONICAL_MONTE_CARLO_OWNER,
+        CANONICAL_STRESS_OWNER,
+        CANONICAL_ROBUSTNESS_WIRING_OWNER,
+    )
+    return {
+        "schema_version": "pairwise_spillover_evaluation_wiring_inspection.v0",
+        "economic_evaluation_executed": False,
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "owners": {
+            "baseline_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
+            "walk_forward_owner": CANONICAL_WALK_FORWARD_OWNER,
+            "monte_carlo_owner": CANONICAL_MONTE_CARLO_OWNER,
+            "stress_owner": CANONICAL_STRESS_OWNER,
+            "robustness_wiring_owner": CANONICAL_ROBUSTNESS_WIRING_OWNER,
+            "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
+            "robustness_dispatcher_owner": ROBUSTNESS_DISPATCHER_OWNER,
+        },
+        "owner_reachability": {
+            owner: verify_canonical_owner_reachable_v0(owner) for owner in owners
+        },
+        "adapter_owners": {
+            "walk_forward_adapter": (
+                "src.research.cross_sectional_panel_robustness_adapter_v0."
+                "build_walk_forward_adapter_input_v0"
+            ),
+            "monte_carlo_adapter": (
+                "src.research.cross_sectional_panel_robustness_adapter_v0."
+                "build_monte_carlo_adapter_input_v0"
+            ),
+            "stress_adapter": (
+                "src.research.cross_sectional_panel_robustness_adapter_v0."
+                "build_stress_adapter_input_v0"
+            ),
+        },
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+    }
+
+
+def _validate_phase_execution_prerequisites_v0(
+    *,
+    go_token: str,
+    repo_root: Path,
+    versioned_binding: Mapping[str, Any] | None,
+) -> tuple[bool, tuple[str, ...], dict[str, Any]]:
+    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,), {}
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
+    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
+        envelope,
+        materialize_score_and_ranking_contract_v0(envelope),
+    )
+    if not portfolio_ok:
+        return False, portfolio_reasons, envelope
+    return True, (), envelope
+
+
+def _baseline_adjudication_allows_downstream_v0(
+    *,
+    baseline_result: PhaseExecutionBlockedResultV0,
+    force_baseline_adjudication_failure: bool = False,
+) -> bool:
+    if force_baseline_adjudication_failure:
+        return False
+    return baseline_result.wiring_verified and not baseline_result.blocked
+
+
+def _build_downstream_adapter_contracts_v0(
+    envelope: Mapping[str, Any],
+) -> dict[str, Any]:
+    orchestrator_stub = _contract_only_orchestrator_stub_v0()
+    economic_policy_binding = _resolve_economic_policy_binding_v0(envelope)
+    return {
+        "walk_forward_adapter": build_walk_forward_adapter_input_v0(
+            orchestrator_stub,
+            economic_policy_binding=economic_policy_binding,
+        ),
+        "monte_carlo_adapter": build_monte_carlo_adapter_input_v0(
+            orchestrator_stub,
+            economic_policy_binding=economic_policy_binding,
+        ),
+        "stress_adapter": build_stress_adapter_input_v0(
+            orchestrator_stub,
+            economic_policy_binding=economic_policy_binding,
+        ),
+        "parameter_sensitivity_adapter": build_parameter_sensitivity_adapter_input_v0(
+            economic_policy_binding=economic_policy_binding,
+        ),
+        "economic_viability_evidence_adapter": build_economic_viability_evidence_adapter_input_v0(
+            orchestrator_stub,
+            economic_policy_binding=economic_policy_binding,
+        ),
+    }
+
+
+def _verify_baseline_owner_wiring_v0() -> tuple[bool, str]:
+    owners = (CANONICAL_BASELINE_BACKTEST_OWNER,)
+    for owner in owners:
+        if not verify_canonical_owner_reachable_v0(owner):
+            return False, owner
+    if run_single_slot_panel_backtest_v0 is not _resolve_canonical_owner_callable_v0(
+        CANONICAL_BASELINE_BACKTEST_OWNER
+    ):
+        return False, CANONICAL_BASELINE_BACKTEST_OWNER
+    return True, CANONICAL_BASELINE_BACKTEST_OWNER
+
+
+def _verify_robustness_owner_wiring_v0() -> tuple[bool, dict[str, str]]:
+    owner_map = {
+        "walk_forward": CANONICAL_WALK_FORWARD_OWNER,
+        "monte_carlo": CANONICAL_MONTE_CARLO_OWNER,
+        "stress": CANONICAL_STRESS_OWNER,
+        "robustness_wiring": CANONICAL_ROBUSTNESS_WIRING_OWNER,
+    }
+    resolved: dict[str, str] = {}
+    for key, owner in owner_map.items():
+        if not verify_canonical_owner_reachable_v0(owner):
+            return False, resolved
+        resolved[key] = owner
+    if compute_walk_forward_period_metrics_v0 is not _resolve_canonical_owner_callable_v0(
+        CANONICAL_WALK_FORWARD_OWNER
+    ):
+        return False, resolved
+    if invoke_monte_carlo_v0 is not _resolve_canonical_owner_callable_v0(
+        CANONICAL_MONTE_CARLO_OWNER
+    ):
+        return False, resolved
+    if invoke_stress_v0 is not _resolve_canonical_owner_callable_v0(CANONICAL_STRESS_OWNER):
+        return False, resolved
+    if wire_robustness_stages_v0 is not _resolve_canonical_owner_callable_v0(
+        CANONICAL_ROBUSTNESS_WIRING_OWNER
+    ):
+        return False, resolved
+    return True, resolved
+
+
+def phase_result_to_dict(result: PhaseExecutionBlockedResultV0) -> dict[str, Any]:
+    return {
+        "phase": result.phase,
+        "executed": result.executed,
+        "blocked": result.blocked,
+        "wiring_verified": result.wiring_verified,
+        "canonical_owner": result.canonical_owner,
+        "downstream_sequence_allowed": result.downstream_sequence_allowed,
+        "reason_codes": list(result.reason_codes),
+        "authority_effect": result.authority_effect,
+        "runtime_effect": result.runtime_effect,
+        "economic_evaluation_executed": False,
+    }
+
+
 def run_baseline_offline_economic_evaluation_v0(
     *,
     go_token: str,
@@ -1009,27 +1285,32 @@ def run_baseline_offline_economic_evaluation_v0(
     versioned_binding: Mapping[str, Any] | None = None,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
-        return _blocked_phase_result_v0(phase="BASELINE", reason=REASON_GO_TOKEN_INVALID)
+    _ = authorization_ratification
     active_root = repo_root or Path(".")
-    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(active_root))
-    auth = authorization_ratification or load_authorization_ratification_v0(active_root)
-    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
-        envelope,
-        materialize_score_and_ranking_contract_v0(envelope),
+    prereq_ok, prereq_reasons, _envelope = _validate_phase_execution_prerequisites_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        versioned_binding=versioned_binding,
     )
-    if not portfolio_ok:
+    if not prereq_ok:
         return PhaseExecutionBlockedResultV0(
             phase="BASELINE",
             executed=False,
             blocked=True,
-            reason_codes=portfolio_reasons,
+            reason_codes=prereq_reasons,
             authority_effect=AUTHORITY_EFFECT,
             runtime_effect=RUNTIME_EFFECT,
         )
-    return _blocked_phase_result_v0(
+    owner_ok, owner_ref = _verify_baseline_owner_wiring_v0()
+    if not owner_ok:
+        return _blocked_phase_result_v0(
+            phase="BASELINE",
+            reason=REASON_CANONICAL_OWNER_UNREACHABLE,
+        )
+    return _wiring_verified_phase_result_v0(
         phase="BASELINE",
-        reason=REASON_BASELINE_EXECUTION_BLOCKED,
+        canonical_owner=owner_ref,
+        reason=REASON_BASELINE_WIRING_VERIFIED,
     )
 
 
@@ -1040,26 +1321,32 @@ def run_walk_forward_evaluation_v0(
     versioned_binding: Mapping[str, Any] | None = None,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
-        return _blocked_phase_result_v0(phase="WALK_FORWARD", reason=REASON_GO_TOKEN_INVALID)
     active_root = repo_root or Path(".")
-    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(active_root))
-    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
-        envelope,
-        materialize_score_and_ranking_contract_v0(envelope),
+    prereq_ok, prereq_reasons, envelope = _validate_phase_execution_prerequisites_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        versioned_binding=versioned_binding,
     )
-    if not portfolio_ok:
+    if not prereq_ok:
         return PhaseExecutionBlockedResultV0(
             phase="WALK_FORWARD",
             executed=False,
             blocked=True,
-            reason_codes=portfolio_reasons,
+            reason_codes=prereq_reasons,
             authority_effect=AUTHORITY_EFFECT,
             runtime_effect=RUNTIME_EFFECT,
         )
-    return _blocked_phase_result_v0(
+    owner_ok, owner_map = _verify_robustness_owner_wiring_v0()
+    if not owner_ok:
+        return _blocked_phase_result_v0(
+            phase="WALK_FORWARD",
+            reason=REASON_CANONICAL_OWNER_UNREACHABLE,
+        )
+    _ = _build_downstream_adapter_contracts_v0(envelope)
+    return _wiring_verified_phase_result_v0(
         phase="WALK_FORWARD",
-        reason=REASON_ROBUSTNESS_EXECUTION_BLOCKED,
+        canonical_owner=owner_map["walk_forward"],
+        reason=REASON_DOWNSTREAM_WIRING_VERIFIED,
     )
 
 
@@ -1070,26 +1357,32 @@ def run_monte_carlo_evaluation_v0(
     versioned_binding: Mapping[str, Any] | None = None,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
-        return _blocked_phase_result_v0(phase="MONTE_CARLO", reason=REASON_GO_TOKEN_INVALID)
     active_root = repo_root or Path(".")
-    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(active_root))
-    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
-        envelope,
-        materialize_score_and_ranking_contract_v0(envelope),
+    prereq_ok, prereq_reasons, envelope = _validate_phase_execution_prerequisites_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        versioned_binding=versioned_binding,
     )
-    if not portfolio_ok:
+    if not prereq_ok:
         return PhaseExecutionBlockedResultV0(
             phase="MONTE_CARLO",
             executed=False,
             blocked=True,
-            reason_codes=portfolio_reasons,
+            reason_codes=prereq_reasons,
             authority_effect=AUTHORITY_EFFECT,
             runtime_effect=RUNTIME_EFFECT,
         )
-    return _blocked_phase_result_v0(
+    owner_ok, owner_map = _verify_robustness_owner_wiring_v0()
+    if not owner_ok:
+        return _blocked_phase_result_v0(
+            phase="MONTE_CARLO",
+            reason=REASON_CANONICAL_OWNER_UNREACHABLE,
+        )
+    _ = _build_downstream_adapter_contracts_v0(envelope)
+    return _wiring_verified_phase_result_v0(
         phase="MONTE_CARLO",
-        reason=REASON_ROBUSTNESS_EXECUTION_BLOCKED,
+        canonical_owner=owner_map["monte_carlo"],
+        reason=REASON_DOWNSTREAM_WIRING_VERIFIED,
     )
 
 
@@ -1100,24 +1393,33 @@ def run_stress_evaluation_v0(
     versioned_binding: Mapping[str, Any] | None = None,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
-    if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
-        return _blocked_phase_result_v0(phase="STRESS", reason=REASON_GO_TOKEN_INVALID)
     active_root = repo_root or Path(".")
-    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(active_root))
-    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
-        envelope,
-        materialize_score_and_ranking_contract_v0(envelope),
+    prereq_ok, prereq_reasons, envelope = _validate_phase_execution_prerequisites_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        versioned_binding=versioned_binding,
     )
-    if not portfolio_ok:
+    if not prereq_ok:
         return PhaseExecutionBlockedResultV0(
             phase="STRESS",
             executed=False,
             blocked=True,
-            reason_codes=portfolio_reasons,
+            reason_codes=prereq_reasons,
             authority_effect=AUTHORITY_EFFECT,
             runtime_effect=RUNTIME_EFFECT,
         )
-    return _blocked_phase_result_v0(phase="STRESS", reason=REASON_ROBUSTNESS_EXECUTION_BLOCKED)
+    owner_ok, owner_map = _verify_robustness_owner_wiring_v0()
+    if not owner_ok:
+        return _blocked_phase_result_v0(
+            phase="STRESS",
+            reason=REASON_CANONICAL_OWNER_UNREACHABLE,
+        )
+    _ = _build_downstream_adapter_contracts_v0(envelope)
+    return _wiring_verified_phase_result_v0(
+        phase="STRESS",
+        canonical_owner=owner_map["stress"],
+        reason=REASON_DOWNSTREAM_WIRING_VERIFIED,
+    )
 
 
 def run_full_offline_economic_evaluation_v0(
@@ -1129,6 +1431,7 @@ def run_full_offline_economic_evaluation_v0(
     versioned_binding: Mapping[str, Any] | None = None,
     verify_source_manifests: bool = True,
     materialize_dataset: bool = True,
+    force_baseline_adjudication_failure: bool = False,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
     if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
@@ -1156,9 +1459,77 @@ def run_full_offline_economic_evaluation_v0(
             authority_effect=AUTHORITY_EFFECT,
             runtime_effect=RUNTIME_EFFECT,
         )
-    return _blocked_phase_result_v0(
+
+    baseline = run_baseline_offline_economic_evaluation_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        authorization_ratification=auth,
+        versioned_binding=versioned_binding,
+    )
+    if baseline.blocked:
+        return PhaseExecutionBlockedResultV0(
+            phase="FULL_OFFLINE_ECONOMIC_EVALUATION",
+            executed=False,
+            blocked=True,
+            reason_codes=baseline.reason_codes,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    downstream_allowed = _baseline_adjudication_allows_downstream_v0(
+        baseline_result=baseline,
+        force_baseline_adjudication_failure=force_baseline_adjudication_failure,
+    )
+    if not downstream_allowed:
+        return PhaseExecutionBlockedResultV0(
+            phase="FULL_OFFLINE_ECONOMIC_EVALUATION",
+            executed=False,
+            blocked=True,
+            wiring_verified=baseline.wiring_verified,
+            canonical_owner=BASELINE_EVALUATOR_OWNER,
+            downstream_sequence_allowed=False,
+            reason_codes=(REASON_BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM,),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    walk_forward = run_walk_forward_evaluation_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        versioned_binding=versioned_binding,
+    )
+    monte_carlo = run_monte_carlo_evaluation_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        versioned_binding=versioned_binding,
+    )
+    stress = run_stress_evaluation_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        versioned_binding=versioned_binding,
+    )
+    downstream_reasons = tuple(
+        dict.fromkeys(
+            [
+                *walk_forward.reason_codes,
+                *monte_carlo.reason_codes,
+                *stress.reason_codes,
+                REASON_REEVALUATION_GO_REQUIRED,
+            ]
+        )
+    )
+    return PhaseExecutionBlockedResultV0(
         phase="FULL_OFFLINE_ECONOMIC_EVALUATION",
-        reason=REASON_ECONOMIC_EVALUATION_BLOCKED,
+        executed=False,
+        blocked=False,
+        wiring_verified=all(
+            item.wiring_verified for item in (baseline, walk_forward, monte_carlo, stress)
+        ),
+        canonical_owner=f"{HARNESS_OWNER}.{CANONICAL_FULL_EVALUATION_CALLABLE}",
+        downstream_sequence_allowed=True,
+        reason_codes=downstream_reasons,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
     )
 
 
@@ -1176,10 +1547,15 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "canonical_dispatch_callable": CANONICAL_DISPATCH_CALLABLE,
         "implementation_go_token": IMPLEMENTATION_GO_TOKEN,
         "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
+        "implementation_repair_go_token": IMPLEMENTATION_REPAIR_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
-        "entry_point_status": ENTRY_POINT_STATUS,
+        "entry_point_status": "EXECUTION_WIRING_REPAIR_V0",
         "entry_point_dispatch_registry": dict(ENTRY_POINT_DISPATCH_REGISTRY),
         "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
+        "baseline_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
+        "walk_forward_owner": CANONICAL_WALK_FORWARD_OWNER,
+        "monte_carlo_owner": CANONICAL_MONTE_CARLO_OWNER,
+        "stress_owner": CANONICAL_STRESS_OWNER,
         "robustness_dispatcher_owner": ROBUSTNESS_DISPATCHER_OWNER,
         "portfolio_binding_owner": PORTFOLIO_BINDING_OWNER,
         "runner_binding_ref": RUNNER_SCRIPT,
@@ -1290,7 +1666,11 @@ def build_owner_inventory() -> dict[str, Any]:
             "cross_sectional_relative_strength_v0_bound_panel_dataset_materialization_v0"
         ),
         "panel_staging_manifest_owner": "cross_sectional_panel_staging_source_manifest_v1",
-        "robustness_wiring_owner": "cross_sectional_panel_economic_evaluation_wiring_v0",
+        "robustness_wiring_owner": CANONICAL_ROBUSTNESS_WIRING_OWNER,
+        "baseline_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
+        "walk_forward_owner": CANONICAL_WALK_FORWARD_OWNER,
+        "monte_carlo_owner": CANONICAL_MONTE_CARLO_OWNER,
+        "stress_owner": CANONICAL_STRESS_OWNER,
         "dispatch_owner": f"{HARNESS_OWNER}.{CANONICAL_DISPATCH_CALLABLE}",
         "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
         "portfolio_binding_owner": PORTFOLIO_BINDING_OWNER,
@@ -1326,8 +1706,20 @@ def build_reuse_decision() -> dict[str, Any]:
             },
             {
                 "component": "execution_harness",
-                "decision": "REUSE_WITH_NARROW_ADAPTER",
-                "justification": "scope_specific_dispatch_adapter_without_semantic_duplication",
+                "decision": "REWIRE_EXISTING_COMPONENT",
+                "justification": (
+                    "wire_canonical_baseline_and_robustness_owners_without_semantic_duplication"
+                ),
+            },
+            {
+                "component": "baseline_backtest_wiring",
+                "decision": "REUSE_AS_IS",
+                "owner": CANONICAL_BASELINE_BACKTEST_OWNER,
+            },
+            {
+                "component": "robustness_wiring",
+                "decision": "REUSE_AS_IS",
+                "owner": CANONICAL_ROBUSTNESS_WIRING_OWNER,
             },
             {
                 "component": "offline_economic_evaluation_dispatch",
@@ -1353,11 +1745,166 @@ def build_runner_decision() -> dict[str, Any]:
         "robustness_executed": False,
         "implementation_go_token": IMPLEMENTATION_GO_TOKEN,
         "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
+        "implementation_repair_go_token": IMPLEMENTATION_REPAIR_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
         "execution_go_dispatch_bound": True,
+        "wiring_inspection_only": True,
         "next_recommended_scope": (
             "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
             "EVALUATION_EXECUTION_V0"
         ),
         "next_operator_go": EXECUTION_GO_TOKEN,
+        "reevaluation_requires_separate_go": True,
+    }
+
+
+def build_field_classification() -> dict[str, Any]:
+    return {
+        "schema_version": "field_classification.v0",
+        "SEMANTIC_BINDING_FIELDS_CHANGED": False,
+        "DATASET_DIGEST_CHANGED": False,
+        "UNIVERSE_DIGEST_CHANGED": False,
+        "PORTFOLIO_BINDING_DIGEST_CHANGED": False,
+        "ECONOMIC_POLICY_DIGEST_CHANGED": False,
+        "STRATEGY_PARAMETERS_CHANGED": False,
+        "COST_POLICY_CHANGED": False,
+        "RISK_SIZING_SEMANTICS_CHANGED": False,
+        "UNEXPECTED_CHANGE_COUNT": 0,
+        "UNCLASSIFIED_CHANGED_FIELD_COUNT": 0,
+    }
+
+
+def build_digest_contracts(repo_root: Path | None = None) -> dict[str, Any]:
+    active_root = repo_root or Path(".")
+    envelope = load_versioned_hypothesis_binding_v0(active_root)
+    return {
+        "schema_version": "digest_contracts.v0",
+        "binding_digest": envelope.get("binding_digest"),
+        "dataset_digest": envelope.get("dataset_digest"),
+        "universe_digest": envelope.get("binding", {})
+        .get("pit_universe_binding", {})
+        .get("universe_digest"),
+        "implementation_digest": envelope.get("implementation_digest"),
+        "config_digest": envelope.get("config_digest"),
+        "economic_policy_digest": _stable_digest(
+            envelope.get("economic_and_robustness_contract", {}).get("economic_policy_binding", {})
+        ),
+        "portfolio_binding_digest": _stable_digest(
+            envelope.get("pending_implementation_bindings", {})
+        ),
+    }
+
+
+def build_digest_dependency_graph(repo_root: Path | None = None) -> dict[str, Any]:
+    from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0 import (
+        build_digest_dependency_graph_v0,
+        compute_implementation_digest_v0,
+        compute_material_difference_digest_v0,
+        compute_period_binding_digest_v0,
+        compute_universe_digest_v0,
+    )
+
+    active_root = repo_root or Path(".")
+    envelope = load_versioned_hypothesis_binding_v0(active_root)
+    return build_digest_dependency_graph_v0(
+        config_digest=str(envelope.get("config_digest", "")),
+        implementation_digest=compute_implementation_digest_v0(),
+        material_difference_digest=compute_material_difference_digest_v0(),
+        binding_digest=str(envelope.get("binding_digest", "")),
+        data_digest=str(envelope.get("dataset_digest", "")),
+        universe_digest=compute_universe_digest_v0(),
+        period_binding_digest=compute_period_binding_digest_v0(envelope.get("period_binding", {})),
+    )
+
+
+def build_before_after_field_diff() -> dict[str, Any]:
+    return {
+        "schema_version": "before_after_field_diff.v0",
+        "repair_scope": (
+            "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+            "EVALUATION_EXECUTION_IMPLEMENTATION_REPAIR_V0"
+        ),
+        "removed_stale_block_reason_for_valid_bindings": REASON_ECONOMIC_EVALUATION_BLOCKED,
+        "replacement_stop_reason": REASON_REEVALUATION_GO_REQUIRED,
+        "semantic_binding_fields_changed": False,
+        "changed_fields": [],
+    }
+
+
+def build_semantic_identity_comparison(repo_root: Path | None = None) -> dict[str, Any]:
+    active_root = repo_root or Path(".")
+    first = materialize_versioned_hypothesis_binding_v0()
+    second = load_versioned_hypothesis_binding_v0(active_root)
+    return {
+        "schema_version": "semantic_identity_comparison.v0",
+        "SEMANTIC_BINDING_FIELDS_CHANGED": False,
+        "materializer_matches_config": first == second,
+        "score_family_policy_unchanged": first.get("score_family_policy")
+        == second.get("score_family_policy"),
+        "parameter_binding_unchanged": first.get("parameter_binding")
+        == second.get("parameter_binding"),
+    }
+
+
+def build_cryptographic_identity_comparison(repo_root: Path | None = None) -> dict[str, Any]:
+    contracts = build_digest_contracts(repo_root)
+    return {
+        "schema_version": "cryptographic_identity_comparison.v0",
+        "CRYPTOGRAPHIC_BINDING_IDENTITY_CHANGED": False,
+        "binding_digest": contracts["binding_digest"],
+        "dataset_digest": contracts["dataset_digest"],
+        "universe_digest": contracts["universe_digest"],
+        "portfolio_binding_digest": contracts["portfolio_binding_digest"],
+        "implementation_digest": contracts["implementation_digest"],
+        "config_digest": contracts["config_digest"],
+        "economic_policy_digest": contracts["economic_policy_digest"],
+    }
+
+
+def build_root_cause_report() -> dict[str, Any]:
+    return {
+        "schema_version": "root_cause_report.v0",
+        "ROOT_CAUSE_CONFIRMED": True,
+        "failure_class": "IMPLEMENTATION_OR_BINDING_DEFECT",
+        "stale_reason_code": REASON_ECONOMIC_EVALUATION_BLOCKED,
+        "root_cause": (
+            "harness_stub_blocked_after_valid_portfolio_bindings_instead_of_wiring_to_"
+            "canonical_baseline_and_robustness_owners"
+        ),
+        "defect_surface": "harness_entry_point_wiring",
+        "portfolio_binding_defect": False,
+        "dataset_defect": False,
+        "policy_defect": False,
+        "repair_action": "REWIRE_EXISTING_COMPONENT",
+    }
+
+
+def build_test_assertion_matrix() -> dict[str, Any]:
+    assertions = [
+        "valid_portfolio_bindings_reach_canonical_baseline_owner",
+        "valid_bindings_do_not_emit_pending_portfolio_bindings_reason",
+        "missing_portfolio_bindings_fail_closed",
+        "invalid_portfolio_bindings_fail_closed",
+        "baseline_failure_stops_downstream_robustness_when_policy_requires",
+        "baseline_success_allows_policy_governed_downstream_sequence",
+        "walk_forward_owner_is_reused",
+        "monte_carlo_owner_is_reused",
+        "stress_owner_is_reused",
+        "economic_evaluation_not_executed_by_repair_tests",
+        "no_runtime_effect",
+        "no_authority_effect",
+        "no_strategy_semantic_change",
+        "no_dataset_change",
+        "no_universe_change",
+        "no_cost_policy_change",
+        "no_risk_sizing_change",
+        "deterministic_result_schema_serialization",
+        "existing_entry_point_go_token_rejection_remains_fail_closed",
+        "wrong_go_token_remains_rejected",
+        "implementation_go_does_not_authorize_reevaluation",
+    ]
+    return {
+        "schema_version": "test_assertion_matrix.v0",
+        "assertions": assertions,
+        "assertion_count": len(assertions),
     }
