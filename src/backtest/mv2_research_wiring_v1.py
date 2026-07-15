@@ -146,6 +146,7 @@ from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayInputV1,
     IntegratedOfflineReplayIntermediateV1,
     IntegratedOfflineReplayPoliciesV1,
+    build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
 )
 from src.trading.master_v2.suitability_binding_v1 import (
@@ -1340,8 +1341,8 @@ def _coerce_replay_input_enums_for_integrated_replay_v1(
         TradingGate as IntegratedTradingGate,
     )
     from trading.master_v2.double_play_state import SideState as IntegratedSideState
+    from trading.master_v2 import integrated_offline_trading_logic_replay_v1 as integrated_replay_v1
     from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
-        IntegratedOfflineReplayInputV1 as IntegratedOfflineReplayInputV1Integrated,
         IntegratedOfflineReplayPoliciesV1 as IntegratedOfflineReplayPoliciesV1Integrated,
     )
     from trading.master_v2.suitability_binding_v1 import (
@@ -1419,7 +1420,7 @@ def _coerce_replay_input_enums_for_integrated_replay_v1(
     def _signal(signal: PolicySignalV0) -> IntegratedPolicySignalV0:
         return IntegratedPolicySignalV0(triggered=signal.triggered)
 
-    return IntegratedOfflineReplayInputV1Integrated(
+    return integrated_replay_v1.build_integrated_offline_replay_input_v1(
         replay_id=replay_input.replay_id,
         instrument_id=replay_input.instrument_id,
         trading_epoch=replay_input.trading_epoch,
@@ -1502,7 +1503,7 @@ def _build_replay_input(
     sequence_state: MV2IntegratedReplayBarSequenceStateV1,
 ) -> IntegratedOfflineReplayInputV1:
     price_path = (float(context.mark_price), float(context.mark_price + 5.0))
-    return IntegratedOfflineReplayInputV1(
+    return build_integrated_offline_replay_input_v1(
         replay_id=replay_id,
         instrument_id=instrument_id,
         trading_epoch=trading_epoch,
