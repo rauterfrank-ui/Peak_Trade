@@ -26,6 +26,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline
     REASON_DATASET_DIGEST_MISMATCH,
     REASON_ECONOMIC_EXECUTION_FORBIDDEN,
     REASON_GO_TOKEN_INVALID,
+    REASON_PORTFOLIO_BINDING_PENDING,
     REASON_UNIVERSE_DIGEST_MISMATCH,
     RUNNER_SCRIPT,
     RUNTIME_EFFECT,
@@ -353,10 +354,17 @@ class TestNoExecutionDuringImplementation:
         assert result.executed is False
         assert result.blocked is True
 
-    def test_full_evaluation_blocked_in_implementation_scope(self) -> None:
-        result = run_full_offline_economic_evaluation_v0(go_token=_EXEC_GO)
+    def test_full_evaluation_blocked_on_pending_portfolio_bindings(self) -> None:
+        result = run_full_offline_economic_evaluation_v0(
+            go_token=_EXEC_GO,
+            repo_root=REPO_ROOT,
+            authorization_ratification=materialize_offline_economic_evaluation_authorization_ratification_v0(),
+            versioned_binding=materialize_versioned_hypothesis_binding_v0(),
+            verify_source_manifests=False,
+            materialize_dataset=False,
+        )
         assert result.executed is False
-        assert REASON_ECONOMIC_EXECUTION_FORBIDDEN in result.reason_codes
+        assert any(REASON_PORTFOLIO_BINDING_PENDING in item for item in result.reason_codes)
 
 
 class TestMaterializationRoundtrip:
@@ -384,7 +392,7 @@ class TestMaterializationRoundtrip:
         contract = materialize_execution_contract_v0()
         assert contract["economic_evaluation_executed"] is False
         assert contract["binding_digest"] == RATIFIED_BINDING_DIGEST
-        assert contract["entry_point_status"] == "EXECUTION_INFRASTRUCTURE_COMPLETE"
+        assert contract["entry_point_status"] == "EXECUTION_DISPATCH_BOUND_V0"
 
 
 class TestOpsConfigAndGovernanceArtifacts:

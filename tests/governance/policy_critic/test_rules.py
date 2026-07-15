@@ -77,6 +77,20 @@ class TestNoSecretsRule:
 
         assert len(violations) == 0
 
+    def test_no_false_positive_on_operator_go_token_identifiers(self):
+        rule = NoSecretsRule()
+        diff = """
++++ b/src/research/example_offline_economic_evaluation_execution_v0.py
++IMPLEMENTATION_GO_TOKEN: _BRANCH_IMPLEMENTATION_V0,
++        go_token=EXECUTION_CONFIRM_GO,
++GO_TOKEN = "GO_EXAMPLE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+        """
+        violations = rule.check(
+            diff, ["src/research/example_offline_economic_evaluation_execution_v0.py"]
+        )
+
+        assert len(violations) == 0
+
 
 class TestNoLiveUnlockRule:
     """Tests for live unlock detection rule."""

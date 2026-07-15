@@ -79,6 +79,10 @@ IMPLEMENTATION_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_EXECUTION_IMPLEMENTATION_V0"
 )
+DISPATCH_IMPLEMENTATION_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_DISPATCH_IMPLEMENTATION_V0"
+)
 EXECUTION_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_EXECUTION_V0"
@@ -93,7 +97,19 @@ INFRASTRUCTURE_GO_TOKEN = (
 )
 
 ALLOWED_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset({IMPLEMENTATION_GO_TOKEN})
+ALLOWED_DISPATCH_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
+    {DISPATCH_IMPLEMENTATION_GO_TOKEN}
+)
 ALLOWED_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({EXECUTION_GO_TOKEN})
+
+_BRANCH_IMPLEMENTATION_V0 = "IMPLEMENTATION_V0"
+_BRANCH_DISPATCH_IMPLEMENTATION_V0 = "DISPATCH_IMPLEMENTATION_V0"
+_BRANCH_EXECUTION_V0 = "EXECUTION_V0"
+ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
+    IMPLEMENTATION_GO_TOKEN: _BRANCH_IMPLEMENTATION_V0,
+    DISPATCH_IMPLEMENTATION_GO_TOKEN: _BRANCH_DISPATCH_IMPLEMENTATION_V0,
+    EXECUTION_GO_TOKEN: _BRANCH_EXECUTION_V0,
+}
 
 RATIFIED_BINDING_DIGEST = RATIFIED_HYPOTHESIS_BINDING_DIGEST
 RATIFIED_DATASET_DIGEST = RATIFIED_NORMALIZED_PANEL_DIGEST
@@ -105,7 +121,27 @@ CONFIG_REL_PATH_OPS = (
 
 CANONICAL_EVALUATION_CALLABLE = "run_contract_smoke_evaluation_v0"
 CANONICAL_FULL_EVALUATION_CALLABLE = "run_full_offline_economic_evaluation_v0"
-ENTRY_POINT_STATUS = "EXECUTION_INFRASTRUCTURE_COMPLETE"
+CANONICAL_DISPATCH_CALLABLE = "run_offline_economic_evaluation_execution_dispatch_v0"
+BASELINE_EVALUATOR_OWNER = (
+    "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_"
+    "economic_evaluation_execution_v0.run_baseline_offline_economic_evaluation_v0"
+)
+ROBUSTNESS_DISPATCHER_OWNER = "cross_sectional_panel_economic_evaluation_wiring_v0"
+PORTFOLIO_BINDING_OWNER = (
+    "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_"
+    "hypothesis_binding_v0"
+)
+ENTRY_POINT_STATUS = "EXECUTION_DISPATCH_BOUND_V0"
+
+PORTFOLIO_BINDING_REQUIRED_FIELDS: tuple[str, ...] = (
+    "aggregation_policy",
+    "selection_policy",
+    "holding_policy",
+    "exit_policy",
+    "portfolio_weighting_policy",
+)
+PENDING_PORTFOLIO_BINDING_STATUS = "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+BOUND_PORTFOLIO_BINDING_STATUS = "BOUND"
 
 ALLOWED_EVALUATION_STAGES: tuple[str, ...] = (
     "OFFLINE_BACKTEST",
@@ -160,6 +196,14 @@ REASON_SYNTHETIC_SPOT_ALLOWED_VIOLATION = "SYNTHETIC_SPOT_ALLOWED_VIOLATION"
 REASON_SEMANTIC_BINDING_MUTATION = "SEMANTIC_BINDING_MUTATION_DETECTED"
 REASON_MISSING_OPS_EVALUATION_CONFIG = "MISSING_OPS_EVALUATION_CONFIG"
 REASON_SCORE_FAMILY_POLICY_MISMATCH = "SCORE_FAMILY_POLICY_MISMATCH"
+REASON_MISSING_PORTFOLIO_BINDING = "MISSING_PORTFOLIO_BINDING"
+REASON_PORTFOLIO_BINDING_PENDING = "PORTFOLIO_BINDING_PENDING"
+REASON_PORTFOLIO_BINDING_DIGEST_MISMATCH = "PORTFOLIO_BINDING_DIGEST_MISMATCH"
+REASON_SOURCE_MANIFEST_VERIFY_FAILED = "SOURCE_MANIFEST_VERIFY_FAILED"
+REASON_OFFLINE_ONLY_VIOLATION = "OFFLINE_ONLY_VIOLATION"
+REASON_BASELINE_EXECUTION_BLOCKED = "BASELINE_EXECUTION_BLOCKED_PENDING_PORTFOLIO_BINDINGS"
+REASON_ROBUSTNESS_EXECUTION_BLOCKED = "ROBUSTNESS_EXECUTION_BLOCKED_PENDING_PORTFOLIO_BINDINGS"
+REASON_ECONOMIC_EVALUATION_BLOCKED = "ECONOMIC_EVALUATION_BLOCKED_PENDING_PORTFOLIO_BINDINGS"
 
 
 class InfrastructureTerminalStatus(str, Enum):
@@ -171,6 +215,13 @@ class InfrastructureTerminalStatus(str, Enum):
 class EvaluationEntrypointTerminalStatus(str, Enum):
     ENTRYPOINT_READY_DRY_RUN_STOPPED = "ENTRYPOINT_READY_DRY_RUN_STOPPED"
     FAIL_CLOSED_PRECHECK = "FAIL_CLOSED_PRECHECK"
+
+
+class ExecutionDispatchTerminalStatus(str, Enum):
+    DISPATCH_FAIL_CLOSED = "DISPATCH_FAIL_CLOSED"
+    DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION = (
+        "DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION"
+    )
 
 
 @dataclass(frozen=True)
@@ -231,6 +282,27 @@ class PhaseExecutionBlockedResultV0:
     runtime_effect: str
 
 
+@dataclass(frozen=True)
+class OfflineEconomicEvaluationDispatchResultV0:
+    status: ExecutionDispatchTerminalStatus
+    dispatch_accepted: bool
+    precheck_passed: bool
+    portfolio_bindings_valid: bool
+    source_manifests_verified: bool
+    bound_dataset_materialized: bool
+    dataset_period_match: bool
+    panel_data_digest: str
+    reason_codes: tuple[str, ...]
+    baseline_executed: bool
+    robustness_executed: bool
+    economic_evaluation_executed: bool
+    authority_effect: str
+    runtime_effect: str
+    dispatcher_owner: str
+    baseline_phase_owner: str
+    robustness_phase_owner: str
+
+
 def _stable_digest(payload: Mapping[str, Any]) -> str:
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
@@ -277,12 +349,253 @@ def validate_execution_go_token_v0(go_token: str | None) -> tuple[bool, tuple[st
     return True, ()
 
 
+def validate_dispatch_implementation_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_DISPATCH_IMPLEMENTATION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
 def validate_entry_point_go_token_v0(go_token: str) -> tuple[bool, str | None]:
-    if go_token in ALLOWED_IMPLEMENTATION_GO_TOKENS:
-        return True, "IMPLEMENTATION_V0"
-    if go_token in ALLOWED_EXECUTION_GO_TOKENS:
-        return True, "EXECUTION_V0"
-    return False, None
+    branch = ENTRY_POINT_DISPATCH_REGISTRY.get(go_token)
+    if branch is None:
+        return False, None
+    return True, branch
+
+
+def _ranking_contract_portfolio_binding_status_key(field: str) -> str:
+    return f"{field}_binding_status"
+
+
+def validate_portfolio_bindings_for_execution_dispatch_v0(
+    envelope: Mapping[str, Any],
+    score_ranking_contract: Mapping[str, Any] | None = None,
+    *,
+    expected_portfolio_binding_digests: Mapping[str, str] | None = None,
+) -> tuple[bool, tuple[str, ...]]:
+    reasons: list[str] = []
+    pending = envelope.get("pending_implementation_bindings", {})
+    if not isinstance(pending, Mapping):
+        reasons.append(REASON_MISSING_PORTFOLIO_BINDING)
+        return False, tuple(dict.fromkeys(reasons))
+
+    contract = score_ranking_contract or materialize_score_and_ranking_contract_v0(envelope)
+    ranking_contract = contract.get("ranking_contract", contract)
+
+    for field in PORTFOLIO_BINDING_REQUIRED_FIELDS:
+        binding = pending.get(field)
+        if not isinstance(binding, Mapping):
+            reasons.append(f"{REASON_MISSING_PORTFOLIO_BINDING}:{field}")
+            continue
+
+        status = str(binding.get("status", ""))
+        if status == PENDING_PORTFOLIO_BINDING_STATUS:
+            reasons.append(f"{REASON_PORTFOLIO_BINDING_PENDING}:{field}")
+        elif status != BOUND_PORTFOLIO_BINDING_STATUS:
+            reasons.append(f"{REASON_MISSING_PORTFOLIO_BINDING}:{field}")
+        elif expected_portfolio_binding_digests is not None:
+            expected_digest = expected_portfolio_binding_digests.get(field)
+            actual_digest = str(binding.get("binding_digest", ""))
+            if expected_digest and actual_digest != expected_digest:
+                reasons.append(f"{REASON_PORTFOLIO_BINDING_DIGEST_MISMATCH}:{field}")
+
+        rank_key = _ranking_contract_portfolio_binding_status_key(field)
+        rank_status = ranking_contract.get(rank_key)
+        if rank_status == PENDING_PORTFOLIO_BINDING_STATUS:
+            reasons.append(f"{REASON_PORTFOLIO_BINDING_PENDING}:{rank_key}")
+        elif rank_status not in {None, BOUND_PORTFOLIO_BINDING_STATUS}:
+            reasons.append(f"{REASON_MISSING_PORTFOLIO_BINDING}:{rank_key}")
+
+    return not reasons, tuple(dict.fromkeys(reasons))
+
+
+def materialize_portfolio_binding_contract_v0(
+    envelope: Mapping[str, Any] | None = None,
+    *,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
+    active_root = repo_root or Path(".")
+    active = dict(envelope or load_versioned_hypothesis_binding_v0(active_root))
+    pending = active.get("pending_implementation_bindings", {})
+    contract = materialize_score_and_ranking_contract_v0(active)
+    ranking_contract = contract.get("ranking_contract", contract)
+    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
+        active,
+        contract,
+    )
+    return {
+        "schema_version": "pairwise_spillover_portfolio_binding_contract.v0",
+        "portfolio_binding_owner": PORTFOLIO_BINDING_OWNER,
+        "required_fields": list(PORTFOLIO_BINDING_REQUIRED_FIELDS),
+        "pending_portfolio_binding_status": PENDING_PORTFOLIO_BINDING_STATUS,
+        "bound_portfolio_binding_status": BOUND_PORTFOLIO_BINDING_STATUS,
+        "portfolio_bindings_valid": portfolio_ok,
+        "reason_codes": list(portfolio_reasons),
+        "pending_implementation_bindings": {
+            field: pending.get(field, {}) for field in PORTFOLIO_BINDING_REQUIRED_FIELDS
+        },
+        "ranking_contract_binding_statuses": {
+            _ranking_contract_portfolio_binding_status_key(field): ranking_contract.get(
+                _ranking_contract_portfolio_binding_status_key(field)
+            )
+            for field in PORTFOLIO_BINDING_REQUIRED_FIELDS
+        },
+        "implicit_defaults_forbidden": True,
+    }
+
+
+def materialize_dispatch_contract_v0() -> dict[str, Any]:
+    return {
+        "schema_version": "pairwise_spillover_offline_economic_evaluation_dispatch.v0",
+        "canonical_dispatch_callable": CANONICAL_DISPATCH_CALLABLE,
+        "canonical_full_evaluation_callable": CANONICAL_FULL_EVALUATION_CALLABLE,
+        "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
+        "robustness_dispatcher_owner": ROBUSTNESS_DISPATCHER_OWNER,
+        "portfolio_binding_owner": PORTFOLIO_BINDING_OWNER,
+        "implementation_go_token": IMPLEMENTATION_GO_TOKEN,
+        "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
+        "execution_go_token": EXECUTION_GO_TOKEN,
+        "entry_point_dispatch_registry": dict(ENTRY_POINT_DISPATCH_REGISTRY),
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+    }
+
+
+def dispatch_result_to_dict(result: OfflineEconomicEvaluationDispatchResultV0) -> dict[str, Any]:
+    return {
+        "status": result.status.value,
+        "dispatch_accepted": result.dispatch_accepted,
+        "precheck_passed": result.precheck_passed,
+        "portfolio_bindings_valid": result.portfolio_bindings_valid,
+        "source_manifests_verified": result.source_manifests_verified,
+        "bound_dataset_materialized": result.bound_dataset_materialized,
+        "dataset_period_match": result.dataset_period_match,
+        "panel_data_digest": result.panel_data_digest,
+        "reason_codes": list(result.reason_codes),
+        "baseline_executed": result.baseline_executed,
+        "robustness_executed": result.robustness_executed,
+        "economic_evaluation_executed": result.economic_evaluation_executed,
+        "authority_effect": result.authority_effect,
+        "runtime_effect": result.runtime_effect,
+        "dispatcher_owner": result.dispatcher_owner,
+        "baseline_phase_owner": result.baseline_phase_owner,
+        "robustness_phase_owner": result.robustness_phase_owner,
+    }
+
+
+def run_offline_economic_evaluation_execution_dispatch_v0(
+    *,
+    repo_root: Path,
+    authorization_ratification: Mapping[str, Any],
+    go_token: str,
+    staging_root: Path | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
+    expected_portfolio_binding_digests: Mapping[str, str] | None = None,
+    verify_source_manifests: bool = True,
+    materialize_dataset: bool = True,
+) -> OfflineEconomicEvaluationDispatchResultV0:
+    """Fail-closed offline economic evaluation dispatch without baseline or robustness."""
+    reasons: list[str] = []
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
+    score_ranking_contract = materialize_score_and_ranking_contract_v0(envelope)
+
+    token_ok, token_reasons = validate_execution_go_token_v0(go_token)
+    if not token_ok:
+        reasons.extend(token_reasons)
+
+    if authorization_ratification.get("offline_only") is not True:
+        reasons.append(REASON_OFFLINE_ONLY_VIOLATION)
+    ops_cfg = load_ops_evaluation_config_v0(repo_root)
+    if ops_cfg.get("offline_only") is not True:
+        reasons.append(REASON_OFFLINE_ONLY_VIOLATION)
+
+    start_state = verify_execution_start_state_v0(
+        repo_root=repo_root,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=envelope,
+    )
+    if not start_state.valid:
+        reasons.extend(start_state.fail_reasons)
+
+    digest_ok, digest_reasons = verify_ratified_digests_v0(
+        envelope,
+        expected_binding_digest=str(ops_cfg.get("binding_digest", "")),
+        expected_dataset_digest=str(
+            ops_cfg.get("cross_sectional_evaluation_binding_v1", {})
+            .get("dataset_binding", {})
+            .get("dataset_digest", RATIFIED_DATASET_DIGEST)
+        ),
+    )
+    if not digest_ok:
+        reasons.extend(digest_reasons)
+
+    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
+        envelope,
+        score_ranking_contract,
+        expected_portfolio_binding_digests=expected_portfolio_binding_digests,
+    )
+    if not portfolio_ok:
+        reasons.extend(portfolio_reasons)
+
+    source_manifests_verified = False
+    if verify_source_manifests and staging_root is not None:
+        manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
+            staging_root
+        )
+        source_manifests_verified = manifest_ok and manifest_rc == 0
+        if not source_manifests_verified:
+            reasons.append(REASON_SOURCE_MANIFEST_VERIFY_FAILED)
+            reasons.extend(manifest_reasons)
+
+    bound_dataset_materialized = False
+    dataset_period_match = False
+    panel_data_digest = "0" * 64
+    if materialize_dataset and staging_root is not None and not reasons:
+        materialization = materialize_bound_panel_dataset_v0(
+            staging_root,
+            period_binding=envelope["period_binding"],
+        )
+        panel_data_digest = materialization.panel_data_digest
+        bound_dataset_materialized = (
+            materialization.status is MaterializationTerminalStatus.DATASET_MATERIALIZATION_COMPLETE
+        )
+        dataset_period_match = bound_dataset_materialized
+        if not bound_dataset_materialized:
+            reasons.extend(materialization.reason_codes)
+
+    unique_reasons = tuple(dict.fromkeys(reasons))
+    precheck_passed = not unique_reasons
+    dispatch_accepted = token_ok and precheck_passed
+    status = (
+        ExecutionDispatchTerminalStatus.DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION
+        if dispatch_accepted
+        else ExecutionDispatchTerminalStatus.DISPATCH_FAIL_CLOSED
+    )
+    return OfflineEconomicEvaluationDispatchResultV0(
+        status=status,
+        dispatch_accepted=dispatch_accepted,
+        precheck_passed=precheck_passed,
+        portfolio_bindings_valid=portfolio_ok,
+        source_manifests_verified=source_manifests_verified,
+        bound_dataset_materialized=bound_dataset_materialized,
+        dataset_period_match=dataset_period_match,
+        panel_data_digest=panel_data_digest,
+        reason_codes=unique_reasons,
+        baseline_executed=False,
+        robustness_executed=False,
+        economic_evaluation_executed=False,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+        dispatcher_owner=f"{HARNESS_OWNER}.{CANONICAL_DISPATCH_CALLABLE}",
+        baseline_phase_owner=BASELINE_EVALUATOR_OWNER,
+        robustness_phase_owner=ROBUSTNESS_DISPATCHER_OWNER,
+    )
 
 
 def verify_ratified_digests_v0(
@@ -691,47 +1004,131 @@ def _blocked_phase_result_v0(*, phase: str, reason: str) -> PhaseExecutionBlocke
 def run_baseline_offline_economic_evaluation_v0(
     *,
     go_token: str,
+    repo_root: Path | None = None,
+    authorization_ratification: Mapping[str, Any] | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
     if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(phase="BASELINE", reason=REASON_GO_TOKEN_INVALID)
+    active_root = repo_root or Path(".")
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(active_root))
+    auth = authorization_ratification or load_authorization_ratification_v0(active_root)
+    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
+        envelope,
+        materialize_score_and_ranking_contract_v0(envelope),
+    )
+    if not portfolio_ok:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            reason_codes=portfolio_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
     return _blocked_phase_result_v0(
         phase="BASELINE",
-        reason=REASON_ECONOMIC_EXECUTION_FORBIDDEN,
+        reason=REASON_BASELINE_EXECUTION_BLOCKED,
     )
 
 
 def run_walk_forward_evaluation_v0(
-    *, go_token: str, **_kwargs: Any
+    *,
+    go_token: str,
+    repo_root: Path | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
+    **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
     if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(phase="WALK_FORWARD", reason=REASON_GO_TOKEN_INVALID)
+    active_root = repo_root or Path(".")
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(active_root))
+    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
+        envelope,
+        materialize_score_and_ranking_contract_v0(envelope),
+    )
+    if not portfolio_ok:
+        return PhaseExecutionBlockedResultV0(
+            phase="WALK_FORWARD",
+            executed=False,
+            blocked=True,
+            reason_codes=portfolio_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
     return _blocked_phase_result_v0(
         phase="WALK_FORWARD",
-        reason=REASON_ECONOMIC_EXECUTION_FORBIDDEN,
+        reason=REASON_ROBUSTNESS_EXECUTION_BLOCKED,
     )
 
 
 def run_monte_carlo_evaluation_v0(
-    *, go_token: str, **_kwargs: Any
+    *,
+    go_token: str,
+    repo_root: Path | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
+    **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
     if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(phase="MONTE_CARLO", reason=REASON_GO_TOKEN_INVALID)
+    active_root = repo_root or Path(".")
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(active_root))
+    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
+        envelope,
+        materialize_score_and_ranking_contract_v0(envelope),
+    )
+    if not portfolio_ok:
+        return PhaseExecutionBlockedResultV0(
+            phase="MONTE_CARLO",
+            executed=False,
+            blocked=True,
+            reason_codes=portfolio_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
     return _blocked_phase_result_v0(
         phase="MONTE_CARLO",
-        reason=REASON_ECONOMIC_EXECUTION_FORBIDDEN,
+        reason=REASON_ROBUSTNESS_EXECUTION_BLOCKED,
     )
 
 
-def run_stress_evaluation_v0(*, go_token: str, **_kwargs: Any) -> PhaseExecutionBlockedResultV0:
+def run_stress_evaluation_v0(
+    *,
+    go_token: str,
+    repo_root: Path | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
+    **_kwargs: Any,
+) -> PhaseExecutionBlockedResultV0:
     if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
         return _blocked_phase_result_v0(phase="STRESS", reason=REASON_GO_TOKEN_INVALID)
-    return _blocked_phase_result_v0(phase="STRESS", reason=REASON_ECONOMIC_EXECUTION_FORBIDDEN)
+    active_root = repo_root or Path(".")
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(active_root))
+    portfolio_ok, portfolio_reasons = validate_portfolio_bindings_for_execution_dispatch_v0(
+        envelope,
+        materialize_score_and_ranking_contract_v0(envelope),
+    )
+    if not portfolio_ok:
+        return PhaseExecutionBlockedResultV0(
+            phase="STRESS",
+            executed=False,
+            blocked=True,
+            reason_codes=portfolio_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+    return _blocked_phase_result_v0(phase="STRESS", reason=REASON_ROBUSTNESS_EXECUTION_BLOCKED)
 
 
 def run_full_offline_economic_evaluation_v0(
     *,
     go_token: str,
+    repo_root: Path | None = None,
+    authorization_ratification: Mapping[str, Any] | None = None,
+    staging_root: Path | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
+    verify_source_manifests: bool = True,
+    materialize_dataset: bool = True,
     **_kwargs: Any,
 ) -> PhaseExecutionBlockedResultV0:
     if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
@@ -739,9 +1136,29 @@ def run_full_offline_economic_evaluation_v0(
             phase="FULL_OFFLINE_ECONOMIC_EVALUATION",
             reason=REASON_GO_TOKEN_INVALID,
         )
+    active_root = repo_root or Path(".")
+    auth = authorization_ratification or load_authorization_ratification_v0(active_root)
+    dispatch = run_offline_economic_evaluation_execution_dispatch_v0(
+        repo_root=active_root,
+        authorization_ratification=auth,
+        go_token=go_token,
+        staging_root=staging_root,
+        versioned_binding=versioned_binding,
+        verify_source_manifests=verify_source_manifests,
+        materialize_dataset=materialize_dataset,
+    )
+    if not dispatch.dispatch_accepted:
+        return PhaseExecutionBlockedResultV0(
+            phase="FULL_OFFLINE_ECONOMIC_EVALUATION",
+            executed=False,
+            blocked=True,
+            reason_codes=dispatch.reason_codes,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
     return _blocked_phase_result_v0(
         phase="FULL_OFFLINE_ECONOMIC_EVALUATION",
-        reason=REASON_ECONOMIC_EXECUTION_FORBIDDEN,
+        reason=REASON_ECONOMIC_EVALUATION_BLOCKED,
     )
 
 
@@ -756,9 +1173,15 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "score_family_policy": SCORE_FORMULA_VERSION,
         "canonical_evaluation_callable": CANONICAL_EVALUATION_CALLABLE,
         "canonical_full_evaluation_callable": CANONICAL_FULL_EVALUATION_CALLABLE,
+        "canonical_dispatch_callable": CANONICAL_DISPATCH_CALLABLE,
         "implementation_go_token": IMPLEMENTATION_GO_TOKEN,
+        "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
         "entry_point_status": ENTRY_POINT_STATUS,
+        "entry_point_dispatch_registry": dict(ENTRY_POINT_DISPATCH_REGISTRY),
+        "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
+        "robustness_dispatcher_owner": ROBUSTNESS_DISPATCHER_OWNER,
+        "portfolio_binding_owner": PORTFOLIO_BINDING_OWNER,
         "runner_binding_ref": RUNNER_SCRIPT,
         "harness_binding_ref": f"{HARNESS_OWNER}.py",
         "versioned_binding_config": CONFIG_REL_PATH,
@@ -868,6 +1291,9 @@ def build_owner_inventory() -> dict[str, Any]:
         ),
         "panel_staging_manifest_owner": "cross_sectional_panel_staging_source_manifest_v1",
         "robustness_wiring_owner": "cross_sectional_panel_economic_evaluation_wiring_v0",
+        "dispatch_owner": f"{HARNESS_OWNER}.{CANONICAL_DISPATCH_CALLABLE}",
+        "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
+        "portfolio_binding_owner": PORTFOLIO_BINDING_OWNER,
         "manifest_owner": "scripts.ops.primary_evidence_retention_v0",
     }
 
@@ -900,8 +1326,18 @@ def build_reuse_decision() -> dict[str, Any]:
             },
             {
                 "component": "execution_harness",
-                "decision": "NEW_IMPLEMENTATION_JUSTIFIED",
-                "justification": "scope_specific_orchestration_adapter_without_semantic_duplication",
+                "decision": "REUSE_WITH_NARROW_ADAPTER",
+                "justification": "scope_specific_dispatch_adapter_without_semantic_duplication",
+            },
+            {
+                "component": "offline_economic_evaluation_dispatch",
+                "decision": "REUSE_WITH_NARROW_ADAPTER",
+                "owner": f"{HARNESS_OWNER}.{CANONICAL_DISPATCH_CALLABLE}",
+            },
+            {
+                "component": "portfolio_binding_validation",
+                "decision": "REUSE_AS_IS",
+                "owner": PORTFOLIO_BINDING_OWNER,
             },
         ],
     }
@@ -911,12 +1347,14 @@ def build_runner_decision() -> dict[str, Any]:
     return {
         "schema_version": "runner_decision.v0",
         "runner_required": True,
-        "runner_action": "THIN_OPS_DELEGATION_TO_HARNESS",
+        "runner_action": "THIN_OPS_DELEGATION_TO_HARNESS_WITH_EXECUTION_DISPATCH",
         "economic_evaluation_executed": False,
         "baseline_executed": False,
         "robustness_executed": False,
         "implementation_go_token": IMPLEMENTATION_GO_TOKEN,
+        "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
+        "execution_go_dispatch_bound": True,
         "next_recommended_scope": (
             "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
             "EVALUATION_EXECUTION_V0"
