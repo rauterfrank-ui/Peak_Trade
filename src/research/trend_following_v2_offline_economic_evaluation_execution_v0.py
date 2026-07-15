@@ -57,6 +57,9 @@ CANONICAL_SERIALIZATION_VERSION = "sparse_signal_execution_canonical_json_v1"
 INFRASTRUCTURE_GO_TOKEN = (
     "GO_TREND_FOLLOWING_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_INFRASTRUCTURE_V0"
 )
+DISPATCH_IMPLEMENTATION_GO_TOKEN = (
+    "GO_TREND_FOLLOWING_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_DISPATCH_IMPLEMENTATION_V0"
+)
 EXECUTION_GO_TOKEN = "GO_TREND_FOLLOWING_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 GO_TOKEN = EXECUTION_GO_TOKEN
 
@@ -67,13 +70,25 @@ CONFIG_REL_PATH_OPS = "config/ops/trend_following_v2_economic_evaluation_v1.json
 RUNNER_SCRIPT = "scripts/ops/run_trend_following_v2_offline_economic_evaluation_execution_v0.py"
 CANONICAL_EVALUATION_CALLABLE = "run_contract_smoke_evaluation_v0"
 CANONICAL_FULL_EVALUATION_CALLABLE = "run_full_offline_economic_evaluation_v0"
-ENTRY_POINT_STATUS = "EXECUTION_INFRASTRUCTURE_WIRING_V0"
+CANONICAL_DISPATCH_CALLABLE = "run_offline_economic_evaluation_execution_dispatch_v0"
+HARNESS_OWNER = "src.research.trend_following_v2_offline_economic_evaluation_execution_v0"
+BASELINE_EVALUATOR_OWNER = (
+    "versioned_final_fleet_bindings_offline_economic_evaluation_v0."
+    "_run_candidate_with_runtime_config_v0"
+)
+ENTRY_POINT_STATUS = "EXECUTION_DISPATCH_WIRING_V0"
 
 _BRANCH_INFRASTRUCTURE_V0 = "INFRASTRUCTURE_V0"
 _BRANCH_EXECUTION_V0 = "EXECUTION_V0"
+_BRANCH_DISPATCH_IMPLEMENTATION_V0 = "DISPATCH_IMPLEMENTATION_V0"
+ALLOWED_EVALUATION_DISPATCH_GO_TOKENS: frozenset[str] = frozenset({EXECUTION_GO_TOKEN})
+ALLOWED_DISPATCH_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
+    {DISPATCH_IMPLEMENTATION_GO_TOKEN}
+)
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     INFRASTRUCTURE_GO_TOKEN: _BRANCH_INFRASTRUCTURE_V0,
     EXECUTION_GO_TOKEN: _BRANCH_EXECUTION_V0,
+    DISPATCH_IMPLEMENTATION_GO_TOKEN: _BRANCH_DISPATCH_IMPLEMENTATION_V0,
 }
 
 REASON_BINDING_DIGEST_MISMATCH = "BINDING_DIGEST_MISMATCH"
@@ -82,6 +97,10 @@ REASON_BINDING_INCOMPLETE = "BINDING_INCOMPLETE"
 REASON_RATIFICATION_INVALID = "RATIFICATION_INVALID"
 REASON_GO_TOKEN_INVALID = "GO_TOKEN_INVALID"
 REASON_ECONOMIC_EXECUTION_FORBIDDEN = "ECONOMIC_EXECUTION_FORBIDDEN_IN_INFRASTRUCTURE_SCOPE"
+REASON_OFFLINE_ONLY_VIOLATION = "OFFLINE_ONLY_VIOLATION"
+REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION = (
+    "DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION"
+)
 REASON_MISSING_OPS_EVALUATION_CONFIG = "MISSING_OPS_EVALUATION_CONFIG"
 REASON_PANEL_STAGING_MISSING = "PANEL_STAGING_MISSING"
 REASON_SOURCE_MANIFEST_VERIFY_FAILED = "SOURCE_MANIFEST_VERIFY_FAILED"
@@ -97,6 +116,13 @@ class InfrastructureTerminalStatus(str, Enum):
 class EvaluationEntrypointTerminalStatus(str, Enum):
     ENTRYPOINT_READY_DRY_RUN_STOPPED = "ENTRYPOINT_READY_DRY_RUN_STOPPED"
     FAIL_CLOSED_PRECHECK = "FAIL_CLOSED_PRECHECK"
+
+
+class ExecutionDispatchTerminalStatus(str, Enum):
+    DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION = (
+        "DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION"
+    )
+    DISPATCH_FAIL_CLOSED = "DISPATCH_FAIL_CLOSED"
 
 
 @dataclass(frozen=True)
@@ -155,6 +181,26 @@ class FullEvaluationDispatchResultV0:
     reason_codes: tuple[str, ...]
     authority_effect: str
     runtime_effect: str
+
+
+@dataclass(frozen=True)
+class OfflineEconomicEvaluationDispatchResultV0:
+    status: ExecutionDispatchTerminalStatus
+    dispatch_accepted: bool
+    precheck_passed: bool
+    source_manifests_verified: bool
+    bound_dataset_materialized: bool
+    dataset_period_match: bool
+    panel_data_digest: str
+    panel_wiring_complete: bool
+    reason_codes: tuple[str, ...]
+    baseline_executed: bool
+    robustness_executed: bool
+    economic_evaluation_executed: bool
+    authority_effect: str
+    runtime_effect: str
+    dispatcher_owner: str
+    baseline_phase_owner: str
 
 
 def _stable_digest(payload: Mapping[str, Any]) -> str:
@@ -289,6 +335,22 @@ def validate_infrastructure_go_token_v0(go_token: str | None) -> tuple[bool, tup
 
 def validate_execution_go_token_v0(go_token: str | None) -> tuple[bool, tuple[str, ...]]:
     if go_token != EXECUTION_GO_TOKEN:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def validate_dispatch_implementation_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if go_token not in ALLOWED_DISPATCH_IMPLEMENTATION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def validate_evaluation_dispatch_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if go_token not in ALLOWED_EVALUATION_DISPATCH_GO_TOKENS:
         return False, (REASON_GO_TOKEN_INVALID,)
     return True, ()
 
@@ -446,6 +508,8 @@ def verify_full_evaluation_precheck_v1(
         ok, token_reasons = validate_infrastructure_go_token_v0(go_token)
         if not ok:
             reasons.extend(token_reasons)
+        if go_token in ALLOWED_EVALUATION_DISPATCH_GO_TOKENS:
+            reasons.append(REASON_ECONOMIC_EXECUTION_FORBIDDEN)
 
     staging_root = _resolve_panel_staging_root(envelope)
     if not staging_root.is_dir():
@@ -461,6 +525,22 @@ def run_full_evaluation_entrypoint_dry_run_v1(
     versioned_binding: Mapping[str, Any] | None = None,
     go_token: str = INFRASTRUCTURE_GO_TOKEN,
 ) -> FullEvaluationEntrypointResultV1:
+    if go_token in ALLOWED_EVALUATION_DISPATCH_GO_TOKENS:
+        return FullEvaluationEntrypointResultV1(
+            status=EvaluationEntrypointTerminalStatus.FAIL_CLOSED_PRECHECK,
+            precheck_passed=False,
+            source_manifests_verified=False,
+            bound_dataset_materialized=False,
+            dataset_period_match=False,
+            panel_data_digest=RATIFIED_DATASET_DIGEST,
+            stage_wiring=(),
+            dry_run_stopped_before_execution=True,
+            economic_evaluation_executed=False,
+            reason_codes=(REASON_ECONOMIC_EXECUTION_FORBIDDEN,),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
     envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
     precheck_ok, precheck_reasons = verify_full_evaluation_precheck_v1(
         repo_root=repo_root,
@@ -525,12 +605,108 @@ def run_full_evaluation_entrypoint_dry_run_v1(
     )
 
 
+def run_offline_economic_evaluation_execution_dispatch_v0(
+    *,
+    repo_root: Path,
+    authorization_ratification: Mapping[str, Any],
+    go_token: str,
+    versioned_binding: Mapping[str, Any] | None = None,
+    verify_source_manifests: bool = True,
+) -> OfflineEconomicEvaluationDispatchResultV0:
+    """Fail-closed offline economic evaluation dispatch without baseline or robustness."""
+    reasons: list[str] = []
+    envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
+
+    token_ok, token_reasons = validate_evaluation_dispatch_go_token_v0(go_token)
+    if not token_ok:
+        reasons.extend(token_reasons)
+
+    if authorization_ratification.get("offline_only") is not True:
+        reasons.append(REASON_OFFLINE_ONLY_VIOLATION)
+    ops_cfg = load_ops_evaluation_config_v0(repo_root)
+    if ops_cfg.get("offline_only") is not True:
+        reasons.append(REASON_OFFLINE_ONLY_VIOLATION)
+
+    start_state = verify_execution_start_state_v0(
+        repo_root=repo_root,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=envelope,
+    )
+    if not start_state.valid:
+        reasons.extend(start_state.fail_reasons)
+
+    digest_ok, digest_reasons = verify_ratified_digests_v0(
+        envelope,
+        expected_binding_digest=str(ops_cfg.get("binding_digest", RATIFIED_BINDING_DIGEST)),
+        expected_dataset_digest=str(
+            ops_cfg.get("sparse_signal_evaluation_binding_v0", {}).get(
+                "dataset_digest",
+                RATIFIED_DATASET_DIGEST,
+            )
+        ),
+    )
+    if not digest_ok:
+        reasons.extend(digest_reasons)
+
+    source_manifests_verified = False
+    if verify_source_manifests:
+        manifest_ok, manifest_reasons = verify_source_evidence_manifests_v0()
+        source_manifests_verified = manifest_ok
+        if not manifest_ok:
+            reasons.extend(manifest_reasons)
+
+    panel_data_digest = str(envelope.get("dataset_digest", RATIFIED_DATASET_DIGEST))
+    bound_dataset_materialized = False
+    dataset_period_match = False
+    panel_wiring_complete = False
+    if not reasons:
+        smoke = run_contract_smoke_evaluation_v0(
+            repo_root=repo_root,
+            versioned_binding=envelope,
+            authorization_ratification=authorization_ratification,
+        )
+        panel_data_digest = smoke.panel_data_digest
+        bound_dataset_materialized = smoke.bound_dataset_materialized
+        dataset_period_match = smoke.dataset_period_match
+        panel_wiring_complete = smoke.panel_wiring_complete
+        if smoke.status is not InfrastructureTerminalStatus.EXECUTION_INFRASTRUCTURE_COMPLETE:
+            reasons.extend(smoke.reason_codes)
+
+    unique_reasons = tuple(dict.fromkeys(reasons))
+    precheck_passed = not unique_reasons
+    dispatch_accepted = token_ok and precheck_passed
+    status = (
+        ExecutionDispatchTerminalStatus.DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION
+        if dispatch_accepted
+        else ExecutionDispatchTerminalStatus.DISPATCH_FAIL_CLOSED
+    )
+    return OfflineEconomicEvaluationDispatchResultV0(
+        status=status,
+        dispatch_accepted=dispatch_accepted,
+        precheck_passed=precheck_passed,
+        source_manifests_verified=source_manifests_verified,
+        bound_dataset_materialized=bound_dataset_materialized,
+        dataset_period_match=dataset_period_match,
+        panel_data_digest=panel_data_digest,
+        panel_wiring_complete=panel_wiring_complete,
+        reason_codes=unique_reasons,
+        baseline_executed=False,
+        robustness_executed=False,
+        economic_evaluation_executed=False,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+        dispatcher_owner=f"{HARNESS_OWNER}.{CANONICAL_DISPATCH_CALLABLE}",
+        baseline_phase_owner=BASELINE_EVALUATOR_OWNER,
+    )
+
+
 def run_full_offline_economic_evaluation_v0(
     *,
     go_token: str,
     repo_root: Path,
     authorization_ratification: Mapping[str, Any] | None = None,
     versioned_binding: Mapping[str, Any] | None = None,
+    verify_source_manifests: bool = True,
 ) -> FullEvaluationDispatchResultV0:
     envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
     ratification = dict(authorization_ratification or load_authorization_ratification_v0(repo_root))
@@ -571,11 +747,28 @@ def run_full_offline_economic_evaluation_v0(
             runtime_effect=RUNTIME_EFFECT,
         )
 
+    dispatch = run_offline_economic_evaluation_execution_dispatch_v0(
+        repo_root=repo_root,
+        authorization_ratification=ratification,
+        go_token=go_token,
+        versioned_binding=envelope,
+        verify_source_manifests=verify_source_manifests,
+    )
+    if not dispatch.dispatch_accepted:
+        return FullEvaluationDispatchResultV0(
+            executed=False,
+            blocked=True,
+            wiring_verified=dispatch.precheck_passed,
+            reason_codes=dispatch.reason_codes,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
     return FullEvaluationDispatchResultV0(
         executed=False,
-        blocked=True,
+        blocked=False,
         wiring_verified=True,
-        reason_codes=(REASON_ECONOMIC_EXECUTION_FORBIDDEN,),
+        reason_codes=(REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION,),
         authority_effect=AUTHORITY_EFFECT,
         runtime_effect=RUNTIME_EFFECT,
     )
@@ -594,7 +787,9 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "dataset_digest": RATIFIED_DATASET_DIGEST,
         "canonical_evaluation_callable": CANONICAL_EVALUATION_CALLABLE,
         "canonical_full_evaluation_callable": CANONICAL_FULL_EVALUATION_CALLABLE,
+        "canonical_dispatch_callable": CANONICAL_DISPATCH_CALLABLE,
         "infrastructure_go_token": INFRASTRUCTURE_GO_TOKEN,
+        "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
         "entry_point_status": ENTRY_POINT_STATUS,
         "harness_binding_ref": HARNESS_BINDING_REF,
@@ -608,6 +803,47 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "authority_effect": AUTHORITY_EFFECT,
         "runtime_effect": RUNTIME_EFFECT,
         "order_effect": ORDER_EFFECT,
+    }
+
+
+def materialize_dispatch_contract_v0() -> dict[str, Any]:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "execution_id": EXECUTION_ID,
+        "canonical_dispatch_callable": CANONICAL_DISPATCH_CALLABLE,
+        "dispatcher_owner": f"{HARNESS_OWNER}.{CANONICAL_DISPATCH_CALLABLE}",
+        "baseline_phase_owner": BASELINE_EVALUATOR_OWNER,
+        "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
+        "execution_go_token": EXECUTION_GO_TOKEN,
+        "entry_point_status": ENTRY_POINT_STATUS,
+        "economic_evaluation_executed": False,
+        "baseline_executed": False,
+        "robustness_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+    }
+
+
+def dispatch_result_to_dict(
+    result: OfflineEconomicEvaluationDispatchResultV0,
+) -> dict[str, Any]:
+    return {
+        "status": result.status.value,
+        "dispatch_accepted": result.dispatch_accepted,
+        "precheck_passed": result.precheck_passed,
+        "source_manifests_verified": result.source_manifests_verified,
+        "bound_dataset_materialized": result.bound_dataset_materialized,
+        "dataset_period_match": result.dataset_period_match,
+        "panel_data_digest": result.panel_data_digest,
+        "panel_wiring_complete": result.panel_wiring_complete,
+        "reason_codes": list(result.reason_codes),
+        "baseline_executed": result.baseline_executed,
+        "robustness_executed": result.robustness_executed,
+        "economic_evaluation_executed": result.economic_evaluation_executed,
+        "authority_effect": result.authority_effect,
+        "runtime_effect": result.runtime_effect,
+        "dispatcher_owner": result.dispatcher_owner,
+        "baseline_phase_owner": result.baseline_phase_owner,
     }
 
 
@@ -677,34 +913,44 @@ def entrypoint_result_to_dict(result: FullEvaluationEntrypointResultV1) -> dict[
 
 __all__ = [
     "AUTHORITY_EFFECT",
+    "BASELINE_EVALUATOR_OWNER",
+    "CANONICAL_DISPATCH_CALLABLE",
     "CANONICAL_EVALUATION_CALLABLE",
     "CANONICAL_FULL_EVALUATION_CALLABLE",
     "CONFIG_REL_PATH_OPS",
+    "DISPATCH_IMPLEMENTATION_GO_TOKEN",
     "ENTRY_POINT_STATUS",
     "EXECUTION_GO_TOKEN",
     "EXECUTION_VERSION",
     "GO_TOKEN",
     "HARNESS_BINDING_REF",
+    "HARNESS_OWNER",
     "INFRASTRUCTURE_GO_TOKEN",
     "ORDER_EFFECT",
     "RATIFIED_BINDING_DIGEST",
     "RATIFIED_DATASET_DIGEST",
     "REASON_BINDING_DIGEST_MISMATCH",
     "REASON_DATASET_DIGEST_MISMATCH",
+    "REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION",
     "REASON_ECONOMIC_EXECUTION_FORBIDDEN",
     "REASON_GO_TOKEN_INVALID",
     "RUNNER_SCRIPT",
     "RUNTIME_EFFECT",
+    "dispatch_result_to_dict",
     "entrypoint_result_to_dict",
     "load_authorization_ratification_v0",
     "load_ops_evaluation_config_v0",
     "load_versioned_research_binding_v0",
+    "materialize_dispatch_contract_v0",
     "materialize_execution_contract_v0",
     "materialize_infrastructure_summary_v0",
     "run_contract_smoke_evaluation_v0",
     "run_full_evaluation_entrypoint_dry_run_v1",
     "run_full_offline_economic_evaluation_v0",
+    "run_offline_economic_evaluation_execution_dispatch_v0",
+    "validate_dispatch_implementation_go_token_v0",
     "validate_entry_point_go_token_v0",
+    "validate_evaluation_dispatch_go_token_v0",
     "validate_execution_go_token_v0",
     "validate_infrastructure_go_token_v0",
     "verify_execution_start_state_v0",
