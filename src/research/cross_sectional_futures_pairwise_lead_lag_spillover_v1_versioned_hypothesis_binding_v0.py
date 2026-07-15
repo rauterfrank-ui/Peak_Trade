@@ -112,6 +112,12 @@ PERIOD_BINDING_REF = f"{PERIOD_BINDING_ID}:v1"
 RATIFIED_NORMALIZED_PANEL_DIGEST = (
     "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1"
 )
+RATIFIED_SEMANTIC_DATA_DIGEST = "18eccf85663ce292ef1bf0edce63d2dd44215405cf3d880850d2c8d8e413a591"
+PRIOR_RATIFIED_DATASET_DIGEST = RATIFIED_NORMALIZED_PANEL_DIGEST
+DATASET_DIGEST_RECONCILIATION_SUPERSESSION_MODE = "PANEL_SEMANTIC_DATA_DIGEST_RECONCILIATION_V0"
+DATASET_DIGEST_BINDING_CLASSIFICATION = (
+    "UNCHANGED_PANEL_SEMANTICS_CORRECTED_DATASET_DIGEST_LAYER_V0"
+)
 RATIFIED_PANEL_MANIFEST_DIGEST = "36b333ffd52e6465c5de3d0fca8267bea01ab4e476afa94412352fecbe7ac01a"
 RATIFIED_LIFECYCLE_REGISTRY_DIGEST = (
     "79713e9b84a8d6e9afa54f36ef89c3e1a844d8d2b79d0cb26bec18a8f3473a92"
@@ -440,7 +446,7 @@ def build_dataset_binding_v0() -> dict[str, Any]:
         "timestamp_alignment": TIMESTAMP_ALIGNMENT,
         "normalized_panel_digest": RATIFIED_NORMALIZED_PANEL_DIGEST,
         "panel_manifest_digest": RATIFIED_PANEL_MANIFEST_DIGEST,
-        "dataset_digest": RATIFIED_NORMALIZED_PANEL_DIGEST,
+        "dataset_digest": RATIFIED_SEMANTIC_DATA_DIGEST,
         "data_contract_digest": compute_data_contract_digest_v0(),
         "finalized_bars_only": True,
         "forward_fill_forbidden": True,
@@ -610,7 +616,7 @@ def build_digest_dependency_graph_v0(
             "implementation_digest": implementation_digest,
             "config_digest": config_digest,
             "data_digest": data_digest,
-            "dataset_digest": RATIFIED_NORMALIZED_PANEL_DIGEST,
+            "dataset_digest": RATIFIED_SEMANTIC_DATA_DIGEST,
             "universe_digest": universe_digest,
             "period_binding_digest": period_binding_digest,
             "material_difference_digest": material_difference_digest,
@@ -674,7 +680,7 @@ def materialize_versioned_hypothesis_binding_v0() -> dict[str, Any]:
         "digest_bindings": {
             "config_digest": _field_bound(value=config_digest),
             "data_digest": _field_bound(value=data_digest),
-            "dataset_digest": _field_bound(value=RATIFIED_NORMALIZED_PANEL_DIGEST),
+            "dataset_digest": _field_bound(value=RATIFIED_SEMANTIC_DATA_DIGEST),
             "universe_digest": _field_bound(value=universe_digest),
             "period_binding_digest": _field_bound(value=period_binding_digest),
             "implementation_digest": _field_bound(value=implementation_digest),
@@ -752,12 +758,15 @@ def materialize_versioned_hypothesis_binding_v0() -> dict[str, Any]:
         "implementation_digest": implementation_digest,
         "config_digest": config_digest,
         "data_digest": data_digest,
-        "dataset_digest": RATIFIED_NORMALIZED_PANEL_DIGEST,
+        "dataset_digest": RATIFIED_SEMANTIC_DATA_DIGEST,
+        "prior_ratified_dataset_digest": PRIOR_RATIFIED_DATASET_DIGEST,
         "universe_digest": universe_digest,
         "period_binding_digest": period_binding_digest,
         "material_difference_digest": material_difference_digest,
         "binding_digest": binding_digest,
         "binding_classification": "PORTFOLIO_BINDING_COMPLETION_V0",
+        "dataset_digest_binding_classification": DATASET_DIGEST_BINDING_CLASSIFICATION,
+        "dataset_digest_supersession_mode": DATASET_DIGEST_RECONCILIATION_SUPERSESSION_MODE,
         "supersession_mode": SUPERSESSION_MODE,
         "pre_ratified_binding_digest": PRE_RATIFIED_BINDING_DIGEST,
         "portfolio_binding_go_token": PORTFOLIO_BINDING_GO_TOKEN,
@@ -836,7 +845,7 @@ def validate_versioned_hypothesis_binding_v0(
         reasons.append("SCORE_FAMILY_POLICY_MISMATCH")
 
     digests = binding.get("digest_bindings", {})
-    if digests.get("dataset_digest", {}).get("value") != RATIFIED_NORMALIZED_PANEL_DIGEST:
+    if digests.get("dataset_digest", {}).get("value") != RATIFIED_SEMANTIC_DATA_DIGEST:
         reasons.append("DATASET_DIGEST_MISMATCH")
     if not digests.get("universe_digest", {}).get("value"):
         reasons.append("MISSING_UNIVERSE_BINDING")

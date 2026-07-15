@@ -20,7 +20,7 @@
       "bar_interval": "PT1H",
       "binding_version": "v0",
       "data_contract_digest": "cc09958107aca2f5c46bc0a828354fb8e8d70053b02853a2786062bcc8c6aff6",
-      "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+      "dataset_digest": "18eccf85663ce292ef1bf0edce63d2dd44215405cf3d880850d2c8d8e413a591",
       "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
       "dataset_policy": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
       "dataset_rematerialization_required": false,
@@ -37,11 +37,11 @@
     "digest_bindings": {
       "binding_digest": {
         "status": "BOUND",
-        "value": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8"
+        "value": "0ea54fa258ad0a5a7cbb57f39194f5d72f8b92284a6ebcbab94ea83a0aa573e7"
       },
       "config_digest": {
         "status": "BOUND",
-        "value": "f81708dcb5f1854b2b4db053830f9fef310d5e3691d89a66f9f0ecae66e6148d"
+        "value": "c6ef66ece1a77338a98871cca544444e4c5ec93fd7a29d5be814724524c39ef8"
       },
       "data_digest": {
         "status": "BOUND",
@@ -49,7 +49,7 @@
       },
       "dataset_digest": {
         "status": "BOUND",
-        "value": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1"
+        "value": "18eccf85663ce292ef1bf0edce63d2dd44215405cf3d880850d2c8d8e413a591"
       },
       "implementation_digest": {
         "status": "BOUND",
@@ -384,8 +384,8 @@
     }
   },
   "binding_classification": "PORTFOLIO_BINDING_COMPLETION_V0",
-  "binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
-  "config_digest": "f81708dcb5f1854b2b4db053830f9fef310d5e3691d89a66f9f0ecae66e6148d",
+  "binding_digest": "0ea54fa258ad0a5a7cbb57f39194f5d72f8b92284a6ebcbab94ea83a0aa573e7",
+  "config_digest": "c6ef66ece1a77338a98871cca544444e4c5ec93fd7a29d5be814724524c39ef8",
   "cost_execution_binding": {
     "binding_version": "v0",
     "cost_model_binding": "backtest_cost_stack_v0",
@@ -416,13 +416,15 @@
   },
   "cryptographic_binding_identity_changed": true,
   "data_digest": "cc09958107aca2f5c46bc0a828354fb8e8d70053b02853a2786062bcc8c6aff6",
-  "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+  "dataset_digest": "18eccf85663ce292ef1bf0edce63d2dd44215405cf3d880850d2c8d8e413a591",
+  "dataset_digest_binding_classification": "UNCHANGED_PANEL_SEMANTICS_CORRECTED_DATASET_DIGEST_LAYER_V0",
+  "dataset_digest_supersession_mode": "PANEL_SEMANTIC_DATA_DIGEST_RECONCILIATION_V0",
   "digest_dependency_graph": {
     "component_digests": {
-      "binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
-      "config_digest": "f81708dcb5f1854b2b4db053830f9fef310d5e3691d89a66f9f0ecae66e6148d",
+      "binding_digest": "0ea54fa258ad0a5a7cbb57f39194f5d72f8b92284a6ebcbab94ea83a0aa573e7",
+      "config_digest": "c6ef66ece1a77338a98871cca544444e4c5ec93fd7a29d5be814724524c39ef8",
       "data_digest": "cc09958107aca2f5c46bc0a828354fb8e8d70053b02853a2786062bcc8c6aff6",
-      "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+      "dataset_digest": "18eccf85663ce292ef1bf0edce63d2dd44215405cf3d880850d2c8d8e413a591",
       "implementation_digest": "e32e53bafc40e572dc90d8deced1f7316bc75576051468fc524b729f825a02e9",
       "material_difference_digest": "bf8530c8e6a9cde7b2165b907a3d0dc134f34ea4fc69dfc3e7cff27ea445be7b",
       "period_binding_digest": "c4255a453dc9ff71f69a1f51fe89952a6958e79858b5c64442c5d2cffb4acc24",
@@ -602,7 +604,7 @@
     "bar_interval": "PT1H",
     "binding_version": "v0",
     "data_contract_digest": "cc09958107aca2f5c46bc0a828354fb8e8d70053b02853a2786062bcc8c6aff6",
-    "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+    "dataset_digest": "18eccf85663ce292ef1bf0edce63d2dd44215405cf3d880850d2c8d8e413a591",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
     "dataset_policy": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
     "dataset_rematerialization_required": false,
@@ -834,6 +836,7 @@
   },
   "portfolio_binding_go_token": "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_PORTFOLIO_BINDING_IMPLEMENTATION_V0",
   "pre_ratified_binding_digest": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438",
+  "prior_ratified_dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
   "research_hypothesis_id": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_NON_BITCOIN_PERPETUALS_V1",
   "research_scope": "cross_sectional_futures_pairwise_lead_lag_spillover/v1",
   "runner_decision": {

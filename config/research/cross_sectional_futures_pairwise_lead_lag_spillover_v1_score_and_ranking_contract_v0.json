@@ -2,13 +2,13 @@
   "artifact_kind": "cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract",
   "artifact_version": "v0",
   "authority_effect": "NONE",
-  "config_digest": "8a948f82f61aa62a59eb87d41a2c609f01ac14362fcea14fde2fe8b45ac47968",
-  "contract_digest": "0dd20523ac8330b9aa4883c8f80b7d17afd0b792ca7a7e66e06acd0dbd70e1a2",
+  "config_digest": "79e08c57d3b6cbc9e6ef7c0fc0068355f7c968ec4b5b0db51efdf72d6c709cfe",
+  "contract_digest": "941420a43515369617fc71e6e8cdffb7a2c0f30b05edaa92bef12e5ff9840390",
   "digest_dependency_graph": {
     "component_digests": {
-      "config_digest": "8a948f82f61aa62a59eb87d41a2c609f01ac14362fcea14fde2fe8b45ac47968",
-      "contract_digest": "0dd20523ac8330b9aa4883c8f80b7d17afd0b792ca7a7e66e06acd0dbd70e1a2",
-      "hypothesis_binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
+      "config_digest": "79e08c57d3b6cbc9e6ef7c0fc0068355f7c968ec4b5b0db51efdf72d6c709cfe",
+      "contract_digest": "941420a43515369617fc71e6e8cdffb7a2c0f30b05edaa92bef12e5ff9840390",
+      "hypothesis_binding_digest": "0ea54fa258ad0a5a7cbb57f39194f5d72f8b92284a6ebcbab94ea83a0aa573e7",
       "implementation_digest": "bfc5ae3274211eccdbed7318e74bb294bd821ae0739c940d0e001fc9a02a7d4c"
     },
     "edges": [
@@ -40,11 +40,11 @@
     "schema_version": "transitive_digest_graph.v0"
   },
   "economic_evaluation_executed": false,
-  "hypothesis_binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
+  "hypothesis_binding_digest": "0ea54fa258ad0a5a7cbb57f39194f5d72f8b92284a6ebcbab94ea83a0aa573e7",
   "hypothesis_binding_reference": {
-    "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+    "dataset_digest": "18eccf85663ce292ef1bf0edce63d2dd44215405cf3d880850d2c8d8e413a591",
     "hypothesis_binding_config_ref": "config/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0.json",
-    "hypothesis_binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
+    "hypothesis_binding_digest": "0ea54fa258ad0a5a7cbb57f39194f5d72f8b92284a6ebcbab94ea83a0aa573e7",
     "hypothesis_binding_governance_ref": "docs/governance/CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_VERSIONED_HYPOTHESIS_BINDING_V0.md",
     "hypothesis_binding_mutated": false,
     "hypothesis_binding_owner": "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0",

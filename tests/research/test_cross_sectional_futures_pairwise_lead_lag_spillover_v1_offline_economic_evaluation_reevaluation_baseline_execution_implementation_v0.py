@@ -156,7 +156,7 @@ class TestBaselinePreflightBehavior:
         not STAGING_ROOT.is_dir(),
         reason="staging_root_unavailable",
     )
-    def test_dataset_digest_mismatch_blocks_baseline_execution_admissible(
+    def test_dataset_digest_verified_after_reconciliation_repair(
         self,
         authorization_ratification: dict,
         complete_binding: dict,
@@ -171,8 +171,49 @@ class TestBaselinePreflightBehavior:
             materialize_dataset=True,
         )
         assert result.bound_dataset_materialized is True
+        assert result.dataset_digest_verified is True
+        assert result.dataset_digest_repaired is True
+        assert result.baseline_executed is False
+        assert result.economic_evaluation_executed is False
+        assert REASON_DATASET_DIGEST_NOT_VERIFIED not in result.reason_codes
+
+    @pytest.mark.skipif(
+        not STAGING_ROOT.is_dir(),
+        reason="staging_root_unavailable",
+    )
+    def test_stale_dataset_digest_rejected_by_preflight(
+        self,
+        authorization_ratification: dict,
+        complete_binding: dict,
+    ) -> None:
+        identity_patch = {
+            "same_dataset": True,
+            "same_universe": True,
+            "same_strategy_parameters": True,
+            "same_cost_policy": True,
+            "same_risk_sizing_semantics": True,
+        }
+        with (
+            patch(
+                "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.build_identity_invariant_contract_v0",
+                return_value=identity_patch,
+            ),
+            patch(
+                "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.RATIFIED_DATASET_DIGEST",
+                "f" * 64,
+            ),
+        ):
+            result = run_reevaluation_baseline_execution_preflight_v0(
+                go_token=_IMPL_GO,
+                repo_root=REPO_ROOT,
+                authorization_ratification=authorization_ratification,
+                versioned_binding=complete_binding,
+                staging_root=STAGING_ROOT,
+                verify_source_manifests=True,
+                materialize_dataset=True,
+            )
         assert result.dataset_digest_verified is False
-        assert result.baseline_execution_admissible is False
+        assert result.dataset_digest_repaired is False
         assert REASON_DATASET_DIGEST_NOT_VERIFIED in result.reason_codes
 
 

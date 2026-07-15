@@ -21,6 +21,8 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_version
     PAIR_DEFINITION,
     PRIOR_LEAD_LAG_BINDING_DIGEST,
     PRIOR_LEAD_LAG_SCORE_FAMILY,
+    RATIFIED_NORMALIZED_PANEL_DIGEST,
+    RATIFIED_SEMANTIC_DATA_DIGEST,
     RESEARCH_SCOPE,
     SCORE_FAMILY_POLICY,
     materialize_and_validate_versioned_hypothesis_binding_v0,
@@ -133,8 +135,9 @@ class TestRequiredBindingFields:
 
     def test_dataset_universe_period_digests_bound(self) -> None:
         envelope = materialize_versioned_hypothesis_binding_v0()
-        assert envelope["dataset_digest"] == (
-            "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1"
+        assert envelope["dataset_digest"] == RATIFIED_SEMANTIC_DATA_DIGEST
+        assert envelope["panel_dataset_binding"]["normalized_panel_digest"] == (
+            RATIFIED_NORMALIZED_PANEL_DIGEST
         )
         assert envelope["universe_digest"] == (
             "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1"
