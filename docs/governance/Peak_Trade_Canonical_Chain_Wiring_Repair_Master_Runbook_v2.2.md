@@ -407,7 +407,7 @@ Heute existieren mindestens drei produktive Konstruktionsstellen für `Integrate
 
 | Aktuelle Stelle | Status |
 |---|---|
-| `src/backtest/mv2_research_wiring_v1.py:_build_replay_input` | MV2-spezifischer privater Builder |
+| `src&#47;backtest&#47;mv2_research_wiring_v1.py#_build_replay_input` | MV2-spezifischer privater Builder |
 | `canonical_core_runtime_integration_bridge_v0.py:build_integrated_offline_replay_input_from_harness_v0` | Bridge-spezifischer Builder |
 | `integrated_vs_scenario_replay_full_system_parity_harness_v0.py` inline | Fixture-/Parity-spezifische Konstruktion |
 
@@ -850,8 +850,8 @@ Test-only Helper dürfen für kompakte Fixture-Erzeugung bestehen, sollen aber m
 | 1 | `registry_engine → run_realistic` | Echte zweite Decision Authority |
 | 2 | `engine.run_single_strategy_from_registry` | Echte zweite Decision Authority |
 | 3 | `walkforward → run_realistic` | Echte zweite Decision Authority |
-| 4 | `sweeps/engine → run_realistic` | Echte zweite Decision Authority |
-| 5 | `portfolio/manager → run_realistic` | Echte zweite Decision Authority |
+| 4 | `sweeps&#47;engine → run_realistic` | Echte zweite Decision Authority |
+| 5 | `portfolio&#47;manager → run_realistic` | Echte zweite Decision Authority |
 | 6 | MV2 `configured_strategy_signal → engine` | Echte zweite Decision Authority |
 | 7 | `offline_double_play_scenario_replay_v0` | Technischer paralleler Orchestrierungspfad; kanonische Komponenten reused |
 | 8 | `ops.double_play.evaluate_double_play` | Legacy Duplicate Decision Logic |
