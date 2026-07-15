@@ -108,7 +108,13 @@ class TestHappyPathCanonicalBacktestOwnerInvocation:
         assert REASON_BASELINE_BACKTEST_OWNER_INVOKED in result.reason_codes
         backtest_spy.assert_called_once()
         _, kwargs = backtest_spy.call_args
-        assert kwargs["cost_execution_binding"] == complete_binding["cost_execution_binding"]
+        from src.research.cross_sectional_cost_execution_binding_normalization_v0 import (
+            normalize_cost_execution_binding_for_backtest_v0,
+        )
+
+        assert kwargs["cost_execution_binding"] == normalize_cost_execution_binding_for_backtest_v0(
+            complete_binding["cost_execution_binding"]
+        )
         orchestrator_arg, panel_arg = backtest_spy.call_args[0]
         assert orchestrator_arg.score_formula_version == complete_binding["score_family_policy"]
         assert panel_arg == panel_series

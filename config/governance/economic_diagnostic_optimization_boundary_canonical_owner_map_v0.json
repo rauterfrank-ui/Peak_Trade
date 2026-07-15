@@ -436,6 +436,7 @@
     "OFFLINE_ECONOMIC_EVALUATION_EXECUTION_INFRASTRUCTURE_WITHOUT_TRADING_SEMANTIC_EFFECT": {
       "path_globs": [
         "src/research/*offline_economic_evaluation_execution_v0.py",
+        "src/research/cross_sectional_cost_execution_binding_normalization_v0.py",
         "src/research/*offline_economic_evaluation_scope_ratification_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_infrastructure_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_dispatch_implementation_v0.py",
@@ -446,6 +447,7 @@
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_execution_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_actual_execution_owner_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_dataset_digest_reconciliation_repair_v0.py",
+        "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_execution_data_unavailable_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_authorization_ratification_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_full_runner_v0.py"

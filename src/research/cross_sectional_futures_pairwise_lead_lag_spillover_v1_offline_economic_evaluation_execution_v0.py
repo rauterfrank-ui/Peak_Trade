@@ -79,6 +79,9 @@ from src.research.cross_sectional_panel_robustness_adapter_v0 import (
     build_stress_adapter_input_v0,
     build_walk_forward_adapter_input_v0,
 )
+from src.research.cross_sectional_cost_execution_binding_normalization_v0 import (
+    normalize_cost_execution_binding_for_backtest_v0,
+)
 from src.research.cross_sectional_single_slot_backtest_wiring_v0 import (
     run_single_slot_panel_backtest_v0,
 )
@@ -346,6 +349,9 @@ REASON_REEVALUATION_EXECUTION_WIRING_VERIFIED = (
 REASON_BASELINE_WIRING_VERIFIED = "BASELINE_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
 REASON_BASELINE_BACKTEST_OWNER_INVOKED = "BASELINE_BACKTEST_OWNER_INVOKED_STOPPED_BEFORE_EVIDENCE"
 REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE = "BASELINE_EXECUTION_DATA_UNAVAILABLE_FAIL_CLOSED"
+REASON_BASELINE_COST_BINDING_CONTRACT_MISMATCH = (
+    "BASELINE_COST_BINDING_CONTRACT_MISMATCH_FAIL_CLOSED"
+)
 REASON_BASELINE_BACKTEST_ALREADY_INVOKED = "BASELINE_BACKTEST_ALREADY_INVOKED_FAIL_CLOSED"
 REASON_DOWNSTREAM_WIRING_VERIFIED = "DOWNSTREAM_WIRING_VERIFIED_STOPPED_BEFORE_EXECUTION"
 REASON_BASELINE_ADJUDICATION_BLOCKS_DOWNSTREAM = (
@@ -2040,13 +2046,33 @@ def run_baseline_offline_economic_evaluation_v0(
         versioned_binding=envelope,
     )
     backtest_invoked = False
+    normalized_cost_binding = normalize_cost_execution_binding_for_backtest_v0(
+        envelope["cost_execution_binding"]
+    )
     try:
         _ = run_single_slot_panel_backtest_v0(
             orchestrator,
             panel_series,
-            cost_execution_binding=envelope["cost_execution_binding"],
+            cost_execution_binding=normalized_cost_binding,
         )
         backtest_invoked = True
+    except ValueError as exc:
+        if str(exc) == "implicit_zero_cost_forbidden":
+            reason_codes = (REASON_BASELINE_COST_BINDING_CONTRACT_MISMATCH,)
+        else:
+            reason_codes = (REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE,)
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            wiring_verified=True,
+            canonical_owner=owner_ref,
+            actual_baseline_backtest_call_present=backtest_invoked,
+            baseline_backtest_owner_call_count=1 if backtest_invoked else 0,
+            reason_codes=reason_codes,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
     except Exception:
         return PhaseExecutionBlockedResultV0(
             phase="BASELINE",
