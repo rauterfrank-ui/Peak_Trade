@@ -110,6 +110,10 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "tests/research/test_offline_signal_orthogonality_diagnostics_v0.py",
                 "tests/research/test_step29l2_import_boundary_classification_v0.py",
             ],
+            [
+                "src/research/cross_sectional_open_interest_zscore_reversion_v0_terminal_insufficient_sample_and_distinct_futures_research_scope_ratification_v0.py",
+                "scripts/research/materialize_cross_sectional_open_interest_zscore_reversion_v0_terminal_insufficient_sample_operator_ratification_and_lead_lag_scope_ratification_v0.py",
+            ],
         ],
     )
     def test_positive_cases_admissible(self, changed_files: list[str]) -> None:
