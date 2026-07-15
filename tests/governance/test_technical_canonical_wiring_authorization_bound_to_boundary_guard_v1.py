@@ -41,6 +41,14 @@ AUTHORIZED_STRATEGY_SUITABILITY_AGREEMENT_FIXTURE = [
     "tests/backtest/test_strategy_signal_suitability_agreement_adapter_v1.py",
 ]
 
+AUTHORIZED_SLICE4_LEGACY_BOUNDARY_CLOSEOUT_FIXTURE = [
+    "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
+    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+    "src/ops/double_play/specialists.py",
+    "tests/trading/master_v2/test_runtime_backtest_parity_and_legacy_boundary_closeout_v1.py",
+    "config/governance/technical_canonical_wiring_authorization_v1.json",
+]
+
 
 def _load_auth() -> dict:
     payload = json.loads(AUTH_PATH.read_text(encoding="utf-8"))
@@ -239,6 +247,21 @@ class TestTechnicalCanonicalWiringAuthorizationPositiveV1:
     def test_authorized_strategy_suitability_agreement_fixture_passes(self) -> None:
         report = build_boundary_report(
             AUTHORIZED_STRATEGY_SUITABILITY_AGREEMENT_FIXTURE,
+            repo_root=REPO_ROOT,
+        )
+        assert report.admissible is True
+        assert report.fail_closed is False
+        assert report.technical_wiring_authorization_applied is True
+        assert "TECHNICAL_CANONICAL_WIRING_AUTHORIZED" in report.reason_codes
+        assert forbidden_surface_changed_count(report) == 0
+        assert report.canonical_trading_semantics_changed is False
+        assert report.promotion_runtime_authority_changed is False
+        assert report.risk_sizing_changed is False
+        assert report.safety_killswitch_reconciliation_changed is False
+
+    def test_authorized_slice4_legacy_boundary_closeout_fixture_passes(self) -> None:
+        report = build_boundary_report(
+            AUTHORIZED_SLICE4_LEGACY_BOUNDARY_CLOSEOUT_FIXTURE,
             repo_root=REPO_ROOT,
         )
         assert report.admissible is True
