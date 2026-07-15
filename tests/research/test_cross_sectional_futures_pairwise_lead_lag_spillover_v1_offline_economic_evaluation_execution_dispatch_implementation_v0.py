@@ -179,9 +179,7 @@ class TestPortfolioBindingFailClosed:
         self, complete_binding: dict
     ) -> None:
         pending_binding = _binding_with_pending_portfolio(complete_binding)
-        contract = materialize_portfolio_binding_contract_v0(
-            pending_binding, repo_root=REPO_ROOT
-        )
+        contract = materialize_portfolio_binding_contract_v0(pending_binding, repo_root=REPO_ROOT)
         assert contract["implicit_defaults_forbidden"] is True
         assert contract["portfolio_bindings_valid"] is False
 
