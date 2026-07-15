@@ -114,6 +114,11 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "src/research/cross_sectional_open_interest_zscore_reversion_v0_terminal_insufficient_sample_and_distinct_futures_research_scope_ratification_v0.py",
                 "scripts/research/materialize_cross_sectional_open_interest_zscore_reversion_v0_terminal_insufficient_sample_operator_ratification_and_lead_lag_scope_ratification_v0.py",
             ],
+            [
+                "src/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0.py",
+                "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_infrastructure_v0.py",
+                "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",
+            ],
         ],
     )
     def test_positive_cases_admissible(self, changed_files: list[str]) -> None:
