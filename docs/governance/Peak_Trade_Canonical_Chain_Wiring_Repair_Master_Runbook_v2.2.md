@@ -5,33 +5,51 @@
 ```text
 DOCUMENT_TYPE=IMPLEMENTATION_CONTRACT_AND_HANDOFF_RUNBOOK
 DOCUMENT_VERSION=2.2
-STATUS=DECISION_D_RATIFIED_SLICE_2_AUTHORIZED_UNDER_GO_TOKEN
+STATUS=COMPLETE
+IMPLEMENTATION_COMPLETE=true
+TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
+FULL_CANONICAL_CHAIN_WIRED=true
+BACKTEST_RUNTIME_DECISION_PARITY=true
+FINAL_CLOSEOUT_COMPLETE=true
+FINAL_CLOSEOUT_HEAD=81222f4e4227a98f93d0456d28db28aa075d4f80
+FINAL_IMPLEMENTATION_PR=5233
+FINAL_IMPLEMENTATION_SQUASH_COMMIT=81222f4e4227a98f93d0456d28db28aa075d4f80
 DISCOVERY_COMPLETE=true
 SEMANTIC_AUTHORITY_RESOLVED=true
 BUILDER_OWNERSHIP_RESOLVED=true
 SLICE_1_COMPLETE=true
+SLICE_2_COMPLETE=true
+SLICE_3_COMPLETE=true
+SLICE_4_COMPLETE=true
 SLICE_1_REOPENED=false
-SLICE_2_IMPLEMENTATION_BLOCKED=false
-SLICE_2_IMPLEMENTATION_AUTHORIZED=true
 ARCHITECTURE_REMAINS_BINDING=true
 SAFETY_BOUNDARIES_REMAIN_BINDING=true
 ARCHITECTURE_AUTHORIZATION_DECISION=C
 ARCHITECTURE_DECISION_D_NAME=
 FAMILY_SCOPED_STRATEGY_AGREEMENT_INTO_EXISTING_SUITABILITY_V1
 ARCHITECTURE_DECISION_D_RATIFIED=true
-GO_TOKEN=GO_DECISION_D_STRATEGY_SIGNAL_CANONICAL_CONSUMER_BINDING_V1
-SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=false
-SEPARATE_ARCHITECTURE_AUTHORIZATION_EXECUTED=true
-NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=
-FAMILY_SCOPED_STRATEGY_AGREEMENT_INTO_EXISTING_SUITABILITY_V1
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+ORDER_EFFECT=NONE
+NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
+MISSION_STATUS=TECHNICALLY_COMPLETE
+FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
 READ_ONLY_CHAINING_REQUIRED=false
 MISSION_COMPLETE=false
+ECONOMIC_VALIDITY_CLAIMED=false
+PROMOTION_CLAIMED=false
 REPO=/Users/frnkhrz/Peak_Trade
 ```
 
+Hinweis: `MISSION_COMPLETE=false` bleibt bewusst gesetzt — Economic Validity,
+Promotion und Runtime-/Live-Authority sind **nicht** Teil dieses Closeouts.
+`MISSION_STATUS=TECHNICALLY_COMPLETE` und `STATUS=COMPLETE` beziehen sich
+ausschließlich auf die technische Canonical-Chain-Wiring-Reparatur.
+
 ### 0.1 Historischer Discovery-/Slice-1-Startzustand (superseded als aktueller Repo-Ist)
 
-Die folgenden Felder beschreiben den **historischen Discovery-Baseline** zum Slice-1-Start und sind **nicht** der aktuelle Post-Slice-1-Repo-Ist. Inhalt bleibt als Audit-Trail erhalten.
+Die folgenden Felder beschreiben den **historischen Discovery-Baseline** zum Slice-1-Start und sind **nicht** der aktuelle Post-Closeout-Repo-Ist. Inhalt bleibt als Audit-Trail erhalten und wird **nicht** mit `FINAL_CLOSEOUT_HEAD` überschrieben.
 
 ```text
 HISTORICAL_DISCOVERY_BASELINE=true
@@ -41,7 +59,13 @@ DISCOVERY_BASELINE_WORKTREE_CLEAN=true
 STATUS_AT_DISCOVERY=IMPLEMENTATION_READY
 ```
 
-### 0.2 CURRENT CANONICAL STATE (Post-Slice-1)
+### 0.2 HISTORICAL CANONICAL STATE (Post-Slice-1 / pre-final-closeout; superseded)
+
+> **HISTORICAL / SUPERSEDED AS CURRENT REPO STATE.** Post-Slice-1-Baseline nach
+> PR #5226. Der aktuelle Endzustand steht in §0 Dokumentstatus und in
+> `CANONICAL_CHAIN_WIRING_REPAIR_FINAL_CLOSEOUT_V1`. Die SHA
+> `6a37df8ab433b4d99a0a12d4c7c3c43d45774ea7` bleibt als historische
+> Post-Slice-1-Baseline erhalten.
 
 ```text
 CURRENT_CANONICAL_BASELINE_HEAD=
@@ -168,7 +192,88 @@ Separate Architecture Authorization (GO v1, Decision **C** — historical negati
 Positive Architecture Decision **D** (family-scoped suitability agreement; Slice-2 authorized under GO_TOKEN):
 [`docs/governance/STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_DECISION_D_V1.md`](STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_DECISION_D_V1.md).
 
-**Zweck:** Dieses Runbook ist der vollständige technische Implementierungsvertrag für die Reparatur der bestätigten Chain-Wiring-Defekte zwischen Strategy Layer, kanonischem Master-V2-Core, Backtest, Offline Replay und Runtime-Parity-Bridge.
+### 0.4 CANONICAL_CHAIN_WIRING_REPAIR_FINAL_CLOSEOUT_V1
+
+> **FINAL / BINDING CURRENT STATE.** Technical Canonical Chain Wiring Repair is
+> complete after squash-merge of PR #5233. No Economic Evaluation, no runtime
+> activation, no orders, no authority expansion.
+
+```text
+PR_NUMBER=5233
+PR_STATE=MERGED
+MERGE_METHOD=SQUASH
+PR_HEAD_SHA=9685f88a86f90fb4e571b58ab73b2f8bada7e470
+PR_BASE_OID=b6d1988739b529b01e8ed226fbb890a300783c0b
+PR_SQUASH_COMMIT=81222f4e4227a98f93d0456d28db28aa075d4f80
+POST_MERGE_FOCUSED_TESTS=37 passed
+
+FINAL_DIFF_SHA256=fc83d89b5e59ab28baa737ce16f332f8394f6ab7beb71a0e3ab057435f9d1376
+
+FINAL_IMPLEMENTATION_FILES=
+* config/governance/technical_canonical_wiring_authorization_v1.json
+* src/ops/double_play/specialists.py
+* src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py
+* src/trading/master_v2/offline_double_play_scenario_replay_v0.py
+* tests/governance/test_technical_canonical_wiring_authorization_bound_to_boundary_guard_v1.py
+* tests/trading/master_v2/test_runtime_backtest_parity_and_legacy_boundary_closeout_v1.py
+
+CANONICAL_REPLAY_INPUT_BUILDER_SINGLE_OWNER=true
+PRODUCTIVE_DIRECT_REPLAY_INPUT_CONSTRUCTOR_COUNT=1
+CANONICAL_TOTAL_DECISION_OWNER_UNCHANGED=true
+DECISION_D_BINDING_UNCHANGED=true
+MASTER_V2_IMPORTS_BACKTEST_TYPES=false
+
+BACKTEST_CANONICAL_BUILDER_BOUND=true
+RUNTIME_BRIDGE_CANONICAL_BUILDER_BOUND=true
+BACKTEST_CANONICAL_ORCHESTRATOR_BOUND=true
+RUNTIME_BRIDGE_CANONICAL_ORCHESTRATOR_BOUND=true
+RUNTIME_BRIDGE_DUPLICATES_DECISION_LOGIC=false
+
+BACKTEST_RUNTIME_DECISION_EVIDENCE_MATCH=true
+BACKTEST_RUNTIME_SEMANTIC_DIGEST_MATCH=true
+
+OFFLINE_SCENARIO_REPLAY_NON_AUTHORITATIVE=true
+OPS_DOUBLE_PLAY_NON_AUTHORITATIVE=true
+LEGACY_SYSTEM_ECONOMIC_EVIDENCE_BLOCKED=true
+LEGACY_RUNTIME_GUARD_UNCHANGED=true
+
+DIRECT_STRATEGY_TO_POSITION_PATH_COUNT=0
+SYSTEM_RELEVANT_DIRECT_STRATEGY_TO_TRADE_PATH_COUNT=0
+CLASSIC_ENGINE_DECISION_AUTHORITY_BYPASS_COUNT=0
+
+CORE_DECISION_SEMANTICS_CHANGED=false
+RISK_SIZING_SEMANTICS_CHANGED=false
+FILL_SEMANTICS_CHANGED=false
+PORTFOLIO_SEMANTICS_CHANGED=false
+SAFETY_SEMANTICS_CHANGED=false
+
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+ORDER_EFFECT=NONE
+
+TECHNICAL_WIRING_AUTHORIZATION_VALID_JSON=true
+TECHNICAL_WIRING_AUTHORIZATION_SCOPE_BOUNDED=true
+ECONOMIC_BOUNDARY_GUARD_PASS=true
+LINT_GATE_PASS=true
+LINT_GATE_ALWAYS_RUN_SUCCESS=true
+
+TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
+FULL_CANONICAL_CHAIN_WIRED=true
+BACKTEST_RUNTIME_DECISION_PARITY=true
+STRATEGY_LAYER_FEEDS_CANONICAL_CORE=true
+FINAL_CLOSEOUT_COMPLETE=true
+FINAL_CLOSEOUT_HEAD=81222f4e4227a98f93d0456d28db28aa075d4f80
+FINAL_IMPLEMENTATION_PR=5233
+FINAL_IMPLEMENTATION_SQUASH_COMMIT=81222f4e4227a98f93d0456d28db28aa075d4f80
+
+NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
+MISSION_STATUS=TECHNICALLY_COMPLETE
+FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
+NEW_READ_ONLY_CHAIN_CREATED=false
+```
+
+**Zweck:** Dieses Runbook ist der vollständige technische Implementierungsvertrag (jetzt final closed) für die Reparatur der bestätigten Chain-Wiring-Defekte zwischen Strategy Layer, kanonischem Master-V2-Core, Backtest, Offline Replay und Runtime-Parity-Bridge.
 
 Es ist so aufgebaut, dass es:
 
@@ -180,7 +285,7 @@ Es ist so aufgebaut, dass es:
 6. den Core als einzige fachliche Gesamtwahrheit erhält,
 7. keine Runtime-, Order- oder Live-Authority aktiviert.
 
-**Bindend weiterhin:** Operator-Absicht (§1), Safety-Grenzen (§2), kanonische Architektur (§4), Single-Truth-Regel, Strategy-Signal-Authoritätsgrenzen, Fail-Closed-Regeln für Slice 2, die PR-#5229-Decision-C-Historie (§0.3) und die Decision-D-Ratifikation unter `GO_DECISION_D_STRATEGY_SIGNAL_CANONICAL_CONSUMER_BINDING_V1` mit Consumer-Pfad `evaluate_suitability_binding_v1`. **Historisch / superseded als aktueller Ist:** Discovery-Baseline-HEAD `6e8c5889…`, Multiple-Builder-Discovery-Befund, §8.1 Builder-Defekt als aktueller Defekt, §8.3 Builder nur als Implementierungsziel, §24 Slice-1-Readiness-Auftrag, §25 Slice-1-Implementation-Template als noch auszuführen, sowie der frühere automatische Read-Only-Consumer-Design-Gate vor Slice 2.
+**Bindend weiterhin:** Operator-Absicht (§1), Safety-Grenzen (§2), kanonische Architektur (§4), Single-Truth-Regel, Strategy-Signal-Authoritätsgrenzen, die PR-#5229-Decision-C-Historie (§0.3), die Decision-D-Ratifikation unter `GO_DECISION_D_STRATEGY_SIGNAL_CANONICAL_CONSUMER_BINDING_V1` mit Consumer-Pfad `evaluate_suitability_binding_v1`, und der finale Closeout-Block `CANONICAL_CHAIN_WIRING_REPAIR_FINAL_CLOSEOUT_V1` (§0.4) nach PR #5233. **Historisch / superseded als aktueller Ist:** Discovery-Baseline-HEAD `6e8c5889…`, Post-Slice-1-Baseline `6a37df8a…` (§0.2), Multiple-Builder-Discovery-Befund, §8.1 Builder-Defekt als aktueller Defekt, §8.3 Builder nur als Implementierungsziel, offene Slice-2-/Slice-3-/Slice-4-Aufträge, früherer „Nächster Cursor-Auftrag“-Text, sowie der frühere automatische Read-Only-Consumer-Design-Gate vor Slice 2.
 
 ---
 
@@ -497,16 +602,17 @@ Version and Digest Bindings
 
 # 8. Single Canonical Replay Input Builder
 
-## 8.1 Aktueller Defekt
+## 8.1 Historischer Defekt (Discovery-/Slice-1-Start; superseded)
 
 > **HISTORICAL / SUPERSEDED AS CURRENT DEFECT.** Beschreibt den Discovery-/Slice-1-Startzustand.
-> Nach PR #5226 gilt §0.2: `CANONICAL_REPLAY_INPUT_BUILDER_SINGLE_OWNER=true`,
+> Nach PR #5226 / final PR #5233 gilt:
+> `CANONICAL_REPLAY_INPUT_BUILDER_SINGLE_OWNER=true`,
 > `PRODUCTIVE_DIRECT_REPLAY_INPUT_CONSTRUCTOR_COUNT=1`, Thin Adapters für MV2 / Runtime Bridge / Parity Harness.
-> Der technische Inhalt bleibt als Audit-Trail erhalten.
+> Der technische Inhalt bleibt als Audit-Trail erhalten und ist **nicht** der aktuelle Ist.
 
-Heute existieren mindestens drei produktive Konstruktionsstellen für `IntegratedOfflineReplayInputV1`:
+Zum Discovery-Zeitpunkt existierten mindestens drei produktive Konstruktionsstellen für `IntegratedOfflineReplayInputV1`:
 
-| Aktuelle Stelle | Status |
+| Historische Stelle | Damaliger Status |
 |---|---|
 | `src&#47;backtest&#47;mv2_research_wiring_v1.py#_build_replay_input` | MV2-spezifischer privater Builder |
 | `canonical_core_runtime_integration_bridge_v0.py:build_integrated_offline_replay_input_from_harness_v0` | Bridge-spezifischer Builder |
@@ -713,18 +819,20 @@ SLICE_2_SIGNAL_VALUE_EFFECTIVENESS_REQUIRES_SEPARATE_FUTURE_SCOPE=true
 FUTURE_SCOPE_ID=STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_BINDING_V1
 ```
 
-Aktuelle Consumer-Lage:
+Historische Consumer-Lage zum Readiness-Zeitpunkt (Baseline `6e8c5889…`;
+**nicht** der aktuelle Post-Closeout-Ist):
 
-| Kanonische Stage | Heutiger Input | Bewertung für `StrategySignalBindingResultV1.signals` |
+| Kanonische Stage | Damaliger Input | Bewertung für `StrategySignalBindingResultV1.signals` |
 |---|---|---|
 | Directional Assessment | `price_path`, Reference Price, CMC Trust | Kein bestehender Consumer; Signalstärke wird aus Marktmaterial abgeleitet |
 | Suitability Binding | Strategy Registry, Ranking, Regime | Konsumiert Identity/Registry-Material, aber keine Strategy-Signalwerte oder deren Provenance |
 | Entry/Exit/Reversal Policy | Boolean Policy Signals | Kein Consumer des Strategy-Binding-Contracts |
 | Composition / Survival / State Switch | kanonische Vorstufen | Kein Strategy-Signalwert-Input |
 
-Daraus folgt verbindlich (historischer Readiness-Befund; durch PR #5229 Decision **C** ratifiziert abgeschlossen):
+Daraus folgte damals verbindlich (historischer Readiness-Befund; durch PR #5229 Decision **C** ratifiziert als negativer Audit-Ist; später durch Decision **D** und Slices 2–4 supersediert):
 
 ```text
+HISTORICAL_READINESS_BASELINE=true
 SLICE_1_MAY_PROCEED_WITHOUT_STRATEGY_VALUE_BINDING=true
 SLICE_1_MUST_NOT_ADD_DORMANT_STRATEGY_FIELDS=true
 SLICE_2_IMPLEMENTATION_READY=false
@@ -739,18 +847,17 @@ READ_ONLY_CHAINING_REQUIRED=false
 
 Slice 1 bleibt eine reine Konsolidierung der Replay-Input-Construction-Authority und ist abgeschlossen (`SLICE_1_COMPLETE=true`, `SLICE_1_REOPENED=false`). Er darf weder neue Strategy-Felder noch einen neuen Strategy-Consumer einführen und darf nicht erneut geöffnet werden.
 
-**Superseded:** Der frühere Auftrag, vor Slice 2 automatisch
+**Superseded als aktueller Ist:** Der frühere Auftrag, vor Slice 2 automatisch
 `READ_ONLY_STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_BINDING_V1` erneut
 auszuführen bzw. einen weiteren Consumer-Design-Report zu starten, ist
-**aufgehoben**. PR #5229 hat Decision **C** ratifiziert — kein autorisierter
-kanonischer Consumer, keine Provenance-only-Verdrahtung, keine
-Direct-Signal-Authority, keine neue parallele Decision Stage, kein neuer
-Total Decision Owner. Slice 2 bleibt fail-closed blockiert. Ein neuer
-technischer Implementierungsscope entsteht erst nach einer **neuen
-expliziten Operator-Architekturentscheidung**. Ohne neue Unsicherheit darf
-kein weiterer Read-Only-Report verkettet werden.
+**aufgehoben**. PR #5229 hat Decision **C** als historischen negativen Ist
+ratifiziert. Decision **D** und die späteren Slice-2–4-Implementierungen
+(final PR #5233) haben die technische Chain-Wiring-Mission danach
+abgeschlossen. Ohne neue Unsicherheit darf kein weiterer Read-Only-Report
+verkettet werden.
 
 ```text
+HISTORICAL_DECISION_C_CLOSEOUT=true
 STATUS=RATIFIED_NEGATIVE_CLOSEOUT
 SLICE_2_IMPLEMENTATION_BLOCKED=true
 SLICE_2_STATUS=BLOCKED_BY_ARCHITECTURE_DECISION_C
@@ -814,9 +921,15 @@ Strategy Signal
 
 # 11. Classic Backtest Engine — Zielrolle
 
-## 11.1 Aktueller Defekt
+## 11.1 Historischer Defekt (pre-Slice-3; superseded)
 
-Aktuell existieren direkte Strategy-to-Trade-Pfade:
+> **HISTORICAL / SUPERSEDED AS CURRENT DEFECT.** Discovery-/pre-Slice-3-Befund.
+> Finaler Closeout bestätigt:
+> `DIRECT_STRATEGY_TO_POSITION_PATH_COUNT=0`,
+> `SYSTEM_RELEVANT_DIRECT_STRATEGY_TO_TRADE_PATH_COUNT=0`,
+> `CLASSIC_ENGINE_DECISION_AUTHORITY_BYPASS_COUNT=0`.
+
+Zum Discovery-Zeitpunkt existierten direkte Strategy-to-Trade-Pfade:
 
 ```text
 src/backtest/registry_engine.py
@@ -839,7 +952,7 @@ with ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
 → BacktestEngine.run_realistic
 ```
 
-Diese Pfade geben der Strategy-Serie de facto Positions-/Trade-Authority.
+Diese Pfade gaben der Strategy-Serie de facto Positions-/Trade-Authority.
 
 ## 11.2 Zielrolle
 
@@ -1014,12 +1127,17 @@ Nicht im Chain-Wiring-PR improvisieren.
 
 # 16. Empfohlene bounded Implementierungssequenz
 
-Ein einzelner großer Rewire über Builder, MV2, Bridge, Parity, fünf Classic Caller und Legacy Guards wäre risikoreich. Die technische Gesamtmission soll deshalb in überprüfbare Slices geteilt werden.
+> **HISTORICALLY COMPLETE.** Die Slice-Sequenz 1–4 ist durch die Implementation
+> PRs und final PR #5233 (`81222f4e…`) technisch abgeschlossen. Die Slice-Texte
+> bleiben als auditierbarer Vertrag erhalten und sind **keine** offenen Aufträge.
+
+Ein einzelner großer Rewire über Builder, MV2, Bridge, Parity, fünf Classic Caller und Legacy Guards wäre risikoreich. Die technische Gesamtmission wurde deshalb in überprüfbare Slices geteilt.
 
 ## Slice 1 — Canonical Replay Input Builder Consolidation
 
-> **SLICE_1_COMPLETE=true** (PR #5226 squash-merged). Ziele und Acceptance unten sind erfüllt.
-> Historischer Auftragstext bleibt als Vertrag auditierbar. Keine erneute Slice-1-Implementierung.
+> **HISTORICALLY COMPLETE — SLICE_1_COMPLETE=true** (PR #5226 squash-merged).
+> Ziele und Acceptance unten sind erfüllt. Historischer Auftragstext bleibt als
+> Vertrag auditierbar. Keine erneute Slice-1-Implementierung.
 
 ### Ziel
 
@@ -1066,14 +1184,14 @@ CORE_DECISION_SEMANTICS_CHANGED=false
 
 ## Slice 2 — Strategy Signal to Canonical Replay Input Binding
 
-> **SLICE_2_IMPLEMENTATION_AUTHORIZED=true** unter
-> `GO_DECISION_D_STRATEGY_SIGNAL_CANONICAL_CONSUMER_BINDING_V1`.
+> **HISTORICALLY COMPLETE — SLICE_2_COMPLETE=true.**
+> Autorisiert unter `GO_DECISION_D_STRATEGY_SIGNAL_CANONICAL_CONSUMER_BINDING_V1`.
 > Decision **C** bleibt historischer negativer Ist-Befund.
 > Decision **D** ratifiziert
 > `FAMILY_SCOPED_STRATEGY_AGREEMENT_INTO_EXISTING_SUITABILITY_V1`.
 > `AUTHORIZED_CANONICAL_CONSUMER_STAGE=evaluate_suitability_binding_v1`.
-> `SLICE_2_IMPLEMENTATION_BLOCKED=false`. Mission nicht abgeschlossen
-> (kein Merge-Claim in diesem Abschnitt).
+> Technical Chain Wiring Mission final closed via PR #5233
+> (`CANONICAL_CHAIN_WIRING_REPAIR_FINAL_CLOSEOUT_V1`).
 
 ### Ziel
 
@@ -1149,6 +1267,10 @@ CANONICAL_TOTAL_DECISION_OWNER_UNCHANGED=true
 
 ## Slice 3 — Classic Caller Canonicalization / Fail-Closed Guarding
 
+> **HISTORICALLY COMPLETE — SLICE_3_COMPLETE=true.** Acceptance unten ist
+> im finalen Closeout bestätigt
+> (`CLASSIC_ENGINE_DECISION_AUTHORITY_BYPASS_COUNT=0`). Kein offener Auftrag.
+
 ### Ziel
 
 Alle fünf klassischen produktiven Caller und der Engine convenience entry point klassifizieren und entweder kanonisch umleiten oder für systemrelevante Evidence fail-closed blockieren.
@@ -1174,6 +1296,12 @@ CLASSIC_ENGINE_DECISION_AUTHORITY_BYPASS_COUNT=0
 ```
 
 ## Slice 4 — Runtime/Backtest Parity and Legacy Boundary Closeout
+
+> **HISTORICALLY COMPLETE — SLICE_4_COMPLETE=true** (final implementation PR #5233
+> squash-merged as `81222f4e4227a98f93d0456d28db28aa075d4f80`).
+> `BACKTEST_RUNTIME_DECISION_PARITY=true`;
+> `CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED`.
+> Kein offener Auftrag.
 
 ### Ziel
 
@@ -1498,7 +1626,9 @@ strategy input has no real canonical consumer when Slice 2 is requested
 focused parity cannot be established
 ```
 
-Zusätzlich:
+Zusätzlich — als **historische Fail-Closed-Bedingungen** während der Implementation
+(nicht als aktueller Post-Closeout-Ist; final bestätigt sind die positiven Gegenstücke
+in §0.4):
 
 ```text
 CANONICAL_REPLAY_INPUT_BUILDER_SINGLE_OWNER=false
@@ -1508,13 +1638,17 @@ DIRECT_STRATEGY_TO_POSITION_PATH_COUNT>0
 BACKTEST_RUNTIME_DECISION_PARITY=false
 ```
 
-sind Closeout-Blocker.
+waren Closeout-Blocker, falls sie während der Umsetzung erneut beobachtet worden wären.
 
 ---
 
 # 22. Definition of Done
 
-Die Gesamtmission ist erst abgeschlossen, wenn:
+> **SATISFIED / FINAL CLOSEOUT.** Die unten stehenden Felder sind nach PR #5233
+> (`81222f4e4227a98f93d0456d28db28aa075d4f80`) technisch erfüllt. Siehe
+> `CANONICAL_CHAIN_WIRING_REPAIR_FINAL_CLOSEOUT_V1` (§0.4).
+
+Die technische Gesamtmission gilt als abgeschlossen, weil:
 
 ```text
 STRATEGY_LAYER_FEEDS_CANONICAL_CORE=true
@@ -1537,6 +1671,7 @@ DIRECT_STRATEGY_TO_POSITION_PATH_COUNT=0
 DIRECT_STRATEGY_TO_ORDER_INTENT_PATH_COUNT=0
 SYSTEM_RELEVANT_DIRECT_STRATEGY_TO_TRADE_PATH_COUNT=0
 CLASSIC_ENGINE_BYPASS_COUNT=0
+CLASSIC_ENGINE_DECISION_AUTHORITY_BYPASS_COUNT=0
 
 FULL_CANONICAL_CHAIN_WIRED=true
 BACKTEST_RUNTIME_DECISION_PARITY=true
@@ -1548,12 +1683,15 @@ SAFETY_SEMANTICS_CHANGED=false
 RUNTIME_EFFECT=NONE
 AUTHORITY_EFFECT=NONE
 ORDER_EFFECT=NONE
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
 ```
 
 Das Ergebnis bedeutet ausschließlich:
 
 ```text
 TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
+STATUS=COMPLETE
+MISSION_STATUS=TECHNICALLY_COMPLETE
 ```
 
 Es bedeutet nicht:
@@ -1563,6 +1701,7 @@ ECONOMIC_VALIDITY_PASS=true
 PROMOTION_ELIGIBLE=true
 RUNTIME_AUTHORIZED=true
 LIVE_AUTHORIZED=true
+MISSION_COMPLETE=true
 ```
 
 ---
@@ -1580,40 +1719,40 @@ Das beigefügte Dokument
 "Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md"
 ist der verbindliche Implementierungsvertrag.
 
-Discovery, Semantic Authority Audit und Replay Input Builder Audit sind abgeschlossen.
+STATUS=COMPLETE
+TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
+FULL_CANONICAL_CHAIN_WIRED=true
+BACKTEST_RUNTIME_DECISION_PARITY=true
+FINAL_CLOSEOUT_COMPLETE=true
+FINAL_IMPLEMENTATION_PR=5233
+FINAL_IMPLEMENTATION_SQUASH_COMMIT=81222f4e4227a98f93d0456d28db28aa075d4f80
+FINAL_CLOSEOUT_HEAD=81222f4e4227a98f93d0456d28db28aa075d4f80
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
+MISSION_STATUS=TECHNICALLY_COMPLETE
+FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
+MISSION_COMPLETE=false
 
-Bestätigte Wahrheiten:
+Bestätigte Wahrheiten (aktueller Post-Closeout-Ist):
 
 - Core ist die einzige fachliche Trading-Gesamtwahrheit.
-- Strategy Layer muss als wirksames Input-Material in den Core einfließen.
-- Reeller Strategy-Contract:
-  StrategySignalBindingResultV1.
-- Erste vollständige kanonische Decision Unit:
-  IntegratedOfflineReplayInputV1.
-- Single Decision Owner:
-  run_integrated_offline_trading_logic_replay_v1.
-- Es existiert noch kein StrategySignal→IntegratedOfflineReplayInput Adapter.
-- Es existieren mehrere produktive ReplayInput-Builder.
-- Ziel ist ein public Single Canonical Replay Input Builder im
-  integrated_offline_trading_logic_replay_v1-Modul.
-- Der Strategy-spezifische Adapter gehört in mv2_research_wiring_v1.py
-  und darf nur den Single Builder aufrufen.
-- BacktestEngine darf nur Fill-/Execution-Simulator sein.
+- Strategy Layer speist den kanonischen Core wirksam
+  (`STRATEGY_LAYER_FEEDS_CANONICAL_CORE=true`).
+- Reeller Strategy-Contract: StrategySignalBindingResultV1.
+- Erste vollständige kanonische Decision Unit: IntegratedOfflineReplayInputV1.
+- Single Decision Owner: run_integrated_offline_trading_logic_replay_v1.
+- Canonical Replay Input Builder ist Single-Owner
+  (`PRODUCTIVE_DIRECT_REPLAY_INPUT_CONSTRUCTOR_COUNT=1`).
+- Classic-Engine Decision-Authority-Bypass-Count ist 0.
+- BacktestEngine bleibt Fill-/Execution-Simulator.
 - Runtime bleibt BOUND_NOT_ACTIVATED.
 - Keine Economic Evaluation, keine Runtime-Aktivierung, keine Orders.
-- Der Readiness-Report hat bestätigt, dass kein bestehender kanonischer Consumer für die Strategy-Signalwerte existiert.
-- Slice 1 hat den Replay-Input-Builder konsolidiert und ist abgeschlossen (`SLICE_1_COMPLETE=true`, `SLICE_1_REOPENED=false`).
-- PR #5229 hat `ARCHITECTURE_AUTHORIZATION_DECISION=C` ratifiziert als historischen negativen Ist-Befund (`AUTHORIZED_CANONICAL_CONSUMER_STAGE=none` zum Closeout-Zeitpunkt).
-- Decision **D** unter `GO_DECISION_D_STRATEGY_SIGNAL_CANONICAL_CONSUMER_BINDING_V1` ratifiziert `FAMILY_SCOPED_STRATEGY_AGREEMENT_INTO_EXISTING_SUITABILITY_V1`.
-- Slice 2 ist autorisiert (`SLICE_2_IMPLEMENTATION_AUTHORIZED=true`, `SLICE_2_STATUS=AUTHORIZED_UNDER_DECISION_D`).
-- Keine Provenance-only-Verdrahtung, keine Direct-Signal-Authority, keine neue parallele Decision Stage, kein neuer Total Decision Owner.
-- `NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=FAMILY_SCOPED_STRATEGY_AGREEMENT_INTO_EXISTING_SUITABILITY_V1`.
-- Exact Consumer Path: `StrategySignalBindingResultV1 → normalize_strategy_signal_to_suitability_agreement_material_v1 → build_integrated_offline_replay_input_v1 → run_integrated_offline_trading_logic_replay_v1 → _suitability_input_for_assessment → evaluate_suitability_binding_v1`.
+- Slice 1–4 historisch abgeschlossen; finaler Implementierungs-Merge PR #5233.
+- Discovery-/Decision-C-/Post-Slice-1-Baselines bleiben historische Audit-Info
+  und sind nicht der aktuelle Ist.
 
-Beginne nicht mit neuer Discovery und starte keinen erneuten
-Consumer-Design- oder Read-Only-Chain-Report, sofern keine neue
-Unsicherheit vorliegt. Slice 1 nicht erneut öffnen. Slice 2 nur unter
-dem ratifizierten Decision-D-Scope.
+Keine neue Discovery. Keine neue Read-Only-Kette. Keine Mutation ohne
+separaten neuen Scope und neues Operator-GO.
 ```
 
 ## 23.2 Fortsetzungsregel
@@ -1622,9 +1761,31 @@ Ein neuer Chat darf nicht wieder bei hypothetischen Klassen wie `StrategySignalV
 
 Er muss die realen Repo-Symbole verwenden.
 
-**Nach Decision-D-Ratifikation gilt zusätzlich verbindlich:**
+**Nach Final Closeout (PR #5233) gilt verbindlich:**
 
 ```text
+FINAL_CLOSEOUT_COMPLETE=true
+FINAL_IMPLEMENTATION_PR=5233
+FINAL_IMPLEMENTATION_SQUASH_COMMIT=81222f4e4227a98f93d0456d28db28aa075d4f80
+TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE=true
+FULL_CANONICAL_CHAIN_WIRED=true
+BACKTEST_RUNTIME_DECISION_PARITY=true
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
+MISSION_STATUS=TECHNICALLY_COMPLETE
+FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
+READ_ONLY_CHAINING_REQUIRED=false
+NEW_READ_ONLY_CHAIN_CREATED=false
+MISSION_COMPLETE=false
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+ORDER_EFFECT=NONE
+```
+
+**Historische Decision-D-/Decision-C-Audit-Felder (nicht aktueller offener Auftrag):**
+
+```text
+HISTORICAL_DECISION_AND_SLICE_AUTHORIZATION_TRAIL=true
 PR5229_RATIFICATION_STATUS=COMPLETE
 ARCHITECTURE_AUTHORIZATION_DECISION=C
 ARCHITECTURE_DECISION_D_RATIFIED=true
@@ -1635,13 +1796,6 @@ AUTHORIZED_CANONICAL_CONSUMER_STAGE=evaluate_suitability_binding_v1
 SLICE_1_REOPENED=false
 SLICE_2_IMPLEMENTATION_AUTHORIZED=true
 SLICE_2_STATUS=AUTHORIZED_UNDER_DECISION_D
-NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=
-FAMILY_SCOPED_STRATEGY_AGREEMENT_INTO_EXISTING_SUITABILITY_V1
-READ_ONLY_CHAINING_REQUIRED=false
-RAW_SIGNAL_DIRECT_AUTHORITY=false
-PROVENANCE_ONLY_BINDING=false
-NEW_PARALLEL_DECISION_STAGE=false
-NEW_TOTAL_DECISION_OWNER=false
 EXACT_CONSUMER_PATH=
 StrategySignalBindingResultV1
 → normalize_strategy_signal_to_suitability_agreement_material_v1
@@ -1649,27 +1803,35 @@ StrategySignalBindingResultV1
 → run_integrated_offline_trading_logic_replay_v1
 → _suitability_input_for_assessment
 → evaluate_suitability_binding_v1
-CORE_CODE_EFFECT=NONE
-RUNTIME_EFFECT=NONE
-AUTHORITY_EFFECT=NONE
-ORDER_EFFECT=NONE
 ```
 
 Verboten als automatische Fortsetzung: erneuter Consumer-Design-Report,
-erneuter Read-Only-Scope `STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_BINDING_V1`,
-Slice-2-Implementierung, Übergang zur Mutation ohne neue
-Operator-Architekturentscheidung.
+erneuter Read-Only-Scope, erneute Slice-1–4-Implementierung ohne neuen
+separaten Operator-Scope, Runtime-Aktivierung, Economic Evaluation, Orders.
 
 ---
 
-# 24. Nächster Cursor-Auftrag — Implementation Readiness und Slice-1-Vertrag
+# 24. NEXT_ACTION — Canonical Chain Wiring Repair Closed
 
-> **HISTORICAL / SUPERSEDED — SLICE 1 ALREADY COMPLETED.** Dieser §24-Auftragstext war der
+```text
+NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR
+MISSION_STATUS=TECHNICALLY_COMPLETE
+FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true
+NEW_READ_ONLY_CHAIN_CREATED=false
+```
+
+Keine neue Read-Only-Kette. Kein weiterer automatischer Cursor-Auftrag für
+diese Mission. Weitere Änderungen erfordern einen separaten neuen Scope und
+ein neues Operator-GO.
+
+### 24.1 HISTORICAL / SUPERSEDED — früherer Slice-1 Readiness-Auftrag
+
+> **HISTORICAL / SUPERSEDED — SLICE 1 ALREADY COMPLETED.** Dieser §24.1-Auftragstext war der
 > Slice-1-Readiness-Auftrag zum Discovery-Baseline `6e8c5889…`. Slice 1 ist per PR #5226
 > abgeschlossen (`SLICE_1_COMPLETE=true`). Nicht erneut ausführen. Inhalt bleibt als
 > historischer Vertrag erhalten.
 
-Dieser Auftrag ist noch read-only. Er prüft nur Drift seit dem Discovery-Baseline-Commit und erzeugt den exakten bounded Implementierungsvertrag für Slice 1.
+Dieser Auftrag war read-only. Er prüfte nur Drift seit dem Discovery-Baseline-Commit und erzeugte den exakten bounded Implementierungsvertrag für Slice 1.
 
 ```text
 AUSFÜHRUNGSART: READ_ONLY_CANONICAL_REPLAY_INPUT_BUILDER_IMPLEMENTATION_READINESS_V1
