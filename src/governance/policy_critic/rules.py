@@ -68,6 +68,18 @@ class NoSecretsRule(PolicyRule):
         (r"aws_secret_access_key", "AWS secret access key detected"),
     ]
 
+    @staticmethod
+    def _is_operator_go_token_false_positive(added: str) -> bool:
+        """Public operator GO token identifiers are not commit secrets."""
+        stripped = added.strip()
+        if re.search(r"\b[A-Z0-9_]*_GO_TOKEN\b", stripped):
+            return True
+        if re.match(r"go_token\s*=\s*[A-Z][A-Z0-9_]*", stripped, re.IGNORECASE):
+            return True
+        if re.search(r"""['"]GO_[A-Z0-9_]{10,}['"]""", stripped):
+            return True
+        return False
+
     def check(
         self, diff: str, changed_files: List[str], context: Optional[dict] = None
     ) -> List[Violation]:
@@ -82,6 +94,8 @@ class NoSecretsRule(PolicyRule):
                 for match in re.finditer(pattern, added, re.IGNORECASE):
                     matched_text = match.group(0)
                     if re.search(r"[\$]\{?[A-Za-z_][A-Za-z0-9_]*", matched_text):
+                        continue
+                    if self._is_operator_go_token_false_positive(added):
                         continue
 
                     snippet = added.strip()
