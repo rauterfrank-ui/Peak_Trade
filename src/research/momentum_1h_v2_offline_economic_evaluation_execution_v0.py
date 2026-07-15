@@ -117,6 +117,9 @@ ALLOWED_BASELINE_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({BASELINE_EXECU
 ALLOWED_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
     {BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN}
 )
+ALLOWED_ORCHESTRATED_BASELINE_GO_TOKENS: frozenset[str] = (
+    ALLOWED_BASELINE_EXECUTION_GO_TOKENS | ALLOWED_EVALUATION_DISPATCH_GO_TOKENS
+)
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     INFRASTRUCTURE_GO_TOKEN: _BRANCH_INFRASTRUCTURE_V0,
     EXECUTION_GO_TOKEN: _BRANCH_EXECUTION_V0,
@@ -269,6 +272,14 @@ class FullEvaluationDispatchResultV0:
     reason_codes: tuple[str, ...]
     authority_effect: str
     runtime_effect: str
+    economic_evaluation_executed: bool = False
+    canonical_owner: str = ""
+    actual_baseline_backtest_call_present: bool = False
+    baseline_backtest_owner_call_count: int = 0
+    baseline_backtest_owner_invoked: bool = False
+    backtest_engine_entered: bool = False
+    backtest_engine_completed: bool = False
+    economic_evidence_persisted: bool = False
 
 
 @dataclass(frozen=True)
@@ -882,20 +893,34 @@ def run_full_offline_economic_evaluation_v0(
             runtime_effect=RUNTIME_EFFECT,
         )
 
-    return FullEvaluationDispatchResultV0(
-        executed=False,
-        blocked=False,
-        wiring_verified=True,
-        reason_codes=(REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION,),
-        authority_effect=AUTHORITY_EFFECT,
-        runtime_effect=RUNTIME_EFFECT,
+    staging_root = _resolve_panel_staging_root(envelope)
+    baseline = run_baseline_offline_economic_evaluation_v0(
+        go_token=go_token,
+        repo_root=repo_root,
+        authorization_ratification=ratification,
+        versioned_binding=envelope,
+        staging_root=staging_root,
+        invoke_baseline_owner=True,
+        verify_source_manifests=verify_source_manifests,
+        orchestrated_from_full_evaluation=True,
     )
+    return _full_evaluation_result_from_baseline_v0(baseline)
 
 
 def validate_baseline_execution_go_token_v0(go_token: str | None) -> tuple[bool, tuple[str, ...]]:
     if not go_token:
         return False, (REASON_GO_TOKEN_MISSING,)
     if go_token not in ALLOWED_BASELINE_EXECUTION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def validate_orchestrated_baseline_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_ORCHESTRATED_BASELINE_GO_TOKENS:
         return False, (REASON_GO_TOKEN_INVALID,)
     return True, ()
 
@@ -945,6 +970,46 @@ def _wiring_verified_phase_result_v0(
     )
 
 
+def _full_evaluation_result_from_baseline_v0(
+    baseline: PhaseExecutionBlockedResultV0,
+) -> FullEvaluationDispatchResultV0:
+    return FullEvaluationDispatchResultV0(
+        executed=baseline.executed,
+        blocked=baseline.blocked,
+        wiring_verified=baseline.wiring_verified,
+        reason_codes=baseline.reason_codes,
+        authority_effect=baseline.authority_effect,
+        runtime_effect=baseline.runtime_effect,
+        economic_evaluation_executed=baseline.economic_evaluation_executed,
+        canonical_owner=baseline.canonical_owner,
+        actual_baseline_backtest_call_present=baseline.actual_baseline_backtest_call_present,
+        baseline_backtest_owner_call_count=baseline.baseline_backtest_owner_call_count,
+        baseline_backtest_owner_invoked=baseline.baseline_backtest_owner_invoked,
+        backtest_engine_entered=baseline.backtest_engine_entered,
+        backtest_engine_completed=baseline.backtest_engine_completed,
+        economic_evidence_persisted=baseline.economic_evidence_persisted,
+    )
+
+
+def full_evaluation_result_to_dict(result: FullEvaluationDispatchResultV0) -> dict[str, Any]:
+    return {
+        "executed": result.executed,
+        "blocked": result.blocked,
+        "wiring_verified": result.wiring_verified,
+        "reason_codes": list(result.reason_codes),
+        "authority_effect": result.authority_effect,
+        "runtime_effect": result.runtime_effect,
+        "economic_evaluation_executed": result.economic_evaluation_executed,
+        "canonical_owner": result.canonical_owner,
+        "actual_baseline_backtest_call_present": result.actual_baseline_backtest_call_present,
+        "baseline_backtest_owner_call_count": result.baseline_backtest_owner_call_count,
+        "baseline_backtest_owner_invoked": result.baseline_backtest_owner_invoked,
+        "backtest_engine_entered": result.backtest_engine_entered,
+        "backtest_engine_completed": result.backtest_engine_completed,
+        "economic_evidence_persisted": result.economic_evidence_persisted,
+    }
+
+
 def _validate_baseline_execution_guards_v0(
     *,
     go_token: str,
@@ -952,10 +1017,15 @@ def _validate_baseline_execution_guards_v0(
     authorization_ratification: Mapping[str, Any] | None,
     versioned_binding: Mapping[str, Any] | None,
     staging_root: Path | None,
+    orchestrated_from_full_evaluation: bool = False,
 ) -> tuple[bool, tuple[str, ...], dict[str, Any]]:
     reasons: list[str] = []
-    if go_token not in ALLOWED_BASELINE_EXECUTION_GO_TOKENS:
-        return False, (REASON_GO_TOKEN_INVALID,), {}
+    if orchestrated_from_full_evaluation:
+        token_ok, token_reasons = validate_orchestrated_baseline_go_token_v0(go_token)
+    else:
+        token_ok, token_reasons = validate_baseline_execution_go_token_v0(go_token)
+    if not token_ok:
+        return False, token_reasons, {}
 
     envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
     auth = authorization_ratification or load_authorization_ratification_v0(repo_root)
@@ -1105,6 +1175,7 @@ def run_baseline_offline_economic_evaluation_v0(
     scratch_root: Path | None = None,
     invoke_baseline_owner: bool = False,
     verify_source_manifests: bool = False,
+    orchestrated_from_full_evaluation: bool = False,
     panel_member_instrument_ids: Sequence[str] | None = None,
     skip_member_trade_count_backtest_v0: bool = False,
     **_kwargs: Any,
@@ -1124,7 +1195,10 @@ def run_baseline_offline_economic_evaluation_v0(
             runtime_effect=RUNTIME_EFFECT,
         )
 
-    token_ok, token_reasons = validate_baseline_execution_go_token_v0(go_token)
+    if orchestrated_from_full_evaluation:
+        token_ok, token_reasons = validate_orchestrated_baseline_go_token_v0(go_token)
+    else:
+        token_ok, token_reasons = validate_baseline_execution_go_token_v0(go_token)
     if not token_ok:
         return PhaseExecutionBlockedResultV0(
             phase="BASELINE",
@@ -1148,6 +1222,7 @@ def run_baseline_offline_economic_evaluation_v0(
         authorization_ratification=authorization_ratification,
         versioned_binding=versioned_binding,
         staging_root=staging_root if invoke_baseline_owner else None,
+        orchestrated_from_full_evaluation=orchestrated_from_full_evaluation,
     )
     if not guards_ok:
         return PhaseExecutionBlockedResultV0(
@@ -1832,7 +1907,10 @@ __all__ = [
     "run_full_offline_economic_evaluation_v0",
     "run_offline_economic_evaluation_execution_dispatch_v0",
     "validate_baseline_execution_go_token_v0",
+    "validate_orchestrated_baseline_go_token_v0",
     "validate_baseline_execution_implementation_go_token_v0",
+    "full_evaluation_result_to_dict",
+    "_full_evaluation_result_from_baseline_v0",
     "validate_dispatch_implementation_go_token_v0",
     "validate_entry_point_go_token_v0",
     "validate_evaluation_dispatch_go_token_v0",

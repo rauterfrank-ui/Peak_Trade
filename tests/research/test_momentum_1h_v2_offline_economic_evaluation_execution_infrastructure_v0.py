@@ -6,6 +6,8 @@ import ast
 from copy import deepcopy
 from pathlib import Path
 
+from unittest.mock import patch
+
 import pytest
 
 from src.research.momentum_1h_v2_offline_economic_evaluation_authorization_ratification_v0 import (
@@ -19,11 +21,14 @@ from src.research.momentum_1h_v2_offline_economic_evaluation_execution_v0 import
     RATIFIED_DATASET_DIGEST,
     REASON_BINDING_DIGEST_MISMATCH,
     REASON_DATASET_DIGEST_MISMATCH,
+    REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED,
+    REASON_BASELINE_WIRING_VERIFIED,
     REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION,
     REASON_ECONOMIC_EXECUTION_FORBIDDEN,
     REASON_GO_TOKEN_INVALID,
     RUNNER_SCRIPT,
     RUNTIME_EFFECT,
+    PhaseExecutionBlockedResultV0,
     entrypoint_result_to_dict,
     load_ops_evaluation_config_v0,
     materialize_execution_contract_v0,
@@ -213,21 +218,46 @@ class TestNoExecutionDuringInfrastructure:
         assert result.executed is False
         assert result.blocked is True
 
-    def test_full_evaluation_wiring_verified_with_execution_go(
+    def test_full_evaluation_chains_to_baseline_after_dispatch_accepted(
         self,
         authorization_ratification: dict,
         complete_binding: dict,
     ) -> None:
-        result = run_full_offline_economic_evaluation_v0(
-            go_token=EXECUTION_GO_TOKEN,
-            repo_root=REPO_ROOT,
-            authorization_ratification=authorization_ratification,
-            versioned_binding=complete_binding,
+        owner_ref = (
+            "versioned_final_fleet_bindings_offline_economic_evaluation_v0."
+            "_run_candidate_with_runtime_config_v0"
         )
-        assert result.executed is False
+        baseline_result = PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=False,
+            wiring_verified=True,
+            canonical_owner=owner_ref,
+            reason_codes=(
+                REASON_BASELINE_WIRING_VERIFIED,
+                REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED,
+            ),
+            authority_effect="OFFLINE_EVALUATION_AUTHORIZATION_ONLY",
+            runtime_effect="NONE",
+            economic_evaluation_executed=False,
+        )
+        with patch(
+            "src.research.momentum_1h_v2_offline_economic_evaluation_execution_v0."
+            "run_baseline_offline_economic_evaluation_v0",
+            return_value=baseline_result,
+        ) as baseline_spy:
+            result = run_full_offline_economic_evaluation_v0(
+                go_token=EXECUTION_GO_TOKEN,
+                repo_root=REPO_ROOT,
+                authorization_ratification=authorization_ratification,
+                versioned_binding=complete_binding,
+            )
+
+        baseline_spy.assert_called_once()
         assert result.blocked is False
         assert result.wiring_verified is True
-        assert REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION in result.reason_codes
+        assert result.canonical_owner == owner_ref
+        assert REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION not in result.reason_codes
 
 
 class TestMaterializationContract:
