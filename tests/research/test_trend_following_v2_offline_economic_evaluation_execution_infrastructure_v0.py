@@ -19,6 +19,7 @@ from src.research.trend_following_v2_offline_economic_evaluation_execution_v0 im
     RATIFIED_DATASET_DIGEST,
     REASON_BINDING_DIGEST_MISMATCH,
     REASON_DATASET_DIGEST_MISMATCH,
+    REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION,
     REASON_ECONOMIC_EXECUTION_FORBIDDEN,
     REASON_GO_TOKEN_INVALID,
     RUNNER_SCRIPT,
@@ -203,7 +204,7 @@ class TestContractSmokeAndDryRun:
             go_token=EXECUTION_GO_TOKEN,
         )
         assert result.precheck_passed is False
-        assert REASON_GO_TOKEN_INVALID in result.reason_codes
+        assert REASON_ECONOMIC_EXECUTION_FORBIDDEN in result.reason_codes
 
 
 class TestNoExecutionDuringInfrastructure:
@@ -227,8 +228,9 @@ class TestNoExecutionDuringInfrastructure:
             versioned_binding=complete_binding,
         )
         assert result.executed is False
+        assert result.blocked is False
         assert result.wiring_verified is True
-        assert REASON_ECONOMIC_EXECUTION_FORBIDDEN in result.reason_codes
+        assert REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION in result.reason_codes
 
 
 class TestMaterializationContract:
@@ -236,7 +238,7 @@ class TestMaterializationContract:
         contract = materialize_execution_contract_v0()
         assert contract["economic_evaluation_executed"] is False
         assert contract["binding_digest"] == RATIFIED_BINDING_DIGEST
-        assert contract["entry_point_status"] == "EXECUTION_INFRASTRUCTURE_WIRING_V0"
+        assert contract["entry_point_status"] == "EXECUTION_DISPATCH_WIRING_V0"
 
     def test_entrypoint_result_roundtrip(
         self,
