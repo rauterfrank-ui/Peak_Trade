@@ -164,6 +164,7 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "scripts/ops/run_trend_following_v2_offline_economic_evaluation_execution_v0.py",
                 "scripts/ops/materialize_trend_following_v2_offline_economic_evaluation_baseline_execution_implementation_v0.py",
                 "tests/research/test_trend_following_v2_offline_economic_evaluation_baseline_execution_implementation_v0.py",
+                "tests/research/test_trend_following_v2_baseline_execution_entry_point_result_contract_repair_v0.py",
                 "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
             ],
             [

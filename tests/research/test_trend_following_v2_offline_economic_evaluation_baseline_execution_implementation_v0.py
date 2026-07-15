@@ -195,16 +195,20 @@ class TestHappyPathCanonicalBacktestOwnerInvocation:
                 invoke_baseline_owner=True,
             )
 
-        assert result.blocked is False
+        assert result.blocked is True
         assert result.executed is False
         assert result.actual_baseline_backtest_call_present is True
         assert result.baseline_backtest_owner_call_count == 1
+        assert result.baseline_backtest_owner_invoked is True
+        assert result.economic_evaluation_executed is False
         assert REASON_BASELINE_BACKTEST_OWNER_INVOKED in result.reason_codes
+        assert "BASELINE_OWNER_RUN_FAILED" in result.reason_codes
         backtest_spy.assert_called_once()
         _, kwargs = backtest_spy.call_args
         assert kwargs["strategy_id"] == STRATEGY_ID
         assert kwargs["strategy_version"] == STRATEGY_VERSION
         assert kwargs["config_path"] == config_path
+        assert not Path(kwargs["output_dir"]).exists()
 
 
 class TestBindingAndCostContracts:
