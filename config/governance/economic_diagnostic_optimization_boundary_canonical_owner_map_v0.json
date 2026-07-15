@@ -444,6 +444,7 @@
         "tests/research/test_*offline_economic_evaluation_reevaluation_execution_ops_runner_branch_v0.py",
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_execution_ops_runner_branch_v0.py",
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_execution_implementation_v0.py",
+        "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_actual_execution_owner_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_dataset_digest_reconciliation_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_authorization_ratification_repair_v0.py",

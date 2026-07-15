@@ -151,6 +151,10 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
             ],
             [
                 "src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py",
+                "tests/research/test_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_reevaluation_baseline_actual_execution_owner_implementation_v0.py",
+            ],
+            [
+                "src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py",
                 "scripts/ops/run_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py",
                 "config/ops/cross_sectional_futures_pairwise_lead_lag_spillover_v1_economic_evaluation_v1.json",
                 "tests/research/test_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_infrastructure_v0.py",
