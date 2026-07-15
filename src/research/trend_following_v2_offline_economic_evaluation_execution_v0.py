@@ -9,6 +9,7 @@ No runtime, order, or authority effect.
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
 from dataclasses import dataclass
 from enum import Enum
@@ -16,11 +17,20 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256
+from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (
+    CandidateExecutionResultV0,
+    CandidateTerminalStatus,
+)
 from src.research.panel_sequential_signal_density_research_adapter_v0 import (
     ADAPTER_KIND,
     ROTATION_POLICY,
+    build_sparse_signal_runtime_step31f_config_v0,
+    compute_sparse_signal_density_metrics_v0,
     load_sorted_panel_binding,
     resolve_panel_staging_root,
+)
+from src.research.versioned_final_fleet_bindings_offline_economic_evaluation_v0 import (
+    _run_candidate_with_runtime_config_v0,
 )
 from src.research.trend_following_v2_offline_economic_evaluation_authorization_ratification_v0 import (
     AUTHORITY_EFFECT,
@@ -61,10 +71,17 @@ DISPATCH_IMPLEMENTATION_GO_TOKEN = (
     "GO_TREND_FOLLOWING_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_DISPATCH_IMPLEMENTATION_V0"
 )
 EXECUTION_GO_TOKEN = "GO_TREND_FOLLOWING_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+BASELINE_EXECUTION_GO_TOKEN = (
+    "GO_TREND_FOLLOWING_V2_OFFLINE_ECONOMIC_EVALUATION_BASELINE_EXECUTION_V0"
+)
+BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN = (
+    "GO_TREND_FOLLOWING_V2_OFFLINE_ECONOMIC_EVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
+)
 GO_TOKEN = EXECUTION_GO_TOKEN
 
 RATIFIED_BINDING_DIGEST = "9c624a22506c905261e58c117923ea4c0f570968d54ddf5e91f2c56f88b0d966"
 RATIFIED_DATASET_DIGEST = "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638"
+ROUNDTRIP_COST_BPS = 40.0
 
 CONFIG_REL_PATH_OPS = "config/ops/trend_following_v2_economic_evaluation_v1.json"
 RUNNER_SCRIPT = "scripts/ops/run_trend_following_v2_offline_economic_evaluation_execution_v0.py"
@@ -76,19 +93,36 @@ BASELINE_EVALUATOR_OWNER = (
     "versioned_final_fleet_bindings_offline_economic_evaluation_v0."
     "_run_candidate_with_runtime_config_v0"
 )
+CANONICAL_BASELINE_BACKTEST_OWNER = (
+    "src.research.versioned_final_fleet_bindings_offline_economic_evaluation_v0."
+    "_run_candidate_with_runtime_config_v0"
+)
+CANONICAL_BASELINE_ENTRY_POINT = (
+    "src.research.trend_following_v2_offline_economic_evaluation_execution_v0."
+    "run_baseline_offline_economic_evaluation_v0"
+)
 ENTRY_POINT_STATUS = "EXECUTION_DISPATCH_WIRING_V0"
+BASELINE_ENTRY_POINT_STATUS = "BASELINE_EXECUTION_ENTRY_POINT_V0"
 
 _BRANCH_INFRASTRUCTURE_V0 = "INFRASTRUCTURE_V0"
 _BRANCH_EXECUTION_V0 = "EXECUTION_V0"
 _BRANCH_DISPATCH_IMPLEMENTATION_V0 = "DISPATCH_IMPLEMENTATION_V0"
+_BRANCH_BASELINE_EXECUTION_V0 = "BASELINE_EXECUTION_V0"
+_BRANCH_BASELINE_EXECUTION_IMPLEMENTATION_V0 = "BASELINE_EXECUTION_IMPLEMENTATION_V0"
 ALLOWED_EVALUATION_DISPATCH_GO_TOKENS: frozenset[str] = frozenset({EXECUTION_GO_TOKEN})
 ALLOWED_DISPATCH_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
     {DISPATCH_IMPLEMENTATION_GO_TOKEN}
+)
+ALLOWED_BASELINE_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({BASELINE_EXECUTION_GO_TOKEN})
+ALLOWED_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
+    {BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN}
 )
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     INFRASTRUCTURE_GO_TOKEN: _BRANCH_INFRASTRUCTURE_V0,
     EXECUTION_GO_TOKEN: _BRANCH_EXECUTION_V0,
     DISPATCH_IMPLEMENTATION_GO_TOKEN: _BRANCH_DISPATCH_IMPLEMENTATION_V0,
+    BASELINE_EXECUTION_GO_TOKEN: _BRANCH_BASELINE_EXECUTION_V0,
+    BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN: _BRANCH_BASELINE_EXECUTION_IMPLEMENTATION_V0,
 }
 
 REASON_BINDING_DIGEST_MISMATCH = "BINDING_DIGEST_MISMATCH"
@@ -105,6 +139,52 @@ REASON_MISSING_OPS_EVALUATION_CONFIG = "MISSING_OPS_EVALUATION_CONFIG"
 REASON_PANEL_STAGING_MISSING = "PANEL_STAGING_MISSING"
 REASON_SOURCE_MANIFEST_VERIFY_FAILED = "SOURCE_MANIFEST_VERIFY_FAILED"
 REASON_ENTRY_POINT_PENDING = "ENTRY_POINT_PENDING"
+REASON_GO_TOKEN_MISSING = "GO_TOKEN_MISSING"
+REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION = (
+    "IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION"
+)
+REASON_BASELINE_WIRING_VERIFIED = "BASELINE_WIRING_VERIFIED"
+REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED = "BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED"
+REASON_BASELINE_BACKTEST_OWNER_INVOKED = "BASELINE_BACKTEST_OWNER_INVOKED"
+REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE = "BASELINE_EXECUTION_DATA_UNAVAILABLE"
+REASON_CANONICAL_OWNER_UNREACHABLE = "CANONICAL_OWNER_UNREACHABLE"
+REASON_BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE = "BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE"
+REASON_FUTURES_ONLY_VIOLATION = "FUTURES_ONLY_VIOLATION"
+REASON_BITCOIN_DIRECTION_VIOLATION = "BITCOIN_DIRECTION_VIOLATION"
+
+
+@dataclass(frozen=True)
+class PhaseExecutionBlockedResultV0:
+    phase: str
+    executed: bool
+    blocked: bool
+    wiring_verified: bool = False
+    canonical_owner: str = ""
+    actual_baseline_backtest_call_present: bool = False
+    baseline_backtest_owner_call_count: int = 0
+    reason_codes: tuple[str, ...] = ()
+    authority_effect: str = AUTHORITY_EFFECT
+    runtime_effect: str = RUNTIME_EFFECT
+
+
+@dataclass(frozen=True)
+class BaselineExecutionPreflightResultV0:
+    preflight_passed: bool
+    blocked: bool
+    baseline_execution_admissible: bool
+    implementation_wiring_verified: bool
+    reason_codes: tuple[str, ...]
+    bound_dataset_materialized: bool
+    source_manifests_verified: bool
+    dataset_digest_verified: bool
+    panel_data_digest: str
+    ratified_dataset_digest: str
+    baseline_wiring_verified: bool
+    baseline_executed: bool
+    baseline_callable_wiring_only: bool
+    economic_evaluation_executed: bool
+    authority_effect: str
+    runtime_effect: str
 
 
 class InfrastructureTerminalStatus(str, Enum):
@@ -774,6 +854,482 @@ def run_full_offline_economic_evaluation_v0(
     )
 
 
+def validate_baseline_execution_go_token_v0(go_token: str | None) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_BASELINE_EXECUTION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def validate_baseline_execution_implementation_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
+def _verify_baseline_owner_wiring_v0() -> tuple[bool, str]:
+    if _run_candidate_with_runtime_config_v0 is None:
+        return False, ""
+    return True, CANONICAL_BASELINE_BACKTEST_OWNER
+
+
+def _blocked_phase_result_v0(*, phase: str, reason: str) -> PhaseExecutionBlockedResultV0:
+    return PhaseExecutionBlockedResultV0(
+        phase=phase,
+        executed=False,
+        blocked=True,
+        reason_codes=(reason,),
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
+
+
+def _wiring_verified_phase_result_v0(
+    *,
+    phase: str,
+    canonical_owner: str,
+    reason: str,
+) -> PhaseExecutionBlockedResultV0:
+    return PhaseExecutionBlockedResultV0(
+        phase=phase,
+        executed=False,
+        blocked=False,
+        wiring_verified=True,
+        canonical_owner=canonical_owner,
+        reason_codes=(reason,),
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
+
+
+def _validate_baseline_execution_guards_v0(
+    *,
+    go_token: str,
+    repo_root: Path,
+    authorization_ratification: Mapping[str, Any] | None,
+    versioned_binding: Mapping[str, Any] | None,
+    staging_root: Path | None,
+) -> tuple[bool, tuple[str, ...], dict[str, Any]]:
+    reasons: list[str] = []
+    if go_token not in ALLOWED_BASELINE_EXECUTION_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,), {}
+
+    envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
+    auth = authorization_ratification or load_authorization_ratification_v0(repo_root)
+
+    if auth.get("offline_only") is not True:
+        reasons.append(REASON_OFFLINE_ONLY_VIOLATION)
+
+    start_state = verify_execution_start_state_v0(
+        repo_root=repo_root,
+        authorization_ratification=auth,
+        versioned_binding=envelope,
+    )
+    if not start_state.valid:
+        reasons.extend(start_state.fail_reasons)
+
+    digest_ok, digest_reasons = verify_ratified_digests_v0(envelope)
+    if not digest_ok:
+        reasons.extend(digest_reasons)
+
+    candidate = envelope.get("binding", {})
+    instrument_binding = candidate.get("instrument_binding", {})
+    if instrument_binding.get("futures_only") is not True:
+        reasons.append(REASON_FUTURES_ONLY_VIOLATION)
+    if instrument_binding.get("bitcoin_direction_allowed") is not False:
+        reasons.append(REASON_BITCOIN_DIRECTION_VIOLATION)
+
+    execution_model = candidate.get("execution_model_binding", {})
+    if execution_model.get("roundtrip_cost_bps") != ROUNDTRIP_COST_BPS:
+        reasons.append("ROUNDTRIP_COST_BPS_MISMATCH")
+
+    if staging_root is not None and not staging_root.is_dir():
+        reasons.append(REASON_PANEL_STAGING_MISSING)
+
+    return not reasons, tuple(dict.fromkeys(reasons)), envelope
+
+
+def run_baseline_offline_economic_evaluation_v0(
+    *,
+    go_token: str,
+    repo_root: Path | None = None,
+    authorization_ratification: Mapping[str, Any] | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
+    staging_root: Path | None = None,
+    scratch_root: Path | None = None,
+    invoke_baseline_owner: bool = False,
+    verify_source_manifests: bool = False,
+    **_kwargs: Any,
+) -> PhaseExecutionBlockedResultV0:
+    """Fail-closed baseline entry point wiring to canonical sparse-signal backtest owner."""
+    active_root = repo_root or Path(".")
+    if go_token in ALLOWED_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            reason_codes=(
+                REASON_GO_TOKEN_INVALID,
+                REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION,
+            ),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    token_ok, token_reasons = validate_baseline_execution_go_token_v0(go_token)
+    if not token_ok:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            reason_codes=token_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    owner_ok, owner_ref = _verify_baseline_owner_wiring_v0()
+    if not owner_ok:
+        return _blocked_phase_result_v0(
+            phase="BASELINE",
+            reason=REASON_CANONICAL_OWNER_UNREACHABLE,
+        )
+
+    guards_ok, guard_reasons, envelope = _validate_baseline_execution_guards_v0(
+        go_token=go_token,
+        repo_root=active_root,
+        authorization_ratification=authorization_ratification,
+        versioned_binding=versioned_binding,
+        staging_root=staging_root if invoke_baseline_owner else None,
+    )
+    if not guards_ok:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            wiring_verified=False,
+            canonical_owner=owner_ref,
+            reason_codes=guard_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    if verify_source_manifests:
+        manifest_ok, manifest_reasons = verify_source_evidence_manifests_v0()
+        if not manifest_ok:
+            return PhaseExecutionBlockedResultV0(
+                phase="BASELINE",
+                executed=False,
+                blocked=True,
+                wiring_verified=True,
+                canonical_owner=owner_ref,
+                reason_codes=manifest_reasons,
+                authority_effect=AUTHORITY_EFFECT,
+                runtime_effect=RUNTIME_EFFECT,
+            )
+
+    if not invoke_baseline_owner or staging_root is None:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=False,
+            wiring_verified=True,
+            canonical_owner=owner_ref,
+            actual_baseline_backtest_call_present=False,
+            baseline_backtest_owner_call_count=0,
+            reason_codes=(
+                REASON_BASELINE_WIRING_VERIFIED,
+                REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED,
+            ),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    active_scratch = scratch_root or (active_root / ".baseline_scratch")
+    active_scratch.mkdir(parents=True, exist_ok=True)
+    backtest_invoked = False
+    try:
+        metrics = compute_sparse_signal_density_metrics_v0(
+            repo_root=active_root,
+            strategy_id=STRATEGY_ID,
+            staging_root=staging_root,
+            scratch_root=active_scratch,
+        )
+        config_path = build_sparse_signal_runtime_step31f_config_v0(
+            repo_root=active_root,
+            strategy_id=STRATEGY_ID,
+            staging_root=staging_root,
+            instrument_id=metrics.evaluation_instrument_id,
+            output_path=active_scratch / "step31f_trend_following_v2_economic_evaluation_v1.json",
+        )
+        output_dir = active_scratch / "baseline_candidate_output"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        _ = _run_candidate_with_runtime_config_v0(
+            repo_root=active_root,
+            strategy_id=STRATEGY_ID,
+            strategy_version=STRATEGY_VERSION,
+            config_path=config_path,
+            output_dir=output_dir,
+        )
+        backtest_invoked = True
+    except Exception:
+        return PhaseExecutionBlockedResultV0(
+            phase="BASELINE",
+            executed=False,
+            blocked=True,
+            wiring_verified=True,
+            canonical_owner=owner_ref,
+            actual_baseline_backtest_call_present=backtest_invoked,
+            baseline_backtest_owner_call_count=1 if backtest_invoked else 0,
+            reason_codes=(REASON_BASELINE_EXECUTION_DATA_UNAVAILABLE,),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    return PhaseExecutionBlockedResultV0(
+        phase="BASELINE",
+        executed=False,
+        blocked=False,
+        wiring_verified=True,
+        canonical_owner=owner_ref,
+        actual_baseline_backtest_call_present=True,
+        baseline_backtest_owner_call_count=1,
+        reason_codes=(REASON_BASELINE_BACKTEST_OWNER_INVOKED,),
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
+
+
+def run_baseline_execution_preflight_v0(
+    *,
+    go_token: str,
+    repo_root: Path,
+    authorization_ratification: Mapping[str, Any] | None = None,
+    versioned_binding: Mapping[str, Any] | None = None,
+    staging_root: Path | None = None,
+    verify_source_manifests: bool = True,
+) -> BaselineExecutionPreflightResultV0:
+    reasons: list[str] = []
+    baseline_exec_ok, baseline_exec_reasons = validate_baseline_execution_go_token_v0(go_token)
+    impl_ok, impl_reasons = validate_baseline_execution_implementation_go_token_v0(go_token)
+    if not baseline_exec_ok and not impl_ok:
+        reasons.extend(baseline_exec_reasons)
+
+    envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
+    panel_data_digest = str(envelope.get("dataset_digest", RATIFIED_DATASET_DIGEST))
+
+    bound_dataset_materialized = False
+    if staging_root is not None and staging_root.is_dir():
+        try:
+            _ = load_sorted_panel_binding(staging_root)
+            bound_dataset_materialized = True
+        except FileNotFoundError:
+            reasons.append(REASON_PANEL_STAGING_MISSING)
+
+    source_manifests_verified = False
+    if verify_source_manifests:
+        manifest_ok, manifest_reasons = verify_source_evidence_manifests_v0()
+        source_manifests_verified = manifest_ok
+        if not manifest_ok:
+            reasons.extend(manifest_reasons)
+
+    dataset_digest_verified = (
+        bound_dataset_materialized and panel_data_digest == RATIFIED_DATASET_DIGEST
+    )
+    if bound_dataset_materialized and not dataset_digest_verified:
+        reasons.append(REASON_DATASET_DIGEST_MISMATCH)
+
+    baseline_wiring_verified = False
+    baseline_callable_wiring_only = False
+    if impl_ok or baseline_exec_ok:
+        probe = run_baseline_offline_economic_evaluation_v0(
+            go_token=BASELINE_EXECUTION_GO_TOKEN,
+            repo_root=repo_root,
+            authorization_ratification=authorization_ratification,
+            versioned_binding=envelope,
+            verify_source_manifests=False,
+            invoke_baseline_owner=False,
+        )
+        baseline_wiring_verified = probe.wiring_verified
+        baseline_callable_wiring_only = (
+            REASON_BASELINE_CALLABLE_WIRING_ONLY_ACKNOWLEDGED in probe.reason_codes
+        )
+
+    if impl_ok:
+        reasons.append(REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION)
+        reasons.append(REASON_BASELINE_PREFLIGHT_IMPLEMENTATION_COMPLETE)
+
+    unique_reasons = tuple(dict.fromkeys(reasons))
+    preflight_passed = (
+        impl_ok
+        and baseline_wiring_verified
+        and not any(
+            code in unique_reasons
+            for code in (
+                REASON_BINDING_DIGEST_MISMATCH,
+                REASON_DATASET_DIGEST_MISMATCH,
+                REASON_PANEL_STAGING_MISSING,
+                REASON_SOURCE_MANIFEST_VERIFY_FAILED,
+            )
+        )
+    )
+    baseline_execution_admissible = baseline_exec_ok and baseline_wiring_verified
+    blocked = not baseline_execution_admissible and not impl_ok
+
+    return BaselineExecutionPreflightResultV0(
+        preflight_passed=preflight_passed,
+        blocked=blocked,
+        baseline_execution_admissible=baseline_execution_admissible,
+        implementation_wiring_verified=baseline_wiring_verified,
+        reason_codes=unique_reasons,
+        bound_dataset_materialized=bound_dataset_materialized,
+        source_manifests_verified=source_manifests_verified,
+        dataset_digest_verified=dataset_digest_verified,
+        panel_data_digest=panel_data_digest,
+        ratified_dataset_digest=RATIFIED_DATASET_DIGEST,
+        baseline_wiring_verified=baseline_wiring_verified,
+        baseline_executed=False,
+        baseline_callable_wiring_only=baseline_callable_wiring_only,
+        economic_evaluation_executed=False,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
+
+
+def verify_actual_baseline_backtest_call_present_in_production_source_v0() -> bool:
+    source = inspect.getsource(run_baseline_offline_economic_evaluation_v0)
+    return "_run_candidate_with_runtime_config_v0(" in source
+
+
+def phase_result_to_dict(result: PhaseExecutionBlockedResultV0) -> dict[str, Any]:
+    return {
+        "phase": result.phase,
+        "executed": result.executed,
+        "blocked": result.blocked,
+        "wiring_verified": result.wiring_verified,
+        "canonical_owner": result.canonical_owner,
+        "actual_baseline_backtest_call_present": result.actual_baseline_backtest_call_present,
+        "baseline_backtest_owner_call_count": result.baseline_backtest_owner_call_count,
+        "reason_codes": list(result.reason_codes),
+        "authority_effect": result.authority_effect,
+        "runtime_effect": result.runtime_effect,
+        "economic_evaluation_executed": False,
+    }
+
+
+def preflight_result_to_dict(result: BaselineExecutionPreflightResultV0) -> dict[str, Any]:
+    return {
+        "preflight_passed": result.preflight_passed,
+        "blocked": result.blocked,
+        "baseline_execution_admissible": result.baseline_execution_admissible,
+        "implementation_wiring_verified": result.implementation_wiring_verified,
+        "reason_codes": list(result.reason_codes),
+        "bound_dataset_materialized": result.bound_dataset_materialized,
+        "source_manifests_verified": result.source_manifests_verified,
+        "dataset_digest_verified": result.dataset_digest_verified,
+        "panel_data_digest": result.panel_data_digest,
+        "ratified_dataset_digest": result.ratified_dataset_digest,
+        "baseline_wiring_verified": result.baseline_wiring_verified,
+        "baseline_executed": result.baseline_executed,
+        "baseline_callable_wiring_only": result.baseline_callable_wiring_only,
+        "economic_evaluation_executed": result.economic_evaluation_executed,
+        "authority_effect": result.authority_effect,
+        "runtime_effect": result.runtime_effect,
+    }
+
+
+def build_baseline_owner_inventory() -> dict[str, Any]:
+    return {
+        "schema_version": "owner_inventory.v0",
+        "canonical_entry_point": CANONICAL_BASELINE_ENTRY_POINT,
+        "canonical_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
+        "baseline_evaluator_owner": BASELINE_EVALUATOR_OWNER,
+        "versioned_binding_owner": (
+            "src.research.trend_following_v2_versioned_research_binding_v0"
+        ),
+        "panel_adapter_owner": "src.research.panel_sequential_signal_density_research_adapter_v0",
+        "dataset_materialization_owner": (
+            "panel_sequential_signal_density_research_adapter_v0."
+            "materialize_panel_member_evaluation_dataset_v0"
+        ),
+        "runtime_config_owner": (
+            "panel_sequential_signal_density_research_adapter_v0."
+            "build_sparse_signal_runtime_step31f_config_v0"
+        ),
+        "evidence_output_owner": "scripts.ops.primary_evidence_retention_v0",
+    }
+
+
+def build_baseline_reuse_decision() -> dict[str, Any]:
+    return {
+        "schema_version": "reuse_decision.v0",
+        "decision": "REUSE_WITH_NARROW_ADAPTER",
+        "canonical_backtest_owner_reused": True,
+        "new_backtest_owner_created": False,
+        "strategy_logic_duplicated": False,
+        "digest_algorithm_duplicated": False,
+        "rationale": (
+            "Materialize run_baseline_offline_economic_evaluation_v0 as narrow adapter over "
+            "existing sparse-signal panel adapter and _run_candidate_with_runtime_config_v0."
+        ),
+    }
+
+
+def build_baseline_runner_decision() -> dict[str, Any]:
+    return {
+        "schema_version": "runner_decision.v0",
+        "runner_script": RUNNER_SCRIPT,
+        "baseline_implementation_branch": _BRANCH_BASELINE_EXECUTION_IMPLEMENTATION_V0,
+        "baseline_execution_branch": _BRANCH_BASELINE_EXECUTION_V0,
+        "implementation_go_authorizes_baseline_execution": False,
+        "baseline_execution_go_separately_gated": True,
+    }
+
+
+def build_baseline_test_assertion_matrix() -> dict[str, Any]:
+    assertions = [
+        "baseline_entry_point_materialized_and_importable",
+        "valid_path_reaches_canonical_backtest_owner",
+        "canonical_backtest_owner_invoked_exactly_once_in_spy_test",
+        "trend_following_v2_binding_contract_passed",
+        "roundtrip_cost_bps_unchanged_at_40",
+        "wrong_go_token_blocks_before_backtest",
+        "stale_binding_digest_blocks_before_backtest",
+        "missing_staging_blocks_fail_closed_on_invoke",
+        "futures_only_enforced",
+        "bitcoin_exclusion_enforced",
+        "no_economic_evaluation_in_implementation_scope",
+        "runtime_effect_none",
+        "authority_effect_none",
+    ]
+    return {
+        "schema_version": "test_assertion_matrix.v0",
+        "assertions": assertions,
+        "assertion_count": len(assertions),
+    }
+
+
+def materialize_baseline_implementation_contract_v0() -> dict[str, Any]:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "execution_id": EXECUTION_ID,
+        "canonical_entry_point": CANONICAL_BASELINE_ENTRY_POINT,
+        "canonical_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
+        "baseline_execution_go_token": BASELINE_EXECUTION_GO_TOKEN,
+        "baseline_execution_implementation_go_token": BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN,
+        "roundtrip_cost_bps": ROUNDTRIP_COST_BPS,
+        "entry_point_status": BASELINE_ENTRY_POINT_STATUS,
+        "baseline_entry_point_status": BASELINE_ENTRY_POINT_STATUS,
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+    }
+
+
 def materialize_execution_contract_v0() -> dict[str, Any]:
     return {
         "schema_version": SCHEMA_VERSION,
@@ -792,6 +1348,12 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
         "entry_point_status": ENTRY_POINT_STATUS,
+        "baseline_entry_point_status": BASELINE_ENTRY_POINT_STATUS,
+        "canonical_baseline_entry_point": CANONICAL_BASELINE_ENTRY_POINT,
+        "canonical_baseline_backtest_owner": CANONICAL_BASELINE_BACKTEST_OWNER,
+        "baseline_execution_go_token": BASELINE_EXECUTION_GO_TOKEN,
+        "baseline_execution_implementation_go_token": BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN,
+        "roundtrip_cost_bps": ROUNDTRIP_COST_BPS,
         "harness_binding_ref": HARNESS_BINDING_REF,
         "runner_binding_ref": RUNNER_BINDING_REF,
         "adapter_kind": ADAPTER_KIND,
@@ -816,6 +1378,7 @@ def materialize_dispatch_contract_v0() -> dict[str, Any]:
         "dispatch_implementation_go_token": DISPATCH_IMPLEMENTATION_GO_TOKEN,
         "execution_go_token": EXECUTION_GO_TOKEN,
         "entry_point_status": ENTRY_POINT_STATUS,
+        "baseline_entry_point_status": BASELINE_ENTRY_POINT_STATUS,
         "economic_evaluation_executed": False,
         "baseline_executed": False,
         "robustness_executed": False,
@@ -914,12 +1477,16 @@ def entrypoint_result_to_dict(result: FullEvaluationEntrypointResultV1) -> dict[
 __all__ = [
     "AUTHORITY_EFFECT",
     "BASELINE_EVALUATOR_OWNER",
+    "BASELINE_EXECUTION_GO_TOKEN",
+    "BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN",
+    "CANONICAL_BASELINE_BACKTEST_OWNER",
+    "CANONICAL_BASELINE_ENTRY_POINT",
     "CANONICAL_DISPATCH_CALLABLE",
     "CANONICAL_EVALUATION_CALLABLE",
     "CANONICAL_FULL_EVALUATION_CALLABLE",
     "CONFIG_REL_PATH_OPS",
     "DISPATCH_IMPLEMENTATION_GO_TOKEN",
-    "ENTRY_POINT_STATUS",
+    "BASELINE_ENTRY_POINT_STATUS",
     "EXECUTION_GO_TOKEN",
     "EXECUTION_VERSION",
     "GO_TOKEN",
@@ -929,30 +1496,45 @@ __all__ = [
     "ORDER_EFFECT",
     "RATIFIED_BINDING_DIGEST",
     "RATIFIED_DATASET_DIGEST",
+    "REASON_BASELINE_BACKTEST_OWNER_INVOKED",
     "REASON_BINDING_DIGEST_MISMATCH",
     "REASON_DATASET_DIGEST_MISMATCH",
     "REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION",
     "REASON_ECONOMIC_EXECUTION_FORBIDDEN",
     "REASON_GO_TOKEN_INVALID",
+    "REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION",
+    "ROUNDTRIP_COST_BPS",
     "RUNNER_SCRIPT",
     "RUNTIME_EFFECT",
+    "build_baseline_owner_inventory",
+    "build_baseline_reuse_decision",
+    "build_baseline_runner_decision",
+    "build_baseline_test_assertion_matrix",
     "dispatch_result_to_dict",
     "entrypoint_result_to_dict",
     "load_authorization_ratification_v0",
     "load_ops_evaluation_config_v0",
     "load_versioned_research_binding_v0",
+    "materialize_baseline_implementation_contract_v0",
     "materialize_dispatch_contract_v0",
     "materialize_execution_contract_v0",
     "materialize_infrastructure_summary_v0",
+    "phase_result_to_dict",
+    "preflight_result_to_dict",
+    "run_baseline_execution_preflight_v0",
+    "run_baseline_offline_economic_evaluation_v0",
     "run_contract_smoke_evaluation_v0",
     "run_full_evaluation_entrypoint_dry_run_v1",
     "run_full_offline_economic_evaluation_v0",
     "run_offline_economic_evaluation_execution_dispatch_v0",
+    "validate_baseline_execution_go_token_v0",
+    "validate_baseline_execution_implementation_go_token_v0",
     "validate_dispatch_implementation_go_token_v0",
     "validate_entry_point_go_token_v0",
     "validate_evaluation_dispatch_go_token_v0",
     "validate_execution_go_token_v0",
     "validate_infrastructure_go_token_v0",
+    "verify_actual_baseline_backtest_call_present_in_production_source_v0",
     "verify_execution_start_state_v0",
     "verify_ratified_digests_v0",
     "verify_source_evidence_manifests_v0",
