@@ -19,9 +19,48 @@
 - Historical formatter drift / Black wording: [Issue #252](https://github.com/rauterfrank-ui/Peak_Trade/issues/252)
 - Current formatter source of truth: Ruff format checks, not Black enforcement.
 
+## Strategy Signal Canonical Consumer Architecture Authorization v1 — docs/tests-only reciprocal crosslink guard
+
+**Operator-GO:** `GO_STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1`
+
+**Purpose:** Register the **separate architecture authorization** required after Selection D. Decision **C** (`NO_SAFE_ARCHITECTURE_AUTHORIZABLE`) — does **not** silently override the Selection-D implementation block; Slice 2 remains unauthorized.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Architecture Authorization v1 | `docs/governance/STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md` |
+| Prior Ratification Closeout v1 | `docs/governance/STRATEGY_SIGNAL_CANONICAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1.md` |
+| Chain Wiring Repair Master Runbook v2.2 | `docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md` |
+| Governance index | `docs/governance/README.md` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` |
+| Static crosslink contract test | `tests/ops/test_strategy_signal_canonical_consumer_architecture_authorization_v1_static_crosslink_contract_v1.py` |
+
+```text
+STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1_REGISTERED=true
+PREVIOUS_SELECTION=D
+PREVIOUS_IMPLEMENTATION_BLOCKED=true
+ARCHITECTURE_AUTHORIZATION_DECISION=C
+SLICE_2_IMPLEMENTATION_AUTHORIZED=false
+SLICE_2_IMPLEMENTATION_BLOCKED=true
+NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
+SEPARATE_ARCHITECTURE_AUTHORIZATION_EXECUTED=true
+SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=false
+RAW_SIGNAL_DIRECT_AUTHORITY=false
+PROVENANCE_ONLY_BINDING=false
+NEW_PARALLEL_DECISION_STAGE=false
+NEW_TOTAL_DECISION_OWNER=false
+MISSION_COMPLETE=false
+CORE_CODE_EFFECT=NONE
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+ORDER_EFFECT=NONE
+DOCUMENTATION_ONLY=true
+```
+
 ## Canonical Chain Wiring Repair Runbook v2.2 + Strategy Signal Architecture Ratification Closeout — docs/tests-only reciprocal crosslink guard v1
 
-**Purpose:** Adopt and anchor the **Canonical Chain Wiring Repair Master Runbook v2.2** as governance/implementation contract and register the **negative Strategy Signal Architecture Ratification Closeout (Selection D)** — static reciprocal crosslink **without** core-code, runtime, order, authority, economic-validity, or promotion claims. Slice 1 is complete (PR #5226); Slice 2 remains blocked pending separate future architecture authorization.
+**Purpose:** Adopt and anchor the **Canonical Chain Wiring Repair Master Runbook v2.2** as governance/implementation contract and register the **negative Strategy Signal Architecture Ratification Closeout (Selection D)** — static reciprocal crosslink **without** core-code, runtime, order, authority, economic-validity, or promotion claims. Slice 1 is complete (PR #5226); Slice 2 remains blocked. Separate architecture authorization Decision C is recorded in `STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md` and does not authorize Slice 2.
 
 **Canonical repo owners (reuse — do not duplicate):**
 
@@ -45,7 +84,10 @@ STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_STATUS=NO_SAFE_EXISTING_CANONICAL_CONSU
 SLICE_2_IMPLEMENTATION_READY=false
 SLICE_2_IMPLEMENTATION_BLOCKED=true
 NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
-SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=true
+SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=false
+SEPARATE_ARCHITECTURE_AUTHORIZATION_EXECUTED=true
+ARCHITECTURE_AUTHORIZATION_DECISION=C
+SLICE_2_IMPLEMENTATION_AUTHORIZED=false
 MISSION_COMPLETE=false
 ECONOMIC_VALIDITY_CLAIMED=false
 PROMOTION_CLAIMED=false
