@@ -75,6 +75,20 @@ ECONOMIC_EVALUATION_EXECUTED = False
 FUTURES_ONLY = True
 BITCOIN_DIRECTION_ALLOWED = False
 
+REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED = "ECONOMIC_EVALUATION_NOT_AUTHORIZED"
+REASON_OFFLINE_BOUNDARY_VIOLATION = "OFFLINE_BOUNDARY_VIOLATION"
+REASON_STORED_ECONOMIC_EVALUATION_AUTHORIZED_VIOLATION = (
+    "STORED_ECONOMIC_EVALUATION_AUTHORIZED_VIOLATION"
+)
+REASON_SCOPE_RATIFICATION_MISMATCH = "SCOPE_RATIFICATION_MISMATCH"
+REASON_BINDING_DIGEST_MISMATCH = "BINDING_DIGEST_MISMATCH"
+REASON_DATASET_DIGEST_MISMATCH = "DATASET_DIGEST_MISMATCH"
+REASON_UNIVERSE_DIGEST_MISMATCH = "UNIVERSE_DIGEST_MISMATCH"
+REASON_IMPLEMENTATION_DIGEST_MISMATCH = "IMPLEMENTATION_DIGEST_MISMATCH"
+REASON_CONFIG_DIGEST_MISMATCH = "CONFIG_DIGEST_MISMATCH"
+REASON_FULL_CANONICAL_PARITY_NOT_PROVEN = "FULL_CANONICAL_PARITY_NOT_PROVEN"
+REASON_BACKTEST_RUNTIME_DECISION_PARITY_FAIL = "BACKTEST_RUNTIME_DECISION_PARITY_FAIL"
+
 ALLOWED_EVALUATION_STAGES: tuple[str, ...] = (
     "OFFLINE_BACKTEST",
     "WALK_FORWARD",
@@ -126,6 +140,13 @@ class RatificationValidationResultV0:
     fail_reasons: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class InvocationBoundAuthorizationResultV0:
+    authorized: bool
+    economic_evaluation_authorized: bool
+    reason_codes: tuple[str, ...]
+
+
 def _stable_digest(payload: Mapping[str, Any]) -> str:
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
@@ -166,6 +187,137 @@ def validate_lead_lag_offline_economic_evaluation_scope_ratification_v0(
             fail_reasons=unique,
         )
     return RatificationValidationResultV0(verdict=ValidationVerdictEnum.ACCEPTED, fail_reasons=())
+
+
+def evaluate_invocation_bound_economic_evaluation_authorization_v0(
+    *,
+    ratification: Mapping[str, Any],
+    versioned_binding: Mapping[str, Any],
+    go_token: str | None,
+    allowed_execution_go_tokens: frozenset[str],
+    ops_config: Mapping[str, Any],
+    full_chain_wired: bool,
+    parity_pass: bool,
+) -> InvocationBoundAuthorizationResultV0:
+    """Derive fail-closed invocation-bound execution authorization.
+
+    Persisted scope ratification remains ``economic_evaluation_authorized=false`` by default.
+    A separately confirmed execution GO elevates authorization only when all canonical
+    co-requisites are satisfied for this invocation. No runtime or authority effect.
+    """
+    reasons: list[str] = []
+
+    if ratification.get("economic_evaluation_authorized") is not False:
+        reasons.append(REASON_STORED_ECONOMIC_EVALUATION_AUTHORIZED_VIOLATION)
+
+    if not go_token or go_token not in allowed_execution_go_tokens:
+        reasons.append(REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED)
+
+    for field_name in ("strategy_id", "strategy_version", "hypothesis_id"):
+        if ratification.get(field_name) != versioned_binding.get(field_name):
+            reasons.append(REASON_SCOPE_RATIFICATION_MISMATCH)
+
+    if ratification.get("binding_digest") != versioned_binding.get("binding_digest"):
+        reasons.append(REASON_BINDING_DIGEST_MISMATCH)
+
+    expected_dataset_digest = str(
+        ops_config.get("cross_sectional_evaluation_binding_v1", {})
+        .get("dataset_binding", {})
+        .get("dataset_digest", versioned_binding.get("dataset_digest", ""))
+    )
+    if str(versioned_binding.get("dataset_digest", "")) != expected_dataset_digest:
+        reasons.append(REASON_DATASET_DIGEST_MISMATCH)
+
+    universe_digest = str(
+        versioned_binding.get("binding", {})
+        .get("pit_universe_binding", {})
+        .get("universe_digest", "")
+    )
+    expected_universe_digest = str(
+        ops_config.get("cross_sectional_evaluation_binding_v1", {})
+        .get("instrument_universe_binding", {})
+        .get("universe_digest", ratification.get("universe_digest", ""))
+    )
+    if universe_digest != expected_universe_digest:
+        reasons.append(REASON_UNIVERSE_DIGEST_MISMATCH)
+
+    expected_implementation_digest = str(ops_config.get("implementation_digest", ""))
+    binding_implementation_digest = str(
+        versioned_binding.get("binding", {})
+        .get("digest_bindings", {})
+        .get("implementation_digest", {})
+        .get("value", versioned_binding.get("implementation_digest", ""))
+    )
+    ratification_implementation_digest = str(ratification.get("implementation_digest", ""))
+    if expected_implementation_digest and (
+        binding_implementation_digest != expected_implementation_digest
+        or ratification_implementation_digest != expected_implementation_digest
+    ):
+        reasons.append(REASON_IMPLEMENTATION_DIGEST_MISMATCH)
+
+    expected_config_digest = str(ops_config.get("config_digest", ""))
+    binding_config_digest = str(versioned_binding.get("config_digest", ""))
+    if expected_config_digest and binding_config_digest != expected_config_digest:
+        reasons.append(REASON_CONFIG_DIGEST_MISMATCH)
+
+    constraints = versioned_binding.get("system_constraints", {})
+    if constraints.get("futures_only") is not True or ratification.get("futures_only") is not True:
+        reasons.append("FUTURES_ONLY_VIOLATION")
+    if (
+        constraints.get("bitcoin_direction_allowed") is not False
+        or ratification.get("bitcoin_direction_allowed") is not False
+    ):
+        reasons.append("BITCOIN_DIRECTION_VIOLATION")
+
+    for effect_field, expected in (
+        ("runtime_effect", RUNTIME_EFFECT),
+        ("authority_effect", AUTHORITY_EFFECT),
+        ("order_effect", ORDER_EFFECT),
+    ):
+        if (
+            ratification.get(effect_field) != expected
+            or versioned_binding.get(effect_field) != expected
+        ):
+            reasons.append(REASON_OFFLINE_BOUNDARY_VIOLATION)
+
+    if not full_chain_wired:
+        reasons.append(REASON_FULL_CANONICAL_PARITY_NOT_PROVEN)
+    if not parity_pass:
+        reasons.append(REASON_BACKTEST_RUNTIME_DECISION_PARITY_FAIL)
+
+    unique = tuple(dict.fromkeys(reasons))
+    authorized = not unique
+    return InvocationBoundAuthorizationResultV0(
+        authorized=authorized,
+        economic_evaluation_authorized=authorized,
+        reason_codes=unique,
+    )
+
+
+def materialize_invocation_bound_authorization_contract_v0() -> dict[str, Any]:
+    return {
+        "schema_version": (
+            "cross_sectional_futures_lead_lag_information_diffusion_v0_invocation_bound_"
+            "economic_evaluation_authorization.v0"
+        ),
+        "authorization_model": "INVOCATION_BOUND_FAIL_CLOSED",
+        "persisted_economic_evaluation_authorized_default": ECONOMIC_EVALUATION_AUTHORIZED,
+        "invocation_elevates_authorization": True,
+        "runtime_effect": RUNTIME_EFFECT,
+        "authority_effect": AUTHORITY_EFFECT,
+        "order_effect": ORDER_EFFECT,
+        "required_co_requisites": [
+            "ALLOWED_EXECUTION_GO_TOKEN",
+            "PERSISTED_ECONOMIC_EVALUATION_AUTHORIZED_FALSE",
+            "SCOPE_RATIFICATION_BINDING_IDENTITY",
+            "RATIFIED_DIGEST_BINDINGS",
+            "FUTURES_ONLY",
+            "BITCOIN_EXCLUDED",
+            "OFFLINE_BOUNDARY_ENFORCED",
+            "FULL_CANONICAL_CHAIN_WIRED",
+            "BACKTEST_RUNTIME_DECISION_PARITY_PASS",
+        ],
+    }
 
 
 def materialize_lead_lag_offline_economic_evaluation_scope_ratification_v0(

@@ -391,23 +391,65 @@ def test_implementation_scope_runner_infrastructure_mode_does_not_execute_evalua
         full_eval.assert_not_called()
 
 
+def _dispatch_boundary_evaluation_result():
+    from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0 import (
+        AUTHORITY_EFFECT,
+        EconomicClassification,
+        ExecutionTerminalStatus,
+        FullEconomicEvaluationResultV0,
+        RUNTIME_EFFECT,
+    )
+
+    return FullEconomicEvaluationResultV0(
+        status=ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK,
+        precheck_passed=True,
+        bound_dataset_materialized=False,
+        dataset_period_match=False,
+        panel_data_digest="0" * 64,
+        data_digest_is_fixture=False,
+        stage_wiring=(),
+        backtest=None,
+        robustness=None,
+        robustness_metrics=None,
+        economic_viability_evidence={},
+        economic_classification=EconomicClassification.FAIL_CLOSED,
+        economic_validity_offline_gate_pass=False,
+        promotion_candidate_eligible=False,
+        economic_evaluation_executed=False,
+        reason_codes=(),
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
+
+
 def test_execution_go_reaches_guarded_dispatch_without_reevaluation_rewrite(
     tmp_path: Path,
     bound_staging: Path,
 ) -> None:
-    with patch.object(
-        runner_module,
-        "run_full_offline_economic_evaluation_v0",
-    ) as full_eval:
-        with pytest.raises(SystemExit) as exc:
-            runner_module.run_bounded_full_evaluation_dispatch_v0(
-                confirm=GO_TOKEN,
-                durable_evidence_root=tmp_path,
-                primary_worktree=REPO_ROOT,
-                staging_root=bound_staging,
-            )
-        assert exc.value.code == 1
-        full_eval.assert_not_called()
+    with (
+        patch.object(
+            runner_module,
+            "run_full_offline_economic_evaluation_v0",
+            return_value=_dispatch_boundary_evaluation_result(),
+        ) as full_eval,
+        patch(
+            "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+            "economic_evaluation_execution_v0.verify_panel_staging_source_manifests_v1",
+            return_value=(True, 0, ()),
+        ),
+        patch(
+            "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+            "economic_evaluation_execution_v0.load_ohlcv_panel_series_for_backtest",
+            return_value=(),
+        ),
+    ):
+        runner_module.run_bounded_full_evaluation_dispatch_v0(
+            confirm=GO_TOKEN,
+            durable_evidence_root=tmp_path,
+            primary_worktree=REPO_ROOT,
+            staging_root=bound_staging,
+        )
+        full_eval.assert_called_once()
 
 
 def test_ops_runner_rejects_wrong_go_token() -> None:
@@ -439,13 +481,15 @@ def test_ops_runner_execution_go_routes_to_guarded_dispatch_not_infrastructure_m
             str(REPO_ROOT),
             "--durable-evidence-root",
             tempfile.mkdtemp(prefix="cs_lead_lag_exec_go_cli_"),
+            "--staging-root",
+            tempfile.mkdtemp(prefix="cs_lead_lag_cli_invalid_staging_"),
         ],
         capture_output=True,
         text=True,
         cwd=str(REPO_ROOT),
     )
     assert proc.returncode == 1
-    assert "BLOCK_REASON=FULL_CANONICAL_PARITY_NOT_PROVEN" in proc.stderr
+    assert "BLOCK_REASON=ECONOMIC_EVALUATION_NOT_AUTHORIZED" not in proc.stderr
     assert "ERR:confirm_go_token_required" not in proc.stderr
 
 

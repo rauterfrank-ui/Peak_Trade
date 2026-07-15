@@ -119,6 +119,12 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_infrastructure_v0.py",
                 "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",
             ],
+            [
+                "src/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0.py",
+                "src/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_scope_ratification_v0.py",
+                "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_authorization_ratification_repair_v0.py",
+                "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_full_runner_v0.py",
+            ],
         ],
     )
     def test_positive_cases_admissible(self, changed_files: list[str]) -> None:

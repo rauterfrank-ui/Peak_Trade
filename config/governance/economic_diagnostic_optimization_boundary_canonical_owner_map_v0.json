@@ -425,9 +425,10 @@
         "src/research/*offline_economic_evaluation_scope_ratification_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_infrastructure_v0.py",
         "tests/research/test_*offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",
+        "tests/research/test_*offline_economic_evaluation_execution_authorization_ratification_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_full_runner_v0.py"
       ],
-      "note": "Offline economic evaluation execution infrastructure, preexecution guards, and contract tests without trading semantic mutation or runtime authority."
+      "note": "Offline economic evaluation execution infrastructure, preexecution guards, invocation-bound authorization repair, and contract tests without trading semantic mutation or runtime authority."
     }
   }
 }
