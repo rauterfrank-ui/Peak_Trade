@@ -25,7 +25,7 @@
     "slippage_bps": 5.0,
     "slippage_model_version": "backtest_slippage_symmetric_v0"
   },
-  "binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
+  "binding_digest": "0ea54fa258ad0a5a7cbb57f39194f5d72f8b92284a6ebcbab94ea83a0aa573e7",
   "config_schema_version": "cross_sectional_futures_pairwise_lead_lag_spillover_v1_economic_evaluation_admissibility_v1",
   "config_version": "v1",
   "cross_sectional_evaluation_binding_v1": {
@@ -33,7 +33,7 @@
     "candidate_binding_version": "v0",
     "data_contract_digest": "cc09958107aca2f5c46bc0a828354fb8e8d70053b02853a2786062bcc8c6aff6",
     "dataset_binding": {
-      "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+      "dataset_digest": "18eccf85663ce292ef1bf0edce63d2dd44215405cf3d880850d2c8d8e413a591",
       "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
       "dataset_version": "v1",
       "panel_staging_profile": "cross_sectional_research_staging_v1"

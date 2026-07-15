@@ -43,6 +43,9 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_version
     CONFIG_REL_PATH,
     ORDER_EFFECT,
     RATIFIED_NORMALIZED_PANEL_DIGEST,
+    RATIFIED_SEMANTIC_DATA_DIGEST,
+    PRIOR_RATIFIED_DATASET_DIGEST,
+    DATASET_DIGEST_RECONCILIATION_SUPERSESSION_MODE,
     RESEARCH_HYPOTHESIS_ID,
     RESEARCH_SCOPE,
     RUNTIME_EFFECT,
@@ -137,6 +140,10 @@ REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
 )
+REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_V0"
+)
 
 MINIMUM_PYTHON_VERSION_MAJOR = 3
 MINIMUM_PYTHON_VERSION_MINOR = 10
@@ -162,6 +169,9 @@ ALLOWED_REEVALUATION_BASELINE_EXECUTION_GO_TOKENS: frozenset[str] = frozenset(
 ALLOWED_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset(
     {REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN}
 )
+ALLOWED_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKENS: frozenset[str] = (
+    frozenset({REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKEN})
+)
 ALLOWED_EVALUATION_DISPATCH_GO_TOKENS: frozenset[str] = (
     ALLOWED_EXECUTION_GO_TOKENS
     | ALLOWED_REEVALUATION_EXECUTION_GO_TOKENS
@@ -178,6 +188,9 @@ _BRANCH_REEVALUATION_BASELINE_EXECUTION_V0 = "REEVALUATION_BASELINE_EXECUTION_V0
 _BRANCH_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0 = (
     "REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
 )
+_BRANCH_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_V0 = (
+    "REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_V0"
+)
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     IMPLEMENTATION_GO_TOKEN: _BRANCH_IMPLEMENTATION_V0,
     DISPATCH_IMPLEMENTATION_GO_TOKEN: _BRANCH_DISPATCH_IMPLEMENTATION_V0,
@@ -191,10 +204,13 @@ ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN: (
         _BRANCH_REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0
     ),
+    REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKEN: (
+        _BRANCH_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_V0
+    ),
 }
 
 RATIFIED_BINDING_DIGEST = RATIFIED_HYPOTHESIS_BINDING_DIGEST
-RATIFIED_DATASET_DIGEST = RATIFIED_NORMALIZED_PANEL_DIGEST
+RATIFIED_DATASET_DIGEST = RATIFIED_SEMANTIC_DATA_DIGEST
 RATIFIED_UNIVERSE_DIGEST = "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1"
 
 CONFIG_REL_PATH_OPS = (
@@ -530,6 +546,16 @@ def validate_reevaluation_baseline_execution_go_token_v0(
     return True, ()
 
 
+def validate_reevaluation_baseline_dataset_digest_reconciliation_repair_go_token_v0(
+    go_token: str | None,
+) -> tuple[bool, tuple[str, ...]]:
+    if not go_token:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token not in ALLOWED_REEVALUATION_BASELINE_DATASET_DIGEST_RECONCILIATION_REPAIR_GO_TOKENS:
+        return False, (REASON_GO_TOKEN_INVALID,)
+    return True, ()
+
+
 def validate_reevaluation_baseline_execution_implementation_go_token_v0(
     go_token: str | None,
 ) -> tuple[bool, tuple[str, ...]]:
@@ -669,6 +695,11 @@ def run_reevaluation_baseline_execution_preflight_v0(
     dataset_digest_verified = (
         bound_dataset_materialized and panel_data_digest == RATIFIED_DATASET_DIGEST
     )
+    dataset_digest_repaired = (
+        bound_dataset_materialized
+        and dataset_digest_verified
+        and RATIFIED_DATASET_DIGEST != PRIOR_RATIFIED_DATASET_DIGEST
+    )
     if bound_dataset_materialized and not dataset_digest_verified:
         reasons.append(REASON_DATASET_DIGEST_NOT_VERIFIED)
 
@@ -754,7 +785,7 @@ def run_reevaluation_baseline_execution_preflight_v0(
         baseline_executed=False,
         baseline_callable_wiring_only=baseline_callable_wiring_only,
         economic_evaluation_executed=False,
-        dataset_digest_repaired=False,
+        dataset_digest_repaired=dataset_digest_repaired,
         authority_effect=AUTHORITY_EFFECT,
         runtime_effect=RUNTIME_EFFECT,
     )
@@ -2418,10 +2449,18 @@ def build_reevaluation_baseline_test_assertion_matrix() -> dict[str, Any]:
         "implementation_go_does_not_authorize_baseline_execution",
         "python_version_too_low_blocks",
         "dataset_digest_mismatch_blocks_baseline_execution_admissible",
+        "dataset_digest_verified_after_reconciliation_repair",
+        "dataset_digest_repaired",
+        "stale_dataset_digest_rejected",
+        "canonical_materializer_uses_panel_semantic_data_digest_v0",
+        "materializer_to_binder_roundtrip_pass",
+        "deterministic_materialization",
+        "second_materialization_diff_empty",
+        "semantic_dataset_identity_unchanged",
+        "transitive_config_digest_updated_for_dataset_digest_layer",
         "baseline_callable_wiring_only_acknowledged",
         "economic_evaluation_not_executed",
         "baseline_not_executed",
-        "dataset_digest_not_repaired",
         "unknown_go_token_rejected",
         "missing_go_token_rejected",
         "offline_boundary_preserved",
