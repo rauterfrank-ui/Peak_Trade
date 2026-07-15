@@ -310,11 +310,23 @@ Verbindlicher Owner:
 docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
 config/governance/economic_diagnostic_optimization_boundary_v0.json
 config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json
+config/governance/technical_canonical_wiring_authorization_v1.json
 src/governance/economic_diagnostic_optimization_boundary_v0.py
 scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py
 ```
 
 Jeder Research-/Economic-/Diagnostics-/Cost-/Target-/Feature-/Parameter-PR benötigt einen maschinenlesbaren Boundary-Report. Verbotene Owner-Mutationen sind fail-closed.
+
+Eng begrenzte Technical-Wiring-Authorization (`TECHNICAL_CANONICAL_WIRING_ONLY`):
+
+```text
+TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_VERSION=technical_canonical_wiring_authorization_v1
+AUTHORIZED_SCOPE_CLASS=TECHNICAL_CANONICAL_WIRING_ONLY
+MASTER_V2_MUTATION_ALLOWED=false
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+TOKEN_ALONE_INSUFFICIENT=true
+```
 
 ## 13. Trend Following v2 Recovery Wiring (v0)
 
