@@ -18,6 +18,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline
     AUTHORITY_EFFECT,
     EXECUTION_GO_TOKEN,
     IMPLEMENTATION_GO_TOKEN,
+    INFRASTRUCTURE_GO_TOKEN,
     RATIFIED_BINDING_DIGEST,
     RATIFIED_DATASET_DIGEST,
     RATIFIED_UNIVERSE_DIGEST,
@@ -63,6 +64,8 @@ from tests.research.fixtures.cross_sectional_relative_strength_v0.staging_builde
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+_INFRA_GO = INFRASTRUCTURE_GO_TOKEN
+_EXEC_GO = EXECUTION_GO_TOKEN
 EXECUTION_MODULE = (
     REPO_ROOT / "src/research/"
     "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_"
@@ -319,7 +322,7 @@ class TestContractSmokeAndDryRun:
             staging_root=bound_staging,
             panel_series=panel,
             versioned_binding=complete_binding,
-            go_token=EXECUTION_GO_TOKEN,
+            go_token=_EXEC_GO,
         )
         assert result.precheck_passed is False
         assert REASON_ECONOMIC_EXECUTION_FORBIDDEN in result.reason_codes
@@ -338,7 +341,7 @@ class TestContractSmokeAndDryRun:
             staging_root=bound_staging,
             panel_series=panel,
             versioned_binding=complete_binding,
-            go_token=IMPLEMENTATION_GO_TOKEN,
+            go_token=_INFRA_GO,
         )
         assert result.economic_evaluation_executed is False
         assert result.dry_run_stopped_before_execution is True
@@ -346,12 +349,12 @@ class TestContractSmokeAndDryRun:
 
 class TestNoExecutionDuringImplementation:
     def test_baseline_phase_blocked_without_execution_go(self) -> None:
-        result = run_baseline_offline_economic_evaluation_v0(go_token=IMPLEMENTATION_GO_TOKEN)
+        result = run_baseline_offline_economic_evaluation_v0(go_token=_INFRA_GO)
         assert result.executed is False
         assert result.blocked is True
 
     def test_full_evaluation_blocked_in_implementation_scope(self) -> None:
-        result = run_full_offline_economic_evaluation_v0(go_token=EXECUTION_GO_TOKEN)
+        result = run_full_offline_economic_evaluation_v0(go_token=_EXEC_GO)
         assert result.executed is False
         assert REASON_ECONOMIC_EXECUTION_FORBIDDEN in result.reason_codes
 

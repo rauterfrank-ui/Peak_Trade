@@ -83,8 +83,14 @@ EXECUTION_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
     "EVALUATION_EXECUTION_V0"
 )
-GO_TOKEN = EXECUTION_GO_TOKEN
-INFRASTRUCTURE_GO_TOKEN = IMPLEMENTATION_GO_TOKEN
+GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_V0"
+)
+INFRASTRUCTURE_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_IMPLEMENTATION_V0"
+)
 
 ALLOWED_IMPLEMENTATION_GO_TOKENS: frozenset[str] = frozenset({IMPLEMENTATION_GO_TOKEN})
 ALLOWED_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({EXECUTION_GO_TOKEN})
@@ -471,10 +477,11 @@ def run_contract_smoke_evaluation_v0(
     panel_series: Sequence[InstrumentPanelSeriesV1],
     versioned_binding: Mapping[str, Any],
     staging_root: Path | None = None,
-    go_token: str = IMPLEMENTATION_GO_TOKEN,
+    go_token: str | None = None,
 ) -> InfrastructureReadinessResultV0:
     """Contract-only smoke: score/ranking pipeline wiring without economic execution."""
-    token_ok, token_reasons = validate_implementation_go_token_v0(go_token)
+    active_go = go_token if go_token is not None else IMPLEMENTATION_GO_TOKEN
+    token_ok, token_reasons = validate_implementation_go_token_v0(active_go)
     if not token_ok:
         return InfrastructureReadinessResultV0(
             status=InfrastructureTerminalStatus.FAIL_CLOSED,
@@ -599,10 +606,11 @@ def run_full_evaluation_entrypoint_dry_run_v1(
     staging_root: Path,
     panel_series: Sequence[InstrumentPanelSeriesV1],
     versioned_binding: Mapping[str, Any] | None = None,
-    go_token: str = IMPLEMENTATION_GO_TOKEN,
+    go_token: str | None = None,
 ) -> FullEvaluationEntrypointResultV1:
     """Validate full evaluation entrypoint wiring; stop before economic classification."""
-    if go_token == EXECUTION_GO_TOKEN:
+    active_go = go_token if go_token is not None else IMPLEMENTATION_GO_TOKEN
+    if active_go == EXECUTION_GO_TOKEN:
         return FullEvaluationEntrypointResultV1(
             status=EvaluationEntrypointTerminalStatus.FAIL_CLOSED_PRECHECK,
             precheck_passed=False,
@@ -624,7 +632,7 @@ def run_full_evaluation_entrypoint_dry_run_v1(
         authorization_ratification=authorization_ratification,
         staging_root=staging_root,
         versioned_binding=envelope,
-        go_token=go_token,
+        go_token=active_go,
     )
     manifest_ok, _, _ = verify_panel_staging_source_manifests_v1(staging_root)
 
@@ -649,7 +657,7 @@ def run_full_evaluation_entrypoint_dry_run_v1(
         panel_series=panel_series,
         versioned_binding=envelope,
         staging_root=staging_root,
-        go_token=go_token,
+        go_token=active_go,
     )
     stage_wiring = build_stage_wiring_status_v0()
 

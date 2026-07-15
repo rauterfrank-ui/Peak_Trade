@@ -25,9 +25,9 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.ops import primary_evidence_retention_v0 as retention  # noqa: E402
 from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     AUTHORITY_EFFECT,
-    EXECUTION_GO_TOKEN,
     EXECUTION_VERSION,
-    IMPLEMENTATION_GO_TOKEN,
+    GO_TOKEN,
+    INFRASTRUCTURE_GO_TOKEN,
     RUNTIME_EFFECT,
     InfrastructureReadinessResultV0,
     InfrastructureTerminalStatus,
@@ -42,8 +42,8 @@ from tests.research.fixtures.cross_sectional_relative_strength_v0.fixture_builde
     build_synthetic_panel_series_v0,
 )
 
-CONFIRM_GO = IMPLEMENTATION_GO_TOKEN
-EXECUTION_CONFIRM_GO = EXECUTION_GO_TOKEN
+CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
+EXECUTION_CONFIRM_GO = GO_TOKEN
 MAX_RUNTIME_SECONDS = 1500
 DEFAULT_DURABLE_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
