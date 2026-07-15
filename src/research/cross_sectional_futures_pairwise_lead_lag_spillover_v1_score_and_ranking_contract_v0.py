@@ -23,6 +23,9 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_v
     SCORE_FORMULA_EXPRESSION,
     SCORE_FORMULA_VERSION,
 )
+from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_portfolio_binding_v0 import (
+    BOUND_PORTFOLIO_BINDING_STATUS,
+)
 from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0 import (
     CONFIG_REL_PATH as HYPOTHESIS_BINDING_CONFIG_REL_PATH,
     GOVERNANCE_REL_PATH as HYPOTHESIS_BINDING_GOVERNANCE_REL_PATH,
@@ -36,8 +39,11 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_version
     materialize_versioned_hypothesis_binding_v0,
 )
 
-RATIFIED_HYPOTHESIS_BINDING_DIGEST = (
+PRE_PORTFOLIO_HYPOTHESIS_BINDING_DIGEST = (
     "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438"
+)
+RATIFIED_HYPOTHESIS_BINDING_DIGEST = (
+    "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8"
 )
 
 PACKAGE_MARKER = (
@@ -91,6 +97,7 @@ TIE_BREAK_SCORE_SOURCE = "unrounded_internal_score"
 RANKING_ENTITY_PRIMARY = "directed_pair"
 RANKING_ENTITY_SECONDARY = "instrument_net_inbound_spillover"
 PENDING_SELECTION_POLICY_STATUS = "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+BOUND_SELECTION_POLICY_STATUS = BOUND_PORTFOLIO_BINDING_STATUS
 
 DURABLE_ARCHIVE_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
@@ -105,9 +112,13 @@ RUNTIME_EFFECT = "NONE"
 ORDER_EFFECT = "NONE"
 
 NEXT_RECOMMENDED_SCOPE = (
-    "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_BINDING_COMPLETION_V0"
+    "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_V0"
 )
-NEXT_OPERATOR_GO = "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_BINDING_COMPLETION_V0"
+NEXT_OPERATOR_GO = (
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_V0"
+)
 
 ORCHESTRATOR_OWNER = "cross_sectional_single_slot_research_orchestrator_v0"
 MANIFEST_OWNER = "scripts.ops.primary_evidence_retention_v0"
@@ -210,11 +221,11 @@ def build_ranking_contract_v0() -> dict[str, Any]:
         "missing_pair_policy": "exclude_non_finite_pair_for_epoch",
         "insufficient_panel_policy": "FAIL_CLOSED_EMPTY_RANKING",
         "finalized_bar_only": True,
-        "selection_policy_binding_status": PENDING_SELECTION_POLICY_STATUS,
-        "aggregation_policy_binding_status": PENDING_SELECTION_POLICY_STATUS,
-        "holding_policy_binding_status": PENDING_SELECTION_POLICY_STATUS,
-        "exit_policy_binding_status": PENDING_SELECTION_POLICY_STATUS,
-        "portfolio_weighting_policy_binding_status": PENDING_SELECTION_POLICY_STATUS,
+        "selection_policy_binding_status": BOUND_SELECTION_POLICY_STATUS,
+        "aggregation_policy_binding_status": BOUND_SELECTION_POLICY_STATUS,
+        "holding_policy_binding_status": BOUND_SELECTION_POLICY_STATUS,
+        "exit_policy_binding_status": BOUND_SELECTION_POLICY_STATUS,
+        "portfolio_weighting_policy_binding_status": BOUND_SELECTION_POLICY_STATUS,
         "panel_median_benchmark_ranking_forbidden": True,
         "lead_lag_v0_ranking_formula_reuse_forbidden": True,
     }
@@ -333,8 +344,9 @@ def materialize_score_and_ranking_contract_v0(
             "no_economic_evaluation": True,
             "hypothesis_binding_mutated": False,
             "dataset_mutated": False,
-            "selection_policy_deferred": True,
-            "aggregation_policy_deferred": True,
+            "selection_policy_deferred": False,
+            "aggregation_policy_deferred": False,
+            "portfolio_binding_complete": True,
         },
         "authority_effect": AUTHORITY_EFFECT,
         "runtime_effect": RUNTIME_EFFECT,
@@ -406,8 +418,8 @@ def validate_ranking_contract_v0(
         "exit_policy_binding_status",
         "portfolio_weighting_policy_binding_status",
     ):
-        if ranking_contract.get(field) != PENDING_SELECTION_POLICY_STATUS:
-            reasons.append(f"PENDING_POLICY_NOT_EXPLICIT:{field}")
+        if ranking_contract.get(field) != BOUND_SELECTION_POLICY_STATUS:
+            reasons.append(f"PORTFOLIO_POLICY_NOT_BOUND:{field}")
     return not reasons, tuple(dict.fromkeys(reasons))
 
 
@@ -450,8 +462,10 @@ def validate_score_and_ranking_contract_v0(
         reasons.append("HYPOTHESIS_BINDING_MUTATION_FLAG_FALSE")
     if constraints.get("dataset_mutated") is not False:
         reasons.append("DATASET_MUTATION_FLAG_FALSE")
-    if constraints.get("selection_policy_deferred") is not True:
-        reasons.append("SELECTION_POLICY_NOT_DEFERRED")
+    if constraints.get("selection_policy_deferred") is not False:
+        reasons.append("SELECTION_POLICY_STILL_DEFERRED")
+    if constraints.get("portfolio_binding_complete") is not True:
+        reasons.append("PORTFOLIO_BINDING_NOT_COMPLETE")
 
     if envelope.get("economic_evaluation_executed") is not False:
         reasons.append("ECONOMIC_EVALUATION_EXECUTED")

@@ -8,7 +8,8 @@
 |------|------|
 | `research_scope` | `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1` |
 | `score_family` | `pairwise_spillover_graph_v1` |
-| `hypothesis_binding_digest` | `6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438` |
+| `hypothesis_binding_digest` | `a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8` |
+| `pre_portfolio_hypothesis_binding_digest` | `6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438` |
 | `GO_TOKEN` | `GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_IMPLEMENTATION_V0` |
 
 ## Score Contract
@@ -34,15 +35,12 @@
 | `instrument_tie_break` | `score_desc_then_instrument_id_asc` |
 | `tie_break_score_source` | `unrounded_internal_score` |
 
-## Deferred Policies
+## Portfolio Binding Status
 
-Folgende Felder bleiben explizit `PENDING_SEPARATE_IMPLEMENTATION_BINDING`:
+Alle fünf Portfolio-Policy-Felder sind `BOUND` via
+`CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_PORTFOLIO_BINDING_IMPLEMENTATION_V0`.
 
-- `selection_policy_binding_status`
-- `aggregation_policy_binding_status`
-- `holding_policy_binding_status`
-- `exit_policy_binding_status`
-- `portfolio_weighting_policy_binding_status`
+## Next Admissible Scope
 
 ## Canonical Owners
 
@@ -50,11 +48,12 @@ Folgende Felder bleiben explizit `PENDING_SEPARATE_IMPLEMENTATION_BINDING`:
 |---------|-------|
 | Score computation | `src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_v0.py` |
 | Contract validator/binder | `src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0.py` |
+| Portfolio binding | `src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_portfolio_binding_v0.py` |
 | Materializer | `scripts/research/materialize_cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0.py` |
 | Config | `config/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0.json` |
 | Tests | `tests/research/test_cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0_contract.py` |
-| Hypothesis binding (unchanged) | `src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0.py` |
+| Hypothesis binding | `src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0.py` |
 
 ## Next Admissible Scope
 
-`GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_BINDING_COMPLETION_V0`
+`GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0`

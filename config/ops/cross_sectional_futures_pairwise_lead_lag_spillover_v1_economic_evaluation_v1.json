@@ -25,7 +25,7 @@
     "slippage_bps": 5.0,
     "slippage_model_version": "backtest_slippage_symmetric_v0"
   },
-  "binding_digest": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438",
+  "binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
   "config_schema_version": "cross_sectional_futures_pairwise_lead_lag_spillover_v1_economic_evaluation_admissibility_v1",
   "config_version": "v1",
   "cross_sectional_evaluation_binding_v1": {

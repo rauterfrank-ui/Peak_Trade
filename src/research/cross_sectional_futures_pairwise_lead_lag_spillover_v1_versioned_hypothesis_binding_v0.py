@@ -18,6 +18,14 @@ from src.backtest.economic_validity_policy_v1 import ECONOMIC_VALIDITY_POLICY_VE
 from src.research.instrument_id_canonicalization_v1 import (
     INSTRUMENT_ID_CANONICALIZATION_VERSION,
 )
+from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_portfolio_binding_v0 import (
+    BOUND_PORTFOLIO_BINDING_STATUS,
+    PORTFOLIO_BINDING_GO_TOKEN,
+    PORTFOLIO_BINDING_SCOPE,
+    PRE_PORTFOLIO_BINDING_DIGEST,
+    build_portfolio_implementation_bindings_v0,
+    validate_portfolio_implementation_bindings_v0,
+)
 from src.research.pit_futures_universe_manifest_production_materialization_v1 import (
     MANIFEST_ARTIFACT_ID,
     UNIVERSE_ID,
@@ -171,13 +179,15 @@ RUNTIME_EFFECT = "NONE"
 ORDER_EFFECT = "NONE"
 
 NEXT_RECOMMENDED_SCOPE = (
-    "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_"
-    "IMPLEMENTATION_V0"
+    "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_V0"
 )
 NEXT_OPERATOR_GO = (
-    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_"
-    "IMPLEMENTATION_V0"
+    "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
+    "EVALUATION_EXECUTION_V0"
 )
+PRE_RATIFIED_BINDING_DIGEST = PRE_PORTFOLIO_BINDING_DIGEST
+SUPERSESSION_MODE = "PORTFOLIO_BINDING_COMPLETION_SUPERSESSION_V0"
 
 ORCHESTRATOR_OWNER = "cross_sectional_single_slot_research_orchestrator_v0"
 MANIFEST_OWNER = "scripts.ops.primary_evidence_retention_v0"
@@ -239,10 +249,14 @@ def compute_implementation_digest_v0() -> str:
                 "cross_sectional_futures_pairwise_lead_lag_spillover_v1_"
                 "versioned_hypothesis_binding_v0"
             ),
+            "portfolio_binding_module": (
+                "cross_sectional_futures_pairwise_lead_lag_spillover_v1_portfolio_binding_v0"
+            ),
             "orchestrator": ORCHESTRATOR_OWNER,
             "score_family_policy": SCORE_FAMILY_POLICY,
             "hypothesis_family": HYPOTHESIS_FAMILY,
             "schema_version": BINDING_SCHEMA_VERSION,
+            "portfolio_binding_scope": PORTFOLIO_BINDING_SCOPE,
         }
     )
 
@@ -339,17 +353,7 @@ def build_pairwise_hypothesis_contract_v0() -> dict[str, Any]:
 
 
 def build_pending_implementation_bindings_v0() -> dict[str, Any]:
-    return {
-        "binding_version": "v0",
-        "aggregation_policy": _field_pending(ref="aggregation_policy"),
-        "selection_policy": _field_pending(ref="selection_policy"),
-        "holding_policy": _field_pending(ref="holding_policy"),
-        "exit_policy": _field_pending(ref="exit_policy"),
-        "portfolio_weighting_policy": _field_pending(ref="portfolio_weighting_policy"),
-        "numeric_lags_forbidden_in_binding_scope": True,
-        "numeric_thresholds_forbidden_in_binding_scope": True,
-        "portfolio_rules_forbidden_in_binding_scope": True,
-    }
+    return build_portfolio_implementation_bindings_v0()
 
 
 def build_material_difference_from_prior_v0() -> dict[str, Any]:
@@ -662,7 +666,8 @@ def materialize_versioned_hypothesis_binding_v0() -> dict[str, Any]:
             "digest_binding_status": "BOUND",
             "period_binding_status": "BOUND",
             "pairwise_contract_binding_status": "BOUND",
-            "pending_implementation_bindings_status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING",
+            "pending_implementation_bindings_status": BOUND_PORTFOLIO_BINDING_STATUS,
+            "portfolio_binding_scope": "COMPLETE",
             "cost_model_binding_status": "BOUND",
             "policy_classes_status": "BOUND",
         },
@@ -752,7 +757,10 @@ def materialize_versioned_hypothesis_binding_v0() -> dict[str, Any]:
         "period_binding_digest": period_binding_digest,
         "material_difference_digest": material_difference_digest,
         "binding_digest": binding_digest,
-        "binding_classification": "NEW_DISTINCT_PAIRWISE_SPILLOVER_GRAPH_SCORE_FAMILY",
+        "binding_classification": "PORTFOLIO_BINDING_COMPLETION_V0",
+        "supersession_mode": SUPERSESSION_MODE,
+        "pre_ratified_binding_digest": PRE_RATIFIED_BINDING_DIGEST,
+        "portfolio_binding_go_token": PORTFOLIO_BINDING_GO_TOKEN,
         "semantic_binding_fields_changed": True,
         "cryptographic_binding_identity_changed": True,
         "orchestrator_owner": ORCHESTRATOR_OWNER,
@@ -872,15 +880,11 @@ def validate_versioned_hypothesis_binding_v0(
         reasons.append("UNFINALIZED_BARS_ALLOWED")
 
     pending = envelope.get("pending_implementation_bindings", {})
-    for field in (
-        "aggregation_policy",
-        "selection_policy",
-        "holding_policy",
-        "exit_policy",
-        "portfolio_weighting_policy",
-    ):
-        if pending.get(field, {}).get("status") != PENDING_IMPLEMENTATION_STATUS:
-            reasons.append(f"PENDING_IMPLEMENTATION_NOT_EXPLICIT:{field}")
+    portfolio_ok, portfolio_reasons = validate_portfolio_implementation_bindings_v0(pending)
+    if not portfolio_ok:
+        reasons.extend(portfolio_reasons)
+    if pending.get("portfolio_binding_scope") != "COMPLETE":
+        reasons.append("PORTFOLIO_BINDING_SCOPE_INCOMPLETE")
 
     negative = envelope.get("distinctness_and_negative_evidence_protection", {})
     if negative.get("negative_evidence_preserved") is not True:
@@ -1056,7 +1060,7 @@ def build_field_classification_v0() -> dict[str, Any]:
             "target_time_gt_decision_time",
             "contemporaneous_target_leakage_forbidden",
         ],
-        "pending_implementation_fields": [
+        "portfolio_policy_fields": [
             "aggregation_policy",
             "selection_policy",
             "holding_policy",

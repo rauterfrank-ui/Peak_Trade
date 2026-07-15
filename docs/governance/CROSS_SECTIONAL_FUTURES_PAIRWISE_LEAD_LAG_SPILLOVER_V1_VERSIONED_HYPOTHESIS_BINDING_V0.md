@@ -25,15 +25,16 @@
 - Keine Panel-Median-Benchmark-Semantik aus Lead-Lag-v0.
 - Kein unverändertes Reuse des terminalen Lead-Lag-v0-Bindings.
 
-## Pending Implementation Fields
+## Portfolio Binding
 
-Folgende Felder sind explizit `PENDING_SEPARATE_IMPLEMENTATION_BINDING`:
-
-- `aggregation_policy`
-- `selection_policy`
-- `holding_policy`
-- `exit_policy`
-- `portfolio_weighting_policy`
+| Feld | Wert |
+|------|------|
+| `portfolio_binding_scope` | `COMPLETE` |
+| `aggregation_policy` | `BOUND` (`instrument_net_spillover_aggregation`) |
+| `selection_policy` | `BOUND` (`single_top1_by_instrument_net_inbound_spillover_desc`) |
+| `holding_policy` | `BOUND` (`until_next_rebalance`, PT1H cadence) |
+| `exit_policy` | `BOUND` (`flat_then_wait_one_epoch_then_enter`) |
+| `portfolio_weighting_policy` | `BOUND` (`equal_weight_single_slot_v0`) |
 
 ## Distinctness and Negative Evidence
 
@@ -66,4 +67,4 @@ Folgende Felder sind explizit `PENDING_SEPARATE_IMPLEMENTATION_BINDING`:
 
 ## Next Admissible Scope
 
-`GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_IMPLEMENTATION_V0`
+`GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0`
