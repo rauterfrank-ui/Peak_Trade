@@ -19,6 +19,45 @@
 - Historical formatter drift / Black wording: [Issue #252](https://github.com/rauterfrank-ui/Peak_Trade/issues/252)
 - Current formatter source of truth: Ruff format checks, not Black enforcement.
 
+## Canonical Chain Wiring Repair Runbook v2.2 + Strategy Signal Architecture Ratification Closeout — docs/tests-only reciprocal crosslink guard v1
+
+**Purpose:** Adopt and anchor the **Canonical Chain Wiring Repair Master Runbook v2.2** as governance/implementation contract and register the **negative Strategy Signal Architecture Ratification Closeout (Selection D)** — static reciprocal crosslink **without** core-code, runtime, order, authority, economic-validity, or promotion claims. Slice 1 is complete (PR #5226); Slice 2 remains blocked pending separate future architecture authorization.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Chain Wiring Repair Master Runbook v2.2 | `docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md` |
+| Strategy Signal Architecture Ratification Closeout v1 | `docs/governance/STRATEGY_SIGNAL_CANONICAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1.md` |
+| Governance index | `docs/governance/README.md` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` |
+| Static crosslink contract test | `tests/ops/test_canonical_chain_wiring_repair_runbook_v2_2_and_strategy_signal_architecture_ratification_closeout_static_crosslink_contract_v1.py` |
+
+```text
+CANONICAL_CHAIN_WIRING_REPAIR_RUNBOOK_V2_2_REPO_ADOPTED=true
+STRATEGY_SIGNAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1_REGISTERED=true
+SLICE_1_COMPLETE=true
+PR5226_SQUASH_MERGED=true
+CANONICAL_REPLAY_INPUT_BUILDER_SINGLE_OWNER=true
+PRODUCTIVE_DIRECT_REPLAY_INPUT_CONSTRUCTOR_COUNT=1
+ARCHITECTURE_RATIFICATION_SELECTION=D
+STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_STATUS=NO_SAFE_EXISTING_CANONICAL_CONSUMER
+SLICE_2_IMPLEMENTATION_READY=false
+SLICE_2_IMPLEMENTATION_BLOCKED=true
+NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
+SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=true
+MISSION_COMPLETE=false
+ECONOMIC_VALIDITY_CLAIMED=false
+PROMOTION_CLAIMED=false
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+ORDER_EFFECT=NONE
+CORE_CODE_EFFECT=NONE
+DOCUMENTATION_ONLY=true
+```
+
 ## Canonical Unified Trading System Runbook v2.6 — docs/tests-only reciprocal crosslink guard v0
 
 **Operator-GO:** `GO_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6_REPO_INTEGRATION_MULTI_AGENT_V0`
