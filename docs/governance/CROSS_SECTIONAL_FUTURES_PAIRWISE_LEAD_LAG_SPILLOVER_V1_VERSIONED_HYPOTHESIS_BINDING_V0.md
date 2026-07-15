@@ -1,12 +1,12 @@
 # Cross-Sectional Futures Pairwise Lead-Lag Spillover V1 Versioned Hypothesis Binding V0
 
-> **Non-authorizing:** Ratifiziert die versionierte Binding-Identität für `cross_sectional_futures_pairwise_lead_lag_spillover/v1` als pairwise directed spillover graph hypothesis auf dem kanonischen PIT-OHLCV-Panel. Keine Economic Evaluation, keine Score-Berechnung, keine Runtime, keine Promotion.
+> **Non-authorizing:** Ratifiziert die versionierte Binding-Identität für `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1` als pairwise directed spillover graph hypothesis auf dem kanonischen PIT-OHLCV-Panel. Keine Economic Evaluation, keine Score-Berechnung, keine Runtime, keine Promotion.
 
 ## Scope
 
 | Feld | Wert |
 |------|------|
-| `research_scope` | `cross_sectional_futures_pairwise_lead_lag_spillover/v1` |
+| `research_scope` | `cross_sectional_futures_pairwise_lead_lag_spillover&#47;v1` |
 | `hypothesis_family` | `pairwise_leader_follower_spillover_v1` |
 | `score_family` | `pairwise_spillover_graph_v1` |
 | `market_scope` | `OKX_LINEAR_USDT_NON_BITCOIN_FUTURES` |
@@ -39,7 +39,7 @@ Folgende Felder sind explizit `PENDING_SEPARATE_IMPLEMENTATION_BINDING`:
 
 | Feld | Wert |
 |------|------|
-| `prior_scope` | `cross_sectional_futures_lead_lag_information_diffusion/v0` |
+| `prior_scope` | `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` |
 | `prior_scope_status` | `TERMINAL_INSUFFICIENT_SAMPLE` |
 | `material_difference_class` | `PAIRWISE_DIRECTED_GRAPH_VS_PANEL_MEDIAN_DIFFUSION` |
 | `negative_evidence_preserved` | `true` |
