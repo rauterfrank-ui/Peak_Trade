@@ -17,7 +17,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_a
     INSTRUMENT_RANKING_FORMULA,
     PAIR_DETERMINISTIC_TIE_BREAK,
     PAIR_RANKING_FORMULA,
-    PENDING_SELECTION_POLICY_STATUS,
+    BOUND_SELECTION_POLICY_STATUS,
     RATIFIED_HYPOTHESIS_BINDING_DIGEST,
     RESEARCH_SCOPE,
     SCORE_FAMILY_POLICY,
@@ -125,7 +125,7 @@ class TestRankingContract:
         assert ranking["instrument_deterministic_tie_break"] == INSTRUMENT_DETERMINISTIC_TIE_BREAK
         assert ranking["tie_break_score_source"] == "unrounded_internal_score"
 
-    def test_selection_policies_deferred(self, complete_contract: dict) -> None:
+    def test_selection_policies_bound(self, complete_contract: dict) -> None:
         ranking = complete_contract["ranking_contract"]
         for field in (
             "selection_policy_binding_status",
@@ -134,7 +134,7 @@ class TestRankingContract:
             "exit_policy_binding_status",
             "portfolio_weighting_policy_binding_status",
         ):
-            assert ranking[field] == PENDING_SELECTION_POLICY_STATUS
+            assert ranking[field] == BOUND_SELECTION_POLICY_STATUS
 
 
 class TestContractRejections:

@@ -12,11 +12,13 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_vers
     SCORE_FAMILY_POLICY as LEAD_LAG_V0_SCORE_FAMILY,
     materialize_versioned_hypothesis_binding_v0 as materialize_prior_lead_lag_v0,
 )
+from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_portfolio_binding_v0 import (
+    BOUND_PORTFOLIO_BINDING_STATUS,
+)
 from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0 import (
     CONFIG_REL_PATH,
     GOVERNANCE_REL_PATH,
     PAIR_DEFINITION,
-    PENDING_IMPLEMENTATION_STATUS,
     PRIOR_LEAD_LAG_BINDING_DIGEST,
     PRIOR_LEAD_LAG_SCORE_FAMILY,
     RESEARCH_SCOPE,
@@ -140,7 +142,7 @@ class TestRequiredBindingFields:
         assert envelope["period_binding_digest"]
         assert envelope["binding"]["digest_bindings"]["period_binding_digest"]["value"]
 
-    def test_pending_implementation_fields_explicit(self) -> None:
+    def test_portfolio_implementation_fields_bound(self) -> None:
         envelope = materialize_versioned_hypothesis_binding_v0()
         pending = envelope["pending_implementation_bindings"]
         for field in (
@@ -150,7 +152,9 @@ class TestRequiredBindingFields:
             "exit_policy",
             "portfolio_weighting_policy",
         ):
-            assert pending[field]["status"] == PENDING_IMPLEMENTATION_STATUS
+            assert pending[field]["status"] == BOUND_PORTFOLIO_BINDING_STATUS
+            assert pending[field]["binding_digest"]
+            assert pending[field]["policy"]
 
     def test_no_economic_evaluation(self) -> None:
         envelope = materialize_versioned_hypothesis_binding_v0()
@@ -245,4 +249,4 @@ class TestRepoArtifacts:
             pytest.skip("governance doc not yet materialized in repo")
         text = GOVERNANCE_DOC.read_text(encoding="utf-8")
         assert "pairwise_spillover_graph_v1" in text
-        assert "PENDING_SEPARATE_IMPLEMENTATION_BINDING" in text
+        assert "portfolio_binding_scope" in text or "BOUND" in text

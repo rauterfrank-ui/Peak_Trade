@@ -99,6 +99,21 @@ def _bound_portfolio_binding(field: str, *, digest: str) -> dict[str, str]:
     }
 
 
+def _binding_with_pending_portfolio(complete_binding: dict) -> dict:
+    stale = deepcopy(complete_binding)
+    pending = {
+        "binding_version": "v0",
+        "portfolio_rules_forbidden_in_binding_scope": True,
+    }
+    for field in PORTFOLIO_BINDING_REQUIRED_FIELDS:
+        pending[field] = {
+            "ref": field,
+            "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING",
+        }
+    stale["pending_implementation_bindings"] = pending
+    return stale
+
+
 def _binding_with_bound_portfolio(complete_binding: dict) -> dict:
     bound = deepcopy(complete_binding)
     pending = deepcopy(bound["pending_implementation_bindings"])
@@ -134,7 +149,8 @@ class TestPortfolioBindingFailClosed:
         assert any("MISSING_PORTFOLIO_BINDING" in reason for reason in reasons)
 
     def test_pending_portfolio_binding_fails_closed(self, complete_binding: dict) -> None:
-        ok, reasons = validate_portfolio_bindings_for_execution_dispatch_v0(complete_binding)
+        pending_binding = _binding_with_pending_portfolio(complete_binding)
+        ok, reasons = validate_portfolio_bindings_for_execution_dispatch_v0(pending_binding)
         assert ok is False
         assert any(REASON_PORTFOLIO_BINDING_PENDING in reason for reason in reasons)
 
@@ -156,6 +172,14 @@ class TestPortfolioBindingFailClosed:
 
     def test_no_implicit_portfolio_defaults(self, complete_binding: dict) -> None:
         contract = materialize_portfolio_binding_contract_v0(complete_binding, repo_root=REPO_ROOT)
+        assert contract["implicit_defaults_forbidden"] is True
+        assert contract["portfolio_bindings_valid"] is True
+
+    def test_pending_binding_has_no_implicit_defaults_and_not_valid(
+        self, complete_binding: dict
+    ) -> None:
+        pending_binding = _binding_with_pending_portfolio(complete_binding)
+        contract = materialize_portfolio_binding_contract_v0(pending_binding, repo_root=REPO_ROOT)
         assert contract["implicit_defaults_forbidden"] is True
         assert contract["portfolio_bindings_valid"] is False
 
@@ -209,11 +233,12 @@ class TestDispatchWithoutEvaluation:
         authorization_ratification: dict,
         complete_binding: dict,
     ) -> None:
+        pending_binding = _binding_with_pending_portfolio(complete_binding)
         dispatch = run_offline_economic_evaluation_execution_dispatch_v0(
             repo_root=REPO_ROOT,
             authorization_ratification=authorization_ratification,
             go_token=_EXEC_GO,
-            versioned_binding=complete_binding,
+            versioned_binding=pending_binding,
             verify_source_manifests=False,
             materialize_dataset=False,
         )
@@ -228,11 +253,12 @@ class TestDispatchWithoutEvaluation:
         authorization_ratification: dict,
         complete_binding: dict,
     ) -> None:
+        pending_binding = _binding_with_pending_portfolio(complete_binding)
         result = run_full_offline_economic_evaluation_v0(
             go_token=_EXEC_GO,
             repo_root=REPO_ROOT,
             authorization_ratification=authorization_ratification,
-            versioned_binding=complete_binding,
+            versioned_binding=pending_binding,
             verify_source_manifests=False,
             materialize_dataset=False,
         )
@@ -244,11 +270,12 @@ class TestDispatchWithoutEvaluation:
         authorization_ratification: dict,
         complete_binding: dict,
     ) -> None:
+        pending_binding = _binding_with_pending_portfolio(complete_binding)
         result = run_baseline_offline_economic_evaluation_v0(
             go_token=_EXEC_GO,
             repo_root=REPO_ROOT,
             authorization_ratification=authorization_ratification,
-            versioned_binding=complete_binding,
+            versioned_binding=pending_binding,
         )
         assert result.executed is False
         assert any(REASON_PORTFOLIO_BINDING_PENDING in item for item in result.reason_codes)

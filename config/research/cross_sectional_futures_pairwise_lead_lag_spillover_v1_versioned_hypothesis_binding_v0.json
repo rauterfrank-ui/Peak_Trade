@@ -9,9 +9,10 @@
       "digest_binding_status": "BOUND",
       "overall_binding_status": "COMPLETE",
       "pairwise_contract_binding_status": "BOUND",
-      "pending_implementation_bindings_status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING",
+      "pending_implementation_bindings_status": "BOUND",
       "period_binding_status": "BOUND",
       "policy_classes_status": "BOUND",
+      "portfolio_binding_scope": "COMPLETE",
       "universe_binding_status": "BOUND"
     },
     "dataset_binding": {
@@ -36,11 +37,11 @@
     "digest_bindings": {
       "binding_digest": {
         "status": "BOUND",
-        "value": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438"
+        "value": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8"
       },
       "config_digest": {
         "status": "BOUND",
-        "value": "9391de5348dbb8a6a23ae0bb209496ab99212b956a9c60fed05d6030570cbb07"
+        "value": "f81708dcb5f1854b2b4db053830f9fef310d5e3691d89a66f9f0ecae66e6148d"
       },
       "data_digest": {
         "status": "BOUND",
@@ -52,7 +53,7 @@
       },
       "implementation_digest": {
         "status": "BOUND",
-        "value": "76e792f639ab699da99ec8ffac81865ef44aebcd63c6b89fd5fe1df3c78d9c5f"
+        "value": "e32e53bafc40e572dc90d8deced1f7316bc75576051468fc524b729f825a02e9"
       },
       "material_difference_digest": {
         "status": "BOUND",
@@ -181,28 +182,142 @@
     },
     "pending_implementation_bindings": {
       "aggregation_policy": {
+        "binding_digest": "1680b13180537bfc6d964776d4bf0afec603190cc37befd711cdb29429af7e04",
+        "policy": {
+          "aggregation_callable_owner": "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_v0.compute_instrument_net_spillover_scores_v0",
+          "aggregation_order": "deterministic_sorted_instrument_id_asc",
+          "aggregation_source": "directed_pairwise_spillover_scores",
+          "aggregation_target": "instrument_net_spillover_scores",
+          "bitcoin_instruments_excluded": true,
+          "implicit_defaults_forbidden": true,
+          "inbound_semantics": "sum_spillover_strength_where_instrument_is_follower",
+          "lead_lag_v0_aggregation_reuse_forbidden": true,
+          "minimum_incident_pairs_for_instrument": 0,
+          "missing_instrument_incident_pairs_policy": "zero_contribution_when_no_incident_pairs",
+          "missing_pair_policy": "exclude_non_finite_pair_for_epoch",
+          "net_semantics": "inbound_sum_minus_outbound_sum",
+          "outbound_semantics": "sum_spillover_strength_where_instrument_is_leader",
+          "pair_iteration_order": "leader_id_asc_then_follower_id_asc",
+          "panel_median_benchmark_aggregation_forbidden": true,
+          "partial_pairwise_coverage_policy": "include_instrument_with_partial_incident_pairs",
+          "policy_version": "pairwise_spillover_instrument_net_aggregation_policy.v0",
+          "schema_version": "pairwise_spillover_instrument_net_aggregation_policy.v0",
+          "score_family_policy": "pairwise_spillover_graph_v1"
+        },
+        "policy_version": "pairwise_spillover_instrument_net_aggregation_policy.v0",
         "ref": "aggregation_policy",
-        "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+        "status": "BOUND"
       },
       "binding_version": "v0",
       "exit_policy": {
+        "binding_digest": "fb50b7584cb67b57f54a489f3829a0080606f4bb1500a638230d45f0534025be",
+        "policy": {
+          "atomic_side_switch_forbidden": true,
+          "cooldown_policy": "no_cooldown",
+          "direct_reversal_without_flat_forbidden": true,
+          "end_of_window_policy": "force_close_at_window_end_inclusive_v0",
+          "implicit_defaults_forbidden": true,
+          "invalid_data_exit": "force_flat_on_non_finite_score",
+          "opposite_side_requires_reconciled_flat": true,
+          "policy_version": "pairwise_spillover_single_slot_exit_policy.v0",
+          "rank_based_exit": true,
+          "rebalance_exit": "rotation_via_switch_policy",
+          "runtime_order_semantics_forbidden": true,
+          "schema_version": "pairwise_spillover_single_slot_exit_policy.v0",
+          "switch_entry_delay_epochs": 1,
+          "switch_policy": "flat_then_wait_one_epoch_then_enter",
+          "universe_removal_exit": "force_flat_on_universe_removal"
+        },
+        "policy_version": "pairwise_spillover_single_slot_exit_policy.v0",
         "ref": "exit_policy",
-        "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+        "status": "BOUND"
       },
       "holding_policy": {
+        "binding_digest": "a99a44589743011d879aab19842ba64652a620e33c51098d51e98705d831c095",
+        "policy": {
+          "between_rebalance_behavior": "maintain_position_until_rebalance_or_exit_trigger",
+          "hold_semantics": "until_next_rebalance",
+          "implicit_defaults_forbidden": true,
+          "minimum_hold_epochs": 0,
+          "missing_data_between_rebalances": "force_flat_if_selected_instrument_missing",
+          "policy_version": "pairwise_spillover_single_slot_holding_policy.v0",
+          "rebalance_cadence": "PT1H",
+          "rebalance_interval_bars": 1,
+          "rebalance_policy_class": "fixed_N_bar_cadence",
+          "schema_version": "pairwise_spillover_single_slot_holding_policy.v0",
+          "stale_instrument_policy": "exclude_when_ineligible_for_epoch",
+          "warmup_incomplete_target": "FLAT"
+        },
+        "policy_version": "pairwise_spillover_single_slot_holding_policy.v0",
         "ref": "holding_policy",
-        "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+        "status": "BOUND"
       },
       "numeric_lags_forbidden_in_binding_scope": true,
       "numeric_thresholds_forbidden_in_binding_scope": true,
-      "portfolio_rules_forbidden_in_binding_scope": true,
+      "portfolio_binding_scope": "COMPLETE",
+      "portfolio_rules_forbidden_in_binding_scope": false,
       "portfolio_weighting_policy": {
+        "binding_digest": "29eab156e01a81a8e0e4d20a7fb22236a969f55340dbe4544c124ba5750082b2",
+        "policy": {
+          "empty_selection_weight": "flat_zero_exposure",
+          "exposure_invariant_enforced": true,
+          "gross_exposure_cap": 1.0,
+          "gross_exposure_policy": "unit_notional_single_slot_v0",
+          "implicit_defaults_forbidden": true,
+          "long_budget": 1.0,
+          "net_exposure_bounds": {
+            "max": 1.0,
+            "min": -1.0
+          },
+          "net_exposure_policy": "directional_single_slot_v0",
+          "partial_selection_policy": "not_applicable_single_slot",
+          "per_instrument_cap": 1.0,
+          "policy_version": "pairwise_spillover_single_slot_weighting_policy.v0",
+          "portfolio_cap": 1.0,
+          "risk_sizing_semantics_changed": false,
+          "rounding_policy": "deterministic_no_rounding_required_single_unit",
+          "schema_version": "pairwise_spillover_single_slot_weighting_policy.v0",
+          "short_budget": 1.0,
+          "weight_normalization": "single_instrument_full_notional",
+          "weight_sum_invariant": 1.0,
+          "weighting_policy": "equal_weight_single_slot_v0"
+        },
+        "policy_version": "pairwise_spillover_single_slot_weighting_policy.v0",
         "ref": "portfolio_weighting_policy",
-        "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+        "status": "BOUND"
       },
       "selection_policy": {
+        "binding_digest": "9d9bb469476b941677763d52c21c75d1488ee16a53d2d51fd227484e9eb97f11",
+        "policy": {
+          "bitcoin_instruments_forbidden": true,
+          "deterministic_tie_break": "score_desc_then_instrument_id_asc",
+          "direction_policy": "symmetric_top1_sign",
+          "finalized_bar_only": true,
+          "implicit_defaults_forbidden": true,
+          "insufficient_panel_policy": "FAIL_CLOSED_EMPTY_RANKING",
+          "insufficient_panel_target": "FLAT",
+          "minimum_rankable_instrument_count": 5,
+          "missing_score_policy": "exclude_non_finite",
+          "negative_top1_means": "SHORT_TOP1",
+          "non_finite_score_target": "FLAT",
+          "nondeterministic_selection_forbidden": true,
+          "orchestrator_owner": "cross_sectional_single_slot_research_orchestrator_v0",
+          "policy_version": "pairwise_spillover_instrument_net_selection_policy.v0",
+          "positive_top1_means": "LONG_TOP1",
+          "post_result_selection_forbidden": true,
+          "ranking_direction": "descending",
+          "ranking_entity": "instrument_net_inbound_spillover",
+          "ranking_formula": "rank_instruments_by_net_inbound_spillover_desc_v1",
+          "schema_version": "pairwise_spillover_instrument_net_selection_policy.v0",
+          "score_family_policy": "pairwise_spillover_graph_v1",
+          "selection_count": 1,
+          "selection_mode": "single_top1_by_score_desc",
+          "tie_break_score_source": "unrounded_internal_score",
+          "zero_score_target": "FLAT"
+        },
+        "policy_version": "pairwise_spillover_instrument_net_selection_policy.v0",
         "ref": "selection_policy",
-        "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+        "status": "BOUND"
       }
     },
     "period_binding": {
@@ -268,9 +383,9 @@
       "venue": "OKX"
     }
   },
-  "binding_classification": "NEW_DISTINCT_PAIRWISE_SPILLOVER_GRAPH_SCORE_FAMILY",
-  "binding_digest": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438",
-  "config_digest": "9391de5348dbb8a6a23ae0bb209496ab99212b956a9c60fed05d6030570cbb07",
+  "binding_classification": "PORTFOLIO_BINDING_COMPLETION_V0",
+  "binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
+  "config_digest": "f81708dcb5f1854b2b4db053830f9fef310d5e3691d89a66f9f0ecae66e6148d",
   "cost_execution_binding": {
     "binding_version": "v0",
     "cost_model_binding": "backtest_cost_stack_v0",
@@ -304,11 +419,11 @@
   "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
   "digest_dependency_graph": {
     "component_digests": {
-      "binding_digest": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438",
-      "config_digest": "9391de5348dbb8a6a23ae0bb209496ab99212b956a9c60fed05d6030570cbb07",
+      "binding_digest": "a531051eb8a4f414fea42aef9bed3afbbbb93e455092a4bc43be2e9b820a1ae8",
+      "config_digest": "f81708dcb5f1854b2b4db053830f9fef310d5e3691d89a66f9f0ecae66e6148d",
       "data_digest": "cc09958107aca2f5c46bc0a828354fb8e8d70053b02853a2786062bcc8c6aff6",
       "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
-      "implementation_digest": "76e792f639ab699da99ec8ffac81865ef44aebcd63c6b89fd5fe1df3c78d9c5f",
+      "implementation_digest": "e32e53bafc40e572dc90d8deced1f7316bc75576051468fc524b729f825a02e9",
       "material_difference_digest": "bf8530c8e6a9cde7b2165b907a3d0dc134f34ea4fc69dfc3e7cff27ea445be7b",
       "period_binding_digest": "c4255a453dc9ff71f69a1f51fe89952a6958e79858b5c64442c5d2cffb4acc24",
       "universe_digest": "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1"
@@ -420,7 +535,7 @@
   "hypothesis_id": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_NON_BITCOIN_PERPETUALS_V1",
   "hypothesis_statement": "Cross-sectional futures pairwise lead-lag spillover hypothesis: model admissible futures instruments as graph nodes and directed leader-to-follower edges; infer pairwise spillover strength from strictly lagged leader features to strictly future follower returns on finalized PT1H OHLCV without panel-median diffusion semantics.",
   "hypothesis_version": "v1",
-  "implementation_digest": "76e792f639ab699da99ec8ffac81865ef44aebcd63c6b89fd5fe1df3c78d9c5f",
+  "implementation_digest": "e32e53bafc40e572dc90d8deced1f7316bc75576051468fc524b729f825a02e9",
   "material_difference_digest": "bf8530c8e6a9cde7b2165b907a3d0dc134f34ea4fc69dfc3e7cff27ea445be7b",
   "material_difference_from_prior": {
     "graph_structure_delta": "panel_median_scalar_diffusion vs directed_dyadic_edges",
@@ -516,28 +631,142 @@
   },
   "pending_implementation_bindings": {
     "aggregation_policy": {
+      "binding_digest": "1680b13180537bfc6d964776d4bf0afec603190cc37befd711cdb29429af7e04",
+      "policy": {
+        "aggregation_callable_owner": "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_v0.compute_instrument_net_spillover_scores_v0",
+        "aggregation_order": "deterministic_sorted_instrument_id_asc",
+        "aggregation_source": "directed_pairwise_spillover_scores",
+        "aggregation_target": "instrument_net_spillover_scores",
+        "bitcoin_instruments_excluded": true,
+        "implicit_defaults_forbidden": true,
+        "inbound_semantics": "sum_spillover_strength_where_instrument_is_follower",
+        "lead_lag_v0_aggregation_reuse_forbidden": true,
+        "minimum_incident_pairs_for_instrument": 0,
+        "missing_instrument_incident_pairs_policy": "zero_contribution_when_no_incident_pairs",
+        "missing_pair_policy": "exclude_non_finite_pair_for_epoch",
+        "net_semantics": "inbound_sum_minus_outbound_sum",
+        "outbound_semantics": "sum_spillover_strength_where_instrument_is_leader",
+        "pair_iteration_order": "leader_id_asc_then_follower_id_asc",
+        "panel_median_benchmark_aggregation_forbidden": true,
+        "partial_pairwise_coverage_policy": "include_instrument_with_partial_incident_pairs",
+        "policy_version": "pairwise_spillover_instrument_net_aggregation_policy.v0",
+        "schema_version": "pairwise_spillover_instrument_net_aggregation_policy.v0",
+        "score_family_policy": "pairwise_spillover_graph_v1"
+      },
+      "policy_version": "pairwise_spillover_instrument_net_aggregation_policy.v0",
       "ref": "aggregation_policy",
-      "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+      "status": "BOUND"
     },
     "binding_version": "v0",
     "exit_policy": {
+      "binding_digest": "fb50b7584cb67b57f54a489f3829a0080606f4bb1500a638230d45f0534025be",
+      "policy": {
+        "atomic_side_switch_forbidden": true,
+        "cooldown_policy": "no_cooldown",
+        "direct_reversal_without_flat_forbidden": true,
+        "end_of_window_policy": "force_close_at_window_end_inclusive_v0",
+        "implicit_defaults_forbidden": true,
+        "invalid_data_exit": "force_flat_on_non_finite_score",
+        "opposite_side_requires_reconciled_flat": true,
+        "policy_version": "pairwise_spillover_single_slot_exit_policy.v0",
+        "rank_based_exit": true,
+        "rebalance_exit": "rotation_via_switch_policy",
+        "runtime_order_semantics_forbidden": true,
+        "schema_version": "pairwise_spillover_single_slot_exit_policy.v0",
+        "switch_entry_delay_epochs": 1,
+        "switch_policy": "flat_then_wait_one_epoch_then_enter",
+        "universe_removal_exit": "force_flat_on_universe_removal"
+      },
+      "policy_version": "pairwise_spillover_single_slot_exit_policy.v0",
       "ref": "exit_policy",
-      "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+      "status": "BOUND"
     },
     "holding_policy": {
+      "binding_digest": "a99a44589743011d879aab19842ba64652a620e33c51098d51e98705d831c095",
+      "policy": {
+        "between_rebalance_behavior": "maintain_position_until_rebalance_or_exit_trigger",
+        "hold_semantics": "until_next_rebalance",
+        "implicit_defaults_forbidden": true,
+        "minimum_hold_epochs": 0,
+        "missing_data_between_rebalances": "force_flat_if_selected_instrument_missing",
+        "policy_version": "pairwise_spillover_single_slot_holding_policy.v0",
+        "rebalance_cadence": "PT1H",
+        "rebalance_interval_bars": 1,
+        "rebalance_policy_class": "fixed_N_bar_cadence",
+        "schema_version": "pairwise_spillover_single_slot_holding_policy.v0",
+        "stale_instrument_policy": "exclude_when_ineligible_for_epoch",
+        "warmup_incomplete_target": "FLAT"
+      },
+      "policy_version": "pairwise_spillover_single_slot_holding_policy.v0",
       "ref": "holding_policy",
-      "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+      "status": "BOUND"
     },
     "numeric_lags_forbidden_in_binding_scope": true,
     "numeric_thresholds_forbidden_in_binding_scope": true,
-    "portfolio_rules_forbidden_in_binding_scope": true,
+    "portfolio_binding_scope": "COMPLETE",
+    "portfolio_rules_forbidden_in_binding_scope": false,
     "portfolio_weighting_policy": {
+      "binding_digest": "29eab156e01a81a8e0e4d20a7fb22236a969f55340dbe4544c124ba5750082b2",
+      "policy": {
+        "empty_selection_weight": "flat_zero_exposure",
+        "exposure_invariant_enforced": true,
+        "gross_exposure_cap": 1.0,
+        "gross_exposure_policy": "unit_notional_single_slot_v0",
+        "implicit_defaults_forbidden": true,
+        "long_budget": 1.0,
+        "net_exposure_bounds": {
+          "max": 1.0,
+          "min": -1.0
+        },
+        "net_exposure_policy": "directional_single_slot_v0",
+        "partial_selection_policy": "not_applicable_single_slot",
+        "per_instrument_cap": 1.0,
+        "policy_version": "pairwise_spillover_single_slot_weighting_policy.v0",
+        "portfolio_cap": 1.0,
+        "risk_sizing_semantics_changed": false,
+        "rounding_policy": "deterministic_no_rounding_required_single_unit",
+        "schema_version": "pairwise_spillover_single_slot_weighting_policy.v0",
+        "short_budget": 1.0,
+        "weight_normalization": "single_instrument_full_notional",
+        "weight_sum_invariant": 1.0,
+        "weighting_policy": "equal_weight_single_slot_v0"
+      },
+      "policy_version": "pairwise_spillover_single_slot_weighting_policy.v0",
       "ref": "portfolio_weighting_policy",
-      "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+      "status": "BOUND"
     },
     "selection_policy": {
+      "binding_digest": "9d9bb469476b941677763d52c21c75d1488ee16a53d2d51fd227484e9eb97f11",
+      "policy": {
+        "bitcoin_instruments_forbidden": true,
+        "deterministic_tie_break": "score_desc_then_instrument_id_asc",
+        "direction_policy": "symmetric_top1_sign",
+        "finalized_bar_only": true,
+        "implicit_defaults_forbidden": true,
+        "insufficient_panel_policy": "FAIL_CLOSED_EMPTY_RANKING",
+        "insufficient_panel_target": "FLAT",
+        "minimum_rankable_instrument_count": 5,
+        "missing_score_policy": "exclude_non_finite",
+        "negative_top1_means": "SHORT_TOP1",
+        "non_finite_score_target": "FLAT",
+        "nondeterministic_selection_forbidden": true,
+        "orchestrator_owner": "cross_sectional_single_slot_research_orchestrator_v0",
+        "policy_version": "pairwise_spillover_instrument_net_selection_policy.v0",
+        "positive_top1_means": "LONG_TOP1",
+        "post_result_selection_forbidden": true,
+        "ranking_direction": "descending",
+        "ranking_entity": "instrument_net_inbound_spillover",
+        "ranking_formula": "rank_instruments_by_net_inbound_spillover_desc_v1",
+        "schema_version": "pairwise_spillover_instrument_net_selection_policy.v0",
+        "score_family_policy": "pairwise_spillover_graph_v1",
+        "selection_count": 1,
+        "selection_mode": "single_top1_by_score_desc",
+        "tie_break_score_source": "unrounded_internal_score",
+        "zero_score_target": "FLAT"
+      },
+      "policy_version": "pairwise_spillover_instrument_net_selection_policy.v0",
       "ref": "selection_policy",
-      "status": "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
+      "status": "BOUND"
     }
   },
   "period_binding": {
@@ -603,13 +832,15 @@
     "universe_policy_version": "v1",
     "venue": "OKX"
   },
+  "portfolio_binding_go_token": "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_PORTFOLIO_BINDING_IMPLEMENTATION_V0",
+  "pre_ratified_binding_digest": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438",
   "research_hypothesis_id": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_NON_BITCOIN_PERPETUALS_V1",
   "research_scope": "cross_sectional_futures_pairwise_lead_lag_spillover/v1",
   "runner_decision": {
     "economic_evaluation_executed": false,
     "evaluation_executed": false,
-    "next_operator_go": "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_IMPLEMENTATION_V0",
-    "next_recommended_scope": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_IMPLEMENTATION_V0",
+    "next_operator_go": "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+    "next_recommended_scope": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
     "runner_action": "DEFER_TO_SCORE_AND_RANKING_CONTRACT_IMPLEMENTATION_SCOPE",
     "runner_required": true,
     "schema_version": "runner_decision.v0"
@@ -634,6 +865,7 @@
   "strategy_family": "pairwise_leader_follower_spillover_v1",
   "strategy_id": "cross_sectional_futures_pairwise_lead_lag_spillover",
   "strategy_version": "v1",
+  "supersession_mode": "PORTFOLIO_BINDING_COMPLETION_SUPERSESSION_V0",
   "system_constraints": {
     "bitcoin_direction_allowed": false,
     "bitcoin_present": false,
