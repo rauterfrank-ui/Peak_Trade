@@ -5,15 +5,21 @@
 ```text
 DOCUMENT_TYPE=IMPLEMENTATION_CONTRACT_AND_HANDOFF_RUNBOOK
 DOCUMENT_VERSION=2.2
-STATUS=POST_SLICE_1_ARCHITECTURE_RATIFICATION_CLOSEOUT
+STATUS=PR5229_ARCHITECTURE_AUTHORIZATION_DECISION_C_CLOSEOUT_COMPLETE
 DISCOVERY_COMPLETE=true
 SEMANTIC_AUTHORITY_RESOLVED=true
 BUILDER_OWNERSHIP_RESOLVED=true
 SLICE_1_COMPLETE=true
+SLICE_1_REOPENED=false
 SLICE_2_IMPLEMENTATION_BLOCKED=true
+SLICE_2_IMPLEMENTATION_AUTHORIZED=false
 ARCHITECTURE_REMAINS_BINDING=true
 SAFETY_BOUNDARIES_REMAIN_BINDING=true
-SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=true
+ARCHITECTURE_AUTHORIZATION_DECISION=C
+SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=false
+SEPARATE_ARCHITECTURE_AUTHORIZATION_EXECUTED=true
+NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
+READ_ONLY_CHAINING_REQUIRED=false
 MISSION_COMPLETE=false
 REPO=/Users/frnkhrz/Peak_Trade
 ```
@@ -60,19 +66,70 @@ NO_SAFE_EXISTING_CANONICAL_CONSUMER
 PREVIOUS_SELECTION=D
 PREVIOUS_IMPLEMENTATION_BLOCKED=true
 ARCHITECTURE_AUTHORIZATION_DECISION=C
+AUTHORIZED_CANONICAL_CONSUMER_STAGE=none
+AUTHORIZED_CONSUMER_OWNER_FILE=none
+AUTHORIZED_CONSUMER_OWNER_SYMBOL=none
+STRATEGY_VALUE_SEMANTICS_RESOLVED=false
+CMC_CONSISTENCY_BINDING_RESOLVED=false
+FAIL_CLOSED_RULES_RESOLVED=false
+REAL_CANONICAL_EFFECT_PROVEN=false
+RAW_SIGNAL_DIRECT_AUTHORITY=false
+PROVENANCE_ONLY_BINDING=false
+NEW_PARALLEL_DECISION_STAGE=false
+NEW_TOTAL_DECISION_OWNER=false
 SLICE_2_IMPLEMENTATION_AUTHORIZED=false
 NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
 SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=false
 SEPARATE_ARCHITECTURE_AUTHORIZATION_EXECUTED=true
+CORE_CODE_EFFECT=NONE
+READ_ONLY_CHAINING_REQUIRED=false
 MISSION_COMPLETE=false
 ECONOMIC_VALIDITY_CLAIMED=false
 PROMOTION_CLAIMED=false
 ```
 
+### 0.3 PR #5229 — Architecture Authorization Decision C Closeout (ratified)
+
+```text
+PR_NUMBER=5229
+PR_HEAD_SHA=bc441e0020ba221936e903658f3c564536042a62
+PR_SQUASH_COMMIT=cab3fa2c231492714ab8c446390f22d35ae6ce54
+MERGED_AT=2026-07-15T20:55:07Z
+RATIFICATION_STATUS=COMPLETE
+ARCHITECTURE_AUTHORIZATION_DECISION=C
+AUTHORIZED_CANONICAL_CONSUMER_STAGE=none
+AUTHORIZED_CONSUMER_OWNER_FILE=none
+AUTHORIZED_CONSUMER_OWNER_SYMBOL=none
+SLICE_1_REOPENED=false
+SLICE_2_STATUS=BLOCKED_BY_ARCHITECTURE_DECISION_C
+SLICE_2_IMPLEMENTATION_AUTHORIZED=false
+NEXT_AUTOMATIC_SCOPE=NONE
+NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
+READ_ONLY_CHAINING_REQUIRED=false
+CORE_CODE_EFFECT=NONE
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+ORDER_EFFECT=NONE
+```
+
+**Fortsetzungsregel nach PR #5229 (bindend):**
+
+- PR #5229 hat Architekturentscheidung **C** ratifiziert (`NO_SAFE_ARCHITECTURE_AUTHORIZABLE`).
+- Es existiert kein autorisierter kanonischer Consumer für Strategy-Signalwerte.
+- Slice 1 bleibt abgeschlossen und darf nicht erneut geöffnet werden (`SLICE_1_REOPENED=false`).
+- Slice 2 bleibt fail-closed blockiert (`SLICE_2_IMPLEMENTATION_AUTHORIZED=false`).
+- Keine Provenance-only-Verdrahtung.
+- Keine Direct-Signal-Authority.
+- Keine neue parallele Decision Stage.
+- Kein neuer Total Decision Owner.
+- Ein neuer technischer Implementierungsscope darf erst nach einer **neuen expliziten Operator-Architekturentscheidung** entstehen.
+- Ohne neue Unsicherheit darf kein weiterer Read-Only-Report verkettet werden.
+- `NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE`.
+
 Kanonisches Architecture-Ratification-Closeout (Selection D, negativ):
 [`docs/governance/STRATEGY_SIGNAL_CANONICAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1.md`](STRATEGY_SIGNAL_CANONICAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1.md).
 
-Separate Architecture Authorization (GO v1, Decision **C** — no safe architecture authorizable):
+Separate Architecture Authorization (GO v1, Decision **C** — no safe architecture authorizable; squash-merged as PR #5229):
 [`docs/governance/STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md`](STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md).
 
 **Zweck:** Dieses Runbook ist der vollständige technische Implementierungsvertrag für die Reparatur der bestätigten Chain-Wiring-Defekte zwischen Strategy Layer, kanonischem Master-V2-Core, Backtest, Offline Replay und Runtime-Parity-Bridge.
@@ -87,7 +144,7 @@ Es ist so aufgebaut, dass es:
 6. den Core als einzige fachliche Gesamtwahrheit erhält,
 7. keine Runtime-, Order- oder Live-Authority aktiviert.
 
-**Bindend weiterhin:** Operator-Absicht (§1), Safety-Grenzen (§2), kanonische Architektur (§4), Single-Truth-Regel, Strategy-Signal-Authoritätsgrenzen, und die Fail-Closed-Regeln für Slice 2. **Historisch / superseded als aktueller Ist:** Discovery-Baseline-HEAD `6e8c5889…`, Multiple-Builder-Discovery-Befund, §8.1 Builder-Defekt als aktueller Defekt, §8.3 Builder nur als Implementierungsziel, §24 Slice-1-Readiness-Auftrag, §25 Slice-1-Implementation-Template als noch auszuführen.
+**Bindend weiterhin:** Operator-Absicht (§1), Safety-Grenzen (§2), kanonische Architektur (§4), Single-Truth-Regel, Strategy-Signal-Authoritätsgrenzen, Fail-Closed-Regeln für Slice 2, und die PR-#5229-Fortsetzungsregel (§0.3): Decision **C**, kein autorisierter Consumer, `NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE`, kein Read-Only-Chaining ohne neue Unsicherheit. **Historisch / superseded als aktueller Ist:** Discovery-Baseline-HEAD `6e8c5889…`, Multiple-Builder-Discovery-Befund, §8.1 Builder-Defekt als aktueller Defekt, §8.3 Builder nur als Implementierungsziel, §24 Slice-1-Readiness-Auftrag, §25 Slice-1-Implementation-Template als noch auszuführen, sowie der frühere automatische Read-Only-Consumer-Design-Gate vor Slice 2.
 
 ---
 
@@ -629,43 +686,42 @@ Aktuelle Consumer-Lage:
 | Entry/Exit/Reversal Policy | Boolean Policy Signals | Kein Consumer des Strategy-Binding-Contracts |
 | Composition / Survival / State Switch | kanonische Vorstufen | Kein Strategy-Signalwert-Input |
 
-Daraus folgt verbindlich:
+Daraus folgt verbindlich (historischer Readiness-Befund; durch PR #5229 Decision **C** ratifiziert abgeschlossen):
 
 ```text
 SLICE_1_MAY_PROCEED_WITHOUT_STRATEGY_VALUE_BINDING=true
 SLICE_1_MUST_NOT_ADD_DORMANT_STRATEGY_FIELDS=true
 SLICE_2_IMPLEMENTATION_READY=false
-SLICE_2_REQUIRES_PRIOR_READ_ONLY_CONSUMER_DESIGN=true
+SLICE_2_IMPLEMENTATION_AUTHORIZED=false
 STRATEGY_PROVENANCE_ONLY_WIRING_FORBIDDEN=true
 RAW_STRATEGY_SIGNAL_TO_POSITION_MAPPING_FORBIDDEN=true
+ARCHITECTURE_AUTHORIZATION_DECISION=C
+AUTHORIZED_CANONICAL_CONSUMER_STAGE=none
+NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
+READ_ONLY_CHAINING_REQUIRED=false
 ```
 
-Slice 1 bleibt eine reine Konsolidierung der Replay-Input-Construction-Authority. Er darf weder neue Strategy-Felder noch einen neuen Strategy-Consumer einführen.
+Slice 1 bleibt eine reine Konsolidierung der Replay-Input-Construction-Authority und ist abgeschlossen (`SLICE_1_COMPLETE=true`, `SLICE_1_REOPENED=false`). Er darf weder neue Strategy-Felder noch einen neuen Strategy-Consumer einführen und darf nicht erneut geöffnet werden.
 
-Vor Slice 2 ist ein separater bounded Read-Only-Scope auszuführen:
-
-```text
-AUSFÜHRUNGSART=READ_ONLY_STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_BINDING_V1
-```
-
-Dieser Scope muss reuse-first klären:
-
-```text
-- welche bestehende kanonische Stage semantisch geeignet ist,
-- ob eine bestehende Stage erweitert werden kann, ohne Parallel-Semantik zu erzeugen,
-- wie Signalwert, Identity, Version, Provenance und Digest gebunden werden,
-- wie CMC-, Epoch- und Instrument-Konsistenz durchgesetzt werden,
-- wie ein echter fachlicher Effekt nachgewiesen wird,
-- wie rohe ±1-Signale von Position-, Exit-, Reversal-, Sizing- und Order-Authority getrennt bleiben.
-```
-
-Falls kein bestehender kanonischer Consumer reuse-first erweiterbar ist:
+**Superseded:** Der frühere Auftrag, vor Slice 2 automatisch
+`READ_ONLY_STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_BINDING_V1` erneut
+auszuführen bzw. einen weiteren Consumer-Design-Report zu starten, ist
+**aufgehoben**. PR #5229 hat Decision **C** ratifiziert — kein autorisierter
+kanonischer Consumer, keine Provenance-only-Verdrahtung, keine
+Direct-Signal-Authority, keine neue parallele Decision Stage, kein neuer
+Total Decision Owner. Slice 2 bleibt fail-closed blockiert. Ein neuer
+technischer Implementierungsscope entsteht erst nach einer **neuen
+expliziten Operator-Architekturentscheidung**. Ohne neue Unsicherheit darf
+kein weiterer Read-Only-Report verkettet werden.
 
 ```text
-STATUS=FAIL_CLOSED
+STATUS=RATIFIED_NEGATIVE_CLOSEOUT
 SLICE_2_IMPLEMENTATION_BLOCKED=true
+SLICE_2_STATUS=BLOCKED_BY_ARCHITECTURE_DECISION_C
 NEW_PARALLEL_DECISION_STAGE_ALLOWED=false
-SEPARATE_ARCHITECTURE_RATIFICATION_REQUIRED=true
+SEPARATE_ARCHITECTURE_AUTHORIZATION_EXECUTED=true
+SEPARATE_FUTURE_ARCHITECTURE_AUTHORIZATION_REQUIRED=false
+NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
 ```
 
 # 10. Canonical Market Context Binding
@@ -974,9 +1030,13 @@ CORE_DECISION_SEMANTICS_CHANGED=false
 
 ## Slice 2 — Strategy Signal to Canonical Replay Input Binding
 
-> **SLICE_2_IMPLEMENTATION_BLOCKED=true.** Architecture Ratification Closeout Selection **D**:
-> `NO_SAFE_EXISTING_CANONICAL_CONSUMER`. Kein automatischer Implementierungsscope.
-> Separate zukünftige Architekturautorisierung erforderlich. Mission nicht abgeschlossen.
+> **SLICE_2_IMPLEMENTATION_BLOCKED=true.** Architecture Ratification Closeout
+> Selection **D** (`NO_SAFE_EXISTING_CANONICAL_CONSUMER`) bleibt der negative
+> Baseline-Befund. PR #5229 ratifizierte zusätzlich
+> `ARCHITECTURE_AUTHORIZATION_DECISION=C` (`NO_SAFE_ARCHITECTURE_AUTHORIZABLE`).
+> `AUTHORIZED_CANONICAL_CONSUMER_STAGE=none`. Kein automatischer
+> Implementierungsscope. `SLICE_2_IMPLEMENTATION_AUTHORIZED=false`.
+> `NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE`. Mission nicht abgeschlossen.
 
 ### Ziel
 
@@ -988,6 +1048,10 @@ CORE_DECISION_SEMANTICS_CHANGED=false
 - engine signal source is canonical replay series
 ```
 
+> **Hinweis:** Das Zielbild bleibt architektonisch dokumentiert, ist aber
+> **nicht** zur automatischen Umsetzung freigegeben. Keine Slice-2-
+> Implementierung ohne neue explizite Operator-Architekturentscheidung.
+
 ### Erwartete Dateien
 
 ```text
@@ -997,21 +1061,37 @@ src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py only for nor
 focused tests
 ```
 
-### Vorbedingung
+### Vorbedingung (fail-closed nach PR #5229)
 
-Slice 2 darf erst nach erfolgreichem separatem Read-Only-Consumer-Design beginnen:
+Slice 2 ist **nicht** autorisiert und darf nicht automatisch beginnen.
+Der frühere Gate „separates Read-Only-Consumer-Design → dann Slice 2“ ist
+durch Decision **C** supersediert.
 
 ```text
-READ_ONLY_STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_BINDING_V1=PASS
-EXISTING_OR_REUSE_FIRST_EXTENDABLE_CANONICAL_CONSUMER_RESOLVED=true
-NO_ARTIFICIAL_CONSUMER_REQUIRED=true
+ARCHITECTURE_AUTHORIZATION_DECISION=C
+AUTHORIZED_CANONICAL_CONSUMER_STAGE=none
+AUTHORIZED_CONSUMER_OWNER_FILE=none
+AUTHORIZED_CONSUMER_OWNER_SYMBOL=none
+SLICE_2_IMPLEMENTATION_AUTHORIZED=false
+SLICE_2_STATUS=BLOCKED_BY_ARCHITECTURE_DECISION_C
+NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
+READ_ONLY_CHAINING_REQUIRED=false
+STRATEGY_VALUE_SEMANTICS_RESOLVED=false
+CMC_CONSISTENCY_BINDING_RESOLVED=false
+FAIL_CLOSED_RULES_RESOLVED=false
+REAL_CANONICAL_EFFECT_PROVEN=false
+RAW_SIGNAL_DIRECT_AUTHORITY=false
+PROVENANCE_ONLY_BINDING=false
+NEW_PARALLEL_DECISION_STAGE=false
+NEW_TOTAL_DECISION_OWNER=false
 ```
 
-Der aktuelle bestätigte Stand ist:
+Der bestätigte Stand bleibt:
 
 ```text
 EXISTING_CANONICAL_CONSUMER_IDENTIFIED_FOR_STRATEGY_SIGNAL_VALUES=false
 SLICE_2_IMPLEMENTATION_READY=false
+SLICE_2_IMPLEMENTATION_BLOCKED=true
 ```
 
 ### Acceptance
@@ -1481,14 +1561,19 @@ Bestätigte Wahrheiten:
 - BacktestEngine darf nur Fill-/Execution-Simulator sein.
 - Runtime bleibt BOUND_NOT_ACTIVATED.
 - Keine Economic Evaluation, keine Runtime-Aktivierung, keine Orders.
-- Der Readiness-Report hat bestätigt, dass aktuell kein bestehender kanonischer Consumer für die Strategy-Signalwerte existiert.
-- Slice 1 darf deshalb nur den Replay-Input-Builder konsolidieren.
-- Vor Slice 2 ist der separate Read-Only-Scope STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_BINDING_V1 Pflicht.
+- Der Readiness-Report hat bestätigt, dass kein bestehender kanonischer Consumer für die Strategy-Signalwerte existiert.
+- Slice 1 hat den Replay-Input-Builder konsolidiert und ist abgeschlossen (`SLICE_1_COMPLETE=true`, `SLICE_1_REOPENED=false`).
+- PR #5229 hat `ARCHITECTURE_AUTHORIZATION_DECISION=C` ratifiziert: kein autorisierter Consumer (`AUTHORIZED_CANONICAL_CONSUMER_STAGE=none`).
+- Slice 2 bleibt fail-closed blockiert (`SLICE_2_IMPLEMENTATION_AUTHORIZED=false`, `SLICE_2_STATUS=BLOCKED_BY_ARCHITECTURE_DECISION_C`).
+- Keine Provenance-only-Verdrahtung, keine Direct-Signal-Authority, keine neue parallele Decision Stage, kein neuer Total Decision Owner.
+- `NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE`.
+- Ohne neue Unsicherheit darf kein weiterer Read-Only-Report verkettet werden (`READ_ONLY_CHAINING_REQUIRED=false`).
+- Ein neuer technischer Implementierungsscope entsteht erst nach einer neuen expliziten Operator-Architekturentscheidung.
 
-Beginne nicht mit neuer Discovery, sofern der aktuelle Repo-Stand die
-manifestierten Owner nicht widerlegt. Führe zuerst einen read-only
-Implementation-Readiness-Preflight gegen den aktuellen HEAD aus und
-vergleiche ihn mit diesem Runbook.
+Beginne nicht mit neuer Discovery und starte keinen erneuten
+Consumer-Design- oder Read-Only-Chain-Report, sofern keine neue
+Unsicherheit oder keine neue explizite Operator-Architekturentscheidung
+vorliegt. Slice 1 nicht erneut öffnen. Slice 2 nicht implementieren.
 ```
 
 ## 23.2 Fortsetzungsregel
@@ -1496,6 +1581,32 @@ vergleiche ihn mit diesem Runbook.
 Ein neuer Chat darf nicht wieder bei hypothetischen Klassen wie `StrategySignalV1` oder `CanonicalDecisionRequestV1` beginnen.
 
 Er muss die realen Repo-Symbole verwenden.
+
+**Nach PR #5229 gilt zusätzlich verbindlich:**
+
+```text
+PR5229_RATIFICATION_STATUS=COMPLETE
+ARCHITECTURE_AUTHORIZATION_DECISION=C
+AUTHORIZED_CANONICAL_CONSUMER_STAGE=none
+SLICE_1_REOPENED=false
+SLICE_2_IMPLEMENTATION_AUTHORIZED=false
+SLICE_2_STATUS=BLOCKED_BY_ARCHITECTURE_DECISION_C
+NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE
+READ_ONLY_CHAINING_REQUIRED=false
+RAW_SIGNAL_DIRECT_AUTHORITY=false
+PROVENANCE_ONLY_BINDING=false
+NEW_PARALLEL_DECISION_STAGE=false
+NEW_TOTAL_DECISION_OWNER=false
+CORE_CODE_EFFECT=NONE
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+ORDER_EFFECT=NONE
+```
+
+Verboten als automatische Fortsetzung: erneuter Consumer-Design-Report,
+erneuter Read-Only-Scope `STRATEGY_SIGNAL_VALUE_CANONICAL_CONSUMER_BINDING_V1`,
+Slice-2-Implementierung, Übergang zur Mutation ohne neue
+Operator-Architekturentscheidung.
 
 ---
 
