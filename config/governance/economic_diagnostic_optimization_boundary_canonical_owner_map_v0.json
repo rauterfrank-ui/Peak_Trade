@@ -451,7 +451,11 @@
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_actual_execution_owner_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_dataset_digest_reconciliation_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_reevaluation_baseline_execution_data_unavailable_repair_v0.py",
+        "tests/research/test_*offline_economic_evaluation_baseline_execution_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",
+        "scripts/ops/run_*offline_economic_evaluation_execution_v0.py",
+        "scripts/ops/materialize_*offline_economic_evaluation_baseline_execution_implementation_v0.py",
+        "scripts/ops/materialize_*offline_economic_evaluation_execution_*_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_authorization_ratification_repair_v0.py",
         "tests/research/test_*offline_economic_evaluation_full_runner_v0.py"
       ],
