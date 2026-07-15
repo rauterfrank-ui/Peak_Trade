@@ -1,0 +1,119 @@
+{
+  "backtest": {
+    "cost_model_version": "backtest_cost_v0",
+    "economic_research_execution_cost": {
+      "conservative_half_spread_bps": 5.0,
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "initial_cash": 10000.0,
+    "parameter_sensitivity": {
+      "bind": true,
+      "grid_version": "v1",
+      "parameter_search_forbidden": true,
+      "policy_version": "parameter_sensitivity_v1",
+      "primary_binding_only": true
+    },
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "binding_digest": "366f7aeb21d781a2531d477ef32943c04d5edb262b7be9e540bbfcfc2528985f",
+  "config_schema_version": "momentum_1h_v2_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "economic_evaluation_v1": {
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "engine_signal_source": "mv2_decision_replay_series",
+    "monte_carlo": {
+      "bind": true,
+      "policy_version": "monte_carlo_v1",
+      "runs": 64,
+      "seed": 42
+    },
+    "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
+    "strategy_id": "momentum_1h",
+    "strategy_params": {
+      "entry_threshold": 0.02,
+      "exit_threshold": -0.01,
+      "lookback_period": 20
+    },
+    "strategy_version": "v2",
+    "stress": {
+      "bind": true,
+      "policy_version": "stress_class_suite_v1"
+    },
+    "walk_forward": {
+      "bind": true,
+      "policy_version": "walk_forward_v1",
+      "step_bars": 1440,
+      "test_bars": 1440,
+      "train_bars": 4320
+    }
+  },
+  "mv2_research_backtest_mandatory_boundary_state_file_binding_v0": {
+    "canonical_order_intent": {
+      "expected_state_file_digest_ref": "3fc5a99ca38101b3017b00260b2bdbbd7a0fb96e7f2c600333e40876c98e06b5",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/canonical_order_intent.json"
+    },
+    "capital_risk_sizing": {
+      "expected_state_file_digest_ref": "82a8b8ae2f38a90c93915c97c912243b3fca64b68e1e1490e062049cdff728a7",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/capital_risk_sizing.json"
+    },
+    "killswitch": {
+      "expected_state_file_digest_ref": "e8acdea6f07b3e5e232aef82ad9e6ce0e2dbf1bf09f7c1395a13e5cb176f9aeb",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/killswitch.json"
+    },
+    "reconciliation": {
+      "expected_state_file_digest_ref": "3475daedda9ec7d490f395972fd82356ac81288379fa708b43fc0a6c4870dcaf",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/reconciliation.json"
+    },
+    "safety_kernel": {
+      "expected_state_file_digest_ref": "21e11676f47a579032cfb594cc003271483e342f6edd49dd5e573c06da7bd30b",
+      "state_file_path": "config/research/mv2_backtest_mandatory_boundary_state_files_v0/safety_kernel.json"
+    },
+    "schema_version": "mv2_research_backtest_mandatory_boundary_state_file_binding_v0"
+  },
+  "offline_only": true,
+  "sparse_signal_evaluation_binding_v0": {
+    "adapter_kind": "PANEL_SEQUENTIAL_SIGNAL_DENSITY_RESEARCH_ADAPTER_v0",
+    "candidate_binding_ref": "config/research/momentum_1h_v2_versioned_research_binding_v0.json",
+    "data_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
+    "dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+    "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+    "parameter_binding": {
+      "binding_class": "SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0",
+      "entry_threshold": 0.02,
+      "exit_threshold": -0.01,
+      "lookback_period": 20,
+      "parameter_optimization_forbidden": true,
+      "parameter_rescue_forbidden": true,
+      "parameter_schema_version": "step31f_momentum_1h_v1_economic_evaluation_admissibility_v1",
+      "threshold_lowering_forbidden": true,
+      "unchanged_from_terminal_class_d_v1": true
+    },
+    "period_binding": {
+      "coverage_period_end_utc": "2024-09-01T00:00:00Z",
+      "coverage_period_start_utc": "2024-05-01T00:00:00Z",
+      "embargo_duration": "PT2H",
+      "period_binding_id": "extended_chronological_sparse_signal_research_v0",
+      "period_binding_ref": "extended_chronological_sparse_signal_research_v0:v0",
+      "period_binding_version": "v0",
+      "period_digest": "96b5b8c7759511e810e72e0ac2623c4b21124520e625364f75081c59f4066f03",
+      "purge_duration": "PT2H",
+      "sparse_signal_research_binding": true,
+      "split_policy_id": "extended_chronological_sparse_signal_research_v0",
+      "split_policy_version": "v0"
+    },
+    "rotation_policy": "deterministic_instrument_id_asc"
+  },
+  "strategy_id": "momentum_1h",
+  "strategy_version": "v2"
+}
