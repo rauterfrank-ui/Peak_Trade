@@ -7984,7 +7984,7 @@ Docs-only governance completion reconciliation binding PR #5185–#5187 linear d
 
 #### CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_TERMINAL_INSUFFICIENT_SAMPLE_OPERATOR_RATIFICATION_AND_LEAD_LAG_SCOPE_RATIFICATION_V0
 
-Operator-ratifizierter Slice nach kanonischer OI-ZScore-Offline-Evaluation (`INSUFFICIENT_TRADE_SAMPLE`, trade_count=1). Registriert das unveränderte OI-ZScore-Binding als terminal insufficient sample, blockiert Retry, und ratifiziert `cross_sectional_futures_lead_lag_information_diffusion/v0` als materiell distincten Nachfolge-Research-Scope. Keine Economic Evaluation in diesem Slice.
+Operator-ratifizierter Slice nach kanonischer OI-ZScore-Offline-Evaluation (`INSUFFICIENT_TRADE_SAMPLE`, trade_count=1). Registriert das unveränderte OI-ZScore-Binding als terminal insufficient sample, blockiert Retry, und ratifiziert `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` als materiell distincten Nachfolge-Research-Scope. Keine Economic Evaluation in diesem Slice.
 
 | Feld | Wert |
 |---|---|

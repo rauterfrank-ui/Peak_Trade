@@ -9,7 +9,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Registriert `cross_sectional_open_interest_zscore_reversion/v0` als terminal für das unveränderte Binding nach `INSUFFICIENT_TRADE_SAMPLE` und ratifiziert `cross_sectional_futures_lead_lag_information_diffusion/v0` als materiell distincten Nachfolge-Research-Scope. Keine Economic Evaluation, keine Runtime, keine Promotion.
+> **Non-authorizing:** Registriert `cross_sectional_open_interest_zscore_reversion&#47;v0` als terminal für das unveränderte Binding nach `INSUFFICIENT_TRADE_SAMPLE` und ratifiziert `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` als materiell distincten Nachfolge-Research-Scope. Keine Economic Evaluation, keine Runtime, keine Promotion.
 
 ## A. Verdict
 
@@ -18,12 +18,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `VERDICT` | `PASS` |
 | `OPERATOR_DECISION` | `NEW_VERSIONED_RESEARCH_SCOPE` |
 | `GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
-| `TERMINAL_SCOPE` | `cross_sectional_open_interest_zscore_reversion/v0` |
+| `TERMINAL_SCOPE` | `cross_sectional_open_interest_zscore_reversion&#47;v0` |
 | `TERMINAL_VERDICT` | `FAIL_ECONOMIC_VALIDITY_OFFLINE_INSUFFICIENT_TRADE_SAMPLE` |
 | `TERMINAL_FAILURE_CLASS` | `INSUFFICIENT_TRADE_SAMPLE` |
 | `TRADE_COUNT` | `1` |
 | `POLICY_MINIMUM_TRADE_COUNT` | `50` |
-| `SELECTED_DISTINCT_SCOPE` | `cross_sectional_futures_lead_lag_information_diffusion/v0` |
+| `SELECTED_DISTINCT_SCOPE` | `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` |
 | `MATERIAL_DIFFERENCE_PROVEN` | `true` |
 | `UNCHANGED_RETRY_BLOCKED` | `true` |
 | `ECONOMIC_EVALUATION_EXECUTED_IN_THIS_SLICE` | `false` |
