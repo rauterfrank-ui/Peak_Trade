@@ -19,6 +19,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline
     EXECUTION_GO_TOKEN,
     IMPLEMENTATION_GO_TOKEN,
     INFRASTRUCTURE_GO_TOKEN,
+    REEVALUATION_EXECUTION_GO_TOKEN,
     RATIFIED_BINDING_DIGEST,
     RATIFIED_DATASET_DIGEST,
     RATIFIED_UNIVERSE_DIGEST,
@@ -394,7 +395,7 @@ class TestMaterializationRoundtrip:
         contract = materialize_execution_contract_v0()
         assert contract["economic_evaluation_executed"] is False
         assert contract["binding_digest"] == RATIFIED_BINDING_DIGEST
-        assert contract["entry_point_status"] == "EXECUTION_WIRING_REPAIR_V0"
+        assert contract["entry_point_status"] == "REEVALUATION_EXECUTION_WIRING_V0"
 
 
 class TestOpsConfigAndGovernanceArtifacts:
@@ -415,7 +416,7 @@ class TestOpsConfigAndGovernanceArtifacts:
     def test_runner_decision_exports(self) -> None:
         decision = build_runner_decision()
         assert decision["economic_evaluation_executed"] is False
-        assert decision["next_operator_go"] == EXECUTION_GO_TOKEN
+        assert decision["next_operator_go"] == REEVALUATION_EXECUTION_GO_TOKEN
 
 
 class TestImportBoundary:
