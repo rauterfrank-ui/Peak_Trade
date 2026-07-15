@@ -2,6 +2,7 @@
   "artifact_kind": "cross_sectional_futures_lead_lag_information_diffusion_v0_versioned_hypothesis_binding",
   "artifact_version": "v0",
   "authority_effect": "NONE",
+  "baseline_verdict": "FAIL",
   "binding": {
     "binding_status": {
       "cost_model_binding_status": "BOUND",
@@ -229,8 +230,12 @@
       "weighting_policy": "equal_weight_single_slot_v0"
     }
   },
+  "binding_changed": false,
   "binding_classification": "NEW_DISTINCT_HYPOTHESIS_LAG_DIFFUSION_SCORE_FAMILY",
   "binding_digest": "9e9ab5676d8859d819dad1aed1eaa78163529682492fcc333ead001841e414c1",
+  "binding_digest_at_terminal_registration": "9e9ab5676d8859d819dad1aed1eaa78163529682492fcc333ead001841e414c1",
+  "canonical_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
+  "canonical_evaluation_timestamp": "20260715T030542Z",
   "config_digest": "f939aefbaf2a88bfc77b6c47eac86e8eeabcbfa0f0ca9ef7a804ecdf87464089",
   "cost_execution_binding": {
     "binding_version": "v0",
@@ -329,6 +334,10 @@
     ],
     "schema_version": "transitive_digest_graph.v0"
   },
+  "directional_candidate_count": 30,
+  "directional_confirmed_count": 0,
+  "distinct_scope_required": true,
+  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5197_merge_closeout_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_authorization_ratification_repair_v0_20260715T030215Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_zscore_reversion_v0_terminal_insufficient_sample_operator_ratification_and_lead_lag_scope_ratification_v0_20260715T021447Z (MANIFEST_VERIFY_RC=0)",
   "economic_and_robustness_contract": {
     "binding_version": "v0",
     "economic_policy_binding": {
@@ -355,12 +364,20 @@
       "policy_version": "walk_forward_v1"
     }
   },
-  "economic_evaluation_executed": false,
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": true,
+  "economic_evaluation_status": "COMPLETE_FAIL_INSUFFICIENT_SAMPLE",
+  "economic_validity_offline_gate_pass": false,
+  "economic_viability_evidence_manifest_digest": "19b7bd182e27e143816c084555d29aca68b960e5807596a33bad4daaae34b4ce",
+  "economic_viability_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z (MANIFEST_VERIFY_RC=0)",
+  "evaluation_authorized": false,
+  "historical_economic_result": "FAIL",
   "hypothesis_class": "CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION",
   "hypothesis_id": "CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_NON_BITCOIN_PERPETUALS_V0",
   "hypothesis_statement": "Cross-sectional futures lead-lag information diffusion hypothesis: rank instruments by panel-median-benchmark lagged return diffusion score on finalized PT1H OHLCV; long laggards and short leaders via symmetric single-slot top1 rotation.",
   "hypothesis_version": "v0",
   "implementation_digest": "612b431acc3833ed364b66de58b06ce15268edb30e1c5d82db50258cedd6c949",
+  "implementation_digest_at_terminal_registration": "612b431acc3833ed364b66de58b06ce15268edb30e1c5d82db50258cedd6c949",
   "material_difference_from_prior": {
     "material_difference_proven": true,
     "mechanism_delta": "contemporaneous_volatility_normalized_return_rank vs lagged_panel_median_diffusion_score",
@@ -377,6 +394,9 @@
     "unchanged_retry_blocked": true
   },
   "material_difference_proven": true,
+  "monte_carlo_status": "EXECUTED_ZERO_TRADES",
+  "negative_evidence_preserved": true,
+  "net_return": 0.0,
   "orchestrator_owner": "cross_sectional_single_slot_research_orchestrator_v0",
   "order_effect": "NONE",
   "panel_dataset_binding": {
@@ -471,6 +491,11 @@
     "universe_policy_version": "v1",
     "venue": "OKX"
   },
+  "policy_or_threshold_changed": false,
+  "policy_rescue_allowed": false,
+  "primary_cause_class": "CANONICAL_POLICY_BLOCKED",
+  "primary_failure_class": "CANONICAL_POLICY_BLOCKED",
+  "promotion_eligible": false,
   "ranking_policy_binding": {
     "binding_version": "v0",
     "deterministic_tie_break": "score_desc_then_instrument_id_asc",
@@ -490,8 +515,10 @@
     "stale_instrument_policy": "exclude_when_staleness_exceeds_max_bar_staleness_bars",
     "tie_break_score_source": "unrounded_internal_score"
   },
+  "re_evaluation_allowed": false,
   "research_hypothesis_id": "CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_NON_BITCOIN_PERPETUALS_V0",
   "research_scope": "cross_sectional_futures_lead_lag_information_diffusion/v0",
+  "retry_unchanged_binding_allowed": false,
   "runner_decision": {
     "economic_evaluation_executed": false,
     "evaluation_executed": false,
@@ -502,10 +529,16 @@
     "schema_version": "runner_decision.v0"
   },
   "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
   "same_semantic_binding": false,
+  "sample_sufficiency_status": "INSUFFICIENT",
   "schema_version": "cross_sectional_futures_lead_lag_information_diffusion_v0_versioned_hypothesis_binding.v0",
   "score_definition": "r_i = ln(close_i[t-lag] / close_i[t-lag-L]); r_med = median({r_j : j eligible at epoch}); score_i = r_med - r_i; lag = signal_lag_bars",
   "score_family_policy": "panel_median_benchmark_lagged_return_diffusion_v0",
+  "secondary_cause_class": "INSUFFICIENT_DATA",
+  "secondary_failure_class": "INSUFFICIENT_DATA",
+  "selected_distinct_scope": "cross_sectional_futures_pairwise_lead_lag_spillover/v1",
+  "selected_distinct_scope_ratified": true,
   "selection_hold_exit_rotation_binding": {
     "binding_version": "v0",
     "cooldown_policy": "no_cooldown",
@@ -525,6 +558,7 @@
   "strategy_family": "cross_sectional_panel_lag_diffusion",
   "strategy_id": "cross_sectional_futures_lead_lag_information_diffusion",
   "strategy_version": "v0",
+  "stress_status": "EXECUTED_ZERO_TRADES",
   "system_constraints": {
     "bitcoin_direction_allowed": false,
     "bitcoin_present": false,
@@ -537,5 +571,14 @@
     "synthetic_spot_excluded": true,
     "unchanged_retry_blocked": true
   },
-  "universe_digest": "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1"
+  "terminal_failure_class": "INSUFFICIENT_TRADE_SAMPLE",
+  "terminal_insufficient_sample_evidence_for_unchanged_binding": true,
+  "terminal_negative_evidence_for_unchanged_binding": false,
+  "terminal_status": "TERMINAL_INSUFFICIENT_SAMPLE",
+  "terminal_verdict": "FAIL_ECONOMIC_VALIDITY_OFFLINE_INSUFFICIENT_TRADE_SAMPLE",
+  "trade_count": 0,
+  "trades_opened_count": 0,
+  "unchanged_retry_blocked": true,
+  "universe_digest": "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1",
+  "walk_forward_status": "EXECUTED_ZERO_TRADES"
 }
