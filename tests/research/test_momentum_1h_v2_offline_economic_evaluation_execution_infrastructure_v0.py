@@ -106,7 +106,7 @@ class TestGoTokenEnforcement:
         ok, branch = validate_entry_point_go_token_v0(INFRASTRUCTURE_GO_TOKEN)
         assert ok and branch == "INFRASTRUCTURE_V0"
         ok, branch = validate_entry_point_go_token_v0(EXECUTION_GO_TOKEN)
-        assert ok and branch == "EXECUTION_V0"
+        assert ok and branch == "EXECUTION_V1"
 
 
 class TestOfflineBoundary:

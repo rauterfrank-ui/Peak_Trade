@@ -470,7 +470,11 @@
         "scripts/ops/materialize_*offline_economic_evaluation_baseline_execution_implementation_v0.py",
         "scripts/ops/materialize_*offline_economic_evaluation_execution_*_implementation_v0.py",
         "tests/research/test_*offline_economic_evaluation_execution_authorization_ratification_repair_v0.py",
-        "tests/research/test_*offline_economic_evaluation_full_runner_v0.py"
+        "tests/research/test_*execution_v1_token_binding_repair_v0.py",
+        "tests/research/test_*offline_economic_evaluation_full_runner_v0.py",
+        "src/research/*offline_economic_evaluation_execution_authorization_supersession_v*.py",
+        "scripts/research/materialize_*offline_economic_evaluation_execution_authorization_supersession_v*.py",
+        "config/research/*offline_economic_evaluation_execution_authorization_supersession_v*.json"
       ],
       "note": "Offline economic evaluation execution infrastructure, preexecution guards, invocation-bound authorization repair, and contract tests without trading semantic mutation or runtime authority."
     }

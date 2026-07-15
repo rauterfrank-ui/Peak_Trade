@@ -46,6 +46,17 @@ from src.research.momentum_1h_v2_offline_economic_evaluation_authorization_ratif
     materialize_offline_economic_evaluation_authorization_ratification_v0,
     validate_offline_economic_evaluation_authorization_ratification_v0,
 )
+from src.research.momentum_1h_v2_offline_economic_evaluation_execution_authorization_supersession_v1 import (
+    EXECUTION_GO_TOKEN,
+    REASON_PRIOR_PRODUCTIVE_V1_EXECUTION_EXISTS,
+    REASON_SUPERSEDED_EXECUTION_GO_TOKEN_REJECTED,
+    REASON_V0_REUSE_FORBIDDEN,
+    SUPERSEDED_EXECUTION_GO_TOKEN,
+    SupersessionValidationVerdict,
+    load_execution_authorization_supersession_v1,
+    validate_execution_authorization_supersession_v1,
+    verify_execution_go_token_replay_guard_v1,
+)
 from src.research.momentum_1h_v2_versioned_research_binding_v0 import (
     CONFIG_REL_PATH,
     HYPOTHESIS_ID,
@@ -72,7 +83,6 @@ INFRASTRUCTURE_GO_TOKEN = (
 DISPATCH_IMPLEMENTATION_GO_TOKEN = (
     "GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_DISPATCH_IMPLEMENTATION_V0"
 )
-EXECUTION_GO_TOKEN = "GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 BASELINE_EXECUTION_GO_TOKEN = "GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_BASELINE_EXECUTION_V0"
 BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN = (
     "GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_V0"
@@ -105,7 +115,7 @@ ENTRY_POINT_STATUS = "EXECUTION_DISPATCH_WIRING_V0"
 BASELINE_ENTRY_POINT_STATUS = "BASELINE_EXECUTION_ENTRY_POINT_V0"
 
 _BRANCH_INFRASTRUCTURE_V0 = "INFRASTRUCTURE_V0"
-_BRANCH_EXECUTION_V0 = "EXECUTION_V0"
+_BRANCH_EXECUTION_V1 = "EXECUTION_V1"
 _BRANCH_DISPATCH_IMPLEMENTATION_V0 = "DISPATCH_IMPLEMENTATION_V0"
 _BRANCH_BASELINE_EXECUTION_V0 = "BASELINE_EXECUTION_V0"
 _BRANCH_BASELINE_EXECUTION_IMPLEMENTATION_V0 = "BASELINE_EXECUTION_IMPLEMENTATION_V0"
@@ -122,7 +132,7 @@ ALLOWED_ORCHESTRATED_BASELINE_GO_TOKENS: frozenset[str] = (
 )
 ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
     INFRASTRUCTURE_GO_TOKEN: _BRANCH_INFRASTRUCTURE_V0,
-    EXECUTION_GO_TOKEN: _BRANCH_EXECUTION_V0,
+    EXECUTION_GO_TOKEN: _BRANCH_EXECUTION_V1,
     DISPATCH_IMPLEMENTATION_GO_TOKEN: _BRANCH_DISPATCH_IMPLEMENTATION_V0,
     BASELINE_EXECUTION_GO_TOKEN: _BRANCH_BASELINE_EXECUTION_V0,
     BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN: _BRANCH_BASELINE_EXECUTION_IMPLEMENTATION_V0,
@@ -133,6 +143,7 @@ REASON_DATASET_DIGEST_MISMATCH = "DATASET_DIGEST_MISMATCH"
 REASON_BINDING_INCOMPLETE = "BINDING_INCOMPLETE"
 REASON_RATIFICATION_INVALID = "RATIFICATION_INVALID"
 REASON_GO_TOKEN_INVALID = "GO_TOKEN_INVALID"
+REASON_GO_TOKEN_MISSING = "GO_TOKEN_MISSING"
 REASON_ECONOMIC_EXECUTION_FORBIDDEN = "ECONOMIC_EXECUTION_FORBIDDEN_IN_INFRASTRUCTURE_SCOPE"
 REASON_OFFLINE_ONLY_VIOLATION = "OFFLINE_ONLY_VIOLATION"
 REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION = (
@@ -142,7 +153,6 @@ REASON_MISSING_OPS_EVALUATION_CONFIG = "MISSING_OPS_EVALUATION_CONFIG"
 REASON_PANEL_STAGING_MISSING = "PANEL_STAGING_MISSING"
 REASON_SOURCE_MANIFEST_VERIFY_FAILED = "SOURCE_MANIFEST_VERIFY_FAILED"
 REASON_ENTRY_POINT_PENDING = "ENTRY_POINT_PENDING"
-REASON_GO_TOKEN_MISSING = "GO_TOKEN_MISSING"
 REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION = (
     "IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION"
 )
@@ -417,6 +427,27 @@ def verify_execution_start_state_v0(
     if entry_point.get("runner_binding_ref") != RUNNER_BINDING_REF:
         reasons.append("RUNNER_BINDING_REF_MISMATCH")
 
+    supersession_path = repo_root / (
+        "config/research/"
+        "momentum_1h_v2_offline_economic_evaluation_execution_authorization_supersession_v1.json"
+    )
+    if not supersession_path.is_file():
+        reasons.append("EXECUTION_AUTHORIZATION_SUPERSESSION_MISSING")
+    else:
+        supersession = load_execution_authorization_supersession_v1(repo_root)
+        supersession_verdict, supersession_reasons = (
+            validate_execution_authorization_supersession_v1(
+                supersession,
+                expected_binding_digest=str(
+                    envelope.get("binding_digest", RATIFIED_BINDING_DIGEST)
+                ),
+            )
+        )
+        if supersession_verdict is not SupersessionValidationVerdict.ACCEPTED_COMPLETE:
+            reasons.extend(supersession_reasons)
+        if supersession.get("next_operator_go") != EXECUTION_GO_TOKEN:
+            reasons.append("EXECUTION_SUPERSESSION_NEXT_OPERATOR_GO_MISMATCH")
+
     return StartStateVerificationResultV0(
         valid=not reasons,
         fail_reasons=tuple(reasons),
@@ -433,6 +464,10 @@ def validate_infrastructure_go_token_v0(go_token: str | None) -> tuple[bool, tup
 
 
 def validate_execution_go_token_v0(go_token: str | None) -> tuple[bool, tuple[str, ...]]:
+    if go_token is None:
+        return False, (REASON_GO_TOKEN_MISSING,)
+    if go_token == SUPERSEDED_EXECUTION_GO_TOKEN:
+        return False, (REASON_SUPERSEDED_EXECUTION_GO_TOKEN_REJECTED, REASON_V0_REUSE_FORBIDDEN)
     if go_token != EXECUTION_GO_TOKEN:
         return False, (REASON_GO_TOKEN_INVALID,)
     return True, ()
@@ -749,6 +784,10 @@ def run_offline_economic_evaluation_execution_dispatch_v0(
     token_ok, token_reasons = validate_evaluation_dispatch_go_token_v0(go_token)
     if not token_ok:
         reasons.extend(token_reasons)
+    else:
+        replay = verify_execution_go_token_replay_guard_v1(go_token=go_token)
+        if not replay.allowed:
+            reasons.extend(replay.reason_codes)
 
     if authorization_ratification.get("offline_only") is not True:
         reasons.append(REASON_OFFLINE_ONLY_VIOLATION)
@@ -846,6 +885,17 @@ def run_full_offline_economic_evaluation_v0(
             blocked=True,
             wiring_verified=False,
             reason_codes=token_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    replay = verify_execution_go_token_replay_guard_v1(go_token=go_token)
+    if not replay.allowed:
+        return FullEvaluationDispatchResultV0(
+            executed=False,
+            blocked=True,
+            wiring_verified=False,
+            reason_codes=replay.reason_codes,
             authority_effect=AUTHORITY_EFFECT,
             runtime_effect=RUNTIME_EFFECT,
         )
@@ -1881,6 +1931,11 @@ __all__ = [
     "REASON_DISPATCH_PRECHECK_PASSED_STOPPED_BEFORE_EVALUATION",
     "REASON_ECONOMIC_EXECUTION_FORBIDDEN",
     "REASON_GO_TOKEN_INVALID",
+    "REASON_GO_TOKEN_MISSING",
+    "REASON_SUPERSEDED_EXECUTION_GO_TOKEN_REJECTED",
+    "REASON_V0_REUSE_FORBIDDEN",
+    "REASON_PRIOR_PRODUCTIVE_V1_EXECUTION_EXISTS",
+    "SUPERSEDED_EXECUTION_GO_TOKEN",
     "REASON_IMPLEMENTATION_GO_DOES_NOT_AUTHORIZE_BASELINE_EXECUTION",
     "ROUNDTRIP_COST_BPS",
     "RUNNER_SCRIPT",
