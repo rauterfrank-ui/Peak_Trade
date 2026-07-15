@@ -146,6 +146,13 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
             ],
             [
+                "src/research/trend_following_v2_offline_economic_evaluation_execution_v0.py",
+                "scripts/ops/run_trend_following_v2_offline_economic_evaluation_execution_v0.py",
+                "tests/research/test_trend_following_v2_offline_economic_evaluation_execution_infrastructure_v0.py",
+                "config/ops/trend_following_v2_economic_evaluation_v1.json",
+                "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+            ],
+            [
                 "src/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0.py",
                 "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_infrastructure_v0.py",
                 "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",

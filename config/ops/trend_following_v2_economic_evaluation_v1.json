@@ -1,0 +1,100 @@
+{
+  "backtest": {
+    "cost_model_version": "backtest_cost_v0",
+    "economic_research_execution_cost": {
+      "conservative_half_spread_bps": 5.0,
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "initial_cash": 10000.0,
+    "parameter_sensitivity": {
+      "bind": true,
+      "grid_version": "v1",
+      "parameter_search_forbidden": true,
+      "policy_version": "parameter_sensitivity_v1",
+      "primary_binding_only": true
+    },
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "binding_digest": "9c624a22506c905261e58c117923ea4c0f570968d54ddf5e91f2c56f88b0d966",
+  "config_schema_version": "trend_following_v2_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "economic_evaluation_v1": {
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "engine_signal_source": "mv2_decision_replay_series",
+    "monte_carlo": {
+      "bind": true,
+      "policy_version": "monte_carlo_v1",
+      "runs": 64,
+      "seed": 42
+    },
+    "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
+    "strategy_id": "trend_following",
+    "strategy_params": {
+      "adx_period": 14,
+      "adx_threshold": 25.0,
+      "exit_threshold": 20.0,
+      "ma_period": 50,
+      "use_ma_filter": true
+    },
+    "strategy_version": "v2",
+    "stress": {
+      "bind": true,
+      "policy_version": "stress_class_suite_v1"
+    },
+    "walk_forward": {
+      "bind": true,
+      "policy_version": "walk_forward_v1",
+      "step_bars": 1440,
+      "test_bars": 1440,
+      "train_bars": 4320
+    }
+  },
+  "offline_only": true,
+  "sparse_signal_evaluation_binding_v0": {
+    "adapter_kind": "PANEL_SEQUENTIAL_SIGNAL_DENSITY_RESEARCH_ADAPTER_v0",
+    "candidate_binding_ref": "config/research/trend_following_v2_versioned_research_binding_v0.json",
+    "data_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
+    "dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+    "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+    "parameter_binding": {
+      "adx_period": 14,
+      "adx_threshold": 25.0,
+      "binding_class": "SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0",
+      "exit_threshold": 20.0,
+      "ma_period": 50,
+      "parameter_optimization_forbidden": true,
+      "parameter_rescue_forbidden": true,
+      "parameter_schema_version": "step31f_trend_following_v1_economic_evaluation_admissibility_v1",
+      "threshold_lowering_forbidden": true,
+      "unchanged_from_terminal_class_d_v1": true,
+      "use_ma_filter": true
+    },
+    "period_binding": {
+      "coverage_period_end_utc": "2024-09-01T00:00:00Z",
+      "coverage_period_start_utc": "2024-05-01T00:00:00Z",
+      "embargo_duration": "PT2H",
+      "period_binding_id": "extended_chronological_sparse_signal_research_v0",
+      "period_binding_ref": "extended_chronological_sparse_signal_research_v0:v0",
+      "period_binding_version": "v0",
+      "period_digest": "96b5b8c7759511e810e72e0ac2623c4b21124520e625364f75081c59f4066f03",
+      "purge_duration": "PT2H",
+      "sparse_signal_research_binding": true,
+      "split_policy_id": "extended_chronological_sparse_signal_research_v0",
+      "split_policy_version": "v0"
+    },
+    "rotation_policy": "deterministic_instrument_id_asc"
+  },
+  "strategy_id": "trend_following",
+  "strategy_version": "v2"
+}
