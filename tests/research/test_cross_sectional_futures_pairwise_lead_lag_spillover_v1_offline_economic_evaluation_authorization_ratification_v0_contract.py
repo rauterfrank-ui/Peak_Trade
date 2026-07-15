@@ -7,17 +7,23 @@ from pathlib import Path
 import pytest
 
 from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification_v0 import (
+    AUTHORIZATION_BINDING_DIGEST,
     AUTHORIZATION_SCOPE,
     AUTHORIZATION_VERSION,
     CONFIG_REL_PATH,
     GO_TOKEN,
     GOVERNANCE_REL_PATH,
+    PREVIOUS_GO_TOKEN,
     RATIFIED_HYPOTHESIS_BINDING_DIGEST,
     RESEARCH_SCOPE,
+    SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+    SUPERSESSION_MODE,
     RatificationMaterializationVerdict,
     RatificationValidationVerdict,
+    authorization_binding_digest_match_v0,
     compute_ranking_contract_digest_v0,
     compute_score_contract_digest_v0,
+    is_authorization_ratification_stale_v0,
     materialize_and_validate_authorization_ratification_v0,
     materialize_offline_economic_evaluation_authorization_ratification_v0,
     materializer_to_binder_roundtrip_v0,
@@ -113,6 +119,11 @@ class TestCanonicalReferenceRequirements:
         assert refs["binding_digest"] == RATIFIED_HYPOTHESIS_BINDING_DIGEST
         assert refs["mutated"] is False
 
+    def test_portfolio_binding_reference_required(self, complete_ratification: dict) -> None:
+        refs = complete_ratification["canonical_references"]["portfolio_binding"]
+        assert refs["authorization_binding_digest"] == AUTHORIZATION_BINDING_DIGEST
+        assert refs["mutated"] is False
+
     def test_score_contract_reference_required(self, complete_ratification: dict) -> None:
         refs = complete_ratification["canonical_references"]["score_and_ranking_contract"]
         assert refs["score_contract_digest"] == compute_score_contract_digest_v0()
@@ -151,10 +162,46 @@ class TestDigestIdentityProtection:
         rejected, reasons = validate_ratification_rejections_v0(
             complete_ratification,
             mutated_field="hypothesis_binding_digest",
-            mutated_value="0" * 64,
+            mutated_value=SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
         )
         assert rejected
         assert "HYPOTHESIS_BINDING_DIGEST_MISMATCH" in reasons
+
+    def test_stale_authorization_binding_digest_rejected(self, complete_ratification: dict) -> None:
+        rejected, reasons = validate_ratification_rejections_v0(
+            complete_ratification,
+            mutated_field="authorization_binding_digest",
+            mutated_value=SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+        )
+        assert rejected
+        assert "AUTHORIZATION_BINDING_DIGEST_MISMATCH" in reasons
+
+    def test_authorization_binding_digest_matches_portfolio_binding(
+        self, complete_ratification: dict
+    ) -> None:
+        binding = materialize_versioned_hypothesis_binding_v0()
+        assert complete_ratification["authorization_binding_digest"] == binding["binding_digest"]
+        assert authorization_binding_digest_match_v0(complete_ratification) is True
+
+    def test_superseded_authorization_binding_preserved(self, complete_ratification: dict) -> None:
+        assert (
+            complete_ratification["superseded_authorization_binding_digest"]
+            == SUPERSEDED_AUTHORIZATION_BINDING_DIGEST
+        )
+        assert complete_ratification["supersession_mode"] == SUPERSESSION_MODE
+
+    def test_prior_stale_authorization_classified(self) -> None:
+        stale = {
+            "authorization_binding_digest": SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+            "hypothesis_binding_digest": SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+        }
+        assert is_authorization_ratification_stale_v0(stale) is True
+        fresh = materialize_offline_economic_evaluation_authorization_ratification_v0()
+        assert is_authorization_ratification_stale_v0(fresh) is False
+
+    def test_previous_go_token_recorded(self, complete_ratification: dict) -> None:
+        assert complete_ratification["previous_operator_go"] == PREVIOUS_GO_TOKEN
+        assert complete_ratification["operator_go"] == GO_TOKEN
 
     def test_stale_dataset_digest_rejected(self, complete_ratification: dict) -> None:
         rejected, reasons = validate_ratification_rejections_v0(

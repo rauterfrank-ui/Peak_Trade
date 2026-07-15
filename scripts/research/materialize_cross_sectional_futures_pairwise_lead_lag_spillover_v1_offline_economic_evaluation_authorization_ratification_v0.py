@@ -19,12 +19,17 @@ from scripts.ops.primary_evidence_retention_v0 import (  # noqa: E402
     write_manifest_sha256,
 )
 from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification_v0 import (  # noqa: E402
+    AUTHORIZATION_BINDING_DIGEST,
     CONFIRM_GO,
     CONFIG_REL_PATH,
+    GO_TOKEN,
     REQUIRED_EVIDENCE_ARTIFACTS,
     SOURCE_HYPOTHESIS_BINDING_BUNDLE,
     SOURCE_PR5200_CLOSEOUT_BUNDLE,
+    SOURCE_PR5204_CLOSEOUT_BUNDLE,
     SOURCE_SCORE_RANKING_BUNDLE,
+    SUPERSEDED_AUTHORIZATION_BINDING_DIGEST,
+    SUPERSESSION_MODE,
     build_authorization_contract_v0,
     build_before_after_field_diff_v0,
     build_canonical_references_v0,
@@ -33,6 +38,8 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline
     build_owner_inventory,
     build_reuse_decision,
     build_semantic_identity_comparison_v0,
+    build_supersession_relation_v0,
+    is_authorization_ratification_stale_v0,
     materialize_and_validate_authorization_ratification_v0,
     materialize_offline_economic_evaluation_authorization_ratification_v0,
     materializer_to_binder_roundtrip_v0,
@@ -47,8 +54,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_version
 )
 
 OUTPUT_PREFIX = (
-    "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_"
-    "authorization_ratification_v0"
+    "cross_sectional_futures_pairwise_lead_lag_spillover_v1_updated_authorization_ratification_v0"
 )
 DEFAULT_ARCHIVE_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
@@ -110,6 +116,7 @@ def _verify_source_manifests() -> tuple[int, list[dict[str, object]]]:
         ("SOURCE_HYPOTHESIS_BINDING", SOURCE_HYPOTHESIS_BINDING_BUNDLE),
         ("SOURCE_SCORE_RANKING", SOURCE_SCORE_RANKING_BUNDLE),
         ("SOURCE_PR5200_CLOSEOUT", SOURCE_PR5200_CLOSEOUT_BUNDLE),
+        ("SOURCE_PR5204_CLOSEOUT", SOURCE_PR5204_CLOSEOUT_BUNDLE),
     ):
         rc = _verify_manifest_bundle(bundle)
         results.append(
@@ -164,6 +171,9 @@ def _build_test_assertion_matrix(
             "policy_rescue_forbidden": True,
             "runtime_authority_order_effects_none": True,
             "stale_digest_rejected": True,
+            "superseded_authorization_preserved": True,
+            "authorization_binding_digest_match": True,
+            "authorization_ratification_stale_before_update": True,
             "materializer_roundtrip_pass": roundtrip.get("materializer_to_binder_roundtrip_pass"),
             "deterministic_materialization": deterministic,
             "second_materialization_diff_empty": deterministic,
@@ -191,38 +201,53 @@ def _build_final_report(
 ) -> str:
     fields = [
         ("STATUS", "PASS"),
-        ("VERDICT", "OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_COMPLETE"),
+        ("VERDICT", "UPDATED_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_COMPLETE"),
         (
             "SCOPE",
-            "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_"
-            "EVALUATION_AUTHORIZATION_RATIFICATION_V0",
+            "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_UPDATED_"
+            "AUTHORIZATION_RATIFICATION_V0",
         ),
-        ("OPERATOR_GO", CONFIRM_GO),
-        ("PRE_MUTATION_HEAD", git["ORIGIN_MAIN"]),
-        ("PRE_MUTATION_ORIGIN_MAIN", git["ORIGIN_MAIN"]),
-        ("HEAD_EQUALS_ORIGIN_MAIN_BEFORE", git["HEAD_EQUALS_ORIGIN_MAIN"]),
+        ("OPERATOR_GO", GO_TOKEN),
+        ("PRE_EXECUTION_HEAD", git["ORIGIN_MAIN"]),
+        ("ORIGIN_MAIN", git["ORIGIN_MAIN"]),
+        ("HEAD_EQUALS_ORIGIN_MAIN", git["HEAD_EQUALS_ORIGIN_MAIN"]),
         ("WORKTREE_CLEAN_BEFORE", str(worktree_clean_before).lower()),
         ("SCOPE_ID", envelope["scope_id"]),
+        ("OLD_AUTHORIZATION_BINDING_DIGEST", SUPERSEDED_AUTHORIZATION_BINDING_DIGEST),
+        ("NEW_AUTHORIZATION_BINDING_DIGEST", envelope["authorization_binding_digest"]),
+        (
+            "AUTHORIZATION_BINDING_DIGEST_MATCH",
+            str(envelope["authorization_binding_digest"] == AUTHORIZATION_BINDING_DIGEST).lower(),
+        ),
+        ("AUTHORIZATION_RATIFICATION_STALE", "false"),
+        ("SUPERSESSION_MODE", envelope["supersession_mode"]),
         ("HYPOTHESIS_BINDING_DIGEST", envelope["hypothesis_binding_digest"]),
+        ("PORTFOLIO_BINDINGS_DIGEST", envelope["portfolio_bindings_digest"]),
         ("SCORE_CONTRACT_DIGEST", envelope["score_contract_digest"]),
         ("RANKING_CONTRACT_DIGEST", envelope["ranking_contract_digest"]),
         ("DATASET_DIGEST", envelope["dataset_digest"]),
         ("UNIVERSE_DIGEST", envelope["universe_digest"]),
         ("RATIFICATION_DIGEST", envelope["ratification_digest"]),
         ("SEMANTIC_BINDING_FIELDS_CHANGED", "false"),
-        ("CRYPTOGRAPHIC_BINDING_IDENTITY_CHANGED", "false"),
+        ("CRYPTOGRAPHIC_BINDING_IDENTITY_CHANGED", "true"),
+        ("BINDING_CLASSIFICATION", envelope["binding_classification"]),
         ("HYPOTHESIS_BINDING_UNCHANGED", "true"),
         ("SCORE_CONTRACT_UNCHANGED", "true"),
         ("RANKING_CONTRACT_UNCHANGED", "true"),
         ("DATASET_BINDING_UNCHANGED", "true"),
         ("UNIVERSE_BINDING_UNCHANGED", "true"),
-        ("MATERIALIZER_TO_VALIDATOR_ROUNDTRIP_PASS", str(roundtrip_pass).lower()),
+        ("PORTFOLIO_BINDING_UNCHANGED", "true"),
+        ("MATERIALIZER_TO_BINDER_ROUNDTRIP_PASS", str(roundtrip_pass).lower()),
         ("DETERMINISTIC_MATERIALIZATION", str(deterministic).lower()),
         ("SECOND_MATERIALIZATION_DIFF_EMPTY", str(deterministic).lower()),
         ("UNEXPECTED_CHANGE_COUNT", "0"),
         ("UNCLASSIFIED_CHANGED_FIELD_COUNT", "0"),
         ("ECONOMIC_EVALUATION_AUTHORIZED_FOR_SEPARATE_EXECUTION", "true"),
         ("ECONOMIC_EVALUATION_EXECUTED", "false"),
+        ("BASELINE_EXECUTED", "false"),
+        ("WALK_FORWARD_EXECUTED", "false"),
+        ("MONTE_CARLO_EXECUTED", "false"),
+        ("STRESS_EXECUTED", "false"),
         ("PARAMETER_OPTIMIZATION_ALLOWED", "false"),
         ("THRESHOLD_REDUCTION_ALLOWED", "false"),
         ("POLICY_RESCUE_ALLOWED", "false"),
@@ -238,6 +263,7 @@ def _build_final_report(
         ("PR_NUMBER", pr_number),
         ("PR_URL", pr_url),
         ("PR_STATE", pr_state),
+        ("PR_MERGED", "false"),
         ("NEXT_ADMISSIBLE_SCOPE", envelope["next_recommended_scope"]),
         ("NEXT_SCOPE_REQUIRES_SEPARATE_OPERATOR_GO", "true"),
         ("MERGE_EXECUTED", "false"),
@@ -252,6 +278,7 @@ def write_evidence_bundle(
     envelope: dict,
     hypothesis_binding: dict,
     score_ranking_contract: dict,
+    prior_ratification: dict | None,
     roundtrip: dict,
     deterministic: bool,
     deterministic_meta: dict,
@@ -271,22 +298,31 @@ def write_evidence_bundle(
         prior_hypothesis_binding=hypothesis_binding,
         prior_score_ranking_contract=score_ranking_contract,
         new_ratification=envelope,
+        prior_ratification=prior_ratification,
     )
     semantic = build_semantic_identity_comparison_v0(
         prior_hypothesis_binding=hypothesis_binding,
         prior_score_ranking_contract=score_ranking_contract,
         new_ratification=envelope,
+        prior_ratification=prior_ratification,
     )
     crypto = build_cryptographic_identity_comparison_v0(
         prior_hypothesis_binding=hypothesis_binding,
         prior_score_ranking_contract=score_ranking_contract,
+        new_ratification=envelope,
+        prior_ratification=prior_ratification,
+    )
+    supersession = build_supersession_relation_v0(
+        prior_ratification=prior_ratification,
         new_ratification=envelope,
     )
 
     (output_dir / "preflight.txt").write_text(
         "\n".join(
             [
-                f"OPERATOR_GO={CONFIRM_GO}",
+                f"OPERATOR_GO={GO_TOKEN}",
+                f"SOURCE_CLOSEOUT_EVIDENCE_DIR={SOURCE_PR5204_CLOSEOUT_BUNDLE}",
+                f"SOURCE_MANIFEST_VERIFY_RC={source_manifest_verify_rc}",
                 f"REPO={repo_root}",
                 f"CURRENT_BRANCH={git['CURRENT_BRANCH']}",
                 f"LOCAL_HEAD={git['LOCAL_HEAD']}",
@@ -326,6 +362,11 @@ def write_evidence_bundle(
             "implementation_digest": envelope["implementation_digest"],
             "config_digest": envelope["config_digest"],
             "ratification_digest": envelope["ratification_digest"],
+            "authorization_binding_digest": envelope["authorization_binding_digest"],
+            "superseded_authorization_binding_digest": envelope[
+                "superseded_authorization_binding_digest"
+            ],
+            "portfolio_bindings_digest": envelope["portfolio_bindings_digest"],
             "hypothesis_binding_digest": envelope["hypothesis_binding_digest"],
             "score_contract_digest": envelope["score_contract_digest"],
             "ranking_contract_digest": envelope["ranking_contract_digest"],
@@ -336,6 +377,8 @@ def write_evidence_bundle(
         "before_after_field_diff.json": diff_rows,
         "semantic_identity_comparison.json": semantic,
         "cryptographic_identity_comparison.json": crypto,
+        "supersession_relation.json": supersession,
+        "authorization_ratification.json": envelope,
         "test_assertion_matrix.json": _build_test_assertion_matrix(
             envelope, roundtrip, deterministic
         ),
@@ -437,9 +480,28 @@ def main() -> int:
 
     repo_root = args.repo_root.resolve()
     worktree_clean_before = _worktree_clean(repo_root)
+    config_path = repo_root / CONFIG_REL_PATH
+    prior_ratification = None
+    if config_path.is_file():
+        prior_ratification = json.loads(config_path.read_text(encoding="utf-8"))
+        if not is_authorization_ratification_stale_v0(prior_ratification):
+            print(
+                json.dumps(
+                    {
+                        "error": "PRIOR_AUTHORIZATION_NOT_STALE",
+                        "authorization_binding_digest": prior_ratification.get(
+                            "authorization_binding_digest",
+                            prior_ratification.get("hypothesis_binding_digest"),
+                        ),
+                    },
+                    indent=2,
+                )
+            )
+            return 1
+
     hypothesis_binding = materialize_versioned_hypothesis_binding_v0()
     score_ranking_contract = materialize_score_and_ranking_contract_v0(hypothesis_binding)
-    result = materialize_and_validate_authorization_ratification_v0()
+    result = materialize_and_validate_authorization_ratification_v0(go_token=GO_TOKEN)
     if result.validation_verdict.value != "ACCEPTED_COMPLETE":
         print(json.dumps({"fail_reasons": list(result.fail_reasons)}, indent=2))
         return 1
@@ -452,7 +514,7 @@ def main() -> int:
     if not args.skip_tests:
         for test_path in (FOCUSED_TEST, BOUNDARY_TEST):
             test_rc = subprocess.run(
-                ["python", "-m", "pytest", "-q", test_path],
+                [sys.executable, "-m", "pytest", "-q", test_path],
                 cwd=repo_root,
                 check=False,
             ).returncode
@@ -465,7 +527,7 @@ def main() -> int:
         output_dir = args.archive_root / "research" / f"{OUTPUT_PREFIX}_{_utc_stamp()}"
     validation_verdict, fail_reasons = (
         validate_offline_economic_evaluation_authorization_ratification_v0(
-            envelope, go_token=CONFIRM_GO
+            envelope, go_token=GO_TOKEN
         )
     )
     changed_files = [
@@ -474,8 +536,6 @@ def main() -> int:
         CONFIG_REL_PATH,
         "docs/governance/CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0.md",
         FOCUSED_TEST,
-        "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
-        BOUNDARY_TEST,
     ]
     manifest_rc = write_evidence_bundle(
         output_dir,
@@ -483,6 +543,7 @@ def main() -> int:
         envelope=envelope,
         hypothesis_binding=hypothesis_binding,
         score_ranking_contract=score_ranking_contract,
+        prior_ratification=prior_ratification,
         roundtrip=roundtrip,
         deterministic=deterministic,
         deterministic_meta=deterministic_meta,
