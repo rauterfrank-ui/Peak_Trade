@@ -15,11 +15,13 @@ from scripts.ops import (
     run_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0 as runner_module,
 )
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0 import (
+    BLOCK_REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED,
     BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN,
     GO_TOKEN,
     INFRASTRUCTURE_GO_TOKEN,
     REASON_BACKTEST_RUNTIME_DECISION_PARITY_FAIL,
     REASON_DISPATCH_NOT_SUCCESSFUL,
+    REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED,
     REASON_ENTRY_POINT_GO_TOKEN_UNKNOWN,
     REASON_FULL_CANONICAL_PARITY_NOT_PROVEN,
     REASON_RUNNER_ENVELOPE_REQUIRED,
@@ -203,8 +205,8 @@ def test_parity_true_and_valid_go_passes_precheck_without_evaluation(
             runner_envelope=envelope,
             materialize_dataset=False,
         )
-    assert ok is True
-    assert reasons == ()
+    assert ok is False
+    assert REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED in reasons
     assert materialization is None
 
 
@@ -269,7 +271,7 @@ def test_ops_runner_execution_go_dispatch_blocks_before_evaluation(tmp_path: Pat
     assert bundles
     block_text = (bundles[0] / "PREEXECUTION_BLOCK.txt").read_text(encoding="utf-8")
     assert "EVALUATION_EXECUTED=False" in block_text
-    assert "BLOCK_REASON=FULL_CANONICAL_PARITY_NOT_PROVEN" in block_text
+    assert "BLOCK_REASON=ECONOMIC_EVALUATION_NOT_AUTHORIZED" in block_text
 
 
 @PY310_STAGING

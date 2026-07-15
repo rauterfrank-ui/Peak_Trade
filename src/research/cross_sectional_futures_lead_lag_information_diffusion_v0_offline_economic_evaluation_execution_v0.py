@@ -220,6 +220,8 @@ REASON_UNIVERSE_DIGEST_MISMATCH = "UNIVERSE_DIGEST_MISMATCH"
 REASON_BINDING_DIGEST_MISMATCH = "BINDING_DIGEST_MISMATCH"
 REASON_GO_TOKEN_INVALID = "GO_TOKEN_INVALID"
 REASON_ECONOMIC_EXECUTION_FORBIDDEN = "ECONOMIC_EXECUTION_FORBIDDEN_IN_INFRASTRUCTURE_SCOPE"
+REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED = "ECONOMIC_EVALUATION_NOT_AUTHORIZED"
+BLOCK_REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED = "ECONOMIC_EVALUATION_NOT_AUTHORIZED"
 REASON_SOURCE_MANIFEST_MISSING = "SOURCE_MANIFEST_MISSING"
 REASON_SOURCE_MANIFEST_VERIFY_FAILED = "SOURCE_MANIFEST_VERIFY_FAILED"
 REASON_PARAMETER_SEARCH_FORBIDDEN_VIOLATION = "PARAMETER_SEARCH_FORBIDDEN_VIOLATION"
@@ -666,6 +668,16 @@ def materialize_preexecution_fail_closed_block_v0(
     }
 
 
+def resolve_preexecution_block_reason_v0(precheck_reasons: Sequence[str]) -> str:
+    if REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED in precheck_reasons:
+        return BLOCK_REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED
+    if REASON_FULL_CANONICAL_PARITY_NOT_PROVEN in precheck_reasons:
+        return BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN
+    if REASON_BACKTEST_RUNTIME_DECISION_PARITY_FAIL in precheck_reasons:
+        return BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN
+    return "PREEXECUTION_GUARD_FAIL_CLOSED"
+
+
 def validate_entry_point_go_token_v0(go_token: str) -> tuple[bool, str | None]:
     branch = ENTRY_POINT_DISPATCH_REGISTRY.get(go_token)
     if branch is None:
@@ -769,7 +781,12 @@ def verify_runner_envelope_v0(
     ):
         reasons.append(REASON_DISPATCH_GO_MISMATCH)
     if not envelope.preexecution_parity_guard_pass:
-        reasons.append(REASON_PREEXECUTION_PARITY_GUARD_FAIL)
+        if not envelope.full_canonical_chain_wired:
+            reasons.append(REASON_FULL_CANONICAL_PARITY_NOT_PROVEN)
+        elif not envelope.backtest_runtime_decision_parity_pass:
+            reasons.append(REASON_BACKTEST_RUNTIME_DECISION_PARITY_FAIL)
+        else:
+            reasons.append(REASON_PREEXECUTION_PARITY_GUARD_FAIL)
     return not reasons, tuple(dict.fromkeys(reasons))
 
 
@@ -800,6 +817,8 @@ def verify_full_evaluation_precheck_v1(
         reasons.append(REASON_PARAMETER_SEARCH_FORBIDDEN_VIOLATION)
 
     if require_execution_go:
+        if ratification.get("economic_evaluation_authorized") is not True:
+            reasons.append(REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED)
         if go_token not in ALLOWED_FULL_EVALUATION_GO_TOKENS:
             reasons.append(REASON_GO_TOKEN_INVALID)
         entry_ok, _ = validate_entry_point_go_token_v0(str(go_token or ""))

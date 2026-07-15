@@ -26,12 +26,10 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.ops import primary_evidence_retention_v0 as retention  # noqa: E402
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     AUTHORITY_EFFECT,
-    BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN,
     EXECUTION_VERSION,
     GO_TOKEN,
     INFRASTRUCTURE_GO_TOKEN,
     PRODUCTIVE_RESEARCH_EVAL_BACKTEST_LANE_MV2_REWIRE_GO_TOKEN,
-    REASON_FULL_CANONICAL_PARITY_NOT_PROVEN,
     REEVALUATION_GO_TOKEN,
     RUNTIME_EFFECT,
     SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
@@ -47,6 +45,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     materialize_runner_envelope_v0,
     materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0,
     resolve_identity_operator_go_v0,
+    resolve_preexecution_block_reason_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_full_offline_economic_evaluation_v0,
     run_mv2_system_evidence_wiring_dispatch_v0,
@@ -411,9 +410,7 @@ def run_bounded_full_evaluation_dispatch_v0(
 
     if not precheck_ok:
         block = materialize_preexecution_fail_closed_block_v0(
-            block_reason=BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN
-            if REASON_FULL_CANONICAL_PARITY_NOT_PROVEN in precheck_reasons
-            else "PREEXECUTION_GUARD_FAIL_CLOSED",
+            block_reason=resolve_preexecution_block_reason_v0(precheck_reasons),
         )
         _emit_preexecution_block(block=block)
         _write_preexecution_block_files(bundle_dir, block=block)

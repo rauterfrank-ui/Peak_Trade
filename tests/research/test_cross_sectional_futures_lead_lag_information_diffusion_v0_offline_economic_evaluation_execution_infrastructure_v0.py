@@ -76,6 +76,11 @@ RUNNER_MODULE = (
     "run_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_"
     "evaluation_execution_v0.py"
 )
+MATERIALIZER_MODULE = (
+    REPO_ROOT / "scripts/ops/"
+    "materialize_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+    "economic_evaluation_execution_infrastructure_v0.py"
+)
 FORBIDDEN_RUNTIME_IMPORT_PREFIXES = (
     "src.execution",
     "src.scheduler",
@@ -387,6 +392,13 @@ def test_execution_module_has_no_runtime_imports() -> None:
 
 def test_runner_module_has_no_runtime_imports() -> None:
     imports = _collect_imports(RUNNER_MODULE)
+    for forbidden in FORBIDDEN_RUNTIME_IMPORT_PREFIXES:
+        assert not any(item == forbidden or item.startswith(forbidden + ".") for item in imports)
+
+
+def test_materializer_module_has_no_runtime_imports() -> None:
+    assert MATERIALIZER_MODULE.is_file()
+    imports = _collect_imports(MATERIALIZER_MODULE)
     for forbidden in FORBIDDEN_RUNTIME_IMPORT_PREFIXES:
         assert not any(item == forbidden or item.startswith(forbidden + ".") for item in imports)
 
