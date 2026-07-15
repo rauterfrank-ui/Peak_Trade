@@ -408,6 +408,16 @@
         "src/backtest/engine.py"
       ],
       "note": "Real fill binding repair only; no trading semantic mutation."
+    },
+    "GOVERNANCE_ONLY_OPERATOR_RATIFICATION_AND_RESEARCH_SCOPE_DEFINITION_WITHOUT_TRADING_SEMANTIC_EFFECT": {
+      "path_globs": [
+        "src/research/*terminal_inconclusive_insufficient_sample_and_distinct_futures_research_scope_definition_v0.py",
+        "src/research/*terminal_insufficient_sample_and_distinct_futures_research_scope_ratification_v0.py",
+        "scripts/research/materialize_*operator_ratification*",
+        "scripts/research/materialize_*scope_ratification*",
+        "scripts/research/materialize_*terminal_*research_scope*"
+      ],
+      "note": "Governance-only operator ratification and research scope definition without trading semantic mutation or runtime authority."
     }
   }
 }
