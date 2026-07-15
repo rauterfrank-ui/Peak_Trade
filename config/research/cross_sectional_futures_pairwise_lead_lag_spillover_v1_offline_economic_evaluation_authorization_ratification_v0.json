@@ -1,0 +1,175 @@
+{
+  "artifact_kind": "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "authorization_contract": {
+    "authority_effect": "NONE",
+    "authorization_scope": "OFFLINE_ECONOMIC_EVALUATION",
+    "authorization_version": "v0",
+    "dataset_binding_unchanged": true,
+    "economic_evaluation_authorized_for_separate_execution": true,
+    "economic_evaluation_executed": false,
+    "hypothesis_binding_unchanged": true,
+    "later_execution_must_rebind_head_ratification_bindings_and_manifests": true,
+    "live_authorized": false,
+    "negative_result_may_not_be_rescued_by_parameter_policy_threshold_change": true,
+    "next_operator_go": "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+    "next_recommended_scope": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+    "offline_only": true,
+    "operator_go": "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0",
+    "order_effect": "NONE",
+    "orders_allowed": false,
+    "parameter_optimization_allowed": false,
+    "policy_rescue_allowed": false,
+    "post_result_selection_allowed": false,
+    "ranking_contract_unchanged": true,
+    "repair_and_reevaluation_separate_authority_slices": true,
+    "runtime_effect": "NONE",
+    "schema_version": "offline_economic_evaluation_authorization_contract.v0",
+    "scope_id": "cross_sectional_futures_pairwise_lead_lag_spillover/v1",
+    "score_contract_unchanged": true,
+    "technical_defect_does_not_authorize_repair_or_retry": true,
+    "threshold_reduction_allowed": false,
+    "universe_binding_unchanged": true
+  },
+  "authorization_scope": "OFFLINE_ECONOMIC_EVALUATION",
+  "authorization_version": "v0",
+  "bitcoin_direction_allowed": false,
+  "canonical_references": {
+    "hypothesis_binding": {
+      "binding_digest": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438",
+      "bitcoin_excluded": true,
+      "config_ref": "config/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0.json",
+      "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "dataset_schema": "pit_okx_pt1h_panel_ohlcv_dataset_manifest_v1",
+      "futures_only": true,
+      "governance_ref": "docs/governance/CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_VERSIONED_HYPOTHESIS_BINDING_V0.md",
+      "hypothesis_id": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_NON_BITCOIN_PERPETUALS_V1",
+      "mutated": false,
+      "owner": "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_v0",
+      "pair_definition": "ordered_directed_pairs_i_to_j_with_i_not_equal_j",
+      "spillover_definition": "directed_spillover_strength",
+      "universe_digest": "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1",
+      "universe_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe_v1"
+    },
+    "offline_evaluation_entry_point": {
+      "execution_authorized_in_this_scope": false,
+      "harness_binding_ref": "src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py",
+      "runner_binding_ref": "scripts/ops/run_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py",
+      "status": "PENDING_SEPARATE_EXECUTION_SCOPE"
+    },
+    "schema_version": "canonical_references.v0",
+    "score_and_ranking_contract": {
+      "config_ref": "config/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0.json",
+      "contract_digest": "900410cfe2812b910c086942e123ff15ca8054a6069b0b39982ccdbec00e2ddd",
+      "governance_ref": "docs/governance/CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_V0.md",
+      "instrument_deterministic_tie_break": "score_desc_then_instrument_id_asc",
+      "mutated": false,
+      "owner": "src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0",
+      "pair_deterministic_tie_break": "score_desc_then_leader_id_asc_then_follower_id_asc",
+      "ranking_contract_digest": "54f719f821c17e5cfbb79387806e34c3d520ce0434975980c9641e5e2fd20ef4",
+      "score_contract_digest": "68acad0db62cfc9db7371be1b91e61c7ee069ce58591b05b9c43a027e6fd6a0c",
+      "score_family_policy": "pairwise_spillover_graph_v1"
+    },
+    "source_evidence": {
+      "hypothesis_binding_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_ratification_v0_20260715T040511Z",
+      "pr5200_closeout_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5200_merge_closeout_cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_implementation_v0_20260715T044248Z",
+      "score_ranking_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0_20260715T041800Z"
+    }
+  },
+  "canonical_serialization_version": "authorization_ratification_canonical_json_v1",
+  "config_digest": "7c73abf25a8e48fd3b84bbd39b2ca8a6625fa493ce9f4d488bb23c67ae08d48f",
+  "dataset_binding_unchanged": true,
+  "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+  "digest_dependency_graph": {
+    "component_digests": {
+      "config_digest": "7c73abf25a8e48fd3b84bbd39b2ca8a6625fa493ce9f4d488bb23c67ae08d48f",
+      "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+      "hypothesis_binding_digest": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438",
+      "implementation_digest": "53a5126266fcb4781b1029e90e695795b24256f6ac6b4645f58d4e29a4fafaf6",
+      "ranking_contract_digest": "54f719f821c17e5cfbb79387806e34c3d520ce0434975980c9641e5e2fd20ef4",
+      "ratification_digest": "1f8b03bbfe48ae0b3f56edcd430aaccd110cfe6aab15cde3e48be575550ad05e",
+      "score_contract_digest": "68acad0db62cfc9db7371be1b91e61c7ee069ce58591b05b9c43a027e6fd6a0c",
+      "universe_digest": "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1"
+    },
+    "edges": [
+      {
+        "from": "authorization_contract",
+        "to": "config_digest"
+      },
+      {
+        "from": "canonical_references",
+        "to": "config_digest"
+      },
+      {
+        "from": "implementation_digest",
+        "to": "ratification_digest"
+      },
+      {
+        "from": "config_digest",
+        "to": "ratification_digest"
+      },
+      {
+        "from": "hypothesis_binding_digest",
+        "to": "ratification_digest"
+      },
+      {
+        "from": "score_contract_digest",
+        "to": "ratification_digest"
+      },
+      {
+        "from": "ranking_contract_digest",
+        "to": "ratification_digest"
+      },
+      {
+        "from": "dataset_digest",
+        "to": "ratification_digest"
+      },
+      {
+        "from": "universe_digest",
+        "to": "ratification_digest"
+      }
+    ],
+    "schema_version": "transitive_digest_graph.v0"
+  },
+  "economic_evaluation_authorized_for_separate_execution": true,
+  "economic_evaluation_executed": false,
+  "economic_validity_policy_version": "economic_validity_policy_v1",
+  "entry_point_status": "PENDING_SEPARATE_EXECUTION_SCOPE",
+  "futures_only": true,
+  "harness_binding_ref": "src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py",
+  "hypothesis_binding_digest": "6b2a74392eda2bf1a672682aa27da3873bc25666c5d9bb34d269f785afc2b438",
+  "hypothesis_binding_unchanged": true,
+  "hypothesis_id": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_NON_BITCOIN_PERPETUALS_V1",
+  "implementation_digest": "53a5126266fcb4781b1029e90e695795b24256f6ac6b4645f58d4e29a4fafaf6",
+  "live_authorized": false,
+  "next_operator_go": "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "next_recommended_scope": "CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+  "offline_only": true,
+  "operator_go": "GO_CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0",
+  "order_effect": "NONE",
+  "orders_allowed": false,
+  "parameter_optimization_allowed": false,
+  "policy_rescue_allowed": false,
+  "post_result_selection_allowed": false,
+  "ranking_contract_digest": "54f719f821c17e5cfbb79387806e34c3d520ce0434975980c9641e5e2fd20ef4",
+  "ranking_contract_unchanged": true,
+  "ratification_digest": "1f8b03bbfe48ae0b3f56edcd430aaccd110cfe6aab15cde3e48be575550ad05e",
+  "ratification_id": "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification_v0",
+  "ratification_version": "v0",
+  "runner_binding_ref": "scripts/ops/run_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_execution_v0.py",
+  "runtime_effect": "NONE",
+  "schema_version": "cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification.v0",
+  "scope_classification": "BOUNDED_FUTURES_ONLY_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0",
+  "scope_id": "cross_sectional_futures_pairwise_lead_lag_spillover/v1",
+  "score_and_ranking_contract_digest": "900410cfe2812b910c086942e123ff15ca8054a6069b0b39982ccdbec00e2ddd",
+  "score_contract_digest": "68acad0db62cfc9db7371be1b91e61c7ee069ce58591b05b9c43a027e6fd6a0c",
+  "score_contract_unchanged": true,
+  "score_family_policy": "pairwise_spillover_graph_v1",
+  "strategy_id": "cross_sectional_futures_pairwise_lead_lag_spillover",
+  "strategy_version": "v1",
+  "threshold_reduction_allowed": false,
+  "universe_binding_unchanged": true,
+  "universe_digest": "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1"
+}

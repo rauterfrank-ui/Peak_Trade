@@ -133,6 +133,12 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
             ],
             [
+                "src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification_v0.py",
+                "scripts/research/materialize_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification_v0.py",
+                "tests/research/test_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_evaluation_authorization_ratification_v0_contract.py",
+                "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+            ],
+            [
                 "src/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0.py",
                 "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_infrastructure_v0.py",
                 "tests/research/test_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_entry_point_guard_and_dispatch_repair_v0.py",
