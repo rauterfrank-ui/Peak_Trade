@@ -1,5 +1,8 @@
 # Market Surface v0 (read-only)
 
+> **Related product SSOT (no runtime effect):** Visual Operator Dashboard Product Runbook v1.3 — [`docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md`](../product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) (binding: [`docs/product/README.md`](../product/README.md)).  
+> This file remains the **technical** Market Surface route/marker/env chronicle. The product runbook owns product/UX/implementation-spec intent only and does **not** own trading, risk, authority, economic, or decision semantics.
+
 ## Routen
 
 | Methode | Pfad | Beschreibung |
