@@ -1,0 +1,15 @@
+{
+  "UNEXPECTED_NETWORK_REQUESTS": 0,
+  "unexpected_requests": [],
+  "CONSOLE_ERRORS": 0,
+  "PRIMARY_BROWSER": "GOOGLE_CHROME",
+  "REAL_CHROME_VERIFIED": true,
+  "PLAYWRIGHT_CHROMIUM_FALLBACK_USED": false,
+  "BROWSER_VERSION": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.0.0 Safari/537.36",
+  "VIEWPORTS_TESTED": [
+    "1280x800",
+    "1440x900",
+    "1728x1117",
+    "1024x768"
+  ]
+}

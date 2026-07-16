@@ -1,0 +1,53 @@
+{
+  "canonical_ssot": "MASTER_V2_AND_DOUBLE_PLAY",
+  "go_token": "GO_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_V1_3_PHASE_MINUS_1_REBASELINE_V1",
+  "owners": [
+    {
+      "mode": "offline_bundle_consumer",
+      "owner": "src/webui/market_futures_ohlcv_runtime_v0.py",
+      "surface": "Futures OHLCV"
+    },
+    {
+      "mode": "offline_bundle_consumer",
+      "owner": "src/webui/market_ranking_funnel_runtime_v0.py",
+      "surface": "Ranking funnel"
+    },
+    {
+      "mode": "offline_bundle_consumer",
+      "owner": "src/webui/futures_read_only_market_dashboard_runtime_v0.py",
+      "surface": "F5 futures dashboard"
+    },
+    {
+      "mode": "core_display_projection",
+      "owner": "src/webui/double_play_dashboard_display_json_route_v0.py",
+      "surface": "Double Play display"
+    },
+    {
+      "mode": "offline_evidence_consumer",
+      "owner": "market_visual_operator_surface_v1/decision_funnel_display_v1.py",
+      "surface": "Decision funnel evidence"
+    },
+    {
+      "mode": "offline_evidence_consumer",
+      "owner": "market_visual_operator_surface_v1/economic_observability_display_v1.py",
+      "surface": "Economic evidence"
+    },
+    {
+      "mode": "offline_evidence_consumer",
+      "owner": "market_visual_operator_surface_v1/ai_linear_diagnostics_display_v1.py",
+      "surface": "Linear diagnostics"
+    },
+    {
+      "mode": "dashboard_display_snapshot",
+      "owner": "market_dashboard_current_state_snapshot_v0.py",
+      "surface": "Current state snapshot"
+    },
+    {
+      "mode": "offline_materialize_only",
+      "owner": "scripts/ops/materialize_market_dashboard_visual_operator_offline_bundles_v1.py",
+      "surface": "Materializer"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "slice": "PHASE_MINUS_1_REBASELINE_V1"
+}
