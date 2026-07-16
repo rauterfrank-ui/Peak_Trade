@@ -1,16 +1,27 @@
 {
   "schema_version": "1.0.0",
-  "slice": "PHASE_1A",
-  "branch": "feat/visual-operator-dashboard-phase-1a-layout-header-v1",
+  "slice": "PHASE_1B",
+  "branch": "feat/visual-operator-dashboard-phase-1b-design-system-assets-v1",
   "files": [
+    "static/css/peak_trade_dashboard_design_tokens_v1.css",
+    "static/css/peak_trade_dashboard_layout_v1.css",
+    "static/css/peak_trade_dashboard_utilities_v1.css",
+    "templates/peak_trade_dashboard/base.html",
     "templates/peak_trade_dashboard/market_v0.html",
-    "templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html",
-    "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html",
-    "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
-    "tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py",
-    "tests/webui/test_market_dashboard_selected_instrument_workspace_v1.py"
+    "templates/peak_trade_dashboard/partials/market_legacy_operator_panels_v0.html",
+    "templates/peak_trade_dashboard/partials/double_play_market_panel_v0.html",
+    "templates/peak_trade_dashboard/r_and_d_charts.html",
+    "tests/webui/test_market_dashboard_phase_1b_design_system_assets_v1.py"
   ],
-  "forbidden": ["data_producer_change", "decision_semantics_change", "phase_1b_token_migration", "cdn_vendorization"],
-  "tests": ["tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py"],
-  "evidence_dir": "docs/product/evidence/phase_1a_20260716T180101Z"
+  "forbidden": [
+    "data_producer_change",
+    "decision_semantics_change",
+    "trading_semantics_change",
+    "authority_change"
+  ],
+  "tests": [
+    "tests/webui/test_market_dashboard_phase_1b_design_system_assets_v1.py"
+  ],
+  "evidence_dir": "docs/product/evidence/phase_1b_20260716T181219Z",
+  "prior_phase_1a_evidence": "docs/product/evidence/phase_1a_20260716T180101Z"
 }

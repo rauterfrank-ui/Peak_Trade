@@ -1,0 +1,22 @@
+OK  IMPLEMENTATION_MANIFEST.md
+OK  browser/browser_test_log.json
+OK  browser/chrome_dump_dom_1440x900.html
+OK  browser/console_log.json
+OK  browser/market_render_path.html
+OK  browser/market_render_path_governance_expanded.html
+OK  geometry/phase_1b_bounding_boxes_1440x900.json
+OK  geometry/phase_1b_dom_geometry_v1.json
+OK  geometry/phase_1b_overflow_viewports.json
+OK  network/browser_network_log_1440x900.json
+OK  proofs/asset_inventory.json
+OK  proofs/cdn_removal_proof.json
+OK  proofs/token_ownership_report.json
+OK  screenshots/phase_1b_1280x800_full.png
+OK  screenshots/phase_1b_1440x900_full.png
+OK  screenshots/phase_1b_1440x900_header_hero_chart.png
+OK  screenshots/phase_1b_1728x1117_full.png
+OK  screenshots/phase_1b_governance_collapsed.png
+OK  screenshots/phase_1b_governance_expanded.png
+OK  test_output/focused_tests.txt
+OK  test_output/timing_proof_pytest.txt
+MANIFEST_VERIFY_PASS=true

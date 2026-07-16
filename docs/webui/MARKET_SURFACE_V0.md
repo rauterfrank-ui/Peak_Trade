@@ -497,9 +497,9 @@ Dashboard markers remain non-authorizing: **Dashboard ≠ Freigabe**; no marker 
 
 - Sichtbare **Chart diagnostics**‑Zusammenfassung (**Chart.js‑Status‑Hinweis**, **einbettete Bar‑Anzahl**, **Chart render status**‑Spiegel zur bestehenden `data‑market‑chart‑status`‑Semantik).
 - **Prominenter Fallback‑Kasten** bei **SSR‑Empty** sowie ein **client‑gesteuerter** Fehler‑Kasten für **Chart library missing or blocked** bzw. **Chart render error** (**keine** neue Autorität).
-- **Kein** eager local Chart.js‑`<script>` in SSR (CDN-primary **jsdelivr**; onerror-only vendor fallback — siehe **§ Chart.js vendor fallback template wiring v1 (implemented)**); **GET &#47;api&#47;market&#47;ohlcv** bleibt unverändert.
+- **Eager local Chart.js**‑`<script>` in SSR (Phase 1B **vendor-primary** / **self-only** — siehe **§ Chart.js vendor primary self-only wiring v1 (Phase 1B)**); **GET &#47;api&#47;market&#47;ohlcv** bleibt unverändert.
 - **Keine** Double‑Play‑Komposition oder Trading‑/Risk‑/Capital‑Interpretation durch diese Diagnosemarker.
-- **v0 CDN load attribution (template):** Die Chart.js‑Einbindung über **jsdelivr** setzt am `<script>`‑Tag ein **`onerror`**, markiert das Skript bei Ladefehler mit **`data-chartjs-cdn-load-error`** und spiegelt den Zustand auf den jeweiligen Dashboard‑Shell‑Container (**`data-chartjs-cdn-load-error`** auf **`#market-v0-shell`**, **`#double-play-market-v0-shell`**, bzw. **`#r-and-d-charts-shell`** wenn Diagramme geladen werden). Zusätzlich **`data-chartjs-cdn-monitored-v0="true"`** kennzeichnet Oberflächen mit dieser Überwachung. Bei CDN‑`onerror` lädt **template-wired vendor fallback v1** lokal **`/static/vendor/chartjs/4.4.1/chart.umd.min.js`** (**onerror-only**, **non-authorizing** — siehe **§ Chart.js vendor fallback template wiring v1 (implemented)**); Oberflächen bleiben **read-only** und **non-authorizing**.
+- **Phase 1B self-only asset path:** Chart.js lädt ausschließlich von **`&#47;static&#47;vendor&#47;chartjs&#47;4.4.1&#47;chart.umd.min.js`** mit Markern **`data-chartjs-vendor-primary-v1`**, **`data-chartjs-self-only-v1`**, **`data-chartjs-vendor-monitored-v1`** (**non-authorizing**). Historische CDN-Diagnostik (#4101 / PR #4108 onerror-only fallback) ist durch Phase 1B **superseded** — siehe unten stehende Chronicle-Abschnitte.
 
 #### Operator enablement (chart.js CDN diagnostics v1)
 
@@ -564,6 +564,20 @@ DASHBOARD_AUTHORITY_CHANGED=false
 ```
 
 Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`**, **`tests/ops/test_chartjs_vendor_asset_integrity_v0.py`**.
+
+#### Chart.js vendor primary self-only wiring v1 (Phase 1B)
+
+**UI-only / fail-closed / non-authorizing / SELF_ONLY:** Phase 1B ersetzt CDN-primary durch **vendor-primary**. Eager SSR‑`<script>` lädt **`&#47;static&#47;vendor&#47;chartjs&#47;4.4.1&#47;chart.umd.min.js`**. Marker: **`data-chartjs-vendor-primary-v1="true"`**, **`data-chartjs-self-only-v1="true"`**, **`data-chartjs-vendor-monitored-v1="true"`**, optional **`data-chartjs-vendor-load-error`**. **Keine** jsdelivr-/Tailwind-CDN-Requests im Target-State von **`GET &#47;market`**. Betroffene Shells: **`#market-v0-shell`**, **`#double-play-market-v0-shell`**, **`#r-and-d-charts-shell`**. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-/Execution-/Order-/Cancel-Autorität.
+
+```
+CHARTJS_PHASE_1B_VENDOR_PRIMARY=true
+CHARTJS_CDN_ALLOWED_IN_TARGET_STATE=false
+NETWORK_ALLOWLIST_DEFAULT=SELF_ONLY
+MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
+DASHBOARD_AUTHORITY_CHANGED=false
+```
+
+Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`**, **`tests/webui/test_market_dashboard_phase_1b_design_system_assets_v1.py`**.
 
 #### CDN-blocking evidence criteria (v1)
 
@@ -750,7 +764,7 @@ Stabile neue **Markup‑Marker** unter anderem **`data-double-play-market-cockpi
 **v1.2** ist eine **Templates-/Tests-/Docs-only**‑Erweiterung auf demselben **SSR‑Pfad**:
 
 - Nutzt die **bereits eingebetteten OHLCV-Bars** im Market-Payload (**`open`/`high`/`low`/`close`/`volume`/`ts`**) — **keine** Änderungen an **`GET`** **`&#47;api&#47;market&#47;ohlcv`**, Provider-/Kraken-/Backend- oder Doppel-Spiel‑JSON‑Router.
-- **Custom Canvas‑Candlesticks** aus dem eingebetteten JSON‑Payload (**kein** externes Finanz-/Candlestick-Chart‑Plugin, **kein** lokales Vendor‑Chart‑SDK als Ersatz); **sekundäre Chart.js‑Close-Line** über CDN-primary **jsdelivr** (`chart.js@4.4.1`); bei CDN-`<script>`-`onerror` lädt **template-wired vendor fallback v1** lokal **`/static/vendor/chartjs/4.4.1/chart.umd.min.js`** (**onerror-only**, **non-authorizing** — siehe **§ Chart.js vendor fallback template wiring v1 (implemented)**).
+- **Custom Canvas‑Candlesticks** aus dem eingebetteten JSON‑Payload (**kein** externes Finanz-/Candlestick-Chart‑Plugin); **sekundäre Chart.js‑Close-Line** über **vendor-primary** / **self-only** lokal **`&#47;static&#47;vendor&#47;chartjs&#47;4.4.1&#47;chart.umd.min.js`** (**non-authorizing** — siehe **§ Chart.js vendor primary self-only wiring v1 (Phase 1B)**).
 - **Kein** `fetch()`, **kein** Polling, **keine** neuen Formularkontrollen.
 
 Die **visual Double‑Play**‑Rail (**Chips**, **Tiles**, **Diagnostics**) ist **strikt display-only**. **`display_ready`** und sämtliche angezeigten Status-/Label‑Felder (**`trading_ready`**, **`testnet_ready`**, **`live_ready`**, Overlays wie **DISPLAY ONLY** / **Not trading ready**) sind **nicht** Handelsbereitschaft, **nicht** Freigabe/Autorisierung zu Live/Testnet, **keine** Scope/Capital‑Billigung und **kein** Risk-/KillSwitch‑Override.

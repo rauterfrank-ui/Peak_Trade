@@ -1,0 +1,60 @@
+/*
+ * Peak Trade Dashboard — Design Tokens v1
+ * CANONICAL_OWNER: static/css/peak_trade_dashboard_design_tokens_v1.css
+ * PRODUCT_DOCUMENT_SCOPE: Visual Operator Dashboard presentation only
+ * NO_TRADING_SEMANTICS / NO_RUNTIME_AUTHORITY
+ *
+ * Exactly one design-token owner. Do not redefine these custom properties elsewhere
+ * in productive dashboard templates or CSS.
+ */
+:root {
+  /* Spacing / layout */
+  --pt-content-max-width: 1600px;
+  --pt-page-padding: 16px;
+  --pt-grid-gap: 12px;
+  --pt-card-padding: 12px;
+  --pt-card-radius: 10px;
+  --pt-card-border: 1px solid var(--pt-color-border);
+  --pt-header-height: 56px;
+  --pt-table-row-height: 44px;
+
+  --pt-space-1: 4px;
+  --pt-space-2: 8px;
+  --pt-space-3: 12px;
+  --pt-space-4: 16px;
+  --pt-space-5: 24px;
+  --pt-space-6: 32px;
+  --pt-space-7: 48px;
+
+  --pt-icon-sm: 14px;
+  --pt-icon-md: 16px;
+  --pt-icon-lg: 20px;
+
+  --pt-bp-narrow: 1280px;
+  --pt-bp-reference: 1440px;
+  --pt-bp-wide: 1728px;
+
+  /* Typography */
+  --pt-font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --pt-mono-font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --pt-font-size-xs: 10px;
+  --pt-font-size-sm: 12px;
+  --pt-font-size-md: 14px;
+  --pt-font-size-lg: 16px;
+  --pt-font-size-xl: 20px;
+  --pt-line-height: 1.4;
+
+  /* Colors */
+  --pt-color-background: #0b0f14;
+  --pt-color-surface-1: #0f172a;
+  --pt-color-surface-2: #111827;
+  --pt-color-border: rgba(51, 65, 85, 0.8);
+  --pt-color-text-primary: #f1f5f9;
+  --pt-color-text-secondary: #94a3b8;
+  --pt-color-positive: #34d399;
+  --pt-color-negative: #fb7185;
+  --pt-color-warning: #fbbf24;
+  --pt-color-info: #38bdf8;
+  --pt-color-model: #a78bfa;
+  --pt-color-muted: #64748b;
+}
