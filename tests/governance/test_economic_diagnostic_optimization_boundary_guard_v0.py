@@ -235,6 +235,11 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardPositiveV0:
                 "src/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0.py",
                 "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
             ],
+            [
+                "config/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_result_v0.json",
+                "tests/research/test_full_canonical_system_economic_evidence_generation_v1_offline_execution_result_v0_contract.py",
+                "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+            ],
         ],
     )
     def test_positive_cases_admissible(self, changed_files: list[str]) -> None:

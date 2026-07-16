@@ -22,10 +22,10 @@ SECTION = (
     "#### STEP29M_VERSIONED_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_"
     "AND_PROGRESS_REGISTRY_V4_4_12_SUPERSESSION_SYNC_V0"
 )
-HEAD = "84a584e7d8ee23834ed6bde09ef06dbe0414db8a"
-NEXT = "SEPARATE_OPERATOR_GO_FOR_FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_EXECUTION"
+HEAD = "580b871e17835c31d614159596374d5665d04ecd"
+NEXT = "NO_UNCHANGED_RETRY_REQUIRES_NEW_DISTINCT_FULL_CANONICAL_SYSTEM_BINDING_OR_EVIDENCE_CLASS"
 CURRENT_STATE = (
-    "FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFIED_NOT_EXECUTED"
+    "FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_OFFLINE_BASELINE_COMPLETE_FAIL"
 )
 
 
@@ -75,7 +75,7 @@ class TestStep29mBindingAdmissibilityInventoryAndProgressSyncV0:
 
     def test_progress_registry_authoritative_sync(self) -> None:
         assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == HEAD
-        assert authoritative_field_value("LAST_VERIFIED_PR") == "5240"
+        assert authoritative_field_value("LAST_VERIFIED_PR") == "5241"
         assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT
         assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT
@@ -98,7 +98,7 @@ class TestStep29mBindingAdmissibilityInventoryAndProgressSyncV0:
         assert authoritative_field_value("STEP_29R_STATUS") == "BLOCKED_BY_PRIOR_GATE"
         assert authoritative_field_value("ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
-        assert authoritative_field_value("ECONOMIC_EVALUATION_EXECUTED") == "false"
+        assert authoritative_field_value("ECONOMIC_EVALUATION_EXECUTED") == "true"
         assert authoritative_field_value("STRATEGY_SELECTED") == "false"
         assert authoritative_field_value("RUNTIME_EFFECT") == "NONE"
         assert authoritative_field_value("AUTHORITY_EFFECT") == "NONE"
