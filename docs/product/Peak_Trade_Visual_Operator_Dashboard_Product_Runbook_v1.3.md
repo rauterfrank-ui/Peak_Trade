@@ -111,26 +111,26 @@ Scope: Visual Operator / Market Dashboard im aktuellen Repository
 | HEAD | `30de36030892d4a7680c68b812021f6bb38b5831` |
 | origin/main | `30de36030892d4a7680c68b812021f6bb38b5831` |
 | HEAD vs origin/main | identisch (`0	0` ahead/behind) |
-| HEAD-Message | `Merge pull request #5254 from rauterfrank-ui/feat/market-dashboard-phase1a-composition-foundation-v1` |
-| Tracking | `main...origin/main` |
+| HEAD-Message | `Merge pull request #5254 from rauterfrank-ui&#47;feat&#47;market-dashboard-phase1a-composition-foundation-v1` |
+| Tracking | `main...origin&#47;main` |
 
 ## Worktree-Status
 
 - Tracked working tree: clean (keine staged/unstaged tracked changes)
-- Untracked: `.runtime/`
-  - `.runtime/market-dashboard-composition-first.log`
-  - `.runtime/market-dashboard-phase-minus-1-rebaseline.log`
-  - `.runtime/market-dashboard-phase-minus-1-rebaseline.pid`
-  - `.runtime/market-dashboard-pr5248.log`
-  - `.runtime/market-dashboard-pr5249-merged.log`
-  - `.runtime/market-dashboard-pr5250-review.log`
+- Untracked: `.runtime&#47;`
+  - `.runtime&#47;market-dashboard-composition-first.log`
+  - `.runtime&#47;market-dashboard-phase-minus-1-rebaseline.log`
+  - `.runtime&#47;market-dashboard-phase-minus-1-rebaseline.pid`
+  - `.runtime&#47;market-dashboard-pr5248.log`
+  - `.runtime&#47;market-dashboard-pr5249-merged.log`
+  - `.runtime&#47;market-dashboard-pr5250-review.log`
 
 ---
 
 # 2 Dashboard Render Chain
 
 Framework: FastAPI  
-Kanonische Route: `GET /market`  
+Kanonische Route: `GET &#47;market`  
 App-Einstieg: `src.webui.app:app` (`create_app()` → module-level `app`)  
 Template-Root: `templates/peak_trade_dashboard` (`Jinja2Templates`)  
 Static mount: `/static` → `static/`  
@@ -158,16 +158,16 @@ Client GET /market[?symbol&timeframe&limit&source&top_n&matrix_*]
 
 | Route | Handler-Datei | Ziel |
 |---|---|---|
-| `GET /market/double-play` | `src/webui/app.py` | `302` → `/market?...#double-play` |
-| `GET /market/futures` | `src/webui/app.py` | `302` → `/market...#futures` |
+| `GET &#47;market&#47;double-play` | `src/webui/app.py` | `302` → `/market?...#double-play` |
+| `GET &#47;market&#47;futures` | `src/webui/app.py` | `302` → `/market...#futures` |
 
 ## Neben-Endpunkte (nicht SSR-Hauptpfad)
 
 | Route | Owner-Datei | Funktion |
 |---|---|---|
-| `GET /api/market/ohlcv` | `src/webui/market_surface.py` | `api_market_ohlcv` (Legacy JSON; `source=futures` → HTTP 422) |
-| `GET /api/market/depth` | `src/webui/market_depth_api_v0.py` | Depth JSON |
-| `GET /api/master-v2/double-play/dashboard-display.json` | `src/webui/double_play_dashboard_display_json_route_v0.py` | Double-Play Display JSON |
+| `GET &#47;api&#47;market&#47;ohlcv` | `src/webui/market_surface.py` | `api_market_ohlcv` (Legacy JSON; `source=futures` → HTTP 422) |
+| `GET &#47;api&#47;market&#47;depth` | `src/webui/market_depth_api_v0.py` | Depth JSON |
+| `GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json` | `src/webui/double_play_dashboard_display_json_route_v0.py` | Double-Play Display JSON |
 
 ## Kanonische Owner-Konstanten (`src/webui/market_surface.py`)
 
@@ -265,19 +265,19 @@ CSS-Trio für alle Surfaces:
 
 | Surface / Component | Landmark / ID | Owner (Python) | Context Builder | Template | CSS | JS | Datenquelle |
 |---|---|---|---|---|---|---|---|
-| GLOBAL_HEADER | `GLOBAL_HEADER` / C-HEADER | `market_surface` + `market_visual_operator_surface_v1` | `build_market_visual_operator_surface_context` → `build_operator_header_display_v1`; Page-Shell in `market_v0.html` | `market_v0.html` Header + `partials/market_visual_operator_header_v1.html` | CSS-Trio | — | Futures-OHLCV Freshness + Economic/AI Activity States |
-| PRIMARY Hero / Workspace | `PRIMARY_MARKET_SURFACE` / C-HERO | `src/webui/market_surface.py` (`CANONICAL_WORKSPACE_TEMPLATE_OWNER`) | `build_market_selected_instrument_workspace_display_context`, `build_market_primary_values_display_context`, `build_operator_overview_display_v1` | `partials/market_primary_operator_hero_v1.html` | CSS-Trio | — | `resolve_market_page_data` → Futures-OHLCV Bundle oder Legacy Loader |
-| PRIMARY Chart | C-CHART | Chart-Template Owner | payload / primary_values / workspace | `partials/market_primary_close_chart_v1.html` | CSS-Trio (`--pt-primary-chart-min-height`) | SSR SVG (kein Chart.js im Primary) | `payload.bars` / Futures OHLCV |
-| DECISION Ranking / Top20 | `DECISION_SURFACE` / C-RANKING | `src/webui/market_ranking_funnel_runtime_v0.py` + `market_surface` | `build_market_ranking_funnel_display_context` → `build_market_governed_top20_display_context` | `partials/market_governed_top20_primary_v1.html` | CSS-Trio | Query-Hrefs (SSR Links) | `PEAK_TRADE_MARKET_RANKING_FUNNEL_*` + `ranking_funnel.json` |
-| DECISION Funnel | C-FUNNEL | `market_visual_operator_surface_v1` | `build_decision_funnel_display_v1` | `partials/market_decision_funnel_visual_v1.html` | CSS-Trio | — | `PEAK_TRADE_MARKET_VISUAL_OPERATOR_EVIDENCE_ROOT` |
-| DECISION F5 Compact | DECISION secondary | `src/webui/futures_read_only_market_dashboard_runtime_v0.py` | `build_futures_read_only_market_dashboard_display_context` | `partials/futures_market_compact_v1.html` (+ Detail `futures_read_only_market_panel_v0.html`) | CSS-Trio | — | `PEAK_TRADE_F5_MARKET_DASHBOARD_*` → `dashboard.json` |
-| DECISION Double Play | DECISION secondary | `src/webui/double_play_dashboard_display_json_route_v0.py` + `market_surface` | `build_static_dashboard_display_dict` → `build_market_double_play_matrix_display_context` | `partials/double_play_market_compact_v1.html` (+ `double_play_market_panel_v0.html`) | CSS-Trio | optional JSON-URL im Context | In-process static Double-Play Snapshot |
-| DECISION Safety / Risk | C-SAFETY | `market_surface` + F5 Runtime | `build_market_safety_matrix_display_context` | `partials/market_safety_compact_v1.html` | CSS-Trio | — | DP Display + F5 Sections; Authority-Flags false |
-| DECISION Watchlist | Include in `DECISION_SURFACE` (Inventory: C-WATCH / OBSERVABILITY) | `market_surface` | `build_market_ranking_watchlist_display_context` | `partials/market_watchlist_compact_v1.html` | CSS-Trio | — | Ranking-Funnel Rows |
-| OBSERVABILITY Economic | C-ECON | `market_visual_operator_surface_v1` | `build_economic_observability_display_v1` | `partials/market_economic_observability_visual_v1.html` | CSS-Trio | — | Evidence Root |
-| OBSERVABILITY AI Linear | C-AI | `market_visual_operator_surface_v1` | `build_ai_linear_diagnostics_display_v1` | `partials/market_ai_linear_diagnostics_visual_v1.html` | CSS-Trio | — | `PEAK_TRADE_MARKET_LINEAR_DIAGNOSTICS_BUNDLE_ROOT` |
-| ENGINEERING Current State | ENGINEERING_DRAWER | Snapshot + Runtime | `market_dashboard_current_state_snapshot_v0` → `build_market_dashboard_current_state_display_context` | `partials/market_current_state_compact_v1.html` | CSS-Trio | — | In-code Snapshot SSOT (always-on) |
-| ENGINEERING Diagnostics | C-ENG | Runtime + Legacy Panels | depth/tape/run/active-paper/current_state Contexts | `partials/market_diagnostics_drawer_v1.html` → `market_legacy_operator_panels_v0.html` | CSS-Trio | Chart.js vendor (Legacy) | Env-gated Depth/Tape/Paper/Run Projection Bundles |
+| GLOBAL_HEADER | `GLOBAL_HEADER` / C-HEADER | `market_surface` + `market_visual_operator_surface_v1` | `build_market_visual_operator_surface_context` → `build_operator_header_display_v1`; Page-Shell in `market_v0.html` | `market_v0.html` Header + `partials&#47;market_visual_operator_header_v1.html` | CSS-Trio | — | Futures-OHLCV Freshness + Economic/AI Activity States |
+| PRIMARY Hero / Workspace | `PRIMARY_MARKET_SURFACE` / C-HERO | `src/webui/market_surface.py` (`CANONICAL_WORKSPACE_TEMPLATE_OWNER`) | `build_market_selected_instrument_workspace_display_context`, `build_market_primary_values_display_context`, `build_operator_overview_display_v1` | `partials&#47;market_primary_operator_hero_v1.html` | CSS-Trio | — | `resolve_market_page_data` → Futures-OHLCV Bundle oder Legacy Loader |
+| PRIMARY Chart | C-CHART | Chart-Template Owner | payload / primary_values / workspace | `partials&#47;market_primary_close_chart_v1.html` | CSS-Trio (`--pt-primary-chart-min-height`) | SSR SVG (kein Chart.js im Primary) | `payload.bars` / Futures OHLCV |
+| DECISION Ranking / Top20 | `DECISION_SURFACE` / C-RANKING | `src/webui/market_ranking_funnel_runtime_v0.py` + `market_surface` | `build_market_ranking_funnel_display_context` → `build_market_governed_top20_display_context` | `partials&#47;market_governed_top20_primary_v1.html` | CSS-Trio | Query-Hrefs (SSR Links) | `PEAK_TRADE_MARKET_RANKING_FUNNEL_*` + `ranking_funnel.json` |
+| DECISION Funnel | C-FUNNEL | `market_visual_operator_surface_v1` | `build_decision_funnel_display_v1` | `partials&#47;market_decision_funnel_visual_v1.html` | CSS-Trio | — | `PEAK_TRADE_MARKET_VISUAL_OPERATOR_EVIDENCE_ROOT` |
+| DECISION F5 Compact | DECISION secondary | `src/webui/futures_read_only_market_dashboard_runtime_v0.py` | `build_futures_read_only_market_dashboard_display_context` | `partials&#47;futures_market_compact_v1.html` (+ Detail `futures_read_only_market_panel_v0.html`) | CSS-Trio | — | `PEAK_TRADE_F5_MARKET_DASHBOARD_*` → `dashboard.json` |
+| DECISION Double Play | DECISION secondary | `src/webui/double_play_dashboard_display_json_route_v0.py` + `market_surface` | `build_static_dashboard_display_dict` → `build_market_double_play_matrix_display_context` | `partials&#47;double_play_market_compact_v1.html` (+ `double_play_market_panel_v0.html`) | CSS-Trio | optional JSON-URL im Context | In-process static Double-Play Snapshot |
+| DECISION Safety / Risk | C-SAFETY | `market_surface` + F5 Runtime | `build_market_safety_matrix_display_context` | `partials&#47;market_safety_compact_v1.html` | CSS-Trio | — | DP Display + F5 Sections; Authority-Flags false |
+| DECISION Watchlist | Include in `DECISION_SURFACE` (Inventory: C-WATCH / OBSERVABILITY) | `market_surface` | `build_market_ranking_watchlist_display_context` | `partials&#47;market_watchlist_compact_v1.html` | CSS-Trio | — | Ranking-Funnel Rows |
+| OBSERVABILITY Economic | C-ECON | `market_visual_operator_surface_v1` | `build_economic_observability_display_v1` | `partials&#47;market_economic_observability_visual_v1.html` | CSS-Trio | — | Evidence Root |
+| OBSERVABILITY AI Linear | C-AI | `market_visual_operator_surface_v1` | `build_ai_linear_diagnostics_display_v1` | `partials&#47;market_ai_linear_diagnostics_visual_v1.html` | CSS-Trio | — | `PEAK_TRADE_MARKET_LINEAR_DIAGNOSTICS_BUNDLE_ROOT` |
+| ENGINEERING Current State | ENGINEERING_DRAWER | Snapshot + Runtime | `market_dashboard_current_state_snapshot_v0` → `build_market_dashboard_current_state_display_context` | `partials&#47;market_current_state_compact_v1.html` | CSS-Trio | — | In-code Snapshot SSOT (always-on) |
+| ENGINEERING Diagnostics | C-ENG | Runtime + Legacy Panels | depth/tape/run/active-paper/current_state Contexts | `partials&#47;market_diagnostics_drawer_v1.html` → `market_legacy_operator_panels_v0.html` | CSS-Trio | Chart.js vendor (Legacy) | Env-gated Depth/Tape/Paper/Run Projection Bundles |
 | Operator Overview Phase 2 | Hero/Header Composition | `operator_overview_display_v1.py` | `build_operator_overview_display_v1` | konsumiert in Hero/Header (kein eigenes Top-Level-Include) | Layout Hero Grid | — | Composed aus Primary/Workspace/Funnel/Safety/AI |
 | Secondary Grid | MIXED / C-SECONDARY-GRID | `market_v0.html` Layout | F5 + DP + Safety + Watchlist Contexts | Secondary Grid in `market_v0.html` | Layout CSS | — | F5 + DP + Safety + Watchlist |
 
@@ -361,7 +361,7 @@ base.html
 
 | Datei | Rolle | Owner-Marker |
 |---|---|---|
-| `static/css/peak_trade_dashboard_design_tokens_v1.css` | Design Tokens (`:root`) | Header: `CANONICAL_OWNER: static/css/peak_trade_dashboard_design_tokens_v1.css` |
+| `static/css/peak_trade_dashboard_design_tokens_v1.css` | Design Tokens (`:root`) | Header: `CANONICAL_OWNER: static&#47;css&#47;peak_trade_dashboard_design_tokens_v1.css` |
 | `static/css/peak_trade_dashboard_layout_v1.css` | Layout / Grid / Composition | konsumiert nur Tokens |
 | `static/css/peak_trade_dashboard_utilities_v1.css` | Purged Utilities (self-hosted; kein Tailwind CDN) | Template-Marker `data-market-utilities-css-v1` |
 
@@ -380,10 +380,10 @@ Inline: nur `.pulse-dot` Animation
 |---|---|
 | Layout | `--pt-content-max-width: 1600px`, `--pt-page-padding: 16px`, `--pt-grid-gap: 12px`, `--pt-card-padding: 12px`, `--pt-card-radius: 10px`, `--pt-card-border`, `--pt-header-height: 64px`, `--pt-safety-rail-max-height: 32px`, `--pt-hero-min-height: 210px`, `--pt-hero-max-height: 290px`, `--pt-primary-chart-min-height: 390px`, `--pt-primary-chart-visual-share-min: 0.4`, `--pt-table-row-height: 44px` |
 | Spacing Scale | `--pt-space-1`…`--pt-space-7` (4px…48px) |
-| Icons | `--pt-icon-sm/md/lg` |
+| Icons | `--pt-icon-sm&#47;md&#47;lg` |
 | Breakpoints | `--pt-bp-narrow: 1280px`, `--pt-bp-reference: 1440px`, `--pt-bp-wide: 1728px` |
 | Typography | `--pt-font-family`, `--pt-mono-font`, `--pt-font-size-xs`…`xl`, `--pt-line-height: 1.4` |
-| Colors | `--pt-color-background`, `surface-1/2`, `border`, `text-primary/secondary`, `positive`, `negative`, `warning`, `info`, `model`, `muted` |
+| Colors | `--pt-color-background`, `surface-1&#47;2`, `border`, `text-primary&#47;secondary`, `positive`, `negative`, `warning`, `info`, `model`, `muted` |
 
 ## Layout-System / Grid / Spacing
 
@@ -438,7 +438,7 @@ Default Path: `/market?timeframe=1h`
 
 ## Screenshot-Harness
 
-- Schreibt unter Caller-`out_dir/screenshots/`
+- Schreibt unter Caller-`out_dir&#47;screenshots&#47;`
 - Pfade in `BrowserReport.screenshots`
 - Durable Evidence-Packs:
   - `docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/`
@@ -446,7 +446,7 @@ Default Path: `/market?timeframe=1h`
   - `docs/product/evidence/phase_1b_20260716T181219Z/`
   - `docs/product/evidence/phase_2_20260716T184639Z/`
   - `docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/`
-  - `docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/`
+  - `docs&#47;product&#47;evidence&#47;visual_composition_first_refactor_v1_20260716T221000Z&#47;`
 
 ## Visual Regression
 
@@ -463,7 +463,7 @@ Default Path: `/market?timeframe=1h`
 | Artefakt | Pfad / Inhalt |
 |---|---|
 | Materializer | `scripts/ops/materialize_market_dashboard_visual_operator_offline_bundles_v1.py` |
-| Emitiert u. a. | `futures_ohlcv/`, `ranking_funnel/`, `f5_dashboard/`, `SOURCE_PROVENANCE.json`, `economic_evidence_binding.json`, `MANIFEST.sha256` |
+| Emitiert u. a. | `futures_ohlcv&#47;`, `ranking_funnel&#47;`, `f5_dashboard&#47;`, `SOURCE_PROVENANCE.json`, `economic_evidence_binding.json`, `MANIFEST.sha256` |
 | Local Env Example | `docs/webui/market_visual_operator_surface_v1.local.example.env` |
 | Readonly Start | `scripts/ops/start_market_dashboard_visual_operator_readonly_v1.sh` |
 
@@ -471,17 +471,17 @@ Default Path: `/market?timeframe=1h`
 
 | Surface-Daten | Enabled Env | Bundle/Root Env | Runtime / Builder |
 |---|---|---|---|
-| Ranking Funnel | `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED` | `PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT` | `market_ranking_funnel_runtime_v0.py` → `market_ranking_funnel_readmodel_v0/builder.py` (`ranking_funnel.json`) |
-| Futures OHLCV | `PEAK_TRADE_MARKET_FUTURES_OHLCV_ENABLED` | `PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT` | `market_futures_ohlcv_runtime_v0.py` → `market_futures_ohlcv_readmodel_v0/builder.py` (`futures_ohlcv.json`) |
+| Ranking Funnel | `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED` | `PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT` | `market_ranking_funnel_runtime_v0.py` → `market_ranking_funnel_readmodel_v0&#47;builder.py` (`ranking_funnel.json`) |
+| Futures OHLCV | `PEAK_TRADE_MARKET_FUTURES_OHLCV_ENABLED` | `PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT` | `market_futures_ohlcv_runtime_v0.py` → `market_futures_ohlcv_readmodel_v0&#47;builder.py` (`futures_ohlcv.json`) |
 | F5 Dashboard | `PEAK_TRADE_F5_MARKET_DASHBOARD_ENABLED` | `PEAK_TRADE_F5_MARKET_DASHBOARD_BUNDLE_ROOT` | `futures_read_only_market_dashboard_runtime_v0.py` (`dashboard.json`) |
-| Depth | `PEAK_TRADE_MARKET_DEPTH_ENABLED` | `PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT` | `market_depth_runtime_v0.py` → `market_depth_readmodel_v0/builder.py` (`depth.json`) |
-| Tape | `PEAK_TRADE_MARKET_TAPE_ENABLED` | `PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT` | `market_tape_readmodel_v0/gate.py` + `builder.py` (`tape.json`) |
+| Depth | `PEAK_TRADE_MARKET_DEPTH_ENABLED` | `PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT` | `market_depth_runtime_v0.py` → `market_depth_readmodel_v0&#47;builder.py` (`depth.json`) |
+| Tape | `PEAK_TRADE_MARKET_TAPE_ENABLED` | `PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT` | `market_tape_readmodel_v0&#47;gate.py` + `builder.py` (`tape.json`) |
 | Visual Evidence | — | `PEAK_TRADE_MARKET_VISUAL_OPERATOR_EVIDENCE_ROOT` | Funnel/Economic Loader via `contracts.py` / display modules |
 | AI Linear | — | `PEAK_TRADE_MARKET_LINEAR_DIAGNOSTICS_BUNDLE_ROOT` | `ai_linear_diagnostics_display_v1.py` |
 | Active Paper | `PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_ENABLED` | `PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_BRIDGE_ROOT` | `market_active_paper_run_runtime_v0.py` |
 | Run Projection | `PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED` | `PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON` | `build_market_run_projection_display_context` |
 | Consolidation | `PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED` | Workflow/Archive + Last-Paper Envs | `workflow_dashboard_runtime_v1.py`, `last_paper_run_panel_runtime_v0.py` |
-| Workflow Dashboard | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED` | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` | `workflow_dashboard_readmodel_v1/*` |
+| Workflow Dashboard | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED` | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` | `workflow_dashboard_readmodel_v1&#47;*` |
 | Double Play | static | — | `_build_static_double_play_dashboard_display_snapshot_v0` / `build_static_dashboard_display_dict` |
 | Current State | always-on | — | `market_dashboard_current_state_snapshot_v0.py` |
 
@@ -548,7 +548,7 @@ Default Path: `/market?timeframe=1h`
 | Element | Owner |
 |---|---|
 | Safety Matrix Context | `build_market_safety_matrix_display_context` in `market_surface.py` |
-| Safety Template | `partials/market_safety_compact_v1.html` |
+| Safety Template | `partials&#47;market_safety_compact_v1.html` |
 | Safety Data Owner Konstante | `CANONICAL_SAFETY_DATA_OWNER` = F5 Runtime |
 | Inventory | `risk_safety_owner` in `dashboard_component_inventory.json` |
 
@@ -557,7 +557,7 @@ Default Path: `/market?timeframe=1h`
 | Element | Owner |
 |---|---|
 | Display | `economic_observability_display_v1.py` |
-| Template | `partials/market_economic_observability_visual_v1.html` |
+| Template | `partials&#47;market_economic_observability_visual_v1.html` |
 | Inventory | `economic_owner` |
 
 ## Decision
@@ -680,7 +680,7 @@ Konstante: `CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS`
 ## Screenshot / Regression Evidence
 
 - Harness Screenshots + Geometry Reports
-- Durable Packs unter `docs/product/evidence/**`
+- Durable Packs unter `docs&#47;product&#47;evidence&#47;**`
 - Kein separates Pixel-Diff-Testpaket unter `tests/`
 
 ---
