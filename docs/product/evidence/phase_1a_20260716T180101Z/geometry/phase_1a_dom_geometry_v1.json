@@ -1,0 +1,11 @@
+{
+  "single_safety_rail": true,
+  "header_before_rail": true,
+  "rail_before_hero": true,
+  "hero_before_chart": true,
+  "chart_before_secondary": true,
+  "chart_height_attr": "300",
+  "viewport_reference": "1440x900",
+  "estimated_above_chart_stack": "compact_header+single_rail+compact_hero (phase 1A)",
+  "note": "Bounding boxes from Chromium screenshots; WebKit automation not used. Real Safari manual open attempted separately."
+}

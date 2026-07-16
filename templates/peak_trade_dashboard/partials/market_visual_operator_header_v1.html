@@ -1,9 +1,18 @@
-{# Compact read-only operator header — futures-only, no runtime/order authority #}
+{# Compact single safety rail — Phase 1A: one rail, no dual badge wall #}
 <section
-  class="rounded-lg border border-slate-800/70 bg-slate-950/60 px-2.5 py-2 mt-2"
+  class="rounded-md border border-slate-800/70 bg-slate-950/70 px-2 py-1.5 mt-1.5 market-phase-1a-safety-rail"
   role="region"
-  aria-label="Visual operator header"
+  aria-label="Visual operator safety rail"
   data-market-visual-operator-header-v1="true"
+  data-market-phase-1a-single-safety-rail-v1="true"
+  data-market-system-status-rail-v1="true"
+  data-market-terminal-status-badges-v1="true"
+  data-market-operator-system-bar-v1="true"
+  data-market-safety-status-bar-v1="true"
+  data-market-remodel-operator-overview-v2="true"
+  data-market-operator-overview-v1="true"
+  data-market-operator-story-v1="true"
+  data-market-operator-diagnostics-compact-v1="true"
   data-market-view-only="true"
   data-market-read-only="true"
   data-market-trading-authority-v1="false"
@@ -13,16 +22,20 @@
   data-market-visual-operator-futures-only="{{ visual_operator_header.futures_only|lower }}"
   data-market-visual-operator-ai-activity-state="{{ visual_operator_header.ai_activity_state|e }}"
 >
-  <div class="flex flex-wrap items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wide">
-    <span class="rounded border border-emerald-800/50 bg-emerald-950/35 px-1.5 py-0.5 text-emerald-200/90">Read-only</span>
-    <span class="rounded border border-emerald-800/50 bg-emerald-950/25 px-1.5 py-0.5 text-emerald-200/90">Futures-only</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300">Source · {{ visual_operator_header.source|e }}</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300" data-market-visual-operator-freshness-v1="true">Freshness · {{ visual_operator_header.data_freshness|e }}</span>
-    <span class="rounded border {% if visual_operator_header.economic_gate_pass %}border-emerald-800/50 text-emerald-200/90{% else %}border-rose-800/45 text-rose-200/90{% endif %} px-1.5 py-0.5" data-market-visual-operator-economic-gate-v1="true">Econ gate · {{ visual_operator_header.economic_gate_status|e }}</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300">Runtime authority · {{ visual_operator_header.runtime_authority|e }}</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300">Orders · {{ visual_operator_header.orders_allowed|lower }}</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300">Live · {{ visual_operator_header.live_allowed|lower }}</span>
-    <span class="rounded border border-sky-800/45 bg-sky-950/25 px-1.5 py-0.5 text-sky-200/90" data-market-visual-operator-ai-state-badge-v1="true">AI · {{ visual_operator_header.ai_activity_state|e }}</span>
+  <div
+    class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1 text-[8px] font-semibold uppercase tracking-wide"
+    data-market-phase-1a-primary-status-count-v1="8"
+  >
+    <div class="flex items-center gap-1 rounded border border-emerald-800/50 bg-emerald-950/35 px-1.5 py-1 text-emerald-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-readonly-v1="true" data-market-remodel-operator-safety-v2="true">Read-only</div>
+    <div class="flex items-center gap-1 rounded border border-emerald-800/45 bg-emerald-950/25 px-1.5 py-1 text-emerald-200/90">Futures-only</div>
+    <div class="flex items-center gap-1 rounded border border-rose-800/45 bg-rose-950/30 px-1.5 py-1 text-rose-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-blocked-v1="true" data-market-remodel-operator-blocked-v2="true">Preflight blocked</div>
+    <div class="flex items-center gap-1 rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-1 text-slate-300" data-market-system-status-node-v1="true" data-market-system-status-tone-neutral-v1="true">Live locked</div>
+    <div class="flex items-center gap-1 rounded border border-sky-800/45 bg-sky-950/25 px-1.5 py-1 text-sky-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-ready-v1="true" data-market-remodel-operator-freshness-v2="true" data-market-visual-operator-freshness-v1="true">Fresh · {{ visual_operator_header.data_freshness|e }}</div>
+    <div class="flex items-center gap-1 rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-1 text-slate-300" data-market-system-status-node-v1="true" data-market-system-status-tone-neutral-v1="true" data-market-remodel-operator-authority-v2="true">Authority · false</div>
+    <div class="flex items-center gap-1 rounded border {% if visual_operator_header.economic_gate_pass %}border-emerald-800/50 text-emerald-200/90{% else %}border-rose-800/45 text-rose-200/90{% endif %} px-1.5 py-1" data-market-visual-operator-economic-gate-v1="true">Econ · {{ visual_operator_header.economic_gate_status|e }}</div>
+    <div class="flex items-center gap-1 rounded border border-sky-800/45 bg-sky-950/25 px-1.5 py-1 text-sky-200/90" data-market-visual-operator-ai-state-badge-v1="true" data-market-remodel-operator-lane-v2="true">AI · {{ visual_operator_header.ai_activity_state|e }}</div>
   </div>
-  <p class="m-0 mt-1 text-[8px] text-slate-500" data-market-visual-operator-snapshot-ts-v1="true">Snapshot · {{ visual_operator_header.snapshot_timestamp|e }} · directional crypto excluded · spot/synthetic disallowed</p>
+  <p class="m-0 mt-1 text-[8px] text-slate-500" data-market-remodel-operator-readiness-v2="true" data-market-visual-operator-snapshot-ts-v1="true">
+    Snapshot · {{ visual_operator_header.snapshot_timestamp|e }} · Source · {{ visual_operator_header.source|e }} · Runtime authority · {{ visual_operator_header.runtime_authority|e }} · no orders · no live · no execution
+  </p>
 </section>

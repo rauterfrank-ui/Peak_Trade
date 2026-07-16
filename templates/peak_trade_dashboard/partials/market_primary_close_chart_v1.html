@@ -3,13 +3,14 @@
   data-market-chart-primary-v2="true"
   role="region"
   aria-labelledby="market-v0-landmark-close-chart-h2"
-  class="bg-slate-900/40 rounded-lg border border-slate-800/80 ring-1 ring-sky-900/10 shadow-xl shadow-black/30 p-2.5 sm:p-3"
+  class="bg-slate-900/40 rounded-lg border border-slate-800/80 ring-1 ring-sky-900/10 shadow-xl shadow-black/30 p-2.5 sm:p-3 market-phase-1a-primary-chart"
   data-chart="market-v0-close-line"
   data-market-chart-primary-v1="true"
   data-market-chart-visual-primary-v1="true"
   data-market-chart-above-fold-v1="true"
   data-market-workspace-chart-v1="true"
-  data-market-chart-height-v1="420"
+  data-market-chart-height-v1="300"
+  data-market-phase-1a-chart-above-fold-v1="true"
   {% if selected_instrument_workspace is defined and selected_instrument_workspace.workspace_visible %}
   data-market-workspace-ohlcv-status="{{ selected_instrument_workspace.ohlcv_status|e }}"
   {% if selected_instrument_workspace.ohlcv_status == 'empty' %}data-market-workspace-ohlcv-empty-v1="true"{% endif %}
@@ -73,11 +74,11 @@
   {% set last_bar_ic = chart_bars_ic[-1] %}
   {% set vol_max_use = vmax_ic.val if vmax_ic.val > 0 else 1.0 %}
   {% set vb_w_ic = 1000 %}
-  {% set vb_h_ic = 420 %}
+  {% set vb_h_ic = 300 %}
   {% set pad_l_ic = 68 %}
   {% set pad_r_ic = 12 %}
   {% set pad_t_ic = 14 %}
-  {% set price_h_ic = 250 %}
+  {% set price_h_ic = 190 %}
   {% set vol_h_ic = 56 %}
   {% set gap_ic = 10 %}
   {% set time_h_ic = 28 %}
@@ -111,8 +112,8 @@
   {% endif %}
 
   <div
-    class="relative flex flex-col w-full max-w-full rounded-lg border border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35 min-h-[280px] sm:min-h-[360px]"
-    style="height:clamp(280px, 52vw, 420px);max-height:480px"
+    class="relative flex flex-col w-full max-w-full rounded-lg border border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35 min-h-[220px] sm:min-h-[280px]"
+    style="height:clamp(220px, 36vw, 300px);max-height:320px"
     data-market-v0-close-chart-integrated-frame="true"
     data-market-v0-in-chart-ohlc-svg-v1="true"
     data-market-chart-operator-readable-v1="true"

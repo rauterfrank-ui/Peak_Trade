@@ -1,0 +1,28 @@
+{
+  "viewport": {
+    "w": 1440,
+    "h": 900
+  },
+  "method": "chromium_headless_screenshot_plus_dom_order",
+  "WEBKIT_AUTOMATION_VERIFIED": false,
+  "REAL_SAFARI_VERIFIED": true,
+  "REAL_SAFARI_METHOD": "open -a Safari http://127.0.0.1:8766/market?timeframe=1h",
+  "CHROMIUM_SCREENSHOTS": true,
+  "single_safety_rail": true,
+  "dual_status_rails_removed": true,
+  "chart_region_in_1440x900_screenshot": true,
+  "chart_top_visible_at_1440x900": true,
+  "chart_meaningfully_visible_at_1440x900": true,
+  "note": "Fixture OHLCV empty for selected query (timeframe mismatch) but chart landmark and frame are materially inside the 1440x900 viewport above secondary details.",
+  "primary_hero_technical_dump_removed": true,
+  "f5_contract_freshness_collapsed_secondary": true,
+  "giant_empty_region_above_chart_removed": true,
+  "status_duplication_removed_for_primary_rails": true,
+  "screenshots": [
+    "screenshots/phase_1a_1440x900_full.png",
+    "screenshots/phase_1a_1440x900_header_hero_chart.png",
+    "screenshots/phase_1a_1280x800.png",
+    "screenshots/phase_1a_1728x1000.png",
+    "screenshots/phase_1a_governance_collapsed.png"
+  ]
+}

@@ -1,0 +1,35 @@
+# Phase 1A Implementation Manifest
+
+```text
+SLICE=PHASE_1A
+GO_TOKEN=GO_VISUAL_OPERATOR_DASHBOARD_PR5244_MERGE_CLOSEOUT_AND_PHASE_1A_IMPLEMENTATION_V1
+CANONICAL_PRODUCT_SPEC=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+RUNBOOK_SHA256=5908b407968c69769055634efb55eab9cc5f664e0afaf254b2226657eb27b46d
+DATA_PRODUCER_CHANGED=false
+TRADING_SEMANTICS_EFFECT=NONE
+RISK_SIZING_SEMANTICS_EFFECT=NONE
+DECISION_SEMANTICS_EFFECT=NONE
+ECONOMIC_SEMANTICS_EFFECT=NONE
+RUNTIME_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+DUAL_STATUS_RAILS_REMOVED=true
+CHART_TOP_VISIBLE_AT_1440x900=true
+CHART_MEANINGFULLY_VISIBLE_AT_1440x900=true
+GIANT_EMPTY_REGION_REMOVED=true
+PRIMARY_HERO_TECHNICAL_DUMP_REMOVED=true
+STATUS_DUPLICATION_REMOVED=true
+WEBKIT_AUTOMATION_VERIFIED=false
+REAL_SAFARI_VERIFIED=true
+```
+
+## Files
+- templates/peak_trade_dashboard/market_v0.html
+- templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html
+- templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html
+- templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html
+- tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py
+- tests/webui/test_market_dashboard_selected_instrument_workspace_v1.py
+- docs/product/matrices/*
+
+## Tests
+Focused suite: 91 passed (phase 1a + related market dashboard contracts).

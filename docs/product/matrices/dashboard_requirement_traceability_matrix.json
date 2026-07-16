@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_product_spec": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
+  "runbook_sha256": "5908b407968c69769055634efb55eab9cc5f664e0afaf254b2226657eb27b46d",
+  "slice": "PHASE_1A",
+  "requirements": [
+    {"id": "R-1A-01", "text": "Single compact global header", "status": "IMPLEMENTED", "owners": ["templates/peak_trade_dashboard/market_v0.html"]},
+    {"id": "R-1A-02", "text": "Single compact safety rail", "status": "IMPLEMENTED", "owners": ["templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html"]},
+    {"id": "R-1A-03", "text": "No dual status/badge rails", "status": "IMPLEMENTED", "defect": "D1"},
+    {"id": "R-1A-04", "text": "Selected instrument + decision narrative primary hero", "status": "IMPLEMENTED", "owners": ["templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"]},
+    {"id": "R-1A-05", "text": "Compact metadata High/Low/Volume/Rank/Score", "status": "IMPLEMENTED"},
+    {"id": "R-1A-06", "text": "F5/governance dumps not primary above chart", "status": "IMPLEMENTED", "defect": "D6"},
+    {"id": "R-1A-07", "text": "Chart materially visible at 1440x900", "status": "IMPLEMENTED", "defect": "D2"},
+    {"id": "R-1A-08", "text": "No giant empty region above chart", "status": "IMPLEMENTED", "defect": "D3"},
+    {"id": "R-1A-09", "text": "No data producer / context semantics change", "status": "PASS"},
+    {"id": "R-1A-10", "text": "Status duplication removed for primary rails", "status": "IMPLEMENTED", "defect": "D7"}
+  ]
+}

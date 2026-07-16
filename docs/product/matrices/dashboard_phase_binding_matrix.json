@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "slice": "PHASE_1A",
+  "branch": "feat/visual-operator-dashboard-phase-1a-layout-header-v1",
+  "files": [
+    "templates/peak_trade_dashboard/market_v0.html",
+    "templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html",
+    "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html",
+    "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+    "tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py",
+    "tests/webui/test_market_dashboard_selected_instrument_workspace_v1.py"
+  ],
+  "forbidden": ["data_producer_change", "decision_semantics_change", "phase_1b_token_migration", "cdn_vendorization"],
+  "tests": ["tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py"],
+  "evidence_dir": "docs/product/evidence/phase_1a_20260716T180101Z"
+}
