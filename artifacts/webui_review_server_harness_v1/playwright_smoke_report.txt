@@ -1,0 +1,15 @@
+9:tests/webui/test_review_server_harness_v1.py::test_harness_script_exists_and_is_executable PASSED [  9%]
+10:tests/webui/test_review_server_harness_v1.py::test_macos_bash_32_static_compat PASSED [ 18%]
+11:tests/webui/test_review_server_harness_v1.py::test_start_status_idempotent_stop_logs_and_bind PASSED [ 27%]
+12:tests/webui/test_review_server_harness_v1.py::test_stale_pid_recovery PASSED [ 36%]
+13:tests/webui/test_review_server_harness_v1.py::test_unknown_port_owner_fail_closed PASSED [ 45%]
+14:tests/webui/test_review_server_harness_v1.py::test_stop_only_own_verified_process PASSED [ 54%]
+15:tests/webui/test_review_server_harness_v1.py::test_restart PASSED        [ 63%]
+16:tests/webui/test_review_server_harness_v1.py::test_healthcheck_timeout PASSED [ 72%]
+17:tests/webui/test_review_server_harness_v1.py::test_localhost_only_rejects_non_loopback PASSED [ 81%]
+18:tests/webui/test_review_server_harness_v1.py::test_playwright_webserver_module_contracts PASSED [ 90%]
+19:tests/webui/test_review_server_harness_v1.py::test_playwright_webserver_smoke_and_no_external_network PASSED [100%]
+---
+PLAYWRIGHT_WEBSERVER_SMOKE=PASS
+PRIMARY_PLAYWRIGHT_CHANNEL=chrome
+UNEXPECTED_EXTERNAL_NETWORK_REQUESTS_ZERO=true

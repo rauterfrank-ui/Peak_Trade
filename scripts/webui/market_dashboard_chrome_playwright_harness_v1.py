@@ -250,33 +250,71 @@ def write_report(report: BrowserReport, out_dir: Path) -> Path:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--base-url", required=True)
+    parser.add_argument(
+        "--base-url",
+        required=False,
+        default=None,
+        help="Base URL; optional when --manage-server starts review_server.sh",
+    )
     parser.add_argument("--out-dir", required=True, type=Path)
     parser.add_argument("--headless", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--path", default="/market?timeframe=1h")
+    parser.add_argument(
+        "--manage-server",
+        action="store_true",
+        help=(
+            "Start/stop via scripts/webui/review_server.sh (Playwright webServer path). "
+            "Local reuse of a healthy harness server is allowed; CI reuse is disabled."
+        ),
+    )
+    parser.add_argument("--port", type=int, default=None, help="Port when --manage-server")
     args = parser.parse_args(argv)
 
-    report = verify_market_page(
-        base_url=args.base_url,
-        out_dir=args.out_dir,
-        headless=args.headless,
-        path=args.path,
-    )
-    write_report(report, args.out_dir)
-    print(json.dumps(asdict(report), indent=2, sort_keys=True))
-    ok = (
-        report.CONSOLE_ERRORS == 0
-        and report.PAGE_ERRORS == 0
-        and report.FAILED_ASSETS == 0
-        and report.UNEXPECTED_NETWORK_REQUESTS == 0
-        and report.EXTERNAL_NETWORK_REQUESTS == 0
-        and not report.HORIZONTAL_OVERFLOW
-        and report.CHART_TOP_VISIBLE_1440x900
-        and report.CHART_MATERIALLY_VISIBLE_1440x900
-        and report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET
-        and report.COMPOSITION_CONTRACT_PASS
-    )
-    return 0 if ok else 2
+    server_cm = None
+    base_url = args.base_url
+    if args.manage_server:
+        import importlib.util
+
+        helper_path = REPO_ROOT / "scripts" / "webui" / "review_server_playwright_webserver_v1.py"
+        spec = importlib.util.spec_from_file_location(
+            "review_server_playwright_webserver_v1", helper_path
+        )
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"unable to load {helper_path}")
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        port = args.port if args.port is not None else helper.find_free_localhost_port()
+        server_cm = helper.ReviewServerWebServer(port=port, reuse_existing=None)
+        handle = server_cm.start()
+        base_url = handle.base_url
+    if not base_url:
+        parser.error("--base-url is required unless --manage-server is set")
+
+    try:
+        report = verify_market_page(
+            base_url=base_url,
+            out_dir=args.out_dir,
+            headless=args.headless,
+            path=args.path,
+        )
+        write_report(report, args.out_dir)
+        print(json.dumps(asdict(report), indent=2, sort_keys=True))
+        ok = (
+            report.CONSOLE_ERRORS == 0
+            and report.PAGE_ERRORS == 0
+            and report.FAILED_ASSETS == 0
+            and report.UNEXPECTED_NETWORK_REQUESTS == 0
+            and report.EXTERNAL_NETWORK_REQUESTS == 0
+            and not report.HORIZONTAL_OVERFLOW
+            and report.CHART_TOP_VISIBLE_1440x900
+            and report.CHART_MATERIALLY_VISIBLE_1440x900
+            and report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET
+            and report.COMPOSITION_CONTRACT_PASS
+        )
+        return 0 if ok else 2
+    finally:
+        if server_cm is not None:
+            server_cm.stop()
 
 
 if __name__ == "__main__":
