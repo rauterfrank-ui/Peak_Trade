@@ -64,27 +64,27 @@ class TestTerminalBlockerAuthoritativeBinding:
         assert authoritative_field_value("INTENT_COMPATIBILITY_FIREWALL_PASS") == "true"
 
     def test_fleet_complete_no_pass_zero_viable_candidates(self) -> None:
-        assert authoritative_field_value("STEP29M_FLEET_STATUS") == "COMPLETE_NO_PASS"
+        assert authoritative_field_value("STEP29M_FLEET_STATUS") == (
+            "TERMINAL_FAIL_RESEARCH_GENERATION_CLOSED"
+        )
         assert authoritative_field_value("ECONOMICALLY_VIABLE_CANDIDATE_COUNT") == "0"
 
     def test_no_new_candidate_hold_revoked(self) -> None:
-        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "REVOKED"
+        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
 
     def test_next_canonical_action_fleet_binding_ratification(self) -> None:
         assert (
             authoritative_field_value("NEXT_CANONICAL_ACTION")
-            == "RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE"
+            == "AWAIT_SEPARATE_OPERATOR_GO_FOR_NEW_VERSIONED_FULL_CANONICAL_SYSTEM_ECONOMIC_BINDING_OR_NEW_EVIDENCE_CLASS_V0"
         )
 
     def test_next_runbook_step_remains_blocked(self) -> None:
         assert authoritative_field_value("NEXT_RUNBOOK_STEP_ADMISSIBLE") == "false"
         assert (
             authoritative_field_value("NEXT_RUNBOOK_STEP_BLOCK_REASON")
-            == "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE"
+            == "STEP29M_NO_PASS_ADMISSIBLE_VERSIONED_SYSTEM_ECONOMIC_BINDING"
         )
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_IMPLEMENTATION_SCOPE") == (
-            "NONE_UNTIL_VERSIONED_FLEET_BINDING_RATIFICATION"
-        )
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_IMPLEMENTATION_SCOPE") == "NONE"
 
     def test_complete_no_pass_not_reinterpreted(self) -> None:
         assert authoritative_field_value("COMPLETE_NO_PASS_NOT_REINTERPRETED_AS_PASS") == "true"
@@ -173,5 +173,5 @@ class TestGlobalSummaryBinding:
     def test_last_verified_origin_main_updated(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "LAST_VERIFIED_ORIGIN_MAIN") == (
-            "1a6dac20003b1e9e84aed0f015a1cbb37601d467"
+            "05c814a06eb5ef46b88495b9a392268b65c57246"
         )
