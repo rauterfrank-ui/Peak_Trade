@@ -42,6 +42,13 @@ class BrowserReport:
     HORIZONTAL_OVERFLOW: bool = False
     CHART_TOP_VISIBLE_1440x900: bool = False
     CHART_MATERIALLY_VISIBLE_1440x900: bool = False
+    PRIMARY_CHART_VISUAL_SHARE_PCT: float = 0.0
+    PRIMARY_CHART_VISUAL_SHARE_MIN_MET: bool = False
+    HEADER_HEIGHT_PX: float = 0.0
+    SAFETY_RAIL_HEIGHT_PX: float = 0.0
+    HERO_HEIGHT_PX: float = 0.0
+    CHART_HEIGHT_PX: float = 0.0
+    COMPOSITION_CONTRACT_PASS: bool = False
     console_messages: list[str] = field(default_factory=list)
     page_errors: list[str] = field(default_factory=list)
     failed_requests: list[str] = field(default_factory=list)
@@ -159,8 +166,10 @@ def verify_market_page(
                 scrollWidth: doc.scrollWidth,
                 clientWidth: doc.clientWidth,
                 header: pick('[data-market-phase-1a-global-header-v1="true"]'),
+                safety: pick('[data-market-phase-1a-single-safety-rail-v1="true"]'),
                 hero: pick('[data-market-phase-2-hero-v1="true"]'),
                 chart: pick('[data-market-phase-1a-chart-above-fold-v1="true"]'),
+                chartFrame: pick('[data-market-v0-close-chart-integrated-frame="true"]'),
                 sentence: pick('[data-market-phase-2-decision-sentence-v1="true"]'),
                 critical: pick('[data-market-phase-2-critical-system-state-v1="true"]'),
                 viewportHeight: window.innerHeight,
@@ -173,25 +182,46 @@ def verify_market_page(
             geometry and geometry.get("scrollWidth", 0) > geometry.get("clientWidth", 0) + 1
         )
         chart = (geometry or {}).get("chart") or {}
+        chart_frame = (geometry or {}).get("chartFrame") or {}
+        header = (geometry or {}).get("header") or {}
+        safety = (geometry or {}).get("safety") or {}
+        hero = (geometry or {}).get("hero") or {}
         vh = float((geometry or {}).get("viewportHeight") or viewport[1])
         chart_top = float(chart.get("top") or 9999)
         chart_bottom = float(chart.get("bottom") or 0)
         chart_height = float(chart.get("height") or 0)
+        frame_height = float(chart_frame.get("height") or chart_height or 0)
         visible_px = max(0.0, min(chart_bottom, vh) - max(chart_top, 0.0))
         report.CHART_TOP_VISIBLE_1440x900 = chart_top < vh and chart_height > 0
-        report.CHART_MATERIALLY_VISIBLE_1440x900 = visible_px >= 120.0
+        report.CHART_MATERIALLY_VISIBLE_1440x900 = visible_px >= 180.0
+        report.HEADER_HEIGHT_PX = float(header.get("height") or 0.0)
+        report.SAFETY_RAIL_HEIGHT_PX = float(safety.get("height") or 0.0)
+        report.HERO_HEIGHT_PX = float(hero.get("height") or 0.0)
+        report.CHART_HEIGHT_PX = frame_height
+        report.PRIMARY_CHART_VISUAL_SHARE_PCT = (visible_px / vh) * 100.0 if vh > 0 else 0.0
+        report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET = report.PRIMARY_CHART_VISUAL_SHARE_PCT >= 40.0
+        report.COMPOSITION_CONTRACT_PASS = bool(
+            report.HEADER_HEIGHT_PX <= 64.0 + 1.0
+            and report.SAFETY_RAIL_HEIGHT_PX <= 32.0 + 1.0
+            and report.HERO_HEIGHT_PX >= 210.0 - 1.0
+            and report.HERO_HEIGHT_PX <= 290.0 + 1.0
+            and report.CHART_HEIGHT_PX >= 390.0 - 1.0
+            and report.CHART_TOP_VISIBLE_1440x900
+            and report.CHART_MATERIALLY_VISIBLE_1440x900
+            and report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET
+        )
 
         shot_specs = [
-            ("phase_2_1440x900_full.png", (1440, 900), True),
-            ("phase_2_1440x900_header_overview_chart.png", (1440, 900), False),
+            ("foundation_1440x900_full.png", (1440, 900), True),
+            ("foundation_1440x900_header_hero_chart.png", (1440, 900), False),
+            ("foundation_1440x900_above_fold.png", (1440, 900), False),
+            ("foundation_selected_instrument_hero.png", (1440, 900), False),
+            ("foundation_critical_system_state.png", (1440, 900), False),
+            ("foundation_decision_narrative.png", (1440, 900), False),
+            ("foundation_primary_chart.png", (1440, 900), False),
+            ("foundation_1280x800_narrow.png", (1280, 800), True),
+            ("foundation_1728x1117_wide.png", (1728, 1117), True),
             ("phase_2_1440x900_above_fold.png", (1440, 900), False),
-            ("phase_2_selected_instrument_hero.png", (1440, 900), False),
-            ("phase_2_critical_system_state.png", (1440, 900), False),
-            ("phase_2_decision_narrative.png", (1440, 900), False),
-            ("phase_2_fresh_state.png", (1440, 900), False),
-            ("phase_2_governance_collapsed.png", (1440, 900), False),
-            ("phase_2_1280x800_narrow.png", (1280, 800), True),
-            ("phase_2_1728x1117_wide.png", (1728, 1117), True),
         ]
         for name, (w, h), full_page in shot_specs:
             page.set_viewport_size({"width": w, "height": h})
@@ -201,7 +231,7 @@ def verify_market_page(
             report.screenshots.append(str(dest.relative_to(out_dir)))
 
         # Stale/missing: capture same page tagged as baseline if no dedicated route
-        missing_shot = shots / "phase_2_stale_or_missing_state.png"
+        missing_shot = shots / "foundation_stale_or_missing_state.png"
         page.set_viewport_size({"width": 1440, "height": 900})
         page.screenshot(path=str(missing_shot), full_page=False)
         report.screenshots.append(str(missing_shot.relative_to(out_dir)))
@@ -243,6 +273,8 @@ def main(argv: list[str] | None = None) -> int:
         and not report.HORIZONTAL_OVERFLOW
         and report.CHART_TOP_VISIBLE_1440x900
         and report.CHART_MATERIALLY_VISIBLE_1440x900
+        and report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET
+        and report.COMPOSITION_CONTRACT_PASS
     )
     return 0 if ok else 2
 

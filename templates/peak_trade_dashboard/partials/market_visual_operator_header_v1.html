@@ -1,6 +1,6 @@
-{# Compact single safety rail — Phase 1A: one rail, no dual badge wall #}
+{# Compact single safety rail — visual foundation: one quiet line, no badge wall #}
 <section
-  class="rounded-md border border-slate-800/70 bg-slate-950/70 px-2 py-1.5 mt-1.5 market-phase-1a-safety-rail"
+  class="rounded border border-slate-800/60 bg-slate-950/55 px-2 market-phase-1a-safety-rail"
   role="region"
   aria-label="Visual operator safety rail"
   data-market-visual-operator-header-v1="true"
@@ -21,21 +21,26 @@
   data-market-visual-operator-live-allowed="{{ visual_operator_header.live_allowed|lower }}"
   data-market-visual-operator-futures-only="{{ visual_operator_header.futures_only|lower }}"
   data-market-visual-operator-ai-activity-state="{{ visual_operator_header.ai_activity_state|e }}"
+  data-market-foundation-safety-rail-v1="true"
+  data-market-phase-1a-primary-status-count-v1="3"
+  data-market-foundation-max-prominent-header-badges-v1="3"
 >
   <div
-    class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1 text-[8px] font-semibold uppercase tracking-wide"
-    data-market-phase-1a-primary-status-count-v1="8"
+    class="pt-foundation-safety-rail-line"
+    data-market-foundation-safety-line-v1="true"
   >
-    <div class="flex items-center gap-1 rounded border border-emerald-800/50 bg-emerald-950/35 px-1.5 py-1 text-emerald-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-readonly-v1="true" data-market-remodel-operator-safety-v2="true">Read-only</div>
-    <div class="flex items-center gap-1 rounded border border-emerald-800/45 bg-emerald-950/25 px-1.5 py-1 text-emerald-200/90">Futures-only</div>
-    <div class="flex items-center gap-1 rounded border border-rose-800/45 bg-rose-950/30 px-1.5 py-1 text-rose-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-blocked-v1="true" data-market-remodel-operator-blocked-v2="true">Preflight blocked</div>
-    <div class="flex items-center gap-1 rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-1 text-slate-300" data-market-system-status-node-v1="true" data-market-system-status-tone-neutral-v1="true">Live locked</div>
-    <div class="flex items-center gap-1 rounded border border-sky-800/45 bg-sky-950/25 px-1.5 py-1 text-sky-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-ready-v1="true" data-market-remodel-operator-freshness-v2="true" data-market-visual-operator-freshness-v1="true">Fresh · {{ visual_operator_header.data_freshness|e }}</div>
-    <div class="flex items-center gap-1 rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-1 text-slate-300" data-market-system-status-node-v1="true" data-market-system-status-tone-neutral-v1="true" data-market-remodel-operator-authority-v2="true">Authority · false</div>
-    <div class="flex items-center gap-1 rounded border {% if visual_operator_header.economic_gate_pass %}border-emerald-800/50 text-emerald-200/90{% else %}border-rose-800/45 text-rose-200/90{% endif %} px-1.5 py-1" data-market-visual-operator-economic-gate-v1="true">Econ · {{ visual_operator_header.economic_gate_status|e }}</div>
-    <div class="flex items-center gap-1 rounded border border-sky-800/45 bg-sky-950/25 px-1.5 py-1 text-sky-200/90" data-market-visual-operator-ai-state-badge-v1="true" data-market-remodel-operator-lane-v2="true">AI · {{ visual_operator_header.ai_activity_state|e }}</div>
+    <span data-market-system-status-node-v1="true" data-market-remodel-operator-safety-v2="true">Futures only</span>
+    <span aria-hidden="true" class="text-slate-700">·</span>
+    <span data-market-system-status-node-v1="true" data-market-system-status-tone-blocked-v1="true" data-market-remodel-operator-blocked-v2="true">Execution / Orders / Live disabled</span>
+    <span aria-hidden="true" class="text-slate-700">·</span>
+    <span
+      data-market-system-status-node-v1="true"
+      data-market-remodel-operator-authority-v2="true"
+      data-market-visual-operator-economic-gate-v1="true"
+      title="Snapshot {{ visual_operator_header.snapshot_timestamp|e }} · Source {{ visual_operator_header.source|e }} · Freshness {{ visual_operator_header.data_freshness|e }}"
+    >Authority NONE</span>
   </div>
-  <p class="m-0 mt-1 text-[8px] text-slate-500" data-market-remodel-operator-readiness-v2="true" data-market-visual-operator-snapshot-ts-v1="true">
-    Snapshot · {{ visual_operator_header.snapshot_timestamp|e }} · Source · {{ visual_operator_header.source|e }} · Runtime authority · {{ visual_operator_header.runtime_authority|e }} · no orders · no live · no execution
+  <p class="sr-only" data-market-remodel-operator-readiness-v2="true">
+    Snapshot · {{ visual_operator_header.snapshot_timestamp|e }} · Source · {{ visual_operator_header.source|e }} · Runtime authority · {{ visual_operator_header.runtime_authority|e }} · no orders · no live · no execution · AI · {{ visual_operator_header.ai_activity_state|e }} · Econ · {{ visual_operator_header.economic_gate_status|e }}
   </p>
 </section>

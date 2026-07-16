@@ -1,4 +1,4 @@
-<!-- Selected instrument workspace — Phase 2 Operator Overview + chart above fold -->
+<!-- Selected instrument workspace — visual foundation: hero + dominant chart above fold -->
 <section
   id="market-selected-instrument-workspace-v1"
   class="space-y-1.5 pt-1 market-phase-1a-hero-workspace"
@@ -13,6 +13,7 @@
   data-market-metrics-above-fold-v1="true"
   data-market-phase-1a-compact-hero-v1="true"
   data-market-phase-2-operator-overview-v1="true"
+  data-market-foundation-hero-v1="true"
   data-market-detail-click-required="false"
   data-market-canonical-short-url-v1="true"
   data-market-view-only="true"
@@ -64,14 +65,9 @@
     {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-500">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
   </div>
   {% elif query.source == 'futures' and not data_unavailable %}
-  <p
-    class="m-0 text-[9px] font-mono text-emerald-200/70"
-    role="status"
-    data-market-futures-ohlcv-wired-v1="true"
-    data-market-futures-chart-complete-v1="true"
-  >
-    Futures OHLCV · read-only SSR{% if futures_ohlcv.source %} · {{ futures_ohlcv.source|e }}{% endif %}
-  </p>
+  <span class="sr-only" data-market-futures-ohlcv-wired-v1="true" data-market-futures-chart-complete-v1="true">
+    Futures OHLCV wired · read-only SSR{% if futures_ohlcv.source %} · {{ futures_ohlcv.source|e }}{% endif %}
+  </span>
   {% endif %}
 
   {% if query.source == 'dummy' %}
@@ -108,20 +104,39 @@
     data-market-phase-1a-hero-compact-v1="true"
     data-market-phase-2-hero-v1="true"
     data-market-operator-overview-hero-v1="true"
+    data-market-foundation-hero-panel-v1="true"
     aria-label="Operator overview: selected instrument and decision narrative"
   >
     <div class="pt-operator-overview-hero-grid" data-market-phase-2-hero-layout-v1="8_4">
       <div class="pt-operator-overview-hero-primary" data-market-phase-2-hero-primary-v1="true">
         <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <p class="m-0 text-base sm:text-lg font-bold font-mono text-slate-50 tracking-tight" data-market-workspace-symbol-v1="true">{{ ov.selected_instrument.symbol|e }}</p>
-          <span class="text-[10px] font-mono text-slate-400" data-market-phase-2-instrument-meta-v1="true">
+          <p class="pt-foundation-instrument-title" data-market-workspace-symbol-v1="true">{{ ov.selected_instrument.symbol|e }}</p>
+          <span class="text-[10px] font-mono text-slate-500" data-market-phase-2-instrument-meta-v1="true">
             {{ ov.selected_instrument.exchange|e }}
             · {{ ov.selected_instrument.contract_type|e }}
             · {{ ov.selected_instrument.timeframe|e }}
           </span>
         </div>
+        <div class="pt-foundation-price-row" data-market-workspace-kpi-band-v1="true" data-market-workspace-kpi-primary-v1="true">
+          <span class="pt-foundation-last-price" data-market-workspace-kpi-last-price-v1="true">{{ ov.selected_instrument.last_price|e }}</span>
+          <span class="font-mono text-sm text-slate-300" data-market-workspace-kpi-change-v1="true">{{ ov.selected_instrument.change|e }}</span>
+        </div>
+        <div
+          class="pt-foundation-meta-chips"
+          data-market-phase-1a-compact-metadata-row-v1="true"
+          data-market-phase-2-compact-metadata-row-v1="true"
+          data-market-foundation-meta-chips-v1="true"
+          aria-label="Compact market metadata"
+        >
+          <span data-market-workspace-kpi-rank-v1="true">Rank · <span class="font-mono text-slate-200">{% if ov.selected_instrument.rank != 'unavailable' %}#{{ ov.selected_instrument.rank|e }}{% else %}unavailable{% endif %}</span></span>
+          <span data-market-workspace-kpi-score-v1="true">Score · <span class="font-mono text-slate-200">{{ ov.selected_instrument.score|e }}</span></span>
+          <span data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
+            Regime · <span class="font-mono text-slate-200">{{ ov.market_regime.trend|e }}</span>
+          </span>
+          <span data-market-foundation-momentum-v1="true">Momentum · <span class="font-mono text-slate-200">{{ ov.market_regime.momentum|e }}</span></span>
+        </div>
         <p
-          class="pt-operator-overview-decision-sentence"
+          class="pt-operator-overview-decision-sentence mt-2"
           data-market-operator-decision-narrative-v1="true"
           data-market-phase-1a-decision-narrative-v1="true"
           data-market-phase-2-decision-sentence-v1="true"
@@ -129,82 +144,42 @@
           {{ ov.decision_sentence|e }}
         </p>
         <dl
-          class="m-0 pt-operator-overview-status-strip flex flex-wrap text-slate-300"
+          class="m-0 mt-1 pt-operator-overview-status-strip flex flex-wrap text-slate-400"
           data-market-phase-2-decision-state-v1="true"
           aria-label="Current decision state"
         >
-          <div><dt class="inline text-slate-500">Decision · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.state|e }}</dd></div>
-          <div><dt class="inline text-slate-500">Direction · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.direction|e }}</dd></div>
-          <div><dt class="inline text-slate-500">AI · </dt><dd class="inline m-0 font-mono" data-market-phase-2-ai-activity-v1="true">{{ ov.current_decision.ai_activity_state|e }}</dd></div>
-          <div><dt class="inline text-slate-500">Quality · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.data_quality_state|e }}</dd></div>
+          <div><dt class="inline text-slate-600">Direction · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.direction|e }}</dd></div>
+          <div><dt class="inline text-slate-600">AI · </dt><dd class="inline m-0 font-mono" data-market-phase-2-ai-activity-v1="true">{{ ov.current_decision.ai_activity_state|e }}</dd></div>
           <div data-market-phase-2-blocker-scope-v1="{{ ov.current_decision.blocker_scope|e }}">
-            <dt class="inline text-slate-500">Blocker scope · </dt>
-            <dd class="inline m-0 font-mono text-slate-400">{{ ov.current_decision.blocker_scope|e }}</dd>
-          </div>
-        </dl>
-        <dl
-          class="m-0 pt-operator-overview-meta-row"
-          data-market-workspace-kpi-band-v1="true"
-          data-market-workspace-kpi-primary-v1="true"
-          data-market-phase-1a-compact-metadata-row-v1="true"
-          data-market-phase-2-compact-metadata-row-v1="true"
-          aria-label="Compact market metadata"
-        >
-          <div data-market-workspace-kpi-last-price-v1="true">
-            <dt class="text-slate-500 uppercase text-[8px]">Last</dt>
-            <dd class="m-0 font-mono text-sm font-semibold text-sky-200/95">{{ ov.selected_instrument.last_price|e }}</dd>
-          </div>
-          <div>
-            <dt class="text-slate-500 uppercase text-[8px]">High</dt>
-            <dd class="m-0 font-mono text-slate-200">{{ ov.selected_instrument.high|e }}</dd>
-          </div>
-          <div>
-            <dt class="text-slate-500 uppercase text-[8px]">Low</dt>
-            <dd class="m-0 font-mono text-slate-200">{{ ov.selected_instrument.low|e }}</dd>
-          </div>
-          <div>
-            <dt class="text-slate-500 uppercase text-[8px]">Volume</dt>
-            <dd class="m-0 font-mono text-slate-200">{{ ov.selected_instrument.volume|e }}</dd>
-          </div>
-          <div data-market-workspace-kpi-rank-v1="true">
-            <dt class="text-slate-500 uppercase text-[8px]">Rank</dt>
-            <dd class="m-0 font-mono text-slate-200">
-              {% if ov.selected_instrument.rank != 'unavailable' %}
-              <span class="inline-flex items-center rounded border border-violet-700/60 bg-violet-950/45 px-1 py-0.5" data-market-kpi-rank-badge-v1="true">#{{ ov.selected_instrument.rank|e }}</span>
-              {% else %}unavailable{% endif %}
-            </dd>
-          </div>
-          <div data-market-workspace-kpi-score-v1="true">
-            <dt class="text-slate-500 uppercase text-[8px]">Score</dt>
-            <dd class="m-0 font-mono text-slate-200">{{ ov.selected_instrument.score|e }}</dd>
-          </div>
-        </dl>
-        <dl class="m-0 mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[8px] tabular-nums" data-market-workspace-kpi-status-v1="true">
-          <div data-market-workspace-kpi-change-v1="true"><span class="text-slate-500">Change · </span><span class="font-mono text-slate-300">{{ ov.selected_instrument.change|e }}</span></div>
-          <div data-market-workspace-kpi-freshness-v1="true"><span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="{{ ov.selected_instrument.freshness|e }}">Freshness</span></div>
-          <div data-market-workspace-data-quality-badge-v1="true"><span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="{{ ov.selected_instrument.data_quality|e }}">Quality</span></div>
-          <div data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
-            <span class="text-slate-500">Regime · </span><span class="font-mono text-slate-300">{{ ov.market_regime.trend|e }}</span>
-            <span class="text-slate-600">({{ ov.market_regime.scope_note|e }})</span>
+            <dt class="inline text-slate-600">Scope · </dt>
+            <dd class="inline m-0 font-mono">{{ ov.current_decision.blocker_scope|e }}</dd>
           </div>
         </dl>
       </div>
 
       <aside
-        class="pt-operator-overview-hero-system shrink-0 rounded border border-slate-700/55 bg-slate-900/55 px-2 py-1.5 text-[10px] text-slate-300"
+        class="pt-operator-overview-hero-system shrink-0 rounded border border-slate-700/50 bg-slate-900/45 px-2.5 py-2 text-[10px] text-slate-300"
         data-market-phase-1a-critical-system-state-v1="true"
         data-market-phase-2-critical-system-state-v1="true"
+        data-market-foundation-system-decision-v1="true"
         aria-label="Critical system state"
       >
-        <p class="m-0 uppercase tracking-wide text-slate-500 text-[8px]">Critical system state</p>
-        <dl class="m-0 mt-1 space-y-0.5 font-mono text-[10px]">
+        <p class="m-0 uppercase tracking-[0.12em] text-slate-500 text-[8px]">System decision</p>
+        <p class="pt-foundation-decision-state mt-1" data-market-foundation-decision-state-v1="true">{{ ov.current_decision.state|e }}</p>
+        <p class="m-0 mt-1.5 text-[11px] text-slate-200">
+          <span class="text-slate-500">Primary blocker</span>
+          <span class="block font-mono text-sm text-slate-100 mt-0.5">{{ ov.current_decision.primary_blocker|e }}</span>
+        </p>
+        <dl class="m-0 mt-2 space-y-0.5 font-mono text-[10px]" data-market-foundation-system-priorities-v1="true">
           <div class="flex justify-between gap-2"><dt class="text-slate-500">Economic</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.economic_validity|e }}</dd></div>
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Authority</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.runtime_authority|e }}</dd></div>
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Orders</dt><dd class="m-0 text-slate-400">{{ ov.critical_system_state.orders|e }}</dd></div>
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Live</dt><dd class="m-0 text-slate-400">{{ ov.critical_system_state.live|e }}</dd></div>
           <div class="flex justify-between gap-2"><dt class="text-slate-500">Risk</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.risk_status|e }}</dd></div>
           <div class="flex justify-between gap-2"><dt class="text-slate-500">Safety</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.safety_status|e }}</dd></div>
         </dl>
+        <p class="sr-only">
+          Authority {{ ov.critical_system_state.runtime_authority|e }} · Orders {{ ov.critical_system_state.orders|e }} · Live {{ ov.critical_system_state.live|e }}
+        </p>
+        <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.orders|e }}</span>
+        <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.live|e }}</span>
       </aside>
     </div>
   </section>

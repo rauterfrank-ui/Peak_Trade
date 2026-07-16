@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
   "canonical_product_spec": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
-  "runbook_sha256": "fd87909e3dc340bc5ae0f642cbb8114a5311b7d2300dae115667e27e67b64216",
-  "slice": "PHASE_2",
+  "runbook_sha256": "cb07ca30310056a3f7f3639763a8c2774c2fe5de527666446f7b269c6b0d82c0",
+  "slice": "VISUAL_FOUNDATION_REWORK_V1",
   "browser_policy": {
     "PRIMARY_BROWSER": "GOOGLE_CHROME",
     "PRIMARY_AUTOMATION": "PLAYWRIGHT",
@@ -13,8 +13,8 @@
   },
   "requirements": [
     {
-      "id": "R-2-01",
-      "text": "Chrome-primary browser verification policy bound in runbook",
+      "id": "R-VF-01",
+      "text": "Runbook v1.3 DesignGate/Chrome/Playwright/VisualContract owner updated in place (no second runbook)",
       "status": "IMPLEMENTED",
       "owners": [
         "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
@@ -22,37 +22,40 @@
       ]
     },
     {
-      "id": "R-2-02",
-      "text": "Operator Overview decision narrative from canonical contexts only",
+      "id": "R-VF-02",
+      "text": "Compact global header + quiet safety rail (max 3 primary status signals)",
       "status": "IMPLEMENTED",
       "owners": [
-        "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py",
-        "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"
+        "templates/peak_trade_dashboard/market_v0.html",
+        "templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html",
+        "static/css/peak_trade_dashboard_layout_v1.css"
       ]
     },
     {
-      "id": "R-2-03",
-      "text": "Hero hierarchy 8+4 with critical system state calm disabled states",
+      "id": "R-VF-03",
+      "text": "Hero 8/4 composition with instrument primacy and system decision priority",
       "status": "IMPLEMENTED",
       "owners": [
-        "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"
+        "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html",
+        "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py"
       ]
     },
     {
-      "id": "R-2-04",
-      "text": "Activity states without bare ACTIVE in operator overview",
+      "id": "R-VF-04",
+      "text": "Dominant primary candlestick/volume chart min height 390px / visual share contract",
       "status": "IMPLEMENTED",
       "owners": [
-        "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py",
-        "tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py"
-      ]
-    },
-    {
-      "id": "R-2-05",
-      "text": "Chrome Playwright harness for self-only evidence",
-      "status": "IMPLEMENTED",
-      "owners": [
+        "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+        "static/css/peak_trade_dashboard_design_tokens_v1.css",
         "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py"
+      ]
+    },
+    {
+      "id": "R-VF-05",
+      "text": "Focused foundation composition tests",
+      "status": "IMPLEMENTED",
+      "owners": [
+        "tests/webui/test_market_dashboard_visual_foundation_rework_v1.py"
       ]
     },
     {
@@ -66,6 +69,6 @@
       "status": "PRESERVED"
     }
   ],
-  "phase_1b_requirements_preserved": true,
-  "evidence": "docs/product/evidence/phase_2_20260716T184639Z/IMPLEMENTATION_MANIFEST.md"
+  "phase_2_requirements_preserved": true,
+  "evidence": "docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/IMPLEMENTATION_MANIFEST.md"
 }

@@ -16,6 +16,126 @@
 
 .pt-dashboard-app-header {
   min-height: var(--pt-header-height);
+  max-height: var(--pt-header-height);
+}
+
+/* Visual foundation rework v1 — composition contract (1440×900). */
+#market-v0-shell .market-phase-1a-app-header,
+#market-v0-shell [data-market-phase-1a-global-header-v1="true"] {
+  max-height: var(--pt-header-height);
+  min-height: 0;
+  overflow: hidden;
+}
+
+#market-v0-shell .market-phase-1a-safety-rail,
+#market-v0-shell [data-market-phase-1a-single-safety-rail-v1="true"] {
+  max-height: var(--pt-safety-rail-max-height);
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0.25rem;
+}
+
+#market-v0-shell .pt-foundation-safety-rail-line {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  width: 100%;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pt-color-text-secondary, #94a3b8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#market-v0-shell .pt-foundation-safety-rail-line > span {
+  flex: 0 0 auto;
+}
+
+#market-v0-shell .pt-operator-overview-hero-panel {
+  min-height: var(--pt-hero-min-height);
+  max-height: var(--pt-hero-max-height);
+  overflow: hidden;
+}
+
+#market-v0-shell .market-phase-1a-primary-chart,
+#market-v0-shell [data-market-phase-1a-chart-above-fold-v1="true"] {
+  min-height: var(--pt-primary-chart-min-height);
+}
+
+#market-v0-shell [data-market-v0-close-chart-integrated-frame="true"] {
+  min-height: var(--pt-primary-chart-min-height);
+  height: clamp(
+    var(--pt-primary-chart-min-height),
+    42vh,
+    520px
+  );
+  max-height: none;
+}
+
+#market-v0-shell .pt-foundation-instrument-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-family: var(--pt-mono-font);
+  color: var(--pt-color-text-primary, #f1f5f9);
+}
+
+#market-v0-shell .pt-foundation-decision-state {
+  margin: 0;
+  font-size: clamp(1.35rem, 1.8vw, 1.75rem);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--pt-color-text-primary, #f1f5f9);
+}
+
+#market-v0-shell .pt-foundation-price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-top: 0.35rem;
+}
+
+#market-v0-shell .pt-foundation-price-row .pt-foundation-last-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: var(--pt-mono-font);
+  color: var(--pt-color-info, #38bdf8);
+}
+
+#market-v0-shell .pt-foundation-meta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  margin-top: 0.45rem;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-color-text-secondary, #94a3b8);
+}
+
+#market-v0-shell .pt-foundation-meta-chips > span {
+  max-width: 100%;
+}
+
+#market-v0-shell .pt-foundation-chart-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.85rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.6875rem;
+  font-family: var(--pt-mono-font);
+  color: var(--pt-color-text-secondary, #94a3b8);
 }
 
 .pt-dashboard-grid {

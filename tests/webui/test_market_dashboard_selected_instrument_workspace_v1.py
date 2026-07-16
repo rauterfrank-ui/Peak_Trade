@@ -370,7 +370,7 @@ def test_kpi_hierarchy_and_f5_operator_status(client_workspace_on: TestClient) -
 def test_chart_height_bounded(client_workspace_on: TestClient) -> None:
     html = _html(client_workspace_on)
     # Phase 1A densifies the primary chart band for 1440×900 above-fold visibility.
-    assert 'data-market-chart-height-v1="300"' in html
+    assert 'data-market-chart-height-v1="390"' in html
     assert "min-h-[60vh]" not in html
 
 
