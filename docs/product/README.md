@@ -12,7 +12,8 @@
 |------|------|
 | Document | [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) |
 | Version | v1.3 |
-| Role | Product SSOT + Implementation Spec |
+| Edition | Canonical Composition + Technical Discovery Edition |
+| Role | Product SSOT + Implementation Spec (PART I normative; PART II technical discovery snapshot) |
 | `PRODUCT_DOCUMENT` | `true` |
 | `IMPLEMENTATION_SPEC` | `true` |
 | `READ_ONLY` | `true` |
@@ -46,9 +47,10 @@ DASHBOARD_ROLE=PRESENTATION_LAYER
 
 1. Das **Core-System / Master V2** bleibt die einzige fachliche Wahrheit (Trading, Risk, Authority, Economic, Decision).
 2. Dieses Product Runbook ist die **Dashboard-Produkt-/Presentation-Spec** und innerhalb der Dashboard-Produktdokumentation die **einzige kanonische Produktspezifikation**.
-3. Das Dashboard ist **Consumer-only** — es besitzt keine Trading-, Risk-, Economic-, Decision- oder Authority-Ownership.
-4. Abgeleitete Dokumente (Implementation Plan, Patch-Empfehlungen, Index-Pointer, technische Surface-Chronicle) dürfen das Runbook **nicht** überschreiben und keine zweite vollständige Produktspezifikation bilden.
-5. `docs/webui/MARKET_SURFACE_V0.md` bleibt die technische Route-/Marker-/Env-Chronicle — nicht die Product Spec.
+3. Innerhalb des Runbooks: **PART I** ist normativ (Composition-/Landmark-/Governance-/UX-Ziel); **PART II** ist die technische Discovery-/Ist-Referenz. Bei Abweichungen gilt PART I.
+4. Das Dashboard ist **Consumer-only** — es besitzt keine Trading-, Risk-, Economic-, Decision- oder Authority-Ownership.
+5. Abgeleitete Dokumente (Implementation Plan, Patch-Empfehlungen, Index-Pointer, technische Surface-Chronicle, eigenständige Discovery-Exporte wie `Runbook_V2_Discovery.md`) dürfen das Runbook **nicht** überschreiben und keine zweite vollständige Produktspezifikation bilden. Eigenständige Discovery bleibt höchstens technische Historien-/Referenzquelle.
+6. `docs/webui/MARKET_SURFACE_V0.md` bleibt die technische Route-/Marker-/Env-Chronicle — nicht die Product Spec.
 
 ### Ownership split (reuse, no dual truth)
 
@@ -79,10 +81,12 @@ MARKET_BROWSER_E2E_BASELINE=MISSING
 ### Bootstrap provenance
 
 ```text
-GO_TOKEN=GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1
+GO_TOKEN=GO_CONSOLIDATED_COMPOSITION_LANDMARK_MASTER_RUNBOOK_REPO_SSOT_V1
 PRODUCT_IMPLEMENTATION_GO_TOKEN=GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_PRODUCT_V1_3
-SOURCE_DESKTOP_PATH=~/Desktop/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
-RUNBOOK_SHA256=5908b407968c69769055634efb55eab9cc5f664e0afaf254b2226657eb27b46d
+SOURCE_DOWNLOADS_PATH=/Users/frnkhrz/Downloads/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+CANONICAL_TARGET=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+RUNBOOK_SHA256=9e93e0599fca7fecbed1ece6aafa19f1a5112d0a43dd244aab69753e5ae210eb
+PRIOR_BOOTSTRAP_GO_TOKEN=GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1
 DISCOVERY_BASELINE_HEAD=20969b4a155ffbdc0e1a9a55657311aa061511be
 DISCOVERY_BASELINE_PR=5244
 ```

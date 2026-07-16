@@ -18,7 +18,7 @@ NO_TRADING_SEMANTICS_EFFECT=true
 NO_RUNTIME_AUTHORITY_EFFECT=true
 ```
 
-Dieses Dokument ist abgeleitet und dem Product Runbook untergeordnet. Bei Widerspruch gilt ausschließlich das Runbook.
+Dieses Dokument ist abgeleitet und dem Product Runbook untergeordnet. Bei Widerspruch gilt ausschließlich das Runbook (PART I normativ; PART II technische Discovery-/Ist-Referenz; eigenständige Discovery-Exporte sind keine Produkt-SSOT).
 
 ---
 
