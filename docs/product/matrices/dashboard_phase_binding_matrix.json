@@ -29,6 +29,8 @@
   "harness": "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
   "primary_browser": "GOOGLE_CHROME",
   "playwright_channel": "chrome",
-  "evidence_dir": "docs/product/evidence/phase_3_20260716T191523Z",
-  "evidence_manifest": "docs/product/evidence/phase_3_20260716T191523Z/implementation_manifest.json"
+  "evidence_dir": "docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z",
+  "evidence_manifest": "docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/implementation_manifest.json",
+  "prior_phase_3_fixture_evidence": "docs/product/evidence/phase_3_20260716T191523Z",
+  "operator_path_parity": true
 }

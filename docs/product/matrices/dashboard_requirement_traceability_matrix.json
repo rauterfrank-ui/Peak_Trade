@@ -12,12 +12,24 @@
   },
   "requirements": [
     {
+      "id": "R-3-08",
+      "text": "Normal uvicorn/operator /market?timeframe=1h binds canonical offline OHLCV (not test fixtures); REAL_DATA only for canonical source class",
+      "status": "IMPLEMENTED",
+      "owners": [
+        "src/webui/market_visual_operator_surface_v1/local_offline_binding_v1.py",
+        "src/webui/app.py",
+        "tests/webui/test_market_dashboard_operator_ohlcv_binding_v1.py",
+        "docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/phase3_operator_binding_repair_report.md"
+      ]
+    },
+    {
       "id": "R-3-01",
       "text": "Primary market chart uses canonical real OHLCV candles and volume (SSR)",
       "status": "IMPLEMENTED",
       "owners": [
         "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
-        "src/webui/market_futures_ohlcv_runtime_v0.py"
+        "src/webui/market_futures_ohlcv_runtime_v0.py",
+        "src/webui/market_visual_operator_surface_v1/local_offline_binding_v1.py"
       ]
     },
     {
@@ -90,5 +102,8 @@
     }
   ],
   "phase_2_requirements_preserved": true,
-  "evidence": "docs/product/evidence/phase_3_20260716T191523Z/implementation_manifest.json"
+  "previous_evidence_operator_path_parity": false,
+  "repair_evidence_operator_path_parity": true,
+  "evidence": "docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/implementation_manifest.json",
+  "prior_phase_3_evidence_note": "docs/product/evidence/phase_3_20260716T191523Z was fixture-harness path; not operator-path parity"
 }

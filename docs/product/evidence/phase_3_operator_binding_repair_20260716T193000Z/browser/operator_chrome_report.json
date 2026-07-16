@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8766/market?timeframe=1h",
+  "PLAYWRIGHT_CHANNEL": "chrome",
+  "REAL_CHROME_VERIFIED": true,
+  "CONSOLE_ERRORS": 0,
+  "PAGE_ERRORS": 0,
+  "FAILED_ASSETS": 0,
+  "EXTERNAL_REQUESTS": 0,
+  "HORIZONTAL_OVERFLOW": false,
+  "CHART_MATERIALLY_VISIBLE_1440X900": true,
+  "assertions": {
+    "no_fixture": true,
+    "canonical_source": true,
+    "candles_gt_0": true,
+    "volumes_gt_0": true,
+    "not_empty": true,
+    "not_stale": true,
+    "no_2030": true
+  },
+  "geometry": {
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "vh": 900,
+    "chart": {
+      "top": 406.65625,
+      "bottom": 906.15625,
+      "height": 499.5
+    },
+    "metaText": "Symbol NOTUSDT\nSource historical_panel_offline:214a3f1940d54030\nTF 1h\nBars 120\nFreshness 2026-07-16T18:05:26Z\nTZ UTC\nO/H/L/C 0.012215/0.012229/0.011761/0.011923\nGaps 0",
+    "candles": 216,
+    "volumes": 120,
+    "empty": false,
+    "stale": "none",
+    "bodyHasFixture": false,
+    "bodyHas2030": false,
+    "bodyHasCanonical": true
+  }
+}

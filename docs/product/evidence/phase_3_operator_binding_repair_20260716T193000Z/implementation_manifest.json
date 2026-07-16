@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "go_token": "GO_VISUAL_OPERATOR_DASHBOARD_PR5248_OPERATOR_RUNTIME_DATA_BINDING_REPAIR_V1",
+  "previous_evidence_operator_path_parity": false,
+  "repair_evidence_operator_path_parity": true,
+  "root_cause": "phase3_evidence_used_test_fixture_1d_harness_not_canonical_operator_1h_bind",
+  "files": [
+    "src/webui/market_visual_operator_surface_v1/local_offline_binding_v1.py",
+    "src/webui/market_visual_operator_surface_v1/chart_display_v1.py",
+    "src/webui/app.py",
+    "tests/webui/test_market_dashboard_operator_ohlcv_binding_v1.py",
+    "tests/webui/test_market_dashboard_phase_3_chart_polish_v1.py"
+  ],
+  "canonical_bundle_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/_market_visual_operator_offline_bundles_v1",
+  "operator_source_after": "historical_panel_offline:214a3f1940d54030",
+  "operator_bar_count_after": 120,
+  "stop_before_merge": true
+}

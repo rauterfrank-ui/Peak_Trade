@@ -1,0 +1,11 @@
+{
+  "fixture_complete_minimal": false,
+  "historical_panel": true,
+  "candles": 216,
+  "volumes": 120,
+  "empty_chart": false,
+  "stale_overlay": false,
+  "has_2030": false,
+  "bars_meta": 120,
+  "source": "historical_panel_offline:214a3f1940d54030"
+}

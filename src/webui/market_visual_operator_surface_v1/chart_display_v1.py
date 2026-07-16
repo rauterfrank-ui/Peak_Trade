@@ -92,6 +92,27 @@ def _window_href(
     return "/market?" + urlencode(params)
 
 
+def _classify_source(source: str) -> str:
+    text = (source or "").strip().lower()
+    if not text or text == _UNAVAILABLE:
+        return "UNAVAILABLE"
+    if text.startswith("fixture:") or "complete_minimal" in text or text.startswith("test_"):
+        return "TEST_FIXTURE"
+    if text.startswith("historical_panel_offline:"):
+        return "CANONICAL_LOCAL_READ_ONLY_BUNDLE"
+    return "UNKNOWN"
+
+
+def _freshness_state(freshness: str) -> str:
+    dt = _parse_ts(freshness)
+    if dt is None:
+        return "UNAVAILABLE" if freshness in ("", _UNAVAILABLE) else "INVALID"
+    now = datetime.now(timezone.utc)
+    if dt > now + timedelta(minutes=5):
+        return "INVALID_FUTURE"
+    return "OK"
+
+
 def build_chart_display_v1(
     *,
     payload: dict[str, Any] | None = None,
@@ -123,12 +144,14 @@ def build_chart_display_v1(
         meta.get("data_source") or futures.get("source") or payload.get("source"),
         default="unavailable",
     )
+    source_class = _classify_source(source)
     freshness = _text(
         primary.get("generated_at_utc")
         or meta.get("freshness")
         or futures.get("generated_at_iso")
         or payload.get("generated_at_utc")
     )
+    freshness_state = _freshness_state(freshness)
     ohlcv_status = _text(workspace.get("ohlcv_status"), default="unavailable")
     if bars_returned == 0 and ohlcv_status in (_UNAVAILABLE, "ready"):
         ohlcv_status = "empty" if payload.get("bars_returned") == 0 else ohlcv_status
@@ -176,10 +199,18 @@ def build_chart_display_v1(
     overlay_state = "none"
     if stale:
         overlay_state = "stale"
+    elif freshness_state == "INVALID_FUTURE":
+        overlay_state = "missing"
     elif malformed:
         overlay_state = "malformed"
     elif missing:
         overlay_state = "missing"
+
+    canonical_real = (
+        source_class == "CANONICAL_LOCAL_READ_ONLY_BUNDLE"
+        and bars_returned > 0
+        and freshness_state != "INVALID_FUTURE"
+    )
 
     last_bar = bars[-1] if bars else {}
     return {
@@ -191,7 +222,9 @@ def build_chart_display_v1(
         "selected_symbol": symbol,
         "timeframe": timeframe,
         "source": source,
+        "source_class": source_class,
         "freshness": freshness,
+        "freshness_state": freshness_state,
         "timezone": "UTC",
         "timezone_visible": True,
         "bar_count": bars_returned,
@@ -205,13 +238,13 @@ def build_chart_display_v1(
         "stale": stale,
         "missing": missing,
         "malformed": malformed,
-        "has_real_bars": bars_returned > 0,
+        "has_real_bars": bars_returned > 0 and source_class != "TEST_FIXTURE",
         "gap_indices": gap_indices,
         "gap_count": gap_count,
         "gap_rendering_policy": "EXPLICIT",
         "no_visual_interpolation": True,
-        "candle_chart_real_data": bars_returned > 0,
-        "volume_real_data": bars_returned > 0,
+        "candle_chart_real_data": canonical_real,
+        "volume_real_data": canonical_real,
         "selected_instrument_sync": symbol != _UNAVAILABLE
         and symbol == _text(payload.get("symbol"), default=symbol),
         "last_ohlc": {
@@ -231,6 +264,7 @@ def build_chart_display_v1(
             "NO_VISUAL_INTERPOLATION_OF_MISSING_BARS": True,
             "STALE_DATA_OVERLAY_REQUIRED": True,
             "TIMEZONE_VISIBLE": True,
+            "SOURCE_CLASS_REQUIRED_FOR_REAL_DATA": "CANONICAL_LOCAL_READ_ONLY_BUNDLE",
         },
     }
 

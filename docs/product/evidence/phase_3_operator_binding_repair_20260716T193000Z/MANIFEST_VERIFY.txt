@@ -1,0 +1,10 @@
+./browser/html_contract.json: OK
+./browser/operator_chrome_report.json: OK
+./implementation_manifest.json: OK
+./phase3_operator_binding_repair_report.md: OK
+./screenshots/operator_1440x900_overview_candles.png: OK
+./screenshots/operator_chart_closeup_candles_volume.png: OK
+./screenshots/operator_chart_meta_row.png: OK
+./screenshots/operator_full_page.png: OK
+./test_output/focused_tests.txt: OK
+MANIFEST_VERIFY_PASS=true

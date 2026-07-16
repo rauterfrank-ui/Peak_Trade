@@ -116,15 +116,18 @@ def test_chart_display_adapter_windows_and_gaps_unit() -> None:
             "bars_returned": 3,
             "symbol": "AAAUSDT",
             "source": "futures",
-            "meta": {"data_source": "fixture_ohlcv", "freshness": "2030-01-01T04:00:00Z"},
+            "meta": {
+                "data_source": "fixture:complete_minimal",
+                "freshness": "2026-07-16T18:05:26Z",
+            },
         },
         primary_values={
             "symbol": "AAAUSDT",
             "timeframe": "1h",
-            "generated_at_utc": "2030-01-01T04:00:00Z",
+            "generated_at_utc": "2026-07-16T18:05:26Z",
         },
         selected_instrument_workspace={"ohlcv_status": "ready"},
-        futures_ohlcv={"source": "fixture_ohlcv", "stale": False},
+        futures_ohlcv={"source": "fixture:complete_minimal", "stale": False},
         query={
             "symbol": "AAAUSDT",
             "source": "futures",
@@ -133,10 +136,11 @@ def test_chart_display_adapter_windows_and_gaps_unit() -> None:
             "top_n": 20,
         },
     )
-    assert vm["candle_chart_real_data"] is True
-    assert vm["volume_real_data"] is True
+    assert vm["candle_chart_real_data"] is False  # fixture source is not canonical REAL_DATA
+    assert vm["volume_real_data"] is False
+    assert vm["source_class"] == "TEST_FIXTURE"
     assert vm["timezone"] == "UTC"
-    assert vm["source"] == "fixture_ohlcv"
+    assert vm["source"] == "fixture:complete_minimal"
     assert vm["gap_count"] == 1
     assert 2 in vm["gap_indices"]
     assert vm["no_visual_interpolation"] is True
@@ -144,6 +148,74 @@ def test_chart_display_adapter_windows_and_gaps_unit() -> None:
     assert labels == ["50", "120", "250", "ALL"]
     assert any("limit=120" in w["href"] for w in vm["window_controls"])
     assert any("limit=720" in w["href"] for w in vm["window_controls"] if w["label"] == "ALL")
+
+
+def test_chart_display_canonical_source_marks_real_data() -> None:
+    bars = [
+        {
+            "ts": "2024-06-01T00:00:00Z",
+            "open": 1,
+            "high": 2,
+            "low": 0.5,
+            "close": 1.5,
+            "volume": 10,
+        }
+    ]
+    vm = build_chart_display_v1(
+        payload={
+            "bars": bars,
+            "bars_returned": 1,
+            "symbol": "ETHUSDT",
+            "meta": {
+                "data_source": "historical_panel_offline:abc",
+                "freshness": "2026-07-16T18:05:26Z",
+            },
+        },
+        primary_values={
+            "symbol": "ETHUSDT",
+            "timeframe": "1h",
+            "generated_at_utc": "2026-07-16T18:05:26Z",
+        },
+        selected_instrument_workspace={"ohlcv_status": "ready"},
+        futures_ohlcv={"source": "historical_panel_offline:abc", "stale": False},
+        query={"symbol": "ETHUSDT", "source": "futures", "timeframe": "1h", "limit": 120},
+    )
+    assert vm["source_class"] == "CANONICAL_LOCAL_READ_ONLY_BUNDLE"
+    assert vm["candle_chart_real_data"] is True
+    assert vm["volume_real_data"] is True
+    assert vm["freshness_state"] == "OK"
+
+
+def test_chart_display_future_freshness_is_invalid() -> None:
+    vm = build_chart_display_v1(
+        payload={
+            "bars": [
+                {
+                    "ts": "2024-01-01T00:00:00Z",
+                    "open": 1,
+                    "high": 1,
+                    "low": 1,
+                    "close": 1,
+                    "volume": 1,
+                }
+            ],
+            "bars_returned": 1,
+            "meta": {
+                "data_source": "historical_panel_offline:abc",
+                "freshness": "2030-01-15T12:34:56Z",
+            },
+        },
+        primary_values={
+            "symbol": "ETHUSDT",
+            "timeframe": "1h",
+            "generated_at_utc": "2030-01-15T12:34:56Z",
+        },
+        selected_instrument_workspace={"ohlcv_status": "ready"},
+        futures_ohlcv={"source": "historical_panel_offline:abc", "stale": False},
+        query={"symbol": "ETHUSDT", "timeframe": "1h", "limit": 120},
+    )
+    assert vm["freshness_state"] == "INVALID_FUTURE"
+    assert vm["candle_chart_real_data"] is False
 
 
 def test_chart_display_stale_overlay_without_invented_bars() -> None:
