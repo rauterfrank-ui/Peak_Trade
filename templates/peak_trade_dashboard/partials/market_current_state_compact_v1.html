@@ -16,19 +16,40 @@
   </div>
 
   <p class="m-0 mb-1.5 text-[9px] font-mono text-slate-400" data-market-latest-merged-pr-v1="true">
-    PR #{{ current_state.system.LATEST_MERGED_PR_NUMBER|e }} MERGED · {{ current_state.system.LATEST_MERGED_PR_TITLE|e }}
+    PR #{{ current_state.system.LATEST_MERGED_PR_NUMBER|e }} {{ current_state.system.LATEST_MERGED_PR_STATE|e }} · {{ current_state.system.LATEST_MERGED_PR_TITLE|e }}
     · NOTION_CURRENT={{ current_state.system.NOTION_CURRENT|lower }} · NOTION_UPDATED={{ current_state.system.NOTION_UPDATED|lower }}
   </p>
 
-  <div class="mb-2" data-market-blocked-main-gates-v1="true">
-    <p class="m-0 mb-1 text-[9px] uppercase text-rose-300/90">Blocked main gates (system-level)</p>
+  <div class="mb-2" data-market-technical-completion-v1="true">
+    <p class="m-0 mb-1 text-[9px] uppercase text-emerald-300/90">Technical completion (not economic validity)</p>
     <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-1 text-[9px] font-mono">
-      <div><dt class="text-slate-500 uppercase">Chain wired</dt><dd class="m-0 text-rose-200/90" data-market-full-canonical-chain-wired-v1="true">{{ current_state.blocked_main_gates.FULL_CANONICAL_CHAIN_WIRED|lower }}</dd></div>
-      <div><dt class="text-slate-500 uppercase">Parity pass</dt><dd class="m-0 text-rose-200/90" data-market-backtest-runtime-parity-pass-v1="true">{{ current_state.blocked_main_gates.BACKTEST_RUNTIME_DECISION_PARITY_PASS|lower }}</dd></div>
+      <div><dt class="text-slate-500 uppercase">Chain wired</dt><dd class="m-0 text-emerald-200/90" data-market-full-canonical-chain-wired-v1="true">{{ current_state.technical_completion.FULL_CANONICAL_CHAIN_WIRED|lower }}</dd></div>
+      <div><dt class="text-slate-500 uppercase">Parity pass</dt><dd class="m-0 text-emerald-200/90" data-market-backtest-runtime-parity-pass-v1="true">{{ current_state.technical_completion.BACKTEST_RUNTIME_DECISION_PARITY_PASS|lower }}</dd></div>
       <div><dt class="text-slate-500 uppercase">Econ evidence</dt><dd class="m-0 text-rose-200/90" data-market-economic-evidence-admissible-v1="true">{{ current_state.blocked_main_gates.SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE|lower }}</dd></div>
       <div><dt class="text-slate-500 uppercase">Runtime rewire</dt><dd class="m-0 text-rose-200/90" data-market-runtime-rewire-admissible-v1="true">{{ current_state.blocked_main_gates.RUNTIME_REWIRE_ADMISSIBLE|lower }}</dd></div>
     </dl>
     <p class="m-0 mt-1 text-[8px] text-amber-200/80" data-market-next-blocker-v1="true">NEXT_BLOCKER={{ current_state.system.NEXT_BLOCKER|e }}</p>
+  </div>
+
+  <div class="mb-2" data-market-economic-result-v1="true">
+    <p class="m-0 mb-1 text-[9px] uppercase text-rose-300/90">Economic result (offline evidence closeout)</p>
+    <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-1 text-[9px] font-mono">
+      <div><dt class="text-slate-500 uppercase">Status</dt><dd class="m-0 text-rose-200/90" data-market-economic-status-v1="true">{{ current_state.economic_result.ECONOMIC_STATUS|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase">Trades</dt><dd class="m-0 text-slate-300" data-market-trade-count-v1="true">{{ current_state.economic_result.TRADE_COUNT|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase">Net return</dt><dd class="m-0 text-slate-300" data-market-net-return-v1="true">{{ current_state.economic_result.NET_RETURN|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase">Econ gate</dt><dd class="m-0 text-rose-200/90" data-market-economic-validity-offline-gate-v1="true">{{ current_state.economic_result.ECONOMIC_VALIDITY_OFFLINE_GATE_PASS|lower }}</dd></div>
+      <div><dt class="text-slate-500 uppercase">Retry</dt><dd class="m-0 text-amber-200/80" data-market-unchanged-retry-forbidden-v1="true">UNCHANGED_RETRY_FORBIDDEN={{ current_state.economic_result.UNCHANGED_RETRY_FORBIDDEN|lower }}</dd></div>
+      <div><dt class="text-slate-500 uppercase">Rescue</dt><dd class="m-0 text-slate-400" data-market-policy-rescue-allowed-v1="true">POLICY_RESCUE_ALLOWED={{ current_state.economic_result.POLICY_RESCUE_ALLOWED|lower }}</dd></div>
+    </dl>
+  </div>
+
+  <div class="mb-2" data-market-current-research-v1="true">
+    <p class="m-0 mb-1 text-[9px] uppercase text-slate-400">Current research scope</p>
+    <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-2 gap-y-1 text-[9px] font-mono">
+      <div><dt class="text-slate-500 uppercase">Strategy</dt><dd class="m-0 text-sky-200/90" data-market-current-research-strategy-v1="true">{{ current_state.current_research.strategy_id|e }}/{{ current_state.current_research.strategy_version|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase">Status</dt><dd class="m-0 text-rose-200/90" data-market-current-research-status-v1="true">{{ current_state.current_research.status|e }}</dd></div>
+      <div class="sm:col-span-2"><dt class="text-slate-500 uppercase">Binding</dt><dd class="m-0 text-slate-300 break-all" data-market-current-research-binding-v1="true">{{ current_state.current_research.binding_id|e }}</dd></div>
+    </dl>
   </div>
 
   <div class="mb-2" data-market-parity-surfaces-completed-v1="true">
@@ -60,9 +81,9 @@
   </dl>
 
   <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-1 text-[9px] font-mono mb-2" data-market-current-state-fleet-flags-v1="true">
-    <div><dt class="text-slate-500 uppercase">Pending eval</dt><dd class="m-0 text-sky-200/90" data-market-authorized-pending-count-v1="true">{{ current_state.system.AUTHORIZED_PENDING_EVALUATION_COUNT|e }}</dd></div>
-    <div><dt class="text-slate-500 uppercase">Next strategy</dt><dd class="m-0 text-sky-200/90" data-market-next-evaluation-strategy-v1="true">{{ current_state.system.NEXT_EVALUATION_STRATEGY_ID|e }}</dd></div>
-    <div><dt class="text-slate-500 uppercase">Next status</dt><dd class="m-0 text-sky-200/90" data-market-next-evaluation-status-v1="true">{{ current_state.system.NEXT_EVALUATION_CONFIG_STATUS|e }}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Pending eval</dt><dd class="m-0 text-slate-300" data-market-authorized-pending-count-v1="true">{{ current_state.system.AUTHORIZED_PENDING_EVALUATION_COUNT|e }}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Next strategy</dt><dd class="m-0 text-slate-300" data-market-next-evaluation-strategy-v1="true">{{ current_state.system.NEXT_EVALUATION_STRATEGY_ID|e }}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Next status</dt><dd class="m-0 text-slate-300" data-market-next-evaluation-status-v1="true">{{ current_state.system.NEXT_EVALUATION_CONFIG_STATUS|e }}</dd></div>
     <div><dt class="text-slate-500 uppercase">Econ pass</dt><dd class="m-0 text-rose-200/90" data-market-economic-validity-pass-v1="true">false</dd></div>
     <div><dt class="text-slate-500 uppercase">Runtime auth</dt><dd class="m-0 text-slate-300" data-market-runtime-authorized-v1="true">{{ current_state.system.RUNTIME_AUTHORIZED|lower }}</dd></div>
     <div><dt class="text-slate-500 uppercase">Econ admissible</dt><dd class="m-0 text-rose-200/90" data-market-system-economic-admissible-v1="true">{{ current_state.system.SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE|lower }}</dd></div>
@@ -77,14 +98,15 @@
         data-market-fleet-row-v1="true"
         data-market-fleet-strategy-id="{{ row.strategy_id|e }}"
         data-market-fleet-status="{{ row.status_label|e }}"
+        {% if row.fleet_role is defined %}data-market-fleet-role="{{ row.fleet_role|e }}"{% endif %}
       >
         <span class="font-mono text-slate-200">{{ row.strategy_id|e }} {{ row.strategy_version|e }} / config {{ row.config_version|e }}</span>
         <span class="block mt-0.5 uppercase text-slate-400">{{ row.status_label|e }}</span>
         {% if row.policy_ratified %}
         <span class="block text-[8px] text-emerald-300/80">POLICY_RATIFIED · FIXED_CONFIG_BOUND</span>
         {% endif %}
-        {% if row.economic_evaluation_executed is defined and not row.economic_evaluation_executed %}
-        <span class="block text-[8px] text-slate-500">ECONOMIC_EVALUATION_EXECUTED=false</span>
+        {% if row.fleet_role is defined and row.fleet_role == 'current_terminal' %}
+        <span class="block text-[8px] text-amber-200/80">CURRENT_TERMINAL · ECONOMIC_EVALUATION_EXECUTED={{ row.economic_evaluation_executed|lower }} · EVIDENCE_RESULTS_REMATERIALIZED={{ row.evidence_results_rematerialized|lower }}</span>
         {% endif %}
       </li>
       {% endfor %}
@@ -103,7 +125,7 @@
       <div><dt class="text-slate-500">oversize</dt><dd class="m-0">{{ cfg.oversize_policy|e }}</dd></div>
       <div class="sm:col-span-2"><dt class="text-slate-500">sizing invariant</dt><dd class="m-0">{{ cfg.sizing_invariant.lhs|e }} &lt;= {{ cfg.sizing_invariant.rhs|e }}</dd></div>
     </dl>
-    <p class="m-0 mt-1 text-[8px] text-slate-500">Fixed config · no tuning · no dataset switch · no threshold change · no economic evaluation · no performance statement</p>
+    <p class="m-0 mt-1 text-[8px] text-slate-500">Fixed config · no tuning · no dataset switch · no threshold change · no performance statement</p>
   </details>
 
   <div class="rounded border border-sky-900/40 bg-sky-950/20 px-2 py-1.5 mb-2" data-market-next-parity-slice-v1="true">
@@ -118,6 +140,17 @@
     <p class="m-0 mt-1 text-[8px] text-slate-500">DOCUMENTED_ONLY_NOT_EXECUTABLE · operator ratification required · no runtime authority · no promotion</p>
   </div>
 
+  <div class="rounded border border-slate-700/50 bg-slate-950/35 px-2 py-1.5 mb-2" data-market-current-state-provenance-v1="true">
+    <p class="m-0 text-[9px] uppercase text-slate-400">Provenance (display-only; not request-time loaded)</p>
+    <dl class="m-0 mt-1 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-1 text-[8px] font-mono text-slate-400">
+      <div><dt class="text-slate-500">SOURCE_PR</dt><dd class="m-0" data-market-source-pr-v1="true">{{ current_state.provenance.CURRENT_STATE_SOURCE_PR|e }}</dd></div>
+      <div><dt class="text-slate-500">SOURCE_HEAD</dt><dd class="m-0 break-all" data-market-source-head-v1="true">{{ current_state.provenance.CURRENT_STATE_SOURCE_HEAD|e }}</dd></div>
+      <div class="sm:col-span-2"><dt class="text-slate-500">RESULT_JSON</dt><dd class="m-0 break-all" data-market-result-json-v1="true">{{ current_state.provenance.CURRENT_STATE_RESULT_JSON|e }}</dd></div>
+      <div><dt class="text-slate-500">MANIFESTS</dt><dd class="m-0" data-market-manifests-verified-v1="true">MANIFESTS_VERIFIED={{ current_state.provenance.MANIFESTS_VERIFIED|lower }} · RC={{ current_state.provenance.PRIMARY_SOURCE_MANIFEST_VERIFY_RC|e }}/{{ current_state.provenance.SOURCE_REPAIR_MANIFEST_VERIFY_RC|e }}/{{ current_state.provenance.CLOSEOUT_MANIFEST_VERIFY_RC|e }}</dd></div>
+      <div><dt class="text-slate-500">PR5242 closeout flags</dt><dd class="m-0" data-market-pr5242-closeout-flags-v1="true">ECONOMIC_EVALUATION_EXECUTED={{ current_state.provenance.ECONOMIC_EVALUATION_EXECUTED|lower }} · EVIDENCE_RESULTS_REMATERIALIZED={{ current_state.provenance.EVIDENCE_RESULTS_REMATERIALIZED|lower }}</dd></div>
+    </dl>
+  </div>
+
   <div class="flex flex-wrap gap-1 text-[8px] uppercase mb-1" data-market-governance-safety-compact-v1="true">
     <span class="rounded border border-emerald-800/50 px-1 py-0.5 text-emerald-200/90">FUTURES_ONLY</span>
     <span class="rounded border border-rose-800/45 px-1 py-0.5 text-rose-200/90" data-market-governance-directional-crypto-blocked-v1="true">BIT<!-- -->COIN_DIRECTION_ALLOWED=false</span>
@@ -130,6 +163,6 @@
   </div>
 
   <p class="m-0 text-[8px] text-slate-500" data-market-evidence-primary-v1="true">
-    PR #{{ current_state.system.LATEST_MERGED_PR_NUMBER|e }} MERGED · FULL_CANONICAL_CHAIN_WIRED=false · BACKTEST_RUNTIME_DECISION_PARITY_PASS=false · RUNTIME_REWIRE_ADMISSIBLE=false · view-only · no controls
+    PR #{{ current_state.system.LATEST_MERGED_PR_NUMBER|e }} {{ current_state.system.LATEST_MERGED_PR_STATE|e }} · FULL_CANONICAL_CHAIN_WIRED=true · BACKTEST_RUNTIME_DECISION_PARITY_PASS=true · ECONOMIC_STATUS=FAIL · ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false · RUNTIME_REWIRE_ADMISSIBLE=false · view-only · no controls
   </p>
 </section>
