@@ -1,0 +1,79 @@
+{
+  "BROWSER_REQUESTED": "GOOGLE_CHROME",
+  "PLAYWRIGHT_CHANNEL": "chrome",
+  "BROWSER_ACTUAL": "GOOGLE_CHROME",
+  "REAL_CHROME_VERIFIED": true,
+  "CHROMIUM_FALLBACK_USED": false,
+  "CONSOLE_ERRORS": 0,
+  "PAGE_ERRORS": 0,
+  "FAILED_ASSETS": 0,
+  "EXTERNAL_NETWORK_REQUESTS": 0,
+  "UNEXPECTED_NETWORK_REQUESTS": 0,
+  "HORIZONTAL_OVERFLOW": false,
+  "CHART_TOP_VISIBLE_1440x900": true,
+  "CHART_MATERIALLY_VISIBLE_1440x900": true,
+  "screenshots": [
+    "docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/01_header_1440x900.png",
+    "docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/02_hero_1440x900.png",
+    "docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/03_hero_chart_1440x900.png",
+    "docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/04_above_fold_1440x900.png",
+    "docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/05_full_desktop_1440x900.png",
+    "docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/06_narrow_1280x800.png",
+    "docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/07_wide_1728x1117.png"
+  ],
+  "console_messages": [],
+  "geometry_1440x900": {
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "header": {
+      "top": 105,
+      "bottom": 158.6875,
+      "left": 176,
+      "right": 1264,
+      "width": 1088,
+      "height": 53.6875
+    },
+    "rail": {
+      "top": 164.28125,
+      "bottom": 228.78125,
+      "left": 176,
+      "right": 1264,
+      "width": 1088,
+      "height": 64.5
+    },
+    "hero": {
+      "top": 257.875,
+      "bottom": 401.0625,
+      "left": 176,
+      "right": 1264,
+      "width": 1088,
+      "height": 143.1875
+    },
+    "chart": {
+      "top": 406.65625,
+      "bottom": 864.15625,
+      "left": 176,
+      "right": 1264,
+      "width": 1088,
+      "height": 457.5
+    },
+    "sentence": {
+      "top": 296.46875,
+      "bottom": 314.015625,
+      "left": 186.59375,
+      "right": 895.125,
+      "width": 708.53125,
+      "height": 17.546875
+    },
+    "critical": {
+      "top": 264.46875,
+      "bottom": 394.46875,
+      "left": 903.125,
+      "right": 1253.40625,
+      "width": 350.28125,
+      "height": 130
+    },
+    "vh": 900,
+    "vw": 1440
+  }
+}

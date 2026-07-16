@@ -98,7 +98,7 @@ from typing import Any, Dict, List, Literal, Optional
 
 import toml
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -543,6 +543,16 @@ def create_app() -> FastAPI:
 
     # Market Surface v0 — read-only OHLCV (kein OPS-Cockpit-Bezug)
     app.include_router(create_market_router(templates, get_project_status))
+
+    @app.get("/favicon.ico", include_in_schema=False)
+    async def favicon_ico() -> Response:
+        """Self-only placeholder icon — prevents browser console 404 noise."""
+        # Minimal 1x1 PNG (self-hosted; no CDN).
+        png = bytes.fromhex(
+            "89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c489"
+            "0000000a49444154789c63000100000500010d0a2db40000000049454e44ae426082"
+        )
+        return Response(content=png, media_type="image/png")
 
     # Master V2 Double Play — read-only dashboard display JSON (pure snapshot; no I/O)
     app.include_router(double_play_dashboard_display_json_v0_router)

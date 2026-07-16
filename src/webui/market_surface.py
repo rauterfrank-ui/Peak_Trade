@@ -63,6 +63,9 @@ from .market_dashboard_current_state_runtime_v0 import (
 from .market_visual_operator_surface_v1 import (
     build_market_visual_operator_surface_context,
 )
+from .market_visual_operator_surface_v1.operator_overview_display_v1 import (
+    build_operator_overview_display_v1,
+)
 from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
 
 logger = logging.getLogger(__name__)
@@ -2856,6 +2859,10 @@ def build_market_selected_instrument_workspace_display_context(
     volume_status = "available" if volume_display and volume_display != "—" else "unavailable"
 
     ranking_rank = governed_row.get("rank") if governed_row else None
+    if governed_row:
+        ranking_regime = str(governed_row.get("regime") or "unavailable").strip() or "unavailable"
+    else:
+        ranking_regime = "unavailable"
     ranking_score = (
         str(governed_row.get("score_display") or "unavailable") if governed_row else "unavailable"
     )
@@ -2972,6 +2979,7 @@ def build_market_selected_instrument_workspace_display_context(
         "timeframe": str(primary_values.get("timeframe") or ""),
         "selected_instrument": symbol,
         "ranking_rank": ranking_rank,
+        "ranking_regime": ranking_regime,
         "ranking_score_display": ranking_score,
         "ranking_eligibility_status": ranking_eligibility,
         "ranking_f5_status": ranking_f5_status,
@@ -3108,6 +3116,15 @@ def build_market_v0_page_template_context(
         source=source,
         futures_ohlcv=futures_ohlcv,
     )
+    operator_overview_phase_2 = build_operator_overview_display_v1(
+        primary_values=primary_values,
+        selected_instrument_workspace=selected_instrument_workspace,
+        visual_operator_header=visual_operator["visual_operator_header"],
+        decision_funnel_visual=visual_operator["decision_funnel_visual"],
+        safety_matrix=safety_matrix,
+        ai_activity_state=visual_operator["ai_activity_state"],
+        governed_top20=governed_top20,
+    )
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
         f"/market?source=dummy&symbol={quote('ETHUSDT', safe='')}"
@@ -3141,6 +3158,7 @@ def build_market_v0_page_template_context(
         "economic_observability_visual": visual_operator["economic_observability_visual"],
         "ai_linear_diagnostics_visual": visual_operator["ai_linear_diagnostics_visual"],
         "ai_activity_state": visual_operator["ai_activity_state"],
+        "operator_overview_phase_2": operator_overview_phase_2,
         "top_n": top_n,
         "top_n_toggle_hrefs": {
             20: build_market_top_n_toggle_href(

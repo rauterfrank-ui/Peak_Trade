@@ -237,7 +237,7 @@ Dieses Dokument ist abgeleitet und dem Product Runbook untergeordnet. Bei Widers
 
 | Field | Plan |
 |-------|------|
-| Goal | Safari/WebKit evidence; console clean; visual regression; network allowlist zero; a11y basics |
+| Goal | Chrome/Playwright (`channel=chrome`) primary evidence; Safari/WebKit secondary only; console clean; visual regression; network allowlist zero; a11y basics |
 | Affected files | Browser test infra / evidence dirs; possibly small polish only |
 | Owners | New or extended browser harness under `tests/webui/` (reuse structure contracts first; add E2E owner only if missing — closes R6) |
 | Expected PR | `test(webui): visual operator demo readiness evidence (phase 10)` |

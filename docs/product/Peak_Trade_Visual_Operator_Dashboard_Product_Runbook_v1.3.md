@@ -111,7 +111,8 @@ PRIMARY_CSS_OWNER=templates/peak_trade_dashboard/market_v0.html+base.html
 PRIMARY_CHART_RENDERER=SSR_SVG
 DETAIL_CHART_LIBRARY=Chart.js_4.4.1
 MARKET_BROWSER_E2E_BASELINE=MISSING
-REAL_SAFARI_BASELINE=open_-a_Safari_manual
+PRIMARY_BROWSER_BASELINE=PLAYWRIGHT_CHANNEL_CHROME
+REAL_SAFARI_BASELINE=SECONDARY_COMPATIBILITY_OPTIONAL
 ```
 
 Die Commit- und PR-Angaben sind Discovery-Evidence, keine dauerhafte Freigabe für weitere Arbeiten. Vor jeder Mutation sind `origin&#47;main`, aktueller `HEAD`, PR-Zustand und Worktree erneut zu prüfen.
@@ -141,7 +142,9 @@ templates/peak_trade_dashboard/market_v0.html
   ↓ SSR partials
 Header → Hero → Chart → Ranking → Decision → Risk → Economic → Diagnostics → Governance
   ↓
-Full SSR HTML in Safari / WebKit / Chromium
+Full SSR HTML in Google Chrome (Playwright channel=chrome);
+Chromium fallback allowed when Chrome channel unavailable;
+Safari / WebKit secondary compatibility only
 ```
 
 Verbindlich:
@@ -1465,7 +1468,8 @@ ENGINEERING_DETAILS_SECONDARY=true
 
 Ziel:
 
-- Safari,
+- Google Chrome (Playwright `channel="chrome"`) als primäre Browser-Abnahme,
+- Safari / WebKit nur als sekundärer Kompatibilitätscheck,
 - responsive,
 - no console errors,
 - no clipped content,
@@ -1478,6 +1482,73 @@ Exit-Kriterium:
 DEMO_READY=true
 EXTERNAL_VIEWER_READY=true
 ```
+
+---
+
+# Browser Verification Policy
+
+Ab dieser Klarstellung gilt für Entwicklung, visuelle Abnahme, Screenshots und automatisierte Evidence des Visual Operator Dashboards verbindlich:
+
+```text
+PRIMARY_BROWSER=GOOGLE_CHROME
+PRIMARY_BROWSER_AUTOMATION=PLAYWRIGHT
+PRIMARY_PLAYWRIGHT_CHANNEL=chrome
+PRIMARY_BROWSER_SCREENSHOTS=CHROME
+PRIMARY_DOM_ASSERTIONS=CHROME
+PRIMARY_CONSOLE_ASSERTIONS=CHROME
+PRIMARY_NETWORK_ASSERTIONS=CHROME
+PRIMARY_INTERACTION_ASSERTIONS=CHROME
+
+CHROMIUM_FALLBACK_ALLOWED=true
+CHROMIUM_FALLBACK_MUST_BE_REPORTED=true
+PLAYWRIGHT_CHROMIUM_IS_NOT_REAL_CHROME=true
+
+WEBKIT_VERIFICATION=SECONDARY
+REAL_SAFARI_VERIFICATION=SECONDARY
+SAFARI_REQUIRED_FOR_NORMAL_SLICE_MERGE=false
+SAFARI_FAILURE_BLOCKS_NORMAL_SLICE=false
+WEBKIT_IS_NOT_REAL_SAFARI=true
+SAFARI_ROLE=SECONDARY_COMPATIBILITY_CHECK
+WEBKIT_ROLE=SECONDARY_ENGINE_COMPATIBILITY_CHECK
+
+PRIMARY_BROWSER_EVIDENCE=PLAYWRIGHT_REAL_CHROME
+PRIMARY_INTERACTIVE_REVIEW=REAL_CHROME
+POST_SLICE_INTERACTIVE_OPEN=REAL_CHROME
+```
+
+### Playwright Channel
+
+Playwright muss, sofern lokal Google Chrome installiert ist, den installierten Chrome-Channel verwenden:
+
+```text
+channel="chrome"
+```
+
+Das gebündelte Chromium ist nur Fallback. Wenn Chromium statt `channel="chrome"` genutzt wird, muss die Evidence `CHROMIUM_FALLBACK_USED=true` ausweisen.
+
+### Safari / WebKit
+
+Safari und WebKit sind ausschließlich sekundäre Kompatibilitätschecks.
+
+- `SAFARI_REQUIRED_FOR_NORMAL_SLICE_MERGE=false`
+- `SAFARI_FAILURE_BLOCKS_NORMAL_SLICE=false`
+- Ein Safari-/WebKit-Fail blockiert einen normalen Slice-Merge nicht, solange Chrome/Playwright vollständig PASS ist und kein explizit Safari-spezifischer Release-Gate angeordnet wurde.
+- Ein bestandener WebKit-Lauf darf nicht als realer Safari-Nachweis und nicht als Ersatz für Chrome-Primary-Evidence bezeichnet werden.
+
+### Interaktive Review
+
+Nach erfolgreichen Slice-Läufen ist das Dashboard für die interaktive visuelle Review sichtbar in Google Chrome zu öffnen (`PRIMARY_INTERACTIVE_REVIEW=REAL_CHROME`). Safari ist dafür nicht der Primärpfad.
+
+### Pflicht-Reporting (getrennt)
+
+```text
+CHROME_PLAYWRIGHT_VERIFIED=<true|false>
+CHROMIUM_FALLBACK_USED=<true|false>
+WEBKIT_AUTOMATION_VERIFIED=<true|false>
+REAL_SAFARI_VERIFIED=<true|false>
+```
+
+`REAL_SAFARI_VERIFIED` und `WEBKIT_AUTOMATION_VERIFIED` sind Reporting-Felder, keine normalen Slice-Merge-Blocker.
 
 ---
 
@@ -1497,8 +1568,9 @@ EXTERNAL_VIEWER_READY=true
 
 ## 8.2 Layout
 
-- desktop Safari
-- desktop Chrome
+- desktop Google Chrome (Playwright `channel="chrome"`; primary)
+- Chromium fallback only when Chrome channel unavailable (must be reported)
+- desktop Safari / WebKit (secondary compatibility only; not a normal merge blocker)
 - common laptop width
 - wide desktop
 - no horizontal overflow
@@ -1549,16 +1621,20 @@ EXTERNAL_VIEWER_READY=true
 
 ## 8.7 Browser, DOM and Visual Regression
 
-- visual regression baseline
-- DOM overflow assertions
-- console error assertions
-- failed asset assertions
-- unexpected network request assertions
+Primär gemäß `# Browser Verification Policy`:
+
+- Google Chrome via Playwright (`channel="chrome"`) für Screenshots, DOM-, Console-, Network- und Interaction-Assertions
+- visual regression baseline (Chrome)
+- DOM overflow assertions (Chrome)
+- console error assertions (Chrome)
+- failed asset assertions (Chrome)
+- unexpected network request assertions (Chrome)
 - selection-context consistency assertions
 - stale response discard assertions
-- WebKit verification
-- real Safari verification where locally available
-- WebKit result not presented as equivalent to real Safari
+- Chromium fallback allowed only when Chrome channel unavailable; must be reported
+- WebKit verification secondary only
+- real Safari verification secondary only; not required for normal slice merge
+- WebKit result not presented as equivalent to real Safari and not as Chrome-primary substitute
 
 ## 8.8 Accessibility
 
@@ -1649,16 +1725,19 @@ Jeder PR mit visuellen Änderungen muss Screenshots erzeugen:
 15. Stale-data state.
 16. narrow desktop viewport.
 
-Screenshots sind Bestandteil der PR-Evidence.
+Screenshots sind Bestandteil der PR-Evidence und werden primär mit Google Chrome (Playwright `channel="chrome"`) erzeugt. Safari-Screenshots sind optionaler sekundärer Kompatibilitätsnachweis, keine generelle PR-Pflicht für normale Slices.
 
 Browser-Abnahme muss unterscheiden:
 
 ```text
+CHROME_PLAYWRIGHT_VERIFIED=<true|false>
+CHROMIUM_FALLBACK_USED=<true|false>
 WEBKIT_AUTOMATION_VERIFIED=<true|false>
 REAL_SAFARI_VERIFIED=<true|false>
 ```
 
-Ein bestandener WebKit-Lauf darf nicht als vollständiger realer Safari-Nachweis bezeichnet werden.
+Ein bestandener WebKit-Lauf darf nicht als vollständiger realer Safari-Nachweis und nicht als Ersatz für Chrome-Primary-Evidence bezeichnet werden.
+`REAL_SAFARI_VERIFIED=false` ist für normale Slice-Merges zulässig, solange Chrome/Playwright PASS ist.
 
 ---
 
@@ -1717,7 +1796,9 @@ ECONOMIC_OBSERVABILITY_COMPLETE=true
 AI_LINEAR_DIAGNOSTICS_COMPLETE_OR_EXPLICITLY_NOT_AVAILABLE=true
 GOVERNANCE_SECONDARY=true
 RESPONSIVE_PASS=true
-SAFARI_PASS=true
+CHROME_PASS=true
+CHROME_PLAYWRIGHT_VERIFIED=true
+SAFARI_PASS=OPTIONAL_SECONDARY_OR_EXPLICIT_RELEASE_GATE
 CONSOLE_CLEAN=true
 SCREENSHOT_REVIEW_PASS=true
 VISUAL_REGRESSION_PASS=true
@@ -1725,8 +1806,8 @@ DOM_OVERFLOW_ASSERTIONS_PASS=true
 SELECTION_CONTEXT_ATOMIC=true
 SNAPSHOT_IDENTITY_COHERENT=true
 UNEXPECTED_NETWORK_REQUESTS_ZERO=true
-WEBKIT_VERIFIED=true
-REAL_SAFARI_VERIFIED_OR_EXPLICITLY_PENDING=true
+WEBKIT_VERIFIED=OPTIONAL_SECONDARY
+REAL_SAFARI_VERIFIED=OPTIONAL_SECONDARY
 DEMO_READY=true
 ```
 
@@ -1765,24 +1846,26 @@ Arbeitsregeln:
 7. Pro Phase genau ein bounded PR.
 8. Jeder PR benötigt:
    - Focused Tests,
-   - Browser Render Verification,
-   - Safari Screenshots,
+   - Browser Render Verification via Google Chrome / Playwright (`channel="chrome"`),
+   - Chrome Screenshots (primär),
    - Layout Checks,
    - Console Error Check,
    - Source Provenance Proof,
    - MANIFEST.sha256.
+   Safari-Screenshots sind optionaler sekundärer Kompatibilitätsnachweis und keine normale Slice-Merge-Pflicht.
 9. Stoppe vor jedem Merge.
 10. Kein PR gilt als erfolgreich, wenn nur zusätzliche Karten, Badges oder Rohtext ergänzt wurden.
 11. Primärziel ist visuelle Verdichtung und Operator-Verständlichkeit.
 12. Engineering- und Governance-Details bleiben sekundär und einklappbar.
 13. Ein grünes ACTIVE ist ohne Processing Evidence verboten.
 14. Große Leerflächen, gebrochene Grids, abgeschnittene Karten und horizontale Überläufe sind Merge-Blocker.
-15. Nach jeder Phase Screenshot-Abnahme gegen dieses Runbook.
+15. Nach jeder Phase Screenshot-Abnahme gegen dieses Runbook (Chrome primary).
 16. Phase -1 ist vor jeder produktiven Dashboard-Mutation verpflichtend.
 17. Jede Phase benötigt konkrete Owner-, Datei-, Test- und Screenshot-Bindings.
 18. Selection Context und Snapshot Identity müssen über alle synchronen Oberflächen atomar konsistent sein.
-19. WebKit und echter Safari sind getrennt zu berichten.
+19. Chrome/Playwright ist primär; WebKit und echter Safari sind sekundär und getrennt zu berichten. Safari-/WebKit-Fails blockieren normale Slices nicht, sofern Chrome PASS ist und kein expliziter Safari-Release-Gate gilt.
 20. Unerwartete Browser-Netzwerkzugriffe sind Merge-Blocker.
+20a. Nach erfolgreichen Slice-Läufen ist das Dashboard sichtbar in Google Chrome zu öffnen (`POST_SLICE_INTERACTIVE_OPEN=REAL_CHROME`).
 21. Risk-Zustände `NOT_APPLICABLE`, `MISSING`, `STALE` und `INVALID` dürfen nicht visuell oder semantisch vermischt werden.
 22. Economic Evidence muss ihren Scope und ihre Kompatibilität mit dem ausgewählten Instrument sichtbar ausweisen.
 23. Design-Tokens müssen zentral gebunden sein; divergierende Inline-Token sind nicht zulässig.
