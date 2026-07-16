@@ -58,10 +58,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | Binding surface | FULL_CANONICAL_SYSTEM | Status | Pass-admissible |
 |---|---|---|---|
 | STEP29M full-canonical offline baseline fleet v0 | yes | `TERMINAL_NEGATIVE` | false |
-| `trend_following/v2` | yes | `TERMINAL_NEGATIVE` | false |
-| `momentum_1h/v2` | yes | `INCOMPLETE_BINDING` | false |
-| `bouchaud_microstructure_ohlcv_proxy/v1` | yes | `TERMINAL_NEGATIVE` | false |
-| `cross_sectional_futures_lead_lag_information_diffusion/v0` | no | `NOT_FULL_CANONICAL_SYSTEM` | false |
+| `trend_following&#47;v2` | yes | `TERMINAL_NEGATIVE` | false |
+| `momentum_1h&#47;v2` | yes | `INCOMPLETE_BINDING` | false |
+| `bouchaud_microstructure_ohlcv_proxy&#47;v1` | yes | `TERMINAL_NEGATIVE` | false |
+| `cross_sectional_futures_lead_lag_information_diffusion&#47;v0` | no | `NOT_FULL_CANONICAL_SYSTEM` | false |
 | Historical STEP29M registered-strategy fleet | no | `TERMINAL_NEGATIVE` | false |
 | OLS / linear diagnostics surfaces | no | `DIAGNOSTIC_ONLY` | false |
 
