@@ -1,0 +1,42 @@
+{# AI linear diagnostics — optional read-only surface; compact empty if missing (SSR) #}
+<section
+  class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-2.5 py-2 mt-3"
+  role="region"
+  aria-label="AI linear diagnostics"
+  data-market-ai-linear-diagnostics-visual-v1="true"
+  data-market-view-only="true"
+  data-market-read-only="true"
+  data-market-ai-linear-diagnostics-activity-state="{{ ai_linear_diagnostics_visual.activity_state|e }}"
+  data-market-ai-linear-diagnostics-bundle-status="{{ ai_linear_diagnostics_visual.bundle_status|e }}"
+>
+  <h2 class="m-0 mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-300">AI · Linear diagnostics</h2>
+
+  {% if ai_linear_diagnostics_visual.bundle_status != 'loaded' %}
+  <p class="m-0 text-[10px] text-slate-400" data-market-ai-linear-diagnostics-missing-source-v1="true">
+    MISSING_SOURCE — {{ ai_linear_diagnostics_visual.recovery_hint|e }}
+  </p>
+  {% else %}
+  <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-1 text-[9px] font-mono mb-2" data-market-ai-linear-diagnostics-summary-v1="true">
+    <div><dt class="text-slate-500 uppercase">Condition #</dt><dd class="m-0 text-slate-200">{% if ai_linear_diagnostics_visual.condition_number is not none %}{{ '%.4g'|format(ai_linear_diagnostics_visual.condition_number) }}{% else %}—{% endif %}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Matrix rank</dt><dd class="m-0 text-slate-200">{% if ai_linear_diagnostics_visual.matrix_rank is not none %}{{ ai_linear_diagnostics_visual.matrix_rank|e }}{% else %}—{% endif %}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Drift score</dt><dd class="m-0 text-slate-200">{% if ai_linear_diagnostics_visual.drift_score is not none %}{{ '%.4g'|format(ai_linear_diagnostics_visual.drift_score) }}{% else %}—{% endif %}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Drift verdict</dt><dd class="m-0 text-slate-200">{{ ai_linear_diagnostics_visual.drift_verdict|e or '—' }}</dd></div>
+  </dl>
+
+  {% if ai_linear_diagnostics_visual.coefficients %}
+  <div data-market-ai-linear-diagnostics-coefficients-v1="true">
+    <p class="m-0 mb-1 text-[9px] uppercase text-slate-500">Coefficients (factor exposure)</p>
+    <ul class="m-0 p-0 list-none grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 text-[9px] font-mono">
+      {% for coef in ai_linear_diagnostics_visual.coefficients %}
+      <li class="rounded border border-slate-800/60 bg-slate-900/40 px-1.5 py-0.5 flex justify-between gap-2">
+        <span class="text-slate-400 truncate" title="{{ coef.feature|e }}">{{ coef.feature|e }}</span>
+        <span class="text-slate-200">{% if coef.coefficient is not none %}{{ '%.4g'|format(coef.coefficient) }}{% else %}—{% endif %}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <p class="m-0 mt-1.5 text-[8px] text-slate-500" data-market-ai-linear-diagnostics-provenance-v1="true">source · {{ ai_linear_diagnostics_visual.source_id|e or 'unavailable' }} · read-only parse</p>
+  {% endif %}
+</section>

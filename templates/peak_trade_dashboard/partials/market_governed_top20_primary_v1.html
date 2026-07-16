@@ -143,15 +143,15 @@
     >Reset sort</a>
   </div>
 
-  <div class="overflow-x-auto max-w-full" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true" data-market-governed-matrix-table-v1="true" data-market-governed-matrix-scroll-contained-v1="true" data-market-matrix-scroll-contained-v1="true" data-market-matrix-detail-layer-v1="true">
-    <table class="w-full min-w-[52rem] text-[11px] border-collapse tabular-nums" data-market-matrix-scan-layer-v1="true">
+  <div class="overflow-x-auto max-w-full" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true" data-market-governed-matrix-table-v1="true" data-market-governed-matrix-scroll-contained-v1="true" data-market-matrix-scroll-contained-v1="true" data-market-matrix-detail-layer-v1="true" data-market-ranking-visual-columns-v1="true">
+    <table class="w-full min-w-[72rem] text-[11px] border-collapse tabular-nums" data-market-matrix-scan-layer-v1="true">
       <thead class="sticky top-0 z-10 bg-slate-950/95 backdrop-blur-sm">
         <tr class="text-left text-slate-400 border-b border-slate-800/70">
           <th scope="col" class="pr-2 py-1 font-normal sticky left-0 z-20 bg-slate-950/95">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.rank|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'rank' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="rank" title="Governed rank (default order)" {% if governed_top20.active_sort_field == 'rank' %}aria-current="true"{% endif %}>Rank</a>
           </th>
           <th scope="col" class="pr-2 py-1 font-normal">
-            <a href="{{ governed_top20.matrix_control_hrefs.sort.symbol|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'symbol' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="symbol" {% if governed_top20.active_sort_field == 'symbol' %}aria-current="true"{% endif %}>Futures symbol</a>
+            <a href="{{ governed_top20.matrix_control_hrefs.sort.symbol|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'symbol' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="symbol" {% if governed_top20.active_sort_field == 'symbol' %}aria-current="true"{% endif %}>Instrument</a>
           </th>
           <th scope="col" class="pr-2 py-1 font-normal text-right">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.score|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'score' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="score" title="Producer display_score" {% if governed_top20.active_sort_field == 'score' %}aria-current="true"{% endif %}>Score</a>
@@ -159,15 +159,16 @@
           <th scope="col" class="pr-2 py-1 font-normal">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.f5_status|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'f5_status' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="f5_status" title="F5 metadata status (snapshot-level)" {% if governed_top20.active_sort_field == 'f5_status' %}aria-current="true"{% endif %}>Eligibility / F5</a>
           </th>
+          <th scope="col" class="pr-2 py-1 font-normal" title="Producer bull/long suitability when present; else unavailable">Bull / Long</th>
+          <th scope="col" class="pr-2 py-1 font-normal" title="Producer bear/short suitability when present; else unavailable">Bear / Short</th>
+          <th scope="col" class="pr-2 py-1 font-normal" title="Producer regime when present; else unavailable">Regime</th>
+          <th scope="col" class="pr-2 py-1 font-normal text-right" title="Window momentum from offline OHLCV bars when available">Momentum</th>
+          <th scope="col" class="pr-2 py-1 font-normal text-right" title="Range volatility from offline OHLCV bars when available">Volatility</th>
+          <th scope="col" class="pr-2 py-1 font-normal text-right" title="Last-bar volume from offline OHLCV (liquidity proxy)">Liquidity</th>
           <th scope="col" class="pr-2 py-1 font-normal text-right">
-            <a href="{{ governed_top20.matrix_control_hrefs.sort.last_price|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'last_price' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="last_price" title="Last close from futures OHLCV readmodel when available" {% if governed_top20.active_sort_field == 'last_price' %}aria-current="true"{% endif %}>Last price</a>
+            <a href="{{ governed_top20.matrix_control_hrefs.sort.last_price|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'last_price' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="last_price" title="Last close from futures OHLCV readmodel when available" {% if governed_top20.active_sort_field == 'last_price' %}aria-current="true"{% endif %}>Last</a>
           </th>
-          <th scope="col" class="pr-2 py-1 font-normal text-right">
-            <a href="{{ governed_top20.matrix_control_hrefs.sort.change|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'change' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="change" title="Bar-over-bar % change from OHLCV when available" {% if governed_top20.active_sort_field == 'change' %}aria-current="true"{% endif %}>Change</a>
-          </th>
-          <th scope="col" class="pr-2 py-1 font-normal text-right">
-            <a href="{{ governed_top20.matrix_control_hrefs.sort.volume|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'volume' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="volume" title="Last bar volume from OHLCV when available" {% if governed_top20.active_sort_field == 'volume' %}aria-current="true"{% endif %}>Volume</a>
-          </th>
+          <th scope="col" class="pr-2 py-1 font-normal text-right" title="Bar-over-bar % change vs previous snapshot bar">Δ vs prev</th>
           <th scope="col" class="pr-2 py-1 font-normal">Freshness</th>
           <th scope="col" class="py-1 font-normal">Data status</th>
         </tr>
@@ -205,9 +206,14 @@
             <span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 font-mono text-[10px] text-slate-300" title="Candidate stage: {{ row.eligibility_status|e }}">{{ row.eligibility_status|e }}</span>
             <span class="ml-1 rounded border border-violet-800/50 bg-violet-950/40 px-1 py-0.5 font-mono text-[10px] text-violet-200/90" title="F5 metadata status">{{ row.f5_status|e }}</span>
           </td>
+          <td class="pr-2 py-1 font-mono text-[10px] text-slate-300" data-market-matrix-bull-suitability-v1="true">{{ row.bull_suitability|default('unavailable')|e }}</td>
+          <td class="pr-2 py-1 font-mono text-[10px] text-slate-300" data-market-matrix-bear-suitability-v1="true">{{ row.bear_suitability|default('unavailable')|e }}</td>
+          <td class="pr-2 py-1 font-mono text-[10px] text-slate-300" data-market-matrix-regime-v1="true">{{ row.regime|default('unavailable')|e }}</td>
+          <td class="pr-2 py-1 text-right font-mono text-[10px]" data-market-matrix-momentum-v1="true">{{ row.momentum_display|default('unavailable')|e }}</td>
+          <td class="pr-2 py-1 text-right font-mono text-[10px]" data-market-matrix-volatility-v1="true">{{ row.volatility_display|default('unavailable')|e }}</td>
+          <td class="pr-2 py-1 text-right font-mono text-[10px]" data-market-matrix-liquidity-v1="true">{{ row.liquidity_display|default('unavailable')|e }}</td>
           <td class="pr-2 py-1 text-right font-mono">{{ row.last_price_display|e }}</td>
-          <td class="pr-2 py-1 text-right font-mono">{{ row.change_display|e }}</td>
-          <td class="pr-2 py-1 text-right font-mono">{{ row.volume_display|e }}</td>
+          <td class="pr-2 py-1 text-right font-mono text-[10px]" data-market-matrix-change-vs-prev-v1="true">{{ row.change_vs_prev_display|default(row.change_display)|e }}</td>
           <td class="pr-2 py-1 font-mono text-[10px]">
             {% if row.stale %}
             <span class="inline-block w-2 h-2 rounded-full bg-amber-400 mr-1 align-middle" data-market-matrix-freshness-dot-v1="true" title="stale"></span>
@@ -246,9 +252,9 @@
     <ul class="m-0 mt-1 list-disc pl-4 space-y-0.5">
       <li><strong>Score</strong> — producer <code>display_score</code> from ranking funnel (not recomputed).</li>
       <li><strong>Eligibility</strong> — governed <code>selected</code> stage row; F5 status from futures read-only dashboard metadata.</li>
-      <li><strong>Last price / Change / Volume</strong> — from futures OHLCV readmodel when gate+bundle provide series; otherwise em dash.</li>
+      <li><strong>Bull / Bear / Regime</strong> — only when ranking producer supplies them; otherwise <code>unavailable</code> (never invented).</li>
+      <li><strong>Momentum / Volatility / Liquidity / Δ vs prev</strong> — derived only from offline futures OHLCV bars when present.</li>
       <li><strong>Sort / Filter</strong> — URL-backed GET view state only; does not mutate snapshot, ranking, or authority.</li>
-      <li>Liquidity, Regime, Bull/Bear, Scope — not shown (no canonical per-row owner in this slice).</li>
     </ul>
   </details>
   {% elif governed_top20.snapshot_status == 'malformed' %}

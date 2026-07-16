@@ -1,0 +1,84 @@
+{# Decision funnel waterfall + bull/bear + survival/suitability + block reasons (SSR) #}
+<section
+  class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-2.5 py-2 mt-3"
+  role="region"
+  aria-label="AI decision funnel"
+  data-market-decision-funnel-visual-v1="true"
+  data-market-view-only="true"
+  data-market-read-only="true"
+  data-market-decision-funnel-activity-state="{{ decision_funnel_visual.activity_state|e }}"
+  data-market-ai-activity-state="{{ ai_activity_state|e }}"
+>
+  <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+    <h2 class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-300">AI · Decision funnel</h2>
+    <span class="text-[9px] font-mono text-slate-500">activity · {{ decision_funnel_visual.activity_state|e }} · AI · {{ ai_activity_state|e }}</span>
+  </div>
+
+  {% if decision_funnel_visual.activity_state == 'NOT_AVAILABLE' %}
+  <p class="m-0 text-[10px] text-slate-400" data-market-decision-funnel-missing-source-v1="true">
+    Decision funnel unavailable — {{ decision_funnel_visual.recovery_hint|e }}
+  </p>
+  {% elif decision_funnel_visual.activity_state == 'FAILED' %}
+  <p class="m-0 text-[10px] text-rose-200/90" role="alert" data-market-decision-funnel-failed-v1="true">
+    Decision funnel evidence invalid/malformed (read-only fail-closed).
+  </p>
+  {% else %}
+  <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-1 text-[9px] font-mono mb-2" data-market-decision-funnel-summary-v1="true">
+    <div><dt class="text-slate-500 uppercase">Bars</dt><dd class="m-0 text-slate-200" data-market-decision-funnel-bar-count-v1="true">{% if decision_funnel_visual.bar_count is not none %}{{ decision_funnel_visual.bar_count|e }}{% else %}—{% endif %}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Trades</dt><dd class="m-0 text-slate-200" data-market-decision-funnel-trade-count-v1="true">{% if decision_funnel_visual.trade_count is not none %}{{ decision_funnel_visual.trade_count|e }}{% else %}—{% endif %}</dd></div>
+    <div class="col-span-2"><dt class="text-slate-500 uppercase">Zero-trade degeneration</dt><dd class="m-0 text-amber-200/80" data-market-decision-funnel-ztd-v1="true">{% if decision_funnel_visual.zero_trade_degeneration_explicit %}{{ decision_funnel_visual.zero_trade_degeneration|lower }}{% else %}unavailable{% endif %}</dd></div>
+  </dl>
+
+  <ol class="m-0 p-0 list-none space-y-1" data-market-decision-funnel-stages-v1="true">
+    {% for stage in decision_funnel_visual.stages %}
+    <li
+      class="flex items-center gap-2"
+      data-market-decision-funnel-stage-v1="true"
+      data-market-decision-funnel-stage-id="{{ stage.stage_id|e }}"
+      data-market-decision-funnel-stage-status="{{ stage.status|e }}"
+    >
+      <span class="w-40 shrink-0 text-[9px] uppercase tracking-wide text-slate-400">{{ stage.label|e }}</span>
+      <span class="flex-1 h-2 rounded bg-slate-900/70 overflow-hidden" aria-hidden="true">
+        {% if stage.count is not none and decision_funnel_visual.bar_count and decision_funnel_visual.bar_count > 0 %}
+        {% set pct = ((stage.count / decision_funnel_visual.bar_count) * 100)|round(2) %}
+        <span class="block h-full bg-gradient-to-r from-violet-500/80 to-sky-400/80" style="width: {{ pct if pct <= 100 else 100 }}%"></span>
+        {% endif %}
+      </span>
+      <span class="w-16 shrink-0 text-right text-[9px] font-mono {% if stage.count is not none %}text-slate-200{% else %}text-slate-500{% endif %}">
+        {% if stage.count is not none %}{{ stage.count|e }}{% else %}n/a{% endif %}
+      </span>
+    </li>
+    {% endfor %}
+  </ol>
+
+  <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2" data-market-decision-funnel-suitability-strip-v1="true">
+    {% for row in double_play_matrix.rows %}
+    {% if row.dimension_slug in ('side_summary', 'eligibility') %}
+    <div class="rounded border border-slate-800/60 bg-slate-900/40 px-1.5 py-1 text-[9px]" data-market-decision-funnel-suitability-row-v1="true" data-market-decision-funnel-suitability-dimension="{{ row.dimension_slug|e }}">
+      <p class="m-0 text-slate-500 uppercase">{{ row.dimension|e }}</p>
+      <p class="m-0 mt-0.5 font-mono text-slate-200"><span class="text-emerald-300/90">bull</span> {{ row.bull_long.status_label|e }} · <span class="text-rose-300/90">bear</span> {{ row.bear_short.status_label|e }}</p>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="mt-2" data-market-decision-funnel-block-reasons-v1="true">
+    <p class="m-0 mb-1 text-[9px] uppercase text-slate-500">Most frequent block reasons</p>
+    {% if decision_funnel_visual.most_frequent_block_reasons %}
+    <ul class="m-0 p-0 list-none space-y-1">
+      {% for reason in decision_funnel_visual.most_frequent_block_reasons %}
+      <li class="flex items-center gap-2" data-market-decision-funnel-block-reason-row-v1="true">
+        <span class="w-40 shrink-0 text-[9px] font-mono text-slate-300 truncate" title="{{ reason.label|e }}">{{ reason.label|e }}</span>
+        <span class="flex-1 h-2 rounded bg-slate-900/70 overflow-hidden" aria-hidden="true"><span class="block h-full bg-rose-500/70" style="width: {% if reason.count %}100{% else %}0{% endif %}%"></span></span>
+        <span class="w-12 shrink-0 text-right text-[9px] font-mono text-slate-200">{% if reason.count is not none %}{{ reason.count|e }}{% else %}n/a{% endif %}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="m-0 text-[9px] text-slate-500" data-market-decision-funnel-block-reasons-empty-v1="true">No block reasons recorded (empty).</p>
+    {% endif %}
+  </div>
+
+  <p class="m-0 mt-1.5 text-[8px] text-slate-500" data-market-decision-funnel-provenance-v1="true">source · {{ decision_funnel_visual.source_id|e or 'unavailable' }} · read-only · counts never invented</p>
+  {% endif %}
+</section>
