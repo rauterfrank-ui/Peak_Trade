@@ -1,6 +1,6 @@
-{# Compact single safety rail — visual foundation: one quiet line, no badge wall #}
+{# Compact single safety rail — quiet line, minimal chrome (Phase 1A composition). #}
 <section
-  class="rounded border border-slate-800/60 bg-slate-950/55 px-2 market-phase-1a-safety-rail"
+  class="border-0 border-b border-slate-800/50 bg-transparent px-0 market-phase-1a-safety-rail"
   role="region"
   aria-label="Visual operator safety rail"
   data-market-visual-operator-header-v1="true"
@@ -40,6 +40,8 @@
       title="Snapshot {{ visual_operator_header.snapshot_timestamp|e }} · Source {{ visual_operator_header.source|e }} · Freshness {{ visual_operator_header.data_freshness|e }}"
     >Authority NONE</span>
   </div>
+  <span class="sr-only" data-market-remodel-operator-lane-v2="true">Operator lane · futures-first · read-only</span>
+  <span class="sr-only" data-market-remodel-operator-freshness-v2="true">Freshness · {{ visual_operator_header.data_freshness|e }}</span>
   <p class="sr-only" data-market-remodel-operator-readiness-v2="true">
     Snapshot · {{ visual_operator_header.snapshot_timestamp|e }} · Source · {{ visual_operator_header.source|e }} · Runtime authority · {{ visual_operator_header.runtime_authority|e }} · no orders · no live · no execution · AI · {{ visual_operator_header.ai_activity_state|e }} · Econ · {{ visual_operator_header.economic_gate_status|e }}
   </p>

@@ -1,0 +1,66 @@
+{
+  "canonical_runbook": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
+  "closed_defects": [
+    "LDD-01",
+    "LDD-02",
+    "LDD-03",
+    "LDD-04",
+    "LDD-06"
+  ],
+  "discovery_binding": "artifacts/market_dashboard_landmark_discovery_delta_v1/next_slice_binding.json",
+  "head_sha": "b3c9b9453ea0d2243b57812f657ebf3d9bf2f1e3",
+  "open_defects": [
+    "LDD-05"
+  ],
+  "origin_main_sha": "b3c9b9453ea0d2243b57812f657ebf3d9bf2f1e3",
+  "requirements": [
+    {
+      "defect": "LDD-02",
+      "evidence": "landmark_assertion_results.json",
+      "id": "RB-19-EXPLICIT-LANDMARK-MARKERS",
+      "status": "CLOSED"
+    },
+    {
+      "defect": "LDD-01",
+      "evidence": "ux_geometry_results.json",
+      "id": "RB-20-EYE-PATH",
+      "status": "CLOSED"
+    },
+    {
+      "defect": "LDD-04",
+      "evidence": "landmark_assertion_results.json",
+      "id": "RB-19-SINGLE-ENGINEERING-DRAWER",
+      "status": "CLOSED"
+    },
+    {
+      "defect": "LDD-03",
+      "evidence": "changed_owner_matrix.json",
+      "id": "RB-19-LANDMARK-REGROUP",
+      "status": "CLOSED"
+    },
+    {
+      "defect": "LDD-06",
+      "evidence": "full_page_composition_review.md",
+      "id": "RB-CARD-CHROME-REDUCTION",
+      "residual": "IA v2 secondary grid retains bordered compact cards",
+      "status": "CLOSED_PARTIAL"
+    },
+    {
+      "evidence": "ux_geometry_results.json",
+      "id": "RB-16-CHART-ABOVE-FOLD",
+      "status": "PASS"
+    },
+    {
+      "evidence": "ssot_boundary_audit.json",
+      "id": "RB-22-SSOT-CONSUMER-ONLY",
+      "status": "PASS"
+    },
+    {
+      "evidence": "browser_network_audit.json",
+      "id": "RB-6A-CHROME-PRIMARY",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "slice": "PHASE_1A_COMPOSITION_FOUNDATION"
+}

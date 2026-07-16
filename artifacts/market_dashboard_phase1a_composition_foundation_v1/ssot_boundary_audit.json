@@ -1,0 +1,14 @@
+{
+  "CANONICAL_RUNBOOK_PATH": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
+  "CANONICAL_SINGLE_SOURCE_OF_TRUTH": "MASTER_V2_AND_DOUBLE_PLAY",
+  "CORE_OWNER_MUTATION": false,
+  "DASHBOARD_DOMAIN_LOGIC_CREATED": false,
+  "DASHBOARD_IS_CONSUMER_ONLY": true,
+  "DATA_PRODUCER_MUTATION": false,
+  "LIVE_AUTHORIZED": false,
+  "NO_SECOND_RENDER_CHAIN": true,
+  "ORDERS_ALLOWED": false,
+  "SECOND_RUNBOOK_CREATED": false,
+  "notes": "Presentation-only landmark/composition mutation; existing context values reused.",
+  "schema_version": "1.0.0"
+}

@@ -94,9 +94,10 @@
   {% endif %}
 
   {% set ov = operator_overview_phase_2 %}
+  {# Compact instrument context ABOVE chart — eye path MARKET → CHART → DECISION (LDD-01). #}
   <section
     id="market-primary-operator-hero-v1"
-    class="rounded-md border border-slate-800/70 bg-slate-950/85 pt-operator-overview-hero-panel"
+    class="border-0 bg-transparent pt-operator-overview-hero-panel"
     data-market-terminal-asset-bar-v1="true"
     data-market-primary-values-panel-v1="true"
     data-market-workspace-hero-v1="true"
@@ -105,38 +106,52 @@
     data-market-phase-2-hero-v1="true"
     data-market-operator-overview-hero-v1="true"
     data-market-foundation-hero-panel-v1="true"
-    aria-label="Operator overview: selected instrument and decision narrative"
+    data-market-phase1a-pre-chart-context-v1="true"
+    aria-label="Selected instrument and compact market context"
   >
-    <div class="pt-operator-overview-hero-grid" data-market-phase-2-hero-layout-v1="8_4">
-      <div class="pt-operator-overview-hero-primary" data-market-phase-2-hero-primary-v1="true">
-        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <p class="pt-foundation-instrument-title" data-market-workspace-symbol-v1="true">{{ ov.selected_instrument.symbol|e }}</p>
-          <span class="text-[10px] font-mono text-slate-500" data-market-phase-2-instrument-meta-v1="true">
-            {{ ov.selected_instrument.exchange|e }}
-            · {{ ov.selected_instrument.contract_type|e }}
-            · {{ ov.selected_instrument.timeframe|e }}
-          </span>
-        </div>
-        <div class="pt-foundation-price-row" data-market-workspace-kpi-band-v1="true" data-market-workspace-kpi-primary-v1="true">
-          <span class="pt-foundation-last-price" data-market-workspace-kpi-last-price-v1="true">{{ ov.selected_instrument.last_price|e }}</span>
-          <span class="font-mono text-sm text-slate-300" data-market-workspace-kpi-change-v1="true">{{ ov.selected_instrument.change|e }}</span>
-        </div>
-        <div
-          class="pt-foundation-meta-chips"
-          data-market-phase-1a-compact-metadata-row-v1="true"
-          data-market-phase-2-compact-metadata-row-v1="true"
-          data-market-foundation-meta-chips-v1="true"
-          aria-label="Compact market metadata"
-        >
-          <span data-market-workspace-kpi-rank-v1="true">Rank · <span class="font-mono text-slate-200">{% if ov.selected_instrument.rank != 'unavailable' %}#{{ ov.selected_instrument.rank|e }}{% else %}unavailable{% endif %}</span></span>
-          <span data-market-workspace-kpi-score-v1="true">Score · <span class="font-mono text-slate-200">{{ ov.selected_instrument.score|e }}</span></span>
-          <span data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
-            Regime · <span class="font-mono text-slate-200">{{ ov.market_regime.trend|e }}</span>
-          </span>
-          <span data-market-foundation-momentum-v1="true">Momentum · <span class="font-mono text-slate-200">{{ ov.market_regime.momentum|e }}</span></span>
-        </div>
+    <div class="pt-operator-overview-hero-primary" data-market-phase-2-hero-primary-v1="true">
+      <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+        <p class="pt-foundation-instrument-title" data-market-workspace-symbol-v1="true">{{ ov.selected_instrument.symbol|e }}</p>
+        <span class="text-[10px] font-mono text-slate-500" data-market-phase-2-instrument-meta-v1="true">
+          {{ ov.selected_instrument.exchange|e }}
+          · {{ ov.selected_instrument.contract_type|e }}
+          · {{ ov.selected_instrument.timeframe|e }}
+        </span>
+      </div>
+      <div class="pt-foundation-price-row" data-market-workspace-kpi-band-v1="true" data-market-workspace-kpi-primary-v1="true">
+        <span class="pt-foundation-last-price" data-market-workspace-kpi-last-price-v1="true">{{ ov.selected_instrument.last_price|e }}</span>
+        <span class="font-mono text-sm text-slate-300" data-market-workspace-kpi-change-v1="true">{{ ov.selected_instrument.change|e }}</span>
+      </div>
+      <div
+        class="pt-foundation-meta-chips"
+        data-market-phase-1a-compact-metadata-row-v1="true"
+        data-market-phase-2-compact-metadata-row-v1="true"
+        data-market-foundation-meta-chips-v1="true"
+        aria-label="Compact market metadata"
+      >
+        <span data-market-workspace-kpi-rank-v1="true">Rank · <span class="font-mono text-slate-200">{% if ov.selected_instrument.rank != 'unavailable' %}#{{ ov.selected_instrument.rank|e }}{% else %}unavailable{% endif %}</span></span>
+        <span data-market-workspace-kpi-score-v1="true">Score · <span class="font-mono text-slate-200">{{ ov.selected_instrument.score|e }}</span></span>
+        <span data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
+          Regime · <span class="font-mono text-slate-200">{{ ov.market_regime.trend|e }}</span>
+        </span>
+        <span data-market-foundation-momentum-v1="true">Momentum · <span class="font-mono text-slate-200">{{ ov.market_regime.momentum|e }}</span></span>
+      </div>
+    </div>
+  </section>
+
+  {% include "partials/market_primary_close_chart_v1.html" %}
+
+  {# Decision narrative + primary blocker AFTER chart (MARKET → CHART → DECISION → BLOCKER). #}
+  <section
+    class="mt-2 pt-phase1a-post-chart-decision"
+    data-market-phase1a-post-chart-decision-v1="true"
+    data-market-phase-2-hero-layout-v1="8_4"
+    aria-label="Decision narrative and primary blocker"
+  >
+    <div class="pt-operator-overview-hero-grid">
+      <div class="min-w-0">
         <p
-          class="pt-operator-overview-decision-sentence mt-2"
+          class="pt-operator-overview-decision-sentence m-0"
           data-market-operator-decision-narrative-v1="true"
           data-market-phase-1a-decision-narrative-v1="true"
           data-market-phase-2-decision-sentence-v1="true"
@@ -156,9 +171,8 @@
           </div>
         </dl>
       </div>
-
       <aside
-        class="pt-operator-overview-hero-system shrink-0 rounded border border-slate-700/50 bg-slate-900/45 px-2.5 py-2 text-[10px] text-slate-300"
+        class="pt-operator-overview-hero-system shrink-0 border-0 border-l border-slate-800/70 bg-transparent pl-3 text-[10px] text-slate-300"
         data-market-phase-1a-critical-system-state-v1="true"
         data-market-phase-2-critical-system-state-v1="true"
         data-market-foundation-system-decision-v1="true"
@@ -183,8 +197,6 @@
       </aside>
     </div>
   </section>
-
-  {% include "partials/market_primary_close_chart_v1.html" %}
 
 {% if selected_instrument_workspace.workspace_visible %}
   <details

@@ -1,0 +1,9 @@
+{
+  "EXTERNAL_NETWORK_REQUESTS": 0,
+  "LOCALHOST_ONLY": true,
+  "UNEXPECTED_EXTERNAL_NETWORK_REQUESTS_ZERO": true,
+  "base_url": "http://127.0.0.1:56893",
+  "external_requests": [],
+  "review_url": "http://127.0.0.1:56893/market",
+  "schema_version": "1.0.0"
+}

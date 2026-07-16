@@ -20,9 +20,9 @@
     "dashboard_domain_model"
   ],
   "gates_blocking_new_surfaces": {
-    "COMPOSITION_GATE_PASS": false,
-    "FULL_PAGE_REVIEW_PASS": false,
-    "LANDMARK_GATE_PASS": false,
+    "COMPOSITION_GATE_PASS": true,
+    "FULL_PAGE_REVIEW_PASS": true,
+    "LANDMARK_GATE_PASS": true,
     "UX_ACCEPTANCE_GATE_PASS": false
   },
   "go_token": "GO_VISUAL_OPERATOR_DASHBOARD_LANDMARK_DISCOVERY_DELTA_PR_OPEN_STOP_BEFORE_MERGE_V1",
@@ -248,6 +248,25 @@
       ]
     }
   ],
+  "phase_1a_composition_foundation": {
+    "COMPOSITION_GATE_PASS": true,
+    "DESIGN_GATE": "PASS",
+    "FULL_PAGE_REVIEW_PASS": true,
+    "LANDMARK_GATE_PASS": true,
+    "branch": "feat/market-dashboard-phase1a-composition-foundation-v1",
+    "closed_defects": [
+      "LDD-01",
+      "LDD-02",
+      "LDD-03",
+      "LDD-04",
+      "LDD-06"
+    ],
+    "evidence_dir": "artifacts/market_dashboard_phase1a_composition_foundation_v1",
+    "open_defects": [
+      "LDD-05"
+    ],
+    "status": "PR_OPEN_STOP_BEFORE_MERGE"
+  },
   "playwright_channel": "chrome",
   "pr_5250_code_imported": false,
   "pr_5250_disposition": "SUPERSEDE_WITHOUT_MERGE",
