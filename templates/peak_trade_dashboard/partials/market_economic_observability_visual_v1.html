@@ -1,16 +1,17 @@
 {# Economic observability — honest zeros / FAIL / NOT_COMPUTED / MISSING_SOURCE (SSR) #}
 <section
-  class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-2.5 py-2 mt-3"
+  class="px-0 py-2 mt-3"
   role="region"
   aria-label="Economic observability"
   data-market-economic-observability-visual-v1="true"
+  data-market-composition-secondary-band-v1="true"
   data-market-view-only="true"
   data-market-read-only="true"
   data-market-economic-activity-state="{{ economic_observability_visual.activity_state|e }}"
   data-market-economic-status="{{ economic_observability_visual.economic_status|e }}"
 >
   <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-    <h2 class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-300">Economic observability</h2>
+    <h2 class="pt-composition-section-title">Economic observability</h2>
     <span class="text-[9px] font-mono {% if economic_observability_visual.gates_pass %}text-emerald-300/90{% else %}text-rose-300/90{% endif %}" data-market-economic-status-badge-v1="true">{{ economic_observability_visual.economic_status|e }}</span>
   </div>
 

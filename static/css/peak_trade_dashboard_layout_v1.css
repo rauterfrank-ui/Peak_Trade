@@ -233,3 +233,192 @@
   gap: 0.35rem 0.75rem;
   font-size: 0.625rem;
 }
+
+/* =====================================================================
+ * Composition-first v1 — one trading surface, not a card wall.
+ * Presentation only. No trading / decision / risk semantics.
+ * ===================================================================== */
+
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-foundation-instrument-title {
+  font-size: var(--pt-type-hero-title);
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-operator-overview-decision-sentence {
+  margin-top: 0.65rem;
+  font-size: var(--pt-type-decision);
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--pt-color-text-primary, #f1f5f9);
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-foundation-decision-state {
+  font-size: clamp(1.5rem, 2vw, 1.9rem);
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-composition-section-title {
+  margin: 0;
+  font-size: var(--pt-type-section);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pt-color-text-secondary, #94a3b8);
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-composition-meta {
+  font-size: var(--pt-type-meta);
+  color: var(--pt-color-muted, #64748b);
+}
+
+/* Safety rail: quiet meta line, not a bordered strip. */
+#market-v0-shell[data-market-composition-first-v1="true"] .market-phase-1a-safety-rail,
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-foundation-safety-rail-v1="true"] {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Hero: part of the stage — not a card. */
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-operator-overview-hero-panel,
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-foundation-hero-panel-v1="true"] {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.5rem 0 0.75rem;
+}
+
+/* Decision / blocker column: fused into hero, no nested widget chrome. */
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-operator-overview-hero-system,
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-foundation-system-decision-v1="true"] {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.15rem 0 0.15rem 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  #market-v0-shell[data-market-composition-first-v1="true"] .pt-operator-overview-hero-system,
+  #market-v0-shell[data-market-composition-first-v1="true"] [data-market-foundation-system-decision-v1="true"] {
+    border-left: 1px solid rgba(51, 65, 85, 0.35);
+  }
+}
+
+/* Unified primary stage: hero + chart share one quiet plane. */
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-composition-primary-stage-v1="true"] {
+  display: block;
+  margin-top: 0.35rem;
+  padding: 0.35rem 0 0.85rem;
+  border: 0;
+  background: transparent;
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-foundation-primary-chart-v1="true"],
+#market-v0-shell[data-market-composition-first-v1="true"] .market-phase-1a-primary-chart {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.35rem 0 0;
+  margin-top: 0.15rem;
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-instrument-live-tile-v1="true"] {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* Chart frame stays dominant; drop competing chrome around the plot. */
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-v0-close-chart-integrated-frame="true"] {
+  border: 0;
+  border-radius: 0;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-diagnostics-secondary-v1="true"],
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-phase-1a-secondary-instrument-details-v1="true"] {
+  border: 0;
+  border-top: 1px solid rgba(51, 65, 85, 0.35);
+  border-radius: 0;
+  background: transparent;
+  margin-top: 0.75rem;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Ranking = clear second level — quieter than primary stage, no violet card wall. */
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-governed-top20-primary-v1="true"] {
+  margin-top: var(--pt-composition-secondary-gap);
+  border: 0;
+  border-top: 1px solid rgba(51, 65, 85, 0.4);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 1rem 0 0.5rem;
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-governed-top20-primary-v1="true"] .pt-composition-section-title,
+#market-v0-shell[data-market-composition-first-v1="true"] #market-governed-top20-primary-h2 {
+  color: var(--pt-color-text-secondary, #94a3b8);
+  font-size: var(--pt-type-section);
+  letter-spacing: 0.08em;
+}
+
+/* Secondary observability bands: hairline separators, not card stack. */
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-decision-funnel-visual-v1="true"],
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-economic-observability-visual-v1="true"],
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-ai-linear-diagnostics-visual-v1="true"] {
+  border: 0;
+  border-top: 1px solid rgba(51, 65, 85, 0.35);
+  border-radius: 0;
+  background: transparent;
+  margin-top: 1rem;
+  padding: 0.85rem 0 0.25rem;
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-terminal-secondary-grid-v1="true"] {
+  margin-top: 1.25rem;
+  gap: 1rem;
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-remodel-detail-anchors-v2="true"],
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-system-governance-details-v1="true"] {
+  border: 0;
+  border-top: 1px solid rgba(51, 65, 85, 0.3);
+  border-radius: 0;
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-foundation-meta-chips {
+  margin-top: 0.55rem;
+  font-size: var(--pt-type-meta);
+  color: var(--pt-color-muted, #64748b);
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] .pt-operator-overview-status-strip {
+  font-size: var(--pt-type-meta);
+  color: var(--pt-color-muted, #64748b);
+}
+
+/* Secondary terminal tiles: quieter than primary stage — hairlines, not card wall. */
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-terminal-secondary-grid-v1="true"] > * section,
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-f5-pipeline-strip-v1="true"] > section,
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-double-play-visual-grid-v1="true"] > section,
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-remodel-secondary-safety-v2="true"],
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-watchlist-compact-v1="true"],
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-futures-compact-v1="true"],
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-remodel-secondary-double-play-v2="true"] {
+  border-color: rgba(51, 65, 85, 0.35);
+  background: rgba(15, 23, 42, 0.35);
+  box-shadow: none;
+}
+
+#market-v0-shell[data-market-composition-first-v1="true"] [data-market-foundation-header-badge-v1="true"] {
+  border-color: rgba(16, 185, 129, 0.25);
+  background: transparent;
+}

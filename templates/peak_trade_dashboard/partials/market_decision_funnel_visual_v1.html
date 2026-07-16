@@ -1,17 +1,18 @@
 {# Decision funnel waterfall + bull/bear + survival/suitability + block reasons (SSR) #}
 <section
-  class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-2.5 py-2 mt-3"
+  class="px-0 py-2 mt-3"
   role="region"
   aria-label="AI decision funnel"
   data-market-decision-funnel-visual-v1="true"
+  data-market-composition-secondary-band-v1="true"
   data-market-view-only="true"
   data-market-read-only="true"
   data-market-decision-funnel-activity-state="{{ decision_funnel_visual.activity_state|e }}"
   data-market-ai-activity-state="{{ ai_activity_state|e }}"
 >
   <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-    <h2 class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-300">AI · Decision funnel</h2>
-    <span class="text-[9px] font-mono text-slate-500">activity · {{ decision_funnel_visual.activity_state|e }} · AI · {{ ai_activity_state|e }}</span>
+    <h2 class="pt-composition-section-title">AI · Decision funnel</h2>
+    <span class="pt-composition-meta font-mono">activity · {{ decision_funnel_visual.activity_state|e }} · AI · {{ ai_activity_state|e }}</span>
   </div>
 
   {% if decision_funnel_visual.activity_state == 'NOT_AVAILABLE' %}

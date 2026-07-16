@@ -1,0 +1,106 @@
+{
+  "BROWSER_ACTUAL": "GOOGLE_CHROME",
+  "BROWSER_REQUESTED": "GOOGLE_CHROME",
+  "CHART_HEIGHT_PX": 390.0,
+  "CHART_MATERIALLY_VISIBLE_1440x900": true,
+  "CHART_TOP_VISIBLE_1440x900": true,
+  "CHROMIUM_FALLBACK_USED": false,
+  "CHROMIUM_REPORTED_AS_REAL_CHROME": false,
+  "COMPOSITION_CONTRACT_PASS": true,
+  "CONSOLE_ERRORS": 0,
+  "EXTERNAL_NETWORK_REQUESTS": 0,
+  "FAILED_ASSETS": 0,
+  "HEADER_HEIGHT_PX": 45.6875,
+  "HEADLESS": true,
+  "HERO_HEIGHT_PX": 210.0,
+  "HORIZONTAL_OVERFLOW": false,
+  "PAGE_ERRORS": 0,
+  "PLAYWRIGHT_CHANNEL": "chrome",
+  "PLAYWRIGHT_CHROMIUM_FALLBACK_USED": false,
+  "PRIMARY_CHART_VISUAL_SHARE_MIN_MET": true,
+  "PRIMARY_CHART_VISUAL_SHARE_PCT": 53.78819444444445,
+  "REAL_CHROME_VERIFIED": true,
+  "SAFETY_RAIL_HEIGHT_PX": 15.0,
+  "UNEXPECTED_NETWORK_REQUESTS": 0,
+  "console_messages": [],
+  "external_requests": [],
+  "failed_requests": [],
+  "geometry": {
+    "chart": {
+      "bottom": 809.15625,
+      "height": 484.09375,
+      "left": 16,
+      "right": 1424,
+      "top": 325.0625,
+      "width": 1408
+    },
+    "chartFrame": {
+      "bottom": 764.15625,
+      "height": 390,
+      "left": 16,
+      "right": 1424,
+      "top": 374.15625,
+      "width": 1408
+    },
+    "clientWidth": 1440,
+    "critical": {
+      "bottom": 275.359375,
+      "height": 157.890625,
+      "left": 960,
+      "right": 1424,
+      "top": 117.46875,
+      "width": 464
+    },
+    "header": {
+      "bottom": 77.6875,
+      "height": 45.6875,
+      "left": 16,
+      "right": 1424,
+      "top": 32,
+      "width": 1408
+    },
+    "hero": {
+      "bottom": 319.46875,
+      "height": 210,
+      "left": 16,
+      "right": 1424,
+      "top": 109.46875,
+      "width": 1408
+    },
+    "safety": {
+      "bottom": 98.28125,
+      "height": 15,
+      "left": 16,
+      "right": 1424,
+      "top": 83.28125,
+      "width": 1408
+    },
+    "scrollWidth": 1440,
+    "sentence": {
+      "bottom": 250.53125,
+      "height": 25.265625,
+      "left": 16,
+      "right": 952,
+      "top": 225.265625,
+      "width": 936
+    },
+    "viewportHeight": 900,
+    "viewportWidth": 1440
+  },
+  "launch_error": null,
+  "page_errors": [],
+  "screenshots": [
+    "screenshots/foundation_1440x900_full.png",
+    "screenshots/foundation_1440x900_header_hero_chart.png",
+    "screenshots/foundation_1440x900_above_fold.png",
+    "screenshots/foundation_selected_instrument_hero.png",
+    "screenshots/foundation_critical_system_state.png",
+    "screenshots/foundation_decision_narrative.png",
+    "screenshots/foundation_primary_chart.png",
+    "screenshots/foundation_1280x800_narrow.png",
+    "screenshots/foundation_1728x1117_wide.png",
+    "screenshots/phase_2_1440x900_above_fold.png",
+    "screenshots/foundation_stale_or_missing_state.png"
+  ],
+  "unexpected_requests": []
+}

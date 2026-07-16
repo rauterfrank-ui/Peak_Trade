@@ -1,7 +1,7 @@
 <!-- Selected instrument workspace — visual foundation: hero + dominant chart above fold -->
 <section
   id="market-selected-instrument-workspace-v1"
-  class="space-y-1.5 pt-1 market-phase-1a-hero-workspace"
+  class="pt-1 market-phase-1a-hero-workspace"
   role="region"
   aria-labelledby="market-v0-landmark-page-title"
   data-market-selected-instrument-workspace-v1="true"
@@ -14,6 +14,8 @@
   data-market-phase-1a-compact-hero-v1="true"
   data-market-phase-2-operator-overview-v1="true"
   data-market-foundation-hero-v1="true"
+  data-market-composition-primary-stage-v1="true"
+  data-market-composition-first-hero-v1="true"
   data-market-detail-click-required="false"
   data-market-canonical-short-url-v1="true"
   data-market-view-only="true"
@@ -96,7 +98,7 @@
   {% set ov = operator_overview_phase_2 %}
   <section
     id="market-primary-operator-hero-v1"
-    class="rounded-md border border-slate-800/70 bg-slate-950/85 pt-operator-overview-hero-panel"
+    class="pt-operator-overview-hero-panel"
     data-market-terminal-asset-bar-v1="true"
     data-market-primary-values-panel-v1="true"
     data-market-workspace-hero-v1="true"
@@ -105,13 +107,14 @@
     data-market-phase-2-hero-v1="true"
     data-market-operator-overview-hero-v1="true"
     data-market-foundation-hero-panel-v1="true"
+    data-market-composition-hero-fused-v1="true"
     aria-label="Operator overview: selected instrument and decision narrative"
   >
     <div class="pt-operator-overview-hero-grid" data-market-phase-2-hero-layout-v1="8_4">
       <div class="pt-operator-overview-hero-primary" data-market-phase-2-hero-primary-v1="true">
         <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <p class="pt-foundation-instrument-title" data-market-workspace-symbol-v1="true">{{ ov.selected_instrument.symbol|e }}</p>
-          <span class="text-[10px] font-mono text-slate-500" data-market-phase-2-instrument-meta-v1="true">
+          <span class="pt-composition-meta font-mono" data-market-phase-2-instrument-meta-v1="true">
             {{ ov.selected_instrument.exchange|e }}
             · {{ ov.selected_instrument.contract_type|e }}
             · {{ ov.selected_instrument.timeframe|e }}
@@ -128,23 +131,24 @@
           data-market-foundation-meta-chips-v1="true"
           aria-label="Compact market metadata"
         >
-          <span data-market-workspace-kpi-rank-v1="true">Rank · <span class="font-mono text-slate-200">{% if ov.selected_instrument.rank != 'unavailable' %}#{{ ov.selected_instrument.rank|e }}{% else %}unavailable{% endif %}</span></span>
-          <span data-market-workspace-kpi-score-v1="true">Score · <span class="font-mono text-slate-200">{{ ov.selected_instrument.score|e }}</span></span>
+          <span data-market-workspace-kpi-rank-v1="true">Rank · <span class="font-mono text-slate-300">{% if ov.selected_instrument.rank != 'unavailable' %}#{{ ov.selected_instrument.rank|e }}{% else %}unavailable{% endif %}</span></span>
+          <span data-market-workspace-kpi-score-v1="true">Score · <span class="font-mono text-slate-300">{{ ov.selected_instrument.score|e }}</span></span>
           <span data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
-            Regime · <span class="font-mono text-slate-200">{{ ov.market_regime.trend|e }}</span>
+            Regime · <span class="font-mono text-slate-300">{{ ov.market_regime.trend|e }}</span>
           </span>
-          <span data-market-foundation-momentum-v1="true">Momentum · <span class="font-mono text-slate-200">{{ ov.market_regime.momentum|e }}</span></span>
+          <span data-market-foundation-momentum-v1="true">Momentum · <span class="font-mono text-slate-300">{{ ov.market_regime.momentum|e }}</span></span>
         </div>
         <p
-          class="pt-operator-overview-decision-sentence mt-2"
+          class="pt-operator-overview-decision-sentence"
           data-market-operator-decision-narrative-v1="true"
           data-market-phase-1a-decision-narrative-v1="true"
           data-market-phase-2-decision-sentence-v1="true"
+          data-market-composition-decision-fused-v1="true"
         >
           {{ ov.decision_sentence|e }}
         </p>
         <dl
-          class="m-0 mt-1 pt-operator-overview-status-strip flex flex-wrap text-slate-400"
+          class="m-0 mt-1 pt-operator-overview-status-strip flex flex-wrap"
           data-market-phase-2-decision-state-v1="true"
           aria-label="Current decision state"
         >
@@ -158,16 +162,17 @@
       </div>
 
       <aside
-        class="pt-operator-overview-hero-system shrink-0 rounded border border-slate-700/50 bg-slate-900/45 px-2.5 py-2 text-[10px] text-slate-300"
+        class="pt-operator-overview-hero-system shrink-0 text-[10px] text-slate-300"
         data-market-phase-1a-critical-system-state-v1="true"
         data-market-phase-2-critical-system-state-v1="true"
         data-market-foundation-system-decision-v1="true"
+        data-market-composition-blocker-fused-v1="true"
         aria-label="Critical system state"
       >
-        <p class="m-0 uppercase tracking-[0.12em] text-slate-500 text-[8px]">System decision</p>
+        <p class="pt-composition-section-title">System decision</p>
         <p class="pt-foundation-decision-state mt-1" data-market-foundation-decision-state-v1="true">{{ ov.current_decision.state|e }}</p>
-        <p class="m-0 mt-1.5 text-[11px] text-slate-200">
-          <span class="text-slate-500">Primary blocker</span>
+        <p class="m-0 mt-2 text-[11px] text-slate-200">
+          <span class="pt-composition-meta">Primary blocker</span>
           <span class="block font-mono text-sm text-slate-100 mt-0.5">{{ ov.current_decision.primary_blocker|e }}</span>
         </p>
         <dl class="m-0 mt-2 space-y-0.5 font-mono text-[10px]" data-market-foundation-system-priorities-v1="true">
@@ -188,12 +193,12 @@
 
 {% if selected_instrument_workspace.workspace_visible %}
   <details
-    class="rounded-md border border-slate-800/60 bg-slate-950/40 px-2.5 py-1.5"
+    class="px-0 py-1.5"
     data-market-phase-1a-secondary-instrument-details-v1="true"
     data-market-workspace-ranking-f5-compact-v1="true"
     data-market-workspace-ranking-context-v1="true"
   >
-    <summary class="cursor-pointer text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+    <summary class="cursor-pointer pt-composition-section-title text-slate-500">
       Ranking / F5 / contract / freshness (secondary)
     </summary>
     <div class="mt-2 space-y-2">

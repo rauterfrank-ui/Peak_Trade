@@ -3,7 +3,7 @@
   data-market-chart-primary-v2="true"
   role="region"
   aria-labelledby="market-v0-landmark-close-chart-h2"
-  class="bg-slate-900/35 rounded-lg border border-slate-800/70 ring-1 ring-sky-900/10 p-2 sm:p-2.5 market-phase-1a-primary-chart"
+  class="market-phase-1a-primary-chart"
   data-chart="market-v0-close-line"
   data-market-chart-primary-v1="true"
   data-market-chart-visual-primary-v1="true"
@@ -12,6 +12,7 @@
   data-market-chart-height-v1="390"
   data-market-phase-1a-chart-above-fold-v1="true"
   data-market-foundation-primary-chart-v1="true"
+  data-market-composition-chart-stage-v1="true"
   data-market-foundation-chart-min-height-px-v1="390"
   {% if selected_instrument_workspace is defined and selected_instrument_workspace.workspace_visible %}
   data-market-workspace-ohlcv-status="{{ selected_instrument_workspace.ohlcv_status|e }}"
@@ -21,12 +22,12 @@
   {% endif %}
 >
   <div class="flex flex-wrap items-end justify-between gap-1.5 mb-1">
-    <h2 id="market-v0-landmark-close-chart-h2" class="text-sm font-semibold text-slate-100 m-0 tracking-tight">Market chart</h2>
-    <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500">Read-only · SSR</span>
+    <h2 id="market-v0-landmark-close-chart-h2" class="pt-composition-section-title">Market chart</h2>
+    <span class="pt-composition-meta font-semibold uppercase tracking-wide">Read-only · SSR</span>
   </div>
 
   <div
-    class="pt-foundation-chart-meta"
+    class="pt-foundation-chart-meta pt-composition-meta"
     data-market-chart-legend-v1="true"
     data-market-foundation-chart-meta-v1="true"
     aria-label="Chart metadata"
@@ -114,8 +115,9 @@
   {% endif %}
 
   <div
-    class="relative flex flex-col w-full max-w-full rounded-lg border border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/25"
+    class="relative flex flex-col w-full max-w-full"
     data-market-v0-close-chart-integrated-frame="true"
+    data-market-composition-chart-frame-v1="true"
     data-market-v0-in-chart-ohlc-svg-v1="true"
     data-market-chart-operator-readable-v1="true"
     data-market-chart-responsive-v1="true"
@@ -227,8 +229,8 @@
     {% endif %}
   </div>
 
-  <details class="mt-2 rounded-lg border border-slate-800/70 bg-slate-950/50 px-3 py-2 text-xs text-slate-400" data-market-diagnostics-secondary-v1="true" data-market-v11-chart-diagnostics="true">
-    <summary class="cursor-pointer font-semibold text-slate-300">Chart diagnostics (secondary)</summary>
+  <details class="mt-2 px-0 py-2 text-xs text-slate-400" data-market-diagnostics-secondary-v1="true" data-market-v11-chart-diagnostics="true">
+    <summary class="cursor-pointer pt-composition-section-title text-slate-500">Chart diagnostics (secondary)</summary>
     <div class="mt-2" data-market-v11-diagnostics-inner="true">
       <dl class="m-0 grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-[11px]">
         <div><dt class="text-slate-500 m-0" data-market-v11-chart-library-status="true">Chart.js status</dt><dd id="market-v11-chartjs-state" class="m-0 text-sky-300/95">SSR only</dd></div>
