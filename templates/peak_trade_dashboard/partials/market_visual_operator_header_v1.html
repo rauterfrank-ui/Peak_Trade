@@ -41,6 +41,9 @@
       title="Snapshot {{ visual_operator_header.snapshot_timestamp|e }} · Source {{ visual_operator_header.source|e }} · Freshness {{ visual_operator_header.data_freshness|e }}"
     >Authority NONE</span>
   </div>
+  {# Remodel IA v2 contract markers — sr-only; keep the visible rail badge-free (composition-first). #}
+  <span class="sr-only" data-market-remodel-operator-lane-v2="true" data-market-visual-operator-ai-state-badge-v1="true">AI · {{ visual_operator_header.ai_activity_state|e }}</span>
+  <span class="sr-only" data-market-remodel-operator-freshness-v2="true" data-market-visual-operator-freshness-v1="true">Freshness · {{ visual_operator_header.data_freshness|e }}</span>
   <p class="sr-only" data-market-remodel-operator-readiness-v2="true">
     Snapshot · {{ visual_operator_header.snapshot_timestamp|e }} · Source · {{ visual_operator_header.source|e }} · Runtime authority · {{ visual_operator_header.runtime_authority|e }} · no orders · no live · no execution · AI · {{ visual_operator_header.ai_activity_state|e }} · Econ · {{ visual_operator_header.economic_gate_status|e }}
   </p>
