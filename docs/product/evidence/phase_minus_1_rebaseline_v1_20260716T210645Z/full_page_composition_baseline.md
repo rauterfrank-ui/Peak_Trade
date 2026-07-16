@@ -13,7 +13,7 @@ VIEWPORTS=1280x800,1440x900,1728x1117,1024x768
 
 ## Landmark order (document order / measured Y)
 
-Observed marker sequence on `origin/main` foundation:
+Observed marker sequence on `origin&#47;main` foundation:
 
 1. GLOBAL_HEADER
 2. SAFETY_RAIL
@@ -54,14 +54,14 @@ OBSERVED: MARKET/HERO+DECISION → CHART → RANKING → …
 
 ## Screenshots
 
-Under `browser/screenshots/`:
+Under `browser&#47;screenshots&#47;`:
 
 - `phase_minus_1_1280x800_{full,viewport}.png`
 - `phase_minus_1_1440x900_{full,viewport}.png`
 - `phase_minus_1_1728x1117_{full,viewport}.png`
 - `phase_minus_1_1024x768_{full,viewport}.png`
 
-Harness cross-check also under `harness_crosscheck/` (`COMPOSITION_CONTRACT_PASS=true` for foundation numeric contract; product §§17–22 gates remain closed).
+Harness cross-check also under `harness_crosscheck&#47;` (`COMPOSITION_CONTRACT_PASS=true` for foundation numeric contract; product §§17–22 gates remain closed).
 
 ## Gate verdict (product contracts §§17–22)
 

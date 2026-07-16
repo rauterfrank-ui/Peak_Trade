@@ -15,12 +15,12 @@ MERGE_RECOMMENDED=false
 
 54 files / +1007 / −49, primarily:
 
-- `static/css/peak_trade_dashboard_design_tokens_v1.css`
-- `static/css/peak_trade_dashboard_layout_v1.css`
-- `templates/peak_trade_dashboard/market_v0.html`
+- `static&#47;css&#47;peak_trade_dashboard_design_tokens_v1.css`
+- `static&#47;css&#47;peak_trade_dashboard_layout_v1.css`
+- `templates&#47;peak_trade_dashboard&#47;market_v0.html`
 - Visual Operator partials (header, hero, chart, ranking, funnel, economic, AI)
-- `tests/webui/test_market_dashboard_composition_first_refactor_v1.py`
-- Large evidence tree under `docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/`
+- `tests&#47;webui&#47;test_market_dashboard_composition_first_refactor_v1.py`
+- Large evidence tree under `docs&#47;product&#47;evidence&#47;visual_composition_first_refactor_v1_20260716T221000Z&#47;`
 
 Intent: composition-first chrome reduction (less card wall / badge wall).
 

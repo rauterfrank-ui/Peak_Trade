@@ -4,7 +4,7 @@
 SLICE=PHASE_MINUS_1_REBASELINE_V1
 GO_TOKEN=GO_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_V1_3_PHASE_MINUS_1_REBASELINE_V1
 CANONICAL_PRODUCT_SPEC=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
-RUNBOOK_SHA256=9d61f63c786748d904442d9883fbc09d0117f170e5f93708cb97982cfee83a6e
+RUNBOOK_SHA256=62aadd97ec3876ebbc6daa0290256880b1d07960385ecaefd39f608262ea285a
 RUNBOOK_VERSION_CHANGED=false
 SECOND_RUNBOOK_CREATED=false
 BASE=origin/main@b9be86aa97d58ac5d00dc4e9885cdbbeab3125f1
@@ -55,8 +55,8 @@ STOP_BEFORE_MERGE=true
 ## Artifacts
 
 - `implementation_discovery_report.md`
-- `dashboard_requirement_traceability_matrix.json` (+ canonical copy in `docs/product/matrices/`)
-- `dashboard_phase_binding_matrix.json` (+ canonical copy in `docs/product/matrices/`)
+- `dashboard_requirement_traceability_matrix.json` (+ canonical copy in `docs&#47;product&#47;matrices&#47;`)
+- `dashboard_phase_binding_matrix.json` (+ canonical copy in `docs&#47;product&#47;matrices&#47;`)
 - `recommended_runbook_patch_list.md`
 - `dashboard_component_inventory.json`
 - `data_owner_inventory.json`
@@ -68,9 +68,9 @@ STOP_BEFORE_MERGE=true
 - `ux_geometry_baseline.json`
 - `full_page_composition_baseline.md`
 - `pr5250_supersession_assessment.md`
-- `browser/browser_evidence_report.json`
-- `browser/screenshots/*`
-- `harness_crosscheck/`
+- `browser&#47;browser_evidence_report.json`
+- `browser&#47;screenshots&#47;*`
+- `harness_crosscheck&#47;`
 
 ## Scope confirmation
 

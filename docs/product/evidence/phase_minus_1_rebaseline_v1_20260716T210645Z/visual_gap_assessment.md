@@ -25,4 +25,4 @@ PR5250_USED_AS_BASE=false
 
 ## Recommended first mutation slice
 
-`S1 Composition/Landmark Foundation` only — no new functional surfaces until gates flip.
+`S1 Composition&#47;Landmark Foundation` only — no new functional surfaces until gates flip.

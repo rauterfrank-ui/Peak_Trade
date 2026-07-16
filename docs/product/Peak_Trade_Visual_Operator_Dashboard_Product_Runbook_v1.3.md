@@ -125,7 +125,7 @@ REAL_SAFARI_BASELINE=OPTIONAL_SECONDARY_MANUAL_CHECK
 ```
 
 Die Commit- und PR-Angaben sind Discovery-Evidence, keine dauerhafte
-Freigabe für weitere Arbeiten. Vor jeder Mutation sind `origin/main`,
+Freigabe für weitere Arbeiten. Vor jeder Mutation sind `origin&#47;main`,
 aktueller `HEAD`, PR-Zustand und Worktree erneut zu prüfen.
 
 ## 0A.1 Kanonische Render Chain
@@ -245,52 +245,52 @@ Farbe oder Textmenge einen höher priorisierten Bereich dominieren.
   Rail                                                                    Badge-Wall          Single Safety Rail  
                                                                                               konsolidieren       
 
-  Visual        `partials/market_visual_operator_header_v1.html`          teilweise korrekt   reuse + verdichten  1A
+  Visual        `partials&#47;market_visual_operator_header_v1.html`          teilweise korrekt   reuse + verdichten  1A
   Operator                                                                                                        
   Header                                                                                                          
 
-  Selected      `partials/market_primary_operator_hero_v1.html`           zu dicht,           strukturell         1A/2
+  Selected      `partials&#47;market_primary_operator_hero_v1.html`           zu dicht,           strukturell         1A/2
   Instrument                                                              F5-/Gov-Dump        überarbeiten        
   Hero                                                                                                            
 
-  Primary Chart `partials/market_primary_close_chart_v1.html`             reale 120 Bars,     reuse +             1A/3
+  Primary Chart `partials&#47;market_primary_close_chart_v1.html`             reale 120 Bars,     reuse +             1A/3
                                                                           unter Fold          reposition + polish 
 
-  Ranking       `partials/market_governed_top20_primary_v1.html`          real Top20/50,      single canonical    4A--4C
+  Ranking       `partials&#47;market_governed_top20_primary_v1.html`          real Top20/50,      single canonical    4A--4C
                                                                           sparse columns      component;          
                                                                                               contract-first      
 
-  Decision      `partials/market_decision_funnel_visual_v1.html`          nicht               rewire + activity   5A/5B
+  Decision      `partials&#47;market_decision_funnel_visual_v1.html`          nicht               rewire + activity   5A/5B
   Funnel                                                                  selection-bound;    contract            
                                                                           `ACTIVE`                                
 
-  Economic      `partials/market_economic_observability_visual_v1.html`   teilweise, Kurven   reuse; Scope        7
+  Economic      `partials&#47;market_economic_observability_visual_v1.html`   teilweise, Kurven   reuse; Scope        7
                                                                           fehlen              sichtbar; honest    
                                                                                               missing             
 
-  Linear        `partials/market_ai_linear_diagnostics_visual_v1.html`    sparse              summary in Level 2, 8
+  Linear        `partials&#47;market_ai_linear_diagnostics_visual_v1.html`    sparse              summary in Level 2, 8
   Diagnostics                                                                                 Details Level 3     
 
-  F5 Compact    `partials/futures_market_compact_v1.html`                 unvollständige      narrow adapter; aus 1A/9
+  F5 Compact    `partials&#47;futures_market_compact_v1.html`                 unvollständige      narrow adapter; aus 1A/9
                                                                           Feld-Dumps          Hero entfernen      
 
-  Double-Play   `partials/double_play_market_compact_v1.html`             static fixture,     klar labeln oder    5A/5B
+  Double-Play   `partials&#47;double_play_market_compact_v1.html`             static fixture,     klar labeln oder    5A/5B
   Compact                                                                 nicht               nicht primär zeigen 
                                                                           selection-bound                         
 
-  Safety        `partials/market_safety_compact_v1.html`                  badge-dense         semantic groups     6
+  Safety        `partials&#47;market_safety_compact_v1.html`                  badge-dense         semantic groups     6
   Compact                                                                                     Risk/Safety         
 
-  Watchlist     `partials/market_watchlist_compact_v1.html`               brauchbar           reuse as navigation 4B
+  Watchlist     `partials&#47;market_watchlist_compact_v1.html`               brauchbar           reuse as navigation 4B
                                                                                               aid                 
 
   Detail        DP/F5 Detail Partials                                     CDN, doppelt        Governance/Detail   1B/9
   Anchors                                                                                     only; vendorize     
                                                                                               assets              
 
-  Current State `partials/market_current_state_compact_v1.html`           korrekt collapsed   reuse               9
+  Current State `partials&#47;market_current_state_compact_v1.html`           korrekt collapsed   reuse               9
 
-  Diagnostics   `partials/market_diagnostics_drawer_v1.html`              legacy density      consolidate or      8/9
+  Diagnostics   `partials&#47;market_diagnostics_drawer_v1.html`              legacy density      consolidate or      8/9
   Drawer                                                                                      retire              
   ---------------------------------------------------------------------------------------------------------------------------
 

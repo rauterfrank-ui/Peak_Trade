@@ -4,7 +4,7 @@
 SLICE=PHASE_MINUS_1_REBASELINE_V1
 GO_TOKEN=GO_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_V1_3_PHASE_MINUS_1_REBASELINE_V1
 CANONICAL_PRODUCT_SPEC=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
-RUNBOOK_SHA256=9d61f63c786748d904442d9883fbc09d0117f170e5f93708cb97982cfee83a6e
+RUNBOOK_SHA256=62aadd97ec3876ebbc6daa0290256880b1d07960385ecaefd39f608262ea285a
 BASE=origin/main@b9be86aa97d58ac5d00dc4e9885cdbbeab3125f1
 BRANCH=docs/visual-operator-dashboard-v1-3-phase-minus-1-rebaseline-v1
 PR5250_CODE_IMPORTED=false
@@ -24,23 +24,23 @@ Browser GET /market
 
 | Role | Owner |
 |---|---|
-| Route | `GET /market` |
-| Router | `src/webui/app.py` + `create_market_router` |
+| Route | `GET &#47;market` |
+| Router | `src&#47;webui&#47;app.py` + `create_market_router` |
 | Request Resolver | `resolve_market_page_data` |
 | Page Context | `build_market_v0_page_template_context` |
 | Snapshot | `market_dashboard_current_state_snapshot_v0.py` |
-| Primary Template | `templates/peak_trade_dashboard/market_v0.html` |
-| Base Template | `templates/peak_trade_dashboard/base.html` |
-| CSS/Tokens | `static/css/peak_trade_dashboard_{design_tokens,layout,utilities}_v1.css` |
-| Primary Chart | SSR SVG `partials/market_primary_close_chart_v1.html` |
-| Vendor JS | `static/vendor/chartjs/4.4.1/chart.umd.min.js` (legacy/detail) |
+| Primary Template | `templates&#47;peak_trade_dashboard&#47;market_v0.html` |
+| Base Template | `templates&#47;peak_trade_dashboard&#47;base.html` |
+| CSS/Tokens | `static&#47;css&#47;peak_trade_dashboard_{design_tokens,layout,utilities}_v1.css` |
+| Primary Chart | SSR SVG `partials&#47;market_primary_close_chart_v1.html` |
+| Vendor JS | `static&#47;vendor&#47;chartjs&#47;4.4.1&#47;chart.umd.min.js` (legacy/detail) |
 | Ranking | `market_ranking_funnel_runtime_v0.py` |
-| Decision | `market_visual_operator_surface_v1/{decision_funnel,operator_overview}_display_v1.py` |
+| Decision | `market_visual_operator_surface_v1&#47;{decision_funnel,operator_overview}_display_v1.py` |
 | Risk/Safety | `build_market_safety_matrix_display_context` |
 | Economic | `economic_observability_display_v1.py` |
 | Diagnostics | `ai_linear_diagnostics_display_v1.py` |
 | Governance Drawer | current-state runtime + diagnostics drawer partials |
-| Browser infra | `scripts/webui/market_dashboard_chrome_playwright_harness_v1.py` |
+| Browser infra | `scripts&#47;webui&#47;market_dashboard_chrome_playwright_harness_v1.py` |
 
 `CANONICAL_RENDER_CHAIN_IDENTIFIED=true`
 
@@ -75,7 +75,7 @@ UNEXPECTED_NETWORK_REQUESTS=0
 HORIZONTAL_OVERFLOW_PX(1440)=0
 ```
 
-1440×900 numeric geometry thresholds from the updated runbook: **all pass** on current `origin/main` foundation.
+1440×900 numeric geometry thresholds from the updated runbook: **all pass** on current `origin&#47;main` foundation.
 Composition/Landmark/UX product gates remain **fail-closed** due to eye-path, landmark cohesion, and secondary-grid mixing defects.
 
 See `ux_geometry_baseline.json` and `full_page_composition_baseline.md`.
@@ -104,4 +104,4 @@ UX_ACCEPTANCE_GATE_PASS=false
 FULL_PAGE_REVIEW_PASS=false
 ```
 
-Next implementation must start at Slice S1 (Composition/Landmark Foundation) on a fresh branch from `origin/main`, not from PR #5250.
+Next implementation must start at Slice S1 (Composition/Landmark Foundation) on a fresh branch from `origin&#47;main`, not from PR #5250.
