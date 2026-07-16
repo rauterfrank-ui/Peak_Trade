@@ -37,17 +37,17 @@ Base: `origin/main` @ `b9be86aa97d58ac5d00dc4e9885cdbbeab3125f1`
 
 ## Selected healthcheck route
 
-- **Primary:** `GET /api/health` (always `{"status":"ok"}` in `src/webui/app.py`)
-- **Review URL / secondary readiness:** `GET /market`
+- **Primary:** `GET &#47;api&#47;health` (always `{"status":"ok"}` in `src/webui/app.py`)
+- **Review URL / secondary readiness:** `GET &#47;market`
 - Override: `PEAK_TRADE_WEBUI_HEALTH_PATH`
 
 ## Selected runtime-state / log directories
 
-- **State dir:** `.run/webui_review_server/` (override: `PEAK_TRADE_WEBUI_STATE_DIR`)
-- **PID file:** `.run/webui_review_server/review_server.pid`
-- **Log file:** `.run/webui_review_server/review_server.log`
-- **Meta file:** `.run/webui_review_server/review_server.meta`
-- Add `.run/` to `.gitignore` (do not commit PID/logs)
+- **State dir:** `.run&#47;webui_review_server&#47;` (override: `PEAK_TRADE_WEBUI_STATE_DIR`)
+- **PID file:** `.run&#47;webui_review_server&#47;review_server.pid`
+- **Log file:** `.run&#47;webui_review_server&#47;review_server.log`
+- **Meta file:** `.run&#47;webui_review_server&#47;review_server.meta`
+- Add `.run&#47;` to `.gitignore` (do not commit PID/logs)
 
 ## Playwright integration point
 
@@ -67,8 +67,8 @@ Base: `origin/main` @ `b9be86aa97d58ac5d00dc4e9885cdbbeab3125f1`
 4. `tests/webui/test_review_server_harness_v1.py` (new)
 5. `docs/webui/REVIEW_SERVER_HARNESS_V1.md` (new ops doc under existing `docs/webui/`)
 6. `docs/webui/MARKET_SURFACE_V0.md` (short link only)
-7. `.gitignore` (`.run/`)
-8. `artifacts/webui_review_server_harness_v1/*` (evidence)
+7. `.gitignore` (`.run&#47;`)
+8. `artifacts&#47;webui_review_server_harness_v1&#47;*` (evidence)
 
 ## Non-goals / untouched
 
