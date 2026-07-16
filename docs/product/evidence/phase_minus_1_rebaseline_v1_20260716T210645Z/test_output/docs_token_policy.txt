@@ -1,0 +1,52 @@
+== Docs token policy preflight (changed .md vs origin/main) ==
+🔍 Scanning 1 Markdown file(s) (changed files (base: origin/main))...
+
+❌ Found 13 violation(s) in 1 file(s):
+
+📄 docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+  Line 248: `partials/market_visual_operator_header_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_visual_operator_header_v1.html` with `partials&#47;market_visual_operator_header_v1.html`
+  Line 252: `partials/market_primary_operator_hero_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_primary_operator_hero_v1.html` with `partials&#47;market_primary_operator_hero_v1.html`
+  Line 256: `partials/market_primary_close_chart_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_primary_close_chart_v1.html` with `partials&#47;market_primary_close_chart_v1.html`
+  Line 259: `partials/market_governed_top20_primary_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_governed_top20_primary_v1.html` with `partials&#47;market_governed_top20_primary_v1.html`
+  Line 263: `partials/market_decision_funnel_visual_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_decision_funnel_visual_v1.html` with `partials&#47;market_decision_funnel_visual_v1.html`
+  Line 267: `partials/market_economic_observability_visual_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_economic_observability_visual_v1.html` with `partials&#47;market_economic_observability_visual_v1.html`
+  Line 271: `partials/market_ai_linear_diagnostics_visual_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_ai_linear_diagnostics_visual_v1.html` with `partials&#47;market_ai_linear_diagnostics_visual_v1.html`
+  Line 274: `partials/futures_market_compact_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/futures_market_compact_v1.html` with `partials&#47;futures_market_compact_v1.html`
+  Line 277: `partials/double_play_market_compact_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/double_play_market_compact_v1.html` with `partials&#47;double_play_market_compact_v1.html`
+  Line 281: `partials/market_safety_compact_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_safety_compact_v1.html` with `partials&#47;market_safety_compact_v1.html`
+  Line 284: `partials/market_watchlist_compact_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_watchlist_compact_v1.html` with `partials&#47;market_watchlist_compact_v1.html`
+  Line 291: `partials/market_current_state_compact_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_current_state_compact_v1.html` with `partials&#47;market_current_state_compact_v1.html`
+  Line 293: `partials/market_diagnostics_drawer_v1.html` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `partials/market_diagnostics_drawer_v1.html` with `partials&#47;market_diagnostics_drawer_v1.html`
+
+
+Docs token policy preflight FAILED.
+Illustrative inline-code path tokens in Markdown must encode '/' as '&#47;'.
+Examples: `GET &#47;observability`, `readmodels&#47;file.json`, `BTC&#47;USD`
+See: docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md
+Optional dry-run fix: scripts/ops/autofix_docs_token_policy_inline_code_v2.py --dry-run <files>

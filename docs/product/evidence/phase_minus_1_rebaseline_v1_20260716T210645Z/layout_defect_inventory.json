@@ -1,0 +1,73 @@
+{
+  "defects": [
+    {
+      "contract": "EYE_PATH MARKET\u2192CHART\u2192DECISION",
+      "evidence": "DECISION_NARRATIVE top\u2248226 < PRIMARY_CHART top\u2248331",
+      "id": "L-01",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "Decision narrative Y-position precedes chart"
+    },
+    {
+      "contract": "LANDMARK_ARCHITECTURE",
+      "evidence": "Binding via data-market-* only",
+      "id": "L-02",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "No explicit data-landmark-* attributes for \u00a719"
+    },
+    {
+      "contract": "LANDMARK integrity",
+      "evidence": "F5/DP/safety/watchlist shared grid",
+      "id": "L-03",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "Secondary grid mixes Decision and Observability"
+    },
+    {
+      "contract": "INFORMATION_DENSITY",
+      "evidence": "RANKING height\u22481035px",
+      "id": "L-04",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Ranking height dominates below fold"
+    },
+    {
+      "contract": "ENGINEERING_DRAWER",
+      "evidence": "detail anchors + governance + diagnostics",
+      "id": "L-05",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Multiple engineering details vs single drawer identity"
+    },
+    {
+      "contract": "COMPOSITION_FIRST",
+      "evidence": "VISIBLE_CARD_LIKE_COUNT=5",
+      "id": "L-06",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Card-like chrome still present on origin/main"
+    },
+    {
+      "contract": "UX Geometry Assertions",
+      "evidence": {
+        "HEADER_HEIGHT_PX<=64": true,
+        "HORIZONTAL_OVERFLOW_PX=0": true,
+        "LEVEL4_VISIBLE_ELEMENT_COUNT=0": true,
+        "PRIMARY_CHART_TOP_Y<900": true,
+        "PRIMARY_CHART_VISIBLE_HEIGHT_PX>=280": true,
+        "PRIMARY_FOCAL_POINT_COUNT<=2": true,
+        "PROMINENT_HEADER_BADGE_COUNT<=3": true,
+        "VISIBLE_STATUS_BADGE_COUNT<=8": true
+      },
+      "id": "L-07",
+      "severity": "INFO",
+      "status": "OBSERVED_PASS_ON_MAIN_FOUNDATION",
+      "title": "Numeric UX geometry thresholds pass on foundation baseline"
+    }
+  ],
+  "go_token": "GO_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_V1_3_PHASE_MINUS_1_REBASELINE_V1",
+  "reference_viewport": "1440x900",
+  "schema_version": "1.0.0",
+  "slice": "PHASE_MINUS_1_REBASELINE_V1"
+}
