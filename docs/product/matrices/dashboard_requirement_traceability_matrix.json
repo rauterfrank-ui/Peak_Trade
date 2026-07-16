@@ -1,60 +1,71 @@
 {
   "schema_version": "1.0.0",
   "canonical_product_spec": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
-  "runbook_sha256": "5908b407968c69769055634efb55eab9cc5f664e0afaf254b2226657eb27b46d",
-  "slice": "PHASE_1B",
+  "runbook_sha256": "fd87909e3dc340bc5ae0f642cbb8114a5311b7d2300dae115667e27e67b64216",
+  "slice": "PHASE_2",
+  "browser_policy": {
+    "PRIMARY_BROWSER": "GOOGLE_CHROME",
+    "PRIMARY_AUTOMATION": "PLAYWRIGHT",
+    "PRIMARY_PLAYWRIGHT_CHANNEL": "chrome",
+    "SAFARI_REQUIRED_FOR_NORMAL_SLICE_MERGE": false,
+    "PLAYWRIGHT_CHROMIUM_IS_NOT_REAL_CHROME": true,
+    "WEBKIT_IS_NOT_REAL_SAFARI": true
+  },
   "requirements": [
     {
+      "id": "R-2-01",
+      "text": "Chrome-primary browser verification policy bound in runbook",
+      "status": "IMPLEMENTED",
+      "owners": [
+        "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
+        "tests/webui/test_market_dashboard_browser_policy_chrome_primary_v1.py"
+      ]
+    },
+    {
+      "id": "R-2-02",
+      "text": "Operator Overview decision narrative from canonical contexts only",
+      "status": "IMPLEMENTED",
+      "owners": [
+        "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py",
+        "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"
+      ]
+    },
+    {
+      "id": "R-2-03",
+      "text": "Hero hierarchy 8+4 with critical system state calm disabled states",
+      "status": "IMPLEMENTED",
+      "owners": [
+        "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"
+      ]
+    },
+    {
+      "id": "R-2-04",
+      "text": "Activity states without bare ACTIVE in operator overview",
+      "status": "IMPLEMENTED",
+      "owners": [
+        "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py",
+        "tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py"
+      ]
+    },
+    {
+      "id": "R-2-05",
+      "text": "Chrome Playwright harness for self-only evidence",
+      "status": "IMPLEMENTED",
+      "owners": [
+        "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py"
+      ]
+    },
+    {
+      "id": "R-2-06",
+      "text": "No trading/risk/decision/economic/authority semantics ownership in dashboard",
+      "status": "PASS"
+    },
+    {
       "id": "R-1B-01",
-      "text": "Central design token owner",
-      "status": "IMPLEMENTED",
-      "defect": "D10",
-      "owners": [
-        "static/css/peak_trade_dashboard_design_tokens_v1.css"
-      ]
-    },
-    {
-      "id": "R-1B-02",
-      "text": "Consolidate fragmented inline design tokens",
-      "status": "IMPLEMENTED",
-      "defect": "D10"
-    },
-    {
-      "id": "R-1B-03",
-      "text": "Responsive grid and content containers",
-      "status": "IMPLEMENTED",
-      "owners": [
-        "static/css/peak_trade_dashboard_layout_v1.css"
-      ]
-    },
-    {
-      "id": "R-1B-04",
-      "text": "Remove Tailwind CDN from dashboard target state",
-      "status": "IMPLEMENTED",
-      "defect": "D9"
-    },
-    {
-      "id": "R-1B-05",
-      "text": "Remove or vendorize Chart.js CDN",
-      "status": "IMPLEMENTED",
-      "defect": "D9"
-    },
-    {
-      "id": "R-1B-06",
-      "text": "Browser network allowlist SELF_ONLY",
-      "status": "IMPLEMENTED",
-      "defect": "D9"
-    },
-    {
-      "id": "R-1B-07",
-      "text": "Preserve Phase 1A layout and chart-above-fold",
-      "status": "PASS"
-    },
-    {
-      "id": "R-1B-08",
-      "text": "No data producer / semantics / authority change",
-      "status": "PASS"
+      "text": "Central design token owner (preserved)",
+      "status": "PRESERVED"
     }
   ],
-  "phase_1a_requirements_preserved": true
+  "phase_1b_requirements_preserved": true,
+  "evidence": "docs/product/evidence/phase_2_20260716T184639Z/IMPLEMENTATION_MANIFEST.md"
 }

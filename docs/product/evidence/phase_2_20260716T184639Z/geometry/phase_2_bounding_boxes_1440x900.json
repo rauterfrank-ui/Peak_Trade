@@ -1,0 +1,57 @@
+{
+  "method": "playwright_channel_chrome",
+  "BROWSER_ACTUAL": "GOOGLE_CHROME",
+  "REAL_CHROME_VERIFIED": true,
+  "PLAYWRIGHT_CHROMIUM_FALLBACK_USED": false,
+  "WEBKIT_AUTOMATION_VERIFIED": false,
+  "REAL_SAFARI_VERIFIED": false,
+  "geometry": {
+    "chart": {
+      "bottom": 864.15625,
+      "height": 457.5,
+      "left": 176,
+      "right": 1264,
+      "top": 406.65625,
+      "width": 1088
+    },
+    "clientWidth": 1440,
+    "critical": {
+      "bottom": 394.46875,
+      "height": 130,
+      "left": 903.125,
+      "right": 1253.40625,
+      "top": 264.46875,
+      "width": 350.28125
+    },
+    "header": {
+      "bottom": 158.6875,
+      "height": 53.6875,
+      "left": 176,
+      "right": 1264,
+      "top": 105,
+      "width": 1088
+    },
+    "hero": {
+      "bottom": 401.0625,
+      "height": 143.1875,
+      "left": 176,
+      "right": 1264,
+      "top": 257.875,
+      "width": 1088
+    },
+    "scrollWidth": 1440,
+    "sentence": {
+      "bottom": 314.015625,
+      "height": 17.546875,
+      "left": 186.59375,
+      "right": 895.125,
+      "top": 296.46875,
+      "width": 708.53125
+    },
+    "viewportHeight": 900,
+    "viewportWidth": 1440
+  },
+  "CHART_TOP_VISIBLE_1440x900": true,
+  "CHART_MATERIALLY_VISIBLE_1440x900": true,
+  "HORIZONTAL_OVERFLOW": false
+}
