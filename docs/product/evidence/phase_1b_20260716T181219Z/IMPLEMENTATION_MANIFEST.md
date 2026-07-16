@@ -49,4 +49,4 @@ STOP_BEFORE_MERGE=true
 - docs/product/matrices/*
 
 ## Evidence
-`docs/product/evidence/phase_1b_20260716T181219Z`
+Canonical evidence root (this directory): see `MANIFEST.sha256` and `MANIFEST_VERIFY.txt` in this folder.
