@@ -68,11 +68,11 @@ MARKET → DECISION → BLOCKER → CHART → RANKING → DETAIL
 | Tokens | `static/css/peak_trade_dashboard_design_tokens_v1.css` |
 | Layout/composition | `static/css/peak_trade_dashboard_layout_v1.css` |
 | Page shell | `templates/peak_trade_dashboard/market_v0.html` |
-| Hero / Decision | `templates/.../market_primary_operator_hero_v1.html` |
-| Chart | `templates/.../market_primary_close_chart_v1.html` |
-| Ranking | `templates/.../market_governed_top20_primary_v1.html` |
-| Safety rail | `templates/.../market_visual_operator_header_v1.html` |
-| Harness | `scripts/webui/market_dashboard_chrome_playwright_harness_v1.py` |
+| Hero / Decision | `templates&#47;peak_trade_dashboard&#47;partials&#47;market_primary_operator_hero_v1.html` |
+| Chart | `templates&#47;peak_trade_dashboard&#47;partials&#47;market_primary_close_chart_v1.html` |
+| Ranking | `templates&#47;peak_trade_dashboard&#47;partials&#47;market_governed_top20_primary_v1.html` |
+| Safety rail | `templates&#47;peak_trade_dashboard&#47;partials&#47;market_visual_operator_header_v1.html` |
+| Harness | `scripts&#47;webui&#47;market_dashboard_chrome_playwright_harness_v1.py` |
 
 ## Chrome Playwright composition (1440×900) — AFTER
 
@@ -92,9 +92,9 @@ CONSOLE_ERRORS=0
 
 ## Evidence paths
 
-- Before: `before/01_full_viewport_1440x900.png`, `before/03_hero_1440x900.png`, `before/04_chart_1440x900.png`, `before/browser/`
-- After: `after/01_full_viewport_1440x900.png`, `after/03_hero_1440x900.png`, `after/04_chart_1440x900.png`, `after/browser/`
-- Focused tests: `test_output/composition_first_focused_tests.txt`
+- Before: `before&#47;01_full_viewport_1440x900.png`, `before&#47;03_hero_1440x900.png`, `before&#47;04_chart_1440x900.png`, `before&#47;browser&#47;`
+- After: `after&#47;01_full_viewport_1440x900.png`, `after&#47;03_hero_1440x900.png`, `after&#47;04_chart_1440x900.png`, `after&#47;browser&#47;`
+- Focused tests: `test_output&#47;focused_tests.txt`
 
 ## Stop condition
 
