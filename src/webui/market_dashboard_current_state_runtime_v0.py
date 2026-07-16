@@ -17,6 +17,7 @@ def build_market_dashboard_current_state_display_context() -> dict[str, Any]:
     system = snapshot["current_system_state"]
     governance = snapshot["governance_and_safety"]
     evidence = snapshot["pr_and_evidence_status"]
+    provenance = snapshot["provenance"]
 
     return {
         "section_visible": True,
@@ -25,8 +26,11 @@ def build_market_dashboard_current_state_display_context() -> dict[str, Any]:
         "controls_allowed": False,
         "snapshot_owner": SNAPSHOT_OWNER,
         "snapshot_version": snapshot["snapshot_version"],
-        "provenance": snapshot["provenance"],
+        "provenance": provenance,
         "system": system,
+        "technical_completion": snapshot["technical_completion"],
+        "economic_result": snapshot["economic_result"],
+        "current_research": snapshot["current_research"],
         "parity_surfaces_completed": snapshot["parity_surfaces_completed"],
         "blocked_main_gates": snapshot["blocked_main_gates"],
         "strategy_fleet": snapshot["strategy_fleet"],
