@@ -32,7 +32,20 @@
     "open": [
       "LDD-05"
     ],
-    "status": "IMPLEMENTED_PR_OPEN"
+    "status": "MERGED"
+  },
+  "phase_3_market_chart_polish": {
+    "evidence": "docs/product/evidence/phase_3_20260716T191523Z",
+    "requirements": [
+      "DEFAULT_VISIBLE_BARS=120",
+      "SUPPORTED_CHART_WINDOWS=50,120,250,ALL",
+      "GAP_RENDERING_POLICY=EXPLICIT",
+      "STALE_DATA_OVERLAY_REQUIRED=true",
+      "TIMEZONE_VISIBLE=true",
+      "NO_VISUAL_INTERPOLATION_OF_MISSING_BARS=true"
+    ],
+    "status": "IMPLEMENTED_PR_OPEN",
+    "updated_at": "2026-07-16T22:08:24Z"
   },
   "requirements": [
     {

@@ -262,8 +262,24 @@
       "LDD-06"
     ],
     "evidence_dir": "artifacts/market_dashboard_phase1a_composition_foundation_v1",
+    "merge_commit": "30de36030892d4a7680c68b812021f6bb38b5831",
+    "merged_at": "2026-07-16T22:04:26Z",
     "open_defects": [
       "LDD-05"
+    ],
+    "status": "MERGED"
+  },
+  "phase_3_market_chart_polish": {
+    "DESIGN_GATE": "PASS",
+    "based_on_main": "30de36030892d4a7680c68b812021f6bb38b5831",
+    "branch": "feat/market-dashboard-phase3-chart-polish-after-5254-v1",
+    "evidence_dir": "docs/product/evidence/phase_3_20260716T191523Z",
+    "note": "Ported onto post-PR5254 composition foundation; windows/meta/gaps/overlays presentation-only.",
+    "owners": [
+      "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+      "src/webui/market_visual_operator_surface_v1/chart_display_v1.py",
+      "src/webui/market_visual_operator_surface_v1/local_offline_binding_v1.py",
+      "src/webui/market_surface.py"
     ],
     "status": "PR_OPEN_STOP_BEFORE_MERGE"
   },

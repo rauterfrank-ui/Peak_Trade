@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "phase": "PHASE_3",
+  "phase_name": "MARKET_CHART",
+  "go_token": "GO_VISUAL_OPERATOR_DASHBOARD_PR5247_MERGE_CLOSEOUT_AND_PHASE3_IMPLEMENTATION_V1",
+  "canonical_runbook": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
+  "branch": "feat/market-dashboard-phase-3-chart-polish-v1",
+  "base_origin_main": "880bc9a1dde0d9d3be1c80c5f53bd060afecef31",
+  "phase2_pr": 5247,
+  "phase2_merge_commit": "880bc9a1dde0d9d3be1c80c5f53bd060afecef31",
+  "files": [
+    "src/webui/market_visual_operator_surface_v1/chart_display_v1.py",
+    "src/webui/market_surface.py",
+    "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+    "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
+    "tests/webui/test_market_dashboard_phase_3_chart_polish_v1.py",
+    "docs/product/evidence/phase_2_20260716T184639Z/PHASE2_CLOSEOUT.md",
+    "docs/product/evidence/phase_3_20260716T191523Z/",
+    "docs/product/matrices/dashboard_requirement_traceability_matrix.json",
+    "docs/product/matrices/dashboard_phase_binding_matrix.json"
+  ],
+  "forbidden_effects": {
+    "TRADING_SEMANTICS_EFFECT": "NONE",
+    "DECISION_SEMANTICS_EFFECT": "NONE",
+    "RISK_SIZING_SEMANTICS_EFFECT": "NONE",
+    "ECONOMIC_SEMANTICS_EFFECT": "NONE",
+    "DATA_PRODUCER_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "AUTHORITY_EFFECT": "NONE"
+  },
+  "dependencies_changed": false,
+  "stop_before_merge": true
+}

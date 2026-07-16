@@ -498,6 +498,14 @@ def load_live_status_snapshot_home_context() -> Dict[str, Any]:
 
 
 def create_app() -> FastAPI:
+    # Local operator review: bind durable offline OHLCV/ranking/F5 bundles when present.
+    # No-op under pytest and when env is already explicit; never invents market data.
+    from .market_visual_operator_surface_v1.local_offline_binding_v1 import (
+        maybe_apply_local_operator_offline_binding,
+    )
+
+    maybe_apply_local_operator_offline_binding()
+
     app = FastAPI(
         title="Peak_Trade Dashboard v1.2",
         description=(

@@ -1,0 +1,12 @@
+{
+  "phase3_chart": true,
+  "candles": 90,
+  "volume": 45,
+  "source_meta": true,
+  "freshness_meta": true,
+  "tz_meta": true,
+  "bars_meta": true,
+  "gap_markers": 0,
+  "no_cdn": true,
+  "symbol": "ETHUSDT"
+}

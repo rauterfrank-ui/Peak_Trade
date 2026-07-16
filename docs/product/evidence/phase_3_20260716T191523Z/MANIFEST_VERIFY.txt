@@ -1,0 +1,27 @@
+./browser/browser_evidence_report.json: OK
+./browser/console_log.json: OK
+./browser/harness_stderr.txt: OK
+./browser/harness_stdout.json: OK
+./browser/screenshot_index.md: OK
+./browser_verification_report.md: OK
+./chart_contract_report.md: OK
+./focused_test_report.md: OK
+./geometry/phase_3_bounding_boxes_1440x900.json: OK
+./implementation_manifest.json: OK
+./network/browser_network_summary.json: OK
+./phase3_execution_report.md: OK
+./proofs/html_contract_snapshot.json: OK
+./screenshot_manifest.json: OK
+./screenshots/above_fold_with_chart.png: OK
+./screenshots/chart_default_1440x900.png: OK
+./screenshots/chart_full_desktop.png: OK
+./screenshots/chart_missing_or_incomplete_state.png: OK
+./screenshots/chart_narrow_desktop.png: OK
+./screenshots/chart_selected_instrument.png: OK
+./screenshots/chart_stale_state.png: OK
+./screenshots/chart_tooltip_or_equivalent_detail_state.png: OK
+./screenshots/chart_wide_1728x1117.png: OK
+./screenshots/chart_with_volume.png: OK
+./source_provenance_report.md: OK
+./test_output/focused_tests.txt: OK
+MANIFEST_VERIFY_PASS=true

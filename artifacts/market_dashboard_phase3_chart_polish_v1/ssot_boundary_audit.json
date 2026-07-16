@@ -1,0 +1,8 @@
+{
+  "DASHBOARD_IS_CONSUMER_ONLY": true,
+  "SECOND_RUNBOOK_CREATED": false,
+  "DATA_PRODUCER_MUTATION": false,
+  "CORE_OWNER_MUTATION": false,
+  "LIVE_AUTHORIZED": false,
+  "ORDERS_ALLOWED": false
+}

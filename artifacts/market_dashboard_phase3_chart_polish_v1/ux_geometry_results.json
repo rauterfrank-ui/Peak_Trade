@@ -1,0 +1,30 @@
+{
+  "assertions": {
+    "DECISION_AFTER_CHART": true,
+    "ENGINEERING_DRAWER_DEFAULT_HIDDEN": true,
+    "HEADER_HEIGHT_PX_LE_64": true,
+    "HORIZONTAL_OVERFLOW_PX_EQ_0": true,
+    "LANDMARK_ORDER_PASS": true,
+    "LEVEL4_VISIBLE_ELEMENT_COUNT_EQ_0": true,
+    "PRIMARY_CHART_TOP_Y_LT_900": true,
+    "PRIMARY_CHART_VISIBLE_HEIGHT_PX_GE_280": true,
+    "PROMINENT_HEADER_BADGE_COUNT_LE_3": true,
+    "VISIBLE_STATUS_BADGE_COUNT_LE_8": true
+  },
+  "geometry": {
+    "DECISION_NARRATIVE_TOP_Y": 854.78125,
+    "HEADER_HEIGHT_PX": 45.6875,
+    "HORIZONTAL_OVERFLOW_PX": 0,
+    "LEVEL4_VISIBLE_ELEMENT_COUNT": 0,
+    "PRIMARY_CHART_TOP_Y": 276.28125,
+    "PRIMARY_CHART_VISIBLE_HEIGHT_PX": 570.5,
+    "PROMINENT_HEADER_BADGE_COUNT": 1,
+    "VISIBLE_STATUS_BADGE_COUNT": 4,
+    "clientWidth": 1440,
+    "engineering_open_details_count": 0,
+    "scrollWidth": 1440,
+    "viewportHeight": 900,
+    "viewportWidth": 1440
+  },
+  "viewport": "1440x900"
+}
