@@ -47,3 +47,69 @@
     padding-right: var(--pt-space-3);
   }
 }
+
+/* Phase 2 — Operator Overview hero (8 primary / 4 system).
+ * Explicit grid owner: do not rely on missing Tailwind lg:col-span-8 utility.
+ */
+.pt-operator-overview-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--pt-space-2, 0.5rem);
+  align-items: start;
+}
+
+.pt-operator-overview-hero-primary,
+.pt-operator-overview-hero-system {
+  min-width: 0;
+}
+
+.pt-operator-overview-decision-sentence {
+  display: block;
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--pt-color-text-primary, #e2e8f0);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.pt-operator-overview-meta-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem 0.5rem;
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(30, 41, 59, 0.6);
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 640px) {
+  .pt-operator-overview-meta-row {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .pt-operator-overview-hero-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .pt-operator-overview-hero-primary {
+    grid-column: span 8;
+  }
+
+  .pt-operator-overview-hero-system {
+    grid-column: span 4;
+  }
+}
+
+#market-v0-shell.market-phase-1a-layout .pt-operator-overview-hero-panel {
+  padding: 0.35rem 0.6rem;
+}
+
+#market-v0-shell.market-phase-1a-layout .pt-operator-overview-status-strip {
+  margin-top: 0.3rem;
+  gap: 0.35rem 0.75rem;
+  font-size: 0.625rem;
+}

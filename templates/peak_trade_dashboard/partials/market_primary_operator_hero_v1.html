@@ -1,4 +1,4 @@
-<!-- Selected instrument workspace — Phase 1A: compact hero then chart above fold -->
+<!-- Selected instrument workspace — Phase 2 Operator Overview + chart above fold -->
 <section
   id="market-selected-instrument-workspace-v1"
   class="space-y-1.5 pt-1 market-phase-1a-hero-workspace"
@@ -12,6 +12,7 @@
   data-market-primary-market-values-v1="true"
   data-market-metrics-above-fold-v1="true"
   data-market-phase-1a-compact-hero-v1="true"
+  data-market-phase-2-operator-overview-v1="true"
   data-market-detail-click-required="false"
   data-market-canonical-short-url-v1="true"
   data-market-view-only="true"
@@ -63,15 +64,14 @@
     {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-500">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
   </div>
   {% elif query.source == 'futures' and not data_unavailable %}
-  <div
-    class="rounded-md border border-emerald-900/40 bg-emerald-950/15 px-2 py-1 text-[10px] text-emerald-100/90"
+  <p
+    class="m-0 text-[9px] font-mono text-emerald-200/70"
     role="status"
     data-market-futures-ohlcv-wired-v1="true"
     data-market-futures-chart-complete-v1="true"
   >
-    Futures OHLCV · read-only SSR
-    {% if futures_ohlcv.source %}<span class="font-mono text-emerald-200/70"> · {{ futures_ohlcv.source|e }}</span>{% endif %}
-  </div>
+    Futures OHLCV · read-only SSR{% if futures_ohlcv.source %} · {{ futures_ohlcv.source|e }}{% endif %}
+  </p>
   {% endif %}
 
   {% if query.source == 'dummy' %}
@@ -97,95 +97,121 @@
   </div>
   {% endif %}
 
+  {% set ov = operator_overview_phase_2 %}
   <section
     id="market-primary-operator-hero-v1"
-    class="rounded-md border border-slate-800/70 bg-slate-950/85 px-2.5 py-1.5"
+    class="rounded-md border border-slate-800/70 bg-slate-950/85 pt-operator-overview-hero-panel"
     data-market-terminal-asset-bar-v1="true"
     data-market-primary-values-panel-v1="true"
     data-market-workspace-hero-v1="true"
     data-market-instrument-live-tile-v1="true"
     data-market-phase-1a-hero-compact-v1="true"
-    aria-label="Selected instrument identity and KPIs"
+    data-market-phase-2-hero-v1="true"
+    data-market-operator-overview-hero-v1="true"
+    aria-label="Operator overview: selected instrument and decision narrative"
   >
-    <div class="flex flex-wrap items-start justify-between gap-2">
-      <div class="min-w-0 flex-1">
-        <p class="m-0 text-lg sm:text-xl font-bold font-mono text-slate-50 tracking-tight" data-market-workspace-symbol-v1="true">{{ primary_values.symbol|e }}</p>
+    <div class="pt-operator-overview-hero-grid" data-market-phase-2-hero-layout-v1="8_4">
+      <div class="pt-operator-overview-hero-primary" data-market-phase-2-hero-primary-v1="true">
+        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <p class="m-0 text-base sm:text-lg font-bold font-mono text-slate-50 tracking-tight" data-market-workspace-symbol-v1="true">{{ ov.selected_instrument.symbol|e }}</p>
+          <span class="text-[10px] font-mono text-slate-400" data-market-phase-2-instrument-meta-v1="true">
+            {{ ov.selected_instrument.exchange|e }}
+            · {{ ov.selected_instrument.contract_type|e }}
+            · {{ ov.selected_instrument.timeframe|e }}
+          </span>
+        </div>
         <p
-          class="m-0 mt-0.5 text-[11px] text-slate-300 leading-snug"
+          class="pt-operator-overview-decision-sentence"
           data-market-operator-decision-narrative-v1="true"
           data-market-phase-1a-decision-narrative-v1="true"
+          data-market-phase-2-decision-sentence-v1="true"
         >
-          {{ primary_values.symbol|e }} stands at rank
-          {% if selected_instrument_workspace.ranking_rank is not none %}{{ selected_instrument_workspace.ranking_rank|e }}{% else %}n/a{% endif %}.
-          AI {{ visual_operator_header.ai_activity_state|e }}.
-          Econ {{ visual_operator_header.economic_gate_status|e }}.
-          Primärer Blocker: Preflight blocked · Authority NONE.
+          {{ ov.decision_sentence|e }}
         </p>
+        <dl
+          class="m-0 pt-operator-overview-status-strip flex flex-wrap text-slate-300"
+          data-market-phase-2-decision-state-v1="true"
+          aria-label="Current decision state"
+        >
+          <div><dt class="inline text-slate-500">Decision · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.state|e }}</dd></div>
+          <div><dt class="inline text-slate-500">Direction · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.direction|e }}</dd></div>
+          <div><dt class="inline text-slate-500">AI · </dt><dd class="inline m-0 font-mono" data-market-phase-2-ai-activity-v1="true">{{ ov.current_decision.ai_activity_state|e }}</dd></div>
+          <div><dt class="inline text-slate-500">Quality · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.data_quality_state|e }}</dd></div>
+          <div data-market-phase-2-blocker-scope-v1="{{ ov.current_decision.blocker_scope|e }}">
+            <dt class="inline text-slate-500">Blocker scope · </dt>
+            <dd class="inline m-0 font-mono text-slate-400">{{ ov.current_decision.blocker_scope|e }}</dd>
+          </div>
+        </dl>
+        <dl
+          class="m-0 pt-operator-overview-meta-row"
+          data-market-workspace-kpi-band-v1="true"
+          data-market-workspace-kpi-primary-v1="true"
+          data-market-phase-1a-compact-metadata-row-v1="true"
+          data-market-phase-2-compact-metadata-row-v1="true"
+          aria-label="Compact market metadata"
+        >
+          <div data-market-workspace-kpi-last-price-v1="true">
+            <dt class="text-slate-500 uppercase text-[8px]">Last</dt>
+            <dd class="m-0 font-mono text-sm font-semibold text-sky-200/95">{{ ov.selected_instrument.last_price|e }}</dd>
+          </div>
+          <div>
+            <dt class="text-slate-500 uppercase text-[8px]">High</dt>
+            <dd class="m-0 font-mono text-slate-200">{{ ov.selected_instrument.high|e }}</dd>
+          </div>
+          <div>
+            <dt class="text-slate-500 uppercase text-[8px]">Low</dt>
+            <dd class="m-0 font-mono text-slate-200">{{ ov.selected_instrument.low|e }}</dd>
+          </div>
+          <div>
+            <dt class="text-slate-500 uppercase text-[8px]">Volume</dt>
+            <dd class="m-0 font-mono text-slate-200">{{ ov.selected_instrument.volume|e }}</dd>
+          </div>
+          <div data-market-workspace-kpi-rank-v1="true">
+            <dt class="text-slate-500 uppercase text-[8px]">Rank</dt>
+            <dd class="m-0 font-mono text-slate-200">
+              {% if ov.selected_instrument.rank != 'unavailable' %}
+              <span class="inline-flex items-center rounded border border-violet-700/60 bg-violet-950/45 px-1 py-0.5" data-market-kpi-rank-badge-v1="true">#{{ ov.selected_instrument.rank|e }}</span>
+              {% else %}unavailable{% endif %}
+            </dd>
+          </div>
+          <div data-market-workspace-kpi-score-v1="true">
+            <dt class="text-slate-500 uppercase text-[8px]">Score</dt>
+            <dd class="m-0 font-mono text-slate-200">{{ ov.selected_instrument.score|e }}</dd>
+          </div>
+        </dl>
+        <dl class="m-0 mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[8px] tabular-nums" data-market-workspace-kpi-status-v1="true">
+          <div data-market-workspace-kpi-change-v1="true"><span class="text-slate-500">Change · </span><span class="font-mono text-slate-300">{{ ov.selected_instrument.change|e }}</span></div>
+          <div data-market-workspace-kpi-freshness-v1="true"><span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="{{ ov.selected_instrument.freshness|e }}">Freshness</span></div>
+          <div data-market-workspace-data-quality-badge-v1="true"><span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="{{ ov.selected_instrument.data_quality|e }}">Quality</span></div>
+          <div data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
+            <span class="text-slate-500">Regime · </span><span class="font-mono text-slate-300">{{ ov.market_regime.trend|e }}</span>
+            <span class="text-slate-600">({{ ov.market_regime.scope_note|e }})</span>
+          </div>
+        </dl>
       </div>
-      <div
-        class="shrink-0 rounded border border-slate-700/60 bg-slate-900/70 px-2 py-1 text-[9px] text-slate-300 max-w-[11rem]"
+
+      <aside
+        class="pt-operator-overview-hero-system shrink-0 rounded border border-slate-700/55 bg-slate-900/55 px-2 py-1.5 text-[10px] text-slate-300"
         data-market-phase-1a-critical-system-state-v1="true"
+        data-market-phase-2-critical-system-state-v1="true"
         aria-label="Critical system state"
       >
-        <p class="m-0 uppercase tracking-wide text-slate-500 text-[8px]">Critical</p>
-        <p class="m-0 font-mono text-rose-200/90">Preflight blocked</p>
-        <p class="m-0 font-mono text-slate-400">Live locked · Auth false</p>
-      </div>
+        <p class="m-0 uppercase tracking-wide text-slate-500 text-[8px]">Critical system state</p>
+        <dl class="m-0 mt-1 space-y-0.5 font-mono text-[10px]">
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Economic</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.economic_validity|e }}</dd></div>
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Authority</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.runtime_authority|e }}</dd></div>
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Orders</dt><dd class="m-0 text-slate-400">{{ ov.critical_system_state.orders|e }}</dd></div>
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Live</dt><dd class="m-0 text-slate-400">{{ ov.critical_system_state.live|e }}</dd></div>
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Risk</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.risk_status|e }}</dd></div>
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Safety</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.safety_status|e }}</dd></div>
+        </dl>
+      </aside>
     </div>
-
-    <dl
-      class="m-0 mt-1.5 grid grid-cols-3 sm:grid-cols-6 gap-x-2 gap-y-1 text-[10px] tabular-nums border-t border-slate-800/60 pt-1.5"
-      data-market-workspace-kpi-band-v1="true"
-      data-market-workspace-kpi-primary-v1="true"
-      data-market-phase-1a-compact-metadata-row-v1="true"
-      aria-label="Compact market metadata"
-    >
-      <div data-market-workspace-kpi-last-price-v1="true">
-        <dt class="text-slate-500 uppercase text-[8px]">Last</dt>
-        <dd class="m-0 font-mono text-sm font-semibold text-sky-200/95">{% if primary_values.status == 'available' %}{{ primary_values.last_close_display|e }}{% else %}unavailable{% endif %}</dd>
-      </div>
-      <div>
-        <dt class="text-slate-500 uppercase text-[8px]">High</dt>
-        <dd class="m-0 font-mono text-slate-200">{{ primary_values.last_high_display|e or '—' }}</dd>
-      </div>
-      <div>
-        <dt class="text-slate-500 uppercase text-[8px]">Low</dt>
-        <dd class="m-0 font-mono text-slate-200">{{ primary_values.last_low_display|e or '—' }}</dd>
-      </div>
-      <div>
-        <dt class="text-slate-500 uppercase text-[8px]">Volume</dt>
-        <dd class="m-0 font-mono text-slate-200">{{ primary_values.last_volume_display|e or '—' }}</dd>
-      </div>
-      <div data-market-workspace-kpi-rank-v1="true">
-        <dt class="text-slate-500 uppercase text-[8px]">Rank</dt>
-        <dd class="m-0 font-mono text-slate-200">
-          {% if selected_instrument_workspace.ranking_rank is not none %}
-          <span class="inline-flex items-center rounded border border-violet-700/60 bg-violet-950/45 px-1 py-0.5" data-market-kpi-rank-badge-v1="true">#{{ selected_instrument_workspace.ranking_rank|e }}</span>
-          {% else %}unavailable{% endif %}
-        </dd>
-      </div>
-      <div data-market-workspace-kpi-score-v1="true">
-        <dt class="text-slate-500 uppercase text-[8px]">Score</dt>
-        <dd class="m-0 font-mono text-slate-200">
-          {{ selected_instrument_workspace.ranking_score_display|e }}
-          {% if selected_instrument_workspace.ranking_score_display != 'unavailable' %}
-          {% set score_width = (selected_instrument_workspace.ranking_score_display|float * 100)|round(1) %}
-          <span class="block h-1 mt-0.5 rounded bg-slate-800/80 overflow-hidden max-w-[5rem]" data-market-kpi-score-bar-v1="true" aria-hidden="true"><span class="block h-full bg-violet-400/75" style="width: {{ score_width }}%"></span></span>
-          {% endif %}
-        </dd>
-      </div>
-    </dl>
-    <dl class="m-0 mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[8px] tabular-nums" data-market-workspace-kpi-status-v1="true">
-      <div data-market-workspace-kpi-change-v1="true"><span class="text-slate-500">Change · </span><span class="font-mono text-slate-300">{% if primary_values.change_status == 'available' %}{{ primary_values.change_abs_display|e }} ({{ primary_values.change_pct_display|e }}){% else %}unavailable{% endif %}</span></div>
-      <div data-market-workspace-kpi-freshness-v1="true"><span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="{% if primary_values.last_bar_ts %}{{ primary_values.last_bar_ts|e }}{% else %}{{ primary_values.generated_at_utc|e }}{% endif %}">Fresh</span></div>
-      <div data-market-workspace-data-quality-badge-v1="true"><span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="{{ selected_instrument_workspace.data_quality_status|e }}">Quality</span></div>
-      <div><span class="font-mono text-slate-500">{{ query.source|e }} · {{ primary_values.timeframe|e }} · bars {{ primary_values.bars_returned|e }}/{{ primary_values.limit|e }}</span></div>
-    </dl>
   </section>
 
   {% include "partials/market_primary_close_chart_v1.html" %}
 
-  {% if selected_instrument_workspace.workspace_visible %}
+{% if selected_instrument_workspace.workspace_visible %}
   <details
     class="rounded-md border border-slate-800/60 bg-slate-950/40 px-2.5 py-1.5"
     data-market-phase-1a-secondary-instrument-details-v1="true"
