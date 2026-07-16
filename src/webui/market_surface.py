@@ -60,6 +60,9 @@ from .market_instrument_eligibility_v0 import (
 from .market_dashboard_current_state_runtime_v0 import (
     build_market_dashboard_current_state_display_context,
 )
+from .market_visual_operator_surface_v1 import (
+    build_market_visual_operator_surface_context,
+)
 from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
 
 logger = logging.getLogger(__name__)
@@ -1646,6 +1649,101 @@ def _derive_governed_matrix_row_ohlcv_fields(
     }
 
 
+def _resolve_symbol_bars_display_only(
+    futures_ohlcv: Dict[str, Any],
+    symbol: str,
+) -> list[dict[str, Any]]:
+    """Return raw OHLCV bars for a symbol regardless of route timeframe (display-only)."""
+    if not isinstance(futures_ohlcv, dict) or not futures_ohlcv.get("gate_enabled"):
+        return []
+    if futures_ohlcv.get("display_status") in ("builder_error", "unconfigured", "disabled"):
+        return []
+    if futures_ohlcv.get("stale") is True:
+        return []
+    series_map = futures_ohlcv.get("series")
+    if not isinstance(series_map, dict):
+        return []
+    series = series_map.get(symbol)
+    if not isinstance(series, dict):
+        return []
+    bars = series.get("bars")
+    return bars if isinstance(bars, list) else []
+
+
+def _derive_governed_matrix_row_visual_fields(
+    *,
+    row: dict[str, Any],
+    futures_ohlcv: Dict[str, Any],
+    symbol: str,
+) -> dict[str, Any]:
+    """Optional display-only visual fields for a governed matrix row (real bars only).
+
+    Suitability/regime are only surfaced when the ranking row already carries them; they
+    are never invented. Momentum/volatility/liquidity/change are derived from the real
+    offline OHLCV series when present, otherwise reported as ``unavailable``.
+    """
+
+    def _passthrough(key: str) -> Any:
+        value = row.get(key)
+        return value if value not in (None, "") else "unavailable"
+
+    fields: dict[str, Any] = {
+        "bull_suitability": _passthrough("bull_suitability"),
+        "bear_suitability": _passthrough("bear_suitability"),
+        "regime": _passthrough("regime"),
+        "momentum_display": "unavailable",
+        "momentum_sort": None,
+        "volatility_display": "unavailable",
+        "volatility_sort": None,
+        "liquidity_display": "unavailable",
+        "liquidity_sort": None,
+        "change_vs_prev_display": "unavailable",
+        "change_vs_prev_sort": None,
+    }
+
+    bars = _resolve_symbol_bars_display_only(futures_ohlcv, symbol)
+    if not bars:
+        return fields
+
+    def _fval(bar: Any, key: str) -> float | None:
+        if not isinstance(bar, dict):
+            return None
+        raw = bar.get(key)
+        if raw is None:
+            return None
+        try:
+            return float(raw)
+        except (TypeError, ValueError):
+            return None
+
+    closes = [c for c in (_fval(bar, "close") for bar in bars) if c is not None]
+    highs = [h for h in (_fval(bar, "high") for bar in bars) if h is not None]
+    lows = [low for low in (_fval(bar, "low") for bar in bars) if low is not None]
+    last_volume = _fval(bars[-1], "volume")
+
+    if len(closes) >= 2 and closes[0] != 0:
+        momentum = (closes[-1] - closes[0]) / closes[0]
+        fields["momentum_sort"] = momentum
+        fields["momentum_display"] = f"{momentum * 100.0:.2f}%"
+
+    last_close = closes[-1] if closes else None
+    if highs and lows and last_close not in (None, 0):
+        volatility = (max(highs) - min(lows)) / last_close
+        fields["volatility_sort"] = volatility
+        fields["volatility_display"] = f"{volatility * 100.0:.2f}%"
+
+    if last_volume is not None:
+        fields["liquidity_sort"] = last_volume
+        fields["liquidity_display"] = _format_display_price(last_volume)
+
+    if len(closes) >= 2 and closes[-2] != 0:
+        change_vs_prev = (closes[-1] - closes[-2]) / closes[-2]
+        fields["change_vs_prev_sort"] = change_vs_prev
+        fields["change_vs_prev_display"] = f"{change_vs_prev * 100.0:.4f}%"
+
+    return fields
+
+
 def _enrich_ranking_row_for_watchlist(
     row: dict[str, Any],
     *,
@@ -1744,6 +1842,11 @@ def build_market_governed_top20_display_context(
             timeframe=timeframe,
             limit=limit,
         )
+        visual_fields = _derive_governed_matrix_row_visual_fields(
+            row=row,
+            futures_ohlcv=ohlcv_ctx,
+            symbol=row_symbol,
+        )
         row_rank = row.get("rank")
         try:
             rank_sort = int(row_rank) if row_rank is not None else None
@@ -1778,6 +1881,17 @@ def build_market_governed_top20_display_context(
                 "data_status": row_data_status,
                 "stale": snapshot_stale,
                 "is_selected": is_selected,
+                "bull_suitability": visual_fields["bull_suitability"],
+                "bear_suitability": visual_fields["bear_suitability"],
+                "regime": visual_fields["regime"],
+                "momentum_display": visual_fields["momentum_display"],
+                "momentum_sort": visual_fields["momentum_sort"],
+                "volatility_display": visual_fields["volatility_display"],
+                "volatility_sort": visual_fields["volatility_sort"],
+                "liquidity_display": visual_fields["liquidity_display"],
+                "liquidity_sort": visual_fields["liquidity_sort"],
+                "change_vs_prev_display": visual_fields["change_vs_prev_display"],
+                "change_vs_prev_sort": visual_fields["change_vs_prev_sort"],
                 "market_nav_href": build_market_symbol_nav_href(
                     symbol=row_symbol,
                     source=source,
@@ -2990,6 +3104,10 @@ def build_market_v0_page_template_context(
         f5_dashboard=f5_dashboard,
     )
     current_state = build_market_dashboard_current_state_display_context()
+    visual_operator = build_market_visual_operator_surface_context(
+        source=source,
+        futures_ohlcv=futures_ohlcv,
+    )
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
         f"/market?source=dummy&symbol={quote('ETHUSDT', safe='')}"
@@ -3018,6 +3136,11 @@ def build_market_v0_page_template_context(
         "double_play_matrix": double_play_matrix,
         "safety_matrix": safety_matrix,
         "current_state": current_state,
+        "visual_operator_header": visual_operator["visual_operator_header"],
+        "decision_funnel_visual": visual_operator["decision_funnel_visual"],
+        "economic_observability_visual": visual_operator["economic_observability_visual"],
+        "ai_linear_diagnostics_visual": visual_operator["ai_linear_diagnostics_visual"],
+        "ai_activity_state": visual_operator["ai_activity_state"],
         "top_n": top_n,
         "top_n_toggle_hrefs": {
             20: build_market_top_n_toggle_href(

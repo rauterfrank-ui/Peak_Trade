@@ -12,8 +12,9 @@
 
 **New to Peak_Trade (product overview)?**
 1. Read: [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) – Architecture, Strategy Registry, Config, Quick Start
-2. Run your first backtest: `python3 scripts&#47;run_strategy_from_config.py --strategy ma_crossover`
-3. Explore: [What changed recently?](DOCUMENTATION_UPDATE_SUMMARY.md)
+2. Visual Operator Dashboard (product SSOT, read-only, no runtime effect): [product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) — see [product/README.md](product/README.md)
+3. Run your first backtest: `python3 scripts&#47;run_strategy_from_config.py --strategy ma_crossover`
+4. Explore: [What changed recently?](DOCUMENTATION_UPDATE_SUMMARY.md)
 
 **Coming back?**
 - Jump to your [audience section](#by-audience) below

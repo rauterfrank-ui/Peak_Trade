@@ -1,0 +1,28 @@
+{# Compact read-only operator header — futures-only, no runtime/order authority #}
+<section
+  class="rounded-lg border border-slate-800/70 bg-slate-950/60 px-2.5 py-2 mt-2"
+  role="region"
+  aria-label="Visual operator header"
+  data-market-visual-operator-header-v1="true"
+  data-market-view-only="true"
+  data-market-read-only="true"
+  data-market-trading-authority-v1="false"
+  data-market-visual-operator-runtime-authority="{{ visual_operator_header.runtime_authority|e }}"
+  data-market-visual-operator-orders-allowed="{{ visual_operator_header.orders_allowed|lower }}"
+  data-market-visual-operator-live-allowed="{{ visual_operator_header.live_allowed|lower }}"
+  data-market-visual-operator-futures-only="{{ visual_operator_header.futures_only|lower }}"
+  data-market-visual-operator-ai-activity-state="{{ visual_operator_header.ai_activity_state|e }}"
+>
+  <div class="flex flex-wrap items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wide">
+    <span class="rounded border border-emerald-800/50 bg-emerald-950/35 px-1.5 py-0.5 text-emerald-200/90">Read-only</span>
+    <span class="rounded border border-emerald-800/50 bg-emerald-950/25 px-1.5 py-0.5 text-emerald-200/90">Futures-only</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300">Source · {{ visual_operator_header.source|e }}</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300" data-market-visual-operator-freshness-v1="true">Freshness · {{ visual_operator_header.data_freshness|e }}</span>
+    <span class="rounded border {% if visual_operator_header.economic_gate_pass %}border-emerald-800/50 text-emerald-200/90{% else %}border-rose-800/45 text-rose-200/90{% endif %} px-1.5 py-0.5" data-market-visual-operator-economic-gate-v1="true">Econ gate · {{ visual_operator_header.economic_gate_status|e }}</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300">Runtime authority · {{ visual_operator_header.runtime_authority|e }}</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300">Orders · {{ visual_operator_header.orders_allowed|lower }}</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5 text-slate-300">Live · {{ visual_operator_header.live_allowed|lower }}</span>
+    <span class="rounded border border-sky-800/45 bg-sky-950/25 px-1.5 py-0.5 text-sky-200/90" data-market-visual-operator-ai-state-badge-v1="true">AI · {{ visual_operator_header.ai_activity_state|e }}</span>
+  </div>
+  <p class="m-0 mt-1 text-[8px] text-slate-500" data-market-visual-operator-snapshot-ts-v1="true">Snapshot · {{ visual_operator_header.snapshot_timestamp|e }} · directional crypto excluded · spot/synthetic disallowed</p>
+</section>

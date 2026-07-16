@@ -1,5 +1,8 @@
 # Market Surface v0 (read-only)
 
+> **Related product SSOT (no runtime effect):** Visual Operator Dashboard Product Runbook v1.3 — [`docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md`](../product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) (binding: [`docs/product/README.md`](../product/README.md)).  
+> This file remains the **technical** Market Surface route/marker/env chronicle. The product runbook owns product/UX/implementation-spec intent only and does **not** own trading, risk, authority, economic, or decision semantics.
+
 ## Routen
 
 | Methode | Pfad | Beschreibung |
@@ -1087,6 +1090,47 @@ MARKET_SURFACE_AUTHORITY_SOURCE=false
 - Abweichende lokale Kopien eines Manifests (**`master_v2_double_play_trading_logic_manifest_v0.md`**) zuerst per `diff` gegen [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0](../ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) prüfen; normative Änderungen **nur** per PR auf die canonical Spec‑Datei.
 - Für archivierte Bewegungen aus Downloads führt eine Ingest-Spur‑Tabelle (z. B. `DOUBLE_PLAY_DOWNLOADS_INGEST_V0_RESULT.md` unter **`/tmp`**) Filename → Aktion; automatisierte Läufe verschieben **keine** Quelldateien ohne gesonderte operatorische Freigaben.
 
+## Market Visual Operator Surface v1 (read-only)
+
+A visual operator zone rendered on the canonical **`GET &#47;market`** page: a compact operator
+header, the existing chart-first hero (**Market Overview primary**), the governed Top-N matrix
+(now enriched with display-only momentum/volatility/liquidity/change derived **only** from real
+offline OHLCV bars), an **AI · Decision funnel** waterfall, an **Economic observability** panel,
+and an optional **AI · Linear diagnostics** panel. The full-parity `current_state` panel is
+preserved but collapsed under a **System / Governance Details** `<details>`
+(`data-market-system-governance-details-v1`). Shell marker:
+`data-market-visual-operator-surface-v1="true"`.
+
+**No authority.** Read-only and non-authorizing: `runtime_authority=NONE`, `orders_allowed=false`,
+`live_allowed=false`, `promotion_allowed=false`. Futures-only; Bitcoin excluded; no spot/synthetic
+fallback. No trading/risk/sizing/safety/execution/promotion/economic-gate semantics are changed.
+
+**No invented data.** Intermediate decision-funnel stages without evidence stay `None`
+(`AVAILABLE_NOT_RUN`); economic zeros / `FAIL` / `NOT_COMPUTED` and missing equity/drawdown series
+(`MISSING_SOURCE`) are shown honestly. AI `ACTIVE` is reported **only** when concrete processing
+evidence is present (computed trade count, or positive bar count with explicit
+`zero_trade_degeneration`); this is distinct from `AVAILABLE_NOT_RUN`.
+
+**Enablement (fail-closed OFF by default).** Gates are never enabled in app code. For local
+operator inspection use `scripts/ops/start_market_dashboard_visual_operator_readonly_v1.sh`, which
+materializes offline bundles via
+`scripts/ops/materialize_market_dashboard_visual_operator_offline_bundles_v1.py` and exports the
+display gates. Example env: `docs/webui/market_visual_operator_surface_v1.local.example.env`.
+
+| Env | Purpose |
+|-----|---------|
+| `PEAK_TRADE_MARKET_FUTURES_OHLCV_ENABLED` / `_BUNDLE_ROOT` | Offline futures OHLCV read-model (timeframe `1h`). |
+| `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED` / `_BUNDLE_ROOT` | Offline governed ranking funnel (volume-ranked, no Bitcoin). |
+| `PEAK_TRADE_F5_MARKET_DASHBOARD_ENABLED` / `_BUNDLE_ROOT` | Offline F5 futures read-only dashboard (partial metadata). |
+| `PEAK_TRADE_MARKET_VISUAL_OPERATOR_EVIDENCE_ROOT` | Dir with `economic_evidence_binding.json` **or** the offline economic evidence dir itself. |
+| `PEAK_TRADE_MARKET_LINEAR_DIAGNOSTICS_BUNDLE_ROOT` | Optional linear diagnostics evidence dir (compact-empty `MISSING_SOURCE` if unset). |
+
+Owner: `src/webui/market_visual_operator_surface_v1/` (contracts + per-panel display view models
++ `runtime_v1`), wired via `build_market_v0_page_template_context` in `src/webui/market_surface.py`.
+CI tests use `tmp_path` bundles only; the offline evidence archive is never a required CI runtime
+input.
+
 ## Verwandte read-only WebUI-Fläche
 
 - [**Observability Hub v0**](observability/OBSERVABILITY_HUB_V0.md) — zentraler Display-/Navigations‑Kontext mit Verweisen u. a. auf diese Market‑Surface‑GET‑Routen; **ohne** zusätzliche Autorität oder Steuerlogik.
+
