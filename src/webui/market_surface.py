@@ -63,6 +63,9 @@ from .market_dashboard_current_state_runtime_v0 import (
 from .market_visual_operator_surface_v1 import (
     build_market_visual_operator_surface_context,
 )
+from .market_visual_operator_surface_v1.chart_display_v1 import (
+    build_chart_display_v1,
+)
 from .market_visual_operator_surface_v1.operator_overview_display_v1 import (
     build_operator_overview_display_v1,
 )
@@ -3125,6 +3128,21 @@ def build_market_v0_page_template_context(
         ai_activity_state=visual_operator["ai_activity_state"],
         governed_top20=governed_top20,
     )
+    chart_phase_3 = build_chart_display_v1(
+        payload=payload if isinstance(payload, dict) else {},
+        primary_values=primary_values,
+        selected_instrument_workspace=selected_instrument_workspace,
+        futures_ohlcv=futures_ohlcv if isinstance(futures_ohlcv, dict) else {},
+        query={
+            "symbol": symbol,
+            "source": source,
+            "timeframe": timeframe,
+            "limit": limit,
+            "top_n": top_n,
+        },
+        max_ohlcv_limit=MAX_OHLCV_LIMIT,
+        default_visible_bars=DEFAULT_LIMIT,
+    )
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
         f"/market?source=dummy&symbol={quote('ETHUSDT', safe='')}"
@@ -3159,6 +3177,7 @@ def build_market_v0_page_template_context(
         "ai_linear_diagnostics_visual": visual_operator["ai_linear_diagnostics_visual"],
         "ai_activity_state": visual_operator["ai_activity_state"],
         "operator_overview_phase_2": operator_overview_phase_2,
+        "chart_phase_3": chart_phase_3,
         "top_n": top_n,
         "top_n_toggle_hrefs": {
             20: build_market_top_n_toggle_href(

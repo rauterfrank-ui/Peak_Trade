@@ -1,0 +1,14 @@
+{
+  "viewport": {"w": 1440, "h": 900},
+  "HORIZONTAL_OVERFLOW": false,
+  "CHART_TOP_VISIBLE_1440x900": true,
+  "CHART_MATERIALLY_VISIBLE_1440x900": true,
+  "source_report": "docs/product/evidence/phase_3_20260716T191523Z/browser/browser_evidence_report.json",
+  "geometry": {
+    "chart_top": 406.65625,
+    "chart_height": 480.5,
+    "phase3_meta_top": 495.15625,
+    "phase3_svg_top": 562.65625,
+    "phase3_svg_height": 318
+  }
+}

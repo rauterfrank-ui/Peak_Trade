@@ -1,35 +1,34 @@
 {
   "schema_version": "1.0.0",
-  "slice": "PHASE_2",
-  "branch": "feat/market-dashboard-phase-2-operator-overview-v1",
+  "slice": "PHASE_3",
+  "branch": "feat/market-dashboard-phase-3-chart-polish-v1",
+  "canonical_runbook": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
+  "prior_phase_2_evidence": "docs/product/evidence/phase_2_20260716T184639Z/PHASE2_CLOSEOUT.md",
   "files": [
-    "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
-    "docs/product/VISUAL_OPERATOR_DASHBOARD_IMPLEMENTATION_PLAN_V1.md",
+    "src/webui/market_visual_operator_surface_v1/chart_display_v1.py",
     "src/webui/market_surface.py",
-    "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py",
-    "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html",
-    "static/css/peak_trade_dashboard_layout_v1.css",
+    "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
     "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
-    "tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py",
-    "tests/webui/test_market_dashboard_browser_policy_chrome_primary_v1.py",
-    "pyproject.toml"
+    "tests/webui/test_market_dashboard_phase_3_chart_polish_v1.py",
+    "docs/product/evidence/phase_2_20260716T184639Z/PHASE2_CLOSEOUT.md",
+    "docs/product/evidence/phase_3_20260716T191523Z/"
   ],
   "forbidden": [
     "data_producer_change",
     "decision_semantics_change",
     "trading_semantics_change",
     "authority_change",
-    "phase_3_scope"
+    "phase_4_scope",
+    "external_browser_cdn"
   ],
   "tests": [
+    "tests/webui/test_market_dashboard_phase_3_chart_polish_v1.py",
     "tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py",
     "tests/webui/test_market_dashboard_browser_policy_chrome_primary_v1.py"
   ],
   "harness": "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
   "primary_browser": "GOOGLE_CHROME",
   "playwright_channel": "chrome",
-  "evidence_dir_pattern": "docs/product/evidence/phase_2_*",
-  "prior_phase_1b_evidence": "docs/product/evidence/phase_1b_20260716T181219Z/IMPLEMENTATION_MANIFEST.md",
-  "evidence_dir": "docs/product/evidence/phase_2_20260716T184639Z",
-  "evidence_manifest": "docs/product/evidence/phase_2_20260716T184639Z/IMPLEMENTATION_MANIFEST.md"
+  "evidence_dir": "docs/product/evidence/phase_3_20260716T191523Z",
+  "evidence_manifest": "docs/product/evidence/phase_3_20260716T191523Z/implementation_manifest.json"
 }

@@ -1,0 +1,8 @@
+{
+  "NETWORK_ASSERTIONS": "SELF_ONLY_PASS",
+  "UNEXPECTED_NETWORK_REQUESTS": 0,
+  "EXTERNAL_NETWORK_REQUESTS": 0,
+  "FAILED_ASSETS": 0,
+  "ALLOWLIST": "SELF_ONLY",
+  "source_report": "docs/product/evidence/phase_3_20260716T191523Z/browser/browser_evidence_report.json"
+}

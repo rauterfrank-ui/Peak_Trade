@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "phase": "PHASE_3",
+  "primary_browser": "GOOGLE_CHROME",
+  "playwright_channel": "chrome",
+  "real_chrome_verified": true,
+  "chromium_fallback_used": false,
+  "screenshot_count": 10,
+  "screenshots": [
+    {
+      "id": "chart_default_1440x900",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_default_1440x900.png",
+      "viewport": "1440x900"
+    },
+    {
+      "id": "chart_full_desktop",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_full_desktop.png",
+      "viewport": "1440x900",
+      "full_page": true
+    },
+    {
+      "id": "chart_narrow_desktop",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_narrow_desktop.png",
+      "viewport": "1280x800",
+      "full_page": true
+    },
+    {
+      "id": "chart_selected_instrument",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_selected_instrument.png",
+      "viewport": "1440x900"
+    },
+    {
+      "id": "chart_tooltip_or_equivalent_detail_state",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_tooltip_or_equivalent_detail_state.png",
+      "viewport": "1440x900"
+    },
+    {
+      "id": "chart_stale_state",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_stale_state.png",
+      "viewport": "1440x900"
+    },
+    {
+      "id": "chart_missing_or_incomplete_state",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_missing_or_incomplete_state.png",
+      "viewport": "1440x900"
+    },
+    {
+      "id": "chart_with_volume",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_with_volume.png",
+      "viewport": "1440x900"
+    },
+    {
+      "id": "above_fold_with_chart",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/above_fold_with_chart.png",
+      "viewport": "1440x900"
+    },
+    {
+      "id": "chart_wide_1728x1117",
+      "path": "docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_wide_1728x1117.png",
+      "viewport": "1728x1117",
+      "full_page": true
+    }
+  ],
+  "not_captured": [
+    {
+      "id": "chart_gap_state",
+      "reason": "fixture_ohlcv_1d_contiguous_no_real_gap"
+    }
+  ]
+}

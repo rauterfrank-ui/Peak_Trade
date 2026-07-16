@@ -1,8 +1,7 @@
 {
   "schema_version": "1.0.0",
   "canonical_product_spec": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
-  "runbook_sha256": "fd87909e3dc340bc5ae0f642cbb8114a5311b7d2300dae115667e27e67b64216",
-  "slice": "PHASE_2",
+  "slice": "PHASE_3",
   "browser_policy": {
     "PRIMARY_BROWSER": "GOOGLE_CHROME",
     "PRIMARY_AUTOMATION": "PLAYWRIGHT",
@@ -13,59 +12,83 @@
   },
   "requirements": [
     {
-      "id": "R-2-01",
-      "text": "Chrome-primary browser verification policy bound in runbook",
+      "id": "R-3-01",
+      "text": "Primary market chart uses canonical real OHLCV candles and volume (SSR)",
       "status": "IMPLEMENTED",
       "owners": [
-        "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
-        "tests/webui/test_market_dashboard_browser_policy_chrome_primary_v1.py"
+        "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+        "src/webui/market_futures_ohlcv_runtime_v0.py"
       ]
     },
     {
-      "id": "R-2-02",
-      "text": "Operator Overview decision narrative from canonical contexts only",
+      "id": "R-3-02",
+      "text": "Chart meta shows source, freshness, timeframe, bar count, timezone",
       "status": "IMPLEMENTED",
       "owners": [
-        "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py",
-        "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"
+        "src/webui/market_visual_operator_surface_v1/chart_display_v1.py",
+        "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html"
       ]
     },
     {
-      "id": "R-2-03",
-      "text": "Hero hierarchy 8+4 with critical system state calm disabled states",
+      "id": "R-3-03",
+      "text": "D2 chart above fold / D3 no unexplained empty chart region when data exists",
       "status": "IMPLEMENTED",
       "owners": [
-        "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"
+        "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+        "docs/product/evidence/phase_3_20260716T191523Z/browser_verification_report.md"
       ]
     },
     {
-      "id": "R-2-04",
-      "text": "Activity states without bare ACTIVE in operator overview",
+      "id": "R-3-04",
+      "text": "Stale/missing overlays and explicit gap policy without visual interpolation",
       "status": "IMPLEMENTED",
       "owners": [
-        "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py",
-        "tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py"
+        "src/webui/market_visual_operator_surface_v1/chart_display_v1.py",
+        "tests/webui/test_market_dashboard_phase_3_chart_polish_v1.py"
       ]
     },
     {
-      "id": "R-2-05",
-      "text": "Chrome Playwright harness for self-only evidence",
+      "id": "R-3-05",
+      "text": "Chrome Playwright self-only network browser evidence",
       "status": "IMPLEMENTED",
       "owners": [
-        "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py"
+        "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
+        "docs/product/evidence/phase_3_20260716T191523Z/browser_verification_report.md"
       ]
     },
     {
-      "id": "R-2-06",
-      "text": "No trading/risk/decision/economic/authority semantics ownership in dashboard",
+      "id": "R-3-06",
+      "text": "Selected instrument sync + window controls via existing limit query",
+      "status": "IMPLEMENTED",
+      "owners": [
+        "src/webui/market_visual_operator_surface_v1/chart_display_v1.py"
+      ]
+    },
+    {
+      "id": "R-3-07",
+      "text": "No trading/risk/decision/economic/authority/data-producer semantics in chart adapter",
       "status": "PASS"
     },
     {
-      "id": "R-1B-01",
-      "text": "Central design token owner (preserved)",
+      "id": "R-2-MEDIUM-UX",
+      "text": "Phase-2 MEDIUM UX (badge density, status duplication, AI label) tracked; not Phase-3 blockers; only chart-header/meta if touched",
+      "status": "DEFERRED_TRACEABILITY",
+      "owners": [
+        "docs/product/evidence/phase_2_20260716T184639Z/PHASE2_CLOSEOUT.md",
+        "docs/product/evidence/phase_2_20260716T184639Z/design_review/design_review_gate.md"
+      ]
+    },
+    {
+      "id": "R-2-01",
+      "text": "Chrome-primary browser verification policy bound in runbook (preserved)",
+      "status": "PRESERVED"
+    },
+    {
+      "id": "R-2-02",
+      "text": "Operator Overview decision narrative (preserved)",
       "status": "PRESERVED"
     }
   ],
-  "phase_1b_requirements_preserved": true,
-  "evidence": "docs/product/evidence/phase_2_20260716T184639Z/IMPLEMENTATION_MANIFEST.md"
+  "phase_2_requirements_preserved": true,
+  "evidence": "docs/product/evidence/phase_3_20260716T191523Z/implementation_manifest.json"
 }
