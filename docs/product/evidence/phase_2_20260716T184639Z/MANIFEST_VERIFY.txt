@@ -7,7 +7,17 @@ OK  browser/screenshot_index.md
 OK  design_review/DESIGN_REVIEW_PACKAGE.md
 OK  design_review/after_phase_2_1440x900.png
 OK  design_review/before_phase_1a_1440x900.png
+OK  design_review/design_review_gate.md
+OK  design_review/gate_chrome/01_header_1440x900.png
+OK  design_review/gate_chrome/02_hero_1440x900.png
+OK  design_review/gate_chrome/03_hero_chart_1440x900.png
+OK  design_review/gate_chrome/04_above_fold_1440x900.png
+OK  design_review/gate_chrome/05_full_desktop_1440x900.png
+OK  design_review/gate_chrome/06_narrow_1280x800.png
+OK  design_review/gate_chrome/07_wide_1728x1117.png
+OK  design_review/gate_chrome/design_gate_browser_report.json
 OK  design_review/narrow_desktop.png
+OK  design_review/phase3_execution_plan.md
 OK  design_review/wide_desktop.png
 OK  geometry/phase_2_bounding_boxes_1440x900.json
 OK  network/browser_network_summary.json
