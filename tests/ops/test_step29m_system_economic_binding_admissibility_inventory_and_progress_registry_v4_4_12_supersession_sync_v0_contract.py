@@ -22,9 +22,11 @@ SECTION = (
     "#### STEP29M_VERSIONED_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_"
     "AND_PROGRESS_REGISTRY_V4_4_12_SUPERSESSION_SYNC_V0"
 )
-HEAD = "05c814a06eb5ef46b88495b9a392268b65c57246"
-NEXT = "AWAIT_SEPARATE_OPERATOR_GO_FOR_NEW_VERSIONED_FULL_CANONICAL_SYSTEM_ECONOMIC_BINDING_OR_NEW_EVIDENCE_CLASS_V0"
-CURRENT_STATE = "STEP29M_VERSIONED_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_AND_PROGRESS_REGISTRY_V4_4_12_SUPERSESSION_SYNC_COMPLETE_V0"
+HEAD = "84a584e7d8ee23834ed6bde09ef06dbe0414db8a"
+NEXT = "SEPARATE_OPERATOR_GO_FOR_FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_EXECUTION"
+CURRENT_STATE = (
+    "FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFIED_NOT_EXECUTED"
+)
 
 
 def _field(text: str, field: str) -> str:
@@ -73,7 +75,7 @@ class TestStep29mBindingAdmissibilityInventoryAndProgressSyncV0:
 
     def test_progress_registry_authoritative_sync(self) -> None:
         assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == HEAD
-        assert authoritative_field_value("LAST_VERIFIED_PR") == "5239"
+        assert authoritative_field_value("LAST_VERIFIED_PR") == "5240"
         assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT
         assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT
@@ -86,7 +88,7 @@ class TestStep29mBindingAdmissibilityInventoryAndProgressSyncV0:
         assert authoritative_field_value("STEP_29L_2_STATUS") == "COMPLETE_MANIFEST_VERIFIED"
         assert (
             authoritative_field_value("STEP_29M_STATUS")
-            == "BLOCKED_BY_MISSING_VERSIONED_SYSTEM_ECONOMIC_BINDING"
+            == "BINDING_RATIFIED_NOT_EXECUTED_AWAITING_ECONOMIC_BASELINE_GO"
         )
         assert authoritative_field_value("STEP29M_PASS_ADMISSIBLE_BINDING_PRESENT") == "false"
         assert (
