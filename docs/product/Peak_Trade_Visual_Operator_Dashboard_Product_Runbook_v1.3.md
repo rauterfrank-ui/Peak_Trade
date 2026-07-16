@@ -200,20 +200,20 @@ Kein niedriger priorisierter Bereich darf durch Höhe, Badge-Dichte, Farbe oder 
 | Component | Kanonischer Owner / Template | Discovery-Zustand | Verbindliche Behandlung | Zielphase |
 |---|---|---|---|---|
 | Legacy Status Rail | `market_v0.html` | redundant, Badge-Wall | entfernen oder in Single Safety Rail konsolidieren | 1A |
-| Visual Operator Header | `partials/market_visual_operator_header_v1.html` | teilweise korrekt | reuse + verdichten | 1A |
-| Selected Instrument Hero | `partials/market_primary_operator_hero_v1.html` | zu dicht, F5-/Gov-Dump | strukturell überarbeiten | 1A/2 |
-| Primary Chart | `partials/market_primary_close_chart_v1.html` | reale 120 Bars, unter Fold | reuse + reposition + polish | 1A/3 |
-| Ranking | `partials/market_governed_top20_primary_v1.html` | real Top20/50, sparse columns | single canonical component; contract-first | 4A–4C |
-| Decision Funnel | `partials/market_decision_funnel_visual_v1.html` | nicht selection-bound; `ACTIVE` | rewire + activity contract | 5A/5B |
-| Economic | `partials/market_economic_observability_visual_v1.html` | teilweise, Kurven fehlen | reuse; Scope sichtbar; honest missing | 7 |
-| Linear Diagnostics | `partials/market_ai_linear_diagnostics_visual_v1.html` | sparse | summary in Level 2, Details Level 3 | 8 |
-| F5 Compact | `partials/futures_market_compact_v1.html` | unvollständige Feld-Dumps | narrow adapter; aus Hero entfernen | 1A/9 |
-| Double-Play Compact | `partials/double_play_market_compact_v1.html` | static fixture, nicht selection-bound | klar labeln oder nicht primär zeigen | 5A/5B |
-| Safety Compact | `partials/market_safety_compact_v1.html` | badge-dense | semantic groups Risk/Safety | 6 |
-| Watchlist | `partials/market_watchlist_compact_v1.html` | brauchbar | reuse as navigation aid | 4B |
+| Visual Operator Header | `partials&#47;market_visual_operator_header_v1.html` | teilweise korrekt | reuse + verdichten | 1A |
+| Selected Instrument Hero | `partials&#47;market_primary_operator_hero_v1.html` | zu dicht, F5-/Gov-Dump | strukturell überarbeiten | 1A/2 |
+| Primary Chart | `partials&#47;market_primary_close_chart_v1.html` | reale 120 Bars, unter Fold | reuse + reposition + polish | 1A/3 |
+| Ranking | `partials&#47;market_governed_top20_primary_v1.html` | real Top20/50, sparse columns | single canonical component; contract-first | 4A–4C |
+| Decision Funnel | `partials&#47;market_decision_funnel_visual_v1.html` | nicht selection-bound; `ACTIVE` | rewire + activity contract | 5A/5B |
+| Economic | `partials&#47;market_economic_observability_visual_v1.html` | teilweise, Kurven fehlen | reuse; Scope sichtbar; honest missing | 7 |
+| Linear Diagnostics | `partials&#47;market_ai_linear_diagnostics_visual_v1.html` | sparse | summary in Level 2, Details Level 3 | 8 |
+| F5 Compact | `partials&#47;futures_market_compact_v1.html` | unvollständige Feld-Dumps | narrow adapter; aus Hero entfernen | 1A/9 |
+| Double-Play Compact | `partials&#47;double_play_market_compact_v1.html` | static fixture, nicht selection-bound | klar labeln oder nicht primär zeigen | 5A/5B |
+| Safety Compact | `partials&#47;market_safety_compact_v1.html` | badge-dense | semantic groups Risk/Safety | 6 |
+| Watchlist | `partials&#47;market_watchlist_compact_v1.html` | brauchbar | reuse as navigation aid | 4B |
 | Detail Anchors | DP/F5 Detail Partials | CDN, doppelt | Governance/Detail only; vendorize assets | 1B/9 |
-| Current State | `partials/market_current_state_compact_v1.html` | korrekt collapsed | reuse | 9 |
-| Diagnostics Drawer | `partials/market_diagnostics_drawer_v1.html` | legacy density | consolidate or retire | 8/9 |
+| Current State | `partials&#47;market_current_state_compact_v1.html` | korrekt collapsed | reuse | 9 |
+| Diagnostics Drawer | `partials&#47;market_diagnostics_drawer_v1.html` | legacy density | consolidate or retire | 8/9 |
 
 ## 0C.1 Reuse Decision Matrix
 

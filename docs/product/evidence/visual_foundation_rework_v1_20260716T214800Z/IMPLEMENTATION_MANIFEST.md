@@ -32,7 +32,7 @@ HARNESS=scripts/webui/market_dashboard_chrome_playwright_harness_v1.py
 
 ## Tests
 
-See `test_output/focused_tests.txt`.
+See `test_output&#47;focused_tests.txt`.
 
 ## Chrome Playwright composition (1440×900)
 
@@ -52,4 +52,4 @@ HORIZONTAL_OVERFLOW=false
 CONSOLE_ERRORS=0
 ```
 
-Evidence report: `browser/browser_evidence_report.json`
+Evidence report: `browser&#47;browser_evidence_report.json`

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "canonical_product_spec": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
-  "runbook_sha256": "cb07ca30310056a3f7f3639763a8c2774c2fe5de527666446f7b269c6b0d82c0",
+  "runbook_sha256": "6cf37777fb5aae105df65dcab8097722b33c31df84685a53cfacfc7daaac8d6f",
   "slice": "VISUAL_FOUNDATION_REWORK_V1",
   "browser_policy": {
     "PRIMARY_BROWSER": "GOOGLE_CHROME",
