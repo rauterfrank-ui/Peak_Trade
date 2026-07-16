@@ -55,11 +55,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## C. Selection Rationale
 
-Selection uses PR #5240 admissibility inventory plus manifest-verified discovery ranking. `bollinger_bands/v2` is:
+Selection uses PR #5240 admissibility inventory plus manifest-verified discovery ranking. `bollinger_bands&#47;v2` is:
 
 1. FULL_CANONICAL_SYSTEM-capable and futures-only / Bitcoin-excluded
-2. Materially distinct from terminal-negative `bollinger_bands/v1`
-3. Distinct from terminal `trend_following/v2` and incomplete `momentum_1h/v2`
+2. Materially distinct from terminal-negative `bollinger_bands&#47;v1`
+3. Distinct from terminal `trend_following&#47;v2` and incomplete `momentum_1h&#47;v2`
 4. Previously unexecuted as FULL_CANONICAL_SYSTEM evidence
 5. Not selected for expected PnL / Sharpe / profit-factor
 
