@@ -11,7 +11,7 @@ REPAIR_EVIDENCE_OPERATOR_PATH_PARITY=true
 
 Previous Phase-3 Chrome evidence (`docs/product/evidence/phase_3_20260716T191523Z/`) was produced against a **fixture-injected** uvicorn process:
 
-- `PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=tests/fixtures/.../complete_minimal`
+- `PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=tests&#47;fixtures&#47;...&#47;complete_minimal`
 - Default evidence path used `timeframe=1d` (fixture only contains `1d` bars)
 - `PEAK_TRADE_FIXED_GENERATED_AT_UTC=2030-01-15...` pinned display freshness
 
