@@ -64,16 +64,16 @@ PHASE_3_STARTED=false
 
 ## Evidence file targets
 
-- `MANIFEST.sha256`
-- `MANIFEST_VERIFY.txt`
-- `browser/browser_evidence_report.json`
-- `browser/console_log.json`
-- `geometry/phase_2_bounding_boxes_1440x900.json`
-- `network/browser_network_summary.json`
-- `screenshots/phase_2_1440x900_above_fold.png`
-- `design_review/DESIGN_REVIEW_PACKAGE.md`
-- `proofs/source_provenance_v1.json`
-- `test_output/focused_tests.txt`
+- `docs/product/evidence/phase_2_20260716T184639Z/MANIFEST.sha256`
+- `docs/product/evidence/phase_2_20260716T184639Z/MANIFEST_VERIFY.txt`
+- `docs/product/evidence/phase_2_20260716T184639Z/browser/browser_evidence_report.json`
+- `docs/product/evidence/phase_2_20260716T184639Z/browser/console_log.json`
+- `docs/product/evidence/phase_2_20260716T184639Z/geometry/phase_2_bounding_boxes_1440x900.json`
+- `docs/product/evidence/phase_2_20260716T184639Z/network/browser_network_summary.json`
+- `docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_1440x900_above_fold.png`
+- `docs/product/evidence/phase_2_20260716T184639Z/design_review/DESIGN_REVIEW_PACKAGE.md`
+- `docs/product/evidence/phase_2_20260716T184639Z/proofs/source_provenance_v1.json`
+- `docs/product/evidence/phase_2_20260716T184639Z/test_output/focused_tests.txt`
 
 ## Harness
 

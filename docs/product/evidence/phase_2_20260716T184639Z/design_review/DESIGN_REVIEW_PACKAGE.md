@@ -9,11 +9,11 @@ REAL_CHROME_VERIFIED=true
 
 ## Screenshots for review
 
-- Above-the-fold 1440×900: `design_review/after_phase_2_1440x900.png`
-- Narrow desktop: `design_review/narrow_desktop.png`
-- Wide desktop: `design_review/wide_desktop.png`
-- Header/Hero/Chart detail: `screenshots/phase_2_1440x900_header_overview_chart.png`
-- Before (Phase 1A): `design_review/before_phase_1a_1440x900.png` (if present)
+- Above-the-fold 1440×900: `docs/product/evidence/phase_2_20260716T184639Z/design_review/after_phase_2_1440x900.png`
+- Narrow desktop: `docs/product/evidence/phase_2_20260716T184639Z/design_review/narrow_desktop.png`
+- Wide desktop: `docs/product/evidence/phase_2_20260716T184639Z/design_review/wide_desktop.png`
+- Header/Hero/Chart detail: `docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_1440x900_header_overview_chart.png`
+- Before (Phase 1A): `docs/product/evidence/phase_2_20260716T184639Z/design_review/before_phase_1a_1440x900.png`
 
 ## Five-second test questions
 
