@@ -48,6 +48,25 @@ Lokale Verbesserungen ohne Verbesserung der Gesamtkomposition sind unzulässig.
 - Nur kanonische Core-Outputs darstellen.
 - Adapter sind reine Präsentationsschicht.
 
+
+## Business SSOT Boundary (non-negotiable)
+
+```text
+BUSINESS_SSOT=MASTER_V2_AND_DOUBLE_PLAY
+DASHBOARD_ROLE=READ_ONLY_CONSUMER_DISPLAY_LAYER
+DASHBOARD_CREATES_SECOND_TRUTH=false
+RUNBOOK_ROLE=PRODUCT_UX_ARCHITECTURE_IMPLEMENTATION_GOVERNANCE
+PART_I_NORMATIVE=true
+PART_II_DISCOVERY_SNAPSHOT_ONLY=true
+PART_I_WINS_ON_CONFLICT=true
+```
+
+- Master V2 und Double Play bleiben die **einzige fachliche Business-SSOT**.
+- Das Dashboard ist ausschließlich **read-only Consumer / Display Layer**.
+- Dieses Runbook erzeugt **keine zweite fachliche Wahrheit**, keinen alternativen Decision Owner und keine Trading-/Risk-/Sizing-/Execution-/Authority-Logik.
+- PART I ist normativ (Composition-/Landmark-/Governance-/UX-Ziel).
+- PART II ist ein zeitgebundener technischer Discovery-Snapshot / Ist-Referenz; bei Abweichungen gilt PART I.
+
 ## Browser
 
 Primär:
@@ -56,6 +75,63 @@ Primär:
 Sekundär:
 - Chromium (explizit als Fallback kennzeichnen)
 - WebKit/Safari nur als Kompatibilitätsprüfung
+
+# 6A. Browser Verification Policy
+
+Diese Policy ist für alle visuellen Dashboard-Slices verbindlich.
+
+``` text
+PRIMARY_BROWSER=GOOGLE_CHROME
+PRIMARY_BROWSER_AUTOMATION=PLAYWRIGHT
+PRIMARY_PLAYWRIGHT_CHANNEL=chrome
+PRIMARY_BROWSER_SCREENSHOTS=CHROME
+PRIMARY_DOM_ASSERTIONS=CHROME
+PRIMARY_CONSOLE_ASSERTIONS=CHROME
+PRIMARY_NETWORK_ASSERTIONS=CHROME
+PRIMARY_INTERACTION_ASSERTIONS=CHROME
+
+CHROMIUM_FALLBACK_ALLOWED=true
+CHROMIUM_FALLBACK_MUST_BE_REPORTED=true
+PLAYWRIGHT_CHROMIUM_IS_NOT_REAL_CHROME=true
+
+WEBKIT_VERIFICATION=SECONDARY
+WEBKIT_IS_NOT_REAL_SAFARI=true
+
+REAL_SAFARI_VERIFICATION=SECONDARY
+SAFARI_REQUIRED_FOR_NORMAL_SLICE_MERGE=false
+SAFARI_FAILURE_BLOCKS_NORMAL_SLICE=false
+
+POST_SLICE_INTERACTIVE_OPEN=REAL_CHROME
+```
+
+Verbindliche Regeln:
+
+1.  Google Chrome über Playwright ist der primäre Browser für
+    Entwicklung, visuelle Abnahme, Screenshots, DOM-, Console-, Network-
+    und Interaktionsprüfungen.
+2.  Playwright verwendet nach Möglichkeit den lokal installierten
+    Google-Chrome-Channel `chrome`.
+3.  Falls echter Google Chrome technisch nicht verfügbar ist, darf
+    Playwright Chromium als Fallback verwendet werden.
+4.  Ein Chromium-Fallback muss ausdrücklich berichtet werden und darf
+    niemals als echter Google-Chrome-Nachweis bezeichnet werden.
+5.  WebKit ist ausschließlich ein sekundärer
+    Engine-Kompatibilitätscheck.
+6.  WebKit darf nicht als echter Safari-Nachweis bezeichnet werden.
+7.  Echter Safari ist ein optionaler sekundärer Kompatibilitätscheck.
+8.  Safari oder WebKit sind für normale Dashboard-Slices keine
+    allgemeinen Merge-Blocker.
+9.  Safari wird nur dann zum Blocker, wenn ein konkreter späterer
+    Release-Gate dies ausdrücklich verlangt.
+10. Nach erfolgreichem Slice soll das Dashboard für die Operator-Prüfung
+    sichtbar in realem Google Chrome geöffnet werden.
+11. Browser-Evidence muss den tatsächlich verwendeten Browser eindeutig
+    ausweisen.
+12. Die bestehende Self-only-Netzwerk- und Read-only-Policy bleibt
+    unverändert.
+
+------------------------------------------------------------------------
+
 
 ## Merge-Blocker
 
@@ -867,3 +943,11 @@ END OF DISCOVERY
 3. Bei Abweichungen gilt:
    - Architektur- und Governance-Regeln aus PART I definieren das Ziel.
    - PART II dient als technische Referenz für Refactoring, Audits und Implementierung.
+
+## Business SSOT reminder
+
+```text
+BUSINESS_SSOT=MASTER_V2_AND_DOUBLE_PLAY
+DASHBOARD_IS_CONSUMER_ONLY=true
+SECOND_TRUTH_CREATED=false
+```
