@@ -21,10 +21,14 @@ from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
 
 ROW_RE = re.compile(r"^\| `([^`]+)` \| `([^`]*)` \|$")
 VALID_ENTRY_CLASSES = frozenset(item.value for item in RegistryEntryClass)
-AUTHORITATIVE_NEXT_STEP = "AWAIT_SEPARATE_OPERATOR_GO_FOR_NEW_VERSIONED_FULL_CANONICAL_SYSTEM_ECONOMIC_BINDING_OR_NEW_EVIDENCE_CLASS_V0"
+AUTHORITATIVE_NEXT_STEP = (
+    "SEPARATE_OPERATOR_GO_FOR_FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_EXECUTION"
+)
 CURRENT_ADMISSIBLE_SCOPE = "NONE"
-CURRENT_STATE = "STEP29M_VERSIONED_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_AND_PROGRESS_REGISTRY_V4_4_12_SUPERSESSION_SYNC_COMPLETE_V0"
-ORIGIN_MAIN = "05c814a06eb5ef46b88495b9a392268b65c57246"
+CURRENT_STATE = (
+    "FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFIED_NOT_EXECUTED"
+)
+ORIGIN_MAIN = "84a584e7d8ee23834ed6bde09ef06dbe0414db8a"
 
 
 def _metadata_field_rows(text: str) -> list[tuple[str, str]]:
@@ -82,7 +86,7 @@ class TestRunbookProgressRegistryResolverHygieneV0:
 
     def test_post_pr4865_4872_closeout_metadata(self) -> None:
         assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == ORIGIN_MAIN
-        assert authoritative_field_value("LAST_VERIFIED_PR") == "5239"
+        assert authoritative_field_value("LAST_VERIFIED_PR") == "5240"
         assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
         assert (
             authoritative_field_value("POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_STATUS")

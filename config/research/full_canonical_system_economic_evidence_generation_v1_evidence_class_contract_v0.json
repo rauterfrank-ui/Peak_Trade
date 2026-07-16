@@ -1,0 +1,93 @@
+{
+  "admissible_inputs": {
+    "bitcoin_excluded": true,
+    "full_canonical_system_scope_required": true,
+    "futures_only": true,
+    "partial_pipeline_forbidden": true,
+    "ranking_only_forbidden": true,
+    "raw_signal_only_forbidden": true,
+    "strategy_only_forbidden": true,
+    "terminal_negative_unchanged_retry_forbidden": true
+  },
+  "artifact_kind": "full_canonical_system_economic_evidence_generation_v1_evidence_class_contract",
+  "authority_boundary": "NONE_RESEARCH_RATIFICATION_ONLY",
+  "authority_effect": "NONE",
+  "binding_schema_ref": "config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json",
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "economic_viability_schema_ref": "src/backtest/economic_viability_evidence_v1.py",
+  "evidence_class_id": "BOLLINGER_BANDS_V2_FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_V1",
+  "evidence_generation_id": "FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1",
+  "failure_taxonomy": [
+    "PARTIAL_PIPELINE_BINDING",
+    "RAW_SIGNAL_ONLY_BINDING",
+    "TERMINAL_NEGATIVE_UNCHANGED_RETRY",
+    "BITCOIN_INCLUDED",
+    "MISSING_REALISTIC_COST_BINDING",
+    "MISSING_WALK_FORWARD_CONTRACT",
+    "MISSING_MONTE_CARLO_CONTRACT",
+    "MISSING_STRESS_CONTRACT",
+    "RUNTIME_AUTHORITY_CLAIM",
+    "PRE_EVALUATION_PASS_STATUS"
+  ],
+  "futures_only": true,
+  "promotion_boundary": "PROMOTION_FORBIDDEN_UNTIL_SEPARATE_ECONOMIC_PASS",
+  "purpose": "Ratify one FULL_CANONICAL_SYSTEM economic evidence class for bollinger_bands/v2 under evidence generation v1 without executing economic evaluation.",
+  "required_artifacts": [
+    "versioned_binding",
+    "evidence_class_contract",
+    "digest_dependency_graph",
+    "materializer_roundtrip",
+    "progress_registry_sync"
+  ],
+  "required_canonical_chain_components": [
+    "Canonical Market Context",
+    "Scope Initialization",
+    "Scope Event Generator",
+    "Bull/Bear Assessment",
+    "State Switch",
+    "Survival",
+    "Suitability",
+    "Double Play",
+    "Entry",
+    "Position Management",
+    "Exit / Reversal",
+    "Capital",
+    "Risk",
+    "Position Sizing",
+    "Canonical Order Intent Boundary",
+    "Safety",
+    "KillSwitch",
+    "Reconciliation",
+    "Economic Validation Boundary"
+  ],
+  "required_cost_components": [
+    "fee_model_version",
+    "slippage_model_version",
+    "funding_model_version",
+    "spread_model_version",
+    "execution_model_version"
+  ],
+  "required_robustness_stages": [
+    "walk_forward_contract",
+    "monte_carlo_contract",
+    "stress_contract"
+  ],
+  "required_validation_stages": [
+    "baseline_economic_validity",
+    "sample_sufficiency",
+    "decision_funnel",
+    "trade_ledger",
+    "cost_attribution"
+  ],
+  "runtime_boundary": "NO_RUNTIME_EFFECT",
+  "runtime_effect": "NONE",
+  "schema_version": "full_canonical_system_economic_evidence_generation_v1_evidence_class_contract.v0",
+  "status": "RATIFIED_NOT_EXECUTED",
+  "status_enum": [
+    "RATIFIED_NOT_EXECUTED",
+    "BLOCKED",
+    "SUPERSEDED"
+  ],
+  "version": "v1"
+}

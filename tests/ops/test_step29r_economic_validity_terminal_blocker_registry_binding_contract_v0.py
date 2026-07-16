@@ -75,14 +75,14 @@ class TestTerminalBlockerAuthoritativeBinding:
     def test_next_canonical_action_fleet_binding_ratification(self) -> None:
         assert (
             authoritative_field_value("NEXT_CANONICAL_ACTION")
-            == "AWAIT_SEPARATE_OPERATOR_GO_FOR_NEW_VERSIONED_FULL_CANONICAL_SYSTEM_ECONOMIC_BINDING_OR_NEW_EVIDENCE_CLASS_V0"
+            == "SEPARATE_OPERATOR_GO_FOR_FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_EXECUTION"
         )
 
     def test_next_runbook_step_remains_blocked(self) -> None:
         assert authoritative_field_value("NEXT_RUNBOOK_STEP_ADMISSIBLE") == "false"
         assert (
             authoritative_field_value("NEXT_RUNBOOK_STEP_BLOCK_REASON")
-            == "STEP29M_NO_PASS_ADMISSIBLE_VERSIONED_SYSTEM_ECONOMIC_BINDING"
+            == "STEP29M_BINDING_RATIFIED_AWAITING_ECONOMIC_BASELINE_EXECUTION_GO"
         )
         assert authoritative_field_value("CURRENT_ADMISSIBLE_IMPLEMENTATION_SCOPE") == "NONE"
 
@@ -173,5 +173,5 @@ class TestGlobalSummaryBinding:
     def test_last_verified_origin_main_updated(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "LAST_VERIFIED_ORIGIN_MAIN") == (
-            "05c814a06eb5ef46b88495b9a392268b65c57246"
+            "84a584e7d8ee23834ed6bde09ef06dbe0414db8a"
         )
