@@ -1,8 +1,9 @@
 {
-  "base": "origin/main@b9be86aa97d5",
-  "branch": "docs/visual-operator-dashboard-v1-3-phase-minus-1-rebaseline-v1",
+  "base": "origin/main@2b936808c7c9",
+  "branch": "feat/market-dashboard-landmark-discovery-delta-v1",
   "canonical_product_spec": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
-  "evidence_dir": "docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z",
+  "discovery_delta_complete": true,
+  "evidence_dir": "artifacts/market_dashboard_landmark_discovery_delta_v1",
   "files": [
     "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
     "docs/product/matrices/dashboard_requirement_traceability_matrix.json",
@@ -24,8 +25,8 @@
     "LANDMARK_GATE_PASS": false,
     "UX_ACCEPTANCE_GATE_PASS": false
   },
-  "go_token": "GO_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_V1_3_PHASE_MINUS_1_REBASELINE_V1",
-  "harness": "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
+  "go_token": "GO_VISUAL_OPERATOR_DASHBOARD_LANDMARK_DISCOVERY_DELTA_PR_OPEN_STOP_BEFORE_MERGE_V1",
+  "harness": "scripts/webui/market_dashboard_landmark_discovery_capture_v1.py",
   "next_slices": [
     {
       "geometry_assertions": [
@@ -251,6 +252,8 @@
   "pr_5250_code_imported": false,
   "pr_5250_disposition": "SUPERSEDE_WITHOUT_MERGE",
   "primary_browser": "GOOGLE_CHROME",
+  "prior_evidence": "docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z",
+  "review_server_harness": "scripts/webui/review_server.sh",
   "runbook_sha256": "62aadd97ec3876ebbc6daa0290256880b1d07960385ecaefd39f608262ea285a",
   "schema_version": "1.0.0",
   "slice": "PHASE_MINUS_1_REBASELINE_V1"

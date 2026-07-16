@@ -1,0 +1,87 @@
+{
+  "components": [
+    {
+      "component": "global_header_shell",
+      "file": "templates/peak_trade_dashboard/market_v0.html",
+      "landmark": "GLOBAL_HEADER"
+    },
+    {
+      "component": "visual_operator_header_safety_rail",
+      "file": "templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html",
+      "landmark": "GLOBAL_HEADER"
+    },
+    {
+      "component": "selected_instrument_hero",
+      "file": "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html",
+      "landmark": "PRIMARY_MARKET_SURFACE"
+    },
+    {
+      "component": "primary_close_chart",
+      "file": "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+      "landmark": "PRIMARY_MARKET_SURFACE"
+    },
+    {
+      "component": "governed_top20_ranking",
+      "file": "templates/peak_trade_dashboard/partials/market_governed_top20_primary_v1.html",
+      "landmark": "DECISION_SURFACE"
+    },
+    {
+      "component": "decision_funnel",
+      "file": "templates/peak_trade_dashboard/partials/market_decision_funnel_visual_v1.html",
+      "landmark": "DECISION_SURFACE"
+    },
+    {
+      "component": "safety_matrix_compact",
+      "file": "templates/peak_trade_dashboard/partials/market_safety_compact_v1.html",
+      "landmark": "DECISION_SURFACE"
+    },
+    {
+      "component": "double_play_compact",
+      "file": "templates/peak_trade_dashboard/partials/double_play_market_compact_v1.html",
+      "landmark": "DECISION_SURFACE"
+    },
+    {
+      "component": "economic_observability",
+      "file": "templates/peak_trade_dashboard/partials/market_economic_observability_visual_v1.html",
+      "landmark": "OBSERVABILITY_SURFACE"
+    },
+    {
+      "component": "ai_linear_diagnostics",
+      "file": "templates/peak_trade_dashboard/partials/market_ai_linear_diagnostics_visual_v1.html",
+      "landmark": "OBSERVABILITY_SURFACE"
+    },
+    {
+      "component": "watchlist_compact",
+      "file": "templates/peak_trade_dashboard/partials/market_watchlist_compact_v1.html",
+      "landmark": "OBSERVABILITY_SURFACE"
+    },
+    {
+      "component": "futures_f5_compact",
+      "file": "templates/peak_trade_dashboard/partials/futures_market_compact_v1.html",
+      "landmark": "OBSERVABILITY_SURFACE"
+    },
+    {
+      "component": "diagnostics_drawer",
+      "file": "templates/peak_trade_dashboard/partials/market_diagnostics_drawer_v1.html",
+      "landmark": "ENGINEERING_DRAWER"
+    },
+    {
+      "component": "governance_details",
+      "file": "templates/peak_trade_dashboard/market_v0.html",
+      "landmark": "ENGINEERING_DRAWER"
+    },
+    {
+      "component": "current_state_compact",
+      "file": "templates/peak_trade_dashboard/partials/market_current_state_compact_v1.html",
+      "landmark": "ENGINEERING_DRAWER"
+    },
+    {
+      "component": "detail_anchors_dp_f5",
+      "file": "templates/peak_trade_dashboard/market_v0.html",
+      "landmark": "ENGINEERING_DRAWER"
+    }
+  ],
+  "head_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "schema_version": "1.0.0",
+  "slice": "LANDMARK_DISCOVERY_DELTA_V1"
+}

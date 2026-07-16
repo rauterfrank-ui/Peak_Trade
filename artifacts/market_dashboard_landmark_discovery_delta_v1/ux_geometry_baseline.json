@@ -1,0 +1,88 @@
+{
+  "CHROMIUM_FALLBACK_USED": false,
+  "CONSOLE_ERRORS": 0,
+  "DECISION_NARRATIVE_TOP_Y": 275.59375,
+  "ENGINEERING_DRAWER_DEFAULT_HIDDEN": true,
+  "EXTERNAL_NETWORK_REQUESTS": 0,
+  "HEADER_HEIGHT_PX": 45.6875,
+  "HERO_HEIGHT_PX": 210.0,
+  "HORIZONTAL_OVERFLOW_PX": 0.0,
+  "HTTP_200": true,
+  "PRIMARY_BROWSER": "GOOGLE_CHROME",
+  "PRIMARY_CHART_HEIGHT_PX": 521.0,
+  "PRIMARY_CHART_TOP_Y": 381.46875,
+  "PRIMARY_CHART_VISIBLE_HEIGHT_PX": 518.53125,
+  "PRIMARY_PLAYWRIGHT_CHANNEL": "chrome",
+  "REAL_CHROME_VERIFIED": true,
+  "UNEXPECTED_NETWORK_REQUESTS": 0,
+  "VISIBLE_CARD_LIKE_COUNT": 55,
+  "VISIBLE_STATUS_BADGE_COUNT": 1,
+  "assertions": {
+    "DECISION_NARRATIVE_BEFORE_CHART": true,
+    "ENGINEERING_DRAWER_DEFAULT_HIDDEN": true,
+    "HEADER_HEIGHT_PX_LE_64": true,
+    "HORIZONTAL_OVERFLOW_PX_EQ_0": true,
+    "LANDMARK_ORDER_MATCHES": true,
+    "PRIMARY_CHART_TOP_Y_LT_900": true,
+    "PRIMARY_CHART_VISIBLE_HEIGHT_PX_GE_280": true
+  },
+  "head_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "origin_main_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "reference_viewport": "1440x900",
+  "schema_version": "1.0.0",
+  "slice": "LANDMARK_DISCOVERY_DELTA_V1",
+  "viewports": {
+    "1024x768": {
+      "chart_height": 521,
+      "chart_top": 381.46875,
+      "header_height": 45.6875,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "overflow_px": 0.0
+    },
+    "1280x800": {
+      "chart_height": 521,
+      "chart_top": 381.46875,
+      "header_height": 45.6875,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "overflow_px": 0.0
+    },
+    "1440x900": {
+      "chart_height": 521,
+      "chart_top": 381.46875,
+      "header_height": 45.6875,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "overflow_px": 0.0
+    },
+    "1728x1117": {
+      "chart_height": 600.125,
+      "chart_top": 381.46875,
+      "header_height": 45.6875,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "overflow_px": 0.0
+    }
+  }
+}

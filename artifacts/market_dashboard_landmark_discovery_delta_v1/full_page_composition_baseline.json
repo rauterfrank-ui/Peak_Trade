@@ -1,0 +1,49 @@
+{
+  "capture_owner": "scripts/webui/market_dashboard_landmark_discovery_capture_v1.py",
+  "composition_notes": [
+    "DOM landmark order matches \u00a719 binding order by coarse selectors.",
+    "No explicit data-landmark-* attributes; binding uses data-market-* markers.",
+    "Decision narrative Y precedes chart Y inside PRIMARY_MARKET_SURFACE (eye-path tension).",
+    "Secondary grid mixes Decision and Observability siblings.",
+    "Engineering content split across diagnostics drawer + governance details + detail anchors."
+  ],
+  "engineering_drawer_default_hidden": true,
+  "head_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "landmark_order_observed": [
+    "GLOBAL_HEADER",
+    "PRIMARY_MARKET_SURFACE",
+    "DECISION_SURFACE",
+    "OBSERVABILITY_SURFACE",
+    "ENGINEERING_DRAWER"
+  ],
+  "origin_main_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "review_server_harness": "scripts/webui/review_server.sh",
+  "review_url": "http://127.0.0.1:56579/market",
+  "safety": {
+    "CONSOLE_ERRORS_ZERO": true,
+    "LIVE_AUTHORIZED": false,
+    "LOCALHOST_ONLY": true,
+    "ORDERS_ALLOWED": false,
+    "UNEXPECTED_EXTERNAL_NETWORK_REQUESTS_ZERO": true,
+    "UVICORN_RELOAD": false
+  },
+  "schema_version": "1.0.0",
+  "screenshots": [
+    "screenshots/landmark_discovery_1280x800_full.png",
+    "screenshots/landmark_discovery_1280x800_above_fold.png",
+    "screenshots/landmark_discovery_1440x900_full.png",
+    "screenshots/landmark_discovery_1440x900_above_fold.png",
+    "screenshots/landmark_discovery_1728x1117_full.png",
+    "screenshots/landmark_discovery_1728x1117_above_fold.png",
+    "screenshots/landmark_discovery_1024x768_full.png",
+    "screenshots/landmark_discovery_1024x768_above_fold.png",
+    "screenshots/landmark_discovery_1440x900_header_hero_chart.png"
+  ],
+  "slice": "LANDMARK_DISCOVERY_DELTA_V1",
+  "viewports_captured": [
+    "1024x768",
+    "1280x800",
+    "1440x900",
+    "1728x1117"
+  ]
+}

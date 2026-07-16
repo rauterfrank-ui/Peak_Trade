@@ -1,0 +1,63 @@
+{
+  "GO_TOKEN_EXPECTED": "GO_VISUAL_OPERATOR_DASHBOARD_PHASE_1A_COMPOSITION_FOUNDATION_V1",
+  "NEXT_SLICE_NAME": "PHASE_1A_COMPOSITION_FOUNDATION",
+  "PRODUCTIVE_MUTATION_IN_THIS_PR": false,
+  "READ_ONLY_DISCOVERY_COMPLETE": true,
+  "allowed_files": [
+    "templates/peak_trade_dashboard/market_v0.html",
+    "templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html",
+    "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html",
+    "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+    "templates/peak_trade_dashboard/partials/market_diagnostics_drawer_v1.html",
+    "static/css/peak_trade_dashboard_layout_v1.css",
+    "static/css/peak_trade_dashboard_design_tokens_v1.css",
+    "tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py",
+    "tests/webui/test_market_dashboard_visual_foundation_rework_v1.py",
+    "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py"
+  ],
+  "defects_addressed": [
+    "LDD-01",
+    "LDD-02",
+    "LDD-03",
+    "LDD-04",
+    "LDD-06"
+  ],
+  "expected_dom_structure": [
+    "GLOBAL_HEADER",
+    "PRIMARY_MARKET_SURFACE(hero+chart with chart after market context)",
+    "DECISION_SURFACE",
+    "OBSERVABILITY_SURFACE",
+    "ENGINEERING_DRAWER(default closed, single landmark)"
+  ],
+  "forbidden_files": [
+    "src/trading/**",
+    "src/risk/**",
+    "src/execution/**",
+    "src/governance/**",
+    "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md"
+  ],
+  "geometry_assertions": [
+    "HEADER_HEIGHT_PX<=64",
+    "PRIMARY_CHART_TOP_Y<900",
+    "PRIMARY_CHART_VISIBLE_HEIGHT_PX>=280",
+    "HORIZONTAL_OVERFLOW_PX=0",
+    "LEVEL4_VISIBLE_ELEMENT_COUNT=0",
+    "DECISION_NARRATIVE_TOP_Y >= PRIMARY_CHART_TOP_Y OR narrative relocated out of pre-chart hero"
+  ],
+  "head_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "origin_main_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "schema_version": "1.0.0",
+  "slice": "LANDMARK_DISCOVERY_DELTA_V1",
+  "stop_conditions": [
+    "COMPOSITION_GATE_PASS",
+    "LANDMARK_GATE_PASS",
+    "no productive semantic mutation",
+    "STOP_BEFORE_MERGE=true"
+  ],
+  "tests": [
+    "tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py",
+    "tests/webui/test_market_dashboard_visual_foundation_rework_v1.py",
+    "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
+    "tests/webui/test_review_server_harness_v1.py"
+  ]
+}
