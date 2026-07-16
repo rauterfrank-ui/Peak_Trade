@@ -2,6 +2,8 @@
 
 > **Related product SSOT (no runtime effect):** Visual Operator Dashboard Product Runbook v1.3 — [`docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md`](../product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) (binding: [`docs/product/README.md`](../product/README.md)).  
 > This file remains the **technical** Market Surface route/marker/env chronicle. The product runbook owns product/UX/implementation-spec intent only and does **not** own trading, risk, authority, economic, or decision semantics.
+>
+> **Local review server (no runtime/trading effect):** durable localhost lifecycle — [`REVIEW_SERVER_HARNESS_V1.md`](./REVIEW_SERVER_HARNESS_V1.md) ([`scripts/webui/review_server.sh`](../../scripts/webui/review_server.sh)).
 
 ## Routen
 

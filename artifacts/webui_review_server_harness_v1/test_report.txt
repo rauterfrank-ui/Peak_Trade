@@ -1,0 +1,21 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0 -- /Users/frnkhrz/Peak_Trade_review_server_harness_v1/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/frnkhrz/Peak_Trade_review_server_harness_v1
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collecting ... collected 11 items
+
+tests/webui/test_review_server_harness_v1.py::test_harness_script_exists_and_is_executable PASSED [  9%]
+tests/webui/test_review_server_harness_v1.py::test_macos_bash_32_static_compat PASSED [ 18%]
+tests/webui/test_review_server_harness_v1.py::test_start_status_idempotent_stop_logs_and_bind PASSED [ 27%]
+tests/webui/test_review_server_harness_v1.py::test_stale_pid_recovery PASSED [ 36%]
+tests/webui/test_review_server_harness_v1.py::test_unknown_port_owner_fail_closed PASSED [ 45%]
+tests/webui/test_review_server_harness_v1.py::test_stop_only_own_verified_process PASSED [ 54%]
+tests/webui/test_review_server_harness_v1.py::test_restart PASSED        [ 63%]
+tests/webui/test_review_server_harness_v1.py::test_healthcheck_timeout PASSED [ 72%]
+tests/webui/test_review_server_harness_v1.py::test_localhost_only_rejects_non_loopback PASSED [ 81%]
+tests/webui/test_review_server_harness_v1.py::test_playwright_webserver_module_contracts PASSED [ 90%]
+tests/webui/test_review_server_harness_v1.py::test_playwright_webserver_smoke_and_no_external_network PASSED [100%]
+
+============================= 11 passed in 14.93s ==============================

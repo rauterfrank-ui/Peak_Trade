@@ -1,0 +1,60 @@
+=== START ===
+OK: web runtime deps present (fastapi, uvicorn).
+STATUS=RUNNING_HEALTHY
+ACTION=STARTED
+PID=44669
+BOOT_PID=44652
+PORT=8765
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8765/api/health
+REVIEW_URL=http://127.0.0.1:8765/market
+PID_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.log
+UVICORN_RELOAD=false
+LOCALHOST_ONLY=true
+IDEMPOTENT_START=true
+=== STATUS ===
+STATUS=RUNNING_HEALTHY
+PID=44669
+PORT=8765
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8765/api/health
+REVIEW_URL=http://127.0.0.1:8765/market
+PID_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.log
+=== HTTP ===
+HEALTH_HTTP=200
+MARKET_HTTP=200
+=== OPEN ===
+STATUS=RUNNING_HEALTHY
+PID=44669
+PORT=8765
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8765/api/health
+REVIEW_URL=http://127.0.0.1:8765/market
+PID_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.log
+ACTION=REUSED_EXISTING_HEALTHY
+IDEMPOTENT_START=true
+OPENED_URL=http://127.0.0.1:8765/market
+PRIMARY_BROWSER=GOOGLE_CHROME
+=== STATUS2 ===
+STATUS=RUNNING_HEALTHY
+PID=44669
+PORT=8765
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8765/api/health
+REVIEW_URL=http://127.0.0.1:8765/market
+PID_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.log
+=== STOP ===
+STATUS=STOPPED
+ACTION=STOPPED
+PID=44669
+=== FINAL_STATUS ===
+STATUS=STOPPED
+PORT=8765
+HOST=127.0.0.1
+PID_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade_review_server_harness_v1/.run/webui_review_server_verify_v1/review_server.log
+LISTENERS_AFTER_STOP=NONE
