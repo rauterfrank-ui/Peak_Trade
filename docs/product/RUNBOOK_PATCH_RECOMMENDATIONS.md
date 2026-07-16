@@ -36,20 +36,20 @@ Dieses Dokument ist ausschließlich eine Gap-/Patch-Liste. Es ist nicht kanonisc
 
 | Discovery claim | Repo path | Status |
 |-----------------|-----------|--------|
-| `DASHBOARD_ROUTE=/market` | `src/webui/app.py` → `include_router(create_market_router(...))` | PRESENT |
+| `DASHBOARD_ROUTE=&#47;market` | `src/webui/app.py` → `include_router(create_market_router(...))` | PRESENT |
 | `create_market_router` | `src/webui/market_surface.py` | PRESENT |
 | `resolve_market_page_data` | `src/webui/market_surface.py` | PRESENT |
 | `build_market_v0_page_template_context` | `src/webui/market_surface.py` | PRESENT |
 | `market_dashboard_current_state_snapshot_v0` | `src/webui/market_dashboard_current_state_snapshot_v0.py` | PRESENT |
 | `PRIMARY_TEMPLATE` | `templates/peak_trade_dashboard/market_v0.html` | PRESENT |
 | Visual operator surface package | `src/webui/market_visual_operator_surface_v1/` | PRESENT (package; Discovery text implies module symbol only) |
-| Header / hero / chart / ranking / funnel / economic / linear / F5 / DP / safety / watchlist / current state / diagnostics partials | `templates/peak_trade_dashboard/partials/*` listed in Runbook §0C | ALL PRESENT |
+| Header / hero / chart / ranking / funnel / economic / linear / F5 / DP / safety / watchlist / current state / diagnostics partials | `templates&#47;peak_trade_dashboard&#47;partials&#47;*` listed in Runbook §0C | ALL PRESENT |
 | OHLCV / Ranking runtime owners | `market_futures_ohlcv_runtime_v0.py`, `market_ranking_funnel_runtime_v0.py` | PRESENT |
-| Decision / Economic / Linear display adapters | `market_visual_operator_surface_v1/{decision_funnel,economic_observability,ai_linear_diagnostics}_display_v1.py` | PRESENT |
+| Decision / Economic / Linear display adapters | `market_visual_operator_surface_v1&#47;{decision_funnel,economic_observability,ai_linear_diagnostics}_display_v1.py` | PRESENT |
 | Technical surface docs | `docs/webui/MARKET_SURFACE_V0.md` | PRESENT |
 | Futures display contract | `docs/ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md` | PRESENT |
 | Tailwind CDN | `templates/peak_trade_dashboard/base.html` | PRESENT (matches D9 target-state debt) |
-| Primary chart renderer SSR SVG | `partials/market_primary_close_chart_v1.html` | PRESENT |
+| Primary chart renderer SSR SVG | `partials&#47;market_primary_close_chart_v1.html` | PRESENT |
 | Chart.js 4.4.1 | vendor path + CDN still used on detail/legacy panels | PRESENT (matches D9) |
 
 ---
@@ -86,7 +86,7 @@ Dieses Dokument ist ausschließlich eine Gap-/Patch-Liste. Es ist nicht kanonisc
 | Field | Value |
 |-------|-------|
 | Severity | HIGH (product boundary) |
-| Finding | `MARKET_SURFACE_V0.md` still documents defaults `symbol=BTC/EUR`, `source=kraken` (public network OHLCV). Runbook §1 requires `FUTURES_ONLY`, `BITCOIN_DIRECTION_ALLOWED=false`, `NO_REQUEST_TIME_NETWORK_ACCESS=true`. |
+| Finding | `MARKET_SURFACE_V0.md` still documents defaults `symbol=BTC&#47;EUR`, `source=kraken` (public network OHLCV). Runbook §1 requires `FUTURES_ONLY`, `BITCOIN_DIRECTION_ALLOWED=false`, `NO_REQUEST_TIME_NETWORK_ACCESS=true`. |
 | Status | **DOCUMENTED as Discovery/Default Gap** in Runbook §1 (`CURRENT_REPO_OR_DOCS_DEFAULT_MAY_INCLUDE_KRAKEN_OR_BTC=true`; must not claim current default as already compliant). Runtime defaults unchanged; fix requires separate bounded slice. |
 
 ### R5 — Narrow Discovery wording for visual-operator package path
@@ -102,7 +102,7 @@ Dieses Dokument ist ausschließlich eine Gap-/Patch-Liste. Es ist nicht kanonisc
 | Field | Value |
 |-------|-------|
 | Severity | MED |
-| Finding | `MARKET_BROWSER_E2E_BASELINE=MISSING` remains accurate for Playwright/real-browser harness. Many focused `tests/webui/test_market_*` structure/visual contracts exist, but not a durable browser E2E baseline matching §8.7/§10. |
+| Finding | `MARKET_BROWSER_E2E_BASELINE=MISSING` remains accurate for Playwright/real-browser harness. Many focused `tests&#47;webui&#47;test_market_*` structure/visual contracts exist, but not a durable browser E2E baseline matching §8.7/§10. |
 | Recommended patch | Keep `MISSING`; bind Phase **10** / Phase **1A** evidence to existing structure contracts as interim, and name the future E2E owner explicitly when created. |
 
 ### R7 — PR / main relative status note
@@ -110,7 +110,7 @@ Dieses Dokument ist ausschließlich eine Gap-/Patch-Liste. Es ist nicht kanonisc
 | Field | Value |
 |-------|-------|
 | Severity | MED (process) |
-| Finding | Discovery baseline HEAD is the feature tip; `origin/main` is **one commit behind** this branch (`e20b788…`). PR 5244 is **OPEN**, not merged. |
+| Finding | Discovery baseline HEAD is the feature tip; `origin&#47;main` is **one commit behind** this branch (`e20b788…`). PR 5244 is **OPEN**, not merged. |
 | Recommended patch | Before each mutation slice: re-record `ORIGIN_MAIN`, PR state, and whether Discovery baseline still equals feature HEAD. Do not treat Discovery SHAs as merge authority. |
 
 ### R8 — Primary CSS owner remains fragmented (D10)
@@ -154,3 +154,4 @@ NO_DEFAULT_QUERY_MUTATION=true
 1. Operator accepts or rejects each `R*` item.  
 2. Accepted items land as a **docs-only** Runbook patch PR (or Phase -1 artifact PR).  
 3. Only then start `PHASE_1A_LAYOUT_AND_HEADER` under a separate GO.
+

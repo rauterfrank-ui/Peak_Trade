@@ -1092,7 +1092,7 @@ MARKET_SURFACE_AUTHORITY_SOURCE=false
 
 ## Market Visual Operator Surface v1 (read-only)
 
-A visual operator zone rendered on the canonical **`GET /market`** page: a compact operator
+A visual operator zone rendered on the canonical **`GET &#47;market`** page: a compact operator
 header, the existing chart-first hero (**Market Overview primary**), the governed Top-N matrix
 (now enriched with display-only momentum/volatility/liquidity/change derived **only** from real
 offline OHLCV bars), an **AI · Decision funnel** waterfall, an **Economic observability** panel,
@@ -1133,3 +1133,4 @@ input.
 ## Verwandte read-only WebUI-Fläche
 
 - [**Observability Hub v0**](observability/OBSERVABILITY_HUB_V0.md) — zentraler Display-/Navigations‑Kontext mit Verweisen u. a. auf diese Market‑Surface‑GET‑Routen; **ohne** zusätzliche Autorität oder Steuerlogik.
+
