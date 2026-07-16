@@ -17,6 +17,9 @@
     "reason": "Phase -1 discovery only; gates remain closed until composition/landmark foundation slices complete against \u00a7\u00a717-22."
   },
   "go_token": "GO_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_V1_3_PHASE_MINUS_1_REBASELINE_V1",
+  "head_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "latest_discovery_delta": "artifacts/market_dashboard_landmark_discovery_delta_v1/requirement_traceability_delta.json",
+  "latest_discovery_go_token": "GO_VISUAL_OPERATOR_DASHBOARD_LANDMARK_DISCOVERY_DELTA_PR_OPEN_STOP_BEFORE_MERGE_V1",
   "requirements": [
     {
       "id": "R-PM1-01",

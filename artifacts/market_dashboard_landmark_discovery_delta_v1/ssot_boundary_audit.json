@@ -1,0 +1,52 @@
+{
+  "CANONICAL_RUNBOOK_PATH": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
+  "CANONICAL_SINGLE_SOURCE_OF_TRUTH": "MASTER_V2_AND_DOUBLE_PLAY",
+  "DASHBOARD_DOMAIN_LOGIC_CREATED": false,
+  "DASHBOARD_IS_CONSUMER_ONLY": true,
+  "NO_SECOND_SSOT_ALLOWED": true,
+  "SECOND_RUNBOOK_CREATED": false,
+  "SSOT_BOUNDARY_AUDIT_PASS": true,
+  "audit": [
+    {
+      "claim": "Dashboard consumes market_surface adapters only",
+      "evidence": "src/webui/market_surface.py build_market_v0_page_template_context",
+      "status": "PASS"
+    },
+    {
+      "claim": "Current-state snapshot owner is presentation binder",
+      "evidence": "src/webui/market_dashboard_current_state_snapshot_v0.py",
+      "status": "PASS"
+    },
+    {
+      "claim": "No second runbook path",
+      "evidence": "single docs/product/...Runbook_v1.3.md",
+      "status": "PASS"
+    },
+    {
+      "claim": "Review server harness is localhost-only infra",
+      "evidence": "scripts/webui/review_server.sh",
+      "status": "PASS"
+    },
+    {
+      "claim": "Legacy panels remain drawer/collapsed",
+      "evidence": "multiple engineering details still present",
+      "status": "PASS_WITH_GAP"
+    },
+    {
+      "claim": "No productive UI mutation in this slice",
+      "evidence": "discovery artifacts + capture script only",
+      "status": "PASS"
+    }
+  ],
+  "forbidden_next_actions": [
+    "Invent dashboard domain truth",
+    "Reconstruct Master-V2 state in UI",
+    "Merge PR5250 code",
+    "Create second runbook",
+    "Enable LIVE_AUTHORIZED/ORDERS_ALLOWED"
+  ],
+  "head_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "origin_main_sha": "2b936808c7c99687def5e9c4597e3fe55de0e58f",
+  "schema_version": "1.0.0",
+  "slice": "LANDMARK_DISCOVERY_DELTA_V1"
+}
