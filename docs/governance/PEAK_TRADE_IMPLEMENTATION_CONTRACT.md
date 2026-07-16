@@ -1,25 +1,32 @@
 # Peak Trade — Implementierungsvertrag für Cursor
 
-**Rolle:** Kurze repo-seitige Navigations- und Ausführungsanweisung.  
+**Rolle:** Kurze repo-seitige Navigations- und Ausführungsanweisung.
 **Authority:** Keine zweite Trading-, Safety-, Risk-, Sizing-, Economic- oder Runtime-SSOT.
 
+**Einstieg (Discovery):** [`PEAK_TRADE_MAP_OF_TRUTH.md`](PEAK_TRADE_MAP_OF_TRUTH.md) — zentrale Navigation; definiert keine Semantik.
+**Aktuelle normative SSOT:** [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) (via Map of Truth).
+
 ```text
+MAP_OF_TRUTH_PATH=docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
 CANONICAL_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md
+NORMATIVE_SSOT_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
 THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true
 THIS_DOCUMENT_MAY_NOT_OVERRIDE_CANONICAL_RUNBOOK=true
 CURSOR_MUST_READ_CANONICAL_RUNBOOK_FIRST=true
 ```
 
-**Kanonischer Parent:** [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md)
+**Historischer Crosslink-Parent (Contract-Pfad):** [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md)
+**Kanonischer Parent (v4.4.12):** siehe [Map of Truth](PEAK_TRADE_MAP_OF_TRUTH.md).
 
-## 0. Externe kanonische Quelle (v4.4.11) — Referenz, keine Kopie
+## 0. Externe kanonische Quelle (v4.4.12) — Referenz + Repo-Kopie
 
 ```text
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_FILENAME=Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.11_IMPLEMENTATION_CONTRACT.md
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_VERSION=v4.4.11
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_PATH=/Users/frnkhrz/Desktop/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.11_IMPLEMENTATION_CONTRACT.md
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_SHA256=fe24efc4d9fdc7c610d74d681b415399ba79151828c93671e1eea9c3ffd1fb99
-NORMATIVE_REFERENCE_ONLY=true
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_FILENAME=Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_VERSION=v4.4.12
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_PATH=/Users/frnkhrz/Desktop/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_SHA256=00f35015ad6e96d955d7c9913815dc5e54b36988d209cc41c85c98c06abe79d9
+REPO_CANONICAL_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+NORMATIVE_REFERENCE_ONLY=false
 PROGRESS_METADATA_COPIED=false
 ```
 

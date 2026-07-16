@@ -73,7 +73,7 @@ RUNTIME_REWIRE_ADMISSIBLE=false
 
 - Reuse existing governance, Safety, Reconciliation, Double Play, and portfolio research surfaces.
 - Do **not** create a parallel rotation SSOT or implicit order path from ranking/selection.
-- Extend [`docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md`](../../governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md) only when the future slice is explicitly opened — not via this reminder.
+- Extend [`docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md`](../../governance/PEAK_TRADE_MAP_OF_TRUTH.md) / Multi-Future Clarification only when the future slice is explicitly opened — not via this reminder.
 
 ## No Implementation Statement
 

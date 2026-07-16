@@ -1,6 +1,7 @@
 # Economic Diagnostic Optimization Boundary and Canonical Trading Logic Immutability Contract v0
 
-**Scope:** `ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0`  
+**Scope:** `ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0`
+**Navigations-Einstieg:** [`PEAK_TRADE_MAP_OF_TRUTH.md`](PEAK_TRADE_MAP_OF_TRUTH.md) (defines no semantics).
 **Authority:** Additive Governance extension of [`PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md) — **keine Parallel-SSOT**.
 
 ```text
@@ -11,10 +12,10 @@ RUNTIME_EFFECT=NONE
 AUTHORITY_EFFECT=NONE
 ```
 
-**Kanonischer Parent:** [`PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md)  
-**Maschinenlesbarer Owner:** [`config/governance/economic_diagnostic_optimization_boundary_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_v0.json)  
-**Owner-Map:** [`config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json)  
-**Technical Wiring Authorization:** [`config/governance/technical_canonical_wiring_authorization_v1.json`](../../config/governance/technical_canonical_wiring_authorization_v1.json)  
+**Kanonischer Parent:** [`PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md)
+**Maschinenlesbarer Owner:** [`config/governance/economic_diagnostic_optimization_boundary_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_v0.json)
+**Owner-Map:** [`config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json)
+**Technical Wiring Authorization:** [`config/governance/technical_canonical_wiring_authorization_v1.json`](../../config/governance/technical_canonical_wiring_authorization_v1.json)
 **Guard:** [`src/governance/economic_diagnostic_optimization_boundary_v0.py`](../../src/governance/economic_diagnostic_optimization_boundary_v0.py)
 
 ## 1. Unveränderliche Flags
@@ -175,6 +176,10 @@ Runbook-Referenz (read-only, keine Progress-Metadaten kopiert):
 
 ```text
 SOURCE_RUNBOOK_REFERENCED=true
+MAP_OF_TRUTH_PATH=docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+NORMATIVE_SSOT_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
 CANONICAL_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md
 NORMATIVE_REFERENCE_ONLY=true
 ```
+
+Aktueller Einstieg: [`PEAK_TRADE_MAP_OF_TRUTH.md`](PEAK_TRADE_MAP_OF_TRUTH.md).

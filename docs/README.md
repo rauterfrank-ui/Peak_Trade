@@ -6,7 +6,11 @@
 
 ## 📍 Start Here (30 seconds)
 
-**New to Peak_Trade?**
+**Canonical navigation (Governance / Autonomy / Architecture SSOT):**
+1. Start: [governance/PEAK_TRADE_MAP_OF_TRUTH.md](governance/PEAK_TRADE_MAP_OF_TRUTH.md) — Map of Truth (entry only; defines no semantics)
+2. Read the canonical Vollautonomie-Runbook v4.4.12 via that map
+
+**New to Peak_Trade (product overview)?**
 1. Read: [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) – Architecture, Strategy Registry, Config, Quick Start
 2. Run your first backtest: `python3 scripts&#47;run_strategy_from_config.py --strategy ma_crossover`
 3. Explore: [What changed recently?](DOCUMENTATION_UPDATE_SUMMARY.md)
@@ -96,6 +100,7 @@
 ### 🛡️ Governance / Safety
 
 **Governance Hub:**
+- [governance/PEAK_TRADE_MAP_OF_TRUTH.md](governance/PEAK_TRADE_MAP_OF_TRUTH.md) – **Map of Truth** (canonical SSOT pointers; no semantics)
 - [governance/README.md](governance/README.md) – **Governance center**
 - [GOVERNANCE_AND_SAFETY_OVERVIEW.md](GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Safety-first approach
 - [SAFETY_POLICY_TESTNET_AND_LIVE.md](SAFETY_POLICY_TESTNET_AND_LIVE.md) – Safety policies
