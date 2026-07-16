@@ -8,7 +8,9 @@ Dieses Dokument führt dich Schritt für Schritt durch deine erste Stunde mit Pe
 - Live-/Ops-Flow (Health, Portfolio, Status-Reports)
 - **Ohne echte Live-Trades** – alles im Safe-Mode
 
-**Docs Truth Map:** [kanonische Ops-Doku-Registry und Änderungsnachweis](ops/registry/DOCS_TRUTH_MAP.md) (truth-first)
+**Map of Truth:** [kanonischer Navigations-Einstieg zur Architektur-/Governance-SSOT](governance/PEAK_TRADE_MAP_OF_TRUTH.md) (defines no semantics)
+
+**Docs Truth Map (Ops Drift-Registry):** [kanonische Ops-Doku-Registry und Änderungsnachweis](ops/registry/DOCS_TRUTH_MAP.md) (truth-first)
 
 **R&D Web-Dashboard (read-only, v0):** Ist-Umfang und Spezifikation in [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) — keine Job-Trigger aus dem UI.
 

@@ -1,18 +1,21 @@
 # Peak Trade — Implementierungsvertrag für Cursor
 
-**Rolle:** Kurze repo-seitige Navigations- und Ausführungsanweisung.  
-**Authority:** Keine zweite Trading-, Safety-, Risk-, Sizing-, Economic- oder Runtime-SSOT.  
-**Kanonischer Parent:** `Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md` beziehungsweise dessen kanonische Repo-Kopie.
+**Rolle:** Kurze repo-seitige Navigations- und Ausführungsanweisung.
+**Authority:** Keine zweite Trading-, Safety-, Risk-, Sizing-, Economic- oder Runtime-SSOT.
+**Einstieg:** `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` (defines no semantics).
+**Kanonischer Parent (normativ):** `Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md` via Map of Truth.
+**Historischer Crosslink-Parent:** `Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md` beziehungsweise dessen kanonische Repo-Kopie.
 
 ```text
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_FILENAME=Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.11_IMPLEMENTATION_CONTRACT.md
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_VERSION=v4.4.11
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_PATH=/Users/frnkhrz/Desktop/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.11_IMPLEMENTATION_CONTRACT.md
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_SHA256=fe24efc4d9fdc7c610d74d681b415399ba79151828c93671e1eea9c3ffd1fb99
-NORMATIVE_REFERENCE_ONLY=true
+MAP_OF_TRUTH_PATH=docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_FILENAME=Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_VERSION=v4.4.12
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_PATH=/Users/frnkhrz/Desktop/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_SHA256=00f35015ad6e96d955d7c9913815dc5e54b36988d209cc41c85c98c06abe79d9
+REPO_CANONICAL_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+NORMATIVE_REFERENCE_ONLY=false
 PROGRESS_METADATA_COPIED=false
 ```
-
 ## 1. Unveränderliche Grenzen
 
 ```text

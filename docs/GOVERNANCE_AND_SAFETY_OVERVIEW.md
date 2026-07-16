@@ -12,6 +12,12 @@
 - Normative Kurzregel: `Governance > Safety&#47;Kill-Switch > Risk&#47;Exposure Caps`; `Switch-Gate` und `AI Orchestrator` sind Control-Orchestration/advisory, aber keine finale Execution Authority.
 - Claim-Disziplin: Claims nur in den Klassen `repo-evidenced`, `documented`, `unverified`, `not-claimed` formulieren (Abschnitt 6); `unverified` und `not-claimed` nicht als verifizierte Fakten ausgeben; `operator-stated` explizit markieren; keine impliziten E2E-/Runtime-Behauptungen.
 
+## Map of Truth + Vollautonomie-Runbook v4.4.12 (canonical governance/implementation SSOT — non-authorizing)
+
+- **Navigations-Einstieg:** [docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md](governance/PEAK_TRADE_MAP_OF_TRUTH.md) — definiert **keine** Semantik; verweist auf kanonische Owner.
+- **Kanonische SSOT:** Vollautonomie-Runbook v4.4.12 (über die Map of Truth).
+- **Keine** Live-/Order-/Scheduler-Freigabe durch alleinige Lektüre.
+
 ## Canonical Unified Trading System Runbook v2.6 (strategic target — non-authorizing)
 
 - Kanonisches **strategisches Ziel- und Implementierungsrunbook** (Futures-only, zwei Authority-Domänen): [docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md](architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md)

@@ -129,9 +129,27 @@ PARALLEL_SSOT_CREATED=false
 PREFLIGHT_REMAINS_BLOCKED=true
 ```
 
+## Map of Truth + Vollautonomie-Runbook v4.4.12 — docs-only navigation pointer (additive)
+
+**Purpose:** Central navigation entry declaring Vollautonomie-Runbook **v4.4.12** as canonical governance/implementation SSOT — navigation-only Map of Truth **without** trading/runtime/promotion semantic change, live authorization, orders, or scheduler runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Map of Truth (navigation only) | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` |
+| Vollautonomie-Runbook v4.4.12 (full SSOT) | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md` |
+
+```text
+CANONICAL_VOLLAUTONOMIE_RUNBOOK_V4_4_12_REPO_ADOPTED=true
+THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true
+PARALLEL_SSOT_CREATED=false
+LIVE_AUTHORIZED=false
+```
+
 ## Vollautonomie-Runbook v4.4.10 + Implementation Contract — docs/tests-only reciprocal crosslink guard v0
 
-**Purpose:** Anchor Vollautonomie-Runbook v4.4.10 as **canonical governance and implementation SSOT** with a short navigation-only implementation contract — static reciprocal crosslink **without** trading/runtime/promotion semantic change, live authorization, orders, or scheduler runtime.
+**Purpose:** Anchor Vollautonomie-Runbook v4.4.10 as **canonical governance and implementation SSOT** with a short navigation-only implementation contract — static reciprocal crosslink **without** trading/runtime/promotion semantic change, live authorization, orders, or scheduler runtime. (Historischer Crosslink-Owner; aktuelle Navigation: Map of Truth → v4.4.12.)
 
 **Canonical repo owners (reuse — do not duplicate):**
 
