@@ -15,7 +15,12 @@
   --pt-card-padding: 12px;
   --pt-card-radius: 10px;
   --pt-card-border: 1px solid var(--pt-color-border);
-  --pt-header-height: 56px;
+  --pt-header-height: 64px;
+  --pt-safety-rail-max-height: 32px;
+  --pt-hero-min-height: 210px;
+  --pt-hero-max-height: 290px;
+  --pt-primary-chart-min-height: 390px;
+  --pt-primary-chart-visual-share-min: 0.4;
   --pt-table-row-height: 44px;
 
   --pt-space-1: 4px;

@@ -68,16 +68,7 @@ DASHBOARD_OWNS_NO_AUTHORITY_STATE=true
 DASHBOARD_MAY_NOT_REIMPLEMENT_CORE_LOGIC=true
 DASHBOARD_MAY_NOT_OVERRIDE_CORE_SEMANTICS=true
 ALL_DASHBOARD_VALUES_MUST_BE_TRACEABLE_TO_CANONICAL_OWNER=true
-DASHBOARD_PRODUCT_SPEC_SSOT=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
-DERIVED_DOCUMENTS_MAY_NOT_OVERRIDE_PRODUCT_SPEC=true
-CORE_SYSTEM_REMAINS_FUNCTIONAL_SSOT=true
 ```
-
-SSOT-Unterscheidung:
-
-- fachliche Core-SSOT = kanonisches Peak_Trade-Core-System / Master V2
-- Dashboard-Produkt-SSOT = dieses Runbook (Presentation / UX / Implementation Spec only)
-- Dashboard selbst = Consumer-only; besitzt keine Trading-, Risk-, Economic-, Decision- oder Authority-Ownership
 
 Architekturgrundsatz:
 
@@ -86,7 +77,6 @@ Architekturgrundsatz:
 - Jeder dargestellte Wert muss auf einen kanonischen Core-Owner oder einen dokumentierten Adapter zurückführbar sein.
 - Adapter dürfen Daten transformieren oder visualisieren, jedoch keine fachliche Logik, Entscheidungen oder Authority erzeugen.
 - Existiert bereits ein kanonischer Owner, darf keine zweite Implementierung im Dashboard entstehen.
-- Abgeleitete Docs (Implementation Plan, Patch-Empfehlungen, technische Surface-Chronicle) dürfen dieses Product Runbook nicht überschreiben.
 
 ---
 
@@ -112,10 +102,10 @@ PRIMARY_CHART_RENDERER=SSR_SVG
 DETAIL_CHART_LIBRARY=Chart.js_4.4.1
 MARKET_BROWSER_E2E_BASELINE=MISSING
 PRIMARY_BROWSER_BASELINE=PLAYWRIGHT_CHANNEL_CHROME
-REAL_SAFARI_BASELINE=SECONDARY_COMPATIBILITY_OPTIONAL
+REAL_SAFARI_BASELINE=OPTIONAL_SECONDARY_MANUAL_CHECK
 ```
 
-Die Commit- und PR-Angaben sind Discovery-Evidence, keine dauerhafte Freigabe für weitere Arbeiten. Vor jeder Mutation sind `origin&#47;main`, aktueller `HEAD`, PR-Zustand und Worktree erneut zu prüfen.
+Die Commit- und PR-Angaben sind Discovery-Evidence, keine dauerhafte Freigabe für weitere Arbeiten. Vor jeder Mutation sind `origin/main`, aktueller `HEAD`, PR-Zustand und Worktree erneut zu prüfen.
 
 ## 0A.1 Kanonische Render Chain
 
@@ -142,9 +132,7 @@ templates/peak_trade_dashboard/market_v0.html
   ↓ SSR partials
 Header → Hero → Chart → Ranking → Decision → Risk → Economic → Diagnostics → Governance
   ↓
-Full SSR HTML in Google Chrome (Playwright channel=chrome);
-Chromium fallback allowed when Chrome channel unavailable;
-Safari / WebKit secondary compatibility only
+Full SSR HTML in Google Chrome via Playwright; Chromium fallback allowed; Safari/WebKit secondary only
 ```
 
 Verbindlich:
@@ -248,7 +236,7 @@ Neue Komponenten sind nur zulässig, wenn keine kanonische Owner-Struktur existi
 | Datenfeld / Surface | Kanonischer Owner | Source Class | Instrument-scoped | Status / Regel |
 |---|---|---|---:|---|
 | OHLCV / Volume | `market_futures_ohlcv_runtime_v0.py` | `CANONICAL_LOCAL_READ_ONLY_BUNDLE` | ja | reuse, kein Request-Time-Netzwerk |
-| Ranking Top20/50 | `market_ranking_funnel_runtime_v0.py` | Offline volume-rank bundle | ja | real distinct views; Target: Bitcoin-direction disabled (Default-Gap siehe §1) |
+| Ranking Top20/50 | `market_ranking_funnel_runtime_v0.py` | Offline volume-rank bundle | ja | real distinct views; BTC ausgeschlossen |
 | Score | Ranking `display_score` | deterministic derivation | ja | implemented |
 | Rank Delta | kein Owner | — | — | data-blocked; nicht erfinden |
 | Regime | Ranking passthrough | unvollständig | teilweise | hide/de-emphasize until producer exists |
@@ -318,16 +306,6 @@ PARTIAL_SURFACE_COMMIT_FORBIDDEN=true
 MISMATCHED_CONTEXT_RENDER_FORBIDDEN=true
 ```
 
-Implementierungsstand (Discovery / Bootstrap, docs-only):
-
-```text
-SELECTION_CONTEXT_IMPLEMENTED=false
-SELECTION_CONTEXT_REQUIRED_BEFORE_PHASE_4C_COMPLETE=true
-SELECTION_CONTEXT_PSEUDO_ID_FORBIDDEN=true
-```
-
-`selection_context_id` ist ein verpflichtender offener Contract-Gap. Es darf nicht als bereits implementiert dargestellt, nicht durch Pseudo-IDs ersetzt und nicht durch stille Fallbacks vorgetäuscht werden. Closure nur in Phase 4C mit Owner-, Test- und Screenshot-Binding.
-
 Eine fleet-level oder baseline-level Surface darf unverändert bleiben, wenn ein Instrument gewechselt wird, aber nur, wenn sie sichtbar als nicht instrument-scoped markiert ist. Sie darf nicht den Eindruck erwecken, zur neu ausgewählten Zeile zu gehören.
 
 # 0F. Discovery Defect Closure Matrix
@@ -380,18 +358,6 @@ DASHBOARD_RENDER_SIDE_EFFECT_FREE=true
 DASHBOARD_DATA_ACCESS_ALLOWLIST_REQUIRED=true
 DASHBOARD_ROUTE_MUTATION_CONTROLS_FORBIDDEN=true
 ```
-
-Discovery-/Default-Gap (dokumentarisch; keine Runtime-Mutation in diesem Slice):
-
-```text
-TARGET_CONTRACT_FUTURES_ONLY=true
-TARGET_CONTRACT_BITCOIN_DIRECTION_DISABLED=true
-CURRENT_REPO_OR_DOCS_DEFAULT_MAY_INCLUDE_KRAKEN_OR_BTC=true
-CURRENT_DEFAULT_MUST_NOT_BE_CLAIMED_AS_ALREADY_COMPLIANT=true
-BTC_KRAKEN_DEFAULT_GAP_REQUIRES_SEPARATE_BOUNDED_SLICE=true
-```
-
-Der Target Contract bleibt Futures-only und Bitcoin-direction-disabled. Ein aktueller Repo- oder Docs-Default (z. B. Kraken/BTC in der technischen Surface-Chronicle) darf nicht als bereits compliant dargestellt werden. Die Behebung benötigt einen separaten bounded Slice mit Owner- und Test-Bindung; Runtime-/Producer-Defaults werden hier nicht geändert.
 
 Das Dashboard darf Daten darstellen, erklären, vergleichen und visualisieren.
 
@@ -1192,6 +1158,51 @@ REQUEST_TIME_PROVIDER_CALL
 
 ---
 
+# 6A. Browser Verification Policy
+
+Diese Policy ist für alle visuellen Dashboard-Slices verbindlich.
+
+```text
+PRIMARY_BROWSER=GOOGLE_CHROME
+PRIMARY_BROWSER_AUTOMATION=PLAYWRIGHT
+PRIMARY_PLAYWRIGHT_CHANNEL=chrome
+PRIMARY_BROWSER_SCREENSHOTS=CHROME
+PRIMARY_DOM_ASSERTIONS=CHROME
+PRIMARY_CONSOLE_ASSERTIONS=CHROME
+PRIMARY_NETWORK_ASSERTIONS=CHROME
+PRIMARY_INTERACTION_ASSERTIONS=CHROME
+
+CHROMIUM_FALLBACK_ALLOWED=true
+CHROMIUM_FALLBACK_MUST_BE_REPORTED=true
+PLAYWRIGHT_CHROMIUM_IS_NOT_REAL_CHROME=true
+
+WEBKIT_VERIFICATION=SECONDARY
+WEBKIT_IS_NOT_REAL_SAFARI=true
+
+REAL_SAFARI_VERIFICATION=SECONDARY
+SAFARI_REQUIRED_FOR_NORMAL_SLICE_MERGE=false
+SAFARI_FAILURE_BLOCKS_NORMAL_SLICE=false
+
+POST_SLICE_INTERACTIVE_OPEN=REAL_CHROME
+```
+
+Verbindliche Regeln:
+
+1. Google Chrome über Playwright ist der primäre Browser für Entwicklung, visuelle Abnahme, Screenshots, DOM-, Console-, Network- und Interaktionsprüfungen.
+2. Playwright verwendet nach Möglichkeit den lokal installierten Google-Chrome-Channel `chrome`.
+3. Falls echter Google Chrome technisch nicht verfügbar ist, darf Playwright Chromium als Fallback verwendet werden.
+4. Ein Chromium-Fallback muss ausdrücklich berichtet werden und darf niemals als echter Google-Chrome-Nachweis bezeichnet werden.
+5. WebKit ist ausschließlich ein sekundärer Engine-Kompatibilitätscheck.
+6. WebKit darf nicht als echter Safari-Nachweis bezeichnet werden.
+7. Echter Safari ist ein optionaler sekundärer Kompatibilitätscheck.
+8. Safari oder WebKit sind für normale Dashboard-Slices keine allgemeinen Merge-Blocker.
+9. Safari wird nur dann zum Blocker, wenn ein konkreter späterer Release-Gate dies ausdrücklich verlangt.
+10. Nach erfolgreichem Slice soll das Dashboard für die Operator-Prüfung sichtbar in realem Google Chrome geöffnet werden.
+11. Browser-Evidence muss den tatsächlich verwendeten Browser eindeutig ausweisen.
+12. Die bestehende Self-only-Netzwerk- und Read-only-Policy bleibt unverändert.
+
+---
+
 # 7. Umsetzung in Phasen
 
 
@@ -1216,7 +1227,7 @@ Jede Phase ist ein Bauabschnitt mit eigener Owner-, Datei-, Test-, Screenshot- u
 | Phase 7 | Economic Visuals | economic display + partial | scope compatibility, negative/zero preservation | fail/zero/missing curves | Profitabilität behaupten |
 | Phase 8 | Linear Diagnostics | diagnostics display + partial | summary/detail separation | summary + expanded details | große leere Karten |
 | Phase 9 | Governance Consolidation | current state/details/drawers | collapsed default, no raw JSON default | collapsed/expanded | Hauptfluss dominieren |
-| Phase 10 | Demo Readiness | browser test infra/evidence | visual regression, console, network, accessibility | complete matrix | Merge bei offenen Blockern |
+| Phase 10 | Demo Readiness | browser test infra/evidence | Chrome/Playwright visual regression, console, network, accessibility; Safari/WebKit optional secondary | complete matrix in Chrome | Merge bei offenen Blockern |
 
 Jeder Slice endet mit:
 
@@ -1230,6 +1241,8 @@ ORIGIN_MAIN=<sha>
 WORKTREE_CLEAN=true
 FOCUSED_TESTS_PASS=true
 BROWSER_EVIDENCE_COMPLETE=true
+PRIMARY_BROWSER=GOOGLE_CHROME
+PRIMARY_AUTOMATION=PLAYWRIGHT
 VISUAL_EVIDENCE_COMPLETE=true
 SOURCE_PROVENANCE_VERIFIED=true
 TRADING_SEMANTICS_EFFECT=NONE
@@ -1468,8 +1481,8 @@ ENGINEERING_DETAILS_SECONDARY=true
 
 Ziel:
 
-- Google Chrome (Playwright `channel="chrome"`) als primäre Browser-Abnahme,
-- Safari / WebKit nur als sekundärer Kompatibilitätscheck,
+- Google Chrome via Playwright,
+- optionaler sekundärer Safari-/WebKit-Kompatibilitätscheck,
 - responsive,
 - no console errors,
 - no clipped content,
@@ -1482,73 +1495,6 @@ Exit-Kriterium:
 DEMO_READY=true
 EXTERNAL_VIEWER_READY=true
 ```
-
----
-
-# Browser Verification Policy
-
-Ab dieser Klarstellung gilt für Entwicklung, visuelle Abnahme, Screenshots und automatisierte Evidence des Visual Operator Dashboards verbindlich:
-
-```text
-PRIMARY_BROWSER=GOOGLE_CHROME
-PRIMARY_BROWSER_AUTOMATION=PLAYWRIGHT
-PRIMARY_PLAYWRIGHT_CHANNEL=chrome
-PRIMARY_BROWSER_SCREENSHOTS=CHROME
-PRIMARY_DOM_ASSERTIONS=CHROME
-PRIMARY_CONSOLE_ASSERTIONS=CHROME
-PRIMARY_NETWORK_ASSERTIONS=CHROME
-PRIMARY_INTERACTION_ASSERTIONS=CHROME
-
-CHROMIUM_FALLBACK_ALLOWED=true
-CHROMIUM_FALLBACK_MUST_BE_REPORTED=true
-PLAYWRIGHT_CHROMIUM_IS_NOT_REAL_CHROME=true
-
-WEBKIT_VERIFICATION=SECONDARY
-REAL_SAFARI_VERIFICATION=SECONDARY
-SAFARI_REQUIRED_FOR_NORMAL_SLICE_MERGE=false
-SAFARI_FAILURE_BLOCKS_NORMAL_SLICE=false
-WEBKIT_IS_NOT_REAL_SAFARI=true
-SAFARI_ROLE=SECONDARY_COMPATIBILITY_CHECK
-WEBKIT_ROLE=SECONDARY_ENGINE_COMPATIBILITY_CHECK
-
-PRIMARY_BROWSER_EVIDENCE=PLAYWRIGHT_REAL_CHROME
-PRIMARY_INTERACTIVE_REVIEW=REAL_CHROME
-POST_SLICE_INTERACTIVE_OPEN=REAL_CHROME
-```
-
-### Playwright Channel
-
-Playwright muss, sofern lokal Google Chrome installiert ist, den installierten Chrome-Channel verwenden:
-
-```text
-channel="chrome"
-```
-
-Das gebündelte Chromium ist nur Fallback. Wenn Chromium statt `channel="chrome"` genutzt wird, muss die Evidence `CHROMIUM_FALLBACK_USED=true` ausweisen.
-
-### Safari / WebKit
-
-Safari und WebKit sind ausschließlich sekundäre Kompatibilitätschecks.
-
-- `SAFARI_REQUIRED_FOR_NORMAL_SLICE_MERGE=false`
-- `SAFARI_FAILURE_BLOCKS_NORMAL_SLICE=false`
-- Ein Safari-/WebKit-Fail blockiert einen normalen Slice-Merge nicht, solange Chrome/Playwright vollständig PASS ist und kein explizit Safari-spezifischer Release-Gate angeordnet wurde.
-- Ein bestandener WebKit-Lauf darf nicht als realer Safari-Nachweis und nicht als Ersatz für Chrome-Primary-Evidence bezeichnet werden.
-
-### Interaktive Review
-
-Nach erfolgreichen Slice-Läufen ist das Dashboard für die interaktive visuelle Review sichtbar in Google Chrome zu öffnen (`PRIMARY_INTERACTIVE_REVIEW=REAL_CHROME`). Safari ist dafür nicht der Primärpfad.
-
-### Pflicht-Reporting (getrennt)
-
-```text
-CHROME_PLAYWRIGHT_VERIFIED=<true|false>
-CHROMIUM_FALLBACK_USED=<true|false>
-WEBKIT_AUTOMATION_VERIFIED=<true|false>
-REAL_SAFARI_VERIFIED=<true|false>
-```
-
-`REAL_SAFARI_VERIFIED` und `WEBKIT_AUTOMATION_VERIFIED` sind Reporting-Felder, keine normalen Slice-Merge-Blocker.
 
 ---
 
@@ -1568,9 +1514,9 @@ REAL_SAFARI_VERIFIED=<true|false>
 
 ## 8.2 Layout
 
-- desktop Google Chrome (Playwright `channel="chrome"`; primary)
-- Chromium fallback only when Chrome channel unavailable (must be reported)
-- desktop Safari / WebKit (secondary compatibility only; not a normal merge blocker)
+- desktop Google Chrome via Playwright
+- real Chrome verification where locally available
+- optional secondary Safari compatibility check
 - common laptop width
 - wide desktop
 - no horizontal overflow
@@ -1621,20 +1567,20 @@ REAL_SAFARI_VERIFIED=<true|false>
 
 ## 8.7 Browser, DOM and Visual Regression
 
-Primär gemäß `# Browser Verification Policy`:
-
-- Google Chrome via Playwright (`channel="chrome"`) für Screenshots, DOM-, Console-, Network- und Interaction-Assertions
-- visual regression baseline (Chrome)
-- DOM overflow assertions (Chrome)
-- console error assertions (Chrome)
-- failed asset assertions (Chrome)
-- unexpected network request assertions (Chrome)
-- selection-context consistency assertions
-- stale response discard assertions
-- Chromium fallback allowed only when Chrome channel unavailable; must be reported
-- WebKit verification secondary only
-- real Safari verification secondary only; not required for normal slice merge
-- WebKit result not presented as equivalent to real Safari and not as Chrome-primary substitute
+- visual regression baseline in Google Chrome via Playwright
+- DOM overflow assertions in Chrome
+- console error assertions in Chrome
+- failed asset assertions in Chrome
+- unexpected network request assertions in Chrome
+- selection-context consistency assertions in Chrome
+- stale response discard assertions in Chrome
+- real Google Chrome verification where locally available
+- Playwright Chromium fallback explicitly reported when used
+- Playwright Chromium result not presented as equivalent to real Google Chrome
+- WebKit verification optional and secondary
+- real Safari verification optional and secondary
+- WebKit result not presented as equivalent to real Safari
+- Safari/WebKit failures do not block normal dashboard slices unless explicitly required by a later release gate
 
 ## 8.8 Accessibility
 
@@ -1706,7 +1652,7 @@ MISLEADING_STATUS_COUNT=0
 
 # 10. Screenshot-basierte Abnahme
 
-Jeder PR mit visuellen Änderungen muss Screenshots erzeugen:
+Jeder PR mit visuellen Änderungen muss primär in Google Chrome via Playwright Screenshots erzeugen:
 
 1. Full page desktop.
 2. Header + operator overview.
@@ -1725,19 +1671,25 @@ Jeder PR mit visuellen Änderungen muss Screenshots erzeugen:
 15. Stale-data state.
 16. narrow desktop viewport.
 
-Screenshots sind Bestandteil der PR-Evidence und werden primär mit Google Chrome (Playwright `channel="chrome"`) erzeugt. Safari-Screenshots sind optionaler sekundärer Kompatibilitätsnachweis, keine generelle PR-Pflicht für normale Slices.
+Screenshots sind Bestandteil der PR-Evidence.
 
 Browser-Abnahme muss unterscheiden:
 
 ```text
-CHROME_PLAYWRIGHT_VERIFIED=<true|false>
-CHROMIUM_FALLBACK_USED=<true|false>
-WEBKIT_AUTOMATION_VERIFIED=<true|false>
-REAL_SAFARI_VERIFIED=<true|false>
+PRIMARY_BROWSER=GOOGLE_CHROME
+PRIMARY_AUTOMATION=PLAYWRIGHT
+PRIMARY_PLAYWRIGHT_CHANNEL=chrome
+REAL_CHROME_VERIFIED=<true|false>
+PLAYWRIGHT_CHROMIUM_FALLBACK_USED=<true|false>
+WEBKIT_AUTOMATION_VERIFIED=<true|false|NOT_RUN>
+REAL_SAFARI_VERIFIED=<true|false|NOT_RUN>
 ```
 
-Ein bestandener WebKit-Lauf darf nicht als vollständiger realer Safari-Nachweis und nicht als Ersatz für Chrome-Primary-Evidence bezeichnet werden.
-`REAL_SAFARI_VERIFIED=false` ist für normale Slice-Merges zulässig, solange Chrome/Playwright PASS ist.
+Ein Playwright-Chromium-Lauf darf nicht als vollständiger realer Google-Chrome-Nachweis bezeichnet werden.
+
+Ein bestandener WebKit-Lauf darf nicht als vollständiger realer Safari-Nachweis bezeichnet werden.
+
+Safari und WebKit sind sekundäre Kompatibilitätschecks und keine allgemeinen Merge-Blocker für normale Dashboard-Slices.
 
 ---
 
@@ -1769,6 +1721,7 @@ CONSOLE_ERRORS
 LIVE_OR_ORDER_AUTHORITY_CHANGE
 PARTIAL_SELECTION_CONTEXT
 UNEXPECTED_BROWSER_NETWORK_REQUEST
+PRIMARY_CHROME_EVIDENCE_MISSING
 UNBOUND_DESIGN_TOKEN_DUPLICATION
 ```
 
@@ -1797,8 +1750,6 @@ AI_LINEAR_DIAGNOSTICS_COMPLETE_OR_EXPLICITLY_NOT_AVAILABLE=true
 GOVERNANCE_SECONDARY=true
 RESPONSIVE_PASS=true
 CHROME_PASS=true
-CHROME_PLAYWRIGHT_VERIFIED=true
-SAFARI_PASS=OPTIONAL_SECONDARY_OR_EXPLICIT_RELEASE_GATE
 CONSOLE_CLEAN=true
 SCREENSHOT_REVIEW_PASS=true
 VISUAL_REGRESSION_PASS=true
@@ -1806,8 +1757,10 @@ DOM_OVERFLOW_ASSERTIONS_PASS=true
 SELECTION_CONTEXT_ATOMIC=true
 SNAPSHOT_IDENTITY_COHERENT=true
 UNEXPECTED_NETWORK_REQUESTS_ZERO=true
-WEBKIT_VERIFIED=OPTIONAL_SECONDARY
-REAL_SAFARI_VERIFIED=OPTIONAL_SECONDARY
+CHROME_PLAYWRIGHT_VERIFIED=true
+REAL_CHROME_VERIFIED_OR_CHROMIUM_FALLBACK_EXPLICIT=true
+WEBKIT_VERIFIED_OR_NOT_REQUIRED=true
+REAL_SAFARI_VERIFIED_OR_NOT_REQUIRED=true
 DEMO_READY=true
 ```
 
@@ -1831,7 +1784,7 @@ ORDERS_ALLOWED=false
 # 13. Cursor Master Instruction
 
 ```text
-GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_PRODUCT_V1_3
+GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_PRODUCT_V1_2
 
 Implementiere dieses Runbook strikt phasenweise.
 
@@ -1846,26 +1799,25 @@ Arbeitsregeln:
 7. Pro Phase genau ein bounded PR.
 8. Jeder PR benötigt:
    - Focused Tests,
-   - Browser Render Verification via Google Chrome / Playwright (`channel="chrome"`),
-   - Chrome Screenshots (primär),
+   - Browser Render Verification,
+   - Chrome Screenshots via Playwright,
+   - Safari Screenshots nur bei explizitem sekundärem Kompatibilitätscheck,
    - Layout Checks,
    - Console Error Check,
    - Source Provenance Proof,
    - MANIFEST.sha256.
-   Safari-Screenshots sind optionaler sekundärer Kompatibilitätsnachweis und keine normale Slice-Merge-Pflicht.
 9. Stoppe vor jedem Merge.
 10. Kein PR gilt als erfolgreich, wenn nur zusätzliche Karten, Badges oder Rohtext ergänzt wurden.
 11. Primärziel ist visuelle Verdichtung und Operator-Verständlichkeit.
 12. Engineering- und Governance-Details bleiben sekundär und einklappbar.
 13. Ein grünes ACTIVE ist ohne Processing Evidence verboten.
 14. Große Leerflächen, gebrochene Grids, abgeschnittene Karten und horizontale Überläufe sind Merge-Blocker.
-15. Nach jeder Phase Screenshot-Abnahme gegen dieses Runbook (Chrome primary).
+15. Nach jeder Phase Screenshot-Abnahme gegen dieses Runbook.
 16. Phase -1 ist vor jeder produktiven Dashboard-Mutation verpflichtend.
 17. Jede Phase benötigt konkrete Owner-, Datei-, Test- und Screenshot-Bindings.
 18. Selection Context und Snapshot Identity müssen über alle synchronen Oberflächen atomar konsistent sein.
-19. Chrome/Playwright ist primär; WebKit und echter Safari sind sekundär und getrennt zu berichten. Safari-/WebKit-Fails blockieren normale Slices nicht, sofern Chrome PASS ist und kein expliziter Safari-Release-Gate gilt.
+19. Google Chrome ist der Primärbrowser. Playwright Chromium darf nur als explizit berichteter Fallback verwendet werden; WebKit und echter Safari sind sekundär und getrennt zu berichten.
 20. Unerwartete Browser-Netzwerkzugriffe sind Merge-Blocker.
-20a. Nach erfolgreichen Slice-Läufen ist das Dashboard sichtbar in Google Chrome zu öffnen (`POST_SLICE_INTERACTIVE_OPEN=REAL_CHROME`).
 21. Risk-Zustände `NOT_APPLICABLE`, `MISSING`, `STALE` und `INVALID` dürfen nicht visuell oder semantisch vermischt werden.
 22. Economic Evidence muss ihren Scope und ihre Kompatibilität mit dem ausgewählten Instrument sichtbar ausweisen.
 23. Design-Tokens müssen zentral gebunden sein; divergierende Inline-Token sind nicht zulässig.
@@ -1904,3 +1856,143 @@ how risk and economic validity currently stand
 
 Alles andere ist sekundär.
 
+
+---
+
+# 15. Design Review Gate (Ergänzung)
+
+> **Hinweis:** Diese Ergänzung erweitert das Runbook inhaltlich, ohne die Versionsbezeichnung **v1.3** zu ändern. Sie dient als zusätzliche Governance-Regel für die Umsetzung.
+
+## 15.1 Zweck
+
+Nach Abschluss der grundlegenden visuellen Basis (Design-System und Operator Overview) wird ein verpflichtender UX-/Produkt-Review durchgeführt, bevor weitere größere Dashboard-Surfaces umgesetzt werden.
+
+Ziel ist es, Informationshierarchie, visuelle Prioritäten und Bedienbarkeit früh zu validieren und spätere großflächige UI-Umbauten zu vermeiden.
+
+## 15.2 Verpflichtender Review-Zeitpunkt
+
+```text
+DESIGN_REVIEW_GATE_AFTER_PHASE_2=true
+AUTO_CONTINUE_AFTER_PHASE_2=false
+```
+
+Der Review findet nach Abschluss von:
+
+- Phase 1B (Design System Foundation)
+- Phase 2 (Operator Overview)
+
+statt.
+
+## 15.3 Review-Inhalte
+
+Mindestens zu bewerten:
+
+- Above-the-fold-Wirkung
+- Informationshierarchie
+- Hero-Struktur
+- Chart-Priorität
+- Badge-Dichte
+- Operator-Verständlichkeit
+- 5-Sekunden-Test
+- Premium-Eindruck
+- Konsistenz mit den Produktzielen
+
+## 15.4 Benchmark
+
+Die Bewertung orientiert sich an modernen Trading-Oberflächen (z. B. Kraken, Binance, TradingView) hinsichtlich:
+
+- Klarheit
+- visueller Hierarchie
+- Fokus auf Markt und Entscheidung
+- Reduktion technischer Ablenkung
+
+Dies ist ausdrücklich **kein** Auftrag zur Übernahme fremder Designs, sondern dient ausschließlich als UX-Referenz.
+
+## 15.5 Ergebnis
+
+Der Review endet mit genau einem der folgenden Zustände:
+
+```text
+DESIGN_GATE=PASS
+```
+
+oder
+
+```text
+DESIGN_GATE=REWORK_REQUIRED
+```
+
+Bei `REWORK_REQUIRED` werden ausschließlich die bereits vorhandenen Oberflächen (Header, Hero, Chart, Layout) verbessert. Es werden keine neuen funktionalen Dashboard-Bereiche begonnen, bis die grundlegende Informationsarchitektur den Produktzielen entspricht.
+
+## 15.6 Nicht-Ziel
+
+Der Design Review Gate verändert keine fachliche Logik.
+
+```text
+TRADING_SEMANTICS_EFFECT=NONE
+RISK_SEMANTICS_EFFECT=NONE
+DECISION_SEMANTICS_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+DATA_PRODUCER_EFFECT=NONE
+```
+
+
+---
+
+# 16. Visual Composition Contract (Ergänzung)
+
+Diese Ergänzung präzisiert die bereits vorhandenen Designregeln. Ziel ist nicht die Einführung neuer Dashboard-Funktionen, sondern die verbindliche Steuerung der visuellen Hierarchie.
+
+## 16.1 Produktprinzip
+
+```text
+VISUAL_REFACTOR_ALLOWED=true
+VISUAL_REFACTOR_PREFERRED_OVER_NEW_SURFACES=true
+NO_SECOND_RUNBOOK=true
+NO_SECOND_VISUAL_TRUTH=true
+```
+
+Vor jeder neuen Dashboard-Surface ist zu prüfen, ob bestehende Bereiche (Header, Hero, Chart, Ranking) zunächst verbessert werden müssen.
+
+## 16.2 Visual Hierarchy Contract
+
+```text
+ONE_PRIMARY_FOCUS_PER_VIEW=true
+NO_INFORMATION_COMPETITION=true
+ONE_VISUAL_STORY_PER_VIEW=true
+PRIMARY_ACTION_VISIBLE_WITHIN_3_SECONDS=true
+EXCHANGE_GRADE_INFORMATION_HIERARCHY_REQUIRED=true
+```
+
+## 16.3 Above-the-fold Composition
+
+```text
+HEADER_MAX_HEIGHT_PX=64
+HERO_DOMINANT=true
+PRIMARY_CHART_VISUAL_SHARE_MIN=40_PERCENT
+RANKING_STARTS_BELOW_PRIMARY_CHART=true
+NO_BADGE_WALL_ALLOWED=true
+NO_DEBUG_PANEL_APPEARANCE=true
+```
+
+Der Marktchart und die Entscheidung bilden gemeinsam den visuellen Schwerpunkt. Engineering-, Provenance- und Governance-Informationen dürfen oberhalb des Folds niemals dominieren.
+
+## 16.4 Premium UX Gate
+
+```text
+PREMIUM_PRODUCT_FEEL_REQUIRED=true
+FIRST_IMPRESSION_REVIEW_REQUIRED=true
+VISUAL_INFORMATION_HIERARCHY_REQUIRED=true
+PRODUCT_DEMO_READY_REQUIRED=true
+```
+
+Ein Slice gilt nur dann als bestanden, wenn sowohl die technische als auch die visuelle Abnahme erfolgreich sind.
+
+## 16.5 Refactor Policy
+
+Bereits vorhandene Komponenten dürfen beliebig oft reorganisiert, verdichtet oder visuell verbessert werden.
+
+Neue Komponenten sind erst zulässig, wenn:
+- bestehende Primärflächen die Informationshierarchie erfüllen,
+- Above-the-fold keine Debug-Anmutung besitzt,
+- Header, Hero und Chart als zusammenhängende Operator-Story funktionieren.

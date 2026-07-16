@@ -24,7 +24,8 @@ HARNESS = project_root / "scripts" / "webui" / "market_dashboard_chrome_playwrig
 
 def test_runbook_browser_policy_chrome_primary() -> None:
     text = RUNBOOK.read_text(encoding="utf-8")
-    assert "# Browser Verification Policy" in text
+    assert "# 6A. Browser Verification Policy" in text
+    assert "Browser Verification Policy" in text
     assert "PRIMARY_BROWSER=GOOGLE_CHROME" in text
     assert "PRIMARY_BROWSER_AUTOMATION=PLAYWRIGHT" in text
     assert "PRIMARY_PLAYWRIGHT_CHANNEL=chrome" in text

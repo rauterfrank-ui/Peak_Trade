@@ -1,35 +1,43 @@
 {
   "schema_version": "1.0.0",
-  "slice": "PHASE_2",
-  "branch": "feat/market-dashboard-phase-2-operator-overview-v1",
+  "slice": "VISUAL_FOUNDATION_REWORK_V1",
+  "branch": "feat/market-dashboard-visual-foundation-rework-v1",
   "files": [
     "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
-    "docs/product/VISUAL_OPERATOR_DASHBOARD_IMPLEMENTATION_PLAN_V1.md",
-    "src/webui/market_surface.py",
-    "src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py",
+    "templates/peak_trade_dashboard/base.html",
+    "templates/peak_trade_dashboard/market_v0.html",
+    "templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html",
     "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html",
+    "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html",
+    "static/css/peak_trade_dashboard_design_tokens_v1.css",
     "static/css/peak_trade_dashboard_layout_v1.css",
     "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
-    "tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py",
+    "tests/webui/test_market_dashboard_visual_foundation_rework_v1.py",
     "tests/webui/test_market_dashboard_browser_policy_chrome_primary_v1.py",
-    "pyproject.toml"
+    "docs/product/matrices/dashboard_requirement_traceability_matrix.json",
+    "docs/product/matrices/dashboard_phase_binding_matrix.json"
   ],
   "forbidden": [
     "data_producer_change",
     "decision_semantics_change",
     "trading_semantics_change",
     "authority_change",
-    "phase_3_scope"
+    "ranking_rebuild",
+    "phase_3_linear_continuation"
   ],
   "tests": [
+    "tests/webui/test_market_dashboard_visual_foundation_rework_v1.py",
+    "tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py",
     "tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py",
     "tests/webui/test_market_dashboard_browser_policy_chrome_primary_v1.py"
   ],
   "harness": "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
   "primary_browser": "GOOGLE_CHROME",
   "playwright_channel": "chrome",
-  "evidence_dir_pattern": "docs/product/evidence/phase_2_*",
-  "prior_phase_1b_evidence": "docs/product/evidence/phase_1b_20260716T181219Z/IMPLEMENTATION_MANIFEST.md",
-  "evidence_dir": "docs/product/evidence/phase_2_20260716T184639Z",
-  "evidence_manifest": "docs/product/evidence/phase_2_20260716T184639Z/IMPLEMENTATION_MANIFEST.md"
+  "evidence_dir_pattern": "docs/product/evidence/visual_foundation_rework_v1_*",
+  "prior_phase_2_evidence": "docs/product/evidence/phase_2_20260716T184639Z/IMPLEMENTATION_MANIFEST.md",
+  "evidence_dir": "docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z",
+  "evidence_manifest": "docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/IMPLEMENTATION_MANIFEST.md",
+  "pr_5248_status": "CLOSED_NOT_MERGED",
+  "pr_5248_branch_retained": "feat/market-dashboard-phase-3-chart-polish-v1"
 }

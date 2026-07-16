@@ -89,7 +89,7 @@ def test_phase_1a_single_safety_rail(client_phase_1a: TestClient) -> None:
     assert body_wo_style.count('data-market-phase-1a-single-safety-rail-v1="true"') == 1
     assert body_wo_style.count('data-market-system-status-rail-v1="true"') == 1
     assert body_wo_style.count('data-market-visual-operator-header-v1="true"') == 1
-    assert 'data-market-phase-1a-primary-status-count-v1="8"' in body_wo_style
+    assert 'data-market-phase-1a-primary-status-count-v1="3"' in body_wo_style
 
 
 def test_phase_1a_no_duplicate_prominent_status_rails(client_phase_1a: TestClient) -> None:
