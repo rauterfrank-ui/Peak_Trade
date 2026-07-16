@@ -483,7 +483,9 @@
         "tests/research/test_*offline_economic_evaluation_full_runner_v0.py",
         "src/research/*offline_economic_evaluation_execution_authorization_supersession_v*.py",
         "scripts/research/materialize_*offline_economic_evaluation_execution_authorization_supersession_v*.py",
-        "config/research/*offline_economic_evaluation_execution_authorization_supersession_v*.json"
+        "config/research/*offline_economic_evaluation_execution_authorization_supersession_v*.json",
+        "config/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_result_v0.json",
+        "tests/research/test_full_canonical_system_economic_evidence_generation_v1_offline_execution_result_v0_contract.py"
       ],
       "note": "Offline economic evaluation execution infrastructure, preexecution guards, invocation-bound authorization repair, and contract tests without trading semantic mutation or runtime authority."
     }
