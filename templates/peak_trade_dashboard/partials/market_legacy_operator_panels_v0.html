@@ -1985,37 +1985,12 @@
   </div>
 
   <script type="application/json" id="market-v0-payload">{{ payload | tojson }}</script>
-  <script data-chartjs-vendor-fallback-loader-v0="true">
-    (function () {
-      window.peakTradeChartjsVendorFallbackV0 = function (shellId) {
-        var shell = document.getElementById(shellId);
-        if (
-          !shell ||
-          shell.getAttribute("data-chartjs-vendor-fallback-v0") === "true" ||
-          typeof window.Chart !== "undefined"
-        ) {
-          return;
-        }
-        var scr = document.createElement("script");
-        scr.src = "/static/vendor/chartjs/4.4.1/chart.umd.min.js";
-        scr.setAttribute("data-chartjs-vendor-fallback-script-v0", "true");
-        scr.onload = function () {
-          shell.setAttribute("data-chartjs-vendor-fallback-v0", "true");
-          document.dispatchEvent(
-            new CustomEvent("peak-trade-chartjs-vendor-fallback-ready", {
-              detail: { shellId: shellId },
-            })
-          );
-        };
-        document.head.appendChild(scr);
-      };
-    })();
-  </script>
   <script
-    id="peak-trade-market-chartjs-cdn-v0"
-    src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
-    data-chartjs-cdn-script-v0="true"
-    onerror="this.setAttribute('data-chartjs-cdn-load-error','true');var s=document.getElementById('market-v0-shell');if(s){s.setAttribute('data-chartjs-cdn-load-error','true');if(window.peakTradeChartjsVendorFallbackV0)window.peakTradeChartjsVendorFallbackV0('market-v0-shell');}"
+    id="peak-trade-market-chartjs-vendor-v1"
+    src="/static/vendor/chartjs/4.4.1/chart.umd.min.js"
+    data-chartjs-vendor-primary-v1="true"
+    data-chartjs-self-only-v1="true"
+    onerror="this.setAttribute('data-chartjs-vendor-load-error','true');var s=document.getElementById('market-v0-shell');if(s){s.setAttribute('data-chartjs-vendor-load-error','true');}"
   ></script>
   <script>
     (function () {

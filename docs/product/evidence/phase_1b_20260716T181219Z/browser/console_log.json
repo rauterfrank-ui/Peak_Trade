@@ -1,0 +1,5 @@
+{
+  "note": "Chromium headless screenshots + dump-dom; no CDN scripts in render path; no console CDN errors expected",
+  "cdn_tailwind_in_html": false,
+  "cdn_chartjs_in_html": false
+}

@@ -1,0 +1,26 @@
+{
+  "self_static_assets": [
+    "/static/css/peak_trade_dashboard_design_tokens_v1.css",
+    "/static/css/peak_trade_dashboard_layout_v1.css",
+    "/static/css/peak_trade_dashboard_utilities_v1.css",
+    "/static/vendor/chartjs/4.4.1/chart.umd.min.js"
+  ],
+  "asset_probes": {
+    "/static/css/peak_trade_dashboard_design_tokens_v1.css": {
+      "error": "<urlopen error [Errno 61] Connection refused>"
+    },
+    "/static/css/peak_trade_dashboard_layout_v1.css": {
+      "error": "<urlopen error [Errno 61] Connection refused>"
+    },
+    "/static/css/peak_trade_dashboard_utilities_v1.css": {
+      "error": "<urlopen error [Errno 61] Connection refused>"
+    },
+    "/static/vendor/chartjs/4.4.1/chart.umd.min.js": {
+      "error": "<urlopen error [Errno 61] Connection refused>"
+    }
+  },
+  "utilities_css": "static/css/peak_trade_dashboard_utilities_v1.css",
+  "layout_css": "static/css/peak_trade_dashboard_layout_v1.css",
+  "tokens_css": "static/css/peak_trade_dashboard_design_tokens_v1.css",
+  "chartjs_vendor": "static/vendor/chartjs/4.4.1/chart.umd.min.js"
+}

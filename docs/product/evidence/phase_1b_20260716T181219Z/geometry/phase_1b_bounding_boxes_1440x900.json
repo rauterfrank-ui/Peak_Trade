@@ -1,0 +1,23 @@
+{
+  "viewport": {
+    "w": 1440,
+    "h": 900
+  },
+  "method": "chromium_headless_screenshot_plus_dom_marker_order",
+  "WEBKIT_AUTOMATION_VERIFIED": false,
+  "REAL_SAFARI_VERIFIED": false,
+  "CHROMIUM_SCREENSHOTS": true,
+  "NO_HORIZONTAL_MAIN_SCROLL": true,
+  "horizontal_overflow_px": 0,
+  "CHART_TOP_VISIBLE_AT_1440x900": true,
+  "CHART_MEANINGFULLY_VISIBLE_AT_1440x900": true,
+  "GIANT_EMPTY_REGION_REMOVED": true,
+  "phase1b_markers": {
+    "design_token_owner": true,
+    "phase_1b": true,
+    "self_only": true,
+    "vendor_chartjs": true,
+    "safety_rail_count": 2
+  },
+  "dom_order_ok": true
+}

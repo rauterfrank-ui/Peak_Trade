@@ -1,0 +1,49 @@
+/*
+ * Peak Trade Dashboard — Layout / Grid v1
+ * Consumes tokens from peak_trade_dashboard_design_tokens_v1.css only.
+ * Presentation layer — no trading/decision/risk semantics.
+ */
+.pt-dashboard-shell {
+  width: 100%;
+  max-width: var(--pt-content-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--pt-page-padding);
+  padding-right: var(--pt-page-padding);
+  box-sizing: border-box;
+  overflow-x: clip;
+}
+
+.pt-dashboard-app-header {
+  min-height: var(--pt-header-height);
+}
+
+.pt-dashboard-grid {
+  display: grid;
+  gap: var(--pt-grid-gap);
+}
+
+.pt-dashboard-card {
+  padding: var(--pt-card-padding);
+  border-radius: var(--pt-card-radius);
+  border: var(--pt-card-border);
+  background: var(--pt-color-surface-1);
+  color: var(--pt-color-text-primary);
+}
+
+.pt-dashboard-tabular {
+  font-family: var(--pt-mono-font);
+  font-variant-numeric: tabular-nums;
+}
+
+#market-v0-shell.pt-dashboard-shell,
+#market-v0-shell.market-phase-1a-layout {
+  max-width: var(--pt-content-max-width);
+}
+
+@media (max-width: 1279px) {
+  .pt-dashboard-shell {
+    padding-left: var(--pt-space-3);
+    padding-right: var(--pt-space-3);
+  }
+}

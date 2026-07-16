@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "slice": "PHASE_1B",
+  "defects": {
+    "D9": {
+      "status": "CLOSED",
+      "code": true,
+      "tests": true,
+      "browser_network": true,
+      "screenshots": true,
+      "note": "Tailwind/Chart.js CDN removed from /market render path; SELF_ONLY allowlist"
+    },
+    "D10": {
+      "status": "CLOSED",
+      "code": true,
+      "tests": true,
+      "token_owner": true,
+      "screenshots": true,
+      "note": "Canonical token owner static/css/peak_trade_dashboard_design_tokens_v1.css"
+    }
+  }
+}

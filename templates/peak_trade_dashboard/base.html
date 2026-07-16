@@ -5,8 +5,20 @@
     <meta charset="utf-8" />
     <title>{% block title %}Peak_Trade Dashboard v1.2{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Tailwind über CDN für schnelles Styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phase 1B: self-hosted design tokens + layout + purged utilities (no Tailwind CDN) -->
+    <link
+      rel="stylesheet"
+      href="/static/css/peak_trade_dashboard_design_tokens_v1.css"
+      data-market-design-token-owner-v1="true"
+      data-canonical-design-token-owner="true"
+    />
+    <link rel="stylesheet" href="/static/css/peak_trade_dashboard_layout_v1.css" />
+    <link
+      rel="stylesheet"
+      href="/static/css/peak_trade_dashboard_utilities_v1.css"
+      data-market-utilities-css-v1="true"
+    />
+    <meta name="peak-trade-browser-network-allowlist" content="self-only" />
     <style>
       /* Custom animation for running indicator */
       @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
