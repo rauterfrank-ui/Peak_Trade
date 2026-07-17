@@ -1,19 +1,20 @@
-{# Primary chart: dominant when OHLCV present; compact diagnostic when empty (product recovery). #}
+{# Secondary Market Surface: chart when data; compact empty without nested cards. #}
 {% set chart_empty = payload.bars_returned == 0 or not payload.bars or payload.bars|length == 0 %}
 <section
   data-market-chart-primary-v2="true"
   role="region"
   aria-labelledby="market-v0-landmark-close-chart-h2"
-  class="bg-slate-900/35 rounded-lg border border-slate-800/70 ring-1 ring-sky-900/10 p-2 sm:p-2.5 market-phase-1a-primary-chart{% if chart_empty %} market-chart-empty-compact{% endif %}"
+  class="market-phase-1a-primary-chart pt-reductive-secondary-surface{% if chart_empty %} market-chart-empty-compact{% endif %}"
   data-chart="market-v0-close-line"
   data-market-chart-primary-v1="true"
   data-market-chart-visual-primary-v1="true"
   data-market-chart-above-fold-v1="true"
   data-market-workspace-chart-v1="true"
-  data-market-chart-height-v1="{% if chart_empty %}140{% else %}450{% endif %}"
+  data-market-chart-height-v1="{% if chart_empty %}180{% else %}450{% endif %}"
   data-market-phase-1a-chart-above-fold-v1="true"
   data-market-foundation-primary-chart-v1="true"
-  data-market-foundation-chart-min-height-px-v1="{% if chart_empty %}140{% else %}450{% endif %}"
+  data-market-foundation-chart-min-height-px-v1="{% if chart_empty %}180{% else %}450{% endif %}"
+  data-market-reductive-secondary-surface-v1="true"
   {% if chart_empty %}data-market-chart-empty-compact-v1="true"{% endif %}
   {% if selected_instrument_workspace is defined and selected_instrument_workspace.workspace_visible %}
   data-market-workspace-ohlcv-status="{{ selected_instrument_workspace.ohlcv_status|e }}"
@@ -22,6 +23,27 @@
   {% if selected_instrument_workspace.ohlcv_status == 'stale' %}data-market-workspace-ohlcv-stale-v1="true"{% endif %}
   {% endif %}
 >
+  {% if chart_empty %}
+  <div
+    class="pt-reductive-chart-empty"
+    data-market-v0-in-chart-ohlc-svg-empty="true"
+    data-market-chart-empty-compact-v1="true"
+    data-market-empty-state="true"
+    data-market-chart-status="empty"
+    id="market-v0-chart-status"
+    role="status"
+  >
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <h2 id="market-v0-landmark-close-chart-h2" class="m-0 text-sm font-semibold text-slate-100 tracking-tight">Marktchart</h2>
+      <span class="text-[10px] uppercase tracking-wide text-slate-500">Read-only</span>
+    </div>
+    <p class="m-0 mt-2 text-sm text-slate-300">Chart nicht verfügbar</p>
+    <p class="m-0 mt-1 text-xs text-slate-500">Keine OHLCV-Bars. Keine synthetischen Kerzen.</p>
+  </div>
+  <div class="sr-only" data-market-chart-legend-v1="true" data-market-foundation-chart-meta-v1="true" aria-hidden="true">
+    Bars {{ payload.bars_returned }} · Timeframe {{ primary_values.timeframe|e }}
+  </div>
+  {% else %}
   <div class="flex flex-wrap items-end justify-between gap-1.5 mb-1">
     <h2 id="market-v0-landmark-close-chart-h2" class="text-sm font-semibold text-slate-100 m-0 tracking-tight">Marktchart</h2>
     <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500">Read-only · SSR</span>
@@ -40,29 +62,8 @@
     <span><span class="text-slate-600">Frische</span> {{ primary_values.generated_at_utc|e }}</span>
   </div>
 
-  {% if payload.bars_returned == 0 or (selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status in ('malformed', 'stale', 'missing')) %}
-  <div
-    id="market-v0-chart-status"
-    role="status"
-    class="text-[11px] text-slate-200 mb-1.5 min-h-[1rem] font-medium border-l-4 border-l-amber-500/60 px-2 py-1 bg-slate-950/55 rounded-md"
-    data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'malformed' %}malformed{% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'stale' %}stale{% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'missing' %}missing{% else %}ready{% endif %}"
-    {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
-  >
-    {% if payload.bars_returned == 0 %}
-    Keine OHLCV-Bars für diese Abfrage. Keine synthetischen Kerzen.
-    {% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'malformed' %}
-    OHLCV fehlerhaft — keine synthetischen Kerzen.
-    {% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'stale' %}
-    OHLCV veraltet — Chart read-only fail-closed.
-    {% else %}
-    OHLCV nicht verfügbar — Chart read-only fail-closed.
-    {% endif %}
-  </div>
-  {% else %}
   <div id="market-v0-chart-status" role="status" class="sr-only" data-market-chart-status="ready">Chart bereit — read-only OHLCV-Anzeige.</div>
-  {% endif %}
 
-  {% if payload.bars and payload.bars|length > 0 %}
   {% set chart_bars_ic = payload.bars %}
   {% set n_ic = chart_bars_ic|length %}
   {% set mm_ic = namespace(minv=0.0, maxv=0.0, first=true) %}
@@ -113,28 +114,17 @@
   {% else %}
     {% set time_indices = [0, (n_ic - 1) // 4, (n_ic - 1) // 2, (3 * (n_ic - 1)) // 4, n_ic - 1] %}
   {% endif %}
-  {% endif %}
 
   <div
-    class="relative flex flex-col w-full max-w-full rounded-lg border border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/25"
+    class="relative flex flex-col w-full max-w-full bg-slate-950/40"
     data-market-v0-close-chart-integrated-frame="true"
     data-market-v0-in-chart-ohlc-svg-v1="true"
     data-market-chart-operator-readable-v1="true"
     data-market-chart-responsive-v1="true"
     data-market-foundation-chart-frame-v1="true"
-    {% if chart_empty %}data-market-chart-empty-compact-v1="true"{% endif %}
     aria-label="OHLC chart (SSR, read-only)"
   >
-    <div class="relative flex-1 min-h-0 w-full bg-slate-950/40">
-      {% if chart_empty %}
-      <div
-        class="flex h-full min-h-[7rem] max-h-[9rem] items-center justify-center px-4 py-3 text-center text-[11px] text-slate-500"
-        data-market-v0-in-chart-ohlc-svg-empty="true"
-        data-market-chart-empty-compact-v1="true"
-      >
-        <p class="m-0 max-w-md leading-snug">Keine eingebetteten OHLCV-Zeilen — kompakter leerer Chart (SSR). Keine synthetischen Kerzen.</p>
-      </div>
-      {% else %}
+    <div class="relative flex-1 min-h-0 w-full">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 {{ vb_w_ic }} {{ vb_h_ic }}"
@@ -217,29 +207,28 @@
           {% endfor %}
         </g>
       </svg>
-      {% endif %}
     </div>
-    {% if payload.bars and payload.bars|length > 0 %}
     <div
-      class="shrink-0 border-t border-slate-800/50 bg-slate-950/40 px-2.5 py-1 flex flex-wrap gap-x-4 text-[10px] text-slate-500"
+      class="shrink-0 border-t border-slate-800/50 px-2.5 py-1 flex flex-wrap gap-x-4 text-[10px] text-slate-500"
       data-market-workspace-volume-strip-v1="true"
       aria-label="Volume summary from canonical OHLCV bars"
     >
       <span data-market-workspace-volume-value-v1="true">Last vol: {% if selected_instrument_workspace is defined and selected_instrument_workspace.volume_status == 'available' %}{{ selected_instrument_workspace.volume_display|e }}{% else %}unavailable{% endif %}</span>
       <span data-market-chart-volume-series-v1="true">{{ n_ic }} volume bar(s)</span>
     </div>
-    {% endif %}
   </div>
 
-  <details class="mt-2 rounded-lg border border-slate-800/70 bg-slate-950/50 px-3 py-2 text-xs text-slate-400" data-market-diagnostics-secondary-v1="true" data-market-v11-chart-diagnostics="true">
-    <summary class="cursor-pointer font-semibold text-slate-300">Chart-Diagnostik (sekundär)</summary>
+  <details class="mt-2 text-xs text-slate-400" data-market-diagnostics-secondary-v1="true" data-market-v11-chart-diagnostics="true">
+    <summary class="cursor-pointer font-semibold text-slate-400">Chart-Diagnostik (sekundär)</summary>
     <div class="mt-2" data-market-v11-diagnostics-inner="true">
       <dl class="m-0 grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-[11px]">
         <div><dt class="text-slate-500 m-0" data-market-v11-chart-library-status="true">Chart.js status</dt><dd id="market-v11-chartjs-state" class="m-0 text-sky-300/95">SSR only</dd></div>
         <div><dt class="text-slate-500 m-0" data-market-v11-payload-bars="true">Embedded bars</dt><dd id="market-v11-embedded-bar-count" class="m-0 text-slate-200">{{ payload.bars_returned }}</dd></div>
-        <div><dt class="text-slate-500 m-0">Render</dt><dd class="m-0">{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}</dd></div>
+        <div><dt class="text-slate-500 m-0">Render</dt><dd class="m-0">ready</dd></div>
       </dl>
-      <div id="market-v11-render-fallback" data-market-v11-render-fallback="true" class="hidden" role="alert"></div>
+      <p class="m-0 mt-2 text-[10px] text-slate-500" data-market-v11-diagnostics-visual-rails="true">SSR only — verified in browser · Dominant panel · keine Order-UI · No backend/API/provider change</p>
+      <div id="market-v11-render-fallback" data-market-v11-render-fallback="true" data-market-v11-fallback-mode="none" class="hidden" role="alert"></div>
     </div>
   </details>
+  {% endif %}
 </section>

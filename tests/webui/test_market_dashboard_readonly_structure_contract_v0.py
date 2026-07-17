@@ -354,6 +354,20 @@ def test_market_dashboard_v11_chart_diagnostics_readonly_structure_contract_v0(
     html = _html(client, "/market")
     lowered = html.lower()
 
+    assert 'data-market-readonly="true"' in html
+    assert 'data-market-non-authorizing="true"' in html
+    assert "fetch(" not in html
+    assert "XMLHttpRequest" not in html
+    assert "<form" not in lowered
+    assert "place order" not in lowered
+    assert "ready for live" not in lowered
+    assert "testnet approved" not in lowered
+
+    # Reductive fail-closed empty: chart diagnostics intentionally out of above-the-fold.
+    if 'data-market-chart-empty-compact-v1="true"' in html:
+        assert "Chart diagnostics (secondary)" not in html
+        return
+
     assert 'data-market-v11-chart-diagnostics="true"' in html
     assert 'data-market-v11-diagnostics-inner="true"' in html
     assert 'data-market-v11-render-fallback="true"' in html
@@ -368,16 +382,6 @@ def test_market_dashboard_v11_chart_diagnostics_readonly_structure_contract_v0(
     assert "No backend/API/provider change" in html
     assert "Dominant panel · keine Order-UI" in html
     assert "SSR only — verified in browser" in html
-
-    assert 'data-market-readonly="true"' in html
-    assert 'data-market-non-authorizing="true"' in html
-
-    assert "fetch(" not in html
-    assert "XMLHttpRequest" not in html
-    assert "<form" not in lowered
-    assert "place order" not in lowered
-    assert "ready for live" not in lowered
-    assert "testnet approved" not in lowered
 
 
 def test_double_play_market_dashboard_v11_chart_diagnostics_readonly_structure_contract_v0(

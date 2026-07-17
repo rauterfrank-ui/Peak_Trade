@@ -146,12 +146,13 @@ def build_operator_overview_display_v1(
     contract = workspace.get("contract_metadata")
     contract_meta = contract if isinstance(contract, dict) else {}
 
-    if symbol == _UNAVAILABLE:
+    snapshot_missing = governed.get("snapshot_available") is False
+    if snapshot_missing or symbol == _UNAVAILABLE:
         sentence = (
-            f"Kein Instrument geladen (Rang {rank_display}). "
-            f"Regime {regime}. "
-            f"Entscheidung {decision_state}. "
-            f"Primärer Blocker: {blocker}."
+            "Marktdaten nicht verfügbar. "
+            "Systementscheid: BLOCKIERT. "
+            "Grund: Der kanonische Futures-Snapshot ist nicht verfügbar. "
+            "Operator-Aktion: Datenquelle prüfen oder später erneut laden."
         )
     else:
         sentence = (

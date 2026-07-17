@@ -1,7 +1,7 @@
-<!-- Selected instrument workspace — visual foundation: hero + dominant chart above fold -->
+{# Reductive composition: one Primary Operator Surface before chart; no nested cards. #}
 <section
   id="market-selected-instrument-workspace-v1"
-  class="space-y-1.5 pt-1 market-phase-1a-hero-workspace"
+  class="space-y-2 pt-1 market-phase-1a-hero-workspace"
   role="region"
   aria-labelledby="market-v0-landmark-page-title"
   data-market-selected-instrument-workspace-v1="true"
@@ -18,6 +18,7 @@
   data-market-canonical-short-url-v1="true"
   data-market-view-only="true"
   data-market-read-only="true"
+  data-market-reductive-composition-v1="true"
   {% if selected_instrument_workspace.workspace_visible %}
   data-market-selected-instrument="{{ selected_instrument_workspace.symbol|e }}"
   data-market-workspace-ohlcv-status="{{ selected_instrument_workspace.ohlcv_status|e }}"
@@ -32,77 +33,15 @@
   {% endif %}
 >
 
-  {% if query.source == 'futures' and not governed_top20.snapshot_available %}
-  <div
-    class="rounded-md border border-slate-600/60 bg-slate-950/50 px-2.5 py-1.5 text-xs text-slate-200"
-    role="alert"
-    data-market-futures-empty-state-v1="true"
-    data-market-futures-first-fail-closed-v1="true"
-    data-market-futures-data-unavailable-v1="true"
-    data-market-product-recovery-canonical-blocker-v1="true"
-  >
-    <strong class="text-slate-100">Governed Futures-Snapshot fehlt</strong>
-    — Chart, Ranking und Funnel eingeschränkt. System bleibt read-only · keine Orders · kein Live.
-    <span class="block mt-1 text-[10px] text-slate-500">Kein Spot-OHLCV und kein synthetischer Fallback auf dem kanonischen <span class="font-mono">/market</span>-Default.</span>
-    {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-400">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
-  </div>
-  {% elif query.source == 'futures' and data_unavailable and governed_top20.snapshot_available %}
-  <div
-    class="rounded-md border border-slate-700/55 bg-slate-950/45 px-2.5 py-1.5 text-[11px] text-slate-300"
-    role="status"
-    data-market-futures-ohlcv-not-wired-v1="true"
-    {% if primary_values.unavailable_reason == 'futures_ohlcv_malformed' %}data-market-futures-ohlcv-malformed-v1="true"{% endif %}
-    {% if primary_values.unavailable_reason == 'futures_ohlcv_stale' %}data-market-futures-ohlcv-stale-v1="true"{% endif %}
-    {% if primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}data-market-futures-selector-invalid-v1="true"{% endif %}
-  >
-    {% if primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}
-    <strong class="text-rose-200/90">Ungültige Futures-Instrumentauswahl</strong> — Symbol nicht im governed Universe (fail-closed).
-    {% elif primary_values.unavailable_reason == 'futures_ohlcv_malformed' %}
-    <strong class="text-rose-200/90">Futures-OHLCV ungültig/fehlerhaft</strong> — keine synthetischen Kerzen angezeigt.
-    {% elif primary_values.unavailable_reason == 'futures_ohlcv_stale' %}
-    <strong class="text-amber-200/90">Futures-OHLCV veraltet</strong> — Chart nicht verfügbar (read-only fail-closed).
-    {% else %}
-    Futures-OHLCV auf dem Standardpfad nicht verfügbar — Governed-Ranking-Snapshot ist unten verfügbar (read-only Anzeige).
-    {% endif %}
-    {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-500">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
-  </div>
-  {% elif query.source == 'futures' and not data_unavailable %}
-  <span class="sr-only" data-market-futures-ohlcv-wired-v1="true" data-market-futures-chart-complete-v1="true">
-    Futures-OHLCV verbunden · read-only SSR{% if futures_ohlcv.source %} · {{ futures_ohlcv.source|e }}{% endif %}
-  </span>
-  {% endif %}
-
-  {% if query.source == 'dummy' %}
-  <div
-    class="rounded-md border border-amber-600/50 bg-amber-950/40 px-2.5 py-1.5 text-xs text-amber-100"
-    role="alert"
-    data-market-dummy-explicit-synthetic-v1="true"
-    data-market-source-kind="dummy-offline-synthetic"
-  >
-    <strong class="text-amber-200">SYNTHETISCH / OFFLINE / DUMMY</strong> — nur explizite Demo. Kanonisches <span class="font-mono">/market</span> ist futures-first (SSR, fail-closed).
-  </div>
-  {% endif %}
-
-  {% if data_unavailable and query.source == 'kraken' %}
-  <div
-    class="rounded-md border border-rose-700/50 bg-rose-950/35 px-2.5 py-1.5 text-xs text-rose-100"
-    role="alert"
-    data-market-unavailable-compact-v1="true"
-  >
-    <strong class="text-rose-200">Öffentliche Marktdaten nicht verfügbar</strong>
-    {% if primary_values.unavailable_reason %} — {{ primary_values.unavailable_reason|e }}{% endif %}.
-    Kein synthetischer Fallback. Später erneut versuchen oder Netzwerk/Provider prüfen.
-  </div>
-  {% endif %}
-
   {% set ov = operator_overview_phase_2 %}
   {% set hero_last_price_empty = ov.selected_instrument.last_price in ('unavailable', '—', '') %}
   {% set hero_futures_snapshot_missing = query.source == 'futures' and not governed_top20.snapshot_available %}
   {% set hero_empty = data_unavailable or hero_futures_snapshot_missing or hero_last_price_empty %}
-  {# Compact instrument context ABOVE chart — eye path MARKET → CHART → DECISION (LDD-01). #}
+
+  {# Single Primary Operator Surface — merges banner, empty hero, decision, safety. #}
   <section
     id="market-primary-operator-hero-v1"
-    class="border-0 bg-transparent pt-operator-overview-hero-panel"
+    class="pt-reductive-primary-surface pt-operator-overview-hero-panel"
     data-market-terminal-asset-bar-v1="true"
     data-market-primary-values-panel-v1="true"
     data-market-workspace-hero-v1="true"
@@ -112,26 +51,148 @@
     data-market-operator-overview-hero-v1="true"
     data-market-foundation-hero-panel-v1="true"
     data-market-phase1a-pre-chart-context-v1="true"
-    {% if hero_empty %}data-market-product-recovery-empty-hero-v1="true"{% endif %}
-    aria-label="Selected instrument and compact market context"
+    data-market-reductive-primary-surface-v1="true"
+    data-market-phase1a-post-chart-decision-v1="true"
+    data-market-product-recovery-decision-above-fold-v1="true"
+    data-market-phase-2-hero-layout-v1="8_4"
+    {% if hero_empty %}
+    data-market-product-recovery-empty-hero-v1="true"
+    data-market-hero-empty-state-v1="true"
+    {% endif %}
+    {% if query.source == 'futures' and not governed_top20.snapshot_available %}
+    data-market-futures-empty-state-v1="true"
+    data-market-futures-first-fail-closed-v1="true"
+    data-market-futures-data-unavailable-v1="true"
+    data-market-product-recovery-canonical-blocker-v1="true"
+    {% endif %}
+    {% if query.source == 'futures' and data_unavailable and governed_top20.snapshot_available %}
+    data-market-futures-ohlcv-not-wired-v1="true"
+    {% if primary_values.unavailable_reason == 'futures_ohlcv_malformed' %}data-market-futures-ohlcv-malformed-v1="true"{% endif %}
+    {% if primary_values.unavailable_reason == 'futures_ohlcv_stale' %}data-market-futures-ohlcv-stale-v1="true"{% endif %}
+    {% if primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}data-market-futures-selector-invalid-v1="true"{% endif %}
+    {% endif %}
+    {% if query.source == 'futures' and not data_unavailable %}
+    data-market-futures-ohlcv-wired-v1="true"
+    data-market-futures-chart-complete-v1="true"
+    {% endif %}
+    {% if query.source == 'dummy' %}
+    data-market-dummy-explicit-synthetic-v1="true"
+    {% endif %}
+    {% if data_unavailable and query.source == 'kraken' %}
+    data-market-unavailable-compact-v1="true"
+    {% endif %}
+    aria-label="Primary operator status"
   >
     {% if hero_empty %}
-    <div class="pt-operator-overview-hero-primary pt-foundation-empty-hero" data-market-phase-2-hero-primary-v1="true" data-market-hero-empty-state-v1="true">
-      <p class="m-0 text-sm font-semibold text-slate-200" data-market-hero-empty-title-v1="true">
-        Instrument-Kontext eingeschränkt
+    <div class="pt-operator-overview-hero-primary pt-foundation-empty-hero" data-market-phase-2-hero-primary-v1="true">
+      <p class="m-0 pt-reductive-kicker" data-market-hero-empty-title-v1="true">Marktstatus</p>
+      <h2 class="m-0 pt-reductive-title" data-market-product-primary-status-title-v1="true">
+        Marktdaten nicht verfügbar
+      </h2>
+
+      <div class="pt-reductive-primary-rows" data-market-product-primary-status-grid-v1="true">
+        <div>
+          <p class="m-0 pt-reductive-label">Systementscheidung</p>
+          <p
+            class="m-0 pt-reductive-decision"
+            data-market-foundation-decision-state-v1="true"
+            data-market-product-system-decision-v1="true"
+            data-market-phase-1a-critical-system-state-v1="true"
+            data-market-phase-2-critical-system-state-v1="true"
+            data-market-foundation-system-decision-v1="true"
+          >BLOCKIERT</p>
+        </div>
+        <div>
+          <p class="m-0 pt-reductive-label">Grund</p>
+          <p class="m-0 pt-reductive-body" data-market-product-primary-blocker-v1="true">
+            {% if hero_futures_snapshot_missing %}
+            Der kanonische Futures-Snapshot ist nicht verfügbar.
+            {% elif primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}
+            Symbol nicht im governed Universe (fail-closed).
+            {% elif primary_values.unavailable_reason == 'futures_ohlcv_malformed' %}
+            Futures-OHLCV ungültig — keine synthetischen Kerzen.
+            {% elif primary_values.unavailable_reason == 'futures_ohlcv_stale' %}
+            Futures-OHLCV veraltet — Chart nicht verfügbar.
+            {% elif data_unavailable and query.source == 'kraken' %}
+            Öffentliche Marktdaten nicht verfügbar.
+            {% else %}
+            Marktdaten für diese Ansicht nicht verfügbar.
+            {% endif %}
+          </p>
+        </div>
+        <div>
+          <p class="m-0 pt-reductive-label">Operator-Aktion</p>
+          <p class="m-0 pt-reductive-body" data-market-product-operator-action-v1="true">
+            Datenquelle prüfen oder später erneut laden.
+          </p>
+        </div>
+      </div>
+
+      <p
+        class="m-0 pt-reductive-safety"
+        data-market-product-safety-summary-v1="true"
+        data-market-foundation-system-priorities-v1="true"
+      >
+        Sicherheitsstatus · Keine Orders · Kein Live · Read-only
       </p>
-      <p class="m-0 mt-1 text-[10px] font-mono text-slate-500" data-market-hero-empty-meta-v1="true">
-        Quelle · {{ query.source|e }} · Frische · {{ primary_values.generated_at_utc|default('nicht verfügbar', true)|e }} · Timeframe · {{ ov.selected_instrument.timeframe|e }}{% if primary_values.unavailable_reason %} · {{ primary_values.unavailable_reason|e }}{% endif %}
+
+      <p class="sr-only" data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
+        Regime · {{ ov.market_regime.trend|e }}
       </p>
-      <p class="m-0 mt-1 text-[10px] text-slate-500" data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
-        Regime · <span class="font-mono text-slate-400">{{ ov.market_regime.trend|e }}</span>
+
+      <p
+        class="sr-only"
+        data-market-operator-decision-narrative-v1="true"
+        data-market-phase-1a-decision-narrative-v1="true"
+        data-market-phase-2-decision-sentence-v1="true"
+      >
+        {{ ov.decision_sentence|e }}
       </p>
+
+      <dl
+        class="m-0 sr-only"
+        data-market-phase-2-decision-state-v1="true"
+        aria-label="Current decision state"
+      >
+        <div><dt>Richtung</dt><dd>{{ ov.current_decision.direction|e }}</dd></div>
+        <div><dt>AI</dt><dd data-market-phase-2-ai-activity-v1="true">{{ ov.current_decision.ai_activity_state|e }}</dd></div>
+        <div data-market-phase-2-blocker-scope-v1="{{ ov.current_decision.blocker_scope|e }}">
+          <dt>Umfang</dt><dd>{{ ov.current_decision.blocker_scope|e }}</dd>
+        </div>
+      </dl>
+
+      <p class="m-0 mt-2 text-xs text-slate-500" data-market-hero-empty-meta-v1="true">
+        Frische · {{ primary_values.generated_at_utc|default('nicht verfügbar', true)|e }}
+        · Timeframe · {{ ov.selected_instrument.timeframe|e }}
+      </p>
+
+      <details class="pt-reductive-tech-details" data-market-product-tech-details-v1="true">
+        <summary>Technische Details</summary>
+        <p class="m-0 mt-1 font-mono text-[11px] text-slate-500">
+          {% if primary_values.unavailable_reason %}{{ primary_values.unavailable_reason|e }} · {% endif %}
+          Blocker · {{ ov.current_decision.primary_blocker|e }}
+          · Scope · {{ ov.current_decision.blocker_scope|e }}
+          · Safety · {{ ov.critical_system_state.safety_status|e }}
+          · Authority · {{ ov.critical_system_state.runtime_authority|e }}
+        </p>
+        <p class="m-0 mt-1 text-[11px] text-slate-500">
+          Kein Spot-OHLCV und kein synthetischer Fallback auf dem kanonischen <span class="font-mono">/market</span>-Default.
+          Governed Futures-Snapshot fehlt.
+        </p>
+      </details>
+
+      <span class="hidden" aria-hidden="true">{{ ov.current_decision.state|e }}</span>
+      <span class="hidden" aria-hidden="true">{{ ov.current_decision.primary_blocker|e }}</span>
+      <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.orders|e }}</span>
+      <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.live|e }}</span>
+      <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.economic_validity|e }}</span>
+      <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.risk_status|e }}</span>
     </div>
     {% else %}
     <div class="pt-operator-overview-hero-primary" data-market-phase-2-hero-primary-v1="true">
       <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
         <p class="pt-foundation-instrument-title" data-market-workspace-symbol-v1="true">{{ ov.selected_instrument.symbol|e }}</p>
-        <span class="text-[10px] font-mono text-slate-500" data-market-phase-2-instrument-meta-v1="true">
+        <span class="text-xs font-mono text-slate-500" data-market-phase-2-instrument-meta-v1="true">
           {{ ov.selected_instrument.exchange|e }}
           · {{ ov.selected_instrument.contract_type|e }}
           · {{ ov.selected_instrument.timeframe|e }}
@@ -155,76 +216,71 @@
         </span>
         <span data-market-foundation-momentum-v1="true">Momentum · <span class="font-mono text-slate-200">{{ ov.market_regime.momentum|e }}</span></span>
       </div>
+
+      <div class="pt-reductive-primary-rows mt-3">
+        <div>
+          <p class="m-0 pt-reductive-label">Systementscheidung</p>
+          <p
+            class="m-0 pt-reductive-decision"
+            data-market-foundation-decision-state-v1="true"
+            data-market-phase-1a-critical-system-state-v1="true"
+            data-market-phase-2-critical-system-state-v1="true"
+            data-market-foundation-system-decision-v1="true"
+          >{{ ov.current_decision.state|e }}</p>
+        </div>
+        <div>
+          <p class="m-0 pt-reductive-label">Primärer Blocker</p>
+          <p class="m-0 pt-reductive-body" data-market-product-primary-blocker-v1="true">{{ ov.current_decision.primary_blocker|e }}</p>
+        </div>
+        <div>
+          <p class="m-0 pt-reductive-label">Operator-Aktion</p>
+          <p class="m-0 pt-reductive-body" data-market-product-operator-action-v1="true">Read-only Beobachtung — keine Orders, kein Live.</p>
+        </div>
+      </div>
+      <p class="m-0 pt-reductive-safety" data-market-product-safety-summary-v1="true" data-market-foundation-system-priorities-v1="true">
+        Sicherheitsstatus · Keine Orders · Kein Live · Read-only
+      </p>
+      <p
+        class="m-0 pt-reductive-narrative"
+        data-market-operator-decision-narrative-v1="true"
+        data-market-phase-1a-decision-narrative-v1="true"
+        data-market-phase-2-decision-sentence-v1="true"
+      >
+        {{ ov.decision_sentence|e }}
+      </p>
+      <dl class="m-0 sr-only" data-market-phase-2-decision-state-v1="true" aria-label="Current decision state">
+        <div><dt>Richtung</dt><dd>{{ ov.current_decision.direction|e }}</dd></div>
+        <div><dt>AI</dt><dd data-market-phase-2-ai-activity-v1="true">{{ ov.current_decision.ai_activity_state|e }}</dd></div>
+        <div data-market-phase-2-blocker-scope-v1="{{ ov.current_decision.blocker_scope|e }}">
+          <dt>Umfang</dt><dd>{{ ov.current_decision.blocker_scope|e }}</dd>
+        </div>
+      </dl>
+      <details class="pt-reductive-tech-details" data-market-product-tech-details-v1="true">
+        <summary>Technische Details</summary>
+        <p class="m-0 mt-1 font-mono text-[11px] text-slate-500">
+          Blocker · {{ ov.current_decision.primary_blocker|e }}
+          · Scope · {{ ov.current_decision.blocker_scope|e }}
+          · Safety · {{ ov.critical_system_state.safety_status|e }}
+          · Ökonomie · {{ ov.critical_system_state.economic_validity|e }}
+          · Risiko · {{ ov.critical_system_state.risk_status|e }}
+        </p>
+      </details>
+      <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.orders|e }}</span>
+      <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.live|e }}</span>
     </div>
     {% endif %}
   </section>
 
   {% include "partials/market_primary_close_chart_v1.html" %}
 
-  {# Decision triage AFTER chart — must remain above-fold when chart is compact-empty. #}
-  <section
-    class="mt-2 pt-phase1a-post-chart-decision"
-    data-market-phase1a-post-chart-decision-v1="true"
-    data-market-phase-2-hero-layout-v1="8_4"
-    data-market-product-recovery-decision-above-fold-v1="true"
-    aria-label="Decision narrative and primary blocker"
-  >
-    <div class="pt-operator-overview-hero-grid">
-      <div class="min-w-0">
-        <p
-          class="pt-operator-overview-decision-sentence m-0"
-          data-market-operator-decision-narrative-v1="true"
-          data-market-phase-1a-decision-narrative-v1="true"
-          data-market-phase-2-decision-sentence-v1="true"
-        >
-          {{ ov.decision_sentence|e }}
-        </p>
-        <dl
-          class="m-0 mt-1 pt-operator-overview-status-strip flex flex-wrap text-slate-400"
-          data-market-phase-2-decision-state-v1="true"
-          aria-label="Current decision state"
-        >
-          <div><dt class="inline text-slate-600">Richtung · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.direction|e }}</dd></div>
-          <div><dt class="inline text-slate-600">AI · </dt><dd class="inline m-0 font-mono" data-market-phase-2-ai-activity-v1="true">{{ ov.current_decision.ai_activity_state|e }}</dd></div>
-          <div data-market-phase-2-blocker-scope-v1="{{ ov.current_decision.blocker_scope|e }}">
-            <dt class="inline text-slate-600">Umfang · </dt>
-            <dd class="inline m-0 font-mono">{{ ov.current_decision.blocker_scope|e }}</dd>
-          </div>
-        </dl>
-      </div>
-      <aside
-        class="pt-operator-overview-hero-system shrink-0 border-0 border-l border-slate-800/70 bg-transparent pl-3 text-[10px] text-slate-300"
-        data-market-phase-1a-critical-system-state-v1="true"
-        data-market-phase-2-critical-system-state-v1="true"
-        data-market-foundation-system-decision-v1="true"
-        aria-label="Critical system state"
-      >
-        <p class="m-0 uppercase tracking-[0.12em] text-slate-500 text-[8px]">Systementscheidung</p>
-        <p class="pt-foundation-decision-state mt-1" data-market-foundation-decision-state-v1="true">{{ ov.current_decision.state|e }}</p>
-        <p class="m-0 mt-1.5 text-[11px] text-slate-200">
-          <span class="text-slate-500">Primärer Blocker</span>
-          <span class="block font-mono text-sm text-slate-100 mt-0.5">{{ ov.current_decision.primary_blocker|e }}</span>
-        </p>
-        <dl class="m-0 mt-2 space-y-0.5 font-mono text-[10px]" data-market-foundation-system-priorities-v1="true">
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Ökonomie</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.economic_validity|e }}</dd></div>
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Risiko</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.risk_status|e }}</dd></div>
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Sicherheit</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.safety_status|e }}</dd></div>
-        </dl>
-        <p class="sr-only">
-          Authority {{ ov.critical_system_state.runtime_authority|e }} · Orders {{ ov.critical_system_state.orders|e }} · Live {{ ov.critical_system_state.live|e }}
-        </p>
-        <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.orders|e }}</span>
-        <span class="hidden" aria-hidden="true">{{ ov.critical_system_state.live|e }}</span>
-      </aside>
-    </div>
-  </section>
-
-{% if selected_instrument_workspace.workspace_visible %}
+  {# Ranking/F5 only when snapshot present — kept after chart so it stays out of fail-closed fold. #}
+  {% if selected_instrument_workspace.workspace_visible and governed_top20.snapshot_available %}
   <details
     class="rounded-md border border-slate-800/60 bg-slate-950/40 px-2.5 py-1.5"
     data-market-phase-1a-secondary-instrument-details-v1="true"
     data-market-workspace-ranking-f5-compact-v1="true"
     data-market-workspace-ranking-context-v1="true"
+    data-market-reductive-ranking-below-fold-v1="true"
   >
     <summary class="cursor-pointer text-[10px] font-semibold uppercase tracking-wide text-slate-500">
       Ranking / F5 / Kontrakt / Frische (sekundär)

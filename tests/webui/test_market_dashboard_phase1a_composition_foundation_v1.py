@@ -107,14 +107,15 @@ def test_phase1a_landmark_dom_order(client_phase1a_comp: TestClient) -> None:
 
 
 def test_phase1a_eye_path_chart_before_decision_narrative(client_phase1a_comp: TestClient) -> None:
+    """Reductive composition: primary decision precedes chart; DECISION_SURFACE stays after."""
     body = _body(client_phase1a_comp)
     chart_i = body.find('data-market-phase-1a-chart-above-fold-v1="true"')
     narrative_i = body.find('data-market-operator-decision-narrative-v1="true"')
     post_i = body.find('data-market-phase1a-post-chart-decision-v1="true"')
     decision_surface_i = body.find('data-landmark="DECISION_SURFACE"')
     assert min(chart_i, narrative_i, post_i, decision_surface_i) >= 0
-    assert chart_i < narrative_i
-    assert chart_i < post_i
+    assert narrative_i < chart_i
+    assert post_i < chart_i
     assert chart_i < decision_surface_i
 
 

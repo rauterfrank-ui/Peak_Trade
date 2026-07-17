@@ -80,22 +80,155 @@
   max-height: none;
 }
 
-/* Product recovery: empty OHLCV → compact diagnostic chart (not dominant empty stage). */
+/* Product recovery / reductive: empty OHLCV → compact secondary surface (≤240px). */
 #market-v0-shell [data-market-chart-empty-compact-v1="true"].market-phase-1a-primary-chart,
 #market-v0-shell [data-market-chart-empty-compact-v1="true"][data-market-phase-1a-chart-above-fold-v1="true"] {
   min-height: 0;
+  max-height: 240px;
+  height: auto;
 }
 
 #market-v0-shell [data-market-v0-close-chart-integrated-frame="true"][data-market-chart-empty-compact-v1="true"] {
-  min-height: 7rem;
-  height: 8.5rem;
-  max-height: 9rem;
+  min-height: 0;
+  height: auto;
+  max-height: none;
 }
 
-#market-v0-shell [data-market-product-recovery-empty-hero-v1="true"].pt-operator-overview-hero-panel {
+#market-v0-shell [data-market-product-recovery-empty-hero-v1="true"].pt-operator-overview-hero-panel,
+#market-v0-shell [data-market-reductive-primary-surface-v1="true"].pt-operator-overview-hero-panel {
   min-height: 0;
   max-height: none;
   overflow: visible;
+}
+
+/* Reductive composition — one primary + one secondary surface above fold. */
+#market-v0-shell .pt-reductive-primary-surface {
+  border: 1px solid rgba(71, 85, 105, 0.55);
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.72);
+  padding: 0.9rem 1rem 0.85rem;
+  border-left: 3px solid rgba(148, 163, 184, 0.55);
+}
+
+#market-v0-shell .pt-reductive-secondary-surface {
+  border: 1px solid rgba(51, 65, 85, 0.55);
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.45);
+  padding: 0.65rem 0.85rem;
+}
+
+#market-v0-shell .pt-reductive-chart-empty {
+  min-height: 7.5rem;
+  max-height: 13rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#market-v0-shell .pt-reductive-kicker {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+#market-v0-shell .pt-reductive-title {
+  margin-top: 0.2rem;
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f8fafc;
+}
+
+#market-v0-shell .pt-reductive-primary-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.7rem 1.25rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(51, 65, 85, 0.55);
+}
+
+@media (min-width: 900px) {
+  #market-v0-shell .pt-reductive-primary-rows {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+#market-v0-shell .pt-reductive-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+#market-v0-shell .pt-reductive-decision {
+  margin-top: 0.2rem;
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  line-height: 1.2;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+#market-v0-shell .pt-reductive-body {
+  margin-top: 0.2rem;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+#market-v0-shell .pt-reductive-safety {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: #94a3b8;
+}
+
+#market-v0-shell .pt-reductive-narrative {
+  margin-top: 0.55rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #cbd5e1;
+}
+
+#market-v0-shell .pt-reductive-tech-details {
+  margin-top: 0.65rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid rgba(51, 65, 85, 0.45);
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+#market-v0-shell .pt-reductive-tech-details > summary {
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+#market-v0-shell .pt-reductive-deferred-modules {
+  margin-top: 0.75rem;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+#market-v0-shell .pt-reductive-deferred-modules > summary {
+  cursor: pointer;
+  color: #64748b;
+  list-style: none;
+}
+
+#market-v0-shell .pt-reductive-deferred-modules > summary::-webkit-details-marker {
+  display: none;
+}
+
+#market-v0-shell .pt-reductive-deferred-modules-body {
+  margin-top: 0.75rem;
 }
 
 #market-v0-shell .pt-foundation-instrument-title {
@@ -204,8 +337,8 @@
 .pt-operator-overview-decision-sentence {
   display: block;
   margin: 0.25rem 0 0;
-  font-size: 0.8125rem;
-  line-height: 1.35;
+  font-size: 0.875rem;
+  line-height: 1.4;
   color: var(--pt-color-text-primary, #e2e8f0);
   font-weight: 500;
   overflow-wrap: anywhere;
