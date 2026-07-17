@@ -1,0 +1,10 @@
+contract	producer_module	producer_symbol	exists	lossless_enough	notes
+MarketInstrumentSnapshotV1	src/webui/market_futures_ohlcv_readmodel_v0/builder.py	build_market_futures_ohlcv_readmodel	true	partial	venue/instrument explicit caller params; mark/change unavailable
+MarketRankingSnapshotV1	src/webui/market_ranking_funnel_readmodel_v0/builder.py	build_market_ranking_funnel_readmodel	true	partial	eligibility NOT_PROVIDED; scores from display_score only
+CanonicalDecisionSummaryV1	src/trading/master_v2/canonical_trading_decision_evidence_v1.py	CanonicalTradingDecisionEvidenceV1	true	partial	confidence absent; explicit outcome/side maps
+DoublePlayDecisionSnapshotV1	src/trading/master_v2/double_play_composition_matrix_v1.py	DoublePlayCompositionResultV1 + DirectionalAssessmentV1	true	partial	requires bull/bear assessment objects alongside composition
+SafetyAuthoritySnapshotV1	(none consolidated)	N/A	false	n/a	NOT_BOUND unless single pre-consolidated mapping supplied
+ExecutionStateSnapshotV1	src/trading/master_v2/double_play_entry_exit_policy_v0.py	EntryExitPolicyDecisionV0	true	partial	fill_state NOT_PROVIDED
+EconomicSummarySnapshotV1	src/backtest/economic_viability_evidence_v1.py	EconomicViabilityEvidenceV1	true	partial	COMPUTED metrics only; no recalc
+DiagnosticsSummarySnapshotV1	src/research/linear_evidence/offline_productive_linear_diagnostics_support_bundle_v0.py	support bundle artifacts mapping	true	yes	diagnostic-only; authority_effect=NONE required
+DashboardFreshnessSnapshotV1	adapters/freshness.py + freshness_policy.py	adapt_dashboard_freshness_snapshot_v1	true	yes	explicit evaluation time

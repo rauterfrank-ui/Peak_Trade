@@ -32,6 +32,17 @@ This package must not import templates, Jinja, Flask/FastAPI route modules, or C
 
 ## PR boundaries
 
-- Producer binding belongs to **PR-C**.
+- Producer binding belongs to **PR-C** (`adapters/` subdirectory).
 - UI / `/market` page binding belongs to **PR-D**.
 - This package is intentionally not bound to the active reset shell in PR-B.
+
+## Adapters (PR-C)
+
+`src/webui/market_dashboard_readmodels_v1/adapters/` projects already-produced
+canonical sources onto the typed contracts above. Adapters are deterministic,
+side-effect free, accept explicit source objects, and emit
+`UnavailableSnapshotV1` when sources are absent, unbound, or malformed.
+
+Adapters must not call `integrated_offline_trading_logic_replay_v1`, must not
+import `build_static_dashboard_display_dict`, must not recalculate economic
+metrics, and must not invent authority/execution permission from UI constants.

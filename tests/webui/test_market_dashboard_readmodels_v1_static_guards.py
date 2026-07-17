@@ -68,7 +68,15 @@ RESET_SHELL_MARKERS = (
 
 
 def _package_py_files() -> list[Path]:
+    # Top-level contract modules only; adapters have dedicated PR-C guards.
     return sorted(PACKAGE_DIR.glob("*.py"))
+
+
+def _adapter_py_files() -> list[Path]:
+    adapters = PACKAGE_DIR / "adapters"
+    if not adapters.is_dir():
+        return []
+    return sorted(adapters.rglob("*.py"))
 
 
 def _import_names(path: Path) -> set[str]:

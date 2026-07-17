@@ -1,0 +1,6 @@
+contract	missing_producer	adapter_behavior
+SafetyAuthoritySnapshotV1	consolidated SafetyAuthority owner	UnavailableSnapshotV1 NOT_BOUND
+CanonicalDecisionSummaryV1 confidence	confidence field absent on evidence	confidence=None
+MarketInstrumentSnapshotV1 mark/change	not in OHLCV readmodel	mark_price/change remain None
+MarketRankingSnapshotV1 eligibility	not in ranking funnel	EligibilityStatusV1.NOT_PROVIDED
+ExecutionStateSnapshotV1 fill_state	not in EntryExit offline decision	fill_state=NOT_PROVIDED
