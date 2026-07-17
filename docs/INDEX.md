@@ -34,7 +34,8 @@
 - [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) — Architektur
 - [KNOWLEDGE_BASE_INDEX.md](KNOWLEDGE_BASE_INDEX.md) — Hub
 - [product/README.md](product/README.md) — Product docs frontdoor (no runtime effect)
-- [product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) — Visual Operator Dashboard Product SSOT / Implementation Spec (v1.3 Composition + Technical Discovery Edition; PART I normative; read-only; no trading semantics)
+- [product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) — Visual Operator Dashboard Master Runbook v1.3 (Composition + Landmark + Discovery; PART I normative; PART II snapshot; read-only; no trading semantics)
+- [product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) — Compatibility / contract surface (delegates to Master Runbook; Browser Verification Policy tokens)
 - [features/FEHLENDE_FEATURES_PEAK_TRADE.md](features/FEHLENDE_FEATURES_PEAK_TRADE.md) — Fehlende/geplante Features (canonical)
 - [governance/feature_state_map_v1.md](governance/feature_state_map_v1.md) — Kanonische Feature-State-Map (A–D, non-operational rule)
 - [governance/drift_cleanup_plan_v1.md](governance/drift_cleanup_plan_v1.md) — Drift Cleanup Plan (safe docs fixes)

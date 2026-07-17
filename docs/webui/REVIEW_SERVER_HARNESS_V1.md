@@ -6,7 +6,7 @@ Bounded, repo-owned localhost review-server lifecycle for Peak Trade WebUI opera
 `LIVE_AUTHORIZED=false` · `ORDERS_ALLOWED=false` · `NETWORK_POLICY=LOCALHOST_ONLY`
 
 Related technical surface: [`MARKET_SURFACE_V0.md`](./MARKET_SURFACE_V0.md) (`GET &#47;market`).
-Product runbook SSOT remains [`docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md`](../product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) — this harness does **not** duplicate that runbook.
+Dashboard master runbook SSOT remains [`docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md`](../product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) — this harness does **not** duplicate that runbook.
 
 ## Canonical commands
 
