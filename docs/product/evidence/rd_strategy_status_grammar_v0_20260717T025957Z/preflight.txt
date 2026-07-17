@@ -1,0 +1,14 @@
+BASE_MAIN_HEAD=91989723da26a223a7871b6afabf67fcaedcba60
+BRANCH=feat/rd-strategy-status-grammar-v0
+HEAD=91989723da26a223a7871b6afabf67fcaedcba60
+AUTHORIZED_SLICE=DRIFT_B02_RD_STRATEGY_STATUS_GRAMMAR_V0
+PR5269_MERGE=91989723da26a223a7871b6afabf67fcaedcba60
+UTC=20260717T025957Z
+## feat/rd-strategy-status-grammar-v0
+ M docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md
+ M docs/governance/drift_cleanup_plan_v1.md
+?? .runtime/
+?? docs/features/rd_strategy_status_grammar_v0.json
+?? docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/
+?? src/governance/rd_strategy_status_grammar_v0.py
+?? tests/governance/test_rd_strategy_status_grammar_v0.py

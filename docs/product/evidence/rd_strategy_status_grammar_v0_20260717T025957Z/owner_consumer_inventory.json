@@ -1,0 +1,20 @@
+{
+  "canonical_owner": "src/governance/rd_strategy_status_grammar_v0.py",
+  "ssot_contract": "docs/features/rd_strategy_status_grammar_v0.json",
+  "docs_consumer": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+  "drift_plan_consumer": "docs/governance/drift_cleanup_plan_v1.md",
+  "producers": [
+    "docs/features/rd_strategy_status_grammar_v0.json"
+  ],
+  "consumers": [
+    "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+    "src/governance/rd_strategy_status_grammar_v0.py",
+    "tests/governance/test_rd_strategy_status_grammar_v0.py"
+  ],
+  "not_mutated": [
+    "src/strategies/",
+    "templates/",
+    "static/",
+    "src/trading/master_v2/"
+  ]
+}

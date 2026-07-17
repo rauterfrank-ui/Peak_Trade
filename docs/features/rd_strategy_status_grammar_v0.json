@@ -1,0 +1,87 @@
+{
+  "contract_id": "RD_STRATEGY_STATUS_GRAMMAR_V0",
+  "contract_version": "v0",
+  "slice_id": "DRIFT_B02_RD_STRATEGY_STATUS_GRAMMAR_V0",
+  "canonical_owner_module": "src/governance/rd_strategy_status_grammar_v0.py",
+  "canonical_docs_catalog": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+  "scope": "docs_and_governance_classification_only",
+  "non_goals": [
+    "no_strategy_signal_semantics_change",
+    "no_promotion_or_live_authorization",
+    "no_master_v2_or_double_play_mutation",
+    "no_dashboard_mutation",
+    "no_runtime_activation"
+  ],
+  "canonical_statuses": [
+    "stub",
+    "research-only",
+    "missing"
+  ],
+  "status_definitions": {
+    "stub": "Module or scaffold exists, but the primary strategy behavior remains placeholder/dummy and must not be described as complete research logic.",
+    "research-only": "Productive R&D strategy module exists (classes/methods without NotImplementedError for primary helpers), remains NON-OPERATIONAL for live, and must not be labeled missing/TODO.",
+    "missing": "No productive strategy module path is present for the named R&D line."
+  },
+  "legacy_aliases": {
+    "research_only": "research-only",
+    "research only": "research-only",
+    "research-only": "research-only",
+    "r_and_d": "research-only",
+    "r&d": "research-only",
+    "placeholder": "stub",
+    "scaffold": "stub",
+    "stub": "stub",
+    "fehlt": "missing",
+    "absent": "missing",
+    "not_present": "missing",
+    "missing": "missing"
+  },
+  "ambiguous_rejected_tokens": [
+    "todo",
+    "notimplemented",
+    "not_implemented",
+    "notimplementederror",
+    "not implemented",
+    "not implemented error"
+  ],
+  "operational_invariants": {
+    "non_operational": true,
+    "live_authorized": false,
+    "orders": false,
+    "runtime_bridge": "BOUND_NOT_ACTIVATED"
+  },
+  "strategies": [
+    {
+      "strategy_id": "ehlers_cycle_filter",
+      "display_name": "Ehlers Cycle Filter",
+      "module_path": "src/strategies/ehlers/ehlers_cycle_filter_strategy.py",
+      "registry_key": "ehlers_cycle_filter",
+      "status": "research-only",
+      "notes": "Productive BaseStrategy implementation; research-only / NON-OPERATIONAL."
+    },
+    {
+      "strategy_id": "bouchaud_microstructure",
+      "display_name": "Bouchaud Microstructure",
+      "module_path": "src/strategies/bouchaud/bouchaud_microstructure_strategy.py",
+      "registry_key": "bouchaud_microstructure",
+      "status": "research-only",
+      "notes": "Productive OHLCV-proxy research strategy; research-only / NON-OPERATIONAL."
+    },
+    {
+      "strategy_id": "vol_regime_overlay",
+      "display_name": "Gatheral Cont Vol Regime Overlay",
+      "module_path": "src/strategies/gatheral_cont/vol_regime_overlay_strategy.py",
+      "registry_key": "vol_regime_overlay",
+      "status": "research-only",
+      "notes": "Productive Gatheral-cont research overlay; research-only / NON-OPERATIONAL."
+    },
+    {
+      "strategy_id": "meta_labeling",
+      "display_name": "López de Prado Meta-Labeling",
+      "module_path": "src/strategies/lopez_de_prado/meta_labeling_strategy.py",
+      "registry_key": "meta_labeling",
+      "status": "research-only",
+      "notes": "Labels delegate to research triple-barrier; _extract_features returns vol_20. Primary generate_signals remains a research stub (flat dummy) and must not be described as returning all-zero label placeholders."
+    }
+  ]
+}
