@@ -27,6 +27,9 @@ from trading.master_v2.runtime_bridge_pre_activation_gate_v0 import (
     current_head_default_gate_input_v0,
     evaluate_runtime_bridge_pre_activation_gate_v0,
 )
+from trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0 import (
+    evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
@@ -95,11 +98,14 @@ def test_boundary_path_four_way_parity_complete_v0() -> None:
         assert item.runtime_reference_non_authority_confirmed is True
 
 
-def test_surface_p_gap_assessment_still_partial_runtime_blocked_v0() -> None:
+def test_surface_p_registry_pass_with_runtime_activation_pending_v0() -> None:
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_p.parity_status == "PARTIAL"
-    assert "fixture coverage complete offline" in surface_p.missing_binding_if_any
-    assert "BOUND_NOT_ACTIVATED by policy" in surface_p.missing_binding_if_any
+    assert surface_p.parity_status == "PASS"
+    assert surface_p.missing_binding_if_any == ""
+    semantic = evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0()
+    assert semantic.surface_p_overall_status == "PARTIAL_RUNTIME_ACTIVATION_PENDING"
+    assert semantic.runtime_bridge_activated is False
+    assert RUNTIME_REFERENCE_INTEGRATION_STATUS_V0 == "BOUND_NOT_ACTIVATED"
 
 
 def test_runtime_bridge_pre_activation_gate_still_blocked_v0() -> None:

@@ -103,7 +103,10 @@ def test_ai_observability_no_authority_boundary_v0() -> None:
 
 def test_surface_p_not_counted_as_offline_parity_gap_when_activation_pending_v0() -> None:
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_p.parity_status == "PARTIAL"
+    assert surface_p.parity_status == "PASS"
+    semantic = evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0()
+    assert semantic.surface_p_overall_status == "PARTIAL_RUNTIME_ACTIVATION_PENDING"
+    assert semantic.runtime_bridge_activated is False
     gap_record_ids = {record["surface_id"] for record in parity_gap_records_v0()}
     assert "P" not in gap_record_ids
 

@@ -227,8 +227,8 @@ def test_project_composition_sets_opposite_selected_side_v0() -> None:
 
 def test_surface_c_pass_dep_unchanged_partial_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 15
-    assert counts["PARTIAL"] == 1
+    assert counts["PASS"] == 16
+    assert counts["PARTIAL"] == 0
     surface_c = next(item for item in parity_surface_assessments_v0() if item.surface_id == "C")
     assert surface_c.parity_status == "PASS"
     assert surface_c.missing_binding_if_any == ""
@@ -237,10 +237,9 @@ def test_surface_c_pass_dep_unchanged_partial_v0() -> None:
     surface_e = next(item for item in parity_surface_assessments_v0() if item.surface_id == "E")
     assert surface_e.parity_status == "PASS"
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_p.parity_status == "PARTIAL"
-    assert (
-        NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
-    )
+    assert surface_p.parity_status == "PASS"
+    assert surface_p.missing_binding_if_any == ""
+    assert NEXT_RECOMMENDED_SLICE == "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
 
 
 def test_default_scenario_replay_still_passes_v0() -> None:

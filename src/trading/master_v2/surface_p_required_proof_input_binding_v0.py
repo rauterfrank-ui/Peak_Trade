@@ -2,10 +2,20 @@
 Surface P required proof-input binding v0.
 
 Owner-bound evaluation for the Full Canonical Parity Proof Bundle Assembler
-required proof input on surface P. Offline/backtest/scenario 4-way parity may be
-COMPLETE while registry parity_status remains PARTIAL because runtime bridge
-activation is policy-blocked. Does not activate runtime, grant order authority,
-or promote final success flags.
+required proof input on surface P.
+
+Canonical registry semantics (do not mix with activation):
+- registry_parity_status / promoted parity_surface_assessments_v0 parity_status
+  is PASS when offline 4-way parity + semantic bindings + evidence refs are
+  satisfied AND the runtime bridge remains BOUND_NOT_ACTIVATED (activation
+  pending by policy).
+- PARTIAL is only the unpromoted base assessment when proof input is not
+  satisfied.
+- Runtime activation pending is tracked separately as
+  surface_p_overall_status=PARTIAL_RUNTIME_ACTIVATION_PENDING on the semantic
+  contract owner; it must not be confused with registry PARTIAL.
+
+Does not activate runtime, grant order authority, or unlock live/orders.
 """
 
 from __future__ import annotations

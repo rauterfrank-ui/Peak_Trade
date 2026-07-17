@@ -12,6 +12,7 @@ from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 i
 )
 from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_v0 import (
     RUNTIME_REFERENCE_INTEGRATION_STATUS_V0,
+    SURFACE_P_BAR_SEQUENCE_FIXTURE_COUNT,
     SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT,
     SURFACE_P_FULL_BAR_SEQUENCE_4_WAY_PARITY_COMPLETION_SLICE_ID,
     assert_runtime_reference_lane_v0,
@@ -22,6 +23,9 @@ from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_
     surface_p_bar_sequence_fixtures_v0,
     surface_p_core_bar_sequence_fixtures_v0,
     surface_p_fixture_lane_semantics_ok_v0,
+)
+from trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0 import (
+    evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -77,7 +81,7 @@ def test_full_bar_sequence_four_way_parity_complete_v0() -> None:
     assessment = evaluate_surface_p_full_bar_sequence_four_way_parity_v0()
     assert assessment.fixtures_complete is True
     assert assessment.core_fixtures_complete is True
-    assert len(assessment.fixture_assessments) == 13
+    assert len(assessment.fixture_assessments) == SURFACE_P_BAR_SEQUENCE_FIXTURE_COUNT
     assert assessment.runtime_bridge_status == "BOUND_NOT_ACTIVATED"
     for item in assessment.fixture_assessments:
         assert item.four_way_fixture_parity_bound is True
@@ -111,11 +115,14 @@ def test_runtime_reference_lane_not_activated_v0() -> None:
         )
 
 
-def test_surface_p_gap_assessment_still_partial_runtime_blocked_v0() -> None:
+def test_surface_p_registry_pass_with_runtime_activation_pending_v0() -> None:
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_p.parity_status == "PARTIAL"
-    assert "fixture coverage complete offline" in surface_p.missing_binding_if_any
-    assert "BOUND_NOT_ACTIVATED by policy" in surface_p.missing_binding_if_any
+    assert surface_p.parity_status == "PASS"
+    assert surface_p.missing_binding_if_any == ""
+    semantic = evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0()
+    assert semantic.surface_p_overall_status == "PARTIAL_RUNTIME_ACTIVATION_PENDING"
+    assert semantic.runtime_bridge_activated is False
+    assert RUNTIME_REFERENCE_INTEGRATION_STATUS_V0 == "BOUND_NOT_ACTIVATED"
 
 
 def test_forbidden_runtime_paths_guard_v0() -> None:
