@@ -1,0 +1,5 @@
+route	method	owner_file	handler	target	notes
+/market	GET	src/webui/market_surface.py	market_v0_page	templates/peak_trade_dashboard/market_v0.html	CANONICAL product HTML
+/api/market/ohlcv	GET	src/webui/market_surface.py	api_market_ohlcv	JSON payload	Legacy kraken/dummy only; futures=422
+/market/double-play	GET	src/webui/app.py	double_play_market_dashboard_v1_legacy_redirect	302 -> /market?...#double-play	Legacy redirect
+/market/futures	GET	src/webui/app.py	futures_read_only_market_dashboard_v0_legacy_redirect	302 -> /market...#futures	Legacy redirect

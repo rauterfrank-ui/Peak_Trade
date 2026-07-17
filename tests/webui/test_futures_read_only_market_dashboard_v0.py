@@ -15,7 +15,16 @@ pytest.importorskip("fastapi")
 
 from fastapi.testclient import TestClient
 
-pytestmark = pytest.mark.web
+pytestmark = [
+    pytest.mark.web,
+    pytest.mark.skip(
+        reason=(
+            "PR-A architecture reset: GET /market is reset shell only; "
+            "legacy composition HTTP contracts deferred "
+            "(see test_market_architecture_reset_shell_pr_a_v1.py)"
+        )
+    ),
+]
 
 from src.webui.app import create_app
 from src.webui.futures_read_only_market_dashboard_runtime_v0 import (

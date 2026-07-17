@@ -1,0 +1,11 @@
+consumer	producer_or_domain	kind	mechanism	pr_a_action
+market_surface.build_market_v0_page_template_context	build_static_dashboard_display_dict	LEGACY_FALLBACK	direct call	unbind from /market route
+market_surface.build_market_v0_page_template_context	market_dashboard_current_state_runtime_v0	LEGACY_FALLBACK	direct call	unbind from /market route
+market_surface.resolve_market_page_data	market_ranking_funnel_runtime_v0	CANONICAL_READMODEL	env-gated	preserve producer; unbind route
+market_surface.resolve_market_page_data	market_futures_ohlcv_runtime_v0	CANONICAL_READMODEL	env-gated	preserve producer; unbind route
+market_surface	market_depth_runtime_v0	CANONICAL_READMODEL	env-gated	preserve
+market_surface	futures_read_only_market_dashboard_runtime_v0	CANONICAL_READMODEL	env-gated	preserve
+market_surface	market_visual_operator_surface_v1	PRESENTER	offline bundles	unbind route
+market_surface.load_ohlcv_dataframe	scripts/_shared_ohlcv_loader.load_dummy_ohlcv	LEGACY_FALLBACK	dummy source	unbind from /market route
+market_surface.load_ohlcv_dataframe	src.data.kraken.fetch_ohlcv_df	LEGACY_FALLBACK	kraken source	unbind from /market route
+double_play_dashboard_display_json_route_v0	trading.master_v2.double_play_*	DOMAIN_OWNER	static fixture generation	preserve domain; unbind /market

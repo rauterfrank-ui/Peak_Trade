@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests für read-only Market Surface v0 (GET /market, GET /api/market/ohlcv)."""
+"""Tests für read-only Market Surface (GET /market reset shell, GET /api/market/ohlcv)."""
 
 from __future__ import annotations
 
@@ -59,277 +59,55 @@ class TestMarketSurfaceJson:
 
 
 class TestMarketSurfaceHtml:
-    def test_market_page_dummy_ok_markers(self, client: TestClient) -> None:
+    def test_market_page_reset_shell_ignores_dummy_query(self, client: TestClient) -> None:
+        """PR-A: GET /market is the architecture reset shell; query params cannot re-enter composition."""
         resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
         assert "text/html" in resp.headers.get("content-type", "")
         body = resp.text
-        assert 'data-section="market-v0"' in body
-        assert 'data-market-surface-v0="true"' in body
-        assert 'data-market-v1-dashboard-shell="true"' in body
-        assert 'data-market-v1-context="true"' in body
-        assert 'data-market-v1-readonly-banner="true"' in body
-        assert body.count('data-market-v1-stat-card="true"') >= 6
-        assert 'data-market-v1-api-reference="true"' in body
-        assert 'data-market-v0-surface-links="true"' in body
-        assert 'data-market-v0-dashboard-surface="true"' in body
-        assert 'data-market-v0-rd-charts-surface="true"' in body
-        assert 'data-market-v0-data-surfaces="true"' in body
-        assert 'data-market-v0-ohlcv-surface="true"' in body
-        assert 'data-market-v0-depth-surface="true"' in body
-        assert 'data-market-v0-visual-cockpit="true"' in body
-        assert 'data-market-v0-visual-surface-strip="true"' in body
-        assert 'data-market-v0-dashboard-preview="true"' in body
-        assert 'data-market-v0-rd-preview="true"' in body
-        assert 'data-market-v0-ohlcv-preview="true"' in body
-        assert 'data-market-v0-depth-preview="true"' in body
-        assert 'data-market-v0-ssr-metrics-strip="true"' in body
-        assert 'data-market-v0-in-chart-ohlc-svg-v1="true"' in body
-        assert 'data-market-v0-close-chart-integrated-frame="true"' in body
-        assert 'data-market-v0-in-chart-ohlc-svg-root="true"' in body
-        assert (
-            'data-market-v0-in-chart-ohlc-candle-up="true"' in body
-            or 'data-market-v0-in-chart-ohlc-candle-down="true"' in body
-        )
-        assert "chartjs-chart-financial" not in body.lower()
-        assert 'data-market-v11-chart-library-status="true"' in body
-        assert 'data-market-v11-payload-bars="true"' in body
-        assert 'data-market-v11-render-fallback="true"' in body
-        assert "Chart-Diagnostik" in body or "Chart diagnostics" in body
-        assert "Chart.js status" in body
-        assert "Embedded bars" in body
-        assert "Chart render status" in body
-        assert "Chart library missing or blocked" in body
-        assert "Chart render error" in body
-        assert "No backend/API/provider change" in body
-        assert 'data-market-readonly="true"' in body
-        assert 'data-market-non-authorizing="true"' in body
-        assert 'data-market-source-kind="dummy-offline-synthetic"' in body
-        assert 'data-market-safety-banner="true"' in body
-        assert 'data-market-source="dummy"' in body
-        assert 'data-market-bars="20"' in body
-        assert 'data-chart="market-v0-close-line"' in body
-        assert 'id="market-v0-payload"' in body
-        assert "read-only · non-authorizing" in body
-        assert "Read-only market display" in body
-        assert "No orders" in body
-        assert "No strategy authority" in body
-        assert "No Live/Testnet action" in body
-        assert "No Risk/KillSwitch override" in body
-        assert "/api/market/ohlcv" in body
-        assert "Keine Orders" in body or "keine Orders" in body
-        assert "Testnet" in body
-        assert "Live" in body
-        assert "Capital" in body or "Scope" in body
-        assert "KillSwitch" in body or "Risk" in body
-        assert "chart.umd.min.js" in body.lower()
-        assert 'data-chartjs-vendor-primary-v1="true"' in body
-        assert 'data-chartjs-vendor-monitored-v1="true"' in body
-        assert 'id="peak-trade-market-chartjs-vendor-v1"' in body
-        assert 'id="market-v0-shell"' in body
-        assert "data-chartjs-vendor-load-error" in body
-        assert "cdn.jsdelivr.net" not in body
-        assert "onerror=" in body.lower()
-        lower = body.lower()
-        assert "<form" not in lower
-        assert 'method="post"' not in lower
-        assert "<button" not in lower
-        assert 'type="submit"' not in lower
-        assert "fetch(" not in body
-        assert 'method="POST"' not in body
-        assert 'id="market-v0-chart-status"' in body
-        assert 'data-market-chart-status="ready"' in body
-        assert "Chart bereit — read-only OHLCV-Anzeige." in body
-        assert 'data-market-depth-panel="true"' in body
-        assert 'data-market-depth-status="disabled"' in body
-        assert 'data-market-v0-orderbook-topn="true"' in body
-        assert 'data-market-v0-orderbook-has-levels="false"' in body
-        assert 'data-market-v0-orderbook-empty="true"' in body
-        assert 'data-market-v0-ladder-empty-explain="true"' in body
-        assert "Depth SSR is" in body
-        assert 'data-market-depth-operator-hint="true"' in body
+        assert "Market Dashboard" in body
+        assert "ARCHITECTURE RESET IN PROGRESS" in body
+        assert "READ ONLY" in body
+        assert "NO TRADING AUTHORITY" in body
+        assert 'data-market-architecture-reset-shell-v1="true"' in body
+        assert 'id="market-v0-shell"' not in body
+        assert "source=dummy" not in body
+        assert "ETHUSDT" not in body
+        assert "<form" not in body.lower()
+        assert 'type="submit"' not in body.lower()
+        assert "<button" not in body.lower()
 
-    def test_market_page_depth_ssr_forbids_client_depth_route_and_xhr(
+    def test_market_page_depth_route_and_xhr_absent_on_reset_shell(
         self,
         client: TestClient,
     ) -> None:
-        """Depth is embedded SSR-only; page must not steer browsers to the JSON route or XHR."""
-
         resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
-        assert "text/html" in resp.headers.get("content-type", "")
         body = resp.text
-
         assert "/api/market/depth" not in body
         assert "fetch(" not in body
         assert "XMLHttpRequest" not in body
 
-    def test_market_depth_ssr_context_contract_v0_future_seam(
-        self,
-        client: TestClient,
-    ) -> None:
-        """Contract: GET /market carries narrow depth markers and no client Depth fetch."""
-        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
-        assert resp.status_code == 200
-        assert "text/html" in resp.headers.get("content-type", "")
-        body = resp.text
-
-        assert "/api/market/depth" not in body
-        assert "fetch(" not in body
-        assert "XMLHttpRequest" not in body
-
-        assert 'data-market-depth-panel="true"' in body
-        assert 'data-market-depth-status="' in body
-
-    def test_market_depth_ssr_page_stays_200_when_helper_returns_diagnostic_tuple(
-        self,
-        client: TestClient,
-        monkeypatch: pytest.MonkeyPatch,
-    ) -> None:
-        """Page HTTP status stays 200 when JSON route would use 503 (monkeypatch, no bundles)."""
-
-        def _fake_diagnostic() -> tuple[int, dict[str, object]]:
-            return 503, {
-                "readmodel_id": "market_depth_readmodel.v0",
-                "generated_at_iso": "2026-05-06T12:00:00+00:00",
-                "runtime_source_status": "builder_error",
-                "warnings": ["market_depth_bundle_build_failed"],
-                "stale_reason": "bundle_build_failed",
-            }
-
-        monkeypatch.setattr(
-            "src.webui.market_surface.market_depth_json_payload_v0",
-            _fake_diagnostic,
-        )
-
-        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
-        assert resp.status_code == 200
-        body = resp.text
-        assert 'data-market-depth-status="builder_error"' in body
-        assert 'data-market-v0-orderbook-has-levels="false"' in body
-        assert 'data-market-v0-orderbook-empty="true"' in body
-        assert "/api/market/depth" not in body
-        assert "failed build" in body
-        assert "validation" in body
-        assert 'data-market-depth-operator-hint="true"' in body
-
-    def test_market_depth_ssr_ok_branch_uses_display_status_ok(
-        self,
-        client: TestClient,
-        monkeypatch: pytest.MonkeyPatch,
-    ) -> None:
-        """When helper succeeds, SSR shows display_status ok (mocked tuple, env-independent)."""
-
-        def _fake_ok() -> tuple[int, dict[str, object]]:
-            return 200, {
-                "readmodel_id": "market_depth_readmodel.v0",
-                "symbol": "BTC/EUR",
-                "depth": {"levels_returned": {"bids": 2, "asks": 3}},
-            }
-
-        monkeypatch.setattr(
-            "src.webui.market_surface.market_depth_json_payload_v0",
-            _fake_ok,
-        )
-
-        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
-        assert resp.status_code == 200
-        body = resp.text
-        assert 'data-market-depth-status="ok"' in body
-        assert 'data-market-v0-orderbook-has-levels="false"' in body
-        assert 'data-market-v0-orderbook-empty="true"' in body
-        assert "/api/market/depth" not in body
-        assert "no bid/ask rows" in body
-        assert 'data-market-depth-operator-hint="true"' in body
-
-    def test_market_dashboard_orderbook_topn_ssr_with_fixture_bundle(
-        self,
-        monkeypatch: pytest.MonkeyPatch,
-    ) -> None:
-        bundle = (
-            Path(__file__).resolve().parents[1]
-            / "tests"
-            / "fixtures"
-            / "market_depth_readmodel_v0"
-            / "complete_minimal"
-        )
-        monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "1")
-        monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT", str(bundle.resolve()))
-        monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-05-02T12:00:00+00:00")
-        client = TestClient(create_app())
-
-        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
-        assert resp.status_code == 200
-        body = resp.text
-        assert 'data-market-v0-orderbook-topn="true"' in body
-        assert 'data-market-v0-orderbook-has-levels="true"' in body
-        assert 'data-market-v0-orderbook-bids="true"' in body
-        assert 'data-market-v0-orderbook-asks="true"' in body
-        assert 'data-market-v0-orderbook-empty="true"' not in body
-        assert "63010" in body
-        assert "63020" in body
-        assert 'data-market-depth-status="ok"' in body
-        assert "/api/market/depth" not in body
-        assert "fetch(" not in body
-        assert "XMLHttpRequest" not in body
-
-    def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
+    def test_market_html_query_noise_still_200(self, client: TestClient) -> None:
+        """Invalid legacy query params are ignored; reset shell always returns 200."""
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
-        assert r.status_code == 422
+        assert r.status_code == 200
+        assert "ARCHITECTURE RESET IN PROGRESS" in r.text
+        r2 = client.get("/market", params={"source": "invalid", "timeframe": "1d"})
+        assert r2.status_code == 200
+        assert "ARCHITECTURE RESET IN PROGRESS" in r2.text
 
-    def test_market_html_invalid_source_422(self, client: TestClient) -> None:
-        r = client.get("/market", params={"source": "invalid", "timeframe": "1d"})
-        assert r.status_code == 422
 
-
-def test_market_v0_template_kraken_banner_markers_in_source() -> None:
-    """Kraken-Pfad ohne Netzwerk: Banner-Zweig muss im Template-Stack existieren."""
+def test_market_v0_active_template_is_reset_shell_not_legacy_composition() -> None:
+    """Active market_v0.html is the PR-A reset shell; legacy markers live only in quarantine."""
     tmpl_dir = Path(__file__).resolve().parents[1] / "templates" / "peak_trade_dashboard"
-    txt = (tmpl_dir / "market_v0.html").read_text(encoding="utf-8")
-    txt += (tmpl_dir / "partials" / "market_legacy_operator_panels_v0.html").read_text(
-        encoding="utf-8"
-    )
-    assert 'data-market-source-kind="kraken-public-ohlcv-network"' in txt
-    assert 'data-market-v1-dashboard-shell="true"' in txt
-    assert 'data-market-v1-readonly-banner="true"' in txt
-    assert 'data-market-v1-context="true"' in txt
-    assert 'data-market-v1-api-reference="true"' in txt
-    assert 'data-market-v0-surface-links="true"' in txt
-    assert 'data-market-v0-dashboard-surface="true"' in txt
-    assert 'data-market-v0-rd-charts-surface="true"' in txt
-    assert 'data-market-v0-data-surfaces="true"' in txt
-    assert 'data-market-v0-ohlcv-surface="true"' in txt
-    assert 'data-market-v0-depth-surface="true"' in txt
-    assert 'data-market-v0-visual-cockpit="true"' in txt
-    assert 'data-market-v0-visual-surface-strip="true"' in txt
-    assert 'data-market-v0-dashboard-preview="true"' in txt
-    assert 'data-market-v0-rd-preview="true"' in txt
-    assert 'data-market-v0-ohlcv-preview="true"' in txt
-    assert 'data-market-v0-depth-preview="true"' in txt
-    assert 'data-market-v0-ssr-metrics-strip="true"' in txt
-    assert 'data-market-v0-in-chart-ohlc-svg-v1="true"' in txt
-    assert 'data-market-v0-close-chart-integrated-frame="true"' in txt
-    assert 'data-market-v0-in-chart-ohlc-svg-root="true"' in txt
-    assert (
-        'data-market-v0-in-chart-ohlc-candle-up="true"' in txt
-        or 'data-market-v0-in-chart-ohlc-candle-down="true"' in txt
-    )
-    assert "chartjs-chart-financial" not in txt.lower()
-    assert 'data-market-v11-chart-diagnostics="true"' in txt
-    assert 'data-market-v11-chart-library-status="true"' in txt
-    assert 'data-market-v11-payload-bars="true"' in txt
-    assert 'data-market-v11-render-fallback="true"' in txt
-    assert txt.count('data-market-v1-stat-card="true"') >= 6
-    assert "Read-only market display" in txt
-    assert "Futures" in txt
-    assert "read-only · non-authorizing" in txt
-    assert 'id="market-v0-chart-status"' in txt
-    assert "data-market-chart-status" in txt
-    assert "data-market-empty-state" in txt
-    assert "Chart bereit — read-only OHLCV-Anzeige." in txt
-    assert "Keine OHLCV-Bars für diese Abfrage. Keine synthetischen Kerzen." in txt
-    assert "No OHLCV bars for this query." not in txt
-    assert "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar." in txt
-    assert 'data-market-depth-panel="true"' in txt
-    assert "data-market-depth-status" in txt
-    assert 'data-market-v0-orderbook-topn="true"' in txt
+    active = (tmpl_dir / "market_v0.html").read_text(encoding="utf-8")
+    assert "ARCHITECTURE RESET IN PROGRESS" in active
+    assert "NO TRADING AUTHORITY" in active
+    assert 'id="market-v0-shell"' not in active
+    assert "{% include" not in active
+    quarantine = (
+        tmpl_dir / "partials" / "market_v0_legacy_composition_not_routed_v1.html"
+    ).read_text(encoding="utf-8")
+    assert "LEGACY / NOT ROUTED" in quarantine
+    assert 'id="market-v0-shell"' in quarantine
