@@ -24,12 +24,12 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 Short operator snapshot after **#3470–#3478** (no new roadmap promises; **not** testnet/live readiness).
 
-- **Market Dashboard / Double-Play read-only line (#3470–#3476):** **closed/idle** for micro-continuation; orientation: [`MARKET_SURFACE_V0.md`](../../webui/MARKET_DASHBOARD_REMOVED.md). These slices did **not** start scheduler, runtime, paper, testnet, live, broker, exchange, or order paths.
+- **Market Dashboard / Double-Play read-only line (#3470–#3476):** **closed/idle** for micro-continuation; orientation: [`MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md) (product removed). These slices did **not** start scheduler, runtime, paper, testnet, live, broker, exchange, or order paths.
 - **Credential / Kraken governance docs (#3471):** **closed/idle** for routine follow-up; planning-first boundary runbook: [`RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md`](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md).
 - **Semgrep / SAST and ZAP / DAST (#3477–#3478):** **concept-only**, **manual-first**, **default-off**; **no** install, **no** scan/run, **no** CI gates from those specs alone. Entry points: [`SEMGREP_SAST_ADOPTION_CONCEPT_V0.md`](../specs/SEMGREP_SAST_ADOPTION_CONCEPT_V0.md), [`ZAP_DAST_SHADOW_CONCEPT_V0.md`](../specs/ZAP_DAST_SHADOW_CONCEPT_V0.md), and the CI/static posture index [`CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md`](../CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md).
 - **Chart.js:** CDN load-failure **attribution** is in place (#3476); **local** vendored fallback is **not** implemented and needs a **separate** charter if ever pursued.
 
-**Suggested default posture:** **STOP/IDLE** at the repo slice level unless the operator selects a **larger** charter (e.g. Testnet/Daemon planning, Chart.js local fallback **concept**, `/market/double-play` design depth, or another explicit non-micro topic).
+**Suggested default posture:** **STOP/IDLE** at the repo slice level unless the operator selects a **larger** charter (e.g. Testnet/Daemon planning, Chart.js local fallback **concept**, or another explicit non-micro topic). Market Dashboard `/market*` routes are removed — do not charter rebuilds without a new operator-authorized product spec.
 
 ## Post–Canary docs navigation + Go-Live gap audit closeout (May 2026, docs-only)
 

@@ -1652,7 +1652,7 @@ MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_EXPECTED: dict[str, str] = 
     "TRADING_LOGIC_TOUCHED": "false",
 }
 MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_TESTS = (
-    "test_market_terminal_layout_v1.py",
+    "test_market_dashboard_tombstone_v1.py",
 )
 MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_SURFACES = (
     "MARKET_DASHBOARD_REMOVED.md",
@@ -4994,7 +4994,7 @@ def test_docs_truth_map_market_dashboard_trading_app_terminal_rebuild_pr4162_chr
     )
     assert "MARKET_DASHBOARD_LANE_CLOSED_AFTER_VISUAL_PASS=true" in text
     assert "9a8c259f1c5f41d8b617bd15b93d1c518473e80e" in text
-    assert "test_market_terminal_layout_v1.py" in text or "MARKET_DASHBOARD_REMOVED.md" in text
+    assert "test_market_dashboard_tombstone_v1.py" in text or "MARKET_DASHBOARD_REMOVED.md" in text
     assert "data-market-trading-app-terminal-v1" in text
     assert (
         "**no** UI/runtime/trading/Master-V2/Double-Play-decision-logic/protected-scope touch/Market-Airport"

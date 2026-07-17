@@ -476,7 +476,7 @@ Remote host placement **does not** relax manifest, closeout, or preflight rules.
 #### Notion and Market Dashboard (projection-only in this contract)
 
 - Notion: §6a.1 — post-closeout sync only; `NOTION_WRITE_DEFAULT=false`; no writes in this contract slice.
-- Market Dashboard: §6a.2 — read-only Registry v1 projection; no runtime actions; `GET &#47;market&#47;double-play` untouched.
+- Market Dashboard: §6a.2 — read-only Registry v1 projection fields only; no runtime actions; product UI routes `GET &#47;market*` intentionally absent (see [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md)).
 
 #### S3 (after-finalize-only)
 
@@ -1232,7 +1232,7 @@ POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true
 | Charter alias | Owner |
 |---|---|
 | `NOTION_POST_CLOSEOUT_SYNC_V0` | §6a.1 — `notion_projection` states; default `disabled`; operator token future-only |
-| `MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0` | §6a.2 — `market_dashboard_projection` states; `GET &#47;market` only; Double Play untouched |
+| `MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0` | §6a.2 — `market_dashboard_projection` states; product `GET &#47;market*` absent; Master V2 / Double Play domain authority unchanged (§9); DP JSON is `/api/master-v2/double-play/dashboard-display.json` (not a Market Dashboard route) |
 | Shared pointer/status fields | [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) test constants aligned with Registry v1 `runs[]` / `compositions[]` |
 
 **Forbidden in v0 charter slice:** Notion MCP/API writes; new Notion DB schema as productive SSOT; dashboard HTML/template panels or new routes; payload-builder scripts; CI hooks that start runtime; S3/AWS/rclone upload or download; scheduler/daemon/adapter execution; workflow dispatch; Live/Testnet/broker/exchange authority; Master V2 / Double Play route or authority changes; parallel Market Surface, Notion DB, or readmodel SSOT (`NO_PARALLEL_*=true`).
@@ -1343,7 +1343,7 @@ Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test
 - Before durable primary evidence exists outside `/tmp` (`TMP_ONLY_EVIDENCE_INVALID`).
 - Before `MANIFEST.sha256` verify **RC=0** on the durable root.
 - `launchctl` / daemon startup / supervisor auto-start paths.
-- Dashboard route/view path (`GET &#47;market` SSR overlay — projection display only; not orchestration owner).
+- Removed Market Dashboard route path (`GET &#47;market*` — product deleted; not an attach owner; see [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md)).
 - Notion writer / MCP / API path (§6a.1 / §6a.1.1 remain planning/dry-run until separate charter).
 - Market overlay global enablement path (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED` stays `false` by default).
 - Live / Testnet / broker / exchange execution paths.
@@ -1726,7 +1726,7 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 - No AWS CLI, rclone, S3 uploads, or Notion writes from Dashboard projection paths
 - No broker&#47;exchange authority, testnet&#47;live authority, approval authority, or Double Play / Master V2 authority
 - No parallel Dashboard truth layer; repo contracts, manifests, closeouts, and operator approvals remain canonical
-- No changes to `GET &#47;market&#47;double-play` routes, handlers, templates, or decision authority (`MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false`)
+- No Market Dashboard product routes (`GET &#47;market*` intentionally absent; `MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false`); Master V2 / Double Play domain decision authority remains protected (§9)
 - No `lane_id=daemon_paper_24h`, no `lane_id=remote_runtime`, no Registry v2
 
 #### Status interpretation
@@ -1737,9 +1737,9 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 
 #### Surface boundaries (product removed; ops projection fields preserved)
 
-- **Market Dashboard product removed:** [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) is the tombstone chronicle. `GET &#47;market` is intentionally absent. No UI consumer is authorized by this deletion.
+- **Market Dashboard product removed:** [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) is the tombstone chronicle. `GET &#47;market*` is intentionally absent (normal HTTP 404; no redirect, alias, placeholder, or reset shell). No UI consumer is authorized by this deletion.
 - **Registry v1 projection fields preserved:** `market_dashboard_projection` / `market_dashboard_projection_allowed` remain ops-only disabled-by-default consumer eligibility markers (this §6a.2).
-- **`GET &#47;market&#47;double-play` untouched:** Master V2 / Double Play read-only composition **authority**, handlers, templates, and non-authority boundaries remain unchanged (§9) — even if the HTTP path is a **302** redirect onto `/market#double-play`. Registry projection must **not** embed Double Play decision or selection authority.
+- **Master V2 / Double Play domain preserved (not a Market route):** composition **authority** and non-authority boundaries remain unchanged (§9). The surviving read-only display JSON is `GET /api/master-v2/double-play/dashboard-display.json` — independent of the removed Market Dashboard product. Registry projection must **not** embed Double Play decision or selection authority.
 
 Detail owner for historical F5 / §7h display markers: taxonomy §7h and [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md).
 
@@ -2259,7 +2259,7 @@ Normative state (post Market Dashboard product removal):
 - Registry v1 `market_dashboard_projection` consumer fields remain ops-only (§6a.2); `MARKET_DASHBOARD_AUTHORITY=false`.
 - Dashboard display, SSR read models, registry rows, and test status **do not** grant approval, gate clearance, Live/Testnet/broker/exchange permission, scheduler activation, or runtime start.
 - `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (see §5).
-- Master V2 / Double Play boundaries stay **protected**; dashboard must not reimplement selection or live decision authority (see §9). A read-only canonical DP projection on `/market` does not transfer Double Play authority into WebUI.
+- Master V2 / Double Play boundaries stay **protected**; removed Market Dashboard surfaces must not be rebuilt as selection or live decision authority (see §9). The surviving read-only DP JSON at `/api/master-v2/double-play/dashboard-display.json` does not transfer Double Play authority into WebUI and is not a Market Dashboard route.
 
 ## 8. Canary and Live-Canary lanes
 

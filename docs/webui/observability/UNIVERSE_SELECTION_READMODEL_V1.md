@@ -18,7 +18,7 @@ This document defines the **normative persistence contract** for **`universe_sel
 
 - **`non_authorizing: true`** is required on every persisted payload.
 - This readmodel is **display-only** — no order placement, no live arming, no strategy activation, no scheduler trigger.
-- **`GET &#47;market`** dummy OHLCV and **`market_ranking_funnel_readmodel.v0`** remain a **separate** Market Surface SSOT — they must **not** backfill Observability Missing Truth.
+- **Removed Market Dashboard (`GET &#47;market*`) dummy OHLCV** (product deleted) and historical **`market_ranking_funnel_readmodel.v0`** must **not** backfill Observability Missing Truth — see [`MARKET_DASHBOARD_REMOVED.md`](../MARKET_DASHBOARD_REMOVED.md).
 - **BTC/USD** (and `market_surface_dummy` source kinds) are **forbidden** as Selected Future paper/future/runtime truth.
 
 ## 3. Schema identity
@@ -255,7 +255,7 @@ Governed bundles with `u2b_candidate_validation_only=true` and `candidate_valida
 
 **Futures-first:** Contract validator rejects spot/BTC dummy selected truth; UI never displays rejected payloads.
 
-**GET &#47;market** remains separate SSOT — must not backfill Observability Missing Truth.
+**Removed Market Dashboard (`GET &#47;market*`)** must not backfill Observability Missing Truth — see [`MARKET_DASHBOARD_REMOVED.md`](../MARKET_DASHBOARD_REMOVED.md).
 
 ### Projection-coverage reader (Slice 3 additive — non-truth, not dashboard-wired)
 
