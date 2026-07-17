@@ -1,0 +1,14 @@
+{
+  "canonical_authority_boundary_owner": "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
+  "canonical_offline_authority_owner": "trading.master_v2.double_play_composition_matrix_v1",
+  "ops_evaluator": "src/ops/double_play/specialists.py::evaluate_double_play",
+  "ops_authority_marker": "LEGACY_NON_AUTHORITATIVE",
+  "normative_map": "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md#Slice-E-authority-boundary",
+  "docs_consumers": [
+    "docs/ops/runbooks/double_play.md",
+    "docs/ops/runbooks/double_play_specialists.md"
+  ],
+  "static_contract": "tests/ops/test_ops_double_play_authority_markers_static_contract_v0.py",
+  "new_authority_decision_logic_created": false,
+  "reuse_first": true
+}

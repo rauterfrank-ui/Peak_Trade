@@ -1,0 +1,17 @@
+{
+  "slice_id": "DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0",
+  "allowed_paths": [
+    "docs/ops/runbooks/double_play.md",
+    "docs/ops/runbooks/double_play_specialists.md",
+    "docs/governance/drift_cleanup_plan_v1.md",
+    "tests/ops/test_ops_double_play_authority_markers_static_contract_v0.py",
+    "docs/product/evidence/drift_b03_ops_double_play_authority_markers_v0_20260717T032034Z/"
+  ],
+  "forbidden_touched": [],
+  "live_authorized": false,
+  "orders": false,
+  "shadow": false,
+  "paper": false,
+  "testnet": false,
+  "auto_merge": false
+}
