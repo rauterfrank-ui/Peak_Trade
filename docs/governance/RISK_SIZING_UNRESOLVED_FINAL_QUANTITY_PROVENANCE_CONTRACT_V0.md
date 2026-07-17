@@ -118,7 +118,7 @@ Guards fail on:
 - Economic gate remains fail-closed
 - `LIVE_AUTHORIZED=false`, `ORDERS_ENABLED=false`
 - Runtime bridge not activated
-- No productive `src/**` mutation in this slice
+- No productive `src&#47;**` mutation in this slice
 
 ## Next
 
