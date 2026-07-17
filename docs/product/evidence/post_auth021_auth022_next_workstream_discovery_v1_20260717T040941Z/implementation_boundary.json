@@ -1,0 +1,16 @@
+{
+  "discovery_only": true,
+  "implementation_performed": false,
+  "allowed_in_discovery_pr": [
+    "docs/governance/drift_cleanup_plan_v1.md next-step pointer",
+    "docs/product/evidence/post_auth021_auth022_next_workstream_discovery_v1_*/",
+    "optional short discovery authorization note under docs/governance/"
+  ],
+  "forbidden": [
+    "no productive code",
+    "no dashboard",
+    "no runtime/live/orders",
+    "no B-04 implementation",
+    "no selected-slice implementation (NONE)"
+  ]
+}

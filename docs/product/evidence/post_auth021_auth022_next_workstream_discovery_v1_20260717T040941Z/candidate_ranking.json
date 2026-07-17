@@ -1,0 +1,34 @@
+{
+  "candidates": [
+    {
+      "rank": 1,
+      "slice_id": "NONE",
+      "REAL_GAP_CONFIRMED": false,
+      "reason": "no confirmed REAL_GAP"
+    },
+    {
+      "rank": 2,
+      "slice_id": "DRIFT_SECTION_A_CHECKLIST_RECONCILIATION_V0",
+      "REAL_GAP_CONFIRMED": false,
+      "classification": "AMBIGUOUS"
+    },
+    {
+      "rank": 3,
+      "slice_id": "SSOT_SATELLITE_AUTH021_AUTH022_ANNOTATION_V0",
+      "REAL_GAP_CONFIRMED": false,
+      "classification": "AMBIGUOUS"
+    },
+    {
+      "rank": 4,
+      "slice_id": "DRIFT_B04_REGISTRY_SUITABILITY_REPLAY_READ_MODEL_V0",
+      "REAL_GAP_CONFIRMED": false,
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "rank": 5,
+      "slice_id": "DRIFT_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT_V0",
+      "REAL_GAP_CONFIRMED": false,
+      "requires_runtime_go": true
+    }
+  ]
+}

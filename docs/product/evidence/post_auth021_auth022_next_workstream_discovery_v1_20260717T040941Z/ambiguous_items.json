@@ -1,0 +1,14 @@
+{
+  "count": 2,
+  "items": [
+    {
+      "id": "OBL_SSOT_SATELLITE_ANNOTATION_HYGIENE",
+      "classification": "AMBIGUOUS",
+      "note": "ssot_decision_hygiene / cycle_break still name AUTH-021\u2013023 as docs residual layer without claiming open stale-DAG status; not confirmed REAL_GAP"
+    },
+    {
+      "id": "OBL_SECTION_A_CHECKLIST",
+      "classification": "AMBIGUOUS"
+    }
+  ]
+}

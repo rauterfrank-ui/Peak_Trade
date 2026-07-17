@@ -1,0 +1,12 @@
+{
+  "SELECTED_NEXT_SLICE": "NONE",
+  "SELECTED_SLICE_REAL_GAP_CONFIRMED": false,
+  "SELECTED_SLICE_BEHAVIOR_PRESERVING": true,
+  "SELECTED_SLICE_BOUNDED": true,
+  "SELECTED_SLICE_REQUIRES_RUNTIME_GO": false,
+  "SELECTED_SLICE_REQUIRES_LIVE_OR_CAPITAL_GO": false,
+  "DISCOVERY_ONLY": true,
+  "IMPLEMENTATION_PERFORMED": false,
+  "IMPLEMENTATION_AUTHORIZED_NOW": false,
+  "rationale": "No unambiguous REAL_GAP with concrete missing canonical link after PR #5278. Ambiguous checklist/satellite annotation items are not selected. Intentional policy states (B-04 etc.) are not defects."
+}

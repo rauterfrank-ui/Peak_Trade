@@ -1,0 +1,5 @@
+{
+  "real_gaps_confirmed": 0,
+  "items": [],
+  "note": "After PR #5278 SSOT AUTH-021/AUTH-022 closeout projection, no new confirmed behavior-preserving REAL_GAP with concrete missing canonical link was found on merged main."
+}
