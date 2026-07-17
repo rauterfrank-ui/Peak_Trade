@@ -12,6 +12,6 @@ Header → Hero → **Chart (dominant)** → Decision (secondary) → Observabil
 
 ## Screenshots
 
-- Before: `before/screenshots/full_page_1440x900.png`, `before/screenshots/viewport_1440x900.png`
-- After: `screenshots/full_page_1440x900.png`, `screenshots/viewport_1440x900.png`
+- Before: `before&#47;screenshots&#47;full_page_1440x900.png`, `before&#47;screenshots&#47;viewport_1440x900.png`
+- After: `screenshots&#47;full_page_1440x900.png`, `screenshots&#47;viewport_1440x900.png`
 - Also: 1280×800, 1728×1117 full-page + viewport

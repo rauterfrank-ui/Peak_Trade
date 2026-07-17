@@ -50,8 +50,8 @@ Largest remaining composition gap: **Decision still slightly heavier than Primar
 - `console_and_network_report.json`
 - `repository_snapshot.json`
 - `ssot_consumer_audit.json`
-- `screenshots/full_page_*.png`
-- `screenshots/viewport_*.png`
+- `screenshots&#47;full_page_*.png`
+- `screenshots&#47;viewport_*.png`
 - `MANIFEST.sha256`
 
 ## Governance

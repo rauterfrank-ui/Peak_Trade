@@ -150,11 +150,11 @@ Non-defects (do not prioritize): Chrome harness, Engineering secondary posture, 
 
 ## 7. Screenshot evidence index
 
-- `screenshots/full_page_1440x900.png`
-- `screenshots/full_page_1280x800.png`
-- `screenshots/full_page_1728x1117.png`
-- `screenshots/viewport_1440x900.png`
-- `screenshots/viewport_1280x800.png`
-- `screenshots/viewport_1728x1117.png`
+- `screenshots&#47;full_page_1440x900.png`
+- `screenshots&#47;full_page_1280x800.png`
+- `screenshots&#47;full_page_1728x1117.png`
+- `screenshots&#47;viewport_1440x900.png`
+- `screenshots&#47;viewport_1280x800.png`
+- `screenshots&#47;viewport_1728x1117.png`
 - Geometry: `composition_geometry.json`
 - Browser: `browser_report.json`
