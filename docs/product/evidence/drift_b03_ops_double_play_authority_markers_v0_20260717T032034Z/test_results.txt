@@ -1,0 +1,13 @@
+FOCUSED: 39 passed (authority markers + specialists + slice_e + strategy crosslink)
+BOUNDED: 16 passed (runtime_backtest_parity_and_legacy_boundary_closeout_v1)
+...........                                                              [ 74%]
+tests/ops/test_strategy_to_master_v2_integration_contract_static_crosslink_v0.py . [ 76%]
+.........                                                                [100%]
+
+============================== 39 passed in 1.70s ==============================
+---
+
+tests/trading/master_v2/test_runtime_backtest_parity_and_legacy_boundary_closeout_v1.py . [  6%]
+...............                                                          [100%]
+
+============================== 16 passed in 8.07s ==============================

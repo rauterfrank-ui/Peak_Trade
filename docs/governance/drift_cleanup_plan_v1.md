@@ -100,7 +100,7 @@ Diese Punkte erfordern **Architektur- oder Status-Grammatik-Entscheid**, nicht n
 |------|--------|-------|------------------|--------------------------------|
 | **B-01** | DOC-03, R-04 | Feature-Engine / `missing_features_plan.md` | Plan referenziert zukünftige `src&#47;features/pipeline.py` | Plan-Header „deferred“; Verweis auf `feature_state_map_v1` Class C | <!-- pt:ref-target-ignore -->
 | **B-02** | DOC-12, CR-P2-03 | R&D Strategy Status (stub vs missing) | **CLOSED (2026-07-17)** — Status-Tabelle `stub`/`research-only`/`missing` in FEHLENDE + `rd_strategy_status_grammar_v0` | Grammar-Owner: `docs&#47;features&#47;rd_strategy_status_grammar_v0.json` + `src&#47;governance&#47;rd_strategy_status_grammar_v0.py` | <!-- pt:ref-target-ignore -->
-| **B-03** | DOC-11, WG-07 | Double Play authority visibility | Ops evaluator vs MV2 matrix vs Decision Packet | Ops-Runbook-Abschnitt: `LEGACY_NON_AUTHORITATIVE` + Link `MASTER_V2_DECISION_AUTHORITY_MAP_V1` Slice E |
+| **B-03** | DOC-11, WG-07 | Double Play authority visibility | **CLOSED (2026-07-17)** — Ops runbooks mirror `LEGACY_NON_AUTHORITATIVE` + Slice E crosslink | Owner projection: `evaluate_double_play_authority_boundary_v0` → `docs/ops/runbooks/double_play.md` + `double_play_specialists.md` |
 | **B-04** | WG-01 | Registry → Suitability → Replay sequence | Kein Default-Runtime-Wiring dokumentiert | Neues read-only Spec (analog ECM inventory): „Registry-Suitability-Replay Read Model v0“ |
 | **B-05** | WG-02, WG-03, R-06 | Scope Capital / Risk / Sizing owner split | Runbook v2.6: 3 Owner; Code: merged in `capital_risk_sizing_v1` | Architecture design note: „merged by intent“ vs „gap“ — **kein** Owner-Urteil in Safe-Fixes |
 | **B-06** | WG-07 | Decision Packet vs Integrated Replay | Zwei parallele MV2-Pfade in `master_v2&#47;__init__.py` exports | Decision-authority map Ergänzung: welcher Pfad canonical replay owner ist | <!-- pt:ref-target-ignore -->
@@ -177,7 +177,7 @@ Abhängig von Runtime-/Strategy-Truth — **keine Docs-Only-Closure möglich**.
 | DOC-08 | stale reference | SAFE DOC FIX | A-05 | ✅ |
 | DOC-09 | naming duplication | SAFE DOC FIX | A-04 | ✅ |
 | DOC-10 | path drift | SAFE DOC FIX | A-08 | ✅ |
-| DOC-11 | authority drift | STRUCTURAL | B-03 | Teilweise (markers only) |
+| DOC-11 | authority drift | STRUCTURAL | B-03 | **CLOSED** (ops runbook markers + Slice E) |
 | DOC-12 | stale reference | STRUCTURAL | B-02 | **CLOSED** (grammar v0 + FEHLENDE §5.2.1) |
 
 ---
@@ -223,7 +223,8 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 - [ ] DOC-01, DOC-02: redirect-only, kein widersprüchlicher Volltext
 - [ ] DOC-04: historischer Banner gesetzt
 - [ ] DOC-05, DOC-07, DOC-08, DOC-09, DOC-10: addressed in Section A steps
-- [ ] DOC-06, DOC-11: remain flagged in B/C/D — **not closed**
+- [ ] DOC-06: remain flagged in B/C/D — **not closed**
+- [x] DOC-11 / B-03: closed via ops Double-Play authority markers + Slice E crosslink (2026-07-17)
 - [x] DOC-12 / B-02: closed via `rd_strategy_status_grammar_v0` (2026-07-17)
 - [x] DOC-12 / B-02 post-merge reconciled on main via PR #5270 (`1d099ca746cc5790cd6d35487e788bd3a5da7b44`); evidence: `docs/product/evidence/post_drift_b02_next_workstream_discovery_v1_20260717T031201Z/`
 - [ ] Kein Claim „live operational features > 0“
@@ -233,4 +234,4 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 
 **Plan-Owner:** Drift Cleanup Plan v1  
 **Evidence frozen at:** `2f1672bee8761f8d50def3f6ef31cc803824b2e9`  
-**Nächster Schritt (post B-02):** Discovery selected `DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0` — requires **separate** docs Operator-GO; no implementation in the discovery PR.
+**Nächster Schritt (post B-03):** remaining Section B items (B-01/B-07/B-04…) require separate Operator-GO; no runtime/live activation.

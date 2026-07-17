@@ -1,0 +1,12 @@
+{
+  "note": "B03 does not introduce status-token aliases; authority marker is a single frozen constant.",
+  "authority_marker_aliases_allowed": [],
+  "authority_marker_ssot": "OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY in evaluate_double_play_authority_boundary_v0",
+  "legacy_alias_boundary_only": true,
+  "divergent_labels_forbidden": [
+    "OPS_AUTHORITATIVE",
+    "CANONICAL_AUTHORITATIVE",
+    "LIVE_AUTHORITATIVE",
+    "RUNTIME_AUTHORITATIVE"
+  ]
+}

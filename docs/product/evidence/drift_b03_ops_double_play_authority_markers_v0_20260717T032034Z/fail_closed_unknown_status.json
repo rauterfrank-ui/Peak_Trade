@@ -1,0 +1,8 @@
+{
+  "unknown_marker_fail_closed": true,
+  "mechanism": "static contract rejects unknown/divergent authority labels in ops runbooks; code owner remains fail-closed for system economic evidence on legacy paths",
+  "live_authorized": false,
+  "orders": false,
+  "zero_order_runtime_ready": "false",
+  "master_v2_double_play_authority_used": "false"
+}

@@ -1,0 +1,10 @@
+{
+  "behavior_preserving": true,
+  "core_semantics_changed": false,
+  "double_play_algorithm_changed": false,
+  "master_v2_changed": false,
+  "python_runtime_modules_changed": false,
+  "dashboard_files_changed": false,
+  "ops_evaluate_double_play_authority_unchanged": "LEGACY_NON_AUTHORITATIVE",
+  "related_tests_pass": true
+}

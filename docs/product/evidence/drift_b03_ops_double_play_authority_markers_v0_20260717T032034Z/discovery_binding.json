@@ -1,0 +1,8 @@
+{
+  "selected_next_slice": "DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0",
+  "discovery_pr": 5271,
+  "discovery_evidence": "docs/product/evidence/post_drift_b02_next_workstream_discovery_v1_20260717T031201Z",
+  "acceptance_criteria_source": "selected_next_slice.json",
+  "real_gap_confirmed_on_main": true,
+  "already_complete_before_impl": false
+}
