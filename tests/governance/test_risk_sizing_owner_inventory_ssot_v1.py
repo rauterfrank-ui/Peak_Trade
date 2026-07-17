@@ -119,7 +119,7 @@ def test_ssot_json_parseable_and_pins_inventory_not_consolidation() -> None:
     assert markers["ORDERS_ENABLED"] is False
     assert markers["ECONOMIC_GATE_REMAINS_FAIL_CLOSED"] is True
     assert payload["canonical_status"]["repo_wide"] == "UNRESOLVED"
-    assert payload["next_plan_item"] == "P2_LEGACY_ORDER_INTENT"
+    assert payload["next_plan_item"] == "P2_LEGACY_ORDER_INTENT_DECOMMISSION_REQUIRES_OPERATOR_GO"
     assert payload["promotion_owner_status"] == "DONE"
 
 

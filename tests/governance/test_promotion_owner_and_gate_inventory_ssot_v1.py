@@ -85,7 +85,9 @@ def test_ssot_json_pins_canonical_owner_and_count() -> None:
     assert owner["primary_callable"] == "evaluate_promotion_economic_gate_v1"
     assert payload["risk_sizing_claimed_consolidated"] is False
     assert payload["risk_sizing_inventory_status"] == "DONE"
-    assert payload["next_plan_item"] == "P2_LEGACY_ORDER_INTENT"
+    assert payload["legacy_order_intent_inventory_status"] == "DONE"
+    assert payload["legacy_order_intent_claimed_decommissioned"] is False
+    assert payload["next_plan_item"] == "P2_LEGACY_ORDER_INTENT_DECOMMISSION_REQUIRES_OPERATOR_GO"
 
 
 def test_gate_module_is_sole_owner_string_definition() -> None:

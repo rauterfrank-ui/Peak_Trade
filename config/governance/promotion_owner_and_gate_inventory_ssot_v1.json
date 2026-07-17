@@ -50,7 +50,9 @@
     "src/meta/learning_loop/comparison_promotion_policy_decision_v1.py",
     "src/experiments/topn_promotion.py"
   ],
-  "next_plan_item": "P2_LEGACY_ORDER_INTENT",
+  "next_plan_item": "P2_LEGACY_ORDER_INTENT_DECOMMISSION_REQUIRES_OPERATOR_GO",
   "risk_sizing_inventory_status": "DONE",
-  "risk_sizing_claimed_consolidated": false
+  "risk_sizing_claimed_consolidated": false,
+  "legacy_order_intent_inventory_status": "DONE",
+  "legacy_order_intent_claimed_decommissioned": false
 }
