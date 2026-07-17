@@ -1,9 +1,0 @@
-BEFORE PR-D:
-  Owner: src/webui/market_surface.py create_market_router → market_v0_page
-  Route: GET /market
-  Template: templates/peak_trade_dashboard/market_v0.html
-  Behavior: architecture reset shell only
-  Markers: ARCHITECTURE RESET IN PROGRESS, READ ONLY, NO TRADING AUTHORITY
-  Query params ignored
-  Prohibited from route: build_market_v0_page_template_context, build_static_dashboard_display_dict,
-    resolve_market_page_data, build_market_dashboard_current_state_display_context, load_ohlcv_dataframe, build_market_payload

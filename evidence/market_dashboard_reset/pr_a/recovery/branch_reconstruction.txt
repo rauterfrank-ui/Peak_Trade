@@ -1,7 +1,0 @@
-TARGET_BRANCH=fix/market-dashboard-architecture-reset-v1
-EXPECTED_ORIGIN_MAIN=cf416c03c3238263b994d46cfbb3e96d02adc56b
-HEAD=cf416c03c3238263b994d46cfbb3e96d02adc56b
-ORIGIN_MAIN=cf416c03c3238263b994d46cfbb3e96d02adc56b
-AHEAD_BEHIND=0	0
-DIRTY_WORK_REAPPLIED=false
-RECONSTRUCTION=switch_detach_delete_recreate_from_origin_main

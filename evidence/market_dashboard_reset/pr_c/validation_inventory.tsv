@@ -1,5 +1,0 @@
-surface	entry_point	notes
-validation.py	MarketDashboardReadModelContractError + require_* helpers	fail-closed; no wall clock
-contracts.py	__post_init__ on each dataclass	immutable frozen contracts
-serialization.py	to_json_dict / dumps_json / loads_page_snapshot_json	allow_nan=False; deterministic
-adapters/*	adapt_*_v1 functions	project or UnavailableSnapshotV1

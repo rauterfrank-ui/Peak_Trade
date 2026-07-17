@@ -1,7 +1,0 @@
-M	docs/webui/MARKET_DASHBOARD_READMODELS_V1.md
-M	src/webui/market_dashboard_readmodels_v1/__init__.py
-M	src/webui/market_surface.py
-M	templates/peak_trade_dashboard/base.html
-M	tests/webui/test_market_architecture_reset_shell_pr_a_v1.py
-M	tests/webui/test_market_dashboard_adapters_v1_static_guards.py
-M	tests/webui/test_market_dashboard_readmodels_v1_static_guards.py

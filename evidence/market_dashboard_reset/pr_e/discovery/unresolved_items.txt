@@ -1,8 +1,0 @@
-LEGACY_STILL_REFERENCED (retain until later teardown slice):
-- templates/peak_trade_dashboard/partials/market_* (quarantine include tree + visual/unit tests)
-- src/webui/market_dashboard_current_state_*
-- src/webui/market_visual_operator_surface_v1/
-- src/webui/futures_read_only_market_dashboard_runtime_v0.py
-- build_market_v0_page_template_context and related helpers in market_surface.py
-- GET /api/market/ohlcv legacy JSON path
-CANONICAL_SAFETY_AUTHORITY_BOUND remains NOT_BOUND (no consolidated producer)

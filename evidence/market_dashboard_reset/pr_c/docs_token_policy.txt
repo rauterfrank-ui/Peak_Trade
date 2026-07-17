@@ -1,3 +1,0 @@
-== Docs token policy preflight (changed .md vs origin/main) ==
-✅ No Markdown files to check (changed files (base: origin/main))
-OK: docs token policy preflight passed

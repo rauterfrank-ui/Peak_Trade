@@ -1,8 +1,0 @@
-exact_command=uv run pytest tests/webui/test_market_dashboard_readmodels_v1.py tests/webui/test_market_dashboard_adapters_v1.py tests/webui/test_market_dashboard_adapters_v1_static_guards.py tests/webui/test_market_dashboard_readmodels_v1_static_guards.py tests/webui/test_market_dashboard_product_surface_pr_d_v1.py tests/webui/test_market_architecture_reset_shell_pr_a_v1.py -q
-start=2026-07-17T09:31:46Z
-end=2026-07-17T09:31:48Z
-selector_mode=PR_BOUNDED_FULL
-selector_reason=category_unknown_requires_full
-start=2026-07-17T09:33:13Z
-end=2026-07-17T09:33:52Z
-command=uv run pytest <pr_bounded_targets + market_dashboard PR-D owners>
