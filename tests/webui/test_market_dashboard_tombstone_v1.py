@@ -102,6 +102,8 @@ def test_tombstone_doc_present() -> None:
     text = TOMBSTONE.read_text(encoding="utf-8")
     assert "intentionally" in text.lower()
     assert "/market" in text
+    assert "&#47;market" not in text
+    assert "&amp;#47;market" not in text
     assert "not authorized" in text.lower() or "no rebuild" in text.lower()
 
 
