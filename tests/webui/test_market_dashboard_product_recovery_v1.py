@@ -43,8 +43,9 @@ def test_empty_chart_compact_markers_in_template() -> None:
     assert "Keine OHLCV" in text
     assert "Keine synthetischen Kerzen" in text
     assert "Marktchart" in text
-    assert "Chart-Diagnostik (sekundär)" not in text
     assert "pt-reductive-chart-empty" in text
+    empty_branch = text.split("{% if chart_empty %}", 1)[1].split("{% else %}", 1)[0]
+    assert "Chart-Diagnostik" not in empty_branch
     assert "Market chart" not in text
     assert "Chart diagnostics (secondary)" not in text
     assert "No OHLCV bars for this query" not in text
