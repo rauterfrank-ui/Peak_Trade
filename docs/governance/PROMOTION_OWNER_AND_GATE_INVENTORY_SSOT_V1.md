@@ -2,7 +2,7 @@
 
 **Status:** BINDING inventory / pointer (docs + static contract only)  
 **Date:** 2026-07-17  
-**Plan item:** `P2_GOVERNANCE / PROMOTION_OWNER`  
+**Plan item:** `P2_GOVERNANCE &#47; PROMOTION_OWNER`  
 **Machine inventory:** [`config/governance/promotion_owner_and_gate_inventory_ssot_v1.json`](../../config/governance/promotion_owner_and_gate_inventory_ssot_v1.json)
 
 ```
@@ -82,16 +82,16 @@ Status / parity / evidence surfaces that report promotion-boundary state:
 
 - `docs/PROMOTION_LOOP_V0.md`
 - `docs/ops/specs/MASTER_V2_PROMOTION_STATE_MACHINE_V1.md`
-- `docs/LEARNING_PROMOTION_LOOP_*`, `docs/learning_promotion/**`
+- `docs&#47;LEARNING_PROMOTION_LOOP_*`, `docs&#47;learning_promotion&#47;**`
 - Runbook / progress registry mentions of promotion (non-authorizing)
 
 ### TEST / FIXTURE
 
 - `tests/governance/test_promotion_economic_gate_v1.py`
 - `tests/ops/test_step29n_promotion_economic_gate_binding_fail_closed_contract_v0.py`
-- `tests/research/test_*promotion_economic_gate*`
-- `tests/trading/master_v2/test_promotion_gate_boundary_*`
-- Related scripts under `scripts/ops/*promotion*`, `scripts/run_promotion_proposal_cycle.py`
+- `tests&#47;research&#47;test_*promotion_economic_gate*`
+- `tests&#47;trading&#47;master_v2&#47;test_promotion_gate_boundary_*`
+- Related scripts under `scripts&#47;ops&#47;*promotion*`, `scripts/run_promotion_proposal_cycle.py`
 
 ### LEGACY / DOMAIN-SCOPED (not a second productive live-promotion gate)
 
@@ -130,4 +130,4 @@ Do **not** delete legacy/domain surfaces without a separate call-graph + contrac
 
 ## 6. Next plan item after this slice
 
-`P2 Risk/Sizing Inventory` (CRS / PositionSizer / `core.position_sizing`) — inventory only; **not** claimed consolidated by this PR.
+`P2 Risk&#47;Sizing Inventory` (CRS / PositionSizer / `core.position_sizing`) — inventory only; **not** claimed consolidated by this PR.
