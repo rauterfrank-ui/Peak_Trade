@@ -1,0 +1,18 @@
+{
+  "evidence_schema_version": "canonical_trading_decision_evidence_v1",
+  "decision_outcome": "hold",
+  "selected_side": "none",
+  "reason_codes": [
+    "ranking_selected_instrument_bound",
+    "execution_offline_hold",
+    "review_evidence_bound"
+  ],
+  "semantic_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "decision_id": "review-decision-ethusdt-v1",
+  "effective_at": "2026-05-27T00:00:00+00:00",
+  "evidence_status": "review_fixture_pass",
+  "blocker_codes": [
+    "promotion_blocked_read_only_review",
+    "orders_disabled"
+  ]
+}

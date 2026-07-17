@@ -1,7 +1,7 @@
 {#
-  Market Dashboard Product Surface v1 (PR-D)
+  Market Dashboard Product Surface v1 (PR-F)
 
-  Read-only consumer of the canonical page aggregate via presenter context.
+  Dense read-only futures terminal. Consumes presenter context only.
   No domain logic, no order controls, no fabricated market/authority facts.
 #}
 {% extends "base.html" %}
@@ -28,12 +28,12 @@
   <div class="mdps-global-header__inner">
     <div class="mdps-global-header__brand">
       <a href="/" class="mdps-link-quiet">Peak Trade</a>
-      <span class="mdps-global-header__title">{{ header.title }}</span>
+      <span class="mdps-global-header__title">Market Dashboard</span>
     </div>
     <div class="mdps-global-header__meta" data-market-dashboard-header-meta-v1="true">
-      <span data-market-header-instrument-v1="true">{{ header.instrument_id }}</span>
-      <span data-market-header-venue-v1="true">{{ header.venue }}</span>
-      <span data-market-header-freshness-v1="true">{{ header.aggregate_freshness_label }}</span>
+      <span class="mdps-meta-pill" data-market-header-instrument-v1="true">{{ header.instrument_id }}</span>
+      <span class="mdps-meta-pill" data-market-header-venue-v1="true">{{ header.venue }}</span>
+      <span class="mdps-meta-pill" data-market-header-freshness-v1="true">{{ header.aggregate_freshness_label }}</span>
       <span class="mdps-badge mdps-badge--readonly" data-market-header-readonly-v1="true">{{ header.read_only_label }}</span>
       <span
         class="mdps-badge mdps-badge--not-bound"
@@ -58,90 +58,223 @@
   data-page-aggregate-owner="{{ page_aggregate_owner|e }}"
   data-presenter-owner="{{ presenter_owner|e }}"
 >
-  {# PRIMARY MARKET WORKSPACE #}
+  {# PRIMARY MARKET WORKSPACE: chart + ranking side rail #}
   <section
     class="mdps-workspace"
     data-market-primary-workspace-v1="true"
     aria-labelledby="mdps-workspace-title"
   >
-    <div class="mdps-workspace__head">
-      <h1 id="mdps-workspace-title" class="mdps-h1">Primary Market Workspace</h1>
-      <p class="mdps-sub">
-        {% if market_workspace.available %}
-          {{ market_workspace.instrument_id }} · {{ market_workspace.venue }}
-          {% if market_workspace.last_price_display %} · {{ market_workspace.last_price_display }}{% endif %}
-        {% else %}
-          {{ market_workspace.availability_label }}
-          {% if market_workspace.reason_code %} · {{ market_workspace.reason_code }}{% endif %}
-        {% endif %}
-      </p>
-    </div>
-
-    <div
-      class="mdps-chart-panel"
-      data-market-chart-panel-v1="true"
-      data-market-chart-status="{{ market_workspace.chart_status }}"
-      {% if not market_workspace.chart_available %}data-market-chart-unavailable-v1="true"{% endif %}
-    >
-      {% if market_workspace.chart_available and market_workspace.chart_bars %}
-        {% set bars = market_workspace.chart_bars %}
-        {% set n = bars|length %}
-        {% set mm = namespace(minv=0.0, maxv=0.0, first=true) %}
-        {% for bar in bars %}
-          {% set lo = bar.low|float %}
-          {% set hi = bar.high|float %}
-          {% if mm.first %}
-            {% set mm.minv = lo %}
-            {% set mm.maxv = hi %}
-            {% set mm.first = false %}
-          {% else %}
-            {% if lo < mm.minv %}{% set mm.minv = lo %}{% endif %}
-            {% if hi > mm.maxv %}{% set mm.maxv = hi %}{% endif %}
-          {% endif %}
-        {% endfor %}
-        {% set span = mm.maxv - mm.minv %}
-        {% if span <= 0 %}{% set span = 1.0 %}{% endif %}
-        <svg
-          class="mdps-chart-svg"
-          viewBox="0 0 1000 320"
-          role="img"
-          aria-label="OHLCV close series"
-          data-market-chart-svg-v1="true"
-        >
-          {% for bar in bars %}
-            {% set i = loop.index0 %}
-            {% set x = (i / (n - 1 if n > 1 else 1)) * 980 + 10 %}
-            {% set y_close = 300 - ((bar.close|float - mm.minv) / span) * 280 %}
-            {% if not loop.first %}
-              {% set prev = bars[loop.index0 - 1] %}
-              {% set x0 = ((i - 1) / (n - 1 if n > 1 else 1)) * 980 + 10 %}
-              {% set y0 = 300 - ((prev.close|float - mm.minv) / span) * 280 %}
-              <line x1="{{ x0 }}" y1="{{ y0 }}" x2="{{ x }}" y2="{{ y_close }}" class="mdps-chart-line" />
+    <div class="mdps-workspace__main">
+      <div class="mdps-workspace__head">
+        <div>
+          <h1 id="mdps-workspace-title" class="mdps-h1">
+            {% if market_workspace.available %}
+              {{ market_workspace.instrument_id }}
+            {% else %}
+              Market
             {% endif %}
-          {% endfor %}
-        </svg>
-        <p class="mdps-chart-meta" data-market-chart-meta-v1="true">
-          Bars {{ bars|length }}
-          {% if market_workspace.freshness_state %} · {{ market_workspace.freshness_state }}{% endif %}
-          · source-backed · no synthetic candles
-        </p>
-      {% else %}
-        <div
-          class="mdps-unavailable-panel"
-          role="status"
-          data-market-chart-unavailable-panel-v1="true"
-        >
-          <p class="mdps-unavailable-panel__label">{{ market_workspace.chart_status_label|default("UNAVAILABLE") }}</p>
-          <p class="mdps-unavailable-panel__detail">
-            Chart data is not available from a canonical market source.
-            No synthetic candles or dummy price paths are rendered.
+          </h1>
+          <p class="mdps-sub">
+            {% if market_workspace.available %}
+              {{ market_workspace.venue }}
+              {% if market_workspace.freshness_state %} · {{ market_workspace.freshness_state }}{% endif %}
+            {% else %}
+              {{ market_workspace.availability_label }}
+            {% endif %}
           </p>
-          {% if market_workspace.reason_code %}
-          <p class="mdps-unavailable-panel__code">{{ market_workspace.reason_code }}</p>
+        </div>
+        <div class="mdps-price-strip" data-market-price-strip-v1="true">
+          {% if market_workspace.available and market_workspace.last_price_display %}
+            <span class="mdps-price-strip__last" data-market-last-price-v1="true">{{ market_workspace.last_price_display }}</span>
+            {% if market_workspace.change_pct_display %}
+              <span class="mdps-price-strip__chg" data-market-change-v1="true">{{ market_workspace.change_abs_display }} ({{ market_workspace.change_pct_display }})</span>
+            {% endif %}
+            {% if market_workspace.volume_display %}
+              <span class="mdps-price-strip__vol" data-market-volume-v1="true">Vol {{ market_workspace.volume_display }}</span>
+            {% endif %}
+          {% elif not market_workspace.available %}
+            <span class="mdps-muted">{{ market_workspace.reason_code }}</span>
           {% endif %}
         </div>
-      {% endif %}
+      </div>
+
+      <div
+        class="mdps-chart-panel"
+        data-market-chart-panel-v1="true"
+        data-market-chart-status="{{ market_workspace.chart_status }}"
+        {% if not market_workspace.chart_available %}data-market-chart-unavailable-v1="true"{% endif %}
+      >
+        {% if market_workspace.chart_available and market_workspace.chart_bars %}
+          {% set bars = market_workspace.chart_bars %}
+          {% set n = bars|length %}
+          {% set mm = namespace(minv=0.0, maxv=0.0, first=true) %}
+          {% set vmax = namespace(val=0.0) %}
+          {% for bar in bars %}
+            {% set lo = bar.low|float %}
+            {% set hi = bar.high|float %}
+            {% set vol = bar.volume|default(0)|float %}
+            {% if vol > vmax.val %}{% set vmax.val = vol %}{% endif %}
+            {% if mm.first %}
+              {% set mm.minv = lo %}
+              {% set mm.maxv = hi %}
+              {% set mm.first = false %}
+            {% else %}
+              {% if lo < mm.minv %}{% set mm.minv = lo %}{% endif %}
+              {% if hi > mm.maxv %}{% set mm.maxv = hi %}{% endif %}
+            {% endif %}
+          {% endfor %}
+          {% set sp_raw = mm.maxv - mm.minv %}
+          {% if sp_raw < 1e-12 %}
+            {% set pad = [mm.maxv * 0.05, 1.0]|max %}
+            {% set plot_min = mm.minv - pad %}
+            {% set plot_max = mm.maxv + pad %}
+          {% else %}
+            {% set pad = sp_raw * 0.075 %}
+            {% set plot_min = mm.minv - pad %}
+            {% set plot_max = mm.maxv + pad %}
+          {% endif %}
+          {% set sp_use = plot_max - plot_min if (plot_max - plot_min) >= 1e-12 else 1e-12 %}
+          {% set vol_max_use = vmax.val if vmax.val > 0 else 1.0 %}
+          {% set vb_w = 1000 %}
+          {% set vb_h = 390 %}
+          {% set pad_l = 68 %}
+          {% set pad_r = 12 %}
+          {% set pad_t = 12 %}
+          {% set price_h = 268 %}
+          {% set vol_h = 72 %}
+          {% set gap = 10 %}
+          {% set price_top = pad_t %}
+          {% set price_bot = price_top + price_h %}
+          {% set vol_top = price_bot + gap %}
+          {% set vol_bot = vol_top + vol_h %}
+          {% set time_y = vol_bot + 18 %}
+          {% set plot_w = vb_w - pad_l - pad_r %}
+          {% set price_label_count = 6 %}
+          {% if n == 1 %}
+            {% set time_indices = [0] %}
+          {% else %}
+            {% set time_indices = [0, (n - 1) // 4, (n - 1) // 2, (3 * (n - 1)) // 4, n - 1] %}
+          {% endif %}
+          <svg
+            class="mdps-chart-svg"
+            viewBox="0 0 {{ vb_w }} {{ vb_h }}"
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="OHLCV candlestick chart"
+            data-market-chart-svg-v1="true"
+            data-market-chart-candles-v1="true"
+            data-market-chart-bar-count-v1="{{ n }}"
+            data-market-chart-width-v1="{{ vb_w }}"
+            data-market-chart-height-v1="{{ vb_h }}"
+          >
+            <rect x="0" y="0" width="{{ vb_w }}" height="{{ vb_h }}" fill="rgba(2,6,23,0.35)" />
+            <g data-market-chart-price-axis-v1="true" aria-hidden="true">
+              {% for gi in range(price_label_count) %}
+              {% set gy = price_top + (price_h * gi / (price_label_count - 1)) %}
+              {% set price_val = plot_max - (sp_use * gi / (price_label_count - 1)) %}
+              {% if sp_raw >= 100 %}
+                {% set price_txt = "%.0f"|format(price_val) %}
+              {% elif sp_raw >= 1 %}
+                {% set price_txt = "%.2f"|format(price_val) %}
+              {% else %}
+                {% set price_txt = "%.4f"|format(price_val) %}
+              {% endif %}
+              <line x1="{{ pad_l }}" y1="{{ gy|round(2) }}" x2="{{ vb_w - pad_r }}" y2="{{ gy|round(2) }}" stroke="rgba(148,163,184,0.14)" stroke-width="1" />
+              <text x="{{ pad_l - 6 }}" y="{{ (gy + 3.5)|round(2) }}" text-anchor="end" fill="rgba(148,163,184,0.88)" font-size="9" font-family="ui-monospace, monospace" data-market-chart-price-label-v1="true">{{ price_txt }}</text>
+              {% endfor %}
+            </g>
+            {% for bar in bars %}
+            {% set loop_idx = loop.index0 %}
+            {% set o = bar.open|float %}
+            {% set h = bar.high|float %}
+            {% set l = bar.low|float %}
+            {% set c = bar.close|float %}
+            {% set vol = bar.volume|default(0)|float %}
+            {% if o >= c %}{% set top_pri = o %}{% set bot_pri = c %}{% else %}{% set top_pri = c %}{% set bot_pri = o %}{% endif %}
+            {% set up = c >= o %}
+            {% set slot_w = plot_w / n %}
+            {% set cx = pad_l + (loop_idx + 0.5) * slot_w %}
+            {% set cw0 = [10, slot_w * 0.58]|min %}
+            {% set cw_base = [3.0, cw0]|max %}
+            {% set cw = [cw_base, slot_w * 0.82]|min %}
+            {% set y_hi = price_top + (plot_max - h) / sp_use * price_h %}
+            {% set y_lo = price_top + (plot_max - l) / sp_use * price_h %}
+            {% set y_body_top = price_top + (plot_max - top_pri) / sp_use * price_h %}
+            {% set y_body_bot = price_top + (plot_max - bot_pri) / sp_use * price_h %}
+            {% set bh0 = y_body_bot - y_body_top %}
+            {% set bh = [bh0, 1.0]|max %}
+            {% set vol_bar_h = (vol / vol_max_use) * (vol_h - 4) if vol_max_use > 0 else 0 %}
+            {% set vol_y = vol_bot - vol_bar_h %}
+            <g data-market-chart-candle-v1="true" {% if up %}data-up="true"{% else %}data-down="true"{% endif %}>
+              <line x1="{{ cx|round(2) }}" y1="{{ y_hi|round(2) }}" x2="{{ cx|round(2) }}" y2="{{ y_lo|round(2) }}" stroke="{% if up %}rgba(52,211,153,0.85){% else %}rgba(244,63,94,0.88){% endif %}" stroke-width="1.1" />
+              <rect x="{{ (cx - cw / 2)|round(2) }}" y="{{ y_body_top|round(2) }}" width="{{ cw|round(2) }}" height="{{ bh|round(2) }}" rx="0.6" fill="{% if up %}rgba(52,211,153,0.35){% else %}rgba(244,63,94,0.32){% endif %}" stroke="{% if up %}rgba(52,211,153,0.55){% else %}rgba(244,63,94,0.5){% endif %}" stroke-width="0.9" />
+            </g>
+            <rect
+              x="{{ (cx - cw / 2)|round(2) }}"
+              y="{{ vol_y|round(2) }}"
+              width="{{ cw|round(2) }}"
+              height="{{ [vol_bar_h, 0.5]|max|round(2) }}"
+              rx="0.4"
+              fill="{% if up %}rgba(52,211,153,0.45){% else %}rgba(244,63,94,0.42){% endif %}"
+              data-market-chart-volume-bar-v1="true"
+            />
+            {% endfor %}
+            <line x1="{{ pad_l }}" y1="{{ vol_top - 2 }}" x2="{{ vb_w - pad_r }}" y2="{{ vol_top - 2 }}" stroke="rgba(148,163,184,0.2)" stroke-width="1" />
+            <text x="{{ pad_l - 6 }}" y="{{ vol_top + 10 }}" text-anchor="end" fill="rgba(148,163,184,0.7)" font-size="8" font-family="ui-monospace, monospace">Vol</text>
+            <g data-market-chart-time-axis-v1="true" aria-hidden="true">
+              {% for ti in time_indices %}
+              {% set slot_w_t = plot_w / n %}
+              {% set cx_t = pad_l + (ti + 0.5) * slot_w_t %}
+              {% set ts_bar = bars[ti] %}
+              {% set ts_raw = ts_bar.ts|string %}
+              {% set ts_short = ts_raw[5:10] if ts_raw|length >= 10 else ts_raw %}
+              <text x="{{ cx_t|round(2) }}" y="{{ time_y|round(2) }}" text-anchor="middle" fill="rgba(148,163,184,0.88)" font-size="9" font-family="ui-monospace, monospace" data-market-chart-time-label-v1="true">{{ ts_short }}</text>
+              {% endfor %}
+            </g>
+          </svg>
+          <p class="mdps-chart-meta" data-market-chart-meta-v1="true">
+            {{ n }} OHLCV bars · source-backed · no synthetic candles
+            {% if market_workspace.chart_status == "stale" %} · STALE{% endif %}
+          </p>
+        {% else %}
+          <div
+            class="mdps-unavailable-panel"
+            role="status"
+            data-market-chart-unavailable-panel-v1="true"
+          >
+            <p class="mdps-unavailable-panel__label">{{ market_workspace.chart_status_label|default("UNAVAILABLE") }}</p>
+            <p class="mdps-unavailable-panel__detail">
+              Chart data is not available from a canonical market source.
+              No synthetic candles or dummy price paths are rendered.
+            </p>
+          </div>
+        {% endif %}
+      </div>
     </div>
+
+    <aside
+      class="mdps-watchlist"
+      data-market-ranking-v1="true"
+      aria-label="Ranking watchlist"
+    >
+      <h2 class="mdps-h2">Watchlist</h2>
+      {% if ranking.available %}
+        <p class="mdps-muted mdps-watchlist__selected">
+          Selected: <strong data-market-ranking-selected-v1="true">{{ ranking.selected_instrument_id or "—" }}</strong>
+        </p>
+        <ol class="mdps-rank-list" data-market-ranking-list-v1="true">
+          {% for item in ranking['items'][:12] %}
+          <li {% if item.selected %}data-selected="true" class="is-selected"{% endif %}>
+            <span class="mdps-rank-list__rank">#{{ item.rank }}</span>
+            <span class="mdps-rank-list__sym">{{ item.instrument_id }}</span>
+            {% if item.score_display %}<span class="mdps-rank-list__score">{{ item.score_display }}</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <p class="mdps-muted" data-market-ranking-unavailable-v1="true">{{ ranking.availability_label }}</p>
+      {% endif %}
+    </aside>
   </section>
 
   {# CANONICAL DECISION STRIP #}
@@ -150,124 +283,95 @@
     data-market-canonical-decision-v1="true"
     aria-labelledby="mdps-decision-title"
   >
-    <h2 id="mdps-decision-title" class="mdps-h2">Canonical Decision</h2>
+    <div class="mdps-decision__label">
+      <h2 id="mdps-decision-title" class="mdps-h2">Canonical Decision</h2>
+    </div>
     {% if decision.available %}
       <div class="mdps-decision__grid" data-market-decision-available-v1="true">
-        <div><span class="mdps-k">Decision</span><span class="mdps-v">{{ decision.decision_status }}</span></div>
-        <div><span class="mdps-k">Direction</span><span class="mdps-v">{{ decision.direction }}</span></div>
+        <div><span class="mdps-k">Decision</span><span class="mdps-v" data-market-decision-status-v1="true">{{ decision.decision_status }}</span></div>
+        <div><span class="mdps-k">Direction</span><span class="mdps-v" data-market-decision-direction-v1="true">{{ decision.direction }}</span></div>
         <div><span class="mdps-k">Evidence</span><span class="mdps-v">{{ decision.evidence_status }}</span></div>
-        <div><span class="mdps-k">Effective</span><span class="mdps-v">{{ decision.effective_at or "—" }}</span></div>
+        <div data-market-safety-execution-strip-v1="true">
+          <span class="mdps-k">Authority / Exec</span>
+          <span class="mdps-v">
+            <span data-market-safety-authority-v1="true" data-safety-authority-state="{{ safety_authority.safety_authority_state }}">{{ safety_authority.compact_label }}</span>
+            ·
+            <span data-market-execution-state-v1="true">{% if execution.available %}{{ execution.intent_state }} / {{ execution.operating_mode }}{% else %}{{ execution.availability_label }}{% endif %}</span>
+          </span>
+        </div>
       </div>
       {% if decision.reason_codes %}
-      <ul class="mdps-code-list" data-market-decision-reason-codes-v1="true">
-        {% for code in decision.reason_codes %}
-        <li>{{ code }}</li>
-        {% endfor %}
-      </ul>
+      <div class="mdps-decision__codes">
+        <span class="mdps-k">Reasons</span>
+        <ul class="mdps-code-list mdps-code-list--inline" data-market-decision-reason-codes-v1="true">
+          {% for code in decision.reason_codes %}
+          <li>{{ code }}</li>
+          {% endfor %}
+        </ul>
+      </div>
       {% endif %}
-      {% if decision.blockers %}
-      <ul class="mdps-code-list mdps-code-list--blockers" data-market-decision-blockers-v1="true">
-        {% for code in decision.blockers %}
-        <li>{{ code }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
+      <div class="mdps-decision__codes">
+        <span class="mdps-k">Blockers</span>
+        {% if decision.blockers %}
+        <ul class="mdps-code-list mdps-code-list--inline mdps-code-list--blockers" data-market-decision-blockers-v1="true">
+          {% for code in decision.blockers %}
+          <li>{{ code }}</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <span class="mdps-muted" data-market-decision-blockers-v1="true">none reported</span>
+        {% endif %}
+      </div>
     {% else %}
       <div class="mdps-unavailable-inline" data-market-decision-unavailable-v1="true">
-        <span class="mdps-badge mdps-badge--missing">{{ decision.availability_label }}</span>
-        <span>{{ decision.reason_code }}</span>
+        <span>{{ decision.availability_label }}</span>
+        {% if decision.reason_code %}<span class="mdps-muted">{{ decision.reason_code }}</span>{% endif %}
       </div>
     {% endif %}
   </section>
 
-  {# SAFETY / EXECUTION AVAILABILITY #}
-  <section
-    class="mdps-safety-exec"
-    data-market-safety-execution-strip-v1="true"
-    aria-label="Safety authority and execution availability"
-  >
-    <div
-      class="mdps-strip-card"
-      data-market-safety-authority-v1="true"
-      data-safety-authority-state="{{ safety_authority.safety_authority_state }}"
-    >
-      <h2 class="mdps-h2">Safety / Authority</h2>
-      <p class="mdps-badge mdps-badge--not-bound">{{ safety_authority.compact_label }}</p>
-      <p class="mdps-muted">
-        Consolidated canonical SafetyAuthority producer is not bound.
-        This page does not claim execution is safe, allowed, or blocked.
-      </p>
-      {% if safety_authority.reason_code %}
-      <p class="mdps-unavailable-panel__code">{{ safety_authority.reason_code }}</p>
-      {% endif %}
-    </div>
-    <div class="mdps-strip-card" data-market-execution-state-v1="true">
-      <h2 class="mdps-h2">Execution State</h2>
-      {% if execution.available %}
-        <p class="mdps-v">{{ execution.intent_state }} · {{ execution.operating_mode }}</p>
-      {% else %}
-        <p class="mdps-badge mdps-badge--missing">{{ execution.availability_label }}</p>
-        <p class="mdps-muted">{{ execution.reason_code }}</p>
-      {% endif %}
-    </div>
-  </section>
-
-  {# SECONDARY ANALYSIS #}
+  {# SECONDARY ANALYSIS — dense, no repeated status billboards #}
   <section class="mdps-secondary" data-market-secondary-analysis-v1="true" aria-label="Secondary analysis">
-    <div class="mdps-secondary__card" data-market-double-play-v1="true">
-      <h2 class="mdps-h2">Double Play Composition</h2>
+    <div class="mdps-secondary__panel" data-market-double-play-v1="true">
+      <h2 class="mdps-h2">Double Play</h2>
       {% if double_play.available %}
         <p class="mdps-v">{{ double_play.composition_result }} · {{ double_play.arbitration_status }}</p>
+        <p class="mdps-muted">Bull {{ double_play.bull_status }}{% if double_play.bull_score_display %} ({{ double_play.bull_score_display }}){% endif %} · Bear {{ double_play.bear_status }}{% if double_play.bear_score_display %} ({{ double_play.bear_score_display }}){% endif %}</p>
       {% else %}
-        <p class="mdps-badge mdps-badge--missing">{{ double_play.availability_label }}</p>
-        <p class="mdps-muted">{{ double_play.reason_code }}</p>
+        <p class="mdps-muted">{{ double_play.availability_label }}</p>
       {% endif %}
     </div>
-    <div class="mdps-secondary__card" data-market-ranking-v1="true">
-      <h2 class="mdps-h2">Ranking / Watchlist</h2>
-      {% if ranking.available %}
-        <p class="mdps-muted">Selected: {{ ranking.selected_instrument_id or "NOT PROVIDED" }}</p>
-        <ol class="mdps-rank-list">
-          {% for item in ranking.items[:8] %}
-          <li {% if item.selected %}data-selected="true"{% endif %}>
-            #{{ item.rank }} {{ item.instrument_id }}
-            {% if item.score_display %} · {{ item.score_display }}{% endif %}
-          </li>
-          {% endfor %}
-        </ol>
-      {% else %}
-        <p class="mdps-badge mdps-badge--missing">{{ ranking.availability_label }}</p>
-        <p class="mdps-muted">{{ ranking.reason_code }}</p>
-      {% endif %}
-    </div>
-    <div class="mdps-secondary__card" data-market-economic-v1="true">
-      <h2 class="mdps-h2">Economic Summary</h2>
+    <div class="mdps-secondary__panel" data-market-economic-v1="true">
+      <h2 class="mdps-h2">Economic</h2>
       {% if economic.available %}
         <p class="mdps-v">{{ economic.economic_gate_status }}</p>
+        <p class="mdps-muted">
+          PF {{ economic.profit_factor_display or "—" }}
+          · DD {{ economic.drawdown_display or "—" }}
+          · n={{ economic.sample_size_display or "—" }}
+        </p>
       {% else %}
-        <p class="mdps-badge mdps-badge--missing">{{ economic.availability_label }}</p>
-        <p class="mdps-muted">{{ economic.reason_code }}</p>
+        <p class="mdps-muted">{{ economic.availability_label }}</p>
       {% endif %}
     </div>
-    <div class="mdps-secondary__card" data-market-diagnostics-v1="true" data-diagnostic-only="true">
+    <div class="mdps-secondary__panel" data-market-diagnostics-v1="true" data-diagnostic-only="true">
       <h2 class="mdps-h2">Diagnostics</h2>
       <p class="mdps-badge mdps-badge--diagnostic" data-diagnostic-non-authority-marker-v1="true">
         {{ diagnostics.non_authority_marker|default("DIAGNOSTIC ONLY") }}
       </p>
       {% if diagnostics.available %}
         <ul class="mdps-code-list">
-          {% for status in diagnostics.diagnostic_statuses %}
+          {% for status in diagnostics.diagnostic_statuses[:6] %}
           <li>{{ status }}</li>
           {% endfor %}
         </ul>
       {% else %}
-        <p class="mdps-badge mdps-badge--missing">{{ diagnostics.availability_label }}</p>
-        <p class="mdps-muted">{{ diagnostics.reason_code }}</p>
+        <p class="mdps-muted">{{ diagnostics.availability_label }}</p>
       {% endif %}
     </div>
   </section>
 
-  {# ENGINEERING / PROVENANCE #}
+  {# ENGINEERING / PROVENANCE — collapsed #}
   <details
     class="mdps-engineering"
     data-market-engineering-provenance-v1="true"
@@ -289,6 +393,14 @@
       <ul class="mdps-code-list" data-market-missing-source-reasons-v1="true">
         {% for item in engineering.missing_source_reasons %}
         <li>{{ item.section }} · {{ item.availability_state }} · {{ item.reason_code }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% if loader_notes %}
+      <h3 class="mdps-h3">Loader notes</h3>
+      <ul class="mdps-code-list" data-market-loader-notes-v1="true">
+        {% for note in loader_notes %}
+        <li>{{ note }}</li>
         {% endfor %}
       </ul>
       {% endif %}

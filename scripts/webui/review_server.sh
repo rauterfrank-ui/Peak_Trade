@@ -14,8 +14,9 @@
 #   PEAK_TRADE_WEBUI_REVIEW_PATH
 #   PEAK_TRADE_WEBUI_LOG_TAIL_LINES
 #   PEAK_TRADE_WEBUI_UV
-#   PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES=1  # opt-in: bind tests/fixtures ranking+OHLCV for local review
-#                                         # default OFF — canonical /market stays fail-closed empty
+#   PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES=1  # default ON for documented review start:
+#                                         # binds ranking+OHLCV+venue+review evidence JSON
+#                                         # set =0 to keep canonical /market fail-closed empty
 #
 # Invariants:
 #   REPO_OWNED_SERVER_HARNESS=true
@@ -43,9 +44,11 @@ UV_BIN="${PEAK_TRADE_WEBUI_UV:-uv}"
 ASGI_TARGET="src.webui.app:app"
 IDENTITY_MARKER="peak_trade_webui_review_server_v1"
 EXPECTED_CMD_FRAGMENT="uvicorn ${ASGI_TARGET}"
-REVIEW_BIND_FIXTURES="${PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES:-0}"
+REVIEW_BIND_FIXTURES="${PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES:-1}"
 RANKING_FIXTURE_ROOT="${REPO_ROOT}/tests/fixtures/market_ranking_funnel_readmodel_v0/complete_minimal"
 OHLCV_FIXTURE_ROOT="${REPO_ROOT}/tests/fixtures/market_futures_ohlcv_readmodel_v0/complete_minimal"
+REVIEW_EVIDENCE_ROOT="${REPO_ROOT}/tests/fixtures/market_dashboard_review_evidence_v1/complete_minimal"
+REVIEW_VENUE_DEFAULT="binance_usdm_futures"
 
 PID_FILE="${STATE_DIR}/review_server.pid"
 LOG_FILE="${STATE_DIR}/review_server.log"
@@ -317,7 +320,11 @@ review_fixture_env_exports() {
     return 0
   fi
   if [[ ! -f "${RANKING_FIXTURE_ROOT}/ranking_funnel.json" || ! -f "${OHLCV_FIXTURE_ROOT}/futures_ohlcv.json" ]]; then
-    echo "ERROR: REVIEW_BIND_FIXTURES=1 but fixture JSON missing under tests/fixtures/" >&2
+    echo "ERROR: REVIEW_BIND_FIXTURES=1 but ranking/OHLCV fixture JSON missing under tests/fixtures/" >&2
+    return 1
+  fi
+  if [[ ! -f "${REVIEW_EVIDENCE_ROOT}/manifest.json" || ! -f "${REVIEW_EVIDENCE_ROOT}/canonical_decision.json" ]]; then
+    echo "ERROR: REVIEW_BIND_FIXTURES=1 but review evidence bundle missing under tests/fixtures/" >&2
     return 1
   fi
   echo "REVIEW_BIND_FIXTURES=true"
@@ -325,6 +332,8 @@ review_fixture_env_exports() {
   echo "PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=${RANKING_FIXTURE_ROOT}"
   echo "PEAK_TRADE_MARKET_FUTURES_OHLCV_ENABLED=1"
   echo "PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=${OHLCV_FIXTURE_ROOT}"
+  echo "PEAK_TRADE_MARKET_DASHBOARD_VENUE=${REVIEW_VENUE_DEFAULT}"
+  echo "PEAK_TRADE_MARKET_DASHBOARD_REVIEW_EVIDENCE_ROOT=${REVIEW_EVIDENCE_ROOT}"
 }
 
 classify_status() {
@@ -484,18 +493,23 @@ cmd_start() {
 
   : >"$LOG_FILE"
 
-  # Optional read-only fixture binding for local operator review (default OFF).
+  # Read-only review fixture binding (default ON for documented review start).
   # Bash 3.2 compatible — no arrays.
   local bind_rank_en="" bind_rank_root="" bind_ohlcv_en="" bind_ohlcv_root=""
+  local bind_venue="" bind_evidence=""
   if [[ "${REVIEW_BIND_FIXTURES}" == "1" || "${REVIEW_BIND_FIXTURES}" == "true" ]]; then
     review_fixture_env_exports || die "fixture binding failed"
     bind_rank_en="PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1"
     bind_rank_root="PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=${RANKING_FIXTURE_ROOT}"
     bind_ohlcv_en="PEAK_TRADE_MARKET_FUTURES_OHLCV_ENABLED=1"
     bind_ohlcv_root="PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=${OHLCV_FIXTURE_ROOT}"
+    bind_venue="PEAK_TRADE_MARKET_DASHBOARD_VENUE=${REVIEW_VENUE_DEFAULT}"
+    bind_evidence="PEAK_TRADE_MARKET_DASHBOARD_REVIEW_EVIDENCE_ROOT=${REVIEW_EVIDENCE_ROOT}"
     echo "REVIEW_BIND_FIXTURES=true"
     echo "PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=${RANKING_FIXTURE_ROOT}"
     echo "PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=${OHLCV_FIXTURE_ROOT}"
+    echo "PEAK_TRADE_MARKET_DASHBOARD_VENUE=${REVIEW_VENUE_DEFAULT}"
+    echo "PEAK_TRADE_MARKET_DASHBOARD_REVIEW_EVIDENCE_ROOT=${REVIEW_EVIDENCE_ROOT}"
   else
     echo "REVIEW_BIND_FIXTURES=false"
   fi
@@ -514,6 +528,8 @@ cmd_start() {
       ${bind_rank_root} \
       ${bind_ohlcv_en} \
       ${bind_ohlcv_root} \
+      ${bind_venue} \
+      ${bind_evidence} \
       ${UV_BIN} run python -m uvicorn "${ASGI_TARGET}" \
         --host "${HOST}" \
         --port "${PORT}" \

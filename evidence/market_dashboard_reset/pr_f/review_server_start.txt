@@ -1,0 +1,26 @@
+OK: web runtime deps present (fastapi, uvicorn).
+REVIEW_BIND_FIXTURES=true
+PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1
+PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=/Users/frnkhrz/Peak_Trade/tests/fixtures/market_ranking_funnel_readmodel_v0/complete_minimal
+PEAK_TRADE_MARKET_FUTURES_OHLCV_ENABLED=1
+PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=/Users/frnkhrz/Peak_Trade/tests/fixtures/market_futures_ohlcv_readmodel_v0/complete_minimal
+PEAK_TRADE_MARKET_DASHBOARD_VENUE=binance_usdm_futures
+PEAK_TRADE_MARKET_DASHBOARD_REVIEW_EVIDENCE_ROOT=/Users/frnkhrz/Peak_Trade/tests/fixtures/market_dashboard_review_evidence_v1/complete_minimal
+REVIEW_BIND_FIXTURES=true
+PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=/Users/frnkhrz/Peak_Trade/tests/fixtures/market_ranking_funnel_readmodel_v0/complete_minimal
+PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=/Users/frnkhrz/Peak_Trade/tests/fixtures/market_futures_ohlcv_readmodel_v0/complete_minimal
+PEAK_TRADE_MARKET_DASHBOARD_VENUE=binance_usdm_futures
+PEAK_TRADE_MARKET_DASHBOARD_REVIEW_EVIDENCE_ROOT=/Users/frnkhrz/Peak_Trade/tests/fixtures/market_dashboard_review_evidence_v1/complete_minimal
+STATUS=RUNNING_HEALTHY
+ACTION=STARTED
+PID=45615
+BOOT_PID=45598
+PORT=8000
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8000/api/health
+REVIEW_URL=http://127.0.0.1:8000/market
+PID_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server/review_server.log
+UVICORN_RELOAD=false
+LOCALHOST_ONLY=true
+IDEMPOTENT_START=true

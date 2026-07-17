@@ -1,4 +1,4 @@
-"""Route composition for GET /market product surface (PR-D).
+"""Route composition for GET /market product surface (PR-F).
 
 Path: optional read-only sources → PR-C adapters via page builder → presenter → template.
 """
@@ -38,13 +38,27 @@ def build_market_dashboard_product_template_context_v1() -> dict[str, Any]:
         venue=loaded.venue,
         ranking_source=loaded.ranking_source,
         ranking_stage=loaded.ranking_stage,
-        # Explicitly unbound until consolidated / evidence producers are wired.
-        canonical_decision_source=None,
-        double_play_composition=None,
-        safety_authority_source=None,
-        execution_source=None,
-        economic_source=None,
-        diagnostics_source=None,
+        canonical_decision_source=loaded.canonical_decision_source,
+        decision_effective_at=loaded.decision_effective_at,
+        decision_evidence_reference=loaded.decision_evidence_reference,
+        decision_evidence_status=loaded.decision_evidence_status,
+        double_play_composition=loaded.double_play_composition,
+        double_play_bull_assessment=loaded.double_play_bull_assessment,
+        double_play_bear_assessment=loaded.double_play_bear_assessment,
+        double_play_effective_at=loaded.double_play_effective_at,
+        double_play_evidence_reference=loaded.double_play_evidence_reference,
+        # Honest residual: no consolidated Safety/Authority producer.
+        safety_authority_source=loaded.safety_authority_source,
+        execution_source=loaded.execution_source,
+        execution_effective_at=loaded.execution_effective_at,
+        execution_operating_mode=loaded.execution_operating_mode,
+        execution_evidence_reference=loaded.execution_evidence_reference,
+        economic_source=loaded.economic_source,
+        economic_effective_at=loaded.economic_effective_at,
+        economic_evidence_reference=loaded.economic_evidence_reference,
+        diagnostics_source=loaded.diagnostics_source,
+        diagnostics_effective_at=loaded.diagnostics_effective_at,
+        diagnostics_bundle_reference=loaded.diagnostics_bundle_reference,
         market_source_reference=loaded.market_source_reference,
         ranking_source_reference=loaded.ranking_source_reference,
     )

@@ -219,6 +219,22 @@ def _build_market_workspace(
             "volume": _fmt_number(market.ohlcv.volume) if market.ohlcv.volume is not None else None,
         }
 
+    # Display-only change from already-loaded OHLCV bars when producer omits change.
+    change_abs = market.change_abs
+    change_pct = market.change_pct
+    if change_abs is None and change_pct is None and len(bars_view) >= 2:
+        first_close = bars_view[0]["close"]
+        last_close = bars_view[-1]["close"]
+        if isinstance(first_close, (int, float)) and isinstance(last_close, (int, float)):
+            if first_close != 0:
+                change_abs = float(last_close) - float(first_close)
+                change_pct = change_abs / float(first_close)
+
+    last_volume = None
+    if bars_view and bars_view[-1].get("volume") is not None:
+        last_volume = bars_view[-1]["volume"]
+    volume_value = market.volume if market.volume is not None else last_volume
+
     return {
         "available": True,
         "availability_state": "AVAILABLE",
@@ -228,9 +244,10 @@ def _build_market_workspace(
         "last_price": market.last_price,
         "last_price_display": _fmt_number(market.last_price),
         "mark_price_display": _fmt_number(market.mark_price),
-        "change_abs_display": _fmt_number(market.change_abs),
-        "change_pct_display": _fmt_pct(market.change_pct),
-        "volume_display": _fmt_number(market.volume, digits=2),
+        "change_abs_display": _fmt_number(change_abs),
+        "change_pct_display": _fmt_pct(change_pct),
+        "volume_display": _fmt_number(volume_value, digits=2),
+        "bar_count": len(bars_view),
         "ohlcv": ohlcv,
         "freshness_state": freshness,
         "effective_at": _fmt_ts(market.effective_at),

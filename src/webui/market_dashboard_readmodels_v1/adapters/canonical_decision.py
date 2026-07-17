@@ -135,8 +135,10 @@ def adapt_canonical_decision_summary_v1(
 
     status_text = evidence_status or "EVIDENCE_PRESENT"
     reason_codes = as_reason_tuple(source_get(source, "reason_codes"))
-    # Precedence trace is diagnostic ordering metadata, not newly derived blockers.
-    blockers: tuple[str, ...] = ()
+    # Project explicit blocker fields only — never infer blockers from reason codes.
+    blockers = as_reason_tuple(
+        source_get(source, "blocker_codes") or source_get(source, "blockers")
+    )
 
     prov_generated_at = generated_at if generated_at >= effective_at else effective_at
     provenance = new_dashboard_snapshot_provenance_v1(

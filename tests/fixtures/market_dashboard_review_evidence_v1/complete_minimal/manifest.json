@@ -1,0 +1,18 @@
+{
+  "schema_version": "market_dashboard_review_evidence_bundle.v1",
+  "bundle_id": "market_dashboard_review_evidence_v1_complete_minimal",
+  "venue": "binance_usdm_futures",
+  "selected_instrument_id": "ETHUSDT",
+  "provenance_label": "review_fixture",
+  "non_authorizing": true,
+  "live_authorized": false,
+  "orders": false,
+  "files": {
+    "canonical_decision": "canonical_decision.json",
+    "double_play": "double_play.json",
+    "execution": "execution.json",
+    "economic": "economic.json",
+    "diagnostics": "diagnostics.json"
+  },
+  "safety_authority": "NOT_BOUND_NO_CONSOLIDATED_PRODUCER"
+}

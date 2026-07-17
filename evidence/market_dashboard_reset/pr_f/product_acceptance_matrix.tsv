@@ -1,0 +1,23 @@
+criterion	phase	implementation_owner	source_producer	dom_selector	automated_assertion	screenshot_evidence	completion_state
+ABOVE_FOLD_PRIMARY_CHART_VISIBLE	6	market_dashboard_product_v1.html + presenter	market_futures_ohlcv_readmodel.v0	[data-market-chart-svg-v1][data-market-chart-candles-v1]	chart_bar_count>0 AND bbox w/h>0	browser_iterations/final_1512x982.png	PASS
+SELECTED_INSTRUMENT_VISIBLE	6	header + workspace	ranking selected + market adapter	[data-market-header-instrument-v1]	text==ETHUSDT (review)	final_1512x982.png	PASS
+VENUE_VISIBLE	6	header + workspace	PEAK_TRADE_MARKET_DASHBOARD_VENUE + market adapter	[data-market-header-venue-v1]	text contains venue	final_1512x982.png	PASS
+MARKET_PRICE_VISIBLE	6	price strip	OHLCV last close	[data-market-last-price-v1]	non-empty numeric text	final_1512x982.png	PASS
+CANONICAL_DECISION_VISIBLE	6	decision strip	CanonicalTradingDecisionEvidenceV1 review JSON	[data-market-decision-status-v1]	non-empty decision status	final_1512x982.png	PASS
+DECISION_REASONS_VISIBLE	6	decision strip	evidence reason_codes	[data-market-decision-reason-codes-v1] li	count>=1	final_1512x982.png	PASS
+BLOCKERS_VISIBLE	6	decision strip	evidence blocker_codes	[data-market-decision-blockers-v1]	visible blocker text	final_1512x982.png	PASS
+SOURCE_FRESHNESS_VISIBLE	6	header	freshness adapter	[data-market-header-freshness-v1]	non-empty label	final_1512x982.png	PASS
+DOUBLE_PLAY_VISIBLE	6	secondary panel	DoublePlayCompositionResultV1 review JSON	[data-market-double-play-v1]	composition text present	final_1512x982.png	PASS
+RANKING_WATCHLIST_VISIBLE	6	watchlist aside	market_ranking_funnel_readmodel.v0	[data-market-ranking-v1] ol li	count>=1	final_1512x982.png	PASS
+ECONOMIC_SUMMARY_VISIBLE	6	secondary panel	EconomicViabilityEvidenceV1 review JSON	[data-market-economic-v1]	gate status visible	final_1512x982.png	PASS
+DIAGNOSTICS_VISIBLE	6	secondary panel	diagnostics support bundle review JSON	[data-market-diagnostics-v1]	DIAGNOSTIC ONLY + statuses	final_1512x982.png	PASS
+ENGINEERING_DRAWER_PRESENT	6	details drawer	page aggregate provenance	[data-market-engineering-provenance-v1]	details present default closed	final_1512x982.png	PASS
+GOVERNANCE_CARD_WALL	6	template/CSS layout	n/a	visual review	false when dense terminal layout	final_visual_review.md	PASS
+NESTED_CARD_VIOLATIONS	6	template/CSS	n/a	DOM structure	0 nested card-in-card panels	final_dom_assertions.json	PASS
+DUPLICATE_STATUS_RENDERINGS	6	template	n/a	badge count audit	0 repeated SOURCE MISSING billboards	final_dom_assertions.json	PASS
+NO_ORDER_CONTROLS	6	template	n/a	html scan	no Buy/Sell/Submit/button/submit	unit+chrome	PASS
+BLANK_PRIMARY_WORKSPACE	6	chart panel	OHLCV bars	[data-market-primary-workspace-v1]	false when chart populated	final_1512x982.png	PASS
+TECHNICAL_GATE	7	tests/webui/*pr_f*	n/a	pytest	all focused tests pass	test_results	PASS
+PRODUCT_GATE	7	operator only	n/a	n/a	PRODUCT_GATE_PASS=false until operator GO	gates.txt	FAIL_PENDING_OPERATOR
+SAFETY_AUTHORITY_HONEST_NOT_BOUND	6.1/DoD	safety adapter	no consolidated producer	[data-market-header-safety-v1]	NOT_BOUND visible; no safe claims	unit+chrome	PASS
+REVIEW_SERVER_POPULATED_PROFILE	3/7	review_server.sh	fixtures + evidence root	review_fixture_env_exports	venue+ohlcv+ranking+evidence bound	unit test	PASS

@@ -1,0 +1,9 @@
+{
+  "decision_outcome": "hold",
+  "reconciliation_state": "reconciled",
+  "position_state": "flat_reconciled",
+  "semantic_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "policy_decision_id": "review-exec-ethusdt-v1",
+  "operating_mode": "OFFLINE",
+  "effective_at": "2026-05-27T00:00:00+00:00"
+}

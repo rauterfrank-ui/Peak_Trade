@@ -1,0 +1,28 @@
+{
+  "composition": {
+    "composition_status": "hold_selected",
+    "conflict_status": "none",
+    "reason_codes": [
+      "dp_sides_observed",
+      "dp_no_conflict"
+    ],
+    "semantic_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "composition_id": "review-dp-ethusdt-v1",
+    "chop_guard_status": "none"
+  },
+  "bull_assessment": {
+    "status": "OBSERVE",
+    "confidence": 0.42,
+    "reason_codes": [
+      "bull_observe_only"
+    ]
+  },
+  "bear_assessment": {
+    "status": "OBSERVE",
+    "confidence": 0.38,
+    "reason_codes": [
+      "bear_observe_only"
+    ]
+  },
+  "effective_at": "2026-05-27T00:00:00+00:00"
+}
