@@ -286,28 +286,58 @@
     data-market-decision-surface-vertical-compression-v1="true"
     data-market-primary-page-share-dominance-v1="true"
     data-market-landmark-vertical-rhythm-v1="true"
+    data-market-decision-surface-hierarchy-v1="true"
     aria-label="Decision surface"
   >
     {% if futures_first %}
-    <div data-market-governed-top20-primary-slot-v1="true">
+    <div
+      data-market-governed-top20-primary-slot-v1="true"
+      data-market-decision-hierarchy-primary-v1="true"
+      data-market-decision-hierarchy-tier="primary"
+    >
       {% include "partials/market_governed_top20_primary_v1.html" %}
     </div>
     {% endif %}
 
-    {% include "partials/market_decision_funnel_visual_v1.html" %}
+    <div
+      data-market-decision-hierarchy-secondary-v1="true"
+      data-market-decision-hierarchy-tier="secondary"
+    >
+      {% include "partials/market_decision_funnel_visual_v1.html" %}
+    </div>
 
-    <div class="mt-2 grid grid-cols-1 lg:grid-cols-4 gap-2" data-market-terminal-secondary-grid-v1="true" data-market-remodel-secondary-grid-v2="true" data-market-phase1a-decision-secondary-v1="true" data-market-decision-secondary-dense-v1="true">
-      <div class="lg:col-span-3 order-1 lg:order-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-        <div data-market-f5-pipeline-strip-v1="true">
-        {% include "partials/futures_market_compact_v1.html" %}
+    <div
+      class="mt-2"
+      data-market-decision-hierarchy-tertiary-v1="true"
+      data-market-decision-hierarchy-tier="tertiary"
+      data-market-decision-secondary-group-v1="true"
+      aria-label="Secondary decision modules"
+    >
+      <p class="m-0 mb-1 text-[9px] font-semibold uppercase tracking-wide text-slate-500" data-market-decision-hierarchy-tertiary-label-v1="true">
+        Secondary · F5 · Double Play · Safety · Watchlist
+      </p>
+      <div
+        class="grid grid-cols-1 lg:grid-cols-4 gap-1.5"
+        data-market-terminal-secondary-grid-v1="true"
+        data-market-remodel-secondary-grid-v2="true"
+        data-market-phase1a-decision-secondary-v1="true"
+        data-market-decision-secondary-dense-v1="true"
+        data-market-decision-hierarchy-tertiary-grid-v1="true"
+      >
+        <div class="lg:col-span-3 order-1 lg:order-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
+          <div data-market-f5-pipeline-strip-v1="true" data-market-decision-hierarchy-tertiary-module-v1="true">
+          {% include "partials/futures_market_compact_v1.html" %}
+          </div>
+          <div data-market-double-play-visual-grid-v1="true" data-market-decision-hierarchy-tertiary-module-v1="true">
+          {% include "partials/double_play_market_compact_v1.html" %}
+          </div>
+          <div data-market-decision-hierarchy-tertiary-module-v1="true">
+          {% include "partials/market_safety_compact_v1.html" %}
+          </div>
         </div>
-        <div data-market-double-play-visual-grid-v1="true">
-        {% include "partials/double_play_market_compact_v1.html" %}
+        <div class="lg:col-span-1 order-2 lg:order-1" data-market-decision-hierarchy-tertiary-module-v1="true">
+          {% include "partials/market_watchlist_compact_v1.html" %}
         </div>
-        {% include "partials/market_safety_compact_v1.html" %}
-      </div>
-      <div class="lg:col-span-1 order-2 lg:order-1">
-        {% include "partials/market_watchlist_compact_v1.html" %}
       </div>
     </div>
   </section>

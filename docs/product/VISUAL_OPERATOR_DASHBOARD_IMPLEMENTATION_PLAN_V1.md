@@ -3,11 +3,11 @@
 > **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` for any further unrelated UI slice
 > **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
-> **Next implementable slice:** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` (authorized; not implemented in this docs/rebaseline pack)
-> **Authorized slice in flight / implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (merged PR #5261)
-> **Prior slice:** `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` · historical authorize pack for `COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1`: [composition_rebaseline_next_slice_v1_20260717T001413Z](evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/)
+> **Implemented slice (this PR):** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1`
+> **Evidence:** [composition_decision_surface_hierarchy_v1_20260717T013644Z](evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/)
+> **Prior implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (merged PR #5261) · `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` (PR #5260)
 > **Post-rhythm rebaseline:** [composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z](evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/)
-> **Rhythm after evidence:** [composition_landmark_vertical_rhythm_v1_20260717T011316Z](evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/)
+> **Next candidate (NOT authorized):** Observability densify / Engineering quiet-chrome — requires separate GO
 > **Branch context at original plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
 ```text
@@ -267,31 +267,32 @@ AUTHORITY_EFFECT=NONE
 
 ## Explicit stop / authorized next slice
 
-Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. The post-PR#5257 Chrome full-page rebaseline authorizes exactly one next presentation slice:
+Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. Hierarchy slice status:
 
 ```text
-IMPLEMENTED_SLICE=COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1
-IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/
-IMPLEMENTED_SLICE_SCOPE=templates/CSS presentation only; landmark gap tokens; no data-contract or authority changes
-BASELINE_EVIDENCE=docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/
-POST_RHYTHM_REBASELINE_EVIDENCE=docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/
-PRIOR_SLICE=COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1
-NEXT_SLICE=COMPOSITION_DECISION_SURFACE_HIERARCHY_V1
-NEXT_SLICE_BRANCH=feat/dashboard-composition-decision-surface-hierarchy-v1
+IMPLEMENTED_SLICE=COMPOSITION_DECISION_SURFACE_HIERARCHY_V1
+IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/
+IMPLEMENTED_SLICE_SCOPE=templates/CSS presentation only; Decision hierarchy Top-20>Funnel>Secondary; no data-contract or authority changes
+BASELINE_EVIDENCE=docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/
+PRIOR_SLICE=COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1
+NEXT_SLICE=NONE_AUTHORIZED
+NEXT_SLICE_CANDIDATES=OBSERVABILITY_DENSIFY_OR_ENGINEERING_QUIET_CHROME
 STOP_BEFORE_IMPLEMENTATION=true
 STOP_BEFORE_NEXT_UNRELATED_SLICE=true
+DASHBOARD_PROJECT_COMPLETE=false
 ```
 
-### Before / after measured (1440×900, real Chrome) — Primary dominance (PR #5260)
+### Decision Surface hierarchy (this slice) — measured @1440×900
 
-| Metric | Post-compression baseline | After dominance slice | Target |
-|---|---:|---:|---:|
-| PRIMARY_MARKET_SURFACE page share | 34.2% | 38.9% | ≥ Decision + 2 pp |
-| DECISION_SURFACE page share | 39.1% | 32.7% | ≤ 34% |
-| DECISION_SURFACE height | 1006 px | 790 px | ≤ 850 |
-| OBSERVABILITY_SURFACE start Y | 2007 | 1848 | ≤ 1850 |
-| PRIMARY chart viewport share | ≥40% | 50.0% | ≥ 40% |
-| Horizontal overflow | 0 | 0 | 0 |
+| Metric | Before (post-rhythm) | After hierarchy | Target |
+|---|---:|---:|---|
+| Top-20 height | 322.5 | 354.5 | > Funnel |
+| Funnel height | 233.2 | 216.2 | > each Secondary module |
+| Secondary max module | ~230 | 152 | tertiary |
+| Decision card frames | 16 | 3 | material reduction |
+| Primary page share | 38.8% | 39.2% | ≥ Decision + 2 pp |
+| Decision page share | 32.6% | 32.0% | ≤ Primary − 2 pp |
+| Rhythm gaps | 8/20/20/20 | 8/20/20/20 | hold |
 
 ### Landmark vertical rhythm (PR #5261) — gaps @1440×900
 
@@ -310,5 +311,5 @@ STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 | Primary ≥ Decision + 2 pp | PASS (38.8% vs 32.6%) |
 | Chart viewport share ≥ 40% | PASS |
 | Landmark order / overflow / Engineering secondary | PASS |
-| Authorized next | `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` |
+| Hierarchy slice | IMPLEMENTED (this PR) — next slice not auto-authorized |
 
