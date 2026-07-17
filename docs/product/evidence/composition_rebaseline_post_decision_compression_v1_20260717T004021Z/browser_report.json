@@ -1,0 +1,161 @@
+{
+  "BROWSER_ACTUAL": "GOOGLE_CHROME",
+  "BROWSER_REQUESTED": "GOOGLE_CHROME",
+  "CHROMIUM_FALLBACK_USED": false,
+  "CONSOLE_ERRORS": 0,
+  "ENGINEERING_SECONDARY_PASS": true,
+  "EVIDENCE_ACCEPTED": true,
+  "EXTERNAL_NETWORK_REQUESTS": 0,
+  "FAILED_ASSETS": 0,
+  "HORIZONTAL_OVERFLOW_PASS": true,
+  "LANDMARK_ORDER_PASS": true,
+  "PAGE_ERRORS": 0,
+  "PRIMARY_CHART_DOMINANCE_PASS": true,
+  "PRIMARY_PLAYWRIGHT_CHANNEL": "chrome",
+  "REAL_CHROME_VERIFIED": true,
+  "alignment_1440x900": {
+    "landmark_left_max": 16,
+    "landmark_left_min": 16,
+    "landmark_left_spread_px": 0,
+    "landmark_width_max": 1408,
+    "landmark_width_min": 1408,
+    "landmark_width_spread_px": 0
+  },
+  "base_url": "http://127.0.0.1:8765",
+  "captured_at_utc": "2026-07-17T00:40:24Z",
+  "competing_focus_points_1440x900": [
+    {
+      "height": 106.3125,
+      "name": "hero",
+      "top": 114.875,
+      "visible_px": 106.3125
+    },
+    {
+      "height": 498.5,
+      "name": "primary_chart",
+      "top": 226.78125,
+      "visible_px": 498.5
+    }
+  ],
+  "decision_height_1440x900": 1006.4375,
+  "engineering_share_of_viewport_pct_1440x900": 0,
+  "gaps_1440x900": [
+    {
+      "after": "GLOBAL_HEADER",
+      "before": "PRIMARY_MARKET_SURFACE",
+      "gap_px": 5.59375
+    },
+    {
+      "after": "PRIMARY_MARKET_SURFACE",
+      "before": "DECISION_SURFACE",
+      "gap_px": 4
+    },
+    {
+      "after": "DECISION_SURFACE",
+      "before": "OBSERVABILITY_SURFACE",
+      "gap_px": 12
+    },
+    {
+      "after": "OBSERVABILITY_SURFACE",
+      "before": "ENGINEERING_DRAWER",
+      "gap_px": 16
+    }
+  ],
+  "head": "8fa865061e671d065e93ad5619ce263b91c46fee",
+  "hero_share_of_primary_pct_1440x900": 12.084184353076992,
+  "http_status": 200,
+  "launch_error": null,
+  "mode": "READ_ONLY_NO_CODE_CHANGES",
+  "observability_start_y_1440x900": 2007.078125,
+  "page_height_1440x900": 2572,
+  "page_shares_1440x900": {
+    "DECISION_SURFACE": 39.13054043545879,
+    "ENGINEERING_DRAWER": 5.67651632970451,
+    "GLOBAL_HEADER": 2.6159117418351476,
+    "OBSERVABILITY_SURFACE": 11.275272161741835,
+    "PRIMARY_MARKET_SURFACE": 34.205506415241054
+  },
+  "path": "/market?timeframe=1h",
+  "phase": "COMPOSITION_REBASELINE",
+  "post_decision_compression_delta_vs_pre_slice": {
+    "decision_height_after_slice": 1006,
+    "decision_height_before": 1803,
+    "decision_height_now": 1006.4375,
+    "decision_share_before": 53.4,
+    "decision_share_now": 39.13054043545879,
+    "obs_y_before": 2812,
+    "obs_y_now": 2007.078125,
+    "page_height_before": 3377,
+    "page_height_now": 2572
+  },
+  "primary_chart_share_of_primary_pct_1440x900": 56.66281857739099,
+  "primary_chart_share_of_viewport_pct_1440x900": 55.388888888888886,
+  "readonly_markers_1440x900": {
+    "data_market_live_locked": true,
+    "data_market_non_authorizing": true,
+    "data_market_readonly": true,
+    "data_market_trading_authority_false": true,
+    "decision_compression": true
+  },
+  "screenshots": [
+    "screenshots/full_page_1440x900.png",
+    "screenshots/viewport_1440x900.png",
+    "screenshots/full_page_1280x800.png",
+    "screenshots/viewport_1280x800.png",
+    "screenshots/full_page_1728x1117.png",
+    "screenshots/viewport_1728x1117.png"
+  ],
+  "viewports": {
+    "1280x800": {
+      "competing_focus_count": 2,
+      "decision_height": 1060.71875,
+      "engineering_share_of_viewport_pct": 0,
+      "horizontal_overflow_px": 0,
+      "landmark_order_pass": true,
+      "observability_start_y": 2092.578125,
+      "page_height": 2658,
+      "page_share": {
+        "DECISION_SURFACE": 39.9066497366441,
+        "ENGINEERING_DRAWER": 5.492851768246802,
+        "GLOBAL_HEADER": 2.531273513920241,
+        "OBSERVABILITY_SURFACE": 10.9104589917231,
+        "PRIMARY_MARKET_SURFACE": 34.27330229495861
+      },
+      "primary_chart_share_of_viewport_pct": 62.31250000000001
+    },
+    "1440x900": {
+      "competing_focus_count": 2,
+      "decision_height": 1006.4375,
+      "engineering_share_of_viewport_pct": 0,
+      "horizontal_overflow_px": 0,
+      "landmark_order_pass": true,
+      "observability_start_y": 2007.078125,
+      "page_height": 2572,
+      "page_share": {
+        "DECISION_SURFACE": 39.13054043545879,
+        "ENGINEERING_DRAWER": 5.67651632970451,
+        "GLOBAL_HEADER": 2.6159117418351476,
+        "OBSERVABILITY_SURFACE": 11.275272161741835,
+        "PRIMARY_MARKET_SURFACE": 34.205506415241054
+      },
+      "primary_chart_share_of_viewport_pct": 55.388888888888886
+    },
+    "1728x1117": {
+      "competing_focus_count": 4,
+      "decision_height": 1006.4375,
+      "engineering_share_of_viewport_pct": 0,
+      "horizontal_overflow_px": 0,
+      "landmark_order_pass": true,
+      "observability_start_y": 2051.453125,
+      "page_height": 2616,
+      "page_share": {
+        "DECISION_SURFACE": 38.472381498470945,
+        "ENGINEERING_DRAWER": 5.581039755351682,
+        "GLOBAL_HEADER": 2.5719132262996944,
+        "OBSERVABILITY_SURFACE": 11.085626911314984,
+        "PRIMARY_MARKET_SURFACE": 35.326476490825684
+      },
+      "primary_chart_share_of_viewport_pct": 51.712175470008944
+    }
+  }
+}
