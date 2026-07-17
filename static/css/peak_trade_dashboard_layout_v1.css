@@ -256,6 +256,100 @@
   margin-top: 0.75rem;
 }
 
+/*
+ * COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1
+ * Presentation-only: densify Decision landmark so Observability re-enters scroll path earlier.
+ * No trading/risk/authority semantics.
+ */
+#market-v0-shell [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"] {
+  margin-top: var(--pt-decision-section-gap);
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-governed-top20-table-v1="true"] {
+  max-height: var(--pt-decision-matrix-max-height);
+  overflow: auto;
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-governed-top20-table-v1="true"]
+  table {
+  border-collapse: collapse;
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-governed-top20-table-v1="true"]
+  thead
+  th,
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-governed-top20-table-v1="true"]
+  tbody
+  td {
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  line-height: 1.25;
+  height: var(--pt-decision-table-row-height);
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-decision-funnel-visual-v1="true"] {
+  margin-top: var(--pt-decision-section-gap);
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-remodel-secondary-grid-v2="true"] {
+  margin-top: var(--pt-decision-section-gap);
+  gap: var(--pt-decision-secondary-gap);
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-remodel-secondary-grid-v2="true"]
+  > .grid {
+  gap: var(--pt-decision-secondary-gap);
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-futures-compact-v1="true"],
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-terminal-watchlist-v1="true"],
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-safety-rail-compact-v1="true"],
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-double-play-compact-v1="true"] {
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-safety-matrix-scroll-v1="true"],
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-double-play-matrix-scroll-v1="true"] {
+  max-height: var(--pt-decision-secondary-matrix-max-height);
+  overflow: auto;
+}
+
+#market-v0-shell
+  [data-landmark="DECISION_SURFACE"][data-market-decision-surface-vertical-compression-v1="true"]
+  [data-market-decision-funnel-stages-v1="true"] {
+  max-height: 132px;
+  overflow: auto;
+}
+
 #market-v0-shell [data-landmark="ENGINEERING_DRAWER"] > details:not([open]) {
   /* collapsed by default; chrome quiet */
   border-color: rgba(51, 65, 85, 0.45);

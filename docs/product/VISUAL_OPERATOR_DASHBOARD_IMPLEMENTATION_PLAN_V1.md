@@ -3,8 +3,10 @@
 > **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` for the authorized next UI slice
 > **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
-> **Next implementable slice:** `COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1` (requires separate GO; presentation/CSS/templates only)
-> **Rebaseline evidence:** [composition_rebaseline_next_slice_v1_20260717T001413Z](evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/) @ `b113ef57…` (post PR [#5257](https://github.com/rauterfrank-ui/Peak_Trade/pull/5257))
+> **Next implementable slice:** awaiting post-compression composition rebaseline (separate GO)
+> **Authorized slice in flight / implemented:** `COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1`
+> **Rebaseline evidence:** [composition_rebaseline_next_slice_v1_20260717T001413Z](evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/)
+> **After evidence:** [decision_surface_vertical_compression_v1_20260717T003002Z](evidence/decision_surface_vertical_compression_v1_20260717T003002Z/)
 > **Branch context at original plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
 ```text
@@ -267,23 +269,21 @@ AUTHORITY_EFFECT=NONE
 Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. The post-PR#5257 Chrome full-page rebaseline authorizes exactly one next presentation slice:
 
 ```text
-NEXT_SLICE=COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1
-NEXT_SLICE_GOAL=Compress DECISION_SURFACE vertical weight so Observability re-enters the scroll path earlier
-NEXT_SLICE_SCOPE=templates/CSS presentation only; reuse existing ViewModels; no data-contract or authority changes
-NEXT_SLICE_EVIDENCE=docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/
-NEXT_SLICE_PLAN=docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/next_slice_plan.md
-STOP_BEFORE_IMPLEMENTATION=true
-NO_UI_MUTATION_IN_REBASELINE_PR=true
-REQUIRES_SEPARATE_IMPLEMENTATION_GO=true
+IMPLEMENTED_SLICE=COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1
+IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/
+IMPLEMENTED_SLICE_SCOPE=templates/CSS presentation only; reuse existing ViewModels; no data-contract or authority changes
+BASELINE_EVIDENCE=docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/
+NEXT_SLICE=AWAITING_POST_COMPRESSION_REBASELINE
+STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 ```
 
-### Before / after targets (1440×900, real Chrome)
+### Before / after measured (1440×900, real Chrome)
 
-| Metric | Rebaseline before | Implementation after |
-|---|---:|---:|
-| DECISION_SURFACE height | 1803 px | ≤ 1350 px |
-| DECISION_SURFACE page share | 53.4% | ≤ 40% |
-| OBSERVABILITY_SURFACE start Y | 2812 | ≤ 2200 |
-| PRIMARY chart viewport share | 55.4% | ≥ 40% |
-| Horizontal overflow | 0 | 0 |
+| Metric | Rebaseline before | After (implemented) | Target |
+|---|---:|---:|---:|
+| DECISION_SURFACE height | 1803 px | 1006 px | ≤ 1350 |
+| DECISION_SURFACE page share | 53.4% | 39.1% | ≤ 40% |
+| OBSERVABILITY_SURFACE start Y | 2812 | 2007 | ≤ 2200 |
+| PRIMARY chart viewport share | 55.4% | 55.4% | ≥ 40% |
+| Horizontal overflow | 0 | 0 | 0 |
 
