@@ -392,7 +392,7 @@ def main(argv: list[str] | None = None) -> int:
             panel_ratified["ENTER_LONG"] or panel_ratified["ENTER_SHORT"]
         ),
         "elapsed_seconds": round(time.time() - t0, 2),
-        "runner": "scripts/research/run_obl_b05_trend_following_side_impact_diagnostic_v1.py",
+        "runner": "scripts/ops/run_obl_b05_trend_following_side_impact_diagnostic_v1.py",
     }
 
     out = args.output_dir

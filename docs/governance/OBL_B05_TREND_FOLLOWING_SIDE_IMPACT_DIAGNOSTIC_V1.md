@@ -45,7 +45,7 @@ Inputs reused from durable full-canonical panel scratch + MV2 runtime config,
 with `economic_evaluation_v1.strategy_id=trend_following` overlay only inside
 the diagnostic runner (no productive config mutation).
 
-Runner: `scripts&#47;research&#47;run_obl_b05_trend_following_side_impact_diagnostic_v1.py`
+Runner: `scripts&#47;ops&#47;run_obl_b05_trend_following_side_impact_diagnostic_v1.py`
 
 ## C. Counts (summary)
 
@@ -86,7 +86,7 @@ Runner: `scripts&#47;research&#47;run_obl_b05_trend_following_side_impact_diagno
 ## E. Next dominant blocker (no repair in this slice)
 
 - Stage: `composition`
-- Contract: `src&#47;trading&#47;master_v2&#47;double_play_composition_matrix_v1.py::CompositionStatus.OBSERVE`
+- Contract: `CompositionStatus.OBSERVE` (double-play composition matrix owner)
 - Panel count: 5054 ENTRY bars still blocked at composition after DA unblock
 
 ## F. Owners / navigation
@@ -95,7 +95,7 @@ Runner: `scripts&#47;research&#47;run_obl_b05_trend_following_side_impact_diagno
 |---|---|
 | SSOT JSON | `config&#47;governance&#47;obl_b05_trend_following_side_impact_diagnostic_v1.json` |
 | Governance narrative | this document |
-| Diagnostic runner | `scripts&#47;research&#47;run_obl_b05_trend_following_side_impact_diagnostic_v1.py` |
-| Tests | `tests&#47;research&#47;test_obl_b05_trend_following_side_impact_diagnostic_v1.py` |
+| Diagnostic runner | `scripts&#47;ops&#47;run_obl_b05_trend_following_side_impact_diagnostic_v1.py` |
+| Tests | `tests&#47;backtest&#47;test_obl_b05_trend_following_side_impact_diagnostic_v1.py` |
 | Parent ratification | `docs&#47;governance&#47;OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_RATIFICATION_V1.md` |
 | Evidence pointer | `docs&#47;product&#47;evidence&#47;obl_b05_trend_following_side_impact_diagnostic_v1_20260717T225700Z&#47;` |

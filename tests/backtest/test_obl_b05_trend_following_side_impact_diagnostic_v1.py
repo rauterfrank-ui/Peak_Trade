@@ -15,9 +15,7 @@ SSOT_PATH = (
     REPO_ROOT / "config" / "governance" / "obl_b05_trend_following_side_impact_diagnostic_v1.json"
 )
 GOV_DOC = REPO_ROOT / "docs" / "governance" / "OBL_B05_TREND_FOLLOWING_SIDE_IMPACT_DIAGNOSTIC_V1.md"
-RUNNER = (
-    REPO_ROOT / "scripts" / "research" / "run_obl_b05_trend_following_side_impact_diagnostic_v1.py"
-)
+RUNNER = REPO_ROOT / "scripts" / "ops" / "run_obl_b05_trend_following_side_impact_diagnostic_v1.py"
 ADAPTER = REPO_ROOT / "src" / "backtest" / "strategy_signal_suitability_agreement_adapter_v1.py"
 
 _ALLOWED_IMPACT = frozenset(
@@ -107,6 +105,7 @@ def test_next_dominant_blocker_is_composition_observe() -> None:
     blocker = data["next_dominant_blocker"]
     assert blocker["stage"] == "composition"
     assert "CompositionStatus.OBSERVE" in blocker["contract_path"]
+    assert "double_play_composition_matrix_v1" in blocker["contract_path"]
     assert blocker["panel_count"] == data["panel_ratified"]["BLOCKED_COMPOSITION"]
     assert data["panel_ratified"]["ENTER_LONG"] == 0
     assert data["panel_ratified"]["ENTER_SHORT"] == 0

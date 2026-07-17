@@ -128,7 +128,7 @@
   ],
   "next_dominant_blocker": {
     "composition_outcome_dominant": "observe",
-    "contract_path": "src/trading/master_v2/double_play_composition_matrix_v1.py::CompositionStatus.OBSERVE",
+    "contract_path": "trading.master_v2.double_play_composition_matrix_v1::CompositionStatus.OBSERVE",
     "note": "DA unblocked via entry_side=LONG; composition remains observe (no LONG_SELECTED/SHORT_SELECTED)",
     "panel_count": 5054,
     "stage": "composition"
@@ -203,7 +203,7 @@
   },
   "ratified_dominant_first_failed_stage": "composition",
   "ratified_mode": "productive_adapter_emission",
-  "runner": "scripts/research/run_obl_b05_trend_following_side_impact_diagnostic_v1.py",
+  "runner": "scripts/ops/run_obl_b05_trend_following_side_impact_diagnostic_v1.py",
   "schema_version": "obl_b05_trend_following_side_impact_diagnostic.v1",
   "slice_id": "OBL_B05_TREND_FOLLOWING_SIDE_IMPACT_DIAGNOSTIC_V1",
   "strategy_under_test": "trend_following",
