@@ -3,10 +3,11 @@
 > **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` for any further unrelated UI slice
 > **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
-> **Implemented slice (merged):** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` — PR [#5263](https://github.com/rauterfrank-ui/Peak_Trade/pull/5263) · merge `301c50f2…` · feature `d689d087…` · docs-policy fix `1bf80e76…`
-> **Hierarchy evidence:** [composition_decision_surface_hierarchy_v1_20260717T013644Z](evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/)
-> **Post-hierarchy rebaseline:** [composition_post_hierarchy_rebaseline_v1_20260717T015247Z](evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/)
-> **Authorized next (NOT implemented):** `COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1`
+> **Implemented slice (merged):** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` — PR [#5263](https://github.com/rauterfrank-ui/Peak_Trade/pull/5263)
+> **Post-hierarchy rebaseline:** [composition_post_hierarchy_rebaseline_v1_20260717T015247Z](evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/) — docs PR [#5264](https://github.com/rauterfrank-ui/Peak_Trade/pull/5264)
+> **Implemented this PR:** `COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1`
+> **Evidence:** [composition_observability_surface_hierarchy_v1_20260717T015943Z](evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/)
+> **Next candidate (NOT authorized):** Engineering drawer deemphasis — requires separate GO
 > **Prior implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (PR #5261) · `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` (PR #5260)
 > **Branch context at original plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
@@ -270,24 +271,39 @@ AUTHORITY_EFFECT=NONE
 Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. Post-PR#5263 hierarchy rebaseline authorizes exactly one next presentation slice:
 
 ```text
-IMPLEMENTED_SLICE=COMPOSITION_DECISION_SURFACE_HIERARCHY_V1
-IMPLEMENTED_SLICE_PR=5263
-IMPLEMENTED_SLICE_MERGE=301c50f28a824fe2f03e2561a5b0903e772d01d8
-IMPLEMENTED_FEATURE_COMMIT=d689d087d65a487e9506ae5685c5f0b638a9e62e
-IMPLEMENTED_DOCS_POLICY_FIX=1bf80e7615285541485a9ae7ca9ec77fe3875813
-IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/
+IMPLEMENTED_SLICE=COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1
+IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/
+PRIOR_IMPLEMENTED=COMPOSITION_DECISION_SURFACE_HIERARCHY_V1
 POST_HIERARCHY_REBASELINE=docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/
-PRIOR_SLICE=COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1
-NEXT_SLICE=COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1
-NEXT_SLICE_TITLE=Observability Surface hierarchy: Economic > Linear diagnostics
-NEXT_SLICE_BRANCH=feat/dashboard-composition-observability-surface-hierarchy-v1
+NEXT_SLICE=NONE_AUTHORIZED
+NEXT_SLICE_CANDIDATES=COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1
 NEXT_SLICE_STATUS=AUTHORIZED_NOT_IMPLEMENTED
 STOP_BEFORE_IMPLEMENTATION=true
 STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 DASHBOARD_PROJECT_COMPLETE=false
 ```
 
-### Authorized next — COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1
+### Observability Surface hierarchy (this PR) — measured @1440×900
+
+| Metric | Before (post-hierarchy rebaseline) | After | Target |
+|---|---:|---:|---|
+| Economic height | 192 | 190 | > Linear |
+| Linear height | 86 | 72 | secondary |
+| Observability peer cards | 2 | 1 | material reduction |
+| Observability page share | 12.1% | 11.3% | denser |
+| Rhythm gaps | 8/20/20/20 | 8/20/20/20 | hold |
+| OBSERVABILITY_HIERARCHY_PASS | false | true | true |
+
+### Authorized next — COMPLETED IN THIS PR (historical authorization text retained below)
+
+~~COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1~~ implemented. Remaining candidate only:
+
+| Field | Value |
+|---|---|
+| Candidate | `COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1` |
+| Status | NOT authorized — requires separate GO after this merge + rebaseline |
+
+### Prior authorization block (superseded by implementation)
 
 | Field | Value |
 |---|---|
@@ -299,7 +315,7 @@ DASHBOARD_PROJECT_COMPLETE=false
 | Acceptance | Landmark order held; no overflow; Primary dominance held; Decision hierarchy held; Economic dominates Linear visually; Observability card frames reduced; Engineering closed; Chrome full-page evidence 1280/1440/1728 |
 | Tests | New observability-hierarchy testowner + rhythm/hierarchy/browser-policy/readonly/no-bitcoin/responsive contracts |
 | Evidence | Chrome full-page before/after under `docs&#47;product&#47;evidence&#47;composition_observability_surface_hierarchy_v1_<UTC>&#47;` |
-| Status | `AUTHORIZED_NOT_IMPLEMENTED` — docs authorization only in this PR |
+| Status | IMPLEMENTED (this PR) |
 
 ### Post-hierarchy rebaseline held (@1440×900)
 

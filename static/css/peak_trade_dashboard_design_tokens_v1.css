@@ -45,6 +45,9 @@
   --pt-decision-hierarchy-secondary-matrix-max-height: 48px;
   --pt-decision-hierarchy-tertiary-module-max-height: 152px;
   --pt-decision-hierarchy-tier-gap: 6px;
+  /* Observability Surface hierarchy — Economic > Linear (presentation only) */
+  --pt-observability-hierarchy-tier-gap: 6px;
+  --pt-observability-hierarchy-linear-max-height: 72px;
 
   --pt-space-1: 4px;
   --pt-space-2: 8px;

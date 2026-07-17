@@ -346,10 +346,21 @@
     data-landmark="OBSERVABILITY_SURFACE"
     data-landmark-observability-surface="true"
     data-market-landmark-vertical-rhythm-v1="true"
+    data-market-observability-surface-hierarchy-v1="true"
     aria-label="Observability surface"
   >
-    {% include "partials/market_economic_observability_visual_v1.html" %}
-    {% include "partials/market_ai_linear_diagnostics_visual_v1.html" %}
+    <div
+      data-market-observability-hierarchy-primary-v1="true"
+      data-market-observability-hierarchy-tier="primary"
+    >
+      {% include "partials/market_economic_observability_visual_v1.html" %}
+    </div>
+    <div
+      data-market-observability-hierarchy-secondary-v1="true"
+      data-market-observability-hierarchy-tier="secondary"
+    >
+      {% include "partials/market_ai_linear_diagnostics_visual_v1.html" %}
+    </div>
   </section>
 
   <section
