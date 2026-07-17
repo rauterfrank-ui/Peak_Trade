@@ -103,7 +103,7 @@ StrategySignalBindingResultV1
 |---|---|---|
 | `POSITIONAL_LS_STATE_V1` | `+1` long / `-1` short / `0` flat | side agreement vs DA side |
 | `POSITIONAL_LONG01_STATE_V1` | `+1` long / `0` flat; `-1` fail-closed | long-only agreement |
-| `ENTRY_EXIT_EVENT_V1` | `+1` entry / `-1` exit / `0` none | EXIT demotes eligibility only; never exit authority |
+| `ENTRY_EXIT_EVENT_V1` | `+1` entry / `-1` exit / `0` none | EXIT demotes eligibility only; never exit authority. Optional explicit `entry_side` ∈ {LONG, SHORT, NONE} (default NONE) is the only DA side carrier; `+1` alone is never LONG. |
 | `FILTER_MASK01_V1` | `1` allow / `0` block | eligibility gate |
 | `UNKNOWN_OR_STUB_V1` | n/a | fail-closed |
 
