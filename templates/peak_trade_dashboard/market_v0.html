@@ -279,9 +279,10 @@
   </section>
 
   <section
-    class="mt-3"
+    class="mt-2"
     data-landmark="DECISION_SURFACE"
     data-landmark-decision-surface="true"
+    data-market-decision-surface-vertical-compression-v1="true"
     aria-label="Decision surface"
   >
     {% if futures_first %}
@@ -292,8 +293,8 @@
 
     {% include "partials/market_decision_funnel_visual_v1.html" %}
 
-    <div class="mt-3 sm:mt-4 grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4" data-market-terminal-secondary-grid-v1="true" data-market-remodel-secondary-grid-v2="true" data-market-phase1a-decision-secondary-v1="true">
-      <div class="lg:col-span-3 order-1 lg:order-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div class="mt-2 grid grid-cols-1 lg:grid-cols-4 gap-2" data-market-terminal-secondary-grid-v1="true" data-market-remodel-secondary-grid-v2="true" data-market-phase1a-decision-secondary-v1="true" data-market-decision-secondary-dense-v1="true">
+      <div class="lg:col-span-3 order-1 lg:order-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         <div data-market-f5-pipeline-strip-v1="true">
         {% include "partials/futures_market_compact_v1.html" %}
         </div>
