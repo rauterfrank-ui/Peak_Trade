@@ -84,7 +84,8 @@ def test_ssot_json_pins_canonical_owner_and_count() -> None:
     assert owner["module_path"] == "src/governance/promotion_loop/promotion_economic_gate_v1.py"
     assert owner["primary_callable"] == "evaluate_promotion_economic_gate_v1"
     assert payload["risk_sizing_claimed_consolidated"] is False
-    assert payload["next_plan_item"] == "P2_RISK_SIZING_INVENTORY"
+    assert payload["risk_sizing_inventory_status"] == "DONE"
+    assert payload["next_plan_item"] == "P2_LEGACY_ORDER_INTENT"
 
 
 def test_gate_module_is_sole_owner_string_definition() -> None:

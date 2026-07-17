@@ -50,6 +50,7 @@
     "src/meta/learning_loop/comparison_promotion_policy_decision_v1.py",
     "src/experiments/topn_promotion.py"
   ],
-  "next_plan_item": "P2_RISK_SIZING_INVENTORY",
+  "next_plan_item": "P2_LEGACY_ORDER_INTENT",
+  "risk_sizing_inventory_status": "DONE",
   "risk_sizing_claimed_consolidated": false
 }

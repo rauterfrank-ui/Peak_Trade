@@ -130,4 +130,5 @@ Do **not** delete legacy/domain surfaces without a separate call-graph + contrac
 
 ## 6. Next plan item after this slice
 
-`P2 Risk&#47;Sizing Inventory` (CRS / PositionSizer / `core.position_sizing`) — inventory only; **not** claimed consolidated by this PR.
+Risk/Sizing inventory is tracked separately in [`RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md`](RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md) (`INVENTORY ONLY — NOT CONSOLIDATED`).  
+Next plan item: `P2 Legacy Order Intent`.
