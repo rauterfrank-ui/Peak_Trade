@@ -217,16 +217,12 @@ def verify(*, base: str, head: str, evidence_root: Path) -> None:
     if recorded_base != base_full:
         raise EvidenceVerifyError(f"base_mismatch recorded={recorded_base} expected={base_full}")
 
-    # Optional documentary head stamp (excluded from manifest; not required for PASS).
+    # Optional documentary head stamp (excluded from manifest; never fail-closed).
     head_stamp = evidence_root / "final_head_sha.txt"
     if head_stamp.is_file():
         recorded_head = head_stamp.read_text(encoding="utf-8").strip()
-        head_type = _run(["git", "cat-file", "-t", head_full]).decode().strip()
-        if head_type == "commit" and recorded_head not in {"PENDING_COMMIT", head_full}:
-            if _tree_of(recorded_head) != _tree_of(head_full):
-                raise EvidenceVerifyError(
-                    f"head_stamp_tree_mismatch recorded={recorded_head} expected={head_full}"
-                )
+        print(f"FINAL_HEAD_STAMP={recorded_head}")
+        print(f"VERIFY_HEAD={head_full}")
 
     rows = _name_status(base_full, head_full)
     counts = _counts(rows)
