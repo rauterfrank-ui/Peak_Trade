@@ -36,7 +36,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | **AUTH-013** | Alias policy: `el_karoui_vol_v1` aliased, `ecm_cycle` not | C | MEDIUM | Registry-Grammatik; ECM-spezifischer Ableger von AUTH-001 |
 | **AUTH-020** | `el_karoui_vol_model` registry vs R&D docs drift | A+B | MEDIUM | **Pattern-Analog** zu AUTH-005 (Tier-Dual-Source); kein ECM-Kern, aber gleiche Leseregel |
 
-**Residual Docs-Echo (Domain A):** AUTH-003 teilt B-01-Abhängigkeit; kein separater Authority-Kern.
+**Residual Docs-Echo (Domain A):** AUTH-003 docs layer B-01 **CLOSED** (PR #5274); residual Type D remains — kein separater Authority-Kern.
 
 **Cluster-Größe:** 7 primäre Konflikte (+ 1 Pattern-Analog)
 
@@ -59,7 +59,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | **AUTH-010** | Functional-only IDs without full OOP StrategySpec | C | MEDIUM | Registry-Subcluster; Policy-Leaf |
 | **AUTH-011** | `rsi_strategy` vs `rsi_reversion` dual identity | C | MEDIUM | Registry-Subcluster; hängt an AUTH-010 Policy |
 
-**Residual Docs-Echo (Domain B):** AUTH-021 (Feature-Engine stale DAG), AUTH-022 (R&D stub grammar) — LOW, structural docs only.
+**Residual Docs-Echo (Domain B):** AUTH-021 (Feature-Engine stale DAG), AUTH-022 (R&D stub grammar) — **CLOSED** on canonical matrix (PR #5274/#5270/#5276); do not re-open as structural docs-echo.
 
 **Cluster-Größe:** 10 primäre Konflikte (+ 2 Docs-Echo)
 
@@ -87,13 +87,13 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 
 ### Docs-Only Residual Layer (cross-domain, nicht authority-kern)
 
-| AUTH-ID | Kurzbezeichnung | Primär-Domain | Risiko |
-|---------|-----------------|---------------|--------|
-| **AUTH-021** | `missing_features_plan.md` stale DAG | A (Feature-Engine) | LOW |
-| **AUTH-022** | R&D stub status grammar | B (Registry visibility) | LOW |
-| **AUTH-023** | Psychology path residual | — (Reporting) | LOW |
+| AUTH-ID | Kurzbezeichnung | Primär-Domain | Risiko | Closeout projection |
+|---------|-----------------|---------------|--------|---------------------|
+| **AUTH-021** | `missing_features_plan.md` stale DAG | A (Feature-Engine) | LOW | **CLOSED** — matrix SSOT (PR #5274 / B-01+B-07; PR #5276 sync) |
+| **AUTH-022** | R&D stub status grammar | B (Registry visibility) | LOW | **CLOSED** — matrix SSOT (PR #5270 / B-02) |
+| **AUTH-023** | Psychology path residual | — (Reporting) | LOW | Open / optional A-06 follow-up (unchanged) |
 
-Diese Konflikte **kollabieren nicht** durch Authority-Ratifikation in A/B/C — sie erfordern Safe/Structural Docs-Fixes (Section A/B des drift_cleanup_plan).
+AUTH-021/AUTH-022 are projected **CLOSED** from `authority_conflict_matrix_v1.md` only. AUTH-023 remains docs residual and does **not** collapse through Authority-Ratifikation in A/B/C alone.
 
 ---
 
@@ -206,12 +206,12 @@ AUTH-019 (Registry→Core wiring)
 
 | AUTH-ID | Domain | Abhängigkeit | Unabhängigkeit |
 |---------|--------|--------------|----------------|
-| AUTH-003 | A | B-01 (docs) | Kein Block auf AUTH-001 für docs-deferred path |
+| AUTH-003 | A | B-01 docs CLOSED (PR #5274); residual Type D | Kein Block auf AUTH-001 für docs-deferred path |
 | AUTH-005 | A | Dual-Source Contract | Parallel zu AUTH-001; pattern für AUTH-020 |
 | AUTH-009 | B | AUTH-010 policy optional | DEF-05 leaf — disposition unabhängig von ECM |
 | AUTH-020 | A | AUTH-005 pattern | El-Karoui-spezifisch; alias docs bereits applied |
-| AUTH-021 | — | B-01 | Docs-only |
-| AUTH-022 | — | B-02 | Docs-only |
+| AUTH-021 | — | **CLOSED** (matrix SSOT / PR #5274/#5276) | Docs-only closeout projected |
+| AUTH-022 | — | **CLOSED** (matrix SSOT / PR #5270) | Docs-only closeout projected |
 | AUTH-023 | — | A-06 follow-up | Docs-only |
 
 ---

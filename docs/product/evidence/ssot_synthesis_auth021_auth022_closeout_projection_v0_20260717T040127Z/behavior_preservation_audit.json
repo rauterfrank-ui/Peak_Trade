@@ -1,0 +1,9 @@
+{
+  "behavior_preserving": true,
+  "core_semantics_changed": false,
+  "python_runtime_modules_changed": false,
+  "dashboard_files_changed": false,
+  "auth003_residual_type_d_preserved": true,
+  "auth023_optional_preserved": true,
+  "feature_engine_remains_class_c_non_operational": true
+}

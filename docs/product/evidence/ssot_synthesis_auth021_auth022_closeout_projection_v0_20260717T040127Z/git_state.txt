@@ -1,0 +1,5 @@
+branch=feat/ssot-synthesis-auth021-auth022-closeout-projection-v0
+head=8fb95ed28da10ccd89aec84fe1d8e6172b9f40ee
+origin_main=8fb95ed28da10ccd89aec84fe1d8e6172b9f40ee
+pr5277_merge=8fb95ed28da10ccd89aec84fe1d8e6172b9f40ee
+pr5276_merge=00c906abf4a9bfad06a9919f25ebe4f1f21e4edf

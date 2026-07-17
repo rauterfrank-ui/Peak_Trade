@@ -82,7 +82,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | Aspekt | Simulierte Wirkung |
 |--------|-------------------|
 | DOC-06 / Wiring Inventory | Konvergenz mit ratifizierter Identität; AUTH-003 docs-deferred Pfad aligniert |
-| `missing_features_plan.md` (AUTH-021) | Teilweise entlastet (Feature-Engine deferred bestätigt); B-01 weiter separat |
+| `missing_features_plan.md` (AUTH-021) | **CLOSED** on matrix SSOT (PR #5274 / B-01+B-07); Feature-Engine remains Class C deferred / NON-OPERATIONAL |
 | Matrix / Synthesis / Feature State Map | A-Konflikte als „ratified“ markierbar; B/C-Spalten bleiben widersprüchlich |
 | Operator-facing tier docs | AUTH-005 geschlossen in A — **aber** AUTH-012 (tier ≠ operational) weiter offen → Leser-Risiko |
 
@@ -227,7 +227,7 @@ flowchart TD
 | Aspekt | Simulierte Wirkung |
 |--------|-------------------|
 | `MASTER_V2_DECISION_AUTHORITY_MAP_V1` | Aligniert mit B-SSOT; Stage-Tabelle „partial/unclear“ reduziert |
-| AUTH-021, AUTH-022 | Docs-Echo; nicht durch B-SSOT allein geschlossen |
+| AUTH-021, AUTH-022 | Docs-Echo **CLOSED** on matrix SSOT (PR #5274/#5270/#5276); not re-opened by B-SSOT alone |
 | ECM docs (DOC-06 BLOCKED) | Weiterhin widersprüchlich zu ratifiziertem B-Wiring wenn falsche strategy_id |
 | Feature State Map Class A/B | B-SSOT verstärkt Class-A-Semantik für Integrated Replay |
 
@@ -506,7 +506,7 @@ flowchart TD
 |-----------|---------|----------------------|
 | **0 live operational features** | Matrix Runtime Core; Snapshot | Ja — keine SSOT-Wahl aktiviert Bridge |
 | **`BOUND_NOT_ACTIVATED` / `BOUND_OFFLINE`** | Matrix §Runtime Decision Core | Ja — C-SSOT ändert nicht Activation |
-| **Docs-only residual AUTH-021–023** | Neutral Surface §Docs-Only Layer | Ja — erfordern Safe/Structural Docs-Fixes unabhängig von A/B/C |
+| **Docs-only residual AUTH-021–023** | Neutral Surface §Docs-Only Layer | AUTH-021/AUTH-022 **CLOSED** (matrix SSOT); AUTH-023 remains optional docs residual independent of A/B/C |
 | **Orphan `breakout_confirmation_v1` (AUTH-009)** | Leaf in B; unabhängig von A/C | Ja — unless B-SSOT registry policy explizit einbezieht |
 | **Psychology reporting path (AUTH-023)** | Reporting layer | Ja |
 | **Feature-Engine Class C deferred** | AUTH-003 docs-deferred | Ja unter B/C; bestätigt unter A |
@@ -538,7 +538,7 @@ Maximal simulated closure per scenario:
 
 Shared boundary (AUTH-016, AUTH-017) requires ≥2 domain perspectives regardless of which is ratified first.
 
-Docs-only layer (AUTH-021, AUTH-022, AUTH-023) invariant — no A/B/C alone collapses.
+Docs-only layer: AUTH-021/AUTH-022 **CLOSED** (matrix SSOT projection); AUTH-023 remains residual — no A/B/C alone collapses AUTH-023.
 ```
 
 Diese Beobachtung ist **keine Empfehlung** für Multi-SSOT oder Sequenz — nur Feststellung: unitary selection per candidate leaves predictable residual conflict sets.

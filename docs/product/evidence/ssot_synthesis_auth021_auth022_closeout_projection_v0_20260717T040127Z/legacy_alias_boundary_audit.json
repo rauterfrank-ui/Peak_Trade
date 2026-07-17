@@ -1,0 +1,10 @@
+{
+  "legacy_alias_boundary_only": true,
+  "aliases": [
+    "deferred",
+    "docs-echo",
+    "docs-only",
+    "placeholder"
+  ],
+  "normalized_outside_boundary": false
+}

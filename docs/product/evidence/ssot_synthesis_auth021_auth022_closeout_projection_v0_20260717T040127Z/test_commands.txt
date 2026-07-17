@@ -1,0 +1,2 @@
+python -m pytest tests/governance/test_ssot_synthesis_auth021_auth022_closeout_projection_v0.py tests/governance/test_auth021_auth003_authority_matrix_b01_b07_closeout_sync_v0.py tests/governance/test_missing_features_plan_deferred_alignment_v0.py -q --tb=short
+python scripts/ops/ci_test_selection_v1.py --files <4 slice files>

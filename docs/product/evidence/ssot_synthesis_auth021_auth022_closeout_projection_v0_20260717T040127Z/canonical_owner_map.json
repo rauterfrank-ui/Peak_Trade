@@ -1,0 +1,12 @@
+{
+  "canonical_source_owner": "docs/governance/authority_conflict_matrix_v1.md",
+  "auth021_status_owner": "docs/governance/authority_conflict_matrix_v1.md#AUTH-021",
+  "auth022_status_owner": "docs/governance/authority_conflict_matrix_v1.md#AUTH-022",
+  "target_projection_owners": [
+    "docs/governance/ssot_decision_surface_neutral_v1.md",
+    "docs/governance/authority_resolution_synthesis_v1.md",
+    "docs/governance/ssot_counterfactual_simulation_v1.md"
+  ],
+  "test_owner": "tests/governance/test_ssot_synthesis_auth021_auth022_closeout_projection_v0.py",
+  "no_second_status_engine": true
+}

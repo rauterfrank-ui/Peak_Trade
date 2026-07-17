@@ -1,0 +1,16 @@
+{
+  "before": {
+    "missing_canonical_links": 1,
+    "stale_phrases": [
+      "B-01 weiter separat",
+      "AUTH-021, AUTH-022 \u2014 structural docs only",
+      "LOW, structural docs only (Domain B residual)"
+    ]
+  },
+  "after": {
+    "missing_canonical_links": 0,
+    "auth021_projected_closed": true,
+    "auth022_projected_closed": true,
+    "stale_phrases_removed": true
+  }
+}
