@@ -1261,6 +1261,7 @@ FAST_LANE_FULL_STATIC_PATHS = frozenset(
 )
 
 CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/webui/test_market_architecture_reset_shell_pr_a_v1.py",
     "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py",
     "tests/webui/test_market_futures_only_canonical_completion_v1.py",
     "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py",

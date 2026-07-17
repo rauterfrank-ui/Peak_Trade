@@ -1,0 +1,10 @@
+commands:
+- ruff format --check (changed python) -> PASS
+- ruff check (changed python) -> PASS
+- pytest tests/webui/test_market_architecture_reset_shell_pr_a_v1.py tests/test_market_surface_api.py -> 17 passed
+- pytest CANONICAL_MARKET_DASHBOARD_FOCUSED (+ reset shell + ci selector) -> 489 passed, 244 skipped, 37.79s
+- ci_test_selection_v1.py --event-name pull_request --files <final code files> -> CONTRACT_FOCUSED market_dashboard_focused
+timing_wallclock_seconds=38
+timing_target_max_seconds=840
+timing_hard_stop_seconds=900
+TIMING_PROOF_STATUS=PASS

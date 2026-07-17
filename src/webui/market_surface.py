@@ -1,18 +1,20 @@
 # src/webui/market_surface.py
 """
-Read-only Market Surface v0 — öffentliche OHLCV + minimale Chart-UI.
+Read-only Market Surface — PR-A architecture reset shell on GET /market.
 
-- GET /market — HTML (Close-Line-Chart, Chart.js)
-- GET /api/market/ohlcv — JSON (OHLCV-Bars)
+- GET /market — minimal architecture-reset shell (no landmark composition)
+- GET /api/market/ohlcv — JSON (OHLCV-Bars; legacy kraken/dummy only; not used by /market)
 
-GET /market embeds offline Market Depth read-model state SSR-only via
-``market_depth_json_payload_v0`` (no in-page Depth JSON route, no fetch).
+PR-A removes the active /market bindings to:
+``build_static_dashboard_display_dict``, ``market_dashboard_current_state_snapshot_v0``,
+implicit dummy fallback chains, and UI-composed decision/safety/authority facts.
 
-GET /market may embed env-gated Tape readmodel SSR via
-``build_market_tape_display_context`` (offline fixture bundle only, default off).
+Canonical read-model producers and ``build_market_v0_page_template_context`` remain in
+this module for reuse/quarantine, but are **not** reachable from the routed GET /market
+handler. Legacy presentation partials under ``templates/peak_trade_dashboard/partials/``
+are unreferenced by the active shell (LEGACY / NOT ROUTED).
 
-Keine Orders, kein OPS-Cockpit-Bezug. Kanonischer Default ist futures-first (SSR, fail-closed).
-Legacy Spot/Synthetic nur explizit via ``source=kraken`` oder ``source=dummy`` mit explizitem Symbol.
+Keine Orders, kein OPS-Cockpit-Bezug, keine Trading Authority auf /market.
 """
 
 from __future__ import annotations
@@ -3248,61 +3250,25 @@ def create_market_router(
         return build_market_payload(symbol=sym, timeframe=timeframe, limit=limit, source=src)
 
     @router.get("/market", response_class=HTMLResponse)
-    async def market_v0_page(
-        request: Request,
-        symbol: str = Query(DEFAULT_SYMBOL),
-        timeframe: str = Query(DEFAULT_TIMEFRAME),
-        limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_OHLCV_LIMIT),
-        source: str = Query(DEFAULT_SOURCE),
-        top_n: Optional[str] = Query(None, description="Governed Top-N list size (20 or 50)"),
-        matrix_filter_symbol: Optional[str] = Query(
-            None, description="View-only matrix symbol filter"
-        ),
-        matrix_filter_f5_status: Optional[str] = Query(
-            None, description="View-only matrix F5 status filter"
-        ),
-        matrix_filter_freshness: Optional[str] = Query(
-            None, description="View-only matrix freshness filter"
-        ),
-        matrix_sort_field: Optional[str] = Query(None, description="View-only matrix sort field"),
-        matrix_sort_direction: Optional[str] = Query(
-            None, description="View-only matrix sort direction"
-        ),
-    ) -> Any:
-        if timeframe not in MARKET_TIMEFRAMES:
-            raise HTTPException(
-                status_code=422,
-                detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
-            )
-        normalized_top_n = normalize_top_n(top_n)
-        view_extras = build_market_view_query_extras(
-            matrix_filter_symbol=matrix_filter_symbol,
-            matrix_filter_f5_status=matrix_filter_f5_status,
-            matrix_filter_freshness=matrix_filter_freshness,
-            matrix_sort_field=matrix_sort_field,
-            matrix_sort_direction=matrix_sort_direction,
-        )
-        sym, src, payload, data_unavailable = resolve_market_page_data(
-            symbol=symbol,
-            timeframe=timeframe,
-            limit=limit,
-            source=source,
-            top_n=normalized_top_n,
-        )
+    async def market_v0_page(request: Request) -> Any:
+        """GET /market — architecture reset shell (PR-A).
+
+        The legacy landmark composition is not routed. Query parameters are
+        intentionally ignored so /market cannot re-enter dummy/kraken OHLCV,
+        static Double-Play fixtures, or hardcoded current-state snapshots.
+        ``get_project_status`` remains injected for router compatibility but is
+        not rendered as domain truth on this shell.
+        """
+        _ = get_project_status  # retained for create_market_router contract; unused on shell
         return templates.TemplateResponse(
             request,
             "market_v0.html",
-            build_market_v0_page_template_context(
-                get_project_status=get_project_status,
-                symbol=sym,
-                timeframe=timeframe,
-                limit=limit,
-                source=src,
-                payload=payload,
-                data_unavailable=data_unavailable,
-                top_n=normalized_top_n,
-                extras=view_extras,
-            ),
+            {
+                "page_title": "Market Dashboard",
+                "architecture_reset_in_progress": "ARCHITECTURE RESET IN PROGRESS",
+                "read_only_label": "READ ONLY",
+                "no_trading_authority_label": "NO TRADING AUTHORITY",
+            },
         )
 
     return router

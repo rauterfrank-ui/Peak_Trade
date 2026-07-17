@@ -152,3 +152,6 @@ docs-token-policy-report.json
 !tests/ops/test_run_bounded_pilot_with_local_secrets.py
 !docs/ops/reviews/post_local_secret_launcher_run_handoff/
 !docs/ops/reviews/post_local_secret_launcher_run_handoff/*
+
+# Ephemeral local Pre-PR validation artifact (must not be tracked)
+.cursor/PRE_PR_VALIDATION_RESULT.env

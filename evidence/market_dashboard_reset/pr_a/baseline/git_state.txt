@@ -1,0 +1,23 @@
+timestamp_utc=20260717T075706Z
+repo_root=/Users/frnkhrz/Peak_Trade
+branch=fix/market-dashboard-architecture-reset-v1
+head=cf416c03c3238263b994d46cfbb3e96d02adc56b
+origin_main=cf416c03c3238263b994d46cfbb3e96d02adc56b
+expected=cf416c03c3238263b994d46cfbb3e96d02adc56b
+?? evidence/market_dashboard_reset/pr_a/baseline/git_state.txt
+?? evidence/market_dashboard_reset/pr_a/git_state.txt
+?? evidence/market_dashboard_reset/pr_a/recovery/branch_reconstruction.txt
+?? evidence/market_dashboard_reset/pr_a/recovery/post_reset_status.txt
+?? evidence/market_dashboard_reset/pr_a/recovery/pre_reset_status.txt
+?? evidence/market_dashboard_reset/pr_a/recovery/quarantine_manifest.sha256
+?? evidence/market_dashboard_reset/pr_a/recovery/quarantine_path.txt
+---remotes---
+origin	https://github.com/rauterfrank-ui/Peak_Trade.git (fetch)
+origin	https://github.com/rauterfrank-ui/Peak_Trade.git (push)
+---worktrees---
+/Users/frnkhrz/Peak_Trade                                                cf416c03 [fix/market-dashboard-architecture-reset-v1]
+/Users/frnkhrz/Peak_Trade_docs_market_dashboard_governance_ssot_norm_v1  54981735 [docs/market-dashboard-governance-ssot-normalization-v1]
+/Users/frnkhrz/Peak_Trade_landmark_discovery_delta_v1                    700155b7 [feat/market-dashboard-landmark-discovery-delta-v1]
+/Users/frnkhrz/Peak_Trade_phase1a_composition_foundation_v1              c9ad576b [feat/market-dashboard-phase1a-composition-foundation-v1]
+/Users/frnkhrz/Peak_Trade_phase3_chart_polish_v1                         23a82750 [feat/market-dashboard-phase3-chart-polish-after-5254-v1]
+/Users/frnkhrz/Peak_Trade_review_server_harness_v1                       f2723b8d [feat/webui-review-server-harness-v1]
