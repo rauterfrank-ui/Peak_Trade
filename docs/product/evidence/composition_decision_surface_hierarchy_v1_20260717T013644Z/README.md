@@ -2,7 +2,7 @@
 
 Slice: `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1`  
 Browser: `GOOGLE_CHROME` · REAL_CHROME_VERIFIED=true · CHROMIUM_FALLBACK_USED=false  
-Evidence root: `docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/`
+Evidence root: `docs&#47;product&#47;evidence&#47;composition_decision_surface_hierarchy_v1_20260717T013644Z&#47;`
 
 ## Hierarchy (1440×900)
 
@@ -34,7 +34,7 @@ Evidence root: `docs/product/evidence/composition_decision_surface_hierarchy_v1_
 
 ## Artifacts
 
-- Before: `before/screenshots/`, `before/browser_report.json`
-- After: `screenshots/`, `browser_report.json`, `hierarchy_report.json`
+- Before: `before&#47;screenshots&#47;`, `before&#47;browser_report.json`
+- After: `screenshots&#47;`, `browser_report.json`, `hierarchy_report.json`
 - Geometry / landmark / overflow reports in this directory
 - `test_report.txt` · `MANIFEST.sha256`
