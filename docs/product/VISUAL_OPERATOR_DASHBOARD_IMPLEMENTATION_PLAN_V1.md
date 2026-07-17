@@ -3,11 +3,11 @@
 > **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` for any further unrelated UI slice
 > **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
-> **Next implementable slice:** awaiting post-rhythm composition rebaseline (separate GO)
-> **Authorized slice in flight / implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1`
+> **Next implementable slice:** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` (authorized; not implemented in this docs/rebaseline pack)
+> **Authorized slice in flight / implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (merged PR #5261)
 > **Prior slice:** `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` · historical authorize pack for `COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1`: [composition_rebaseline_next_slice_v1_20260717T001413Z](evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/)
-> **Rebaseline evidence:** [composition_rebaseline_post_primary_dominance_v1_20260717T010616Z](evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/)
-> **After evidence:** [composition_landmark_vertical_rhythm_v1_20260717T011316Z](evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/)
+> **Post-rhythm rebaseline:** [composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z](evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/)
+> **Rhythm after evidence:** [composition_landmark_vertical_rhythm_v1_20260717T011316Z](evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/)
 > **Branch context at original plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
 ```text
@@ -274,8 +274,11 @@ IMPLEMENTED_SLICE=COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1
 IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/
 IMPLEMENTED_SLICE_SCOPE=templates/CSS presentation only; landmark gap tokens; no data-contract or authority changes
 BASELINE_EVIDENCE=docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/
+POST_RHYTHM_REBASELINE_EVIDENCE=docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/
 PRIOR_SLICE=COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1
-NEXT_SLICE=AWAITING_POST_RHYTHM_REBASELINE
+NEXT_SLICE=COMPOSITION_DECISION_SURFACE_HIERARCHY_V1
+NEXT_SLICE_BRANCH=feat/dashboard-composition-decision-surface-hierarchy-v1
+STOP_BEFORE_IMPLEMENTATION=true
 STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 ```
 
@@ -290,7 +293,7 @@ STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 | PRIMARY chart viewport share | ≥40% | 50.0% | ≥ 40% |
 | Horizontal overflow | 0 | 0 | 0 |
 
-### Landmark vertical rhythm (this slice) — gaps @1440×900
+### Landmark vertical rhythm (PR #5261) — gaps @1440×900
 
 | Transition | Post-dominance rebaseline | After rhythm slice | Target |
 |---|---:|---:|---:|
@@ -298,4 +301,14 @@ STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 | Primary → Decision | 2 px | 20 px | 16–28 |
 | Decision → Observability | 12 px | 20 px | ≥ 16 |
 | Observability → Engineering | 16 px | 20 px | ≥ 16 |
+
+### Post-rhythm rebaseline (merged main) — held
+
+| Gate | Result |
+|---|---|
+| Rhythm gaps 8/20/20/20 | PASS (stable across 1280/1440/1728) |
+| Primary ≥ Decision + 2 pp | PASS (38.8% vs 32.6%) |
+| Chart viewport share ≥ 40% | PASS |
+| Landmark order / overflow / Engineering secondary | PASS |
+| Authorized next | `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` |
 

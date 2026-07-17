@@ -1,0 +1,101 @@
+{
+  "AUTHORIZED_SLICE_ID": "COMPOSITION_DECISION_SURFACE_HIERARCHY_V1",
+  "Titel": "Decision Surface hierarchy: Top-20 > Funnel > Secondary",
+  "Problemstatement": "Nach Dominance (PR#5260) und Rhythm (PR#5261) ist die Full-Page-Masse und Stage-Atmung korrekt, aber innerhalb DECISION_SURFACE bleiben Top-20 (~322.5px), Funnel (~233.15625px) und Secondary-Grid (~229.96875px) peer-gewichtet mit 16 bordered containers. Der Scan-Pfad nach dem Fold wird zur flachen Decision-Wand.",
+  "konkrete_Messwerte_Evidence": {
+    "decision_modules_1440x900": {
+      "top20": {
+        "top": 1067.046875,
+        "height": 322.5
+      },
+      "top20_table": {
+        "top": 1165.546875,
+        "height": 192
+      },
+      "funnel": {
+        "top": 1391.546875,
+        "height": 233.15625
+      },
+      "secondary_grid": {
+        "top": 1626.703125,
+        "height": 229.96875
+      },
+      "decision_sentence": {
+        "top": 795.6875,
+        "height": 140.375
+      }
+    },
+    "decision_bordered_container_count": 16,
+    "page_shares_1440x900": {
+      "GLOBAL_HEADER": 2.7779211395540875,
+      "PRIMARY_MARKET_SURFACE": 38.80122316267548,
+      "DECISION_SURFACE": 32.60218827415359,
+      "OBSERVABILITY_SURFACE": 11.973575557390586,
+      "ENGINEERING_DRAWER": 5.037159372419488
+    },
+    "gaps_1440x900": {
+      "GLOBAL_HEADER->PRIMARY_MARKET_SURFACE": 8,
+      "PRIMARY_MARKET_SURFACE->DECISION_SURFACE": 20,
+      "DECISION_SURFACE->OBSERVABILITY_SURFACE": 20,
+      "OBSERVABILITY_SURFACE->ENGINEERING_DRAWER": 20
+    },
+    "evidence_root": "docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z"
+  },
+  "betroffene_Dateien": [
+    "templates/peak_trade_dashboard/market_v0.html",
+    "templates/peak_trade_dashboard/partials/market_governed_top20_primary_v1.html",
+    "templates/peak_trade_dashboard/partials/market_decision_funnel_visual_v1.html",
+    "static/css/peak_trade_dashboard_design_tokens_v1.css",
+    "static/css/peak_trade_dashboard_layout_v1.css",
+    "tests/webui/test_market_dashboard_*hierarchy*"
+  ],
+  "ausdr\u00fccklich_nicht_betroffene_Dateien": [
+    "trading/**",
+    "src/execution/**",
+    "src/risk/**",
+    "src/governance/**",
+    "Master V2 / Double Play owners",
+    "producers / APIs / runtime"
+  ],
+  "erwartete_Tests": [
+    "new hierarchy presentation contracts",
+    "rhythm regression",
+    "primary dominance regression",
+    "compression regression",
+    "browser policy chrome primary",
+    "readonly structure / landmark order / overflow"
+  ],
+  "erwartete_Chrome_Evidence": [
+    "full-page 1440/1280/1728 before/after",
+    "decision submodule height ratios Top20 > Funnel > Secondary",
+    "primary share still >= decision + 2pp",
+    "rhythm gaps remain 16\u201328px"
+  ],
+  "Acceptance_Criteria": [
+    "Top-20 clearly primary submodule by visual mass within Decision",
+    "Funnel clearly secondary to Top-20",
+    "Secondary grid tertiary / denser / quieter frames",
+    "No Primary dominance regression",
+    "No Rhythm regression (gaps 16\u201328)",
+    "Landmark order PASS; overflow PASS; Engineering closed",
+    "Chrome real verified; no Chromium-as-Chrome claim"
+  ],
+  "Non_Goals": [
+    "No Primary page-share mass levers (PR#5260)",
+    "No landmark gap token changes (PR#5261)",
+    "No new ViewModel/SSOT/business logic",
+    "No observability producer work",
+    "No runtime/orders/live activation"
+  ],
+  "Governance_Grenzen": {
+    "BUSINESS_SSOT": "MASTER_V2_AND_DOUBLE_PLAY",
+    "DASHBOARD_ROLE": "READ_ONLY_CONSUMER_DISPLAY_LAYER",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS": false,
+    "SECOND_TRUTH": false
+  },
+  "vorgeschlagener_Branchname": "feat/dashboard-composition-decision-surface-hierarchy-v1",
+  "REPEATS_PR5260_SCOPE": false,
+  "REPEATS_PR5261_SCOPE": false,
+  "AUTHORIZATION_PASS": true
+}
