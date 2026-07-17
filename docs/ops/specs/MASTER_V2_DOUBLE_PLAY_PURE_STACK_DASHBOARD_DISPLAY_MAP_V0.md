@@ -61,6 +61,7 @@ This map is consistent with the static audit conclusion (read-only, no repo muta
 - The **general WebUI** application (`src&#47;webui&#47;app.py`) is the **best initial host** for a future read-only Double Play pure-stack display slice.
 - **`src&#47;live&#47;web&#47;app.py`** (Shadow/Paper run monitoring) is **not** the first target for pure-stack **model** display — different contract and runtime adjacency.
 - **`src&#47;webui&#47;market_surface.py`** (Market Surface v0: OHLCV chart, optional Kraken public REST) must **not** be mixed with Double Play pure-stack display in v0 — different data lineage and exchange-touching path.
+- **Architecture-Reset clarification:** inventing Double Play decision truth inside WebUI/OHLCV lineage remains forbidden. A **read-only** projection of a **canonical** Double Play / composition-matrix Evidence ReadModel onto **`GET &#47;market`** is allowed under the Architecture Reset Runbook and does **not** transfer Double Play authority into WebUI.
 
 See also: [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) for pure module inventory.
 
@@ -75,7 +76,7 @@ A future slice should add a **dedicated** router or route namespace for Double P
 | Surface | Reason to defer for Double Play pure-stack v0 display |
 |---------|--------------------------------------------------------|
 | `src&#47;live&#47;web&#47;app.py` | Run/snapshot monitoring semantics; not the pure DTO stack |
-| `src&#47;webui&#47;market_surface.py` | OHLCV/Kraken/dummy lineage; must not imply Double Play authority |
+| `src&#47;webui&#47;market_surface.py` | OHLCV/Kraken/dummy lineage; must not imply Double Play authority; may host read-only canonical DP projection without owning DP decisions |
 | Knowledge POST paths | Mutation; unrelated |
 | R&D experiment HTML/API | Evidence/report adjacency; unrelated to pure-stack labels |
 

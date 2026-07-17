@@ -1737,9 +1737,9 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 
 #### Surface boundaries (orthogonal owners)
 
-- **`GET &#47;market` only** for future registry-derived run/evidence projection overlays: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) remains the canonical Market Surface v0 owner (SSR OHLCV/dummy/kraken read-only lineage).
-- **F5 futures read-only display** remains orthogonal: [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — instrument/provenance/risk display semantics; **does not** replace Registry v1 run/evidence projection fields.
-- **`GET &#47;market&#47;double-play` untouched:** Master V2 / Double Play read-only composition route, handlers, templates, and authority boundaries remain unchanged (§9). Registry projection must **not** embed Double Play decision or selection authority.
+- **`GET &#47;market` only** for future registry-derived run/evidence projection overlays: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) remains the technical chronicle owner for Market Surface v0 route/marker/env facts (SSR OHLCV/dummy/kraken read-only lineage) — not Product/Architecture-Reset SSOT.
+- **F5 futures read-only display** remains orthogonal: [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — instrument/provenance/risk display semantics; **does not** replace Registry v1 run/evidence projection fields. Orthogonality is **ownership**, not a requirement for a separate route host; F5 may render on `/market` without transferring authority into WebUI.
+- **`GET &#47;market&#47;double-play` untouched:** Master V2 / Double Play read-only composition **authority**, handlers, templates, and non-authority boundaries remain unchanged (§9) — even if the HTTP path is a **302** redirect onto `/market#double-play`. "Untouched" means **authority/composition ownership** stays protected; it does not forbid host-path reuse via redirect. Registry projection must **not** embed Double Play decision or selection authority.
 
 Detail owner for existing F5 / §7h display markers: taxonomy §7h and [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md).
 
@@ -2256,10 +2256,10 @@ Normative state (post Market Dashboard taxonomy cross-ref):
 
 - F5 read-only market dashboard surfaces map to lane_id `dashboard` with authority level `review_input_only` (see §3).
 - Detail owner: [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — futures-aware read-only display boundary (F5 stage).
-- WebUI orientation surface [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) remains orthogonal Kraken/OHLCV/dummy lineage; it does **not** replace the F5 contract owner.
+- WebUI orientation surface [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) remains orthogonal Kraken/OHLCV/dummy lineage; it does **not** replace the F5 contract owner. Orthogonality = separate contract ownership; shared `/market` hosting is allowed without transferring F5 authority into WebUI.
 - Dashboard display, SSR read models, registry rows, and test status **do not** grant approval, gate clearance, Live/Testnet/broker/exchange permission, scheduler activation, or runtime start.
 - `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (see §5).
-- Master V2 / Double Play boundaries stay **protected**; dashboard must not reimplement selection or live decision authority (see §9).
+- Master V2 / Double Play boundaries stay **protected**; dashboard must not reimplement selection or live decision authority (see §9). A read-only canonical DP projection on `/market` does not transfer Double Play authority into WebUI.
 
 ## 8. Canary and Live-Canary lanes
 

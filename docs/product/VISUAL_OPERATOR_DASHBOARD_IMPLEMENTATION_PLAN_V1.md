@@ -1,31 +1,39 @@
 # Visual Operator Dashboard — Implementation Plan v1
 
 > **Supersession (Architecture Reset / Rebuild scope):** Historisches abgeleitetes Implementierungsdokument; bleibt als Evidence erhalten. Für den neuen Architecture-Reset-/Rebuild-Scope gilt ausschließlich [Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md). Keine automatische Implementierungsfreigabe.
-> **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` for any further unrelated UI slice
-> **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
+> **Status (historical pre-reset):** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` applied to further **pre-reset composition** UI polish slices only.
+> **Reset-scope note:** `STOP_BEFORE_IMPLEMENTATION` / `NONE_AUTHORIZED` here are **historical pre-reset** states and do **not** block Architecture Reset PR-A or subsequent Reset/Rebuild PRs governed by the Reset Runbook.
+> **Authority (historical):** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
 > **Implemented slice (merged):** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` — PR [#5263](https://github.com/rauterfrank-ui/Peak_Trade/pull/5263)
 > **Post-hierarchy rebaseline:** [composition_post_hierarchy_rebaseline_v1_20260717T015247Z](evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/) — docs PR [#5264](https://github.com/rauterfrank-ui/Peak_Trade/pull/5264)
 > **Implemented this PR:** `COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1`
 > **Evidence:** [composition_engineering_drawer_deemphasis_v1_20260717T021409Z](evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/)
 > **Prior implemented:** `COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1` (PR #5265) · `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` (PR #5263) · `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (PR #5261) · `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` (PR #5260)
-> **Next candidate:** NONE_AUTHORIZED — composition presentation gates complete; further polish requires separate GO
+> **Next candidate (historical pre-reset):** NONE_AUTHORIZED — pre-reset composition presentation gates complete; further **pre-reset** polish requires separate GO. Architecture Reset / Rebuild work is governed solely by the Reset Runbook and is **not** blocked by this historical NONE_AUTHORIZED marker.
 > **Post-hierarchy rebaseline:** [composition_post_hierarchy_rebaseline_v1_20260717T015247Z](evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/) — docs PR [#5264](https://github.com/rauterfrank-ui/Peak_Trade/pull/5264)
 > **Branch context at original plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
 ```text
-CANONICAL_PRODUCT_SPEC=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+HISTORICAL_PRODUCT_SPEC_REFERENCE=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
 DOCUMENT_ROLE=DERIVED_IMPLEMENTATION_PLAN
-MAY_NOT_OVERRIDE_RUNBOOK=true
+STATUS=HISTORICAL_PRE_RESET
+SUPERSEDED_FOR_ARCHITECTURE_RESET_REBUILD=true
+ACTIVE_FOR_ARCHITECTURE_RESET_REBUILD_SCOPE=false
+MAY_NOT_OVERRIDE_ACTIVE_RESET_SSOT=true
 IMPLEMENTATION_READY=true
 STOP_BEFORE_IMPLEMENTATION=true
+STOP_BEFORE_IMPLEMENTATION_SCOPE=HISTORICAL_PRE_RESET_COMPOSITION_SLICES_ONLY
+NONE_AUTHORIZED_SCOPE=HISTORICAL_PRE_RESET_COMPOSITION_SLICES_ONLY
+DOES_NOT_BLOCK_ARCHITECTURE_RESET_PR_A=true
 ONE_BOUNDED_PR_PER_SLICE=true
 REUSE_BEFORE_NEW=true
 NO_TRADING_SEMANTICS_EFFECT=true
 NO_RUNTIME_AUTHORITY_EFFECT=true
+ARCHITECTURE_RESET_REBUILD_GOVERNED_BY=docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
 ```
 
-Dieses Dokument ist abgeleitet und dem Product Runbook untergeordnet. Bei Widerspruch gilt ausschließlich das Runbook (PART I normativ; PART II technische Discovery-/Ist-Referenz; eigenständige Discovery-Exporte sind keine Produkt-SSOT).
+Dieses Dokument ist abgeleitet und dem historischen Product Runbook untergeordnet. Für den Architecture-Reset-/Rebuild-Scope gilt ausschließlich das Reset-Runbook. `STOP_BEFORE_IMPLEMENTATION` / `NONE_AUTHORIZED` sind historische pre-reset Zustände und blockieren Reset PR-A nicht.
 
 ---
 

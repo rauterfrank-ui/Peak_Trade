@@ -57,12 +57,14 @@ Dieses Dokument ist die **einzige aktive Repo-SSOT** für den Market-Dashboard-A
 ### Binding statement
 
 ```text
-DASHBOARD_PRODUCT_SPEC_SSOT=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+HISTORICAL_DASHBOARD_PRODUCT_SPEC_REFERENCE=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
 DASHBOARD_PRODUCT_COMPATIBILITY_SURFACE=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
 DASHBOARD_PRODUCT_SPEC_SCOPE=HISTORICAL_COMPOSITION_LANDMARK_PRE_RESET
-DERIVED_DOCUMENTS_MAY_NOT_OVERRIDE_PRODUCT_SPEC=true
+ACTIVE_FOR_ARCHITECTURE_RESET_REBUILD_SCOPE=false
+SUPERSEDED_FOR_ARCHITECTURE_RESET_REBUILD=true
+DERIVED_DOCUMENTS_MAY_NOT_OVERRIDE_ACTIVE_RESET_SSOT=true
 CORE_SYSTEM_REMAINS_FUNCTIONAL_SSOT=true
-CANONICAL_PRODUCT_DOCUMENT=true
+HISTORICAL_PRODUCT_DOCUMENT=true
 PRODUCT_DOCUMENT=true
 IMPLEMENTATION_SPEC=true
 READ_ONLY=true
@@ -84,8 +86,8 @@ ARCHITECTURE_RESET_REBUILD_GOVERNED_BY=docs/product/Peak_Trade_Market_Dashboard_
 
 1. Das **Core-System / Master V2** bleibt die einzige fachliche Wahrheit (Trading, Risk, Authority, Economic, Decision).
 2. Für den **Architecture-Reset-/Rebuild-Scope** ist ausschließlich [Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md) die aktive SSOT.
-3. Das **Composition-/Landmark-Master-Runbook v1.3** bleibt als historische Produkt-/Presentation-Spec und Evidence erhalten; für neuen Reset-/Rebuild-Scope gilt es als superseded und darf keine zweite aktive Reset-Wahrheit bilden. Die Datei `Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md` bleibt Compatibility-/Contract-Surface.
-4. Innerhalb des v1.3-Runbooks: **PART I** war normativ (Composition-/Landmark-/Governance-/UX-Ziel); **PART II** war die technische Discovery-/Ist-Referenz.
+3. Das **Composition-/Landmark-Master-Runbook v1.3** bleibt als historische Produkt-/Presentation-Spec und Evidence erhalten (`STATUS=HISTORICAL_PRE_RESET`, `SUPERSEDED_FOR_ARCHITECTURE_RESET_REBUILD=true`); für den Reset-/Rebuild-Scope darf es **keine** zweite aktive Architecture-SSOT bilden. Die Datei `Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md` bleibt Compatibility-/Contract-Surface (`HISTORICAL_PRODUCT_REFERENCE` / `COMPATIBILITY_REFERENCE`).
+4. Innerhalb des v1.3-Runbooks gilt `PART_I_NORMATIVE` / `PART_I_WINS_ON_CONFLICT` **nur** für die historische pre-reset Interpretation; sie überschreiben **nicht** die aktive Architecture-Reset-SSOT. **PART II** bleibt Discovery-/Ist-Referenz.
 5. Das Dashboard ist **Consumer-only** — es besitzt keine Trading-, Risk-, Economic-, Decision- oder Authority-Ownership.
 6. Abgeleitete Dokumente (Implementation Plan, Patch-Empfehlungen, Index-Pointer, technische Surface-Chronicle) dürfen weder die Architecture-Reset-SSOT noch historische Evidence unkontrolliert überschreiben.
 7. `docs/webui/MARKET_SURFACE_V0.md` bleibt die technische Route-/Marker-/Env-Chronicle — nicht die Product Spec und nicht die Architecture-Reset-SSOT.
@@ -116,6 +118,36 @@ SELECTION_CONTEXT_REQUIRED_BEFORE_PHASE_4C_COMPLETE=true
 CURRENT_REPO_OR_DOCS_DEFAULT_MAY_INCLUDE_KRAKEN_OR_BTC=true
 CURRENT_DEFAULT_MUST_NOT_BE_CLAIMED_AS_ALREADY_COMPLIANT=true
 MARKET_BROWSER_E2E_BASELINE=MISSING
+```
+
+
+
+---
+
+## Market Dashboard SSOT consistency matrix (reset/rebuild scope)
+
+Maschinenlesbare Rollenklärung. Bei Widerspruch steuert ausschließlich die Architecture-Reset-SSOT den Reset-/Rebuild-Scope.
+
+| DOCUMENT | ROLE | ACTIVE_FOR_RESET_SCOPE | NORMATIVE_AUTHORITY | SUPERSEDED_BY | NOTES |
+|----------|------|------------------------|---------------------|---------------|-------|
+| `docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md` | Architecture Reset & Rebuild Master SSOT | `true` | Architecture reset/rebuild product plan | — | Sole active SSOT for reset/rebuild; does not authorize Live/Orders |
+| `docs/product/README.md` | Product docs index / binding | `true` (binding only) | Points to Reset SSOT for reset scope | — | Declares `SINGLE_ACTIVE_SSOT_FOR_ARCHITECTURE_RESET_REBUILD=true` |
+| `docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md` | Historical composition/landmark product reference | `false` | Pre-reset historical PART I only | Reset Runbook v1.0 (reset scope) | `STATUS=HISTORICAL_PRE_RESET`; may not override Reset SSOT |
+| `docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md` | Compatibility / browser-policy surface | `false` | Browser verification policy only | Reset Runbook v1.0 (reset scope) | `COMPATIBILITY_REFERENCE`; Chrome/Playwright preserved |
+| `docs/product/VISUAL_OPERATOR_DASHBOARD_IMPLEMENTATION_PLAN_V1.md` | Derived historical implementation plan | `false` | None for reset scope | Reset Runbook v1.0 (reset scope) | `STOP_BEFORE_IMPLEMENTATION` / `NONE_AUTHORIZED` are historical pre-reset; do **not** block Reset PR-A |
+| `docs/webui/MARKET_SURFACE_V0.md` | Technical route/marker/env chronicle | `false` | Marker/IA chronicle ownership only (not Product SSOT) | Reset Runbook v1.0 (architecture target) | `TECHNICAL_CHRONICLE_NOT_PRODUCT_SSOT`; pre-reset IA/defaults/static display paths are historical facts |
+| `docs/ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md` | F5 display contract owner | `true` (F5 display semantics) | F5 display boundary / non-authority | — | Orthogonal **ownership** to Market Surface; may be hosted on `GET &#47;market` without transferring F5 authority into WebUI |
+| `docs/ops/specs/FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md` | Futures provenance display requirements | `true` (provenance display) | Provenance / fail-closed display | — | Read-only dashboard must not call write-enabled fetch paths |
+| `docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md` | Lane/authority taxonomy | `true` (authority lane rules) | `dashboard`=`review_input_only`; projection non-authority | — | DP authority boundaries remain protected even if path redirects |
+| `docs/ops/specs/SESSION_ENV_NAME_AND_EXCHANGE_SURFACES_NON_AUTHORITY_V0.md` | Env/label non-authority policy | `true` (label semantics) | Labels ≠ capability/authority | — | Preserved |
+| `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md` | DP pure-stack display planning map | `false` (planning lens) | Display-only; no DP authority | Reset Runbook for `/market` consumer rebuild | Canonical DP read-model projection on `/market` allowed; inventing DP truth in WebUI forbidden |
+| `docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md` | Observer surface inventory | `false` (inventory) | Inventory only | — | Dashboard/cockpit observation ≠ order authority |
+
+```text
+DUAL_ACTIVE_ARCHITECTURE_RESET_SSOT_FORBIDDEN=true
+V1_3_MAY_NOT_OVERRIDE_RESET_SSOT=true
+MARKET_SURFACE_V0_IS_NOT_PRODUCT_OR_RESET_SSOT=true
+HISTORICAL_STOP_NONE_AUTHORIZED_DOES_NOT_BLOCK_RESET_PR_A=true
 ```
 
 ### Bootstrap provenance

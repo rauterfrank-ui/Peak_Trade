@@ -11,20 +11,26 @@
 ## Role
 
 ```text
-CANONICAL_DASHBOARD_MASTER_RUNBOOK=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+HISTORICAL_PRODUCT_REFERENCE=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+COMPATIBILITY_REFERENCE=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
 PRODUCT_RUNBOOK_ROLE=COMPATIBILITY_CONTRACT_SURFACE
+STATUS=HISTORICAL_PRE_RESET
+SUPERSEDED_FOR_ARCHITECTURE_RESET_REBUILD=true
+ACTIVE_FOR_ARCHITECTURE_RESET_REBUILD_SCOPE=false
 BUSINESS_SSOT=MASTER_V2_AND_DOUBLE_PLAY
 DASHBOARD_ROLE=READ_ONLY_CONSUMER_DISPLAY_LAYER
 DASHBOARD_CREATES_SECOND_TRUTH=false
-PART_I_NORMATIVE_OWNER=MASTER_RUNBOOK
-PART_II_DISCOVERY_SNAPSHOT_OWNER=MASTER_RUNBOOK
+PART_I_NORMATIVE_OWNER=HISTORICAL_MASTER_RUNBOOK_PRE_RESET
+PART_II_DISCOVERY_SNAPSHOT_OWNER=HISTORICAL_MASTER_RUNBOOK_PRE_RESET
+ARCHITECTURE_RESET_REBUILD_GOVERNED_BY=docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
 VERSION=v1.3
 ```
 
+- Für den **Architecture-Reset-/Rebuild-Scope** gilt ausschließlich [Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md).
 - Fachliche Business-SSOT bleibt ausschließlich **Master V2 und Double Play**.
 - Das Dashboard bleibt **Consumer-/Display-only**.
-- Normative Composition-/Landmark-Vorgaben und der technische Discovery-Snapshot leben im Master Runbook (PART I / PART II).
-- Diese Datei behält die maschinenlesbare Browser-Verification-Policy für bestehende Repo-Contracts.
+- Historische Composition-/Landmark-Vorgaben und der technische Discovery-Snapshot leben im historischen Master Runbook (PART I / PART II; pre-reset only).
+- Diese Datei behält die maschinenlesbare Browser-Verification-Policy für bestehende Repo-Contracts (Chrome/Playwright primary).
 
 # 6A. Browser Verification Policy
 
