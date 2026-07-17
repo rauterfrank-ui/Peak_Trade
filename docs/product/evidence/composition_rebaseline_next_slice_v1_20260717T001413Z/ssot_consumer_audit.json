@@ -1,0 +1,32 @@
+{
+  "authority_status": "NONE",
+  "business_ssot_unchanged": true,
+  "canonical_ssot": "MASTER_V2_AND_DOUBLE_PLAY",
+  "confirmed_markers": {
+    "data_market_live_locked": true,
+    "data_market_non_authorizing": true,
+    "data_market_readonly": true,
+    "data_market_trading_authority_false": true
+  },
+  "consumer_owners_verified_present": [
+    "src/webui/market_surface.py",
+    "src/webui/double_play_dashboard_display_json_route_v0.py",
+    "src/webui/market_ranking_funnel_runtime_v0.py",
+    "src/webui/futures_read_only_market_dashboard_runtime_v0.py",
+    "src/webui/market_visual_operator_surface_v1/runtime_v1.py",
+    "src/webui/market_dashboard_current_state_snapshot_v0.py"
+  ],
+  "dashboard_creates_second_truth": false,
+  "dashboard_is_consumer_only": true,
+  "dashboard_readonly": true,
+  "live_orders_scheduler_activation": false,
+  "new_domain_snapshot_owners_created": false,
+  "notes": [
+    "Rebaseline/planning run only; no productive Python/Template/CSS/JS mutation.",
+    "Master V2 and Double Play remain sole business SSOT.",
+    "Dashboard remains read-only consumer/display layer."
+  ],
+  "productive_ui_files_changed_this_run": false,
+  "reuse_before_new": true,
+  "second_truth_created_this_run": false
+}
