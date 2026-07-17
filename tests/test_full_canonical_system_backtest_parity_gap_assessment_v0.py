@@ -54,7 +54,9 @@ def test_capital_risk_sizing_surface_pass_v0() -> None:
 
 def test_gap_matrix_markdown_renders_v0() -> None:
     md = render_parity_gap_matrix_markdown_v0()
-    assert "FULL_CANONICAL_CHAIN_WIRED=false" in md
+    assert "FULL_CANONICAL_CHAIN_WIRED=true" in md
+    assert "BACKTEST_RUNTIME_DECISION_PARITY_PASS=true" in md
+    assert "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE=false" in md
     assert NEXT_RECOMMENDED_SLICE in md
 
 
@@ -63,9 +65,14 @@ def test_gap_matrix_json_machine_readable_v0() -> None:
     assert payload["assessment_owner"] == FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER
     assert payload["next_recommended_slice"] == NEXT_RECOMMENDED_SLICE
     assert len(payload["surfaces"]) == 16
-    assert payload["summary"]["full_canonical_chain_wired"] is False
+    assert payload["summary"]["full_canonical_chain_wired"] is True
+    assert payload["summary"]["backtest_runtime_decision_parity_pass"] is True
+    assert payload["summary"]["system_economic_evidence_admissible"] is False
     surface_i = next(item for item in payload["surfaces"] if item["surface_id"] == "I")
     assert surface_i["parity_status"] == "PASS"
+    surface_p = next(item for item in payload["surfaces"] if item["surface_id"] == "P")
+    assert surface_p["parity_status"] == "PASS"
+    assert surface_p["matrix_status"] == "PARTIAL_RUNTIME_ACTIVATION_PENDING"
 
 
 def test_surface_p_passes_offline_when_required_proof_input_is_satisfied_and_runtime_bridge_remains_policy_blocked() -> (

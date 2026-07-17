@@ -32,7 +32,16 @@
     "tests/trading/master_v2/test_canonical_architecture_drift_guard_v1.py",
     "tests/backtest/test_strategy_signal_suitability_agreement_adapter_v1.py",
     "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
-    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md"
+    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md",
+    "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py",
+    "tests/trading/master_v2/test_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
+    "tests/trading/master_v2/test_surface_p_boundary_path_bar_sequence_4_way_parity_extension_contract_v0.py",
+    "tests/trading/master_v2/test_runtime_bridge_pre_activation_gate_assessment_contract_v0.py",
+    "tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_reversal_preparation_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_survival_suitability_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "tests/test_full_canonical_system_backtest_parity_gap_assessment_v0.py"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -46,7 +55,8 @@
     "TECHNICAL_LEGACY_DUPLICATE_DECISION_BOUNDARY_CLOSEOUT",
     "TECHNICAL_RUNTIME_BACKTEST_PARITY_CONTRACT_TEST",
     "TECHNICAL_CANONICAL_ARCHITECTURE_DRIFT_GUARD_CONTRACT_TEST",
-    "TECHNICAL_DOCS_TOMBSTONE_POINTER_WIRING"
+    "TECHNICAL_DOCS_TOMBSTONE_POINTER_WIRING",
+    "TECHNICAL_SURFACE_P_REGISTRY_STATUS_CONTRACT_TEST"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -82,6 +92,7 @@
     "Includes family-scoped strategy suitability agreement consumer/adapter paths for Decision-D binding under runtime/authority/order NONE invariants.",
     "Includes Slice-4 legacy duplicate decision boundary closeout and runtime/backtest parity contract test under runtime/authority/order NONE invariants.",
     "Includes canonical architecture drift guard SSOT contract tests (total decision owner, replay-input constructor, strategy-authority bypass rails) under runtime/authority/order NONE invariants.",
-    "Includes docs-only Market Dashboard tombstone pointer updates on Double Play display/route contract specs (no DP composition semantics, no runtime/authority)."
+    "Includes docs-only Market Dashboard tombstone pointer updates on Double Play display/route contract specs (no DP composition semantics, no runtime/authority).",
+    "Includes Surface P registry status contract-test alignment (PASS vs PARTIAL_RUNTIME_ACTIVATION_PENDING split) under runtime/authority/order NONE invariants; no owner semantic mutation."
   ]
 }

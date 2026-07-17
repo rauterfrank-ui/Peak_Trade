@@ -75,11 +75,12 @@ def test_current_head_assessment_documents_fail_closed_gate_v0() -> None:
     assert result.gate_assessment_status == "FAIL_CLOSED_DOCUMENTED"
     assert result.runtime_bridge_pre_activation_gate_status == "FAIL"
     assert result.runtime_bridge_activation_admissible is False
-    assert result.surface_p_registry_status == "PARTIAL"
+    assert result.surface_p_registry_status == "PASS"
     assert result.surface_p_semantic_post_status == "PASS"
     assert len(result.blocking_reasons) > 0
     assert len(result.required_next_gates) > 0
-    assert "surface_p_status!=FAIL" in result.blocking_reasons
+    assert not any(reason.startswith("surface_p_status") for reason in result.blocking_reasons)
+    assert "operator_go_token_status!=FAIL" in result.blocking_reasons
 
 
 def test_final_success_flags_remain_false_v0() -> None:
