@@ -1,0 +1,17 @@
+{
+  "canonicalBlocker": true,
+  "emptyChart": true,
+  "decisionAboveFold": true,
+  "noSpotEn": false,
+  "noOhlcvEn": false,
+  "marketChartEn": false,
+  "marktchart": true,
+  "keinSpot": true,
+  "entscheidung": true,
+  "keinInstrument": true,
+  "chartDiagDe": true,
+  "configured": true,
+  "activeGreenBadge": false,
+  "authorityNone": true,
+  "sample": "Peak Trade\nOperator Console\nOps\nObservability\n\nPEAK TRADE / OPERATOR CONSOLE\n\nPeak Trade Market Dashboard\nSnapshot · 2026-07-17T05:38:46Z\n·\nSource · futures\n·\nFreshness · unavailable\nREAD ONLY\nFUTURES ONLY\n·\nEXECUTION / ORDERS / LIVE DISABLED\n·\nAUTHORITY NONE\nOperator lane · futures-first · read-only\nFreshness · unavailable\n\nSnapshot · 2026-07-17T05:38:46Z · Source · futures · Runtime authority · NONE · no orders · no live · no execution · AI · NOT_AVAILABLE · Econ · unavailable\n\nGoverned Futures-Snapshot fehlt — Chart, Ranking und Funnel eingeschränkt. System bleibt read-only · keine Orders · kein Live.\nKein Spot-OHLCV und kein synthetischer Fallback auf dem kanonischen /market-Default.\nfutures_snapshot_unavailable\n\nInstrument-Kontext eingeschränkt\n\nQuelle · futures · Frische · 2026-07-17T05:38:46.821361+00:00 · Timeframe · 1h · futures_snapshot_unavailable\n\nRegime · unavailable\n\nMarktchart\nREAD-ONLY · SSR\nInstrument\nTimeframe 1h\nBars 0\nQuelle futures\nFrische 2026-07-17T05:38:46.821361+00:00\nKeine OHLCV-Bars für diese Abfrage. Keine synthetischen Kerzen.\n\nKeine eingebetteten OHLCV-Zeilen — kompakter leerer Chart (SSR). Keine synthetischen Kerzen.\n\nChart-Diagnostik (sekundär)\n\nKein"
+}

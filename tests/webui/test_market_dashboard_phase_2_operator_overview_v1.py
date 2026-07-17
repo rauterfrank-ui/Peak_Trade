@@ -109,7 +109,8 @@ def test_decision_sentence_contract_unit() -> None:
     assert "AAAUSDT" in sentence
     assert "Rang 3" in sentence
     assert "Regime unavailable" in sentence
-    assert "Decision Blocked" in sentence
+    assert "Decision Blocked" not in sentence
+    assert "Entscheidung Blocked" in sentence
     assert "Primärer Blocker: Preflight blocked" in sentence
     assert vm["current_decision"]["ai_activity_state"] == "PROCESSED"
     assert vm["current_decision"]["ai_activity_state_raw"] == "ACTIVE"

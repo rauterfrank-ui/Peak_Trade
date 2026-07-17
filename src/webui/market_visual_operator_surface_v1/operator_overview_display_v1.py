@@ -146,12 +146,20 @@ def build_operator_overview_display_v1(
     contract = workspace.get("contract_metadata")
     contract_meta = contract if isinstance(contract, dict) else {}
 
-    sentence = (
-        f"{symbol} steht auf Rang {rank_display}. "
-        f"Regime {regime}. "
-        f"Decision {decision_state}. "
-        f"Primärer Blocker: {blocker}."
-    )
+    if symbol == _UNAVAILABLE:
+        sentence = (
+            f"Kein Instrument geladen (Rang {rank_display}). "
+            f"Regime {regime}. "
+            f"Entscheidung {decision_state}. "
+            f"Primärer Blocker: {blocker}."
+        )
+    else:
+        sentence = (
+            f"{symbol} steht auf Rang {rank_display}. "
+            f"Regime {regime}. "
+            f"Entscheidung {decision_state}. "
+            f"Primärer Blocker: {blocker}."
+        )
 
     economic_status = _text(header.get("economic_gate_status"))
     risk_row = next(

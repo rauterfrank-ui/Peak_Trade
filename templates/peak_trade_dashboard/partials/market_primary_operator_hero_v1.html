@@ -43,7 +43,7 @@
   >
     <strong class="text-slate-100">Governed Futures-Snapshot fehlt</strong>
     — Chart, Ranking und Funnel eingeschränkt. System bleibt read-only · keine Orders · kein Live.
-    <span class="block mt-1 text-[10px] text-slate-500">No spot OHLCV or synthetic fallback on canonical <span class="font-mono">/market</span> default.</span>
+    <span class="block mt-1 text-[10px] text-slate-500">Kein Spot-OHLCV und kein synthetischer Fallback auf dem kanonischen <span class="font-mono">/market</span>-Default.</span>
     {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-400">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
   </div>
   {% elif query.source == 'futures' and data_unavailable and governed_top20.snapshot_available %}
@@ -56,7 +56,7 @@
     {% if primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}data-market-futures-selector-invalid-v1="true"{% endif %}
   >
     {% if primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}
-    <strong class="text-rose-200/90">Invalid futures instrument selection</strong> — symbol not in governed universe (fail-closed).
+    <strong class="text-rose-200/90">Ungültige Futures-Instrumentauswahl</strong> — Symbol nicht im governed Universe (fail-closed).
     {% elif primary_values.unavailable_reason == 'futures_ohlcv_malformed' %}
     <strong class="text-rose-200/90">Futures-OHLCV ungültig/fehlerhaft</strong> — keine synthetischen Kerzen angezeigt.
     {% elif primary_values.unavailable_reason == 'futures_ohlcv_stale' %}
@@ -227,7 +227,7 @@
     data-market-workspace-ranking-context-v1="true"
   >
     <summary class="cursor-pointer text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-      Ranking / F5 / contract / freshness (secondary)
+      Ranking / F5 / Kontrakt / Frische (sekundär)
     </summary>
     <div class="mt-2 space-y-2">
       <section aria-label="Ranking context and F5 metadata">
@@ -243,9 +243,9 @@
         </dl>
         <div data-market-workspace-f5-strip-v1="true" data-f5-workspace-strip-readonly="true">
         {% if not selected_instrument_workspace.f5_gate_enabled %}
-        <p class="m-0 text-[10px] text-slate-400" data-market-workspace-f5-unavailable-v1="true">F5 metadata unavailable — env gate off.</p>
+        <p class="m-0 text-[10px] text-slate-400" data-market-workspace-f5-unavailable-v1="true">F5-Metadaten nicht verfügbar — Env-Gate aus.</p>
         {% elif selected_instrument_workspace.f5_display_status == 'builder_error' %}
-        <p class="m-0 text-[10px] text-rose-200/90" role="alert" data-market-workspace-f5-malformed-v1="true">F5 fixture invalid/malformed.</p>
+        <p class="m-0 text-[10px] text-rose-200/90" role="alert" data-market-workspace-f5-malformed-v1="true">F5-Fixture ungültig/fehlerhaft.</p>
         {% else %}
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
           {% for card in selected_instrument_workspace.f5_cards %}
@@ -273,9 +273,9 @@
         data-market-workspace-contract-metadata-v1="true"
         aria-label="Contract and market metadata"
       >
-        <h3 class="m-0 mb-1 text-[9px] font-semibold uppercase tracking-wide text-slate-300">Contract / market metadata</h3>
+        <h3 class="m-0 mb-1 text-[9px] font-semibold uppercase tracking-wide text-slate-300">Kontrakt- / Markt-Metadaten</h3>
         {% if not selected_instrument_workspace.f5_gate_enabled or selected_instrument_workspace.f5_display_status in ('builder_error', 'disabled', 'unconfigured') %}
-        <p class="m-0 text-[11px] text-slate-400" data-market-workspace-contract-unavailable-v1="true">Contract metadata unavailable.</p>
+        <p class="m-0 text-[11px] text-slate-400" data-market-workspace-contract-unavailable-v1="true">Kontrakt-Metadaten nicht verfügbar.</p>
         {% else %}
         <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[11px] tabular-nums">
           <div><dt class="text-slate-500 uppercase text-[10px]">Exchange</dt><dd class="m-0 font-mono text-slate-200">{{ selected_instrument_workspace.contract_metadata.exchange|e }}</dd></div>
@@ -285,7 +285,7 @@
         </dl>
         {% if selected_instrument_workspace.contract_unavailable_fields %}
         <p class="m-0 mt-2 text-[10px] text-slate-500" data-market-workspace-contract-unavailable-compact-v1="true">
-          Unavailable: {{ selected_instrument_workspace.contract_unavailable_fields|join(', ') }}
+          Nicht verfügbar: {{ selected_instrument_workspace.contract_unavailable_fields|join(', ') }}
         </p>
         {% endif %}
         {% endif %}

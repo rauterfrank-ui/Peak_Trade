@@ -42,6 +42,11 @@ def test_empty_chart_compact_markers_in_template() -> None:
     assert "min-h-[20rem]" not in text
     assert "Keine OHLCV" in text
     assert "Keine synthetischen Kerzen" in text
+    assert "Marktchart" in text
+    assert "Chart-Diagnostik (sekundär)" in text
+    assert "Market chart" not in text
+    assert "Chart diagnostics (secondary)" not in text
+    assert "No OHLCV bars for this query" not in text
 
 
 def test_layout_css_empty_chart_compact_override() -> None:
@@ -56,6 +61,9 @@ def test_hero_empty_and_decision_above_fold_markers() -> None:
     assert "data-market-product-recovery-decision-above-fold-v1" in text
     assert "data-market-product-recovery-canonical-blocker-v1" in text
     assert "Governed Futures-Snapshot fehlt" in text or "Instrument-Kontext" in text
+    assert "Kein Spot-OHLCV" in text
+    assert "No spot OHLCV" not in text
+    assert "is ranked #" not in text
 
 
 def test_watchlist_german_locale() -> None:

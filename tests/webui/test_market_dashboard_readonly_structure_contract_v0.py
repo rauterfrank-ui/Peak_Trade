@@ -363,7 +363,8 @@ def test_market_dashboard_v11_chart_diagnostics_readonly_structure_contract_v0(
     assert 'data-market-v11-diagnostics-visual-rails="true"' in html
     assert 'id="market-v11-render-fallback"' in html
 
-    assert "Chart diagnostics" in html
+    assert "Chart-Diagnostik" in html
+    assert "Chart diagnostics (secondary)" not in html
     assert "No backend/API/provider change" in html
     assert "Dominant panel · keine Order-UI" in html
     assert "SSR only — verified in browser" in html

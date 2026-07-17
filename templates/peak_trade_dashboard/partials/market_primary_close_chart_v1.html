@@ -23,7 +23,7 @@
   {% endif %}
 >
   <div class="flex flex-wrap items-end justify-between gap-1.5 mb-1">
-    <h2 id="market-v0-landmark-close-chart-h2" class="text-sm font-semibold text-slate-100 m-0 tracking-tight">Market chart</h2>
+    <h2 id="market-v0-landmark-close-chart-h2" class="text-sm font-semibold text-slate-100 m-0 tracking-tight">Marktchart</h2>
     <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500">Read-only · SSR</span>
   </div>
 
@@ -31,13 +31,13 @@
     class="pt-foundation-chart-meta"
     data-market-chart-legend-v1="true"
     data-market-foundation-chart-meta-v1="true"
-    aria-label="Chart metadata"
+    aria-label="Chart-Metadaten"
   >
     <span><span class="text-slate-600">Instrument</span> {{ primary_values.symbol|e }}</span>
     <span><span class="text-slate-600">Timeframe</span> {{ primary_values.timeframe|e }}</span>
     <span><span class="text-slate-600">Bars</span> {{ payload.bars_returned }}</span>
-    <span><span class="text-slate-600">Source</span> {% if futures_ohlcv is defined and futures_ohlcv.source %}{{ futures_ohlcv.source|e }}{% else %}{{ query.source|e }}{% endif %}</span>
-    <span><span class="text-slate-600">Freshness</span> {{ primary_values.generated_at_utc|e }}</span>
+    <span><span class="text-slate-600">Quelle</span> {% if futures_ohlcv is defined and futures_ohlcv.source %}{{ futures_ohlcv.source|e }}{% else %}{{ query.source|e }}{% endif %}</span>
+    <span><span class="text-slate-600">Frische</span> {{ primary_values.generated_at_utc|e }}</span>
   </div>
 
   {% if payload.bars_returned == 0 or (selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status in ('malformed', 'stale', 'missing')) %}
@@ -232,7 +232,7 @@
   </div>
 
   <details class="mt-2 rounded-lg border border-slate-800/70 bg-slate-950/50 px-3 py-2 text-xs text-slate-400" data-market-diagnostics-secondary-v1="true" data-market-v11-chart-diagnostics="true">
-    <summary class="cursor-pointer font-semibold text-slate-300">Chart diagnostics (secondary)</summary>
+    <summary class="cursor-pointer font-semibold text-slate-300">Chart-Diagnostik (sekundär)</summary>
     <div class="mt-2" data-market-v11-diagnostics-inner="true">
       <dl class="m-0 grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-[11px]">
         <div><dt class="text-slate-500 m-0" data-market-v11-chart-library-status="true">Chart.js status</dt><dd id="market-v11-chartjs-state" class="m-0 text-sky-300/95">SSR only</dd></div>

@@ -1,0 +1,5 @@
+STATUS=STOPPED
+PORT=8010
+HOST=127.0.0.1
+PID_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server/review_server.log
