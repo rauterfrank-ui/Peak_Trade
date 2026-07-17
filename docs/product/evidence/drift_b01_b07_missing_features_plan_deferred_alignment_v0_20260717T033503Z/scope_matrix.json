@@ -1,0 +1,27 @@
+{
+  "rows": [
+    {
+      "OBLIGATION": "B-01",
+      "CANONICAL_OWNER": "docs/governance/drift_cleanup_plan_v1.md#B-01 + feature_state_map_v1 Class C",
+      "CURRENT_STATE_BEFORE": "missing deferred banner / Class C pointer",
+      "TARGET_STATE": "STRUCTURAL/DEFERRED banner + Class C crosslink",
+      "FILES_ALLOWED": [
+        "docs/analysis/missing_features_plan.md",
+        "docs/governance/drift_cleanup_plan_v1.md"
+      ],
+      "TEST_OWNER": "tests/governance/test_missing_features_plan_deferred_alignment_v0.py",
+      "BEHAVIOR_CHANGE_ALLOWED": false
+    },
+    {
+      "OBLIGATION": "B-07",
+      "CANONICAL_OWNER": "docs/governance/drift_cleanup_plan_v1.md#B-07 + feature_state_map Validation Rule",
+      "CURRENT_STATE_BEFORE": "DAG without NON-OPERATIONAL footnote",
+      "TARGET_STATE": "DAG NON-OPERATIONAL footnote + Feature-Engine deferred edges",
+      "FILES_ALLOWED": [
+        "docs/analysis/missing_features_plan.md"
+      ],
+      "TEST_OWNER": "tests/governance/test_missing_features_plan_deferred_alignment_v0.py",
+      "BEHAVIOR_CHANGE_ALLOWED": false
+    }
+  ]
+}

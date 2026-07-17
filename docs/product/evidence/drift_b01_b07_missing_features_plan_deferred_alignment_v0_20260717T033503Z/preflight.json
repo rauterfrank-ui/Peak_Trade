@@ -1,0 +1,9 @@
+{
+  "slice": "DRIFT_B01_B07_MISSING_FEATURES_PLAN_DEFERRED_ALIGNMENT_V0",
+  "discovery_pr": 5273,
+  "discovery_merge": "fc248ddae3aacd37148d351f61b8e3ed4ebe4f84",
+  "branch": "feat/drift-b01-b07-missing-features-plan-deferred-alignment-v0",
+  "base_head": "fc248ddae3aacd37148d351f61b8e3ed4ebe4f84",
+  "live_authorized": false,
+  "orders": false
+}

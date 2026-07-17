@@ -1,0 +1,16 @@
+ docs/analysis/missing_features_plan.md             |  20 ++-
+ docs/governance/drift_cleanup_plan_v1.md           |   9 +-
+ .../MANIFEST.sha256                                |  11 ++
+ .../behavior_preservation.json                     |   9 ++
+ .../changed_files.txt                              |  14 ++
+ .../diff_stat.txt                                  |   3 +
+ .../focused_tests.txt                              |  22 +++
+ .../forbidden_mapping_scan.txt                     |   4 +
+ .../manifest.json                                  |  10 ++
+ .../preflight.json                                 |   9 ++
+ .../safety_state.json                              |  12 ++
+ .../scope_matrix.json                              |  27 ++++
+ .../static_contract_tests.txt                      |   2 +
+ .../summary.md                                     |   7 +
+ ..._missing_features_plan_deferred_alignment_v0.py | 162 +++++++++++++++++++++
+ 15 files changed, 313 insertions(+), 8 deletions(-)

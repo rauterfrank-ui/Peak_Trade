@@ -1,0 +1,2 @@
+STATIC: same as focused contract file
+PASS

@@ -1,0 +1,10 @@
+{
+  "slice_id": "DRIFT_B01_B07_MISSING_FEATURES_PLAN_DEFERRED_ALIGNMENT_V0",
+  "unknown_marker_fail_closed": true,
+  "missing_features_fail_closed": true,
+  "plan_deferred_explicit": true,
+  "legacy_alias_boundary_only": true,
+  "direct_authority_mappings_after": 0,
+  "canonical_producer_truth": "docs/governance/feature_state_map_v1.md",
+  "consumer": "docs/analysis/missing_features_plan.md"
+}

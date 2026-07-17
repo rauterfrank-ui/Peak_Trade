@@ -1,10 +1,18 @@
 # Missing Features – Implementation Plan (Logical Gap Analysis)
 
+> **STRUCTURAL DOC DRIFT / DEFERRED ROADMAP (DRIFT_B01 + B-07)** — This plan is a **logical gap / roadmap analysis**, not operational wiring authority.  
+> It does **not** authorize runtime activation, live trading, orders, promotion, or Feature-Engine enablement.  
+> **Canonical Class C truth:** [feature_state_map_v1.md](../governance/feature_state_map_v1.md) — Feature-Engine (central layer) = **Defer** / **Non-operational**.  
+> **Validation Rule (frozen):** `NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)`.  
+> **Plan state:** explicitly **deferred** — never silently treat as PASS, READY, ENABLED, or live-authorized.  
+> Unknown / non-canonical status claims for this plan surface must remain **fail-closed**.
+
 **Erzeugt:** Cursor Multi-Agent (Primary)  
 **Input:** `docs&#47;analysis&#47;FEHLENDE_FEATURES_PEAK_TRADE.md`, `out&#47;ops&#47;missing_features_prioritized.md` <!-- pt:ref-target-ignore -->
 **Constraints:** Kein Live-Trading freischalten; bestehende Gates unverändert. Bevorzugt deterministischer Kern + reproduzierbare Experimente.
 
-Note: ECM implementation has been consolidated under `src&#47;strategies&#47;ecm.py` (legacy feature path removed). <!-- pt:ref-target-ignore -->
+Note: ECM implementation has been consolidated under `src&#47;strategies&#47;ecm.py` (legacy feature path removed). <!-- pt:ref-target-ignore -->  
+Note: `src&#47;features&#47;` remains a **deferred placeholder** only (`__init__.py`); proposed `pipeline.py` / Feature-Engine skeletons below are **roadmap**, not present operational owners. ECM truth remains strategy-layer. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -33,6 +41,9 @@ Note: ECM implementation has been consolidated under `src&#47;strategies&#47;ecm
 
 ## 2. Abhängigkeits-DAG (vereinfacht)
 
+> **B-07 / NON-OPERATIONAL footnote:** Nodes outside the Runtime Decision Core — including **Feature-Engine** and other Class C roadmap nodes — are **NON-OPERATIONAL** per [feature_state_map_v1.md](../governance/feature_state_map_v1.md) Validation Rule, even if partially sketched.  
+> Feature-Engine upstream edges in this DAG are **deferred / non-operational roadmap edges**, not an activated runtime dependency path. They must not be read as READY, ENABLED, PASS, or live-authorized wiring.
+
 ```text
                     ┌─────────────────┐
                     │  Data / Feeds   │
@@ -44,8 +55,9 @@ Note: ECM implementation has been consolidated under `src&#47;strategies&#47;ecm
          ▼                   ▼                   ▼
 ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
 │ Feature-Engine  │  │  Regime/Labels   │  │  Streaming      │
-│ (ECM, TA, Meta- │  │  (bereits da)    │  │  (Design/Stub)   │
-│  Labeling)      │  └────────┬─────────┘  └────────┬─────────┘
+│ (DEFERRED /     │  │  (bereits da)    │  │  (Design/Stub)   │
+│  NON-OPERATIONAL│  └────────┬─────────┘  └────────┬─────────┘
+│  Class C)       │           │                    │
 └────────┬────────┘           │                    │
          │                    │                    │
          └────────────────────┼────────────────────┘
@@ -77,7 +89,7 @@ Note: ECM implementation has been consolidated under `src&#47;strategies&#47;ecm
        └──────────┘   └──────────┘   └──────────┘
 ```
 
-- **Feature-Engine** und **Streaming** hängen nur von Data/Feeds ab; keine Abhängigkeit von Live-Execution.
+- **Feature-Engine** (Class C / deferred placeholder under `src&#47;features&#47;`) und **Streaming** hängen nur von Data/Feeds ab; keine Abhängigkeit von Live-Execution; **keine** Runtime-Aktivierung aus diesem DAG. <!-- pt:ref-target-ignore -->
 - **Execution** bleibt hinter Gates; alle neuen Designs (Multi-Exchange, Routing) dürfen keine Bypässe einführen.
 - **Research** (Sweeps, Heatmaps, Bayesian) nutzt Backtest/Experiments; reproduzierbar, deterministisch wo möglich.
 

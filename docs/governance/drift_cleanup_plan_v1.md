@@ -98,13 +98,13 @@ Diese Punkte erfordern **Architektur- oder Status-Grammatik-Entscheid**, nicht n
 
 | Flag | Quelle | Thema | Warum structural | Minimaler Docs-Ansatz (wenn GO) |
 |------|--------|-------|------------------|--------------------------------|
-| **B-01** | DOC-03, R-04 | Feature-Engine / `missing_features_plan.md` | Plan referenziert zukünftige `src&#47;features/pipeline.py` | Plan-Header „deferred“; Verweis auf `feature_state_map_v1` Class C | <!-- pt:ref-target-ignore -->
+| **B-01** | DOC-03, R-04 | Feature-Engine / `missing_features_plan.md` | **CLOSED (2026-07-17)** — deferred/STRUCTURAL banner + Class C pointer | Consumer: `docs&#47;analysis&#47;missing_features_plan.md` · Truth: `feature_state_map_v1` Class C | <!-- pt:ref-target-ignore -->
 | **B-02** | DOC-12, CR-P2-03 | R&D Strategy Status (stub vs missing) | **CLOSED (2026-07-17)** — Status-Tabelle `stub`/`research-only`/`missing` in FEHLENDE + `rd_strategy_status_grammar_v0` | Grammar-Owner: `docs&#47;features&#47;rd_strategy_status_grammar_v0.json` + `src&#47;governance&#47;rd_strategy_status_grammar_v0.py` | <!-- pt:ref-target-ignore -->
 | **B-03** | DOC-11, WG-07 | Double Play authority visibility | **CLOSED (2026-07-17)** — Ops runbooks mirror `LEGACY_NON_AUTHORITATIVE` + Slice E crosslink | Owner projection: `evaluate_double_play_authority_boundary_v0` → `docs/ops/runbooks/double_play.md` + `double_play_specialists.md` |
 | **B-04** | WG-01 | Registry → Suitability → Replay sequence | Kein Default-Runtime-Wiring dokumentiert | Neues read-only Spec (analog ECM inventory): „Registry-Suitability-Replay Read Model v0“ |
 | **B-05** | WG-02, WG-03, R-06 | Scope Capital / Risk / Sizing owner split | Runbook v2.6: 3 Owner; Code: merged in `capital_risk_sizing_v1` | Architecture design note: „merged by intent“ vs „gap“ — **kein** Owner-Urteil in Safe-Fixes |
 | **B-06** | WG-07 | Decision Packet vs Integrated Replay | Zwei parallele MV2-Pfade in `master_v2&#47;__init__.py` exports | Decision-authority map Ergänzung: welcher Pfad canonical replay owner ist | <!-- pt:ref-target-ignore -->
-| **B-07** | DOC-03 | `missing_features_plan.md` DAG | Veraltete Abhängigkeitskante Feature-Engine → alles downstream | DAG-Fußnote: Validation Rule NON-OPERATIONAL für nicht-Core-Features |
+| **B-07** | DOC-03 | `missing_features_plan.md` DAG | **CLOSED (2026-07-17)** — DAG NON-OPERATIONAL footnote + Feature-Engine deferred edges | Same consumer as B-01; Validation Rule from `feature_state_map_v1` |
 
 **Section B Regel:** Kein Schritt in Section B ohne explizites Operator-GO und ggf. separates Architecture-Review-Packet.
 
@@ -169,7 +169,7 @@ Abhängig von Runtime-/Strategy-Truth — **keine Docs-Only-Closure möglich**.
 |----|-----|--------|---------|----------------------|
 | DOC-01 | naming duplication | SAFE DOC FIX | A-02 | ✅ |
 | DOC-02 | naming duplication | SAFE DOC FIX | A-03 | ✅ |
-| DOC-03 | stale reference | STRUCTURAL | B-01 | Teilweise (Header/deferred) |
+| DOC-03 | stale reference | STRUCTURAL | B-01 / B-07 | **CLOSED** (deferred banner + DAG NON-OPERATIONAL) |
 | DOC-04 | stale reference | SAFE DOC FIX | A-01 | ✅ |
 | DOC-05 | path drift | SAFE DOC FIX | A-07 | ✅ (JSON/docs policy) |
 | DOC-06 | authority drift | BLOCKED | C.1 | ❌ |
@@ -223,6 +223,7 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 - [ ] DOC-01, DOC-02: redirect-only, kein widersprüchlicher Volltext
 - [ ] DOC-04: historischer Banner gesetzt
 - [ ] DOC-05, DOC-07, DOC-08, DOC-09, DOC-10: addressed in Section A steps
+- [x] DOC-03 / B-01 + B-07: closed via `missing_features_plan.md` deferred banner + Class C pointer + DAG NON-OPERATIONAL footnote (2026-07-17)
 - [ ] DOC-06: remain flagged in B/C/D — **not closed**
 - [x] DOC-11 / B-03: closed via ops Double-Play authority markers + Slice E crosslink (2026-07-17)
 - [x] DOC-12 / B-02: closed via `rd_strategy_status_grammar_v0` (2026-07-17)
@@ -234,4 +235,4 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 
 **Plan-Owner:** Drift Cleanup Plan v1  
 **Evidence frozen at:** `2f1672bee8761f8d50def3f6ef31cc803824b2e9`  
-**Nächster Schritt (post B-03 discovery):** Selected next slice `DRIFT_B01_B07_MISSING_FEATURES_PLAN_DEFERRED_ALIGNMENT_V0` — requires **separate** docs Operator-GO / Implementation-GO; this discovery PR performs **no** `missing_features_plan.md` mutation.
+**Nächster Schritt (post B-01/B-07):** remaining Section B items (B-04…) require separate Operator-GO; no runtime/live activation.
