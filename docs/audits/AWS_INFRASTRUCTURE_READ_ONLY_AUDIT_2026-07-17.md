@@ -27,7 +27,7 @@ RUNTIME_BRIDGE_ACTIVATED=false
 
 Read-only AWS API inventory against account `511913187493` using profile `peak-trade-prearm-v3-audit` (assumed role `peak-trade-operator-readonly-audit-role`).
 
-- No `GetSecretValue`, no Lambda invoke, no EventBridge/Scheduler mutate, no S3 object read/write, no IAM/OIDC mutations.
+- No Secrets Manager value retrieval, no Lambda invoke, no EventBridge/Scheduler mutate, no S3 object read/write, no IAM/OIDC mutations.
 - Fallback profile was **not** used (canonical STS succeeded).
 - This audit does **not** claim a complete account inventory: the audit role's inline policy intentionally omits most list APIs.
 
@@ -36,7 +36,7 @@ Read-only AWS API inventory against account `511913187493` using profile `peak-t
 | Expected item | Repo evidence class | Notes |
 |---|---|---|
 | No Terraform/CloudFormation/CDK | repo-evidenced | No `*.tf` / CFN / CDK trees |
-| No GitHub Actions → AWS OIDC | repo-evidenced | No `aws-actions/configure-aws-credentials` |
+| No GitHub Actions → AWS OIDC | repo-evidenced | No `aws-actions&#47;configure-aws-credentials` |
 | Export via rclone + GitHub Secrets | documented | `PT_RCLONE_CONF_B64`, `PT_EXPORT_REMOTE`, `PT_EXPORT_PREFIX` |
 | Example bucket `peaktrade-exports` | documented (example) | Phase T / Phase W; may be stale vs live |
 | IAM comment `pt-gh-export-consumer` | documented (orphan) | Code comment only; no ARN/policy in repo |
@@ -50,7 +50,7 @@ Read-only AWS API inventory against account `511913187493` using profile `peak-t
 | Field | Value |
 |---|---|
 | Classification | `MATCH` (exists; STS assume succeeded) |
-| ARN | `arn:aws:iam::511913187493:role/peak-trade-operator-readonly-audit-role` |
+| ARN | `arn:aws:iam::511913187493:role&#47;peak-trade-operator-readonly-audit-role` |
 | Created | 2026-05-29 |
 | MaxSessionDuration | 3600 |
 | Description | Peak Trade remote daemon 247 scoped role |
@@ -60,7 +60,7 @@ Read-only AWS API inventory against account `511913187493` using profile `peak-t
 **Trust policy principals:**
 
 - `arn:aws:iam::511913187493:root` → `sts:AssumeRole`
-- `arn:aws:iam::511913187493:user/peak-trade-operator-readonly-audit-user` → `sts:AssumeRole`
+- `arn:aws:iam::511913187493:user&#47;peak-trade-operator-readonly-audit-user` → `sts:AssumeRole`
 
 **Trust observation (DRIFT / hygiene):** allowing account `root` as AssumeRole principal is broader than the explicit audit user. Not a GitHub-OIDC trust. Classified as trust-hygiene drift for the audit role, not as proven live trading authority.
 

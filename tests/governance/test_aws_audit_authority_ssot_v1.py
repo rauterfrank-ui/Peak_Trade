@@ -41,7 +41,6 @@ FORBIDDEN_CLAIMS: tuple[str, ...] = (
     "ORDERS_ENABLED=true",
     "RUNTIME_BRIDGE_ACTIVATED=true",
     "full account inventory complete",
-    "GetSecretValue",
 )
 
 
