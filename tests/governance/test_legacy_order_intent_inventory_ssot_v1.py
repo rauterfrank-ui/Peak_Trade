@@ -2,10 +2,14 @@
 
 Docs/config/tests-only. Does not authorize live, orders, runtime bridge,
 decommission, consolidation, rewire, or execution-semantic changes.
+
+The direct_submission_surface_contract is an inventory/drift guard only —
+NOT an execution allowlist or permission grant.
 """
 
 from __future__ import annotations
 
+import ast
 import json
 from pathlib import Path
 
@@ -30,6 +34,8 @@ EXPECTED_DECISION_OWNER_COUNT = 3
 EXPECTED_BYPASS_COUNT = 4
 EXPECTED_SUBMISSION_BYPASS_COUNT = 5
 EXPECTED_MV2_OWNER = "src.governance.canonical_order_intent_v1"
+EXPECTED_SURFACE_CONTRACT_SEMANTICS = "INVENTORY_ONLY_NOT_EXECUTION_PERMISSION"
+KRAKEN_SURFACE_ID = "submission.kraken_live_client"
 
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1=true",
@@ -44,6 +50,9 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     f"PRODUCTIVE_ORDER_INTENT_DECISION_OWNER_COUNT={EXPECTED_DECISION_OWNER_COUNT}",
     f"PRODUCTIVE_BYPASS_PATH_COUNT={EXPECTED_BYPASS_COUNT}",
     f"DIRECT_SUBMISSION_BYPASS_COUNT={EXPECTED_SUBMISSION_BYPASS_COUNT}",
+    "DIRECT_SUBMISSION_SURFACE_CONTRACT_V1=true",
+    f"DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS={EXPECTED_SURFACE_CONTRACT_SEMANTICS}",
+    "DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST=true",
     "AUTHORITY_LEAK_DETECTED=false",
     "THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY=true",
     "NO_RUNTIME_REWIRE_IN_THIS_SLICE=true",
@@ -86,6 +95,25 @@ ALLOWED_ROLES = {
     "FALSE_POSITIVE",
 }
 
+REQUIRED_SURFACE_FIELDS = (
+    "surface_id",
+    "module",
+    "source_path",
+    "symbol_or_callable",
+    "classification",
+    "canonical",
+    "authorized",
+    "enabled",
+    "execution_authority",
+    "decommissioned",
+    "inventory_only",
+    "can_submit_orders",
+    "reachability",
+    "authority_owner_status",
+    "consolidation_status",
+    "decommission_status",
+)
+
 
 def _read(path: Path) -> str:
     assert path.is_file(), f"missing canonical path: {path}"
@@ -94,6 +122,37 @@ def _read(path: Path) -> str:
 
 def _load_ssot() -> dict:
     return json.loads(_read(SSOT_JSON))
+
+
+def _ast_symbol_resolves(source_path: Path, symbol_or_callable: str) -> bool:
+    """Resolve Class.method or bare function via AST — no module import."""
+    tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    if "." in symbol_or_callable:
+        class_name, method_name = symbol_or_callable.split(".", 1)
+        for node in tree.body:
+            if isinstance(node, ast.ClassDef) and node.name == class_name:
+                for item in node.body:
+                    if (
+                        isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+                        and item.name == method_name
+                    ):
+                        return True
+        return False
+    for node in tree.body:
+        if (
+            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.name == symbol_or_callable
+        ):
+            return True
+        if isinstance(node, ast.ClassDef) and node.name == symbol_or_callable:
+            return True
+    return False
+
+
+def _surface_contract(payload: dict) -> dict:
+    contract = payload["direct_submission_surface_contract"]
+    assert isinstance(contract, dict)
+    return contract
 
 
 def test_ssot_doc_exists_with_required_markers() -> None:
@@ -214,3 +273,141 @@ def test_coi_and_runtime_remain_non_authorizing() -> None:
 def test_governance_readme_points_to_legacy_order_intent_inventory() -> None:
     readme = _read(REPO_ROOT / "docs" / "governance" / "README.md")
     assert "LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md" in readme
+
+
+def test_direct_submission_surface_contract_semantics_and_count() -> None:
+    payload = _load_ssot()
+    markers = payload["markers"]
+    contract = _surface_contract(payload)
+    assert markers["DIRECT_SUBMISSION_SURFACE_CONTRACT_V1"] is True
+    assert markers["DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS"] == (
+        EXPECTED_SURFACE_CONTRACT_SEMANTICS
+    )
+    assert markers["DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST"] is True
+    assert contract["semantics"] == EXPECTED_SURFACE_CONTRACT_SEMANTICS
+    assert "NOT_EXECUTION_PERMISSION" in contract["semantics"]
+    assert "NOT an execution allowlist" in contract["semantics_clarification"]
+    assert contract["expected_surface_count"] == EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert len(contract["surfaces"]) == EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert len(contract["surface_ids_sorted"]) == EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert contract["drift_policy"] == {
+        "addition": "FAIL",
+        "removal": "FAIL",
+        "rename": "FAIL",
+        "duplicate": "FAIL",
+        "unresolved_symbol": "FAIL",
+    }
+    assert contract["surface_ids_sorted"] == sorted(contract["surface_ids_sorted"])
+    assert set(contract["surface_ids_sorted"]) == set(payload["direct_submission_bypasses"])
+    assert markers["CANONICAL_EXECUTION_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert markers["CONSOLIDATION_STATUS"] == "NOT_STARTED"
+    assert markers["DECOMMISSION_STATUS"] == "NOT_STARTED"
+
+
+def test_direct_submission_surfaces_exact_unique_and_non_authorizing() -> None:
+    payload = _load_ssot()
+    contract = _surface_contract(payload)
+    surfaces = contract["surfaces"]
+    ids = [s["surface_id"] for s in surfaces]
+    paths = [s["source_path"] for s in surfaces]
+    triples = [(s["source_path"], s["symbol_or_callable"], s["surface_id"]) for s in surfaces]
+
+    assert len(ids) == EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert len(set(ids)) == EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert len(set(triples)) == EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert ids == sorted(ids)
+    assert ids == contract["surface_ids_sorted"]
+
+    for surface in surfaces:
+        for field in REQUIRED_SURFACE_FIELDS:
+            assert field in surface, f"missing field {field} on {surface.get('surface_id')}"
+        assert surface["classification"] == "LEGACY_DIRECT_SUBMISSION_BYPASS"
+        assert surface["canonical"] is False
+        assert surface["authorized"] is False
+        assert surface["enabled"] is False
+        assert surface["execution_authority"] is False
+        assert surface["decommissioned"] is False
+        assert surface["inventory_only"] is True
+        assert surface["authority_owner_status"] == "UNRESOLVED"
+        assert surface["consolidation_status"] == "NOT_STARTED"
+        assert surface["decommission_status"] == "NOT_STARTED"
+        assert surface["can_submit_orders"] is True  # capability only
+        assert "*" not in surface["source_path"]
+        assert "*" not in surface["symbol_or_callable"]
+        assert not surface["source_path"].endswith("/")
+
+    # path uniqueness among contract surfaces (each surface is a distinct file+symbol pin)
+    assert len(set(paths)) == EXPECTED_SUBMISSION_BYPASS_COUNT
+
+
+def test_direct_submission_surface_symbols_resolve_via_ast_without_import() -> None:
+    payload = _load_ssot()
+    contract = _surface_contract(payload)
+    for surface in contract["surfaces"]:
+        rel = surface["source_path"]
+        path = REPO_ROOT / rel
+        assert path.is_file(), f"missing surface file: {rel}"
+        assert _ast_symbol_resolves(path, surface["symbol_or_callable"]), (
+            f"unresolved_symbol FAIL: {surface['surface_id']} "
+            f"{rel}::{surface['symbol_or_callable']}"
+        )
+
+
+def test_kraken_surface_present_and_explicitly_non_authorizing() -> None:
+    payload = _load_ssot()
+    contract = _surface_contract(payload)
+    by_id = {s["surface_id"]: s for s in contract["surfaces"]}
+    assert KRAKEN_SURFACE_ID in by_id
+    kraken = by_id[KRAKEN_SURFACE_ID]
+    assert kraken["source_path"] == "src/exchange/kraken_live.py"
+    assert kraken["symbol_or_callable"] == "KrakenLiveClient.place_order"
+    assert kraken["classification"] == "LEGACY_DIRECT_SUBMISSION_BYPASS"
+    assert kraken["canonical"] is False
+    assert kraken["authorized"] is False
+    assert kraken["enabled"] is False
+    assert kraken["execution_authority"] is False
+    assert kraken["inventory_only"] is True
+    assert kraken["decommissioned"] is False
+    # Capability must remain separated from authorization
+    assert kraken["can_submit_orders"] is True
+    assert (
+        "NOT authorized" in kraken["capability_note"]
+        or "not authorization" in kraken["capability_note"].lower()
+    )
+
+    doc = _read(SSOT_DOC)
+    assert "canonical=false" in doc
+    assert "authorized=false" in doc
+    assert "enabled=false" in doc
+    assert "execution_authority=false" in doc
+    assert "NOT an execution allowlist" in doc or "not an execution allowlist" in doc.lower()
+
+
+def test_surface_contract_drift_guards_on_mutated_payload() -> None:
+    """Negative checks against in-memory mutations (fail-closed drift policy)."""
+    payload = _load_ssot()
+    contract = _surface_contract(payload)
+    inventory_ids = set(payload["direct_submission_bypasses"])
+    contract_ids = set(contract["surface_ids_sorted"])
+    assert inventory_ids == contract_ids
+
+    # addition
+    mutated_add = list(contract["surface_ids_sorted"]) + ["submission.fake_new_surface"]
+    assert len(mutated_add) != EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert set(mutated_add) != inventory_ids
+
+    # removal
+    mutated_remove = [i for i in contract["surface_ids_sorted"] if i != KRAKEN_SURFACE_ID]
+    assert len(mutated_remove) != EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert set(mutated_remove) != inventory_ids
+
+    # rename
+    mutated_rename = [
+        "submission.kraken_live_client_renamed" if i == KRAKEN_SURFACE_ID else i
+        for i in contract["surface_ids_sorted"]
+    ]
+    assert set(mutated_rename) != inventory_ids
+
+    # duplicate
+    mutated_dup = list(contract["surface_ids_sorted"]) + [KRAKEN_SURFACE_ID]
+    assert len(mutated_dup) != len(set(mutated_dup))
