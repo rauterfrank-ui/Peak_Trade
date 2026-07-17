@@ -1,0 +1,18 @@
+{
+  "slice_id": "AUTH021_AUTH003_AUTHORITY_MATRIX_B01_B07_CLOSEOUT_SYNC_V0",
+  "canonical_owner": "docs/governance/authority_conflict_matrix_v1.md",
+  "test_owner": "tests/governance/test_auth021_auth003_authority_matrix_b01_b07_closeout_sync_v0.py",
+  "allowed_files": [
+    "docs/governance/authority_conflict_matrix_v1.md",
+    "tests/governance/test_auth021_auth003_authority_matrix_b01_b07_closeout_sync_v0.py",
+    "docs/product/evidence/auth021_auth003_authority_matrix_b01_b07_closeout_sync_v0_20260717T034827Z/"
+  ],
+  "non_goals": [
+    "no Python runtime mutation",
+    "no B-04",
+    "no dashboard",
+    "no live/orders"
+  ],
+  "behavior_preserving": true,
+  "core_semantics_changed": false
+}

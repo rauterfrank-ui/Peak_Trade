@@ -1,0 +1,13 @@
+{
+  "LIVE_AUTHORIZED": false,
+  "ORDERS": false,
+  "SHADOW": false,
+  "PAPER": false,
+  "TESTNET": false,
+  "CORE_SEMANTICS_CHANGED": false,
+  "DASHBOARD_FILES_CHANGED": false,
+  "BEHAVIOR_PRESERVING": true,
+  "UNKNOWN_MARKER_FAIL_CLOSED": true,
+  "MISSING_FEATURES_FAIL_CLOSED": true,
+  "LEGACY_ALIAS_BOUNDARY_ONLY": true
+}

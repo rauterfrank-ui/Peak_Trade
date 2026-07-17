@@ -1,0 +1,8 @@
+{
+  "b01_post_merge_pass": true,
+  "b07_post_merge_pass": true,
+  "auth021_bound_to_pr5274": true,
+  "auth021_bound_to_evidence_pack": true,
+  "auth003_docs_layer_closed": true,
+  "merge_commit_referenced": true
+}

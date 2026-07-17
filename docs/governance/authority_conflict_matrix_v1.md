@@ -82,13 +82,14 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | Feld | Inhalt |
 |------|--------|
 | **Affected Layers** | Documentation · Strategy Layer · Registry/Config |
-| **Type** | **A** (teilweise behoben) + **D** (Schicht-Ambiguität bleibt) |
-| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** ECM-Math in `src&#47;strategies&#47;ecm.py`, OOP in `src&#47;strategies&#47;armstrong&#47;` · **Registry/Config:** — · **Docs:** kanonischer Catalog (`FEHLENDE_FEATURES`) markiert `src&#47;features/` als deferred; `missing_features_plan.md` (DOC-03/B-01) noch structural offen | <!-- pt:ref-target-ignore -->
-| **Expected Canonical Ownership (NOT ENFORCED YET)** | Feature-Engine = Class C deferred; ECM = Strategy layer only — einheitlich in **allen** Plan-/Architektur-Docs |
-| **Risk Level** | **MEDIUM** |
-| **Resolution Dependency** | B-01 Operator-GO (`missing_features_plan.md` deferred header); keine Code-Umzüge ohne Product-Entscheid |
+| **Type** | **A** (docs layer B-01 CLOSED) + **D** (Schicht-Ambiguität bleibt) |
+| **Status (docs layer)** | **CLOSED (2026-07-17)** — PR #5274 / B-01: `missing_features_plan.md` deferred/STRUCTURAL banner + Class C pointer; Feature-Engine remains Class C deferred (no runtime enablement) |
+| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** ECM-Math in `src&#47;strategies&#47;ecm.py`, OOP in `src&#47;strategies&#47;armstrong&#47;` · **Registry/Config:** — · **Docs:** kanonischer Catalog (`FEHLENDE_FEATURES`) markiert `src&#47;features/` als deferred; `missing_features_plan.md` (DOC-03/B-01) **CLOSED** deferred-aligned via PR #5274 — residual Type D layer ambiguity unchanged | <!-- pt:ref-target-ignore -->
+| **Expected Canonical Ownership (NOT ENFORCED YET)** | Feature-Engine = Class C deferred; ECM = Strategy layer only — docs plan surface aligned; residual architecture ambiguity remains Type D |
+| **Risk Level** | **MEDIUM** (residual Type D only; docs deferred path no longer stale) |
+| **Resolution Dependency** | Docs layer B-01: **CLOSED** via PR #5274 · Residual Type D / code moves: **blocked** without separate Product-Entscheid |
 
-**Evidence:** `src&#47;features/__init__.py` (Placeholder); `feature_state_map_v1.md` Class C/D; drift_safe_docs_patch_v1 §3 (DOC-03 nicht angewendet). <!-- pt:ref-target-ignore -->
+**Evidence:** `src&#47;features/__init__.py` (Placeholder); `feature_state_map_v1.md` Class C/D; PR #5274; `docs/product/evidence/drift_b01_b07_missing_features_plan_deferred_alignment_v0_20260717T033503Z/`. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -364,12 +365,13 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Documentation |
 | **Type** | **A** |
-| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** — · **Registry/Config:** — · **Docs:** `docs&#47;analysis/missing_features_plan.md` — STRUCTURAL (B-01), nicht in Safe Patch | <!-- pt:ref-target-ignore -->
-| **Expected Canonical Ownership (NOT ENFORCED YET)** | Deferred header + link `feature_state_map_v1` Class C |
+| **Status** | **CLOSED (2026-07-17)** — PR #5274 / B-01+B-07: deferred/STRUCTURAL banner + Class C pointer + DAG NON-OPERATIONAL footnote on `missing_features_plan.md` |
+| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** — · **Registry/Config:** — · **Docs:** `docs&#47;analysis/missing_features_plan.md` — STRUCTURAL/DEFERRED aligned (B-01/B-07 CLOSED); not operational wiring authority | <!-- pt:ref-target-ignore -->
+| **Expected Canonical Ownership** | Deferred header + link `feature_state_map_v1` Class C — **satisfied on main** (docs projection only; Feature-Engine remains NON-OPERATIONAL) |
 | **Risk Level** | **LOW** |
-| **Resolution Dependency** | B-01 Operator-GO |
+| **Resolution Dependency** | None (B-01/B-07 reconciled on main via PR #5274 @ `721f28f52b81b01f01ec310eee0dbcdc75d10cce`) |
 
-**Evidence:** drift_cleanup_plan §4 B-01; drift_safe_docs_patch_v1 §3.
+**Evidence:** drift_cleanup_plan §4 B-01/B-07 CLOSED; PR #5274; `docs/product/evidence/drift_b01_b07_missing_features_plan_deferred_alignment_v0_20260717T033503Z/`; binding discovery `docs/product/evidence/post_b01_b07_next_workstream_discovery_v1_20260717T034127Z/`.
 
 ---
 
@@ -410,7 +412,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |-------------|-----------------|------|------|-------------------------|
 | AUTH-001 | `ecm_cycle` vs `armstrong_cycle` identity | C | HIGH | Strategy ↔ Registry/Config |
 | AUTH-002 | Config `[strategy.ecm_cycle]` ohne Spec | C | HIGH | Registry/Config |
-| AUTH-003 | `src&#47;features/` vs Strategy ECM | A+D | MEDIUM | Docs ↔ Strategy | <!-- pt:ref-target-ignore -->
+| AUTH-003 | `src&#47;features/` vs Strategy ECM | A+D | MEDIUM | Docs ↔ Strategy — **docs layer B-01 CLOSED** (PR #5274); residual Type D remains | <!-- pt:ref-target-ignore -->
 | AUTH-004 | `ecm.py` vs `ArmstrongCycleStrategy` | D | MEDIUM | Strategy |
 | AUTH-005 | Armstrong live-readiness triangle | C+B | HIGH | Strategy ↔ Registry/Config |
 | AUTH-006 | Ops DP evaluator vs composition matrix | B | HIGH | Runtime ↔ Ops — **docs markers CLOSED** (PR #5272 / B-03); runtime rewire still blocked |
@@ -428,7 +430,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | AUTH-018 | Attestation slots vs merged module | D | MEDIUM | Runtime ↔ Meta |
 | AUTH-019 | No default Registry→Core wiring | B | HIGH | Strategy ↔ Runtime |
 | AUTH-020 | El Karoui tier tension | A+B | MEDIUM | Strategy ↔ Docs |
-| AUTH-021 | `missing_features_plan` stale | A | LOW | Docs |
+| AUTH-021 | `missing_features_plan` stale DAG | A | LOW | Docs — **CLOSED** (PR #5274 / B-01+B-07) |
 | AUTH-022 | R&D stub status grammar | A | LOW | Docs ↔ Strategy — **CLOSED** (PR #5270 / B-02) |
 | AUTH-023 | Psychology path residual | A | LOW | Docs |
 
@@ -436,7 +438,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 
 | Type | Count |
 |------|-------|
-| **A** — Pure Documentation Mismatch | 5 (AUTH-003 partial, 020–023) |
+| **A** — Pure Documentation Mismatch | 5 listed (AUTH-003 residual A+D; AUTH-020/023 open; AUTH-021/022 CLOSED) |
 | **B** — Strategy vs Runtime Misalignment | 8 |
 | **C** — Registry Ownership Conflict | 8 |
 | **D** — Architectural Ambiguity | 10 |
