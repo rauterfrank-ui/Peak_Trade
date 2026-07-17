@@ -10,7 +10,7 @@ Discovery/evidence only. No code mutation of trading, strategy, risk, execution,
 authority, runtime bridge, dashboard, CI, or tests beyond this evidence pack.
 
 ## Exact owners
-- Discovery evidence owner: `docs/product/evidence/canonical_chain_next_slice_discovery_v1_<UTC>/`
+- Discovery evidence owner: `docs&#47;product&#47;evidence&#47;canonical_chain_next_slice_discovery_v1_<UTC>&#47;`
 - Canonical total decision owner (unchanged): `run_integrated_offline_trading_logic_replay_v1`
 - Canonical replay input builder (unchanged): `build_integrated_offline_replay_input_v1`
 
@@ -18,7 +18,7 @@ authority, runtime bridge, dashboard, CI, or tests beyond this evidence pack.
 - Only this evidence directory in the discovery PR.
 
 ## Forbidden files
-- `src/**` trading/backtest/runtime owners
+- `src&#47;**` trading/backtest/runtime owners
 - dashboard templates/CSS/tests
 - CI workflow / required-check mutations
 - any runtime activation surface
