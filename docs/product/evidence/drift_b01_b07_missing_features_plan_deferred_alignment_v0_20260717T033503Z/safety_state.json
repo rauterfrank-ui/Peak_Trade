@@ -1,0 +1,12 @@
+{
+  "LIVE_AUTHORIZED": false,
+  "ORDERS": false,
+  "SHADOW": false,
+  "PAPER": false,
+  "TESTNET": false,
+  "CORE_SEMANTICS_CHANGED": false,
+  "DASHBOARD_FILES_CHANGED": false,
+  "RUNTIME_ACTIVATION": false,
+  "SCHEDULER_ACTIVATION": false,
+  "AUTO_MERGE": false
+}

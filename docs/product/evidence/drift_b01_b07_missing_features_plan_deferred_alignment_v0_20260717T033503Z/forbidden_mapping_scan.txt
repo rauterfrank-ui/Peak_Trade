@@ -1,0 +1,4 @@
+FORBIDDEN_SCAN
+NO_FORBIDDEN_HITS
+tests/governance/test_missing_features_plan_deferred_alignment_v0.py
+DIRECT_AUTHORITY_MAPPINGS_AFTER=0

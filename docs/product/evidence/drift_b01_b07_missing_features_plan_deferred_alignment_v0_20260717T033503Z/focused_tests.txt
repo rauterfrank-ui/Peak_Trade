@@ -1,0 +1,22 @@
+FOCUSED: 11 passed test_missing_features_plan_deferred_alignment_v0.py
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 11 items
+
+tests/governance/test_missing_features_plan_deferred_alignment_v0.py ... [ 27%]
+........                                                                 [100%]
+
+============================== 11 passed in 0.10s ==============================
+SELECTOR:
+test_selection_mode=NO_OP
+test_selection_reason=docs_workflow_or_static_contract_only
+tests_execute_full=false
+tests_execute_contract_focused=false
+tests_execute_focused=false
+tests_execute_pr_bounded_full=false
+tests_execute_exhaustive_full=false
+tests_execute_no_op=true
+tests_execute_invalid=false
+focused_pytest_targets=
+focused_module_imports=
+pr_bounded_pytest_targets=

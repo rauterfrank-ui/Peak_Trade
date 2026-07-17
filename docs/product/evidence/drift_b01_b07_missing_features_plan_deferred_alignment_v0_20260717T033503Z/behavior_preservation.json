@@ -1,0 +1,9 @@
+{
+  "behavior_preserving": true,
+  "core_semantics_changed": false,
+  "trading_results_changed": false,
+  "python_runtime_modules_changed": false,
+  "dashboard_files_changed": false,
+  "plan_deferred_explicit": true,
+  "missing_features_not_presented_as_fulfilled": true
+}
