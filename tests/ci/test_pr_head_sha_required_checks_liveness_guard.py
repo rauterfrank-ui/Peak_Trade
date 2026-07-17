@@ -279,12 +279,15 @@ def test_liveness_workflow_includes_merge_group_path() -> None:
     assert '--head-sha "${{ github.sha }}"' in workflow
 
 
-def test_liveness_workflow_uses_bounded_180_second_wait() -> None:
+def test_liveness_workflow_uses_bounded_420_second_wait() -> None:
+    """Wait must cover tests+(strategy-smoke needs) after SSOT sync made smoke required."""
     workflow = Path(".github/workflows/pr-head-sha-required-checks-liveness-guard.yml").read_text(
         encoding="utf-8"
     )
-    assert workflow.count("--liveness-wait-seconds 180") == 2
+    assert workflow.count("--liveness-wait-seconds 420") == 2
+    assert "--liveness-wait-seconds 180" not in workflow
     assert "--liveness-wait-seconds 90" not in workflow
+    assert "timeout-minutes: 10" in workflow
     assert "--poll-interval-seconds 5" in workflow
 
 
