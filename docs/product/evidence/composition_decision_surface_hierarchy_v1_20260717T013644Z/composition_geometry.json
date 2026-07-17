@@ -1,0 +1,883 @@
+{
+  "after": {
+    "1280x800": {
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "pageHeight": 2509,
+      "viewportHeight": 800,
+      "viewportWidth": 1280,
+      "horizontal_overflow_px": 0,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "landmarks": [
+        {
+          "name": "GLOBAL_HEADER",
+          "top": 32,
+          "bottom": 99.28125,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 67.28125,
+          "visible_in_initial_viewport": true,
+          "visible_px": 67.28125
+        },
+        {
+          "name": "PRIMARY_MARKET_SURFACE",
+          "top": 107.28125,
+          "bottom": 1078.265625,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 970.984375,
+          "visible_in_initial_viewport": true,
+          "visible_px": 692.71875
+        },
+        {
+          "name": "DECISION_SURFACE",
+          "top": 1098.265625,
+          "bottom": 1943.96875,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 845.703125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        {
+          "name": "OBSERVABILITY_SURFACE",
+          "top": 1963.96875,
+          "bottom": 2253.96875,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 290,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        {
+          "name": "ENGINEERING_DRAWER",
+          "top": 2273.96875,
+          "bottom": 2395.96875,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 122,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      ],
+      "header": {
+        "name": "GLOBAL_HEADER",
+        "top": 32,
+        "bottom": 99.28125,
+        "left": 16,
+        "right": 1264,
+        "width": 1248,
+        "height": 67.28125,
+        "visible_in_initial_viewport": true,
+        "visible_px": 67.28125
+      },
+      "primary": {
+        "name": "PRIMARY_MARKET_SURFACE",
+        "top": 107.28125,
+        "bottom": 1078.265625,
+        "left": 16,
+        "right": 1264,
+        "width": 1248,
+        "height": 970.984375,
+        "visible_in_initial_viewport": true,
+        "visible_px": 692.71875
+      },
+      "decision": {
+        "name": "DECISION_SURFACE",
+        "top": 1098.265625,
+        "bottom": 1943.96875,
+        "left": 16,
+        "right": 1264,
+        "width": 1248,
+        "height": 845.703125,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "observability": {
+        "name": "OBSERVABILITY_SURFACE",
+        "top": 1963.96875,
+        "bottom": 2253.96875,
+        "left": 16,
+        "right": 1264,
+        "width": 1248,
+        "height": 290,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "engineering": {
+        "name": "ENGINEERING_DRAWER",
+        "top": 2273.96875,
+        "bottom": 2395.96875,
+        "left": 16,
+        "right": 1264,
+        "width": 1248,
+        "height": 122,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "chart": {
+        "top": 282.8125,
+        "bottom": 732.8125,
+        "left": 25,
+        "right": 1255,
+        "width": 1230,
+        "height": 450,
+        "visible_in_initial_viewport": true,
+        "visible_px": 450
+      },
+      "page_share": {
+        "GLOBAL_HEADER": 2.681596253487445,
+        "PRIMARY_MARKET_SURFACE": 38.70005480271024,
+        "DECISION_SURFACE": 33.706780589876445,
+        "OBSERVABILITY_SURFACE": 11.558389796731767,
+        "ENGINEERING_DRAWER": 4.862495017935433
+      },
+      "gaps": [
+        {
+          "before": "GLOBAL_HEADER",
+          "after": "PRIMARY_MARKET_SURFACE",
+          "gap_px": 8
+        },
+        {
+          "before": "PRIMARY_MARKET_SURFACE",
+          "after": "DECISION_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "DECISION_SURFACE",
+          "after": "OBSERVABILITY_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "OBSERVABILITY_SURFACE",
+          "after": "ENGINEERING_DRAWER",
+          "gap_px": 20
+        }
+      ],
+      "engineering_drawer_open": false,
+      "primary_chart_share_of_viewport_pct": 56.25,
+      "decision_modules": {
+        "top20": {
+          "top": 1098.265625,
+          "bottom": 1452.765625,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 354.5,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "top20_table": {
+          "top": 1198.765625,
+          "bottom": 1418.765625,
+          "left": 29,
+          "right": 1251,
+          "width": 1222,
+          "height": 220,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "funnel": {
+          "top": 1458.765625,
+          "bottom": 1666.953125,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 208.1875,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "secondary_grid": {
+          "top": 1697.046875,
+          "bottom": 1936.578125,
+          "left": 24.1875,
+          "right": 1255.8125,
+          "width": 1231.625,
+          "height": 239.53125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_primary": {
+          "top": 1098.265625,
+          "bottom": 1452.765625,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 354.5,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_secondary": {
+          "top": 1458.765625,
+          "bottom": 1666.953125,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 208.1875,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_tertiary": {
+          "top": 1672.953125,
+          "bottom": 1943.96875,
+          "left": 16,
+          "right": 1264,
+          "width": 1248,
+          "height": 271.015625,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      },
+      "secondary_children": {
+        "watchlist": {
+          "top": 1697.046875,
+          "bottom": 1850.328125,
+          "left": 24.1875,
+          "right": 327.890625,
+          "width": 303.703125,
+          "height": 153.28125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "f5": {
+          "top": 1697.046875,
+          "bottom": 1936.578125,
+          "left": 333.484375,
+          "right": 691.6875,
+          "width": 358.203125,
+          "height": 239.53125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "double_play": {
+          "top": 1697.046875,
+          "bottom": 1794.328125,
+          "left": 642.25,
+          "right": 947.03125,
+          "width": 304.78125,
+          "height": 97.28125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "safety": {
+          "top": 1697.046875,
+          "bottom": 1936.578125,
+          "left": 951.03125,
+          "right": 1255.796875,
+          "width": 304.765625,
+          "height": 239.53125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      },
+      "decision_bordered_container_count": 3,
+      "readonly_markers": {
+        "data_market_readonly": true,
+        "data_market_trading_authority_false": true,
+        "decision_compression": true,
+        "primary_page_share_dominance": true,
+        "landmark_vertical_rhythm": true,
+        "decision_hierarchy": true
+      },
+      "has_notusdt": true,
+      "unavailable_banner": false
+    },
+    "1440x900": {
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "pageHeight": 2447,
+      "viewportHeight": 900,
+      "viewportWidth": 1440,
+      "horizontal_overflow_px": 0,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "landmarks": [
+        {
+          "name": "GLOBAL_HEADER",
+          "top": 32,
+          "bottom": 99.28125,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 67.28125,
+          "visible_in_initial_viewport": true,
+          "visible_px": 67.28125
+        },
+        {
+          "name": "PRIMARY_MARKET_SURFACE",
+          "top": 107.28125,
+          "bottom": 1047.046875,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 939.765625,
+          "visible_in_initial_viewport": true,
+          "visible_px": 792.71875
+        },
+        {
+          "name": "DECISION_SURFACE",
+          "top": 1067.046875,
+          "bottom": 1881.96875,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 814.921875,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        {
+          "name": "OBSERVABILITY_SURFACE",
+          "top": 1901.96875,
+          "bottom": 2191.96875,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 290,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        {
+          "name": "ENGINEERING_DRAWER",
+          "top": 2211.96875,
+          "bottom": 2333.96875,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 122,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      ],
+      "header": {
+        "name": "GLOBAL_HEADER",
+        "top": 32,
+        "bottom": 99.28125,
+        "left": 16,
+        "right": 1424,
+        "width": 1408,
+        "height": 67.28125,
+        "visible_in_initial_viewport": true,
+        "visible_px": 67.28125
+      },
+      "primary": {
+        "name": "PRIMARY_MARKET_SURFACE",
+        "top": 107.28125,
+        "bottom": 1047.046875,
+        "left": 16,
+        "right": 1424,
+        "width": 1408,
+        "height": 939.765625,
+        "visible_in_initial_viewport": true,
+        "visible_px": 792.71875
+      },
+      "decision": {
+        "name": "DECISION_SURFACE",
+        "top": 1067.046875,
+        "bottom": 1881.96875,
+        "left": 16,
+        "right": 1424,
+        "width": 1408,
+        "height": 814.921875,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "observability": {
+        "name": "OBSERVABILITY_SURFACE",
+        "top": 1901.96875,
+        "bottom": 2191.96875,
+        "left": 16,
+        "right": 1424,
+        "width": 1408,
+        "height": 290,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "engineering": {
+        "name": "ENGINEERING_DRAWER",
+        "top": 2211.96875,
+        "bottom": 2333.96875,
+        "left": 16,
+        "right": 1424,
+        "width": 1408,
+        "height": 122,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "chart": {
+        "top": 286.6875,
+        "bottom": 736.6875,
+        "left": 25,
+        "right": 1415,
+        "width": 1390,
+        "height": 450,
+        "visible_in_initial_viewport": true,
+        "visible_px": 450
+      },
+      "page_share": {
+        "GLOBAL_HEADER": 2.749540253371475,
+        "PRIMARY_MARKET_SURFACE": 38.40480690641602,
+        "DECISION_SURFACE": 33.30289640375971,
+        "OBSERVABILITY_SURFACE": 11.851246424192889,
+        "ENGINEERING_DRAWER": 4.985696771557008
+      },
+      "gaps": [
+        {
+          "before": "GLOBAL_HEADER",
+          "after": "PRIMARY_MARKET_SURFACE",
+          "gap_px": 8
+        },
+        {
+          "before": "PRIMARY_MARKET_SURFACE",
+          "after": "DECISION_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "DECISION_SURFACE",
+          "after": "OBSERVABILITY_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "OBSERVABILITY_SURFACE",
+          "after": "ENGINEERING_DRAWER",
+          "gap_px": 20
+        }
+      ],
+      "engineering_drawer_open": false,
+      "primary_chart_share_of_viewport_pct": 50,
+      "decision_modules": {
+        "top20": {
+          "top": 1067.046875,
+          "bottom": 1421.546875,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 354.5,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "top20_table": {
+          "top": 1167.546875,
+          "bottom": 1387.546875,
+          "left": 29,
+          "right": 1411,
+          "width": 1382,
+          "height": 220,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "funnel": {
+          "top": 1427.546875,
+          "bottom": 1635.734375,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 208.1875,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "secondary_grid": {
+          "top": 1665.828125,
+          "bottom": 1874.578125,
+          "left": 24.1875,
+          "right": 1415.8125,
+          "width": 1391.625,
+          "height": 208.75,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_primary": {
+          "top": 1067.046875,
+          "bottom": 1421.546875,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 354.5,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_secondary": {
+          "top": 1427.546875,
+          "bottom": 1635.734375,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 208.1875,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_tertiary": {
+          "top": 1641.734375,
+          "bottom": 1881.96875,
+          "left": 16,
+          "right": 1424,
+          "width": 1408,
+          "height": 240.234375,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      },
+      "secondary_children": {
+        "watchlist": {
+          "top": 1665.828125,
+          "bottom": 1819.109375,
+          "left": 24.1875,
+          "right": 367.890625,
+          "width": 343.703125,
+          "height": 153.28125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "f5": {
+          "top": 1665.828125,
+          "bottom": 1874.578125,
+          "left": 373.484375,
+          "right": 731.6875,
+          "width": 358.203125,
+          "height": 208.75,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "double_play": {
+          "top": 1665.828125,
+          "bottom": 1763.109375,
+          "left": 722.25,
+          "right": 1067.03125,
+          "width": 344.78125,
+          "height": 97.28125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "safety": {
+          "top": 1665.828125,
+          "bottom": 1874.578125,
+          "left": 1071.03125,
+          "right": 1415.796875,
+          "width": 344.765625,
+          "height": 208.75,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      },
+      "decision_bordered_container_count": 3,
+      "readonly_markers": {
+        "data_market_readonly": true,
+        "data_market_trading_authority_false": true,
+        "decision_compression": true,
+        "primary_page_share_dominance": true,
+        "landmark_vertical_rhythm": true,
+        "decision_hierarchy": true
+      },
+      "has_notusdt": true,
+      "unavailable_banner": false
+    },
+    "1728x1117": {
+      "scrollWidth": 1728,
+      "clientWidth": 1728,
+      "pageHeight": 2498,
+      "viewportHeight": 1117,
+      "viewportWidth": 1728,
+      "horizontal_overflow_px": 0,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "landmarks": [
+        {
+          "name": "GLOBAL_HEADER",
+          "top": 32,
+          "bottom": 99.28125,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 67.28125,
+          "visible_in_initial_viewport": true,
+          "visible_px": 67.28125
+        },
+        {
+          "name": "PRIMARY_MARKET_SURFACE",
+          "top": 107.28125,
+          "bottom": 1098.453125,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 991.171875,
+          "visible_in_initial_viewport": true,
+          "visible_px": 991.171875
+        },
+        {
+          "name": "DECISION_SURFACE",
+          "top": 1118.453125,
+          "bottom": 1933.375,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 814.921875,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        {
+          "name": "OBSERVABILITY_SURFACE",
+          "top": 1953.375,
+          "bottom": 2243.375,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 290,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        {
+          "name": "ENGINEERING_DRAWER",
+          "top": 2263.375,
+          "bottom": 2385.375,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 122,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      ],
+      "header": {
+        "name": "GLOBAL_HEADER",
+        "top": 32,
+        "bottom": 99.28125,
+        "left": 80,
+        "right": 1648,
+        "width": 1568,
+        "height": 67.28125,
+        "visible_in_initial_viewport": true,
+        "visible_px": 67.28125
+      },
+      "primary": {
+        "name": "PRIMARY_MARKET_SURFACE",
+        "top": 107.28125,
+        "bottom": 1098.453125,
+        "left": 80,
+        "right": 1648,
+        "width": 1568,
+        "height": 991.171875,
+        "visible_in_initial_viewport": true,
+        "visible_px": 991.171875
+      },
+      "decision": {
+        "name": "DECISION_SURFACE",
+        "top": 1118.453125,
+        "bottom": 1933.375,
+        "left": 80,
+        "right": 1648,
+        "width": 1568,
+        "height": 814.921875,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "observability": {
+        "name": "OBSERVABILITY_SURFACE",
+        "top": 1953.375,
+        "bottom": 2243.375,
+        "left": 80,
+        "right": 1648,
+        "width": 1568,
+        "height": 290,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "engineering": {
+        "name": "ENGINEERING_DRAWER",
+        "top": 2263.375,
+        "bottom": 2385.375,
+        "left": 80,
+        "right": 1648,
+        "width": 1568,
+        "height": 122,
+        "visible_in_initial_viewport": false,
+        "visible_px": 0
+      },
+      "chart": {
+        "top": 287.03125,
+        "bottom": 823.1875,
+        "left": 89,
+        "right": 1639,
+        "width": 1550,
+        "height": 536.15625,
+        "visible_in_initial_viewport": true,
+        "visible_px": 536.15625
+      },
+      "page_share": {
+        "GLOBAL_HEADER": 2.693404723779023,
+        "PRIMARY_MARKET_SURFACE": 39.67861789431545,
+        "DECISION_SURFACE": 32.622973378702966,
+        "OBSERVABILITY_SURFACE": 11.609287429943956,
+        "ENGINEERING_DRAWER": 4.88390712570056
+      },
+      "gaps": [
+        {
+          "before": "GLOBAL_HEADER",
+          "after": "PRIMARY_MARKET_SURFACE",
+          "gap_px": 8
+        },
+        {
+          "before": "PRIMARY_MARKET_SURFACE",
+          "after": "DECISION_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "DECISION_SURFACE",
+          "after": "OBSERVABILITY_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "OBSERVABILITY_SURFACE",
+          "after": "ENGINEERING_DRAWER",
+          "gap_px": 20
+        }
+      ],
+      "engineering_drawer_open": false,
+      "primary_chart_share_of_viewport_pct": 47.9996642793196,
+      "decision_modules": {
+        "top20": {
+          "top": 1118.453125,
+          "bottom": 1472.953125,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 354.5,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "top20_table": {
+          "top": 1218.953125,
+          "bottom": 1438.953125,
+          "left": 93,
+          "right": 1635,
+          "width": 1542,
+          "height": 220,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "funnel": {
+          "top": 1478.953125,
+          "bottom": 1687.140625,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 208.1875,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "secondary_grid": {
+          "top": 1717.234375,
+          "bottom": 1925.984375,
+          "left": 88.1875,
+          "right": 1639.8125,
+          "width": 1551.625,
+          "height": 208.75,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_primary": {
+          "top": 1118.453125,
+          "bottom": 1472.953125,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 354.5,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_secondary": {
+          "top": 1478.953125,
+          "bottom": 1687.140625,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 208.1875,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "hierarchy_tertiary": {
+          "top": 1693.140625,
+          "bottom": 1933.375,
+          "left": 80,
+          "right": 1648,
+          "width": 1568,
+          "height": 240.234375,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      },
+      "secondary_children": {
+        "watchlist": {
+          "top": 1717.234375,
+          "bottom": 1870.515625,
+          "left": 88.1875,
+          "right": 471.890625,
+          "width": 383.703125,
+          "height": 153.28125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "f5": {
+          "top": 1717.234375,
+          "bottom": 1925.984375,
+          "left": 477.484375,
+          "right": 862.25,
+          "width": 384.765625,
+          "height": 208.75,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "double_play": {
+          "top": 1717.234375,
+          "bottom": 1814.515625,
+          "left": 866.25,
+          "right": 1251.03125,
+          "width": 384.78125,
+          "height": 97.28125,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        },
+        "safety": {
+          "top": 1717.234375,
+          "bottom": 1925.984375,
+          "left": 1255.03125,
+          "right": 1639.796875,
+          "width": 384.765625,
+          "height": 208.75,
+          "visible_in_initial_viewport": false,
+          "visible_px": 0
+        }
+      },
+      "decision_bordered_container_count": 3,
+      "readonly_markers": {
+        "data_market_readonly": true,
+        "data_market_trading_authority_false": true,
+        "decision_compression": true,
+        "primary_page_share_dominance": true,
+        "landmark_vertical_rhythm": true,
+        "decision_hierarchy": true
+      },
+      "has_notusdt": true,
+      "unavailable_banner": false
+    }
+  }
+}

@@ -1,16 +1,17 @@
 {# Decision funnel waterfall + bull/bear + survival/suitability + block reasons (SSR) #}
 <section
-  class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-2.5 py-1.5 mt-2"
+  class="rounded-md border-0 border-t border-slate-800/50 bg-transparent px-2 py-1 mt-1"
   role="region"
   aria-label="AI decision funnel"
   data-market-decision-funnel-visual-v1="true"
+  data-market-decision-hierarchy-funnel-v1="true"
   data-market-view-only="true"
   data-market-read-only="true"
   data-market-decision-funnel-activity-state="{{ decision_funnel_visual.activity_state|e }}"
   data-market-ai-activity-state="{{ ai_activity_state|e }}"
 >
-  <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-    <h2 class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-300">AI · Decision funnel</h2>
+  <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+    <h2 class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-400">AI · Decision funnel</h2>
     <span class="text-[9px] font-mono text-slate-500">activity · {{ decision_funnel_visual.activity_state|e }} · AI · {{ ai_activity_state|e }}</span>
   </div>
 
@@ -54,7 +55,7 @@
   <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2" data-market-decision-funnel-suitability-strip-v1="true">
     {% for row in double_play_matrix.rows %}
     {% if row.dimension_slug in ('side_summary', 'eligibility') %}
-    <div class="rounded border border-slate-800/60 bg-slate-900/40 px-1.5 py-1 text-[9px]" data-market-decision-funnel-suitability-row-v1="true" data-market-decision-funnel-suitability-dimension="{{ row.dimension_slug|e }}">
+    <div class="rounded-sm border-0 bg-slate-900/25 px-1.5 py-0.5 text-[9px]" data-market-decision-funnel-suitability-row-v1="true" data-market-decision-funnel-suitability-dimension="{{ row.dimension_slug|e }}">
       <p class="m-0 text-slate-500 uppercase">{{ row.dimension|e }}</p>
       <p class="m-0 mt-0.5 font-mono text-slate-200"><span class="text-emerald-300/90">bull</span> {{ row.bull_long.status_label|e }} · <span class="text-rose-300/90">bear</span> {{ row.bear_short.status_label|e }}</p>
     </div>
