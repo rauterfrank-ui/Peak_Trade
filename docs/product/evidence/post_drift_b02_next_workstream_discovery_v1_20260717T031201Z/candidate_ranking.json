@@ -1,0 +1,70 @@
+{
+  "ranking_rules": [
+    "real evidenced gap",
+    "runbook priority",
+    "behavior-preserving",
+    "bounded diff",
+    "no runtime/live/capital GO",
+    "clear owner",
+    "testable+reversible",
+    "no core semantics change"
+  ],
+  "candidates": [
+    {
+      "rank": 1,
+      "slice_id": "DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0",
+      "REAL_GAP_CONFIRMED": true,
+      "behavior_preserving": true,
+      "bounded": true,
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "estimated_diff_size": "S",
+      "runbook_priority": "HIGH"
+    },
+    {
+      "rank": 2,
+      "slice_id": "DRIFT_B01_MISSING_FEATURES_PLAN_DEFERRED_BANNER_V0",
+      "REAL_GAP_CONFIRMED": true,
+      "behavior_preserving": true,
+      "bounded": true,
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "estimated_diff_size": "XS",
+      "runbook_priority": "MEDIUM"
+    },
+    {
+      "rank": 3,
+      "slice_id": "DRIFT_B07_MISSING_FEATURES_PLAN_DAG_FOOTNOTE_V0",
+      "REAL_GAP_CONFIRMED": true,
+      "behavior_preserving": true,
+      "bounded": true,
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "estimated_diff_size": "XS",
+      "runbook_priority": "LOW"
+    },
+    {
+      "rank": 4,
+      "slice_id": "AUTH022_AUTHORITY_MATRIX_B02_CLOSEOUT_SYNC_V0",
+      "REAL_GAP_CONFIRMED": true,
+      "behavior_preserving": true,
+      "bounded": true,
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "estimated_diff_size": "XS",
+      "runbook_priority": "LOW",
+      "note": "Hygiene add-on; partial sync included in this discovery PR reconciliation only"
+    },
+    {
+      "rank": 5,
+      "slice_id": "AUTH_ECM_01_DECISION_RECORD_DOCS_ONLY_V0",
+      "REAL_GAP_CONFIRMED": true,
+      "behavior_preserving": true,
+      "bounded": false,
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "requires_separate_authority_operator_go": true,
+      "runbook_priority": "DEFERRED"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "pr_number": 5270,
+  "title": "feat(r&d): canonical strategy status grammar v0",
+  "url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5270",
+  "state_before_merge": "OPEN",
+  "state_after_merge": "MERGED",
+  "isDraft": false,
+  "headRefName": "feat/rd-strategy-status-grammar-v0",
+  "headRefOid": "d68146ad598119cce8a26c6fb7b3e3edd3991f95",
+  "expected_head_sha": "d68146ad598119cce8a26c6fb7b3e3edd3991f95",
+  "head_sha_match": true,
+  "remote_head_sha": "d68146ad598119cce8a26c6fb7b3e3edd3991f95",
+  "remote_head_sha_match": true,
+  "baseRefName": "main",
+  "baseRefOid_before": "91989723da26a223a7871b6afabf67fcaedcba60",
+  "mergeable_before": "MERGEABLE",
+  "mergeStateStatus_before": "CLEAN",
+  "autoMergeRequest": null,
+  "auto_merge_enabled": false,
+  "commits": [
+    {
+      "oid": "0d2e7929be6c7f0ff9632ec7f0ecb2f3d863c9bd",
+      "headline": "feat(r&d): canonicalize strategy status grammar v0"
+    },
+    {
+      "oid": "d68146ad598119cce8a26c6fb7b3e3edd3991f95",
+      "headline": "docs(r&d): encode FEHLENDE illustrative path separators"
+    }
+  ],
+  "unexpected_commits": false,
+  "history_rewrite_detected": false,
+  "files": [
+    "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+    "docs/features/rd_strategy_status_grammar_v0.json",
+    "docs/governance/drift_cleanup_plan_v1.md",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/discovery_reconciliation.md",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/drift_before_after.json",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/git_diff_stat.txt",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/manifest.sha256",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/owner_consumer_inventory.json",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/preflight.txt",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/scope_audit.txt",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/status_grammar_contract.json",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/test_results.txt",
+    "src/governance/rd_strategy_status_grammar_v0.py",
+    "tests/governance/test_rd_strategy_status_grammar_v0.py"
+  ],
+  "file_count": 14,
+  "expected_file_count": 14,
+  "canonical_owner": "src/governance/rd_strategy_status_grammar_v0.py",
+  "scope": "DRIFT_B02_RD_STRATEGY_STATUS_GRAMMAR_V0",
+  "dashboard_files_changed": false,
+  "core_semantics_changed": false,
+  "effective_required_checks": {
+    "Guard tracked files in reports directories": "pass",
+    "Lint Gate": "pass",
+    "Policy Critic Gate": "pass",
+    "audit": "pass",
+    "dispatch-guard": "pass",
+    "docs-reference-targets-gate": "pass",
+    "docs-token-policy-gate": "pass",
+    "tests (3.11)": "pass"
+  },
+  "required_checks_all_pass": true,
+  "mergedAt": "2026-07-17T03:09:46Z",
+  "mergeCommit": "1d099ca746cc5790cd6d35487e788bd3a5da7b44",
+  "evidence_root": "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z",
+  "direct_drift_mappings_after": 0,
+  "unknown_status_fail_closed": true,
+  "legacy_alias_boundary_only": true
+}

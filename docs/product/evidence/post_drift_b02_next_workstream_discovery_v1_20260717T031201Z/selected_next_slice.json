@@ -1,0 +1,51 @@
+{
+  "SELECTED_NEXT_SLICE": "DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0",
+  "SELECTED_SLICE_REAL_GAP_CONFIRMED": true,
+  "SELECTED_SLICE_BEHAVIOR_PRESERVING": true,
+  "SELECTED_SLICE_BOUNDED": true,
+  "SELECTED_SLICE_REQUIRES_RUNTIME_GO": false,
+  "SELECTED_SLICE_REQUIRES_LIVE_OR_CAPITAL_GO": false,
+  "SELECTED_SLICE_REQUIRES_SEPARATE_IMPLEMENTATION_GO": true,
+  "SELECTED_SLICE_REQUIRES_SEPARATE_DOCS_OPERATOR_GO": true,
+  "IMPLEMENTATION_AUTHORIZED_NOW": false,
+  "IMPLEMENTATION_PERFORMED": false,
+  "DISCOVERY_ONLY": true,
+  "stable_id": "DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0",
+  "description": "Mirror frozen Double-Play authority semantics from code/spec into ops runbooks: LEGACY_NON_AUTHORITATIVE markers + Slice E crosslink; remove false 'not implemented' specialist claims.",
+  "canonical_owner": "docs/governance/drift_cleanup_plan_v1.md#B-03",
+  "producer": [
+    "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
+    "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md"
+  ],
+  "consumer": [
+    "docs/ops/runbooks/double_play.md",
+    "docs/ops/runbooks/double_play_specialists.md"
+  ],
+  "current_drift_behavior": "docs/ops/runbooks/double_play.md \u00a7Next claims specialists 'not implemented here' while src/ops/double_play/specialists.py implements evaluate_double_play with LEGACY_NON_AUTHORITATIVE; ops runbooks lack Slice E authority markers.",
+  "target_contract": "Ops runbooks state LEGACY_NON_AUTHORITATIVE (annotation-only); link MASTER_V2_DECISION_AUTHORITY_MAP_V1 Slice E; no implied ops authority; no Python runtime mutation.",
+  "needed_tests": [
+    "Recommended static crosslink contract for LEGACY_NON_AUTHORITATIVE + Slice E in both ops runbooks",
+    "Existing tests/ops/test_double_play_specialists.py",
+    "Docs token policy + docs reference targets"
+  ],
+  "risks": [
+    "Must not reframe ops evaluator as gaining authority",
+    "Must not imply runtime rewire"
+  ],
+  "estimated_diff_size": "S",
+  "dependencies": [],
+  "acceptance_criteria": [
+    "double_play.md contains LEGACY_NON_AUTHORITATIVE",
+    "double_play_specialists.md contains LEGACY_NON_AUTHORITATIVE",
+    "Both link MASTER_V2_DECISION_AUTHORITY_MAP_V1 Slice E",
+    "Remove/replace false 'not implemented' specialist claim",
+    "Explicit annotation-only / non-authorizing wording",
+    "No Python/template/CSS/config/runtime/scheduler/order mutations",
+    "Docs gates pass"
+  ],
+  "alternates": [
+    "DRIFT_B01_MISSING_FEATURES_PLAN_DEFERRED_BANNER_V0",
+    "Bundle B-01 + B-07"
+  ],
+  "reason_selected": "Highest runbook-priority real docs\u2194code authority drift after B-02 closeout; bounded, behavior-preserving, no runtime/live/capital GO."
+}

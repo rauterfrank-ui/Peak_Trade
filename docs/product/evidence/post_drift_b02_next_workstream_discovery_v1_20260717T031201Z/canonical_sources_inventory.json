@@ -1,0 +1,31 @@
+{
+  "audited_at_utc": "20260717T031201Z",
+  "repository_head": "1d099ca746cc5790cd6d35487e788bd3a5da7b44",
+  "canonical_sources_audited": [
+    "docs/governance/drift_cleanup_plan_v1.md",
+    "docs/governance/feature_state_map_v1.md",
+    "docs/governance/authority_conflict_matrix_v1.md",
+    "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+    "docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md",
+    "docs/audit/feature_drift_reconciliation_report_v1.md",
+    "docs/audit/drift_safe_docs_patch_v1.md",
+    "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+    "docs/features/rd_strategy_status_grammar_v0.json",
+    "src/governance/rd_strategy_status_grammar_v0.py",
+    "tests/governance/test_rd_strategy_status_grammar_v0.py",
+    "docs/analysis/missing_features_plan.md",
+    "docs/ops/runbooks/double_play.md",
+    "docs/ops/runbooks/double_play_specialists.md",
+    "src/ops/double_play/specialists.py",
+    "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
+    "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+    "docs/product/evidence/global_runbook_next_workstream_discovery_v1_20260717T025036Z/",
+    "docs/product/evidence/canonical_chain_next_slice_discovery_v1_20260717T023751Z/",
+    "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/",
+    "docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md",
+    "docs/product/RUNBOOK_PATCH_RECOMMENDATIONS.md",
+    "scripts/ops/ci_test_selection_v1.py",
+    "config/ci/required_status_checks.json"
+  ],
+  "count": 24
+}
