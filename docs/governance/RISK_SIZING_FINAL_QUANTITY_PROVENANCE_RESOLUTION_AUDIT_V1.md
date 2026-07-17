@@ -4,7 +4,8 @@
 **Date:** 2026-07-17  
 **Obligation:** `OBL_B05_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_CONTRACT_V1`  
 **Machine contract:** [`config/governance/risk_sizing_final_quantity_provenance_resolution_audit_v1.json`](../../config/governance/risk_sizing_final_quantity_provenance_resolution_audit_v1.json)  
-**Related (unchanged):** [`RISK_SIZING_UNRESOLVED_FINAL_QUANTITY_PROVENANCE_CONTRACT_V0.md`](RISK_SIZING_UNRESOLVED_FINAL_QUANTITY_PROVENANCE_CONTRACT_V0.md) · [`RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md`](RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md) · [`RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md`](RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md) · [`RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md`](RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md) · [`RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md`](RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md)
+**Related (unchanged):** [`RISK_SIZING_UNRESOLVED_FINAL_QUANTITY_PROVENANCE_CONTRACT_V0.md`](RISK_SIZING_UNRESOLVED_FINAL_QUANTITY_PROVENANCE_CONTRACT_V0.md) · [`RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md`](RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md) · [`RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md`](RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md) · [`RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md`](RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md) · [`RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md`](RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md)  
+**Related (separate companion-intent &#47; EFS-quarantine freeze):** [`RISK_SIZING_COMPANION_INTENT_FREEZE_AND_EFS_QUARANTINE_V1.md`](RISK_SIZING_COMPANION_INTENT_FREEZE_AND_EFS_QUARANTINE_V1.md)
 
 ```
 RISK_SIZING_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_V1=true
@@ -155,4 +156,4 @@ Guards fail on:
 
 ## Next
 
-Resolution-audit classifications are **frozen**; Final Quantity Provenance remains **unresolved** (`FINAL_QUANTITY_PROVENANCE_RESOLVED=false`). Any productive intent choice (Fraction vs Absolute-Units), math change, rename, validator change, rewire, authority assignment, or federation implementation requires a **separate Operator-GO** (`NEXT_PRODUCTIVE_SEMANTICS_SLICE_AUTHORIZED=false`).
+Resolution-audit classifications are **frozen**; Final Quantity Provenance remains **unresolved** (`FINAL_QUANTITY_PROVENANCE_RESOLVED=false`). Companion declared intent and separate EFS quarantine are frozen in [`RISK_SIZING_COMPANION_INTENT_FREEZE_AND_EFS_QUARANTINE_V1.md`](RISK_SIZING_COMPANION_INTENT_FREEZE_AND_EFS_QUARANTINE_V1.md) without conversion, authority assignment, or runtime math. Any Fraction→Units conversion, quantity math, rename, validator change, rewire, authority assignment, EFS deletion, or federation implementation requires a **separate Operator-GO** (`NEXT_PRODUCTIVE_SEMANTICS_SLICE_AUTHORIZED=false`).
