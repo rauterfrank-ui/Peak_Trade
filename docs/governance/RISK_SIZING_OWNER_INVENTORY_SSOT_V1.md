@@ -241,4 +241,6 @@ Do **not** treat this inventory as consolidation. Do **not** delete legacy/domai
 
 Risk/Sizing inventory and the owner/bypass surface-contract freeze are **DONE**. Consolidation of Risk/Sizing remains **NOT_STARTED** and requires a separate Operator-GO architecture packet (`OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT`).  
 
+**Related (separate, non-mutating):** [`RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md`](RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md) / [`config/governance/risk_sizing_units_dimensions_contract_v0.json`](../../config/governance/risk_sizing_units_dimensions_contract_v0.json) declares units/dimensions for the same five owners without changing math, defaults, authority, or the 5/5 owner/bypass freeze.
+
 Legacy Order Intent inventory / decision-owner / direct-submission surface contracts remain separate and unchanged (`INVENTORY ONLY — DECOMMISSION NOT STARTED`).

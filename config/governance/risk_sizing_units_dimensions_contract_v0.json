@@ -1,0 +1,567 @@
+{
+  "contract_name": "risk_sizing_units_dimensions_contract_v0",
+  "contract_version": "v0",
+  "schema_version": "risk_sizing_units_dimensions_schema_v0",
+  "ssot_doc": "docs/governance/RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md",
+  "inventory_date": "2026-07-17",
+  "pinned_against_main_sha": "05d9e9eb56c058ae4b6ee108350019b2f2543609",
+  "semantics": "INVENTORY_ONLY_UNITS_DIMENSIONS_DECLARATION_NOT_AUTHORITY_ASSIGNMENT",
+  "markers": {
+    "RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0": true,
+    "INVENTORY_ONLY": true,
+    "UNITS_DIMENSIONS_DECLARATION_ONLY": true,
+    "NO_SIZING_MATH_CHANGE": true,
+    "NO_DEFAULT_HARMONIZATION": true,
+    "NO_PERCENT_DECIMAL_CONVERSION": true,
+    "NO_AUTHORITY_ASSIGNMENT": true,
+    "NO_OWNER_BYPASS_ALLOWLIST_MUTATION": true,
+    "NO_REWIRE": true,
+    "NO_DELEGATION": true,
+    "NO_DECOMMISSION": true,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "EXPECTED_PRIMARY_OWNER_COUNT": 5,
+    "EXPECTED_COMPANION_EDGE_COUNT": 2
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_owner_and_bypass_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES",
+    "legacy_order_intent_decision_owner_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED",
+    "legacy_order_intent_direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED"
+  },
+  "dimension_catalog_closed": [
+    "ACCOUNT_EQUITY_CCY",
+    "AVAILABLE_CAPITAL_CCY",
+    "RISK_BUDGET_CCY",
+    "MAX_NOTIONAL_CCY",
+    "POSITION_NOTIONAL_CCY",
+    "PRICE_CCY_PER_UNIT",
+    "STOP_DISTANCE_CCY_PER_UNIT",
+    "STOP_DISTANCE_FRACTION",
+    "QUANTITY_BASE_UNITS",
+    "SIGNED_QUANTITY_BASE_UNITS",
+    "SIGNAL_DIMENSIONLESS_SIGNED",
+    "FRACTION_DECIMAL_0_1",
+    "PERCENT_0_100",
+    "LEVERAGE_MULTIPLIER",
+    "LOT_SIZE_BASE_UNITS",
+    "POSITION_COUNT_INTEGER",
+    "BOOLEAN_GATE",
+    "ENUM_POLICY",
+    "UNKNOWN_OR_AMBIGUOUS"
+  ],
+  "allowed_numeric_representations": [
+    "Decimal",
+    "float",
+    "int",
+    "bool",
+    "enum",
+    "mixed"
+  ],
+  "allowed_percent_conventions": [
+    "PERCENT_0_100",
+    "FRACTION_DECIMAL_0_1",
+    "NOT_APPLICABLE",
+    "MIXED_OR_AMBIGUOUS"
+  ],
+  "allowed_runtime_scopes": [
+    "mv2_governance_offline",
+    "classic_backtest",
+    "offline_economic_evaluation",
+    "execution_kernel",
+    "shadow_paper",
+    "live_session_companion",
+    "config_builder"
+  ],
+  "allowed_signedness": [
+    "unsigned_magnitude",
+    "signed",
+    "side_separate",
+    "not_applicable"
+  ],
+  "allowed_authority_effect": ["NONE"],
+  "allowed_runtime_effect": ["NONE"],
+  "primary_owner_ids_sorted": [
+    "backtest.offline_evaluation_sizing_contract_v1",
+    "src.core.position_sizing",
+    "src.execution.pipeline.execute_from_signals",
+    "src.governance.capital_risk_sizing_v1",
+    "src.risk.position_sizer"
+  ],
+  "known_percent_conflicts": [
+    {
+      "conflict_id": "POSITION_SIZER_CONFIG_PCT_VS_CALC_FRACTION",
+      "summary": "PositionSizerConfig.risk_pct/max_position_pct use PERCENT_0_100; calc_position_size risk_per_trade/max_position_pct use FRACTION_DECIMAL_0_1",
+      "surfaces": [
+        "PositionSizerConfig.risk_pct",
+        "PositionSizerConfig.max_position_pct",
+        "calc_position_size.risk_per_trade",
+        "calc_position_size.max_position_pct"
+      ],
+      "must_not_equate": ["PERCENT_0_100", "FRACTION_DECIMAL_0_1"]
+    },
+    {
+      "conflict_id": "EXECUTE_FROM_SIGNALS_NOTIONAL_PCT_NAME_VS_UNIT_USAGE",
+      "summary": "ExecutionPipelineConfig.max_position_notional_pct is named/documented as capital share but execute_from_signals multiplies signal by the raw float as unit size",
+      "surfaces": [
+        "ExecutionPipelineConfig.max_position_notional_pct",
+        "ExecutionPipeline.execute_from_signals"
+      ],
+      "must_not_equate": ["FRACTION_DECIMAL_0_1", "QUANTITY_BASE_UNITS"]
+    }
+  ],
+  "primary_callables": [
+    {
+      "callable_id": "crs.evaluate_capital_risk_sizing_v1",
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "source_path": "src/governance/capital_risk_sizing_v1.py",
+      "symbol": "evaluate_capital_risk_sizing_v1",
+      "symbol_kind": "function",
+      "domain": "capital_risk_sizing",
+      "inputs": {
+        "account_equity": "ACCOUNT_EQUITY_CCY",
+        "scope_capital_limit": "AVAILABLE_CAPITAL_CCY",
+        "per_trade_risk_limit": "RISK_BUDGET_CCY",
+        "total_capital_limit": "MAX_NOTIONAL_CCY",
+        "daily_loss_remaining_budget": "RISK_BUDGET_CCY",
+        "current_reconciled_exposure": "POSITION_NOTIONAL_CCY",
+        "reference_price": "PRICE_CCY_PER_UNIT",
+        "protective_stop_price": "PRICE_CCY_PER_UNIT",
+        "stop_distance": "STOP_DISTANCE_CCY_PER_UNIT",
+        "configured_quantity_cap": "QUANTITY_BASE_UNITS",
+        "leverage_ceiling": "LEVERAGE_MULTIPLIER",
+        "maximum_positions": "POSITION_COUNT_INTEGER",
+        "lot_size": "LOT_SIZE_BASE_UNITS",
+        "selected_side": "ENUM_POLICY",
+        "decision_outcome": "ENUM_POLICY"
+      },
+      "outputs": {
+        "final_quantity": "QUANTITY_BASE_UNITS",
+        "selected_side": "ENUM_POLICY",
+        "outcome": "ENUM_POLICY",
+        "authority_effect": "ENUM_POLICY",
+        "runtime_effect": "ENUM_POLICY"
+      },
+      "signedness": "side_separate",
+      "numeric_representation": "Decimal",
+      "percent_convention": "NOT_APPLICABLE",
+      "rounding_behavior": "floor_to_lot",
+      "ambiguity_notes": "final_quantity is an unsigned Decimal magnitude; side is carried separately. leverage_ceiling is accepted on CapitalRiskSizingInputV1/Context and passed through, but is not applied inside evaluate_quantity_chain_v1 (declared/pass-through, currently not applied in quantity chain).",
+      "runtime_scope": "mv2_governance_offline",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "crs.evaluate_quantity_chain_v1",
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "source_path": "src/governance/capital_risk_sizing_v1.py",
+      "symbol": "evaluate_quantity_chain_v1",
+      "symbol_kind": "function",
+      "domain": "capital_risk_sizing",
+      "inputs": {
+        "account_equity": "ACCOUNT_EQUITY_CCY",
+        "already_committed_capital": "AVAILABLE_CAPITAL_CCY",
+        "remaining_capital_envelope": "AVAILABLE_CAPITAL_CCY",
+        "per_order_cap": "MAX_NOTIONAL_CCY",
+        "daily_loss_budget": "RISK_BUDGET_CCY",
+        "per_trade_risk_cap": "RISK_BUDGET_CCY",
+        "current_reconciled_exposure": "POSITION_NOTIONAL_CCY",
+        "reference_price": "PRICE_CCY_PER_UNIT",
+        "stop_or_risk_distance": "STOP_DISTANCE_CCY_PER_UNIT",
+        "lot_size": "LOT_SIZE_BASE_UNITS",
+        "configured_quantity_cap": "QUANTITY_BASE_UNITS",
+        "leverage_ceiling": "LEVERAGE_MULTIPLIER",
+        "max_positions": "POSITION_COUNT_INTEGER",
+        "selected_side": "ENUM_POLICY"
+      },
+      "outputs": {
+        "final_quantity": "QUANTITY_BASE_UNITS",
+        "resulting_notional": "POSITION_NOTIONAL_CCY",
+        "outcome": "ENUM_POLICY"
+      },
+      "signedness": "side_separate",
+      "numeric_representation": "Decimal",
+      "percent_convention": "NOT_APPLICABLE",
+      "rounding_behavior": "floor_to_lot",
+      "ambiguity_notes": "leverage_ceiling field is present on CapitalRiskSizingContextV1 but unused in evaluate_quantity_chain_v1 math (declared/pass-through, currently not applied in quantity chain).",
+      "runtime_scope": "mv2_governance_offline",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "risk.PositionSizer",
+      "owner_id": "src.risk.position_sizer",
+      "source_path": "src/risk/position_sizer.py",
+      "symbol": "PositionSizer",
+      "symbol_kind": "class",
+      "domain": "legacy_position_sizing",
+      "inputs": {
+        "capital": "ACCOUNT_EQUITY_CCY",
+        "stop_distance": "STOP_DISTANCE_CCY_PER_UNIT",
+        "risk_pct_config": "PERCENT_0_100",
+        "max_position_pct_config": "PERCENT_0_100",
+        "kelly_scaling": "FRACTION_DECIMAL_0_1"
+      },
+      "outputs": {
+        "size_units": "QUANTITY_BASE_UNITS"
+      },
+      "signedness": "unsigned_magnitude",
+      "numeric_representation": "float",
+      "percent_convention": "PERCENT_0_100",
+      "rounding_behavior": "none",
+      "ambiguity_notes": "PositionSizerConfig documents all percentages as percent values (e.g. 1.0 for 1%). Methods convert risk_pct/max_position_pct via /100.0 before Fixed Fractional math. Distinct from calc_position_size fraction convention.",
+      "runtime_scope": "classic_backtest",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "risk.calc_position_size",
+      "owner_id": "src.risk.position_sizer",
+      "source_path": "src/risk/position_sizer.py",
+      "symbol": "calc_position_size",
+      "symbol_kind": "function",
+      "domain": "legacy_position_sizing",
+      "inputs": {
+        "equity": "ACCOUNT_EQUITY_CCY",
+        "entry_price": "PRICE_CCY_PER_UNIT",
+        "stop_price": "PRICE_CCY_PER_UNIT",
+        "risk_per_trade": "FRACTION_DECIMAL_0_1",
+        "max_position_pct": "FRACTION_DECIMAL_0_1",
+        "min_position_value": "MAX_NOTIONAL_CCY",
+        "min_stop_distance": "STOP_DISTANCE_FRACTION"
+      },
+      "outputs": {
+        "size": "QUANTITY_BASE_UNITS",
+        "value": "POSITION_NOTIONAL_CCY",
+        "risk_amount": "RISK_BUDGET_CCY",
+        "rejected": "BOOLEAN_GATE"
+      },
+      "signedness": "unsigned_magnitude",
+      "numeric_representation": "float",
+      "percent_convention": "FRACTION_DECIMAL_0_1",
+      "rounding_behavior": "reject_oversize",
+      "ambiguity_notes": "Long-only validation requires stop_price < entry_price. Defaults max_position_pct=0.25 and min_position_value=50 are FRACTION_DECIMAL_0_1 / currency — must not be equated with PositionSizerConfig PERCENT_0_100.",
+      "runtime_scope": "classic_backtest",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "core.build_position_sizer_from_config",
+      "owner_id": "src.core.position_sizing",
+      "source_path": "src/core/position_sizing.py",
+      "symbol": "build_position_sizer_from_config",
+      "symbol_kind": "function",
+      "domain": "core_position_sizing",
+      "inputs": {
+        "config": "ENUM_POLICY",
+        "fraction_when_fixed_fraction": "FRACTION_DECIMAL_0_1",
+        "units_when_fixed_size": "QUANTITY_BASE_UNITS"
+      },
+      "outputs": {
+        "sizer_instance": "ENUM_POLICY"
+      },
+      "signedness": "not_applicable",
+      "numeric_representation": "mixed",
+      "percent_convention": "FRACTION_DECIMAL_0_1",
+      "rounding_behavior": "path_dependent",
+      "ambiguity_notes": "Factory/builder only; economic units depend on constructed sizer type (FixedFractionSizer/FixedSizeSizer/NoopPositionSizer/overlays). Missing section may fall back to FixedSizeSizer(units=1.0) or NoopPositionSizer.",
+      "runtime_scope": "config_builder",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "core.FixedFractionSizer",
+      "owner_id": "src.core.position_sizing",
+      "source_path": "src/core/position_sizing.py",
+      "symbol": "FixedFractionSizer",
+      "symbol_kind": "class",
+      "domain": "core_position_sizing",
+      "inputs": {
+        "signal": "SIGNAL_DIMENSIONLESS_SIGNED",
+        "price": "PRICE_CCY_PER_UNIT",
+        "equity": "ACCOUNT_EQUITY_CCY",
+        "fraction": "FRACTION_DECIMAL_0_1"
+      },
+      "outputs": {
+        "target_position": "SIGNED_QUANTITY_BASE_UNITS"
+      },
+      "signedness": "signed",
+      "numeric_representation": "float",
+      "percent_convention": "FRACTION_DECIMAL_0_1",
+      "rounding_behavior": "none",
+      "ambiguity_notes": "Default fraction=0.1 means 10% equity as FRACTION_DECIMAL_0_1. No stop-distance or risk-budget input.",
+      "runtime_scope": "classic_backtest",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "core.FixedSizeSizer",
+      "owner_id": "src.core.position_sizing",
+      "source_path": "src/core/position_sizing.py",
+      "symbol": "FixedSizeSizer",
+      "symbol_kind": "class",
+      "domain": "core_position_sizing",
+      "inputs": {
+        "signal": "SIGNAL_DIMENSIONLESS_SIGNED",
+        "price": "PRICE_CCY_PER_UNIT",
+        "equity": "ACCOUNT_EQUITY_CCY",
+        "units": "QUANTITY_BASE_UNITS"
+      },
+      "outputs": {
+        "target_position": "SIGNED_QUANTITY_BASE_UNITS"
+      },
+      "signedness": "signed",
+      "numeric_representation": "float",
+      "percent_convention": "NOT_APPLICABLE",
+      "rounding_behavior": "none",
+      "ambiguity_notes": "price and equity are accepted by BasePositionSizer contract but unused in FixedSizeSizer.get_target_position math.",
+      "runtime_scope": "classic_backtest",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "core.NoopPositionSizer",
+      "owner_id": "src.core.position_sizing",
+      "source_path": "src/core/position_sizing.py",
+      "symbol": "NoopPositionSizer",
+      "symbol_kind": "class",
+      "domain": "core_position_sizing",
+      "inputs": {
+        "signal": "SIGNAL_DIMENSIONLESS_SIGNED",
+        "price": "PRICE_CCY_PER_UNIT",
+        "equity": "ACCOUNT_EQUITY_CCY"
+      },
+      "outputs": {
+        "target_position": "SIGNED_QUANTITY_BASE_UNITS"
+      },
+      "signedness": "signed",
+      "numeric_representation": "float",
+      "percent_convention": "NOT_APPLICABLE",
+      "rounding_behavior": "none",
+      "ambiguity_notes": "Returns float(signal) directly; conflates SIGNAL_DIMENSIONLESS_SIGNED with SIGNED_QUANTITY_BASE_UNITS without conversion.",
+      "runtime_scope": "classic_backtest",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "offline.size_offline_evaluation_entry_v1",
+      "owner_id": "backtest.offline_evaluation_sizing_contract_v1",
+      "source_path": "src/backtest/offline_evaluation_sizing_contract_v1.py",
+      "symbol": "size_offline_evaluation_entry_v1",
+      "symbol_kind": "function",
+      "domain": "offline_evaluation_sizing",
+      "inputs": {
+        "equity": "ACCOUNT_EQUITY_CCY",
+        "entry_price": "PRICE_CCY_PER_UNIT",
+        "risk_per_trade": "FRACTION_DECIMAL_0_1",
+        "stop_pct": "STOP_DISTANCE_FRACTION",
+        "max_position_pct": "FRACTION_DECIMAL_0_1",
+        "oversize_policy": "ENUM_POLICY"
+      },
+      "outputs": {
+        "size": "QUANTITY_BASE_UNITS",
+        "requested_notional": "POSITION_NOTIONAL_CCY",
+        "effective_notional": "POSITION_NOTIONAL_CCY",
+        "stop_price": "PRICE_CCY_PER_UNIT",
+        "accepted": "BOOLEAN_GATE",
+        "reason_code": "ENUM_POLICY"
+      },
+      "signedness": "unsigned_magnitude",
+      "numeric_representation": "float",
+      "percent_convention": "FRACTION_DECIMAL_0_1",
+      "rounding_behavior": "path_dependent",
+      "ambiguity_notes": "REJECT_OVERSIZE delegates to calc_position_size (fraction convention). CAP_TO_MAX_POSITION_PCT recomputes size locally and may override requested size. Long-entry stop derived as entry*(1-stop_pct).",
+      "runtime_scope": "offline_economic_evaluation",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    {
+      "callable_id": "execution.execute_from_signals",
+      "owner_id": "src.execution.pipeline.execute_from_signals",
+      "source_path": "src/execution/pipeline.py",
+      "symbol": "ExecutionPipeline.execute_from_signals",
+      "symbol_kind": "method",
+      "domain": "execution_quantity_adapter",
+      "inputs": {
+        "signals": "SIGNAL_DIMENSIONLESS_SIGNED",
+        "prices": "PRICE_CCY_PER_UNIT",
+        "max_position_notional_pct": "UNKNOWN_OR_AMBIGUOUS",
+        "initial_position": "SIGNED_QUANTITY_BASE_UNITS"
+      },
+      "outputs": {
+        "order_quantity": "QUANTITY_BASE_UNITS",
+        "target_position": "SIGNED_QUANTITY_BASE_UNITS"
+      },
+      "signedness": "signed",
+      "numeric_representation": "float",
+      "percent_convention": "MIXED_OR_AMBIGUOUS",
+      "rounding_behavior": "none",
+      "ambiguity_notes": "Field name and config docstring describe max_position_notional_pct as capital share (1.0=100% of size budget), but execute_from_signals sets base_position_size=max_position_notional_pct and uses target_position=signal*base_position_size as absolute units. Do not silently treat as FRACTION_DECIMAL_0_1 or QUANTITY_BASE_UNITS alone.",
+      "runtime_scope": "execution_kernel",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE"
+    }
+  ],
+  "companion_edges": [
+    {
+      "edge_id": "COMPANION_SHADOW_POSITION_FRACTION",
+      "classification": "OBSERVED_COMPANION_EDGE_NOT_PRIMARY_OWNER",
+      "source_path": "src/live/shadow_session.py",
+      "caller_symbol": "ShadowPaperSession.step_once",
+      "assignment_attribute": "position_fraction",
+      "config_source_path": "src/data/kraken_live.py",
+      "config_symbol": "ShadowPaperConfig",
+      "config_field": "position_fraction",
+      "declared_dimension": "FRACTION_DECIMAL_0_1",
+      "runtime_usage_dimension": "UNKNOWN_OR_AMBIGUOUS",
+      "numeric_representation": "float",
+      "percent_convention": "FRACTION_DECIMAL_0_1",
+      "signedness": "unsigned_magnitude",
+      "runtime_scope": "shadow_paper",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "ambiguity_notes": "Config default 0.1 and naming imply FRACTION_DECIMAL_0_1 capital share. ShadowPaperSession.step_once assigns position_size=self._shadow_cfg.position_fraction and passes it to ExecutionPipeline.signal_to_orders, which documents position_size as absolute units (Stueck). Not counted as a sixth primary owner or sixth bypass.",
+      "primary_owner": false,
+      "bypass_surface_member": false
+    },
+    {
+      "edge_id": "COMPANION_LIVE_SESSION_POSITION_FRACTION",
+      "classification": "OBSERVED_COMPANION_EDGE_NOT_PRIMARY_OWNER",
+      "source_path": "src/execution/live_session.py",
+      "caller_symbol": "LiveSessionRunner.step_once",
+      "assignment_attribute": "position_fraction",
+      "config_source_path": "src/execution/live_session.py",
+      "config_symbol": "LiveSessionConfig",
+      "config_field": "position_fraction",
+      "declared_dimension": "FRACTION_DECIMAL_0_1",
+      "runtime_usage_dimension": "UNKNOWN_OR_AMBIGUOUS",
+      "numeric_representation": "float",
+      "percent_convention": "FRACTION_DECIMAL_0_1",
+      "signedness": "unsigned_magnitude",
+      "runtime_scope": "live_session_companion",
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "ambiguity_notes": "LiveSessionConfig validates 0.0 < position_fraction <= 1.0 (FRACTION_DECIMAL_0_1). LiveSessionRunner.step_once passes position_size=self._config.position_fraction into signal_to_orders (absolute units). Companion edge only — must not be added to primary owner or bypass counts.",
+      "primary_owner": false,
+      "bypass_surface_member": false
+    }
+  ],
+  "field_pins": [
+    {
+      "field_id": "PositionSizerConfig.risk_pct",
+      "owner_id": "src.risk.position_sizer",
+      "source_path": "src/risk/position_sizer.py",
+      "symbol": "PositionSizerConfig",
+      "field_name": "risk_pct",
+      "dimension": "PERCENT_0_100",
+      "numeric_representation": "float",
+      "note": "Docstring: percentages as percent values (e.g. 1.0 for 1%)."
+    },
+    {
+      "field_id": "PositionSizerConfig.max_position_pct",
+      "owner_id": "src.risk.position_sizer",
+      "source_path": "src/risk/position_sizer.py",
+      "symbol": "PositionSizerConfig",
+      "field_name": "max_position_pct",
+      "dimension": "PERCENT_0_100",
+      "numeric_representation": "float",
+      "note": "Docstring: percentages as percent values (e.g. 10.0 for 10%)."
+    },
+    {
+      "field_id": "calc_position_size.max_position_pct",
+      "owner_id": "src.risk.position_sizer",
+      "source_path": "src/risk/position_sizer.py",
+      "symbol": "calc_position_size",
+      "field_name": "max_position_pct",
+      "dimension": "FRACTION_DECIMAL_0_1",
+      "numeric_representation": "float",
+      "note": "Default 0.25 means 25% as decimal fraction."
+    },
+    {
+      "field_id": "FixedFractionSizer.fraction",
+      "owner_id": "src.core.position_sizing",
+      "source_path": "src/core/position_sizing.py",
+      "symbol": "FixedFractionSizer",
+      "field_name": "fraction",
+      "dimension": "FRACTION_DECIMAL_0_1",
+      "numeric_representation": "float",
+      "note": "Default 0.1 means 10% equity."
+    },
+    {
+      "field_id": "CapitalRiskSizingContextV1.leverage_ceiling",
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "source_path": "src/governance/capital_risk_sizing_v1.py",
+      "symbol": "CapitalRiskSizingContextV1",
+      "field_name": "leverage_ceiling",
+      "dimension": "LEVERAGE_MULTIPLIER",
+      "numeric_representation": "Decimal",
+      "note": "declared/pass-through, currently not applied in quantity chain"
+    },
+    {
+      "field_id": "ExecutionPipelineConfig.max_position_notional_pct",
+      "owner_id": "src.execution.pipeline.execute_from_signals",
+      "source_path": "src/execution/pipeline.py",
+      "symbol": "ExecutionPipelineConfig",
+      "field_name": "max_position_notional_pct",
+      "dimension": "UNKNOWN_OR_AMBIGUOUS",
+      "numeric_representation": "float",
+      "note": "Name/docs imply capital fraction; execute_from_signals uses raw value as unit size."
+    },
+    {
+      "field_id": "ShadowPaperConfig.position_fraction",
+      "owner_id": null,
+      "companion_edge_id": "COMPANION_SHADOW_POSITION_FRACTION",
+      "source_path": "src/data/kraken_live.py",
+      "symbol": "ShadowPaperConfig",
+      "field_name": "position_fraction",
+      "dimension": "FRACTION_DECIMAL_0_1",
+      "numeric_representation": "float",
+      "note": "Declared fraction; shadow runtime passes value as absolute position_size."
+    },
+    {
+      "field_id": "LiveSessionConfig.position_fraction",
+      "owner_id": null,
+      "companion_edge_id": "COMPANION_LIVE_SESSION_POSITION_FRACTION",
+      "source_path": "src/execution/live_session.py",
+      "symbol": "LiveSessionConfig",
+      "field_name": "position_fraction",
+      "dimension": "FRACTION_DECIMAL_0_1",
+      "numeric_representation": "float",
+      "note": "Validated (0,1]; live runtime passes value as absolute position_size."
+    }
+  ],
+  "drift_policy": {
+    "primary_owner_addition": "FAIL",
+    "primary_owner_removal": "FAIL",
+    "primary_owner_rename": "FAIL",
+    "primary_owner_duplicate": "FAIL",
+    "callable_addition": "FAIL",
+    "callable_removal": "FAIL",
+    "dimension_catalog_addition": "FAIL",
+    "unknown_dimension_token": "FAIL",
+    "unresolved_symbol": "FAIL",
+    "companion_edge_addition": "FAIL",
+    "companion_edge_removal": "FAIL",
+    "authority_escalation": "FAIL",
+    "percent_convention_silent_equivalence": "FAIL",
+    "missing_ambiguity_notes_for_unknown": "FAIL"
+  },
+  "global_authority_pins": {
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE"
+  },
+  "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",
+  "scan_uncertainty_notes": [
+    "This contract declares units/dimensions only; it does not assign authority or change sizing math.",
+    "Companion edges are observational and must remain excluded from primary owner and bypass counts.",
+    "execute_from_signals max_position_notional_pct is intentionally UNKNOWN_OR_AMBIGUOUS.",
+    "CRS leverage_ceiling is declared LEVERAGE_MULTIPLIER but not applied in evaluate_quantity_chain_v1."
+  ]
+}
