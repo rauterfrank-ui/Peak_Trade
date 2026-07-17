@@ -1,0 +1,16 @@
+{
+  "AUTH-003": {
+    "heading": "### AUTH-003 \u2014",
+    "status": null,
+    "resolution_dependency": "B-01 Operator-GO (`missing_features_plan.md` deferred header); keine Code-Umz\u00fcge ohne Product-Entscheid",
+    "has_closed": false,
+    "stale_open_markers": true
+  },
+  "AUTH-021": {
+    "heading": "### AUTH-021 \u2014",
+    "status": null,
+    "resolution_dependency": "B-01 Operator-GO",
+    "has_closed": false,
+    "stale_open_markers": true
+  }
+}

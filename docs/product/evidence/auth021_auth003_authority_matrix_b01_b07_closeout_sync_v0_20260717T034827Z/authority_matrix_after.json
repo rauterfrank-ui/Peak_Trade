@@ -1,0 +1,16 @@
+{
+  "AUTH-003": {
+    "heading": "### AUTH-003 \u2014",
+    "status": "**CLOSED (2026-07-17)** \u2014 PR #5274 / B-01: `missing_features_plan.md` deferred/STRUCTURAL banner + Class C pointer; Feature-Engine remains Class C deferred (no runtime enablement)",
+    "resolution_dependency": "Docs layer B-01: **CLOSED** via PR #5274 \u00b7 Residual Type D / code moves: **blocked** without separate Product-Entscheid",
+    "has_closed": true,
+    "stale_open_markers": false
+  },
+  "AUTH-021": {
+    "heading": "### AUTH-021 \u2014",
+    "status": "**CLOSED (2026-07-17)** \u2014 PR #5274 / B-01+B-07: deferred/STRUCTURAL banner + Class C pointer + DAG NON-OPERATIONAL footnote on `missing_features_plan.md`",
+    "resolution_dependency": "None (B-01/B-07 reconciled on main via PR #5274 @ `721f28f52b81b01f01ec310eee0dbcdc75d10cce`)",
+    "has_closed": true,
+    "stale_open_markers": false
+  }
+}
