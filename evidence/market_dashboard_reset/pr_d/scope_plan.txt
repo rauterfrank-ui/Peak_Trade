@@ -1,0 +1,16 @@
+PR-D scope plan
+ONE_PAGE_AGGREGATE_OWNER=src/webui/market_dashboard_readmodels_v1/page_builder.py → MarketDashboardPageSnapshotV1
+ONE_PRESENTER_BOUNDARY=src/webui/market_dashboard_product_surface_v1/presenter.py
+ROUTE_COMPOSITION=src/webui/market_dashboard_product_surface_v1/route_composition.py + market_surface.py GET /market
+TEMPLATE=templates/peak_trade_dashboard/market_dashboard_product_v1.html
+CSS=static/css/market_dashboard_product_v1.css
+SOURCE_LOADER=src/webui/market_dashboard_product_surface_v1/source_loader.py
+  - optional env-gated OHLCV + ranking readmodels only
+  - safety_authority always None → NOT_BOUND
+  - decision/dp/execution/economic/diagnostics default None → explicit unavailable
+  - no static DP, no current-state snapshot, no dummy fallback
+TESTS=tests/webui/test_market_dashboard_product_surface_pr_d_v1.py (+ update PR-A shell expectations)
+DOCS=docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md
+EVIDENCE=evidence/market_dashboard_reset/pr_d/
+FORBIDDEN: trading/governance/risk/execution/backtest/strategies semantics; CI infra
+HARD_STOP_TRIGGERS: new domain logic; direct legacy producer binding from presenter/template

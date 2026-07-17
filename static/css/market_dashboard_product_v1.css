@@ -1,0 +1,329 @@
+/* Market Dashboard Product Surface v1 — presentation-only */
+
+.pt-market-dashboard-product-v1 {
+  --mdps-bg: #0b1220;
+  --mdps-panel: #121a2b;
+  --mdps-border: rgba(148, 163, 184, 0.22);
+  --mdps-text: #e2e8f0;
+  --mdps-muted: #94a3b8;
+  --mdps-accent: #38bdf8;
+  --mdps-warn: #fbbf24;
+  --mdps-danger: #f87171;
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(56, 189, 248, 0.08), transparent 60%),
+    radial-gradient(900px 400px at 90% 0%, rgba(14, 165, 233, 0.05), transparent 55%),
+    var(--mdps-bg);
+  color: var(--mdps-text);
+}
+
+.mdps-main {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 1rem 1.25rem 2.5rem;
+}
+
+.mdps-global-header {
+  border-bottom: 1px solid var(--mdps-border);
+  background: rgba(8, 12, 22, 0.92);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.mdps-global-header__inner {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 0.65rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mdps-global-header__brand {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.mdps-global-header__title {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.mdps-global-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--mdps-muted);
+}
+
+.mdps-link-quiet {
+  color: var(--mdps-muted);
+  text-decoration: none;
+  font-size: 0.75rem;
+}
+
+.mdps-link-quiet:hover {
+  color: var(--mdps-text);
+}
+
+.mdps-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.mdps-h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.mdps-h2 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #cbd5e1;
+}
+
+.mdps-h3 {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.mdps-sub,
+.mdps-muted {
+  margin: 0.25rem 0 0;
+  color: var(--mdps-muted);
+  font-size: 0.8rem;
+}
+
+.mdps-workspace {
+  border: 1px solid var(--mdps-border);
+  background: var(--mdps-panel);
+  border-radius: 0.5rem;
+  padding: 0.9rem 1rem 1rem;
+  min-height: 22rem;
+}
+
+.mdps-workspace__head {
+  margin-bottom: 0.75rem;
+}
+
+.mdps-chart-panel {
+  min-height: 16rem;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 0.4rem;
+  background: rgba(2, 6, 23, 0.55);
+  padding: 0.5rem;
+}
+
+.mdps-chart-svg {
+  width: 100%;
+  height: 16rem;
+  display: block;
+}
+
+.mdps-chart-line {
+  stroke: var(--mdps-accent);
+  stroke-width: 2;
+  fill: none;
+}
+
+.mdps-chart-meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.7rem;
+  color: var(--mdps-muted);
+}
+
+.mdps-unavailable-panel {
+  min-height: 14rem;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 0.35rem;
+  padding: 1.5rem;
+}
+
+.mdps-unavailable-panel__label {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--mdps-warn);
+}
+
+.mdps-unavailable-panel__detail {
+  margin: 0;
+  max-width: 36rem;
+  color: var(--mdps-muted);
+  font-size: 0.8rem;
+}
+
+.mdps-unavailable-panel__code {
+  margin: 0.25rem 0 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+
+.mdps-decision,
+.mdps-safety-exec,
+.mdps-secondary__card,
+.mdps-engineering {
+  border: 1px solid var(--mdps-border);
+  background: rgba(15, 23, 42, 0.72);
+  border-radius: 0.45rem;
+  padding: 0.85rem 1rem;
+}
+
+.mdps-decision__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.mdps-k {
+  display: block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mdps-muted);
+}
+
+.mdps-v {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.mdps-safety-exec {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 0.85rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.mdps-strip-card {
+  border: 1px solid var(--mdps-border);
+  background: rgba(15, 23, 42, 0.72);
+  border-radius: 0.45rem;
+  padding: 0.85rem 1rem;
+}
+
+.mdps-secondary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.mdps-badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--mdps-border);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mdps-badge--readonly {
+  color: #7dd3fc;
+  border-color: rgba(125, 211, 252, 0.35);
+}
+
+.mdps-badge--not-bound {
+  color: var(--mdps-warn);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.mdps-badge--missing {
+  color: #fda4af;
+  border-color: rgba(251, 113, 133, 0.35);
+}
+
+.mdps-badge--diagnostic {
+  color: #c4b5fd;
+  border-color: rgba(196, 181, 253, 0.35);
+}
+
+.mdps-unavailable-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+  color: var(--mdps-muted);
+  font-size: 0.8rem;
+}
+
+.mdps-code-list,
+.mdps-rank-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.78rem;
+  color: #cbd5e1;
+}
+
+.mdps-engineering summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.mdps-engineering__body {
+  margin-top: 0.75rem;
+}
+
+.mdps-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+}
+
+.mdps-table th,
+.mdps-table td {
+  border-top: 1px solid var(--mdps-border);
+  padding: 0.35rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.mdps-table th {
+  width: 40%;
+  color: var(--mdps-muted);
+  font-weight: 500;
+}
+
+@media (max-width: 1100px) {
+  .mdps-secondary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mdps-decision__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .mdps-safety-exec,
+  .mdps-secondary,
+  .mdps-decision__grid {
+    grid-template-columns: 1fr;
+  }
+  .mdps-workspace {
+    min-height: 16rem;
+  }
+}

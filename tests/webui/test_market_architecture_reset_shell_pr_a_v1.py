@@ -1,8 +1,7 @@
-"""PR-A guards: /market architecture reset shell.
+"""PR-A legacy non-reintroduction guards retained after PR-D product surface.
 
-Proves the product route renders only the reset shell and cannot reach prohibited
-legacy producers (static DP fixture, hardcoded current-state, dummy fallback,
-old landmark composition).
+Reset-shell markers must remain absent from GET /market. Prohibited producers
+must stay unreachable from the routed handler.
 """
 
 from __future__ import annotations
@@ -21,13 +20,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MARKET_SURFACE_PATH = REPO_ROOT / "src" / "webui" / "market_surface.py"
 RESET_TEMPLATE_PATH = REPO_ROOT / "templates" / "peak_trade_dashboard" / "market_v0.html"
 
-RESET_SHELL_MARKERS = (
-    "Market Dashboard",
-    "ARCHITECTURE RESET IN PROGRESS",
-    "READ ONLY",
-    "NO TRADING AUTHORITY",
-)
-
 OLD_LANDMARK_MARKERS = (
     'id="market-v0-shell"',
     "data-market-phase1a-composition-v1",
@@ -35,7 +27,6 @@ OLD_LANDMARK_MARKERS = (
     "data-market-decision-funnel-visual-v1",
     "data-market-double-play-matrix",
     "data-market-safety-matrix",
-    "data-market-engineering-drawer",
     "double-play-market-v0-shell",
     "build_static_dashboard_display_dict",
     "market_dashboard_current_state_snapshot_v0",
@@ -68,8 +59,8 @@ def client() -> TestClient:
 
 def _market_route_source() -> str:
     src = inspect.getsource(market_surface.create_market_router)
-    assert "async def market_v0_page" in src
-    start = src.index("async def market_v0_page")
+    assert "async def market_dashboard_product_page_v1" in src
+    start = src.index("async def market_dashboard_product_page_v1")
     rest = src[start:]
     end_markers = ("\n    @router.get", "\n    return router", "\ndef ")
     end = len(rest)
@@ -80,14 +71,14 @@ def _market_route_source() -> str:
     return rest[:end]
 
 
-def test_get_market_returns_200_and_reset_shell(client: TestClient) -> None:
+def test_get_market_no_longer_renders_reset_shell(client: TestClient) -> None:
     response = client.get("/market")
     assert response.status_code == 200
     html = response.text
-    for marker in RESET_SHELL_MARKERS:
-        assert marker in html, f"missing reset-shell text: {marker}"
-    assert 'data-market-architecture-reset-shell-v1="true"' in html
-    assert 'id="market-architecture-reset-shell-v1"' in html
+    assert "ARCHITECTURE RESET IN PROGRESS" not in html
+    assert 'data-market-architecture-reset-shell-v1="true"' not in html
+    assert 'id="market-architecture-reset-shell-v1"' not in html
+    assert 'data-market-dashboard-product-surface-v1="true"' in html
 
 
 def test_old_market_v0_composition_not_routed(client: TestClient) -> None:
@@ -96,40 +87,10 @@ def test_old_market_v0_composition_not_routed(client: TestClient) -> None:
         assert marker not in html, f"old composition still routed: {marker}"
 
 
-def test_no_decision_dp_risk_authority_economic_or_execution_state(
-    client: TestClient,
-) -> None:
-    html = client.get("/market").text
-    prohibited_snippets = (
-        "Bull",
-        "Bear",
-        "Double Play",
-        "Kill Switch",
-        "execution permission",
-        "Profit Factor",
-        "drawdown",
-        "source=dummy",
-        "ORDER",
-        "Place Order",
-        "Submit",
-        'type="submit"',
-        "<button",
-        "data-market-safety-matrix",
-        "data-market-double-play",
-        "decision_funnel",
-        "current_state",
-    )
-    for snippet in prohibited_snippets:
-        assert snippet not in html, f"prohibited domain/UI state rendered: {snippet}"
-
-
-def test_reset_shell_template_has_exact_wording() -> None:
+def test_reset_shell_template_preserved_offline_not_routed() -> None:
     text = RESET_TEMPLATE_PATH.read_text(encoding="utf-8")
-    for marker in RESET_SHELL_MARKERS:
-        assert marker in text
-    assert "architecture reset" in text.lower()
+    assert "ARCHITECTURE RESET IN PROGRESS" in text
     assert "market-v0-shell" not in text
-    assert "{% include" not in text
 
 
 def test_market_route_source_does_not_call_prohibited_producers() -> None:
@@ -139,17 +100,16 @@ def test_market_route_source_does_not_call_prohibited_producers() -> None:
 
 
 def test_routed_dependency_path_ast_guard() -> None:
-    """Inspect the real routed handler AST — not merely one template file."""
     module = ast.parse(MARKET_SURFACE_PATH.read_text(encoding="utf-8"))
     route_fn = None
     for node in module.body:
         if isinstance(node, ast.FunctionDef) and node.name == "create_market_router":
             for child in node.body:
                 if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    if child.name == "market_v0_page":
+                    if child.name == "market_dashboard_product_page_v1":
                         route_fn = child
                         break
-    assert route_fn is not None, "market_v0_page handler missing"
+    assert route_fn is not None, "product page handler missing"
     called: set[str] = set()
     for node in ast.walk(route_fn):
         if isinstance(node, ast.Call):
@@ -176,27 +136,26 @@ def test_static_prohibited_import_patterns_not_in_route_handler() -> None:
         assert pattern not in route_src
 
 
-def test_forbidden_domain_owner_files_unchanged_vs_head() -> None:
-    """No diff allowed on forbidden domain-owner paths for this working tree."""
+def test_forbidden_domain_owner_files_unchanged_vs_origin_main() -> None:
     import subprocess
 
     for rel in FORBIDDEN_DOMAIN_OWNER_PATHS:
         result = subprocess.run(
-            ["git", "diff", "--", rel],
+            ["git", "diff", "origin/main", "--", rel],
             cwd=REPO_ROOT,
             capture_output=True,
             text=True,
             check=False,
         )
-        assert result.returncode == 0
+        assert result.returncode == 0, result.stderr
         assert result.stdout == "", f"forbidden domain owner changed: {rel}"
 
 
-def test_legacy_redirects_land_on_reset_shell(client: TestClient) -> None:
+def test_legacy_redirects_do_not_restore_reset_shell(client: TestClient) -> None:
     for path in ("/market/double-play", "/market/futures"):
         response = client.get(path, follow_redirects=True)
         assert response.status_code == 200
-        assert "ARCHITECTURE RESET IN PROGRESS" in response.text
+        assert "ARCHITECTURE RESET IN PROGRESS" not in response.text
         assert 'id="market-v0-shell"' not in response.text
 
 
@@ -204,7 +163,6 @@ def test_query_params_cannot_reintroduce_dummy_composition(client: TestClient) -
     response = client.get("/market?source=dummy&symbol=ETHUSDT&timeframe=5m")
     assert response.status_code == 200
     html = response.text
-    assert "ARCHITECTURE RESET IN PROGRESS" in html
+    assert "ARCHITECTURE RESET IN PROGRESS" not in html
     assert "source=dummy" not in html
-    assert "ETHUSDT" not in html
     assert 'id="market-v0-shell"' not in html

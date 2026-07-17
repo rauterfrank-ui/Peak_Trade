@@ -1,0 +1,30 @@
+PR-D STEP1 adapter inventory (PR-C)
+PACKAGE=src/webui/market_dashboard_readmodels_v1/adapters
+ADAPTER_PACKAGE_ID=market_dashboard_adapters.v1
+
+adapt_market_instrument_snapshot_v1(source, *, instrument_id, venue, generated_at, source_reference=None)
+  in: market_futures_ohlcv_readmodel.v0 Mapping | None
+  out: MarketInstrumentSnapshotV1 | UnavailableSnapshotV1
+
+adapt_market_ranking_snapshot_v1(source, *, generated_at, stage="universe", source_reference=None)
+  in: market_ranking_funnel_readmodel.v0 Mapping | None
+  out: MarketRankingSnapshotV1 | UnavailableSnapshotV1
+
+adapt_canonical_decision_summary_v1(source, *, generated_at, effective_at, evidence_reference=None, evidence_status=None)
+  in: CanonicalTradingDecisionEvidenceV1-like | None
+  out: CanonicalDecisionSummaryV1 | UnavailableSnapshotV1
+
+adapt_double_play_decision_snapshot_v1(composition, *, generated_at, effective_at, bull_assessment=None, bear_assessment=None, evidence_reference=None)
+  in: DoublePlayCompositionResultV1-like | None + side assessments
+  out: DoublePlayDecisionSnapshotV1 | UnavailableSnapshotV1
+
+adapt_safety_authority_snapshot_v1(source, *, generated_at, effective_at=None, source_reference=None)
+  in: consolidated Mapping | None
+  out: SafetyAuthoritySnapshotV1 | UnavailableSnapshotV1
+  None → NOT_BOUND / SAFETY_AUTHORITY_PRODUCER_NOT_BOUND
+
+adapt_execution_state_snapshot_v1(source, *, generated_at, effective_at, operating_mode=OFFLINE, evidence_reference=None)
+adapt_economic_summary_snapshot_v1(source, *, generated_at, effective_at, evidence_reference=None)
+adapt_diagnostics_summary_snapshot_v1(source, *, generated_at, effective_at, bundle_reference=None)
+adapt_dashboard_freshness_snapshot_v1(*, page_generated_at, sources, policy=DEFAULT, source_reference=None)
+  always returns DashboardFreshnessSnapshotV1 (never Unavailable)

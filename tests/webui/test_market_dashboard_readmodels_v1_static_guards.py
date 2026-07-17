@@ -115,27 +115,27 @@ def test_package_readme_states_pr_c_and_pr_d_boundaries() -> None:
     assert not (PACKAGE_DIR / "README.md").exists()
 
 
-def test_market_route_does_not_consume_new_contracts_yet() -> None:
+def test_market_route_binds_product_surface_not_legacy_composition() -> None:
     route_text = MARKET_SURFACE.read_text(encoding="utf-8")
-    template_text = RESET_TEMPLATE.read_text(encoding="utf-8")
-    assert "market_dashboard_readmodels_v1" not in route_text
-    assert "MarketDashboardPageSnapshotV1" not in route_text
-    assert "market_dashboard_readmodels_v1" not in template_text
-    for marker in RESET_SHELL_MARKERS:
-        assert marker in template_text
+    product_template = (
+        REPO_ROOT / "templates" / "peak_trade_dashboard" / "market_dashboard_product_v1.html"
+    )
+    template_text = product_template.read_text(encoding="utf-8")
+    assert "build_market_dashboard_product_template_context_v1" in route_text
+    assert "MarketDashboardPageSnapshotV1" not in template_text
+    assert "import " not in template_text
+    assert "ARCHITECTURE RESET IN PROGRESS" not in template_text
+    assert "data-market-dashboard-product-surface-v1" in template_text
 
 
-def test_get_market_remains_reset_shell() -> None:
+def test_get_market_renders_product_surface() -> None:
     client = TestClient(create_app())
     response = client.get("/market")
     assert response.status_code == 200
     html = response.text
-    for marker in RESET_SHELL_MARKERS:
-        assert marker in html
-    assert "market_dashboard_readmodels_v1" not in html
-    assert "Bull" not in html
-    assert "Double Play" not in html
-    assert "Profit Factor" not in html
+    assert "ARCHITECTURE RESET IN PROGRESS" not in html
+    assert 'data-market-dashboard-product-surface-v1="true"' in html
+    assert "NOT BOUND" in html
     assert 'type="submit"' not in html
 
 
@@ -169,10 +169,8 @@ def test_forbidden_trees_have_no_diff_vs_origin_main() -> None:
 
 def test_legacy_prohibited_producers_unreachable_from_market_route() -> None:
     text = MARKET_SURFACE.read_text(encoding="utf-8")
-    # Locate routed handler body heuristically by marker used in PR-A.
-    assert "async def market_v0_page" in text
-    start = text.index("async def market_v0_page")
-    # Handler is the final route before `return router`.
+    assert "async def market_dashboard_product_page_v1" in text
+    start = text.index("async def market_dashboard_product_page_v1")
     end_markers = ("\n    return router", "\ndef ")
     end = len(text)
     for marker in end_markers:
@@ -186,6 +184,6 @@ def test_legacy_prohibited_producers_unreachable_from_market_route() -> None:
         "market_dashboard_current_state_snapshot_v0",
         "resolve_market_page_data",
         "load_ohlcv_dataframe",
-        "market_dashboard_readmodels_v1",
     ):
         assert token not in route_body
+    assert "build_market_dashboard_product_template_context_v1" in route_body

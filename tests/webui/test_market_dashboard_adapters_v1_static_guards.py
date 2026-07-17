@@ -133,22 +133,23 @@ def test_top_level_readmodel_package_still_forbids_domain_compute_imports() -> N
             assert not name.startswith("flask")
 
 
-def test_get_market_remains_reset_shell_after_pr_c() -> None:
+def test_get_market_uses_product_surface_after_pr_d() -> None:
     route_text = MARKET_SURFACE.read_text(encoding="utf-8")
-    template_text = RESET_TEMPLATE.read_text(encoding="utf-8")
-    assert "market_dashboard_readmodels_v1.adapters" not in route_text
-    assert "MarketDashboardPageSnapshotV1" not in route_text
-    for marker in RESET_SHELL_MARKERS:
-        assert marker in template_text
+    product_template = (
+        REPO_ROOT / "templates" / "peak_trade_dashboard" / "market_dashboard_product_v1.html"
+    )
+    template_text = product_template.read_text(encoding="utf-8")
+    assert "market_dashboard_product_surface_v1" in route_text
+    assert "build_market_dashboard_product_template_context_v1" in route_text
+    assert "ARCHITECTURE RESET IN PROGRESS" not in template_text
+    assert "data-market-dashboard-product-surface-v1" in template_text
     client = TestClient(create_app())
     response = client.get("/market")
     assert response.status_code == 200
     html = response.text
-    for marker in RESET_SHELL_MARKERS:
-        assert marker in html
-    assert "Bull" not in html
-    assert "Double Play" not in html
-    assert "Profit Factor" not in html
+    assert "ARCHITECTURE RESET IN PROGRESS" not in html
+    assert 'data-market-dashboard-product-surface-v1="true"' in html
+    assert "NOT BOUND" in html
     assert 'type="submit"' not in html
 
 
