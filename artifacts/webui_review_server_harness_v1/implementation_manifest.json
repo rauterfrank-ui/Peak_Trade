@@ -12,7 +12,7 @@
   "default_host": "127.0.0.1",
   "default_port": 8000,
   "healthcheck_url": "http://127.0.0.1:8000/api/health",
-  "review_url": "http://127.0.0.1:8000/market",
+  "review_url": "http://127.0.0.1:8000/",
   "pid_file": ".run/webui_review_server/review_server.pid",
   "log_file": ".run/webui_review_server/review_server.log",
   "invariants": {
@@ -47,9 +47,8 @@
     "artifacts/webui_review_server_harness_v1/server_lifecycle_report.txt",
     "artifacts/webui_review_server_harness_v1/playwright_smoke_report.txt",
     "artifacts/webui_review_server_harness_v1/MANIFEST.sha256",
-    "docs/webui/MARKET_SURFACE_V0.md",
+    "docs/webui/MARKET_DASHBOARD_REMOVED.md",
     "docs/webui/REVIEW_SERVER_HARNESS_V1.md",
-    "scripts/webui/market_dashboard_chrome_playwright_harness_v1.py",
     "scripts/webui/review_server.sh",
     "scripts/webui/review_server_playwright_webserver_v1.py",
     "tests/webui/test_review_server_harness_v1.py"
@@ -58,7 +57,7 @@
     "focused_tests": "11 passed",
     "lifecycle": "start/status/open/stop PASS on 127.0.0.1:8765",
     "real_chrome_opened": true,
-    "http_200_health_and_market": true,
+    "http_200_health_and_root": true,
     "listeners_after_stop": "NONE",
     "ruff_format": "PASS",
     "ruff_check": "PASS",

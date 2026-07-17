@@ -1,0 +1,4 @@
+R078	evidence/market_dashboard_reset/pr_e/docs_reference_targets.txt	evidence/market_dashboard_deletion/docs_reference_targets.txt
+R100	evidence/market_dashboard_reset/pr_c/docs_token_policy.txt	evidence/market_dashboard_deletion/docs_token_policy.txt
+R100	evidence/market_dashboard_reset/pr_a/ruff_check.txt	evidence/market_dashboard_deletion/ruff_check.txt
+R068	evidence/market_dashboard_reset/pr_d/test_results.txt	evidence/market_dashboard_deletion/timing_proof.txt

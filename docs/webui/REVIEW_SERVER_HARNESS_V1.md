@@ -5,8 +5,7 @@ Bounded, repo-owned localhost review-server lifecycle for Peak Trade WebUI opera
 **No runtime / trading / authority effect.**
 `LIVE_AUTHORIZED=false` · `ORDERS_ALLOWED=false` · `NETWORK_POLICY=LOCALHOST_ONLY`
 
-Related technical surface: [`MARKET_SURFACE_V0.md`](./MARKET_SURFACE_V0.md) (`GET &#47;market`).
-Dashboard master runbook SSOT remains [`docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md`](../product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) — this harness does **not** duplicate that runbook.
+Market Dashboard removed — see [`MARKET_DASHBOARD_REMOVED.md`](./MARKET_DASHBOARD_REMOVED.md). Default review opens the general WebUI root (`GET &#47;`), not a Market Dashboard route.
 
 ## Canonical commands
 
@@ -29,7 +28,7 @@ Dashboard master runbook SSOT remains [`docs/product/Peak_Trade_Runbook_v1.3_Com
 | Port | `8000` |
 | ASGI | `src.webui.app:app` via `uv run python -m uvicorn` |
 | Healthcheck | `GET &#47;api&#47;health` |
-| Review URL | `http://127.0.0.1:8000/market` |
+| Review URL | `http://127.0.0.1:8000/` |
 | State dir | `.run&#47;webui_review_server&#47;` |
 | PID file | `.run&#47;webui_review_server&#47;review_server.pid` |
 | Log file | `.run&#47;webui_review_server&#47;review_server.log` |

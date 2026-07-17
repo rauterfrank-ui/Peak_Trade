@@ -1,8 +1,0 @@
-TIMESTAMP_UTC=2026-07-17T08:22:25Z
-NOTE=Cursor IDE processes present; no concurrent writer modifying this worktree for PR-B.
-PLAYWRIGHT_KEEP_OPEN_PIDS:
-13277 /Users/frnkhrz/Peak_Trade/.venv/bin/python3 /tmp/peak_trade_market_dashboard_operator_chrome_keep_open_13231/keep_open.py
-13279 /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/playwright/driver/node /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/playwright/driver/package/cli.js run-driver
-15958 /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/playwright/driver/node /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/playwright/driver/package/cli.js run-driver
-16806 /Users/frnkhrz/Peak_Trade/.venv/bin/python3 /tmp/peak_trade_pr5281_data_filled_chrome_16594/keep_open.py
-16808 /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/playwright/driver/node /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/playwright/driver/package/cli.js run-driver

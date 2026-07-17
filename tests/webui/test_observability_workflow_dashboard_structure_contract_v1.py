@@ -150,7 +150,7 @@ def test_btc_not_workflow_truth(client_on: TestClient) -> None:
     end = html.index('data-observability-status-summary="true"')
     section = html[start:end]
     assert (
-        "GET /market BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth."
+        "Removed Market Dashboard BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth."
         in section
     )
     assert "instrument_truth_status" not in section
@@ -158,18 +158,12 @@ def test_btc_not_workflow_truth(client_on: TestClient) -> None:
 
 
 def test_market_separation(client_off: TestClient) -> None:
-    html = client_off.get("/market").text
-    assert 'data-workflow-dashboard-v1="true"' not in html
-    assert 'data-observability-last-paper-run-panel-v0="true"' not in html
-    # PR-A+: reset shell keeps market≠paper-run separation without the legacy marker.
-    if 'data-market-architecture-reset-shell-v1="true"' in html:
-        assert "ARCHITECTURE RESET IN PROGRESS" in html
-        return
-    # PR-D+: product surface remains read-only market consumer without paper-run panel.
-    if 'data-market-dashboard-product-surface-v1="true"' in html:
-        assert "ARCHITECTURE RESET IN PROGRESS" not in html
-        return
-    assert 'data-market-v0-paper-run-truth-separation-v0="true"' in html
+    response = client_off.get("/market")
+    assert response.status_code == 404
+    html = response.text.lower()
+    assert "market dashboard" not in html
+    assert "data-market-dashboard-product-surface-v1" not in html
+    assert "architecture reset in progress" not in html
 
 
 def test_persisted_readmodel_renders_futures_only_values(
@@ -203,7 +197,7 @@ def test_persisted_readmodel_renders_futures_only_values(
     assert "ETHUSDT" in section
     assert "PERSISTED" in section
     assert (
-        "GET /market BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth."
+        "Removed Market Dashboard BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth."
         in section
     )
     assert "selected_symbol" not in section

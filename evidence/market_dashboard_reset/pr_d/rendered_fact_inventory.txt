@@ -1,8 +1,0 @@
-header.instrument='SOURCE MISSING'
-header.venue='SOURCE MISSING'
-header.freshness='MISSING'
-header.read_only='READ ONLY'
-header.safety='NOT BOUND'
-decision.unavailable='SOURCE MISSING\nCANONICAL_DECISION_SOURCE_ABSENT'
-chart.unavailable='SOURCE MISSING\n\nChart data is not available from a canonical market source. No synthetic candles or dummy price paths are rendered.\n\nMARKET_OHLCV_SOURCE_ABSENT'
-diagnostics.marker='DIAGNOSTIC ONLY'

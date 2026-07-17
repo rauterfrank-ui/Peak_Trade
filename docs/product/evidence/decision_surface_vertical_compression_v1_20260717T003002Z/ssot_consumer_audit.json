@@ -1,9 +1,0 @@
-{
-  "canonical_ssot": "MASTER_V2_AND_DOUBLE_PLAY",
-  "dashboard_creates_second_truth": false,
-  "dashboard_is_consumer_only": true,
-  "dashboard_readonly": true,
-  "new_domain_snapshot_owners_created": false,
-  "presentation_only": true,
-  "productive_ui_files_changed_this_run": true
-}

@@ -8,7 +8,6 @@ from pathlib import Path
 import pytest
 
 from tests.fixtures.ops.generic_evidence_run_registry_v1 import projection_consumer_v0 as pc
-from tests.ops import test_market_dashboard_readonly_run_projection_spec_v0 as dashboard_spec
 from tests.ops import test_notion_post_closeout_sync_projection_spec_v0 as notion_spec
 
 REPO_ROOT = pc.REPO_ROOT
@@ -101,11 +100,9 @@ def test_post_closeout_projection_automation_charter_present() -> None:
     assert "build_generic_evidence_run_registry_v1.py" in section
 
 
-def test_notion_and_dashboard_tests_import_shared_field_constants() -> None:
+def test_notion_projection_spec_imports_shared_field_constants() -> None:
     assert notion_spec.ALLOWED_PROJECTION_FIELDS is pc.ALLOWED_PROJECTION_FIELDS
     assert notion_spec.RUN_PROJECTION_FIELDS is pc.RUN_PROJECTION_FIELDS
-    assert dashboard_spec.ALLOWED_PROJECTION_FIELDS is pc.ALLOWED_PROJECTION_FIELDS
-    assert dashboard_spec.RUN_PROJECTION_FIELDS is pc.RUN_PROJECTION_FIELDS
 
 
 def test_taxonomy_sections_document_shared_projection_fields() -> None:

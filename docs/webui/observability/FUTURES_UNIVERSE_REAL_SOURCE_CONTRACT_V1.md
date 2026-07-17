@@ -139,7 +139,7 @@ The following must **never** back Universe / Top-20 / Selected-Future observabil
 | `market_surface`, `market_surface_dummy`, `get_market_dummy`, `btc_usd_dummy_default` | Dummy truth kinds (enforced in U1/U2a) |
 | `source_kind=fixture` as production upstream | U2a tests only; reader rejects `fixture_marked` |
 | Fixture-only upstream without governed table | `FIXTURE_ONLY_AS_REAL_TRUTH_ALLOWED=false` |
-| **`GET &#47;market`** dummy OHLCV | Must not backfill Observability Missing Truth |
+| **Removed Market Dashboard (`GET &#47;market*`) dummy OHLCV** | Must not backfill Observability Missing Truth (product deleted) |
 | Row fields: `approval`, `approved`, `live_authorized`, `strategy_activation`, lift flags | Gate semantics forbidden on truth rows |
 
 When no eligible governed source exists: emit **Missing Truth** (`NOT_PERSISTED`, canonical reason codes) — **not** synthetic ranking or BTC dummy selection.

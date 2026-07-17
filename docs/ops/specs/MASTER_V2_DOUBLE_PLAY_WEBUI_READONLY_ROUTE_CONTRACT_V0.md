@@ -61,7 +61,7 @@ Frontmatter **`status: DRAFT`** marks this file as an **evolving contract lens**
 This contract aligns with the static **WebUI route placement audit** (read-only; no repo mutation at audit time):
 
 - **Target app:** `src&#47;webui&#47;app.py` — **`create_app()`** registers multiple `include_router` calls and many inline routes; this is the **preferred host** for a future Double Play read-only display slice.
-- **Do not attach** Double Play v0 display to `src&#47;webui&#47;market_surface.py` — that surface is **Kraken/OHLCV/dummy** lineage and a different contract ([FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md)).
+- **Market Dashboard removed** — see [`docs/webui/MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md). Do **not** attach Double Play v0 display to removed Market Dashboard routes or hosts.
 - **Do not attach** Double Play v0 display to `src&#47;live&#47;web&#47;app.py` — that is a **separate** Live/paper run WebUI with different semantics.
 - **Useful precedent:** JSON snapshot + `TestClient(create_app())` patterns (e.g. `tests&#47;test_live_status_snapshot_api.py`).
 
@@ -72,7 +72,7 @@ This contract aligns with the static **WebUI route placement audit** (read-only;
 **Placement (recommended):**
 
 1. Add a **dedicated** router module under `src&#47;webui&#47;` (exact filename is a future implementation choice), exporting an `APIRouter` with **GET-only** handlers.
-2. Register that router inside **`create_app()`** via `app.include_router(...)`, alongside existing read-only routers (e.g. execution watch, health), **not** inside `market_surface.create_market_router`.
+2. Register that router inside **`create_app()`** via `app.include_router(...)`, alongside existing read-only routers (e.g. execution watch, health). The Double Play JSON route remains **independent** of the removed Market Dashboard product.
 
 **Do not start the WebUI from this document.** **Do not implement the route in this document.**
 
@@ -285,5 +285,5 @@ The shipping GET JSON handler **returns** a response body produced by **`snapsho
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md) — display panels and DTO vocabulary; **§21** structured display metadata v2 (**canonical** **`snapshot_to_jsonable`** in **`master_v2`**; read-only JSON route **imports**/**re-exports** that mapper).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — pure stack inventory vs runtime.
 - [MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) — PRE_LIVE reading index; peer context only.
-- [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — style reference for read-only dashboard contracts (different surface).
+- [`docs/webui/MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md) — Market Dashboard product removed; Double Play JSON route is unrelated.
 - [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) — Double Play trading-logic semantics; non-authority for display.

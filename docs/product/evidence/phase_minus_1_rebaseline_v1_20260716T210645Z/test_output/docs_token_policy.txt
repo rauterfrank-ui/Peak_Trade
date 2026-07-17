@@ -1,5 +1,0 @@
-== Docs token policy preflight (changed .md vs origin/main) ==
-🔍 Scanning 7 Markdown file(s) (changed files (base: origin/main))...
-
-✅ All checks passed! (7 files scanned)
-OK: docs token policy preflight passed

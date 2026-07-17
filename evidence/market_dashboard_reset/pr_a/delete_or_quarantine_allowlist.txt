@@ -1,9 +1,0 @@
-# DELETE_OR_QUARANTINE_ALLOWLIST — presentation only (PR-A)
-# path	classification	active_callers	replacement_or_reason	domain_owner_impact	reversibility
-templates/peak_trade_dashboard/market_v0.html	TEMPLATE	GET /market TemplateResponse	replace content with reset shell; prior body quarantined to partials/market_v0_legacy_composition_not_routed_v1.html	none	git revert / restore partial include
-templates/peak_trade_dashboard/partials/market_v0_legacy_composition_not_routed_v1.html	LEGACY_FALLBACK	none (new quarantine)	non-routed quarantine of prior market_v0 composition	none	delete file or re-include intentionally
-src/webui/market_surface.py::market_v0_page	ROUTE	create_market_router	stop calling build_market_v0_page_template_context / resolve_market_page_data	none	restore prior handler body
-# NOT deleted (preserve producers; only unbound from route):
-# build_static_dashboard_display_dict, market_dashboard_current_state_snapshot_v0, readmodel runtimes
-DOMAIN_OWNER_DELETE_COUNT=0
-FORBIDDEN_SCOPE_CHANGE_COUNT=0

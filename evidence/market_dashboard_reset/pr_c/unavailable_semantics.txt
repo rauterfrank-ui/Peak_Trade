@@ -1,6 +1,0 @@
-UnavailableSnapshotV1 expresses fail-closed absence via DashboardAvailabilityStateV1:
-AVAILABLE is forbidden on UnavailableSnapshotV1.
-Allowed: UNAVAILABLE, NOT_BOUND, MISSING_SOURCE, STALE, MALFORMED_SOURCE.
-Required fields: reason_code, detail, expected_source, generated_at (aware).
-Optional: source_reference, provenance.
-No fabricated domain zeros/safe booleans — use UnavailableSnapshotV1 instead.

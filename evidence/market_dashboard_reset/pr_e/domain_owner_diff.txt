@@ -1,4 +1,0 @@
-UNCHANGED src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
-UNCHANGED src/trading/master_v2/double_play_composition_matrix_v1.py
-UNCHANGED src/governance/capital_risk_sizing_v1.py
-UNCHANGED src/execution/pipeline.py

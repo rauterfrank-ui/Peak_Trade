@@ -50,9 +50,6 @@ HTML Pages:
 - GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77, Alias)
 - GET /r_and_d/experiments/{run_id} (R&D Experiment Detail - Phase 76 kanonisch)
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
-- GET /market (Market Surface v0 — read-only OHLCV, Close-Line-Chart)
-- GET /market/double-play (Double-Play Market Dashboard v1 — SSR OHLCV chart + Double-Play display snapshot; kein Fetch)
-- GET /market/futures (F5 Futures Read-only Market Dashboard v0 — SSR offline/fixture display; kein Fetch, keine Autorität)
 - GET /observability (Observability-Hub — read-only Link-/Hinweisleiste, keine neue Autorität)
 
 API Endpoints:
@@ -82,8 +79,6 @@ System:
 - GET /api/health (Health-Check)
 
 Market Surface v0 (read-only):
-- GET /api/market/ohlcv (JSON — öffentliche OHLCV oder Dummy)
-- GET /api/market/depth (Market Depth fixture read-model v0 — read-only JSON, nur server-seitiges Bundle via Env)
 
 Paper/Shadow summary read-model v0 (read-only, server-configured bundle only):
 - GET /api/observability/paper-shadow-summary
@@ -192,14 +187,6 @@ from .ops_ci_health_router import (
 from .execution_watch_api_v0 import router as execution_watch_v0_router
 from .execution_watch_api_v0_2 import router as execution_watch_v0_2_router
 from .paper_shadow_summary_api_v0 import router as paper_shadow_summary_api_v0_router
-from .market_depth_api_v0 import router as market_depth_api_v0_router
-from .market_surface import (
-    MAX_OHLCV_LIMIT,
-    MARKET_TIMEFRAMES,
-    build_market_depth_display_context,
-    build_market_payload,
-    create_market_router,
-)
 from .double_play_dashboard_display_json_route_v0 import (
     build_static_dashboard_display_dict,
     router as double_play_dashboard_display_json_v0_router,
@@ -393,22 +380,8 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
 
 templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
 
-# Double-Play Market Dashboard v0 — static URL examples (no runtime I/O)
-_DP_MARKET_V0_DEMO_URL = "/market?source=dummy&symbol=BTC/EUR&timeframe=1d&limit=120"
-_DP_MARKET_V0_API_URL = "/api/market/ohlcv?source=dummy&symbol=BTC/EUR&timeframe=1d&limit=120"
-_DP_MARKET_V0_DEMO_HREF = "/market?source=dummy&symbol=BTC%2FEUR&timeframe=1d&limit=120"
-_DP_MARKET_V0_API_HREF = "/api/market/ohlcv?source=dummy&symbol=BTC%2FEUR&timeframe=1d&limit=120"
+# Master V2 Double Play — read-only display JSON URL (no Market Dashboard)
 _DP_DOUBLE_PLAY_DISPLAY_JSON_URL = "/api/master-v2/double-play/dashboard-display.json"
-
-
-def _normalize_market_surface_source_for_double_play(raw: str) -> Literal["kraken", "dummy"]:
-    key = (raw or "dummy").strip().lower()
-    if key not in ("kraken", "dummy"):
-        raise HTTPException(
-            status_code=422,
-            detail=f"source muss 'kraken' oder 'dummy' sein, nicht {raw!r}",
-        )
-    return key  # type: ignore[return-value]
 
 
 def load_live_sessions(limit: int = 10) -> Dict[str, Any]:
@@ -539,10 +512,6 @@ def create_app() -> FastAPI:
 
     # Paper/Shadow Summary read-model v0 — read-only JSON (server-side bundle root only)
     app.include_router(paper_shadow_summary_api_v0_router)
-    app.include_router(market_depth_api_v0_router)
-
-    # Market Surface v0 — read-only OHLCV (kein OPS-Cockpit-Bezug)
-    app.include_router(create_market_router(templates, get_project_status))
 
     @app.get("/favicon.ico", include_in_schema=False)
     async def favicon_ico() -> Response:
@@ -615,38 +584,6 @@ def create_app() -> FastAPI:
                 "workflow_dashboard": workflow_dashboard,
             },
         )
-
-    @app.get("/market/double-play")
-    async def double_play_market_dashboard_v1_legacy_redirect(
-        symbol: str = Query("BTC/EUR", description="Trading-Paar, z.B. BTC/EUR"),
-        timeframe: str = Query("1d", description="Timeframe (Kraken); Dummy ignoriert Serie"),
-        limit: int = Query(120, ge=1, le=MAX_OHLCV_LIMIT, description="Bars (max 720)"),
-        source: str = Query("dummy", description="dummy | kraken"),
-    ) -> RedirectResponse:
-        """Legacy deep-link → canonical GET /market with #double-play anchor (query preserved)."""
-        if timeframe not in MARKET_TIMEFRAMES:
-            raise HTTPException(
-                status_code=422,
-                detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
-            )
-        src = _normalize_market_surface_source_for_double_play(source)
-        from urllib.parse import quote
-
-        encoded_symbol = quote(symbol, safe="")
-        url = (
-            f"/market?source={src}&symbol={encoded_symbol}"
-            f"&timeframe={timeframe}&limit={limit}#double-play"
-        )
-        return RedirectResponse(url=url, status_code=302)
-
-    @app.get("/market/futures")
-    async def futures_read_only_market_dashboard_v0_legacy_redirect(
-        request: Request,
-    ) -> RedirectResponse:
-        """Legacy deep-link → canonical GET /market with #futures anchor (query preserved)."""
-        qs = request.url.query
-        suffix = f"?{qs}" if qs else ""
-        return RedirectResponse(url=f"/market{suffix}#futures", status_code=302)
 
     @app.get("/", response_class=HTMLResponse)
     async def index(

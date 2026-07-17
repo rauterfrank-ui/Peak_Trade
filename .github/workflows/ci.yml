@@ -418,7 +418,7 @@ jobs:
             tests/webui/test_last_paper_run_panel_readmodel_v0.py \
             tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py \
             tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py \
-            tests/webui/test_market_dashboard_readonly_structure_contract_v0.py \
+            tests/webui/test_market_dashboard_tombstone_v1.py \
             -q --tb=short -m "not network and not external_tools"
 
   # ============================================================================

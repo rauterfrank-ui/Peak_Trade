@@ -1,0 +1,45 @@
+{
+  "MARKET_ROUTE_HTTP_STATUS": 404,
+  "MARKET_ROUTE_REDIRECT": false,
+  "MARKET_ROUTE_200": false,
+  "RESET_SHELL_PRESENT": false,
+  "DASHBOARD_CONTENT_PRESENT": false,
+  "results": {
+    "/market": {
+      "status": 404,
+      "final_url": "http://127.0.0.1:8765/market",
+      "redirect": false,
+      "body_lower_has_market_dashboard": false,
+      "body_lower_has_reset": false,
+      "body_lower_has_product_surface": false
+    },
+    "/market/": {
+      "status": 404,
+      "final_url": "http://127.0.0.1:8765/market/",
+      "redirect": false,
+      "body_lower_has_market_dashboard": false,
+      "body_lower_has_reset": false,
+      "body_lower_has_product_surface": false
+    },
+    "/market/double-play": {
+      "status": 404,
+      "final_url": "http://127.0.0.1:8765/market/double-play",
+      "redirect": false,
+      "body_lower_has_market_dashboard": false,
+      "body_lower_has_reset": false,
+      "body_lower_has_product_surface": false
+    },
+    "/market/futures": {
+      "status": 404,
+      "final_url": "http://127.0.0.1:8765/market/futures",
+      "redirect": false,
+      "body_lower_has_market_dashboard": false,
+      "body_lower_has_reset": false,
+      "body_lower_has_product_surface": false
+    },
+    "/": {
+      "status": 200,
+      "ok": true
+    }
+  }
+}

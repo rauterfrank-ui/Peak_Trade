@@ -1,0 +1,5 @@
+BRANCH=delete/market-dashboard-complete-tombstone-v1
+BASE=origin/main
+BASE_SHA=987e020378d1767fbd6fb1f0914d475f9a485f51
+UNCERTAIN_COUNT=0
+REBUILD_AUTHORIZED=false

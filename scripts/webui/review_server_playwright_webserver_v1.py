@@ -16,7 +16,7 @@ Invariants:
   LOCALHOST_ONLY=true
 
 No second Playwright toolchain: reuses Python Playwright (channel=chrome)
-from scripts/webui/market_dashboard_chrome_playwright_harness_v1.py.
+from scripts/webui/_dashboard_chrome_playwright_harness_v1.py.
 """
 
 from __future__ import annotations
@@ -94,7 +94,7 @@ class ReviewServerWebServer:
         reuse_existing: bool | None = None,
         start_timeout_seconds: int | None = None,
         health_path: str = "/api/health",
-        review_path: str = "/market",
+        review_path: str = "/",
         repo_root: Path | None = None,
     ) -> None:
         if host not in {"127.0.0.1", "localhost", "::1"}:

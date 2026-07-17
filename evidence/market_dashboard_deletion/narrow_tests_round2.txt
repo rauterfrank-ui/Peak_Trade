@@ -1,0 +1,49 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 152 items
+
+tests/webui/test_market_dashboard_tombstone_v1.py .........              [  5%]
+tests/webui/test_observability_hub.py ..F.F..                            [ 10%]
+tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py .s..      [ 13%]
+tests/webui/test_webui_api_security_headers_visibility_contract_v0.py .. [ 14%]
+.F...                                                                    [ 17%]
+tests/webui/test_workflow_dashboard_runtime_v1.py ..................     [ 29%]
+tests/webui/test_last_paper_run_panel_runtime_v0.py ...............      [ 39%]
+tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py . [ 40%]
+.....................                                                    [ 53%]
+tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py . [ 54%]
+.F...                                                                    [ 57%]
+tests/webui/test_review_server_harness_v1.py ...........                 [ 65%]
+tests/ops/test_projection_chain_synthetic_smoke_v0.py .......            [ 69%]
+tests/ops/test_registry_v1_projection_consumer_smoke_fixtures_v0.py .... [ 72%]
+..........                                                               [ 78%]
+tests/ops/test_closeout_to_projection_chain_automation_contract_v0.py .. [ 80%]
+.............................                                            [ 99%]
+tests/ci/test_ci_diff_aware_test_selection_v1.py .                       [100%]
+
+=================================== FAILURES ===================================
+E   assert 'data-observability-double-play-panel="true"' in '<!-- templates/peak_trade_dashboard/observability_hub.html -->\n<!-- Read-only Navigations-/Observability-Hub — keine...        <span>🔒 Live-Execution ist deaktiviert</span>\n        </div>\n      </footer>\n    </div>\n  </body>\n</html>'
+------------------------------ Captured log setup ------------------------------
+WARNING  src.core.resilience:resilience.py:389 Overwriting existing health check: metrics
+WARNING  src.core.resilience:resilience.py:389 Overwriting existing health check: resilience
+/Users/frnkhrz/Peak_Trade/tests/webui/test_observability_hub.py:52: assert 'data-observability-double-play-panel="true"' in '<!-- templates/peak_trade_dashboard/observability_hub.html -->\n<!-- Read-only Navigations-/Observability-Hub — keine...        <span>🔒 Live-Execution ist deaktiviert</span>\n        </div>\n      </footer>\n    </div>\n  </body>\n</html>'
+E   assert 'data-observability-double-play-panel="true"' in '<!-- templates/peak_trade_dashboard/observability_hub.html -->\n<!-- Read-only Navigations-/Observability-Hub — keine...änkte GET-/Angebote sammeln, ohne neue Autorisierung zu suggerieren.\n    </p>\n  </section>\n</div>\n{% endblock %}\n'
+/Users/frnkhrz/Peak_Trade/tests/webui/test_observability_hub.py:185: assert 'data-observability-double-play-panel="true"' in '<!-- templates/peak_trade_dashboard/observability_hub.html -->\n<!-- Read-only Navigations-/Observability-Hub — keine...änkte GET-/Angebote sammeln, ohne neue Autorisierung zu suggerieren.\n    </p>\n  </section>\n</div>\n{% endblock %}\n'
+E   AssertionError: assert 3 == 4
+     +  where 3 = len(frozenset({'src/webui/app.py', 'src/webui/double_play_dashboard_display_json_route_v0.py', 'src/webui/execution_watch_api_v0.py'}))
+/Users/frnkhrz/Peak_Trade/tests/webui/test_webui_api_security_headers_visibility_contract_v0.py:147: AssertionError: assert 3 == 4
+E   AssertionError: assert 'Market Surface BTC/USD dummy is not Paper Run Truth' in '<!-- templates/peak_trade_dashboard/observability_hub.html -->\n<!-- Read-only Navigations-/Observability-Hub — keine...        <span>🔒 Live-Execution ist deaktiviert</span>\n        </div>\n      </footer>\n    </div>\n  </body>\n</html>'
+------------------------------ Captured log setup ------------------------------
+WARNING  src.core.resilience:resilience.py:389 Overwriting existing health check: metrics
+WARNING  src.core.resilience:resilience.py:389 Overwriting existing health check: resilience
+/Users/frnkhrz/Peak_Trade/tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py:63: AssertionError: assert 'Market Surface BTC/USD dummy is not Paper Run Truth' in '<!-- templates/peak_trade_dashboard/observability_hub.html -->\n<!-- Read-only Navigations-/Observability-Hub — keine...        <span>🔒 Live-Execution ist deaktiviert</span>\n        </div>\n      </footer>\n    </div>\n  </body>\n</html>'
+=========================== short test summary info ============================
+FAILED tests/webui/test_observability_hub.py::test_observability_hub_ok_markers
+FAILED tests/webui/test_observability_hub.py::test_observability_hub_template_health_panel_markers_and_no_post
+FAILED tests/webui/test_webui_api_security_headers_visibility_contract_v0.py::test_webui_api_security_headers_visibility_contract_known_sets_stay_documentary
+FAILED tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py::test_btc_usd_not_paper_instrument_truth
+================== 4 failed, 147 passed, 1 skipped in 18.42s ===================
+WALLCLOCK=19

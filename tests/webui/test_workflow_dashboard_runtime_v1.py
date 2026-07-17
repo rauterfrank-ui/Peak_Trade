@@ -199,10 +199,11 @@ def test_display_context_does_not_mutate_fixture_archive(
 
 
 def test_futures_operator_consumer_wires_runtime_builder() -> None:
-    source = (PROJECT_ROOT / "src" / "webui" / "market_surface.py").read_text(encoding="utf-8")
+    source = (PROJECT_ROOT / "src" / "webui" / "app.py").read_text(encoding="utf-8")
     assert "build_workflow_dashboard_display_context" in source
     assert "workflow_dashboard" in source
-    assert "market_single_page_consolidation" in source
+    assert "market_surface.py" not in source
+    assert '@app.get("/market"' not in source
 
 
 def test_ready_readmodel_panel_contracts_present(monkeypatch: pytest.MonkeyPatch) -> None:

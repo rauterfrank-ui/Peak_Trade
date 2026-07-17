@@ -1,0 +1,6 @@
+POST_DELETION_ROUTE_AUDIT
+GET /market -> 404
+GET /market/double-play -> 404
+GET /market/futures -> 404
+app.py @app.get("/market") count=0
+navigation href="/market" count=0

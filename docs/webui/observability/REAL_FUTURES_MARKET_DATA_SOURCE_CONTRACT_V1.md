@@ -224,7 +224,7 @@ U5b raw evidence
   → Operator acceptance
   → U2b loader validation
   → Readmodel write
-  → /market Top20 panel
+  → Workflow Dashboard observability panels (when separately authorized)
 ```
 
 | Layer | Canonical reuse — **no new owner** |

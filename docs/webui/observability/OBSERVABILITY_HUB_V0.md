@@ -36,13 +36,12 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 | Einordnung (Amber-Banner) | Top-Level read-only · non-authorizing |
 | Globale Grenz-Legende | Kompakte Wiederholung der Systemgrenze inkl. Workflow/PaperExecutionEngine |
 | Health Status Panel | Links zu **`GET &#47;health`**, **`&#47;health&#47;detailed`**, **`&#47;metrics`**, **`&#47;prometheus`**, **`GET &#47;api&#47;health`** |
-| Market Surface v0 | Dummy-Links **`GET &#47;market`** und **`GET &#47;api&#47;market&#47;ohlcv`** |
 | Double Play Display | **`GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json`** (display-only Snapshot/Display-Vertrag, ohne Autorität) |
 | R&amp;D Experiments | HTML-Liste und **`GET &#47;api&#47;r_and_d&#47;experiments`** |
 | OPS CI Health | **`GET &#47;ops&#47;ci-health`** (dediziertes CI-Dashboard) und **`GET &#47;ops&#47;ci-health&#47;status`** (bevorzugter read-only Status, JSON) — Hub nur GET-Links, v0.6 |
 | Paper/Shadow Summary (Placeholder v0) | Statischer Link zu **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** + Doc-Pfad-Hinweise; **kein** serverseitiger Aufruf, **kein** Artefakt-Lesen beim Rendern von **`GET &#47;observability`** |
-| Last Paper Run (view-only SSR v0) | Env-gated SSR panel from durable run bundle — **`last_paper_run_panel_readmodel.v0`**; **not** Market Surface; instrument **`NOT_PERSISTED`** when absent in evidence |
-| Workflow Dashboard V1 (view-only SSR v1) | Env-gated multi-run pipeline + missing-truth panels — **`workflow_dashboard_readmodel.v1`**; **not** Market Surface; **no** BTC/USD substitution |
+| Last Paper Run (view-only SSR v0) | Env-gated SSR panel from durable run bundle — **`last_paper_run_panel_readmodel.v0`**; instrument **`NOT_PERSISTED`** when absent in evidence |
+| Workflow Dashboard V1 (view-only SSR v1) | Env-gated multi-run pipeline + missing-truth panels — **`workflow_dashboard_readmodel.v1`**; **no** BTC/USD substitution |
 
 ## Workflow Dashboard V1 (view-only SSR v1)
 
@@ -51,7 +50,7 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 - **Gate (default off):** `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` and `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT=<durable archive root>` — implemented in `src/webui/workflow_dashboard_runtime_v1.py`.
 - **Readmodel:** `workflow_dashboard_readmodel.v1` with embedded `workflow_pipeline_aggregate.v1` — builder `src/webui/workflow_dashboard_readmodel_v1/`.
 - **Panels (A–J):** Safety, Universe/Top20/Selected/Future missing-truth, Pipeline P1→T3, Orders/Fills/PnL, Evidence, KillSwitch, Next GO.
-- **Missing truth:** `UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE` — **never** inferred from `GET &#47;market` dummy OHLCV.
+- **Missing truth:** `UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE` — **never** inferred from removed Market Dashboard routes or dummy OHLCV fixtures.
 - **T1 original:** displayed with `RECLASSIFIED_STAGING_ONLY`; T3 **PLANNED_PARKED** without run bundle.
 - **Markers:** `data-workflow-dashboard-v1="true"`, `data-workflow-dashboard-readonly="true"`, `data-workflow-dashboard-authority="false"`, `data-workflow-panel-*-v1`, `data-workflow-stage-v1`.
 - **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no trading controls. `stale=true`, `stale_reason=archive_snapshot`.
@@ -77,18 +76,18 @@ Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observabil
 - **Dashboard today:** Panels B–E remain **Missing Truth** (`UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE`). Slice 1 does **not** populate rows.
 - **Slice 3 (future):** `workflow_dashboard_readmodel.v1` builder will read the persisted file when present and manifest-verified; until then Missing Truth stays valid.
 - **Producer eligibility (Slice 2+):** Paper / Shadow / Testnet bounded observation closeout adapters only — **Live not authorized**.
-- **BTC&#47;USD rule:** `GET &#47;market` dummy and Market Surface defaults must **never** substitute Observability universe/selection truth.
+- **BTC&#47;USD rule:** Removed Market Dashboard dummy defaults must **never** substitute Observability universe/selection truth.
 - **Tests:** `tests/webui/test_universe_selection_contract_v1.py`, fixtures under `tests/fixtures/workflow_dashboard_readmodel_v1/universe_selection_readmodel_v1/`.
 
 ## Last Paper Run panel (view-only SSR v0)
 
-**Route:** **`GET &#47;observability`** only (not primary on **`GET &#47;market`**).
+**Route:** **`GET &#47;observability`** only.
 
 - **Gate (default off):** `PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED=1` and `PEAK_TRADE_LAST_PAPER_RUN_BUNDLE_ROOT=<durable run bundle path>` — implemented in `src/webui/last_paper_run_panel_runtime_v0.py`.
 - **Readmodel:** `last_paper_run_panel_readmodel.v0` — builder `src/webui/last_paper_run_panel_readmodel_v0/`.
 - **Markers:** `data-observability-last-paper-run-panel-v0="true"`, `data-observability-last-paper-run-readonly="true"`, `data-observability-last-paper-run-authority="false"`, `data-observability-last-paper-run-instrument-truth="<status>"`.
-- **Instrument rule:** When run evidence lacks `selected_instrument` / `selected_future` / `selected_symbol`, UI shows **`NOT_PERSISTED`** — **never** `BTC&#47;USD` or Market Surface query defaults as paper truth.
-- **Market separation:** **`GET &#47;market`** may show `data-market-v0-paper-run-truth-separation-v0` cross-link only; Market Surface remains fixture/OHLCV demo.
+- **Instrument rule:** When run evidence lacks `selected_instrument` / `selected_future` / `selected_symbol`, UI shows **`NOT_PERSISTED`** — **never** `BTC&#47;USD` or removed Market Dashboard defaults as paper truth.
+- **Market separation:** Market Dashboard removed — see [`MARKET_DASHBOARD_REMOVED.md`](../MARKET_DASHBOARD_REMOVED.md).
 - **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no runtime/scheduler/paper start, no trading authority. `stale=true`, `stale_reason=archive_snapshot` for archive-backed reads.
 - **Tests:** `tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py`, `tests/webui/test_last_paper_run_panel_readmodel_v0.py`.
 
@@ -156,43 +155,12 @@ Stabile Marker fuer Tests/Vertrag (zusaetzlich zu `data-observability-ops-ci-pan
 - `data-observability-ops-ci-no-workflow-trigger=&quot;true&quot;`
 - `data-observability-ops-ci-no-approval=&quot;true&quot;`
 
-## Market/Data Provenance Panel (v0.4)
-
-Das Market Surface Panel im Hub bleibt eine **reine Anzeige- und Navigationsflaeche**. Es dient zur Einordnung der Datenherkunft (Provenance), nicht als Readiness- oder Trading-Signal.
-
-Bestehende GET-Links im Hub:
-
-- **`GET &#47;market?source=dummy&amp;timeframe=1h&amp;limit=30&amp;symbol=BTC%2FUSD`** (HTML-Ansicht)
-- **`GET &#47;api&#47;market&#47;ohlcv?symbol=BTC%2FUSD&amp;timeframe=1h&amp;limit=30&amp;source=dummy`** (JSON-Ansicht)
-
-Bedeutung der Quellenhinweise:
-
-- `source=dummy` bedeutet **offline/synthetic** Darstellungsdaten.
-- `source=kraken` bedeutet optionale **public OHLCV/network display** nur dann, wenn die Market-Route direkt geoeffnet wird.
-- Der Observability Hub selbst **does not fetch OHLCV**.
-- Der Observability Hub selbst **does not call Kraken**.
-
-Readiness-/Autoritaetsgrenze (explizit):
-
-- Market display is not provider readiness.
-- Market display is not Futures readiness.
-- Market display is not Paper/Testnet/Live/order readiness.
-- Market display is not trading authority.
-
-Stabile Marker fuer Tests/Vertrag:
-
-- `data-observability-market-panel=&quot;true&quot;`
-- `data-observability-market-provenance=&quot;true&quot;`
-- `data-observability-market-no-fetch=&quot;true&quot;`
-- `data-observability-market-no-readiness=&quot;true&quot;`
-
-### Stabile `data-observability-*` Marker (Auszug)
+## Paper/Shadow Summary Placeholder Panel (v0.8c — static only)
 
 - `data-observability-hub`, `data-observability-readonly`, `data-observability-display-only`
 - `data-observability-safety-banner`
 - `data-observability-boundary-legend`
 - `data-observability-health-panel`, `data-observability-health-readonly`, `data-observability-health-no-actions`
-- `data-observability-market-panel`
 - `data-observability-double-play-panel`
 - `data-observability-double-play-display-json`
 - `data-observability-double-play-no-authority`
@@ -269,6 +237,4 @@ uv run python -m uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 Sichere Beispiel-URLs (nach Start):
 
 - `http://127.0.0.1:8000/observability` — entspricht **`GET &#47;observability`**
-- `http://127.0.0.1:8000/market?source=dummy` — entspricht **`GET &#47;market`** mit Dummy-OHLCV
-
-Siehe ergänzend: [**Market Surface v0**](../MARKET_SURFACE_V0.md) zur OHLCV-Read-only-Oberfläche.
+- `http://127.0.0.1:8000/` — general WebUI root (Market Dashboard removed; see [`MARKET_DASHBOARD_REMOVED.md`](../MARKET_DASHBOARD_REMOVED.md))

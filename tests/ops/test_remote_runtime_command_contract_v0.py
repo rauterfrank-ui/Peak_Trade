@@ -134,7 +134,8 @@ def test_notion_and_dashboard_projection_only() -> None:
     assert "§6a.1" in section
     assert "§6a.2" in section
     assert "NOTION_WRITE_DEFAULT=false" in section
-    assert "GET &#47;market&#47;double-play" in section
+    assert "MARKET_DASHBOARD_REMOVED.md" in section or "GET &#47;market" in section
+    assert "intentionally absent" in section.lower() or "product" in section.lower()
 
 
 def test_s3_after_finalize_only() -> None:

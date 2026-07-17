@@ -1,0 +1,11 @@
+BASE=987e020378d1767fbd6fb1f0914d475f9a485f51
+=== DOMAIN PATH DIFF vs origin/main ===
+--- src/trading --- CLEAN
+--- src/strategies --- CLEAN
+--- src/governance --- CLEAN
+--- src/risk_layer --- CLEAN
+--- src/risk --- CLEAN
+--- src/execution --- CLEAN
+--- src/backtest --- CLEAN
+--- src/observability --- CLEAN
+--- src/market_sentinel --- CLEAN

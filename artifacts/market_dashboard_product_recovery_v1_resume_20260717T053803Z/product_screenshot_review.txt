@@ -1,7 +1,0 @@
-PRODUCT_SCREENSHOT_REVIEW=PASS
-JUSTIFICATION=Above-fold shows DE canonical blocker (Governed Futures-Snapshot fehlt + Kein Spot-OHLCV), compact Marktchart (Bars 0, Keine OHLCV DE, Chart-Diagnostik sekundär collapsed), decision triage above fold with Kein Instrument geladen / Entscheidung Blocked / Primärer Blocker; secondary panels say siehe Primärblocker oben; Double Play shows CONFIGURED not Active; AUTHORITY NONE / READ ONLY / NO ORDERS visible; narrow 1280 viewport no clipping of primary copy. No EN No-spot/No-OHLCV/Market-chart remnants.
-EMPTY_STATE_COMPACT=true
-DE_OPERATOR_COPY_COMPLETE=true
-STATUS_SEMANTICS_PASS=true
-NO_CLIPPING_PASS=true
-CONFIG_DETAILS_SECONDARY=true

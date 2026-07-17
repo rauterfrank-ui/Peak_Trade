@@ -1,0 +1,13 @@
+TOTAL_CHANGED_FILES=859
+ADDED_FILES=37
+MODIFIED_FILES=45
+DELETED_FILES=773
+RENAMED_FILES=4
+INTENDED_ENTRY_COUNT=859
+FINAL_DIFF_SHA256=df34069c1739ce0bbbad9712761c12b56169bdd61d43eb982ee803c6ff23618b
+FINAL_BASE_SHA=987e020378d1767fbd6fb1f0914d475f9a485f51
+MANIFEST_SELF_REFERENCE=false
+RENAME_COUNTING_MODEL=name_status_entry_equals_one_changed_file
+DIFF_HASH_EXCLUDES=evidence/market_dashboard_deletion/**
+MANIFEST_FILE_SHA256_PATH=evidence/market_dashboard_deletion/manifest_file.sha256
+FINAL_HEAD_SHA_PATH=evidence/market_dashboard_deletion/final_head_sha.txt

@@ -23,7 +23,7 @@
       </h2>
       <p class="text-xs text-violet-100/85 leading-relaxed">
         Durable evidence snapshot from server-configured bundle — display-only, non-authorizing.
-        <strong class="text-amber-200/95">Market Surface BTC/USD dummy is not Paper Run Truth.</strong>
+        <strong class="text-amber-200/95">Removed Market Dashboard defaults are not Paper Run Truth.</strong>
       </p>
     </div>
     <p
@@ -31,7 +31,7 @@
       data-observability-last-paper-run-market-surface-warning="true"
     >
       Dashboard ≠ Freigabe · Evidence ≠ Approval ·
-      <span class="font-mono text-amber-200/90">GET /market</span> remains Market Surface / fixture only.
+      Market Dashboard removed — see <span class="font-mono text-amber-200/90">docs/webui/MARKET_DASHBOARD_REMOVED.md</span>.
     </p>
     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs">
       <div><dt class="text-slate-400">run_id</dt><dd class="font-mono text-slate-100">{{ lr.run_id }}</dd></div>
@@ -53,7 +53,7 @@
       </p>
       {% if inst.instrument_truth_status == 'NOT_PERSISTED' %}
       <p class="text-xs text-slate-400 m-0 leading-snug">
-        No selected instrument/future/symbol persisted in run evidence. Not inferred from Market Surface defaults.
+        No selected instrument/future/symbol persisted in run evidence. Not inferred from removed Market Dashboard defaults.
       </p>
       {% else %}
       <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs">

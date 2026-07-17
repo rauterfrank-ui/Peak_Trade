@@ -30,7 +30,9 @@
     "tests/trading/master_v2/test_runtime_backtest_parity_and_legacy_boundary_closeout_v1.py",
     "tests/trading/master_v2/_canonical_architecture_drift_guard_helpers_v1.py",
     "tests/trading/master_v2/test_canonical_architecture_drift_guard_v1.py",
-    "tests/backtest/test_strategy_signal_suitability_agreement_adapter_v1.py"
+    "tests/backtest/test_strategy_signal_suitability_agreement_adapter_v1.py",
+    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
+    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -43,7 +45,8 @@
     "TECHNICAL_STRATEGY_SUITABILITY_AGREEMENT_CONTRACT_TEST",
     "TECHNICAL_LEGACY_DUPLICATE_DECISION_BOUNDARY_CLOSEOUT",
     "TECHNICAL_RUNTIME_BACKTEST_PARITY_CONTRACT_TEST",
-    "TECHNICAL_CANONICAL_ARCHITECTURE_DRIFT_GUARD_CONTRACT_TEST"
+    "TECHNICAL_CANONICAL_ARCHITECTURE_DRIFT_GUARD_CONTRACT_TEST",
+    "TECHNICAL_DOCS_TOMBSTONE_POINTER_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -78,6 +81,7 @@
     "Does not infer semantic invariance from path names alone; invariants are contract-bound.",
     "Includes family-scoped strategy suitability agreement consumer/adapter paths for Decision-D binding under runtime/authority/order NONE invariants.",
     "Includes Slice-4 legacy duplicate decision boundary closeout and runtime/backtest parity contract test under runtime/authority/order NONE invariants.",
-    "Includes canonical architecture drift guard SSOT contract tests (total decision owner, replay-input constructor, strategy-authority bypass rails) under runtime/authority/order NONE invariants."
+    "Includes canonical architecture drift guard SSOT contract tests (total decision owner, replay-input constructor, strategy-authority bypass rails) under runtime/authority/order NONE invariants.",
+    "Includes docs-only Market Dashboard tombstone pointer updates on Double Play display/route contract specs (no DP composition semantics, no runtime/authority)."
   ]
 }

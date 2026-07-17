@@ -1,7 +1,0 @@
-{
-  "head": "1705bba16dcbe76aa1f4b3a06f132cd4a5a65c45",
-  "origin_main": "1705bba16dcbe76aa1f4b3a06f132cd4a5a65c45",
-  "branch": "feat/dashboard-composition-landmark-vertical-rhythm-v1",
-  "pr5260_merge": "1705bba16dcbe76aa1f4b3a06f132cd4a5a65c45",
-  "mode": "post_merge_rebaseline_then_rhythm_slice"
-}

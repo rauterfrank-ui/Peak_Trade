@@ -134,7 +134,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 | Release line | Core status | Canonical detail owner (pointer — not duplicated here) |
 |--------------|-------------|----------------------------------------------------------|
-| Operator Experience RC v0 | **CORE COMPLETE** | [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — § Operator Experience …; market polish — [`MARKET_SURFACE_V0.md`](../../webui/MARKET_SURFACE_V0.md) |
+| Operator Experience RC v0 | **CORE COMPLETE** | [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — § Operator Experience …; market polish — [`MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md) |
 | Cybersecurity Visibility RC v0 | **CORE COMPLETE** | [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — § Cybersecurity Visibility … |
 | Evidence Durable Closeout Retention RC v0 | **CORE COMPLETE** | [`PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md`](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — § Evidence Durable … (**ER SSOT**; Ops Cockpit shows pointer/status only) |
 
@@ -146,7 +146,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 - **No auto-writes or auto-sync** without explicit operator GO.
 - **Preflight** remains **BLOCKED**; **STOP_IDLE** preserved; no paper/shadow/testnet/live implication from displayed status.
 - **SLICE-OC-2 complete (#3909):** tests-only static guard for these reflection tokens in `tests/ops/test_ops_cockpit_payload_top_level_contract.py` (reciprocal crosslink in `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`); **no** new payload keys or `src/webui/ops_cockpit.py` changes without separate GO.
-- **SLICE-OC-3 complete (pointer-only):** one-line post-trilogy crosslink in [`MARKET_SURFACE_V0.md`](../../webui/MARKET_SURFACE_V0.md) — **§ Operator Experience Release RC v0 — SLICE-OE-1 Status-Reflexion**; **docs-only** navigational closeout; **no** UI/template/`src` change in this slice.
+- **SLICE-OC-3 complete (pointer-only):** one-line post-trilogy crosslink in [`MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md) — **§ Operator Experience Release RC v0 — SLICE-OE-1 Status-Reflexion**; **docs-only** navigational closeout; **no** UI/template/`src` change in this slice.
 
 **Durable planning pointer (archive only):**
 
