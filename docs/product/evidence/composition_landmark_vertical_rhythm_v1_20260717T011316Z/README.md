@@ -18,4 +18,4 @@ LANDMARK_ORDER_PASS=True
 HORIZONTAL_OVERFLOW_PASS=True
 ACCEPTANCE_PASS=True
 
-Baseline rebaseline: `docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z`
+Baseline rebaseline: [composition_rebaseline_post_primary_dominance_v1_20260717T010616Z](../composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/README.md)
