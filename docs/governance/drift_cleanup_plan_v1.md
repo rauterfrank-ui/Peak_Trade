@@ -234,4 +234,4 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 
 **Plan-Owner:** Drift Cleanup Plan v1  
 **Evidence frozen at:** `2f1672bee8761f8d50def3f6ef31cc803824b2e9`  
-**Nächster Schritt (post B-03):** remaining Section B items (B-01/B-07/B-04…) require separate Operator-GO; no runtime/live activation.
+**Nächster Schritt (post B-03 discovery):** Selected next slice `DRIFT_B01_B07_MISSING_FEATURES_PLAN_DEFERRED_ALIGNMENT_V0` — requires **separate** docs Operator-GO / Implementation-GO; this discovery PR performs **no** `missing_features_plan.md` mutation.

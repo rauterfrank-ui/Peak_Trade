@@ -1,0 +1,40 @@
+{
+  "candidates": [
+    {
+      "rank": 1,
+      "slice_id": "DRIFT_B01_B07_MISSING_FEATURES_PLAN_DEFERRED_ALIGNMENT_V0",
+      "REAL_GAP_CONFIRMED": true,
+      "behavior_preserving": true,
+      "bounded": true,
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false
+    },
+    {
+      "rank": 2,
+      "slice_id": "AUTH006_AUTHORITY_MATRIX_B03_CLOSEOUT_SYNC_V0",
+      "REAL_GAP_CONFIRMED": true,
+      "behavior_preserving": true,
+      "bounded": true,
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "priority": "LOW hygiene"
+    },
+    {
+      "rank": 3,
+      "slice_id": "DRIFT_B04_REGISTRY_SUITABILITY_REPLAY_READ_MODEL_V0",
+      "REAL_GAP_CONFIRMED": false,
+      "classification": "INTENTIONAL_POLICY_STATE",
+      "bounded": false
+    },
+    {
+      "rank": 4,
+      "slice_id": "DRIFT_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT_V0",
+      "requires_runtime_go": true
+    },
+    {
+      "rank": 5,
+      "slice_id": "AUTH_ECM_01_RESOLUTION_V0",
+      "requires_runtime_go": true
+    }
+  ]
+}

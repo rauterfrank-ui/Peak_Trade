@@ -1,0 +1,12 @@
+{
+  "excluded": {
+    "B-02": "ALREADY_COMPLETE PR #5270",
+    "B-03": "ALREADY_COMPLETE PR #5272",
+    "AUTH-022": "ALREADY_COMPLETE",
+    "dashboard": "TERMINAL",
+    "runtime_bridge": "INTENTIONAL_POLICY_STATE BOUND_NOT_ACTIVATED",
+    "live_orders_capital": "REQUIRES_LIVE_OR_CAPITAL_GO / policy blocked",
+    "economic_retries": "TERMINAL",
+    "master_v2_semantic": "excluded"
+  }
+}

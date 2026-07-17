@@ -1,0 +1,3 @@
+PR5272_PRE_MERGE_REPRO: 29 passed (B03 static + specialists + slice_e)
+PR5272_POST_MERGE_B03: 13 passed (authority markers static contract)
+DISCOVERY: READ_ONLY — no new implementation tests

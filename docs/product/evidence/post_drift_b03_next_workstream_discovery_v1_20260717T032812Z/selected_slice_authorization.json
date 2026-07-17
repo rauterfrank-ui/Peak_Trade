@@ -1,0 +1,34 @@
+{
+  "SELECTED_NEXT_SLICE": "DRIFT_B01_B07_MISSING_FEATURES_PLAN_DEFERRED_ALIGNMENT_V0",
+  "SELECTED_SLICE_REAL_GAP_CONFIRMED": true,
+  "SELECTED_SLICE_BEHAVIOR_PRESERVING": true,
+  "SELECTED_SLICE_BOUNDED": true,
+  "SELECTED_SLICE_REQUIRES_RUNTIME_GO": false,
+  "SELECTED_SLICE_REQUIRES_LIVE_OR_CAPITAL_GO": false,
+  "SELECTED_SLICE_REQUIRES_SEPARATE_IMPLEMENTATION_GO": true,
+  "SELECTED_SLICE_REQUIRES_SEPARATE_DOCS_OPERATOR_GO": true,
+  "IMPLEMENTATION_AUTHORIZED_NOW": false,
+  "IMPLEMENTATION_PERFORMED": false,
+  "DISCOVERY_ONLY": true,
+  "stable_id": "DRIFT_B01_B07_MISSING_FEATURES_PLAN_DEFERRED_ALIGNMENT_V0",
+  "description": "Align missing_features_plan.md with Class-C deferred truth: deferred banner + feature_state_map Class C pointer (B-01) and NON-OPERATIONAL DAG footnote (B-07).",
+  "canonical_owner": "docs/governance/drift_cleanup_plan_v1.md#B-01+#B-07",
+  "consumer": [
+    "docs/analysis/missing_features_plan.md"
+  ],
+  "producer_truth": [
+    "docs/governance/feature_state_map_v1.md Class C + Validation Rule",
+    "src/features/__init__.py placeholder only"
+  ],
+  "acceptance_criteria": [
+    "Header banner: STRUCTURAL / deferred roadmap \u2014 not operational wiring authority",
+    "Crosslink feature_state_map_v1.md Class C (Feature-Engine = Defer)",
+    "src/features/ framed as deferred placeholder; ECM remains strategy layer",
+    "\u00a72 DAG footnote: NON-OPERATIONAL per Validation Rule for non-core nodes",
+    "Feature-Engine edges marked non-operational/deferred",
+    "No Python/runtime/scheduler/order/capital/config mutations",
+    "Docs token policy + docs reference targets pass"
+  ],
+  "reason_selected": "Highest remaining Section-B REAL_GAP after B-03; docs-only; bounded; behavior-preserving; no runtime/live GO.",
+  "follow_on_hygiene": "AUTH006_AUTHORITY_MATRIX_B03_CLOSEOUT_SYNC_V0"
+}

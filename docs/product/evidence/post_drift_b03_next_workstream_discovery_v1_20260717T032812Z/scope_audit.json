@@ -1,0 +1,19 @@
+{
+  "discovery_only": true,
+  "implementation_performed": false,
+  "allowed_mutations": [
+    "docs/product/evidence/post_drift_b03_next_workstream_discovery_v1_*/",
+    "docs/governance/drift_cleanup_plan_v1.md (next-step pointer only)",
+    "docs/governance/authority_conflict_matrix_v1.md (AUTH-006 B-03 closeout sync only)"
+  ],
+  "forbidden": [
+    "docs/analysis/missing_features_plan.md mutation (requires separate Implementation-GO)",
+    "src/**",
+    "templates/**",
+    "static/**",
+    "dashboard"
+  ],
+  "live_authorized": false,
+  "orders": false,
+  "auto_merge": false
+}
