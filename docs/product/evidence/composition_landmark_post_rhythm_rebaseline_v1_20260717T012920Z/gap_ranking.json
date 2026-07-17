@@ -1,0 +1,107 @@
+{
+  "ranked_gaps": [
+    {
+      "GAP_ID": "GAP_DECISION_INTERNAL_HIERARCHY",
+      "Beschreibung": "Innerhalb DECISION_SURFACE bleiben Top-20, Funnel und Secondary-Grid nahezu peer-gewichtet; viele Rahmen/Container.",
+      "betroffene_Landmarks": [
+        "DECISION_SURFACE"
+      ],
+      "Viewports": [
+        "1440x900",
+        "1280x800",
+        "1728x1117"
+      ],
+      "gemessene_Evidence": {
+        "top20_h": 322.5,
+        "funnel_h": 233.15625,
+        "secondary_h": 229.96875,
+        "bordered_containers": 16
+      },
+      "globale_Wirkung": "HIGH",
+      "lokaler_Effekt": "Lange tabellarische Leselast nach erstem Scroll; unklare Sub-Hierarchie.",
+      "Severity": "HIGH",
+      "Confidence": "HIGH",
+      "Repeats_PR5260_Scope": false,
+      "Repeats_PR5261_Scope": false,
+      "Core_Risk": "LOW",
+      "SSOT_Risk": "LOW",
+      "empfohlener_Scope": "templates/CSS presentation inside Decision only; visual weight tokens",
+      "Begr\u00fcndung": "H\u00f6chster verbleibender Full-Page-Kompositionsgewinn nach Dominance+Rhythm."
+    },
+    {
+      "GAP_ID": "GAP_ABOVE_FOLD_DECISION_STATUS_TIP",
+      "Beschreibung": "DECISION_SURFACE visible_px @1440=0; Decision-Landmark startet unter dem Fold.",
+      "betroffene_Landmarks": [
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE"
+      ],
+      "Viewports": [
+        "1440x900"
+      ],
+      "gemessene_Evidence": {
+        "decision_visible_px_1440": 0,
+        "decision_top": 1067.046875
+      },
+      "globale_Wirkung": "MEDIUM",
+      "lokaler_Effekt": "Blocker/Decision-Status erst nach Scroll im Landmark sichtbar.",
+      "Severity": "MEDIUM",
+      "Confidence": "HIGH",
+      "Repeats_PR5260_Scope": false,
+      "Repeats_PR5261_Scope": false,
+      "Core_Risk": "LOW",
+      "SSOT_Risk": "LOW",
+      "empfohlener_Scope": "thin Decision tip peek 48\u201396px without chart regression",
+      "Begr\u00fcndung": "Nutzen f\u00fcr Blickf\u00fchrung, aber Risiko dritter Fokus; nach Hierarchy priorisieren."
+    },
+    {
+      "GAP_ID": "GAP_SECONDARY_PANEL_DENSITY",
+      "Beschreibung": "Watchlist/F5/Double-Play/Safety als gleichgewichtige Secondary-Peers.",
+      "betroffene_Landmarks": [
+        "DECISION_SURFACE"
+      ],
+      "Viewports": [
+        "1440x900",
+        "1728x1117"
+      ],
+      "gemessene_Evidence": {
+        "secondary_grid_h": 229.96875
+      },
+      "globale_Wirkung": "MEDIUM",
+      "lokaler_Effekt": "Konkurrierende Glanceables; redundante Safety-Signale.",
+      "Severity": "MEDIUM",
+      "Confidence": "MEDIUM",
+      "Repeats_PR5260_Scope": false,
+      "Repeats_PR5261_Scope": false,
+      "Core_Risk": "LOW",
+      "SSOT_Risk": "LOW",
+      "empfohlener_Scope": "secondary grid densify/subordinate presentation",
+      "Begr\u00fcndung": "Kann Teil von Hierarchy-Slice sein oder eigener Folgeslice."
+    },
+    {
+      "GAP_ID": "GAP_OBSERVABILITY_PLACEHOLDER_CALM",
+      "Beschreibung": "Economic Observability zeigt NOT_COMPUTED/MISSING_SOURCE und wirkt unfinished-sparse.",
+      "betroffene_Landmarks": [
+        "OBSERVABILITY_SURFACE"
+      ],
+      "Viewports": [
+        "1440x900",
+        "1728x1117"
+      ],
+      "gemessene_Evidence": {
+        "obs_share": 11.973575557390586,
+        "obs_y": 1876.671875
+      },
+      "globale_Wirkung": "MEDIUM_LOW",
+      "lokaler_Effekt": "Late-scroll polish; kein Prim\u00e4rfokus-Problem.",
+      "Severity": "LOW",
+      "Confidence": "MEDIUM",
+      "Repeats_PR5260_Scope": false,
+      "Repeats_PR5261_Scope": false,
+      "Core_Risk": "LOW",
+      "SSOT_Risk": "MEDIUM",
+      "empfohlener_Scope": "empty-state presentation only; no new metrics",
+      "Begr\u00fcndung": "Niedrigerer ROI; SSOT-Risiko wenn neue Claims entstehen."
+    }
+  ],
+  "selected": "COMPOSITION_DECISION_SURFACE_HIERARCHY_V1"
+}
