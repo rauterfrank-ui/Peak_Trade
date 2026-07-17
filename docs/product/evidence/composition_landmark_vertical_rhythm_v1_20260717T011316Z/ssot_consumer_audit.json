@@ -1,0 +1,14 @@
+{
+  "BUSINESS_SSOT": "MASTER_V2_AND_DOUBLE_PLAY",
+  "DASHBOARD_ROLE": "READ_ONLY_CONSUMER_DISPLAY_LAYER",
+  "DASHBOARD_CREATES_SECOND_TRUTH": false,
+  "CORE_FILES_CHANGED": false,
+  "BUSINESS_LOGIC_CHANGED": false,
+  "SLICE": "COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1",
+  "markers": {
+    "landmark_vertical_rhythm": true,
+    "primary_page_share_dominance": true,
+    "decision_compression": true,
+    "trading_authority_false": true
+  }
+}

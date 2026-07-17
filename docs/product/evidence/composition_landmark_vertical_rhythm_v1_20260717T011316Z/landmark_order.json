@@ -1,0 +1,38 @@
+{
+  "expected": [
+    "GLOBAL_HEADER",
+    "PRIMARY_MARKET_SURFACE",
+    "DECISION_SURFACE",
+    "OBSERVABILITY_SURFACE",
+    "ENGINEERING_DRAWER"
+  ],
+  "viewports": {
+    "1280x800": {
+      "observed": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ]
+    },
+    "1440x900": {
+      "observed": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ]
+    },
+    "1728x1117": {
+      "observed": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ]
+    }
+  }
+}

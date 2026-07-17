@@ -37,6 +37,9 @@ EXPECTED_LANDMARKS = [
     "ENGINEERING_DRAWER",
 ]
 NEXT_SLICE = "COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1"
+# Live implementation-plan posture after post-dominance rebaseline + rhythm slice.
+CURRENT_IMPLEMENTED_SLICE = "COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1"
+CURRENT_NEXT_SLICE = "AWAITING_POST_RHYTHM_REBASELINE"
 PLAN = project_root / "docs" / "product" / "VISUAL_OPERATOR_DASHBOARD_IMPLEMENTATION_PLAN_V1.md"
 
 
@@ -135,12 +138,18 @@ def test_next_slice_plan_authorizes_single_decision_compression_slice() -> None:
 
 def test_implementation_plan_points_to_authorized_next_slice() -> None:
     text = PLAN.read_text(encoding="utf-8")
-    assert f"NEXT_SLICE={NEXT_SLICE}" in text
-    assert NEXT_SLICE in text
+    # Historical rebaseline pack that authorized Decision compression remains referenced.
     assert "composition_rebaseline_next_slice_v1_20260717T001413Z" in text
+    assert NEXT_SLICE in text
+    # Active plan posture advances with the latest bounded composition slice.
+    assert f"IMPLEMENTED_SLICE={CURRENT_IMPLEMENTED_SLICE}" in text
+    assert f"NEXT_SLICE={CURRENT_NEXT_SLICE}" in text
     # Stale bootstrap pointer must not remain the active next slice.
     assert not re.search(r"(?m)^NEXT_SLICE=PHASE_1A_LAYOUT_AND_HEADER$", text)
-    assert f"`{NEXT_SLICE}`" in text or NEXT_SLICE in text
+    assert not re.search(
+        rf"(?m)^NEXT_SLICE={re.escape(NEXT_SLICE)}$",
+        text,
+    )
 
 
 def test_runbook_snapshot_drift_documented_not_silently_repaired() -> None:
