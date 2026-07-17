@@ -2058,9 +2058,24 @@ def run_mv2_research_backtest_wiring_v1(
                 evidence_codes = tuple(getattr(evidence_obj, "reason_codes", ()) or ())
         price_path_value = None
         regime_id_value = None
+        eligible_strategy_count_value = None
+        regime_wildcard_matched_value = None
         if replay_input_obj is not None:
             price_path_value = getattr(replay_input_obj, "price_path", None)
             regime_id_value = getattr(replay_input_obj, "regime_id", None)
+        if replay_result_obj is not None and intermediate_obj is not None:
+            bull_suit = getattr(intermediate_obj, "bull_suitability", None)
+            bear_suit = getattr(intermediate_obj, "bear_suitability", None)
+            bull_ids = tuple(getattr(bull_suit, "eligible_strategy_ids", ()) or ())
+            bear_ids = tuple(getattr(bear_suit, "eligible_strategy_ids", ()) or ())
+            eligible_strategy_count_value = len(set(bull_ids) | set(bear_ids))
+        if regime_id_value is not None:
+            from trading.master_v2.suitability_binding_v1 import regime_wildcard_matched_v1
+
+            regime_wildcard_matched_value = any(
+                regime_wildcard_matched_v1(entry.supported_regime_ids, str(regime_id_value))
+                for entry in suitability_registry.entries
+            )
         observational_bar_hook(
             trading_epoch=trading_epoch,
             bar_timestamp=str(pd.Timestamp(bar_row.name)),
@@ -2078,6 +2093,8 @@ def run_mv2_research_backtest_wiring_v1(
             mapped_position_signal=int(mapped_signal),
             price_path=price_path_value,
             regime_id=regime_id_value,
+            eligible_strategy_count=eligible_strategy_count_value,
+            regime_wildcard_matched=regime_wildcard_matched_value,
             fail_reasons=fail_reasons,
             replay_input_built=replay_input_built,
             decision_authority_reached=decision_authority_reached,

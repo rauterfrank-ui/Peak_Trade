@@ -110,6 +110,8 @@ class ObservationalBarSnapshotV1:
     mapped_position_signal: int
     price_path: Optional[tuple[float, ...]]
     regime_id: Optional[str]
+    eligible_strategy_count: Optional[int]
+    regime_wildcard_matched: Optional[bool]
     fail_reasons: tuple[str, ...]
 
 
@@ -139,6 +141,8 @@ class EntryBarDiagnosticRecordV1:
     taxonomy_outcome: str
     price_path: Optional[tuple[float, ...]]
     regime_id: Optional[str]
+    eligible_strategy_count: Optional[int]
+    regime_wildcard_matched: Optional[bool]
     evidence_reason_codes: tuple[str, ...]
 
     def to_dict(self) -> dict[str, Any]:
@@ -435,6 +439,8 @@ def classify_entry_bar_snapshot_v1(
         taxonomy_outcome=taxonomy.value,
         price_path=snapshot.price_path,
         regime_id=snapshot.regime_id,
+        eligible_strategy_count=snapshot.eligible_strategy_count,
+        regime_wildcard_matched=snapshot.regime_wildcard_matched,
         evidence_reason_codes=tuple(snapshot.evidence_reason_codes),
     )
 
@@ -553,6 +559,8 @@ def build_observational_snapshot_from_replay_v1(
     fail_reasons: Sequence[str],
     replay_input_built: bool,
     decision_authority_reached: bool,
+    eligible_strategy_count: Optional[int] = None,
+    regime_wildcard_matched: Optional[bool] = None,
 ) -> ObservationalBarSnapshotV1:
     agreement_event = None
     agreement_side = None
@@ -567,13 +575,20 @@ def build_observational_snapshot_from_replay_v1(
     suitability_bull = suitability_bear = None
     composition_status = composition_side = None
     entry_eligibility = None
+    derived_eligible_count = eligible_strategy_count
     if intermediate is not None:
         directional_bull = _status_name(getattr(intermediate.bull_assessment, "status", None))
         directional_bear = _status_name(getattr(intermediate.bear_assessment, "status", None))
         survival_bull = _status_name(getattr(intermediate.bull_survival, "status", None))
         survival_bear = _status_name(getattr(intermediate.bear_survival, "status", None))
-        suitability_bull = _status_name(getattr(intermediate.bull_suitability, "status", None))
-        suitability_bear = _status_name(getattr(intermediate.bear_suitability, "status", None))
+        bull_suitability = getattr(intermediate, "bull_suitability", None)
+        bear_suitability = getattr(intermediate, "bear_suitability", None)
+        suitability_bull = _status_name(getattr(bull_suitability, "status", None))
+        suitability_bear = _status_name(getattr(bear_suitability, "status", None))
+        if derived_eligible_count is None:
+            bull_ids = tuple(getattr(bull_suitability, "eligible_strategy_ids", ()) or ())
+            bear_ids = tuple(getattr(bear_suitability, "eligible_strategy_ids", ()) or ())
+            derived_eligible_count = len(set(bull_ids) | set(bear_ids))
         composition_status = _status_name(
             getattr(intermediate.composition_result, "composition_status", None)
         )
@@ -621,6 +636,8 @@ def build_observational_snapshot_from_replay_v1(
         mapped_position_signal=int(mapped_position_signal),
         price_path=path_tuple,
         regime_id=str(regime_id) if regime_id is not None else None,
+        eligible_strategy_count=derived_eligible_count,
+        regime_wildcard_matched=regime_wildcard_matched,
         fail_reasons=tuple(str(code) for code in fail_reasons if code),
     )
 

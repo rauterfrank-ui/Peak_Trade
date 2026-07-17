@@ -59,6 +59,8 @@ def _snapshot(**overrides: object) -> ObservationalBarSnapshotV1:
         "mapped_position_signal": 1,
         "price_path": (100.0, 105.0),
         "regime_id": "trending",
+        "eligible_strategy_count": 1,
+        "regime_wildcard_matched": False,
         "fail_reasons": (),
     }
     payload.update(overrides)

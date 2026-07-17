@@ -125,6 +125,8 @@ def _diagnose_member(
             mapped_position_signal=int(kwargs["mapped_position_signal"]),
             price_path=kwargs.get("price_path"),
             regime_id=kwargs.get("regime_id"),
+            eligible_strategy_count=kwargs.get("eligible_strategy_count"),
+            regime_wildcard_matched=kwargs.get("regime_wildcard_matched"),
             fail_reasons=tuple(kwargs.get("fail_reasons") or ()),
             replay_input_built=bool(kwargs["replay_input_built"]),
             decision_authority_reached=bool(kwargs["decision_authority_reached"]),

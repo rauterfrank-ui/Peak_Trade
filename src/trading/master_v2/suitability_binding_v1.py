@@ -14,7 +14,7 @@ import json
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Mapping, Optional, Tuple
+from typing import Mapping, Optional, Sequence, Tuple
 
 from trading.master_v2.directional_assessment_v1 import (
     DirectionalAssessmentSide,
@@ -47,6 +47,7 @@ _RISK_EFFECT_NONE = "NONE"
 _FORBIDDEN_INSTRUMENT_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "spot", "synthetic_spot"})
 
 _UNKNOWN_REGIME_ID = "unknown_regime"
+_REGIME_WILDCARD_TOKEN = "*"
 
 
 class SuitabilityBindingStatus(str, Enum):
@@ -280,9 +281,42 @@ def _strategy_supports_side(
     return side in entry.supported_sides
 
 
+def strategy_supports_regime_v1(
+    supported_regime_ids: Sequence[str],
+    regime_id: str,
+) -> bool:
+    """
+    Canonical Suitability regime match.
+
+    Concrete regime lists match by normalized equality. The token ``*`` is a
+    universal match (``regime_id in supported OR "*" in supported``). Empty
+    ``supported_regime_ids`` (or empty after strip) is fail-closed.
+    """
+    if not supported_regime_ids:
+        return False
+    normalized = str(regime_id).strip().lower()
+    if not normalized:
+        return False
+    supported = {str(rid).strip().lower() for rid in supported_regime_ids if str(rid).strip()}
+    if not supported:
+        return False
+    return normalized in supported or _REGIME_WILDCARD_TOKEN in supported
+
+
+def regime_wildcard_matched_v1(
+    supported_regime_ids: Sequence[str],
+    regime_id: str,
+) -> bool:
+    """True when ``*`` confers eligibility and no concrete regime token matched."""
+    if not strategy_supports_regime_v1(supported_regime_ids, regime_id):
+        return False
+    normalized = str(regime_id).strip().lower()
+    supported = {str(rid).strip().lower() for rid in supported_regime_ids if str(rid).strip()}
+    return _REGIME_WILDCARD_TOKEN in supported and normalized not in supported
+
+
 def _strategy_supports_regime(entry: SuitabilityStrategyEntryV1, regime_id: str) -> bool:
-    normalized = regime_id.strip().lower()
-    return normalized in {rid.strip().lower() for rid in entry.supported_regime_ids}
+    return strategy_supports_regime_v1(entry.supported_regime_ids, regime_id)
 
 
 def filter_eligible_strategies(
@@ -879,8 +913,10 @@ __all__ = [
     "filter_eligible_strategies",
     "mirror_suitability_strategy_entry_for_short",
     "rank_eligible_strategies",
+    "regime_wildcard_matched_v1",
     "select_strategy_deterministic",
     "serialize_suitability_result_canonical",
+    "strategy_supports_regime_v1",
     "survival_result_ref_from_result",
     "validate_strategy_suitability_agreement_material_binding_v1",
     "validate_suitability_ranking_policy",
