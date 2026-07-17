@@ -1,0 +1,15 @@
+OK: web runtime deps present (fastapi, uvicorn).
+REVIEW_BIND_FIXTURES=false
+STATUS=RUNNING_HEALTHY
+ACTION=STARTED
+PID=56533
+BOOT_PID=56516
+PORT=8765
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8765/api/health
+REVIEW_URL=http://127.0.0.1:8765/
+PID_FILE=/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/tmp.RlPdJMMkny/review_server.pid
+LOG_FILE=/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/tmp.RlPdJMMkny/review_server.log
+UVICORN_RELOAD=false
+LOCALHOST_ONLY=true
+IDEMPOTENT_START=true

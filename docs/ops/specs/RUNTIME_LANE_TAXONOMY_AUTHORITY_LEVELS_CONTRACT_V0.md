@@ -207,7 +207,7 @@ Non-goals:
 | Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
 | OPS Cockpit non-authority | [OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) |
-| F5 read-only market dashboard (display) | [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) |
+| F5 read-only market dashboard (display) — **product removed** | [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) |
 | Readiness Evidence Ledger v0 | [build_readiness_evidence_ledger_v0.py](../../../scripts/ops/build_readiness_evidence_ledger_v0.py) |
 | Readiness Ledger Preflight Mirror v0 | [report_readiness_ledger_preflight_mirror_v0.py](../../../scripts/ops/report_readiness_ledger_preflight_mirror_v0.py) |
 | Readiness Gate Snapshot v0 | [report_readiness_gate_snapshot_v0.py](../../../scripts/ops/report_readiness_gate_snapshot_v0.py) |
@@ -1359,7 +1359,7 @@ Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test
 
 Cross-reference: Preflight §2a.1 primary evidence hard gate; §2b.1 mandatory durable closeout; Preflight **§2b.3** durable closeout adapter validation (PR #4127/#4128; `BLOCKER_HINT`; `--durable-closeout-force`; authoritative hierarchy); [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py); [test_post_closeout_automation_hook_owner_precheck_v0.py](../../../tests/ops/test_post_closeout_automation_hook_owner_precheck_v0.py).
 
-Cross-reference: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) (future registry overlay on `GET &#47;market`); §6a.0.9 payload builder planning; [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout; Preflight §2b.3 adapter closeout validation SSOT.
+Cross-reference: [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) (Market Dashboard product tombstone; registry overlay consumer §6a.2 remains ops-only); §6a.0.9 payload builder planning; [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout; Preflight §2b.3 adapter closeout validation SSOT.
 
 ### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)
 
@@ -1735,13 +1735,13 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 - Dashboard status does **not** clear blockers, override manifests&#47;closeouts, or grant gates.
 - `FAIL_CLOSED` remains fail-closed even if displayed on a read-only surface.
 
-#### Surface boundaries (orthogonal owners)
+#### Surface boundaries (product removed; ops projection fields preserved)
 
-- **`GET &#47;market` only** for future registry-derived run/evidence projection overlays: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) remains the technical chronicle owner for Market Surface v0 route/marker/env facts (SSR OHLCV/dummy/kraken read-only lineage) — not Product/Architecture-Reset SSOT.
-- **F5 futures read-only display** remains orthogonal: [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — instrument/provenance/risk display semantics; **does not** replace Registry v1 run/evidence projection fields. Orthogonality is **ownership**, not a requirement for a separate route host; F5 may render on `/market` without transferring authority into WebUI.
-- **`GET &#47;market&#47;double-play` untouched:** Master V2 / Double Play read-only composition **authority**, handlers, templates, and non-authority boundaries remain unchanged (§9) — even if the HTTP path is a **302** redirect onto `/market#double-play`. "Untouched" means **authority/composition ownership** stays protected; it does not forbid host-path reuse via redirect. Registry projection must **not** embed Double Play decision or selection authority.
+- **Market Dashboard product removed:** [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) is the tombstone chronicle. `GET &#47;market` is intentionally absent. No UI consumer is authorized by this deletion.
+- **Registry v1 projection fields preserved:** `market_dashboard_projection` / `market_dashboard_projection_allowed` remain ops-only disabled-by-default consumer eligibility markers (this §6a.2).
+- **`GET &#47;market&#47;double-play` untouched:** Master V2 / Double Play read-only composition **authority**, handlers, templates, and non-authority boundaries remain unchanged (§9) — even if the HTTP path is a **302** redirect onto `/market#double-play`. Registry projection must **not** embed Double Play decision or selection authority.
 
-Detail owner for existing F5 / §7h display markers: taxonomy §7h and [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md).
+Detail owner for historical F5 / §7h display markers: taxonomy §7h and [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md).
 
 #### Canonical boundary copy (required on future dashboard projection surfaces)
 
@@ -2252,11 +2252,11 @@ MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true
 MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
 ```
 
-Normative state (post Market Dashboard taxonomy cross-ref):
+Normative state (post Market Dashboard product removal):
 
 - F5 read-only market dashboard surfaces map to lane_id `dashboard` with authority level `review_input_only` (see §3).
-- Detail owner: [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — futures-aware read-only display boundary (F5 stage).
-- WebUI orientation surface [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) remains orthogonal Kraken/OHLCV/dummy lineage; it does **not** replace the F5 contract owner. Orthogonality = separate contract ownership; shared `/market` hosting is allowed without transferring F5 authority into WebUI.
+- Detail owner: [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) — product tombstone; historical F5 / Market Surface contracts deleted.
+- Registry v1 `market_dashboard_projection` consumer fields remain ops-only (§6a.2); `MARKET_DASHBOARD_AUTHORITY=false`.
 - Dashboard display, SSR read models, registry rows, and test status **do not** grant approval, gate clearance, Live/Testnet/broker/exchange permission, scheduler activation, or runtime start.
 - `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (see §5).
 - Master V2 / Double Play boundaries stay **protected**; dashboard must not reimplement selection or live decision authority (see §9). A read-only canonical DP projection on `/market` does not transfer Double Play authority into WebUI.

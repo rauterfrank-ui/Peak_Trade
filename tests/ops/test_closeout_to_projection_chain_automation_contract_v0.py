@@ -47,7 +47,7 @@ CANONICAL_OWNERS: dict[str, str] = {
     "phase_4_registry": "scripts/ops/build_generic_evidence_run_registry_v1.py",
     "phase_5_payload": "scripts/ops/build_post_closeout_projection_payload_v0.py",
     "phase_6_notion_dry_run": "scripts/ops/notion_post_closeout_sync_dry_run_v0.py",
-    "phase_7_market": "src/webui/market_surface.py",
+    "phase_7_market": "docs/webui/MARKET_DASHBOARD_REMOVED.md",
 }
 
 REUSED_TEST_MODULES: tuple[str, ...] = (

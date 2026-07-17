@@ -1,0 +1,12 @@
+KEEP_DOMAIN_OWNER
+src/trading/master_v2/**
+src/market_sentinel/**
+src/ops/market_data_cache_observation_reader.py
+src/data/kraken.py (fetch_ohlcv_df)
+src/webui/double_play_dashboard_display_json_route_v0.py
+src/webui/workflow_dashboard_readmodel_v1/**
+src/webui/last_paper_run_panel_runtime_v0.py
+scripts/ops/build_static_market_capture_package_v0.py
+tests/test_market_data_provenance_v1.py
+tests/test_market_sentinel_v0_daily.py
+tests/ops/test_market_data_cache_observation_reader.py

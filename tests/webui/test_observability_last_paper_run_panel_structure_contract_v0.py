@@ -60,7 +60,7 @@ def test_panel_present_when_gate_enabled(client_on: TestClient) -> None:
 def test_btc_usd_not_paper_instrument_truth(client_on: TestClient) -> None:
     html = client_on.get("/observability").text
     assert "selected_symbol" not in html or "BTC/USD" not in html.split("Instrument")[1][:500]
-    assert "Market Surface BTC/USD dummy is not Paper Run Truth" in html
+    assert "Removed Market Dashboard BTC/USD dummy is not Paper Run Truth" in html
 
 
 def test_no_forms_or_post(client_on: TestClient) -> None:
@@ -81,14 +81,9 @@ def test_safety_flags_false(client_on: TestClient) -> None:
 
 
 def test_market_without_last_paper_primary_panel(client_off: TestClient) -> None:
-    html = client_off.get("/market").text
-    assert 'data-observability-last-paper-run-panel-v0="true"' not in html
-    # PR-A+: reset shell has no paper-run panel and no legacy separation marker.
-    if 'data-market-architecture-reset-shell-v1="true"' in html:
-        assert "ARCHITECTURE RESET IN PROGRESS" in html
-        return
-    # PR-D+: product surface has no paper-run primary panel and no legacy landmark.
-    if 'data-market-dashboard-product-surface-v1="true"' in html:
-        assert "ARCHITECTURE RESET IN PROGRESS" not in html
-        return
-    assert 'data-market-v0-paper-run-truth-separation-v0="true"' in html
+    response = client_off.get("/market")
+    assert response.status_code == 404
+    html = response.text.lower()
+    assert "market dashboard" not in html
+    assert "data-market-dashboard-product-surface-v1" not in html
+    assert "architecture reset in progress" not in html

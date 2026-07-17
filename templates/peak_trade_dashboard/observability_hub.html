@@ -169,7 +169,7 @@
 
   <section
     class="rounded-xl border border-sky-900/35 bg-sky-950/10 px-5 py-4 space-y-4"
-    aria-label="Market Surface v0 — display-only"
+    aria-label="Market Dashboard — removed"
     data-observability-market-panel="true"
     data-observability-market-provenance="true"
     data-observability-market-no-fetch="true"
@@ -177,11 +177,11 @@
   >
     <div class="space-y-1.5">
       <h2 class="text-sm font-semibold text-sky-200/95 tracking-wide uppercase text-[11px]">
-        Market Surface v0 Panel
+        Market Dashboard — Removed
       </h2>
       <p class="text-xs text-sky-100/80 leading-relaxed">
-        read-only OHLCV — Dummy/Offline nur informativ; optional öffentliche OHLCV ebenfalls nur Anzeige
-        ohne Trading-, Live- oder Readiness-Aussage. Keine Ausführung, keine Ordersemantik.
+        The Market Dashboard product (<span class="font-mono">GET /market</span>) was intentionally removed.
+        See <span class="font-mono">docs/webui/MARKET_DASHBOARD_REMOVED.md</span>. No rebuild is authorized here.
       </p>
     </div>
     <ul class="list-disc pl-5 space-y-1.5 text-xs text-sky-100/90 leading-relaxed">
@@ -195,27 +195,18 @@
       <li>Market display is not Futures readiness.</li>
       <li>Market display is not Paper/Testnet/Live/order readiness.</li>
       <li>Market display is not trading authority.</li>
+      <li>Removed Market Dashboard BTC/USD dummy is not Paper Run Truth.</li>
     </ul>
     <div
       class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
       data-observability-panel-link-block="true"
     >
       <h3 class="text-xs font-medium text-slate-400 uppercase tracking-wide text-[11px]">
-        GET-Ziele
+        Route status
       </h3>
-      <ul class="space-y-2 text-sm text-sky-400">
-        <li>
-          <a class="underline hover:text-sky-300 font-mono text-xs break-all"
-             href="/market?source=dummy&amp;timeframe=1h&amp;limit=30&amp;symbol=BTC%2FUSD">GET /market</a>
-          — HTML-Anzeige (Dummy-Beispielparameter).
-        </li>
-        <li>
-          <a class="underline hover:text-sky-300 font-mono text-xs break-all"
-             href="/api/market/ohlcv?symbol=BTC%2FUSD&amp;timeframe=1h&amp;limit=30&amp;source=dummy">
-            GET /api/market/ohlcv</a>
-          — JSON (Dummy).
-        </li>
-      </ul>
+      <p class="text-xs text-slate-400 m-0 font-mono">
+        GET /market — intentionally absent (normal not-found). No alias, redirect, or placeholder.
+      </p>
     </div>
   </section>
 

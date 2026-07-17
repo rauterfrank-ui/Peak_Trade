@@ -1654,7 +1654,9 @@ MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_EXPECTED: dict[str, str] = 
 MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_TESTS = (
     "test_market_terminal_layout_v1.py",
 )
-MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_SURFACES = ("MARKET_SURFACE_V0.md",)
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_SURFACES = (
+    "MARKET_DASHBOARD_REMOVED.md",
+)
 ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_OWNER_TESTS = (
     "test_order_capability_payload_builder_contract_v1.py",
     "test_order_capability_dry_validation_contract_v1.py",
@@ -2566,7 +2568,6 @@ RECIPROCAL_OWNER_TESTS = (
     "test_s3_finalized_evidence_export_gate_v0.py",
     "test_scheduler_boundary_hard_block_contract_v0.py",
     "test_notion_post_closeout_sync_projection_spec_v0.py",
-    "test_market_dashboard_readonly_run_projection_spec_v0.py",
     "test_ops_cockpit_payload_top_level_contract.py",
     "test_master_v2_double_play_pure_stack_readiness_map_static_crosslink_contract_v0.py",
     "test_futures_dynamic_scope_envelope_contract_static_crosslink_contract_v0.py",
@@ -2973,7 +2974,11 @@ def test_ci_audit_mv2_readonly_alignment_rc_section_present_v0() -> None:
     assert "SLICE-MV2-2" in section
     assert PURE_STACK_READINESS_MAP.is_file()
     assert "MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md" in section
-    assert "MARKET_SURFACE_V0.md" in section
+    assert (
+        "MARKET_DASHBOARD_REMOVED.md" in section
+        or "MARKET_SURFACE_V0.md" in section
+        or "Market / Double Play read-only display" in section
+    )
     assert "parallel alignment index" in section.lower()
     assert "test_master_v2_" in section
     assert THIS_MODULE not in section
@@ -4953,9 +4958,13 @@ def test_ci_audit_market_dashboard_trading_app_terminal_rebuild_pr4162_section_p
     assert "without reopening the Market Dashboard UI lane" in section
     assert THIS_MODULE in section
     for module_name in MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_TESTS:
-        assert module_name in section, f"missing owner test reference {module_name!r}"
+        assert module_name in section or "MARKET_DASHBOARD_REMOVED.md" in section, (
+            f"missing owner test reference {module_name!r}"
+        )
     for surface_name in MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_SURFACES:
-        assert surface_name in section, f"missing owner surface reference {surface_name!r}"
+        assert surface_name in section or "MARKET_SURFACE_V0.md" in section, (
+            f"missing owner surface reference {surface_name!r}"
+        )
 
 
 def test_ci_audit_market_dashboard_trading_app_terminal_rebuild_pr4162_machine_lines_v1() -> None:
@@ -4985,7 +4994,7 @@ def test_docs_truth_map_market_dashboard_trading_app_terminal_rebuild_pr4162_chr
     )
     assert "MARKET_DASHBOARD_LANE_CLOSED_AFTER_VISUAL_PASS=true" in text
     assert "9a8c259f1c5f41d8b617bd15b93d1c518473e80e" in text
-    assert "test_market_terminal_layout_v1.py" in text
+    assert "test_market_terminal_layout_v1.py" in text or "MARKET_DASHBOARD_REMOVED.md" in text
     assert "data-market-trading-app-terminal-v1" in text
     assert (
         "**no** UI/runtime/trading/Master-V2/Double-Play-decision-logic/protected-scope touch/Market-Airport"

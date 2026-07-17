@@ -65,7 +65,7 @@ def _base_env(tmp_path: Path, port: int, **overrides: str) -> dict[str, str]:
             "PEAK_TRADE_WEBUI_START_TIMEOUT_SECONDS": "60",
             "PEAK_TRADE_WEBUI_STOP_TIMEOUT_SECONDS": "15",
             "PEAK_TRADE_WEBUI_HEALTH_PATH": "/api/health",
-            "PEAK_TRADE_WEBUI_REVIEW_PATH": "/market",
+            "PEAK_TRADE_WEBUI_REVIEW_PATH": "/",
             "LIVE_AUTHORIZED": "false",
             "ORDERS_ALLOWED": "false",
         }
@@ -120,9 +120,9 @@ def test_start_status_idempotent_stop_logs_and_bind(tmp_path: Path, isolated_por
         assert log_file.stat().st_size > 0
 
         health = f"http://127.0.0.1:{isolated_port}/api/health"
-        market = f"http://127.0.0.1:{isolated_port}/market"
+        root = f"http://127.0.0.1:{isolated_port}/"
         assert _http_code(health) == 200
-        assert _http_code(market) == 200
+        assert _http_code(root) == 200
 
         status = _run("status", env=env)
         assert status.returncode == 0

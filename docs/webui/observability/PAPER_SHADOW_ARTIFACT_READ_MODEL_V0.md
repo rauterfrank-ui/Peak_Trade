@@ -187,4 +187,4 @@ Stop and **do not** add UI if:
 - [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — current hub scope; **no** Paper/Shadow artifact **panel** **`GET &#47;observability`** today.
 - [**Paper/Shadow Summary Read-model Schema v0**](PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md) — normative JSON shape for **`paper_shadow_summary_readmodel_v0`** (Candidate C); builder + **env-gated** summary **`GET`** **shipped** (see Implementation status there); **hub** consumption **not** approved here.
 - [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) — **runtime source** boundary and env/config contract for the **shipped** read-only **`GET`**; **hub** wiring remains out of scope for this doc.
-- [**Market Surface v0**](../MARKET_SURFACE_V0.md) — example of read-only display boundaries (orthogonal domain).
+- [**Market Surface v0**](../MARKET_DASHBOARD_REMOVED.md) — example of read-only display boundaries (orthogonal domain).

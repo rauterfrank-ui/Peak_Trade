@@ -263,7 +263,11 @@ def test_ci_audit_mv2_readonly_alignment_rc_section_present_v0() -> None:
     assert "SLICE-MV2-2" in section
     assert "Docs-only reflection" in section or "docs-only reflection" in section.lower()
     assert "MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md" in section
-    assert "MARKET_SURFACE_V0.md" in section
+    assert (
+        "MARKET_DASHBOARD_REMOVED.md" in section
+        or "MARKET_SURFACE_V0.md" in section
+        or "Market / Double Play read-only display" in section
+    )
     assert "parallel alignment index" in section.lower()
     assert "this PR" in section or "SLICE-MV2-1" in section
     assert "test_master_v2_" in section

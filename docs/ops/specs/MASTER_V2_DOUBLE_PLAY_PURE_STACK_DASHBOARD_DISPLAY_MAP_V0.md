@@ -46,7 +46,7 @@ Frontmatter **`status: DRAFT`** marks this display map as an **evolving contract
 - panels and **display boundaries** per pure layer
 - DTO/snapshot, route, template, and **data-source** boundaries for a future implementation slice
 - explicit **non-selection** of certain existing apps/routes for v0 display of this stack
-- alignment with the futures read-only market dashboard contract (display semantics)
+- alignment with read-only display semantics for futures context (Market Dashboard product removed — see [`docs/webui/MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md))
 
 **Out of scope:**
 
@@ -60,7 +60,7 @@ This map is consistent with the static audit conclusion (read-only, no repo muta
 
 - The **general WebUI** application (`src&#47;webui&#47;app.py`) is the **best initial host** for a future read-only Double Play pure-stack display slice.
 - **`src&#47;live&#47;web&#47;app.py`** (Shadow/Paper run monitoring) is **not** the first target for pure-stack **model** display — different contract and runtime adjacency.
-- **`src&#47;webui&#47;market_surface.py`** (Market Surface v0: OHLCV chart, optional Kraken public REST) must **not** be mixed with Double Play pure-stack display in v0 — different data lineage and exchange-touching path.
+- **Market Dashboard removed** — do **not** mix Double Play pure-stack display with removed Market Dashboard routes or hosts. See [`docs/webui/MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md).
 
 See also: [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) for pure module inventory.
 
@@ -68,14 +68,14 @@ See also: [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBL
 
 **Recommended v0 host (future implementation):** the **Peak Trade Web Dashboard** FastAPI app behind `src&#47;webui&#47;app.py` (started only under separate operator procedure; **not** started by this document).
 
-A future slice should add a **dedicated** router or route namespace for Double Play pure-stack **display only**, rather than overloading unrelated panels (R&D, live sessions, market OHLCV).
+A future slice should add a **dedicated** router or route namespace for Double Play pure-stack **display only**, rather than overloading unrelated panels (R&D, live sessions).
 
 ## 6. Surfaces not selected for v0
 
 | Surface | Reason to defer for Double Play pure-stack v0 display |
 |---------|--------------------------------------------------------|
 | `src&#47;live&#47;web&#47;app.py` | Run/snapshot monitoring semantics; not the pure DTO stack |
-| `src&#47;webui&#47;market_surface.py` | OHLCV/Kraken/dummy lineage; must not imply Double Play authority |
+| Removed Market Dashboard (`GET &#47;market`) | Product removed — see [`docs/webui/MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md) |
 | Knowledge POST paths | Mutation; unrelated |
 | R&D experiment HTML/API | Evidence/report adjacency; unrelated to pure-stack labels |
 
@@ -169,7 +169,7 @@ Operational producers may exist elsewhere; they are **not** authority surfaces f
 
 A **no-live banner** (or equivalent persistent disclosure) is **required** on any page showing Double Play pure-stack decisions.
 
-**Testnet and Live remain unauthorized** by this display map. Align display semantics with [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) where futures context appears.
+**Testnet and Live remain unauthorized** by this display map. Futures-context display remains read-only and non-authorizing.
 
 ## 20. Validation / future tests
 
@@ -238,6 +238,6 @@ Cross-link canonical **additive key list**: [MASTER_V2_DOUBLE_PLAY_WEBUI_READONL
 - [MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md](MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md) — WebUI **GET** read-only JSON route boundary for this display DTO (**§9**, **§19**).
 - [MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md](MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md) — pure stack inventory and model boundaries.
 - [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md](MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md) — Futures Input Snapshot read model.
-- [FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — futures read-only dashboard display contract (F5).
+- [`docs/webui/MARKET_DASHBOARD_REMOVED.md`](../../webui/MARKET_DASHBOARD_REMOVED.md) — Market Dashboard product removed.
 - [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) — Double Play trading-logic semantics; non-authority.
 - [MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md) — PRE_LIVE navigation index.

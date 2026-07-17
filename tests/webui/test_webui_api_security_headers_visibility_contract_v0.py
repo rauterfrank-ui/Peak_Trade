@@ -35,7 +35,6 @@ KNOWN_WEBUI_ROUTE_FILES_WITH_LOCAL_SECURITY_HEADER_MARKERS = frozenset(
         "src/webui/app.py",
         "src/webui/double_play_dashboard_display_json_route_v0.py",
         "src/webui/execution_watch_api_v0.py",
-        "src/webui/market_depth_api_v0.py",
     }
 )
 
@@ -44,7 +43,6 @@ KNOWN_WEBUI_ROUTE_FILES_WITHOUT_LOCAL_SECURITY_HEADER_MARKERS = frozenset(
         "src/webui/execution_watch_api_v0_2.py",
         "src/webui/health_endpoint.py",
         "src/webui/knowledge_api.py",
-        "src/webui/market_surface.py",
         "src/webui/ops_ci_health_router.py",
         "src/webui/ops_stage1_router.py",
         "src/webui/ops_workflows_router.py",
@@ -146,8 +144,8 @@ def test_webui_api_security_headers_visibility_contract_classifies_current_sets(
 
 def test_webui_api_security_headers_visibility_contract_known_sets_stay_documentary() -> None:
     """Known sets are owner-review surfaces, not WebUI behavior-change mandates."""
-    assert len(KNOWN_WEBUI_ROUTE_FILES_WITH_LOCAL_SECURITY_HEADER_MARKERS) == 4
-    assert len(KNOWN_WEBUI_ROUTE_FILES_WITHOUT_LOCAL_SECURITY_HEADER_MARKERS) == 9
+    assert len(KNOWN_WEBUI_ROUTE_FILES_WITH_LOCAL_SECURITY_HEADER_MARKERS) == 3
+    assert len(KNOWN_WEBUI_ROUTE_FILES_WITHOUT_LOCAL_SECURITY_HEADER_MARKERS) == 8
 
 
 def test_webui_api_security_headers_visibility_contract_requires_route_decorators_for_known_sets() -> (

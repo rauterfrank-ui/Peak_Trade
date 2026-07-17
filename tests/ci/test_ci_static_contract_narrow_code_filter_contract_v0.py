@@ -61,7 +61,7 @@ WEBUI_BOUNDED_PYTEST_MODULES = (
     "tests/webui/test_last_paper_run_panel_readmodel_v0.py",
     "tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py",
     "tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py",
-    "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py",
+    "tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py",
 )
 
 
@@ -290,13 +290,13 @@ def test_code_filter_narrows_src_ops_contract_v0_modules() -> None:
     ("path", "expect_code", "expect_static"),
     [
         (
-            "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py",
+            "tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py",
             False,
             True,
         ),
         ("tests/webui/test_other_webui_behavior.py", True, False),
         (
-            "tests/webui/subdir/test_market_dashboard_readonly_structure_contract_v0.py",
+            "tests/webui/subdir/test_observability_workflow_dashboard_structure_contract_v1.py",
             True,
             False,
         ),
@@ -306,7 +306,7 @@ def test_code_filter_narrows_src_ops_contract_v0_modules() -> None:
         ("src/webui/app.py", True, False),
         ("src/ops/bounded_futures_testnet_contract_v0.py", False, True),
         ("src/ops/bounded_futures_testnet_runtime_module.py", True, False),
-        ("templates/peak_trade_dashboard/market_v0.html", True, False),
+        ("templates/peak_trade_dashboard/observability_hub.html", True, False),
     ],
 )
 def test_code_and_static_contract_path_semantics_v0(
@@ -402,7 +402,7 @@ def test_code_changed_output_uses_narrowed_code_bucket_not_raw_filter_alias() ->
     ("path", "expect_webui", "expect_non_webui"),
     [
         ("src/webui/app.py", True, False),
-        ("templates/peak_trade_dashboard/market_v0.html", True, False),
+        ("templates/peak_trade_dashboard/observability_hub.html", True, False),
         ("docs/webui/observability/OBSERVABILITY_HUB_V0.md", True, False),
         ("tests/webui/test_observability_hub.py", True, False),
         ("tests/fixtures/workflow_dashboard_readmodel_v1/foo.json", True, False),
@@ -425,7 +425,7 @@ def test_webui_surface_and_non_webui_path_semantics_v1(
 @pytest.mark.parametrize(
     ("paths", "expect_run_matrix"),
     [
-        (["src/webui/app.py", "templates/peak_trade_dashboard/market_v0.html"], False),
+        (["src/webui/app.py", "templates/peak_trade_dashboard/observability_hub.html"], False),
         (["src/webui/app.py", "pyproject.toml"], True),
         (["docs/foo.md"], False),
         (["src/execution/module.py"], True),

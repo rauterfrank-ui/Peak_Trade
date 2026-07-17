@@ -28,6 +28,7 @@ MARKET_DASHBOARD_SPEC = (
     REPO_ROOT / "docs" / "ops" / "specs" / "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md"
 )
 MARKET_SURFACE_V0 = REPO_ROOT / "docs" / "webui" / "MARKET_SURFACE_V0.md"
+MARKET_DASHBOARD_TOMBSTONE = REPO_ROOT / "docs" / "webui" / "MARKET_DASHBOARD_REMOVED.md"
 READINESS_LEDGER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "build_readiness_evidence_ledger_v0.py"
 READINESS_MIRROR_SCRIPT = (
     REPO_ROOT / "scripts" / "ops" / "report_readiness_ledger_preflight_mirror_v0.py"
@@ -688,71 +689,60 @@ def test_post_stop_pack_wrapper_marker_aligned() -> None:
     assert "non-authorizing" in preflight.lower()
 
 
+def test_market_dashboard_product_tombstone_present_deleted_surfaces_absent() -> None:
+    assert MARKET_DASHBOARD_TOMBSTONE.is_file()
+    assert not MARKET_DASHBOARD_SPEC.is_file()
+    assert not MARKET_SURFACE_V0.is_file()
+    tombstone = MARKET_DASHBOARD_TOMBSTONE.read_text(encoding="utf-8")
+    assert "Market Dashboard" in tombstone
+    assert "removed" in tombstone.lower()
+    assert "GET /market" in tombstone or "GET &#47;market" in tombstone
+
+
 def test_market_dashboard_f5_non_authority_taxonomy_cross_ref_aligned() -> None:
-    assert MARKET_DASHBOARD_SPEC.is_file()
     taxonomy = _spec_text()
-    market = MARKET_DASHBOARD_SPEC.read_text(encoding="utf-8")
     for marker in (
         "MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true",
         "MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true",
         "MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true",
     ):
         assert marker in taxonomy
-    assert "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md" in taxonomy
+    assert "MARKET_DASHBOARD_REMOVED.md" in taxonomy
+    assert not MARKET_DASHBOARD_SPEC.is_file()
     assert "`dashboard`" in taxonomy
     assert "review_input_only" in taxonomy
     assert "FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL" in taxonomy
-    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in market
-    assert "Lane taxonomy cross-reference" in market
-    assert "Dashboard ≠ Freigabe" in market or "dashboard" in market.lower()
-    assert "non-authorizing" in market.lower()
-    assert "does not grant" in market.lower() or "does not permit" in market.lower()
-    assert "Master V2" in market
-    assert "Double Play" in market
-    assert "Live" in market
-    assert "broker" in market.lower() or "exchange" in market.lower()
-    assert "scheduler" in market.lower() or "runtime" in market.lower()
+    assert "MARKET_DASHBOARD_AUTHORITY=false" in taxonomy
+    assert "non-authorizing" in taxonomy.lower()
+    assert "Master V2" in taxonomy
+    assert "Double Play" in taxonomy
+    assert "broker" in taxonomy.lower() or "exchange" in taxonomy.lower()
 
 
-def test_market_surface_v0_taxonomy_cross_ref_aligned() -> None:
-    assert MARKET_SURFACE_V0.is_file()
-    assert MARKET_DASHBOARD_SPEC.is_file()
-    surface = MARKET_SURFACE_V0.read_text(encoding="utf-8")
+def test_market_dashboard_tombstone_taxonomy_cross_ref_aligned() -> None:
+    assert MARKET_DASHBOARD_TOMBSTONE.is_file()
+    assert not MARKET_SURFACE_V0.is_file()
+    tombstone = MARKET_DASHBOARD_TOMBSTONE.read_text(encoding="utf-8")
     taxonomy = _spec_text()
-    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in surface
-    assert "§7h" in surface or "7h" in surface
-    assert "Lane taxonomy cross-reference" in surface
-    assert "`dashboard`" in surface
-    assert "review_input_only" in surface
-    assert "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md" in surface
-    assert "double-play" in surface.lower()
-    assert "Master V2" in surface
-    assert "Double Play" in surface
-    assert "non-authorizing" in surface.lower()
-    assert "review input only" in surface.lower() or "review_input_only" in surface
-    assert "FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL" in surface
-    assert "Live" in surface or "live" in surface.lower()
-    assert "broker" in surface.lower() or "exchange" in surface.lower()
-    assert "does not" in surface.lower() or "do not" in surface.lower()
-    assert "MARKET_SURFACE_V0.md" in taxonomy
-    assert "does not replace the F5 contract owner" in taxonomy or "F5 contract owner" in taxonomy
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" not in tombstone
+    assert "MARKET_DASHBOARD_REMOVED.md" in taxonomy
+    assert "`dashboard`" in taxonomy
+    assert "review_input_only" in taxonomy
+    assert "MARKET_DASHBOARD_AUTHORITY=false" in taxonomy
+    assert "FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL" in taxonomy
+    assert "non-authorizing" in taxonomy.lower()
+    assert "does not" in taxonomy.lower() or "do not" in taxonomy.lower()
 
 
-def test_f5_contract_market_surface_bidirectional_crossref_v0() -> None:
-    """F5 contract and Market Surface v0 cross-reference each other; separation preserved."""
-    assert MARKET_DASHBOARD_SPEC.is_file()
-    assert MARKET_SURFACE_V0.is_file()
-    f5 = MARKET_DASHBOARD_SPEC.read_text(encoding="utf-8")
-    surface = MARKET_SURFACE_V0.read_text(encoding="utf-8")
-    assert "MARKET_SURFACE_V0.md" in f5
-    assert "orthogonal" in f5.lower()
-    assert "does not replace" in f5.lower()
-    assert "Market-Airport" in f5 or "market-airport" in f5.lower()
-    assert "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md" in surface
-    assert "replace f5" in surface.lower()
-    assert "Guardrails" in surface
-    assert "Freigabe" in surface
-    assert "AI" in surface and "Authority" in surface
+def test_market_dashboard_section_6a2_preserves_registry_projection_fields() -> None:
+    """§6a.2 ops consumer field docs remain; product UI surfaces are tombstoned."""
+    taxonomy = _spec_text()
+    assert "### 6a.2 Market Dashboard read-only run projection contract v0" in taxonomy
+    assert "market_dashboard_projection" in taxonomy
+    assert "MARKET_DASHBOARD_AUTHORITY=false" in taxonomy
+    assert "MARKET_DASHBOARD_REMOVED.md" in taxonomy
+    assert not MARKET_SURFACE_V0.is_file()
+    assert not MARKET_DASHBOARD_SPEC.is_file()
 
 
 def test_autonomy_stage_authority_crosswalk_section_present() -> None:

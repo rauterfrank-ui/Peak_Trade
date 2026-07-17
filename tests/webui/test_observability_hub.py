@@ -106,8 +106,8 @@ def test_observability_hub_ok_markers(client: TestClient) -> None:
     assert "R&amp;D display is not Paper/Testnet/Live/order readiness." in body
     assert "R&amp;D display is not trading authority." in body
 
-    assert 'href="/market' in body
-    assert "/api/market/ohlcv" in body
+    assert 'href="/market' not in body
+    assert "/api/market/ohlcv" not in body
     assert "/health/detailed" in body
     assert 'href="/health"' in body
     assert "/health/metrics" in body

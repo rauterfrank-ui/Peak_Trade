@@ -1,0 +1,51 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 30 items
+
+tests/webui/test_market_dashboard_tombstone_v1.py .........              [ 30%]
+tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py . [ 33%]
+                                                                         [ 33%]
+tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py . [ 36%]
+                                                                         [ 36%]
+tests/ops/test_projection_chain_synthetic_smoke_v0.py F......            [ 60%]
+tests/ci/test_ci_diff_aware_test_selection_v1.py .                       [ 63%]
+tests/webui/test_review_server_harness_v1.py ..F........                 [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_happy_path_chain_smoke __________________________
+tests/ops/test_projection_chain_synthetic_smoke_v0.py:126: in test_happy_path_chain_smoke
+    _assert_no_leaks(json.dumps(market))
+                                ^^^^^^
+E   NameError: name 'market' is not defined
+_______________ test_start_status_idempotent_stop_logs_and_bind ________________
+tests/webui/test_review_server_harness_v1.py:125: in test_start_status_idempotent_stop_logs_and_bind
+    assert _http_code(market) == 200
+           ^^^^^^^^^^^^^^^^^^
+tests/webui/test_review_server_harness_v1.py:78: in _http_code
+    with urlopen(url, timeout=timeout) as resp:  # noqa: S310 — localhost tests
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/urllib/request.py:216: in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/urllib/request.py:525: in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/urllib/request.py:634: in http_response
+    response = self.parent.error(
+../.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/urllib/request.py:563: in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/urllib/request.py:496: in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/urllib/request.py:643: in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+E   urllib.error.HTTPError: HTTP Error 404: Not Found
+=========================== short test summary info ============================
+FAILED tests/ops/test_projection_chain_synthetic_smoke_v0.py::test_happy_path_chain_smoke
+FAILED tests/webui/test_review_server_harness_v1.py::test_start_status_idempotent_stop_logs_and_bind
+======================== 2 failed, 28 passed in 15.46s =========================
+WALLCLOCK=16

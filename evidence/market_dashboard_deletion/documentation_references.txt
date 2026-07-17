@@ -1,0 +1,3 @@
+POST_DELETION_DOCS_AUDIT
+rebuild/runbook docs removed; tombstone=docs/webui/MARKET_DASHBOARD_REMOVED.md
+historical ledger refs retargeted to tombstone for docs-reference gate

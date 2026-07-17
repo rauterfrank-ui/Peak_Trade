@@ -1,0 +1,53 @@
+{
+  "CHROME_ABSENCE_VERIFICATION_PASS": true,
+  "MARKET_ROUTE_HTTP_STATUS": 404,
+  "MARKET_ROUTE_REDIRECT": false,
+  "ROOT_STATUS": 200,
+  "CONSOLE_ERROR_LOOP": false,
+  "results": [
+    {
+      "path": "/market",
+      "status": 404,
+      "final_url": "http://127.0.0.1:8766/market",
+      "redirect": false,
+      "has_market_dashboard_text": false,
+      "has_product_surface_marker": false,
+      "has_reset_shell": false,
+      "has_placeholder_rebuild": false
+    },
+    {
+      "path": "/market/double-play",
+      "status": 404,
+      "final_url": "http://127.0.0.1:8766/market/double-play",
+      "redirect": false,
+      "has_market_dashboard_text": false,
+      "has_product_surface_marker": false,
+      "has_reset_shell": false,
+      "has_placeholder_rebuild": false
+    },
+    {
+      "path": "/market/futures",
+      "status": 404,
+      "final_url": "http://127.0.0.1:8766/market/futures",
+      "redirect": false,
+      "has_market_dashboard_text": false,
+      "has_product_surface_marker": false,
+      "has_reset_shell": false,
+      "has_placeholder_rebuild": false
+    }
+  ],
+  "console_sample": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}

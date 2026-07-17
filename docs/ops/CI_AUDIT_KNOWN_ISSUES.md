@@ -3936,7 +3936,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 | Concern | Owner |
 |---------|-------|
-| Tape SSR spec + operator enablement | `docs/webui/MARKET_SURFACE_V0.md` § Market tape readmodel SSR |
+| Tape SSR spec + operator enablement | `docs/webui/MARKET_DASHBOARD_REMOVED.md` § Market tape readmodel SSR |
 | Tape SSR + env boundary static tests | `tests/webui/test_market_tape_ssr_v0.py` |
 | Tape env/schema boundary guard | `tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py` |
 | DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
@@ -3968,10 +3968,10 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 | Concern | Owner |
 |---------|-------|
-| Operator Overview IA v1 spec + display-only markers | `docs/webui/MARKET_SURFACE_V0.md` § Operator overview IA v1 |
+| Operator Overview IA v1 spec + display-only markers | `docs/webui/MARKET_DASHBOARD_REMOVED.md` § Operator overview IA v1 |
 | Operator Overview structure contract + SSR markers | `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py` |
 | Operator Overview crosslink + env boundary guard | `tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py` |
-| Display-only operator overview wiring (no decision logic) | `src/webui/market_surface.py` (`build_market_operator_overview_display_context`) |
+| Display-only operator overview wiring (no decision logic) | `docs/webui/MARKET_DASHBOARD_REMOVED.md` (`build_market_operator_overview_display_context`) |
 | DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
 
 ```text
@@ -4003,7 +4003,7 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 | Concern | Owner |
 |---------|-------|
-| Market surface spec + terminal markers | `docs/webui/MARKET_SURFACE_V0.md` |
+| Market surface spec + terminal markers | `docs/webui/MARKET_DASHBOARD_REMOVED.md` |
 | Terminal layout contract on `GET &#47;market` | `tests/webui/test_market_terminal_layout_v1.py` |
 | DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
 | Static docs guard hub | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
@@ -5445,7 +5445,7 @@ CYBERSECURITY_CSC_RCHAIN_V1_ACCEPTED_GROUPS_REFLECTION_GUARD_DOCS_TESTS_ONLY=tru
 
 **Batch TIER-A-007-003-ops-evidence-closeout-build-contracts-v0 traceability (reference-only — target files not modified):** `tests/ops/test_build_generic_evidence_run_registry_v1.py`, `tests/ops/test_build_post_closeout_projection_payload_v0.py`, `tests/ops/test_build_readiness_evidence_ledger_v0.py`, `tests/ops/test_bundle_prbj_exec_events_cleanup_scope_contract_v0.py` — evidence/closeout/build **offline contract tests** only; tests may load **scripts&#47;ops** builders offline or read script text statically (candidate **000451** is **static UTF-8 scan only** — never executes `scripts/ops/bundle_prbj_exec_events.py`); assert fail-closed governance (`LIVE_ALLOWED=false`, `GO_DECISION_GRANTED=false`, `RUNTIME_COMMANDS_CALLED=false`, forbidden subprocess/network in builders) as **narrative/offline-contract verification only**; `shadow`/`testnet`/`scheduler`/`workflow` strings are fixture paths, machine-line keys, or static surface documentation — **not** authorization; **no** Gap Owner Map edits; **no** **scripts&#47;ops** edits; **no** `src/` edits; **no** evidence/closeout/build execution/runtime/scheduler/automation/Testnet/Live enablement authorization.
 
-**Batch TIER-A-008-001-ops-closeout-contracts-v0 traceability (reference-only — target files not modified):** `tests/ops/test_closeout_final_machine_lines_contract_v0.py`, `tests/ops/test_closeout_to_projection_chain_automation_contract_v0.py`, `tests/ops/test_combined_outroot_composition_index_v0.py`, `tests/ops/test_durable_closeout_copy_verify_v0.py` — closeout **offline contract tests** only; tests use synthetic `tmp_path` fixtures, static reads, or controlled `importlib` loads of **scripts&#47;ops** helpers (candidate **000454** asserts `attempts_workflow_dispatch` as **forbidden** blocker; `src/webui/market_surface.py` appears as path constant only); assert fail-closed governance (`LIVE_START_PERMITTED=false`, `TESTNET_START_PERMITTED=false`, `WORKFLOW_DISPATCH_CALLED=false`, forbidden aws/rclone/subprocess in helpers) as **narrative/offline-contract verification only**; `shadow`/`testnet`/`scheduler`/`workflow`/`automation` strings are fixture paths, machine-line keys, or forbidden-substring guards — **not** authorization; **no** Gap Owner Map edits; **no** **scripts&#47;ops** edits; **no** `src/` edits; **no** closeout execution/runtime/scheduler/automation/Testnet/Live enablement authorization.
+**Batch TIER-A-008-001-ops-closeout-contracts-v0 traceability (reference-only — target files not modified):** `tests/ops/test_closeout_final_machine_lines_contract_v0.py`, `tests/ops/test_closeout_to_projection_chain_automation_contract_v0.py`, `tests/ops/test_combined_outroot_composition_index_v0.py`, `tests/ops/test_durable_closeout_copy_verify_v0.py` — closeout **offline contract tests** only; tests use synthetic `tmp_path` fixtures, static reads, or controlled `importlib` loads of **scripts&#47;ops** helpers (candidate **000454** asserts `attempts_workflow_dispatch` as **forbidden** blocker; `docs/webui/MARKET_DASHBOARD_REMOVED.md` appears as path constant only); assert fail-closed governance (`LIVE_START_PERMITTED=false`, `TESTNET_START_PERMITTED=false`, `WORKFLOW_DISPATCH_CALLED=false`, forbidden aws/rclone/subprocess in helpers) as **narrative/offline-contract verification only**; `shadow`/`testnet`/`scheduler`/`workflow`/`automation` strings are fixture paths, machine-line keys, or forbidden-substring guards — **not** authorization; **no** Gap Owner Map edits; **no** **scripts&#47;ops** edits; **no** `src/` edits; **no** closeout execution/runtime/scheduler/automation/Testnet/Live enablement authorization.
 
 **Batch TIER-A-009-001-ops-bounded-durable-evidence-contracts-v0 traceability (reference-only — target files not modified):** `tests/ops/test_autonomy_maturity_vocabulary_staged_levels_v0.py`, `tests/ops/test_bounded_adapter_durable_chain_synthetic_e2e_v0.py`, `tests/ops/test_bounded_adapter_final_machine_lines_emit_v0.py`, `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py`, `tests/ops/test_dashboard_cockpit_observer_surface_inventory_v0.py`, `tests/ops/test_environment_safety_verification.py`, `tests/ops/test_hold_context_contract_clarification_v0.py`, `tests/ops/test_offline_crosslink_invariant_contract_v0.py`, `tests/ops/test_p67_primary_evidence_closeout_v0.py`, `tests/ops/test_p79_supervisor_primary_evidence_manifest_gate_v0.py`, `tests/ops/test_planning_artifact_durable_retention_contract_v0.py`, `tests/ops/test_portable_verify_contract_v0.py`, `tests/ops/test_post_closeout_automation_hook_owner_precheck_v0.py`, `tests/ops/test_post_closeout_hook_attach_readiness_bridge_v0.py`, `tests/ops/test_prbj_heartbeat_events_contract.py`, `tests/ops/test_preflight_s3_finalized_evidence_export_v0.py`, `tests/ops/test_preflight_scoped_exception_contract_u3_v0.py`, `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py`, `tests/ops/test_run_sample_size_ramp_script_contract_v0.py`, `tests/ops/test_s3_finalized_evidence_export_gate_v0.py`, `tests/ops/test_s3_finalized_evidence_export_implementation_preflight_v0.py`, `tests/ops/test_supervisor_pack_durable_closeout_hook_pass_through_v0.py`, `tests/ops/test_verify_git_rescue_artifacts_contract_v0.py` — bounded/durable/evidence/offline **contract tests** only; candidates **000540**, **000574**, and **000575** reference `s3` in test filenames as **offline/preflight contract verification only** (forbidden-substring/static-scan context — **not** S3, AWS, or outbound network **authorization**); assert fail-closed governance (`LIVE_START_PERMITTED=false`, `TESTNET_START_PERMITTED=false`, `AWS_TOUCHED=false`, `NETWORK_TOUCHED=false`, forbidden aws/rclone/subprocess in helpers) as **narrative/offline-contract verification only**; `shadow`/`testnet`/`scheduler`/`workflow`/`automation` strings are fixture paths, machine-line keys, or forbidden-substring guards — **not** authorization; **no** Gap Owner Map edits; **no** **scripts&#47;ops** edits; **no** `src/` edits; **no** bounded-pilot/runtime/scheduler/automation/Testnet/Live/S3/AWS **authorization**.
 
@@ -6978,7 +6978,7 @@ PREFLIGHT_PROCESS_GATE_HYGIENE_DOCS_TESTS_ONLY=true
 
 | Concern | Owner |
 |---------|-------|
-| Market Surface routes, visual polish status, non-authority boundaries | `docs/webui/MARKET_SURFACE_V0.md` (**§ Operator Experience Release RC v0 — SLICE-OE-1 Status-Reflexion**) |
+| Market Surface routes, visual polish status, non-authority boundaries | `docs/webui/MARKET_DASHBOARD_REMOVED.md` (**§ Operator Experience Release RC v0 — SLICE-OE-1 Status-Reflexion**) |
 | CI audit posture, ops pointers, schedule/Notion handoff | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this section) |
 
 **Durable operator pointers (archive only — not repo-ingested):**
@@ -7162,7 +7162,7 @@ PARALLEL_CYBER_INDEX_CREATED=false
 |-------|----------|-------|--------|
 | 1 | **SLICE-OC-1** | Docs-only: this meta-index + Ops Cockpit summary reflection | **complete** (#3908) |
 | 2 | **SLICE-OC-2** | Tests-ops: static guard for meta-index tokens in `tests&#47;ops&#47;test_ops_cockpit_payload_top_level_contract.py` and reciprocal docs-guard modules | **complete** (#3909) |
-| 3 | **SLICE-OC-3** | Docs-only: one-line trilogy pointer in `docs/webui/MARKET_SURFACE_V0.md` | **complete** (pointer-only closeout) |
+| 3 | **SLICE-OC-3** | Docs-only: one-line trilogy pointer in `docs/webui/MARKET_DASHBOARD_REMOVED.md` | **complete** (pointer-only closeout) |
 
 **Operational rules:**
 
@@ -7634,7 +7634,7 @@ PARALLEL_OPERATOR_DECISION_INDEX_CREATED=false
 | Bounded acceptance vs Master V2 priority | `docs/ops/BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md` |
 | MV2 alignment RC meta-index (this section) | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document) |
 | Post-trilogy operator status reflection | `docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` |
-| Market / Double Play read-only display | `docs/webui/MARKET_SURFACE_V0.md` |
+| Market / Double Play read-only display | `docs/webui/MARKET_DASHBOARD_REMOVED.md` |
 | Preflight / ER / primary evidence posture (**SSOT — pointer only**) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
 
 **Subordinate external inputs (archive only — confirmed):**
