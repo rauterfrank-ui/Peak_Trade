@@ -1,0 +1,22 @@
+{
+  "count": 17,
+  "sources": [
+    "docs/governance/drift_cleanup_plan_v1.md",
+    "docs/governance/feature_state_map_v1.md",
+    "docs/governance/authority_conflict_matrix_v1.md",
+    "docs/governance/ssot_decision_surface_neutral_v1.md",
+    "docs/governance/authority_resolution_synthesis_v1.md",
+    "docs/governance/ssot_counterfactual_simulation_v1.md",
+    "docs/governance/ssot_decision_hygiene_report_v1.md",
+    "docs/governance/ssot_cycle_break_plan_v1.md",
+    "docs/governance/ssot_cycle_break_execution_strategy_v1.md",
+    "docs/analysis/missing_features_plan.md",
+    "docs/product/evidence/ssot_synthesis_auth021_auth022_closeout_projection_v0_20260717T040127Z/",
+    "docs/product/evidence/post_auth021_auth003_next_workstream_discovery_v1_20260717T035456Z/",
+    "docs/product/evidence/drift_b01_b07_missing_features_plan_deferred_alignment_v0_20260717T033503Z/",
+    "tests/governance/test_ssot_synthesis_auth021_auth022_closeout_projection_v0.py",
+    "tests/governance/test_auth021_auth003_authority_matrix_b01_b07_closeout_sync_v0.py",
+    "tests/governance/test_missing_features_plan_deferred_alignment_v0.py",
+    "config/ci/required_status_checks.json"
+  ]
+}
