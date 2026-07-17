@@ -1,0 +1,6 @@
+{
+  "UNKNOWN_MARKER_FAIL_CLOSED": true,
+  "MISSING_FEATURES_FAIL_CLOSED": true,
+  "unknown_probe": "TOTALLY_UNKNOWN_SSOT_CLOSEOUT_STATUS_XYZ",
+  "unknown_accepted": false
+}

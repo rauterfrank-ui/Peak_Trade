@@ -57,7 +57,7 @@ Dieses Dokument garantiert folgende Neutralitäts-Eigenschaften:
 | AUTH-013 | Alias policy: `el_karoui_vol_v1` aliased, `ecm_cycle` not | C | Registry-Grammatik; Ableger von AUTH-001 |
 | AUTH-020 | `el_karoui_vol_model` registry vs R&D docs drift | A+B | Strukturell analog zu AUTH-005; kein ECM-Kern |
 
-**Residual Docs-Echo (Candidate A):** AUTH-003 teilt B-01-Abhängigkeit.
+**Residual Docs-Echo (Candidate A):** AUTH-003 docs layer B-01 **CLOSED** (PR #5274); residual Type D layer ambiguity remains (intentional / Product-Entscheid).
 
 **Cluster-Größe:** 7 primäre Konflikte (+ 1 strukturelles Analog)
 
@@ -80,7 +80,7 @@ Dieses Dokument garantiert folgende Neutralitäts-Eigenschaften:
 | AUTH-010 | Functional-only IDs without full OOP StrategySpec | C | Registry-Subcluster; Policy-Leaf |
 | AUTH-011 | `rsi_strategy` vs `rsi_reversion` dual identity | C | Registry-Subcluster; hängt an AUTH-010 Policy |
 
-**Residual Docs-Echo (Candidate B):** AUTH-021, AUTH-022 — structural docs only.
+**Residual Docs-Echo (Candidate B):** AUTH-021, AUTH-022 — **CLOSED** on canonical matrix (PR #5274/#5270/#5276); projection must not re-open as structural docs-echo.
 
 **Cluster-Größe:** 10 primäre Konflikte (+ 2 Docs-Echo)
 
@@ -106,13 +106,13 @@ Dieses Dokument garantiert folgende Neutralitäts-Eigenschaften:
 
 ### Docs-Only Residual Layer (cross-domain, nicht authority-kern)
 
-| AUTH-ID | Kurzbezeichnung | Zugeordneter Cluster | Typ |
-|---------|-----------------|----------------------|-----|
-| AUTH-021 | `missing_features_plan.md` stale DAG | A (Feature-Engine) | A |
-| AUTH-022 | R&D stub status grammar | B (Registry visibility) | A |
-| AUTH-023 | Psychology path residual | — (Reporting) | A |
+| AUTH-ID | Kurzbezeichnung | Zugeordneter Cluster | Typ | Closeout projection |
+|---------|-----------------|----------------------|-----|---------------------|
+| AUTH-021 | `missing_features_plan.md` stale DAG | A (Feature-Engine) | A | **CLOSED** — matrix SSOT (PR #5274 / B-01+B-07; PR #5276 sync) |
+| AUTH-022 | R&D stub status grammar | B (Registry visibility) | A | **CLOSED** — matrix SSOT (PR #5270 / B-02) |
+| AUTH-023 | Psychology path residual | — (Reporting) | A | Open / optional A-06 follow-up (unchanged) |
 
-Diese Konflikte erfordern Safe/Structural Docs-Fixes; sie kollabieren nicht durch Authority-Ratifikation in A/B/C allein.
+AUTH-021/AUTH-022 closeout is projected from `authority_conflict_matrix_v1.md` only — no second status engine. AUTH-023 remains docs residual and does not collapse via A/B/C authority ratification alone.
 
 ---
 
@@ -228,10 +228,10 @@ flowchart LR
 
 | AUTH-ID | Cluster | Strukturelle Unabhängigkeit |
 |---------|---------|----------------------------|
-| AUTH-003 | A | B-01 (docs); kein Block auf AUTH-001 für docs-deferred path |
+| AUTH-003 | A | B-01 docs CLOSED (PR #5274); residual Type D; kein Block auf AUTH-001 für docs-deferred path |
 | AUTH-009 | B | AUTH-010 policy optional; DEF-05 leaf |
-| AUTH-021 | — | B-01; docs-only |
-| AUTH-022 | — | B-02; docs-only |
+| AUTH-021 | — | **CLOSED** — matrix SSOT (PR #5274/#5276); docs-only closeout |
+| AUTH-022 | — | **CLOSED** — matrix SSOT (PR #5270); docs-only closeout |
 | AUTH-023 | — | A-06 follow-up; docs-only |
 
 ### 3.5 Validation Rule (frozen observation, keine Meta-SSOT-Behauptung)
@@ -270,8 +270,8 @@ Diese Regel ist eine **beobachtete Safety-Gate-Formulierung** aus der Matrix. Si
 | AUTH-018 | Attestation slots vs merged module | D | C | Runtime ↔ Meta |
 | AUTH-019 | No default Registry→Core wiring | B | B | Strategy ↔ Runtime |
 | AUTH-020 | El Karoui tier tension | A+B | A | Strategy ↔ Docs |
-| AUTH-021 | `missing_features_plan` stale | A | A (docs echo) | Docs |
-| AUTH-022 | R&D stub status grammar | A | B (docs echo) | Docs ↔ Strategy |
+| AUTH-021 | `missing_features_plan` stale DAG | A | A (docs echo) | Docs — **CLOSED** (matrix SSOT / PR #5274/#5276) |
+| AUTH-022 | R&D stub status grammar | A | B (docs echo) | Docs ↔ Strategy — **CLOSED** (matrix SSOT / PR #5270) |
 | AUTH-023 | Psychology path residual | A | — (reporting) | Docs |
 
 ### Count by Type (strukturell, nicht prioritär)

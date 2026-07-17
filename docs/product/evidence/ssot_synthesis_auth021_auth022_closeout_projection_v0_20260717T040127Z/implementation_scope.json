@@ -1,0 +1,9 @@
+{
+  "REAL_GAP": "SSOT/synthesis residual docs-echo still project AUTH-021/AUTH-022 as open stale DAG contradicting authority_conflict_matrix_v1.md CLOSED",
+  "CANONICAL_SOURCE_OWNER": "docs/governance/authority_conflict_matrix_v1.md",
+  "TARGET_PROJECTION_OWNER": "docs/governance/ssot_decision_surface_neutral_v1.md;docs/governance/authority_resolution_synthesis_v1.md;docs/governance/ssot_counterfactual_simulation_v1.md",
+  "CURRENT_BEHAVIOR": "AUTH-021/AUTH-022 listed as open residual docs-echo / B-01|B-02 open deps",
+  "REQUIRED_BEHAVIOR": "Project CLOSED status bound to matrix + PR #5270/#5274/#5276; residual B-01 language post-closeout",
+  "UNCHANGED_SEMANTICS": "no authority decisions; AUTH-003 residual Type D; AUTH-023 optional; Feature-Engine Class C NON-OPERATIONAL; no runtime activation",
+  "OUT_OF_SCOPE": "B-04;B-05;B-06;dashboard;python runtime;Master-V2;live/orders"
+}

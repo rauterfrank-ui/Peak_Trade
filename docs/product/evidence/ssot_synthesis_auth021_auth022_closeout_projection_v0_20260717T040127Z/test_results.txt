@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.1, cov-7.1.0
+collected 35 items
+
+tests/governance/test_ssot_synthesis_auth021_auth022_closeout_projection_v0.py . [  2%]
+............                                                             [ 37%]
+tests/governance/test_auth021_auth003_authority_matrix_b01_b07_closeout_sync_v0.py . [ 40%]
+..........                                                               [ 68%]
+tests/governance/test_missing_features_plan_deferred_alignment_v0.py ... [ 77%]
+........                                                                 [100%]
+
+============================== 35 passed in 0.09s ==============================
