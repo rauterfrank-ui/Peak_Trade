@@ -1,0 +1,222 @@
+{
+  "contract_name": "okx_audit_authority_ssot_v1",
+  "schema_version": "okx_audit_authority_schema_v1",
+  "contract_version": "v1",
+  "ssot_doc": "docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md",
+  "inventory_date": "2026-07-17",
+  "generated_from_main_sha": "0f36c93f76a08ae306a49b294ef300aa3e8dcc5c",
+  "markers": {
+    "OKX_AUDIT_AUTHORITY_SSOT_V1": true,
+    "PERMISSION_MODE": "read_only",
+    "SECRET_VALUE_ACCESS_ALLOWED": false,
+    "CREDENTIAL_VALUE_ACCESS_ALLOWED": false,
+    "MUTATION_ALLOWED": false,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false
+  },
+  "authority": "explicit_operator_decision",
+  "permission_mode": "read_only",
+  "okx_environment": "mixed_public_prod_md_plus_eea_demo_prod_bindings_offline",
+  "canonical_owners": [
+    {
+      "id": "venue_binding",
+      "path": "src/ops/bounded_futures_testnet_venue_binding_v0.py",
+      "role": "OKX Europe ETH X-Perp offline venue/instrument SSOT"
+    },
+    {
+      "id": "adapter_lifecycle_reconciliation",
+      "path": "src/ops/okx_europe_adapter_lifecycle_contract_v0.py",
+      "role": "OKX Europe adapter lifecycle + fail-closed reconciliation FSM (offline)"
+    },
+    {
+      "id": "aws_compatibility",
+      "path": "src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py",
+      "role": "Structural AWS shadow/paper/testnet OKX Europe host/credential-slot compatibility"
+    },
+    {
+      "id": "config_exchange_profile",
+      "path": "config/config.toml",
+      "role": "[exchange.okx_europe_eea] enabled=false host and credential env-var name bindings"
+    },
+    {
+      "id": "public_market_data_ingest",
+      "path": "scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py",
+      "role": "Canonical public REST futures market-data GET allowlist on www.okx.com"
+    },
+    {
+      "id": "mock_execution_adapter_legacy",
+      "path": "src/execution/adapters/providers/okx_v1.py",
+      "role": "Offline mock OKX execution adapter (non-network); spot/perp capability advert is hygiene drift"
+    }
+  ],
+  "credential_env_var_names": [
+    "OKX_EEA_PUBLIC_API_KEY",
+    "OKX_EEA_READONLY_API_KEY",
+    "OKX_EEA_READONLY_API_SECRET",
+    "OKX_EEA_READONLY_API_PASSPHRASE",
+    "OKX_EEA_TRADE_API_KEY",
+    "OKX_EEA_TRADE_API_SECRET",
+    "OKX_EEA_TRADE_API_PASSPHRASE",
+    "OKX_API_KEY",
+    "OKX_API_SECRET"
+  ],
+  "credential_presence": {
+    "OKX_EEA_PUBLIC_API_KEY": "ABSENT",
+    "OKX_EEA_READONLY_API_KEY": "ABSENT",
+    "OKX_EEA_READONLY_API_SECRET": "ABSENT",
+    "OKX_EEA_READONLY_API_PASSPHRASE": "ABSENT",
+    "OKX_EEA_TRADE_API_KEY": "ABSENT",
+    "OKX_EEA_TRADE_API_SECRET": "ABSENT",
+    "OKX_EEA_TRADE_API_PASSPHRASE": "ABSENT",
+    "OKX_API_KEY": "ABSENT",
+    "OKX_API_SECRET": "ABSENT"
+  },
+  "allowed_read_only_probes": [
+    "GET /api/v5/public/time",
+    "GET /api/v5/public/instruments",
+    "GET /api/v5/market/ticker",
+    "GET /api/v5/market/tickers",
+    "public_ws subscribe tickers ETH-USDT-SWAP",
+    "public_ws ping/pong",
+    "public_ws unsubscribe/close",
+    "GET /api/v5/public/instruments?instType=FUTURES with header x-simulated-trading:1 (no auth)"
+  ],
+  "forbidden_mutations": [
+    "order_place",
+    "order_amend",
+    "order_cancel",
+    "algo_order_channels",
+    "transfer",
+    "withdrawal",
+    "leverage_set",
+    "margin_mode_change",
+    "position_mode_change",
+    "subaccount_mutation",
+    "private_ws_login_mutation",
+    "credential_rotation",
+    "scheduler_or_trading_activation",
+    "runtime_bridge_activation"
+  ],
+  "probe_results": {
+    "rest_public_reachable": true,
+    "rest_private_authenticated": false,
+    "websocket_public_reachable": true,
+    "websocket_private_authenticated": false,
+    "reconciliation_verified": "static_contract_only",
+    "fail_closed_verified": true,
+    "futures_only_match": true,
+    "btc_exclusion_match": true,
+    "spot_exposure_detected": false,
+    "open_orders_detected": "NOT_VERIFIABLE",
+    "open_algo_orders_detected": "NOT_VERIFIABLE",
+    "open_positions_detected": "NOT_VERIFIABLE"
+  },
+  "safety_status": {
+    "credential_values_read": false,
+    "secret_values_read": false,
+    "okx_mutations_performed": false,
+    "live_authorized": false,
+    "orders_enabled": false,
+    "runtime_bridge_activated": false,
+    "trading_core_changed": false,
+    "execution_semantics_changed": false,
+    "economic_gate_changed": false,
+    "github_settings_mutated": false
+  },
+  "classification_summary": {
+    "repo_expected_component_count": 14,
+    "live_matching_component_count": 10,
+    "live_drift_component_count": 1,
+    "missing_component_count": 0,
+    "access_denied_count": 0,
+    "not_verifiable_count": 3
+  },
+  "expected_components": [
+    {
+      "id": "venue_exchange_enabled_false",
+      "name": "exchange.okx_europe_eea.enabled=false",
+      "classification": "MATCH",
+      "evidence": "config/config.toml enabled=false validate_only=true"
+    },
+    {
+      "id": "venue_binding_eth_xperp_offline",
+      "name": "ETH-USD_UM_XPERP offline venue binding",
+      "classification": "MATCH",
+      "evidence": "bounded_futures_testnet_venue_binding_v0.py production/demo instrument constants; network/orders forbidden"
+    },
+    {
+      "id": "lifecycle_fail_closed_offline",
+      "name": "OKX Europe lifecycle reconciliation fail-closed",
+      "classification": "MATCH",
+      "evidence": "NETWORK_CALL_COUNT=0 UNKNOWN_REMOTE_STATE_FAIL_CLOSED=true AUTOMATIC_ORDER_RESEND_ALLOWED=false"
+    },
+    {
+      "id": "public_rest_www_reachable",
+      "name": "www.okx.com public REST",
+      "classification": "MATCH",
+      "evidence": "public/time instruments ticker HTTP 200 code 0"
+    },
+    {
+      "id": "public_rest_eea_reachable",
+      "name": "eea.okx.com public REST",
+      "classification": "MATCH",
+      "evidence": "public/time and FUTURES instruments HTTP 200 code 0"
+    },
+    {
+      "id": "eea_production_xperp_instrument",
+      "name": "ETH-USD_UM_XPERP-310404",
+      "classification": "MATCH",
+      "evidence": "exact instId present on eea FUTURES without simulation header"
+    },
+    {
+      "id": "eea_demo_xperp_instrument",
+      "name": "ETH-USD_UM_XPERP-310328",
+      "classification": "MATCH",
+      "evidence": "exact instId present on eea FUTURES with x-simulated-trading:1 GET only"
+    },
+    {
+      "id": "public_websocket_reachable",
+      "name": "public websocket subscribe lifecycle",
+      "classification": "MATCH",
+      "evidence": "global and EEA public WS connect subscribe tickers heartbeat clean close"
+    },
+    {
+      "id": "futures_only_btc_exclusion_policy",
+      "name": "futures-only and BTC exclusion policy",
+      "classification": "MATCH",
+      "evidence": "venue+lifecycle+research forbid BTC/XBT and Spot productive bindings"
+    },
+    {
+      "id": "runtime_bridge_bound_not_activated",
+      "name": "runtime bridge BOUND_NOT_ACTIVATED",
+      "classification": "MATCH",
+      "evidence": "audit posture RUNTIME_BRIDGE_ACTIVATED=false; no activation performed"
+    },
+    {
+      "id": "mock_okx_adapter_spot_markets_flag",
+      "name": "mock OKX adapter markets includes spot",
+      "classification": "DRIFT",
+      "evidence": "src/execution/adapters/providers/okx_v1.py / registry advertise markets spot+perp while productive EEA policy is futures-only"
+    },
+    {
+      "id": "private_account_state_readable",
+      "name": "private readonly account/orders/positions",
+      "classification": "NOT_VERIFIABLE",
+      "evidence": "EEA readonly credentials ABSENT; no live private REST client in repo; private endpoints not called"
+    },
+    {
+      "id": "open_orders_absence_confirmed",
+      "name": "affirmable zero open orders",
+      "classification": "NOT_VERIFIABLE",
+      "evidence": "private trade/orders-pending not called"
+    },
+    {
+      "id": "open_positions_absence_confirmed",
+      "name": "affirmable zero open positions",
+      "classification": "NOT_VERIFIABLE",
+      "evidence": "private account/positions not called"
+    }
+  ],
+  "next_action": "OPERATOR_SUPPLY_OKX_EEA_READONLY_CREDENTIALS_FOR_PRIVATE_RO_PROBE_OR_ACCEPT_PARTIAL_PRIVATE_NOT_VERIFIABLE"
+}
