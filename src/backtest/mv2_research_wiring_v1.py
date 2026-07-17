@@ -1826,6 +1826,8 @@ def run_mv2_research_backtest_wiring_v1(
     expected_mv2_replay_signal_digest: Optional[str] = None,
     allow_legacy_raw_signal_research_engine_source: bool = False,
     system_economic_evidence_requested: bool | None = None,
+    observational_bar_hook: Callable[..., None] | None = None,
+    observational_panel_member_instrument_id: str | None = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
@@ -2015,6 +2017,72 @@ def run_mv2_research_backtest_wiring_v1(
     economic_research_profile = (
         effective_profile.dataset_profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1
     )
+    panel_member_id_for_hook = (
+        observational_panel_member_instrument_id
+        if observational_panel_member_instrument_id is not None
+        else instrument_id
+    )
+
+    def _emit_observational_bar_hook(
+        *,
+        trading_epoch: int,
+        bar_row: pd.Series,
+        warmup_status_value: str,
+        warmup_skipped: bool,
+        context_obj: CanonicalMarketContextV1,
+        agreement_material_obj: StrategySuitabilityAgreementMaterialV1 | None,
+        replay_result_obj: Any | None,
+        replay_input_obj: Any | None,
+        mapped_signal: int,
+        replay_input_built: bool,
+        decision_authority_reached: bool,
+        fail_reasons: tuple[str, ...],
+    ) -> None:
+        if observational_bar_hook is None:
+            return
+        raw_signal = 0
+        try:
+            raw_signal = int(engine_signal_series.iloc[trading_epoch])
+        except Exception:  # noqa: BLE001
+            raw_signal = 0
+        intermediate_obj = None
+        decision_outcome_value = None
+        evidence_codes: tuple[str, ...] = ()
+        if replay_result_obj is not None:
+            intermediate_obj = getattr(replay_result_obj, "intermediate", None)
+            evidence_obj = getattr(replay_result_obj, "evidence", None)
+            if evidence_obj is not None:
+                decision_outcome_value = (
+                    str(getattr(evidence_obj, "decision_outcome", "") or "") or None
+                )
+                evidence_codes = tuple(getattr(evidence_obj, "reason_codes", ()) or ())
+        price_path_value = None
+        regime_id_value = None
+        if replay_input_obj is not None:
+            price_path_value = getattr(replay_input_obj, "price_path", None)
+            regime_id_value = getattr(replay_input_obj, "regime_id", None)
+        observational_bar_hook(
+            trading_epoch=trading_epoch,
+            bar_timestamp=str(pd.Timestamp(bar_row.name)),
+            instrument_id=instrument_id,
+            panel_member_instrument_id=panel_member_id_for_hook,
+            raw_strategy_signal=raw_signal,
+            warmup_status=warmup_status_value,
+            warmup_skipped=warmup_skipped,
+            context_id=str(getattr(context_obj, "context_id", "")),
+            context_input_digest=str(getattr(context_obj, "input_digest", "")),
+            agreement_material=agreement_material_obj,
+            intermediate=intermediate_obj,
+            decision_outcome=decision_outcome_value,
+            evidence_reason_codes=evidence_codes,
+            mapped_position_signal=int(mapped_signal),
+            price_path=price_path_value,
+            regime_id=regime_id_value,
+            fail_reasons=fail_reasons,
+            replay_input_built=replay_input_built,
+            decision_authority_reached=decision_authority_reached,
+        )
+
     if economic_research_profile:
         _fail_closed(
             not any(
@@ -2105,6 +2173,20 @@ def run_mv2_research_backtest_wiring_v1(
                 )
                 replay_signals.append(signal)
                 signal_index.append(pd.Timestamp(row.name))
+                _emit_observational_bar_hook(
+                    trading_epoch=i,
+                    bar_row=row,
+                    warmup_status_value=str(bar_warmup_status.value),
+                    warmup_skipped=True,
+                    context_obj=context,
+                    agreement_material_obj=None,
+                    replay_result_obj=None,
+                    replay_input_obj=None,
+                    mapped_signal=signal,
+                    replay_input_built=False,
+                    decision_authority_reached=False,
+                    fail_reasons=(ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON,),
+                )
                 continue
         context, l1_status, observed_l1_used = bind_bar_for_mv2_wiring_v1(
             bar=row,
@@ -2309,6 +2391,20 @@ def run_mv2_research_backtest_wiring_v1(
         )
         replay_signals.append(signal)
         signal_index.append(pd.Timestamp(row.name))
+        _emit_observational_bar_hook(
+            trading_epoch=i,
+            bar_row=row,
+            warmup_status_value=str(context.warmup_status.value),
+            warmup_skipped=False,
+            context_obj=context,
+            agreement_material_obj=agreement_material,
+            replay_result_obj=replay_result,
+            replay_input_obj=replay_input,
+            mapped_signal=signal,
+            replay_input_built=True,
+            decision_authority_reached=True,
+            fail_reasons=tuple(replay_result.fail_reasons),
+        )
 
     mv2_replay_series = pd.Series(replay_signals, index=pd.DatetimeIndex(signal_index), dtype=int)
     mv2_replay_digest = compute_strategy_signal_digest_v1(
