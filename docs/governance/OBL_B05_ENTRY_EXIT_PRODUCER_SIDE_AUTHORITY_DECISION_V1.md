@@ -39,7 +39,8 @@ SEMANTIC_ACTIVATION_REQUIRES_SEPARATE_GO: true
 
 Kanonischer Encoding-Owner (einzige Runtime-Map):
 
-`src&#47;backtest&#47;strategy_signal_suitability_agreement_adapter_v1.py::_ENTRY_EXIT_EVENT_OWNERS`
+`src&#47;backtest&#47;strategy_signal_suitability_agreement_adapter_v1.py`
+(Attribute `_ENTRY_EXIT_EVENT_OWNERS`)
 
 Geschlossene Menge (7):
 
