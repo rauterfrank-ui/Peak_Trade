@@ -5,6 +5,10 @@ decommission, consolidation, rewire, or execution-semantic changes.
 
 The direct_submission_surface_contract is an inventory/drift guard only —
 NOT an execution allowlist or permission grant.
+
+The decision_owner_surface_contract freezes the three productive order-intent
+decision owners as an inventory/drift guard only — NOT authority assignment
+and NOT repo-wide owner promotion.
 """
 
 from __future__ import annotations
@@ -35,7 +39,36 @@ EXPECTED_BYPASS_COUNT = 4
 EXPECTED_SUBMISSION_BYPASS_COUNT = 5
 EXPECTED_MV2_OWNER = "src.governance.canonical_order_intent_v1"
 EXPECTED_SURFACE_CONTRACT_SEMANTICS = "INVENTORY_ONLY_NOT_EXECUTION_PERMISSION"
+EXPECTED_DECISION_OWNER_CONTRACT_SEMANTICS = "INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT"
 KRAKEN_SURFACE_ID = "submission.kraken_live_client"
+EXPECTED_DECISION_OWNER_IDS = (
+    "src.execution.adapters.base_v1.OrderIntentV1",
+    "src.execution.pipeline.OrderIntent",
+    "src.governance.canonical_order_intent_v1",
+)
+EXPECTED_DECISION_OWNER_PINS = {
+    "src.governance.canonical_order_intent_v1": {
+        "source_path": "src/governance/canonical_order_intent_v1.py",
+        "symbol_or_callable": "build_canonical_order_intent_v1",
+        "role": "CANONICAL_DECISION_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "can_submit_orders": False,
+    },
+    "src.execution.pipeline.OrderIntent": {
+        "source_path": "src/execution/pipeline.py",
+        "symbol_or_callable": "OrderIntent",
+        "role": "PRODUCTIVE_LEGACY_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "can_submit_orders": True,
+    },
+    "src.execution.adapters.base_v1.OrderIntentV1": {
+        "source_path": "src/execution/adapters/base_v1.py",
+        "symbol_or_callable": "OrderIntentV1",
+        "role": "PRODUCTIVE_LEGACY_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "can_submit_orders": True,
+    },
+}
 
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1=true",
@@ -53,6 +86,10 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DIRECT_SUBMISSION_SURFACE_CONTRACT_V1=true",
     f"DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS={EXPECTED_SURFACE_CONTRACT_SEMANTICS}",
     "DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST=true",
+    "DECISION_OWNER_SURFACE_CONTRACT_V1=true",
+    f"DECISION_OWNER_SURFACE_CONTRACT_SEMANTICS={EXPECTED_DECISION_OWNER_CONTRACT_SEMANTICS}",
+    "DECISION_OWNER_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT=true",
+    "DECISION_OWNER_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER=true",
     "AUTHORITY_LEAK_DETECTED=false",
     "THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY=true",
     "NO_RUNTIME_REWIRE_IN_THIS_SLICE=true",
@@ -114,6 +151,28 @@ REQUIRED_SURFACE_FIELDS = (
     "decommission_status",
 )
 
+REQUIRED_DECISION_OWNER_FIELDS = (
+    "stable_id",
+    "module",
+    "source_path",
+    "symbol_or_callable",
+    "primary_symbols",
+    "role",
+    "classification",
+    "reachability",
+    "canonical",
+    "authorized",
+    "enabled",
+    "execution_authority",
+    "decommissioned",
+    "inventory_only",
+    "can_submit_orders",
+    "authoritative_order_intent_decision",
+    "authority_owner_status",
+    "consolidation_status",
+    "decommission_status",
+)
+
 
 def _read(path: Path) -> str:
     assert path.is_file(), f"missing canonical path: {path}"
@@ -151,6 +210,12 @@ def _ast_symbol_resolves(source_path: Path, symbol_or_callable: str) -> bool:
 
 def _surface_contract(payload: dict) -> dict:
     contract = payload["direct_submission_surface_contract"]
+    assert isinstance(contract, dict)
+    return contract
+
+
+def _decision_owner_contract(payload: dict) -> dict:
+    contract = payload["decision_owner_surface_contract"]
     assert isinstance(contract, dict)
     return contract
 
@@ -411,3 +476,201 @@ def test_surface_contract_drift_guards_on_mutated_payload() -> None:
     # duplicate
     mutated_dup = list(contract["surface_ids_sorted"]) + [KRAKEN_SURFACE_ID]
     assert len(mutated_dup) != len(set(mutated_dup))
+
+
+def test_decision_owner_surface_contract_semantics_and_count() -> None:
+    payload = _load_ssot()
+    markers = payload["markers"]
+    contract = _decision_owner_contract(payload)
+    assert markers["DECISION_OWNER_SURFACE_CONTRACT_V1"] is True
+    assert markers["DECISION_OWNER_SURFACE_CONTRACT_SEMANTICS"] == (
+        EXPECTED_DECISION_OWNER_CONTRACT_SEMANTICS
+    )
+    assert markers["DECISION_OWNER_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT"] is True
+    assert markers["DECISION_OWNER_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER"] is True
+    assert contract["semantics"] == EXPECTED_DECISION_OWNER_CONTRACT_SEMANTICS
+    assert "NOT_AUTHORITY_ASSIGNMENT" in contract["semantics"]
+    assert "NOT authority assignment" in contract["semantics_clarification"]
+    assert "direct_submission_surface_contract" in contract["semantics_clarification"]
+    assert contract["expected_owner_count"] == EXPECTED_DECISION_OWNER_COUNT
+    assert len(contract["owners"]) == EXPECTED_DECISION_OWNER_COUNT
+    assert len(contract["owner_ids_sorted"]) == EXPECTED_DECISION_OWNER_COUNT
+    assert contract["owner_ids_sorted"] == sorted(contract["owner_ids_sorted"])
+    assert tuple(contract["owner_ids_sorted"]) == EXPECTED_DECISION_OWNER_IDS
+    assert set(contract["owner_ids_sorted"]) == set(payload["productive_decision_owners"])
+    assert contract["drift_policy"] == {
+        "addition": "FAIL",
+        "removal": "FAIL",
+        "rename": "FAIL",
+        "duplicate": "FAIL",
+        "unresolved_symbol": "FAIL",
+        "role_or_reachability_drift": "FAIL",
+        "authority_escalation": "FAIL",
+    }
+    assert contract["global_authority_pins"] == {
+        "CANONICAL_ORDER_INTENT_OWNER": "UNRESOLVED",
+        "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+        "CONSOLIDATION_STATUS": "NOT_STARTED",
+        "DECOMMISSION_STATUS": "NOT_STARTED",
+    }
+    assert (
+        contract["related_but_separate_contracts"]["direct_submission_surface_contract_v1"]
+        == "COMPLETE_SEPARATE_NOT_DUPLICATED"
+    )
+    assert (
+        contract["related_but_separate_contracts"][
+            "risk_sizing_owner_and_bypass_surface_contract_v1"
+        ]
+        == "OUT_OF_SCOPE_NEXT_CANDIDATE"
+    )
+    assert markers["CANONICAL_ORDER_INTENT_OWNER"] == "UNRESOLVED"
+    assert markers["CANONICAL_EXECUTION_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert markers["CONSOLIDATION_STATUS"] == "NOT_STARTED"
+    assert markers["DECOMMISSION_STATUS"] == "NOT_STARTED"
+
+
+def test_decision_owner_surfaces_exact_unique_and_non_authorizing() -> None:
+    payload = _load_ssot()
+    contract = _decision_owner_contract(payload)
+    owners = contract["owners"]
+    ids = [o["stable_id"] for o in owners]
+    paths = [o["source_path"] for o in owners]
+    triples = [(o["source_path"], o["symbol_or_callable"], o["stable_id"]) for o in owners]
+    by_classified = {item["owner_id"]: item for item in payload["classified_paths"]}
+
+    assert len(ids) == EXPECTED_DECISION_OWNER_COUNT
+    assert len(set(ids)) == EXPECTED_DECISION_OWNER_COUNT
+    assert len(set(triples)) == EXPECTED_DECISION_OWNER_COUNT
+    assert len(set(paths)) == EXPECTED_DECISION_OWNER_COUNT
+    assert ids == sorted(ids)
+    assert ids == contract["owner_ids_sorted"]
+
+    for owner in owners:
+        for field in REQUIRED_DECISION_OWNER_FIELDS:
+            assert field in owner, f"missing field {field} on {owner.get('stable_id')}"
+        stable_id = owner["stable_id"]
+        pin = EXPECTED_DECISION_OWNER_PINS[stable_id]
+        classified = by_classified[stable_id]
+        assert owner["source_path"] == pin["source_path"]
+        assert owner["symbol_or_callable"] == pin["symbol_or_callable"]
+        assert owner["role"] == pin["role"]
+        assert owner["reachability"] == pin["reachability"]
+        assert owner["can_submit_orders"] is pin["can_submit_orders"]
+        assert owner["classification"] == "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER"
+        assert owner["canonical"] is False
+        assert owner["authorized"] is False
+        assert owner["enabled"] is False
+        assert owner["execution_authority"] is False
+        assert owner["decommissioned"] is False
+        assert owner["inventory_only"] is True
+        assert owner["authoritative_order_intent_decision"] is True
+        assert owner["authority_owner_status"] == "UNRESOLVED"
+        assert owner["consolidation_status"] == "NOT_STARTED"
+        assert owner["decommission_status"] == "NOT_STARTED"
+        assert owner["primary_symbols"] == classified["primary_symbols"]
+        assert owner["source_path"] == classified["module_path"]
+        assert owner["role"] == classified["role"]
+        assert owner["reachability"] == classified["reachability"]
+        assert "*" not in owner["source_path"]
+        assert "*" not in owner["symbol_or_callable"]
+        assert not owner["source_path"].endswith("/")
+
+    doc = _read(SSOT_DOC)
+    assert "DECISION_OWNER_SURFACE_CONTRACT_V1=true" in doc
+    assert "INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT" in doc
+    assert "DOES_NOT_PROMOTE_REPO_WIDE_OWNER=true" in doc
+    assert "risk_sizing_owner_and_bypass_surface_contract_v1" in doc
+    assert "direct_submission_surface_contract_v1" in doc or "PR #5301" in doc
+
+
+def test_decision_owner_symbols_resolve_via_ast_without_import() -> None:
+    payload = _load_ssot()
+    contract = _decision_owner_contract(payload)
+    for owner in contract["owners"]:
+        rel = owner["source_path"]
+        path = REPO_ROOT / rel
+        assert path.is_file(), f"unresolved source path FAIL: {owner['stable_id']} missing {rel}"
+        assert _ast_symbol_resolves(path, owner["symbol_or_callable"]), (
+            f"unresolved_symbol FAIL: {owner['stable_id']} {rel}::{owner['symbol_or_callable']}"
+        )
+        text = path.read_text(encoding="utf-8")
+        for symbol in owner["primary_symbols"]:
+            bare = symbol.rsplit(".", 1)[-1]
+            assert bare in text, (
+                f"primary_symbol missing FAIL: {owner['stable_id']} {rel}::{symbol}"
+            )
+
+
+def test_decision_owner_contract_does_not_duplicate_direct_submission_contract() -> None:
+    payload = _load_ssot()
+    decision_ids = set(_decision_owner_contract(payload)["owner_ids_sorted"])
+    submission_ids = set(_surface_contract(payload)["surface_ids_sorted"])
+    assert decision_ids.isdisjoint(submission_ids)
+    assert len(_surface_contract(payload)["surfaces"]) == EXPECTED_SUBMISSION_BYPASS_COUNT
+    assert _surface_contract(payload)["expected_surface_count"] == EXPECTED_SUBMISSION_BYPASS_COUNT
+
+
+def test_decision_owner_drift_guards_on_mutated_payload() -> None:
+    """Negative checks: addition/removal/rename/duplicate/authority escalation fail-closed."""
+    payload = _load_ssot()
+    contract = _decision_owner_contract(payload)
+    inventory_ids = set(payload["productive_decision_owners"])
+    contract_ids = set(contract["owner_ids_sorted"])
+    assert inventory_ids == contract_ids
+    assert len(contract_ids) == EXPECTED_DECISION_OWNER_COUNT
+
+    # addition of a fourth productive decision owner
+    mutated_add = list(contract["owner_ids_sorted"]) + ["src.fake.fourth_decision_owner"]
+    assert len(mutated_add) != EXPECTED_DECISION_OWNER_COUNT
+    assert set(mutated_add) != inventory_ids
+
+    # removal
+    removed_id = EXPECTED_DECISION_OWNER_IDS[0]
+    mutated_remove = [i for i in contract["owner_ids_sorted"] if i != removed_id]
+    assert len(mutated_remove) != EXPECTED_DECISION_OWNER_COUNT
+    assert set(mutated_remove) != inventory_ids
+
+    # stable_id rename
+    mutated_rename = [
+        f"{removed_id}_renamed" if i == removed_id else i for i in contract["owner_ids_sorted"]
+    ]
+    assert set(mutated_rename) != inventory_ids
+
+    # duplicate stable_id
+    mutated_dup = list(contract["owner_ids_sorted"]) + [removed_id]
+    assert len(mutated_dup) != len(set(mutated_dup))
+
+    # duplicate / ambiguous owner assignment (same source_path+symbol, different id)
+    owners = contract["owners"]
+    triples = {(o["source_path"], o["symbol_or_callable"]) for o in owners}
+    assert len(triples) == EXPECTED_DECISION_OWNER_COUNT
+    ambiguous = list(triples) + [list(triples)[0]]
+    assert len(ambiguous) != len(set(ambiguous))
+
+    # unresolved source path / symbol would fail AST helpers
+    fake_path = REPO_ROOT / "src" / "does_not_exist_decision_owner.py"
+    assert not fake_path.exists()
+    real_path = REPO_ROOT / owners[0]["source_path"]
+    assert not _ast_symbol_resolves(real_path, "DefinitelyMissingDecisionOwnerSymbol")
+
+    # role / reachability drift
+    for owner in owners:
+        pin = EXPECTED_DECISION_OWNER_PINS[owner["stable_id"]]
+        assert owner["role"] == pin["role"]
+        assert owner["reachability"] == pin["reachability"]
+        assert owner["role"] != "PRODUCTIVE_BYPASS"
+        assert owner["reachability"] != "UNREACHABLE"
+
+    # authority escalation
+    for owner in owners:
+        assert owner["canonical"] is not True
+        assert owner["authorized"] is not True
+        assert owner["execution_authority"] is not True
+
+    # global authority owner must remain unresolved (no silent resolution)
+    assert payload["markers"]["CANONICAL_ORDER_INTENT_OWNER"] == "UNRESOLVED"
+    assert payload["markers"]["CANONICAL_EXECUTION_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert contract["global_authority_pins"]["CANONICAL_ORDER_INTENT_OWNER"] == "UNRESOLVED"
+    assert contract["global_authority_pins"]["CANONICAL_EXECUTION_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert payload["canonical_order_intent_owner"] == "UNRESOLVED"
+    assert payload["canonical_execution_authority_owner"] == "UNRESOLVED"

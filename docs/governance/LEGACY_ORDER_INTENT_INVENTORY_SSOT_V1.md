@@ -22,6 +22,10 @@ DIRECT_SUBMISSION_BYPASS_COUNT=5
 DIRECT_SUBMISSION_SURFACE_CONTRACT_V1=true
 DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_EXECUTION_PERMISSION
 DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST=true
+DECISION_OWNER_SURFACE_CONTRACT_V1=true
+DECISION_OWNER_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT
+DECISION_OWNER_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT=true
+DECISION_OWNER_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER=true
 AUTHORITY_LEAK_DETECTED=false
 THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY=true
 NO_RUNTIME_REWIRE_IN_THIS_SLICE=true
@@ -114,6 +118,43 @@ ADAPTER PARALLEL:
 2. `src.execution.pipeline.OrderIntent`
 3. `src.execution.adapters.base_v1.OrderIntentV1`
 
+### Decision-owner surface static contract (drift guard only)
+
+```
+DECISION_OWNER_SURFACE_CONTRACT_V1=true
+DECISION_OWNER_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT
+DECISION_OWNER_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT=true
+DECISION_OWNER_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER=true
+EXPECTED_OWNER_COUNT=3
+DRIFT_POLICY=addition/removal/rename/duplicate/unresolved_symbol/role_or_reachability_drift/authority_escalation → FAIL
+```
+
+The three inventoried productive order-intent decision owners are **frozen as a static inventory/drift contract** so that addition of a fourth owner, removal, stable_id rename, source_path move, symbol rename, duplicate IDs, unresolved AST symbols, role/reachability drift, or authority escalation (`canonical=true` / `authorized=true` / `execution_authority=true` / resolving global authority owners) fail closed in tests.
+
+Purpose: inventory / drift freeze only — **not** authority assignment and **not** promotion of any owner as repo-wide canonical.
+
+This frozen set does not:
+- assign `CANONICAL_ORDER_INTENT_OWNER` or `CANONICAL_EXECUTION_AUTHORITY_OWNER` (both remain `UNRESOLVED`)
+- promote COI, legacy `OrderIntent`, or `OrderIntentV1` as sole repo-wide owner
+- authorize, enable, or activate any surface
+- start consolidation, decommission, rewire, or delegation
+- change execution / trading-core / risk-sizing semantics
+- activate runtime bridge, live, testnet, shadow, paper, or orders
+
+`role=CANONICAL_DECISION_OWNER` for COI is **MV2-scope classification only**. Repo-wide `CANONICAL_ORDER_INTENT_OWNER` remains `UNRESOLVED`.
+
+Per-owner freeze pins (inventory-backed IDs / paths / symbols only):
+
+| stable_id | source_path | symbol_or_callable | role | reachability | canonical | authorized | execution_authority |
+|---|---|---|---|---|---|---|---|
+| `src.governance.canonical_order_intent_v1` | `src/governance/canonical_order_intent_v1.py` | `build_canonical_order_intent_v1` | CANONICAL_DECISION_OWNER | REACHABLE_PRODUCTIVE | false | false | false |
+| `src.execution.pipeline.OrderIntent` | `src/execution/pipeline.py` | `OrderIntent` | PRODUCTIVE_LEGACY_OWNER | REACHABLE_PRODUCTIVE | false | false | false |
+| `src.execution.adapters.base_v1.OrderIntentV1` | `src/execution/adapters/base_v1.py` | `OrderIntentV1` | PRODUCTIVE_LEGACY_OWNER | REACHABLE_PRODUCTIVE | false | false | false |
+
+**Separate, already-complete contract:** `direct_submission_surface_contract_v1` (PR #5301) remains the freeze for the five direct-submission surfaces and is **not** duplicated here.
+
+**Out of scope / next candidate:** `risk_sizing_owner_and_bypass_surface_contract_v1` (exact freeze of five Risk/Sizing decision owners and five bypass paths) is **not** part of this slice.
+
 ### Productive bypass paths (4)
 
 1. Legacy `ExecutionPipeline` intent path
@@ -193,3 +234,5 @@ Do **not** delete or rewire legacy surfaces in this slice. Decommission requires
 ## 8. Next plan item
 
 Decommission / consolidation of legacy order-intent paths requires **Operator-GO** and is **not** started by this inventory.
+
+Semantikfreier Folgekandidat (nicht in diesem Slice): Risk/Sizing owner+bypass surface static contract (`RISK_SIZING_STATIC_GUARD`).
