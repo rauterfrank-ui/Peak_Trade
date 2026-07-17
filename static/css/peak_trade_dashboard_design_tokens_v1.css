@@ -48,6 +48,9 @@
   /* Observability Surface hierarchy — Economic > Linear (presentation only) */
   --pt-observability-hierarchy-tier-gap: 6px;
   --pt-observability-hierarchy-linear-max-height: 72px;
+  /* Engineering drawer deemphasis — tertiary closed chrome (presentation only) */
+  --pt-engineering-deemphasis-detail-gap: 2px;
+  --pt-engineering-deemphasis-closed-padding-y: 4px;
 
   --pt-space-1: 4px;
   --pt-space-2: 8px;

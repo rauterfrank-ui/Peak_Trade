@@ -1,0 +1,280 @@
+{
+  "phase": "after",
+  "captured_at_utc": "20260717T021734Z",
+  "BROWSER_REQUESTED": "GOOGLE_CHROME",
+  "BROWSER_ACTUAL": "GOOGLE_CHROME",
+  "REAL_CHROME_VERIFIED": true,
+  "CHROMIUM_FALLBACK_USED": false,
+  "FULL_PAGE_SCREENSHOTS": true,
+  "VIEWPORTS": [
+    "1280x800",
+    "1440x900",
+    "1728x1117"
+  ],
+  "viewports": {
+    "1280x800": {
+      "horizontal_overflow_px": 0,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "pageHeight": 2371,
+      "page_share": {
+        "GLOBAL_HEADER": 2.8376739772247994,
+        "PRIMARY_MARKET_SURFACE": 40.95252530577815,
+        "DECISION_SURFACE": 32.314292492619145,
+        "OBSERVABILITY_SURFACE": 11.303247574862928,
+        "ENGINEERING_DRAWER": 3.6271615352172075
+      },
+      "gaps": [
+        {
+          "before": "GLOBAL_HEADER",
+          "after": "PRIMARY_MARKET_SURFACE",
+          "gap_px": 8
+        },
+        {
+          "before": "PRIMARY_MARKET_SURFACE",
+          "after": "DECISION_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "DECISION_SURFACE",
+          "after": "OBSERVABILITY_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "OBSERVABILITY_SURFACE",
+          "after": "ENGINEERING_DRAWER",
+          "gap_px": 20
+        }
+      ],
+      "primary_chart_share_of_viewport_pct": 69.8125,
+      "engineering_drawer_open": false,
+      "engineering_closed_detail_count": 3,
+      "engineering_closed_heights": [
+        21.5,
+        21.5,
+        21.5
+      ],
+      "engineering_total_height": 86,
+      "engineering_summaries": [
+        {
+          "text": "Double-Play / F5 detail anchors (read-only)",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "0px",
+          "height": 21.5
+        },
+        {
+          "text": "System / Governance Details (read-only)",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "2px",
+          "height": 21.5
+        },
+        {
+          "text": "Diagnostics / internals",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "2px",
+          "height": 21.5
+        }
+      ],
+      "engineering_deemphasis_marker": true,
+      "engineering_tertiary_marker": true,
+      "eco_h": 190,
+      "lin_h": 72
+    },
+    "1440x900": {
+      "horizontal_overflow_px": 0,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "pageHeight": 2340,
+      "page_share": {
+        "GLOBAL_HEADER": 2.8752670940170937,
+        "PRIMARY_MARKET_SURFACE": 40.16092414529914,
+        "DECISION_SURFACE": 32.74238782051282,
+        "OBSERVABILITY_SURFACE": 11.452991452991453,
+        "ENGINEERING_DRAWER": 3.6752136752136755
+      },
+      "gaps": [
+        {
+          "before": "GLOBAL_HEADER",
+          "after": "PRIMARY_MARKET_SURFACE",
+          "gap_px": 8
+        },
+        {
+          "before": "PRIMARY_MARKET_SURFACE",
+          "after": "DECISION_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "DECISION_SURFACE",
+          "after": "OBSERVABILITY_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "OBSERVABILITY_SURFACE",
+          "after": "ENGINEERING_DRAWER",
+          "gap_px": 20
+        }
+      ],
+      "primary_chart_share_of_viewport_pct": 62.05555555555555,
+      "engineering_drawer_open": false,
+      "engineering_closed_detail_count": 3,
+      "engineering_closed_heights": [
+        21.5,
+        21.5,
+        21.5
+      ],
+      "engineering_total_height": 86,
+      "engineering_summaries": [
+        {
+          "text": "Double-Play / F5 detail anchors (read-only)",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "0px",
+          "height": 21.5
+        },
+        {
+          "text": "System / Governance Details (read-only)",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "2px",
+          "height": 21.5
+        },
+        {
+          "text": "Diagnostics / internals",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "2px",
+          "height": 21.5
+        }
+      ],
+      "engineering_deemphasis_marker": true,
+      "engineering_tertiary_marker": true,
+      "eco_h": 190,
+      "lin_h": 72
+    },
+    "1728x1117": {
+      "horizontal_overflow_px": 0,
+      "landmark_order": [
+        "GLOBAL_HEADER",
+        "PRIMARY_MARKET_SURFACE",
+        "DECISION_SURFACE",
+        "OBSERVABILITY_SURFACE",
+        "ENGINEERING_DRAWER"
+      ],
+      "pageHeight": 2392,
+      "page_share": {
+        "GLOBAL_HEADER": 2.812761287625418,
+        "PRIMARY_MARKET_SURFACE": 41.436951295986624,
+        "DECISION_SURFACE": 32.030596780936456,
+        "OBSERVABILITY_SURFACE": 11.20401337792642,
+        "ENGINEERING_DRAWER": 3.595317725752508
+      },
+      "gaps": [
+        {
+          "before": "GLOBAL_HEADER",
+          "after": "PRIMARY_MARKET_SURFACE",
+          "gap_px": 8
+        },
+        {
+          "before": "PRIMARY_MARKET_SURFACE",
+          "after": "DECISION_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "DECISION_SURFACE",
+          "after": "OBSERVABILITY_SURFACE",
+          "gap_px": 20
+        },
+        {
+          "before": "OBSERVABILITY_SURFACE",
+          "after": "ENGINEERING_DRAWER",
+          "gap_px": 20
+        }
+      ],
+      "primary_chart_share_of_viewport_pct": 57.71318263205013,
+      "engineering_drawer_open": false,
+      "engineering_closed_detail_count": 3,
+      "engineering_closed_heights": [
+        21.5,
+        21.5,
+        21.5
+      ],
+      "engineering_total_height": 86,
+      "engineering_summaries": [
+        {
+          "text": "Double-Play / F5 detail anchors (read-only)",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "0px",
+          "height": 21.5
+        },
+        {
+          "text": "System / Governance Details (read-only)",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "2px",
+          "height": 21.5
+        },
+        {
+          "text": "Diagnostics / internals",
+          "fontSize": "10px",
+          "color": "rgb(71, 85, 105)",
+          "fontWeight": "500",
+          "borderTop": "1px solid rgba(51, 65, 85, 0.35)",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "4px 0px",
+          "marginTop": "2px",
+          "height": 21.5
+        }
+      ],
+      "engineering_deemphasis_marker": true,
+      "engineering_tertiary_marker": true,
+      "eco_h": 190,
+      "lin_h": 72
+    }
+  }
+}
