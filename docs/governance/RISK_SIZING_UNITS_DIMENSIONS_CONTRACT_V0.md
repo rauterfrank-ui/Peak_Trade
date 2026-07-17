@@ -105,4 +105,4 @@ Same IDs as `risk_sizing_owner_and_bypass_surface_contract_v1`:
 
 ## Next
 
-After merge, re-audit for `OBL_B05_CALLER_TO_OWNER_TOPOLOGY_CONTRACT` (separate slice). Authority assignment, rewire, and decommission remain Operator-GO gated.
+Caller→owner topology is frozen separately in [`RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md`](RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md) (`OBL_B05_CALLER_TO_OWNER_TOPOLOGY_CONTRACT_V0`). Authority assignment, rewire, and decommission remain Operator-GO gated.

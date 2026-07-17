@@ -243,4 +243,6 @@ Risk/Sizing inventory and the owner/bypass surface-contract freeze are **DONE**.
 
 **Related (separate, non-mutating):** [`RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md`](RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md) / [`config/governance/risk_sizing_units_dimensions_contract_v0.json`](../../config/governance/risk_sizing_units_dimensions_contract_v0.json) declares units/dimensions for the same five owners without changing math, defaults, authority, or the 5/5 owner/bypass freeze.
 
+**Related (separate, non-mutating):** [`RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md`](RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md) / [`config/governance/risk_sizing_caller_owner_topology_contract_v0.json`](../../config/governance/risk_sizing_caller_owner_topology_contract_v0.json) freezes caller→owner topology edges without assigning authority or changing sizing semantics.
+
 Legacy Order Intent inventory / decision-owner / direct-submission surface contracts remain separate and unchanged (`INVENTORY ONLY — DECOMMISSION NOT STARTED`).

@@ -31,6 +31,7 @@
   },
   "related_but_separate_contracts": {
     "risk_sizing_owner_and_bypass_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES",
+    "risk_sizing_caller_owner_topology_contract_v0": "SEPARATE_CALLER_OWNER_TOPOLOGY_FREEZE_ONLY",
     "legacy_order_intent_decision_owner_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED",
     "legacy_order_intent_direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED"
   },
