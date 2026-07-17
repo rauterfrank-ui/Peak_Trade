@@ -2,7 +2,7 @@
 
 **Status:** BINDING inventory / pointer (docs + static contract only)  
 **Date:** 2026-07-17  
-**Plan item:** `P2_GOVERNANCE / RISK_SIZING_INVENTORY`  
+**Plan item:** `P2_GOVERNANCE &#47; RISK_SIZING_INVENTORY`  
 **Machine inventory:** [`config/governance/risk_sizing_owner_inventory_ssot_v1.json`](../../config/governance/risk_sizing_owner_inventory_ssot_v1.json)
 
 ```
@@ -56,7 +56,7 @@ Reason: Classic Backtest, Offline-Eval sizing contract, Execution `execute_from_
 | `BasePositionSizer` family | `src/core/position_sizing.py` | independent decision owner | ACTIVE | Yes if wired | Path-dependent |
 | `offline_evaluation_sizing_contract_v1` | `src/backtest/offline_evaluation_sizing_contract_v1.py` | policy owner + calculator wrapper | ACTIVE | Yes (eval path) | Yes |
 | `ExecutionPipeline.execute_from_signals` | `src/execution/pipeline.py` | simplified decision owner | ACTIVE | Yes (exec path) | Weak |
-| Offline replay / backtest state-file adapters | `src/trading/master_v2/capital_risk_sizing_*_adapter_v0.py` | adapter | ADAPTER_ONLY | No (delegates) | Yes |
+| Offline replay / backtest state-file adapters | `src&#47;trading&#47;master_v2&#47;capital_risk_sizing_*_adapter_v0.py` | adapter | ADAPTER_ONLY | No (delegates) | Yes |
 | Intent pipeline bridge | `src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py` | adapter/consumer | ADAPTER_ONLY | Consumes CRS | Yes; submission blocked |
 | `RiskLimits` / `BaseRiskManager` / dynamic leverage | `src/risk/limits.py`, `src/core/risk.py`, `src/risk/dynamic_leverage.py` | limit / helper | ACTIVE | No | Limit/veto |
 | `BacktestEngine` | `src/backtest/engine.py` | consumer (selects owner) | ACTIVE | Indirect | Path-dependent |
