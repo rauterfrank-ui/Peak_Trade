@@ -14,5 +14,5 @@ Browser: `GOOGLE_CHROME` · REAL_CHROME_VERIFIED=true · CHROMIUM_FALLBACK_USED=
 ENGINEERING_DRAWER_DEEMPHASIS_PASS=true  
 Decision/Primary/Observability/Rhythm gates held.
 
-Before: `before/screenshots/`  
-After: `screenshots/`
+Before: `before&#47;screenshots&#47;`  
+After: `screenshots&#47;`

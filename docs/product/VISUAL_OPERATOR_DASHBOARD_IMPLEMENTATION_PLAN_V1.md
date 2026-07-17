@@ -290,7 +290,7 @@ DASHBOARD_PROJECT_COMPLETE=true
 |---|---|
 | Goal | Quiet closed Engineering chrome to tertiary; keep Primary/Decision/Observability hierarchy |
 | Allowed owners | `market_v0.html`; `market_diagnostics_drawer_v1.html`; layout/tokens CSS; focused contract test; evidence |
-| Forbidden | `src/**` domain/runtime; producers; trading/risk/authority; Core semantics; Decision/Primary/Observability rework |
+| Forbidden | `src&#47;**` domain/runtime; producers; trading/risk/authority; Core semantics; Decision/Primary/Observability rework |
 | Acceptance | Landmark order held; drawer default closed; tertiary markers; prior hierarchy gates held; Chrome evidence |
 
 ### Prior — Observability Surface hierarchy (PR #5265) — measured @1440×900
