@@ -1,0 +1,10 @@
+ACTIVE: templates/peak_trade_dashboard/market_v0.html — PR-A reset shell
+UNROUTED LEGACY (partials remain on disk, not included by active shell):
+  market_primary_operator_hero_v1.html, market_primary_close_chart_v1.html,
+  market_watchlist_compact_v1.html, market_safety_compact_v1.html,
+  double_play_market_compact_v1.html, market_current_state_compact_v1.html,
+  market_diagnostics_drawer_v1.html, market_economic_observability_visual_v1.html,
+  market_decision_funnel_visual_v1.html, market_governed_top20_primary_v1.html,
+  market_legacy_operator_panels_v0.html, market_v0_legacy_composition_not_routed_v1.html
+STATIC CSS (legacy composition selectors under #market-v0-shell):
+  static/css/peak_trade_dashboard_layout_v1.css

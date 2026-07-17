@@ -59,25 +59,24 @@ class TestMarketSurfaceJson:
 
 
 class TestMarketSurfaceHtml:
-    def test_market_page_reset_shell_ignores_dummy_query(self, client: TestClient) -> None:
-        """PR-A: GET /market is the architecture reset shell; query params cannot re-enter composition."""
+    def test_market_page_product_surface_ignores_dummy_query(self, client: TestClient) -> None:
+        """PR-D: GET /market is the product surface; query params cannot re-enter legacy composition."""
         resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
         assert "text/html" in resp.headers.get("content-type", "")
         body = resp.text
         assert "Market Dashboard" in body
-        assert "ARCHITECTURE RESET IN PROGRESS" in body
+        assert "ARCHITECTURE RESET IN PROGRESS" not in body
         assert "READ ONLY" in body
-        assert "NO TRADING AUTHORITY" in body
-        assert 'data-market-architecture-reset-shell-v1="true"' in body
+        assert 'data-market-dashboard-product-surface-v1="true"' in body
+        assert 'data-market-architecture-reset-shell-v1="true"' not in body
         assert 'id="market-v0-shell"' not in body
         assert "source=dummy" not in body
-        assert "ETHUSDT" not in body
         assert "<form" not in body.lower()
         assert 'type="submit"' not in body.lower()
         assert "<button" not in body.lower()
 
-    def test_market_page_depth_route_and_xhr_absent_on_reset_shell(
+    def test_market_page_depth_route_and_xhr_absent_on_product_surface(
         self,
         client: TestClient,
     ) -> None:
@@ -89,17 +88,19 @@ class TestMarketSurfaceHtml:
         assert "XMLHttpRequest" not in body
 
     def test_market_html_query_noise_still_200(self, client: TestClient) -> None:
-        """Invalid legacy query params are ignored; reset shell always returns 200."""
+        """Invalid legacy query params are ignored; product surface always returns 200."""
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
         assert r.status_code == 200
-        assert "ARCHITECTURE RESET IN PROGRESS" in r.text
+        assert 'data-market-dashboard-product-surface-v1="true"' in r.text
+        assert "ARCHITECTURE RESET IN PROGRESS" not in r.text
         r2 = client.get("/market", params={"source": "invalid", "timeframe": "1d"})
         assert r2.status_code == 200
-        assert "ARCHITECTURE RESET IN PROGRESS" in r2.text
+        assert 'data-market-dashboard-product-surface-v1="true"' in r2.text
+        assert "ARCHITECTURE RESET IN PROGRESS" not in r2.text
 
 
-def test_market_v0_active_template_is_reset_shell_not_legacy_composition() -> None:
-    """Active market_v0.html is the PR-A reset shell; legacy markers live only in quarantine."""
+def test_market_v0_template_file_remains_offline_reset_shell_not_legacy_composition() -> None:
+    """Offline market_v0.html remains the PR-A reset shell; legacy markers stay quarantined."""
     tmpl_dir = Path(__file__).resolve().parents[1] / "templates" / "peak_trade_dashboard"
     active = (tmpl_dir / "market_v0.html").read_text(encoding="utf-8")
     assert "ARCHITECTURE RESET IN PROGRESS" in active

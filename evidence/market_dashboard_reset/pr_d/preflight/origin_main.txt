@@ -1,0 +1,1 @@
+500f15e4 PR-C: add canonical Market Dashboard adapters (#5286)

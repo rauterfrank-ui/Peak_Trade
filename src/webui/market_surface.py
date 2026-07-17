@@ -1,20 +1,17 @@
 # src/webui/market_surface.py
 """
-Read-only Market Surface — PR-A architecture reset shell on GET /market.
+Read-only Market Surface — PR-D product surface on GET /market.
 
-- GET /market — minimal architecture-reset shell (no landmark composition)
+- GET /market — canonical read-only Market Dashboard product surface
 - GET /api/market/ohlcv — JSON (OHLCV-Bars; legacy kraken/dummy only; not used by /market)
 
-PR-A removes the active /market bindings to:
-``build_static_dashboard_display_dict``, ``market_dashboard_current_state_snapshot_v0``,
-implicit dummy fallback chains, and UI-composed decision/safety/authority facts.
+PR-D binds /market to:
+``build_market_dashboard_product_template_context_v1`` → page aggregate → presenter
+→ ``market_dashboard_product_v1.html``.
 
-Canonical read-model producers and ``build_market_v0_page_template_context`` remain in
-this module for reuse/quarantine, but are **not** reachable from the routed GET /market
-handler. Legacy presentation partials under ``templates/peak_trade_dashboard/partials/``
-are unreferenced by the active shell (LEGACY / NOT ROUTED).
-
-Keine Orders, kein OPS-Cockpit-Bezug, keine Trading Authority auf /market.
+Legacy producers (``build_static_dashboard_display_dict``,
+``market_dashboard_current_state_snapshot_v0``, dummy fallback chains) remain
+unreachable from the routed GET /market handler.
 """
 
 from __future__ import annotations
@@ -69,6 +66,10 @@ from .market_visual_operator_surface_v1.operator_overview_display_v1 import (
     build_operator_overview_display_v1,
 )
 from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
+from .market_dashboard_product_surface_v1 import (
+    PRODUCT_TEMPLATE_NAME,
+    build_market_dashboard_product_template_context_v1,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +92,7 @@ PAGE_TITLE = "Peak Trade Market Dashboard"
 CANONICAL_MARKET_ROUTE = "/market"
 CANONICAL_MARKET_ROUTE_OWNER = "src/webui/market_surface.py"
 CANONICAL_MARKET_VIEWMODEL_OWNER = "src/webui/market_surface.py"
-CANONICAL_MARKET_TEMPLATE_OWNER = "templates/peak_trade_dashboard/market_v0.html"
+CANONICAL_MARKET_TEMPLATE_OWNER = "templates/peak_trade_dashboard/market_dashboard_product_v1.html"
 CANONICAL_FUTURES_UNIVERSE_OWNER = "src/webui/market_ranking_funnel_runtime_v0.py"
 CANONICAL_FUTURES_RANKING_OWNER = "src/webui/market_ranking_funnel_runtime_v0.py"
 CANONICAL_TOP_N_OWNER = "src/webui/market_surface.py"
@@ -3250,25 +3251,22 @@ def create_market_router(
         return build_market_payload(symbol=sym, timeframe=timeframe, limit=limit, source=src)
 
     @router.get("/market", response_class=HTMLResponse)
-    async def market_v0_page(request: Request) -> Any:
-        """GET /market — architecture reset shell (PR-A).
+    async def market_dashboard_product_page_v1(request: Request) -> Any:
+        """GET /market — PR-D read-only Market Dashboard product surface.
 
-        The legacy landmark composition is not routed. Query parameters are
+        Path: optional env-gated readmodel sources → PR-C adapters → one page
+        aggregate → one presenter → product template. Query parameters are
         intentionally ignored so /market cannot re-enter dummy/kraken OHLCV,
         static Double-Play fixtures, or hardcoded current-state snapshots.
         ``get_project_status`` remains injected for router compatibility but is
-        not rendered as domain truth on this shell.
+        not rendered as domain truth on this surface.
         """
-        _ = get_project_status  # retained for create_market_router contract; unused on shell
+        _ = get_project_status  # retained for create_market_router contract; unused
+        context = build_market_dashboard_product_template_context_v1()
         return templates.TemplateResponse(
             request,
-            "market_v0.html",
-            {
-                "page_title": "Market Dashboard",
-                "architecture_reset_in_progress": "ARCHITECTURE RESET IN PROGRESS",
-                "read_only_label": "READ ONLY",
-                "no_trading_authority_label": "NO TRADING AUTHORITY",
-            },
+            PRODUCT_TEMPLATE_NAME,
+            context,
         )
 
     return router

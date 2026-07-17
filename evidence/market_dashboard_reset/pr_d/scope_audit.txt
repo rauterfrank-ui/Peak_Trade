@@ -1,0 +1,15 @@
+PR-D scope audit
+ONE_PAGE_AGGREGATE_OWNER=src/webui/market_dashboard_readmodels_v1/page_builder.py
+ONE_PRESENTER_BOUNDARY=src/webui/market_dashboard_product_surface_v1/presenter.py
+ROUTE=src/webui/market_surface.py → market_dashboard_product_page_v1
+TEMPLATE=templates/peak_trade_dashboard/market_dashboard_product_v1.html
+CSS=static/css/market_dashboard_product_v1.css
+CONDITIONALLY_ALLOWED:
+  templates/peak_trade_dashboard/base.html — extra_head block for product CSS loading
+FORBIDDEN_DOMAIN_OWNER_DIFF=false
+TRADING_CORE_SEMANTICS_DIFF=false
+RUNTIME_ACTIVATION_DIFF=false
+ORDER_PATH_DIFF=false
+CI_INFRA_DIFF=false (selector mapping not modified; PR_BOUNDED_FULL due to new template/css/evidence paths)
+SAFETY_AUTHORITY_STATE=NOT_BOUND
+PRODUCT_GATE_PASS=false

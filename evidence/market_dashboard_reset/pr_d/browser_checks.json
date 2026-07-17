@@ -1,0 +1,25 @@
+{
+  "base_url": "http://127.0.0.1:53151",
+  "browser_actual": "GOOGLE_CHROME",
+  "checks": {
+    "canonical_decision_area_visible": true,
+    "engineering_provenance_disclosure_present": true,
+    "no_blank_primary_workspace": true,
+    "no_failed_critical_static_assets": true,
+    "no_horizontal_overflow": true,
+    "no_order_controls": true,
+    "no_uncaught_console_errors": true,
+    "old_dashboard_landmarks_absent": true,
+    "primary_workspace_above_fold": true,
+    "reset_shell_text_absent": true,
+    "route_status_200": true,
+    "safety_authority_not_bound_visible": true
+  },
+  "console_error_count": 0,
+  "critical_asset_failures": [],
+  "generated_at": "2026-07-17T09:35:30.310704+00:00",
+  "network_failure_count": 0,
+  "product_gate_pass": false,
+  "real_chrome_verified": true,
+  "technical_gate_pass": true
+}

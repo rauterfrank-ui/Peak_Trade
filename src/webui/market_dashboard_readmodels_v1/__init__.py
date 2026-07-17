@@ -13,6 +13,11 @@ from src.webui.market_dashboard_readmodels_v1.aggregate import (
     PAGE_AGGREGATE_SCHEMA_ID,
     new_market_dashboard_page_snapshot_v1,
 )
+from src.webui.market_dashboard_readmodels_v1.page_builder import (
+    MarketDashboardPageSourceInputsV1,
+    PAGE_AGGREGATE_OWNER,
+    build_market_dashboard_page_snapshot_v1,
+)
 from src.webui.market_dashboard_readmodels_v1.contracts import (
     AuthorityClassificationV1,
     CanonicalDecisionStatusV1,
@@ -83,6 +88,7 @@ __all__ = [
     "EligibilityStatusV1",
     "ExecutionStateSnapshotV1",
     "MarketDashboardPageSnapshotV1",
+    "MarketDashboardPageSourceInputsV1",
     "MarketDashboardReadModelContractError",
     "MarketInstrumentSnapshotV1",
     "MarketRankingItemV1",
@@ -90,6 +96,7 @@ __all__ = [
     "OhlcvBarV1",
     "OperatingModeV1",
     "PACKAGE_ID",
+    "PAGE_AGGREGATE_OWNER",
     "PAGE_AGGREGATE_SCHEMA_ID",
     "PROVENANCE_SCHEMA_ID",
     "SafetyAuthoritySnapshotV1",
@@ -97,6 +104,7 @@ __all__ = [
     "SourceFreshnessEntryV1",
     "TriStateV1",
     "UnavailableSnapshotV1",
+    "build_market_dashboard_page_snapshot_v1",
     "dumps_json",
     "loads_page_snapshot_json",
     "new_canonical_decision_summary_v1",

@@ -24,6 +24,7 @@
       @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
       .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
     </style>
+    {% block extra_head %}{% endblock %}
   </head>
   <body class="bg-slate-950 text-slate-100 {% block body_class %}{% endblock %}">
     <div class="min-h-screen">
