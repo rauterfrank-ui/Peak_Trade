@@ -40,7 +40,7 @@ Strict read-only forensic audit of the Peak_Trade OKX integration surface on `or
 | AWS shadow/paper/testnet structural binding | `src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py` | No |
 | Config profile | `config/config.toml` → `[exchange.okx_europe_eea]` (`enabled=false`) | N/A |
 | Public futures market-data ingest | `scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py` | Yes — public GET allowlist on `https://www.okx.com` |
-| Research public fetchers | `src/research/okx_*` / panel materializers | Yes — public GET / CDN archive |
+| Research public fetchers | `src&#47;research&#47;okx_*` / panel materializers | Yes — public GET / CDN archive |
 | Mock execution adapter (legacy) | `src/execution/adapters/providers/okx_v1.py` | No (offline mocks) |
 
 ### 2.2 Explicitly absent / non-implemented live clients
@@ -57,8 +57,8 @@ Strict read-only forensic audit of the Peak_Trade OKX integration surface on `or
 |---|---|---|
 | Research public MD base | `https://www.okx.com` | production public MD |
 | EEA REST host | `https://eea.okx.com` | EEA venue target |
-| EEA public WS | `wss://wseeapap.okx.com:8443/ws/v5/public` | demo/public WS |
-| EEA private WS | `wss://wseeapap.okx.com:8443/ws/v5/private` | config only; not probed with login |
+| EEA public WS | `wss:&#47;&#47;wseeapap.okx.com:8443&#47;ws&#47;v5&#47;public` | demo/public WS |
+| EEA private WS | `wss:&#47;&#47;wseeapap.okx.com:8443&#47;ws&#47;v5&#47;private` | config only; not probed with login |
 | Simulation header | `x-simulated-trading: 1` | demo routing (used once on public GET instruments only) |
 | Exchange enabled | `false` | fail-closed |
 | Validate only | `true` | fail-closed |
@@ -83,11 +83,11 @@ No `.env` / `.secrets` files present in workspace root at audit time.
 
 ### 2.5 Allowed read-only probes (executed)
 
-- `GET /api/v5/public/time` — `www.okx.com`, `eea.okx.com`
-- `GET /api/v5/public/instruments` — SWAP/SPOT/FUTURES as applicable
-- `GET /api/v5/market/ticker?instId=ETH-USDT-SWAP` — `www.okx.com`
+- `GET &#47;api&#47;v5&#47;public&#47;time` — `www.okx.com`, `eea.okx.com`
+- `GET &#47;api&#47;v5&#47;public&#47;instruments` — SWAP/SPOT/FUTURES as applicable
+- `GET &#47;api&#47;v5&#47;market&#47;ticker?instId=ETH-USDT-SWAP` — `www.okx.com`
 - Public WebSocket subscribe `tickers` / `ETH-USDT-SWAP` — global + EEA public hosts; ping/pong; unsubscribe/close
-- One public `GET .../instruments?instType=FUTURES` with `x-simulated-trading: 1` (no auth headers) to verify demo instrument visibility
+- One public `GET ...&#47;instruments?instType=FUTURES` with `x-simulated-trading: 1` (no auth headers) to verify demo instrument visibility
 
 ### 2.6 Explicitly forbidden mutations (not performed)
 
@@ -115,8 +115,8 @@ Order place/amend/cancel, algo order channels, transfer, withdrawal, leverage se
 
 | Probe | Result |
 |---|---|
-| Global public WS connect/subscribe/data/heartbeat/close | `MATCH` (`wss://ws.okx.com:8443/ws/v5/public`) |
-| EEA public WS connect/subscribe/data/heartbeat/close | `MATCH` (`wss://wseeapap.okx.com:8443/ws/v5/public`) |
+| Global public WS connect/subscribe/data/heartbeat/close | `MATCH` (`wss:&#47;&#47;ws.okx.com:8443&#47;ws&#47;v5&#47;public`) |
+| EEA public WS connect/subscribe/data/heartbeat/close | `MATCH` (`wss:&#47;&#47;wseeapap.okx.com:8443&#47;ws&#47;v5&#47;public`) |
 | Private WS authenticated session | `NOT_VERIFIABLE` (no repo private client; credentials ABSENT; login not attempted) |
 
 Reconnect storm / long-soak not exercised (bounded audit). Fail-closed reconnect policy exists as offline contract text only.
