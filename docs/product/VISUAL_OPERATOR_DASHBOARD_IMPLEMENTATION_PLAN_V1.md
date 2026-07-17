@@ -264,7 +264,7 @@ AUTHORITY_EFFECT=NONE
 
 ## Explicit stop / authorized next slice
 
-Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs/product/evidence/phase_*` and must not be re-opened as the next step. The post-PR#5257 Chrome full-page rebaseline authorizes exactly one next presentation slice:
+Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. The post-PR#5257 Chrome full-page rebaseline authorizes exactly one next presentation slice:
 
 ```text
 NEXT_SLICE=COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1

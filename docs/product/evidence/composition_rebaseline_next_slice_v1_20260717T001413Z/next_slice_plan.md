@@ -8,7 +8,7 @@ Above the fold, the Primary Market Chart already dominates (≥51% viewport shar
 
 - Evidence root: this directory
 - `composition_geometry.json` aggregate + per-viewport landmark heights
-- Full-page screenshots: `screenshots/full_page_1440x900.png`, `1280x800`, `1728x1117`
+- Full-page screenshots: `screenshots&#47;full_page_1440x900.png`, `1280x800`, `1728x1117`
 - `REAL_CHROME_VERIFIED=true`, `CHROMIUM_FALLBACK_USED=false`
 - Decision page-share: 53.4% (1440), 53.6% (1280), 50.0% (1728)
 
@@ -58,7 +58,7 @@ Presentation density inside `DECISION_SURFACE`: Governed Top20 matrix + decision
 - `static/css/peak_trade_dashboard_layout_v1.css`
 - `static/css/peak_trade_dashboard_design_tokens_v1.css` (Decision density tokens only, if needed)
 
-Reuse existing context builders in `src/webui/market_surface.py` and `market_visual_operator_surface_v1/*` — **no new Python owners**.
+Reuse existing context builders in `src/webui/market_surface.py` and `market_visual_operator_surface_v1&#47;*` — **no new Python owners**.
 
 ## Unchanged Core / SSOT boundaries
 

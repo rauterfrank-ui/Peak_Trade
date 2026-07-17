@@ -22,7 +22,7 @@ Mode: **READ-ONLY** capture + planning (no productive UI implementation)
 ## Dashboard start (this run)
 
 - Preferred script: `scripts/ops/start_market_dashboard_visual_operator_readonly_v1.sh`
-- Runtime used after bundle materialization: `.venv/bin/python3 -m uvicorn src.webui.app:app --host 127.0.0.1 --port 8765`
+- Runtime used after bundle materialization: `.venv&#47;bin&#47;python3 -m uvicorn src.webui.app:app --host 127.0.0.1 --port 8765`
 - Offline bundle root under Peak_Trade runtime evidence archive research path
 - Authority: none · Depth disabled · no live/testnet/paper/shadow/scheduler/order activation
 - Process stopped after capture
@@ -48,10 +48,10 @@ Mode: **READ-ONLY** capture + planning (no productive UI implementation)
 - `runbook_snapshot_drift_report.json`
 - `composition_findings.md`
 - `next_slice_plan.md`
-- `screenshots/full_page_1440x900.png`
-- `screenshots/full_page_1280x800.png`
-- `screenshots/full_page_1728x1117.png`
-- `screenshots/viewport_*.png` (harness-supported viewport shots)
+- `screenshots&#47;full_page_1440x900.png`
+- `screenshots&#47;full_page_1280x800.png`
+- `screenshots&#47;full_page_1728x1117.png`
+- `screenshots&#47;viewport_*.png` (harness-supported viewport shots)
 - `MANIFEST.sha256`
 
 ## SSOT / governance
