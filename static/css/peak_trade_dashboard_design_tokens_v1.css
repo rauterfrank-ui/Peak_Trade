@@ -33,6 +33,11 @@
   --pt-decision-funnel-aux-max-height: 56px;
   --pt-primary-chart-height-vh: 48vh;
   --pt-primary-chart-max-height: 580px;
+  /* Landmark vertical rhythm — intentional inter-landmark breathing (presentation only) */
+  --pt-landmark-gap-header-to-primary: 8px;
+  --pt-landmark-gap-primary-to-decision: 20px;
+  --pt-landmark-gap-decision-to-observability: 20px;
+  --pt-landmark-gap-observability-to-engineering: 20px;
 
   --pt-space-1: 4px;
   --pt-space-2: 8px;

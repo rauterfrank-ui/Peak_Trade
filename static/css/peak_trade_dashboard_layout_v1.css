@@ -471,3 +471,41 @@
   /* collapsed by default; chrome quiet */
   border-color: rgba(51, 65, 85, 0.45);
 }
+
+/*
+ * COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1
+ * Presentation-only: intentional inter-landmark breathing so stages read as
+ * discrete bands. Does not alter Decision internal density tokens, Primary
+ * page-share dominance, producers, or authority semantics.
+ */
+#market-v0-shell[data-market-landmark-vertical-rhythm-v1="true"]
+  [data-landmark="PRIMARY_MARKET_SURFACE"] {
+  margin-top: var(--pt-landmark-gap-header-to-primary);
+}
+
+#market-v0-shell[data-market-landmark-vertical-rhythm-v1="true"]
+  [data-landmark="DECISION_SURFACE"] {
+  margin-top: var(--pt-landmark-gap-primary-to-decision);
+}
+
+#market-v0-shell[data-market-landmark-vertical-rhythm-v1="true"]
+  [data-landmark="OBSERVABILITY_SURFACE"] {
+  margin-top: var(--pt-landmark-gap-decision-to-observability);
+}
+
+#market-v0-shell[data-market-landmark-vertical-rhythm-v1="true"]
+  [data-landmark="ENGINEERING_DRAWER"] {
+  margin-top: var(--pt-landmark-gap-observability-to-engineering);
+}
+
+#market-v0-shell[data-market-landmark-vertical-rhythm-v1="true"]
+  [data-landmark="ENGINEERING_DRAWER"]
+  > details {
+  margin-top: 0.5rem;
+}
+
+#market-v0-shell[data-market-landmark-vertical-rhythm-v1="true"]
+  [data-landmark="ENGINEERING_DRAWER"]
+  > details:first-child {
+  margin-top: 0;
+}

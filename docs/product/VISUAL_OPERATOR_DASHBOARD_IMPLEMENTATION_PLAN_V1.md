@@ -3,10 +3,11 @@
 > **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` for any further unrelated UI slice
 > **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
-> **Next implementable slice:** awaiting post-dominance composition rebaseline (separate GO)
-> **Authorized slice in flight / implemented:** `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1`
-> **Rebaseline evidence:** [composition_rebaseline_post_decision_compression_v1_20260717T004021Z](evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/)
-> **After evidence:** [composition_primary_page_share_dominance_v1_20260717T004501Z](evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/)
+> **Next implementable slice:** awaiting post-rhythm composition rebaseline (separate GO)
+> **Authorized slice in flight / implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1`
+> **Prior slice:** `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` · historical authorize pack for `COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1`: [composition_rebaseline_next_slice_v1_20260717T001413Z](evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/)
+> **Rebaseline evidence:** [composition_rebaseline_post_primary_dominance_v1_20260717T010616Z](evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/)
+> **After evidence:** [composition_landmark_vertical_rhythm_v1_20260717T011316Z](evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/)
 > **Branch context at original plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
 ```text
@@ -269,16 +270,16 @@ AUTHORITY_EFFECT=NONE
 Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. The post-PR#5257 Chrome full-page rebaseline authorizes exactly one next presentation slice:
 
 ```text
-IMPLEMENTED_SLICE=COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1
-IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/
-IMPLEMENTED_SLICE_SCOPE=templates/CSS presentation only; reuse existing ViewModels; no data-contract or authority changes
-BASELINE_EVIDENCE=docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/
-PRIOR_SLICE=COMPOSITION_DECISION_SURFACE_VERTICAL_COMPRESSION_V1
-NEXT_SLICE=AWAITING_POST_DOMINANCE_REBASELINE
+IMPLEMENTED_SLICE=COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1
+IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/
+IMPLEMENTED_SLICE_SCOPE=templates/CSS presentation only; landmark gap tokens; no data-contract or authority changes
+BASELINE_EVIDENCE=docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/
+PRIOR_SLICE=COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1
+NEXT_SLICE=AWAITING_POST_RHYTHM_REBASELINE
 STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 ```
 
-### Before / after measured (1440×900, real Chrome)
+### Before / after measured (1440×900, real Chrome) — Primary dominance (PR #5260)
 
 | Metric | Post-compression baseline | After dominance slice | Target |
 |---|---:|---:|---:|
@@ -288,4 +289,13 @@ STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 | OBSERVABILITY_SURFACE start Y | 2007 | 1848 | ≤ 1850 |
 | PRIMARY chart viewport share | ≥40% | 50.0% | ≥ 40% |
 | Horizontal overflow | 0 | 0 | 0 |
+
+### Landmark vertical rhythm (this slice) — gaps @1440×900
+
+| Transition | Post-dominance rebaseline | After rhythm slice | Target |
+|---|---:|---:|---:|
+| Header → Primary | 5.6 px | 8 px | ≥ 8 |
+| Primary → Decision | 2 px | 20 px | 16–28 |
+| Decision → Observability | 12 px | 20 px | ≥ 16 |
+| Observability → Engineering | 16 px | 20 px | ≥ 16 |
 
