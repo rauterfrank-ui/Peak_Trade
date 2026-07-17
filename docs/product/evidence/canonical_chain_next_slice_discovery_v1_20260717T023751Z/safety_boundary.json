@@ -1,0 +1,11 @@
+{
+  "LIVE_AUTHORIZED": false,
+  "ORDERS": false,
+  "SHADOW": false,
+  "PAPER": false,
+  "TESTNET": false,
+  "RUNTIME_BRIDGE_STATE": "BOUND_NOT_ACTIVATED",
+  "CORE_SEMANTICS_CHANGED": false,
+  "DASHBOARD_FILES_CHANGED": false,
+  "IMPLEMENTATION_PERFORMED": false
+}
