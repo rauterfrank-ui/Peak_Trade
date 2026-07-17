@@ -1,0 +1,230 @@
+{
+  "BOLLINGER_DECISION": "CONTRACT_REMAINS_AMBIGUOUS",
+  "BOLLINGER_LONG_SEMANTIC_DECISION_COMPLETE": true,
+  "BOLLINGER_QUANTITATIVE_BASELINE_COMPLETE": true,
+  "BOLLINGER_SHORT_EMISSION": false,
+  "BOLLINGER_SIDE_ACTIVATED": false,
+  "LIVE_AUTHORIZED": false,
+  "ORDERS_ENABLED": false,
+  "OTHER_PRODUCER_SIDE_EMISSION_CHANGED": false,
+  "PRODUCTIVE_SEMANTICS_CHANGED": false,
+  "archive_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z",
+  "base_sha": "8ed59484959504e7d477dc9e8d4adedd2ec022b0",
+  "binding": "config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json",
+  "bollinger_eval_entry_mv2": {
+    "BLOCKED_COMPOSITION": 0,
+    "BLOCKED_DIRECTIONAL_AGREEMENT": 1,
+    "BLOCKED_SUITABILITY": 0,
+    "BLOCKED_WARMUP": 0,
+    "ENTER_LONG": 0,
+    "ENTER_SHORT": 0,
+    "EXIT_OR_DEMOTION": 0,
+    "HOLD": 0,
+    "UNOBSERVABLE_FAIL_CLOSED": 0,
+    "agreement_direction_counts": {
+      "unresolved": 1
+    },
+    "composition_outcome_counts": {
+      "observe": 1
+    },
+    "dominant_first_failed_stage": "directional_agreement",
+    "entry_bar_count": 1,
+    "entry_side_counts": {
+      "NONE": 1
+    },
+    "first_failed_stage_counts": {
+      "directional_agreement": 1
+    },
+    "taxonomy_outcome_counts": {
+      "BLOCKED_DIRECTIONAL_AGREEMENT": 1
+    }
+  },
+  "bollinger_event_baseline_eval": {
+    "entry_plus_one": 1,
+    "exit_minus_one": 168,
+    "neutral_zero": 2784,
+    "total_bars": 2953
+  },
+  "bollinger_event_baseline_panel": {
+    "entry_plus_one": 185,
+    "exit_minus_one": 20754,
+    "neutral_zero": 327515,
+    "total_bars": 348454
+  },
+  "bollinger_panel_entry_mv2": {
+    "BLOCKED_COMPOSITION": 0,
+    "BLOCKED_DIRECTIONAL_AGREEMENT": 185,
+    "BLOCKED_SUITABILITY": 0,
+    "BLOCKED_WARMUP": 0,
+    "ENTER_LONG": 0,
+    "ENTER_SHORT": 0,
+    "EXIT_OR_DEMOTION": 0,
+    "HOLD": 0,
+    "UNOBSERVABLE_FAIL_CLOSED": 0,
+    "agreement_direction_counts": {
+      "unresolved": 185
+    },
+    "composition_outcome_counts": {
+      "observe": 185
+    },
+    "dominant_first_failed_stage": "directional_agreement",
+    "entry_bar_count": 185,
+    "entry_side_counts": {
+      "NONE": 185
+    },
+    "first_failed_stage_counts": {
+      "directional_agreement": 185
+    },
+    "taxonomy_outcome_counts": {
+      "BLOCKED_DIRECTIONAL_AGREEMENT": 185
+    }
+  },
+  "changed_bar_count": 0,
+  "comparison_table": {
+    "bollinger_ENTER_LONG": 0,
+    "bollinger_ENTER_SHORT": 0,
+    "bollinger_HOLD": 0,
+    "bollinger_agreement_block": 185,
+    "bollinger_agreement_pass": 0,
+    "bollinger_composition_observe_or_block": 0,
+    "bollinger_dominant_first_failed_stage": "directional_agreement",
+    "bollinger_entry_plus_one": 185,
+    "bollinger_entry_side_long": 0,
+    "bollinger_entry_side_none": 185,
+    "bollinger_entry_side_short": 0,
+    "bollinger_exit_minus_one": 20754,
+    "bollinger_side_resolved": 0,
+    "scope": "identical_panel_member_set_and_bars; strategy differs by design",
+    "short_reference_dominant_note": "rsi_reversion -1 is positional SHORT; Bollinger -1 is EXIT (never SHORT). Bollinger ENTRY remains side-unresolved (NONE) under decision C.",
+    "short_reference_entry_count": 53870,
+    "short_reference_long_plus_one_count": 64110
+  },
+  "control_dominant_first_failed_stage": "directional_agreement",
+  "decision_evidence": {
+    "canonical_side_authority_present": false,
+    "parent_bollinger_entry_side_decision": "BLOCKED_AMBIGUITY",
+    "productive_minus_one_meaning": "EXIT_EVENT",
+    "productive_plus_one_meaning": "ENTRY_EVENT",
+    "short_entry_condition_present": false,
+    "variant_a_rejected_reason": "productive code/tests/owner contract not consistently long-only (class doc vs method return vs Decision D vs adapter NONE)",
+    "variant_b_rejected_reason": "producer package not ratified as EVENT_ONLY_NO_SIDE_AUTHORITY; parent audit class remains AMBIGUOUS_OR_CONTRADICTORY"
+  },
+  "elapsed_seconds": 753.59,
+  "evaluation_instrument_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+  "macd_side_activated": false,
+  "next_dominant_blocker": {
+    "contract_path": "trading.master_v2 / resolve_agreement_bound_directional_cycle_v1 (ENTRY_EXIT entry_side=NONE \u2192 no directional cycle)",
+    "note": "No side ratification in this slice; DA remains fail-closed for Bollinger ENTRY.",
+    "panel_count": 185,
+    "stage": "directional_agreement"
+  },
+  "panel_member_count": 118,
+  "panel_total_bars": 348454,
+  "parent_decision": "OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1",
+  "ratified_dominant_first_failed_stage": "directional_agreement",
+  "runner": "scripts/ops/run_obl_b05_bollinger_long_semantic_decision_baseline_v1.py",
+  "schema_version": "obl_b05_bollinger_long_semantic_decision.v1",
+  "scope_note": "Identical durable full-canonical panel scratch + bollinger runtime config; SHORT reference overlays rsi_reversion POSITIONAL_LS on same bars (documented strategy-id difference; -1 is SHORT entry there, EXIT for bollinger).",
+  "short_reference": {
+    "encoding": "POSITIONAL_LS_STATE_V1",
+    "eval_long_plus_one_mv2": {
+      "BLOCKED_COMPOSITION": 18,
+      "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+      "BLOCKED_SUITABILITY": 0,
+      "BLOCKED_WARMUP": 0,
+      "ENTER_LONG": 53,
+      "ENTER_SHORT": 0,
+      "EXIT_OR_DEMOTION": 0,
+      "HOLD": 405,
+      "UNOBSERVABLE_FAIL_CLOSED": 0,
+      "agreement_direction_counts": {
+        "LONG": 476
+      },
+      "composition_outcome_counts": {
+        "long_selected": 458,
+        "observe": 18
+      },
+      "dominant_first_failed_stage": "entry_exit",
+      "entry_bar_count": 476,
+      "entry_side_counts": {
+        "NONE": 476
+      },
+      "first_failed_stage_counts": {
+        "composition": 18,
+        "entry_exit": 405,
+        "none": 53
+      },
+      "taxonomy_outcome_counts": {
+        "BLOCKED_COMPOSITION": 18,
+        "ENTER_LONG": 53,
+        "HOLD": 405
+      }
+    },
+    "eval_short_entry_minus_one": 345,
+    "minus_one_meaning": "SHORT_ENTRY_POSITIONAL",
+    "panel_event_counts": {
+      "entry_plus_one": 64110,
+      "exit_minus_one": 53870,
+      "neutral_zero": 230474,
+      "note": "exit_minus_one key reused from event counter helper; for rsi_reversion it counts positional SHORT entries (raw==-1)",
+      "short_entry_minus_one": 53870,
+      "total_bars": 348454
+    },
+    "panel_long_plus_one_mv2": {
+      "BLOCKED_COMPOSITION": 2602,
+      "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+      "BLOCKED_SUITABILITY": 0,
+      "BLOCKED_WARMUP": 56,
+      "ENTER_LONG": 9838,
+      "ENTER_SHORT": 0,
+      "EXIT_OR_DEMOTION": 0,
+      "HOLD": 50602,
+      "UNOBSERVABLE_FAIL_CLOSED": 0,
+      "agreement_direction_counts": {
+        "LONG": 64054,
+        "unresolved": 56
+      },
+      "composition_outcome_counts": {
+        "long_selected": 61452,
+        "null": 56,
+        "observe": 2602
+      },
+      "dominant_first_failed_stage": "entry_exit",
+      "entry_bar_count": 64110,
+      "entry_side_counts": {
+        "NONE": 64110
+      },
+      "first_failed_stage_counts": {
+        "composition": 2602,
+        "entry_exit": 51614,
+        "none": 9838,
+        "warmup": 56
+      },
+      "taxonomy_outcome_counts": {
+        "BLOCKED_COMPOSITION": 2602,
+        "BLOCKED_ENTRY_EXIT": 1012,
+        "BLOCKED_WARMUP": 56,
+        "ENTER_LONG": 9838,
+        "HOLD": 50602
+      }
+    },
+    "panel_short_entry_minus_one": 53870,
+    "params": {
+      "lower": 30.0,
+      "rsi_window": 14,
+      "upper": 70.0
+    },
+    "plus_one_meaning": "LONG_ENTRY_POSITIONAL",
+    "producer_id": "rsi_reversion",
+    "scope": "same_panel_bars_identical_archive_strategy_overlay"
+  },
+  "slice_id": "OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_AND_QUANTITATIVE_BASELINE_V1",
+  "unresolved_contradictions": [
+    "CP02_class_doc_1_long_vs_method_return_1_entry",
+    "CP01_base_strategy_abc_long_short_vs_entry_exit",
+    "CP03_registry_supported_sides_long_short_vs_long_only_code",
+    "decision_d_entry_never_implies_long",
+    "adapter_keeps_bollinger_entry_side_none",
+    "parent_ssot_blocked_ambiguity"
+  ]
+}
