@@ -105,8 +105,11 @@ Contrast rule: Bollinger `-1` = EXIT event; RSI `-1` = SHORT entry. Methodologic
 
 - No productive Bollinger side emission
 - Next dominant blocker for Bollinger ENTRY: `directional_agreement` (entry_side=NONE)
-- Future activation only after doc-alignment GO:
+- Governance-doc alignment (fail-closed NONE restatement + open decision brief) is
+  complete in
   `OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1`
+- LONG &#47; keep-NONE &#47; alternate-contract remains an **open** separate Operator-GO
+  (`BOLLINGER_ENTRY_SIDE_AUTHORITY_PENDING_SEPARATE_OPERATOR_GO`)
 
 ## F. Owners &#47; navigation
 
@@ -117,5 +120,6 @@ Contrast rule: Bollinger `-1` = EXIT event; RSI `-1` = SHORT entry. Methodologic
 | Baseline runner | `scripts&#47;ops&#47;run_obl_b05_bollinger_long_semantic_decision_baseline_v1.py` |
 | Tests | `tests&#47;backtest&#47;test_obl_b05_bollinger_long_semantic_decision_v1.py` |
 | Parent authority audit | `docs&#47;governance&#47;OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md` |
+| Doc alignment &#47; open decision | `docs&#47;governance&#47;OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1.md` |
 | TF impact diagnostic | `docs&#47;governance&#47;OBL_B05_TREND_FOLLOWING_SIDE_IMPACT_DIAGNOSTIC_V1.md` |
 | Evidence pointer | `docs&#47;product&#47;evidence&#47;obl_b05_bollinger_long_semantic_decision_v1_20260717T231700Z&#47;` |

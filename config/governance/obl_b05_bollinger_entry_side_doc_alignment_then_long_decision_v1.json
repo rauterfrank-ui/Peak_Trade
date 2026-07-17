@@ -1,0 +1,221 @@
+{
+  "ACTIVE_SSOT_ALIGNED": true,
+  "BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_COMPLETE": true,
+  "BOLLINGER_SIDE_ACTIVATED": false,
+  "CONTRACT_STATE": "CONTRACT_REMAINS_AMBIGUOUS",
+  "ENTRY_SIDE_CURRENT": "NONE",
+  "LIVE_AUTHORIZED": false,
+  "LONG_DECISION_MADE_IN_THIS_SLICE": false,
+  "OPEN_DECISION": "BOLLINGER_ENTRY_SIDE_AUTHORITY_PENDING_SEPARATE_OPERATOR_GO",
+  "ORDERS_ENABLED": false,
+  "PRODUCTIVE_SRC_CHANGED": false,
+  "SIDE_ACTIVATED": false,
+  "active_ssot_updates": [
+    {
+      "change": "Mark governance-docs alignment complete; keep BLOCKED_AMBIGUITY; split next activation candidate",
+      "path": "config/governance/obl_b05_entry_exit_producer_side_authority_decision_v1.json"
+    },
+    {
+      "change": "Align next-step wording; fail-closed NONE invariants; open decision pointer",
+      "path": "docs/governance/OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md"
+    },
+    {
+      "change": "Replace pending doc-alignment next step with completed alignment + open authority decision",
+      "path": "docs/governance/OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_V1.md"
+    },
+    {
+      "change": "Navigation + explicit fail-closed NONE for Bollinger; no activation",
+      "path": "docs/governance/OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1.md"
+    },
+    {
+      "change": "Pointer to doc-alignment slice; keep ENTRY\u2260LONG",
+      "path": "docs/governance/STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_DECISION_D_V1.md"
+    }
+  ],
+  "base_sha": "236a3ed9d39b0346e00662929e911bb44b2095fc",
+  "before_after_contract_statement": {
+    "after": {
+      "bollinger_entry_authorized_side": "NONE",
+      "cycle_signal_plus_one_authorizes_long": false,
+      "entry_side_none_is_intentional_fail_closed": true,
+      "governance_docs_aligned": true,
+      "long_activation_requires_separate_go": true,
+      "productive_src_doc_cp02_still_present": true
+    },
+    "before": {
+      "bollinger_entry_authorized_side": "NONE",
+      "cycle_signal_plus_one_authorizes_long": false,
+      "entry_side_none_is_intentional_fail_closed": true,
+      "governance_docs_aligned": "partial_next_step_pointed_to_this_slice",
+      "long_activation_requires_separate_go": true,
+      "productive_src_doc_cp02_still_present": true
+    },
+    "delta": "Active governance narratives and machine-readable future-slice pointers now state fail-closed NONE as current law and separate the open LONG-authority GO from this non-authorizing doc alignment."
+  },
+  "findings_matrix": [
+    {
+      "layer": "ACTIVE_SSOT",
+      "path": "config/governance/obl_b05_entry_exit_producer_side_authority_decision_v1.json",
+      "statement": "bollinger_entry_side_decision=BLOCKED_AMBIGUITY; KEEP_NONE; activation ineligible",
+      "status": "ALIGNED_UPDATED"
+    },
+    {
+      "layer": "ACTIVE_SSOT",
+      "path": "config/governance/obl_b05_bollinger_long_semantic_decision_v1.json",
+      "statement": "BOLLINGER_DECISION=CONTRACT_REMAINS_AMBIGUOUS; entry_side NONE; SIDE_ACTIVATED=false",
+      "status": "ALIGNED_UNCHANGED_AUTHORITY"
+    },
+    {
+      "layer": "ACTIVE_SSOT",
+      "path": "docs/governance/OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md",
+      "statement": "ENTRY never implies LONG; Bollinger BLOCKED_AMBIGUITY; next = open authority GO",
+      "status": "ALIGNED_UPDATED"
+    },
+    {
+      "layer": "ACTIVE_SSOT",
+      "path": "docs/governance/OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_V1.md",
+      "statement": "Variant C frozen; quantitative baseline; doc-alignment completed pointer",
+      "status": "ALIGNED_UPDATED"
+    },
+    {
+      "layer": "ACTIVE_SSOT",
+      "path": "docs/governance/OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1.md",
+      "statement": "Bollinger entry_side=NONE; +1 is ENTRY only; carrier non-authorizing",
+      "status": "ALIGNED_UPDATED"
+    },
+    {
+      "layer": "ACTIVE_SSOT",
+      "path": "docs/governance/STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_DECISION_D_V1.md",
+      "statement": "ENTRY_EXIT +1 never LONG; Bollinger BLOCKED_AMBIGUITY referenced",
+      "status": "ALIGNED_UPDATED"
+    },
+    {
+      "layer": "ACTIVE_SSOT",
+      "path": "docs/governance/OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_RATIFICATION_V1.md",
+      "statement": "BOLLINGER_SIDE_ACTIVATED=false; TF-only ratification",
+      "status": "ALIGNED_NO_CHANGE_REQUIRED"
+    },
+    {
+      "layer": "ACTIVE_SSOT",
+      "path": "docs/governance/OBL_B05_TREND_FOLLOWING_SIDE_IMPACT_DIAGNOSTIC_V1.md",
+      "statement": "Bollinger control path NONE/DA; SIDE_ACTIVATED=false",
+      "status": "ALIGNED_NO_CHANGE_REQUIRED"
+    },
+    {
+      "layer": "PRODUCTIVE_SOURCE_OUT_OF_SCOPE",
+      "path": "src/strategies/bollinger.py",
+      "statement": "CP02: class doc '1 (long)' vs method '1=entry'; not mutated in this slice",
+      "status": "CONTRADICTION_REMAINS_UNTOUCHED"
+    },
+    {
+      "layer": "PRODUCTIVE_SOURCE_OUT_OF_SCOPE",
+      "path": "src/strategies/base.py",
+      "statement": "CP01: \u00b11 long/short position vocab vs ENTRY_EXIT encoding",
+      "status": "CONTRADICTION_REMAINS_UNTOUCHED"
+    },
+    {
+      "layer": "PRODUCTIVE_SOURCE_OUT_OF_SCOPE",
+      "path": "src/strategies/registry.py",
+      "statement": "CP03: supported_sides=(long,short) capability \u2260 signal authority",
+      "status": "CONTRADICTION_REMAINS_UNTOUCHED"
+    },
+    {
+      "layer": "PRODUCTIVE_SOURCE_OUT_OF_SCOPE",
+      "path": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py",
+      "statement": "Bollinger entry_side forced NONE; only trend_following ratified LONG",
+      "status": "ALIGNED_BEHAVIOR_DOCUMENTED"
+    },
+    {
+      "layer": "HISTORICAL_EVIDENCE",
+      "path": "docs/product/evidence/obl_b05_bollinger_long_semantic_decision_v1_20260717T231700Z/",
+      "statement": "Frozen quantitative baseline; not rewritten",
+      "status": "PRESERVED_NOT_REINTERPRETED"
+    },
+    {
+      "layer": "HISTORICAL_EVIDENCE",
+      "path": "docs/product/evidence/obl_b05_entry_exit_producer_side_authority_decision_v1_20260717T220147Z/",
+      "statement": "Frozen BLOCKED_AMBIGUITY audit package",
+      "status": "PRESERVED_NOT_REINTERPRETED"
+    },
+    {
+      "layer": "GENERAL_DEV_GUIDE",
+      "path": "docs/STRATEGY_DEV_GUIDE.md",
+      "statement": "Generic '1 (long)' strategy template; not Bollinger authority SSOT",
+      "status": "OUT_OF_SCOPE_GENERIC_VOCAB"
+    },
+    {
+      "layer": "GENERAL_DEV_GUIDE",
+      "path": "docs/DEV_GUIDE_ADD_STRATEGY.md",
+      "statement": "Generic template; not Bollinger authority SSOT",
+      "status": "OUT_OF_SCOPE_GENERIC_VOCAB"
+    }
+  ],
+  "open_decision_brief": {
+    "current_law": {
+      "authorized_entry_side": "NONE",
+      "contract_state": "CONTRACT_REMAINS_AMBIGUOUS",
+      "minus_one_meaning": "EXIT_EVENT_NEVER_SHORT",
+      "plus_one_meaning": "ENTRY_EVENT_ONLY"
+    },
+    "next_go_candidates": [
+      "OBL_B05_BOLLINGER_ENTRY_SIDE_LONG_ACTIVATION_V1",
+      "OBL_B05_BOLLINGER_KEEP_FAIL_CLOSED_NONE_RATIFICATION_V1",
+      "OBL_B05_BOLLINGER_EVENT_ONLY_NO_SIDE_AUTHORITY_RATIFICATION_V1"
+    ],
+    "options": [
+      {
+        "id": "OPTION_A_AUTHORIZE_LONG",
+        "requires": [
+          "separate Operator-GO",
+          "productive bollinger.py doc alignment (src mutation in that later GO)",
+          "adapter producer-scoped ratification analogous to trend_following",
+          "A/B impact diagnostic before composition claims"
+        ],
+        "summary": "After productive producer-doc alignment (CP02) and explicit GO, emit entry_side=LONG only on ENTRY (+1); EXIT/FLAT remain NONE; never SHORT.",
+        "title": "Authorize LONG on Bollinger ENTRY",
+        "trade_offs": [
+          "Unblocks DA for Bollinger ENTRY bars (185 panel baseline)",
+          "Composition likely becomes next dominant blocker (TF precedent)",
+          "Touches productive adapter emission \u2014 highest review bar"
+        ]
+      },
+      {
+        "id": "OPTION_B_KEEP_AMBIGUOUS_FAIL_CLOSED",
+        "requires": [
+          "no productive mutation",
+          "optional continued evidence-only work"
+        ],
+        "summary": "Leave entry_side=NONE; retain BLOCKED_AMBIGUITY; no producer activation.",
+        "title": "Keep contract ambiguous / fail-closed NONE",
+        "trade_offs": [
+          "Safest; preserves fail-closed DA block",
+          "Does not progress Bollinger economic ENTER path",
+          "CP02 remains in productive source docs until a src-touching GO"
+        ]
+      },
+      {
+        "id": "OPTION_C_EXTEND_PRODUCER_CONTRACT_DIFFERENTLY",
+        "requires": [
+          "separate Operator-GO defining the alternate owner",
+          "Decision D / carrier contract amendment if ownership moves"
+        ],
+        "summary": "e.g. ratify EVENT_ONLY_NO_SIDE_AUTHORITY, or introduce a separate side owner outside ENTRY_EXIT carrier.",
+        "title": "Extend producer contract differently",
+        "trade_offs": [
+          "Can resolve ambiguity without implying LONG",
+          "Larger architecture change than TF-style ratification",
+          "Risk of second authority map if not reuse-before-new"
+        ]
+      }
+    ],
+    "question": "What should the next Operator-GO authorize for bollinger_bands ENTRY side?",
+    "recommendation_for_operator": "Do not auto-select. Prefer OPTION_B until a dedicated GO authorizes either producer-doc alignment + LONG (A) or an alternate contract extension (C)."
+  },
+  "parent_slices": [
+    "OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1",
+    "OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_AND_QUANTITATIVE_BASELINE_V1",
+    "OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1"
+  ],
+  "schema_version": "obl_b05_bollinger_entry_side_doc_alignment_then_long_decision.v1",
+  "slice_id": "OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1"
+}
