@@ -682,15 +682,7 @@ def _parity_surface_assessments_base_v0() -> Tuple[ParitySurfaceAssessmentV0, ..
 
 
 def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
-    """Return gap assessments; Surface P registry owner.
-
-    Surface P parity_status is PASS when the required offline proof-input binding
-    is satisfied. That PASS means offline/backtest/scenario/runtime-reference
-    parity completeness only; it does not activate the runtime bridge or grant
-    live/order authority. Activation-pending state remains on the semantic
-    contract as PARTIAL_RUNTIME_ACTIVATION_PENDING. Base PARTIAL is retained only
-    when the proof-input binding is not satisfied.
-    """
+    """Return gap assessments with Surface P promoted to PASS when offline proof input is satisfied."""
     from trading.master_v2.surface_p_required_proof_input_binding_v0 import (
         evaluate_surface_p_required_proof_input_binding_v0,
     )
