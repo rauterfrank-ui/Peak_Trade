@@ -1739,7 +1739,7 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 
 - **Market Dashboard product removed:** [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) is the tombstone chronicle. `GET &#47;market*` is intentionally absent (normal HTTP 404; no redirect, alias, placeholder, or reset shell). No UI consumer is authorized by this deletion.
 - **Registry v1 projection fields preserved:** `market_dashboard_projection` / `market_dashboard_projection_allowed` remain ops-only disabled-by-default consumer eligibility markers (this §6a.2).
-- **Master V2 / Double Play domain preserved (not a Market route):** composition **authority** and non-authority boundaries remain unchanged (§9). The surviving read-only display JSON is `GET /api/master-v2/double-play/dashboard-display.json` — independent of the removed Market Dashboard product. Registry projection must **not** embed Double Play decision or selection authority.
+- **Master V2 / Double Play domain preserved (not a Market route):** composition **authority** and non-authority boundaries remain unchanged (§9). The surviving read-only display JSON is `GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json` — independent of the removed Market Dashboard product. Registry projection must **not** embed Double Play decision or selection authority.
 
 Detail owner for historical F5 / §7h display markers: taxonomy §7h and [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md).
 

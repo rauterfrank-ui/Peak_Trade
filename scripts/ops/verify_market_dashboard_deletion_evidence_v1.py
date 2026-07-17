@@ -181,9 +181,7 @@ def _scoped_diff_digest(base: str, head: str) -> str:
 
 def _expected_manifest_lines(evidence_root: Path) -> list[str]:
     files = sorted(
-        p
-        for p in evidence_root.rglob("*")
-        if p.is_file() and p.name not in MANIFEST_EXCLUDES
+        p for p in evidence_root.rglob("*") if p.is_file() and p.name not in MANIFEST_EXCLUDES
     )
     lines: list[str] = []
     for path in files:
@@ -238,7 +236,9 @@ def verify(*, base: str, head: str, evidence_root: Path) -> None:
 
     intended_recorded = [
         ln
-        for ln in (evidence_root / "final_intended_files.txt").read_text(encoding="utf-8").splitlines()
+        for ln in (evidence_root / "final_intended_files.txt")
+        .read_text(encoding="utf-8")
+        .splitlines()
         if ln.strip()
     ]
     if intended_recorded != intended:
@@ -260,7 +260,9 @@ def verify(*, base: str, head: str, evidence_root: Path) -> None:
             raise EvidenceVerifyError(f"missing_counter={key}")
     for key, val in counts.items():
         if counters[key] != str(val):
-            raise EvidenceVerifyError(f"counter_mismatch {key} recorded={counters[key]} actual={val}")
+            raise EvidenceVerifyError(
+                f"counter_mismatch {key} recorded={counters[key]} actual={val}"
+            )
     if counters["INTENDED_ENTRY_COUNT"] != str(len(intended)):
         raise EvidenceVerifyError("intended_entry_count_mismatch")
     if counters["FINAL_DIFF_SHA256"] != scoped:
@@ -352,9 +354,7 @@ def materialize(
     (evidence_root / "name_status_inventory.txt").write_text(ns_text, encoding="utf-8")
 
     rename_lines = [
-        f"{status}\t{paths[0]}\t{paths[1]}"
-        for status, paths in rows
-        if status.startswith("R")
+        f"{status}\t{paths[0]}\t{paths[1]}" for status, paths in rows if status.startswith("R")
     ]
     (evidence_root / "rename_inventory.txt").write_text(
         "\n".join(rename_lines) + ("\n" if rename_lines else ""), encoding="utf-8"
