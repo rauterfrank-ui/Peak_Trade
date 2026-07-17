@@ -152,7 +152,7 @@ Kanonische Docs-Klassifikation für genannte R&amp;D-Strategien. **Nicht** Live-
 | **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
 | **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
 | **Research-Track** | Sweeps, Metriken, Heatmaps, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio, Nightly-Sweeps, Feature-Importance. |
-| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, ``src&#47;features``. R&amp;D-Strategien Ehlers/Bouchaud/Gatheral/Meta-Labeling: siehe §5.2.1 (`research-only`, NON-OPERATIONAL). | <!-- pt:ref-target-ignore -->
+| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, ``src&#47;features``. R&amp;D-Strategien Ehlers&#47;Bouchaud&#47;Gatheral&#47;Meta-Labeling: siehe §5.2.1 (`research-only`, NON-OPERATIONAL). | <!-- pt:ref-target-ignore -->
 
 ---
 
