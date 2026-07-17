@@ -19,6 +19,9 @@ CANONICAL_EXECUTION_AUTHORITY_OWNER=UNRESOLVED
 PRODUCTIVE_ORDER_INTENT_DECISION_OWNER_COUNT=3
 PRODUCTIVE_BYPASS_PATH_COUNT=4
 DIRECT_SUBMISSION_BYPASS_COUNT=5
+DIRECT_SUBMISSION_SURFACE_CONTRACT_V1=true
+DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_EXECUTION_PERMISSION
+DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST=true
 AUTHORITY_LEAK_DETECTED=false
 THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY=true
 NO_RUNTIME_REWIRE_IN_THIS_SLICE=true
@@ -125,6 +128,36 @@ ADAPTER PARALLEL:
 3. `KrakenLiveClient.place_order`
 4. `ExecutionRouterV1.place_order` (mocks)
 5. `execution_pipeline.ExecutionPipeline.execute` adapter submit
+
+### Direct-submission surface static contract (drift guard only)
+
+```
+DIRECT_SUBMISSION_SURFACE_CONTRACT_V1=true
+DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_EXECUTION_PERMISSION
+DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST=true
+EXPECTED_SURFACE_COUNT=5
+DRIFT_POLICY=addition/removal/rename/duplicate/unresolved_symbol → FAIL
+```
+
+The five inventoried direct-submission surfaces are **frozen as a static inventory/drift contract** so that addition, removal, rename, duplicate IDs, or unresolved symbols fail closed in tests.
+
+This frozen set is NOT an execution allowlist and does not:
+- authorize, enable, or activate any surface
+- make any surface canonical
+- assign execution authority
+- approve live / testnet / shadow / paper / orders
+- start consolidation or decommission
+
+`REACHABLE_PRODUCTIVE` and `can_submit_orders=true` describe **technical capability / reachability only**, never authorization.
+
+`KrakenLiveClient.place_order` (`submission.kraken_live_client`) remains a **legacy direct-submission bypass** for governance visibility:
+- `canonical=false`
+- `authorized=false`
+- `enabled=false`
+- `execution_authority=false`
+- `inventory_only=true`
+
+`CANONICAL_EXECUTION_AUTHORITY_OWNER` remains `UNRESOLVED`. Consolidation and decommission remain `NOT_STARTED` and require a separate Operator decision.
 
 ## 5. Canonical Status
 
