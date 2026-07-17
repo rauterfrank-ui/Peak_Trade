@@ -133,11 +133,12 @@ def test_no_canonical_existing_side_authority_in_inventory() -> None:
     assert all(row["class"] != "CANONICAL_EXISTING_SIDE_AUTHORITY" for row in data["producers"])
 
 
-def test_adapter_source_does_not_emit_long_or_short_entry_side() -> None:
+def test_adapter_source_does_not_emit_short_and_scopes_long_to_ratified_owner() -> None:
+    """Parent audit: no SHORT emission; LONG only via explicit trend_following ratification."""
     source = ADAPTER_SRC.read_text(encoding="utf-8")
-    assert "entry_side = StrategyEntrySideCarrierV1.NONE" in source
-    assert "StrategyEntrySideCarrierV1.LONG" not in source
     assert "StrategyEntrySideCarrierV1.SHORT" not in source
+    assert "_resolve_entry_side_carrier_v1" in source
+    assert "_TREND_FOLLOWING_ENTRY_SIDE_RATIFIED_OWNER" in source
 
 
 def test_productive_adapter_still_defaults_bollinger_entry_side_none() -> None:

@@ -66,7 +66,7 @@ SEMANTIC_PRODUCER_DECISION_STILL_REQUIRED: true
 | `bollinger_bands` | `ENTRY_EXIT_EVENT_V1` | no (`NONE`) | `None` | flat `price_path`; DA block |
 | `macd` | `ENTRY_EXIT_EVENT_V1` | no (`NONE`) | `None` | flat `price_path`; DA block |
 | `momentum_1h` | `ENTRY_EXIT_EVENT_V1` | no (`NONE`) | `None` | flat `price_path`; DA block |
-| `trend_following` | `ENTRY_EXIT_EVENT_V1` | no (`NONE`) | `None` | flat `price_path`; DA block |
+| `trend_following` | `ENTRY_EXIT_EVENT_V1` | yes on ENTRY (`LONG`); EXIT&#47;FLAT `NONE` | `+1` on ENTRY else `None` | see `OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_RATIFICATION_V1` |
 | `mean_reversion` | `ENTRY_EXIT_EVENT_V1` | no (`NONE`) | `None` | flat `price_path`; DA block |
 | `my_strategy` | `ENTRY_EXIT_EVENT_V1` | no (`NONE`) | `None` | flat `price_path`; DA block |
 | `ecm_cycle` | `ENTRY_EXIT_EVENT_V1` | no (`NONE`) | `None` | flat `price_path`; DA block |
