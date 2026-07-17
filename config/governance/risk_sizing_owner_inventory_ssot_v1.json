@@ -273,7 +273,9 @@
     "offline_evaluation_sizing_contract_v1": "policy_owner_ACTIVE",
     "execution.execute_from_signals": "simplified_decision_owner_ACTIVE"
   },
-  "next_plan_item": "P2_LEGACY_ORDER_INTENT",
+  "next_plan_item": "P2_LEGACY_ORDER_INTENT_DECOMMISSION_REQUIRES_OPERATOR_GO",
   "prior_plan_item": "P2_RISK_SIZING_INVENTORY",
-  "promotion_owner_status": "DONE"
+  "promotion_owner_status": "DONE",
+  "legacy_order_intent_inventory_status": "DONE",
+  "legacy_order_intent_claimed_decommissioned": false
 }

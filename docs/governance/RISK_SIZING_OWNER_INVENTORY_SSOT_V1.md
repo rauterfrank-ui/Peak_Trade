@@ -186,5 +186,5 @@ Do **not** treat this inventory as consolidation. Do **not** delete legacy/domai
 
 ## 9. Next plan item after this slice
 
-`P2 Legacy Order Intent` — document and later fully retire the legacy order-intent path.  
-Promotion Owner inventory remains **DONE**. Risk/Sizing consolidation remains **NOT_STARTED**.
+`P2 Legacy Order Intent` inventory is tracked in [`LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md`](LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md) (`INVENTORY ONLY — DECOMMISSION NOT STARTED`).  
+Decommission requires separate Operator-GO. Promotion Owner and Risk/Sizing inventory remain **DONE** (consolidation of Risk/Sizing still **NOT_STARTED**).

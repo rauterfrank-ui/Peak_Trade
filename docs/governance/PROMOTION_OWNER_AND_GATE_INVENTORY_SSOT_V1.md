@@ -130,5 +130,6 @@ Do **not** delete legacy/domain surfaces without a separate call-graph + contrac
 
 ## 6. Next plan item after this slice
 
-Risk/Sizing inventory is tracked separately in [`RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md`](RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md) (`INVENTORY ONLY — NOT CONSOLIDATED`).  
-Next plan item: `P2 Legacy Order Intent`.
+Risk/Sizing inventory: [`RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md`](RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md) (`INVENTORY ONLY — NOT CONSOLIDATED`).  
+Legacy Order Intent inventory: [`LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md`](LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md) (`INVENTORY ONLY — DECOMMISSION NOT STARTED`).  
+Next: Legacy Order Intent decommission requires Operator-GO.
