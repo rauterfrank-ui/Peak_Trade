@@ -1,0 +1,78 @@
+{
+  "slice_id": "OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1",
+  "base_sha": "0473c8bad1b0b82840ec038fc0f84ec92a396cff",
+  "producers": [
+    {
+      "producer": "bollinger_bands",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": null,
+      "fail_closed_behavior": "flat_price_path_da_block"
+    },
+    {
+      "producer": "macd",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": null,
+      "fail_closed_behavior": "flat_price_path_da_block"
+    },
+    {
+      "producer": "momentum_1h",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": null,
+      "fail_closed_behavior": "flat_price_path_da_block"
+    },
+    {
+      "producer": "trend_following",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": null,
+      "fail_closed_behavior": "flat_price_path_da_block"
+    },
+    {
+      "producer": "mean_reversion",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": null,
+      "fail_closed_behavior": "flat_price_path_da_block"
+    },
+    {
+      "producer": "my_strategy",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": null,
+      "fail_closed_behavior": "flat_price_path_da_block"
+    },
+    {
+      "producer": "ecm_cycle",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": null,
+      "fail_closed_behavior": "flat_price_path_da_block"
+    },
+    {
+      "producer": "rsi_reversion",
+      "encoding": "POSITIONAL_LS_STATE_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": "from_cycle_signal_value",
+      "fail_closed_behavior": "unchanged_positional_carrier"
+    },
+    {
+      "producer": "ma_crossover",
+      "encoding": "POSITIONAL_LONG01_STATE_V1",
+      "explicit_entry_side_present": false,
+      "entry_side": "NONE",
+      "resolved_direction": "from_cycle_signal_value",
+      "fail_closed_behavior": "unchanged_positional_carrier"
+    }
+  ]
+}

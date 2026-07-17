@@ -17,6 +17,7 @@ from src.backtest.strategy_signal_binding_v1 import (
 )
 from trading.master_v2.strategy_suitability_agreement_material_v1 import (
     StrategyAgreementEventKindV1,
+    StrategyEntrySideCarrierV1,
     StrategySideAgreementV1,
     StrategySignalEncodingClassV1,
     StrategySuitabilityAgreementErrorV1,
@@ -207,6 +208,9 @@ def normalize_strategy_signal_to_suitability_agreement_material_v1(
     side_agreement, filter_pass, event_kind = _intrinsic_side_agreement_and_aux(
         encoding_class, cycle_signal_value
     )
+    # Explicit side carrier only; no producer currently emits LONG/SHORT.
+    # cycle_signal_value=+1 under ENTRY_EXIT remains an ENTRY event, not LONG.
+    entry_side = StrategyEntrySideCarrierV1.NONE
     material_digest = compute_strategy_suitability_agreement_material_digest_v1(
         encoding_class=encoding_class,
         configured_strategy_id=configured_id,
@@ -220,6 +224,7 @@ def normalize_strategy_signal_to_suitability_agreement_material_v1(
         side_agreement=side_agreement,
         filter_pass=filter_pass,
         event_kind=event_kind,
+        entry_side=entry_side,
     )
     return StrategySuitabilityAgreementMaterialV1(
         encoding_class=encoding_class,
@@ -235,6 +240,7 @@ def normalize_strategy_signal_to_suitability_agreement_material_v1(
         filter_pass=filter_pass,
         event_kind=event_kind,
         material_digest=material_digest,
+        entry_side=entry_side,
     )
 
 

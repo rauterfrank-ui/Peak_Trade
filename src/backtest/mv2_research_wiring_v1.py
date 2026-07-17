@@ -58,6 +58,8 @@ from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
     normalize_strategy_signal_to_suitability_agreement_material_v1,
 )
 from trading.master_v2.strategy_suitability_agreement_material_v1 import (
+    StrategyAgreementEventKindV1,
+    StrategyEntrySideCarrierV1,
     StrategySideAgreementV1,
     StrategySignalEncodingClassV1,
     StrategySuitabilityAgreementErrorV1,
@@ -1522,7 +1524,9 @@ def resolve_agreement_bound_directional_cycle_v1(
 ) -> int | None:
     """Return +1 / -1 only when agreement material carries a deterministic side.
 
-    ENTRY_EXIT_EVENT ENTRY with NEUTRAL does not invent LONG/SHORT (fail-closed None).
+    ENTRY_EXIT_EVENT uses only the explicit ``entry_side`` carrier:
+    LONG → +1, SHORT → -1, NONE/missing → None. ``cycle_signal_value=+1`` is ENTRY
+    only and never invents LONG. EXIT never invents a side.
     POSITIONAL_LS / POSITIONAL_LONG01 use ``cycle_signal_value`` as the side carrier.
     """
     if material is None:
@@ -1538,7 +1542,15 @@ def resolve_agreement_bound_directional_cycle_v1(
             return 1
         return None
     if encoding is StrategySignalEncodingClassV1.ENTRY_EXIT_EVENT_V1:
-        # ENTRY/EXIT events do not encode bull/bear side; never invent one.
+        if material.event_kind is StrategyAgreementEventKindV1.EXIT or cycle == -1:
+            return None
+        if material.event_kind is StrategyAgreementEventKindV1.ENTRY or cycle == 1:
+            entry_side = getattr(material, "entry_side", StrategyEntrySideCarrierV1.NONE)
+            if entry_side is StrategyEntrySideCarrierV1.LONG:
+                return 1
+            if entry_side is StrategyEntrySideCarrierV1.SHORT:
+                return -1
+            return None
         return None
     if material.side_agreement is StrategySideAgreementV1.AGREE and cycle in (-1, 1):
         return cycle
@@ -1554,8 +1566,9 @@ def project_mv2_agreement_bound_price_path_v1(
     """Project a dimension-safe long-convention price_path from agreement material.
 
     - No absolute mark+5 impulse.
-    - Scale-invariant relative impulse when a directional cycle is present.
-    - NEUTRAL / ENTRY-without-side → flat path (fail-closed, no invented asymmetry).
+    - Scale-invariant relative impulse when an explicitly resolved directional cycle
+      is present (POSITIONAL_* cycle carrier or ENTRY_EXIT ``entry_side``).
+    - ENTRY_EXIT with entry_side=NONE → flat path (fail-closed, no invented asymmetry).
     """
     mark = float(mark_price)
     if not math.isfinite(mark) or mark <= 0.0:

@@ -1,0 +1,26 @@
+{
+  "slice_id": "OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1",
+  "base_sha": "0473c8bad1b0b82840ec038fc0f84ec92a396cff",
+  "before": {
+    "entry_side_field": false,
+    "resolve_entry_exit": null,
+    "bollinger_price_path": "(mark, mark)",
+    "first_false_predicate": "FF_DA_FLAT_PATH_ENTRY_EXIT_NO_SIDE_CARRIER_V1",
+    "panel_entry_count": 185,
+    "bollinger_side_activated": false
+  },
+  "after": {
+    "entry_side_field": true,
+    "entry_side_default": "NONE",
+    "resolve_entry_exit_none": null,
+    "resolve_entry_exit_long": 1,
+    "resolve_entry_exit_short": -1,
+    "bollinger_price_path": "(mark, mark)",
+    "first_false_predicate": "FF_DA_FLAT_PATH_ENTRY_EXIT_NO_SIDE_CARRIER_V1",
+    "panel_entry_count": 185,
+    "bollinger_side_activated": false,
+    "relative_impulse": 0.02,
+    "contract_extension_available": true,
+    "legacy_behavior_unchanged": true
+  }
+}
