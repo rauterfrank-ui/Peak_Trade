@@ -112,7 +112,11 @@ def test_projection_surfaces_synthesize_closed_from_matrix() -> None:
         assert "AUTH-021" in text and "AUTH-022" in text
         # Require CLOSED near AUTH-021 / AUTH-022 projections (not just anywhere).
         assert "CLOSED" in text
-        assert "matrix SSOT" in text or "canonical matrix" in text or "authority_conflict_matrix" in text
+        assert (
+            "matrix SSOT" in text
+            or "canonical matrix" in text
+            or "authority_conflict_matrix" in text
+        )
 
 
 def test_ssot_neutral_auth021_auth022_closeout_markers() -> None:
@@ -131,7 +135,10 @@ def test_synthesis_auth021_auth022_closeout_markers() -> None:
     text = _read(SYNTHESIS)
     assert "**CLOSED** — matrix SSOT" in text or "CLOSED** — matrix SSOT" in text
     assert "do not re-open as structural docs-echo" in text or "CLOSED" in text
-    assert "LOW, structural docs only" not in text.split("Residual Docs-Echo (Domain B):")[1].split("\n")[0]
+    assert (
+        "LOW, structural docs only"
+        not in text.split("Residual Docs-Echo (Domain B):")[1].split("\n")[0]
+    )
 
 
 def test_counterfactual_no_b01_weiter_separat() -> None:
@@ -200,5 +207,7 @@ def test_deterministic_closeout_markers_serializable() -> None:
 def test_no_second_authority_engine_claims() -> None:
     for path in PROJECTION_SURFACES:
         text = _read(path)
-        assert "second status engine" not in text.lower() or "no second status engine" in text.lower()
+        assert (
+            "second status engine" not in text.lower() or "no second status engine" in text.lower()
+        )
         assert "SSOT_SYNTHESIS_AUTHORITATIVE_RUNTIME=true" not in text
