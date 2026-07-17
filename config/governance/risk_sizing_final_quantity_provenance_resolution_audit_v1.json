@@ -1,0 +1,515 @@
+{
+  "contract_name": "risk_sizing_final_quantity_provenance_resolution_audit_v1",
+  "contract_id": "OBL_B05_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_CONTRACT_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_final_quantity_provenance_resolution_audit_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_V1.md",
+  "inventory_date": "2026-07-17",
+  "pinned_against_main_sha": "7c16ce4521ed8f10a7399abaf688ce8038cba837",
+  "semantics": "SEMANTICS_FREE_RESOLUTION_AUDIT_FREEZE_NOT_AUTHORITY_OR_INTENT_RESOLUTION",
+  "markers": {
+    "RISK_SIZING_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_V1": true,
+    "INVENTORY_ONLY": true,
+    "RESOLUTION_AUDIT_FROZEN": true,
+    "FINAL_QUANTITY_PROVENANCE_RESOLVED": false,
+    "NO_SIZING_MATH_CHANGE": true,
+    "NO_AUTHORITY_ASSIGNMENT": true,
+    "NO_OWNER_BYPASS_ALLOWLIST_MUTATION": true,
+    "NO_UNITS_DIMENSIONS_SEMANTICS_CHANGE": true,
+    "NO_TOPOLOGY_SEMANTICS_CHANGE": true,
+    "NO_CONSUMPTION_OVERWRITE_SEMANTICS_CHANGE": true,
+    "NO_INTENT_LINE_CHOSEN": true,
+    "NO_REWIRE": true,
+    "NO_DELEGATION": true,
+    "NO_DECOMMISSION": true,
+    "NO_FEDERATION_IMPLEMENTED": true,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "RECOMMENDED_CONSOLIDATION_MODEL": "CONTRACTUAL_FEDERATION",
+    "SEMANTICS_FREE_CONTRACT_SLICE_AVAILABLE": true,
+    "SEMANTICS_FREE_OWNER_CONSOLIDATION_AVAILABLE": false,
+    "NEXT_PRODUCTIVE_SEMANTICS_SLICE_AUTHORIZED": false,
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_AUTHORITY_OWNER": "UNRESOLVED",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "EXPECTED_PRIMARY_OWNER_COUNT": 5,
+    "EXPECTED_PRODUCTIVE_DIRECT_EDGE_COUNT": 8,
+    "EXPECTED_COMPANION_EDGE_COUNT": 2,
+    "EXPECTED_DIRECT_SIZING_BYPASS_COUNT": 5,
+    "EXPECTED_PASS_THROUGH_EDGE_COUNT": 2,
+    "EXPECTED_AMBIGUOUS_EDGE_COUNT": 3,
+    "EXPECTED_CONSUMPTION_EDGE_COUNT": 27,
+    "EXPECTED_OVERWRITE_EDGE_COUNT": 13,
+    "EXPECTED_WRAP_DELEGATE_EDGE_COUNT": 1,
+    "EXPECTED_FINAL_QUANTITY_PROVENANCE_RESOLVED_PATH_COUNT": 5,
+    "EXPECTED_FINAL_QUANTITY_PROVENANCE_UNRESOLVED_PATH_COUNT": 3,
+    "EXPECTED_SEMANTIC_CONFLICT_PATH_COUNT": 3,
+    "EXPECTED_CONTRACT_FAMILY_COUNT": 1,
+    "EXPECTED_SUBCONTRACT_COUNT": 2,
+    "EXPECTED_COMPANION_CONFLICT_PATH_COUNT": 2,
+    "EXPECTED_EFS_CONFLICT_PATH_COUNT": 1,
+    "LEVERAGE_APPLICATION_STATUS": "declared_pass_through_not_applied_in_quantity_chain",
+    "COMMON_UNIFIED_SEMANTICS_DECISION": "NOT_TAKEN",
+    "COMPANION_SHARED_CONTRACT_POSSIBLE": true,
+    "EFS_REMAINS_SEPARATE": true
+  },
+  "referenced_contracts": {
+    "risk_sizing_unresolved_final_quantity_provenance_contract_v0": "config/governance/risk_sizing_unresolved_final_quantity_provenance_contract_v0.json",
+    "risk_sizing_output_consumption_overwrite_contract_v0": "config/governance/risk_sizing_output_consumption_overwrite_contract_v0.json",
+    "risk_sizing_caller_owner_topology_contract_v0": "config/governance/risk_sizing_caller_owner_topology_contract_v0.json",
+    "risk_sizing_units_dimensions_contract_v0": "config/governance/risk_sizing_units_dimensions_contract_v0.json",
+    "risk_sizing_owner_inventory_ssot_v1": "config/governance/risk_sizing_owner_inventory_ssot_v1.json"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_unresolved_final_quantity_provenance_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_UNRESOLVED_PATHS_FROZEN_NOT_RESOLVED",
+    "risk_sizing_output_consumption_overwrite_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_CONSUMPTION_FROZEN_NOT_RESOLVED",
+    "risk_sizing_caller_owner_topology_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_TOPOLOGY_FROZEN_NOT_RESOLVED",
+    "risk_sizing_units_dimensions_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_UNITS_DIMENSIONS_DECLARATION_ONLY",
+    "risk_sizing_owner_inventory_ssot_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES"
+  },
+  "contract_family": {
+    "family_id": "FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_FAMILY_V1",
+    "family_count": 1,
+    "federation_model": "CONTRACTUAL_FEDERATION_PLANNING_ONLY",
+    "federation_implemented": false,
+    "unified_semantics_decision_taken": false,
+    "subcontract_count": 2,
+    "subcontracts": [
+      {
+        "subcontract_id": "COMPANION_FRACTION_TO_ABSOLUTE_UNITS_CONFLICT",
+        "role": "SHARED_COMPANION_CONFLICT",
+        "path_ids": ["PATH_SHADOW_COMPANION", "PATH_LIVE_COMPANION"],
+        "path_count": 2,
+        "shared_root_cause": "declared_FRACTION_DECIMAL_0_1_passed_numerically_unchanged_as_absolute_QUANTITY_BASE_UNITS_to_signal_to_orders_without_conversion",
+        "sizing_role": "COMPANION_PASS_THROUGH_NOT_PRIMARY_OWNER",
+        "notes": "Shadow and Live share the same fraction-to-absolute handoff conflict; Live adds fraction validator and safety/mode gates only."
+      },
+      {
+        "subcontract_id": "EFS_CAPITAL_SHARE_TO_ABSOLUTE_UNITS_CONFLICT",
+        "role": "SEPARATE_EFS_CONFLICT",
+        "path_ids": ["PATH_EXECUTE_FROM_SIGNALS"],
+        "path_count": 1,
+        "shared_root_cause": "declared_capital_share_pct_named_input_used_as_absolute_QUANTITY_BASE_UNITS_without_equity_or_price_conversion",
+        "sizing_role": "PRIMARY_BYPASS_KERNEL_SELF_USE_ZERO_SRC_CALLERS",
+        "notes": "execute_from_signals remains a separate self-use kernel; not folded into the companion shared subcontract."
+      }
+    ]
+  },
+  "required_path_fields": [
+    "path_id",
+    "subcontract_id",
+    "classification",
+    "entrypoint",
+    "producer_config_symbol",
+    "declared_dimension",
+    "runtime_dimension",
+    "transformations",
+    "consumer",
+    "productive_caller_classification",
+    "root_cause",
+    "missing_conversion",
+    "double_conversion_observed",
+    "leverage_in_quantity_chain",
+    "companion_or_kernel_role",
+    "safety_gate_boundary",
+    "non_claims",
+    "evidence_anchors",
+    "final_quantity_provenance_status",
+    "authority_status"
+  ],
+  "global_non_claims": [
+    "NO_CANONICAL_RISK_SIZING_OWNER_ASSIGNED",
+    "NO_CANONICAL_EXECUTION_AUTHORITY_OWNER_ASSIGNED",
+    "NO_INTENT_LINE_CHOSEN_BETWEEN_FRACTION_AND_ABSOLUTE_UNITS",
+    "COMPANION_IS_NOT_SIXTH_PRIMARY_OWNER",
+    "ORDER_HANDOFF_IS_NOT_SUBMISSION_AUTHORITY",
+    "RUNTIME_REACHABILITY_IS_NOT_ACTIVATION",
+    "SHADOW_OR_LIVE_NAMING_IS_NOT_LIVE_AUTHORIZED",
+    "PERCENT_MUST_NOT_EQUATE_FRACTION",
+    "LEVERAGE_NOT_CLAIMED_APPLIED_IN_QUANTITY_CHAIN",
+    "NO_DOUBLE_CONVERSION_OBSERVED",
+    "NO_FRACTION_OR_CAPITAL_SHARE_TO_UNITS_CONVERSION_OBSERVED",
+    "NO_SEMANTICS_FREE_OWNER_CONSOLIDATION",
+    "NO_UNIFIED_SEMANTICS_DECISION_TAKEN",
+    "FINAL_QUANTITY_PROVENANCE_NOT_FULLY_RESOLVED",
+    "SMOKE_QUANTITY_EQUALS_POSITION_SIZE_IS_RUNTIME_EVIDENCE_NOT_SEMANTIC_PROOF"
+  ],
+  "audited_paths": [
+    {
+      "path_id": "PATH_EXECUTE_FROM_SIGNALS",
+      "subcontract_id": "EFS_CAPITAL_SHARE_TO_ABSOLUTE_UNITS_CONFLICT",
+      "classification": "SEMANTIC_CONFLICT",
+      "entrypoint": {
+        "module": "src.execution.pipeline",
+        "source_path": "src/execution/pipeline.py",
+        "symbol": "ExecutionPipeline.execute_from_signals",
+        "symbol_kind": "method"
+      },
+      "producer_config_symbol": "ExecutionPipelineConfig.max_position_notional_pct",
+      "declared_dimension": "CAPITAL_SHARE_OR_PCT_NAMED_AMBIGUOUS",
+      "runtime_dimension": "QUANTITY_BASE_UNITS",
+      "transformations": [
+        {
+          "step_id": "EFS_CLIP_SIGNALS",
+          "kind": "CLAMP",
+          "detail": "signals.clip(-1, 1).astype(int)"
+        },
+        {
+          "step_id": "EFS_ASSIGN_BASE_SIZE",
+          "kind": "CAST_OR_ALIAS",
+          "detail": "base_position_size = self._config.max_position_notional_pct"
+        },
+        {
+          "step_id": "EFS_TARGET_POSITION",
+          "kind": "SIGN_SCALE",
+          "detail": "target_position = signal * base_position_size"
+        },
+        {
+          "step_id": "EFS_POSITION_DELTA",
+          "kind": "DIFF",
+          "detail": "position_delta = target_position - current_position"
+        },
+        {
+          "step_id": "EFS_ABS_QUANTITY",
+          "kind": "ABS",
+          "detail": "quantity = abs(position_delta)"
+        },
+        {
+          "step_id": "EFS_ORDER_REQUEST",
+          "kind": "ORDER_HANDOFF",
+          "detail": "OrderRequest(quantity=quantity)"
+        },
+        {
+          "step_id": "EFS_EXECUTE_ORDERS",
+          "kind": "SUBMISSION_OR_EXEC_HANDOFF",
+          "detail": "self.execute_orders([order])"
+        }
+      ],
+      "consumer": "ExecutionPipeline.execute_orders",
+      "productive_caller_classification": {
+        "external_productive_src_caller_count": 0,
+        "class": "REACHABLE_METHOD_ZERO_EXTERNAL_PRODUCTIVE_SRC_CALLERS",
+        "notes": "Self-use bypass kernel; scripts/tests outside src/ inventory are not counted as productive src callers."
+      },
+      "root_cause": "max_position_notional_pct_declared_capital_share_used_as_absolute_base_units_without_equity_or_price_conversion",
+      "missing_conversion": "CAPITAL_SHARE_OR_FRACTION_TO_QUANTITY_BASE_UNITS",
+      "double_conversion_observed": false,
+      "leverage_in_quantity_chain": false,
+      "companion_or_kernel_role": "PRIMARY_BYPASS_KERNEL_SELF_USE_NOT_COMPANION",
+      "safety_gate_boundary": {
+        "live_mode_forbidden_here": false,
+        "exchange_submit_claimed": false,
+        "live_authorized": false,
+        "orders_enabled_claim": false,
+        "notes": "Kernel method itself has no live-mode gate; callers and execute_orders/executor determine environment."
+      },
+      "non_claims": [
+        "NO_CANONICAL_RISK_SIZING_OWNER_ASSIGNED",
+        "NO_CANONICAL_EXECUTION_AUTHORITY_OWNER_ASSIGNED",
+        "NO_INTENT_LINE_CHOSEN_BETWEEN_FRACTION_AND_ABSOLUTE_UNITS",
+        "ORDER_HANDOFF_IS_NOT_SUBMISSION_AUTHORITY",
+        "RUNTIME_REACHABILITY_IS_NOT_ACTIVATION",
+        "PERCENT_MUST_NOT_EQUATE_FRACTION",
+        "LEVERAGE_NOT_CLAIMED_APPLIED_IN_QUANTITY_CHAIN",
+        "NO_FRACTION_OR_CAPITAL_SHARE_TO_UNITS_CONVERSION_OBSERVED",
+        "NO_DOUBLE_CONVERSION_OBSERVED",
+        "FINAL_QUANTITY_PROVENANCE_NOT_FULLY_RESOLVED"
+      ],
+      "evidence_anchors": [
+        {
+          "file": "src/execution/pipeline.py",
+          "symbol": "ExecutionPipelineConfig.max_position_notional_pct",
+          "lines": "492-503"
+        },
+        {
+          "file": "src/execution/pipeline.py",
+          "symbol": "ExecutionPipeline.execute_from_signals",
+          "lines": "945-1097"
+        },
+        {
+          "file": "config/governance/risk_sizing_unresolved_final_quantity_provenance_contract_v0.json",
+          "symbol": "PATH_EXECUTE_FROM_SIGNALS",
+          "lines": "unresolved_paths"
+        }
+      ],
+      "final_quantity_provenance_status": "UNRESOLVED",
+      "authority_status": "UNRESOLVED"
+    },
+    {
+      "path_id": "PATH_SHADOW_COMPANION",
+      "subcontract_id": "COMPANION_FRACTION_TO_ABSOLUTE_UNITS_CONFLICT",
+      "classification": "SEMANTIC_CONFLICT",
+      "entrypoint": {
+        "module": "src.live.shadow_session",
+        "source_path": "src/live/shadow_session.py",
+        "symbol": "ShadowPaperSession.step_once",
+        "symbol_kind": "method"
+      },
+      "producer_config_symbol": "ShadowPaperConfig.position_fraction",
+      "declared_dimension": "FRACTION_DECIMAL_0_1",
+      "runtime_dimension": "QUANTITY_BASE_UNITS",
+      "transformations": [
+        {
+          "step_id": "SHADOW_ASSIGN_POSITION_SIZE",
+          "kind": "CAST_OR_ALIAS",
+          "detail": "position_size = self._shadow_cfg.position_fraction"
+        },
+        {
+          "step_id": "SHADOW_SIGNAL_TO_ORDERS",
+          "kind": "ORDER_HANDOFF",
+          "detail": "pipeline.signal_to_orders(event, position_size=position_size, current_position=...)"
+        },
+        {
+          "step_id": "SHADOW_RISK_CHECK",
+          "kind": "VETO",
+          "detail": "LiveRiskLimits.check_orders may block; no silent resize observed"
+        },
+        {
+          "step_id": "SHADOW_EXECUTE_ORDERS",
+          "kind": "SUBMISSION_OR_EXEC_HANDOFF",
+          "detail": "pipeline.execute_orders(orders) paper/shadow executor"
+        }
+      ],
+      "consumer": "ExecutionPipeline.signal_to_orders",
+      "productive_caller_classification": {
+        "external_productive_src_caller_count": 2,
+        "class": "REACHABLE_PRODUCTIVE_COMPANION",
+        "notes": "Companion pass-through for sizing; not a sixth primary owner. Risk veto may block; no fraction-to-units conversion."
+      },
+      "root_cause": "declared_FRACTION_DECIMAL_0_1_aliased_as_position_size_absolute_units_into_signal_to_orders_no_conversion",
+      "missing_conversion": "FRACTION_DECIMAL_0_1_TO_QUANTITY_BASE_UNITS",
+      "double_conversion_observed": false,
+      "leverage_in_quantity_chain": false,
+      "companion_or_kernel_role": "COMPANION_PASS_THROUGH_NOT_PRIMARY_OWNER",
+      "safety_gate_boundary": {
+        "risk_limits_check_orders": true,
+        "exchange_submit_claimed": false,
+        "live_authorized": false,
+        "orders_enabled_claim": false,
+        "notes": "Paper/shadow execute_orders handoff; naming is not LIVE_AUTHORIZED."
+      },
+      "non_claims": [
+        "NO_CANONICAL_RISK_SIZING_OWNER_ASSIGNED",
+        "COMPANION_IS_NOT_SIXTH_PRIMARY_OWNER",
+        "NO_INTENT_LINE_CHOSEN_BETWEEN_FRACTION_AND_ABSOLUTE_UNITS",
+        "ORDER_HANDOFF_IS_NOT_SUBMISSION_AUTHORITY",
+        "RUNTIME_REACHABILITY_IS_NOT_ACTIVATION",
+        "SHADOW_OR_LIVE_NAMING_IS_NOT_LIVE_AUTHORIZED",
+        "PERCENT_MUST_NOT_EQUATE_FRACTION",
+        "LEVERAGE_NOT_CLAIMED_APPLIED_IN_QUANTITY_CHAIN",
+        "NO_FRACTION_OR_CAPITAL_SHARE_TO_UNITS_CONVERSION_OBSERVED",
+        "NO_DOUBLE_CONVERSION_OBSERVED",
+        "SMOKE_QUANTITY_EQUALS_POSITION_SIZE_IS_RUNTIME_EVIDENCE_NOT_SEMANTIC_PROOF",
+        "FINAL_QUANTITY_PROVENANCE_NOT_FULLY_RESOLVED"
+      ],
+      "evidence_anchors": [
+        {
+          "file": "src/data/kraken_live.py",
+          "symbol": "ShadowPaperConfig.position_fraction",
+          "lines": "177-201"
+        },
+        {
+          "file": "src/live/shadow_session.py",
+          "symbol": "ShadowPaperSession.step_once",
+          "lines": "446-497"
+        },
+        {
+          "file": "src/execution/pipeline.py",
+          "symbol": "ExecutionPipeline.signal_to_orders",
+          "lines": "772-846"
+        }
+      ],
+      "final_quantity_provenance_status": "UNRESOLVED",
+      "authority_status": "UNRESOLVED"
+    },
+    {
+      "path_id": "PATH_LIVE_COMPANION",
+      "subcontract_id": "COMPANION_FRACTION_TO_ABSOLUTE_UNITS_CONFLICT",
+      "classification": "SEMANTIC_CONFLICT",
+      "entrypoint": {
+        "module": "src.execution.live_session",
+        "source_path": "src/execution/live_session.py",
+        "symbol": "LiveSessionRunner.step_once",
+        "symbol_kind": "method"
+      },
+      "producer_config_symbol": "LiveSessionConfig.position_fraction",
+      "declared_dimension": "FRACTION_DECIMAL_0_1",
+      "runtime_dimension": "QUANTITY_BASE_UNITS",
+      "transformations": [
+        {
+          "step_id": "LIVE_VALIDATE_FRACTION",
+          "kind": "CLAMP_OR_VALIDATE",
+          "detail": "LiveSessionConfig.__post_init__ requires 0.0 < position_fraction <= 1.0; mode=live raises"
+        },
+        {
+          "step_id": "LIVE_PASS_POSITION_SIZE",
+          "kind": "CAST_OR_ALIAS",
+          "detail": "position_size=self._config.position_fraction into signal_to_orders"
+        },
+        {
+          "step_id": "LIVE_SIGNAL_TO_ORDERS",
+          "kind": "ORDER_HANDOFF",
+          "detail": "pipeline.signal_to_orders(event, position_size=..., current_position=...)"
+        },
+        {
+          "step_id": "LIVE_EXECUTE_WITH_SAFETY",
+          "kind": "SUBMISSION_OR_EXEC_HANDOFF",
+          "detail": "pipeline.execute_with_safety(orders, context=...) governance+safety gated"
+        }
+      ],
+      "consumer": "ExecutionPipeline.signal_to_orders_then_execute_with_safety",
+      "productive_caller_classification": {
+        "external_productive_src_caller_count": 1,
+        "class": "REACHABLE_PRODUCTIVE_COMPANION_GATED",
+        "notes": "Same companion fraction handoff as Shadow; adds fraction validator and execute_with_safety / mode gates. Still not LIVE_AUTHORIZED."
+      },
+      "root_cause": "same_fraction_as_absolute_units_handoff_plus_fraction_validator_plus_execute_with_safety_gated",
+      "missing_conversion": "FRACTION_DECIMAL_0_1_TO_QUANTITY_BASE_UNITS",
+      "double_conversion_observed": false,
+      "leverage_in_quantity_chain": false,
+      "companion_or_kernel_role": "COMPANION_PASS_THROUGH_NOT_PRIMARY_OWNER",
+      "safety_gate_boundary": {
+        "mode_live_forbidden": true,
+        "execute_with_safety": true,
+        "exchange_submit_claimed": false,
+        "live_authorized": false,
+        "orders_enabled_claim": false,
+        "runtime_bridge_activated": false,
+        "notes": "LiveSession naming and execute_with_safety path remain gated; not LIVE_AUTHORIZED."
+      },
+      "non_claims": [
+        "NO_CANONICAL_RISK_SIZING_OWNER_ASSIGNED",
+        "NO_CANONICAL_EXECUTION_AUTHORITY_OWNER_ASSIGNED",
+        "COMPANION_IS_NOT_SIXTH_PRIMARY_OWNER",
+        "NO_INTENT_LINE_CHOSEN_BETWEEN_FRACTION_AND_ABSOLUTE_UNITS",
+        "ORDER_HANDOFF_IS_NOT_SUBMISSION_AUTHORITY",
+        "RUNTIME_REACHABILITY_IS_NOT_ACTIVATION",
+        "SHADOW_OR_LIVE_NAMING_IS_NOT_LIVE_AUTHORIZED",
+        "PERCENT_MUST_NOT_EQUATE_FRACTION",
+        "LEVERAGE_NOT_CLAIMED_APPLIED_IN_QUANTITY_CHAIN",
+        "NO_FRACTION_OR_CAPITAL_SHARE_TO_UNITS_CONVERSION_OBSERVED",
+        "NO_DOUBLE_CONVERSION_OBSERVED",
+        "SMOKE_QUANTITY_EQUALS_POSITION_SIZE_IS_RUNTIME_EVIDENCE_NOT_SEMANTIC_PROOF",
+        "FINAL_QUANTITY_PROVENANCE_NOT_FULLY_RESOLVED"
+      ],
+      "evidence_anchors": [
+        {
+          "file": "src/execution/live_session.py",
+          "symbol": "LiveSessionConfig.position_fraction",
+          "lines": "112-188"
+        },
+        {
+          "file": "src/execution/live_session.py",
+          "symbol": "LiveSessionRunner.step_once",
+          "lines": "860-886"
+        },
+        {
+          "file": "src/execution/pipeline.py",
+          "symbol": "ExecutionPipeline.execute_with_safety",
+          "lines": "1426-1522"
+        }
+      ],
+      "final_quantity_provenance_status": "UNRESOLVED",
+      "authority_status": "UNRESOLVED"
+    }
+  ],
+  "expected_counts": {
+    "contract_family_count": 1,
+    "subcontract_count": 2,
+    "semantic_conflict_path_count": 3,
+    "companion_conflict_path_count": 2,
+    "efs_conflict_path_count": 1,
+    "audited_paths": 3,
+    "resolved_paths_referenced": 5,
+    "unresolved_paths_referenced": 3,
+    "primary_owners": 5,
+    "productive_direct_edges": 8,
+    "companion_edges": 2,
+    "direct_sizing_bypass_edges": 5,
+    "pass_through_edges_topology": 2,
+    "ambiguous_edges_topology": 3,
+    "consumption_edges": 27,
+    "overwrite_edges": 13,
+    "wrap_delegate_edges": 1,
+    "final_quantity_provenance_resolved_paths": 5,
+    "final_quantity_provenance_unresolved_paths": 3,
+    "execute_from_signals_external_productive_src_callers": 0
+  },
+  "frozen_path_ids": [
+    "PATH_EXECUTE_FROM_SIGNALS",
+    "PATH_SHADOW_COMPANION",
+    "PATH_LIVE_COMPANION"
+  ],
+  "frozen_subcontract_ids": [
+    "COMPANION_FRACTION_TO_ABSOLUTE_UNITS_CONFLICT",
+    "EFS_CAPITAL_SHARE_TO_ABSOLUTE_UNITS_CONFLICT"
+  ],
+  "authority_status": {
+    "canonical_execution_authority_owner": "UNRESOLVED",
+    "canonical_risk_sizing_authority_owner": "UNRESOLVED",
+    "canonical_risk_sizing_owner": "UNRESOLVED",
+    "authority_effect": "NONE",
+    "runtime_effect": "NONE"
+  },
+  "leverage_status": {
+    "application_status": "declared_pass_through_not_applied_in_quantity_chain",
+    "applied_in_quantity_chain": false,
+    "referenced_from": "risk_sizing_units_dimensions_contract_v0"
+  },
+  "planning_only": {
+    "recommended_consolidation_model": "CONTRACTUAL_FEDERATION",
+    "federation_implemented": false,
+    "delegation_implemented": false,
+    "owner_consolidation_implemented": false,
+    "semantics_free_contract_slice_available": true,
+    "semantics_free_owner_consolidation_available": false,
+    "next_productive_semantics_slice_authorized": false,
+    "companion_shared_contract_possible": true,
+    "efs_remains_separate": true,
+    "unified_semantics_decision_taken": false
+  },
+  "drift_policy": {
+    "classification_not_semantic_conflict": "FAIL",
+    "intent_line_chosen_without_operator_go": "FAIL",
+    "authority_escalation_from_unresolved": "FAIL",
+    "final_provenance_escalation_from_unresolved": "FAIL",
+    "subcontract_count_change": "FAIL",
+    "path_id_set_change": "FAIL",
+    "mutation_of_frozen_counts_5_8_2_5_2_3": "FAIL",
+    "mutation_of_frozen_counts_27_13_1": "FAIL",
+    "mutation_of_resolved_unresolved_5_3": "FAIL",
+    "productive_src_mutation_claimed": "FAIL",
+    "leverage_applied_claim": "FAIL",
+    "double_conversion_claim": "FAIL",
+    "companion_escalation_to_primary_owner": "FAIL",
+    "unified_semantics_decision_claimed": "FAIL",
+    "runtime_bridge_activation_claim": "FAIL",
+    "live_or_orders_activation_claim": "FAIL",
+    "smoke_quantity_equals_position_size_as_semantic_proof": "FAIL"
+  },
+  "global_authority_pins": {
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_AUTHORITY_OWNER": "UNRESOLVED",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "FINAL_QUANTITY_PROVENANCE_RESOLVED": false,
+    "NEXT_PRODUCTIVE_SEMANTICS_SLICE_AUTHORIZED": false
+  },
+  "scan_method": "READ_ONLY_AUDIT_PLUS_PINNED_EVIDENCE_ANCHORS_NO_PRODUCTIVE_MUTATION",
+  "scan_uncertainty_notes": [
+    "This contract freezes the resolution-audit classification of three SEMANTIC_CONFLICT paths only.",
+    "It does not choose fraction vs absolute-units intent, assign authority, or authorize rewire.",
+    "Companion shared subcontract is possible; EFS remains a separate subcontract.",
+    "Baseline topology and consumption counts remain unchanged and referenced, not re-owned.",
+    "Smoke tests asserting quantity == position_size are runtime evidence only, not semantic proof.",
+    "FINAL_QUANTITY_PROVENANCE_RESOLVED remains false."
+  ]
+}

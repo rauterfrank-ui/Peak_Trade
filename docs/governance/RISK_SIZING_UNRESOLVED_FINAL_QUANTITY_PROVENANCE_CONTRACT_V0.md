@@ -4,7 +4,7 @@
 **Date:** 2026-07-17  
 **Obligation:** `OBL_B05_FINAL_QUANTITY_PROVENANCE_UNRESOLVED_PATHS_CONTRACT_V0`  
 **Machine contract:** [`config/governance/risk_sizing_unresolved_final_quantity_provenance_contract_v0.json`](../../config/governance/risk_sizing_unresolved_final_quantity_provenance_contract_v0.json)  
-**Related (unchanged):** [`RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md`](RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md) · [`RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md`](RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md) · [`RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md`](RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md) · [`RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md`](RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md)
+**Related (unchanged):** [`RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md`](RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md) · [`RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md`](RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md) · [`RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md`](RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md) · [`RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md`](RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md) · [`RISK_SIZING_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_V1.md`](RISK_SIZING_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_V1.md)
 
 ```
 RISK_SIZING_UNRESOLVED_FINAL_QUANTITY_PROVENANCE_CONTRACT_V0=true
@@ -122,4 +122,4 @@ Guards fail on:
 
 ## Next
 
-Unresolved Final Quantity Provenance paths are **frozen** but **not resolved** (`FINAL_QUANTITY_PROVENANCE_RESOLVED=false`). Dimension normalization, authority assignment, rewire, decommission, and federation remain Operator-GO gated (`NEXT_SLICE_REQUIRES_OPERATOR_GO=true`).
+Unresolved Final Quantity Provenance paths are **frozen** but **not resolved** (`FINAL_QUANTITY_PROVENANCE_RESOLVED=false`). The semantics-free resolution-audit classification freeze lives separately in [`RISK_SIZING_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_V1.md`](RISK_SIZING_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_V1.md) (`OBL_B05_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_CONTRACT_V1`) and does **not** resolve provenance or choose an intent line. Dimension normalization, authority assignment, rewire, decommission, and federation remain Operator-GO gated (`NEXT_SLICE_REQUIRES_OPERATOR_GO=true`).
