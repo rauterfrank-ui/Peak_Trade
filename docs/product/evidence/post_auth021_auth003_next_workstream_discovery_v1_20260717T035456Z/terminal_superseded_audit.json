@@ -1,0 +1,15 @@
+{
+  "terminal_count": 4,
+  "superseded_count": 2,
+  "terminal_or_superseded_total": 6,
+  "terminal": [
+    "OBL_ECONOMIC_BASELINE_RETRY",
+    "OBL_CANONICAL_CHAIN_NEXT",
+    "OBL_DASHBOARD_COMPOSITION",
+    "OBL_TRADE_LEDGER"
+  ],
+  "superseded": [
+    "OBL_REGISTRY_SHA",
+    "OBL_RUNBOOK_PATCH_REC"
+  ]
+}

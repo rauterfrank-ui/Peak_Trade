@@ -1,0 +1,6 @@
+{
+  "workflow": "POST_AUTH021_AUTH003_NEXT_WORKSTREAM_DISCOVERY_V1",
+  "selected_next_slice": "SSOT_SYNTHESIS_AUTH021_AUTH022_CLOSEOUT_PROJECTION_V0",
+  "discovery_only": true,
+  "implementation_performed": false
+}

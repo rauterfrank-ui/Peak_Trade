@@ -235,4 +235,4 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 
 **Plan-Owner:** Drift Cleanup Plan v1  
 **Evidence frozen at:** `2f1672bee8761f8d50def3f6ef31cc803824b2e9`  
-**Nächster Schritt (post B-01/B-07 discovery):** Selected next slice `AUTH021_AUTH003_AUTHORITY_MATRIX_B01_B07_CLOSEOUT_SYNC_V0` — requires **separate** docs Operator-GO; this discovery PR performs **no** matrix mutation beyond pointer. B-04 remains INTENTIONAL_POLICY_STATE.
+**Nächster Schritt (post AUTH021/AUTH003 closeout discovery):** Selected next slice `SSOT_SYNTHESIS_AUTH021_AUTH022_CLOSEOUT_PROJECTION_V0` — requires **separate** docs Operator-GO; this discovery PR performs **no** SSOT/synthesis mutation beyond pointer. B-04 remains INTENTIONAL_POLICY_STATE. AUTH-021/AUTH-003 matrix sync is ALREADY_COMPLETE (PR #5276).
