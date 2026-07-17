@@ -1,0 +1,55 @@
+{
+  "contract_name": "promotion_owner_and_gate_inventory_ssot_v1",
+  "contract_version": "v1",
+  "ssot_doc": "docs/governance/PROMOTION_OWNER_AND_GATE_INVENTORY_SSOT_V1.md",
+  "markers": {
+    "PROMOTION_OWNER_AND_GATE_INVENTORY_SSOT_V1": true,
+    "CANONICAL_PROMOTION_GATE_OWNER": "governance.promotion_loop.promotion_economic_gate_v1",
+    "CANONICAL_PROMOTION_GATE_MODULE": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+    "CANONICAL_PROMOTION_GATE_CALLABLE": "evaluate_promotion_economic_gate_v1",
+    "PRODUCTIVE_PROMOTION_DECISION_OWNER_COUNT": 1,
+    "DUPLICATE_PRODUCTIVE_PROMOTION_DECISION_OWNERS": false,
+    "SECOND_PRODUCTIVE_PROMOTION_DECISION_OWNER_FORBIDDEN": true,
+    "THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY": true,
+    "NO_RUNTIME_REWIRE_IN_THIS_SLICE": true,
+    "ECONOMIC_GATE_REMAINS_FAIL_CLOSED": true,
+    "ELIGIBLE_FOR_LIVE_DEFAULT": false,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "AUTHORITY_EFFECT": "NONE"
+  },
+  "canonical_decision_owner": {
+    "classification": "CANONICAL_DECISION_OWNER",
+    "module_path": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+    "owner_id": "governance.promotion_loop.promotion_economic_gate_v1",
+    "policy_version": "promotion_economic_gate_v1",
+    "primary_callable": "evaluate_promotion_economic_gate_v1",
+    "current_repo_probe": "evaluate_current_repo_promotion_gate_v1"
+  },
+  "adapters_consumers": [
+    "src/research/cross_sectional_lead_lag_v0_promotion_economic_gate_precheck_v0.py",
+    "src/research/linear_evidence/offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0.py",
+    "src/trading/master_v2/promotion_gate_boundary_offline_replay_binding_adapter_v0.py",
+    "src/trading/master_v2/promotion_gate_boundary_backtest_state_file_binding_adapter_v0.py",
+    "src/governance/canonical_offline_linear_diagnostics_promotion_binding_completion_reconciliation_v0.py",
+    "src/governance/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_and_promotion_binding_completion_reconciliation_v0.py"
+  ],
+  "reporting_observability": [
+    "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+    "src/trading/master_v2/surface_p_final_flags_fail_closed_contract_v0.py",
+    "src/meta/learning_loop/runtime_eligibility_v1.py",
+    "src/meta/learning_loop/deploy_inactive_v1.py"
+  ],
+  "legacy_or_domain_scoped_not_canonical_gate": [
+    "src/governance/promotion_loop/engine.py",
+    "src/governance/promotion_loop/safety.py",
+    "src/governance/promotion_loop/models.py",
+    "src/research/okx_full_panel_dataset_promotion_decision_and_binding_v0.py",
+    "src/research/step31f_promotion_metric_materialization_path_execution_owner_v0.py",
+    "src/meta/learning_loop/comparison_promotion_policy_decision_v1.py",
+    "src/experiments/topn_promotion.py"
+  ],
+  "next_plan_item": "P2_RISK_SIZING_INVENTORY",
+  "risk_sizing_claimed_consolidated": false
+}
