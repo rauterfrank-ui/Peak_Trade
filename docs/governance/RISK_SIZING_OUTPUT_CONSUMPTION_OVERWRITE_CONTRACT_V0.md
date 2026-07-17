@@ -135,7 +135,7 @@ This slice does **not**:
 - Runtime bridge not activated
 - Owner count 5 and bypass count 5 remain unchanged
 - Topology and units contracts remain separate and unchanged in semantics
-- No productive `src/**` mutation in this slice
+- No productive `src&#47;**` mutation in this slice
 
 ## Next
 
