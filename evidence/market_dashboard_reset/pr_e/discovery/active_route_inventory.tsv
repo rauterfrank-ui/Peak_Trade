@@ -1,0 +1,9 @@
+path	classification	notes
+GET /market	ACTIVE_PRODUCT_PATH	market_dashboard_product_page_v1 → product_v1.html
+GET /market/double-play	ACTIVE_PRODUCT_PATH	RedirectResponse → /market#double-play
+GET /market/futures	ACTIVE_PRODUCT_PATH	RedirectResponse → /market#futures
+src/webui/market_dashboard_product_surface_v1/	ACTIVE_PRODUCT_PATH	presenter + route_composition + source_loader
+src/webui/market_dashboard_readmodels_v1/	CANONICAL_READMODEL	contracts + page_builder
+src/webui/market_dashboard_readmodels_v1/adapters/	CANONICAL_ADAPTER	PR-C adapters
+templates/peak_trade_dashboard/market_dashboard_product_v1.html	ACTIVE_PRODUCT_PATH	active template
+static/css/market_dashboard_product_v1.css	ACTIVE_PRODUCT_PATH	product CSS

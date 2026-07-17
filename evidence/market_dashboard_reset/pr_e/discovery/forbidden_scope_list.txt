@@ -1,0 +1,9 @@
+src/trading/**
+src/governance/**
+src/risk_layer/**
+src/execution/**
+src/backtest/**
+src/strategies/**
+src/observability/**
+src/research/**
+.github/workflows/**

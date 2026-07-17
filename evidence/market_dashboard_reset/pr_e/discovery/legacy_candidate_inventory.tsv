@@ -1,0 +1,16 @@
+path	classification	action
+templates/peak_trade_dashboard/double_play_market_dashboard_v0.html	LEGACY_DEAD	DELETE (PR-E allowlist)
+templates/peak_trade_dashboard/futures_read_only_market_dashboard_v0.html	LEGACY_DEAD	DELETE (PR-E allowlist)
+templates/peak_trade_dashboard/market_v0.html	QUARANTINED	PRESERVE (offline/quarantine include tree)
+templates/peak_trade_dashboard/partials/market_*	LEGACY_STILL_REFERENCED	PRESERVE
+src/webui/market_dashboard_current_state_*	LEGACY_STILL_REFERENCED	PRESERVE (unreachable from /market route)
+src/webui/market_visual_operator_surface_v1/	LEGACY_STILL_REFERENCED	PRESERVE
+src/webui/futures_read_only_market_dashboard_runtime_v0.py	PRESERVE_PRODUCER	PRESERVE (runtime helper; not routed HTML)
+src/webui/double_play_dashboard_display_json_route_v0.py	PRESERVE_PRODUCER	PRESERVE (JSON API)
+build_static_dashboard_display_dict	LEGACY_STILL_REFERENCED	PRESERVE helper; unreachable from /market
+market_dashboard_current_state_snapshot_v0	LEGACY_STILL_REFERENCED	PRESERVE; unreachable from /market
+tests/webui/test_double_play_market_dashboard_v0.py	TEST_ONLY	REWRITE to product-surface closeout
+tests/webui/test_futures_read_only_market_dashboard_v0.py	TEST_ONLY	REWRITE to product-surface closeout
+src/trading/master_v2/**	CANONICAL_READMODEL	FORBIDDEN delete (domain owner)
+docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md	DOC_ONLY	UPDATE closeout state
+docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md	DOC_ONLY	UPDATE DoD residual contract

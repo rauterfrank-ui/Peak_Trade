@@ -72,17 +72,21 @@ Market Dashboard UI
 
 ## 2. Verifizierter Ist-Zustand
 
-### 2.1 Aktuelle Route und Surface
+### 2.1 Aktuelle Route und Surface (implemented state after PR-A…PR-D)
 
 ```text
 GET /market
-  -> src/webui/market_surface.py
-  -> build_market_v0_page_template_context(...)
-  -> templates/peak_trade_dashboard/market_v0.html
-  -> landmark partials
+  -> src/webui/market_surface.py (market_dashboard_product_page_v1)
+  -> market_dashboard_product_surface_v1/route_composition.py
+  -> page_builder.build_market_dashboard_page_snapshot_v1 (PR-C adapters)
+  -> presenter (display-only)
+  -> templates/peak_trade_dashboard/market_dashboard_product_v1.html
 ```
 
-`src/webui/market_surface.py` ist derzeit als `CANONICAL_MARKET_VIEWMODEL_OWNER` markiert, obwohl die Route fachliche Aussagen aus mehreren teilweise statischen, hardcodierten oder nicht kanonisch gebundenen Quellen zusammensetzt.
+Historical pre-reset path (`build_market_v0_page_template_context` → `market_v0.html`
+landmark partials) is no longer the active product route. Quarantined / offline
+legacy composition may remain in-repo for deferred teardown; PR-E deletes only
+proven-dead unrendered standalone shells.
 
 ### 2.2 Verifizierte Architekturbrüche
 
@@ -756,10 +760,10 @@ Empfohlene bounded PR-Sequenz:
    - Chrome evidence
 
 5. `PR-E: dashboard-closeout`
-   - delete quarantine/legacy code
-   - docs
+   - delete only proven-dead unrendered legacy shells
+   - docs / evidence manifest
    - final static guards
-   - evidence manifest
+   - Definition of Done matrix (honest residuals)
 
 ### Merge-Regeln
 
@@ -769,12 +773,14 @@ Empfohlene bounded PR-Sequenz:
 - Unexpected commits oder History Rewrite = HARD STOP.
 - Unrelated CI-Infrastrukturfehler separat klassifizieren; nicht als Produkt-PASS interpretieren.
 - Jeder PR bleibt unter dem vereinbarten bounded scope.
+- Operator `PRODUCT_GATE_PASS` aus PR-D gilt nur für den reviewed PR-D head; nicht für spätere Feature-PRs.
 
 ---
 
 ## 6. Definition of Done
 
-Der Architektur-Reset ist abgeschlossen, wenn alle folgenden Bedingungen erfüllt sind:
+Der Architektur-Reset der WebUI-`&#47;market`-Surface ist abgeschlossen, wenn die
+folgenden implementierten Zustände evidence-backed erfüllt sind:
 
 ```text
 OLD_DASHBOARD_REMOVED_OR_QUARANTINED=true
@@ -782,19 +788,33 @@ TRADING_CORE_UNCHANGED=true
 DASHBOARD_READ_ONLY=true
 CANONICAL_DECISION_CONSUMER_BOUND=true
 CANONICAL_DOUBLE_PLAY_CONSUMER_BOUND=true
-STATIC_DECISION_FIXTURE_REMOVED=true
-HARDCODED_SYSTEM_STATE_REMOVED=true
-DUMMY_FALLBACK_REMOVED=true
-CANONICAL_SAFETY_AUTHORITY_BOUND=true
+STATIC_DECISION_FIXTURE_REMOVED=true   # unreachable from active /market
+HARDCODED_SYSTEM_STATE_REMOVED=true    # unreachable from active /market
+DUMMY_FALLBACK_REMOVED=true            # unreachable from active /market
+CANONICAL_SAFETY_AUTHORITY_BOUND=NOT_BOUND_HONEST_ALLOWED
 PROVENANCE_COMPLETE=true
 UI_BUSINESS_LOGIC_REMOVED=true
-DUPLICATE_FACT_OWNERS_REMOVED=true
+DUPLICATE_FACT_OWNERS_REMOVED=true     # one page aggregate owner on /market
 MISSING_DATA_FAIL_CLOSED=true
 CHROME_TECHNICAL_REVIEW_PASS=true
-OPERATOR_PRODUCT_REVIEW_PASS=true
+OPERATOR_PRODUCT_REVIEW_PASS=true      # PR-D reviewed head only
 LIVE_AUTHORIZED=false
 ORDERS=false
 ```
+
+### 6.1 Safety / Authority residual (contractual revision)
+
+`CANONICAL_SAFETY_AUTHORITY_BOUND=true` remains the target when a consolidated
+canonical Safety&#47;Authority producer exists. Until that producer exists, the
+implemented closeout state is **`NOT_BOUND_HONEST_ALLOWED`**:
+
+- adapter input stays `None`
+- UI renders **NOT BOUND**
+- UI must not claim execution safe/allowed/blocked, risk passed, or kill-switch inactive
+- inventing a UI-side Safety&#47;Authority producer is forbidden
+
+A residual honest `NOT_BOUND` is therefore an acceptable architecture-reset
+closeout for the dashboard layer; it is **not** converted to `PASS` by assertion.
 
 ---
 

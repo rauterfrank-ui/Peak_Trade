@@ -1,0 +1,8 @@
+consumer	imports_or_references	classification
+src/webui/market_surface.py	market_dashboard_product_surface_v1	ACTIVE_PRODUCT_PATH
+src/webui/market_dashboard_product_surface_v1/route_composition.py	page_builder + adapters via page aggregate	ACTIVE_PRODUCT_PATH
+src/webui/market_dashboard_product_surface_v1/presenter.py	readmodels contracts only	ACTIVE_PRODUCT_PATH
+GET /market/double-play	RedirectResponse only; no TemplateResponse to deleted HTML	ACTIVE_PRODUCT_PATH
+GET /market/futures	RedirectResponse only; no TemplateResponse to deleted HTML	ACTIVE_PRODUCT_PATH
+tests/** referencing deleted HTML filenames	docs/chronicle + discovery only after delete	DOC_ONLY
+domain owners (src/trading, src/governance, src/execution)	not imported by product surface presenter/template	PRESERVE_PRODUCER

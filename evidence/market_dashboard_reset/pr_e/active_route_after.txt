@@ -1,0 +1,10 @@
+ACTIVE_ROUTE=GET /market
+HANDLER=market_dashboard_product_page_v1
+TEMPLATE=templates/peak_trade_dashboard/market_dashboard_product_v1.html
+MARKER=data-market-dashboard-product-surface-v1="true"
+RESET_SHELL_ACTIVE=false
+LEGACY_MARKET_V0_ROUTED=false
+LEGACY_DP_STANDALONE_SHELL=deleted
+LEGACY_F5_STANDALONE_SHELL=deleted
+REDIRECT_/market/double-play=/market#double-play
+REDIRECT_/market/futures=/market#futures

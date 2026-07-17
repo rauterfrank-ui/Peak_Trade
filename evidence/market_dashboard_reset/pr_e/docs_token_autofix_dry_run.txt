@@ -1,0 +1,5 @@
+[DRY-RUN] docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md: 0 inline-code span(s) rewritten
+[DRY-RUN] docs/webui/MARKET_DASHBOARD_READMODELS_V1.md: 0 inline-code span(s) rewritten
+[DRY-RUN] docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md: 0 inline-code span(s) rewritten
+[DRY-RUN] docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md: 0 inline-code span(s) rewritten
+TOTAL rewritten spans: 0

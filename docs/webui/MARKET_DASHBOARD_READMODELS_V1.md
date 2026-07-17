@@ -34,9 +34,11 @@ This package must not import templates, Jinja, Flask/FastAPI route modules, or C
 
 - Producer binding belongs to **PR-C** (`adapters&#47;` subdirectory).
 - UI / `&#47;market` page binding belongs to **PR-D**
-  (`docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md`).
+  (`docs&#47;webui&#47;MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md`).
+- Closeout / static guards / proven-dead legacy deletion belongs to **PR-E**.
 - This package remains free of template/Jinja/CSS concerns; the page aggregate
   builder in `page_builder.py` composes adapter outputs only.
+- Safety&#47;Authority stays honestly `NOT_BOUND` until a consolidated producer exists.
 
 ## Adapters (PR-C)
 

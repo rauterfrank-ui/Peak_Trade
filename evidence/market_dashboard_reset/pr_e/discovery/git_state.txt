@@ -1,0 +1,5 @@
+PR_E_BASE_SHA=1d61ec0deba49ca38a11f1a16ac53679a48608a0
+BRANCH=closeout/market-dashboard-architecture-reset-v1
+ORIGIN_MAIN=1d61ec0deba49ca38a11f1a16ac53679a48608a0
+RECORDED_AT=2026-07-17T10:00:00Z
+NOTE=Branch created from post-PR-D squash merge origin/main
