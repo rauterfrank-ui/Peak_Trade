@@ -1,0 +1,4 @@
+SELECTOR_INPUT=code_and_tests_only
+SELECTOR_EXCLUDED_EVIDENCE_TXT=category_unknown (durable artifacts; same practice as PR-A)
+SELECTOR_EXCLUDED_DOCS=docs_only NO_OP additive; run separately for docs gates
+DOC_FILE=docs/webui/MARKET_DASHBOARD_READMODELS_V1.md categorize=docs_only
