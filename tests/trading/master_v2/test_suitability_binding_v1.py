@@ -54,8 +54,10 @@ from trading.master_v2.suitability_binding_v1 import (
     filter_eligible_strategies,
     mirror_suitability_strategy_entry_for_short,
     rank_eligible_strategies,
+    regime_wildcard_matched_v1,
     select_strategy_deterministic,
     serialize_suitability_result_canonical,
+    strategy_supports_regime_v1,
     survival_result_ref_from_result,
     validate_suitability_ranking_policy,
     with_computed_suitability_result_digest,
@@ -616,3 +618,54 @@ def test_empty_registry_blocks() -> None:
     result = _evaluate(strategy_registry=_registry())
     assert result.status is SuitabilityBindingStatus.BLOCKED
     assert SuitabilityBlockedReason.STRATEGY_REGISTRY_EMPTY.value in result.reason_codes
+
+
+def test_regime_wildcard_star_accepts_trending() -> None:
+    assert strategy_supports_regime_v1(("*",), "trending") is True
+    assert regime_wildcard_matched_v1(("*",), "trending") is True
+
+
+def test_regime_wildcard_star_accepts_arbitrary_regime() -> None:
+    assert strategy_supports_regime_v1(("*",), "mean_reverting_high_vol") is True
+    assert regime_wildcard_matched_v1(("*",), "mean_reverting_high_vol") is True
+
+
+def test_concrete_regime_list_accepts_matching_id() -> None:
+    assert strategy_supports_regime_v1(("trending",), "trending") is True
+    assert regime_wildcard_matched_v1(("trending",), "trending") is False
+
+
+def test_concrete_regime_list_rejects_other_id() -> None:
+    assert strategy_supports_regime_v1(("trending",), "ranging") is False
+    assert regime_wildcard_matched_v1(("trending",), "ranging") is False
+
+
+def test_empty_regime_list_fail_closed() -> None:
+    assert strategy_supports_regime_v1((), "trending") is False
+    assert strategy_supports_regime_v1(("", "  "), "trending") is False
+    assert regime_wildcard_matched_v1((), "trending") is False
+
+
+def test_wildcard_registry_selects_under_trending() -> None:
+    entry = _strategy_entry(supported_regime_ids=("*",))
+    result = _evaluate(strategy_registry=_registry(entry), regime_id="trending")
+    assert result.status is SuitabilityBindingStatus.PASS
+    assert result.selected_strategy_id == "strat-momentum-v1"
+    assert "no_suitable_strategy" not in result.reason_codes
+
+
+def test_production_registry_trending_eligible_count_nonzero() -> None:
+    from src.strategies.registry import build_registry_snapshot
+    from src.strategies.suitability_registry_adapter_v1 import (
+        build_suitability_registry_from_snapshot,
+    )
+
+    registry = build_suitability_registry_from_snapshot(build_registry_snapshot())
+    eligible = filter_eligible_strategies(
+        registry,
+        side=DirectionalAssessmentSide.LONG,
+        regime_id="trending",
+    )
+    assert len(eligible) == len(registry.entries)
+    assert len(eligible) > 0
+    assert all(e.supported_regime_ids == ("*",) for e in registry.entries)
