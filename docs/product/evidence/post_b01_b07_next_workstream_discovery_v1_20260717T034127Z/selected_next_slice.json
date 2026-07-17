@@ -1,0 +1,35 @@
+{
+  "SELECTED_NEXT_SLICE": "AUTH021_AUTH003_AUTHORITY_MATRIX_B01_B07_CLOSEOUT_SYNC_V0",
+  "SELECTED_SLICE_REAL_GAP_CONFIRMED": true,
+  "SELECTED_SLICE_BEHAVIOR_PRESERVING": true,
+  "SELECTED_SLICE_BOUNDED": true,
+  "SELECTED_SLICE_REQUIRES_RUNTIME_GO": false,
+  "SELECTED_SLICE_REQUIRES_LIVE_OR_CAPITAL_GO": false,
+  "SELECTED_SLICE_REQUIRES_SEPARATE_IMPLEMENTATION_GO": true,
+  "IMPLEMENTATION_AUTHORIZED_NOW": false,
+  "IMPLEMENTATION_PERFORMED": false,
+  "DISCOVERY_ONLY": true,
+  "stable_id": "AUTH021_AUTH003_AUTHORITY_MATRIX_B01_B07_CLOSEOUT_SYNC_V0",
+  "description": "Sync authority_conflict_matrix_v1.md AUTH-021/AUTH-003 to post-PR-#5274 closed B-01/B-07 truth.",
+  "canonical_owner": "docs/governance/authority_conflict_matrix_v1.md",
+  "problem": "Matrix still claims missing_features_plan structural open / B-01 Operator-GO while plan is deferred-aligned on main.",
+  "current_vs_target": "AUTH-021 Resolution Dependency B-01 open \u2192 CLOSED referencing PR #5274; AUTH-003 docs layer updated.",
+  "allowed_files": [
+    "docs/governance/authority_conflict_matrix_v1.md",
+    "optional static contract test under tests/governance/"
+  ],
+  "non_goals": [
+    "no Python runtime mutation",
+    "no B-04 read-model creation",
+    "no dashboard",
+    "no live/orders"
+  ],
+  "tests": [
+    "optional static contract asserting CLOSED markers",
+    "docs token + docs reference targets"
+  ],
+  "estimated_size": "XS-S",
+  "dependencies": [
+    "PR #5274 merged"
+  ]
+}

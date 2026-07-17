@@ -1,0 +1,3 @@
+PR5274_PRE_MERGE: 24 passed (B01/B07 + B03 static)
+PR5274_POST_MERGE: 11 passed (missing_features_plan_deferred_alignment_v0)
+DISCOVERY: READ_ONLY — no implementation tests mutated

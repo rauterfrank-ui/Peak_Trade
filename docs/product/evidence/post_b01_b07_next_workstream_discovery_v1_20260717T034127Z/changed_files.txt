@@ -1,0 +1,5 @@
+=== porcelain excl runtime ===
+ M docs/governance/drift_cleanup_plan_v1.md
+?? docs/product/evidence/post_b01_b07_next_workstream_discovery_v1_20260717T034127Z/
+=== diff name-only ===
+docs/governance/drift_cleanup_plan_v1.md
