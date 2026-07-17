@@ -1,0 +1,9 @@
+{
+  "branch": "main",
+  "code_changes": false,
+  "head": "8fa865061e671d065e93ad5619ce263b91c46fee",
+  "host_port": "127.0.0.1:8765",
+  "origin_main": "8fa865061e671d065e93ad5619ce263b91c46fee",
+  "phase": "COMPOSITION_REBASELINE",
+  "readonly_dashboard_start": true
+}

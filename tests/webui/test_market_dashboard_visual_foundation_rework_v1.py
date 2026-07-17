@@ -88,7 +88,7 @@ def test_foundation_composition_tokens_present() -> None:
     assert "--pt-safety-rail-max-height: 32px;" in css
     assert "--pt-hero-min-height: 210px;" in css
     assert "--pt-hero-max-height: 290px;" in css
-    assert "--pt-primary-chart-min-height: 390px;" in css
+    assert "--pt-primary-chart-min-height: 450px;" in css
     layout = LAYOUT.read_text(encoding="utf-8")
     assert "pt-foundation-safety-rail-line" in layout
     assert "pt-foundation-instrument-title" in layout
@@ -101,7 +101,7 @@ def test_foundation_markers_and_anti_badge_wall(client_foundation: TestClient) -
     assert 'data-market-foundation-hero-v1="true"' in body
     assert 'data-market-foundation-primary-chart-v1="true"' in body
     assert 'data-market-phase-1a-primary-status-count-v1="3"' in body
-    assert 'data-market-chart-height-v1="390"' in body
+    assert 'data-market-chart-height-v1="450"' in body
     assert "lg:grid-cols-8" not in body
     assert "Peak Trade / Operator Console" in body
     assert "System decision" in body

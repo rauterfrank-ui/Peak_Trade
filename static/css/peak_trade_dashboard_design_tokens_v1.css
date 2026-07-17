@@ -19,15 +19,20 @@
   --pt-safety-rail-max-height: 32px;
   --pt-hero-min-height: 210px;
   --pt-hero-max-height: 290px;
-  --pt-primary-chart-min-height: 390px;
+  --pt-primary-chart-min-height: 450px;
   --pt-primary-chart-visual-share-min: 0.4;
   --pt-table-row-height: 44px;
   /* Decision Surface vertical compression (presentation density only) */
-  --pt-decision-matrix-max-height: 268px;
-  --pt-decision-table-row-height: 28px;
-  --pt-decision-secondary-gap: 6px;
-  --pt-decision-section-gap: 4px;
-  --pt-decision-secondary-matrix-max-height: 132px;
+  --pt-decision-matrix-max-height: 192px;
+  --pt-decision-table-row-height: 24px;
+  --pt-decision-secondary-gap: 4px;
+  --pt-decision-section-gap: 2px;
+  --pt-decision-secondary-matrix-max-height: 72px;
+  /* Primary page-share dominance — funnel densify window (presentation only) */
+  --pt-decision-funnel-stages-max-height: 72px;
+  --pt-decision-funnel-aux-max-height: 56px;
+  --pt-primary-chart-height-vh: 48vh;
+  --pt-primary-chart-max-height: 580px;
 
   --pt-space-1: 4px;
   --pt-space-2: 8px;
