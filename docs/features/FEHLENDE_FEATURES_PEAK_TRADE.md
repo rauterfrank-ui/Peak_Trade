@@ -3,8 +3,9 @@
 > **Kanonischer Feature Catalog** — einzige gepflegte Quelle für fehlende/geplante Features.  
 > **Feature-State-Map:** [feature_state_map_v1.md](../governance/feature_state_map_v1.md) · **Drift-Report:** [feature_drift_reconciliation_report_v1.md](../audit/feature_drift_reconciliation_report_v1.md)
 
-**Stand:** 2026-07-05 (Drift Safe Docs A-08)  
-**Zweck:** Vollständige Liste der Features, die in der Architektur/Vision genannt sind oder in Roadmaps/TODOs/Limitations dokumentiert wurden, aber **noch nicht implementiert** sind oder bewusst aus v1.0 ausgenommen wurden.
+**Stand:** 2026-07-17 (DRIFT_B02 R&amp;D Status Grammar v0)  
+**Zweck:** Vollständige Liste der Features, die in der Architektur/Vision genannt sind oder in Roadmaps/TODOs/Limitations dokumentiert wurden, aber **noch nicht implementiert** sind oder bewusst aus v1.0 ausgenommen wurden.  
+**R&amp;D Status-Grammatik (SSOT):** [rd_strategy_status_grammar_v0.json](rd_strategy_status_grammar_v0.json) — kanonische Werte ausschließlich `stub` | `research-only` | `missing` (Owner: `src&#47;governance&#47;rd_strategy_status_grammar_v0.py`). <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -107,7 +108,19 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 - Kill-Switch im RiskHook: Phase 0 „not implemented“
 - PagerDuty-Eskalation: `pagerduty_stub`, Phase 85
 - Adapter-Protocol: WP0C Placeholder
-- Einige Research-Strategien: TODO/NotImplementedError (z. B. Ehlers, López de Prado, Bouchaud, Gatheral)
+
+### 5.2.1 R&amp;D Strategy Status Grammar v0 (DRIFT_B02)
+
+Kanonische Docs-Klassifikation für genannte R&amp;D-Strategien. **Nicht** Live-/Promotion-Freigabe. Alle Einträge bleiben **NON-OPERATIONAL** (`NOT in Runtime Decision Core → NON-OPERATIONAL`).
+
+| strategy_id | Status | Modul | Anmerkung |
+|-------------|--------|-------|-----------|
+| `ehlers_cycle_filter` | research-only | `src&#47;strategies&#47;ehlers&#47;ehlers_cycle_filter_strategy.py` | Produktives Research-Modul; kein `NotImplementedError`. | <!-- pt:ref-target-ignore -->
+| `bouchaud_microstructure` | research-only | `src&#47;strategies&#47;bouchaud&#47;bouchaud_microstructure_strategy.py` | Produktives OHLCV-Proxy-Research-Modul; kein `NotImplementedError`. | <!-- pt:ref-target-ignore -->
+| `vol_regime_overlay` | research-only | `src&#47;strategies&#47;gatheral_cont&#47;vol_regime_overlay_strategy.py` | Gatheral-Cont Research-Overlay; kein `NotImplementedError`. | <!-- pt:ref-target-ignore -->
+| `meta_labeling` | research-only | `src&#47;strategies&#47;lopez_de_prado&#47;meta_labeling_strategy.py` | Labels → Research Triple-Barrier; `_extract_features` → `vol_20`. Primäres `generate_signals` bleibt Research-Stub (flat dummy) — **nicht** als „Nullen-Label-Placeholder“ beschreiben. | <!-- pt:ref-target-ignore -->
+
+**Verbotene Docs-Tokens** für diese Zeilen: `TODO`, `NotImplemented`, `NotImplementedError` als Statusersatz (mehrdeutig → fail-closed in Grammar-Owner).
 
 ### 5.3 Tech-Debt Backlog (TECH_DEBT_BACKLOG.md)
 
@@ -124,9 +137,10 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 ## 6. Feature-Engine & López de Prado (konkret im Code)
 
 - Feature-Engine-Schicht (deferred, nur Placeholder): keine ECM- oder allgemeine Feature-Pipeline. ECM liegt in der Strategy-Schicht ([ecm.py](../../src/strategies/ecm.py), [armstrong/](../../src/strategies/armstrong/)). <!-- pt:ref-target-ignore -->
-- **Meta-Labeling-Strategie:**  
-  - `compute_triple_barrier_labels`: TODO, Placeholder (gibt Nullen zurück).  
-  - `_extract_features`: TODO (Fractional Differentiation, Volatility-adjusted Returns, Regime-Indikatoren); gibt leeres DataFrame zurück.
+- **Meta-Labeling-Strategie** (`status=research-only`, siehe §5.2.1):  
+  - `compute_triple_barrier_labels`: delegiert an Research-`compute_triple_barrier_labels` (Close-Preise, Forward-Scan) — **kein** Nullen-Placeholder.  
+  - `_extract_features`: liefert minimale Research-Features (`vol_20` Rolling-Vol) — **kein** leeres DataFrame. Erweiterte Feature-Engineering-Ideen (Fractional Diff, Regime) bleiben optional/roadmap und ändern den Status nicht auf `missing`.  
+  - `generate_signals`: weiterhin Research-Stub (flat dummy); keine Live-Freigabe.
 
 ---
 
@@ -138,7 +152,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 | **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
 | **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
 | **Research-Track** | Sweeps, Metriken, Heatmaps, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio, Nightly-Sweeps, Feature-Importance. |
-| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, ``src&#47;features``, Meta-Labeling Feature-Engineering. | <!-- pt:ref-target-ignore -->
+| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, ``src&#47;features``. R&amp;D-Strategien Ehlers/Bouchaud/Gatheral/Meta-Labeling: siehe §5.2.1 (`research-only`, NON-OPERATIONAL). | <!-- pt:ref-target-ignore -->
 
 ---
 

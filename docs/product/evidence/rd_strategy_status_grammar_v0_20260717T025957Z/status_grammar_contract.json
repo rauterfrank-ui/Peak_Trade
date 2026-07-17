@@ -1,0 +1,64 @@
+{
+  "contract_id": "RD_STRATEGY_STATUS_GRAMMAR_V0",
+  "canonical_statuses": [
+    "stub",
+    "research-only",
+    "missing"
+  ],
+  "legacy_aliases": {
+    "research_only": "research-only",
+    "research only": "research-only",
+    "research-only": "research-only",
+    "r_and_d": "research-only",
+    "r&d": "research-only",
+    "placeholder": "stub",
+    "scaffold": "stub",
+    "stub": "stub",
+    "fehlt": "missing",
+    "absent": "missing",
+    "not_present": "missing",
+    "missing": "missing"
+  },
+  "ambiguous_rejected_tokens": [
+    "todo",
+    "notimplemented",
+    "not_implemented",
+    "notimplementederror",
+    "not implemented",
+    "not implemented error"
+  ],
+  "strategies": [
+    {
+      "strategy_id": "ehlers_cycle_filter",
+      "display_name": "Ehlers Cycle Filter",
+      "module_path": "src/strategies/ehlers/ehlers_cycle_filter_strategy.py",
+      "registry_key": "ehlers_cycle_filter",
+      "status": "research-only",
+      "notes": "Productive BaseStrategy implementation; research-only / NON-OPERATIONAL."
+    },
+    {
+      "strategy_id": "bouchaud_microstructure",
+      "display_name": "Bouchaud Microstructure",
+      "module_path": "src/strategies/bouchaud/bouchaud_microstructure_strategy.py",
+      "registry_key": "bouchaud_microstructure",
+      "status": "research-only",
+      "notes": "Productive OHLCV-proxy research strategy; research-only / NON-OPERATIONAL."
+    },
+    {
+      "strategy_id": "vol_regime_overlay",
+      "display_name": "Gatheral Cont Vol Regime Overlay",
+      "module_path": "src/strategies/gatheral_cont/vol_regime_overlay_strategy.py",
+      "registry_key": "vol_regime_overlay",
+      "status": "research-only",
+      "notes": "Productive Gatheral-cont research overlay; research-only / NON-OPERATIONAL."
+    },
+    {
+      "strategy_id": "meta_labeling",
+      "display_name": "L\u00f3pez de Prado Meta-Labeling",
+      "module_path": "src/strategies/lopez_de_prado/meta_labeling_strategy.py",
+      "registry_key": "meta_labeling",
+      "status": "research-only",
+      "notes": "Labels delegate to research triple-barrier; _extract_features returns vol_20. Primary generate_signals remains a research stub (flat dummy) and must not be described as returning all-zero label placeholders."
+    }
+  ]
+}

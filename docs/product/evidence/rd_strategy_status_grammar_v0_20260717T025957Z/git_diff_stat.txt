@@ -1,0 +1,15 @@
+ docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md      |  28 ++-
+ docs/features/rd_strategy_status_grammar_v0.json   |  87 ++++++++
+ docs/governance/drift_cleanup_plan_v1.md           |   7 +-
+ .../discovery_reconciliation.md                    |  27 +++
+ .../drift_before_after.json                        |  15 ++
+ .../git_diff_stat.txt                              |   3 +
+ .../manifest.sha256                                |   8 +
+ .../owner_consumer_inventory.json                  |  20 ++
+ .../preflight.txt                                  |  14 ++
+ .../scope_audit.txt                                |  15 ++
+ .../status_grammar_contract.json                   |  64 ++++++
+ .../test_results.txt                               |   7 +
+ src/governance/rd_strategy_status_grammar_v0.py    | 232 +++++++++++++++++++++
+ .../test_rd_strategy_status_grammar_v0.py          | 139 ++++++++++++
+ 14 files changed, 656 insertions(+), 10 deletions(-)

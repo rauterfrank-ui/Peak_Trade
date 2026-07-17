@@ -1,0 +1,15 @@
+{
+  "direct_drift_mappings_before": [
+    "FEHLENDE \u00a75.2 blanket TODO/NotImplementedError for Ehlers/LdP/Bouchaud/Gatheral",
+    "FEHLENDE \u00a76 Meta-Labeling zeros/empty DataFrame claims"
+  ],
+  "direct_drift_mappings_after": [],
+  "classifications_after": {
+    "ehlers_cycle_filter": "research-only",
+    "bouchaud_microstructure": "research-only",
+    "vol_regime_overlay": "research-only",
+    "meta_labeling": "research-only"
+  },
+  "behavior_preserving": true,
+  "core_semantics_changed": false
+}
