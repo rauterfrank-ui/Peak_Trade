@@ -13,6 +13,6 @@
 ## Review binding (proposed)
 
 `PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES=1` on review_server start/open:
-- bind ranking + OHLCV fixture roots under `tests/fixtures/.../complete_minimal`
+- bind ranking + OHLCV fixture roots under `tests&#47;fixtures&#47;...&#47;complete_minimal`
 - keep `LIVE_AUTHORIZED=false` `ORDERS_ALLOWED=false`
 - `/market` without flag remains canonical fail-closed empty

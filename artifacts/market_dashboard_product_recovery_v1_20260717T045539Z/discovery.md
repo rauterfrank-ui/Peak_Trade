@@ -14,10 +14,10 @@ locale mix, and recovery env spam as primary content.
 
 | Layer | Owner |
 |---|---|
-| Route | `src/webui/market_surface.py` `GET /market` |
+| Route | `src/webui/market_surface.py` `GET &#47;market` |
 | Template | `templates/peak_trade_dashboard/market_v0.html` |
-| Chart | `partials/market_primary_close_chart_v1.html` |
-| CSS | `static/css/peak_trade_dashboard_{design_tokens,layout,utilities}_v1.css` |
+| Chart | `partials&#47;market_primary_close_chart_v1.html` |
+| CSS | `static&#47;css&#47;peak_trade_dashboard_{design_tokens,layout,utilities}_v1.css` |
 
 ## Why review server shows empty
 
@@ -32,5 +32,5 @@ Optional archive path via `scripts/ops/start_market_dashboard_visual_operator_re
 
 ## Reference screenshots
 
-- `artifacts/market_dashboard_operator_viewing_readonly_20260717T043328Z/screenshots/`
-- `artifacts/market_dashboard_product_review_v13_readonly_20260717T042547Z/screenshots/`
+- `artifacts&#47;market_dashboard_operator_viewing_readonly_20260717T043328Z&#47;screenshots&#47;`
+- `artifacts&#47;market_dashboard_product_review_v13_readonly_20260717T042547Z&#47;screenshots&#47;`
