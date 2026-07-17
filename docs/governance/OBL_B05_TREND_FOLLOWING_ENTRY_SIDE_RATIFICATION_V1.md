@@ -77,3 +77,4 @@ Fail-closed mapping:
 | Static &#47; focused tests | `tests&#47;backtest&#47;test_trend_following_entry_side_ratification_v1.py` |
 | Parent authority decision | `docs&#47;governance&#47;OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md` |
 | Parent carrier contract | `docs&#47;governance&#47;OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1.md` |
+| Follow-on impact diagnostic | `docs&#47;governance&#47;OBL_B05_TREND_FOLLOWING_SIDE_IMPACT_DIAGNOSTIC_V1.md` |

@@ -1,0 +1,211 @@
+{
+  "ADDITIONAL_PRODUCER_ACTIVATED": false,
+  "BOLLINGER_SIDE_ACTIVATED": false,
+  "ENTER_OUTCOME_OBSERVED": false,
+  "LIVE_AUTHORIZED": false,
+  "MACD_SIDE_ACTIVATED": false,
+  "ORDERS_ENABLED": false,
+  "PRODUCTIVE_SEMANTICS_CHANGED": false,
+  "TREND_FOLLOWING_SIDE_IMPACT_DIAGNOSTIC_COMPLETE": true,
+  "base_sha": "190d6a9f6d29f807318904012dc0cc638debc45a",
+  "bollinger_eval_control": {
+    "BLOCKED_COMPOSITION": 0,
+    "BLOCKED_DIRECTIONAL_AGREEMENT": 1,
+    "BLOCKED_SUITABILITY": 0,
+    "ENTER_LONG": 0,
+    "ENTER_SHORT": 0,
+    "EXIT_OR_DEMOTION": 0,
+    "HOLD": 0,
+    "UNOBSERVABLE_FAIL_CLOSED": 0,
+    "agreement_direction_counts": {
+      "unresolved": 1
+    },
+    "composition_outcome_counts": {
+      "observe": 1
+    },
+    "dominant_first_failed_stage": "directional_agreement",
+    "entry_bar_count": 1,
+    "entry_side_counts": {
+      "NONE": 1
+    },
+    "first_failed_stage_counts": {
+      "directional_agreement": 1
+    },
+    "taxonomy_outcome_counts": {
+      "BLOCKED_DIRECTIONAL_AGREEMENT": 1
+    }
+  },
+  "bollinger_eval_ratified_path": {
+    "BLOCKED_COMPOSITION": 0,
+    "BLOCKED_DIRECTIONAL_AGREEMENT": 1,
+    "BLOCKED_SUITABILITY": 0,
+    "ENTER_LONG": 0,
+    "ENTER_SHORT": 0,
+    "EXIT_OR_DEMOTION": 0,
+    "HOLD": 0,
+    "UNOBSERVABLE_FAIL_CLOSED": 0,
+    "agreement_direction_counts": {
+      "unresolved": 1
+    },
+    "composition_outcome_counts": {
+      "observe": 1
+    },
+    "dominant_first_failed_stage": "directional_agreement",
+    "entry_bar_count": 1,
+    "entry_side_counts": {
+      "NONE": 1
+    },
+    "first_failed_stage_counts": {
+      "directional_agreement": 1
+    },
+    "taxonomy_outcome_counts": {
+      "BLOCKED_DIRECTIONAL_AGREEMENT": 1
+    }
+  },
+  "bollinger_eval_unchanged": true,
+  "changed_bar_count": 5054,
+  "control_dominant_first_failed_stage": "directional_agreement",
+  "control_injection": "diagnostic_monkeypatch:_resolve_entry_side_carrier_v1->NONE",
+  "elapsed_seconds": 737.93,
+  "eval_control": {
+    "BLOCKED_COMPOSITION": 0,
+    "BLOCKED_DIRECTIONAL_AGREEMENT": 40,
+    "BLOCKED_SUITABILITY": 0,
+    "ENTER_LONG": 0,
+    "ENTER_SHORT": 0,
+    "EXIT_OR_DEMOTION": 0,
+    "HOLD": 0,
+    "UNOBSERVABLE_FAIL_CLOSED": 0,
+    "agreement_direction_counts": {
+      "unresolved": 40
+    },
+    "composition_outcome_counts": {
+      "observe": 40
+    },
+    "dominant_first_failed_stage": "directional_agreement",
+    "entry_bar_count": 40,
+    "entry_side_counts": {
+      "NONE": 40
+    },
+    "first_failed_stage_counts": {
+      "directional_agreement": 40
+    },
+    "taxonomy_outcome_counts": {
+      "BLOCKED_DIRECTIONAL_AGREEMENT": 40
+    }
+  },
+  "eval_ratified": {
+    "BLOCKED_COMPOSITION": 40,
+    "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+    "BLOCKED_SUITABILITY": 0,
+    "ENTER_LONG": 0,
+    "ENTER_SHORT": 0,
+    "EXIT_OR_DEMOTION": 0,
+    "HOLD": 0,
+    "UNOBSERVABLE_FAIL_CLOSED": 0,
+    "agreement_direction_counts": {
+      "LONG": 40
+    },
+    "composition_outcome_counts": {
+      "observe": 40
+    },
+    "dominant_first_failed_stage": "composition",
+    "entry_bar_count": 40,
+    "entry_side_counts": {
+      "LONG": 40
+    },
+    "first_failed_stage_counts": {
+      "composition": 40
+    },
+    "taxonomy_outcome_counts": {
+      "BLOCKED_COMPOSITION": 40
+    }
+  },
+  "evaluation_instrument_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+  "impact_classification": [
+    "DIRECTIONAL_AGREEMENT_UNBLOCKED",
+    "SHIFTED_TO_COMPOSITION"
+  ],
+  "next_dominant_blocker": {
+    "composition_outcome_dominant": "observe",
+    "contract_path": "src/trading/master_v2/double_play_composition_matrix_v1.py::CompositionStatus.OBSERVE",
+    "note": "DA unblocked via entry_side=LONG; composition remains observe (no LONG_SELECTED/SHORT_SELECTED)",
+    "panel_count": 5054,
+    "stage": "composition"
+  },
+  "panel_control": {
+    "BLOCKED_COMPOSITION": 0,
+    "BLOCKED_DIRECTIONAL_AGREEMENT": 5054,
+    "BLOCKED_SUITABILITY": 0,
+    "ENTER_LONG": 0,
+    "ENTER_SHORT": 0,
+    "EXIT_OR_DEMOTION": 0,
+    "HOLD": 0,
+    "UNOBSERVABLE_FAIL_CLOSED": 0,
+    "agreement_direction_counts": {
+      "unresolved": 5121
+    },
+    "composition_outcome_counts": {
+      "null": 67,
+      "observe": 5054
+    },
+    "dominant_first_failed_stage": "directional_agreement",
+    "entry_bar_count": 5121,
+    "entry_side_counts": {
+      "NONE": 5121
+    },
+    "first_failed_stage_counts": {
+      "directional_agreement": 5054,
+      "warmup": 67
+    },
+    "taxonomy_outcome_counts": {
+      "BLOCKED_DIRECTIONAL_AGREEMENT": 5054,
+      "BLOCKED_WARMUP": 67
+    }
+  },
+  "panel_member_count": 118,
+  "panel_ratified": {
+    "BLOCKED_COMPOSITION": 5054,
+    "BLOCKED_DIRECTIONAL_AGREEMENT": 0,
+    "BLOCKED_SUITABILITY": 0,
+    "ENTER_LONG": 0,
+    "ENTER_SHORT": 0,
+    "EXIT_OR_DEMOTION": 0,
+    "HOLD": 0,
+    "UNOBSERVABLE_FAIL_CLOSED": 0,
+    "agreement_direction_counts": {
+      "LONG": 5054,
+      "unresolved": 67
+    },
+    "composition_outcome_counts": {
+      "null": 67,
+      "observe": 5054
+    },
+    "dominant_first_failed_stage": "composition",
+    "entry_bar_count": 5121,
+    "entry_side_counts": {
+      "LONG": 5054,
+      "NONE": 67
+    },
+    "first_failed_stage_counts": {
+      "composition": 5054,
+      "warmup": 67
+    },
+    "taxonomy_outcome_counts": {
+      "BLOCKED_COMPOSITION": 5054,
+      "BLOCKED_WARMUP": 67
+    }
+  },
+  "panel_total_bars": 348454,
+  "parent_ratification": "OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_RATIFICATION_V1",
+  "producer_distribution_entry_bars": {
+    "trend_following": 5121
+  },
+  "ratified_dominant_first_failed_stage": "composition",
+  "ratified_mode": "productive_adapter_emission",
+  "runner": "scripts/research/run_obl_b05_trend_following_side_impact_diagnostic_v1.py",
+  "schema_version": "obl_b05_trend_following_side_impact_diagnostic.v1",
+  "slice_id": "OBL_B05_TREND_FOLLOWING_SIDE_IMPACT_DIAGNOSTIC_V1",
+  "strategy_under_test": "trend_following",
+  "unchanged_non_trend_following_bar_count": 1
+}
