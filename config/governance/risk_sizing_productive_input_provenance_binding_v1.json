@@ -1,0 +1,524 @@
+{
+  "contract_name": "risk_sizing_productive_input_provenance_binding_v1",
+  "contract_id": "OBL_B05_PRODUCTIVE_INPUT_PROVENANCE_BINDING_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_productive_input_provenance_binding_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_PRODUCTIVE_INPUT_PROVENANCE_BINDING_V1.md",
+  "inventory_date": "2026-07-17",
+  "pinned_against_main_sha": "2c0b4bdbe3a392e87d536eeca29c5ca94b934622",
+  "semantics": "COMPANION_CONVERSION_INPUT_PROVENANCE_BINDING_SEMANTICS_FREE_FAIL_CLOSED_NO_OWNER_ASSIGNMENT_NO_CONVERSION_MATH",
+  "markers": {
+    "RISK_SIZING_PRODUCTIVE_INPUT_PROVENANCE_BINDING_V1": true,
+    "INVENTORY_ONLY": true,
+    "PROVENANCE_BINDING_FROZEN": true,
+    "CONVERSION_READY": false,
+    "CONVERSION_MATH_ADDED": false,
+    "PRODUCTIVE_CALLER_REWIRED": false,
+    "OWNER_ASSIGNED": false,
+    "PRODUCTIVE_DEFAULT_COUNT": 0,
+    "NO_PRODUCTIVE_DEFAULTS": true,
+    "NO_FRACTION_TO_UNITS_CONVERSION": true,
+    "NO_QUANTITY_MATH_CHANGE": true,
+    "NO_SIZING_MATH_CHANGE": true,
+    "NO_AUTHORITY_ASSIGNMENT": true,
+    "NO_OWNER_BYPASS_ALLOWLIST_MUTATION": true,
+    "NO_REWIRE": true,
+    "NO_SIGNAL_TO_ORDERS_MUTATION": true,
+    "NO_SHADOW_LIVE_ORDER_GENERATION_MUTATION": true,
+    "NO_CRS_MATH_CHANGE": true,
+    "NO_LEVERAGE_MULTIPLICATION": true,
+    "NO_MARGIN_MODE_MULTIPLICATION": true,
+    "NO_START_BALANCE_AS_RUNNING_EQUITY": true,
+    "NO_CANDLE_CLOSE_AS_PRICE_AUTHORITY": true,
+    "NO_CMC_MARK_AS_PRICE_AUTHORITY": true,
+    "NO_REPLAY_STATE_AS_LIVE_AUTHORITY": true,
+    "NO_VENUE_SNAPSHOT_AS_LIVE_AUTHORITY": true,
+    "NO_MONITOR_BALANCE_AS_EQUITY_AUTHORITY": true,
+    "COMPANION_INTENT": "FRACTION_DECIMAL_0_1",
+    "COMPANION_PASS_THROUGH_UNCHANGED": true,
+    "COMPANION_RUNTIME_CONVERSION_PRESENT": false,
+    "SHADOW_LIVE_INPUT_PARITY": "PARITY_ON_ABSENCE",
+    "EQUITY_PROVENANCE_STATUS": "REQUIRED_INPUT_MISSING",
+    "PRICE_PROVENANCE_STATUS": "REQUIRED_INPUT_MISSING",
+    "INSTRUMENT_METADATA_PROVENANCE_STATUS": "REQUIRED_INPUT_MISSING",
+    "ACCOUNT_BINDING_STATUS": "UNRESOLVED",
+    "VENUE_BINDING_STATUS": "UNRESOLVED",
+    "INSTRUMENT_BINDING_STATUS": "UNRESOLVED",
+    "FRESHNESS_CONTRACT_STATUS": "FAIL_CLOSED_MISSING",
+    "CRS_CONSUMES_INPUTS_DOES_NOT_OWN_VENUE_ACCOUNT_TRUTH": true,
+    "EFS_QUARANTINED": true,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "RUNTIME_SEMANTICS_CHANGED": false,
+    "QUANTITY_MATH_CHANGED": false,
+    "TRADING_CORE_CHANGED": false,
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_AUTHORITY_OWNER": "UNRESOLVED",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "CANONICAL_EQUITY_OWNER": "UNRESOLVED",
+    "CANONICAL_PRICE_OWNER": "UNRESOLVED",
+    "CANONICAL_INSTRUMENT_METADATA_OWNER": "UNRESOLVED",
+    "FINAL_QUANTITY_PROVENANCE_RESOLVED": false,
+    "EXPECTED_PRIMARY_OWNER_COUNT": 5,
+    "EXPECTED_PRODUCTIVE_DIRECT_EDGE_COUNT": 8,
+    "EXPECTED_COMPANION_EDGE_COUNT": 2,
+    "EXPECTED_DIRECT_SIZING_BYPASS_COUNT": 5,
+    "EXPECTED_PASS_THROUGH_EDGE_COUNT": 2,
+    "EXPECTED_AMBIGUOUS_EDGE_COUNT": 3,
+    "EXPECTED_CONSUMPTION_EDGE_COUNT": 27,
+    "EXPECTED_OVERWRITE_EDGE_COUNT": 13,
+    "EXPECTED_WRAP_DELEGATE_EDGE_COUNT": 1,
+    "EXPECTED_FINAL_QUANTITY_PROVENANCE_RESOLVED_PATH_COUNT": 5,
+    "EXPECTED_FINAL_QUANTITY_PROVENANCE_UNRESOLVED_PATH_COUNT": 3,
+    "EXPECTED_SEMANTIC_CONFLICT_PATH_COUNT": 3,
+    "EXPECTED_COMPANION_CONFLICT_PATH_COUNT": 2,
+    "EXPECTED_EFS_CONFLICT_PATH_COUNT": 1,
+    "EXPECTED_EFS_PRODUCTIVE_SRC_CALLER_COUNT": 0,
+    "EXPECTED_EFS_SCRIPT_OR_OFFLINE_CALLER_COUNT": 2,
+    "EXPECTED_EFS_QUARANTINE_CONTRACT_COUNT": 1,
+    "EXPECTED_CONVERSION_INPUT_FAMILY_COUNT": 3,
+    "EXPECTED_EQUITY_CANDIDATE_COUNT": 4,
+    "EXPECTED_PRICE_CANDIDATE_COUNT": 4,
+    "EXPECTED_INSTRUMENT_METADATA_CANDIDATE_COUNT": 4,
+    "EXPECTED_AUTHORITATIVE_PRODUCTIVE_SOURCE_COUNT": 0,
+    "EXPECTED_PRODUCTIVE_DEFAULT_COUNT": 0,
+    "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED": false
+  },
+  "referenced_contracts": {
+    "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "config/governance/risk_sizing_companion_intent_freeze_and_efs_quarantine_v1.json",
+    "risk_sizing_final_quantity_provenance_resolution_audit_v1": "config/governance/risk_sizing_final_quantity_provenance_resolution_audit_v1.json",
+    "risk_sizing_unresolved_final_quantity_provenance_contract_v0": "config/governance/risk_sizing_unresolved_final_quantity_provenance_contract_v0.json",
+    "risk_sizing_output_consumption_overwrite_contract_v0": "config/governance/risk_sizing_output_consumption_overwrite_contract_v0.json",
+    "risk_sizing_caller_owner_topology_contract_v0": "config/governance/risk_sizing_caller_owner_topology_contract_v0.json",
+    "risk_sizing_units_dimensions_contract_v0": "config/governance/risk_sizing_units_dimensions_contract_v0.json",
+    "risk_sizing_owner_inventory_ssot_v1": "config/governance/risk_sizing_owner_inventory_ssot_v1.json"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_UNCHANGED_COMPANION_INTENT_FROZEN_EFS_QUARANTINED",
+    "risk_sizing_final_quantity_provenance_resolution_audit_v1": "COMPLETE_SEPARATE_UNCHANGED_RESOLUTION_AUDIT_FROZEN_NOT_RESOLVED",
+    "risk_sizing_unresolved_final_quantity_provenance_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_UNRESOLVED_PATHS_FROZEN_NOT_RESOLVED",
+    "risk_sizing_output_consumption_overwrite_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_CONSUMPTION_FROZEN_NOT_RESOLVED",
+    "risk_sizing_caller_owner_topology_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_TOPOLOGY_FROZEN_NOT_RESOLVED",
+    "risk_sizing_units_dimensions_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_UNITS_DIMENSIONS_DECLARATION_ONLY",
+    "risk_sizing_owner_inventory_ssot_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES"
+  },
+  "companion_pass_through_reality_freeze": {
+    "path_ids": [
+      "PATH_SHADOW_COMPANION",
+      "PATH_LIVE_COMPANION"
+    ],
+    "declared_intent": "FRACTION_DECIMAL_0_1",
+    "runtime_conversion_present": false,
+    "pass_through_consumer": "ExecutionPipeline.signal_to_orders",
+    "pass_through_behavior": "position_size_passed_numerically_unchanged_into_OrderRequest.quantity",
+    "productive_conversion_handoff_present": false,
+    "shadow_live_input_parity": "PARITY_ON_ABSENCE",
+    "parity_note": "Shadow and Live share identical absence of Equity, Reference-Price, and Instrument-Metadata conversion-input handoffs.",
+    "evidence_anchors": [
+      {
+        "file": "src/live/shadow_session.py",
+        "symbol": "ShadowPaperSession.step_once",
+        "detail": "position_size = self._shadow_cfg.position_fraction"
+      },
+      {
+        "file": "src/execution/live_session.py",
+        "symbol": "LiveSessionRunner.step_once",
+        "detail": "position_size=self._config.position_fraction"
+      },
+      {
+        "file": "src/execution/pipeline.py",
+        "symbol": "ExecutionPipeline.signal_to_orders",
+        "detail": "quantity=position_size; documents absolute units (Stueck)"
+      }
+    ]
+  },
+  "crs_consumer_role": {
+    "module": "src/governance/capital_risk_sizing_v1.py",
+    "symbol": "evaluate_capital_risk_sizing_v1",
+    "consumes_account_equity": true,
+    "consumes_reference_price": true,
+    "consumes_instrument_quantity_constraints": true,
+    "owns_venue_account_truth": false,
+    "owns_live_equity_authority": false,
+    "owns_live_price_authority": false,
+    "owns_live_instrument_metadata_authority": false,
+    "companion_shadow_live_imports_crs": false,
+    "notes": "CRS consumes equity/price/instrument constraints for offline math only. It does not own venue or account truth and is not wired into Companion Shadow/Live quantity generation."
+  },
+  "input_provenance_records": [
+    {
+      "input_id": "ACCOUNT_EQUITY_AVAILABLE_CAPITAL",
+      "semantic_name": "account_equity_available_capital",
+      "dimension_unit": "CAPITAL_CURRENCY_SCALAR_USD_LIKE",
+      "required_for_companion_conversion": true,
+      "producer_source_identity": "NONE_PRODUCTIVE_ON_COMPANION_PATH",
+      "observation_vs_authority": "NO_AUTHORITY_SOURCE_BOUND",
+      "environment_scope": [
+        "shadow",
+        "live"
+      ],
+      "as_of_source_timestamp": null,
+      "freshness_policy_status": "FAIL_CLOSED_MISSING",
+      "instrument_account_binding": "UNBOUND",
+      "authority_status": "UNRESOLVED",
+      "provenance_completeness": "REQUIRED_INPUT_MISSING",
+      "fail_closed_reason": "EQUITY_PROVENANCE_MISSING_ON_COMPANION_PATH",
+      "explicit_non_sources": [
+        "start_balance_is_initial_risk_cash_base_only_not_running_equity",
+        "offline_replay_default_10000_is_simulation_only",
+        "backtest_state_file_account_equity_is_transport_or_offline_only",
+        "classic_backtest_equity_loop_is_simulation_only",
+        "LivePortfolioMonitor_fetch_balance_is_observation_not_sizing_authority"
+      ],
+      "candidate_sources": [
+        {
+          "candidate_id": "OFFLINE_REPLAY_DEFAULT_ACCOUNT_EQUITY",
+          "identity": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py::default_offline_replay_capital_context_v0",
+          "classification": "SIMULATION_ONLY_SOURCE",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "BACKTEST_STATE_FILE_ACCOUNT_EQUITY",
+          "identity": "src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py",
+          "classification": "TRANSPORT_ONLY_NO_OWNER",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "CLASSIC_BACKTEST_EQUITY_LOOP",
+          "identity": "src/backtest/engine.py::BacktestEngine",
+          "classification": "SIMULATION_ONLY_SOURCE",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "LIVE_PORTFOLIO_MONITOR_FETCH_BALANCE",
+          "identity": "src/live/portfolio_monitor.py::LivePortfolioMonitor._fetch_account_data",
+          "classification": "OBSERVATION_NOT_AUTHORITY",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        }
+      ]
+    },
+    {
+      "input_id": "REFERENCE_PRICE",
+      "semantic_name": "reference_price",
+      "dimension_unit": "PRICE_PER_INSTRUMENT_UNIT",
+      "required_for_companion_conversion": true,
+      "producer_source_identity": "NONE_PRODUCTIVE_ON_COMPANION_PATH",
+      "observation_vs_authority": "NO_AUTHORITY_SOURCE_BOUND",
+      "environment_scope": [
+        "shadow",
+        "live"
+      ],
+      "as_of_source_timestamp": null,
+      "freshness_policy_status": "FAIL_CLOSED_MISSING",
+      "instrument_account_binding": "UNBOUND",
+      "authority_status": "UNRESOLVED",
+      "provenance_completeness": "REQUIRED_INPUT_MISSING",
+      "fail_closed_reason": "REFERENCE_PRICE_PROVENANCE_MISSING_ON_COMPANION_PATH",
+      "explicit_non_sources": [
+        "candle_close_is_local_session_data_input_not_price_authority",
+        "cmc_mark_price_is_data_eligibility_label_is_authority_false",
+        "offline_replay_default_3500_is_simulation_only",
+        "backtest_state_file_reference_price_is_transport_or_offline_only"
+      ],
+      "candidate_sources": [
+        {
+          "candidate_id": "COMPANION_CANDLE_CLOSE",
+          "identity": "src/live/shadow_session.py|src/execution/live_session.py::candle.close",
+          "classification": "OBSERVATION_NOT_AUTHORITY",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "CMC_VENUE_MARK_PRICE_LABEL",
+          "identity": "src/trading/master_v2/canonical_market_context_v1.py::PRIMARY_DECISION_PRICE",
+          "classification": "OBSERVATION_NOT_AUTHORITY",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "OFFLINE_REPLAY_DEFAULT_REFERENCE_PRICE",
+          "identity": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py::_DEFAULT_REFERENCE_PRICE",
+          "classification": "SIMULATION_ONLY_SOURCE",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "BACKTEST_STATE_FILE_REFERENCE_PRICE",
+          "identity": "src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py",
+          "classification": "TRANSPORT_ONLY_NO_OWNER",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        }
+      ]
+    },
+    {
+      "input_id": "INSTRUMENT_QUANTITY_METADATA",
+      "semantic_name": "instrument_quantity_metadata",
+      "dimension_unit": "LOT_SIZE_MIN_QTY_MIN_NOTIONAL_MULTIPLIER_BASE_QUOTE",
+      "required_fields": [
+        "lot_size_or_quantity_step",
+        "minimum_quantity",
+        "minimum_notional",
+        "contract_multiplier",
+        "base_quote_or_instrument_dimension",
+        "source_timestamp_or_freshness"
+      ],
+      "required_for_companion_conversion": true,
+      "producer_source_identity": "NONE_PRODUCTIVE_ON_COMPANION_PATH",
+      "observation_vs_authority": "NO_AUTHORITY_SOURCE_BOUND",
+      "environment_scope": [
+        "shadow",
+        "live"
+      ],
+      "as_of_source_timestamp": null,
+      "freshness_policy_status": "FAIL_CLOSED_MISSING",
+      "instrument_account_binding": "UNBOUND",
+      "authority_status": "UNRESOLVED",
+      "provenance_completeness": "REQUIRED_INPUT_MISSING",
+      "fail_closed_reason": "INSTRUMENT_METADATA_PROVENANCE_MISSING_OR_STALE_ON_COMPANION_PATH",
+      "explicit_non_sources": [
+        "offline_replay_instrument_defaults_are_simulation_only",
+        "backtest_state_file_instrument_constraints_are_transport_or_offline_only",
+        "venue_capability_snapshot_is_offline_non_authorizing_evidence",
+        "okx_bounded_venue_binding_constants_are_offline_venue_specific_not_companion_authority"
+      ],
+      "candidate_sources": [
+        {
+          "candidate_id": "OFFLINE_REPLAY_DEFAULT_INSTRUMENT",
+          "identity": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py::default_offline_replay_instrument_v0",
+          "classification": "SIMULATION_ONLY_SOURCE",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "BACKTEST_STATE_FILE_INSTRUMENT_CONSTRAINTS",
+          "identity": "src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py",
+          "classification": "TRANSPORT_ONLY_NO_OWNER",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "VENUE_CAPABILITY_SNAPSHOT_V1",
+          "identity": "src/meta/learning_loop/venue_capability_snapshot_v1.py",
+          "classification": "SIMULATION_ONLY_SOURCE",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        },
+        {
+          "candidate_id": "OKX_BOUNDED_FUTURES_TESTNET_VENUE_BINDING",
+          "identity": "src/ops/bounded_futures_testnet_venue_binding_v0.py",
+          "classification": "VENUE_SPECIFIC_SOURCE",
+          "authority_status": "NOT_AUTHORITY",
+          "allowed_on_companion_shadow_live": false
+        }
+      ]
+    }
+  ],
+  "companion_conversion_input_binding": {
+    "binding_id": "COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_INPUT_BINDING_V1",
+    "path_ids": [
+      "PATH_SHADOW_COMPANION",
+      "PATH_LIVE_COMPANION"
+    ],
+    "conversion_ready": false,
+    "ready_requires_all_of": [
+      "equity_provenance_closed_and_dimension_clear",
+      "reference_price_provenance_closed_and_instrument_bound",
+      "instrument_metadata_complete_and_freshness_conformant",
+      "shared_account_venue_instrument_context_across_all_three_inputs",
+      "no_simulation_or_default_source_on_shadow_live"
+    ],
+    "equity_provenance_closed": false,
+    "price_provenance_closed": false,
+    "instrument_metadata_complete": false,
+    "shared_account_venue_instrument_context": false,
+    "simulation_or_default_source_on_shadow_live": false,
+    "account_binding_status": "UNRESOLVED",
+    "venue_binding_status": "UNRESOLVED",
+    "instrument_binding_status": "UNRESOLVED",
+    "freshness_contract_status": "FAIL_CLOSED_MISSING",
+    "productive_default_count": 0,
+    "authoritative_productive_source_count": 0,
+    "fail_closed_reason_codes": [
+      "EQUITY_PROVENANCE_MISSING_ON_COMPANION_PATH",
+      "REFERENCE_PRICE_PROVENANCE_MISSING_ON_COMPANION_PATH",
+      "INSTRUMENT_METADATA_PROVENANCE_MISSING_OR_STALE_ON_COMPANION_PATH",
+      "ACCOUNT_VENUE_INSTRUMENT_CONTEXT_UNBOUND",
+      "NO_AUTHORITATIVE_PRODUCTIVE_SOURCE_FOR_CONVERSION_INPUTS",
+      "MULTIPLE_NON_AUTHORITATIVE_CANDIDATES_FAIL_CLOSED"
+    ],
+    "mismatch_fail_closed_codes": [
+      "ACCOUNT_BINDING_MISMATCH",
+      "VENUE_BINDING_MISMATCH",
+      "INSTRUMENT_BINDING_MISMATCH",
+      "OBSERVATION_WITHOUT_AUTHORITY",
+      "STALE_OR_MISSING_INSTRUMENT_METADATA",
+      "PRODUCTIVE_DEFAULT_FORBIDDEN"
+    ]
+  },
+  "fail_closed_evaluation_rules": {
+    "missing_equity": {
+      "status": "REQUIRED_INPUT_MISSING",
+      "conversion_ready": false,
+      "reason_code": "EQUITY_PROVENANCE_MISSING_ON_COMPANION_PATH",
+      "fallback_allowed": false,
+      "default_allowed": false
+    },
+    "observation_without_authority": {
+      "status": "UNRESOLVED",
+      "conversion_ready": false,
+      "reason_code": "OBSERVATION_WITHOUT_AUTHORITY",
+      "fallback_allowed": false,
+      "default_allowed": false
+    },
+    "stale_or_missing_instrument_metadata": {
+      "status": "REQUIRED_INPUT_MISSING",
+      "conversion_ready": false,
+      "reason_code": "STALE_OR_MISSING_INSTRUMENT_METADATA",
+      "fallback_allowed": false,
+      "default_allowed": false
+    },
+    "account_venue_instrument_mismatch": {
+      "status": "UNRESOLVED",
+      "conversion_ready": false,
+      "reason_code": "ACCOUNT_VENUE_INSTRUMENT_CONTEXT_MISMATCH",
+      "fallback_allowed": false,
+      "default_allowed": false
+    },
+    "multiple_non_authoritative_candidates": {
+      "status": "MULTIPLE_OWNER_CANDIDATES",
+      "conversion_ready": false,
+      "reason_code": "MULTIPLE_NON_AUTHORITATIVE_CANDIDATES_FAIL_CLOSED",
+      "fallback_allowed": false,
+      "default_allowed": false
+    },
+    "productive_default_attempt": {
+      "status": "UNRESOLVED",
+      "conversion_ready": false,
+      "reason_code": "PRODUCTIVE_DEFAULT_FORBIDDEN",
+      "fallback_allowed": false,
+      "default_allowed": false
+    }
+  },
+  "authority_status": {
+    "canonical_execution_authority_owner": "UNRESOLVED",
+    "canonical_risk_sizing_authority_owner": "UNRESOLVED",
+    "canonical_risk_sizing_owner": "UNRESOLVED",
+    "canonical_equity_owner": "UNRESOLVED",
+    "canonical_price_owner": "UNRESOLVED",
+    "canonical_instrument_metadata_owner": "UNRESOLVED",
+    "final_quantity_provenance_resolved": false,
+    "authority_effect": "NONE",
+    "runtime_effect": "NONE",
+    "no_candidate_implicitly_elevated_to_owner": true,
+    "owner_assigned": false
+  },
+  "expected_counts": {
+    "primary_owners": 5,
+    "productive_direct_edges": 8,
+    "companion_edges": 2,
+    "direct_sizing_bypass_edges": 5,
+    "pass_through_edges_topology": 2,
+    "ambiguous_edges_topology": 3,
+    "consumption_edges": 27,
+    "overwrite_edges": 13,
+    "wrap_delegate_edges": 1,
+    "final_quantity_provenance_resolved_paths": 5,
+    "final_quantity_provenance_unresolved_paths": 3,
+    "semantic_conflict_paths": 3,
+    "companion_conflict_paths": 2,
+    "efs_conflict_paths": 1,
+    "efs_productive_src_callers": 0,
+    "efs_script_or_offline_callers": 2,
+    "efs_quarantine_contract_count": 1,
+    "conversion_input_families": 3,
+    "equity_candidates": 4,
+    "price_candidates": 4,
+    "instrument_metadata_candidates": 4,
+    "authoritative_productive_sources": 0,
+    "productive_defaults": 0
+  },
+  "global_non_claims": [
+    "NO_CANONICAL_RISK_SIZING_OWNER_ASSIGNED",
+    "NO_CANONICAL_EXECUTION_AUTHORITY_OWNER_ASSIGNED",
+    "NO_CANONICAL_EQUITY_OWNER_ASSIGNED",
+    "NO_CANONICAL_PRICE_OWNER_ASSIGNED",
+    "NO_CANONICAL_INSTRUMENT_METADATA_OWNER_ASSIGNED",
+    "FINAL_QUANTITY_PROVENANCE_NOT_FULLY_RESOLVED",
+    "NO_FRACTION_TO_UNITS_CONVERSION_IN_THIS_SLICE",
+    "NO_QUANTITY_MATH_CHANGE_IN_THIS_SLICE",
+    "NO_REWIRE",
+    "NO_SIGNAL_TO_ORDERS_MUTATION",
+    "NO_SHADOW_LIVE_ORDER_GENERATION_MUTATION",
+    "NO_CRS_MATH_CHANGE",
+    "NO_LEVERAGE_OR_MARGIN_MULTIPLICATION",
+    "NO_START_BALANCE_AS_RUNNING_EQUITY",
+    "NO_CANDLE_CLOSE_AS_PRICE_AUTHORITY",
+    "NO_CMC_MARK_AS_PRICE_AUTHORITY",
+    "NO_REPLAY_STATE_AS_LIVE_AUTHORITY",
+    "NO_VENUE_SNAPSHOT_AS_LIVE_AUTHORITY",
+    "NO_MONITOR_BALANCE_AS_EQUITY_AUTHORITY",
+    "NO_PRODUCTIVE_DEFAULTS",
+    "CRS_CONSUMES_BUT_DOES_NOT_OWN_VENUE_ACCOUNT_TRUTH",
+    "COMPANION_PASS_THROUGH_UNCHANGED",
+    "EFS_REMAINS_QUARANTINED",
+    "RUNTIME_REACHABILITY_IS_NOT_ACTIVATION",
+    "SHADOW_OR_LIVE_NAMING_IS_NOT_LIVE_AUTHORIZED",
+    "CONVERSION_NOT_READY"
+  ],
+  "drift_policy": {
+    "conversion_ready_claimed_true": "FAIL",
+    "owner_assignment_claimed": "FAIL",
+    "fraction_to_units_conversion_claimed": "FAIL",
+    "quantity_math_change_claimed": "FAIL",
+    "productive_caller_rewire_claimed": "FAIL",
+    "productive_default_introduced": "FAIL",
+    "start_balance_elevated_to_running_equity": "FAIL",
+    "candle_close_elevated_to_price_authority": "FAIL",
+    "cmc_mark_elevated_to_price_authority": "FAIL",
+    "replay_or_venue_snapshot_elevated_to_live_authority": "FAIL",
+    "monitor_balance_elevated_to_equity_authority": "FAIL",
+    "companion_intent_changed_from_fraction_decimal_0_1": "FAIL",
+    "companion_pass_through_mutated": "FAIL",
+    "efs_not_quarantined": "FAIL",
+    "runtime_bridge_activation_claim": "FAIL",
+    "live_or_orders_activation_claim": "FAIL",
+    "mutation_of_frozen_counts_5_8_2_5_2_3": "FAIL",
+    "mutation_of_frozen_counts_27_13_1": "FAIL",
+    "mutation_of_resolved_unresolved_5_3": "FAIL",
+    "authority_escalation_from_unresolved": "FAIL",
+    "leverage_or_margin_multiplication_claimed": "FAIL"
+  },
+  "global_authority_pins": {
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_AUTHORITY_OWNER": "UNRESOLVED",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "CANONICAL_EQUITY_OWNER": "UNRESOLVED",
+    "CANONICAL_PRICE_OWNER": "UNRESOLVED",
+    "CANONICAL_INSTRUMENT_METADATA_OWNER": "UNRESOLVED",
+    "FINAL_QUANTITY_PROVENANCE_RESOLVED": false,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "CONVERSION_READY": false,
+    "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED": false
+  },
+  "scan_method": "STATIC_CONTRACT_PLUS_SNIPPET_AND_IMPORT_GUARD_NO_PRODUCTIVE_MUTATION",
+  "scan_uncertainty_notes": [
+    "This slice models fail-closed provenance binding contracts only; it does not bind productive producers.",
+    "Companion Shadow/Live remain without Equity, Reference-Price, and Instrument-Metadata conversion-input handoffs.",
+    "Multiple non-authoritative candidates are inventoried and explicitly forbidden as Companion Shadow/Live sources.",
+    "CRS continues to consume offline inputs without owning venue/account truth.",
+    "Baseline OBL_B05 freeze counts remain unchanged; this binding contract counts conversion-input families separately.",
+    "CONVERSION_READY remains false until a separate Operator-GO closes productive provenance."
+  ]
+}
