@@ -696,7 +696,8 @@ def test_market_dashboard_product_tombstone_present_deleted_surfaces_absent() ->
     tombstone = MARKET_DASHBOARD_TOMBSTONE.read_text(encoding="utf-8")
     assert "Market Dashboard" in tombstone
     assert "removed" in tombstone.lower()
-    assert "GET /market" in tombstone or "GET &#47;market" in tombstone
+    assert "GET /market" in tombstone
+    assert "&#47;market" not in tombstone
 
 
 def test_market_dashboard_f5_non_authority_taxonomy_cross_ref_aligned() -> None:
