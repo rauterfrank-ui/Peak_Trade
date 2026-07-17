@@ -1,0 +1,18 @@
+{
+  "PREFERRED_SLICE": "CANONICAL_INTEGRATED_REPLAY_INPUT_BUILDER_V1",
+  "PREFERRED_SLICE_STATUS": "ALREADY_COMPLETE_ON_MAIN",
+  "CANONICAL_BUILDER_PREEXISTED": true,
+  "THIN_ADAPTERS_ALREADY_MIGRATED": true,
+  "STATIC_CONTRACT_ALREADY_PRESENT": true,
+  "NEXT_CANONICAL_CHAIN_BOUNDARY_SLICE": "NONE",
+  "REASON": "Repository already owns build_integrated_offline_replay_input_v1 with a single productive direct constructor inside the owner module; MV2 wiring, runtime bridge, and parity harness already call the public builder; SSOT/static drift contracts exist and pass. Canonical Chain Wiring Repair Master Runbook v2.2 declares FURTHER_CHAIN_WIRING_MUTATION_REQUIRED=false and FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE=true with NEXT_ACTION=NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR. No additional canonical-chain boundary slice is authorized without a separate new scope GO. Duplicating the builder or inventing an unauthorized next wiring mutation is forbidden.",
+  "IMPLEMENTATION_MUTATION_AUTHORIZED": false,
+  "DOCS_DISCOVERY_EVIDENCE_AUTHORIZED": true,
+  "RUNBOOK_MARKERS": {
+    "SLICE_1_COMPLETE": true,
+    "TECHNICAL_CANONICAL_CHAIN_WIRING_COMPLETE": true,
+    "FURTHER_CHAIN_WIRING_MUTATION_REQUIRED_false": true,
+    "NEXT_ACTION_NONE": true,
+    "FURTHER_MUTATION_REQUIRES_SEPARATE_NEW_SCOPE": true
+  }
+}

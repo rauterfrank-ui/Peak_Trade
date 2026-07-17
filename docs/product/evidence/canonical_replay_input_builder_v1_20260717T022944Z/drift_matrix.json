@@ -1,0 +1,45 @@
+{
+  "productive_direct_constructors": [
+    {
+      "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "lineno": 548
+    }
+  ],
+  "productive_direct_constructor_count": 1,
+  "expected_owner_only_count": 1,
+  "owner_only_pass": true,
+  "builder_call_sites": [
+    {
+      "path": "src/backtest/mv2_research_wiring_v1.py",
+      "lineno": 1434
+    },
+    {
+      "path": "src/backtest/mv2_research_wiring_v1.py",
+      "lineno": 1523
+    },
+    {
+      "path": "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+      "lineno": 367
+    },
+    {
+      "path": "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+      "lineno": 2499
+    }
+  ],
+  "adapter_status": {
+    "src/backtest/mv2_research_wiring_v1.py": {
+      "calls_builder": true,
+      "direct_ctor": false
+    },
+    "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py": {
+      "calls_builder": true,
+      "direct_ctor": false
+    },
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py": {
+      "calls_builder": true,
+      "direct_ctor": false
+    }
+  },
+  "now_tick_default_in_builder": true,
+  "keyword_only_builder": true
+}

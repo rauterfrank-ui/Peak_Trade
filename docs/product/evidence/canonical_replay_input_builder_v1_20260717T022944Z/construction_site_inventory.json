@@ -1,0 +1,35 @@
+{
+  "direct_construction_sites_src": [
+    {
+      "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "lineno": 548
+    }
+  ],
+  "builder_call_sites_src": [
+    {
+      "path": "src/backtest/mv2_research_wiring_v1.py",
+      "lineno": 1434
+    },
+    {
+      "path": "src/backtest/mv2_research_wiring_v1.py",
+      "lineno": 1523
+    },
+    {
+      "path": "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+      "lineno": 367
+    },
+    {
+      "path": "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+      "lineno": 2499
+    }
+  ],
+  "expected_adapters": [
+    "src/backtest/mv2_research_wiring_v1.py",
+    "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py"
+  ],
+  "static_contract_tests": [
+    "tests/trading/master_v2/test_canonical_replay_input_builder_ssot_contract_v1.py",
+    "tests/trading/master_v2/test_canonical_architecture_drift_guard_v1.py"
+  ]
+}

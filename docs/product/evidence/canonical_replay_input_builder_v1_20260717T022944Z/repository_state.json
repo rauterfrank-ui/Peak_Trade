@@ -1,0 +1,14 @@
+{
+  "captured_at_utc": "20260717T022944Z",
+  "branch": "main",
+  "local_head": "f75aa53d20f04c926d3719e80e035983f61dc366",
+  "origin_main": "f75aa53d20f04c926d3719e80e035983f61dc366",
+  "expected_origin_main": "f75aa53d20f04c926d3719e80e035983f61dc366",
+  "origin_main_match": true,
+  "pr5266_state": "MERGED",
+  "pr5266_merge": "f75aa53d20f04c926d3719e80e035983f61dc366",
+  "tracked_dirty": false,
+  "dashboard_project_complete": true,
+  "canonical_input_type_owner": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+  "canonical_builder_symbol": "build_integrated_offline_replay_input_v1"
+}
