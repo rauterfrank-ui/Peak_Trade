@@ -1,0 +1,279 @@
+{
+  "contract_name": "risk_sizing_owner_inventory_ssot_v1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_owner_inventory_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+  "inventory_date": "2026-07-17",
+  "markers": {
+    "RISK_SIZING_OWNER_INVENTORY_SSOT_V1": true,
+    "INVENTORY_ONLY": true,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "RISK_SIZING_CLAIMED_CONSOLIDATED": false,
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_OWNER_MV2_SCOPE": "src.governance.capital_risk_sizing_v1",
+    "PRODUCTIVE_RISK_SIZING_DECISION_OWNER_COUNT": 5,
+    "DUPLICATE_PRODUCTIVE_RISK_SIZING_DECISION_OWNERS": true,
+    "BYPASS_PATH_COUNT": 5,
+    "RISK_LIMIT_AND_SIZING_SEPARATION": "PARTIAL",
+    "THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY": true,
+    "NO_RUNTIME_REWIRE_IN_THIS_SLICE": true,
+    "NO_TRADING_CORE_CHANGE": true,
+    "NO_RISK_SIZING_SEMANTICS_CHANGE": true,
+    "NO_LEGACY_ORDER_INTENT_CHANGE": true,
+    "NO_RUNTIME_BRIDGE_ACTIVATION": true,
+    "ECONOMIC_GATE_REMAINS_FAIL_CLOSED": true,
+    "ELIGIBLE_FOR_LIVE_DEFAULT": false,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "AUTHORITY_EFFECT": "NONE"
+  },
+  "canonical_status": {
+    "repo_wide": "UNRESOLVED",
+    "reason": "Multiple productive size decision owners coexist. CRS is unique only for MV2/governance/intent-bound paths. OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT remains open and requires Operator-GO. Classic backtest, offline-eval contract, execution pipeline, and live/shadow fraction paths decide size without CRS.",
+    "mv2_governance_chain_owner": "src.governance.capital_risk_sizing_v1",
+    "mv2_scope_status": "RESOLVED_TO_CRS"
+  },
+  "productive_decision_owners": [
+    {
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "module_path": "src/governance/capital_risk_sizing_v1.py",
+      "primary_symbols": [
+        "evaluate_capital_risk_sizing_v1",
+        "evaluate_quantity_chain_v1",
+        "export_bypass_scan_v1"
+      ],
+      "role": "canonical_decision_owner",
+      "scope": "mv2_governance_intent_bound",
+      "status": "ACTIVE",
+      "authoritative_size_decision": true,
+      "fail_closed": true,
+      "authority_effect": "NONE",
+      "runtime_effect": "NONE",
+      "notes": "CRS quantity chain for canonical MV2/governance paths. Declares CANONICAL_OWNER=src.governance.capital_risk_sizing_v1 for that scope; does not erase parallel classic/execution owners."
+    },
+    {
+      "owner_id": "src.risk.position_sizer",
+      "module_path": "src/risk/position_sizer.py",
+      "primary_symbols": [
+        "PositionSizer",
+        "PositionSizerConfig",
+        "calc_position_size"
+      ],
+      "role": "legacy_decision_owner",
+      "scope": "classic_backtest_default",
+      "status": "LEGACY",
+      "authoritative_size_decision": true,
+      "fail_closed": "partial",
+      "notes": "CRS export_bypass_scan_v1 classifies as DEPRECATE_LEGACY_PATH; still ACTIVE default size path in BacktestEngine."
+    },
+    {
+      "owner_id": "src.core.position_sizing",
+      "module_path": "src/core/position_sizing.py",
+      "primary_symbols": [
+        "BasePositionSizer",
+        "FixedFractionSizer",
+        "NoopPositionSizer"
+      ],
+      "role": "decision_owner",
+      "scope": "classic_backtest_when_core_position_sizer_wired",
+      "status": "ACTIVE",
+      "authoritative_size_decision": true,
+      "fail_closed": "path_dependent",
+      "notes": "Independent signal-to-units owner when BacktestEngine.core_position_sizer is set; not a CRS adapter."
+    },
+    {
+      "owner_id": "backtest.offline_evaluation_sizing_contract_v1",
+      "module_path": "src/backtest/offline_evaluation_sizing_contract_v1.py",
+      "primary_symbols": [
+        "size_offline_evaluation_entry_v1",
+        "OfflineEvaluationSizingContractV1"
+      ],
+      "role": "policy_owner",
+      "scope": "offline_economic_evaluation",
+      "status": "ACTIVE",
+      "authoritative_size_decision": true,
+      "fail_closed": true,
+      "notes": "Own CONTRACT_OWNER and CAP/REJECT policy; wraps calc_position_size but owns offline-eval sizing contract semantics."
+    },
+    {
+      "owner_id": "src.execution.pipeline.execute_from_signals",
+      "module_path": "src/execution/pipeline.py",
+      "primary_symbols": [
+        "ExecutionPipeline.execute_from_signals"
+      ],
+      "role": "decision_owner",
+      "scope": "execution_kernel_simplified",
+      "status": "ACTIVE",
+      "authoritative_size_decision": true,
+      "fail_closed": "weak",
+      "notes": "Simplified size = signal * max_position_notional_pct; does not call CRS."
+    }
+  ],
+  "adapters": [
+    {
+      "module_path": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+      "role": "adapter",
+      "status": "ADAPTER_ONLY",
+      "delegates_to": "src.governance.capital_risk_sizing_v1",
+      "authoritative_size_decision": false
+    },
+    {
+      "module_path": "src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py",
+      "role": "adapter",
+      "status": "ADAPTER_ONLY",
+      "delegates_to": "src.governance.capital_risk_sizing_v1",
+      "authoritative_size_decision": false
+    },
+    {
+      "module_path": "src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py",
+      "role": "adapter",
+      "status": "ADAPTER_ONLY",
+      "delegates_to": "src.governance.capital_risk_sizing_v1",
+      "authoritative_size_decision": false,
+      "notes": "Consumes CRS then builds order intent; submission remains blocked; bridge not activated."
+    }
+  ],
+  "limit_veto_surfaces_not_size_owners": [
+    {
+      "module_path": "src/risk/limits.py",
+      "role": "policy_owner",
+      "status": "ACTIVE",
+      "authoritative_size_decision": false,
+      "notes": "RiskLimits cap/block; not quantity owner."
+    },
+    {
+      "module_path": "src/core/risk.py",
+      "role": "calculator/helper",
+      "status": "ACTIVE",
+      "authoritative_size_decision": false,
+      "notes": "BaseRiskManager adjusts/zeros target; limit/veto helper."
+    },
+    {
+      "module_path": "src/risk/dynamic_leverage.py",
+      "role": "calculator/helper",
+      "status": "ACTIVE",
+      "authoritative_size_decision": false
+    }
+  ],
+  "consumers_and_reporters": [
+    {
+      "module_path": "src/backtest/engine.py",
+      "role": "consumer",
+      "status": "ACTIVE",
+      "notes": "Chooses among core_position_sizer, offline_evaluation_sizing_contract_v1, or calc_position_size."
+    },
+    {
+      "module_path": "src/meta/learning_loop/runtime_eligibility_v1.py",
+      "role": "reporter/diagnostic",
+      "status": "ACTIVE",
+      "notes": "SIZING_OWNER_REF token gate uses string src/governance/sizing (path mismatch vs CRS module); non-authorizing."
+    },
+    {
+      "module_path": "src/live/shadow_session.py",
+      "role": "consumer",
+      "status": "ACTIVE",
+      "notes": "position_fraction size assignment; CRS bypass."
+    },
+    {
+      "module_path": "src/live/testnet_profiles.py",
+      "role": "consumer",
+      "status": "ACTIVE",
+      "notes": "position_fraction config validation; CRS bypass when used."
+    }
+  ],
+  "archive_historical": [
+    {
+      "module_path": "src/risk/_archive/position_sizer_old_backup.py",
+      "role": "archive/historical",
+      "status": "ARCHIVED",
+      "authoritative_size_decision": false
+    }
+  ],
+  "bypass_paths": [
+    {
+      "id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "description": "BacktestEngine default uses calc_position_size / PositionSizer without CRS."
+    },
+    {
+      "id": "BYPASS_CORE_POSITION_SIZER",
+      "description": "BacktestEngine.core_position_sizer path decides units without CRS."
+    },
+    {
+      "id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+      "description": "offline_evaluation_sizing_contract_v1 owns CAP/REJECT sizing without CRS."
+    },
+    {
+      "id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+      "description": "ExecutionPipeline.execute_from_signals sizes via max_position_notional_pct without CRS."
+    },
+    {
+      "id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
+      "description": "Shadow/testnet position_fraction assigns size without CRS."
+    }
+  ],
+  "default_conflicts": [
+    {
+      "surface": "PositionSizerConfig",
+      "detail": "risk_pct=1.0 (%), max_position_pct=10.0 (%)"
+    },
+    {
+      "surface": "calc_position_size defaults",
+      "detail": "max_position_pct=0.25 (decimal fraction), min_position_value=50"
+    },
+    {
+      "surface": "config/default.toml [risk]",
+      "detail": "risk_per_trade and max_position_* keys mix decimal and percent semantics"
+    },
+    {
+      "surface": "CRS offline adapter defaults",
+      "detail": "absolute USD risk budgets / equity envelopes distinct from classic percent defaults"
+    },
+    {
+      "surface": "FixedFractionSizer",
+      "detail": "fraction=0.1 default units mapping"
+    }
+  ],
+  "safety_status": {
+    "runtime_bridge_activated": false,
+    "runtime_bridge_binding_status_expected": "BOUND_NOT_ACTIVATED",
+    "eligible_for_live": false,
+    "live_authorized": false,
+    "orders_enabled": false,
+    "economic_gate_fail_closed": true,
+    "crs_authority_effect": "NONE",
+    "crs_runtime_effect": "NONE",
+    "crs_adapter_compatible": false,
+    "market_dashboard_restored": false,
+    "github_settings_mutated": false
+  },
+  "open_governance_decisions": [
+    "Is CRS the sole size owner for all system/economic evidence including classic backtest?",
+    "Remain offline_evaluation_sizing_contract_v1 non-canonical or rebind to CRS policy inputs?",
+    "Deauthorize execution/live position_fraction and max_position_notional_pct until CRS-intent?",
+    "Are core.position_sizing overlays research-only forever?",
+    "Harmonize defaults (percent vs decimal, absolute vs fraction).",
+    "Align SIZING_OWNER_REF token with real CRS module path.",
+    "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT Operator-GO architecture packet."
+  ],
+  "reuse_first_consolidation_candidates_not_implemented": [
+    "Keep CRS as quantity owner for system-relevant MV2 evidence.",
+    "Gate classic BacktestEngine size behind CRS provenance / state-file binding for core evidence.",
+    "Treat PositionSizer/calc_position_size as calculator behind CRS or deprecate for core paths.",
+    "Mark core.position_sizing research/backtest-fill only.",
+    "Explicitly label offline-eval contract non-canonical or align policy inputs to CRS.",
+    "Bind or hard-deauthorize execution/live simplified size paths.",
+    "Fix SIZING_OWNER_REF string drift.",
+    "Unify default units and percent/decimal conventions."
+  ],
+  "classifications_summary": {
+    "CRS": "canonical_decision_owner_mv2_scope_ACTIVE",
+    "PositionSizer": "legacy_decision_owner_still_ACTIVE",
+    "core.position_sizing": "independent_decision_owner_ACTIVE",
+    "offline_evaluation_sizing_contract_v1": "policy_owner_ACTIVE",
+    "execution.execute_from_signals": "simplified_decision_owner_ACTIVE"
+  },
+  "next_plan_item": "P2_LEGACY_ORDER_INTENT",
+  "prior_plan_item": "P2_RISK_SIZING_INVENTORY",
+  "promotion_owner_status": "DONE"
+}
