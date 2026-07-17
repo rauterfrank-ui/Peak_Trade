@@ -1,0 +1,467 @@
+{
+  "contract_name": "risk_sizing_caller_owner_topology_contract_v0",
+  "contract_id": "OBL_B05_CALLER_TO_OWNER_TOPOLOGY_CONTRACT_V0",
+  "contract_version": "v0",
+  "schema_version": "risk_sizing_caller_owner_topology_schema_v0",
+  "ssot_doc": "docs/governance/RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md",
+  "inventory_date": "2026-07-17",
+  "pinned_against_main_sha": "f554c64e737088dcc72d201d4f62a2c1096fa3b4",
+  "semantics": "INVENTORY_ONLY_CALLER_OWNER_TOPOLOGY_FREEZE_NOT_AUTHORITY_ASSIGNMENT",
+  "markers": {
+    "RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0": true,
+    "INVENTORY_ONLY": true,
+    "CALLER_TO_OWNER_TOPOLOGY_FROZEN": true,
+    "CALLER_TO_OWNER_TOPOLOGY_RESOLVED": false,
+    "NO_SIZING_MATH_CHANGE": true,
+    "NO_AUTHORITY_ASSIGNMENT": true,
+    "NO_OWNER_BYPASS_ALLOWLIST_MUTATION": true,
+    "NO_UNITS_DIMENSIONS_SEMANTICS_CHANGE": true,
+    "NO_REWIRE": true,
+    "NO_DELEGATION": true,
+    "NO_DECOMMISSION": true,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_AUTHORITY_OWNER": "UNRESOLVED",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "EXPECTED_PRIMARY_OWNER_COUNT": 5,
+    "EXPECTED_PRODUCTIVE_DIRECT_EDGE_COUNT": 8,
+    "EXPECTED_COMPANION_EDGE_COUNT": 2,
+    "EXPECTED_DIRECT_SIZING_BYPASS_COUNT": 5,
+    "EXPECTED_PASS_THROUGH_EDGE_COUNT": 2,
+    "EXPECTED_AMBIGUOUS_EDGE_COUNT": 3,
+    "EXPECTED_UNRESOLVED_SYMBOL_COUNT": 0,
+    "EXPECTED_PERCENT_CONFLICT_COUNT": 2,
+    "EXPECTED_OWNER_WITHOUT_EXTERNAL_PRODUCTIVE_CALLER_COUNT": 1,
+    "EXPECTED_PRODUCTIVE_CALLER_WITHOUT_PINNED_CANONICAL_OWNER_COUNT": 2,
+    "EXPECTED_EXECUTE_FROM_SIGNALS_EXTERNAL_CALLER_COUNT": 0
+  },
+  "referenced_contracts": {
+    "risk_sizing_owner_inventory_ssot_v1": "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "risk_sizing_owner_and_bypass_surface_contract_v1": "embedded_in_risk_sizing_owner_inventory_ssot_v1",
+    "risk_sizing_units_dimensions_contract_v0": "config/governance/risk_sizing_units_dimensions_contract_v0.json",
+    "legacy_order_intent_inventory_ssot_v1": "config/governance/legacy_order_intent_inventory_ssot_v1.json",
+    "capital_risk_sizing_v1_module": "src/governance/capital_risk_sizing_v1.py"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_owner_and_bypass_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES",
+    "risk_sizing_units_dimensions_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_UNITS_DIMENSIONS_DECLARATION_ONLY",
+    "legacy_order_intent_decision_owner_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED",
+    "legacy_order_intent_direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED"
+  },
+  "primary_owners": [
+    {
+      "owner_id": "backtest.offline_evaluation_sizing_contract_v1",
+      "module": "src.backtest.offline_evaluation_sizing_contract_v1",
+      "source_path": "src/backtest/offline_evaluation_sizing_contract_v1.py",
+      "primary_symbols": [
+        "size_offline_evaluation_entry_v1",
+        "OfflineEvaluationSizingContractV1"
+      ],
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "has_external_productive_caller": true
+    },
+    {
+      "owner_id": "src.core.position_sizing",
+      "module": "src.core.position_sizing",
+      "source_path": "src/core/position_sizing.py",
+      "primary_symbols": [
+        "BasePositionSizer",
+        "FixedFractionSizer",
+        "NoopPositionSizer",
+        "build_position_sizer_from_config"
+      ],
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "has_external_productive_caller": true
+    },
+    {
+      "owner_id": "src.execution.pipeline.execute_from_signals",
+      "module": "src.execution.pipeline",
+      "source_path": "src/execution/pipeline.py",
+      "primary_symbols": [
+        "ExecutionPipeline.execute_from_signals"
+      ],
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "has_external_productive_caller": false,
+      "notes": "No external productive callers in src/. Self-use remains classified as bypass kernel BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS."
+    },
+    {
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "module": "src.governance.capital_risk_sizing_v1",
+      "source_path": "src/governance/capital_risk_sizing_v1.py",
+      "primary_symbols": [
+        "evaluate_capital_risk_sizing_v1",
+        "evaluate_quantity_chain_v1",
+        "export_bypass_scan_v1"
+      ],
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "has_external_productive_caller": true,
+      "mv2_scope_canonical_call": true
+    },
+    {
+      "owner_id": "src.risk.position_sizer",
+      "module": "src.risk.position_sizer",
+      "source_path": "src/risk/position_sizer.py",
+      "primary_symbols": [
+        "PositionSizer",
+        "PositionSizerConfig",
+        "calc_position_size"
+      ],
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "has_external_productive_caller": true,
+      "percent_convention_conflict_note": "PositionSizer uses PERCENT_0_100; calc_position_size uses FRACTION_DECIMAL_0_1 — must not equate."
+    }
+  ],
+  "productive_direct_edges": [
+    {
+      "edge_id": "EDGE_CRS_INTENT_PIPELINE_BRIDGE",
+      "classification": "CANONICAL_OWNER_CALL_MV2_SCOPE",
+      "also_classified_as": "PASS_THROUGH_ONLY",
+      "caller_source_path": "src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py",
+      "caller_symbol": "run_canonical_core_runtime_integration_intent_pipeline_bridge_v0",
+      "callee_symbol": "evaluate_capital_risk_sizing_v1",
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "owner_source_path": "src/governance/capital_risk_sizing_v1.py",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "notes": "MV2 intent-pipeline bridge calls CRS; adapter remains PASS_THROUGH_ONLY."
+    },
+    {
+      "edge_id": "EDGE_CRS_OFFLINE_REPLAY_ADAPTER",
+      "classification": "CANONICAL_OWNER_CALL_MV2_SCOPE",
+      "also_classified_as": "PASS_THROUGH_ONLY",
+      "caller_source_path": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+      "caller_symbol": "bind_capital_risk_sizing_offline_replay_evidence_v0",
+      "callee_symbol": "evaluate_capital_risk_sizing_v1",
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "owner_source_path": "src/governance/capital_risk_sizing_v1.py",
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "notes": "MV2 offline-replay adapter calls CRS; adapter remains PASS_THROUGH_ONLY."
+    },
+    {
+      "edge_id": "EDGE_ENGINE_CALC_POSITION_SIZE",
+      "classification": "LEGACY_OR_SPECIALIST_PATH",
+      "also_classified_as": "DIRECT_SIZING_BYPASS",
+      "bypass_stable_id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "caller_source_path": "src/backtest/engine.py",
+      "caller_symbol": "BacktestEngine.run_realistic",
+      "callee_symbol": "calc_position_size",
+      "owner_id": "src.risk.position_sizer",
+      "owner_source_path": "src/risk/position_sizer.py",
+      "reachability": "REACHABLE_PRODUCTIVE"
+    },
+    {
+      "edge_id": "EDGE_ENGINE_GET_TARGET_POSITION",
+      "classification": "DIRECT_SIZING_BYPASS",
+      "bypass_stable_id": "BYPASS_CORE_POSITION_SIZER",
+      "caller_source_path": "src/backtest/engine.py",
+      "caller_symbol": "BacktestEngine.run_realistic",
+      "callee_symbol": "get_target_position",
+      "callee_owner_symbol": "BasePositionSizer.get_target_position",
+      "owner_id": "src.core.position_sizing",
+      "owner_source_path": "src/core/position_sizing.py",
+      "reachability": "REACHABLE_PRODUCTIVE"
+    },
+    {
+      "edge_id": "EDGE_ENGINE_OFFLINE_EVAL_SIZING",
+      "classification": "DIRECT_SIZING_BYPASS",
+      "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+      "caller_source_path": "src/backtest/engine.py",
+      "caller_symbol": "BacktestEngine.run_realistic",
+      "callee_symbol": "size_offline_evaluation_entry_v1",
+      "owner_id": "backtest.offline_evaluation_sizing_contract_v1",
+      "owner_source_path": "src/backtest/offline_evaluation_sizing_contract_v1.py",
+      "reachability": "REACHABLE_PRODUCTIVE"
+    },
+    {
+      "edge_id": "EDGE_FEEDBACK_CALC_POSITION_SIZE",
+      "classification": "LEGACY_OR_SPECIALIST_PATH",
+      "also_classified_as": "DIRECT_SIZING_BYPASS_COMPANION_CALLER",
+      "bypass_stable_id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "caller_source_path": "src/backtest/backtest_engine_position_feedback_adapter_v1.py",
+      "caller_symbol": "step_legacy_realistic_bar_v1",
+      "callee_symbol": "calc_position_size",
+      "owner_id": "src.risk.position_sizer",
+      "owner_source_path": "src/risk/position_sizer.py",
+      "reachability": "REACHABLE_PRODUCTIVE"
+    },
+    {
+      "edge_id": "EDGE_FEEDBACK_GET_TARGET_POSITION",
+      "classification": "DIRECT_SIZING_BYPASS_COMPANION_CALLER",
+      "bypass_stable_id": "BYPASS_CORE_POSITION_SIZER",
+      "caller_source_path": "src/backtest/backtest_engine_position_feedback_adapter_v1.py",
+      "caller_symbol": "step_legacy_realistic_bar_v1",
+      "callee_symbol": "get_target_position",
+      "callee_owner_symbol": "BasePositionSizer.get_target_position",
+      "owner_id": "src.core.position_sizing",
+      "owner_source_path": "src/core/position_sizing.py",
+      "reachability": "REACHABLE_PRODUCTIVE"
+    },
+    {
+      "edge_id": "EDGE_FEEDBACK_OFFLINE_EVAL_SIZING",
+      "classification": "DIRECT_SIZING_BYPASS_COMPANION_CALLER",
+      "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+      "caller_source_path": "src/backtest/backtest_engine_position_feedback_adapter_v1.py",
+      "caller_symbol": "step_legacy_realistic_bar_v1",
+      "callee_symbol": "size_offline_evaluation_entry_v1",
+      "owner_id": "backtest.offline_evaluation_sizing_contract_v1",
+      "owner_source_path": "src/backtest/offline_evaluation_sizing_contract_v1.py",
+      "reachability": "REACHABLE_PRODUCTIVE"
+    }
+  ],
+  "companion_edges": [
+    {
+      "edge_id": "COMPANION_LIVE_SESSION_POSITION_FRACTION",
+      "classification": "OBSERVED_COMPANION_EDGE_NOT_PRIMARY_OWNER",
+      "referenced_from": "risk_sizing_units_dimensions_contract_v0",
+      "caller_source_path": "src/execution/live_session.py",
+      "caller_symbol": "LiveSessionRunner.step_once",
+      "assignment_attribute": "position_fraction",
+      "handoff_callee": "signal_to_orders",
+      "handoff_usage": "position_fraction_passed_as_absolute_units",
+      "primary_owner": false,
+      "must_not_classify_as_primary_owner": true
+    },
+    {
+      "edge_id": "COMPANION_SHADOW_POSITION_FRACTION",
+      "classification": "OBSERVED_COMPANION_EDGE_NOT_PRIMARY_OWNER",
+      "referenced_from": "risk_sizing_units_dimensions_contract_v0",
+      "caller_source_path": "src/live/shadow_session.py",
+      "caller_symbol": "ShadowPaperSession.step_once",
+      "assignment_attribute": "position_fraction",
+      "handoff_callee": "signal_to_orders",
+      "handoff_usage": "position_fraction_passed_as_absolute_units",
+      "primary_owner": false,
+      "must_not_classify_as_primary_owner": true
+    }
+  ],
+  "direct_sizing_bypass_edges": [
+    {
+      "bypass_stable_id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "classification": "PRODUCTIVE_RISK_SIZING_BYPASS",
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "source_path": "src/backtest/engine.py",
+      "caller_symbol": "BacktestEngine.run_realistic",
+      "target_symbol": "calc_position_size",
+      "target_classification": "LEGACY_POSITION_SIZER_CALC"
+    },
+    {
+      "bypass_stable_id": "BYPASS_CORE_POSITION_SIZER",
+      "classification": "PRODUCTIVE_RISK_SIZING_BYPASS",
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "source_path": "src/backtest/engine.py",
+      "caller_symbol": "BacktestEngine.run_realistic",
+      "target_symbol": "BasePositionSizer.get_target_position",
+      "target_classification": "CORE_POSITION_SIZER_GET_TARGET_POSITION"
+    },
+    {
+      "bypass_stable_id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+      "classification": "PRODUCTIVE_RISK_SIZING_BYPASS",
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "source_path": "src/execution/pipeline.py",
+      "caller_symbol": "ExecutionPipeline.execute_from_signals",
+      "target_symbol": "ExecutionPipeline.execute_from_signals",
+      "target_classification": "EXECUTION_SIMPLIFIED_NOTIONAL_PCT_SIZE",
+      "notes": "Self-use bypass kernel; owner currently has zero external productive callers."
+    },
+    {
+      "bypass_stable_id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
+      "classification": "PRODUCTIVE_RISK_SIZING_BYPASS",
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "source_path": "src/live/shadow_session.py",
+      "caller_symbol": "ShadowPaperSession.step_once",
+      "target_symbol": null,
+      "target_classification": "SHADOW_CFG_POSITION_FRACTION_ASSIGNMENT"
+    },
+    {
+      "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+      "classification": "PRODUCTIVE_RISK_SIZING_BYPASS",
+      "referenced_from": "risk_sizing_owner_and_bypass_surface_contract_v1",
+      "source_path": "src/backtest/engine.py",
+      "caller_symbol": "BacktestEngine.run_realistic",
+      "target_symbol": "size_offline_evaluation_entry_v1",
+      "target_classification": "OFFLINE_EVALUATION_SIZING_CONTRACT"
+    }
+  ],
+  "pass_through_edges": [
+    {
+      "edge_id": "EDGE_CRS_INTENT_PIPELINE_BRIDGE",
+      "classification": "PASS_THROUGH_ONLY",
+      "productive_direct_edge_id": "EDGE_CRS_INTENT_PIPELINE_BRIDGE",
+      "caller_source_path": "src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py",
+      "caller_symbol": "run_canonical_core_runtime_integration_intent_pipeline_bridge_v0",
+      "callee_symbol": "evaluate_capital_risk_sizing_v1",
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "authoritative_size_decision": false,
+      "notes": "Adapter/bridge delegates to CRS; not a sixth primary owner."
+    },
+    {
+      "edge_id": "EDGE_CRS_OFFLINE_REPLAY_ADAPTER",
+      "classification": "PASS_THROUGH_ONLY",
+      "productive_direct_edge_id": "EDGE_CRS_OFFLINE_REPLAY_ADAPTER",
+      "caller_source_path": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+      "caller_symbol": "bind_capital_risk_sizing_offline_replay_evidence_v0",
+      "callee_symbol": "evaluate_capital_risk_sizing_v1",
+      "owner_id": "src.governance.capital_risk_sizing_v1",
+      "authoritative_size_decision": false,
+      "notes": "Adapter delegates to CRS; not a sixth primary owner."
+    }
+  ],
+  "ambiguous_edges": [
+    {
+      "edge_id": "EDGE_DIAGNOSTICS_BUILD_POSITION_SIZER",
+      "classification": "OFFLINE_ANALYTICS_ONLY",
+      "caller_source_path": "src/strategies/diagnostics.py",
+      "caller_symbol": "run_single_strategy_smoke",
+      "callee_symbol": "build_position_sizer_from_config",
+      "owner_id": "src.core.position_sizing",
+      "owner_source_path": "src/core/position_sizing.py",
+      "pinned_canonical_owner": false,
+      "notes": "Offline analytics/smoke factory call; not pinned as canonical authority edge."
+    },
+    {
+      "edge_id": "EDGE_OFFLINE_EVAL_WRAPS_CALC_POSITION_SIZE",
+      "classification": "OWNER_WRAPS_OTHER_OWNER",
+      "caller_source_path": "src/backtest/offline_evaluation_sizing_contract_v1.py",
+      "caller_symbol": "size_offline_evaluation_entry_v1",
+      "callee_symbol": "calc_position_size",
+      "owner_id": "src.risk.position_sizer",
+      "owner_source_path": "src/risk/position_sizer.py",
+      "caller_is_also_primary_owner": true,
+      "caller_owner_id": "backtest.offline_evaluation_sizing_contract_v1",
+      "notes": "Policy owner wraps legacy calc_position_size on REJECT path; dual-owner ambiguity retained unresolved."
+    },
+    {
+      "edge_id": "EDGE_SWEEPS_BUILD_POSITION_SIZER",
+      "classification": "OFFLINE_ANALYTICS_ONLY",
+      "caller_source_path": "src/sweeps/engine.py",
+      "caller_symbol": "SweepEngine._run_single_backtest",
+      "callee_symbol": "build_position_sizer_from_config",
+      "owner_id": "src.core.position_sizing",
+      "owner_source_path": "src/core/position_sizing.py",
+      "pinned_canonical_owner": false,
+      "notes": "Sweep/offline analytics factory call; not pinned as canonical authority edge."
+    }
+  ],
+  "non_topology_construction_edges": [
+    {
+      "edge_id": "EDGE_ENGINE_POSITION_SIZER_CONSTRUCTION",
+      "classification": "CONSTRUCTION_ONLY_NOT_SIZING_DECISION_EDGE",
+      "caller_source_path": "src/backtest/engine.py",
+      "caller_symbol": "BacktestEngine.__init__",
+      "callee_symbol": "PositionSizer",
+      "owner_id": "src.risk.position_sizer",
+      "notes": "Constructor wiring only; size decision occurs later via calc_position_size / run_realistic."
+    }
+  ],
+  "owners_without_external_productive_callers": [
+    {
+      "owner_id": "src.execution.pipeline.execute_from_signals",
+      "source_path": "src/execution/pipeline.py",
+      "symbol": "ExecutionPipeline.execute_from_signals",
+      "external_productive_caller_count": 0,
+      "self_use_bypass_stable_id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS"
+    }
+  ],
+  "productive_callers_without_pinned_canonical_owner": [
+    {
+      "caller_source_path": "src/strategies/diagnostics.py",
+      "caller_symbol": "run_single_strategy_smoke",
+      "ambiguous_edge_id": "EDGE_DIAGNOSTICS_BUILD_POSITION_SIZER"
+    },
+    {
+      "caller_source_path": "src/sweeps/engine.py",
+      "caller_symbol": "SweepEngine._run_single_backtest",
+      "ambiguous_edge_id": "EDGE_SWEEPS_BUILD_POSITION_SIZER"
+    }
+  ],
+  "expected_counts": {
+    "primary_owners": 5,
+    "productive_direct_edges": 8,
+    "companion_edges": 2,
+    "direct_sizing_bypass_edges": 5,
+    "pass_through_edges": 2,
+    "ambiguous_edges": 3,
+    "unresolved_symbols": 0,
+    "percent_conflicts": 2,
+    "owners_without_external_productive_callers": 1,
+    "productive_callers_without_pinned_canonical_owner": 2,
+    "execute_from_signals_external_callers": 0,
+    "non_topology_construction_edges": 1
+  },
+  "authority_status": {
+    "canonical_execution_authority_owner": "UNRESOLVED",
+    "canonical_risk_sizing_authority_owner": "UNRESOLVED",
+    "canonical_risk_sizing_owner": "UNRESOLVED",
+    "authority_effect": "NONE",
+    "runtime_effect": "NONE"
+  },
+  "leverage_status": {
+    "field": "CapitalRiskSizingContextV1.leverage_ceiling",
+    "dimension": "LEVERAGE_MULTIPLIER",
+    "application_status": "declared_pass_through_not_applied_in_quantity_chain",
+    "applied_in_quantity_chain": false,
+    "referenced_from": "risk_sizing_units_dimensions_contract_v0"
+  },
+  "percent_conflicts_unresolved": [
+    {
+      "conflict_id": "POSITION_SIZER_CONFIG_PCT_VS_CALC_FRACTION",
+      "must_not_equate": ["PERCENT_0_100", "FRACTION_DECIMAL_0_1"],
+      "referenced_from": "risk_sizing_units_dimensions_contract_v0",
+      "resolution_status": "UNRESOLVED_MUST_NOT_EQUATE"
+    },
+    {
+      "conflict_id": "EXECUTE_FROM_SIGNALS_NOTIONAL_PCT_NAME_VS_UNIT_USAGE",
+      "must_not_equate": ["FRACTION_DECIMAL_0_1", "QUANTITY_BASE_UNITS"],
+      "referenced_from": "risk_sizing_units_dimensions_contract_v0",
+      "resolution_status": "UNRESOLVED_MUST_NOT_EQUATE"
+    }
+  ],
+  "edge_identity_rules": {
+    "unique_edge_id_required": true,
+    "duplicate_edge_identity_fail": true,
+    "companion_must_not_be_primary_owner": true,
+    "pass_through_must_not_be_primary_owner": true,
+    "stable_sort_by_edge_id": true
+  },
+  "drift_policy": {
+    "productive_direct_edge_addition": "FAIL",
+    "productive_direct_edge_removal": "FAIL",
+    "productive_direct_edge_rename": "FAIL",
+    "productive_direct_edge_duplicate": "FAIL",
+    "companion_edge_addition": "FAIL",
+    "companion_edge_removal": "FAIL",
+    "companion_as_primary_owner": "FAIL",
+    "bypass_reclassification": "FAIL",
+    "pass_through_reclassification": "FAIL",
+    "ambiguous_edge_addition": "FAIL",
+    "ambiguous_edge_removal": "FAIL",
+    "execute_from_signals_external_caller_addition": "FAIL",
+    "owner_without_caller_state_loss": "FAIL",
+    "percent_convention_silent_equivalence": "FAIL",
+    "leverage_falsely_claimed_applied": "FAIL",
+    "unresolved_symbol": "FAIL",
+    "count_deviation": "FAIL",
+    "authority_escalation": "FAIL"
+  },
+  "global_authority_pins": {
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_AUTHORITY_OWNER": "UNRESOLVED",
+    "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE"
+  },
+  "scan_method": "AST_CALL_AND_SYMBOL_RESOLUTION_NO_IMPORT",
+  "scan_uncertainty_notes": [
+    "Topology freeze pins inventoried caller→owner edges only; dynamic getattr/importlib routes are not claimed exhaustively.",
+    "Companion edges are observational and must remain excluded from primary owner counts.",
+    "Pass-through adapters call CRS but are not additional primary owners.",
+    "execute_from_signals has zero external productive callers under src/; self-use remains the bypass kernel.",
+    "BacktestEngine.__init__ PositionSizer construction is construction-only and excluded from productive_direct_edges.",
+    "Percent conflicts remain unresolved and must not be silently equated.",
+    "CRS leverage_ceiling remains declared/pass-through and not applied in evaluate_quantity_chain_v1."
+  ]
+}
