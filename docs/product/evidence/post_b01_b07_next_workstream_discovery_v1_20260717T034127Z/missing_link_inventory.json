@@ -1,0 +1,9 @@
+{
+  "confirmed_real_missing_canonical_links": 0,
+  "stale_matrix_links": [
+    "AUTH-021 still open while B-01/B-07 CLOSED",
+    "AUTH-003 docs layer stale"
+  ],
+  "missing_canonical_links_after_merge": 1,
+  "note": "count=1 treats AUTH-021/AUTH-003 matrix staleness as one hygiene missing-link cluster"
+}

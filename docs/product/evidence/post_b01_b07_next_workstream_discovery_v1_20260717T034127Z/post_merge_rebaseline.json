@@ -1,0 +1,13 @@
+{
+  "missing_features_plan_deferred_banner": true,
+  "dag_non_operational_footnote": true,
+  "class_c_crosslink": true,
+  "unknown_marker_fail_closed": true,
+  "missing_features_fail_closed": true,
+  "plan_deferred_explicit": true,
+  "legacy_alias_boundary_only": true,
+  "direct_authority_mappings_after_merge": 0,
+  "dashboard_files_changed": false,
+  "core_semantics_changed": false,
+  "behavior_preserving": true
+}

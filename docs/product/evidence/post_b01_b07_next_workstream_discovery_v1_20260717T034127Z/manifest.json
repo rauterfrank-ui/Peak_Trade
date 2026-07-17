@@ -1,0 +1,6 @@
+{
+  "workflow": "POST_B01_B07_NEXT_WORKSTREAM_DISCOVERY_V1",
+  "selected_next_slice": "AUTH021_AUTH003_AUTHORITY_MATRIX_B01_B07_CLOSEOUT_SYNC_V0",
+  "discovery_only": true,
+  "implementation_performed": false
+}

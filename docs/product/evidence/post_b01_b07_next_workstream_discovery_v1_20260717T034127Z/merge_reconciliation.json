@@ -1,0 +1,10 @@
+{
+  "pr": 5274,
+  "expected_head": "beabf6f9b8d4152348f4644f42c09e3303c6fa50",
+  "merge_commit": "721f28f52b81b01f01ec310eee0dbcdc75d10cce",
+  "merged_at": "2026-07-17T03:39:53Z",
+  "local_equals_origin_main": true,
+  "b01_post_merge_pass": true,
+  "b07_post_merge_pass": true,
+  "runtime_preserved": true
+}
