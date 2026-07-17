@@ -99,3 +99,4 @@ Runner: `scripts&#47;ops&#47;run_obl_b05_trend_following_side_impact_diagnostic_
 | Tests | `tests&#47;backtest&#47;test_obl_b05_trend_following_side_impact_diagnostic_v1.py` |
 | Parent ratification | `docs&#47;governance&#47;OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_RATIFICATION_V1.md` |
 | Evidence pointer | `docs&#47;product&#47;evidence&#47;obl_b05_trend_following_side_impact_diagnostic_v1_20260717T225700Z&#47;` |
+| Bollinger long-semantic decision | `docs&#47;governance&#47;OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_V1.md` |

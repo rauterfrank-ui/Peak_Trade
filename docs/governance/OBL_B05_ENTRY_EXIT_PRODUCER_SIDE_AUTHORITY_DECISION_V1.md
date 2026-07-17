@@ -132,3 +132,4 @@ Homogene Sammelaktivierung ist **nicht** autorisiert.
 | Encoding owner map (reuse) | `src&#47;backtest&#47;strategy_signal_suitability_agreement_adapter_v1.py` |
 | Static contract tests | `tests&#47;backtest&#47;test_entry_exit_producer_side_authority_decision_v1.py` |
 | Parent carrier contract | `docs&#47;governance&#47;OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1.md` |
+| Bollinger long-semantic decision | `docs&#47;governance&#47;OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_V1.md` |
