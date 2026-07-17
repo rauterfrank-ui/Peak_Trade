@@ -34,7 +34,11 @@
     "AUTHORITY_EFFECT": "NONE",
     "DIRECT_SUBMISSION_SURFACE_CONTRACT_V1": true,
     "DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS": "INVENTORY_ONLY_NOT_EXECUTION_PERMISSION",
-    "DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST": true
+    "DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST": true,
+    "DECISION_OWNER_SURFACE_CONTRACT_V1": true,
+    "DECISION_OWNER_SURFACE_CONTRACT_SEMANTICS": "INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT",
+    "DECISION_OWNER_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT": true,
+    "DECISION_OWNER_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER": true
   },
   "canonical_order_intent_owner": "UNRESOLVED",
   "canonical_order_intent_owner_mv2_scope": "src.governance.canonical_order_intent_v1",
@@ -101,7 +105,7 @@
       "reachability": "REACHABLE_PRODUCTIVE",
       "authoritative_order_intent_decision": false,
       "can_submit_orders": false,
-      "rationale": "CRS→COI→firewall→plan-only orchestrator; submission_blocked; status BOUND_NOT_ACTIVATED."
+      "rationale": "CRS\u2192COI\u2192firewall\u2192plan-only orchestrator; submission_blocked; status BOUND_NOT_ACTIVATED."
     },
     {
       "owner_id": "src.governance.intent_compatibility_firewall_v1",
@@ -113,7 +117,7 @@
       "reachability": "REACHABLE_PRODUCTIVE",
       "authoritative_order_intent_decision": false,
       "can_submit_orders": false,
-      "rationale": "Fail-closed adapter-compatibility firewall for canonical→adapter transform."
+      "rationale": "Fail-closed adapter-compatibility firewall for canonical\u2192adapter transform."
     },
     {
       "owner_id": "src.execution_pipeline.plan_only_boundary_v0",
@@ -238,7 +242,7 @@
       "reachability": "REACHABLE_PRODUCTIVE",
       "authoritative_order_intent_decision": false,
       "can_submit_orders": true,
-      "rationale": "Direct real AddOrder API client; library reachable; productive live entrypoints currently guarded — not counted as authority leak."
+      "rationale": "Direct real AddOrder API client; library reachable; productive live entrypoints currently guarded \u2014 not counted as authority leak."
     },
     {
       "owner_id": "submission.execution_pipeline_submit_order",
@@ -526,6 +530,131 @@
     "scan_uncertainty_notes": [
       "Dynamic getattr/importlib call sites are not claimed exhaustively; this contract pins inventoried surface definitions only.",
       "No heuristic expansion beyond the five inventory direct_submission_bypasses IDs."
+    ]
+  },
+  "decision_owner_surface_contract": {
+    "contract_name": "decision_owner_surface_contract_v1",
+    "contract_version": "v1",
+    "semantics": "INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT",
+    "semantics_clarification": "This frozen set is a static inventory/drift contract only for the three inventoried productive order-intent decision owners. It is NOT authority assignment, NOT repo-wide owner selection, NOT authorization, NOT activation, NOT canonicalization, NOT consolidation, and NOT decommission. role=CANONICAL_DECISION_OWNER for COI means MV2-scope classification only; CANONICAL_ORDER_INTENT_OWNER and CANONICAL_EXECUTION_AUTHORITY_OWNER remain UNRESOLVED. The direct_submission_surface_contract from PR #5301 remains a separate, already-complete surface contract and is not duplicated here.",
+    "expected_owner_count": 3,
+    "owner_ids_sorted": [
+      "src.execution.adapters.base_v1.OrderIntentV1",
+      "src.execution.pipeline.OrderIntent",
+      "src.governance.canonical_order_intent_v1"
+    ],
+    "owners": [
+      {
+        "stable_id": "src.execution.adapters.base_v1.OrderIntentV1",
+        "module": "src.execution.adapters.base_v1",
+        "source_path": "src/execution/adapters/base_v1.py",
+        "symbol_or_callable": "OrderIntentV1",
+        "primary_symbols": [
+          "OrderIntentV1",
+          "ExecutionAdapterV1"
+        ],
+        "role": "PRODUCTIVE_LEGACY_OWNER",
+        "classification": "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": true,
+        "authoritative_order_intent_decision": true,
+        "capability_note": "Parallel adapter-level OrderIntentV1 decision surface; not COI; not execution authority.",
+        "inventory_pin_reason": "Inventory-pinned OrderIntentV1 decision owner; contract freezes drift only.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED",
+        "scope_note": "Parallel adapter decision owner; not promoted as repo-wide canonical owner."
+      },
+      {
+        "stable_id": "src.execution.pipeline.OrderIntent",
+        "module": "src.execution.pipeline",
+        "source_path": "src/execution/pipeline.py",
+        "symbol_or_callable": "OrderIntent",
+        "primary_symbols": [
+          "OrderIntent",
+          "ExecutionPipeline",
+          "submit_order",
+          "execute_from_signals"
+        ],
+        "role": "PRODUCTIVE_LEGACY_OWNER",
+        "classification": "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": true,
+        "authoritative_order_intent_decision": true,
+        "capability_note": "Legacy OrderIntent decision surface; can_submit_orders describes technical capability only, not authorization.",
+        "inventory_pin_reason": "Inventory-pinned legacy OrderIntent decision owner outside COI; not promoted as canonical or execution authority.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED",
+        "scope_note": "Parallel legacy decision owner; submission capability is separately inventoried in direct_submission_surface_contract."
+      },
+      {
+        "stable_id": "src.governance.canonical_order_intent_v1",
+        "module": "src.governance.canonical_order_intent_v1",
+        "source_path": "src/governance/canonical_order_intent_v1.py",
+        "symbol_or_callable": "build_canonical_order_intent_v1",
+        "primary_symbols": [
+          "build_canonical_order_intent_v1",
+          "CanonicalOrderIntentV1",
+          "transform_canonical_order_intent_v1_to_adapter_order_intent_v1"
+        ],
+        "role": "CANONICAL_DECISION_OWNER",
+        "classification": "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER",
+        "reachability": "REACHABLE_PRODUCTIVE",
+        "canonical": false,
+        "authorized": false,
+        "enabled": false,
+        "execution_authority": false,
+        "decommissioned": false,
+        "inventory_only": true,
+        "can_submit_orders": false,
+        "authoritative_order_intent_decision": true,
+        "capability_note": "MV2-scope decision builder only; rejects execution_eligible/submission_authorized; authority_effect NONE. NOT repo-wide sole owner; NOT authorization.",
+        "inventory_pin_reason": "Inventory-pinned COI decision owner; contract freezes drift only and does not promote repo-wide canonical ownership.",
+        "authority_owner_status": "UNRESOLVED",
+        "consolidation_status": "NOT_STARTED",
+        "decommission_status": "NOT_STARTED",
+        "scope_note": "MV2/offline-chain decision owner only; CANONICAL_ORDER_INTENT_OWNER remains UNRESOLVED repo-wide."
+      }
+    ],
+    "drift_policy": {
+      "addition": "FAIL",
+      "removal": "FAIL",
+      "rename": "FAIL",
+      "duplicate": "FAIL",
+      "unresolved_symbol": "FAIL",
+      "role_or_reachability_drift": "FAIL",
+      "authority_escalation": "FAIL"
+    },
+    "global_authority_pins": {
+      "CANONICAL_ORDER_INTENT_OWNER": "UNRESOLVED",
+      "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
+      "CONSOLIDATION_STATUS": "NOT_STARTED",
+      "DECOMMISSION_STATUS": "NOT_STARTED"
+    },
+    "related_but_separate_contracts": {
+      "direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_NOT_DUPLICATED",
+      "risk_sizing_owner_and_bypass_surface_contract_v1": "OUT_OF_SCOPE_NEXT_CANDIDATE"
+    },
+    "pinned_against_main_sha": "57fe3c61ca564b245fdbfa20e6b0341e7bc86cc7",
+    "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",
+    "scan_uncertainty_notes": [
+      "Dynamic getattr/importlib producers are not claimed exhaustively; this contract pins inventoried decision-owner definitions only.",
+      "No heuristic expansion beyond the three inventory productive_decision_owners IDs.",
+      "Companion symbols listed in primary_symbols remain inventory-backed; AST fail-closed enforcement applies to symbol_or_callable.",
+      "This contract does not duplicate direct_submission_surface_contract surfaces."
     ]
   }
 }
