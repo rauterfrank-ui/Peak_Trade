@@ -200,16 +200,41 @@ def verify_market_page(
         report.CHART_HEIGHT_PX = frame_height
         report.PRIMARY_CHART_VISUAL_SHARE_PCT = (visible_px / vh) * 100.0 if vh > 0 else 0.0
         report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET = report.PRIMARY_CHART_VISUAL_SHARE_PCT >= 40.0
-        report.COMPOSITION_CONTRACT_PASS = bool(
-            report.HEADER_HEIGHT_PX <= 64.0 + 1.0
-            and report.SAFETY_RAIL_HEIGHT_PX <= 32.0 + 1.0
-            and report.HERO_HEIGHT_PX >= 210.0 - 1.0
-            and report.HERO_HEIGHT_PX <= 290.0 + 1.0
-            and report.CHART_HEIGHT_PX >= 390.0 - 1.0
-            and report.CHART_TOP_VISIBLE_1440x900
-            and report.CHART_MATERIALLY_VISIBLE_1440x900
-            and report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET
+        chart_empty_compact = page.evaluate(
+            """() => !!document.querySelector('[data-market-chart-empty-compact-v1="true"]')"""
         )
+        decision_above_fold = page.evaluate(
+            """() => {
+              const el = document.querySelector('[data-market-phase-2-critical-system-state-v1="true"]');
+              if (!el) return false;
+              const r = el.getBoundingClientRect();
+              return r.top < window.innerHeight && r.bottom > 0;
+            }"""
+        )
+        report.geometry = {
+            **(geometry or {}),
+            "chart_empty_compact": bool(chart_empty_compact),
+            "decision_critical_above_fold": bool(decision_above_fold),
+        }
+        if chart_empty_compact:
+            # DATA_UNAVAILABLE: compact diagnostic chart; decision triage above fold.
+            report.COMPOSITION_CONTRACT_PASS = bool(
+                report.HEADER_HEIGHT_PX <= 64.0 + 1.0
+                and report.SAFETY_RAIL_HEIGHT_PX <= 32.0 + 1.0
+                and report.CHART_HEIGHT_PX <= 200.0 + 1.0
+                and decision_above_fold
+                and not report.HORIZONTAL_OVERFLOW
+            )
+        else:
+            # DATA_AVAILABLE: chart dominant stage.
+            report.COMPOSITION_CONTRACT_PASS = bool(
+                report.HEADER_HEIGHT_PX <= 64.0 + 1.0
+                and report.SAFETY_RAIL_HEIGHT_PX <= 32.0 + 1.0
+                and report.CHART_HEIGHT_PX >= 390.0 - 1.0
+                and report.CHART_TOP_VISIBLE_1440x900
+                and report.CHART_MATERIALLY_VISIBLE_1440x900
+                and report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET
+            )
 
         shot_specs = [
             ("foundation_1440x900_full.png", (1440, 900), True),
@@ -306,11 +331,16 @@ def main(argv: list[str] | None = None) -> int:
             and report.UNEXPECTED_NETWORK_REQUESTS == 0
             and report.EXTERNAL_NETWORK_REQUESTS == 0
             and not report.HORIZONTAL_OVERFLOW
-            and report.CHART_TOP_VISIBLE_1440x900
-            and report.CHART_MATERIALLY_VISIBLE_1440x900
-            and report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET
             and report.COMPOSITION_CONTRACT_PASS
         )
+        # Available-state gates only when chart is not compact-empty.
+        if not (report.geometry or {}).get("chart_empty_compact"):
+            ok = bool(
+                ok
+                and report.CHART_TOP_VISIBLE_1440x900
+                and report.CHART_MATERIALLY_VISIBLE_1440x900
+                and report.PRIMARY_CHART_VISUAL_SHARE_MIN_MET
+            )
         return 0 if ok else 2
     finally:
         if server_cm is not None:

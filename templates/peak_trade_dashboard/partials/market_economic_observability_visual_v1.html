@@ -16,9 +16,13 @@
   </div>
 
   {% if economic_observability_visual.activity_state == 'NOT_AVAILABLE' %}
-  <p class="m-0 text-[10px] text-slate-400" data-market-economic-missing-source-v1="true">
-    Economic evidence unavailable — {{ economic_observability_visual.recovery_hint|e }}
-  </p>
+  <div class="text-[10px] text-slate-400" data-market-economic-missing-source-v1="true">
+    <p class="m-0">Economic evidence unavailable — economic metrics not displayed. Fail-closed; no invented values.</p>
+    <details class="mt-1 text-[9px] text-slate-500">
+      <summary class="cursor-pointer">Recovery binding</summary>
+      <p class="m-0 mt-1 font-mono leading-snug">{{ economic_observability_visual.recovery_hint|e }}</p>
+    </details>
+  </div>
   {% else %}
   <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-1 text-[9px] font-mono mb-2" data-market-economic-metrics-v1="true">
     <div><dt class="text-slate-500 uppercase">Gross</dt><dd class="m-0 text-slate-200">{{ economic_observability_visual.gross_return.display|e }}</dd></div>

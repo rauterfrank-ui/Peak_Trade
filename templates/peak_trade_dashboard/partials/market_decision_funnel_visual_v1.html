@@ -16,9 +16,13 @@
   </div>
 
   {% if decision_funnel_visual.activity_state == 'NOT_AVAILABLE' %}
-  <p class="m-0 text-[10px] text-slate-400" data-market-decision-funnel-missing-source-v1="true">
-    Decision funnel unavailable — {{ decision_funnel_visual.recovery_hint|e }}
-  </p>
+  <div class="text-[10px] text-slate-400" data-market-decision-funnel-missing-source-v1="true">
+    <p class="m-0">Decision funnel unavailable — AI funnel metrics not shown. System remains read-only / blocked when preflight blocked.</p>
+    <details class="mt-1 text-[9px] text-slate-500">
+      <summary class="cursor-pointer">Recovery binding</summary>
+      <p class="m-0 mt-1 font-mono leading-snug">{{ decision_funnel_visual.recovery_hint|e }}</p>
+    </details>
+  </div>
   {% elif decision_funnel_visual.activity_state == 'FAILED' %}
   <p class="m-0 text-[10px] text-rose-200/90" role="alert" data-market-decision-funnel-failed-v1="true">
     Decision funnel evidence invalid/malformed (read-only fail-closed).

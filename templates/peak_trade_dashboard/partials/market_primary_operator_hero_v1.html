@@ -94,6 +94,9 @@
   {% endif %}
 
   {% set ov = operator_overview_phase_2 %}
+  {% set hero_last_price_empty = ov.selected_instrument.last_price in ('unavailable', '—', '') %}
+  {% set hero_futures_snapshot_missing = query.source == 'futures' and not governed_top20.snapshot_available %}
+  {% set hero_empty = data_unavailable or hero_futures_snapshot_missing or hero_last_price_empty %}
   {# Compact instrument context ABOVE chart — eye path MARKET → CHART → DECISION (LDD-01). #}
   <section
     id="market-primary-operator-hero-v1"
@@ -107,8 +110,22 @@
     data-market-operator-overview-hero-v1="true"
     data-market-foundation-hero-panel-v1="true"
     data-market-phase1a-pre-chart-context-v1="true"
+    {% if hero_empty %}data-market-product-recovery-empty-hero-v1="true"{% endif %}
     aria-label="Selected instrument and compact market context"
   >
+    {% if hero_empty %}
+    <div class="pt-operator-overview-hero-primary pt-foundation-empty-hero" data-market-phase-2-hero-primary-v1="true" data-market-hero-empty-state-v1="true">
+      <p class="m-0 text-sm font-semibold text-slate-200" data-market-hero-empty-title-v1="true">
+        {% if ov.selected_instrument.symbol and ov.selected_instrument.symbol != 'unavailable' %}{{ ov.selected_instrument.symbol|e }}{% else %}Governed futures snapshot unavailable{% endif %}
+      </p>
+      <p class="m-0 mt-1 text-[10px] font-mono text-slate-500" data-market-hero-empty-meta-v1="true">
+        Source · {{ query.source|e }} · Freshness · {{ primary_values.generated_at_utc|default('unavailable', true)|e }} · Timeframe · {{ ov.selected_instrument.timeframe|e }}{% if primary_values.unavailable_reason %} · {{ primary_values.unavailable_reason|e }}{% endif %}
+      </p>
+      <p class="m-0 mt-1 text-[10px] text-slate-500" data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
+        Regime · <span class="font-mono text-slate-400">{{ ov.market_regime.trend|e }}</span>
+      </p>
+    </div>
+    {% else %}
     <div class="pt-operator-overview-hero-primary" data-market-phase-2-hero-primary-v1="true">
       <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
         <p class="pt-foundation-instrument-title" data-market-workspace-symbol-v1="true">{{ ov.selected_instrument.symbol|e }}</p>
@@ -137,15 +154,17 @@
         <span data-market-foundation-momentum-v1="true">Momentum · <span class="font-mono text-slate-200">{{ ov.market_regime.momentum|e }}</span></span>
       </div>
     </div>
+    {% endif %}
   </section>
 
   {% include "partials/market_primary_close_chart_v1.html" %}
 
-  {# Decision narrative + primary blocker AFTER chart (MARKET → CHART → DECISION → BLOCKER). #}
+  {# Decision triage AFTER chart — must remain above-fold when chart is compact-empty. #}
   <section
     class="mt-2 pt-phase1a-post-chart-decision"
     data-market-phase1a-post-chart-decision-v1="true"
     data-market-phase-2-hero-layout-v1="8_4"
+    data-market-product-recovery-decision-above-fold-v1="true"
     aria-label="Decision narrative and primary blocker"
   >
     <div class="pt-operator-overview-hero-grid">

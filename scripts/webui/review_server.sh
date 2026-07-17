@@ -14,6 +14,8 @@
 #   PEAK_TRADE_WEBUI_REVIEW_PATH
 #   PEAK_TRADE_WEBUI_LOG_TAIL_LINES
 #   PEAK_TRADE_WEBUI_UV
+#   PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES=1  # opt-in: bind tests/fixtures ranking+OHLCV for local review
+#                                         # default OFF — canonical /market stays fail-closed empty
 #
 # Invariants:
 #   REPO_OWNED_SERVER_HARNESS=true
@@ -41,6 +43,9 @@ UV_BIN="${PEAK_TRADE_WEBUI_UV:-uv}"
 ASGI_TARGET="src.webui.app:app"
 IDENTITY_MARKER="peak_trade_webui_review_server_v1"
 EXPECTED_CMD_FRAGMENT="uvicorn ${ASGI_TARGET}"
+REVIEW_BIND_FIXTURES="${PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES:-0}"
+RANKING_FIXTURE_ROOT="${REPO_ROOT}/tests/fixtures/market_ranking_funnel_readmodel_v0/complete_minimal"
+OHLCV_FIXTURE_ROOT="${REPO_ROOT}/tests/fixtures/market_futures_ohlcv_readmodel_v0/complete_minimal"
 
 PID_FILE="${STATE_DIR}/review_server.pid"
 LOG_FILE="${STATE_DIR}/review_server.log"
@@ -304,9 +309,45 @@ tail_logs() {
   fi
 }
 
+adopt_identity_ok_listener_if_any() {
+  # If a Peak_Trade identity-ok uvicorn already listens on our host/port/cwd but
+  # the pidfile is missing/stale, adopt it (write pidfile). Never kill anyone.
+  local listeners candidate
+  listeners="$(listening_pids_on_port || true)"
+  [[ -n "$listeners" ]] || return 1
+  for candidate in $listeners; do
+    if identity_ok "$candidate" && http_ok "$(health_url)"; then
+      ensure_state_dir
+      write_pid_atomic "$candidate"
+      write_meta "$candidate"
+      echo "INFO: adopted identity-ok listener pid=${candidate} into ${PID_FILE}" >&2
+      printf '%s' "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+review_fixture_env_exports() {
+  # Echo KEY=VALUE lines for optional fixture binding (no authority).
+  if [[ "${REVIEW_BIND_FIXTURES}" != "1" && "${REVIEW_BIND_FIXTURES}" != "true" ]]; then
+    echo "REVIEW_BIND_FIXTURES=false"
+    return 0
+  fi
+  if [[ ! -f "${RANKING_FIXTURE_ROOT}/ranking_funnel.json" || ! -f "${OHLCV_FIXTURE_ROOT}/futures_ohlcv.json" ]]; then
+    echo "ERROR: REVIEW_BIND_FIXTURES=1 but fixture JSON missing under tests/fixtures/" >&2
+    return 1
+  fi
+  echo "REVIEW_BIND_FIXTURES=true"
+  echo "PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1"
+  echo "PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=${RANKING_FIXTURE_ROOT}"
+  echo "PEAK_TRADE_MARKET_FUTURES_OHLCV_ENABLED=1"
+  echo "PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=${OHLCV_FIXTURE_ROOT}"
+}
+
 classify_status() {
   # Prints STATUS=... and supporting fields; exit 0 always for status cmd.
-  local pid="" listeners="" alive=0 id_ok=0 healthy=0
+  local pid="" listeners="" alive=0 id_ok=0 healthy=0 adopted=""
 
   listeners="$(listening_pids_on_port || true)"
 
@@ -321,6 +362,27 @@ classify_status() {
 
   if http_ok "$(health_url)"; then
     healthy=1
+  fi
+
+  # Adopt identity-ok orphan when pidfile missing/mismatch but listener is ours.
+  if [[ "$alive" -ne 1 || "$id_ok" -ne 1 ]]; then
+    if [[ -n "$listeners" && "$healthy" -eq 1 ]]; then
+      if adopted="$(adopt_identity_ok_listener_if_any)"; then
+        pid="$adopted"
+        alive=1
+        id_ok=1
+        echo "STATUS=RUNNING_HEALTHY"
+        echo "ACTION=ADOPTED_IDENTITY_OK_LISTENER"
+        echo "PID=${pid}"
+        echo "PORT=${PORT}"
+        echo "HOST=${HOST}"
+        echo "HEALTH_URL=$(health_url)"
+        echo "REVIEW_URL=$(review_url)"
+        echo "PID_FILE=${PID_FILE}"
+        echo "LOG_FILE=${LOG_FILE}"
+        return 0
+      fi
+    fi
   fi
 
   if [[ "$alive" -eq 1 && "$id_ok" -eq 1 ]]; then
@@ -427,6 +489,17 @@ cmd_start() {
   fi
 
   if [[ "$status_line" == "PORT_OCCUPIED_BY_UNKNOWN_PROCESS" ]]; then
+    # Retry adopt once (identity-ok Peak_Trade uvicorn without pidfile).
+    if adopt_identity_ok_listener_if_any >/dev/null; then
+      status_blob="$(classify_status)"
+      status_line="$(printf '%s\n' "$status_blob" | sed -n 's/^STATUS=//p' | head -n 1)"
+      if [[ "$status_line" == "RUNNING_HEALTHY" ]]; then
+        printf '%s\n' "$status_blob"
+        echo "ACTION=ADOPTED_THEN_REUSED"
+        echo "IDEMPOTENT_START=true"
+        return 0
+      fi
+    fi
     printf '%s\n' "$status_blob" >&2
     die "unknown process occupies port ${PORT}; refuse to start or kill (UNKNOWN_PORT_OWNER_FAIL_CLOSED)"
   fi
@@ -461,6 +534,22 @@ cmd_start() {
 
   : >"$LOG_FILE"
 
+  # Optional read-only fixture binding for local operator review (default OFF).
+  # Bash 3.2 compatible — no arrays.
+  local bind_rank_en="" bind_rank_root="" bind_ohlcv_en="" bind_ohlcv_root=""
+  if [[ "${REVIEW_BIND_FIXTURES}" == "1" || "${REVIEW_BIND_FIXTURES}" == "true" ]]; then
+    review_fixture_env_exports || die "fixture binding failed"
+    bind_rank_en="PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1"
+    bind_rank_root="PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=${RANKING_FIXTURE_ROOT}"
+    bind_ohlcv_en="PEAK_TRADE_MARKET_FUTURES_OHLCV_ENABLED=1"
+    bind_ohlcv_root="PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=${OHLCV_FIXTURE_ROOT}"
+    echo "REVIEW_BIND_FIXTURES=true"
+    echo "PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=${RANKING_FIXTURE_ROOT}"
+    echo "PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT=${OHLCV_FIXTURE_ROOT}"
+  else
+    echo "REVIEW_BIND_FIXTURES=false"
+  fi
+
   # Detached start: nohup + closed stdin; no --reload.
   # Boot PID may be `uv`; after health we re-bind pidfile to the verified listener.
   (
@@ -471,6 +560,10 @@ cmd_start() {
       PEAK_TRADE_WEBUI_REVIEW_REPO_ROOT="${REPO_ROOT}" \
       LIVE_AUTHORIZED=false \
       ORDERS_ALLOWED=false \
+      ${bind_rank_en} \
+      ${bind_rank_root} \
+      ${bind_ohlcv_en} \
+      ${bind_ohlcv_root} \
       ${UV_BIN} run python -m uvicorn "${ASGI_TARGET}" \
         --host "${HOST}" \
         --port "${PORT}" \

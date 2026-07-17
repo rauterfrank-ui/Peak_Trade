@@ -80,6 +80,24 @@
   max-height: none;
 }
 
+/* Product recovery: empty OHLCV → compact diagnostic chart (not dominant empty stage). */
+#market-v0-shell [data-market-chart-empty-compact-v1="true"].market-phase-1a-primary-chart,
+#market-v0-shell [data-market-chart-empty-compact-v1="true"][data-market-phase-1a-chart-above-fold-v1="true"] {
+  min-height: 0;
+}
+
+#market-v0-shell [data-market-v0-close-chart-integrated-frame="true"][data-market-chart-empty-compact-v1="true"] {
+  min-height: 7rem;
+  height: 8.5rem;
+  max-height: 9rem;
+}
+
+#market-v0-shell [data-market-product-recovery-empty-hero-v1="true"].pt-operator-overview-hero-panel {
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
 #market-v0-shell .pt-foundation-instrument-title {
   margin: 0;
   font-size: clamp(1.5rem, 2.2vw, 2rem);

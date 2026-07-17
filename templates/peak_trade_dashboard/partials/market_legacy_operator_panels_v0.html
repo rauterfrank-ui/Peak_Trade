@@ -1335,7 +1335,7 @@
       {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
     >
       {% if payload.bars_returned == 0 %}
-      Keine OHLCV-Bars für diese Abfrage verfügbar.
+      No OHLCV bars for this query.
       {% else %}
       Chart bereit — read-only OHLCV-Anzeige.
       {% endif %}
@@ -2045,7 +2045,7 @@
         if (!node) return;
         var copy = {
           ready: "Chart bereit — read-only OHLCV-Anzeige.",
-          empty: "Keine OHLCV-Bars für diese Abfrage verfügbar.",
+          empty: "No OHLCV bars for this query.",
           error:
             "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar.",
         };
