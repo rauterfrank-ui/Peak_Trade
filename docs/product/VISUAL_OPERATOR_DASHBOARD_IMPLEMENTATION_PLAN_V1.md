@@ -5,10 +5,11 @@
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
 > **Implemented slice (merged):** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` — PR [#5263](https://github.com/rauterfrank-ui/Peak_Trade/pull/5263)
 > **Post-hierarchy rebaseline:** [composition_post_hierarchy_rebaseline_v1_20260717T015247Z](evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/) — docs PR [#5264](https://github.com/rauterfrank-ui/Peak_Trade/pull/5264)
-> **Implemented this PR:** `COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1`
-> **Evidence:** [composition_observability_surface_hierarchy_v1_20260717T015943Z](evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/)
-> **Next candidate (NOT authorized):** Engineering drawer deemphasis — requires separate GO
-> **Prior implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (PR #5261) · `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` (PR #5260)
+> **Implemented this PR:** `COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1`
+> **Evidence:** [composition_engineering_drawer_deemphasis_v1_20260717T021409Z](evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/)
+> **Prior implemented:** `COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1` (PR #5265) · `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` (PR #5263) · `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (PR #5261) · `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` (PR #5260)
+> **Next candidate:** NONE_AUTHORIZED — composition presentation gates complete; further polish requires separate GO
+> **Post-hierarchy rebaseline:** [composition_post_hierarchy_rebaseline_v1_20260717T015247Z](evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/) — docs PR [#5264](https://github.com/rauterfrank-ui/Peak_Trade/pull/5264)
 > **Branch context at original plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
 ```text
@@ -271,19 +272,28 @@ AUTHORITY_EFFECT=NONE
 Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. Post-PR#5263 hierarchy rebaseline authorizes exactly one next presentation slice:
 
 ```text
-IMPLEMENTED_SLICE=COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1
-IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/
-PRIOR_IMPLEMENTED=COMPOSITION_DECISION_SURFACE_HIERARCHY_V1
+IMPLEMENTED_SLICE=COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1
+IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/
+PRIOR_IMPLEMENTED=COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1
 POST_HIERARCHY_REBASELINE=docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/
 NEXT_SLICE=NONE_AUTHORIZED
-NEXT_SLICE_CANDIDATES=COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1
-NEXT_SLICE_STATUS=AUTHORIZED_NOT_IMPLEMENTED
+NEXT_SLICE_CANDIDATES=NONE
+NEXT_SLICE_STATUS=NONE_AUTHORIZED
 STOP_BEFORE_IMPLEMENTATION=true
 STOP_BEFORE_NEXT_UNRELATED_SLICE=true
-DASHBOARD_PROJECT_COMPLETE=false
+DASHBOARD_PROJECT_COMPLETE=true
 ```
 
-### Observability Surface hierarchy (this PR) — measured @1440×900
+### Engineering drawer deemphasis (this PR)
+
+| Field | Value |
+|---|---|
+| Goal | Quiet closed Engineering chrome to tertiary; keep Primary/Decision/Observability hierarchy |
+| Allowed owners | `market_v0.html`; `market_diagnostics_drawer_v1.html`; layout/tokens CSS; focused contract test; evidence |
+| Forbidden | `src&#47;**` domain/runtime; producers; trading/risk/authority; Core semantics; Decision/Primary/Observability rework |
+| Acceptance | Landmark order held; drawer default closed; tertiary markers; prior hierarchy gates held; Chrome evidence |
+
+### Prior — Observability Surface hierarchy (PR #5265) — measured @1440×900
 
 | Metric | Before (post-hierarchy rebaseline) | After | Target |
 |---|---:|---:|---|
@@ -296,25 +306,18 @@ DASHBOARD_PROJECT_COMPLETE=false
 
 ### Authorized next — COMPLETED IN THIS PR (historical authorization text retained below)
 
-~~COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1~~ implemented. Remaining candidate only:
+~~COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1~~ implemented. Remaining:
 
 | Field | Value |
 |---|---|
-| Candidate | `COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1` |
-| Status | NOT authorized — requires separate GO after this merge + rebaseline |
+| Candidate | NONE |
+| Status | No further composition slice auto-authorized |
 
 ### Prior authorization block (superseded by implementation)
 
 | Field | Value |
 |---|---|
-| Goal | Inside Observability: Economic primary > Linear diagnostics secondary; reduce peer-card chrome; densify without removing read-only SSOT transparency |
-| Full-page gain | Less competing peer chrome below Decision; clearer landmark hierarchy continuation; earlier Engineering entry |
-| Allowed owners | `templates&#47;peak_trade_dashboard&#47;market_v0.html`; `partials&#47;market_economic_observability_visual_v1.html`; `partials&#47;market_ai_linear_diagnostics_visual_v1.html`; `static&#47;css&#47;peak_trade_dashboard_layout_v1.css`; tokens only if justified |
-| Forbidden | `src&#47;**` domain/runtime owners; new producers; trading/risk/authority/orders; Core semantics; Decision/Primary rework; Bitcoin instruments |
-| Non-goals | Engineering deemphasis (candidate only); global whitespace rewrite; Decision hierarchy redo |
-| Acceptance | Landmark order held; no overflow; Primary dominance held; Decision hierarchy held; Economic dominates Linear visually; Observability card frames reduced; Engineering closed; Chrome full-page evidence 1280/1440/1728 |
-| Tests | New observability-hierarchy testowner + rhythm/hierarchy/browser-policy/readonly/no-bitcoin/responsive contracts |
-| Evidence | Chrome full-page before/after under `docs&#47;product&#47;evidence&#47;composition_observability_surface_hierarchy_v1_<UTC>&#47;` |
+| Candidate | `COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1` |
 | Status | IMPLEMENTED (this PR) |
 
 ### Post-hierarchy rebaseline held (@1440×900)

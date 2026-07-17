@@ -741,3 +741,53 @@
   max-height: 2.5rem;
   overflow: auto;
 }
+
+/*
+ * COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1
+ * Presentation-only: quiet closed Engineering chrome to tertiary.
+ * Does not alter producers, authority, landmark order, or open-state content.
+ */
+#market-v0-shell
+  [data-landmark="ENGINEERING_DRAWER"][data-market-engineering-drawer-deemphasis-v1="true"] {
+  opacity: 0.92;
+}
+
+#market-v0-shell
+  [data-landmark="ENGINEERING_DRAWER"][data-market-engineering-drawer-deemphasis-v1="true"]
+  [data-market-engineering-hierarchy-tertiary-label-v1="true"] {
+  letter-spacing: 0.04em;
+}
+
+#market-v0-shell
+  [data-landmark="ENGINEERING_DRAWER"][data-market-engineering-drawer-deemphasis-v1="true"]
+  > details[data-market-engineering-deemphasis-detail-v1="true"]:not([open]),
+#market-v0-shell
+  [data-landmark="ENGINEERING_DRAWER"][data-market-engineering-drawer-deemphasis-v1="true"]
+  > details[data-market-diagnostics-drawer-v1="true"]:not([open]) {
+  margin-top: var(--pt-engineering-deemphasis-detail-gap);
+  padding-top: var(--pt-engineering-deemphasis-closed-padding-y);
+  padding-bottom: var(--pt-engineering-deemphasis-closed-padding-y);
+  border: 0;
+  border-top: 1px solid rgba(51, 65, 85, 0.35);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#market-v0-shell
+  [data-landmark="ENGINEERING_DRAWER"][data-market-engineering-drawer-deemphasis-v1="true"]
+  > details[data-market-engineering-deemphasis-detail-v1="true"]:first-of-type:not([open]),
+#market-v0-shell
+  [data-landmark="ENGINEERING_DRAWER"][data-market-engineering-drawer-deemphasis-v1="true"]
+  > details[data-market-diagnostics-drawer-v1="true"]:first-of-type:not([open]) {
+  margin-top: 0;
+}
+
+#market-v0-shell
+  [data-landmark="ENGINEERING_DRAWER"][data-market-engineering-drawer-deemphasis-v1="true"]
+  > details:not([open]) > summary {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgb(71, 85, 105);
+  line-height: 1.25;
+}
