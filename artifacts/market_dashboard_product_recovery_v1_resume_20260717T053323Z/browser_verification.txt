@@ -1,0 +1,7 @@
+REAL_CHROME_VERIFIED=true
+CHROMIUM_FALLBACK_USED=false
+BROWSER_ACTUAL=GOOGLE_CHROME
+PLAYWRIGHT_CHANNEL=chrome
+BASE_URL=http://127.0.0.1:8000
+console_error_count=0
+network_error_count=0

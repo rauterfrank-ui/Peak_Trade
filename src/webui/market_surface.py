@@ -1951,7 +1951,7 @@ def build_market_governed_top20_display_context(
         "f5_overall_status": f5_overall_status,
         "f5_gate_enabled": f5_gate_enabled,
         "f5_filter_values": f5_filter_values,
-        "unavailable_message": "Futures data unavailable",
+        "unavailable_message": "Futures-Daten nicht verfügbar",
         "view_only": True,
         "read_only": True,
         "matrix_row_schema": MATRIX_ROW_SCHEMA,

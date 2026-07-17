@@ -210,6 +210,7 @@ diagnose_unknown_port_owner() {
   echo "LISTENERS=${listeners}"
   echo "PID_FILE=${PID_FILE}"
   echo "RECOMMENDED_MANUAL_CHECK=lsof -nP -iTCP:${PORT} -sTCP:LISTEN"
+  echo "RECOMMENDED_ACTION=never adopt; use a free port, e.g. PEAK_TRADE_WEBUI_PORT=8001 ./scripts/webui/review_server.sh start"
   for pid in $listeners; do
     cmd="$(process_command "$pid")"
     echo "FOREIGN_PID=${pid}"
@@ -309,25 +310,6 @@ tail_logs() {
   fi
 }
 
-adopt_identity_ok_listener_if_any() {
-  # If a Peak_Trade identity-ok uvicorn already listens on our host/port/cwd but
-  # the pidfile is missing/stale, adopt it (write pidfile). Never kill anyone.
-  local listeners candidate
-  listeners="$(listening_pids_on_port || true)"
-  [[ -n "$listeners" ]] || return 1
-  for candidate in $listeners; do
-    if identity_ok "$candidate" && http_ok "$(health_url)"; then
-      ensure_state_dir
-      write_pid_atomic "$candidate"
-      write_meta "$candidate"
-      echo "INFO: adopted identity-ok listener pid=${candidate} into ${PID_FILE}" >&2
-      printf '%s' "$candidate"
-      return 0
-    fi
-  done
-  return 1
-}
-
 review_fixture_env_exports() {
   # Echo KEY=VALUE lines for optional fixture binding (no authority).
   if [[ "${REVIEW_BIND_FIXTURES}" != "1" && "${REVIEW_BIND_FIXTURES}" != "true" ]]; then
@@ -347,7 +329,7 @@ review_fixture_env_exports() {
 
 classify_status() {
   # Prints STATUS=... and supporting fields; exit 0 always for status cmd.
-  local pid="" listeners="" alive=0 id_ok=0 healthy=0 adopted=""
+  local pid="" listeners="" alive=0 id_ok=0 healthy=0
 
   listeners="$(listening_pids_on_port || true)"
 
@@ -362,27 +344,6 @@ classify_status() {
 
   if http_ok "$(health_url)"; then
     healthy=1
-  fi
-
-  # Adopt identity-ok orphan when pidfile missing/mismatch but listener is ours.
-  if [[ "$alive" -ne 1 || "$id_ok" -ne 1 ]]; then
-    if [[ -n "$listeners" && "$healthy" -eq 1 ]]; then
-      if adopted="$(adopt_identity_ok_listener_if_any)"; then
-        pid="$adopted"
-        alive=1
-        id_ok=1
-        echo "STATUS=RUNNING_HEALTHY"
-        echo "ACTION=ADOPTED_IDENTITY_OK_LISTENER"
-        echo "PID=${pid}"
-        echo "PORT=${PORT}"
-        echo "HOST=${HOST}"
-        echo "HEALTH_URL=$(health_url)"
-        echo "REVIEW_URL=$(review_url)"
-        echo "PID_FILE=${PID_FILE}"
-        echo "LOG_FILE=${LOG_FILE}"
-        return 0
-      fi
-    fi
   fi
 
   if [[ "$alive" -eq 1 && "$id_ok" -eq 1 ]]; then
@@ -489,19 +450,8 @@ cmd_start() {
   fi
 
   if [[ "$status_line" == "PORT_OCCUPIED_BY_UNKNOWN_PROCESS" ]]; then
-    # Retry adopt once (identity-ok Peak_Trade uvicorn without pidfile).
-    if adopt_identity_ok_listener_if_any >/dev/null; then
-      status_blob="$(classify_status)"
-      status_line="$(printf '%s\n' "$status_blob" | sed -n 's/^STATUS=//p' | head -n 1)"
-      if [[ "$status_line" == "RUNNING_HEALTHY" ]]; then
-        printf '%s\n' "$status_blob"
-        echo "ACTION=ADOPTED_THEN_REUSED"
-        echo "IDEMPOTENT_START=true"
-        return 0
-      fi
-    fi
     printf '%s\n' "$status_blob" >&2
-    die "unknown process occupies port ${PORT}; refuse to start or kill (UNKNOWN_PORT_OWNER_FAIL_CLOSED)"
+    die "unknown process occupies port ${PORT}; refuse to start or adopt (UNKNOWN_PORT_OWNER_FAIL_CLOSED). Use a free port, e.g. PEAK_TRADE_WEBUI_PORT=8001 ./scripts/webui/review_server.sh start"
   fi
 
   if [[ "$status_line" == "RUNNING_UNHEALTHY" ]]; then

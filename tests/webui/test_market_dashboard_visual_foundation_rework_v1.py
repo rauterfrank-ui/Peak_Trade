@@ -107,8 +107,8 @@ def test_foundation_markers_and_anti_badge_wall(client_foundation: TestClient) -
     )
     assert "lg:grid-cols-8" not in body
     assert "Peak Trade / Operator Console" in body
-    assert "System decision" in body
-    assert "Primary blocker" in body
+    assert "Systementscheidung" in body
+    assert "Primärer Blocker" in body
     assert 'data-market-foundation-chart-meta-v1="true"' in body
     # Authority/orders/live remain truthful but are not a badge wall in the rail.
     assert "Futures only" in body

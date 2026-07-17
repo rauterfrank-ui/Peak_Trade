@@ -49,17 +49,17 @@
     {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
   >
     {% if payload.bars_returned == 0 %}
-    No OHLCV bars for this query. No synthetic candles.
+    Keine OHLCV-Bars für diese Abfrage. Keine synthetischen Kerzen.
     {% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'malformed' %}
-    OHLCV malformed — no synthetic candles.
+    OHLCV fehlerhaft — keine synthetischen Kerzen.
     {% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'stale' %}
-    OHLCV stale — chart read-only fail-closed.
+    OHLCV veraltet — Chart read-only fail-closed.
     {% else %}
-    OHLCV unavailable — chart read-only fail-closed.
+    OHLCV nicht verfügbar — Chart read-only fail-closed.
     {% endif %}
   </div>
   {% else %}
-  <div id="market-v0-chart-status" role="status" class="sr-only" data-market-chart-status="ready">Chart ready — read-only OHLCV display.</div>
+  <div id="market-v0-chart-status" role="status" class="sr-only" data-market-chart-status="ready">Chart bereit — read-only OHLCV-Anzeige.</div>
   {% endif %}
 
   {% if payload.bars and payload.bars|length > 0 %}
@@ -132,7 +132,7 @@
         data-market-v0-in-chart-ohlc-svg-empty="true"
         data-market-chart-empty-compact-v1="true"
       >
-        <p class="m-0 max-w-md leading-snug">No embedded OHLCV rows — compact empty chart (SSR). No synthetic candles.</p>
+        <p class="m-0 max-w-md leading-snug">Keine eingebetteten OHLCV-Zeilen — kompakter leerer Chart (SSR). Keine synthetischen Kerzen.</p>
       </div>
       {% else %}
       <svg

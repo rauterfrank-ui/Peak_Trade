@@ -39,9 +39,11 @@
     data-market-futures-empty-state-v1="true"
     data-market-futures-first-fail-closed-v1="true"
     data-market-futures-data-unavailable-v1="true"
+    data-market-product-recovery-canonical-blocker-v1="true"
   >
-    <strong class="text-slate-100">Futures data unavailable</strong>
-    — governed futures snapshot required. No spot OHLCV or synthetic fallback on the canonical <span class="font-mono">/market</span> default.
+    <strong class="text-slate-100">Governed Futures-Snapshot fehlt</strong>
+    — Chart, Ranking und Funnel eingeschränkt. System bleibt read-only · keine Orders · kein Live.
+    <span class="block mt-1 text-[10px] text-slate-500">No spot OHLCV or synthetic fallback on canonical <span class="font-mono">/market</span> default.</span>
     {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-400">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
   </div>
   {% elif query.source == 'futures' and data_unavailable and governed_top20.snapshot_available %}
@@ -56,17 +58,17 @@
     {% if primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}
     <strong class="text-rose-200/90">Invalid futures instrument selection</strong> — symbol not in governed universe (fail-closed).
     {% elif primary_values.unavailable_reason == 'futures_ohlcv_malformed' %}
-    <strong class="text-rose-200/90">Futures OHLCV invalid/malformed</strong> — no synthetic candles shown.
+    <strong class="text-rose-200/90">Futures-OHLCV ungültig/fehlerhaft</strong> — keine synthetischen Kerzen angezeigt.
     {% elif primary_values.unavailable_reason == 'futures_ohlcv_stale' %}
-    <strong class="text-amber-200/90">Futures OHLCV stale</strong> — chart unavailable (read-only fail-closed).
+    <strong class="text-amber-200/90">Futures-OHLCV veraltet</strong> — Chart nicht verfügbar (read-only fail-closed).
     {% else %}
-    Futures OHLCV unavailable on default path — governed ranking snapshot is available below (read-only display).
+    Futures-OHLCV auf dem Standardpfad nicht verfügbar — Governed-Ranking-Snapshot ist unten verfügbar (read-only Anzeige).
     {% endif %}
     {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-500">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
   </div>
   {% elif query.source == 'futures' and not data_unavailable %}
   <span class="sr-only" data-market-futures-ohlcv-wired-v1="true" data-market-futures-chart-complete-v1="true">
-    Futures OHLCV wired · read-only SSR{% if futures_ohlcv.source %} · {{ futures_ohlcv.source|e }}{% endif %}
+    Futures-OHLCV verbunden · read-only SSR{% if futures_ohlcv.source %} · {{ futures_ohlcv.source|e }}{% endif %}
   </span>
   {% endif %}
 
@@ -77,7 +79,7 @@
     data-market-dummy-explicit-synthetic-v1="true"
     data-market-source-kind="dummy-offline-synthetic"
   >
-    <strong class="text-amber-200">SYNTHETIC / OFFLINE / DUMMY</strong> — explicit demo only. Canonical <span class="font-mono">/market</span> is futures-first (SSR, fail-closed).
+    <strong class="text-amber-200">SYNTHETISCH / OFFLINE / DUMMY</strong> — nur explizite Demo. Kanonisches <span class="font-mono">/market</span> ist futures-first (SSR, fail-closed).
   </div>
   {% endif %}
 
@@ -87,9 +89,9 @@
     role="alert"
     data-market-unavailable-compact-v1="true"
   >
-    <strong class="text-rose-200">Public market data unavailable</strong>
+    <strong class="text-rose-200">Öffentliche Marktdaten nicht verfügbar</strong>
     {% if primary_values.unavailable_reason %} — {{ primary_values.unavailable_reason|e }}{% endif %}.
-    No synthetic fallback. Retry later or check network/provider.
+    Kein synthetischer Fallback. Später erneut versuchen oder Netzwerk/Provider prüfen.
   </div>
   {% endif %}
 
@@ -116,10 +118,10 @@
     {% if hero_empty %}
     <div class="pt-operator-overview-hero-primary pt-foundation-empty-hero" data-market-phase-2-hero-primary-v1="true" data-market-hero-empty-state-v1="true">
       <p class="m-0 text-sm font-semibold text-slate-200" data-market-hero-empty-title-v1="true">
-        {% if ov.selected_instrument.symbol and ov.selected_instrument.symbol != 'unavailable' %}{{ ov.selected_instrument.symbol|e }}{% else %}Governed futures snapshot unavailable{% endif %}
+        Instrument-Kontext eingeschränkt
       </p>
       <p class="m-0 mt-1 text-[10px] font-mono text-slate-500" data-market-hero-empty-meta-v1="true">
-        Source · {{ query.source|e }} · Freshness · {{ primary_values.generated_at_utc|default('unavailable', true)|e }} · Timeframe · {{ ov.selected_instrument.timeframe|e }}{% if primary_values.unavailable_reason %} · {{ primary_values.unavailable_reason|e }}{% endif %}
+        Quelle · {{ query.source|e }} · Frische · {{ primary_values.generated_at_utc|default('nicht verfügbar', true)|e }} · Timeframe · {{ ov.selected_instrument.timeframe|e }}{% if primary_values.unavailable_reason %} · {{ primary_values.unavailable_reason|e }}{% endif %}
       </p>
       <p class="m-0 mt-1 text-[10px] text-slate-500" data-market-phase-2-regime-chip-v1="true" data-market-phase-2-regime-scope-v1="{{ ov.market_regime.scope|e }}">
         Regime · <span class="font-mono text-slate-400">{{ ov.market_regime.trend|e }}</span>
@@ -182,10 +184,10 @@
           data-market-phase-2-decision-state-v1="true"
           aria-label="Current decision state"
         >
-          <div><dt class="inline text-slate-600">Direction · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.direction|e }}</dd></div>
+          <div><dt class="inline text-slate-600">Richtung · </dt><dd class="inline m-0 font-mono">{{ ov.current_decision.direction|e }}</dd></div>
           <div><dt class="inline text-slate-600">AI · </dt><dd class="inline m-0 font-mono" data-market-phase-2-ai-activity-v1="true">{{ ov.current_decision.ai_activity_state|e }}</dd></div>
           <div data-market-phase-2-blocker-scope-v1="{{ ov.current_decision.blocker_scope|e }}">
-            <dt class="inline text-slate-600">Scope · </dt>
+            <dt class="inline text-slate-600">Umfang · </dt>
             <dd class="inline m-0 font-mono">{{ ov.current_decision.blocker_scope|e }}</dd>
           </div>
         </dl>
@@ -197,16 +199,16 @@
         data-market-foundation-system-decision-v1="true"
         aria-label="Critical system state"
       >
-        <p class="m-0 uppercase tracking-[0.12em] text-slate-500 text-[8px]">System decision</p>
+        <p class="m-0 uppercase tracking-[0.12em] text-slate-500 text-[8px]">Systementscheidung</p>
         <p class="pt-foundation-decision-state mt-1" data-market-foundation-decision-state-v1="true">{{ ov.current_decision.state|e }}</p>
         <p class="m-0 mt-1.5 text-[11px] text-slate-200">
-          <span class="text-slate-500">Primary blocker</span>
+          <span class="text-slate-500">Primärer Blocker</span>
           <span class="block font-mono text-sm text-slate-100 mt-0.5">{{ ov.current_decision.primary_blocker|e }}</span>
         </p>
         <dl class="m-0 mt-2 space-y-0.5 font-mono text-[10px]" data-market-foundation-system-priorities-v1="true">
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Economic</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.economic_validity|e }}</dd></div>
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Risk</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.risk_status|e }}</dd></div>
-          <div class="flex justify-between gap-2"><dt class="text-slate-500">Safety</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.safety_status|e }}</dd></div>
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Ökonomie</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.economic_validity|e }}</dd></div>
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Risiko</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.risk_status|e }}</dd></div>
+          <div class="flex justify-between gap-2"><dt class="text-slate-500">Sicherheit</dt><dd class="m-0 text-slate-200">{{ ov.critical_system_state.safety_status|e }}</dd></div>
         </dl>
         <p class="sr-only">
           Authority {{ ov.critical_system_state.runtime_authority|e }} · Orders {{ ov.critical_system_state.orders|e }} · Live {{ ov.critical_system_state.live|e }}

@@ -147,10 +147,10 @@ def build_operator_overview_display_v1(
     contract_meta = contract if isinstance(contract, dict) else {}
 
     sentence = (
-        f"{symbol} is ranked #{rank_display}. "
+        f"{symbol} steht auf Rang {rank_display}. "
         f"Regime {regime}. "
         f"Decision {decision_state}. "
-        f"Primary blocker: {blocker}."
+        f"Primärer Blocker: {blocker}."
     )
 
     economic_status = _text(header.get("economic_gate_status"))

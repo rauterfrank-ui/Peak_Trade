@@ -1,4 +1,4 @@
-"""Product recovery v1 — empty-state, CONFIGURED projection, EN locale, consumer-only."""
+"""Product recovery v1 — empty-state, CONFIGURED projection, DE locale, consumer-only."""
 
 from __future__ import annotations
 
@@ -40,9 +40,8 @@ def test_empty_chart_compact_markers_in_template() -> None:
     text = CHART.read_text(encoding="utf-8")
     assert 'data-market-chart-empty-compact-v1="true"' in text
     assert "min-h-[20rem]" not in text
-    assert "Keine OHLCV" not in text
-    assert "No OHLCV bars for this query" in text
-    assert "No synthetic candles" in text
+    assert "Keine OHLCV" in text
+    assert "Keine synthetischen Kerzen" in text
 
 
 def test_layout_css_empty_chart_compact_override() -> None:
@@ -55,19 +54,20 @@ def test_hero_empty_and_decision_above_fold_markers() -> None:
     text = HERO.read_text(encoding="utf-8")
     assert "data-market-product-recovery-empty-hero-v1" in text
     assert "data-market-product-recovery-decision-above-fold-v1" in text
-    assert "Governed futures snapshot unavailable" in text
+    assert "data-market-product-recovery-canonical-blocker-v1" in text
+    assert "Governed Futures-Snapshot fehlt" in text or "Instrument-Kontext" in text
 
 
-def test_watchlist_english_locale() -> None:
+def test_watchlist_german_locale() -> None:
     text = WATCHLIST.read_text(encoding="utf-8")
-    assert "Weitere Märkte" not in text
-    assert "Additional markets not loaded" in text
+    assert "Weitere Märkte" in text
+    assert "Additional markets not loaded" not in text
 
 
-def test_review_server_fixture_binding_and_adopt_hooks() -> None:
+def test_review_server_fixture_binding_and_no_orphan_adopt() -> None:
     text = REVIEW_SH.read_text(encoding="utf-8")
     assert "PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES" in text
-    assert "adopt_identity_ok_listener_if_any" in text
+    assert "adopt_identity_ok_listener_if_any" not in text
     assert "REVIEW_BIND_FIXTURES" in text
 
 
@@ -81,6 +81,7 @@ def test_market_unavailable_html_product_recovery_surface() -> None:
     assert 'data-market-non-authorizing="true"' in body
     assert "data-market-chart-empty-compact-v1" in body
     assert "data-market-product-recovery-decision-above-fold-v1" in body
-    assert "Keine OHLCV" not in body
+    assert "data-market-product-recovery-canonical-blocker-v1" in body
+    assert "Keine OHLCV" in body
     # Double-play must not paint misleading Active for display_ready projection.
     assert ">Active<" not in body or 'data-matrix-status-category="configured"' in body
