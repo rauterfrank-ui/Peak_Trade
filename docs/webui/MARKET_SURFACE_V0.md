@@ -1,7 +1,15 @@
 # Market Surface v0 (read-only)
 
-> **Related product SSOT (no runtime effect):** Visual Operator Dashboard Master Runbook v1.3 — [`docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md`](../product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (binding: [`docs/product/README.md`](../product/README.md)).
-> This file remains the **technical** Market Surface route/marker/env chronicle. The product runbook owns product/UX/implementation-spec intent only and does **not** own trading, risk, authority, economic, or decision semantics.
+> ```text
+> DOCUMENT_ROLE=TECHNICAL_CHRONICLE_NOT_PRODUCT_SSOT
+> TECHNICAL_CHRONICLE_NOT_PRODUCT_SSOT=true
+> ACTIVE_FOR_ARCHITECTURE_RESET_REBUILD_SCOPE=false
+> ARCHITECTURE_RESET_REBUILD_GOVERNED_BY=docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
+> ```
+>
+> **Active Architecture Reset / Rebuild SSOT (no runtime effect):** [`docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md`](../product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md) (binding: [`docs/product/README.md`](../product/README.md)).
+> **Historical product reference (pre-reset):** Visual Operator Dashboard Master Runbook v1.3 — [`docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md`](../product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md).
+> This file remains the **technical** Market Surface route/marker/env chronicle (`TECHNICAL_CHRONICLE_NOT_PRODUCT_SSOT`). It is **not** Product SSOT and **not** the Architecture-Reset-SSOT. Pre-reset routing, static display paths, query defaults, and IA descriptions below are **historical implementation facts** unless a Reset/Rebuild PR explicitly rebinds them. This chronicle does **not** own trading, risk, authority, economic, or decision semantics.
 >
 > **Local review server (no runtime/trading effect):** durable localhost lifecycle — [`REVIEW_SERVER_HARNESS_V1.md`](./REVIEW_SERVER_HARNESS_V1.md) ([`scripts/webui/review_server.sh`](../../scripts/webui/review_server.sh)).
 
@@ -9,19 +17,19 @@
 
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
-| GET | `/market` | **Canonical operator page (unified single-page; IA v2 remodel layout active).** HTML: **read-only** Market-Dashboard — **chart-first** SSR primary; **Chart.js** Close-Line/Diagnose; **compact operator overview band**; **secondary grid** (Double-Play / Safety / F5 compact partials); **diagnostics drawer collapsed by default**; ranking funnel; depth/tape when env-gated. Shell marker: **`data-market-remodel-ia-v2="true"`**; legacy consolidation markers **`data-market-single-page-unified-v1="true"`**, **`data-market-safety-status-bar-v1="true"`** may co-exist. **No** trading authority. |
-| GET | `/market/double-play` | **Legacy redirect (302)** → **`GET &#47;market?{query}#double-play`** (query preserved). Display content lives on canonical **`/market`**; **no** separate primary operator surface. |
+| GET | `/market` | **Canonical operator page path (unified single-page).** **Historical pre-reset composition (IA v2 remodel layout as last shipped pre-reset fact):** HTML: **read-only** Market-Dashboard — **chart-first** SSR primary; **Chart.js** Close-Line/Diagnose; **compact operator overview band**; **secondary grid** (Double-Play / Safety / F5 compact partials); **diagnostics drawer collapsed by default**; ranking funnel; depth/tape when env-gated. Shell marker: **`data-market-remodel-ia-v2="true"`**; legacy consolidation markers **`data-market-single-page-unified-v1="true"`**, **`data-market-safety-status-bar-v1="true"`** may co-exist. Architecture-target layout for reset/rebuild is governed solely by the Reset Runbook — **not** by this chronicle. **No** trading authority. |
+| GET | `/market/double-play` | **Legacy redirect (302)** → **`GET &#47;market?{query}#double-play`** (query preserved). Display content may render via canonical **`/market`** host path; HTTP path is a redirect, while Master V2 / Double Play **authority/composition ownership** remains separate (non-authorizing display only). **No** separate primary operator product surface. |
 | GET | `/market/futures` | **Legacy redirect (302)** → **`GET &#47;market?{query}#futures`** (query preserved when present). F5 display content lives on canonical **`/market`**; env gates unchanged (`PEAK_TRADE_F5_MARKET_DASHBOARD_*`). |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 | GET | `/api/market/depth` | JSON: Market Depth readmodel v0 — **read-only**, **env-gated** (**`PEAK_TRADE_MARKET_DEPTH_ENABLED`** muss **`1`** sein), Bundle nur über **`PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT`** (kein Query-/Pfad‑Override); bei Erfolg Builder‑Payload (**`200`**), sonst kurzes Diagnose‑JSON (**`503`**); **`HTTP 200`**/**`503`** gelten für **diese JSON‑Route**. **`GET`** **`/market`** nutzt denselben Hilfstupel **nur serverseitig**, **nicht** per Browser‑Request auf diese URL; **kein** Polling‑Vertrag hier |
 
 ## Query-Parameter (`GET &#47;market`, `GET &#47;api&#47;market&#47;ohlcv`, eingebetter Marktblock auf **`GET`** **`&#47;market&#47;double-play`**)
 
-- `symbol` — z. B. `BTC&#47;EUR` (**Default** auf **`GET`** **`&#47;market`**: **`BTC&#47;EUR`**; Legacy **`GET`** **`&#47;market&#47;double-play`**: `BTC&#47;EUR`)
-- `timeframe` — `1m` \| `5m` \| `15m` \| `1h` \| `4h` \| `1d` (Kraken-Pfad; Dummy bleibt synthetisch 1h); **Default** auf **`GET`** **`&#47;market`**: **`1d`**
+- `symbol` — z. B. `BTC&#47;EUR` (**Historical pre-reset default** auf **`GET`** **`&#47;market`**: **`BTC&#47;EUR`**; Legacy **`GET`** **`&#47;market&#47;double-play`**: `BTC&#47;EUR`). Not the Architecture-Reset target provenance policy.
+- `timeframe` — `1m` \| `5m` \| `15m` \| `1h` \| `4h` \| `1d` (Kraken-Pfad; Dummy bleibt synthetisch 1h); **Historical pre-reset default** auf **`GET`** **`&#47;market`**: **`1d`**
 - `limit` — 1 … 720 (Default **`120`**)
-- `source` — **`kraken`** (Default auf **`GET`** **`&#47;market`**, öffentliche OHLCV) \| `dummy` (explizit offline/synthetisch)
-- **Canonical operator URL (short):** **`GET`** **`&#47;market`** — keine Query-Pflicht; effektive Defaults: `source=kraken`, `symbol=BTC&#47;EUR`, `timeframe=1d`, `limit=120`; Seitentitel **Peak Trade Market Dashboard**
+- `source` — **`kraken`** (**historical pre-reset default** auf **`GET`** **`&#47;market`**, öffentliche OHLCV) \| `dummy` (explizit offline/synthetisch). Reset Runbook treats implicit `kraken`/`dummy` fallbacks as GAP-05 — not a new target behavior.
+- **Canonical operator URL (short):** **`GET`** **`&#47;market`** — keine Query-Pflicht; **historical pre-reset** effective defaults: `source=kraken`, `symbol=BTC&#47;EUR`, `timeframe=1d`, `limit=120`; Seitentitel **Peak Trade Market Dashboard**
 
 Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 
@@ -37,9 +45,9 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 
 **Read-only / non-authorizing:** Keine Orders, keine Paper-/Testnet-/Live‑Aktivierung, keine Scope/Capital‑Billigung, kein Bypass von Risk/KillSwitch‑Enforcement, keine Ausführungs‑ oder Strategieautorität. Keine Schlussfolgerung auf Futures‑„Readiness“ oder Provider‑Bereitschaft über diese View hinaus.
 
-### Market Dashboard Remodel IA v2 (current operator layout — display-only)
+### Market Dashboard Remodel IA v2 (historical pre-reset operator layout — display-only)
 
-**Status:** Implementation complete on **`GET`** **`&#47;market`** — structure contract **96/96**, SSR real-values **10/10**, operator visual PASS after restart. **No** further template/src slice without a newly evidenced gap and separate operator GO.
+**Status (historical pre-reset):** Implementation complete on **`GET`** **`&#47;market`** — structure contract **96/96**, SSR real-values **10/10**, operator visual PASS after restart. That closeout applied to **pre-reset IA-v2 composition polish** only. It does **not** declare IA v2 the active Architecture-Reset target and does **not** block Architecture Reset PR-A / Rebuild PRs governed by the Reset Runbook. Further **pre-reset** template/src polish still requires a newly evidenced gap and separate operator GO.
 
 **Merged delivery wave:**
 
@@ -78,7 +86,7 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 - **No** change to Master V2 / Double Play decision logic, Bull/Bear, Risk/KillSwitch, Scope/Capital, strategy/signal/position-sizing, or execution paths
 - **Market-Airport excluded**
 
-The **Operator overview IA v1** subsection below remains as chronicle/reference for the pre-remodel wave (#4145–#4150); **IA v2 remodel** is the active operator layout on **`GET`** **`&#47;market`**.
+The **Operator overview IA v1** subsection below remains as chronicle/reference for the pre-remodel wave (#4145–#4150); **IA v2 remodel** is the **last shipped historical pre-reset** operator layout chronicle on **`GET`** **`&#47;market`**. Architecture-reset/rebuild target composition is governed solely by the Reset Runbook.
 
 ### Operator overview IA v1 (display-only redesign)
 
@@ -86,7 +94,7 @@ The **Operator overview IA v1** subsection below remains as chronicle/reference 
 - System bar: **`data-market-operator-system-bar-v1`** — read-only, live locked, trading authority=false, data source, instrument, snapshot.
 - Guardrails moved to collapsible secondary section: **`data-market-guardrails-secondary-v1`**; diagnostics: **`data-market-diagnostics-secondary-v1`**.
 - Top20/ranking table reuses **`market_ranking_funnel_readmodel_v0`** (`data-market-top20-ranking-v1`, `data-market-ranking-source-mode-v1`).
-- Explain readout reuses **`build_static_dashboard_display_dict()`** display-only (`data-market-ai-decision-readout-v1`) — **no** trading signal.
+- Explain readout historically reused **`build_static_dashboard_display_dict()`** display-only (`data-market-ai-decision-readout-v1`) — **no** trading signal. Under the Architecture Reset Runbook this static fixture path is **not** an active canonical DP target (GAP-01); prefer canonical DP / Decision Evidence read-models when rebound.
 - **`GET &#47;market&#47;double-play`**: Bull/Bear cards (`data-double-play-bull-bear-cards-v1`), compact scope/capital/risk cards (`data-double-play-scope-capital-risk-v1`); depth/diagnostics secondary.
 - **Observe co-presence tape+depth (v1):** `#market-v0-observe-strip` embeds compact inline micro-tables from existing **`market_tape`** / **`market_depth`** SSR contexts (`#market-v0-observe-co-presence`, `#market-v0-observe-tape-inline`, `#market-v0-observe-depth-inline`). View-only IA wiring — **no** new readmodel SSOT, **no** trading authority, **no** Kraken/live data claim without explicit `source-mode` labeling (`data-market-v0-observe-source-mode-v1`). Full tape/depth panels remain detail anchors below.
 - **Instrument header (v1):** `#market-v0-instrument-header` is **display-only** IA (`data-market-v0-instrument-header`, `data-market-v0-instrument-display-only`) — shows selected instrument/symbol, labeled `source-mode`, `data authority=false`, `trading authority=false`, derived last close from embedded OHLC payload, optional mid/spread from existing **`market_depth`** when available, and navigation link to **`GET &#47;market&#47;double-play`**. **Not** a selector with trading authority; **no** order/buy/sell/cancel/arm/leverage/margin controls; **no** new route/SPA/SSOT.
@@ -158,12 +166,12 @@ The **Operator overview IA v1** subsection below remains as chronicle/reference 
 
 ### Lane taxonomy cross-reference (non-authorizing)
 
-This document is the **canonical Market Surface v0** owner for **`GET &#47;market`**, **`GET &#47;api&#47;market&#47;*`**, and related SSR read-only routes. Lane indexing and forbidden promotions are defined in [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§7h**:
+This document is the **historical technical chronicle owner** (route/marker/env) for **`GET &#47;market`**, **`GET &#47;api&#47;market&#47;*`**, and related SSR read-only routes — **not** Product SSOT and **not** Architecture-Reset-SSOT. Lane indexing and forbidden promotions are defined in [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§7h**:
 
 - lane_id `dashboard` with authority level `review_input_only`
 - taxonomy §7h markers `MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true`, `MARKET_DASHBOARD_NO_APPROVAL_AUTHORITY=true`, `MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true`
 - **F5 Futures Read-only Market Dashboard** detail owner remains [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) — this broader **`&#47;market`** surface does **not** replace F5 semantics
-- **`GET &#47;market&#47;double-play`** remains a separate Master V2 / Double Play read-only composition route; **no** live decision, selection, or execution authority
+- **`GET &#47;market&#47;double-play`** remains a separate Master V2 / Double Play read-only composition route; **no** live decision, selection, or execution authority. **Routing note:** the HTTP path may **302** to **`GET &#47;market#double-play`** (host path reuse) while DP **authority/composition ownership** stays separate and non-authorizing — redirect ≠ authority merge.
 - Display, SSR read models, and diagnostic output **do not** grant approval, gate clearance, Live/Testnet/broker/exchange permission, scheduler activation, or runtime start
 - `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (taxonomy §5)
 
@@ -466,7 +474,7 @@ Non-authority invariants remain unchanged:
 
 ### Marker / IA crosswalk policy v0
 
-`market_v0.html` deliberately exposes many `data-market-v0-*` markers for SSR structure, visual grouping, and regression tests. `MARKET_SURFACE_V0.md` is the canonical product/contract surface, not a complete attribute registry: it should describe marker families and authority boundaries rather than duplicate every template attribute.
+`market_v0.html` deliberately exposes many `data-market-v0-*` markers for SSR structure, visual grouping, and regression tests. `MARKET_SURFACE_V0.md` is the canonical product/contract surface, not a complete attribute registry: it should describe marker families and authority boundaries rather than duplicate every template attribute. **Scope note:** that "canonical product/contract surface" phrasing means **historical technical marker/IA chronicle ownership** for structure-contract drift locks — it does **not** make this file Product SSOT or Architecture-Reset-SSOT (`TECHNICAL_CHRONICLE_NOT_PRODUCT_SSOT=true`).
 
 Current marker families are consolidated as:
 

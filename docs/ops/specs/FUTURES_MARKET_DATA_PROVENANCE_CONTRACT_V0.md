@@ -140,6 +140,9 @@ Rules:
 
 ## Dashboard display contract
 
+> **Architecture-Reset note:** Market-Dashboard Architecture Reset / Rebuild display provenance targets are governed by [`docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md`](../../product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md). This F2 contract remains the futures provenance display owner; WebUI hosting does not weaken provenance or write-path prohibitions.
+
+
 A futures-aware dashboard may display market data only if source, freshness, and cache/write state are visible.
 
 Required dashboard fields include:

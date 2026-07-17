@@ -2,9 +2,16 @@
 ## Canonical Composition + Technical Discovery Edition
 
 > **Supersession (Architecture Reset / Rebuild scope):** Dieses Dokument bleibt als historische Evidence und pre-reset Composition-/Landmark-Referenz erhalten. Für den neuen Market-Dashboard-Architecture-Reset- und Rebuild-Scope ist ausschließlich [Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md) maßgeblich. Keine automatische Implementierungsfreigabe durch dieses historische Dokument.
+>
+> ```text
+> STATUS=HISTORICAL_PRE_RESET
+> SUPERSEDED_FOR_ARCHITECTURE_RESET_REBUILD=true
+> ACTIVE_FOR_ARCHITECTURE_RESET_REBUILD_SCOPE=false
+> MAY_NOT_OVERRIDE_ACTIVE_RESET_SSOT=true
+> ```
 
 > Dieses Dokument kombiniert:
-> - die normativen Architektur-, Governance- und UX-Regeln des Composition/Landmark-Runbooks
+> - die (historisch) normativen Architektur-, Governance- und UX-Regeln des Composition/Landmark-Runbooks für den **pre-reset** Scope
 > - die vollständige technische Discovery als Referenz für Implementierung und Audits.
 
 ---
@@ -56,17 +63,25 @@ Lokale Verbesserungen ohne Verbesserung der Gesamtkomposition sind unzulässig.
 BUSINESS_SSOT=MASTER_V2_AND_DOUBLE_PLAY
 DASHBOARD_ROLE=READ_ONLY_CONSUMER_DISPLAY_LAYER
 DASHBOARD_CREATES_SECOND_TRUTH=false
-RUNBOOK_ROLE=PRODUCT_UX_ARCHITECTURE_IMPLEMENTATION_GOVERNANCE
+RUNBOOK_ROLE=HISTORICAL_PRODUCT_UX_ARCHITECTURE_IMPLEMENTATION_GOVERNANCE_PRE_RESET
+STATUS=HISTORICAL_PRE_RESET
+SUPERSEDED_FOR_ARCHITECTURE_RESET_REBUILD=true
+ACTIVE_FOR_ARCHITECTURE_RESET_REBUILD_SCOPE=false
 PART_I_NORMATIVE=true
+PART_I_NORMATIVE_SCOPE=HISTORICAL_PRE_RESET_ONLY
 PART_II_DISCOVERY_SNAPSHOT_ONLY=true
 PART_I_WINS_ON_CONFLICT=true
+PART_I_WINS_ON_CONFLICT_SCOPE=HISTORICAL_PRE_RESET_ONLY
+PART_I_MAY_NOT_OVERRIDE_ARCHITECTURE_RESET_SSOT=true
+ARCHITECTURE_RESET_REBUILD_GOVERNED_BY=docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
 ```
 
 - Master V2 und Double Play bleiben die **einzige fachliche Business-SSOT**.
 - Das Dashboard ist ausschließlich **read-only Consumer / Display Layer**.
 - Dieses Runbook erzeugt **keine zweite fachliche Wahrheit**, keinen alternativen Decision Owner und keine Trading-/Risk-/Sizing-/Execution-/Authority-Logik.
-- PART I ist normativ (Composition-/Landmark-/Governance-/UX-Ziel).
-- PART II ist ein zeitgebundener technischer Discovery-Snapshot / Ist-Referenz; bei Abweichungen gilt PART I.
+- PART I ist normativ **nur** innerhalb der historischen pre-reset Composition-/Landmark-/Governance-/UX-Interpretation (`PART_I_NORMATIVE_SCOPE=HISTORICAL_PRE_RESET_ONLY`).
+- PART I überschreibt **nicht** die aktive Architecture-Reset-/Rebuild-SSOT.
+- PART II ist ein zeitgebundener technischer Discovery-Snapshot / Ist-Referenz; bei Abweichungen **innerhalb des historischen pre-reset Scopes** gilt PART I.
 
 ## Browser
 
