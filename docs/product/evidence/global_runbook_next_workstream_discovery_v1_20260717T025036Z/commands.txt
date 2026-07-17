@@ -1,0 +1,30 @@
+# Exact commands used (discovery)
+cd /Users/frnkhrz/Peak_Trade
+git fetch origin --prune
+git rev-parse HEAD
+git rev-parse origin/main
+git branch --show-current
+git status -sb
+git status --porcelain
+
+# Gap reproduction
+rg -n 'TODO/NotImplementedError|Ehlers|Bouchaud|Meta-Labeling|Nullen' docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md
+rg -n 'NotImplementedError|TODO' src/strategies/ehlers/ src/strategies/bouchaud/ src/strategies/lopez_de_prado/
+sed -n '100,145p' docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md
+sed -n '377,414p' src/strategies/lopez_de_prado/meta_labeling_strategy.py
+rg -n 'LEGACY_NON_AUTHORITATIVE' src/ops/double_play/specialists.py
+rg -ni 'LEGACY_NON_AUTHORITATIVE|non-authoritative' docs/ops/runbooks/double_play.md docs/ops/runbooks/double_play_specialists.md
+head -n 60 docs/analysis/missing_features_plan.md
+ls src/features
+rg -n 'CURRENT_ADMISSIBLE_NEXT_SCOPE|LAST_VERIFIED_ORIGIN_MAIN|STEP29M_BLOCKER' docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md
+rg -n 'FURTHER_CHAIN_WIRING|NEXT_ACTION|BOUND_NOT_ACTIVATED' docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md
+rg -n 'Section B|B-0|DOC-12|DOC-11|DOC-03' docs/governance/drift_cleanup_plan_v1.md
+gh pr list --state open --limit 5
+
+# Line anchors verified
+# docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md:110
+# docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md:127-129
+# src/strategies/lopez_de_prado/meta_labeling_strategy.py:377-383
+# src/strategies/lopez_de_prado/meta_labeling_strategy.py:401-414
+# src/ops/double_play/specialists.py:29
+# docs/ops/runbooks/double_play.md:15-17

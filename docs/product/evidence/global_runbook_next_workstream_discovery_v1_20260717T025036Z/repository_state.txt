@@ -1,0 +1,11 @@
+## main...origin/main
+?? .runtime/
+?? docs/product/evidence/global_runbook_next_workstream_discovery_v1_20260717T025036Z/
+BASE_MAIN_HEAD=12d7e2ba6cad611e6c0d530ab29ea1f3b97cc35b
+ORIGIN_MAIN=12d7e2ba6cad611e6c0d530ab29ea1f3b97cc35b
+BRANCH=main
+EXPECTED=12d7e2ba6cad611e6c0d530ab29ea1f3b97cc35b
+TRACKED_PORCELAIN=2
+RUNTIME_UNTRACKED_COUNT=17
+FETCH_TIME_UTC=2026-07-17T02:50:51Z
+OPEN_PRS=0

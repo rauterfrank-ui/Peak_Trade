@@ -1,0 +1,164 @@
+{
+  "BASE_MAIN_HEAD": "12d7e2ba6cad611e6c0d530ab29ea1f3b97cc35b",
+  "OPEN_OBLIGATIONS_TOTAL": 14,
+  "items": [
+    {
+      "id": "OBL_B02_FEHLENDE_RD_STATUS_GRAMMAR",
+      "classification": "REAL_GAP",
+      "owners": [
+        "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+        "docs/governance/drift_cleanup_plan_v1.md#B-02"
+      ],
+      "observed": "FEHLENDE L110 claims TODO/NotImplementedError for Ehlers/LdP/Bouchaud/Gatheral; L127-129 claim Meta-Labeling returns zeros/empty DF",
+      "expected": "Unified stub/research-only/missing status grammar reflecting productive modules",
+      "evidence": {
+        "docs_anchors": [
+          "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md:110",
+          "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md:127-129"
+        ],
+        "code": {
+          "ehlers_NotImplementedError": 0,
+          "bouchaud_NotImplementedError": 0,
+          "meta_labeling_NotImplementedError": 0,
+          "meta_labeling_delegates_labels": "src/strategies/lopez_de_prado/meta_labeling_strategy.py:377-383",
+          "meta_labeling_extract_features": "src/strategies/lopez_de_prado/meta_labeling_strategy.py:401-414 returns vol_20",
+          "gatheral_module": "src/strategies/gatheral_cont/vol_regime_overlay_strategy.py"
+        }
+      },
+      "why_not_closed_by_existing_contract": "No automated docs↔strategy status contract closes DOC-12; drift plan marks B-02 open/not closed"
+    },
+    {
+      "id": "OBL_B03_OPS_DP_AUTHORITY_MARKERS",
+      "classification": "REAL_GAP",
+      "owners": [
+        "docs/ops/runbooks/double_play.md",
+        "docs/ops/runbooks/double_play_specialists.md",
+        "src/ops/double_play/specialists.py"
+      ],
+      "observed": "Ops runbooks are scaffolds; no LEGACY_NON_AUTHORITATIVE marker; double_play.md L15-17 claims specialists not implemented",
+      "expected": "Ops docs state LEGACY_NON_AUTHORITATIVE + link MASTER_V2_DECISION_AUTHORITY_MAP_V1 Slice E; specialists exist as non-authoritative annotator",
+      "evidence": {
+        "code_marker": "src/ops/double_play/specialists.py:29",
+        "ops_marker_matches": 0
+      },
+      "why_not_closed_by_existing_contract": "Code docstring marker is not mirrored into ops runbooks; DOC-11 remains flagged"
+    },
+    {
+      "id": "OBL_B01_MISSING_FEATURES_PLAN_DEFERRED",
+      "classification": "REAL_GAP",
+      "owners": [
+        "docs/analysis/missing_features_plan.md",
+        "docs/governance/drift_cleanup_plan_v1.md#B-01"
+      ],
+      "observed": "Plan still maps Feature-Engine next steps to src/features/pipeline.py without prominent DEFERRED banner; src/features only has __init__.py",
+      "expected": "Deferred header + Class C feature_state_map reference",
+      "evidence": {
+        "plan_header_deferred_banner": false,
+        "src_features_contents": [
+          "__init__.py"
+        ]
+      },
+      "why_not_closed_by_existing_contract": "DOC-03 remains STRUCTURAL DOC DRIFT / partially open"
+    },
+    {
+      "id": "OBL_AUTH_ECM_01",
+      "classification": "REQUIRES_RUNTIME_GO",
+      "note": "Governance decision record could be docs-only, but resolution options include registry/config mutation; plan marks BLOCKED out of scope for cleanup",
+      "classification_detail": "Also INTENTIONAL_POLICY_STATE until Operator authority GO",
+      "owners": [
+        "docs/governance/drift_cleanup_plan_v1.md#AUTH-ECM-01",
+        "docs/governance/authority_conflict_matrix_v1.md"
+      ]
+    },
+    {
+      "id": "OBL_RUNTIME_BRIDGE",
+      "classification": "INTENTIONAL_POLICY_STATE",
+      "observed": "CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED",
+      "owners": [
+        "docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md"
+      ]
+    },
+    {
+      "id": "OBL_AUTONOMY_NEXT_SCOPE",
+      "classification": "INTENTIONAL_POLICY_STATE",
+      "observed": "CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE; requires separate Operator GO",
+      "owners": [
+        "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
+      ]
+    },
+    {
+      "id": "OBL_ECONOMIC_BASELINE_RETRY",
+      "classification": "TERMINAL_CLOSED",
+      "observed": "FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_TERMINAL_FAIL_UNCHANGED_RETRY_FORBIDDEN",
+      "owners": [
+        "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
+      ]
+    },
+    {
+      "id": "OBL_CANONICAL_CHAIN_NEXT",
+      "classification": "TERMINAL_CLOSED",
+      "observed": "Prior discovery SELECTED_NEXT_SLICE=NONE; FURTHER_CHAIN_WIRING_MUTATION_REQUIRED=false",
+      "owners": [
+        "docs/product/evidence/canonical_chain_next_slice_discovery_v1_20260717T023751Z/",
+        "docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md"
+      ]
+    },
+    {
+      "id": "OBL_REPLAY_INPUT_BUILDER",
+      "classification": "TERMINAL_CLOSED",
+      "observed": "Canonical builder already SSOT; discovery closeout PR #5267",
+      "owners": [
+        "docs/product/evidence/canonical_replay_input_builder_v1_20260717T022944Z/"
+      ]
+    },
+    {
+      "id": "OBL_DASHBOARD_COMPOSITION",
+      "classification": "TERMINAL_CLOSED",
+      "observed": "Composition + engineering drawer deemphasis merged; no further dashboard slice authorized",
+      "owners": [
+        "docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md",
+        "docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/"
+      ]
+    },
+    {
+      "id": "OBL_TRADE_LEDGER_MATERIALIZATION",
+      "classification": "TERMINAL_CLOSED",
+      "observed": "Binding materialization complete; offline evaluation execution complete with robustness fail — not an open builder gap",
+      "owners": [
+        "docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0.md",
+        "docs/governance/TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0.md"
+      ]
+    },
+    {
+      "id": "OBL_REGISTRY_SHA_LAG",
+      "classification": "FALSE_POSITIVE",
+      "observed": "LAST_VERIFIED_ORIGIN_MAIN != current origin/main",
+      "reason": "Registry field clarification forbids treating self-referential SHA refresh as canonical next step"
+    },
+    {
+      "id": "OBL_B04_REGISTRY_SUITABILITY_REPLAY_READ_MODEL",
+      "classification": "INTENTIONAL_POLICY_STATE",
+      "note": "Absence of default runtime wiring docs mirrors BOUND_NOT_ACTIVATED; new read-model would be optional docs, not a missing productive contract gap after chain closeout",
+      "owners": [
+        "docs/governance/drift_cleanup_plan_v1.md#B-04"
+      ]
+    },
+    {
+      "id": "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT",
+      "classification": "REQUIRES_RUNTIME_GO",
+      "note": "Architecture design note only after Operator GO; risk of core-semantics interpretation; excluded from selection",
+      "owners": [
+        "docs/governance/drift_cleanup_plan_v1.md#B-05"
+      ]
+    }
+  ],
+  "counts_by_classification": {
+    "REAL_GAP": 3,
+    "INTENTIONAL_POLICY_STATE": 3,
+    "TERMINAL_CLOSED": 5,
+    "SUPERSEDED": 0,
+    "FALSE_POSITIVE": 1,
+    "REQUIRES_RUNTIME_GO": 2,
+    "REQUIRES_CAPITAL_OR_LIVE_GO": 0
+  }
+}
