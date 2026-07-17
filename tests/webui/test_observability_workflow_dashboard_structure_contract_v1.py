@@ -160,6 +160,11 @@ def test_btc_not_workflow_truth(client_on: TestClient) -> None:
 def test_market_separation(client_off: TestClient) -> None:
     html = client_off.get("/market").text
     assert 'data-workflow-dashboard-v1="true"' not in html
+    # PR-A+: reset shell keeps market≠paper-run separation without the legacy marker.
+    if 'data-market-architecture-reset-shell-v1="true"' in html:
+        assert 'data-observability-last-paper-run-panel-v0="true"' not in html
+        assert "ARCHITECTURE RESET IN PROGRESS" in html
+        return
     assert 'data-market-v0-paper-run-truth-separation-v0="true"' in html
 
 
