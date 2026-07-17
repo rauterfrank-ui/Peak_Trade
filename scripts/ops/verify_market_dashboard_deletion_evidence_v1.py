@@ -39,7 +39,13 @@ from pathlib import Path
 EVIDENCE_DIR = Path("evidence/market_dashboard_deletion")
 DEFAULT_BASE = "987e020378d1767fbd6fb1f0914d475f9a485f51"
 DIFF_PATHSPEC = (".", ":(exclude)evidence/market_dashboard_deletion/**")
-MANIFEST_EXCLUDES = frozenset({"manifest.sha256", "manifest_file.sha256"})
+MANIFEST_EXCLUDES = frozenset(
+    {
+        "manifest.sha256",
+        "manifest_file.sha256",
+        "final_head_sha.txt",  # commit identity; excluded to avoid closeout hash loops
+    }
+)
 COUNTER_KEYS = (
     "TOTAL_CHANGED_FILES",
     "ADDED_FILES",
@@ -49,7 +55,6 @@ COUNTER_KEYS = (
     "INTENDED_ENTRY_COUNT",
     "FINAL_DIFF_SHA256",
     "FINAL_BASE_SHA",
-    "FINAL_HEAD_SHA",
 )
 
 
@@ -94,6 +99,14 @@ def _parse_counters(text: str) -> dict[str, str]:
 
 def _rev_parse(ref: str) -> str:
     return _run(["git", "rev-parse", ref]).decode().strip()
+
+
+def _tree_of(ref: str) -> str:
+    # Commits resolve via ^{tree}; bare tree ids return themselves.
+    try:
+        return _run(["git", "rev-parse", f"{ref}^{{tree}}"]).decode().strip()
+    except EvidenceVerifyError:
+        return _rev_parse(ref)
 
 
 def _name_status(base: str, head: str) -> list[tuple[str, list[str]]]:
@@ -190,7 +203,6 @@ def verify(*, base: str, head: str, evidence_root: Path) -> None:
         "manifest.sha256",
         "manifest_file.sha256",
         "diff_hash_scope.txt",
-        "final_head_sha.txt",
         "final_base_sha.txt",
         "name_status_inventory.txt",
         "rename_inventory.txt",
@@ -202,11 +214,19 @@ def verify(*, base: str, head: str, evidence_root: Path) -> None:
     base_full = _rev_parse(base)
     head_full = _rev_parse(head)
     recorded_base = (evidence_root / "final_base_sha.txt").read_text(encoding="utf-8").strip()
-    recorded_head = (evidence_root / "final_head_sha.txt").read_text(encoding="utf-8").strip()
     if recorded_base != base_full:
         raise EvidenceVerifyError(f"base_mismatch recorded={recorded_base} expected={base_full}")
-    if recorded_head != head_full:
-        raise EvidenceVerifyError(f"head_mismatch recorded={recorded_head} expected={head_full}")
+
+    # Optional documentary head stamp (excluded from manifest; not required for PASS).
+    head_stamp = evidence_root / "final_head_sha.txt"
+    if head_stamp.is_file():
+        recorded_head = head_stamp.read_text(encoding="utf-8").strip()
+        head_type = _run(["git", "cat-file", "-t", head_full]).decode().strip()
+        if head_type == "commit" and recorded_head not in {"PENDING_COMMIT", head_full}:
+            if _tree_of(recorded_head) != _tree_of(head_full):
+                raise EvidenceVerifyError(
+                    f"head_stamp_tree_mismatch recorded={recorded_head} expected={head_full}"
+                )
 
     rows = _name_status(base_full, head_full)
     counts = _counts(rows)
@@ -251,8 +271,7 @@ def verify(*, base: str, head: str, evidence_root: Path) -> None:
         raise EvidenceVerifyError("counter_final_diff_sha256_mismatch")
     if counters["FINAL_BASE_SHA"] != base_full:
         raise EvidenceVerifyError("counter_base_mismatch")
-    if counters["FINAL_HEAD_SHA"] != head_full:
-        raise EvidenceVerifyError("counter_head_mismatch")
+    # FINAL_HEAD_SHA may be absent from counters (identity lives in final_head_sha.txt)
 
     expected_manifest = _expected_manifest_lines(evidence_root)
     recorded_manifest = [
@@ -352,10 +371,10 @@ def materialize(
                 "FINAL_DIFF_HASH_ALGORITHM=sha256",
                 (
                     "FINAL_DIFF_HASH_SCOPE=LC_ALL=C git -c core.quotepath=false diff "
-                    f"--binary --full-index --no-ext-diff {base_full} <HEAD> "
+                    f"--binary --full-index --no-ext-diff {base_full} HEAD "
                     "-- . ':(exclude)evidence/market_dashboard_deletion/**'"
                 ),
-                f"FINAL_DIFF_HASH_HEAD_RESOLVED={scope_head_token}",
+                "FINAL_DIFF_HASH_HEAD_RESOLVED=see_final_head_sha_txt",
                 (
                     "RENAME_COUNTING_MODEL=git diff --name-status -M; one R* line = one "
                     "changed entry; TOTAL_CHANGED_FILES=name-status lines; "
@@ -383,11 +402,11 @@ def materialize(
             f"INTENDED_ENTRY_COUNT={len(intended)}",
             f"FINAL_DIFF_SHA256={scoped}",
             f"FINAL_BASE_SHA={base_full}",
-            f"FINAL_HEAD_SHA={head_record}",
             "MANIFEST_SELF_REFERENCE=false",
             "RENAME_COUNTING_MODEL=name_status_entry_equals_one_changed_file",
             "DIFF_HASH_EXCLUDES=evidence/market_dashboard_deletion/**",
             "MANIFEST_FILE_SHA256_PATH=evidence/market_dashboard_deletion/manifest_file.sha256",
+            "FINAL_HEAD_SHA_PATH=evidence/market_dashboard_deletion/final_head_sha.txt",
         ]
     )
     (evidence_root / "final_audit_counters.txt").write_text(counters + "\n", encoding="utf-8")
@@ -398,7 +417,7 @@ def materialize(
 ## Identity
 
 - BASE=`{base_full}`
-- HEAD=`{head_record}`
+- HEAD=`git rev-parse HEAD` (see also `../final_head_sha.txt`, excluded from manifest)
 
 ## Counts
 

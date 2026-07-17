@@ -3,7 +3,7 @@
 ## Identity
 
 - BASE=`987e020378d1767fbd6fb1f0914d475f9a485f51`
-- HEAD=`PENDING_COMMIT`
+- HEAD=`git rev-parse HEAD` (see also `../final_head_sha.txt`, excluded from manifest)
 
 ## Counts
 
