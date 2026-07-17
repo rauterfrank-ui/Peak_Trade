@@ -10,10 +10,10 @@
 
 | Feld | Wert |
 |------|------|
-| Document | [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) |
+| Document | [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) |
 | Version | v1.3 |
 | Edition | Canonical Composition + Technical Discovery Edition |
-| Role | Product SSOT + Implementation Spec (PART I normative; PART II technical discovery snapshot) |
+| Role | Dashboard Master Runbook (PART I normative Composition/Landmark; PART II technical discovery snapshot) |
 | `PRODUCT_DOCUMENT` | `true` |
 | `IMPLEMENTATION_SPEC` | `true` |
 | `READ_ONLY` | `true` |
@@ -23,7 +23,8 @@
 ### Binding statement
 
 ```text
-DASHBOARD_PRODUCT_SPEC_SSOT=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+DASHBOARD_PRODUCT_SPEC_SSOT=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+DASHBOARD_PRODUCT_COMPATIBILITY_SURFACE=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
 DERIVED_DOCUMENTS_MAY_NOT_OVERRIDE_PRODUCT_SPEC=true
 CORE_SYSTEM_REMAINS_FUNCTIONAL_SSOT=true
 CANONICAL_PRODUCT_DOCUMENT=true
@@ -46,17 +47,17 @@ DASHBOARD_ROLE=PRESENTATION_LAYER
 ### SSOT rules (no dual functional truth)
 
 1. Das **Core-System / Master V2** bleibt die einzige fachliche Wahrheit (Trading, Risk, Authority, Economic, Decision).
-2. Dieses Product Runbook ist die **Dashboard-Produkt-/Presentation-Spec** und innerhalb der Dashboard-Produktdokumentation die **einzige kanonische Produktspezifikation**.
+2. Das **Composition-/Landmark-Master-Runbook** ist die **Dashboard-Produkt-/Presentation-Spec** und innerhalb der Dashboard-Produktdokumentation die **einzige kanonische Produktspezifikation**. Die Datei `Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md` ist nur Compatibility-/Contract-Surface und delegiert an das Master-Runbook.
 3. Innerhalb des Runbooks: **PART I** ist normativ (Composition-/Landmark-/Governance-/UX-Ziel); **PART II** ist die technische Discovery-/Ist-Referenz. Bei Abweichungen gilt PART I.
 4. Das Dashboard ist **Consumer-only** — es besitzt keine Trading-, Risk-, Economic-, Decision- oder Authority-Ownership.
-5. Abgeleitete Dokumente (Implementation Plan, Patch-Empfehlungen, Index-Pointer, technische Surface-Chronicle, eigenständige Discovery-Exporte wie `Runbook_V2_Discovery.md`) dürfen das Runbook **nicht** überschreiben und keine zweite vollständige Produktspezifikation bilden. Eigenständige Discovery bleibt höchstens technische Historien-/Referenzquelle.
+5. Abgeleitete Dokumente (Implementation Plan, Patch-Empfehlungen, Index-Pointer, technische Surface-Chronicle) dürfen das Master-Runbook **nicht** überschreiben und keine zweite vollständige Produktspezifikation bilden. Eigenständige Discovery-Exporte sind im Master-Runbook PART II absorbiert und dürfen nicht als konkurrierende Wahrheit verbleiben.
 6. `docs/webui/MARKET_SURFACE_V0.md` bleibt die technische Route-/Marker-/Env-Chronicle — nicht die Product Spec.
 
 ### Ownership split (reuse, no dual truth)
 
 | Layer | Canonical owner | Scope |
 |-------|-----------------|-------|
-| Product / UX / Implementation Spec | [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md) | what the Visual Operator Dashboard must look like and how to ship slices |
+| Product / UX / Implementation Spec | [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) | what the Visual Operator Dashboard must look like and how to ship slices |
 | Technical Market Surface contract / IA chronicle | [`docs/webui/MARKET_SURFACE_V0.md`](../webui/MARKET_SURFACE_V0.md) | route, markers, env gates, structure contracts |
 | Futures read-only display contract | [`docs/ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md`](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md) | F5 display boundary |
 | Core trading / risk / authority / economic / decision | MASTER_V2 + existing core owners | never owned by dashboard docs or UI |
@@ -84,8 +85,12 @@ MARKET_BROWSER_E2E_BASELINE=MISSING
 GO_TOKEN=GO_CONSOLIDATED_COMPOSITION_LANDMARK_MASTER_RUNBOOK_REPO_SSOT_V1
 PRODUCT_IMPLEMENTATION_GO_TOKEN=GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_PRODUCT_V1_3
 SOURCE_DOWNLOADS_PATH=/Users/frnkhrz/Downloads/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
-CANONICAL_TARGET=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
-RUNBOOK_SHA256=7de34b99380db4cb1461c3e4711af915858a3e626f38eaf8b74f168150d995e2
+SOURCE_SHA256=1c77fc3bdbcc9d05c6d2e7f07bd84e962ea81d738f431207481d21bb2b558c0e
+CANONICAL_TARGET=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+COMPATIBILITY_SURFACE=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+RUNBOOK_SHA256=1cbe3558bda8a8b95d77ad8e1a698f4037346f05e7bdc7031c7127288e8f7a23
+SOURCE_TARGET_IDENTICAL=false
+HASH_DEVIATION_REASON=inserted_business_ssot_boundary;inserted_6a_browser_policy_from_product_contract;docs_token_policy_illustrative_path_encoding
 PRIOR_BOOTSTRAP_GO_TOKEN=GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1
 DISCOVERY_BASELINE_HEAD=20969b4a155ffbdc0e1a9a55657311aa061511be
 DISCOVERY_BASELINE_PR=5244

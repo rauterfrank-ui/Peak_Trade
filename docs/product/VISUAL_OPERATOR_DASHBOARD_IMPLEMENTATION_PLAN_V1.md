@@ -1,13 +1,13 @@
 # Visual Operator Dashboard — Implementation Plan v1
 
 > **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true`  
-> **Authority:** [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md)  
+> **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`  
 > **Next implementable slice:** `PHASE_1A_LAYOUT_AND_HEADER` (requires separate GO)  
 > **Branch context at plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
 ```text
-CANONICAL_PRODUCT_SPEC=docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+CANONICAL_PRODUCT_SPEC=docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
 DOCUMENT_ROLE=DERIVED_IMPLEMENTATION_PLAN
 MAY_NOT_OVERRIDE_RUNBOOK=true
 IMPLEMENTATION_READY=true
