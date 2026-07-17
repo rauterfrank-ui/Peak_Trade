@@ -1,6 +1,8 @@
 # Peak_Trade Visual Operator Dashboard Runbook v1.3
 ## Canonical Composition + Technical Discovery Edition
 
+> **Supersession (Architecture Reset / Rebuild scope):** Dieses Dokument bleibt als historische Evidence und pre-reset Composition-/Landmark-Referenz erhalten. Für den neuen Market-Dashboard-Architecture-Reset- und Rebuild-Scope ist ausschließlich [Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md) maßgeblich. Keine automatische Implementierungsfreigabe durch dieses historische Dokument.
+
 > Dieses Dokument kombiniert:
 > - die normativen Architektur-, Governance- und UX-Regeln des Composition/Landmark-Runbooks
 > - die vollständige technische Discovery als Referenz für Implementierung und Audits.

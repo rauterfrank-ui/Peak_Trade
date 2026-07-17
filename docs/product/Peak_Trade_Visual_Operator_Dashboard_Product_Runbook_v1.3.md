@@ -1,10 +1,12 @@
 # Peak_Trade Visual Operator Dashboard Product Runbook v1.3
 
-> **Canonical dashboard master runbook (Composition + Landmark + Discovery):**
+> **Supersession (Architecture Reset / Rebuild scope):** Compatibility-/Contract-Surface bleibt als Evidence erhalten. Für den neuen Architecture-Reset-/Rebuild-Scope gilt ausschließlich [Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md). Keine automatische Implementierungsfreigabe.
+>
+> **Historical dashboard master runbook (Composition + Landmark + Discovery):**
 > [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md)
 >
 > This file is a **compatibility / contract surface** for path-bound tests and historical references.
-> It does **not** define a second product norm and must not diverge from the Master Runbook.
+> It does **not** define a second product norm and must not diverge from the historical Master Runbook.
 
 ## Role
 

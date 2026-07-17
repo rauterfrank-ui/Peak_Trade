@@ -12,7 +12,7 @@
 
 **New to Peak_Trade (product overview)?**
 1. Read: [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) – Architecture, Strategy Registry, Config, Quick Start
-2. Visual Operator Dashboard (master runbook, read-only, no runtime effect): [product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) — see [product/README.md](product/README.md)
+2. Market Dashboard Architecture Reset & Rebuild SSOT (read-only, no runtime/trading authorization): [product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md) — see [product/README.md](product/README.md)
 3. Run your first backtest: `python3 scripts&#47;run_strategy_from_config.py --strategy ma_crossover`
 4. Explore: [What changed recently?](DOCUMENTATION_UPDATE_SUMMARY.md)
 

@@ -1,5 +1,6 @@
 # Visual Operator Dashboard — Implementation Plan v1
 
+> **Supersession (Architecture Reset / Rebuild scope):** Historisches abgeleitetes Implementierungsdokument; bleibt als Evidence erhalten. Für den neuen Architecture-Reset-/Rebuild-Scope gilt ausschließlich [Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md). Keine automatische Implementierungsfreigabe.
 > **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` for any further unrelated UI slice
 > **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
