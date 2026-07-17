@@ -260,22 +260,25 @@
   </details>
   {% elif governed_top20.snapshot_status == 'malformed' %}
   <p class="m-0 text-sm text-rose-200/90" role="alert" data-market-governed-top20-malformed-state-v1="true">
-    <strong>Governed snapshot invalid/malformed</strong> — ranking bundle could not be loaded. No partial or synthetic list shown.
+    <strong>Governed-Snapshot ungültig/fehlerhaft</strong> — Ranking-Bundle konnte nicht geladen werden. Keine partielle oder synthetische Liste angezeigt.
   </p>
   {% elif governed_top20.snapshot_status == 'stale' and not governed_top20.rows %}
   <p class="m-0 text-sm text-amber-200/90" role="alert" data-market-governed-top20-stale-empty-state-v1="true">
-    <strong>Governed snapshot stale</strong>{% if governed_top20.stale_reason %} — {{ governed_top20.stale_reason|e }}{% endif %}. No rows available for display.
+    <strong>Governed-Snapshot veraltet</strong>{% if governed_top20.stale_reason %} — {{ governed_top20.stale_reason|e }}{% endif %}. Keine Zeilen zur Anzeige verfügbar.
   </p>
   {% else %}
-  <p class="m-0 text-sm text-slate-200" role="alert" data-market-governed-top20-missing-state-v1="true">
-    <strong>{{ governed_top20.unavailable_message|e }}</strong>
-    — no governed Top-{{ governed_top20.top_n }} snapshot on the canonical <span class="font-mono">/market</span> default.
-    No spot OHLCV, no synthetic fallback, no invented ranking data.
-    {% if not governed_top20.gate_enabled %}
-    <span class="block mt-1 font-mono text-[10px] text-slate-400">PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1 + bundle root required.</span>
-    {% elif governed_top20.snapshot_status == 'unconfigured' %}
-    <span class="block mt-1 font-mono text-[10px] text-slate-400">PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT unconfigured.</span>
-    {% endif %}
-  </p>
+  <div class="text-sm text-slate-200" role="alert" data-market-governed-top20-missing-state-v1="true">
+    <p class="m-0">
+      <strong>{{ governed_top20.unavailable_message|e }}</strong>
+      — siehe Primärblocker oben. Governed-Top-{{ governed_top20.top_n }}-Ranking eingeschränkt. System bleibt read-only · keine Orders · kein Live.
+    </p>
+    <details class="mt-1 text-[10px] text-slate-500" data-market-governed-top20-recovery-details-v1="true">
+      <summary class="cursor-pointer text-slate-400">Recovery-Bindung (read-only)</summary>
+      <p class="m-0 mt-1 font-mono text-[10px] text-slate-400 leading-snug">
+        Erwartet ranking_funnel.json via PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1 und PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT.
+        Review: PEAK_TRADE_WEBUI_REVIEW_BIND_FIXTURES=1 ./scripts/webui/review_server.sh restart
+      </p>
+    </details>
+  </div>
   {% endif %}
 </section>

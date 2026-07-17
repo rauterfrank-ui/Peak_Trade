@@ -117,8 +117,8 @@ def test_market_default_shows_futures_empty_state_without_snapshot(client: TestC
     assert 'data-market-futures-empty-state-v1="true"' in body
     assert 'data-market-futures-first-fail-closed-v1="true"' in body
     assert 'data-market-futures-data-unavailable-v1="true"' in body
-    assert "Futures data unavailable" in body
-    assert "No spot OHLCV" in body or "no spot" in body.lower()
+    assert "Futures-Daten nicht verfügbar" in body or "Governed Futures-Snapshot fehlt" in body
+    assert "Kein Spot-OHLCV" in body or "kein synthetischer Fallback" in body.lower()
 
 
 def test_market_default_no_synthetic_fallback(client: TestClient) -> None:

@@ -1,0 +1,30 @@
+OK: web runtime deps present (fastapi, uvicorn).
+REVIEW_BIND_FIXTURES=false
+STATUS=RUNNING_HEALTHY
+ACTION=STARTED
+PID=11579
+BOOT_PID=11562
+PORT=8011
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8011/api/health
+REVIEW_URL=http://127.0.0.1:8011/market
+PID_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server_pr5280_8011/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server_pr5280_8011/review_server.log
+UVICORN_RELOAD=false
+LOCALHOST_ONLY=true
+IDEMPOTENT_START=true
+OK: web runtime deps present (fastapi, uvicorn).
+REVIEW_BIND_FIXTURES=false
+STATUS=RUNNING_HEALTHY
+ACTION=STARTED
+PID=11902
+BOOT_PID=11885
+PORT=8011
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8011/api/health
+REVIEW_URL=http://127.0.0.1:8011/market
+PID_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server_pr5280_8011/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server_pr5280_8011/review_server.log
+UVICORN_RELOAD=false
+LOCALHOST_ONLY=true
+IDEMPOTENT_START=true

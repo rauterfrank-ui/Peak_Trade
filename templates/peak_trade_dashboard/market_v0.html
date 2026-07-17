@@ -99,9 +99,13 @@
     padding: 0.15rem 0.35rem;
     font-weight: 700;
   }
+  /* True active/go-live only — reserved green. display_ready/ready are "configured", never this. */
   #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category="active"] { background: rgba(6,78,59,0.45); border-color: rgba(16,185,129,0.55); color: rgba(209,250,229,0.95); }
   #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category="blocked"],
   #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category="not_authorized"] { background: rgba(76,5,25,0.45); border-color: rgba(244,63,94,0.55); color: rgba(254,205,211,0.95); }
+  /* Muted slate/blue — display-ready/configured must never look like go-live green. */
+  #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category="configured"] { background: rgba(30,41,59,0.55); border-color: rgba(100,116,139,0.55); color: rgba(203,213,225,0.95); }
+  #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category="not_evaluated"] { background: rgba(30,41,59,0.4); border-color: rgba(71,85,105,0.5); color: rgba(148,163,184,0.9); }
   #market-v0-shell [data-market-f5-pipeline-strip-v1="true"] {
     display: grid;
     gap: 0.35rem;

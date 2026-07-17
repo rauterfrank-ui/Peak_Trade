@@ -109,7 +109,7 @@ def test_market_default_futures_first_no_spot_fallback(client: TestClient) -> No
 def test_market_missing_snapshot_shows_futures_data_unavailable(client: TestClient) -> None:
     body = _html(client)
     assert 'data-market-futures-data-unavailable-v1="true"' in body
-    assert "Futures data unavailable" in body
+    assert "Futures-Daten nicht verfügbar" in body or "Governed Futures-Snapshot fehlt" in body
     assert 'data-market-governed-top20-unavailable-v1="true"' in body
     assert 'data-market-governed-top20-missing-state-v1="true"' in body
 
@@ -178,7 +178,7 @@ def test_ranking_malformed_state(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     with TestClient(create_app()) as test_client:
         body = _html(test_client)
     assert 'data-market-governed-top20-malformed-v1="true"' in body
-    assert "invalid/malformed" in body.lower()
+    assert "governed-snapshot ungültig/fehlerhaft" in body.lower()
 
 
 def test_ranking_stale_state(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -204,7 +204,7 @@ def test_build_market_governed_top20_display_context_unit() -> None:
     ctx = build_market_governed_top20_display_context(ranking_funnel=ranking, f5_dashboard=f5)
     assert ctx["snapshot_available"] is False
     assert ctx["row_count"] == 0
-    assert ctx["unavailable_message"] == "Futures data unavailable"
+    assert ctx["unavailable_message"] == "Futures-Daten nicht verfügbar"
 
 
 def test_resolve_market_page_data_no_network_no_pipeline(client: TestClient) -> None:

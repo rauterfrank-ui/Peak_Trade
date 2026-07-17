@@ -1,0 +1,8 @@
+STATUS=RUNNING_HEALTHY
+PID=11902
+PORT=8011
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8011/api/health
+REVIEW_URL=http://127.0.0.1:8011/market
+PID_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server_pr5280_8011/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server_pr5280_8011/review_server.log

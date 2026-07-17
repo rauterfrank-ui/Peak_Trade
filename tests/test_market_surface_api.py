@@ -95,7 +95,7 @@ class TestMarketSurfaceHtml:
         assert 'data-market-v11-chart-library-status="true"' in body
         assert 'data-market-v11-payload-bars="true"' in body
         assert 'data-market-v11-render-fallback="true"' in body
-        assert "Chart diagnostics" in body
+        assert "Chart-Diagnostik" in body or "Chart diagnostics" in body
         assert "Chart.js status" in body
         assert "Embedded bars" in body
         assert "Chart render status" in body
@@ -327,7 +327,8 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert "data-market-chart-status" in txt
     assert "data-market-empty-state" in txt
     assert "Chart bereit — read-only OHLCV-Anzeige." in txt
-    assert "Keine OHLCV-Bars für diese Abfrage verfügbar." in txt
+    assert "Keine OHLCV-Bars für diese Abfrage. Keine synthetischen Kerzen." in txt
+    assert "No OHLCV bars for this query." not in txt
     assert "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar." in txt
     assert 'data-market-depth-panel="true"' in txt
     assert "data-market-depth-status" in txt

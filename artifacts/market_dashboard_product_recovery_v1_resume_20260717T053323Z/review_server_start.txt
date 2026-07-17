@@ -1,0 +1,15 @@
+OK: web runtime deps present (fastapi, uvicorn).
+REVIEW_BIND_FIXTURES=false
+STATUS=RUNNING_HEALTHY
+ACTION=STARTED
+PID=10494
+BOOT_PID=10477
+PORT=8000
+HOST=127.0.0.1
+HEALTH_URL=http://127.0.0.1:8000/api/health
+REVIEW_URL=http://127.0.0.1:8000/market
+PID_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server/review_server.pid
+LOG_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server/review_server.log
+UVICORN_RELOAD=false
+LOCALHOST_ONLY=true
+IDEMPOTENT_START=true

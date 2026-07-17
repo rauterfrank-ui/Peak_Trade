@@ -16,12 +16,16 @@
   </div>
 
   {% if decision_funnel_visual.activity_state == 'NOT_AVAILABLE' %}
-  <p class="m-0 text-[10px] text-slate-400" data-market-decision-funnel-missing-source-v1="true">
-    Decision funnel unavailable — {{ decision_funnel_visual.recovery_hint|e }}
-  </p>
+  <div class="text-[10px] text-slate-400" data-market-decision-funnel-missing-source-v1="true">
+    <p class="m-0">Decision-Funnel nicht verfügbar — siehe Primärblocker oben.</p>
+    <details class="mt-1 text-[9px] text-slate-500">
+      <summary class="cursor-pointer">Recovery-Bindung</summary>
+      <p class="m-0 mt-1 font-mono leading-snug">{{ decision_funnel_visual.recovery_hint|e }}</p>
+    </details>
+  </div>
   {% elif decision_funnel_visual.activity_state == 'FAILED' %}
   <p class="m-0 text-[10px] text-rose-200/90" role="alert" data-market-decision-funnel-failed-v1="true">
-    Decision funnel evidence invalid/malformed (read-only fail-closed).
+    Decision-Funnel-Evidenz ungültig/fehlerhaft (read-only fail-closed).
   </p>
   {% else %}
   <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-1 text-[9px] font-mono mb-2" data-market-decision-funnel-summary-v1="true">
@@ -76,7 +80,7 @@
       {% endfor %}
     </ul>
     {% else %}
-    <p class="m-0 text-[9px] text-slate-500" data-market-decision-funnel-block-reasons-empty-v1="true">No block reasons recorded (empty).</p>
+    <p class="m-0 text-[9px] text-slate-500" data-market-decision-funnel-block-reasons-empty-v1="true">Keine Blockgründe erfasst (leer).</p>
     {% endif %}
   </div>
 

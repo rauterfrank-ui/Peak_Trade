@@ -109,7 +109,8 @@ def test_decision_sentence_contract_unit() -> None:
     assert "AAAUSDT" in sentence
     assert "Rang 3" in sentence
     assert "Regime unavailable" in sentence
-    assert "Decision Blocked" in sentence
+    assert "Decision Blocked" not in sentence
+    assert "Entscheidung Blocked" in sentence
     assert "Primärer Blocker: Preflight blocked" in sentence
     assert vm["current_decision"]["ai_activity_state"] == "PROCESSED"
     assert vm["current_decision"]["ai_activity_state_raw"] == "ACTIVE"
@@ -125,7 +126,7 @@ def test_phase_2_markers_and_sentence_in_html(client_phase_2: TestClient) -> Non
     assert 'data-market-phase-2-critical-system-state-v1="true"' in body
     assert 'data-market-operator-decision-narrative-v1="true"' in body
     assert "steht auf Rang" in body
-    assert "Primärer Blocker:" in body
+    assert "Primärer Blocker" in body
     assert "Preflight blocked · Authority NONE" not in body
     assert "AI ACTIVE" not in body
     assert (

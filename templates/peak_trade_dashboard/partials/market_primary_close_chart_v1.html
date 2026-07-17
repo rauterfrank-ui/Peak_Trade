@@ -1,18 +1,20 @@
-<!-- Primary close/OHLC chart — visual foundation: dominant candlestick + volume above fold -->
+{# Primary chart: dominant when OHLCV present; compact diagnostic when empty (product recovery). #}
+{% set chart_empty = payload.bars_returned == 0 or not payload.bars or payload.bars|length == 0 %}
 <section
   data-market-chart-primary-v2="true"
   role="region"
   aria-labelledby="market-v0-landmark-close-chart-h2"
-  class="bg-slate-900/35 rounded-lg border border-slate-800/70 ring-1 ring-sky-900/10 p-2 sm:p-2.5 market-phase-1a-primary-chart"
+  class="bg-slate-900/35 rounded-lg border border-slate-800/70 ring-1 ring-sky-900/10 p-2 sm:p-2.5 market-phase-1a-primary-chart{% if chart_empty %} market-chart-empty-compact{% endif %}"
   data-chart="market-v0-close-line"
   data-market-chart-primary-v1="true"
   data-market-chart-visual-primary-v1="true"
   data-market-chart-above-fold-v1="true"
   data-market-workspace-chart-v1="true"
-  data-market-chart-height-v1="450"
+  data-market-chart-height-v1="{% if chart_empty %}140{% else %}450{% endif %}"
   data-market-phase-1a-chart-above-fold-v1="true"
   data-market-foundation-primary-chart-v1="true"
-  data-market-foundation-chart-min-height-px-v1="450"
+  data-market-foundation-chart-min-height-px-v1="{% if chart_empty %}140{% else %}450{% endif %}"
+  {% if chart_empty %}data-market-chart-empty-compact-v1="true"{% endif %}
   {% if selected_instrument_workspace is defined and selected_instrument_workspace.workspace_visible %}
   data-market-workspace-ohlcv-status="{{ selected_instrument_workspace.ohlcv_status|e }}"
   {% if selected_instrument_workspace.ohlcv_status == 'empty' %}data-market-workspace-ohlcv-empty-v1="true"{% endif %}
@@ -21,7 +23,7 @@
   {% endif %}
 >
   <div class="flex flex-wrap items-end justify-between gap-1.5 mb-1">
-    <h2 id="market-v0-landmark-close-chart-h2" class="text-sm font-semibold text-slate-100 m-0 tracking-tight">Market chart</h2>
+    <h2 id="market-v0-landmark-close-chart-h2" class="text-sm font-semibold text-slate-100 m-0 tracking-tight">Marktchart</h2>
     <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500">Read-only · SSR</span>
   </div>
 
@@ -29,13 +31,13 @@
     class="pt-foundation-chart-meta"
     data-market-chart-legend-v1="true"
     data-market-foundation-chart-meta-v1="true"
-    aria-label="Chart metadata"
+    aria-label="Chart-Metadaten"
   >
     <span><span class="text-slate-600">Instrument</span> {{ primary_values.symbol|e }}</span>
     <span><span class="text-slate-600">Timeframe</span> {{ primary_values.timeframe|e }}</span>
     <span><span class="text-slate-600">Bars</span> {{ payload.bars_returned }}</span>
-    <span><span class="text-slate-600">Source</span> {% if futures_ohlcv is defined and futures_ohlcv.source %}{{ futures_ohlcv.source|e }}{% else %}{{ query.source|e }}{% endif %}</span>
-    <span><span class="text-slate-600">Freshness</span> {{ primary_values.generated_at_utc|e }}</span>
+    <span><span class="text-slate-600">Quelle</span> {% if futures_ohlcv is defined and futures_ohlcv.source %}{{ futures_ohlcv.source|e }}{% else %}{{ query.source|e }}{% endif %}</span>
+    <span><span class="text-slate-600">Frische</span> {{ primary_values.generated_at_utc|e }}</span>
   </div>
 
   {% if payload.bars_returned == 0 or (selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status in ('malformed', 'stale', 'missing')) %}
@@ -47,13 +49,13 @@
     {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
   >
     {% if payload.bars_returned == 0 %}
-    Keine OHLCV-Bars für diese Abfrage verfügbar.
+    Keine OHLCV-Bars für diese Abfrage. Keine synthetischen Kerzen.
     {% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'malformed' %}
-    OHLCV malformed — keine synthetischen Kerzen.
+    OHLCV fehlerhaft — keine synthetischen Kerzen.
     {% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'stale' %}
-    OHLCV stale — Chart read-only fail-closed.
+    OHLCV veraltet — Chart read-only fail-closed.
     {% else %}
-    OHLCV unavailable — Chart read-only fail-closed.
+    OHLCV nicht verfügbar — Chart read-only fail-closed.
     {% endif %}
   </div>
   {% else %}
@@ -120,15 +122,17 @@
     data-market-chart-operator-readable-v1="true"
     data-market-chart-responsive-v1="true"
     data-market-foundation-chart-frame-v1="true"
+    {% if chart_empty %}data-market-chart-empty-compact-v1="true"{% endif %}
     aria-label="OHLC chart (SSR, read-only)"
   >
     <div class="relative flex-1 min-h-0 w-full bg-slate-950/40">
-      {% if not payload.bars or payload.bars|length == 0 %}
+      {% if chart_empty %}
       <div
-        class="flex h-full min-h-[20rem] items-center justify-center px-4 text-center text-[11px] text-slate-500"
+        class="flex h-full min-h-[7rem] max-h-[9rem] items-center justify-center px-4 py-3 text-center text-[11px] text-slate-500"
         data-market-v0-in-chart-ohlc-svg-empty="true"
+        data-market-chart-empty-compact-v1="true"
       >
-        <p class="m-0 max-w-md leading-snug">No embedded OHLCV rows — chart area empty (SSR). Keine synthetischen Kerzen.</p>
+        <p class="m-0 max-w-md leading-snug">Keine eingebetteten OHLCV-Zeilen — kompakter leerer Chart (SSR). Keine synthetischen Kerzen.</p>
       </div>
       {% else %}
       <svg
@@ -228,7 +232,7 @@
   </div>
 
   <details class="mt-2 rounded-lg border border-slate-800/70 bg-slate-950/50 px-3 py-2 text-xs text-slate-400" data-market-diagnostics-secondary-v1="true" data-market-v11-chart-diagnostics="true">
-    <summary class="cursor-pointer font-semibold text-slate-300">Chart diagnostics (secondary)</summary>
+    <summary class="cursor-pointer font-semibold text-slate-300">Chart-Diagnostik (sekundär)</summary>
     <div class="mt-2" data-market-v11-diagnostics-inner="true">
       <dl class="m-0 grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-[11px]">
         <div><dt class="text-slate-500 m-0" data-market-v11-chart-library-status="true">Chart.js status</dt><dd id="market-v11-chartjs-state" class="m-0 text-sky-300/95">SSR only</dd></div>

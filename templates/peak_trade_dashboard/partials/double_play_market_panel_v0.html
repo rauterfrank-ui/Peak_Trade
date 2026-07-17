@@ -236,9 +236,9 @@
             {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
           >
             {% if payload.bars_returned == 0 %}
-            Keine OHLCV-Bars eingebettet — Candlesticks nicht zeichenbar.
+            No OHLCV bars embedded — candlesticks cannot be drawn.
             {% else %}
-            Candlestick Renderer bereit — read-only OHLCV visualization.
+            Candlestick renderer ready — read-only OHLCV visualization.
             {% endif %}
           </div>
           <div class="relative w-full rounded-lg border border-slate-800 bg-[#070b14] shadow-inner shadow-black/50" style="height: clamp(280px, 48vh, 520px);">
