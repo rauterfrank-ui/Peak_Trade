@@ -1,0 +1,145 @@
+{
+  "RANKING_CRITERIA": [
+    "1_real_contract_gap",
+    "2_safety_reproducibility",
+    "3_technical_leverage",
+    "4_bounded_scope",
+    "5_testable_dod",
+    "6_no_core_semantics_change",
+    "7_no_runtime_live_capital_go"
+  ],
+  "CANDIDATES_RANKED": [
+    {
+      "rank": 1,
+      "name": "DRIFT_B02_RD_STRATEGY_STATUS_GRAMMAR_V0",
+      "owners": [
+        "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+        "docs/governance/drift_cleanup_plan_v1.md"
+      ],
+      "observed_ist": "FEHLENDE claims TODO/NotImplemented/zeros for R&D strategies that have productive modules on main",
+      "expected_soll": "Status table stub|research-only|missing aligned to code; Meta-Labeling rows updated to research-delegation truth",
+      "reproducible_gap": true,
+      "evidence_refs": [
+        "open_obligations.json#OBL_B02_FEHLENDE_RD_STATUS_GRAMMAR"
+      ],
+      "user_system_value": "Prevents false 'not implemented' operator truth; unblocks accurate research inventory",
+      "risk": "LOW_DOCS_ONLY; must not invent promotion/live readiness",
+      "behavior_preserving": true,
+      "affected_tests": [
+        "scripts/ops/preflight_docs_token_policy_changed.sh",
+        "scripts/ops/verify_docs_reference_targets.sh"
+      ],
+      "estimated_slice_size": "S (single canonical FEHLENDE status grammar patch + crosslinks)",
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "requires_separate_docs_operator_go": true,
+      "why_now": "Highest leverage real docs gap after dashboard+chain closeout; reproduction is hard on current main",
+      "why_existing_contract_insufficient": "DOC-12/B-02 explicitly remain not closed; no CI owner asserts strategy-status grammar"
+    },
+    {
+      "rank": 2,
+      "name": "DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0",
+      "owners": [
+        "docs/ops/runbooks/double_play.md",
+        "docs/ops/runbooks/double_play_specialists.md",
+        "src/ops/double_play/specialists.py"
+      ],
+      "observed_ist": "Ops scaffolds omit LEGACY_NON_AUTHORITATIVE; claim specialists not implemented",
+      "expected_soll": "Authority markers + link to MASTER_V2_DECISION_AUTHORITY_MAP_V1 Slice E; no implied ops authority",
+      "reproducible_gap": true,
+      "evidence_refs": [
+        "open_obligations.json#OBL_B03_OPS_DP_AUTHORITY_MARKERS"
+      ],
+      "user_system_value": "Reduces authority confusion between ops annotator and MV2 composition matrix",
+      "risk": "LOW_DOCS_ONLY",
+      "behavior_preserving": true,
+      "affected_tests": [
+        "docs token/reference gates"
+      ],
+      "estimated_slice_size": "S",
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "requires_separate_docs_operator_go": true,
+      "why_now": "Strong safety/docs leverage; ranked below B-02 because FEHLENDE is broader SSOT for 'what is missing'",
+      "why_existing_contract_insufficient": "Code docstring exists; ops runbooks do not consume it"
+    },
+    {
+      "rank": 3,
+      "name": "DRIFT_B01_MISSING_FEATURES_PLAN_DEFERRED_BANNER_V0",
+      "owners": [
+        "docs/analysis/missing_features_plan.md"
+      ],
+      "observed_ist": "Plan still reads as active Feature-Engine implementation roadmap",
+      "expected_soll": "Explicit DEFERRED banner + Class C pointer",
+      "reproducible_gap": true,
+      "behavior_preserving": true,
+      "estimated_slice_size": "XS",
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "requires_separate_docs_operator_go": true,
+      "why_now": "Smaller clarity fix; lower leverage than B-02/B-03",
+      "why_existing_contract_insufficient": "DOC-03/B-01 remain open"
+    },
+    {
+      "rank": 4,
+      "name": "AUTH_ECM_01_DECISION_RECORD_DOCS_ONLY_V0",
+      "owners": [
+        "docs/governance/drift_cleanup_plan_v1.md",
+        "docs/governance/authority_conflict_matrix_v1.md"
+      ],
+      "observed_ist": "Dual ECM identity documented as open conflict without ratified decision record",
+      "expected_soll": "Governance decision record choosing alias|migration|documented dual-ID — docs first",
+      "reproducible_gap": true,
+      "behavior_preserving": true,
+      "estimated_slice_size": "M",
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "requires_separate_authority_operator_go": true,
+      "risk": "MEDIUM — decision may pressure later registry/config mutation",
+      "why_now": "Not preferred: authority conflict; not a narrow docs grammar fix",
+      "why_existing_contract_insufficient": "AUTH-ECM-01 BLOCKED until Operator GO"
+    },
+    {
+      "rank": 5,
+      "name": "DRIFT_B04_REGISTRY_SUITABILITY_REPLAY_READ_MODEL_V0",
+      "owners": [
+        "docs/governance/drift_cleanup_plan_v1.md#B-04"
+      ],
+      "observed_ist": "No default runtime wiring documented for Registry→Suitability→Replay",
+      "expected_soll": "Optional read-only read model spec",
+      "reproducible_gap": false,
+      "classification_override": "INTENTIONAL_POLICY_STATE_BOUND_NOT_ACTIVATED",
+      "behavior_preserving": true,
+      "requires_runtime_go": false,
+      "requires_live_or_capital_go": false,
+      "why_now": "Deferred — absence is policy-aligned after chain closeout; not a missing productive link",
+      "why_existing_contract_insufficient": "N/A — intentional non-activation"
+    }
+  ],
+  "EXCLUDED_FROM_CANDIDACY": [
+    {
+      "name": "DASHBOARD_FURTHER_COMPOSITION",
+      "reason": "TERMINAL_CLOSED workstream"
+    },
+    {
+      "name": "CANONICAL_CHAIN_REWIRE",
+      "reason": "No confirmed bypass; prior SELECTED_NEXT_SLICE=NONE"
+    },
+    {
+      "name": "RUNTIME_BRIDGE_ACTIVATION",
+      "reason": "REQUIRES_RUNTIME_GO / INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "name": "LIVE_ORDER_SHADOW_PAPER_TESTNET",
+      "reason": "REQUIRES_CAPITAL_OR_LIVE_GO"
+    },
+    {
+      "name": "ECONOMIC_UNCHANGED_RETRY",
+      "reason": "TERMINAL_CLOSED retry forbidden"
+    },
+    {
+      "name": "CORE_SEMANTICS_MUTATION",
+      "reason": "Not authorized"
+    }
+  ]
+}

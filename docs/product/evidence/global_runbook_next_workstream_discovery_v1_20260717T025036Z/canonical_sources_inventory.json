@@ -1,0 +1,178 @@
+{
+  "BASE_MAIN_HEAD": "12d7e2ba6cad611e6c0d530ab29ea1f3b97cc35b",
+  "INVENTORY_UTC": "20260717T025036Z",
+  "PRIORITY_ORDER": [
+    "autonomy_progress_registry",
+    "canonical_chain_wiring_runbook",
+    "drift_cleanup_plan",
+    "dashboard_composition_master_runbook",
+    "fehlende_features_ssot",
+    "missing_features_plan",
+    "double_play_ops_runbooks",
+    "authority_conflict_matrix",
+    "ci_selection_contracts",
+    "recent_evidence_closeouts"
+  ],
+  "sources": [
+    {
+      "id": "dashboard_composition_master",
+      "path": "docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md",
+      "role": "canonical_dashboard_runbook",
+      "current_truth": "Dashboard composition workstream closed; not a next global workstream source for code slices",
+      "superseded": false
+    },
+    {
+      "id": "dashboard_product_runbook",
+      "path": "docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md",
+      "role": "product_dashboard_runbook",
+      "superseded": false
+    },
+    {
+      "id": "autonomy_progress",
+      "path": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+      "role": "progress_registry_ssot",
+      "key_fields": {
+        "CURRENT_ADMISSIBLE_NEXT_SCOPE": "NONE",
+        "LAST_VERIFIED_ORIGIN_MAIN": "580b871e17835c31d614159596374d5665d04ecd",
+        "STEP29M_BLOCKER": "FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_TERMINAL_FAIL_UNCHANGED_RETRY_FORBIDDEN"
+      },
+      "note": "LAST_VERIFIED_ORIGIN_MAIN lag is intentional field semantics; self-referential SHA refresh is not a canonical next step"
+    },
+    {
+      "id": "canonical_chain_runbook",
+      "path": "docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md",
+      "role": "canonical_chain_owner",
+      "key_fields": {
+        "FURTHER_CHAIN_WIRING_MUTATION_REQUIRED": false,
+        "NEXT_ACTION": "NONE_FOR_CANONICAL_CHAIN_WIRING_REPAIR",
+        "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "BOUND_NOT_ACTIVATED"
+      }
+    },
+    {
+      "id": "drift_cleanup_plan",
+      "path": "docs/governance/drift_cleanup_plan_v1.md",
+      "role": "structural_doc_drift_owner",
+      "section_b_open": [
+        "B-01",
+        "B-02",
+        "B-03",
+        "B-04",
+        "B-05",
+        "B-06",
+        "B-07"
+      ],
+      "rule": "No Section B step without explicit Operator-GO"
+    },
+    {
+      "id": "authority_conflict_matrix",
+      "path": "docs/governance/authority_conflict_matrix_v1.md",
+      "role": "authority_conflicts",
+      "open": [
+        "AUTH-ECM-01",
+        "AUTH-DP-01"
+      ]
+    },
+    {
+      "id": "fehlende_features",
+      "path": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+      "role": "missing_features_ssot",
+      "anchors": [
+        "L110",
+        "L127-L129",
+        "L141"
+      ]
+    },
+    {
+      "id": "missing_features_plan",
+      "path": "docs/analysis/missing_features_plan.md",
+      "role": "gap_analysis_plan",
+      "drift_flag": "B-01"
+    },
+    {
+      "id": "double_play_ops",
+      "path": "docs/ops/runbooks/double_play.md",
+      "role": "ops_double_play_runbook",
+      "drift_flag": "B-03"
+    },
+    {
+      "id": "double_play_specialists_ops",
+      "path": "docs/ops/runbooks/double_play_specialists.md",
+      "role": "ops_double_play_specialists_runbook",
+      "drift_flag": "B-03"
+    },
+    {
+      "id": "specialists_code_authority",
+      "path": "src/ops/double_play/specialists.py",
+      "role": "code_authority_marker",
+      "anchor": "L29 LEGACY_NON_AUTHORITATIVE"
+    },
+    {
+      "id": "ehlers_strategy",
+      "path": "src/strategies/ehlers/ehlers_cycle_filter_strategy.py",
+      "role": "productive_rd_strategy",
+      "not_implemented_count": 0,
+      "lines": 402
+    },
+    {
+      "id": "bouchaud_strategy",
+      "path": "src/strategies/bouchaud/bouchaud_microstructure_strategy.py",
+      "role": "productive_rd_strategy",
+      "not_implemented_count": 0,
+      "lines": 294
+    },
+    {
+      "id": "meta_labeling_strategy",
+      "path": "src/strategies/lopez_de_prado/meta_labeling_strategy.py",
+      "role": "productive_rd_strategy",
+      "anchors": {
+        "compute_triple_barrier_labels": "L377-L383 delegates to research labeling",
+        "_extract_features": "L401-L414 returns vol_20 DataFrame"
+      },
+      "not_implemented_count": 0
+    },
+    {
+      "id": "gatheral_strategy",
+      "path": "src/strategies/gatheral_cont/vol_regime_overlay_strategy.py",
+      "role": "productive_rd_strategy",
+      "lines": 361
+    },
+    {
+      "id": "chain_discovery_closeout",
+      "path": "docs/product/evidence/canonical_chain_next_slice_discovery_v1_20260717T023751Z/",
+      "role": "prior_discovery_evidence",
+      "SELECTED_NEXT_SLICE": "NONE"
+    },
+    {
+      "id": "replay_builder_closeout",
+      "path": "docs/product/evidence/canonical_replay_input_builder_v1_20260717T022944Z/",
+      "role": "prior_discovery_evidence",
+      "status": "already_complete"
+    },
+    {
+      "id": "ci_selector",
+      "path": "scripts/ops/ci_test_selection_v1.py",
+      "role": "ci_test_selection_owner"
+    },
+    {
+      "id": "required_checks",
+      "path": "config/ci/required_status_checks.json",
+      "role": "required_contexts_owner"
+    },
+    {
+      "id": "trade_ledger_materialization",
+      "path": "docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0.md",
+      "role": "trade_ledger_binding",
+      "status": "BINDING_MATERIALIZATION_COMPLETE_NOT_EXECUTED_AS_OPEN_GAP"
+    },
+    {
+      "id": "trade_ledger_execution",
+      "path": "docs/governance/TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0.md",
+      "role": "trade_ledger_execution_closeout",
+      "status": "OFFLINE_EVALUATION_EXECUTION_COMPLETE"
+    }
+  ],
+  "historical_or_superseded_not_treated_as_current_truth": [
+    "docs/product/RUNBOOK_PATCH_RECOMMENDATIONS.md (advisory; not current next-slice authority)",
+    "older Peak_Trade_Kanonisches_Vollautonomie_Runbook versions superseded by registry pointer to v4.4.12"
+  ]
+}

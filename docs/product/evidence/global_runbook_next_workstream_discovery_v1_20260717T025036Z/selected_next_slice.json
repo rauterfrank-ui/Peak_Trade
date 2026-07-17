@@ -1,0 +1,30 @@
+{
+  "SELECTED_NEXT_SLICE": "DRIFT_B02_RD_STRATEGY_STATUS_GRAMMAR_V0",
+  "SELECTED_SLICE_REAL_GAP_CONFIRMED": true,
+  "SELECTED_SLICE_BEHAVIOR_PRESERVING": true,
+  "SELECTED_SLICE_BOUNDED": true,
+  "SELECTED_SLICE_REQUIRES_RUNTIME_GO": false,
+  "SELECTED_SLICE_REQUIRES_LIVE_OR_CAPITAL_GO": false,
+  "SELECTED_SLICE_REQUIRES_SEPARATE_IMPLEMENTATION_GO": true,
+  "SELECTED_SLICE_REQUIRES_SEPARATE_DOCS_OPERATOR_GO": true,
+  "IMPLEMENTATION_AUTHORIZED_NOW": false,
+  "DISCOVERY_ONLY": true,
+  "OWNERS": [
+    "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+    "docs/governance/drift_cleanup_plan_v1.md"
+  ],
+  "GAP_SUMMARY": "FEHLENDE_FEATURES incorrectly classifies productive R&D strategies as TODO/NotImplemented and Meta-Labeling as zero/empty placeholders; code on 12d7e2ba contradicts those claims.",
+  "DEFINITION_OF_DONE_FOR_FUTURE_GO": [
+    "Replace blanket TODO/NotImplemented claims with stub|research-only|missing grammar rows for Ehlers, Bouchaud, Gatheral, Meta-Labeling",
+    "Update Meta-Labeling concrete bullets to match research delegation + vol_20 features",
+    "Keep NON-OPERATIONAL / no-live semantics explicit",
+    "Pass docs token policy + docs reference targets",
+    "No Python/template/CSS/config/runtime mutations"
+  ],
+  "SEPARATE_IMPLEMENTATION_GO_RECOMMENDED": true,
+  "REASON_SELECTED": "Only top-ranked candidate with hard main reproduction, docs-only DoD, no runtime/live GO, and clear owners after dashboard+canonical-chain closeouts.",
+  "ALTERNATES": [
+    "DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0",
+    "DRIFT_B01_MISSING_FEATURES_PLAN_DEFERRED_BANNER_V0"
+  ]
+}
