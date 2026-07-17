@@ -16,6 +16,11 @@ PRODUCTIVE_RISK_SIZING_DECISION_OWNER_COUNT=5
 DUPLICATE_PRODUCTIVE_RISK_SIZING_DECISION_OWNERS=true
 BYPASS_PATH_COUNT=5
 RISK_LIMIT_AND_SIZING_SEPARATION=PARTIAL
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_V1=true
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT=true
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER=true
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_DOES_NOT_CONSOLIDATE=true
 THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY=true
 NO_RUNTIME_REWIRE_IN_THIS_SLICE=true
 NO_TRADING_CORE_CHANGE=true
@@ -30,7 +35,7 @@ ECONOMIC_GATE_REMAINS_FAIL_CLOSED=true
 AUTHORITY_EFFECT=NONE
 ```
 
-**INVENTORY ONLY — NOT CONSOLIDATED.** This slice does **not** claim Risk/Sizing is consolidated, does not rewire owners, and does not change sizing formulas, risk limits, leverage, notional, quantity, stop rules, trading-core semantics, runtime bridge, live/order flags, or the economic gate.
+**INVENTORY ONLY — NOT CONSOLIDATED.** This slice does **not** claim Risk/Sizing is consolidated, does not rewire owners, and does not change sizing formulas, risk limits, leverage, notional, quantity, stop rules, trading-core semantics, runtime bridge, live/order flags, or the economic gate. The surface contract below is an **inventory / drift freeze only**.
 
 ## 1. Executive Summary
 
@@ -110,13 +115,61 @@ Live/Shadow
 
 ### Bypass paths (CRS)
 
-1. Classic Backtest default (`calc_position_size` / `PositionSizer`)
-2. `core_position_sizer` branch
-3. Offline-eval sizing contract
-4. Execution `execute_from_signals`
-5. Live/Shadow `position_fraction`
+1. `BYPASS_CLASSIC_BACKTEST_DEFAULT` — Classic Backtest default (`calc_position_size` / `PositionSizer`)
+2. `BYPASS_CORE_POSITION_SIZER` — `core_position_sizer` branch
+3. `BYPASS_OFFLINE_EVAL_SIZING_CONTRACT` — Offline-eval sizing contract
+4. `BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS` — Execution `execute_from_signals`
+5. `BYPASS_LIVE_SHADOW_POSITION_FRACTION` — Live/Shadow `position_fraction`
 
 CRS `export_bypass_scan_v1` documents legacy sizer presence and `DEPRECATE_LEGACY_PATH` for the governance owner boundary; it does **not** remove classic/execution bypasses.
+
+### Risk/Sizing owner and bypass surface contract v1
+
+```
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_V1=true
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT=true
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER=true
+RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_DOES_NOT_CONSOLIDATE=true
+EXPECTED_OWNER_COUNT=5
+EXPECTED_BYPASS_COUNT=5
+DRIFT_POLICY=owner/bypass addition/removal/rename/duplicate/unresolved_symbol/role_or_reachability_drift/authority_escalation → FAIL
+```
+
+**Purpose:** inventory / drift freeze of the already-inventoried productive Risk/Sizing decision surface. Machine contract: `risk_sizing_owner_and_bypass_surface_contract` in [`config/governance/risk_sizing_owner_inventory_ssot_v1.json`](../../config/governance/risk_sizing_owner_inventory_ssot_v1.json).
+
+This frozen set does **not**:
+- select a repo-wide canonical Risk/Sizing owner (`CANONICAL_RISK_SIZING_OWNER=UNRESOLVED`)
+- assign capital authority or execution authority
+- consolidate, decommission, rewire, or delegate owners/bypasses
+- change Risk/Sizing algorithms, risk limits, capital allocation, position-sizing formulas, notional/quantity derivation, leverage, or exposure caps
+- activate runtime bridge, live, testnet, shadow, paper, or orders
+- change order intent, order submission, or Legacy Order Intent surface contracts
+- assert economic quality of any size path
+
+`role=canonical_decision_owner` for CRS is **MV2-scope classification only**. Repo-wide `CANONICAL_RISK_SIZING_OWNER` remains `UNRESOLVED`.
+
+Per-owner freeze pins (inventory-backed IDs / paths / symbols only):
+
+| stable_id | source_path | symbol_or_callable | role | decision_type | reachability | canonical | authorized | capital_authority |
+|---|---|---|---|---|---|---|---|---|
+| `backtest.offline_evaluation_sizing_contract_v1` | `src/backtest/offline_evaluation_sizing_contract_v1.py` | `size_offline_evaluation_entry_v1` | policy_owner | offline_evaluation_sizing_policy | REACHABLE_PRODUCTIVE | false | false | false |
+| `src.core.position_sizing` | `src/core/position_sizing.py` | `BasePositionSizer` | decision_owner | position_sizing | REACHABLE_PRODUCTIVE | false | false | false |
+| `src.execution.pipeline.execute_from_signals` | `src/execution/pipeline.py` | `ExecutionPipeline.execute_from_signals` | decision_owner | quantity_notional_derivation | REACHABLE_PRODUCTIVE | false | false | false |
+| `src.governance.capital_risk_sizing_v1` | `src/governance/capital_risk_sizing_v1.py` | `evaluate_capital_risk_sizing_v1` | canonical_decision_owner | capital_risk_sizing_quantity_chain | REACHABLE_PRODUCTIVE | false | false | false |
+| `src.risk.position_sizer` | `src/risk/position_sizer.py` | `calc_position_size` | legacy_decision_owner | position_sizing | REACHABLE_PRODUCTIVE | false | false | false |
+
+Per-bypass freeze pins (inventory-backed IDs / paths / symbols only):
+
+| stable_id | source_path | caller_symbol | target | bypasses | canonical | authorized |
+|---|---|---|---|---|---|---|
+| `BYPASS_CLASSIC_BACKTEST_DEFAULT` | `src/backtest/engine.py` | `BacktestEngine.run_realistic` | `calc_position_size` | CRS | false | false |
+| `BYPASS_CORE_POSITION_SIZER` | `src/backtest/engine.py` | `BacktestEngine.run_realistic` | `BasePositionSizer.get_target_position` | CRS | false | false |
+| `BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS` | `src/execution/pipeline.py` | `ExecutionPipeline.execute_from_signals` | same (simplified notional pct) | CRS | false | false |
+| `BYPASS_LIVE_SHADOW_POSITION_FRACTION` | `src/live/shadow_session.py` | `ShadowPaperSession.step_once` | `SHADOW_CFG_POSITION_FRACTION_ASSIGNMENT` | CRS | false | false |
+| `BYPASS_OFFLINE_EVAL_SIZING_CONTRACT` | `src/backtest/engine.py` | `BacktestEngine.run_realistic` | `size_offline_evaluation_entry_v1` | CRS | false | false |
+
+**Separate, unchanged contracts:** Legacy Order Intent `direct_submission_surface_contract_v1` and `decision_owner_surface_contract_v1` remain separate and are **not** mutated by this slice.
 
 ### Defaults / caps conflicts (inventory observation only)
 
@@ -186,5 +239,6 @@ Do **not** treat this inventory as consolidation. Do **not** delete legacy/domai
 
 ## 9. Next plan item after this slice
 
-`P2 Legacy Order Intent` inventory is tracked in [`LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md`](LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md) (`INVENTORY ONLY — DECOMMISSION NOT STARTED`).  
-Decommission requires separate Operator-GO. Promotion Owner and Risk/Sizing inventory remain **DONE** (consolidation of Risk/Sizing still **NOT_STARTED**).
+Risk/Sizing inventory and the owner/bypass surface-contract freeze are **DONE**. Consolidation of Risk/Sizing remains **NOT_STARTED** and requires a separate Operator-GO architecture packet (`OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT`).  
+
+Legacy Order Intent inventory / decision-owner / direct-submission surface contracts remain separate and unchanged (`INVENTORY ONLY — DECOMMISSION NOT STARTED`).
