@@ -1,0 +1,11 @@
+Guard tracked files in reports directories	pass	8s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386693/job/87855740866	
+Lint Gate	pass	17s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386623/job/87855740495	
+Policy Critic Gate	pass	9s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386805/job/87855741077	
+audit	pass	1m26s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386831/job/87855741103	
+dispatch-guard	pass	9s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386633/job/87855740503	
+docs-drift-guard	pass	13s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386642/job/87855740527	
+docs-reference-targets-gate	pass	9s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386692/job/87855740844	
+docs-token-policy-gate	pass	16s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386973/job/87855741469	
+repo-truth-claims	pass	11s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386642/job/87855740553	
+strategy-smoke	pass	4s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386862/job/87856550178	
+tests (3.11)	pass	2m36s	https://github.com/rauterfrank-ui/Peak_Trade/actions/runs/29571386862/job/87856054010	

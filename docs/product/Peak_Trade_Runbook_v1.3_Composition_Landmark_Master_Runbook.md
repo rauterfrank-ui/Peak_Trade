@@ -380,10 +380,11 @@ CSS-Trio für alle Surfaces:
 
 | Datei | Rolle |
 |---|---|
-| `templates/peak_trade_dashboard/base.html` | Base; CSS-Links; Default App-Chrome |
-| `templates/peak_trade_dashboard/market_v0.html` | Kanonische Market Page (`{% extends "base.html" %}`) |
-| `templates/peak_trade_dashboard/double_play_market_dashboard_v0.html` | Legacy Standalone Double-Play |
-| `templates/peak_trade_dashboard/futures_read_only_market_dashboard_v0.html` | Legacy Standalone F5 |
+| `templates&#47;peak_trade_dashboard&#47;base.html` | Base; CSS-Links; Default App-Chrome |
+| `templates&#47;peak_trade_dashboard&#47;market_dashboard_product_v1.html` | **Active** Market Page (PR-D product surface) |
+| `templates&#47;peak_trade_dashboard&#47;market_v0.html` | Offline&#47;quarantine legacy composition (not active `&#47;market`) |
+| `templates&#47;peak_trade_dashboard&#47;double_play_market_dashboard_v0.html` | **Deleted in PR-E** (was unrendered standalone; route redirects) |
+| `templates&#47;peak_trade_dashboard&#47;futures_read_only_market_dashboard_v0.html` | **Deleted in PR-E** (was unrendered standalone; route redirects) |
 
 ## Market Partials (vollständig)
 
@@ -833,9 +834,10 @@ src/webui/workflow_dashboard_readmodel_v1/universe_selection_reader_v1.py
 
 ```
 templates/peak_trade_dashboard/base.html
+templates/peak_trade_dashboard/market_dashboard_product_v1.html
 templates/peak_trade_dashboard/market_v0.html
-templates/peak_trade_dashboard/double_play_market_dashboard_v0.html
-templates/peak_trade_dashboard/futures_read_only_market_dashboard_v0.html
+# deleted PR-E: double_play_market_dashboard_v0.html (unrendered standalone)
+# deleted PR-E: futures_read_only_market_dashboard_v0.html (unrendered standalone)
 templates/peak_trade_dashboard/partials/double_play_market_compact_v1.html
 templates/peak_trade_dashboard/partials/double_play_market_panel_v0.html
 templates/peak_trade_dashboard/partials/futures_market_compact_v1.html

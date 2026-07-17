@@ -1,4 +1,9 @@
-"""Double-Play Market Dashboard v1 (GET /market/double-play) — SSR cockpit + DP rail."""
+"""Double-Play Market Dashboard — legacy route redirect + PR-E product-surface closeout.
+
+Legacy standalone shell `double_play_market_dashboard_v0.html` was deleted in PR-E
+(unrendered; `/market/double-play` is RedirectResponse only). Layout assertions that
+expected the old DP cockpit on GET /market are replaced by product-surface guards.
+"""
 
 from __future__ import annotations
 
@@ -18,16 +23,19 @@ pytestmark = pytest.mark.web
 
 from src.webui.app import create_app
 
+LEGACY_DP_MARKERS = (
+    'data-double-play-market-dashboard-v0="true"',
+    'data-double-play-market-composition-ssr-v1="true"',
+    'data-double-play-market-cockpit-layout-v1-1="true"',
+    'data-double-play-market-candlestick-v1-2="true"',
+    'id="chart-dp-market-v0-close"',
+    'id="dp-market-ssr-payload"',
+)
+
 
 @pytest.fixture()
 def client() -> TestClient:
     return TestClient(create_app())
-
-
-def _market_unified_html(client: TestClient) -> str:
-    r = client.get("/market?source=dummy&symbol=BTC/EUR&timeframe=1d&limit=120")
-    assert r.status_code == 200
-    return r.text
 
 
 def test_double_play_legacy_route_redirects_to_market_anchor(client: TestClient) -> None:
@@ -36,50 +44,19 @@ def test_double_play_legacy_route_redirects_to_market_anchor(client: TestClient)
     assert r.headers["location"].endswith("#double-play")
 
 
-def test_double_play_market_dashboard_v1_cockpit_layout_ok_defaults(client: TestClient) -> None:
-    body = _market_unified_html(client)
+def test_double_play_legacy_shell_deleted() -> None:
+    assert not (
+        project_root / "templates/peak_trade_dashboard/double_play_market_dashboard_v0.html"
+    ).exists()
 
-    assert 'data-double-play-market-dashboard-v0="true"' in body
-    assert 'data-double-play-market-composition-ssr-v1="true"' in body
-    assert 'data-double-play-market-ssr-only="true"' in body
-    assert 'data-double-play-market-no-fetch="true"' in body
-    assert 'data-double-play-market-readonly="true"' in body
-    assert 'data-double-play-market-no-live="true"' in body
-    assert 'data-double-play-market-no-orders="true"' in body
-    assert 'data-double-play-market-no-authority="true"' in body
-    assert 'data-double-play-market-embedded-chart="true"' in body
-    assert 'data-double-play-display-ssr-v1="true"' in body
-    assert 'data-double-play-market-display-json-link="true"' in body
-    assert 'data-double-play-market-market-link="true"' in body
 
-    assert 'data-double-play-market-cockpit-layout-v1-1="true"' in body
-    assert 'data-double-play-market-cockpit-grid="true"' in body
-    assert 'data-double-play-market-cockpit-chart-column="true"' in body
-    assert 'data-double-play-market-cockpit-rail="true"' in body
-    assert 'data-double-play-market-cockpit-safety-chips="true"' in body
-    assert 'data-double-play-market-cockpit-diagnostics-secondary="true"' in body
-
-    assert "Double-Play display (embedded)" in body
-
-    assert "No orders" in body
-    assert "No live" in body
-    assert "No strategy authority" in body
-    assert "No side-switch authority" in body
-    assert "No Scope/Capital approval" in body
-    assert "No Risk/KillSwitch override" in body
-
-    assert 'id="chart-dp-market-v0-close"' in body
-    assert 'id="dp-market-ssr-payload"' in body
-
-    assert "/market?source=dummy&amp;symbol=BTC%2FEUR&amp;timeframe=1d&amp;limit=120" in body
-    assert (
-        "/api/market/ohlcv?source=dummy&amp;symbol=BTC%2FEUR&amp;timeframe=1d&amp;limit=120" in body
-    )
-    assert "/api/master-v2/double-play/dashboard-display.json" in body
-
-    assert 'data-double-play-panel="futures_input"' in body
-    assert "display_ready" in body.lower()
-
+def test_market_product_surface_has_no_legacy_dp_cockpit(client: TestClient) -> None:
+    r = client.get("/market?source=dummy&symbol=BTC/EUR&timeframe=1d&limit=120")
+    assert r.status_code == 200
+    body = r.text
+    assert 'data-market-dashboard-product-surface-v1="true"' in body
+    for marker in LEGACY_DP_MARKERS:
+        assert marker not in body
     lower = body.lower()
     assert "<form" not in lower
     assert 'method="post"' not in lower
@@ -90,204 +67,15 @@ def test_double_play_market_dashboard_v1_cockpit_layout_ok_defaults(client: Test
     assert "live_authorization" not in lower
 
 
-def test_double_play_market_dashboard_v1_2_candlesticks_and_visual_panels(
-    client: TestClient,
-) -> None:
-    """Markers and copy anchors for Candlestick cockpit v1.2 + visual DP rail."""
-    body = _market_unified_html(client)
-
-    assert 'data-double-play-market-candlestick-v1-2="true"' in body
-    assert 'data-double-play-market-candlestick-canvas="true"' in body
-    assert 'data-double-play-market-candlestick-status="true"' in body
-    assert 'data-double-play-market-candlestick-no-plugin="true"' in body
-    assert 'data-double-play-market-ohlc-source="embedded-ssr-bars"' in body
-
-    assert "Candlestick view" in body
-    assert "Embedded OHLC bars" in body
-    assert "No external financial chart plugin" in body
-    assert "Read-only OHLCV visualization" in body
-
-    assert "chartjs-chart-financial" not in body.lower()
-    assert "candlestick plugin" not in body.lower()
-    assert "financial plugin" not in body.lower()
-
-    forbidden = ("BUY", "SELL", "APPROVED", "ACTIVE TRADE")
-    for w in forbidden:
-        assert w not in body
-
-    assert 'data-double-play-market-visual-panels-v1-2="true"' in body
-    assert 'data-double-play-market-status-chip="true"' in body
-    assert 'data-double-play-market-panel-tile="true"' in body
-    assert 'data-double-play-market-diagnostics-chip="true"' in body
-    assert "DISPLAY ONLY" in body
-    assert "SSR snapshot" in body
-    assert "Diagnostics (not approval)" in body
-    assert "Not trading ready" in body
-    assert "No authority" in body
-    assert "Model label only" in body
-
-    assert 'data-double-play-market-dashboard-v0="true"' in body
-    assert 'data-double-play-market-composition-ssr-v1="true"' in body
-    assert 'data-double-play-market-cockpit-layout-v1-1="true"' in body
-
-    assert 'data-double-play-panel="futures_input"' in body
-    assert 'data-double-play-panel="state_transition"' in body
-    assert 'data-double-play-panel="survival_envelope"' in body
-
-    assert "/market?source=dummy&amp;symbol=BTC%2FEUR&amp;timeframe=1d&amp;limit=120" in body
-    assert "/api/master-v2/double-play/dashboard-display.json" in body
-
-    lower = body.lower()
-    assert "<form" not in lower
-    assert 'method="post"' not in lower
-    assert "<button" not in lower
-    assert 'type="submit"' not in lower
-    assert "fetch(" not in body
-    assert "setinterval" not in lower
-
-
-def test_double_play_market_dashboard_v1_3_field_mapping_rail(client: TestClient) -> None:
-    body = _market_unified_html(client)
-
-    assert 'data-double-play-market-field-mapping-v1-3="true"' in body
-    assert 'data-double-play-market-diagnostic-only-label="true"' in body
-    assert 'data-double-play-market-panel-human-title="true"' in body
-    assert 'data-double-play-market-display-status-label="true"' in body
-    assert 'data-double-play-market-blocker-count="true"' in body
-    assert 'data-double-play-market-missing-input-count="true"' in body
-
-    assert "Diagnostic only" in body
-    assert "Keine Trading-Freigabe" in body
-    assert "Panel titles are display labels" in body
-    assert "Status labels describe the display snapshot, not trading permission" in body
-
-    for title in (
-        "Futures Input Snapshot",
-        "State Transition Envelope",
-        "Survival / Scope Envelope",
-        "Strategy Suitability",
-        "Capital Slot Ratchet",
-        "Capital Slot Release",
-        "Composition Summary",
-    ):
-        assert title in body
-
-    assert "Instrument and input completeness for display only" in body
-    assert "Display-only composition of panel diagnostics" in body
-
-    assert 'data-double-play-overall-display-status="display_ready"' in body
-    assert "Anzeige: OK" in body
-    assert "No blockers reported" in body or "Blockers:" in body
-    assert "No missing inputs reported" in body or "Missing inputs:" in body
-
-    assert 'data-double-play-panel="futures_input"' in body
-    assert "Panel key ·" in body
-    forbidden = (
-        "BUY",
-        "SELL",
-        "GO",
-        "APPROVED",
-        "ACTIVE TRADE",
-        "Trade long",
-        "Trade short",
-        "Bull active",
-        "Bear active",
-    )
-    for w in forbidden:
-        assert w not in body
-
-    lower = body.lower()
-    assert "live_authorization" not in lower
-    assert "<form" not in lower
-    assert 'method="post"' not in lower
-    assert "<button" not in lower
-    assert 'type="submit"' not in lower
-    assert "fetch(" not in body
-    assert "setinterval" not in lower
-
-
-def test_double_play_market_dashboard_consumes_structured_metadata_v2(client: TestClient) -> None:
-    """Rail surfaces display-layer v2 metadata from SSR dp_display (no new backend keys)."""
-    body = _market_unified_html(client)
-
-    assert 'data-double-play-market-ui-consumes-v2-metadata="true"' in body
-    assert 'data-double-play-market-display-layer-version="true"' in body
-    assert 'data-double-play-market-display-snapshot-meta="true"' in body
-    assert 'data-double-play-market-panel-ordinal="true"' in body
-    assert 'data-double-play-market-panel-group="true"' in body
-    assert 'data-double-play-market-severity-rank="true"' in body
-
-    assert "Display layer:" in body
-    assert "Source kind:" in body
-    assert "Source id:" in body
-    assert "Assembled:" in body
-    assert "Display metadata only" in body
-    assert "Assembly timestamp, not market/evidence/readiness time" in body
-    assert "Severity rank is display ordering metadata, not trading readiness" in body
-    assert "Panel group is a display category" in body
-
-    assert "Display layer: v2" in body
-    assert "static_display_v0" in body
-    assert "webui_dashboard_display_static_v0" in body
-
-    assert "Group: input" in body
-    assert "Group: state" in body
-    assert "Group: scope" in body
-    assert "Group: strategy" in body
-    assert "Group: capital" in body
-    assert "Group: composition" in body
-    assert "Severity rank: 0" in body
-    assert "Ordinal: 0" in body
-
-    lower_keys = body.lower()
-    assert "recommended_side" not in lower_keys
-    assert "active_side" not in lower_keys
-    assert "ready_to_trade" not in lower_keys
-
-    assert "fetch(" not in body
-    assert "setinterval" not in body.lower()
-    assert "<form" not in body.lower()
-    assert 'method="post"' not in body.lower()
-    assert "<button" not in body.lower()
-    assert 'type="submit"' not in body.lower()
-
-    forbidden = ("BUY", "SELL", "GO", "APPROVED", "ACTIVE TRADE")
-    for w in forbidden:
-        assert w not in body
-
-    lower = body.lower()
-    assert "live_authorization" not in lower
-
-
-def test_double_play_market_dashboard_operator_reading_guide_v0(client: TestClient) -> None:
-    """Orientation block: OHLC SSR vs DP display rail semantics (readonly, display metadata)."""
-    body = _market_unified_html(client)
-
-    assert 'data-double-play-market-operator-reading-guide-v0="true"' in body
-    assert "So lesen Sie diese Ansicht" in body
-    assert "Marktkontext" in body
-    assert "Double-Play-Display-Snapshot" in body
-    assert "dashboard-display.json" in body
-    assert "Ordinal" in body
-    assert "Panel group" in body
-    assert "Severity rank" in body
-    assert "Display-/Readout-Hinweise" in body
-    assert "Ausführungs-Priorität" in body
-
-    forbidden = ("BUY", "SELL", "GO", "APPROVED", "ACTIVE TRADE")
-    for w in forbidden:
-        assert w not in body
-
-    lower = body.lower()
-    assert "<form" not in lower
-    assert 'method="post"' not in lower
-    assert "<button" not in lower
-    assert 'type="submit"' not in lower
-    assert "fetch(" not in body
-    assert "setinterval" not in lower
-    assert "live_authorization" not in lower
+def test_double_play_redirect_lands_on_product_surface(client: TestClient) -> None:
+    r = client.get("/market/double-play", follow_redirects=True)
+    assert r.status_code == 200
+    assert 'data-market-dashboard-product-surface-v1="true"' in r.text
+    for marker in LEGACY_DP_MARKERS:
+        assert marker not in r.text
 
 
 def test_double_play_market_dashboard_bad_timeframe_422(client: TestClient) -> None:
+    """Legacy path still validates query params before redirect."""
     r = client.get("/market/double-play", params={"timeframe": "bogus"})
     assert r.status_code == 422

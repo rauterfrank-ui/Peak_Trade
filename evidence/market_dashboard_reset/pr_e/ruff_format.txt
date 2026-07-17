@@ -1,0 +1,2 @@
+Would reformat: [1mtests/webui/test_market_dashboard_architecture_closeout_pr_e_v1.py[0m
+1 file would be reformatted, 2 files already formatted

@@ -1,0 +1,13 @@
+src/webui/market_dashboard_product_surface_v1/
+src/webui/market_dashboard_readmodels_v1/
+templates/peak_trade_dashboard/market_dashboard_product_v1.html
+static/css/market_dashboard_product_v1.css
+src/webui/market_futures_ohlcv_readmodel_v0/
+src/webui/market_futures_ohlcv_runtime_v0.py
+src/webui/market_ranking_funnel_readmodel_v0/
+src/webui/market_ranking_funnel_runtime_v0.py
+src/webui/market_instrument_eligibility_v0.py
+src/webui/double_play_dashboard_display_json_route_v0.py
+templates/peak_trade_dashboard/market_v0.html
+templates/peak_trade_dashboard/partials/market_v0_legacy_composition_not_routed_v1.html
+src/trading/master_v2/**

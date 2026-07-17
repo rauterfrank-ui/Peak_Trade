@@ -1,0 +1,5 @@
+COMMAND=uv run pytest -q tests/webui/test_market_dashboard_architecture_closeout_pr_e_v1.py tests/webui/test_double_play_market_dashboard_v0.py tests/webui/test_futures_read_only_market_dashboard_v0.py tests/webui/test_market_dashboard_product_surface_pr_d_v1.py tests/webui/test_market_architecture_reset_shell_pr_a_v1.py tests/webui/test_market_dashboard_readmodels_v1_static_guards.py tests/webui/test_market_dashboard_adapters_v1_static_guards.py tests/test_market_surface_api.py --tb=short
+EXIT=0
+DURATION_SECONDS=3
+RESULT=66 passed
+GUARDS=product surface only; deleted shells absent; static DP/current-state/dummy unreachable from route; one page aggregate; NOT_BOUND safety; no order controls; domain owners unchanged vs origin/main

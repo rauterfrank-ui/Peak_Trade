@@ -1,0 +1,7 @@
+2026-07-17T09:59:15Z
+REPO=/Users/frnkhrz/Peak_Trade
+BRANCH=feat/market-dashboard-product-surface-v1
+HEAD=069abac5accfcf3e4723200ea3f2f2241f01d643
+ORIGIN_MAIN=500f15e4c6a6295a438ab18c8f44bcce62c5b825
+PR_D_HEAD=069abac5accfcf3e4723200ea3f2f2241f01d643
+WORKTREE_CLEAN=true

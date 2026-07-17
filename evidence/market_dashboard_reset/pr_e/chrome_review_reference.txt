@@ -1,0 +1,8 @@
+PR_D_MERGE_COMMIT=1d61ec0deba49ca38a11f1a16ac53679a48608a0
+PR_D_REVIEWED_HEAD=069abac5accfcf3e4723200ea3f2f2241f01d643
+PR_D_EVIDENCE_ROOT=evidence/market_dashboard_reset/pr_d/
+PR_D_MERGE_CLOSEOUT=evidence/market_dashboard_reset/pr_d_merge_closeout/
+PRODUCT_GATE_PASS=true
+PRODUCT_GATE_AUTHORITY=OPERATOR
+PRODUCT_GATE_SCOPE=PR_D_MARKET_DASHBOARD_PRODUCT_SURFACE
+NOTE=Chrome/Playwright evidence from PR-D remains primary product-approval path; Safari not required. PR-E does not reopen product design.
