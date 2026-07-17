@@ -1,0 +1,13 @@
+{
+  "confirmed_bypass_count_system_economic_decision_authority": 0,
+  "intentional_legacy_raw_signal_research_paths": [
+    "src/backtest/walkforward.py",
+    "src/sweeps/engine.py",
+    "src/portfolio/manager.py",
+    "src/strategies/diagnostics.py",
+    "src/experiments/base.py",
+    "src/backtest/engine.py (registry helpers)",
+    "scripts/run_backtest.py"
+  ],
+  "notes": "Legacy raw-signal paths are fail-closed for system economic evidence and do not constitute an open canonical-chain decision-authority gap."
+}

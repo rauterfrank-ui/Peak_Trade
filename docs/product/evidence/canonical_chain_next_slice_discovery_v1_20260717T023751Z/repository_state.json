@@ -1,0 +1,11 @@
+{
+  "captured_at_utc": "20260717T023751Z",
+  "branch": "main",
+  "local_head": "e4aae48b386314329649940b9c28c1ec41d6e0cf",
+  "origin_main": "e4aae48b386314329649940b9c28c1ec41d6e0cf",
+  "pr5267_merge_commit": "e4aae48b386314329649940b9c28c1ec41d6e0cf",
+  "pr5267_merged": true,
+  "preferred_replay_input_builder_already_complete": true,
+  "discovery_only": true,
+  "implementation_performed": false
+}

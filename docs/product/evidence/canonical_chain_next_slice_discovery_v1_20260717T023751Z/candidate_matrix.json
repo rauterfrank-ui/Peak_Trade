@@ -1,0 +1,63 @@
+{
+  "candidates": [
+    {
+      "id": "STRATEGY_SIGNAL_TO_CANONICAL_CORE_BINDING_V1",
+      "priority": 1,
+      "producer": "src/backtest/strategy_signal_binding_v1.py::execute_configured_strategy_signal_series_v1",
+      "consumer": "src/trading/master_v2/suitability_binding_v1.py::evaluate_suitability_binding_v1 via strategy_suitability_agreement_material",
+      "gap_status": "INTENTIONALLY_ABSENT_ALREADY_WIRED",
+      "real_gap_confirmed": false,
+      "confirmed_bypasses": [
+        "scripts/run_backtest.py RAW_SIGNAL_RESEARCH legacy path",
+        "MV2 wiring configured_strategy engine feed only with explicit non-system grant",
+        "bridge/parity harness may omit agreement material by design"
+      ],
+      "semantic_risk_if_reimplemented": "MEDIUM",
+      "behavior_preserving_minimum_change": "NONE",
+      "recommended_select": false,
+      "reason": "Decision D path already feeds strategy signals into integrated replay via normalize_strategy_signal_to_suitability_agreement_material_v1 on the default MV2 canonical path."
+    },
+    {
+      "id": "CLASSIC_ENGINE_TO_INTEGRATED_ORCHESTRATOR_BOUNDARY_V1",
+      "priority": 2,
+      "producer": "classic BacktestEngine raw strategy_signal_fn callers",
+      "consumer": "run_integrated_offline_trading_logic_replay_v1 (canonical) vs BacktestEngine fill simulator",
+      "gap_status": "INTENTIONALLY_ABSENT_ALREADY_CLOSED_SLICE3",
+      "real_gap_confirmed": false,
+      "confirmed_bypasses": [
+        "src classic research callers guarded by declare_legacy_raw_signal_research_path_v1",
+        "CLASSIC_ENGINE_DECISION_AUTHORITY_BYPASS_COUNT=0 for system economic evidence"
+      ],
+      "semantic_risk_if_rewired_all_classic": "HIGH",
+      "behavior_preserving_minimum_change": "NONE (docs-only residual script marking optional)",
+      "recommended_select": false,
+      "reason": "System decision authority already routes through integrated orchestrator; classic callers are intentional non-authoritative research paths."
+    },
+    {
+      "id": "STRATEGY_OUTPUT_TO_CANONICAL_MARKET_CONTEXT_PROJECTION_V1",
+      "priority": 3,
+      "producer": "strategy signal series",
+      "consumer": "CanonicalMarketContextV1 feature maps",
+      "gap_status": "INTENTIONALLY_ABSENT_MUST_REMAIN_ABSENT",
+      "real_gap_confirmed": false,
+      "confirmed_bypasses": [],
+      "semantic_risk_if_projected": "HIGH",
+      "behavior_preserving_minimum_change": "NONE",
+      "recommended_select": false,
+      "reason": "CMC is market truth only; strategy feeds suitability agreement sibling input, not CMC features."
+    },
+    {
+      "id": "RUNTIME_BRIDGE_ACTIVATION",
+      "priority": 4,
+      "producer": "canonical_core_runtime_integration_bridge_v0",
+      "consumer": "runtime/live/shadow/order surfaces",
+      "gap_status": "POLICY_BOUND_NOT_ACTIVATED",
+      "real_gap_confirmed": false,
+      "confirmed_bypasses": [],
+      "semantic_risk_if_activated": "CRITICAL",
+      "behavior_preserving_minimum_change": "NONE \u2014 not authorizable in this run",
+      "recommended_select": false,
+      "reason": "INTEGRATION_STATUS and CANONICAL_RUNTIME_ENTRYPOINT_STATUS remain BOUND_NOT_ACTIVATED; activation requires separate runtime GO."
+    }
+  ]
+}
