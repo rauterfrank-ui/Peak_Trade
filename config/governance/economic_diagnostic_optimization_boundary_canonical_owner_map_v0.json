@@ -488,6 +488,15 @@
         "tests/research/test_full_canonical_system_economic_evidence_generation_v1_offline_execution_result_v0_contract.py"
       ],
       "note": "Offline economic evaluation execution infrastructure, preexecution guards, invocation-bound authorization repair, and contract tests without trading semantic mutation or runtime authority."
+    },
+    "OFFLINE_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_WITHOUT_TRADING_SEMANTIC_EFFECT": {
+      "path_prefixes": [
+        "src/research/mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.py",
+        "scripts/research/run_mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.py",
+        "tests/research/test_mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.py",
+        "config/research/mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.json"
+      ],
+      "note": "Offline-only per-bar MV2 decision-outcome diagnostic for zero-trade root-cause observability; observational hook only; no trading/runtime/authority/sizing semantic mutation."
     }
   }
 }

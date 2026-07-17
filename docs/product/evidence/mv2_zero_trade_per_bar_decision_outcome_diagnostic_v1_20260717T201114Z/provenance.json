@@ -1,0 +1,15 @@
+{
+  "base_sha": "147f0bee154e5a2452553d51c9b254350ea10142",
+  "binding_digest": "b0b51de225a7e282263c1b00091ccb457612f74df0e817d8dd03efc7af837320",
+  "binding_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "binding_ref": "config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json",
+  "canonical_wiring_instrument_id": "inst-eth-usdt-perp",
+  "created_at_utc": "20260717T201114Z",
+  "diagnostic_id": "MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+  "evaluation_instrument_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+  "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
+  "panel_member_count": 118,
+  "provenance_digest": "c19850e55221e3dfb3520947ba72a4bae6ebde50867e471e2e35ab779b53685e",
+  "runtime_evaluation_config": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z/runtime_evaluation_config.json",
+  "source_durable_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z"
+}
