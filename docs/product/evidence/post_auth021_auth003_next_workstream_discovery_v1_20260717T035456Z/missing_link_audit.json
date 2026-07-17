@@ -1,0 +1,11 @@
+{
+  "missing_canonical_links_after_merge": 1,
+  "confirmed_real_missing_canonical_links": 1,
+  "stale_surfaces": [
+    "ssot_decision_surface_neutral_v1.md still lists AUTH-021 as open stale DAG residual",
+    "authority_resolution_synthesis_v1.md residual docs-echo AUTH-021",
+    "ssot_counterfactual_simulation_v1.md still says B-01 weiter separat for AUTH-021",
+    "drift_cleanup_plan next-step still points at AUTH021 slice (pointer hygiene; discovery updates pointer)"
+  ],
+  "note": "count=1 treats SSOT/synthesis AUTH-021/AUTH-022 closeout projection staleness as one hygiene missing-link cluster"
+}

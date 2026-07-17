@@ -1,0 +1,118 @@
+{
+  "summary_counts": {
+    "REAL_GAP": 1,
+    "INTENTIONAL_POLICY_STATE": 6,
+    "REQUIRES_RUNTIME_GO": 3,
+    "TERMINAL": 4,
+    "ALREADY_COMPLETE": 8,
+    "SUPERSEDED": 2,
+    "AMBIGUOUS": 1,
+    "OUT_OF_SCOPE": 1
+  },
+  "items": [
+    {
+      "id": "OBL_SSOT_SYNTHESIS_AUTH021_AUTH022_STALE_POST_CLOSEOUT",
+      "classification": "REAL_GAP"
+    },
+    {
+      "id": "OBL_B04_REGISTRY_SUITABILITY_REPLAY_READ_MODEL",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT",
+      "classification": "REQUIRES_RUNTIME_GO"
+    },
+    {
+      "id": "OBL_B06_DECISION_PACKET_VS_INTEGRATED_REPLAY",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_AUTH_ECM_01",
+      "classification": "REQUIRES_RUNTIME_GO"
+    },
+    {
+      "id": "OBL_AUTH_REG_01_BREAKOUT",
+      "classification": "REQUIRES_RUNTIME_GO"
+    },
+    {
+      "id": "OBL_RUNTIME_BRIDGE",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_DEF_FEATURE_ENGINE",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_DEF_LIVE_OPERATIONAL",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_AUTH003_RESIDUAL_TYPE_D",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_ECONOMIC_BASELINE_RETRY",
+      "classification": "TERMINAL"
+    },
+    {
+      "id": "OBL_CANONICAL_CHAIN_NEXT",
+      "classification": "TERMINAL"
+    },
+    {
+      "id": "OBL_DASHBOARD_COMPOSITION",
+      "classification": "TERMINAL"
+    },
+    {
+      "id": "OBL_TRADE_LEDGER",
+      "classification": "TERMINAL"
+    },
+    {
+      "id": "OBL_B01_B07",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_B02",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_B03",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_AUTH022",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_AUTH006",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_AUTH021_AUTH003_MATRIX_SYNC",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_REPLAY_INPUT_BUILDER",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_AUTH023",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_REGISTRY_SHA",
+      "classification": "SUPERSEDED"
+    },
+    {
+      "id": "OBL_RUNBOOK_PATCH_REC",
+      "classification": "SUPERSEDED"
+    },
+    {
+      "id": "OBL_SECTION_A_CHECKLIST",
+      "classification": "AMBIGUOUS"
+    },
+    {
+      "id": "OBL_AUTH_DP_02",
+      "classification": "OUT_OF_SCOPE"
+    }
+  ]
+}

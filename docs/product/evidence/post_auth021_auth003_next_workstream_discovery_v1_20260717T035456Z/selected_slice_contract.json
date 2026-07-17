@@ -1,0 +1,39 @@
+{
+  "slice_id": "SSOT_SYNTHESIS_AUTH021_AUTH022_CLOSEOUT_PROJECTION_V0",
+  "exact_gap": "After AUTH-021/AUTH-022 matrix closeout (PR #5270/#5274/#5276), SSOT neutral surface + authority resolution synthesis (+ counterfactual residual lines) still project AUTH-021 as open stale-DAG docs-echo and AUTH-022 as residual structural docs-only \u2014 contradicting canonical authority_conflict_matrix_v1.md CLOSED truth.",
+  "canonical_source": "docs/governance/authority_conflict_matrix_v1.md",
+  "affected_owner_files": [
+    "docs/governance/ssot_decision_surface_neutral_v1.md",
+    "docs/governance/authority_resolution_synthesis_v1.md",
+    "docs/governance/ssot_counterfactual_simulation_v1.md"
+  ],
+  "allowed_changes": [
+    "Project AUTH-021/AUTH-022 CLOSED status into SSOT/synthesis residual docs-echo sections only",
+    "Update residual B-01 dependency language to post-closeout truth",
+    "Optional static contract under tests/governance/",
+    "Evidence pack for the implementation slice"
+  ],
+  "forbidden_changes": [
+    "no Python runtime mutation",
+    "no new authority decisions",
+    "no B-04 read-model creation",
+    "no dashboard",
+    "no live/orders/shadow/paper/testnet",
+    "no Master-V2/Double-Play/Risk/Sizing/Execution semantics",
+    "do not rewrite frozen historical narrative beyond closeout projection markers"
+  ],
+  "expected_tests": [
+    "static contract asserting AUTH-021/AUTH-022 CLOSED projection in targeted SSOT/synthesis surfaces",
+    "docs token + docs reference targets",
+    "reuse AUTH021/AUTH003 and B01/B07 focused contracts"
+  ],
+  "behavior_preserving": true,
+  "core_semantics_changed": false,
+  "runtime_go_required": false,
+  "live_or_capital_go_required": false,
+  "implementation_performed": false,
+  "SELECTED_SLICE_REAL_GAP_CONFIRMED": true,
+  "SELECTED_SLICE_BOUNDED": true,
+  "DISCOVERY_ONLY": true,
+  "IMPLEMENTATION_AUTHORIZED_NOW": false
+}
