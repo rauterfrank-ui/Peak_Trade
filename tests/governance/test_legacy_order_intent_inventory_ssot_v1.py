@@ -139,10 +139,7 @@ def test_doc_and_json_counts_agree() -> None:
     assert len(payload["productive_decision_owners"]) == EXPECTED_DECISION_OWNER_COUNT
     assert len(payload["productive_bypass_paths"]) == EXPECTED_BYPASS_COUNT
     assert len(payload["direct_submission_bypasses"]) == EXPECTED_SUBMISSION_BYPASS_COUNT
-    assert (
-        payload["productive_order_intent_decision_owner_count"]
-        == EXPECTED_DECISION_OWNER_COUNT
-    )
+    assert payload["productive_order_intent_decision_owner_count"] == EXPECTED_DECISION_OWNER_COUNT
     assert f"PRODUCTIVE_ORDER_INTENT_DECISION_OWNER_COUNT={EXPECTED_DECISION_OWNER_COUNT}" in doc
     assert f"PRODUCTIVE_BYPASS_PATH_COUNT={EXPECTED_BYPASS_COUNT}" in doc
     assert f"DIRECT_SUBMISSION_BYPASS_COUNT={EXPECTED_SUBMISSION_BYPASS_COUNT}" in doc
@@ -189,7 +186,9 @@ def test_no_false_decommission_or_rewire_claim() -> None:
     assert payload["decommission_status"] == "NOT_STARTED"
     doc = _read(SSOT_DOC).lower()
     assert "not started" in doc
-    assert "does **not** retire legacy paths".lower() in doc or "does not retire legacy paths" in doc
+    assert (
+        "does **not** retire legacy paths".lower() in doc or "does not retire legacy paths" in doc
+    )
 
 
 def test_coi_and_runtime_remain_non_authorizing() -> None:

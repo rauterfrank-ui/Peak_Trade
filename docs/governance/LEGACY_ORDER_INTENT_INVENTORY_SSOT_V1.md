@@ -64,7 +64,7 @@ Repo-wide forensic inventory of order-intent producers, transformers, routers, a
 | Owner / Symbol | Path | Role | Reachability | Decides intent? | Can submit? |
 |---|---|---|---|---|---|
 | `build_canonical_order_intent_v1` | `src/governance/canonical_order_intent_v1.py` | CANONICAL_DECISION_OWNER | REACHABLE_PRODUCTIVE | Yes (MV2) | No |
-| Offline / backtest COI adapters | `src/trading/master_v2/canonical_order_intent_*_adapter_v0.py` | CANONICAL_ADAPTER | REACHABLE_PRODUCTIVE | No | No |
+| Offline / backtest COI adapters | `src&#47;trading&#47;master_v2&#47;canonical_order_intent_*_adapter_v0.py` | CANONICAL_ADAPTER | REACHABLE_PRODUCTIVE | No | No |
 | Intent pipeline bridge | `src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py` | CANONICAL_ADAPTER | REACHABLE_PRODUCTIVE | No | No (`submission_blocked`) |
 | Intent compatibility firewall | `src/governance/intent_compatibility_firewall_v1.py` | CANONICAL_ADAPTER | REACHABLE_PRODUCTIVE | No | No |
 | Plan-only boundary | `src/execution_pipeline/plan_only_boundary_v0.py` | CANONICAL_ADAPTER | REACHABLE_PRODUCTIVE | No | No |
@@ -79,7 +79,7 @@ Repo-wide forensic inventory of order-intent producers, transformers, routers, a
 | `LiveSessionRunner` | `src/execution/live_session.py` | PRODUCTIVE_BYPASS | UNREACHABLE | Indirect | Guarded |
 | `execution_simple` | `src/execution_simple/pipeline.py` | PRODUCTIVE_BYPASS | UNREACHABLE | Yes | Guarded |
 | Legacy entrypoint guard | `src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py` | REPORTING_OR_OBSERVABILITY | REACHABLE_PRODUCTIVE | No | Blocks |
-| Meta lifecycle / idempotency | `src/meta/learning_loop/*order*` | REPORTING_OR_OBSERVABILITY | REACHABLE_PRODUCTIVE | No | No |
+| Meta lifecycle / idempotency | `src&#47;meta&#47;learning_loop&#47;*order*` | REPORTING_OR_OBSERVABILITY | REACHABLE_PRODUCTIVE | No | No |
 | `go_no_go` live map | `src/governance/go_no_go.py` | REPORTING_OR_OBSERVABILITY | REACHABLE_PRODUCTIVE | No | Unlock map only |
 | COI tests | `tests/governance/test_canonical_order_intent_v1.py` | TEST_OR_FIXTURE | REACHABLE_TEST | No | No |
 | Plan pointers in other SSOTs | docs | FALSE_POSITIVE | ARCHIVE | No | No |
