@@ -1,8 +1,8 @@
-"""Offline characterization for required-checks reconcile diff contexts.
+"""Offline characterization for required-checks SSOT vs live reconcile semantics.
 
-These tests pin the semantics observed by the read-only reconciliation probe:
-extra live contexts can be reported as reconcile data without implying trading
-authority or changing the required-checks SSOT.
+These tests pin that previously observed extra live contexts are now part of the
+canonical JSON-SSOT effective required set (synced to main branch protection),
+without implying trading authority.
 """
 
 from __future__ import annotations
@@ -16,7 +16,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_CHECKS_PATH = REPO_ROOT / "config" / "ci" / "required_status_checks.json"
 RECONCILER_PATH = REPO_ROOT / "scripts" / "ops" / "reconcile_required_checks_branch_protection.py"
 
-OBSERVED_EXTRA_LIVE_CONTEXTS = {
+# Contexts that were previously reported as extra_in_live before SSOT sync.
+PREVIOUSLY_EXTRA_LIVE_CONTEXTS = {
     "docs-drift-guard",
     "repo-truth-claims",
     "strategy-smoke",
@@ -49,7 +50,7 @@ def effective_required_contexts(data: dict[str, Any]) -> set[str]:
     return required - ignored
 
 
-def test_observed_extra_live_contexts_are_plain_non_authority_contexts() -> None:
+def test_synced_live_contexts_are_plain_non_authority_contexts() -> None:
     forbidden_claims = [
         "live authorization granted",
         "signoff complete",
@@ -60,7 +61,7 @@ def test_observed_extra_live_contexts_are_plain_non_authority_contexts() -> None
         "trade approved",
     ]
 
-    for context in OBSERVED_EXTRA_LIVE_CONTEXTS:
+    for context in PREVIOUSLY_EXTRA_LIVE_CONTEXTS:
         assert context
         assert context.strip() == context
         assert "\n" not in context
@@ -69,35 +70,25 @@ def test_observed_extra_live_contexts_are_plain_non_authority_contexts() -> None
             assert claim not in lowered
 
 
-def test_observed_extra_live_contexts_are_not_effective_required_contexts() -> None:
+def test_previously_extra_live_contexts_are_now_effective_required() -> None:
     data = load_ssot_data()
     effective = effective_required_contexts(data)
+    ignored = set(flatten_strings(data.get("ignored_contexts", [])))
 
-    assert OBSERVED_EXTRA_LIVE_CONTEXTS.isdisjoint(effective)
+    assert PREVIOUSLY_EXTRA_LIVE_CONTEXTS <= effective
+    assert PREVIOUSLY_EXTRA_LIVE_CONTEXTS.isdisjoint(ignored)
 
 
-def test_observed_extra_live_contexts_are_allowed_as_reconcile_report_data() -> None:
-    synthetic_reconcile_diff = {
-        "status": "RECONCILE_DIFF",
-        "extra_in_live": sorted(OBSERVED_EXTRA_LIVE_CONTEXTS),
-        "missing_in_live": [],
-    }
-
-    assert synthetic_reconcile_diff["status"] == "RECONCILE_DIFF"
-    assert set(synthetic_reconcile_diff["extra_in_live"]) == OBSERVED_EXTRA_LIVE_CONTEXTS
-    assert synthetic_reconcile_diff["missing_in_live"] == []
+def test_required_and_ignored_have_no_intersection_in_ssot() -> None:
+    data = load_ssot_data()
+    required = set(flatten_strings(data.get("required_contexts", [])))
+    ignored = set(flatten_strings(data.get("ignored_contexts", [])))
+    assert required.isdisjoint(ignored)
 
 
 def test_ignored_contexts_are_report_concepts_not_trading_authority() -> None:
     data = load_ssot_data()
     ignored_contexts = set(flatten_strings(data.get("ignored_contexts", [])))
-    effective = effective_required_contexts(data)
-
-    assert ignored_contexts
-    assert (
-        OBSERVED_EXTRA_LIVE_CONTEXTS <= ignored_contexts
-        or OBSERVED_EXTRA_LIVE_CONTEXTS.isdisjoint(effective)
-    )
 
     serialized = "\n".join(sorted(ignored_contexts)).lower()
     forbidden_claims = [
@@ -112,10 +103,13 @@ def test_ignored_contexts_are_report_concepts_not_trading_authority() -> None:
         assert claim not in serialized
 
 
-def test_synthetic_reconcile_diff_has_no_conflicting_authority_verbs() -> None:
-    diff_blob = "RECONCILE_DIFF: extra_in_live: docs-drift-guard, repo-truth-claims, strategy-smoke"
+def test_synthetic_reconcile_match_blob_has_no_conflicting_authority_verbs() -> None:
+    diff_blob = (
+        "RECONCILE_MATCH: effective required contexts match live protection "
+        "(docs-drift-guard, repo-truth-claims, strategy-smoke included)"
+    )
     lower = diff_blob.lower()
-    assert "reconcile_diff" in lower or "reconcile" in lower
+    assert "reconcile_match" in lower or "reconcile" in lower
     for bad in (
         "live authorization granted",
         "gate passed",

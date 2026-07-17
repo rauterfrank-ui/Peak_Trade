@@ -76,13 +76,27 @@ def test_ignored_contexts_are_unique_strings() -> None:
     assert len(ignored) == len(set(ignored))
 
 
-def test_ssot_allows_overlap_between_required_and_ignored_lists() -> None:
-    """Inventory lists may overlap; effective contexts follow loader semantics."""
+def test_ssot_forbids_overlap_between_required_and_ignored_lists() -> None:
+    """Canonical SSOT must not list the same context as both required and ignored."""
     data: Any = json.loads(_REQUIRED_CHECKS_PATH.read_text(encoding="utf-8"))
     raw_required = set(data["required_contexts"])
     raw_ignored = set(data["ignored_contexts"])
+    assert raw_required.isdisjoint(raw_ignored)
     cfg = load_required_checks_config(_REQUIRED_CHECKS_PATH)
+    assert set(cfg["effective_required_contexts"]) == raw_required
     assert set(cfg["effective_required_contexts"]) == raw_required - raw_ignored
+
+
+def test_ssot_required_and_ignored_lists_are_deterministically_sorted() -> None:
+    data: Any = json.loads(_REQUIRED_CHECKS_PATH.read_text(encoding="utf-8"))
+    required = data["required_contexts"]
+    ignored = data["ignored_contexts"]
+    assert required == sorted(required)
+    assert ignored == sorted(ignored)
+    assert all(isinstance(x, str) and x.strip() == x and x for x in required)
+    assert all(isinstance(x, str) and x.strip() == x and x for x in ignored)
+    assert len(required) == len(set(required))
+    assert len(ignored) == len(set(ignored))
 
 
 def test_required_context_names_do_not_make_authority_claims() -> None:

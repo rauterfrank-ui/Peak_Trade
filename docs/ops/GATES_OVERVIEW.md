@@ -78,7 +78,7 @@ Runbook: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` · CI
 
 Die wichtigsten PR-relevanten Checks (inkl. required contexts config) sind in `config&#47;ci&#47;required_status_checks.json` definiert; die Workflows, die diese Checks erzeugen, sind in den YAMLs implementiert.
 
-**Branch Protection:** Die Config ist an die GitHub Branch-Protection ausgerichtet (9 required contexts). Siehe `config&#47;ci&#47;required_status_checks.json` und `gh api repos/<owner>/<repo>/branches/main/protection` für den aktuellen Stand.
+**Branch Protection:** Die Config ist an die GitHub Branch-Protection ausgerichtet (11 required contexts, inkl. `docs-drift-guard`, `repo-truth-claims`, `strategy-smoke`). Siehe `config&#47;ci&#47;required_status_checks.json` und `gh api repos/<owner>/<repo>/branches/main/protection` für den aktuellen Stand.
 
 **Lesart:** Branch-Protection-relevante Required-Check-Namen folgen `config&#47;ci&#47;required_status_checks.json` (`required_contexts` minus `ignored_contexts`; Erläuterung in dessen Feld `notes`); einzelne Gate- oder Jobnamen aus Prosa oder dem `CI`-Workflow (z. B. zu „PR Gate“) nicht isoliert dagegen lesen — JSON und GitHub-Schutzliste als Abgleich nutzen.
 
@@ -101,6 +101,10 @@ Die wichtigsten PR-relevanten Checks (inkl. required contexts config) sind in `c
 
 - **Workflow `Docs Reference Targets Gate`** (`.github/workflows/docs_reference_targets_gate.yml`)
   - Job/Check: `docs-reference-targets-gate`
+
+- **Workflow `Truth Gates PR`** (`.github/workflows/truth_gates_pr.yml`)
+  - Job/Check: `docs-drift-guard`
+  - Job/Check: `repo-truth-claims`
 
 - **Workflow `Docs Reference Targets Full Scan (scheduled)`** (`.github/workflows/docs_reference_targets_fullscan_schedule.yml`)
   - Job/Check: `docs-reference-targets-fullscan-warn`

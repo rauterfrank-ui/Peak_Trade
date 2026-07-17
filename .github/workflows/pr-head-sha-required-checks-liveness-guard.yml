@@ -19,7 +19,9 @@ jobs:
   pr-head-sha-required-checks-liveness-guard:
     name: pr-head-sha-required-checks-liveness-guard
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    # strategy-smoke is effective-required and needs: [changes, tests], so the
+    # wait window must cover tests completion plus smoke start (not only 180s).
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -41,7 +43,7 @@ jobs:
             --repo "${{ github.repository }}" \
             --pr-number "${{ github.event.pull_request.number }}" \
             --head-sha "${{ github.event.pull_request.head.sha }}" \
-            --liveness-wait-seconds 180 \
+            --liveness-wait-seconds 420 \
             --poll-interval-seconds 5 \
             --required-config "config/ci/required_status_checks.json"
 
@@ -55,7 +57,7 @@ jobs:
             --subject-kind "merge_group" \
             --repo "${{ github.repository }}" \
             --head-sha "${{ github.sha }}" \
-            --liveness-wait-seconds 180 \
+            --liveness-wait-seconds 420 \
             --poll-interval-seconds 5 \
             --required-config "config/ci/required_status_checks.json"
 
