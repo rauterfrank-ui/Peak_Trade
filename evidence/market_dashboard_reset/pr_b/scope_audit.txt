@@ -1,0 +1,80 @@
+PR_SEQUENCE=PR_B
+TIMESTAMP_UTC=2026-07-17T08:33:01Z
+
+=== git status --short ===
+?? docs/webui/MARKET_DASHBOARD_READMODELS_V1.md
+?? evidence/market_dashboard_reset/pr_b/
+?? src/webui/market_dashboard_readmodels_v1/
+?? tests/webui/test_market_dashboard_readmodels_v1.py
+?? tests/webui/test_market_dashboard_readmodels_v1_static_guards.py
+
+=== final files (28) ===
+docs/webui/MARKET_DASHBOARD_READMODELS_V1.md
+evidence/market_dashboard_reset/pr_b/baseline_diff.txt
+evidence/market_dashboard_reset/pr_b/contract_location_analysis.md
+evidence/market_dashboard_reset/pr_b/final_diff_manifest.txt
+evidence/market_dashboard_reset/pr_b/final_intended_files.txt
+evidence/market_dashboard_reset/pr_b/git_state.txt
+evidence/market_dashboard_reset/pr_b/process_state.txt
+evidence/market_dashboard_reset/pr_b/ruff_check.txt
+evidence/market_dashboard_reset/pr_b/ruff_format.txt
+evidence/market_dashboard_reset/pr_b/scope_audit.txt
+evidence/market_dashboard_reset/pr_b/scope_plan.txt
+evidence/market_dashboard_reset/pr_b/selector_input_notes.txt
+evidence/market_dashboard_reset/pr_b/selector_result.txt
+evidence/market_dashboard_reset/pr_b/test_results/docs_gates_summary.txt
+evidence/market_dashboard_reset/pr_b/test_results/docs_reference_targets.txt
+evidence/market_dashboard_reset/pr_b/test_results/docs_token_policy.txt
+evidence/market_dashboard_reset/pr_b/test_results/narrow_contract_tests.txt
+evidence/market_dashboard_reset/pr_b/test_results/narrow_plus_reset_shell.txt
+evidence/market_dashboard_reset/pr_b/validation_focused.txt
+evidence/market_dashboard_reset/pr_b/worktree_state.txt
+src/webui/market_dashboard_readmodels_v1/__init__.py
+src/webui/market_dashboard_readmodels_v1/aggregate.py
+src/webui/market_dashboard_readmodels_v1/contracts.py
+src/webui/market_dashboard_readmodels_v1/provenance.py
+src/webui/market_dashboard_readmodels_v1/serialization.py
+src/webui/market_dashboard_readmodels_v1/validation.py
+tests/webui/test_market_dashboard_readmodels_v1.py
+tests/webui/test_market_dashboard_readmodels_v1_static_guards.py
+
+=== classification ===
+documentation	docs/webui/MARKET_DASHBOARD_READMODELS_V1.md
+evidence	evidence/market_dashboard_reset/pr_b/baseline_diff.txt
+evidence	evidence/market_dashboard_reset/pr_b/contract_location_analysis.md
+evidence	evidence/market_dashboard_reset/pr_b/final_diff_manifest.txt
+evidence	evidence/market_dashboard_reset/pr_b/final_intended_files.txt
+evidence	evidence/market_dashboard_reset/pr_b/git_state.txt
+evidence	evidence/market_dashboard_reset/pr_b/process_state.txt
+evidence	evidence/market_dashboard_reset/pr_b/ruff_check.txt
+evidence	evidence/market_dashboard_reset/pr_b/ruff_format.txt
+evidence	evidence/market_dashboard_reset/pr_b/scope_audit.txt
+evidence	evidence/market_dashboard_reset/pr_b/scope_plan.txt
+evidence	evidence/market_dashboard_reset/pr_b/selector_input_notes.txt
+evidence	evidence/market_dashboard_reset/pr_b/selector_result.txt
+evidence	evidence/market_dashboard_reset/pr_b/test_results/docs_gates_summary.txt
+evidence	evidence/market_dashboard_reset/pr_b/test_results/docs_reference_targets.txt
+evidence	evidence/market_dashboard_reset/pr_b/test_results/docs_token_policy.txt
+evidence	evidence/market_dashboard_reset/pr_b/test_results/narrow_contract_tests.txt
+evidence	evidence/market_dashboard_reset/pr_b/test_results/narrow_plus_reset_shell.txt
+evidence	evidence/market_dashboard_reset/pr_b/validation_focused.txt
+evidence	evidence/market_dashboard_reset/pr_b/worktree_state.txt
+contract-package	src/webui/market_dashboard_readmodels_v1/__init__.py
+contract-package	src/webui/market_dashboard_readmodels_v1/aggregate.py
+contract-package	src/webui/market_dashboard_readmodels_v1/contracts.py
+contract-package	src/webui/market_dashboard_readmodels_v1/provenance.py
+contract-package	src/webui/market_dashboard_readmodels_v1/serialization.py
+contract-package	src/webui/market_dashboard_readmodels_v1/validation.py
+tests	tests/webui/test_market_dashboard_readmodels_v1.py
+tests	tests/webui/test_market_dashboard_readmodels_v1_static_guards.py
+
+CI_SELECTOR_RELATED_FILE_COUNT=0
+FORBIDDEN_DOMAIN_OWNER_DIFF_COUNT=0
+CANONICAL_PRODUCER_BINDING_COUNT=0
+ACTIVE_MARKET_PRODUCT_REBUILD=false
+RUNTIME_ACTIVATION_COUNT=0
+ORDER_CAPABILITY_COUNT=0
+STATIC_FIXTURE_REINTRODUCED=false
+RESET_SHELL_PRESERVED=true
+NEW_CONTRACTS_BOUND_TO_MARKET=false
+ACTIVE_ROUTE_DIFF=false
