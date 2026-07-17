@@ -1,0 +1,114 @@
+{
+  "contract_name": "aws_audit_authority_ssot_v1",
+  "schema_version": "aws_audit_authority_schema_v1",
+  "contract_version": "v1",
+  "ssot_doc": "docs/audits/AWS_INFRASTRUCTURE_READ_ONLY_AUDIT_2026-07-17.md",
+  "inventory_date": "2026-07-17",
+  "generated_from_main_sha": "55388134cb424227449157b051b30a1812454564",
+  "markers": {
+    "AWS_AUDIT_AUTHORITY_SSOT_V1": true,
+    "PROFILE_SELECTION_AUTHORITY": "EXPLICIT_OPERATOR_DECISION",
+    "PERMISSION_MODE": "read_only",
+    "SECRET_VALUE_ACCESS_ALLOWED": false,
+    "MUTATION_ALLOWED": false,
+    "AUDIT_CLAIMS_FULL_ACCOUNT_INVENTORY": false,
+    "AUDIT_PARTIAL_DUE_TO_ROLE_SCOPE": true
+  },
+  "account_id": "511913187493",
+  "canonical_profile": "peak-trade-prearm-v3-audit",
+  "principal_role": "peak-trade-operator-readonly-audit-role",
+  "region": "eu-central-1",
+  "authority": "explicit_operator_decision",
+  "permission_mode": "read_only",
+  "fallback_profile": "peak-trade-operator-readonly-audit-user",
+  "secret_value_access_allowed": false,
+  "mutation_allowed": false,
+  "principal_arn_pattern": "arn:aws:sts::511913187493:assumed-role/peak-trade-operator-readonly-audit-role/<SESSION_REDACTED>",
+  "safety_status": {
+    "secret_values_read": false,
+    "aws_mutations_performed": false,
+    "live_authorized": false,
+    "orders_enabled": false,
+    "runtime_bridge_activated": false,
+    "trading_core_changed": false,
+    "economic_gate_changed": false,
+    "github_settings_mutated": false
+  },
+  "classification_summary": {
+    "repo_expected_resource_count": 6,
+    "live_matching_resource_count": 2,
+    "live_drift_resource_count": 1,
+    "missing_resource_count": 0,
+    "access_denied_count": 16,
+    "not_verifiable_count": 2,
+    "active_trading_schedule_detected": "UNRESOLVED",
+    "active_order_execution_detected": "UNRESOLVED",
+    "public_s3_exposure_detected": "UNRESOLVED",
+    "iam_oidc_trust_drift_detected": "UNRESOLVED"
+  },
+  "expected_resources": [
+    {
+      "id": "iam_audit_role",
+      "name": "peak-trade-operator-readonly-audit-role",
+      "classification": "MATCH",
+      "evidence": "iam.get-role succeeded; trust allows audit user + account root"
+    },
+    {
+      "id": "sts_assumed_role_session",
+      "name": "peak-trade-prearm-v3-audit -> peak-trade-operator-readonly-audit-role",
+      "classification": "MATCH",
+      "evidence": "sts.get-caller-identity Account=511913187493 assumed-role match"
+    },
+    {
+      "id": "audit_role_trust_root_principal",
+      "name": "assume_role_trust_includes_account_root",
+      "classification": "DRIFT",
+      "evidence": "Trust policy allows arn:aws:iam::511913187493:root in addition to explicit audit user"
+    },
+    {
+      "id": "s3_peaktrade_exports",
+      "name": "peaktrade-exports",
+      "classification": "ACCESS_DENIED",
+      "evidence": "s3.list-buckets denied; head-bucket peaktrade-exports returned 403 Forbidden"
+    },
+    {
+      "id": "no_aws_eventbridge_trading_schedule",
+      "name": "absence_of_aws_eventbridge_trading_schedules",
+      "classification": "NOT_VERIFIABLE",
+      "evidence": "events.list-rules and scheduler.list-schedules AccessDenied by audit role scope"
+    },
+    {
+      "id": "no_lambda_order_execution",
+      "name": "absence_of_lambda_order_execution_functions",
+      "classification": "NOT_VERIFIABLE",
+      "evidence": "lambda.list-functions AccessDenied by audit role scope"
+    }
+  ],
+  "access_denied_surfaces": [
+    "iam.list-open-id-connect-providers",
+    "s3.list-buckets",
+    "events.list-rules",
+    "scheduler.list-schedules",
+    "lambda.list-functions",
+    "logs.describe-log-groups",
+    "secretsmanager.list-secrets",
+    "ssm.describe-parameters",
+    "cloudtrail.describe-trails",
+    "kms.list-aliases",
+    "sns.list-topics",
+    "sqs.list-queues",
+    "ecr.describe-repositories",
+    "ecs.list-clusters",
+    "eks.list-clusters",
+    "apigateway.get-rest-apis"
+  ],
+  "readable_surfaces": [
+    "sts.get-caller-identity",
+    "iam.get-role",
+    "iam.list-attached-role-policies",
+    "iam.list-role-policies",
+    "iam.get-role-policy",
+    "cloudwatch.describe-alarms"
+  ],
+  "next_action": "OPERATOR_EXPAND_READONLY_AUDIT_ROLE_SCOPE_OR_ACCEPT_PARTIAL_AUDIT"
+}
