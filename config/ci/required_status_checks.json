@@ -2,19 +2,20 @@
   "schema_version": "1.0.0",
   "required_contexts": [
     "Guard tracked files in reports directories",
-    "audit",
-    "tests (3.11)",
-    "strategy-smoke",
-    "Policy Critic Gate",
     "Lint Gate",
+    "Policy Critic Gate",
+    "audit",
     "dispatch-guard",
+    "docs-drift-guard",
+    "docs-reference-targets-gate",
     "docs-token-policy-gate",
-    "docs-reference-targets-gate"
+    "repo-truth-claims",
+    "strategy-smoke",
+    "tests (3.11)"
   ],
   "ignored_contexts": [
-    "strategy-smoke",
     "CI Health Gate (weekly_core)",
     "Docs Diff Guard Policy Gate"
   ],
-  "notes": "JSON-only SSOT semantics: effective required contexts are required_contexts minus ignored_contexts. PR Gate is produced by CI but not in branch protection. Last updated: 2026-04-18."
+  "notes": "JSON-only SSOT semantics: effective required contexts are required_contexts minus ignored_contexts. Synced to live main branch protection (11 contexts). PR Gate is produced by CI but not in branch protection. Last updated: 2026-07-17."
 }

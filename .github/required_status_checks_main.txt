@@ -2,11 +2,13 @@
 # config/ci/required_status_checks.json by CI/Guard/Ops consumers.
 # This file is retained only for human reference.
 Guard tracked files in reports directories
-audit
-tests (3.11)
-strategy-smoke
-Policy Critic Gate
 Lint Gate
+Policy Critic Gate
+audit
 dispatch-guard
-docs-token-policy-gate
+docs-drift-guard
 docs-reference-targets-gate
+docs-token-policy-gate
+repo-truth-claims
+strategy-smoke
+tests (3.11)
