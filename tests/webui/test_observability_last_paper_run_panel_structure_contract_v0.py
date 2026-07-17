@@ -87,4 +87,8 @@ def test_market_without_last_paper_primary_panel(client_off: TestClient) -> None
     if 'data-market-architecture-reset-shell-v1="true"' in html:
         assert "ARCHITECTURE RESET IN PROGRESS" in html
         return
+    # PR-D+: product surface has no paper-run primary panel and no legacy landmark.
+    if 'data-market-dashboard-product-surface-v1="true"' in html:
+        assert "ARCHITECTURE RESET IN PROGRESS" not in html
+        return
     assert 'data-market-v0-paper-run-truth-separation-v0="true"' in html
