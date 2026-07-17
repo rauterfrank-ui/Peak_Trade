@@ -1,0 +1,5 @@
+FINAL_DIFF_HASH_ALGORITHM=sha256
+FINAL_DIFF_HASH_SCOPE=LC_ALL=C git -c core.quotepath=false diff --binary --full-index --no-ext-diff 987e020378d1767fbd6fb1f0914d475f9a485f51 <HEAD> -- . ':(exclude)evidence/market_dashboard_deletion/**'
+FINAL_DIFF_HASH_HEAD_RESOLVED=PENDING_COMMIT
+RENAME_COUNTING_MODEL=git diff --name-status -M; one R* line = one changed entry; TOTAL_CHANGED_FILES=name-status lines; final_intended_files uses destination path only
+SELF_REFERENCE_AVOIDANCE=evidence/market_dashboard_deletion/** excluded from FINAL_DIFF_SHA256; tree/commit identity in FINAL_HEAD_SHA; manifest.sha256 excludes itself and manifest_file.sha256; manifest_file.sha256 hashes manifest.sha256 bytes only
