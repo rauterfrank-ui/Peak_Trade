@@ -1,0 +1,17 @@
+[
+  {
+    "id": "COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1",
+    "score": 92,
+    "reason": "Economic+Linear remain peer-styled cards (2 frames, identical chrome); Decision hierarchy held; largest remaining full-page composition gain"
+  },
+  {
+    "id": "COMPOSITION_ENGINEERING_DRAWER_DEEMPHASIS_V1",
+    "score": 55,
+    "reason": "Engineering closed but still ~5.1% page share; quieter chrome candidate after Observability"
+  },
+  {
+    "id": "COMPOSITION_GLOBAL_WHITESPACE_CONSOLIDATION_V1",
+    "score": 25,
+    "reason": "Landmark rhythm already 8/20/20/20; no large empty-band regression detected"
+  }
+]
