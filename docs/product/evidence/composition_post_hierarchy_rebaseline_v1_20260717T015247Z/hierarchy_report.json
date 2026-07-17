@@ -1,0 +1,29 @@
+{
+  "TOP20_DOMINATES_FUNNEL": true,
+  "FUNNEL_DOMINATES_SECONDARY": true,
+  "DECISION_HIERARCHY_PASS": true,
+  "FRAME_COUNT_DECISION": 3,
+  "modules": {
+    "top20": {
+      "h": 354.5
+    },
+    "funnel": {
+      "h": 216.1875
+    },
+    "tertiary": {
+      "h": 183.484375
+    },
+    "hierarchy_primary": {
+      "h": 354.5
+    },
+    "hierarchy_secondary": {
+      "h": 216.1875
+    }
+  },
+  "secondary": {
+    "watchlist": 146.28125,
+    "f5": 152,
+    "double_play": 87.78125,
+    "safety": 152
+  }
+}

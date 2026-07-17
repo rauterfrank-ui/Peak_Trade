@@ -3,11 +3,11 @@
 > **Status:** PLAN ONLY — `STOP_BEFORE_IMPLEMENTATION=true` for any further unrelated UI slice
 > **Authority:** [Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md](Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md) (compatibility surface: [Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md](Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md))
 > **Bootstrap GO:** `GO_PEAK_TRADE_VISUAL_OPERATOR_DASHBOARD_RUNBOOK_REPOSITORY_BOOTSTRAP_V1`
-> **Implemented slice (this PR):** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1`
-> **Evidence:** [composition_decision_surface_hierarchy_v1_20260717T013644Z](evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/)
-> **Prior implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (merged PR #5261) · `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` (PR #5260)
-> **Post-rhythm rebaseline:** [composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z](evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/)
-> **Next candidate (NOT authorized):** Observability densify / Engineering quiet-chrome — requires separate GO
+> **Implemented slice (merged):** `COMPOSITION_DECISION_SURFACE_HIERARCHY_V1` — PR [#5263](https://github.com/rauterfrank-ui/Peak_Trade/pull/5263) · merge `301c50f2…` · feature `d689d087…` · docs-policy fix `1bf80e76…`
+> **Hierarchy evidence:** [composition_decision_surface_hierarchy_v1_20260717T013644Z](evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/)
+> **Post-hierarchy rebaseline:** [composition_post_hierarchy_rebaseline_v1_20260717T015247Z](evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/)
+> **Authorized next (NOT implemented):** `COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1`
+> **Prior implemented:** `COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1` (PR #5261) · `COMPOSITION_PRIMARY_PAGE_SHARE_DOMINANCE_V1` (PR #5260)
 > **Branch context at original plan time:** `feat/market-dashboard-visual-operator-surface-v1` @ `20969b4…` · PR [#5244](https://github.com/rauterfrank-ui/Peak_Trade/pull/5244)
 
 ```text
@@ -267,22 +267,52 @@ AUTHORITY_EFFECT=NONE
 
 ## Explicit stop / authorized next slice
 
-Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. Hierarchy slice status:
+Phases 1A / 1B / 2 composition foundation work is already evidenced under `docs&#47;product&#47;evidence&#47;phase_*` and must not be re-opened as the next step. Post-PR#5263 hierarchy rebaseline authorizes exactly one next presentation slice:
 
 ```text
 IMPLEMENTED_SLICE=COMPOSITION_DECISION_SURFACE_HIERARCHY_V1
+IMPLEMENTED_SLICE_PR=5263
+IMPLEMENTED_SLICE_MERGE=301c50f28a824fe2f03e2561a5b0903e772d01d8
+IMPLEMENTED_FEATURE_COMMIT=d689d087d65a487e9506ae5685c5f0b638a9e62e
+IMPLEMENTED_DOCS_POLICY_FIX=1bf80e7615285541485a9ae7ca9ec77fe3875813
 IMPLEMENTED_SLICE_EVIDENCE=docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/
-IMPLEMENTED_SLICE_SCOPE=templates/CSS presentation only; Decision hierarchy Top-20>Funnel>Secondary; no data-contract or authority changes
-BASELINE_EVIDENCE=docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/
+POST_HIERARCHY_REBASELINE=docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/
 PRIOR_SLICE=COMPOSITION_LANDMARK_VERTICAL_RHYTHM_V1
-NEXT_SLICE=NONE_AUTHORIZED
-NEXT_SLICE_CANDIDATES=OBSERVABILITY_DENSIFY_OR_ENGINEERING_QUIET_CHROME
+NEXT_SLICE=COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1
+NEXT_SLICE_TITLE=Observability Surface hierarchy: Economic > Linear diagnostics
+NEXT_SLICE_BRANCH=feat/dashboard-composition-observability-surface-hierarchy-v1
+NEXT_SLICE_STATUS=AUTHORIZED_NOT_IMPLEMENTED
 STOP_BEFORE_IMPLEMENTATION=true
 STOP_BEFORE_NEXT_UNRELATED_SLICE=true
 DASHBOARD_PROJECT_COMPLETE=false
 ```
 
-### Decision Surface hierarchy (this slice) — measured @1440×900
+### Authorized next — COMPOSITION_OBSERVABILITY_SURFACE_HIERARCHY_V1
+
+| Field | Value |
+|---|---|
+| Goal | Inside Observability: Economic primary > Linear diagnostics secondary; reduce peer-card chrome; densify without removing read-only SSOT transparency |
+| Full-page gain | Less competing peer chrome below Decision; clearer landmark hierarchy continuation; earlier Engineering entry |
+| Allowed owners | `templates&#47;peak_trade_dashboard&#47;market_v0.html`; `partials&#47;market_economic_observability_visual_v1.html`; `partials&#47;market_ai_linear_diagnostics_visual_v1.html`; `static&#47;css&#47;peak_trade_dashboard_layout_v1.css`; tokens only if justified |
+| Forbidden | `src&#47;**` domain/runtime owners; new producers; trading/risk/authority/orders; Core semantics; Decision/Primary rework; Bitcoin instruments |
+| Non-goals | Engineering deemphasis (candidate only); global whitespace rewrite; Decision hierarchy redo |
+| Acceptance | Landmark order held; no overflow; Primary dominance held; Decision hierarchy held; Economic dominates Linear visually; Observability card frames reduced; Engineering closed; Chrome full-page evidence 1280/1440/1728 |
+| Tests | New observability-hierarchy testowner + rhythm/hierarchy/browser-policy/readonly/no-bitcoin/responsive contracts |
+| Evidence | Chrome full-page before/after under `docs&#47;product&#47;evidence&#47;composition_observability_surface_hierarchy_v1_<UTC>&#47;` |
+| Status | `AUTHORIZED_NOT_IMPLEMENTED` — docs authorization only in this PR |
+
+### Post-hierarchy rebaseline held (@1440×900)
+
+| Gate | Result |
+|---|---|
+| Primary ≥ Decision + 2 pp | PASS (39.2% vs 32.0%) |
+| Top-20 > Funnel > Secondary | PASS |
+| Decision frames | 3 held |
+| Rhythm 8/20/20/20 | PASS |
+| Observability peer-card chrome | OPEN gap (2 twin cards) — drives next slice |
+| Engineering closed/secondary | PASS |
+
+### Decision Surface hierarchy (PR #5263) — measured @1440×900
 
 | Metric | Before (post-rhythm) | After hierarchy | Target |
 |---|---:|---:|---|
