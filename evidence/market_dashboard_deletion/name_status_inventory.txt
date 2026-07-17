@@ -97,6 +97,7 @@ D	artifacts/market_dashboard_product_recovery_v1_resume_20260717T053803Z/server_
 D	artifacts/market_dashboard_product_recovery_v1_resume_20260717T053803Z/stop_prior.txt
 M	artifacts/webui_review_server_harness_v1/implementation_manifest.json
 M	config/ci/file_category_mapping.yaml
+M	config/governance/technical_canonical_wiring_authorization_v1.json
 M	docs/ops/CI_AUDIT_KNOWN_ISSUES.md
 M	docs/ops/registry/DOCS_TRUTH_MAP.md
 M	docs/ops/roadmap/CURRENT_FOCUS.md
