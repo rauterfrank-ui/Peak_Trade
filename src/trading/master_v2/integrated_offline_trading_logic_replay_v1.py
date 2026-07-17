@@ -62,7 +62,6 @@ from trading.master_v2.directional_assessment_v1 import (
     DirectionalConfirmationStateV1,
     ScopeEventRefV1,
     evaluate_directional_assessment_v1,
-    mirror_price_path_for_short,
     with_computed_directional_assessment_digest,
 )
 from trading.master_v2.double_play_composition_matrix_v1 import (
@@ -780,18 +779,19 @@ def _directional_input_for_side(
     side: DirectionalAssessmentSide,
     scope_event_ref: ScopeEventRefV1,
 ) -> DirectionalAssessmentInputV1:
+    """Build side input from the shared long-convention market path.
+
+    Both sides consume the same ``price_path``. Side orientation is applied only by
+    ``compute_signal_strength`` (sign flip for SHORT). Do not mirror the shared path
+    here: mirroring plus the SHORT sign flip would invent identical candidate strength
+    on both sides from one directional impulse.
+    """
     anchor = float(inp.canonical_market_context.mark_price)
-    long_path = inp.price_path
-    price_path = (
-        long_path
-        if side is DirectionalAssessmentSide.LONG
-        else mirror_price_path_for_short(long_path, anchor)
-    )
     return DirectionalAssessmentInputV1(
         instrument_id=inp.instrument_id,
         trading_epoch=inp.trading_epoch,
         side=side,
-        price_path=price_path,
+        price_path=inp.price_path,
         reference_price=anchor,
         feature_refs=("feat-momentum-v1",),
         scope_event_ref=scope_event_ref,

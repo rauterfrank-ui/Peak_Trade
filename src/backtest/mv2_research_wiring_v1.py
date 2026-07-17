@@ -58,6 +58,8 @@ from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
     normalize_strategy_signal_to_suitability_agreement_material_v1,
 )
 from trading.master_v2.strategy_suitability_agreement_material_v1 import (
+    StrategySideAgreementV1,
+    StrategySignalEncodingClassV1,
     StrategySuitabilityAgreementErrorV1,
     StrategySuitabilityAgreementMaterialV1,
 )
@@ -124,6 +126,8 @@ from src.trading.master_v2.deterministic_scope_event_generator_v1 import (
 from src.trading.master_v2.directional_assessment_v1 import (
     DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
     DirectionalAssessmentPolicyV1,
+    DirectionalAssessmentStatus,
+    DirectionalAssessmentV1,
     DirectionalConfirmationStateV1,
 )
 from src.trading.master_v2.double_play_composition_matrix_v1 import (
@@ -1165,9 +1169,9 @@ def build_initial_mv2_integrated_replay_bar_sequence_state_v1(
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
         directional_confirmation_state=DirectionalConfirmationStateV1(
-            candidate_count=1,
+            candidate_count=0,
             last_evaluated_trading_epoch=trading_epoch - 1,
-            last_signal_strength=0.02,
+            last_signal_strength=0.0,
         ),
         previous_composition_direction_state=CompositionDirectionState.NEUTRAL,
         position_management_context=PositionManagementContext.FLAT,
@@ -1207,16 +1211,20 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
         position_state=entry_exit.position_state,
     )
     scope_confirmation = intermediate.scope_event.next_confirmation_state
+    policies = _default_policies()
+    directional_confirmation_state = project_directional_confirmation_state_from_assessments_v1(
+        bull_assessment=intermediate.bull_assessment,
+        bear_assessment=intermediate.bear_assessment,
+        previous=previous.directional_confirmation_state,
+        next_trading_epoch=next_trading_epoch,
+        candidate_signal_threshold=float(policies.directional.candidate_signal_threshold),
+    )
     return MV2IntegratedReplayBarSequenceStateV1(
         existing_scope=intermediate.current_scope,
         scope_direction_state=previous.scope_direction_state,
         scope_confirmation_state=scope_confirmation,
         scope_cooldown_state=_advance_scope_cooldown_state_v1(previous.scope_cooldown_state),
-        directional_confirmation_state=DirectionalConfirmationStateV1(
-            candidate_count=scope_confirmation.candidate_count,
-            last_evaluated_trading_epoch=next_trading_epoch - 1,
-            last_signal_strength=previous.directional_confirmation_state.last_signal_strength,
-        ),
+        directional_confirmation_state=directional_confirmation_state,
         previous_composition_direction_state=_composition_direction_from_result_v1(composition),
         position_management_context=composition.position_management_context,
         last_evaluated_trading_epoch=next_trading_epoch - 1,
@@ -1504,6 +1512,107 @@ def _coerce_replay_input_enums_for_integrated_replay_v1(
     )
 
 
+# Scale-invariant relative impulse for agreement-bound price_path projection.
+# Matches existing directional fixture convention (anchor * 1.02), not absolute +5.
+MV2_AGREEMENT_BOUND_RELATIVE_IMPULSE_V1 = 0.02
+
+
+def resolve_agreement_bound_directional_cycle_v1(
+    material: StrategySuitabilityAgreementMaterialV1 | None,
+) -> int | None:
+    """Return +1 / -1 only when agreement material carries a deterministic side.
+
+    ENTRY_EXIT_EVENT ENTRY with NEUTRAL does not invent LONG/SHORT (fail-closed None).
+    POSITIONAL_LS / POSITIONAL_LONG01 use ``cycle_signal_value`` as the side carrier.
+    """
+    if material is None:
+        return None
+    encoding = material.encoding_class
+    cycle = int(material.cycle_signal_value)
+    if encoding is StrategySignalEncodingClassV1.POSITIONAL_LS_STATE_V1:
+        if cycle in (-1, 1):
+            return cycle
+        return None
+    if encoding is StrategySignalEncodingClassV1.POSITIONAL_LONG01_STATE_V1:
+        if cycle == 1:
+            return 1
+        return None
+    if encoding is StrategySignalEncodingClassV1.ENTRY_EXIT_EVENT_V1:
+        # ENTRY/EXIT events do not encode bull/bear side; never invent one.
+        return None
+    if material.side_agreement is StrategySideAgreementV1.AGREE and cycle in (-1, 1):
+        return cycle
+    return None
+
+
+def project_mv2_agreement_bound_price_path_v1(
+    *,
+    mark_price: float,
+    material: StrategySuitabilityAgreementMaterialV1 | None,
+    relative_impulse: float = MV2_AGREEMENT_BOUND_RELATIVE_IMPULSE_V1,
+) -> tuple[float, float]:
+    """Project a dimension-safe long-convention price_path from agreement material.
+
+    - No absolute mark+5 impulse.
+    - Scale-invariant relative impulse when a directional cycle is present.
+    - NEUTRAL / ENTRY-without-side → flat path (fail-closed, no invented asymmetry).
+    """
+    mark = float(mark_price)
+    if not math.isfinite(mark) or mark <= 0.0:
+        raise ValueError("agreement_bound_price_path_mark_invalid")
+    impulse = float(relative_impulse)
+    if not math.isfinite(impulse) or impulse <= 0.0:
+        raise ValueError("agreement_bound_price_path_impulse_invalid")
+    direction = resolve_agreement_bound_directional_cycle_v1(material)
+    if direction is None:
+        return (mark, mark)
+    if direction > 0:
+        return (mark, mark * (1.0 + impulse))
+    return (mark, mark * (1.0 - impulse))
+
+
+def project_directional_confirmation_state_from_assessments_v1(
+    *,
+    bull_assessment: DirectionalAssessmentV1,
+    bear_assessment: DirectionalAssessmentV1,
+    previous: DirectionalConfirmationStateV1,
+    next_trading_epoch: int,
+    candidate_signal_threshold: float,
+) -> DirectionalConfirmationStateV1:
+    """Feed confirmation state from DA provenance; never from scope candidate_count."""
+    threshold = float(candidate_signal_threshold)
+    active = [
+        assessment
+        for assessment in (bull_assessment, bear_assessment)
+        if assessment.status
+        in {
+            DirectionalAssessmentStatus.CANDIDATE,
+            DirectionalAssessmentStatus.CONFIRMED,
+        }
+    ]
+    if active:
+        chosen = max(active, key=lambda item: float(item.signal_strength))
+        strength = float(chosen.signal_strength)
+        if strength >= threshold and previous.last_signal_strength >= threshold:
+            count = int(previous.candidate_count) + 1
+        elif strength >= threshold:
+            count = 1
+        else:
+            count = 0
+    else:
+        strength = max(
+            float(bull_assessment.signal_strength),
+            float(bear_assessment.signal_strength),
+            0.0,
+        )
+        count = 0
+    return DirectionalConfirmationStateV1(
+        candidate_count=max(0, int(count)),
+        last_evaluated_trading_epoch=int(next_trading_epoch) - 1,
+        last_signal_strength=float(strength),
+    )
+
+
 def _build_replay_input(
     *,
     replay_id: str,
@@ -1519,7 +1628,10 @@ def _build_replay_input(
         StrategySuitabilityAgreementMaterialV1
     ] = None,
 ) -> IntegratedOfflineReplayInputV1:
-    price_path = (float(context.mark_price), float(context.mark_price + 5.0))
+    price_path = project_mv2_agreement_bound_price_path_v1(
+        mark_price=float(context.mark_price),
+        material=strategy_suitability_agreement_material,
+    )
     return build_integrated_offline_replay_input_v1(
         replay_id=replay_id,
         instrument_id=instrument_id,
