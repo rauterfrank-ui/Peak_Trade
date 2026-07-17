@@ -637,7 +637,8 @@
     },
     "related_but_separate_contracts": {
       "legacy_order_intent_decision_owner_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED",
-      "legacy_order_intent_direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED"
+      "legacy_order_intent_direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED",
+      "risk_sizing_units_dimensions_contract_v0": "SEPARATE_UNITS_DIMENSIONS_DECLARATION_ONLY"
     },
     "pinned_against_main_sha": "1dd571860058ad44e0cc872ff37c43ded837b3c1",
     "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",
