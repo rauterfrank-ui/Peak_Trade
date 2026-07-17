@@ -96,3 +96,10 @@ SEMANTIC_PRODUCER_DECISION_STILL_REQUIRED: true
 
 Next semantic producer decision (separate Operator-GO) is required before any
 ENTRY_EXIT producer may emit `entry_side=LONG|SHORT`.
+
+Bollinger-specific current law (doc-aligned, non-authorizing):
+
+- `entry_side=NONE` is intentional fail-closed for `bollinger_bands`.
+- `cycle_signal_value=+1` alone never authorizes LONG.
+- Open authority decision brief:
+  `docs&#47;governance&#47;OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1.md`

@@ -1,16 +1,4 @@
 {
-  "schema_version": "obl_b05_entry_exit_producer_side_authority_decision.v1",
-  "slice_id": "OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1",
-  "base_sha": "5039a9666afefe8b5e18cca2d6be19ae3ded9bc2",
-  "parent_contract": "OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1",
-  "encoding_owner": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py::_ENTRY_EXIT_EVENT_OWNERS",
-  "entry_exit_owner_set_closed": true,
-  "productive_side_emission_changed": false,
-  "legacy_behavior_unchanged": true,
-  "bollinger_side_activated": false,
-  "semantic_activation_requires_separate_go": true,
-  "live_authorized": false,
-  "orders_enabled": false,
   "allowed_classes": [
     "CANONICAL_EXISTING_SIDE_AUTHORITY",
     "RATIFIABLE_PRODUCER_SEMANTICS",
@@ -18,7 +6,59 @@
     "AMBIGUOUS_OR_CONTRADICTORY",
     "LEGACY_OR_SPECIALIST_ONLY"
   ],
+  "base_sha": "5039a9666afefe8b5e18cca2d6be19ae3ded9bc2",
   "bollinger_entry_side_decision": "BLOCKED_AMBIGUITY",
+  "bollinger_side_activated": false,
+  "closed_owner_set": [
+    "bollinger_bands",
+    "ecm_cycle",
+    "macd",
+    "mean_reversion",
+    "momentum_1h",
+    "my_strategy",
+    "trend_following"
+  ],
+  "conflict_provenance": [
+    {
+      "applies_to": "all_entry_exit_owners",
+      "claim": "+1 long position / -1 short position / 0 flat",
+      "conflicts_with": "Decision D ENTRY_EXIT +1 entry / -1 exit",
+      "id": "CP01_BASE_STRATEGY_ABC_LONG_SHORT",
+      "surface": "src/strategies/base.py::BaseStrategy.generate_signals"
+    },
+    {
+      "applies_to": [
+        "bollinger_bands"
+      ],
+      "claim": "class docstring 1 (long) vs method Returns 1=entry",
+      "conflicts_with": "internal producer contract consistency and Decision D",
+      "id": "CP02_BOLLINGER_CLASS_DOC_LONG_VS_METHOD_ENTRY",
+      "surface": "src/strategies/bollinger.py"
+    },
+    {
+      "applies_to": "all_entry_exit_owners",
+      "claim": "capability metadata implies short support",
+      "conflicts_with": "long-only ENTRY_EXIT producer implementations; OBL_B05 forbids as signal authority",
+      "id": "CP03_REGISTRY_SUPPORTED_SIDES_UNIVERSAL",
+      "surface": "src/strategies/registry.py supported_sides=(long,short)"
+    },
+    {
+      "applies_to": "all_entry_exit_owners",
+      "claim": "ENTRY agrees only with LONG DA side",
+      "conflicts_with": "producer side authority / Decision D entry_side carrier; consumer-only eligibility heuristic",
+      "id": "CP04_SUITABILITY_ENTRY_AGREE_LONG",
+      "surface": "src/trading/master_v2/suitability_binding_v1.py::derive_effective_strategy_side_agreement_v1"
+    },
+    {
+      "applies_to": [
+        "macd"
+      ],
+      "claim": "-1 or dual polarity as short",
+      "conflicts_with": "adapter EXIT-not-short contract",
+      "id": "CP05_MACD_BINDING_TEST_VOCAB",
+      "surface": "tests implying macd long_and_short signals"
+    }
+  ],
   "decision_rules_applied": [
     "ENTRY_NEVER_IMPLIES_LONG",
     "CYCLE_SIGNAL_PLUS_ONE_IS_NOT_SIDE_AUTHORITY",
@@ -29,31 +69,85 @@
     "NO_POSITIONAL_RECLASSIFICATION_IN_THIS_SLICE",
     "DEFAULT_ENTRY_SIDE_REMAINS_NONE"
   ],
-  "closed_owner_set": [
-    "bollinger_bands",
-    "ecm_cycle",
-    "macd",
-    "mean_reversion",
-    "momentum_1h",
-    "my_strategy",
-    "trend_following"
+  "encoding_owner": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py::_ENTRY_EXIT_EVENT_OWNERS",
+  "entry_exit_owner_set_closed": true,
+  "future_activation_slices": [
+    {
+      "prerequisite": "separate Operator-GO; align producer docs with Decision D; emit entry_side=LONG only on ENTRY",
+      "producers": [
+        "momentum_1h"
+      ],
+      "slice_id_candidate": "OBL_B05_MOMENTUM_1H_ENTRY_SIDE_LONG_ACTIVATION_V1"
+    },
+    {
+      "prerequisite": "separate Operator-GO; confirm exit remains EXIT not SHORT",
+      "producers": [
+        "trend_following"
+      ],
+      "slice_id_candidate": "OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_LONG_ACTIVATION_V1"
+    },
+    {
+      "prerequisite": "separate Operator-GO; isolate from mean_reversion_channel POSITIONAL_LS",
+      "producers": [
+        "mean_reversion"
+      ],
+      "slice_id_candidate": "OBL_B05_MEAN_REVERSION_ENTRY_SIDE_LONG_ACTIVATION_V1"
+    },
+    {
+      "prerequisite": "separate Operator-GO; align docs with ENTRY_EXIT carrier",
+      "producers": [
+        "my_strategy"
+      ],
+      "slice_id_candidate": "OBL_B05_MY_STRATEGY_ENTRY_SIDE_LONG_ACTIVATION_V1"
+    },
+    {
+      "prerequisite": "align active governance docs to fail-closed NONE; prepare open LONG-authority decision brief without activating side",
+      "producers": [
+        "bollinger_bands"
+      ],
+      "slice_id_candidate": "OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1",
+      "status": "COMPLETE_NON_AUTHORIZING"
+    },
+    {
+      "prerequisite": "explicit GO choosing OPTION_A; productive CP02 doc alignment; producer-scoped adapter ratification; never treat +1 alone as LONG",
+      "producers": [
+        "bollinger_bands"
+      ],
+      "slice_id_candidate": "OBL_B05_BOLLINGER_ENTRY_SIDE_LONG_ACTIVATION_V1",
+      "status": "PENDING_SEPARATE_OPERATOR_GO"
+    },
+    {
+      "prerequisite": "explicit GO choosing OPTION_B to freeze KEEP_NONE without productive activation",
+      "producers": [
+        "bollinger_bands"
+      ],
+      "slice_id_candidate": "OBL_B05_BOLLINGER_KEEP_FAIL_CLOSED_NONE_RATIFICATION_V1",
+      "status": "PENDING_SEPARATE_OPERATOR_GO"
+    },
+    {
+      "prerequisite": "explicit GO choosing OPTION_C alternate contract extension; reuse-before-new carrier ownership",
+      "producers": [
+        "bollinger_bands"
+      ],
+      "slice_id_candidate": "OBL_B05_BOLLINGER_EVENT_ONLY_NO_SIDE_AUTHORITY_RATIFICATION_V1",
+      "status": "PENDING_SEPARATE_OPERATOR_GO"
+    },
+    {
+      "prerequisite": "resolve AMBIGUOUS_OR_CONTRADICTORY vocab before activation",
+      "producers": [
+        "macd"
+      ],
+      "slice_id_candidate": "OBL_B05_MACD_ENTRY_SIDE_DOC_AND_TEST_ALIGNMENT_V1"
+    }
   ],
+  "legacy_behavior_unchanged": true,
+  "live_authorized": false,
+  "orders_enabled": false,
+  "parent_contract": "OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1",
   "producers": [
     {
-      "producer_id": "bollinger_bands",
-      "encoding": "ENTRY_EXIT_EVENT_V1",
-      "raw_output_domain": [-1, 0, 1],
-      "meaning_plus_one": "ENTRY_EVENT",
-      "meaning_minus_one": "EXIT_EVENT",
-      "meaning_zero": "NONE",
-      "entry_condition": "close crosses entry_level (lower*entry_threshold) from above to below",
-      "exit_condition": "close crosses middle band from below to above",
-      "short_entry_condition_present": false,
-      "canonical_side_authority_present": false,
-      "candidate_entry_side": "LONG",
-      "authority_source": "NONE",
-      "class": "AMBIGUOUS_OR_CONTRADICTORY",
-      "confidence": "HIGH",
+      "activation_blocked_reason": "BOLLINGER_ENTRY_SIDE_DECISION=BLOCKED_AMBIGUITY",
+      "activation_slice_eligible": false,
       "ambiguity_or_contradiction": [
         "class_doc_1_long_vs_method_return_1_entry",
         "decision_d_entry_not_long",
@@ -61,219 +155,200 @@
         "registry_supported_sides_long_short_vs_long_only_code",
         "suitability_entry_agree_long_is_consumer_not_producer"
       ],
-      "recommended_disposition": "KEEP_NONE",
-      "activation_slice_eligible": false,
-      "activation_blocked_reason": "BOLLINGER_ENTRY_SIDE_DECISION=BLOCKED_AMBIGUITY"
-    },
-    {
-      "producer_id": "macd",
-      "encoding": "ENTRY_EXIT_EVENT_V1",
-      "raw_output_domain": [-1, 0, 1],
-      "meaning_plus_one": "ENTRY_EVENT",
-      "meaning_minus_one": "EXIT_EVENT",
-      "meaning_zero": "NONE",
-      "entry_condition": "MACD crosses signal line from below",
-      "exit_condition": "MACD crosses signal line from above",
-      "short_entry_condition_present": false,
-      "canonical_side_authority_present": false,
-      "candidate_entry_side": "LONG",
       "authority_source": "NONE",
+      "candidate_entry_side": "LONG",
+      "canonical_side_authority_present": false,
       "class": "AMBIGUOUS_OR_CONTRADICTORY",
       "confidence": "HIGH",
+      "cycle_signal_plus_one_authorizes_long": false,
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "entry_condition": "close crosses entry_level (lower*entry_threshold) from above to below",
+      "entry_side_current": "NONE",
+      "exit_condition": "close crosses middle band from below to above",
+      "governance_docs_aligned_to_fail_closed_none": true,
+      "governance_docs_alignment_slice": "OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1",
+      "meaning_minus_one": "EXIT_EVENT",
+      "meaning_plus_one": "ENTRY_EVENT",
+      "meaning_zero": "NONE",
+      "open_authority_decision": "BOLLINGER_ENTRY_SIDE_AUTHORITY_PENDING_SEPARATE_OPERATOR_GO",
+      "producer_id": "bollinger_bands",
+      "productive_source_doc_contradiction_cp02_still_present": true,
+      "raw_output_domain": [
+        -1,
+        0,
+        1
+      ],
+      "recommended_disposition": "KEEP_NONE",
+      "short_entry_condition_present": false
+    },
+    {
+      "activation_blocked_reason": "doc_and_test_vocab_contradict_entry_exit_contract",
+      "activation_slice_eligible": false,
       "ambiguity_or_contradiction": [
         "class_doc_1_long_vs_encoding_entry",
         "binding_test_name_implies_short_signals",
         "base_strategy_abc_long_short_position_vocab",
         "registry_supported_sides_long_short_vs_long_only_code"
       ],
+      "authority_source": "NONE",
+      "candidate_entry_side": "LONG",
+      "canonical_side_authority_present": false,
+      "class": "AMBIGUOUS_OR_CONTRADICTORY",
+      "confidence": "HIGH",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "entry_condition": "MACD crosses signal line from below",
+      "exit_condition": "MACD crosses signal line from above",
+      "meaning_minus_one": "EXIT_EVENT",
+      "meaning_plus_one": "ENTRY_EVENT",
+      "meaning_zero": "NONE",
+      "producer_id": "macd",
+      "raw_output_domain": [
+        -1,
+        0,
+        1
+      ],
       "recommended_disposition": "KEEP_NONE",
-      "activation_slice_eligible": false,
-      "activation_blocked_reason": "doc_and_test_vocab_contradict_entry_exit_contract"
+      "short_entry_condition_present": false
     },
     {
-      "producer_id": "momentum_1h",
-      "encoding": "ENTRY_EXIT_EVENT_V1",
-      "raw_output_domain": [-1, 0, 1],
-      "meaning_plus_one": "ENTRY_EVENT",
-      "meaning_minus_one": "EXIT_EVENT",
-      "meaning_zero": "NONE",
-      "entry_condition": "momentum crosses up through entry_threshold",
-      "exit_condition": "momentum crosses down through exit_threshold",
-      "short_entry_condition_present": false,
-      "canonical_side_authority_present": false,
-      "candidate_entry_side": "LONG",
-      "authority_source": "NONE",
-      "class": "RATIFIABLE_PRODUCER_SEMANTICS",
-      "confidence": "HIGH",
+      "activation_slice_eligible": true,
+      "activation_slice_id_candidate": "OBL_B05_MOMENTUM_1H_ENTRY_SIDE_LONG_ACTIVATION_V1",
       "ambiguity_or_contradiction": [
         "module_and_class_docs_say_long_while_decision_d_says_entry",
         "registry_supported_sides_capability_only"
       ],
-      "recommended_disposition": "KEEP_NONE_PENDING_SEPARATE_ACTIVATION_GO",
-      "activation_slice_eligible": true,
-      "activation_slice_id_candidate": "OBL_B05_MOMENTUM_1H_ENTRY_SIDE_LONG_ACTIVATION_V1"
-    },
-    {
-      "producer_id": "trend_following",
-      "encoding": "ENTRY_EXIT_EVENT_V1",
-      "raw_output_domain": [-1, 0, 1],
-      "meaning_plus_one": "ENTRY_EVENT",
-      "meaning_minus_one": "EXIT_EVENT",
-      "meaning_zero": "NONE",
-      "entry_condition": "rising edge ADX>threshold and +DI>-DI (optional MA filter)",
-      "exit_condition": "rising edge ADX<exit_threshold or -DI>+DI",
-      "short_entry_condition_present": false,
-      "canonical_side_authority_present": false,
-      "candidate_entry_side": "LONG",
       "authority_source": "NONE",
+      "candidate_entry_side": "LONG",
+      "canonical_side_authority_present": false,
       "class": "RATIFIABLE_PRODUCER_SEMANTICS",
       "confidence": "HIGH",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "entry_condition": "momentum crosses up through entry_threshold",
+      "exit_condition": "momentum crosses down through exit_threshold",
+      "meaning_minus_one": "EXIT_EVENT",
+      "meaning_plus_one": "ENTRY_EVENT",
+      "meaning_zero": "NONE",
+      "producer_id": "momentum_1h",
+      "raw_output_domain": [
+        -1,
+        0,
+        1
+      ],
+      "recommended_disposition": "KEEP_NONE_PENDING_SEPARATE_ACTIVATION_GO",
+      "short_entry_condition_present": false
+    },
+    {
+      "activation_slice_eligible": true,
+      "activation_slice_id_candidate": "OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_LONG_ACTIVATION_V1",
       "ambiguity_or_contradiction": [
         "downtrend_exit_must_not_be_read_as_short_entry",
         "docs_say_long_while_decision_d_says_entry"
       ],
-      "recommended_disposition": "KEEP_NONE_PENDING_SEPARATE_ACTIVATION_GO",
-      "activation_slice_eligible": true,
-      "activation_slice_id_candidate": "OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_LONG_ACTIVATION_V1"
-    },
-    {
-      "producer_id": "mean_reversion",
-      "encoding": "ENTRY_EXIT_EVENT_V1",
-      "raw_output_domain": [-1, 0, 1],
-      "meaning_plus_one": "ENTRY_EVENT",
-      "meaning_minus_one": "EXIT_EVENT",
-      "meaning_zero": "NONE",
-      "entry_condition": "rising edge zscore < entry_threshold",
-      "exit_condition": "rising edge zscore > exit_threshold",
-      "short_entry_condition_present": false,
-      "canonical_side_authority_present": false,
-      "candidate_entry_side": "LONG",
       "authority_source": "NONE",
+      "candidate_entry_side": "LONG",
+      "canonical_side_authority_present": false,
       "class": "RATIFIABLE_PRODUCER_SEMANTICS",
       "confidence": "HIGH",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "entry_condition": "rising edge ADX>threshold and +DI>-DI (optional MA filter)",
+      "exit_condition": "rising edge ADX<exit_threshold or -DI>+DI",
+      "meaning_minus_one": "EXIT_EVENT",
+      "meaning_plus_one": "ENTRY_EVENT",
+      "meaning_zero": "NONE",
+      "producer_id": "trend_following",
+      "raw_output_domain": [
+        -1,
+        0,
+        1
+      ],
+      "recommended_disposition": "KEEP_NONE_PENDING_SEPARATE_ACTIVATION_GO",
+      "short_entry_condition_present": false
+    },
+    {
+      "activation_slice_eligible": true,
+      "activation_slice_id_candidate": "OBL_B05_MEAN_REVERSION_ENTRY_SIDE_LONG_ACTIVATION_V1",
       "ambiguity_or_contradiction": [
         "confusion_risk_with_mean_reversion_channel_positional_ls",
         "docs_say_long_while_decision_d_says_entry"
       ],
-      "recommended_disposition": "KEEP_NONE_PENDING_SEPARATE_ACTIVATION_GO",
-      "activation_slice_eligible": true,
-      "activation_slice_id_candidate": "OBL_B05_MEAN_REVERSION_ENTRY_SIDE_LONG_ACTIVATION_V1"
-    },
-    {
-      "producer_id": "my_strategy",
-      "encoding": "ENTRY_EXIT_EVENT_V1",
-      "raw_output_domain": [-1, 0, 1],
-      "meaning_plus_one": "ENTRY_EVENT",
-      "meaning_minus_one": "EXIT_EVENT",
-      "meaning_zero": "NONE",
-      "entry_condition": "rising edge close > ma + atr*entry_multiplier",
-      "exit_condition": "rising edge close < ma - atr*exit_multiplier",
-      "short_entry_condition_present": false,
-      "canonical_side_authority_present": false,
-      "candidate_entry_side": "LONG",
       "authority_source": "NONE",
+      "candidate_entry_side": "LONG",
+      "canonical_side_authority_present": false,
       "class": "RATIFIABLE_PRODUCER_SEMANTICS",
       "confidence": "HIGH",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "entry_condition": "rising edge zscore < entry_threshold",
+      "exit_condition": "rising edge zscore > exit_threshold",
+      "meaning_minus_one": "EXIT_EVENT",
+      "meaning_plus_one": "ENTRY_EVENT",
+      "meaning_zero": "NONE",
+      "producer_id": "mean_reversion",
+      "raw_output_domain": [
+        -1,
+        0,
+        1
+      ],
+      "recommended_disposition": "KEEP_NONE_PENDING_SEPARATE_ACTIVATION_GO",
+      "short_entry_condition_present": false
+    },
+    {
+      "activation_slice_eligible": true,
+      "activation_slice_id_candidate": "OBL_B05_MY_STRATEGY_ENTRY_SIDE_LONG_ACTIVATION_V1",
       "ambiguity_or_contradiction": [
         "docs_say_long_while_decision_d_says_entry",
         "registry_supported_sides_capability_only"
       ],
+      "authority_source": "NONE",
+      "candidate_entry_side": "LONG",
+      "canonical_side_authority_present": false,
+      "class": "RATIFIABLE_PRODUCER_SEMANTICS",
+      "confidence": "HIGH",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "entry_condition": "rising edge close > ma + atr*entry_multiplier",
+      "exit_condition": "rising edge close < ma - atr*exit_multiplier",
+      "meaning_minus_one": "EXIT_EVENT",
+      "meaning_plus_one": "ENTRY_EVENT",
+      "meaning_zero": "NONE",
+      "producer_id": "my_strategy",
+      "raw_output_domain": [
+        -1,
+        0,
+        1
+      ],
       "recommended_disposition": "KEEP_NONE_PENDING_SEPARATE_ACTIVATION_GO",
-      "activation_slice_eligible": true,
-      "activation_slice_id_candidate": "OBL_B05_MY_STRATEGY_ENTRY_SIDE_LONG_ACTIVATION_V1"
+      "short_entry_condition_present": false
     },
     {
-      "producer_id": "ecm_cycle",
-      "encoding": "ENTRY_EXIT_EVENT_V1",
-      "raw_output_domain": [-1, 0, 1],
-      "meaning_plus_one": "ENTRY_EVENT",
-      "meaning_minus_one": "EXIT_EVENT",
-      "meaning_zero": "NONE",
-      "entry_condition": "rising edge high ECM confidence and close > MA",
-      "exit_condition": "rising edge low confidence or not bullish",
-      "short_entry_condition_present": false,
-      "canonical_side_authority_present": false,
-      "candidate_entry_side": "LONG",
-      "authority_source": "NONE",
-      "class": "LEGACY_OR_SPECIALIST_ONLY",
-      "confidence": "MEDIUM",
+      "activation_blocked_reason": "legacy_or_specialist_only_requires_separate_scope_ratification",
+      "activation_slice_eligible": false,
       "ambiguity_or_contradiction": [
         "functional_only_loader_path",
         "docs_say_1_equals_long_vs_decision_d_entry",
         "sparse_consumer_contract_coverage"
       ],
+      "authority_source": "NONE",
+      "candidate_entry_side": "LONG",
+      "canonical_side_authority_present": false,
+      "class": "LEGACY_OR_SPECIALIST_ONLY",
+      "confidence": "MEDIUM",
+      "encoding": "ENTRY_EXIT_EVENT_V1",
+      "entry_condition": "rising edge high ECM confidence and close > MA",
+      "exit_condition": "rising edge low confidence or not bullish",
+      "meaning_minus_one": "EXIT_EVENT",
+      "meaning_plus_one": "ENTRY_EVENT",
+      "meaning_zero": "NONE",
+      "producer_id": "ecm_cycle",
+      "raw_output_domain": [
+        -1,
+        0,
+        1
+      ],
       "recommended_disposition": "KEEP_NONE",
-      "activation_slice_eligible": false,
-      "activation_blocked_reason": "legacy_or_specialist_only_requires_separate_scope_ratification"
+      "short_entry_condition_present": false
     }
   ],
-  "conflict_provenance": [
-    {
-      "id": "CP01_BASE_STRATEGY_ABC_LONG_SHORT",
-      "surface": "src/strategies/base.py::BaseStrategy.generate_signals",
-      "claim": "+1 long position / -1 short position / 0 flat",
-      "conflicts_with": "Decision D ENTRY_EXIT +1 entry / -1 exit",
-      "applies_to": "all_entry_exit_owners"
-    },
-    {
-      "id": "CP02_BOLLINGER_CLASS_DOC_LONG_VS_METHOD_ENTRY",
-      "surface": "src/strategies/bollinger.py",
-      "claim": "class docstring 1 (long) vs method Returns 1=entry",
-      "conflicts_with": "internal producer contract consistency and Decision D",
-      "applies_to": ["bollinger_bands"]
-    },
-    {
-      "id": "CP03_REGISTRY_SUPPORTED_SIDES_UNIVERSAL",
-      "surface": "src/strategies/registry.py supported_sides=(long,short)",
-      "claim": "capability metadata implies short support",
-      "conflicts_with": "long-only ENTRY_EXIT producer implementations; OBL_B05 forbids as signal authority",
-      "applies_to": "all_entry_exit_owners"
-    },
-    {
-      "id": "CP04_SUITABILITY_ENTRY_AGREE_LONG",
-      "surface": "src/trading/master_v2/suitability_binding_v1.py::derive_effective_strategy_side_agreement_v1",
-      "claim": "ENTRY agrees only with LONG DA side",
-      "conflicts_with": "producer side authority / Decision D entry_side carrier; consumer-only eligibility heuristic",
-      "applies_to": "all_entry_exit_owners"
-    },
-    {
-      "id": "CP05_MACD_BINDING_TEST_VOCAB",
-      "surface": "tests implying macd long_and_short signals",
-      "claim": "-1 or dual polarity as short",
-      "conflicts_with": "adapter EXIT-not-short contract",
-      "applies_to": ["macd"]
-    }
-  ],
-  "future_activation_slices": [
-    {
-      "slice_id_candidate": "OBL_B05_MOMENTUM_1H_ENTRY_SIDE_LONG_ACTIVATION_V1",
-      "producers": ["momentum_1h"],
-      "prerequisite": "separate Operator-GO; align producer docs with Decision D; emit entry_side=LONG only on ENTRY"
-    },
-    {
-      "slice_id_candidate": "OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_LONG_ACTIVATION_V1",
-      "producers": ["trend_following"],
-      "prerequisite": "separate Operator-GO; confirm exit remains EXIT not SHORT"
-    },
-    {
-      "slice_id_candidate": "OBL_B05_MEAN_REVERSION_ENTRY_SIDE_LONG_ACTIVATION_V1",
-      "producers": ["mean_reversion"],
-      "prerequisite": "separate Operator-GO; isolate from mean_reversion_channel POSITIONAL_LS"
-    },
-    {
-      "slice_id_candidate": "OBL_B05_MY_STRATEGY_ENTRY_SIDE_LONG_ACTIVATION_V1",
-      "producers": ["my_strategy"],
-      "prerequisite": "separate Operator-GO; align docs with ENTRY_EXIT carrier"
-    },
-    {
-      "slice_id_candidate": "OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1",
-      "producers": ["bollinger_bands"],
-      "prerequisite": "resolve BLOCKED_AMBIGUITY (class/method/Decision D/registry) before any LONG emission"
-    },
-    {
-      "slice_id_candidate": "OBL_B05_MACD_ENTRY_SIDE_DOC_AND_TEST_ALIGNMENT_V1",
-      "producers": ["macd"],
-      "prerequisite": "resolve AMBIGUOUS_OR_CONTRADICTORY vocab before activation"
-    }
-  ]
+  "productive_side_emission_changed": false,
+  "schema_version": "obl_b05_entry_exit_producer_side_authority_decision.v1",
+  "semantic_activation_requires_separate_go": true,
+  "slice_id": "OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1"
 }

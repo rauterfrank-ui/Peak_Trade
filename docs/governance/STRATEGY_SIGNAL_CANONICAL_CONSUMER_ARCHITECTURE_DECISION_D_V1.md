@@ -103,7 +103,7 @@ StrategySignalBindingResultV1
 |---|---|---|
 | `POSITIONAL_LS_STATE_V1` | `+1` long / `-1` short / `0` flat | side agreement vs DA side |
 | `POSITIONAL_LONG01_STATE_V1` | `+1` long / `0` flat; `-1` fail-closed | long-only agreement |
-| `ENTRY_EXIT_EVENT_V1` | `+1` entry / `-1` exit / `0` none | EXIT demotes eligibility only; never exit authority. Optional explicit `entry_side` ∈ {LONG, SHORT, NONE} (default NONE) is the only DA side carrier; `+1` alone is never LONG. Producer-side ratification status is frozen in [`OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md`](OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md) (`BOLLINGER_ENTRY_SIDE_DECISION=BLOCKED_AMBIGUITY`). |
+| `ENTRY_EXIT_EVENT_V1` | `+1` entry / `-1` exit / `0` none | EXIT demotes eligibility only; never exit authority. Optional explicit `entry_side` ∈ {LONG, SHORT, NONE} (default NONE) is the only DA side carrier; `+1` alone is never LONG. Producer-side ratification status is frozen in [`OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md`](OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md) (`BOLLINGER_ENTRY_SIDE_DECISION=BLOCKED_AMBIGUITY`). Bollinger governance-doc alignment (still non-authorizing, `entry_side=NONE`) is recorded in [`OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1.md`](OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1.md). |
 | `FILTER_MASK01_V1` | `1` allow / `0` block | eligibility gate |
 | `UNKNOWN_OR_STUB_V1` | n/a | fail-closed |
 

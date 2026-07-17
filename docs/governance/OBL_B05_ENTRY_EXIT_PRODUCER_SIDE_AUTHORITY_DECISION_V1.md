@@ -98,6 +98,17 @@ Begründung:
 
 Daher: **keine** LONG-Aktivierung in diesem Slice; `entry_side` bleibt `NONE`.
 
+Governance-Doc-Alignment (nicht-autorisierend) ist abgeschlossen in
+`OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1`:
+
+- Bollinger ENTRY besitzt derzeit keine autorisierte Side.
+- `entry_side=NONE` ist beabsichtigt fail-closed.
+- `cycle_signal_value=+1` allein autorisiert keine LONG-Direction.
+- Produktives `src&#47;strategies&#47;bollinger.py` CP02 bleibt unberührt bis zu einem
+  separaten, expliziten Operator-GO.
+- Offene Authority-Frage:
+  `BOLLINGER_ENTRY_SIDE_AUTHORITY_PENDING_SEPARATE_OPERATOR_GO`.
+
 ## F. Konflikt-&#47;Provenance-Tabelle (Index)
 
 | id | surface | conflict |
@@ -118,7 +129,10 @@ Nur nach eigenem Operator-GO; jeweils ein Producer (oder Doc-Alignment zuerst):
 - `OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_LONG_ACTIVATION_V1`
 - `OBL_B05_MEAN_REVERSION_ENTRY_SIDE_LONG_ACTIVATION_V1`
 - `OBL_B05_MY_STRATEGY_ENTRY_SIDE_LONG_ACTIVATION_V1`
-- `OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1`
+- `OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1` (**complete**, non-authorizing)
+- `OBL_B05_BOLLINGER_ENTRY_SIDE_LONG_ACTIVATION_V1` (pending separate GO &#47; OPTION_A)
+- `OBL_B05_BOLLINGER_KEEP_FAIL_CLOSED_NONE_RATIFICATION_V1` (pending &#47; OPTION_B)
+- `OBL_B05_BOLLINGER_EVENT_ONLY_NO_SIDE_AUTHORITY_RATIFICATION_V1` (pending &#47; OPTION_C)
 - `OBL_B05_MACD_ENTRY_SIDE_DOC_AND_TEST_ALIGNMENT_V1`
 
 Homogene Sammelaktivierung ist **nicht** autorisiert.
@@ -133,3 +147,4 @@ Homogene Sammelaktivierung ist **nicht** autorisiert.
 | Static contract tests | `tests&#47;backtest&#47;test_entry_exit_producer_side_authority_decision_v1.py` |
 | Parent carrier contract | `docs&#47;governance&#47;OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1.md` |
 | Bollinger long-semantic decision | `docs&#47;governance&#47;OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_V1.md` |
+| Bollinger doc alignment &#47; open decision | `docs&#47;governance&#47;OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1.md` |
