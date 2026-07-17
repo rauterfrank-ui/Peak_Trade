@@ -130,12 +130,13 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Runtime Decision Core · Strategy-adjacent Ops · Documentation |
 | **Type** | **B** |
-| **Current Ownership (per layer)** | **Runtime:** kanonisch offline = `double_play_composition_matrix_v1` in `integrated_offline_trading_logic_replay_v1` · **Strategy:** — · **Registry/Config:** — · **Docs:** `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` Slice E — Ops = `LEGACY_NON_AUTHORITATIVE` |
-| **Expected Canonical Ownership (NOT ENFORCED YET)** | MV2 composition matrix = einzige offline Decision-Core-Authority; Ops-Evaluator nur Annotation/non-authorizing |
-| **Risk Level** | **HIGH** |
-| **Resolution Dependency** | B-03 (Docs-Marker verstärken) — **keine** Runtime-Umverdrahtung ohne separates Design; Slice E Evidence frozen |
+| **Status (docs markers)** | **CLOSED (2026-07-17)** — PR #5272 / B-03: both ops runbooks project `LEGACY_NON_AUTHORITATIVE` + Slice E crosslink |
+| **Current Ownership (per layer)** | **Runtime:** kanonisch offline = `double_play_composition_matrix_v1` in `integrated_offline_trading_logic_replay_v1` · **Strategy:** — · **Registry/Config:** — · **Docs:** `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` Slice E — Ops = `LEGACY_NON_AUTHORITATIVE` (runbooks reconciled) |
+| **Expected Canonical Ownership** | MV2 composition matrix = einzige offline Decision-Core-Authority; Ops-Evaluator nur Annotation/non-authorizing (docs markers enforced; runtime rewire **not** authorized) |
+| **Risk Level** | **HIGH** (residual if misread as runtime authority — mitigated by docs markers + Slice E) |
+| **Resolution Dependency** | Docs markers: **CLOSED** via B-03 / PR #5272 · Runtime rewire: **blocked** — requires separate Adapt/Master-V2 design GO (not in Section B docs slices) |
 
-**Evidence:** `src&#47;ops/double_play/specialists.py` L18–27; `integrated_offline_trading_logic_replay_v1.py` imports L64–73; `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` L103–110. <!-- pt:ref-target-ignore -->
+**Evidence:** `src&#47;ops/double_play/specialists.py`; `evaluate_double_play_authority_boundary_v0.py`; `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` Slice E; ops runbooks `double_play.md` + `double_play_specialists.md`; PR #5272; evidence `docs/product/evidence/drift_b03_ops_double_play_authority_markers_v0_20260717T032034Z/`. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -412,7 +413,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | AUTH-003 | `src&#47;features/` vs Strategy ECM | A+D | MEDIUM | Docs ↔ Strategy | <!-- pt:ref-target-ignore -->
 | AUTH-004 | `ecm.py` vs `ArmstrongCycleStrategy` | D | MEDIUM | Strategy |
 | AUTH-005 | Armstrong live-readiness triangle | C+B | HIGH | Strategy ↔ Registry/Config |
-| AUTH-006 | Ops DP evaluator vs composition matrix | B | HIGH | Runtime ↔ Ops |
+| AUTH-006 | Ops DP evaluator vs composition matrix | B | HIGH | Runtime ↔ Ops — **docs markers CLOSED** (PR #5272 / B-03); runtime rewire still blocked |
 | AUTH-007 | Packet handoff vs runtime DP observations | D | MEDIUM | Runtime |
 | AUTH-008 | Multiple DP replay surfaces | D | MEDIUM | Runtime |
 | AUTH-009 | `breakout_confirmation_v1` orphan | C | MEDIUM | Strategy ↔ Registry |
@@ -478,8 +479,8 @@ AUTH-019 (Registry→Core wiring)
 ├── B-04
 └── DEF-02
 
-AUTH-006 (DP authority — docs markers)
-└── B-03 (partial docs-only; no runtime rewire)
+AUTH-006 (DP authority — docs markers CLOSED via B-03 / PR #5272)
+└── Runtime rewire residual: INTENTIONAL_POLICY_STATE / separate Adapt GO only
 ```
 
 ---

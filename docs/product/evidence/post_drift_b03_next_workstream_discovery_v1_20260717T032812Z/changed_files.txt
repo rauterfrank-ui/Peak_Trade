@@ -1,0 +1,8 @@
+=== git diff --stat HEAD ===
+ docs/governance/authority_conflict_matrix_v1.md | 17 +++++++++--------
+ docs/governance/drift_cleanup_plan_v1.md        |  2 +-
+ 2 files changed, 10 insertions(+), 9 deletions(-)
+=== porcelain excl runtime ===
+ M docs/governance/authority_conflict_matrix_v1.md
+ M docs/governance/drift_cleanup_plan_v1.md
+?? docs/product/evidence/post_drift_b03_next_workstream_discovery_v1_20260717T032812Z/

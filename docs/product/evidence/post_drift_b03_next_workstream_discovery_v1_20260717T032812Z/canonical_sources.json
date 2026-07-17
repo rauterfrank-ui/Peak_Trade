@@ -1,0 +1,17 @@
+{
+  "audited_at_utc": "20260717T032812Z",
+  "repository_head": "ba5015f2508cc3f6acdf3c5febc6f757b21cf82e",
+  "sources": [
+    "docs/governance/drift_cleanup_plan_v1.md",
+    "docs/analysis/missing_features_plan.md",
+    "docs/governance/feature_state_map_v1.md",
+    "docs/governance/authority_conflict_matrix_v1.md",
+    "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+    "docs/ops/runbooks/double_play.md",
+    "docs/ops/runbooks/double_play_specialists.md",
+    "docs/product/evidence/post_drift_b02_next_workstream_discovery_v1_20260717T031201Z/",
+    "docs/product/evidence/drift_b03_ops_double_play_authority_markers_v0_20260717T032034Z/",
+    "src/features/__init__.py"
+  ],
+  "count": 10
+}

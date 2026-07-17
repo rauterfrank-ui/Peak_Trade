@@ -1,0 +1,104 @@
+{
+  "inventory_utc": "20260717T032812Z",
+  "items": [
+    {
+      "id": "OBL_B01_MISSING_FEATURES_PLAN_DEFERRED",
+      "classification": "REAL_GAP"
+    },
+    {
+      "id": "OBL_B07_MISSING_FEATURES_PLAN_DAG",
+      "classification": "REAL_GAP"
+    },
+    {
+      "id": "OBL_AUTH006_MATRIX_STALE_POST_B03",
+      "classification": "ALREADY_COMPLETE",
+      "severity": "LOW",
+      "note": "docs markers closed in this discovery PR reconciliation (AUTH-006)"
+    },
+    {
+      "id": "OBL_AUTH021_MISSING_FEATURES_PLAN",
+      "classification": "REAL_GAP",
+      "note": "same surface as B-01/B-07"
+    },
+    {
+      "id": "OBL_B04_REGISTRY_SUITABILITY_REPLAY_READ_MODEL",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT",
+      "classification": "REQUIRES_RUNTIME_GO"
+    },
+    {
+      "id": "OBL_B06_DECISION_PACKET_VS_INTEGRATED_REPLAY",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_AUTH_ECM_01",
+      "classification": "REQUIRES_RUNTIME_GO"
+    },
+    {
+      "id": "OBL_AUTH_REG_01_BREAKOUT",
+      "classification": "REQUIRES_RUNTIME_GO"
+    },
+    {
+      "id": "OBL_RUNTIME_BRIDGE",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_AUTONOMY_NEXT_SCOPE",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_ECONOMIC_BASELINE_RETRY",
+      "classification": "TERMINAL"
+    },
+    {
+      "id": "OBL_CANONICAL_CHAIN_NEXT",
+      "classification": "TERMINAL"
+    },
+    {
+      "id": "OBL_DASHBOARD_COMPOSITION",
+      "classification": "TERMINAL"
+    },
+    {
+      "id": "OBL_TRADE_LEDGER_MATERIALIZATION",
+      "classification": "TERMINAL"
+    },
+    {
+      "id": "OBL_REGISTRY_SHA_LAG",
+      "classification": "SUPERSEDED"
+    },
+    {
+      "id": "OBL_RUNBOOK_PATCH_RECOMMENDATIONS",
+      "classification": "SUPERSEDED"
+    },
+    {
+      "id": "OBL_DRIFT_B02_GRAMMAR",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_DRIFT_B03_OPS_DP_AUTHORITY_MARKERS",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_AUTH022_MATRIX",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_REPLAY_INPUT_BUILDER",
+      "classification": "ALREADY_COMPLETE"
+    },
+    {
+      "id": "OBL_DEF_FEATURE_ENGINE",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_DEF_LIVE_OPERATIONAL",
+      "classification": "INTENTIONAL_POLICY_STATE"
+    },
+    {
+      "id": "OBL_AUTH_DP_02",
+      "classification": "OUT_OF_SCOPE"
+    }
+  ]
+}
