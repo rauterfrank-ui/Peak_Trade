@@ -1,0 +1,9 @@
+=== name-status (working tree vs origin/main including untracked via status) ===
+M	docs/webui/MARKET_DASHBOARD_READMODELS_V1.md
+M	tests/webui/test_market_dashboard_readmodels_v1_static_guards.py
+ M docs/webui/MARKET_DASHBOARD_READMODELS_V1.md
+ M tests/webui/test_market_dashboard_readmodels_v1_static_guards.py
+?? evidence/market_dashboard_reset/pr_c/
+?? src/webui/market_dashboard_readmodels_v1/adapters/
+?? tests/webui/test_market_dashboard_adapters_v1.py
+?? tests/webui/test_market_dashboard_adapters_v1_static_guards.py

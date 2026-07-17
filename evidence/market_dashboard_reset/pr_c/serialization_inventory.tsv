@@ -1,0 +1,5 @@
+path	role
+src/webui/market_dashboard_readmodels_v1/serialization.py	canonical JSON dict/string serialization for contracts
+src/webui/market_dashboard_readmodels_v1/to_json_dict	per-object deterministic dict projection
+src/webui/market_dashboard_readmodels_v1/dumps_json	compact JSON without NaN
+adapters do not define alternate serializers	reuse PR-B serialization only

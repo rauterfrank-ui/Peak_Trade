@@ -1,0 +1,4 @@
+command	duration_s	exit_code	notes
+.venv/bin/python -m pytest tests/webui/test_market_dashboard_adapters_v1.py tests/webui/test_market_dashboard_adapters_v1_static_guards.py tests/webui/test_market_dashboard_readmodels_v1.py tests/webui/test_market_dashboard_readmodels_v1_static_guards.py tests/webui/test_market_architecture_reset_shell_pr_a_v1.py -q	1.25	0	69 passed
+.venv/bin/ruff format --check adapters+adapter tests	~0.2	0	PASS
+.venv/bin/ruff check adapters+adapter tests	~0.2	0	PASS
