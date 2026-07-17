@@ -117,4 +117,4 @@ Referenced from owner&#47;bypass surface contract v1 — unchanged allowlist.
 
 ## Next
 
-Topology is **frozen** but **not resolved** (`CALLER_TO_OWNER_TOPOLOGY_RESOLVED=false`). Authority assignment, rewire, decommission, and percent&#47;leverage normalization remain Operator-GO gated.
+Topology is **frozen** but **not resolved** (`CALLER_TO_OWNER_TOPOLOGY_RESOLVED=false`). Output consumption&#47;overwrite is frozen separately in [`RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md`](RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md) (`OBL_B05_RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0`). Authority assignment, rewire, decommission, and percent&#47;leverage normalization remain Operator-GO gated.
