@@ -191,13 +191,13 @@ Scope: Visual Operator / Market Dashboard im aktuellen Repository
 ## Worktree-Status
 
 - Tracked working tree: clean (keine staged/unstaged tracked changes)
-- Untracked: `.runtime/`
-  - `.runtime/market-dashboard-composition-first.log`
-  - `.runtime/market-dashboard-phase-minus-1-rebaseline.log`
-  - `.runtime/market-dashboard-phase-minus-1-rebaseline.pid`
-  - `.runtime/market-dashboard-pr5248.log`
-  - `.runtime/market-dashboard-pr5249-merged.log`
-  - `.runtime/market-dashboard-pr5250-review.log`
+- Untracked: `.runtime&#47;`
+  - `.runtime&#47;market-dashboard-composition-first.log`
+  - `.runtime&#47;market-dashboard-phase-minus-1-rebaseline.log`
+  - `.runtime&#47;market-dashboard-phase-minus-1-rebaseline.pid`
+  - `.runtime&#47;market-dashboard-pr5248.log`
+  - `.runtime&#47;market-dashboard-pr5249-merged.log`
+  - `.runtime&#47;market-dashboard-pr5250-review.log`
 
 ---
 
@@ -520,7 +520,7 @@ Default Path: `/market?timeframe=1h`
   - `docs/product/evidence/phase_1b_20260716T181219Z/`
   - `docs/product/evidence/phase_2_20260716T184639Z/`
   - `docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/`
-  - `docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/`
+  - `docs&#47;product&#47;evidence&#47;visual_composition_first_refactor_v1_20260716T221000Z&#47;`
 
 ## Visual Regression
 
