@@ -1,0 +1,8 @@
+{
+  "OBSERVABILITY_HIERARCHY_PASS": true,
+  "eco_h": 190,
+  "lin_h": 72,
+  "obs_frames_before": 2,
+  "obs_frames_after": 1,
+  "ECONOMIC_DOMINATES_LINEAR": true
+}
