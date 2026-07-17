@@ -1,0 +1,13 @@
+UTC_REPRO=2026-07-17T03:07:29Z..2026-07-17T03:09:25Z
+PR_HEAD=d68146ad598119cce8a26c6fb7b3e3edd3991f95
+EVIDENCE_MANIFEST_SHA256_VERIFY=PASS (8/8 files OK from repo root)
+GRAMMAR_TESTS=tests/governance/test_rd_strategy_status_grammar_v0.py — 29 passed in 0.10s
+RELATED_TESTS=tests/test_ehlers_lopez_strategies.py + tests/test_bouchaud_gatheral_cont_strategies.py — 66 passed in 1.24s
+CONSUMER_PARITY_SMOKE=PASS (assert_fehlende_features_consumes_grammar_v0 + fail-closed unknowns)
+STATIC_DIRECT_DRIFT_MAPPINGS=0
+SELECTOR_MODE=PR_BOUNDED_FULL
+SELECTOR_REASON=category_central_src_requires_full
+SELECTOR_COMMAND=python3 scripts/ops/ci_test_selection_v1.py --files-file <pr5270_files>
+BOUNDED_FULL_SUITE_RERUN=NOT_REQUIRED (CI tests 3.9/3.10/3.11 + Fast-Lane + PR Gate already SUCCESS on exact head; local grammar+related+parity green)
+RUFF_AND_DOCS_GATES_ON_PR=PASS via required checks (Lint Gate, docs-token-policy-gate, docs-reference-targets-gate)
+POST_MERGE_GRAMMAR_RETEST=29 passed on main@1d099ca746cc5790cd6d35487e788bd3a5da7b44

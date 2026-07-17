@@ -1,0 +1,29 @@
+{
+  "contract_id": "DRIFT_B02_POST_MERGE_RECONCILIATION_V1",
+  "slice_id": "DRIFT_B02_RD_STRATEGY_STATUS_GRAMMAR_V0",
+  "classification": "ALREADY_COMPLETE",
+  "merged": true,
+  "reconciled": true,
+  "pr_number": 5270,
+  "merge_commit": "1d099ca746cc5790cd6d35487e788bd3a5da7b44",
+  "merged_at": "2026-07-17T03:09:46Z",
+  "canonical_owner": "src/governance/rd_strategy_status_grammar_v0.py",
+  "ssot_json": "docs/features/rd_strategy_status_grammar_v0.json",
+  "canonical_statuses": [
+    "missing",
+    "research-only",
+    "stub"
+  ],
+  "direct_drift_mappings_before": 2,
+  "direct_drift_mappings_after_merge": 0,
+  "unknown_status_fail_closed": true,
+  "legacy_alias_boundary_only": true,
+  "producer_consumer_parity": true,
+  "second_status_grammar_detected": false,
+  "dashboard_files_changed": false,
+  "core_semantics_changed": false,
+  "behavior_preserving": true,
+  "post_merge_tests_pass": true,
+  "runtime_live_order_activation": false,
+  "evidence_implementation": "docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z"
+}

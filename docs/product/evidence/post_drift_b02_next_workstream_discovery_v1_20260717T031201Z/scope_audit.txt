@@ -1,0 +1,26 @@
+AUTHORIZED_WORKFLOW=PR5270_MERGE + POST_MERGE_RECONCILIATION + READ_ONLY_NEXT_WORKSTREAM_DISCOVERY
+IMPLEMENTATION_PERFORMED=false
+NEXT_WORKSTREAM_IMPLEMENTATION_GO=false
+DRIFT_B02_STATUS=MERGED_AND_RECONCILED
+SELECTED_NEXT_SLICE=DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0
+DISCOVERY_ONLY=true
+DASHBOARD_FILES_CHANGED=false
+CORE_SEMANTICS_CHANGED=false
+LIVE_AUTHORIZED=false
+ORDERS=false
+SHADOW=false
+PAPER=false
+TESTNET=false
+CAPITAL_MUTATION=false
+SCHEDULER_MUTATION=false
+AUTO_MERGE_ENABLED=false
+RUNTIME_UNTRACKED_PRESERVED=true
+ALLOWED_MUTATIONS_THIS_PR=
+- docs/product/evidence/post_drift_b02_next_workstream_discovery_v1_20260717T031201Z/
+- docs/governance/authority_conflict_matrix_v1.md (AUTH-022 B-02 closeout sync only)
+- docs/governance/drift_cleanup_plan_v1.md (post-merge reconciliation pointer only, if needed)
+FORBIDDEN=
+- src/ops/double_play/** behavior mutation
+- Master V2 / Double-Play / Risk / Sizing / Execution semantics
+- Dashboard templates/static
+- Live/order/scheduler/capital activation

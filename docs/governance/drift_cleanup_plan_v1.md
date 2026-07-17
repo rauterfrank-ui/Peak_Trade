@@ -225,6 +225,7 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 - [ ] DOC-05, DOC-07, DOC-08, DOC-09, DOC-10: addressed in Section A steps
 - [ ] DOC-06, DOC-11: remain flagged in B/C/D — **not closed**
 - [x] DOC-12 / B-02: closed via `rd_strategy_status_grammar_v0` (2026-07-17)
+- [x] DOC-12 / B-02 post-merge reconciled on main via PR #5270 (`1d099ca746cc5790cd6d35487e788bd3a5da7b44`); evidence: `docs/product/evidence/post_drift_b02_next_workstream_discovery_v1_20260717T031201Z/`
 - [ ] Kein Claim „live operational features > 0“
 - [ ] Kein Claim „ECM identity resolved“ ohne AUTH-ECM-01 record
 
@@ -232,4 +233,4 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 
 **Plan-Owner:** Drift Cleanup Plan v1  
 **Evidence frozen at:** `2f1672bee8761f8d50def3f6ef31cc803824b2e9`  
-**Nächster Schritt:** Operator GO für Phase 1 (Section A) als separater Docs-only PR
+**Nächster Schritt (post B-02):** Discovery selected `DRIFT_B03_OPS_DOUBLE_PLAY_AUTHORITY_MARKERS_V0` — requires **separate** docs Operator-GO; no implementation in the discovery PR.

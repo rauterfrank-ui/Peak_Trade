@@ -378,12 +378,13 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Documentation · Strategy Layer |
 | **Type** | **A** |
-| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** ehlers, meta_labeling, bouchaud — partial stubs exist · **Registry/Config:** registered as `r_and_d` · **Docs:** DOC-12 / B-02 structural — kanonischer Catalog updated (A-08), Status-Gitter für stubs nicht uniform |
-| **Expected Canonical Ownership (NOT ENFORCED YET)** | Einheitliche Status-Tabelle: stub / research-only / missing |
+| **Status** | **CLOSED (2026-07-17)** — PR #5270 merged `rd_strategy_status_grammar_v0`; FEHLENDE §5.2.1 uses stub / research-only / missing |
+| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** ehlers, meta_labeling, bouchaud, gatheral classified research-only · **Registry/Config:** registered as `r_and_d` · **Docs:** DOC-12 / B-02 CLOSED — grammar owner `src/governance/rd_strategy_status_grammar_v0.py` + SSOT `docs/features/rd_strategy_status_grammar_v0.json` |
+| **Expected Canonical Ownership** | Einheitliche Status-Tabelle: stub / research-only / missing (enforced fail-closed at grammar boundary) |
 | **Risk Level** | **LOW** |
-| **Resolution Dependency** | B-02 Operator-GO |
+| **Resolution Dependency** | None (B-02 reconciled on main @ 1d099ca746cc5790cd6d35487e788bd3a5da7b44) |
 
-**Evidence:** drift_cleanup_plan §4 B-02; feature_state_map_v1 §2.2.
+**Evidence:** drift_cleanup_plan §4 B-02 CLOSED; PR #5270; docs/product/evidence/rd_strategy_status_grammar_v0_20260717T025957Z/; post-merge pack docs/product/evidence/post_drift_b02_next_workstream_discovery_v1_20260717T031201Z/.
 
 ---
 
@@ -427,7 +428,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | AUTH-019 | No default Registry→Core wiring | B | HIGH | Strategy ↔ Runtime |
 | AUTH-020 | El Karoui tier tension | A+B | MEDIUM | Strategy ↔ Docs |
 | AUTH-021 | `missing_features_plan` stale | A | LOW | Docs |
-| AUTH-022 | R&D stub status grammar | A | LOW | Docs ↔ Strategy |
+| AUTH-022 | R&D stub status grammar | A | LOW | Docs ↔ Strategy — **CLOSED** (PR #5270 / B-02) |
 | AUTH-023 | Psychology path residual | A | LOW | Docs |
 
 ### Count by Type
