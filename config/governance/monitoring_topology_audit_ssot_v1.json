@@ -1,0 +1,114 @@
+{
+  "contract_name": "monitoring_topology_audit_ssot_v1",
+  "schema_version": "monitoring_topology_audit_schema_v1",
+  "contract_version": "v1",
+  "ssot_doc": "docs/audits/MONITORING_TOPOLOGY_READ_ONLY_AUDIT_2026-07-17.md",
+  "inventory_date": "2026-07-17",
+  "generated_from_main_sha": "f5114401f6a76171840040f0c44d0de05df61bf5",
+  "markers": {
+    "MONITORING_TOPOLOGY_AUDIT_SSOT_V1": true,
+    "PERMISSION_MODE": "read_only",
+    "SECRET_VALUE_ACCESS_ALLOWED": false,
+    "MUTATION_ALLOWED": false,
+    "NOTIFICATION_SEND_ALLOWED": false,
+    "GRAFANA_EXPECTED": false,
+    "GRAFANA_AUDITED": false,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "RUNTIME_BRIDGE_ACTIVATED": false,
+    "OKX_AUDIT_REOPENED": false
+  },
+  "authority": "explicit_operator_decision",
+  "permission_mode": "read_only",
+  "canonical_topology": {
+    "prometheus_expected": true,
+    "prometheus_kind": "metrics_client_and_scrape_ssot_not_in_repo_compose_server",
+    "alertmanager_expected": false,
+    "alert_routing_expected": true,
+    "alert_routing_kind": "in_app_live_alerts_pipeline_escalation",
+    "cloudwatch_expected": false,
+    "grafana_expected": false
+  },
+  "surface_status": {
+    "prometheus": "VERIFIED_REPO_ONLY",
+    "alertmanager": "REMOVED_AS_DESIGNED",
+    "alert_routing": "VERIFIED_REPO_ONLY",
+    "cloudwatch": "REMOVED_AS_DESIGNED",
+    "grafana": "REMOVED_AS_DESIGNED"
+  },
+  "stale_references": {
+    "grafana_match_count": 432,
+    "grafana_file_count": 90,
+    "grafana_class": "STALE_REFERENCE_FOUND",
+    "market_dashboard_match_count": 334,
+    "market_dashboard_file_count": 69,
+    "market_dashboard_class": "STALE_REFERENCE_FOUND"
+  },
+  "secret_env_var_names": [
+    "PEAK_TRADE_SMTP_PASSWORD",
+    "PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH",
+    "PAGERDUTY_ROUTING_KEY",
+    "TELEGRAM_BOT_TOKEN",
+    "TELEGRAM_CHAT_ID",
+    "KILL_SWITCH_SLACK_WEBHOOK",
+    "SLACK_WEBHOOK_URL"
+  ],
+  "safety_status": {
+    "secret_values_read": false,
+    "monitoring_mutations_performed": false,
+    "notifications_sent": false,
+    "grafana_audited": false,
+    "live_authorized": false,
+    "orders_enabled": false,
+    "runtime_bridge_activated": false,
+    "trading_core_changed": false,
+    "execution_semantics_changed": false,
+    "economic_gate_changed": false,
+    "okx_audit_reopened": false
+  },
+  "classification_summary": {
+    "expected_active_component_count": 2,
+    "live_matching_component_count": 0,
+    "repo_only_component_count": 2,
+    "drift_component_count": 0,
+    "access_denied_count": 0,
+    "not_verifiable_count": 0
+  },
+  "expected_active_components": [
+    {
+      "id": "prometheus_metrics_surface",
+      "name": "prometheus_client metrics + scrape SSOT",
+      "classification": "VERIFIED_REPO_ONLY",
+      "evidence": "prometheus_client dependency; health_endpoint; PROMETHEUS_LOCAL_SCRAPE.yml; .local prometheus scrape configs; no in-repo compose prometheus server"
+    },
+    {
+      "id": "in_app_alert_routing",
+      "name": "live_alerts + alert_pipeline + escalation",
+      "classification": "VERIFIED_REPO_ONLY",
+      "evidence": "config live_alerts sinks=[log]; slack/email disabled; escalation enabled=false; modules present; no notification sent"
+    }
+  ],
+  "removed_as_designed": [
+    {
+      "id": "grafana",
+      "status": "REMOVED_AS_DESIGNED",
+      "audited": false
+    },
+    {
+      "id": "alertmanager",
+      "status": "REMOVED_AS_DESIGNED",
+      "audited": false
+    },
+    {
+      "id": "cloudwatch_peak_trade_monitoring",
+      "status": "REMOVED_AS_DESIGNED",
+      "audited": false
+    },
+    {
+      "id": "market_dashboard_product",
+      "status": "REMOVED_AS_DESIGNED",
+      "audited": false
+    }
+  ],
+  "next_action": "OPERATOR_OPTIONAL_STALE_REF_HYGIENE_FOR_GRAFANA_AND_MARKET_DASHBOARD_DOCS_OR_ACCEPT_RESIDUAL_GUARDS"
+}
