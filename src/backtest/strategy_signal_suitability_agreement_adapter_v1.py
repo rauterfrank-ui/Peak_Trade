@@ -70,6 +70,11 @@ _UNKNOWN_OR_STUB_OWNERS = frozenset(
     }
 )
 
+# Explicit producer-scoped side ratification (OBL_B05).
+# Only trend_following is ratified: productive +1 ENTRY = LONG.
+# No heuristic name/sign/class derivation for other ENTRY_EXIT owners.
+_TREND_FOLLOWING_ENTRY_SIDE_RATIFIED_OWNER = "trend_following"
+
 
 def resolve_strategy_signal_encoding_class_v1(
     executed_strategy_id: str,
@@ -151,6 +156,32 @@ def _intrinsic_side_agreement_and_aux(
     raise StrategySuitabilityAgreementErrorV1("encoding_class_unknown")
 
 
+def _resolve_entry_side_carrier_v1(
+    *,
+    executed_strategy_id: str,
+    encoding_class: StrategySignalEncodingClassV1,
+    event_kind: Optional[StrategyAgreementEventKindV1],
+    cycle_signal_value: int,
+) -> StrategyEntrySideCarrierV1:
+    """Resolve optional ENTRY_EXIT ``entry_side`` (fail-closed, producer-explicit).
+
+    Productive ``trend_following`` contract (``src/strategies/trend_following.py``):
+    - ``+1`` / ENTRY = LONG entry (ADX strong and +DI > -DI; optional MA filter)
+    - ``-1`` / EXIT = exit event (ADX weak or -DI > +DI) — never SHORT
+    - ``0`` / NONE = no change / flat
+
+    No SHORT-entry condition exists in the productive producer. Other ENTRY_EXIT
+    owners remain ``NONE`` until a separate ratification GO.
+    """
+    if encoding_class is not StrategySignalEncodingClassV1.ENTRY_EXIT_EVENT_V1:
+        return StrategyEntrySideCarrierV1.NONE
+    if executed_strategy_id != _TREND_FOLLOWING_ENTRY_SIDE_RATIFIED_OWNER:
+        return StrategyEntrySideCarrierV1.NONE
+    if event_kind is StrategyAgreementEventKindV1.ENTRY and cycle_signal_value == 1:
+        return StrategyEntrySideCarrierV1.LONG
+    return StrategyEntrySideCarrierV1.NONE
+
+
 def normalize_strategy_signal_to_suitability_agreement_material_v1(
     binding: StrategySignalBindingResultV1,
     *,
@@ -208,9 +239,14 @@ def normalize_strategy_signal_to_suitability_agreement_material_v1(
     side_agreement, filter_pass, event_kind = _intrinsic_side_agreement_and_aux(
         encoding_class, cycle_signal_value
     )
-    # Explicit side carrier only; no producer currently emits LONG/SHORT.
-    # cycle_signal_value=+1 under ENTRY_EXIT remains an ENTRY event, not LONG.
-    entry_side = StrategyEntrySideCarrierV1.NONE
+    # Explicit producer-scoped carrier only (trend_following LONG on ENTRY).
+    # Generic cycle_signal_value=+1 is not side authority for other producers.
+    entry_side = _resolve_entry_side_carrier_v1(
+        executed_strategy_id=executed_id,
+        encoding_class=encoding_class,
+        event_kind=event_kind,
+        cycle_signal_value=cycle_signal_value,
+    )
     material_digest = compute_strategy_suitability_agreement_material_digest_v1(
         encoding_class=encoding_class,
         configured_strategy_id=configured_id,

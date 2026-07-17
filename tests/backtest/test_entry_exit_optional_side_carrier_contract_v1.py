@@ -294,6 +294,25 @@ def test_adapter_legacy_producers_default_entry_side_none() -> None:
     assert resolve_agreement_bound_directional_cycle_v1(material) is None
 
 
+def test_adapter_trend_following_entry_emits_explicit_long_side() -> None:
+    """Carrier contract: only ratified trend_following ENTRY may emit LONG."""
+    material = normalize_strategy_signal_to_suitability_agreement_material_v1(
+        _binding(
+            [1, 0, -1],
+            provenance=_provenance(
+                configured_strategy_id="trend_following",
+                executed_strategy_id="trend_following",
+            ),
+        ),
+        instrument_id="inst-eth-usdt-perp",
+        trading_epoch=0,
+    )
+    assert material.encoding_class is StrategySignalEncodingClassV1.ENTRY_EXIT_EVENT_V1
+    assert material.event_kind is StrategyAgreementEventKindV1.ENTRY
+    assert material.entry_side is StrategyEntrySideCarrierV1.LONG
+    assert resolve_agreement_bound_directional_cycle_v1(material) == 1
+
+
 def test_bollinger_panel_baseline_predicate_unchanged_without_carrier() -> None:
     """Contract-universal baseline: 185× FF_DA_FLAT_PATH while Bollinger emits NONE."""
     assert _PANEL_ENTRY_BASELINE == 185
