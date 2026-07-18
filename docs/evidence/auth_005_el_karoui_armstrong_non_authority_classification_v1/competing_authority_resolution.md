@@ -19,7 +19,7 @@
 
 | Field | Value |
 |---|---|
-| Files | `src/strategies/ecm.py` (`ecm_cycle`) vs `src/strategies/armstrong/*` (`armstrong_cycle`) |
+| Files | `src/strategies/ecm.py` (`ecm_cycle`) vs `src&#47;strategies&#47;armstrong&#47;*` (`armstrong_cycle`) |
 | Semantic | Two named surfaces for Armstrong/ECM cycle ideas |
 | Authority claim | **None** for Master V2 system-state after clarification |
 | Why previously counted | Identity dual can be misread as competing producers |

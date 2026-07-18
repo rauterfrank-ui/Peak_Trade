@@ -6,7 +6,7 @@ Registry/tiering metadata triangle closed: both strategies are consistent Resear
 - `src/strategies/registry.py` — AUTH-005 Spec alignment
 - `config/strategy_tiering.toml` — clarifying notes
 - Docstrings on armstrong / el_karoui / ecm / combi experiment
-- Contract tests under `tests/strategies/test_auth_005_*`
+- Contract tests under `tests&#47;strategies&#47;test_auth_005_*`
 
 ## Unchanged
 - Rolling-vol math, 3141d cycle math, Master V2, Double Play, Risk/Sizing/Execution owners
