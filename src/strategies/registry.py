@@ -163,19 +163,25 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         key="armstrong_cycle",
         cls=ArmstrongCycleStrategy,
         config_section="strategy.armstrong_cycle",
-        description="Armstrong ECM Cycle Strategy (R&D-Only, nicht für Live)",
-        is_live_ready=True,  # Armstrong ist live-ready
-        tier="production",
-        allowed_environments=("backtest", "paper", "live"),
+        description=(
+            "Armstrong ECM Cycle Strategy (R&D-Only, Non-Authority, "
+            "CYCLE_INFORMATION research; nicht live / nicht kanonisch gebunden)"
+        ),
+        is_live_ready=False,  # AUTH-005: align class + strategy_tiering.toml
+        tier="r_and_d",
+        allowed_environments=("offline_backtest", "research"),
     ),
     "el_karoui_vol_model": StrategySpec(
         key="el_karoui_vol_model",
         cls=ElKarouiVolModelStrategy,
         config_section="strategy.el_karoui_vol_model",
-        description="El Karoui Stochastic Vol Model (R&D-Only, nicht für Live)",
-        is_live_ready=True,  # El Karoui ist live-ready
-        tier="production",
-        allowed_environments=("backtest", "paper", "live"),
+        description=(
+            "El Karoui Vol Regime Model (R&D-Only, Non-Authority, "
+            "REGIME_INFORMATION research; nicht live / nicht kanonisch gebunden)"
+        ),
+        is_live_ready=False,  # AUTH-005: align class + strategy_tiering.toml
+        tier="r_and_d",
+        allowed_environments=("offline_backtest", "research"),
     ),
     "ehlers_cycle_filter": StrategySpec(
         key="ehlers_cycle_filter",

@@ -8,6 +8,13 @@ Model (ECM) für explorative Research-Zwecke.
 
 ⚠️ WICHTIG: RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
 
+AUTH-005 classification (Non-Authority):
+- CATEGORY=RESEARCH_INFORMATION_SOURCE
+- PRIMARY_ROLE=CYCLE_INFORMATION
+- AUTHORITY=NON_AUTHORITY
+- LIVE_READY=false · EXECUTION_ELIGIBLE=false · CANONICAL_BOUND=false
+- Does not own Master V2 / Double Play / Dynamic Scope / Agreement / Risk / Sizing
+
 Diese Strategie ist ausschließlich für:
 - Offline-Backtests
 - Research & Analyse

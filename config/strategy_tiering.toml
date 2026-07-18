@@ -137,10 +137,11 @@ tags = ["cycles", "timing", "ecm", "long-term"]
 recommended_config_id = "armstrong_cycle_v0_research"
 allow_live = false
 notes = """
-Armstrong ECM-Zyklus-Strategie (Research-Only).
+Armstrong ECM-Zyklus-Strategie (Research-Only / Non-Authority).
+PRIMARY_ROLE=CYCLE_INFORMATION · AUTH-005.
 Basiert auf Martin Armstrongs Economic Confidence Model (8.6-Jahre-Zyklus).
 ⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
-Deployment erst nach Phase-X-Freigabe möglich.
+Keine Master-V2-/Double-Play-/Scope-/Agreement-/Risk-/Sizing-Authority.
 """
 
 [strategy.el_karoui_vol_model]
@@ -153,10 +154,11 @@ tags = ["volatility", "stochastic-vol", "risk-model", "options"]
 recommended_config_id = "el_karoui_vol_v0_research"
 allow_live = false
 notes = """
-El Karoui Stochastisches Volatilitätsmodell (Research-Only).
-Basiert auf Nicole El Karouis Arbeiten zu stoch. Vol-Modellen.
+El Karoui Vol-Regime-Modell (Research-Only / Non-Authority).
+PRIMARY_ROLE=REGIME_INFORMATION · AUTH-005.
+Pragmatische rolling/EWM-Vol (nicht BSDE-Publikationsmath).
 ⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
-Deployment erst nach Phase-X-Freigabe möglich.
+Keine Master-V2-/Double-Play-/Scope-/Agreement-/Risk-/Sizing-Authority.
 """
 
 [strategy.ehlers_cycle_filter]
