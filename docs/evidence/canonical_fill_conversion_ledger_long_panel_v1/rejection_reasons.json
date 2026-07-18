@@ -1,0 +1,30 @@
+{
+  "by_fill_class": {
+    "CONVERTED": 63,
+    "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE": 52,
+    "NO_ENTRY_INTENT": 3
+  },
+  "by_first_drop_boundary": {
+    "NONE": 63,
+    "backtest_engine_fill_or_roundtrip_ledger": 52,
+    "entry_exit_policy": 3
+  },
+  "definition": "Per-instrument fill_class and first_drop_boundary from the non-authoritative probe; not exchange reject codes.",
+  "no_entry_intent_instruments": [
+    "LUNA",
+    "TRX",
+    "USDC"
+  ],
+  "source": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_fill_conversion.csv",
+  "unobserved": {
+    "exchange_reject_codes": "not_observed",
+    "per_bar_fill_reject_taxonomy": "not_observed",
+    "reason": "Probe records funnel/class/boundary aggregates and engine totals; it does not emit a per-fill venue reject ledger."
+  },
+  "zero_trade_with_enter": {
+    "count": 52,
+    "dominant_boundary": "backtest_engine_fill_or_roundtrip_ledger",
+    "max_impulse_len_observed": 5.0,
+    "median_impulse_len": 1.0
+  }
+}

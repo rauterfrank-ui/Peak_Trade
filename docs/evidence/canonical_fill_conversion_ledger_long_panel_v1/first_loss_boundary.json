@@ -1,0 +1,68 @@
+{
+  "actual_outputs": {
+    "first_drop_boundary_for_enter_zero_trade": "backtest_engine_fill_or_roundtrip_ledger",
+    "instruments_enter_and_zero_trade": 52,
+    "instruments_with_trades": 63,
+    "mechanical_defect_instruments": 0,
+    "representative_zero_trade_fill_class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE",
+    "representative_zero_trade_instrument_total_trades": 0,
+    "total_trades": 69
+  },
+  "classes_excluded": {
+    "A": "rejected \u2014 canonical chain bound (mv2_decision_replay_series); binding proof PASS",
+    "B": "rejected \u2014 market/scope path reached enter intents on 115/118 instruments",
+    "C": "rejected \u2014 entry intents present (4226); only 3 instruments NO_ENTRY_INTENT",
+    "F": "not_observed \u2014 no separable fee/slippage domination analysis on this harness",
+    "G": "not_observed \u2014 no per-trade gross-edge panel economics in this fill-conversion slice"
+  },
+  "classification_source": "docs/evidence/canonical_chain_economic_reevaluation_v1/instrument_classification.md (A\u2013I legend; A\u2013G reused without redefinition)",
+  "evidence_paths": [
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/probe_summary.json",
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_fill_conversion.csv",
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_classification.md",
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/probe_run_log.txt",
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/chain_binding_proof.txt",
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/fill_conversion_probe_v1.py"
+  ],
+  "expected_outputs": {
+    "if_mechanical_intent_map_or_map_engine_intact": {
+      "engine_nonzero_equals_mapped_nonzero": true,
+      "enter_engine_mismatch_sum": 0,
+      "enter_map_mismatch_sum": 0,
+      "mapped_nonzero_on_enter_equals_entry_intents": true
+    },
+    "trade_materialization": "not required by this audit contract; probe classifies sparse ledger conversion without asserting a required open"
+  },
+  "first_value_loss_boundary": "backtest_engine_fill_or_roundtrip_ledger",
+  "mechanical_defect_found": false,
+  "observed_inputs": {
+    "engine_nonzero_bars_total": 4226,
+    "enter_engine_mismatch_sum": 0,
+    "enter_map_mismatch_sum": 0,
+    "entry_intents_total": 4226,
+    "funnel_engine_values_match_all": true,
+    "instruments_enter_and_zero_trade": 52,
+    "instruments_with_enter": 115,
+    "mapped_nonzero_bars_total": 4226,
+    "median_impulse_len_enter_zero_trade": 1.0,
+    "panel_instruments": 118,
+    "representative_zero_trade_instrument": {
+      "engine_nonzero_bars": 8,
+      "engine_signal_source": "mv2_decision_replay_series",
+      "entry_intents": 8,
+      "instrument": "AAVE",
+      "mapped_nonzero_bars": 8,
+      "median_impulse_len": 1.0
+    }
+  },
+  "primary_blocker_class": "E",
+  "primary_blocker_class_meaning": "LOW_SAMPLE_OR_FIXTURE_INSUFFICIENCY",
+  "secondary_blocker_classes_observed": [
+    {
+      "class": "D",
+      "meaning": "EXIT_DOMINANCE_OR_PREMATURE_EXIT",
+      "observation": "Panel exit_or_reduce (240230) \u226b entry_intents (4226); not classified as primary because enter signals already reach engine nonzero bars.",
+      "status": "secondary_annotation_only"
+    }
+  ]
+}

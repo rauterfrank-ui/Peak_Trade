@@ -1,0 +1,101 @@
+{
+  "canonical_path_owners": {
+    "engine_signal_source": "mv2_decision_replay_series",
+    "ledger": "src/backtest/engine.py::BacktestEngine.run_realistic",
+    "map": "src/backtest/mv2_research_wiring_v1.py::map_decision_evidence_to_position_signal_v1",
+    "wiring": "src/backtest/mv2_research_wiring_v1.py::run_mv2_research_backtest_wiring_v1"
+  },
+  "paths": [
+    {
+      "classic_bypass": false,
+      "decision_top_raw": "{\"\": 60, \"blocked\": 3, \"enter_short\": 8, \"no_action\": 14, \"observe\": 391, \"reduce\": 2477}",
+      "fill_class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE",
+      "first_drop_boundary": "backtest_engine_fill_or_roundtrip_ledger",
+      "funnel_engine_values_match": true,
+      "instrument": "AAVE",
+      "label": "enter_present_ledger_zero_trade",
+      "mechanical_defect_suspected": false,
+      "member_id": "okx:linear_perpetual:AAVE:USDT:USDT:perp",
+      "narrative": "Intent enter_short=8 maps 1:1 to mapped and engine nonzero bars; total_trades remains 0 at backtest_engine_fill_or_roundtrip_ledger under median_impulse_len=1.0.",
+      "observed_stage_counts": {
+        "bars": 2953,
+        "engine_nonzero_bars": 8,
+        "enter_engine_mismatch_count": 0,
+        "enter_long": 0,
+        "enter_map_mismatch_count": 0,
+        "enter_short": 8,
+        "entry_intents": 8,
+        "exit_or_reduce": 2477,
+        "mapped_nonzero_bars": 8,
+        "mapped_nonzero_on_enter_epochs": 8,
+        "max_impulse_len": 1,
+        "median_impulse_len": 1.0,
+        "total_trades": 0
+      },
+      "probe_log_excerpt": {
+        "class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE",
+        "engine_nz": 8,
+        "enter": 8,
+        "instrument": "AAVE",
+        "mapped_on_enter": 8,
+        "mechanical": false,
+        "trades": 0
+      },
+      "unobserved_fields": {
+        "exact_bar_index_of_enter_impulse": "not_observed",
+        "fill_ids": "not_observed",
+        "order_ids": "not_observed",
+        "per_bar_timestamps": "not_observed",
+        "reason": "Harness aggregates per instrument; it does not persist a bar-level trade/event ID stream in durable evidence."
+      }
+    },
+    {
+      "classic_bypass": false,
+      "decision_top_raw": "{\"\": 60, \"blocked\": 13, \"enter_long\": 1, \"enter_short\": 8, \"hold\": 91, \"no_action\": 13, \"observe\": 275, \"reduce\": 2492}",
+      "fill_class": "CONVERTED",
+      "first_drop_boundary": "NONE",
+      "funnel_engine_values_match": true,
+      "instrument": "1INCH",
+      "label": "converted_control",
+      "mechanical_defect_suspected": false,
+      "member_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "narrative": "Control path proves the same chain can materialize a ledger trade (total_trades=1) without map/engine mismatch.",
+      "observed_stage_counts": {
+        "bars": 2953,
+        "engine_nonzero_bars": 9,
+        "enter_engine_mismatch_count": 0,
+        "enter_long": 1,
+        "enter_map_mismatch_count": 0,
+        "enter_short": 8,
+        "entry_intents": 9,
+        "exit_or_reduce": 2492,
+        "mapped_nonzero_bars": 9,
+        "mapped_nonzero_on_enter_epochs": 9,
+        "max_impulse_len": 1,
+        "median_impulse_len": 1.0,
+        "total_trades": 1
+      },
+      "probe_log_excerpt": {
+        "class": "CONVERTED",
+        "engine_nz": 9,
+        "enter": 9,
+        "instrument": "1INCH",
+        "mapped_on_enter": 9,
+        "mechanical": false,
+        "trades": 1
+      },
+      "unobserved_fields": {
+        "fill_ids": "not_observed",
+        "order_ids": "not_observed",
+        "per_bar_timestamps": "not_observed",
+        "trade_pnl_decomposition": "not_observed"
+      }
+    }
+  ],
+  "source": [
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_fill_conversion.csv",
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/probe_run_log.txt",
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/chain_binding_proof.txt",
+    "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/probe_summary.json"
+  ]
+}

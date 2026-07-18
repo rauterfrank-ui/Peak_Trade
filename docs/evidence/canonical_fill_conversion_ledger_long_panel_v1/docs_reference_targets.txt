@@ -1,0 +1,2 @@
+Docs Reference Targets: scanned 1767 md file(s) (514 ignored), found 12804 reference(s).
+All referenced targets exist.
