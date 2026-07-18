@@ -125,7 +125,29 @@
     "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/bypass_scan.txt",
     "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/test_results.txt",
     "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/safety_invariants.txt",
-    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/final_summary.txt"
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/final_summary.txt",
+    "src/ops/durable_completion_validation/validators/event_stream.py",
+    "tests/governance/test_scenario_scope_event_injection_fail_closed_guard_v1.py",
+    "tests/ops/test_inv016_durable_completion_binding_contract_v0.py",
+    "tests/trading/master_v2/test_testnet_scenario_injection_fail_closed_tick_provenance_v1.py",
+    "docs/product/evidence/read_only_dynamic_scope_competing_authority_forensic_audit_v1_20260718T163605Z/authority_inventory.tsv",
+    "docs/product/evidence/read_only_dynamic_scope_competing_authority_forensic_audit_v1_20260718T163605Z/call_graph.md",
+    "docs/product/evidence/read_only_dynamic_scope_competing_authority_forensic_audit_v1_20260718T163605Z/canonical_chain.md",
+    "docs/product/evidence/read_only_dynamic_scope_competing_authority_forensic_audit_v1_20260718T163605Z/file_search_manifest.txt",
+    "docs/product/evidence/read_only_dynamic_scope_competing_authority_forensic_audit_v1_20260718T163605Z/git_state_before_after.txt",
+    "docs/product/evidence/read_only_dynamic_scope_competing_authority_forensic_audit_v1_20260718T163605Z/summary.md",
+    "docs/product/evidence/read_only_dynamic_scope_competing_authority_forensic_audit_v1_20260718T163605Z/suspected_paths.md",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/audit_evidence_reference.md",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/authority_invariants.md",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/before_after_defaults.md",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/changed_files.txt",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/git_state_before_after.txt",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/injection_callsite_inventory.tsv",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/lint.log",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/pr_bounded_timing.log",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/provenance_contract.md",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/summary.md",
+    "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/tests.log"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -144,7 +166,8 @@
     "TECHNICAL_SURFACE_P_REGISTRY_STATUS_CONTRACT_TEST",
     "TECHNICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_WIRING",
     "TECHNICAL_DOUBLE_PLAY_SOLE_AUTHORITY_QUARANTINE_WIRING",
-    "TECHNICAL_CHOP_SCOPE_EVENT_POLICY_BINDING_WIRING"
+    "TECHNICAL_CHOP_SCOPE_EVENT_POLICY_BINDING_WIRING",
+    "TECHNICAL_SCENARIO_INJECTION_FAIL_CLOSED_TICK_PROVENANCE_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -188,6 +211,7 @@
     "Includes Surface P registry status contract-test alignment (PASS vs PARTIAL_RUNTIME_ACTIVATION_PENDING split) under runtime/authority/order NONE invariants; no owner semantic mutation.",
     "Includes canonical Dynamic Scope trailing state continuity repair: RuntimeScopeState SSOT across integrated/backtest cycles; CanonicalScopeSnapshot identity-only; CHOP bound as scope policy (no emission heuristic); no runtime/authority/order/live activation.",
     "Includes Double Play sole authority fail-closed quarantine: Ops SwitchGate projection-only, scenario tick.scope_event TEST_ONLY guarded, backtest position feedback observation-only (no SideState overwrite); CHOP bound as scope policy; UNKNOWN remains NOT_BOUND; no runtime/order/live activation; TEST_ONLY injection harness test paths explicitly allowlisted.",
-    "Includes CHOP scope-event policy binding v1: ScopeEvent.CHOP_DETECTED bound as RuntimeScopeState scope policy only; Composition consumer projection; UNKNOWN remains NOT_BOUND_FAIL_CLOSED; no Direction/Switch/SideState mutation by CHOP; no runtime/order/live activation."
+    "Includes CHOP scope-event policy binding v1: ScopeEvent.CHOP_DETECTED bound as RuntimeScopeState scope policy only; Composition consumer projection; UNKNOWN remains NOT_BOUND_FAIL_CLOSED; no Direction/Switch/SideState mutation by CHOP; no runtime/order/live activation.",
+    "Includes testnet/scenario injection fail-closed default + required typed tick provenance: allow_test_scope_event_injection defaults False; explicit bool opt-in + OfflineScenarioTickProvenanceV1 required; no Direction/Side/Switch authority; chop_guard default-minimal transition_allowed aligned to CHOP scope-policy application; no runtime/order/live activation."
   ]
 }
