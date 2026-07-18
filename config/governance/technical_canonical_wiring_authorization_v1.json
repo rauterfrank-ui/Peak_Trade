@@ -58,7 +58,18 @@
     "tests/trading/master_v2/test_reversal_preparation_scenario_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_survival_suitability_scenario_replay_binding_parity_rewire_contract_v0.py",
-    "tests/test_full_canonical_system_backtest_parity_gap_assessment_v0.py"
+    "tests/test_full_canonical_system_backtest_parity_gap_assessment_v0.py",
+    "tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py",
+    "docs/ops/specs/CANONICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_CONTRACT_V1.md",
+    "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/call_graph_before_after.json",
+    "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/contract.json",
+    "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/instrument_isolation.json",
+    "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/multi_bar_sequences.json",
+    "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/owner_before_after.json",
+    "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/state_lifecycle.json",
+    "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/summary.md",
+    "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/test_results.json",
+    "config/governance/technical_canonical_wiring_authorization_v1.json"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -74,7 +85,8 @@
     "TECHNICAL_RUNTIME_BACKTEST_PARITY_CONTRACT_TEST",
     "TECHNICAL_CANONICAL_ARCHITECTURE_DRIFT_GUARD_CONTRACT_TEST",
     "TECHNICAL_DOCS_TOMBSTONE_POINTER_WIRING",
-    "TECHNICAL_SURFACE_P_REGISTRY_STATUS_CONTRACT_TEST"
+    "TECHNICAL_SURFACE_P_REGISTRY_STATUS_CONTRACT_TEST",
+    "TECHNICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -115,6 +127,7 @@
     "Includes Slice-4 legacy duplicate decision boundary closeout and runtime/backtest parity contract test under runtime/authority/order NONE invariants.",
     "Includes canonical architecture drift guard SSOT contract tests (total decision owner, replay-input constructor, strategy-authority bypass rails) under runtime/authority/order NONE invariants.",
     "Includes docs-only Market Dashboard tombstone pointer updates on Double Play display/route contract specs (no DP composition semantics, no runtime/authority).",
-    "Includes Surface P registry status contract-test alignment (PASS vs PARTIAL_RUNTIME_ACTIVATION_PENDING split) under runtime/authority/order NONE invariants; no owner semantic mutation."
+    "Includes Surface P registry status contract-test alignment (PASS vs PARTIAL_RUNTIME_ACTIVATION_PENDING split) under runtime/authority/order NONE invariants; no owner semantic mutation.",
+    "Includes canonical Dynamic Scope trailing state continuity repair: RuntimeScopeState SSOT across integrated/backtest cycles; CanonicalScopeSnapshot identity-only; CHOP remains NOT_BOUND; no runtime/authority/order/live activation."
   ]
 }
