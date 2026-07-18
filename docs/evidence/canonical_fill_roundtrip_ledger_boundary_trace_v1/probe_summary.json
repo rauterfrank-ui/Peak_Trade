@@ -1,0 +1,8 @@
+{
+  "failed_ids": [],
+  "harness_id": "CANONICAL_FILL_ROUNDTRIP_LEDGER_BOUNDARY_TRACE_V1",
+  "primary_first_loss": "backtest_engine_fill_or_roundtrip_ledger",
+  "scenarios_fail": 0,
+  "scenarios_pass": 12,
+  "scenarios_total": 12
+}
