@@ -38,3 +38,21 @@ tests/research/test_canonical_chain_economic_reevaluation_audit_harness_v1.py . 
 ......                                                                   [100%]
 
 ============================== 7 passed in 1.70s ===============================
+=== LINT GATE FIX NOTE ===
+Moved harness contract from tests/research/ to tests/governance/ to avoid
+IMPACT_UNKNOWN_MUTATION_BLOCKED (tests/research is BOUNDARY_GOVERNED).
+Re-verify:
+  ],
+  "risk_sizing_changed": false,
+  "safety_killswitch_reconciliation_changed": false,
+  "scope_entry_exit_reversal_changed": false,
+  "technical_wiring_authorization_applied": false,
+  "technical_wiring_authorization_version": null
+}
+economic_diagnostic_optimization_boundary_guard_v0: PASS
+
+
+tests/governance/test_canonical_chain_economic_reevaluation_audit_harness_v1.py . [ 14%]
+......                                                                   [100%]
+
+============================== 7 passed in 1.80s ===============================
