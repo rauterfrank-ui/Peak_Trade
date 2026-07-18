@@ -7,9 +7,9 @@
 **Implemented:** Deterministic **bar-level pressure proxies** producing long/flat `{0,1}`:
 
 1. If `bid_size`+`ask_size` and `use_orderbook_imbalance`:  
-   `imbalance=(bid-ask)/(bid+ask)` → rolling mean → `> imbalance_threshold`
+   `imbalance=(bid-ask)&#47;(bid+ask)` → rolling mean → `> imbalance_threshold`
 2. Else if OHLC present:  
-   `pressure=(close-open)/(high-low)` clipped → rolling mean → threshold
+   `pressure=(close-open)&#47;(high-low)` clipped → rolling mean → threshold
 3. Else close-only:  
    `close > SMA(lookback_ticks)`
 
@@ -17,7 +17,7 @@
 
 ### B) Research feature matrix (`compute_ohlcv_proxy_features_v0`)
 
-OHLCV-derived proxies **inspired by** impact / imbalance concepts, explicitly tagged `DETERMINISTIC_OHLCV_PROXY`, with `OHLCV_PROXY_IS_NOT_TRUE_ORDER_BOOK_MICROSTRUCTURE=True`. Includes e.g. `|ret|/vol`, `|ret|/volume` (Kyle-λ proxy), short/long impact ratio — **not** calibrated Bouchaud propagators.
+OHLCV-derived proxies **inspired by** impact / imbalance concepts, explicitly tagged `DETERMINISTIC_OHLCV_PROXY`, with `OHLCV_PROXY_IS_NOT_TRUE_ORDER_BOOK_MICROSTRUCTURE=True`. Includes e.g. `|ret|&#47;vol`, `|ret|&#47;volume` (Kyle-λ proxy), short/long impact ratio — **not** calibrated Bouchaud propagators.
 
 ## Data requirements vs reality
 

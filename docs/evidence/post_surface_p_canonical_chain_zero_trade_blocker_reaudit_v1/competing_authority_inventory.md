@@ -26,7 +26,7 @@
 | `src/trading/master_v2/double_play_entry_exit_policy_v0.py` | entry/exit + qty/eligibility | CONSUMER_PROJECTION | Offline `execution_eligible=false`, qty default `NOT_BOUND` |
 | `src/trading/master_v2/strategy_suitability_agreement_material_v1.py` | `entry_side` / `cycle_signal_value` | CONSUMER_PROJECTION | Explicit carriers; no side from sign invention |
 | `src/trading/master_v2/directional_assessment_v1.py` | DA LONG/SHORT | CONSUMER_PROJECTION | Assessment; `authority_effect=NONE` |
-| `src/trading/master_v2/*_scenario_binding_adapter_v0.py` | scenario adapters | CONSUMER_PROJECTION | Thin wrappers → `transition_state` |
+| `src&#47;trading&#47;master_v2&#47;*_scenario_binding_adapter_v0.py` | scenario adapters | CONSUMER_PROJECTION | Thin wrappers → `transition_state` |
 | `src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py` | runtime bridge | CONSUMER_PROJECTION | Bound offline; `BOUND_NOT_ACTIVATED` |
 | `src/ops/double_play/specialists.py` | `evaluate_double_play` | CONSUMER_PROJECTION | Projection only |
 | `src/live/live_gates.py` | DP annotation | CONSUMER_PROJECTION | No eligibility unlock via DP |

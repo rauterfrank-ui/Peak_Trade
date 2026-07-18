@@ -23,6 +23,6 @@ This removed six previously **untracked** evidence directories that had never be
 - Therefore recovery is **semantic regeneration**, not byte restore
 
 ## Recovery performed
-Branch `recovery/reconstruct-deleted-evidence-packs-v1` reconstructs packs from transcripts, PR/branch context, and historical probe re-runs in temporary worktrees.
+Branch `recovery&#47;reconstruct-deleted-evidence-packs-v1` reconstructs packs from transcripts, PR/branch context, and historical probe re-runs in temporary worktrees.
 
 Recovered_at: 2026-07-18T23:23:43Z

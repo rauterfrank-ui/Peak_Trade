@@ -30,9 +30,9 @@ Both topics have real R&D strategy modules (Ehlers Super Smoother long/flat; Bou
 
 ## Key owners
 
-- Ehlers: `src/strategies/ehlers/ehlers_cycle_filter_strategy.py::EhlersCycleFilterStrategy` (`_super_smoother` + `generate_signals`)
-- Bouchaud strategy: `src/strategies/bouchaud/bouchaud_microstructure_strategy.py::BouchaudMicrostructureStrategy`
-- Bouchaud research proxies: `src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py::compute_ohlcv_proxy_features_v0`
+- Ehlers: `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` (`EhlersCycleFilterStrategy`) (`_super_smoother` + `generate_signals`)
+- Bouchaud strategy: `src/strategies/bouchaud/bouchaud_microstructure_strategy.py` (`BouchaudMicrostructureStrategy`)
+- Bouchaud research proxies: `src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py` (`compute_ohlcv_proxy_features_v0`)
 
 ## Recommendations
 

@@ -38,8 +38,8 @@ RECOMMENDED_AUTHORITY_OWNER=NONE
 
 (Future candidates after ratification — not activated here:)
 
-- Intent emission: `src/strategies/bollinger.py::generate_signals` (+ docs)
-- Transport: `src/backtest/strategy_signal_suitability_agreement_adapter_v1.py::_resolve_entry_side_carrier_v1`
+- Intent emission: `src/strategies/bollinger.py` (`generate_signals`) (+ docs)
+- Transport: `src/backtest/strategy_signal_suitability_agreement_adapter_v1.py` (`_resolve_entry_side_carrier_v1`)
 - System state: `double_play_state.py::transition_state` / composition matrix (unchanged)
 
 ## Operator-GO required

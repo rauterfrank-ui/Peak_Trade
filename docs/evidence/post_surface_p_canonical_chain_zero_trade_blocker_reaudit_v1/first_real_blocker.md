@@ -18,8 +18,8 @@ Not chosen (reason):
 
 ## Owner
 
-`src/backtest/strategy_signal_suitability_agreement_adapter_v1.py::_resolve_entry_side_carrier_v1`  
-→ consumed by `src/backtest/mv2_research_wiring_v1.py::resolve_agreement_bound_directional_cycle_v1`
+`src/backtest/strategy_signal_suitability_agreement_adapter_v1.py` (`_resolve_entry_side_carrier_v1`)  
+→ consumed by `src/backtest/mv2_research_wiring_v1.py` (`resolve_agreement_bound_directional_cycle_v1`)
 
 ## Concrete condition
 

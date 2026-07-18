@@ -47,7 +47,7 @@ Evidence: `generate_signals` calls only `_super_smoother`; Hilbert/Bandpass not 
 | `src/research/step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0.py` | Digest/materialization | RESEARCH_ONLY |
 | `src/backtest/step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibility_contract_v1.py` | Admissibility contract | RESEARCH_ONLY |
 | `scripts/ops/run_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.py` | Offline runner | RESEARCH_ONLY |
-| Terminal inconclusive configs/docs under `config/research/ehlers_*` / `docs/governance/EHLERS_*` | Scope closed as insufficient sample | EVIDENCE_ONLY / RESEARCH_ONLY |
+| Terminal inconclusive configs/docs under `config&#47;research&#47;ehlers_*` / `docs&#47;governance&#47;EHLERS_*` | Scope closed as insufficient sample | EVIDENCE_ONLY / RESEARCH_ONLY |
 
 ## R&D presets / UI / demos
 
@@ -60,7 +60,7 @@ Evidence: `generate_signals` calls only `_super_smoother`; Hilbert/Bandpass not 
 
 ## Cross-references (not Ehlers owners)
 
-El Karoui / Armstrong ratification configs cite `ehlers_cycle_filter/v1` as **distinct baseline scope** — documentation of scope separation, not Ehlers implementation.
+El Karoui / Armstrong ratification configs cite `ehlers_cycle_filter&#47;v1` as **distinct baseline scope** — documentation of scope separation, not Ehlers implementation.
 
 ## Hit volume
 

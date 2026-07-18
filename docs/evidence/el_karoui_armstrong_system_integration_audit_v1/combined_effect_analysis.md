@@ -7,7 +7,7 @@
 
 | Item | Value |
 |---|---|
-| Aggregator | `src/experiments/armstrong_elkaroui_combi_experiment.py::run_armstrong_elkaroui_combi_experiment` |
+| Aggregator | `src/experiments/armstrong_elkaroui_combi_experiment.py` (`run_armstrong_elkaroui_combi_experiment`) |
 | CLI | `scripts/research_cli.py` subcommand `armstrong-elkaroui-combi` |
 | Concept | Cartesian product of Armstrong event-state × El Karoui vol-regime labels; forward-return stats per combo state |
 | Weighting | Descriptive aggregation / stats — **not** a live multi-factor score with production weights |

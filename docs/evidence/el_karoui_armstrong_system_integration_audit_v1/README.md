@@ -23,10 +23,10 @@ Both topics exist as real R&D (and one legacy ECM functional) strategy surfaces 
 | `changed_files.txt` | Files created by this audit only |
 
 ## Key owners
-- El Karoui: `src/strategies/el_karoui/el_karoui_vol_model_strategy.py::ElKarouiVolatilityStrategy`
-- Armstrong: `src/strategies/armstrong/armstrong_cycle_strategy.py::ArmstrongCycleStrategy`
-- Legacy ECM: `src/strategies/ecm.py::generate_signals`
-- Combi: `src/experiments/armstrong_elkaroui_combi_experiment.py::run_armstrong_elkaroui_combi_experiment`
+- El Karoui: `src/strategies/el_karoui/el_karoui_vol_model_strategy.py` (`ElKarouiVolatilityStrategy`)
+- Armstrong: `src/strategies/armstrong/armstrong_cycle_strategy.py` (`ArmstrongCycleStrategy`)
+- Legacy ECM: `src/strategies/ecm.py` (`generate_signals`)
+- Combi: `src/experiments/armstrong_elkaroui_combi_experiment.py` (`run_armstrong_elkaroui_combi_experiment`)
 
 ## Non-actions
 No productive code/test/config mutations · no PR · no stash changes · prior evidence dirs untouched.

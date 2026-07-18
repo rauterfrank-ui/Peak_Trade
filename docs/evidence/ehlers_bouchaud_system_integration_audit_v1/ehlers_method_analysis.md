@@ -21,8 +21,8 @@
 
 Super Smoother coefficients match the common Ehlers / TradingView recursion:
 
-- `a1 = exp(-√2 · π / period)`
-- `c2 = 2·a1·cos(√2 · π / period)`, `c3 = -a1²`, `c1 = 1 - c2 - c3`
+- `a1 = exp(-√2 · π &#47; period)`
+- `c2 = 2·a1·cos(√2 · π &#47; period)`, `c3 = -a1²`, `c1 = 1 - c2 - c3`
 - Recurrence uses `x[i]`, `x[i-1]`, `out[i-1]`, `out[i-2]` only → **causal**
 
 Docs cite „Rocket Science for Traders“ / Cybernetic Analysis. The **signal rule** (close vs smooth) is a minimal research slice, not a full Ehlers cycle-trading system.

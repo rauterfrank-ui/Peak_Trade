@@ -36,7 +36,7 @@ bleibt auf dem Research-Seed `LONG_ARMED` ohne `DOWNSCOPE_*`.
 
 ## First value-loss boundary
 
-`src/backtest/mv2_research_wiring_v1.py::_build_replay_input` (hardcoded `up_distance=120.0` …)
+`src/backtest/mv2_research_wiring_v1.py` (`_build_replay_input`) (hardcoded `up_distance=120.0` …)
 → Generator: `generate_deterministic_scope_event` setzt `event_type=NOOP` wenn `selected_kind is None`.
 
 ## Next recommended action

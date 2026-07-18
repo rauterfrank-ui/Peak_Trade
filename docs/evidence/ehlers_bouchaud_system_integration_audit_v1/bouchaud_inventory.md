@@ -8,13 +8,13 @@
 | Symbol | `BouchaudMicrostructureStrategy.generate_signals` |
 | File kind | Strategy (R&D OHLCV proxy) |
 | Relation | **BOUCHAUD** — cites J.-P. Bouchaud microstructure literature; **does not** implement square-root impact / propagator math |
-| Method | Priority: (1) bid/ask size imbalance rolling mean vs threshold; (2) OHLC bar pressure `(c-o)/(h-l)` rolling vs threshold; (3) close vs SMA |
+| Method | Priority: (1) bid/ask size imbalance rolling mean vs threshold; (2) OHLC bar pressure `(c-o)&#47;(h-l)` rolling vs threshold; (3) close vs SMA |
 | Productive? | Callable research code; **not** live authority |
 | Import | `src/strategies/bouchaud/__init__.py` → registry |
 | Callers | Registry, STEP29M offline adapters, research materializers, tests |
 | Consumers | Offline economic evaluation; linear-diagnostics research; agreement encoding map |
 | Reachable | Offline/research/backtest; **not** in `src/trading/master_v2/` |
-| Tests | `tests/test_bouchaud_gatheral_cont_strategies.py` + many `tests/ops|research/*bouchaud*` |
+| Tests | `tests/test_bouchaud_gatheral_cont_strategies.py` + many `tests&#47;ops|research&#47;*bouchaud*` |
 | Docs | Module refs to *Trades, Quotes and Prices*; `docs/strategies/R_AND_D_STRATEGIES.md` |
 | Classification | **RESEARCH_ONLY** (`IS_LIVE_READY=False`, tier `r_and_d`, binding `authority_effect=NONE`) |
 
@@ -47,7 +47,7 @@
 
 ## Offline research / STEP29M / diagnostics
 
-Large surface under `src/research/bouchaud_*`, `scripts/ops/*bouchaud*`, `config/research/bouchaud_*`, governance docs. Scope `bouchaud_microstructure_ohlcv_proxy/v1` is **separated** from reserved `bouchaud_microstructure_tick_l2/v1`. Baseline verdict historically **INCONCLUSIVE**; failed-execution / retry-block artifacts exist.
+Large surface under `src&#47;research&#47;bouchaud_*`, `scripts&#47;ops&#47;*bouchaud*`, `config&#47;research&#47;bouchaud_*`, governance docs. Scope `bouchaud_microstructure_ohlcv_proxy&#47;v1` is **separated** from reserved `bouchaud_microstructure_tick_l2&#47;v1`. Baseline verdict historically **INCONCLUSIVE**; failed-execution / retry-block artifacts exist.
 
 `config/research/full_canonical_system_economic_evidence_generation_v1_binding_ratification_v0.json` lists Bouchaud as a **candidate_id** for research evidence generation — not MV2 authority.
 

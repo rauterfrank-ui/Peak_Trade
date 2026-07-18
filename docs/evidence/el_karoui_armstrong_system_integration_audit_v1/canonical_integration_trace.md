@@ -20,14 +20,14 @@ Authority class: `Authority` | `Projection` | `Non-Authority` | `Consumer-only`
 | Adapter | NOT_BOUND | No Master V2 adapter consumes this as live producer |
 | Canonical Market Context | NOT_BOUND | Not a MV2 market-context producer |
 | Dynamic Scope | NOT_BOUND | Does not mutate scope |
-| transition_state / Dynamic Switch | NOT_BOUND | No calls from `trading/master_v2` |
+| transition_state / Dynamic Switch | NOT_BOUND | No calls from `trading&#47;master_v2` |
 | Bull/Bear selected future | NOT_BOUND | |
 | Agreement / Composition | NOT_BOUND (prod) / BOUND (encoding catalog) | Listed in agreement adapter encoding owners only; not active composition authority |
 | Risk / Sizing | NOT_BOUND (MV2) | Local regime multipliers / vol scaling exist inside R&D model only |
 | Quantity | NOT_BOUND | |
 | Execution Eligibility | FAIL_CLOSED (live) | Class + tiering + R&D gates block live; registry metadata triangle is conflicting but Dual-source contracts treat as research-only |
 | Trade Intent | NOT_BOUND | Not in execution kernel path |
-| Execution Kernel | NOT_BOUND | No imports under `src/execution` |
+| Execution Kernel | NOT_BOUND | No imports under `src/execution/` |
 
 **Authority class:** Non-Authority (relative to MV2). Strategy Intent only when explicitly run as R&D/backtest strategy.
 

@@ -160,5 +160,5 @@ tests/test_strategies_smoke.py
 
 ## Key owners (path presence)
 PRESENT src/strategies/el_karoui
-ABSENT src/strategies/el_karoui/el_karoui_volatility_strategy.py
+ABSENT `src&#47;strategies&#47;el_karoui&#47;el_karoui_volatility_strategy.py` <!-- pt:ref-target-ignore -->
 PRESENT src/experiments/armstrong_elkaroui_combi_experiment.py
