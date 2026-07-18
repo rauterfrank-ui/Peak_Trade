@@ -1,0 +1,23 @@
+{
+  "dominant_enter_side": "SHORT",
+  "instruments_with_enter_long_gt0": 63,
+  "instruments_with_enter_short_gt0": 99,
+  "intent_side_totals": {
+    "enter_long": 69,
+    "enter_short": 4157,
+    "entry_intents": 4226,
+    "exit_or_reduce": 240230
+  },
+  "ledger_trade_side_classification": {
+    "long_trades": "not_observed",
+    "reason": "CSV/probe expose total_trades only; no long_trades/short_trades columns were recorded on this harness.",
+    "short_trades": "not_observed",
+    "total_trades": 69
+  },
+  "source": "docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/instrument_fill_conversion.csv + probe_summary.json",
+  "strategy_entry_side_authority": {
+    "entry_side": "NONE",
+    "evidence": "Existing slice contract and economic reevaluation chain: Bollinger/strategy entry_side remains NONE; probe does not invent LONG defaults.",
+    "long_default_found": false
+  }
+}
