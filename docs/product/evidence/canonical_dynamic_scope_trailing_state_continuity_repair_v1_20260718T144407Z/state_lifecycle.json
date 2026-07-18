@@ -1,0 +1,16 @@
+{
+  "seed_when": [
+    "runtime_scope_state is None",
+    "explicit_runtime_scope_reset",
+    "instrument mismatch"
+  ],
+  "carry_fields": [
+    "anchor_price",
+    "boundaries",
+    "hysteresis",
+    "switch cooldown ticks",
+    "switches_in_window"
+  ],
+  "snapshot_not_mutated_for_trail": true,
+  "scope_direction_from": "scope_direction_from_side_state_v1"
+}

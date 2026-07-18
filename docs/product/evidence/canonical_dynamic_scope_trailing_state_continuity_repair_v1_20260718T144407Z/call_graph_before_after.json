@@ -1,0 +1,18 @@
+{
+  "before": [
+    "initialize_canonical_scope",
+    "generate_event(snapshot.trailing)",
+    "transition_state(_EMPTY)",
+    "discard scope return"
+  ],
+  "after": [
+    "initialize_canonical_scope (identity)",
+    "resolve/seed RuntimeScopeState",
+    "update_dynamic_boundaries",
+    "generate_event(runtime trailing_anchor)",
+    "transition_state(runtime_scope_pre)",
+    "update_dynamic_boundaries post",
+    "return runtime_scope_state_after",
+    "wiring project into next bar"
+  ]
+}

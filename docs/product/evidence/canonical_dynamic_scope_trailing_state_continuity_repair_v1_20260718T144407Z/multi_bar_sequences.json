@@ -1,0 +1,11 @@
+{
+  "tests": {
+    "A_rising": "pass",
+    "B_falling": "pass",
+    "C_sideways": "pass",
+    "D_pending": "pass",
+    "E_cooldown": "pass",
+    "F_instrument": "pass",
+    "G_regression_gates": "pass"
+  }
+}

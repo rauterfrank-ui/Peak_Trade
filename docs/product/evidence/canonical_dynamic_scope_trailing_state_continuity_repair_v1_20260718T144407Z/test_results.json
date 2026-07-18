@@ -1,0 +1,6 @@
+{
+  "command": "PYTHONPATH=src python3 -m pytest tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py tests/backtest/test_mv2_research_wiring_v1.py -q",
+  "result": "135 passed",
+  "focused_new_file": "tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py",
+  "new_tests_passed": 8
+}

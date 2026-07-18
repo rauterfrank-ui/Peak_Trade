@@ -157,7 +157,7 @@ from src.trading.master_v2.double_play_entry_exit_policy_v0 import (
     TradingGate,
 )
 from src.trading.master_v2.double_play_futures_input import FuturesMarketType
-from src.trading.master_v2.double_play_state import SideState
+from src.trading.master_v2.double_play_state import RuntimeScopeState, SideState
 from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
     IntegratedOfflineReplayInputV1,
@@ -165,6 +165,7 @@ from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayPoliciesV1,
     build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
+    scope_direction_from_side_state_v1,
 )
 from src.trading.master_v2.suitability_binding_v1 import (
     SUITABILITY_RANKING_POLICY_VERSION,
@@ -388,6 +389,9 @@ class MV2IntegratedReplayBarSequenceStateV1:
     hard_risk_reduction_signal: PolicySignalV0
     safety_exit_signal: PolicySignalV0
     now_tick: int
+    runtime_scope_state: RuntimeScopeState | None = None
+    runtime_scope_bound_instrument_id: str | None = None
+    dynamic_scope_rules: Any | None = None
 
 
 @dataclass(frozen=True)
@@ -1194,6 +1198,9 @@ def build_initial_mv2_integrated_replay_bar_sequence_state_v1(
         hard_risk_reduction_signal=PolicySignalV0(triggered=False),
         safety_exit_signal=PolicySignalV0(triggered=False),
         now_tick=trading_epoch,
+        runtime_scope_state=None,
+        runtime_scope_bound_instrument_id=None,
+        dynamic_scope_rules=None,
     )
 
 
@@ -1206,6 +1213,10 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
     """Project canonical integrated replay intermediate outputs into the next bar input state."""
     side_state = SideState(intermediate.state_switch.next_side_state)
     direction_state = side_state_to_entry_exit_direction(side_state)
+    scope_direction_state = scope_direction_from_side_state_v1(
+        side_state,
+        fallback=previous.scope_direction_state,
+    )
     entry_exit = intermediate.entry_exit_decision
     composition = intermediate.composition_result
     existing_position_side, venue_flat = _derive_existing_position_side_and_venue_flat_v1(
@@ -1223,7 +1234,7 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
     )
     return MV2IntegratedReplayBarSequenceStateV1(
         existing_scope=intermediate.current_scope,
-        scope_direction_state=previous.scope_direction_state,
+        scope_direction_state=scope_direction_state,
         scope_confirmation_state=scope_confirmation,
         scope_cooldown_state=_advance_scope_cooldown_state_v1(previous.scope_cooldown_state),
         directional_confirmation_state=directional_confirmation_state,
@@ -1246,6 +1257,9 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
         hard_risk_reduction_signal=PolicySignalV0(triggered=False),
         safety_exit_signal=PolicySignalV0(triggered=False),
         now_tick=next_trading_epoch,
+        runtime_scope_state=intermediate.runtime_scope_state_after,
+        runtime_scope_bound_instrument_id=intermediate.current_scope.instrument_id,
+        dynamic_scope_rules=previous.dynamic_scope_rules,
     )
 
 
@@ -1259,6 +1273,10 @@ def apply_backtest_engine_position_feedback_to_mv2_sequence_state_v1(
         sequence_state,
         side_state=feedback.side_state,
         direction_state=feedback.direction_state,
+        scope_direction_state=scope_direction_from_side_state_v1(
+            feedback.side_state,
+            fallback=sequence_state.scope_direction_state,
+        ),
         position_state=position_state,
         reconciliation_state=feedback.reconciliation_state,
         existing_position_side=feedback.existing_position_side,
@@ -1511,6 +1529,14 @@ def _coerce_replay_input_enums_for_integrated_replay_v1(
         strategy_suitability_agreement_material=(
             replay_input.strategy_suitability_agreement_material
         ),
+        runtime_scope_state=getattr(replay_input, "runtime_scope_state", None),
+        runtime_scope_bound_instrument_id=getattr(
+            replay_input, "runtime_scope_bound_instrument_id", None
+        ),
+        dynamic_scope_rules=getattr(replay_input, "dynamic_scope_rules", None),
+        explicit_runtime_scope_reset=bool(
+            getattr(replay_input, "explicit_runtime_scope_reset", False)
+        ),
     )
 
 
@@ -1699,6 +1725,10 @@ def _build_replay_input(
         context_reference=f"mv2-research-{trading_epoch}",
         now_tick=sequence_state.now_tick,
         strategy_suitability_agreement_material=strategy_suitability_agreement_material,
+        runtime_scope_state=sequence_state.runtime_scope_state,
+        runtime_scope_bound_instrument_id=sequence_state.runtime_scope_bound_instrument_id,
+        dynamic_scope_rules=sequence_state.dynamic_scope_rules,
+        explicit_runtime_scope_reset=False,
     )
 
 
