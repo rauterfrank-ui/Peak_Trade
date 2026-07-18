@@ -1,0 +1,77 @@
+===== 2026-07-18T19:40:26Z =====
+MAIN=72bd45ecd1019f7d0441dcba1ef52ff47c721480
+--- bypass identity from audits ---
+config/governance/obl_b07_bollinger_event_only_semantic_contract_v1.json:11:  "CLASSIC_LONG_IS_CANONICAL": false,
+config/governance/obl_b07_bollinger_event_only_semantic_contract_v1.json:12:  "CLASSIC_LONG_PROPAGATES_TO_INTEGRATED": false,
+docs/evidence/bollinger_entry_side_canonical_authority_read_only_audit_v1/bypass_and_competing_authority_findings.md:14:CONFIRMED_BYPASS_COUNT=1
+docs/evidence/bollinger_entry_side_canonical_authority_read_only_audit_v1/bypass_and_competing_authority_findings.md:19:| 1 | `BacktestEngine.run_realistic` | `signal==1` → LONG ENTRY; `signal==-1` → EXIT long | **No** — Legacy&#47;Compatibility. OBL_B07: `CLASSIC_LONG_IS_CANONICAL=false`, `CLASSIC_LONG_PROPAGATES_TO_INTEGRATED=false` |
+docs/evidence/bollinger_entry_side_canonical_composition_slice_plan_v1/test_plan.md:11:3. No Classic `run_realistic` authority leakage into Integrated&#47;MV2.
+docs/evidence/bollinger_entry_side_canonical_authority_read_only_audit_v1/recommended_next_slice.md:21:4. Keep Classic `run_realistic` non-canonical.
+docs/evidence/bollinger_entry_side_canonical_composition_slice_plan_v1/implementation_scope.md:39:CONFIRMED_BYPASS_COUNT=1  # Classic run_realistic LONG — non-canonical
+docs/evidence/bollinger_entry_side_canonical_composition_slice_plan_v1/contract_matrix.md:49:- Classic `run_realistic` LONG remains non-canonical
+docs/evidence/bollinger_entry_side_canonical_composition_slice_plan_v1/final_status.txt:14:CONFIRMED_BYPASS_COUNT=1
+docs/evidence/bollinger_entry_side_canonical_authority_read_only_audit_v1/authority_inventory.md:26:| `src&#47;backtest&#47;engine.py` | `BacktestEngine.run_realistic` | LEGACY_OR_COMPATIBILITY | yes classic | **yes** `signal==1`→LONG | n&#47;a | HIGH if treated as Integrated |
+docs/evidence/bollinger_entry_side_canonical_authority_read_only_audit_v1/authority_inventory.md:34:CONFIRMED_BYPASS_COUNT=1
+docs/evidence/bollinger_entry_side_canonical_authority_read_only_audit_v1/final_status.txt:12:CONFIRMED_BYPASS_COUNT=1
+--- engine LONG ENTRY ---
+498:    def run_realistic(
+528:            strategy_signal_fn: Funktion(df, params) -> pd.Series mit Signalen (1=Buy, -1=Sell, 0=Hold)
+654:            if signal == 1 and current_trade is None:
+655:                # LONG ENTRY
+835:            elif signal == -1 and current_trade is not None:
+1101:            strategy_signal_fn: Funktion(df, params) -> pd.Series mit Signalen (1=Buy, -1=Sell, 0=Hold)
+--- callers of run_realistic ---
+scripts/run_strategy_from_config.py:252:    result = engine.run_realistic(
+scripts/run_optuna_study.py:287:    result = engine.run_realistic(
+scripts/run_idea_strategy.py:291:    result = engine.run_realistic(
+tests/test_tracking_noop.py:127:        result = engine.run_realistic(
+tests/test_tracking_noop.py:154:        result1 = engine1.run_realistic(
+tests/test_tracking_noop.py:161:        result2 = engine2.run_realistic(
+tests/test_tracking_noop.py:181:        result = engine.run_realistic(
+tests/test_tracking_noop.py:201:        result = engine.run_realistic(
+scripts/run_simple_backtest.py:165:    result = engine.run_realistic(
+scripts/run_backtest.py:621:        result = engine.run_realistic(
+scripts/run_ma_realistic.py:183:    result = engine.run_realistic(
+scripts/smoke_test_mlflow.py:216:            result = engine.run_realistic(
+scripts/smoke_test_mlflow.py:272:            result = engine.run_realistic(
+scripts/demo_complete_pipeline.py:288:        result = engine.run_realistic(
+scripts/run_portfolio_backtest_v2.py:271:    result = engine.run_realistic(
+scripts/run_sweep.py:408:    result = engine.run_realistic(
+scripts/run_shadow_execution.py:530:        backtest_result = engine.run_realistic(
+scripts/run_momentum_realistic.py:120:    result = engine.run_realistic(
+scripts/sweep_parameters.py:286:    result = engine.run_realistic(
+scripts/demo_backtest_with_risk.py:50:    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
+scripts/demo_backtest_with_risk.py:93:    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
+scripts/demo_backtest_with_risk.py:144:    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
+scripts/demo_backtest_with_risk.py:174:    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
+scripts/run_portfolio_backtest.py:224:    result = engine.run_realistic(
+scripts/research_cli.py:1586:        result = engine.run_realistic(
+scripts/demo_phase40_portfolio_backtest.py:231:    result = engine.run_realistic(
+scripts/demo_phase40_portfolio_backtest.py:296:    result = engine.run_realistic(
+scripts/demo_phase40_portfolio_backtest.py:399:    result = engine.run_realistic(
+scripts/research_compare_strategies.py:217:        result = engine.run_realistic(
+scripts/demo_execution_backtest.py:590:    result = engine.run_realistic(
+scripts/run_rsi_realistic.py:179:    result = engine.run_realistic(
+scripts/run_donchian_realistic.py:172:    result = engine.run_realistic(
+scripts/research_run_strategy.py:401:        result = engine.run_realistic(
+scripts/scan_markets.py:151:    result = engine.run_realistic(
+scripts/run_market_scan.py:290:        result = engine.run_realistic(
+scripts/demo_order_pipeline_backtest.py:271:        legacy_result = legacy_engine.run_realistic(
+tests/risk/test_backtest_integration.py:78:        result = engine.run_realistic(
+tests/risk/test_backtest_integration.py:141:        result = engine.run_realistic(
+tests/risk/test_backtest_integration.py:178:        result = engine.run_realistic(
+tests/risk/test_backtest_integration.py:210:        result = engine.run_realistic(
+--- MV2 cycle / order intent ---
+src/governance/canonical_order_intent_v1.py:501:def build_canonical_order_intent_v1(
+src/backtest/mv2_research_wiring_v1.py:1547:def resolve_agreement_bound_directional_cycle_v1(
+src/backtest/mv2_research_wiring_v1.py:1596:    - ENTRY_EXIT with entry_side=NONE → flat path (fail-closed, no invented asymmetry).
+--- bridge status ---
+99:INTEGRATION_STATUS_BOUND_NOT_ACTIVATED = "BOUND_NOT_ACTIVATED"
+144:    authority_effect: str
+448:        authority_effect=_AUTHORITY_EFFECT_NONE,
+452:        integration_status=INTEGRATION_STATUS_BOUND_NOT_ACTIVATED,
+475:    if evidence.authority_effect != _AUTHORITY_EFFECT_NONE:
+476:        safety_failures.append("authority_effect_must_remain_none")
+495:        authority_effect=evidence.authority_effect,
+499:        integration_status=INTEGRATION_STATUS_BOUND_NOT_ACTIVATED,
+516:        "canonical_decision_authority_effect": result.authority_effect,
