@@ -30,11 +30,11 @@
   },
   "source_manifest_verify_rc": 0,
   "implementation_digests": {
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py": "906530ad16f4e2a6d9c09e652740b0749c3c9e1c1e4b8ea99d39e0ea71f1681c",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py": "f99f3859dc9f6934be170884356e91c17a224023092f8ba3026085d8b76cb928",
     "src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py": "e557f73eb289ff594ea33474376c66be8cc671b70d666473a1fb57ba81296a30",
     "src/trading/master_v2/reversal_preparation_scenario_binding_adapter_v0.py": "929dc8072ca58e20fbe12b517072b987a672351ec05b9534f1d6b01c63d73dc3",
-    "src/backtest/mv2_research_wiring_v1.py": "31a2dd287dbe25ef61ecae6de5560b03632bf159b59a2f0ac50cd8349a429d2b",
-    "src/trading/master_v2/deterministic_scope_event_generator_v1.py": "15fa4a5b0d74426695c34fe238b470534d4e5cce26dd0343fe0761d18dc48b1b"
+    "src/backtest/mv2_research_wiring_v1.py": "41cc8116cd6fe99b0cdc23bcb7eef94037ccc51e7b5574ada944c55285548949",
+    "src/trading/master_v2/deterministic_scope_event_generator_v1.py": "b562677ac56b7143af25bd7f619fc435ad0359c5ed80bed7631b2793e40a2a55"
   },
   "deterministic_test_refs": [
     "tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_narrow_rewire_v0.py",

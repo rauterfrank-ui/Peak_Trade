@@ -44,6 +44,7 @@ from trading.master_v2.canonical_trading_decision_evidence_v1 import (
 from trading.master_v2.deterministic_scope_event_generator_v1 import (
     DETERMINISTIC_SCOPE_EVENT_GENERATOR_LAYER_VERSION,
     CanonicalScopeEventType,
+    ScopeCandidateKind,
     ScopeConfirmationStateV1,
     ScopeCooldownStateV1,
     ScopeDirectionState,
@@ -648,7 +649,18 @@ def _instrument_allowed(instrument_id: str) -> bool:
     return not any(token in lowered for token in _FORBIDDEN_INSTRUMENT_SUBSTRINGS)
 
 
-def _canonical_scope_event_to_scope_event(event_type: CanonicalScopeEventType) -> ScopeEvent:
+def _canonical_scope_event_to_scope_event(
+    event_type: CanonicalScopeEventType,
+    *,
+    matched_conditions: Tuple[str, ...] = (),
+) -> ScopeEvent:
+    """Map canonical generator evidence to SideState ScopeEvent.
+
+    ``ADVERSE_EXIT_CANDIDATE`` is not a SideState event. When matched conditions
+    also contain a specific downscope fact, transport ``DOWNSCOPE_CANDIDATE`` so
+    an exit reason cannot degrade a known downscope into ``SCOPE_UNKNOWN``.
+    Without that fact, map fail-closed to ``SCOPE_UNKNOWN`` (no invented scope).
+    """
     mapping = {
         CanonicalScopeEventType.NOOP: ScopeEvent.NOOP,
         CanonicalScopeEventType.UPSCOPE_CANDIDATE: ScopeEvent.UPSCOPE_CANDIDATE,
@@ -659,6 +671,10 @@ def _canonical_scope_event_to_scope_event(event_type: CanonicalScopeEventType) -
     }
     if event_type in mapping:
         return mapping[event_type]
+    if event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE:
+        if ScopeCandidateKind.DOWNSCOPE.value in matched_conditions:
+            return ScopeEvent.DOWNSCOPE_CANDIDATE
+        return ScopeEvent.SCOPE_UNKNOWN
     return ScopeEvent.SCOPE_UNKNOWN
 
 
@@ -1172,7 +1188,10 @@ def run_integrated_offline_trading_logic_replay_v1(
     scope_event = with_computed_scope_event_digest(
         generate_deterministic_scope_event(scope_event_inp, inp.policies.scope_event_generator)
     )
-    mapped_event = _canonical_scope_event_to_scope_event(scope_event.event_type)
+    mapped_event = _canonical_scope_event_to_scope_event(
+        scope_event.event_type,
+        matched_conditions=tuple(scope_event.matched_conditions),
+    )
     scope_chop_policy_active = bool(runtime_scope_pre.chop_latched) or (
         mapped_event is ScopeEvent.CHOP_DETECTED
     )

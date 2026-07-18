@@ -170,10 +170,19 @@ def evaluate_adverse_exit_integrated_backtest_parity_fixtures_v0() -> tuple[Any,
         long_scope,
         PolicySignalV0(triggered=False),
     )
-    if long_scope.event_type is not CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE:
-        raise ValueError("long adverse fixture must reach ADVERSE_EXIT_CANDIDATE")
     if not long_signal.triggered:
         raise ValueError("long adverse fixture must derive triggered scope adverse exit signal")
+    if "adverse_exit" not in long_scope.matched_conditions:
+        raise ValueError("long adverse fixture must match adverse_exit condition")
+    if long_scope.event_type not in (
+        CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
+    ):
+        raise ValueError(
+            "long adverse fixture must keep adverse dimension "
+            "(ADVERSE_EXIT_CANDIDATE or nested DOWNSCOPE_*)"
+        )
 
     short_path = mirror_price_path_for_short(long_path, reference=100.0)
     short_inp = _build_integrated_replay_input_for_fixture(
@@ -193,10 +202,19 @@ def evaluate_adverse_exit_integrated_backtest_parity_fixtures_v0() -> tuple[Any,
         short_scope,
         PolicySignalV0(triggered=False),
     )
-    if short_scope.event_type is not CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE:
-        raise ValueError("short adverse fixture must reach ADVERSE_EXIT_CANDIDATE")
     if not short_signal.triggered:
         raise ValueError("short adverse fixture must derive triggered scope adverse exit signal")
+    if "adverse_exit" not in short_scope.matched_conditions:
+        raise ValueError("short adverse fixture must match adverse_exit condition")
+    if short_scope.event_type not in (
+        CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
+    ):
+        raise ValueError(
+            "short adverse fixture must keep adverse dimension "
+            "(ADVERSE_EXIT_CANDIDATE or nested DOWNSCOPE_*)"
+        )
     return long_result, short_result
 
 
@@ -376,11 +394,19 @@ def build_rewire_binding(repo_root: Path) -> dict[str, Any]:
         raise ValueError("integrated replay must derive scope adverse exit signal")
     if not binding.integrated_reversal_preparation_projection_bound:
         raise ValueError("integrated replay must bind reversal preparation projection")
-    if (
-        scope_binding.scope_event_evidence.event_type
-        is not CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+    if not scope_binding.scope_adverse_exit_signal.triggered:
+        raise ValueError("offline scope fixture must keep adverse-exit signal")
+    if "adverse_exit" not in scope_binding.scope_event_evidence.matched_conditions:
+        raise ValueError("offline scope fixture must match adverse_exit condition")
+    if scope_binding.scope_event_evidence.event_type not in (
+        CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
     ):
-        raise ValueError("offline scope fixture must remain adverse-exit bound")
+        raise ValueError(
+            "offline scope fixture must keep adverse dimension "
+            "(ADVERSE_EXIT_CANDIDATE or nested DOWNSCOPE_*)"
+        )
     if reversal_decision.exit_class is not ExitClass.REVERSAL_PREPARATION_EXIT:
         raise ValueError("offline reversal fixture must remain reversal-preparation bound")
     if not reversal_preparation_decision_is_reduce_only_preparation_v0(reversal_decision):

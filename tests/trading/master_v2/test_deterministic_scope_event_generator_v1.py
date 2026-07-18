@@ -230,9 +230,11 @@ def test_event_precedence_block_before_candidate() -> None:
     assert ScopeEventBlockReason.POLICY_UP_DISTANCE_INVALID.value in evidence.blocked_reasons
 
 
-def test_event_precedence_adverse_before_favorable_candidate() -> None:
+def test_event_precedence_directional_before_adverse_when_both_match() -> None:
+    """Nested adverse must not suppress DOWNSCOPE_* for the SM path."""
     evidence = _generate(current_price=3390.0)
-    assert evidence.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+    assert evidence.event_type is CanonicalScopeEventType.DOWNSCOPE_CANDIDATE
+    assert ScopeCandidateKind.DOWNSCOPE.value in evidence.matched_conditions
     assert ScopeCandidateKind.ADVERSE_EXIT.value in evidence.matched_conditions
 
 
@@ -283,8 +285,9 @@ def test_candidate_reset_on_opposite_signal() -> None:
         current_price=3390.0,
         confirmation_state=upscope.next_confirmation_state,
     )
-    assert downscope.next_confirmation_state.candidate_kind is ScopeCandidateKind.ADVERSE_EXIT
+    assert downscope.next_confirmation_state.candidate_kind is ScopeCandidateKind.DOWNSCOPE
     assert downscope.next_confirmation_state.candidate_count == 1
+    assert ScopeCandidateKind.ADVERSE_EXIT.value in downscope.matched_conditions
 
 
 def test_duplicate_epoch_is_idempotent() -> None:

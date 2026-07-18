@@ -436,14 +436,21 @@ def _event_type_for_kind(
 def _select_directional_kind(
     matched: Tuple[ScopeCandidateKind, ...],
 ) -> Optional[ScopeCandidateKind]:
-    if ScopeCandidateKind.ADVERSE_EXIT in matched:
-        return ScopeCandidateKind.ADVERSE_EXIT
+    """Select SM-facing scope candidate kind from matched conditions.
+
+    Directional upscope/downscope take precedence over adverse_exit so a nested
+    adverse band (adverse_distance < up_distance) cannot suppress DOWNSCOPE_* /
+    UPSCOPE_* evidence. Adverse exit remains visible via ``matched_conditions``
+    for PolicySignal derivation (dual-dimension: exit signal ≠ scope event).
+    """
     if ScopeCandidateKind.DOWNSCOPE in matched and ScopeCandidateKind.UPSCOPE in matched:
         return None
     if ScopeCandidateKind.DOWNSCOPE in matched:
         return ScopeCandidateKind.DOWNSCOPE
     if ScopeCandidateKind.UPSCOPE in matched:
         return ScopeCandidateKind.UPSCOPE
+    if ScopeCandidateKind.ADVERSE_EXIT in matched:
+        return ScopeCandidateKind.ADVERSE_EXIT
     return None
 
 

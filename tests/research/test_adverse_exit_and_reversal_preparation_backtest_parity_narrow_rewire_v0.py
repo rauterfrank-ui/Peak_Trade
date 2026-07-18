@@ -170,12 +170,15 @@ def test_ADVERSE_SCOPE_EXIT_WIRED_TO_BACKTEST() -> None:
     long_result, short_result = evaluate_adverse_exit_integrated_backtest_parity_fixtures_v0()
     for result in (long_result, short_result):
         assert result.intermediate is not None
-        assert (
-            result.intermediate.scope_event.event_type
-            is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+        scope = result.intermediate.scope_event
+        assert "adverse_exit" in scope.matched_conditions
+        assert scope.event_type in (
+            CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+            CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+            CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
         )
         derived = resolve_integrated_scope_adverse_exit_signal_v0(
-            result.intermediate.scope_event,
+            scope,
             PolicySignalV0(triggered=False),
         )
         assert derived.triggered is True
@@ -273,10 +276,14 @@ def test_mirrored_long_and_short_adverse_fixtures_v0() -> None:
     )
     long_scope = run_integrated_offline_trading_logic_replay_v1(long_inp).intermediate.scope_event
     short_scope = run_integrated_offline_trading_logic_replay_v1(short_inp).intermediate.scope_event
-    assert long_scope.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
-    assert short_scope.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
-    assert derive_scope_adverse_exit_signal_v0(long_scope).triggered is True
-    assert derive_scope_adverse_exit_signal_v0(short_scope).triggered is True
+    for scope in (long_scope, short_scope):
+        assert "adverse_exit" in scope.matched_conditions
+        assert scope.event_type in (
+            CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+            CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+            CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
+        )
+        assert derive_scope_adverse_exit_signal_v0(scope).triggered is True
 
 
 def test_integrated_replay_derives_scope_adverse_exit_signal_positive() -> None:

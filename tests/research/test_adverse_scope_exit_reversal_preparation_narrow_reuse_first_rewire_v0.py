@@ -53,9 +53,11 @@ def test_chained_scope_and_reversal_parity_fixtures_reach_canonical_owners() -> 
     scope_binding, reversal_decision = (
         evaluate_adverse_scope_exit_reversal_preparation_parity_fixtures_v0()
     )
-    assert (
-        scope_binding.scope_event_evidence.event_type
-        is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+    assert "adverse_exit" in scope_binding.scope_event_evidence.matched_conditions
+    assert scope_binding.scope_event_evidence.event_type in (
+        CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
     )
     assert scope_binding.scope_adverse_exit_signal.triggered is True
     assert scope_binding.scope_event_ref
