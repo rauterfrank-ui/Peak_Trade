@@ -1,0 +1,18 @@
+ENTRY_SIDE_NONE=true (OPTION_D unchanged)
+SECOND_AUTHORITY_FOUND=false
+DIRECTION_SWITCH_OWNER=trading.master_v2.double_play_state.transition_state
+COMPOSITION_OWNER=trading.master_v2.double_play_composition_matrix_v1.evaluate_double_play_composition_matrix_v1
+SCOPE_EVENT_OWNER=trading.master_v2.deterministic_scope_event_generator_v1.generate_deterministic_scope_event
+RESEARCH_WIRING_ROLE=input_binding_only (mark-relative distances)
+
+LONG_DEFAULT_FOUND=true (pre-existing build_initial_mv2_integrated_replay_bar_sequence_state_v1 LONG_ARMED seed; not introduced by this fix)
+CLASSIC_ENGINE_BYPASS_FOUND=false
+RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED
+LIVE_AUTHORIZED=false
+ORDERS=false
+
+NO_SCOPE_EVENT_INJECTION_IN_WIRING=true
+NO_SIDESTATE_FORCE_IN_DISTANCE_HELPER=true
+GENERATOR_FILE_UNCHANGED=true
+TRANSITION_STATE_FILE_UNCHANGED=true
+COMPOSITION_FILE_UNCHANGED=true

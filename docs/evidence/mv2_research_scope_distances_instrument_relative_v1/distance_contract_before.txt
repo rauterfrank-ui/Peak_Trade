@@ -1,0 +1,27 @@
+FIELD_NAMES:
+  up_distance
+  adverse_exit_distance
+  reversal_distance
+  confirmation_epochs=2 (unchanged)
+
+MEANING:
+  Absolute price distances consumed by deterministic_scope_event_generator_v1
+  via ScopeEventGeneratorInputV1. Thresholds are trailing_anchor ± distance
+  (direction-mirrored for SHORT).
+
+EXPECTED_UNIT_BEFORE_FIX:
+  Absolute price units in the same numeric scale as mark/trailing_anchor.
+  (Implicit; values 120/60/90 were ETH-fixture-scale absolutes.)
+
+RELATION_TO_MARK_PRIOR_PRICE_PATH:
+  Distances were constants independent of mark, prior_mark, and price_path.
+  Only current_price/trailing_anchor moved with the bar.
+
+LEGACY_VALUES:
+  up_distance=120.0
+  adverse_exit_distance=60.0
+  reversal_distance=90.0
+  Relation up:adverse:reversal = 120:60:90 = 1:0.5:0.75
+
+FAILURE_MODE:
+  For marks ~0.23–0.53, thresholds at anchor±120 are unreachable → exclusive noop.
