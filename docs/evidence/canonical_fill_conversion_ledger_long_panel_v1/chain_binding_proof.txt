@@ -1,0 +1,13 @@
+{
+  "authority_effect": "NONE",
+  "canonical_engine_signal_source": "mv2_decision_replay_series",
+  "harness_forces_configured_strategy_bypass": false,
+  "harness_id": "CANONICAL_FILL_CONVERSION_LEDGER_LONG_PANEL_V1",
+  "ledger_owner": "src/backtest/engine.py::BacktestEngine.run_realistic",
+  "map_owner": "src/backtest/mv2_research_wiring_v1.py::map_decision_evidence_to_position_signal_v1",
+  "non_authoritative_marker": true,
+  "runtime_effect": "NONE",
+  "uses_map_decision_evidence_to_position_signal_v1": true,
+  "uses_run_mv2_research_backtest_wiring_v1": true,
+  "wiring_calls_replay": true
+}

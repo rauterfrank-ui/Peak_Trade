@@ -1,0 +1,6 @@
+# commands
+PYTHONPATH=src:. python3 docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/fill_conversion_probe_v1.py
+python3 -m pytest -q tests/governance/test_canonical_fill_conversion_ledger_long_panel_audit_harness_v1.py
+ruff format/check on touched py
+docs token + reference targets
+economic boundary guard --base origin/main

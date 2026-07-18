@@ -1,0 +1,239 @@
+{"harness": "CANONICAL_FILL_CONVERSION_LEDGER_LONG_PANEL_V1", "authority_effect": "NONE", "runtime_effect": "NONE", "source": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z"}
+{"phase": "probe", "i": 1, "n": 118, "instrument": "1INCH"}
+ConfigRegistry: [strategy.*] blocks not listed in strategies.available: ['breakout_basic', 'vol_regime_basic', 'breakout', 'vol_regime_filter', 'rsi_reversion_v1', 'breakout_v1', 'composite', 'portfolio_phase40_example', 'rsi_reversion_btc_conservative', 'rsi_reversion_btc_moderate', 'rsi_reversion_btc_aggressive', 'rsi_reversion_eth_conservative', 'rsi_reversion_eth_moderate', 'rsi_reversion_eth_aggressive', 'ma_trend_btc_conservative', 'ma_trend_btc_moderate', 'ma_trend_btc_aggressive', 'trend_following_eth_conservative', 'trend_following_eth_moderate', 'trend_following_eth_aggressive', 'armstrong_cycle', 'el_karoui_vol_model']
+{"class": "CONVERTED", "engine_nz": 9, "enter": 9, "instrument": "1INCH", "mapped_on_enter": 9, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 2, "n": 118, "instrument": "AAVE"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 8, "enter": 8, "instrument": "AAVE", "mapped_on_enter": 8, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 3, "n": 118, "instrument": "ACH"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 22, "enter": 22, "instrument": "ACH", "mapped_on_enter": 22, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 4, "n": 118, "instrument": "ADA"}
+{"class": "CONVERTED", "engine_nz": 7, "enter": 7, "instrument": "ADA", "mapped_on_enter": 7, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 5, "n": 118, "instrument": "AEVO"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 309, "enter": 309, "instrument": "AEVO", "mapped_on_enter": 309, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 6, "n": 118, "instrument": "AGLD"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 16, "enter": 16, "instrument": "AGLD", "mapped_on_enter": 16, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 7, "n": 118, "instrument": "ALGO"}
+{"class": "CONVERTED", "engine_nz": 10, "enter": 10, "instrument": "ALGO", "mapped_on_enter": 10, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 8, "n": 118, "instrument": "APE"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 2, "enter": 2, "instrument": "APE", "mapped_on_enter": 2, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 9, "n": 118, "instrument": "API3"}
+{"class": "CONVERTED", "engine_nz": 2, "enter": 2, "instrument": "API3", "mapped_on_enter": 2, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 10, "n": 118, "instrument": "APT"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 18, "enter": 18, "instrument": "APT", "mapped_on_enter": 18, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 11, "n": 118, "instrument": "AR"}
+{"class": "CONVERTED", "engine_nz": 13, "enter": 13, "instrument": "AR", "mapped_on_enter": 13, "mechanical": false, "trades": 3}
+{"phase": "probe", "i": 12, "n": 118, "instrument": "ARB"}
+{"class": "CONVERTED", "engine_nz": 9, "enter": 9, "instrument": "ARB", "mapped_on_enter": 9, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 13, "n": 118, "instrument": "ATOM"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 79, "enter": 79, "instrument": "ATOM", "mapped_on_enter": 79, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 14, "n": 118, "instrument": "AUCTION"}
+{"class": "CONVERTED", "engine_nz": 5, "enter": 5, "instrument": "AUCTION", "mapped_on_enter": 5, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 15, "n": 118, "instrument": "AVAX"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 8, "enter": 8, "instrument": "AVAX", "mapped_on_enter": 8, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 16, "n": 118, "instrument": "AXS"}
+{"class": "CONVERTED", "engine_nz": 3, "enter": 3, "instrument": "AXS", "mapped_on_enter": 3, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 17, "n": 118, "instrument": "BAND"}
+{"class": "CONVERTED", "engine_nz": 2, "enter": 2, "instrument": "BAND", "mapped_on_enter": 2, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 18, "n": 118, "instrument": "BAT"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 6, "enter": 6, "instrument": "BAT", "mapped_on_enter": 6, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 19, "n": 118, "instrument": "BCH"}
+{"class": "CONVERTED", "engine_nz": 3, "enter": 3, "instrument": "BCH", "mapped_on_enter": 3, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 20, "n": 118, "instrument": "BICO"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 13, "enter": 13, "instrument": "BICO", "mapped_on_enter": 13, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 21, "n": 118, "instrument": "BIGTIME"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 29, "enter": 29, "instrument": "BIGTIME", "mapped_on_enter": 29, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 22, "n": 118, "instrument": "BLUR"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 15, "enter": 15, "instrument": "BLUR", "mapped_on_enter": 15, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 23, "n": 118, "instrument": "BNB"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "BNB", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 24, "n": 118, "instrument": "BONK"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 52, "enter": 52, "instrument": "BONK", "mapped_on_enter": 52, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 25, "n": 118, "instrument": "CELO"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 2, "enter": 2, "instrument": "CELO", "mapped_on_enter": 2, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 26, "n": 118, "instrument": "CFX"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 20, "enter": 20, "instrument": "CFX", "mapped_on_enter": 20, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 27, "n": 118, "instrument": "CHZ"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 4, "enter": 4, "instrument": "CHZ", "mapped_on_enter": 4, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 28, "n": 118, "instrument": "COMP"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 11, "enter": 11, "instrument": "COMP", "mapped_on_enter": 11, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 29, "n": 118, "instrument": "CORE"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 42, "enter": 42, "instrument": "CORE", "mapped_on_enter": 42, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 30, "n": 118, "instrument": "CRO"}
+{"class": "CONVERTED", "engine_nz": 60, "enter": 60, "instrument": "CRO", "mapped_on_enter": 60, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 31, "n": 118, "instrument": "CRV"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 1, "enter": 1, "instrument": "CRV", "mapped_on_enter": 1, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 32, "n": 118, "instrument": "DOGE"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 7, "enter": 7, "instrument": "DOGE", "mapped_on_enter": 7, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 33, "n": 118, "instrument": "DOT"}
+{"class": "CONVERTED", "engine_nz": 11, "enter": 11, "instrument": "DOT", "mapped_on_enter": 11, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 34, "n": 118, "instrument": "DYDX"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 140, "enter": 140, "instrument": "DYDX", "mapped_on_enter": 140, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 35, "n": 118, "instrument": "EGLD"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 14, "enter": 14, "instrument": "EGLD", "mapped_on_enter": 14, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 36, "n": 118, "instrument": "ENJ"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 9, "enter": 9, "instrument": "ENJ", "mapped_on_enter": 9, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 37, "n": 118, "instrument": "ENS"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 18, "enter": 18, "instrument": "ENS", "mapped_on_enter": 18, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 38, "n": 118, "instrument": "ETC"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 1, "enter": 1, "instrument": "ETC", "mapped_on_enter": 1, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 39, "n": 118, "instrument": "ETH"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 7, "enter": 7, "instrument": "ETH", "mapped_on_enter": 7, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 40, "n": 118, "instrument": "ETHFI"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "ETHFI", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 41, "n": 118, "instrument": "ETHW"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 13, "enter": 13, "instrument": "ETHW", "mapped_on_enter": 13, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 42, "n": 118, "instrument": "FIL"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 11, "enter": 11, "instrument": "FIL", "mapped_on_enter": 11, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 43, "n": 118, "instrument": "FLOKI"}
+{"class": "CONVERTED", "engine_nz": 17, "enter": 17, "instrument": "FLOKI", "mapped_on_enter": 17, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 44, "n": 118, "instrument": "FLOW"}
+{"class": "CONVERTED", "engine_nz": 10, "enter": 10, "instrument": "FLOW", "mapped_on_enter": 10, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 45, "n": 118, "instrument": "GALA"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 10, "enter": 10, "instrument": "GALA", "mapped_on_enter": 10, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 46, "n": 118, "instrument": "GAS"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "GAS", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 47, "n": 118, "instrument": "GMT"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 10, "enter": 10, "instrument": "GMT", "mapped_on_enter": 10, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 48, "n": 118, "instrument": "GMX"}
+{"class": "CONVERTED", "engine_nz": 4, "enter": 4, "instrument": "GMX", "mapped_on_enter": 4, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 49, "n": 118, "instrument": "GRT"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "GRT", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 50, "n": 118, "instrument": "HBAR"}
+{"class": "CONVERTED", "engine_nz": 2, "enter": 2, "instrument": "HBAR", "mapped_on_enter": 2, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 51, "n": 118, "instrument": "ICP"}
+{"class": "CONVERTED", "engine_nz": 174, "enter": 174, "instrument": "ICP", "mapped_on_enter": 174, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 52, "n": 118, "instrument": "ICX"}
+{"class": "CONVERTED", "engine_nz": 3, "enter": 3, "instrument": "ICX", "mapped_on_enter": 3, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 53, "n": 118, "instrument": "IMX"}
+{"class": "CONVERTED", "engine_nz": 10, "enter": 10, "instrument": "IMX", "mapped_on_enter": 10, "mechanical": false, "trades": 3}
+{"phase": "probe", "i": 54, "n": 118, "instrument": "INJ"}
+{"class": "CONVERTED", "engine_nz": 5, "enter": 5, "instrument": "INJ", "mapped_on_enter": 5, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 55, "n": 118, "instrument": "IOST"}
+{"class": "CONVERTED", "engine_nz": 93, "enter": 93, "instrument": "IOST", "mapped_on_enter": 93, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 56, "n": 118, "instrument": "IOTA"}
+{"class": "CONVERTED", "engine_nz": 6, "enter": 6, "instrument": "IOTA", "mapped_on_enter": 6, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 57, "n": 118, "instrument": "JTO"}
+{"class": "CONVERTED", "engine_nz": 9, "enter": 9, "instrument": "JTO", "mapped_on_enter": 9, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 58, "n": 118, "instrument": "JUP"}
+{"class": "CONVERTED", "engine_nz": 5, "enter": 5, "instrument": "JUP", "mapped_on_enter": 5, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 59, "n": 118, "instrument": "KSM"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 25, "enter": 25, "instrument": "KSM", "mapped_on_enter": 25, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 60, "n": 118, "instrument": "LDO"}
+{"class": "CONVERTED", "engine_nz": 36, "enter": 36, "instrument": "LDO", "mapped_on_enter": 36, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 61, "n": 118, "instrument": "LINK"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 4, "enter": 4, "instrument": "LINK", "mapped_on_enter": 4, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 62, "n": 118, "instrument": "LPT"}
+{"class": "CONVERTED", "engine_nz": 16, "enter": 16, "instrument": "LPT", "mapped_on_enter": 16, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 63, "n": 118, "instrument": "LQTY"}
+{"class": "CONVERTED", "engine_nz": 14, "enter": 14, "instrument": "LQTY", "mapped_on_enter": 14, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 64, "n": 118, "instrument": "LRC"}
+{"class": "CONVERTED", "engine_nz": 14, "enter": 14, "instrument": "LRC", "mapped_on_enter": 14, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 65, "n": 118, "instrument": "LTC"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 3, "enter": 3, "instrument": "LTC", "mapped_on_enter": 3, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 66, "n": 118, "instrument": "LUNA"}
+{"class": "NO_ENTRY_INTENT", "engine_nz": 0, "enter": 0, "instrument": "LUNA", "mapped_on_enter": 0, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 67, "n": 118, "instrument": "MAGIC"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 10, "enter": 10, "instrument": "MAGIC", "mapped_on_enter": 10, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 68, "n": 118, "instrument": "MANA"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 3, "enter": 3, "instrument": "MANA", "mapped_on_enter": 3, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 69, "n": 118, "instrument": "MASK"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 3, "enter": 3, "instrument": "MASK", "mapped_on_enter": 3, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 70, "n": 118, "instrument": "MEME"}
+{"class": "CONVERTED", "engine_nz": 11, "enter": 11, "instrument": "MEME", "mapped_on_enter": 11, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 71, "n": 118, "instrument": "MERL"}
+{"class": "CONVERTED", "engine_nz": 374, "enter": 374, "instrument": "MERL", "mapped_on_enter": 374, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 72, "n": 118, "instrument": "METIS"}
+{"class": "CONVERTED", "engine_nz": 7, "enter": 7, "instrument": "METIS", "mapped_on_enter": 7, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 73, "n": 118, "instrument": "MEW"}
+{"class": "CONVERTED", "engine_nz": 93, "enter": 93, "instrument": "MEW", "mapped_on_enter": 93, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 74, "n": 118, "instrument": "MINA"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "MINA", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 75, "n": 118, "instrument": "NEAR"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "NEAR", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 76, "n": 118, "instrument": "NEO"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 115, "enter": 115, "instrument": "NEO", "mapped_on_enter": 115, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 77, "n": 118, "instrument": "NMR"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "NMR", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 78, "n": 118, "instrument": "ONE"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "ONE", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 79, "n": 118, "instrument": "ONT"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "ONT", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 80, "n": 118, "instrument": "OP"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 168, "enter": 168, "instrument": "OP", "mapped_on_enter": 168, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 81, "n": 118, "instrument": "ORDI"}
+{"class": "CONVERTED", "engine_nz": 39, "enter": 39, "instrument": "ORDI", "mapped_on_enter": 39, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 82, "n": 118, "instrument": "PEOPLE"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "PEOPLE", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 83, "n": 118, "instrument": "PEPE"}
+{"class": "CONVERTED", "engine_nz": 18, "enter": 18, "instrument": "PEPE", "mapped_on_enter": 18, "mechanical": false, "trades": 2}
+{"phase": "probe", "i": 84, "n": 118, "instrument": "PYTH"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 236, "enter": 236, "instrument": "PYTH", "mapped_on_enter": 236, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 85, "n": 118, "instrument": "QTUM"}
+{"class": "CONVERTED", "engine_nz": 9, "enter": 9, "instrument": "QTUM", "mapped_on_enter": 9, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 86, "n": 118, "instrument": "RAY"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "RAY", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 87, "n": 118, "instrument": "RSR"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "RSR", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 88, "n": 118, "instrument": "RVN"}
+{"class": "CONVERTED", "engine_nz": 8, "enter": 8, "instrument": "RVN", "mapped_on_enter": 8, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 89, "n": 118, "instrument": "SAND"}
+{"class": "CONVERTED", "engine_nz": 6, "enter": 6, "instrument": "SAND", "mapped_on_enter": 6, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 90, "n": 118, "instrument": "SATS"}
+{"class": "CONVERTED", "engine_nz": 20, "enter": 20, "instrument": "SATS", "mapped_on_enter": 20, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 91, "n": 118, "instrument": "SHIB"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "SHIB", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 92, "n": 118, "instrument": "SNX"}
+{"class": "CONVERTED", "engine_nz": 13, "enter": 13, "instrument": "SNX", "mapped_on_enter": 13, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 93, "n": 118, "instrument": "SOL"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 2, "enter": 2, "instrument": "SOL", "mapped_on_enter": 2, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 94, "n": 118, "instrument": "SSV"}
+{"class": "CONVERTED", "engine_nz": 34, "enter": 34, "instrument": "SSV", "mapped_on_enter": 34, "mechanical": false, "trades": 2}
+{"phase": "probe", "i": 95, "n": 118, "instrument": "STRK"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 254, "enter": 254, "instrument": "STRK", "mapped_on_enter": 254, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 96, "n": 118, "instrument": "STX"}
+{"class": "CONVERTED", "engine_nz": 219, "enter": 219, "instrument": "STX", "mapped_on_enter": 219, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 97, "n": 118, "instrument": "SUI"}
+{"class": "CONVERTED", "engine_nz": 36, "enter": 36, "instrument": "SUI", "mapped_on_enter": 36, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 98, "n": 118, "instrument": "SUSHI"}
+{"class": "CONVERTED", "engine_nz": 6, "enter": 6, "instrument": "SUSHI", "mapped_on_enter": 6, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 99, "n": 118, "instrument": "THETA"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "THETA", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 100, "n": 118, "instrument": "TIA"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 39, "enter": 39, "instrument": "TIA", "mapped_on_enter": 39, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 101, "n": 118, "instrument": "TRB"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 11, "enter": 11, "instrument": "TRB", "mapped_on_enter": 11, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 102, "n": 118, "instrument": "TRX"}
+{"class": "NO_ENTRY_INTENT", "engine_nz": 0, "enter": 0, "instrument": "TRX", "mapped_on_enter": 0, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 103, "n": 118, "instrument": "TURBO"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "TURBO", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 104, "n": 118, "instrument": "UMA"}
+{"class": "CONVERTED", "engine_nz": 1, "enter": 1, "instrument": "UMA", "mapped_on_enter": 1, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 105, "n": 118, "instrument": "UNI"}
+{"class": "CONVERTED", "engine_nz": 3, "enter": 3, "instrument": "UNI", "mapped_on_enter": 3, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 106, "n": 118, "instrument": "USDC"}
+{"class": "NO_ENTRY_INTENT", "engine_nz": 0, "enter": 0, "instrument": "USDC", "mapped_on_enter": 0, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 107, "n": 118, "instrument": "W"}
+{"class": "CONVERTED", "engine_nz": 303, "enter": 303, "instrument": "W", "mapped_on_enter": 303, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 108, "n": 118, "instrument": "WIF"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 8, "enter": 8, "instrument": "WIF", "mapped_on_enter": 8, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 109, "n": 118, "instrument": "WLD"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 293, "enter": 293, "instrument": "WLD", "mapped_on_enter": 293, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 110, "n": 118, "instrument": "WOO"}
+{"class": "CONVERTED", "engine_nz": 3, "enter": 3, "instrument": "WOO", "mapped_on_enter": 3, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 111, "n": 118, "instrument": "XLM"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 51, "enter": 51, "instrument": "XLM", "mapped_on_enter": 51, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 112, "n": 118, "instrument": "XRP"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 22, "enter": 22, "instrument": "XRP", "mapped_on_enter": 22, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 113, "n": 118, "instrument": "XTZ"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 9, "enter": 9, "instrument": "XTZ", "mapped_on_enter": 9, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 114, "n": 118, "instrument": "YFI"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 2, "enter": 2, "instrument": "YFI", "mapped_on_enter": 2, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 115, "n": 118, "instrument": "YGG"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 6, "enter": 6, "instrument": "YGG", "mapped_on_enter": 6, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 116, "n": 118, "instrument": "ZETA"}
+{"class": "CONVERTED", "engine_nz": 276, "enter": 276, "instrument": "ZETA", "mapped_on_enter": 276, "mechanical": false, "trades": 1}
+{"phase": "probe", "i": 117, "n": 118, "instrument": "ZIL"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 9, "enter": 9, "instrument": "ZIL", "mapped_on_enter": 9, "mechanical": false, "trades": 0}
+{"phase": "probe", "i": 118, "n": 118, "instrument": "ZRX"}
+{"class": "ENGINE_SIGNAL_PRESENT_LEDGER_ZERO_TRADE", "engine_nz": 10, "enter": 10, "instrument": "ZRX", "mapped_on_enter": 10, "mechanical": false, "trades": 0}
+{"ok": true, "summary": "/Users/frnkhrz/Peak_Trade/docs/evidence/canonical_fill_conversion_ledger_long_panel_v1/probe_summary.json", "totals": {"instruments": 118, "bars": 348454, "entry_intents": 4226, "enter_long": 69, "enter_short": 4157, "exit_or_reduce": 240230, "mapped_nonzero_bars": 4226, "engine_nonzero_bars": 4226, "total_trades": 69, "instruments_with_enter": 115, "instruments_with_trades": 63, "instruments_ledger_zero_with_enter": 52, "mechanical_defect_instruments": 0}}
