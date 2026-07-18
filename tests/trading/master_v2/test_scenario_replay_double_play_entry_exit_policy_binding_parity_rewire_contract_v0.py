@@ -287,20 +287,16 @@ def test_6_both_sides_confirmed_chop_no_entry_v0() -> None:
     env = extract_entry_exit_policy_parity_envelope_v0(decision)
     assert_non_authority_boundary_v0(env)
 
-    integrated = _run(price_path=(3500.0, 3600.0))
-    if integrated.intermediate is not None:
-        matrix = evaluate_scenario_matrix_for_side_state_v0(
-            side_state=SideState.CHOP_GUARD_BLOCK,
-            instrument_id=_INSTRUMENT,
-            trading_epoch=_EPOCH,
-            context_reference=_CONTEXT,
-        )
-        if matrix.composition_status is CompositionStatus.CHOP_GUARD_BLOCK:
-            assert integrated.evidence.decision_outcome in (
-                DecisionOutcome.OBSERVE.value,
-                DecisionOutcome.BLOCKED.value,
-                DecisionOutcome.NO_ACTION.value,
-            )
+    matrix = evaluate_scenario_matrix_for_side_state_v0(
+        side_state=SideState.CHOP_GUARD_BLOCK,
+        instrument_id=_INSTRUMENT,
+        trading_epoch=_EPOCH,
+        context_reference=_CONTEXT,
+    )
+    assert matrix.composition_status is CompositionStatus.CHOP_GUARD_BLOCK
+    assert "composition_conflict_not_scope_chop" in matrix.reason_codes
+    assert matrix.selected_side.value == "none"
+    # Integrated default path does not emit Scope-CHOP; conflict fixture is scenario-only.
 
 
 def test_scenario_replay_tick_entry_exit_binding_no_shortcut_v0() -> None:

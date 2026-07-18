@@ -38,6 +38,10 @@ from trading.master_v2.survival_assessment_v1 import (
 DOUBLE_PLAY_COMPOSITION_MATRIX_LAYER_VERSION = "v1"
 DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION = "double_play_composition_matrix_policy_v1"
 
+# CHOP_SCOPE_EVENT_POLICY_BINDING_CONTRACT_V1: composition is consumer/projection only.
+COMPOSITION_CHOP_STATUS = "CONSUMER_PROJECTION_ONLY"
+COMPOSITION_BOTH_SIDES_CONFIRMED_ROLE = "COMPOSITION_CONFLICT_NOT_SCOPE_CHOP_SSOT"
+
 _AUTHORITY_EFFECT_NONE = "NONE"
 _RUNTIME_EFFECT_NONE = "NONE"
 _ORDER_EFFECT_NONE = "NONE"
@@ -164,6 +168,9 @@ class DoublePlayCompositionInputV1:
     input_complete: bool
     input_digest: str
     explicit_blocked_reasons: Tuple[CompositionBlockedReason, ...] = ()
+    # Projection input from canonical CHOP scope policy (RuntimeScopeState.chop_latched).
+    # Composition must not independently invent Scope-CHOP semantics.
+    scope_chop_policy_active: bool = False
     policy_version: str = DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION
 
 
@@ -260,6 +267,7 @@ def serialize_composition_input_canonical(inp: DoublePlayCompositionInputV1) -> 
         "last_evaluated_trading_epoch": inp.last_evaluated_trading_epoch,
         "input_complete": inp.input_complete,
         "explicit_blocked_reasons": sorted(r.value for r in inp.explicit_blocked_reasons),
+        "scope_chop_policy_active": inp.scope_chop_policy_active,
         "policy_version": inp.policy_version,
     }
     return json.dumps(payload, sort_keys=True, separators=(",", ":"))
@@ -622,20 +630,46 @@ def evaluate_double_play_composition_matrix_v1(
     bear_u = inp.bear_suitability_result
 
     if _both_assessments_confirmed(bull_a, bear_a):
+        # Conflict entry-block only — NOT Scope-CHOP semantic SSOT.
+        # Historical CompositionStatus.CHOP_GUARD_BLOCK label retained for entry gates.
         reason_codes: Tuple[str, ...] = (
             "both_sides_confirmed",
-            "chop_guard_block",
+            "composition_conflict_not_scope_chop",
             "no_new_entry",
             "existing_position_management_continues",
         )
+        chop_guard = (
+            CompositionChopGuardStatus.CHOP_GUARD_BLOCK
+            if inp.scope_chop_policy_active
+            else CompositionChopGuardStatus.NONE
+        )
+        if inp.scope_chop_policy_active:
+            reason_codes = reason_codes + ("scope_chop_policy_projection",)
         return _finalize_result(
             inp,
             policy,
             composition_status=CompositionStatus.CHOP_GUARD_BLOCK,
             selected_side=CompositionSelectedSide.NONE,
             conflict_status=CompositionConflictStatus.BOTH_SIDES_CONFIRMED,
-            chop_guard_status=CompositionChopGuardStatus.CHOP_GUARD_BLOCK,
+            chop_guard_status=chop_guard,
             reason_codes=reason_codes,
+            computed_input_digest=computed_digest,
+        )
+
+    # Canonical Scope-CHOP projection: block new directional selection; consumer-only.
+    if inp.scope_chop_policy_active:
+        return _finalize_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.CHOP_GUARD_BLOCK,
+            selected_side=CompositionSelectedSide.NONE,
+            conflict_status=CompositionConflictStatus.NONE,
+            chop_guard_status=CompositionChopGuardStatus.CHOP_GUARD_BLOCK,
+            reason_codes=(
+                "scope_chop_policy_projection",
+                "no_new_entry",
+                "entry_blocked",
+            ),
             computed_input_digest=computed_digest,
         )
 
@@ -809,6 +843,8 @@ def evaluate_double_play_composition_matrix_v1(
 __all__ = [
     "DOUBLE_PLAY_COMPOSITION_MATRIX_LAYER_VERSION",
     "DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION",
+    "COMPOSITION_BOTH_SIDES_CONFIRMED_ROLE",
+    "COMPOSITION_CHOP_STATUS",
     "BothCandidateOutcome",
     "BothInvalidOutcome",
     "CompositionBlockedReason",

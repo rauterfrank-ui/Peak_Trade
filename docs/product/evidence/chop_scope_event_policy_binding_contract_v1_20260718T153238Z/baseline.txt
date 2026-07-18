@@ -1,0 +1,28 @@
+HEAD=ddef47d55910550dc56842d5e357aa6bf76d6357
+ORIGIN_MAIN=ddef47d55910550dc56842d5e357aa6bf76d6357
+BRANCH=feat/chop-scope-event-policy-binding-contract-v1
+UTC=20260718T153238Z
+ M config/governance/technical_canonical_wiring_authorization_v1.json
+ M docs/ops/specs/CANONICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_CONTRACT_V1.md
+ M docs/ops/specs/DOUBLE_PLAY_SOLE_AUTHORITY_FAIL_CLOSED_QUARANTINE_CONTRACT_V1.md
+ M scripts/research/double_play_composition_narrow_reuse_first_rewire_v0.py
+ M src/trading/master_v2/deterministic_scope_event_generator_v1.py
+ M src/trading/master_v2/double_play_composition_matrix_v1.py
+ M src/trading/master_v2/double_play_sole_authority_quarantine_v1.py
+ M src/trading/master_v2/double_play_state.py
+ M src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py
+ M src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+ M tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py
+ M tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py
+ M tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py
+ M tests/trading/master_v2/test_double_play_composition_matrix_v1.py
+ M tests/trading/master_v2/test_double_play_pure_stack_contract.py
+ M tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py
+ M tests/trading/master_v2/test_double_play_state.py
+ M tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py
+ M tests/trading/master_v2/test_offline_governance_tick_harness_v0.py
+ M tests/trading/master_v2/test_scenario_replay_double_play_entry_exit_policy_binding_parity_rewire_contract_v0.py
+?? docs/ops/specs/CHOP_SCOPE_EVENT_POLICY_BINDING_CONTRACT_V1.md
+?? docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/
+?? src/trading/master_v2/chop_scope_event_policy_binding_v1.py
+?? tests/trading/master_v2/test_chop_scope_event_policy_binding_contract_v1.py

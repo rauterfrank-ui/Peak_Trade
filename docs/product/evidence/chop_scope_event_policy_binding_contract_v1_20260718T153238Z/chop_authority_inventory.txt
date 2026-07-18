@@ -1,0 +1,14 @@
+ScopeEvent.CHOP_DETECTED | Scope input | double_play_state.ScopeEvent
+apply_chop_scope_event_policy_v1 | Scope policy binding | chop_scope_event_policy_binding_v1
+RuntimeScopeState.chop_latched | Scope policy SSOT | double_play_state.RuntimeScopeState
+transition_state (CHOP path) | SideState authority retains sole SM; CHOP does not mutate SideState | double_play_state.transition_state
+update_dynamic_boundaries (chop freeze) | Scope policy (defensive freeze) | double_play_state
+Composition scope_chop_policy_active | Composition consumer projection | double_play_composition_matrix_v1
+Composition both_sides_confirmed | Composition conflict NOT Scope-CHOP SSOT | double_play_composition_matrix_v1
+SideState.CHOP_GUARD_BLOCK | Legacy residual / scenario conflict fixture | double_play_state
+CompositionChopGuardStatus | Projection label only when scope policy active | double_play_composition_matrix_v1
+SCOPE_UNKNOWN | UNKNOWN unbound fail-closed | double_play_state.transition_state
+Generator CHOP_POLICY_STATUS | Bound as scope policy; no emission heuristic | deterministic_scope_event_generator_v1
+Scenario tick.scope_event | TEST_ONLY_GUARDED | offline_double_play_scenario_replay_v0
+Ops evaluate_double_play | PROJECTION_DIAGNOSTIC_ONLY | ops/double_play/specialists
+Backtest position feedback | OBSERVATION_ONLY | backtest_engine_position_feedback_adapter_v1

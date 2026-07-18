@@ -126,11 +126,16 @@ def test_scenario_conformance_state_switch_cannot_override_kill_all() -> None:
 
 
 def test_chop_blocks_from_short_armed():
-    """Test 5: CHOP on armed blocks activation path."""
-    s, _, d = _t(SideState.SHORT_ARMED, ScopeEvent.CHOP_DETECTED, EMPTY_ST, 0)
-    assert s == SideState.CHOP_GUARD_BLOCK
-    s2, _, d2 = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, EMPTY_ST, 1)
-    assert s2 == SideState.CHOP_GUARD_BLOCK and not d2.allowed
+    """CHOP latches scope policy; SideState stays armed; confirmed activation blocked."""
+    s, st, d = _t(SideState.SHORT_ARMED, ScopeEvent.CHOP_DETECTED, EMPTY_ST, 0)
+    assert s == SideState.SHORT_ARMED
+    assert st.chop_latched is True
+    assert d.allowed and d.reason_code == "CHOP_SCOPE_POLICY_APPLIED"
+    s2, st2, d2 = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, st, 1)
+    assert s2 == SideState.SHORT_ARMED
+    assert st2.chop_latched is True
+    assert not d2.allowed
+    assert d2.reason_code == "CHOP_SCOPE_POLICY_BLOCKS_TRANSITION"
 
 
 def test_cooldown_prevents_immediate_reversal():

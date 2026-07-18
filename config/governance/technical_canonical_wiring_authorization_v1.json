@@ -22,6 +22,10 @@
     "src/trading/master_v2/suitability_binding_v1.py",
     "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
     "src/trading/master_v2/double_play_sole_authority_quarantine_v1.py",
+    "src/trading/master_v2/chop_scope_event_policy_binding_v1.py",
+    "src/trading/master_v2/double_play_state.py",
+    "src/trading/master_v2/double_play_composition_matrix_v1.py",
+    "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
     "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
     "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
     "src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py",
@@ -69,8 +73,15 @@
     "tests/test_full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py",
     "tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py",
+    "tests/trading/master_v2/test_chop_scope_event_policy_binding_contract_v1.py",
+    "tests/trading/master_v2/test_double_play_state.py",
+    "tests/trading/master_v2/test_double_play_composition_matrix_v1.py",
+    "tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py",
+    "tests/trading/master_v2/test_offline_governance_tick_harness_v0.py",
+    "tests/trading/master_v2/test_double_play_pure_stack_contract.py",
     "docs/ops/specs/CANONICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_CONTRACT_V1.md",
     "docs/ops/specs/DOUBLE_PLAY_SOLE_AUTHORITY_FAIL_CLOSED_QUARANTINE_CONTRACT_V1.md",
+    "docs/ops/specs/CHOP_SCOPE_EVENT_POLICY_BINDING_CONTRACT_V1.md",
     "docs/ops/runbooks/double_play.md",
     "docs/ops/runbooks/double_play_specialists.md",
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/call_graph_before_after.json",
@@ -103,7 +114,17 @@
     "tests/ops/test_bounded_master_v2_testnet_completion_path_wiring_contract_v0.py",
     "tests/ops/test_bounded_testnet_market_input_admission_wiring_contract_v0.py",
     "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py",
-    "config/governance/technical_canonical_wiring_authorization_v1.json"
+    "config/governance/technical_canonical_wiring_authorization_v1.json",
+    "scripts/research/double_play_composition_narrow_reuse_first_rewire_v0.py",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/baseline.txt",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/changed_files.txt",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/chop_authority_inventory.txt",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/before_after_semantics.md",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/owner_matrix.md",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/bypass_scan.txt",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/test_results.txt",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/safety_invariants.txt",
+    "docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/final_summary.txt"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -121,7 +142,8 @@
     "TECHNICAL_DOCS_TOMBSTONE_POINTER_WIRING",
     "TECHNICAL_SURFACE_P_REGISTRY_STATUS_CONTRACT_TEST",
     "TECHNICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_WIRING",
-    "TECHNICAL_DOUBLE_PLAY_SOLE_AUTHORITY_QUARANTINE_WIRING"
+    "TECHNICAL_DOUBLE_PLAY_SOLE_AUTHORITY_QUARANTINE_WIRING",
+    "TECHNICAL_CHOP_SCOPE_EVENT_POLICY_BINDING_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -163,7 +185,8 @@
     "Includes canonical architecture drift guard SSOT contract tests (total decision owner, replay-input constructor, strategy-authority bypass rails) under runtime/authority/order NONE invariants.",
     "Includes docs-only Market Dashboard tombstone pointer updates on Double Play display/route contract specs (no DP composition semantics, no runtime/authority).",
     "Includes Surface P registry status contract-test alignment (PASS vs PARTIAL_RUNTIME_ACTIVATION_PENDING split) under runtime/authority/order NONE invariants; no owner semantic mutation.",
-    "Includes canonical Dynamic Scope trailing state continuity repair: RuntimeScopeState SSOT across integrated/backtest cycles; CanonicalScopeSnapshot identity-only; CHOP remains NOT_BOUND; no runtime/authority/order/live activation.",
-    "Includes Double Play sole authority fail-closed quarantine: Ops SwitchGate projection-only, scenario tick.scope_event TEST_ONLY guarded, backtest position feedback observation-only (no SideState overwrite); CHOP remains NOT_BOUND; no runtime/order/live activation; TEST_ONLY injection harness test paths explicitly allowlisted."
+    "Includes canonical Dynamic Scope trailing state continuity repair: RuntimeScopeState SSOT across integrated/backtest cycles; CanonicalScopeSnapshot identity-only; CHOP bound as scope policy (no emission heuristic); no runtime/authority/order/live activation.",
+    "Includes Double Play sole authority fail-closed quarantine: Ops SwitchGate projection-only, scenario tick.scope_event TEST_ONLY guarded, backtest position feedback observation-only (no SideState overwrite); CHOP bound as scope policy; UNKNOWN remains NOT_BOUND; no runtime/order/live activation; TEST_ONLY injection harness test paths explicitly allowlisted.",
+    "Includes CHOP scope-event policy binding v1: ScopeEvent.CHOP_DETECTED bound as RuntimeScopeState scope policy only; Composition consumer projection; UNKNOWN remains NOT_BOUND_FAIL_CLOSED; no Direction/Switch/SideState mutation by CHOP; no runtime/order/live activation."
   ]
 }

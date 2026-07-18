@@ -17,7 +17,10 @@ from trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0 import
     state_switch_parity_aligned_v0,
 )
 from trading.master_v2.deterministic_scope_event_generator_v1 import ScopeDirectionState
-from trading.master_v2.double_play_composition_matrix_v1 import CompositionStatus
+from trading.master_v2.double_play_composition_matrix_v1 import (
+    CompositionConflictStatus,
+    CompositionStatus,
+)
 from trading.master_v2.double_play_state import ScopeEvent, SideState
 from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_v0 import (
     assert_scenario_replay_zero_order_boundary_v0,
@@ -171,7 +174,11 @@ def test_3_both_sides_confirmed_conflict_chop_block_v0() -> None:
         trading_epoch=_EPOCH,
         context_reference=_CONTEXT,
     )
-    assert binding.side_state_after == SideState.CHOP_GUARD_BLOCK
+    # CHOP binds as scope policy; SideState unchanged (no CHOP_GUARD_BLOCK write).
+    assert binding.side_state_after == SideState.LONG_ARMED
+    assert binding.transition.reason_code == "CHOP_SCOPE_POLICY_APPLIED"
+    assert binding.scope_state_after.chop_latched is True
+    # Composition conflict path remains available as conflict (not Scope-CHOP SSOT).
     matrix = evaluate_scenario_matrix_for_side_state_v0(
         side_state=SideState.CHOP_GUARD_BLOCK,
         instrument_id=_INSTRUMENT,
@@ -179,6 +186,7 @@ def test_3_both_sides_confirmed_conflict_chop_block_v0() -> None:
         context_reference=_CONTEXT,
     )
     assert matrix.composition_status is CompositionStatus.CHOP_GUARD_BLOCK
+    assert matrix.conflict_status is CompositionConflictStatus.BOTH_SIDES_CONFIRMED
     env = extract_state_switch_parity_envelope_v0(binding)
     assert_state_switch_non_authority_boundary_v0(env)
 

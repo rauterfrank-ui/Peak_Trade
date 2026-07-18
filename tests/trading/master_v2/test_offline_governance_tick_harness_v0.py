@@ -416,10 +416,10 @@ def test_chop_detected_from_long_armed_yields_chop_guard_block_without_authoriza
     _assert_non_authorizing(result)
     assert result.tick_ok is True
     assert result.transition_allowed is True
-    assert result.transition_reason_code == "CHOP_GUARD"
+    assert result.transition_reason_code == "CHOP_SCOPE_POLICY_APPLIED"
     assert result.side_state_before == SideState.LONG_ARMED
-    assert result.side_state_after == SideState.CHOP_GUARD_BLOCK
-    assert result.recommended_side == "neutral"
+    assert result.side_state_after == SideState.LONG_ARMED
+    assert result.recommended_side == "long"
     assert "transition_compliance_visible" in result.compliance_labels
     assert result == evaluate_offline_governance_tick_v0(tick_input)
 
@@ -437,9 +437,9 @@ def test_chop_detected_from_switch_pending_states_yield_chop_guard_block() -> No
         )
         _assert_non_authorizing(result)
         assert result.tick_ok is True
-        assert result.transition_reason_code == "CHOP_GUARD"
+        assert result.transition_reason_code == "CHOP_SCOPE_POLICY_APPLIED"
         assert result.side_state_before == pending
-        assert result.side_state_after == SideState.CHOP_GUARD_BLOCK
+        assert result.side_state_after == pending
         assert "transition_compliance_visible" in result.compliance_labels
 
 
@@ -451,12 +451,11 @@ def test_chop_detected_irrelevant_from_long_active_blocks_transition() -> None:
         )
     )
     _assert_non_authorizing(result)
-    assert result.tick_ok is False
-    assert result.blocked_reason == "CHOP_IRRELEVANT"
-    assert result.transition_reason_code == "CHOP_IRRELEVANT"
-    assert result.transition_allowed is False
+    assert result.tick_ok is True
+    assert result.transition_allowed is True
+    assert result.transition_reason_code == "CHOP_SCOPE_POLICY_APPLIED"
     assert result.side_state_after == SideState.LONG_ACTIVE
-    assert "transition_blocked_visible" in result.compliance_labels
+    assert "transition_compliance_visible" in result.compliance_labels
 
 
 def test_scope_unknown_fails_closed_without_side_change() -> None:

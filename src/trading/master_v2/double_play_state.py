@@ -104,7 +104,8 @@ class RuntimeScopeState:
     window_start_tick: int = 0
     # Last completed migration to a new ActiveSide (for cooldown)
     last_completed_side_switch_tick: int = -1_000_000
-    # Chop: cleared via NOOP from CHOP_GUARD in this v0 model
+    # Chop scope policy latch (CHOP_SCOPE_EVENT_POLICY_BINDING_CONTRACT_V1).
+    # Cleared via NOOP while latched; never invents SideState / Direction / Switch.
     chop_latched: bool = False
 
 
@@ -191,8 +192,12 @@ def update_dynamic_boundaries(
 
     Long: anchor chases new highs; downscope boundary trails below anchor.
     Short: anchor chases new lows; upscope boundary trails above anchor.
+
+    When ``chop_latched`` is true, trailing updates freeze (defensive CHOP scope policy).
     """
     if not envelope_valid(env) or not rules_valid(rules):
+        return st
+    if st.chop_latched:
         return st
     band = clamp_band_width(rules.volatility_estimate * mark_price, rules, env)
     if side == ActiveSide.LONG:
@@ -234,9 +239,18 @@ def transition_state(
 
     * ``live_authorization`` in envelope must be False; otherwise fail-closed.
     * KILL_ALL_REQUIRED from any state -> KILL_ALL.
-    * CHOP_DETECTED in armed/pending before activation -> CHOP_GUARD_BLOCK.
+    * CHOP_DETECTED binds as scope policy only (``chop_latched``); SideState unchanged.
+    * Active CHOP scope policy blocks arming / activation / switch confirmations.
     * Downscope / upscope **confirmed** drive long<->short pipelines (manifest §4).
     """
+    # Local import keeps double_play_state dependency-light for non-CHOP callers
+    # while making the CHOP binding owner explicit on the productive SM path.
+    from trading.master_v2.chop_scope_event_policy_binding_v1 import (
+        REASON_CHOP_SCOPE_POLICY_BLOCKS_TRANSITION,
+        apply_chop_scope_event_policy_v1,
+        chop_scope_policy_blocks_side_transition_v1,
+    )
+
     st = replace(scope_state, now_tick=now_tick)
 
     if not _both_active_invariant_ok(side_state):
@@ -257,23 +271,55 @@ def transition_state(
     if event in (ScopeEvent.SCOPE_UNKNOWN,):
         return side_state, st, TransitionDecision(False, "SCOPE_UNKNOWN_FAIL_CLOSED")
 
+    # Canonical CHOP binding: scope policy only — never mutates SideState here.
     if event in (ScopeEvent.CHOP_DETECTED,):
-        if side_state in (
-            SideState.SHORT_ARMED,
-            SideState.LONG_ARMED,
-            SideState.SWITCH_LONG_TO_SHORT_PENDING,
-            SideState.SWITCH_SHORT_TO_LONG_PENDING,
-        ):
-            st2 = replace(st, chop_latched=True, last_switch_tick=now_tick)
-            return SideState.CHOP_GUARD_BLOCK, st2, TransitionDecision(True, "CHOP_GUARD")
-        return side_state, st, TransitionDecision(False, "CHOP_IRRELEVANT")
+        policy = apply_chop_scope_event_policy_v1(
+            event=event,
+            scope_state=st,
+            now_tick=now_tick,
+        )
+        return (
+            side_state,
+            policy.runtime_scope_state,
+            TransitionDecision(policy.transition_allowed, policy.reason_code),
+        )
 
+    # Legacy residual SideState.CHOP_GUARD_BLOCK: clear via NOOP; otherwise hold.
+    # New CHOP events no longer enter this state (scope latch is SSOT).
     if side_state == SideState.CHOP_GUARD_BLOCK and event == ScopeEvent.NOOP:
-        st2 = replace(st, chop_latched=False)
-        return SideState.NEUTRAL_OBSERVE, st2, TransitionDecision(True, "CHOP_CLEAR")
+        policy = apply_chop_scope_event_policy_v1(
+            event=event,
+            scope_state=st,
+            now_tick=now_tick,
+        )
+        return (
+            SideState.NEUTRAL_OBSERVE,
+            policy.runtime_scope_state,
+            TransitionDecision(True, "CHOP_CLEAR"),
+        )
 
     if side_state == SideState.CHOP_GUARD_BLOCK:
         return side_state, st, TransitionDecision(False, "CHOP_STILL_BLOCKING")
+
+    # Recovery: NOOP clears active chop latch without SideState rewrite.
+    if event == ScopeEvent.NOOP and st.chop_latched:
+        policy = apply_chop_scope_event_policy_v1(
+            event=event,
+            scope_state=st,
+            now_tick=now_tick,
+        )
+        return (
+            side_state,
+            policy.runtime_scope_state,
+            TransitionDecision(policy.transition_allowed, policy.reason_code),
+        )
+
+    if chop_scope_policy_blocks_side_transition_v1(chop_latched=st.chop_latched, event=event):
+        return (
+            side_state,
+            st,
+            TransitionDecision(False, REASON_CHOP_SCOPE_POLICY_BLOCKS_TRANSITION),
+        )
 
     # Cooldown: block starting a new opposite-direction pipeline from active side
     if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.LONG_ACTIVE:

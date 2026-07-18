@@ -628,8 +628,8 @@ def test_g_regression_single_cycle_none_state_and_gates() -> None:
     assert MASTER_V2_DOUBLE_PLAY_AUTHORITY_USED == "false"
     assert ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED == "true"
     assert INTEGRATION_STATUS_BOUND_NOT_ACTIVATED == "BOUND_NOT_ACTIVATED"
-    assert CHOP_POLICY_STATUS == "NOT_BOUND"
-    assert CHOP_BINDING_STATUS == "NOT_BOUND_FAIL_CLOSED_GAP"
+    assert CHOP_POLICY_STATUS == "BOUND_AS_SCOPE_POLICY_NO_EMISSION_HEURISTIC"
+    assert CHOP_BINDING_STATUS == "BOUND_AS_SCOPE_POLICY"
 
 
 def test_wiring_projects_runtime_scope_and_direction() -> None:

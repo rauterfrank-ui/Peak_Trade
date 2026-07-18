@@ -451,9 +451,23 @@ def test_6_both_sides_confirmed_chop_guard() -> None:
     )
     assert result.composition_status is CompositionStatus.CHOP_GUARD_BLOCK
     assert result.conflict_status is CompositionConflictStatus.BOTH_SIDES_CONFIRMED
-    assert result.chop_guard_status is CompositionChopGuardStatus.CHOP_GUARD_BLOCK
+    # Conflict is not Scope-CHOP SSOT; chop_guard projects only when scope policy active.
+    assert result.chop_guard_status is CompositionChopGuardStatus.NONE
+    assert "composition_conflict_not_scope_chop" in result.reason_codes
     assert "no_new_entry" in result.reason_codes
     assert result.selected_side is CompositionSelectedSide.NONE
+
+    projected = _evaluate(
+        bull_directional_assessment=bull,
+        bear_directional_assessment=bear,
+        bull_survival_result=bull_s,
+        bear_survival_result=bear_s,
+        bull_suitability_result=bull_u,
+        bear_suitability_result=bear_u,
+        scope_chop_policy_active=True,
+    )
+    assert projected.chop_guard_status is CompositionChopGuardStatus.CHOP_GUARD_BLOCK
+    assert "scope_chop_policy_projection" in projected.reason_codes
 
 
 def test_7_long_only_admissible() -> None:
