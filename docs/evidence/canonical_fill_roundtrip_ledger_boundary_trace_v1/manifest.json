@@ -2,7 +2,7 @@
   "base_sha": "f5f5fee56e471621988b5d193397d0b7b80eb535",
   "branch": "audit/canonical-fill-roundtrip-ledger-boundary-trace-v1",
   "evidence_dir": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1",
-  "file_count": 28,
+  "file_count": 29,
   "files": [
     {
       "bytes": 8577,
@@ -103,11 +103,11 @@
       "sha256": "41205fc1c9b5b5763f9d6a56a01f2d66ca8b51e77ffc892d4c4eb1461820665d"
     },
     {
-      "bytes": 8755,
+      "bytes": 9069,
       "name": "manifest.json",
       "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/manifest.json",
       "purpose": "SHA-256 inventory of evidence package",
-      "sha256": "23e909eb304cd5cc2358804de5ff367a0936ecc34d4a9d4c99fdaf1e1b2d6fa4"
+      "sha256": "ee5731a95484ef33d876e00ada257904fc1a3c197fe2aa048be2948864892128"
     },
     {
       "bytes": 870,
@@ -150,6 +150,13 @@
       "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/ruff.txt",
       "purpose": "Ruff format/check capture",
       "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "bytes": 809,
+      "name": "selector_result.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/selector_result.txt",
+      "purpose": "CI selector mode capture for final diff",
+      "sha256": "8021fec2b6de96f3666a4d9c7c1d18fcf9990f0ab04f4472a00d15a4e6295b99"
     },
     {
       "bytes": 584,
