@@ -183,8 +183,15 @@ def test_2_actionable_enter_short_sizing_bound_v0() -> None:
         is not CompositionStatus.SHORT_SELECTED
     ):
         return
+    # Same CRS offline contract as long: BOUND_OFFLINE + PASS|REDUCE|BLOCK.
+    # BLOCK may omit quantity_provenance_ref while still setting risk_sizing_ref.
     assert integrated.evidence.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE
-    assert integrated.evidence.quantity_provenance_ref
+    assert integrated.evidence.risk_sizing_ref
+    assert integrated.evidence.quantity_status in {"PASS", "REDUCE", "BLOCK", "ROUNDED_DOWN"}
+    if integrated.evidence.quantity_status != "BLOCK":
+        assert integrated.evidence.quantity_provenance_ref
+    env = extract_integrated_parity_envelope_v0(integrated)
+    assert_capital_risk_sizing_non_authority_boundary_v0(env)
 
 
 def test_3_non_actionable_observe_remains_unbound_v0() -> None:
