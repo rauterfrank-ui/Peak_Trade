@@ -1,0 +1,81 @@
+DATE_UTC=2026-07-18T19:27:04Z
+BRANCH=audit/bollinger-entry-side-canonical-authority-read-only-v1
+HEAD=0198e8188bab64a4b66a2e1021739603b32f39e2
+ORIGIN_MAIN=0198e8188bab64a4b66a2e1021739603b32f39e2
+BASE_SHA=0198e8188bab64a4b66a2e1021739603b32f39e2
+STASH_BEFORE=9dee9fcdfc2800d5051d82fa85a329d19ae3d15e0e896220ac9cafabfcb30c30
+WORKTREE:
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+STASHES:
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework
+===== SEARCH SNAPSHOT 2026-07-18T19:28:53Z =====
+--- entry_side / Bollinger ---
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:81:_TREND_FOLLOWING_ENTRY_SIDE_RATIFIED_OWNER = "trend_following"
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:84:_BOLLINGER_EVENT_ONLY_OWNER = BOLLINGER_STRATEGY_ID
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:172:    Direction and entry_side stay NONE (enforced by carrier resolver). Classic
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:185:def _resolve_entry_side_carrier_v1(
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:192:    """Resolve optional ENTRY_EXIT ``entry_side`` (fail-closed, producer-explicit).
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:205:    if executed_strategy_id == _BOLLINGER_EVENT_ONLY_OWNER:
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:207:    if executed_strategy_id != _TREND_FOLLOWING_ENTRY_SIDE_RATIFIED_OWNER:
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:268:    if executed_id == _BOLLINGER_EVENT_ONLY_OWNER:
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:280:    entry_side = _resolve_entry_side_carrier_v1(
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:287:        executed_id == _BOLLINGER_EVENT_ONLY_OWNER
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:288:        and entry_side is not StrategyEntrySideCarrierV1.NONE
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:290:        raise StrategySuitabilityAgreementErrorV1("bollinger_entry_side_must_be_none")
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:304:        entry_side=entry_side,
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:320:        entry_side=entry_side,
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:9:optional explicit ``entry_side`` ∈ {LONG, SHORT, NONE} for ENTRY_EXIT_EVENT_V1.
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:83:    entry_side: StrategyEntrySideCarrierV1 = StrategyEntrySideCarrierV1.NONE,
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:89:        "entry_side": entry_side.value,
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:121:    entry_side: StrategyEntrySideCarrierV1 = StrategyEntrySideCarrierV1.NONE
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:147:        if not isinstance(self.entry_side, StrategyEntrySideCarrierV1):
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:148:            raise StrategySuitabilityAgreementErrorV1("entry_side_invalid")
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:149:        if self.entry_side is not StrategyEntrySideCarrierV1.NONE:
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:151:                raise StrategySuitabilityAgreementErrorV1("entry_side_encoding_mismatch")
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:153:                raise StrategySuitabilityAgreementErrorV1("entry_side_event_kind_mismatch")
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:159:    """Canonical JSON-ready mapping; preserves ``entry_side`` losslessly."""
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:164:        "entry_side": material.entry_side.value,
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:181:    """Rebuild material from a mapping. Missing ``entry_side`` → NONE (legacy)."""
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:187:        raw_side = payload.get("entry_side", StrategyEntrySideCarrierV1.NONE.value)
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:189:            entry_side = StrategyEntrySideCarrierV1.NONE
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:191:            entry_side = StrategyEntrySideCarrierV1(str(raw_side))
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:209:            entry_side=entry_side,
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:230:        "entry_side": material.entry_side.value,
+src/strategies/bollinger_event_semantic_contract_v1.py:15:  - entry_side emission (always NONE)
+src/strategies/bollinger_event_semantic_contract_v1.py:25:BOLLINGER_EVENT_SEMANTIC_CONTRACT_OWNER = "strategies.bollinger_event_semantic_contract_v1"
+src/strategies/bollinger_event_semantic_contract_v1.py:26:BOLLINGER_EVENT_SEMANTIC_CONTRACT_VERSION = "v1"
+src/strategies/bollinger_event_semantic_contract_v1.py:42:    """Bollinger-scoped event classification; direction and entry_side stay NONE."""
+src/strategies/bollinger_event_semantic_contract_v1.py:46:    entry_side: BollingerEntrySideV1 = "NONE"
+src/strategies/bollinger_event_semantic_contract_v1.py:52:        if self.entry_side != "NONE":
+src/strategies/bollinger_event_semantic_contract_v1.py:53:            raise ValueError("bollinger_entry_side_must_be_none")
+src/strategies/bollinger_event_semantic_contract_v1.py:92:    """Full EVENT_ONLY result: event + forced NONE direction/entry_side."""
+src/strategies/bollinger_event_semantic_contract_v1.py:102:        entry_side="NONE",
+src/strategies/bollinger_event_semantic_contract_v1.py:108:    "BOLLINGER_EVENT_SEMANTIC_CONTRACT_OWNER",
+src/strategies/bollinger_event_semantic_contract_v1.py:109:    "BOLLINGER_EVENT_SEMANTIC_CONTRACT_VERSION",
+config/governance/obl_b07_bollinger_event_only_semantic_contract_v1.json:3:  "slice_id": "OBL_B07_BOLLINGER_EVENT_ONLY_SEMANTIC_CONTRACT_V1",
+config/governance/obl_b07_bollinger_event_only_semantic_contract_v1.json:5:  "BOLLINGER_EVENT_ONLY_RATIFIED": true,
+config/governance/obl_b07_bollinger_event_only_semantic_contract_v1.json:10:  "ENTRY_SIDE": "NONE",
+config/governance/obl_b07_bollinger_event_only_semantic_contract_v1.json:35:    "OBL_B05_BOLLINGER_ENTRY_SIDE_AUTHORITY_OPERATOR_GO_SELECTION_V1",
+config/governance/obl_b07_bollinger_event_only_semantic_contract_v1.json:38:  "notes": "EVENT_ONLY closes the event-geometry ratification; Direction/entry_side remain NONE until a separate Operator-GO and Strategy-Design slice."
+src/backtest/mv2_research_wiring_v1.py:1552:    ENTRY_EXIT_EVENT uses only the explicit ``entry_side`` carrier:
+src/backtest/mv2_research_wiring_v1.py:1573:            entry_side = getattr(material, "entry_side", StrategyEntrySideCarrierV1.NONE)
+src/backtest/mv2_research_wiring_v1.py:1574:            if entry_side is StrategyEntrySideCarrierV1.LONG:
+src/backtest/mv2_research_wiring_v1.py:1576:            if entry_side is StrategyEntrySideCarrierV1.SHORT:
+src/backtest/mv2_research_wiring_v1.py:1595:      is present (POSITIONAL_* cycle carrier or ENTRY_EXIT ``entry_side``).
+src/backtest/mv2_research_wiring_v1.py:1596:    - ENTRY_EXIT with entry_side=NONE → flat path (fail-closed, no invented asymmetry).
+--- transition_state / composition ---
+src/governance/canonical_order_intent_v1.py:501:def build_canonical_order_intent_v1(
+src/trading/master_v2/double_play_composition.py:87:def compose_double_play_decision(
+src/backtest/mv2_research_wiring_v1.py:1547:def resolve_agreement_bound_directional_cycle_v1(
+src/trading/master_v2/double_play_composition_matrix_v1.py:541:def evaluate_double_play_composition_matrix_v1(
+src/trading/master_v2/double_play_state.py:228:def transition_state(
+--- classic LONG ENTRY ---
+654:            if signal == 1 and current_trade is None:
+655:                # LONG ENTRY
+--- suitability ENTRY agrees LONG ---
+461:        # ENTRY impulse: agrees only with LONG directional assessment for v1 families
