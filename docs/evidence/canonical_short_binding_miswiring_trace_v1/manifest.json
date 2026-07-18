@@ -2,7 +2,7 @@
   "base_sha": "f5f5fee56e471621988b5d193397d0b7b80eb535",
   "branch": "audit/canonical-short-binding-miswiring-trace-v1",
   "evidence_dir": "docs/evidence/canonical_short_binding_miswiring_trace_v1",
-  "file_count": 23,
+  "file_count": 24,
   "files": [
     {
       "bytes": 1559,
@@ -61,6 +61,13 @@
       "sha256": "1d671ee441222e8be102fe6e3f10d1e99943a2bc6566401a8a2af6caf68272fe"
     },
     {
+      "bytes": 2846,
+      "name": "economic_boundary_guard.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/economic_boundary_guard.txt",
+      "purpose": "Economic boundary guard capture",
+      "sha256": "e4da85147ace531d007039add7f33df2704842bf478c01fb6f9bae905f5f7685"
+    },
+    {
       "bytes": 383,
       "name": "environment.txt",
       "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/environment.txt",
@@ -96,11 +103,11 @@
       "sha256": "3fbac4fa8db24e63fb81d873905f7d660c97b181540453cf6179d9b5d710e065"
     },
     {
-      "bytes": 6910,
+      "bytes": 7226,
       "name": "manifest.json",
       "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/manifest.json",
       "purpose": "SHA-256 inventory",
-      "sha256": "e720a13f6b04c29d65cb7d3053ca2291391cfa7872fbb07309f231b3ae1d381b"
+      "sha256": "be176c3a3cc1b421486fd5f2315574ed99b2d067cf49c3fa7ef03c9edd469440"
     },
     {
       "bytes": 797,
