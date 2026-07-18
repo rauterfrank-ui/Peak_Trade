@@ -49,6 +49,7 @@ from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_
     assert_surface_p_integrated_envelope_non_authority_boundary_v0,
     assert_scenario_replay_zero_order_boundary_v0,
     bind_backtest_bar_four_way_parity_lane_v0,
+    build_surface_p_four_way_smoke_integrated_envelope_v0,
     scan_forbidden_runtime_import_modules_v0,
     canonical_owner_refs_v0,
     composition_matrix_results_aligned_v0,
@@ -176,8 +177,29 @@ def test_backtest_bar_lane_bound_offline_v0() -> None:
 
 
 def test_surface_p_four_way_parity_smoke_assessment_v0() -> None:
-    integrated = _run(price_path=(3500.0, 3600.0))
-    integrated_env = extract_integrated_parity_envelope_v0(integrated)
+    # Bind integrated smoke fixture to the same CHOP_GUARD scenario-matrix lane
+    # that evaluate_surface_p_four_way_parity_v0 evaluates (single composition truth).
+    # Default integrated _run() emits long_selected and is not Scope-CHOP SSOT.
+    scenario_matrix = evaluate_scenario_matrix_for_side_state_v0(
+        side_state=SideState.CHOP_GUARD_BLOCK,
+        instrument_id=_INSTRUMENT,
+        trading_epoch=_EPOCH,
+        context_reference=_CONTEXT,
+    )
+    scenario_env = extract_scenario_matrix_parity_envelope_v0(scenario_matrix)
+    integrated_env = build_surface_p_four_way_smoke_integrated_envelope_v0(
+        instrument_id=_INSTRUMENT,
+        trading_epoch=_EPOCH,
+        context_reference=_CONTEXT,
+    )
+    assert scenario_matrix.composition_status is CompositionStatus.CHOP_GUARD_BLOCK
+    assert integrated_env.composition_status == scenario_env.composition_status
+    assert integrated_env.composition_status == CompositionStatus.CHOP_GUARD_BLOCK.value
+    assert_surface_p_integrated_envelope_non_authority_boundary_v0(integrated_env)
+    assert integrated_env.execution_eligible is False
+    assert integrated_env.authority_effect == "NONE"
+    assert integrated_env.runtime_effect == "NONE"
+
     assessment = evaluate_surface_p_four_way_parity_v0(
         instrument_id=_INSTRUMENT,
         trading_epoch=_EPOCH,
@@ -189,9 +211,14 @@ def test_surface_p_four_way_parity_smoke_assessment_v0() -> None:
     assert assessment.runtime_reference_lane_bound is True
     assert assessment.integrated_lane_bound is True
     assert assessment.integrated_scenario_composition_aligned is True
+    assert "integrated_scenario_composition_not_aligned" not in assessment.fail_closed_reasons
     assert assessment.backtest_non_authority_confirmed is True
     assert assessment.runtime_reference_non_authority_confirmed is True
     assert assessment.four_way_parity_rewire_bound is True
+    # Chop-guard smoke lane remains unbound offline (NOT_BOUND / NONE effects).
+    assert integrated_env.quantity_status == "NOT_BOUND"
+    assert integrated_env.risk_sizing_effect == "NONE"
+    assert integrated_env.order_intent_effect == "NONE"
 
 
 def test_forbidden_runtime_paths_guard_v0() -> None:

@@ -1,0 +1,4 @@
+focused smoke PASS 1
+full suite+contracts PASS 60
+regression batch A PASS 79
+LIVE_AUTHORIZED=false ORDERS_ENABLED=false
