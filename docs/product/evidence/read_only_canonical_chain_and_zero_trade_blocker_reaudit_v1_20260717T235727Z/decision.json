@@ -1,0 +1,39 @@
+{
+  "schema_version": "read_only_canonical_chain_and_zero_trade_blocker_reaudit.decision.v1",
+  "slice_id": "READ_ONLY_CANONICAL_CHAIN_AND_ZERO_TRADE_BLOCKER_REAUDIT_V1",
+  "base_sha": "aaf83d00341a7649a070b31a5170dfc49a646db3",
+  "STATUS": "PASS",
+  "VERDICT": "PRODUCTIVE_OFFLINE_CHAIN_INTACT; ZERO_TRADE_DOMINATED_BY_DIRECTIONAL_AGREEMENT_FROM_BOLLINGER_ENTRY_SIDE_NONE; NEXT_SLICE_IS_OPERATOR_GO_SELECTION_NOT_WIRING_REPAIR",
+  "CANONICAL_CHAIN_STATE": "PRODUCTIVE_OFFLINE_CHAIN_INTACT_RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
+  "STRATEGY_TO_CMC": "MISSING",
+  "STRATEGY_TO_ORCHESTRATOR": "PRESENT_AND_PRODUCTIVE",
+  "CLASSIC_ENGINE_TO_ORCHESTRATOR": "MISSING",
+  "RUNTIME_BRIDGE_STATE": "BOUND_NOT_ACTIVATED",
+  "BYPASS_PATH_COUNT": 7,
+  "confirmed_bypass_count_system_economic_decision_authority": 0,
+  "EVAL_ENTRY_COUNT": 1,
+  "PANEL_ENTRY_COUNT": 185,
+  "DOMINANT_FIRST_FAILED_STAGE": "directional_agreement",
+  "TRADE_COUNT": 0,
+  "COUNTS_RECONCILED": true,
+  "BOLLINGER_ENTRY_SIDE_CURRENT": "NONE",
+  "BOLLINGER_AUTHORITY_CHANGED": false,
+  "SIDE_ACTIVATED": false,
+  "LIVE_AUTHORIZED": false,
+  "ORDERS_ENABLED": false,
+  "PRODUCTIVE_SRC_CHANGED": false,
+  "priority_scan": {
+    "1_missing_or_bypassed_canonical_chain_link": "NONE_OPEN_FOR_PRODUCTIVE_OFFLINE_PATH",
+    "2_runtime_bridge_binding_activation_gap": "POLICY_BOUND_NOT_ACTIVATED_NOT_OFFLINE_FUNNEL_WIRING_DEFECT",
+    "3_generic_composition_agreement_contract": "BEHAVES_CORRECTLY_FAIL_CLOSED_ON_NONE",
+    "4_strategy_specific_bollinger_side_authority": "REMAINING_HIGHEST_LEVERAGE_BLOCKER"
+  },
+  "NEXT_RECOMMENDED_ACTION": "OBL_B05_BOLLINGER_ENTRY_SIDE_AUTHORITY_OPERATOR_GO_SELECTION_V1",
+  "next_action_does_not_auto_select_options": [
+    "OPTION_A_AUTHORIZE_LONG",
+    "OPTION_B_KEEP_AMBIGUOUS_FAIL_CLOSED",
+    "OPTION_C_EXTEND_PRODUCER_CONTRACT_DIFFERENTLY"
+  ],
+  "implementation_authorized_now": false,
+  "reaudit_only": true
+}

@@ -1,0 +1,129 @@
+{
+  "schema_version": "read_only_canonical_chain_and_zero_trade_blocker_reaudit.call_graph.v1",
+  "base_sha": "aaf83d00341a7649a070b31a5170dfc49a646db3",
+  "canonical_system_path": [
+    "run_mv2_research_backtest_wiring_v1",
+    "execute_configured_strategy_signal_series_v1",
+    "normalize_strategy_signal_to_suitability_agreement_material_v1",
+    "run_integrated_offline_trading_logic_replay_v1",
+    "bind_canonical_market_context_event",
+    "map_decision_evidence_to_position_signal_v1",
+    "BacktestEngine.run_realistic"
+  ],
+  "symbol_anchors": {
+    "strategy_signal_producer": {
+      "path": "src/backtest/strategy_signal_binding_v1.py",
+      "symbol": "execute_configured_strategy_signal_series_v1",
+      "line": 1199
+    },
+    "canonical_market_context": {
+      "path": "src/trading/master_v2/canonical_market_context_v1.py",
+      "symbol": "bind_canonical_market_context_event",
+      "line": 467
+    },
+    "integrated_offline_orchestrator": {
+      "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "symbol": "run_integrated_offline_trading_logic_replay_v1",
+      "line": 900
+    },
+    "classic_backtest_engine": {
+      "path": "src/backtest/engine.py",
+      "symbol": "BacktestEngine.run_realistic",
+      "line": 498
+    },
+    "runtime_bridge": {
+      "path": "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+      "symbol": "run_canonical_core_runtime_integration_bridge_v0",
+      "line": 459
+    },
+    "productive_wiring_owner": {
+      "path": "src/backtest/mv2_research_wiring_v1.py",
+      "symbol": "run_mv2_research_backtest_wiring_v1",
+      "line": 1921
+    }
+  },
+  "links": [
+    {
+      "id": "STRATEGY_TO_CMC",
+      "from": "execute_configured_strategy_signal_series_v1",
+      "to": "bind_canonical_market_context_event",
+      "classification": "MISSING",
+      "note": "Intentional Decision D: strategy feeds suitability agreement sibling, not CMC feature maps"
+    },
+    {
+      "id": "STRATEGY_TO_ORCHESTRATOR",
+      "from": "execute_configured_strategy_signal_series_v1",
+      "to": "run_integrated_offline_trading_logic_replay_v1",
+      "via": [
+        "run_mv2_research_backtest_wiring_v1:2094",
+        "normalize_strategy_signal_to_suitability_agreement_material_v1:2352",
+        "run_integrated_offline_trading_logic_replay_v1:2376"
+      ],
+      "classification": "PRESENT_AND_PRODUCTIVE"
+    },
+    {
+      "id": "CMC_EVENT_BIND_IN_ORCHESTRATOR",
+      "from": "run_integrated_offline_trading_logic_replay_v1",
+      "to": "bind_canonical_market_context_event",
+      "via": ["integrated_offline_trading_logic_replay_v1.py:949"],
+      "classification": "PRESENT_AND_PRODUCTIVE"
+    },
+    {
+      "id": "BARS_TO_CMC_OBJECT",
+      "from": "bind_bar_for_mv2_wiring_v1",
+      "to": "CanonicalMarketContextV1",
+      "via": ["mv2_research_wiring_v1.py:815", "mv2_research_wiring_v1.py:2333"],
+      "classification": "PRESENT_AND_PRODUCTIVE"
+    },
+    {
+      "id": "CLASSIC_ENGINE_TO_ORCHESTRATOR",
+      "from": "BacktestEngine.run_realistic",
+      "to": "run_integrated_offline_trading_logic_replay_v1",
+      "classification": "MISSING",
+      "note": "Engine never imports or calls orchestrator"
+    },
+    {
+      "id": "ORCHESTRATOR_TO_CLASSIC_ENGINE_FILL",
+      "from": "run_integrated_offline_trading_logic_replay_v1",
+      "to": "BacktestEngine.run_realistic",
+      "via": ["mv2_research_wiring_v1.py:2603"],
+      "classification": "PRESENT_AND_PRODUCTIVE",
+      "note": "Fill/cost/equity simulator only after mapped decisions"
+    },
+    {
+      "id": "RUNTIME_BRIDGE_BOUND",
+      "from": "run_canonical_core_runtime_integration_bridge_v0",
+      "to": "offline_replay_core",
+      "classification": "BOUND_NOT_ACTIVATED",
+      "evidence_lines": [99, 452, 499]
+    },
+    {
+      "id": "RUNTIME_BRIDGE_ACTIVATED",
+      "from": "run_canonical_core_runtime_integration_bridge_v0",
+      "to": "live_shadow_order_surfaces",
+      "classification": "MISSING",
+      "note": "Hard safety: execution_eligible and authority_effect must remain false/NONE"
+    }
+  ],
+  "bypass_inventory": {
+    "intentional_legacy_raw_signal_research_paths": [
+      "src/backtest/walkforward.py",
+      "src/sweeps/engine.py",
+      "src/portfolio/manager.py",
+      "src/strategies/diagnostics.py",
+      "src/experiments/base.py",
+      "src/backtest/engine.py (registry helpers)",
+      "scripts/run_backtest.py"
+    ],
+    "BYPASS_PATH_COUNT": 7,
+    "confirmed_bypass_count_system_economic_decision_authority": 0,
+    "classification": "BYPASS_CONFIRMED_INTENTIONAL_NON_AUTHORITATIVE"
+  },
+  "summary_classifications": {
+    "STRATEGY_TO_CMC": "MISSING",
+    "STRATEGY_TO_ORCHESTRATOR": "PRESENT_AND_PRODUCTIVE",
+    "CLASSIC_ENGINE_TO_ORCHESTRATOR": "MISSING",
+    "RUNTIME_BRIDGE_STATE": "BOUND_NOT_ACTIVATED",
+    "CANONICAL_CHAIN_STATE": "PRODUCTIVE_OFFLINE_CHAIN_INTACT_RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED"
+  }
+}
