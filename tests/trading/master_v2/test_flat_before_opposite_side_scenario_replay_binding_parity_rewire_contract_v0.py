@@ -267,6 +267,7 @@ def test_scenario_replay_e2e_flat_before_opposite_side_binding_v0() -> None:
             selected_future_id=_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision="flat-before-opposite-side-binding-parity-v0",
+            allow_test_scope_event_injection=True,
         )
     )
     assert result.replay_pass, result.fail_reasons

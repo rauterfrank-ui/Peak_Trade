@@ -56,6 +56,7 @@ def _default_input() -> OfflineDoublePlayScenarioReplayInputV0:
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=build_default_bull_bear_bull_scenario_ticks(),
         source_revision="offline-replay-test-v0",
+        allow_test_scope_event_injection=True,
     )
 
 
@@ -189,6 +190,7 @@ def test_btc_spot_instruments_fail_closed(instrument: str) -> None:
     inp = OfflineDoublePlayScenarioReplayInputV0(
         selected_future_id=instrument,
         ticks=build_default_bull_bear_bull_scenario_ticks(),
+        allow_test_scope_event_injection=True,
     )
     reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
     assert reasons
@@ -201,10 +203,12 @@ def test_non_monotone_timestamp_fail_closed() -> None:
         timestamp_ms=ticks[1].timestamp_ms,
         price=103.0,
         scope_event=ScopeEvent.NOOP,
+        scope_event_provenance="TEST_INJECTION",
     )
     inp = OfflineDoublePlayScenarioReplayInputV0(
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=tuple(ticks),
+        allow_test_scope_event_injection=True,
     )
     reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
     assert any("non-monotone" in r for r in reasons)
@@ -217,10 +221,12 @@ def test_invalid_price_fail_closed() -> None:
         timestamp_ms=ticks[0].timestamp_ms,
         price=math.nan,
         scope_event=ScopeEvent.UPSCOPE_CONFIRMED,
+        scope_event_provenance="TEST_INJECTION",
     )
     inp = OfflineDoublePlayScenarioReplayInputV0(
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=tuple(ticks),
+        allow_test_scope_event_injection=True,
     )
     result = run_offline_double_play_scenario_replay_v0(inp)
     assert not result.replay_pass
@@ -272,6 +278,7 @@ def test_incomplete_futures_input_snapshot_fail_closed() -> None:
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=build_default_bull_bear_bull_scenario_ticks(),
         futures_input_snapshot=blocked,
+        allow_test_scope_event_injection=True,
     )
     reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
     assert any("futures_input_admission_blocked" in r for r in reasons)
@@ -308,6 +315,7 @@ def test_stale_futures_input_provenance_fail_closed() -> None:
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=build_default_bull_bear_bull_scenario_ticks(),
         futures_input_snapshot=stale,
+        allow_test_scope_event_injection=True,
     )
     reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
     assert any("futures_input_admission_blocked" in r for r in reasons)
@@ -386,6 +394,7 @@ def test_replay_display_projection_absent_on_validation_failure() -> None:
     inp = OfflineDoublePlayScenarioReplayInputV0(
         selected_future_id="BTC-PERP",
         ticks=build_default_bull_bear_bull_scenario_ticks(),
+        allow_test_scope_event_injection=True,
     )
     result = run_offline_double_play_scenario_replay_v0(inp)
     assert not result.replay_pass
@@ -451,6 +460,7 @@ def _run_ticks(
         ticks=ticks,
         source_revision="scenario-conformance-v0",
         futures_input_snapshot=futures_input_snapshot,
+        allow_test_scope_event_injection=True,
     )
     return run_offline_double_play_scenario_replay_v0(inp)
 
@@ -603,6 +613,7 @@ def test_scenario_e_conformance_long_winning_stale_data_fail_closed() -> None:
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=ticks,
         futures_input_snapshot=stale,
+        allow_test_scope_event_injection=True,
     )
     reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
     assert any("futures_input_admission_blocked" in r for r in reasons)
@@ -621,6 +632,7 @@ def test_scenario_f_conformance_short_winning_systemic_kill_all_blocks_both_side
         price=95.0,
         scope_event=ScopeEvent.KILL_ALL_REQUIRED,
         safety_decision_allowed=False,
+        scope_event_provenance="TEST_INJECTION",
     )
     result = _run_ticks(favorable_short_ticks + (kill_tick,))
     _assert_replay_executed(result)

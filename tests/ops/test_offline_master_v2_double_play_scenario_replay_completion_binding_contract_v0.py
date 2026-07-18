@@ -75,6 +75,7 @@ def _replay_result() -> OfflineDoublePlayScenarioReplayResultV0:
             selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision="offline-replay-ops-test-v0",
+            allow_test_scope_event_injection=True,
         )
     )
     assert replay.replay_pass, replay.fail_reasons
@@ -521,6 +522,7 @@ def _run_scenario_ticks(
             ticks=ticks,
             source_revision="offline-e2e-scenario-v0",
             futures_input_snapshot=futures_input_snapshot,
+            allow_test_scope_event_injection=True,
         )
     )
 
@@ -535,6 +537,7 @@ def _prove_scenario_ticks(
         ticks=ticks,
         source_revision="offline-e2e-scenario-v0",
         futures_input_snapshot=futures_input_snapshot,
+        allow_test_scope_event_injection=True,
     )
     return prove_offline_replay_six_node_validation_graph_binding_v0(replay_input)
 
@@ -609,6 +612,7 @@ def test_scenario_e_end_to_end_replay_fail_closed() -> None:
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=ticks,
         futures_input_snapshot=stale,
+        allow_test_scope_event_injection=True,
     )
     assert validate_offline_double_play_scenario_replay_input_v0(inp)
     proof = prove_offline_replay_six_node_validation_graph_binding_v0(inp)
@@ -624,6 +628,7 @@ def test_scenario_f_end_to_end_kill_all_path_bound() -> None:
         price=95.0,
         scope_event=ScopeEvent.KILL_ALL_REQUIRED,
         safety_decision_allowed=False,
+        scope_event_provenance="TEST_INJECTION",
     )
     ticks = _default_ticks()[:12] + (kill_tick,)
     replay_result = _run_scenario_ticks(ticks)

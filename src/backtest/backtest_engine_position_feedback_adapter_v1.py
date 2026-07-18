@@ -30,9 +30,6 @@ from src.trading.master_v2.double_play_entry_exit_policy_v0 import (
     ReconciliationState,
     EntryExitDirectionState,
 )
-from src.trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
-    side_state_to_entry_exit_direction,
-)
 from src.trading.master_v2.double_play_state import SideState
 
 BACKTEST_ENGINE_POSITION_FEEDBACK_ADAPTER_LAYER_VERSION = "v1"
@@ -40,13 +37,20 @@ BACKTEST_ENGINE_POSITION_FEEDBACK_ADAPTER_OWNER = (
     "backtest.backtest_engine_position_feedback_adapter_v1"
 )
 CANONICAL_BACKTEST_POSITION_OWNER = "backtest.engine.BacktestEngine"
+BACKTEST_POSITION_FEEDBACK_ROLE = "OBSERVATION_ONLY"
+BACKTEST_POSITION_FEEDBACK_MAY_WRITE_SIDE_STATE = False
 
 _PARTIAL_REDUCTION_SUPPORTED_BY_CANONICAL_OWNER = False
 
 
 @dataclass(frozen=True)
 class BacktestEnginePositionFeedbackV1:
-    """Canonical backtest execution position snapshot consumable by the next MV2 replay bar."""
+    """Canonical backtest execution position snapshot consumable by the next MV2 replay bar.
+
+    Position fields are **observation only**. ``side_state`` / ``direction_state`` are
+    non-authoritative placeholders (always NEUTRAL) and must not overwrite Double Play
+    SideState / Switch authority.
+    """
 
     feedback_source_bar_epoch: int
     position_state: PositionState
@@ -58,6 +62,7 @@ class BacktestEnginePositionFeedbackV1:
     reconciliation_state: ReconciliationState
     last_bar_exit_reason: str | None = None
     has_open_trade: bool = False
+    authority_role: str = BACKTEST_POSITION_FEEDBACK_ROLE
 
 
 @dataclass
@@ -293,30 +298,43 @@ def capture_backtest_engine_position_feedback_v1(
     state: LegacyRealisticBarLoopStateV1,
     feedback_source_bar_epoch: int,
 ) -> BacktestEnginePositionFeedbackV1:
+    """Capture position observation only — never invent Bull/Bear SideState authority.
+
+    Open trades are reported as ``ExistingPositionSide`` / ``PositionManagementContext``
+    facts. ``side_state`` / ``direction_state`` remain NEUTRAL placeholders and are not
+    applied onto the Double Play state machine by the wiring apply hook.
+    """
+    # Non-authoritative placeholders — must not become Bull/Bear Switch authority.
+    neutral_side = SideState.NEUTRAL_OBSERVE
+    neutral_direction = EntryExitDirectionState.NEUTRAL
     if state.current_trade is not None:
+        # Legacy realistic loop currently opens long-only trades; report as position
+        # observation, not as SideState.SHORT/LONG Double Play authority.
         return BacktestEnginePositionFeedbackV1(
             feedback_source_bar_epoch=feedback_source_bar_epoch,
             position_state=PositionState.OPEN_FULL,
             existing_position_side=ExistingPositionSide.LONG,
             venue_flat=False,
-            side_state=SideState.LONG_ACTIVE,
-            direction_state=side_state_to_entry_exit_direction(SideState.LONG_ACTIVE),
+            side_state=neutral_side,
+            direction_state=neutral_direction,
             position_management_context=PositionManagementContext.LONG_POSITION,
             reconciliation_state=ReconciliationState.RECONCILED,
             last_bar_exit_reason=state.last_bar_exit_reason,
             has_open_trade=True,
+            authority_role=BACKTEST_POSITION_FEEDBACK_ROLE,
         )
     return BacktestEnginePositionFeedbackV1(
         feedback_source_bar_epoch=feedback_source_bar_epoch,
         position_state=PositionState.FLAT_RECONCILED,
         existing_position_side=ExistingPositionSide.NONE,
         venue_flat=True,
-        side_state=SideState.LONG_ARMED,
-        direction_state=side_state_to_entry_exit_direction(SideState.LONG_ARMED),
+        side_state=neutral_side,
+        direction_state=neutral_direction,
         position_management_context=PositionManagementContext.FLAT,
         reconciliation_state=ReconciliationState.RECONCILED,
         last_bar_exit_reason=state.last_bar_exit_reason,
         has_open_trade=False,
+        authority_role=BACKTEST_POSITION_FEEDBACK_ROLE,
     )
 
 

@@ -26,9 +26,7 @@ from src.trading.master_v2.double_play_entry_exit_policy_v0 import (
     ExistingPositionSide,
     PositionState,
     ReconciliationState,
-)
-from src.trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
-    side_state_to_entry_exit_direction,
+    EntryExitDirectionState,
 )
 from src.trading.master_v2.double_play_state import SideState
 from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
@@ -103,8 +101,8 @@ def _flat_feedback(epoch: int = 0) -> BacktestEnginePositionFeedbackV1:
         position_state=PositionState.FLAT_RECONCILED,
         existing_position_side=ExistingPositionSide.NONE,
         venue_flat=True,
-        side_state=SideState.LONG_ARMED,
-        direction_state=side_state_to_entry_exit_direction(SideState.LONG_ARMED),
+        side_state=SideState.NEUTRAL_OBSERVE,
+        direction_state=EntryExitDirectionState.NEUTRAL,
         position_management_context=PositionManagementContext.FLAT,
         reconciliation_state=ReconciliationState.RECONCILED,
         has_open_trade=False,
@@ -388,6 +386,7 @@ def test_negative_position_state_coercion_fail_closed() -> None:
 def test_apply_feedback_overrides_position_fields_only() -> None:
     initial = wiring.build_initial_mv2_integrated_replay_bar_sequence_state_v1(trading_epoch=0)
     marked = replace(initial, scope_direction_state=initial.scope_direction_state)
+    prior_side = marked.side_state
     feedback = _flat_feedback()
     open_feedback = replace(
         feedback,
@@ -404,6 +403,7 @@ def test_apply_feedback_overrides_position_fields_only() -> None:
     )
     assert updated.position_state is PositionState.OPEN_FULL
     assert updated.scope_direction_state == marked.scope_direction_state
+    assert updated.side_state is prior_side
 
 
 def test_mv2_replay_incremental_matches_batch_backtest(monkeypatch: pytest.MonkeyPatch) -> None:

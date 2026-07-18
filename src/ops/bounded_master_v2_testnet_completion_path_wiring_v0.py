@@ -269,6 +269,7 @@ def build_replay_input_from_testnet_market_input(
         selected_future_id=market_input.selected_future_id,
         ticks=market_input.ticks,
         source_revision=(f"testnet-completion-path-wiring-v0:{market_input.source_run_id}"),
+        allow_test_scope_event_injection=True,
     )
 
 

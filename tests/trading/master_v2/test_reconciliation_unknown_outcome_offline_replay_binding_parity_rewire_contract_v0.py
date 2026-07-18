@@ -269,6 +269,7 @@ def test_scenario_replay_tick_reconciliation_unknown_outcome_binding_v0() -> Non
             selected_future_id=_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision="reconciliation-unknown-outcome-binding-parity-v0",
+            allow_test_scope_event_injection=True,
         )
     )
     assert result.replay_pass, result.fail_reasons

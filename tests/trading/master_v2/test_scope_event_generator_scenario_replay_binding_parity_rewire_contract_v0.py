@@ -277,12 +277,14 @@ def test_scenario_replay_e2e_wires_generator_per_tick_v0() -> None:
             timestamp_ms=1_700_000_000_000,
             price=100.0,
             scope_event=ScopeEvent.NOOP,
+            scope_event_provenance="TEST_INJECTION",
         ),
         OfflineDoublePlayScenarioTickV0(
             tick_index=1,
             timestamp_ms=1_700_000_060_000,
             price=96.0,
             scope_event=ScopeEvent.NOOP,
+            scope_event_provenance="TEST_INJECTION",
         ),
     )
     result = run_offline_double_play_scenario_replay_v0(
@@ -290,6 +292,7 @@ def test_scenario_replay_e2e_wires_generator_per_tick_v0() -> None:
             selected_future_id=_INSTRUMENT,
             ticks=ticks,
             correlation_id_prefix="scope-gen-scenario-e2e-v0",
+            allow_test_scope_event_injection=True,
         )
     )
     assert len(result.tick_records) == 2
@@ -302,6 +305,7 @@ def test_default_scenario_replay_still_passes_with_generator_binding_v0() -> Non
             selected_future_id=_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             correlation_id_prefix="scope-gen-default-scenario-v0",
+            allow_test_scope_event_injection=True,
         )
     )
     assert result.replay_pass is True

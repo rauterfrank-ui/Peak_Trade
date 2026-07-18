@@ -152,6 +152,11 @@ from trading.master_v2.evaluate_double_play_authority_boundary_v0 import (
     OFFLINE_SCENARIO_REPLAY_CALLABLE,
     declare_legacy_duplicate_decision_path_v0,
 )
+from trading.master_v2.double_play_sole_authority_quarantine_v1 import (
+    REASON_SCENARIO_SCOPE_EVENT_INJECTION_REQUIRES_TEST_HARNESS,
+    SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION,
+    SCENARIO_SCOPE_EVENT_PROVENANCE_UNMARKED,
+)
 from trading.master_v2.local_evaluator_v1 import evaluate_master_v2_local_flow_v1
 from trading.master_v2.staged_execution_enablement_v1 import (
     ExecutionStageV1,
@@ -227,6 +232,8 @@ class OfflineDoublePlayScenarioTickV0:
     realized_or_settled_slot_equity: float | None = None
     time_without_cashflow_step: int | None = None
     opportunity_score: float | None = None
+    # Provenance for injected ScopeEvent. UNMARKED is fail-closed without test harness.
+    scope_event_provenance: str = "UNMARKED"
 
 
 @dataclass(frozen=True)
@@ -236,6 +243,9 @@ class OfflineDoublePlayScenarioReplayInputV0:
     correlation_id_prefix: str = "offline-double-play-replay-v0"
     source_revision: str = "offline-replay-v0"
     futures_input_snapshot: FuturesInputSnapshot | None = None
+    # TEST_ONLY: allow tick.scope_event to drive transition_state (bypasses generator).
+    # Default False — fail-closed quarantine of unmarked productive injection.
+    allow_test_scope_event_injection: bool = False
 
 
 @dataclass(frozen=True)
@@ -569,6 +579,9 @@ def validate_offline_double_play_scenario_replay_input_v0(
         return admission_reasons
     if not inp.ticks:
         return ["ticks required"]
+    if not inp.allow_test_scope_event_injection:
+        reasons.append(REASON_SCENARIO_SCOPE_EVENT_INJECTION_REQUIRES_TEST_HARNESS)
+        return reasons
     prev_ts: int | None = None
     seen: set[int] = set()
     for tick in inp.ticks:
@@ -579,8 +592,42 @@ def validate_offline_double_play_scenario_replay_input_v0(
             reasons.append(f"invalid price at tick {tick.tick_index}")
         if prev_ts is not None and tick.timestamp_ms <= prev_ts:
             reasons.append(f"non-monotone timestamp at tick {tick.tick_index}")
+        provenance = str(getattr(tick, "scope_event_provenance", "") or "")
+        if provenance != SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION:
+            reasons.append(
+                f"unmarked_scope_event_injection_at_tick_{tick.tick_index}:"
+                f"{provenance or SCENARIO_SCOPE_EVENT_PROVENANCE_UNMARKED}"
+            )
         prev_ts = tick.timestamp_ms
     return reasons
+
+
+def make_offline_scenario_replay_input_for_tests_v0(
+    *,
+    selected_future_id: str,
+    ticks: tuple[OfflineDoublePlayScenarioTickV0, ...],
+    correlation_id_prefix: str = "offline-double-play-replay-v0",
+    source_revision: str = "offline-replay-v0-test-injection",
+    futures_input_snapshot: FuturesInputSnapshot | None = None,
+) -> OfflineDoublePlayScenarioReplayInputV0:
+    """TEST_ONLY factory: enables marked tick.scope_event injection for harnesses."""
+    marked = tuple(
+        tick
+        if tick.scope_event_provenance == SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION
+        else replace(
+            tick,
+            scope_event_provenance=SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION,
+        )
+        for tick in ticks
+    )
+    return OfflineDoublePlayScenarioReplayInputV0(
+        selected_future_id=selected_future_id,
+        ticks=marked,
+        correlation_id_prefix=correlation_id_prefix,
+        source_revision=source_revision,
+        futures_input_snapshot=futures_input_snapshot,
+        allow_test_scope_event_injection=True,
+    )
 
 
 def build_default_bull_bear_bull_scenario_ticks() -> tuple[OfflineDoublePlayScenarioTickV0, ...]:
@@ -613,6 +660,7 @@ def build_default_bull_bear_bull_scenario_ticks() -> tuple[OfflineDoublePlayScen
                 realized_or_settled_slot_equity=realized,
                 time_without_cashflow_step=inactive_steps,
                 opportunity_score=opp,
+                scope_event_provenance=SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION,
             )
         )
         idx += 1

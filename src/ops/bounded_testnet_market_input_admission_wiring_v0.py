@@ -169,6 +169,7 @@ def _map_observation_ticks_to_replay_ticks(
             timestamp_ms=tick.timestamp_ms,
             price=tick.mark_price,
             scope_event=ScopeEvent.NOOP,
+            scope_event_provenance="TEST_INJECTION",
         )
         for tick in observation.price_ticks
     )

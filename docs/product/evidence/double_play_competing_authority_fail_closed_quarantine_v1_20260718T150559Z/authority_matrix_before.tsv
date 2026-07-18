@@ -1,0 +1,9 @@
+role	owner	classification_before
+BullBearState	transition_state + Ops switch_gate + feedback overwrite	MULTIPLE/COMPETING
+Switch	transition_state + step_switch_gate + scenario inject	MULTIPLE/COMPETING
+ScopeState	RuntimeScopeState	SOLE (post #5323)
+OpsDP	evaluate_double_play→step_switch_gate	COMPETING
+ScenarioEvent	tick.scope_event	BYPASS
+BacktestFeedback	capture/apply SideState	BYPASS/COMPETING
+CompositionCHOP	composition_matrix	DUPLICATE_vs_ScopeCHOP
+EOF

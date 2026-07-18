@@ -103,6 +103,7 @@ def _replay_result() -> OfflineDoublePlayScenarioReplayResultV0:
             selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision="gap004-testnet-wiring-v0",
+            allow_test_scope_event_injection=True,
         )
     )
     assert replay.replay_pass, replay.fail_reasons
@@ -156,6 +157,7 @@ def test_synthetic_offline_fixture_rejected() -> None:
                 timestamp_ms=1_700_000_000_000,
                 price=100.0,
                 scope_event=ScopeEvent.NOOP,
+                scope_event_provenance="TEST_INJECTION",
             ),
         ),
         source_run_id="fixture-run",
@@ -176,6 +178,7 @@ def test_btc_instrument_rejected() -> None:
                 timestamp_ms=1_700_000_000_000,
                 price=100.0,
                 scope_event=ScopeEvent.NOOP,
+                scope_event_provenance="TEST_INJECTION",
             ),
         ),
         source_run_id="run-1",

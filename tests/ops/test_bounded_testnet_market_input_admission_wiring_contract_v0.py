@@ -247,6 +247,7 @@ def test_wiring_section_accepts_forwarded_market_input() -> None:
                 timestamp_ms=1_700_000_000_000,
                 price=2500.0,
                 scope_event=ScopeEvent.NOOP,
+                scope_event_provenance="TEST_INJECTION",
             ),
         ),
         source_run_id="section-test",

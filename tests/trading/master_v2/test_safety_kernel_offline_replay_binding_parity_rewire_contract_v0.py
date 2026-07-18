@@ -230,6 +230,7 @@ def test_scenario_replay_tick_safety_boundary_binding_v0() -> None:
             selected_future_id=_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision="safety-kernel-binding-parity-v0",
+            allow_test_scope_event_injection=True,
         )
     )
     assert result.replay_pass, result.fail_reasons

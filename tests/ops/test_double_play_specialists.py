@@ -9,7 +9,7 @@ def test_double_play_default_off_is_noop():
     assert d.active_specialist in ("bull", "bear")
 
 
-def test_double_play_enabled_switches_to_bear_on_negative_score():
+def test_double_play_enabled_does_not_switch_on_negative_score_projection_only():
     from src.ops.double_play.specialists import evaluate_double_play
 
     d = evaluate_double_play(
@@ -23,7 +23,9 @@ def test_double_play_enabled_switches_to_bear_on_negative_score():
         }
     )
     assert d.enabled is True
-    assert d.active_specialist == "bear"
+    # Fail-closed quarantine: score must not authorize a bull→bear switch.
+    assert d.active_specialist == "bull"
+    assert d.details["switch_gate_invoked"] is False
 
 
 def test_double_play_enabled_stays_bull_in_hysteresis_band():
@@ -54,3 +56,4 @@ def test_live_gates_integration_details_contain_double_play():
     assert dp["authority_boundary"]["ops_evaluate_double_play_authority"] == (
         "LEGACY_NON_AUTHORITATIVE"
     )
+    assert dp["authority_boundary"]["authority_role"] == "PROJECTION_DIAGNOSTIC_ONLY"

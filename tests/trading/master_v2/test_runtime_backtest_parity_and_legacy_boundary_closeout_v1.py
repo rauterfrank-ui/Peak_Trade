@@ -217,6 +217,7 @@ def test_offline_scenario_replay_is_non_authoritative() -> None:
         OfflineDoublePlayScenarioReplayInputV0(
             selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks()[:3],
+            allow_test_scope_event_injection=True,
         )
     )
     assert result.replay_pass is True or result.fail_reasons is not None
@@ -251,6 +252,7 @@ def test_legacy_paths_cannot_produce_system_economic_evidence() -> None:
             OfflineDoublePlayScenarioReplayInputV0(
                 selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
                 ticks=build_default_bull_bear_bull_scenario_ticks()[:1],
+                allow_test_scope_event_injection=True,
             ),
             system_economic_evidence_requested=True,
         )

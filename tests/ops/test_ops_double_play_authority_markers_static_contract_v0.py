@@ -113,7 +113,10 @@ def test_ops_runbooks_fail_closed_no_authority_grants(path: Path) -> None:
     # Frozen non-activation flags must remain false in code owner.
     assert MASTER_V2_DOUBLE_PLAY_AUTHORITY_USED == "false"
     assert ZERO_ORDER_RUNTIME_READY == "false"
-    assert LIVE_GATES_DOUBLE_PLAY_ANNOTATION_ROLE.endswith("ANNOTATION_ONLY")
+    assert LIVE_GATES_DOUBLE_PLAY_ANNOTATION_ROLE in (
+        "LEGACY_NON_AUTHORITATIVE_ANNOTATION_ONLY",
+        "PROJECTION_DIAGNOSTIC_ONLY",
+    )
 
 
 @pytest.mark.parametrize("path", [DOUBLE_PLAY_MD, SPECIALISTS_MD])
