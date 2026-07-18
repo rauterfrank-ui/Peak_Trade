@@ -1,0 +1,39 @@
+{
+  "schema_version": "obl_b07_bollinger_event_only_semantic_contract.v1",
+  "slice_id": "OBL_B07_BOLLINGER_EVENT_ONLY_SEMANTIC_CONTRACT_V1",
+  "OPERATOR_OPTION": "OPTION_EVENT_ONLY",
+  "BOLLINGER_EVENT_ONLY_RATIFIED": true,
+  "LONG_ONLY_AUTHORIZED": false,
+  "SHORT_ENTRY_AUTHORIZED": false,
+  "SYMMETRIC_SHORT_GEOMETRY_AUTHORIZED": false,
+  "STRATEGY_DIRECTION": "NONE",
+  "ENTRY_SIDE": "NONE",
+  "CLASSIC_LONG_IS_CANONICAL": false,
+  "CLASSIC_LONG_PROPAGATES_TO_INTEGRATED": false,
+  "CYCLE_DIRECTION_INFERENCE_ALLOWED": false,
+  "SYSTEM_STATE_DIRECTION_INFERENCE_ALLOWED": false,
+  "GENERIC_SIGN_HEURISTIC_INTRODUCED": false,
+  "PRODUCTIVE_SEMANTICS_CHANGED": true,
+  "PRODUCTIVE_SIDE_ACTIVATED": false,
+  "BOLLINGER_SIDE_ACTIVATED": false,
+  "OTHER_PRODUCER_SIDE_EMISSION_CHANGED": false,
+  "LIVE_AUTHORIZED": false,
+  "ORDERS_ENABLED": false,
+  "raw_signal_authority": "BollingerBandsStrategy.generate_signals",
+  "event_semantic_authority": "classify_bollinger_raw_signal_event_v1",
+  "event_semantic_owner": "strategies.bollinger_event_semantic_contract_v1",
+  "adapter_binding_owner": "backtest.strategy_signal_suitability_agreement_adapter_v1",
+  "producer_id": "bollinger_bands",
+  "mapping": {
+    "plus_one": "ENTRY_EVENT",
+    "minus_one": "EXIT_EVENT",
+    "zero": "FLAT_NO_EVENT",
+    "missing_or_invalid": "UNKNOWN_FAIL_CLOSED"
+  },
+  "parent_slices": [
+    "OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_AND_QUANTITATIVE_BASELINE_V1",
+    "OBL_B05_BOLLINGER_ENTRY_SIDE_AUTHORITY_OPERATOR_GO_SELECTION_V1",
+    "OBL_B06_BOLLINGER_STRATEGY_SEMANTIC_RATIFICATION_V1"
+  ],
+  "notes": "EVENT_ONLY closes the event-geometry ratification; Direction/entry_side remain NONE until a separate Operator-GO and Strategy-Design slice."
+}

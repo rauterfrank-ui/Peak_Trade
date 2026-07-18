@@ -15,6 +15,11 @@ from src.backtest.strategy_signal_binding_v1 import (
     StrategySignalBindingResultV1,
     StrategySignalProvenanceV1,
 )
+from src.strategies.bollinger_event_semantic_contract_v1 import (
+    BOLLINGER_STRATEGY_ID,
+    BollingerSignalEventV1,
+    classify_bollinger_raw_signal_event_v1,
+)
 from trading.master_v2.strategy_suitability_agreement_material_v1 import (
     StrategyAgreementEventKindV1,
     StrategyEntrySideCarrierV1,
@@ -74,6 +79,9 @@ _UNKNOWN_OR_STUB_OWNERS = frozenset(
 # Only trend_following is ratified: productive +1 ENTRY = LONG.
 # No heuristic name/sign/class derivation for other ENTRY_EXIT owners.
 _TREND_FOLLOWING_ENTRY_SIDE_RATIFIED_OWNER = "trend_following"
+
+# OBL_B07: bollinger_bands is EVENT_ONLY — events without direction/side.
+_BOLLINGER_EVENT_ONLY_OWNER = BOLLINGER_STRATEGY_ID
 
 
 def resolve_strategy_signal_encoding_class_v1(
@@ -156,6 +164,24 @@ def _intrinsic_side_agreement_and_aux(
     raise StrategySuitabilityAgreementErrorV1("encoding_class_unknown")
 
 
+def _bollinger_event_only_side_agreement_and_aux(
+    cycle_signal_value: int,
+) -> tuple[StrategySideAgreementV1, Optional[bool], Optional[StrategyAgreementEventKindV1]]:
+    """OBL_B07 Bollinger EVENT_ONLY: map raw signal via Bollinger contract only.
+
+    Direction and entry_side stay NONE (enforced by carrier resolver). Classic
+    engine LONG reinterpretation is explicitly non-canonical here.
+    """
+    event = classify_bollinger_raw_signal_event_v1(cycle_signal_value)
+    if event is BollingerSignalEventV1.UNKNOWN_FAIL_CLOSED:
+        raise StrategySuitabilityAgreementErrorV1("bollinger_raw_signal_invalid")
+    if event is BollingerSignalEventV1.ENTRY_EVENT:
+        return StrategySideAgreementV1.NEUTRAL, None, StrategyAgreementEventKindV1.ENTRY
+    if event is BollingerSignalEventV1.EXIT_EVENT:
+        return StrategySideAgreementV1.NOT_APPLICABLE, None, StrategyAgreementEventKindV1.EXIT
+    return StrategySideAgreementV1.NEUTRAL, None, StrategyAgreementEventKindV1.NONE
+
+
 def _resolve_entry_side_carrier_v1(
     *,
     executed_strategy_id: str,
@@ -170,10 +196,13 @@ def _resolve_entry_side_carrier_v1(
     - ``-1`` / EXIT = exit event (ADX weak or -DI > +DI) — never SHORT
     - ``0`` / NONE = no change / flat
 
-    No SHORT-entry condition exists in the productive producer. Other ENTRY_EXIT
-    owners remain ``NONE`` until a separate ratification GO.
+    ``bollinger_bands`` is OBL_B07 EVENT_ONLY: events without side (always NONE).
+    No SHORT-entry condition exists in the productive Bollinger producer. Other
+    ENTRY_EXIT owners remain ``NONE`` until a separate ratification GO.
     """
     if encoding_class is not StrategySignalEncodingClassV1.ENTRY_EXIT_EVENT_V1:
+        return StrategyEntrySideCarrierV1.NONE
+    if executed_strategy_id == _BOLLINGER_EVENT_ONLY_OWNER:
         return StrategyEntrySideCarrierV1.NONE
     if executed_strategy_id != _TREND_FOLLOWING_ENTRY_SIDE_RATIFIED_OWNER:
         return StrategyEntrySideCarrierV1.NONE
@@ -236,17 +265,29 @@ def normalize_strategy_signal_to_suitability_agreement_material_v1(
         raise StrategySuitabilityAgreementErrorV1("stub_or_unknown_strategy_semantics")
 
     cycle_signal_value = _extract_cycle_signal_value(binding, trading_epoch=trading_epoch)
-    side_agreement, filter_pass, event_kind = _intrinsic_side_agreement_and_aux(
-        encoding_class, cycle_signal_value
-    )
+    if executed_id == _BOLLINGER_EVENT_ONLY_OWNER:
+        # OBL_B07: Bollinger EVENT_ONLY contract is the event authority.
+        # Does not invent LONG/SHORT or classic-engine direction.
+        side_agreement, filter_pass, event_kind = _bollinger_event_only_side_agreement_and_aux(
+            cycle_signal_value
+        )
+    else:
+        side_agreement, filter_pass, event_kind = _intrinsic_side_agreement_and_aux(
+            encoding_class, cycle_signal_value
+        )
     # Explicit producer-scoped carrier only (trend_following LONG on ENTRY).
-    # Generic cycle_signal_value=+1 is not side authority for other producers.
+    # Bollinger EVENT_ONLY and generic +1 never invent side authority.
     entry_side = _resolve_entry_side_carrier_v1(
         executed_strategy_id=executed_id,
         encoding_class=encoding_class,
         event_kind=event_kind,
         cycle_signal_value=cycle_signal_value,
     )
+    if (
+        executed_id == _BOLLINGER_EVENT_ONLY_OWNER
+        and entry_side is not StrategyEntrySideCarrierV1.NONE
+    ):
+        raise StrategySuitabilityAgreementErrorV1("bollinger_entry_side_must_be_none")
     material_digest = compute_strategy_suitability_agreement_material_digest_v1(
         encoding_class=encoding_class,
         configured_strategy_id=configured_id,
