@@ -1,0 +1,34 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 58 items
+
+tests/backtest/test_obl_b07_bollinger_event_only_semantic_contract_v1.py . [  1%]
+.........                                                                [ 17%]
+tests/backtest/test_obl_b06_bollinger_strategy_semantic_ratification_v1.py . [ 18%]
+....                                                                     [ 25%]
+tests/backtest/test_strategy_signal_suitability_agreement_adapter_v1.py . [ 27%]
+.....                                                                    [ 36%]
+tests/backtest/test_entry_exit_optional_side_carrier_contract_v1.py .... [ 43%]
+.............                                                            [ 65%]
+tests/backtest/test_trend_following_entry_side_ratification_v1.py ...... [ 75%]
+.....                                                                    [ 84%]
+tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py . [ 86%]
+........                                                                 [100%]
+
+============================== 58 passed in 1.00s ==============================
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 40 items
+
+tests/trading/master_v2/test_double_play_composition_matrix_v1.py ...... [ 15%]
+.....................                                                    [ 67%]
+tests/backtest/test_mv2_composition_directional_asymmetry_wiring_repair_v1.py . [ 70%]
+............                                                             [100%]
+
+============================== 40 passed in 0.68s ==============================
