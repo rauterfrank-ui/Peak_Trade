@@ -46,6 +46,7 @@ from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_
     RUNTIME_REFERENCE_INTEGRATION_STATUS_V0,
     assert_non_authority_boundary_v0,
     assert_runtime_reference_lane_v0,
+    assert_surface_p_integrated_envelope_non_authority_boundary_v0,
     assert_scenario_replay_zero_order_boundary_v0,
     bind_backtest_bar_four_way_parity_lane_v0,
     scan_forbidden_runtime_import_modules_v0,
@@ -380,7 +381,7 @@ def test_5_reversal_preparation_boundary_parity_v0() -> None:
     )
     integrated_env = extract_integrated_parity_envelope_v0(integrated)
     assert integrated_env.decision_outcome != DecisionOutcome.ENTER_SHORT.value
-    assert_non_authority_boundary_v0(integrated_env)
+    assert_surface_p_integrated_envelope_non_authority_boundary_v0(integrated_env)
 
 
 def test_scenario_replay_e2e_composition_and_zero_order_boundary_v0() -> None:
@@ -418,7 +419,7 @@ def test_integrated_replay_boundary_fields_stable_v0() -> None:
     assert env.previous_side_state is not None
     assert env.next_side_state is not None
     assert env.composition_result_id
-    assert_non_authority_boundary_v0(env)
+    assert_surface_p_integrated_envelope_non_authority_boundary_v0(env)
     assert integrated.evidence.authority_effect == "NONE"
     assert integrated.evidence.runtime_effect == "NONE"
     assert integrated.evidence.order_effect == "NONE"

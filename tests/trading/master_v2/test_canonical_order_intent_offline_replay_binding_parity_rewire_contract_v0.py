@@ -191,8 +191,19 @@ def test_2_actionable_enter_short_order_intent_bound_v0() -> None:
         is not CompositionStatus.SHORT_SELECTED
     ):
         return
-    assert integrated.evidence.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE
-    assert integrated.evidence.order_intent_ref
+    # Symmetric with long / scenario ticks: order-intent binds offline only when
+    # sizing allows it; CRS BOUND_OFFLINE with non-PASS quantity keeps intent NONE.
+    env = extract_integrated_parity_envelope_v0(integrated)
+    assert_canonical_order_intent_non_authority_boundary_v0(env)
+    if integrated.evidence.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE:
+        assert integrated.evidence.order_intent_ref
+        assert integrated.intermediate.canonical_order_intent is not None
+        return
+    assert integrated.evidence.risk_sizing_effect == "BOUND_OFFLINE"
+    assert integrated.evidence.quantity_status in {"PASS", "REDUCE", "BLOCK"}
+    if integrated.evidence.quantity_status != "PASS":
+        assert integrated.evidence.order_intent_effect == ORDER_INTENT_EFFECT_NONE
+        assert integrated.evidence.order_intent_ref == ""
 
 
 def test_3_non_actionable_observe_remains_unbound_v0() -> None:

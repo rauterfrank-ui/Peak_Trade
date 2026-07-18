@@ -15,6 +15,8 @@ from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 
     ORDER_INTENT_EFFECT_BOUND_OFFLINE,
     ORDER_INTENT_EFFECT_NONE,
 )
+from trading.master_v2.double_play_entry_exit_policy_v0 import EntryExitDirectionState
+from trading.master_v2.double_play_state import SideState
 from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
     ALLOWED_SLICE_CHANGED_PATH_PREFIXES,
     parity_surface_assessments_v0,
@@ -31,6 +33,7 @@ from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_
     assert_runtime_reference_lane_v0,
     assert_surface_p_integrated_envelope_non_authority_boundary_v0,
     evaluate_surface_p_full_bar_sequence_four_way_parity_v0,
+    extract_integrated_parity_envelope_v0,
     extract_runtime_reference_parity_envelope_v0,
     run_backtest_bar_sequence_envelopes_v0,
     scan_changed_paths_for_forbidden_runtime_v0 as harness_scan_forbidden,
@@ -167,6 +170,66 @@ def test_bound_and_unbound_paths_remain_execution_ineligible_v0() -> None:
     )
     with pytest.raises(AssertionError):
         assert_surface_p_integrated_envelope_non_authority_boundary_v0(eligible)
+
+
+@pytest.mark.parametrize(
+    ("side_state", "direction_state", "price_path"),
+    (
+        (SideState.LONG_ARMED, EntryExitDirectionState.LONG_ARMED, (3500.0, 3570.0)),
+        (SideState.SHORT_ARMED, EntryExitDirectionState.SHORT_ARMED, (3500.0, 3430.0)),
+    ),
+)
+def test_integrated_long_short_crs_bound_dispatch_symmetric_v0(
+    side_state: SideState,
+    direction_state: EntryExitDirectionState,
+    price_path: tuple[float, float],
+) -> None:
+    from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import _run
+
+    integrated = _run(
+        side_state=side_state,
+        direction_state=direction_state,
+        price_path=price_path,
+    )
+    env = extract_integrated_parity_envelope_v0(integrated)
+    if env.risk_sizing_effect != RISK_SIZING_EFFECT_BOUND_OFFLINE:
+        return
+    assert env.quantity_status in {"PASS", "REDUCE", "BLOCK"}
+    assert_surface_p_integrated_envelope_non_authority_boundary_v0(env)
+    assert env.execution_eligible is False
+    assert env.authority_effect == "NONE"
+    assert env.runtime_effect == "NONE"
+
+
+@pytest.mark.parametrize(
+    ("side_state", "direction_state", "price_path"),
+    (
+        (SideState.LONG_ARMED, EntryExitDirectionState.LONG_ARMED, (3500.0, 3570.0)),
+        (SideState.SHORT_ARMED, EntryExitDirectionState.SHORT_ARMED, (3500.0, 3430.0)),
+    ),
+)
+def test_integrated_long_short_order_intent_dispatch_symmetric_v0(
+    side_state: SideState,
+    direction_state: EntryExitDirectionState,
+    price_path: tuple[float, float],
+) -> None:
+    from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import _run
+
+    integrated = _run(
+        side_state=side_state,
+        direction_state=direction_state,
+        price_path=price_path,
+    )
+    env = extract_integrated_parity_envelope_v0(integrated)
+    assert_surface_p_integrated_envelope_non_authority_boundary_v0(env)
+    if env.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE:
+        assert env.order_intent_ref
+        assert env.execution_eligible is False
+        return
+    if env.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE:
+        assert env.quantity_status in {"PASS", "REDUCE", "BLOCK"}
+        if env.quantity_status != "PASS":
+            assert env.order_intent_effect == ORDER_INTENT_EFFECT_NONE
 
 
 def test_eight_bar_sequence_fixtures_defined_v0() -> None:

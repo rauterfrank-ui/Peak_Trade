@@ -2063,7 +2063,9 @@ def evaluate_surface_p_four_way_parity_v0(
     integrated_scenario_aligned = False
     if integrated_envelope is not None:
         try:
-            assert_non_authority_boundary_v0(integrated_envelope)
+            # Integrated offline replay may intentionally bind CRS / order intent
+            # as BOUND_OFFLINE; route by envelope effects (not generic NOT_BOUND).
+            assert_surface_p_integrated_envelope_non_authority_boundary_v0(integrated_envelope)
             integrated_scenario_aligned = (
                 integrated_envelope.composition_status == scenario_env.composition_status
             )
