@@ -11,6 +11,15 @@ optional aus Bid/Ask-Größen, sobald diese Spalten vorhanden sind.
 Echte Tick-/L2-Logik ist hier nicht abgebildet; die Signale dienen Pipeline-
  und Backtest-Tests mit Standard-OHLCV.
 
+AUTH-005-style classification (Non-Authority / research safety closeout):
+- CATEGORY=RESEARCH_STRATEGY_INTENT
+- PRIMARY_ROLE=STRATEGY_INTENT (Long/Flat 0/1 only; no Short vocabulary)
+- AUTHORITY=NON_AUTHORITY
+- LIVE_READY=false · EXECUTION_ELIGIBLE=false · CANONICAL_BOUND=false
+- PROXY_DATA_RISK=HIGH (OHLCV / optional size columns — not true tick/L2 microstructure)
+- Does not own Master V2 / Double Play / Dynamic Scope / Agreement / Risk / Sizing
+- Propagator / trade-sign config knobs are unused in the productive signal path
+
 Diese Strategie ist ausschließlich für:
 - Offline-Backtests und Research-Pipelines
 - Akademische Experimente
@@ -28,8 +37,9 @@ Voraussetzungen für echte Implementierung:
 
 Warnung:
 - Diese Strategie ergibt nur Sinn mit Hochfrequenz-/Tick-Daten
-- OHLCV-Daten (1m/1h/1d) sind NICHT ausreichend
+- OHLCV-Daten (1m/1h/1d) sind NICHT ausreichend (explicit OHLCV proxy)
 - Implementierung erfordert erheblichen Research-Aufwand
+- Invalid/insufficient inputs yield Flat (0) — no forward-fill or imputed books
 
 Referenzen:
 - "Trades, Quotes and Prices" (Bouchaud, Bonart, Donier, Gould)
@@ -214,6 +224,15 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
             propagator_decay=cfg.get(f"{section}.propagator_decay", 0.5),
         )
 
+    @staticmethod
+    def _flat_signals(index: pd.Index, **attrs: Any) -> pd.Series:
+        """Research-safe Neutral/Flat output (Long/Flat vocabulary only)."""
+        signals = pd.Series(0, index=index, dtype=int)
+        signals.attrs["is_research_stub"] = False
+        for key, value in attrs.items():
+            signals.attrs[key] = value
+        return signals
+
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
         Generiert deterministische 0/1-Signale (Research-Proxy).
@@ -225,6 +244,15 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
 
         In (1) und (2) wird die rollende Mittelwert-Serie mit ``imbalance_threshold``
         verglichen; in (3) entsteht direkt 0/1 ohne dieselbe Schwelle.
+
+        Research input contract:
+        - Missing ``close`` → ``ValueError`` (existing fail-closed contract)
+        - Empty frame → empty series
+        - ``len < lookback_ticks`` / non-finite prices / negative or non-finite
+          volume (when column present) / OHLC inconsistency / bad index → Flat
+        - Zero-range candles remain division-safe (existing ``+1e-12`` / fillna path)
+        - Output vocabulary is exclusively Long/Flat ``{0,1}`` (no Short)
+        - Does not claim true order-book / tick microstructure
 
         Args:
             data: DataFrame mit mindestens Spalte ``close``
@@ -242,33 +270,99 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
             empty.attrs["is_research_stub"] = False
             return empty
 
-        lb = max(1, min(int(self.cfg.lookback_ticks), len(data)))
+        lookback = int(self.cfg.lookback_ticks)
+        if len(data) < lookback:
+            return self._flat_signals(
+                data.index,
+                insufficient_history=True,
+                lookback_effective=lookback,
+            )
+
+        if not data.index.is_unique or not data.index.is_monotonic_increasing:
+            return self._flat_signals(
+                data.index,
+                invalid_input=True,
+                invalid_reason="index_not_unique_or_not_monotonic_increasing",
+                lookback_effective=lookback,
+            )
+
+        close = pd.to_numeric(data["close"], errors="coerce")
+        close_arr = close.to_numpy(dtype=float, copy=False)
+        if not np.isfinite(close_arr).all():
+            return self._flat_signals(
+                data.index,
+                invalid_input=True,
+                invalid_reason="non_finite_close",
+                lookback_effective=lookback,
+            )
+
+        if "volume" in data.columns:
+            volume = pd.to_numeric(data["volume"], errors="coerce")
+            vol_arr = volume.to_numpy(dtype=float, copy=False)
+            if (not np.isfinite(vol_arr).all()) or bool(np.any(vol_arr < 0.0)):
+                return self._flat_signals(
+                    data.index,
+                    invalid_input=True,
+                    invalid_reason="invalid_volume",
+                    lookback_effective=lookback,
+                )
+
+        lb = max(1, min(lookback, len(data)))
 
         if (
             self.cfg.use_orderbook_imbalance
             and "bid_size" in data.columns
             and "ask_size" in data.columns
         ):
-            b = data["bid_size"].astype(float)
-            a = data["ask_size"].astype(float)
+            b = pd.to_numeric(data["bid_size"], errors="coerce")
+            a = pd.to_numeric(data["ask_size"], errors="coerce")
+            b_arr = b.to_numpy(dtype=float, copy=False)
+            a_arr = a.to_numpy(dtype=float, copy=False)
+            if (not np.isfinite(b_arr).all()) or (not np.isfinite(a_arr).all()):
+                return self._flat_signals(
+                    data.index,
+                    invalid_input=True,
+                    invalid_reason="non_finite_bid_ask_size",
+                    lookback_effective=lb,
+                )
             denom = b + a
             raw = np.where(denom.to_numpy() > 1e-15, (b - a).to_numpy() / denom.to_numpy(), 0.0)
             pressure = pd.Series(raw, index=data.index)
             roll = pressure.rolling(window=lb, min_periods=1).mean()
             signals = (roll > float(self.cfg.imbalance_threshold)).astype(int)
         elif all(c in data.columns for c in ("open", "high", "low")):
-            hl = (data["high"] - data["low"]).replace(0, np.nan)
-            pressure = ((data["close"] - data["open"]) / (hl + 1e-12)).clip(-1.0, 1.0).fillna(0.0)
+            open_ = pd.to_numeric(data["open"], errors="coerce")
+            high = pd.to_numeric(data["high"], errors="coerce")
+            low = pd.to_numeric(data["low"], errors="coerce")
+            ohlc = pd.concat([open_, high, low, close], axis=1)
+            ohlc_arr = ohlc.to_numpy(dtype=float, copy=False)
+            if not np.isfinite(ohlc_arr).all():
+                return self._flat_signals(
+                    data.index,
+                    invalid_input=True,
+                    invalid_reason="non_finite_ohlc",
+                    lookback_effective=lb,
+                )
+            if bool(np.any(high.to_numpy(dtype=float) < low.to_numpy(dtype=float))):
+                return self._flat_signals(
+                    data.index,
+                    invalid_input=True,
+                    invalid_reason="high_lt_low",
+                    lookback_effective=lb,
+                )
+            # Zero-range candles: replace 0 span with NaN then epsilon — no ZeroDivision
+            hl = (high - low).replace(0, np.nan)
+            pressure = ((close - open_) / (hl + 1e-12)).clip(-1.0, 1.0).fillna(0.0)
             roll = pressure.rolling(window=lb, min_periods=1).mean()
             signals = (roll > float(self.cfg.imbalance_threshold)).astype(int)
         else:
-            close = data["close"].astype(float)
             rolling_mean = close.rolling(window=lb, min_periods=1).mean()
             signals = (close > rolling_mean).astype(int)
 
         signals.index = data.index
         signals.attrs["is_research_stub"] = False
         signals.attrs["lookback_effective"] = lb
+        signals.attrs["proxy_data_risk"] = "HIGH"
         return signals
 
     def validate(self) -> None:

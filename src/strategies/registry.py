@@ -187,7 +187,10 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         key="ehlers_cycle_filter",
         cls=EhlersCycleFilterStrategy,
         config_section="strategy.ehlers_cycle_filter",
-        description="Ehlers DSP Cycle Filter (R&D-Only, Intraday-Signalqualität)",
+        description=(
+            "Ehlers DSP Cycle Filter (R&D-Only, Non-Authority, "
+            "STRATEGY_INTENT research Long/Flat; nicht live / nicht kanonisch gebunden)"
+        ),
         is_live_ready=False,  # NICHT live-ready
         tier="r_and_d",
         allowed_environments=("backtest", "offline_backtest", "research"),
@@ -206,7 +209,10 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         key="bouchaud_microstructure",
         cls=BouchaudMicrostructureStrategy,
         config_section="strategy.bouchaud_microstructure",
-        description="Bouchaud Microstructure (R&D, OHLCV-Proxy-Signale)",
+        description=(
+            "Bouchaud Microstructure (R&D-Only, Non-Authority, OHLCV-Proxy "
+            "STRATEGY_INTENT Long/Flat; HIGH proxy-data risk; nicht live / nicht kanonisch gebunden)"
+        ),
         is_live_ready=False,  # NICHT live-ready
         tier="r_and_d",
         allowed_environments=("backtest", "offline_backtest", "research"),

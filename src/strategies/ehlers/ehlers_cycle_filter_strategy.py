@@ -8,6 +8,14 @@ John Ehlers für Cycle-Detection und verbesserte Intraday-Signalqualität.
 
 ⚠️ WICHTIG: RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
 
+AUTH-005-style classification (Non-Authority / research safety closeout):
+- CATEGORY=RESEARCH_STRATEGY_INTENT
+- PRIMARY_ROLE=STRATEGY_INTENT (Long/Flat 0/1 only; no Short vocabulary)
+- AUTHORITY=NON_AUTHORITY
+- LIVE_READY=false · EXECUTION_ELIGIBLE=false · CANONICAL_BOUND=false
+- Does not own Master V2 / Double Play / Dynamic Scope / Agreement / Risk / Sizing
+- Implemented method: Super Smoother + close>smoothed Long/Flat (Hilbert/Bandpass stubs unused)
+
 Diese Strategie ist ausschließlich für:
 - Offline-Backtests
 - Research & Analyse
@@ -29,6 +37,7 @@ Warnung:
 - DSP-Konzepte erfordern sorgfältige Parametrisierung
 - Lookahead-Bias bei falscher Implementierung möglich
 - Nur für explorative Research-Analysen verwenden
+- Invalid/insufficient inputs yield Flat (0) — no forward-fill or imputed prices
 """
 
 from __future__ import annotations
@@ -238,6 +247,15 @@ class EhlersCycleFilterStrategy(BaseStrategy):
             use_hilbert_transform=use_hilbert,
         )
 
+    @staticmethod
+    def _flat_signals(index: pd.Index, **attrs: Any) -> pd.Series:
+        """Research-safe Neutral/Flat output (Long/Flat vocabulary only)."""
+        signals = pd.Series(0, index=index, dtype=int)
+        signals.attrs["is_research_stub"] = False
+        for key, value in attrs.items():
+            signals.attrs[key] = value
+        return signals
+
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
         Generiert Handelssignale aus Super-Smoother und einfacher 0/1-Regel.
@@ -245,6 +263,13 @@ class EhlersCycleFilterStrategy(BaseStrategy):
         Pro Bar: ``close`` wird mit dem Ehlers Super-Smoother geglättet; Long (1), wenn
         `close` über dem geglätteten Wert liegt, sonst Flat (0). Bei zu wenig Historie
         (``len < lookback``) werden nur Nullen zurückgegeben (kein harter Fehler).
+
+        Research input contract:
+        - Missing ``close`` → ``ValueError`` (existing fail-closed contract)
+        - Empty frame → empty series
+        - Insufficient history / non-finite close / non-monotonic or duplicate
+          index → Flat (0), no entry intent (no forward-fill / imputation)
+        - Output vocabulary is exclusively Long/Flat ``{0,1}`` (no Short)
 
         Args:
             data: DataFrame mit OHLCV-Daten (mindestens 'close')
@@ -256,15 +281,29 @@ class EhlersCycleFilterStrategy(BaseStrategy):
             raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         if len(data) == 0:
-            return pd.Series([], dtype=int)
+            empty = pd.Series([], dtype=int)
+            empty.attrs["is_research_stub"] = False
+            return empty
 
         if len(data) < self.cfg.lookback:
-            signals = pd.Series(0, index=data.index, dtype=int)
-            signals.attrs["is_research_stub"] = False
-            signals.attrs["insufficient_history"] = True
-            return signals
+            return self._flat_signals(data.index, insufficient_history=True)
 
-        close = data["close"].astype(float)
+        if not data.index.is_unique or not data.index.is_monotonic_increasing:
+            return self._flat_signals(
+                data.index,
+                invalid_input=True,
+                invalid_reason="index_not_unique_or_not_monotonic_increasing",
+            )
+
+        close = pd.to_numeric(data["close"], errors="coerce")
+        close_arr = close.to_numpy(dtype=float, copy=False)
+        if close_arr.size == 0 or not np.isfinite(close_arr).all():
+            return self._flat_signals(
+                data.index,
+                invalid_input=True,
+                invalid_reason="non_finite_close",
+            )
+
         period = max(int(self.cfg.min_cycle_length), 2)
 
         # two_pole / three_pole: noch nicht separat — Super-Smoother als gemeinsamer Pfad
