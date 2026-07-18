@@ -71,7 +71,7 @@ def test_class_flags_match_registry() -> None:
 
 
 class TestEhlersResearchSafetyCloseout:
-    def test_valid_input_output_parity_exact(self) -> None:
+    def test_ehlers_valid_input_output_parity_exact(self) -> None:
         """Golden capture from pre-change Super-Smoother path (seed=42, n=150)."""
         expected = [
             0,
@@ -230,18 +230,18 @@ class TestEhlersResearchSafetyCloseout:
         assert signals.tolist() == expected
         assert set(signals.unique()).issubset({0, 1})
 
-    def test_empty_input_safe_neutral(self) -> None:
+    def test_ehlers_empty_input_safe_neutral(self) -> None:
         strategy = EhlersCycleFilterStrategy()
         out = strategy.generate_signals(pd.DataFrame({"close": []}))
         assert len(out) == 0
         assert out.attrs.get("is_research_stub") is False
 
-    def test_missing_close_fail_closed(self) -> None:
+    def test_ehlers_missing_close_fail_closed(self) -> None:
         strategy = EhlersCycleFilterStrategy()
         with pytest.raises(ValueError, match="close"):
             strategy.generate_signals(pd.DataFrame({"open": [1.0, 2.0]}))
 
-    def test_nan_inf_no_entry_intent(self) -> None:
+    def test_ehlers_nan_inf_no_entry_intent(self) -> None:
         strategy = EhlersCycleFilterStrategy(lookback=10)
         idx = pd.date_range("2024-01-01", periods=20, freq="h", tz="UTC")
         for bad in (np.nan, np.inf, -np.inf):
@@ -251,14 +251,14 @@ class TestEhlersResearchSafetyCloseout:
             assert (out == 0).all()
             assert out.attrs.get("invalid_input") is True
 
-    def test_insufficient_history_flat(self) -> None:
+    def test_ehlers_insufficient_history_flat(self) -> None:
         strategy = EhlersCycleFilterStrategy(lookback=100)
         idx = pd.date_range("2024-01-01", periods=10, freq="h", tz="UTC")
         out = strategy.generate_signals(pd.DataFrame({"close": [100.0] * 10}, index=idx))
         assert (out == 0).all()
         assert out.attrs.get("insufficient_history") is True
 
-    def test_constant_series_deterministic(self) -> None:
+    def test_ehlers_constant_series_deterministic(self) -> None:
         strategy = EhlersCycleFilterStrategy(lookback=20, min_cycle_length=6)
         idx = pd.date_range("2024-01-01", periods=40, freq="h", tz="UTC")
         df = pd.DataFrame({"close": [100.0] * 40}, index=idx)
@@ -267,7 +267,7 @@ class TestEhlersResearchSafetyCloseout:
         assert a.equals(b)
         assert set(a.unique()).issubset({0, 1})
 
-    def test_no_lookahead_prefix_consistency(self) -> None:
+    def test_ehlers_no_lookahead_prefix_consistency(self) -> None:
         strategy = EhlersCycleFilterStrategy(lookback=30, min_cycle_length=6)
         df = _ehlers_valid_frame(n=80)
         full = strategy.generate_signals(df)
@@ -275,13 +275,13 @@ class TestEhlersResearchSafetyCloseout:
             prefix = strategy.generate_signals(df.iloc[: t + 1])
             assert int(prefix.iloc[-1]) == int(full.iloc[t])
 
-    def test_long_flat_vocabulary_only(self) -> None:
+    def test_ehlers_long_flat_vocabulary_only(self) -> None:
         strategy = EhlersCycleFilterStrategy(lookback=20)
         out = strategy.generate_signals(_ehlers_valid_frame(n=50))
         assert set(map(int, out.unique())).issubset({0, 1})
         assert -1 not in set(map(int, out.unique()))
 
-    def test_duplicate_index_flat(self) -> None:
+    def test_ehlers_duplicate_index_flat(self) -> None:
         strategy = EhlersCycleFilterStrategy(lookback=5)
         idx = pd.to_datetime(["2024-01-01", "2024-01-01", "2024-01-02"] * 4)
         out = strategy.generate_signals(pd.DataFrame({"close": list(range(12))}, index=idx))
@@ -295,24 +295,24 @@ class TestEhlersResearchSafetyCloseout:
 
 
 class TestBouchaudResearchSafetyCloseout:
-    def test_valid_ohlc_output_parity_exact(self) -> None:
+    def test_bouchaud_valid_ohlc_output_parity_exact(self) -> None:
         strategy = BouchaudMicrostructureStrategy(lookback_ticks=20, imbalance_threshold=0.3)
         out = strategy.generate_signals(_bouchaud_valid_ohlc_frame())
         assert (out == 1).all()
         assert set(out.unique()).issubset({0, 1})
         assert out.attrs.get("proxy_data_risk") == "HIGH"
 
-    def test_empty_input_safe_neutral(self) -> None:
+    def test_bouchaud_empty_input_safe_neutral(self) -> None:
         strategy = BouchaudMicrostructureStrategy()
         out = strategy.generate_signals(pd.DataFrame({"close": []}))
         assert len(out) == 0
 
-    def test_missing_close_fail_closed(self) -> None:
+    def test_bouchaud_missing_close_fail_closed(self) -> None:
         strategy = BouchaudMicrostructureStrategy()
         with pytest.raises(ValueError, match="close"):
             strategy.generate_signals(pd.DataFrame({"volume": [1.0]}))
 
-    def test_zero_range_candle_no_division_error(self) -> None:
+    def test_bouchaud_zero_range_candle_no_division_error(self) -> None:
         strategy = BouchaudMicrostructureStrategy(lookback_ticks=5, imbalance_threshold=0.0)
         idx = pd.date_range("2024-01-01", periods=10, freq="h", tz="UTC")
         df = pd.DataFrame(
@@ -329,7 +329,7 @@ class TestBouchaudResearchSafetyCloseout:
         assert len(out) == 10
         assert set(map(int, out.unique())).issubset({0, 1})
 
-    def test_nan_inf_no_entry_intent(self) -> None:
+    def test_bouchaud_nan_inf_no_entry_intent(self) -> None:
         strategy = BouchaudMicrostructureStrategy(lookback_ticks=5)
         idx = pd.date_range("2024-01-01", periods=10, freq="h", tz="UTC")
         df = _bouchaud_valid_ohlc_frame(n=10)
@@ -338,7 +338,7 @@ class TestBouchaudResearchSafetyCloseout:
         assert (out == 0).all()
         assert out.attrs.get("invalid_input") is True
 
-    def test_negative_volume_fail_closed_flat(self) -> None:
+    def test_bouchaud_negative_volume_fail_closed_flat(self) -> None:
         strategy = BouchaudMicrostructureStrategy(lookback_ticks=5)
         df = _bouchaud_valid_ohlc_frame(n=10)
         df.iloc[2, df.columns.get_loc("volume")] = -1.0
@@ -346,14 +346,14 @@ class TestBouchaudResearchSafetyCloseout:
         assert (out == 0).all()
         assert out.attrs.get("invalid_reason") == "invalid_volume"
 
-    def test_insufficient_history_flat(self) -> None:
+    def test_bouchaud_insufficient_history_flat(self) -> None:
         strategy = BouchaudMicrostructureStrategy(lookback_ticks=50)
         df = _bouchaud_valid_ohlc_frame(n=10)
         out = strategy.generate_signals(df)
         assert (out == 0).all()
         assert out.attrs.get("insufficient_history") is True
 
-    def test_no_lookahead_prefix_consistency(self) -> None:
+    def test_bouchaud_no_lookahead_prefix_consistency(self) -> None:
         strategy = BouchaudMicrostructureStrategy(lookback_ticks=20, imbalance_threshold=0.3)
         df = _bouchaud_valid_ohlc_frame(n=80)
         full = strategy.generate_signals(df)
@@ -361,13 +361,13 @@ class TestBouchaudResearchSafetyCloseout:
             prefix = strategy.generate_signals(df.iloc[: t + 1])
             assert int(prefix.iloc[-1]) == int(full.iloc[t])
 
-    def test_long_flat_vocabulary_only(self) -> None:
+    def test_bouchaud_long_flat_vocabulary_only(self) -> None:
         strategy = BouchaudMicrostructureStrategy(lookback_ticks=20)
         out = strategy.generate_signals(_bouchaud_valid_ohlc_frame(n=50))
         assert set(map(int, out.unique())).issubset({0, 1})
         assert -1 not in set(map(int, out.unique()))
 
-    def test_high_lt_low_flat(self) -> None:
+    def test_bouchaud_high_lt_low_flat(self) -> None:
         strategy = BouchaudMicrostructureStrategy(lookback_ticks=5)
         df = _bouchaud_valid_ohlc_frame(n=10)
         df.iloc[1, df.columns.get_loc("high")] = 90.0
