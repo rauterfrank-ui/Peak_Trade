@@ -1,0 +1,1010 @@
+{
+  "adverse_exit_policy_preserved": true,
+  "base_sha_expected": "00302a228e47d1cf74e43494a838123d2f803fb8",
+  "downscope_reaches_transition_state": true,
+  "live_authorized": false,
+  "live_traces": [
+    {
+      "adverse_exit_distance": 0.0019425,
+      "adverse_geometry": true,
+      "adverse_policy_reason": "adverse_scope_exit_matched",
+      "adverse_policy_triggered": true,
+      "bear_geometry": true,
+      "bull_geometry": false,
+      "composition_side": "none",
+      "decision_outcome": "reduce",
+      "entry_exit_outcome": "reduce",
+      "epoch": 86,
+      "event_type": "downscope_candidate",
+      "exit_class": "adverse_scope_exit",
+      "instrument": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "mapped_scope_event": "downscope_candidate",
+      "mark": 0.3885,
+      "matched": "downscope|adverse_exit",
+      "order_intent": "none",
+      "prior_mark": 0.3896,
+      "reason_codes": "adverse_scope_exit|adverse_scope_exit_matched",
+      "reversal_distance": 0.00291375,
+      "side_after": "long_active",
+      "side_before": "long_active",
+      "source": "1INCH_fixture",
+      "timestamp": "2024-05-04 14:00:00+00:00",
+      "trace_id": "D1_ADVERSE_PLUS_VALID_DOWNSCOPE_LIVE",
+      "transition_allowed": true,
+      "transition_reason": "CANDIDATE_ACK",
+      "up_distance": 0.003885
+    },
+    {
+      "adverse_exit_distance": 0.0019145000000000002,
+      "adverse_geometry": true,
+      "adverse_policy_reason": "adverse_scope_exit_candidate",
+      "adverse_policy_triggered": true,
+      "bear_geometry": false,
+      "bull_geometry": false,
+      "composition_side": "none",
+      "decision_outcome": "reduce",
+      "entry_exit_outcome": "reduce",
+      "epoch": 71,
+      "event_type": "adverse_exit_candidate",
+      "exit_class": "adverse_scope_exit",
+      "instrument": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "mapped_scope_event": "scope_unknown",
+      "mark": 0.3829,
+      "matched": "adverse_exit",
+      "order_intent": "none",
+      "prior_mark": 0.3854,
+      "reason_codes": "adverse_scope_exit|adverse_scope_exit_candidate",
+      "reversal_distance": 0.00287175,
+      "side_after": "long_active",
+      "side_before": "long_active",
+      "source": "1INCH_fixture",
+      "timestamp": "2024-05-03 23:00:00+00:00",
+      "trace_id": "D2_ADVERSE_WITHOUT_DOWNSCOPE_LIVE",
+      "transition_allowed": false,
+      "transition_reason": "SCOPE_UNKNOWN_FAIL_CLOSED",
+      "up_distance": 0.0038290000000000004
+    }
+  ],
+  "mark_relative_bps_regression_pass": true,
+  "members": {
+    "1INCH": {
+      "adverse_exit_event_count": 31,
+      "adverse_geometry_count": 308,
+      "adverse_policy_triggered_count": 2491,
+      "bars_hooked": 2953,
+      "bars_total": 2953,
+      "bear_candidate_count": 286,
+      "bear_event_count": 2460,
+      "bear_transition_count": 2,
+      "bps_samples": [
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.0018770000000000002,
+          "mark": 0.3754,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.0028155000000000003,
+          "up_bps": 100.0,
+          "up_distance": 0.0037540000000000004
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.0018995000000000001,
+          "mark": 0.3799,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.0028492500000000002,
+          "up_bps": 100.0,
+          "up_distance": 0.0037990000000000003
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.0018985,
+          "mark": 0.3797,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.00284775,
+          "up_bps": 100.0,
+          "up_distance": 0.003797
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.0018965000000000002,
+          "mark": 0.3793,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.00284475,
+          "up_bps": 100.0,
+          "up_distance": 0.0037930000000000004
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.00191,
+          "mark": 0.382,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.002865,
+          "up_bps": 100.0,
+          "up_distance": 0.00382
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.001911,
+          "mark": 0.3822,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.0028665,
+          "up_bps": 100.0,
+          "up_distance": 0.003822
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.001912,
+          "mark": 0.3824,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.002868,
+          "up_bps": 100.0,
+          "up_distance": 0.003824
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.0019185,
+          "mark": 0.3837,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.00287775,
+          "up_bps": 100.0,
+          "up_distance": 0.003837
+        }
+      ],
+      "bull_candidate_count": 2458,
+      "bull_event_count": 284,
+      "bull_transition_count": 1,
+      "composition_side": {
+        "long": 132,
+        "none": 2624,
+        "short": 137
+      },
+      "composition_status": {
+        "long_selected": 132,
+        "observe": 2623,
+        "reversal_preparation": 1,
+        "short_selected": 137
+      },
+      "conflicting_intents": 0,
+      "decision_outcome": {
+        "blocked": 13,
+        "enter_long": 1,
+        "enter_short": 8,
+        "hold": 91,
+        "no_action": 13,
+        "observe": 275,
+        "reduce": 2492
+      },
+      "downscope_event_count": 2460,
+      "downscope_transition_count": 4,
+      "entry_exit_outcome": {
+        "blocked": 13,
+        "enter_long": 1,
+        "enter_short": 8,
+        "hold": 91,
+        "no_action": 13,
+        "observe": 275,
+        "reduce": 2492
+      },
+      "entry_policy_enter_count": 9,
+      "entry_side_none": 2893,
+      "entry_side_other": 0,
+      "event_counts": {
+        "adverse_exit_candidate": 31,
+        "downscope_candidate": 21,
+        "downscope_confirmed": 2439,
+        "noop": 118,
+        "upscope_candidate": 7,
+        "upscope_confirmed": 277
+      },
+      "exit_class": {
+        "adverse_scope_exit": 2491,
+        "none": 401,
+        "reversal_preparation_exit": 1
+      },
+      "exit_policy_exit_count": 2492,
+      "first_blocking": {
+        "boundary": "src/backtest/mv2_research_wiring_v1.py:observational_hook",
+        "reason": "no_intermediate",
+        "symbol": "intermediate_missing"
+      },
+      "hold_noop_intent_count": 379,
+      "legacy_absolute_distance_seen": 0,
+      "long_trade_count": 0,
+      "mapped_scope_event": {
+        "downscope_candidate": 21,
+        "downscope_confirmed": 2439,
+        "noop": 118,
+        "scope_unknown": 31,
+        "upscope_candidate": 7,
+        "upscope_confirmed": 277
+      },
+      "mark_max": 0.5301,
+      "mark_min": 0.2303,
+      "marks_invalid": 0,
+      "marks_valid": 2893,
+      "matched_counts": {
+        "adverse_exit": 2491,
+        "downscope": 2460,
+        "upscope": 284
+      },
+      "member_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "noop_count": 118,
+      "order_intent": {
+        "none": 2893
+      },
+      "reason_codes_top": {
+        "adverse_scope_exit": 2491,
+        "adverse_scope_exit_candidate": 31,
+        "adverse_scope_exit_matched": 2460,
+        "direction_not_armed": 13,
+        "entry_blocked": 13,
+        "entry_long_eligible": 1,
+        "entry_short_eligible": 8,
+        "existing_long_hold": 91,
+        "no_action": 13,
+        "observe_only": 275,
+        "reversal_preparation": 1,
+        "selected_opposite_short": 1
+      },
+      "rejected_transition_count": 2742,
+      "scale_invariant_fail": 0,
+      "scale_invariant_ok": 2893,
+      "scope_unknown_mapped_count": 31,
+      "short_trade_count": 0,
+      "side_after": {
+        "long_active": 25,
+        "long_armed": 2,
+        "long_blocked": 4,
+        "short_active": 2543,
+        "short_armed": 277,
+        "switch_long_to_short_pending": 42
+      },
+      "side_before": {
+        "long_active": 25,
+        "long_armed": 3,
+        "long_blocked": 4,
+        "short_active": 2542,
+        "short_armed": 277,
+        "switch_long_to_short_pending": 42
+      },
+      "stay_transition_count": 2888,
+      "threshold_miss_count": 127,
+      "trade_count": 1,
+      "transition_allowed": {
+        "False": 2742,
+        "True": 151
+      },
+      "transition_reason": {
+        "CANDIDATE_ACK": 28,
+        "DOWNscope_SWITCH_PENDING": 1,
+        "LONG_ACTIVE": 1,
+        "LONG_BLOCKED": 1,
+        "NOOP": 118,
+        "NO_TRANSITION": 2711,
+        "SCOPE_UNKNOWN_FAIL_CLOSED": 31,
+        "SHORT_ACTIVE": 1,
+        "SHORT_ARMED": 1
+      },
+      "zero_trade": false
+    },
+    "AVAX": {
+      "adverse_exit_event_count": 92,
+      "adverse_geometry_count": 358,
+      "adverse_policy_triggered_count": 2343,
+      "bars_hooked": 2953,
+      "bars_total": 2953,
+      "bear_candidate_count": 327,
+      "bear_event_count": 2251,
+      "bear_transition_count": 2,
+      "bps_samples": [
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.173185,
+          "mark": 34.637,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.2597775,
+          "up_bps": 100.0,
+          "up_distance": 0.34637
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.174115,
+          "mark": 34.823,
+          "reversal_bps": 74.99999999999999,
+          "reversal_distance": 0.2611725,
+          "up_bps": 100.0,
+          "up_distance": 0.34823
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.17381,
+          "mark": 34.762,
+          "reversal_bps": 74.99999999999999,
+          "reversal_distance": 0.260715,
+          "up_bps": 100.0,
+          "up_distance": 0.34762
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.17535,
+          "mark": 35.07,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.263025,
+          "up_bps": 100.0,
+          "up_distance": 0.3507
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.17617000000000002,
+          "mark": 35.234,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.264255,
+          "up_bps": 100.0,
+          "up_distance": 0.35234000000000004
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.176625,
+          "mark": 35.325,
+          "reversal_bps": 74.99999999999999,
+          "reversal_distance": 0.2649375,
+          "up_bps": 100.0,
+          "up_distance": 0.35325
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.176065,
+          "mark": 35.213,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.2640975,
+          "up_bps": 100.0,
+          "up_distance": 0.35213
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.17641500000000002,
+          "mark": 35.283,
+          "reversal_bps": 75.0,
+          "reversal_distance": 0.26462250000000004,
+          "up_bps": 100.0,
+          "up_distance": 0.35283000000000003
+        }
+      ],
+      "bull_candidate_count": 2249,
+      "bull_event_count": 325,
+      "bull_transition_count": 1,
+      "composition_side": {
+        "long": 136,
+        "none": 2625,
+        "short": 132
+      },
+      "composition_status": {
+        "long_selected": 136,
+        "observe": 2625,
+        "short_selected": 132
+      },
+      "conflicting_intents": 0,
+      "decision_outcome": {
+        "blocked": 23,
+        "enter_short": 8,
+        "no_action": 12,
+        "observe": 507,
+        "reduce": 2343
+      },
+      "downscope_event_count": 2251,
+      "downscope_transition_count": 4,
+      "entry_exit_outcome": {
+        "blocked": 23,
+        "enter_short": 8,
+        "no_action": 12,
+        "observe": 507,
+        "reduce": 2343
+      },
+      "entry_policy_enter_count": 8,
+      "entry_side_none": 2893,
+      "entry_side_other": 0,
+      "event_counts": {
+        "adverse_exit_candidate": 92,
+        "downscope_candidate": 65,
+        "downscope_confirmed": 2186,
+        "noop": 225,
+        "upscope_candidate": 13,
+        "upscope_confirmed": 312
+      },
+      "exit_class": {
+        "adverse_scope_exit": 2343,
+        "none": 550
+      },
+      "exit_policy_exit_count": 2343,
+      "first_blocking": {
+        "boundary": "src/backtest/mv2_research_wiring_v1.py:observational_hook",
+        "reason": "no_intermediate",
+        "symbol": "intermediate_missing"
+      },
+      "hold_noop_intent_count": 519,
+      "legacy_absolute_distance_seen": 0,
+      "long_trade_count": 0,
+      "mapped_scope_event": {
+        "downscope_candidate": 65,
+        "downscope_confirmed": 2186,
+        "noop": 225,
+        "scope_unknown": 92,
+        "upscope_candidate": 13,
+        "upscope_confirmed": 312
+      },
+      "mark_max": 41.448,
+      "mark_min": 17.705,
+      "marks_invalid": 0,
+      "marks_valid": 2893,
+      "matched_counts": {
+        "adverse_exit": 2343,
+        "downscope": 2251,
+        "upscope": 325
+      },
+      "member_id": "okx:linear_perpetual:AVAX:USDT:USDT:perp",
+      "noop_count": 225,
+      "order_intent": {
+        "none": 2893
+      },
+      "reason_codes_top": {
+        "adverse_scope_exit": 2343,
+        "adverse_scope_exit_candidate": 92,
+        "adverse_scope_exit_matched": 2251,
+        "direction_not_armed": 23,
+        "entry_blocked": 23,
+        "entry_short_eligible": 8,
+        "no_action": 12,
+        "observe_only": 507
+      },
+      "rejected_transition_count": 2585,
+      "scale_invariant_fail": 0,
+      "scale_invariant_ok": 2893,
+      "scope_unknown_mapped_count": 92,
+      "short_trade_count": 0,
+      "side_after": {
+        "long_active": 37,
+        "long_armed": 4,
+        "long_blocked": 16,
+        "short_active": 2477,
+        "short_armed": 332,
+        "switch_long_to_short_pending": 27
+      },
+      "side_before": {
+        "long_active": 37,
+        "long_armed": 5,
+        "long_blocked": 16,
+        "short_active": 2476,
+        "short_armed": 332,
+        "switch_long_to_short_pending": 27
+      },
+      "stay_transition_count": 2888,
+      "threshold_miss_count": 286,
+      "trade_count": 0,
+      "transition_allowed": {
+        "False": 2585,
+        "True": 308
+      },
+      "transition_reason": {
+        "CANDIDATE_ACK": 78,
+        "DOWNscope_SWITCH_PENDING": 1,
+        "LONG_ACTIVE": 1,
+        "LONG_BLOCKED": 1,
+        "NOOP": 225,
+        "NO_TRANSITION": 2493,
+        "SCOPE_UNKNOWN_FAIL_CLOSED": 92,
+        "SHORT_ACTIVE": 1,
+        "SHORT_ARMED": 1
+      },
+      "zero_trade": true
+    },
+    "BONK": {
+      "adverse_exit_event_count": 13,
+      "adverse_geometry_count": 520,
+      "adverse_policy_triggered_count": 1905,
+      "bars_hooked": 2953,
+      "bars_total": 2953,
+      "bear_candidate_count": 511,
+      "bear_event_count": 1892,
+      "bear_transition_count": 2,
+      "bps_samples": [
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 1.3808e-07,
+          "mark": 2.7616e-05,
+          "reversal_bps": 75.0,
+          "reversal_distance": 2.0712000000000002e-07,
+          "up_bps": 100.0,
+          "up_distance": 2.7616e-07
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 1.37395e-07,
+          "mark": 2.7479e-05,
+          "reversal_bps": 75.0,
+          "reversal_distance": 2.0609249999999998e-07,
+          "up_bps": 100.0,
+          "up_distance": 2.7479e-07
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 1.37875e-07,
+          "mark": 2.7575e-05,
+          "reversal_bps": 75.0,
+          "reversal_distance": 2.068125e-07,
+          "up_bps": 100.0,
+          "up_distance": 2.7575e-07
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 1.358e-07,
+          "mark": 2.716e-05,
+          "reversal_bps": 75.0,
+          "reversal_distance": 2.037e-07,
+          "up_bps": 100.0,
+          "up_distance": 2.716e-07
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 1.36275e-07,
+          "mark": 2.7255e-05,
+          "reversal_bps": 75.0,
+          "reversal_distance": 2.0441249999999998e-07,
+          "up_bps": 100.0,
+          "up_distance": 2.7255e-07
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 1.34695e-07,
+          "mark": 2.6939e-05,
+          "reversal_bps": 75.0,
+          "reversal_distance": 2.020425e-07,
+          "up_bps": 100.0,
+          "up_distance": 2.6939e-07
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 1.32615e-07,
+          "mark": 2.6523e-05,
+          "reversal_bps": 75.0,
+          "reversal_distance": 1.989225e-07,
+          "up_bps": 100.0,
+          "up_distance": 2.6523e-07
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 1.3342e-07,
+          "mark": 2.6684e-05,
+          "reversal_bps": 75.00000000000001,
+          "reversal_distance": 2.0013000000000003e-07,
+          "up_bps": 100.0,
+          "up_distance": 2.6684e-07
+        }
+      ],
+      "bull_candidate_count": 2304,
+      "bull_event_count": 923,
+      "bull_transition_count": 1,
+      "composition_side": {
+        "long": 352,
+        "none": 2176,
+        "short": 365
+      },
+      "composition_status": {
+        "long_selected": 352,
+        "observe": 2176,
+        "short_selected": 365
+      },
+      "conflicting_intents": 0,
+      "decision_outcome": {
+        "blocked": 162,
+        "enter_short": 52,
+        "no_action": 64,
+        "observe": 710,
+        "reduce": 1905
+      },
+      "downscope_event_count": 1892,
+      "downscope_transition_count": 4,
+      "entry_exit_outcome": {
+        "blocked": 162,
+        "enter_short": 52,
+        "no_action": 64,
+        "observe": 710,
+        "reduce": 1905
+      },
+      "entry_policy_enter_count": 52,
+      "entry_side_none": 2893,
+      "entry_side_other": 0,
+      "event_counts": {
+        "adverse_exit_candidate": 13,
+        "downscope_candidate": 24,
+        "downscope_confirmed": 1868,
+        "noop": 65,
+        "upscope_candidate": 8,
+        "upscope_confirmed": 915
+      },
+      "exit_class": {
+        "adverse_scope_exit": 1905,
+        "none": 988
+      },
+      "exit_policy_exit_count": 1905,
+      "first_blocking": {
+        "boundary": "src/backtest/mv2_research_wiring_v1.py:observational_hook",
+        "reason": "no_intermediate",
+        "symbol": "intermediate_missing"
+      },
+      "hold_noop_intent_count": 774,
+      "legacy_absolute_distance_seen": 0,
+      "long_trade_count": 0,
+      "mapped_scope_event": {
+        "downscope_candidate": 24,
+        "downscope_confirmed": 1868,
+        "noop": 65,
+        "scope_unknown": 13,
+        "upscope_candidate": 8,
+        "upscope_confirmed": 915
+      },
+      "mark_max": 4.3558e-05,
+      "mark_min": 1.5959e-05,
+      "marks_invalid": 0,
+      "marks_valid": 2893,
+      "matched_counts": {
+        "adverse_exit": 1905,
+        "downscope": 1892,
+        "upscope": 923
+      },
+      "member_id": "okx:linear_perpetual:BONK:USDT:USDT:perp",
+      "noop_count": 65,
+      "order_intent": {
+        "none": 2893
+      },
+      "reason_codes_top": {
+        "adverse_scope_exit": 1905,
+        "adverse_scope_exit_candidate": 13,
+        "adverse_scope_exit_matched": 1892,
+        "direction_not_armed": 162,
+        "entry_blocked": 162,
+        "entry_short_eligible": 52,
+        "no_action": 64,
+        "observe_only": 710
+      },
+      "rejected_transition_count": 2791,
+      "scale_invariant_fail": 0,
+      "scale_invariant_ok": 2893,
+      "scope_unknown_mapped_count": 13,
+      "short_trade_count": 0,
+      "side_after": {
+        "long_active": 7,
+        "long_armed": 17,
+        "long_blocked": 428,
+        "short_active": 1932,
+        "short_armed": 114,
+        "switch_long_to_short_pending": 395
+      },
+      "side_before": {
+        "long_active": 7,
+        "long_armed": 18,
+        "long_blocked": 428,
+        "short_active": 1931,
+        "short_armed": 114,
+        "switch_long_to_short_pending": 395
+      },
+      "stay_transition_count": 2888,
+      "threshold_miss_count": 69,
+      "trade_count": 0,
+      "transition_allowed": {
+        "False": 2791,
+        "True": 102
+      },
+      "transition_reason": {
+        "CANDIDATE_ACK": 32,
+        "DOWNscope_SWITCH_PENDING": 1,
+        "LONG_ACTIVE": 1,
+        "LONG_BLOCKED": 1,
+        "NOOP": 65,
+        "NO_TRANSITION": 2778,
+        "SCOPE_UNKNOWN_FAIL_CLOSED": 13,
+        "SHORT_ACTIVE": 1,
+        "SHORT_ARMED": 1
+      },
+      "zero_trade": true
+    },
+    "SOL": {
+      "adverse_exit_event_count": 34,
+      "adverse_geometry_count": 84,
+      "adverse_policy_triggered_count": 2708,
+      "bars_hooked": 2953,
+      "bars_total": 2953,
+      "bear_candidate_count": 72,
+      "bear_event_count": 2674,
+      "bear_transition_count": 2,
+      "bps_samples": [
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.7095999999999999,
+          "mark": 141.92,
+          "reversal_bps": 74.99999999999999,
+          "reversal_distance": 1.0643999999999998,
+          "up_bps": 100.0,
+          "up_distance": 1.4191999999999998
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.71475,
+          "mark": 142.95,
+          "reversal_bps": 75.0,
+          "reversal_distance": 1.072125,
+          "up_bps": 100.0,
+          "up_distance": 1.4295
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.71285,
+          "mark": 142.57,
+          "reversal_bps": 75.0,
+          "reversal_distance": 1.069275,
+          "up_bps": 100.0,
+          "up_distance": 1.4257
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.7103499999999999,
+          "mark": 142.07,
+          "reversal_bps": 74.99999999999999,
+          "reversal_distance": 1.0655249999999998,
+          "up_bps": 100.0,
+          "up_distance": 1.4206999999999999
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.70845,
+          "mark": 141.69,
+          "reversal_bps": 75.0,
+          "reversal_distance": 1.062675,
+          "up_bps": 100.0,
+          "up_distance": 1.4169
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.7109000000000001,
+          "mark": 142.18,
+          "reversal_bps": 75.0,
+          "reversal_distance": 1.0663500000000001,
+          "up_bps": 100.0,
+          "up_distance": 1.4218000000000002
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.708,
+          "mark": 141.6,
+          "reversal_bps": 74.99999999999999,
+          "reversal_distance": 1.0619999999999998,
+          "up_bps": 100.0,
+          "up_distance": 1.416
+        },
+        {
+          "adverse_bps": 50.0,
+          "adverse_exit_distance": 0.71375,
+          "mark": 142.75,
+          "reversal_bps": 75.0,
+          "reversal_distance": 1.070625,
+          "up_bps": 100.0,
+          "up_distance": 1.4275
+        }
+      ],
+      "bull_candidate_count": 2706,
+      "bull_event_count": 104,
+      "bull_transition_count": 1,
+      "composition_side": {
+        "long": 115,
+        "none": 2640,
+        "short": 138
+      },
+      "composition_status": {
+        "long_selected": 115,
+        "observe": 2640,
+        "short_selected": 138
+      },
+      "conflicting_intents": 0,
+      "decision_outcome": {
+        "blocked": 16,
+        "enter_short": 2,
+        "no_action": 3,
+        "observe": 164,
+        "reduce": 2708
+      },
+      "downscope_event_count": 2674,
+      "downscope_transition_count": 4,
+      "entry_exit_outcome": {
+        "blocked": 16,
+        "enter_short": 2,
+        "no_action": 3,
+        "observe": 164,
+        "reduce": 2708
+      },
+      "entry_policy_enter_count": 2,
+      "entry_side_none": 2893,
+      "entry_side_other": 0,
+      "event_counts": {
+        "adverse_exit_candidate": 34,
+        "downscope_candidate": 31,
+        "downscope_confirmed": 2643,
+        "noop": 81,
+        "upscope_candidate": 8,
+        "upscope_confirmed": 96
+      },
+      "exit_class": {
+        "adverse_scope_exit": 2708,
+        "none": 185
+      },
+      "exit_policy_exit_count": 2708,
+      "first_blocking": {
+        "boundary": "src/backtest/mv2_research_wiring_v1.py:observational_hook",
+        "reason": "no_intermediate",
+        "symbol": "intermediate_missing"
+      },
+      "hold_noop_intent_count": 167,
+      "legacy_absolute_distance_seen": 0,
+      "long_trade_count": 0,
+      "mapped_scope_event": {
+        "downscope_candidate": 31,
+        "downscope_confirmed": 2643,
+        "noop": 81,
+        "scope_unknown": 34,
+        "upscope_candidate": 8,
+        "upscope_confirmed": 96
+      },
+      "mark_max": 193.55,
+      "mark_min": 111.82,
+      "marks_invalid": 0,
+      "marks_valid": 2893,
+      "matched_counts": {
+        "adverse_exit": 2708,
+        "downscope": 2674,
+        "upscope": 104
+      },
+      "member_id": "okx:linear_perpetual:SOL:USDT:USDT:perp",
+      "noop_count": 81,
+      "order_intent": {
+        "none": 2893
+      },
+      "reason_codes_top": {
+        "adverse_scope_exit": 2708,
+        "adverse_scope_exit_candidate": 34,
+        "adverse_scope_exit_matched": 2674,
+        "direction_not_armed": 16,
+        "entry_blocked": 16,
+        "entry_short_eligible": 2,
+        "no_action": 3,
+        "observe_only": 164
+      },
+      "rejected_transition_count": 2768,
+      "scale_invariant_fail": 0,
+      "scale_invariant_ok": 2893,
+      "scope_unknown_mapped_count": 34,
+      "short_trade_count": 0,
+      "side_after": {
+        "long_active": 15,
+        "long_armed": 11,
+        "long_blocked": 47,
+        "short_active": 2738,
+        "short_armed": 39,
+        "switch_long_to_short_pending": 43
+      },
+      "side_before": {
+        "long_active": 15,
+        "long_armed": 12,
+        "long_blocked": 47,
+        "short_active": 2737,
+        "short_armed": 39,
+        "switch_long_to_short_pending": 43
+      },
+      "stay_transition_count": 2888,
+      "threshold_miss_count": 103,
+      "trade_count": 0,
+      "transition_allowed": {
+        "False": 2768,
+        "True": 125
+      },
+      "transition_reason": {
+        "CANDIDATE_ACK": 39,
+        "DOWNscope_SWITCH_PENDING": 1,
+        "LONG_ACTIVE": 1,
+        "LONG_BLOCKED": 1,
+        "NOOP": 81,
+        "NO_TRANSITION": 2734,
+        "SCOPE_UNKNOWN_FAIL_CLOSED": 34,
+        "SHORT_ACTIVE": 1,
+        "SHORT_ARMED": 1
+      },
+      "zero_trade": true
+    }
+  },
+  "ok": true,
+  "old_absolute_distances_found": false,
+  "orders": false,
+  "primary": "1INCH",
+  "primary_member_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+  "runtime_bridge_status": "BOUND_NOT_ACTIVATED",
+  "side_state_transition_reachable": true,
+  "specific_downscope_preserved": true,
+  "synthetic_traces": [
+    {
+      "execution_result": "n/a_unit_trace_offline_only",
+      "final_intent": "n/a_unit_trace_no_entry_exit",
+      "fixture_id": "synth|100.0|97.0|up=2.0|adv=1.0",
+      "generator_event": "downscope_candidate",
+      "input": {
+        "adverse_exit_distance": 1.0,
+        "current_price": 97.0,
+        "reversal_distance": 1.5,
+        "side_before": "long_active",
+        "trailing_anchor": 100.0,
+        "up_distance": 2.0
+      },
+      "mapped_scope_event": "downscope_candidate",
+      "matched_conditions": [
+        "downscope",
+        "adverse_exit"
+      ],
+      "policy_signal_adverse_triggered": true,
+      "policy_signal_reason": "adverse_scope_exit_matched",
+      "source": "synthetic_contract",
+      "state_after": "long_active",
+      "state_before": "long_active",
+      "trace_id": "D1_ADVERSE_PLUS_VALID_DOWNSCOPE",
+      "transition_allowed": true,
+      "transition_reason": "CANDIDATE_ACK"
+    },
+    {
+      "execution_result": "n/a_unit_trace_offline_only",
+      "final_intent": "n/a_unit_trace_no_entry_exit",
+      "fixture_id": "synth|100.0|98.5|up=2.0|adv=1.0",
+      "generator_event": "adverse_exit_candidate",
+      "input": {
+        "adverse_exit_distance": 1.0,
+        "current_price": 98.5,
+        "reversal_distance": 1.5,
+        "side_before": "long_active",
+        "trailing_anchor": 100.0,
+        "up_distance": 2.0
+      },
+      "mapped_scope_event": "scope_unknown",
+      "matched_conditions": [
+        "adverse_exit"
+      ],
+      "policy_signal_adverse_triggered": true,
+      "policy_signal_reason": "adverse_scope_exit_candidate",
+      "source": "synthetic_contract",
+      "state_after": "long_active",
+      "state_before": "long_active",
+      "trace_id": "D2_ADVERSE_WITHOUT_DOWNSCOPE",
+      "transition_allowed": false,
+      "transition_reason": "SCOPE_UNKNOWN_FAIL_CLOSED"
+    },
+    {
+      "execution_result": "n/a_unit_trace_offline_only",
+      "final_intent": "n/a_unit_trace_no_entry_exit",
+      "fixture_id": "synth|100.0|97.5|up=2.0|adv=4.0",
+      "generator_event": "downscope_candidate",
+      "input": {
+        "adverse_exit_distance": 4.0,
+        "current_price": 97.5,
+        "reversal_distance": 5.0,
+        "side_before": "long_active",
+        "trailing_anchor": 100.0,
+        "up_distance": 2.0
+      },
+      "mapped_scope_event": "downscope_candidate",
+      "matched_conditions": [
+        "downscope"
+      ],
+      "policy_signal_adverse_triggered": false,
+      "policy_signal_reason": "no_adverse_scope_exit",
+      "source": "synthetic_contract",
+      "state_after": "long_active",
+      "state_before": "long_active",
+      "trace_id": "D3_DOWNSCOPE_WITHOUT_ADVERSE",
+      "transition_allowed": true,
+      "transition_reason": "CANDIDATE_ACK"
+    }
+  ]
+}

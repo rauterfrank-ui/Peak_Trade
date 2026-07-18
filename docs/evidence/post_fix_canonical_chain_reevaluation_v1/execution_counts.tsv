@@ -1,0 +1,12 @@
+metric	count
+order_intent:none	2893
+trade_count	1
+long_trade_count	0
+short_trade_count	0
+decision:blocked	13
+decision:enter_long	1
+decision:enter_short	8
+decision:hold	91
+decision:no_action	13
+decision:observe	275
+decision:reduce	2492

@@ -1,0 +1,16 @@
+event	count
+adverse_exit_candidate	31
+downscope_candidate	21
+downscope_confirmed	2439
+noop	118
+upscope_candidate	7
+upscope_confirmed	277
+MATCHED:adverse_exit	2491
+MATCHED:downscope	2460
+MATCHED:upscope	284
+MAPPED:downscope_candidate	21
+MAPPED:downscope_confirmed	2439
+MAPPED:noop	118
+MAPPED:scope_unknown	31
+MAPPED:upscope_candidate	7
+MAPPED:upscope_confirmed	277
