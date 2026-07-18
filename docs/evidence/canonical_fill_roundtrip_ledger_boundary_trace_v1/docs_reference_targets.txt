@@ -1,1 +1,2 @@
-Docs Reference Targets: not applicable (no markdown files to scan).
+Docs Reference Targets: scanned 5 md file(s), found 5 reference(s).
+All referenced targets exist.

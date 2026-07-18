@@ -1,1 +1,3 @@
-✅ No Markdown files to check (changed files (base: origin/main))
+🔍 Scanning 5 Markdown file(s) (changed files (base: origin/main))...
+
+✅ All checks passed! (5 files scanned)

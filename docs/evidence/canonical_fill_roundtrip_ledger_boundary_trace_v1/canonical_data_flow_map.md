@@ -28,7 +28,7 @@ Strategy signal
 | Module | `src/backtest/strategy_signal_binding_v1.py` |
 | Input | bars DataFrame, `strategy_id`, cfg |
 | Output | `StrategySignalBindingResultV1` (signal Series + digests) |
-| Side semantics | Raw producer encoding (`+1/0/-1`); **not** side authority |
+| Side semantics | Raw producer encoding (`+1&#47;0&#47;-1`); **not** side authority |
 | Quantity/price | N/A at this stage |
 | Identifiers | strategy digests / instrument binding |
 | Timestamp | bar index |
@@ -121,7 +121,7 @@ Critical: `signal == -1` without open long = **no-op** (no short open on legacy 
 
 Completed `Trade` with entry+exit+PnL:
 
-1. Exit sets `exit_time/price/pnl/exit_reason`
+1. Exit sets `exit_time&#47;price&#47;pnl&#47;exit_reason`
 2. `_emit_legacy_trade_accounting_fields_v0` (`side="long"`)
 3. Append to `trades`; equity update
 4. `BacktestResult.trades` + `stats.total_trades`

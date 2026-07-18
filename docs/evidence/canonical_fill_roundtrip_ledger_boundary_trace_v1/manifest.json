@@ -19,11 +19,11 @@
       "sha256": "30c8673e09aa22c9c31c85f6ba9ac1ff12d66a4151ce7dec09cd25bf4106fbed"
     },
     {
-      "bytes": 6701,
+      "bytes": 6721,
       "name": "canonical_data_flow_map.md",
       "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/canonical_data_flow_map.md",
       "purpose": "Stage-by-stage canonical owner map",
-      "sha256": "084fb6d34147548b96bb6deb2a27004bc9789306a2ab05193abecdf62edffe20"
+      "sha256": "3dab831c1f3df51618d996726173a5017d5ed9847d520f2cd02d0786fe6bf9c8"
     },
     {
       "bytes": 1032,
@@ -54,25 +54,25 @@
       "sha256": "279ea82da7956c38bc05834adadc4c37046093032a8c11b691db3f3154e873b5"
     },
     {
-      "bytes": 68,
+      "bytes": 98,
       "name": "docs_reference_targets.txt",
       "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/docs_reference_targets.txt",
       "purpose": "Docs reference targets gate capture",
-      "sha256": "c2891bc18eda0a1766fea3e19fe630c24dbed05c856e43fdbd6101b25c0ef0eb"
+      "sha256": "5fe832e76032aa9621a1c23b86512e8208b87d39e3ababdc71367cbfe9f4edd4"
     },
     {
-      "bytes": 67,
+      "bytes": 114,
       "name": "docs_token_policy.txt",
       "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/docs_token_policy.txt",
       "purpose": "Docs token policy gate capture",
-      "sha256": "36a106d4e407866916be553e33a2a7b31be702495940d502a1e3a299ff400831"
+      "sha256": "ea1be97cf08251e559efb3e0ef241831ef3e903bf9305be327db74a704e413af"
     },
     {
-      "bytes": 816,
+      "bytes": 3469,
       "name": "economic_boundary_guard.txt",
       "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/economic_boundary_guard.txt",
       "purpose": "Economic boundary guard capture",
-      "sha256": "912360f62aaf5079c5f3634aad43ba724a140f657a0386b015f4c54943d7a789"
+      "sha256": "7a7eda0614b0ad08cfaa8f04a3abcfd980d30ecfefadbb66826ff2a7657c02d6"
     },
     {
       "bytes": 474,
@@ -103,11 +103,11 @@
       "sha256": "41205fc1c9b5b5763f9d6a56a01f2d66ca8b51e77ffc892d4c4eb1461820665d"
     },
     {
-      "bytes": 8753,
+      "bytes": 8755,
       "name": "manifest.json",
       "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/manifest.json",
       "purpose": "SHA-256 inventory of evidence package",
-      "sha256": "9919f5de92078ac1de46802c256c0ea94d26585d6c14ce4afa1e4001c68383f4"
+      "sha256": "23e909eb304cd5cc2358804de5ff367a0936ecc34d4a9d4c99fdaf1e1b2d6fa4"
     },
     {
       "bytes": 870,
