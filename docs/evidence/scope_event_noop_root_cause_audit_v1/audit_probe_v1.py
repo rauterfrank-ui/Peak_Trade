@@ -140,9 +140,7 @@ def main() -> int:
             max_abs_move = max(max_abs_move, abs(current_price - prior_mark))
 
         # Reconstruct bull/bear candidate geometry for LONG direction seed
-        dir_enum = (
-            ScopeDirectionState.LONG if direction == "long" else ScopeDirectionState.SHORT
-        )
+        dir_enum = ScopeDirectionState.LONG if direction == "long" else ScopeDirectionState.SHORT
         thresholds = compute_evaluated_thresholds(
             direction=dir_enum,
             trailing_anchor=trailing,
@@ -183,7 +181,8 @@ def main() -> int:
                     "reversal_distance_input": reversal_d,
                     "trailing_anchor": trailing,
                     "gap_to_bull_threshold": thresholds.up_candidate_threshold - current_price,
-                    "gap_to_bear_threshold": current_price - thresholds.downscope_candidate_threshold,
+                    "gap_to_bear_threshold": current_price
+                    - thresholds.downscope_candidate_threshold,
                     "bull_confirmation": "n/a_no_candidate",
                     "bear_confirmation": "n/a_no_candidate",
                     "current_side_state": "long_armed_seed_frozen",
@@ -266,9 +265,7 @@ def main() -> int:
         "median_mark": median_mark,
         "scale_aware_up_distance_1pct": scale_up,
         "trades_opened": (
-            0
-            if result.backtest_result.trades is None
-            else len(result.backtest_result.trades)
+            0 if result.backtest_result.trades is None else len(result.backtest_result.trades)
         ),
         "root_cause_class": "UNIT_MISMATCH",
         "dominant_noop_reason": "threshold_miss_no_candidate",

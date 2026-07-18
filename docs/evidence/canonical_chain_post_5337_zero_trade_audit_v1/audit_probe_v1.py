@@ -42,9 +42,7 @@ SOURCE = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z"
 )
-CONFIG = (
-    _REPO / "config/research/mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.json"
-)
+CONFIG = _REPO / "config/research/mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.json"
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -163,8 +161,14 @@ def _probe_member(
                 row["next_side_state"] = nxt
             comp = getattr(intermediate, "composition_result", None)
             if comp is not None:
-                status = str(getattr(getattr(comp, "composition_status", None), "value", comp.composition_status))
-                side = str(getattr(getattr(comp, "selected_side", None), "value", comp.selected_side))
+                status = str(
+                    getattr(
+                        getattr(comp, "composition_status", None), "value", comp.composition_status
+                    )
+                )
+                side = str(
+                    getattr(getattr(comp, "selected_side", None), "value", comp.selected_side)
+                )
                 counters["composition_status"][status] += 1
                 counters["composition_selected_side"][side] += 1
                 row["composition_status"] = status
@@ -176,7 +180,9 @@ def _probe_member(
                 ("suit_bear", "bear_suitability"),
             ):
                 obj = getattr(intermediate, attr, None)
-                st = str(getattr(getattr(obj, "status", None), "value", getattr(obj, "status", None)))
+                st = str(
+                    getattr(getattr(obj, "status", None), "value", getattr(obj, "status", None))
+                )
                 counters[key][st] += 1
                 row[key] = st
         decision = kwargs.get("decision_outcome")
