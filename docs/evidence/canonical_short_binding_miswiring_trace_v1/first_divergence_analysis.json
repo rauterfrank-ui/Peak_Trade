@@ -1,0 +1,27 @@
+{
+  "FIRST_CAPABILITY_MISMATCH_BOUNDARY": "canonical_binding_selects_legacy_long_only_for_short_capable_upstream_intents",
+  "FIRST_CONSUMER_SELECTION_BOUNDARY": "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=False)",
+  "FIRST_SEMANTIC_DIVERGENCE_BOUNDARY": "map_decision_evidence_to_position_signal_v1 (enter_short\u2192-1 as short-entry encoding vs legacy exit-only)",
+  "FIRST_SILENT_NOOP_BOUNDARY": "src/backtest/engine.py::signal==-1 and current_trade is None",
+  "FIRST_TRUE_MISWIRING_BOUNDARY": "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=False)",
+  "FIRST_VALUE_LOSS_BOUNDARY": "backtest_engine_fill_or_roundtrip_ledger",
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "scenario_refs": {
+    "S05": "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=False)",
+    "S10": "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=False)",
+    "S15": "consumer_capability_vs_upstream_short_intent",
+    "S16": "missing_pre_dispatch_capability_check",
+    "S17": "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=False)"
+  },
+  "static_proof": {
+    "capability_gate_present": false,
+    "engine_default_pipeline": true,
+    "legacy_binds": 2,
+    "pipeline_binds_on_mv2_path": 0
+  },
+  "value_loss_vs_miswiring": {
+    "reason": "Value loss is the observable no-op at fill/ledger; the binding/selection of the long-only consumer (and absent capability gate) precedes it.",
+    "true_miswiring_earlier_than_value_loss": true,
+    "value_loss_boundary_unchanged_from_pr_5344": true
+  }
+}

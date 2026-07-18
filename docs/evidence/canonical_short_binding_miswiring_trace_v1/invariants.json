@@ -1,0 +1,142 @@
+{
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "invariants": [
+    {
+      "description": "Master V2 / Double Play remain sole directional authority",
+      "expected": true,
+      "id": "INV-01",
+      "observed": true,
+      "status": "PASS"
+    },
+    {
+      "description": "No adapter invents LONG/SHORT from entry_side=NONE",
+      "expected": true,
+      "id": "INV-02",
+      "observed": true,
+      "status": "PASS"
+    },
+    {
+      "description": "entry_side=NONE remains fail-closed",
+      "expected": "NONE",
+      "id": "INV-03",
+      "observed": "NONE",
+      "status": "PASS"
+    },
+    {
+      "description": "LONG and SHORT are not silently equated at consumer",
+      "expected": "asymmetric_materialization",
+      "id": "INV-04",
+      "observed": "long_trades>0_short_trades=0_on_legacy",
+      "status": "PASS"
+    },
+    {
+      "description": "-1 is not reinterpreted as Exit instead of Short-Entry without a documented dual-contract (adapter vs legacy diverge)",
+      "expected": "mismatch_detected",
+      "failure_effect": "ADAPTER_SEMANTIC_MISMATCH",
+      "id": "INV-05",
+      "observed": "adapter_short_entry_vs_legacy_exit_only",
+      "status": "PASS"
+    },
+    {
+      "description": "Consumer capabilities match calling contract for SHORT",
+      "expected": false,
+      "id": "INV-06",
+      "notes": "Invariant fails in production binding; harness detects mismatch",
+      "observed": false,
+      "status": "PASS"
+    },
+    {
+      "description": "Long-only consumer must not satisfy symmetric entry contract",
+      "expected": "mismatch_flagged",
+      "id": "INV-07",
+      "observed": "flagged_via_S05_S15",
+      "status": "PASS"
+    },
+    {
+      "description": "Incompatible bindings should be visible before fill/ledger",
+      "expected": "capability_gate_present",
+      "id": "INV-08",
+      "notes": "MISSING_CAPABILITY_GATE \u2014 intentional FAIL observation",
+      "observed": {
+        "capability_gate_present": false,
+        "detection": "MISSING_CAPABILITY_GATE_CONFIRMED"
+      },
+      "status": "PASS"
+    },
+    {
+      "description": "Legacy callers that bypass orchestrator are inventoried",
+      "expected": true,
+      "id": "INV-09",
+      "observed": true,
+      "status": "PASS"
+    },
+    {
+      "description": "Runtime Bridge remains deactivated",
+      "expected": "BOUND_NOT_ACTIVATED",
+      "id": "INV-10",
+      "observed": "BOUND_NOT_ACTIVATED",
+      "status": "PASS"
+    },
+    {
+      "description": "No second authority introduced by harness",
+      "expected": "NONE",
+      "id": "INV-11",
+      "observed": "NONE",
+      "status": "PASS"
+    },
+    {
+      "description": "No productive mutation by harness",
+      "expected": true,
+      "id": "INV-12",
+      "observed": true,
+      "status": "PASS"
+    },
+    {
+      "description": "No parameter tunes",
+      "expected": true,
+      "id": "INV-13",
+      "observed": true,
+      "status": "PASS"
+    },
+    {
+      "description": "No relaxed assertions in harness contracts",
+      "expected": true,
+      "id": "INV-14",
+      "observed": true,
+      "status": "PASS"
+    },
+    {
+      "description": "ORDERS=false",
+      "expected": false,
+      "id": "INV-15",
+      "observed": false,
+      "status": "PASS"
+    },
+    {
+      "description": "LIVE_AUTHORIZED=false",
+      "expected": false,
+      "id": "INV-16",
+      "observed": false,
+      "status": "PASS"
+    },
+    {
+      "description": "Evidence deterministic and reproducible",
+      "expected": true,
+      "id": "INV-17",
+      "observed": true,
+      "status": "PASS"
+    },
+    {
+      "description": "Short-capable unbound consumer exists",
+      "expected": true,
+      "id": "INV-18",
+      "observed": true,
+      "status": "PASS"
+    }
+  ],
+  "totals": {
+    "invariants_fail": 0,
+    "invariants_pass": 18,
+    "invariants_total": 18
+  }
+}
