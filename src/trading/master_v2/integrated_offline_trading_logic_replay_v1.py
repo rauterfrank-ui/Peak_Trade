@@ -101,7 +101,9 @@ from trading.master_v2.double_play_state import (
     SideState,
     StaticHardLimits,
     TransitionDecision,
+    derive_active_side,
     transition_state,
+    update_dynamic_boundaries,
 )
 from trading.master_v2.reversal_preparation_scenario_binding_adapter_v0 import (
     derive_reversal_preparation_position_context_v0,
@@ -153,17 +155,26 @@ _DEFAULT_SCOPE_RULES = DynamicScopeRules(
     max_switches_per_window=1_000_000,
     volatility_estimate=0.02,
 )
-_EMPTY_SCOPE_STATE = RuntimeScopeState(
+# Seed template only — never fed into transition_state as per-cycle empty state.
+_RUNTIME_SCOPE_SEED_TEMPLATE = RuntimeScopeState(
     anchor_price=0.0,
     current_downscope_boundary=0.0,
     current_upscope_boundary=0.0,
     current_hysteresis_band=0.0,
-    last_switch_tick=-1,
+    last_switch_tick=-1_000_000,
     switches_in_window=0,
     window_start_tick=0,
     chop_latched=False,
     now_tick=0,
+    last_completed_side_switch_tick=-1_000_000,
 )
+
+# CHOP remains NOT_BOUND in deterministic_scope_event_generator_v1 (no new heuristic).
+CANONICAL_DYNAMIC_SCOPE_TRAILING_OWNER = "trading.master_v2.double_play_state.RuntimeScopeState"
+CANONICAL_SCOPE_SNAPSHOT_IDENTITY_OWNER = (
+    "trading.master_v2.canonical_scope_initialization_v1.CanonicalScopeSnapshotV1"
+)
+CHOP_BINDING_STATUS = "NOT_BOUND_FAIL_CLOSED_GAP"
 
 
 @dataclass(frozen=True)
@@ -228,6 +239,11 @@ class IntegratedOfflineReplayInputV1:
     context_reference: str
     now_tick: int = 0
     strategy_suitability_agreement_material: Optional[StrategySuitabilityAgreementMaterialV1] = None
+    # Trailing envelope carrier (SSOT for SCOPE(t)→SCOPE(t+1)); snapshot stays identity-only.
+    runtime_scope_state: Optional[RuntimeScopeState] = None
+    runtime_scope_bound_instrument_id: Optional[str] = None
+    dynamic_scope_rules: Optional[DynamicScopeRules] = None
+    explicit_runtime_scope_reset: bool = False
 
 
 @dataclass(frozen=True)
@@ -261,6 +277,11 @@ class IntegratedOfflineReplayIntermediateV1:
     state_switch: StateSwitchEvidenceV1
     current_scope: CanonicalScopeSnapshotV1
     next_scope_ref: str
+    runtime_scope_state_before: RuntimeScopeState
+    runtime_scope_state_after: RuntimeScopeState
+    runtime_scope_reinitialized: bool
+    trailing_anchor_used: float
+    chop_binding_status: str = CHOP_BINDING_STATUS
 
 
 @dataclass(frozen=True)
@@ -358,6 +379,10 @@ def build_integrated_offline_replay_input_v1(
     strategy_suitability_agreement_material: Optional[
         StrategySuitabilityAgreementMaterialV1
     ] = None,
+    runtime_scope_state: Optional[RuntimeScopeState] = None,
+    runtime_scope_bound_instrument_id: Optional[str] = None,
+    dynamic_scope_rules: Optional[DynamicScopeRules] = None,
+    explicit_runtime_scope_reset: bool = False,
 ) -> IntegratedOfflineReplayInputV1:
     """Single canonical productive constructor for IntegratedOfflineReplayInputV1.
 
@@ -536,6 +561,22 @@ def build_integrated_offline_replay_input_v1(
             if mat_epoch != trading_epoch:
                 errors.append("trading_epoch_mismatch")
 
+    if runtime_scope_state is not None and not _builder_type_name_ok(
+        runtime_scope_state, "RuntimeScopeState"
+    ):
+        errors.append("runtime_scope_state_type_invalid")
+    if runtime_scope_bound_instrument_id is not None and (
+        not isinstance(runtime_scope_bound_instrument_id, str)
+        or not runtime_scope_bound_instrument_id.strip()
+    ):
+        errors.append("runtime_scope_bound_instrument_id_invalid")
+    if dynamic_scope_rules is not None and not _builder_type_name_ok(
+        dynamic_scope_rules, "DynamicScopeRules"
+    ):
+        errors.append("dynamic_scope_rules_type_invalid")
+    if not isinstance(explicit_runtime_scope_reset, bool):
+        errors.append("explicit_runtime_scope_reset_invalid")
+
     if errors:
         raise ValueError(";".join(sorted(set(errors))))
 
@@ -594,6 +635,10 @@ def build_integrated_offline_replay_input_v1(
         context_reference=context_reference,
         now_tick=now_tick,
         strategy_suitability_agreement_material=strategy_suitability_agreement_material,
+        runtime_scope_state=runtime_scope_state,
+        runtime_scope_bound_instrument_id=runtime_scope_bound_instrument_id,
+        dynamic_scope_rules=dynamic_scope_rules,
+        explicit_runtime_scope_reset=bool(explicit_runtime_scope_reset),
     )
 
 
@@ -614,6 +659,93 @@ def _canonical_scope_event_to_scope_event(event_type: CanonicalScopeEventType) -
     if event_type in mapping:
         return mapping[event_type]
     return ScopeEvent.SCOPE_UNKNOWN
+
+
+def scope_direction_from_side_state_v1(
+    side: SideState,
+    *,
+    fallback: ScopeDirectionState = ScopeDirectionState.LONG,
+) -> ScopeDirectionState:
+    """Derive ScopeDirectionState from SideState for trailing / threshold orientation."""
+    if side in (
+        SideState.SHORT_ARMED,
+        SideState.SHORT_ACTIVE,
+        SideState.SHORT_BLOCKED,
+        SideState.SWITCH_LONG_TO_SHORT_PENDING,
+    ):
+        return ScopeDirectionState.SHORT
+    if side in (
+        SideState.LONG_ARMED,
+        SideState.LONG_ACTIVE,
+        SideState.LONG_BLOCKED,
+        SideState.SWITCH_SHORT_TO_LONG_PENDING,
+    ):
+        return ScopeDirectionState.LONG
+    return fallback
+
+
+def _seed_runtime_scope_from_snapshot_v1(
+    *,
+    snapshot: CanonicalScopeSnapshotV1,
+    now_tick: int,
+) -> RuntimeScopeState:
+    """Initialize trailing envelope from identity snapshot — first cycle / reset only."""
+    anchor = float(snapshot.trailing_anchor)
+    band = max(float(snapshot.scope_band), float(snapshot.min_scope_band), 1.0)
+    return RuntimeScopeState(
+        anchor_price=anchor,
+        current_upscope_boundary=float(snapshot.neutral_upper_boundary),
+        current_downscope_boundary=float(snapshot.neutral_lower_boundary),
+        current_hysteresis_band=band,
+        last_switch_tick=-1_000_000,
+        switches_in_window=0,
+        window_start_tick=now_tick,
+        chop_latched=False,
+        now_tick=now_tick,
+        last_completed_side_switch_tick=-1_000_000,
+        scope_stability_ticks=0,
+    )
+
+
+def _resolve_runtime_scope_state_for_cycle_v1(
+    *,
+    instrument_id: str,
+    current_scope: CanonicalScopeSnapshotV1,
+    now_tick: int,
+    prior_state: Optional[RuntimeScopeState],
+    bound_instrument_id: Optional[str],
+    explicit_reset: bool,
+) -> tuple[RuntimeScopeState, bool]:
+    """Return (state, reinitialized). Fail-closed reinit on instrument mismatch / reset / missing."""
+    if explicit_reset or prior_state is None:
+        return (
+            _seed_runtime_scope_from_snapshot_v1(snapshot=current_scope, now_tick=now_tick),
+            True,
+        )
+    if bound_instrument_id is None or bound_instrument_id != instrument_id:
+        return (
+            _seed_runtime_scope_from_snapshot_v1(snapshot=current_scope, now_tick=now_tick),
+            True,
+        )
+    return prior_state, False
+
+
+def _rules_for_cycle_v1(
+    *,
+    provided: Optional[DynamicScopeRules],
+    snapshot: CanonicalScopeSnapshotV1,
+) -> DynamicScopeRules:
+    if provided is not None:
+        return provided
+    return DynamicScopeRules(
+        downscope_band_multiplier=_DEFAULT_SCOPE_RULES.downscope_band_multiplier,
+        upscope_band_multiplier=_DEFAULT_SCOPE_RULES.upscope_band_multiplier,
+        min_band_width=max(float(snapshot.min_scope_band), _DEFAULT_SCOPE_RULES.min_band_width),
+        max_band_width=min(float(snapshot.max_scope_band), _DEFAULT_SCOPE_RULES.max_band_width),
+        min_switch_cooldown_ticks=_DEFAULT_SCOPE_RULES.min_switch_cooldown_ticks,
+        volatility_estimate=max(float(snapshot.volatility_estimate), 1e-9),
+        max_switches_per_window=_DEFAULT_SCOPE_RULES.max_switches_per_window,
+    )
 
 
 def _side_state_to_entry_exit_direction(side: SideState) -> EntryExitDirectionState:
@@ -984,16 +1116,46 @@ def run_integrated_offline_trading_logic_replay_v1(
 
     current_scope = scope_init.scope
 
+    rules = _rules_for_cycle_v1(
+        provided=inp.dynamic_scope_rules,
+        snapshot=current_scope,
+    )
+    runtime_scope_before, runtime_scope_reinitialized = _resolve_runtime_scope_state_for_cycle_v1(
+        instrument_id=inp.instrument_id,
+        current_scope=current_scope,
+        now_tick=inp.now_tick,
+        prior_state=inp.runtime_scope_state,
+        bound_instrument_id=inp.runtime_scope_bound_instrument_id,
+        explicit_reset=bool(inp.explicit_runtime_scope_reset),
+    )
+    active_for_trail = derive_active_side(inp.side_state)
+    runtime_scope_pre = update_dynamic_boundaries(
+        mark_price=float(inp.current_price),
+        side=active_for_trail,
+        st=runtime_scope_before,
+        rules=rules,
+        env=_DEFAULT_RUNTIME_ENVELOPE,
+    )
+    trailing_anchor_used = (
+        float(runtime_scope_pre.anchor_price)
+        if runtime_scope_pre.anchor_price > 0
+        else float(current_scope.trailing_anchor)
+    )
+    effective_scope_direction = scope_direction_from_side_state_v1(
+        inp.side_state,
+        fallback=inp.scope_direction_state,
+    )
+
     scope_event_inp = ScopeEventGeneratorInputV1(
         instrument_id=inp.instrument_id,
         trading_epoch=inp.trading_epoch,
         market_context_id=bound_context.context_id,
         market_context_digest=bound_context.input_digest,
         current_scope=current_scope,
-        current_direction_state=inp.scope_direction_state,
+        current_direction_state=effective_scope_direction,
         reference_price=float(bound_context.mark_price),
         current_price=float(inp.current_price),
-        trailing_anchor=float(current_scope.trailing_anchor),
+        trailing_anchor=trailing_anchor_used,
         up_distance=float(inp.up_distance),
         adverse_exit_distance=float(inp.adverse_exit_distance),
         reversal_distance=float(inp.reversal_distance),
@@ -1065,13 +1227,20 @@ def run_integrated_offline_trading_logic_replay_v1(
     )
 
     mapped_event = _canonical_scope_event_to_scope_event(scope_event.event_type)
-    next_side_state, _, transition = transition_state(
+    next_side_state, runtime_scope_after_switch, transition = transition_state(
         side_state=inp.side_state,
         event=mapped_event,
-        scope_state=_EMPTY_SCOPE_STATE,
-        rules=_DEFAULT_SCOPE_RULES,
+        scope_state=runtime_scope_pre,
+        rules=rules,
         envelope=_DEFAULT_RUNTIME_ENVELOPE,
         now_tick=inp.now_tick,
+    )
+    runtime_scope_after = update_dynamic_boundaries(
+        mark_price=float(inp.current_price),
+        side=derive_active_side(next_side_state),
+        st=runtime_scope_after_switch,
+        rules=rules,
+        env=_DEFAULT_RUNTIME_ENVELOPE,
     )
     state_switch_id = _derive_state_switch_id(
         inp.instrument_id, inp.trading_epoch, scope_event.scope_event_id
@@ -1331,6 +1500,11 @@ def run_integrated_offline_trading_logic_replay_v1(
         state_switch=state_switch,
         current_scope=current_scope,
         next_scope_ref=next_scope_ref,
+        runtime_scope_state_before=runtime_scope_before,
+        runtime_scope_state_after=runtime_scope_after,
+        runtime_scope_reinitialized=runtime_scope_reinitialized,
+        trailing_anchor_used=trailing_anchor_used,
+        chop_binding_status=CHOP_BINDING_STATUS,
     )
 
     boundary_ok = (

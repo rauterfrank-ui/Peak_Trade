@@ -1,0 +1,17 @@
+{
+  "schema_version": "canonical_dynamic_scope_trailing_state_continuity_repair_v1.contract",
+  "extraction_id": "canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z",
+  "head_base": "6a92163f492b9dfce3a32ab94b66f90a7982a5a6",
+  "contract_path": "docs/ops/specs/CANONICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_CONTRACT_V1.md",
+  "ownership_split": {
+    "identity_snapshot": "CanonicalScopeSnapshotV1",
+    "trailing_envelope_ssot": "RuntimeScopeState",
+    "orchestrator": "run_integrated_offline_trading_logic_replay_v1",
+    "bar_carrier": "MV2IntegratedReplayBarSequenceStateV1"
+  },
+  "invariant": "SCOPE(t)+market(t+1)->SCOPE(t+1)->next cycle runtime_scope_state",
+  "chop_status": "NOT_BOUND_FAIL_CLOSED_GAP",
+  "live_authorized": false,
+  "orders_enabled": false,
+  "runtime_bridge": "BOUND_NOT_ACTIVATED"
+}

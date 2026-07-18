@@ -1,0 +1,5 @@
+{
+  "bound_field": "runtime_scope_bound_instrument_id",
+  "mismatch_behavior": "fail_closed_reseed",
+  "cross_instrument_leak_blocked": true
+}

@@ -1,0 +1,13 @@
+{
+  "before": {
+    "trailing_in_integrated": "NONE (_EMPTY_SCOPE_STATE)",
+    "snapshot_role": "frozen trailing_anchor misuse",
+    "competing_owners": 3
+  },
+  "after": {
+    "trailing_ssot": "RuntimeScopeState via update_dynamic_boundaries+transition_state",
+    "snapshot_role": "identity/evidence only",
+    "empty_scope_per_cycle": false,
+    "competing_owners_resolved": "split_identity_vs_trailing"
+  }
+}
