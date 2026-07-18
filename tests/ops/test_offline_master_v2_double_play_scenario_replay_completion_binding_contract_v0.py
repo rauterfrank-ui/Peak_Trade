@@ -63,6 +63,7 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OfflineDoublePlayScenarioTickV0,
     build_default_bull_bear_bull_scenario_ticks,
     build_offline_replay_futures_input_snapshot,
+    make_offline_scenario_tick_provenance_v1,
     run_offline_double_play_scenario_replay_v0,
     validate_offline_double_play_scenario_replay_input_v0,
 )
@@ -405,6 +406,8 @@ def test_six_node_display_projection_digest_matches_testnet_completion_wiring(
         selected_future_id=replay_result.selected_future_id,
         ticks=tuple(tick for tick in build_default_bull_bear_bull_scenario_ticks()),
         source_run_id="six-node-digest-crosscheck-v0",
+        allow_test_scope_event_injection=True,
+        execution_surface="offline_replay",
     )
     wiring = evaluate_bounded_master_v2_testnet_completion_path_wiring(market_input)
     assert wiring.dashboard_display_projection_digest == proof.dashboard_display_projection_digest
@@ -629,6 +632,13 @@ def test_scenario_f_end_to_end_kill_all_path_bound() -> None:
         scope_event=ScopeEvent.KILL_ALL_REQUIRED,
         safety_decision_allowed=False,
         scope_event_provenance="TEST_INJECTION",
+        tick_provenance=make_offline_scenario_tick_provenance_v1(
+            source_kind="offline_scenario_fixture",
+            source_id="scenario_f_e2e_kill_all",
+            tick_index=12,
+            event_time_ms=1_700_000_000_000 + 12 * 60_000,
+            sequence_number=12,
+        ),
     )
     ticks = _default_ticks()[:12] + (kill_tick,)
     replay_result = _run_scenario_ticks(ticks)

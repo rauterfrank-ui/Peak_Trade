@@ -173,6 +173,41 @@ MASTER_V2_RUNTIME_ADAPTER_PROJECTION_OWNER = OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY
 OFFLINE_REPLAY_STATE_EVENT_PROJECTION_LAYER_VERSION = "v0"
 SYNTHETIC_FUTURES_INSTRUMENT = "ETH-PERP"
 
+# Tick provenance contract for TEST_ONLY scope-event injection (auditability only).
+OFFLINE_SCENARIO_TICK_PROVENANCE_VERSION_V1 = "v1"
+OFFLINE_SCENARIO_TICK_PROVENANCE_OWNER = (
+    "trading.master_v2.offline_double_play_scenario_replay_v0.OfflineScenarioTickProvenanceV1"
+)
+ALLOWED_OFFLINE_SCENARIO_TICK_SOURCE_KINDS = frozenset(
+    {
+        "offline_scenario_fixture",
+        "testnet_bounded_observation",
+        "synthetic_offline_validation",
+    }
+)
+ALLOWED_INJECTION_EXECUTION_SURFACES = frozenset(
+    {
+        "offline_scenario",
+        "offline_test",
+        "offline_replay",
+    }
+)
+FORBIDDEN_INJECTION_EXECUTION_SURFACES = frozenset(
+    {
+        "runtime",
+        "live",
+        "order",
+        "orders",
+        "exchange",
+        "testnet_runtime",
+    }
+)
+REASON_SCENARIO_TICK_PROVENANCE_REQUIRED = "scenario_tick_provenance_required"
+REASON_SCENARIO_TICK_PROVENANCE_INVALID = "scenario_tick_provenance_invalid"
+REASON_SCENARIO_INJECTION_EXECUTION_SURFACE_FORBIDDEN = (
+    "scenario_scope_event_injection_execution_surface_forbidden"
+)
+
 _BTC_SPOT_RE = re.compile(r"(?i)(btc|xbt|bitcoin|/usd|/eur|spot)")
 
 _STATIC_LIMITS = StaticHardLimits(
@@ -221,6 +256,22 @@ class OfflineDoublePlayProofEvent(str, Enum):
 
 
 @dataclass(frozen=True)
+class OfflineScenarioTickProvenanceV1:
+    """Typed audit provenance authorizing TEST_ONLY scope-event injection.
+
+    Provenance never creates Direction, Side, Scope, or Switch decisions.
+    """
+
+    provenance_version: str
+    source_kind: str
+    source_id: str
+    tick_index: int
+    sequence_number: int
+    event_time_ms: int
+    fixture_id: str = ""
+
+
+@dataclass(frozen=True)
 class OfflineDoublePlayScenarioTickV0:
     tick_index: int
     timestamp_ms: int
@@ -234,6 +285,8 @@ class OfflineDoublePlayScenarioTickV0:
     opportunity_score: float | None = None
     # Provenance for injected ScopeEvent. UNMARKED is fail-closed without test harness.
     scope_event_provenance: str = "UNMARKED"
+    # Typed tick provenance required when allow_test_scope_event_injection is True.
+    tick_provenance: OfflineScenarioTickProvenanceV1 | None = None
 
 
 @dataclass(frozen=True)
@@ -246,6 +299,8 @@ class OfflineDoublePlayScenarioReplayInputV0:
     # TEST_ONLY: allow tick.scope_event to drive transition_state (bypasses generator).
     # Default False — fail-closed quarantine of unmarked productive injection.
     allow_test_scope_event_injection: bool = False
+    # Explicit offline/test/scenario surface; runtime/live/order surfaces fail-closed.
+    execution_surface: str = "offline_scenario"
 
 
 @dataclass(frozen=True)
@@ -556,6 +611,111 @@ def resolve_replay_futures_input_snapshot(
     return build_offline_replay_futures_input_snapshot(inp.selected_future_id)
 
 
+def resolve_allow_test_scope_event_injection(value: object) -> bool:
+    """Strict fail-closed resolver: only exact bool True enables injection.
+
+    Missing fields, None, and truthy strings ("1", "true", "yes", "on") are False.
+    """
+    return value is True
+
+
+def make_offline_scenario_tick_provenance_v1(
+    *,
+    source_kind: str,
+    source_id: str,
+    tick_index: int,
+    event_time_ms: int,
+    sequence_number: int | None = None,
+    fixture_id: str = "",
+    provenance_version: str = OFFLINE_SCENARIO_TICK_PROVENANCE_VERSION_V1,
+) -> OfflineScenarioTickProvenanceV1:
+    """Build typed tick provenance for offline/test injection authorization."""
+    return OfflineScenarioTickProvenanceV1(
+        provenance_version=provenance_version,
+        source_kind=source_kind,
+        source_id=source_id,
+        tick_index=tick_index,
+        sequence_number=tick_index if sequence_number is None else sequence_number,
+        event_time_ms=event_time_ms,
+        fixture_id=fixture_id,
+    )
+
+
+def validate_offline_scenario_tick_provenance_v1(
+    provenance: OfflineScenarioTickProvenanceV1 | None,
+    *,
+    expected_tick_index: int | None = None,
+) -> list[str]:
+    """Fail-closed validation for typed tick provenance (authorization/audit only)."""
+    reasons: list[str] = []
+    if provenance is None:
+        reasons.append(REASON_SCENARIO_TICK_PROVENANCE_REQUIRED)
+        return reasons
+    if provenance.provenance_version != OFFLINE_SCENARIO_TICK_PROVENANCE_VERSION_V1:
+        reasons.append(
+            f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:unknown_provenance_version:"
+            f"{provenance.provenance_version or 'missing'}"
+        )
+    if provenance.source_kind not in ALLOWED_OFFLINE_SCENARIO_TICK_SOURCE_KINDS:
+        reasons.append(
+            f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:unknown_source_kind:"
+            f"{provenance.source_kind or 'missing'}"
+        )
+    source_ref = (provenance.source_id or "").strip() or (provenance.fixture_id or "").strip()
+    if not source_ref:
+        reasons.append(f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:missing_source_id_or_fixture_id")
+    if not isinstance(provenance.tick_index, int) or isinstance(provenance.tick_index, bool):
+        reasons.append(f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:tick_index_type")
+    elif provenance.tick_index < 0:
+        reasons.append(f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:negative_tick_index")
+    if not isinstance(provenance.sequence_number, int) or isinstance(
+        provenance.sequence_number, bool
+    ):
+        reasons.append(f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:sequence_number_type")
+    elif provenance.sequence_number < 0:
+        reasons.append(f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:negative_sequence_number")
+    if not isinstance(provenance.event_time_ms, int) or isinstance(provenance.event_time_ms, bool):
+        reasons.append(f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:event_time_type")
+    elif provenance.event_time_ms <= 0:
+        reasons.append(f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:missing_or_invalid_event_time")
+    if expected_tick_index is not None and provenance.tick_index != expected_tick_index:
+        reasons.append(
+            f"{REASON_SCENARIO_TICK_PROVENANCE_INVALID}:tick_index_mismatch:"
+            f"expected_{expected_tick_index}_got_{provenance.tick_index}"
+        )
+    return reasons
+
+
+def _ensure_offline_scenario_tick_injection_marks(
+    tick: OfflineDoublePlayScenarioTickV0,
+    *,
+    source_kind: str,
+    source_id: str,
+) -> OfflineDoublePlayScenarioTickV0:
+    """Attach TEST_INJECTION mark + typed provenance for legitimate test factories."""
+    provenance = tick.tick_provenance
+    if provenance is None or validate_offline_scenario_tick_provenance_v1(
+        provenance, expected_tick_index=tick.tick_index
+    ):
+        provenance = make_offline_scenario_tick_provenance_v1(
+            source_kind=source_kind,
+            source_id=source_id,
+            tick_index=tick.tick_index,
+            event_time_ms=tick.timestamp_ms,
+            sequence_number=tick.tick_index,
+        )
+    if (
+        tick.scope_event_provenance == SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION
+        and tick.tick_provenance is provenance
+    ):
+        return tick
+    return replace(
+        tick,
+        scope_event_provenance=SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION,
+        tick_provenance=provenance,
+    )
+
+
 def futures_input_admission_fail_reasons(
     snapshot: FuturesInputSnapshot,
 ) -> list[str]:
@@ -579,8 +739,18 @@ def validate_offline_double_play_scenario_replay_input_v0(
         return admission_reasons
     if not inp.ticks:
         return ["ticks required"]
-    if not inp.allow_test_scope_event_injection:
+    allow_injection = resolve_allow_test_scope_event_injection(inp.allow_test_scope_event_injection)
+    if not allow_injection:
         reasons.append(REASON_SCENARIO_SCOPE_EVENT_INJECTION_REQUIRES_TEST_HARNESS)
+        return reasons
+    surface = str(getattr(inp, "execution_surface", "") or "").strip().lower()
+    if (
+        surface in FORBIDDEN_INJECTION_EXECUTION_SURFACES
+        or surface not in ALLOWED_INJECTION_EXECUTION_SURFACES
+    ):
+        reasons.append(
+            f"{REASON_SCENARIO_INJECTION_EXECUTION_SURFACE_FORBIDDEN}:{surface or 'missing'}"
+        )
         return reasons
     prev_ts: int | None = None
     seen: set[int] = set()
@@ -598,6 +768,11 @@ def validate_offline_double_play_scenario_replay_input_v0(
                 f"unmarked_scope_event_injection_at_tick_{tick.tick_index}:"
                 f"{provenance or SCENARIO_SCOPE_EVENT_PROVENANCE_UNMARKED}"
             )
+        tick_prov = getattr(tick, "tick_provenance", None)
+        for prov_reason in validate_offline_scenario_tick_provenance_v1(
+            tick_prov, expected_tick_index=tick.tick_index
+        ):
+            reasons.append(f"tick_{tick.tick_index}:{prov_reason}")
         prev_ts = tick.timestamp_ms
     return reasons
 
@@ -609,14 +784,15 @@ def make_offline_scenario_replay_input_for_tests_v0(
     correlation_id_prefix: str = "offline-double-play-replay-v0",
     source_revision: str = "offline-replay-v0-test-injection",
     futures_input_snapshot: FuturesInputSnapshot | None = None,
+    execution_surface: str = "offline_test",
+    provenance_source_id: str = "make_offline_scenario_replay_input_for_tests_v0",
 ) -> OfflineDoublePlayScenarioReplayInputV0:
     """TEST_ONLY factory: enables marked tick.scope_event injection for harnesses."""
     marked = tuple(
-        tick
-        if tick.scope_event_provenance == SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION
-        else replace(
+        _ensure_offline_scenario_tick_injection_marks(
             tick,
-            scope_event_provenance=SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION,
+            source_kind="offline_scenario_fixture",
+            source_id=provenance_source_id,
         )
         for tick in ticks
     )
@@ -627,6 +803,7 @@ def make_offline_scenario_replay_input_for_tests_v0(
         source_revision=source_revision,
         futures_input_snapshot=futures_input_snapshot,
         allow_test_scope_event_injection=True,
+        execution_surface=execution_surface,
     )
 
 
@@ -661,6 +838,14 @@ def build_default_bull_bear_bull_scenario_ticks() -> tuple[OfflineDoublePlayScen
                 time_without_cashflow_step=inactive_steps,
                 opportunity_score=opp,
                 scope_event_provenance=SCENARIO_SCOPE_EVENT_PROVENANCE_TEST_INJECTION,
+                tick_provenance=make_offline_scenario_tick_provenance_v1(
+                    source_kind="synthetic_offline_validation",
+                    source_id="build_default_bull_bear_bull_scenario_ticks",
+                    tick_index=idx,
+                    event_time_ms=ts,
+                    sequence_number=idx,
+                    fixture_id="default_bull_bear_bull_v0",
+                ),
             )
         )
         idx += 1

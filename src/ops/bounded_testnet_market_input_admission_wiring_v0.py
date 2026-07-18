@@ -24,6 +24,7 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER,
     OfflineDoublePlayScenarioTickV0,
     SYNTHETIC_FUTURES_INSTRUMENT,
+    make_offline_scenario_tick_provenance_v1,
 )
 
 BOUNDED_TESTNET_MARKET_INPUT_ADMISSION_WIRING_LAYER_VERSION = "v0"
@@ -170,6 +171,14 @@ def _map_observation_ticks_to_replay_ticks(
             price=tick.mark_price,
             scope_event=ScopeEvent.NOOP,
             scope_event_provenance="TEST_INJECTION",
+            tick_provenance=make_offline_scenario_tick_provenance_v1(
+                source_kind="testnet_bounded_observation",
+                source_id=observation.source_run_id,
+                tick_index=tick.tick_index,
+                event_time_ms=tick.timestamp_ms,
+                sequence_number=tick.sequence,
+                fixture_id=observation.dataset_id,
+            ),
         )
         for tick in observation.price_ticks
     )

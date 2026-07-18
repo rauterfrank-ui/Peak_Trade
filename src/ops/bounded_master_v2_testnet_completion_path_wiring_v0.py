@@ -37,7 +37,9 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OfflineDoublePlayScenarioReplayInputV0,
     OfflineDoublePlayScenarioReplayResultV0,
     OfflineDoublePlayScenarioTickV0,
+    resolve_allow_test_scope_event_injection,
     run_offline_double_play_scenario_replay_v0,
+    validate_offline_scenario_tick_provenance_v1,
 )
 
 BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_LAYER_VERSION = "v0"
@@ -91,6 +93,9 @@ class TestnetCompletionPathMarketInputV0:
     source_run_id: str
     source_lane: str = "testnet_bounded_observation"
     synthetic_offline_fixture: bool = False
+    # TEST_ONLY opt-in for scenario scope-event injection. Default fail-closed False.
+    allow_test_scope_event_injection: bool = False
+    execution_surface: str = "offline_replay"
 
 
 @dataclass(frozen=True)
@@ -260,16 +265,50 @@ def validate_testnet_completion_path_market_input(
 
 def build_replay_input_from_testnet_market_input(
     market_input: TestnetCompletionPathMarketInputV0,
+    *,
+    allow_test_scope_event_injection: object = None,
 ) -> OfflineDoublePlayScenarioReplayInputV0:
-    """Map admitted testnet market input into the canonical offline replay input contract."""
+    """Map admitted testnet market input into the canonical offline replay input contract.
+
+    Scope-event injection defaults fail-closed. Explicit bool True is required on the
+    market input (or as an exact-True keyword override), and every tick must already
+    carry validated typed tick provenance — this helper never invents provenance.
+    """
     reasons = validate_testnet_completion_path_market_input(market_input)
     if reasons:
         raise ValueError("; ".join(reasons))
+
+    if allow_test_scope_event_injection is None:
+        flag_raw: object = market_input.allow_test_scope_event_injection
+    else:
+        flag_raw = allow_test_scope_event_injection
+    allow_injection = resolve_allow_test_scope_event_injection(flag_raw)
+
+    if allow_injection:
+        provenance_reasons: list[str] = []
+        for tick in market_input.ticks:
+            for prov_reason in validate_offline_scenario_tick_provenance_v1(
+                getattr(tick, "tick_provenance", None),
+                expected_tick_index=tick.tick_index,
+            ):
+                provenance_reasons.append(f"tick_{tick.tick_index}:{prov_reason}")
+            mark = str(getattr(tick, "scope_event_provenance", "") or "")
+            if mark != "TEST_INJECTION":
+                provenance_reasons.append(
+                    f"tick_{tick.tick_index}:unmarked_scope_event_injection:{mark or 'UNMARKED'}"
+                )
+        if provenance_reasons:
+            raise ValueError(
+                "allow_test_scope_event_injection requires validated tick provenance; "
+                + "; ".join(provenance_reasons)
+            )
+
     return OfflineDoublePlayScenarioReplayInputV0(
         selected_future_id=market_input.selected_future_id,
         ticks=market_input.ticks,
         source_revision=(f"testnet-completion-path-wiring-v0:{market_input.source_run_id}"),
-        allow_test_scope_event_injection=True,
+        allow_test_scope_event_injection=allow_injection,
+        execution_surface=market_input.execution_surface,
     )
 
 

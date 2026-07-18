@@ -275,6 +275,7 @@ def prove_offline_replay_six_node_validation_graph_binding_v0(
         ticks=build_default_bull_bear_bull_scenario_ticks(),
         source_revision="offline-replay-six-node-graph-binding-v0",
         allow_test_scope_event_injection=True,
+        execution_surface="offline_replay",
     )
     replay_result = run_offline_double_play_scenario_replay_v0(resolved_input)
     if not replay_result.replay_pass:

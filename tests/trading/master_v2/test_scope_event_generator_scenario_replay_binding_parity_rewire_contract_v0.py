@@ -39,6 +39,7 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OfflineDoublePlayScenarioTickV0,
     SYNTHETIC_FUTURES_INSTRUMENT,
     build_default_bull_bear_bull_scenario_ticks,
+    make_offline_scenario_tick_provenance_v1,
     run_offline_double_play_scenario_replay_v0,
 )
 from trading.master_v2.scope_event_generator_scenario_binding_adapter_v0 import (
@@ -278,6 +279,13 @@ def test_scenario_replay_e2e_wires_generator_per_tick_v0() -> None:
             price=100.0,
             scope_event=ScopeEvent.NOOP,
             scope_event_provenance="TEST_INJECTION",
+            tick_provenance=make_offline_scenario_tick_provenance_v1(
+                source_kind="offline_scenario_fixture",
+                source_id="scope_gen_scenario_e2e",
+                tick_index=0,
+                event_time_ms=1_700_000_000_000,
+                sequence_number=0,
+            ),
         ),
         OfflineDoublePlayScenarioTickV0(
             tick_index=1,
@@ -285,6 +293,13 @@ def test_scenario_replay_e2e_wires_generator_per_tick_v0() -> None:
             price=96.0,
             scope_event=ScopeEvent.NOOP,
             scope_event_provenance="TEST_INJECTION",
+            tick_provenance=make_offline_scenario_tick_provenance_v1(
+                source_kind="offline_scenario_fixture",
+                source_id="scope_gen_scenario_e2e",
+                tick_index=1,
+                event_time_ms=1_700_000_060_000,
+                sequence_number=1,
+            ),
         ),
     )
     result = run_offline_double_play_scenario_replay_v0(

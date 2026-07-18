@@ -1,0 +1,26 @@
+AUDIT=READ_ONLY_DYNAMIC_SCOPE_COMPETING_AUTHORITY_FORENSIC_AUDIT_V1
+TIMESTAMP_UTC=20260718T163605Z
+
+BEFORE
+HEAD=4185af607b2c595f2ff250e759563ee9aedca7cb
+ORIGIN_MAIN=4185af607b2c595f2ff250e759563ee9aedca7cb
+BRANCH=main
+WORKTREE_CLEAN=true
+STASH_LIST=
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework
+BASELINE_EXPECTED_MATCH=true
+
+AFTER
+HEAD=4185af607b2c595f2ff250e759563ee9aedca7cb
+ORIGIN_MAIN=4185af607b2c595f2ff250e759563ee9aedca7cb
+BRANCH=main
+WORKTREE_CLEAN=false
+UNTRACKED_ONLY=docs/product/evidence/read_only_dynamic_scope_competing_authority_forensic_audit_v1_20260718T163605Z/
+NOTE=Evidence directory created under docs/product/evidence/ only; no productive src/ changes.
+STASHES_UNCHANGED=true
+PRODUCTIVE_FILES_CHANGED=false
+INVENTORY_ROWS=21
+COMPETING_AUTHORITY_COUNT=0
+TESTS_FOCUSED=100_passed
