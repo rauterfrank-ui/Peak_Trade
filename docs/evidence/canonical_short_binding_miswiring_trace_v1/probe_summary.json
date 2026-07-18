@@ -1,0 +1,11 @@
+{
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "predecessor_pr": 5344,
+  "scenarios_fail": [],
+  "scenarios_pass": 19,
+  "scenarios_total": 19,
+  "selected_consumer": "legacy_BacktestEngine",
+  "short_capable_consumer_bound": false,
+  "short_capable_consumer_exists": true,
+  "verdict_letter": "B"
+}

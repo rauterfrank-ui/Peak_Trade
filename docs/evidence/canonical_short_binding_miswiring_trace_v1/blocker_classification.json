@@ -1,0 +1,96 @@
+{
+  "classes": {
+    "ADAPTER_SEMANTIC_MISMATCH": {
+      "primary": false,
+      "status": "confirmed_secondary",
+      "where": "S05/S06/S08 \u2014 -1 short-entry vs legacy exit/no-op"
+    },
+    "CONTRACT_CAPABILITY_MISMATCH": {
+      "primary": true,
+      "status": "confirmed_primary",
+      "where": "S05/S10/S15"
+    },
+    "DOCUMENTATION_ONLY_MISMATCH": {
+      "primary": false,
+      "status": "secondary_annotation",
+      "where": "Surface-P / symmetry wording vs long-only open path"
+    },
+    "LEGACY_BYPASS": {
+      "primary": false,
+      "status": "observed_adjacent",
+      "where": "S11/S12 classic callers; not the MV2 residual mechanism"
+    },
+    "LEGITIMATE_FAIL_CLOSED": {
+      "primary": false,
+      "status": "observed_partial",
+      "where": "entry_side=NONE, observe/flat, sizing rejects"
+    },
+    "MISSING_CAPABILITY_GATE": {
+      "primary": false,
+      "status": "confirmed_secondary",
+      "where": "S16 \u2014 no pre-dispatch capability negotiation"
+    },
+    "WRONG_CONSUMER_BINDING": {
+      "primary": false,
+      "status": "confirmed_secondary",
+      "where": "S10/S17 \u2014 pipeline short-capable exists, MV2 forces legacy"
+    }
+  },
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "not_legitimate_early_fail_closed_for_short": {
+    "reason": "SHORT is not blocked before engine dispatch with an explicit capability denial; it becomes a silent no-op at legacy fill semantics."
+  },
+  "predecessor_pr": 5344,
+  "predecessor_primary_blocker_class_A_to_G": "E",
+  "predecessor_secondary_blocker_classes_A_to_G": [
+    "D"
+  ],
+  "scenario_class_counts": {
+    "ADAPTER_SEMANTIC_MISMATCH": 2,
+    "CONTRACT_CAPABILITY_MISMATCH": 3,
+    "HEALTHY_PATH": 5,
+    "LEGACY_BYPASS": 2,
+    "LEGITIMATE_FAIL_CLOSED": 2,
+    "MISSING_CAPABILITY_GATE": 1,
+    "OBSERVATION_ONLY": 2,
+    "WRONG_CONSUMER_BINDING": 2
+  },
+  "static_proof": {
+    "authority_effect": "NONE",
+    "canonical_engine_signal_source": "mv2_decision_replay_series",
+    "capability_gate_present": false,
+    "capability_gate_tokens_in_wiring": [],
+    "classic_bypass_callers_sampled": [
+      "scripts/run_backtest.py",
+      "scripts/research_run_strategy.py",
+      "scripts/demo_execution_backtest.py"
+    ],
+    "engine_default_use_execution_pipeline": true,
+    "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+    "intended_consumer_if_short_symmetry_claimed": "BacktestEngine(use_execution_pipeline=True) / ExecutionPipeline",
+    "legacy_exits_on_minus_one_if_open": true,
+    "legacy_opens_on_plus_one": true,
+    "live_authorized": false,
+    "map_enter_short_to_minus_one": true,
+    "non_authoritative_marker": true,
+    "orders": false,
+    "partial_reduction_false": true,
+    "pipeline_entry_short_order_reason": true,
+    "pipeline_has_is_entry_short": true,
+    "predecessor_pr": 5344,
+    "runtime_bridge_status": "BOUND_NOT_ACTIVATED",
+    "runtime_effect": "NONE",
+    "selected_consumer_on_canonical_path": "BacktestEngine(use_execution_pipeline=False)",
+    "unbound_short_capable_consumer": "BacktestEngine(use_execution_pipeline=True) / ExecutionPipeline",
+    "wiring_calls_integrated_replay": true,
+    "wiring_use_execution_pipeline_false_count": 2,
+    "wiring_use_execution_pipeline_true_count": 0
+  },
+  "supporting_verdict_letters": [
+    "C",
+    "E",
+    "F"
+  ],
+  "verdict_letter": "B",
+  "verdict_statement": "Contract-Capability-Mismatch: Upstream (MV2/DP + map) allows SHORT via enter_short\u2192-1, but the canonical binding layer hard-selects a long-only legacy BacktestEngine consumer."
+}

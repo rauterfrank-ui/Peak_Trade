@@ -1,0 +1,172 @@
+{
+  "base_sha": "f5f5fee56e471621988b5d193397d0b7b80eb535",
+  "branch": "audit/canonical-short-binding-miswiring-trace-v1",
+  "evidence_dir": "docs/evidence/canonical_short_binding_miswiring_trace_v1",
+  "file_count": 23,
+  "files": [
+    {
+      "bytes": 1559,
+      "name": "README.md",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/README.md",
+      "purpose": "Slice overview and verdict letter B",
+      "sha256": "2c4188681a91df3c93b717b61cacdf3e22e191df8e7dfb3f650ea581085191fc"
+    },
+    {
+      "bytes": 964,
+      "name": "binding_decision_trace.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/binding_decision_trace.json",
+      "purpose": "Stepwise binding decision trace",
+      "sha256": "36ec850acca748e9f38d4e17d485bc13aa8f4d785761009a829f5b10018e3ebc"
+    },
+    {
+      "bytes": 3573,
+      "name": "blocker_classification.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/blocker_classification.json",
+      "purpose": "Miswiring class + verdict letter",
+      "sha256": "773ab4c0626cabff01ea69239aae9271e6a4644baff00d45e0f4dfd9113226bc"
+    },
+    {
+      "bytes": 7534,
+      "name": "canonical_binding_matrix.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/canonical_binding_matrix.json",
+      "purpose": "Producer/consumer binding matrix",
+      "sha256": "c861daaf16036f410d26b6bbaa237c73731faccf987dd6ecf3d38b01b602ca38"
+    },
+    {
+      "bytes": 1319,
+      "name": "chain_binding_proof.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/chain_binding_proof.json",
+      "purpose": "Static wiring/engine proof",
+      "sha256": "6b98f6e7ae519f1f2d21f1eb9c989d8e5d962b96709ec74c81b806fee18d32f8"
+    },
+    {
+      "bytes": 1453,
+      "name": "commands.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/commands.txt",
+      "purpose": "Repro commands",
+      "sha256": "b4e0720d7062f90cdc4cf798875bcbada6ec29f2a36325a06e8d5a588a2262bb"
+    },
+    {
+      "bytes": 896,
+      "name": "consumer_capability_matrix.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/consumer_capability_matrix.json",
+      "purpose": "Legacy vs pipeline capabilities",
+      "sha256": "5913fa5e517ee53b3c60f6bb9b6f7595e73f889cf32f466bd0e4b2dc59e259f5"
+    },
+    {
+      "bytes": 1847,
+      "name": "diff_scope.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/diff_scope.txt",
+      "purpose": "Allowed diff scope declaration",
+      "sha256": "1d671ee441222e8be102fe6e3f10d1e99943a2bc6566401a8a2af6caf68272fe"
+    },
+    {
+      "bytes": 383,
+      "name": "environment.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/environment.txt",
+      "purpose": "Platform/base/safety flags",
+      "sha256": "2a3a1d75fd6684c91d7a0dc371a29a7cf0e4f884b6a01f15c7681d27e3edb39a"
+    },
+    {
+      "bytes": 1638,
+      "name": "first_divergence_analysis.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/first_divergence_analysis.json",
+      "purpose": "First miswiring vs value-loss boundaries",
+      "sha256": "d8b4cacb7292d8181e65f9734cc28419e4243ef686e6e1f249393e4c17da6c29"
+    },
+    {
+      "bytes": 3887,
+      "name": "invariants.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/invariants.json",
+      "purpose": "Static/dynamic invariants",
+      "sha256": "93fe748335e46a845eb5e176033238bdc09b317e3e30842f4b448892376c0b78"
+    },
+    {
+      "bytes": 543,
+      "name": "legacy_bypass_inventory.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/legacy_bypass_inventory.json",
+      "purpose": "Classic caller bypass inventory",
+      "sha256": "ecaaa456467c4699066cbc8a5bc244bec125c8566d960cda4f5624f74a818474"
+    },
+    {
+      "bytes": 1871,
+      "name": "long_short_call_graph.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/long_short_call_graph.json",
+      "purpose": "LONG vs SHORT call graphs",
+      "sha256": "3fbac4fa8db24e63fb81d873905f7d660c97b181540453cf6179d9b5d710e065"
+    },
+    {
+      "bytes": 6910,
+      "name": "manifest.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/manifest.json",
+      "purpose": "SHA-256 inventory",
+      "sha256": "e720a13f6b04c29d65cb7d3053ca2291391cfa7872fbb07309f231b3ae1d381b"
+    },
+    {
+      "bytes": 797,
+      "name": "probe_run_log.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/probe_run_log.txt",
+      "purpose": "Harness stdout capture",
+      "sha256": "ad5a31d9bd41d20b56a2c0c663cc5ff6ef4bf07c764e7403e0a81bb9c6981164"
+    },
+    {
+      "bytes": 319,
+      "name": "probe_summary.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/probe_summary.json",
+      "purpose": "Harness aggregate summary",
+      "sha256": "632d0ee696389ed73b9e45988d0d5752b07cd099611cf3b506feb13ca6b0f007"
+    },
+    {
+      "bytes": 19,
+      "name": "ruff.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/ruff.txt",
+      "purpose": "Ruff capture",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "bytes": 16883,
+      "name": "scenario_results.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/scenario_results.json",
+      "purpose": "S01-S19 scenario outcomes",
+      "sha256": "a0db610ee29688176d11b68e4efe9683f897a6d3a1d5a396f07c90e443841b8c"
+    },
+    {
+      "bytes": 59004,
+      "name": "short_binding_miswiring_harness_v1.py",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/short_binding_miswiring_harness_v1.py",
+      "purpose": "Non-authoritative audit harness",
+      "sha256": "ac492a33df6a96639daee4615f03aaad36514c31a9df003da4ef8d55e782b089"
+    },
+    {
+      "bytes": 493,
+      "name": "tests.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/tests.txt",
+      "purpose": "Pytest capture",
+      "sha256": "f29f8e22ea406bffdaa49691d2cf61103e1d0326a72edab17af1baa2d21134f5"
+    },
+    {
+      "bytes": 1658,
+      "name": "verdict.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/verdict.txt",
+      "purpose": "Compact machine-readable verdict",
+      "sha256": "af582f2842556c3edbc7b7fa47fbc31276c1657b6c3a85b88667444325d98faa"
+    },
+    {
+      "bytes": 908,
+      "name": "worktree_after.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/worktree_after.txt",
+      "purpose": "Post-audit worktree snapshot",
+      "sha256": "0c84f6e883d1b81a4abc8a46c0340f56676d10263498fe8d2745111631939feb"
+    },
+    {
+      "bytes": 806,
+      "name": "worktree_before.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_trace_v1/worktree_before.txt",
+      "purpose": "Preflight worktree snapshot",
+      "sha256": "8641cc4fa209f14d08af53197525f3441a4965ced348162bab0c1e684b5eac95"
+    }
+  ],
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "predecessor_pr": 5344,
+  "verdict_letter": "B"
+}

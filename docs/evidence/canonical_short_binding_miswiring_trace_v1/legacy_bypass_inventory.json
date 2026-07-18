@@ -1,0 +1,11 @@
+{
+  "harness_id": "CANONICAL_SHORT_BINDING_MISWIRING_TRACE_V1",
+  "mv2_path_forces_legacy_engine": true,
+  "mv2_path_uses_integrated_replay": true,
+  "role": "Adjacent LEGACY_BYPASS inventory \u2014 these skip integrated orchestrator. They are not the primary residual mechanism on the bound MV2 research path, but demonstrate that pipeline (short-capable) is the engine default outside MV2.",
+  "sampled_classic_callers": [
+    "scripts/run_backtest.py",
+    "scripts/research_run_strategy.py",
+    "scripts/demo_execution_backtest.py"
+  ]
+}
