@@ -1,0 +1,8 @@
+platform=macOS-26.5.1-arm64-arm-64bit
+python=3.11.14
+base_sha=4ca5594e61024dd53c33dbbb7f39c91d80d3505d
+branch=fix/canonical-short-binding-miswiring-v1
+utc=2026-07-18T22:51:19.270118+00:00
+LIVE_AUTHORIZED=false
+ORDERS=false
+RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED

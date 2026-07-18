@@ -43,6 +43,46 @@ BACKTEST_POSITION_FEEDBACK_MAY_WRITE_SIDE_STATE = False
 _PARTIAL_REDUCTION_SUPPORTED_BY_CANONICAL_OWNER = False
 
 
+def _trade_side_from_size(size: float) -> str:
+    """Ledger-compatible side: size>0 long, size<0 short."""
+    return "short" if float(size) < 0.0 else "long"
+
+
+def _directional_trade_pnl(*, size: float, entry_price: float, exit_price: float) -> float:
+    quantity = abs(float(size))
+    if float(size) < 0.0:
+        return quantity * (float(entry_price) - float(exit_price))
+    return quantity * (float(exit_price) - float(entry_price))
+
+
+def _close_current_trade(
+    current_trade: Trade,
+    *,
+    trade_dt: Any,
+    exit_price: float,
+    exit_reason: str,
+    effective_cost: EffectiveBacktestCostConfigV0,
+) -> None:
+    current_trade.exit_time = trade_dt
+    current_trade.exit_price = float(exit_price)
+    current_trade.pnl = _directional_trade_pnl(
+        size=current_trade.size,
+        entry_price=current_trade.entry_price,
+        exit_price=current_trade.exit_price,
+    )
+    current_trade.pnl_pct = (
+        (current_trade.pnl / (current_trade.entry_price * abs(current_trade.size))) * 100.0
+        if current_trade.entry_price > 0 and current_trade.size != 0
+        else 0.0
+    )
+    current_trade.exit_reason = exit_reason
+    _emit_legacy_trade_accounting_fields_v0(
+        current_trade,
+        side=_trade_side_from_size(current_trade.size),
+        effective_cost=effective_cost,
+    )
+
+
 @dataclass(frozen=True)
 class BacktestEnginePositionFeedbackV1:
     """Canonical backtest execution position snapshot consumable by the next MV2 replay bar.
@@ -114,6 +154,129 @@ def init_legacy_realistic_bar_loop_state_v1(
     )
 
 
+def _try_open_position(
+    engine: BacktestEngine,
+    *,
+    equity: float,
+    entry_price: float,
+    stop_price: float,
+    trade_dt: Any,
+    symbol: str,
+    signal: int,
+    offline_sizing_bound: bool,
+    signed_size_multiplier: float,
+) -> tuple[Trade | None, int]:
+    """Size and open one position. Returns (trade_or_none, blocked_increment)."""
+    if engine.core_position_sizer is not None:
+        target_units = engine.core_position_sizer.get_target_position(
+            signal=int(signal), price=entry_price, equity=equity
+        )
+        if engine.risk_manager is not None:
+            target_units = engine.risk_manager.adjust_target_position(
+                target_units=target_units,
+                price=entry_price,
+                equity=equity,
+                timestamp=trade_dt,
+                symbol=symbol,
+            )
+        position_value = abs(target_units) * entry_price
+        position_size = abs(target_units) * signed_size_multiplier
+        rejected = target_units == 0 or position_value < engine.config["risk"].get(
+            "min_position_value", 50.0
+        )
+        if not rejected:
+            max_pos_pct = engine.config["risk"].get("max_position_size", 0.25)
+            if position_value > equity * max_pos_pct:
+                rejected = True
+        if rejected:
+            return None, 1
+        if engine._check_risk_limits(
+            current_capital=equity,
+            proposed_position_value=position_value,
+            current_dt=trade_dt,
+        ):
+            return (
+                Trade(
+                    entry_time=trade_dt,
+                    entry_price=entry_price,
+                    size=position_size,
+                    stop_price=stop_price,
+                ),
+                0,
+            )
+        return None, 1
+    if offline_sizing_bound:
+        from src.backtest.offline_evaluation_sizing_contract_v1 import (
+            get_offline_sizing_accounting_v1,
+            load_offline_evaluation_sizing_contract_v1,
+            size_offline_evaluation_entry_v1,
+        )
+
+        contract = load_offline_evaluation_sizing_contract_v1(engine.config)
+        accounting = get_offline_sizing_accounting_v1(engine.config)
+        sizing_outcome = size_offline_evaluation_entry_v1(
+            contract=contract,
+            equity=equity,
+            entry_price=entry_price,
+            cfg=engine.config,
+            accounting=accounting,
+        )
+        if not sizing_outcome.accepted:
+            return None, 1
+        if engine._check_risk_limits(
+            current_capital=equity,
+            proposed_position_value=sizing_outcome.effective_notional,
+            current_dt=trade_dt,
+        ):
+            resolved_stop = sizing_outcome.stop_price if signed_size_multiplier > 0 else stop_price
+            return (
+                Trade(
+                    entry_time=trade_dt,
+                    entry_price=entry_price,
+                    size=abs(sizing_outcome.size) * signed_size_multiplier,
+                    stop_price=resolved_stop,
+                ),
+                0,
+            )
+        return None, 1
+    # PositionRequest/calc_position_size are long-oriented (stop must be below entry).
+    # For shorts, size on the mirrored distance; keep the real short stop on the Trade.
+    sizing_stop_price = (
+        stop_price
+        if signed_size_multiplier > 0
+        else entry_price - abs(float(stop_price) - float(entry_price))
+    )
+    req = PositionRequest(
+        equity=equity,
+        entry_price=entry_price,
+        stop_price=sizing_stop_price,
+        risk_per_trade=engine.config["risk"]["risk_per_trade"],
+    )
+    pos_result = calc_position_size(
+        req,
+        max_position_pct=engine.config["risk"]["max_position_size"],
+        min_position_value=engine.config["risk"]["min_position_value"],
+        min_stop_distance=engine.config["risk"]["min_stop_distance"],
+    )
+    if pos_result.rejected:
+        return None, 1
+    if engine._check_risk_limits(
+        current_capital=equity,
+        proposed_position_value=pos_result.value,
+        current_dt=trade_dt,
+    ):
+        return (
+            Trade(
+                entry_time=trade_dt,
+                entry_price=entry_price,
+                size=abs(pos_result.size) * signed_size_multiplier,
+                stop_price=stop_price,
+            ),
+            0,
+        )
+    return None, 1
+
+
 def step_legacy_realistic_bar_v1(
     engine: BacktestEngine,
     state: LegacyRealisticBarLoopStateV1,
@@ -122,8 +285,14 @@ def step_legacy_realistic_bar_v1(
     signal: int,
     symbol: str,
     effective_cost: EffectiveBacktestCostConfigV0,
+    honor_mapped_short_entry: bool = False,
 ) -> LegacyRealisticBarLoopStateV1:
-    """Execute exactly one legacy realistic bar using canonical BacktestEngine helpers."""
+    """Execute exactly one legacy realistic bar using canonical BacktestEngine helpers.
+
+    When ``honor_mapped_short_entry`` is True (MV2 mapped-signal path only), ``signal==-1``
+    while flat opens a short (negative size). Default False preserves classic long-only
+    semantics where flat ``-1`` is a no-op.
+    """
     trade_dt = bar.name
     current_trade = state.current_trade
     equity = state.equity
@@ -134,148 +303,91 @@ def step_legacy_realistic_bar_v1(
         engine.config.get("offline_evaluation_sizing_contract_v1"), Mapping
     )
 
-    if current_trade is not None and bar["low"] <= current_trade.stop_price:
-        current_trade.exit_time = trade_dt
-        current_trade.exit_price = current_trade.stop_price
-        current_trade.pnl = current_trade.size * (
-            current_trade.exit_price - current_trade.entry_price
+    if current_trade is not None:
+        side = _trade_side_from_size(current_trade.size)
+        stop_hit = (
+            bar["high"] >= current_trade.stop_price
+            if side == "short"
+            else bar["low"] <= current_trade.stop_price
         )
-        current_trade.pnl_pct = (
-            (current_trade.exit_price - current_trade.entry_price)
-            / current_trade.entry_price
-            * 100.0
-        )
-        current_trade.exit_reason = "stop_loss"
-        _emit_legacy_trade_accounting_fields_v0(
-            current_trade,
-            side="long",
-            effective_cost=effective_cost,
-        )
-        equity += current_trade.pnl
-        trades.append(current_trade)
-        engine._register_trade_pnl(trade_dt, current_trade.pnl_pct)
-        last_bar_exit_reason = "stop_loss"
-        current_trade = None
+        if stop_hit:
+            _close_current_trade(
+                current_trade,
+                trade_dt=trade_dt,
+                exit_price=current_trade.stop_price,
+                exit_reason="stop_loss",
+                effective_cost=effective_cost,
+            )
+            equity += current_trade.pnl or 0.0
+            trades.append(current_trade)
+            engine._register_trade_pnl(trade_dt, current_trade.pnl_pct or 0.0)
+            last_bar_exit_reason = "stop_loss"
+            current_trade = None
 
     if signal == 1 and current_trade is None:
         entry_price = float(bar["close"])
         stop_price = entry_price * (1 - state.stop_pct)
-        if engine.core_position_sizer is not None:
-            target_units = engine.core_position_sizer.get_target_position(
-                signal=int(signal), price=entry_price, equity=equity
-            )
-            if engine.risk_manager is not None:
-                target_units = engine.risk_manager.adjust_target_position(
-                    target_units=target_units,
-                    price=entry_price,
-                    equity=equity,
-                    timestamp=trade_dt,
-                    symbol=symbol,
-                )
-            position_value = abs(target_units) * entry_price
-            position_size = abs(target_units)
-            rejected = target_units == 0 or position_value < engine.config["risk"].get(
-                "min_position_value", 50.0
-            )
-            if not rejected:
-                max_pos_pct = engine.config["risk"].get("max_position_size", 0.25)
-                if position_value > equity * max_pos_pct:
-                    rejected = True
-            if rejected:
-                blocked_trades += 1
-            elif engine._check_risk_limits(
-                current_capital=equity,
-                proposed_position_value=position_value,
-                current_dt=trade_dt,
-            ):
-                current_trade = Trade(
-                    entry_time=trade_dt,
-                    entry_price=entry_price,
-                    size=position_size,
-                    stop_price=stop_price,
-                )
-            else:
-                blocked_trades += 1
-        elif offline_sizing_bound:
-            from src.backtest.offline_evaluation_sizing_contract_v1 import (
-                get_offline_sizing_accounting_v1,
-                load_offline_evaluation_sizing_contract_v1,
-                size_offline_evaluation_entry_v1,
-            )
-
-            contract = load_offline_evaluation_sizing_contract_v1(engine.config)
-            accounting = get_offline_sizing_accounting_v1(engine.config)
-            sizing_outcome = size_offline_evaluation_entry_v1(
-                contract=contract,
-                equity=equity,
-                entry_price=entry_price,
-                cfg=engine.config,
-                accounting=accounting,
-            )
-            if not sizing_outcome.accepted:
-                blocked_trades += 1
-            elif engine._check_risk_limits(
-                current_capital=equity,
-                proposed_position_value=sizing_outcome.effective_notional,
-                current_dt=trade_dt,
-            ):
-                current_trade = Trade(
-                    entry_time=trade_dt,
-                    entry_price=entry_price,
-                    size=sizing_outcome.size,
-                    stop_price=sizing_outcome.stop_price,
-                )
-            else:
-                blocked_trades += 1
-        else:
-            req = PositionRequest(
-                equity=equity,
-                entry_price=entry_price,
-                stop_price=stop_price,
-                risk_per_trade=engine.config["risk"]["risk_per_trade"],
-            )
-            pos_result = calc_position_size(
-                req,
-                max_position_pct=engine.config["risk"]["max_position_size"],
-                min_position_value=engine.config["risk"]["min_position_value"],
-                min_stop_distance=engine.config["risk"]["min_stop_distance"],
-            )
-            if pos_result.rejected:
-                blocked_trades += 1
-            elif engine._check_risk_limits(
-                current_capital=equity,
-                proposed_position_value=pos_result.value,
-                current_dt=trade_dt,
-            ):
-                current_trade = Trade(
-                    entry_time=trade_dt,
-                    entry_price=entry_price,
-                    size=pos_result.size,
-                    stop_price=stop_price,
-                )
-            else:
-                blocked_trades += 1
-
-    elif signal == -1 and current_trade is not None:
-        current_trade.exit_time = trade_dt
-        current_trade.exit_price = float(bar["close"])
-        current_trade.pnl = current_trade.size * (
-            current_trade.exit_price - current_trade.entry_price
+        opened, blocked_inc = _try_open_position(
+            engine,
+            equity=equity,
+            entry_price=entry_price,
+            stop_price=stop_price,
+            trade_dt=trade_dt,
+            symbol=symbol,
+            signal=signal,
+            offline_sizing_bound=offline_sizing_bound,
+            signed_size_multiplier=1.0,
         )
-        current_trade.pnl_pct = (
-            (current_trade.exit_price - current_trade.entry_price)
-            / current_trade.entry_price
-            * 100.0
+        blocked_trades += blocked_inc
+        if opened is not None:
+            current_trade = opened
+    elif honor_mapped_short_entry and signal == -1 and current_trade is None:
+        entry_price = float(bar["close"])
+        stop_price = entry_price * (1 + state.stop_pct)
+        opened, blocked_inc = _try_open_position(
+            engine,
+            equity=equity,
+            entry_price=entry_price,
+            stop_price=stop_price,
+            trade_dt=trade_dt,
+            symbol=symbol,
+            signal=signal,
+            offline_sizing_bound=offline_sizing_bound,
+            signed_size_multiplier=-1.0,
         )
-        current_trade.exit_reason = "signal"
-        _emit_legacy_trade_accounting_fields_v0(
+        blocked_trades += blocked_inc
+        if opened is not None:
+            current_trade = opened
+    elif signal == -1 and current_trade is not None and current_trade.size > 0:
+        _close_current_trade(
             current_trade,
-            side="long",
+            trade_dt=trade_dt,
+            exit_price=float(bar["close"]),
+            exit_reason="signal",
             effective_cost=effective_cost,
         )
-        equity += current_trade.pnl
+        equity += current_trade.pnl or 0.0
         trades.append(current_trade)
-        engine._register_trade_pnl(trade_dt, current_trade.pnl_pct)
+        engine._register_trade_pnl(trade_dt, current_trade.pnl_pct or 0.0)
+        last_bar_exit_reason = "signal"
+        current_trade = None
+    elif (
+        honor_mapped_short_entry
+        and signal == 1
+        and current_trade is not None
+        and current_trade.size < 0
+    ):
+        # Cover short on opposite mapped signal (+1), matching pipeline flip/exit semantics.
+        _close_current_trade(
+            current_trade,
+            trade_dt=trade_dt,
+            exit_price=float(bar["close"]),
+            exit_reason="signal",
+            effective_cost=effective_cost,
+        )
+        equity += current_trade.pnl or 0.0
+        trades.append(current_trade)
+        engine._register_trade_pnl(trade_dt, current_trade.pnl_pct or 0.0)
         last_bar_exit_reason = "signal"
         current_trade = None
 
@@ -308,8 +420,22 @@ def capture_backtest_engine_position_feedback_v1(
     neutral_side = SideState.NEUTRAL_OBSERVE
     neutral_direction = EntryExitDirectionState.NEUTRAL
     if state.current_trade is not None:
-        # Legacy realistic loop currently opens long-only trades; report as position
-        # observation, not as SideState.SHORT/LONG Double Play authority.
+        # Observation only: ledger side from size; never SideState Double Play authority.
+        side = _trade_side_from_size(state.current_trade.size)
+        if side == "short":
+            return BacktestEnginePositionFeedbackV1(
+                feedback_source_bar_epoch=feedback_source_bar_epoch,
+                position_state=PositionState.OPEN_FULL,
+                existing_position_side=ExistingPositionSide.SHORT,
+                venue_flat=False,
+                side_state=neutral_side,
+                direction_state=neutral_direction,
+                position_management_context=PositionManagementContext.SHORT_POSITION,
+                reconciliation_state=ReconciliationState.RECONCILED,
+                last_bar_exit_reason=state.last_bar_exit_reason,
+                has_open_trade=True,
+                authority_role=BACKTEST_POSITION_FEEDBACK_ROLE,
+            )
         return BacktestEnginePositionFeedbackV1(
             feedback_source_bar_epoch=feedback_source_bar_epoch,
             position_state=PositionState.OPEN_FULL,
@@ -355,25 +481,16 @@ def finalize_legacy_realistic_bar_loop_v1(
 
     if current_trade is not None:
         last_bar = df.iloc[-1]
-        current_trade.exit_time = last_bar.name
-        current_trade.exit_price = float(last_bar["close"])
-        current_trade.pnl = current_trade.size * (
-            current_trade.exit_price - current_trade.entry_price
-        )
-        current_trade.pnl_pct = (
-            (current_trade.exit_price - current_trade.entry_price)
-            / current_trade.entry_price
-            * 100.0
-        )
-        current_trade.exit_reason = "end_of_data"
-        _emit_legacy_trade_accounting_fields_v0(
+        _close_current_trade(
             current_trade,
-            side="long",
+            trade_dt=last_bar.name,
+            exit_price=float(last_bar["close"]),
+            exit_reason="end_of_data",
             effective_cost=effective_cost,
         )
-        equity += current_trade.pnl
+        equity += current_trade.pnl or 0.0
         trades.append(current_trade)
-        engine._register_trade_pnl(last_bar.name, current_trade.pnl_pct)
+        engine._register_trade_pnl(last_bar.name, current_trade.pnl_pct or 0.0)
         if equity_curve:
             equity_curve[-1] = equity
 

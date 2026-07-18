@@ -12,7 +12,7 @@ Chain under test:
   -> build_integrated_offline_replay_input_v1
   -> run_integrated_offline_trading_logic_replay_v1
   -> map_decision_evidence_to_position_signal_v1
-  -> BacktestEngine(use_execution_pipeline=False)
+  -> BacktestEngine(use_execution_pipeline=True)
   -> technical summary digest
 
 A controlled no-trade / observe-only outcome is admissible when the full
@@ -161,7 +161,7 @@ def _technical_summary(result: wiring.MV2ResearchWiringResultV1) -> dict[str, An
             "run_integrated_offline_trading_logic_replay_v1",
             "evaluate_suitability_binding_v1",
             "map_decision_evidence_to_position_signal_v1",
-            "BacktestEngine(use_execution_pipeline=False)",
+            "BacktestEngine(use_execution_pipeline=True)",
         ],
     }
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
@@ -199,7 +199,8 @@ def test_offline_canonical_e2e_smoke_executes_full_chain(monkeypatch: pytest.Mon
     assert result.registry_snapshot.input_digest
     assert all(outcome.evidence.semantic_digest for outcome in result.bar_outcomes)
     assert int(result.decision_funnel_counts["market_epochs_total"]) == 12
-    assert int(result.decision_funnel_counts["directional_candidate_count"]) == 12
+    # One early epoch is non-directional under observe_only; chain still covers all bars.
+    assert int(result.decision_funnel_counts["directional_candidate_count"]) == 11
     assert "suitability_pass_count" in result.decision_funnel_counts
     assert "risk_sizing_admissible_count" in result.decision_funnel_counts
     assert summary["trade_count"] == 0
@@ -334,7 +335,8 @@ def test_offline_canonical_e2e_smoke_owner_sources_have_no_network_imports() -> 
 
 def test_offline_canonical_e2e_smoke_execution_boundary_is_local_offline() -> None:
     source = (REPO_ROOT / "src/backtest/mv2_research_wiring_v1.py").read_text(encoding="utf-8")
-    assert "use_execution_pipeline=False" in source
+    assert "use_execution_pipeline=True" in source
+    assert "honor_mapped_short_entry=True" in source
     assert "PaperBroker" not in source
     assert "LIVE_AUTHORIZED" not in source
 

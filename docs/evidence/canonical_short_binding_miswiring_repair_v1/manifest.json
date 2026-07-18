@@ -1,0 +1,102 @@
+{
+  "base_sha": "4ca5594e61024dd53c33dbbb7f39c91d80d3505d",
+  "branch": "fix/canonical-short-binding-miswiring-v1",
+  "evidence_id": "canonical_short_binding_miswiring_repair_v1",
+  "file_count": 15,
+  "files": [
+    {
+      "bytes": 909,
+      "name": "README.md",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/README.md",
+      "sha256": "b243ea22fc40fb3b42187bb0e8c0a39827803f57173bf62a9fd0dcb382ae4287"
+    },
+    {
+      "bytes": 463,
+      "name": "commands.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/commands.txt",
+      "sha256": "961518a30046bc13aeb79458f754b7d8d84324d3da97db8c135e960a272efffe"
+    },
+    {
+      "bytes": 632,
+      "name": "diff_scope.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/diff_scope.txt",
+      "sha256": "a44f8e3956c3bdbcc9eb633dd6814a0a8dd5e99e33c4597ef6c5caa7381aecbb"
+    },
+    {
+      "bytes": 119,
+      "name": "docs_reference_targets.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/docs_reference_targets.txt",
+      "sha256": "372054fc6949b65c760d2de52e47ef09bc9d1447dd35329c56d3cf0fe071b5bd"
+    },
+    {
+      "bytes": 169,
+      "name": "docs_token_policy.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/docs_token_policy.txt",
+      "sha256": "b5d1a7398ddcdf4c49ec7c05c3446849829197dce7c72b502a058eb21b1069c1"
+    },
+    {
+      "bytes": 265,
+      "name": "environment.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/environment.txt",
+      "sha256": "e91c5d2bb8b06712ff86b839a0fc59746565b1e8805bc79e5b39d9d06fc41a38"
+    },
+    {
+      "bytes": 10453,
+      "name": "materialize_repair_evidence_v1.py",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/materialize_repair_evidence_v1.py",
+      "sha256": "0c4159f250a21c60f18ea9bd29e53f1a065927fafc10c6b9b6cee6e7c5a24289"
+    },
+    {
+      "bytes": 566,
+      "name": "repair_binding_proof.json",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/repair_binding_proof.json",
+      "sha256": "09128a59fba3438c05c8a20abcc88f043dfe51cff296a2894ecf57f7f679f92d"
+    },
+    {
+      "bytes": 61,
+      "name": "ruff.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/ruff.txt",
+      "sha256": "38bed8679cc0f64c3a84dac5cea5c9283fef23337082b924e3b979d1d1f700d8"
+    },
+    {
+      "bytes": 1240,
+      "name": "selector_result.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/selector_result.txt",
+      "sha256": "20fc39c9b6dc7f147d1b2dfd4b82f88692c47b63d6876079ea21bb1e9a5de29d"
+    },
+    {
+      "bytes": 1137,
+      "name": "tests.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/tests.txt",
+      "sha256": "6b99d60851ff24ebf20aba915e2f4702b45f6ccefdf2abf2b85c0b2e9254a189"
+    },
+    {
+      "bytes": 4181,
+      "name": "timing_pr_bounded_full.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/timing_pr_bounded_full.txt",
+      "sha256": "f98ed0301844879d34f888857fe3fd90b3c042adf66fd1986988f1a93f40f1aa"
+    },
+    {
+      "bytes": 740,
+      "name": "verdict.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/verdict.txt",
+      "sha256": "a3a41a4ec29429e7e7cc2e00465c18db2560052498acbe0c0896442909467914"
+    },
+    {
+      "bytes": 962,
+      "name": "worktree_after.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/worktree_after.txt",
+      "sha256": "e48bdb5c2ba7bb6340150dfab65033f37bc2f726cd424506563d47cd83876ecb"
+    },
+    {
+      "bytes": 962,
+      "name": "worktree_before.txt",
+      "path": "docs/evidence/canonical_short_binding_miswiring_repair_v1/worktree_before.txt",
+      "sha256": "e48bdb5c2ba7bb6340150dfab65033f37bc2f726cd424506563d47cd83876ecb"
+    }
+  ],
+  "predecessor_pr": 5345,
+  "selector_mode": "PR_BOUNDED_FULL",
+  "timing_target_max_seconds": 840,
+  "timing_wallclock_seconds": 36
+}

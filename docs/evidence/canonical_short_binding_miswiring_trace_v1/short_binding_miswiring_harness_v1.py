@@ -337,13 +337,14 @@ def prove_static_binding() -> dict[str, Any]:
         ),
         "classic_bypass_callers_sampled": classic_bypass_files,
         "non_authoritative_marker": "NON-AUTHORITATIVE" in harness,
-        "selected_consumer_on_canonical_path": ("BacktestEngine(use_execution_pipeline=False)"),
+        "selected_consumer_on_canonical_path": ("BacktestEngine(use_execution_pipeline=True)"),
         "unbound_short_capable_consumer": (
             "BacktestEngine(use_execution_pipeline=True) / ExecutionPipeline"
         ),
         "intended_consumer_if_short_symmetry_claimed": (
             "BacktestEngine(use_execution_pipeline=True) / ExecutionPipeline"
         ),
+        "honor_mapped_short_entry_bound": "honor_mapped_short_entry=True" in wiring,
     }
 
 
@@ -591,11 +592,11 @@ def scenario_09_orchestrator_long_proxy() -> ScenarioResult:
         final_classification=CLS_HEALTHY,
         first_divergence_boundary="NONE",
         scenario_pass=(
-            proof["wiring_use_execution_pipeline_false_count"] >= 2
+            proof["wiring_use_execution_pipeline_true_count"] >= 2
             and proof["wiring_calls_integrated_replay"]
             and trades == 1
         ),
-        notes="Static proof: wiring hardcodes legacy consumer for MV2 path.",
+        notes="Static proof: wiring binds short-capable pipeline consumer for MV2 path.",
     )
 
 
@@ -621,17 +622,19 @@ def scenario_10_orchestrator_short_proxy() -> ScenarioResult:
         trade_count=trades,
         roundtrip_count=trades,
         ledger_count=ledger,
-        final_classification=CLS_WRONG_CONSUMER_BINDING,
-        first_divergence_boundary=(
-            "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=False)"
-        ),
+        final_classification=CLS_ADAPTER_SEMANTIC_MISMATCH,
+        first_divergence_boundary="legacy_engine_signal_semantics",
         scenario_pass=(
             mapped == -1
             and trades == 0
-            and proof["wiring_use_execution_pipeline_true_count"] == 0
+            and proof["wiring_use_execution_pipeline_true_count"] >= 2
+            and proof.get("honor_mapped_short_entry_bound") is True
             and proof["engine_default_use_execution_pipeline"] is True
         ),
-        notes=("Engine default is pipeline=True (short-capable), but MV2 wiring forces False."),
+        notes=(
+            "Direct legacy engine still no-ops flat -1; MV2 wiring now binds pipeline + "
+            "honor_mapped_short_entry for the productive path."
+        ),
     )
 
 
@@ -740,9 +743,12 @@ def scenario_15_capability_mismatch() -> ScenarioResult:
             and legacy_trades == 0
             and pipe_trades >= 1
             and "short" in pipe_sides
-            and proof["wiring_use_execution_pipeline_false_count"] >= 2
+            and proof["wiring_use_execution_pipeline_true_count"] >= 2
         ),
-        notes=f"pipeline_trades={pipe_trades} sides={pipe_sides}",
+        notes=(
+            f"pipeline_trades={pipe_trades} sides={pipe_sides}; "
+            "legacy engine still long-only when explicitly selected."
+        ),
     )
 
 
@@ -790,17 +796,16 @@ def scenario_17_alternate_short_consumer() -> ScenarioResult:
         trade_count=trades,
         roundtrip_count=trades,
         ledger_count=ledger,
-        final_classification=CLS_WRONG_CONSUMER_BINDING,
-        first_divergence_boundary=(
-            "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=False)"
-        ),
+        final_classification=CLS_HEALTHY,
+        first_divergence_boundary="NONE",
         scenario_pass=(
             trades >= 1
             and any(r.get("side") == "short" for r in rows)
             and proof["engine_default_use_execution_pipeline"] is True
-            and proof["wiring_use_execution_pipeline_true_count"] == 0
+            and proof["wiring_use_execution_pipeline_true_count"] >= 2
+            and proof.get("honor_mapped_short_entry_bound") is True
         ),
-        notes=proof["unbound_short_capable_consumer"],
+        notes="Short-capable pipeline consumer is bound on MV2 research wiring path.",
     )
 
 
@@ -1006,15 +1011,15 @@ def build_binding_matrix(proof: dict[str, Any]) -> dict[str, Any]:
             "symbol": "BacktestEngine._run_with_execution_pipeline",
             "direction_domain": ["LONG", "SHORT"],
             "capabilities": PIPELINE_CAPS,
-            "bound_consumer": "UNBOUND on MV2 research path",
+            "bound_consumer": "BOUND on MV2 research path",
             "intended_consumer": "available short-capable consumer",
             "authority": False,
             "symmetry_claimed": True,
             "symmetry_actual": True,
-            "potential_miswiring": True,
+            "potential_miswiring": False,
             "legacy_compat": False,
             "fail_closed": "pipeline risk/order rules",
-            "binding_status": "exists_but_not_selected_by_mv2_wiring",
+            "binding_status": "selected_by_mv2_wiring_post_repair",
         },
         {
             "stage": "fill_trade_roundtrip_ledger",
@@ -1270,10 +1275,16 @@ def build_invariants(results: list[ScenarioResult], proof: dict[str, Any]) -> di
         {
             "id": "INV-06",
             "description": "Consumer capabilities match calling contract for SHORT",
-            "expected": False,
-            "observed": False,
-            "status": "PASS",
-            "notes": "Invariant fails in production binding; harness detects mismatch",
+            "expected": True,
+            "observed": proof["wiring_use_execution_pipeline_true_count"] >= 2
+            and proof.get("honor_mapped_short_entry_bound") is True,
+            "status": "PASS"
+            if (
+                proof["wiring_use_execution_pipeline_true_count"] >= 2
+                and proof.get("honor_mapped_short_entry_bound") is True
+            )
+            else "FAIL",
+            "notes": "Post-repair MV2 binding selects short-capable consumer + honor flag",
         },
         {
             "id": "INV-07",
@@ -1355,7 +1366,7 @@ def build_invariants(results: list[ScenarioResult], proof: dict[str, Any]) -> di
         },
         {
             "id": "INV-18",
-            "description": "Short-capable unbound consumer exists",
+            "description": "Short-capable consumer is bound on MV2 path",
             "expected": True,
             "observed": next(s for s in results if s.scenario_id == "S17").scenario_pass,
             "status": "PASS"
@@ -1405,17 +1416,23 @@ def write_artifacts(results: list[ScenarioResult]) -> dict[str, Path]:
             "harness_id": AUDIT_HARNESS_ID,
             "consumers": {
                 "legacy_BacktestEngine": {
-                    "selected_on_mv2_path": True,
+                    "selected_on_mv2_path": False,
                     "capabilities": LEGACY_CAPS,
                     "binding_site": (
-                        "src/backtest/mv2_research_wiring_v1.py "
-                        f"(use_execution_pipeline=False x{proof['wiring_use_execution_pipeline_false_count']})"
+                        "src/backtest/engine.py explicit use_execution_pipeline=False "
+                        "(contrast / non-MV2); residual long-only semantics"
                     ),
                 },
                 "pipeline_BacktestEngine": {
-                    "selected_on_mv2_path": False,
+                    "selected_on_mv2_path": True,
                     "capabilities": PIPELINE_CAPS,
-                    "binding_site": "UNBOUND (engine default True; wiring never selects)",
+                    "binding_site": (
+                        "src/backtest/mv2_research_wiring_v1.py "
+                        f"(use_execution_pipeline=True "
+                        f"x{proof['wiring_use_execution_pipeline_true_count']}; "
+                        f"honor_mapped_short_entry="
+                        f"{proof.get('honor_mapped_short_entry_bound')})"
+                    ),
                     "proof_scenario": "S12/S15/S17",
                 },
             },
@@ -1496,6 +1513,9 @@ def write_artifacts(results: list[ScenarioResult]) -> dict[str, Path]:
             "mv2_path_forces_legacy_engine": (
                 proof["wiring_use_execution_pipeline_false_count"] >= 2
             ),
+            "mv2_path_binds_pipeline_engine": (
+                proof["wiring_use_execution_pipeline_true_count"] >= 2
+            ),
         },
     )
     summary = {
@@ -1504,10 +1524,11 @@ def write_artifacts(results: list[ScenarioResult]) -> dict[str, Path]:
         "scenarios_total": len(results),
         "scenarios_pass": sum(1 for s in results if s.scenario_pass),
         "scenarios_fail": [s.scenario_id for s in results if not s.scenario_pass],
-        "verdict_letter": "B",
-        "selected_consumer": "legacy_BacktestEngine",
+        "verdict_letter": "B_HISTORICAL_PRE_REPAIR",
+        "selected_consumer": "pipeline_BacktestEngine",
         "short_capable_consumer_exists": True,
-        "short_capable_consumer_bound": False,
+        "short_capable_consumer_bound": True,
+        "honor_mapped_short_entry_bound": proof.get("honor_mapped_short_entry_bound"),
     }
     dump("probe_summary.json", summary)
     return paths
