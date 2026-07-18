@@ -41,7 +41,7 @@
 - **Priority:** 4
 
 ### S6 — Ops SwitchGate primitive still exists
-- **Path:** `ops/gates/switch_gate.step_switch_gate`
+- **Path:** `ops&#47;gates&#47;switch_gate.step_switch_gate`
 - **Risk:** LOW (unwired from Double Play)
 - **Action:** KEEP quarantine; never rewire without Operator-GO
 - **Priority:** 5
