@@ -1,0 +1,26 @@
+=== Core domain batch ===
+91 passed: injection fail-closed + governance guard + quarantine + offline binding
+=== Wiring sample ===
+test_wiring_exposes_canonical_dashboard_display_projection_digest PASSED (90.73s)
+=== Note ===
+surface_b quantity_status=NOT_BOUND assert remains pre-existing per prior audit (unrelated to injection default)
+........                                                                 [ 76%]
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py . [ 78%]
+.......F...                                                              [100%]
+
+=================================== FAILURES ===================================
+E   AssertionError
+/Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1086: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/_pytest/cacheprovider.py:475
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: cache could not write path /Users/frnkhrz/Peak_Trade/.pytest_cache/v/cache/nodeids: [Errno 1] Operation not permitted: '/Users/frnkhrz/Peak_Trade/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv/lib/python3.11/site-packages/_pytest/cacheprovider.py:429
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: cache could not write path /Users/frnkhrz/Peak_Trade/.pytest_cache/v/cache/lastfailed: [Errno 1] Operation not permitted: '/Users/frnkhrz/Peak_Trade/.pytest_cache/v/cache/lastfailed'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py::test_surface_b_pass_cde_remain_partial_v0
+=================== 1 failed, 49 passed, 2 warnings in 1.93s ===================

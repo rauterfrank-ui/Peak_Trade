@@ -53,10 +53,18 @@ Live, Testnet, Orders, or Runtime-Bridge activation.
 - **Disposition:** `TEST_ONLY_INJECTION`.
 - `OfflineDoublePlayScenarioReplayInputV0.allow_test_scope_event_injection` default
   `false` — fail-closed.
-- Each tick must set `scope_event_provenance="TEST_INJECTION"`.
+- Explicit opt-in requires `allow_test_scope_event_injection is True` (exact bool; no
+  string coercion), an offline/test/scenario `execution_surface`, and every tick must
+  carry `scope_event_provenance="TEST_INJECTION"` plus validated
+  `OfflineScenarioTickProvenanceV1` (source_kind, source_id/fixture_id, tick_index,
+  sequence_number, event_time_ms, provenance_version).
+- `build_replay_input_from_testnet_market_input` must not hardcode injection True;
+  missing field / default remains False.
 - Integrated / Backtest / Runtime wiring must not accept unmarked external ScopeEvents
   as SideState authority.
 - Factory: `make_offline_scenario_replay_input_for_tests_v0`.
+- Provenance authorizes test injection only; it must not create Direction, Side, Scope,
+  or Switch decisions.
 
 ### Backtest position feedback
 

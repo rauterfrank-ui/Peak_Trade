@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from dataclasses import replace
 from unittest.mock import patch
 
 import pytest
@@ -35,6 +36,7 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     build_offline_replay_futures_input_snapshot,
     build_master_v2_state_event_stream_validation_input_from_replay,
     compute_master_v2_replay_state_event_projection_digest,
+    make_offline_scenario_tick_provenance_v1,
     project_master_v2_state_event_stream_from_replay,
     project_master_v2_state_events_from_replay_records,
     replay_result_digest_coherent,
@@ -198,13 +200,7 @@ def test_btc_spot_instruments_fail_closed(instrument: str) -> None:
 
 def test_non_monotone_timestamp_fail_closed() -> None:
     ticks = list(build_default_bull_bear_bull_scenario_ticks())
-    ticks[2] = OfflineDoublePlayScenarioTickV0(
-        tick_index=2,
-        timestamp_ms=ticks[1].timestamp_ms,
-        price=103.0,
-        scope_event=ScopeEvent.NOOP,
-        scope_event_provenance="TEST_INJECTION",
-    )
+    ticks[2] = replace(ticks[2], timestamp_ms=ticks[1].timestamp_ms)
     inp = OfflineDoublePlayScenarioReplayInputV0(
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=tuple(ticks),
@@ -216,13 +212,7 @@ def test_non_monotone_timestamp_fail_closed() -> None:
 
 def test_invalid_price_fail_closed() -> None:
     ticks = list(build_default_bull_bear_bull_scenario_ticks())
-    ticks[0] = OfflineDoublePlayScenarioTickV0(
-        tick_index=0,
-        timestamp_ms=ticks[0].timestamp_ms,
-        price=math.nan,
-        scope_event=ScopeEvent.UPSCOPE_CONFIRMED,
-        scope_event_provenance="TEST_INJECTION",
-    )
+    ticks[0] = replace(ticks[0], price=math.nan)
     inp = OfflineDoublePlayScenarioReplayInputV0(
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=tuple(ticks),
@@ -633,6 +623,13 @@ def test_scenario_f_conformance_short_winning_systemic_kill_all_blocks_both_side
         scope_event=ScopeEvent.KILL_ALL_REQUIRED,
         safety_decision_allowed=False,
         scope_event_provenance="TEST_INJECTION",
+        tick_provenance=make_offline_scenario_tick_provenance_v1(
+            source_kind="offline_scenario_fixture",
+            source_id="scenario_f_kill_all",
+            tick_index=12,
+            event_time_ms=1_700_000_000_000 + 12 * 60_000,
+            sequence_number=12,
+        ),
     )
     result = _run_ticks(favorable_short_ticks + (kill_tick,))
     _assert_replay_executed(result)

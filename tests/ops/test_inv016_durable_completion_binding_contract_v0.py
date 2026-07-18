@@ -194,6 +194,8 @@ def _valid_market_input() -> TestnetCompletionPathMarketInputV0:
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=build_default_bull_bear_bull_scenario_ticks(),
         source_run_id="inv016-durable-completion-binding",
+        allow_test_scope_event_injection=True,
+        execution_surface="offline_replay",
     )
 
 

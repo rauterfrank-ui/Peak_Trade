@@ -691,7 +691,9 @@ def default_minimal_master_v2_state_switch_event_records(
             side_state_before=SideState.LONG_ACTIVE.value,
             side_state_after=SideState.LONG_ACTIVE.value,
             scope_state_digest=scope_state_digest,
-            transition_allowed=False,
+            # CHOP binds as scope policy only; policy application is allowed,
+            # SideState remains unchanged (no Direction/Switch authority).
+            transition_allowed=True,
         ),
     )
 

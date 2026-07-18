@@ -83,6 +83,8 @@ def _valid_market_input() -> TestnetCompletionPathMarketInputV0:
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=build_default_bull_bear_bull_scenario_ticks(),
         source_run_id="gap004-digest-wiring",
+        allow_test_scope_event_injection=True,
+        execution_surface="offline_replay",
     )
 
 
@@ -104,6 +106,7 @@ def _replay_result() -> OfflineDoublePlayScenarioReplayResultV0:
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision="gap004-testnet-wiring-v0",
             allow_test_scope_event_injection=True,
+            execution_surface="offline_replay",
         )
     )
     assert replay.replay_pass, replay.fail_reasons
