@@ -35,4 +35,4 @@ Until that GO exists, Integrated correctly remains fail-closed (`NONE`).
 
 ## Suitability consumer note (not side authority)
 
-`suitability_binding_v1.py` ENTRY impulse “agrees only with LONG DA” is a **consumer bias** for agreement scoring when an ENTRY event is present. It does **not** emit or invent `entry_side=LONG` for Bollinger.
+`suitability_binding_v1.py` ENTRY impulse "agrees only with LONG DA" is a **consumer bias** for agreement scoring when an ENTRY event is present. It does **not** emit or invent `entry_side=LONG` for Bollinger.

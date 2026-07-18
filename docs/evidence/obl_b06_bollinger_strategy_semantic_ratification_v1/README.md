@@ -38,7 +38,7 @@ None. No Strategy-Semantic-Contract activation; no adapter mutation.
 
 ## Tests added
 
-`tests/backtest/test_obl_b06_bollinger_strategy_semantic_ratification_v1.py` — locks blocker / NONE / EXIT / path-split invariants.
+`tests&#47;backtest&#47;test_obl_b06_bollinger_strategy_semantic_ratification_v1.py` — locks blocker / NONE / EXIT / path-split invariants.
 
 ## Next recommended action
 

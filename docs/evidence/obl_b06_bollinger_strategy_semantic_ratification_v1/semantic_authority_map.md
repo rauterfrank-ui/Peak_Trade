@@ -4,7 +4,7 @@
 
 | Layer | Bollinger status | Authority |
 |-------|------------------|-----------|
-| Mathematical raw signal | **CONFIRMED** `{-1,0,+1}` series | `src/strategies/bollinger.py::generate_signals` |
+| Mathematical raw signal | **CONFIRMED** `{-1,0,+1}` series | `src&#47;strategies&#47;bollinger.py::generate_signals` |
 | Strategy Intent (LONG/SHORT/FLAT) | **NOT RATIFIED** for LONG/SHORT | `NONE` — CP02 / Decision C |
 | Desired Entry Side carrier | **FAIL-CLOSED `NONE`** | Adapter `_resolve_entry_side_carrier_v1` (only TF ratified) |
 | System / Bull-Bear state | Separate; unchanged | Master V2 / Double Play |
