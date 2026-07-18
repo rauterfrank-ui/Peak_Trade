@@ -1,0 +1,20 @@
+CANONICAL_DIRECTION_OWNER=trading.master_v2.double_play_state.transition_state
+CANONICAL_COMPOSITION_OWNER=trading.master_v2.double_play_composition_matrix_v1.evaluate_double_play_composition_matrix_v1
+STRATEGY_SIGNAL_OWNER=strategies.bollinger.BollingerBandsStrategy.generate_signals
+EVENT_SEMANTIC_OWNER=strategies.bollinger_event_semantic_contract_v1.classify_bollinger_raw_signal_event_v1
+ORDER_INTENT_OWNER=governance.canonical_order_intent_v1.build_canonical_order_intent_v1
+ENTRY_SIDE_CURRENT=NONE
+RECOMMENDED_CONTRACT=OPTION_D
+RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED
+LIVE_AUTHORIZED=false
+ORDERS=false
+
+--- symbol presence ---
+228:def transition_state(
+541:def evaluate_double_play_composition_matrix_v1(
+99:INTEGRATION_STATUS_BOUND_NOT_ACTIVATED = "BOUND_NOT_ACTIVATED"
+452:        integration_status=INTEGRATION_STATUS_BOUND_NOT_ACTIVATED,
+499:        integration_status=INTEGRATION_STATUS_BOUND_NOT_ACTIVATED,
+
+--- OBL_B07 SSOT ---
+{'OPERATOR_OPTION': 'OPTION_EVENT_ONLY', 'ENTRY_SIDE': 'NONE', 'STRATEGY_DIRECTION': 'NONE', 'CLASSIC_LONG_IS_CANONICAL': False, 'CLASSIC_LONG_PROPAGATES_TO_INTEGRATED': False, 'LIVE_AUTHORIZED': False, 'ORDERS_ENABLED': False, 'BOLLINGER_SIDE_ACTIVATED': False}

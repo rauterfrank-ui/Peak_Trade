@@ -1,0 +1,26 @@
+DATE_UTC=2026-07-18T19:48:48Z
+BRANCH=docs/option-d-final-closeout-v1
+HEAD=7d1d822c0808915d38a1f8556ac715133e070c7a
+ORIGIN_MAIN=7d1d822c0808915d38a1f8556ac715133e070c7a
+BASE_SHA=7d1d822c0808915d38a1f8556ac715133e070c7a
+STASH_BEFORE=9dee9fcdfc2800d5051d82fa85a329d19ae3d15e0e896220ac9cafabfcb30c30
+FOREIGN_BEFORE=e1f582650b0acbadc3bf3d776db8547b3d1fb836cd3c934e477fe539891ed28f
+
+WORKTREE:
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/option_d_final_closeout_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+
+STASHES:
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework
+
+FOREIGN_UNTRACKED:
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/option_d_final_closeout_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
