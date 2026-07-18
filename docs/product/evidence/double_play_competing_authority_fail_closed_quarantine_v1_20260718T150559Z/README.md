@@ -22,5 +22,5 @@
 
 ## Audit source
 
-`docs/product/evidence/read_only_double_play_authority_and_chop_binding_forensic_audit_v1_20260718T150045Z/`
+`docs&#47;product&#47;evidence&#47;read_only_double_play_authority_and_chop_binding_forensic_audit_v1_20260718T150045Z&#47;`
 EOF

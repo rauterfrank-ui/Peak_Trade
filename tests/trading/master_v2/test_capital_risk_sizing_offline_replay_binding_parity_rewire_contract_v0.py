@@ -205,7 +205,8 @@ def test_scenario_replay_tick_capital_risk_sizing_binding_no_shortcut_v0() -> No
             selected_future_id=_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision="capital-risk-sizing-binding-parity-v0",
-        allow_test_scope_event_injection=True,)
+            allow_test_scope_event_injection=True,
+        )
     )
     assert result.replay_pass, result.fail_reasons
     assert_scenario_replay_zero_order_boundary_v0(result)

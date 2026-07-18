@@ -248,7 +248,8 @@ def test_default_scenario_replay_still_passes_v0() -> None:
             selected_future_id=_INSTRUMENT,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             correlation_id_prefix="reversal-prep-default-scenario-v0",
-        allow_test_scope_event_injection=True,)
+            allow_test_scope_event_injection=True,
+        )
     )
     assert result.replay_pass is True
 

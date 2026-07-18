@@ -7,5 +7,5 @@ backtest loop → capture feedback(LONG_*) → apply overwrite side_state [BYPAS
 integrated → RuntimeScopeState → generator → transition_state [CANONICAL]
 ```
 
-Source audit: `read_only_double_play_authority_and_chop_binding_forensic_audit_v1_20260718T150045Z/caller_graph.md`
+Source audit: `read_only_double_play_authority_and_chop_binding_forensic_audit_v1_20260718T150045Z&#47;caller_graph.md`
 EOF

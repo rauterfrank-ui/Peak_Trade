@@ -2704,7 +2704,8 @@ def build_surface_p_fixture_scenario_envelope_v0(
                 selected_future_id=fixture.instrument_id,
                 ticks=build_default_bull_bear_bull_scenario_ticks(),
                 source_revision=f"surface-p-{fixture.fixture_id}",
-        allow_test_scope_event_injection=True,)
+                allow_test_scope_event_injection=True,
+            )
         )
         if not replay.replay_pass:
             return None
@@ -2786,7 +2787,8 @@ def _surface_p_scenario_replay_tick_for_fixture_v0(
             selected_future_id=fixture.instrument_id,
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision=f"surface-p-{fixture.fixture_id}",
-        allow_test_scope_event_injection=True,)
+            allow_test_scope_event_injection=True,
+        )
     )
     if not replay.replay_pass:
         return None
