@@ -1,0 +1,47 @@
+# READ_ONLY_SCOPE_EVENT_NOOP_ROOT_CAUSE_AUDIT_V1 — command log
+
+## Repo setup
+git fetch origin
+git checkout main
+git pull --ff-only origin main
+test "$(git rev-parse HEAD)" = "a55c4000f33269a98107fd1294b1c9ba82433cad"
+git checkout -b audit/scope-event-noop-root-cause-v1
+
+## Environment / worktree
+git rev-parse HEAD
+git branch --show-current
+git status -sb
+git stash list
+# -> environment.txt, worktree_before.txt, worktree_after.txt
+
+## Probe (evidence-only)
+PYTHONPATH=src:. python3 docs/evidence/scope_event_noop_root_cause_audit_v1/audit_probe_v1.py
+# -> probe_run_log.txt, probe_summary.json, bearish_bar_samples.csv
+
+## Ruff (new audit python only)
+/Users/frnkhrz/.pyenv/versions/3.11.14/bin/python -m ruff format docs/evidence/scope_event_noop_root_cause_audit_v1/audit_probe_v1.py
+/Users/frnkhrz/.pyenv/versions/3.11.14/bin/python -m ruff format --check docs/evidence/scope_event_noop_root_cause_audit_v1/audit_probe_v1.py
+/Users/frnkhrz/.pyenv/versions/3.11.14/bin/python -m ruff check docs/evidence/scope_event_noop_root_cause_audit_v1/audit_probe_v1.py
+# -> ruff.txt (PASS)
+
+## Domain tests (70; prior post-5337 set)
+PYTHONPATH=src:. /Users/frnkhrz/.pyenv/versions/3.11.14/bin/python -m pytest \
+  tests/backtest/test_canonical_chain_zero_trade_blocker_v1.py \
+  tests/backtest/test_mv2_composition_directional_asymmetry_wiring_repair_v1.py \
+  tests/backtest/test_obl_b07_bollinger_event_only_semantic_contract_v1.py \
+  tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py \
+  tests/trading/master_v2/test_double_play_composition_matrix_v1.py \
+  -q --tb=line
+# -> test_results.txt (70 passed)
+
+## Static authority / owner scan
+rg -n "def generate_deterministic_scope_event|def transition_state|def evaluate_double_play_composition_matrix_v1|up_distance=120" \
+  src/trading/master_v2/deterministic_scope_event_generator_v1.py \
+  src/trading/master_v2/double_play_state.py \
+  src/trading/master_v2/double_play_composition_matrix_v1.py \
+  src/backtest/mv2_research_wiring_v1.py \
+  src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+# -> authority_scan_raw.txt / authority_scan.txt
+
+## Not run
+# no commit / no push / no PR / no productive mutation / no live / no orders

@@ -1,0 +1,21 @@
+MEMBER=okx:linear_perpetual:1INCH:USDT:USDT:perp
+SOURCE=docs/evidence/scope_event_noop_root_cause_audit_v1/probe_summary.json
+
+event_counts:
+  noop=2893
+
+noop_reason_counts:
+  threshold_miss_no_candidate=2893
+  threshold_miss_count=2893
+  missing_intermediate=60   # warmup / pre-decision bars (no intermediate yet); not generator noop
+
+blocked_reasons_observed=0
+invalid_input_count=0
+missing_context_count=0
+state_suppressed_count=0
+confirmation_miss_count=0   # confirmation never entered; no candidate to miss
+bull_event_count=0
+bear_event_count=0
+
+DOMINANT_NOOP_REASON=threshold_miss_no_candidate
+INTERPRETATION=selected_kind=None because current_price never crosses absolute thresholds built from up_distance=120

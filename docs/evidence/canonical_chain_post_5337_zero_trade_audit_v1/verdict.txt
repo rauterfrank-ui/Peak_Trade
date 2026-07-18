@@ -1,0 +1,24 @@
+STATUS=PASS
+VERDICT=Post-#5337 panel sample is not zero-trade; remaining Strategy-ENTRY fail is scope_event=noop freezing SideState at LONG_ARMED so SHORT composition cannot enter.
+BASE_SHA=a55c4000f33269a98107fd1294b1c9ba82433cad
+BRANCH=audit/canonical-chain-post-5337-zero-trade-v1
+PRODUCTIVE_FILES_CHANGED=false
+RAW_SIGNAL_NONZERO=true
+MARKET_CONTEXT_SIGNAL_PRESERVED=true
+BULL_STATE_COUNT=23144
+BEAR_STATE_COUNT=0
+NEUTRAL_STATE_COUNT=0
+LONG_COMPOSITION_COUNT=1356
+SHORT_COMPOSITION_COUNT=210
+FAIL_CLOSED_COUNT=21578
+FIRST_VALUE_LOSS_BOUNDARY=double_play_entry_exit_policy_v0<-transition_state<-deterministic_scope_event_generator(noop)
+BLOCKER_CLASS=STATE_TRANSITION
+ENTRY_SIDE_NONE=true
+SECOND_AUTHORITY_FOUND=false
+CLASSIC_ENGINE_BYPASS_FOUND=false
+RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED
+LIVE_AUTHORIZED=false
+ORDERS=false
+PANEL_SAMPLE_TRADES=179
+ZERO_TRADE_REFUTED_ON_SAMPLE=true
+NEXT_RECOMMENDED_ACTION=READ_ONLY_SCOPE_EVENT_NOOP_ROOT_CAUSE_AUDIT_V1: isolate why deterministic_scope_event_generator emits only noop on economic-research bars (distances/confirmation/CMC fields) so transition_state can reach SHORT_ARMED symmetrically — no strategy side activation, no second authority, no runtime bridge.

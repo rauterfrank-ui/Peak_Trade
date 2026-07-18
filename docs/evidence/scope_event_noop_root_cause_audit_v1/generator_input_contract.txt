@@ -1,0 +1,35 @@
+ScopeEventGeneratorInputV1 fields (productive research path) and binding status
+
+instrument_id                 BOUND  (wiring / CANONICAL_INSTRUMENT_ID path)
+trading_epoch                 BOUND  (bar index / epoch)
+market_context_id             BOUND  (CMC.context_id)
+market_context_digest         BOUND  (CMC.input_digest)
+current_scope                 BOUND  (sequence_state.existing_scope / initialized scope)
+current_direction_state       BOUND  (from side_state via scope_direction_from_side_state_v1; LONG under LONG_ARMED)
+reference_price               BOUND  (CMC.mark_price)
+current_price                 BOUND  (replay_input.current_price = CMC.mark_price)  DYNAMIC_PER_BAR=true
+trailing_anchor               BOUND  (runtime_scope.anchor_price or scope.trailing_anchor)
+up_distance                   BOUND  CONSTANT=120.0 from _build_replay_input           DYNAMIC_PER_BAR=false
+adverse_exit_distance         BOUND  CONSTANT=60.0 from _build_replay_input           DYNAMIC_PER_BAR=false
+reversal_distance             BOUND  CONSTANT=90.0 from _build_replay_input           DYNAMIC_PER_BAR=false
+confirmation_epochs           BOUND  CONSTANT=2 from _build_replay_input
+confirmation_state            BOUND  trailed via sequence_state.scope_confirmation_state
+cooldown_state                BOUND  trailed via sequence_state.scope_cooldown_state
+cooldown_remaining_epochs     BOUND
+data_integrity_status         BOUND  from CMC
+clock_trust_status            BOUND  from CMC
+bar_finality_status           BOUND  from CMC
+policy_version                BOUND  from policies.scope_event_generator
+
+INPUTS_COMPLETE=true
+MISSING_NONE_NAN_FOR_CORE_PRICE_FIELDS=false_on_hooked_bars
+DISTANCE_UNIT=absolute_price_units (NOT percent / NOT bps / NOT ATR-normalized)
+SOURCE_OF_DISTANCES=hardcoded_wiring_constants (NOT CMC feature; NOT dynamic_scope_rules band width)
+SOURCE_OF_PRICE=canonical_market_context_mark (NOT adapter fallback for mark)
+PRIOR_MARK_FOR_PRICE_PATH=sequence_state.prior_mark_price (post-#5337 trail) -> PRICE_PATH_DYNAMIC=true
+
+POLICY_HARD_MAX (wiring defaults; does not block 120):
+  hard_max_scope_distance=2000.0
+  hard_max_adverse_distance=900.0
+  hard_max_reversal_distance=1200.0
+  -> policy_blocks not the noop cause on research bars

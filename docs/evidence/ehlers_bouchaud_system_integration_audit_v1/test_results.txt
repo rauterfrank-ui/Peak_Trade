@@ -1,0 +1,2 @@
+RECOVERY_NOTE=Original test_results.txt not byte-recoverable from transcripts.
+STATUS=NOT_RERUN_IN_RECOVERY

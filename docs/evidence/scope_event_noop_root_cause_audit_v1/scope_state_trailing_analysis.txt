@@ -1,0 +1,32 @@
+SCOPE STATE / TRAILING
+
+Runtime / sequence state on research path:
+  build_initial_mv2_integrated_replay_bar_sequence_state_v1 seeds:
+    side_state=LONG_ARMED
+    direction_state=LONG_ARMED
+    scope_direction_state=LONG
+    confirmation_state trailed thereafter via sequence_state updates
+
+Per-bar:
+  existing_scope / scope_confirmation_state / scope_cooldown_state / side_state PASSED FORWARD (trailed)
+  Distances NOT trailed as adaptive values — re-injected as constants 120/60/90 each bar
+
+trailing_anchor:
+  taken from runtime_scope_pre.anchor_price when >0 else current_scope.trailing_anchor
+  Samples show trailing_anchor≈0.3754 while mark moves in 0.37–0.39 range (limited trail movement)
+  Even perfect per-bar trailing cannot bridge a 120 absolute gap on sub-1.0 marks
+
+Can noop be "correct" because already LONG_ARMED?
+  Generator does not suppress candidates due to LONG_ARMED; it emits NOOP when thresholds miss.
+  transition_state(NOOP) keeps SideState unchanged — correct given noop.
+  LONG_ARMED seed explains why long trades can still occur without upscope events;
+  it does not explain why generator never emits downscope candidates.
+
+Where bearish ScopeEvent should arise but does not:
+  When mark moves adversely vs trailing_anchor by >= up_distance (absolute),
+  LONG direction should match DOWNSCOPE (and possibly ADVERSE_EXIT).
+  On research bars the required absolute move never occurs → selected_kind=None → NOOP.
+
+SCOPE_STATE_TRAILED=true (confirmation/side/scope objects)
+DISTANCE_STATE_INSTRUMENT_RELATIVE=false
+TRAILING_IS_ROOT_CAUSE=false

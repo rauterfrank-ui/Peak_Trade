@@ -1,0 +1,38 @@
+FIRST_VALUE_LOSS_BOUNDARY (first Strategy ENTRY bar on eval instrument 1INCH)
+
+member=okx:linear_perpetual:1INCH:USDT:USDT:perp
+bar_index=2305
+bar_timestamp=2024-08-05 01:00:00+00:00
+
+upstream_ok:
+  raw_strategy_signal=+1
+  agreement.event_kind=ENTRY
+  agreement.entry_side=NONE
+  price_path=(0.2725, 0.2505)  # market down-path; #5337 prior_mark working
+  DA: bull=observe; bear=confirmed
+  suitability: bull=pass; bear=pass
+  composition: short_selected / selected_side=short
+
+drop:
+  next_side_state=long_armed  (never left initial seed; scope_event=noop all bars)
+  entry_exit decision_outcome=no_action
+  entry_eligibility=not_applicable
+  mapped_position_signal=0
+  reason_codes=["no_action"]  # block taxonomy also counts selected_opposite_short on instrument
+
+OWNER_AT_DROP:
+  trading.master_v2.double_play_entry_exit_policy_v0.evaluate_double_play_entry_exit_policy_v0
+  (consumer of composition.selected_side + direction_state from transition_state)
+
+ROOT_CAUSE_UPSTREAM:
+  trading.master_v2.deterministic_scope_event_generator_v1 → event_type=noop exclusively
+  ⇒ double_play_state.transition_state cannot emit SHORT_ARMED
+  ⇒ SHORT composition cannot become ENTER_SHORT
+
+BLOCKER_CLASS=STATE_TRANSITION
+(secondary consumer label: ENTRY_EXIT; not STRATEGY / not SUITABILITY after #5337)
+
+BOUNDARY_REF=
+  src/trading/master_v2/double_play_entry_exit_policy_v0.py::evaluate_double_play_entry_exit_policy_v0
+  <- frozen SideState from src/trading/master_v2/double_play_state.py::transition_state
+  <- scope_event=noop from src/trading/master_v2/deterministic_scope_event_generator_v1.py

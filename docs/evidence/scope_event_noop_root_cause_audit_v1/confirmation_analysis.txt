@@ -1,0 +1,27 @@
+CONFIRMATION ANALYSIS
+
+Required for bull_scope / bear_scope confirmed events:
+  - candidate kind selected (UPSCOPE or DOWNSCOPE) via threshold match
+  - confirmation_state.candidate_kind sticky across epochs
+  - candidate_count >= confirmation_epochs (wiring: 2)
+  - not blocked by cooldown for confirmed non-adverse events
+
+Observed on 1INCH research hooked bars:
+  BULL_CONFIRMATION_PASS_COUNT=0
+  BEAR_CONFIRMATION_PASS_COUNT=0
+  confirmation_miss_count=0
+  INTERPRETATION=Confirmation never evaluated a live candidate; selected_kind was always None.
+
+Is noop due to:
+  kein Kandidat              YES (dominant)
+  Kandidat nicht bestätigt   NO (no candidate formed)
+  fehlender Context          NO
+  invalid input              NO
+  fail-closed fallback       NO (policy/gates not firing scope_blocked)
+  state already satisfied    NO (noop is not "already armed" suppression inside generator)
+
+Warmup / history:
+  confirmation_epochs=2 available; sequence trails confirmation_state.
+  Warmup missing_intermediate=60 bars lack intermediate entirely (pre-replay decision), unrelated to threshold miss on 2893 hooked bars.
+
+Conclusion: Confirmation is not the first loss boundary. Threshold geometry fails first.
