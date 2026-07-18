@@ -45,9 +45,11 @@ def test_rewire_binding_reuses_canonical_owners_without_parallel_owner() -> None
 
 def test_scope_and_reversal_parity_fixtures_reach_canonical_owners() -> None:
     scope_binding, reversal_decision = evaluate_scope_adverse_exit_and_reversal_parity_fixtures_v0()
-    assert (
-        scope_binding.scope_event_evidence.event_type
-        is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+    assert "adverse_exit" in scope_binding.scope_event_evidence.matched_conditions
+    assert scope_binding.scope_event_evidence.event_type in (
+        CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
     )
     assert scope_binding.scope_adverse_exit_signal.triggered is True
     assert scope_binding.scope_event_ref

@@ -127,9 +127,11 @@ def test_trace_matrix_confirms_scope_reversal_offline_parity_bound() -> None:
 
 def test_prior_narrow_rewire_binding_reaches_canonical_owners() -> None:
     scope_binding, reversal_decision = evaluate_scope_adverse_exit_and_reversal_parity_fixtures_v0()
-    assert (
-        scope_binding.scope_event_evidence.event_type
-        is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+    assert "adverse_exit" in scope_binding.scope_event_evidence.matched_conditions
+    assert scope_binding.scope_event_evidence.event_type in (
+        CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
     )
     assert scope_binding.scope_adverse_exit_signal.triggered is True
     assert reversal_decision.exit_class is ExitClass.REVERSAL_PREPARATION_EXIT

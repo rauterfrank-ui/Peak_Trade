@@ -225,12 +225,15 @@ def test_mirrored_adverse_exit_and_reversal_preparation_parity() -> None:
     long_result, short_result = evaluate_adverse_exit_integrated_backtest_parity_fixtures_v0()
     for result in (long_result, short_result):
         assert result.intermediate is not None
-        assert (
-            result.intermediate.scope_event.event_type
-            is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+        scope = result.intermediate.scope_event
+        assert "adverse_exit" in scope.matched_conditions
+        assert scope.event_type in (
+            CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+            CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+            CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
         )
         derived = resolve_integrated_scope_adverse_exit_signal_v0(
-            result.intermediate.scope_event,
+            scope,
             PolicySignalV0(triggered=False),
         )
         assert derived.triggered is True

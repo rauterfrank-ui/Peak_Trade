@@ -124,13 +124,21 @@ def evaluate_scope_adverse_exit_and_reversal_parity_fixtures_v0(
         raise ValueError("scope event binding violated non-authority boundary")
     if scope_binding.scope_event_effect != SCOPE_EVENT_EFFECT_BOUND_OFFLINE:
         raise ValueError("scope event effect must remain offline-bound")
-    if (
-        scope_binding.scope_event_evidence.event_type
-        is not CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
-    ):
-        raise ValueError("adverse scope fixture must reach ADVERSE_EXIT_CANDIDATE")
     if not scope_binding.scope_adverse_exit_signal.triggered:
         raise ValueError("adverse exit signal must be triggered in fixture")
+    _matched = scope_binding.scope_event_evidence.matched_conditions
+    if "adverse_exit" not in _matched:
+        raise ValueError("adverse scope fixture must match adverse_exit condition")
+    _etype = scope_binding.scope_event_evidence.event_type
+    if _etype not in (
+        CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CANDIDATE,
+        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED,
+    ):
+        raise ValueError(
+            "adverse scope fixture must keep adverse dimension "
+            "(ADVERSE_EXIT_CANDIDATE or nested DOWNSCOPE_*)"
+        )
 
     reversal_decision = evaluate_scenario_reversal_preparation_for_fixture_v0(
         instrument_id=instrument_id,

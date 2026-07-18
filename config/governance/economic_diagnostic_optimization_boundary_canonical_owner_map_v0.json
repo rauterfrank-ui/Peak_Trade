@@ -178,6 +178,20 @@
         "tests/research/test_double_play_composition_narrow_reuse_first_rewire_v0.py"
       ]
     },
+    "ADVERSE_EXIT_DOWNSCOPE_DUAL_DIMENSION_RESEARCH_FIXTURE_ALIGN": {
+      "path_prefixes": [
+        "scripts/research/adverse_exit_and_reversal_preparation_backtest_parity_narrow_rewire_v0.py",
+        "scripts/research/adverse_scope_exit_reversal_preparation_narrow_reuse_first_rewire_v0.py",
+        "scripts/research/scope_adverse_exit_and_reversal_preparation_narrow_reuse_first_rewire_v0.py"
+      ],
+      "path_globs": [
+        "tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_narrow_rewire_v0.py",
+        "tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py",
+        "tests/research/test_adverse_scope_exit_reversal_preparation_narrow_reuse_first_rewire_v0.py",
+        "tests/research/test_scope_adverse_exit_and_reversal_preparation_narrow_reuse_first_rewire_v0.py",
+        "tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py"
+      ]
+    },
     "DATA_BINDING_REPAIR": {
       "path_prefixes": [
         "src/research/offline_source_evidence_",

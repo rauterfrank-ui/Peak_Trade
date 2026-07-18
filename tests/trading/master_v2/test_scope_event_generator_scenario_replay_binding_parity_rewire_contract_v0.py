@@ -142,7 +142,9 @@ def test_scenario_adverse_exit_uses_canonical_generator_v0() -> None:
             reversal_distance=4.0,
         )
     )
-    assert binding.scope_event_evidence.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+    # Nested adverse+downscope: SM event is DOWNSCOPE_*; PolicySignal still adverse.
+    assert binding.scope_event_evidence.event_type is CanonicalScopeEventType.DOWNSCOPE_CANDIDATE
+    assert ScopeCandidateKind.ADVERSE_EXIT.value in binding.scope_event_evidence.matched_conditions
     assert binding.scope_adverse_exit_signal.triggered is True
     assert scope_event_binding_non_authority_boundary_ok_v0(binding)
 
