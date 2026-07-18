@@ -1180,10 +1180,33 @@ def assert_capital_risk_sizing_non_authority_boundary_v0(
     assert envelope.runtime_effect == "NONE"
     if envelope.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE:
         assert envelope.risk_sizing_ref
+        # Offline CRS binding yields a canonical final quantity status; NOT_BOUND
+        # is reserved for unbound (risk_sizing_effect=NONE) paths.
+        assert envelope.quantity_status in {"PASS", "REDUCE", "BLOCK"}
     assert envelope.risk_sizing_effect in {
         RISK_SIZING_EFFECT_NONE,
         RISK_SIZING_EFFECT_BOUND_OFFLINE,
     }
+
+
+def assert_surface_p_integrated_envelope_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    """Route Surface-P integrated envelopes by offline binding effects only.
+
+    Intentionally CRS-/order-intent-bound offline envelopes keep non-authority
+    invariants (no runtime/execution) while accepting PASS|REDUCE|BLOCK quantity.
+    Truly unbound envelopes remain under the strict generic NOT_BOUND contract.
+    """
+    if envelope.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE:
+        assert_capital_risk_sizing_non_authority_boundary_v0(envelope)
+        if envelope.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE:
+            assert_canonical_order_intent_non_authority_boundary_v0(envelope)
+        return
+    if envelope.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE:
+        assert_canonical_order_intent_non_authority_boundary_v0(envelope)
+        return
+    assert_non_authority_boundary_v0(envelope)
 
 
 def assert_canonical_order_intent_non_authority_boundary_v0(
@@ -3281,7 +3304,7 @@ def build_surface_p_fixture_integrated_envelope_v0(
     if result is None:
         return None
     envelope = extract_integrated_parity_envelope_v0(result)
-    assert_non_authority_boundary_v0(envelope)
+    assert_surface_p_integrated_envelope_non_authority_boundary_v0(envelope)
     return envelope
 
 
