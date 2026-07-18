@@ -84,14 +84,14 @@ bars -> bind_bar_for_mv2_wiring_v1 -> CanonicalMarketContextV1
 
 ### Symbol anchors
 
-| Symbol | Path |
-|---|---|
-| Strategy Signal Producer | `src&#47;backtest&#47;strategy_signal_binding_v1.py:1199` `execute_configured_strategy_signal_series_v1` |
-| Canonical Market Context | `src&#47;trading&#47;master_v2&#47;canonical_market_context_v1.py:467` `bind_canonical_market_context_event` |
-| Integrated Offline Orchestrator | `src&#47;trading&#47;master_v2&#47;integrated_offline_trading_logic_replay_v1.py:900` `run_integrated_offline_trading_logic_replay_v1` |
-| Classic Backtest Engine | `src&#47;backtest&#47;engine.py:498` `BacktestEngine.run_realistic` |
-| Runtime Bridge | `src&#47;trading&#47;master_v2&#47;canonical_core_runtime_integration_bridge_v0.py:459` `run_canonical_core_runtime_integration_bridge_v0` |
-| Productive wiring owner | `src&#47;backtest&#47;mv2_research_wiring_v1.py:1921` `run_mv2_research_backtest_wiring_v1` |
+| Symbol | Path | Line | Symbol name |
+|---|---|---:|---|
+| Strategy Signal Producer | `src/backtest/strategy_signal_binding_v1.py` | 1199 | `execute_configured_strategy_signal_series_v1` |
+| Canonical Market Context | `src/trading/master_v2/canonical_market_context_v1.py` | 467 | `bind_canonical_market_context_event` |
+| Integrated Offline Orchestrator | `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` | 900 | `run_integrated_offline_trading_logic_replay_v1` |
+| Classic Backtest Engine | `src/backtest/engine.py` | 498 | `BacktestEngine.run_realistic` |
+| Runtime Bridge | `src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py` | 459 | `run_canonical_core_runtime_integration_bridge_v0` |
+| Productive wiring owner | `src/backtest/mv2_research_wiring_v1.py` | 1921 | `run_mv2_research_backtest_wiring_v1` |
 
 ### Legacy &#47; scenario &#47; registry &#47; walkforward &#47; sweep &#47; portfolio
 
