@@ -2037,6 +2037,31 @@ def bind_backtest_bar_four_way_parity_lane_v0() -> ParityDecisionEnvelopeV0 | No
     return None
 
 
+def build_surface_p_four_way_smoke_integrated_envelope_v0(
+    *,
+    instrument_id: str,
+    trading_epoch: int,
+    context_reference: str,
+) -> ParityDecisionEnvelopeV0:
+    """Build the integrated smoke envelope for ``evaluate_surface_p_four_way_parity_v0``.
+
+    Uses the same CHOP_GUARD scenario-matrix evaluation that the four-way harness
+    binds as its scenario lane, so composition alignment has a single source of
+    truth. Offline / non-authority only; does not activate runtime or orders.
+    """
+    matrix = evaluate_scenario_matrix_for_side_state_v0(
+        side_state=SideState.CHOP_GUARD_BLOCK,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+    )
+    if matrix.composition_status is not CompositionStatus.CHOP_GUARD_BLOCK:
+        raise ValueError(
+            "surface_p_four_way_smoke_integrated_envelope_requires_chop_guard_composition"
+        )
+    return extract_scenario_matrix_parity_envelope_v0(matrix)
+
+
 def evaluate_surface_p_four_way_parity_v0(
     *,
     instrument_id: str,

@@ -1,0 +1,316 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 1 item
+
+tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py F [100%]
+
+=================================== FAILURES ===================================
+______________ test_surface_p_four_way_parity_smoke_assessment_v0 ______________
+tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py:191: in test_surface_p_four_way_parity_smoke_assessment_v0
+    assert assessment.integrated_scenario_composition_aligned is True
+E   AssertionError: assert False is True
+E    +  where False = FullSystemFourWayParityAssessmentV0(integrated_lane_bound=True, scenario_lane_bound=True, backtest_lane_bound=True, ru...nfirmed=True, four_way_parity_rewire_bound=False, fail_closed_reasons=('integrated_scenario_composition_not_aligned',)).integrated_scenario_composition_aligned
+------------------------------ Captured log call -------------------------------
+WARNING  src.core.config_registry:config_registry.py:159 ConfigRegistry: [strategy.*] blocks not listed in strategies.available: ['breakout_basic', 'vol_regime_basic', 'breakout', 'vol_regime_filter', 'rsi_reversion_v1', 'breakout_v1', 'composite', 'portfolio_phase40_example', 'rsi_reversion_btc_conservative', 'rsi_reversion_btc_moderate', 'rsi_reversion_btc_aggressive', 'rsi_reversion_eth_conservative', 'rsi_reversion_eth_moderate', 'rsi_reversion_eth_aggressive', 'ma_trend_btc_conservative', 'ma_trend_btc_moderate', 'ma_trend_btc_aggressive', 'trend_following_eth_conservative', 'trend_following_eth_moderate', 'trend_following_eth_aggressive', 'armstrong_cycle', 'el_karoui_vol_model']
+=========================== short test summary info ============================
+FAILED tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py::test_surface_p_four_way_parity_smoke_assessment_v0
+============================== 1 failed in 0.86s ===============================
+
+
+===== SMOKE REPRO PROBE =====
+
+=== MODULE ATTRS (smoke-related) ===
+  _run: function
+  assert_runtime_reference_lane_v0: function
+  assert_surface_p_integrated_envelope_non_authority_boundary_v0: function
+  evaluate_surface_p_four_way_parity_v0: function
+  extract_runtime_reference_parity_envelope_v0: function
+  scan_changed_paths_for_forbidden_runtime_v0: function
+  scan_forbidden_runtime_import_modules_v0: function
+  test_3_both_confirmed_chop_guard_parity_v0: function
+  test_forbidden_runtime_paths_guard_v0: function
+  test_integrated_replay_owner_excludes_runtime_imports_v0: function
+  test_runtime_reference_lane_bound_not_activated_v0: function
+  test_slice_sources_exclude_execution_runtime_imports_v0: function
+  test_surface_p_four_way_parity_smoke_assessment_v0: function
+
+_run candidate: <function _run at 0x116fb4360>
+
+=== TEST SOURCE (truncated) ===
+def test_surface_p_four_way_parity_smoke_assessment_v0() -> None:
+    integrated = _run(price_path=(3500.0, 3600.0))
+    integrated_env = extract_integrated_parity_envelope_v0(integrated)
+    assessment = evaluate_surface_p_four_way_parity_v0(
+        instrument_id=_INSTRUMENT,
+        trading_epoch=_EPOCH,
+        context_reference=_CONTEXT,
+        integrated_envelope=integrated_env,
+    )
+    assert assessment.scenario_lane_bound is True
+    assert assessment.backtest_lane_bound is True
+    assert assessment.runtime_reference_lane_bound is True
+    assert assessment.integrated_lane_bound is True
+    assert assessment.integrated_scenario_composition_aligned is True
+    assert assessment.backtest_non_authority_confirmed is True
+    assert assessment.runtime_reference_non_authority_confirmed is True
+    assert assessment.four_way_parity_rewire_bound is True
+
+
+=== evaluate_surface_p_four_way_parity_v0 signature ===
+(*, instrument_id: 'str', trading_epoch: 'int', context_reference: 'str', integrated_envelope: 'ParityDecisionEnvelopeV0 | None' = None) -> 'FullSystemFourWayParityAssessmentV0'
+(no doc)
+
+Harness CHOP-related: []
+
+=== suite callables ===
+  _run
+
+=== context around 3500.0 ===
+ce_lane_v0(envelope)
+
+
+def test_backtest_bar_lane_bound_offline_v0() -> None:
+    envelope = bind_backtest_bar_four_way_parity_lane_v0()
+    assert envelope is not None
+    assert envelope.decision_outcome
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+
+
+def test_surface_p_four_way_parity_smoke_assessment_v0() -> None:
+    integrated = _run(price_path=(3500.0, 3600.0))
+    integrated_env = extract_integrated_parity_envelope_v0(integrated)
+    assessment = evaluate_surface_p_four_way_parity_v0(
+        instrument_id=_INSTRUMENT,
+        trading_epoch=_EPOCH,
+        context_reference=_CONTEXT,
+        integrated_envelope=integrated_env,
+    )
+    assert assessment.scenario_lane_bound is True
+    assert assessment.backtest_lane_bound is True
+    assert assessment.runtime_reference_lane_bound is True
+    assert assessment.integrated_lane_bound is True
+    assert assessment.integrated_scenario_composition_aligned is True
+    assert assessment.ba
+
+=== AST calls in smoke test ===
+  call _run
+  call extract_integrated_parity_envelope_v0
+  call evaluate_surface_p_four_way_parity_v0
+
+=== PROBE evaluate_surface_p_four_way_parity_v0(CHOP_GUARD_BLOCK) ===
+TypeError {'scenario_name': 'CHOP_GUARD_BLOCK'} evaluate_surface_p_four_way_parity_v0() got an unexpected keyword argument 'scenario_name'
+TypeError {'scenario': 'CHOP_GUARD_BLOCK'} evaluate_surface_p_four_way_parity_v0() got an unexpected keyword argument 'scenario'
+TypeError {'scenario_id': 'CHOP_GUARD_BLOCK'} evaluate_surface_p_four_way_parity_v0() got an unexpected keyword argument 'scenario_id'
+
+_run defs: []
+assert fn: None
+SurfacePFourWayParityScenarioV0 import: cannot import name 'SurfacePFourWayParityScenarioV0' from 'trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_v0' (/Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py)
+
+=== evaluate source (first 2000) ===
+def evaluate_surface_p_four_way_parity_v0(
+    *,
+    instrument_id: str,
+    trading_epoch: int,
+    context_reference: str,
+    integrated_envelope: ParityDecisionEnvelopeV0 | None = None,
+) -> FullSystemFourWayParityAssessmentV0:
+    fail_reasons: list[str] = []
+
+    matrix = evaluate_scenario_matrix_for_side_state_v0(
+        side_state=SideState.CHOP_GUARD_BLOCK,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+    )
+    scenario_env = extract_scenario_matrix_parity_envelope_v0(matrix)
+    scenario_lane_bound = matrix.composition_status is CompositionStatus.CHOP_GUARD_BLOCK
+    if scenario_lane_bound:
+        assert_non_authority_boundary_v0(scenario_env)
+    else:
+        fail_reasons.append("scenario_lane_unbound")
+
+    integrated_lane_bound = integrated_envelope is not None
+    integrated_scenario_aligned = False
+    if integrated_envelope is not None:
+        try:
+            # Integrated offline replay may intentionally bind CRS / order intent
+            # as BOUND_OFFLINE; route by envelope effects (not generic NOT_BOUND).
+            assert_surface_p_integrated_envelope_non_authority_boundary_v0(integrated_envelope)
+            integrated_scenario_aligned = (
+                integrated_envelope.composition_status == scenario_env.composition_status
+            )
+        except AssertionError:
+            integrated_lane_bound = False
+            fail_reasons.append("integrated_lane_invalid")
+    else:
+        fail_reasons.append("integrated_lane_unbound")
+    if integrated_lane_bound and not integrated_scenario_aligned:
+        fail_reasons.append("integrated_scenario_composition_not_aligned")
+
+    backtest_env = bind_backtest_bar_four_way_parity_lane_v0()
+    backtest_lane_bound = backtest_env is not None
+    backtest_non_authority = backtest_lane_bound
+    if not backtest_lane_bound:
+        fail_reasons.append("backtest_lane_unbound")
+
+    runtime_env = extract_runtime_reference_par
+CHOP mentioned in evaluate
+h.FullSystemFourWayParityAssessmentV0
+h.OfflineDoublePlayScenarioReplayInputV0
+h.OfflineDoublePlayScenarioReplayResultV0
+h.OfflineDoublePlayScenarioReplayTickRecordV0
+h.ParityCaseV0
+h.ParityDecisionEnvelopeV0
+h.SURFACE_P_BAR_SEQUENCE_FIXTURE_COUNT
+h.SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_SLICE_ID
+h.SURFACE_P_BOUNDARY_PATH_FIXTURE_COUNT
+h.SURFACE_P_BOUNDARY_PATH_KINDS
+h.SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT
+h.SURFACE_P_FULL_BAR_SEQUENCE_4_WAY_PARITY_COMPLETION_SLICE_ID
+h.ScenarioEntryExitPolicyContextV0
+h.ScenarioScopeEventBindingResultV0
+h.ScenarioScopeEventContextV0
+h.ScenarioStateSwitchBindingResultV0
+h.ScenarioStateSwitchContextV0
+h.ScenarioSurvivalSuitabilityEvaluationV0
+h.ScenarioSurvivalSuitabilityOverridesV0
+h.SurfacePFullBarSequenceParityAssessmentV0
+h._SURFACE_P_CONFIG_DIGEST
+h._SURFACE_P_IMPL_DIGEST
+h._SURFACE_P_INTEGRATED_INSTRUMENT
+h._SURFACE_P_REPLAY_ID
+Traceback (most recent call last):
+  File "<stdin>", line 11, in <module>
+ModuleNotFoundError: No module named 'trading.master_v2.side_state_v0'
+ConfigRegistry: [strategy.*] blocks not listed in strategies.available: ['breakout_basic', 'vol_regime_basic', 'breakout', 'vol_regime_filter', 'rsi_reversion_v1', 'breakout_v1', 'composite', 'portfolio_phase40_example', 'rsi_reversion_btc_conservative', 'rsi_reversion_btc_moderate', 'rsi_reversion_btc_aggressive', 'rsi_reversion_eth_conservative', 'rsi_reversion_eth_moderate', 'rsi_reversion_eth_aggressive', 'ma_trend_btc_conservative', 'ma_trend_btc_moderate', 'ma_trend_btc_aggressive', 'trend_following_eth_conservative', 'trend_following_eth_moderate', 'trend_following_eth_aggressive', 'armstrong_cycle', 'el_karoui_vol_model']
+
+============================================================
+=== DETAILED LANE PROBE ===
+============================================================
+import: from trading.master_v2.double_play_composition_matrix_v1 import CompositionStatus, DoublePlayCompositionResultV1
+import: from trading.master_v2.double_play_state import ActiveSide, DynamicScopeRules, RuntimeEnvelope, RuntimeScopeState, ScopeEvent, SideState, StaticHardLimits
+evaluate uses SideState.CHOP_GUARD_BLOCK: True
+SideState import match: from trading.master_v2.double_play_state import (
+    ActiveSide,
+    DynamicScopeRules,
+    RuntimeEnvelope,
+    RuntimeScopeState,
+    ScopeEvent,
+    SideState,
+    StaticHardLimits,
+)
+SideState OK: <enum 'SideState'>
+CompositionStatus OK: <enum 'CompositionStatus'>
+CHOP_GUARD_BLOCK side: SideState.CHOP_GUARD_BLOCK
+CHOP_GUARD_BLOCK composition: CompositionStatus.CHOP_GUARD_BLOCK
+
+--- SCENARIO (CHOP_GUARD_BLOCK) ---
+matrix.composition_status: CompositionStatus.CHOP_GUARD_BLOCK
+scenario_env.composition_status: chop_guard_block
+scenario_env fields:
+  decision_outcome='not_bound_offline_matrix_only'
+  authority_effect='NONE'
+  runtime_effect='NONE'
+  composition_status='chop_guard_block'
+  decision_outcome='not_bound_offline_matrix_only'
+  previous_side_state=None
+  next_side_state=None
+  composition_status='chop_guard_block'
+  composition_result_id='506bc91ba9c53a57267fe42959e6b788'
+  entry_or_exit_policy_ref=''
+  reason_codes=('both_sides_confirmed', 'composition_conflict_not_scope_chop', 'no_new_entry', 'existing_position_management_continues')
+  decision_precedence_trace=()
+  execution_eligible=False
+  adapter_compatible=False
+  quantity_status='NOT_BOUND'
+  authority_effect='NONE'
+  runtime_effect='NONE'
+  quantity_provenance_ref=''
+  risk_sizing_ref=''
+  risk_sizing_effect='NONE'
+  order_intent_ref=''
+  order_intent_effect='NONE'
+  safety_boundary_ref=''
+  safety_boundary_effect='NONE'
+  reconciliation_unknown_outcome_ref=''
+  reconciliation_unknown_outcome_effect='NONE'
+  killswitch_boundary_ref=''
+  killswitch_boundary_effect='NONE'
+  promotion_gate_boundary_ref=''
+  promotion_gate_boundary_effect='NONE'
+  ai_observability_boundary_ref=''
+  ai_observability_boundary_effect='NONE'
+  feedback_learning_boundary_ref=''
+  feedback_learning_boundary_effect='NONE'
+  state_switch_ref=''
+  state_switch_effect='NONE'
+  scope_event_ref=''
+  scope_event_effect=''
+  transition_reason_code=''
+  conflict_status='both_sides_confirmed'
+  selected_side='none'
+
+--- INTEGRATED _run(price_path=(3500.0, 3600.0)) ---
+  decision_outcome='enter_long'
+  previous_side_state='long_armed'
+  next_side_state='long_armed'
+  composition_status='long_selected'
+  composition_result_id='fa34fd235e279ec5b5accd95fc67690e'
+  entry_or_exit_policy_ref='80e81f81b654f803fe9e7d1adb7008f4'
+  reason_codes=('long_only_admissible',)
+  decision_precedence_trace=('new_entry',)
+  execution_eligible=False
+  adapter_compatible=False
+  quantity_status='REDUCE'
+  authority_effect='NONE'
+  runtime_effect='NONE'
+  quantity_provenance_ref='679176c939800d43ff63083007b4f29ec810dc0b6440d42f8ec4d4df5ea1d487'
+  risk_sizing_ref='679176c939800d43ff63083007b4f29ec810dc0b6440d42f8ec4d4df5ea1d487'
+  risk_sizing_effect='BOUND_OFFLINE'
+  order_intent_ref='f013c17a2ce5e32fd1bd24768dc7bd653791f575b9909b8fbcc2e43a00aa014d'
+  order_intent_effect='BOUND_OFFLINE'
+  safety_boundary_ref='257361120d0e9712d5cdd914cb6803a3d821f8d908c0da9959b235142c332276'
+  safety_boundary_effect='BOUND_OFFLINE'
+  reconciliation_unknown_outcome_ref='f403574ed5c2a6bb4c826778e089cc9877e6c1d0ce287f5426bf95c84b3f368f'
+  reconciliation_unknown_outcome_effect='BOUND_OFFLINE'
+  killswitch_boundary_ref='69af08c246d7371d5cb6750eb93904d02527f39681d71699b6f1955a2121e360'
+  killswitch_boundary_effect='BOUND_OFFLINE'
+  promotion_gate_boundary_ref=''
+  promotion_gate_boundary_effect='NONE'
+  ai_observability_boundary_ref=''
+  ai_observability_boundary_effect='NONE'
+  feedback_learning_boundary_ref=''
+  feedback_learning_boundary_effect='NONE'
+  state_switch_ref='state-switch-fd9bfc1c44d5d2f3db5339dc'
+  state_switch_effect='BOUND_OFFLINE'
+  scope_event_ref=''
+  scope_event_effect=''
+  transition_reason_code='NOOP'
+  conflict_status='none'
+  selected_side='long'
+
+--- assert_surface_p_integrated_envelope_non_authority_boundary_v0 ---
+passes: True
+
+--- ASSESSMENT ---
+  integrated_lane_bound=True
+  scenario_lane_bound=True
+  backtest_lane_bound=True
+  runtime_reference_lane_bound=True
+  integrated_scenario_composition_aligned=False
+  backtest_non_authority_confirmed=True
+  runtime_reference_non_authority_confirmed=True
+  four_way_parity_rewire_bound=False
+  fail_closed_reasons=('integrated_scenario_composition_not_aligned',)
+
+--- ALIGNMENT ---
+scenario composition_status: chop_guard_block
+integrated composition_status: long_selected
+equal: False
+fail_closed_reasons: ('integrated_scenario_composition_not_aligned',)
+integrated_scenario_composition_aligned: False
+four_way_parity_rewire_bound: False
