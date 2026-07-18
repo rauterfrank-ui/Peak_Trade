@@ -1,0 +1,17 @@
+PHASE0_TS=2026-07-18T19:58:26Z
+BRANCH=main
+HEAD=be06d44f408b6eb359f07a15d64c6280ec3bce85
+ORIGIN_MAIN=be06d44f408b6eb359f07a15d64c6280ec3bce85
+EXPECTED_BASE=be06d44f408b6eb359f07a15d64c6280ec3bce85
+HEAD_MATCHES_EXPECTED=true
+WORKTREE_CLEAN_TRACKED=true
+FOREIGN_UNTRACKED:
+?? docs/evidence/canonical_chain_zero_trade_blocker_v1/
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+STASH_LIST:
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework

@@ -1,0 +1,11 @@
+FOCUSED_DOMAIN=112 passed (~1.8s)
+PARITY_INTEGRATED=61 passed (~2.4s)
+NEW_CONTRACTS=11 passed
+PR_BOUNDED_FULL_SELECTOR=716 passed (~43.57s)
+RUFF=All checks passed
+--- pr_bounded tail ---
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: cache could not write path /Users/frnkhrz/Peak_Trade/.pytest_cache/v/cache/nodeids: [Errno 1] Operation not permitted: '/Users/frnkhrz/Peak_Trade/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 716 passed, 6 warnings in 43.57s =======================
