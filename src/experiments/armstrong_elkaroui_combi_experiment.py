@@ -8,6 +8,12 @@ für denselben Markt/Zeitraum und berechnet aggregierte Kennzahlen.
 
 ⚠️ WICHTIG: RESEARCH-ONLY – NICHT FÜR LIVE-TRADING ⚠️
 
+AUTH-005 classification:
+- CATEGORY=RESEARCH_EXPERIMENT · AUTHORITY=NON_AUTHORITY
+- CANONICAL_BOUND=false · LIVE_READY=false · EXECUTION_ELIGIBLE=false
+- MAY_PRODUCE_RESEARCH_METRICS=true · MAY_NOT_PRODUCE_CANONICAL_TRADE_INTENT=true
+- Not registered as a productive StrategySpec producer
+
 Konzept:
 - Armstrong-Event-State: Markiert Event-Fenster um ECM-Turning-Points
 - El-Karoui-Regime: Klassifiziert Volatilitäts-Regime (LOW/MEDIUM/HIGH)

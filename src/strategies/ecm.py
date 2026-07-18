@@ -1,7 +1,15 @@
 """
-Peak_Trade ECM Strategy
-========================
+Peak_Trade ECM Strategy (legacy functional surface)
+===================================================
 Armstrong's Economic Confidence Model (ECM) basierte Trading-Strategie.
+
+AUTH-005 / legacy disposition (Non-Authority):
+- LEGACY functional loader key ``ecm_cycle`` (not an OOP StrategySpec live surface)
+- AUTHORITY=NON_AUTHORITY · LIVE_READY=false · EXECUTION_ELIGIBLE=false
+- CANONICAL_BOUND=false (not Master V2 / Double Play system-state authority)
+- Related to Armstrong CYCLE_INFORMATION research; dual naming vs ``armstrong_cycle``
+  is identity dual, not a competing MV2 switch authority
+- OBL_B05 side-authority disposition: KEEP_NONE / activation blocked
 
 Konzept:
 - ECM-Zyklus: 8.6 Jahre = Pi * 1000 Tage = 3141 Tage
