@@ -1,0 +1,63 @@
+SEARCH_TERMS_CASE_INSENSITIVE=
+Dynamic Scope
+Dynamic Case Switch
+Dynamic Switch
+double play
+master v2
+bull bear
+bull_state
+bear_state
+switch
+switch_gate
+stay
+direction
+side
+LONG
+SHORT
+NEUTRAL
+RuntimeScopeState
+transition_state
+scope_state
+previous_state
+current_state
+next_state
+scenario
+inject
+override
+force
+feedback
+composition
+agreement
+suitability
+CHOP_DETECTED
+chop_latched
+step_switch_gate
+allow_test_scope_event_injection
+
+PRIMARY_SURFACES_SCANNED=
+src/trading/master_v2/
+src/ops/double_play/
+src/ops/gates/
+src/ops/durable_completion_validation/
+src/ops/bounded_master_v2_testnet_completion_path_wiring_v0.py
+src/ops/offline_master_v2_replay_six_node_validation_graph_binding_v0.py
+src/backtest/backtest_engine_position_feedback_adapter_v1.py
+src/backtest/mv2_research_wiring_v1.py
+src/webui/double_play_dashboard_display_json_route_v0.py
+src/live/operator_context.py
+tests/trading/master_v2/
+tests/ops/
+tests/backtest/
+
+TRANSITION_STATE_CALLERS=
+src/trading/master_v2/double_play_state.py (definition)
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py (PRODUCTIVE orchestrator)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py (SCENARIO)
+src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py (SCENARIO wrapper)
+src/webui/double_play_dashboard_display_json_route_v0.py (DISPLAY fixture)
+src/ops/durable_completion_validation/validators/event_stream.py (VALIDATOR)
+tests/** / scripts/** (TEST)
+
+PRIOR_DISPOSITION_REUSED=
+docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/competing_paths_disposition.tsv
+docs/product/evidence/chop_scope_event_policy_binding_contract_v1_20260718T153238Z/
