@@ -1,0 +1,207 @@
+{
+  "authority_effect": "NONE",
+  "harness_id": "CANONICAL_FILL_ROUNDTRIP_LEDGER_BOUNDARY_TRACE_V1",
+  "runtime_effect": "NONE",
+  "scenarios": [
+    {
+      "description": "vollstaendiger LONG Entry \u2192 Exit \u2192 Roundtrip \u2192 Ledger",
+      "notes": "Canonical legacy path opens only on signal==+1; exit on -1 with open long.",
+      "scenario_id": "A",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "decision_outcome": "enter_long",
+          "mapped_signal": 1,
+          "stage": "map"
+        },
+        {
+          "signals": [
+            0,
+            1,
+            -1
+          ],
+          "stage": "engine",
+          "trades": 1
+        },
+        {
+          "rows": 1,
+          "stage": "ledger"
+        }
+      ]
+    },
+    {
+      "description": "SHORT Entry mapped to -1 does not open; no Roundtrip on legacy path",
+      "notes": "Not a silent fill bug: productive long-only open semantics. Panel #5343 SHORT-heavy enter intents explain zero-trade cohort at this boundary.",
+      "scenario_id": "B",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "decision_outcome": "enter_short",
+          "mapped_signal": -1,
+          "stage": "map"
+        },
+        {
+          "signals": [
+            0,
+            -1,
+            -1
+          ],
+          "stage": "engine",
+          "trades": 0
+        }
+      ]
+    },
+    {
+      "description": "entry_side=NONE fail-closed: no directional cycle, no fill/roundtrip",
+      "notes": "cycle_signal_value=+1 alone does not invent LONG when entry_side=NONE.",
+      "scenario_id": "C",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "cycle_signal_value": 1,
+          "directional_cycle": null,
+          "entry_side": "NONE",
+          "stage": "agreement"
+        },
+        {
+          "decision_outcome": "observe",
+          "mapped_signal": 0,
+          "stage": "map"
+        },
+        {
+          "stage": "engine",
+          "trades": 0
+        }
+      ]
+    },
+    {
+      "description": "Entry accepted (mapped +1), fill/open rejected by sizing",
+      "notes": "Legitimate fail-closed sizing reject; not a ledger persistence bug.",
+      "scenario_id": "D",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "mapped_signal": 1,
+          "stage": "map"
+        },
+        {
+          "blocked_trades": 1,
+          "stage": "engine",
+          "trades": 0
+        }
+      ]
+    },
+    {
+      "description": "Entry-Fill vs Position-Open inseparability on canonical legacy path",
+      "notes": "No distinct Fill object exists on MV2 legacy path; Trade(...) open IS the fill. Scenario 'fill without position' is not reproducible as a productive defect.",
+      "scenario_id": "E",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "eod_closed_trades_after_entry_only": 1,
+          "legacy_open_coupled_to_signal_plus_one": true,
+          "stage": "static_proof"
+        }
+      ]
+    },
+    {
+      "description": "Open position without signal-matched exit (EOD close still completes RT)",
+      "notes": "Unmatched signal-exit does not drop the roundtrip under productive finalize.",
+      "scenario_id": "F",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "exit_reason": "end_of_data",
+          "stage": "engine",
+          "trades": 1
+        }
+      ]
+    },
+    {
+      "description": "Entry+Exit fills present but Roundtrip missing \u2014 not separable on legacy",
+      "notes": "Exit path appends completed Trade immediately; no orphan fill layer exists.",
+      "scenario_id": "G",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "exit_requires_open": true,
+          "stage": "static_proof",
+          "trades": 1
+        }
+      ]
+    },
+    {
+      "description": "Roundtrip present; ledger missing only when materializer skipped",
+      "notes": "No engine persistence defect; ledger is a pure materialization consumer.",
+      "scenario_id": "H",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "rows_when_called": 1,
+          "rows_when_skipped": 0,
+          "stage": "ledger"
+        }
+      ]
+    },
+    {
+      "description": "Partial Fill / Partial Close on canonical legacy owner",
+      "notes": "Canonical owner models full open/full close only; no partial aggregation path.",
+      "scenario_id": "I",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "partial_supported": false,
+          "stage": "static"
+        }
+      ]
+    },
+    {
+      "description": "Fees/slippage nonzero with cost application \u2014 trade existence preserved",
+      "notes": "Default LEGACY_PATH_COST_APPLICATION=False zeroes costs on productive path; when enabled, economics change but roundtrip/ledger existence remains.",
+      "scenario_id": "J",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "entry_cost": 1.5,
+          "exit_cost": 1.65,
+          "gross_pnl": 100.0,
+          "legacy_path_cost_application_default": true,
+          "net_pnl": 96.85,
+          "stage": "accounting"
+        }
+      ]
+    },
+    {
+      "description": "Multiple instruments without cross-instrument matching",
+      "notes": "Separate engine invocations; ledger binds instrument_id per call \u2014 no cross-match.",
+      "scenario_id": "K",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "exit_reason": "end_of_data",
+          "instrument": "A"
+        },
+        {
+          "exit_reason": "signal",
+          "instrument": "B"
+        }
+      ]
+    },
+    {
+      "description": "Identical timestamps with stable ledger ordering",
+      "notes": "trade_id uses run_id-trade-{index}; order follows engine append order.",
+      "scenario_id": "L",
+      "scenario_pass": true,
+      "trace_events": [
+        {
+          "entry_time": "2024-01-01 00:00:00+00:00",
+          "exit_time": "2024-01-01 00:00:00+00:00",
+          "stage": "ledger",
+          "trade_ids": [
+            "scenario-l-trade-0"
+          ]
+        }
+      ]
+    }
+  ]
+}

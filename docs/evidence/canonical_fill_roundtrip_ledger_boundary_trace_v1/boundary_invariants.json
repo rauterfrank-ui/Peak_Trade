@@ -1,0 +1,201 @@
+{
+  "harness_id": "CANONICAL_FILL_ROUNDTRIP_LEDGER_BOUNDARY_TRACE_V1",
+  "source": "productive code + existing contracts; observed via offline harness scenarios A–L",
+  "invariants": [
+    {
+      "id": "INV-01",
+      "description": "An accepted entry intent produces at most one entry fill/open on the legacy path",
+      "owner": "src/backtest/engine.py::BacktestEngine.run_realistic",
+      "evidence_source": "scenario_A / scenario_D; signal==1 and current_trade is None",
+      "expected": "at_most_one_open_per_flat_book",
+      "observed": "one_open_on_accepted_sized_entry; zero_on_sizing_reject",
+      "status": "PASS",
+      "failure_effect": "duplicate_opens_or_phantom_positions"
+    },
+    {
+      "id": "INV-02",
+      "description": "No fill/open without an accepted canonical mapped entry signal (+1)",
+      "owner": "src/backtest/engine.py::run_realistic",
+      "evidence_source": "scenario_B / scenario_C",
+      "expected": "no_open_without_signal_plus_one",
+      "observed": "short_mapped_minus_one_and_observe_map_zero_produce_no_open",
+      "status": "PASS",
+      "failure_effect": "unauthorized_trade_materialization"
+    },
+    {
+      "id": "INV-03",
+      "description": "No LONG/SHORT side inference from generic ENTRY/EXIT tokens alone",
+      "owner": "src/backtest/mv2_research_wiring_v1.py::resolve_agreement_bound_directional_cycle_v1",
+      "evidence_source": "scenario_C; ENTRY_EXIT + cycle=+1 + entry_side=NONE → None",
+      "expected": "no_side_from_cycle_alone",
+      "observed": "directional_cycle_is_None",
+      "status": "PASS",
+      "failure_effect": "implicit_LONG_default"
+    },
+    {
+      "id": "INV-04",
+      "description": "entry_side=NONE remains fail-closed",
+      "owner": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py::_resolve_entry_side_carrier_v1",
+      "evidence_source": "scenario_C",
+      "expected": "entry_side_NONE",
+      "observed": "NONE",
+      "status": "PASS",
+      "failure_effect": "hidden_direction_authority"
+    },
+    {
+      "id": "INV-05",
+      "description": "Fill-side and position-side are consistent on legacy path (long-only open)",
+      "owner": "src/backtest/engine.py::_emit_legacy_trade_accounting_fields_v0",
+      "evidence_source": "scenario_A; emit side=\"long\"; feedback ExistingPositionSide.LONG",
+      "expected": "long_open_accounting",
+      "observed": "long",
+      "status": "PASS",
+      "failure_effect": "side_inconsistency_between_fill_and_position"
+    },
+    {
+      "id": "INV-06",
+      "description": "Entry quantity is positive and finite when open accepted",
+      "owner": "src/backtest/engine.py / calc_position_size",
+      "evidence_source": "scenario_A trade size",
+      "expected": "size>0_finite",
+      "observed": "positive_finite_size_on_accepted_open",
+      "status": "PASS",
+      "failure_effect": "invalid_notional_or_nan_propagation"
+    },
+    {
+      "id": "INV-07",
+      "description": "Exit quantity does not exceed open quantity (full close only)",
+      "owner": "src/backtest/backtest_engine_position_feedback_adapter_v1.py",
+      "evidence_source": "scenario_I; _PARTIAL_REDUCTION_SUPPORTED_BY_CANONICAL_OWNER=False",
+      "expected": "full_close_only",
+      "observed": "partial_unsupported_full_close_model",
+      "status": "PASS",
+      "failure_effect": "overclose_or_negative_position"
+    },
+    {
+      "id": "INV-08",
+      "description": "Position identity remains the same Trade object from entry to exit",
+      "owner": "src/backtest/engine.py::current_trade",
+      "evidence_source": "scenario_A / scenario_G",
+      "expected": "same_trade_mutated_then_appended",
+      "observed": "single_trade_record_entry_to_exit",
+      "status": "PASS",
+      "failure_effect": "orphaned_exits_or_mismatched_ids"
+    },
+    {
+      "id": "INV-09",
+      "description": "Instrument key is preserved into ledger rows",
+      "owner": "src/backtest/trade_ledger_equity_curve_persistence_v0.py::materialize_trade_ledger_rows_v0",
+      "evidence_source": "scenario_K",
+      "expected": "instrument_id_bound_per_materialization_call",
+      "observed": "no_cross_instrument_id_overlap",
+      "status": "PASS",
+      "failure_effect": "cross_instrument_matching"
+    },
+    {
+      "id": "INV-10",
+      "description": "Timestamp order is stable; duplicate timestamps keep deterministic trade_id order",
+      "owner": "src/backtest/trade_ledger_equity_curve_persistence_v0.py",
+      "evidence_source": "scenario_L",
+      "expected": "run_id-trade-{index}_stable",
+      "observed": "stable_index_ids",
+      "status": "PASS",
+      "failure_effect": "nondeterministic_ledger_order"
+    },
+    {
+      "id": "INV-11",
+      "description": "Entry fill can be associated with open position state (coupled on legacy path)",
+      "owner": "src/backtest/engine.py",
+      "evidence_source": "scenario_E",
+      "expected": "fill_equals_open_on_legacy",
+      "observed": "not_separable_Trade_open_is_fill",
+      "status": "PASS",
+      "failure_effect": "fill_without_position_defect_class"
+    },
+    {
+      "id": "INV-12",
+      "description": "Exit fill can be associated with an open entry",
+      "owner": "src/backtest/engine.py",
+      "evidence_source": "scenario_A / scenario_B",
+      "expected": "exit_requires_open_trade",
+      "observed": "minus_one_without_open_is_noop; with_open_closes",
+      "status": "PASS",
+      "failure_effect": "unmatched_exit_or_false_short_open"
+    },
+    {
+      "id": "INV-13",
+      "description": "Full close produces exactly one roundtrip record",
+      "owner": "src/backtest/engine.py",
+      "evidence_source": "scenario_A / scenario_G",
+      "expected": "exactly_one_completed_trade",
+      "observed": "1",
+      "status": "PASS",
+      "failure_effect": "duplicate_or_missing_roundtrips"
+    },
+    {
+      "id": "INV-14",
+      "description": "Partial close is deterministically unsupported (not silently aggregated)",
+      "owner": "src/backtest/backtest_engine_position_feedback_adapter_v1.py",
+      "evidence_source": "scenario_I",
+      "expected": "partial_flag_false",
+      "observed": false,
+      "status": "PASS",
+      "failure_effect": "ambiguous_partial_aggregation"
+    },
+    {
+      "id": "INV-15",
+      "description": "Fee and slippage change economics but not trade existence when applied",
+      "owner": "src/backtest/engine.py::_emit_legacy_trade_accounting_fields_v0",
+      "evidence_source": "scenario_J",
+      "expected": "trade_exists_with_nonzero_costs_when_application_enabled",
+      "observed": "ledger_row=1_and_costs>0",
+      "status": "PASS",
+      "failure_effect": "cost_path_drops_trades"
+    },
+    {
+      "id": "INV-16",
+      "description": "Roundtrip is not discarded by reporting/panel filters in materializer",
+      "owner": "src/backtest/trade_ledger_equity_curve_persistence_v0.py",
+      "evidence_source": "scenario_H",
+      "expected": "1:1_materialization_when_called",
+      "observed": "rows_when_called=roundtrips; missing_only_if_not_called",
+      "status": "PASS",
+      "failure_effect": "reporting_only_loss_misclassified_as_engine_defect"
+    },
+    {
+      "id": "INV-17",
+      "description": "Ledger rows are reproducible from completed engine trades",
+      "owner": "src/backtest/trade_ledger_equity_curve_persistence_v0.py",
+      "evidence_source": "scenario_A / scenario_H",
+      "expected": "deterministic_materialization",
+      "observed": "reproducible_row_count_equals_trades",
+      "status": "PASS",
+      "failure_effect": "ledger_persistence_defect"
+    },
+    {
+      "id": "INV-18",
+      "description": "Funnel counts align with event/fill/roundtrip numbers in harness scenarios",
+      "owner": "docs/evidence/.../boundary_trace_harness_v1.py",
+      "evidence_source": "funnel_counts.json / first_loss_matrix.json",
+      "expected": "internally_consistent_per_scenario",
+      "observed": "scenarios_pass=12",
+      "status": "PASS",
+      "failure_effect": "unclear_first_loss_localization"
+    },
+    {
+      "id": "INV-19",
+      "description": "SHORT mapped signal does not invent a short open on canonical legacy engine",
+      "owner": "src/backtest/engine.py",
+      "evidence_source": "scenario_B; PR #5343 panel secondary evidence",
+      "expected": "no_short_open_on_legacy",
+      "observed": "enter_short_to_minus_one_noop_when_flat",
+      "status": "PASS",
+      "failure_effect": "false_mechanical_defect_classification"
+    }
+  ],
+  "totals": {
+    "invariants_total": 19,
+    "invariants_pass": 19,
+    "invariants_fail": 0
+  }
+}

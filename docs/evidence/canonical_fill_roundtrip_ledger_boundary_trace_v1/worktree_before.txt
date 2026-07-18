@@ -1,0 +1,13 @@
+WORKTREE_BEFORE_TS=2026-07-18T22:19:10Z
+?? docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/
+?? docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+?? docs/evidence/scope_event_noop_root_cause_audit_v1/
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework
+f5f5fee56e471621988b5d193397d0b7b80eb535
+f5f5fee56e471621988b5d193397d0b7b80eb535

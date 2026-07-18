@@ -1,0 +1,34 @@
+{
+  "by_scenario": {
+    "A": {
+      "long": 1,
+      "short": 0
+    },
+    "B": {
+      "long": 0,
+      "mapped_short_signals": 2,
+      "short": 0
+    },
+    "C": {
+      "directional_cycle": null,
+      "entry_side": "NONE"
+    },
+    "D": {},
+    "E": {},
+    "F": {
+      "long": 1
+    },
+    "G": {},
+    "H": {},
+    "I": {},
+    "J": {
+      "long": 1
+    },
+    "K": {},
+    "L": {}
+  },
+  "canonical_legacy_open_side": "long_only",
+  "entry_side_none_fail_closed": true,
+  "harness_id": "CANONICAL_FILL_ROUNDTRIP_LEDGER_BOUNDARY_TRACE_V1",
+  "long_default_found": false
+}

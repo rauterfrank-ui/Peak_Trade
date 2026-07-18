@@ -1,0 +1,32 @@
+{
+  "by_reason": {
+    "partial_reduction_unsupported": 1,
+    "position_sizing_reject": 1,
+    "short_signal_without_open_long_noop": 2,
+    "signal_exit_unmatched": 1
+  },
+  "by_scenario": {
+    "A": {},
+    "B": {
+      "short_signal_without_open_long_noop": 2
+    },
+    "C": {},
+    "D": {
+      "position_sizing_reject": 1
+    },
+    "E": {},
+    "F": {
+      "signal_exit_unmatched": 1
+    },
+    "G": {},
+    "H": {},
+    "I": {
+      "partial_reduction_unsupported": 1
+    },
+    "J": {},
+    "K": {},
+    "L": {}
+  },
+  "dominant_boundary": "backtest_engine_fill_or_roundtrip_ledger",
+  "harness_id": "CANONICAL_FILL_ROUNDTRIP_LEDGER_BOUNDARY_TRACE_V1"
+}

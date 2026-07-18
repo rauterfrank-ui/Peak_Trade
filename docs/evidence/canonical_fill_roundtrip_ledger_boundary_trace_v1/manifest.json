@@ -1,0 +1,205 @@
+{
+  "base_sha": "f5f5fee56e471621988b5d193397d0b7b80eb535",
+  "branch": "audit/canonical-fill-roundtrip-ledger-boundary-trace-v1",
+  "evidence_dir": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1",
+  "file_count": 28,
+  "files": [
+    {
+      "bytes": 8577,
+      "name": "boundary_invariants.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/boundary_invariants.json",
+      "purpose": "Roundtrip invariants with pass/fail status",
+      "sha256": "191e0863d2599a758be86483f0325e6c87772f3f18163b7f30945d1428505317"
+    },
+    {
+      "bytes": 44295,
+      "name": "boundary_trace_harness_v1.py",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/boundary_trace_harness_v1.py",
+      "purpose": "Non-authoritative offline audit harness",
+      "sha256": "30c8673e09aa22c9c31c85f6ba9ac1ff12d66a4151ce7dec09cd25bf4106fbed"
+    },
+    {
+      "bytes": 6701,
+      "name": "canonical_data_flow_map.md",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/canonical_data_flow_map.md",
+      "purpose": "Stage-by-stage canonical owner map",
+      "sha256": "084fb6d34147548b96bb6deb2a27004bc9789306a2ab05193abecdf62edffe20"
+    },
+    {
+      "bytes": 1032,
+      "name": "chain_binding_proof.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/chain_binding_proof.json",
+      "purpose": "Static productive binding proof",
+      "sha256": "97d582931eb037997af24ba4da2937ba2bcb541a9882db0437a153f662439ca8"
+    },
+    {
+      "bytes": 3927,
+      "name": "classification_a_to_g.md",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/classification_a_to_g.md",
+      "purpose": "A-G classification using repo legend",
+      "sha256": "a0e9ffe07c1949942807d2b2d5f744e8d5b26e601cd0bc13faa64fe80242f5b6"
+    },
+    {
+      "bytes": 1575,
+      "name": "commands.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/commands.txt",
+      "purpose": "Repro commands for this slice",
+      "sha256": "2e73be965cf168c52bed3ee30450a84152d68e53c740574768d8e717c15bd548"
+    },
+    {
+      "bytes": 2587,
+      "name": "conclusions.md",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/conclusions.md",
+      "purpose": "Observation vs inference vs hypothesis",
+      "sha256": "279ea82da7956c38bc05834adadc4c37046093032a8c11b691db3f3154e873b5"
+    },
+    {
+      "bytes": 68,
+      "name": "docs_reference_targets.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/docs_reference_targets.txt",
+      "purpose": "Docs reference targets gate capture",
+      "sha256": "c2891bc18eda0a1766fea3e19fe630c24dbed05c856e43fdbd6101b25c0ef0eb"
+    },
+    {
+      "bytes": 67,
+      "name": "docs_token_policy.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/docs_token_policy.txt",
+      "purpose": "Docs token policy gate capture",
+      "sha256": "36a106d4e407866916be553e33a2a7b31be702495940d502a1e3a299ff400831"
+    },
+    {
+      "bytes": 816,
+      "name": "economic_boundary_guard.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/economic_boundary_guard.txt",
+      "purpose": "Economic boundary guard capture",
+      "sha256": "912360f62aaf5079c5f3634aad43ba724a140f657a0386b015f4c54943d7a789"
+    },
+    {
+      "bytes": 474,
+      "name": "environment.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/environment.txt",
+      "purpose": "Platform/Python/base SHA and offline safety flags",
+      "sha256": "45c73ec8098738cd06a26e8f1b39844c7d86079b596623f92696fa8be7c5bdfd"
+    },
+    {
+      "bytes": 9467,
+      "name": "first_loss_matrix.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/first_loss_matrix.json",
+      "purpose": "First value-loss localization matrix",
+      "sha256": "79970f6fbc1393bb9a184b10bf8288aaecd679ebc7dd16550ea710a98c9e9957"
+    },
+    {
+      "bytes": 4128,
+      "name": "funnel_counts.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/funnel_counts.json",
+      "purpose": "Funnel stage counts per scenario",
+      "sha256": "d381afe04c239137377f98f908f89339a4350eb028b3f61893ba1a72a0010ded"
+    },
+    {
+      "bytes": 407,
+      "name": "instrument_breakdown.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/instrument_breakdown.json",
+      "purpose": "Per-instrument materialization breakdown",
+      "sha256": "41205fc1c9b5b5763f9d6a56a01f2d66ca8b51e77ffc892d4c4eb1461820665d"
+    },
+    {
+      "bytes": 8753,
+      "name": "manifest.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/manifest.json",
+      "purpose": "SHA-256 inventory of evidence package",
+      "sha256": "9919f5de92078ac1de46802c256c0ea94d26585d6c14ce4afa1e4001c68383f4"
+    },
+    {
+      "bytes": 870,
+      "name": "probe_run_log.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/probe_run_log.txt",
+      "purpose": "Harness stdout/stderr capture",
+      "sha256": "4a6f6db7aa597ac0e2b16dfad03ce27512993d24b92ca702ee7359e7b1d9cbee"
+    },
+    {
+      "bytes": 232,
+      "name": "probe_summary.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/probe_summary.json",
+      "purpose": "Harness aggregate pass/fail summary",
+      "sha256": "bed7d51fdc03f43f979eb16ad4210c80acd731f6bed3886fe8913c023dcbb10e"
+    },
+    {
+      "bytes": 665,
+      "name": "rejection_reasons.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/rejection_reasons.json",
+      "purpose": "Aggregated rejection / no-op reasons",
+      "sha256": "39e3774cfdf148ea60eea7a2f6106fe5c2dc8a5db1bccd5338066b7fed2f7294"
+    },
+    {
+      "bytes": 6111,
+      "name": "representative_traces.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/representative_traces.json",
+      "purpose": "Per-scenario structured trace events",
+      "sha256": "a6d417d248c0417398c69fa41bfe64238babeb5f9e2ad817c5c2792ac1c66395"
+    },
+    {
+      "bytes": 2584,
+      "name": "root_cause.md",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/root_cause.md",
+      "purpose": "Root-cause decision across defect classes",
+      "sha256": "215cd7581314be4d37cd875d05698d18176d11a12ae537826e0d0eba9246c343"
+    },
+    {
+      "bytes": 19,
+      "name": "ruff.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/ruff.txt",
+      "purpose": "Ruff format/check capture",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "bytes": 584,
+      "name": "side_breakdown.json",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/side_breakdown.json",
+      "purpose": "Side / entry_side breakdown",
+      "sha256": "1cbb6ce8442ae7525c53aa92ffc493aad3a79e713abca516c01ca03b3ff08a0c"
+    },
+    {
+      "bytes": 1432,
+      "name": "summary.md",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/summary.md",
+      "purpose": "Human-readable slice summary and safety flags",
+      "sha256": "c53b0ead6fbc51e378e12175591d7b8844c3a49d932edb44e4c53c538736e9f6"
+    },
+    {
+      "bytes": 1512,
+      "name": "tests_fill_ledger_roundtrip.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/tests_fill_ledger_roundtrip.txt",
+      "purpose": "Existing fill/ledger/roundtrip pytest capture",
+      "sha256": "7be67d93a432e40c6f0f90936727a13871bed474ecb0db9ca7af189f5baf9ee2"
+    },
+    {
+      "bytes": 1083,
+      "name": "tests_harness.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/tests_harness.txt",
+      "purpose": "New harness pytest capture",
+      "sha256": "9f5f5fb0433230e9e9a337c698cccf5a631109a8c6b24603443d8ddbe18697c0"
+    },
+    {
+      "bytes": 1093,
+      "name": "tests_pr5343.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/tests_pr5343.txt",
+      "purpose": "PR5343 harness pytest capture",
+      "sha256": "332f07fed1922f6560503d182c167963662465dab71e75e892cedbf5ba1f3de6"
+    },
+    {
+      "bytes": 3288,
+      "name": "worktree_after.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/worktree_after.txt",
+      "purpose": "Post-audit worktree snapshot",
+      "sha256": "4f9b14bb208ce4682f0b7b2a6bbfdd9e956e3edca24225f8a511a6f8c31b50f3"
+    },
+    {
+      "bytes": 895,
+      "name": "worktree_before.txt",
+      "path": "docs/evidence/canonical_fill_roundtrip_ledger_boundary_trace_v1/worktree_before.txt",
+      "purpose": "Preflight worktree/stash snapshot",
+      "sha256": "50b7eff6f8ee9454169e3b5fb263fbf3b2591c5c0a4d44c8ff5a3fb5bd7ff316"
+    }
+  ],
+  "harness_id": "CANONICAL_FILL_ROUNDTRIP_LEDGER_BOUNDARY_TRACE_V1"
+}
