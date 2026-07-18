@@ -1,0 +1,106 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 130 items
+
+tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py . [  0%]
+........                                                                 [  6%]
+tests/ops/test_double_play_specialists.py ....                           [ 10%]
+tests/backtest/test_backtest_engine_position_feedback_v1.py ............ [ 19%]
+...                                                                      [ 21%]
+tests/ops/test_canonical_core_runtime_integration_bridge_slice_e_v0.py . [ 22%]
+...........                                                              [ 30%]
+tests/ops/test_ops_double_play_authority_markers_static_contract_v0.py . [ 31%]
+............                                                             [ 40%]
+tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py . [ 41%]
+.......                                                                  [ 46%]
+tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py . [ 47%]
+....................................................                     [ 87%]
+tests/trading/master_v2/test_runtime_backtest_parity_and_legacy_boundary_closeout_v1.py . [ 88%]
+...............                                                          [100%]
+
+============================= 130 passed in 6.66s ==============================
+
+=== focused pytest (130 passed) ===
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 130 items
+
+tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py . [  0%]
+........                                                                 [  6%]
+tests/ops/test_double_play_specialists.py ....                           [ 10%]
+tests/backtest/test_backtest_engine_position_feedback_v1.py ............ [ 19%]
+...                                                                      [ 21%]
+tests/ops/test_canonical_core_runtime_integration_bridge_slice_e_v0.py . [ 22%]
+...........                                                              [ 30%]
+tests/ops/test_ops_double_play_authority_markers_static_contract_v0.py . [ 31%]
+............                                                             [ 40%]
+tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py . [ 41%]
+.......                                                                  [ 46%]
+tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py . [ 47%]
+....................................................                     [ 87%]
+tests/trading/master_v2/test_runtime_backtest_parity_and_legacy_boundary_closeout_v1.py . [ 88%]
+...............                                                          [100%]
+
+============================= 130 passed in 6.66s ==============================
+
+=== PR_BOUNDED_FULL ===
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 716 items
+
+tests/ci/test_ci_diff_aware_test_selection_v1.py ....................... [  3%]
+........................................................................ [ 13%]
+........................................................................ [ 23%]
+........................................................................ [ 33%]
+........................................................................ [ 43%]
+........................................................................ [ 53%]
+........................................................................ [ 63%]
+.............                                                            [ 65%]
+tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py ..... [ 66%]
+............................................................             [ 74%]
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py ..... [ 75%]
+...........................................................              [ 83%]
+tests/ci/test_pr_head_sha_required_checks_liveness_guard.py ..........   [ 84%]
+tests/ci/test_required_checks_config.py ....                             [ 85%]
+tests/ci/test_required_checks_hygiene.py ............                    [ 87%]
+tests/ci/test_workflows_no_pull_request_target_contract_v0.py .........  [ 88%]
+tests/test_data_contracts.py .................                           [ 90%]
+tests/test_error_taxonomy.py ..............................              [ 94%]
+tests/test_resilience.py .............................                   [ 98%]
+tests/test_stability_smoke.py ........                                   [100%]
+
+=============================== warnings summary ===============================
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:49
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:49: PytestCollectionWarning: cannot collect test class 'TestLayer' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    class TestLayer(StrEnum):
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:209
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:209: PytestCollectionWarning: cannot collect test class 'TestownerRuntimeEvidence' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:217
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:217: PytestCollectionWarning: cannot collect test class 'TestownerRuntimeReport' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:431
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:431: PytestCollectionWarning: cannot collect test class 'TestownerCategoryProvenanceReport' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534: PytestCollectionWarning: cannot collect test class 'TestownerBudgetInventoryRow' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 716 passed, 5 warnings in 35.75s =======================
+real 36.04
+user 29.35
+sys 5.82

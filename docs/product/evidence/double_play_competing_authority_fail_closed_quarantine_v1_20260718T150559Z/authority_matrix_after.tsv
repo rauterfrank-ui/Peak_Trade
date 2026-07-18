@@ -1,0 +1,9 @@
+role	owner	classification_after
+BullBearState	transition_state	SOLE
+Switch	transition_state	SOLE
+ScopeState	RuntimeScopeState	SOLE
+OpsDP	evaluate_double_play projection only	PROJECTION_DIAGNOSTIC_ONLY
+ScenarioEvent	TEST_ONLY guarded injection	TEST_ONLY_INJECTION
+BacktestFeedback	position observation only	OBSERVATION_ONLY
+CompositionCHOP	composition_matrix (entry)	LEGITIMATE_DELEGATED (not SideState SM); Scope-CHOP still NOT_BOUND
+EOF

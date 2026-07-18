@@ -137,7 +137,7 @@ def test_no_duplicate_conflicting_authoritative_double_play_owners() -> None:
 def test_live_gates_double_play_details_include_authority_boundary() -> None:
     result = check_strategy_live_eligibility("rsi_reversion", context={})
     dp = result.details["double_play"]
-    assert dp["authority_boundary"]["authority_role"] == "LEGACY_NON_AUTHORITATIVE_ANNOTATION_ONLY"
+    assert dp["authority_boundary"]["authority_role"] == "PROJECTION_DIAGNOSTIC_ONLY"
     assert (
         dp["authority_boundary"]["canonical_offline_authority_owner"]
         == CANONICAL_DOUBLE_PLAY_OFFLINE_AUTHORITY_OWNER

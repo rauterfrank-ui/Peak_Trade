@@ -274,7 +274,7 @@ def prove_offline_replay_six_node_validation_graph_binding_v0(
         selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
         ticks=build_default_bull_bear_bull_scenario_ticks(),
         source_revision="offline-replay-six-node-graph-binding-v0",
-    )
+        allow_test_scope_event_injection=True,)
     replay_result = run_offline_double_play_scenario_replay_v0(resolved_input)
     if not replay_result.replay_pass:
         fail_reasons.extend(replay_result.fail_reasons)

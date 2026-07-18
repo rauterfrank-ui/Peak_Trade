@@ -21,8 +21,16 @@
     "src/trading/master_v2/strategy_suitability_agreement_material_v1.py",
     "src/trading/master_v2/suitability_binding_v1.py",
     "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
+    "src/trading/master_v2/double_play_sole_authority_quarantine_v1.py",
     "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+    "src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py",
+    "src/ops/double_play/specialists.py",
+    "src/ops/offline_master_v2_replay_six_node_validation_graph_binding_v0.py",
+    "src/ops/bounded_master_v2_testnet_completion_path_wiring_v0.py",
+    "src/ops/bounded_testnet_market_input_admission_wiring_v0.py",
     "src/backtest/mv2_research_wiring_v1.py",
+    "src/backtest/backtest_engine_position_feedback_adapter_v1.py",
     "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py",
     "tests/trading/master_v2/test_canonical_replay_input_builder_ssot_contract_v1.py",
     "tests/trading/master_v2/test_strategy_suitability_agreement_consumer_contract_v1.py",
@@ -60,7 +68,11 @@
     "tests/trading/master_v2/test_survival_suitability_scenario_replay_binding_parity_rewire_contract_v0.py",
     "tests/test_full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py",
+    "tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py",
     "docs/ops/specs/CANONICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_CONTRACT_V1.md",
+    "docs/ops/specs/DOUBLE_PLAY_SOLE_AUTHORITY_FAIL_CLOSED_QUARANTINE_CONTRACT_V1.md",
+    "docs/ops/runbooks/double_play.md",
+    "docs/ops/runbooks/double_play_specialists.md",
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/call_graph_before_after.json",
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/contract.json",
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/instrument_isolation.json",
@@ -69,6 +81,11 @@
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/state_lifecycle.json",
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/summary.md",
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/test_results.json",
+        "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/README.md",
+    "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/executive_verdict.md",
+    "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/competing_paths_disposition.tsv",
+    "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/scenario_injection_contract.md",
+    "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/backtest_side_feedback_analysis.md",
     "config/governance/technical_canonical_wiring_authorization_v1.json"
   ],
   "allowed_surface_classes": [
@@ -86,7 +103,8 @@
     "TECHNICAL_CANONICAL_ARCHITECTURE_DRIFT_GUARD_CONTRACT_TEST",
     "TECHNICAL_DOCS_TOMBSTONE_POINTER_WIRING",
     "TECHNICAL_SURFACE_P_REGISTRY_STATUS_CONTRACT_TEST",
-    "TECHNICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_WIRING"
+    "TECHNICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_WIRING",
+    "TECHNICAL_DOUBLE_PLAY_SOLE_AUTHORITY_QUARANTINE_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -128,6 +146,7 @@
     "Includes canonical architecture drift guard SSOT contract tests (total decision owner, replay-input constructor, strategy-authority bypass rails) under runtime/authority/order NONE invariants.",
     "Includes docs-only Market Dashboard tombstone pointer updates on Double Play display/route contract specs (no DP composition semantics, no runtime/authority).",
     "Includes Surface P registry status contract-test alignment (PASS vs PARTIAL_RUNTIME_ACTIVATION_PENDING split) under runtime/authority/order NONE invariants; no owner semantic mutation.",
-    "Includes canonical Dynamic Scope trailing state continuity repair: RuntimeScopeState SSOT across integrated/backtest cycles; CanonicalScopeSnapshot identity-only; CHOP remains NOT_BOUND; no runtime/authority/order/live activation."
+    "Includes canonical Dynamic Scope trailing state continuity repair: RuntimeScopeState SSOT across integrated/backtest cycles; CanonicalScopeSnapshot identity-only; CHOP remains NOT_BOUND; no runtime/authority/order/live activation.",
+    "Includes Double Play sole authority fail-closed quarantine: Ops SwitchGate projection-only, scenario tick.scope_event TEST_ONLY guarded, backtest position feedback observation-only (no SideState overwrite); CHOP remains NOT_BOUND; no runtime/order/live activation."
   ]
 }

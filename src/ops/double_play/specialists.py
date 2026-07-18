@@ -3,7 +3,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Tuple
 
-from src.ops.gates.switch_gate import SwitchGateConfig, SwitchGateState, step_switch_gate
+from trading.master_v2.double_play_sole_authority_quarantine_v1 import (
+    OPS_EVALUATE_DOUBLE_PLAY_ROLE,
+    OPS_MAY_WRITE_SIDE_STATE,
+    OPS_SWITCH_AUTHORIZATION,
+    OPS_SWITCH_GATE_AUTHORITY_STATUS,
+    REASON_OPS_PROJECTION_ONLY,
+    REASON_OPS_SWITCH_AUTHORITY_DISABLED,
+)
 from trading.master_v2.evaluate_double_play_authority_boundary_v0 import (
     OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY,
     OPS_EVALUATE_DOUBLE_PLAY_CALLABLE,
@@ -14,7 +21,7 @@ from trading.master_v2.evaluate_double_play_authority_boundary_v0 import (
 @dataclass(frozen=True)
 class DoublePlayDecision:
     enabled: bool
-    active_specialist: str  # "bull"|"bear"
+    active_specialist: str  # "bull"|"bear" — frozen projection of input state only
     switch_state: Dict[str, Any]
     reasons: Tuple[str, ...]
     details: Dict[str, Any]
@@ -22,16 +29,15 @@ class DoublePlayDecision:
 
 def evaluate_double_play(*, context: Dict[str, Any]) -> DoublePlayDecision:
     """
-    SAFE DEFAULT OFF.
-    When enabled: update switch-gate state and return active specialist.
-    This module does not execute trades; it only selects/annotates.
+    SAFE DEFAULT OFF. Projection / diagnostic consumer only.
 
-    Authority (Slice E / Slice 4): ``LEGACY_NON_AUTHORITATIVE``. Canonical offline
-    Double-Play decision authority is
-    ``trading.master_v2.double_play_composition_matrix_v1`` /
-    ``run_integrated_offline_trading_logic_replay_v1``. live_gates uses this
-    callable for non-authorizing annotation only. System economic evidence is
-    fail-closed via ``declare_legacy_duplicate_decision_path_v0``.
+    Competing SwitchGate authority is fail-closed disabled (quarantine v1).
+    This callable never authorizes a Bull/Bear switch, never calls
+    ``step_switch_gate``, and never writes SideState back into Double Play.
+
+    Canonical Bull/Bear / Switch authority remains
+    ``trading.master_v2.double_play_state.transition_state`` via
+    ``run_integrated_offline_trading_logic_replay_v1``.
     """
     declare_legacy_duplicate_decision_path_v0(
         path_id=OPS_EVALUATE_DOUBLE_PLAY_CALLABLE,
@@ -39,50 +45,39 @@ def evaluate_double_play(*, context: Dict[str, Any]) -> DoublePlayDecision:
             context.get("system_economic_evidence_requested", False)
         ),
     )
-    reasons = []
+    sg = context.get("switch_gate", {}) or {}
+    state_d = dict(sg.get("state", {}) or {})
+    active = str(state_d.get("active", "bull") or "bull")
+    if active not in ("bull", "bear"):
+        active = "bull"
+    frozen_switch_state = {
+        "active": active,
+        "hold_remaining": int(state_d.get("hold_remaining", 0) or 0),
+        "cooldown_remaining": int(state_d.get("cooldown_remaining", 0) or 0),
+    }
+    enabled = bool(context.get("double_play_enabled", False))
+    reasons: Tuple[str, ...] = (
+        REASON_OPS_PROJECTION_ONLY,
+        REASON_OPS_SWITCH_AUTHORITY_DISABLED,
+    )
     details: Dict[str, Any] = {
         "path_authority": OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY,
         "system_economic_evidence_admissible": False,
+        "ops_role": OPS_EVALUATE_DOUBLE_PLAY_ROLE,
+        "switch_gate_authority_status": OPS_SWITCH_GATE_AUTHORITY_STATUS,
+        "switch_authorization": OPS_SWITCH_AUTHORIZATION,
+        "may_write_side_state": OPS_MAY_WRITE_SIDE_STATE,
+        "enabled": enabled,
+        "active_specialist": active,
+        "switch_state": frozen_switch_state,
+        "score_observed": float((sg.get("score", 0.0) or 0.0)),
+        "switch_gate_invoked": False,
     }
-
-    enabled = bool(context.get("double_play_enabled", False))
-    sg = context.get("switch_gate", {}) or {}
-
-    score = float(sg.get("score", 0.0))
-    state_d = sg.get("state", {}) or {}
-    cfg_d = sg.get("cfg", {}) or {}
-
-    state = SwitchGateState(
-        active=str(state_d.get("active", "bull")),
-        hold_remaining=int(state_d.get("hold_remaining", 0) or 0),
-        cooldown_remaining=int(state_d.get("cooldown_remaining", 0) or 0),
-    )
-    cfg = SwitchGateConfig(
-        hysteresis=float(cfg_d.get("hysteresis", 0.0)),
-        min_hold_steps=int(cfg_d.get("min_hold_steps", 0) or 0),
-        cooldown_steps=int(cfg_d.get("cooldown_steps", 0) or 0),
-    )
-
-    if not enabled:
-        details.update(
-            {"enabled": False, "active_specialist": state.active, "switch_state": state_d}
-        )
-        return DoublePlayDecision(False, state.active, dict(state_d), tuple(reasons), details)
-
-    new_state = step_switch_gate(
-        score=score, state=state, cfg=cfg, bull_label="bull", bear_label="bear"
-    )
-    details.update(
-        {
-            "enabled": True,
-            "active_specialist": new_state.active,
-            "switch_state": {
-                "active": new_state.active,
-                "hold_remaining": new_state.hold_remaining,
-                "cooldown_remaining": new_state.cooldown_remaining,
-            },
-        }
-    )
+    # Enabled flag remains observational only — never advances switch state.
     return DoublePlayDecision(
-        True, new_state.active, details["switch_state"], tuple(reasons), details
+        False if not enabled else True,
+        active,
+        frozen_switch_state,
+        reasons,
+        details,
     )

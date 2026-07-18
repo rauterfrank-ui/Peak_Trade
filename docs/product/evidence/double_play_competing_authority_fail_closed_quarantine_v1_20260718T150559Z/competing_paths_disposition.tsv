@@ -1,0 +1,12 @@
+path_id	before_classification	disposition	after_status	file	symbol	notes
+C1	COMPETING_AUTHORITY	FAIL_CLOSED_DISABLE	PROJECTION_DIAGNOSTIC_ONLY	src/ops/double_play/specialists.py	evaluate_double_play	no step_switch_gate; no SideState write
+C2	COMPETING_AUTHORITY	FAIL_CLOSED_DISABLE	PRIMITIVE_QUARANTINED	src/ops/gates/switch_gate.py	step_switch_gate	not wired into DP authority; unit-testable only
+C3	COMPETING_AUTHORITY	OBSERVATION_ONLY	OBSERVATION_ONLY	src/backtest/backtest_engine_position_feedback_adapter_v1.py	capture_*	NEUTRAL placeholders; no LONG_* SideState invention
+B1	BYPASS_PATH	TEST_ONLY_INJECTION	TEST_ONLY_GUARDED	src/trading/master_v2/offline_double_play_scenario_replay_v0.py	tick.scope_event	flag+provenance required
+B2	BYPASS_PATH	OBSERVATION_ONLY	NO_SIDESTATE_OVERWRITE	src/backtest/mv2_research_wiring_v1.py	apply_*_feedback	position fields only
+D1	DUPLICATE_AUTHORITY	KEEP_DEFERRED	DUPLICATE_SEMANTIC_DEFERRED	composition_matrix vs ScopeEvent.CHOP	Composition-CHOP vs Scope-CHOP	not competing Switch; follow-up CHOP slice
+D2	DUPLICATE_AUTHORITY	TEST_ONLY_INJECTION	RESOLVED	scenario event vs generator	tick vs generate_*	generator remains productive SM input on integrated path
+L1	LEGACY	QUARANTINE_LEGACY	PROJECTION_ONLY	ops evaluate_double_play	live_gates annotation	eligibility coupling false
+L2	LEGACY	QUARANTINE_LEGACY	TEST_ONLY	scenario replay	LEGACY_NON_AUTHORITATIVE	harness-only with flag
+L3	DEAD_OR_LEGACY	KEEP	SUPERSEDED	_EMPTY_SCOPE_STATE	pre-repair	already removed from integrated path
+EOF

@@ -1267,16 +1267,15 @@ def apply_backtest_engine_position_feedback_to_mv2_sequence_state_v1(
     sequence_state: MV2IntegratedReplayBarSequenceStateV1,
     feedback: BacktestEnginePositionFeedbackV1,
 ) -> MV2IntegratedReplayBarSequenceStateV1:
-    """Overlay canonical backtest execution position onto the next MV2 replay bar input."""
+    """Overlay backtest **position observation** onto the next MV2 replay bar input.
+
+    Fail-closed quarantine: does **not** overwrite ``side_state``, ``direction_state``,
+    ``scope_direction_state``, or ``runtime_scope_state``. Bull/Bear / Switch authority
+    remains ``transition_state``; RuntimeScopeState remains trailing SSOT.
+    """
     position_state = coerce_backtest_position_state_v1(feedback.position_state)
     return replace(
         sequence_state,
-        side_state=feedback.side_state,
-        direction_state=feedback.direction_state,
-        scope_direction_state=scope_direction_from_side_state_v1(
-            feedback.side_state,
-            fallback=sequence_state.scope_direction_state,
-        ),
         position_state=position_state,
         reconciliation_state=feedback.reconciliation_state,
         existing_position_side=feedback.existing_position_side,
