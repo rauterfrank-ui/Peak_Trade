@@ -1,0 +1,9 @@
+TS=2026-07-18T20:31:14Z
+BRANCH=fix/mv2-research-scope-distances-instrument-relative-v1
+HEAD=a55c4000f33269a98107fd1294b1c9ba82433cad
+ORIGIN_MAIN=a55c4000f33269a98107fd1294b1c9ba82433cad
+PYTHON_TESTS=Python 3.11.14
+STASHES:
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework

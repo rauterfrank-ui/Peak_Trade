@@ -1665,6 +1665,60 @@ def project_directional_confirmation_state_from_assessments_v1(
     )
 
 
+# Research-wiring scope distances: generator contract expects absolute price units
+# equal to mark units. Legacy hardcoded 120/60/90 were ETH-fixture-scale absolutes
+# (UNIT_MISMATCH on sub-1.0 research marks). Bind relative BPS, convert once.
+# Legacy relation preserved: up:adverse:reversal = 120:60:90 = 1:0.5:0.75.
+_MV2_RESEARCH_SCOPE_UP_DISTANCE_BPS = 100.0  # 1% of current mark
+_MV2_RESEARCH_SCOPE_ADVERSE_TO_UP_RATIO = 60.0 / 120.0  # legacy 60/120
+_MV2_RESEARCH_SCOPE_REVERSAL_TO_UP_RATIO = 90.0 / 120.0  # legacy 90/120
+_MV2_RESEARCH_SCOPE_BPS_PER_UNIT = 10_000.0
+
+
+@dataclass(frozen=True)
+class MV2ResearchScopeDistancesAbsoluteV1:
+    """Absolute price distances for scope-event generator input (mark units)."""
+
+    up_distance: float
+    adverse_exit_distance: float
+    reversal_distance: float
+
+
+def compute_mv2_research_scope_distances_absolute_from_mark_v1(
+    mark_price: float,
+) -> MV2ResearchScopeDistancesAbsoluteV1:
+    """Scale research scope distances from current mark (BPS → absolute price).
+
+    Fail-closed on non-finite or non-positive mark. Never falls back to legacy
+    absolute 120/60/90 and never invents direction / SideState.
+    """
+    _fail_closed(mark_price is None, "mv2_research_scope_distance_mark_missing")
+    try:
+        mark = float(mark_price)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("mv2_research_scope_distance_mark_invalid") from exc
+    _fail_closed(not math.isfinite(mark), "mv2_research_scope_distance_mark_non_finite")
+    _fail_closed(mark <= 0.0, "mv2_research_scope_distance_mark_non_positive")
+    up = mark * (_MV2_RESEARCH_SCOPE_UP_DISTANCE_BPS / _MV2_RESEARCH_SCOPE_BPS_PER_UNIT)
+    adverse = up * _MV2_RESEARCH_SCOPE_ADVERSE_TO_UP_RATIO
+    reversal = up * _MV2_RESEARCH_SCOPE_REVERSAL_TO_UP_RATIO
+    _fail_closed(not math.isfinite(up) or up <= 0.0, "mv2_research_scope_up_distance_invalid")
+    _fail_closed(
+        not math.isfinite(adverse) or adverse <= 0.0,
+        "mv2_research_scope_adverse_distance_invalid",
+    )
+    _fail_closed(
+        not math.isfinite(reversal) or reversal <= 0.0,
+        "mv2_research_scope_reversal_distance_invalid",
+    )
+    _fail_closed(adverse > reversal, "mv2_research_scope_adverse_exceeds_reversal")
+    return MV2ResearchScopeDistancesAbsoluteV1(
+        up_distance=up,
+        adverse_exit_distance=adverse,
+        reversal_distance=reversal,
+    )
+
+
 def _build_replay_input(
     *,
     replay_id: str,
@@ -1680,11 +1734,13 @@ def _build_replay_input(
         StrategySuitabilityAgreementMaterialV1
     ] = None,
 ) -> IntegratedOfflineReplayInputV1:
+    mark_price = float(context.mark_price)
     price_path = project_mv2_agreement_bound_price_path_v1(
-        mark_price=float(context.mark_price),
+        mark_price=mark_price,
         material=strategy_suitability_agreement_material,
         prior_mark_price=sequence_state.prior_mark_price,
     )
+    scope_distances = compute_mv2_research_scope_distances_absolute_from_mark_v1(mark_price)
     return build_integrated_offline_replay_input_v1(
         replay_id=replay_id,
         instrument_id=instrument_id,
@@ -1701,11 +1757,11 @@ def _build_replay_input(
         scope_direction_state=sequence_state.scope_direction_state,
         scope_confirmation_state=sequence_state.scope_confirmation_state,
         scope_cooldown_state=sequence_state.scope_cooldown_state,
-        up_distance=120.0,
-        adverse_exit_distance=60.0,
-        reversal_distance=90.0,
+        up_distance=scope_distances.up_distance,
+        adverse_exit_distance=scope_distances.adverse_exit_distance,
+        reversal_distance=scope_distances.reversal_distance,
         confirmation_epochs=2,
-        current_price=float(context.mark_price),
+        current_price=mark_price,
         price_path=price_path,
         directional_confirmation_state=sequence_state.directional_confirmation_state,
         strategy_registry=strategy_registry,

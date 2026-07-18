@@ -1,0 +1,18 @@
+TS=2026-07-18T20:27:06Z
+BRANCH=fix/mv2-research-scope-distances-instrument-relative-v1
+HEAD=a55c4000f33269a98107fd1294b1c9ba82433cad
+ORIGIN_MAIN=a55c4000f33269a98107fd1294b1c9ba82433cad
+EXPECTED=a55c4000f33269a98107fd1294b1c9ba82433cad
+HEAD_MATCH=true
+STATUS:
+?? docs/evidence/canonical_chain_post_5337_zero_trade_audit_v1/
+?? docs/evidence/ehlers_bouchaud_system_integration_audit_v1/
+?? docs/evidence/el_karoui_armstrong_system_integration_audit_v1/
+?? docs/evidence/mv2_research_scope_distances_instrument_relative_v1/
+?? docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+?? docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/
+?? docs/evidence/scope_event_noop_root_cause_audit_v1/
+STASH:
+stash@{0}: On feat/double-play-competing-authority-fail-closed-quarantine-v1: review-temp-untracked
+stash@{1}: On feat/market-dashboard-composition-first-refactor-v1: TEMP_IGNORE_RUNTIME_TESTOUTPUT
+stash@{2}: On feat/market-dashboard-phase-3-chart-polish-v1: runtime-only-before-foundation-rework

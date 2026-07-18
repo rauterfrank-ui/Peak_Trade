@@ -1,0 +1,23 @@
+{
+  "after_bear_candidate_count": 2791,
+  "after_bear_event_count": 0,
+  "after_bull_candidate_count": 2,
+  "after_bull_event_count": 2,
+  "after_event_counts": {
+    "adverse_exit_candidate": 2824,
+    "noop": 67,
+    "upscope_candidate": 1,
+    "upscope_confirmed": 1
+  },
+  "after_noop_count": 67,
+  "after_threshold_miss_count": 100,
+  "before_bear_candidate_count": 0,
+  "before_bull_candidate_count": 0,
+  "before_noop_count": 2893,
+  "before_threshold_miss_count": 2893,
+  "hooked_bars": 2893,
+  "legacy_absolute_distance_seen": 0,
+  "member": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+  "ok": true,
+  "trades_opened": 1
+}

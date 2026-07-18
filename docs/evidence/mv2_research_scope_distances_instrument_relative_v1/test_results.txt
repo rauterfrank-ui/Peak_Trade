@@ -1,0 +1,21 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.1, cov-7.1.0
+collected 79 items
+
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py . [  1%]
+........                                                                 [ 11%]
+tests/backtest/test_canonical_chain_zero_trade_blocker_v1.py ........... [ 25%]
+                                                                         [ 25%]
+tests/backtest/test_mv2_composition_directional_asymmetry_wiring_repair_v1.py . [ 26%]
+............                                                             [ 41%]
+tests/backtest/test_obl_b07_bollinger_event_only_semantic_contract_v1.py . [ 43%]
+.........                                                                [ 54%]
+tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py . [ 55%]
+........                                                                 [ 65%]
+tests/trading/master_v2/test_double_play_composition_matrix_v1.py ...... [ 73%]
+.....................                                                    [100%]
+
+============================== 79 passed in 1.20s ==============================
