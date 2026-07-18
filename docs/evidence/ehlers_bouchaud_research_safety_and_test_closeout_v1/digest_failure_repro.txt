@@ -1,0 +1,63 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 6 items
+
+tests/ops/test_step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0_contract.py F [ 16%]
+                                                                         [ 16%]
+tests/ops/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0_contract.py F [ 33%]
+FF                                                                       [ 66%]
+tests/backtest/test_step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibility_contract_v1.py F [ 83%]
+                                                                         [ 83%]
+tests/backtest/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_economic_evaluation_admissibility_contract_v1.py F [100%]
+
+=================================== FAILURES ===================================
+_______ test_config_and_strategy_params_digests_unchanged_on_main_config _______
+tests/ops/test_step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0_contract.py:39: in test_config_and_strategy_params_digests_unchanged_on_main_config
+    assert (
+E   AssertionError: assert '89d00a3ed284...6e7cc997dc83d' == 'c4db0a42b951...d7d9a29c204a6'
+E     
+E     - c4db0a42b95156192d8c1fcf486aa3d616ae2f0b5dafa26b9e0d7d9a29c204a6
+E     + 89d00a3ed284f6aa8c9f938255200d7e4059503b126255f19346e7cc997dc83d
+____________ test_implementation_digest_stable_and_matches_binding _____________
+tests/ops/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0_contract.py:31: in test_implementation_digest_stable_and_matches_binding
+    assert digest == binding["binding"]["digest_bindings"]["implementation_digest"]["value"]
+E   AssertionError: assert '20a4dbd18fdd...c4f7aa5af431e' == 'e76f7d06e9e8...2a37d4a8b2e35'
+E     
+E     - e76f7d06e9e8e92e2ea3db436e404894e66f218ee78e4f1e0962a37d4a8b2e35
+E     + 20a4dbd18fdd8586509d99481440486f012ff05807db919095ac4f7aa5af431e
+______________________ test_config_digest_matches_binding ______________________
+tests/ops/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0_contract.py:39: in test_config_digest_matches_binding
+    assert digest == binding["binding"]["digest_bindings"]["config_digest"]["value"]
+E   AssertionError: assert '09aa6f5206d9...0630f61c77af8' == 'a3af95053e4a...56b167bfafd95'
+E     
+E     - a3af95053e4a60d302c47465d40b82d2002b75d51a2822a01d756b167bfafd95
+E     + 09aa6f5206d9302914d7cf63151e5e28b28f473fda3971eaefd0630f61c77af8
+_________________ test_binding_digest_roundtrip_deterministic __________________
+tests/ops/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0_contract.py:67: in test_binding_digest_roundtrip_deterministic
+    assert first == binding["binding_digest"]
+E   AssertionError: assert 'ded2df62b58c...545cd5c4385d6' == '99d6153cfc25...ae9f91ac26422'
+E     
+E     - 99d6153cfc25e550a429cde04a2d684c56e0e84369cc3e1196cae9f91ac26422
+E     + ded2df62b58c5759b418c9e4845091bdd6a58857e73ea7f527d545cd5c4385d6
+_____________________ test_versioned_bindings_materialized _____________________
+tests/backtest/test_step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibility_contract_v1.py:169: in test_versioned_bindings_materialized
+    assert binding["binding"]["digest_bindings"]["config_digest"][
+E   AssertionError: assert 'c4db0a42b951...d7d9a29c204a6' == '89d00a3ed284...6e7cc997dc83d'
+E     
+E     - 89d00a3ed284f6aa8c9f938255200d7e4059503b126255f19346e7cc997dc83d
+E     + c4db0a42b95156192d8c1fcf486aa3d616ae2f0b5dafa26b9e0d7d9a29c204a6
+________________ test_versioned_binding_matches_research_scope _________________
+tests/backtest/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_economic_evaluation_admissibility_contract_v1.py:186: in test_versioned_binding_matches_research_scope
+    assert binding["economic_evaluation_executed"] is False
+E   assert True is False
+=========================== short test summary info ============================
+FAILED tests/ops/test_step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0_contract.py::test_config_and_strategy_params_digests_unchanged_on_main_config
+FAILED tests/ops/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0_contract.py::test_implementation_digest_stable_and_matches_binding
+FAILED tests/ops/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0_contract.py::test_config_digest_matches_binding
+FAILED tests/ops/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0_contract.py::test_binding_digest_roundtrip_deterministic
+FAILED tests/backtest/test_step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibility_contract_v1.py::test_versioned_bindings_materialized
+FAILED tests/backtest/test_step29m_bouchaud_microstructure_ohlcv_proxy_v1_economic_evaluation_admissibility_contract_v1.py::test_versioned_binding_matches_research_scope
+============================== 6 failed in 1.48s ===============================
