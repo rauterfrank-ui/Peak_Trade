@@ -1,6 +1,7 @@
 # Bouchaud Safety Closeout
 
-Owner: `src/strategies/bouchaud/bouchaud_microstructure_strategy.py::BouchaudMicrostructureStrategy.generate_signals`
+Owner path: `src&#47;strategies&#47;bouchaud&#47;bouchaud_microstructure_strategy.py`  
+Owner symbol: `BouchaudMicrostructureStrategy.generate_signals`
 
 | Check | Result |
 |---|---|

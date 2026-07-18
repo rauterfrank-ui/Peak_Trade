@@ -1,6 +1,7 @@
 # Ehlers Safety Closeout
 
-Owner: `src/strategies/ehlers/ehlers_cycle_filter_strategy.py::EhlersCycleFilterStrategy.generate_signals`
+Owner path: `src&#47;strategies&#47;ehlers&#47;ehlers_cycle_filter_strategy.py`  
+Owner symbol: `EhlersCycleFilterStrategy.generate_signals`
 
 | Check | Result |
 |---|---|

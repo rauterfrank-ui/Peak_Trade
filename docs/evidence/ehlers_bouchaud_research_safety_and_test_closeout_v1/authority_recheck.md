@@ -11,7 +11,7 @@
 | Risk/Sizing/Execution | false | false |
 | Combined aggregator | none | none |
 
-Callers of strategy classes remain: package `__init__`, `registry.py`, STEP29M research/backtest admissibility adapters — **no** `src/trading/master_v2` references.
+Callers of strategy classes remain: package `__init__`, `registry.py`, STEP29M research/backtest admissibility adapters — **no** Master V2 / Double Play package binding.
 
 - COMPETING_AUTHORITY_COUNT_AFTER=0
 - LEGACY_PRODUCTIVE_COUNT_AFTER=0
