@@ -1,0 +1,427 @@
+# searched_paths / ripgrep inventory
+TS=2026-07-18T20:42:15Z
+## adverse exit
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py:58:        assert d.adverse_exit_distance == pytest.approx(d.up_distance * 0.5)
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py:62:        assert d.adverse_exit_distance != 60.0
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py:71:    assert high.adverse_exit_distance / low.adverse_exit_distance == pytest.approx(10.0)
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py:84:        adverse_exit_distance=d.adverse_exit_distance,
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py:112:    assert "adverse_exit_distance=60" not in src
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py:137:    assert "adverse_exit_distance=60.0" not in wiring
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py:251:        adverse = float(getattr(binding, "adverse_exit_distance", 0.0) or 0.0)
+tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py:258:            adverse_exit_distance=adverse,
+tests/research/test_backtest_runtime_decision_parity_pass_assertion_bull_bear_state_switch_surface_only_v0.py:180:def test_next_parity_surface_is_scope_adverse_exit_assessment() -> None:
+tests/research/test_backtest_runtime_decision_parity_pass_assertion_bull_bear_state_switch_surface_only_v0.py:184:        == "SCOPE_ADVERSE_EXIT_AND_REVERSAL_PREPARATION_BACKTEST_PARITY_WIRING_ASSESSMENT_OR_NARROW_REWIRE_V0"
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:260:    "adverse_exit_path",
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:747:    adverse = binding.scope_adverse_exit_signal
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:782:    adverse_exit_distance: float = 2.0,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:795:            adverse_exit_distance=adverse_exit_distance,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:912:        scope_adverse_exit_signal=scope_binding.scope_adverse_exit_signal,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:922:    if not scope_binding.scope_adverse_exit_signal.triggered:
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1039:            scope_adverse_exit_signal=scope_binding.scope_adverse_exit_signal,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1056:    if not scope_binding.scope_adverse_exit_signal.triggered:
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2176:            "adverse_exit_path",
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2395:    elif fixture.path_kind == "adverse_exit_path":
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2403:                "scope_adverse_exit_signal": PolicySignalV0(
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2574:        adverse_exit_distance=80.0,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2619:        scope_adverse_exit_signal=overrides.get(
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2620:            "scope_adverse_exit_signal",
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2802:    if fixture.path_kind == "adverse_exit_path":
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2807:            scope_adverse_exit_signal=PolicySignalV0(
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2865:    if fixture.path_kind == "adverse_exit_path":
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:3192:    if path_kind == "adverse_exit_path":
+tests/research/test_survival_and_suitability_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:76:ADVERSE_EXIT_CONTRACT = (
+tests/research/test_survival_and_suitability_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:78:    / "docs/research/adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json"
+tests/research/test_survival_and_suitability_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:364:    assert ADVERSE_EXIT_CONTRACT.is_file()
+tests/research/test_backtest_runtime_decision_parity_trace_matrix_v0.py:13:        "scope_adverse_exit_and_reversal_preparation",
+src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py:191:                " + scope_adverse_exit_signal -> evaluate_double_play_entry_exit_policy_v0()"
+src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py:196:                " + scope_adverse_exit_signal -> evaluate_scenario_entry_exit_policy_v0()"
+src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py:199:                "mv2_research_wiring_v1 adverse_exit_distance=60.0 -> integrated replay"
+src/trading/master_v2/flat_before_opposite_side_scenario_binding_adapter_v0.py:111:        scope_adverse_exit_signal=policy_context.scope_adverse_exit_signal,
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:5:and derives ``scope_adverse_exit_signal`` for the entry-exit policy chain.
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:88:    adverse_exit_distance: float | None = None
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:96:    scope_adverse_exit_signal: PolicySignalV0
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:133:    adverse_exit_distance: float | None,
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:138:        and adverse_exit_distance is not None
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:141:        return float(up_distance), float(adverse_exit_distance), float(reversal_distance)
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:194:    up_distance, adverse_exit_distance, reversal_distance = _distance_triplet_from_scope_v0(
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:198:        adverse_exit_distance=ctx.adverse_exit_distance,
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:221:        adverse_exit_distance=adverse_exit_distance,
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:234:def derive_scope_adverse_exit_signal_v0(
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:240:    if evidence.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE:
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:242:    if ScopeCandidateKind.ADVERSE_EXIT.value in evidence.matched_conditions:
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:268:    adverse_signal = derive_scope_adverse_exit_signal_v0(evidence)
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:276:        scope_adverse_exit_signal=adverse_signal,
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:322:    scenario = scenario_binding.scope_adverse_exit_signal
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:49:    derive_scope_adverse_exit_signal_v0,
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:125:def test_scenario_adverse_exit_uses_canonical_generator_v0() -> None:
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:141:            adverse_exit_distance=2.0,
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:145:    assert binding.scope_event_evidence.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:146:    assert binding.scope_adverse_exit_signal.triggered is True
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:150:def test_no_legacy_shortcut_adverse_exit_from_tick_scope_event_v0() -> None:
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:167:            adverse_exit_distance=2.0,
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:171:    assert binding.scope_adverse_exit_signal.triggered is False
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:174:        is not CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:178:def test_untrusted_data_blocks_adverse_exit_authority_v0() -> None:
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:196:            adverse_exit_distance=2.0,
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:200:    assert binding.scope_adverse_exit_signal.triggered is False
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:205:def test_derive_scope_adverse_exit_signal_from_matched_condition_v0() -> None:
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:221:            adverse_exit_distance=2.0,
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:225:    signal = derive_scope_adverse_exit_signal_v0(binding.scope_event_evidence)
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:227:    assert ScopeCandidateKind.ADVERSE_EXIT.value in binding.scope_event_evidence.matched_conditions
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:329:def test_adverse_exit_signal_drives_entry_exit_policy_when_position_open_v0() -> None:
+tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py:352:            scope_adverse_exit_signal=PolicySignalV0(
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:49:    ADVERSE_EXIT = "adverse_exit"
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:61:    ADVERSE_EXIT_CANDIDATE = "adverse_exit_candidate"
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:127:    adverse_exit_distance: float
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:143:    adverse_exit_threshold: float
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:154:    adverse_exit_distance: float
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:218:    adverse_exit_distance: float,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:238:    if not _positive_finite(adverse_exit_distance):
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:240:    elif adverse_exit_distance > policy.hard_max_adverse_distance:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:246:    if adverse_exit_distance > reversal_distance:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:298:    adverse_exit_distance: float,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:303:    adverse = float(adverse_exit_distance)
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:309:            adverse_exit_threshold=anchor - adverse,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:315:        adverse_exit_threshold=anchor + adverse,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:338:        if price <= thresholds.adverse_exit_threshold:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:339:            matched.append(ScopeCandidateKind.ADVERSE_EXIT)
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:345:        if price >= thresholds.adverse_exit_threshold:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:346:            matched.append(ScopeCandidateKind.ADVERSE_EXIT)
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:421:    if kind is ScopeCandidateKind.ADVERSE_EXIT:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:422:        return CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:439:    if ScopeCandidateKind.ADVERSE_EXIT in matched:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:440:        return ScopeCandidateKind.ADVERSE_EXIT
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:464:        adverse_exit_distance=float(inp.adverse_exit_distance),
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:476:        "adverse_exit_distance": binding.adverse_exit_distance,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:490:            "adverse_exit_threshold": evidence.evaluated_thresholds.adverse_exit_threshold,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:641:        adverse_exit_distance=inp.adverse_exit_distance,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:648:        adverse_exit_distance=inp.adverse_exit_distance,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:688:            and selected is not ScopeCandidateKind.ADVERSE_EXIT
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:733:    if cooldown_blocks and selected_kind not in (ScopeCandidateKind.ADVERSE_EXIT, None):
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:751:    if selected_kind is ScopeCandidateKind.ADVERSE_EXIT:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:752:        event_type = CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py:260:        "adverse_exit_distance": 80.0,
+tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py:285:        "scope_adverse_exit_signal": PolicySignalV0(triggered=False),
+tests/trading/master_v2/test_scenario_replay_double_play_entry_exit_policy_binding_parity_rewire_contract_v0.py:184:        scope_adverse_exit_signal=PolicySignalV0(triggered=True, reason_code="adverse_scope"),
+tests/trading/master_v2/test_scenario_replay_double_play_entry_exit_policy_binding_parity_rewire_contract_v0.py:206:        scope_adverse_exit_signal=PolicySignalV0(triggered=True, reason_code="adverse_scope"),
+tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py:233:    adverse_exit_distance: float = 30.0,
+tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py:268:        adverse_exit_distance=adverse_exit_distance,
+tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py:293:        scope_adverse_exit_signal=PolicySignalV0(triggered=False),
+tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py:431:    # adverse farther than up so a moderate drop confirms DOWNSCOPE without ADVERSE_EXIT;
+tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py:432:    # policy requires adverse_exit_distance <= reversal_distance.
+tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py:433:    dist = {"up_distance": 40.0, "adverse_exit_distance": 80.0, "reversal_distance": 100.0}
+tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py:77:def test_scope_adverse_exit_surface_pass_v0() -> None:
+tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py:242:        "adverse_exit_path",
+tests/research/test_adverse_scope_exit_reversal_preparation_narrow_reuse_first_rewire_v0.py:26:        if s["surface_id"] == "scope_adverse_exit_and_reversal_preparation"
+tests/research/test_adverse_scope_exit_reversal_preparation_narrow_reuse_first_rewire_v0.py:58:        is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/research/test_adverse_scope_exit_reversal_preparation_narrow_reuse_first_rewire_v0.py:60:    assert scope_binding.scope_adverse_exit_signal.triggered is True
+tests/research/test_adverse_scope_exit_reversal_preparation_narrow_reuse_first_rewire_v0.py:94:    assert scope_edge["surface_id"] == "scope_adverse_exit_and_reversal_preparation"
+src/trading/master_v2/double_play_entry_exit_policy_v0.py:199:    scope_adverse_exit_signal: PolicySignalV0
+src/trading/master_v2/double_play_entry_exit_policy_v0.py:337:        ExitClass.ADVERSE_SCOPE_EXIT: inp.scope_adverse_exit_signal,
+src/trading/master_v2/double_play_entry_exit_policy_v0.py:375:        "scope_adverse_exit_signal": inp.scope_adverse_exit_signal.triggered,
+src/trading/master_v2/double_play_entry_exit_policy_v0.py:758:            ExitClass.ADVERSE_SCOPE_EXIT: inp.scope_adverse_exit_signal,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:113:        "adverse_exit_distance": 80.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:178:        adverse_exit_distance=80.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:189:        "adverse_exit_distance": 80.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:207:def test_long_adverse_exit_candidate() -> None:
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:209:    assert evidence.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:212:def test_short_adverse_exit_candidate_mirrored() -> None:
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:221:    assert evidence.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:235:    assert evidence.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:236:    assert ScopeCandidateKind.ADVERSE_EXIT.value in evidence.matched_conditions
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:286:    assert downscope.next_confirmation_state.candidate_kind is ScopeCandidateKind.ADVERSE_EXIT
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:336:        adverse_exit_distance=80.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:349:def test_adverse_exit_distance_zero_invalid() -> None:
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:350:    evidence = _generate(adverse_exit_distance=0.0, current_price=3410.0)
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:359:def test_adverse_exit_distance_exceeds_reversal_invalid() -> None:
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:361:        adverse_exit_distance=150.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:451:def test_active_cooldown_allows_adverse_exit_evidence() -> None:
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:457:    assert evidence.event_type is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:533:        adverse_exit_distance=40.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:542:        adverse_exit_distance=40.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:554:        adverse_exit_distance=8.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:561:        adverse_exit_distance=8.0,
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:566:    assert long_t.adverse_exit_threshold == pytest.approx(92.0)
+tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py:567:    assert short_t.adverse_exit_threshold == pytest.approx(108.0)
+src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py:392:        adverse_exit_distance=80.0,
+src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py:417:        scope_adverse_exit_signal=PolicySignalV0(triggered=False),
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:114:    derive_scope_adverse_exit_signal_v0,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:206:    adverse_exit_distance: float
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:227:    scope_adverse_exit_signal: PolicySignalV0
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:344:    adverse_exit_distance: float,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:365:    scope_adverse_exit_signal: PolicySignalV0,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:433:        ("adverse_exit_distance", adverse_exit_distance),
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:487:        ("scope_adverse_exit_signal", scope_adverse_exit_signal),
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:602:        adverse_exit_distance=adverse_exit_distance,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:623:        scope_adverse_exit_signal=scope_adverse_exit_signal,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:999:def resolve_integrated_scope_adverse_exit_signal_v0(
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1004:    derived = derive_scope_adverse_exit_signal_v0(scope_event)
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1161:        adverse_exit_distance=float(inp.adverse_exit_distance),
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1275:    scope_adverse_exit_signal = resolve_integrated_scope_adverse_exit_signal_v0(
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1277:        inp.scope_adverse_exit_signal,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1306:        scope_adverse_exit_signal=scope_adverse_exit_signal,
+tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py:405:        "scope_adverse_exit_signal": PolicySignalV0(triggered=False),
+tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py:563:        scope_adverse_exit_signal=PolicySignalV0(triggered=True, reason_code="adverse_scope"),
+tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py:577:        scope_adverse_exit_signal=PolicySignalV0(triggered=True, reason_code="adverse_scope"),
+tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py:617:        scope_adverse_exit_signal=PolicySignalV0(triggered=True),
+tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py:714:        scope_adverse_exit_signal=PolicySignalV0(triggered=True, reason_code="adverse"),
+tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py:726:        scope_adverse_exit_signal=PolicySignalV0(triggered=True),
+tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py:810:        "scope_adverse_exit_signal": PolicySignalV0(triggered=True),
+tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py:817:        "scope_adverse_exit_signal": PolicySignalV0(triggered=True),
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1118:            scope_adverse_exit_signal=scope_event_binding.scope_adverse_exit_signal,
+src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py:74:    scope_adverse_exit_signal: PolicySignalV0 = PolicySignalV0(triggered=False)
+src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py:120:        scope_adverse_exit_signal=ctx.scope_adverse_exit_signal,
+src/backtest/mv2_research_wiring_v1.py:385:    scope_adverse_exit_signal: PolicySignalV0
+src/backtest/mv2_research_wiring_v1.py:1196:        scope_adverse_exit_signal=PolicySignalV0(triggered=False),
+src/backtest/mv2_research_wiring_v1.py:1256:        scope_adverse_exit_signal=PolicySignalV0(triggered=False),
+src/backtest/mv2_research_wiring_v1.py:1490:        adverse_exit_distance=replay_input.adverse_exit_distance,
+src/backtest/mv2_research_wiring_v1.py:1517:        scope_adverse_exit_signal=_signal(replay_input.scope_adverse_exit_signal),
+src/backtest/mv2_research_wiring_v1.py:1683:    adverse_exit_distance: float
+src/backtest/mv2_research_wiring_v1.py:1717:        adverse_exit_distance=adverse,
+src/backtest/mv2_research_wiring_v1.py:1761:        adverse_exit_distance=scope_distances.adverse_exit_distance,
+src/backtest/mv2_research_wiring_v1.py:1782:        scope_adverse_exit_signal=sequence_state.scope_adverse_exit_signal,
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:9:from scripts.research.scope_adverse_exit_and_reversal_preparation_narrow_reuse_first_rewire_v0 import (
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:14:    evaluate_scope_adverse_exit_and_reversal_parity_fixtures_v0,
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:29:    derive_scope_adverse_exit_signal_v0,
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:37:    / "adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json"
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:86:    assert data["canonical_adverse_exit_owner"] == CANONICAL_SCOPE_EVENT_GENERATOR_OWNER
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:108:        == "SCOPE_ADVERSE_EXIT_AND_REVERSAL_PREPARATION_BACKTEST_PARITY_NARROW_REWIRE_V0"
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:129:    scope_binding, reversal_decision = evaluate_scope_adverse_exit_and_reversal_parity_fixtures_v0()
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:132:        is CanonicalScopeEventType.ADVERSE_EXIT_CANDIDATE
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:134:    assert scope_binding.scope_adverse_exit_signal.triggered is True
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:146:    assert findings["integrated_replay_derives_scope_adverse_exit_signal"] is False
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:150:def test_scenario_adapter_derives_scope_adverse_exit_signal_from_evidence() -> None:
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:151:    scope_binding, _ = evaluate_scope_adverse_exit_and_reversal_parity_fixtures_v0()
+tests/research/test_adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py:152:    derived = derive_scope_adverse_exit_signal_v0(scope_binding.scope_event_evidence)
+tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py:9:from scripts.research.adverse_exit_and_reversal_preparation_backtest_parity_narrow_rewire_v0 import (
+tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py:14:    evaluate_adverse_exit_integrated_backtest_parity_fixtures_v0,
+tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py:39:    resolve_integrated_scope_adverse_exit_signal_v0,
+tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py:52:    derive_scope_adverse_exit_signal_v0,
+tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py:62:    / "docs/research/scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.json"
+tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py:66:    / "docs/research/adverse_exit_and_reversal_preparation_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json"
+tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py:70:    / "docs/research/adverse_exit_and_reversal_preparation_backtest_parity_narrow_rewire_v0.json"
+tests/research/test_scope_adverse_exit_reversal_backtest_runtime_decision_parity_pass_assertion_surface_only_v0.py:96:        scope_adverse_exit_signal=PolicySignalV0(triggered=False),
+## downscope / scope event
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:681:    current_downscope_boundary=0.0,
+src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py:190:                "integrated_offline_trading_logic_replay_v1 -> generate_deterministic_scope_event()"
+src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py:195:                " -> generate_deterministic_scope_event()"
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:4:``deterministic_scope_event_generator_v1.generate_deterministic_scope_event`` owner
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:38:    generate_deterministic_scope_event,
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:262:    """Evaluate one scenario tick through canonical ``generate_deterministic_scope_event`` only."""
+src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py:266:        generate_deterministic_scope_event(generator_input, generator_policy)
+src/trading/master_v2/double_play_state.py:36:    DOWNSCOPE_CANDIDATE = "downscope_candidate"
+src/trading/master_v2/double_play_state.py:37:    DOWNSCOPE_CONFIRMED = "downscope_confirmed"
+src/trading/master_v2/double_play_state.py:77:    downscope_band_multiplier: float = 1.0
+src/trading/master_v2/double_play_state.py:97:    current_downscope_boundary: float = 0.0
+src/trading/master_v2/double_play_state.py:193:    Long: anchor chases new highs; downscope boundary trails below anchor.
+src/trading/master_v2/double_play_state.py:206:        up = new_anchor + band  # still bounded; manifest emphasizes downscope side for long
+src/trading/master_v2/double_play_state.py:210:            current_downscope_boundary=down,
+src/trading/master_v2/double_play_state.py:222:            current_downscope_boundary=down,
+src/trading/master_v2/double_play_state.py:262:    if side_state == SideState.KILL_ALL and event == ScopeEvent.KILL_ALL_REQUIRED:
+src/trading/master_v2/double_play_state.py:264:    if event == ScopeEvent.KILL_ALL_REQUIRED:
+src/trading/master_v2/double_play_state.py:271:    if event in (ScopeEvent.SCOPE_UNKNOWN,):
+src/trading/master_v2/double_play_state.py:275:    if event in (ScopeEvent.CHOP_DETECTED,):
+src/trading/master_v2/double_play_state.py:289:    if side_state == SideState.CHOP_GUARD_BLOCK and event == ScopeEvent.NOOP:
+src/trading/master_v2/double_play_state.py:305:    if event == ScopeEvent.NOOP and st.chop_latched:
+src/trading/master_v2/double_play_state.py:325:    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.LONG_ACTIVE:
+src/trading/master_v2/double_play_state.py:338:        event == ScopeEvent.DOWNSCOPE_CONFIRMED
+src/trading/master_v2/double_play_state.py:347:    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.LONG_BLOCKED:
+src/trading/master_v2/double_play_state.py:350:    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.SHORT_ARMED:
+src/trading/master_v2/double_play_state.py:358:    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.SHORT_ACTIVE:
+src/trading/master_v2/double_play_state.py:371:        event == ScopeEvent.UPSCOPE_CONFIRMED
+src/trading/master_v2/double_play_state.py:376:    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.SHORT_BLOCKED:
+src/trading/master_v2/double_play_state.py:379:    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.LONG_ARMED:
+src/trading/master_v2/double_play_state.py:388:    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.NEUTRAL_OBSERVE:
+src/trading/master_v2/double_play_state.py:391:    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.NEUTRAL_OBSERVE:
+src/trading/master_v2/double_play_state.py:394:    if event in (ScopeEvent.DOWNSCOPE_CANDIDATE, ScopeEvent.UPSCOPE_CANDIDATE):
+src/trading/master_v2/double_play_state.py:398:    if event == ScopeEvent.NOOP:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:48:    DOWNSCOPE = "downscope"
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:55:    NOOP = ScopeEvent.NOOP.value
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:56:    UPSCOPE_CANDIDATE = ScopeEvent.UPSCOPE_CANDIDATE.value
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:57:    UPSCOPE_CONFIRMED = ScopeEvent.UPSCOPE_CONFIRMED.value
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:58:    DOWNSCOPE_CANDIDATE = ScopeEvent.DOWNSCOPE_CANDIDATE.value
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:59:    DOWNSCOPE_CONFIRMED = ScopeEvent.DOWNSCOPE_CONFIRMED.value
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:60:    CHOP_DETECTED = ScopeEvent.CHOP_DETECTED.value
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:142:    downscope_candidate_threshold: float
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:308:            downscope_candidate_threshold=anchor - up,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:314:        downscope_candidate_threshold=anchor + up,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:336:        if price <= thresholds.downscope_candidate_threshold:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:337:            matched.append(ScopeCandidateKind.DOWNSCOPE)
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:343:        if price >= thresholds.downscope_candidate_threshold:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:344:            matched.append(ScopeCandidateKind.DOWNSCOPE)
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:430:        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:432:        else CanonicalScopeEventType.DOWNSCOPE_CANDIDATE
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:436:def _select_directional_kind(
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:441:    if ScopeCandidateKind.DOWNSCOPE in matched and ScopeCandidateKind.UPSCOPE in matched:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:443:    if ScopeCandidateKind.DOWNSCOPE in matched:
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:444:        return ScopeCandidateKind.DOWNSCOPE
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:491:            "downscope_candidate_threshold": evidence.evaluated_thresholds.downscope_candidate_threshold,
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:626:def generate_deterministic_scope_event(
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:683:        selected = _select_directional_kind(matched)
+src/trading/master_v2/deterministic_scope_event_generator_v1.py:719:    selected_kind = _select_directional_kind(matched)
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:5:Binds ``ScopeEvent.CHOP_DETECTED`` as the sole canonical CHOP semantic: a
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:35:CHOP_CANONICAL_INPUT_EVENT = "ScopeEvent.CHOP_DETECTED"
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:104:    Bind ``ScopeEvent.CHOP_DETECTED`` (and recovery) to RuntimeScopeState policy.
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:127:    if event is ScopeEvent.SCOPE_UNKNOWN:
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:141:    if event is ScopeEvent.CHOP_DETECTED:
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:156:    if event is ScopeEvent.NOOP and st.chop_latched:
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:208:        ScopeEvent.UPSCOPE_CONFIRMED,
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:209:        ScopeEvent.DOWNSCOPE_CONFIRMED,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:286:    # Provenance for injected ScopeEvent. UNMARKED is fail-closed without test harness.
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:855:    add(100.0, ScopeEvent.UPSCOPE_CONFIRMED)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:856:    add(101.5, ScopeEvent.UPSCOPE_CONFIRMED)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:857:    add(103.0, ScopeEvent.NOOP)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:858:    add(104.5, ScopeEvent.NOOP)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:859:    add(106.0, ScopeEvent.NOOP)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:862:    add(104.0, ScopeEvent.DOWNSCOPE_CONFIRMED)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:863:    add(102.5, ScopeEvent.DOWNSCOPE_CONFIRMED)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:864:    add(101.0, ScopeEvent.DOWNSCOPE_CONFIRMED)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:865:    add(99.5, ScopeEvent.DOWNSCOPE_CONFIRMED)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:868:    add(98.0, ScopeEvent.NOOP)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:869:    add(96.5, ScopeEvent.NOOP)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:870:    add(95.0, ScopeEvent.NOOP)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:873:    add(95.5, ScopeEvent.UPSCOPE_CANDIDATE, cooldown=5)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:874:    add(96.0, ScopeEvent.DOWNSCOPE_CANDIDATE, cooldown=5)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:875:    add(96.5, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=5)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:878:    add(93.0, ScopeEvent.NOOP, vol=0.08, cooldown=0)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:881:    add(95.0, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=0)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:882:    add(97.0, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=0)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:883:    add(99.0, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=0)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:884:    add(101.0, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=0)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:887:    add(100.0, ScopeEvent.NOOP, realized=1200.0, cooldown=0)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:888:    add(99.0, ScopeEvent.NOOP, realized=850.0, cooldown=0)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:891:    add(100.0, ScopeEvent.NOOP, inactive_steps=25, opp=0.10)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:894:    add(100.0, ScopeEvent.KILL_ALL_REQUIRED, safety=False)
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:925:    if side == SideState.LONG_ACTIVE and tick.scope_event == ScopeEvent.NOOP:
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:927:    if side == SideState.SHORT_ACTIVE and tick.scope_event == ScopeEvent.NOOP:
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:933:    if tick.scope_event in (ScopeEvent.DOWNSCOPE_CANDIDATE, ScopeEvent.UPSCOPE_CANDIDATE):
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1042:        if not tick.safety_decision_allowed and event != ScopeEvent.KILL_ALL_REQUIRED:
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1043:            event = ScopeEvent.NOOP
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1336:                downscope_boundary=scope_state.current_downscope_boundary,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1525:        current_downscope_boundary=95.0,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1536:        downscope_band_multiplier=1.0,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1561:    if scope_event == ScopeEvent.KILL_ALL_REQUIRED:
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1563:    if scope_event == ScopeEvent.CHOP_DETECTED:
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1566:        ScopeEvent.NOOP,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1567:        ScopeEvent.UPSCOPE_CANDIDATE,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1568:        ScopeEvent.DOWNSCOPE_CANDIDATE,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1569:        ScopeEvent.UPSCOPE_CONFIRMED,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:1570:        ScopeEvent.DOWNSCOPE_CONFIRMED,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:53:    generate_deterministic_scope_event,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:161:    current_downscope_boundary=0.0,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:651:def _canonical_scope_event_to_scope_event(event_type: CanonicalScopeEventType) -> ScopeEvent:
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:653:        CanonicalScopeEventType.NOOP: ScopeEvent.NOOP,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:654:        CanonicalScopeEventType.UPSCOPE_CANDIDATE: ScopeEvent.UPSCOPE_CANDIDATE,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:655:        CanonicalScopeEventType.UPSCOPE_CONFIRMED: ScopeEvent.UPSCOPE_CONFIRMED,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:656:        CanonicalScopeEventType.DOWNSCOPE_CANDIDATE: ScopeEvent.DOWNSCOPE_CANDIDATE,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:657:        CanonicalScopeEventType.DOWNSCOPE_CONFIRMED: ScopeEvent.DOWNSCOPE_CONFIRMED,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:658:        CanonicalScopeEventType.CHOP_DETECTED: ScopeEvent.CHOP_DETECTED,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:662:    return ScopeEvent.SCOPE_UNKNOWN
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:699:        current_downscope_boundary=float(snapshot.neutral_lower_boundary),
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:742:        downscope_band_multiplier=_DEFAULT_SCOPE_RULES.downscope_band_multiplier,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1173:        generate_deterministic_scope_event(scope_event_inp, inp.policies.scope_event_generator)
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1175:    mapped_event = _canonical_scope_event_to_scope_event(scope_event.event_type)
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1177:        mapped_event is ScopeEvent.CHOP_DETECTED
+## shadowing / defaults
+src/backtest/strategy_signal_binding_v1.py:367:                    params.setdefault(key, value)
+src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py:76:        SideState.LONG_ARMED,
+src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py:95:    if side in (SideState.LONG_ACTIVE, SideState.LONG_ARMED, SideState.LONG_BLOCKED):
+src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py:115:    previous_side_state: str,
+src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py:124:        "previous_side_state": previous_side_state,
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:172:    Direction and entry_side stay NONE (enforced by carrier resolver). Classic
+src/backtest/strategy_signal_suitability_agreement_adapter_v1.py:288:        and entry_side is not StrategyEntrySideCarrierV1.NONE
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:312:    previous_side_state: Optional[str]
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:438:    previous_side_state: Optional[str] = None
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:448:        previous_side_state = intermediate.state_switch.previous_side_state
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:453:        previous_side_state=previous_side_state,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:497:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:517:    previous_side_state: Optional[str] = None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:523:        previous_side_state=previous_side_state,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:548:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:573:        previous_side_state=tick.prior_side_state.value,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:598:        previous_side_state=tick.prior_side_state.value,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:618:        previous_side_state=binding.side_state_before.value,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:641:        previous_side_state=tick.prior_side_state.value,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:750:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:808:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:863:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:936:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:994:    previous_side_state: Optional[str] = None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:999:        previous_side_state=previous_side_state,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1124:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1332:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1357:        previous_side_state=tick.prior_side_state.value,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1388:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1415:        previous_side_state=tick.prior_side_state.value,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1450:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1481:        previous_side_state=tick.prior_side_state.value,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1516:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1545:        previous_side_state=tick.prior_side_state.value,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1578:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1615:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1654:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1723:    if integrated.previous_side_state != scenario.previous_side_state:
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1907:        previous_side_state=evidence.previous_direction_state or None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:1937:        previous_side_state=None,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2160:            SideState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2205:            SideState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2214:            SideState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2269:            SideState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2374:        "direction_state": EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2379:                "side_state": SideState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2380:                "direction_state": EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2436:                "side_state": SideState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2437:                "direction_state": EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2607:        side_state=overrides.get("side_state", SideState.LONG_ARMED),
+src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py:2608:        direction_state=overrides.get("direction_state", EntryExitDirectionState.LONG_ARMED),
+src/backtest/economic_observability_materialization_v1.py:431:        bucket = snapshot.provenance.setdefault("metrics", {})
+src/backtest/engine.py:310:        self.daily_returns_pct.setdefault(day, []).append(pnl_pct)
+src/trading/master_v2/double_play_entry_exit_policy_v0.py:50:    LONG_ARMED = "long_armed"
+src/trading/master_v2/double_play_entry_exit_policy_v0.py:324:        EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/double_play_entry_exit_policy_v0.py:880:            if inp.direction_state is EntryExitDirectionState.LONG_ARMED:
+src/trading/master_v2/suitability_binding_v1.py:463:        # entry_side=NONE (OPTION_D / OBL_B07 EVENT_ONLY) agrees with both DA
+src/trading/master_v2/suitability_binding_v1.py:465:        entry_side = getattr(material, "entry_side", StrategyEntrySideCarrierV1.NONE)
+src/trading/master_v2/chop_scope_event_policy_binding_v1.py:127:    if event is ScopeEvent.SCOPE_UNKNOWN:
+src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py:408:        side_state=SideState.LONG_ARMED,
+src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py:409:        direction_state=EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/offline_double_play_scenario_replay_v0.py:463:    if side in (SideState.LONG_ACTIVE, SideState.LONG_ARMED):
+src/backtest/decision_funnel_v0.py:106:        bucket = by_stage.setdefault(mapped_stage, {})
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:255:    previous_side_state: str
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:662:    return ScopeEvent.SCOPE_UNKNOWN
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:668:    fallback: ScopeDirectionState = ScopeDirectionState.LONG,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:679:        SideState.LONG_ARMED,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:755:        SideState.LONG_ARMED: EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:762:        SideState.SWITCH_SHORT_TO_LONG_PENDING: EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:783:    previous_side_state: str,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:792:        "previous_side_state": previous_side_state,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1257:        previous_side_state=inp.side_state.value,
+src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1267:        previous_side_state=inp.side_state.value,
+src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py:248:    if side_st in (SideState.LONG_ACTIVE, SideState.LONG_ARMED, SideState.LONG_BLOCKED):
+src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py:256:    if side_st in (SideState.LONG_ACTIVE, SideState.LONG_ARMED, SideState.LONG_BLOCKED):
+src/backtest/economic_observability_derived_metrics_v1.py:1006:        bucket = snapshot.provenance.setdefault("metrics", {})
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:9:optional explicit ``entry_side`` ∈ {LONG, SHORT, NONE} for ENTRY_EXIT_EVENT_V1.
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:83:    entry_side: StrategyEntrySideCarrierV1 = StrategyEntrySideCarrierV1.NONE,
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:121:    entry_side: StrategyEntrySideCarrierV1 = StrategyEntrySideCarrierV1.NONE
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:149:        if self.entry_side is not StrategyEntrySideCarrierV1.NONE:
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:181:    """Rebuild material from a mapping. Missing ``entry_side`` → NONE (legacy)."""
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:187:        raw_side = payload.get("entry_side", StrategyEntrySideCarrierV1.NONE.value)
+src/trading/master_v2/strategy_suitability_agreement_material_v1.py:189:            entry_side = StrategyEntrySideCarrierV1.NONE
+src/backtest/mv2_research_wiring_v1.py:1022:        statuses.setdefault(deferred, StressClassBindingStatus.DEFERRED_EXPLICIT)
+src/backtest/mv2_research_wiring_v1.py:1025:        statuses.setdefault(required, StressClassBindingStatus.BOUND)
+src/backtest/mv2_research_wiring_v1.py:1148:            SideState.LONG_ARMED,
+src/backtest/mv2_research_wiring_v1.py:1187:        side_state=SideState.LONG_ARMED,
+src/backtest/mv2_research_wiring_v1.py:1188:        direction_state=EntryExitDirectionState.LONG_ARMED,
+src/backtest/mv2_research_wiring_v1.py:1577:            entry_side = getattr(material, "entry_side", StrategyEntrySideCarrierV1.NONE)
+src/backtest/mv2_research_wiring_v1.py:1601:    - When strategy direction is unbound (OPTION_D ``entry_side=NONE`` / neutral):
+src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py:49:        SideState.LONG_ARMED: EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py:56:        SideState.SWITCH_SHORT_TO_LONG_PENDING: EntryExitDirectionState.LONG_ARMED,
+src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py:144:    if side_st in (SideState.LONG_ACTIVE, SideState.LONG_ARMED):
+src/trading/master_v2/double_play_state.py:21:    LONG_ARMED = "long_armed"
+src/trading/master_v2/double_play_state.py:41:    SCOPE_UNKNOWN = "scope_unknown"
+src/trading/master_v2/double_play_state.py:271:    if event in (ScopeEvent.SCOPE_UNKNOWN,):
+src/trading/master_v2/double_play_state.py:272:        return side_state, st, TransitionDecision(False, "SCOPE_UNKNOWN_FAIL_CLOSED")
+src/trading/master_v2/double_play_state.py:377:        return SideState.LONG_ARMED, st, TransitionDecision(True, "LONG_ARMED")
+src/trading/master_v2/double_play_state.py:379:    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.LONG_ARMED:
+src/trading/master_v2/double_play_state.py:389:        return SideState.LONG_ARMED, st, TransitionDecision(True, "NEUTRAL_TO_LONG_ARMED")
+src/backtest/parameter_sensitivity_v1.py:286:        eval_section = cfg.setdefault("economic_evaluation_v1", {})
+src/backtest/parameter_sensitivity_v1.py:289:        strategy_params = eval_section.setdefault("strategy_params", {})

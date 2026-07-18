@@ -1,0 +1,23 @@
+# ADVERSE_EXIT_DOWNSCOPE_SHADOWING_AUDIT_V1 — commands
+
+## Phase A
+gh pr view 5338 --json number,state,isDraft,headRefName,headRefOid,mergeable,mergeStateStatus,statusCheckRollup
+gh pr diff 5338 --name-only
+# required contexts from config/ci/required_status_checks.json all SUCCESS
+gh pr merge 5338 --squash --delete-branch
+git checkout main
+git fetch origin --prune
+git pull --ff-only origin main
+# LOCAL_MAIN=ORIGIN_MAIN=MERGE_SHA=2cb140bf3121d7e474e9f8475f97750957587329
+# PR state MERGED; remote fix branch deleted
+
+## Phase B
+git checkout -b audit/adverse-exit-downscope-shadowing-v1
+rg inventory -> searched_paths.txt
+static code review of:
+  deterministic_scope_event_generator_v1._select_directional_kind
+  integrated_offline_trading_logic_replay_v1._canonical_scope_event_to_scope_event
+  double_play_state.transition_state (SCOPE_UNKNOWN / DOWNSCOPE)
+  derive_scope_adverse_exit_signal_v0
+  mv2_research_wiring_v1 mark-relative BPS distances
+focused pytest (sole authority + research distances)
