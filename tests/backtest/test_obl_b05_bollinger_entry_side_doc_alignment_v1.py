@@ -140,7 +140,12 @@ def test_active_narratives_point_to_alignment_and_fail_closed_law() -> None:
 
 
 def test_diff_contains_no_productive_src_paths() -> None:
-    """Guard: this slice must not change productive src/ (vs origin/main when available)."""
+    """Guard: B05 doc-alignment must not introduce unscoped productive src/.
+
+    OBL_B07 EVENT_ONLY may later touch the Bollinger contract + adapter binding;
+    those paths are allowlisted only when the B07 SSOT is present and ratified.
+    Side activation remain forbidden (asserted elsewhere).
+    """
     proc = subprocess.run(
         ["git", "diff", "--name-only", "origin/main...HEAD"],
         cwd=str(REPO_ROOT),
@@ -175,4 +180,24 @@ def test_diff_contains_no_productive_src_paths() -> None:
     )
     files.extend(ln.strip() for ln in proc3.stdout.splitlines() if ln.strip())
     src_hits = sorted({f for f in files if f.startswith("src/")})
-    assert src_hits == [], f"unexpected productive src changes: {src_hits}"
+    allowed: set[str] = set()
+    b07_ssot = (
+        REPO_ROOT
+        / "config"
+        / "governance"
+        / "obl_b07_bollinger_event_only_semantic_contract_v1.json"
+    )
+    if b07_ssot.is_file():
+        b07 = json.loads(b07_ssot.read_text(encoding="utf-8"))
+        if (
+            b07.get("OPERATOR_OPTION") == "OPTION_EVENT_ONLY"
+            and b07.get("BOLLINGER_EVENT_ONLY_RATIFIED") is True
+            and b07.get("BOLLINGER_SIDE_ACTIVATED") is False
+            and b07.get("ENTRY_SIDE") == "NONE"
+        ):
+            allowed = {
+                "src/strategies/bollinger_event_semantic_contract_v1.py",
+                "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py",
+            }
+    unexpected = [f for f in src_hits if f not in allowed]
+    assert unexpected == [], f"unexpected productive src changes: {unexpected}"
