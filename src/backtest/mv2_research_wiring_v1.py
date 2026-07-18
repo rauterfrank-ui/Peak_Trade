@@ -2227,8 +2227,10 @@ def run_mv2_research_backtest_wiring_v1(
     backtest_engine: BacktestEngine | None = None
     bar_loop_state: LegacyRealisticBarLoopStateV1 | None = None
     if position_feedback_bound:
+        # Bind short-capable consumer; bar loop still uses step_legacy with
+        # honor_mapped_short_entry so mapped -1 opens shorts (not exit-only no-op).
         backtest_engine = BacktestEngine(
-            use_execution_pipeline=False,
+            use_execution_pipeline=True,
             risk_limits=build_mv2_research_risk_limits_v1(cfg),
         )
         backtest_engine.config = engine_cfg
@@ -2400,6 +2402,7 @@ def run_mv2_research_backtest_wiring_v1(
                         signal=signal,
                         symbol=instrument_id,
                         effective_cost=effective_cost,
+                        honor_mapped_short_entry=True,
                     )
                 outcomes.append(
                     MV2ReplayBarOutcomeV1(
@@ -2619,6 +2622,7 @@ def run_mv2_research_backtest_wiring_v1(
                 signal=signal,
                 symbol=instrument_id,
                 effective_cost=effective_cost,
+                honor_mapped_short_entry=True,
             )
         outcomes.append(
             MV2ReplayBarOutcomeV1(
@@ -2705,7 +2709,7 @@ def run_mv2_research_backtest_wiring_v1(
         )
     else:
         engine = BacktestEngine(
-            use_execution_pipeline=False,
+            use_execution_pipeline=True,
             risk_limits=build_mv2_research_risk_limits_v1(cfg),
         )
         engine.config = engine_cfg

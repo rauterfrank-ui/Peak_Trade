@@ -56,10 +56,11 @@ def test_harness_not_under_src() -> None:
 
 def test_static_binding_proof(harness) -> None:
     proof = harness.prove_static_binding()
-    assert proof["wiring_use_execution_pipeline_false_count"] >= 2
-    assert proof["wiring_use_execution_pipeline_true_count"] == 0
+    # Post-repair: MV2 wiring binds short-capable pipeline consumer.
+    assert proof["wiring_use_execution_pipeline_true_count"] >= 2
+    assert proof["wiring_use_execution_pipeline_false_count"] == 0
+    assert proof["honor_mapped_short_entry_bound"] is True
     assert proof["engine_default_use_execution_pipeline"] is True
-    assert proof["capability_gate_present"] is False
     assert proof["map_enter_short_to_minus_one"] is True
     assert proof["pipeline_has_is_entry_short"] is True
     assert proof["wiring_calls_integrated_replay"] is True
@@ -72,15 +73,16 @@ def test_all_scenarios_pass(scenario_results) -> None:
 
 
 def test_short_canonical_zero_trades(scenario_results) -> None:
+    # Explicit legacy engine (use_pipeline=False) still no-ops flat -1.
     s05 = next(s for s in scenario_results if s.scenario_id == "S05")
     assert s05.trade_count == 0
     assert s05.final_classification == "CONTRACT_CAPABILITY_MISMATCH"
 
 
-def test_pipeline_short_exists_unbound(scenario_results) -> None:
+def test_pipeline_short_bound_on_mv2_path(scenario_results) -> None:
     s17 = next(s for s in scenario_results if s.scenario_id == "S17")
     assert s17.trade_count >= 1
-    assert s17.final_classification == "WRONG_CONSUMER_BINDING"
+    assert s17.final_classification == "HEALTHY_PATH"
 
 
 def test_entry_side_none_fail_closed(scenario_results) -> None:

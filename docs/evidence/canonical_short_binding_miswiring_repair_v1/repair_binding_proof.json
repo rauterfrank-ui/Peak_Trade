@@ -1,0 +1,10 @@
+{
+  "FIRST_MISWIRING_BOUNDARY": "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=False)",
+  "REPAIR_BOUNDARY": "run_mv2_research_backtest_wiring_v1::BacktestEngine(use_execution_pipeline=True) + step_legacy_realistic_bar_v1(honor_mapped_short_entry=True)",
+  "adapter_honor_mapped_short_entry_param": true,
+  "honor_mapped_short_entry_true_count": 2,
+  "no_new_direction_authority": true,
+  "side_state_remains_neutral_on_feedback": true,
+  "wiring_use_execution_pipeline_false_count": 0,
+  "wiring_use_execution_pipeline_true_count": 2
+}
