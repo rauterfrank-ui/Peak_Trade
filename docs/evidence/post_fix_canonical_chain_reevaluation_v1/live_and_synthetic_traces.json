@@ -1,0 +1,145 @@
+{
+  "live": [
+    {
+      "adverse_exit_distance": 0.0019425,
+      "adverse_geometry": true,
+      "adverse_policy_reason": "adverse_scope_exit_matched",
+      "adverse_policy_triggered": true,
+      "bear_geometry": true,
+      "bull_geometry": false,
+      "composition_side": "none",
+      "decision_outcome": "reduce",
+      "entry_exit_outcome": "reduce",
+      "epoch": 86,
+      "event_type": "downscope_candidate",
+      "exit_class": "adverse_scope_exit",
+      "instrument": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "mapped_scope_event": "downscope_candidate",
+      "mark": 0.3885,
+      "matched": "downscope|adverse_exit",
+      "order_intent": "none",
+      "prior_mark": 0.3896,
+      "reason_codes": "adverse_scope_exit|adverse_scope_exit_matched",
+      "reversal_distance": 0.00291375,
+      "side_after": "long_active",
+      "side_before": "long_active",
+      "source": "1INCH_fixture",
+      "timestamp": "2024-05-04 14:00:00+00:00",
+      "trace_id": "D1_ADVERSE_PLUS_VALID_DOWNSCOPE_LIVE",
+      "transition_allowed": true,
+      "transition_reason": "CANDIDATE_ACK",
+      "up_distance": 0.003885
+    },
+    {
+      "adverse_exit_distance": 0.0019145000000000002,
+      "adverse_geometry": true,
+      "adverse_policy_reason": "adverse_scope_exit_candidate",
+      "adverse_policy_triggered": true,
+      "bear_geometry": false,
+      "bull_geometry": false,
+      "composition_side": "none",
+      "decision_outcome": "reduce",
+      "entry_exit_outcome": "reduce",
+      "epoch": 71,
+      "event_type": "adverse_exit_candidate",
+      "exit_class": "adverse_scope_exit",
+      "instrument": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "mapped_scope_event": "scope_unknown",
+      "mark": 0.3829,
+      "matched": "adverse_exit",
+      "order_intent": "none",
+      "prior_mark": 0.3854,
+      "reason_codes": "adverse_scope_exit|adverse_scope_exit_candidate",
+      "reversal_distance": 0.00287175,
+      "side_after": "long_active",
+      "side_before": "long_active",
+      "source": "1INCH_fixture",
+      "timestamp": "2024-05-03 23:00:00+00:00",
+      "trace_id": "D2_ADVERSE_WITHOUT_DOWNSCOPE_LIVE",
+      "transition_allowed": false,
+      "transition_reason": "SCOPE_UNKNOWN_FAIL_CLOSED",
+      "up_distance": 0.0038290000000000004
+    }
+  ],
+  "synthetic": [
+    {
+      "execution_result": "n/a_unit_trace_offline_only",
+      "final_intent": "n/a_unit_trace_no_entry_exit",
+      "fixture_id": "synth|100.0|97.0|up=2.0|adv=1.0",
+      "generator_event": "downscope_candidate",
+      "input": {
+        "adverse_exit_distance": 1.0,
+        "current_price": 97.0,
+        "reversal_distance": 1.5,
+        "side_before": "long_active",
+        "trailing_anchor": 100.0,
+        "up_distance": 2.0
+      },
+      "mapped_scope_event": "downscope_candidate",
+      "matched_conditions": [
+        "downscope",
+        "adverse_exit"
+      ],
+      "policy_signal_adverse_triggered": true,
+      "policy_signal_reason": "adverse_scope_exit_matched",
+      "source": "synthetic_contract",
+      "state_after": "long_active",
+      "state_before": "long_active",
+      "trace_id": "D1_ADVERSE_PLUS_VALID_DOWNSCOPE",
+      "transition_allowed": true,
+      "transition_reason": "CANDIDATE_ACK"
+    },
+    {
+      "execution_result": "n/a_unit_trace_offline_only",
+      "final_intent": "n/a_unit_trace_no_entry_exit",
+      "fixture_id": "synth|100.0|98.5|up=2.0|adv=1.0",
+      "generator_event": "adverse_exit_candidate",
+      "input": {
+        "adverse_exit_distance": 1.0,
+        "current_price": 98.5,
+        "reversal_distance": 1.5,
+        "side_before": "long_active",
+        "trailing_anchor": 100.0,
+        "up_distance": 2.0
+      },
+      "mapped_scope_event": "scope_unknown",
+      "matched_conditions": [
+        "adverse_exit"
+      ],
+      "policy_signal_adverse_triggered": true,
+      "policy_signal_reason": "adverse_scope_exit_candidate",
+      "source": "synthetic_contract",
+      "state_after": "long_active",
+      "state_before": "long_active",
+      "trace_id": "D2_ADVERSE_WITHOUT_DOWNSCOPE",
+      "transition_allowed": false,
+      "transition_reason": "SCOPE_UNKNOWN_FAIL_CLOSED"
+    },
+    {
+      "execution_result": "n/a_unit_trace_offline_only",
+      "final_intent": "n/a_unit_trace_no_entry_exit",
+      "fixture_id": "synth|100.0|97.5|up=2.0|adv=4.0",
+      "generator_event": "downscope_candidate",
+      "input": {
+        "adverse_exit_distance": 4.0,
+        "current_price": 97.5,
+        "reversal_distance": 5.0,
+        "side_before": "long_active",
+        "trailing_anchor": 100.0,
+        "up_distance": 2.0
+      },
+      "mapped_scope_event": "downscope_candidate",
+      "matched_conditions": [
+        "downscope"
+      ],
+      "policy_signal_adverse_triggered": false,
+      "policy_signal_reason": "no_adverse_scope_exit",
+      "source": "synthetic_contract",
+      "state_after": "long_active",
+      "state_before": "long_active",
+      "trace_id": "D3_DOWNSCOPE_WITHOUT_ADVERSE",
+      "transition_allowed": true,
+      "transition_reason": "CANDIDATE_ACK"
+    }
+  ]
+}
