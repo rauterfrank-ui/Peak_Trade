@@ -150,9 +150,17 @@ def test_neutral_entry_exit_fail_closed_flat_path() -> None:
         event=StrategyAgreementEventKindV1.ENTRY,
     )
     assert resolve_agreement_bound_directional_cycle_v1(material) is None
+    # Unbound prior → flat fail-closed (no invented strategy asymmetry).
     path = project_mv2_agreement_bound_price_path_v1(mark_price=100.0, material=material)
     assert path == (100.0, 100.0)
     assert material.entry_side.value == "NONE"
+    # Bound prior → market-context path; direction remains MV2-owned.
+    market = project_mv2_agreement_bound_price_path_v1(
+        mark_price=102.0,
+        material=material,
+        prior_mark_price=100.0,
+    )
+    assert market == (100.0, 102.0)
 
 
 def test_directional_asymmetry_long_material_not_both_candidates() -> None:

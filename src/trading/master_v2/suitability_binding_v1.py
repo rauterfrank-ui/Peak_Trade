@@ -22,6 +22,7 @@ from trading.master_v2.directional_assessment_v1 import (
 )
 from trading.master_v2.strategy_suitability_agreement_material_v1 import (
     StrategyAgreementEventKindV1,
+    StrategyEntrySideCarrierV1,
     StrategySideAgreementV1,
     StrategySignalEncodingClassV1,
     StrategySuitabilityAgreementErrorV1,
@@ -458,10 +459,19 @@ def derive_effective_strategy_side_agreement_v1(
             return StrategySideAgreementV1.NOT_APPLICABLE
         if material.event_kind is StrategyAgreementEventKindV1.NONE or value == 0:
             return StrategySideAgreementV1.NEUTRAL
-        # ENTRY impulse: agrees only with LONG directional assessment for v1 families
-        if side is DirectionalAssessmentSide.LONG:
-            return StrategySideAgreementV1.AGREE
-        return StrategySideAgreementV1.DISAGREE
+        # ENTRY timing gate: direction only from explicit entry_side carrier.
+        # entry_side=NONE (OPTION_D / OBL_B07 EVENT_ONLY) agrees with both DA
+        # sides as timing-only — never invents LONG/SHORT from cycle=+1.
+        entry_side = getattr(material, "entry_side", StrategyEntrySideCarrierV1.NONE)
+        if entry_side is StrategyEntrySideCarrierV1.LONG:
+            if side is DirectionalAssessmentSide.LONG:
+                return StrategySideAgreementV1.AGREE
+            return StrategySideAgreementV1.DISAGREE
+        if entry_side is StrategyEntrySideCarrierV1.SHORT:
+            if side is DirectionalAssessmentSide.SHORT:
+                return StrategySideAgreementV1.AGREE
+            return StrategySideAgreementV1.DISAGREE
+        return StrategySideAgreementV1.AGREE
     if encoding is StrategySignalEncodingClassV1.POSITIONAL_LONG01_STATE_V1:
         if value == -1:
             raise StrategySuitabilityAgreementErrorV1("cross_family_coercion_attempted")

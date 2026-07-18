@@ -1,0 +1,12 @@
+BOUNDARY bear control entry_side=NONE
+  resolve_cycle = None
+  market_path = (3500.0, 3400.0)
+  suitability L/S = StrategySideAgreementV1.AGREE StrategySideAgreementV1.AGREE
+  DA L/S = -0.02857142857142857 0.02857142857142857
+  composition.selected_side = CompositionSelectedSide.SHORT
+  decision_outcome = enter_short
+  quantity_status = BLOCK
+  canonical_order_intent_bound = False
+  execution_eligible = False
+BEFORE_FIX_ASYMMETRY=suitability DISAGREE on SHORT for ENTRY+1 without entry_side
+AFTER_FIX=timing-only AGREE both sides; composition SHORT; ENTER_SHORT

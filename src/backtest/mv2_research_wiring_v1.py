@@ -392,6 +392,8 @@ class MV2IntegratedReplayBarSequenceStateV1:
     runtime_scope_state: RuntimeScopeState | None = None
     runtime_scope_bound_instrument_id: str | None = None
     dynamic_scope_rules: Any | None = None
+    # Prior bar mark for market-context price_path when strategy direction is unbound.
+    prior_mark_price: float | None = None
 
 
 @dataclass(frozen=True)
@@ -1201,6 +1203,7 @@ def build_initial_mv2_integrated_replay_bar_sequence_state_v1(
         runtime_scope_state=None,
         runtime_scope_bound_instrument_id=None,
         dynamic_scope_rules=None,
+        prior_mark_price=None,
     )
 
 
@@ -1260,6 +1263,7 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
         runtime_scope_state=intermediate.runtime_scope_state_after,
         runtime_scope_bound_instrument_id=intermediate.current_scope.instrument_id,
         dynamic_scope_rules=previous.dynamic_scope_rules,
+        prior_mark_price=previous.prior_mark_price,
     )
 
 
@@ -1587,13 +1591,18 @@ def project_mv2_agreement_bound_price_path_v1(
     mark_price: float,
     material: StrategySuitabilityAgreementMaterialV1 | None,
     relative_impulse: float = MV2_AGREEMENT_BOUND_RELATIVE_IMPULSE_V1,
+    prior_mark_price: float | None = None,
 ) -> tuple[float, float]:
-    """Project a dimension-safe long-convention price_path from agreement material.
+    """Project a dimension-safe long-convention price_path for dual-lane DA.
 
     - No absolute mark+5 impulse.
     - Scale-invariant relative impulse when an explicitly resolved directional cycle
-      is present (POSITIONAL_* cycle carrier or ENTRY_EXIT ``entry_side``).
-    - ENTRY_EXIT with entry_side=NONE → flat path (fail-closed, no invented asymmetry).
+      is present (POSITIONAL_* cycle carrier or ENTRY_EXIT ``entry_side`` LONG/SHORT).
+    - When strategy direction is unbound (OPTION_D ``entry_side=NONE`` / neutral):
+      use the bar-to-bar market path ``(prior_mark, mark)`` when prior is bound.
+      Dual-lane DA + ``transition_state`` + composition matrix own direction —
+      never invent asymmetry from ``cycle_signal_value=+1`` alone.
+    - First bar / missing prior → flat ``(mark, mark)`` fail-closed.
     """
     mark = float(mark_price)
     if not math.isfinite(mark) or mark <= 0.0:
@@ -1602,11 +1611,16 @@ def project_mv2_agreement_bound_price_path_v1(
     if not math.isfinite(impulse) or impulse <= 0.0:
         raise ValueError("agreement_bound_price_path_impulse_invalid")
     direction = resolve_agreement_bound_directional_cycle_v1(material)
-    if direction is None:
-        return (mark, mark)
-    if direction > 0:
-        return (mark, mark * (1.0 + impulse))
-    return (mark, mark * (1.0 - impulse))
+    if direction is not None:
+        if direction > 0:
+            return (mark, mark * (1.0 + impulse))
+        return (mark, mark * (1.0 - impulse))
+    if prior_mark_price is not None:
+        prior = float(prior_mark_price)
+        if not math.isfinite(prior) or prior <= 0.0:
+            raise ValueError("agreement_bound_price_path_prior_mark_invalid")
+        return (prior, mark)
+    return (mark, mark)
 
 
 def project_directional_confirmation_state_from_assessments_v1(
@@ -1669,6 +1683,7 @@ def _build_replay_input(
     price_path = project_mv2_agreement_bound_price_path_v1(
         mark_price=float(context.mark_price),
         material=strategy_suitability_agreement_material,
+        prior_mark_price=sequence_state.prior_mark_price,
     )
     return build_integrated_offline_replay_input_v1(
         replay_id=replay_id,
@@ -2344,6 +2359,10 @@ def run_mv2_research_backtest_wiring_v1(
                 )
                 replay_signals.append(signal)
                 signal_index.append(pd.Timestamp(row.name))
+                sequence_state = replace(
+                    sequence_state,
+                    prior_mark_price=float(context.mark_price),
+                )
                 _emit_observational_bar_hook(
                     trading_epoch=i,
                     bar_row=row,
@@ -2413,6 +2432,11 @@ def run_mv2_research_backtest_wiring_v1(
                 previous=sequence_state,
                 next_trading_epoch=i + 1,
             )
+        # Trail prior mark for next-bar market-context price_path (OPTION_D).
+        sequence_state = replace(
+            sequence_state,
+            prior_mark_price=float(context.mark_price),
+        )
         signal = map_decision_evidence_to_position_signal_v1(replay_result.evidence)
         killswitch_evidence: KillSwitchBoundaryBacktestStateFileEvidenceV0 | None = None
         if killswitch_state_file_record is not None:
