@@ -1,0 +1,9 @@
+utc=2026-07-18T23:04:03.073527+00:00
+python=3.11.14
+platform=macOS-26.5.1-arm64-arm-64bit
+base_sha=fdf94a241fdfe257a17ee3b774c53efba3de5f61
+head_sha=fdf94a241fdfe257a17ee3b774c53efba3de5f61
+branch=audit/canonical-short-binding-post-repair-reevaluation-v1
+LIVE_AUTHORIZED=false
+ORDERS=false
+RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED

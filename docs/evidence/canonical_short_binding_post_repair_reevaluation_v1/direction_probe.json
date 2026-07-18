@@ -1,0 +1,228 @@
+{
+  "direction_authority": "MasterV2_DoublePlay_sole",
+  "flags": {
+    "BYPASS_FOUND": false,
+    "LONG_FUNCTIONAL": true,
+    "NONE_FAIL_CLOSED_PASS": true,
+    "SHORT_ENTRY_REQUESTED": true,
+    "SHORT_EXIT_CREATED": true,
+    "SHORT_FILL_CREATED": true,
+    "SHORT_POSITION_OBSERVED": true,
+    "SHORT_ROUNDTRIP_LEDGERED": true,
+    "VALUE_LOSS_FOUND": false
+  },
+  "map_layer": {
+    "enter_long": 1,
+    "enter_short": -1,
+    "observe": 0
+  },
+  "none_agreement": {
+    "cycle_signal_value": 1,
+    "directional_cycle": null,
+    "entry_side": "NONE"
+  },
+  "runs": {
+    "LONG": {
+      "engine_signal_source": "mv2_decision_replay_series",
+      "forced_signals": [
+        0,
+        1,
+        0,
+        -1
+      ],
+      "honor_mapped_short_entry_expected": true,
+      "label": "LONG",
+      "long_fills": 1,
+      "observed_signals": [
+        0,
+        1,
+        0,
+        -1
+      ],
+      "pipeline_bound": true,
+      "roundtrips": 1,
+      "short_fills": 0,
+      "signal_match": true,
+      "total_trades": 1,
+      "trade_sizes": [
+        19.80198019801984
+      ]
+    },
+    "NONE": {
+      "engine_signal_source": "mv2_decision_replay_series",
+      "forced_signals": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "honor_mapped_short_entry_expected": true,
+      "label": "NONE",
+      "long_fills": 0,
+      "observed_signals": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pipeline_bound": true,
+      "roundtrips": 0,
+      "short_fills": 0,
+      "signal_match": true,
+      "total_trades": 0,
+      "trade_sizes": []
+    },
+    "SHORT": {
+      "engine_signal_source": "mv2_decision_replay_series",
+      "forced_signals": [
+        0,
+        -1,
+        -1,
+        0
+      ],
+      "honor_mapped_short_entry_expected": true,
+      "label": "SHORT",
+      "long_fills": 0,
+      "observed_signals": [
+        0,
+        -1,
+        -1,
+        0
+      ],
+      "pipeline_bound": true,
+      "roundtrips": 1,
+      "short_fills": 1,
+      "signal_match": true,
+      "total_trades": 1,
+      "trade_sizes": [
+        -20.20202020202016
+      ]
+    }
+  },
+  "traces": {
+    "LONG": [
+      {
+        "stage": "strategy_signal",
+        "value": "+1_forced_mapped"
+      },
+      {
+        "stage": "canonical_market_context",
+        "via": "run_mv2_research_backtest_wiring_v1"
+      },
+      {
+        "note": "forced_after_map_for_direction_probe",
+        "stage": "master_v2_double_play_decision"
+      },
+      {
+        "forced_series": [
+          0,
+          1,
+          0,
+          -1
+        ],
+        "mapped": 1,
+        "stage": "mapped_entry_side"
+      },
+      {
+        "stage": "execution_pipeline",
+        "use_execution_pipeline": true
+      },
+      {
+        "long_fills": 1,
+        "stage": "fill"
+      },
+      {
+        "implied_side": "LONG",
+        "stage": "position_feedback"
+      },
+      {
+        "roundtrips": 1,
+        "stage": "exit"
+      },
+      {
+        "stage": "trade_ledger",
+        "total_trades": 1
+      },
+      {
+        "engine_signal_source": "mv2_decision_replay_series",
+        "stage": "observability_metrics"
+      }
+    ],
+    "NONE": [
+      {
+        "stage": "strategy_signal",
+        "value": "0_forced_mapped"
+      },
+      {
+        "cycle_signal_value": 1,
+        "entry_side": "NONE",
+        "stage": "agreement_entry_side"
+      },
+      {
+        "stage": "directional_cycle",
+        "value": null
+      },
+      {
+        "mapped": 0,
+        "stage": "mapped_entry_side"
+      },
+      {
+        "fills": 0,
+        "stage": "execution_pipeline"
+      },
+      {
+        "no_synthetic_long_or_short": true,
+        "stage": "fail_closed"
+      }
+    ],
+    "SHORT": [
+      {
+        "stage": "strategy_signal",
+        "value": "-1_forced_mapped"
+      },
+      {
+        "stage": "canonical_market_context",
+        "via": "run_mv2_research_backtest_wiring_v1"
+      },
+      {
+        "note": "forced_after_map_for_direction_probe",
+        "stage": "master_v2_double_play_decision"
+      },
+      {
+        "forced_series": [
+          0,
+          -1,
+          -1,
+          0
+        ],
+        "mapped": -1,
+        "stage": "mapped_entry_side"
+      },
+      {
+        "honor_mapped_short_entry": true,
+        "stage": "execution_pipeline",
+        "use_execution_pipeline": true
+      },
+      {
+        "short_fills": 1,
+        "stage": "fill"
+      },
+      {
+        "implied_side": "SHORT",
+        "stage": "position_feedback"
+      },
+      {
+        "roundtrips": 1,
+        "stage": "exit"
+      },
+      {
+        "stage": "trade_ledger",
+        "total_trades": 1
+      },
+      {
+        "engine_signal_source": "mv2_decision_replay_series",
+        "stage": "observability_metrics"
+      }
+    ]
+  }
+}

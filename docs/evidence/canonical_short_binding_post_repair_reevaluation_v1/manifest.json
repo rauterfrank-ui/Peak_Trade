@@ -1,0 +1,160 @@
+{
+  "base_sha": "fdf94a241fdfe257a17ee3b774c53efba3de5f61",
+  "branch": "audit/canonical-short-binding-post-repair-reevaluation-v1",
+  "evidence_id": "canonical_short_binding_post_repair_reevaluation_v1",
+  "file_count": 25,
+  "files": [
+    {
+      "bytes": 1855,
+      "name": "README.md",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/README.md",
+      "sha256": "0b2bc4498a3f988fe2c9584d96c4402c1904dd351830bf74e589efee266edfb8"
+    },
+    {
+      "bytes": 1117,
+      "name": "chain_binding_proof.json",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/chain_binding_proof.json",
+      "sha256": "91d41547b087e0e635d4eae59d267f981c77a6009feecde6df65b295f7dfed1b"
+    },
+    {
+      "bytes": 1203,
+      "name": "claims.json",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/claims.json",
+      "sha256": "b514e82a273989ad84faa9c03fa0fd9fdd4c64017de9fb6dad3d852299e807af"
+    },
+    {
+      "bytes": 991,
+      "name": "commands.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/commands.txt",
+      "sha256": "e012df544c334edcc6cc8eeb103107ab19110998f3f37e8c121611d9d51abb40"
+    },
+    {
+      "bytes": 4773,
+      "name": "direction_probe.json",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/direction_probe.json",
+      "sha256": "c8264341fa7158ee28126c1d25e3860e9b9df4747c6b58bbd808ca33c3afc1a9"
+    },
+    {
+      "bytes": 2391,
+      "name": "direction_traces.json",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/direction_traces.json",
+      "sha256": "1c4c970594fe5153ff647b7023fbbc7f01d164b621e6eefc59deddb746d42837"
+    },
+    {
+      "bytes": 119,
+      "name": "docs_reference_targets.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/docs_reference_targets.txt",
+      "sha256": "7b473abe169c0092abffaeb526b3e4a59f575d1b5d3b3f03e3c9cf721e4a43ea"
+    },
+    {
+      "bytes": 169,
+      "name": "docs_token_policy.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/docs_token_policy.txt",
+      "sha256": "b5d1a7398ddcdf4c49ec7c05c3446849829197dce7c72b502a058eb21b1069c1"
+    },
+    {
+      "bytes": 562,
+      "name": "economics.json",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/economics.json",
+      "sha256": "11e7c85c4a086fc1d6676d8043b3069f9718b65c7a8534d652c275884096076a"
+    },
+    {
+      "bytes": 332,
+      "name": "environment.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/environment.txt",
+      "sha256": "42c0981ac30a4daadf10fc2fe2e5863e893e2efb82153c217901ae89fbf27933"
+    },
+    {
+      "bytes": 10876,
+      "name": "instrument_metrics.json",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/instrument_metrics.json",
+      "sha256": "f06c7f358250215d6c7ad5064dfc9fafb54a22f8d9fb0a9c8019ff81e8a6c1bf"
+    },
+    {
+      "bytes": 16456,
+      "name": "materialize_evidence_v1.py",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/materialize_evidence_v1.py",
+      "sha256": "7145cff2fbd8b97b373133482c879944f6ff291b686062d237b9abec7ac132cb"
+    },
+    {
+      "bytes": 44979,
+      "name": "post_repair_reevaluation_probe_v1.py",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/post_repair_reevaluation_probe_v1.py",
+      "sha256": "dc6705408d4c6633a763bba166f107158599613fb7840e15142584226104e66a"
+    },
+    {
+      "bytes": 3035,
+      "name": "probe_run_log.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/probe_run_log.txt",
+      "sha256": "97d33591b81104b1d0dea29174eba12450953e295dfabf2f04372f5f0990f2ac"
+    },
+    {
+      "bytes": 15507,
+      "name": "probe_summary.json",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/probe_summary.json",
+      "sha256": "d947733c32bde726370df5f142e02cf3cc39deb418f3cc8a08aa9d5bf4e8db23"
+    },
+    {
+      "bytes": 646,
+      "name": "result_classification.json",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/result_classification.json",
+      "sha256": "c35f55ef31aab0bd3aa86af412b3fec11e568b03b579889f56dc237b600b8ff5"
+    },
+    {
+      "bytes": 61,
+      "name": "ruff.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/ruff.txt",
+      "sha256": "38bed8679cc0f64c3a84dac5cea5c9283fef23337082b924e3b979d1d1f700d8"
+    },
+    {
+      "bytes": 811,
+      "name": "selector_result.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/selector_result.txt",
+      "sha256": "1b5477e69c180d9cd71755a1eaa09aca9d7098340770673afb59e3ce9a4be9b8"
+    },
+    {
+      "bytes": 297,
+      "name": "stash_after.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/stash_after.txt",
+      "sha256": "9dee9fcdfc2800d5051d82fa85a329d19ae3d15e0e896220ac9cafabfcb30c30"
+    },
+    {
+      "bytes": 297,
+      "name": "stash_before.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/stash_before.txt",
+      "sha256": "9dee9fcdfc2800d5051d82fa85a329d19ae3d15e0e896220ac9cafabfcb30c30"
+    },
+    {
+      "bytes": 662,
+      "name": "tests.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/tests.txt",
+      "sha256": "70172e6dcabd47072738d2877a4f18592096fcafdf4d8d23888a893d3e8b536c"
+    },
+    {
+      "bytes": 662,
+      "name": "tests_final.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/tests_final.txt",
+      "sha256": "9b7fd7fa9d0a603c66d91297f625868aa75ee925e2373da24bdb90f7ab5a68cd"
+    },
+    {
+      "bytes": 1449,
+      "name": "verdict.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/verdict.txt",
+      "sha256": "088ec4d35e9e07a14fb8199d699b51c4143724e6fee6c0ff9a1f0e38c0641849"
+    },
+    {
+      "bytes": 558,
+      "name": "worktree_after.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/worktree_after.txt",
+      "sha256": "881f565a020ecee308b305417ed2eb8dd88ef32610b3e6c7c2369e6aef3b3ae7"
+    },
+    {
+      "bytes": 478,
+      "name": "worktree_before.txt",
+      "path": "docs/evidence/canonical_short_binding_post_repair_reevaluation_v1/worktree_before.txt",
+      "sha256": "aa6a2b874d3cf291238065861f5c819e1a5e40753046b51a1e1775993513da3b"
+    }
+  ],
+  "head_sha": "fdf94a241fdfe257a17ee3b774c53efba3de5f61",
+  "result_class": "PASS_CHAIN_ONLY"
+}
