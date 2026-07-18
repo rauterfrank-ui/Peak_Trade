@@ -1,0 +1,17 @@
+{
+  "authority_effect": "NONE",
+  "canonical_engine_signal_source": "mv2_decision_replay_series",
+  "cmc_owner": "src/trading/master_v2/canonical_market_context_v1.py",
+  "composition_owner_present": true,
+  "harness_forces_configured_strategy_bypass": false,
+  "harness_id": "CANONICAL_CHAIN_ECONOMIC_REEVALUATION_V1",
+  "non_authoritative_marker": true,
+  "replay_calls_transition": true,
+  "replay_owner": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+  "runtime_effect": "NONE",
+  "strategy_signal_binding_owner": "src/backtest/strategy_signal_binding_v1.py",
+  "transition_state_owner_present": true,
+  "uses_integrated_offline_replay": true,
+  "uses_run_mv2_research_backtest_wiring_v1": true,
+  "wiring_calls_replay": true
+}

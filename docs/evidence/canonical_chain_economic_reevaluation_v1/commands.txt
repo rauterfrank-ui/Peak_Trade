@@ -1,0 +1,34 @@
+# commands.txt — canonical_chain_economic_reevaluation_v1
+DATE_UTC=2026-07-18T21:29:53Z
+
+# Phase A
+git fetch origin --prune
+git rev-parse HEAD origin/main
+gh pr view 5341 --json state,mergedAt,mergeCommit
+
+# Phase B probe (non-authoritative)
+PYTHONPATH=src:. python3 docs/evidence/canonical_chain_economic_reevaluation_v1/economic_reevaluation_probe_v1.py
+
+# Phase F focused tests (same family as #5338/#5340/#5341 + harness contract)
+python3 -m pytest -q \
+  tests/research/test_canonical_chain_economic_reevaluation_audit_harness_v1.py \
+  tests/backtest/test_mv2_research_scope_distances_instrument_relative_v1.py \
+  tests/trading/master_v2/test_adverse_exit_downscope_priority_v1.py \
+  tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py \
+  tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py \
+  tests/trading/master_v2/test_double_play_state.py \
+  tests/trading/master_v2/test_double_play_composition_matrix_v1.py \
+  tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py \
+  tests/research/test_entry_position_exit_policy_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py
+
+# Ruff (touched python)
+ruff format --check docs/evidence/canonical_chain_economic_reevaluation_v1/economic_reevaluation_probe_v1.py tests/research/test_canonical_chain_economic_reevaluation_audit_harness_v1.py
+ruff check docs/evidence/canonical_chain_economic_reevaluation_v1/economic_reevaluation_probe_v1.py tests/research/test_canonical_chain_economic_reevaluation_audit_harness_v1.py
+
+# Docs gates
+bash scripts/ops/preflight_docs_token_policy_changed.sh
+bash scripts/ops/verify_docs_reference_targets.sh
+
+# Diff scope / economic boundary
+git diff --check
+# ECONOMIC_BOUNDARY_GUARD: productive trading/strategy/risk/execution/authority files must be unchanged
