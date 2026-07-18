@@ -41,7 +41,13 @@ Re-initialize RuntimeScopeState **only** when:
 
 ## 4. CHOP
 
-`CHOP_POLICY_STATUS` in the deterministic generator remains **`NOT_BOUND`**. No new chop heuristic. Status marker: `NOT_BOUND_FAIL_CLOSED_GAP`.
+`CHOP_BINDING_STATUS=BOUND_AS_SCOPE_POLICY` via
+`chop_scope_event_policy_binding_v1` / `RuntimeScopeState.chop_latched`.
+
+The deterministic generator still has **no market emission heuristic** for
+`CHOP_DETECTED` (`CHOP_POLICY_STATUS=BOUND_AS_SCOPE_POLICY_NO_EMISSION_HEURISTIC`).
+When a CHOP event is present (e.g. TEST_ONLY injection), it binds as scope policy
+only — never as Direction or Switch.
 
 ## 5. Non-authority
 

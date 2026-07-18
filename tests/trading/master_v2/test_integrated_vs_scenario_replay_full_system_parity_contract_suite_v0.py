@@ -284,6 +284,24 @@ def test_2_short_bear_path_parity_v0() -> None:
 
 
 def test_3_both_confirmed_chop_guard_parity_v0() -> None:
+    """
+    Composition both_sides_confirmed is conflict, not Scope-CHOP SSOT.
+
+    CHOP_SCOPE_EVENT_POLICY_BINDING_CONTRACT_V1: Scope-CHOP is RuntimeScopeState
+    latch / scope_chop_policy_active projection; legacy SideState.CHOP_GUARD_BLOCK
+    remains a scenario conflict fixture only. Integrated default path does not emit
+    CHOP and is not required to mirror the conflict fixture.
+    """
+    from trading.master_v2.double_play_composition_matrix_v1 import (
+        CompositionChopGuardStatus,
+        DoublePlayCompositionPolicyV1,
+        compute_composition_input_digest,
+        evaluate_double_play_composition_matrix_v1,
+    )
+    from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
+        build_scenario_matrix_composition_input_v0,
+    )
+
     matrix = evaluate_scenario_matrix_for_side_state_v0(
         side_state=SideState.CHOP_GUARD_BLOCK,
         instrument_id=_INSTRUMENT,
@@ -293,28 +311,28 @@ def test_3_both_confirmed_chop_guard_parity_v0() -> None:
     scenario_env = extract_scenario_matrix_parity_envelope_v0(matrix)
     assert matrix.composition_status is CompositionStatus.CHOP_GUARD_BLOCK
     assert matrix.conflict_status is CompositionConflictStatus.BOTH_SIDES_CONFIRMED
+    assert matrix.chop_guard_status is CompositionChopGuardStatus.NONE
+    assert "composition_conflict_not_scope_chop" in matrix.reason_codes
     assert "no_new_entry" in matrix.reason_codes
     assert_non_authority_boundary_v0(scenario_env)
 
-    integrated = _run(price_path=(3500.0, 3600.0))
-    assert integrated.intermediate is not None
-    assert integrated_assessments_match_scenario_side_state_v0(
-        side_state=SideState.CHOP_GUARD_BLOCK,
-        bull_status=integrated.intermediate.bull_assessment.status,
-        bear_status=integrated.intermediate.bear_assessment.status,
+    base_inp = build_scenario_matrix_composition_input_v0(
+        instrument_id=_INSTRUMENT,
+        trading_epoch=_EPOCH,
+        context_reference=_CONTEXT,
+        side_st=SideState.CHOP_GUARD_BLOCK,
     )
-    assert composition_matrix_results_aligned_v0(
-        integrated.intermediate.composition_result,
-        matrix,
+    projected_inp = replace(base_inp, scope_chop_policy_active=True, input_digest="")
+    projected_inp = replace(
+        projected_inp, input_digest=compute_composition_input_digest(projected_inp)
     )
-    integrated_env = extract_integrated_parity_envelope_v0(integrated)
-    assert integrated_env.composition_status == CompositionStatus.CHOP_GUARD_BLOCK.value
-    assert integrated_env.decision_outcome in (
-        DecisionOutcome.OBSERVE.value,
-        DecisionOutcome.BLOCKED.value,
-        DecisionOutcome.NO_ACTION.value,
+    projected = evaluate_double_play_composition_matrix_v1(
+        projected_inp,
+        DoublePlayCompositionPolicyV1(validity_epochs=3),
     )
-    assert_non_authority_boundary_v0(integrated_env)
+    assert projected.chop_guard_status is CompositionChopGuardStatus.CHOP_GUARD_BLOCK
+    assert projected.selected_side is CompositionSelectedSide.NONE
+    assert "scope_chop_policy_projection" in projected.reason_codes
 
 
 def test_4_neutral_observe_no_action_parity_v0() -> None:

@@ -133,7 +133,7 @@ def _generate(**kwargs: object):
 
 def test_layer_version_and_chop_policy_status() -> None:
     assert DETERMINISTIC_SCOPE_EVENT_GENERATOR_LAYER_VERSION == "v1"
-    assert CHOP_POLICY_STATUS == "NOT_BOUND"
+    assert CHOP_POLICY_STATUS == "BOUND_AS_SCOPE_POLICY_NO_EMISSION_HEURISTIC"
 
 
 def test_long_upscope_candidate_first_epoch() -> None:
@@ -594,7 +594,7 @@ def test_synthetic_spot_instrument_rejected() -> None:
 def test_chop_detected_not_emitted_without_bound_policy() -> None:
     evidence = _generate(current_price=3605.0)
     assert evidence.event_type is not CanonicalScopeEventType.CHOP_DETECTED
-    assert CHOP_POLICY_STATUS == "NOT_BOUND"
+    assert CHOP_POLICY_STATUS == "BOUND_AS_SCOPE_POLICY_NO_EMISSION_HEURISTIC"
 
 
 def test_with_computed_scope_event_digest_round_trip() -> None:

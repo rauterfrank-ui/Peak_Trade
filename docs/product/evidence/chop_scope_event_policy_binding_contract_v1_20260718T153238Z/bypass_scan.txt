@@ -1,0 +1,2 @@
+PRODUCTIVE_CHOP_BYPASS_PATHS=0
+Checked: composition (consumer only), scenario (TEST_ONLY), ops (projection), backtest feedback (observation), generator (no emission heuristic), legacy SideState.CHOP_GUARD_BLOCK (residual clear path only; no new productive entry from CHOP).

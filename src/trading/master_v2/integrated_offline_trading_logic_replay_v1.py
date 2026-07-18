@@ -169,12 +169,13 @@ _RUNTIME_SCOPE_SEED_TEMPLATE = RuntimeScopeState(
     last_completed_side_switch_tick=-1_000_000,
 )
 
-# CHOP remains NOT_BOUND in deterministic_scope_event_generator_v1 (no new heuristic).
+# CHOP is bound as scope policy (chop_scope_event_policy_binding_v1).
+# Generator still has no market emission heuristic for CHOP_DETECTED.
 CANONICAL_DYNAMIC_SCOPE_TRAILING_OWNER = "trading.master_v2.double_play_state.RuntimeScopeState"
 CANONICAL_SCOPE_SNAPSHOT_IDENTITY_OWNER = (
     "trading.master_v2.canonical_scope_initialization_v1.CanonicalScopeSnapshotV1"
 )
-CHOP_BINDING_STATUS = "NOT_BOUND_FAIL_CLOSED_GAP"
+CHOP_BINDING_STATUS = "BOUND_AS_SCOPE_POLICY"
 
 
 @dataclass(frozen=True)
@@ -1171,6 +1172,10 @@ def run_integrated_offline_trading_logic_replay_v1(
     scope_event = with_computed_scope_event_digest(
         generate_deterministic_scope_event(scope_event_inp, inp.policies.scope_event_generator)
     )
+    mapped_event = _canonical_scope_event_to_scope_event(scope_event.event_type)
+    scope_chop_policy_active = bool(runtime_scope_pre.chop_latched) or (
+        mapped_event is ScopeEvent.CHOP_DETECTED
+    )
 
     scope_event_ref = _scope_event_ref_from_evidence(scope_event)
     bull_inp = _directional_input_for_side(inp, DirectionalAssessmentSide.LONG, scope_event_ref)
@@ -1215,6 +1220,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         input_complete=True,
         input_digest="",
         explicit_blocked_reasons=(),
+        scope_chop_policy_active=scope_chop_policy_active,
         policy_version=inp.policies.composition.policy_version,
     )
     composition_inp = replace(
@@ -1226,7 +1232,6 @@ def run_integrated_offline_trading_logic_replay_v1(
         inp.policies.composition,
     )
 
-    mapped_event = _canonical_scope_event_to_scope_event(scope_event.event_type)
     next_side_state, runtime_scope_after_switch, transition = transition_state(
         side_state=inp.side_state,
         event=mapped_event,

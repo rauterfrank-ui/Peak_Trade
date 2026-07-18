@@ -121,13 +121,17 @@ def _assert_both_sides_confirmed_conflict_semantics(result: DoublePlayCompositio
         raise ValueError("both sides confirmed must resolve to CHOP_GUARD_BLOCK")
     if result.conflict_status is not CompositionConflictStatus.BOTH_SIDES_CONFIRMED:
         raise ValueError("both sides confirmed conflict status required")
-    if result.chop_guard_status is not CompositionChopGuardStatus.CHOP_GUARD_BLOCK:
-        raise ValueError("both sides confirmed must set chop guard block")
+    # CHOP_SCOPE_EVENT_POLICY_BINDING_CONTRACT_V1: conflict is not Scope-CHOP SSOT.
+    if result.chop_guard_status is not CompositionChopGuardStatus.NONE:
+        raise ValueError(
+            "both sides confirmed must not invent Scope-CHOP chop_guard "
+            "(COMPOSITION_CONFLICT_NOT_SCOPE_CHOP_SSOT)"
+        )
     if result.selected_side is not CompositionSelectedSide.NONE:
         raise ValueError("both sides confirmed must not select a new entry side")
     required_reasons = {
         "both_sides_confirmed",
-        "chop_guard_block",
+        "composition_conflict_not_scope_chop",
         "no_new_entry",
         "existing_position_management_continues",
     }

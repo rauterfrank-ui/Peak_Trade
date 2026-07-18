@@ -67,12 +67,14 @@ Live, Testnet, Orders, or Runtime-Bridge activation.
 - Capture must not invent LONG_ACTIVE/LONG_ARMED SideState from open/flat position.
 - Flat/NONE remains position NONE; no Direction invention.
 
-## 5. CHOP / UNKNOWN (unchanged this slice)
+## 5. CHOP / UNKNOWN
 
-- `CHOP_BINDING_STATUS=NOT_BOUND_FAIL_CLOSED`
-- `UNKNOWN_BINDING_STATUS=NOT_BOUND_FAIL_CLOSED`
-- CHOP/UNKNOWN cannot create Direction or Switch
-- Composition-CHOP and Scope-CHOP remain separate; binding is a later slice
+- `CHOP_BINDING_STATUS=BOUND_AS_SCOPE_POLICY` (see
+  `CHOP_SCOPE_EVENT_POLICY_BINDING_CONTRACT_V1`)
+- `UNKNOWN_BINDING_STATUS=NOT_BOUND_FAIL_CLOSED` (unchanged)
+- CHOP cannot create Direction, mutate SideState, or trigger Switch
+- Composition consumes Scope-CHOP as projection only; `both_sides_confirmed` is
+  composition conflict, not Scope-CHOP SSOT
 
 ## 6. Non-authority
 

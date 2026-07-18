@@ -829,7 +829,9 @@ def test_contract_5_kill_all_blocks_despite_valid_survival_and_suit() -> None:
 
 def test_contract_6_chop_guard_blocks_despite_valid_survival_and_suit() -> None:
     s_chop, st_chop, t_chop = _ts(SideState.SHORT_ARMED, ScopeEvent.CHOP_DETECTED, EMPTY_ST, 0)
-    assert s_chop == SideState.CHOP_GUARD_BLOCK
+    assert s_chop == SideState.SHORT_ARMED
+    assert st_chop.chop_latched is True
+    assert t_chop.reason_code == "CHOP_SCOPE_POLICY_APPLIED"
 
     surv = evaluate_survival_envelope(_env_ok())
     meta = StrategyMetadata(
@@ -842,10 +844,13 @@ def test_contract_6_chop_guard_blocks_despite_valid_survival_and_suit() -> None:
     assert suit.projection.suitability_class is SuitabilityClass.BOTH_SIDES_CANDIDATE
     assert suit.can_enter_long_bull_pool and suit.can_enter_short_bear_pool
 
+    # Legacy composition path still projects CHOP_GUARD from residual SideState label;
+    # under the new contract SideState is unchanged, so feed the legacy CHOP_GUARD_BLOCK
+    # projection surface explicitly for this pure-stack compose check.
     comp = compose_double_play_decision(
         DoublePlayCompositionInput(
             transition=t_chop,
-            resulting_side_state=s_chop,
+            resulting_side_state=SideState.CHOP_GUARD_BLOCK,
             survival=surv,
             suitability=suit,
             requested_side=RequestedSide.LONG_BULL,

@@ -193,12 +193,15 @@ def test_capture_feedback_never_invents_long_side_state() -> None:
 
 def test_chop_unknown_invariants_preserved() -> None:
     fields = build_double_play_sole_authority_status_fields_v1()
-    assert fields["CHOP_BINDING_STATUS"] == CHOP_BINDING_STATUS == "NOT_BOUND_FAIL_CLOSED"
+    assert fields["CHOP_BINDING_STATUS"] == CHOP_BINDING_STATUS == "BOUND_AS_SCOPE_POLICY"
     assert fields["UNKNOWN_BINDING_STATUS"] == UNKNOWN_BINDING_STATUS == "NOT_BOUND_FAIL_CLOSED"
     assert fields["CHOP_CAN_CREATE_DIRECTION"] == CHOP_CAN_CREATE_DIRECTION == "false"
     assert fields["UNKNOWN_CAN_CREATE_DIRECTION"] == UNKNOWN_CAN_CREATE_DIRECTION == "false"
     assert fields["CHOP_CAN_TRIGGER_SWITCH"] == CHOP_CAN_TRIGGER_SWITCH == "false"
     assert fields["UNKNOWN_CAN_TRIGGER_SWITCH"] == UNKNOWN_CAN_TRIGGER_SWITCH == "false"
+    assert fields["CHOP_CAN_MUTATE_SIDE_STATE"] == "false"
+    assert fields["COMPOSITION_CHOP_STATUS"] == "CONSUMER_PROJECTION_ONLY"
+    assert fields["CHOP_SEMANTIC_SSOT_COUNT"] == "1"
 
 
 def test_transition_state_remains_switch_owner_for_confirmed_events() -> None:
