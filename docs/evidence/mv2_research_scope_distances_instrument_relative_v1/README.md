@@ -13,8 +13,8 @@ ORDERS=false
 
 ## Verdict
 
-Hardcoded absolute research distances `120/60/90` in `_build_replay_input` are replaced by
-mark-relative BPS (`100/50/75` implied via `100 bps` up + legacy ratios `0.5/0.75`),
+Hardcoded absolute research distances `120&#47;60&#47;90` in `_build_replay_input` are replaced by
+mark-relative BPS (`100&#47;50&#47;75` implied via `100 bps` up + legacy ratios `0.5&#47;0.75`),
 converted once to absolute price units for the generator contract.
 
 1INCH research sample: `noop` 2893 → 67; bull/bear geometry candidates reachable;
