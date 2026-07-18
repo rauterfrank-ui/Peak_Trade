@@ -81,11 +81,28 @@
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/state_lifecycle.json",
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/summary.md",
     "docs/product/evidence/canonical_dynamic_scope_trailing_state_continuity_repair_v1_20260718T144407Z/test_results.json",
-        "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/README.md",
+    "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/README.md",
     "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/executive_verdict.md",
     "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/competing_paths_disposition.tsv",
     "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/scenario_injection_contract.md",
     "docs/product/evidence/double_play_competing_authority_fail_closed_quarantine_v1_20260718T150559Z/backtest_side_feedback_analysis.md",
+    "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_canonical_order_intent_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_capital_risk_sizing_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_double_play_composition_scenario_matrix_parity_contract_v0.py",
+    "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+    "tests/trading/master_v2/test_killswitch_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
+    "tests/trading/master_v2/test_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_safety_kernel_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_scenario_replay_double_play_entry_exit_policy_binding_parity_rewire_contract_v0.py",
+    "tests/backtest/test_backtest_engine_position_feedback_v1.py",
+    "tests/ops/test_double_play_specialists.py",
+    "tests/ops/test_ops_double_play_authority_markers_static_contract_v0.py",
+    "tests/ops/test_canonical_core_runtime_integration_bridge_slice_e_v0.py",
+    "tests/ops/test_bounded_master_v2_testnet_completion_path_wiring_contract_v0.py",
+    "tests/ops/test_bounded_testnet_market_input_admission_wiring_contract_v0.py",
+    "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py",
     "config/governance/technical_canonical_wiring_authorization_v1.json"
   ],
   "allowed_surface_classes": [
@@ -147,6 +164,6 @@
     "Includes docs-only Market Dashboard tombstone pointer updates on Double Play display/route contract specs (no DP composition semantics, no runtime/authority).",
     "Includes Surface P registry status contract-test alignment (PASS vs PARTIAL_RUNTIME_ACTIVATION_PENDING split) under runtime/authority/order NONE invariants; no owner semantic mutation.",
     "Includes canonical Dynamic Scope trailing state continuity repair: RuntimeScopeState SSOT across integrated/backtest cycles; CanonicalScopeSnapshot identity-only; CHOP remains NOT_BOUND; no runtime/authority/order/live activation.",
-    "Includes Double Play sole authority fail-closed quarantine: Ops SwitchGate projection-only, scenario tick.scope_event TEST_ONLY guarded, backtest position feedback observation-only (no SideState overwrite); CHOP remains NOT_BOUND; no runtime/order/live activation."
+    "Includes Double Play sole authority fail-closed quarantine: Ops SwitchGate projection-only, scenario tick.scope_event TEST_ONLY guarded, backtest position feedback observation-only (no SideState overwrite); CHOP remains NOT_BOUND; no runtime/order/live activation; TEST_ONLY injection harness test paths explicitly allowlisted."
   ]
 }
