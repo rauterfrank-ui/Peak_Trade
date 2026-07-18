@@ -170,6 +170,14 @@
     }
   },
   "allowed_optimization_surfaces": {
+    "DOUBLE_PLAY_COMPOSITION_NARROW_RESEARCH_REWIRE": {
+      "path_prefixes": [
+        "scripts/research/double_play_composition_narrow_reuse_first_rewire_v0.py"
+      ],
+      "path_globs": [
+        "tests/research/test_double_play_composition_narrow_reuse_first_rewire_v0.py"
+      ]
+    },
     "DATA_BINDING_REPAIR": {
       "path_prefixes": [
         "src/research/offline_source_evidence_",

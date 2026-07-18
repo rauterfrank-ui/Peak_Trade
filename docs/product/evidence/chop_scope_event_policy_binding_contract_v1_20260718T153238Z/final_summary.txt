@@ -5,6 +5,12 @@ Composition is consumer/projection only.
 UNKNOWN remains NOT_BOUND_FAIL_CLOSED.
 No Live/Orders/Runtime activation.
 
+LINT_GATE_FOLLOWUP:
+Allowed research surface registered in
+economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json
+for scripts/research/double_play_composition_narrow_reuse_first_rewire_v0.py
+(BOUNDARY_GUARD locally PASS vs origin/main).
+
 TIMING_PROOF_STATUS=PASS
 TIMING_COMMAND=pytest PR_BOUNDED_FULL targets
 ======================= 716 passed, 5 warnings in 45.51s =======================
