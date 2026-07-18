@@ -1,0 +1,18 @@
+READ_ONLY_PROOF (local, post-merge main @ 2cb140bf)
+
+Research distances mark=0.40 (BPS-scaled):
+  matched=['downscope','adverse_exit']
+  selected=adverse_exit
+  map_to_sm(ADVERSE_EXIT_CANDIDATE)=scope_unknown
+  map_downscope(DOWNSCOPE_CANDIDATE)=downscope_candidate
+  LONG_ACTIVE+SCOPE_UNKNOWN -> long_active allowed=False reason=SCOPE_UNKNOWN_FAIL_CLOSED
+  NEUTRAL+DOWNSCOPE_CONFIRMED -> short_armed allowed=True reason=NEUTRAL_TO_SHORT_ARMED
+
+Fixture-style distances (up=50, adverse=80, price=3440, anchor=3500):
+  matched=['downscope'] selected=downscope
+  => downscope reachable when adverse threshold is outside downscope band
+
+Post-#5338 1INCH probe (evidence context):
+  adverse_exit_candidate=2824
+  downscope_*=0
+  noop=67
