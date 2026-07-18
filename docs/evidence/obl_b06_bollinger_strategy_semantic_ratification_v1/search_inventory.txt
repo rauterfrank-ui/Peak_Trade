@@ -1,0 +1,61 @@
+OBL_B06 Bollinger Strategy Semantic Ratification — Search Inventory
+====================================================================
+DATE_UTC=2026-07-18T19:07:10Z
+HEAD=a55888f48acaa5512d1c2295b65981ad8f8be7dd
+SCOPE=productive + test + governance Bollinger paths (no live/orders)
+
+PRIMARY_PRODUCER
+  src/strategies/bollinger.py::BollingerBandsStrategy.generate_signals
+  KEY=bollinger_bands
+  Geometry:
+    +1 lower*entry_threshold cross down (entry event assignment)
+    -1 middle cross up (exit event assignment)
+    0 elsewhere
+  Upper-band SHORT entry: ABSENT (no short_entry condition)
+
+ENCODING / SIDE CARRIER
+  src/backtest/strategy_signal_suitability_agreement_adapter_v1.py
+    _ENTRY_EXIT_EVENT_OWNERS includes bollinger_bands
+    _intrinsic_side_agreement_and_aux: +1→ENTRY, -1→EXIT, 0→NONE
+    _resolve_entry_side_carrier_v1: non-trend_following → NONE
+  trading/master_v2/strategy_suitability_agreement_material_v1.py
+    entry_side carrier SSOT; no cycle_signal→side derivation
+
+CLASSIC ENGINE
+  src/backtest/engine.py::run_realistic
+    docstring: 1=Buy, -1=Sell, 0=Hold
+    signal==1 → LONG ENTRY (flat only)
+    signal==-1 → EXIT open long (not SHORT open)
+
+INTEGRATED / MV2
+  src/backtest/mv2_research_wiring_v1.py::resolve_agreement_bound_directional_cycle_v1
+    ENTRY_EXIT without entry_side → None (flat)
+  src/trading/master_v2/suitability_binding_v1.py
+    ENTRY impulse agrees only with LONG DA (consumer bias; not carrier emission)
+  src/trading/master_v2/double_play_composition.py::compose_double_play_decision
+    does NOT set Bollinger entry_side
+
+GOVERNANCE SSOT (prior, still binding)
+  config/governance/obl_b05_bollinger_long_semantic_decision_v1.json
+    BOLLINGER_DECISION=CONTRACT_REMAINS_AMBIGUOUS
+    BOLLINGER_SIDE_ACTIVATED=false
+  docs/governance/OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_V1.md
+  docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/
+    OPTION_D_REMAIN_FAIL_CLOSED; next=STRATEGY_SEMANTIC_RATIFICATION_REQUIRED
+
+KEY TESTS
+  tests/backtest/test_obl_b05_bollinger_long_semantic_decision_v1.py
+  tests/backtest/test_obl_b05_bollinger_entry_side_doc_alignment_v1.py
+  tests/backtest/test_entry_exit_optional_side_carrier_contract_v1.py
+  tests/backtest/test_trend_following_entry_side_ratification_v1.py (contrast TF only)
+  tests/test_new_strategies.py::test_bollinger_signals (smoke only)
+
+HYPOTHESIS CHECK (not presupposed)
+  lower-band oversolds → LONG: DOC-leaning / classic-engine-treated; NOT ratifiable as Strategy Intent authority (CP02)
+  upper-band overbought → SHORT: FALSE — not implemented in producer
+  neutral → FLAT/NO_ENTRY: supported as 0 / event_kind NONE
+
+SEARCH TERMS USED
+  bollinger, BollingerBands, bollinger_bands, ENTRY_EXIT_EVENT, entry_side,
+  _resolve_entry_side, cross_entry, cross_exit, CONTRACT_REMAINS_AMBIGUOUS,
+  BLOCKED_AMBIGUITY, LONG ENTRY, signal == -1
