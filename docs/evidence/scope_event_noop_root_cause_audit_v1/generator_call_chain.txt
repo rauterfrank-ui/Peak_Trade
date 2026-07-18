@@ -1,0 +1,34 @@
+CANONICAL_CALL_CHAIN (MV2 economic research wiring -> scope event)
+
+1) src/backtest/mv2_research_wiring_v1.py::run_mv2_research_backtest_wiring_v1
+   - builds sequence_state via build_initial_mv2_integrated_replay_bar_sequence_state_v1
+     (side_state=LONG_ARMED, scope_direction_state=LONG)
+   - per bar: binds CanonicalMarketContextV1 from bars
+   - per bar: _build_replay_input(...) injects hardcoded distances 120/60/90
+
+2) src/backtest/mv2_research_wiring_v1.py::_build_replay_input
+   - current_price = context.mark_price
+   - price_path = project_mv2_agreement_bound_price_path_v1(mark, material, prior_mark)
+   - up_distance=120.0, adverse_exit_distance=60.0, reversal_distance=90.0, confirmation_epochs=2
+   - trails existing_scope / confirmation / cooldown / side_state from sequence_state
+
+3) integrated offline replay
+   src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+   - resolves trailing_anchor from runtime_scope_pre.anchor_price (fallback current_scope.trailing_anchor)
+   - effective_scope_direction = scope_direction_from_side_state_v1(side_state, fallback=scope_direction_state)
+     -> LONG while LONG_ARMED
+   - builds ScopeEventGeneratorInputV1 with CMC digests + distances from replay input
+   - calls generate_deterministic_scope_event(scope_event_inp, policies.scope_event_generator)
+
+4) src/trading/master_v2/deterministic_scope_event_generator_v1.py::generate_deterministic_scope_event
+   - compute_evaluated_thresholds(direction=LONG, trailing_anchor, up=120, adverse=60, reversal=90)
+     -> up_candidate = anchor+120; downscope = anchor-120; adverse = anchor-60
+   - _matched_directional_conditions(...)
+   - _select_directional_kind(...) -> None when no thresholds hit
+   - event_type = NOOP
+
+5) mapped ScopeEvent.NOOP -> transition_state(..., event=NOOP) -> SideState unchanged (LONG_ARMED)
+   - BEAR/SHORT_ARMED never reached on research bars
+
+NO_SECOND_GENERATOR_ON_PRODUCTIVE_PATH=true
+SCENARIO_ADAPTER_PRESENT_BUT_NOT_RESEARCH_OWNER=scope_event_generator_scenario_binding_adapter_v0 (scenario/parity harness; not MV2 research wiring path)

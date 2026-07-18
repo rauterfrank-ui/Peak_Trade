@@ -1,0 +1,44 @@
+# Canonical Chain Post-#5337 Zero-Trade Audit v1
+
+```text
+SLICE=READ_ONLY_CANONICAL_CHAIN_POST_5337_ZERO_TRADE_AUDIT_V1
+BASE_SHA=a55c4000f33269a98107fd1294b1c9ba82433cad
+BRANCH=audit/canonical-chain-post-5337-zero-trade-v1
+PRODUCTIVE_FILES_CHANGED=false
+RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED
+LIVE_AUTHORIZED=false
+ORDERS=false
+```
+
+## Verdict
+
+PR #5337 restored market-context DA input: panel sample is **no longer zero-trade** (179 trades / 8 instruments). Remaining Strategy-ENTRY fail path: `deterministic_scope_event_generator` emits **only `noop`**, so `transition_state` never leaves initial `LONG_ARMED`; when composition selects SHORT (typical Bollinger mean-reversion ENTRY), entry/exit returns `no_action` (`selected_opposite_short`).
+
+## Answers
+
+| # | Question | Finding |
+|---|----------|---------|
+| 1 | Non-neutral raw signals? | **Yes** — sample `+1=10`, `-1=1404`, `0=22210` |
+| 2 | Reach CMC unchanged? | **Yes** — CMC bound; agreement ENTRY preserved; `entry_side=NONE` |
+| 3 | Bull/Bear/Neutral from `transition_state`? | **Frozen** — `next_side_state=long_armed` on all hooked bars; scope_event=`noop` always |
+| 4 | Composition? | `long`/`short`/`none` selected; many `observe` |
+| 5 | First value-loss boundary? | Strategy ENTRY: composition can be `short_selected` + DA/suitability pass → **entry_exit `no_action`** vs `LONG_ARMED` |
+| 6 | Blocker class? | **STATE_TRANSITION** (scope/`transition_state` freeze); consumer drop at ENTRY_EXIT |
+| 7 | Hidden LONG default / 2nd authority / classic bypass? | Initial `LONG_ARMED` default yes; no second productive authority; classic remains quarantined |
+
+## Artifacts
+
+| File | Purpose |
+|------|---------|
+| `audit_probe_v1.py` | Evidence-only observational probe |
+| `probe_summary.json` / `trade_recount.json` | Machine counts |
+| `signal_counts.txt` | Raw / CMC / trade signals |
+| `state_transition_counts.txt` | Scope + SideState |
+| `composition_counts.txt` | Composition / decisions |
+| `first_value_loss_boundary.txt` | Exact first ENTRY drop |
+| `authority_scan.txt` | Authority / defaults / bypass |
+| `verdict.txt` | Machine-readable closeout |
+
+## Safety
+
+Read-only. No commit/push/PR. Foreign untracked / stashes untouched.

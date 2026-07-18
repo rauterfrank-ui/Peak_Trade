@@ -1,0 +1,20 @@
+MEMBER=okx:linear_perpetual:1INCH:USDT:USDT:perp
+GEOMETRY_BASIS=compute_evaluated_thresholds(direction=LONG) vs current_price on hooked bars
+
+BULL_CANDIDATE_COUNT=0
+BEAR_CANDIDATE_COUNT=0
+BULL_CONFIRMATION_PASS_COUNT=0
+BEAR_CONFIRMATION_PASS_COUNT=0
+BULL_EVENT_COUNT=0
+BEAR_EVENT_COUNT=0
+NOOP_COUNT=2893
+
+COUNTERFACTUAL_SCALE_AWARE (diagnostic only; not a productive change):
+  scale_up_distance = 1% of median_mark = 0.003895
+  bull_hits=255
+  bear_hits=239
+  none=2459
+  => with instrument-relative distances, both sides would produce candidates on real bars
+
+SYMMETRY_NOTE=Generator geometry is direction-mirrored; exclusive noop is not an asymmetric confirmation bug.
+Asymmetry on research path comes from (1) unreachable absolute thresholds and (2) LONG_ARMED seed allowing long entries without upscope events.

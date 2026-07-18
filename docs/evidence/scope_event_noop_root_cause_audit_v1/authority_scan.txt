@@ -1,0 +1,43 @@
+AUTHORITY / BYPASS SCAN
+
+SECOND_DIRECTION_OR_SWITCH_AUTHORITY_FOUND=false
+  Sole productive SM: trading.master_v2.double_play_state.transition_state
+
+SECOND_COMPOSITION_AUTHORITY_FOUND=false
+  Sole productive composition: evaluate_double_play_composition_matrix_v1
+
+SECOND_SCOPE_EVENT_GENERATOR_ON_RESEARCH_PATH=false
+  Productive call: generate_deterministic_scope_event from integrated_offline_trading_logic_replay_v1
+  Scenario adapter exists for parity harnesses only; MV2 research wiring uses integrated path
+
+ENTRY_SIDE_NONE=true
+  bollinger_event_semantic_contract_v1 forces entry_side="NONE" (OPTION_D)
+
+LONG_DEFAULT_FOUND=true (seed, not second authority)
+  build_initial_mv2_integrated_replay_bar_sequence_state_v1 sets SideState.LONG_ARMED
+  Explains long activity without upscope; does NOT invent noop
+
+CLASSIC_ENGINE_BYPASS_FOUND=false
+  Classic remains quarantined on audited MV2 path (prior sole-authority contracts still green)
+
+TEST_FIXTURE_DEFAULT_USED_PRODUCTIVELY_FOR_DISTANCES=true (ROOT)
+  Hardcoded 120/60/90 in _build_replay_input match ETH-scale fixture mentality
+  Generator unit tests use ~3500 marks with distances 50–100 and CAN emit DOWNSCOPE_*
+  Research bars cannot
+
+SCENARIO_RESEARCH_FALLBACK_INJECTING_NOOP=false
+  Noop emerges from threshold miss inside generator, not from scenario noop injection
+
+RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED
+LIVE_AUTHORIZED=false
+ORDERS=false
+
+BEAR_FIXTURES_CAN_REACH_SHORT_ARMED=true
+  Code: transition_state NEUTRAL_OBSERVE + DOWNSCOPE_CONFIRMED -> SHORT_ARMED
+    (src/trading/master_v2/double_play_state.py:391-392)
+  Tests: tests/trading/master_v2/test_double_play_state.py / test_deterministic_scope_event_generator_v1.py::test_long_downscope_candidate
+  NOTE: LONG_ARMED + DOWNSCOPE_CONFIRMED is NO_TRANSITION (lines 379-401 fallthrough) —
+        secondary after exclusive noop; not required to explain generator noop
+
+BULL_CAN_REACH_LONG_ARMED=true
+  Seeded already LONG_ARMED; UPSCOPE_CONFIRMED from NEUTRAL also arms LONG; LONG_ARMED+UPSCOPE -> LONG_ACTIVE

@@ -1,0 +1,7 @@
+REPO_ROOT=/Users/frnkhrz/Peak_Trade
+RECOVERY_NOTE=Regenerated repo_state after untracked delete; not original capture.
+SOURCE_HEAD_SHA=43558204d4f7bcab30ce9e8357d2513a9a5f0970
+CAPTURED_AT=2026-07-18T23:21:53Z
+LIVE_AUTHORIZED=false
+ORDERS_ENABLED=false
+BRANCH_AT_SOURCE=main

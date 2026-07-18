@@ -1,0 +1,9 @@
+# changed_files.txt (recovery reconstruction)
+RECOVERY_NOTE=Regenerated listing after untracked delete.
+/Users/frnkhrz/Peak_Trade/docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/README.md
+/Users/frnkhrz/Peak_Trade/docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/canonical_chain_trace.md
+/Users/frnkhrz/Peak_Trade/docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/changed_files.txt
+/Users/frnkhrz/Peak_Trade/docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/competing_authority_inventory.md
+/Users/frnkhrz/Peak_Trade/docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/first_real_blocker.md
+/Users/frnkhrz/Peak_Trade/docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/repo_state.txt
+/Users/frnkhrz/Peak_Trade/docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/surface_p_closeout_matrix.md

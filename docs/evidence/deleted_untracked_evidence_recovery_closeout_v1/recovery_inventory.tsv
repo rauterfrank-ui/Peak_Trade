@@ -1,0 +1,7 @@
+pack	semantic	source_branch	source_base_sha	source_prs	original_bytes	files	placeholders
+canonical_chain_post_5337_zero_trade_audit_v1	PARTIAL				false	17	4
+ehlers_bouchaud_system_integration_audit_v1	PARTIAL				false	15	3
+el_karoui_armstrong_system_integration_audit_v1	PARTIAL				false	11	4
+obl_b05_bollinger_entry_side_authority_operator_go_selection_v1	PASS				false	10	1
+post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1	PARTIAL				false	8	2
+scope_event_noop_root_cause_audit_v1	PARTIAL				false	25	6

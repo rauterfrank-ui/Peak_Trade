@@ -1,0 +1,45 @@
+{
+  "bear_candidate_geometry_hit": 0,
+  "bull_candidate_geometry_hit": 0,
+  "counterfactual_1pct_median_distance_hits": {
+    "bear": 239,
+    "bull": 255,
+    "none": 2459
+  },
+  "direction_counts": {
+    "long": 2893
+  },
+  "dominant_noop_reason": "threshold_miss_no_candidate",
+  "event_counts": {
+    "noop": 2893
+  },
+  "impossible_threshold_gap_example": {
+    "down_threshold_if_anchor_eq_mark": -119.7697,
+    "mathematically_unreachable": true,
+    "observed_max_bar_move": 0.029299999999999993,
+    "required_move_to_hit": 120.0,
+    "typical_mark": 0.2303,
+    "up_threshold_if_anchor_eq_mark": 120.2303
+  },
+  "mark_max": 0.5301,
+  "mark_min": 0.2303,
+  "max_abs_bar_to_bar_move": 0.029299999999999993,
+  "median_mark": 0.3895,
+  "member": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+  "noop_reason_counts": {
+    "missing_intermediate": 60,
+    "threshold_miss_count": 2893,
+    "threshold_miss_no_candidate": 2893
+  },
+  "root_cause_class": "UNIT_MISMATCH",
+  "scale_aware_up_distance_1pct": 0.003895,
+  "threshold_miss_count": 2893,
+  "trades_opened": 11,
+  "wiring_hardcoded_distances": {
+    "adverse_exit_distance": 60.0,
+    "confirmation_epochs": 2,
+    "owner": "src/backtest/mv2_research_wiring_v1.py::_build_replay_input",
+    "reversal_distance": 90.0,
+    "up_distance": 120.0
+  }
+}
