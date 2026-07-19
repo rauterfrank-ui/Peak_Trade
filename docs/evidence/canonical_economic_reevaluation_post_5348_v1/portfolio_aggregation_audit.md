@@ -16,7 +16,7 @@ Summing independent returns implicitly treats each instrument's full initial
 capital as additive portfolio capital without a shared equity curve:
 
 - prior sum-of-returns: `0.5066899689424893`
-- equal-capital panel proxy `sum(net_pnl)/(N*10000)`: `0.004293982787648256`
+- equal-capital panel proxy `sum(net_pnl)&#47;(N*10000)`: `0.004293982787648256`
 
 These differ by ~0.502396.
 

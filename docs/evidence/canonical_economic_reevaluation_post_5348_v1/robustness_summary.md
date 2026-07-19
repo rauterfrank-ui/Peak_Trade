@@ -6,7 +6,7 @@ Prior baseline exports are **INVALID_ECONOMIC_MEASUREMENT**. Configured
 `fee_bps=10` / `slippage_bps=5` are **NOT_APPLIED** in the roundtrip ledger
 (`entry_cost=exit_cost=fee_drag=0`, `pnl==gross_pnl`, `COST_DRAG=0`). Prior panel
 `NET_RETURN≈0.507` summed 118 independent instrument returns (capital
-double-counting). Corrected equal-capital proxy: `sum(net_pnl)/(118*10000)`.
+double-counting). Corrected equal-capital proxy: `sum(net_pnl)&#47;(118*10000)`.
 
 See `metrics_integrity_verdict.md`, `cost_reconciliation.json`,
 `portfolio_aggregation_audit.md`.

@@ -3,8 +3,8 @@
 ## Scope
 
 Audit of exported panel metrics from
-`docs/evidence/canonical_economic_reevaluation_post_5348_v1` against the
-canonical offline roundtrip ledger produced by
+`docs/evidence/canonical_economic_reevaluation_post_5348_v1/README.md`
+against the canonical offline roundtrip ledger produced by
 `run_mv2_research_backtest_wiring_v1` (seed 42).
 
 ## Per-metric contract
