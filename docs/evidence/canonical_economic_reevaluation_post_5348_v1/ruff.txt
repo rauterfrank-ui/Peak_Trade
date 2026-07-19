@@ -1,0 +1,6 @@
+FORMAT:
+2 files already formatted
+RC=0
+CHECK:
+All checks passed!
+RC=0

@@ -1,0 +1,187 @@
+{
+  "ECONOMIC_GATE_OPENED": false,
+  "PROMOTION_ELIGIBLE": false,
+  "base_sha": "8eb90ecf5b8f4a7cef4b7621aa146bfd6f1ffacc",
+  "branch": "audit/canonical-economic-reevaluation-post-5348-v1",
+  "economic_class": "INCONCLUSIVE_UNSTABLE",
+  "evidence_id": "canonical_economic_reevaluation_post_5348_v1",
+  "file_count": 25,
+  "files": [
+    {
+      "bytes": 1622,
+      "name": "README.md",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/README.md",
+      "sha256": "ab92420ca9ffa5a23a00db5bde63b000153f3043324ca33e302b6024c9dbcfe2"
+    },
+    {
+      "bytes": 77722,
+      "name": "economic_reevaluation_probe_v1.cpython-311.pyc",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/__pycache__/economic_reevaluation_probe_v1.cpython-311.pyc",
+      "sha256": "e21a7691b9baf955923e7396660d63f1638eaa72487d1a58a257b86d93b9290b"
+    },
+    {
+      "bytes": 263,
+      "name": "adverse_exit_stop_diagnostic.json",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/adverse_exit_stop_diagnostic.json",
+      "sha256": "64c3949b568d5c2d5b0938aa2efa93fd6456a4b2f975b80a75a7fdf23e9d6b24"
+    },
+    {
+      "bytes": 1386,
+      "name": "baseline_metrics.json",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/baseline_metrics.json",
+      "sha256": "412c48f58d350db2eec8097b9c139f79ec004e33feca2c8aa1138e9a356f3e86"
+    },
+    {
+      "bytes": 941,
+      "name": "chain_binding_proof.json",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/chain_binding_proof.json",
+      "sha256": "462fd18c4b735491bf66c7c03d167e7a283d81cca5e85c5445786b32af557191"
+    },
+    {
+      "bytes": 330915,
+      "name": "checkpoint_baseline_wf.json",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/checkpoint_baseline_wf.json",
+      "sha256": "8a86f0b13d4b5672c162da61e7a24aefbfcfce1aa179f502fbbc0899b13a5e3a"
+    },
+    {
+      "bytes": 901,
+      "name": "commands.log",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/commands.log",
+      "sha256": "1fc150e23f79e1ca3f79da468cf5ca2bd6f1314818f34487c25cb6c097a902a2"
+    },
+    {
+      "bytes": 23987,
+      "name": "commands_probe_stream.log",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/commands_probe_stream.log",
+      "sha256": "aefee14a9f151febfabdfb116aba35374840c5a943405595dc73014955b99ab4"
+    },
+    {
+      "bytes": 1451,
+      "name": "config_snapshot.json",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/config_snapshot.json",
+      "sha256": "96eced16b5bdb5b545afdcb5f0a39716f2b10fe675dbf8d77379c06dcd41cad7"
+    },
+    {
+      "bytes": 2107,
+      "name": "dataset_manifest.json",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/dataset_manifest.json",
+      "sha256": "723594c1458340dc6c428dac6ac8ec6bac1c87994c494f509f9bd7a18350bd74"
+    },
+    {
+      "bytes": 83,
+      "name": "direction_metrics.csv",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/direction_metrics.csv",
+      "sha256": "a4d786dfb67dcde5116854a52ed01fd6d40845252d9fe9d14a7d8c43cfcb6bd1"
+    },
+    {
+      "bytes": 52157,
+      "name": "economic_reevaluation_probe_v1.py",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/economic_reevaluation_probe_v1.py",
+      "sha256": "693e6b26097c441fdaee18cd8c1291f6407b059d8c5079915408aadc85d05b82"
+    },
+    {
+      "bytes": 377,
+      "name": "environment.txt",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/environment.txt",
+      "sha256": "45bfb1f1512b6765a6b8f5966d7affe052e37288686359ae3ce405ffe945f76b"
+    },
+    {
+      "bytes": 50,
+      "name": "exit_reason_metrics.csv",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/exit_reason_metrics.csv",
+      "sha256": "da3266a13979c3ae3b97a16001582109f42b411c4f4ea1ca348e3e2e2ddc4ec8"
+    },
+    {
+      "bytes": 26068,
+      "name": "instrument_metrics.csv",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/instrument_metrics.csv",
+      "sha256": "5851960e88c9e80d2549b10a3f6525617678a9a7d5708bdc21e38862d7e8c049"
+    },
+    {
+      "bytes": 96999,
+      "name": "loo_metrics.json",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/loo_metrics.json",
+      "sha256": "ed9ff1b37434c35e44f7d28930c43e66ca927407accff8f718d4304503997b74"
+    },
+    {
+      "bytes": 7907,
+      "name": "materialize_evidence_v1.py",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/materialize_evidence_v1.py",
+      "sha256": "e278b99543311266ff23bda37aa386d99ab9cb74e035ccad405508b63b8302fd"
+    },
+    {
+      "bytes": 183103,
+      "name": "probe_summary.json",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/probe_summary.json",
+      "sha256": "540588890bf6ed58e51e6ec8b46a608c290911d0a2da1943395d37285f9b46ca"
+    },
+    {
+      "bytes": 5662,
+      "name": "recover_baseline_checkpoint_v1.py",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/recover_baseline_checkpoint_v1.py",
+      "sha256": "49888b7f682b9e76acef1e491c4b733c4a0419ef6281eb5abaf8c82019b00b96"
+    },
+    {
+      "bytes": 2215,
+      "name": "robustness_summary.md",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/robustness_summary.md",
+      "sha256": "40276f41d12efc51fad344b99ffb0f37e2a9ed41ef8a7397e8e88c000293036f"
+    },
+    {
+      "bytes": 70,
+      "name": "ruff.txt",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/ruff.txt",
+      "sha256": "43ff3900e360d0a0869d622ccbd0e3f94014ff47ecb915c0da04c5c7b25009d8"
+    },
+    {
+      "bytes": 1838,
+      "name": "stress_metrics.csv",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/stress_metrics.csv",
+      "sha256": "51e48151176e5222e5021592e31cc0b24e843a0e2bcd1fa1345aa69c527fcb3d"
+    },
+    {
+      "bytes": 502,
+      "name": "tests.log",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/tests.log",
+      "sha256": "d3f91a773c2f036f97627272bdde2ff48dfebabe6fe04fbeb0b48cc4db200ca3"
+    },
+    {
+      "bytes": 1008,
+      "name": "verdict.md",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/verdict.md",
+      "sha256": "fcceebbc0d8ec437ec7721f458f87e5c074404cd5784c223b64e18fd12f92207"
+    },
+    {
+      "bytes": 545,
+      "name": "walk_forward_metrics.csv",
+      "path": "docs/evidence/canonical_economic_reevaluation_post_5348_v1/walk_forward_metrics.csv",
+      "sha256": "34e7cf277cc05e8839dcfd96a12a462e8f567181e802d56dfbf9e9fcbaf6ff9e"
+    }
+  ],
+  "git_changed_vs_origin_main": [
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/README.md",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/adverse_exit_stop_diagnostic.json",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/baseline_metrics.json",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/chain_binding_proof.json",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/checkpoint_baseline_wf.json",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/config_snapshot.json",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/dataset_manifest.json",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/economic_reevaluation_probe_v1.py",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/environment.txt",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/loo_metrics.json",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/materialize_evidence_v1.py",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/probe_summary.json",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/recover_baseline_checkpoint_v1.py",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/robustness_summary.md",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/ruff.txt",
+    "docs/evidence/canonical_economic_reevaluation_post_5348_v1/verdict.md",
+    "tests/governance/test_canonical_economic_reevaluation_post_5348_v1.py"
+  ],
+  "head_sha": "8eb90ecf5b8f4a7cef4b7621aa146bfd6f1ffacc",
+  "pytest_rc": 0,
+  "reproducibility_ok": true,
+  "ruff_check_rc": 0,
+  "ruff_format_rc": 0,
+  "status": "PARTIAL",
+  "wall_seconds": 0.04
+}
