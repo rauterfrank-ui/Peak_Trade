@@ -85,6 +85,32 @@ def _compute_directional_gross_pnl_v0(
     return quantity * (exit_price - entry_price)
 
 
+def _compute_roundtrip_fee_slippage_components_v0(
+    *,
+    size: float,
+    entry_price: float,
+    exit_price: float,
+    effective_cost: EffectiveBacktestCostConfigV0,
+) -> tuple[float, float, float, float]:
+    """Return (entry_fee, exit_fee, entry_slippage, exit_slippage) in currency.
+
+    Slippage is modeled as cash drag on notional (fills remain bar/stop prices);
+    fee and slippage are not double-counted. Uses the same bps owners as
+    ``compute_effective_entry/exit_cost_bps`` (fee + slippage per leg).
+    """
+    quantity = abs(size)
+    entry_notional = quantity * entry_price
+    exit_notional = quantity * exit_price
+    fee_bps = float(effective_cost.taker_fee_bps)
+    entry_slip_bps = float(effective_cost.entry_slippage_bps)
+    exit_slip_bps = float(effective_cost.exit_slippage_bps)
+    entry_fee = entry_notional * fee_bps / 10000.0
+    exit_fee = exit_notional * fee_bps / 10000.0
+    entry_slippage = entry_notional * entry_slip_bps / 10000.0
+    exit_slippage = exit_notional * exit_slip_bps / 10000.0
+    return entry_fee, exit_fee, entry_slippage, exit_slippage
+
+
 def _compute_roundtrip_cost_components_v0(
     *,
     size: float,
@@ -92,21 +118,20 @@ def _compute_roundtrip_cost_components_v0(
     exit_price: float,
     effective_cost: EffectiveBacktestCostConfigV0,
 ) -> tuple[float, float]:
-    """Return (entry_cost, exit_cost) from bound effective cost config."""
-    quantity = abs(size)
-    entry_notional = quantity * entry_price
-    exit_notional = quantity * exit_price
-    entry_bps = compute_effective_entry_cost_bps(
-        fee_bps=effective_cost.taker_fee_bps,
-        slippage_bps=effective_cost.entry_slippage_bps,
+    """Return (entry_cost, exit_cost) from bound effective cost config.
+
+    Equivalent to notional × ``compute_effective_{entry,exit}_cost_bps`` / 10000
+    (fee + slippage per leg; no fill-price double count).
+    """
+    entry_fee, exit_fee, entry_slippage, exit_slippage = (
+        _compute_roundtrip_fee_slippage_components_v0(
+            size=size,
+            entry_price=entry_price,
+            exit_price=exit_price,
+            effective_cost=effective_cost,
+        )
     )
-    exit_bps = compute_effective_exit_cost_bps(
-        fee_bps=effective_cost.taker_fee_bps,
-        slippage_bps=effective_cost.exit_slippage_bps,
-    )
-    entry_cost = entry_notional * entry_bps / 10000.0
-    exit_cost = exit_notional * exit_bps / 10000.0
-    return entry_cost, exit_cost
+    return entry_fee + entry_slippage, exit_fee + exit_slippage
 
 
 def _emit_legacy_trade_accounting_fields_v0(
@@ -116,7 +141,11 @@ def _emit_legacy_trade_accounting_fields_v0(
     effective_cost: Optional[EffectiveBacktestCostConfigV0] = None,
     legacy_path_cost_application: bool = LEGACY_PATH_COST_APPLICATION,
 ) -> None:
-    """Materialize gross_pnl and cost fields on legacy Trade records (net pnl unchanged)."""
+    """Materialize gross_pnl and cost fields on legacy Trade records.
+
+    When ``legacy_path_cost_application`` is True and ``effective_cost`` is bound,
+    ``trade.pnl`` becomes net of fee+slippage cash drag (fills unchanged).
+    """
     if trade.exit_price is None or trade.pnl is None:
         return
     gross_pnl = _compute_directional_gross_pnl_v0(
@@ -127,18 +156,26 @@ def _emit_legacy_trade_accounting_fields_v0(
     )
     trade.gross_pnl = gross_pnl
     if legacy_path_cost_application and effective_cost is not None:
-        entry_cost, exit_cost = _compute_roundtrip_cost_components_v0(
-            size=trade.size,
-            entry_price=trade.entry_price,
-            exit_price=trade.exit_price,
-            effective_cost=effective_cost,
+        entry_fee, exit_fee, entry_slippage, exit_slippage = (
+            _compute_roundtrip_fee_slippage_components_v0(
+                size=trade.size,
+                entry_price=trade.entry_price,
+                exit_price=trade.exit_price,
+                effective_cost=effective_cost,
+            )
         )
+        entry_cost = entry_fee + entry_slippage
+        exit_cost = exit_fee + exit_slippage
         trade.entry_cost = entry_cost
         trade.exit_cost = exit_cost
+        trade.fee_total = entry_fee + exit_fee
+        trade.slippage_total = entry_slippage + exit_slippage
         trade.pnl = gross_pnl - entry_cost - exit_cost
     else:
         trade.entry_cost = 0.0
         trade.exit_cost = 0.0
+        trade.fee_total = 0.0
+        trade.slippage_total = 0.0
 
 
 def _emit_pipeline_trade_accounting_fields_v0(
@@ -189,6 +226,8 @@ class Trade:
     gross_pnl: Optional[float] = None
     entry_cost: Optional[float] = None
     exit_cost: Optional[float] = None
+    fee_total: Optional[float] = None
+    slippage_total: Optional[float] = None
 
 
 class BacktestEngine:

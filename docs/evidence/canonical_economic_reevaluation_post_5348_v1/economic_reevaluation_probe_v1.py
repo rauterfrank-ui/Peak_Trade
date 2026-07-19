@@ -46,6 +46,18 @@ from src.backtest.mv2_research_wiring_v1 import (  # noqa: E402
     compute_mv2_backtest_metrics_v1,
     run_mv2_research_backtest_wiring_v1,
 )
+
+_EVIDENCE_DIR = Path(__file__).resolve().parent
+if str(_EVIDENCE_DIR) not in sys.path:
+    sys.path.insert(0, str(_EVIDENCE_DIR))
+from shared_portfolio_equity_research_v1 import (  # noqa: E402
+    HOURLY_PERIODS_PER_YEAR,
+    PORTFOLIO_AGGREGATION_ID,
+    build_equal_weight_portfolio_equity,
+    peak_gross_exposure_from_scaled_trades,
+    portfolio_metrics_from_equity,
+    reconcile_portfolio_equity_to_scaled_net_pnl,
+)
 from src.backtest.strategy_signal_binding_v1 import (  # noqa: E402
     CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE,
     ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
@@ -97,7 +109,11 @@ CLASS_LOW = "INCONCLUSIVE_LOW_SAMPLE"
 CLASS_UNSTABLE = "INCONCLUSIVE_UNSTABLE"
 CLASS_PARTIAL = "PARTIAL"
 CLASS_INVALID = "INVALID_ECONOMIC_MEASUREMENT"
-INITIAL_CAPITAL_PER_INSTRUMENT = 10_000.0
+SLEEVE_INITIAL_CASH = 10_000.0
+SHARED_INITIAL_CAPITAL = 10_000.0
+# Backward-compatible alias used by older integrity helpers/tests.
+INITIAL_CAPITAL_PER_INSTRUMENT = SLEEVE_INITIAL_CASH
+LEDGER_RECON_TOL = 1e-6
 
 
 @dataclass
@@ -276,6 +292,7 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
     gross_pnls: list[float] = []
     net_pnls: list[float] = []
     fees: list[float] = []
+    slips: list[float] = []
     entry_costs: list[float] = []
     exit_costs: list[float] = []
     hold_hours: list[float] = []
@@ -296,8 +313,12 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
                 gross_pnls.append(float(rec["gross_pnl"]))
             if rec.get("pnl") is not None:
                 net_pnls.append(float(rec["pnl"]))
-            if rec.get("fee") is not None:
+            if rec.get("fee_total") is not None:
+                fees.append(float(rec["fee_total"]))
+            elif rec.get("fee") is not None:
                 fees.append(float(rec["fee"]))
+            if rec.get("slippage_total") is not None:
+                slips.append(float(rec["slippage_total"]))
             if rec.get("entry_cost") is not None:
                 entry_costs.append(float(rec["entry_cost"]))
             if rec.get("exit_cost") is not None:
@@ -330,29 +351,47 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
 
     gross_pnl = float(sum(gross_pnls)) if gross_pnls else (0.0 if trade_count == 0 else NA)
     net_pnl = float(sum(net_pnls)) if net_pnls else (0.0 if trade_count == 0 else NA)
-    fee_components = (
+    fee_total = float(sum(fees)) if fees else 0.0
+    slippage_total = float(sum(slips)) if slips else 0.0
+    # If fee_total/slippage_total absent but combined entry/exit costs present, keep
+    # combined costs visible via cost_drag; do not invent a fee/slip split.
+    combined_costs = (
         float(sum(entry_costs) + sum(exit_costs)) if (entry_costs or exit_costs) else 0.0
     )
-    fee_field_total = float(sum(fees)) if fees else 0.0
-    fee_total = fee_components if (entry_costs or exit_costs) else fee_field_total
-    # Separable slippage is not a distinct ledger column in this path; do not invent
-    # bps·trades pseudo-units. Report ledger currency only.
-    slippage_total = 0.0
+    if fee_total == 0.0 and slippage_total == 0.0 and combined_costs > 0.0:
+        fee_total = combined_costs
+        slippage_total = 0.0
 
     cost_drag: Any = NA
     if isinstance(gross_pnl, (int, float)) and isinstance(net_pnl, (int, float)):
         cost_drag = float(gross_pnl - net_pnl)
-    cost_application = (
-        "PASS"
-        if isinstance(cost_drag, (int, float)) and abs(float(cost_drag)) > 1e-12
-        else "NOT_APPLIED"
-    )
+    configured_nonzero = (fee_bps + slip_bps) > 1e-15
+    ledger_cost_sum = float(fee_total) + float(slippage_total)
+    if configured_nonzero and abs(ledger_cost_sum) <= 1e-12:
+        cost_application = "NOT_APPLIED"
+    else:
+        cost_application = "APPLIED"
+    ledger_recon = "PASS"
+    if (
+        isinstance(gross_pnl, (int, float))
+        and isinstance(net_pnl, (int, float))
+        and abs(float(gross_pnl) - ledger_cost_sum - float(net_pnl)) > LEDGER_RECON_TOL
+        and abs(float(gross_pnl) - float(cost_drag) - float(net_pnl)) > LEDGER_RECON_TOL
+    ):
+        ledger_recon = "FAIL"
 
     gross_profit = float(sum(x for x in gross_pnls if x > 0)) if gross_pnls else NA
     gross_loss = float(sum(x for x in gross_pnls if x < 0)) if gross_pnls else NA
     pf_gross = (
         _pf(float(gross_profit), abs(float(gross_loss)))
         if gross_profit is not NA and gross_loss is not NA
+        else NA
+    )
+    net_profit = float(sum(x for x in net_pnls if x > 0)) if net_pnls else NA
+    net_loss = float(sum(x for x in net_pnls if x < 0)) if net_pnls else NA
+    pf_net = (
+        _pf(float(net_profit), abs(float(net_loss)))
+        if net_profit is not NA and net_loss is not NA
         else NA
     )
     wins = sum(1 for x in net_pnls if x > 0) if net_pnls else 0
@@ -387,8 +426,13 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
                 "pnl": _num(rec.get("pnl")),
                 "gross_pnl": _num(rec.get("gross_pnl")),
                 "fee": _num(rec.get("fee")),
+                "fee_total": _num(rec.get("fee_total")),
+                "slippage_total": _num(rec.get("slippage_total")),
                 "entry_cost": _num(rec.get("entry_cost")),
                 "exit_cost": _num(rec.get("exit_cost")),
+                "size": _num(rec.get("size")),
+                "entry_price": _num(rec.get("entry_price")),
+                "exit_price": _num(rec.get("exit_price")),
                 "entry_time": str(rec.get("entry_time"))
                 if rec.get("entry_time") is not None
                 else None,
@@ -412,7 +456,9 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
         "slippage_drag": slippage_total,
         "cost_drag": cost_drag,
         "cost_application": cost_application,
+        "ledger_reconciliation": ledger_recon,
         "profit_factor_gross": pf_gross,
+        "profit_factor_net": pf_net,
         "win_rate": win_rate,
         "expectancy_gross": expectancy_gross,
         "max_drawdown": max_dd,
@@ -433,6 +479,7 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
             or CANONICAL_SYSTEM_ENGINE_SIGNAL_SOURCE
         ),
         "trades_compact": compact_trades,
+        "_equity_curve": equity,
     }
 
 
@@ -528,7 +575,20 @@ def _slice_bars(bars: pd.DataFrame, start: str, end: str) -> pd.DataFrame:
     return out
 
 
-def _aggregate_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
+def _strip_non_json_row_fields(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for r in rows:
+        compact = {k: v for k, v in r.items() if not str(k).startswith("_")}
+        out.append(compact)
+    return out
+
+
+def _aggregate_rows(
+    rows: list[dict[str, Any]],
+    *,
+    shared_initial_capital: float = SHARED_INITIAL_CAPITAL,
+    write_portfolio_equity_csv: Path | None = None,
+) -> dict[str, Any]:
     gross_pnls = [_num(r.get("gross_pnl")) for r in rows]
     net_pnls = [_num(r.get("net_pnl")) for r in rows]
     fee_vals = [_num(r.get("fees")) for r in rows]
@@ -562,20 +622,119 @@ def _aggregate_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
     gp = float(sum(gross_f)) if gross_f else 0.0
     np_ = float(sum(net_f)) if net_f else 0.0
-    pf = (
+    fees_total = float(sum(fee_f)) if fee_f else 0.0
+    slip_total = float(sum(slip_f)) if slip_f else 0.0
+    cost_drag = float(sum(cost_f)) if cost_f else (float(gp - np_) if gross_f and net_f else 0.0)
+    n_instruments = len(rows)
+
+    # Sleeve-level ledger sums (unscaled). Portfolio metrics use shared capital.
+    net_pnls_for_pf = []
+    for r in rows:
+        for t in r.get("trades_compact") or []:
+            if t.get("pnl") is not None:
+                net_pnls_for_pf.append(float(t["pnl"]))
+    pf_net = (
+        _pf(
+            sum(x for x in net_pnls_for_pf if x > 0),
+            abs(sum(x for x in net_pnls_for_pf if x < 0)),
+        )
+        if net_pnls_for_pf
+        else NA
+    )
+    pf_gross = (
         _pf(sum(x for x in gross_f if x > 0), abs(sum(x for x in gross_f if x < 0)))
         if gross_f
         else NA
     )
-    n_instruments = len(rows)
-    panel_return = (
-        float(np_ / (n_instruments * INITIAL_CAPITAL_PER_INSTRUMENT)) if n_instruments > 0 else NA
+
+    traded_apps = [
+        str(r.get("cost_application") or "") for r in rows if int(r.get("total_trades") or 0) > 0
+    ]
+    if traded_apps and all(a == "APPLIED" for a in traded_apps):
+        cost_application = "APPLIED"
+    elif not traded_apps:
+        cost_application = "APPLIED"
+    else:
+        cost_application = "NOT_APPLIED"
+    ledger_recon = (
+        "PASS"
+        if abs(gp - fees_total - slip_total - np_) <= LEDGER_RECON_TOL
+        or abs(gp - cost_drag - np_) <= LEDGER_RECON_TOL
+        else "FAIL"
     )
-    cost_drag = float(sum(cost_f)) if cost_f else (float(gp - np_) if gross_f and net_f else NA)
-    cost_application = (
-        "NOT_APPLIED"
-        if isinstance(cost_drag, (int, float)) and abs(float(cost_drag)) <= 1e-12
-        else "PASS"
+
+    sleeve_curves: dict[str, pd.Series] = {}
+    for r in rows:
+        eq = r.get("_equity_curve")
+        if eq is not None and hasattr(eq, "iloc") and len(eq) > 0:
+            sleeve_curves[str(r.get("member_id") or r.get("instrument") or len(sleeve_curves))] = eq
+
+    portfolio_equity: pd.Series | None = None
+    port_metrics: dict[str, Any] = {}
+    equity_recon = "FAIL"
+    if sleeve_curves:
+        portfolio_equity = build_equal_weight_portfolio_equity(
+            sleeve_curves, initial_capital=shared_initial_capital
+        )
+        port_metrics = portfolio_metrics_from_equity(
+            portfolio_equity,
+            initial_capital=shared_initial_capital,
+            periods_per_year=HOURLY_PERIODS_PER_YEAR,
+        )
+        equity_recon = reconcile_portfolio_equity_to_scaled_net_pnl(
+            initial_capital=shared_initial_capital,
+            final_equity=float(port_metrics["final_equity"]),
+            sleeve_net_pnls=net_f,
+            n_instruments=n_instruments,
+            sleeve_initial_cash=SLEEVE_INITIAL_CASH,
+        )
+        if write_portfolio_equity_csv is not None:
+            portfolio_equity.to_frame("equity").to_csv(write_portfolio_equity_csv)
+
+    all_trades: list[dict[str, Any]] = []
+    for r in rows:
+        for t in r.get("trades_compact") or []:
+            all_trades.append(t)
+    exposure = peak_gross_exposure_from_scaled_trades(
+        all_trades,
+        n_instruments=max(n_instruments, 1),
+        initial_capital=shared_initial_capital,
+        sleeve_initial_cash=SLEEVE_INITIAL_CASH,
+    )
+
+    net_return = port_metrics.get("net_return", NA)
+    gross_return = (
+        float(
+            gp
+            * (shared_initial_capital / (n_instruments * SLEEVE_INITIAL_CASH))
+            / shared_initial_capital
+        )
+        if n_instruments > 0 and shared_initial_capital > 0
+        else NA
+    )
+    # Gross return on shared book under CRS scale of sleeve gross pnl.
+    if n_instruments > 0 and shared_initial_capital > 0:
+        scale = shared_initial_capital / (n_instruments * SLEEVE_INITIAL_CASH)
+        gross_return = float((gp * scale) / shared_initial_capital)
+        # Net pnl on shared book for reporting (scaled); unscaled kept as forensic.
+        net_pnl_shared = float(np_ * scale)
+        gross_pnl_shared = float(gp * scale)
+        fees_shared = float(fees_total * scale)
+        slip_shared = float(slip_total * scale)
+        cost_drag_shared = float(cost_drag * scale)
+    else:
+        net_pnl_shared = np_
+        gross_pnl_shared = gp
+        fees_shared = fees_total
+        slip_shared = slip_total
+        cost_drag_shared = cost_drag
+
+    economic_measurement_valid = (
+        cost_application == "APPLIED"
+        and ledger_recon == "PASS"
+        and equity_recon == "PASS"
+        and portfolio_equity is not None
+        and net_return is not NA
     )
 
     return {
@@ -584,27 +743,44 @@ def _aggregate_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "total_trades": total_trades,
         "long_trades": long_trades,
         "short_trades": short_trades,
-        "gross_pnl": gp,
-        "net_pnl": np_,
-        "fees": float(sum(fee_f)) if fee_f else 0.0,
-        "slippage_drag": float(sum(slip_f)) if slip_f else 0.0,
-        "cost_drag": cost_drag,
+        "gross_pnl": gross_pnl_shared,
+        "gross_pnl_sleeve_sum_forensic": gp,
+        "net_pnl": net_pnl_shared,
+        "net_pnl_sleeve_sum_forensic": np_,
+        "fees": fees_shared,
+        "fees_sleeve_sum_forensic": fees_total,
+        "slippage_drag": slip_shared,
+        "slippage_sleeve_sum_forensic": slip_total,
+        "cost_drag": cost_drag_shared,
         "cost_application": cost_application,
-        "net_return": panel_return,
+        "ledger_reconciliation": ledger_recon,
+        "equity_reconciliation": equity_recon,
+        "initial_capital": shared_initial_capital,
+        "final_equity": port_metrics.get("final_equity", NA),
+        "gross_return": gross_return,
+        "net_return": net_return,
         "net_return_definition": (
-            "equal_capital_panel_return=sum(net_pnl)/(N*initial_capital); "
-            "not sum of independent instrument total_returns"
+            f"shared_portfolio_final_equity/initial_capital - 1 from {PORTFOLIO_AGGREGATION_ID}"
         ),
         "net_return_sum_instrument_returns_forensic": float(sum(ret_f)) if ret_f else NA,
-        "portfolio_aggregation": (
-            "independent_per_instrument_equity_curves; equal-capital panel proxy only"
+        "portfolio_aggregation": PORTFOLIO_AGGREGATION_ID,
+        "portfolio_aggregation_definition": (
+            "Research-only equal-weight normalize-and-combine of independent sleeve "
+            f"equity curves onto shared initial_capital={shared_initial_capital}; "
+            "not runtime authority; CRS scale for pnl/fee/exposure reporting"
         ),
-        "initial_capital_per_instrument": INITIAL_CAPITAL_PER_INSTRUMENT,
-        "profit_factor": pf,
-        "sharpe": NA,
-        "sharpe_definition": "NOT_AVAILABLE_WITHOUT_PORTFOLIO_EQUITY_CURVE",
-        "max_drawdown": NA,
+        "sleeve_initial_cash": SLEEVE_INITIAL_CASH,
+        "profit_factor": pf_net if pf_net is not NA else pf_gross,
+        "profit_factor_net": pf_net,
+        "profit_factor_gross_forensic": pf_gross,
+        "sharpe": port_metrics.get("sharpe", NA),
+        "sharpe_definition": port_metrics.get(
+            "sharpe_definition", "NOT_AVAILABLE_WITHOUT_PORTFOLIO_EQUITY_CURVE"
+        ),
+        "max_drawdown": port_metrics.get("max_drawdown", NA),
         "max_drawdown_worst_instrument_forensic": min(dd_f) if dd_f else NA,
+        "peak_gross_exposure": exposure["peak_gross_exposure"],
+        "capital_utilization": exposure["capital_utilization"],
         "win_rate": float(sum(wr_f) / len(wr_f)) if wr_f else NA,
         "avg_hold_hours": float(sum(hold_f) / len(hold_f)) if hold_f else NA,
         "turnover": float(total_trades),
@@ -618,7 +794,7 @@ def _aggregate_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "classic_bypass_any": any(bool(r.get("classic_bypass")) for r in rows),
         "entry_side_other_total": sum(int(r.get("entry_side_other") or 0) for r in rows),
         "capital_double_counting": False,
-        "economic_measurement_valid": cost_application == "PASS",
+        "economic_measurement_valid": economic_measurement_valid,
     }
 
 
@@ -641,9 +817,13 @@ def classify_economic(
         status = "PASS"
         period_note = "period_ok"
 
+    cost_app = str(agg.get("cost_application") or "")
     if (
-        str(agg.get("cost_application") or "") == "NOT_APPLIED"
+        cost_app == "NOT_APPLIED"
         or agg.get("economic_measurement_valid") is False
+        or str(agg.get("equity_reconciliation") or "") == "FAIL"
+        or str(agg.get("ledger_reconciliation") or "") == "FAIL"
+        or (cost_app and cost_app != "APPLIED" and cost_app != "PASS")
     ):
         return (
             CLASS_INVALID,
@@ -809,7 +989,27 @@ def main() -> int:
     assert not any("BTC" in m for m in members)
 
     checkpoint_path = EVIDENCE / "checkpoint_baseline_wf.json"
+    resume_ok = False
     if resume and checkpoint_path.is_file():
+        ck_probe = _load(checkpoint_path)
+        ck_agg = dict(ck_probe.get("baseline_agg") or {})
+        resume_ok = (
+            str(ck_agg.get("cost_application") or "") == "APPLIED"
+            and str(ck_agg.get("portfolio_aggregation") or "") == PORTFOLIO_AGGREGATION_ID
+            and bool(ck_agg.get("economic_measurement_valid"))
+        )
+        if not resume_ok:
+            print(
+                json.dumps(
+                    {
+                        "phase": "resume_rejected_invalid_prior_measurement",
+                        "cost_application": ck_agg.get("cost_application"),
+                        "portfolio_aggregation": ck_agg.get("portfolio_aggregation"),
+                    }
+                ),
+                flush=True,
+            )
+    if resume and resume_ok:
         print(json.dumps({"phase": "resume_checkpoint", "path": str(checkpoint_path)}), flush=True)
         ck = _load(checkpoint_path)
         baseline_rows = list(ck["baseline_rows"])
@@ -848,7 +1048,11 @@ def main() -> int:
                 flush=True,
             )
 
-        baseline_agg = _aggregate_rows(baseline_rows)
+        baseline_agg = _aggregate_rows(
+            baseline_rows,
+            shared_initial_capital=SHARED_INITIAL_CAPITAL,
+            write_portfolio_equity_csv=EVIDENCE / "portfolio_equity.csv",
+        )
         traded_members = [r for r in baseline_rows if int(r.get("total_trades") or 0) > 0]
 
         repro_member = (traded_members[0] if traded_members else baseline_rows[0])["member_id"]
@@ -928,12 +1132,17 @@ def main() -> int:
     # sensitivity; not a promotion input).
     # Checkpoint baseline+WF so a later resume can skip the long panel.
     checkpoint = {
-        "baseline_rows": baseline_rows,
+        "baseline_rows": _strip_non_json_row_fields(baseline_rows),
         "wf_rows": wf_rows,
         "baseline_agg": baseline_agg,
         "traded_member_ids": [r["member_id"] for r in traded_members],
         "repro_ok": repro_ok,
         "repro_member": repro_member,
+        "measurement_repair": {
+            "cost_application": baseline_agg.get("cost_application"),
+            "portfolio_aggregation": baseline_agg.get("portfolio_aggregation"),
+            "supersedes_invalid_prior_exports": True,
+        },
     }
     (EVIDENCE / "checkpoint_baseline_wf.json").write_text(
         json.dumps(checkpoint, indent=2, sort_keys=True, default=str) + "\n",

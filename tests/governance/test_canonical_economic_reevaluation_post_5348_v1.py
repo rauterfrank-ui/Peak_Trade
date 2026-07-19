@@ -114,7 +114,9 @@ def test_classification_unstable(harness) -> None:
             "total_trades": 50,
             "net_return": 0.02,
             "profit_factor": 1.2,
-            "cost_application": "PASS",
+            "cost_application": "APPLIED",
+            "ledger_reconciliation": "PASS",
+            "equity_reconciliation": "PASS",
             "economic_measurement_valid": True,
         },
         walk_forward_rows=[
@@ -146,14 +148,20 @@ def test_classification_invalid_when_costs_not_applied(harness) -> None:
     assert "INVALID_ECONOMIC_MEASUREMENT" in rationale
 
 
-def test_aggregate_rows_does_not_sum_instrument_returns(harness) -> None:
+def test_aggregate_rows_uses_shared_portfolio_equity_not_sum_returns(harness) -> None:
+    import pandas as pd
+
+    idx = pd.date_range("2024-01-01", periods=2, freq="1h", tz="UTC")
     rows = [
         {
-            "gross_pnl": 100.0,
+            "member_id": "A",
+            "instrument": "A",
+            "gross_pnl": 115.0,
             "net_pnl": 100.0,
-            "fees": 0.0,
-            "slippage_drag": 0.0,
-            "cost_drag": 0.0,
+            "fees": 10.0,
+            "slippage_drag": 5.0,
+            "cost_drag": 15.0,
+            "cost_application": "APPLIED",
             "net_return": 0.01,
             "max_drawdown": -0.01,
             "avg_hold_hours": 1.0,
@@ -166,13 +174,18 @@ def test_aggregate_rows_does_not_sum_instrument_returns(harness) -> None:
             "canonical_chain_bound": True,
             "classic_bypass": False,
             "entry_side_other": 0,
+            "trades_compact": [{"pnl": 100.0, "gross_pnl": 115.0}],
+            "_equity_curve": pd.Series([10_000.0, 10_100.0], index=idx),
         },
         {
-            "gross_pnl": 200.0,
+            "member_id": "B",
+            "instrument": "B",
+            "gross_pnl": 230.0,
             "net_pnl": 200.0,
-            "fees": 0.0,
-            "slippage_drag": 0.0,
-            "cost_drag": 0.0,
+            "fees": 20.0,
+            "slippage_drag": 10.0,
+            "cost_drag": 30.0,
+            "cost_application": "APPLIED",
             "net_return": 0.02,
             "max_drawdown": -0.02,
             "avg_hold_hours": 2.0,
@@ -185,14 +198,25 @@ def test_aggregate_rows_does_not_sum_instrument_returns(harness) -> None:
             "canonical_chain_bound": True,
             "classic_bypass": False,
             "entry_side_other": 0,
+            "trades_compact": [{"pnl": 200.0, "gross_pnl": 230.0}],
+            "_equity_curve": pd.Series([10_000.0, 10_200.0], index=idx),
         },
     ]
     agg = harness._aggregate_rows(rows)
-    # Equal-capital proxy: 300 / (2 * 10000) = 0.015 — not 0.01+0.02=0.03.
+    # Shared book equal-weight norms → final 10150 → return 0.015; not 0.01+0.02.
     assert abs(float(agg["net_return"]) - 0.015) < 1e-12
     assert agg["net_return_sum_instrument_returns_forensic"] == 0.03
-    assert agg["sharpe"] == harness.NA
-    assert agg["cost_application"] == "NOT_APPLIED"
+    assert agg["initial_capital"] == 10_000.0
+    assert agg["capital_double_counting"] is False
+    assert agg["cost_application"] == "APPLIED"
+    assert agg["ledger_reconciliation"] == "PASS"
+    assert agg["equity_reconciliation"] == "PASS"
+    assert agg["sharpe"] != harness.NA
+    assert (
+        "cross-sectional" not in str(agg["sharpe_definition"]).lower()
+        or "not cross" in str(agg["sharpe_definition"]).lower()
+    )
+    assert agg["economic_measurement_valid"] is True
 
 
 def test_dataset_manifest_documents_period_blocker(harness) -> None:

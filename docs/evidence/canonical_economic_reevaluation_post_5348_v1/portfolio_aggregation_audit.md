@@ -1,42 +1,39 @@
-# Portfolio aggregation audit — post-#5348
+# Portfolio aggregation audit — measurement repair
 
-## Method used in prior export
+## Model
 
-Each of the 118 instruments was backtested independently with
-`initial_cash = 10000.0`.
+`RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1` (research measurement only;
+not runtime / sizing / risk authority).
 
-Prior panel `NET_RETURN=0.5066899689424893` was
-computed as the **sum of per-instrument `total_return` values**.
-
-## Capital double-counting
-
-`CAPITAL_DOUBLE_COUNTING=true`.
-
-Summing independent returns implicitly treats each instrument's full initial
-capital as additive portfolio capital without a shared equity curve:
-
-- prior sum-of-returns: `0.5066899689424893`
-- equal-capital panel proxy `sum(net_pnl)&#47;(N*10000)`: `0.004293982787648256`
-
-These differ by ~0.502396.
-
-## Equity reconciliation
-
-`EQUITY_RECONCILIATION=FAIL` — there is **no** single portfolio equity series.
-Therefore panel Sharpe / portfolio max-drawdown / portfolio net-return cannot be
-sourced from one canonical equity ledger.
-
-## Corrected aggregation (reporting only)
+## Shared capital
 
 | Field | Value |
-|------|------:|
-| gross_pnl (sum trades) | 5066.899689424941 |
-| net_pnl (sum trades) | 5066.899689424941 |
-| equal-capital panel return | 0.004293982787648256 |
-| profit_factor (trade gross) | 1.22955031589784 |
-| sharpe corrected | NOT_AVAILABLE |
-| portfolio equity | NOT_AVAILABLE |
+|---|---:|
+| initial_capital (shared) | 10000 |
+| sleeve_initial_cash | 10000 |
+| instruments N | 118 |
+| CRS scale | 1/118 |
+| capital_double_counting | false |
 
-## First-loss boundary
+## Construction
 
-`NET_RETURN_SUM_OF_INSTRUMENT_RETURNS` in audit harness `_aggregate_rows`.
+1. Run each instrument sleeve independently (canonical MV2 wiring, seed 42).
+2. Normalize each sleeve equity to 1.0 at t0.
+3. Equal-weight combine → multiply by shared `initial_capital`.
+4. `NET_RETURN = final_equity &#47; initial_capital - 1`.
+5. Sharpe / MaxDD from the shared hourly portfolio equity only.
+6. PnL/fee/slippage/exposure reports apply CRS scale so shared capital is counted once.
+
+## Prior invalid aggregation (superseded)
+
+- Sum of independent instrument `total_return`s (`≈0.507`) — INVALID.
+- Cross-sectional Sharpe `mean(r_i)&#47;std(r_i)` — INVALID.
+- Equal-capital proxy alone without portfolio equity path — SUPERSEDED.
+
+## Current reconciliation
+
+| Check | Result |
+|---|---|
+| equity_reconciliation | PASS |
+| final_equity vs initial + scaled net_pnl | aligned under CRS |
+| peak_gross_exposure | scaled concurrent notionals |

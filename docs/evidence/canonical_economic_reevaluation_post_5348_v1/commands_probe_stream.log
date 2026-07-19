@@ -1,167 +1,136 @@
-{"harness": "CANONICAL_ECONOMIC_REEVALUATION_POST_5348_V1", "authority_effect": "NONE", "runtime_effect": "NONE", "config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1", "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1", "period": "2024-05-01T00:00:00Z..2024-09-01T00:00:00Z", "seed": 42}
+{"harness": "CANONICAL_ECONOMIC_REEVALUATION_POST_5348_V1", "authority_effect": "NONE", "runtime_effect": "NONE", "config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1", "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1", "period": "2024-05-01T00:00:00Z..2024-09-01T00:00:00Z", "seed": 42, "resume_checkpoint": false}
 {"phase": "baseline", "n": 118}
 ConfigRegistry: [strategy.*] blocks not listed in strategies.available: ['breakout_basic', 'vol_regime_basic', 'breakout', 'vol_regime_filter', 'rsi_reversion_v1', 'breakout_v1', 'composite', 'portfolio_phase40_example', 'rsi_reversion_btc_conservative', 'rsi_reversion_btc_moderate', 'rsi_reversion_btc_aggressive', 'rsi_reversion_eth_conservative', 'rsi_reversion_eth_moderate', 'rsi_reversion_eth_aggressive', 'ma_trend_btc_conservative', 'ma_trend_btc_moderate', 'ma_trend_btc_aggressive', 'trend_following_eth_conservative', 'trend_following_eth_moderate', 'trend_following_eth_aggressive', 'armstrong_cycle', 'el_karoui_vol_model']
-{"phase": "baseline_member", "i": 1, "n": 118, "instrument": "1INCH", "trades": 6, "long": 1, "short": 5, "net_pnl": -296.2749064373423, "seconds": 3.385}
-{"phase": "baseline_member", "i": 2, "n": 118, "instrument": "AAVE", "trades": 1, "long": 0, "short": 1, "net_pnl": -50.0, "seconds": 3.303}
-{"phase": "baseline_member", "i": 3, "n": 118, "instrument": "ACH", "trades": 6, "long": 0, "short": 6, "net_pnl": -296.27490643734217, "seconds": 3.305}
-{"phase": "baseline_member", "i": 4, "n": 118, "instrument": "ADA", "trades": 6, "long": 1, "short": 5, "net_pnl": -296.27490643734257, "seconds": 3.295}
-{"phase": "baseline_member", "i": 5, "n": 118, "instrument": "AEVO", "trades": 1, "long": 0, "short": 1, "net_pnl": 1558.0821917808228, "seconds": 3.271}
-{"phase": "baseline_member", "i": 6, "n": 118, "instrument": "AGLD", "trades": 1, "long": 0, "short": 1, "net_pnl": -49.99999999999959, "seconds": 3.316}
-{"phase": "baseline_member", "i": 7, "n": 118, "instrument": "ALGO", "trades": 5, "long": 1, "short": 4, "net_pnl": -247.51246878124942, "seconds": 3.314}
-{"phase": "baseline_member", "i": 8, "n": 118, "instrument": "APE", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.74999999999963, "seconds": 3.326}
-{"phase": "baseline_member", "i": 9, "n": 118, "instrument": "API3", "trades": 2, "long": 1, "short": 1, "net_pnl": -99.7499999999996, "seconds": 3.31}
-{"phase": "baseline_member", "i": 10, "n": 118, "instrument": "APT", "trades": 7, "long": 0, "short": 7, "net_pnl": -344.79353190515496, "seconds": 3.256}
-{"phase": "baseline_member", "i": 11, "n": 118, "instrument": "AR", "trades": 8, "long": 3, "short": 5, "net_pnl": -393.0695642456302, "seconds": 3.289}
-{"phase": "baseline_member", "i": 12, "n": 118, "instrument": "ARB", "trades": 5, "long": 1, "short": 4, "net_pnl": -247.51246878124934, "seconds": 3.264}
-{"phase": "baseline_member", "i": 13, "n": 118, "instrument": "ATOM", "trades": 1, "long": 0, "short": 1, "net_pnl": 1009.3518921270089, "seconds": 3.217}
-{"phase": "baseline_member", "i": 14, "n": 118, "instrument": "AUCTION", "trades": 3, "long": 1, "short": 2, "net_pnl": -149.25124999999935, "seconds": 3.361}
-{"phase": "baseline_member", "i": 15, "n": 118, "instrument": "AVAX", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.7499999999996, "seconds": 3.36}
-{"phase": "baseline_member", "i": 16, "n": 118, "instrument": "AXS", "trades": 2, "long": 1, "short": 1, "net_pnl": -99.75, "seconds": 3.317}
-{"phase": "baseline_member", "i": 17, "n": 118, "instrument": "BAND", "trades": 2, "long": 1, "short": 1, "net_pnl": -99.74999999999972, "seconds": 3.367}
-{"phase": "baseline_member", "i": 18, "n": 118, "instrument": "BAT", "trades": 6, "long": 0, "short": 6, "net_pnl": -296.27490643734234, "seconds": 3.343}
-{"phase": "baseline_member", "i": 19, "n": 118, "instrument": "BCH", "trades": 3, "long": 1, "short": 2, "net_pnl": -149.25124999999946, "seconds": 3.355}
-{"phase": "baseline_member", "i": 20, "n": 118, "instrument": "BICO", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.5049937499993, "seconds": 3.341}
-{"phase": "baseline_member", "i": 21, "n": 118, "instrument": "BIGTIME", "trades": 9, "long": 0, "short": 9, "net_pnl": -441.10421642440133, "seconds": 3.343}
-{"phase": "baseline_member", "i": 22, "n": 118, "instrument": "BLUR", "trades": 3, "long": 0, "short": 3, "net_pnl": -149.25124999999917, "seconds": 3.35}
-{"phase": "baseline_member", "i": 23, "n": 118, "instrument": "BNB", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.375}
-{"phase": "baseline_member", "i": 24, "n": 118, "instrument": "BONK", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.50499374999927, "seconds": 3.345}
-{"phase": "baseline_member", "i": 25, "n": 118, "instrument": "CELO", "trades": 1, "long": 0, "short": 1, "net_pnl": -49.99999999999972, "seconds": 3.353}
-{"phase": "baseline_member", "i": 26, "n": 118, "instrument": "CFX", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.74999999999974, "seconds": 3.365}
-{"phase": "baseline_member", "i": 27, "n": 118, "instrument": "CHZ", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.5049937499993, "seconds": 3.309}
-{"phase": "baseline_member", "i": 28, "n": 118, "instrument": "COMP", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.50499374999902, "seconds": 3.286}
-{"phase": "baseline_member", "i": 29, "n": 118, "instrument": "CORE", "trades": 1, "long": 0, "short": 1, "net_pnl": -49.99999999999957, "seconds": 3.285}
-{"phase": "baseline_member", "i": 30, "n": 118, "instrument": "CRO", "trades": 3, "long": 1, "short": 2, "net_pnl": 583.6722641206663, "seconds": 3.239}
-{"phase": "baseline_member", "i": 31, "n": 118, "instrument": "CRV", "trades": 1, "long": 0, "short": 1, "net_pnl": -49.999999999999744, "seconds": 3.292}
-{"phase": "baseline_member", "i": 32, "n": 118, "instrument": "DOGE", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.50499374999887, "seconds": 3.306}
-{"phase": "baseline_member", "i": 33, "n": 118, "instrument": "DOT", "trades": 3, "long": 1, "short": 2, "net_pnl": -149.25124999999974, "seconds": 3.315}
-{"phase": "baseline_member", "i": 34, "n": 118, "instrument": "DYDX", "trades": 4, "long": 0, "short": 4, "net_pnl": 970.7016768177518, "seconds": 3.25}
-{"phase": "baseline_member", "i": 35, "n": 118, "instrument": "EGLD", "trades": 5, "long": 0, "short": 5, "net_pnl": -247.51246878124934, "seconds": 3.335}
-{"phase": "baseline_member", "i": 36, "n": 118, "instrument": "ENJ", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.74999999999963, "seconds": 3.348}
-{"phase": "baseline_member", "i": 37, "n": 118, "instrument": "ENS", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.50499374999933, "seconds": 3.282}
-{"phase": "baseline_member", "i": 38, "n": 118, "instrument": "ETC", "trades": 1, "long": 0, "short": 1, "net_pnl": -49.99999999999974, "seconds": 3.328}
-{"phase": "baseline_member", "i": 39, "n": 118, "instrument": "ETH", "trades": 3, "long": 0, "short": 3, "net_pnl": -149.2512499999991, "seconds": 3.294}
-{"phase": "baseline_member", "i": 40, "n": 118, "instrument": "ETHFI", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.00000000000001, "seconds": 3.36}
-{"phase": "baseline_member", "i": 41, "n": 118, "instrument": "ETHW", "trades": 5, "long": 0, "short": 5, "net_pnl": -247.5124687812488, "seconds": 3.366}
-{"phase": "baseline_member", "i": 42, "n": 118, "instrument": "FIL", "trades": 1, "long": 0, "short": 1, "net_pnl": -49.99999999999971, "seconds": 3.338}
-{"phase": "baseline_member", "i": 43, "n": 118, "instrument": "FLOKI", "trades": 9, "long": 1, "short": 8, "net_pnl": -441.1042164244007, "seconds": 3.356}
-{"phase": "baseline_member", "i": 44, "n": 118, "instrument": "FLOW", "trades": 8, "long": 1, "short": 7, "net_pnl": -393.0695642456295, "seconds": 3.388}
-{"phase": "baseline_member", "i": 45, "n": 118, "instrument": "GALA", "trades": 6, "long": 0, "short": 6, "net_pnl": -296.27490643734313, "seconds": 3.385}
-{"phase": "baseline_member", "i": 46, "n": 118, "instrument": "GAS", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.337}
-{"phase": "baseline_member", "i": 47, "n": 118, "instrument": "GMT", "trades": 3, "long": 0, "short": 3, "net_pnl": -149.2512499999995, "seconds": 3.319}
-{"phase": "baseline_member", "i": 48, "n": 118, "instrument": "GMX", "trades": 4, "long": 1, "short": 3, "net_pnl": -198.50499374999916, "seconds": 3.34}
-{"phase": "baseline_member", "i": 49, "n": 118, "instrument": "GRT", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.34}
-{"phase": "baseline_member", "i": 50, "n": 118, "instrument": "HBAR", "trades": 2, "long": 1, "short": 1, "net_pnl": -99.74999999999974, "seconds": 3.348}
-{"phase": "baseline_member", "i": 51, "n": 118, "instrument": "ICP", "trades": 3, "long": 1, "short": 2, "net_pnl": 771.1841849599538, "seconds": 3.27}
-{"phase": "baseline_member", "i": 52, "n": 118, "instrument": "ICX", "trades": 3, "long": 1, "short": 2, "net_pnl": -149.2512499999995, "seconds": 3.328}
-{"phase": "baseline_member", "i": 53, "n": 118, "instrument": "IMX", "trades": 6, "long": 3, "short": 3, "net_pnl": -296.27490643734336, "seconds": 3.33}
-{"phase": "baseline_member", "i": 54, "n": 118, "instrument": "INJ", "trades": 5, "long": 1, "short": 4, "net_pnl": -247.51246878124942, "seconds": 3.348}
-{"phase": "baseline_member", "i": 55, "n": 118, "instrument": "IOST", "trades": 7, "long": 1, "short": 6, "net_pnl": 634.1173877458255, "seconds": 3.302}
-{"phase": "baseline_member", "i": 56, "n": 118, "instrument": "IOTA", "trades": 6, "long": 1, "short": 5, "net_pnl": -296.27490643734245, "seconds": 3.335}
-{"phase": "baseline_member", "i": 57, "n": 118, "instrument": "JTO", "trades": 4, "long": 1, "short": 3, "net_pnl": -198.5049937499995, "seconds": 3.358}
-{"phase": "baseline_member", "i": 58, "n": 118, "instrument": "JUP", "trades": 3, "long": 1, "short": 2, "net_pnl": -149.25124999999915, "seconds": 3.333}
-{"phase": "baseline_member", "i": 59, "n": 118, "instrument": "KSM", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.50499374999907, "seconds": 3.349}
-{"phase": "baseline_member", "i": 60, "n": 118, "instrument": "LDO", "trades": 10, "long": 1, "short": 9, "net_pnl": -488.8986953422788, "seconds": 3.331}
-{"phase": "baseline_member", "i": 61, "n": 118, "instrument": "LINK", "trades": 1, "long": 0, "short": 1, "net_pnl": -49.99999999999975, "seconds": 3.357}
-{"phase": "baseline_member", "i": 62, "n": 118, "instrument": "LPT", "trades": 5, "long": 1, "short": 4, "net_pnl": -247.5124687812495, "seconds": 3.331}
-{"phase": "baseline_member", "i": 63, "n": 118, "instrument": "LQTY", "trades": 8, "long": 1, "short": 7, "net_pnl": -393.0695642456302, "seconds": 3.369}
-{"phase": "baseline_member", "i": 64, "n": 118, "instrument": "LRC", "trades": 7, "long": 1, "short": 6, "net_pnl": -344.79353190515553, "seconds": 3.328}
-{"phase": "baseline_member", "i": 65, "n": 118, "instrument": "LTC", "trades": 1, "long": 0, "short": 1, "net_pnl": -50.0, "seconds": 3.309}
-{"phase": "baseline_member", "i": 66, "n": 118, "instrument": "LUNA", "trades": 0, "long": 0, "short": 0, "net_pnl": 0.0, "seconds": 3.348}
-{"phase": "baseline_member", "i": 67, "n": 118, "instrument": "MAGIC", "trades": 6, "long": 0, "short": 6, "net_pnl": -296.2749064373422, "seconds": 3.35}
-{"phase": "baseline_member", "i": 68, "n": 118, "instrument": "MANA", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.74999999999949, "seconds": 3.343}
-{"phase": "baseline_member", "i": 69, "n": 118, "instrument": "MASK", "trades": 3, "long": 0, "short": 3, "net_pnl": -149.25124999999917, "seconds": 3.321}
-{"phase": "baseline_member", "i": 70, "n": 118, "instrument": "MEME", "trades": 8, "long": 1, "short": 7, "net_pnl": -393.06956424562986, "seconds": 3.352}
-{"phase": "baseline_member", "i": 71, "n": 118, "instrument": "MERL", "trades": 17, "long": 1, "short": 16, "net_pnl": 359.1917461807815, "seconds": 3.269}
-{"phase": "baseline_member", "i": 72, "n": 118, "instrument": "METIS", "trades": 4, "long": 1, "short": 3, "net_pnl": -198.5049937499993, "seconds": 3.34}
-{"phase": "baseline_member", "i": 73, "n": 118, "instrument": "MEW", "trades": 6, "long": 1, "short": 5, "net_pnl": -296.2749064373429, "seconds": 3.379}
-{"phase": "baseline_member", "i": 74, "n": 118, "instrument": "MINA", "trades": 1, "long": 1, "short": 0, "net_pnl": -49.99999999999999, "seconds": 3.354}
-{"phase": "baseline_member", "i": 75, "n": 118, "instrument": "NEAR", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.327}
-{"phase": "baseline_member", "i": 76, "n": 118, "instrument": "NEO", "trades": 3, "long": 0, "short": 3, "net_pnl": 682.0027127725084, "seconds": 3.283}
-{"phase": "baseline_member", "i": 77, "n": 118, "instrument": "NMR", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.322}
-{"phase": "baseline_member", "i": 78, "n": 118, "instrument": "ONE", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.367}
-{"phase": "baseline_member", "i": 79, "n": 118, "instrument": "ONT", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.348}
-{"phase": "baseline_member", "i": 80, "n": 118, "instrument": "OP", "trades": 5, "long": 0, "short": 5, "net_pnl": 805.5275224511447, "seconds": 3.317}
-{"phase": "baseline_member", "i": 81, "n": 118, "instrument": "ORDI", "trades": 10, "long": 1, "short": 9, "net_pnl": -488.8986953422791, "seconds": 3.324}
-{"phase": "baseline_member", "i": 82, "n": 118, "instrument": "PEOPLE", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.339}
-{"phase": "baseline_member", "i": 83, "n": 118, "instrument": "PEPE", "trades": 9, "long": 2, "short": 7, "net_pnl": -441.1042164244016, "seconds": 3.381}
-{"phase": "baseline_member", "i": 84, "n": 118, "instrument": "PYTH", "trades": 2, "long": 0, "short": 2, "net_pnl": 912.0807037674477, "seconds": 3.228}
-{"phase": "baseline_member", "i": 85, "n": 118, "instrument": "QTUM", "trades": 3, "long": 1, "short": 2, "net_pnl": -149.25124999999952, "seconds": 3.271}
-{"phase": "baseline_member", "i": 86, "n": 118, "instrument": "RAY", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.305}
-{"phase": "baseline_member", "i": 87, "n": 118, "instrument": "RSR", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.346}
-{"phase": "baseline_member", "i": 88, "n": 118, "instrument": "RVN", "trades": 6, "long": 1, "short": 5, "net_pnl": -296.27490643734285, "seconds": 3.297}
-{"phase": "baseline_member", "i": 89, "n": 118, "instrument": "SAND", "trades": 5, "long": 1, "short": 4, "net_pnl": -247.51246878124925, "seconds": 3.321}
-{"phase": "baseline_member", "i": 90, "n": 118, "instrument": "SATS", "trades": 7, "long": 1, "short": 6, "net_pnl": -344.793531905156, "seconds": 3.323}
-{"phase": "baseline_member", "i": 91, "n": 118, "instrument": "SHIB", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.442}
-{"phase": "baseline_member", "i": 92, "n": 118, "instrument": "SNX", "trades": 2, "long": 1, "short": 1, "net_pnl": -99.74999999999967, "seconds": 3.396}
-{"phase": "baseline_member", "i": 93, "n": 118, "instrument": "SOL", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.7499999999996, "seconds": 3.29}
-{"phase": "baseline_member", "i": 94, "n": 118, "instrument": "SSV", "trades": 7, "long": 2, "short": 5, "net_pnl": -344.7935319051554, "seconds": 3.303}
-{"phase": "baseline_member", "i": 95, "n": 118, "instrument": "STRK", "trades": 3, "long": 0, "short": 3, "net_pnl": 1364.7874587700676, "seconds": 3.3}
-{"phase": "baseline_member", "i": 96, "n": 118, "instrument": "STX", "trades": 15, "long": 1, "short": 14, "net_pnl": 17.789079686296418, "seconds": 3.234}
-{"phase": "baseline_member", "i": 97, "n": 118, "instrument": "SUI", "trades": 6, "long": 1, "short": 5, "net_pnl": -296.27490643734257, "seconds": 3.282}
-{"phase": "baseline_member", "i": 98, "n": 118, "instrument": "SUSHI", "trades": 6, "long": 1, "short": 5, "net_pnl": -296.27490643734336, "seconds": 3.353}
-{"phase": "baseline_member", "i": 99, "n": 118, "instrument": "THETA", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.365}
-{"phase": "baseline_member", "i": 100, "n": 118, "instrument": "TIA", "trades": 3, "long": 0, "short": 3, "net_pnl": -149.25124999999895, "seconds": 3.315}
-{"phase": "baseline_member", "i": 101, "n": 118, "instrument": "TRB", "trades": 5, "long": 0, "short": 5, "net_pnl": -247.51246878124883, "seconds": 3.297}
-{"phase": "baseline_member", "i": 102, "n": 118, "instrument": "TRX", "trades": 0, "long": 0, "short": 0, "net_pnl": 0.0, "seconds": 3.263}
-{"phase": "baseline_member", "i": 103, "n": 118, "instrument": "TURBO", "trades": 1, "long": 1, "short": 0, "net_pnl": 10628.360569320006, "seconds": 3.249}
-{"phase": "baseline_member", "i": 104, "n": 118, "instrument": "UMA", "trades": 1, "long": 1, "short": 0, "net_pnl": -50.0, "seconds": 3.32}
-{"phase": "baseline_member", "i": 105, "n": 118, "instrument": "UNI", "trades": 3, "long": 1, "short": 2, "net_pnl": -149.25124999999952, "seconds": 3.311}
-{"phase": "baseline_member", "i": 106, "n": 118, "instrument": "USDC", "trades": 0, "long": 0, "short": 0, "net_pnl": 0.0, "seconds": 3.205}
-{"phase": "baseline_member", "i": 107, "n": 118, "instrument": "W", "trades": 8, "long": 1, "short": 7, "net_pnl": 1036.7773036766857, "seconds": 3.279}
-{"phase": "baseline_member", "i": 108, "n": 118, "instrument": "WIF", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.50499374999896, "seconds": 3.328}
-{"phase": "baseline_member", "i": 109, "n": 118, "instrument": "WLD", "trades": 8, "long": 0, "short": 8, "net_pnl": 977.1356066898721, "seconds": 3.226}
-{"phase": "baseline_member", "i": 110, "n": 118, "instrument": "WOO", "trades": 3, "long": 1, "short": 2, "net_pnl": -149.25124999999963, "seconds": 3.305}
-{"phase": "baseline_member", "i": 111, "n": 118, "instrument": "XLM", "trades": 6, "long": 0, "short": 6, "net_pnl": -7.451237243556335, "seconds": 3.231}
-{"phase": "baseline_member", "i": 112, "n": 118, "instrument": "XRP", "trades": 6, "long": 0, "short": 6, "net_pnl": -296.2749064373423, "seconds": 3.31}
-{"phase": "baseline_member", "i": 113, "n": 118, "instrument": "XTZ", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.74999999999955, "seconds": 3.268}
-{"phase": "baseline_member", "i": 114, "n": 118, "instrument": "YFI", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.74999999999947, "seconds": 3.296}
-{"phase": "baseline_member", "i": 115, "n": 118, "instrument": "YGG", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.5049937499992, "seconds": 3.303}
-{"phase": "baseline_member", "i": 116, "n": 118, "instrument": "ZETA", "trades": 9, "long": 1, "short": 8, "net_pnl": 965.1557530479727, "seconds": 3.296}
-{"phase": "baseline_member", "i": 117, "n": 118, "instrument": "ZIL", "trades": 4, "long": 0, "short": 4, "net_pnl": -198.50499374999941, "seconds": 3.344}
-{"phase": "baseline_member", "i": 118, "n": 118, "instrument": "ZRX", "trades": 2, "long": 0, "short": 2, "net_pnl": -99.74999999999977, "seconds": 3.353}
+{"phase": "baseline_member", "i": 1, "n": 118, "instrument": "1INCH", "trades": 6, "long": 1, "short": 5, "net_pnl": -331.62266681728744, "seconds": 3.489}
+{"phase": "baseline_member", "i": 2, "n": 118, "instrument": "AAVE", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.075, "seconds": 3.359}
+{"phase": "baseline_member", "i": 3, "n": 118, "instrument": "ACH", "trades": 6, "long": 0, "short": 6, "net_pnl": -331.76850809462866, "seconds": 3.379}
+{"phase": "baseline_member", "i": 4, "n": 118, "instrument": "ADA", "trades": 6, "long": 1, "short": 5, "net_pnl": -331.6226668172877, "seconds": 3.348}
+{"phase": "baseline_member", "i": 5, "n": 118, "instrument": "AEVO", "trades": 1, "long": 0, "short": 1, "net_pnl": 1554.419315068494, "seconds": 3.329}
+{"phase": "baseline_member", "i": 6, "n": 118, "instrument": "AGLD", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.07499999999958, "seconds": 3.387}
+{"phase": "baseline_member", "i": 7, "n": 118, "instrument": "ALGO", "trades": 5, "long": 1, "short": 4, "net_pnl": -277.1015135545455, "seconds": 3.372}
+{"phase": "baseline_member", "i": 8, "n": 118, "instrument": "APE", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.83555943749963, "seconds": 3.368}
+{"phase": "baseline_member", "i": 9, "n": 118, "instrument": "API3", "trades": 2, "long": 1, "short": 1, "net_pnl": -111.68640056249959, "seconds": 3.384}
+{"phase": "baseline_member", "i": 10, "n": 118, "instrument": "APT", "trades": 7, "long": 0, "short": 7, "net_pnl": -385.9831161854875, "seconds": 3.422}
+{"phase": "baseline_member", "i": 11, "n": 118, "instrument": "AR", "trades": 8, "long": 3, "short": 5, "net_pnl": -439.46107857561765, "seconds": 3.356}
+{"phase": "baseline_member", "i": 12, "n": 118, "instrument": "ARB", "trades": 5, "long": 1, "short": 4, "net_pnl": -277.10151355454536, "seconds": 3.319}
+{"phase": "baseline_member", "i": 13, "n": 118, "instrument": "ATOM", "trades": 1, "long": 0, "short": 1, "net_pnl": 1004.8659199651994, "seconds": 3.375}
+{"phase": "baseline_member", "i": 14, "n": 118, "instrument": "AUCTION", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.1351190713451, "seconds": 3.364}
+{"phase": "baseline_member", "i": 15, "n": 118, "instrument": "AVAX", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.8355594374996, "seconds": 3.393}
+{"phase": "baseline_member", "i": 16, "n": 118, "instrument": "AXS", "trades": 2, "long": 1, "short": 1, "net_pnl": -111.6864005625, "seconds": 3.322}
+{"phase": "baseline_member", "i": 17, "n": 118, "instrument": "BAND", "trades": 2, "long": 1, "short": 1, "net_pnl": -111.6864005624997, "seconds": 3.394}
+{"phase": "baseline_member", "i": 18, "n": 118, "instrument": "BAT", "trades": 6, "long": 0, "short": 6, "net_pnl": -331.7685080946289, "seconds": 3.344}
+{"phase": "baseline_member", "i": 19, "n": 118, "instrument": "BCH", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.13511907134523, "seconds": 3.35}
+{"phase": "baseline_member", "i": 20, "n": 118, "instrument": "BICO", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.42039963952942, "seconds": 3.331}
+{"phase": "baseline_member", "i": 21, "n": 118, "instrument": "BIGTIME", "trades": 8, "long": 0, "short": 8, "net_pnl": -439.8937158614776, "seconds": 3.386}
+{"phase": "baseline_member", "i": 22, "n": 118, "instrument": "BLUR", "trades": 3, "long": 0, "short": 3, "net_pnl": -167.28344153795342, "seconds": 3.431}
+{"phase": "baseline_member", "i": 23, "n": 118, "instrument": "BNB", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.924999999999976, "seconds": 3.317}
+{"phase": "baseline_member", "i": 24, "n": 118, "instrument": "BONK", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.42039963952948, "seconds": 3.358}
+{"phase": "baseline_member", "i": 25, "n": 118, "instrument": "CELO", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.07499999999971, "seconds": 3.327}
+{"phase": "baseline_member", "i": 26, "n": 118, "instrument": "CFX", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.83555943749974, "seconds": 3.344}
+{"phase": "baseline_member", "i": 27, "n": 118, "instrument": "CHZ", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.42039963952945, "seconds": 3.328}
+{"phase": "baseline_member", "i": 28, "n": 118, "instrument": "COMP", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.42039963952917, "seconds": 3.394}
+{"phase": "baseline_member", "i": 29, "n": 118, "instrument": "CORE", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.074999999999555, "seconds": 3.329}
+{"phase": "baseline_member", "i": 30, "n": 118, "instrument": "CRO", "trades": 3, "long": 1, "short": 2, "net_pnl": 566.0027934414643, "seconds": 3.29}
+{"phase": "baseline_member", "i": 31, "n": 118, "instrument": "CRV", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.07499999999975, "seconds": 3.341}
+{"phase": "baseline_member", "i": 32, "n": 118, "instrument": "DOGE", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.42039963952902, "seconds": 3.348}
+{"phase": "baseline_member", "i": 33, "n": 118, "instrument": "DOT", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.13511907134554, "seconds": 3.356}
+{"phase": "baseline_member", "i": 34, "n": 118, "instrument": "DYDX", "trades": 4, "long": 0, "short": 4, "net_pnl": 946.3965907075988, "seconds": 3.288}
+{"phase": "baseline_member", "i": 35, "n": 118, "instrument": "EGLD", "trades": 5, "long": 0, "short": 5, "net_pnl": -277.24817724855086, "seconds": 3.326}
+{"phase": "baseline_member", "i": 36, "n": 118, "instrument": "ENJ", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.83555943749963, "seconds": 3.344}
+{"phase": "baseline_member", "i": 37, "n": 118, "instrument": "ENS", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.42039963952945, "seconds": 3.312}
+{"phase": "baseline_member", "i": 38, "n": 118, "instrument": "ETC", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.07499999999972, "seconds": 3.324}
+{"phase": "baseline_member", "i": 39, "n": 118, "instrument": "ETH", "trades": 3, "long": 0, "short": 3, "net_pnl": -167.2834415379533, "seconds": 3.282}
+{"phase": "baseline_member", "i": 40, "n": 118, "instrument": "ETHFI", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.925000000000004, "seconds": 3.336}
+{"phase": "baseline_member", "i": 41, "n": 118, "instrument": "ETHW", "trades": 5, "long": 0, "short": 5, "net_pnl": -277.2481772485503, "seconds": 3.362}
+{"phase": "baseline_member", "i": 42, "n": 118, "instrument": "FIL", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.07499999999971, "seconds": 3.335}
+{"phase": "baseline_member", "i": 43, "n": 118, "instrument": "FLOKI", "trades": 8, "long": 1, "short": 7, "net_pnl": -439.74950560822015, "seconds": 3.379}
+{"phase": "baseline_member", "i": 44, "n": 118, "instrument": "FLOW", "trades": 8, "long": 1, "short": 7, "net_pnl": -439.7495056082205, "seconds": 3.357}
+{"phase": "baseline_member", "i": 45, "n": 118, "instrument": "GALA", "trades": 5, "long": 0, "short": 5, "net_pnl": -277.2481772485509, "seconds": 3.344}
+{"phase": "baseline_member", "i": 46, "n": 118, "instrument": "GAS", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.925, "seconds": 3.41}
+{"phase": "baseline_member", "i": 47, "n": 118, "instrument": "GMT", "trades": 3, "long": 0, "short": 3, "net_pnl": -167.2834415379537, "seconds": 3.366}
+{"phase": "baseline_member", "i": 48, "n": 118, "instrument": "GMX", "trades": 4, "long": 1, "short": 3, "net_pnl": -222.27290889115238, "seconds": 3.383}
+{"phase": "baseline_member", "i": 49, "n": 118, "instrument": "GRT", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.92500000000001, "seconds": 3.338}
+{"phase": "baseline_member", "i": 50, "n": 118, "instrument": "HBAR", "trades": 2, "long": 1, "short": 1, "net_pnl": -111.68640056249974, "seconds": 3.365}
+{"phase": "baseline_member", "i": 51, "n": 118, "instrument": "ICP", "trades": 3, "long": 1, "short": 2, "net_pnl": 753.5695661903458, "seconds": 3.289}
+{"phase": "baseline_member", "i": 52, "n": 118, "instrument": "ICX", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.13511907134526, "seconds": 3.38}
+{"phase": "baseline_member", "i": 53, "n": 118, "instrument": "IMX", "trades": 6, "long": 3, "short": 3, "net_pnl": -331.3309776627066, "seconds": 3.343}
+{"phase": "baseline_member", "i": 54, "n": 118, "instrument": "INJ", "trades": 4, "long": 1, "short": 3, "net_pnl": -222.2729088911526, "seconds": 3.424}
+{"phase": "baseline_member", "i": 55, "n": 118, "instrument": "IOST", "trades": 7, "long": 1, "short": 6, "net_pnl": 590.9699655929501, "seconds": 3.287}
+{"phase": "baseline_member", "i": 56, "n": 118, "instrument": "IOTA", "trades": 6, "long": 1, "short": 5, "net_pnl": -331.6226668172876, "seconds": 3.364}
+{"phase": "baseline_member", "i": 57, "n": 118, "instrument": "JTO", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.13511907134554, "seconds": 3.372}
+{"phase": "baseline_member", "i": 58, "n": 118, "instrument": "JUP", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.1351190713449, "seconds": 3.362}
+{"phase": "baseline_member", "i": 59, "n": 118, "instrument": "KSM", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.4203996395292, "seconds": 3.353}
+{"phase": "baseline_member", "i": 60, "n": 118, "instrument": "LDO", "trades": 10, "long": 1, "short": 9, "net_pnl": -546.667101848514, "seconds": 3.374}
+{"phase": "baseline_member", "i": 61, "n": 118, "instrument": "LINK", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.074999999999754, "seconds": 3.335}
+{"phase": "baseline_member", "i": 62, "n": 118, "instrument": "LPT", "trades": 5, "long": 1, "short": 4, "net_pnl": -277.10151355454553, "seconds": 3.334}
+{"phase": "baseline_member", "i": 63, "n": 118, "instrument": "LQTY", "trades": 8, "long": 1, "short": 7, "net_pnl": -439.74950560822117, "seconds": 3.365}
+{"phase": "baseline_member", "i": 64, "n": 118, "instrument": "LRC", "trades": 7, "long": 1, "short": 6, "net_pnl": -385.83809271310946, "seconds": 3.384}
+{"phase": "baseline_member", "i": 65, "n": 118, "instrument": "LTC", "trades": 1, "long": 0, "short": 1, "net_pnl": -56.07500000000001, "seconds": 3.362}
+{"phase": "baseline_member", "i": 66, "n": 118, "instrument": "LUNA", "trades": 0, "long": 0, "short": 0, "net_pnl": 0.0, "seconds": 3.363}
+{"phase": "baseline_member", "i": 67, "n": 118, "instrument": "MAGIC", "trades": 6, "long": 0, "short": 6, "net_pnl": -331.7685080946286, "seconds": 3.342}
+{"phase": "baseline_member", "i": 68, "n": 118, "instrument": "MANA", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.83555943749951, "seconds": 3.381}
+{"phase": "baseline_member", "i": 69, "n": 118, "instrument": "MASK", "trades": 3, "long": 0, "short": 3, "net_pnl": -167.28344153795342, "seconds": 3.343}
+{"phase": "baseline_member", "i": 70, "n": 118, "instrument": "MEME", "trades": 7, "long": 1, "short": 6, "net_pnl": -385.8380927131099, "seconds": 3.366}
+{"phase": "baseline_member", "i": 71, "n": 118, "instrument": "MERL", "trades": 15, "long": 1, "short": 14, "net_pnl": 335.5810666772908, "seconds": 3.324}
+{"phase": "baseline_member", "i": 72, "n": 118, "instrument": "METIS", "trades": 4, "long": 1, "short": 3, "net_pnl": -222.27290889115247, "seconds": 3.386}
+{"phase": "baseline_member", "i": 73, "n": 118, "instrument": "MEW", "trades": 5, "long": 1, "short": 4, "net_pnl": -277.10151355454514, "seconds": 3.39}
+{"phase": "baseline_member", "i": 74, "n": 118, "instrument": "MINA", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.924999999999976, "seconds": 3.385}
+{"phase": "baseline_member", "i": 75, "n": 118, "instrument": "NEAR", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.925000000000004, "seconds": 3.349}
+{"phase": "baseline_member", "i": 76, "n": 118, "instrument": "NEO", "trades": 3, "long": 0, "short": 3, "net_pnl": 664.2011411319206, "seconds": 3.303}
+{"phase": "baseline_member", "i": 77, "n": 118, "instrument": "NMR", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.92499999999998, "seconds": 3.339}
+{"phase": "baseline_member", "i": 78, "n": 118, "instrument": "ONE", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.925000000000004, "seconds": 3.392}
+{"phase": "baseline_member", "i": 79, "n": 118, "instrument": "ONT", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.92499999999999, "seconds": 3.366}
+{"phase": "baseline_member", "i": 80, "n": 118, "instrument": "OP", "trades": 5, "long": 0, "short": 5, "net_pnl": 740.3075868181529, "seconds": 3.301}
+{"phase": "baseline_member", "i": 81, "n": 118, "instrument": "ORDI", "trades": 10, "long": 1, "short": 9, "net_pnl": -546.6671018485147, "seconds": 3.389}
+{"phase": "baseline_member", "i": 82, "n": 118, "instrument": "PEOPLE", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.925, "seconds": 3.412}
+{"phase": "baseline_member", "i": 83, "n": 118, "instrument": "PEPE", "trades": 8, "long": 2, "short": 6, "net_pnl": -439.60529317961175, "seconds": 3.4}
+{"phase": "baseline_member", "i": 84, "n": 118, "instrument": "PYTH", "trades": 2, "long": 0, "short": 2, "net_pnl": 900.8941876888475, "seconds": 3.335}
+{"phase": "baseline_member", "i": 85, "n": 118, "instrument": "QTUM", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.1351190713453, "seconds": 3.341}
+{"phase": "baseline_member", "i": 86, "n": 118, "instrument": "RAY", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.92499999999999, "seconds": 3.368}
+{"phase": "baseline_member", "i": 87, "n": 118, "instrument": "RSR", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.92500000000001, "seconds": 3.394}
+{"phase": "baseline_member", "i": 88, "n": 118, "instrument": "RVN", "trades": 6, "long": 1, "short": 5, "net_pnl": -331.622666817288, "seconds": 3.339}
+{"phase": "baseline_member", "i": 89, "n": 118, "instrument": "SAND", "trades": 5, "long": 1, "short": 4, "net_pnl": -277.10151355454525, "seconds": 3.322}
+{"phase": "baseline_member", "i": 90, "n": 118, "instrument": "SATS", "trades": 7, "long": 1, "short": 6, "net_pnl": -385.8380927131099, "seconds": 3.406}
+{"phase": "baseline_member", "i": 91, "n": 118, "instrument": "SHIB", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.92500000000001, "seconds": 3.334}
+{"phase": "baseline_member", "i": 92, "n": 118, "instrument": "SNX", "trades": 2, "long": 1, "short": 1, "net_pnl": -111.68640056249967, "seconds": 3.335}
+{"phase": "baseline_member", "i": 93, "n": 118, "instrument": "SOL", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.83555943749958, "seconds": 3.354}
+{"phase": "baseline_member", "i": 94, "n": 118, "instrument": "SSV", "trades": 6, "long": 2, "short": 4, "net_pnl": -331.476823339991, "seconds": 3.368}
+{"phase": "baseline_member", "i": 95, "n": 118, "instrument": "STRK", "trades": 3, "long": 0, "short": 3, "net_pnl": 1347.1753162992609, "seconds": 3.302}
+{"phase": "baseline_member", "i": 96, "n": 118, "instrument": "STX", "trades": 14, "long": 1, "short": 13, "net_pnl": -15.877044107746883, "seconds": 3.308}
+{"phase": "baseline_member", "i": 97, "n": 118, "instrument": "SUI", "trades": 6, "long": 1, "short": 5, "net_pnl": -331.6226668172877, "seconds": 3.312}
+{"phase": "baseline_member", "i": 98, "n": 118, "instrument": "SUSHI", "trades": 6, "long": 1, "short": 5, "net_pnl": -331.6226668172885, "seconds": 3.348}
+{"phase": "baseline_member", "i": 99, "n": 118, "instrument": "THETA", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.925, "seconds": 3.407}
+{"phase": "baseline_member", "i": 100, "n": 118, "instrument": "TIA", "trades": 3, "long": 0, "short": 3, "net_pnl": -167.28344153795314, "seconds": 3.362}
+{"phase": "baseline_member", "i": 101, "n": 118, "instrument": "TRB", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.42039963952936, "seconds": 3.301}
+{"phase": "baseline_member", "i": 102, "n": 118, "instrument": "TRX", "trades": 0, "long": 0, "short": 0, "net_pnl": 0.0, "seconds": 3.318}
+{"phase": "baseline_member", "i": 103, "n": 118, "instrument": "TURBO", "trades": 1, "long": 1, "short": 0, "net_pnl": 10606.418028466027, "seconds": 3.26}
+{"phase": "baseline_member", "i": 104, "n": 118, "instrument": "UMA", "trades": 1, "long": 1, "short": 0, "net_pnl": -55.925000000000004, "seconds": 3.313}
+{"phase": "baseline_member", "i": 105, "n": 118, "instrument": "UNI", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.13511907134526, "seconds": 3.35}
+{"phase": "baseline_member", "i": 106, "n": 118, "instrument": "USDC", "trades": 0, "long": 0, "short": 0, "net_pnl": 0.0, "seconds": 3.301}
+{"phase": "baseline_member", "i": 107, "n": 118, "instrument": "W", "trades": 8, "long": 1, "short": 7, "net_pnl": 986.1546949142789, "seconds": 3.297}
+{"phase": "baseline_member", "i": 108, "n": 118, "instrument": "WIF", "trades": 3, "long": 0, "short": 3, "net_pnl": -167.28344153795345, "seconds": 3.512}
+{"phase": "baseline_member", "i": 109, "n": 118, "instrument": "WLD", "trades": 12, "long": 0, "short": 12, "net_pnl": 683.4847016982329, "seconds": 3.309}
+{"phase": "baseline_member", "i": 110, "n": 118, "instrument": "WOO", "trades": 3, "long": 1, "short": 2, "net_pnl": -167.1351190713454, "seconds": 3.404}
+{"phase": "baseline_member", "i": 111, "n": 118, "instrument": "XLM", "trades": 6, "long": 0, "short": 6, "net_pnl": -43.39355879178683, "seconds": 3.306}
+{"phase": "baseline_member", "i": 112, "n": 118, "instrument": "XRP", "trades": 6, "long": 0, "short": 6, "net_pnl": -331.7685080946287, "seconds": 3.41}
+{"phase": "baseline_member", "i": 113, "n": 118, "instrument": "XTZ", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.83555943749954, "seconds": 3.336}
+{"phase": "baseline_member", "i": 114, "n": 118, "instrument": "YFI", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.83555943749946, "seconds": 3.303}
+{"phase": "baseline_member", "i": 115, "n": 118, "instrument": "YGG", "trades": 3, "long": 0, "short": 3, "net_pnl": -167.28344153795365, "seconds": 3.341}
+{"phase": "baseline_member", "i": 116, "n": 118, "instrument": "ZETA", "trades": 10, "long": 1, "short": 9, "net_pnl": 846.9999527751959, "seconds": 3.26}
+{"phase": "baseline_member", "i": 117, "n": 118, "instrument": "ZIL", "trades": 4, "long": 0, "short": 4, "net_pnl": -222.42039963952953, "seconds": 3.319}
+{"phase": "baseline_member", "i": 118, "n": 118, "instrument": "ZRX", "trades": 2, "long": 0, "short": 2, "net_pnl": -111.8355594374998, "seconds": 3.369}
 {"phase": "repro", "member": "okx:linear_perpetual:1INCH:USDT:USDT:perp"}
 {"phase": "walk_forward", "folds": 3}
-{"phase": "walk_forward_fold", "fold": "train", "trades": 455, "net_return": 0.4535997748365108}
-{"phase": "walk_forward_fold", "fold": "validation", "trades": 499, "net_return": -0.9419867817405109}
-{"phase": "walk_forward_fold", "fold": "oos", "trades": 142, "net_return": 0.41217047071955276}
-{"phase": "stress", "universe": 20, "specs": ["baseline_ref", "cost_stress_1_5x", "cost_stress_2x", "slip_stress_1_5x", "slip_stress_2x", "stop_stress_tighter", "stop_stress_wider"]}
-{"phase": "stress_spec", "stress": "baseline_ref", "trades": 73, "net_return": -0.09463110693048218}
-{"phase": "stress_spec", "stress": "cost_stress_1_5x", "trades": 73, "net_return": -0.09463110693048218}
-{"phase": "stress_spec", "stress": "cost_stress_2x", "trades": 73, "net_return": -0.09463110693048218}
-{"phase": "stress_spec", "stress": "slip_stress_1_5x", "trades": 73, "net_return": -0.09463110693048218}
-{"phase": "stress_spec", "stress": "slip_stress_2x", "trades": 73, "net_return": -0.09463110693048218}
-Traceback (most recent call last):
-  File "/Users/frnkhrz/Peak_Trade/src/backtest/mv2_research_wiring_v1.py", line 2217, in run_mv2_research_backtest_wiring_v1
-    contract, _accounting = bind_offline_evaluation_sizing_v1(
-                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/frnkhrz/Peak_Trade/src/backtest/offline_evaluation_sizing_contract_v1.py", line 589, in bind_offline_evaluation_sizing_v1
-    raise OfflineEvaluationSizingError("sizing_config_digest_mismatch")
-src.backtest.offline_evaluation_sizing_contract_v1.OfflineEvaluationSizingError: sizing_config_digest_mismatch
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/Users/frnkhrz/Peak_Trade/docs/evidence/canonical_economic_reevaluation_post_5348_v1/economic_reevaluation_probe_v1.py", line 1282, in <module>
-    raise SystemExit(main())
-                     ^^^^^^
-  File "/Users/frnkhrz/Peak_Trade/docs/evidence/canonical_economic_reevaluation_post_5348_v1/economic_reevaluation_probe_v1.py", line 910, in main
-    member_rows.append(_probe_member(r["member_id"], cfg_s, collect_hook=False))
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/frnkhrz/Peak_Trade/docs/evidence/canonical_economic_reevaluation_post_5348_v1/economic_reevaluation_probe_v1.py", line 461, in _probe_member
-    result = run_mv2_research_backtest_wiring_v1(
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/frnkhrz/Peak_Trade/src/backtest/mv2_research_wiring_v1.py", line 2223, in run_mv2_research_backtest_wiring_v1
-    raise ValueError(f"offline_evaluation_sizing_contract_invalid:{exc}") from exc
-ValueError: offline_evaluation_sizing_contract_invalid:sizing_config_digest_mismatch
-{"harness": "CANONICAL_ECONOMIC_REEVALUATION_POST_5348_V1", "authority_effect": "NONE", "runtime_effect": "NONE", "config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1", "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1", "period": "2024-05-01T00:00:00Z..2024-09-01T00:00:00Z", "seed": 42, "resume_checkpoint": true}
-{"phase": "resume_checkpoint", "path": "/Users/frnkhrz/Peak_Trade/docs/evidence/canonical_economic_reevaluation_post_5348_v1/checkpoint_baseline_wf.json"}
+{"phase": "walk_forward_fold", "fold": "train", "trades": 445, "net_return": 0.0019141235770510079}
+{"phase": "walk_forward_fold", "fold": "validation", "trades": 508, "net_return": -0.015009584550038424}
+{"phase": "walk_forward_fold", "fold": "oos", "trades": 139, "net_return": 0.004012177799338712}
 {"phase": "stress", "mode": "modelled_roundtrip_bps_drag_on_baseline_panel", "stop_stress": "NOT_AVAILABLE_SIZING_CONFIG_DIGEST_SEALED", "specs": ["baseline_ref", "cost_stress_1_5x", "cost_stress_2x", "slip_stress_1_5x", "slip_stress_2x", "combined_cost_slip_1_5x", "combined_cost_slip_2x"]}
-{"phase": "stress_spec", "stress": "baseline_ref", "trades": 464, "net_return": 0.5066899689424893, "extra_roundtrip_bps": 0.0}
-{"phase": "stress_spec", "stress": "cost_stress_1_5x", "trades": 464, "net_return": 0.042689968942489276, "extra_roundtrip_bps": 10.0}
-{"phase": "stress_spec", "stress": "cost_stress_2x", "trades": 464, "net_return": -0.42131003105751075, "extra_roundtrip_bps": 20.0}
-{"phase": "stress_spec", "stress": "slip_stress_1_5x", "trades": 464, "net_return": 0.2746899689424893, "extra_roundtrip_bps": 5.0}
-{"phase": "stress_spec", "stress": "slip_stress_2x", "trades": 464, "net_return": 0.042689968942489276, "extra_roundtrip_bps": 10.0}
-{"phase": "stress_spec", "stress": "combined_cost_slip_1_5x", "trades": 464, "net_return": -0.18931003105751076, "extra_roundtrip_bps": 15.0}
-{"phase": "stress_spec", "stress": "combined_cost_slip_2x", "trades": 464, "net_return": -0.8853100310575108, "extra_roundtrip_bps": 30.0}
+{"phase": "stress_spec", "stress": "baseline_ref", "trades": 454, "net_return": 0.00232538607176469, "extra_roundtrip_bps": 0.0}
+{"phase": "stress_spec", "stress": "cost_stress_1_5x", "trades": 454, "net_return": -0.4516746139282353, "extra_roundtrip_bps": 10.0}
+{"phase": "stress_spec", "stress": "cost_stress_2x", "trades": 454, "net_return": -0.9056746139282353, "extra_roundtrip_bps": 20.0}
+{"phase": "stress_spec", "stress": "slip_stress_1_5x", "trades": 454, "net_return": -0.22467461392823532, "extra_roundtrip_bps": 5.0}
+{"phase": "stress_spec", "stress": "slip_stress_2x", "trades": 454, "net_return": -0.4516746139282353, "extra_roundtrip_bps": 10.0}
+{"phase": "stress_spec", "stress": "combined_cost_slip_1_5x", "trades": 454, "net_return": -0.6786746139282354, "extra_roundtrip_bps": 15.0}
+{"phase": "stress_spec", "stress": "combined_cost_slip_2x", "trades": 454, "net_return": -1.3596746139282354, "extra_roundtrip_bps": 30.0}
 {"phase": "loo", "n": 115}
-{"ok": true, "status": "PARTIAL", "economic_class": "INCONCLUSIVE_UNSTABLE", "total_trades": 464, "long_trades": 69, "short_trades": 395, "traded_instruments": 115, "net_return": 0.5066899689424893, "walk_forward": "INCONCLUSIVE", "stress": "INCONCLUSIVE", "repro_ok": true, "wall_seconds": 0.04}
+{"ok": true, "status": "PARTIAL", "economic_class": "INCONCLUSIVE_UNSTABLE", "total_trades": 454, "long_trades": 69, "short_trades": 385, "traded_instruments": 115, "net_return": 0.00232538607176469, "walk_forward": "INCONCLUSIVE", "stress": "INCONCLUSIVE", "repro_ok": true, "wall_seconds": 805.51}

@@ -1,42 +1,31 @@
-# Metrics integrity verdict — post-#5348
+# Verdict — canonical economic reevaluation post-#5348 v1
 
-## STATUS=`FAIL`
+## STATUS=`PARTIAL`
 
-## ECONOMIC_MEASUREMENT_VALID=`false`
+## ECONOMIC_CLASS=`INCONCLUSIVE_UNSTABLE`
 
-## ECONOMIC_CLASS=`INVALID_ECONOMIC_MEASUREMENT`
+## ECONOMIC_MEASUREMENT_VALID=`true`
 
-The previously exported economic panel metrics are **not** a valid portfolio
-measurement:
+## COST_APPLICATION=`APPLIED`
 
-1. **Costs NOT_APPLIED** — fee_bps/slippage_bps are configured, but roundtrip
-   ledger shows `entry_cost=exit_cost=0`, `fee_drag=0`, `pnl==gross_pnl`, and
-   entry fills at bar close (0 bps). `COST_DRAG=0.0` is ledger-true but
-   economically misleading.
-2. **Capital double-counting** — prior `NET_RETURN` summed independent
-   instrument returns.
-3. **Sharpe mismatch** — prior panel Sharpe was a cross-sectional mean/std of
-   instrument returns, not an equity-curve Sharpe; hence a tiny Sharpe can
-   coexist with a large (invalid) summed return.
-4. **No shared equity ledger** — PF/DD/Sharpe/Return were not computed from one
-   portfolio equity curve.
+unstable_splits_or_stress;NO_LONGER_CHRONOLOGICAL_PIT_OKX_LINEAR_USDT_NON_BTC_DATASET_THAN_2024-05-01..2024-09-01
 
-Independent of any corrected proxy:
+Measurement repair complete: MV2 legacy-bar path applies bound fee+slippage cash
+drag; Return/Sharpe/MaxDD use shared research portfolio equity
+(`initial_capital=10000`). Prior zero-cost / summed-return exports are superseded.
 
-- `ECONOMIC_GATE_OPENED=false`
-- `PROMOTION_ELIGIBLE=false`
-- No economic promotion claim is authorized.
+Independent of economics:
 
-### Corrected reporting snapshot
+- ECONOMIC_GATE_OPENED=`false`
+- PROMOTION_ELIGIBLE=`false`
+- LIVE_AUTHORIZED=`false`
+- ORDERS=`false`
+- ENTRY_SIDE remains strategy carrier NONE (no second authority)
 
-- GROSS_PNL=`5066.899689424941`
-- FEES_TOTAL=`0.0`
-- SLIPPAGE_TOTAL=`0.0`
-- NET_PNL=`5066.899689424941`
-- COST_DRAG=`0.0`
-- NET_RETURN (corrected equal-capital proxy)=`0.004293982787648256`
-- NET_RETURN (prior invalid sum)=`0.5066899689424893`
-- SHARPE (corrected)=`NOT_AVAILABLE`
-- LEDGER_RECONCILIATION=`PASS`
-- COST_APPLICATION=`NOT_APPLIED`
-- CAPITAL_DOUBLE_COUNTING=`True`
+### Walk-forward: `INCONCLUSIVE`
+### Stress robustness: `INCONCLUSIVE`
+
+### Blockers
+
+- `NO_LONGER_CHRONOLOGICAL_PIT_OKX_LINEAR_USDT_NON_BTC_DATASET_THAN_2024-05-01..2024-09-01; max local coverage equals prior sample period; cross-sectional expansion to full 118-member panel used instead`
+- Robustness/WF/stress not yet promotion-grade (separate from measurement validity)

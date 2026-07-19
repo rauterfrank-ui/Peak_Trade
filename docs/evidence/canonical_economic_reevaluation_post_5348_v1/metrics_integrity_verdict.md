@@ -1,42 +1,39 @@
-# Metrics integrity verdict — post-#5348
+# Metrics integrity verdict — post repair
 
-## STATUS=`FAIL`
+## STATUS=`PARTIAL` (measurement valid; economics inconclusive)
 
-## ECONOMIC_MEASUREMENT_VALID=`false`
+## ECONOMIC_MEASUREMENT_VALID=`true`
 
-## ECONOMIC_CLASS=`INVALID_ECONOMIC_MEASUREMENT`
+## COST_APPLICATION=`APPLIED`
 
-The previously exported economic panel metrics are **not** a valid portfolio
-measurement:
+## LEDGER_RECONCILIATION=`PASS`
 
-1. **Costs NOT_APPLIED** — fee_bps/slippage_bps are configured, but roundtrip
-   ledger shows `entry_cost=exit_cost=0`, `fee_drag=0`, `pnl==gross_pnl`, and
-   entry fills at bar close (0 bps). `COST_DRAG=0.0` is ledger-true but
-   economically misleading.
-2. **Capital double-counting** — prior `NET_RETURN` summed independent
-   instrument returns.
-3. **Sharpe mismatch** — prior panel Sharpe was a cross-sectional mean/std of
-   instrument returns, not an equity-curve Sharpe; hence a tiny Sharpe can
-   coexist with a large (invalid) summed return.
-4. **No shared equity ledger** — PF/DD/Sharpe/Return were not computed from one
-   portfolio equity curve.
+## EQUITY_RECONCILIATION=`PASS`
 
-Independent of any corrected proxy:
+## CAPITAL_DOUBLE_COUNTING=`false`
 
-- `ECONOMIC_GATE_OPENED=false`
-- `PROMOTION_ELIGIBLE=false`
-- No economic promotion claim is authorized.
+## ECONOMIC_CLASS=`INCONCLUSIVE_UNSTABLE`
 
-### Corrected reporting snapshot
+## ECONOMIC_GATE_OPENED=`false`
 
-- GROSS_PNL=`5066.899689424941`
-- FEES_TOTAL=`0.0`
-- SLIPPAGE_TOTAL=`0.0`
-- NET_PNL=`5066.899689424941`
-- COST_DRAG=`0.0`
-- NET_RETURN (corrected equal-capital proxy)=`0.004293982787648256`
-- NET_RETURN (prior invalid sum)=`0.5066899689424893`
-- SHARPE (corrected)=`NOT_AVAILABLE`
-- LEDGER_RECONCILIATION=`PASS`
-- COST_APPLICATION=`NOT_APPLIED`
-- CAPITAL_DOUBLE_COUNTING=`True`
+## PROMOTION_ELIGIBLE=`false`
+
+### Answers to critical questions (repaired)
+
+1. **COST_DRAG** is now non-zero (`≈22.88` on shared book) because MV2 bar closes
+   apply fee+slippage cash drag via canonical cost owners.
+2. **NET_RETURN** is `final_shared_equity &#47; 10000 - 1` from the equal-weight
+   portfolio equity curve (not a sum of instrument returns).
+3. **SHARPE** is annualized from hourly portfolio equity returns (`P=8760`), not
+   cross-sectional instrument returns.
+4. Capital is shared once (`initial_capital=10000`); sleeve curves are combined
+   equal-weight (research model), not summed as independent 10k books.
+5. Profit factor (net), drawdown, Sharpe, and return share the cost-applied ledger
+   and the shared portfolio equity path.
+6. LONG and SHORT roundtrips include entry/exit fee+slippage cash drag; stops use
+   stop price fills without a second slippage layer.
+
+### Superseded prior exports
+
+Prior `COST_DRAG=0`, `NET_RETURN≈0.507`, `SHARPE≈0.041` are INVALID and must not
+be reused for economic claims.

@@ -1,60 +1,46 @@
-# Robustness summary — post-#5348 economic reevaluation
+# Robustness summary — post-#5348 (measurement repaired)
 
-## Integrity override (fail-closed)
+## Measurement
 
-Prior baseline exports are **INVALID_ECONOMIC_MEASUREMENT**. Configured
-`fee_bps=10` / `slippage_bps=5` are **NOT_APPLIED** in the roundtrip ledger
-(`entry_cost=exit_cost=fee_drag=0`, `pnl==gross_pnl`, `COST_DRAG=0`). Prior panel
-`NET_RETURN≈0.507` summed 118 independent instrument returns (capital
-double-counting). Corrected equal-capital proxy: `sum(net_pnl)&#47;(118*10000)`.
-
-See `metrics_integrity_verdict.md`, `cost_reconciliation.json`,
-`portfolio_aggregation_audit.md`.
+- Cost application: `APPLIED` (fee_bps=10, slippage_bps=5 cash drag)
+- Portfolio aggregation: `RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1`
+- Shared initial capital: `10000`
+- Ledger / equity reconciliation: `PASS` / `PASS`
+- Economic measurement valid: `true`
+- Economic class: `INCONCLUSIVE_UNSTABLE` (WF/stress; period blocker)
 
 ## Scope
 
 - Config: `bollinger_bands_v2_full_canonical_system_economic_binding_v1`
-- Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1` (118 instruments)
-- Period: `2024-05-01T00:00:00Z..2024-09-01T00:00:00Z` (max local PIT coverage; **no longer chronological panel**)
+- Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1` (118)
+- Period: `2024-05-01T00:00:00Z..2024-09-01T00:00:00Z`
 - Seed: `42`
-- Chain: `run_mv2_research_backtest_wiring_v1` → integrated offline replay → `transition_state`
 
-## Dataset blocker
-
-`NO_LONGER_CHRONOLOGICAL_PIT_OKX_LINEAR_USDT_NON_BTC_DATASET_THAN_2024-05-01..2024-09-01; max local coverage equals prior sample period; cross-sectional expansion to full 118-member panel used instead`
-
-## Corrected baseline (measurement-invalid; forensic)
+## Baseline (shared book)
 
 | Metric | Value |
 |--------|------:|
-| Total trades | 464 |
-| LONG | 69 |
-| SHORT | 395 |
-| Traded instruments | 115 |
-| Gross PnL | 5066.899689424941 |
-| Fees | 0.0 |
-| Slippage | 0.0 |
-| Net PnL | 5066.899689424941 |
-| Cost drag | 0.0 |
-| Cost application | NOT_APPLIED |
-| Net return (corrected equal-capital proxy) | 0.004293982787648256 |
-| Net return (prior INVALID sum of instrument returns) | 0.5066899689424893 |
-| Profit factor (pooled trade gross) | 1.22955031589784 |
-| Sharpe | NOT_AVAILABLE |
-| Sharpe (prior INVALID cross-section) | 0.040885256927793066 |
-| Max drawdown | NOT_AVAILABLE |
-| Max DD (prior worst instrument) | -0.0770688760257639 |
-| Win rate | 0.051520834322429536 |
-| Avg hold (h) | 247.42446941095278 |
-| Stop triggers | 447 |
-| Economic class | INVALID_ECONOMIC_MEASUREMENT |
-| Economic measurement valid | false |
+| Total trades | 454 |
+| LONG / SHORT | 69 / 385 |
+| Gross PnL | 46.13329289862826 |
+| Fees | 15.25295478732169 |
+| Slippage | 7.626477393660845 |
+| Net PnL | 23.253860717645743 |
+| Cost drag | 22.87943218098253 |
+| Final equity | 10023.253860717647 |
+| Gross return | 0.004613329289862827 |
+| Net return | 0.00232538607176469 |
+| Profit factor (net) | 1.1135430312470467 |
+| Sharpe | 0.1909766065222959 |
+| Max drawdown | -0.020480218347394656 |
+| Peak gross exposure | 1466.1642226234028 |
 
-## Walk-forward / stress / LOO
+Trade count differs from the prior invalid zero-cost run (464) because applied
+costs alter sleeve equity and subsequent sizing path-dependently.
 
-Prior walk-forward / stress / LOO artifacts remain on disk for forensic
-comparison only. They inherit the same cost-application and aggregation defects
-and must **not** be treated as valid economic robustness evidence.
+## Walk-forward / stress
+
+Remain `INCONCLUSIVE` (sign instability / modelled stress). Not promotion inputs.
 
 ## Safety
 
