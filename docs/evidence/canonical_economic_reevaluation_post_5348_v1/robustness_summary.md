@@ -1,5 +1,16 @@
 # Robustness summary — post-#5348 economic reevaluation
 
+## Integrity override (fail-closed)
+
+Prior baseline exports are **INVALID_ECONOMIC_MEASUREMENT**. Configured
+`fee_bps=10` / `slippage_bps=5` are **NOT_APPLIED** in the roundtrip ledger
+(`entry_cost=exit_cost=fee_drag=0`, `pnl==gross_pnl`, `COST_DRAG=0`). Prior panel
+`NET_RETURN≈0.507` summed 118 independent instrument returns (capital
+double-counting). Corrected equal-capital proxy: `sum(net_pnl)/(118*10000)`.
+
+See `metrics_integrity_verdict.md`, `cost_reconciliation.json`,
+`portfolio_aggregation_audit.md`.
+
 ## Scope
 
 - Config: `bollinger_bands_v2_full_canonical_system_economic_binding_v1`
@@ -12,10 +23,7 @@
 
 `NO_LONGER_CHRONOLOGICAL_PIT_OKX_LINEAR_USDT_NON_BTC_DATASET_THAN_2024-05-01..2024-09-01; max local coverage equals prior sample period; cross-sectional expansion to full 118-member panel used instead`
 
-Cross-sectional expansion: prior post-#5346 sample used 4 instruments; this run uses
-the full binding panel (118).
-
-## Baseline
+## Corrected baseline (measurement-invalid; forensic)
 
 | Metric | Value |
 |--------|------:|
@@ -23,44 +31,31 @@ the full binding panel (118).
 | LONG | 69 |
 | SHORT | 395 |
 | Traded instruments | 115 |
-| Gross PnL | 5066.899689424928 |
-| Net PnL | 5066.899689424928 |
-| Net return | 0.5066899689424893 |
+| Gross PnL | 5066.899689424941 |
 | Fees | 0.0 |
-| Slippage drag | 4640.0 |
+| Slippage | 0.0 |
+| Net PnL | 5066.899689424941 |
 | Cost drag | 0.0 |
-| Profit factor | 1.2782631983779025 |
-| Sharpe | 0.040885256927793066 |
-| Max drawdown | -0.0770688760257639 |
+| Cost application | NOT_APPLIED |
+| Net return (corrected equal-capital proxy) | 0.004293982787648256 |
+| Net return (prior INVALID sum of instrument returns) | 0.5066899689424893 |
+| Profit factor (pooled trade gross) | 1.22955031589784 |
+| Sharpe | NOT_AVAILABLE |
+| Sharpe (prior INVALID cross-section) | 0.040885256927793066 |
+| Max drawdown | NOT_AVAILABLE |
+| Max DD (prior worst instrument) | -0.0770688760257639 |
 | Win rate | 0.051520834322429536 |
 | Avg hold (h) | 247.42446941095278 |
 | Stop triggers | 447 |
+| Economic class | INVALID_ECONOMIC_MEASUREMENT |
+| Economic measurement valid | false |
 
-## Walk-forward
+## Walk-forward / stress / LOO
 
-Verdict: **INCONCLUSIVE**
+Prior walk-forward / stress / LOO artifacts remain on disk for forensic
+comparison only. They inherit the same cost-application and aggregation defects
+and must **not** be treated as valid economic robustness evidence.
 
-Folds use the existing runtime training/validation/OOS calendar windows.
+## Safety
 
-## Stress
-
-Verdict: **INCONCLUSIVE**
-
-Modelled fee/slip roundtrip-bps drag on the baseline panel net return (sealed cost
-binding does not honor cfg fee/slip overrides). Live stop-pct re-runs are
-`NOT_AVAILABLE` (`sizing_config_digest_mismatch`).
-
-## Leave-one-out
-
-LOO rows: 115 (one per traded instrument). Used diagnostically for
-cross-sectional concentration; not a promotion input.
-
-## Classification
-
-- ECONOMIC_CLASS=`INCONCLUSIVE_UNSTABLE`
-- STATUS=`PARTIAL`
-- RATIONALE=`unstable_splits_or_stress;NO_LONGER_CHRONOLOGICAL_PIT_OKX_LINEAR_USDT_NON_BTC_DATASET_THAN_2024-05-01..2024-09-01`
-- ECONOMIC_GATE_OPENED=`false`
-- PROMOTION_ELIGIBLE=`false`
-- Reproducibility identical (`okx:linear_perpetual:1INCH:USDT:USDT:perp`): `True`
-- entry_side_other_total=`0` (expect 0 / NONE)
+`ECONOMIC_GATE_OPENED=false`, `PROMOTION_ELIGIBLE=false`.

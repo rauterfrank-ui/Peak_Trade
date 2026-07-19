@@ -110,7 +110,13 @@ def test_classification_fail_economic(harness) -> None:
 def test_classification_unstable(harness) -> None:
     klass, status, _ = harness.classify_economic(
         period_extension_available=False,
-        agg={"total_trades": 50, "net_return": 0.02, "profit_factor": 1.2},
+        agg={
+            "total_trades": 50,
+            "net_return": 0.02,
+            "profit_factor": 1.2,
+            "cost_application": "PASS",
+            "economic_measurement_valid": True,
+        },
         walk_forward_rows=[
             {"net_return": 0.10},
             {"net_return": -0.08},
@@ -120,6 +126,73 @@ def test_classification_unstable(harness) -> None:
     )
     assert klass == harness.CLASS_UNSTABLE
     assert status == "PARTIAL"
+
+
+def test_classification_invalid_when_costs_not_applied(harness) -> None:
+    klass, status, rationale = harness.classify_economic(
+        period_extension_available=False,
+        agg={
+            "total_trades": 464,
+            "net_return": 0.004,
+            "profit_factor": 1.2,
+            "cost_application": "NOT_APPLIED",
+            "economic_measurement_valid": False,
+        },
+        walk_forward_rows=[],
+        stress_rows=[],
+    )
+    assert klass == harness.CLASS_INVALID
+    assert status == "FAIL"
+    assert "INVALID_ECONOMIC_MEASUREMENT" in rationale
+
+
+def test_aggregate_rows_does_not_sum_instrument_returns(harness) -> None:
+    rows = [
+        {
+            "gross_pnl": 100.0,
+            "net_pnl": 100.0,
+            "fees": 0.0,
+            "slippage_drag": 0.0,
+            "cost_drag": 0.0,
+            "net_return": 0.01,
+            "max_drawdown": -0.01,
+            "avg_hold_hours": 1.0,
+            "win_rate": 1.0,
+            "total_trades": 1,
+            "long_trades": 1,
+            "short_trades": 0,
+            "stop_triggers": 0,
+            "exit_reasons": {},
+            "canonical_chain_bound": True,
+            "classic_bypass": False,
+            "entry_side_other": 0,
+        },
+        {
+            "gross_pnl": 200.0,
+            "net_pnl": 200.0,
+            "fees": 0.0,
+            "slippage_drag": 0.0,
+            "cost_drag": 0.0,
+            "net_return": 0.02,
+            "max_drawdown": -0.02,
+            "avg_hold_hours": 2.0,
+            "win_rate": 1.0,
+            "total_trades": 1,
+            "long_trades": 0,
+            "short_trades": 1,
+            "stop_triggers": 0,
+            "exit_reasons": {},
+            "canonical_chain_bound": True,
+            "classic_bypass": False,
+            "entry_side_other": 0,
+        },
+    ]
+    agg = harness._aggregate_rows(rows)
+    # Equal-capital proxy: 300 / (2 * 10000) = 0.015 — not 0.01+0.02=0.03.
+    assert abs(float(agg["net_return"]) - 0.015) < 1e-12
+    assert agg["net_return_sum_instrument_returns_forensic"] == 0.03
+    assert agg["sharpe"] == harness.NA
+    assert agg["cost_application"] == "NOT_APPLIED"
 
 
 def test_dataset_manifest_documents_period_blocker(harness) -> None:

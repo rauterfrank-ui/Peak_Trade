@@ -96,6 +96,8 @@ CLASS_FAIL = "FAIL_ECONOMIC"
 CLASS_LOW = "INCONCLUSIVE_LOW_SAMPLE"
 CLASS_UNSTABLE = "INCONCLUSIVE_UNSTABLE"
 CLASS_PARTIAL = "PARTIAL"
+CLASS_INVALID = "INVALID_ECONOMIC_MEASUREMENT"
+INITIAL_CAPITAL_PER_INSTRUMENT = 10_000.0
 
 
 @dataclass
@@ -328,19 +330,23 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
 
     gross_pnl = float(sum(gross_pnls)) if gross_pnls else (0.0 if trade_count == 0 else NA)
     net_pnl = float(sum(net_pnls)) if net_pnls else (0.0 if trade_count == 0 else NA)
-    fee_total = float(sum(fees)) if fees else (0.0 if trade_count == 0 else NA)
-    if (entry_costs or exit_costs) and fee_total is NA:
-        fee_total = float(sum(entry_costs) + sum(exit_costs))
-
-    slippage_total: Any = NA
-    if slip_bps > 0 and trade_count > 0:
-        slippage_total = float(trade_count) * (2.0 * slip_bps)
+    fee_components = (
+        float(sum(entry_costs) + sum(exit_costs)) if (entry_costs or exit_costs) else 0.0
+    )
+    fee_field_total = float(sum(fees)) if fees else 0.0
+    fee_total = fee_components if (entry_costs or exit_costs) else fee_field_total
+    # Separable slippage is not a distinct ledger column in this path; do not invent
+    # bps·trades pseudo-units. Report ledger currency only.
+    slippage_total = 0.0
 
     cost_drag: Any = NA
     if isinstance(gross_pnl, (int, float)) and isinstance(net_pnl, (int, float)):
         cost_drag = float(gross_pnl - net_pnl)
-    elif isinstance(fee_total, (int, float)) and isinstance(slippage_total, (int, float)):
-        cost_drag = float(fee_total) + float(slippage_total)
+    cost_application = (
+        "PASS"
+        if isinstance(cost_drag, (int, float)) and abs(float(cost_drag)) > 1e-12
+        else "NOT_APPLIED"
+    )
 
     gross_profit = float(sum(x for x in gross_pnls if x > 0)) if gross_pnls else NA
     gross_loss = float(sum(x for x in gross_pnls if x < 0)) if gross_pnls else NA
@@ -381,6 +387,8 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
                 "pnl": _num(rec.get("pnl")),
                 "gross_pnl": _num(rec.get("gross_pnl")),
                 "fee": _num(rec.get("fee")),
+                "entry_cost": _num(rec.get("entry_cost")),
+                "exit_cost": _num(rec.get("exit_cost")),
                 "entry_time": str(rec.get("entry_time"))
                 if rec.get("entry_time") is not None
                 else None,
@@ -403,6 +411,7 @@ def _extract_trade_economics(result: Any) -> dict[str, Any]:
         "fees": fee_total,
         "slippage_drag": slippage_total,
         "cost_drag": cost_drag,
+        "cost_application": cost_application,
         "profit_factor_gross": pf_gross,
         "win_rate": win_rate,
         "expectancy_gross": expectancy_gross,
@@ -558,16 +567,19 @@ def _aggregate_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         if gross_f
         else NA
     )
-
-    sharpe = NA
-    if total_trades >= MIN_TRADES_FOR_ROBUSTNESS and ret_f:
-        # Panel-level Sharpe proxy from per-instrument net returns (fail-closed simple).
-        s = pd.Series(ret_f, dtype=float)
-        if float(s.std(ddof=0) or 0.0) > 0:
-            sharpe = float(s.mean() / s.std(ddof=0))
+    n_instruments = len(rows)
+    panel_return = (
+        float(np_ / (n_instruments * INITIAL_CAPITAL_PER_INSTRUMENT)) if n_instruments > 0 else NA
+    )
+    cost_drag = float(sum(cost_f)) if cost_f else (float(gp - np_) if gross_f and net_f else NA)
+    cost_application = (
+        "NOT_APPLIED"
+        if isinstance(cost_drag, (int, float)) and abs(float(cost_drag)) <= 1e-12
+        else "PASS"
+    )
 
     return {
-        "instruments": len(rows),
+        "instruments": n_instruments,
         "traded_instruments": traded_instruments,
         "total_trades": total_trades,
         "long_trades": long_trades,
@@ -575,14 +587,24 @@ def _aggregate_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "gross_pnl": gp,
         "net_pnl": np_,
         "fees": float(sum(fee_f)) if fee_f else 0.0,
-        "slippage_drag": float(sum(slip_f)) if slip_f else NA,
-        "cost_drag": float(sum(cost_f))
-        if cost_f
-        else (float(gp - np_) if gross_f and net_f else NA),
-        "net_return": float(sum(ret_f)) if ret_f else NA,
+        "slippage_drag": float(sum(slip_f)) if slip_f else 0.0,
+        "cost_drag": cost_drag,
+        "cost_application": cost_application,
+        "net_return": panel_return,
+        "net_return_definition": (
+            "equal_capital_panel_return=sum(net_pnl)/(N*initial_capital); "
+            "not sum of independent instrument total_returns"
+        ),
+        "net_return_sum_instrument_returns_forensic": float(sum(ret_f)) if ret_f else NA,
+        "portfolio_aggregation": (
+            "independent_per_instrument_equity_curves; equal-capital panel proxy only"
+        ),
+        "initial_capital_per_instrument": INITIAL_CAPITAL_PER_INSTRUMENT,
         "profit_factor": pf,
-        "sharpe": sharpe,
-        "max_drawdown": min(dd_f) if dd_f else NA,
+        "sharpe": NA,
+        "sharpe_definition": "NOT_AVAILABLE_WITHOUT_PORTFOLIO_EQUITY_CURVE",
+        "max_drawdown": NA,
+        "max_drawdown_worst_instrument_forensic": min(dd_f) if dd_f else NA,
         "win_rate": float(sum(wr_f) / len(wr_f)) if wr_f else NA,
         "avg_hold_hours": float(sum(hold_f) / len(hold_f)) if hold_f else NA,
         "turnover": float(total_trades),
@@ -595,6 +617,8 @@ def _aggregate_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         else False,
         "classic_bypass_any": any(bool(r.get("classic_bypass")) for r in rows),
         "entry_side_other_total": sum(int(r.get("entry_side_other") or 0) for r in rows),
+        "capital_double_counting": False,
+        "economic_measurement_valid": cost_application == "PASS",
     }
 
 
@@ -616,6 +640,16 @@ def classify_economic(
     else:
         status = "PASS"
         period_note = "period_ok"
+
+    if (
+        str(agg.get("cost_application") or "") == "NOT_APPLIED"
+        or agg.get("economic_measurement_valid") is False
+    ):
+        return (
+            CLASS_INVALID,
+            "FAIL",
+            f"INVALID_ECONOMIC_MEASUREMENT:cost_or_aggregation_invalid;{period_note}",
+        )
 
     trades = int(agg.get("total_trades") or 0)
     net_ret = _num(agg.get("net_return"))

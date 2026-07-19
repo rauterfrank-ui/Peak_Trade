@@ -1,0 +1,30 @@
+{
+  "cost_application": "NOT_APPLIED",
+  "cost_drag_ledger_gross_minus_net": 0.0,
+  "costs_configured_in_runtime_evaluation_config": true,
+  "engine_notes": [
+    "src/backtest/engine.py LEGACY_PATH_COST_APPLICATION=False zeros entry_cost/exit_cost on legacy Trade accounting path",
+    "stop_loss roundtrips observed with entry_cost=exit_cost=0 and pnl==gross_pnl",
+    "EffectiveBacktestCostConfigV0.economic_interpretation_allowed=False"
+  ],
+  "fee_bps_config": 10.0,
+  "fees_total_ledger": 0.0,
+  "live_spot_check_1INCH": {
+    "conclusion": "CONFIGURED_BUT_NOT_APPLIED_TO_LEDGER_OR_FILLS",
+    "economic_interpretation_allowed": false,
+    "entry_cost": 0.0,
+    "entry_fill_vs_bar_close_bps": 0.0,
+    "exit_cost": 0.0,
+    "fee_drag_stats": 0.0,
+    "legacy_path_cost_application": false,
+    "slippage_impact_stats": 0.0
+  },
+  "prior_exported_cost_drag": 0.0,
+  "prior_exported_slippage_drag_invalid_unit": 4640.0,
+  "prior_slippage_drag_unit": "bps_times_trades_NOT_currency",
+  "reconciliation_identity": "gross_pnl - fees - slippage = net_pnl",
+  "reconciliation_status": "PASS",
+  "slippage_bps_config": 5.0,
+  "slippage_total_ledger": 0.0,
+  "stop_pct_config": 0.025
+}

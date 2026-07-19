@@ -5,8 +5,9 @@ SLICE=CANONICAL_ECONOMIC_REEVALUATION_POST_5348_V1
 BASE_SHA=8eb90ecf5b8f4a7cef4b7621aa146bfd6f1ffacc
 BRANCH=audit/canonical-economic-reevaluation-post-5348-v1
 PRODUCTIVE_FILES_CHANGED=false
-STATUS=PARTIAL
-ECONOMIC_CLASS=INCONCLUSIVE_UNSTABLE
+STATUS=FAIL
+ECONOMIC_CLASS=INVALID_ECONOMIC_MEASUREMENT
+ECONOMIC_MEASUREMENT_VALID=false
 ECONOMIC_GATE_OPENED=false
 PROMOTION_ELIGIBLE=false
 RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED
@@ -17,13 +18,23 @@ ORDERS=false
 
 ## Verdict
 
-unstable_splits_or_stress;NO_LONGER_CHRONOLOGICAL_PIT_OKX_LINEAR_USDT_NON_BTC_DATASET_THAN_2024-05-01..2024-09-01
+Fail-closed metrics integrity audit: configured fee/slippage are **NOT_APPLIED**
+in the roundtrip ledger (`COST_DRAG=0` with `pnl==gross_pnl`), and the prior panel
+`NET_RETURN≈0.507` was an invalid sum of independent instrument returns (capital
+double-counting). Corrected equal-capital proxy return ≈ `0.00429`. No economic
+promotion claim is authorized.
 
-Full 118-member PIT OKX linear USDT non-BTC futures panel (same durable calendar
-coverage as the prior 4-instrument sample). No longer chronological local dataset
-exists; period extension is a documented PARTIAL blocker. Cross-sectional
-expansion and walk-forward / stress / LOO robustness were executed on the
-existing canonical chain without parameter optimization.
+## Integrity artifacts
+
+| File | Purpose |
+|---|---|
+| `metrics_definitions.md` | Formula / unit / aggregation contract |
+| `economic_ledger_reconciliation.csv` | Per-trade gross/fee/slip/net residual |
+| `cost_reconciliation.json` | Configured vs ledger cost application |
+| `portfolio_aggregation_audit.md` | Capital double-counting analysis |
+| `metrics_integrity_verdict.md` | Fail-closed measurement verdict |
+| `baseline_metrics.json` | Corrected exports + forensic priors |
+| `metrics_integrity_audit_v1.py` | Non-authoritative regenerator |
 
 ## Bindings (unchanged)
 
@@ -33,12 +44,10 @@ existing canonical chain without parameter optimization.
 | DATASET_ID | `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1` |
 | PERIOD | `2024-05-01T00:00:00Z..2024-09-01T00:00:00Z` |
 | SEED | `42` |
+| FEE_BPS / SLIPPAGE_BPS | `10.0` / `5.0` (configured, not applied in ledger) |
 | Instruments | 118 |
 | Total trades | 464 |
 | LONG / SHORT | 69 / 395 |
-| Net return | 0.5066899689424893 |
-| Walk-forward | INCONCLUSIVE |
-| Stress | INCONCLUSIVE |
 
 ## Safety
 
