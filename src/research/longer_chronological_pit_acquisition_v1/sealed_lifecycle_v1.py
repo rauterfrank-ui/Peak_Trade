@@ -40,7 +40,7 @@ SEALED_SCHEMA_VERSION = "longer_chronological_pit_sealed_lifecycle_manifest.v1"
 INCLUSION_POLICY_VERSION = "longer_chronological_pit_sealed_lifecycle_inclusion_policy.v1"
 MIN_HISTORY_DAYS_POLICY = 365
 RELIST_GAP_HOURS = 168  # 7d — public earliest materially after listing ⇒ discontinuity
-SAMPLE_UNIVERSE_TRUTH_TOKEN = "scaffold_lifecycle_policy_sample_not_production_manifest"
+SAMPLE_UNIVERSE_TRUTH_MARKER = "scaffold_lifecycle_policy_sample_not_production_manifest"
 SEAL_HASH_EXCLUDED_KEYS = frozenset(
     {
         "content_hash",
@@ -117,7 +117,7 @@ def compute_record_fingerprint(record: Mapping[str, Any]) -> str:
 
 
 def assert_not_sample_universe(universe_truth: str | None) -> None:
-    if universe_truth == SAMPLE_UNIVERSE_TRUTH_TOKEN:
+    if universe_truth == SAMPLE_UNIVERSE_TRUTH_MARKER:
         raise SealedLifecycleError("SAMPLE_UNIVERSE_CANNOT_BE_EMITTED_AS_PRODUCTION_MANIFEST")
     if (
         universe_truth
@@ -507,7 +507,7 @@ __all__ = [
     "PRODUCTION_LIFECYCLE_SOURCE_ID",
     "RELIST_GAP_HOURS",
     "SEALED_SCHEMA_VERSION",
-    "SAMPLE_UNIVERSE_TRUTH_TOKEN",
+    "SAMPLE_UNIVERSE_TRUTH_MARKER",
     "SealedInstrumentLifecycleRecordV1",
     "SealedLifecycleError",
     "assert_instrument_not_btc_or_spot",

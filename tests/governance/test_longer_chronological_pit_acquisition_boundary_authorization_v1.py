@@ -69,7 +69,9 @@ def test_technical_wiring_auth_lists_exact_pit_acquisition_files() -> None:
     assert "src/research/longer_chronological_pit_acquisition_v1/history_depth_probe.py" in allowed
     assert "src/research/longer_chronological_pit_acquisition_v1/sealed_lifecycle_v1.py" in allowed
     assert "tests/research/test_longer_chronological_pit_okx_history_depth_probe_v1.py" in allowed
-    assert "tests/research/test_longer_chronological_pit_sealed_lifecycle_acquisition_v1.py" in allowed
+    assert (
+        "tests/research/test_longer_chronological_pit_sealed_lifecycle_acquisition_v1.py" in allowed
+    )
     assert "config/research/longer_chronological_pit_sealed_lifecycle_long_panel_v1.json" in allowed
     assert (
         "TECHNICAL_LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_WIRING"

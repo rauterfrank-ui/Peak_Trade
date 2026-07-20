@@ -10,7 +10,7 @@ import pytest
 from src.research.longer_chronological_pit_acquisition_v1.sealed_lifecycle_v1 import (
     INCLUSION_POLICY_VERSION,
     InclusionDecision,
-    SAMPLE_UNIVERSE_TRUTH_TOKEN,
+    SAMPLE_UNIVERSE_TRUTH_MARKER,
     SealedLifecycleError,
     assert_instrument_not_btc_or_spot,
     assert_not_sample_universe,
@@ -108,7 +108,7 @@ def test_truncated_public_archive_still_includable_when_long_enough() -> None:
 
 def test_sample_universe_cannot_be_emitted_as_production() -> None:
     with pytest.raises(SealedLifecycleError, match="SAMPLE_UNIVERSE"):
-        assert_not_sample_universe(SAMPLE_UNIVERSE_TRUTH_TOKEN)
+        assert_not_sample_universe(SAMPLE_UNIVERSE_TRUTH_MARKER)
 
 
 def test_tampered_manifest_fails_seal_hash() -> None:
