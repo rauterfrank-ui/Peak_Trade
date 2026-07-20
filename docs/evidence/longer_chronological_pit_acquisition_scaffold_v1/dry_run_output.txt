@@ -1,0 +1,22 @@
+MODE=DRY_RUN
+DATASET_ID=pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1
+PERIOD=2021-09-01T00:00:00Z..2024-09-01T00:00:00Z
+PARTITION_COUNT=3
+PARTITION_SCHEME=monthly_clipped_to_lifecycle
+BTC_EXCLUDED_ATTESTED=True
+SPOT_EXCLUDED_ATTESTED=True
+NETWORK_USED=False
+WRITES_ENABLED=False
+MANIFEST_DIGEST=b2c37c318b8849bd562f7d8fe396a6914cf105c70001223d998538fb9d951035
+VOLUME_ESTIMATE_GIB=0.0007 (ASSUMPTION_NOT_MEASURED)
+EXCLUDED_COUNT=0
+EXPECTED_PATHS_SAMPLE:
+  - raw/ohlcv_pt1h/ETH-USDT-SWAP/202109/ohlcv_pt1h_okx_linear_perpetual_ETH_USDT_USDT_perp_202109_f699f0d0cc6f8568.json
+  - raw/ohlcv_pt1h/ETH-USDT-SWAP/202110/ohlcv_pt1h_okx_linear_perpetual_ETH_USDT_USDT_perp_202110_5900ad4123a5aafd.json
+  - raw/ohlcv_pt1h/ETH-USDT-SWAP/202111/ohlcv_pt1h_okx_linear_perpetual_ETH_USDT_USDT_perp_202111_858a19b8a485fb61.json
+UNCERTAIN_SOURCES:
+  - okx_public_market_history_candles_v1=UNCERTAIN
+  - okx_public_funding_rate_history_v1=UNCERTAIN
+  - okx_cdn_swaprate_monthly_archive_v0=PARTIAL
+ECONOMIC_GATE_OPENED=False
+PROMOTION_ELIGIBLE=False

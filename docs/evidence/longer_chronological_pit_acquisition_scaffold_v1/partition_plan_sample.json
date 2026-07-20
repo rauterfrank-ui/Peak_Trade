@@ -1,0 +1,54 @@
+{
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+  "excluded": [],
+  "frequency": "PT1H",
+  "partition_count": 3,
+  "partition_scheme": "monthly_clipped_to_lifecycle",
+  "partitions": [
+    {
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+      "frequency": "PT1H",
+      "instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+      "kind": "ohlcv_pt1h",
+      "market_type": "linear_usdt_perpetual",
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "normalized_symbol": "ETH-USDT-SWAP",
+      "partition_id": "ohlcv_pt1h_okx_linear_perpetual_ETH_USDT_USDT_perp_202109_f699f0d0cc6f8568",
+      "period_end": "2021-10-01T00:00:00Z",
+      "period_start": "2021-09-01T00:00:00Z",
+      "status": "PLANNED",
+      "venue": "okx"
+    },
+    {
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+      "frequency": "PT1H",
+      "instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+      "kind": "ohlcv_pt1h",
+      "market_type": "linear_usdt_perpetual",
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "normalized_symbol": "ETH-USDT-SWAP",
+      "partition_id": "ohlcv_pt1h_okx_linear_perpetual_ETH_USDT_USDT_perp_202110_5900ad4123a5aafd",
+      "period_end": "2021-11-01T00:00:00Z",
+      "period_start": "2021-10-01T00:00:00Z",
+      "status": "PLANNED",
+      "venue": "okx"
+    },
+    {
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+      "frequency": "PT1H",
+      "instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+      "kind": "ohlcv_pt1h",
+      "market_type": "linear_usdt_perpetual",
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "normalized_symbol": "ETH-USDT-SWAP",
+      "partition_id": "ohlcv_pt1h_okx_linear_perpetual_ETH_USDT_USDT_perp_202111_858a19b8a485fb61",
+      "period_end": "2021-12-01T00:00:00Z",
+      "period_start": "2021-11-01T00:00:00Z",
+      "status": "PLANNED",
+      "venue": "okx"
+    }
+  ],
+  "period_end": "2021-12-01T00:00:00Z",
+  "period_start": "2021-09-01T00:00:00Z",
+  "truncated": false
+}

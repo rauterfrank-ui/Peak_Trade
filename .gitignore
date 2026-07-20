@@ -155,3 +155,11 @@ docs-token-policy-report.json
 
 # Ephemeral local Pre-PR validation artifact (must not be tracked)
 .cursor/PRE_PR_VALIDATION_RESULT.env
+
+# Longer chronological PIT acquisition archives (must stay outside git;
+# belt-and-suspenders if someone mistakenly stages under the repo)
+/datasets/
+/longer_chronological_pit/
+**/longer_chronological_pit/chrono_3y_v1/raw/
+**/longer_chronological_pit/chrono_3y_v1/normalized/
+**/longer_chronological_pit/chrono_3y_v1/quarantine/
