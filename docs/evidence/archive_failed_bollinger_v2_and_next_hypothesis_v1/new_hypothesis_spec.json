@@ -1,0 +1,111 @@
+{
+  "schema_version": "research_hypothesis_spec.v1",
+  "hypothesis_id": "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+  "hypothesis_class": "REGIME_GATED_MEAN_REVERSION_WITH_STANDASIDE",
+  "strategy_id_proposed": "regime_gated_standaside_mean_reversion",
+  "strategy_version_proposed": "v1",
+  "research_only": true,
+  "runtime_activated": false,
+  "implementation_authorized": false,
+  "evaluation_authorized": false,
+  "promotion_eligible": false,
+  "economic_gate_opened": false,
+  "entry_side_authority": "trading.master_v2.double_play_state.transition_state",
+  "entry_side_expected": "NONE",
+  "motivation": [
+    "Sealed-panel evidence shows unfiltered Bollinger-v2 mean reversion produced PF=0 with all exits via stop_loss and extreme SHORT dominance.",
+    "Gross PnL was already negative before costs, so the failure is not primarily a fee/slippage artifact.",
+    "Repo already distinguishes regime/range concepts in research inventories; a regime gate that forces stand-aside in strong trends is a material, falsifiable alternative to blind band reversion."
+  ],
+  "expected_mechanism": "Allow mean-reversion band entries only when a predeclared local price/vol regime is classified as range-bound; stand aside (flat) when the regime is classified as strong trend. Direction may be LONG or SHORT only inside the admitted regime; Master-V2 entry_side remains NONE.",
+  "direction_semantics": {
+    "long_allowed": true,
+    "short_allowed": true,
+    "both_require_regime_admission": true,
+    "standaside_required_outside_range_regime": true,
+    "bitcoin_direction_allowed": false,
+    "master_v2_entry_side": "NONE",
+    "no_second_direction_authority": true
+  },
+  "distinction_from_failed_bollinger_v2": [
+    "Mandatory regime admission gate before any entry intent",
+    "Explicit stand-aside state outside range regimes",
+    "No reuse of sealed Bollinger-v2 parameters as a free search space",
+    "Development and selection forbidden on sealed 65-instrument holdout panel"
+  ],
+  "conceptual_entry_logic": [
+    "Compute a frozen, predeclared regime label from finalized PIT OHLCV only (no lookahead).",
+    "If regime != RANGE_BOUND: emit flat / no entry.",
+    "If regime == RANGE_BOUND: allow a mean-reversion band entry against local extremes using a single frozen parameter binding ratified later (not in this slice)."
+  ],
+  "conceptual_exit_logic": [
+    "Exit on mid/mean reversion target, hard stop, or regime transition out of RANGE_BOUND — exactly one frozen exit binding later; no post-hoc choice."
+  ],
+  "conceptual_invalidation_logic": [
+    "If independent-development evaluation yields PF < 1.0 after realistic costs, or <50% OOS folds positive, or win-rate/stop-exit share remains structurally stop-dominated without any positive expectancy: terminal reject this hypothesis family without sealed-holdout retune."
+  ],
+  "allowed_data_and_features": [
+    "Public read-only OKX linear USDT perpetual OHLCV PT1H",
+    "Finalized bars only",
+    "PIT / chronological features derived from mark/close path",
+    "Optional public funding later only if separately ratified; not required for initial hypothesis"
+  ],
+  "forbidden_leakage_and_authority_paths": [
+    "No sealed holdout 2023-08-16..2024-09-01 for development, selection, or tuning",
+    "No live/paper/testnet/shadow/scheduler/orders",
+    "No Master-V2 / Double-Play / risk / sizing / execution authority mutation",
+    "No second direction authority",
+    "No parameter search on evaluation panels"
+  ],
+  "dataset_split_policy": {
+    "sealed_holdout_dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+    "sealed_holdout_period": "2023-08-16T05:55:00Z..2024-09-01T00:00:00Z",
+    "sealed_holdout_role": "FINAL_AUDIT_ONLY_NO_TUNING_NO_SELECTION",
+    "development_requirements": {
+      "futures_only": true,
+      "btc_excluded": true,
+      "spot_excluded": true,
+      "public_okx_read_only": true,
+      "frequency": "PT1H",
+      "pit_chronological": true,
+      "period_must_end_before_sealed_holdout_start": true,
+      "target_development_window_example": "2021-09-01T00:00:00Z..2023-08-15T23:00:00Z",
+      "min_history_days_policy": 365,
+      "materialized_now": false,
+      "download_in_this_slice": false
+    },
+    "independent_development_data_available": "unknown",
+    "research_status_if_dev_data_missing": "BLOCKED_BY_INDEPENDENT_DEVELOPMENT_DATA"
+  },
+  "metrics_contract": {
+    "primary_metric": "shared_book_net_return_after_fees_and_slippage",
+    "secondary_robustness_metrics": [
+      "profit_factor_net",
+      "sharpe_shared_book_hourly_8760",
+      "max_drawdown",
+      "walk_forward_positive_fold_share",
+      "stop_exit_share",
+      "long_short_trade_balance",
+      "cost_drag_bps",
+      "monte_carlo_p05_net_return"
+    ],
+    "minimum_trade_count": 50,
+    "cost_model": {
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 5.0,
+      "roundtrip_reference_bps": 30.0
+    },
+    "walk_forward_schema": "predeclared_chronological_oos_segments_on_development_panel_only",
+    "stress_schema": "modelled_fee_slip_multipliers_1_5x_and_2x_plus_optional_adverse_slip"
+  },
+  "terminal_fail_criteria": [
+    "PF_net < 1.0 after realistic costs on independent development evaluation",
+    "shared_book_net_return < 0 on development baseline",
+    "walk_forward_positive_fold_share < 0.5",
+    "all_or_nearly_all exits stop_loss with win_rate≈0",
+    "any use of sealed holdout for parameter choice or hypothesis selection"
+  ],
+  "no_promotion_in_this_phase": true,
+  "next_required_operator_step": "Seal or acquire independent development panel ending before 2023-08-16; then separate GO for binding definition only — still no sealed-holdout tuning"
+}
