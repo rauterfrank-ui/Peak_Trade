@@ -1,0 +1,22 @@
+# Safety attestation
+
+- `DEFINITION_ONLY=true`
+- `BACKTEST_EXECUTED=false`
+- `ECONOMIC_METRICS_COMPUTED=false`
+- `DEVELOPMENT_PANEL_ACCESSED=false`
+- `HOLDOUT_ACCESSED=false`
+- `SEALED_HOLDOUT_CONTENT_INSPECTED=false`
+- `PROMOTION_ELIGIBLE=false`
+- Economic offline gate unchanged/closed
+- `RUNTIME_ACTIVATED=false`
+- `SHADOW_ACTIVATED=false`
+- `TESTNET_ACTIVATED=false`
+- `ORDERS_SENT=false`
+- `PRODUCTIVE_TRADING_LOGIC_CHANGED=false`
+- `AUTHORITY_CHANGED=false`
+- No direction / switch / risk / sizing / execution authority change
+- No policy runtime implementation in this slice
+- Multiple-testing budget locked at exactly 1
+- Evaluation run count authorized exactly 1 (later GO only)
+- `ENTRY_ELIGIBILITY_DIVERGENCE_REQUIRED=true`
+- Prior failed regime-gate features not reused
