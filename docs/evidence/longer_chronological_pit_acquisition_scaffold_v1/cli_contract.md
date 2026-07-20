@@ -14,6 +14,8 @@ python -m src.research.longer_chronological_pit_acquisition_v1 <command> [option
 | `qualify-dry-run` | Alias of plan-style dry-run report |
 | `probe` | Bounded probe; **network disabled by default** |
 | `history-depth-probe` | Public OKX history-depth probe; **network/write disabled by default** |
+| `seal-lifecycle` | Bind production lifecycle registry + public candle enrichment; seal long panel |
+| `acquire-long-panel` | Bounded PT1H acquisition for sealed long-panel common window |
 
 ## Defaults
 

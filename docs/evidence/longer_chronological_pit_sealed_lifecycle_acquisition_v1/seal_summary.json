@@ -1,0 +1,24 @@
+{
+  "archive_root": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/peak_trade_data_archive/sealed_lifecycle_long_panel_v1_d884a000_20260720T1832Z",
+  "blockers": [
+    "LRC-USDT-SWAP:FETCH_FAILED:OKX_ERROR_CODE:51001:Instrument ID, Instrument ID code, or Spread ID doesn't exist."
+  ],
+  "common_panel_duration_days": 381.75347222222223,
+  "common_panel_end": "2024-09-01T00:00:00Z",
+  "common_panel_start": "2023-08-16T05:55:00Z",
+  "content_hash": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+  "inclusion_policy_version": "longer_chronological_pit_sealed_lifecycle_inclusion_policy.v1",
+  "instrument_count_discovered": 391,
+  "instrument_count_excluded": 326,
+  "instrument_count_long_panel_included": 65,
+  "luna_decision": "INCLUDE_LONG_PANEL",
+  "luna_decision_reason": null,
+  "min_history_days_policy": 365,
+  "production_lifecycle_source_id": "okx_production_instrument_lifecycle_historical_as_of_fail_closed.v1",
+  "production_registry_digest": "ddcdec738ff5661f3e2f6bd3dcc97a1bcddbf0b9254faa344b318558f1dbe289",
+  "relist_edge_count": 0,
+  "requests_used": 1566,
+  "sample_universe_replaced": true,
+  "sealed_manifest_sha256": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56",
+  "universe_truth": "production_lifecycle_registry_binding_v1"
+}

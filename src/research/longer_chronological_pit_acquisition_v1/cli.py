@@ -111,6 +111,8 @@ def build_parser() -> argparse.ArgumentParser:
             "probe",
             "qualify-dry-run",
             "history-depth-probe",
+            "seal-lifecycle",
+            "acquire-long-panel",
         ),
         help="Acquisition scaffold command",
     )
@@ -166,16 +168,65 @@ def build_parser() -> argparse.ArgumentParser:
         default=0,
         help="Deterministic seed recorded for probe sample edge-case ties",
     )
+    p.add_argument(
+        "--production-registry-json",
+        type=Path,
+        default=None,
+        help="Absolute path to validated production lifecycle registry_snapshot_v1.json",
+    )
+    p.add_argument(
+        "--sealed-manifest-json",
+        type=Path,
+        default=None,
+        help="Path to sealed lifecycle manifest (acquire-long-panel)",
+    )
+    p.add_argument(
+        "--allow-write-seal",
+        action="store_true",
+        help="Write sealed lifecycle artifacts under external archive root",
+    )
+    p.add_argument(
+        "--allow-write-acquisition",
+        action="store_true",
+        help="Write bounded long-panel acquisition artifacts under archive root",
+    )
+    p.add_argument(
+        "--seal-request-budget",
+        type=int,
+        default=None,
+        help="Hard request budget for seal-lifecycle public enrichment",
+    )
+    p.add_argument(
+        "--acquisition-request-budget",
+        type=int,
+        default=None,
+        help="Hard request budget for acquire-long-panel",
+    )
+    p.add_argument(
+        "--seal-max-instruments",
+        type=int,
+        default=None,
+        help="Optional cap on registry intervals enriched during seal (fail-closed tests)",
+    )
+    p.add_argument(
+        "--acquire-max-instruments",
+        type=int,
+        default=None,
+        help="Optional cap on long-panel instruments acquired (bounded runs)",
+    )
     p.add_argument("--json", action="store_true", help="Emit JSON")
     return p
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(list(argv) if argv is not None else None)
-    instruments = _load_instruments(
-        args.instruments_json,
-        for_history_depth=(args.command == "history-depth-probe"),
-    )
+    if args.command in {"seal-lifecycle", "acquire-long-panel"}:
+        instruments = []
+    else:
+        instruments = _load_instruments(
+            args.instruments_json,
+            for_history_depth=(args.command == "history-depth-probe"),
+        )
     max_parts = args.max_partitions
     if args.probe_one:
         max_parts = 1
@@ -228,6 +279,67 @@ def main(argv: Sequence[str] | None = None) -> int:
         if summary.get("blockers"):
             return 5
         return 0
+
+    if args.command == "seal-lifecycle":
+        from src.research.longer_chronological_pit_acquisition_v1.public_lifecycle_acquisition_v1 import (  # noqa: PLC0415
+            run_seal_lifecycle,
+        )
+        from src.research.longer_chronological_pit_acquisition_v1.sealed_lifecycle_v1 import (  # noqa: PLC0415
+            SealedLifecycleError,
+        )
+
+        if args.production_registry_json is None:
+            sys.stderr.write("PRODUCTION_REGISTRY_JSON_REQUIRED\n")
+            return 4
+        if args.seal_request_budget is None:
+            sys.stderr.write("SEAL_REQUEST_BUDGET_REQUIRED\n")
+            return 4
+        try:
+            summary = run_seal_lifecycle(
+                production_registry_path=args.production_registry_json,
+                archive_root=args.archive_root,
+                allow_network=bool(args.allow_network_probe or args.allow_network),
+                allow_write=bool(args.allow_write_seal or args.allow_write_probe),
+                request_budget=int(args.seal_request_budget),
+                max_instruments=args.seal_max_instruments,
+                panel_start=args.period_start,
+                panel_end=args.period_end,
+            )
+        except SealedLifecycleError as exc:
+            sys.stderr.write(f"{exc}\n")
+            return 4
+        sys.stdout.write(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+        return 0 if not summary.get("blockers") else 5
+
+    if args.command == "acquire-long-panel":
+        from src.research.longer_chronological_pit_acquisition_v1.public_lifecycle_acquisition_v1 import (  # noqa: PLC0415
+            acquire_long_panel_ohlcv,
+        )
+        from src.research.longer_chronological_pit_acquisition_v1.sealed_lifecycle_v1 import (  # noqa: PLC0415
+            SealedLifecycleError,
+        )
+
+        if args.sealed_manifest_json is None:
+            sys.stderr.write("SEALED_MANIFEST_JSON_REQUIRED\n")
+            return 4
+        if args.acquisition_request_budget is None:
+            sys.stderr.write("ACQUISITION_REQUEST_BUDGET_REQUIRED\n")
+            return 4
+        sealed = json.loads(args.sealed_manifest_json.read_text(encoding="utf-8"))
+        try:
+            summary = acquire_long_panel_ohlcv(
+                sealed_manifest=sealed,
+                archive_root=args.archive_root,
+                allow_network=bool(args.allow_network_probe or args.allow_network),
+                allow_write=bool(args.allow_write_acquisition or args.allow_write_probe),
+                request_budget=int(args.acquisition_request_budget),
+                max_instruments=args.acquire_max_instruments,
+            )
+        except SealedLifecycleError as exc:
+            sys.stderr.write(f"{exc}\n")
+            return 4
+        sys.stdout.write(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+        return 0 if summary.get("acquisition_executed") else 5
 
     if args.command == "probe":
         # Default still no network — demonstrate gate
