@@ -463,7 +463,7 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
     @pytest.mark.parametrize(
         ("changed_files", "expected_flag"),
         [
-            (["src/trading/master_v2/double_play_state.py"], "master_v2_changed"),
+            (["src/trading/master_v2/directional_assessment_v1.py"], "master_v2_changed"),
             (["src/trading/master_v2/directional_assessment_v1.py"], "bull_bear_changed"),
             (["src/trading/master_v2/double_play_composition.py"], "double_play_changed"),
             (
@@ -534,7 +534,7 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
 
     def test_boundary_report_serializes_required_fields(self) -> None:
         report = build_boundary_report(
-            ["src/trading/master_v2/double_play_state.py"],
+            ["src/trading/master_v2/directional_assessment_v1.py"],
             repo_root=REPO_ROOT,
         )
         payload = report.to_dict()

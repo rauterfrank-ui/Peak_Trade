@@ -230,7 +230,15 @@
     "docs/evidence/longer_chronological_pit_okx_history_depth_probe_v1/timing_proof.txt",
     "config/governance/economic_diagnostic_optimization_boundary_v0.json",
     "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
-    "tests/governance/test_longer_chronological_pit_acquisition_boundary_authorization_v1.py"
+    "tests/governance/test_longer_chronological_pit_acquisition_boundary_authorization_v1.py",
+    "src/research/regime_gated_standaside_mr_hypothesis_preregistration_v1.py",
+    "tests/research/test_regime_gated_standaside_mr_hypothesis_preregistration_v1.py",
+    "config/research/regime_gated_standaside_mr_preregistered_economic_hypothesis_measurement_contract_v1.json",
+    "docs/evidence/preregister_regime_gated_standaside_mr_hypothesis_v1/README.md",
+    "docs/evidence/preregister_regime_gated_standaside_mr_hypothesis_v1/summary.json",
+    "docs/evidence/preregister_regime_gated_standaside_mr_hypothesis_v1/split_manifest.json",
+    "docs/evidence/preregister_regime_gated_standaside_mr_hypothesis_v1/safety_attestation.md",
+    "docs/governance/REGIME_GATED_STANDASIDE_MR_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -252,7 +260,8 @@
     "TECHNICAL_CHOP_SCOPE_EVENT_POLICY_BINDING_WIRING",
     "TECHNICAL_SCENARIO_INJECTION_FAIL_CLOSED_TICK_PROVENANCE_WIRING",
     "TECHNICAL_ADVERSE_EXIT_DOWNSCOPE_DUAL_DIMENSION_WIRING",
-    "TECHNICAL_LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_WIRING"
+    "TECHNICAL_LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_WIRING",
+    "TECHNICAL_REGIME_GATED_STANDASIDE_MR_HYPOTHESIS_PREREGISTRATION_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -299,6 +308,7 @@
     "Includes CHOP scope-event policy binding v1: ScopeEvent.CHOP_DETECTED bound as RuntimeScopeState scope policy only; Composition consumer projection; UNKNOWN remains NOT_BOUND_FAIL_CLOSED; no Direction/Switch/SideState mutation by CHOP; no runtime/order/live activation.",
     "Includes testnet/scenario injection fail-closed default + required typed tick provenance: allow_test_scope_event_injection defaults False; explicit bool opt-in + OfflineScenarioTickProvenanceV1 required; no Direction/Side/Switch authority; chop_guard default-minimal transition_allowed aligned to CHOP scope-policy application; no runtime/order/live activation.",
     "Includes adverse-exit/downscope dual-dimension transport: generator prefers DOWNSCOPE/UPSCOPE over ADVERSE_EXIT for ScopeEvent; adverse remains in matched_conditions for Exit PolicySignal; ADVERSE_EXIT maps fail-closed unless downscope fact present; transition_state remains sole SideState owner; no runtime/order/live activation.",
-    "Includes longer chronological PIT public-history acquisition scaffold, bounded OKX history-depth probe, and sealed production-lifecycle long-panel binding/acquisition (research-only, dry-run/no-credentials defaults, external archive root required for writes); no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation. Owner surface: LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_SCAFFOLD_AND_DEPTH_PROBE_V1. Review basis: acquisition/probe/seal workstream; remains in force until superseded by a later acquisition operator GO."
+    "Includes longer chronological PIT public-history acquisition scaffold, bounded OKX history-depth probe, and sealed production-lifecycle long-panel binding/acquisition (research-only, dry-run/no-credentials defaults, external archive root required for writes); no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation. Owner surface: LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_SCAFFOLD_AND_DEPTH_PROBE_V1. Review basis: acquisition/probe/seal workstream; remains in force until superseded by a later acquisition operator GO.",
+    "Includes definition-only preregistration of a single regime-gated stand-aside mean-reversion measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + thresholds); no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: REGIME_GATED_STANDASIDE_MR_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1."
   ]
 }

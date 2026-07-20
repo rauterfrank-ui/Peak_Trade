@@ -536,6 +536,16 @@
         "tests/governance/test_acquire_and_seal_okx_independent_dev_panel_v1.py"
       ],
       "note": "Research-only public OKX history acquisition scaffold, bounded history-depth probe, sealed production-lifecycle long-panel binding/acquisition, and independent pre-holdout development-panel seal; dry-run/no-credentials defaults; no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation."
+    },
+    "REGIME_GATED_STANDASIDE_MR_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "path_prefixes": [
+        "src/research/regime_gated_standaside_mr_hypothesis_preregistration_v1.py",
+        "tests/research/test_regime_gated_standaside_mr_hypothesis_preregistration_v1.py",
+        "config/research/regime_gated_standaside_mr_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "docs/evidence/preregister_regime_gated_standaside_mr_hypothesis_v1/",
+        "docs/governance/REGIME_GATED_STANDASIDE_MR_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
+      ],
+      "note": "Definition-only preregistration of a single regime-gated stand-aside mean-reversion measurement contract on the sealed DEVELOPMENT_ONLY panel; no backtest, no economic metrics, no holdout access, no productive authority mutation."
     }
   }
 }
