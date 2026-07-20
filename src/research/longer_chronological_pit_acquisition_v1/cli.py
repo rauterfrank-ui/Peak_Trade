@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from src.research.longer_chronological_pit_acquisition_v1 import (
-    DATASET_ID,
     ENV_ARCHIVE_ROOT,
     TARGET_PERIOD_END,
     TARGET_PERIOD_START,
@@ -23,6 +22,13 @@ from src.research.longer_chronological_pit_acquisition_v1.adapter import (
 )
 from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
     resolve_archive_root,
+)
+from src.research.longer_chronological_pit_acquisition_v1.history_depth_probe import (
+    DEFAULT_MAX_INSTRUMENTS,
+    DEFAULT_REQUEST_BUDGET,
+    HistoryDepthProbeError,
+    default_probe_universe_sample,
+    run_history_depth_probe,
 )
 from src.research.longer_chronological_pit_acquisition_v1.manifest import (
     build_partition_manifest_row,
@@ -39,8 +45,24 @@ from src.research.longer_chronological_pit_acquisition_v1.source_discovery impor
 )
 
 
-def _load_instruments(path: Path | None) -> list[dict[str, Any]]:
+def _load_instruments(
+    path: Path | None, *, for_history_depth: bool = False
+) -> list[dict[str, Any]]:
     if path is None:
+        if for_history_depth:
+            return [
+                {
+                    "instrument_id": i.instrument_id,
+                    "native_instrument_id": i.native_instrument_id,
+                    "base_asset": i.base_asset,
+                    "quote_asset": i.quote_asset,
+                    "market_type": i.market_type,
+                    "listing_time": i.listing_time,
+                    "delisting_time": i.delisting_time,
+                    "state": i.state,
+                }
+                for i in default_probe_universe_sample()
+            ]
         # Tiny built-in sample for dry-run demos (non-BTC linear perps)
         return [
             {
@@ -64,7 +86,12 @@ def _load_instruments(path: Path | None) -> list[dict[str, Any]]:
                 "state": "KNOWN",
             },
         ]
-    return json.loads(path.read_text(encoding="utf-8"))
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(payload, dict) and "instruments" in payload:
+        return list(payload["instruments"])
+    if isinstance(payload, list):
+        return payload
+    raise ValueError("INSTRUMENTS_JSON_MUST_BE_LIST_OR_OBJECT_WITH_instruments")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -77,7 +104,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "command",
-        choices=("plan", "discover", "manifest", "probe", "qualify-dry-run"),
+        choices=(
+            "plan",
+            "discover",
+            "manifest",
+            "probe",
+            "qualify-dry-run",
+            "history-depth-probe",
+        ),
         help="Acquisition scaffold command",
     )
     p.add_argument("--instruments-json", type=Path, default=None)
@@ -104,13 +138,44 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Probe mode: at most one partition",
     )
+    p.add_argument(
+        "--allow-network-probe",
+        action="store_true",
+        help="Explicit freigabe for history-depth-probe network calls (default off)",
+    )
+    p.add_argument(
+        "--allow-write-probe",
+        action="store_true",
+        help="Explicit freigabe to write small probe artifacts under archive root",
+    )
+    p.add_argument(
+        "--request-budget",
+        type=int,
+        default=None,
+        help=f"Hard request budget for history-depth-probe (max {DEFAULT_REQUEST_BUDGET})",
+    )
+    p.add_argument(
+        "--max-instruments",
+        type=int,
+        default=DEFAULT_MAX_INSTRUMENTS,
+        help=f"Max instruments in history-depth sample (1..{DEFAULT_MAX_INSTRUMENTS})",
+    )
+    p.add_argument(
+        "--selection-seed",
+        type=int,
+        default=0,
+        help="Deterministic seed recorded for probe sample edge-case ties",
+    )
     p.add_argument("--json", action="store_true", help="Emit JSON")
     return p
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(list(argv) if argv is not None else None)
-    instruments = _load_instruments(args.instruments_json)
+    instruments = _load_instruments(
+        args.instruments_json,
+        for_history_depth=(args.command == "history-depth-probe"),
+    )
     max_parts = args.max_partitions
     if args.probe_one:
         max_parts = 1
@@ -141,6 +206,27 @@ def main(argv: Sequence[str] | None = None) -> int:
             sys.stdout.write(out)
         else:
             sys.stdout.write(json.dumps(out, indent=2, sort_keys=True) + "\n")
+        return 0
+
+    if args.command == "history-depth-probe":
+        try:
+            summary = run_history_depth_probe(
+                instruments,
+                allow_network_probe=bool(args.allow_network_probe),
+                allow_write_probe=bool(args.allow_write_probe),
+                request_budget=args.request_budget,
+                archive_root=args.archive_root,
+                max_instruments=int(args.max_instruments),
+                selection_seed=int(args.selection_seed),
+                period_start=args.period_start,
+                period_end=args.period_end,
+            )
+        except HistoryDepthProbeError as exc:
+            sys.stderr.write(f"{exc}\n")
+            return 4
+        sys.stdout.write(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+        if summary.get("blockers"):
+            return 5
         return 0
 
     if args.command == "probe":
