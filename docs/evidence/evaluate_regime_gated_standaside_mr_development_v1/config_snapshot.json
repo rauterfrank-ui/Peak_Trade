@@ -1,0 +1,46 @@
+{
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "contract_id": "regime_gated_standaside_mr_preregistered_economic_hypothesis_measurement_contract.v1",
+  "cost_model": {
+    "adjustment_forbidden_after_preregistration": true,
+    "fee_bps": 10.0,
+    "fixed": true,
+    "half_spread_bps": 5.0,
+    "roundtrip_reference_bps": 30.0,
+    "slippage_bps": 5.0
+  },
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "decision_segment": {
+    "end_exclusive": "2023-08-16T05:55:00Z",
+    "start": "2023-05-20T00:00:00Z"
+  },
+  "decision_thresholds": {
+    "decision_segment": "final_development_confirmation_only",
+    "fail_if_any": [
+      "trade_count_treatment >= minimum_trade_count AND net_return_treatment < net_return_baseline - materiality_epsilon_net_return_abs",
+      "trade_count_treatment >= minimum_trade_count AND max_drawdown_treatment < max_drawdown_baseline",
+      "any_holdout_use_for_tuning_or_selection",
+      "any_post_hoc_threshold_or_feature_adjustment"
+    ],
+    "inconclusive_if_any": [
+      "trade_count_treatment < minimum_trade_count",
+      "trade_count_baseline < minimum_trade_count"
+    ],
+    "materiality_epsilon_net_return_abs": 0.005,
+    "minimum_trade_count": 50,
+    "pass_requires_all": [
+      "trade_count_treatment >= minimum_trade_count",
+      "max_drawdown_treatment >= max_drawdown_baseline",
+      "turnover_treatment < turnover_baseline",
+      "cost_drag_treatment < cost_drag_baseline",
+      "net_return_treatment >= net_return_baseline - materiality_epsilon_net_return_abs"
+    ],
+    "threshold_adjustment_forbidden_after_preregistration": true
+  },
+  "feature_formula_sha256": "70ae8571b1af755b441e0b87cb5f472877dd4e220d81f1f6d6ab59c7504952a1",
+  "hypothesis_id": "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+  "schema_version": "evaluate_regime_gated_standaside_mr_development_config_snapshot.v1",
+  "seed": 20220601,
+  "stop_pct": 0.025,
+  "treatment_id": "regime_gated_standaside_entry_eligibility_v1"
+}
