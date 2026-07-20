@@ -1,0 +1,485 @@
+{
+  "CREDENTIALS_USED": false,
+  "DATA_ARCHIVES_ADDED_TO_GIT": false,
+  "ECONOMIC_GATE_OPENED": false,
+  "LIVE_AUTHORIZED": false,
+  "MASS_DOWNLOAD_STARTED": false,
+  "NETWORK_PROBE_EXECUTED": true,
+  "ORDERS": false,
+  "PROMOTION_ELIGIBLE": false,
+  "archive_root": "/private/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/peak_trade_data_archive/okx_history_depth_probe_v1",
+  "blockers": [],
+  "btc_excluded": true,
+  "credentials_used": false,
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+  "earliest_history_by_instrument": {
+    "ETH-USDT-SWAP": "2021-08-23T16:00:00Z",
+    "LINK-USDT-SWAP": "2020-06-06T17:00:00Z",
+    "LUNA-USDT-SWAP": "2026-07-12T10:00:00Z",
+    "SOL-USDT-SWAP": "2021-05-23T17:00:00Z",
+    "TIA-USDT-SWAP": "2023-10-31T18:00:00Z"
+  },
+  "endpoint": "https://www.okx.com/api/v5/market/history-candles",
+  "evidence_pack_created_at": "2026-07-20T17:47:37Z",
+  "external_artifact_hashes": {
+    "history_depth_probe_manifest.json": "722aa5f28764aa0dd6982c59e8a9f5bb118b10e1decd66a42bd30e913f55932a",
+    "history_depth_probe_summary.json": "b33d1380296e16c7fe2915b180854ba2ffc82972a8c6ac22ca6aac3e075124d7",
+    "resume_state.json": "e1df6fc017341a275144742a8eaca1436e507934ecbea5624700ca55260da9a3"
+  },
+  "instrument_results": [
+    {
+      "bar": "1H",
+      "base_asset": "ETH",
+      "delisting_time": null,
+      "earliest_public_ms": 1629734400000,
+      "earliest_public_ts": "2021-08-23T16:00:00Z",
+      "endpoint": "https://www.okx.com/api/v5/market/history-candles",
+      "frequency": "PT1H",
+      "instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+      "latest_public_ms": 1784566800000,
+      "latest_public_ts": "2026-07-20T17:00:00Z",
+      "lifecycle_clipping": {
+        "delisting_ms": null,
+        "earliest_public_ms": 1629734400000,
+        "latest_public_ms": 1784566800000,
+        "listing_ms": 1575158400000,
+        "planned_end": "2024-09-01T00:00:00Z",
+        "planned_start": "2021-09-01T00:00:00Z",
+        "reasons": [
+          "CLIPPING_CONSISTENT"
+        ],
+        "valid": true
+      },
+      "listing_time": "2019-12-01T00:00:00Z",
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "pagination_end_reached": true,
+      "partition_count_planned": 36,
+      "requests": [
+        {
+          "after_ms": 1784569598591,
+          "earliest_ms": 1784210400000,
+          "latest_ms": 1784566800000,
+          "query_instId": "ETH-USDT-SWAP",
+          "response_bytes": 10307,
+          "response_sha256": "5690c5da82547173c32e80ac95b608f1703fcd981feeb02dd323cf92b6271823",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1630454400000,
+          "earliest_ms": 1630094400000,
+          "latest_ms": 1630450800000,
+          "query_instId": "ETH-USDT-SWAP",
+          "response_bytes": 9478,
+          "response_sha256": "932fb6ecdc3e490e849bbecfabbbdd5a50bd79244680f1eb0812a159a1f6790c",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1575162000000,
+          "earliest_ms": null,
+          "latest_ms": null,
+          "query_instId": "ETH-USDT-SWAP",
+          "response_bytes": 31,
+          "response_sha256": "65e82d16a0d4bf82a71bf3dc0e533a117944d81a51ed80be42f25a7791131793",
+          "row_count": 0,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1630094400000,
+          "earliest_ms": 1629734400000,
+          "latest_ms": 1630090800000,
+          "query_instId": "ETH-USDT-SWAP",
+          "response_bytes": 9538,
+          "response_sha256": "e450173324afe4f96ee522bb6342b216d25ca2c1806fbaed62a2da77ce7dd7c4",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        }
+      ],
+      "requests_used": 4,
+      "source_id": "okx_public_market_history_candles_v1",
+      "status": "PROBED",
+      "target_end_ms": 1725148800000,
+      "target_period_end": "2024-09-01T00:00:00Z",
+      "target_period_start": "2021-09-01T00:00:00Z",
+      "target_start_ms": 1630454400000,
+      "three_year_depth": "YES"
+    },
+    {
+      "bar": "1H",
+      "base_asset": "LINK",
+      "delisting_time": null,
+      "earliest_public_ms": 1591462800000,
+      "earliest_public_ts": "2020-06-06T17:00:00Z",
+      "endpoint": "https://www.okx.com/api/v5/market/history-candles",
+      "frequency": "PT1H",
+      "instrument_id": "okx:linear_perpetual:LINK:USDT:USDT:perp",
+      "latest_public_ms": 1784566800000,
+      "latest_public_ts": "2026-07-20T17:00:00Z",
+      "lifecycle_clipping": {
+        "delisting_ms": null,
+        "earliest_public_ms": 1591462800000,
+        "latest_public_ms": 1784566800000,
+        "listing_ms": 1592179200000,
+        "planned_end": "2024-09-01T00:00:00Z",
+        "planned_start": "2021-09-01T00:00:00Z",
+        "reasons": [
+          "PUBLIC_HISTORY_BEFORE_LISTING"
+        ],
+        "valid": false
+      },
+      "listing_time": "2020-06-15T00:00:00Z",
+      "native_instrument_id": "LINK-USDT-SWAP",
+      "pagination_end_reached": true,
+      "partition_count_planned": 36,
+      "requests": [
+        {
+          "after_ms": 1784569600542,
+          "earliest_ms": 1784210400000,
+          "latest_ms": 1784566800000,
+          "query_instId": "LINK-USDT-SWAP",
+          "response_bytes": 8819,
+          "response_sha256": "f47912ba26ca9105898256c0f9a5cd37e1746f1bd78c70a0d38ca9a0bc85e55c",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1630454400000,
+          "earliest_ms": 1630094400000,
+          "latest_ms": 1630450800000,
+          "query_instId": "LINK-USDT-SWAP",
+          "response_bytes": 8945,
+          "response_sha256": "6143d818364fa7f1b5dfbce077a3de12a4eae1ec7916f997061fcf3eb12ff49d",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1592182800000,
+          "earliest_ms": 1591822800000,
+          "latest_ms": 1592179200000,
+          "query_instId": "LINK-USDT-SWAP",
+          "response_bytes": 8256,
+          "response_sha256": "7d5f102e4a23bcbf6c6b1ab7dacc6d7eb077eb8ddcb7f0fa30ada1668be92c6a",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1591822800000,
+          "earliest_ms": 1591462800000,
+          "latest_ms": 1591819200000,
+          "query_instId": "LINK-USDT-SWAP",
+          "response_bytes": 8199,
+          "response_sha256": "933d3fc4718d84bf5ca616d00781d1af09aba66a85faf9a7659d3021b9f99cef",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        }
+      ],
+      "requests_used": 4,
+      "source_id": "okx_public_market_history_candles_v1",
+      "status": "PROBED",
+      "target_end_ms": 1725148800000,
+      "target_period_end": "2024-09-01T00:00:00Z",
+      "target_period_start": "2021-09-01T00:00:00Z",
+      "target_start_ms": 1630454400000,
+      "three_year_depth": "YES"
+    },
+    {
+      "bar": "1H",
+      "base_asset": "SOL",
+      "delisting_time": null,
+      "earliest_public_ms": 1621789200000,
+      "earliest_public_ts": "2021-05-23T17:00:00Z",
+      "endpoint": "https://www.okx.com/api/v5/market/history-candles",
+      "frequency": "PT1H",
+      "instrument_id": "okx:linear_perpetual:SOL:USDT:USDT:perp",
+      "latest_public_ms": 1784566800000,
+      "latest_public_ts": "2026-07-20T17:00:00Z",
+      "lifecycle_clipping": {
+        "delisting_ms": null,
+        "earliest_public_ms": 1621789200000,
+        "latest_public_ms": 1784566800000,
+        "listing_ms": 1622505600000,
+        "planned_end": "2024-09-01T00:00:00Z",
+        "planned_start": "2021-09-01T00:00:00Z",
+        "reasons": [
+          "PUBLIC_HISTORY_BEFORE_LISTING"
+        ],
+        "valid": false
+      },
+      "listing_time": "2021-06-01T00:00:00Z",
+      "native_instrument_id": "SOL-USDT-SWAP",
+      "pagination_end_reached": true,
+      "partition_count_planned": 36,
+      "requests": [
+        {
+          "after_ms": 1784569602052,
+          "earliest_ms": 1784210400000,
+          "latest_ms": 1784566800000,
+          "query_instId": "SOL-USDT-SWAP",
+          "response_bytes": 9264,
+          "response_sha256": "d073cfa32147e078b6bb41a44865b148776939649c01f3b98a868180cbc8b3f0",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1630454400000,
+          "earliest_ms": 1630094400000,
+          "latest_ms": 1630450800000,
+          "query_instId": "SOL-USDT-SWAP",
+          "response_bytes": 9102,
+          "response_sha256": "3a9f138e95b5b8f272f738cbf532aec978726cfb6d3a53b9850295955e51a43c",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1622509200000,
+          "earliest_ms": 1622149200000,
+          "latest_ms": 1622505600000,
+          "query_instId": "SOL-USDT-SWAP",
+          "response_bytes": 8801,
+          "response_sha256": "2d00fa704ff8a03b9383f2d96ec876387414e69ec52e243bde6e8693eaebdd12",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1622149200000,
+          "earliest_ms": 1621789200000,
+          "latest_ms": 1622145600000,
+          "query_instId": "SOL-USDT-SWAP",
+          "response_bytes": 8864,
+          "response_sha256": "b28bf1e97332804c323ef5371baf3dee8b9d6bc0b4cc01f835e47df6dd5ccabf",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        }
+      ],
+      "requests_used": 4,
+      "source_id": "okx_public_market_history_candles_v1",
+      "status": "PROBED",
+      "target_end_ms": 1725148800000,
+      "target_period_end": "2024-09-01T00:00:00Z",
+      "target_period_start": "2021-09-01T00:00:00Z",
+      "target_start_ms": 1630454400000,
+      "three_year_depth": "YES"
+    },
+    {
+      "bar": "1H",
+      "base_asset": "LUNA",
+      "delisting_time": "2022-05-13T00:00:00Z",
+      "earliest_public_ms": 1783850400000,
+      "earliest_public_ts": "2026-07-12T10:00:00Z",
+      "endpoint": "https://www.okx.com/api/v5/market/history-candles",
+      "frequency": "PT1H",
+      "instrument_id": "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+      "latest_public_ms": 1784566800000,
+      "latest_public_ts": "2026-07-20T17:00:00Z",
+      "lifecycle_clipping": {
+        "delisting_ms": 1652400000000,
+        "earliest_public_ms": 1783850400000,
+        "latest_public_ms": 1784566800000,
+        "listing_ms": 1640995200000,
+        "planned_end": "2022-05-13T00:00:00Z",
+        "planned_start": "2022-01-01T00:00:00Z",
+        "reasons": [
+          "PUBLIC_LATEST_AFTER_DELISTING_OBSERVED"
+        ],
+        "valid": true
+      },
+      "listing_time": "2022-01-01T00:00:00Z",
+      "native_instrument_id": "LUNA-USDT-SWAP",
+      "pagination_end_reached": true,
+      "partition_count_planned": 5,
+      "requests": [
+        {
+          "after_ms": 1784569603580,
+          "earliest_ms": 1784210400000,
+          "latest_ms": 1784566800000,
+          "query_instId": "LUNA-USDT-SWAP",
+          "response_bytes": 9457,
+          "response_sha256": "6d5ef76d0041547910caa81586552ba2d1918a2d90c4e648c086ba465ada48d4",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1630454400000,
+          "earliest_ms": null,
+          "latest_ms": null,
+          "query_instId": "LUNA-USDT-SWAP",
+          "response_bytes": 31,
+          "response_sha256": "65e82d16a0d4bf82a71bf3dc0e533a117944d81a51ed80be42f25a7791131793",
+          "row_count": 0,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1640998800000,
+          "earliest_ms": null,
+          "latest_ms": null,
+          "query_instId": "LUNA-USDT-SWAP",
+          "response_bytes": 31,
+          "response_sha256": "65e82d16a0d4bf82a71bf3dc0e533a117944d81a51ed80be42f25a7791131793",
+          "row_count": 0,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1784210400000,
+          "earliest_ms": 1783850400000,
+          "latest_ms": 1784206800000,
+          "query_instId": "LUNA-USDT-SWAP",
+          "response_bytes": 9377,
+          "response_sha256": "02ef35e9ebfebbb300f358a81ebd6011126afe964a45a4353580e46417ee7058",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        }
+      ],
+      "requests_used": 4,
+      "source_id": "okx_public_market_history_candles_v1",
+      "status": "PROBED",
+      "target_end_ms": 1725148800000,
+      "target_period_end": "2024-09-01T00:00:00Z",
+      "target_period_start": "2021-09-01T00:00:00Z",
+      "target_start_ms": 1630454400000,
+      "three_year_depth": "NO"
+    },
+    {
+      "bar": "1H",
+      "base_asset": "TIA",
+      "delisting_time": null,
+      "earliest_public_ms": 1698775200000,
+      "earliest_public_ts": "2023-10-31T18:00:00Z",
+      "endpoint": "https://www.okx.com/api/v5/market/history-candles",
+      "frequency": "PT1H",
+      "instrument_id": "okx:linear_perpetual:TIA:USDT:USDT:perp",
+      "latest_public_ms": 1784566800000,
+      "latest_public_ts": "2026-07-20T17:00:00Z",
+      "lifecycle_clipping": {
+        "delisting_ms": null,
+        "earliest_public_ms": 1698775200000,
+        "latest_public_ms": 1784566800000,
+        "listing_ms": 1698796800000,
+        "planned_end": "2024-09-01T00:00:00Z",
+        "planned_start": "2023-11-01T00:00:00Z",
+        "reasons": [
+          "PUBLIC_HISTORY_BEFORE_LISTING"
+        ],
+        "valid": false
+      },
+      "listing_time": "2023-11-01T00:00:00Z",
+      "native_instrument_id": "TIA-USDT-SWAP",
+      "pagination_end_reached": true,
+      "partition_count_planned": 10,
+      "requests": [
+        {
+          "after_ms": 1784569605094,
+          "earliest_ms": 1784210400000,
+          "latest_ms": 1784566800000,
+          "query_instId": "TIA-USDT-SWAP",
+          "response_bytes": 8968,
+          "response_sha256": "961f116550007b7a2d6420af0c337b18da7bb8d9aefe893ed4f8c00b3934741a",
+          "row_count": 100,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1630454400000,
+          "earliest_ms": null,
+          "latest_ms": null,
+          "query_instId": "TIA-USDT-SWAP",
+          "response_bytes": 31,
+          "response_sha256": "65e82d16a0d4bf82a71bf3dc0e533a117944d81a51ed80be42f25a7791131793",
+          "row_count": 0,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1698800400000,
+          "earliest_ms": 1698775200000,
+          "latest_ms": 1698796800000,
+          "query_instId": "TIA-USDT-SWAP",
+          "response_bytes": 638,
+          "response_sha256": "856c0e573dcf68c5b4cddc7ab158f2f465d508e2df0c25a680601f211725d1cb",
+          "row_count": 7,
+          "url_path": "/api/v5/market/history-candles"
+        },
+        {
+          "after_ms": 1698775200000,
+          "earliest_ms": null,
+          "latest_ms": null,
+          "query_instId": "TIA-USDT-SWAP",
+          "response_bytes": 31,
+          "response_sha256": "65e82d16a0d4bf82a71bf3dc0e533a117944d81a51ed80be42f25a7791131793",
+          "row_count": 0,
+          "url_path": "/api/v5/market/history-candles"
+        }
+      ],
+      "requests_used": 4,
+      "source_id": "okx_public_market_history_candles_v1",
+      "status": "PROBED",
+      "target_end_ms": 1725148800000,
+      "target_period_end": "2024-09-01T00:00:00Z",
+      "target_period_start": "2021-09-01T00:00:00Z",
+      "target_start_ms": 1630454400000,
+      "three_year_depth": "YES"
+    }
+  ],
+  "instruments_probed": [
+    "ETH-USDT-SWAP",
+    "LINK-USDT-SWAP",
+    "SOL-USDT-SWAP",
+    "LUNA-USDT-SWAP",
+    "TIA-USDT-SWAP"
+  ],
+  "latest_history_by_instrument": {
+    "ETH-USDT-SWAP": "2026-07-20T17:00:00Z",
+    "LINK-USDT-SWAP": "2026-07-20T17:00:00Z",
+    "LUNA-USDT-SWAP": "2026-07-20T17:00:00Z",
+    "SOL-USDT-SWAP": "2026-07-20T17:00:00Z",
+    "TIA-USDT-SWAP": "2026-07-20T17:00:00Z"
+  },
+  "lifecycle_clipping_valid": false,
+  "limitations": [
+    "Probe measures public history-candles depth only; not a mass download.",
+    "Default instrument list is a policy-compatible scaffold sample, not a second production universe manifest.",
+    "Three-year depth YES requires earliest public ts at/before effective need (target start or listing if later).",
+    "INCONCLUSIVE when pagination end not reached within request budget.",
+    "Overall lifecycle_clipping_valid=false because sample listing_time for LINK/SOL/TIA is slightly after observed public earliest candles; planner planned_start still clips to sample listing.",
+    "LUNA-USDT-SWAP edge case: public history appears recent-only (earliest 2026-07-12) despite sample delisting 2022-05-13 \u2014 likely relisted/different contract continuity; three_year_depth=NO.",
+    "Pagination end reached within per-instrument cap; true absolute earliest may be deeper for some instruments but target 3y window was the probe goal."
+  ],
+  "mass_download_started": false,
+  "network_probe_executed": true,
+  "public_endpoints_only": true,
+  "request_budget": 25,
+  "requests_used": 20,
+  "schema_version": "longer_chronological_pit_okx_history_depth_probe.v1",
+  "selection": {
+    "candidate_count": 6,
+    "excluded_count": 0,
+    "native_ids": [
+      "ETH-USDT-SWAP",
+      "LINK-USDT-SWAP",
+      "SOL-USDT-SWAP",
+      "LUNA-USDT-SWAP",
+      "TIA-USDT-SWAP"
+    ],
+    "roles": {
+      "ETH-USDT-SWAP": "oldest",
+      "LINK-USDT-SWAP": "fill",
+      "LUNA-USDT-SWAP": "middle",
+      "SOL-USDT-SWAP": "edge_near_period_start",
+      "TIA-USDT-SWAP": "youngest"
+    },
+    "seed": 0,
+    "universe_truth": "scaffold_lifecycle_policy_sample_not_production_manifest"
+  },
+  "source_id": "okx_public_market_history_candles_v1",
+  "spot_excluded": true,
+  "three_year_depth_by_instrument": {
+    "ETH-USDT-SWAP": "YES",
+    "LINK-USDT-SWAP": "YES",
+    "LUNA-USDT-SWAP": "NO",
+    "SOL-USDT-SWAP": "YES",
+    "TIA-USDT-SWAP": "YES"
+  },
+  "written_artifacts_keys": [
+    "manifest",
+    "resume_state",
+    "summary"
+  ]
+}

@@ -1,0 +1,6 @@
+timestamp_utc=2026-07-20T17:38:42Z
+git rev-parse HEAD => b242db1b3b16582ff5b63153f647e980f1469e4a
+python -m src.research.longer_chronological_pit_acquisition_v1 plan --max-partitions 3
+python -m pytest -q tests/research/test_longer_chronological_pit_acquisition_scaffold_v1.py
+ruff format/check on scaffold package
+no network mass download

@@ -1,0 +1,51 @@
+{
+  "earliest_history_by_instrument": {
+    "ETH-USDT-SWAP": "2021-08-23T16:00:00Z",
+    "LINK-USDT-SWAP": "2020-06-06T17:00:00Z",
+    "LUNA-USDT-SWAP": "2026-07-12T10:00:00Z",
+    "SOL-USDT-SWAP": "2021-05-23T17:00:00Z",
+    "TIA-USDT-SWAP": "2023-10-31T18:00:00Z"
+  },
+  "endpoint": "https://www.okx.com/api/v5/market/history-candles",
+  "instruments": [
+    "ETH-USDT-SWAP",
+    "LINK-USDT-SWAP",
+    "SOL-USDT-SWAP",
+    "LUNA-USDT-SWAP",
+    "TIA-USDT-SWAP"
+  ],
+  "latest_history_by_instrument": {
+    "ETH-USDT-SWAP": "2026-07-20T17:00:00Z",
+    "LINK-USDT-SWAP": "2026-07-20T17:00:00Z",
+    "LUNA-USDT-SWAP": "2026-07-20T17:00:00Z",
+    "SOL-USDT-SWAP": "2026-07-20T17:00:00Z",
+    "TIA-USDT-SWAP": "2026-07-20T17:00:00Z"
+  },
+  "max_retries": 2,
+  "per_instrument_request_counts": {
+    "ETH-USDT-SWAP": 4,
+    "LINK-USDT-SWAP": 4,
+    "LUNA-USDT-SWAP": 4,
+    "SOL-USDT-SWAP": 4,
+    "TIA-USDT-SWAP": 4
+  },
+  "public_endpoints_only": true,
+  "request_budget": 25,
+  "requests_used": 20,
+  "selection_roles": {
+    "ETH-USDT-SWAP": "oldest",
+    "LINK-USDT-SWAP": "fill",
+    "LUNA-USDT-SWAP": "middle",
+    "SOL-USDT-SWAP": "edge_near_period_start",
+    "TIA-USDT-SWAP": "youngest"
+  },
+  "source_id": "okx_public_market_history_candles_v1",
+  "three_year_depth_by_instrument": {
+    "ETH-USDT-SWAP": "YES",
+    "LINK-USDT-SWAP": "YES",
+    "LUNA-USDT-SWAP": "NO",
+    "SOL-USDT-SWAP": "YES",
+    "TIA-USDT-SWAP": "YES"
+  },
+  "timeout_seconds": 15.0
+}
