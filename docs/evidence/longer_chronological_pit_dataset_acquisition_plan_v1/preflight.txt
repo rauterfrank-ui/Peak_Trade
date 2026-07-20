@@ -1,0 +1,17 @@
+timestamp_utc=2026-07-20T17:28:07Z
+pwd=/Users/frnkhrz/Peak_Trade
+branch=audit/longer-chronological-pit-dataset-acquisition-plan-v1
+HEAD=b242db1b3b16582ff5b63153f647e980f1469e4a
+origin_main=b242db1b3b16582ff5b63153f647e980f1469e4a
+expected_main=b242db1b3b16582ff5b63153f647e980f1469e4a
+worktree_clean=true
+stash_count=3
+untracked_count=1
+PREFLIGHT_SHA_OK=true
+LIVE_AUTHORIZED=false
+ORDERS=false
+SHADOW=false
+PAPER=false
+TESTNET=false
+ECONOMIC_GATE_OPENED=false
+PROMOTION_ELIGIBLE=false

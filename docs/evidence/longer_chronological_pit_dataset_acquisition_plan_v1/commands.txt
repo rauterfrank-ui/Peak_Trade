@@ -1,0 +1,6 @@
+timestamp_utc=2026-07-20T17:29:41Z
+git rev-parse HEAD => b242db1b3b16582ff5b63153f647e980f1469e4a
+git branch --show-current => audit/longer-chronological-pit-dataset-acquisition-plan-v1
+inventory: rg pit_okx_linear_usdt_non_bitcoin; read panel/universe owners
+no downloads executed
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
