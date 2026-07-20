@@ -15,10 +15,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 AUTHORIZED_PIT_ACQUISITION_FIXTURE = [
     "src/research/longer_chronological_pit_acquisition_v1/__init__.py",
     "src/research/longer_chronological_pit_acquisition_v1/history_depth_probe.py",
+    "src/research/longer_chronological_pit_acquisition_v1/sealed_lifecycle_v1.py",
+    "src/research/longer_chronological_pit_acquisition_v1/public_lifecycle_acquisition_v1.py",
     "src/research/longer_chronological_pit_acquisition_v1/cli.py",
     "tests/research/test_longer_chronological_pit_acquisition_scaffold_v1.py",
     "tests/research/test_longer_chronological_pit_okx_history_depth_probe_v1.py",
+    "tests/research/test_longer_chronological_pit_sealed_lifecycle_acquisition_v1.py",
     "config/research/longer_chronological_pit_acquisition_chrono_3y_v1.json",
+    "config/research/longer_chronological_pit_sealed_lifecycle_long_panel_v1.json",
     "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
     "config/governance/technical_canonical_wiring_authorization_v1.json",
 ]
@@ -63,7 +67,10 @@ def test_technical_wiring_auth_lists_exact_pit_acquisition_files() -> None:
     assert reasons == ()
     allowed = set(auth["allowed_paths"])
     assert "src/research/longer_chronological_pit_acquisition_v1/history_depth_probe.py" in allowed
+    assert "src/research/longer_chronological_pit_acquisition_v1/sealed_lifecycle_v1.py" in allowed
     assert "tests/research/test_longer_chronological_pit_okx_history_depth_probe_v1.py" in allowed
+    assert "tests/research/test_longer_chronological_pit_sealed_lifecycle_acquisition_v1.py" in allowed
+    assert "config/research/longer_chronological_pit_sealed_lifecycle_long_panel_v1.json" in allowed
     assert (
         "TECHNICAL_LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_WIRING"
         in auth["allowed_surface_classes"]

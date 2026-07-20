@@ -186,12 +186,24 @@
     "src/research/longer_chronological_pit_acquisition_v1/history_depth_probe.py",
     "src/research/longer_chronological_pit_acquisition_v1/manifest.py",
     "src/research/longer_chronological_pit_acquisition_v1/partition_planner.py",
+    "src/research/longer_chronological_pit_acquisition_v1/public_lifecycle_acquisition_v1.py",
     "src/research/longer_chronological_pit_acquisition_v1/qualification.py",
     "src/research/longer_chronological_pit_acquisition_v1/resume_state.py",
+    "src/research/longer_chronological_pit_acquisition_v1/sealed_lifecycle_v1.py",
     "src/research/longer_chronological_pit_acquisition_v1/source_discovery.py",
     "tests/research/test_longer_chronological_pit_acquisition_scaffold_v1.py",
     "tests/research/test_longer_chronological_pit_okx_history_depth_probe_v1.py",
+    "tests/research/test_longer_chronological_pit_sealed_lifecycle_acquisition_v1.py",
     "config/research/longer_chronological_pit_acquisition_chrono_3y_v1.json",
+    "config/research/longer_chronological_pit_sealed_lifecycle_long_panel_v1.json",
+    "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/README.md",
+    "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/external_artifact_hashes.json",
+    "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/limitations_and_blockers.md",
+    "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/safety_attestation.md",
+    "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/seal_summary.json",
+    "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/acquisition_summary.json",
+    "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/tests.txt",
+    "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/timing_proof.txt",
     "docs/evidence/longer_chronological_pit_acquisition_scaffold_v1/README.md",
     "docs/evidence/longer_chronological_pit_acquisition_scaffold_v1/architecture.md",
     "docs/evidence/longer_chronological_pit_acquisition_scaffold_v1/archive_root_safety.md",
@@ -287,6 +299,6 @@
     "Includes CHOP scope-event policy binding v1: ScopeEvent.CHOP_DETECTED bound as RuntimeScopeState scope policy only; Composition consumer projection; UNKNOWN remains NOT_BOUND_FAIL_CLOSED; no Direction/Switch/SideState mutation by CHOP; no runtime/order/live activation.",
     "Includes testnet/scenario injection fail-closed default + required typed tick provenance: allow_test_scope_event_injection defaults False; explicit bool opt-in + OfflineScenarioTickProvenanceV1 required; no Direction/Side/Switch authority; chop_guard default-minimal transition_allowed aligned to CHOP scope-policy application; no runtime/order/live activation.",
     "Includes adverse-exit/downscope dual-dimension transport: generator prefers DOWNSCOPE/UPSCOPE over ADVERSE_EXIT for ScopeEvent; adverse remains in matched_conditions for Exit PolicySignal; ADVERSE_EXIT maps fail-closed unless downscope fact present; transition_state remains sole SideState owner; no runtime/order/live activation.",
-    "Includes longer chronological PIT public-history acquisition scaffold and bounded OKX history-depth probe (research-only, dry-run/no-credentials defaults, external archive root required for writes); no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation. Owner surface: LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_SCAFFOLD_AND_DEPTH_PROBE_V1. Review basis: acquisition/probe workstream; remains in force until superseded by a later acquisition operator GO."
+    "Includes longer chronological PIT public-history acquisition scaffold, bounded OKX history-depth probe, and sealed production-lifecycle long-panel binding/acquisition (research-only, dry-run/no-credentials defaults, external archive root required for writes); no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation. Owner surface: LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_SCAFFOLD_AND_DEPTH_PROBE_V1. Review basis: acquisition/probe/seal workstream; remains in force until superseded by a later acquisition operator GO."
   ]
 }

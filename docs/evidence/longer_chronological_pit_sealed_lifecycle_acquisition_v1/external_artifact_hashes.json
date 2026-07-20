@@ -1,0 +1,18 @@
+{
+  "logs/bounded_long_panel_acquisition_readiness.json": {
+    "bytes": 457,
+    "sha256": "963e32e91ac6b8f00125219b64c901563b97d03afc08fb11063c128aece2e959"
+  },
+  "logs/bounded_long_panel_acquisition_summary.json": {
+    "bytes": 23053,
+    "sha256": "342bb6015321568540ea2ff4cfc9b4e288dc84da55bf7251056e7858a2c3efb7"
+  },
+  "logs/sealed_lifecycle_summary.json": {
+    "bytes": 655,
+    "sha256": "a69598d15c945d30f3dd405e3282d3da4a9fc5d95b72edbb1adb09e20e477e7c"
+  },
+  "manifests/sealed_lifecycle_v1/sealed_lifecycle_manifest.json": {
+    "bytes": 1010472,
+    "sha256": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56"
+  }
+}
