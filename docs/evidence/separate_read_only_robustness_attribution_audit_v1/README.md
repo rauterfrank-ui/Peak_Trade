@@ -25,7 +25,7 @@ canonical MV2 / Double-Play chain remains economically
 
 Shared-book metrics reproduced from sealed reference artifacts
 (`checkpoint_baseline_wf.json` trades_compact + `portfolio_equity.csv`) with
-CRS scale `1/118`. Full 118-member panel was **not** re-executed (806s probe
+CRS scale `1&#47;118`. Full 118-member panel was **not** re-executed (806s probe
 already sealed in #5349).
 
 | Metric | Reference | Reproduced match |
