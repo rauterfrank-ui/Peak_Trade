@@ -357,10 +357,13 @@ def seal_lifecycle_manifest(
     panel_end: str = TARGET_PERIOD_END,
     sealed_at: str | None = None,
     universe_truth: str = "production_lifecycle_registry_binding_v1",
+    dataset_id: str = DATASET_ID,
 ) -> dict[str, Any]:
     assert_not_sample_universe(universe_truth)
     if not production_registry_digest:
         raise SealedLifecycleError("MISSING_PRODUCTION_REGISTRY_DIGEST")
+    if not str(dataset_id or "").strip():
+        raise SealedLifecycleError("MISSING_DATASET_ID")
     sealed_at = sealed_at or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     sorted_records = sorted(
@@ -412,7 +415,7 @@ def seal_lifecycle_manifest(
 
     body = {
         "schema_version": SEALED_SCHEMA_VERSION,
-        "dataset_id": DATASET_ID,
+        "dataset_id": str(dataset_id),
         "venue": VENUE,
         "market_type": MARKET_TYPE,
         "frequency": FREQUENCY,

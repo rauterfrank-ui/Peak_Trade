@@ -1,7 +1,8 @@
 """Contract tests for independent development-panel inventory (regime-gated MR v1).
 
-Inventory/governance only. No acquisition. No sealed-holdout content inspection.
-No hypothesis implementation. No economic metrics.
+Inventory evidence pack remains the historical SSOT for the inventory decision.
+Live acquisition contract may later become executed/sealed without invalidating
+the inventory pack. No sealed-holdout content inspection.
 """
 
 from __future__ import annotations
@@ -31,10 +32,19 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_acquisition_contract_requires_acquisition_and_keeps_gates_closed() -> None:
+def test_inventory_pack_required_acquisition_at_inventory_time() -> None:
+    summary = _load(EVIDENCE / "summary.json")
+    pointer = _load(EVIDENCE / "acquisition_contract.json")
     contract = _load(CONTRACT)
-    assert contract["verdict"] == "ACQUISITION_CONTRACT_REQUIRED"
-    assert contract["status"] == "ACQUISITION_CONTRACT_DEFINED_NOT_EXECUTED"
+    assert summary["research_status"] == "ACQUISITION_CONTRACT_REQUIRED"
+    assert summary["development_panel_sealed"] is False
+    assert summary["acquisition_contract_created"] is True
+    assert pointer["acquisition_started"] is False
+    assert pointer["holdout_forbidden"] is True
+    assert (
+        pointer["proposed_development_dataset_id"]
+        == "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
+    )
     assert (
         contract["hypothesis_id"]
         == "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1"
@@ -58,12 +68,7 @@ def test_acquisition_contract_requires_acquisition_and_keeps_gates_closed() -> N
     assert acq["frequency"] == "PT1H"
     assert acq["period_end_exclusive_utc"] == "2023-08-16T05:55:00Z"
     assert acq["period_must_end_before_sealed_holdout_start"] is True
-    assert acq["download_enabled_default"] is False
-    assert acq["network_enabled_default"] is False
-    assert acq["acquisition_started"] is False
-    assert acq["materialized"] is False
     assert contract["inventory_result"]["suitable_existing_candidate_count"] == 0
-    assert contract["inventory_result"]["development_panel_sealed"] is False
 
 
 def test_sealed_holdout_is_opaque_exclusion_only() -> None:
@@ -76,15 +81,9 @@ def test_sealed_holdout_is_opaque_exclusion_only() -> None:
     assert exclusion["derive_partial_panel_forbidden"] is True
     assert "Opaque exclusion" in boundary
     assert "No read of files under" in boundary
-    assert contract["explicit_non_actions"] == [
-        "NO_NETWORK_ACQUISITION_IN_THIS_SLICE",
-        "NO_HYPOTHESIS_IMPLEMENTATION",
-        "NO_REGIME_FILTER_CODE",
-        "NO_PARAMETER_TUNING",
-        "NO_ECONOMIC_METRICS",
-        "NO_SEALED_HOLDOUT_CONTENT_INSPECTION",
-        "NO_RUNTIME_OR_PROMOTION_ACTION",
-    ]
+    assert "NO_SEALED_HOLDOUT_CONTENT_INSPECTION" in contract["explicit_non_actions"]
+    assert "NO_HYPOTHESIS_IMPLEMENTATION" in contract["explicit_non_actions"]
+    assert "NO_ECONOMIC_METRICS" in contract["explicit_non_actions"]
 
 
 def test_candidate_matrix_fail_closed_no_suitable_candidate() -> None:
@@ -126,7 +125,6 @@ def test_evidence_and_governance_surfaces_exist() -> None:
 
 
 def test_inventory_scope_excludes_productive_trading_prefixes() -> None:
-    # This slice only adds evidence/config/governance/test surfaces.
     allowed_roots = (
         "config/research/regime_gated_standaside_mr_independent_dev_panel_acquisition_contract_v1.json",
         "docs/evidence/inventory_independent_dev_panel_regime_gated_mr_v1/",
