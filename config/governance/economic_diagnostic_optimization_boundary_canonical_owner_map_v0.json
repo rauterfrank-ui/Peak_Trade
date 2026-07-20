@@ -519,6 +519,15 @@
         "config/research/mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.json"
       ],
       "note": "Offline-only per-bar MV2 decision-outcome diagnostic for zero-trade root-cause observability; observational hook only; no trading/runtime/authority/sizing semantic mutation."
+    },
+    "LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_SCAFFOLD_AND_DEPTH_PROBE_V1": {
+      "path_prefixes": [
+        "src/research/longer_chronological_pit_acquisition_v1/",
+        "tests/research/test_longer_chronological_pit_acquisition_scaffold_v1.py",
+        "tests/research/test_longer_chronological_pit_okx_history_depth_probe_v1.py",
+        "config/research/longer_chronological_pit_acquisition_chrono_3y_v1.json"
+      ],
+      "note": "Research-only public OKX history acquisition scaffold and bounded history-depth probe wiring; dry-run/no-credentials defaults; no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation."
     }
   }
 }

@@ -1,6 +1,6 @@
 # Architecture
 
-Package: `src&#47;research&#47;longer_chronological_pit_acquisition_v1`
+Package: `src&#47;research&#47;longer_chronological_pit_acquisition_v1&#47;__init__.py`
 
 | Module | Role |
 |---|---|

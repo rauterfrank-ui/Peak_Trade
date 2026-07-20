@@ -47,7 +47,7 @@ manifest). Roles: oldest / middle / youngest / edge_near_period_start / fill.
 - Endpoint: `https://www.okx.com/api/v5/market/history-candles` only
 - BTC excluded; Spot excluded; Futures-only Linear USDT Swap
 - External archive root (git-foreign):
-  `${TMPDIR}/peak_trade_data_archive/okx_history_depth_probe_v1`
+  `${TMPDIR}&#47;peak_trade_data_archive&#47;okx_history_depth_probe_v1`
 
 ## Lifecycle clipping
 
