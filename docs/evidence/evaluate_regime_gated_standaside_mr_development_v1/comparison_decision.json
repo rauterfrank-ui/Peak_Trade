@@ -1,0 +1,24 @@
+{
+  "baseline_cost_drag": 302.52029296502405,
+  "baseline_max_drawdown": -0.007131950824027808,
+  "baseline_net_return": 0.0025751067451909027,
+  "baseline_trade_count": 51,
+  "baseline_turnover": 51.0,
+  "checks": {
+    "cost_drag_treatment_lt_baseline": false,
+    "max_drawdown_treatment_ge_baseline": true,
+    "net_return_treatment_ge_baseline_minus_eps": true,
+    "trade_count_baseline_ge_minimum": true,
+    "trade_count_treatment_ge_minimum": true,
+    "turnover_treatment_lt_baseline": false
+  },
+  "materiality_epsilon_net_return_abs": 0.005,
+  "minimum_trade_count": 50,
+  "reason": "PASS_REQUIRES_NOT_MET",
+  "result_class": "FAIL",
+  "treatment_cost_drag": 302.52029296502405,
+  "treatment_max_drawdown": -0.007131950824027808,
+  "treatment_net_return": 0.0025751067451909027,
+  "treatment_trade_count": 51,
+  "treatment_turnover": 51.0
+}

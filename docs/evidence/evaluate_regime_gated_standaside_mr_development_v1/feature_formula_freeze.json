@@ -1,0 +1,19 @@
+{
+  "definitions": {
+    "label_rule": "RANGE_BOUND iff all three threshold conditions hold with finite features; else TREND_STRONG; NaN/warmup => TREND_STRONG (stand aside)",
+    "range_compression_72h": "1.0 - (rolling_max(close,72) - rolling_min(close,72)) / rolling_max(close,72); clipped to [0,1]; higher = more compressed",
+    "realized_vol_168h": "sample_std_ddof1 of close.pct_change() over trailing 168 finalized hourly bars; no annualization",
+    "trend_strength_168h": "abs(close / close.shift(168) - 1.0)"
+  },
+  "feature_formula_id": "regime_gated_standaside_mr_close_path_features_v1",
+  "feature_formula_sha256": "70ae8571b1af755b441e0b87cb5f472877dd4e220d81f1f6d6ab59c7504952a1",
+  "lookahead_forbidden": true,
+  "post_hoc_retune_forbidden": true,
+  "source": "finalized_pt1h_ohlcv_close_path_only",
+  "threshold_adjustment_forbidden": true,
+  "thresholds": {
+    "range_compression_72h_min_for_range": 0.55,
+    "realized_vol_168h_max_for_range": 0.02,
+    "trend_strength_168h_max_for_range": 0.35
+  }
+}
