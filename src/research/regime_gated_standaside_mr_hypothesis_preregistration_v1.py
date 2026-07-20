@@ -21,7 +21,7 @@ SEAL_REGISTRY_REL_PATH = (
     "config/research/regime_gated_standaside_mr_independent_dev_panel_seal_registry_v1.json"
 )
 HOLDOUT_OPAQUE_ID = "offline_economic_reevaluation_sealed_long_panel_v1"
-HOLDOUT_PATH_TOKEN = "offline_economic_reevaluation_sealed_long_panel_v1"
+HOLDOUT_PATH_MARKER = "offline_economic_reevaluation_sealed_long_panel_v1"
 REQUIRED_DATASET_CLASS = "DEVELOPMENT_ONLY"
 REQUIRED_HYPOTHESIS_ID = "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1"
 REQUIRED_DATASET_ID = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
@@ -71,7 +71,7 @@ def load_json(path: Path) -> dict[str, Any]:
 def reject_holdout_dataset_or_path(value: str) -> None:
     text = str(value or "")
     lowered = text.lower()
-    if HOLDOUT_PATH_TOKEN in lowered:
+    if HOLDOUT_PATH_MARKER in lowered:
         raise HypothesisPreregistrationError(f"HOLDOUT_PATH_OR_ID_REJECTED:{text}")
     if "docs/evidence/offline_economic_reevaluation_sealed_long_panel_v1" in lowered:
         raise HypothesisPreregistrationError(f"HOLDOUT_PATH_OR_ID_REJECTED:{text}")
