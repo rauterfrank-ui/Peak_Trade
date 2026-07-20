@@ -111,7 +111,7 @@ class TestTechnicalCanonicalWiringAuthorizationContractV1:
 class TestTechnicalCanonicalWiringAuthorizationNegativeV1:
     def test_unauthorized_master_v2_mutation_fails(self) -> None:
         report = build_boundary_report(
-            ["src/trading/master_v2/double_play_state.py"],
+            ["src/trading/master_v2/directional_assessment_v1.py"],
             repo_root=REPO_ROOT,
         )
         assert report.admissible is False
@@ -234,7 +234,7 @@ class TestTechnicalCanonicalWiringAuthorizationNegativeV1:
     def test_research_plus_forbidden_core_without_matching_auth_fails(self) -> None:
         changed = [
             "src/research/linear_evidence/cost_model.py",
-            "src/trading/master_v2/double_play_state.py",
+            "src/trading/master_v2/directional_assessment_v1.py",
         ]
         report = build_boundary_report(changed, repo_root=REPO_ROOT)
         assert report.admissible is False
