@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sys
 import time
 import urllib.error
 import urllib.request
@@ -16,6 +17,7 @@ from typing import Any, Callable, Mapping, Sequence
 from urllib.parse import urlencode, urlparse
 
 from src.research.longer_chronological_pit_acquisition_v1 import (
+    DATASET_ID,
     ENV_ARCHIVE_ROOT,
     FREQUENCY,
     OKX_BAR_PARAM,
@@ -306,6 +308,7 @@ def run_seal_lifecycle(
     max_instruments: int | None = None,
     panel_start: str = TARGET_PERIOD_START,
     panel_end: str = TARGET_PERIOD_END,
+    dataset_id: str = DATASET_ID,
     fetcher: HttpFetcher | None = None,
     sleep: Callable[[float], None] = time.sleep,
 ) -> dict[str, Any]:
@@ -313,6 +316,8 @@ def run_seal_lifecycle(
         raise SealedLifecycleError("REQUEST_BUDGET_REQUIRED")
     if not allow_network:
         raise SealedLifecycleError("NETWORK_REQUIRED_FOR_SEAL_ENRICHMENT")
+    if not str(dataset_id or "").strip():
+        raise SealedLifecycleError("MISSING_DATASET_ID")
 
     registry = load_production_registry_from_json_path(production_registry_path)
     production_digest = str(registry.get("registry_snapshot_digest") or "")
@@ -358,7 +363,7 @@ def run_seal_lifecycle(
     observed_at = _utc_now()
     blockers: list[str] = []
 
-    for interval in intervals:
+    for idx, interval in enumerate(intervals):
         native = str(interval.get("venue_symbol") or "")
         listing = str(interval.get("listing_time") or interval.get("eligible_from") or "")
         if not native or not listing:
@@ -385,6 +390,16 @@ def run_seal_lifecycle(
                 # still seal from production registry; mark exclusion if needed elsewhere
                 pass
             records.append(rec)
+            if (idx + 1) % 10 == 0 or (idx + 1) == len(intervals):
+                print(
+                    (
+                        f"SEAL_PROGRESS instruments={idx + 1}/{len(intervals)} "
+                        f"records={len(records)} requests_used={client.budget.used} "
+                        f"blockers={len(blockers)}"
+                    ),
+                    file=sys.stderr,
+                    flush=True,
+                )
         except SealedLifecycleError as exc:
             blockers.append(f"{native}:{exc}")
             if "REQUEST_BUDGET" in str(exc) or "PER_INSTRUMENT_CAP" in str(exc):
@@ -405,6 +420,7 @@ def run_seal_lifecycle(
         panel_start=panel_start,
         panel_end=panel_end,
         sealed_at=observed_at,
+        dataset_id=dataset_id,
     )
     manifest["blockers"] = blockers
     manifest["requests_used"] = client.budget.used
@@ -580,6 +596,16 @@ def acquire_long_panel_ohlcv(
                     raise
                 pages += 1
                 total_pages += 1
+                if pages == 1 or pages % 25 == 0:
+                    print(
+                        (
+                            f"ACQUIRE_PROGRESS instrument={native} "
+                            f"pages={pages} total_pages={total_pages} "
+                            f"requests_used={client.budget.used}"
+                        ),
+                        file=sys.stderr,
+                        flush=True,
+                    )
                 parsed = parse_history_candles_payload(body)
                 if parsed["empty"]:
                     exhausted = True

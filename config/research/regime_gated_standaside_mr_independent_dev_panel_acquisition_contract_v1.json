@@ -4,12 +4,14 @@
   "schema_version": "regime_gated_standaside_mr_independent_dev_panel_acquisition_contract.v1",
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
-  "status": "ACQUISITION_CONTRACT_DEFINED_NOT_EXECUTED",
-  "verdict": "ACQUISITION_CONTRACT_REQUIRED",
+  "status": "ACQUISITION_EXECUTED_AND_DEVELOPMENT_PANEL_SEALED",
+  "verdict": "SEALED_INDEPENDENT_DEV_PANEL",
   "hypothesis_id": "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
   "hypothesis_spec_ref": "docs/evidence/archive_failed_bollinger_v2_and_next_hypothesis_v1/new_hypothesis_spec.json",
   "dataset_split_policy_ref": "docs/evidence/archive_failed_bollinger_v2_and_next_hypothesis_v1/dataset_split_policy.json",
   "inventory_evidence_ref": "docs/evidence/inventory_independent_dev_panel_regime_gated_mr_v1/",
+  "acquisition_evidence_ref": "docs/evidence/acquire_and_seal_okx_independent_dev_panel_v1/",
+  "seal_registry_ref": "config/research/regime_gated_standaside_mr_independent_dev_panel_seal_registry_v1.json",
   "proposed_development_dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
   "classification": {
     "role": "DEVELOPMENT_ONLY",
@@ -69,8 +71,13 @@
     "download_enabled_default": false,
     "network_enabled_default": false,
     "write_enabled_default": false,
-    "acquisition_started": false,
-    "materialized": false
+    "acquisition_started": true,
+    "materialized": true,
+    "operator_go_bound_public_acquisition": true,
+    "public_endpoints_used": [
+      "/api/v5/public/instruments",
+      "/api/v5/market/history-candles"
+    ]
   },
   "independence_contract": {
     "temporal_separation_required": true,
@@ -82,18 +89,31 @@
   },
   "inventory_result": {
     "suitable_existing_candidate_count": 0,
-    "selected_development_dataset_id": null,
-    "development_panel_sealed": false,
-    "research_status": "ACQUISITION_CONTRACT_REQUIRED"
+    "selected_development_dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+    "development_panel_sealed": true,
+    "research_status": "SEALED_INDEPENDENT_DEV_PANEL"
+  },
+  "execution_result": {
+    "common_panel_start": "2022-06-01T03:55:17Z",
+    "common_panel_end": "2023-08-16T05:55:00Z",
+    "common_panel_duration_days": 441.08313657407405,
+    "instrument_count_included": 46,
+    "instrument_count_acquired": 46,
+    "gaps_found": 0,
+    "duplicates_found": 0,
+    "ordering_errors": 0,
+    "sealed_lifecycle_content_hash": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+    "root_manifest_sha256": "c91ec9da31e6dc838ff16a2a47d91db8d428445084bd4a2960c7fb664e0b0ffa",
+    "raw_data_tracked_in_git": false
   },
   "explicit_non_actions": [
-    "NO_NETWORK_ACQUISITION_IN_THIS_SLICE",
     "NO_HYPOTHESIS_IMPLEMENTATION",
     "NO_REGIME_FILTER_CODE",
     "NO_PARAMETER_TUNING",
     "NO_ECONOMIC_METRICS",
     "NO_SEALED_HOLDOUT_CONTENT_INSPECTION",
-    "NO_RUNTIME_OR_PROMOTION_ACTION"
+    "NO_RUNTIME_OR_PROMOTION_ACTION",
+    "NO_AUTHENTICATED_OKX_ENDPOINTS"
   ],
-  "next_canonical_step": "EXECUTE_BOUNDED_PUBLIC_OKX_DEV_PRE_HOLDOUT_PANEL_ACQUISITION_WITH_OPERATOR_GO_NO_SEALED_HOLDOUT_ACCESS"
+  "next_canonical_step": "SEPARATE_OPERATOR_GO_FOR_HYPOTHESIS_BINDING_DEFINITION_ONLY_NO_HOLDOUT_TUNING"
 }

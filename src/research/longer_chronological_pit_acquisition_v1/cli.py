@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from src.research.longer_chronological_pit_acquisition_v1 import (
+    DATASET_ID,
     ENV_ARCHIVE_ROOT,
     TARGET_PERIOD_END,
     TARGET_PERIOD_START,
@@ -214,6 +215,11 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional cap on long-panel instruments acquired (bounded runs)",
     )
+    p.add_argument(
+        "--dataset-id",
+        default=None,
+        help="Optional dataset_id override for seal-lifecycle (defaults to package DATASET_ID)",
+    )
     p.add_argument("--json", action="store_true", help="Emit JSON")
     return p
 
@@ -304,6 +310,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 max_instruments=args.seal_max_instruments,
                 panel_start=args.period_start,
                 panel_end=args.period_end,
+                dataset_id=str(args.dataset_id or DATASET_ID),
             )
         except SealedLifecycleError as exc:
             sys.stderr.write(f"{exc}\n")

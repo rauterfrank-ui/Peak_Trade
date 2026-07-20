@@ -528,9 +528,14 @@
         "tests/research/test_longer_chronological_pit_sealed_lifecycle_acquisition_v1.py",
         "config/research/longer_chronological_pit_acquisition_chrono_3y_v1.json",
         "config/research/longer_chronological_pit_sealed_lifecycle_long_panel_v1.json",
-        "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/"
+        "config/research/regime_gated_standaside_mr_independent_dev_panel_acquisition_contract_v1.json",
+        "config/research/regime_gated_standaside_mr_independent_dev_panel_seal_registry_v1.json",
+        "docs/evidence/longer_chronological_pit_sealed_lifecycle_acquisition_v1/",
+        "docs/evidence/acquire_and_seal_okx_independent_dev_panel_v1/",
+        "docs/governance/REGIME_GATED_STANDASIDE_MR_INDEPENDENT_DEV_PANEL_SEALED_V1.md",
+        "tests/governance/test_acquire_and_seal_okx_independent_dev_panel_v1.py"
       ],
-      "note": "Research-only public OKX history acquisition scaffold, bounded history-depth probe, and sealed production-lifecycle long-panel binding/acquisition; dry-run/no-credentials defaults; no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation."
+      "note": "Research-only public OKX history acquisition scaffold, bounded history-depth probe, sealed production-lifecycle long-panel binding/acquisition, and independent pre-holdout development-panel seal; dry-run/no-credentials defaults; no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation."
     }
   }
 }

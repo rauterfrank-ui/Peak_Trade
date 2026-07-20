@@ -141,6 +141,46 @@ def test_tampered_manifest_fails_seal_hash() -> None:
         verify_sealed_manifest(manifest)
 
 
+def test_dataset_id_override_is_bound_into_seal_hash() -> None:
+    interval = {
+        "instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+        "venue_symbol": "ETH-USDT-SWAP",
+        "base_asset": "ETH",
+        "settlement_asset": "USDT",
+        "contract_type": "linear_perpetual",
+        "listing_time": "2019-11-12T11:16:48Z",
+        "delisting_time": None,
+        "record_digest": "abc",
+    }
+    rec = build_sealed_record_from_registry_interval(
+        interval,
+        first_public_candle_timestamp="2021-08-23T16:00:00Z",
+        last_public_candle_timestamp="2024-09-01T00:00:00Z",
+        lifecycle_observed_at="2026-07-20T18:00:00Z",
+        panel_start="2021-09-01T00:00:00Z",
+        panel_end="2023-08-16T05:55:00Z",
+    )
+    manifest = seal_lifecycle_manifest(
+        [rec],
+        production_registry_digest="d" * 64,
+        production_registry_path="/tmp/registry_snapshot_v1.json",
+        request_fingerprints=[],
+        sealed_at="2026-07-20T18:00:00Z",
+        panel_start="2021-09-01T00:00:00Z",
+        panel_end="2023-08-16T05:55:00Z",
+        dataset_id="pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+    )
+    assert (
+        manifest["dataset_id"]
+        == "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
+    )
+    assert manifest["panel_target_end"] == "2023-08-16T05:55:00Z"
+    verify_sealed_manifest(manifest)
+    manifest["dataset_id"] = "tampered_dataset"
+    with pytest.raises(SealedLifecycleError, match="SEAL_HASH_MISMATCH"):
+        verify_sealed_manifest(manifest)
+
+
 def test_policy_version_constant() -> None:
     assert INCLUSION_POLICY_VERSION.endswith(".v1")
 
