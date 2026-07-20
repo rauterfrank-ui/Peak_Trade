@@ -1,0 +1,158 @@
+{
+  "ECONOMIC_GATE_OPENED": false,
+  "PROMOTION_ELIGIBLE": false,
+  "diffs": {
+    "fees_total": {
+      "abs_diff": 1.5987211554602254e-14,
+      "actual": 15.252954787321706,
+      "expected": 15.25295478732169,
+      "match": true,
+      "rel_diff": 1.0481386575597065e-15
+    },
+    "final_equity": {
+      "abs_diff": 1.8189894035458565e-12,
+      "actual": 10023.253860717648,
+      "expected": 10023.253860717647,
+      "match": true,
+      "rel_diff": 1.8147693641430131e-16
+    },
+    "gross_pnl": {
+      "abs_diff": 2.1316282072803006e-14,
+      "actual": 46.13329289862824,
+      "expected": 46.13329289862826,
+      "match": true,
+      "rel_diff": 4.620585423989283e-16
+    },
+    "long_trades": {
+      "abs_diff": 0,
+      "actual": 69,
+      "expected": 69,
+      "match": true,
+      "rel_diff": 0.0
+    },
+    "max_drawdown_net": {
+      "abs_diff": 2.2898349882893854e-16,
+      "actual": -0.020480218347394885,
+      "expected": -0.020480218347394656,
+      "match": true,
+      "rel_diff": 1.1180715700624751e-14
+    },
+    "net_pnl": {
+      "abs_diff": 7.105427357601002e-14,
+      "actual": 23.253860717645672,
+      "expected": 23.253860717645743,
+      "match": true,
+      "rel_diff": 3.055590400182102e-15
+    },
+    "net_return": {
+      "abs_diff": 2.220446049250313e-16,
+      "actual": 0.002325386071764912,
+      "expected": 0.00232538607176469,
+      "match": true,
+      "rel_diff": 9.548720000568594e-14
+    },
+    "profit_factor_net": {
+      "abs_diff": 0.0,
+      "actual": 1.1135430312470467,
+      "expected": 1.1135430312470467,
+      "match": true,
+      "rel_diff": 0.0
+    },
+    "sharpe_net": {
+      "abs_diff": 1.2795320358804929e-14,
+      "actual": 0.1909766065223087,
+      "expected": 0.1909766065222959,
+      "match": true,
+      "rel_diff": 6.699941208407176e-14
+    },
+    "short_trades": {
+      "abs_diff": 0,
+      "actual": 385,
+      "expected": 385,
+      "match": true,
+      "rel_diff": 0.0
+    },
+    "slippage_total": {
+      "abs_diff": 7.993605777301127e-15,
+      "actual": 7.626477393660853,
+      "expected": 7.626477393660845,
+      "match": true,
+      "rel_diff": 1.0481386575597065e-15
+    },
+    "total_trades": {
+      "abs_diff": 0,
+      "actual": 454,
+      "expected": 454,
+      "match": true,
+      "rel_diff": 0.0
+    }
+  },
+  "meta": {
+    "audit_authority_effect": "NONE",
+    "audit_id": "SEPARATE_READ_ONLY_ROBUSTNESS_ATTRIBUTION_AUDIT_V1",
+    "audit_runtime_effect": "NONE",
+    "command": "reproduce_baseline(checkpoint trades_compact + portfolio_equity.csv)",
+    "config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+    "crs_scale": 0.00847457627118644,
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+    "economic_gate_opened": false,
+    "expected_main": "891044056537a4033e6136ba01652a0a2c6e76b7",
+    "fee_bps": 10.0,
+    "initial_capital": 10000.0,
+    "known_limitations": [
+      "Reproduction uses sealed post-#5349 evidence artifacts; no full 118-member panel re-run.",
+      "CRS scale applied to sleeve trade notionals/PnL for shared-book reporting."
+    ],
+    "live_authorized": false,
+    "measurement_contract": "shared_book_CRS_scale=1/118; cost_application=APPLIED; equity from RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+    "orders": false,
+    "period": "2024-05-01T00:00:00Z..2024-09-01T00:00:00Z",
+    "portfolio_aggregation": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+    "promotion_eligible": false,
+    "reference_pr": 5349,
+    "repo_sha": "891044056537a4033e6136ba01652a0a2c6e76b7",
+    "runner": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/run_attribution_audit_v1.py",
+    "seed": 42,
+    "slippage_bps": 5.0,
+    "timestamp_utc": "2026-07-20T17:09:56Z"
+  },
+  "reference": {
+    "fees_total": 15.25295478732169,
+    "final_equity": 10023.253860717647,
+    "gross_pnl": 46.13329289862826,
+    "long_trades": 69,
+    "max_drawdown_net": -0.020480218347394656,
+    "net_pnl": 23.253860717645743,
+    "net_return": 0.00232538607176469,
+    "profit_factor_net": 1.1135430312470467,
+    "sharpe_net": 0.1909766065222959,
+    "short_trades": 385,
+    "slippage_total": 7.626477393660845,
+    "total_trades": 454
+  },
+  "reference_metrics_match": true,
+  "reproduced": {
+    "capital_double_counting": false,
+    "capital_utilization": 0.041967966677123804,
+    "cost_application": "APPLIED",
+    "economic_measurement_valid": true,
+    "equity_reconciliation": "PASS",
+    "fees_total": 15.252954787321706,
+    "final_equity": 10023.253860717648,
+    "final_equity_minus_initial_minus_net_pnl": 2.7498003873915877e-12,
+    "gross_pnl": 46.13329289862824,
+    "gross_return": 0.004613329289862824,
+    "identity_residual_gross_fees_slip_net": 1.0658141036401503e-14,
+    "ledger_reconciliation": "PASS",
+    "long_trades": 69,
+    "max_drawdown_net": -0.020480218347394885,
+    "net_pnl": 23.253860717645672,
+    "net_return": 0.002325386071764912,
+    "peak_gross_exposure": 1466.1642226234028,
+    "profit_factor_net": 1.1135430312470467,
+    "sharpe_net": 0.1909766065223087,
+    "short_trades": 385,
+    "slippage_total": 7.626477393660853,
+    "total_trades": 454
+  }
+}

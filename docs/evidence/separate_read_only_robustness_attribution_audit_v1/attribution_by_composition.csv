@@ -1,0 +1,2 @@
+composition_status,bars,entries,exits,trades,gross_pnl,net_pnl,cost_drag,note
+DATA_GAP,NOT_AVAILABLE,NOT_AVAILABLE,NOT_AVAILABLE,NOT_AVAILABLE,NOT_AVAILABLE,NOT_AVAILABLE,NOT_AVAILABLE,Composition matrix owner exists in chain but bar-level CompositionStatus not exported in reference evidence.
