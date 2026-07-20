@@ -1,0 +1,11 @@
+utc=2026-07-19T18:12:44.751436+00:00
+python=3.11.14
+platform=macOS-26.5.1-arm64-arm-64bit
+base_sha=8eb90ecf5b8f4a7cef4b7621aa146bfd6f1ffacc
+head_sha=8eb90ecf5b8f4a7cef4b7621aa146bfd6f1ffacc
+branch=audit/canonical-economic-reevaluation-post-5348-v1
+LIVE_AUTHORIZED=false
+ORDERS=false
+RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED
+ECONOMIC_GATE_OPENED=false
+PROMOTION_ELIGIBLE=false

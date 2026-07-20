@@ -1,0 +1,38 @@
+{
+  "binding_path": "/Users/frnkhrz/Peak_Trade/config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json",
+  "config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+  "direction_authority": "trading.master_v2.double_play_state.transition_state",
+  "economic_gate_opened": false,
+  "engine_signal_source": "mv2_decision_replay_series",
+  "entry_side_expected": "NONE",
+  "fee_bps": 10.0,
+  "live_authorized": false,
+  "orders": false,
+  "period": "2024-05-01T00:00:00Z..2024-09-01T00:00:00Z",
+  "promotion_eligible": false,
+  "runtime_bridge_status": "BOUND_NOT_ACTIVATED",
+  "seed": 42,
+  "slippage_bps": 5.0,
+  "source_runtime_evaluation_config": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z/runtime_evaluation_config.json",
+  "stop_pct": 0.025,
+  "strategy_id": "bollinger_bands",
+  "strategy_params": {
+    "bb_period": 20,
+    "bb_std": 2.0,
+    "entry_threshold": 0.95,
+    "exit_threshold": 0.5
+  },
+  "strategy_version": "v2",
+  "stress_contract": {
+    "bind": true,
+    "policy_version": "stress_class_suite_v1"
+  },
+  "walk_forward_contract": {
+    "bind": true,
+    "policy_version": "walk_forward_v1",
+    "step_bars": 300,
+    "test_bars": 300,
+    "train_bars": 1200
+  }
+}

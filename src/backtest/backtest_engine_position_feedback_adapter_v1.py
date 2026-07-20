@@ -70,16 +70,20 @@ def _close_current_trade(
         entry_price=current_trade.entry_price,
         exit_price=current_trade.exit_price,
     )
-    current_trade.pnl_pct = (
-        (current_trade.pnl / (current_trade.entry_price * abs(current_trade.size))) * 100.0
-        if current_trade.entry_price > 0 and current_trade.size != 0
-        else 0.0
-    )
     current_trade.exit_reason = exit_reason
+    # Canonical MV2/legacy bar measurement path: apply bound fee+slippage cash drag
+    # via engine cost owners. Fills stay at bar/stop prices (no second slip layer).
     _emit_legacy_trade_accounting_fields_v0(
         current_trade,
         side=_trade_side_from_size(current_trade.size),
         effective_cost=effective_cost,
+        legacy_path_cost_application=True,
+    )
+    current_trade.pnl_pct = (
+        (float(current_trade.pnl or 0.0) / (current_trade.entry_price * abs(current_trade.size)))
+        * 100.0
+        if current_trade.entry_price > 0 and current_trade.size != 0
+        else 0.0
     )
 
 
@@ -511,12 +515,20 @@ def finalize_legacy_realistic_bar_loop_v1(
     }
     trades_df = pd.DataFrame([t.__dict__ for t in trades]) if trades else None
     initial_equity = float(engine.config["backtest"]["initial_cash"])
+    total_fees = float(sum(float(getattr(t, "fee_total", 0.0) or 0.0) for t in trades))
+    total_notional = float(
+        sum(
+            abs(float(t.size)) * float(t.entry_price)
+            + abs(float(t.size)) * float(t.exit_price or 0.0)
+            for t in trades
+        )
+    )
     stats = append_cost_accounting_fields(
         stats,
         initial_equity=initial_equity,
         effective_cost=effective_cost,
-        total_fees=0.0,
-        total_notional=0.0,
+        total_fees=total_fees,
+        total_notional=total_notional,
     )
     metadata = build_cost_result_metadata(
         effective_cost,
@@ -524,7 +536,7 @@ def finalize_legacy_realistic_bar_loop_v1(
             "mode": "realistic_with_risk_management",
             "strategy_name": "",
             "blocked_trades": blocked_trades,
-            "legacy_path_cost_application": False,
+            "legacy_path_cost_application": True,
             "symbol": symbol,
             "incremental_bar_loop": True,
         },
