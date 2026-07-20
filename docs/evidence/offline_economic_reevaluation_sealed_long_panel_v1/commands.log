@@ -1,0 +1,4 @@
+# Offline economic reevaluation on sealed long panel v1 (evidence-only)
+python docs/evidence/offline_economic_reevaluation_sealed_long_panel_v1/materialize_sealed_long_panel_bars_v1.py --force
+python docs/evidence/offline_economic_reevaluation_sealed_long_panel_v1/economic_reevaluation_probe_v1.py
+python -m pytest tests/governance/test_offline_economic_reevaluation_sealed_long_panel_v1.py -q

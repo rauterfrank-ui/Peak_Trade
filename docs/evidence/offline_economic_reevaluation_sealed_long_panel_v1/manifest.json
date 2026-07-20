@@ -1,0 +1,127 @@
+{
+  "ECONOMIC_VALIDITY_OFFLINE_GATE_CHANGED": false,
+  "PROMOTION_ELIGIBLE": false,
+  "base_sha": "3cc71231dd8fc52ea9f2274e68c584555d31155b",
+  "commands": [
+    "python docs/evidence/offline_economic_reevaluation_sealed_long_panel_v1/materialize_sealed_long_panel_bars_v1.py --force",
+    "python docs/evidence/offline_economic_reevaluation_sealed_long_panel_v1/economic_reevaluation_probe_v1.py"
+  ],
+  "config_hash": "c38f1d25f3c2f84eed9b5bbb2d07e08df197fe2d6805d301a57a25599928af08",
+  "config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "dataset_hash_content": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+  "evidence_file_hashes": {
+    "README.md": {
+      "bytes": 2265,
+      "sha256": "d189280f098be97ea38930cc12605699bc6795cd48c748d9ec706d46cb590eb8"
+    },
+    "adverse_exit_stop_diagnostic.json": {
+      "bytes": 263,
+      "sha256": "926025e879a56041c0341904a07765fb2fbbbbf9782eeb8487d9573f23dccc91"
+    },
+    "baseline_metrics.json": {
+      "bytes": 2768,
+      "sha256": "b39fda8c2586e0794218d8ec97fdead3b5c6044e5f54026deeea531ca444f968"
+    },
+    "chain_binding_proof.json": {
+      "bytes": 947,
+      "sha256": "472c1d1b0a7a44c1078bc019708a3eab8d97e1f65d07d19864ed0ccdefcdc2b6"
+    },
+    "checkpoint_baseline_wf.json": {
+      "bytes": 306795,
+      "sha256": "2896a0ecebd610ea9abb4404d7179d1f00f2fc6cb057b7971a4c09af87df0847"
+    },
+    "commands.log": {
+      "bytes": 395,
+      "sha256": "adb6b278b32d6c88215689de4472f2484d471a1a34d264fe0fd12dca5a8a8952"
+    },
+    "concentration_metrics.json": {
+      "bytes": 12249,
+      "sha256": "671ccd220ffff6a424a6ddc55fd080e485fe0c9aec8e962d5005f309acc20b31"
+    },
+    "config_snapshot.json": {
+      "bytes": 1707,
+      "sha256": "402c67961627c842a0800849dca1694b98bea530d4dcf420aa635d74b7a0e778"
+    },
+    "dataset_manifest.json": {
+      "bytes": 3313,
+      "sha256": "1d92a17f5e97afce1433bfd1d2967dd387c3731873a30e56d333aafe76dc1d05"
+    },
+    "direction_metrics.csv": {
+      "bytes": 83,
+      "sha256": "474e5ae0a2512abe384f1471b8fc32f54882ee94ab79f487fbb01a4e50c6976c"
+    },
+    "economic_reevaluation_probe_v1.py": {
+      "bytes": 70029,
+      "sha256": "d31a4c05abb26789bb5ab36eb11192b13c1b0e1c965a95e42b3e5e01e056b30c"
+    },
+    "environment.txt": {
+      "bytes": 179,
+      "sha256": "5ef90a39d656118340d9f862e7c72acbbb744a4043b8c0ec4e162e3fbe3a5c40"
+    },
+    "exit_reason_metrics.csv": {
+      "bytes": 34,
+      "sha256": "baf9d79e2f555e35d02c6263438e463e59947ded204e606a66df512b0353009d"
+    },
+    "instrument_metrics.csv": {
+      "bytes": 17523,
+      "sha256": "e7983ab4077ea39b9c4d8ca2207230fd3841d184312a2c67f622a096474a4673"
+    },
+    "loo_metrics.json": {
+      "bytes": 139668,
+      "sha256": "b882d93345e8685e62e19d9e9d077e2d4957a18c451e9b2420d0eeb87d270fdf"
+    },
+    "materialize_sealed_long_panel_bars_v1.py": {
+      "bytes": 10608,
+      "sha256": "bd3a648ed67e73e7d46e66ebddc922a20a54adb1e2e11ca1749fca1c0a3de95b"
+    },
+    "monte_carlo_summary.json": {
+      "bytes": 459,
+      "sha256": "b7a77e263ecdbff963d4b081722b9644aaf2ee10ef4b4671457a941856531157"
+    },
+    "portfolio_equity.csv": {
+      "bytes": 398394,
+      "sha256": "9071ae5ae00233bff0c32a84e84c3abb0151740c627e0f5031e9f5a767185981"
+    },
+    "probe_summary.json": {
+      "bytes": 161139,
+      "sha256": "21504f7601e45980dfd7b22b744b3b7b786484d9dffb1196c5583c6b317d0475"
+    },
+    "robustness_summary.md": {
+      "bytes": 1955,
+      "sha256": "8f5a6680f7aa560f9cd7d72765caac47831a95c434eaa77d9238db67bfbdbc99"
+    },
+    "safety_attestation.md": {
+      "bytes": 538,
+      "sha256": "267a422b7f780d31c36baf6d1110ce3d0758c437a02adea1dfb66718a69a2e7c"
+    },
+    "shared_portfolio_equity_research_v1.py": {
+      "bytes": 6693,
+      "sha256": "fd81f29fad5f79719d58d56893c5e85ceb01faeb6b8cf8308147f7ad04d424ff"
+    },
+    "stress_metrics.csv": {
+      "bytes": 1963,
+      "sha256": "f1d39715c331c991b6b9db593dac4747bc03563264e7df10eb2362be3f6ee513"
+    },
+    "summary.json": {
+      "bytes": 2648,
+      "sha256": "577f7a108469007f70bf43a1e14f43a131d9412f41290aa1afa64dfc9389911c"
+    },
+    "verdict.md": {
+      "bytes": 1017,
+      "sha256": "db71ebc2214117e0fdf6843f3b707857ffd17ade2e20a01c3c5a613e9a9d66d3"
+    },
+    "walk_forward_metrics.csv": {
+      "bytes": 945,
+      "sha256": "94280b371231bb462b2b39c8750ef31cf46ed16fa43c45c8aabff1d0a2c4ccea"
+    }
+  },
+  "external_bars_root": "PEAK_TRADE_DATA_ARCHIVE/.../normalized/mv2_research_bars_v1",
+  "instrument_count": 65,
+  "lifecycle_registry_digest": "ddcdec738ff5661f3e2f6bd3dcc97a1bcddbf0b9254faa344b318558f1dbe289",
+  "period": "2023-08-16T05:55:00Z..2024-09-01T00:00:00Z",
+  "python": "3.11.14",
+  "schema_version": "offline_economic_reevaluation_sealed_long_panel_manifest.v1",
+  "sealed_manifest_sha256": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56",
+  "seed": 42
+}
