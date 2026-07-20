@@ -566,6 +566,16 @@
         "docs/governance/REGIME_GATED_STANDASIDE_MR_DEVELOPMENT_EVALUATION_V1.md"
       ],
       "note": "Single preregistered DEVELOPMENT-only offline evaluation of regime-gated standaside MR versus immutable bollinger baseline; research-only entry-eligibility gate; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
+    },
+    "ENTRY_EFFECTIVE_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
+      "path_prefixes": [
+        "src/research/entry_effective_mr_eligibility_development_evaluation_v1/",
+        "scripts/research/run_evaluate_entry_effective_mr_eligibility_development_v1.py",
+        "tests/research/test_entry_effective_mr_eligibility_development_evaluation_v1.py",
+        "docs/evidence/evaluate_entry_effective_mr_eligibility_development_v1/",
+        "docs/governance/ENTRY_EFFECTIVE_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md"
+      ],
+      "note": "Single preregistered DEVELOPMENT-only offline evaluation of entry-effective pre-entry ATR-percentile mid-band MR eligibility filter (STRICT bounds) versus immutable bollinger baseline; research-only entry-eligibility gate; read-only reuse of the prior failed regime_gated evaluation's shared_portfolio_equity_research_v1 helper only (no mutation of that package); no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
     }
   }
 }
