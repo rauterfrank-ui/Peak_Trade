@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 import pandas as pd
@@ -10,6 +11,28 @@ import pytest
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 from src.backtest import cost_config_v0 as cost
 from src.backtest import mv2_research_wiring_v1 as wiring
+
+
+def _deterministic_mark_price_log_return_volatility(mark_prices: list[float]) -> list[float]:
+    """Population stdev (ddof=0) of expanding mark-price log returns.
+
+    Synthetic fixtures are short hourly panels and cannot satisfy the PT1M/60-bar
+    canonical materializer warmup. This keeps volatility_estimate an explicit,
+    deterministic, non-negative observed column bound by the admissibility contract
+    instead of an implicit default or NaN fill.
+    """
+    vols: list[float] = []
+    log_returns: list[float] = []
+    for index, price in enumerate(mark_prices):
+        if index == 0:
+            vols.append(0.0)
+            continue
+        previous = mark_prices[index - 1]
+        log_returns.append(math.log(price / previous))
+        mean = sum(log_returns) / len(log_returns)
+        variance = sum((value - mean) ** 2 for value in log_returns) / len(log_returns)
+        vols.append(math.sqrt(variance))
+    return vols
 
 
 def _runtime_bars(n: int = 24) -> pd.DataFrame:
@@ -27,6 +50,7 @@ def _runtime_bars(n: int = 24) -> pd.DataFrame:
             "best_ask": [v + 0.05 for v in close],
             "volume": [1000.0 for _ in close],
             "funding_rate": [0.0001 for _ in close],
+            "volatility_estimate": _deterministic_mark_price_log_return_volatility(close),
             "is_final": [True for _ in close],
         },
         index=idx,
