@@ -1,0 +1,16 @@
+{
+  "auto_rerun_allowed": false,
+  "auto_resume_allowed": false,
+  "completed": true,
+  "heartbeat": true,
+  "last_confirmed_member_id": "YGG-USDT-SWAP",
+  "last_confirmed_member_index": 46,
+  "last_confirmed_phase": "complete",
+  "members_total": 46,
+  "note": "run_complete",
+  "phase": "complete",
+  "pid": 58916,
+  "run_id": "evaluate_bollinger_mr_midband_exit_efficiency_development_v3",
+  "schema_version": "evaluation_runner_lifecycle_observability.v1",
+  "updated_at_utc": "2026-07-21T15:00:17Z"
+}

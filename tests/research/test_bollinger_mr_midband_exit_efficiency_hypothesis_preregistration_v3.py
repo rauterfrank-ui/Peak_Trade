@@ -1,8 +1,8 @@
 """Contract tests for Bollinger/MR midband exit-efficiency hypothesis preregistration v3.
 
-Definition-only: V3 is DEFINITION_ONLY_PREREGISTERED with run count 0.
+Terminal closeout: V3 is DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL with run count 1.
 V2 remains terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE (run count 1; no rerun).
-V1 remains terminal. No evaluation executed in this slice.
+V1 remains terminal. No second evaluation / no rerun under this preregistration.
 """
 
 from __future__ import annotations
@@ -46,6 +46,9 @@ EVIDENCE = REPO / "docs/evidence/preregister_bollinger_mr_midband_exit_efficienc
 V2_EVAL_EVIDENCE = (
     REPO / "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v2"
 )
+V3_EVAL_EVIDENCE = (
+    REPO / "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v3"
+)
 BACKLOG = REPO / "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json"
 
 
@@ -53,18 +56,18 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_contract_definition_only() -> None:
+def test_repo_contract_terminal_fail() -> None:
     report = load_and_validate_repo_contract(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["definition_only"] is False
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     assert report["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert report["evaluation_run_count"] == 0
-    assert report["evaluation_started"] is False
-    assert report["evaluation_completed"] is False
-    assert report["evaluation_executed"] is False
-    assert report["result_class"] == "NOT_EVALUATED"
-    assert report["economic_verdict"] == "NOT_EVALUATED"
+    assert report["evaluation_run_count"] == 1
+    assert report["evaluation_started"] is True
+    assert report["evaluation_completed"] is True
+    assert report["evaluation_executed"] is True
+    assert report["result_class"] == "FAIL"
+    assert report["economic_verdict"] == "FAIL"
     assert report["new_evaluation_not_rerun"] is True
     assert report["v2_partial_results_reused"] is False
     assert report["definition_semantics_identical"] is True
@@ -85,9 +88,11 @@ def test_hypothesis_id_unique_and_not_v2_rerun() -> None:
     assert contract["new_evaluation_not_rerun"] is True
     assert contract["v1_rerun_forbidden"] is True
     assert contract["v2_rerun_forbidden"] is True
-    assert contract["evaluation_run_count"] == 0
-    assert contract["preregistration_state"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert contract["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert contract["evaluation_run_count"] == 1
+    assert contract["preregistration_state"] == ("DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL")
+    assert contract["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
+    assert contract["pass"] is False
+    assert contract["fail"] is True
 
 
 def test_v2_terminal_unchanged_and_not_rerun() -> None:
@@ -129,6 +134,10 @@ def test_no_v2_partial_result_or_economic_import() -> None:
     eval_summary = _load(V2_EVAL_EVIDENCE / "summary.json")
     assert eval_summary["evaluation_run_count"] == 1
     assert eval_summary["result_class"] == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    v3_eval = _load(V3_EVAL_EVIDENCE / "summary.json")
+    assert v3_eval["evaluation_run_count"] == 1
+    assert v3_eval["result_class"] == "FAIL"
+    assert v3_eval["v2_partial_results_reused"] is False
 
 
 def test_definition_semantics_identical_to_v2() -> None:
@@ -170,25 +179,28 @@ def test_holdout_untouched() -> None:
 
 def test_registry_backlog_consistency() -> None:
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    assert len(backlog["terminal_hypotheses"]) == 2
-    prereg = backlog["preregistered_hypotheses"][0]
-    assert prereg["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert prereg["status"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert prereg["evaluation_run_count"] == 0
-    assert prereg["evaluation_executed"] is False
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert backlog["preregistered_hypotheses"] == []
+    assert len(backlog["terminal_hypotheses"]) == 3
     ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
+    assert REQUIRED_HYPOTHESIS_ID in ids
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in ids
     assert REQUIRED_V1_HYPOTHESIS_ID in ids
+    v3 = next(
+        e for e in backlog["terminal_hypotheses"] if e["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
+    )
+    assert v3["status"] == "TERMINAL_FAIL"
+    assert v3["evaluation_run_count"] == 1
+    assert v3["result_class"] == "FAIL"
     assert "NO_V2_RERUN" in backlog["explicit_non_actions"]
-    assert "NO_V3_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    assert "NO_V3_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_AFTER_FAIL" in backlog["explicit_non_actions"]
 
 
-def test_validation_does_not_authorize_evaluation() -> None:
+def test_validation_does_not_authorize_rerun() -> None:
     report = load_and_validate_repo_contract(REPO)
-    assert report["evaluation_executed"] is False
-    assert report["evaluation_run_count"] == 0
+    assert report["evaluation_executed"] is True
+    assert report["evaluation_run_count"] == 1
     assert report["rerun_allowed"] is False
     contract = _load(CONTRACT_PATH)
     assert contract["evaluation_authorized"] is False
@@ -196,11 +208,11 @@ def test_validation_does_not_authorize_evaluation() -> None:
     assert contract["rerun_allowed"] is False
 
 
-def test_mutated_run_count_fails_closed() -> None:
+def test_mutated_run_count_zero_fails_closed() -> None:
     contract = _load(CONTRACT_PATH)
     bad = copy.deepcopy(contract)
-    bad["evaluation_run_count"] = 1
-    with pytest.raises(HypothesisPreregistrationError, match="EVALUATION_RUN_COUNT_MUST_BE_0"):
+    bad["evaluation_run_count"] = 0
+    with pytest.raises(HypothesisPreregistrationError, match="EVALUATION_RUN_COUNT_MUST_BE_1"):
         validate_preregistration_contract(bad)
 
 
@@ -214,3 +226,4 @@ def test_governance_and_evidence_present() -> None:
     assert (EVIDENCE / "summary.json").is_file()
     assert (EVIDENCE / "safety_attestation.md").is_file()
     assert (EVIDENCE / "split_manifest.json").is_file()
+    assert (V3_EVAL_EVIDENCE / "summary.json").is_file()

@@ -796,6 +796,16 @@
       ],
       "note": "Terminal DEVELOPMENT_ONLY evaluation closeout for hypothesis ...DEVELOPMENT_V2 (evaluation_run_count 0->1 exactly once; RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE; ROOT_CAUSE=PREMEASUREMENT_GATE_FALSE_POSITIVE_ZERO_OR_SENTINEL); reuses frozen V1 mechanism/gate/decision by import only; not a V1 rerun; no V1 partial-result reuse; no holdout; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders; no V2 rerun."
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V3": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v3/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v3.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_development_evaluation_v3.py",
+        "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v3/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V3.md"
+      ],
+      "note": "Single authorized DEVELOPMENT_ONLY evaluation of Bollinger/MR midband exit-efficiency V3 (evaluation_run_count 0->1); identical definition to V2/V1; binds EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1 and PANEL_RUNNER_FALSY_ZERO_PREMEASUREMENT_HYGIENE; not a V1/V2 rerun; no V2 partial-result reuse; Economic offline gate closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
+    },
     "EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1": {
       "path_prefixes": [
         "src/research/evaluation_runner_lifecycle_observability_v1/",

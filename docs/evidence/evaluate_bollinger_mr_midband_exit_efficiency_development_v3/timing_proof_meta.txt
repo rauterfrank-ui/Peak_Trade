@@ -1,0 +1,5 @@
+generated_at_utc=2026-07-21T15:01:20Z
+source=evaluate_bollinger_mr_midband_exit_efficiency_development_v3
+one_shot=true
+auto_rerun=false
+

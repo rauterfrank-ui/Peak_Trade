@@ -1,0 +1,83 @@
+{
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "contract_id": "bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract.v3",
+  "cost_model": {
+    "adjustment_forbidden_after_preregistration": true,
+    "canonical_cost_multiplier_minimum": 1.0,
+    "cost_assumption_below_canonical_1x_forbidden": true,
+    "cost_drag_fully_included_in_net_metrics": true,
+    "cost_multiplier": 1.0,
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "fixed": true,
+    "half_spread_bps": 5.0,
+    "roundtrip_reference_bps": 30.0,
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0",
+    "source": "canonical_baseline_and_failure_decomposition_cost_freeze"
+  },
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "decision_segment": {
+    "end_exclusive": "2023-08-16T05:55:00Z",
+    "start": "2023-05-20T00:00:00Z"
+  },
+  "decision_thresholds": {
+    "decision_segment": "final_development_confirmation_only",
+    "fail_if_any": [
+      "evaluable AND exit_divergence_observed == false",
+      "evaluable AND net_profit_factor_treatment <= net_profit_factor_control",
+      "evaluable AND net_pnl_treatment <= net_pnl_control",
+      "evaluable AND net_return_treatment <= net_return_control",
+      "evaluable AND mean_realized_pnl_over_mfe_capture_ratio_treatment <= mean_realized_pnl_over_mfe_capture_ratio_control",
+      "evaluable AND mean_mfe_to_exit_leakage_treatment >= mean_mfe_to_exit_leakage_control",
+      "evaluable AND trade_count_treatment < trade_count_control * (1 - max_trade_count_reduction_fraction_vs_control)",
+      "evaluable AND improvement_solely_explained_by_reduced_trade_count_or_artificially_lower_turnover == true",
+      "evaluable AND new_instrument_concentration_detected == true",
+      "evaluable AND cost_multiplier_treatment < 1.0",
+      "any_holdout_use_for_tuning_or_selection",
+      "any_post_hoc_threshold_or_parameter_adjustment",
+      "any_second_or_repeated_evaluation_run",
+      "any_parameter_sweep_or_variant",
+      "any_entry_eligibility_or_side_filter_change",
+      "any_short_side_parallel_hypothesis"
+    ],
+    "inconclusive_if_any": [
+      "trade_count_control < minimum_trade_count",
+      "technical_panel_hash_or_load_failure",
+      "missing_state_or_index_or_digest_binding",
+      "contract_or_wiring_integrity_failure_preventing_measurement"
+    ],
+    "inconclusive_never_for_poor_economic_results": true,
+    "instrument_concentration_worst1_abs_net_share_max": 0.35,
+    "materiality_epsilon_net_return_abs": 0.0,
+    "max_trade_count_reduction_fraction_vs_control": 0.5,
+    "max_turnover_reduction_fraction_vs_control_without_exit_divergence": 0.5,
+    "minimum_trade_count": 20,
+    "on_fail_holdout_forbidden": true,
+    "on_fail_retuning_forbidden": true,
+    "pass_criteria_frozen": true,
+    "pass_requires_all": [
+      "exit_divergence_observed == true",
+      "trade_count_treatment >= minimum_trade_count",
+      "trade_count_treatment >= trade_count_control * (1 - max_trade_count_reduction_fraction_vs_control)",
+      "net_profit_factor_treatment > net_profit_factor_control",
+      "net_pnl_treatment > net_pnl_control",
+      "net_return_treatment > net_return_control",
+      "mean_realized_pnl_over_mfe_capture_ratio_treatment > mean_realized_pnl_over_mfe_capture_ratio_control",
+      "mean_mfe_to_exit_leakage_treatment < mean_mfe_to_exit_leakage_control",
+      "improvement_not_solely_explained_by_reduced_trade_count_or_artificially_lower_turnover == true",
+      "no_new_instrument_concentration == true",
+      "cost_multiplier_treatment == 1.0",
+      "cost_assumption_below_canonical_1x == false",
+      "cost_drag_fully_included_in_net_metrics == true"
+    ],
+    "threshold_adjustment_forbidden_after_preregistration": true
+  },
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V3",
+  "mechanism_id": "canonical_bollinger_side_aware_middle_band_exit_v1",
+  "predecessor_hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V2",
+  "schema_version": "evaluate_bollinger_mr_midband_exit_efficiency_development_config_snapshot.v3",
+  "seed": 20220601,
+  "stop_pct": 0.025,
+  "treatment_id": "bollinger_mr_side_aware_midband_exit_efficiency_v1"
+}
