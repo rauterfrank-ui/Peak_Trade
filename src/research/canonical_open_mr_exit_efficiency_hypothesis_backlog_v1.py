@@ -3,9 +3,9 @@
 Definition-only governance. No evaluation, backtest, holdout access, runtime
 activation, or productive trading-logic mutation.
 
-Post V3 development evaluation closeout: zero DEFINITION_ONLY_PREREGISTERED
-candidates; V1 and V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE (run count 1
-each); V3 terminal FAIL (identical_arms_no_exit_divergence; run count 1).
+Post V4 definition-only preregistration: exactly one DEFINITION_ONLY_PREREGISTERED
+candidate (V4; run count 0); V1 and V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE
+(run count 1 each); V3 terminal FAIL (identical_arms_no_exit_divergence; run count 1).
 """
 
 from __future__ import annotations
@@ -29,6 +29,10 @@ REQUIRED_V2_HYPOTHESIS_ID = (
 REQUIRED_V3_HYPOTHESIS_ID = (
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V3"
 )
+REQUIRED_V4_HYPOTHESIS_ID = (
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V4"
+)
+REQUIRED_BINDING_FIX_SURFACE = "MV2_WIRING_MOD_CAPTURE_ALIAS_OPEN_SIDE_BINDING_FIX"
 REQUIRED_OBSERVABILITY_SURFACE = "EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1"
 REQUIRED_FALSY_ZERO_HYGIENE_SURFACE = "PANEL_RUNNER_FALSY_ZERO_PREMEASUREMENT_HYGIENE"
 HOLDOUT_OPAQUE_ID = "offline_economic_reevaluation_sealed_long_panel_v1"
@@ -245,13 +249,48 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(rules.get("economic_gate_closed") is True, "ECONOMIC_GATE_NOT_CLOSED")
     _assert_true(rules.get("promotion_closed") is True, "PROMOTION_NOT_CLOSED")
-    _assert_true(rules.get("preregistered_count_exact") == 0, "PREREGISTERED_COUNT_RULE")
+    _assert_true(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_RULE")
     _assert_true(rules.get("open_unpreregistered_count_exact") == 0, "OPEN_COUNT_RULE")
 
     preregistered = backlog.get("preregistered_hypotheses")
     _assert_true(isinstance(preregistered, list), "PREREGISTERED_MISSING")
     assert isinstance(preregistered, list)
-    _assert_true(len(preregistered) == 0, "PREREGISTERED_COUNT", str(len(preregistered)))
+    _assert_true(len(preregistered) == 1, "PREREGISTERED_COUNT", str(len(preregistered)))
+    v4 = preregistered[0]
+    _assert_true(isinstance(v4, dict), "PREREGISTERED_V4_TYPE")
+    _assert_true(v4.get("hypothesis_id") == REQUIRED_V4_HYPOTHESIS_ID, "PREREGISTERED_V4_ID")
+    _assert_true(v4.get("status") == REQUIRED_PREREGISTERED_STATUS, "PREREGISTERED_V4_STATUS")
+    _assert_true(v4.get("treatment_type") == REQUIRED_TREATMENT_TYPE, "PREREGISTERED_V4_TREATMENT")
+    _assert_true(v4.get("development_only") is True, "PREREGISTERED_V4_DEV_ONLY")
+    _assert_true(v4.get("holdout_allowed") is False, "PREREGISTERED_V4_HOLDOUT")
+    _assert_true(v4.get("evaluation_authorized") is False, "PREREGISTERED_V4_EVAL_AUTH")
+    _assert_true(v4.get("evaluation_executed") is False, "PREREGISTERED_V4_EVAL_EXECUTED")
+    _assert_true(v4.get("evaluation_started") is False, "PREREGISTERED_V4_EVAL_STARTED")
+    _assert_true(v4.get("evaluation_completed") is False, "PREREGISTERED_V4_EVAL_COMPLETED")
+    _assert_true(int(v4.get("evaluation_run_count", -1)) == 0, "PREREGISTERED_V4_RUN_COUNT")
+    _assert_true(int(v4.get("evaluation_run_limit") or 0) == 1, "PREREGISTERED_V4_RUN_LIMIT")
+    _assert_true(v4.get("result_class") == "NOT_EVALUATED", "PREREGISTERED_V4_RESULT")
+    _assert_true(v4.get("economic_verdict") == "NOT_EVALUATED", "PREREGISTERED_V4_ECONOMIC")
+    _assert_true(v4.get("new_evaluation_not_rerun") is True, "PREREGISTERED_V4_NOT_RERUN")
+    _assert_true(v4.get("v3_rerun_forbidden") is True, "PREREGISTERED_V4_V3_RERUN")
+    _assert_true(v4.get("v3_partial_results_reused") is False, "PREREGISTERED_V4_PARTIAL")
+    _assert_true(v4.get("v3_economic_result_imported") is False, "PREREGISTERED_V4_ECON_IMPORT")
+    _assert_true(
+        v4.get("observability_surface") == REQUIRED_OBSERVABILITY_SURFACE,
+        "PREREGISTERED_V4_OBSERVABILITY",
+    )
+    _assert_true(
+        v4.get("falsy_zero_hygiene_surface") == REQUIRED_FALSY_ZERO_HYGIENE_SURFACE,
+        "PREREGISTERED_V4_FALSY_ZERO",
+    )
+    _assert_true(
+        v4.get("binding_fix_surface") == REQUIRED_BINDING_FIX_SURFACE,
+        "PREREGISTERED_V4_BINDING_FIX",
+    )
+    _assert_true(
+        v4.get("predecessor_hypothesis_id") == REQUIRED_V3_HYPOTHESIS_ID,
+        "PREREGISTERED_V4_PREDECESSOR",
+    )
 
     terminal = backlog.get("terminal_hypotheses")
     _assert_true(isinstance(terminal, list), "TERMINAL_MISSING")
@@ -313,16 +352,19 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true("NO_V3_RERUN" in non_actions, "NO_V3_RERUN_NON_ACTION_REQUIRED")
     _assert_true("NO_HOLDOUT_AFTER_FAIL" in non_actions, "NO_HOLDOUT_AFTER_FAIL_REQUIRED")
     _assert_true("NO_RETUNING_AFTER_FAIL" in non_actions, "NO_RETUNING_AFTER_FAIL_REQUIRED")
-    _assert_true("NO_V4_AUTO_CREATE" in non_actions, "NO_V4_AUTO_CREATE_REQUIRED")
+    _assert_true("NO_V4_EVALUATION_IN_THIS_SLICE" in non_actions, "NO_V4_EVAL_NON_ACTION_REQUIRED")
+    _assert_true("NO_V5_AUTO_CREATE" in non_actions, "NO_V5_AUTO_CREATE_REQUIRED")
+    _assert_true("NO_V3_ECONOMIC_RESULT_IMPORT" in non_actions, "NO_V3_ECON_IMPORT_REQUIRED")
+    _assert_true("NO_V4_AUTO_CREATE" not in non_actions, "NO_V4_AUTO_CREATE_MUST_BE_ABSENT")
 
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
-        "preregistered_count": 0,
+        "preregistered_count": 1,
         "terminal_count": 3,
         "open_unpreregistered_count": 0,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
-        "preregistered_hypothesis_id": None,
+        "preregistered_hypothesis_id": REQUIRED_V4_HYPOTHESIS_ID,
         "terminal_hypothesis_ids": [
             REQUIRED_HYPOTHESIS_ID,
             REQUIRED_V2_HYPOTHESIS_ID,
@@ -334,16 +376,19 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "short_side_hypothesis_preregistered": False,
         "holdout_candidate_preregistered": False,
         "runtime_locked": True,
-        "result_class": "FAIL",
-        "economic_verdict": "FAIL",
+        "result_class": "NOT_EVALUATED",
+        "economic_verdict": "NOT_EVALUATED",
         "rerun_allowed": False,
         "v2_evaluation_run_count": 1,
         "v2_is_rerun_of_v1": False,
         "v3_evaluation_run_count": 1,
         "v3_result_class": "FAIL",
         "v3_is_rerun_of_v2": False,
+        "v4_evaluation_run_count": 0,
+        "v4_is_rerun_of_v3": False,
         "observability_surface": REQUIRED_OBSERVABILITY_SURFACE,
         "falsy_zero_hygiene_surface": REQUIRED_FALSY_ZERO_HYGIENE_SURFACE,
+        "binding_fix_surface": REQUIRED_BINDING_FIX_SURFACE,
     }
 
 

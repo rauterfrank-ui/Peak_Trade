@@ -179,8 +179,13 @@ def test_holdout_untouched() -> None:
 
 def test_registry_backlog_consistency() -> None:
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
-    assert backlog["preregistered_hypotheses"] == []
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert (
+        backlog["preregistered_hypotheses"][0]["hypothesis_id"]
+        == "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V4"
+    )
+    assert backlog["preregistered_hypotheses"][0]["evaluation_run_count"] == 0
     assert len(backlog["terminal_hypotheses"]) == 3
     ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
     assert REQUIRED_HYPOTHESIS_ID in ids
