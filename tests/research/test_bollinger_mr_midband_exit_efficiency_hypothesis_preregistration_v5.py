@@ -69,17 +69,17 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_contract_definition_only() -> None:
+def test_repo_contract_terminal_infrastructure_failure() -> None:
     report = load_and_validate_repo_contract(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["definition_only"] is False
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     assert report["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert report["evaluation_run_count"] == 0
-    assert report["evaluation_started"] is False
+    assert report["evaluation_run_count"] == 1
+    assert report["evaluation_started"] is True
     assert report["evaluation_completed"] is False
-    assert report["evaluation_executed"] is False
-    assert report["result_class"] == "NOT_EVALUATED"
+    assert report["evaluation_executed"] is True
+    assert report["result_class"] == "INFRASTRUCTURE_FAILURE"
     assert report["economic_verdict"] == "NOT_EVALUATED"
     assert report["rerun_allowed"] is False
     assert report["lifecycle_checkpoint_surface"] == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE
@@ -129,7 +129,7 @@ def test_no_runner_start_during_import_or_validation() -> None:
         name = getattr(func, "id", None) or getattr(func, "attr", None)
         assert name not in forbidden_names
     report = load_and_validate_repo_contract(REPO)
-    assert report["evaluation_executed"] is False
+    assert report["evaluation_executed"] is True
 
 
 def test_holdout_access_forbidden() -> None:
@@ -171,15 +171,12 @@ def test_owner_map_and_backlog_consistency() -> None:
     assert REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE in owners
     assert REQUIRED_OBSERVABILITY_SURFACE in owners
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    pref = backlog["preregistered_hypotheses"][0]
-    assert pref["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert pref["evaluation_run_count"] == 0
-    assert pref["lifecycle_checkpoint_surface"] == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE
-    assert pref["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert backlog["preregistered_hypotheses"] == []
     terminal_ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in terminal_ids
-    assert "NO_V5_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    assert REQUIRED_HYPOTHESIS_ID in terminal_ids
+    assert "NO_V5_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V6_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
 
@@ -188,7 +185,6 @@ def test_governance_and_evidence_present_docs_token_escaped() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "&#47;" in text
-    assert "DEFINITION_ONLY_PREREGISTERED" in text
     assert EXPECTED_DEVELOPMENT_PREREGISTRATION_DIGEST in text
     assert (EVIDENCE / "summary.json").is_file()
     assert (EVIDENCE / "safety_attestation.md").is_file()
@@ -203,15 +199,15 @@ def test_governance_and_evidence_present_docs_token_escaped() -> None:
     assert summary["holdout_accessed"] is False
 
 
-def test_no_v5_evaluation_evidence_dir() -> None:
-    assert not V5_EVAL_EVIDENCE.exists()
+def test_v5_evaluation_evidence_dir_present() -> None:
+    assert V5_EVAL_EVIDENCE.exists()
     assert V4_EVAL_EVIDENCE.is_dir()
 
 
 def test_mutated_run_count_fails_closed() -> None:
     contract = _load(CONTRACT_PATH)
     bad = copy.deepcopy(contract)
-    bad["evaluation_run_count"] = 1
+    bad["evaluation_run_count"] = 2
     with pytest.raises(HypothesisPreregistrationError):
         validate_preregistration_contract(bad)
 

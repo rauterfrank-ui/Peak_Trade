@@ -1,0 +1,28 @@
+{
+  "auto_rerun_allowed": false,
+  "auto_resume_allowed": false,
+  "checkpoint_authorizes_rerun": false,
+  "checkpoint_can_reclaim_run_slot": false,
+  "diagnostics": {
+    "closeout": true,
+    "diagnostic_class": "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL",
+    "result_class": "INFRASTRUCTURE_FAILURE"
+  },
+  "evaluation_run_count_mutation": false,
+  "partial_metrics_authoritative": false,
+  "progress": {
+    "checkpoint_sequence": 16,
+    "completed_member_count": 3,
+    "current_member_index": 4,
+    "last_completed_member_id": "AGLD-USDT-SWAP",
+    "last_heartbeat_at": "2026-07-21T17:19:39Z",
+    "lifecycle_state": "TERMINAL_COMMITTED",
+    "process_id": 76068,
+    "run_id": "evaluate_bollinger_mr_midband_exit_efficiency_development_v5",
+    "started_at": "2026-07-21T17:17:07Z",
+    "total_member_count": 46
+  },
+  "run_slot_claim_mutation": false,
+  "schema_version": "bollinger_mr_midband_exit_efficiency_process_lifecycle_checkpoint.v5",
+  "surface_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PROCESS_LIFECYCLE_CHECKPOINT_V5"
+}

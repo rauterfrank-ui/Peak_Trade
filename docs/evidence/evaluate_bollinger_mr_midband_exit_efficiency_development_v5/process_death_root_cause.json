@@ -1,0 +1,48 @@
+{
+  "auto_rerun_executed": false,
+  "baseline_members_completed": "3/46",
+  "checkpoint_sequence_at_death": 14,
+  "claim_timestamp_utc": "2026-07-21T17:17:07Z",
+  "death_class": "UNKNOWN",
+  "economic_metrics_computed": false,
+  "economic_metrics_produced": false,
+  "excluded_with_available_evidence": [
+    "economic PASS/FAIL (panel incomplete)",
+    "full 46/46 baseline and treatment completion",
+    "reconstructed metrics from V1/V2/V3/V4"
+  ],
+  "holdout_data_accessed": false,
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V5",
+  "lifecycle_checkpoint_surface": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PROCESS_LIFECYCLE_CHECKPOINT_V5",
+  "lifecycle_state_at_death": "MEMBER_STARTED",
+  "lifecycle_terminal_written_by_process": false,
+  "measurement_validity_preflight_passed": true,
+  "observed_facts": [
+    "Atomic run_slot_claim.json persisted before panel archive access",
+    "Runner start count exactly 1 (PID 76068)",
+    "Measurement-validity preflight PASSED (synthetic; no holdout)",
+    "Process-lifecycle checkpoint V5 advanced through member progress (seq=14)",
+    "Baseline members 1-3/46 completed; MEMBER_STARTED for baseline 4/46 (ALGO-USDT-SWAP)",
+    "Process died without runner_lifecycle_terminal_diagnostics from process",
+    "No second runner start; no auto-rerun; slot remains consumed",
+    "No holdout path accessed",
+    "Partial member counters are non-authoritative"
+  ],
+  "panel_backtest_executed": true,
+  "pid": 76068,
+  "process_death_root_cause": "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL",
+  "process_death_root_cause_notes": [
+    "Sole authorized V5 evaluation slot consumed at claim time",
+    "Incomplete panel run is terminal INFRASTRUCTURE_FAILURE under one-shot rule",
+    "V5 lifecycle checkpoint made incomplete progress diagnosable (MEMBER_STARTED at death)",
+    "No resume/rerun permitted under this preregistration"
+  ],
+  "process_died_observed_at_utc": "2026-07-21T17:19:39Z",
+  "process_exit_code": null,
+  "rerun_allowed": false,
+  "run_attempt_started_at_utc": "2026-07-21T17:17:07Z",
+  "schema_version": "bollinger_mr_midband_exit_efficiency_process_death_root_cause.v5",
+  "terminal_closeout_at_utc": "2026-07-21T17:19:39Z",
+  "traceback_present": false,
+  "treatment_members_completed": "0/46"
+}
