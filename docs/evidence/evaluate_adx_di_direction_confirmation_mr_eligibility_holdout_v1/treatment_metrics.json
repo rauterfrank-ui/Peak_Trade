@@ -1,0 +1,12 @@
+{
+  "arm": "treatment",
+  "cost_drag": null,
+  "evaluable": false,
+  "max_drawdown": null,
+  "net_return": null,
+  "profit_factor": null,
+  "reason": "UNEXPECTED_FAILURE_AFTER_DATA_ACCESS:ValueError:mv2_replay_engine_signal_binding_failed:mv2_replay_signal_index_mismatch",
+  "result_class": "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+  "technical_failure": true,
+  "trade_count": null
+}

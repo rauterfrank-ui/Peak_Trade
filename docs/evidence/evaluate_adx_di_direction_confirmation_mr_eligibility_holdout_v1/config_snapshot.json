@@ -1,0 +1,8 @@
+{
+  "evaluable": false,
+  "holdout_preregistration_digest": "014a6955354be19d0abbae65269a816743347975647b448f58ea61ad37647e6f",
+  "holdout_split_digest": "e29eeb4e9d264e1529a0c7419d707ce84df7919ee6ed95a833612fca46a7184d",
+  "hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+  "result_class": "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+  "schema_version": "evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_config_snapshot.v1"
+}

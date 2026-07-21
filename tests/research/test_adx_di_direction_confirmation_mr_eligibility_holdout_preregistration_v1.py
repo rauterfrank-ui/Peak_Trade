@@ -14,6 +14,7 @@ import pytest
 from src.research.adx_di_direction_confirmation_mr_eligibility_holdout_preregistration_v1 import (
     CONTRACT_REL_PATH,
     DECLARED_RUNNER_REL_PATH,
+    EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST,
     HOLDOUT_OPAQUE_ID,
     OPERATOR_GO_ENV,
     REQUIRED_FROZEN_FILTER_PARAMETERS,
@@ -21,6 +22,8 @@ from src.research.adx_di_direction_confirmation_mr_eligibility_holdout_preregist
     HoldoutPreregistrationError,
     assert_execution_go_present,
     assert_holdout_execution_blocked_by_definition_contract,
+    compute_holdout_preregistration_digest,
+    definition_body_for_preregistration_digest,
     expected_holdout_split_digest,
     load_and_validate_repo_holdout_contract,
     materialize_holdout_split_definition,
@@ -56,13 +59,16 @@ def _load(path: Path) -> dict:
 def test_repo_holdout_contract_validates_against_ssot() -> None:
     report = load_and_validate_repo_holdout_contract(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["definition_only"] is False
+    assert report["holdout_executed"] is True
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert report["holdout_run_count"] == 0
+    assert report["holdout_run_count"] == 1
     assert report["holdout_run_limit"] == 1
     assert report["execution_authorized"] is False
     assert report["holdout_split_digest"] == expected_holdout_split_digest()
     assert report["primary_decision_metric"] == "NET_PROFIT_FACTOR"
+    assert report["terminal_holdout_result_class"] == "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN"
+    assert report["holdout_preregistration_digest"] == EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST
 
 
 def test_hypothesis_id_and_development_pass_binding() -> None:
@@ -72,7 +78,9 @@ def test_hypothesis_id_and_development_pass_binding() -> None:
     assert dev["development_result_class"] == "PASS"
     assert dev["development_run_count"] == 1
     assert dev["development_run_limit"] == 1
-    assert contract["holdout_run_count"] == 0
+    assert contract["holdout_run_count"] == 1
+    assert contract["holdout_executed"] is True
+    assert contract["status"] == "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
 
 
 def test_holdout_split_digest_matches_registered_definition() -> None:
@@ -86,16 +94,19 @@ def test_holdout_split_digest_matches_registered_definition() -> None:
     assert manifest["split_intervals_sha256"] == expected_holdout_split_digest()
 
 
-def test_holdout_run_limit_exactly_one_and_count_zero() -> None:
+def test_holdout_run_limit_exactly_one_and_count_consumed() -> None:
     contract = _load(CONTRACT_PATH)
     assert contract["holdout_run_limit"] == 1
     assert contract["holdout_runs_allowed"] == 1
-    assert contract["holdout_run_count"] == 0
+    assert contract["holdout_run_count"] == 1
     bad = copy.deepcopy(contract)
     bad["holdout_run_limit"] = 2
     with pytest.raises(HoldoutPreregistrationError, match="HOLDOUT_RUN_LIMIT"):
         validate_holdout_preregistration_contract(bad)
-    bad2 = copy.deepcopy(contract)
+    # Definition-view still rejects non-zero count.
+    definition_view = definition_body_for_preregistration_digest(contract)
+    definition_view["holdout_preregistration_digest"] = contract["holdout_preregistration_digest"]
+    bad2 = copy.deepcopy(definition_view)
     bad2["holdout_run_count"] = 1
     with pytest.raises(HoldoutPreregistrationError, match="HOLDOUT_RUN_COUNT"):
         validate_holdout_preregistration_contract(bad2)
@@ -175,30 +186,38 @@ def test_universe_non_bitcoin_perpetuals_only() -> None:
     assert u["venue"] == "OKX"
 
 
-def test_definition_only_evidence_pack_has_no_result_metrics() -> None:
+def test_definition_only_prereg_evidence_pack_has_no_result_metrics() -> None:
     assert EVIDENCE.is_dir()
     assert GOVERNANCE.is_file()
     for name in FORBIDDEN_RESULT_ARTIFACTS:
         assert not (EVIDENCE / name).exists()
     summary = _load(EVIDENCE / "summary.json")
+    # Historical preregistration evidence remains definition-only.
     assert summary["holdout_executed"] is False
     assert summary["holdout_data_accessed"] is False
     assert summary["holdout_run_count"] == 0
     assert summary["evaluation_authorized"] is False
     assert summary["base_sha"] == BASE_SHA
     assert summary["declared_runner_rel_path"] == DECLARED_RUNNER_REL_PATH
-    assert not (REPO / DECLARED_RUNNER_REL_PATH).exists()
+    eval_summary = (
+        REPO
+        / "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1"
+        / "summary.json"
+    )
+    assert eval_summary.is_file()
+    eval_payload = _load(eval_summary)
+    assert eval_payload["holdout_run_count"] == 1
+    assert eval_payload["result_class"] == "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN"
+    contract_now = _load(CONTRACT_PATH)
+    assert contract_now["holdout_run_count"] == 1
+    assert contract_now["holdout_executed"] is True
 
 
 def test_preregistration_digest_stable() -> None:
     contract = _load(CONTRACT_PATH)
     stored = contract["holdout_preregistration_digest"]
-    body = {k: v for k, v in contract.items() if k != "holdout_preregistration_digest"}
-    from src.research.adx_di_direction_confirmation_mr_eligibility_holdout_preregistration_v1 import (
-        canonical_json_sha256,
-    )
-
-    assert stored == canonical_json_sha256(body)
+    assert stored == compute_holdout_preregistration_digest(contract)
+    assert stored == EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST
     assert len(stored) == 64
 
 
