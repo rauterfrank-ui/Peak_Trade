@@ -57,9 +57,9 @@ V2_EVIDENCE = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
 )
-EXPECTED_CONFIG_V2_DIGEST = "e11bf722e381dd0debfc9cd23f058a471cbfee380539e5ba6c45f19f531176c5"
-EXPECTED_CONFIG_V3_DIGEST = "e1d923de8e5f44bc873c15008bc895b8b3542a326e9c39521e4860ba091b6b82"
-EXPECTED_V2_FILE_SHA256 = "fe5b3ed1ea174e242f5a821971d94b47eb544c6fe4ec3eb99a8ceef06e3e094b"
+EXPECTED_CONFIG_V2_DIGEST = "d7867cb83cea7f0fe8efdd4374338ae12b29da2cf708e2629d826a1ffede3580"
+EXPECTED_CONFIG_V3_DIGEST = "ddf129809b6452da69dc835fb619fd8b5889ad008af2c6dec4657c40e1287371"
+EXPECTED_V2_FILE_SHA256 = "df44bf2bb80f35ad2877119be8afb72896ccd4e2816a905733140c4ffb712ace"
 V3_RATIFIED_RISK_PER_TRADE = Decimal("0.005")
 V3_RATIFIED_STOP_PCT = Decimal("0.025")
 V3_RATIFIED_MAX_POSITION_PCT = Decimal("0.25")
@@ -425,7 +425,7 @@ def test_mv2_wiring_emits_sizing_provenance_when_contract_bound() -> None:
         "strategy_id": "ma_crossover",
         "strategy_version": "v1",
         "strategy_params": {"fast_period": 10, "slow_period": 30},
-        "engine_signal_source": "configured_strategy_signal",
+        "engine_signal_source": "mv2_decision_replay_series",
         "walk_forward": {"bind": True},
         "monte_carlo": {"bind": True},
         "stress": {"bind": True},
@@ -473,22 +473,31 @@ def test_mv2_wiring_v3_near_twenty_percent_entry_executes_trade(
     bars["funding_rate"] = 0.0001
     bars["is_final"] = True
     impulse = pd.Series([0, 1, 0, 0, -1, 0], index=bars.index, dtype=int)
+    effective_params, strategy_params_digest = signal_binding.resolve_effective_strategy_params_v1(
+        "ma_crossover",
+        {"fast_period": 2, "slow_period": 3},
+    )
+    strategy_signal_digest = signal_binding.compute_strategy_signal_digest_v1(
+        impulse,
+        strategy_id="ma_crossover",
+        strategy_params_digest=strategy_params_digest,
+    )
     provenance = StrategySignalProvenanceV1(
         configured_strategy_id="ma_crossover",
         executed_strategy_id="ma_crossover",
         strategy_version="v1",
         strategy_owner="src.strategies.ma_crossover",
         configured_strategy_params={"fast_period": 2, "slow_period": 3},
-        effective_strategy_params={"fast_period": 2, "slow_period": 3},
-        strategy_params_digest="test",
+        effective_strategy_params=effective_params,
+        strategy_params_digest=strategy_params_digest,
         strategy_execution_status=StrategyExecutionStatus.EXECUTED,
         strategy_signal_source="canonical_strategy_signal_series",
-        strategy_signal_digest="test",
+        strategy_signal_digest=strategy_signal_digest,
         strategy_signal_count=len(impulse),
         strategy_nonzero_signal_count=int((impulse != 0).sum()),
         strategy_signal_transition_count=2,
         engine_signal_source="configured_strategy_signal",
-        engine_signal_digest="test",
+        engine_signal_digest=strategy_signal_digest,
         engine_input_nonzero_signal_count=int((impulse != 0).sum()),
         signal_alignment_status=SignalAlignmentStatus.ALIGNED,
         signal_contract_status=SignalContractStatus.PASS,
@@ -547,7 +556,10 @@ def test_registry_v2_reevaluation_complete() -> None:
     section = text[start:end]
 
     def field(name: str) -> str:
-        match = re.search(rf"\| `{re.escape(name)}` \| `([^`]*)` \|", section)
+        match = re.search(
+            rf"\| `{re.escape(name)}` \| `([^`]*)`(?: <!--.*?-->)? \|",
+            section,
+        )
         assert match, name
         return match.group(1)
 
@@ -560,8 +572,8 @@ def test_registry_v2_reevaluation_complete() -> None:
     assert field("ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert field("PROFITABILITY_CLAIM_ALLOWED") == "false"
     assert field("LAST_EVALUATED_CONFIG_VERSION") == "v1"
-    assert field("NEXT_EVALUATION_CONFIG_VERSION") == "NONE"
-    assert field("NEXT_EVALUATION_CONFIG_STATUS") == "CLOSED_NO_PENDING_CANDIDATE"
+    assert field("NEXT_EVALUATION_CONFIG_VERSION") == "v1"
+    assert field("NEXT_EVALUATION_CONFIG_STATUS") == "TERMINAL_NEGATIVE_EVIDENCE_REGISTERED"
     assert field("POLICY_INVARIANT") == "risk_per_trade <= max_position_pct * stop_pct"
     assert field("OPERATOR_POLICY_DECISION") == (
         "AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0"
@@ -572,7 +584,9 @@ def test_registry_v2_reevaluation_complete() -> None:
     assert str(MACD_EVIDENCE) in field("INVALIDATED_EVALUATION_REF")
     assert str(V2_EVIDENCE) in field("INVALIDATED_V2_EVALUATION_REF")
     assert str(ROOT_CAUSE_EVIDENCE) in field("ROOT_CAUSE_EVIDENCE_REF")
-    assert field("NEXT_EVALUATION_CONFIG_PATH") == "NONE"
+    assert field("NEXT_EVALUATION_CONFIG_PATH").replace("&#47;", "/") == (
+        "config/ops/step29m_okx_inst_eth_usdt_perp_vol_breakout_v1_economic_evaluation_v1.json"
+    )
     assert field("STEP29M_REGISTERED_STRATEGY_FLEET_STATUS") == (
         "EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS"
     )
