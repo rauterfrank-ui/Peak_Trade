@@ -102,20 +102,22 @@
       "fail_finding": "net_profit_factor_not_improved_despite_entry_eligibility_divergence",
       "contract_ref": "config/research/adx_range_admission_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
       "evidence_ref": "docs/evidence/evaluate_adx_range_admission_mr_eligibility_development_v1/"
-    }
-  ],
-  "preregistered_hypotheses": [
+    },
     {
       "hypothesis_id": "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-      "status": "DEFINITION_ONLY_PREREGISTERED",
-      "queue_status": "PREREGISTERED_AWAITING_EVALUATION_GO",
-      "evaluation_authorized": false,
-      "development_run_count": 0,
+      "status": "TERMINAL_FAIL",
+      "treatment_type": "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER",
       "feature_family": "price_vs_ma_trend_alignment",
-      "priority_rank_at_preregistration": 1,
-      "contract_ref": "config/research/ma_trend_alignment_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json"
+      "feature_ids": [
+        "close_vs_sma_50h"
+      ],
+      "fail_reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+      "fail_finding": "net_profit_factor_not_improved_despite_entry_eligibility_divergence",
+      "contract_ref": "config/research/ma_trend_alignment_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+      "evidence_ref": "docs/evidence/evaluate_ma_trend_alignment_mr_eligibility_development_v1/"
     }
   ],
+  "preregistered_hypotheses": [],
   "forbidden_feature_families_for_open_candidates": [
     "multi_feature_absolute_threshold_regime_classifier",
     "atr_rolling_percentile_midband",
@@ -293,12 +295,12 @@
     "open_candidate_count_min": 2,
     "open_candidate_count_max": 4
   },
-  "governance_note": "MA trend-alignment is DEFINITION_ONLY_PREREGISTERED and awaiting evaluation GO; evaluation of the next eligible open candidate is NOT authorized by this transition.",
+  "governance_note": "MA trend-alignment completed its single authorized DEVELOPMENT evaluation (run count 1/1) and is now TERMINAL_FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED, entry-eligibility divergence observed); no retuning, no holdout access, and no second run occurred. Evaluation of the next eligible open candidate (MACD histogram countertrend) is NOT authorized by this transition and requires a separate preregistration PR and operator GO.",
   "explicit_non_actions": [
     "NO_PREREGISTRATION_IN_THIS_SLICE",
-    "NO_BACKTEST_IN_THIS_SLICE",
-    "NO_ECONOMIC_METRICS_COMPUTATION",
-    "NO_DEVELOPMENT_PANEL_RAW_ACCESS_IN_THIS_SLICE",
+    "NO_BACKTEST_IN_THIS_SLICE_FOR_OPEN_CANDIDATES",
+    "NO_ECONOMIC_METRICS_COMPUTATION_FOR_OPEN_CANDIDATES",
+    "NO_DEVELOPMENT_PANEL_RAW_ACCESS_FOR_OPEN_CANDIDATES",
     "NO_PARAMETER_TUNING",
     "NO_VARIANT_SEARCH",
     "NO_HOLDOUT_ACCESS",
@@ -307,7 +309,9 @@
     "NO_PROMOTION_CLAIM",
     "NO_RETUNE_OF_TERMINAL_HYPOTHESES",
     "NO_MULTI_GATE_COMBINATION",
-    "NO_AUTO_EVALUATION_OF_NEXT_ELIGIBLE"
+    "NO_AUTO_EVALUATION_OF_NEXT_ELIGIBLE",
+    "NO_SECOND_EVALUATION_RUN_OF_MA_TREND_ALIGNMENT",
+    "NO_HOLDOUT_ACCESS_FOR_MA_TREND_ALIGNMENT_AFTER_FAIL"
   ],
-  "next_canonical_step": "REVIEW_AND_MERGE_MA_TREND_ALIGNMENT_PREREGISTRATION_BEFORE_ANY_EVALUATION"
+  "next_canonical_step": "REVIEW_AND_MERGE_MA_TREND_ALIGNMENT_TERMINAL_FAIL_TRANSITION_BEFORE_ANY_FURTHER_PREREGISTRATION"
 }

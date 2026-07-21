@@ -1,0 +1,7 @@
+{
+  "contract": "75f6846c5c3a5e189d6366d97e3067e4737c127df25ce96ab97572070e110bd0",
+  "entry_eligibility_gate_v1.py": "27dce1b6f7a70aabb646d249ccc702eb8e21cf1b95fbd41dbec96b65f94c06ea",
+  "feature_formula_sha256": "3de062e653476d94f1c95948c769aa7f25a66fb18d0392bbb16c5a50a6811643",
+  "ma_trend_alignment_eligibility_filter_v1.py": "af151a472713d8cea9e6e7bd1f410a008ad6e83fb8942438f7262608f971dce0",
+  "panel_runner_v1.py": "26102c96eaac31a5d784035752c33d81b9565a7e9757da11a9ea47c085b30fd0"
+}
