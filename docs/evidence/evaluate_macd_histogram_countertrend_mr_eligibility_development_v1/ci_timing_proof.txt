@@ -1,0 +1,10 @@
+CI_TIMING_PROOF
+TARGET_MAX_SECONDS=840
+HARD_STOP_SECONDS=900
+baseline_wallclock_seconds=177.18886008299998
+treatment_wallclock_seconds=180.033088916
+total_wallclock_seconds≈357.221948999
+observed_shell_wallclock_seconds=359
+within_budget=true
+evaluation_run_count=1
+NO_RETRY

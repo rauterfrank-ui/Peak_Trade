@@ -44,9 +44,9 @@ def test_repo_backlog_validates() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
     assert report["status"] == "OPEN_BACKLOG"
-    assert report["terminal_hypothesis_count"] == 5
+    assert report["terminal_hypothesis_count"] == 6
     assert report["open_candidate_count"] == 1
-    assert report["preregistered_count"] == 1
+    assert report["preregistered_count"] == 0
     assert report["development_run_count"] == 0
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
@@ -56,21 +56,12 @@ def test_repo_backlog_validates() -> None:
     )
 
 
-def test_macd_preregistered_and_not_open() -> None:
+def test_macd_terminal_and_not_open() -> None:
     backlog = _load(BACKLOG_PATH)
     open_ids = {c["hypothesis_id"] for c in backlog["open_candidates"]}
     assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in open_ids
     assert "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in open_ids
-    prereg = backlog["preregistered_hypotheses"]
-    assert len(prereg) == 1
-    assert (
-        prereg[0]["hypothesis_id"]
-        == "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
-    )
-    assert prereg[0]["status"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert prereg[0]["queue_status"] == "PREREGISTERED_AWAITING_EVALUATION_GO"
-    assert prereg[0]["evaluation_authorized"] is False
-    assert prereg[0]["development_run_count"] == 0
+    assert backlog["preregistered_hypotheses"] == []
     assert (
         "macd_histogram_sign_countertrend"
         in backlog["forbidden_feature_families_for_open_candidates"]
@@ -82,11 +73,21 @@ def test_macd_preregistered_and_not_open() -> None:
     ma = terminals["MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"]
     assert ma["status"] == "TERMINAL_FAIL"
     assert ma["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    macd = terminals["MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"]
+    assert macd["status"] == "TERMINAL_FAIL"
+    assert macd["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert macd["fail_finding"] == (
+        "net_profit_factor_not_improved_despite_entry_eligibility_divergence"
+    )
+    assert macd["feature_family"] == "macd_histogram_sign_countertrend"
+    assert macd["evidence_ref"].endswith(
+        "evaluate_macd_histogram_countertrend_mr_eligibility_development_v1/"
+    )
     assert backlog["verdict"] == (
-        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ONE_PREREGISTERED"
+        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_ZERO_PREREGISTERED_ADX_DI_NEXT_ELIGIBLE"
     )
     assert backlog["next_canonical_step"] == (
-        "REVIEW_AND_MERGE_MACD_HISTOGRAM_COUNTERTREND_PREREGISTRATION_BEFORE_ANY_EVALUATION"
+        "REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_V1"
     )
 
 
@@ -100,6 +101,11 @@ def test_all_terminal_hypotheses_captured_unchanged() -> None:
     assert terminals[2]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
     assert terminals[3]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
     assert terminals[4]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert terminals[5]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert (
+        terminals[5]["hypothesis_id"]
+        == "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+    )
 
 
 def test_open_candidate_count_and_unique_ids() -> None:
@@ -258,10 +264,11 @@ def test_governance_doc_marks_definition_only_and_next_eligible() -> None:
     assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
     assert "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
     assert "NEXT_ELIGIBLE_FOR_PREREGISTRATION" in text
-    assert "DEFINITION_ONLY_PREREGISTERED" in text
-    assert "PREREGISTERED_AWAITING_EVALUATION_GO" in text
+    assert "preregistered_hypotheses=[]" in text
     assert (
-        "REVIEW_AND_MERGE_MACD_HISTOGRAM_COUNTERTREND_PREREGISTRATION_BEFORE_ANY_EVALUATION" in text
+        "REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_V1"
+        in text
     )
     assert "EVALUATION_EXECUTED=false" in text
     assert "NOT authorized" in text or "not authorized" in text.lower()
+    assert "No second MACD evaluation run is permitted" in text
