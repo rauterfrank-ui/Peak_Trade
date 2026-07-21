@@ -579,7 +579,14 @@
     "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v4/safety_attestation.md",
     "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v4/timing_proof.txt",
     "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v4/timing_proof_meta.txt",
-    "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V4.md"
+    "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V4.md",
+    "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v4/__init__.py",
+    "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v4/constants_v4.py",
+    "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v4/measurement_validity_preflight_v4.py",
+    "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v4/panel_runner_v4.py",
+    "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v4.py",
+    "tests/research/test_bollinger_mr_midband_exit_efficiency_development_evaluation_v4.py",
+    "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V4.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -621,7 +628,8 @@
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V2_WIRING",
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_V3_PREREGISTRATION_WIRING",
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V3_WIRING",
-    "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_V4_PREREGISTRATION_WIRING"
+    "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_V4_PREREGISTRATION_WIRING",
+    "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V4_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -688,6 +696,7 @@
     "Includes evaluation surfaces (constants_v2/panel_runner_v2, runner script, focused tests, governance stub) for exactly one future DEVELOPMENT_ONLY evaluation of Bollinger/MR midband exit-efficiency V2; reuses frozen V1 mechanism/gate/decision modules by import only; no V1 rerun or partial-result reuse; V2 contract remains DEFINITION_ONLY_PREREGISTERED with evaluation_run_count=0 in this slice; no evaluation executed here; evidence directory is created only by a future authorized run (not pre-created); no holdout access; no Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V2.",
     "Includes definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V3 with identical economic/definition semantics to terminal V2/V1; EVALUATION_RUN_COUNT=0; not a V2 or V1 rerun; no V2 partial-result or economic-result import; mandatory EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1 and PANEL_RUNNER_FALSY_ZERO_PREMEASUREMENT_HYGIENE bindings to the already-merged falsy-zero runner correction; V1 and V2 remain terminal unchanged; no evaluation/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V3.",
     "Includes evaluation surfaces (constants_v3/panel_runner_v3, runner script, focused tests, governance stub) and the sole authorized DEVELOPMENT_ONLY evaluation of Bollinger/MR midband exit-efficiency V3 (evaluation_run_count 0\u21921); identical definition to V2/V1; binds EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1 and PANEL_RUNNER_FALSY_ZERO_PREMEASUREMENT_HYGIENE; not a V1/V2 rerun; no V2 partial-result reuse; no holdout; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V3.",
-    "Includes definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V4 after terminal V3 FAIL; EVALUATION_RUN_COUNT=0; presupposes merged MV2 wiring_mod capture-alias open_side binding fix; fail-closed measurement-validity gates; not a V3/V2/V1 rerun; no V3 partial/economic import; V1/V2/V3 remain terminal unchanged; no evaluation/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V4."
+    "Includes definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V4 after terminal V3 FAIL; EVALUATION_RUN_COUNT=0; presupposes merged MV2 wiring_mod capture-alias open_side binding fix; fail-closed measurement-validity gates; not a V3/V2/V1 rerun; no V3 partial/economic import; V1/V2/V3 remain terminal unchanged; no evaluation/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V4.",
+    "Includes evaluation surfaces (constants_v4/measurement_validity_preflight_v4/panel_runner_v4, runner script, focused tests, governance stub) for exactly one future DEVELOPMENT_ONLY evaluation of Bollinger/MR midband exit-efficiency V4; measurement-validity fail-closed preflight; MV2 wiring_mod capture-alias binding fix; V4 contract remains DEFINITION_ONLY_PREREGISTERED with evaluation_run_count=0 in this slice; no evaluation executed here; evidence directory is created only by a future authorized run (not pre-created); not a V1/V2/V3 rerun; no holdout; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V4."
   ]
 }
