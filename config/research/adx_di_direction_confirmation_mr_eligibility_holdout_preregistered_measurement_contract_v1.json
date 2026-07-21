@@ -1,0 +1,424 @@
+{
+  "artifact_kind": "preregistered_holdout_economic_hypothesis_measurement_contract",
+  "artifact_version": "v1",
+  "schema_version": "adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract.v1",
+  "authority_effect": "NONE",
+  "runtime_effect": "NONE",
+  "status": "DEFINITION_ONLY_HOLDOUT_PREREGISTERED",
+  "verdict": "HOLDOUT_HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED_AWAITING_SEPARATE_EXECUTION_GO",
+  "slice_class": "DEFINITION_ONLY",
+  "evaluation_authorized": false,
+  "backtest_authorized": false,
+  "implementation_authorized": false,
+  "holdout_execution_authorized": false,
+  "holdout_data_access_authorized": false,
+  "hypothesis_count": 1,
+  "multiple_testing_budget": 1,
+  "hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+  "development_binding": {
+    "development_result_class": "PASS",
+    "development_result_reason": "ALL_PASS_REQUIRES_MET",
+    "development_run_count": 1,
+    "development_run_limit": 1,
+    "development_contract_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+    "development_evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/",
+    "development_split_intervals_sha256": "a35783bf0268c174dfe585c9839ba45cc6e3835021699786f4490a0d8c9b33db",
+    "development_feature_formula_sha256": "05104afcc41e07d7b14ed8a0e3f2e7bcb97cfabc80cd6ef0c422004136eb36e4",
+    "second_development_run_forbidden": true
+  },
+  "holdout_run_count": 0,
+  "holdout_run_limit": 1,
+  "holdout_runs_allowed": 1,
+  "retry_forbidden": true,
+  "restart_forbidden": true,
+  "post_hoc_threshold_adjustment_forbidden": true,
+  "post_result_tuning_forbidden": true,
+  "optimization_forbidden": true,
+  "variants_forbidden": true,
+  "parameter_sweeps_forbidden": true,
+  "repeat_after_result_inspection_forbidden": true,
+  "reopen_after_terminal_result_forbidden_without_new_hypothesis_id": true,
+  "primary_decision_metric": "NET_PROFIT_FACTOR",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+  "dataset_class": "SEALED_HOLDOUT_FINAL_AUDIT_ONLY",
+  "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "sealed_holdout_evidence_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "sealed_holdout_content_inspection_authorized": false,
+  "holdout_content_inspection_in_this_slice": false,
+  "acquisition_contract_ref": "config/research/regime_gated_standaside_mr_independent_dev_panel_acquisition_contract_v1.json",
+  "acquisition_contract_sha256": "93e60f33eb8d9a62d6f9d98854ae9e934e3caaf3e508dcd87d60e9d80e28a246",
+  "dataset_split_policy_ref": "docs/evidence/archive_failed_bollinger_v2_and_next_hypothesis_v1/dataset_split_policy.json",
+  "universe_scope": {
+    "venue": "OKX",
+    "instrument_class": "LINEAR_USDT_PERPETUAL",
+    "bitcoin_excluded": true,
+    "spot_excluded": true,
+    "frequency": "PT1H",
+    "panel_class": "SEALED_HOLDOUT_FINAL_AUDIT_ONLY"
+  },
+  "allowed_data_sources_after_execution_go_only": [
+    "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+    "offline_economic_reevaluation_sealed_long_panel_v1",
+    "finalized_public_okx_pt1h_ohlcv_bars_only"
+  ],
+  "forbidden_data_sources_in_this_definition_slice": [
+    "any_sealed_holdout_raw_or_derived_artifacts",
+    "live_or_authenticated_account_endpoints",
+    "development_panel_as_holdout_substitute"
+  ],
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "baseline_config_ref": "config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json",
+  "baseline_immutable": true,
+  "treatment": {
+    "treatment_id": "adx_di_direction_confirmation_mr_entry_eligibility_v1",
+    "treatment_type": "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER",
+    "treatment_count": 1,
+    "description": "Identical frozen Wilder ADX(14) +DI/-DI direction-confirmation pre-entry eligibility filter as the development PASS binding. No retune. ADX level unused.",
+    "acts_before_entry_decision": true,
+    "reporting_or_attribution_only": false,
+    "no_new_direction_authority": true,
+    "no_new_switch_authority": true,
+    "no_new_risk_authority": true,
+    "no_new_sizing_authority": true,
+    "no_new_execution_authority": true,
+    "runtime_implementation_in_this_slice": false,
+    "identical_to_development_treatment": true
+  },
+  "control_arm": {
+    "control_id": "unfiltered_canonical_bollinger_v2_baseline",
+    "description": "Identical Master-V2 / Double-Play / bollinger_bands/v2 / execution / cost / stop / ledger chain with no pre-entry eligibility filter.",
+    "eligibility_filter_applied": false,
+    "identical_to_development_control": true
+  },
+  "shared_trading_semantics": {
+    "identical_for_treatment_and_control": true,
+    "identical_to_development_binding": true,
+    "signal_geometry_unchanged": true,
+    "direction_authority_unchanged": true,
+    "entry_side_unchanged": true,
+    "exit_semantics_unchanged": true,
+    "sizing_unchanged": true,
+    "risk_unchanged": true,
+    "execution_unchanged": true,
+    "fees_unchanged": true,
+    "slippage_unchanged": true,
+    "stops_unchanged": true,
+    "ledger_unchanged": true,
+    "master_v2_and_double_play_sole_authority": true
+  },
+  "eligibility_filter": {
+    "filter_id": "canonical_adx_di_direction_confirmation_entry_eligibility_v1",
+    "identical_to_development_filter": true,
+    "derivation": "Frozen carry-forward from development PASS; uniquely from config.toml [strategies.trend_following.defaults] and TrendFollowingStrategy._compute_adx; ADX level unused.",
+    "source_refs": [
+      "config/config.toml#[strategies.trend_following.defaults]",
+      "src/strategies/trend_following.py::TrendFollowingStrategy._compute_adx",
+      "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json"
+    ],
+    "primitive": "adx_di_direction_confirmation_filter",
+    "mode": "filter",
+    "calculator_ssot": "src/strategies/trend_following.py",
+    "calculator_method": "WILDER_ADX_PLUS_DI_MINUS_DI",
+    "feature_formula_sha256": "05104afcc41e07d7b14ed8a0e3f2e7bcb97cfabc80cd6ef0c422004136eb36e4",
+    "lookahead_forbidden": true,
+    "future_bars_forbidden": true,
+    "max_feature_lookback_hours": 28,
+    "frozen_parameters": {
+      "adx_period": 14,
+      "uses_adx_level": false,
+      "uses_di_order_only": true,
+      "side_aware": true,
+      "warmup_bars": 28,
+      "tie_policy": "STAND_ASIDE_WHEN_PLUS_DI_EQUALS_MINUS_DI",
+      "nan_policy": "STAND_ASIDE_WHEN_DI_NONFINITE"
+    },
+    "features": [
+      {
+        "feature_id": "plus_di_14h",
+        "lookback_hours": 28,
+        "causal": true,
+        "definition": "Wilder +DI(14) from TrendFollowingStrategy._compute_adx over trailing finalized PT1H high/low/close"
+      },
+      {
+        "feature_id": "minus_di_14h",
+        "lookback_hours": 28,
+        "causal": true,
+        "definition": "Wilder -DI(14) from TrendFollowingStrategy._compute_adx over trailing finalized PT1H high/low/close"
+      }
+    ],
+    "eligibility_rule": "At finalized bar t, before new entry: long ELIGIBLE iff both DI finite AND minus_DI > plus_DI; short ELIGIBLE iff both DI finite AND plus_DI > minus_DI; tie/non-finite/warmup STAND_ASIDE. ADX level unused.",
+    "threshold_adjustment_forbidden_after_preregistration": true,
+    "forbidden_prior_feature_ids": [
+      "atr_14h",
+      "atr_14h_rolling_percentile_rank_100h",
+      "realized_vol_168h",
+      "range_compression_72h",
+      "trend_strength_168h",
+      "rsi_14h",
+      "adx_14h",
+      "close_vs_sma_50h",
+      "macd_histogram_12_26_9"
+    ]
+  },
+  "entry_eligibility_divergence_requirement": {
+    "required": true,
+    "measurement_condition": "On the holdout decision segment, at least one baseline entry-candidate timestamp must have control_eligible != treatment_eligible.",
+    "if_absent_result_class": "FAIL",
+    "if_absent_reason_code": "identical_arms_no_entry_eligibility_divergence",
+    "reporting_only_gate_forbidden": true
+  },
+  "common_panel_bounds": {
+    "start": "2023-08-16T05:55:00Z",
+    "end_exclusive": "2024-09-01T00:00:00Z",
+    "frequency": "PT1H",
+    "source": "sealed_holdout_opaque_exclusion_and_dataset_split_policy_ssot_only",
+    "content_hash_from_registry": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+    "sealed_manifest_sha256_from_registry": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56",
+    "instrument_count_from_registry": 65
+  },
+  "splits": {
+    "method": "SEALED_HOLDOUT_SINGLE_FINAL_AUDIT_PANEL_V1",
+    "holdout_final_audit": {
+      "start": "2023-08-16T05:55:00Z",
+      "end_exclusive": "2024-09-01T00:00:00Z"
+    },
+    "split_intervals_sha256": "e29eeb4e9d264e1529a0c7419d707ce84df7919ee6ed95a833612fca46a7184d",
+    "holdout_split_definition": {
+      "method": "SEALED_HOLDOUT_SINGLE_FINAL_AUDIT_PANEL_V1",
+      "evidence_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+      "dataset_class": "SEALED_HOLDOUT_FINAL_AUDIT_ONLY",
+      "role": "FINAL_AUDIT_ONLY",
+      "period_start": "2023-08-16T05:55:00Z",
+      "period_end_exclusive": "2024-09-01T00:00:00Z",
+      "instrument_count": 65,
+      "content_hash_from_registry": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+      "sealed_manifest_sha256_from_registry": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56",
+      "decision_segment": "full_sealed_holdout_panel",
+      "intervals": {
+        "holdout_final_audit": {
+          "start": "2023-08-16T05:55:00Z",
+          "end_exclusive": "2024-09-01T00:00:00Z"
+        }
+      },
+      "overlap_with_development_forbidden": true,
+      "development_panel_end_exclusive": "2023-08-16T05:55:00Z",
+      "bitcoin_excluded": true,
+      "spot_excluded": true,
+      "venue": "OKX",
+      "instrument_class": "LINEAR_USDT_PERPETUAL",
+      "frequency": "PT1H",
+      "source_ssot_refs": [
+        "config/research/regime_gated_standaside_mr_independent_dev_panel_acquisition_contract_v1.json#sealed_holdout_opaque_exclusion",
+        "docs/evidence/archive_failed_bollinger_v2_and_next_hypothesis_v1/dataset_split_policy.json#sealed_holdout",
+        "config/research/bollinger_bands_v2_sealed_long_panel_terminal_economic_fail_archive_and_next_hypothesis_v1.json"
+      ]
+    },
+    "decision_segment": "full_sealed_holdout_panel",
+    "overlap_forbidden": true,
+    "chronological_train_validation_forbidden_on_holdout": true,
+    "max_feature_lookback_hours": 28,
+    "max_holding_horizon_hours": 48
+  },
+  "seeds": {
+    "primary_seed": 20220601,
+    "bootstrap_seed": 20220601,
+    "seed_adjustment_forbidden": true,
+    "identical_to_development_seed": true
+  },
+  "cost_model": {
+    "fee_bps": 10.0,
+    "slippage_bps": 5.0,
+    "half_spread_bps": 5.0,
+    "roundtrip_reference_bps": 30.0,
+    "fixed": true,
+    "cost_drag_fully_included_in_net_metrics": true,
+    "adjustment_forbidden_after_preregistration": true,
+    "identical_to_development_cost_model": true
+  },
+  "stop_and_ledger_semantics": {
+    "unchanged_from_baseline_binding": true,
+    "stop_pct": 0.025,
+    "ledger_owner": "unchanged_mv2_research_wiring_closed_trade_and_shared_equity_path",
+    "mutation_forbidden": true,
+    "identical_to_development_stop_ledger": true
+  },
+  "metrics": {
+    "primary": [
+      "NET_RETURN_AFTER_FEES_AND_SLIPPAGE",
+      "PROFIT_FACTOR",
+      "MAX_DRAWDOWN",
+      "SHARPE",
+      "COST_DRAG",
+      "TURNOVER",
+      "TRADE_COUNT",
+      "ENTRY_ELIGIBILITY_DIVERGENCE"
+    ],
+    "comparison": {
+      "baseline": "unchanged_canonical_baseline_config",
+      "treatment_count": 1,
+      "identical_data_splits_costs_seeds_execution_chain": true
+    }
+  },
+  "decision_thresholds": {
+    "minimum_trade_count": 50,
+    "max_trade_count_reduction_fraction_vs_control": 0.5,
+    "materiality_epsilon_net_return_abs": 0.0,
+    "zero_trade_treatment_policy": "If treatment trade_count is 0 while control is evaluable (>= minimum_trade_count), RESULT_CLASS=FAIL (not INCONCLUSIVE).",
+    "pass_requires_all": [
+      "entry_eligibility_divergence_observed == true",
+      "trade_count_treatment >= minimum_trade_count",
+      "trade_count_treatment >= trade_count_control * (1 - max_trade_count_reduction_fraction_vs_control)",
+      "net_profit_factor_treatment > net_profit_factor_control",
+      "net_max_drawdown_treatment >= net_max_drawdown_control",
+      "net_return_treatment > net_return_control",
+      "cost_drag_fully_included_in_net_metrics == true"
+    ],
+    "fail_if_any": [
+      "evaluable AND entry_eligibility_divergence_observed == false",
+      "evaluable AND net_profit_factor_treatment <= net_profit_factor_control",
+      "evaluable AND net_max_drawdown_treatment < net_max_drawdown_control",
+      "evaluable AND net_return_treatment <= net_return_control",
+      "evaluable AND trade_count_treatment < trade_count_control * (1 - max_trade_count_reduction_fraction_vs_control)",
+      "evaluable AND trade_count_treatment == 0",
+      "any_post_hoc_threshold_or_feature_adjustment",
+      "any_second_or_repeated_holdout_run",
+      "any_parameter_sweep_or_variant",
+      "any_retry_after_result_inspection"
+    ],
+    "inconclusive_if_any": [
+      "trade_count_control < minimum_trade_count",
+      "technical_panel_hash_or_load_failure",
+      "feature_warmup_leaves_zero_evaluable_entry_candidates",
+      "contract_or_wiring_integrity_failure_preventing_measurement"
+    ],
+    "inconclusive_never_for_poor_economic_results": true,
+    "threshold_adjustment_forbidden_after_preregistration": true,
+    "decision_segment": "full_sealed_holdout_panel",
+    "on_fail_retuning_forbidden": true,
+    "on_inconclusive_retuning_forbidden": true,
+    "on_pass_retuning_forbidden": true,
+    "on_any_terminal_result_retry_forbidden": true
+  },
+  "terminal_state_transitions": {
+    "PASS": {
+      "terminal": true,
+      "reopen_forbidden_without_new_hypothesis_id": true,
+      "economic_validity_offline_gate_opened": false,
+      "promotion_eligible": false,
+      "strategy_activation_authorized": false,
+      "holdout_run_count_after": 1
+    },
+    "FAIL": {
+      "terminal": true,
+      "reopen_forbidden_without_new_hypothesis_id": true,
+      "retuning_forbidden": true,
+      "economic_validity_offline_gate_opened": false,
+      "promotion_eligible": false,
+      "holdout_run_count_after": 1
+    },
+    "INCONCLUSIVE": {
+      "terminal": true,
+      "reopen_forbidden_without_new_hypothesis_id": true,
+      "retuning_forbidden": true,
+      "economic_validity_offline_gate_opened": false,
+      "promotion_eligible": false,
+      "holdout_run_count_after": 1,
+      "note": "INCONCLUSIVE consumes the single holdout run; no retry."
+    },
+    "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN": {
+      "terminal": true,
+      "retry_forbidden": true,
+      "holdout_run_count_after": 1,
+      "note": "Process/artifact failure also consumes the single authorized run."
+    }
+  },
+  "promotion_and_economic_gate_policy": {
+    "promotion_eligible": false,
+    "promotion_claim_from_holdout_forbidden_in_this_slice": true,
+    "economic_validity_offline_gate_pass": false,
+    "economic_validity_offline_gate_changed": false,
+    "economic_gate_remains_closed_regardless_of_holdout_result": true
+  },
+  "execution_gate": {
+    "requires_separate_explicit_operator_go": true,
+    "operator_go_env": "PEAK_TRADE_ADX_DI_HOLDOUT_EXECUTION_GO",
+    "operator_go_required_value": "true",
+    "definition_only_pr_does_not_authorize_execution": true,
+    "holdout_data_access_forbidden_until_execution_go": true,
+    "execution_go_does_not_open_economic_gate": true,
+    "execution_go_does_not_activate_runtime": true
+  },
+  "runtime_policy": {
+    "runtime_activated": false,
+    "shadow_activated": false,
+    "paper_activated": false,
+    "testnet_activated": false,
+    "live_authorized": false,
+    "orders_allowed": false,
+    "scheduler_authorized": false
+  },
+  "expected_evidence_schema": {
+    "evidence_dir_rel_path": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1/",
+    "required_artifacts_after_execution": [
+      "summary.json",
+      "run_manifest.json",
+      "comparison_decision.json",
+      "baseline_metrics.json",
+      "treatment_metrics.json",
+      "eligibility_attribution.json",
+      "eligibility_filter_formula_freeze.json",
+      "config_snapshot.json",
+      "code_config_hashes.json",
+      "safety_attestation.md",
+      "README.md"
+    ],
+    "summary_schema_version": "evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_summary.v1",
+    "run_manifest_schema_version": "evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_run_manifest.v1",
+    "must_record_fields": [
+      "result_class",
+      "holdout_run_count",
+      "holdout_run_limit",
+      "holdout_split_digest",
+      "primary_decision_metric",
+      "baseline_metrics",
+      "treatment_metrics",
+      "decision",
+      "economic_validity_offline_gate_changed",
+      "promotion_eligible",
+      "runtime_activated",
+      "orders_sent"
+    ]
+  },
+  "declared_future_evaluation_targets": {
+    "authorized_in_this_slice": false,
+    "runner_rel_path": "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1.py",
+    "evaluation_package_rel_path": "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v1/",
+    "evidence_dir_rel_path": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1/",
+    "config_rel_path": "config/research/adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract_v1.json"
+  },
+  "development_contract_holdout_policy_unchanged": {
+    "development_contract_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+    "development_holdout_forbidden_must_remain_true": true,
+    "development_sealed_holdout_content_inspection_authorized_must_remain_false": true,
+    "development_holdout_forbidden_in_this_slice_must_remain_true": true
+  },
+  "explicit_non_actions": [
+    "NO_HOLDOUT_EXECUTION_IN_THIS_SLICE",
+    "NO_HOLDOUT_DATA_ACCESS_IN_THIS_SLICE",
+    "NO_BACKTEST_IN_THIS_SLICE",
+    "NO_ECONOMIC_METRICS_COMPUTATION",
+    "NO_PARAMETER_TUNING",
+    "NO_VARIANT_SEARCH",
+    "NO_RETRY",
+    "NO_POST_RESULT_TUNING",
+    "NO_ECONOMIC_GATE_OPEN",
+    "NO_PROMOTION_CLAIM",
+    "NO_RUNTIME_ACTIVATION",
+    "NO_PRODUCTIVE_TRADING_LOGIC_CHANGE",
+    "NO_SECOND_HOLDOUT_RUN",
+    "NO_REOPEN_WITHOUT_NEW_HYPOTHESIS_ID"
+  ],
+  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN",
+  "holdout_preregistration_digest": "014a6955354be19d0abbae65269a816743347975647b448f58ea61ad37647e6f"
+}

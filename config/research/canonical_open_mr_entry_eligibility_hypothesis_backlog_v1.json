@@ -141,7 +141,15 @@
       "pass_reason": "ALL_PASS_REQUIRES_MET",
       "pass_finding": "all_preregistered_pass_requires_met_with_entry_eligibility_divergence",
       "contract_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
-      "evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/"
+      "evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/",
+      "holdout_run_count": 0,
+      "holdout_run_limit": 1,
+      "holdout_preregistration_status": "DEFINITION_ONLY_HOLDOUT_PREREGISTERED",
+      "holdout_preregistration_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract_v1.json",
+      "holdout_preregistration_evidence_ref": "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v1/",
+      "holdout_split_digest": "e29eeb4e9d264e1529a0c7419d707ce84df7919ee6ed95a833612fca46a7184d",
+      "holdout_preregistration_digest": "014a6955354be19d0abbae65269a816743347975647b448f58ea61ad37647e6f",
+      "holdout_executed": false
     }
   ],
   "preregistered_hypotheses": [],
@@ -222,17 +230,19 @@
     "open_candidate_count_min": 0,
     "open_candidate_count_max": 4
   },
-  "governance_note": "ADX DI direction confirmation completed its single authorized DEVELOPMENT evaluation with RESULT_CLASS=PASS / ALL_PASS_REQUIRES_MET. Hypothesis is TERMINAL_PASS. Economic offline gate remains closed; promotion remains closed; holdout remains forbidden without a separate operator GO. Six prior hypotheses remain TERMINAL_FAIL. Open candidate queue remains empty. No second ADX DI evaluation run is permitted.",
+  "governance_note": "ADX DI direction confirmation completed its single authorized DEVELOPMENT evaluation with RESULT_CLASS=PASS / ALL_PASS_REQUIRES_MET and is TERMINAL_PASS. A definition-only holdout preregistration is now registered (holdout_run_count=0, holdout_run_limit=1). Holdout execution remains unauthorized without a separate operator GO. Economic offline gate remains closed; promotion remains closed. Six prior hypotheses remain TERMINAL_FAIL. Open candidate queue remains empty. No second ADX DI development run is permitted.",
   "explicit_non_actions": [
     "NO_SECOND_EVALUATION_RUN_OF_ADX_DI_DIRECTION_CONFIRMATION",
     "NO_POST_RESULT_TUNING",
-    "NO_HOLDOUT_ACCESS",
+    "NO_HOLDOUT_EXECUTION_WITHOUT_SEPARATE_OPERATOR_GO",
+    "NO_HOLDOUT_DATA_ACCESS_IN_DEFINITION_SLICE",
     "NO_ECONOMIC_GATE_OPEN_FROM_DEVELOPMENT_PASS",
+    "NO_ECONOMIC_GATE_OPEN_FROM_HOLDOUT_PREREGISTRATION",
     "NO_PROMOTION_CLAIM",
     "NO_RUNTIME_ACTIVATION",
     "NO_PRODUCTIVE_TRADING_LOGIC_CHANGE",
     "NO_REOPEN_OF_TERMINAL_HYPOTHESES",
     "NO_AUTO_HOLDOUT_FROM_DEVELOPMENT_PASS"
   ],
-  "next_canonical_step": "REVIEW_AND_MERGE_ADX_DI_DEVELOPMENT_EVALUATION_THEN_SEPARATE_HOLDOUT_GO_IF_AUTHORIZED"
+  "next_canonical_step": "REVIEW_AND_MERGE_ADX_DI_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
 }

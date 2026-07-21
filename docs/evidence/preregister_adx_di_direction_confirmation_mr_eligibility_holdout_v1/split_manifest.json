@@ -1,0 +1,49 @@
+{
+  "schema_version": "preregister_adx_di_direction_confirmation_mr_eligibility_holdout_split_manifest.v1",
+  "method": "SEALED_HOLDOUT_SINGLE_FINAL_AUDIT_PANEL_V1",
+  "panel_start": "2023-08-16T05:55:00Z",
+  "panel_end_exclusive": "2024-09-01T00:00:00Z",
+  "holdout_final_audit": {
+    "start": "2023-08-16T05:55:00Z",
+    "end_exclusive": "2024-09-01T00:00:00Z"
+  },
+  "split_intervals_sha256": "e29eeb4e9d264e1529a0c7419d707ce84df7919ee6ed95a833612fca46a7184d",
+  "holdout_split_definition": {
+    "method": "SEALED_HOLDOUT_SINGLE_FINAL_AUDIT_PANEL_V1",
+    "evidence_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_chrono_3y_v1",
+    "dataset_class": "SEALED_HOLDOUT_FINAL_AUDIT_ONLY",
+    "role": "FINAL_AUDIT_ONLY",
+    "period_start": "2023-08-16T05:55:00Z",
+    "period_end_exclusive": "2024-09-01T00:00:00Z",
+    "instrument_count": 65,
+    "content_hash_from_registry": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+    "sealed_manifest_sha256_from_registry": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56",
+    "decision_segment": "full_sealed_holdout_panel",
+    "intervals": {
+      "holdout_final_audit": {
+        "start": "2023-08-16T05:55:00Z",
+        "end_exclusive": "2024-09-01T00:00:00Z"
+      }
+    },
+    "overlap_with_development_forbidden": true,
+    "development_panel_end_exclusive": "2023-08-16T05:55:00Z",
+    "bitcoin_excluded": true,
+    "spot_excluded": true,
+    "venue": "OKX",
+    "instrument_class": "LINEAR_USDT_PERPETUAL",
+    "frequency": "PT1H",
+    "source_ssot_refs": [
+      "config/research/regime_gated_standaside_mr_independent_dev_panel_acquisition_contract_v1.json#sealed_holdout_opaque_exclusion",
+      "docs/evidence/archive_failed_bollinger_v2_and_next_hypothesis_v1/dataset_split_policy.json#sealed_holdout",
+      "config/research/bollinger_bands_v2_sealed_long_panel_terminal_economic_fail_archive_and_next_hypothesis_v1.json"
+    ]
+  },
+  "content_hash_from_registry": "7bcda794ae2a355c6f36b2ea04703f39078063458f52034add44bec5644206bb",
+  "sealed_manifest_sha256_from_registry": "f4c616c556ff3f2500bb5deff2070c5ee9c4b6a5d5d6ca5da3dc7aca1e8a3e56",
+  "instrument_count_from_registry": 65,
+  "overlap_with_development": false,
+  "derived_from_results": false,
+  "holdout_data_accessed": false,
+  "source": "existing_ssot_registry_metadata_only"
+}

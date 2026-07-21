@@ -66,6 +66,10 @@ def test_adx_di_terminal_pass_and_queue_empty() -> None:
     assert adx["status"] == "TERMINAL_PASS"
     assert adx["pass_reason"] == "ALL_PASS_REQUIRES_MET"
     assert adx["feature_family"] == "adx_di_direction_confirmation"
+    assert adx["holdout_run_count"] == 0
+    assert adx["holdout_run_limit"] == 1
+    assert adx["holdout_preregistration_status"] == "DEFINITION_ONLY_HOLDOUT_PREREGISTERED"
+    assert adx["holdout_executed"] is False
     assert adx["evidence_ref"].endswith(
         "evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/"
     )
@@ -78,7 +82,7 @@ def test_adx_di_terminal_pass_and_queue_empty() -> None:
         "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_EMPTY_AFTER_ADX_DI_TERMINAL_PASS"
     )
     assert backlog["next_canonical_step"] == (
-        "REVIEW_AND_MERGE_ADX_DI_DEVELOPMENT_EVALUATION_THEN_SEPARATE_HOLDOUT_GO_IF_AUTHORIZED"
+        "REVIEW_AND_MERGE_ADX_DI_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
     )
 
 
