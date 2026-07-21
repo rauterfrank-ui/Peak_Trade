@@ -3,7 +3,7 @@
 ---
 docs_token: DOCS_TOKEN_CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1
 STATUS: OPEN_BACKLOG
-scope: research, offline-only, non-authorizing, terminal-closeout
+scope: research, offline-only, non-authorizing, definition-only
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
@@ -12,9 +12,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 ## Status
 
 `OPEN_BACKLOG` — versioned canonical SSOT for Mean-Reversion exit-efficiency
-research candidates. Open preregistered queue is empty after the sole midband
-hypothesis terminated as infrastructure inconclusive. No rerun under that
-preregistration. No holdout access. No runtime activation. No productive
+research candidates. Exactly one `DEFINITION_ONLY_PREREGISTERED` DEVELOPMENT_ONLY
+hypothesis (V2) is open. V1 remains terminal infrastructure-inconclusive and is
+not a rerun target. No holdout access. No runtime activation. No productive
 trading-logic mutation.
 
 ## Binding
@@ -41,19 +41,35 @@ Exactly one:
 
 ## Preregistered hypotheses
 
-Empty.
+Exactly one:
+
+- `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V2`
+  — `DEFINITION_ONLY_PREREGISTERED`
+  — `EVALUATION_RUN_COUNT=0`
+  — `EVALUATION_STARTED=false`
+  — `EVALUATION_COMPLETED=false`
+  — `RESULT_CLASS=NOT_EVALUATED`
+  — `ECONOMIC_VERDICT=NOT_EVALUATED`
+  — `V2_IS_RERUN_OF_V1=false`
+  — `V1_PARTIAL_RESULTS_REUSED=false`
+  — identical definition semantics to V1
+  — mandatory binding: `EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1`
+  — Contract: `config&#47;research&#47;bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v2.json`
+  — Evidence: `docs&#47;evidence&#47;preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2&#47;`
 
 ## Explicit exclusions
 
+- No V1 rerun under the consumed V1 preregistration
+- No V1 partial-result or checkpoint reuse into V2
 - No parallel SHORT-side hypothesis
 - No holdout candidate
 - No cost-structure-weakening hypothesis
 - No entry-eligibility reopen
-- No V2 preregistration in this closeout slice
+- No automatic evaluation in this definition-only slice
 - Open unpreregistered exit-efficiency candidates: empty
 
 ## Next separate action
 
-Not authorized here: fix generic runner lifecycle&#47;observability synthetically,
-then optionally consider a separate V2 preregistration with a new hypothesis ID
-and run count 0 under a new Operator-GO.
+Review and merge this definition-only V2 preregistration. Any development
+evaluation requires a separate Operator-GO and must use the repaired
+`EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1` surface.

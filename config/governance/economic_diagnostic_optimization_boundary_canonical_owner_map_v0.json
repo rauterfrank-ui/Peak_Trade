@@ -747,6 +747,16 @@
       ],
       "note": "Definition-only preregistration of a single DEVELOPMENT_ONLY Bollinger/MR side-aware middle-band exit-efficiency measurement contract on the sealed DEVELOPMENT_ONLY panel; no backtest, no economic metrics, no holdout access, no productive authority mutation."
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V2": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v2.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v2.py",
+        "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v2.json",
+        "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V2.md"
+      ],
+      "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V2 with identical definition semantics to terminal V1; EVALUATION_RUN_COUNT=0; not a V1 rerun; no V1 partial-result reuse; mandatory EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1 binding; no evaluation/runtime/orders."
+    },
     "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1": {
       "path_prefixes": [
         "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
@@ -754,7 +764,7 @@
         "tests/research/test_canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py",
         "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
       ],
-      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY candidate; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders."
+      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY V2 candidate after V1 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders."
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V1": {
       "path_prefixes": [
