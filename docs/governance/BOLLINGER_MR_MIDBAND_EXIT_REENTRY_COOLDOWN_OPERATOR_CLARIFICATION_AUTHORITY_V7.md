@@ -1,8 +1,8 @@
 ---
 docs_token: DOCS_TOKEN_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7
 STATUS: OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY
-implementation_lifecycle_status: READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION
-scope: research, offline-only, non-authorizing, implementation-clarification overlay
+implementation_lifecycle_status: EVALUATION_AUTHORIZED
+scope: research, offline-only, clarification overlay; evaluation auth via separate ratification
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
@@ -10,10 +10,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 # Bollinger&#47;MR midband exit reentry-cooldown — Operator Clarification Authority V7
 
-> **Non-authorizing overlay.** Clarifies executable measurement&#47;lifecycle semantics for
-> B1–B6 without mutating the immutable V7 preregistration or digest
+> Clarification overlay for B1–B6 without mutating the immutable V7 preregistration or digest
 > `4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680`.
-> `evaluation_authorized=false`. `evaluation_run_count=0`. No evaluation in this slice.
+> Preregistration field `evaluation_authorized` remains `false`.
+> Effective evaluation authorization is a separate ratification SSOT.
+> Lifecycle may be `EVALUATION_AUTHORIZED`. `evaluation_run_count=0` until a separate run GO.
 
 ## Authority
 
@@ -22,7 +23,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 - Module: `src&#47;research&#47;bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority_v7.py`
 - Scope: `IMPLEMENTATION_CLARIFICATION_ONLY`
 - Status marker: `OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY`
-- Implementation lifecycle: `READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION`
+- Implementation lifecycle: `EVALUATION_AUTHORIZED` (via separate ratification; runner not started here)
 
 ## Precedence
 
@@ -45,5 +46,6 @@ B7&#47;B8 are confirmed by authority and fulfilled only via wiring + tests.
 
 ## Explicit non-actions
 
-No evaluation. No panel&#47;holdout access. No run-slot claim. No runtime&#47;orders.
+No evaluation executed by this clarification surface. No holdout access.
 No Protected-Core mutation. No second preregistration.
+Separate Operator-GO still required before the single DEVELOPMENT evaluation run.

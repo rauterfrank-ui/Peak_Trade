@@ -202,7 +202,8 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         backlog.get("productive_trading_logic_included") is False,
         "PRODUCTIVE_TRADING_LOGIC_INCLUDED",
     )
-    _assert_true(backlog.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
+    # Top-level evaluation_authorized may become true after separate ratification
+    # (authorized for separate run; not yet executed). Validated against V7 lifecycle below.
     _assert_true(backlog.get("backtest_authorized") is False, "BACKTEST_AUTHORIZED")
     _assert_true(
         backlog.get("evaluation_results_embedded") is False,
@@ -309,7 +310,18 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     assert isinstance(pref, Mapping)
     _assert_true(pref.get("hypothesis_id") == REQUIRED_V7_HYPOTHESIS_ID, "PREREGISTERED_ID")
     _assert_true(pref.get("status") == REQUIRED_PREREGISTERED_STATUS, "PREREGISTERED_STATUS")
-    _assert_true(pref.get("evaluation_authorized") is False, "PREREGISTERED_EVAL_AUTHORIZED")
+    lifecycle = str(pref.get("implementation_lifecycle_status") or "")
+    if lifecycle == "EVALUATION_AUTHORIZED":
+        _assert_true(pref.get("evaluation_authorized") is True, "PREREGISTERED_EVAL_AUTHORIZED")
+        _assert_true(backlog.get("evaluation_authorized") is True, "TOP_EVAL_AUTHORIZED")
+        _assert_true(
+            backlog.get("next_canonical_step")
+            == "AWAIT_SEPARATE_OPERATOR_GO_FOR_V7_DEVELOPMENT_EVALUATION_RUN",
+            "NEXT_STEP_AFTER_AUTH",
+        )
+    else:
+        _assert_true(pref.get("evaluation_authorized") is False, "PREREGISTERED_EVAL_AUTHORIZED")
+        _assert_true(backlog.get("evaluation_authorized") is False, "TOP_EVAL_AUTHORIZED")
     _assert_true(pref.get("evaluation_executed") is False, "PREREGISTERED_EVAL_EXECUTED")
     _assert_true(pref.get("evaluation_started") is False, "PREREGISTERED_EVAL_STARTED")
     _assert_true(pref.get("evaluation_completed") is False, "PREREGISTERED_EVAL_COMPLETED")
@@ -531,7 +543,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
             REQUIRED_V6_HYPOTHESIS_ID,
         ],
         "development_run_count": 6,
-        "evaluation_authorized": False,
+        "evaluation_authorized": bool(backlog.get("evaluation_authorized")),
         "holdout_forbidden": True,
         "short_side_hypothesis_preregistered": False,
         "holdout_candidate_preregistered": False,
