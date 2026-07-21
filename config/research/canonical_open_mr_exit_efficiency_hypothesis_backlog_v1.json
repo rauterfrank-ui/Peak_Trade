@@ -94,6 +94,11 @@
       "contract_ref": "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v7.json",
       "governance_ref": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V7.md",
       "evidence_ref": "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v7/",
+      "operator_clarification_authority_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7",
+      "operator_clarification_authority_ref": "config/research/bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority_v7.json",
+      "operator_clarification_authority_digest": "cb45c1aff8f845b7620748c786a14bc5af4793803d80dc1c16426670da419235",
+      "operator_decisions_status": "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
+      "implementation_lifecycle_status": "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION",
       "runtime_implementation_in_this_slice": false,
       "identical_economic_hypothesis_to_development_v6": false,
       "predecessor_partial_metrics_used": false
@@ -119,7 +124,7 @@
     "preregistered_count_exact": 1,
     "open_unpreregistered_count_exact": 0
   },
-  "governance_note": "Exactly one DEFINITION_ONLY_PREREGISTERED exit-efficiency hypothesis (V7 reentry-cooldown). V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE; V3 terminal FAIL; V4/V5 terminal INFRASTRUCTURE_FAILURE; V6 terminal FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED) after one authorized DEVELOPMENT evaluation with evidence-only failure attribution completed. V7 evaluation_run_count=0; no V1-V6 rerun; no V7 evaluation in this slice; no V8 auto-create. Economic offline gate closed; promotion closed; no runtime/orders.",
+  "governance_note": "Exactly one DEFINITION_ONLY_PREREGISTERED exit-efficiency hypothesis (V7 reentry-cooldown) with Operator Clarification Authority B1-B6 recorded (implementation lifecycle READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION). V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE; V3 terminal FAIL; V4/V5 terminal INFRASTRUCTURE_FAILURE; V6 terminal FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED) after one authorized DEVELOPMENT evaluation with evidence-only failure attribution completed. V7 evaluation_run_count=0; evaluation_authorized=false; no V1-V6 rerun; no V7 evaluation in this slice; no V8 auto-create. Economic offline gate closed; promotion closed; no runtime/orders.",
   "explicit_non_actions": [
     "NO_V1_RERUN",
     "NO_V1_PARTIAL_RESULT_REUSE",
