@@ -1,0 +1,12 @@
+{
+  "economic_verdict": "NOT_EVALUATED",
+  "evaluable": false,
+  "evaluation_run_count": 1,
+  "fail": false,
+  "holdout_data_accessed": false,
+  "pass": false,
+  "reason": "PREMEASUREMENT_GATE_FALSE_POSITIVE_ZERO_OR_SENTINEL_CONTRACT_EVALUATION_RUN_COUNT_NOT_ZERO",
+  "rerun_allowed": false,
+  "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+  "schema_version": "bollinger_mr_midband_exit_efficiency_comparison_decision.v2"
+}
