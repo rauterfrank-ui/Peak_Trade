@@ -343,6 +343,29 @@
     "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/safety_attestation.md",
     "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/timing_proof.txt",
     "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/__init__.py",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/adx_di_direction_confirmation_eligibility_filter_v1.py",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/decision_v1.py",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/entry_eligibility_gate_v1.py",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/panel_runner_v1.py",
+    "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1.py",
+    "tests/research/test_adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1.py",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/README.md",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/summary.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/baseline_metrics.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/treatment_metrics.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/comparison_decision.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/eligibility_attribution.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/eligibility_filter_formula_freeze.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/instrument_attribution.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/config_snapshot.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/code_config_hashes.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/run_manifest.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/run_stdout.txt",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/safety_attestation.md",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/ci_timing_proof.txt",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/determinism_repro.txt",
+    "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md",
     "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json",
     "src/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.py",
     "tests/research/test_canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.py",
@@ -377,7 +400,8 @@
     "TECHNICAL_ADX_RANGE_ADMISSION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
     "TECHNICAL_MA_TREND_ALIGNMENT_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
     "TECHNICAL_MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
-    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING"
+    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
+    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -433,6 +457,7 @@
     "Includes definition-only preregistration of a single ADX(14) range-admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to failed regime-gated, ATR-percentile, and RSI-exhaustion mechanisms; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_RANGE_ADMISSION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
     "Includes definition-only preregistration of a single SMA(50) side-aware with-trend admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to four prior FAILs (regime, ATR, RSI, ADX); backlog transition moves MA to preregistered awaiting evaluation GO and promotes MACD to NEXT_ELIGIBLE without authorizing evaluation; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: MA_TREND_ALIGNMENT_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
     "Includes definition-only preregistration of a single MACD(12,26,9) histogram-sign countertrend admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to five prior FAILs (regime, ATR, RSI, ADX, MA); backlog transition moves MACD to preregistered awaiting evaluation GO and promotes ADX DI to NEXT_ELIGIBLE without authorizing evaluation; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
-    "Includes definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); backlog transition moves ADX DI to preregistered awaiting evaluation GO with empty open queue without authorizing evaluation; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1."
+    "Includes definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); backlog transition moves ADX DI to preregistered awaiting evaluation GO with empty open queue without authorizing evaluation; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
+    "Includes single preregistered DEVELOPMENT evaluation of Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1."
   ]
 }

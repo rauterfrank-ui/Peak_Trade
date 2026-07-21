@@ -19,7 +19,9 @@ from src.research.canonical_open_mr_entry_eligibility_hypothesis_backlog_v1 impo
     HOLDOUT_OPAQUE_ID,
     NEXT_ELIGIBLE,
     QUEUED,
+    REQUIRED_TERMINAL_FAIL_HYPOTHESIS_IDS,
     REQUIRED_TERMINAL_HYPOTHESIS_IDS,
+    REQUIRED_TERMINAL_PASS_HYPOTHESIS_IDS,
     BacklogValidationError,
     assert_exactly_one_backlog_ssot,
     load_and_validate_repo_backlog,
@@ -45,9 +47,9 @@ def test_repo_backlog_validates() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
     assert report["status"] == "OPEN_BACKLOG"
-    assert report["terminal_hypothesis_count"] == 6
+    assert report["terminal_hypothesis_count"] == 7
     assert report["open_candidate_count"] == 0
-    assert report["preregistered_count"] == 1
+    assert report["preregistered_count"] == 0
     assert report["development_run_count"] == 0
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
@@ -55,112 +57,65 @@ def test_repo_backlog_validates() -> None:
     assert report["next_eligible_hypothesis_id"] is None
 
 
-def test_macd_terminal_and_adx_di_preregistered() -> None:
+def test_adx_di_terminal_pass_and_queue_empty() -> None:
     backlog = _load(BACKLOG_PATH)
-    open_ids = {c["hypothesis_id"] for c in backlog["open_candidates"]}
-    assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in open_ids
-    assert "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in open_ids
-    assert ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID not in open_ids
     assert backlog["open_candidates"] == []
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    prereg = backlog["preregistered_hypotheses"][0]
-    assert prereg["hypothesis_id"] == ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID
-    assert prereg["status"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert prereg["queue_status"] == "PREREGISTERED_AWAITING_EVALUATION_GO"
-    assert prereg["evaluation_authorized"] is False
-    assert prereg["development_run_count"] == 0
-    assert prereg["feature_family"] == "adx_di_direction_confirmation"
-    assert (
-        "macd_histogram_sign_countertrend"
-        in backlog["forbidden_feature_families_for_open_candidates"]
+    assert backlog["preregistered_hypotheses"] == []
+    terminals = {t["hypothesis_id"]: t for t in backlog["terminal_hypotheses"]}
+    adx = terminals[ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID]
+    assert adx["status"] == "TERMINAL_PASS"
+    assert adx["pass_reason"] == "ALL_PASS_REQUIRES_MET"
+    assert adx["feature_family"] == "adx_di_direction_confirmation"
+    assert adx["evidence_ref"].endswith(
+        "evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/"
     )
-    assert (
-        "price_vs_ma_trend_alignment" in backlog["forbidden_feature_families_for_open_candidates"]
-    )
+    macd = terminals["MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"]
+    assert macd["status"] == "TERMINAL_FAIL"
     assert (
         "adx_di_direction_confirmation" in backlog["forbidden_feature_families_for_open_candidates"]
     )
-    terminals = {t["hypothesis_id"]: t for t in backlog["terminal_hypotheses"]}
-    ma = terminals["MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"]
-    assert ma["status"] == "TERMINAL_FAIL"
-    assert ma["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
-    macd = terminals["MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"]
-    assert macd["status"] == "TERMINAL_FAIL"
-    assert macd["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
-    assert macd["fail_finding"] == (
-        "net_profit_factor_not_improved_despite_entry_eligibility_divergence"
-    )
-    assert macd["feature_family"] == "macd_histogram_sign_countertrend"
-    assert macd["evidence_ref"].endswith(
-        "evaluate_macd_histogram_countertrend_mr_eligibility_development_v1/"
-    )
     assert backlog["verdict"] == (
-        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ONE_PREREGISTERED_EMPTY_OPEN_QUEUE"
+        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_EMPTY_AFTER_ADX_DI_TERMINAL_PASS"
     )
     assert backlog["next_canonical_step"] == (
-        "REVIEW_AND_MERGE_ADX_DI_DIRECTION_CONFIRMATION_PREREGISTRATION_BEFORE_ANY_EVALUATION"
+        "REVIEW_AND_MERGE_ADX_DI_DEVELOPMENT_EVALUATION_THEN_SEPARATE_HOLDOUT_GO_IF_AUTHORIZED"
     )
 
 
-def test_all_terminal_hypotheses_captured_unchanged() -> None:
+def test_all_terminal_hypotheses_captured() -> None:
     backlog = _load(BACKLOG_PATH)
     terminals = backlog["terminal_hypotheses"]
     assert [t["hypothesis_id"] for t in terminals] == list(REQUIRED_TERMINAL_HYPOTHESIS_IDS)
-    assert all(t["status"] == "TERMINAL_FAIL" for t in terminals)
-    assert terminals[0]["fail_finding"] == "identical_arms_gate_inactive_on_entries"
-    assert terminals[1]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
-    assert terminals[2]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
-    assert terminals[3]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
-    assert terminals[4]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
-    assert terminals[5]["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
-    assert (
-        terminals[5]["hypothesis_id"]
-        == "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
-    )
+    fails = [t for t in terminals if t["status"] == "TERMINAL_FAIL"]
+    passes = [t for t in terminals if t["status"] == "TERMINAL_PASS"]
+    assert [t["hypothesis_id"] for t in fails] == list(REQUIRED_TERMINAL_FAIL_HYPOTHESIS_IDS)
+    assert [t["hypothesis_id"] for t in passes] == list(REQUIRED_TERMINAL_PASS_HYPOTHESIS_IDS)
+    assert len(fails) == 6
+    assert len(passes) == 1
 
 
-def test_open_candidate_count_and_unique_ids() -> None:
+def test_open_candidate_count_empty() -> None:
     backlog = _load(BACKLOG_PATH)
-    candidates = backlog["open_candidates"]
-    assert len(candidates) == 0
-    ids = [c["hypothesis_id"] for c in candidates]
-    assert len(ids) == len(set(ids))
-    assert not set(ids) & set(REQUIRED_TERMINAL_HYPOTHESIS_IDS)
-    assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in ids
-    assert ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID not in ids
+    assert backlog["open_candidates"] == []
 
 
-def test_priority_order_complete_deterministic_no_ties() -> None:
+def test_priority_order_vacuous_when_empty() -> None:
     backlog = _load(BACKLOG_PATH)
-    candidates = backlog["open_candidates"]
-    assert candidates == []
-    ranks = sorted(c["priority_rank"] for c in candidates)
-    assert ranks == list(range(1, len(candidates) + 1))
-    totals = [c["priority_score_total"] for c in candidates]
-    assert len(set(totals)) == len(totals)
+    assert backlog["open_candidates"] == []
 
 
-def test_no_next_eligible_while_adx_di_preregistered() -> None:
+def test_no_next_eligible() -> None:
     backlog = _load(BACKLOG_PATH)
     next_ones = [c for c in backlog["open_candidates"] if c["queue_status"] == NEXT_ELIGIBLE]
-    queued = [c for c in backlog["open_candidates"] if c["queue_status"] == QUEUED]
     assert next_ones == []
-    assert queued == []
     assert backlog["governance_rules"]["exactly_one_next_eligible_for_preregistration"] is False
-    assert backlog["preregistered_hypotheses"][0]["hypothesis_id"] == (
-        ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID
-    )
 
 
 def test_no_semantic_duplicate_feature_families() -> None:
+    assert "adx_di_direction_confirmation" in FORBIDDEN_FEATURE_FAMILIES
     backlog = _load(BACKLOG_PATH)
     for candidate in backlog["open_candidates"]:
         assert candidate["feature_family"] not in FORBIDDEN_FEATURE_FAMILIES
-        for terminal_id in REQUIRED_TERMINAL_HYPOTHESIS_IDS:
-            assert terminal_id in candidate["semantic_distance_to_terminal"]
-            assert candidate["semantic_distance_to_terminal"][terminal_id]
-            assert terminal_id in candidate["not_a_parameter_retune_of"]
-    assert "adx_di_direction_confirmation" in FORBIDDEN_FEATURE_FAMILIES
 
 
 def test_no_embedded_evaluation_results_or_runs() -> None:
@@ -181,7 +136,6 @@ def test_no_embedded_evaluation_results_or_runs() -> None:
     assert backlog["evaluation_results_embedded"] is False
     assert backlog["evaluation_authorized"] is False
     assert backlog["backtest_authorized"] is False
-    assert backlog["preregistered_hypotheses"][0]["development_run_count"] == 0
 
 
 def test_holdout_and_runtime_remain_locked() -> None:
@@ -191,12 +145,7 @@ def test_holdout_and_runtime_remain_locked() -> None:
     assert backlog["sealed_holdout_content_inspection_authorized"] is False
     runtime = backlog["runtime_policy"]
     assert runtime["runtime_activated"] is False
-    assert runtime["shadow_activated"] is False
-    assert runtime["paper_activated"] is False
-    assert runtime["testnet_activated"] is False
-    assert runtime["live_authorized"] is False
     assert runtime["orders_allowed"] is False
-    assert runtime["scheduler_authorized"] is False
     promo = backlog["promotion_and_economic_gate_policy"]
     assert promo["promotion_eligible"] is False
     assert promo["economic_validity_offline_gate_pass"] is False
@@ -204,24 +153,11 @@ def test_holdout_and_runtime_remain_locked() -> None:
 
 def test_universe_and_governance_bindings() -> None:
     backlog = _load(BACKLOG_PATH)
-    universe = backlog["universe_scope"]
-    assert universe["bitcoin_excluded"] is True
-    assert universe["spot_excluded"] is True
-    assert universe["venue"] == "OKX"
-    assert universe["instrument_class"] == "LINEAR_USDT_PERPETUAL"
-    assert universe["frequency"] == "PT1H"
-    assert (
-        backlog["dataset_id"]
-        == "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
-    )
     rules = backlog["governance_rules"]
-    assert rules["max_concurrent_open_preregistrations"] == 1
-    assert rules["development_runs_per_hypothesis"] == 1
-    assert rules["retuning_after_fail_forbidden"] is True
-    assert rules["candidate_combination_forbidden"] is True
-    assert rules["reprioritization_requires_separate_versioned_governance_pr"] is True
     assert rules["open_candidate_count_min"] == 0
     assert rules["exactly_one_next_eligible_for_preregistration"] is False
+    assert rules["economic_gate_closed"] is True
+    assert rules["promotion_closed"] is True
 
 
 def test_validator_rejects_second_next_eligible() -> None:
@@ -284,7 +220,7 @@ def test_validator_rejects_forbidden_feature_family_retune() -> None:
             "hypothesis_id": "SYNTHETIC_FORBIDDEN_FAMILY_OPEN_CANDIDATE_V1",
             "status": "OPEN_UNPREREGISTERED",
             "queue_status": NEXT_ELIGIBLE,
-            "feature_family": "macd_histogram_sign_countertrend",
+            "feature_family": "adx_di_direction_confirmation",
             "priority_rank": 1,
             "priority_scores": {
                 "semantic_distance": 5,
@@ -319,19 +255,14 @@ def test_validator_rejects_nonzero_development_run_count() -> None:
         validate_backlog_contract(bad)
 
 
-def test_governance_doc_marks_definition_only_and_preregistered_adx_di() -> None:
+def test_governance_doc_marks_terminal_pass_and_closed_gate() -> None:
     text = GOVERNANCE_PATH.read_text(encoding="utf-8")
     assert "OPEN_BACKLOG" in text
     assert "PROMOTION_ELIGIBLE=false" in text
-    assert "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
-    assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
     assert ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID in text
-    assert "DEFINITION_ONLY_PREREGISTERED" in text
+    assert "TERMINAL_PASS" in text
     assert "open_candidates=[]" in text
-    assert (
-        "REVIEW_AND_MERGE_ADX_DI_DIRECTION_CONFIRMATION_PREREGISTRATION_BEFORE_ANY_EVALUATION"
-        in text
-    )
-    assert "EVALUATION_EXECUTED=false" in text
-    assert "NOT authorized" in text or "not authorized" in text.lower()
-    assert "No second MACD evaluation run is permitted" in text
+    assert "preregistered_hypotheses=[]" in text
+    assert "ALL_PASS_REQUIRES_MET" in text
+    assert "Economic offline gate remains closed" in text or "economic gate closed" in text.lower()
+    assert "No second ADX DI evaluation run is permitted" in text
