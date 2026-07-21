@@ -2,7 +2,7 @@
 
 ---
 docs_token: DOCS_TOKEN_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1
-STATUS: DEFINITION_ONLY_PREREGISTERED
+STATUS: SUPERSEDED_BY_TERMINAL_EVALUATION_CLOSEOUT
 scope: research, offline-only, non-authorizing, definition-only
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
@@ -88,3 +88,9 @@ Maximum one development evaluation run.
 ## Next step
 
 Review and merge this definition-only PR before any development evaluation.
+
+
+## Terminal evaluation closeout
+
+See `docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V1.md`.
+`RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; `EVALUATION_RUN_COUNT=1`; `RERUN_ALLOWED=false`.

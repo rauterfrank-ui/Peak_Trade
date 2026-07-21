@@ -1,0 +1,18 @@
+{
+  "baseline_members_completed": "2/46",
+  "baseline_metrics": null,
+  "economic_verdict": "NOT_EVALUATED",
+  "evaluable": false,
+  "evaluation_run_count": 1,
+  "exit_divergence_observed": null,
+  "fail": false,
+  "holdout_data_accessed": false,
+  "inconclusive_reason": "contract_or_wiring_or_infrastructure_failure_preventing_measurement",
+  "pass": false,
+  "reason": "PROCESS_DIED_MID_BASELINE_AFTER_MEMBER_2_OF_46_NO_TRACEBACK",
+  "rerun_allowed": false,
+  "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+  "technical_failure": true,
+  "treatment_members_completed": "0/46",
+  "treatment_metrics": null
+}

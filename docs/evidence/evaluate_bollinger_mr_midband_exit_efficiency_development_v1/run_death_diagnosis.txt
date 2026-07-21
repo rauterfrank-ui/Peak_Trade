@@ -1,0 +1,8 @@
+STATUS=PROCESS_DIED_MID_BASELINE
+LAST_STDOUT:
+{"phase": "baseline", "i": 1, "n": 46, "member": "1INCH-USDT-SWAP", "trades": 3, "exits_forced_by_gate": 0}
+{"phase": "baseline", "i": 2, "n": 46, "member": "ADA-USDT-SWAP", "trades": 3, "exits_forced_by_gate": 0}
+MEMBERS_COMPLETED_BASELINE=2/46
+SUMMARY_WRITTEN=false
+RERUN_FORBIDDEN=true
+REASON=User rule: Evaluation niemals erneut starten; ein gestarteter Run verbraucht den Slot. Measurement had begun (baseline i=1..2 emitted).
