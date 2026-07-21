@@ -52,6 +52,10 @@ MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID = (
 ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID = (
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
 )
+ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID = (
+    "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_HOLDOUT_V2"
+)
+REQUIRED_HOLDOUT_V2_PREREGISTERED_STATUS = "DEFINITION_ONLY_HOLDOUT_PREREGISTERED"
 FORBIDDEN_EMBEDDED_RESULT_KEYS = frozenset(
     {
         "baseline_metrics",
@@ -448,11 +452,45 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
             hyp_id,
         )
         _assert_true(hyp_id not in candidate_ids, "PREREGISTERED_STILL_OPEN", hyp_id)
-        _assert_true(
-            entry.get("status") == REQUIRED_PREREGISTERED_STATUS,
-            "PREREGISTERED_STATUS",
-            hyp_id,
-        )
+        if hyp_id == ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID:
+            _assert_true(
+                entry.get("status") == REQUIRED_HOLDOUT_V2_PREREGISTERED_STATUS,
+                "PREREGISTERED_HOLDOUT_V2_STATUS",
+                hyp_id,
+            )
+            _assert_true(
+                entry.get("new_evaluation_not_rerun") is True,
+                "PREREGISTERED_HOLDOUT_V2_MUST_BE_NEW_EVALUATION",
+                hyp_id,
+            )
+            _assert_true(
+                entry.get("predecessor_holdout_hypothesis_id")
+                == ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID,
+                "PREREGISTERED_HOLDOUT_V2_PREDECESSOR",
+                hyp_id,
+            )
+            _assert_true(
+                entry.get("predecessor_holdout_result_class")
+                == "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+                "PREREGISTERED_HOLDOUT_V2_PREDECESSOR_RESULT",
+                hyp_id,
+            )
+            _assert_true(
+                "holdout_run_count" in entry and int(entry["holdout_run_count"]) == 0,
+                "PREREGISTERED_HOLDOUT_V2_RUN_COUNT",
+                hyp_id,
+            )
+            _assert_true(
+                int(entry.get("holdout_run_limit")) == 1,
+                "PREREGISTERED_HOLDOUT_V2_RUN_LIMIT",
+                hyp_id,
+            )
+        else:
+            _assert_true(
+                entry.get("status") == REQUIRED_PREREGISTERED_STATUS,
+                "PREREGISTERED_STATUS",
+                hyp_id,
+            )
         _assert_true(
             entry.get("evaluation_authorized") is False,
             "PREREGISTERED_EVALUATION_AUTHORIZED",
@@ -465,8 +503,8 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         )
         preregistered_ids.append(hyp_id)
     _assert_true(
-        preregistered_ids == [],
-        "PREREGISTERED_MUST_BE_EMPTY_AFTER_ADX_DI_TERMINAL_PASS",
+        preregistered_ids == [ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID],
+        "PREREGISTERED_MUST_BE_EXACTLY_ADX_DI_HOLDOUT_V2",
         str(preregistered_ids),
     )
     _assert_true(
