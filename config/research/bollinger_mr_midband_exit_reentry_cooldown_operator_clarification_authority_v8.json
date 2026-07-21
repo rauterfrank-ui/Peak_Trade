@@ -1,4 +1,5 @@
 {
+  "acceptance_criteria_met": true,
   "allowed_implementation_lifecycle_states": [
     "DEFINITION_ONLY_PREREGISTERED",
     "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
@@ -25,10 +26,13 @@
     ]
   ],
   "allows_post_hoc_result_adjustment": false,
-  "authority_digest": "11dbd8168ac75789f52434e84e3276065d7b5ac3f27568b738307c7d73e7b2ff",
+  "authority_digest": "97fb92f8e4e6c9d1d1f0f415dac02213cd4b4432e9746a941a436e484827c63c",
   "authority_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8",
   "authority_scope": "IMPLEMENTATION_CLARIFICATION_ONLY",
   "authority_version": "v8.0.0",
+  "authorization_ratification_digest": "860f8cf289ac608b62cdd2f3b306245f48e325108366aec36ec07e8c81930024",
+  "authorization_ratification_ref": "config/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v8.json",
+  "authorized_at_utc": "2026-07-21T23:22:38Z",
   "b1_through_b6_fully_resolved": true,
   "b7_b8_technical_fulfillment_required_before_evaluation": true,
   "bindings": {
@@ -43,6 +47,7 @@
     "state": "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8/cooldown_state_v8.py"
   },
   "created_at_utc": "2026-07-22T00:00:00Z",
+  "decision_reason": "ALL_PASS_REQUIRES_MET",
   "decisions": {
     "B1": {
       "exit_divergence_invalidates_measurement": true,
@@ -181,10 +186,12 @@
       "technically_fulfilled_requires_wiring_and_tests": true
     }
   },
+  "economic_verdict": "PASS",
   "evaluation_authorized": false,
-  "evaluation_executed": false,
-  "evaluation_run_count": 0,
-  "evidence_ref": "docs/evidence/operator_clarification_bollinger_mr_midband_exit_reentry_cooldown_v8/",
+  "evaluation_executed": true,
+  "evaluation_run_count": 1,
+  "evidence_ref": "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8/",
+  "fail": false,
   "fail_closed_conditions": [
     "MISSING_AUTHORITY",
     "AUTHORITY_DIGEST_MISMATCH",
@@ -201,15 +208,19 @@
     "IMPLEMENTATION_WIRED_NOT_AUTHORIZED->RESULT_WITHOUT_STATIC_GATES",
     "ANY->EVALUATION_OR_RESULT_WITHOUT_FULL_WIRING_AND_STATIC_GATE_PASS"
   ],
+  "holdout_data_accessed": false,
   "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V8",
   "introduces_new_economic_hypothesis": false,
   "introduces_new_treatment_effect": false,
   "is_second_preregistration": false,
+  "lifecycle_terminal_state": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS",
   "mutates_preregistration": false,
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION_AUTHORIZATION",
+  "next_canonical_step": "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION",
   "operator_decision_reference": "OPERATOR_GO_INTRODUCE_V8_OPERATOR_CLARIFICATION_AUTHORITY_B1_B6_IMPLEMENTATION_ONLY",
   "operator_decisions_status": "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
   "owner": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8",
+  "panel_accessed": true,
+  "pass": true,
   "precedence": {
     "economic_hypothesis_and_registered_measurement_targets": "FROM_UNCHANGED_PREREGISTRATION",
     "forbidden": [
@@ -222,7 +233,11 @@
   },
   "preregistration_digest": "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c",
   "preregistration_path": "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v8.json",
-  "run_slot_consumed": false,
+  "ready_status_authority_digest": "11dbd8168ac75789f52434e84e3276065d7b5ac3f27568b738307c7d73e7b2ff",
+  "rerun_allowed": false,
+  "result_class": "PASS",
+  "run_slot_consumed": true,
   "schema_version": "bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority.v8",
-  "status": "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION"
+  "status": "EVALUATION_AUTHORIZED",
+  "v8_reopen_allowed": false
 }

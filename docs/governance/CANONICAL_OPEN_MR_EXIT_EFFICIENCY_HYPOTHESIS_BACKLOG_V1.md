@@ -2,18 +2,16 @@
 
 ## Current SSOT status
 
-- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ONE_DEFINITION_ONLY_V8_PREREGISTERED`
-- Preregistered: exactly one (`preregistered_count_exact=1`) — V8 reentry-cooldown
-- Terminal: V1&#47;V2&#47;V7 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3&#47;V6 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`
-- V7 remains terminal: `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`; `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
-- V7: `RUNNER_START_COUNT=1`; `RUN_SLOT_CONSUMED=true`; `RERUN_ALLOWED=false`; `V7_REOPEN_ALLOWED=false`
-- V7: no development metrics; no economic PASS&#47;FAIL; not strategy-fail; not measurement-pass; no reopen
-- V8: `DEFINITION_ONLY_PREREGISTERED`; `EVALUATION_RUN_COUNT=0`; `RUNNER_STARTED=false`; `RUN_SLOT_CONSUMED=false`
+- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_V8_TERMINAL_PASS_AWAITING_OPERATOR_GO_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
+- Preregistered: none (`preregistered_count_exact=0`)
+- Terminal: V1&#47;V2&#47;V7 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3&#47;V6 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`; V8 `TERMINAL_PASS`
+- V7 remains terminal unreopened: `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`; `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
+- V8 terminal PASS: `RESULT_CLASS=PASS`; `DECISION_REASON=ALL_PASS_REQUIRES_MET`; `EVALUATION_RUN_COUNT=1`; `RUN_SLOT_CONSUMED=true`; `RERUN_ALLOWED=false`; `V8_REOPEN_ALLOWED=false`
 - V8 digest: `610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c`
-- V8 structural hardening: complete `exit_mechanism.frozen_parameters` + pre-authorization parity validator
-- V6 reason: `NET_PROFIT_FACTOR_NOT_IMPROVED`
-- No V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7 reopen. No V8 evaluation in this slice. No V9 auto-create.
-- `NEXT_CANONICAL_ACTION=AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION`
+- V8 panel digest: `4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca`
+- Development run count: `8`
+- No V8&#47;V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7&#47;V8 reopen. No V9 auto-create. No holdout after PASS. No runtime promotion from DEVELOPMENT PASS.
+- `NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
@@ -28,7 +26,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 ## Status
 
 `OPEN_BACKLOG` — versioned canonical SSOT for Mean-Reversion exit-efficiency
-research candidates. Zero preregistered hypotheses. V1–V7 are terminal.
+research candidates. Zero preregistered hypotheses. V1–V8 are terminal.
 No holdout access. No runtime activation. No productive trading-logic mutation.
 
 ## Binding
@@ -41,11 +39,11 @@ No holdout access. No runtime activation. No productive trading-logic mutation.
 
 ## Preregistered hypotheses
 
-Exactly one (`preregistered_count_exact=1`): `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V8` (`DEFINITION_ONLY_PREREGISTERED`, run count `0`).
+None (`preregistered_count_exact=0`).
 
 ## Terminal hypotheses
 
-Exactly seven:
+Exactly eight:
 
 - `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1`
   — `TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE`
@@ -120,15 +118,34 @@ Exactly seven:
   — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7&#47;`
   — Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V7.md`
 
+- `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V8`
+  — `TERMINAL_PASS`
+  — `EVALUATION_RUN_COUNT=1`
+  — `RESULT_CLASS=PASS`
+  — `DECISION_REASON=ALL_PASS_REQUIRES_MET`
+  — `ACCEPTANCE_CRITERIA_MET=true`
+  — `PANEL_BACKTEST_EXECUTED=true`
+  — `RUN_SLOT_CONSUMED=true`
+  — Members completed: baseline `46&#47;46`; treatment `46&#47;46`
+  — Cooldown: `24` PT1H bars
+  — Digest: `610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c`
+  — `RERUN_ALLOWED=false` &#47; `V8_REOPEN_ALLOWED=false`
+  — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8&#47;`
+  — Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V8.md`
+
 ## Explicit exclusions
 
 - No V1&#47;V2&#47;V3&#47;V4&#47;V5&#47;V6 rerun under consumed preregistrations
 - No V3&#47;V4&#47;V5&#47;V6 partial-result, checkpoint, or economic-result reuse
 - No holdout after FAIL&#47;INFRASTRUCTURE_FAILURE
+- No holdout after PASS
 - No retuning after FAIL&#47;INFRASTRUCTURE_FAILURE
 - No V7 rerun &#47; no V7 reopen
+- No V8 rerun &#47; no V8 reopen
+- No runtime promotion from DEVELOPMENT PASS
 - No V7 auto-create
 - No V8 auto-create
+- No V9 auto-create
 - No parallel SHORT-side hypothesis
 - No holdout candidate
 - No cost-structure-weakening hypothesis
@@ -137,10 +154,10 @@ Exactly seven:
 
 ## Next separate action
 
-`NEXT_CANONICAL_ACTION=AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION`
+`NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
 
-No V7 rerun. No V7 reopen. No V8 evaluation in this slice. No V9 auto-create. No runner start.
+No V8 rerun. No V8 reopen. No holdout. No runtime&#47;orders. No V9 auto-create.
 
-## V7 terminal closeout
+## V8 terminal closeout
 
-V7 DEVELOPMENT evaluation consumed its one-shot slot and terminated as `INCONCLUSIVE_INFRASTRUCTURE_FAILURE` (`FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`, `FAILURE_TIMING=BEFORE_PANEL_ACCESS`, diagnostic `PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST`). V7 remains terminal and unreopened. A separate V8 definition-only preregistration now exists with complete frozen-parameter SSOT and pre-authorization parity validation; V8 evaluation is not authorized in this slice. No V7 rerun. No V7 reopen. No V9 auto-create.
+V8 DEVELOPMENT evaluation consumed its one-shot slot and terminated as `PASS` (`DECISION_REASON=ALL_PASS_REQUIRES_MET`) on the sealed DEVELOPMENT_ONLY panel. V8 remains terminal and unreopened. PASS is a development evaluation result only — not a trading, shadow, testnet, scheduler, or live authorization. Economic offline gate remains closed; promotion remains closed. No V8 rerun. No V8 reopen. No V9 auto-create.

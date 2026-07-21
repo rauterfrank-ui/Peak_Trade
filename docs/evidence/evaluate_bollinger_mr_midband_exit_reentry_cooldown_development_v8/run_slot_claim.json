@@ -1,0 +1,23 @@
+{
+  "claim_timestamp_utc": "2026-07-21T23:22:59Z",
+  "commit_sha": "78fc68282cdf729d6cba8ff1bd888a5cd33c471a",
+  "contract_ref": "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v8.json",
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_preregistration_digest": "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c",
+  "evaluation_run_count_after_claim": 1,
+  "evaluation_run_count_authorized": 1,
+  "evaluation_run_id": "evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8",
+  "holdout_data_accessed": false,
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V8",
+  "lifecycle_state": "RUNNING",
+  "mechanism_id": "canonical_bollinger_side_aware_midband_exit_with_frozen_max_holding_and_same_side_reentry_cooldown_v1",
+  "operator_clarification_authority_digest": "449aa5aa9c7e7271736301feb6b2a83ec48892343051ded6862840e12bdf74cd",
+  "process_id": 22900,
+  "run_limit": 1,
+  "runner_script": "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8.py",
+  "runner_version": "v7",
+  "schema_version": "bollinger_mr_midband_exit_reentry_cooldown_development_v8_run_slot_claim.v1",
+  "slot_claimed": true,
+  "slot_consumed": true
+}

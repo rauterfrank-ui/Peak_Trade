@@ -19,6 +19,7 @@ from src.research.bollinger_mr_midband_exit_reentry_cooldown_operator_clarificat
     ALLOWED_TRANSITIONS,
     AUTHORITY_ID,
     AUTHORITY_REL_PATH,
+    AUTHORIZED_STATUS,
     OPERATOR_DECISIONS_STATUS,
     READY_STATUS,
     REQUIRED_PREREGISTRATION_DIGEST,
@@ -45,7 +46,7 @@ CLI = (
     REPO
     / "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8.py"
 )
-EXPECTED_AUTHORITY_DIGEST = "11dbd8168ac75789f52434e84e3276065d7b5ac3f27568b738307c7d73e7b2ff"
+EXPECTED_AUTHORITY_DIGEST = "97fb92f8e4e6c9d1d1f0f415dac02213cd4b4432e9746a941a436e484827c63c"
 
 
 def test_valid_authority_and_digests() -> None:
@@ -55,12 +56,14 @@ def test_valid_authority_and_digests() -> None:
     assert report["authority_id"] == AUTHORITY_ID
     assert report["authority_digest"] == EXPECTED_AUTHORITY_DIGEST
     assert report["preregistration_digest"] == REQUIRED_PREREGISTRATION_DIGEST
-    assert report["status"] == READY_STATUS
+    assert report["status"] == AUTHORIZED_STATUS
     assert report["operator_decisions_status"] == OPERATOR_DECISIONS_STATUS
     assert report["evaluation_authorized"] is False
-    assert report["evaluation_run_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["evaluation_run_count"] == 1
+    assert report["run_slot_consumed"] is True
     auth = report["authority"]
+    assert auth["result_class"] == "PASS"
+    assert auth["lifecycle_terminal_state"] == ("DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS")
     for key in ("B1", "B2", "B3", "B4", "B5", "B6"):
         assert auth["decisions"][key]["resolved"] is True
 
