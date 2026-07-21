@@ -47,7 +47,10 @@ def optional_treatment_exit_efficiency_gate(
     original_bind_bar = wiring_mod.bind_bar_for_mv2_wiring_v1
     original_bind_warmup = wiring_mod._bind_economic_research_warmup_observation_bar_v1
     original_map = wiring_mod.map_decision_evidence_to_position_signal_v1
-    original_capture = feedback_mod.capture_backtest_engine_position_feedback_v1
+    # MV2 bar loop calls the name bound on wiring_mod (from-import alias). Patching
+    # only feedback_mod leaves that live call site unbound → open_side never set.
+    original_capture_wiring = wiring_mod.capture_backtest_engine_position_feedback_v1
+    original_capture_feedback = feedback_mod.capture_backtest_engine_position_feedback_v1
 
     def _bind_bar_tracked(**kwargs):  # type: ignore[no-untyped-def]
         state["current_ts"] = pd.Timestamp(kwargs["bar"].name)
@@ -58,7 +61,7 @@ def optional_treatment_exit_efficiency_gate(
         return original_bind_warmup(**kwargs)
 
     def _capture_tracked(**kwargs):  # type: ignore[no-untyped-def]
-        feedback = original_capture(**kwargs)
+        feedback = original_capture_feedback(**kwargs)
         if feedback.has_open_trade:
             if feedback.existing_position_side == ExistingPositionSide.LONG:
                 state["open_side"] = "long"
@@ -102,6 +105,7 @@ def optional_treatment_exit_efficiency_gate(
     wiring_mod.bind_bar_for_mv2_wiring_v1 = _bind_bar_tracked  # type: ignore[assignment]
     wiring_mod._bind_economic_research_warmup_observation_bar_v1 = _bind_warmup_tracked  # type: ignore[assignment]
     wiring_mod.map_decision_evidence_to_position_signal_v1 = _map_gated  # type: ignore[assignment]
+    wiring_mod.capture_backtest_engine_position_feedback_v1 = _capture_tracked  # type: ignore[assignment]
     feedback_mod.capture_backtest_engine_position_feedback_v1 = _capture_tracked  # type: ignore[assignment]
     try:
         yield counters
@@ -109,7 +113,10 @@ def optional_treatment_exit_efficiency_gate(
         wiring_mod.bind_bar_for_mv2_wiring_v1 = original_bind_bar  # type: ignore[assignment]
         wiring_mod._bind_economic_research_warmup_observation_bar_v1 = original_bind_warmup  # type: ignore[assignment]
         wiring_mod.map_decision_evidence_to_position_signal_v1 = original_map  # type: ignore[assignment]
-        feedback_mod.capture_backtest_engine_position_feedback_v1 = original_capture  # type: ignore[assignment]
+        wiring_mod.capture_backtest_engine_position_feedback_v1 = original_capture_wiring  # type: ignore[assignment]
+        feedback_mod.capture_backtest_engine_position_feedback_v1 = (  # type: ignore[assignment]
+            original_capture_feedback
+        )
 
 
 __all__ = ["optional_treatment_exit_efficiency_gate"]

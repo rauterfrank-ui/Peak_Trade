@@ -781,10 +781,11 @@
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v1/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v1.py",
         "tests/research/test_bollinger_mr_midband_exit_efficiency_development_evaluation_v1.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_gate_binding_v1.py",
         "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v1/",
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V1.md"
       ],
-      "note": "Single authorized DEVELOPMENT_ONLY evaluation of Bollinger/MR side-aware middle-band exit-efficiency versus immutable bollinger baseline on sealed DEVELOPMENT panel (evaluation_run_count 0->1); Economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
+      "note": "Single authorized DEVELOPMENT_ONLY evaluation of Bollinger/MR side-aware middle-band exit-efficiency versus immutable bollinger baseline on sealed DEVELOPMENT panel (evaluation_run_count 0->1); Economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Gate-binding contract test covers MV2 wiring_mod capture-alias open_side binding only."
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V2": {
       "path_prefixes": [
