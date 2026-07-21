@@ -183,6 +183,13 @@ def test_eval_only_runner_smoke(tmp_path: Path) -> None:
     assert summary["BOLLINGER_DECISION"] == "CONTRACT_REMAINS_AMBIGUOUS"
     assert summary["BOLLINGER_SIDE_ACTIVATED"] is False
     assert summary["bollinger_eval_entry_mv2"]["entry_side_counts"].get("NONE", 0) == 1
-    assert summary["bollinger_eval_entry_mv2"]["dominant_first_failed_stage"] == (
-        "directional_agreement"
+    # Post chain-unblock baseline (suitability wildcard / zero-trade chain): the single
+    # eval ENTRY bar remains side-unresolved (NONE) but first-fails at entry_exit
+    # (BLOCKED_ENTRY_EXIT), not directional_agreement. Do not treat this as side ratification.
+    assert summary["bollinger_eval_entry_mv2"]["dominant_first_failed_stage"] == "entry_exit"
+    assert (
+        summary["bollinger_eval_entry_mv2"]["taxonomy_outcome_counts"].get("BLOCKED_ENTRY_EXIT", 0)
+        == 1
     )
+    assert summary["bollinger_eval_entry_mv2"]["ENTER_LONG"] == 0
+    assert summary["bollinger_eval_entry_mv2"]["ENTER_SHORT"] == 0
