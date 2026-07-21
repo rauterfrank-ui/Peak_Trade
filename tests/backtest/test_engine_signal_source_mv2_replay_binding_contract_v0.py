@@ -19,6 +19,7 @@ from src.backtest.strategy_signal_binding_v1 import (
     assert_parallel_strategy_signal_does_not_control_engine_v1,
     resolve_mv2_research_engine_signal_source_v1,
     validate_engine_signal_source_v1,
+    validate_mv2_replay_engine_signal_contract_v1,
 )
 
 
@@ -205,3 +206,80 @@ def test_run_backtest_script_documents_legacy_classification() -> None:
     content = Path(text).read_text(encoding="utf-8")
     assert "RAW_SIGNAL_RESEARCH" in content
     assert "CANONICAL_SYSTEM_REPLAY" in content
+
+
+def _bars_microsecond_utc(n: int = 12) -> pd.DataFrame:
+    """Synthetic parquet-like bars index: datetime64[us, UTC] with name."""
+    idx = pd.DatetimeIndex(
+        pd.to_datetime(
+            [f"2026-06-01T{hour:02d}:00:00Z" for hour in range(n)],
+            utc=True,
+        )
+    ).astype("datetime64[us, UTC]")
+    idx = pd.to_datetime(idx, utc=True)
+    idx.name = "timestamp"
+    assert str(idx.dtype) == "datetime64[us, UTC]"
+    close = [100.0 + float(i) for i in range(n)]
+    return pd.DataFrame(
+        {
+            "open": close,
+            "high": [v + 0.5 for v in close],
+            "low": [v - 0.5 for v in close],
+            "close": close,
+            "mark_price": close,
+            "index_price": [v - 0.1 for v in close],
+            "best_bid": [v - 0.05 for v in close],
+            "best_ask": [v + 0.05 for v in close],
+            "spread": [0.1 for _ in close],
+            "volume": [1000.0 for _ in close],
+            "open_interest": [10000.0 for _ in close],
+            "funding_rate": [0.0001 for _ in close],
+            "volatility_estimate": [0.2 for _ in close],
+            "is_final": [True for _ in close],
+            "bar_interval": ["1m" for _ in close],
+        },
+        index=idx,
+    )
+
+
+def test_mv2_replay_preserves_canonical_microsecond_utc_bars_index() -> None:
+    bars = _bars_microsecond_utc()
+    result = _run(bars=bars)
+    signal_index = result.mv2_replay_signals.index
+    assert signal_index.equals(bars.index)
+    assert str(signal_index.dtype) == str(bars.index.dtype) == "datetime64[us, UTC]"
+    assert str(signal_index.tz) == str(bars.index.tz) == "UTC"
+    assert signal_index.name == bars.index.name == "timestamp"
+    assert len(signal_index) == len(bars.index)
+    assert list(signal_index) == list(bars.index)
+    validated, _provenance = validate_mv2_replay_engine_signal_contract_v1(
+        result.mv2_replay_signals,
+        bars_index=bars.index,
+        strategy_id="ma_crossover",
+        mv2_replay_signal_digest=result.mv2_replay_signal_digest,
+    )
+    assert validated.index.equals(bars.index)
+    assert result.signals.index.equals(bars.index)
+
+
+def test_manual_timestamp_list_reconstruction_may_promote_us_to_ns() -> None:
+    """Document why wiring must reuse bars.index instead of rebuilding DatetimeIndex."""
+    bars_index = _bars_microsecond_utc(n=3).index
+    reconstructed = pd.DatetimeIndex([pd.Timestamp(ts) for ts in bars_index])
+    if str(reconstructed.dtype) == str(bars_index.dtype):
+        pytest.skip(
+            "installed pandas preserved datetime unit under Timestamp-list reconstruction; "
+            "promotion guard not applicable"
+        )
+    assert str(bars_index.dtype) == "datetime64[us, UTC]"
+    assert str(reconstructed.dtype) == "datetime64[ns, UTC]"
+    assert (reconstructed == bars_index).all()
+    assert not reconstructed.equals(bars_index)
+    signals = pd.Series([0, 1, 0], index=reconstructed, dtype=int)
+    with pytest.raises(StrategySignalBindingError, match="mv2_replay_signal_index_mismatch"):
+        validate_mv2_replay_engine_signal_contract_v1(
+            signals,
+            bars_index=bars_index,
+            strategy_id="ma_crossover",
+            mv2_replay_signal_digest="a" * 64,
+        )
