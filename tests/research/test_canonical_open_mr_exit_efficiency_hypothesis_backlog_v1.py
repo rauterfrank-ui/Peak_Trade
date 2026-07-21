@@ -46,7 +46,7 @@ def test_repo_backlog_one_definition_only_v7_preregistered() -> None:
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     assert report["preregistered_hypothesis_id"] == REQUIRED_V7_HYPOTHESIS_ID
     assert report["development_run_count"] == 6
-    assert report["evaluation_authorized"] is False
+    assert report["evaluation_authorized"] is True
     assert report["holdout_forbidden"] is True
     assert report["rerun_allowed"] is False
     assert report["runtime_locked"] is True

@@ -919,7 +919,29 @@
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7.md",
         "docs/evidence/operator_clarification_bollinger_mr_midband_exit_reentry_cooldown_v7/"
       ],
-      "note": "Governance overlay clarifying V7 implementation ambiguities B1-B6 without mutating immutable preregistration digest; operator_decisions_status OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY; implementation lifecycle READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION; evaluation_authorized=false; evaluation_run_count=0; no evaluation/runtime/orders."
+      "note": "Governance overlay clarifying V7 implementation ambiguities B1-B6 without mutating immutable preregistration digest; operator_decisions_status OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY; lifecycle may transition READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION -> EVALUATION_AUTHORIZED via separate ratification; evaluation_run_count=0 until run GO; no runtime/orders."
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V7": {
+      "path_prefixes": [
+        "config/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.json",
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.py",
+        "scripts/research/run_authorize_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v7.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.py",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V7.md",
+        "docs/evidence/authorize_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v7/"
+      ],
+      "note": "Separate Operator ratification authorizing exactly one later V7 DEVELOPMENT evaluation run; does not mutate preregistration digest/field; requires released DEVELOPMENT panel; does not start runner or claim slot."
+    },
+    "INDEPENDENT_DEV_PANEL_QUARANTINE_RELEASE_V1": {
+      "path_prefixes": [
+        "config/research/independent_dev_panel_quarantine_release_contract_v1.json",
+        "src/research/independent_dev_panel_quarantine_release_v1.py",
+        "scripts/research/run_release_independent_dev_panel_quarantine_v1.py",
+        "tests/research/test_independent_dev_panel_quarantine_release_v1.py",
+        "docs/governance/INDEPENDENT_DEV_PANEL_QUARANTINE_RELEASE_V1.md",
+        "docs/evidence/release_independent_dev_panel_quarantine_byte_identical_v1/"
+      ],
+      "note": "Byte-identical quarantine to RELEASED_DEVELOPMENT_ONLY panel release; no transform; no holdout; does not authorize evaluation."
     }
   }
 }

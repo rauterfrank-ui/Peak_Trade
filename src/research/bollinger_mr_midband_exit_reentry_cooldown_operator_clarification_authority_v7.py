@@ -26,16 +26,19 @@ HYPOTHESIS_ID = "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUA
 REQUIRED_PREREGISTRATION_DIGEST = "4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680"
 OPERATOR_DECISIONS_STATUS = "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY"
 READY_STATUS = "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION"
+AUTHORIZED_STATUS = "EVALUATION_AUTHORIZED"
 ALLOWED_LIFECYCLE_STATES = (
     "DEFINITION_ONLY_PREREGISTERED",
     "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
     "IMPLEMENTATION_WIRED_NOT_AUTHORIZED",
     "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION",
+    "EVALUATION_AUTHORIZED",
 )
 ALLOWED_TRANSITIONS = {
     ("DEFINITION_ONLY_PREREGISTERED", "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY"),
     ("OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY", "IMPLEMENTATION_WIRED_NOT_AUTHORIZED"),
     ("IMPLEMENTATION_WIRED_NOT_AUTHORIZED", "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION"),
+    ("READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION", "EVALUATION_AUTHORIZED"),
 }
 OWNER_MAP_REL_PATH = (
     "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json"
@@ -107,6 +110,7 @@ def validate_authority(
     repo_root: Path | None = None,
     require_registered: bool = True,
     require_ready_status: bool = False,
+    require_authorized_status: bool = False,
 ) -> dict[str, Any]:
     repo = repo_root or _repo_root()
     if not authority:
@@ -125,8 +129,6 @@ def validate_authority(
         raise OperatorClarificationAuthorityError("AUTHORITY_CLAIMS_PREREG_MUTATION")
     if authority.get("is_second_preregistration") is not False:
         raise OperatorClarificationAuthorityError("AUTHORITY_CLAIMS_SECOND_PREREG")
-    if authority.get("evaluation_authorized") is not False:
-        raise OperatorClarificationAuthorityError("AUTHORITY_MUST_KEEP_EVALUATION_UNAUTHORIZED")
     if int(authority.get("evaluation_run_count", -1)) != 0:
         raise OperatorClarificationAuthorityError("AUTHORITY_EVALUATION_RUN_COUNT_NOT_ZERO")
     if str(authority.get("operator_decisions_status")) != OPERATOR_DECISIONS_STATUS:
@@ -152,10 +154,27 @@ def validate_authority(
     status = str(authority.get("status") or "")
     if status not in ALLOWED_LIFECYCLE_STATES:
         raise OperatorClarificationAuthorityError("UNKNOWN_LIFECYCLE_STATE")
-    if require_ready_status and status != READY_STATUS:
-        raise OperatorClarificationAuthorityError(
-            f"STATUS_NOT_READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION:{status}"
-        )
+
+    if status == READY_STATUS:
+        if authority.get("evaluation_authorized") is not False:
+            raise OperatorClarificationAuthorityError("AUTHORITY_MUST_KEEP_EVALUATION_UNAUTHORIZED")
+    elif status == AUTHORIZED_STATUS:
+        if authority.get("evaluation_authorized") is not True:
+            raise OperatorClarificationAuthorityError(
+                "AUTHORIZED_STATUS_REQUIRES_EVALUATION_AUTHORIZED_TRUE"
+            )
+        if not authority.get("authorization_ratification_ref"):
+            raise OperatorClarificationAuthorityError("AUTHORIZED_WITHOUT_RATIFICATION_REF")
+        if not authority.get("authorization_ratification_digest"):
+            raise OperatorClarificationAuthorityError("AUTHORIZED_WITHOUT_RATIFICATION_DIGEST")
+    else:
+        if authority.get("evaluation_authorized") is not False:
+            raise OperatorClarificationAuthorityError("AUTHORITY_MUST_KEEP_EVALUATION_UNAUTHORIZED")
+
+    if require_authorized_status and status != AUTHORIZED_STATUS:
+        raise OperatorClarificationAuthorityError(f"STATUS_NOT_EVALUATION_AUTHORIZED:{status}")
+    if require_ready_status and status not in (READY_STATUS, AUTHORIZED_STATUS):
+        raise OperatorClarificationAuthorityError(f"STATUS_NOT_READY_OR_AUTHORIZED:{status}")
 
     if require_registered:
         _assert_registered(repo, authority)
@@ -168,7 +187,7 @@ def validate_authority(
         "status": status,
         "operator_decisions_status": OPERATOR_DECISIONS_STATUS,
         "b1_through_b6_fully_resolved": True,
-        "evaluation_authorized": False,
+        "evaluation_authorized": bool(authority.get("evaluation_authorized")),
         "evaluation_run_count": 0,
     }
 
@@ -178,6 +197,7 @@ def load_and_validate_authority(
     *,
     require_registered: bool = True,
     require_ready_status: bool = False,
+    require_authorized_status: bool = False,
 ) -> dict[str, Any]:
     authority = load_authority(repo_root)
     report = validate_authority(
@@ -185,6 +205,7 @@ def load_and_validate_authority(
         repo_root=repo_root,
         require_registered=require_registered,
         require_ready_status=require_ready_status,
+        require_authorized_status=require_authorized_status,
     )
     report["authority"] = authority
     return report
@@ -213,6 +234,7 @@ __all__ = [
     "AUTHORITY_ID",
     "AUTHORITY_REL_PATH",
     "AUTHORITY_VERSION",
+    "AUTHORIZED_STATUS",
     "ALLOWED_LIFECYCLE_STATES",
     "ALLOWED_TRANSITIONS",
     "HYPOTHESIS_ID",

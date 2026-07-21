@@ -116,7 +116,11 @@ from src.research.bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregis
     load_and_validate_repo_contract,
     reject_holdout_dataset_or_path,
 )
+from src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7 import (
+    resolve_effective_evaluation_authorization,
+)
 from src.research.bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority_v7 import (
+    AUTHORIZED_STATUS,
     READY_STATUS,
     OperatorClarificationAuthorityError,
     b7_b8_technical_proof,
@@ -525,7 +529,12 @@ def assert_v7_authority_and_prereg_gates(
     require_evaluation_authorized: bool,
     require_ready_status: bool = True,
 ) -> dict[str, Any]:
-    """Fail-closed gates before any panel/holdout access or run-slot claim."""
+    """Fail-closed gates before any panel/holdout access or run-slot claim.
+
+    Effective authorization is derived from the separate ratification SSOT +
+    authority lifecycle state. The immutable preregistration contract keeps
+    ``evaluation_authorized=false`` (DEFINITION_ONLY field).
+    """
     reject_holdout_dataset_or_path(DATASET_ID)
     report = load_and_validate_repo_contract(repo)
     if report.get("hypothesis_id") != HYPOTHESIS_ID:
@@ -540,16 +549,15 @@ def assert_v7_authority_and_prereg_gates(
             repo,
             require_registered=True,
             require_ready_status=require_ready_status,
+            require_authorized_status=False,
         )
     except OperatorClarificationAuthorityError as exc:
         raise RuntimeError(f"OPERATOR_CLARIFICATION_AUTHORITY_GATE:{exc}") from exc
 
     authority = authority_report["authority"]
-    if authority_report.get("status") != READY_STATUS and require_ready_status:
-        raise RuntimeError(
-            f"STATUS_NOT_READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION:"
-            f"{authority_report.get('status')}"
-        )
+    status = str(authority_report.get("status") or "")
+    if require_ready_status and status not in (READY_STATUS, AUTHORIZED_STATUS):
+        raise RuntimeError(f"STATUS_NOT_READY_OR_AUTHORIZED:{status}")
     if not authority.get("b1_through_b6_fully_resolved"):
         raise RuntimeError("UNRESOLVED_B1_THROUGH_B6")
 
@@ -558,19 +566,28 @@ def assert_v7_authority_and_prereg_gates(
         raise RuntimeError("B7_B8_TECHNICAL_FULFILLMENT_MARKERS_MISSING")
 
     contract = load_json(repo / CONTRACT_REL_PATH)
-    eval_auth = bool(contract.get("evaluation_authorized"))
-    if require_evaluation_authorized and not eval_auth:
-        raise RuntimeError("V7_EVALUATION_NOT_AUTHORIZED:evaluation_authorized=false")
+    # Prereg boolean remains false forever; effective auth is ratification/lifecycle.
+    if contract.get("evaluation_authorized") is not False:
+        raise RuntimeError("PREREG_EVALUATION_AUTHORIZED_FIELD_MUST_REMAIN_FALSE")
     if int(contract.get("evaluation_run_count", -1)) != 0:
         raise RuntimeError("CONTRACT_EVALUATION_RUN_COUNT_NOT_ZERO")
+
+    effective = resolve_effective_evaluation_authorization(repo)
+    eval_auth = bool(effective.get("evaluation_authorized"))
+    if require_evaluation_authorized and not eval_auth:
+        raise RuntimeError(
+            f"V7_EVALUATION_NOT_AUTHORIZED:{effective.get('reason') or 'effective_false'}"
+        )
 
     return {
         "prereg_report": report,
         "authority_report": authority_report,
         "authority_digest": authority_report["authority_digest"],
         "evaluation_authorized": eval_auth,
+        "effective_authorization": effective,
         "b7_b8": b7b8,
         "authority_id": OPERATOR_CLARIFICATION_AUTHORITY_ID,
+        "lifecycle_status": status,
     }
 
 

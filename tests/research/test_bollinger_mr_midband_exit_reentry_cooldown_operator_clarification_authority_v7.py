@@ -45,17 +45,19 @@ CLI = (
     REPO
     / "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7.py"
 )
-EXPECTED_AUTHORITY_DIGEST = "cb45c1aff8f845b7620748c786a14bc5af4793803d80dc1c16426670da419235"
+EXPECTED_AUTHORITY_DIGEST = "ba1d221c1774957c14c85469af51b9b7b32109c6204d51f4ccd07301cb92f670"
 
 
 def test_valid_authority_and_digests() -> None:
-    report = load_and_validate_authority(REPO, require_registered=True, require_ready_status=True)
+    report = load_and_validate_authority(
+        REPO, require_registered=True, require_ready_status=True, require_authorized_status=True
+    )
     assert report["authority_id"] == AUTHORITY_ID
     assert report["authority_digest"] == EXPECTED_AUTHORITY_DIGEST
     assert report["preregistration_digest"] == REQUIRED_PREREGISTRATION_DIGEST
-    assert report["status"] == READY_STATUS
+    assert report["status"] == "EVALUATION_AUTHORIZED"
     assert report["operator_decisions_status"] == OPERATOR_DECISIONS_STATUS
-    assert report["evaluation_authorized"] is False
+    assert report["evaluation_authorized"] is True
     assert report["evaluation_run_count"] == 0
     auth = report["authority"]
     for key in ("B1", "B2", "B3", "B4", "B5", "B6"):
@@ -139,24 +141,25 @@ def test_forbidden_lifecycle_transition() -> None:
         "DEFINITION_ONLY_PREREGISTERED",
         "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
     ) in ALLOWED_TRANSITIONS
+    assert (
+        "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION",
+        "EVALUATION_AUTHORIZED",
+    ) in ALLOWED_TRANSITIONS
 
 
-def test_runner_without_evaluation_authorization_no_data_no_slot(tmp_path: Path) -> None:
+def test_runner_without_cli_hypothesis_auth_no_data_no_slot(tmp_path: Path) -> None:
+    """Even when lifecycle is authorized, missing hypothesis CLI auth must not start."""
     out = tmp_path / "evaluate_must_not_claim"
     with pytest.raises(RuntimeError, match="V7_EVALUATION_NOT_AUTHORIZED"):
         run_development_evaluation(
             output_dir=out,
-            authorize_hypothesis_id=(
-                "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7"
-            ),
+            authorize_hypothesis_id="WRONG_HYPOTHESIS",
             allow_panel_run=True,
             repo_root=REPO,
         )
     assert not out.exists() or not any(out.iterdir())
     assert not (out / "run_slot_claim.json").exists()
     assert not (out / "summary.json").exists()
-    assert not (out / "comparison_decision.json").exists()
-    assert not (out / "control_metrics.json").exists()
 
 
 def test_gate_failures_before_slot_and_artifacts(
@@ -221,24 +224,31 @@ def test_runner_source_order_gates_before_claim_before_panel() -> None:
     )
 
 
-def test_assert_gates_require_evaluation_authorized_false_today() -> None:
-    with pytest.raises(RuntimeError, match="evaluation_authorized=false"):
-        assert_v7_authority_and_prereg_gates(
-            repo=REPO,
-            require_evaluation_authorized=True,
-            require_ready_status=True,
-        )
+def test_assert_gates_effective_authorization_true_prereg_field_false(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Deadlock regression closed: effective auth true; prereg field remains false."""
+    monkeypatch.setattr(
+        "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.is_panel_released",
+        lambda archive_root=None: True,
+    )
     ok = assert_v7_authority_and_prereg_gates(
         repo=REPO,
-        require_evaluation_authorized=False,
+        require_evaluation_authorized=True,
         require_ready_status=True,
     )
+    assert ok["evaluation_authorized"] is True
     assert ok["authority_digest"] == EXPECTED_AUTHORITY_DIGEST
+    contract = json.loads(PREREG_PATH.read_text(encoding="utf-8"))
+    assert contract["evaluation_authorized"] is False
+    assert int(contract["evaluation_run_count"]) == 0
 
 
-def test_cli_evaluate_fail_closed_no_slot(tmp_path: Path) -> None:
+def test_cli_evaluate_fail_closed_without_hypothesis_flag(tmp_path: Path) -> None:
     env = {
-        **{k: v for k, v in __import__("os").environ.items()},
+        **{
+            k: v for k, v in __import__("os").environ.items() if k != "PEAK_TRADE_DATA_ARCHIVE_ROOT"
+        },
         "PYTHONPATH": f"{REPO}/src:{REPO}",
     }
     proc = subprocess.run(
@@ -247,8 +257,6 @@ def test_cli_evaluate_fail_closed_no_slot(tmp_path: Path) -> None:
             str(CLI),
             "--mode",
             "evaluate",
-            "--authorize-single-development-evaluation",
-            "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7",
             "--output-dir",
             str(tmp_path / "cli_eval_out"),
         ],
@@ -260,6 +268,7 @@ def test_cli_evaluate_fail_closed_no_slot(tmp_path: Path) -> None:
     )
     assert proc.returncode != 0
     assert not (tmp_path / "cli_eval_out" / "run_slot_claim.json").exists()
+    assert "V7_EVALUATION_NOT_AUTHORIZED" in proc.stdout or "NOT_AUTHORIZED" in proc.stdout
 
 
 def test_authority_registered_in_owner_and_wiring() -> None:
