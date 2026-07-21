@@ -12,11 +12,14 @@ from src.backtest.strategy_signal_binding_v1 import (
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
     ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
     LEGACY_RAW_SIGNAL_RESEARCH_ENGINE_SIGNAL_SOURCE,
+    MV2_REPLAY_INDEX_BINDING_LOSSLESS_DATETIME_INSTANT,
+    MV2_REPLAY_INDEX_BINDING_POSITIONAL_RANGEINDEX_EXPLICIT,
     RUN_BACKTEST_PATH_CLASSIFICATION,
     StrategySignalBindingError,
     assert_backtest_engine_mv2_replay_signal_parity_v1,
     assert_decision_funnel_trade_alignment_v1,
     assert_parallel_strategy_signal_does_not_control_engine_v1,
+    bind_mv2_replay_signals_to_canonical_bars_index_v1,
     resolve_mv2_research_engine_signal_source_v1,
     validate_engine_signal_source_v1,
     validate_mv2_replay_engine_signal_contract_v1,
@@ -262,24 +265,171 @@ def test_mv2_replay_preserves_canonical_microsecond_utc_bars_index() -> None:
     assert result.signals.index.equals(bars.index)
 
 
-def test_manual_timestamp_list_reconstruction_may_promote_us_to_ns() -> None:
-    """Document why wiring must reuse bars.index instead of rebuilding DatetimeIndex."""
+def test_identical_datetime_index_binding_passes() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    signals = pd.Series([0, 1, -1], index=bars_index, dtype=int)
+    validated, _provenance = validate_mv2_replay_engine_signal_contract_v1(
+        signals,
+        bars_index=bars_index,
+        strategy_id="ma_crossover",
+        mv2_replay_signal_digest="a" * 64,
+    )
+    assert validated.index.equals(bars_index)
+    assert validated.tolist() == [0, 1, -1]
+
+
+def test_lossless_us_to_ns_reconstruction_binds_to_canonical_bars_index() -> None:
+    """Synthetic reproduction of holdout mismatch: Timestamp-list rebuild promotes us→ns."""
     bars_index = _bars_microsecond_utc(n=3).index
     reconstructed = pd.DatetimeIndex([pd.Timestamp(ts) for ts in bars_index])
     if str(reconstructed.dtype) == str(bars_index.dtype):
         pytest.skip(
             "installed pandas preserved datetime unit under Timestamp-list reconstruction; "
-            "promotion guard not applicable"
+            "promotion path not applicable"
         )
     assert str(bars_index.dtype) == "datetime64[us, UTC]"
     assert str(reconstructed.dtype) == "datetime64[ns, UTC]"
     assert (reconstructed == bars_index).all()
     assert not reconstructed.equals(bars_index)
-    signals = pd.Series([0, 1, 0], index=reconstructed, dtype=int)
-    with pytest.raises(StrategySignalBindingError, match="mv2_replay_signal_index_mismatch"):
+    signals = pd.Series([0, 1, -1], index=reconstructed, dtype=int)
+    bound, mode = bind_mv2_replay_signals_to_canonical_bars_index_v1(signals, bars_index=bars_index)
+    assert mode == MV2_REPLAY_INDEX_BINDING_LOSSLESS_DATETIME_INSTANT
+    assert bound.index.equals(bars_index)
+    assert str(bound.index.dtype) == "datetime64[us, UTC]"
+    validated, _provenance = validate_mv2_replay_engine_signal_contract_v1(
+        signals,
+        bars_index=bars_index,
+        strategy_id="ma_crossover",
+        mv2_replay_signal_digest="a" * 64,
+    )
+    assert validated.index.equals(bars_index)
+    assert validated.tolist() == [0, 1, -1]
+
+
+def test_rangeindex_binding_fails_closed_by_default() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    signals = pd.Series([0, 1, -1], dtype=int)  # default RangeIndex
+    with pytest.raises(StrategySignalBindingError, match="mv2_replay_signals_index_not_datetime"):
         validate_mv2_replay_engine_signal_contract_v1(
             signals,
             bars_index=bars_index,
             strategy_id="ma_crossover",
             mv2_replay_signal_digest="a" * 64,
         )
+
+
+def test_rangeindex_binding_passes_only_when_explicitly_allowed() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    signals = pd.Series([0, 1, -1], dtype=int)
+    bound, mode = bind_mv2_replay_signals_to_canonical_bars_index_v1(
+        signals,
+        bars_index=bars_index,
+        allow_positional_rangeindex_binding=True,
+    )
+    assert mode == MV2_REPLAY_INDEX_BINDING_POSITIONAL_RANGEINDEX_EXPLICIT
+    assert bound.index.equals(bars_index)
+    validated, _provenance = validate_mv2_replay_engine_signal_contract_v1(
+        signals,
+        bars_index=bars_index,
+        strategy_id="ma_crossover",
+        mv2_replay_signal_digest="a" * 64,
+        allow_positional_rangeindex_binding=True,
+    )
+    assert validated.index.equals(bars_index)
+    assert validated.tolist() == [0, 1, -1]
+
+
+def test_shifted_index_fail_closed_with_diagnostics() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    shifted = pd.date_range("2026-06-02", periods=3, freq="1h", tz="UTC")
+    signals = pd.Series([0, 1, -1], index=shifted, dtype=int)
+    with pytest.raises(
+        StrategySignalBindingError,
+        match=r"mv2_replay_signal_index_mismatch:.*first_divergence_position=0",
+    ):
+        validate_mv2_replay_engine_signal_contract_v1(
+            signals,
+            bars_index=bars_index,
+            strategy_id="ma_crossover",
+            mv2_replay_signal_digest="a" * 64,
+        )
+
+
+def test_missing_timestamp_fail_closed() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    signals = pd.Series([0, 1], index=bars_index[:2], dtype=int)
+    with pytest.raises(
+        StrategySignalBindingError,
+        match=r"mv2_replay_signal_index_length_mismatch:.*expected_len=3;actual_len=2",
+    ):
+        validate_mv2_replay_engine_signal_contract_v1(
+            signals,
+            bars_index=bars_index,
+            strategy_id="ma_crossover",
+            mv2_replay_signal_digest="a" * 64,
+        )
+
+
+def test_extra_timestamp_fail_closed() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    extended = pd.DatetimeIndex([*bars_index, bars_index[-1] + pd.Timedelta(hours=1)])
+    signals = pd.Series([0, 1, -1, 0], index=extended, dtype=int)
+    with pytest.raises(
+        StrategySignalBindingError,
+        match=r"mv2_replay_signal_index_length_mismatch:.*expected_len=3;actual_len=4",
+    ):
+        validate_mv2_replay_engine_signal_contract_v1(
+            signals,
+            bars_index=bars_index,
+            strategy_id="ma_crossover",
+            mv2_replay_signal_digest="a" * 64,
+        )
+
+
+def test_duplicate_timestamps_fail_closed() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    dup = pd.DatetimeIndex([bars_index[0], bars_index[0], bars_index[2]])
+    signals = pd.Series([0, 1, -1], index=dup, dtype=int)
+    with pytest.raises(StrategySignalBindingError, match="mv2_replay_signals_duplicate_timestamps"):
+        validate_mv2_replay_engine_signal_contract_v1(
+            signals,
+            bars_index=bars_index,
+            strategy_id="ma_crossover",
+            mv2_replay_signal_digest="a" * 64,
+        )
+
+
+def test_unordered_index_fail_closed() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    unordered = bars_index[[2, 0, 1]]
+    signals = pd.Series([0, 1, -1], index=unordered, dtype=int)
+    with pytest.raises(StrategySignalBindingError, match="mv2_replay_signals_index_not_monotonic"):
+        validate_mv2_replay_engine_signal_contract_v1(
+            signals,
+            bars_index=bars_index,
+            strategy_id="ma_crossover",
+            mv2_replay_signal_digest="a" * 64,
+        )
+
+
+def test_length_mismatch_fail_closed() -> None:
+    bars_index = pd.date_range("2026-06-01", periods=4, freq="1h", tz="UTC")
+    other = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    signals = pd.Series([0, 1, -1], index=other, dtype=int)
+    with pytest.raises(StrategySignalBindingError, match="mv2_replay_signal_index_length_mismatch"):
+        validate_mv2_replay_engine_signal_contract_v1(
+            signals,
+            bars_index=bars_index,
+            strategy_id="ma_crossover",
+            mv2_replay_signal_digest="a" * 64,
+        )
+
+
+def test_no_silent_positional_reindex_on_label_permutation() -> None:
+    """Same labels, different order already blocked as non-monotonic; values must not remap."""
+    bars_index = pd.date_range("2026-06-01", periods=3, freq="1h", tz="UTC")
+    # Equal as sets but shifted by one hour → not instant-equivalent positionally.
+    shifted_one = bars_index + pd.Timedelta(hours=1)
+    signals = pd.Series([9, 8, 7], index=shifted_one, dtype=int)
+    with pytest.raises(StrategySignalBindingError, match="mv2_replay_signal_index_mismatch"):
+        bind_mv2_replay_signals_to_canonical_bars_index_v1(signals, bars_index=bars_index)

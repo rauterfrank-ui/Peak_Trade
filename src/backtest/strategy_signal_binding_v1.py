@@ -992,6 +992,120 @@ def validate_strategy_signal_contract_v1(
 
 MV2_RESEARCH_WIRING_OWNER_FOR_REPLAY = "backtest.mv2_research_wiring_v1"
 
+# Explicit MV2 replay → market-data index binding modes.
+# Positional RangeIndex binding is never implicit; callers must opt in.
+MV2_REPLAY_INDEX_BINDING_EXACT = "EXACT_INDEX_EQUALS"
+MV2_REPLAY_INDEX_BINDING_LOSSLESS_DATETIME_INSTANT = "LOSSLESS_DATETIME_INSTANT_EQUIVALENT"
+MV2_REPLAY_INDEX_BINDING_POSITIONAL_RANGEINDEX_EXPLICIT = "POSITIONAL_RANGEINDEX_EXPLICIT"
+
+
+def _first_index_divergence_position_v1(left: pd.Index, right: pd.Index) -> int | None:
+    """Return first positional divergence, or None when prefixes and lengths match."""
+    n = min(len(left), len(right))
+    for i in range(n):
+        try:
+            if left[i] != right[i]:
+                return i
+        except Exception:  # noqa: BLE001 — treat incomparable labels as divergence
+            return i
+    if len(left) != len(right):
+        return n
+    return None
+
+
+def format_mv2_replay_signal_index_mismatch_diagnostics_v1(
+    signals_index: pd.Index,
+    bars_index: pd.Index,
+) -> str:
+    """Machine-readable mismatch diagnostics for fail-closed MV2 replay binding."""
+    return (
+        f"expected_len={len(bars_index)};"
+        f"actual_len={len(signals_index)};"
+        f"expected_index_type={type(bars_index).__name__};"
+        f"actual_index_type={type(signals_index).__name__};"
+        f"expected_dtype={getattr(bars_index, 'dtype', None)};"
+        f"actual_dtype={getattr(signals_index, 'dtype', None)};"
+        f"expected_duplicates={bool(getattr(bars_index, 'has_duplicates', False))};"
+        f"actual_duplicates={bool(getattr(signals_index, 'has_duplicates', False))};"
+        f"first_divergence_position="
+        f"{_first_index_divergence_position_v1(signals_index, bars_index)}"
+    )
+
+
+def _datetime_indexes_lossless_instant_equivalent_v1(
+    signals_index: pd.Index,
+    bars_index: pd.Index,
+) -> bool:
+    """True when both DatetimeIndexes encode the same UTC instants positionally.
+
+    Cross-unit identity (e.g. datetime64[us, UTC] vs datetime64[ns, UTC]) is
+    accepted when element-wise ``==`` holds for every position. No ffill/bfill,
+    no label reindex, and no silent acceptance of shifted or unordered axes.
+    """
+    if not isinstance(signals_index, pd.DatetimeIndex):
+        return False
+    if not isinstance(bars_index, pd.DatetimeIndex):
+        return False
+    if len(signals_index) != len(bars_index):
+        return False
+    if bool(signals_index.isna().any()) or bool(bars_index.isna().any()):
+        return False
+    try:
+        return bool((signals_index == bars_index).all())
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def bind_mv2_replay_signals_to_canonical_bars_index_v1(
+    signals: pd.Series,
+    *,
+    bars_index: pd.Index,
+    allow_positional_rangeindex_binding: bool = False,
+) -> tuple[pd.Series, str]:
+    """Bind MV2 replay signal values onto the canonical market-data bars index.
+
+    The market-data ``bars_index`` is the sole canonical time axis. Replay signals
+    must either already share that index identity (``Index.equals``) or be bound
+    via an explicit lossless path:
+
+    - ``LOSSLESS_DATETIME_INSTANT_EQUIVALENT``: same length, DatetimeIndex on both
+      sides, element-wise UTC instant equality (covers parquet ``us`` vs
+      reconstructed ``ns`` unit drift without changing timestamps).
+    - ``POSITIONAL_RANGEINDEX_EXPLICIT``: only when
+      ``allow_positional_rangeindex_binding=True`` and lengths match.
+
+    Silent positional reindexing under unclear semantics is forbidden. Semantic
+    mismatches remain fail-closed with diagnostics.
+    """
+    _fail_closed(not isinstance(bars_index, pd.DatetimeIndex), "mv2_replay_bars_index_not_datetime")
+    _fail_closed(
+        not bars_index.is_monotonic_increasing,
+        "mv2_replay_bars_index_not_monotonic",
+    )
+    _fail_closed(bars_index.has_duplicates, "mv2_replay_bars_index_duplicate_timestamps")
+    _fail_closed(len(bars_index) == 0, "mv2_replay_bars_index_empty")
+
+    if signals.index.equals(bars_index):
+        bound = pd.Series(signals.to_numpy(), index=bars_index, dtype=signals.dtype)
+        return bound, MV2_REPLAY_INDEX_BINDING_EXACT
+
+    if _datetime_indexes_lossless_instant_equivalent_v1(signals.index, bars_index):
+        bound = pd.Series(signals.to_numpy(), index=bars_index, dtype=signals.dtype)
+        return bound, MV2_REPLAY_INDEX_BINDING_LOSSLESS_DATETIME_INSTANT
+
+    if (
+        allow_positional_rangeindex_binding
+        and isinstance(signals.index, pd.RangeIndex)
+        and len(signals.index) == len(bars_index)
+    ):
+        bound = pd.Series(signals.to_numpy(), index=bars_index, dtype=signals.dtype)
+        return bound, MV2_REPLAY_INDEX_BINDING_POSITIONAL_RANGEINDEX_EXPLICIT
+
+    diagnostics = format_mv2_replay_signal_index_mismatch_diagnostics_v1(signals.index, bars_index)
+    if len(signals.index) != len(bars_index):
+        raise StrategySignalBindingError(f"mv2_replay_signal_index_length_mismatch:{diagnostics}")
+    raise StrategySignalBindingError(f"mv2_replay_signal_index_mismatch:{diagnostics}")
+
 
 def validate_mv2_replay_engine_signal_contract_v1(
     signals: pd.Series,
@@ -1000,31 +1114,46 @@ def validate_mv2_replay_engine_signal_contract_v1(
     strategy_id: str,
     mv2_replay_signal_digest: str,
     expected_mv2_replay_signal_digest: str = "",
+    allow_positional_rangeindex_binding: bool = False,
 ) -> tuple[pd.Series, StrategySignalProvenanceV1]:
-    """Validate canonical MV2 replay series before BacktestEngine ingestion."""
+    """Validate canonical MV2 replay series before BacktestEngine ingestion.
+
+    Market-data ``bars_index`` remains the canonical time axis. Replay signals are
+    bound onto that axis via
+    :func:`bind_mv2_replay_signals_to_canonical_bars_index_v1` (exact equals or
+    explicit lossless binding). Positional RangeIndex binding is opt-in only.
+    """
     _fail_closed(len(signals) == 0, "mv2_replay_signals_empty")
-    _fail_closed(
-        not isinstance(signals.index, pd.DatetimeIndex),
-        "mv2_replay_signals_index_not_datetime",
-    )
-    _fail_closed(
-        not signals.index.is_monotonic_increasing,
-        "mv2_replay_signals_index_not_monotonic",
-    )
-    _fail_closed(signals.index.has_duplicates, "mv2_replay_signals_duplicate_timestamps")
-    if not signals.index.equals(bars_index):
+
+    if isinstance(signals.index, pd.DatetimeIndex):
         _fail_closed(
-            len(signals.index) != len(bars_index), "mv2_replay_signal_index_length_mismatch"
+            not signals.index.is_monotonic_increasing,
+            "mv2_replay_signals_index_not_monotonic",
         )
-        _fail_closed(not signals.index.equals(bars_index), "mv2_replay_signal_index_mismatch")
-    if signals.isna().any():
+        _fail_closed(signals.index.has_duplicates, "mv2_replay_signals_duplicate_timestamps")
+    elif not (allow_positional_rangeindex_binding and isinstance(signals.index, pd.RangeIndex)):
+        diagnostics = format_mv2_replay_signal_index_mismatch_diagnostics_v1(
+            signals.index, bars_index
+        )
+        raise StrategySignalBindingError(f"mv2_replay_signals_index_not_datetime:{diagnostics}")
+
+    bound_signals, _binding_mode = bind_mv2_replay_signals_to_canonical_bars_index_v1(
+        signals,
+        bars_index=bars_index,
+        allow_positional_rangeindex_binding=allow_positional_rangeindex_binding,
+    )
+    _fail_closed(not bound_signals.index.equals(bars_index), "mv2_replay_signal_index_mismatch")
+
+    if bound_signals.isna().any():
         raise StrategySignalBindingError("mv2_replay_signals_contain_nan")
     if expected_mv2_replay_signal_digest and (
         mv2_replay_signal_digest != expected_mv2_replay_signal_digest
     ):
         raise StrategySignalBindingError("mv2_replay_signal_digest_mismatch")
 
-    int_signals = signals.astype(int)
+    int_signals = bound_signals.astype(int)
+    # Keep values on the canonical bars index identity after astype.
+    int_signals = pd.Series(int_signals.to_numpy(), index=bars_index, dtype=int)
     unique_values = {int(v) for v in int_signals.unique()}
     unknown = unique_values - _ALLOWED_SIGNAL_VALUES
     _fail_closed(bool(unknown), f"unknown_mv2_replay_signal_encoding:{sorted(unknown)}")
