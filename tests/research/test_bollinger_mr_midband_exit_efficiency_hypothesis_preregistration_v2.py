@@ -160,12 +160,13 @@ def test_holdout_untouched() -> None:
 
 def test_registry_backlog_consistency() -> None:
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    assert len(backlog["terminal_hypotheses"]) == 2
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert backlog["preregistered_hypotheses"] == []
+    assert len(backlog["terminal_hypotheses"]) == 3
     ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
     assert REQUIRED_HYPOTHESIS_ID in ids
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in ids
+    assert "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V3" in ids
     v2 = next(
         e for e in backlog["terminal_hypotheses"] if e["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     )
@@ -174,13 +175,15 @@ def test_registry_backlog_consistency() -> None:
     assert v2["evaluation_started"] is True
     assert v2["evaluation_executed"] is True
     assert "NO_V2_RERUN" in backlog["explicit_non_actions"]
-    v3 = backlog["preregistered_hypotheses"][0]
-    assert (
-        v3["hypothesis_id"]
+    v3 = next(
+        e
+        for e in backlog["terminal_hypotheses"]
+        if e["hypothesis_id"]
         == "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V3"
     )
-    assert v3["evaluation_run_count"] == 0
-    assert v3["evaluation_executed"] is False
+    assert v3["status"] == "TERMINAL_FAIL"
+    assert v3["evaluation_run_count"] == 1
+    assert v3["result_class"] == "FAIL"
 
 
 def test_validation_does_not_authorize_rerun() -> None:
