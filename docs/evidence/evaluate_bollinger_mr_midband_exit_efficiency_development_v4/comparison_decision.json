@@ -1,0 +1,19 @@
+{
+  "baseline_members_completed": "1/46",
+  "baseline_metrics": null,
+  "diagnostic_class": "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL",
+  "economic_verdict": "NOT_EVALUATED",
+  "evaluable": false,
+  "evaluation_run_count": 1,
+  "exit_divergence_observed": null,
+  "fail": false,
+  "holdout_data_accessed": false,
+  "inconclusive_reason": "runner_lifecycle_incomplete_without_economic_closeout",
+  "pass": false,
+  "reason": "incomplete_panel_run_process_died_after_baseline_member_1_of_46",
+  "rerun_allowed": false,
+  "result_class": "INFRASTRUCTURE_FAILURE",
+  "technical_failure": true,
+  "treatment_members_completed": "0/46",
+  "treatment_metrics": null
+}

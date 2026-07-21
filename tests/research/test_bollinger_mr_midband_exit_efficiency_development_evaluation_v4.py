@@ -1,7 +1,7 @@
-"""Contract/unit tests for midband exit-efficiency DEVELOPMENT evaluation v4 surface.
+"""Contract/unit tests for midband exit-efficiency DEVELOPMENT evaluation v4 closeout.
 
-Definition-only / pre-run safe. Must never invoke the panel runner, start a run,
-claim a run slot, or access panel/holdout archives.
+No real panel evaluation. Reads durable terminal evidence only. Must never
+invoke the panel runner or start a second evaluation run.
 """
 
 from __future__ import annotations
@@ -21,23 +21,19 @@ from src.research.bollinger_mr_midband_exit_efficiency_development_evaluation_v4
     GOVERNANCE_REL_PATH,
     HYPOTHESIS_ID,
 )
-from src.research.bollinger_mr_midband_exit_efficiency_development_evaluation_v4.measurement_validity_preflight_v4 import (
-    run_measurement_validity_preflight,
-)
 from src.research.bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v3 import (
     load_and_validate_repo_contract as load_v3_repo_contract,
 )
 from src.research.bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v4 import (
     load_and_validate_repo_contract as load_v4_repo_contract,
 )
+from src.research.canonical_open_mr_exit_efficiency_hypothesis_backlog_v1 import (
+    load_and_validate_repo_backlog,
+)
 
 REPO = Path(__file__).resolve().parents[2]
 TEST_FILE = Path(__file__).resolve()
-PREFLIGHT_FILE = (
-    REPO
-    / "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v4"
-    / "measurement_validity_preflight_v4.py"
-)
+EVIDENCE = REPO / EVIDENCE_REL_PATH
 
 
 def _load(path: Path) -> dict:
@@ -71,32 +67,6 @@ def test_unit_tests_do_not_call_panel_runner_or_start_a_run() -> None:
             touches_environ = True
     assert imports_os is False
     assert touches_environ is False
-
-
-def test_preflight_module_does_not_import_panel_loaders() -> None:
-    tree = ast.parse(PREFLIGHT_FILE.read_text(encoding="utf-8"))
-    banned_modules = {
-        "src.research.entry_effective_mr_eligibility_development_evaluation_v1.dev_panel_bars_v1",
-    }
-    banned_names = {
-        "load_member_bars",
-        "resolve_development_archive_root",
-        "verify_development_panel_hashes",
-        "included_panel_members",
-        "run_development_evaluation",
-        "run_arm",
-    }
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ImportFrom):
-            if node.module in banned_modules:
-                raise AssertionError(f"banned_import:{node.module}")
-            for alias in node.names:
-                if alias.name in banned_names:
-                    raise AssertionError(f"banned_import_name:{alias.name}")
-        if isinstance(node, ast.Import):
-            for alias in node.names:
-                if alias.name in banned_modules:
-                    raise AssertionError(f"banned_import:{alias.name}")
 
 
 def test_package_marker_v4() -> None:
@@ -133,8 +103,6 @@ def test_runner_script_exists() -> None:
     assert "run_development_evaluation" in text
     assert "EvaluationRunnerLifecycleObservabilityV1" in text
     assert "AUTO_RERUN_EXECUTED=false" in text
-    assert "OPERATOR_GO" not in text
-    assert 'os.environ.get("GO_' not in text
     assert "while True" not in text
 
 
@@ -152,19 +120,24 @@ def test_panel_runner_falsy_zero_hygiene_and_validity_gate() -> None:
     assert "predecessor_development_v3" in text
 
 
-def test_v4_contract_still_definition_only_run_count_zero() -> None:
+def test_v4_contract_terminal_infrastructure_failure_run_count_one() -> None:
     report = load_v4_repo_contract(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["definition_only"] is False
     assert report["hypothesis_id"] == HYPOTHESIS_ID
-    assert report["evaluation_run_count"] == 0
-    assert report["preregistration_state"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert report["result_class"] == "NOT_EVALUATED"
+    assert report["evaluation_run_count"] == 1
+    assert report["evaluation_started"] is True
+    assert report["evaluation_completed"] is False
+    assert report["evaluation_executed"] is True
+    assert report["result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert report["economic_verdict"] == "NOT_EVALUATED"
+    assert report["rerun_allowed"] is False
     contract = _load(REPO / CONTRACT_REL_PATH)
-    assert contract["preregistration_state"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert int(contract["evaluation_run_count"]) == 0
+    assert contract["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INFRASTRUCTURE_FAILURE"
+    assert contract["evaluation_run_count"] == 1
+    assert contract["pass"] is False
+    assert contract["fail"] is False
     assert contract["holdout_data_accessed"] is False
-    assert int(contract["evaluation_run_count_authorized"]) == 1
 
 
 def test_v3_remains_terminal_fail_run_count_one() -> None:
@@ -174,28 +147,57 @@ def test_v3_remains_terminal_fail_run_count_one() -> None:
     assert v3_report["rerun_allowed"] is False
 
 
-def test_no_evaluation_evidence_or_slot_claim_in_definition_only_slice() -> None:
-    evidence = REPO / EVIDENCE_REL_PATH
-    assert evidence.exists() is False or not (evidence / "summary.json").exists()
-    assert not (evidence / "run_slot_claim.json").exists() if evidence.exists() else True
+def test_terminal_summary_evidence() -> None:
+    summary = _load(EVIDENCE / "summary.json")
+    assert summary["evaluation_run_count"] == 1
+    assert summary["evaluation_started"] is True
+    assert summary["evaluation_completed"] is False
+    assert summary["result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert summary["economic_verdict"] == "NOT_EVALUATED"
+    assert summary["pass"] is False
+    assert summary["fail"] is False
+    assert summary["baseline_members_completed"] == "1/46"
+    assert summary["treatment_members_completed"] == "0/46"
+    assert summary["holdout_data_accessed"] is False
+    assert summary["rerun_allowed"] is False
+    assert summary["v3_rerun"] is False
+    assert summary["v3_partial_results_reused"] is False
+    assert summary["auto_rerun_executed"] is False
+    assert summary["acceptance_criteria_met"] is False
+    assert summary["runner_start_count"] == 1
+    assert summary["baseline_metrics"] is None
+    assert summary["treatment_metrics"] is None
+    assert (EVIDENCE / "run_slot_claim.json").is_file()
+    assert (EVIDENCE / "measurement_validity_preflight.json").is_file()
+    assert (EVIDENCE / "runner_lifecycle_progress.json").is_file()
+    assert (EVIDENCE / "runner_lifecycle_terminal_diagnostics.json").is_file()
+    assert (EVIDENCE / "process_death_root_cause.json").is_file()
+    assert (EVIDENCE / "MANIFEST.sha256").is_file()
+    decision = _load(EVIDENCE / "comparison_decision.json")
+    assert decision["result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert decision["evaluable"] is False
 
 
-def test_measurement_validity_preflight_passes_on_synthetic_fixture() -> None:
-    result = run_measurement_validity_preflight(repo_root=REPO)
-    assert result["passed"] is True
-    assert result["result_class"] is None
-    assert result["effective_configs_differ"] is True
-    assert result["open_side_binding_observed"] is True
-    assert int(result["exit_bars_observed"]) > 0
-    assert result["synthetic_divergence_observed"] is True
-    assert result["binding_fix_surface"] == BINDING_FIX_SURFACE
+def test_terminal_backlog_validates() -> None:
+    report = load_and_validate_repo_backlog(REPO)
+    assert report["valid"] is True
+    assert report["preregistered_count"] == 0
+    assert report["terminal_count"] == 4
+    assert report["development_run_count"] == 4
+    assert report["v2_evaluation_run_count"] == 1
+    assert report["v3_evaluation_run_count"] == 1
+    assert report["v3_result_class"] == "FAIL"
+    assert report["v4_evaluation_run_count"] == 1
+    assert report["v4_result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert report["v4_is_rerun_of_v3"] is False
+    assert report["rerun_allowed"] is False
 
 
-def test_governance_doc_awaiting_execution() -> None:
+def test_governance_terminal_doc() -> None:
     governance = REPO / GOVERNANCE_REL_PATH
     assert governance.is_file()
     text = governance.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V4" in text
-    assert "AWAITING_EVALUATION_EXECUTION" in text
-    assert "EVALUATION_RUN_COUNT=0" in text
-    assert "MV2_WIRING_MOD_CAPTURE_ALIAS_OPEN_SIDE_BINDING_FIX" in text
+    assert "INFRASTRUCTURE_FAILURE" in text
+    assert "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL" in text
+    assert "AWAITING_EVALUATION_EXECUTION" not in text

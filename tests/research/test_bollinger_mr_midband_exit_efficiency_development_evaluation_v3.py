@@ -162,11 +162,12 @@ def test_terminal_backlog_validates() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
     assert report["preregistered_count"] == 0
-    assert report["terminal_count"] == 3
-    assert report["development_run_count"] == 3
+    assert report["terminal_count"] == 4
+    assert report["development_run_count"] == 4
     assert report["v2_evaluation_run_count"] == 1
     assert report["v3_evaluation_run_count"] == 1
     assert report["v3_result_class"] == "FAIL"
+    assert report["v4_evaluation_run_count"] == 1
     assert report["v3_is_rerun_of_v2"] is False
     assert report["rerun_allowed"] is False
 
