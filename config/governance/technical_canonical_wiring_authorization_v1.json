@@ -409,7 +409,33 @@
     "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v2/split_manifest.json",
     "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v2/safety_attestation.md",
     "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v2/timing_proof.txt",
-    "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V2.md"
+    "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V2.md",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v2/__init__.py",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v2/decision_v1.py",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v2/holdout_panel_bars_v1.py",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v2/panel_runner_v1.py",
+    "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2.py",
+    "tests/research/test_adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v2.py",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/README.md",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/summary.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_manifest.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/comparison_decision.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/baseline_metrics.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/treatment_metrics.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/eligibility_attribution.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/eligibility_filter_formula_freeze.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/config_snapshot.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/code_config_hashes.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/safety_attestation.md",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/instrument_attribution.json",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_stdout.txt",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_stderr.txt",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_exit_code.txt",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_attempt_marker.txt",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_attempt_started_at_utc.txt",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_attempt_finished_at_utc.txt",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/.holdout_run_consumed",
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/.holdout_run.lock"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -444,7 +470,8 @@
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_WIRING",
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_WIRING",
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_WIRING",
-    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_V2_PREREGISTRATION_WIRING"
+    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_V2_PREREGISTRATION_WIRING",
+    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_V2_EVALUATION_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -504,6 +531,7 @@
     "Includes single preregistered DEVELOPMENT evaluation of Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.",
     "Includes definition-only holdout preregistration for Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility after DEVELOPMENT PASS: freezes sealed FINAL_AUDIT holdout split digest from existing SSOT registry metadata, acceptance criteria, holdout_run_limit=1, retry/post-result-tuning locks, and separate execution-GO gate; no holdout data access, no backtest, no economic metrics, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V1.",
     "Includes single authorized HOLDOUT evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility versus immutable bollinger baseline on the sealed FINAL_AUDIT panel (holdout_run_count 1/1, RESULT_CLASS=ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN after MV2 replay signal-index mismatch; no retry); economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V1.",
-    "Includes definition-only holdout preregistration v2 for Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility after terminal holdout V1 ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN and the generic MV2 replay signal-index binding repair: new evaluation ID, holdout_run_limit=1, retry/post-result-tuning locks, and separate execution-GO gate; no V1 rerun; no holdout data access; no backtest; no economic metrics; no policy runtime; no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V2."
+    "Includes definition-only holdout preregistration v2 for Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility after terminal holdout V1 ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN and the generic MV2 replay signal-index binding repair: new evaluation ID, holdout_run_limit=1, retry/post-result-tuning locks, and separate execution-GO gate; no V1 rerun; no holdout data access; no backtest; no economic metrics; no policy runtime; no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V2.",
+    "Includes single authorized HOLDOUT v2 evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility (holdout_run_count 1/1, RESULT_CLASS=FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED); new evaluation ID not a V1 rerun; economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V2."
   ]
 }

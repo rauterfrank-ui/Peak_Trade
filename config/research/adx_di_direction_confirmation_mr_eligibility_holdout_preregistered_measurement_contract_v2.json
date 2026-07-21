@@ -4,8 +4,8 @@
   "schema_version": "adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract.v2",
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
-  "status": "DEFINITION_ONLY_HOLDOUT_PREREGISTERED",
-  "verdict": "HOLDOUT_HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED_AWAITING_SEPARATE_EXECUTION_GO",
+  "status": "HOLDOUT_EVALUATION_EXECUTED_TERMINAL",
+  "verdict": "HOLDOUT_TERMINAL_FAIL",
   "slice_class": "DEFINITION_ONLY",
   "evaluation_authorized": false,
   "backtest_authorized": false,
@@ -26,7 +26,7 @@
     "development_feature_formula_sha256": "05104afcc41e07d7b14ed8a0e3f2e7bcb97cfabc80cd6ef0c422004136eb36e4",
     "second_development_run_forbidden": true
   },
-  "holdout_run_count": 0,
+  "holdout_run_count": 1,
   "holdout_run_limit": 1,
   "holdout_runs_allowed": 1,
   "retry_forbidden": true,
@@ -426,7 +426,7 @@
     "NO_RISK_SIZING_EXECUTION_SEMANTICS_CHANGE",
     "NO_SECOND_HOLDOUT_RUN_OF_V2_WITHOUT_NEW_ID"
   ],
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_V2_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN",
+  "next_canonical_step": "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY",
   "new_evaluation_not_rerun": true,
   "v1_rerun_forbidden": true,
   "identical_measurement_rules_to_holdout_v1": true,
@@ -446,5 +446,9 @@
     "primary_metrics_produced": false,
     "new_evaluation_rationale": "V1 terminated before primary economic metrics due to MV2 replay signal-index binding mismatch; the generic MV2 replay signal-index binding contract was subsequently repaired on main (PR #5387 / 55757341740de5be7413da5c9c4e76173ca4278a). V2 is a new independently versioned evaluation ID, not a V1 rerun."
   },
-  "holdout_preregistration_digest": "4d1ec324977e33a808d40778548523b95df472b72f3d9133fcdf606a4796c332"
+  "holdout_preregistration_digest": "4d1ec324977e33a808d40778548523b95df472b72f3d9133fcdf606a4796c332",
+  "holdout_executed": true,
+  "terminal_holdout_result_class": "FAIL",
+  "terminal_holdout_reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+  "evaluation_evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/"
 }

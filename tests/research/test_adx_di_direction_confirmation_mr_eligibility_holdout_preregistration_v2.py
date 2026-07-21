@@ -64,13 +64,15 @@ def _load(path: Path) -> dict:
 def test_repo_holdout_v2_contract_validates_against_ssot() -> None:
     report = load_and_validate_repo_holdout_contract(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["definition_only"] is False
+    assert report["holdout_executed"] is True
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     assert report["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert report["holdout_run_count"] == 0
+    assert report["holdout_run_count"] == 1
     assert report["holdout_run_limit"] == 1
     assert report["execution_authorized"] is False
     assert report["new_evaluation_not_rerun"] is True
+    assert report["terminal_holdout_result_class"] == "FAIL"
     assert report["holdout_split_digest"] == expected_holdout_split_digest()
     assert report["primary_decision_metric"] == "NET_PROFIT_FACTOR"
     assert report["holdout_preregistration_digest"] == EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST
@@ -82,8 +84,9 @@ def test_hypothesis_id_is_new_and_not_v1_rerun() -> None:
     assert contract["hypothesis_id"] != REQUIRED_PREDECESSOR_HYPOTHESIS_ID
     assert contract["new_evaluation_not_rerun"] is True
     assert contract["v1_rerun_forbidden"] is True
-    assert contract["holdout_run_count"] == 0
-    assert contract["status"] == "DEFINITION_ONLY_HOLDOUT_PREREGISTERED"
+    assert contract["holdout_run_count"] == 1
+    assert contract["status"] == "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
+    assert contract["terminal_holdout_result_class"] == "FAIL"
     pred = contract["predecessor_holdout_v1"]
     assert pred["result_class"] == "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN"
     assert pred["holdout_run_count"] == 1
@@ -112,17 +115,17 @@ def test_holdout_split_digest_matches_registered_definition() -> None:
     assert manifest["split_intervals_sha256"] == expected_holdout_split_digest()
 
 
-def test_holdout_run_limit_exactly_one_and_count_zero() -> None:
+def test_holdout_run_limit_exactly_one_and_count_one_terminal() -> None:
     contract = _load(CONTRACT_PATH)
     assert contract["holdout_run_limit"] == 1
     assert contract["holdout_runs_allowed"] == 1
-    assert contract["holdout_run_count"] == 0
+    assert contract["holdout_run_count"] == 1
     bad = copy.deepcopy(contract)
     bad["holdout_run_limit"] = 2
     with pytest.raises(HoldoutPreregistrationError, match="HOLDOUT_RUN_LIMIT"):
         validate_holdout_preregistration_contract(bad)
     bad2 = copy.deepcopy(contract)
-    bad2["holdout_run_count"] = 1
+    bad2["holdout_run_count"] = 0
     with pytest.raises(HoldoutPreregistrationError, match="HOLDOUT_RUN_COUNT"):
         validate_holdout_preregistration_contract(bad2)
 
@@ -202,7 +205,7 @@ def test_universe_non_bitcoin_perpetuals_only() -> None:
     assert u["venue"] == "OKX"
 
 
-def test_definition_only_prereg_evidence_pack_has_no_result_metrics() -> None:
+def test_definition_only_prereg_evidence_pack_preserved() -> None:
     assert EVIDENCE.is_dir()
     assert GOVERNANCE.is_file()
     for name in FORBIDDEN_RESULT_ARTIFACTS:
@@ -212,11 +215,8 @@ def test_definition_only_prereg_evidence_pack_has_no_result_metrics() -> None:
     assert summary["holdout_data_accessed"] is False
     assert summary["holdout_run_count"] == 0
     assert summary["evaluation_authorized"] is False
-    assert summary["base_sha"] == BASE_SHA
-    assert summary["declared_runner_rel_path"] == DECLARED_RUNNER_REL_PATH
     assert summary["new_evaluation_not_rerun"] is True
     assert summary["predecessor_holdout_v1_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert not (REPO / DECLARED_RUNNER_REL_PATH).exists()
 
 
 def test_preregistration_digest_stable() -> None:
@@ -233,11 +233,18 @@ def test_sealed_holdout_opaque_id_bound() -> None:
     assert contract["sealed_holdout_content_inspection_authorized"] is False
 
 
-def test_no_holdout_runner_or_eval_package_in_this_slice() -> None:
-    assert not (REPO / DECLARED_RUNNER_REL_PATH).exists()
-    assert not (
+def test_holdout_v2_evaluation_package_and_evidence_present_terminal() -> None:
+    assert (REPO / DECLARED_RUNNER_REL_PATH).is_file()
+    assert (
         REPO / "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v2"
-    ).exists()
-    assert not (
+    ).is_dir()
+    eval_ev = (
         REPO / "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2"
-    ).exists()
+    )
+    assert eval_ev.is_dir()
+    assert (eval_ev / ".holdout_run_consumed").is_file()
+    assert (eval_ev / "summary.json").is_file()
+    summary = _load(eval_ev / "summary.json")
+    assert summary["result_class"] == "FAIL"
+    assert summary["holdout_run_count"] == 1
+    assert summary["new_evaluation_not_rerun"] is True
