@@ -3,9 +3,8 @@
 Definition-only governance. No evaluation, backtest, holdout access, runtime
 activation, or productive trading-logic mutation.
 
-Post V7 definition-only preregistration: exactly one DEFINITION_ONLY_PREREGISTERED
-candidate (V7 reentry-cooldown) with genuine economic change vs terminal V6 FAIL;
-V1-V6 remain terminal; development_run_count=6 (V7 not executed); no V8 auto-create.
+Post V7 DEVELOPMENT evaluation terminal closeout: zero DEFINITION_ONLY_PREREGISTERED
+candidates; V1-V7 terminal; development_run_count=7; no V7 rerun; no V8 auto-create.
 """
 
 from __future__ import annotations
@@ -74,7 +73,10 @@ FORBIDDEN_EMBEDDED_RESULT_KEYS = frozenset(
 REQUIRED_TERMINAL_STATUS = "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
 REQUIRED_TERMINAL_FAIL_STATUS = "TERMINAL_FAIL"
 REQUIRED_TERMINAL_INFRA_STATUS = "TERMINAL_INFRASTRUCTURE_FAILURE"
-REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
+REQUIRED_V7_NEXT_STEP = (
+    "NO_AUTO_V8_CREATION_OPERATOR_GO_REQUIRED_FOR_ANY_NEW_PREREGISTRATION_NO_V7_RERUN"
+)
+REQUIRED_V7_DIAGNOSTIC_CLASS = "PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST"
 
 
 class BacklogValidationError(ValueError):
@@ -210,7 +212,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "EVALUATION_RESULTS_EMBEDDED_FLAG",
     )
     _assert_true(
-        int(backlog.get("development_run_count", -1)) == 6, "DEVELOPMENT_RUN_COUNT_MUST_BE_6"
+        int(backlog.get("development_run_count", -1)) == 7, "DEVELOPMENT_RUN_COUNT_MUST_BE_7"
     )
     _assert_true(backlog.get("dataset_id") == REQUIRED_DATASET_ID, "DATASET_ID_MISMATCH")
     _assert_true(backlog.get("dataset_class") == "DEVELOPMENT_ONLY", "DATASET_CLASS")
@@ -298,75 +300,23 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(rules.get("economic_gate_closed") is True, "ECONOMIC_GATE_NOT_CLOSED")
     _assert_true(rules.get("promotion_closed") is True, "PROMOTION_NOT_CLOSED")
-    _assert_true(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_RULE")
+    _assert_true(rules.get("preregistered_count_exact") == 0, "PREREGISTERED_COUNT_RULE")
     _assert_true(rules.get("open_unpreregistered_count_exact") == 0, "OPEN_COUNT_RULE")
 
     preregistered = backlog.get("preregistered_hypotheses")
     _assert_true(isinstance(preregistered, list), "PREREGISTERED_MISSING")
     assert isinstance(preregistered, list)
-    _assert_true(len(preregistered) == 1, "PREREGISTERED_COUNT", str(len(preregistered)))
-    pref = preregistered[0]
-    _assert_true(isinstance(pref, Mapping), "PREREGISTERED_ENTRY_TYPE")
-    assert isinstance(pref, Mapping)
-    _assert_true(pref.get("hypothesis_id") == REQUIRED_V7_HYPOTHESIS_ID, "PREREGISTERED_ID")
-    _assert_true(pref.get("status") == REQUIRED_PREREGISTERED_STATUS, "PREREGISTERED_STATUS")
-    lifecycle = str(pref.get("implementation_lifecycle_status") or "")
-    if lifecycle == "EVALUATION_AUTHORIZED":
-        _assert_true(pref.get("evaluation_authorized") is True, "PREREGISTERED_EVAL_AUTHORIZED")
-        _assert_true(backlog.get("evaluation_authorized") is True, "TOP_EVAL_AUTHORIZED")
-        _assert_true(
-            backlog.get("next_canonical_step")
-            == "AWAIT_SEPARATE_OPERATOR_GO_FOR_V7_DEVELOPMENT_EVALUATION_RUN",
-            "NEXT_STEP_AFTER_AUTH",
-        )
-    else:
-        _assert_true(pref.get("evaluation_authorized") is False, "PREREGISTERED_EVAL_AUTHORIZED")
-        _assert_true(backlog.get("evaluation_authorized") is False, "TOP_EVAL_AUTHORIZED")
-    _assert_true(pref.get("evaluation_executed") is False, "PREREGISTERED_EVAL_EXECUTED")
-    _assert_true(pref.get("evaluation_started") is False, "PREREGISTERED_EVAL_STARTED")
-    _assert_true(pref.get("evaluation_completed") is False, "PREREGISTERED_EVAL_COMPLETED")
-    _assert_true(int(pref.get("evaluation_run_count", -1)) == 0, "PREREGISTERED_RUN_COUNT")
-    _assert_true(int(pref.get("evaluation_run_limit") or 0) == 1, "PREREGISTERED_RUN_LIMIT")
-    _assert_true(pref.get("result_class") == "NOT_EVALUATED", "PREREGISTERED_RESULT_CLASS")
-    _assert_true(pref.get("mechanism_id") == REQUIRED_V7_MECHANISM_ID, "PREREGISTERED_MECHANISM")
+    _assert_true(len(preregistered) == 0, "PREREGISTERED_COUNT", str(len(preregistered)))
+    _assert_true(backlog.get("evaluation_authorized") is False, "TOP_EVAL_AUTHORIZED")
     _assert_true(
-        pref.get("identical_exit_mechanism_to_development_v6") is False,
-        "PREREGISTERED_EXIT_CHANGED",
-    )
-    _assert_true(
-        pref.get("identical_economic_hypothesis_to_development_v6") is False,
-        "PREREGISTERED_ECON_CHANGED",
-    )
-    _assert_true(
-        pref.get("economic_change_vs_development_v6") is True, "PREREGISTERED_ECON_CHANGE_FLAG"
-    )
-    _assert_true(pref.get("v6_rerun_forbidden") is True, "PREREGISTERED_V6_RERUN_FORBIDDEN")
-    _assert_true(pref.get("v6_partial_results_reused") is False, "PREREGISTERED_V6_PARTIAL")
-    _assert_true(
-        pref.get("predecessor_partial_metrics_used") is False, "PREREGISTERED_PARTIAL_METRICS_USED"
-    )
-    _assert_true(int(pref.get("cooldown_bars", -1)) == 24, "PREREGISTERED_COOLDOWN_BARS")
-    _assert_true(
-        pref.get("lifecycle_checkpoint_surface") == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE,
-        "PREREGISTERED_LIFECYCLE_SURFACE",
-    )
-    _assert_true(
-        pref.get("predecessor_hypothesis_id") == REQUIRED_V6_HYPOTHESIS_ID,
-        "PREREGISTERED_PREDECESSOR",
-    )
-    _assert_true(
-        pref.get("predecessor_result_class") == "FAIL",
-        "PREREGISTERED_PREDECESSOR_RESULT",
-    )
-    _assert_true(
-        pref.get("development_preregistration_digest") == REQUIRED_V7_PREREGISTRATION_DIGEST,
-        "PREREGISTERED_DIGEST",
+        backlog.get("next_canonical_step") == REQUIRED_V7_NEXT_STEP,
+        "NEXT_STEP_AFTER_V7_TERMINAL",
     )
 
     terminal = backlog.get("terminal_hypotheses")
     _assert_true(isinstance(terminal, list), "TERMINAL_MISSING")
     assert isinstance(terminal, list)
-    _assert_true(len(terminal) == 6, "TERMINAL_COUNT", str(len(terminal)))
+    _assert_true(len(terminal) == 7, "TERMINAL_COUNT", str(len(terminal)))
     by_id = {str(e.get("hypothesis_id")): e for e in terminal if isinstance(e, Mapping)}
     _assert_true(REQUIRED_HYPOTHESIS_ID in by_id, "TERMINAL_V1_MISSING")
     _assert_true(REQUIRED_V2_HYPOTHESIS_ID in by_id, "TERMINAL_V2_MISSING")
@@ -374,6 +324,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true(REQUIRED_V4_HYPOTHESIS_ID in by_id, "TERMINAL_V4_MISSING")
     _assert_true(REQUIRED_V5_HYPOTHESIS_ID in by_id, "TERMINAL_V5_MISSING")
     _assert_true(REQUIRED_V6_HYPOTHESIS_ID in by_id, "TERMINAL_V6_MISSING")
+    _assert_true(REQUIRED_V7_HYPOTHESIS_ID in by_id, "TERMINAL_V7_MISSING")
     _assert_terminal_inconclusive_entry(
         by_id[REQUIRED_HYPOTHESIS_ID],
         hypothesis_id=REQUIRED_HYPOTHESIS_ID,
@@ -502,6 +453,34 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(v6.get("baseline_members_completed") == "46/46", "TERMINAL_V6_BASELINE")
     _assert_true(v6.get("treatment_members_completed") == "46/46", "TERMINAL_V6_TREATMENT")
+    _assert_terminal_inconclusive_entry(
+        by_id[REQUIRED_V7_HYPOTHESIS_ID],
+        hypothesis_id=REQUIRED_V7_HYPOTHESIS_ID,
+        code_prefix="TERMINAL_V7",
+    )
+    v7 = by_id[REQUIRED_V7_HYPOTHESIS_ID]
+    _assert_true(v7.get("new_evaluation_not_rerun") is True, "TERMINAL_V7_NOT_RERUN")
+    _assert_true(v7.get("mechanism_id") == REQUIRED_V7_MECHANISM_ID, "TERMINAL_V7_MECHANISM")
+    _assert_true(v7.get("v6_partial_results_reused") is False, "TERMINAL_V7_V6_PARTIAL")
+    _assert_true(
+        v7.get("lifecycle_checkpoint_surface") == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE,
+        "TERMINAL_V7_LIFECYCLE",
+    )
+    _assert_true(
+        v7.get("predecessor_hypothesis_id") == REQUIRED_V6_HYPOTHESIS_ID,
+        "TERMINAL_V7_PREDECESSOR",
+    )
+    _assert_true(
+        v7.get("process_death_root_cause") == REQUIRED_V7_DIAGNOSTIC_CLASS,
+        "TERMINAL_V7_ROOT_CAUSE",
+    )
+    _assert_true(
+        v7.get("development_preregistration_digest") == REQUIRED_V7_PREREGISTRATION_DIGEST,
+        "TERMINAL_V7_DIGEST",
+    )
+    _assert_true(v7.get("baseline_members_completed") == "0/46", "TERMINAL_V7_BASELINE")
+    _assert_true(v7.get("treatment_members_completed") == "0/46", "TERMINAL_V7_TREATMENT")
+    _assert_true(v7.get("panel_backtest_executed") is False, "TERMINAL_V7_PANEL")
 
     non_actions = backlog.get("explicit_non_actions") or []
     _assert_true("NO_V2_RERUN" in non_actions, "NO_V2_RERUN_NON_ACTION_REQUIRED")
@@ -511,13 +490,10 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true("NO_V4_RERUN" in non_actions, "NO_V4_RERUN_NON_ACTION_REQUIRED")
     _assert_true("NO_V5_RERUN" in non_actions, "NO_V5_RERUN_REQUIRED")
     _assert_true("NO_V6_RERUN" in non_actions, "NO_V6_RERUN_REQUIRED")
+    _assert_true("NO_V7_RERUN" in non_actions, "NO_V7_RERUN_REQUIRED")
     _assert_true(
-        "NO_V6_EVALUATION_IN_THIS_SLICE" not in non_actions,
-        "NO_V6_EVALUATION_IN_THIS_SLICE_MUST_BE_ABSENT",
-    )
-    _assert_true(
-        "NO_V7_EVALUATION_IN_THIS_SLICE" in non_actions,
-        "NO_V7_EVALUATION_IN_THIS_SLICE_REQUIRED",
+        "NO_V7_EVALUATION_IN_THIS_SLICE" not in non_actions,
+        "NO_V7_EVALUATION_IN_THIS_SLICE_MUST_BE_ABSENT",
     )
     _assert_true("NO_V7_AUTO_CREATE" in non_actions, "NO_V7_AUTO_CREATE_REQUIRED")
     _assert_true("NO_V8_AUTO_CREATE" in non_actions, "NO_V8_AUTO_CREATE_REQUIRED")
@@ -529,11 +505,11 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
-        "preregistered_count": 1,
-        "terminal_count": 6,
+        "preregistered_count": 0,
+        "terminal_count": 7,
         "open_unpreregistered_count": 0,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
-        "preregistered_hypothesis_id": REQUIRED_V7_HYPOTHESIS_ID,
+        "preregistered_hypothesis_id": None,
         "terminal_hypothesis_ids": [
             REQUIRED_HYPOTHESIS_ID,
             REQUIRED_V2_HYPOTHESIS_ID,
@@ -541,14 +517,15 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
             REQUIRED_V4_HYPOTHESIS_ID,
             REQUIRED_V5_HYPOTHESIS_ID,
             REQUIRED_V6_HYPOTHESIS_ID,
+            REQUIRED_V7_HYPOTHESIS_ID,
         ],
-        "development_run_count": 6,
+        "development_run_count": 7,
         "evaluation_authorized": bool(backlog.get("evaluation_authorized")),
         "holdout_forbidden": True,
         "short_side_hypothesis_preregistered": False,
         "holdout_candidate_preregistered": False,
         "runtime_locked": True,
-        "result_class": "INFRASTRUCTURE_FAILURE",
+        "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
         "economic_verdict": "NOT_EVALUATED",
         "rerun_allowed": False,
         "v2_evaluation_run_count": 1,
@@ -565,7 +542,8 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "v6_evaluation_run_count": 1,
         "v6_result_class": "FAIL",
         "v6_is_rerun_of_v5": False,
-        "v7_evaluation_run_count": 0,
+        "v7_evaluation_run_count": 1,
+        "v7_result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
         "observability_surface": REQUIRED_OBSERVABILITY_SURFACE,
         "falsy_zero_hygiene_surface": REQUIRED_FALSY_ZERO_HYGIENE_SURFACE,
         "binding_fix_surface": REQUIRED_BINDING_FIX_SURFACE,

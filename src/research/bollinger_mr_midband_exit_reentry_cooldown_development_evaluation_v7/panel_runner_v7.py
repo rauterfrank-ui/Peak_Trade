@@ -40,9 +40,14 @@ from src.research.bollinger_mr_economic_failure_decomposition_development_v1.met
     enrich_trade_excursions,
     instrument_attribution,
 )
+from src.research.bollinger_mr_midband_exit_efficiency_development_evaluation_v1.midband_exit_mechanism_v1 import (
+    MidbandExitMechanismError,
+)
 from src.research.bollinger_mr_midband_exit_efficiency_development_evaluation_v6.composite_midband_max_holding_exit_mechanism_v6 import (
-    assert_frozen_parameters_match_contract,
     mechanism_freeze_payload,
+)
+from src.research.bollinger_mr_midband_exit_efficiency_development_evaluation_v6.constants_v6 import (
+    REQUIRED_FROZEN_EXIT_PARAMETERS as V6_REQUIRED_FROZEN_EXIT_PARAMETERS,
 )
 from src.research.bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v6 import (
     load_json,
@@ -96,6 +101,7 @@ from src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluat
     OWNER_SURFACE,
     PORTFOLIO_AGGREGATION_ID,
     PRIMARY_SEED,
+    REQUIRED_FROZEN_EXIT_PARAMETERS,
     RESULT_CLASS_INCONCLUSIVE_INFRASTRUCTURE_FAILURE,
     SHARED_INITIAL_CAPITAL,
     SLEEVE_INITIAL_CASH,
@@ -523,6 +529,12 @@ def _assert_no_v6_partial_reuse(contract: Mapping[str, Any]) -> None:
         raise RuntimeError("V6_ECONOMIC_RESULT_IMPORT_FORBIDDEN")
 
 
+def assert_v7_frozen_exit_parameters_unchanged() -> None:
+    """Bind V7 freeze to V6 composite constants; do not mutate immutable prereg JSON."""
+    if REQUIRED_FROZEN_EXIT_PARAMETERS != V6_REQUIRED_FROZEN_EXIT_PARAMETERS:
+        raise MidbandExitMechanismError("FROZEN_EXIT_PARAMETERS_MISMATCH")
+
+
 def assert_v7_authority_and_prereg_gates(
     *,
     repo: Path,
@@ -675,7 +687,6 @@ def run_development_evaluation(
 
     contract = load_json(repo / CONTRACT_REL_PATH)
     _assert_no_v6_partial_reuse(contract)
-    assert_frozen_parameters_match_contract(contract)
 
     started_at = _utc_now()
     lc_tracker = _LifecycleCheckpointTrackerV7(
@@ -689,12 +700,54 @@ def run_development_evaluation(
     if validity.get("passed") is True:
         lc_tracker.mark(LIFECYCLE_STATE_PREFLIGHT_PASSED)
 
-    # Slot consumed only after authorized runner start persistence.
+    # Slot consumed at authorized runner start persistence (before panel / freeze asserts).
     claim = _claim_run_slot_atomic_v7(output_dir, repo=repo, started_at=started_at)
     claim["operator_clarification_authority_digest"] = gates["authority_digest"]
     atomic_write_json_v1(output_dir / "run_slot_claim.json", claim)
     lc_tracker.mark(LIFECYCLE_STATE_RUN_SLOT_CLAIMED, status="STARTED")
     lc_tracker.mark(LIFECYCLE_STATE_RUNNER_STARTED)
+
+    try:
+        assert_v7_frozen_exit_parameters_unchanged()
+    except MidbandExitMechanismError as exc:
+        summary = {
+            "schema_version": "evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_summary.v7",
+            "evaluation_run_id": EVALUATION_RUN_ID,
+            "evaluation_run_count": 1,
+            "evaluation_started": True,
+            "evaluation_completed": False,
+            "panel_backtest_executed": False,
+            "hypothesis_id": HYPOTHESIS_ID,
+            "result_class": RESULT_CLASS_INCONCLUSIVE_INFRASTRUCTURE_FAILURE,
+            "diagnostic_class": "PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST",
+            "lifecycle_terminal_state": LIFECYCLE_TERMINAL_INCONCLUSIVE_INFRA,
+            "economic_verdict": "NOT_EVALUATED",
+            "reason": str(exc),
+            "error": str(exc)[:2000],
+            "partial_metrics_authoritative": False,
+            "operator_clarification_authority_digest": gates["authority_digest"],
+            "holdout_data_accessed": False,
+            "rerun_allowed": False,
+            "auto_rerun_executed": False,
+            "owner_surface": OWNER_SURFACE,
+            "base_sha": _git_base_sha(repo),
+        }
+        (output_dir / "summary.json").write_text(
+            json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        write_manifest_sha256(output_dir)
+        try:
+            lc_tracker.mark(
+                LIFECYCLE_STATE_SUMMARY_COMMITTED,
+                result_class=RESULT_CLASS_INCONCLUSIVE_INFRASTRUCTURE_FAILURE,
+            )
+            lc_tracker.mark(
+                LIFECYCLE_STATE_TERMINAL_COMMITTED,
+                result_class=RESULT_CLASS_INCONCLUSIVE_INFRASTRUCTURE_FAILURE,
+            )
+        except Exception:  # noqa: BLE001
+            pass
+        return summary
 
     if validity.get("passed") is not True:
         invalid_class = str(validity.get("result_class") or "INVALID_MEASUREMENT_BINDING_MISSING")

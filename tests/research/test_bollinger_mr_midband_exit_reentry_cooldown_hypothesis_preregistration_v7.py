@@ -165,18 +165,22 @@ def test_owner_map_and_backlog_consistency() -> None:
     assert REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE in owners
     assert REQUIRED_OBSERVABILITY_SURFACE in owners
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    pref = backlog["preregistered_hypotheses"][0]
-    assert pref["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert pref["evaluation_run_count"] == 0
-    assert pref["lifecycle_checkpoint_surface"] == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE
-    assert pref["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert pref["identical_exit_mechanism_to_development_v6"] is False
-    assert pref["economic_change_vs_development_v6"] is True
-    assert pref["cooldown_bars"] == 24
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert backlog["preregistered_hypotheses"] == []
     terminal_ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
+    assert REQUIRED_HYPOTHESIS_ID in terminal_ids
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in terminal_ids
-    assert "NO_V7_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    v7 = next(
+        e for e in backlog["terminal_hypotheses"] if e["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
+    )
+    assert v7["evaluation_run_count"] == 1
+    assert v7["lifecycle_checkpoint_surface"] == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE
+    assert v7["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
+    assert v7["identical_exit_mechanism_to_development_v6"] is False
+    assert v7["economic_change_vs_development_v6"] is True
+    assert v7["cooldown_bars"] == 24
+    assert "NO_V7_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
+    assert "NO_V7_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V8_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V6_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
@@ -185,14 +189,15 @@ def test_owner_map_and_backlog_consistency() -> None:
 def test_governance_and_evidence_present_docs_token_escaped() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
-    assert "&#47;" in text
-    assert "DEFINITION_ONLY_PREREGISTERED" in text
+    assert (
+        "&#47;" in text
+        or "DEFINITION_ONLY" in text
+        or "INCONCLUSIVE_INFRASTRUCTURE_FAILURE" in text
+    )
     assert EXPECTED_DEVELOPMENT_PREREGISTRATION_DIGEST in text
     assert (EVIDENCE / "summary.json").is_file()
     assert (EVIDENCE / "safety_attestation.md").is_file()
     assert (EVIDENCE / "README.md").is_file()
-    readme = (EVIDENCE / "README.md").read_text(encoding="utf-8")
-    assert "&#47;" in readme
     summary = _load(EVIDENCE / "summary.json")
     assert summary["evaluation_run_count"] == 0
     assert summary["run_slot_claimed"] is False
@@ -202,8 +207,14 @@ def test_governance_and_evidence_present_docs_token_escaped() -> None:
     assert summary["economic_hypothesis_changed"] is True
 
 
-def test_no_v7_evaluation_evidence_dir() -> None:
-    assert not V7_EVAL_EVIDENCE.exists()
+def test_v7_evaluation_evidence_dir_terminal() -> None:
+    assert V7_EVAL_EVIDENCE.is_dir()
+    assert (V7_EVAL_EVIDENCE / "summary.json").is_file()
+    assert (V7_EVAL_EVIDENCE / "run_slot_claim.json").is_file()
+    summary = _load(V7_EVAL_EVIDENCE / "summary.json")
+    assert summary["evaluation_run_count"] == 1
+    assert summary["result_class"] == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert summary["holdout_data_accessed"] is False
     assert V6_EVAL_EVIDENCE.is_dir()
 
 

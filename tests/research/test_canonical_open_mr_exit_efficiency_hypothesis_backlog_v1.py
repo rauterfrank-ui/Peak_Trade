@@ -37,16 +37,18 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
     assert GOVERNANCE_PATH.is_file()
 
 
-def test_repo_backlog_one_definition_only_v7_preregistered() -> None:
+def test_repo_backlog_zero_preregistered_v7_terminal() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["preregistered_count"] == 1
-    assert report["terminal_count"] == 6
+    assert report["preregistered_count"] == 0
+    assert report["terminal_count"] == 7
     assert report["open_unpreregistered_count"] == 0
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert report["preregistered_hypothesis_id"] == REQUIRED_V7_HYPOTHESIS_ID
-    assert report["development_run_count"] == 6
-    assert report["evaluation_authorized"] is True
+    assert report["preregistered_hypothesis_id"] is None
+    assert report["development_run_count"] == 7
+    assert report["evaluation_authorized"] is False
+    assert report["v7_evaluation_run_count"] == 1
+    assert report["v7_result_class"] == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
     assert report["holdout_forbidden"] is True
     assert report["rerun_allowed"] is False
     assert report["runtime_locked"] is True
@@ -67,23 +69,20 @@ def test_repo_backlog_one_definition_only_v7_preregistered() -> None:
         REQUIRED_V4_HYPOTHESIS_ID,
         REQUIRED_V5_HYPOTHESIS_ID,
         REQUIRED_V6_HYPOTHESIS_ID,
+        REQUIRED_V7_HYPOTHESIS_ID,
     }
     assert report["v5_evaluation_run_count"] == 1
     assert report["v5_result_class"] == "INFRASTRUCTURE_FAILURE"
     assert report["v5_is_rerun_of_v4"] is False
 
 
-def test_one_preregistered_v7_and_terminal_entry_shape() -> None:
+def test_zero_preregistered_v7_terminal_and_entry_shape() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    pref = backlog["preregistered_hypotheses"][0]
-    assert pref["hypothesis_id"] == REQUIRED_V7_HYPOTHESIS_ID
-    assert pref["evaluation_run_count"] == 0
-    assert pref["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert len(backlog["preregistered_hypotheses"]) == 0
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
     assert backlog["open_unpreregistered_candidates"] == []
-    assert backlog["development_run_count"] == 6
-    assert len(backlog["terminal_hypotheses"]) == 6
+    assert backlog["development_run_count"] == 7
+    assert len(backlog["terminal_hypotheses"]) == 7
     by_id = {e["hypothesis_id"]: e for e in backlog["terminal_hypotheses"]}
     v1 = by_id[REQUIRED_HYPOTHESIS_ID]
     assert v1["status"] == "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
@@ -141,9 +140,17 @@ def test_one_preregistered_v7_and_terminal_entry_shape() -> None:
     assert v6["treatment_members_completed"] == "46/46"
     assert "NO_V6_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V6_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
-    assert "NO_V7_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    assert "NO_V7_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
+    assert "NO_V7_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V8_AUTO_CREATE" in backlog["explicit_non_actions"]
+    v7 = by_id[REQUIRED_V7_HYPOTHESIS_ID]
+    assert v7["status"] == "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert v7["evaluation_run_count"] == 1
+    assert v7["result_class"] == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert v7["economic_verdict"] == "NOT_EVALUATED"
+    assert v7["panel_backtest_executed"] is False
+    assert v7["rerun_allowed"] is False
     assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V3_ECONOMIC_RESULT_IMPORT" in backlog["explicit_non_actions"]

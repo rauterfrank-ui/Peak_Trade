@@ -24,3 +24,7 @@ Transition:
 
 Module: `src&#47;research&#47;bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.py`  
 CLI: `scripts&#47;research&#47;run_authorize_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v7.py`
+
+## Post-run terminal
+
+After the single authorized DEVELOPMENT evaluate process start, the run slot is consumed and the hypothesis is terminal as `INCONCLUSIVE_INFRASTRUCTURE_FAILURE` (`PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST`). No rerun under this preregistration.

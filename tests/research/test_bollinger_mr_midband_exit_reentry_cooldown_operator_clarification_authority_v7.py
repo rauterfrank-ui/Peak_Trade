@@ -45,7 +45,7 @@ CLI = (
     REPO
     / "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7.py"
 )
-EXPECTED_AUTHORITY_DIGEST = "ba1d221c1774957c14c85469af51b9b7b32109c6204d51f4ccd07301cb92f670"
+EXPECTED_AUTHORITY_DIGEST = "fbf9e8cf7715484e68755a5bd2149bd0d63c94705be8e982611fcf7cc4ace62f"
 
 
 def test_valid_authority_and_digests() -> None:
@@ -57,8 +57,9 @@ def test_valid_authority_and_digests() -> None:
     assert report["preregistration_digest"] == REQUIRED_PREREGISTRATION_DIGEST
     assert report["status"] == "EVALUATION_AUTHORIZED"
     assert report["operator_decisions_status"] == OPERATOR_DECISIONS_STATUS
-    assert report["evaluation_authorized"] is True
-    assert report["evaluation_run_count"] == 0
+    assert report["evaluation_authorized"] is False
+    assert report["evaluation_run_count"] == 1
+    assert report["run_slot_consumed"] is True
     auth = report["authority"]
     for key in ("B1", "B2", "B3", "B4", "B5", "B6"):
         assert auth["decisions"][key]["resolved"] is True
@@ -224,21 +225,20 @@ def test_runner_source_order_gates_before_claim_before_panel() -> None:
     )
 
 
-def test_assert_gates_effective_authorization_true_prereg_field_false(
+def test_assert_gates_effective_authorization_false_after_slot_consumed(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Deadlock regression closed: effective auth true; prereg field remains false."""
+    """After the single authorized start, effective auth is closed; prereg field remains false."""
     monkeypatch.setattr(
         "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.is_panel_released",
         lambda archive_root=None: True,
     )
-    ok = assert_v7_authority_and_prereg_gates(
-        repo=REPO,
-        require_evaluation_authorized=True,
-        require_ready_status=True,
-    )
-    assert ok["evaluation_authorized"] is True
-    assert ok["authority_digest"] == EXPECTED_AUTHORITY_DIGEST
+    with pytest.raises(RuntimeError, match="V7_EVALUATION_NOT_AUTHORIZED"):
+        assert_v7_authority_and_prereg_gates(
+            repo=REPO,
+            require_evaluation_authorized=True,
+            require_ready_status=True,
+        )
     contract = json.loads(PREREG_PATH.read_text(encoding="utf-8"))
     assert contract["evaluation_authorized"] is False
     assert int(contract["evaluation_run_count"]) == 0

@@ -1,0 +1,16 @@
+{
+  "auto_rerun_executed": false,
+  "development_panel_accessed": false,
+  "diagnostic_class": "PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST",
+  "exception_message": "FROZEN_EXIT_PARAMETERS_MISMATCH",
+  "exception_type": "MidbandExitMechanismError",
+  "holdout_data_accessed": false,
+  "panel_backtest_executed": false,
+  "partial_metrics_authoritative": false,
+  "rerun_allowed": false,
+  "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+  "root_cause": "V7 panel_runner called V6 assert_frozen_parameters_match_contract(contract) which requires exit_mechanism.frozen_parameters; V7 DEFINITION_ONLY preregistration omits that field (immutable digest). Failure before atomic claim write; operator-GO closeout consumes slot without rerun.",
+  "run_exit_code": 1,
+  "runner_start_count": 1,
+  "schema_version": "evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_diagnostics.v7"
+}

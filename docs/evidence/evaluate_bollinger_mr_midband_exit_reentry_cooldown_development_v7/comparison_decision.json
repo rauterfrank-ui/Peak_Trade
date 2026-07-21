@@ -1,0 +1,15 @@
+{
+  "diagnostic_class": "PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST",
+  "economic_verdict": "NOT_EVALUATED",
+  "evaluable": false,
+  "evaluation_run_count": 1,
+  "fail": false,
+  "holdout_data_accessed": false,
+  "inconclusive_reason": "pre_panel_frozen_exit_parameters_mismatch",
+  "pass": false,
+  "reason": "assert_frozen_parameters_match_contract raised MidbandExitMechanismError:FROZEN_EXIT_PARAMETERS_MISMATCH because V7 immutable preregistration exit_mechanism lacks frozen_parameters; failure occurred after authorized CLI evaluate process start and before atomic run_slot_claim write; operator GO requires slot consumption on first process start; no rerun.",
+  "rerun_allowed": false,
+  "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+  "technical_failure": true,
+  "treatment_metrics": null
+}

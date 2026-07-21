@@ -212,16 +212,6 @@ def validate_ratification(
         raise EvaluationAuthorizationRatificationError("PREREGISTRATION_DIGEST_MISMATCH")
     if ratification.get("mutates_preregistration") is not False:
         raise EvaluationAuthorizationRatificationError("CLAIMS_PREREG_MUTATION")
-    if ratification.get("evaluation_authorized_for_separate_development_run") is not True:
-        raise EvaluationAuthorizationRatificationError("NOT_AUTHORIZED_FLAG")
-    if ratification.get("evaluation_executed") is not False:
-        raise EvaluationAuthorizationRatificationError("EVALUATION_ALREADY_EXECUTED")
-    if int(ratification.get("evaluation_run_count", -1)) != 0:
-        raise EvaluationAuthorizationRatificationError("RUN_COUNT_NOT_ZERO")
-    if int(ratification.get("evaluation_run_count_authorized", -1)) != RUN_LIMIT:
-        raise EvaluationAuthorizationRatificationError("RUN_LIMIT_MISMATCH")
-    if ratification.get("run_slot_consumed") is not False:
-        raise EvaluationAuthorizationRatificationError("SLOT_MARKED_CONSUMED")
     if str(ratification.get("dataset_id")) != DATASET_ID:
         raise EvaluationAuthorizationRatificationError("DATASET_ID_MISMATCH")
     if str(ratification.get("expected_manifest_sha256")) != EXPECTED_MANIFEST_SHA256:
@@ -233,6 +223,29 @@ def validate_ratification(
     computed = compute_ratification_digest(ratification)
     if str(ratification.get("ratification_digest") or "") != computed:
         raise EvaluationAuthorizationRatificationError("RATIFICATION_DIGEST_MISMATCH")
+
+    executed = ratification.get("evaluation_executed") is True
+    run_count = int(ratification.get("evaluation_run_count", -1))
+    if int(ratification.get("evaluation_run_count_authorized", -1)) != RUN_LIMIT:
+        raise EvaluationAuthorizationRatificationError("RUN_LIMIT_MISMATCH")
+    if executed:
+        if ratification.get("evaluation_authorized_for_separate_development_run") is not False:
+            raise EvaluationAuthorizationRatificationError("POST_EXEC_AUTH_FLAG_MUST_BE_FALSE")
+        if run_count != 1:
+            raise EvaluationAuthorizationRatificationError("POST_EXEC_RUN_COUNT_NOT_ONE")
+        if ratification.get("run_slot_consumed") is not True:
+            raise EvaluationAuthorizationRatificationError("POST_EXEC_SLOT_NOT_CONSUMED")
+        if not _slot_consumed(repo):
+            raise EvaluationAuthorizationRatificationError("POST_EXEC_EVIDENCE_SLOT_MISSING")
+    else:
+        if ratification.get("evaluation_authorized_for_separate_development_run") is not True:
+            raise EvaluationAuthorizationRatificationError("NOT_AUTHORIZED_FLAG")
+        if run_count != 0:
+            raise EvaluationAuthorizationRatificationError("RUN_COUNT_NOT_ZERO")
+        if ratification.get("run_slot_consumed") is not False:
+            raise EvaluationAuthorizationRatificationError("SLOT_MARKED_CONSUMED")
+        if _slot_consumed(repo):
+            raise EvaluationAuthorizationRatificationError("RUN_SLOT_ALREADY_CONSUMED")
 
     # Immutable prereg remains definition-only / unauthorized field.
     prereg_report = load_and_validate_repo_contract(repo)
@@ -253,9 +266,6 @@ def validate_ratification(
         EXPECTED_DEVELOPMENT_PREREGISTRATION_DIGEST
     ):
         raise EvaluationAuthorizationRatificationError("PREREG_DIGEST_DRIFT")
-
-    if _slot_consumed(repo):
-        raise EvaluationAuthorizationRatificationError("RUN_SLOT_ALREADY_CONSUMED")
 
     if require_panel_released:
         try:

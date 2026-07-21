@@ -25,11 +25,11 @@
     ]
   ],
   "allows_post_hoc_result_adjustment": false,
-  "authority_digest": "ba1d221c1774957c14c85469af51b9b7b32109c6204d51f4ccd07301cb92f670",
+  "authority_digest": "fbf9e8cf7715484e68755a5bd2149bd0d63c94705be8e982611fcf7cc4ace62f",
   "authority_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7",
   "authority_scope": "IMPLEMENTATION_CLARIFICATION_ONLY",
   "authority_version": "v7.0.0",
-  "authorization_ratification_digest": "5c5c1f22132ae1a05953058611d7d9434054c6bf7bae89757866fd5288b14c10",
+  "authorization_ratification_digest": "b7fe1341a9e284d8622a9d55cd29036408288385fd471ec2330661322bfb24d9",
   "authorization_ratification_ref": "config/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.json",
   "authorized_at_utc": "2026-07-21T21:31:48Z",
   "b1_through_b6_fully_resolved": true,
@@ -184,8 +184,12 @@
       "technically_fulfilled_requires_wiring_and_tests": true
     }
   },
-  "evaluation_authorized": true,
-  "evaluation_run_count": 0,
+  "diagnostic_class": "PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST",
+  "economic_verdict": "NOT_EVALUATED",
+  "evaluation_authorized": false,
+  "evaluation_executed": true,
+  "evaluation_run_count": 1,
+  "evidence_ref": "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7/",
   "fail_closed_conditions": [
     "MISSING_AUTHORITY",
     "AUTHORITY_DIGEST_MISMATCH",
@@ -206,8 +210,9 @@
   "introduces_new_economic_hypothesis": false,
   "introduces_new_treatment_effect": false,
   "is_second_preregistration": false,
+  "lifecycle_terminal_state": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
   "mutates_preregistration": false,
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_V7_DEVELOPMENT_EVALUATION_RUN",
+  "next_canonical_step": "NO_AUTO_V8_CREATION_OPERATOR_GO_REQUIRED_FOR_ANY_NEW_PREREGISTRATION_NO_V7_RERUN",
   "operator_decision_reference": "OPERATOR_GO_INTRODUCE_V7_OPERATOR_CLARIFICATION_AUTHORITY_B1_B6_IMPLEMENTATION_ONLY",
   "operator_decisions_status": "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
   "owner": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7",
@@ -224,6 +229,8 @@
   "preregistration_digest": "4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680",
   "preregistration_path": "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v7.json",
   "ready_status_authority_digest": "144c9ff3cd59f3ec796a9e9908709c612901e79336470a230a007f46eb2429e9",
+  "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+  "run_slot_consumed": true,
   "schema_version": "bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority.v7",
   "status": "EVALUATION_AUTHORIZED"
 }
