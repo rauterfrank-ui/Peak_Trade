@@ -91,7 +91,10 @@ def test_adx_di_terminal_pass_and_queue_empty() -> None:
     assert backlog["verdict"] == (
         "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_EMPTY_AFTER_ADX_DI_HOLDOUT_V2_TERMINAL_FAIL"
     )
-    assert backlog["next_canonical_step"] == "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY"
+    assert (
+        backlog["next_canonical_step"]
+        == "REVIEW_DEFINITION_ONLY_EXIT_EFFICIENCY_PREREGISTRATION_NO_ENTRY_ELIGIBILITY_REOPEN"
+    )
 
 
 def test_all_terminal_hypotheses_captured() -> None:
@@ -276,7 +279,9 @@ def test_governance_doc_marks_terminal_pass_and_closed_gate() -> None:
     assert "TERMINAL_PASS" in text
     assert "open_candidates=[]" in text
     assert "HOLDOUT_EVALUATION_EXECUTED_TERMINAL" in text
-    assert "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY" in text
+    assert (
+        "REVIEW_DEFINITION_ONLY_EXIT_EFFICIENCY_PREREGISTRATION_NO_ENTRY_ELIGIBILITY_REOPEN" in text
+    )
     assert "ALL_PASS_REQUIRES_MET" in text
     assert "Economic offline gate remains closed" in text or "economic gate closed" in text.lower()
     assert "must not be re-run" in text or "Do **not** re-run" in text

@@ -40,13 +40,18 @@ None. Holdout V2 is no longer preregistered; it is terminal-executed.
 
 ## Next step
 
-`REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY`
+`REVIEW_DEFINITION_ONLY_EXIT_EFFICIENCY_PREREGISTRATION_NO_ENTRY_ELIGIBILITY_REOPEN`
 
-## Next research question (diagnostic pointer only)
+## Next research question (consumed into exit-efficiency lane)
 
 `Given COSTS_DESTROY_MARGINAL_EDGE on the sealed DEVELOPMENT_ONLY Bollinger&#47;MR baseline (marginal gross PF~1.01, all-SHORT book), does a cost-structure or holding&#47;exit-efficiency change class exist that preserves gross edge without retuning terminal entry-eligibility parameters or reopening exhausted filter families?`
 
-Not a preregistered candidate. `open_candidates` remains empty. No evaluation authorized from this pointer alone.
+Consumed by sibling exit-efficiency SSOT
+`config&#47;research&#47;canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json`
+as exactly one `DEFINITION_ONLY_PREREGISTERED` hypothesis
+`BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1`
+(`EVALUATION_RUN_COUNT=0`). Entry-eligibility `open_candidates` remains empty.
+No entry-eligibility reopen. No parallel SHORT-side hypothesis. No holdout candidate.
 
 ## Explicit locks
 
