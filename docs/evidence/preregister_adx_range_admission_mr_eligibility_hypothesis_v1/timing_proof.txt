@@ -1,0 +1,5 @@
+TIMING_PROOF_NOT_REQUIRED_JUSTIFIED
+REASON=definition_only_preregistration_no_evaluation_no_panel_backtest
+BASE_SHA=09472b33a4cc4a3abe819bc46d149bc4b7c4392a
+FOCUSED_UNIT_TESTS=tests/research/test_adx_range_admission_mr_eligibility_hypothesis_preregistration_v1.py
+NOTE=Selector path for this slice is FOCUSED/contract; no FULL economic eval timing probe required.
