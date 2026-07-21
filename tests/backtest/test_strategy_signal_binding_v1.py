@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import json
 import math
+from pathlib import Path
+from typing import Any
 
 import pandas as pd
 import pytest
@@ -10,6 +13,7 @@ import pytest
 from src.backtest import mv2_research_wiring_v1 as wiring
 from src.backtest.strategy_signal_binding_v1 import (
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+    ENGINE_SIGNAL_SOURCE_MV2_REPLAY,
     StrategySignalBindingError,
     collect_configured_strategy_params_v1,
     compute_required_warmup_rows_v1,
@@ -17,6 +21,22 @@ from src.backtest.strategy_signal_binding_v1 import (
     project_strategy_params_for_binding_v1,
     resolve_effective_strategy_params_v1,
 )
+from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+    MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION,
+)
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_REFERENCE_MANDATORY_BINDING_CONFIG = (
+    _REPO_ROOT
+    / "config/ops/cross_sectional_futures_lead_lag_information_diffusion_v0_economic_evaluation_v1.json"
+)
+
+
+def _mandatory_mv2_boundary_state_file_binding_section() -> dict[str, Any]:
+    """Reuse canonical mandatory MV2 boundary fixtures for evidence wiring."""
+    return json.loads(_REFERENCE_MANDATORY_BINDING_CONFIG.read_text(encoding="utf-8"))[
+        MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION
+    ]
 
 
 def _bars(n: int = 80) -> pd.DataFrame:
@@ -63,6 +83,9 @@ def _cfg(**strategy_params: int) -> dict:
             "walk_forward": {"train_bars": 8, "test_bars": 4, "step_bars": 4},
             "monte_carlo": {"runs": 4, "seed": 42},
         },
+        MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION: (
+            _mandatory_mv2_boundary_state_file_binding_section()
+        ),
     }
     if strategy_params:
         payload["economic_evaluation_v1"]["strategy_params"] = dict(strategy_params)
@@ -174,19 +197,27 @@ def test_execute_ma_crossover_produces_nonzero_signals_on_trending_fixture() -> 
 
 
 def test_mv2_wiring_uses_strategy_signals_not_flat_replay() -> None:
+    """Strategy producer stays bound; engine authority remains canonical MV2 replay.
+
+    After the canonical MV2 replay engine-signal binding, ``result.signals`` is the
+    decision-replay series (may be flat when the funnel blocks). Strategy execution
+    must still produce nonzero producer signals with aligned provenance digests and
+    must not silently collapse into claiming the strategy series was the engine input.
+    """
     result = wiring.run_mv2_research_backtest_wiring_v1(
         _bars(),
         strategy_id="ma_crossover",
         cfg=_cfg(),
     )
-    assert result.strategy_signal_provenance.strategy_nonzero_signal_count > 0
-    assert (result.signals != 0).any()
-    assert (
-        result.strategy_signal_provenance.engine_signal_digest
-        == result.strategy_signal_provenance.strategy_signal_digest
-    )
+    provenance = result.strategy_signal_provenance
+    assert provenance.strategy_nonzero_signal_count > 0
+    assert provenance.engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
+    assert provenance.engine_signal_digest == provenance.strategy_signal_digest
+    assert provenance.strategy_signal_digest != result.mv2_replay_signal_digest
+    assert result.backtest_engine_signal_source == ENGINE_SIGNAL_SOURCE_MV2_REPLAY
     assert result.mv2_replay_signals is not None
     assert len(result.mv2_replay_signals) == len(_bars())
+    assert result.signals.equals(result.mv2_replay_signals)
 
 
 def test_mv2_wiring_engine_trades_when_strategy_has_entries() -> None:
