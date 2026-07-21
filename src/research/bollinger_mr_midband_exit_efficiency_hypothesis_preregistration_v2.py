@@ -169,6 +169,13 @@ FORBIDDEN_RESULT_KEYS = frozenset(
     }
 )
 V1_TERMINAL_STATE = "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+TERMINAL_RESULT_CLASSES = ("PASS", "FAIL", "INCONCLUSIVE_INFRASTRUCTURE_FAILURE")
+TERMINAL_STATE_PREFIX = "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/"
+TERMINAL_STATES_BY_RESULT_CLASS = {
+    result_class: f"{TERMINAL_STATE_PREFIX}{result_class}"
+    for result_class in TERMINAL_RESULT_CLASSES
+}
+TERMINAL_SLICE_CLASS = "DEVELOPMENT_EVALUATION_TERMINAL_CLOSEOUT"
 FORBIDDEN_V1_PARTIAL_TRANSFER_KEYS = frozenset(
     {
         "baseline_members_completed",
@@ -342,6 +349,14 @@ def assert_v1_terminal_preserved(v1_contract: Mapping[str, Any]) -> None:
         raise HypothesisPreregistrationError("V1_EVALUATION_COMPLETED_MUST_REMAIN_FALSE")
 
 
+def _terminal_result_class_for_status(status: Any) -> str | None:
+    """Return the terminal result class if ``status`` names an authorized terminal state."""
+    for result_class, state in TERMINAL_STATES_BY_RESULT_CLASS.items():
+        if status == state:
+            return result_class
+    return None
+
+
 def validate_preregistration_contract(
     contract: Mapping[str, Any],
     *,
@@ -350,37 +365,84 @@ def validate_preregistration_contract(
     acquisition_sha256: str | None = None,
     owner_map: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    if contract.get("slice_class") != "DEFINITION_ONLY":
-        raise HypothesisPreregistrationError("SLICE_MUST_BE_DEFINITION_ONLY")
-    if contract.get("preregistration_state") != REQUIRED_PREREGISTRATION_STATE:
-        raise HypothesisPreregistrationError("PREREGISTRATION_STATE_MISMATCH")
-    if contract.get("status") != REQUIRED_PREREGISTRATION_STATE:
-        raise HypothesisPreregistrationError("STATUS_MUST_BE_DEFINITION_ONLY_PREREGISTERED")
-    if contract.get("evaluation_authorized") is not False:
-        raise HypothesisPreregistrationError("EVALUATION_MUST_BE_UNAUTHORIZED")
-    if contract.get("backtest_authorized") is not False:
-        raise HypothesisPreregistrationError("BACKTEST_MUST_BE_UNAUTHORIZED")
-    if contract.get("implementation_authorized") is not False:
-        raise HypothesisPreregistrationError("IMPLEMENTATION_MUST_BE_UNAUTHORIZED")
-    if contract.get("evaluation_executed") is not False:
-        raise HypothesisPreregistrationError("EVALUATION_EXECUTED_MUST_BE_FALSE")
-    if contract.get("evaluation_started") is not False:
-        raise HypothesisPreregistrationError("EVALUATION_STARTED_MUST_BE_FALSE")
-    if contract.get("evaluation_completed") is not False:
-        raise HypothesisPreregistrationError("EVALUATION_COMPLETED_MUST_BE_FALSE")
-    if int(contract.get("evaluation_run_count", -1)) != 0:
-        raise HypothesisPreregistrationError("EVALUATION_RUN_COUNT_MUST_BE_0")
-    if contract.get("result_class") != "NOT_EVALUATED":
-        raise HypothesisPreregistrationError("RESULT_CLASS_MUST_BE_NOT_EVALUATED")
-    if contract.get("economic_verdict") != "NOT_EVALUATED":
-        raise HypothesisPreregistrationError("ECONOMIC_VERDICT_MUST_BE_NOT_EVALUATED")
-    if contract.get("pass") is not False or contract.get("fail") is not False:
-        raise HypothesisPreregistrationError("PASS_FAIL_MUST_BE_FALSE")
-    # One-shot: first evaluation still available via separate GO; no second/rerun slot.
-    if contract.get("rerun_allowed") is not False:
-        raise HypothesisPreregistrationError("RERUN_MUST_BE_FORBIDDEN_UNDER_ONE_SHOT")
-    if contract.get("holdout_data_accessed") is not False:
-        raise HypothesisPreregistrationError("HOLDOUT_DATA_ACCESSED_MUST_BE_FALSE")
+    # Dual-mode: DEFINITION_ONLY_PREREGISTERED (current, pre-run) or a terminal
+    # closeout after exactly one development evaluation run (PASS / FAIL /
+    # INCONCLUSIVE_INFRASTRUCTURE_FAILURE), mirroring the v1 terminal branch.
+    terminal_result_class = _terminal_result_class_for_status(contract.get("status"))
+    if terminal_result_class is not None:
+        if contract.get("slice_class") != TERMINAL_SLICE_CLASS:
+            raise HypothesisPreregistrationError("SLICE_MUST_BE_TERMINAL_CLOSEOUT")
+        if contract.get("preregistration_state") != contract.get("status"):
+            raise HypothesisPreregistrationError("PREREGISTRATION_STATE_MISMATCH")
+        if contract.get("evaluation_authorized") is not False:
+            raise HypothesisPreregistrationError("EVALUATION_MUST_BE_UNAUTHORIZED")
+        if contract.get("backtest_authorized") is not False:
+            raise HypothesisPreregistrationError("BACKTEST_MUST_BE_UNAUTHORIZED")
+        if contract.get("implementation_authorized") is not False:
+            raise HypothesisPreregistrationError("IMPLEMENTATION_MUST_BE_UNAUTHORIZED")
+        if contract.get("evaluation_executed") is not True:
+            raise HypothesisPreregistrationError("EVALUATION_EXECUTED_MUST_BE_TRUE")
+        if contract.get("evaluation_started") is not True:
+            raise HypothesisPreregistrationError("EVALUATION_STARTED_MUST_BE_TRUE")
+        evaluation_completed_expected = (
+            terminal_result_class != "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+        )
+        if contract.get("evaluation_completed") is not evaluation_completed_expected:
+            raise HypothesisPreregistrationError("EVALUATION_COMPLETED_MISMATCH")
+        if int(contract.get("evaluation_run_count", -1)) != 1:
+            raise HypothesisPreregistrationError("EVALUATION_RUN_COUNT_MUST_BE_1")
+        if contract.get("result_class") != terminal_result_class:
+            raise HypothesisPreregistrationError("RESULT_CLASS_MISMATCH")
+        economic_verdict_expected = (
+            "NOT_EVALUATED"
+            if terminal_result_class == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+            else terminal_result_class
+        )
+        if contract.get("economic_verdict") != economic_verdict_expected:
+            raise HypothesisPreregistrationError("ECONOMIC_VERDICT_MISMATCH")
+        pass_expected = terminal_result_class == "PASS"
+        fail_expected = terminal_result_class == "FAIL"
+        if contract.get("pass") is not pass_expected:
+            raise HypothesisPreregistrationError("PASS_FLAG_MISMATCH")
+        if contract.get("fail") is not fail_expected:
+            raise HypothesisPreregistrationError("FAIL_FLAG_MISMATCH")
+        # One-shot: terminal closeout consumes the sole run slot; no rerun ever.
+        if contract.get("rerun_allowed") is not False:
+            raise HypothesisPreregistrationError("RERUN_MUST_REMAIN_FORBIDDEN")
+        if contract.get("holdout_data_accessed") is not False:
+            raise HypothesisPreregistrationError("HOLDOUT_DATA_ACCESSED_MUST_BE_FALSE")
+    else:
+        if contract.get("slice_class") != "DEFINITION_ONLY":
+            raise HypothesisPreregistrationError("SLICE_MUST_BE_DEFINITION_ONLY")
+        if contract.get("preregistration_state") != REQUIRED_PREREGISTRATION_STATE:
+            raise HypothesisPreregistrationError("PREREGISTRATION_STATE_MISMATCH")
+        if contract.get("status") != REQUIRED_PREREGISTRATION_STATE:
+            raise HypothesisPreregistrationError("STATUS_MUST_BE_DEFINITION_ONLY_PREREGISTERED")
+        if contract.get("evaluation_authorized") is not False:
+            raise HypothesisPreregistrationError("EVALUATION_MUST_BE_UNAUTHORIZED")
+        if contract.get("backtest_authorized") is not False:
+            raise HypothesisPreregistrationError("BACKTEST_MUST_BE_UNAUTHORIZED")
+        if contract.get("implementation_authorized") is not False:
+            raise HypothesisPreregistrationError("IMPLEMENTATION_MUST_BE_UNAUTHORIZED")
+        if contract.get("evaluation_executed") is not False:
+            raise HypothesisPreregistrationError("EVALUATION_EXECUTED_MUST_BE_FALSE")
+        if contract.get("evaluation_started") is not False:
+            raise HypothesisPreregistrationError("EVALUATION_STARTED_MUST_BE_FALSE")
+        if contract.get("evaluation_completed") is not False:
+            raise HypothesisPreregistrationError("EVALUATION_COMPLETED_MUST_BE_FALSE")
+        if int(contract.get("evaluation_run_count", -1)) != 0:
+            raise HypothesisPreregistrationError("EVALUATION_RUN_COUNT_MUST_BE_0")
+        if contract.get("result_class") != "NOT_EVALUATED":
+            raise HypothesisPreregistrationError("RESULT_CLASS_MUST_BE_NOT_EVALUATED")
+        if contract.get("economic_verdict") != "NOT_EVALUATED":
+            raise HypothesisPreregistrationError("ECONOMIC_VERDICT_MUST_BE_NOT_EVALUATED")
+        if contract.get("pass") is not False or contract.get("fail") is not False:
+            raise HypothesisPreregistrationError("PASS_FAIL_MUST_BE_FALSE")
+        # One-shot: first evaluation still available via separate GO; no second/rerun slot.
+        if contract.get("rerun_allowed") is not False:
+            raise HypothesisPreregistrationError("RERUN_MUST_BE_FORBIDDEN_UNDER_ONE_SHOT")
+        if contract.get("holdout_data_accessed") is not False:
+            raise HypothesisPreregistrationError("HOLDOUT_DATA_ACCESSED_MUST_BE_FALSE")
     if int(contract.get("hypothesis_count") or 0) != 1:
         raise HypothesisPreregistrationError("HYPOTHESIS_COUNT_MUST_BE_1")
     if int(contract.get("multiple_testing_budget") or 0) != 1:
@@ -710,34 +772,83 @@ def validate_preregistration_contract(
         if REQUIRED_OBSERVABILITY_SURFACE not in owners:
             raise HypothesisPreregistrationError("OBSERVABILITY_OWNER_MAP_ENTRY_MISSING")
 
-    digest = compute_development_preregistration_digest(contract)
-    if contract.get("development_preregistration_digest") != digest:
-        raise HypothesisPreregistrationError("DEVELOPMENT_PREREGISTRATION_DIGEST_MISMATCH")
-    if digest != EXPECTED_DEVELOPMENT_PREREGISTRATION_DIGEST:
-        raise HypothesisPreregistrationError("DEVELOPMENT_PREREGISTRATION_DIGEST_UNEXPECTED")
+    if terminal_result_class is None:
+        # Definition-only: the contract must be byte-identical to what was frozen
+        # at preregistration time, so the digest is recomputed over the full
+        # contract and pinned against the hardcoded EXPECTED constant.
+        digest = compute_development_preregistration_digest(contract)
+        if contract.get("development_preregistration_digest") != digest:
+            raise HypothesisPreregistrationError("DEVELOPMENT_PREREGISTRATION_DIGEST_MISMATCH")
+        if digest != EXPECTED_DEVELOPMENT_PREREGISTRATION_DIGEST:
+            raise HypothesisPreregistrationError("DEVELOPMENT_PREREGISTRATION_DIGEST_UNEXPECTED")
+    else:
+        # Terminal closeout legitimately mutates execution-outcome fields, so the
+        # full-contract digest can no longer match the pre-run snapshot. The
+        # provenance marker itself (set once, at preregistration time) must be
+        # carried forward unchanged; definition-semantics drift is separately
+        # fail-closed by assert_definition_semantics_identical_to_v1 below.
+        if contract.get("development_preregistration_digest") != (
+            EXPECTED_DEVELOPMENT_PREREGISTRATION_DIGEST
+        ):
+            raise HypothesisPreregistrationError(
+                "DEVELOPMENT_PREREGISTRATION_DIGEST_PROVENANCE_MISMATCH"
+            )
+        digest = EXPECTED_DEVELOPMENT_PREREGISTRATION_DIGEST
 
     if v1_contract is not None:
         assert_v1_terminal_preserved(v1_contract)
         assert_definition_semantics_identical_to_v1(contract, v1_contract)
 
+    if terminal_result_class is None:
+        return {
+            "valid": True,
+            "definition_only": True,
+            "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
+            "predecessor_hypothesis_id": REQUIRED_PREDECESSOR_HYPOTHESIS_ID,
+            "dataset_id": REQUIRED_DATASET_ID,
+            "treatment_type": REQUIRED_TREATMENT_TYPE,
+            "mechanism_id": REQUIRED_MECHANISM_ID,
+            "preregistration_state": REQUIRED_PREREGISTRATION_STATE,
+            "development_only": True,
+            "holdout_allowed": False,
+            "evaluation_run_count": 0,
+            "evaluation_run_count_authorized": 1,
+            "evaluation_started": False,
+            "evaluation_completed": False,
+            "evaluation_executed": False,
+            "result_class": "NOT_EVALUATED",
+            "economic_verdict": "NOT_EVALUATED",
+            "multiple_testing_budget": 1,
+            "pass_criteria_frozen": True,
+            "exit_divergence_required": True,
+            "cost_model_canonical": True,
+            "new_evaluation_not_rerun": True,
+            "v1_partial_results_reused": False,
+            "definition_semantics_identical": True,
+            "observability_surface_bound": True,
+            "observability_surface": REQUIRED_OBSERVABILITY_SURFACE,
+            "development_preregistration_digest": digest,
+            "rerun_allowed": False,
+        }
+
     return {
         "valid": True,
-        "definition_only": True,
+        "definition_only": False,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "predecessor_hypothesis_id": REQUIRED_PREDECESSOR_HYPOTHESIS_ID,
         "dataset_id": REQUIRED_DATASET_ID,
         "treatment_type": REQUIRED_TREATMENT_TYPE,
         "mechanism_id": REQUIRED_MECHANISM_ID,
-        "preregistration_state": REQUIRED_PREREGISTRATION_STATE,
+        "preregistration_state": str(contract.get("preregistration_state")),
         "development_only": True,
         "holdout_allowed": False,
-        "evaluation_run_count": 0,
+        "evaluation_run_count": 1,
         "evaluation_run_count_authorized": 1,
-        "evaluation_started": False,
-        "evaluation_completed": False,
-        "evaluation_executed": False,
-        "result_class": "NOT_EVALUATED",
-        "economic_verdict": "NOT_EVALUATED",
+        "evaluation_started": True,
+        "evaluation_completed": bool(contract.get("evaluation_completed")),
+        "evaluation_executed": True,
+        "result_class": terminal_result_class,
+        "economic_verdict": contract.get("economic_verdict"),
         "multiple_testing_budget": 1,
         "pass_criteria_frozen": True,
         "exit_divergence_required": True,

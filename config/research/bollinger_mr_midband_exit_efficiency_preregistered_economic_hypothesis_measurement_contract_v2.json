@@ -5,10 +5,10 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "trading_effect": "NONE",
-  "status": "DEFINITION_ONLY_PREREGISTERED",
-  "verdict": "HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED",
-  "slice_class": "DEFINITION_ONLY",
-  "preregistration_state": "DEFINITION_ONLY_PREREGISTERED",
+  "status": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+  "verdict": "DEVELOPMENT_EVALUATION_SLOT_CONSUMED_INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+  "slice_class": "DEVELOPMENT_EVALUATION_TERMINAL_CLOSEOUT",
+  "preregistration_state": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
   "terminal_states_authorized": [
     "DEFINITION_ONLY_PREREGISTERED",
     "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS",
@@ -18,8 +18,8 @@
   "evaluation_authorized": false,
   "backtest_authorized": false,
   "implementation_authorized": false,
-  "evaluation_executed": false,
-  "evaluation_run_count": 0,
+  "evaluation_executed": true,
+  "evaluation_run_count": 1,
   "hypothesis_count": 1,
   "multiple_testing_budget": 1,
   "evaluation_run_count_authorized": 1,
@@ -393,10 +393,10 @@
   "competing_open_hypothesis_count_allowed": 0,
   "short_side_hypothesis_preregistered": false,
   "holdout_candidate_preregistered": false,
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_V2_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_DEVELOPMENT_EVALUATION",
-  "evaluation_started": false,
+  "next_canonical_step": "NO_RERUN_UNDER_THIS_PREREGISTRATION_SEPARATE_GO_REQUIRED_FOR_ANY_V3",
+  "evaluation_started": true,
   "evaluation_completed": false,
-  "result_class": "NOT_EVALUATED",
+  "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
   "economic_verdict": "NOT_EVALUATED",
   "pass": false,
   "fail": false,
@@ -442,6 +442,6 @@
       ]
     }
   },
-  "evidence_ref": "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/",
+  "evidence_ref": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v2/",
   "development_preregistration_digest": "8a33ef16946034ab9da71e69634f225ef5179ef69c19914f61f9faf588f589b1"
 }

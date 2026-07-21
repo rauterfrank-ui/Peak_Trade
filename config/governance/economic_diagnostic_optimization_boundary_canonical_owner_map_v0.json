@@ -776,6 +776,16 @@
       ],
       "note": "Single authorized DEVELOPMENT_ONLY evaluation of Bollinger/MR side-aware middle-band exit-efficiency versus immutable bollinger baseline on sealed DEVELOPMENT panel (evaluation_run_count 0->1); Economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V2": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v2/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v2.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_development_evaluation_v2.py",
+        "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v2/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V2.md"
+      ],
+      "note": "Terminal DEVELOPMENT_ONLY evaluation closeout for hypothesis ...DEVELOPMENT_V2 (evaluation_run_count 0->1 exactly once; RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE; ROOT_CAUSE=PREMEASUREMENT_GATE_FALSE_POSITIVE_ZERO_OR_SENTINEL); reuses frozen V1 mechanism/gate/decision by import only; not a V1 rerun; no V1 partial-result reuse; no holdout; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders; no V2 rerun."
+    },
     "EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1": {
       "path_prefixes": [
         "src/research/evaluation_runner_lifecycle_observability_v1/",
