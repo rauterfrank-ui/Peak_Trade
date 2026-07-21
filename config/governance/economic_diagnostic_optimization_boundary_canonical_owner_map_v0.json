@@ -674,7 +674,7 @@
         "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/",
         "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
       ],
-      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation."
+      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation."
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
       "path_prefixes": [
@@ -684,7 +684,7 @@
         "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/",
         "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md"
       ],
-      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
+      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V1": {
       "path_prefixes": [
@@ -767,6 +767,16 @@
       ],
       "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V3 with identical economic/definition semantics to terminal V2/V1; EVALUATION_RUN_COUNT=0; not a V2 or V1 rerun; no V2 partial-result or economic-result import; mandatory EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1 and PANEL_RUNNER_FALSY_ZERO_PREMEASUREMENT_HYGIENE bindings; V2 remains terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE run count 1; no evaluation/runtime/orders."
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V4": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v4.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v4.py",
+        "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v4.json",
+        "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v4/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V4.md"
+      ],
+      "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V4 after terminal V3 FAIL; EVALUATION_RUN_COUNT=0; presupposes merged MV2 wiring_mod capture-alias open_side binding fix; fail-closed measurement-validity gates (effective config digest inequality, open_side binding, exit observability, synthetic divergence); not a V3/V2/V1 rerun; no evaluation/runtime/orders."
+    },
     "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1": {
       "path_prefixes": [
         "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
@@ -774,7 +784,7 @@
         "tests/research/test_canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py",
         "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
       ],
-      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY V3 candidate after V1 and V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders."
+      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY V4 candidate after V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE and V3 terminal FAIL; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders."
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V1": {
       "path_prefixes": [
