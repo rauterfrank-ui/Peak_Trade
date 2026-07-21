@@ -1,4 +1,4 @@
-"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (V7 DEFINITION_ONLY)."""
+"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (V8 DEFINITION_ONLY)."""
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from src.research.canonical_open_mr_exit_efficiency_hypothesis_backlog_v1 import
     REQUIRED_V6_HYPOTHESIS_ID,
     REQUIRED_V6_MECHANISM_ID,
     REQUIRED_V7_HYPOTHESIS_ID,
+    REQUIRED_V8_HYPOTHESIS_ID,
     assert_exactly_one_exit_efficiency_backlog_ssot,
     load_and_validate_repo_backlog,
 )
@@ -37,14 +38,14 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
     assert GOVERNANCE_PATH.is_file()
 
 
-def test_repo_backlog_zero_preregistered_v7_terminal() -> None:
+def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["preregistered_count"] == 0
+    assert report["preregistered_count"] == 1
     assert report["terminal_count"] == 7
     assert report["open_unpreregistered_count"] == 0
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert report["preregistered_hypothesis_id"] is None
+    assert report["preregistered_hypothesis_id"] == REQUIRED_V8_HYPOTHESIS_ID
     assert report["development_run_count"] == 7
     assert report["evaluation_authorized"] is False
     assert report["v7_evaluation_run_count"] == 1
@@ -76,10 +77,16 @@ def test_repo_backlog_zero_preregistered_v7_terminal() -> None:
     assert report["v5_is_rerun_of_v4"] is False
 
 
-def test_zero_preregistered_v7_terminal_and_entry_shape() -> None:
+def test_one_preregistered_v8_and_v7_terminal_entry_shape() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert len(backlog["preregistered_hypotheses"]) == 0
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
+    pref = backlog["preregistered_hypotheses"][0]
+    assert pref["hypothesis_id"] == REQUIRED_V8_HYPOTHESIS_ID
+    assert pref["evaluation_run_count"] == 0
+    assert pref["runner_started"] is False
+    assert pref["run_slot_consumed"] is False
+    assert pref["status"] == "DEFINITION_ONLY_PREREGISTERED"
     assert backlog["open_unpreregistered_candidates"] == []
     assert backlog["development_run_count"] == 7
     assert len(backlog["terminal_hypotheses"]) == 7
@@ -142,6 +149,9 @@ def test_zero_preregistered_v7_terminal_and_entry_shape() -> None:
     assert "NO_V6_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
     assert "NO_V7_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
     assert "NO_V7_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_V7_REOPEN" in backlog["explicit_non_actions"]
+    assert "NO_V8_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    assert "NO_V9_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V8_AUTO_CREATE" in backlog["explicit_non_actions"]
     v7 = by_id[REQUIRED_V7_HYPOTHESIS_ID]
@@ -158,7 +168,7 @@ def test_zero_preregistered_v7_terminal_and_entry_shape() -> None:
     assert v7.get("economic_fail") is False
     assert v7.get("measurement_pass") is False
     assert backlog["next_canonical_step"] == (
-        "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION"
+        "AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION"
     )
     assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
@@ -166,7 +176,7 @@ def test_zero_preregistered_v7_terminal_and_entry_shape() -> None:
     assert "NO_V4_AUTO_CREATE" not in backlog["explicit_non_actions"]
 
 
-def test_governance_doc_mentions_v7_terminal_zero_prereg() -> None:
+def test_governance_doc_mentions_v8_prereg_and_v7_terminal() -> None:
     text = (
         REPO / "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
     ).read_text(encoding="utf-8")
@@ -174,10 +184,11 @@ def test_governance_doc_mentions_v7_terminal_zero_prereg() -> None:
     assert "TERMINAL_FAIL" in text or "FAIL" in text
     assert "NET_PROFIT_FACTOR_NOT_IMPROVED" in text
     assert "V7" in text
-    assert "preregistered_count_exact=0" in text
+    assert "preregistered_count_exact=1" in text
+    assert "V8" in text
     assert "FROZEN_EXIT_PARAMETERS_MISMATCH" in text
     assert "BEFORE_PANEL_ACCESS" in text
-    assert "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION" in text
+    assert "AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION" in text
     assert "V5" in text or "v5" in text.lower()
     assert "V4" in text
     assert "INFRASTRUCTURE_FAILURE" in text or "Infrastructure" in text
