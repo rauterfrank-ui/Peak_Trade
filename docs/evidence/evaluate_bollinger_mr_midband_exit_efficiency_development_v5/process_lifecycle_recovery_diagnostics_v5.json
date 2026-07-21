@@ -1,0 +1,73 @@
+{
+  "auto_rerun_executed": false,
+  "death_classification": {
+    "diagnostic_class": "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL",
+    "economic_verdict": "NOT_EVALUATED",
+    "fail_closed": true,
+    "lifecycle_state": "MEMBER_STARTED",
+    "lifecycle_terminal": false,
+    "partial_metrics_authoritative": false,
+    "recovery_inspection_mutates_state": false,
+    "rerun_allowed": false,
+    "result_class": "INFRASTRUCTURE_FAILURE",
+    "resume_allowed": false
+  },
+  "inspected_at_utc": "2026-07-21T17:19:39Z",
+  "metrics_distinction": {
+    "complete_metrics": null,
+    "complete_metrics_authoritative": false,
+    "partial_diagnostic_counters": {
+      "baseline_members_completed": "3/46",
+      "current_member_index": 4,
+      "last_completed_member_id": "AGLD-USDT-SWAP",
+      "lifecycle_state_at_death": "MEMBER_STARTED",
+      "treatment_members_completed": "0/46"
+    },
+    "partial_diagnostic_counters_authoritative": false,
+    "partial_metrics_must_not_promote_to_baseline_treatment_or_delta": true
+  },
+  "process_alive": false,
+  "recovery": {
+    "authoritative_metrics_promoted": false,
+    "auto_rerun_allowed": false,
+    "auto_resume_allowed": false,
+    "checkpoint": {
+      "auto_rerun_allowed": false,
+      "auto_resume_allowed": false,
+      "checkpoint_authorizes_rerun": false,
+      "checkpoint_can_reclaim_run_slot": false,
+      "diagnostics": {
+        "member_id": "ALGO-USDT-SWAP",
+        "phase": "baseline"
+      },
+      "evaluation_run_count_mutation": false,
+      "partial_metrics_authoritative": false,
+      "progress": {
+        "checkpoint_sequence": 14,
+        "completed_member_count": 3,
+        "current_member_index": 4,
+        "last_completed_member_id": "AGLD-USDT-SWAP",
+        "last_heartbeat_at": "2026-07-21T17:17:14Z",
+        "lifecycle_state": "MEMBER_STARTED",
+        "process_id": 76068,
+        "run_id": "evaluate_bollinger_mr_midband_exit_efficiency_development_v5",
+        "started_at": "2026-07-21T17:17:07Z",
+        "total_member_count": 46
+      },
+      "run_slot_claim_mutation": false,
+      "schema_version": "bollinger_mr_midband_exit_efficiency_process_lifecycle_checkpoint.v5",
+      "surface_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PROCESS_LIFECYCLE_CHECKPOINT_V5"
+    },
+    "checkpoint_present": true,
+    "diagnostics_dir": "/Users/frnkhrz/Peak_Trade_evaluate_bollinger_mr_midband_exit_efficiency_development_v5/docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v5",
+    "lifecycle_state": "MEMBER_STARTED",
+    "lifecycle_terminal": false,
+    "partial_metrics_authoritative": false,
+    "recovery_diagnostics_filename": "process_lifecycle_recovery_diagnostics_v5.json",
+    "recovery_inspection_mutates_state": false,
+    "run_slot_reclaim_attempted": false
+  },
+  "rerun_allowed": false,
+  "run_slot_reclaim_attempted": false,
+  "schema_version": "bollinger_mr_midband_exit_efficiency_process_lifecycle_recovery_diagnostics.v5"
+}

@@ -90,3 +90,9 @@ Exactly four:
 
 Any further exit-efficiency measurement requires a new hypothesis ID under a
 separate Operator-GO. No automatic V5 creation.
+
+
+## V5 terminal closeout
+
+V5 evaluated once and closed as `INFRASTRUCTURE_FAILURE` (baseline 3/46; no rerun).
+No DEFINITION_ONLY candidate remains. V6 requires a separate Operator-GO.

@@ -5,10 +5,10 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "trading_effect": "NONE",
-  "status": "DEFINITION_ONLY_PREREGISTERED",
-  "verdict": "DEFINITION_ONLY_PREREGISTERED_NO_EVALUATION",
-  "slice_class": "DEFINITION_ONLY",
-  "preregistration_state": "DEFINITION_ONLY_PREREGISTERED",
+  "status": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INFRASTRUCTURE_FAILURE",
+  "verdict": "DEVELOPMENT_EVALUATION_SLOT_CONSUMED_INFRASTRUCTURE_FAILURE",
+  "slice_class": "DEVELOPMENT_EVALUATION_TERMINAL_CLOSEOUT",
+  "preregistration_state": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INFRASTRUCTURE_FAILURE",
   "terminal_states_authorized": [
     "DEFINITION_ONLY_PREREGISTERED",
     "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS",
@@ -21,8 +21,8 @@
   "evaluation_authorized": false,
   "backtest_authorized": false,
   "implementation_authorized": false,
-  "evaluation_executed": false,
-  "evaluation_run_count": 0,
+  "evaluation_executed": true,
+  "evaluation_run_count": 1,
   "hypothesis_count": 1,
   "multiple_testing_budget": 1,
   "evaluation_run_count_authorized": 1,
@@ -431,18 +431,22 @@
     "NO_AUTO_RERUN_ON_INFRASTRUCTURE_FAILURE",
     "NO_CHECKPOINT_AUTHORIZED_RERUN",
     "NO_PARTIAL_METRICS_PROMOTION",
-    "NO_V5_EVALUATION_IN_THIS_SLICE",
     "NO_REAL_PANEL_RUN_WITHOUT_MEASUREMENT_VALIDITY_GATES",
-    "NO_V6_AUTO_CREATE"
+    "NO_V6_AUTO_CREATE",
+    "NO_V5_RERUN",
+    "NO_V5_PARTIAL_RESULT_REUSE",
+    "NO_V5_CHECKPOINT_REUSE",
+    "NO_V5_ECONOMIC_RESULT_IMPORT",
+    "NO_V5_ECONOMIC_PASS_OR_FAIL_REINTERPRETATION"
   ],
   "competing_open_hypotheses_forbidden": true,
   "competing_open_hypothesis_count_allowed": 0,
   "short_side_hypothesis_preregistered": false,
   "holdout_candidate_preregistered": false,
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_V5_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_DEVELOPMENT_EVALUATION",
-  "evaluation_started": false,
+  "next_canonical_step": "NO_FURTHER_ACTION_UNDER_THIS_PREREGISTRATION_V6_REQUIRES_SEPARATE_OPERATOR_GO",
+  "evaluation_started": true,
   "evaluation_completed": false,
-  "result_class": "NOT_EVALUATED",
+  "result_class": "INFRASTRUCTURE_FAILURE",
   "economic_verdict": "NOT_EVALUATED",
   "pass": false,
   "fail": false,
@@ -546,7 +550,7 @@
       "note": "V5-only process-lifecycle checkpoint scaffold. Definition-only import and validation must not start any evaluation runner, claim a run slot, or access panel/holdout/production data."
     }
   },
-  "evidence_ref": "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v5/",
+  "evidence_ref": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v5/",
   "v2_rerun_forbidden": true,
   "identical_measurement_rules_to_development_v2": false,
   "predecessor_development_v1_lineage": {
@@ -714,5 +718,20 @@
     "evidence_ref": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v4/",
     "new_evaluation_rationale": "V4 sole authorized development evaluation consumed the one-shot slot and terminated as INFRASTRUCTURE_FAILURE after external process death without lifecycle-terminal completion (baseline 1/46; treatment 0/46; no economic closeout; rerun forbidden). V5 is a new independently preregistered measurement authority that preserves the identical economic hypothesis, exit mechanism, and measurement-validity gates while adding generic process-lifecycle observability and bounded checkpoint/recovery diagnostics; not a V4 rerun; no V4 partial results, checkpoints, or economic claims are transferred; V4 remains terminal INFRASTRUCTURE_FAILURE and must not be reinterpreted as economic PASS or FAIL."
   },
-  "development_preregistration_digest": "b85903ebc76d1fefdb576075e88a1b72d9abb852ad4da5f1f8c5bc9c0bd21b2e"
+  "development_preregistration_digest": "b85903ebc76d1fefdb576075e88a1b72d9abb852ad4da5f1f8c5bc9c0bd21b2e",
+  "terminal_closeout": {
+    "result_class": "INFRASTRUCTURE_FAILURE",
+    "diagnostic_class": "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL",
+    "decision_reason": "incomplete_panel_run_process_died_after_baseline_member_3_of_46",
+    "baseline_members_completed": "3/46",
+    "treatment_members_completed": "0/46",
+    "panel_backtest_executed": true,
+    "economic_metrics_produced": false,
+    "acceptance_criteria_met": false,
+    "process_pid": 76068,
+    "process_exit_code": null,
+    "lifecycle_state_at_death": "MEMBER_STARTED",
+    "checkpoint_sequence_at_death": 14,
+    "rerun_allowed": false
+  }
 }

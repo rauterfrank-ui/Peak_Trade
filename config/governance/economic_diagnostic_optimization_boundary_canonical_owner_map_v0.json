@@ -851,6 +851,16 @@
         "tests/research/test_bollinger_mr_midband_exit_efficiency_process_lifecycle_checkpoint_v5.py"
       ],
       "note": "Definition-only process-lifecycle checkpoint scaffold for V5: monotonic lifecycle states, atomic checkpoints, read-only recovery diagnostics; import cannot start runner; checkpoints cannot reclaim run slots or authorize automatic reruns; partial metrics non-authoritative."
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v5/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v5.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_development_evaluation_v5.py",
+        "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v5/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.md"
+      ],
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0\u21921): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5."
     }
   }
 }

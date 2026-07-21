@@ -1,0 +1,20 @@
+{
+  "baseline_declared_config_digest": "1f166bd81b099f7e79edc9e9700028a7db74d6ef46806ffbcd6ee44845a53c9a",
+  "baseline_effective_config_digest": "bce4a14d1fbefe897bf4d78bf34e04176010ca752af145fcedd59d53ea9de22c",
+  "baseline_signal": 0,
+  "binding_fix_surface": "MV2_WIRING_MOD_CAPTURE_ALIAS_OPEN_SIDE_BINDING_FIX",
+  "declared_configs_differ": false,
+  "effective_configs_differ": true,
+  "exit_bars_observed": 1,
+  "exits_forced_by_gate": 1,
+  "first_divergence_or_collapse_boundary": "wiring_mod.capture_backtest_engine_position_feedback_v1",
+  "open_side_binding_observed": true,
+  "passed": true,
+  "reason": "measurement_validity_prerequisites_passed",
+  "result_class": null,
+  "synthetic_divergence_expected": true,
+  "synthetic_divergence_observed": true,
+  "treatment_declared_config_digest": "1f166bd81b099f7e79edc9e9700028a7db74d6ef46806ffbcd6ee44845a53c9a",
+  "treatment_effective_config_digest": "018a176edf54c90b9bd6233629d49f6d858557546aac221e5b218f155f2bd459",
+  "treatment_signal": 1
+}
