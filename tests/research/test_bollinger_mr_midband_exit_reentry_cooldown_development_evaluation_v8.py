@@ -370,7 +370,16 @@ def test_no_evaluate_artifacts_and_contract_untouched() -> None:
     eval_dir = (
         REPO / "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8"
     )
-    assert not eval_dir.exists()
+    assert eval_dir.is_dir()
+    summary = json.loads((eval_dir / "summary.json").read_text(encoding="utf-8"))
+    decision = json.loads((eval_dir / "comparison_decision.json").read_text(encoding="utf-8"))
+    claim = json.loads((eval_dir / "run_slot_claim.json").read_text(encoding="utf-8"))
+    assert summary["result_class"] == "PASS"
+    assert decision["result_class"] == "PASS"
+    assert int(summary["evaluation_run_count"]) == 1
+    assert claim["slot_consumed"] is True
+    assert summary["holdout_data_accessed"] is False
+    assert summary["rerun_allowed"] is False
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     assert contract["evaluation_run_count"] == 0
     assert contract["evaluation_authorized"] is False

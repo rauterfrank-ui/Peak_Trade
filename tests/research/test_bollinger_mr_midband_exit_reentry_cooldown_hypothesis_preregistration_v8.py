@@ -229,22 +229,25 @@ def test_owner_map_and_backlog_consistency() -> None:
     assert REQUIRED_OBSERVABILITY_SURFACE in owners
     assert REQUIRED_BINDING_FIX_SURFACE in owners or True
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    pref = backlog["preregistered_hypotheses"][0]
-    assert pref["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert pref["evaluation_run_count"] == 0
-    assert pref["runner_started"] is False
-    assert pref["run_slot_consumed"] is False
-    assert pref["panel_accessed"] is False
-    assert pref["frozen_parameters_complete"] is True
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert backlog["preregistered_hypotheses"] == []
     terminal_ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
+    assert REQUIRED_HYPOTHESIS_ID in terminal_ids
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in terminal_ids
-    assert "NO_V8_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    v8 = next(
+        e for e in backlog["terminal_hypotheses"] if e["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
+    )
+    assert v8["status"] == "TERMINAL_PASS"
+    assert v8["result_class"] == "PASS"
+    assert int(v8["evaluation_run_count"]) == 1
+    assert v8["run_slot_consumed"] is True
+    assert "NO_V8_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_V8_REOPEN" in backlog["explicit_non_actions"]
     assert "NO_V7_REOPEN" in backlog["explicit_non_actions"]
     assert "NO_V9_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_V8_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
     assert backlog["next_canonical_step"] == (
-        "AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION"
+        "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION"
     )
 
 

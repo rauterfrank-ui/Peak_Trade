@@ -158,7 +158,7 @@ def test_gate_blocked_without_ratification(monkeypatch: pytest.MonkeyPatch) -> N
         / "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8"
         / "run_slot_claim.json"
     )
-    assert not claim.exists()
+    assert claim.is_file()
     with pytest.raises(RuntimeError, match="V8_EVALUATION_NOT_AUTHORIZED"):
         assert_v8_authority_and_prereg_gates(
             repo=REPO, require_evaluation_authorized=True, require_ready_status=True
@@ -172,8 +172,11 @@ def test_effective_auth_false_while_ready_not_ratified(monkeypatch: pytest.Monke
     )
     effective = resolve_effective_evaluation_authorization(REPO)
     assert effective["evaluation_authorized"] is False
-    assert str(effective.get("reason") or "").startswith("LIFECYCLE_NOT_AUTHORIZED")
-    assert effective["lifecycle_status"] == READY_STATUS
+    reason = str(effective.get("reason") or "")
+    assert reason.startswith("AUTHORITY_FLAG_FALSE") or reason.startswith(
+        "RUN_SLOT_ALREADY_CONSUMED"
+    )
+    assert effective["lifecycle_status"] == AUTHORIZED_STATUS
 
 
 @pytest.mark.skipif(
@@ -188,7 +191,10 @@ def test_effective_auth_with_real_released_panel_still_unauthorized(
     monkeypatch.setenv("PEAK_TRADE_DATA_ARCHIVE_ROOT", "/Users/frnkhrz/Peak_Trade_data_archive")
     effective = resolve_effective_evaluation_authorization(REPO)
     assert effective["evaluation_authorized"] is False
-    assert str(effective.get("reason") or "").startswith("LIFECYCLE_NOT_AUTHORIZED")
+    reason = str(effective.get("reason") or "")
+    assert reason.startswith("AUTHORITY_FLAG_FALSE") or reason.startswith(
+        "RUN_SLOT_ALREADY_CONSUMED"
+    )
 
 
 def test_go_token_constant() -> None:
@@ -197,6 +203,10 @@ def test_go_token_constant() -> None:
 
 def test_preauth_parity_required_for_ratification(monkeypatch: pytest.MonkeyPatch) -> None:
     payload = build_ratification_payload()
+    monkeypatch.setattr(
+        "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v8._slot_consumed",
+        lambda repo: False,
+    )
     monkeypatch.setattr(
         "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v8.validate_pre_authorization_frozen_parameter_parity",
         lambda contract: (_ for _ in ()).throw(Exception("FORCED_PREAUTH_FAIL")),
