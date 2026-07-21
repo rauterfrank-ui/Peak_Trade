@@ -586,6 +586,16 @@
         "docs/governance/RSI_EXHAUSTION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
       ],
       "note": "Definition-only preregistration of a single RSI(14)-exhaustion pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to the failed ATR-percentile mid-band and failed regime-gated absolute-threshold mechanisms; no backtest, no economic metrics, no holdout access, no productive authority mutation."
+    },
+    "RSI_EXHAUSTION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
+      "path_prefixes": [
+        "src/research/rsi_exhaustion_mr_eligibility_development_evaluation_v1/",
+        "scripts/research/run_evaluate_rsi_exhaustion_mr_eligibility_development_v1.py",
+        "tests/research/test_rsi_exhaustion_mr_eligibility_development_evaluation_v1.py",
+        "docs/evidence/evaluate_rsi_exhaustion_mr_eligibility_development_v1/",
+        "docs/governance/RSI_EXHAUSTION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md"
+      ],
+      "note": "Single preregistered DEVELOPMENT-only offline evaluation of RSI(14)-exhaustion pre-entry MR eligibility filter versus immutable bollinger baseline; research-only entry-eligibility gate; read-only reuse of entry_effective decision/gate helpers and regime_gated shared_portfolio_equity_research_v1; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
     }
   }
 }

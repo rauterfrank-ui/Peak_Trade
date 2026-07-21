@@ -1,0 +1,7 @@
+{
+  "contract": "aa170e9f346bbe609734321dc1c0bed472e7f42170870e0e0584b0e701bcc532",
+  "entry_eligibility_gate_v1.py": "bac9c1db617262068f8a1e4fb77a052f3222c4337f1c00e8fbc61a51c0b75a50",
+  "feature_formula_sha256": "1ce696e033bc2c5b049063fd5a806ad1e32b7d1b12c9b5ec5153b3e7d96218b5",
+  "panel_runner_v1.py": "f3ea1d710bbea14f8ad6eb1bc1f0f9c50a4afb6efb2cba586acd2c59df33393d",
+  "rsi_exhaustion_eligibility_filter_v1.py": "89351dcbf0508b5a53bbb69a0359265d59def1a8d53e9f79a36beca87f555513"
+}
