@@ -5,7 +5,7 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "status": "OPEN_BACKLOG",
-  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ONE_PREREGISTERED",
+  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_ZERO_PREREGISTERED_MACD_NEXT_ELIGIBLE",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
   "canonical_ssot": true,
   "exactly_one_authoritative_truth": true,
@@ -204,7 +204,8 @@
         "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not absolute multi-feature regime thresholds; single MACD histogram sign rule.",
         "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not ATR percentile mid-band.",
         "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Different oscillator family (MACD EMA-spread histogram sign vs RSI level 30/70); not an RSI threshold retune.",
-        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not Wilder ADX level; uses MACD histogram sign."
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not Wilder ADX level; uses MACD histogram sign.",
+        "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not price-vs-SMA(50) with-trend admission; uses MACD histogram countertrend sign."
       },
       "repo_source_refs": [
         "config/config.toml#[strategies.macd.defaults]",
@@ -220,7 +221,8 @@
         "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
         "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
         "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+        "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
       ]
     },
     {
@@ -255,7 +257,8 @@
         "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not multi-feature absolute regime classifier.",
         "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not ATR percentile mid-band.",
         "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not RSI exhaustion levels.",
-        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not ADX magnitude threshold (ADX < 25). Uses +DI/−DI directional ordering only; ADX level is intentionally unused."
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not ADX magnitude threshold (ADX < 25). Uses +DI/−DI directional ordering only; ADX level is intentionally unused.",
+        "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not price-vs-SMA(50) with-trend admission; uses +DI/−DI directional ordering only."
       },
       "repo_source_refs": [
         "config/config.toml#[strategies.trend_following.defaults]",
@@ -271,7 +274,8 @@
         "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
         "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
         "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+        "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
       ]
     }
   ],
@@ -295,7 +299,7 @@
     "open_candidate_count_min": 2,
     "open_candidate_count_max": 4
   },
-  "governance_note": "MA trend-alignment completed its single authorized DEVELOPMENT evaluation (run count 1/1) and is now TERMINAL_FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED, entry-eligibility divergence observed); no retuning, no holdout access, and no second run occurred. Evaluation of the next eligible open candidate (MACD histogram countertrend) is NOT authorized by this transition and requires a separate preregistration PR and operator GO.",
+  "governance_note": "MA trend-alignment completed its single authorized DEVELOPMENT evaluation (run count 1/1) and is TERMINAL_FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED, entry-eligibility divergence observed); no retuning, no holdout access, and no second run occurred. Open preregistrations are empty. Exactly one next-eligible open candidate remains: MACD histogram countertrend. Definition-only preregistration and any later evaluation of that candidate are NOT authorized by this coherence slice and require a separate preregistration PR plus operator GO.",
   "explicit_non_actions": [
     "NO_PREREGISTRATION_IN_THIS_SLICE",
     "NO_BACKTEST_IN_THIS_SLICE_FOR_OPEN_CANDIDATES",
@@ -311,7 +315,8 @@
     "NO_MULTI_GATE_COMBINATION",
     "NO_AUTO_EVALUATION_OF_NEXT_ELIGIBLE",
     "NO_SECOND_EVALUATION_RUN_OF_MA_TREND_ALIGNMENT",
-    "NO_HOLDOUT_ACCESS_FOR_MA_TREND_ALIGNMENT_AFTER_FAIL"
+    "NO_HOLDOUT_ACCESS_FOR_MA_TREND_ALIGNMENT_AFTER_FAIL",
+    "NO_REOPEN_OF_TERMINAL_HYPOTHESES"
   ],
-  "next_canonical_step": "REVIEW_AND_MERGE_MA_TREND_ALIGNMENT_TERMINAL_FAIL_TRANSITION_BEFORE_ANY_FURTHER_PREREGISTRATION"
+  "next_canonical_step": "REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_V1"
 }
