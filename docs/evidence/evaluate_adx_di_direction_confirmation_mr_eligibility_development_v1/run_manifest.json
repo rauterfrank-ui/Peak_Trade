@@ -1,0 +1,21 @@
+{
+  "base_sha": "d8ddca59280402df6116810953ca6d2dcb6454c0",
+  "baseline_profit_factor": 0.7324360833782796,
+  "baseline_trade_count": 117,
+  "economic_gate_opened": false,
+  "entries_blocked_by_gate": 256,
+  "evaluation_retried": false,
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1",
+  "evaluation_run_limit": 1,
+  "holdout_accessed": false,
+  "hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+  "promotion_eligible": false,
+  "reason": "ALL_PASS_REQUIRES_MET",
+  "result_class": "PASS",
+  "schema_version": "evaluate_adx_di_direction_confirmation_mr_eligibility_development_run_manifest.v1",
+  "seed": 20220601,
+  "split_intervals_sha256": "a35783bf0268c174dfe585c9839ba45cc6e3835021699786f4490a0d8c9b33db",
+  "treatment_profit_factor": 0.8100546157726748,
+  "treatment_trade_count": 100
+}

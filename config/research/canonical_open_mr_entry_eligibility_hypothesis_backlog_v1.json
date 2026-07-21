@@ -5,7 +5,7 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "status": "OPEN_BACKLOG",
-  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ONE_PREREGISTERED_EMPTY_OPEN_QUEUE",
+  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_EMPTY_AFTER_ADX_DI_TERMINAL_PASS",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
   "canonical_ssot": true,
   "exactly_one_authoritative_truth": true,
@@ -128,20 +128,23 @@
       "fail_finding": "net_profit_factor_not_improved_despite_entry_eligibility_divergence",
       "contract_ref": "config/research/macd_histogram_countertrend_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
       "evidence_ref": "docs/evidence/evaluate_macd_histogram_countertrend_mr_eligibility_development_v1/"
-    }
-  ],
-  "preregistered_hypotheses": [
+    },
     {
       "hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-      "status": "DEFINITION_ONLY_PREREGISTERED",
-      "queue_status": "PREREGISTERED_AWAITING_EVALUATION_GO",
-      "evaluation_authorized": false,
-      "development_run_count": 0,
+      "status": "TERMINAL_PASS",
+      "treatment_type": "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER",
       "feature_family": "adx_di_direction_confirmation",
-      "priority_rank_at_preregistration": 1,
-      "contract_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json"
+      "feature_ids": [
+        "plus_di_14h",
+        "minus_di_14h"
+      ],
+      "pass_reason": "ALL_PASS_REQUIRES_MET",
+      "pass_finding": "all_preregistered_pass_requires_met_with_entry_eligibility_divergence",
+      "contract_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+      "evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/"
     }
   ],
+  "preregistered_hypotheses": [],
   "forbidden_feature_families_for_open_candidates": [
     "multi_feature_absolute_threshold_regime_classifier",
     "atr_rolling_percentile_midband",
@@ -219,23 +222,17 @@
     "open_candidate_count_min": 0,
     "open_candidate_count_max": 4
   },
-  "governance_note": "ADX DI direction confirmation is DEFINITION_ONLY_PREREGISTERED and awaiting evaluation GO; evaluation is NOT authorized by this transition and requires a separate operator GO. Open candidate queue is empty after this preregistration. Six prior hypotheses remain TERMINAL_FAIL with no reopen (including MACD histogram-countertrend).",
+  "governance_note": "ADX DI direction confirmation completed its single authorized DEVELOPMENT evaluation with RESULT_CLASS=PASS / ALL_PASS_REQUIRES_MET. Hypothesis is TERMINAL_PASS. Economic offline gate remains closed; promotion remains closed; holdout remains forbidden without a separate operator GO. Six prior hypotheses remain TERMINAL_FAIL. Open candidate queue remains empty. No second ADX DI evaluation run is permitted.",
   "explicit_non_actions": [
-    "NO_PREREGISTRATION_OF_ADDITIONAL_CANDIDATES_IN_THIS_SLICE",
-    "NO_BACKTEST_IN_THIS_SLICE",
-    "NO_ECONOMIC_METRICS_COMPUTATION",
-    "NO_DEVELOPMENT_PANEL_RAW_ACCESS_IN_THIS_SLICE",
-    "NO_PARAMETER_TUNING",
-    "NO_VARIANT_SEARCH",
+    "NO_SECOND_EVALUATION_RUN_OF_ADX_DI_DIRECTION_CONFIRMATION",
+    "NO_POST_RESULT_TUNING",
     "NO_HOLDOUT_ACCESS",
+    "NO_ECONOMIC_GATE_OPEN_FROM_DEVELOPMENT_PASS",
+    "NO_PROMOTION_CLAIM",
     "NO_RUNTIME_ACTIVATION",
     "NO_PRODUCTIVE_TRADING_LOGIC_CHANGE",
-    "NO_PROMOTION_CLAIM",
-    "NO_RETUNE_OF_TERMINAL_HYPOTHESES",
-    "NO_MULTI_GATE_COMBINATION",
-    "NO_AUTO_EVALUATION_OF_PREREGISTERED_ADX_DI",
-    "NO_SECOND_EVALUATION_RUN_OF_MACD_HISTOGRAM_COUNTERTREND",
-    "NO_REOPEN_OF_TERMINAL_HYPOTHESES"
+    "NO_REOPEN_OF_TERMINAL_HYPOTHESES",
+    "NO_AUTO_HOLDOUT_FROM_DEVELOPMENT_PASS"
   ],
-  "next_canonical_step": "REVIEW_AND_MERGE_ADX_DI_DIRECTION_CONFIRMATION_PREREGISTRATION_BEFORE_ANY_EVALUATION"
+  "next_canonical_step": "REVIEW_AND_MERGE_ADX_DI_DEVELOPMENT_EVALUATION_THEN_SEPARATE_HOLDOUT_GO_IF_AUTHORIZED"
 }

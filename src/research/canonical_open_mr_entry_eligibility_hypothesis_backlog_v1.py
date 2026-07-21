@@ -17,13 +17,19 @@ REQUIRED_STATUS = "OPEN_BACKLOG"
 REQUIRED_DATASET_ID = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
 REQUIRED_TREATMENT_TYPE = "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER"
 HOLDOUT_OPAQUE_ID = "offline_economic_reevaluation_sealed_long_panel_v1"
-REQUIRED_TERMINAL_HYPOTHESIS_IDS = (
+REQUIRED_TERMINAL_FAIL_HYPOTHESIS_IDS = (
     "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
     "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
     "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
     "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
     "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
     "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+)
+REQUIRED_TERMINAL_PASS_HYPOTHESIS_IDS = (
+    "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+)
+REQUIRED_TERMINAL_HYPOTHESIS_IDS = (
+    REQUIRED_TERMINAL_FAIL_HYPOTHESIS_IDS + REQUIRED_TERMINAL_PASS_HYPOTHESIS_IDS
 )
 FORBIDDEN_FEATURE_FAMILIES = frozenset(
     {
@@ -227,14 +233,35 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     for terminal in terminals:
         _assert_true(isinstance(terminal, Mapping), "TERMINAL_ENTRY_TYPE")
         assert isinstance(terminal, Mapping)
-        _assert_true(terminal.get("status") == "TERMINAL_FAIL", "TERMINAL_STATUS")
-        _assert_true(isinstance(terminal.get("fail_reason"), str), "TERMINAL_FAIL_REASON")
-        _assert_true(isinstance(terminal.get("fail_finding"), str), "TERMINAL_FAIL_FINDING")
+        status = terminal.get("status")
+        _assert_true(
+            status in {"TERMINAL_FAIL", "TERMINAL_PASS"},
+            "TERMINAL_STATUS",
+            str(status),
+        )
+        if status == "TERMINAL_FAIL":
+            _assert_true(isinstance(terminal.get("fail_reason"), str), "TERMINAL_FAIL_REASON")
+            _assert_true(isinstance(terminal.get("fail_finding"), str), "TERMINAL_FAIL_FINDING")
+        else:
+            _assert_true(isinstance(terminal.get("pass_reason"), str), "TERMINAL_PASS_REASON")
+            _assert_true(isinstance(terminal.get("pass_finding"), str), "TERMINAL_PASS_FINDING")
         _assert_true(isinstance(terminal.get("feature_family"), str), "TERMINAL_FEATURE_FAMILY")
         _assert_true(
             isinstance(terminal.get("feature_ids"), list) and terminal["feature_ids"],
             "TERMINAL_FEATURE_IDS",
         )
+    fail_ids = [t["hypothesis_id"] for t in terminals if t.get("status") == "TERMINAL_FAIL"]
+    pass_ids = [t["hypothesis_id"] for t in terminals if t.get("status") == "TERMINAL_PASS"]
+    _assert_true(
+        tuple(fail_ids) == REQUIRED_TERMINAL_FAIL_HYPOTHESIS_IDS,
+        "TERMINAL_FAIL_IDS",
+        str(fail_ids),
+    )
+    _assert_true(
+        tuple(pass_ids) == REQUIRED_TERMINAL_PASS_HYPOTHESIS_IDS,
+        "TERMINAL_PASS_IDS",
+        str(pass_ids),
+    )
 
     forbidden_families = backlog.get("forbidden_feature_families_for_open_candidates")
     _assert_true(isinstance(forbidden_families, list), "FORBIDDEN_FAMILIES_MISSING")
@@ -438,9 +465,13 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         )
         preregistered_ids.append(hyp_id)
     _assert_true(
-        preregistered_ids == [ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID],
-        "PREREGISTERED_MUST_BE_EXACTLY_ADX_DI",
+        preregistered_ids == [],
+        "PREREGISTERED_MUST_BE_EMPTY_AFTER_ADX_DI_TERMINAL_PASS",
         str(preregistered_ids),
+    )
+    _assert_true(
+        ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID in REQUIRED_TERMINAL_PASS_HYPOTHESIS_IDS,
+        "ADX_DI_MUST_BE_TERMINAL_PASS",
     )
     _assert_true(
         MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID in REQUIRED_TERMINAL_HYPOTHESIS_IDS,
