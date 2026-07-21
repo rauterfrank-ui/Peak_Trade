@@ -297,7 +297,16 @@
     "docs/evidence/evaluate_entry_effective_mr_eligibility_development_v1/portfolio_equity_treatment.csv",
     "docs/evidence/evaluate_entry_effective_mr_eligibility_development_v1/ci_timing_proof.txt",
     "docs/evidence/evaluate_entry_effective_mr_eligibility_development_v1/run_stdout.txt",
-    "docs/evidence/evaluate_entry_effective_mr_eligibility_development_v1/determinism_repro.txt"
+    "docs/evidence/evaluate_entry_effective_mr_eligibility_development_v1/determinism_repro.txt",
+    "src/research/rsi_exhaustion_mr_eligibility_hypothesis_preregistration_v1.py",
+    "tests/research/test_rsi_exhaustion_mr_eligibility_hypothesis_preregistration_v1.py",
+    "config/research/rsi_exhaustion_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+    "docs/evidence/preregister_rsi_exhaustion_mr_eligibility_hypothesis_v1/README.md",
+    "docs/evidence/preregister_rsi_exhaustion_mr_eligibility_hypothesis_v1/summary.json",
+    "docs/evidence/preregister_rsi_exhaustion_mr_eligibility_hypothesis_v1/split_manifest.json",
+    "docs/evidence/preregister_rsi_exhaustion_mr_eligibility_hypothesis_v1/safety_attestation.md",
+    "docs/evidence/preregister_rsi_exhaustion_mr_eligibility_hypothesis_v1/timing_proof.txt",
+    "docs/governance/RSI_EXHAUSTION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -323,7 +332,8 @@
     "TECHNICAL_REGIME_GATED_STANDASIDE_MR_HYPOTHESIS_PREREGISTRATION_WIRING",
     "TECHNICAL_REGIME_GATED_STANDASIDE_MR_DEVELOPMENT_EVALUATION_WIRING",
     "TECHNICAL_ENTRY_EFFECTIVE_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
-    "TECHNICAL_ENTRY_EFFECTIVE_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_WIRING"
+    "TECHNICAL_ENTRY_EFFECTIVE_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_WIRING",
+    "TECHNICAL_RSI_EXHAUSTION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -374,6 +384,7 @@
     "Includes definition-only preregistration of a single regime-gated stand-aside mean-reversion measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + thresholds); no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: REGIME_GATED_STANDASIDE_MR_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
     "Includes single preregistered DEVELOPMENT evaluation of regime-gated standaside MR versus immutable bollinger baseline (research-only entry-eligibility gate, frozen close-path regime formulas, sealed independent DEVELOPMENT_ONLY panel); no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: REGIME_GATED_STANDASIDE_MR_DEVELOPMENT_EVALUATION_V1.",
     "Includes definition-only preregistration of a single entry-effective pre-entry ATR-percentile MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds); no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ENTRY_EFFECTIVE_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
-    "Includes single preregistered DEVELOPMENT evaluation of entry-effective pre-entry ATR-percentile mid-band MR eligibility filter (STRICT exclusive bounds, distinct from VolRegimeFilter.generate_signals inclusive bounds) versus immutable bollinger baseline; research-only entry-eligibility gate; read-only import of the prior failed regime_gated evaluation's shared_portfolio_equity_research_v1 helper only (no mutation of that package); no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ENTRY_EFFECTIVE_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1."
+    "Includes single preregistered DEVELOPMENT evaluation of entry-effective pre-entry ATR-percentile mid-band MR eligibility filter (STRICT exclusive bounds, distinct from VolRegimeFilter.generate_signals inclusive bounds) versus immutable bollinger baseline; research-only entry-eligibility gate; read-only import of the prior failed regime_gated evaluation's shared_portfolio_equity_research_v1 helper only (no mutation of that package); no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ENTRY_EFFECTIVE_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.",
+    "Includes definition-only preregistration of a single RSI(14)-exhaustion pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds), orthogonal to the failed ATR-percentile mid-band mechanism (entry_effective contract) and the failed regime-gated absolute-threshold mechanism (regime_gated contract); no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: RSI_EXHAUSTION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1."
   ]
 }
