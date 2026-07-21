@@ -209,7 +209,10 @@ def test_owner_map_and_backlog_consistency() -> None:
     backlog = _load(BACKLOG)
     assert backlog["governance_rules"]["preregistered_count_exact"] == 1
     assert len(backlog["preregistered_hypotheses"]) == 1
-    assert backlog["preregistered_hypotheses"][0]["hypothesis_id"] == "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7"
+    assert (
+        backlog["preregistered_hypotheses"][0]["hypothesis_id"]
+        == "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7"
+    )
     assert backlog["development_run_count"] == 6
     terminal_ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
     assert REQUIRED_HYPOTHESIS_ID in terminal_ids
