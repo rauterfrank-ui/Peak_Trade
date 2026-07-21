@@ -1,0 +1,19 @@
+# V7 Operator Clarification Authority — binding evidence
+
+```
+authority_id=BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7
+authority_digest=cb45c1aff8f845b7620748c786a14bc5af4793803d80dc1c16426670da419235
+preregistration_digest=4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680
+operator_decisions_status=OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY
+implementation_lifecycle_status=READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION
+evaluation_authorized=false
+evaluation_run_count=0
+evaluation_executed=false
+runner_started=false
+run_slot_claimed=false
+panel_data_accessed=false
+holdout_data_accessed=false
+mutates_preregistration=false
+```
+
+Bindings: decision, preflight, cooldown state, reentry gate, panel runner, CLI, execution map, lifecycle governance.
