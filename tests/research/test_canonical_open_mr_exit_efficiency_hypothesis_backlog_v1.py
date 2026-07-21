@@ -1,4 +1,4 @@
-"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (V6 terminal FAIL)."""
+"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (V7 DEFINITION_ONLY)."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ from src.research.canonical_open_mr_exit_efficiency_hypothesis_backlog_v1 import
     REQUIRED_V5_HYPOTHESIS_ID,
     REQUIRED_V6_HYPOTHESIS_ID,
     REQUIRED_V6_MECHANISM_ID,
+    REQUIRED_V7_HYPOTHESIS_ID,
     assert_exactly_one_exit_efficiency_backlog_ssot,
     load_and_validate_repo_backlog,
 )
@@ -36,14 +37,14 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
     assert GOVERNANCE_PATH.is_file()
 
 
-def test_repo_backlog_zero_preregistered_v6_terminal_fail() -> None:
+def test_repo_backlog_one_definition_only_v7_preregistered() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["preregistered_count"] == 0
+    assert report["preregistered_count"] == 1
     assert report["terminal_count"] == 6
     assert report["open_unpreregistered_count"] == 0
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert report["preregistered_hypothesis_id"] is None
+    assert report["preregistered_hypothesis_id"] == REQUIRED_V7_HYPOTHESIS_ID
     assert report["development_run_count"] == 6
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
@@ -72,10 +73,14 @@ def test_repo_backlog_zero_preregistered_v6_terminal_fail() -> None:
     assert report["v5_is_rerun_of_v4"] is False
 
 
-def test_zero_preregistered_and_terminal_entry_shape() -> None:
+def test_one_preregistered_v7_and_terminal_entry_shape() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert backlog["preregistered_hypotheses"] == []
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
+    pref = backlog["preregistered_hypotheses"][0]
+    assert pref["hypothesis_id"] == REQUIRED_V7_HYPOTHESIS_ID
+    assert pref["evaluation_run_count"] == 0
+    assert pref["status"] == "DEFINITION_ONLY_PREREGISTERED"
     assert backlog["open_unpreregistered_candidates"] == []
     assert backlog["development_run_count"] == 6
     assert len(backlog["terminal_hypotheses"]) == 6
@@ -136,22 +141,25 @@ def test_zero_preregistered_and_terminal_entry_shape() -> None:
     assert v6["treatment_members_completed"] == "46/46"
     assert "NO_V6_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V6_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
+    assert "NO_V7_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
     assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_V8_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V3_ECONOMIC_RESULT_IMPORT" in backlog["explicit_non_actions"]
     assert "NO_V4_AUTO_CREATE" not in backlog["explicit_non_actions"]
 
 
-def test_governance_doc_mentions_v6_terminal_fail() -> None:
+def test_governance_doc_mentions_v7_definition_only() -> None:
     text = (
         REPO / "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
     ).read_text(encoding="utf-8")
     assert "V6" in text
     assert "TERMINAL_FAIL" in text or "FAIL" in text
     assert "NET_PROFIT_FACTOR_NOT_IMPROVED" in text
-    assert "zero" in text.lower() or "Zero" in text or "preregistered_count_exact=0" in text
+    assert "V7" in text
+    assert "DEFINITION_ONLY_PREREGISTERED" in text or "preregistered_count_exact=1" in text
     assert "V5" in text or "v5" in text.lower()
     assert "V4" in text
     assert "INFRASTRUCTURE_FAILURE" in text or "Infrastructure" in text
-    assert "NO_V7" in text or "No V7" in text or "No V7 auto-create" in text
+    assert "NO_V8" in text or "No V8" in text or "No V8 auto-create" in text

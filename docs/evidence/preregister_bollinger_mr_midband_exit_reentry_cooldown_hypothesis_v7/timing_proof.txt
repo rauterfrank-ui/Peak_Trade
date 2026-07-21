@@ -1,0 +1,4 @@
+TIMING_PROOF_NOT_REQUIRED_JUSTIFIED
+REASON=definition_only_preregistration_no_ci_test_path_runtime_risk
+SELECTOR_EXPECTED=FOCUSED_OR_CONTRACT
+NO_EVALUATION_RUNNER=true

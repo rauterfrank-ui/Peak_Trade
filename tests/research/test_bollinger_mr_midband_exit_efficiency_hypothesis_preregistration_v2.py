@@ -160,8 +160,12 @@ def test_holdout_untouched() -> None:
 
 def test_registry_backlog_consistency() -> None:
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
-    assert backlog["preregistered_hypotheses"] == []
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert (
+        backlog["preregistered_hypotheses"][0]["hypothesis_id"]
+        == "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7"
+    )
     assert any(e["hypothesis_id"].endswith("_V6") for e in backlog["terminal_hypotheses"])
     assert len(backlog["terminal_hypotheses"]) == 6
     ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}

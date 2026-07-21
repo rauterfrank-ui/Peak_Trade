@@ -889,6 +889,16 @@
         "tests/research/test_bollinger_mr_midband_exit_efficiency_v6_failure_attribution.py"
       ],
       "note": "Evidence-only read-only failure attribution for terminal V6 FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED). No evaluation/backtest/panel/holdout access; does not mutate V6 artifacts/run count; does not preregister or authorize V7; no promotion/runtime/orders; no Master-V2/Double-Play/risk/sizing/execution mutation."
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V7": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v7.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v7.py",
+        "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v7.json",
+        "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v7/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V7.md"
+      ],
+      "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit reentry-cooldown V7 after terminal V6 FAIL + evidence-only attribution; EVALUATION_RUN_COUNT=0; control=exact V6 semantics; treatment=same-side reentry cooldown 24h after forced midband; not a V6 rerun; no V6 partial import; no evaluation/runtime/orders."
     }
   }
 }
