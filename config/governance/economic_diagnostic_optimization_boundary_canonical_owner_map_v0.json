@@ -765,6 +765,14 @@
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V1.md"
       ],
       "note": "Single authorized DEVELOPMENT_ONLY evaluation of Bollinger/MR side-aware middle-band exit-efficiency versus immutable bollinger baseline on sealed DEVELOPMENT panel (evaluation_run_count 0->1); Economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
+    },
+    "EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1": {
+      "path_prefixes": [
+        "src/research/evaluation_runner_lifecycle_observability_v1/",
+        "tests/research/test_evaluation_runner_lifecycle_observability_v1.py",
+        "docs/evidence/evaluation_runner_lifecycle_observability_v1/"
+      ],
+      "note": "Generic research-infrastructure observability for evaluation-runner process death (atomic heartbeat/progress, catchable signal handlers, exit/signal normalization, supervised child reap, INCONCLUSIVE_INFRASTRUCTURE_FAILURE classification without auto-rerun); no strategy/Master-V2/Double-Play/risk/sizing/execution/economic semantics mutation; no evaluation rerun; no holdout access; no runtime/orders."
     }
   }
 }
