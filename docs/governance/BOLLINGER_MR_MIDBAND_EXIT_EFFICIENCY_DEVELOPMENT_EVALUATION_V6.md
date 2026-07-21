@@ -46,6 +46,15 @@ SCHEDULER_RUNTIME_ALLOWED: false
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1` (`DEVELOPMENT_ONLY`)
 - Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v6&#47;`
 
+## Failure attribution (evidence-only)
+
+Read-only attribution completed without mutating this V6 result:
+
+- Evidence: `docs&#47;evidence&#47;attribute_bollinger_mr_midband_exit_efficiency_v6_failure&#47;`
+- Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION.md`
+- Does **not** authorize promotion, runtime, or V7 execution&#47;preregistration
+- Run count remains `1`; classification remains terminal `FAIL`
+
 ## Explicit non-actions
 
 No V6 rerun. No holdout after FAIL. No retuning after FAIL. No V7 auto-create.

@@ -1,0 +1,119 @@
+{
+  "authority_effect": "NONE",
+  "candidates": [
+    {
+      "acceptance_criterion": "Treatment net_profit_factor > baseline AND treatment net_return > baseline AND cost_drag increase not solely explaining any gross improvement; exit divergence still observed.",
+      "baseline_vs_treatment": "Baseline: current MV2 exits without midband gate. Treatment: V6 composite midband/max-hold gate PLUS post-forced-exit re-entry cooldown.",
+      "candidate_class": "REENTRY_COOLDOWN_AFTER_FORCED_MIDBAND_EXIT",
+      "causal_rationale": "V6 shows +457 short trades via earlier forced exits then re-entry; T-only trades net negative with large cost drag while gross improves insufficiently.",
+      "expected_trade_count_turnover_effect": "Material reduction vs V6 treatment turnover (toward baseline), lower fee/slippage drag; not parameter retune of midband formula.",
+      "hypothesis_id_proposal": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7_CANDIDATE",
+      "major_confounders": [
+        "cooldown length choice",
+        "interaction with stop-loss path",
+        "instrument heterogeneity"
+      ],
+      "not_mere_v6_parameter_tuning": "Adds a distinct post-exit eligibility/cooldown mechanism absent from V6; does not retune midband threshold or max-hold=48.",
+      "primary_metric": "NET_PROFIT_FACTOR",
+      "rank": 1,
+      "ranking_scores": {
+        "causal_support": 1,
+        "expected_churn_cost_reduction": 1,
+        "falsifiability": 1,
+        "implementation_risk": 2,
+        "semantic_distinctness": 1
+      },
+      "rejection_criterion": "NET_PROFIT_FACTOR_NOT_IMPROVED OR improvement solely from trade-count collapse OR no exit divergence OR cooldown alters entries before first forced exit.",
+      "required_measurement_fields": [
+        "reentry_suppressed_count",
+        "forced_exit_count",
+        "fees",
+        "slippage",
+        "cost_drag",
+        "trade_count",
+        "net_profit_factor",
+        "net_return",
+        "side"
+      ],
+      "treatment_boundary": "After a forced midband (or composite) exit, suppress same-instrument re-entry for a frozen cooldown horizon; baseline remains V6 control without cooldown; max-hold semantics unchanged."
+    },
+    {
+      "acceptance_criterion": "Treatment net_profit_factor > baseline AND mean_mfe_to_exit_leakage treatment < control AND net_return treatment > control.",
+      "baseline_vs_treatment": "Baseline: no midband gate. Treatment: midband gate armed only under open-PnL/capture condition; max-hold may remain independent.",
+      "candidate_class": "PROFITABLE_OR_OPEN_PNL_CONDITIONED_MIDBAND_EXIT",
+      "causal_rationale": "Shared-entry end_of_data\u2192signal truncations destroyed large baseline winners (net delta ~-4754) while stop_loss\u2192signal rescues helped; conditioning preserves loss-cutting and reduces premature winner cuts.",
+      "expected_trade_count_turnover_effect": "Fewer forced exits than V6; turnover between baseline and V6; less winner truncation.",
+      "hypothesis_id_proposal": "BOLLINGER_MR_OPEN_PNL_CONDITIONED_MIDBAND_EXIT_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7_CANDIDATE",
+      "major_confounders": [
+        "threshold selection",
+        "path dependence of open PnL",
+        "interaction with max-hold"
+      ],
+      "not_mere_v6_parameter_tuning": "Changes exit semantics from unconditional forced midband to state-conditioned eligibility; not a numeric retune of band lookback/width.",
+      "primary_metric": "NET_PROFIT_FACTOR",
+      "rank": 2,
+      "ranking_scores": {
+        "causal_support": 2,
+        "expected_churn_cost_reduction": 2,
+        "falsifiability": 1,
+        "implementation_risk": 2,
+        "semantic_distinctness": 1
+      },
+      "rejection_criterion": "NET_PROFIT_FACTOR_NOT_IMPROVED OR condition never fires (no divergence) OR condition equivalent to unconditional V6 midband on this sample by construction only if preregistered identically (forbidden).",
+      "required_measurement_fields": [
+        "conditioned_midband_exit_count",
+        "unconditional_midband_suppressed_count",
+        "mfe_to_exit_leakage",
+        "net_profit_factor",
+        "end_of_data_exit_count"
+      ],
+      "treatment_boundary": "Force midband exit only when open-position net PnL (or frozen capture-ratio) meets a preregistered non-negative/threshold condition; otherwise defer to stop-loss/max-hold/natural exit."
+    },
+    {
+      "acceptance_criterion": "Treatment net_profit_factor > baseline with observed midband-eligibility events AND exits_forced_by_unconditional_override == 0 by design.",
+      "baseline_vs_treatment": "Baseline: no midband gate. Treatment: midband cross enables exit but does not override a hold/entry raw signal into forced flat.",
+      "candidate_class": "MIDBAND_EXIT_AS_ELIGIBILITY_RATHER_THAN_UNCONDITIONAL_FORCED_EXIT",
+      "causal_rationale": "V6 earliest causal boundary is unconditional forced exit overriding raw signal; ledger maps many forced events to signal exits and then re-entry. Soft eligibility tests whether force itself is the harmful step.",
+      "expected_trade_count_turnover_effect": "Likely near-baseline trade counts if override was the sole driver of fragmentation; falsifiable against V6 churn signature.",
+      "hypothesis_id_proposal": "BOLLINGER_MR_MIDBAND_EXIT_AS_ELIGIBILITY_NOT_FORCED_FLAT_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7_CANDIDATE",
+      "major_confounders": [
+        "definition of eligibility vs force",
+        "engine exit-reason labeling",
+        "max-hold still forcing"
+      ],
+      "not_mere_v6_parameter_tuning": "Changes control-flow authority of the gate (eligibility vs force), not midband formula parameters.",
+      "primary_metric": "NET_PROFIT_FACTOR",
+      "rank": 3,
+      "ranking_scores": {
+        "causal_support": 3,
+        "expected_churn_cost_reduction": 2,
+        "falsifiability": 2,
+        "implementation_risk": 3,
+        "semantic_distinctness": 1
+      },
+      "rejection_criterion": "No behavioral divergence from baseline OR NET_PROFIT_FACTOR_NOT_IMPROVED OR hidden force-flat equivalence to V6.",
+      "required_measurement_fields": [
+        "midband_eligibility_events",
+        "forced_override_count",
+        "trade_count",
+        "net_profit_factor",
+        "exit_reason_histogram"
+      ],
+      "treatment_boundary": "Treat midband cross as exit-eligibility / soft-exit permission that may flatten only when engine/signal already favors exit, rather than unconditionally forcing flat against raw signal."
+    }
+  ],
+  "evaluation_authorized": false,
+  "note": "Candidates are falsifiable proposals only; not preregistered; not authorized for V7 execution.",
+  "preregistration_created": false,
+  "ranking_order_criteria": [
+    "causal_support",
+    "falsifiability",
+    "semantic_distinctness",
+    "implementation_risk",
+    "expected_reduction_in_churn_cost_drag"
+  ],
+  "runtime_effect": "NONE",
+  "schema_version": "attribute_bollinger_mr_midband_exit_efficiency_v6_failure_v7_candidate_ranking.v1",
+  "selection_authorized": false,
+  "top_candidate_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7_CANDIDATE"
+}

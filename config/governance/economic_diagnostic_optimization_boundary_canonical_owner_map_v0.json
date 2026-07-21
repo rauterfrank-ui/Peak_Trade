@@ -881,6 +881,14 @@
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.md"
       ],
       "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0\u21921): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6."
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION": {
+      "path_prefixes": [
+        "docs/evidence/attribute_bollinger_mr_midband_exit_efficiency_v6_failure/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION.md",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_v6_failure_attribution.py"
+      ],
+      "note": "Evidence-only read-only failure attribution for terminal V6 FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED). No evaluation/backtest/panel/holdout access; does not mutate V6 artifacts/run count; does not preregister or authorize V7; no promotion/runtime/orders; no Master-V2/Double-Play/risk/sizing/execution mutation."
     }
   }
 }
