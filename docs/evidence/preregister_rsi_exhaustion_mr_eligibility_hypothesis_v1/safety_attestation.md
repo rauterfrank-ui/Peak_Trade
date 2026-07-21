@@ -24,4 +24,4 @@
 - Prior failed ATR-percentile mid-band features (`atr_14h`,
   `atr_14h_rolling_percentile_rank_100h`) from PR #5361 not reused
 - No mutation of prior failed contracts or evaluation packages
-- No access to `reports/`
+- No access to `reports&#47;`
