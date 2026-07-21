@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Any, Mapping
 
 import pandas as pd
@@ -9,6 +10,22 @@ import pytest
 from src.backtest import economic_validity_policy_v1 as policy_mod
 from src.backtest import economic_viability_evidence_v1 as ev
 from src.backtest import mv2_research_wiring_v1 as wiring
+from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+    MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION,
+)
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_REFERENCE_MANDATORY_BINDING_CONFIG = (
+    _REPO_ROOT
+    / "config/ops/cross_sectional_futures_lead_lag_information_diffusion_v0_economic_evaluation_v1.json"
+)
+
+
+def _mandatory_mv2_boundary_state_file_binding_section() -> dict[str, Any]:
+    """Reuse canonical mandatory MV2 boundary fixtures for evidence wiring."""
+    return json.loads(_REFERENCE_MANDATORY_BINDING_CONFIG.read_text(encoding="utf-8"))[
+        MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION
+    ]
 
 
 def _cfg(*, fee_bps: float = 10.0, slippage_bps: float = 5.0) -> Mapping[str, Any]:
@@ -31,6 +48,9 @@ def _cfg(*, fee_bps: float = 10.0, slippage_bps: float = 5.0) -> Mapping[str, An
                 "slow_window": 3,
             },
         },
+        MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION: (
+            _mandatory_mv2_boundary_state_file_binding_section()
+        ),
     }
 
 
