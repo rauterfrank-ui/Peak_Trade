@@ -472,7 +472,7 @@ def test_mv2_wiring_v3_near_twenty_percent_entry_executes_trade(
     bars["spread"] = 0.1
     bars["funding_rate"] = 0.0001
     bars["is_final"] = True
-    impulse = pd.Series([0, 1, 0, 0, -1, 0], index=bars.index, dtype=int)
+    impulse = pd.Series([0, 1, 1, 0, 0, 0], index=bars.index, dtype=int)
     effective_params, strategy_params_digest = signal_binding.resolve_effective_strategy_params_v1(
         "ma_crossover",
         {"fast_period": 2, "slow_period": 3},
