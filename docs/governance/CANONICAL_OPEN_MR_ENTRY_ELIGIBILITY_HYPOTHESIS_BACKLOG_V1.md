@@ -37,9 +37,10 @@ Open candidates are empty. Exactly zero hypotheses are `DEFINITION_ONLY_PREREGIS
    PASS / `ALL_PASS_REQUIRES_MET` (Wilder ADX(14) +DI/−DI direction confirmation;
    development run count 1/1; evidence under
    `docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/`).
-   Economic offline gate remains closed. Promotion remains closed. Holdout remains
-   forbidden without a separate operator GO. No second ADX DI evaluation run is
-   permitted.
+   Economic offline gate remains closed. Promotion remains closed. Definition-only
+   holdout preregistration is registered (`holdout_run_count=0`, `holdout_run_limit=1`);
+   holdout execution remains forbidden without a separate operator GO. No second ADX DI
+   development evaluation run is permitted.
 
 Semantic duplicates and parameter retunes of these terminals are forbidden.
 `adx_di_direction_confirmation` remains forbidden for any future open candidates.
@@ -76,7 +77,7 @@ None. `open_candidates=[]`. No `NEXT_ELIGIBLE_FOR_PREREGISTRATION`.
 
 ## Next step
 
-`REVIEW_AND_MERGE_ADX_DI_DEVELOPMENT_EVALUATION_THEN_SEPARATE_HOLDOUT_GO_IF_AUTHORIZED`
+`REVIEW_AND_MERGE_ADX_DI_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN`
 
 Any holdout use or further research candidates require a separate PR and operator GO.
 No second ADX DI evaluation run is permitted. No reopen of terminal hypotheses.
