@@ -73,9 +73,7 @@ FORBIDDEN_EMBEDDED_RESULT_KEYS = frozenset(
 REQUIRED_TERMINAL_STATUS = "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
 REQUIRED_TERMINAL_FAIL_STATUS = "TERMINAL_FAIL"
 REQUIRED_TERMINAL_INFRA_STATUS = "TERMINAL_INFRASTRUCTURE_FAILURE"
-REQUIRED_V7_NEXT_STEP = (
-    "NO_AUTO_V8_CREATION_OPERATOR_GO_REQUIRED_FOR_ANY_NEW_PREREGISTRATION_NO_V7_RERUN"
-)
+REQUIRED_V7_NEXT_STEP = "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION"
 REQUIRED_V7_DIAGNOSTIC_CLASS = "PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST"
 
 
@@ -481,6 +479,16 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true(v7.get("baseline_members_completed") == "0/46", "TERMINAL_V7_BASELINE")
     _assert_true(v7.get("treatment_members_completed") == "0/46", "TERMINAL_V7_TREATMENT")
     _assert_true(v7.get("panel_backtest_executed") is False, "TERMINAL_V7_PANEL")
+    _assert_true(
+        v7.get("failure_class") == "FROZEN_EXIT_PARAMETERS_MISMATCH", "TERMINAL_V7_FAILURE_CLASS"
+    )
+    _assert_true(v7.get("failure_timing") == "BEFORE_PANEL_ACCESS", "TERMINAL_V7_FAILURE_TIMING")
+    _assert_true(v7.get("v7_reopen_allowed") is False, "TERMINAL_V7_REOPEN")
+    _assert_true(v7.get("strategy_fail") is False, "TERMINAL_V7_NOT_STRATEGY_FAIL")
+    _assert_true(v7.get("economic_fail") is False, "TERMINAL_V7_NOT_ECONOMIC_FAIL")
+    _assert_true(v7.get("measurement_pass") is False, "TERMINAL_V7_NOT_MEASUREMENT_PASS")
+    _assert_true(v7.get("development_metrics_produced") is False, "TERMINAL_V7_NO_DEV_METRICS")
+    _assert_true(v7.get("economic_metrics_produced") is False, "TERMINAL_V7_NO_ECON_METRICS")
 
     non_actions = backlog.get("explicit_non_actions") or []
     _assert_true("NO_V2_RERUN" in non_actions, "NO_V2_RERUN_NON_ACTION_REQUIRED")

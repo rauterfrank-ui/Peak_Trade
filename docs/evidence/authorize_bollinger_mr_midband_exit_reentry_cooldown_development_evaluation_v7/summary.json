@@ -6,7 +6,7 @@
   "holdout_data_accessed": false,
   "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7",
   "live_authorized": false,
-  "next_canonical_step": "NO_AUTO_V8_CREATION_OPERATOR_GO_REQUIRED_FOR_ANY_NEW_PREREGISTRATION_NO_V7_RERUN",
+  "next_canonical_step": "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION",
   "orders": false,
   "panel_released": true,
   "preregistration_digest": "4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680",

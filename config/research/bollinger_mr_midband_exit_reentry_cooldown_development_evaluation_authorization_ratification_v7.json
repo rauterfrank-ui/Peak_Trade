@@ -20,6 +20,8 @@
   "expected_content_hash": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
   "expected_manifest_sha256": "be953c559ac3dd797961bdda8cbc190076353c91d3299b9031ae1ee767d4b594",
   "expected_universe_digest": "ddcdec738ff5661f3e2f6bd3dcc97a1bcddbf0b9254faa344b318558f1dbe289",
+  "failure_class": "FROZEN_EXIT_PARAMETERS_MISMATCH",
+  "failure_timing": "BEFORE_PANEL_ACCESS",
   "go_token": "GO_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_DEVELOPMENT_EVALUATION_AUTHORIZATION",
   "governance_ref": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V7.md",
   "holdout_allowed": false,
@@ -27,7 +29,7 @@
   "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7",
   "live_authorized": false,
   "mutates_preregistration": false,
-  "next_canonical_step": "NO_AUTO_V8_CREATION_OPERATOR_GO_REQUIRED_FOR_ANY_NEW_PREREGISTRATION_NO_V7_RERUN",
+  "next_canonical_step": "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION",
   "next_operator_go": null,
   "operator_clarification_authority_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7",
   "operator_clarification_authority_path": "config/research/bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority_v7.json",
@@ -40,7 +42,7 @@
   "preregistration_evaluation_authorized_field_remains_false": true,
   "preregistration_path": "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v7.json",
   "promotion_eligible": false,
-  "ratification_digest": "b7fe1341a9e284d8622a9d55cd29036408288385fd471ec2330661322bfb24d9",
+  "ratification_digest": "af9d88e746b520396f51a46fc89d50a01ccc559ec5d0dbba0ecdf5a44183df56",
   "ratification_id": "bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7",
   "rerun_allowed": false,
   "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
@@ -51,5 +53,6 @@
   "shadow_activated": false,
   "status": "EVALUATION_AUTHORIZED",
   "testnet_activated": false,
-  "trading_effect": "NONE"
+  "trading_effect": "NONE",
+  "v7_reopen_allowed": false
 }

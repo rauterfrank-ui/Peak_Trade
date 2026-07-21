@@ -45,7 +45,7 @@ CLI = (
     REPO
     / "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7.py"
 )
-EXPECTED_AUTHORITY_DIGEST = "fbf9e8cf7715484e68755a5bd2149bd0d63c94705be8e982611fcf7cc4ace62f"
+EXPECTED_AUTHORITY_DIGEST = "5210efe4fab53b614c812ac60bd8aa58fc3d4d08508b7ab75c3e2f92f8d33da9"
 
 
 def test_valid_authority_and_digests() -> None:

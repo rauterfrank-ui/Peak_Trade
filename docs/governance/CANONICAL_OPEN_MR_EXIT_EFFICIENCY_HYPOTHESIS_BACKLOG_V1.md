@@ -2,13 +2,15 @@
 
 ## Current SSOT status
 
-- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ONE_DEFINITION_ONLY_V7_PREREGISTERED`
-- Preregistered: exactly one (`V7` DEFINITION_ONLY)
-- Terminal: V1&#47;V2 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`; V6 `FAIL`
+- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ZERO_PREREGISTERED_V7_TERMINAL`
+- Preregistered: exactly zero (`preregistered_count_exact=0`)
+- Terminal: V1&#47;V2&#47;V7 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3&#47;V6 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`
+- V7: `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`; `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
+- V7: `RUNNER_START_COUNT=1`; `RUN_SLOT_CONSUMED=true`; `RERUN_ALLOWED=false`; `V7_REOPEN_ALLOWED=false`
+- V7: no development metrics; no economic PASS&#47;FAIL; not strategy-fail; not measurement-pass
 - V6 reason: `NET_PROFIT_FACTOR_NOT_IMPROVED`
-- V6 economic delta vs V5: composite midband-cross OR frozen max-holding-horizon=48h
-- No V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7 auto-create.
-- Evidence-only V6 failure attribution completed; V7 separately definition-only preregistered.
+- No V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V8 auto-create.
+- `NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
@@ -23,9 +25,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 ## Status
 
 `OPEN_BACKLOG` — versioned canonical SSOT for Mean-Reversion exit-efficiency
-research candidates. Exactly one `DEFINITION_ONLY_PREREGISTERED` hypothesis (`V7`).
-V1–V6 are terminal. No holdout access. No runtime activation. No productive
-trading-logic mutation.
+research candidates. Zero preregistered hypotheses. V1–V7 are terminal.
+No holdout access. No runtime activation. No productive trading-logic mutation.
 
 ## Binding
 
@@ -37,21 +38,11 @@ trading-logic mutation.
 
 ## Preregistered hypotheses
 
-Exactly one (`preregistered_count_exact=1`):
-
-- `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7`
-  — `DEFINITION_ONLY_PREREGISTERED`
-  — `EVALUATION_RUN_COUNT=0`
-  — Cooldown: `24` PT1H bars; scope `instrument_id` + `direction`
-  — Control: exact V6 composite midband&#47;max-hold semantics
-  — Digest: `4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680`
-  — Contract: `config&#47;research&#47;bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v7.json`
-  — Evidence: `docs&#47;evidence&#47;preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v7&#47;`
-  — Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V7.md`
+Exactly zero (`preregistered_count_exact=0`).
 
 ## Terminal hypotheses
 
-Exactly six:
+Exactly seven:
 
 - `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1`
   — `TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE`
@@ -110,13 +101,29 @@ Exactly six:
   — Failure attribution (evidence-only): `docs&#47;evidence&#47;attribute_bollinger_mr_midband_exit_efficiency_v6_failure&#47;`
   — Attribution governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION.md`
 
+
+- `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7`
+  — `TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE`
+  — `EVALUATION_RUN_COUNT=1`
+  — `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`
+  — `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`
+  — `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
+  — `PANEL_BACKTEST_EXECUTED=false`
+  — `DEVELOPMENT_METRICS_PRODUCED=false`
+  — `ECONOMIC_VERDICT=NOT_EVALUATED`
+  — `STRATEGY_FAIL=false` &#47; `ECONOMIC_FAIL=false` &#47; `MEASUREMENT_PASS=false`
+  — `RERUN_ALLOWED=false` &#47; `V7_REOPEN_ALLOWED=false`
+  — Digest: `4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680`
+  — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7&#47;`
+  — Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V7.md`
+
 ## Explicit exclusions
 
 - No V1&#47;V2&#47;V3&#47;V4&#47;V5&#47;V6 rerun under consumed preregistrations
 - No V3&#47;V4&#47;V5&#47;V6 partial-result, checkpoint, or economic-result reuse
 - No holdout after FAIL&#47;INFRASTRUCTURE_FAILURE
 - No retuning after FAIL&#47;INFRASTRUCTURE_FAILURE
-- No V7 evaluation in this slice
+- No V7 rerun &#47; no V7 reopen
 - No V7 auto-create
 - No V8 auto-create
 - No parallel SHORT-side hypothesis
@@ -127,10 +134,10 @@ Exactly six:
 
 ## Next separate action
 
-V7 is definition-only preregistered. A separate Operator-GO is required for the
-single V7 DEVELOPMENT evaluation. No V7 evaluation in this slice. No V6 rerun.
-No V8 auto-create.
+`NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
+
+No V7 rerun. No V7 reopen. No V8 auto-create. No runner start.
 
 ## V7 terminal closeout
 
-V7 DEVELOPMENT evaluation consumed its one-shot slot and terminated as `INCONCLUSIVE_INFRASTRUCTURE_FAILURE` (`PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST`). Zero preregistered hypotheses remain. No V7 rerun. No V8 auto-create.
+V7 DEVELOPMENT evaluation consumed its one-shot slot and terminated as `INCONCLUSIVE_INFRASTRUCTURE_FAILURE` (`FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`, `FAILURE_TIMING=BEFORE_PANEL_ACCESS`, diagnostic `PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST`). Zero preregistered hypotheses remain. No development metrics. No economic PASS&#47;FAIL. Not a strategy-fail. Not a measurement-pass. No V7 rerun. No V7 reopen. No V8 auto-create.

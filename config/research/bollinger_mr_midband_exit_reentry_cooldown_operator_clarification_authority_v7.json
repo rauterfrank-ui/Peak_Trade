@@ -25,11 +25,11 @@
     ]
   ],
   "allows_post_hoc_result_adjustment": false,
-  "authority_digest": "fbf9e8cf7715484e68755a5bd2149bd0d63c94705be8e982611fcf7cc4ace62f",
+  "authority_digest": "5210efe4fab53b614c812ac60bd8aa58fc3d4d08508b7ab75c3e2f92f8d33da9",
   "authority_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7",
   "authority_scope": "IMPLEMENTATION_CLARIFICATION_ONLY",
   "authority_version": "v7.0.0",
-  "authorization_ratification_digest": "b7fe1341a9e284d8622a9d55cd29036408288385fd471ec2330661322bfb24d9",
+  "authorization_ratification_digest": "af9d88e746b520396f51a46fc89d50a01ccc559ec5d0dbba0ecdf5a44183df56",
   "authorization_ratification_ref": "config/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.json",
   "authorized_at_utc": "2026-07-21T21:31:48Z",
   "b1_through_b6_fully_resolved": true,
@@ -200,6 +200,8 @@
     "FORBIDDEN_LIFECYCLE_TRANSITION",
     "EVALUATION_WITHOUT_evaluation_authorized_true"
   ],
+  "failure_class": "FROZEN_EXIT_PARAMETERS_MISMATCH",
+  "failure_timing": "BEFORE_PANEL_ACCESS",
   "forbidden_direct_transitions": [
     "DEFINITION_ONLY_PREREGISTERED->EVALUATION_AUTHORIZED",
     "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY->EVALUATION_EXECUTED",
@@ -212,7 +214,7 @@
   "is_second_preregistration": false,
   "lifecycle_terminal_state": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
   "mutates_preregistration": false,
-  "next_canonical_step": "NO_AUTO_V8_CREATION_OPERATOR_GO_REQUIRED_FOR_ANY_NEW_PREREGISTRATION_NO_V7_RERUN",
+  "next_canonical_step": "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION",
   "operator_decision_reference": "OPERATOR_GO_INTRODUCE_V7_OPERATOR_CLARIFICATION_AUTHORITY_B1_B6_IMPLEMENTATION_ONLY",
   "operator_decisions_status": "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
   "owner": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7",
@@ -232,5 +234,6 @@
   "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
   "run_slot_consumed": true,
   "schema_version": "bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority.v7",
-  "status": "EVALUATION_AUTHORIZED"
+  "status": "EVALUATION_AUTHORIZED",
+  "v7_reopen_allowed": false
 }

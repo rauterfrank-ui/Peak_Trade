@@ -151,13 +151,22 @@ def test_zero_preregistered_v7_terminal_and_entry_shape() -> None:
     assert v7["economic_verdict"] == "NOT_EVALUATED"
     assert v7["panel_backtest_executed"] is False
     assert v7["rerun_allowed"] is False
+    assert v7.get("failure_class") == "FROZEN_EXIT_PARAMETERS_MISMATCH"
+    assert v7.get("failure_timing") == "BEFORE_PANEL_ACCESS"
+    assert v7.get("v7_reopen_allowed") is False
+    assert v7.get("strategy_fail") is False
+    assert v7.get("economic_fail") is False
+    assert v7.get("measurement_pass") is False
+    assert backlog["next_canonical_step"] == (
+        "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION"
+    )
     assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V3_ECONOMIC_RESULT_IMPORT" in backlog["explicit_non_actions"]
     assert "NO_V4_AUTO_CREATE" not in backlog["explicit_non_actions"]
 
 
-def test_governance_doc_mentions_v7_definition_only() -> None:
+def test_governance_doc_mentions_v7_terminal_zero_prereg() -> None:
     text = (
         REPO / "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
     ).read_text(encoding="utf-8")
@@ -165,7 +174,10 @@ def test_governance_doc_mentions_v7_definition_only() -> None:
     assert "TERMINAL_FAIL" in text or "FAIL" in text
     assert "NET_PROFIT_FACTOR_NOT_IMPROVED" in text
     assert "V7" in text
-    assert "DEFINITION_ONLY_PREREGISTERED" in text or "preregistered_count_exact=1" in text
+    assert "preregistered_count_exact=0" in text
+    assert "FROZEN_EXIT_PARAMETERS_MISMATCH" in text
+    assert "BEFORE_PANEL_ACCESS" in text
+    assert "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION" in text
     assert "V5" in text or "v5" in text.lower()
     assert "V4" in text
     assert "INFRASTRUCTURE_FAILURE" in text or "Infrastructure" in text

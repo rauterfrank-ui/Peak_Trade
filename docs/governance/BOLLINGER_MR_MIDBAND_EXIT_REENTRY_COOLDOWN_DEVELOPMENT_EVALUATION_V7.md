@@ -28,8 +28,16 @@ SCHEDULER_RUNTIME_ALLOWED: false
 - Economic verdict: `NOT_EVALUATED`
 - Economic / promotion gates remain closed
 
+- `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`
+- `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
+- `RUNNER_START_COUNT=1` &#47; `RUN_SLOT_CONSUMED=true`
+- `RERUN_ALLOWED=false` &#47; `V7_REOPEN_ALLOWED=false`
+- `DEVELOPMENT_METRICS_PRODUCED=false` &#47; `ECONOMIC_VERDICT_PRODUCED=false`
+- Not strategy-fail; not economic-fail; not measurement-pass
+- `NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
+
 ## Explicit non-actions
 
 No second runner start. No holdout. No runtime/orders.
 No Master-V2 / Double-Play / risk / sizing / execution mutation.
-No V8 auto-create.
+No V7 reopen. No V8 auto-create.
