@@ -23,6 +23,7 @@ REQUIRED_TERMINAL_HYPOTHESIS_IDS = (
     "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
     "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
     "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+    "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
 )
 FORBIDDEN_FEATURE_FAMILIES = frozenset(
     {
@@ -419,9 +420,13 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         )
         preregistered_ids.append(hyp_id)
     _assert_true(
-        preregistered_ids == [MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID],
-        "PREREGISTERED_MUST_BE_EXACTLY_MACD",
+        preregistered_ids == [],
+        "PREREGISTERED_MUST_BE_EMPTY_AFTER_MACD_TERMINAL",
         str(preregistered_ids),
+    )
+    _assert_true(
+        MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID in REQUIRED_TERMINAL_HYPOTHESIS_IDS,
+        "MACD_MUST_BE_TERMINAL",
     )
 
     return {

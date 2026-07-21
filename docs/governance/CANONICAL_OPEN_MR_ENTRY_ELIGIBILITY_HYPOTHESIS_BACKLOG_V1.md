@@ -5,7 +5,8 @@
 `OPEN_BACKLOG` — versioned canonical SSOT for open Mean-Reversion entry-eligibility
 research candidates. Definition-only governance. No evaluation, no backtest, no
 holdout access, no runtime activation, no productive trading-logic mutation in this
-slice. One hypothesis is `DEFINITION_ONLY_PREREGISTERED` and awaiting evaluation GO.
+slice. Open preregistrations are empty after the MACD histogram-countertrend
+terminal FAIL.
 
 ## Binding
 
@@ -34,28 +35,25 @@ slice. One hypothesis is `DEFINITION_ONLY_PREREGISTERED` and awaiting evaluation
    FAIL / `NET_PROFIT_FACTOR_NOT_IMPROVED` (price-vs-SMA(50) with-trend admission;
    development run count 1/1; evidence under
    `docs/evidence/evaluate_ma_trend_alignment_mr_eligibility_development_v1/`)
+6. `MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` —
+   FAIL / `NET_PROFIT_FACTOR_NOT_IMPROVED` (MACD histogram-sign countertrend;
+   development run count 1/1; evidence under
+   `docs/evidence/evaluate_macd_histogram_countertrend_mr_eligibility_development_v1/`)
 
 Semantic duplicates and parameter retunes of these terminals are forbidden.
-`price_vs_ma_trend_alignment` remains forbidden for remaining open candidates.
-`macd_histogram_sign_countertrend` is also forbidden for remaining open candidates
-(MACD is preregistered).
+`price_vs_ma_trend_alignment` and `macd_histogram_sign_countertrend` remain
+forbidden for remaining open candidates.
 
-## Preregistered (definition-only; evaluation not authorized)
+## Preregistered
 
-| Hypothesis ID | Status | Queue |
-|---|---|---|
-| `MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` | `DEFINITION_ONLY_PREREGISTERED` | `PREREGISTERED_AWAITING_EVALUATION_GO` |
-
-Contract:
-`config/research/macd_histogram_countertrend_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json`.
-`evaluation_authorized=false`; `development_run_count=0`.
+None. `preregistered_hypotheses=[]`.
 
 ## Open candidates (deterministic priority)
 
 Priority criteria are locked a priori (semantic distance, entry-effectiveness,
 measurability, low complexity, low overfit risk, repo support). No performance-based
 selection. No ties. Evaluation of the next eligible candidate is **NOT authorized**
-by this MACD preregistration transition.
+by this MACD evaluation transition.
 
 | Rank | Hypothesis ID | Queue |
 |---:|---|---|
@@ -82,13 +80,14 @@ All open candidates are `OPEN_UNPREREGISTERED`.
 - Economic offline gate unchanged/closed
 - `PRODUCTIVE_TRADING_LOGIC_CHANGED=false`
 - `AUTHORITY_CHANGED=false`
-- `EVALUATION_EXECUTED=false`
-- `DEVELOPMENT_RUN_COUNT=0`
+- `EVALUATION_EXECUTED=false` (for remaining open candidates)
+- `DEVELOPMENT_RUN_COUNT=0` (backlog-level; MACD consumed its single authorized run)
 
 ## Next step
 
-`REVIEW_AND_MERGE_MACD_HISTOGRAM_COUNTERTREND_PREREGISTRATION_BEFORE_ANY_EVALUATION`
+`REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_V1`
 
-Review and merge the MACD histogram-countertrend definition-only preregistration before
-any evaluation. Evaluation of MACD (or of the next eligible open candidate) requires a
-separate operator GO and is not authorized by this backlog transition.
+Definition-only preregistration of ADX DI direction confirmation (and any later
+evaluation) requires a separate PR and operator GO. This MACD evaluation transition
+does not authorize further preregistration, evaluation, holdout access, or productive
+authority change. No second MACD evaluation run is permitted.
