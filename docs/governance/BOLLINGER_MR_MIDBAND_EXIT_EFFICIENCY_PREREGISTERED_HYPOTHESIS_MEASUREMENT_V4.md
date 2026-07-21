@@ -2,8 +2,8 @@
 
 ---
 docs_token: DOCS_TOKEN_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V4
-STATUS: DEFINITION_ONLY_PREREGISTERED
-scope: research, offline-only, non-authorizing, definition-only
+STATUS: DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INFRASTRUCTURE_FAILURE
+scope: research, offline-only, non-authorizing, terminal-closeout
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
@@ -19,9 +19,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## Status
 
-`DEFINITION_ONLY_PREREGISTERED` — hypothesis and measurement contract preregistered;
-`EVALUATION_RUN_COUNT=0`; `EVALUATION_STARTED=false`; `EVALUATION_COMPLETED=false`;
-`RESULT_CLASS=NOT_EVALUATED`; `ECONOMIC_VERDICT=NOT_EVALUATED`; no evaluation executed.
+`DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;INFRASTRUCTURE_FAILURE` — sole authorized
+development evaluation slot consumed (`EVALUATION_RUN_COUNT=1`);
+`EVALUATION_STARTED=true`; `EVALUATION_COMPLETED=false`;
+`RESULT_CLASS=INFRASTRUCTURE_FAILURE`; `ECONOMIC_VERDICT=NOT_EVALUATED`;
+`RERUN_ALLOWED=false`. Evidence:
+`docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v4&#47;`.
 
 ## Binding
 

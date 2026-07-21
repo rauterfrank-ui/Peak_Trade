@@ -1,0 +1,42 @@
+{
+  "auto_rerun_executed": false,
+  "baseline_members_completed": "1/46",
+  "claim_timestamp_utc": "2026-07-21T16:29:24Z",
+  "death_class": "UNKNOWN",
+  "economic_metrics_computed": false,
+  "economic_metrics_produced": false,
+  "excluded_with_available_evidence": [
+    "economic PASS/FAIL (panel incomplete)",
+    "full 46/46 baseline and treatment completion",
+    "reconstructed metrics from V1/V2/V3"
+  ],
+  "holdout_data_accessed": false,
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V4",
+  "lifecycle_terminal_written_by_process": false,
+  "measurement_validity_preflight_passed": true,
+  "observed_facts": [
+    "Atomic run_slot_claim.json persisted before runner start",
+    "Runner start count exactly 1 (PID 70475)",
+    "Measurement-validity preflight PASSED (synthetic; no holdout)",
+    "Baseline member 1/46 (1INCH-USDT-SWAP) completed with durable lifecycle progress",
+    "Process died before further members; no runner_lifecycle_terminal_diagnostics from process",
+    "No second runner start; no auto-rerun",
+    "No holdout path accessed"
+  ],
+  "panel_backtest_executed": true,
+  "pid": 70475,
+  "process_death_root_cause": "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL",
+  "process_death_root_cause_notes": [
+    "Sole authorized V4 evaluation slot consumed at claim time",
+    "Incomplete panel run is terminal INFRASTRUCTURE_FAILURE under one-shot rule",
+    "No resume/rerun permitted under this preregistration"
+  ],
+  "process_died_observed_at_utc": "2026-07-21T16:30:05Z",
+  "process_exit_code": null,
+  "rerun_allowed": false,
+  "run_attempt_started_at_utc": "2026-07-21T16:29:24Z",
+  "schema_version": "bollinger_mr_midband_exit_efficiency_process_death_root_cause.v4",
+  "terminal_closeout_at_utc": "2026-07-21T16:33:23Z",
+  "traceback_present": false,
+  "treatment_members_completed": "0/46"
+}

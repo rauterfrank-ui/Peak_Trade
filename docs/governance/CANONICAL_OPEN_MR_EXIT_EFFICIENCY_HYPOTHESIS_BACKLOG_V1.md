@@ -12,8 +12,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 ## Status
 
 `OPEN_BACKLOG` — versioned canonical SSOT for Mean-Reversion exit-efficiency
-research candidates. Exactly one `DEFINITION_ONLY_PREREGISTERED` hypothesis open (V4).
-V1, V2, and V3 are terminal. No holdout access. No runtime activation.
+research candidates. No `DEFINITION_ONLY_PREREGISTERED` hypothesis remains open.
+V1, V2, V3, and V4 are terminal. No holdout access. No runtime activation.
 No productive trading-logic mutation.
 
 ## Binding
@@ -26,19 +26,11 @@ No productive trading-logic mutation.
 
 ## Preregistered hypotheses
 
-Exactly one (`preregistered_count_exact=1`):
-
-- `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V4`
-  — `DEFINITION_ONLY_PREREGISTERED`
-  — `EVALUATION_RUN_COUNT=0`
-  — `EVALUATION_EXECUTED=false`
-  — Binding fix prerequisite: `MV2_WIRING_MOD_CAPTURE_ALIAS_OPEN_SIDE_BINDING_FIX`
-  — Measurement-validity gates required before any future real-panel run
-  — Evidence: `docs&#47;evidence&#47;preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v4&#47;`
+Exactly zero (`preregistered_count_exact=0`).
 
 ## Terminal hypotheses
 
-Exactly three:
+Exactly four:
 
 - `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1`
   — `TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE`
@@ -62,13 +54,22 @@ Exactly three:
   — `RERUN_ALLOWED=false`
   — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v3&#47;`
 
+- `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V4`
+  — `TERMINAL_INFRASTRUCTURE_FAILURE`
+  — `EVALUATION_RUN_COUNT=1`
+  — `RESULT_CLASS=INFRASTRUCTURE_FAILURE`
+  — `DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL`
+  — `ECONOMIC_VERDICT=NOT_EVALUATED`
+  — `ACCEPTANCE_CRITERIA_MET=false`
+  — `RERUN_ALLOWED=false`
+  — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v4&#47;`
+
 ## Explicit exclusions
 
-- No V1&#47;V2&#47;V3 rerun under consumed preregistrations
-- No V3 partial-result, checkpoint, or economic-result reuse into V4
-- No holdout after FAIL
-- No retuning after FAIL
-- No V4 evaluation in this definition-only slice
+- No V1&#47;V2&#47;V3&#47;V4 rerun under consumed preregistrations
+- No V3&#47;V4 partial-result, checkpoint, or economic-result reuse
+- No holdout after FAIL&#47;INFRASTRUCTURE_FAILURE
+- No retuning after FAIL&#47;INFRASTRUCTURE_FAILURE
 - No V5 auto-create
 - No parallel SHORT-side hypothesis
 - No holdout candidate
@@ -78,5 +79,5 @@ Exactly three:
 
 ## Next separate action
 
-Review and merge this DEFINITION_ONLY V4 preregistration, then authorize exactly one
-DEVELOPMENT evaluation under a separate Operator-GO. Do not rerun V1, V2, or V3.
+Any further exit-efficiency measurement requires a new hypothesis ID under a
+separate Operator-GO. No automatic V5 creation.

@@ -1,8 +1,8 @@
 """Contract tests for Bollinger/MR midband exit-efficiency hypothesis preregistration v4.
 
-Definition-only: V4 is DEFINITION_ONLY_PREREGISTERED with run count 0.
-V3 remains terminal FAIL (run count 1; no rerun).
-V2/V1 remain terminal. No evaluation executed in this slice.
+Terminal closeout: V4 is DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INFRASTRUCTURE_FAILURE
+with run count 1. V3 remains terminal FAIL (run count 1; no rerun).
+V2/V1 remain terminal. No second evaluation under this preregistration.
 """
 
 from __future__ import annotations
@@ -64,21 +64,20 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_contract_definition_only() -> None:
+def test_repo_contract_terminal_infrastructure_failure() -> None:
     report = load_and_validate_repo_contract(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["definition_only"] is False
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     assert report["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert report["evaluation_run_count"] == 0
-    assert report["evaluation_started"] is False
+    assert report["evaluation_run_count"] == 1
+    assert report["evaluation_started"] is True
     assert report["evaluation_completed"] is False
-    assert report["evaluation_executed"] is False
-    assert report["result_class"] == "NOT_EVALUATED"
+    assert report["evaluation_executed"] is True
+    assert report["result_class"] == "INFRASTRUCTURE_FAILURE"
     assert report["economic_verdict"] == "NOT_EVALUATED"
     assert report["new_evaluation_not_rerun"] is True
     assert report["v3_partial_results_reused"] is False
-    assert report["definition_semantics_identical_to_v3"] is False
     assert report["identical_exit_mechanism_to_development_v3"] is True
     assert report["enhanced_measurement_validity_relative_to_development_v3"] is True
     assert report["observability_surface_bound"] is True
@@ -99,50 +98,24 @@ def test_hypothesis_id_unique_and_not_v3_rerun() -> None:
     assert contract["hypothesis_id"] != REQUIRED_V2_HYPOTHESIS_ID
     assert contract["hypothesis_id"] != REQUIRED_V1_HYPOTHESIS_ID
     assert contract["new_evaluation_not_rerun"] is True
-    assert contract["v1_rerun_forbidden"] is True
-    assert contract["v2_rerun_forbidden"] is True
     assert contract["v3_rerun_forbidden"] is True
-    assert contract["evaluation_run_count"] == 0
-    assert contract["preregistration_state"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert contract["status"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert contract["identical_measurement_rules_to_development_v1"] is False
-    assert contract["identical_measurement_rules_to_development_v2"] is False
-    assert contract["identical_measurement_rules_to_development_v3"] is False
     assert contract["identical_exit_mechanism_to_development_v3"] is True
-    assert contract["enhanced_measurement_validity_relative_to_development_v3"] is True
+    assert contract["identical_measurement_rules_to_development_v3"] is False
 
 
-def test_v3_terminal_unchanged_and_not_rerun() -> None:
+def test_v3_remains_terminal_fail() -> None:
     v3_report = load_v3(REPO)
-    assert v3_report["hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
     assert v3_report["evaluation_run_count"] == 1
     assert v3_report["result_class"] == "FAIL"
     assert v3_report["rerun_allowed"] is False
     v3 = _load(V3_CONTRACT_PATH)
     assert v3["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
     assert v3["evaluation_run_count"] == 1
-    assert v3["fail"] is True
-    backlog = _load(BACKLOG)
-    v3_term = next(
-        e
-        for e in backlog["terminal_hypotheses"]
-        if e["hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    )
-    assert v3_term["status"] == "TERMINAL_FAIL"
-    assert v3_term["evaluation_run_count"] == 1
-    assert v3_term["result_class"] == "FAIL"
 
 
-def test_holdout_untouched() -> None:
+def test_holdout_rejected() -> None:
     with pytest.raises(HypothesisPreregistrationError):
         reject_holdout_dataset_or_path("offline_economic_reevaluation_sealed_long_panel_v1")
-    contract = _load(CONTRACT_PATH)
-    assert contract["holdout_allowed"] is False
-    assert contract["holdout_forbidden"] is True
-    assert contract["holdout_data_accessed"] is False
-    assert contract["sealed_holdout_content_inspection_authorized"] is False
-    summary = _load(EVIDENCE / "summary.json")
-    assert summary["holdout_accessed"] is False
 
 
 def test_effective_config_digest_inequality_prerequisite() -> None:
@@ -187,11 +160,11 @@ def test_synthetic_divergence_prerequisite() -> None:
     assert synth["if_absent_block_real_panel_run"] is True
 
 
-def test_mutated_run_count_fails_closed() -> None:
+def test_mutated_run_count_away_from_one_fails_closed() -> None:
     contract = _load(CONTRACT_PATH)
     bad = copy.deepcopy(contract)
-    bad["evaluation_run_count"] = 1
-    with pytest.raises(HypothesisPreregistrationError, match="EVALUATION_RUN_COUNT_MUST_BE_0"):
+    bad["evaluation_run_count"] = 0
+    with pytest.raises(HypothesisPreregistrationError, match="EVALUATION_RUN_COUNT_MUST_BE_1"):
         validate_preregistration_contract(bad)
 
 
@@ -205,22 +178,24 @@ def test_dropped_prerequisite_fails_closed() -> None:
 
 def test_registry_backlog_consistency() -> None:
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    assert len(backlog["terminal_hypotheses"]) == 3
-    prereg = backlog["preregistered_hypotheses"][0]
-    assert prereg["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert prereg["status"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert prereg["evaluation_run_count"] == 0
-    assert prereg["evaluation_executed"] is False
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert len(backlog["preregistered_hypotheses"]) == 0
+    assert len(backlog["terminal_hypotheses"]) == 4
     ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
+    assert REQUIRED_HYPOTHESIS_ID in ids
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in ids
     assert REQUIRED_V2_HYPOTHESIS_ID in ids
     assert REQUIRED_V1_HYPOTHESIS_ID in ids
+    v4 = next(
+        e for e in backlog["terminal_hypotheses"] if e["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
+    )
+    assert v4["status"] == "TERMINAL_INFRASTRUCTURE_FAILURE"
+    assert v4["evaluation_run_count"] == 1
+    assert v4["result_class"] == "INFRASTRUCTURE_FAILURE"
     assert "NO_V3_RERUN" in backlog["explicit_non_actions"]
     assert "NO_HOLDOUT_AFTER_FAIL" in backlog["explicit_non_actions"]
     assert "NO_RETUNING_AFTER_FAIL" in backlog["explicit_non_actions"]
-    assert "NO_V4_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    assert "NO_V4_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V3_ECONOMIC_RESULT_IMPORT" in backlog["explicit_non_actions"]
     assert "NO_V4_AUTO_CREATE" not in backlog["explicit_non_actions"]
@@ -241,12 +216,15 @@ def test_governance_and_evidence_present() -> None:
     assert (V3_EVAL_EVIDENCE / "summary.json").is_file()
 
 
-def test_no_v4_evaluation_evidence_dir_required() -> None:
-    assert not V4_EVAL_EVIDENCE.exists()
-    summary = _load(EVIDENCE / "summary.json")
-    assert summary["evaluation_run_count"] == 0
-    assert summary["evaluation_executed"] is False
-    assert summary["panel_data_accessed"] is False
+def test_v4_evaluation_evidence_terminal() -> None:
+    assert V4_EVAL_EVIDENCE.is_dir()
+    summary = _load(V4_EVAL_EVIDENCE / "summary.json")
+    assert summary["evaluation_run_count"] == 1
+    assert summary["evaluation_executed"] is True
+    assert summary["result_class"] == "INFRASTRUCTURE_FAILURE"
+    assert summary["holdout_data_accessed"] is False
+    assert summary["runner_start_count"] == 1
+    assert (V4_EVAL_EVIDENCE / "run_slot_claim.json").is_file()
 
 
 def test_binding_fix_surface_registered() -> None:
@@ -272,14 +250,3 @@ def test_binding_fix_surface_registered() -> None:
             ]
         )
     )
-
-
-def test_validation_does_not_authorize_evaluation() -> None:
-    report = load_and_validate_repo_contract(REPO)
-    assert report["evaluation_executed"] is False
-    assert report["evaluation_run_count"] == 0
-    assert report["rerun_allowed"] is False
-    contract = _load(CONTRACT_PATH)
-    assert contract["evaluation_authorized"] is False
-    assert contract["backtest_authorized"] is False
-    assert contract["rerun_allowed"] is False

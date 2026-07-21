@@ -1,0 +1,7 @@
+{
+  "archive_root_env": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/peak_trade_data_archive",
+  "holdout_data_accessed": false,
+  "runner_command": "PEAK_TRADE_DATA_ARCHIVE_ROOT=/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/peak_trade_data_archive PYTHONPATH=src:. /Users/frnkhrz/Peak_Trade/.venv/bin/python scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v4.py --output-dir docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v4",
+  "runner_start_count": 1,
+  "runner_start_timestamp_utc": "2026-07-21T16:29:24Z"
+}
