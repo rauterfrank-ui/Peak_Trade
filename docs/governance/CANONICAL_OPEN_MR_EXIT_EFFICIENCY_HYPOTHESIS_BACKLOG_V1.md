@@ -2,13 +2,13 @@
 
 ## Current SSOT status
 
-- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ZERO_PREREGISTERED_V6_TERMINAL_FAIL`
-- Preregistered: exactly zero
+- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ONE_DEFINITION_ONLY_V7_PREREGISTERED`
+- Preregistered: exactly one (`V7` DEFINITION_ONLY)
 - Terminal: V1&#47;V2 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`; V6 `FAIL`
 - V6 reason: `NET_PROFIT_FACTOR_NOT_IMPROVED`
 - V6 economic delta vs V5: composite midband-cross OR frozen max-holding-horizon=48h
 - No V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7 auto-create.
-- Evidence-only V6 failure attribution completed (does not authorize V7).
+- Evidence-only V6 failure attribution completed; V7 separately definition-only preregistered.
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
@@ -23,7 +23,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 ## Status
 
 `OPEN_BACKLOG` — versioned canonical SSOT for Mean-Reversion exit-efficiency
-research candidates. Zero `DEFINITION_ONLY_PREREGISTERED` hypotheses remain.
+research candidates. Exactly one `DEFINITION_ONLY_PREREGISTERED` hypothesis (`V7`).
 V1–V6 are terminal. No holdout access. No runtime activation. No productive
 trading-logic mutation.
 
@@ -37,7 +37,17 @@ trading-logic mutation.
 
 ## Preregistered hypotheses
 
-Exactly zero (`preregistered_count_exact=0`).
+Exactly one (`preregistered_count_exact=1`):
+
+- `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7`
+  — `DEFINITION_ONLY_PREREGISTERED`
+  — `EVALUATION_RUN_COUNT=0`
+  — Cooldown: `24` PT1H bars; scope `instrument_id` + `direction`
+  — Control: exact V6 composite midband&#47;max-hold semantics
+  — Digest: `4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680`
+  — Contract: `config&#47;research&#47;bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v7.json`
+  — Evidence: `docs&#47;evidence&#47;preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v7&#47;`
+  — Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V7.md`
 
 ## Terminal hypotheses
 
@@ -106,7 +116,9 @@ Exactly six:
 - No V3&#47;V4&#47;V5&#47;V6 partial-result, checkpoint, or economic-result reuse
 - No holdout after FAIL&#47;INFRASTRUCTURE_FAILURE
 - No retuning after FAIL&#47;INFRASTRUCTURE_FAILURE
+- No V7 evaluation in this slice
 - No V7 auto-create
+- No V8 auto-create
 - No parallel SHORT-side hypothesis
 - No holdout candidate
 - No cost-structure-weakening hypothesis
@@ -115,5 +127,6 @@ Exactly six:
 
 ## Next separate action
 
-Any new hypothesis requires a separate Operator-GO for definition-only
-preregistration. No automatic V7 creation. No V6 rerun.
+V7 is definition-only preregistered. A separate Operator-GO is required for the
+single V7 DEVELOPMENT evaluation. No V7 evaluation in this slice. No V6 rerun.
+No V8 auto-create.
