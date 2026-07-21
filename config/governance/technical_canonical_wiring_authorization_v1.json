@@ -494,7 +494,17 @@
     "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v1/run_measurement_started_at_utc.txt",
     "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v1/run_process_died_at_utc.txt",
     "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v1/run_pid.txt",
-    "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v1/run_stderr_premeasurement_abort.txt"
+    "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v1/run_stderr_premeasurement_abort.txt",
+    "src/research/bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v2.py",
+    "tests/research/test_bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v2.py",
+    "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v2.json",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/README.md",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/summary.json",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/split_manifest.json",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/safety_attestation.md",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/timing_proof.txt",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/timing_proof_meta.txt",
+    "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V2.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -531,7 +541,8 @@
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_WIRING",
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_V2_PREREGISTRATION_WIRING",
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_V2_EVALUATION_WIRING",
-    "TECHNICAL_BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_WIRING"
+    "TECHNICAL_BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_WIRING",
+    "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_V2_PREREGISTRATION_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -593,6 +604,7 @@
     "Includes single authorized HOLDOUT evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility versus immutable bollinger baseline on the sealed FINAL_AUDIT panel (holdout_run_count 1/1, RESULT_CLASS=ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN after MV2 replay signal-index mismatch; no retry); economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V1.",
     "Includes definition-only holdout preregistration v2 for Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility after terminal holdout V1 ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN and the generic MV2 replay signal-index binding repair: new evaluation ID, holdout_run_limit=1, retry/post-result-tuning locks, and separate execution-GO gate; no V1 rerun; no holdout data access; no backtest; no economic metrics; no policy runtime; no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V2.",
     "Includes single authorized HOLDOUT v2 evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility (holdout_run_count 1/1, RESULT_CLASS=FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED); new evaluation ID not a V1 rerun; economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V2.",
-    "Includes canonical development-only read-only economic failure decomposition of the immutable Bollinger/MR baseline on the sealed DEVELOPMENT_ONLY panel (diagnostic classification only; MFE/MAE/cost-stress/side/instrument attribution); no new hypothesis; no holdout access; no Economic/Promotion gate open; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders. Owner surface: BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_V1."
+    "Includes canonical development-only read-only economic failure decomposition of the immutable Bollinger/MR baseline on the sealed DEVELOPMENT_ONLY panel (diagnostic classification only; MFE/MAE/cost-stress/side/instrument attribution); no new hypothesis; no holdout access; no Economic/Promotion gate open; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders. Owner surface: BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_V1.",
+    "Includes definition-only DEVELOPMENT V2 preregistration for Bollinger/MR side-aware middle-band exit-efficiency after V1 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE: new hypothesis ID, EVALUATION_RUN_COUNT=0, identical definition semantics to V1, mandatory EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1 binding, no V1 rerun or partial-result reuse, no evaluation/backtest/holdout/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V2."
   ]
 }

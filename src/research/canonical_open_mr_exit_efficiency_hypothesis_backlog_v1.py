@@ -19,7 +19,11 @@ REQUIRED_TREATMENT_TYPE = "POST_ENTRY_EXIT_EFFICIENCY_MECHANISM"
 REQUIRED_HYPOTHESIS_ID = (
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1"
 )
+REQUIRED_V2_HYPOTHESIS_ID = (
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V2"
+)
 REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
+REQUIRED_OBSERVABILITY_SURFACE = "EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1"
 HOLDOUT_OPAQUE_ID = "offline_economic_reevaluation_sealed_long_panel_v1"
 REQUIRED_RESEARCH_QUESTION = (
     "Given COSTS_DESTROY_MARGINAL_EDGE on the sealed DEVELOPMENT_ONLY Bollinger/MR "
@@ -178,13 +182,44 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(rules.get("economic_gate_closed") is True, "ECONOMIC_GATE_NOT_CLOSED")
     _assert_true(rules.get("promotion_closed") is True, "PROMOTION_NOT_CLOSED")
-    _assert_true(rules.get("preregistered_count_exact") == 0, "PREREGISTERED_COUNT_RULE")
+    _assert_true(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_RULE")
     _assert_true(rules.get("open_unpreregistered_count_exact") == 0, "OPEN_COUNT_RULE")
 
     preregistered = backlog.get("preregistered_hypotheses")
     _assert_true(isinstance(preregistered, list), "PREREGISTERED_MISSING")
     assert isinstance(preregistered, list)
-    _assert_true(len(preregistered) == 0, "PREREGISTERED_MUST_BE_EMPTY", str(len(preregistered)))
+    _assert_true(len(preregistered) == 1, "PREREGISTERED_COUNT", str(len(preregistered)))
+    prereg = preregistered[0]
+    _assert_true(isinstance(prereg, Mapping), "PREREGISTERED_ENTRY_TYPE")
+    assert isinstance(prereg, Mapping)
+    _assert_true(prereg.get("hypothesis_id") == REQUIRED_V2_HYPOTHESIS_ID, "PREREGISTERED_ID")
+    _assert_true(prereg.get("status") == REQUIRED_PREREGISTERED_STATUS, "PREREGISTERED_STATUS")
+    _assert_true(prereg.get("treatment_type") == REQUIRED_TREATMENT_TYPE, "PREREGISTERED_TREATMENT")
+    _assert_true(prereg.get("development_only") is True, "PREREGISTERED_DEV_ONLY")
+    _assert_true(prereg.get("holdout_allowed") is False, "PREREGISTERED_HOLDOUT_ALLOWED")
+    _assert_true(prereg.get("evaluation_authorized") is False, "PREREGISTERED_EVAL_AUTHORIZED")
+    _assert_true(prereg.get("evaluation_executed") is False, "PREREGISTERED_EVAL_EXECUTED")
+    _assert_true(prereg.get("evaluation_started") is False, "PREREGISTERED_EVAL_STARTED")
+    _assert_true(prereg.get("evaluation_completed") is False, "PREREGISTERED_EVAL_COMPLETED")
+    _assert_true(int(prereg.get("evaluation_run_count", -1)) == 0, "PREREGISTERED_RUN_COUNT")
+    _assert_true(int(prereg.get("evaluation_run_limit") or 0) == 1, "PREREGISTERED_RUN_LIMIT")
+    _assert_true(prereg.get("result_class") == "NOT_EVALUATED", "PREREGISTERED_RESULT_CLASS")
+    _assert_true(prereg.get("economic_verdict") == "NOT_EVALUATED", "PREREGISTERED_ECONOMIC")
+    _assert_true(prereg.get("new_evaluation_not_rerun") is True, "PREREGISTERED_NOT_RERUN")
+    _assert_true(prereg.get("v1_rerun_forbidden") is True, "PREREGISTERED_V1_RERUN_FORBIDDEN")
+    _assert_true(
+        prereg.get("identical_measurement_rules_to_development_v1") is True,
+        "PREREGISTERED_IDENTICAL_RULES",
+    )
+    _assert_true(prereg.get("v1_partial_results_reused") is False, "PREREGISTERED_PARTIAL_REUSE")
+    _assert_true(
+        prereg.get("observability_surface") == REQUIRED_OBSERVABILITY_SURFACE,
+        "PREREGISTERED_OBSERVABILITY",
+    )
+    _assert_true(
+        prereg.get("predecessor_hypothesis_id") == REQUIRED_HYPOTHESIS_ID,
+        "PREREGISTERED_PREDECESSOR",
+    )
 
     terminal = backlog.get("terminal_hypotheses")
     _assert_true(isinstance(terminal, list), "TERMINAL_MISSING")
@@ -212,13 +247,20 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true(entry.get("fail") is False, "TERMINAL_FAIL_MUST_BE_FALSE")
     _assert_true(entry.get("rerun_allowed") is False, "TERMINAL_RERUN_FORBIDDEN")
 
+    non_actions = backlog.get("explicit_non_actions") or []
+    _assert_true(
+        "NO_V2_PREREGISTRATION_IN_THIS_SLICE" not in non_actions,
+        "STALE_NO_V2_PREREGISTRATION_NON_ACTION",
+    )
+
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
-        "preregistered_count": 0,
+        "preregistered_count": 1,
         "terminal_count": 1,
         "open_unpreregistered_count": 0,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
+        "preregistered_hypothesis_id": REQUIRED_V2_HYPOTHESIS_ID,
         "development_run_count": 1,
         "evaluation_authorized": False,
         "holdout_forbidden": True,
@@ -228,6 +270,9 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
         "economic_verdict": "NOT_EVALUATED",
         "rerun_allowed": False,
+        "v2_evaluation_run_count": 0,
+        "v2_is_rerun_of_v1": False,
+        "observability_surface": REQUIRED_OBSERVABILITY_SURFACE,
     }
 
 

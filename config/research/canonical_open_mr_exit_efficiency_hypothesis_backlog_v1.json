@@ -5,7 +5,7 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "status": "OPEN_BACKLOG",
-  "verdict": "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_EMPTY_AFTER_MIDBAND_TERMINAL_INCONCLUSIVE",
+  "verdict": "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ONE_DEFINITION_ONLY_V2_PREREGISTERED",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
   "canonical_ssot": true,
   "exactly_one_authoritative_truth": true,
@@ -48,7 +48,36 @@
     "promotion_claim_from_backlog_forbidden": true
   },
   "open_unpreregistered_candidates": [],
-  "preregistered_hypotheses": [],
+  "preregistered_hypotheses": [
+    {
+      "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V2",
+      "status": "DEFINITION_ONLY_PREREGISTERED",
+      "treatment_type": "POST_ENTRY_EXIT_EFFICIENCY_MECHANISM",
+      "mechanism_id": "canonical_bollinger_side_aware_middle_band_exit_v1",
+      "mechanism_class": "EXIT_EFFICIENCY",
+      "development_only": true,
+      "holdout_allowed": false,
+      "evaluation_authorized": false,
+      "evaluation_executed": false,
+      "evaluation_started": false,
+      "evaluation_completed": false,
+      "evaluation_run_count": 0,
+      "evaluation_run_limit": 1,
+      "development_run_count": 0,
+      "result_class": "NOT_EVALUATED",
+      "economic_verdict": "NOT_EVALUATED",
+      "new_evaluation_not_rerun": true,
+      "v1_rerun_forbidden": true,
+      "identical_measurement_rules_to_development_v1": true,
+      "v1_partial_results_reused": false,
+      "observability_surface": "EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1",
+      "predecessor_hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1",
+      "contract_ref": "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v2.json",
+      "governance_ref": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V2.md",
+      "evidence_ref": "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v2/",
+      "parent_diagnostic_evidence_ref": "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/"
+    }
+  ],
   "short_side_hypothesis_preregistered": false,
   "holdout_candidate_preregistered": false,
   "cost_structure_hypothesis_preregistered": false,
@@ -66,12 +95,13 @@
     "evaluation_requires_separate_operator_go": true,
     "economic_gate_closed": true,
     "promotion_closed": true,
-    "preregistered_count_exact": 0,
+    "preregistered_count_exact": 1,
     "open_unpreregistered_count_exact": 0
   },
-  "governance_note": "Exactly one DEVELOPMENT_ONLY exit-efficiency hypothesis was DEFINITION_ONLY_PREREGISTERED then its sole authorized evaluation started and died after baseline member 2/46 with RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE; EVALUATION_RUN_COUNT=1; RERUN_ALLOWED=false; ECONOMIC_VERDICT=NOT_EVALUATED. Open exit-efficiency queue empty. No SHORT-side parallel hypothesis. No holdout candidate. Economic offline gate closed; promotion closed; no runtime/orders.",
+  "governance_note": "Exactly one DEVELOPMENT_ONLY exit-efficiency hypothesis V2 is DEFINITION_ONLY_PREREGISTERED with EVALUATION_RUN_COUNT=0 after V1 terminated as INCONCLUSIVE_INFRASTRUCTURE_FAILURE (run count 1; rerun forbidden; historical death cause UNKNOWN). V2 is a new independent measurement with identical definition semantics and mandatory EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1 binding; not a V1 rerun; no V1 partial results reused. Evaluation requires separate Operator-GO. No SHORT-side parallel hypothesis. No holdout candidate. Economic offline gate closed; promotion closed; no runtime/orders.",
   "explicit_non_actions": [
-    "NO_RERUN_UNDER_THIS_PREREGISTRATION",
+    "NO_V1_RERUN",
+    "NO_V1_PARTIAL_RESULT_REUSE",
     "NO_ECONOMIC_PASS_OR_FAIL_CLAIM",
     "NO_HOLDOUT_ACCESS",
     "NO_HOLDOUT_PREREGISTRATION",
@@ -86,9 +116,9 @@
     "NO_MASTER_V2_MUTATION",
     "NO_DOUBLE_PLAY_AUTHORITY_CHANGE",
     "NO_RISK_SIZING_EXECUTION_CHANGE",
-    "NO_V2_PREREGISTRATION_IN_THIS_SLICE"
+    "NO_AUTO_EVALUATION_IN_THIS_SLICE"
   ],
-  "next_canonical_step": "NO_RERUN_UNDER_THIS_PREREGISTRATION_SEPARATE_GO_REQUIRED_FOR_LIFECYCLE_FIX_THEN_OPTIONAL_V2_PREREGISTRATION",
+  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_V2_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_DEVELOPMENT_EVALUATION",
   "terminal_hypotheses": [
     {
       "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1",
