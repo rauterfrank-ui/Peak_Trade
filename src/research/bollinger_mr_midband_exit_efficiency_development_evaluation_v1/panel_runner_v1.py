@@ -278,6 +278,7 @@ def run_arm(
     decision_start: str,
     decision_end: str,
     gate: bool,
+    lifecycle: Any | None = None,
 ) -> ArmResult:
     t0 = time.perf_counter()
     d_start = pd.Timestamp(decision_start)
@@ -341,6 +342,18 @@ def run_arm(
             ),
             flush=True,
         )
+        # Durable lifecycle progress (stdout alone is not a death diagnostic).
+        if lifecycle is not None:
+            lifecycle.record_member_progress(
+                phase=arm,
+                member_index=i,
+                members_total=len(members),
+                member_id=native,
+                extra={
+                    "trades": len(trades),
+                    "exits_forced_by_gate": forced,
+                },
+            )
 
     enriched = enrich_trade_excursions(all_trades, bars_by_instrument)
     metrics = _aggregate_arm(
@@ -371,6 +384,7 @@ def run_development_evaluation(
     output_dir: Path,
     archive_root: Path | None = None,
     repo_root: Path | None = None,
+    lifecycle: Any | None = None,
 ) -> dict[str, Any]:
     repo = repo_root or _repo_root()
     output_dir = Path(output_dir)
@@ -428,6 +442,7 @@ def run_development_evaluation(
         decision_start=DECISION_START,
         decision_end=DECISION_END_EXCLUSIVE,
         gate=False,
+        lifecycle=lifecycle,
     )
     treatment = run_arm(
         arm="treatment",
@@ -438,6 +453,7 @@ def run_development_evaluation(
         decision_start=DECISION_START,
         decision_end=DECISION_END_EXCLUSIVE,
         gate=True,
+        lifecycle=lifecycle,
     )
 
     exits_forced = int(treatment.metrics["exits_forced_by_gate"])
@@ -468,9 +484,16 @@ def run_development_evaluation(
         "baseline": baseline.exit_attribution,
         "treatment": treatment.exit_attribution,
     }
-    (output_dir / "exit_attribution.json").write_text(
-        json.dumps(exit_attribution, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    if lifecycle is not None:
+        lifecycle.record_persist_phase(note="pre_evidence_persist")
+    try:
+        (output_dir / "exit_attribution.json").write_text(
+            json.dumps(exit_attribution, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+    except OSError as exc:
+        if lifecycle is not None:
+            lifecycle.record_persistence_failure(exc)
+        raise
 
     decision_out = decide_development_evaluation(
         baseline=baseline.metrics,
@@ -691,6 +714,8 @@ def run_development_evaluation(
         encoding="utf-8",
     )
     write_manifest_sha256(output_dir)
+    if lifecycle is not None:
+        lifecycle.mark_complete()
     return summary
 
 
