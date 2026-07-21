@@ -5,7 +5,7 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "status": "OPEN_BACKLOG",
-  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_ZERO_PREREGISTERED_ADX_DI_NEXT_ELIGIBLE",
+  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ONE_PREREGISTERED_EMPTY_OPEN_QUEUE",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
   "canonical_ssot": true,
   "exactly_one_authoritative_truth": true,
@@ -130,14 +130,26 @@
       "evidence_ref": "docs/evidence/evaluate_macd_histogram_countertrend_mr_eligibility_development_v1/"
     }
   ],
-  "preregistered_hypotheses": [],
+  "preregistered_hypotheses": [
+    {
+      "hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "status": "DEFINITION_ONLY_PREREGISTERED",
+      "queue_status": "PREREGISTERED_AWAITING_EVALUATION_GO",
+      "evaluation_authorized": false,
+      "development_run_count": 0,
+      "feature_family": "adx_di_direction_confirmation",
+      "priority_rank_at_preregistration": 1,
+      "contract_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json"
+    }
+  ],
   "forbidden_feature_families_for_open_candidates": [
     "multi_feature_absolute_threshold_regime_classifier",
     "atr_rolling_percentile_midband",
     "rsi_exhaustion_level",
     "adx_level_range_admission",
     "price_vs_ma_trend_alignment",
-    "macd_histogram_sign_countertrend"
+    "macd_histogram_sign_countertrend",
+    "adx_di_direction_confirmation"
   ],
   "forbidden_retune_of_terminal_parameters": true,
   "forbidden_semantic_duplicates": true,
@@ -186,63 +198,7 @@
     ],
     "tie_break_rule": "If weighted totals equal, lower priority_rank integer wins only when explicitly assigned without tie; ties are forbidden in this SSOT."
   },
-  "open_candidates": [
-    {
-      "hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-      "canonical_slug": "adx-di-direction-confirmation-mr-eligibility",
-      "status": "OPEN_UNPREREGISTERED",
-      "queue_status": "NEXT_ELIGIBLE_FOR_PREREGISTRATION",
-      "priority_rank": 1,
-      "priority_score_total": 57,
-      "priority_scores": {
-        "semantic_distance": 3,
-        "entry_effectiveness": 4,
-        "measurability": 5,
-        "low_additional_complexity": 5,
-        "low_overfitting_risk": 3,
-        "repo_support": 5
-      },
-      "feature_family": "adx_di_direction_confirmation",
-      "feature_ids": [
-        "plus_di_14h",
-        "minus_di_14h"
-      ],
-      "causal_thesis": "Mean-reversion fades are stronger when DI direction confirms the fade side (long fade only when minus_DI > plus_DI; short fade only when plus_DI > minus_DI), improving net PF and net return versus the unfiltered Bollinger baseline without worsening max drawdown.",
-      "independent_treatment_change": "Single side-aware pre-entry eligibility filter on +DI/\u2212DI ordering from TrendFollowingStrategy._compute_adx. Does not reuse ADX level < 25 range admission.",
-      "expected_effect": "Blocks fades that disagree with DI directional dominance; preserves DI-aligned fade admissions.",
-      "known_failure_modes": [
-        "Shares Wilder ADX calculator family with terminal ADX-level FAIL \u2014 must remain DI-order only, never ADX-level retune",
-        "DI crosses can be noisy near equilibrium",
-        "Divergence without economic improvement"
-      ],
-      "semantic_distance_to_terminal": {
-        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not multi-feature absolute regime classifier.",
-        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not ATR percentile mid-band.",
-        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not RSI exhaustion levels.",
-        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not ADX magnitude threshold (ADX < 25). Uses +DI/\u2212DI directional ordering only; ADX level is intentionally unused.",
-        "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not price-vs-SMA(50) with-trend admission; uses +DI/\u2212DI directional ordering only.",
-        "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not MACD(12,26,9) histogram-sign countertrend admission; uses +DI/\u2212DI directional ordering only."
-      },
-      "repo_source_refs": [
-        "config/config.toml#[strategies.trend_following.defaults]",
-        "src/strategies/trend_following.py::TrendFollowingStrategy._compute_adx"
-      ],
-      "frozen_parameter_intent": {
-        "adx_period": 14,
-        "uses_adx_level": false,
-        "uses_di_order_only": true,
-        "side_aware": true
-      },
-      "not_a_parameter_retune_of": [
-        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
-        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
-        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-        "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-        "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
-      ]
-    }
-  ],
+  "open_candidates": [],
   "explicitly_excluded_from_this_backlog": [
     {
       "candidate_id": "BB_BANDWIDTH_PERCENTILE_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
@@ -259,16 +215,16 @@
     "evaluation_requires_separate_preregistration_pr_and_operator_go": true,
     "economic_gate_closed": true,
     "promotion_closed": true,
-    "exactly_one_next_eligible_for_preregistration": true,
-    "open_candidate_count_min": 1,
+    "exactly_one_next_eligible_for_preregistration": false,
+    "open_candidate_count_min": 0,
     "open_candidate_count_max": 4
   },
-  "governance_note": "MACD histogram-countertrend completed its single authorized DEVELOPMENT evaluation (run count 1/1) and is now TERMINAL_FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED, entry-eligibility divergence observed); no retuning, no holdout access, and no second run occurred. Open preregistrations are empty. Exactly one next-eligible open candidate remains (ADX DI direction confirmation). Evaluation/preregistration of that candidate is NOT authorized by this transition and requires a separate preregistration PR and operator GO.",
+  "governance_note": "ADX DI direction confirmation is DEFINITION_ONLY_PREREGISTERED and awaiting evaluation GO; evaluation is NOT authorized by this transition and requires a separate operator GO. Open candidate queue is empty after this preregistration. Six prior hypotheses remain TERMINAL_FAIL with no reopen (including MACD histogram-countertrend).",
   "explicit_non_actions": [
-    "NO_PREREGISTRATION_IN_THIS_SLICE",
-    "NO_BACKTEST_IN_THIS_SLICE_FOR_OPEN_CANDIDATES",
-    "NO_ECONOMIC_METRICS_COMPUTATION_FOR_OPEN_CANDIDATES",
-    "NO_DEVELOPMENT_PANEL_RAW_ACCESS_FOR_OPEN_CANDIDATES",
+    "NO_PREREGISTRATION_OF_ADDITIONAL_CANDIDATES_IN_THIS_SLICE",
+    "NO_BACKTEST_IN_THIS_SLICE",
+    "NO_ECONOMIC_METRICS_COMPUTATION",
+    "NO_DEVELOPMENT_PANEL_RAW_ACCESS_IN_THIS_SLICE",
     "NO_PARAMETER_TUNING",
     "NO_VARIANT_SEARCH",
     "NO_HOLDOUT_ACCESS",
@@ -277,12 +233,9 @@
     "NO_PROMOTION_CLAIM",
     "NO_RETUNE_OF_TERMINAL_HYPOTHESES",
     "NO_MULTI_GATE_COMBINATION",
-    "NO_AUTO_EVALUATION_OF_NEXT_ELIGIBLE",
-    "NO_SECOND_EVALUATION_RUN_OF_MA_TREND_ALIGNMENT",
-    "NO_HOLDOUT_ACCESS_FOR_MA_TREND_ALIGNMENT_AFTER_FAIL",
+    "NO_AUTO_EVALUATION_OF_PREREGISTERED_ADX_DI",
     "NO_SECOND_EVALUATION_RUN_OF_MACD_HISTOGRAM_COUNTERTREND",
-    "NO_HOLDOUT_ACCESS_FOR_MACD_HISTOGRAM_COUNTERTREND_AFTER_FAIL",
     "NO_REOPEN_OF_TERMINAL_HYPOTHESES"
   ],
-  "next_canonical_step": "REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_V1"
+  "next_canonical_step": "REVIEW_AND_MERGE_ADX_DI_DIRECTION_CONFIRMATION_PREREGISTRATION_BEFORE_ANY_EVALUATION"
 }

@@ -334,6 +334,15 @@
     "docs/evidence/preregister_macd_histogram_countertrend_mr_eligibility_hypothesis_v1/safety_attestation.md",
     "docs/evidence/preregister_macd_histogram_countertrend_mr_eligibility_hypothesis_v1/timing_proof.txt",
     "docs/governance/MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "src/research/adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
+    "tests/research/test_adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
+    "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+    "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/README.md",
+    "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/summary.json",
+    "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/split_manifest.json",
+    "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/safety_attestation.md",
+    "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/timing_proof.txt",
+    "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
     "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json",
     "src/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.py",
     "tests/research/test_canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.py",
@@ -367,7 +376,8 @@
     "TECHNICAL_RSI_EXHAUSTION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
     "TECHNICAL_ADX_RANGE_ADMISSION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
     "TECHNICAL_MA_TREND_ALIGNMENT_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
-    "TECHNICAL_MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING"
+    "TECHNICAL_MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING",
+    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -422,6 +432,7 @@
     "Includes definition-only preregistration of a single RSI(14)-exhaustion pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds), orthogonal to the failed ATR-percentile mid-band mechanism (entry_effective contract) and the failed regime-gated absolute-threshold mechanism (regime_gated contract); no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: RSI_EXHAUSTION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
     "Includes definition-only preregistration of a single ADX(14) range-admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to failed regime-gated, ATR-percentile, and RSI-exhaustion mechanisms; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_RANGE_ADMISSION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
     "Includes definition-only preregistration of a single SMA(50) side-aware with-trend admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to four prior FAILs (regime, ATR, RSI, ADX); backlog transition moves MA to preregistered awaiting evaluation GO and promotes MACD to NEXT_ELIGIBLE without authorizing evaluation; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: MA_TREND_ALIGNMENT_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
-    "Includes definition-only preregistration of a single MACD(12,26,9) histogram-sign countertrend admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to five prior FAILs (regime, ATR, RSI, ADX, MA); backlog transition moves MACD to preregistered awaiting evaluation GO and promotes ADX DI to NEXT_ELIGIBLE without authorizing evaluation; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1."
+    "Includes definition-only preregistration of a single MACD(12,26,9) histogram-sign countertrend admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to five prior FAILs (regime, ATR, RSI, ADX, MA); backlog transition moves MACD to preregistered awaiting evaluation GO and promotes ADX DI to NEXT_ELIGIBLE without authorizing evaluation; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1.",
+    "Includes definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel (validator + chronological splits + divergence-required thresholds + on-fail retuning/holdout locks), orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); backlog transition moves ADX DI to preregistered awaiting evaluation GO with empty open queue without authorizing evaluation; no backtest, no economic metrics, no holdout access, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1."
   ]
 }
