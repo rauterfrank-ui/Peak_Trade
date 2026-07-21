@@ -67,7 +67,11 @@ def test_prereg_digest_drift_fail_closed() -> None:
         validate_ratification(mutated, repo_root=REPO, require_panel_released=False)
 
 
-def test_dataset_digest_drift_fail_closed() -> None:
+def test_dataset_digest_drift_fail_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7._slot_consumed",
+        lambda repo: False,
+    )
     payload = build_ratification_payload()
     mutated = copy.deepcopy(payload)
     mutated["expected_manifest_sha256"] = "1" * 64
@@ -113,6 +117,10 @@ def test_panel_not_released_blocks_authorization(monkeypatch: pytest.MonkeyPatch
         "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.is_panel_released",
         lambda archive_root=None: False,
     )
+    monkeypatch.setattr(
+        "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7._slot_consumed",
+        lambda repo: False,
+    )
     payload = build_ratification_payload()
     with pytest.raises(EvaluationAuthorizationRatificationError, match="PANEL_NOT_RELEASED"):
         validate_ratification(payload, repo_root=REPO, require_panel_released=True)
@@ -140,32 +148,35 @@ def test_runner_blocked_when_effective_auth_mocked_false(
     assert not (out / "run_slot_claim.json").exists()
 
 
-def test_gate_startable_when_authorized_but_runner_not_invoked(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+def test_gate_blocked_after_slot_consumed(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.is_panel_released",
         lambda archive_root=None: True,
     )
-    gates = assert_v7_authority_and_prereg_gates(
-        repo=REPO, require_evaluation_authorized=True, require_ready_status=True
-    )
-    assert gates["evaluation_authorized"] is True
-    # Explicit non-start proof for this authorization slice.
-    assert not (
+    claim = (
         REPO
         / "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7"
         / "run_slot_claim.json"
-    ).exists()
+    )
+    assert claim.is_file()
+    with pytest.raises(RuntimeError, match="V7_EVALUATION_NOT_AUTHORIZED"):
+        assert_v7_authority_and_prereg_gates(
+            repo=REPO, require_evaluation_authorized=True, require_ready_status=True
+        )
 
 
-def test_effective_auth_true_after_ratification(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_effective_auth_false_after_slot_consumed(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "src.research.bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.is_panel_released",
         lambda archive_root=None: True,
     )
     effective = resolve_effective_evaluation_authorization(REPO)
-    assert effective["evaluation_authorized"] is True
+    assert effective["evaluation_authorized"] is False
+    assert effective["reason"] in {
+        "RUN_SLOT_ALREADY_CONSUMED",
+        "AUTHORITY_RUN_COUNT_NOT_ZERO",
+        "AUTHORITY_FLAG_FALSE",
+    }
     assert effective["lifecycle_status"] == AUTHORIZED_STATUS
 
 
@@ -175,11 +186,17 @@ def test_effective_auth_true_after_ratification(monkeypatch: pytest.MonkeyPatch)
     ).is_dir(),
     reason="released development panel not present on this host",
 )
-def test_effective_auth_with_real_released_panel(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_effective_auth_with_real_released_panel_slot_consumed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setenv("PEAK_TRADE_DATA_ARCHIVE_ROOT", "/Users/frnkhrz/Peak_Trade_data_archive")
     effective = resolve_effective_evaluation_authorization(REPO)
-    assert effective["evaluation_authorized"] is True
-    assert effective["reason"] == "RATIFICATION_AND_LIFECYCLE_AUTHORIZED"
+    assert effective["evaluation_authorized"] is False
+    assert effective["reason"] in {
+        "RUN_SLOT_ALREADY_CONSUMED",
+        "AUTHORITY_RUN_COUNT_NOT_ZERO",
+        "AUTHORITY_FLAG_FALSE",
+    }
 
 
 def test_go_token_constant() -> None:

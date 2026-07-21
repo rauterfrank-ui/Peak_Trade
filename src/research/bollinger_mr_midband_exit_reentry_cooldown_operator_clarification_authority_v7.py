@@ -129,8 +129,9 @@ def validate_authority(
         raise OperatorClarificationAuthorityError("AUTHORITY_CLAIMS_PREREG_MUTATION")
     if authority.get("is_second_preregistration") is not False:
         raise OperatorClarificationAuthorityError("AUTHORITY_CLAIMS_SECOND_PREREG")
-    if int(authority.get("evaluation_run_count", -1)) != 0:
-        raise OperatorClarificationAuthorityError("AUTHORITY_EVALUATION_RUN_COUNT_NOT_ZERO")
+    run_count = int(authority.get("evaluation_run_count", -1))
+    if run_count not in (0, 1):
+        raise OperatorClarificationAuthorityError("AUTHORITY_EVALUATION_RUN_COUNT_INVALID")
     if str(authority.get("operator_decisions_status")) != OPERATOR_DECISIONS_STATUS:
         raise OperatorClarificationAuthorityError("OPERATOR_DECISIONS_STATUS_MISMATCH")
     if str(authority.get("authority_scope")) != "IMPLEMENTATION_CLARIFICATION_ONLY":
@@ -155,18 +156,39 @@ def validate_authority(
     if status not in ALLOWED_LIFECYCLE_STATES:
         raise OperatorClarificationAuthorityError("UNKNOWN_LIFECYCLE_STATE")
 
+    slot_consumed = authority.get("run_slot_consumed") is True
     if status == READY_STATUS:
         if authority.get("evaluation_authorized") is not False:
             raise OperatorClarificationAuthorityError("AUTHORITY_MUST_KEEP_EVALUATION_UNAUTHORIZED")
+        if run_count != 0:
+            raise OperatorClarificationAuthorityError("AUTHORITY_EVALUATION_RUN_COUNT_NOT_ZERO")
     elif status == AUTHORIZED_STATUS:
-        if authority.get("evaluation_authorized") is not True:
-            raise OperatorClarificationAuthorityError(
-                "AUTHORIZED_STATUS_REQUIRES_EVALUATION_AUTHORIZED_TRUE"
-            )
         if not authority.get("authorization_ratification_ref"):
             raise OperatorClarificationAuthorityError("AUTHORIZED_WITHOUT_RATIFICATION_REF")
         if not authority.get("authorization_ratification_digest"):
             raise OperatorClarificationAuthorityError("AUTHORIZED_WITHOUT_RATIFICATION_DIGEST")
+        if run_count == 0:
+            if authority.get("evaluation_authorized") is not True:
+                raise OperatorClarificationAuthorityError(
+                    "AUTHORIZED_STATUS_REQUIRES_EVALUATION_AUTHORIZED_TRUE"
+                )
+            if slot_consumed:
+                raise OperatorClarificationAuthorityError("SLOT_CONSUMED_WITH_ZERO_RUN_COUNT")
+        elif run_count == 1:
+            if not slot_consumed:
+                raise OperatorClarificationAuthorityError("RUN_COUNT_ONE_REQUIRES_SLOT_CONSUMED")
+            if str(authority.get("result_class") or "") != "INCONCLUSIVE_INFRASTRUCTURE_FAILURE":
+                # Economic PASS/FAIL also valid later; infra closeout is the current terminal.
+                if str(authority.get("result_class") or "") not in {
+                    "PASS",
+                    "FAIL",
+                    "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+                    "INVALID_MEASUREMENT_IDENTICAL_ARMS",
+                    "INVALID_MEASUREMENT_BINDING_MISSING",
+                }:
+                    raise OperatorClarificationAuthorityError("TERMINAL_RESULT_CLASS_MISSING")
+        else:
+            raise OperatorClarificationAuthorityError("AUTHORITY_EVALUATION_RUN_COUNT_INVALID")
     else:
         if authority.get("evaluation_authorized") is not False:
             raise OperatorClarificationAuthorityError("AUTHORITY_MUST_KEEP_EVALUATION_UNAUTHORIZED")
@@ -188,7 +210,8 @@ def validate_authority(
         "operator_decisions_status": OPERATOR_DECISIONS_STATUS,
         "b1_through_b6_fully_resolved": True,
         "evaluation_authorized": bool(authority.get("evaluation_authorized")),
-        "evaluation_run_count": 0,
+        "evaluation_run_count": run_count,
+        "run_slot_consumed": slot_consumed,
     }
 
 

@@ -1,0 +1,26 @@
+{
+  "operator_go": "GO_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_V7_DEVELOPMENT_EVALUATION_RUN",
+  "operator_go_bound": true,
+  "phase": "V7_DEVELOPMENT_EVALUATION",
+  "base_sha": "8592b434279d63c252a120a4d0f904663011a1b7",
+  "branch": "research/evaluate-bollinger-mr-midband-exit-reentry-cooldown-development-v7",
+  "worktree": "/Users/frnkhrz/Peak_Trade_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7",
+  "main_repo": "/Users/frnkhrz/Peak_Trade",
+  "python": "/Users/frnkhrz/Peak_Trade/.venv/bin/python",
+  "python_version": "3.11.14",
+  "env": {
+    "PEAK_TRADE_DATA_ARCHIVE_ROOT": "/Users/frnkhrz/Peak_Trade_data_archive",
+    "PYTHONPATH": "src:.",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS": false,
+    "SHADOW": false,
+    "TESTNET": false
+  },
+  "canonical_runner_command": "PEAK_TRADE_DATA_ARCHIVE_ROOT=/Users/frnkhrz/Peak_Trade_data_archive PYTHONPATH=src:. /Users/frnkhrz/Peak_Trade/.venv/bin/python scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7.py --mode evaluate --authorize-single-development-evaluation BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7 --output-dir docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7 --archive-root /Users/frnkhrz/Peak_Trade_data_archive/dev_pre_holdout_panel_v1_20260720T2052Z",
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7",
+  "archive_root": "/Users/frnkhrz/Peak_Trade_data_archive/dev_pre_holdout_panel_v1_20260720T2052Z",
+  "output_dir": "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7",
+  "dataset_role": "DEVELOPMENT_ONLY",
+  "holdout_path_in_input": false,
+  "runner_start_count_planned": 1
+}
