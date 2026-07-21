@@ -5,7 +5,7 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "status": "OPEN_BACKLOG",
-  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_EMPTY_AFTER_ADX_DI_HOLDOUT_TERMINAL_TECHNICAL_FAILURE",
+  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ADX_DI_HOLDOUT_V2_PREREGISTERED",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
   "canonical_ssot": true,
   "exactly_one_authoritative_truth": true,
@@ -152,10 +152,37 @@
       "holdout_executed": true,
       "holdout_result_class": "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
       "holdout_terminal_reason": "mv2_replay_signal_index_mismatch_after_authorized_data_access",
-      "holdout_evaluation_evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1/"
+      "holdout_evaluation_evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1/",
+      "successor_holdout_evaluation_hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_HOLDOUT_V2",
+      "successor_holdout_preregistration_status": "DEFINITION_ONLY_HOLDOUT_PREREGISTERED",
+      "successor_holdout_preregistration_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract_v2.json",
+      "successor_holdout_preregistration_evidence_ref": "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v2/",
+      "successor_holdout_preregistration_digest": "4d1ec324977e33a808d40778548523b95df472b72f3d9133fcdf606a4796c332",
+      "successor_holdout_split_digest": "e29eeb4e9d264e1529a0c7419d707ce84df7919ee6ed95a833612fca46a7184d",
+      "successor_holdout_run_count": 0,
+      "successor_holdout_run_limit": 1,
+      "successor_holdout_executed": false,
+      "successor_new_evaluation_not_rerun": true
     }
   ],
-  "preregistered_hypotheses": [],
+  "preregistered_hypotheses": [
+    {
+      "hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_HOLDOUT_V2",
+      "status": "DEFINITION_ONLY_HOLDOUT_PREREGISTERED",
+      "queue_status": "PREREGISTERED_AWAITING_HOLDOUT_EXECUTION_GO",
+      "evaluation_authorized": false,
+      "development_run_count": 0,
+      "holdout_run_count": 0,
+      "holdout_run_limit": 1,
+      "new_evaluation_not_rerun": true,
+      "feature_family": "adx_di_direction_confirmation",
+      "predecessor_holdout_hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "predecessor_holdout_result_class": "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+      "contract_ref": "config/research/adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract_v2.json",
+      "evidence_ref": "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v2/",
+      "governance_doc_ref": "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V2.md"
+    }
+  ],
   "forbidden_feature_families_for_open_candidates": [
     "multi_feature_absolute_threshold_regime_classifier",
     "atr_rolling_percentile_midband",
@@ -233,16 +260,18 @@
     "open_candidate_count_min": 0,
     "open_candidate_count_max": 4
   },
-  "governance_note": "ADX DI direction confirmation DEVELOPMENT PASS remains terminal. The single authorized holdout run was executed and terminated as ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN (MV2 replay signal-index mismatch after sealed panel data access). Holdout run count is 1/1; retry forbidden. Economic offline gate remains closed; promotion remains closed; no runtime/orders.",
+  "governance_note": "ADX DI direction confirmation DEVELOPMENT PASS remains terminal. Holdout V1 remains terminal as ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN (run count 1/1; no V1 rerun). A new independently versioned holdout evaluation ID ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_HOLDOUT_V2 is definition-only preregistered (run count 0/1) after the generic MV2 replay signal-index binding repair on main. No holdout execution or data access in this slice. Economic offline gate remains closed; promotion remains closed; no runtime/orders.",
   "explicit_non_actions": [
-    "NO_SECOND_HOLDOUT_RUN_OF_ADX_DI_DIRECTION_CONFIRMATION",
-    "NO_RETRY_AFTER_HOLDOUT_TECHNICAL_FAILURE",
+    "NO_V1_HOLDOUT_RERUN",
+    "NO_RETRY_OF_TERMINAL_HOLDOUT_V1",
+    "NO_HOLDOUT_V2_EXECUTION_WITHOUT_SEPARATE_OPERATOR_GO",
+    "NO_HOLDOUT_DATA_ACCESS_IN_DEFINITION_SLICE",
     "NO_POST_RESULT_TUNING",
     "NO_ECONOMIC_GATE_OPEN",
     "NO_PROMOTION_CLAIM",
     "NO_RUNTIME_ACTIVATION",
     "NO_PRODUCTIVE_TRADING_LOGIC_CHANGE",
-    "NO_REOPEN_WITHOUT_NEW_HYPOTHESIS_ID"
+    "NO_REOPEN_OF_V1_WITHOUT_NEW_HYPOTHESIS_ID"
   ],
-  "next_canonical_step": "REVIEW_TERMINAL_HOLDOUT_ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN_NO_RETRY"
+  "next_canonical_step": "REVIEW_AND_MERGE_ADX_DI_HOLDOUT_V2_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
 }

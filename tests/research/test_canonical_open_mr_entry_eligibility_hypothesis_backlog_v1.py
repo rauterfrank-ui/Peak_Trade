@@ -13,6 +13,7 @@ import pytest
 
 from src.research.canonical_open_mr_entry_eligibility_hypothesis_backlog_v1 import (
     ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID,
+    ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID,
     BACKLOG_REL_PATH,
     FORBIDDEN_FEATURE_FAMILIES,
     GOVERNANCE_REL_PATH,
@@ -49,7 +50,7 @@ def test_repo_backlog_validates() -> None:
     assert report["status"] == "OPEN_BACKLOG"
     assert report["terminal_hypothesis_count"] == 7
     assert report["open_candidate_count"] == 0
-    assert report["preregistered_count"] == 0
+    assert report["preregistered_count"] == 1
     assert report["development_run_count"] == 0
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
@@ -60,16 +61,29 @@ def test_repo_backlog_validates() -> None:
 def test_adx_di_terminal_pass_and_queue_empty() -> None:
     backlog = _load(BACKLOG_PATH)
     assert backlog["open_candidates"] == []
-    assert backlog["preregistered_hypotheses"] == []
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    prereg = backlog["preregistered_hypotheses"][0]
+    assert prereg["hypothesis_id"] == ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID
+    assert prereg["status"] == "DEFINITION_ONLY_HOLDOUT_PREREGISTERED"
+    assert prereg["new_evaluation_not_rerun"] is True
+    assert prereg["holdout_run_count"] == 0
+    assert prereg["holdout_run_limit"] == 1
     terminals = {t["hypothesis_id"]: t for t in backlog["terminal_hypotheses"]}
     adx = terminals[ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID]
     assert adx["status"] == "TERMINAL_PASS"
     assert adx["pass_reason"] == "ALL_PASS_REQUIRES_MET"
     assert adx["feature_family"] == "adx_di_direction_confirmation"
-    assert adx["holdout_run_count"] == 0
+    assert adx["holdout_run_count"] == 1
     assert adx["holdout_run_limit"] == 1
-    assert adx["holdout_preregistration_status"] == "DEFINITION_ONLY_HOLDOUT_PREREGISTERED"
-    assert adx["holdout_executed"] is False
+    assert adx["holdout_preregistration_status"] == "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
+    assert adx["holdout_executed"] is True
+    assert adx["holdout_result_class"] == "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN"
+    assert adx["successor_holdout_evaluation_hypothesis_id"] == (
+        ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID
+    )
+    assert adx["successor_holdout_run_count"] == 0
+    assert adx["successor_holdout_run_limit"] == 1
+    assert adx["successor_new_evaluation_not_rerun"] is True
     assert adx["evidence_ref"].endswith(
         "evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/"
     )
@@ -79,10 +93,10 @@ def test_adx_di_terminal_pass_and_queue_empty() -> None:
         "adx_di_direction_confirmation" in backlog["forbidden_feature_families_for_open_candidates"]
     )
     assert backlog["verdict"] == (
-        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_EMPTY_AFTER_ADX_DI_TERMINAL_PASS"
+        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ADX_DI_HOLDOUT_V2_PREREGISTERED"
     )
     assert backlog["next_canonical_step"] == (
-        "REVIEW_AND_MERGE_ADX_DI_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
+        "REVIEW_AND_MERGE_ADX_DI_HOLDOUT_V2_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
     )
 
 
@@ -264,9 +278,10 @@ def test_governance_doc_marks_terminal_pass_and_closed_gate() -> None:
     assert "OPEN_BACKLOG" in text
     assert "PROMOTION_ELIGIBLE=false" in text
     assert ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID in text
+    assert ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID in text
     assert "TERMINAL_PASS" in text
     assert "open_candidates=[]" in text
-    assert "preregistered_hypotheses=[]" in text
+    assert "DEFINITION_ONLY_HOLDOUT_PREREGISTERED" in text
     assert "ALL_PASS_REQUIRES_MET" in text
     assert "Economic offline gate remains closed" in text or "economic gate closed" in text.lower()
-    assert "No second ADX DI evaluation run is permitted" in text
+    assert "must not be re-run" in text or "Do **not** re-run" in text

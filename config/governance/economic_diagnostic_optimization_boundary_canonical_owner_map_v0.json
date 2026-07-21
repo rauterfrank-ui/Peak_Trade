@@ -705,6 +705,16 @@
         "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V1.md"
       ],
       "note": "Single authorized HOLDOUT evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility versus immutable bollinger baseline on the sealed FINAL_AUDIT panel (holdout_run_count 1/1, RESULT_CLASS=ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN after MV2 replay signal-index mismatch); no retry/post-result tuning; economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
+    },
+    "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V2": {
+      "path_prefixes": [
+        "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_preregistration_v2.py",
+        "tests/research/test_adx_di_direction_confirmation_mr_eligibility_holdout_preregistration_v2.py",
+        "config/research/adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract_v2.json",
+        "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v2/",
+        "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V2.md"
+      ],
+      "note": "Definition-only holdout preregistration v2 for ADX DI direction-confirmation MR eligibility after terminal holdout V1 ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN and the generic MV2 replay signal-index binding repair; new evaluation ID; run-limit=1; no V1 rerun; no holdout data access; no backtest; no economic metrics; no productive authority mutation."
     }
   }
 }
