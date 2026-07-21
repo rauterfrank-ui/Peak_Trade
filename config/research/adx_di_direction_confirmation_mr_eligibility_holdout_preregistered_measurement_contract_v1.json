@@ -4,8 +4,8 @@
   "schema_version": "adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract.v1",
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
-  "status": "DEFINITION_ONLY_HOLDOUT_PREREGISTERED",
-  "verdict": "HOLDOUT_HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED_AWAITING_SEPARATE_EXECUTION_GO",
+  "status": "HOLDOUT_EVALUATION_EXECUTED_TERMINAL",
+  "verdict": "HOLDOUT_TERMINAL_ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
   "slice_class": "DEFINITION_ONLY",
   "evaluation_authorized": false,
   "backtest_authorized": false,
@@ -26,7 +26,7 @@
     "development_feature_formula_sha256": "05104afcc41e07d7b14ed8a0e3f2e7bcb97cfabc80cd6ef0c422004136eb36e4",
     "second_development_run_forbidden": true
   },
-  "holdout_run_count": 0,
+  "holdout_run_count": 1,
   "holdout_run_limit": 1,
   "holdout_runs_allowed": 1,
   "retry_forbidden": true,
@@ -419,6 +419,10 @@
     "NO_SECOND_HOLDOUT_RUN",
     "NO_REOPEN_WITHOUT_NEW_HYPOTHESIS_ID"
   ],
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN",
-  "holdout_preregistration_digest": "014a6955354be19d0abbae65269a816743347975647b448f58ea61ad37647e6f"
+  "next_canonical_step": "REVIEW_TERMINAL_HOLDOUT_ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN_NO_RETRY",
+  "holdout_preregistration_digest": "014a6955354be19d0abbae65269a816743347975647b448f58ea61ad37647e6f",
+  "holdout_executed": true,
+  "terminal_holdout_result_class": "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+  "terminal_holdout_reason": "UNEXPECTED_FAILURE_AFTER_DATA_ACCESS:ValueError:mv2_replay_engine_signal_binding_failed:mv2_replay_signal_index_mismatch",
+  "evaluation_evidence_ref": "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1/"
 }

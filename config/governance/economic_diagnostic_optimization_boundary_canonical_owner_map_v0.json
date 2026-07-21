@@ -695,6 +695,16 @@
         "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V1.md"
       ],
       "note": "Definition-only holdout preregistration for ADX DI direction-confirmation MR eligibility after DEVELOPMENT PASS; freezes sealed FINAL_AUDIT holdout split digest from existing SSOT registry metadata, acceptance criteria, run-limit=1, and execution-GO gate; no holdout data access, no backtest, no economic metrics, no productive authority mutation."
+    },
+    "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V1": {
+      "path_prefixes": [
+        "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v1/",
+        "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1.py",
+        "tests/research/test_adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v1.py",
+        "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1/",
+        "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V1.md"
+      ],
+      "note": "Single authorized HOLDOUT evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility versus immutable bollinger baseline on the sealed FINAL_AUDIT panel (holdout_run_count 1/1, RESULT_CLASS=ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN after MV2 replay signal-index mismatch); no retry/post-result tuning; economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
     }
   }
 }

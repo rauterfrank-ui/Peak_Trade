@@ -1,0 +1,29 @@
+{
+  "checks": {
+    "cost_drag_fully_included": null,
+    "entry_eligibility_divergence_observed": null,
+    "max_drawdown_treatment_ge_control": null,
+    "net_return_treatment_gt_control": null,
+    "profit_factor_treatment_gt_control": null,
+    "trade_count_treatment_ge_control_floor": null,
+    "trade_count_treatment_ge_minimum": null
+  },
+  "control_max_drawdown": null,
+  "control_net_return": null,
+  "control_profit_factor": null,
+  "control_trade_count": null,
+  "cost_drag_fully_included": null,
+  "entry_eligibility_divergence_observed": null,
+  "evaluable": false,
+  "fail_criteria_met": false,
+  "inconclusive_criteria_met": true,
+  "inconclusive_reason": "contract_or_wiring_integrity_failure_preventing_measurement",
+  "pass_criteria_met": false,
+  "reason": "UNEXPECTED_FAILURE_AFTER_DATA_ACCESS:ValueError:mv2_replay_engine_signal_binding_failed:mv2_replay_signal_index_mismatch",
+  "result_class": "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+  "technical_failure": true,
+  "treatment_max_drawdown": null,
+  "treatment_net_return": null,
+  "treatment_profit_factor": null,
+  "treatment_trade_count": null
+}
