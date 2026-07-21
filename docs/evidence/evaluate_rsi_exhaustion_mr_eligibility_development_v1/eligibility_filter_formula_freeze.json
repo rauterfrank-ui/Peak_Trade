@@ -1,0 +1,23 @@
+{
+  "calculator_method": "EWM_CAUSAL_SPAN_ADJUST_FALSE",
+  "calculator_ssot": "src/strategies/rsi.py::calculate_rsi",
+  "definitions": {
+    "eligibility_rule": "ELIGIBLE iff RSI is finite AND (RSI <= 30 OR RSI >= 70); otherwise STAND_ASIDE. First rsi_period=14 bars are always STAND_ASIDE.",
+    "rsi_14h": "RSI(14) over trailing finalized PT1H close prices via src.strategies.rsi.calculate_rsi (EWM causal, span=14, adjust=False); first 14 bars are warmup"
+  },
+  "feature_formula_id": "rsi_exhaustion_mr_eligibility_rsi14_features_v1",
+  "feature_formula_sha256": "1ce696e033bc2c5b049063fd5a806ad1e32b7d1b12c9b5ec5153b3e7d96218b5",
+  "filter_id": "canonical_rsi_exhaustion_entry_eligibility_v1",
+  "frozen_parameters": {
+    "calculator": "ewm_causal_span",
+    "overbought": 70,
+    "oversold": 30,
+    "rsi_period": 14,
+    "use_wilder": false
+  },
+  "lookahead_forbidden": true,
+  "post_hoc_retune_forbidden": true,
+  "source": "finalized_pt1h_ohlcv_close_only",
+  "threshold_adjustment_forbidden": true,
+  "wilder_smoothing_excluded": true
+}
