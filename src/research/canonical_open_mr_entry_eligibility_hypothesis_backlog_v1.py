@@ -29,7 +29,12 @@ FORBIDDEN_FEATURE_FAMILIES = frozenset(
         "atr_rolling_percentile_midband",
         "rsi_exhaustion_level",
         "adx_level_range_admission",
+        "price_vs_ma_trend_alignment",
     }
+)
+REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
+MA_TREND_ALIGNMENT_HYPOTHESIS_ID = (
+    "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
 )
 FORBIDDEN_EMBEDDED_RESULT_KEYS = frozenset(
     {
@@ -363,11 +368,50 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(criteria.get("criteria_locked_a_priori") is True, "CRITERIA_NOT_LOCKED")
 
+    _assert_true(
+        MA_TREND_ALIGNMENT_HYPOTHESIS_ID not in candidate_ids,
+        "MA_TREND_ALIGNMENT_MUST_NOT_BE_OPEN_CANDIDATE",
+    )
+
+    preregistered = backlog.get("preregistered_hypotheses") or []
+    _assert_true(isinstance(preregistered, list), "PREREGISTERED_HYPOTHESES_TYPE")
+    preregistered_ids: list[str] = []
+    for entry in preregistered:
+        _assert_true(isinstance(entry, Mapping), "PREREGISTERED_ENTRY_TYPE")
+        assert isinstance(entry, Mapping)
+        hyp_id = entry.get("hypothesis_id")
+        _assert_true(isinstance(hyp_id, str) and hyp_id, "PREREGISTERED_ID_MISSING")
+        assert isinstance(hyp_id, str)
+        _assert_true(hyp_id not in preregistered_ids, "DUPLICATE_PREREGISTERED_ID", hyp_id)
+        _assert_true(
+            hyp_id not in REQUIRED_TERMINAL_HYPOTHESIS_IDS,
+            "PREREGISTERED_IS_TERMINAL",
+            hyp_id,
+        )
+        _assert_true(hyp_id not in candidate_ids, "PREREGISTERED_STILL_OPEN", hyp_id)
+        _assert_true(
+            entry.get("status") == REQUIRED_PREREGISTERED_STATUS,
+            "PREREGISTERED_STATUS",
+            hyp_id,
+        )
+        _assert_true(
+            entry.get("evaluation_authorized") is False,
+            "PREREGISTERED_EVALUATION_AUTHORIZED",
+            hyp_id,
+        )
+        _assert_true(
+            entry.get("development_run_count") == 0,
+            "PREREGISTERED_DEVELOPMENT_RUN_COUNT",
+            hyp_id,
+        )
+        preregistered_ids.append(hyp_id)
+
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
         "terminal_hypothesis_count": 4,
         "open_candidate_count": len(candidates),
+        "preregistered_count": len(preregistered_ids),
         "next_eligible_hypothesis_id": next_eligible[0],
         "priority_order": [c["hypothesis_id"] for c in ordered],
         "development_run_count": 0,

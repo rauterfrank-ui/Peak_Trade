@@ -5,7 +5,7 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "status": "OPEN_BACKLOG",
-  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_VERSIONED",
+  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ONE_PREREGISTERED",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
   "canonical_ssot": true,
   "exactly_one_authoritative_truth": true,
@@ -104,11 +104,24 @@
       "evidence_ref": "docs/evidence/evaluate_adx_range_admission_mr_eligibility_development_v1/"
     }
   ],
+  "preregistered_hypotheses": [
+    {
+      "hypothesis_id": "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "status": "DEFINITION_ONLY_PREREGISTERED",
+      "queue_status": "PREREGISTERED_AWAITING_EVALUATION_GO",
+      "evaluation_authorized": false,
+      "development_run_count": 0,
+      "feature_family": "price_vs_ma_trend_alignment",
+      "priority_rank_at_preregistration": 1,
+      "contract_ref": "config/research/ma_trend_alignment_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json"
+    }
+  ],
   "forbidden_feature_families_for_open_candidates": [
     "multi_feature_absolute_threshold_regime_classifier",
     "atr_rolling_percentile_midband",
     "rsi_exhaustion_level",
-    "adx_level_range_admission"
+    "adx_level_range_admission",
+    "price_vs_ma_trend_alignment"
   ],
   "forbidden_retune_of_terminal_parameters": true,
   "forbidden_semantic_duplicates": true,
@@ -159,61 +172,11 @@
   },
   "open_candidates": [
     {
-      "hypothesis_id": "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-      "canonical_slug": "ma-trend-alignment-mr-eligibility",
-      "status": "OPEN_UNPREREGISTERED",
-      "queue_status": "NEXT_ELIGIBLE_FOR_PREREGISTRATION",
-      "priority_rank": 1,
-      "priority_score_total": 70,
-      "priority_scores": {
-        "semantic_distance": 5,
-        "entry_effectiveness": 5,
-        "measurability": 5,
-        "low_additional_complexity": 5,
-        "low_overfitting_risk": 5,
-        "repo_support": 5
-      },
-      "feature_family": "price_vs_ma_trend_alignment",
-      "feature_ids": [
-        "close_vs_sma_50h"
-      ],
-      "causal_thesis": "Mean-reversion band fades that fight the local SMA(50) trend are disproportionately stopped out after costs; admitting long entries only when close > SMA(50) and short entries only when close < SMA(50) improves net PF and net return without worsening max drawdown versus the unfiltered Bollinger baseline.",
-      "independent_treatment_change": "Single side-aware pre-entry eligibility filter: ELIGIBLE for a long candidate iff close > SMA(50); ELIGIBLE for a short candidate iff close < SMA(50); otherwise STAND_ASIDE. No change to signal geometry, direction authority, exits, sizing, risk, fees, or slippage.",
-      "expected_effect": "Blocks counter-trend fades; reduces weak entries while preserving with-trend mean-reversion admissions; measurable entry-eligibility divergence vs control.",
-      "known_failure_modes": [
-        "Filter inactive if almost all baseline entries already align with SMA(50)",
-        "Whipsaw around SMA(50) may block good fades near trend turns",
-        "Economic improvement may fail despite divergence (as with prior terminal FAILs)"
-      ],
-      "semantic_distance_to_terminal": {
-        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not a multi-feature absolute-threshold regime classifier; single price-vs-MA compare.",
-        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not ATR percentile mid-band; no volatility-rank feature.",
-        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not RSI level exhaustion; uses SMA alignment, not oscillator extremes.",
-        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not ADX level range admission; uses price/MA side alignment, not trend-strength magnitude."
-      },
-      "repo_source_refs": [
-        "config/config.toml#[strategies.rsi_reversion.defaults].trend_ma_window",
-        "config/config.toml#[strategy.rsi_reversion_v1].trend_ma_window",
-        "src/strategies/rsi_reversion.py"
-      ],
-      "frozen_parameter_intent": {
-        "ma_period": 50,
-        "ma_type": "SMA",
-        "side_aware": true
-      },
-      "not_a_parameter_retune_of": [
-        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
-        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
-        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
-        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
-      ]
-    },
-    {
       "hypothesis_id": "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
       "canonical_slug": "macd-histogram-countertrend-mr-eligibility",
       "status": "OPEN_UNPREREGISTERED",
-      "queue_status": "QUEUED",
-      "priority_rank": 2,
+      "queue_status": "NEXT_ELIGIBLE_FOR_PREREGISTRATION",
+      "priority_rank": 1,
       "priority_score_total": 59,
       "priority_scores": {
         "semantic_distance": 3,
@@ -263,7 +226,7 @@
       "canonical_slug": "adx-di-direction-confirmation-mr-eligibility",
       "status": "OPEN_UNPREREGISTERED",
       "queue_status": "QUEUED",
-      "priority_rank": 3,
+      "priority_rank": 2,
       "priority_score_total": 57,
       "priority_scores": {
         "semantic_distance": 3,
@@ -330,6 +293,7 @@
     "open_candidate_count_min": 2,
     "open_candidate_count_max": 4
   },
+  "governance_note": "MA trend-alignment is DEFINITION_ONLY_PREREGISTERED and awaiting evaluation GO; evaluation of the next eligible open candidate is NOT authorized by this transition.",
   "explicit_non_actions": [
     "NO_PREREGISTRATION_IN_THIS_SLICE",
     "NO_BACKTEST_IN_THIS_SLICE",
@@ -342,7 +306,8 @@
     "NO_PRODUCTIVE_TRADING_LOGIC_CHANGE",
     "NO_PROMOTION_CLAIM",
     "NO_RETUNE_OF_TERMINAL_HYPOTHESES",
-    "NO_MULTI_GATE_COMBINATION"
+    "NO_MULTI_GATE_COMBINATION",
+    "NO_AUTO_EVALUATION_OF_NEXT_ELIGIBLE"
   ],
-  "next_canonical_step": "SEPARATE_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_NEXT_ELIGIBLE_CANDIDATE_AFTER_OPERATOR_MERGE_GO"
+  "next_canonical_step": "REVIEW_AND_MERGE_MA_TREND_ALIGNMENT_PREREGISTRATION_BEFORE_ANY_EVALUATION"
 }
