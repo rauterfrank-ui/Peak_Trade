@@ -2238,7 +2238,6 @@ def run_mv2_research_backtest_wiring_v1(
 
     outcomes: list[MV2ReplayBarOutcomeV1] = []
     replay_signals: list[int] = []
-    signal_index: list[pd.Timestamp] = []
     sequence_state: MV2IntegratedReplayBarSequenceStateV1 | None = None
     decision_funnel_accumulator = DecisionFunnelAccumulatorV0()
     economic_research_profile = (
@@ -2417,7 +2416,6 @@ def run_mv2_research_backtest_wiring_v1(
                     )
                 )
                 replay_signals.append(signal)
-                signal_index.append(pd.Timestamp(row.name))
                 sequence_state = replace(
                     sequence_state,
                     prior_mark_price=float(context.mark_price),
@@ -2645,7 +2643,6 @@ def run_mv2_research_backtest_wiring_v1(
             )
         )
         replay_signals.append(signal)
-        signal_index.append(pd.Timestamp(row.name))
         _emit_observational_bar_hook(
             trading_epoch=i,
             bar_row=row,
@@ -2661,7 +2658,10 @@ def run_mv2_research_backtest_wiring_v1(
             fail_reasons=tuple(replay_result.fail_reasons),
         )
 
-    mv2_replay_series = pd.Series(replay_signals, index=pd.DatetimeIndex(signal_index), dtype=int)
+    # Preserve the canonical bars.index identity (dtype/unit, tz, name, order).
+    # Rebuilding via pd.DatetimeIndex([pd.Timestamp(...), ...]) can promote
+    # datetime64[us, UTC] -> datetime64[ns, UTC] and fail Index.equals.
+    mv2_replay_series = pd.Series(replay_signals, index=bars.index, dtype=int)
     mv2_replay_digest = compute_strategy_signal_digest_v1(
         mv2_replay_series,
         strategy_id=strategy_id,
