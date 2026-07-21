@@ -1,0 +1,239 @@
+"""Canonical open MR exit-efficiency hypothesis backlog SSOT validator v1.
+
+Definition-only governance. No evaluation, backtest, holdout access, runtime
+activation, or productive trading-logic mutation.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, Mapping
+
+PACKAGE_MARKER = "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1=true"
+BACKLOG_REL_PATH = "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json"
+GOVERNANCE_REL_PATH = "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
+REQUIRED_STATUS = "OPEN_BACKLOG"
+REQUIRED_DATASET_ID = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
+REQUIRED_TREATMENT_TYPE = "POST_ENTRY_EXIT_EFFICIENCY_MECHANISM"
+REQUIRED_HYPOTHESIS_ID = (
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1"
+)
+REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
+HOLDOUT_OPAQUE_ID = "offline_economic_reevaluation_sealed_long_panel_v1"
+REQUIRED_RESEARCH_QUESTION = (
+    "Given COSTS_DESTROY_MARGINAL_EDGE on the sealed DEVELOPMENT_ONLY Bollinger/MR "
+    "baseline (marginal gross PF~1.01, all-SHORT book), does a cost-structure or "
+    "holding/exit-efficiency change class exist that preserves gross edge without "
+    "retuning terminal entry-eligibility parameters or reopening exhausted filter families?"
+)
+FORBIDDEN_EMBEDDED_RESULT_KEYS = frozenset(
+    {
+        "baseline_metrics",
+        "treatment_metrics",
+        "measured_net_return",
+        "measured_profit_factor",
+        "economic_metrics",
+        "RESULT_CLASS",
+        "result_class",
+        "comparison_decision",
+        "probe_summary",
+    }
+)
+
+
+class BacklogValidationError(ValueError):
+    """Fail-closed exit-efficiency backlog SSOT validation error."""
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def _load_json(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _assert_true(condition: bool, code: str, detail: str = "") -> None:
+    if not condition:
+        suffix = f": {detail}" if detail else ""
+        raise BacklogValidationError(f"{code}{suffix}")
+
+
+def _contains_banned_result_keys(obj: Any, path: str = "$") -> list[str]:
+    found: list[str] = []
+    if isinstance(obj, Mapping):
+        for key, value in obj.items():
+            key_path = f"{path}.{key}"
+            if key in FORBIDDEN_EMBEDDED_RESULT_KEYS:
+                found.append(key_path)
+            found.extend(_contains_banned_result_keys(value, key_path))
+    elif isinstance(obj, list):
+        for idx, item in enumerate(obj):
+            found.extend(_contains_banned_result_keys(item, f"{path}[{idx}]"))
+    return found
+
+
+def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
+    _assert_true(backlog.get("status") == REQUIRED_STATUS, "STATUS_NOT_OPEN_BACKLOG")
+    _assert_true(backlog.get("canonical_ssot") is True, "NOT_CANONICAL_SSOT")
+    _assert_true(
+        backlog.get("exactly_one_authoritative_truth") is True,
+        "NOT_EXACTLY_ONE_AUTHORITATIVE_TRUTH",
+    )
+    _assert_true(
+        backlog.get("productive_trading_logic_included") is False,
+        "PRODUCTIVE_TRADING_LOGIC_INCLUDED",
+    )
+    _assert_true(backlog.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
+    _assert_true(backlog.get("backtest_authorized") is False, "BACKTEST_AUTHORIZED")
+    _assert_true(
+        backlog.get("evaluation_results_embedded") is False,
+        "EVALUATION_RESULTS_EMBEDDED_FLAG",
+    )
+    _assert_true(backlog.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NONZERO")
+    _assert_true(backlog.get("dataset_id") == REQUIRED_DATASET_ID, "DATASET_ID_MISMATCH")
+    _assert_true(backlog.get("dataset_class") == "DEVELOPMENT_ONLY", "DATASET_CLASS")
+    _assert_true(backlog.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
+    _assert_true(backlog.get("sealed_holdout_id") == HOLDOUT_OPAQUE_ID, "HOLDOUT_ID_MISMATCH")
+    _assert_true(
+        backlog.get("required_treatment_type") == REQUIRED_TREATMENT_TYPE,
+        "TREATMENT_TYPE_MISMATCH",
+    )
+    _assert_true(
+        backlog.get("research_question") == REQUIRED_RESEARCH_QUESTION,
+        "RESEARCH_QUESTION_MISMATCH",
+    )
+    _assert_true(
+        backlog.get("research_question_scope_selected") == "EXIT_EFFICIENCY_ONLY",
+        "SCOPE_MUST_BE_EXIT_EFFICIENCY_ONLY",
+    )
+    _assert_true(
+        backlog.get("short_side_hypothesis_preregistered") is False,
+        "SHORT_SIDE_HYPOTHESIS_PREREGISTERED",
+    )
+    _assert_true(
+        backlog.get("holdout_candidate_preregistered") is False,
+        "HOLDOUT_CANDIDATE_PREREGISTERED",
+    )
+    _assert_true(
+        backlog.get("cost_structure_hypothesis_preregistered") is False,
+        "COST_STRUCTURE_HYPOTHESIS_PREREGISTERED",
+    )
+
+    banned = _contains_banned_result_keys(backlog)
+    _assert_true(not banned, "EMBEDDED_RESULT_METRICS", ", ".join(banned[:8]))
+
+    runtime = backlog.get("runtime_policy")
+    _assert_true(isinstance(runtime, Mapping), "RUNTIME_POLICY_MISSING")
+    assert isinstance(runtime, Mapping)
+    for key in (
+        "runtime_activated",
+        "shadow_activated",
+        "paper_activated",
+        "testnet_activated",
+        "live_authorized",
+        "orders_allowed",
+        "scheduler_authorized",
+        "capital_activated",
+    ):
+        _assert_true(runtime.get(key) is False, f"RUNTIME_UNLOCKED:{key}")
+
+    promo = backlog.get("promotion_and_economic_gate_policy")
+    _assert_true(isinstance(promo, Mapping), "PROMOTION_POLICY_MISSING")
+    assert isinstance(promo, Mapping)
+    _assert_true(promo.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE")
+    _assert_true(promo.get("promotion_gate_open") is False, "PROMOTION_GATE_OPEN")
+    _assert_true(
+        promo.get("economic_validity_offline_gate_pass") is False,
+        "ECONOMIC_GATE_OPEN",
+    )
+    _assert_true(promo.get("economic_gate_open") is False, "ECONOMIC_GATE_OPEN_FLAG")
+
+    open_cands = backlog.get("open_unpreregistered_candidates")
+    _assert_true(isinstance(open_cands, list), "OPEN_CANDIDATES_MISSING")
+    assert isinstance(open_cands, list)
+    _assert_true(len(open_cands) == 0, "OPEN_UNPREREGISTERED_MUST_BE_EMPTY")
+
+    competing = backlog.get("competing_open_hypotheses")
+    _assert_true(isinstance(competing, list), "COMPETING_OPEN_MISSING")
+    assert isinstance(competing, list)
+    _assert_true(len(competing) == 0, "COMPETING_OPEN_MUST_BE_EMPTY")
+
+    rules = backlog.get("governance_rules")
+    _assert_true(isinstance(rules, Mapping), "GOVERNANCE_RULES_MISSING")
+    assert isinstance(rules, Mapping)
+    _assert_true(
+        rules.get("max_concurrent_definition_only_preregistrations") == 1, "MAX_CONCURRENT"
+    )
+    _assert_true(rules.get("development_runs_per_hypothesis") == 1, "DEV_RUNS_PER_HYP")
+    _assert_true(rules.get("holdout_use_forbidden") is True, "HOLDOUT_USE_ALLOWED")
+    _assert_true(
+        rules.get("short_side_parallel_hypothesis_forbidden") is True,
+        "SHORT_SIDE_PARALLEL_ALLOWED",
+    )
+    _assert_true(
+        rules.get("entry_eligibility_reopen_forbidden") is True,
+        "ENTRY_ELIGIBILITY_REOPEN_ALLOWED",
+    )
+    _assert_true(rules.get("economic_gate_closed") is True, "ECONOMIC_GATE_NOT_CLOSED")
+    _assert_true(rules.get("promotion_closed") is True, "PROMOTION_NOT_CLOSED")
+    _assert_true(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_RULE")
+    _assert_true(rules.get("open_unpreregistered_count_exact") == 0, "OPEN_COUNT_RULE")
+
+    preregistered = backlog.get("preregistered_hypotheses")
+    _assert_true(isinstance(preregistered, list), "PREREGISTERED_MISSING")
+    assert isinstance(preregistered, list)
+    _assert_true(len(preregistered) == 1, "PREREGISTERED_COUNT", str(len(preregistered)))
+    entry = preregistered[0]
+    _assert_true(isinstance(entry, Mapping), "PREREGISTERED_ENTRY_TYPE")
+    assert isinstance(entry, Mapping)
+    _assert_true(entry.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "PREREGISTERED_ID")
+    _assert_true(entry.get("status") == REQUIRED_PREREGISTERED_STATUS, "PREREGISTERED_STATUS")
+    _assert_true(entry.get("treatment_type") == REQUIRED_TREATMENT_TYPE, "PREREGISTERED_TREATMENT")
+    _assert_true(entry.get("development_only") is True, "PREREGISTERED_DEV_ONLY")
+    _assert_true(entry.get("holdout_allowed") is False, "PREREGISTERED_HOLDOUT_ALLOWED")
+    _assert_true(entry.get("evaluation_authorized") is False, "PREREGISTERED_EVAL_AUTHORIZED")
+    _assert_true(entry.get("evaluation_executed") is False, "PREREGISTERED_EVAL_EXECUTED")
+    _assert_true(int(entry.get("evaluation_run_count", -1)) == 0, "PREREGISTERED_RUN_COUNT")
+    _assert_true(int(entry.get("evaluation_run_limit") or 0) == 1, "PREREGISTERED_RUN_LIMIT")
+    _assert_true(int(entry.get("development_run_count", -1)) == 0, "PREREGISTERED_DEV_RUN_COUNT")
+
+    return {
+        "valid": True,
+        "status": REQUIRED_STATUS,
+        "preregistered_count": 1,
+        "open_unpreregistered_count": 0,
+        "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
+        "development_run_count": 0,
+        "evaluation_authorized": False,
+        "holdout_forbidden": True,
+        "short_side_hypothesis_preregistered": False,
+        "holdout_candidate_preregistered": False,
+        "runtime_locked": True,
+    }
+
+
+def load_and_validate_repo_backlog(repo_root: Path | None = None) -> dict[str, Any]:
+    root = repo_root or _repo_root()
+    path = root / BACKLOG_REL_PATH
+    _assert_true(path.is_file(), "BACKLOG_SSOT_MISSING", str(path))
+    governance = root / GOVERNANCE_REL_PATH
+    _assert_true(governance.is_file(), "GOVERNANCE_DOC_MISSING", str(governance))
+    backlog = _load_json(path)
+    report = validate_backlog_contract(backlog)
+    report["backlog_path"] = BACKLOG_REL_PATH
+    report["governance_path"] = GOVERNANCE_REL_PATH
+    return report
+
+
+def assert_exactly_one_exit_efficiency_backlog_ssot(repo_root: Path | None = None) -> None:
+    root = repo_root or _repo_root()
+    matches = sorted((root / "config" / "research").glob("*open*mr*exit_efficiency*backlog*.json"))
+    unique = sorted({p.resolve() for p in matches})
+    _assert_true(len(unique) == 1, "EXIT_EFFICIENCY_BACKLOG_SSOT_COUNT", str(unique))
+    _assert_true(
+        unique[0] == (root / BACKLOG_REL_PATH).resolve(),
+        "EXIT_EFFICIENCY_BACKLOG_SSOT_PATH_UNEXPECTED",
+        str(unique[0]),
+    )
