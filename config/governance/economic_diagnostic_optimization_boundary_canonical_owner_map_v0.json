@@ -861,6 +861,16 @@
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.md"
       ],
       "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0\u21921): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5."
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V6": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v6.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v6.py",
+        "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v6.json",
+        "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v6/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V6.md"
+      ],
+      "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V6 after terminal V5 INFRASTRUCTURE_FAILURE; EVALUATION_RUN_COUNT=0; genuine economic change vs V5 (midband-cross OR frozen max-holding-horizon=48h); reuses V5 process-lifecycle checkpoint; not a V5/V4/V3/V2/V1 rerun; no V5 partial metrics; no evaluation/runtime/orders."
     }
   }
 }

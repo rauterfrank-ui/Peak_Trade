@@ -1,4 +1,4 @@
-"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (V4 terminal)."""
+"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (V6 def-only)."""
 
 from __future__ import annotations
 
@@ -15,6 +15,8 @@ from src.research.canonical_open_mr_exit_efficiency_hypothesis_backlog_v1 import
     REQUIRED_V3_HYPOTHESIS_ID,
     REQUIRED_V4_HYPOTHESIS_ID,
     REQUIRED_V5_HYPOTHESIS_ID,
+    REQUIRED_V6_HYPOTHESIS_ID,
+    REQUIRED_V6_MECHANISM_ID,
     assert_exactly_one_exit_efficiency_backlog_ssot,
     load_and_validate_repo_backlog,
 )
@@ -34,14 +36,14 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
     assert GOVERNANCE_PATH.is_file()
 
 
-def test_repo_backlog_no_definition_only_after_v5_terminal() -> None:
+def test_repo_backlog_one_definition_only_v6_preregistered() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["preregistered_count"] == 0
+    assert report["preregistered_count"] == 1
     assert report["terminal_count"] == 5
     assert report["open_unpreregistered_count"] == 0
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert report["preregistered_hypothesis_id"] is None
+    assert report["preregistered_hypothesis_id"] == REQUIRED_V6_HYPOTHESIS_ID
     assert report["development_run_count"] == 5
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
@@ -71,11 +73,24 @@ def test_repo_backlog_no_definition_only_after_v5_terminal() -> None:
     assert report["v5_is_rerun_of_v4"] is False
 
 
-def test_terminal_v4_v5_and_terminal_entry_shape() -> None:
+def test_definition_only_v6_and_terminal_entry_shape() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert len(backlog["preregistered_hypotheses"]) == 0
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
     assert backlog["open_unpreregistered_candidates"] == []
+    pref = backlog["preregistered_hypotheses"][0]
+    assert pref["hypothesis_id"] == REQUIRED_V6_HYPOTHESIS_ID
+    assert pref["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert pref["evaluation_run_count"] == 0
+    assert pref["evaluation_authorized"] is False
+    assert pref["evaluation_executed"] is False
+    assert pref["result_class"] == "NOT_EVALUATED"
+    assert pref["mechanism_id"] == REQUIRED_V6_MECHANISM_ID
+    assert pref["identical_exit_mechanism_to_development_v5"] is False
+    assert pref["identical_economic_hypothesis_to_development_v5"] is False
+    assert pref["economic_change_vs_development_v5"] is True
+    assert pref["v5_rerun_forbidden"] is True
+    assert pref["predecessor_partial_metrics_used"] is False
     assert len(backlog["terminal_hypotheses"]) == 5
     by_id = {e["hypothesis_id"]: e for e in backlog["terminal_hypotheses"]}
     v1 = by_id[REQUIRED_HYPOTHESIS_ID]
@@ -117,16 +132,21 @@ def test_terminal_v4_v5_and_terminal_entry_shape() -> None:
     assert v5["baseline_members_completed"] == "3/46"
     assert v5["treatment_members_completed"] == "0/46"
     assert "NO_V5_RERUN" in backlog["explicit_non_actions"]
-    assert "NO_V6_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_V6_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V3_ECONOMIC_RESULT_IMPORT" in backlog["explicit_non_actions"]
     assert "NO_V4_AUTO_CREATE" not in backlog["explicit_non_actions"]
 
 
-def test_governance_doc_mentions_v5_and_v4_terminal() -> None:
+def test_governance_doc_mentions_v6_definition_only_and_v5_terminal() -> None:
     text = (
         REPO / "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
     ).read_text(encoding="utf-8")
+    assert "V6" in text
+    assert "DEFINITION_ONLY" in text or "definition-only" in text.lower()
     assert "V5" in text or "v5" in text.lower()
     assert "V4" in text
     assert "INFRASTRUCTURE_FAILURE" in text or "Infrastructure" in text
+    assert "NO_V7" in text or "No V7" in text or "No V7 auto-create" in text
