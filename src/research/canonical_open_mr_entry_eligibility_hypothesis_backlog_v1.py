@@ -22,6 +22,7 @@ REQUIRED_TERMINAL_HYPOTHESIS_IDS = (
     "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
     "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
     "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+    "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
 )
 FORBIDDEN_FEATURE_FAMILIES = frozenset(
     {
@@ -203,7 +204,11 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     terminals = backlog.get("terminal_hypotheses")
     _assert_true(isinstance(terminals, list), "TERMINAL_HYPOTHESES_MISSING")
     assert isinstance(terminals, list)
-    _assert_true(len(terminals) == 4, "TERMINAL_HYPOTHESIS_COUNT", str(len(terminals)))
+    _assert_true(
+        len(terminals) == len(REQUIRED_TERMINAL_HYPOTHESIS_IDS),
+        "TERMINAL_HYPOTHESIS_COUNT",
+        str(len(terminals)),
+    )
     terminal_ids = [t.get("hypothesis_id") for t in terminals]
     _assert_true(
         tuple(terminal_ids) == REQUIRED_TERMINAL_HYPOTHESIS_IDS,
@@ -409,7 +414,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
-        "terminal_hypothesis_count": 4,
+        "terminal_hypothesis_count": len(REQUIRED_TERMINAL_HYPOTHESIS_IDS),
         "open_candidate_count": len(candidates),
         "preregistered_count": len(preregistered_ids),
         "next_eligible_hypothesis_id": next_eligible[0],

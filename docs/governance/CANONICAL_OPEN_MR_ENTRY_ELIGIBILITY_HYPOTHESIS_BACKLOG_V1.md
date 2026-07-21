@@ -5,7 +5,7 @@
 `OPEN_BACKLOG` — versioned canonical SSOT for open Mean-Reversion entry-eligibility
 research candidates. Definition-only governance. No evaluation, no backtest, no
 holdout access, no runtime activation, no productive trading-logic mutation in this
-slice. One hypothesis is `DEFINITION_ONLY_PREREGISTERED` and awaiting evaluation GO.
+slice. Open preregistrations are empty after the MA trend-alignment terminal FAIL.
 
 ## Binding
 
@@ -30,27 +30,24 @@ slice. One hypothesis is `DEFINITION_ONLY_PREREGISTERED` and awaiting evaluation
    FAIL / `NET_PROFIT_FACTOR_NOT_IMPROVED`
 4. `ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` —
    FAIL / `NET_PROFIT_FACTOR_NOT_IMPROVED`
+5. `MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` —
+   FAIL / `NET_PROFIT_FACTOR_NOT_IMPROVED` (price-vs-SMA(50) with-trend admission;
+   development run count 1/1; evidence under
+   `docs/evidence/evaluate_ma_trend_alignment_mr_eligibility_development_v1/`)
 
 Semantic duplicates and parameter retunes of these terminals are forbidden.
-`price_vs_ma_trend_alignment` is also forbidden for remaining open candidates
-(MA is preregistered).
+`price_vs_ma_trend_alignment` remains forbidden for remaining open candidates.
 
-## Preregistered (definition-only; evaluation not authorized)
+## Preregistered
 
-| Hypothesis ID | Status | Queue |
-|---|---|---|
-| `MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` | `DEFINITION_ONLY_PREREGISTERED` | `PREREGISTERED_AWAITING_EVALUATION_GO` |
-
-Contract:
-`config/research/ma_trend_alignment_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json`.
-`evaluation_authorized=false`; `development_run_count=0`.
+None. `preregistered_hypotheses=[]`.
 
 ## Open candidates (deterministic priority)
 
 Priority criteria are locked a priori (semantic distance, entry-effectiveness,
 measurability, low complexity, low overfit risk, repo support). No performance-based
 selection. No ties. Evaluation of the next eligible candidate is **NOT authorized**
-by this MA preregistration transition.
+by this coherence slice.
 
 | Rank | Hypothesis ID | Queue |
 |---:|---|---|
@@ -69,6 +66,7 @@ All open candidates are `OPEN_UNPREREGISTERED`.
 - No reprioritization without a separate versioned governance PR
 - Evaluation only after a separate preregistration PR and operator GO
 - No auto-evaluation of the next eligible candidate from this transition
+- No reopen of terminal hypotheses
 - Runtime / shadow / paper / testnet / live / orders remain locked
 
 ## Gates
@@ -82,6 +80,8 @@ All open candidates are `OPEN_UNPREREGISTERED`.
 
 ## Next step
 
-Review and merge the MA trend-alignment definition-only preregistration before any
-evaluation. Evaluation of MA (or of the next eligible open candidate) requires a
-separate operator GO and is not authorized by this backlog transition.
+`REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_V1`
+
+Definition-only preregistration of MACD histogram countertrend (and any later
+evaluation) requires a separate PR and operator GO. This coherence slice does not
+authorize preregistration, evaluation, holdout access, or productive authority change.
