@@ -784,7 +784,7 @@
         "tests/research/test_canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py",
         "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
       ],
-      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY V4 candidate after V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE and V3 terminal FAIL; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders."
+      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY V5 candidate after V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE, V3 terminal FAIL, and V4 terminal INFRASTRUCTURE_FAILURE; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders."
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V1": {
       "path_prefixes": [
@@ -834,6 +834,23 @@
         "docs/evidence/evaluation_runner_lifecycle_observability_v1/"
       ],
       "note": "Generic research-infrastructure observability for evaluation-runner process death (atomic heartbeat/progress, catchable signal handlers, exit/signal normalization, supervised child reap, INCONCLUSIVE_INFRASTRUCTURE_FAILURE classification without auto-rerun); no strategy/Master-V2/Double-Play/risk/sizing/execution/economic semantics mutation; no evaluation rerun; no holdout access; no runtime/orders."
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V5": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v5.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_hypothesis_preregistration_v5.py",
+        "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v5.json",
+        "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v5/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V5.md"
+      ],
+      "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V5 after terminal V4 INFRASTRUCTURE_FAILURE; EVALUATION_RUN_COUNT=0; preserves V4 economic hypothesis/exit mechanism; adds process-lifecycle checkpoint observability; not a V4/V3/V2/V1 rerun; no evaluation/runtime/orders."
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PROCESS_LIFECYCLE_CHECKPOINT_V5": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_process_lifecycle_checkpoint_v5/",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_process_lifecycle_checkpoint_v5.py"
+      ],
+      "note": "Definition-only process-lifecycle checkpoint scaffold for V5: monotonic lifecycle states, atomic checkpoints, read-only recovery diagnostics; import cannot start runner; checkpoints cannot reclaim run slots or authorize automatic reruns; partial metrics non-authoritative."
     }
   }
 }

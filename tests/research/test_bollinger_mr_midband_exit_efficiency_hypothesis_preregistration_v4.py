@@ -178,8 +178,9 @@ def test_dropped_prerequisite_fails_closed() -> None:
 
 def test_registry_backlog_consistency() -> None:
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
-    assert len(backlog["preregistered_hypotheses"]) == 0
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert backlog["preregistered_hypotheses"][0]["hypothesis_id"].endswith("_V5")
     assert len(backlog["terminal_hypotheses"]) == 4
     ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
     assert REQUIRED_HYPOTHESIS_ID in ids
@@ -196,7 +197,9 @@ def test_registry_backlog_consistency() -> None:
     assert "NO_HOLDOUT_AFTER_FAIL" in backlog["explicit_non_actions"]
     assert "NO_RETUNING_AFTER_FAIL" in backlog["explicit_non_actions"]
     assert "NO_V4_RERUN" in backlog["explicit_non_actions"]
-    assert "NO_V5_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_V5_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    assert "NO_V6_AUTO_CREATE" in backlog["explicit_non_actions"]
+    assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V3_ECONOMIC_RESULT_IMPORT" in backlog["explicit_non_actions"]
     assert "NO_V4_AUTO_CREATE" not in backlog["explicit_non_actions"]
 

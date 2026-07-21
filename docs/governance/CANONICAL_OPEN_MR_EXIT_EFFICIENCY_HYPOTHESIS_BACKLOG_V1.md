@@ -1,5 +1,14 @@
 # Canonical open MR exit-efficiency hypothesis backlog v1
 
+## Current SSOT status
+
+- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ONE_DEFINITION_ONLY_V5_PREREGISTERED`
+- Preregistered: exactly one (`..._DEVELOPMENT_V5`, `DEFINITION_ONLY_PREREGISTERED`, run count 0)
+- Terminal: V1&#47;V2 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3 `FAIL`; V4 `INFRASTRUCTURE_FAILURE`
+- V4 diagnostic: `PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL`
+- No V4&#47;V3&#47;V2&#47;V1 rerun. No V5 evaluation in this slice. No V6 auto-create.
+- Economic&#47;promotion gates closed. No runtime&#47;orders.
+
 ---
 docs_token: DOCS_TOKEN_CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1
 STATUS: OPEN_BACKLOG
