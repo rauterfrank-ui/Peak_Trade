@@ -10,7 +10,7 @@ measurement contract preregistered; no holdout execution; no holdout data access
 - Hypothesis / evaluation ID: `ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_HOLDOUT_V2`
 - New evaluation, not a V1 rerun: `true`
 - Predecessor V1 hypothesis: `ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1`
-- Predecessor V1 state: terminal `ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN` (run count `1/1`)
+- Predecessor V1 state: terminal `ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN` (run count `1&#47;1`)
 - Predecessor V1 rationale preserved: MV2 replay signal-index mismatch after sealed
   panel data access; primary economic metrics were not produced
 - Repair context: generic MV2 replay signal-index binding contract repaired on main

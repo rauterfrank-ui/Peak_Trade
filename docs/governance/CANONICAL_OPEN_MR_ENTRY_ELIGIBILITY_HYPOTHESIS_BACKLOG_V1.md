@@ -56,7 +56,7 @@ Semantic duplicates and parameter retunes of these terminals are forbidden.
 
 Exactly one: `ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_HOLDOUT_V2` —
 `DEFINITION_ONLY_HOLDOUT_PREREGISTERED` / `PREREGISTERED_AWAITING_HOLDOUT_EXECUTION_GO`.
-New evaluation ID (not a V1 rerun). Holdout run count `0/1`. Contract:
+New evaluation ID (not a V1 rerun). Holdout run count `0&#47;1`. Contract:
 `config/research/adx_di_direction_confirmation_mr_eligibility_holdout_preregistered_measurement_contract_v2.json`. Evidence: `docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v2/`.
 Governance: `docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V2.md`.
 
