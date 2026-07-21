@@ -155,7 +155,24 @@ def test_eval_only_control_ratified_shift_dynamic(tmp_path: Path) -> None:
     )
     assert proc.returncode == 0, proc.stderr[-2000:]
     summary = json.loads((out / "impact_summary.json").read_text(encoding="utf-8"))
-    assert summary["eval_control"]["dominant_first_failed_stage"] == "directional_agreement"
+    # Post chain-unblock baseline: eval control dominant first-failed stage is composition
+    # (mixed DA/entry_exit remain), not pure directional_agreement. Ratified path still
+    # dominates at composition with LONG side material; no ENTER outcomes / no productive
+    # semantics mutation. Frozen SSOT panel numbers stay historical and are not rewritten.
+    assert summary["eval_control"]["dominant_first_failed_stage"] == "composition"
     assert summary["eval_ratified"]["dominant_first_failed_stage"] == "composition"
+    assert (
+        summary["eval_control"]["entry_side_counts"].get("NONE", 0)
+        == summary["eval_control"]["entry_bar_count"]
+    )
+    assert (
+        summary["eval_ratified"]["entry_side_counts"].get("LONG", 0)
+        == summary["eval_ratified"]["entry_bar_count"]
+    )
+    assert summary["eval_ratified"]["entry_side_counts"].get("SHORT", 0) == 0
+    assert summary["eval_ratified"]["ENTER_LONG"] == 0
+    assert summary["eval_ratified"]["ENTER_SHORT"] == 0
     assert summary["bollinger_eval_unchanged"] is True
     assert summary["PRODUCTIVE_SEMANTICS_CHANGED"] is False
+    assert summary["ADDITIONAL_PRODUCER_ACTIVATED"] is False
+    assert summary["next_dominant_blocker"]["stage"] == "composition"
