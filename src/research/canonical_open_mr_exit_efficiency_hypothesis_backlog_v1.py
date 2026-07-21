@@ -3,11 +3,9 @@
 Definition-only governance. No evaluation, backtest, holdout access, runtime
 activation, or productive trading-logic mutation.
 
-Post V5 terminal closeout: no DEFINITION_ONLY_PREREGISTERED candidate remains;
-V1 and V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE (run count 1 each);
-V3 terminal FAIL (identical_arms_no_exit_divergence; run count 1);
-V4 terminal INFRASTRUCTURE_FAILURE (incomplete panel run; run count 1);
-V5 terminal INFRASTRUCTURE_FAILURE (incomplete panel run; run count 1).
+Post V6 definition-only preregistration: exactly one DEFINITION_ONLY_PREREGISTERED
+candidate (V6) with genuine economic change vs V5; V1-V5 remain terminal;
+development_run_count stays 5 (V6 not executed).
 """
 
 from __future__ import annotations
@@ -36,6 +34,12 @@ REQUIRED_V4_HYPOTHESIS_ID = (
 )
 REQUIRED_V5_HYPOTHESIS_ID = (
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V5"
+)
+REQUIRED_V6_HYPOTHESIS_ID = (
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V6"
+)
+REQUIRED_V6_MECHANISM_ID = (
+    "canonical_bollinger_side_aware_middle_band_exit_with_frozen_max_holding_horizon_v1"
 )
 REQUIRED_BINDING_FIX_SURFACE = "MV2_WIRING_MOD_CAPTURE_ALIAS_OPEN_SIDE_BINDING_FIX"
 REQUIRED_OBSERVABILITY_SURFACE = "EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1"
@@ -286,13 +290,54 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(rules.get("economic_gate_closed") is True, "ECONOMIC_GATE_NOT_CLOSED")
     _assert_true(rules.get("promotion_closed") is True, "PROMOTION_NOT_CLOSED")
-    _assert_true(rules.get("preregistered_count_exact") == 0, "PREREGISTERED_COUNT_RULE")
+    _assert_true(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_RULE")
     _assert_true(rules.get("open_unpreregistered_count_exact") == 0, "OPEN_COUNT_RULE")
 
     preregistered = backlog.get("preregistered_hypotheses")
     _assert_true(isinstance(preregistered, list), "PREREGISTERED_MISSING")
     assert isinstance(preregistered, list)
-    _assert_true(len(preregistered) == 0, "PREREGISTERED_COUNT", str(len(preregistered)))
+    _assert_true(len(preregistered) == 1, "PREREGISTERED_COUNT", str(len(preregistered)))
+    pref = preregistered[0]
+    _assert_true(isinstance(pref, Mapping), "PREREGISTERED_ENTRY_TYPE")
+    assert isinstance(pref, Mapping)
+    _assert_true(pref.get("hypothesis_id") == REQUIRED_V6_HYPOTHESIS_ID, "PREREGISTERED_ID")
+    _assert_true(pref.get("status") == REQUIRED_PREREGISTERED_STATUS, "PREREGISTERED_STATUS")
+    _assert_true(pref.get("evaluation_authorized") is False, "PREREGISTERED_EVAL_AUTHORIZED")
+    _assert_true(pref.get("evaluation_executed") is False, "PREREGISTERED_EVAL_EXECUTED")
+    _assert_true(pref.get("evaluation_started") is False, "PREREGISTERED_EVAL_STARTED")
+    _assert_true(pref.get("evaluation_completed") is False, "PREREGISTERED_EVAL_COMPLETED")
+    _assert_true(int(pref.get("evaluation_run_count", -1)) == 0, "PREREGISTERED_RUN_COUNT")
+    _assert_true(int(pref.get("evaluation_run_limit") or 0) == 1, "PREREGISTERED_RUN_LIMIT")
+    _assert_true(pref.get("result_class") == "NOT_EVALUATED", "PREREGISTERED_RESULT_CLASS")
+    _assert_true(pref.get("mechanism_id") == REQUIRED_V6_MECHANISM_ID, "PREREGISTERED_MECHANISM")
+    _assert_true(
+        pref.get("identical_exit_mechanism_to_development_v5") is False,
+        "PREREGISTERED_EXIT_CHANGED",
+    )
+    _assert_true(
+        pref.get("identical_economic_hypothesis_to_development_v5") is False,
+        "PREREGISTERED_ECON_CHANGED",
+    )
+    _assert_true(
+        pref.get("economic_change_vs_development_v5") is True, "PREREGISTERED_ECON_CHANGE_FLAG"
+    )
+    _assert_true(pref.get("v5_rerun_forbidden") is True, "PREREGISTERED_V5_RERUN_FORBIDDEN")
+    _assert_true(pref.get("v5_partial_results_reused") is False, "PREREGISTERED_V5_PARTIAL")
+    _assert_true(
+        pref.get("predecessor_partial_metrics_used") is False, "PREREGISTERED_PARTIAL_METRICS_USED"
+    )
+    _assert_true(
+        pref.get("lifecycle_checkpoint_surface") == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE,
+        "PREREGISTERED_LIFECYCLE_SURFACE",
+    )
+    _assert_true(
+        pref.get("predecessor_hypothesis_id") == REQUIRED_V5_HYPOTHESIS_ID,
+        "PREREGISTERED_PREDECESSOR",
+    )
+    _assert_true(
+        pref.get("predecessor_result_class") == "INFRASTRUCTURE_FAILURE",
+        "PREREGISTERED_PREDECESSOR_RESULT",
+    )
 
     terminal = backlog.get("terminal_hypotheses")
     _assert_true(isinstance(terminal, list), "TERMINAL_MISSING")
@@ -412,7 +457,11 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true("NO_RETUNING_AFTER_FAIL" in non_actions, "NO_RETUNING_AFTER_FAIL_REQUIRED")
     _assert_true("NO_V4_RERUN" in non_actions, "NO_V4_RERUN_NON_ACTION_REQUIRED")
     _assert_true("NO_V5_RERUN" in non_actions, "NO_V5_RERUN_REQUIRED")
-    _assert_true("NO_V6_AUTO_CREATE" in non_actions, "NO_V6_AUTO_CREATE_REQUIRED")
+    _assert_true(
+        "NO_V6_EVALUATION_IN_THIS_SLICE" in non_actions, "NO_V6_EVALUATION_IN_THIS_SLICE_REQUIRED"
+    )
+    _assert_true("NO_V7_AUTO_CREATE" in non_actions, "NO_V7_AUTO_CREATE_REQUIRED")
+    _assert_true("NO_V6_AUTO_CREATE" not in non_actions, "NO_V6_AUTO_CREATE_MUST_BE_ABSENT")
     _assert_true("NO_V5_AUTO_CREATE" not in non_actions, "NO_V5_AUTO_CREATE_MUST_BE_ABSENT")
     _assert_true("NO_V3_ECONOMIC_RESULT_IMPORT" in non_actions, "NO_V3_ECON_IMPORT_REQUIRED")
     _assert_true("NO_V4_AUTO_CREATE" not in non_actions, "NO_V4_AUTO_CREATE_MUST_BE_ABSENT")
@@ -420,11 +469,11 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
-        "preregistered_count": 0,
+        "preregistered_count": 1,
         "terminal_count": 5,
         "open_unpreregistered_count": 0,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
-        "preregistered_hypothesis_id": None,
+        "preregistered_hypothesis_id": REQUIRED_V6_HYPOTHESIS_ID,
         "terminal_hypothesis_ids": [
             REQUIRED_HYPOTHESIS_ID,
             REQUIRED_V2_HYPOTHESIS_ID,

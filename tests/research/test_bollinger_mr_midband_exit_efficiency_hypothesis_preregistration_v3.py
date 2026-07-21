@@ -179,14 +179,16 @@ def test_holdout_untouched() -> None:
 
 def test_registry_backlog_consistency() -> None:
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
-    assert len(backlog["preregistered_hypotheses"]) == 0
-    assert len(backlog["terminal_hypotheses"]) == 4
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert backlog["preregistered_hypotheses"][0]["hypothesis_id"].endswith("_V6")
+    assert len(backlog["terminal_hypotheses"]) == 5
     ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
     assert REQUIRED_HYPOTHESIS_ID in ids
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in ids
     assert REQUIRED_V1_HYPOTHESIS_ID in ids
     assert "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V4" in ids
+    assert "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V5" in ids
     v3 = next(
         e for e in backlog["terminal_hypotheses"] if e["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     )
@@ -197,6 +199,7 @@ def test_registry_backlog_consistency() -> None:
     assert "NO_V3_RERUN" in backlog["explicit_non_actions"]
     assert "NO_HOLDOUT_AFTER_FAIL" in backlog["explicit_non_actions"]
     assert "NO_V4_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_V6_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
 
 
 def test_validation_does_not_authorize_rerun() -> None:

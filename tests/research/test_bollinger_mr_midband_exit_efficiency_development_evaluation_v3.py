@@ -161,9 +161,9 @@ def test_terminal_summary_evidence() -> None:
 def test_terminal_backlog_validates() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["preregistered_count"] == 0
-    assert report["terminal_count"] == 4
-    assert report["development_run_count"] == 4
+    assert report["preregistered_count"] == 1
+    assert report["terminal_count"] == 5
+    assert report["development_run_count"] == 5
     assert report["v2_evaluation_run_count"] == 1
     assert report["v3_evaluation_run_count"] == 1
     assert report["v3_result_class"] == "FAIL"
