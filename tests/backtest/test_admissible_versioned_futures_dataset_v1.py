@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+from pathlib import Path
 from typing import Any, Mapping
 
 import pandas as pd
@@ -13,6 +14,22 @@ from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256, wr
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 from src.backtest import economic_viability_evidence_v1 as ev
 from src.backtest import mv2_research_wiring_v1 as wiring
+from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+    MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION,
+)
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_REFERENCE_MANDATORY_BINDING_CONFIG = (
+    _REPO_ROOT
+    / "config/ops/cross_sectional_futures_lead_lag_information_diffusion_v0_economic_evaluation_v1.json"
+)
+
+
+def _mandatory_mv2_boundary_state_file_binding_section() -> dict[str, Any]:
+    """Reuse canonical mandatory MV2 boundary fixtures for evidence wiring."""
+    return json.loads(_REFERENCE_MANDATORY_BINDING_CONFIG.read_text(encoding="utf-8"))[
+        MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION
+    ]
 
 
 def _bars(n: int = 24) -> pd.DataFrame:
@@ -137,6 +154,9 @@ def _cfg_with_dataset(bars: pd.DataFrame, **descriptor_overrides: Any) -> Mappin
                 "slow_window": 3,
             },
         },
+        MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION: (
+            _mandatory_mv2_boundary_state_file_binding_section()
+        ),
     }
 
 
@@ -294,6 +314,9 @@ class TestEconomicViabilityDatasetIntegration:
                 "economic_evaluation_v1": {
                     "strategy_params": {"fast_window": 2, "slow_window": 3},
                 },
+                MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION: (
+                    _mandatory_mv2_boundary_state_file_binding_section()
+                ),
             },
         )
         assert result.status is ev.EconomicViabilityStatus.RESEARCH_ONLY
