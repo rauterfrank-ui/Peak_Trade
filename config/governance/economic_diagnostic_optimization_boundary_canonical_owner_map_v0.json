@@ -817,6 +817,16 @@
       ],
       "note": "Single authorized DEVELOPMENT_ONLY evaluation of Bollinger/MR midband exit-efficiency V3 (evaluation_run_count 0->1); identical definition to V2/V1; binds EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1 and PANEL_RUNNER_FALSY_ZERO_PREMEASUREMENT_HYGIENE; not a V1/V2 rerun; no V2 partial-result reuse; Economic offline gate closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V4": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v4/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v4.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_development_evaluation_v4.py",
+        "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v4/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V4.md"
+      ],
+      "note": "Definition-only evaluation surface for exactly one future DEVELOPMENT_ONLY evaluation of Bollinger/MR midband exit-efficiency V4; reuses frozen V1 mechanism/gate/decision by import; binds measurement-validity preflight, EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1, PANEL_RUNNER_FALSY_ZERO hygiene, and MV2_WIRING_MOD_CAPTURE_ALIAS_OPEN_SIDE_BINDING_FIX; V4 contract remains DEFINITION_ONLY_PREREGISTERED with evaluation_run_count=0 in this slice; no evaluation executed here; evidence directory created only by a future authorized run; not a V1/V2/V3 rerun; no holdout; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders."
+    },
     "EVALUATION_RUNNER_LIFECYCLE_OBSERVABILITY_V1": {
       "path_prefixes": [
         "src/research/evaluation_runner_lifecycle_observability_v1/",
