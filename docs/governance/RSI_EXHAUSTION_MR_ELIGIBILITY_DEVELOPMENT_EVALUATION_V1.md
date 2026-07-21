@@ -17,7 +17,7 @@ completed. Evidence under
 - Baseline: `bollinger_bands_v2_full_canonical_system_economic_binding_v1` (immutable control arm)
 - Treatment: research-only `ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER` — frozen
   RSI(14) exhaustion confirmation (`RSI <= 30` or `RSI >= 70`) via
-  `src/strategies/rsi.py::calculate_rsi` (EWM causal; Wilder excluded)
+  `src&#47;strategies&#47;rsi.py` (`calculate_rsi`) (EWM causal; Wilder excluded)
 - Filter ID: `canonical_rsi_exhaustion_entry_eligibility_v1`
 - Decision segment: `final_development_confirmation` only
 - Seed: `20220601`
