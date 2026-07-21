@@ -607,6 +607,16 @@
       ],
       "note": "Definition-only preregistration of a single ADX(14) range-admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to failed regime-gated, ATR-percentile, and RSI-exhaustion mechanisms; no backtest, no economic metrics, no holdout access, no productive authority mutation."
     },
+    "MA_TREND_ALIGNMENT_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "path_prefixes": [
+        "src/research/ma_trend_alignment_mr_eligibility_hypothesis_preregistration_v1.py",
+        "tests/research/test_ma_trend_alignment_mr_eligibility_hypothesis_preregistration_v1.py",
+        "config/research/ma_trend_alignment_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "docs/evidence/preregister_ma_trend_alignment_mr_eligibility_hypothesis_v1/",
+        "docs/governance/MA_TREND_ALIGNMENT_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
+      ],
+      "note": "Definition-only preregistration of a single SMA(50) side-aware with-trend admission pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to four prior FAILs (regime, ATR, RSI, ADX); no backtest, no economic metrics, no holdout access, no productive authority mutation."
+    },
     "ADX_RANGE_ADMISSION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
       "path_prefixes": [
         "src/research/adx_range_admission_mr_eligibility_development_evaluation_v1/",

@@ -45,13 +45,32 @@ def test_repo_backlog_validates() -> None:
     assert report["valid"] is True
     assert report["status"] == "OPEN_BACKLOG"
     assert report["terminal_hypothesis_count"] == 4
-    assert 2 <= report["open_candidate_count"] <= 4
+    assert report["open_candidate_count"] == 2
+    assert report["preregistered_count"] == 1
     assert report["development_run_count"] == 0
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
     assert report["runtime_locked"] is True
     assert report["next_eligible_hypothesis_id"] == (
-        "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+        "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+    )
+
+
+def test_ma_preregistered_and_not_open() -> None:
+    backlog = _load(BACKLOG_PATH)
+    open_ids = {c["hypothesis_id"] for c in backlog["open_candidates"]}
+    assert "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in open_ids
+    prereg = backlog["preregistered_hypotheses"]
+    assert len(prereg) == 1
+    assert (
+        prereg[0]["hypothesis_id"]
+        == "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+    )
+    assert prereg[0]["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert prereg[0]["evaluation_authorized"] is False
+    assert prereg[0]["development_run_count"] == 0
+    assert (
+        "price_vs_ma_trend_alignment" in backlog["forbidden_feature_families_for_open_candidates"]
     )
 
 
@@ -69,7 +88,7 @@ def test_all_terminal_hypotheses_captured_unchanged() -> None:
 def test_open_candidate_count_and_unique_ids() -> None:
     backlog = _load(BACKLOG_PATH)
     candidates = backlog["open_candidates"]
-    assert 2 <= len(candidates) <= 4
+    assert len(candidates) == 2
     ids = [c["hypothesis_id"] for c in candidates]
     assert len(ids) == len(set(ids))
     assert not set(ids) & set(REQUIRED_TERMINAL_HYPOTHESIS_IDS)
@@ -198,5 +217,8 @@ def test_governance_doc_marks_definition_only_and_next_eligible() -> None:
     assert "OPEN_BACKLOG" in text
     assert "PROMOTION_ELIGIBLE=false" in text
     assert "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
+    assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
     assert "NEXT_ELIGIBLE_FOR_PREREGISTRATION" in text
+    assert "DEFINITION_ONLY_PREREGISTERED" in text
     assert "EVALUATION_EXECUTED=false" in text
+    assert "NOT authorized" in text or "not authorized" in text.lower()
