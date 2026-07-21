@@ -1,9 +1,9 @@
 """Contract tests for Bollinger/MR midband exit-efficiency hypothesis preregistration v6.
 
-Definition-only: V6 is DEFINITION_ONLY_PREREGISTERED with run count 0.
+Terminal closeout: V6 is DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL with run count 1.
 V5 remains terminal INFRASTRUCTURE_FAILURE (run count 1; no rerun).
 Genuine economic change vs V5: composite midband-cross OR max-holding-horizon=48h.
-No evaluation executed in this slice.
+Exactly one authorized DEVELOPMENT evaluation executed; no rerun.
 """
 
 from __future__ import annotations
@@ -71,18 +71,18 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_contract_definition_only() -> None:
+def test_repo_contract_terminal_fail() -> None:
     report = load_and_validate_repo_contract(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["definition_only"] is False
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     assert report["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert report["evaluation_run_count"] == 0
-    assert report["evaluation_started"] is False
-    assert report["evaluation_completed"] is False
-    assert report["evaluation_executed"] is False
-    assert report["result_class"] == "NOT_EVALUATED"
-    assert report["economic_verdict"] == "NOT_EVALUATED"
+    assert report["evaluation_run_count"] == 1
+    assert report["evaluation_started"] is True
+    assert report["evaluation_completed"] is True
+    assert report["evaluation_executed"] is True
+    assert report["result_class"] == "FAIL"
+    assert report["economic_verdict"] == "FAIL"
     assert report["rerun_allowed"] is False
     assert report["mechanism_id"] == REQUIRED_MECHANISM_ID
     assert report["identical_exit_mechanism_to_development_v5"] is False
@@ -95,6 +95,14 @@ def test_repo_contract_definition_only() -> None:
     assert (
         report["development_preregistration_digest"]
         == "9ddcd32d78b3b3f60c168321404b2270a770409d46a3bff036f7dbc5eefd8fa5"
+    )
+    contract = _load(CONTRACT_PATH)
+    assert contract["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
+    assert contract["pass"] is False
+    assert contract["fail"] is True
+    assert contract["acceptance_criteria_met"] is False
+    assert (contract.get("terminal_closeout") or {}).get("decision_reason") == (
+        "NET_PROFIT_FACTOR_NOT_IMPROVED"
     )
 
 
@@ -152,7 +160,8 @@ def test_no_runner_start_during_import_or_validation() -> None:
         name = getattr(func, "id", None) or getattr(func, "attr", None)
         assert name not in forbidden_names
     report = load_and_validate_repo_contract(REPO)
-    assert report["evaluation_executed"] is False
+    assert report["evaluation_executed"] is True
+    assert report["result_class"] == "FAIL"
 
 
 def test_holdout_access_forbidden() -> None:
@@ -196,18 +205,23 @@ def test_owner_map_and_backlog_consistency() -> None:
     assert REQUIRED_OWNER_SURFACE in owners
     assert REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE in owners
     assert REQUIRED_OBSERVABILITY_SURFACE in owners
+    assert "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6" in owners
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    pref = backlog["preregistered_hypotheses"][0]
-    assert pref["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert pref["evaluation_run_count"] == 0
-    assert pref["lifecycle_checkpoint_surface"] == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE
-    assert pref["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert pref["identical_exit_mechanism_to_development_v5"] is False
-    assert pref["economic_change_vs_development_v5"] is True
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert backlog["preregistered_hypotheses"] == []
+    assert backlog["development_run_count"] == 6
     terminal_ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
+    assert REQUIRED_HYPOTHESIS_ID in terminal_ids
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in terminal_ids
-    assert "NO_V6_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    v6 = next(
+        e for e in backlog["terminal_hypotheses"] if e["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
+    )
+    assert v6["result_class"] == "FAIL"
+    assert v6["evaluation_run_count"] == 1
+    assert v6["decision_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert v6["lifecycle_checkpoint_surface"] == REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE
+    assert "NO_V6_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
+    assert "NO_V6_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
 
@@ -216,7 +230,6 @@ def test_governance_and_evidence_present_docs_token_escaped() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "&#47;" in text
-    assert "DEFINITION_ONLY_PREREGISTERED" in text
     assert EXPECTED_DEVELOPMENT_PREREGISTRATION_DIGEST in text
     assert (EVIDENCE / "summary.json").is_file()
     assert (EVIDENCE / "safety_attestation.md").is_file()
@@ -224,23 +237,31 @@ def test_governance_and_evidence_present_docs_token_escaped() -> None:
     readme = (EVIDENCE / "README.md").read_text(encoding="utf-8")
     assert "&#47;" in readme
     summary = _load(EVIDENCE / "summary.json")
-    assert summary["evaluation_run_count"] == 0
-    assert summary["run_slot_claimed"] is False
-    assert summary["runner_started"] is False
-    assert summary["panel_data_accessed"] is False
+    assert summary["evaluation_run_count"] == 1
+    assert summary["run_slot_claimed"] is True
+    assert summary["runner_started"] is True
+    assert summary["result_class"] == "FAIL"
     assert summary["holdout_accessed"] is False
     assert summary["economic_hypothesis_changed"] is True
 
 
-def test_no_v6_evaluation_evidence_dir() -> None:
-    assert not V6_EVAL_EVIDENCE.exists()
+def test_v6_evaluation_evidence_terminal_fail() -> None:
+    assert V6_EVAL_EVIDENCE.is_dir()
     assert V5_EVAL_EVIDENCE.is_dir()
+    summary = _load(V6_EVAL_EVIDENCE / "summary.json")
+    assert summary["result_class"] == "FAIL"
+    assert summary["evaluation_run_count"] == 1
+    assert summary["evaluation_completed"] is True
+    assert summary["holdout_data_accessed"] is False
+    assert summary["acceptance_criteria_met"] is False
+    claim = _load(V6_EVAL_EVIDENCE / "run_slot_claim.json")
+    assert claim["slot_consumed"] is True
 
 
 def test_mutated_run_count_fails_closed() -> None:
     contract = _load(CONTRACT_PATH)
     bad = copy.deepcopy(contract)
-    bad["evaluation_run_count"] = 1
+    bad["evaluation_run_count"] = 0
     with pytest.raises(HypothesisPreregistrationError):
         validate_preregistration_contract(bad)
 

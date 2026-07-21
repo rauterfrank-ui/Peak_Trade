@@ -2,18 +2,18 @@
 
 ## Current SSOT status
 
-- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ONE_DEFINITION_ONLY_V6_PREREGISTERED`
-- Preregistered: exactly one (`..._DEVELOPMENT_V6`, `DEFINITION_ONLY_PREREGISTERED`, run count 0)
-- Terminal: V1&#47;V2 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`
-- V5 diagnostic: `PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL`
+- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ZERO_PREREGISTERED_V6_TERMINAL_FAIL`
+- Preregistered: exactly zero
+- Terminal: V1&#47;V2 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`; V6 `FAIL`
+- V6 reason: `NET_PROFIT_FACTOR_NOT_IMPROVED`
 - V6 economic delta vs V5: composite midband-cross OR frozen max-holding-horizon=48h
-- No V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V6 evaluation in this slice. No V7 auto-create.
+- No V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7 auto-create.
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
 docs_token: DOCS_TOKEN_CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1
 STATUS: OPEN_BACKLOG
-scope: research, offline-only, non-authorizing, definition-only
+scope: research, offline-only, non-authorizing, terminal-governance closeout
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
@@ -22,9 +22,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 ## Status
 
 `OPEN_BACKLOG` — versioned canonical SSOT for Mean-Reversion exit-efficiency
-research candidates. Exactly one `DEFINITION_ONLY_PREREGISTERED` hypothesis (V6)
-remains open. V1, V2, V3, V4, and V5 are terminal. No holdout access. No runtime
-activation. No productive trading-logic mutation.
+research candidates. Zero `DEFINITION_ONLY_PREREGISTERED` hypotheses remain.
+V1–V6 are terminal. No holdout access. No runtime activation. No productive
+trading-logic mutation.
 
 ## Binding
 
@@ -36,19 +36,11 @@ activation. No productive trading-logic mutation.
 
 ## Preregistered hypotheses
 
-Exactly one (`preregistered_count_exact=1`):
-
-- `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V6`
-  — `DEFINITION_ONLY_PREREGISTERED`
-  — `EVALUATION_RUN_COUNT=0`
-  — Mechanism: `canonical_bollinger_side_aware_middle_band_exit_with_frozen_max_holding_horizon_v1`
-  — Economic change vs V5: midband-cross OR frozen max-holding-horizon=48h
-  — Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V6.md`
-  — Evidence: `docs&#47;evidence&#47;preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v6&#47;`
+Exactly zero (`preregistered_count_exact=0`).
 
 ## Terminal hypotheses
 
-Exactly five:
+Exactly six:
 
 - `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1`
   — `TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE`
@@ -92,13 +84,25 @@ Exactly five:
   — `RERUN_ALLOWED=false`
   — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v5&#47;`
 
+- `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V6`
+  — `TERMINAL_FAIL`
+  — `EVALUATION_RUN_COUNT=1`
+  — `RESULT_CLASS=FAIL`
+  — `REASON=NET_PROFIT_FACTOR_NOT_IMPROVED`
+  — `ACCEPTANCE_CRITERIA_MET=false`
+  — `EXIT_DIVERGENCE_OBSERVED=true`
+  — Mechanism: `canonical_bollinger_side_aware_middle_band_exit_with_frozen_max_holding_horizon_v1`
+  — Members completed: baseline `46&#47;46`; treatment `46&#47;46`
+  — `RERUN_ALLOWED=false`
+  — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v6&#47;`
+  — Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.md`
+
 ## Explicit exclusions
 
-- No V1&#47;V2&#47;V3&#47;V4&#47;V5 rerun under consumed preregistrations
-- No V3&#47;V4&#47;V5 partial-result, checkpoint, or economic-result reuse into V6
+- No V1&#47;V2&#47;V3&#47;V4&#47;V5&#47;V6 rerun under consumed preregistrations
+- No V3&#47;V4&#47;V5&#47;V6 partial-result, checkpoint, or economic-result reuse
 - No holdout after FAIL&#47;INFRASTRUCTURE_FAILURE
 - No retuning after FAIL&#47;INFRASTRUCTURE_FAILURE
-- No V6 evaluation in this slice
 - No V7 auto-create
 - No parallel SHORT-side hypothesis
 - No holdout candidate
@@ -108,5 +112,5 @@ Exactly five:
 
 ## Next separate action
 
-V6 evaluation requires a separate Operator-GO after this definition-only
-preregistration merges. No automatic V6 evaluation. No automatic V7 creation.
+Any new hypothesis requires a separate Operator-GO for definition-only
+preregistration. No automatic V7 creation. No V6 rerun.

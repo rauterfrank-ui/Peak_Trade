@@ -171,14 +171,15 @@ def test_owner_map_and_backlog_consistency() -> None:
     assert REQUIRED_LIFECYCLE_CHECKPOINT_SURFACE in owners
     assert REQUIRED_OBSERVABILITY_SURFACE in owners
     backlog = _load(BACKLOG)
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    assert backlog["preregistered_hypotheses"][0]["hypothesis_id"].endswith("_V6")
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert backlog["preregistered_hypotheses"] == []
+    assert any(e["hypothesis_id"].endswith("_V6") for e in backlog["terminal_hypotheses"])
     terminal_ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in terminal_ids
     assert REQUIRED_HYPOTHESIS_ID in terminal_ids
     assert "NO_V5_RERUN" in backlog["explicit_non_actions"]
-    assert "NO_V6_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    assert "NO_V6_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
 
