@@ -1,0 +1,22 @@
+{
+  "calculator_method": "WILDER_EWM_ALPHA_1_OVER_PERIOD",
+  "calculator_ssot": "src/strategies/trend_following.py::TrendFollowingStrategy._compute_adx",
+  "definitions": {
+    "adx_14h": "ADX(14) via TrendFollowingStrategy._compute_adx over trailing finalized PT1H OHLC (Wilder ewm alpha=1/14, min_periods=14, adjust=False); first 28 bars (2*period) are warmup",
+    "eligibility_rule": "ELIGIBLE iff ADX is finite AND ADX < 25.0; otherwise STAND_ASIDE. First warmup_bars=28 bars are always STAND_ASIDE."
+  },
+  "feature_formula_id": "adx_range_admission_mr_eligibility_adx14_features_v1",
+  "feature_formula_sha256": "081b61ac5853ca4e08057f2e8f4dd628f10e6678904ef65b978a7dd374770f77",
+  "filter_id": "canonical_adx_range_admission_entry_eligibility_v1",
+  "frozen_parameters": {
+    "adx_period": 14,
+    "adx_threshold": 25.0,
+    "calculator": "wilder_ewm_alpha_1_over_period",
+    "eligibility_comparator": "lt",
+    "warmup_bars": 28
+  },
+  "lookahead_forbidden": true,
+  "post_hoc_retune_forbidden": true,
+  "source": "finalized_pt1h_ohlcv_high_low_close_only",
+  "threshold_adjustment_forbidden": true
+}
