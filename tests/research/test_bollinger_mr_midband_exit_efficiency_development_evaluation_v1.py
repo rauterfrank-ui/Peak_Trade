@@ -89,11 +89,14 @@ def test_terminal_contract_validates() -> None:
 def test_terminal_backlog_validates() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["preregistered_count"] == 0
+    assert report["preregistered_count"] == 1
     assert report["terminal_count"] == 2
     assert report["development_run_count"] == 2
-    assert report["result_class"] == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
-    assert report["economic_verdict"] == "NOT_EVALUATED"
+    assert report["preregistered_hypothesis_id"] == (
+        "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V3"
+    )
+    assert report["v2_evaluation_run_count"] == 1
+    assert report["v3_evaluation_run_count"] == 0
     assert report["rerun_allowed"] is False
 
 
