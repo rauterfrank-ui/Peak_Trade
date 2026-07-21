@@ -48,11 +48,9 @@ with-trend admission, and MACD histogram-sign countertrend. This contract does n
 reuse, rename, or retune any prior mechanism's features or thresholds — especially
 not the ADX-level FAIL.
 
-## Declared future evaluation targets (unauthorized here)
+## Declared future evaluation targets
 
-- Runner: `scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1.py`
-- Package: `src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/`
-- Evidence: `docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/`
+Declared runner/package/evidence targets are frozen in the measurement contract JSON only (`declared_future_evaluation_targets`) and are **not authorized** in this definition-only slice.
 
 ## Gates
 

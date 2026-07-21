@@ -31,11 +31,9 @@ Orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD).
 - Tie / NaN → STAND_ASIDE
 - `warmup_bars=28`; ADX level unused
 
-## Declared future evaluation targets (not authorized here)
+## Declared future evaluation targets
 
-- Runner: `scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1.py`
-- Evidence: `docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1/`
-- Package: `src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/`
+Declared runner/package/evidence targets are frozen in the measurement contract JSON only (`declared_future_evaluation_targets`) and are **not authorized** in this definition-only slice.
 
 ## Explicit non-actions
 
