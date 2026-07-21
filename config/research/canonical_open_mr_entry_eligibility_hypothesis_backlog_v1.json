@@ -1,0 +1,348 @@
+{
+  "artifact_kind": "canonical_open_mr_entry_eligibility_hypothesis_backlog",
+  "artifact_version": "v1",
+  "schema_version": "canonical_open_mr_entry_eligibility_hypothesis_backlog.v1",
+  "authority_effect": "NONE",
+  "runtime_effect": "NONE",
+  "status": "OPEN_BACKLOG",
+  "verdict": "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_VERSIONED",
+  "slice_class": "DEFINITION_ONLY_GOVERNANCE",
+  "canonical_ssot": true,
+  "exactly_one_authoritative_truth": true,
+  "productive_trading_logic_included": false,
+  "evaluation_authorized": false,
+  "backtest_authorized": false,
+  "implementation_authorized": false,
+  "preregistration_authorized_in_this_slice": false,
+  "evaluation_results_embedded": false,
+  "development_run_count": 0,
+  "baseline_config_id": "bollinger_bands_v2_full_canonical_system_economic_binding_v1",
+  "baseline_immutable": true,
+  "required_treatment_type": "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "universe_scope": {
+    "venue": "OKX",
+    "instrument_class": "LINEAR_USDT_PERPETUAL",
+    "bitcoin_excluded": true,
+    "spot_excluded": true,
+    "frequency": "PT1H",
+    "panel_class": "DEVELOPMENT_ONLY_PRE_HOLDOUT"
+  },
+  "holdout_forbidden": true,
+  "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "sealed_holdout_content_inspection_authorized": false,
+  "runtime_policy": {
+    "runtime_activated": false,
+    "shadow_activated": false,
+    "paper_activated": false,
+    "testnet_activated": false,
+    "live_authorized": false,
+    "orders_allowed": false,
+    "scheduler_authorized": false
+  },
+  "promotion_and_economic_gate_policy": {
+    "promotion_eligible": false,
+    "economic_validity_offline_gate_pass": false,
+    "economic_validity_offline_gate_changed": false,
+    "promotion_claim_from_backlog_forbidden": true
+  },
+  "terminal_hypotheses": [
+    {
+      "hypothesis_id": "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+      "status": "TERMINAL_FAIL",
+      "treatment_type": "ENTRY_ELIGIBILITY_STANDASIDE_GATE",
+      "feature_family": "multi_feature_absolute_threshold_regime_classifier",
+      "feature_ids": [
+        "realized_vol_168h",
+        "range_compression_72h",
+        "trend_strength_168h"
+      ],
+      "fail_reason": "PASS_REQUIRES_NOT_MET",
+      "fail_finding": "identical_arms_gate_inactive_on_entries",
+      "contract_ref": "config/research/regime_gated_standaside_mr_preregistered_economic_hypothesis_measurement_contract_v1.json",
+      "evidence_ref": "docs/evidence/evaluate_regime_gated_standaside_mr_development_v1/"
+    },
+    {
+      "hypothesis_id": "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+      "status": "TERMINAL_FAIL",
+      "treatment_type": "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER",
+      "feature_family": "atr_rolling_percentile_midband",
+      "feature_ids": [
+        "atr_14h",
+        "atr_14h_rolling_percentile_rank_100h"
+      ],
+      "fail_reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+      "fail_finding": "net_profit_factor_not_improved_despite_entry_eligibility_divergence",
+      "contract_ref": "config/research/entry_effective_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+      "evidence_ref": "docs/evidence/evaluate_entry_effective_mr_eligibility_development_v1/"
+    },
+    {
+      "hypothesis_id": "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "status": "TERMINAL_FAIL",
+      "treatment_type": "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER",
+      "feature_family": "rsi_exhaustion_level",
+      "feature_ids": [
+        "rsi_14h"
+      ],
+      "fail_reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+      "fail_finding": "net_profit_factor_not_improved_despite_entry_eligibility_divergence",
+      "contract_ref": "config/research/rsi_exhaustion_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+      "evidence_ref": "docs/evidence/evaluate_rsi_exhaustion_mr_eligibility_development_v1/"
+    },
+    {
+      "hypothesis_id": "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "status": "TERMINAL_FAIL",
+      "treatment_type": "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER",
+      "feature_family": "adx_level_range_admission",
+      "feature_ids": [
+        "adx_14h"
+      ],
+      "fail_reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+      "fail_finding": "net_profit_factor_not_improved_despite_entry_eligibility_divergence",
+      "contract_ref": "config/research/adx_range_admission_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+      "evidence_ref": "docs/evidence/evaluate_adx_range_admission_mr_eligibility_development_v1/"
+    }
+  ],
+  "forbidden_feature_families_for_open_candidates": [
+    "multi_feature_absolute_threshold_regime_classifier",
+    "atr_rolling_percentile_midband",
+    "rsi_exhaustion_level",
+    "adx_level_range_admission"
+  ],
+  "forbidden_retune_of_terminal_parameters": true,
+  "forbidden_semantic_duplicates": true,
+  "forbidden_multi_gate_combinations": true,
+  "priority_criteria": {
+    "selection_performance_forbidden": true,
+    "criteria_locked_a_priori": true,
+    "reprioritization_requires_separate_governance_pr": true,
+    "scored_dimensions": [
+      {
+        "dimension_id": "semantic_distance",
+        "weight": 3,
+        "higher_is_better": true,
+        "description": "Orthogonality to all terminal FAIL feature families and mechanisms"
+      },
+      {
+        "dimension_id": "entry_effectiveness",
+        "weight": 3,
+        "higher_is_better": true,
+        "description": "Causal clarity that the filter acts before entry and can diverge from control"
+      },
+      {
+        "dimension_id": "measurability",
+        "weight": 2,
+        "higher_is_better": true,
+        "description": "Deterministic PIT features with binary ELIGIBLE/STAND_ASIDE outcome"
+      },
+      {
+        "dimension_id": "low_additional_complexity",
+        "weight": 2,
+        "higher_is_better": true,
+        "description": "Single-feature single-rule gate; no multi-gate stack"
+      },
+      {
+        "dimension_id": "low_overfitting_risk",
+        "weight": 2,
+        "higher_is_better": true,
+        "description": "Frozen repo-SSOT defaults; no free threshold search"
+      },
+      {
+        "dimension_id": "repo_support",
+        "weight": 2,
+        "higher_is_better": true,
+        "description": "Existing strategy calculator / config.toml defaults reusable without new feature invention"
+      }
+    ],
+    "tie_break_rule": "If weighted totals equal, lower priority_rank integer wins only when explicitly assigned without tie; ties are forbidden in this SSOT."
+  },
+  "open_candidates": [
+    {
+      "hypothesis_id": "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "canonical_slug": "ma-trend-alignment-mr-eligibility",
+      "status": "OPEN_UNPREREGISTERED",
+      "queue_status": "NEXT_ELIGIBLE_FOR_PREREGISTRATION",
+      "priority_rank": 1,
+      "priority_score_total": 70,
+      "priority_scores": {
+        "semantic_distance": 5,
+        "entry_effectiveness": 5,
+        "measurability": 5,
+        "low_additional_complexity": 5,
+        "low_overfitting_risk": 5,
+        "repo_support": 5
+      },
+      "feature_family": "price_vs_ma_trend_alignment",
+      "feature_ids": [
+        "close_vs_sma_50h"
+      ],
+      "causal_thesis": "Mean-reversion band fades that fight the local SMA(50) trend are disproportionately stopped out after costs; admitting long entries only when close > SMA(50) and short entries only when close < SMA(50) improves net PF and net return without worsening max drawdown versus the unfiltered Bollinger baseline.",
+      "independent_treatment_change": "Single side-aware pre-entry eligibility filter: ELIGIBLE for a long candidate iff close > SMA(50); ELIGIBLE for a short candidate iff close < SMA(50); otherwise STAND_ASIDE. No change to signal geometry, direction authority, exits, sizing, risk, fees, or slippage.",
+      "expected_effect": "Blocks counter-trend fades; reduces weak entries while preserving with-trend mean-reversion admissions; measurable entry-eligibility divergence vs control.",
+      "known_failure_modes": [
+        "Filter inactive if almost all baseline entries already align with SMA(50)",
+        "Whipsaw around SMA(50) may block good fades near trend turns",
+        "Economic improvement may fail despite divergence (as with prior terminal FAILs)"
+      ],
+      "semantic_distance_to_terminal": {
+        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not a multi-feature absolute-threshold regime classifier; single price-vs-MA compare.",
+        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not ATR percentile mid-band; no volatility-rank feature.",
+        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not RSI level exhaustion; uses SMA alignment, not oscillator extremes.",
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not ADX level range admission; uses price/MA side alignment, not trend-strength magnitude."
+      },
+      "repo_source_refs": [
+        "config/config.toml#[strategies.rsi_reversion.defaults].trend_ma_window",
+        "config/config.toml#[strategy.rsi_reversion_v1].trend_ma_window",
+        "src/strategies/rsi_reversion.py"
+      ],
+      "frozen_parameter_intent": {
+        "ma_period": 50,
+        "ma_type": "SMA",
+        "side_aware": true
+      },
+      "not_a_parameter_retune_of": [
+        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+      ]
+    },
+    {
+      "hypothesis_id": "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "canonical_slug": "macd-histogram-countertrend-mr-eligibility",
+      "status": "OPEN_UNPREREGISTERED",
+      "queue_status": "QUEUED",
+      "priority_rank": 2,
+      "priority_score_total": 59,
+      "priority_scores": {
+        "semantic_distance": 3,
+        "entry_effectiveness": 4,
+        "measurability": 5,
+        "low_additional_complexity": 5,
+        "low_overfitting_risk": 4,
+        "repo_support": 5
+      },
+      "feature_family": "macd_histogram_sign_countertrend",
+      "feature_ids": [
+        "macd_histogram_12_26_9"
+      ],
+      "causal_thesis": "Mean-reversion band entries are economically stronger when local MACD histogram sign confirms countertrend exhaustion context (long only when histogram < 0; short only when histogram > 0), improving net PF and net return versus the unfiltered Bollinger baseline without worsening max drawdown.",
+      "independent_treatment_change": "Single side-aware pre-entry eligibility filter on frozen MACD(12,26,9) histogram sign. No multi-gate stack; no change to baseline trading semantics beyond entry admission.",
+      "expected_effect": "Admits fades only when MACD histogram is on the countertrend side; blocks same-sign momentum-aligned fades.",
+      "known_failure_modes": [
+        "Conceptual proximity to oscillator-exhaustion ideas (RSI FAIL) may yield similar non-improvement",
+        "Histogram zero-line churn can create noisy eligibility flips",
+        "Divergence may occur without economic improvement"
+      ],
+      "semantic_distance_to_terminal": {
+        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not absolute multi-feature regime thresholds; single MACD histogram sign rule.",
+        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not ATR percentile mid-band.",
+        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Different oscillator family (MACD EMA-spread histogram sign vs RSI level 30/70); not an RSI threshold retune.",
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not Wilder ADX level; uses MACD histogram sign."
+      },
+      "repo_source_refs": [
+        "config/config.toml#[strategies.macd.defaults]",
+        "src/strategies/macd.py::_calculate_macd"
+      ],
+      "frozen_parameter_intent": {
+        "fast_ema": 12,
+        "slow_ema": 26,
+        "signal_ema": 9,
+        "eligibility_on": "histogram_sign_side_aware"
+      },
+      "not_a_parameter_retune_of": [
+        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+      ]
+    },
+    {
+      "hypothesis_id": "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "canonical_slug": "adx-di-direction-confirmation-mr-eligibility",
+      "status": "OPEN_UNPREREGISTERED",
+      "queue_status": "QUEUED",
+      "priority_rank": 3,
+      "priority_score_total": 57,
+      "priority_scores": {
+        "semantic_distance": 3,
+        "entry_effectiveness": 4,
+        "measurability": 5,
+        "low_additional_complexity": 5,
+        "low_overfitting_risk": 3,
+        "repo_support": 5
+      },
+      "feature_family": "adx_di_direction_confirmation",
+      "feature_ids": [
+        "plus_di_14h",
+        "minus_di_14h"
+      ],
+      "causal_thesis": "Mean-reversion fades are stronger when DI direction confirms the fade side (long fade only when minus_DI > plus_DI; short fade only when plus_DI > minus_DI), improving net PF and net return versus the unfiltered Bollinger baseline without worsening max drawdown.",
+      "independent_treatment_change": "Single side-aware pre-entry eligibility filter on +DI/−DI ordering from TrendFollowingStrategy._compute_adx. Does not reuse ADX level < 25 range admission.",
+      "expected_effect": "Blocks fades that disagree with DI directional dominance; preserves DI-aligned fade admissions.",
+      "known_failure_modes": [
+        "Shares Wilder ADX calculator family with terminal ADX-level FAIL — must remain DI-order only, never ADX-level retune",
+        "DI crosses can be noisy near equilibrium",
+        "Divergence without economic improvement"
+      ],
+      "semantic_distance_to_terminal": {
+        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not multi-feature absolute regime classifier.",
+        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1": "Not ATR percentile mid-band.",
+        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not RSI exhaustion levels.",
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1": "Not ADX magnitude threshold (ADX < 25). Uses +DI/−DI directional ordering only; ADX level is intentionally unused."
+      },
+      "repo_source_refs": [
+        "config/config.toml#[strategies.trend_following.defaults]",
+        "src/strategies/trend_following.py::TrendFollowingStrategy._compute_adx"
+      ],
+      "frozen_parameter_intent": {
+        "adx_period": 14,
+        "uses_adx_level": false,
+        "uses_di_order_only": true,
+        "side_aware": true
+      },
+      "not_a_parameter_retune_of": [
+        "REGIME_GATED_STANDASIDE_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+        "ENTRY_EFFECTIVE_MR_ELIGIBILITY_MEAN_REVERSION_NON_BITCOIN_PERPETUALS_V1",
+        "RSI_EXHAUSTION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+        "ADX_RANGE_ADMISSION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+      ]
+    }
+  ],
+  "explicitly_excluded_from_this_backlog": [
+    {
+      "candidate_id": "BB_BANDWIDTH_PERCENTILE_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1",
+      "reason": "Excluded a priori due to elevated semantic proximity / overfit risk relative to terminal ATR-percentile mid-band FAIL (volatility-geometry family). Not a free-parameter invent; exclusion is governance hygiene, not performance selection."
+    }
+  ],
+  "governance_rules": {
+    "max_concurrent_open_preregistrations": 1,
+    "development_runs_per_hypothesis": 1,
+    "retuning_after_fail_forbidden": true,
+    "holdout_use_forbidden": true,
+    "candidate_combination_forbidden": true,
+    "reprioritization_requires_separate_versioned_governance_pr": true,
+    "evaluation_requires_separate_preregistration_pr_and_operator_go": true,
+    "economic_gate_closed": true,
+    "promotion_closed": true,
+    "exactly_one_next_eligible_for_preregistration": true,
+    "open_candidate_count_min": 2,
+    "open_candidate_count_max": 4
+  },
+  "explicit_non_actions": [
+    "NO_PREREGISTRATION_IN_THIS_SLICE",
+    "NO_BACKTEST_IN_THIS_SLICE",
+    "NO_ECONOMIC_METRICS_COMPUTATION",
+    "NO_DEVELOPMENT_PANEL_RAW_ACCESS_IN_THIS_SLICE",
+    "NO_PARAMETER_TUNING",
+    "NO_VARIANT_SEARCH",
+    "NO_HOLDOUT_ACCESS",
+    "NO_RUNTIME_ACTIVATION",
+    "NO_PRODUCTIVE_TRADING_LOGIC_CHANGE",
+    "NO_PROMOTION_CLAIM",
+    "NO_RETUNE_OF_TERMINAL_HYPOTHESES",
+    "NO_MULTI_GATE_COMBINATION"
+  ],
+  "next_canonical_step": "SEPARATE_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_NEXT_ELIGIBLE_CANDIDATE_AFTER_OPERATOR_MERGE_GO"
+}
