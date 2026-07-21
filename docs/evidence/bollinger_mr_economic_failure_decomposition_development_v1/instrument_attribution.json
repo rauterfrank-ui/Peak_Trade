@@ -1,0 +1,197 @@
+{
+  "dominated_by_single": false,
+  "instruments": [
+    {
+      "fees": 23.82787383839676,
+      "gross_pnl": -294.1712819555142,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:LINK:USDT:USDT:perp",
+      "net_pnl": -329.91309271310934,
+      "net_profit_factor": 0.0,
+      "slippage": 11.91393691919838,
+      "trade_count": 6
+    },
+    {
+      "fees": 23.694616453955522,
+      "gross_pnl": -292.5261290611781,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:DOGE:USDT:USDT:perp",
+      "net_pnl": -328.0680537421114,
+      "net_profit_factor": 0.0,
+      "slippage": 11.847308226977761,
+      "trade_count": 6
+    },
+    {
+      "fees": 20.024166167750902,
+      "gross_pnl": -247.21192799692395,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:NEO:USDT:USDT:perp",
+      "net_pnl": -277.24817724855023,
+      "net_profit_factor": 0.0,
+      "slippage": 10.012083083875451,
+      "trade_count": 5
+    },
+    {
+      "fees": 19.91188065596525,
+      "gross_pnl": -245.82568711068117,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:CFX:USDT:USDT:perp",
+      "net_pnl": -275.6935080946291,
+      "net_profit_factor": 0.0,
+      "slippage": 9.955940327982624,
+      "trade_count": 5
+    },
+    {
+      "fees": 16.06424642960496,
+      "gross_pnl": -198.32402999512274,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:LTC:USDT:USDT:perp",
+      "net_pnl": -222.42039963953016,
+      "net_profit_factor": 0.0,
+      "slippage": 8.03212321480248,
+      "trade_count": 4
+    },
+    {
+      "fees": 16.06424642960493,
+      "gross_pnl": -198.32402999512198,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:GRT:USDT:USDT:perp",
+      "net_pnl": -222.42039963952936,
+      "net_profit_factor": 0.0,
+      "slippage": 8.032123214802464,
+      "trade_count": 4
+    },
+    {
+      "fees": 12.081996223427806,
+      "gross_pnl": -149.1604472028118,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:SOL:USDT:USDT:perp",
+      "net_pnl": -167.28344153795354,
+      "net_profit_factor": 0.0,
+      "slippage": 6.040998111713903,
+      "trade_count": 3
+    },
+    {
+      "fees": 8.077289624999997,
+      "gross_pnl": -99.7196249999997,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:XLM:USDT:USDT:perp",
+      "net_pnl": -111.83555943749968,
+      "net_profit_factor": 0.0,
+      "slippage": 4.0386448124999985,
+      "trade_count": 2
+    },
+    {
+      "fees": 8.077289624999985,
+      "gross_pnl": -99.71962499999947,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:MASK:USDT:USDT:perp",
+      "net_pnl": -111.83555943749946,
+      "net_profit_factor": 0.0,
+      "slippage": 4.038644812499992,
+      "trade_count": 2
+    },
+    {
+      "fees": 8.031996223427818,
+      "gross_pnl": -99.16044720281201,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+      "net_pnl": -111.20844153795373,
+      "net_profit_factor": 0.0,
+      "slippage": 4.015998111713909,
+      "trade_count": 2
+    },
+    {
+      "fees": 7.98707728454826,
+      "gross_pnl": -98.60589240183009,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:API3:USDT:USDT:perp",
+      "net_pnl": -110.58650832865247,
+      "net_profit_factor": 0.0,
+      "slippage": 3.99353864227413,
+      "trade_count": 2
+    },
+    {
+      "fees": 4.05,
+      "gross_pnl": -50.0,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:IOST:USDT:USDT:perp",
+      "net_pnl": -56.075,
+      "net_profit_factor": 0.0,
+      "slippage": 2.025,
+      "trade_count": 1
+    },
+    {
+      "fees": 4.049999999999987,
+      "gross_pnl": -49.99999999999971,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "net_pnl": -56.07499999999969,
+      "net_profit_factor": 0.0,
+      "slippage": 2.0249999999999937,
+      "trade_count": 1
+    },
+    {
+      "fees": 4.027350374999992,
+      "gross_pnl": -49.72037499999965,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:UNI:USDT:USDT:perp",
+      "net_pnl": -55.76140056249964,
+      "net_profit_factor": 0.0,
+      "slippage": 2.013675187499996,
+      "trade_count": 1
+    },
+    {
+      "fees": 4.027350374999996,
+      "gross_pnl": -49.720374999999585,
+      "gross_profit_factor": 0.0,
+      "instrument_id": "okx:linear_perpetual:COMP:USDT:USDT:perp",
+      "net_pnl": -55.76140056249958,
+      "net_profit_factor": 0.0,
+      "slippage": 2.013675187499998,
+      "trade_count": 1
+    },
+    {
+      "fees": 11.591732266795226,
+      "gross_pnl": 341.1035094297741,
+      "gross_profit_factor": 4.4206256735299,
+      "instrument_id": "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+      "net_pnl": 323.71591102958126,
+      "net_profit_factor": 3.8945704984870386,
+      "slippage": 5.795866133397613,
+      "trade_count": 3
+    },
+    {
+      "fees": 3.5593750000000037,
+      "gross_pnl": 440.6250000000005,
+      "gross_profit_factor": null,
+      "instrument_id": "okx:linear_perpetual:THETA:USDT:USDT:perp",
+      "net_pnl": 435.2859375000005,
+      "net_profit_factor": null,
+      "slippage": 1.7796875000000019,
+      "trade_count": 1
+    },
+    {
+      "fees": 3.4062292909211296,
+      "gross_pnl": 593.7707090788584,
+      "gross_profit_factor": null,
+      "instrument_id": "okx:linear_perpetual:ALGO:USDT:USDT:perp",
+      "net_pnl": 588.6613651424767,
+      "net_profit_factor": null,
+      "slippage": 1.7031146454605648,
+      "trade_count": 1
+    },
+    {
+      "fees": 3.1254790456175003,
+      "gross_pnl": 874.5209543824933,
+      "gross_profit_factor": null,
+      "instrument_id": "okx:linear_perpetual:APE:USDT:USDT:perp",
+      "net_pnl": 869.8327358140671,
+      "net_profit_factor": null,
+      "slippage": 1.5627395228087502,
+      "trade_count": 1
+    }
+  ],
+  "worst1_abs_net_share": 0.1846903370050265,
+  "worst5_abs_net_share": 0.5418117918459673
+}

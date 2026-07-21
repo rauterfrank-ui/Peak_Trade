@@ -435,7 +435,32 @@
     "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_attempt_started_at_utc.txt",
     "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/run_attempt_finished_at_utc.txt",
     "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/.holdout_run_consumed",
-    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/.holdout_run.lock"
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/.holdout_run.lock",
+    "config/research/bollinger_mr_economic_failure_decomposition_development_v1.json",
+    "src/research/bollinger_mr_economic_failure_decomposition_development_v1/__init__.py",
+    "src/research/bollinger_mr_economic_failure_decomposition_development_v1/constants_v1.py",
+    "src/research/bollinger_mr_economic_failure_decomposition_development_v1/binding_v1.py",
+    "src/research/bollinger_mr_economic_failure_decomposition_development_v1/metrics_v1.py",
+    "src/research/bollinger_mr_economic_failure_decomposition_development_v1/classify_v1.py",
+    "src/research/bollinger_mr_economic_failure_decomposition_development_v1/decompose_v1.py",
+    "scripts/research/run_bollinger_mr_economic_failure_decomposition_development_v1.py",
+    "tests/research/test_bollinger_mr_economic_failure_decomposition_development_v1.py",
+    "docs/governance/BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_V1.md",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/README.md",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/summary.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/FAILURE_DECOMPOSITION.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/core_metrics.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/side_attribution.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/instrument_attribution.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/cost_stress.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/classification.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/trade_ledger.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/code_config_hashes.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/config_snapshot.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/run_manifest.json",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/safety_attestation.md",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/determinism_repro.txt",
+    "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/MANIFEST.sha256"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -471,7 +496,8 @@
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_WIRING",
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_WIRING",
     "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_V2_PREREGISTRATION_WIRING",
-    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_V2_EVALUATION_WIRING"
+    "TECHNICAL_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_V2_EVALUATION_WIRING",
+    "TECHNICAL_BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_WIRING"
   ],
   "forbidden_effects": {
     "RUNTIME_EFFECT": "NONE",
@@ -532,6 +558,7 @@
     "Includes definition-only holdout preregistration for Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility after DEVELOPMENT PASS: freezes sealed FINAL_AUDIT holdout split digest from existing SSOT registry metadata, acceptance criteria, holdout_run_limit=1, retry/post-result-tuning locks, and separate execution-GO gate; no holdout data access, no backtest, no economic metrics, no policy runtime, no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V1.",
     "Includes single authorized HOLDOUT evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility versus immutable bollinger baseline on the sealed FINAL_AUDIT panel (holdout_run_count 1/1, RESULT_CLASS=ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN after MV2 replay signal-index mismatch; no retry); economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V1.",
     "Includes definition-only holdout preregistration v2 for Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility after terminal holdout V1 ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN and the generic MV2 replay signal-index binding repair: new evaluation ID, holdout_run_limit=1, retry/post-result-tuning locks, and separate execution-GO gate; no V1 rerun; no holdout data access; no backtest; no economic metrics; no policy runtime; no Master-V2/Double-Play/risk/sizing/execution mutation. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V2.",
-    "Includes single authorized HOLDOUT v2 evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility (holdout_run_count 1/1, RESULT_CLASS=FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED); new evaluation ID not a V1 rerun; economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V2."
+    "Includes single authorized HOLDOUT v2 evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility (holdout_run_count 1/1, RESULT_CLASS=FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED); new evaluation ID not a V1 rerun; economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders. Owner surface: ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V2.",
+    "Includes canonical development-only read-only economic failure decomposition of the immutable Bollinger/MR baseline on the sealed DEVELOPMENT_ONLY panel (diagnostic classification only; MFE/MAE/cost-stress/side/instrument attribution); no new hypothesis; no holdout access; no Economic/Promotion gate open; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders. Owner surface: BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_V1."
   ]
 }

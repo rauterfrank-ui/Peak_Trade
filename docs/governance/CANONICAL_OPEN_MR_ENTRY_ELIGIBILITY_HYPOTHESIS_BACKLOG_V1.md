@@ -42,6 +42,12 @@ None. Holdout V2 is no longer preregistered; it is terminal-executed.
 
 `REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY`
 
+## Next research question (diagnostic pointer only)
+
+`Given COSTS_DESTROY_MARGINAL_EDGE on the sealed DEVELOPMENT_ONLY Bollinger/MR baseline (marginal gross PF~1.01, all-SHORT book), does a cost-structure or holding/exit-efficiency change class exist that preserves gross edge without retuning terminal entry-eligibility parameters or reopening exhausted filter families?`
+
+Not a preregistered candidate. `open_candidates` remains empty. No evaluation authorized from this pointer alone.
+
 ## Explicit locks
 
 - `PROMOTION_ELIGIBLE=false`

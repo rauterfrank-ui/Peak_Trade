@@ -1,0 +1,9 @@
+{
+  "archive_root": "/private/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/peak_trade_data_archive/dev_pre_holdout_panel_v1_20260720T2052Z",
+  "base_sha": "734900d18ba0cf49b557a398c78985d937dfa177",
+  "evidence_class_id": "BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_EVIDENCE_V1",
+  "execution_id": "BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_EXECUTION_V1",
+  "output_dir": "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1",
+  "timestamp_utc": "2026-07-21T11:57:04Z",
+  "wallclock_seconds": 190.94039270800002
+}

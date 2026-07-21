@@ -246,7 +246,7 @@
     "open_candidate_count_min": 0,
     "open_candidate_count_max": 4
   },
-  "governance_note": "ADX DI direction confirmation DEVELOPMENT PASS remains terminal. Holdout V1 remains terminal as ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN (run count 1/1; no V1 rerun). Independently versioned holdout evaluation ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_HOLDOUT_V2 executed once and terminated as FAIL / NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1; retry forbidden). Economic offline gate remains closed; promotion remains closed; no runtime/orders.",
+  "governance_note": "ADX DI direction confirmation DEVELOPMENT PASS remains terminal. Holdout V1 remains terminal as ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN (run count 1/1; no V1 rerun). Independently versioned holdout evaluation ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_HOLDOUT_V2 executed once and terminated as FAIL / NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1; retry forbidden). Open MR entry-eligibility candidate queue remains empty. A separate development-only diagnostic Economic Failure Decomposition for the immutable Bollinger/MR baseline is authorized as read-only diagnosis only (no preregistration, no new eligibility filter). Economic offline gate remains closed; promotion remains closed; no runtime/orders.",
   "explicit_non_actions": [
     "NO_V1_HOLDOUT_RERUN",
     "NO_RETRY_OF_TERMINAL_HOLDOUT_V1",
@@ -259,5 +259,8 @@
     "NO_PRODUCTIVE_TRADING_LOGIC_CHANGE",
     "NO_REOPEN_WITHOUT_NEW_HYPOTHESIS_ID"
   ],
-  "next_canonical_step": "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY"
+  "next_canonical_step": "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY",
+  "next_research_question": "Given COSTS_DESTROY_MARGINAL_EDGE on the sealed DEVELOPMENT_ONLY Bollinger/MR baseline (marginal gross PF~1.01, all-SHORT book), does a cost-structure or holding/exit-efficiency change class exist that preserves gross edge without retuning terminal entry-eligibility parameters or reopening exhausted filter families?",
+  "next_research_question_preregistration_authorized": false,
+  "next_research_question_note": "Diagnostic backlog pointer only; not a preregistered candidate; open_candidates remains empty."
 }
