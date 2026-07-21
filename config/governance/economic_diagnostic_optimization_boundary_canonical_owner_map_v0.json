@@ -252,6 +252,17 @@
         "docs/evidence/authorize_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v7/"
       ]
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V8": {
+      "note": "Separate Operator ratification surface authorizing exactly one later V8 DEVELOPMENT evaluation run; requires pre-authorization parity PASS and released DEVELOPMENT panel; does not start runner or claim slot in wiring slice.",
+      "path_prefixes": [
+        "config/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v8.json",
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v8.py",
+        "scripts/research/run_authorize_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v8.py",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V8.md",
+        "docs/evidence/authorize_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8/"
+      ]
+    },
     "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V7": {
       "note": "V7 reentry-cooldown DEVELOPMENT evaluation surfaces; single authorized evaluate process consumed slot and terminated INCONCLUSIVE_INFRASTRUCTURE_FAILURE (PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST); no rerun; no holdout.",
       "path_prefixes": [
@@ -261,6 +272,17 @@
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V7.md",
         "docs/evidence/preflight_bollinger_mr_midband_exit_reentry_cooldown_v7_wiring/",
         "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v7/"
+      ]
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V8": {
+      "note": "V8 reentry-cooldown DEVELOPMENT evaluation wiring; pre-authorization parity before auth/slot; EVALUATION_RUN_COUNT=0; default CLI preflight-only; evaluate requires ratification+flag; evaluate evidence not pre-created; no evaluation/runtime/orders; V7 terminal unreopened.",
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8.py",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V8.md",
+        "docs/evidence/preflight_bollinger_mr_midband_exit_reentry_cooldown_v8_wiring/",
+        "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8/"
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V7": {
@@ -273,6 +295,16 @@
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V7.md"
       ]
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V8": {
+      "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit reentry-cooldown V8 after terminal V7 INCONCLUSIVE_INFRASTRUCTURE_FAILURE (FROZEN_EXIT_PARAMETERS_MISMATCH); EVALUATION_RUN_COUNT=0; control=exact V6 semantics; treatment=same-side reentry cooldown 24h; complete exit_mechanism.frozen_parameters SSOT; pre-authorization parity validator; not a V7 reopen/retry; no evaluation/runtime/orders.",
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py",
+        "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v8.json",
+        "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V8.md"
+      ]
+    },
     "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7": {
       "note": "Governance overlay clarifying V7 implementation ambiguities B1-B6 without mutating immutable preregistration digest; operator_decisions_status OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY; lifecycle may transition READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION -> EVALUATION_AUTHORIZED via separate ratification; evaluation_run_count=0 until run GO; no runtime/orders.",
       "path_prefixes": [
@@ -281,6 +313,16 @@
         "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority_v7.py",
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7.md",
         "docs/evidence/operator_clarification_bollinger_mr_midband_exit_reentry_cooldown_v7/"
+      ]
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8": {
+      "note": "Governance overlay clarifying V8 B1-B6 without mutating immutable preregistration digest; lifecycle READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION; evaluation_authorized=false until separate ratification; evaluation_run_count=0; no runtime/orders.",
+      "path_prefixes": [
+        "config/research/bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority_v8.json",
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority_v8.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority_v8.py",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8.md",
+        "docs/evidence/operator_clarification_bollinger_mr_midband_exit_reentry_cooldown_v8/"
       ]
     },
     "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1": {
@@ -771,16 +813,6 @@
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
-      ]
-    },
-    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V8": {
-      "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit reentry-cooldown V8 after terminal V7 INCONCLUSIVE_INFRASTRUCTURE_FAILURE (FROZEN_EXIT_PARAMETERS_MISMATCH); EVALUATION_RUN_COUNT=0; control=exact V6 semantics; treatment=same-side reentry cooldown 24h; complete exit_mechanism.frozen_parameters SSOT; pre-authorization parity validator; not a V7 reopen/retry; no evaluation/runtime/orders.",
-      "path_prefixes": [
-        "src/research/bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py",
-        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py",
-        "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v8.json",
-        "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/",
-        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V8.md"
       ]
     }
   },

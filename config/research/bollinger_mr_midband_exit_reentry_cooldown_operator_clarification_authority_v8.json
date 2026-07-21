@@ -1,0 +1,228 @@
+{
+  "allowed_implementation_lifecycle_states": [
+    "DEFINITION_ONLY_PREREGISTERED",
+    "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
+    "IMPLEMENTATION_WIRED_NOT_AUTHORIZED",
+    "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION",
+    "EVALUATION_AUTHORIZED"
+  ],
+  "allowed_transitions": [
+    [
+      "DEFINITION_ONLY_PREREGISTERED",
+      "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY"
+    ],
+    [
+      "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
+      "IMPLEMENTATION_WIRED_NOT_AUTHORIZED"
+    ],
+    [
+      "IMPLEMENTATION_WIRED_NOT_AUTHORIZED",
+      "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION"
+    ],
+    [
+      "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION",
+      "EVALUATION_AUTHORIZED"
+    ]
+  ],
+  "allows_post_hoc_result_adjustment": false,
+  "authority_digest": "11dbd8168ac75789f52434e84e3276065d7b5ac3f27568b738307c7d73e7b2ff",
+  "authority_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8",
+  "authority_scope": "IMPLEMENTATION_CLARIFICATION_ONLY",
+  "authority_version": "v8.0.0",
+  "b1_through_b6_fully_resolved": true,
+  "b7_b8_technical_fulfillment_required_before_evaluation": true,
+  "bindings": {
+    "cli": "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8.py",
+    "decision": "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8/decision_v8.py",
+    "evidence": "docs/evidence/operator_clarification_bollinger_mr_midband_exit_reentry_cooldown_v8/",
+    "execution_map": "docs/evidence/preflight_bollinger_mr_midband_exit_reentry_cooldown_v8_wiring/EXECUTION_MAP.md",
+    "gate": "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8/reentry_cooldown_gate_v8.py",
+    "lifecycle": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8.md",
+    "preflight": "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8/measurement_validity_preflight_v8.py",
+    "runner": "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8/panel_runner_v8.py",
+    "state": "src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_v8/cooldown_state_v8.py"
+  },
+  "created_at_utc": "2026-07-22T00:00:00Z",
+  "decisions": {
+    "B1": {
+      "exit_divergence_invalidates_measurement": true,
+      "exit_divergence_required": false,
+      "exit_fills_must_be_identical": true,
+      "id": "B1",
+      "missing_reentry_divergence_is_economic_fail": false,
+      "missing_reentry_divergence_result_class": "INVALID_MEASUREMENT_IDENTICAL_ARMS",
+      "note": "V8 preserves V7 economic treatment with complete exit_mechanism.frozen_parameters SSOT and mandatory pre-authorization parity. Control and Treatment share identical entry-before-exit, exit trigger/decision/fill, max-holding, sizing, risk, fees, slippage, execution, and MV2/Double-Play semantics. Sole difference: Treatment arms same-scope reentry cooldown after qualifying forced midband exit; Control does not.",
+      "prereg_exit_divergence_requirement_not_technically_executed": false,
+      "required_divergence_boundary": "same_scope_reentry_eligibility",
+      "resolved": true,
+      "summary": "V7 is a pure reentry-cooldown hypothesis. Control and Treatment share identical entry-before-exit, exit trigger/decision/fill, max-holding, sizing, risk, fees, slippage, execution, and MV2/Double-Play semantics. Sole difference: Treatment arms same-scope reentry cooldown after qualifying forced midband exit; Control does not.",
+      "title": "Causal hypothesis and divergence"
+    },
+    "B2": {
+      "example_minus_0_10_means_10_percent_drawdown": true,
+      "forbidden": [
+        "treatment_le_control_as_pass",
+        "silent_abs",
+        "positive_magnitude_only_in_decision",
+        "mixed_representations"
+      ],
+      "id": "B2",
+      "max_drawdown_representation": "signed_negative_return",
+      "pass_operator": "treatment_max_drawdown >= control_max_drawdown",
+      "positive_magnitude_from_upstream": "FAIL_CLOSED_MEASUREMENT_VALIDITY",
+      "resolved": true,
+      "title": "Max drawdown representation and operator",
+      "tolerance": 0.0,
+      "zero_means_no_drawdown": true
+    },
+    "B3": {
+      "auto_rerun_allowed": false,
+      "diagnostic_class_example": "PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL",
+      "economic_verdict": "NOT_EVALUATED",
+      "evaluation_run_count_remains": 1,
+      "id": "B3",
+      "infrastructure_failure_as_v7_result_class": false,
+      "infrastructure_failure_token_retained_for": [
+        "historical_lineage",
+        "overarching_diagnostic_category_label"
+      ],
+      "lifecycle_terminal_state": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+      "new_run_requires_new_prereg_or_authority": true,
+      "partial_metrics_authoritative": false,
+      "resolved": true,
+      "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+      "resume_same_slot_allowed": false,
+      "title": "Infrastructure-failure classification"
+    },
+    "B4": {
+      "also_block_exit_fill_bar_t": true,
+      "arm_on_bar": "t_after_confirmed_qualifying_forced_midband_exit_fill",
+      "blocked_bars_inclusive": {
+        "from": "t+1",
+        "through": "t+24"
+      },
+      "cooldown_never_changes_direction_authority": true,
+      "cooldown_never_changes_exit_semantics": true,
+      "cooldown_never_creates_entry": true,
+      "count_basis": "canonical_sequential_PT1H_bar_indices",
+      "first_eligible_bar": "t+25",
+      "id": "B4",
+      "resolved": true,
+      "same_bar_reentry_on_t_forbidden": true,
+      "title": "Exact cooldown bar semantics"
+    },
+    "B5": {
+      "counter_creates_economic_pass_fail_rule": false,
+      "id": "B5",
+      "must_not_rely_on_incidental_replay_prevention": true,
+      "requires_explicit_state_gate_test": true,
+      "requires_observability_counter": true,
+      "resolved": true,
+      "same_bar_reentry_after_qualifying_exit_fill_blocked": true,
+      "title": "Same-bar reentry"
+    },
+    "B6": {
+      "accepted_bars_only": [
+        "finalized",
+        "strictly_ascending",
+        "unique",
+        "gapless_PT1H",
+        "sealed_development_panel"
+      ],
+      "diagnostic_field": "PANEL_OR_DATASET_INTEGRITY",
+      "fail_closed_entire_measurement": true,
+      "forbidden": [
+        "keep_last_on_duplicates",
+        "forward_fill",
+        "backfill",
+        "interpolation",
+        "silent_skip",
+        "count_observed_instead_of_canonical_PT1H",
+        "partial_economic_eval_of_damaged_slice"
+      ],
+      "id": "B6",
+      "panel_integrity_preferred_token_authorized": false,
+      "panel_integrity_preferred_token_if_authorized": "INVALID_MEASUREMENT_PANEL_INTEGRITY",
+      "panel_integrity_result_class": "INVALID_MEASUREMENT_BINDING_MISSING",
+      "post_slot_claim_integrity_failure_consumes_slot": true,
+      "preflight_integrity_failure_before_economic_run": true,
+      "resolved": true,
+      "silent_single_instrument_drop_forbidden": true,
+      "title": "Gaps duplicates sort frequency"
+    },
+    "B7": {
+      "evaluated_only_after_measurement_validity": true,
+      "id": "B7",
+      "pass_operator": "treatment_net_profit_factor >= control_net_profit_factor",
+      "resolved_by_authority_decision": true,
+      "strict_gt_forbidden": true,
+      "technically_fulfilled_requires_wiring_and_tests": true,
+      "tie_passes": true
+    },
+    "B8": {
+      "id": "B8",
+      "requirements": [
+        "fully_separate_state_instances",
+        "no_shared_mutable_cooldown_containers",
+        "scope_key_instrument_id_direction",
+        "no_cross_instrument_leak",
+        "no_cross_direction_leak",
+        "no_cross_arm_leak",
+        "no_cross_run_leak",
+        "control_cooldown_permanently_disabled",
+        "treatment_cooldown_armed_only_by_qualifying_fill",
+        "state_empty_at_run_start",
+        "state_not_reused_across_evaluation_runs",
+        "opposite_direction_not_blocked_by_same_scope_cooldown",
+        "rearm_on_new_qualifying_treatment_fill_resets_boundary",
+        "no_state_mutation_from_exit_signal_without_confirmed_fill"
+      ],
+      "resolved_by_authority_decision": true,
+      "technically_fulfilled_requires_wiring_and_tests": true
+    }
+  },
+  "evaluation_authorized": false,
+  "evaluation_executed": false,
+  "evaluation_run_count": 0,
+  "evidence_ref": "docs/evidence/operator_clarification_bollinger_mr_midband_exit_reentry_cooldown_v8/",
+  "fail_closed_conditions": [
+    "MISSING_AUTHORITY",
+    "AUTHORITY_DIGEST_MISMATCH",
+    "PREREGISTRATION_DIGEST_MISMATCH",
+    "UNKNOWN_AUTHORITY_VERSION",
+    "UNRESOLVED_B1_THROUGH_B6",
+    "AUTHORITY_NOT_REGISTERED",
+    "FORBIDDEN_LIFECYCLE_TRANSITION",
+    "EVALUATION_WITHOUT_evaluation_authorized_true"
+  ],
+  "forbidden_direct_transitions": [
+    "DEFINITION_ONLY_PREREGISTERED->EVALUATION_AUTHORIZED",
+    "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY->EVALUATION_EXECUTED",
+    "IMPLEMENTATION_WIRED_NOT_AUTHORIZED->RESULT_WITHOUT_STATIC_GATES",
+    "ANY->EVALUATION_OR_RESULT_WITHOUT_FULL_WIRING_AND_STATIC_GATE_PASS"
+  ],
+  "hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V8",
+  "introduces_new_economic_hypothesis": false,
+  "introduces_new_treatment_effect": false,
+  "is_second_preregistration": false,
+  "mutates_preregistration": false,
+  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION_AUTHORIZATION",
+  "operator_decision_reference": "OPERATOR_GO_INTRODUCE_V8_OPERATOR_CLARIFICATION_AUTHORITY_B1_B6_IMPLEMENTATION_ONLY",
+  "operator_decisions_status": "OPERATOR_DECISIONS_RECORDED_IMPLEMENTATION_ONLY",
+  "owner": "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8",
+  "precedence": {
+    "economic_hypothesis_and_registered_measurement_targets": "FROM_UNCHANGED_PREREGISTRATION",
+    "forbidden": [
+      "NEW_ECONOMIC_HYPOTHESIS",
+      "NEW_TREATMENT_EFFECT",
+      "POST_HOC_RESULT_ADJUSTMENT",
+      "PREREGISTRATION_BYTE_OR_SEMANTIC_MUTATION"
+    ],
+    "implementation_ambiguities_b1_through_b6": "THIS_OPERATOR_AUTHORITY_IS_EXECUTION_BINDING"
+  },
+  "preregistration_digest": "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c",
+  "preregistration_path": "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v8.json",
+  "run_slot_consumed": false,
+  "schema_version": "bollinger_mr_midband_exit_reentry_cooldown_operator_clarification_authority.v8",
+  "status": "READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION"
+}
