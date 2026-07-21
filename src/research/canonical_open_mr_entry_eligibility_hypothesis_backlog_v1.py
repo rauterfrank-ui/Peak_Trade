@@ -31,11 +31,15 @@ FORBIDDEN_FEATURE_FAMILIES = frozenset(
         "rsi_exhaustion_level",
         "adx_level_range_admission",
         "price_vs_ma_trend_alignment",
+        "macd_histogram_sign_countertrend",
     }
 )
 REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
 MA_TREND_ALIGNMENT_HYPOTHESIS_ID = (
     "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+)
+MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID = (
+    "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
 )
 FORBIDDEN_EMBEDDED_RESULT_KEYS = frozenset(
     {
@@ -377,6 +381,10 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         MA_TREND_ALIGNMENT_HYPOTHESIS_ID not in candidate_ids,
         "MA_TREND_ALIGNMENT_MUST_NOT_BE_OPEN_CANDIDATE",
     )
+    _assert_true(
+        MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID not in candidate_ids,
+        "MACD_HISTOGRAM_COUNTERTREND_MUST_NOT_BE_OPEN_CANDIDATE",
+    )
 
     preregistered = backlog.get("preregistered_hypotheses") or []
     _assert_true(isinstance(preregistered, list), "PREREGISTERED_HYPOTHESES_TYPE")
@@ -410,6 +418,11 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
             hyp_id,
         )
         preregistered_ids.append(hyp_id)
+    _assert_true(
+        preregistered_ids == [MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID],
+        "PREREGISTERED_MUST_BE_EXACTLY_MACD",
+        str(preregistered_ids),
+    )
 
     return {
         "valid": True,

@@ -5,7 +5,7 @@
 `OPEN_BACKLOG` — versioned canonical SSOT for open Mean-Reversion entry-eligibility
 research candidates. Definition-only governance. No evaluation, no backtest, no
 holdout access, no runtime activation, no productive trading-logic mutation in this
-slice. Open preregistrations are empty after the MA trend-alignment terminal FAIL.
+slice. One hypothesis is `DEFINITION_ONLY_PREREGISTERED` and awaiting evaluation GO.
 
 ## Binding
 
@@ -37,22 +37,29 @@ slice. Open preregistrations are empty after the MA trend-alignment terminal FAI
 
 Semantic duplicates and parameter retunes of these terminals are forbidden.
 `price_vs_ma_trend_alignment` remains forbidden for remaining open candidates.
+`macd_histogram_sign_countertrend` is also forbidden for remaining open candidates
+(MACD is preregistered).
 
-## Preregistered
+## Preregistered (definition-only; evaluation not authorized)
 
-None. `preregistered_hypotheses=[]`.
+| Hypothesis ID | Status | Queue |
+|---|---|---|
+| `MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` | `DEFINITION_ONLY_PREREGISTERED` | `PREREGISTERED_AWAITING_EVALUATION_GO` |
+
+Contract:
+`config/research/macd_histogram_countertrend_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json`.
+`evaluation_authorized=false`; `development_run_count=0`.
 
 ## Open candidates (deterministic priority)
 
 Priority criteria are locked a priori (semantic distance, entry-effectiveness,
 measurability, low complexity, low overfit risk, repo support). No performance-based
 selection. No ties. Evaluation of the next eligible candidate is **NOT authorized**
-by this coherence slice.
+by this MACD preregistration transition.
 
 | Rank | Hypothesis ID | Queue |
 |---:|---|---|
-| 1 | `MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` | `NEXT_ELIGIBLE_FOR_PREREGISTRATION` |
-| 2 | `ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` | `QUEUED` |
+| 1 | `ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` | `NEXT_ELIGIBLE_FOR_PREREGISTRATION` |
 
 All open candidates are `OPEN_UNPREREGISTERED`.
 
@@ -80,8 +87,8 @@ All open candidates are `OPEN_UNPREREGISTERED`.
 
 ## Next step
 
-`REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_V1`
+`REVIEW_AND_MERGE_MACD_HISTOGRAM_COUNTERTREND_PREREGISTRATION_BEFORE_ANY_EVALUATION`
 
-Definition-only preregistration of MACD histogram countertrend (and any later
-evaluation) requires a separate PR and operator GO. This coherence slice does not
-authorize preregistration, evaluation, holdout access, or productive authority change.
+Review and merge the MACD histogram-countertrend definition-only preregistration before
+any evaluation. Evaluation of MACD (or of the next eligible open candidate) requires a
+separate operator GO and is not authorized by this backlog transition.

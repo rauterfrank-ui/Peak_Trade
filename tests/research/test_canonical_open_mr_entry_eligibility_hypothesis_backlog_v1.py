@@ -45,35 +45,48 @@ def test_repo_backlog_validates() -> None:
     assert report["valid"] is True
     assert report["status"] == "OPEN_BACKLOG"
     assert report["terminal_hypothesis_count"] == 5
-    assert report["open_candidate_count"] == 2
-    assert report["preregistered_count"] == 0
+    assert report["open_candidate_count"] == 1
+    assert report["preregistered_count"] == 1
     assert report["development_run_count"] == 0
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
     assert report["runtime_locked"] is True
     assert report["next_eligible_hypothesis_id"] == (
-        "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+        "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
     )
 
 
-def test_ma_terminal_and_not_open_or_preregistered() -> None:
+def test_macd_preregistered_and_not_open() -> None:
     backlog = _load(BACKLOG_PATH)
     open_ids = {c["hypothesis_id"] for c in backlog["open_candidates"]}
+    assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in open_ids
     assert "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in open_ids
-    assert backlog["preregistered_hypotheses"] == []
+    prereg = backlog["preregistered_hypotheses"]
+    assert len(prereg) == 1
+    assert (
+        prereg[0]["hypothesis_id"]
+        == "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+    )
+    assert prereg[0]["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert prereg[0]["queue_status"] == "PREREGISTERED_AWAITING_EVALUATION_GO"
+    assert prereg[0]["evaluation_authorized"] is False
+    assert prereg[0]["development_run_count"] == 0
+    assert (
+        "macd_histogram_sign_countertrend"
+        in backlog["forbidden_feature_families_for_open_candidates"]
+    )
+    assert (
+        "price_vs_ma_trend_alignment" in backlog["forbidden_feature_families_for_open_candidates"]
+    )
     terminals = {t["hypothesis_id"]: t for t in backlog["terminal_hypotheses"]}
     ma = terminals["MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"]
     assert ma["status"] == "TERMINAL_FAIL"
     assert ma["fail_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
-    assert ma["feature_family"] == "price_vs_ma_trend_alignment"
-    assert (
-        "price_vs_ma_trend_alignment" in backlog["forbidden_feature_families_for_open_candidates"]
-    )
     assert backlog["verdict"] == (
-        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_ZERO_PREREGISTERED_MACD_NEXT_ELIGIBLE"
+        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_WITH_ONE_PREREGISTERED"
     )
     assert backlog["next_canonical_step"] == (
-        "REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_V1"
+        "REVIEW_AND_MERGE_MACD_HISTOGRAM_COUNTERTREND_PREREGISTRATION_BEFORE_ANY_EVALUATION"
     )
 
 
@@ -92,10 +105,11 @@ def test_all_terminal_hypotheses_captured_unchanged() -> None:
 def test_open_candidate_count_and_unique_ids() -> None:
     backlog = _load(BACKLOG_PATH)
     candidates = backlog["open_candidates"]
-    assert len(candidates) == 2
+    assert len(candidates) == 1
     ids = [c["hypothesis_id"] for c in candidates]
     assert len(ids) == len(set(ids))
     assert not set(ids) & set(REQUIRED_TERMINAL_HYPOTHESIS_IDS)
+    assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" not in ids
 
 
 def test_priority_order_complete_deterministic_no_ties() -> None:
@@ -120,6 +134,10 @@ def test_exactly_one_next_eligible_for_preregistration() -> None:
     assert len(next_ones) == 1
     assert next_ones[0]["priority_rank"] == 1
     assert next_ones[0]["status"] == "OPEN_UNPREREGISTERED"
+    assert (
+        next_ones[0]["hypothesis_id"]
+        == "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+    )
     assert all(c["queue_status"] == QUEUED for c in queued)
     assert all(c["status"] == "OPEN_UNPREREGISTERED" for c in backlog["open_candidates"])
 
@@ -190,12 +208,28 @@ def test_universe_and_governance_bindings() -> None:
     assert rules["retuning_after_fail_forbidden"] is True
     assert rules["candidate_combination_forbidden"] is True
     assert rules["reprioritization_requires_separate_versioned_governance_pr"] is True
+    assert rules["open_candidate_count_min"] == 1
 
 
 def test_validator_rejects_second_next_eligible() -> None:
     backlog = _load(BACKLOG_PATH)
     bad = copy.deepcopy(backlog)
-    bad["open_candidates"][1]["queue_status"] = NEXT_ELIGIBLE
+    # Only one open candidate; inject a second NEXT_ELIGIBLE with a lower valid score.
+    clone = copy.deepcopy(bad["open_candidates"][0])
+    clone["hypothesis_id"] = "SYNTHETIC_SECOND_NEXT_ELIGIBLE_OPEN_CANDIDATE_V1"
+    clone["feature_family"] = "synthetic_second_next_eligible_family"
+    clone["priority_rank"] = 2
+    clone["priority_scores"] = {
+        "semantic_distance": 1,
+        "entry_effectiveness": 1,
+        "measurability": 1,
+        "low_additional_complexity": 1,
+        "low_overfitting_risk": 1,
+        "repo_support": 1,
+    }
+    clone["priority_score_total"] = 14
+    clone["queue_status"] = NEXT_ELIGIBLE
+    bad["open_candidates"].append(clone)
     with pytest.raises(BacklogValidationError, match="EXACTLY_ONE_NEXT_ELIGIBLE"):
         validate_backlog_contract(bad)
 
@@ -203,7 +237,7 @@ def test_validator_rejects_second_next_eligible() -> None:
 def test_validator_rejects_forbidden_feature_family_retune() -> None:
     backlog = _load(BACKLOG_PATH)
     bad = copy.deepcopy(backlog)
-    bad["open_candidates"][0]["feature_family"] = "adx_level_range_admission"
+    bad["open_candidates"][0]["feature_family"] = "macd_histogram_sign_countertrend"
     with pytest.raises(BacklogValidationError, match="SEMANTIC_DUPLICATE_FEATURE_FAMILY"):
         validate_backlog_contract(bad)
 
@@ -222,13 +256,12 @@ def test_governance_doc_marks_definition_only_and_next_eligible() -> None:
     assert "PROMOTION_ELIGIBLE=false" in text
     assert "MA_TREND_ALIGNMENT_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
     assert "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
+    assert "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1" in text
     assert "NEXT_ELIGIBLE_FOR_PREREGISTRATION" in text
-    assert "preregistered_hypotheses=[]" in text or "Open preregistrations are empty" in text
+    assert "DEFINITION_ONLY_PREREGISTERED" in text
+    assert "PREREGISTERED_AWAITING_EVALUATION_GO" in text
     assert (
-        "REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_V1"
-        in text
+        "REVIEW_AND_MERGE_MACD_HISTOGRAM_COUNTERTREND_PREREGISTRATION_BEFORE_ANY_EVALUATION" in text
     )
     assert "EVALUATION_EXECUTED=false" in text
     assert "NOT authorized" in text or "not authorized" in text.lower()
-    assert "DEFINITION_ONLY_PREREGISTERED" not in text
-    assert "PREREGISTERED_AWAITING_EVALUATION_GO" not in text
