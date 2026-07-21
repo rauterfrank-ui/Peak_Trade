@@ -3,7 +3,7 @@
 ---
 docs_token: DOCS_TOKEN_CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1
 STATUS: OPEN_BACKLOG
-scope: research, offline-only, non-authorizing, definition-only
+scope: research, offline-only, non-authorizing, terminal-closeout
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
@@ -11,10 +11,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## Status
 
-`OPEN_BACKLOG` — versioned canonical SSOT for open Mean-Reversion exit-efficiency
-research candidates. Definition-only governance. Exactly one hypothesis is
-`DEFINITION_ONLY_PREREGISTERED`. No evaluation, no holdout access, no runtime
-activation, no productive trading-logic mutation in this slice.
+`OPEN_BACKLOG` — versioned canonical SSOT for Mean-Reversion exit-efficiency
+research candidates. Open preregistered queue is empty after the sole midband
+hypothesis terminated as infrastructure inconclusive. No rerun under that
+preregistration. No holdout access. No runtime activation. No productive
+trading-logic mutation.
 
 ## Binding
 
@@ -24,16 +25,23 @@ activation, no productive trading-logic mutation in this slice.
 - Required treatment type: `POST_ENTRY_EXIT_EFFICIENCY_MECHANISM`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
 
-## Preregistered hypotheses
+## Terminal hypotheses
 
 Exactly one:
 
 - `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1`
-  — `DEFINITION_ONLY_PREREGISTERED`
-  — `EVALUATION_RUN_COUNT=0`
-  — `EVALUATION_RUN_LIMIT=1`
-  — `DEVELOPMENT_ONLY=true`
-  — `HOLDOUT_ALLOWED=false`
+  — `TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE`
+  — `EVALUATION_RUN_COUNT=1`
+  — `EVALUATION_STARTED=true`
+  — `EVALUATION_COMPLETED=false`
+  — `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`
+  — `ECONOMIC_VERDICT=NOT_EVALUATED`
+  — `RERUN_ALLOWED=false`
+  — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v1&#47;`
+
+## Preregistered hypotheses
+
+Empty.
 
 ## Explicit exclusions
 
@@ -41,13 +49,11 @@ Exactly one:
 - No holdout candidate
 - No cost-structure-weakening hypothesis
 - No entry-eligibility reopen
+- No V2 preregistration in this closeout slice
 - Open unpreregistered exit-efficiency candidates: empty
 
-## Sibling lane
+## Next separate action
 
-Entry-eligibility backlog remains empty for open candidates:
-`config&#47;research&#47;canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json`.
-
-## Next step
-
-`REVIEW_AND_MERGE_DEFINITION_ONLY_EXIT_EFFICIENCY_PREREGISTRATION_BEFORE_ANY_DEVELOPMENT_EVALUATION`
+Not authorized here: fix generic runner lifecycle&#47;observability synthetically,
+then optionally consider a separate V2 preregistration with a new hypothesis ID
+and run count 0 under a new Operator-GO.

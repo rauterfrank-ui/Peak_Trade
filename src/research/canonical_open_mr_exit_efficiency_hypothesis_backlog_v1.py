@@ -34,12 +34,10 @@ FORBIDDEN_EMBEDDED_RESULT_KEYS = frozenset(
         "measured_net_return",
         "measured_profit_factor",
         "economic_metrics",
-        "RESULT_CLASS",
-        "result_class",
-        "comparison_decision",
         "probe_summary",
     }
 )
+REQUIRED_TERMINAL_STATUS = "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
 
 
 class BacklogValidationError(ValueError):
@@ -91,7 +89,9 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         backlog.get("evaluation_results_embedded") is False,
         "EVALUATION_RESULTS_EMBEDDED_FLAG",
     )
-    _assert_true(backlog.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NONZERO")
+    _assert_true(
+        int(backlog.get("development_run_count", -1)) == 1, "DEVELOPMENT_RUN_COUNT_MUST_BE_1"
+    )
     _assert_true(backlog.get("dataset_id") == REQUIRED_DATASET_ID, "DATASET_ID_MISMATCH")
     _assert_true(backlog.get("dataset_class") == "DEVELOPMENT_ONLY", "DATASET_CLASS")
     _assert_true(backlog.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
@@ -178,39 +178,56 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(rules.get("economic_gate_closed") is True, "ECONOMIC_GATE_NOT_CLOSED")
     _assert_true(rules.get("promotion_closed") is True, "PROMOTION_NOT_CLOSED")
-    _assert_true(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_RULE")
+    _assert_true(rules.get("preregistered_count_exact") == 0, "PREREGISTERED_COUNT_RULE")
     _assert_true(rules.get("open_unpreregistered_count_exact") == 0, "OPEN_COUNT_RULE")
 
     preregistered = backlog.get("preregistered_hypotheses")
     _assert_true(isinstance(preregistered, list), "PREREGISTERED_MISSING")
     assert isinstance(preregistered, list)
-    _assert_true(len(preregistered) == 1, "PREREGISTERED_COUNT", str(len(preregistered)))
-    entry = preregistered[0]
-    _assert_true(isinstance(entry, Mapping), "PREREGISTERED_ENTRY_TYPE")
+    _assert_true(len(preregistered) == 0, "PREREGISTERED_MUST_BE_EMPTY", str(len(preregistered)))
+
+    terminal = backlog.get("terminal_hypotheses")
+    _assert_true(isinstance(terminal, list), "TERMINAL_MISSING")
+    assert isinstance(terminal, list)
+    _assert_true(len(terminal) == 1, "TERMINAL_COUNT", str(len(terminal)))
+    entry = terminal[0]
+    _assert_true(isinstance(entry, Mapping), "TERMINAL_ENTRY_TYPE")
     assert isinstance(entry, Mapping)
-    _assert_true(entry.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "PREREGISTERED_ID")
-    _assert_true(entry.get("status") == REQUIRED_PREREGISTERED_STATUS, "PREREGISTERED_STATUS")
-    _assert_true(entry.get("treatment_type") == REQUIRED_TREATMENT_TYPE, "PREREGISTERED_TREATMENT")
-    _assert_true(entry.get("development_only") is True, "PREREGISTERED_DEV_ONLY")
-    _assert_true(entry.get("holdout_allowed") is False, "PREREGISTERED_HOLDOUT_ALLOWED")
-    _assert_true(entry.get("evaluation_authorized") is False, "PREREGISTERED_EVAL_AUTHORIZED")
-    _assert_true(entry.get("evaluation_executed") is False, "PREREGISTERED_EVAL_EXECUTED")
-    _assert_true(int(entry.get("evaluation_run_count", -1)) == 0, "PREREGISTERED_RUN_COUNT")
-    _assert_true(int(entry.get("evaluation_run_limit") or 0) == 1, "PREREGISTERED_RUN_LIMIT")
-    _assert_true(int(entry.get("development_run_count", -1)) == 0, "PREREGISTERED_DEV_RUN_COUNT")
+    _assert_true(entry.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "TERMINAL_ID")
+    _assert_true(entry.get("status") == REQUIRED_TERMINAL_STATUS, "TERMINAL_STATUS")
+    _assert_true(entry.get("treatment_type") == REQUIRED_TREATMENT_TYPE, "TERMINAL_TREATMENT")
+    _assert_true(entry.get("development_only") is True, "TERMINAL_DEV_ONLY")
+    _assert_true(entry.get("holdout_allowed") is False, "TERMINAL_HOLDOUT_ALLOWED")
+    _assert_true(entry.get("evaluation_authorized") is False, "TERMINAL_EVAL_AUTHORIZED")
+    _assert_true(entry.get("evaluation_executed") is True, "TERMINAL_EVAL_EXECUTED")
+    _assert_true(entry.get("evaluation_started") is True, "TERMINAL_EVAL_STARTED")
+    _assert_true(entry.get("evaluation_completed") is False, "TERMINAL_EVAL_COMPLETED")
+    _assert_true(int(entry.get("evaluation_run_count", -1)) == 1, "TERMINAL_RUN_COUNT")
+    _assert_true(int(entry.get("evaluation_run_limit") or 0) == 1, "TERMINAL_RUN_LIMIT")
+    _assert_true(
+        entry.get("result_class") == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE", "TERMINAL_RESULT_CLASS"
+    )
+    _assert_true(entry.get("economic_verdict") == "NOT_EVALUATED", "TERMINAL_ECONOMIC_VERDICT")
+    _assert_true(entry.get("pass") is False, "TERMINAL_PASS_MUST_BE_FALSE")
+    _assert_true(entry.get("fail") is False, "TERMINAL_FAIL_MUST_BE_FALSE")
+    _assert_true(entry.get("rerun_allowed") is False, "TERMINAL_RERUN_FORBIDDEN")
 
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
-        "preregistered_count": 1,
+        "preregistered_count": 0,
+        "terminal_count": 1,
         "open_unpreregistered_count": 0,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
-        "development_run_count": 0,
+        "development_run_count": 1,
         "evaluation_authorized": False,
         "holdout_forbidden": True,
         "short_side_hypothesis_preregistered": False,
         "holdout_candidate_preregistered": False,
         "runtime_locked": True,
+        "result_class": "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+        "economic_verdict": "NOT_EVALUATED",
+        "rerun_allowed": False,
     }
 
 

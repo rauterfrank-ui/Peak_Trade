@@ -1,0 +1,42 @@
+{
+  "baseline_members_completed": "2/46",
+  "economic_metrics_computed": false,
+  "excluded_with_available_evidence": [
+    "panel temporary directory disappeared",
+    "confirmed OOM/jetsam kill of PID 43003",
+    "confirmed Python exception with traceback"
+  ],
+  "holdout_data_accessed": false,
+  "jetsam_kill_of_pid_43003_observed": false,
+  "last_stdout_lines": [
+    "{\"phase\": \"baseline\", \"i\": 1, \"n\": 46, \"member\": \"1INCH-USDT-SWAP\", \"trades\": 3, \"exits_forced_by_gate\": 0}",
+    "{\"phase\": \"baseline\", \"i\": 2, \"n\": 46, \"member\": \"ADA-USDT-SWAP\", \"trades\": 3, \"exits_forced_by_gate\": 0}"
+  ],
+  "measurement_started_at_utc": "2026-07-21T12:49:23Z",
+  "observed_facts": [
+    "Python PID 43003 started and emitted baseline progress for members 1 and 2",
+    "stderr contained only ConfigRegistry availability warning",
+    "no Python traceback written to run_stderr.txt",
+    "process no longer present at first progress poll",
+    "unified log shows PID 43003 activity only at start; no kill/exit record attributed to this PID",
+    "no jetsam event uniquely tied to PID 43003",
+    "sealed DEVELOPMENT panel directory still present",
+    "runner has no custom SIGTERM/SIGKILL handlers; only SystemExit for unset archive env / main()"
+  ],
+  "panel_archive_still_present": true,
+  "pid": 43003,
+  "premeasurement_abort_reason": "HOLDOUT_PATH_OR_ID_REJECTED_SELF_CHECK_BUG",
+  "premeasurement_abort_then_measurement_start": true,
+  "process_death_root_cause": "UNKNOWN",
+  "process_death_root_cause_notes": [
+    "Unproven hypothesis only: parent Cursor Shell session teardown may have reaped the backgrounded evaluation process despite nohup",
+    "Not asserted as proven; root cause remains UNKNOWN"
+  ],
+  "process_died_observed_at_utc": "2026-07-21T12:50:08Z",
+  "process_exit_code": null,
+  "runner_explicit_signal_handlers_present": false,
+  "runner_os_exit_paths_present": false,
+  "schema_version": "bollinger_mr_midband_exit_efficiency_process_death_root_cause.v1",
+  "traceback_present": false,
+  "treatment_members_completed": "0/46"
+}

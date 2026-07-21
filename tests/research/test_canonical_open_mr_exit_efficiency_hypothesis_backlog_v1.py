@@ -1,21 +1,16 @@
-"""Contract tests for canonical open MR exit-efficiency hypothesis backlog v1."""
+"""Contract tests for canonical open MR exit-efficiency hypothesis backlog after terminal closeout."""
 
 from __future__ import annotations
 
-import copy
 import json
 from pathlib import Path
-
-import pytest
 
 from src.research.canonical_open_mr_exit_efficiency_hypothesis_backlog_v1 import (
     BACKLOG_REL_PATH,
     GOVERNANCE_REL_PATH,
     REQUIRED_HYPOTHESIS_ID,
-    BacklogValidationError,
     assert_exactly_one_exit_efficiency_backlog_ssot,
     load_and_validate_repo_backlog,
-    validate_backlog_contract,
 )
 
 REPO = Path(__file__).resolve().parents[2]
@@ -33,47 +28,41 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
     assert GOVERNANCE_PATH.is_file()
 
 
-def test_repo_backlog_validates() -> None:
+def test_repo_backlog_terminal_inconclusive() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["preregistered_count"] == 1
+    assert report["preregistered_count"] == 0
+    assert report["terminal_count"] == 1
     assert report["open_unpreregistered_count"] == 0
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
-    assert report["short_side_hypothesis_preregistered"] is False
-    assert report["holdout_candidate_preregistered"] is False
+    assert report["result_class"] == "INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert report["economic_verdict"] == "NOT_EVALUATED"
+    assert report["rerun_allowed"] is False
     assert report["runtime_locked"] is True
 
 
-def test_exactly_one_preregistered_exit_efficiency_candidate() -> None:
+def test_terminal_entry_shape() -> None:
     backlog = _load(BACKLOG_PATH)
+    assert backlog["preregistered_hypotheses"] == []
     assert backlog["open_unpreregistered_candidates"] == []
-    assert backlog["competing_open_hypotheses"] == []
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    entry = backlog["preregistered_hypotheses"][0]
+    assert len(backlog["terminal_hypotheses"]) == 1
+    entry = backlog["terminal_hypotheses"][0]
     assert entry["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert entry["status"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert entry["evaluation_run_count"] == 0
-    assert entry["evaluation_run_limit"] == 1
-    assert entry["development_only"] is True
-    assert entry["holdout_allowed"] is False
-    assert backlog["short_side_hypothesis_preregistered"] is False
-    assert backlog["holdout_candidate_preregistered"] is False
-    assert backlog["cost_structure_hypothesis_preregistered"] is False
-
-
-def test_second_preregistered_rejected() -> None:
-    backlog = _load(BACKLOG_PATH)
-    bad = copy.deepcopy(backlog)
-    bad["preregistered_hypotheses"].append(copy.deepcopy(bad["preregistered_hypotheses"][0]))
-    with pytest.raises(BacklogValidationError, match="PREREGISTERED_COUNT"):
-        validate_backlog_contract(bad)
+    assert entry["status"] == "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
+    assert entry["evaluation_run_count"] == 1
+    assert entry["evaluation_started"] is True
+    assert entry["evaluation_completed"] is False
+    assert entry["pass"] is False
+    assert entry["fail"] is False
+    assert entry["rerun_allowed"] is False
+    assert entry["baseline_members_completed"] == "2/46"
+    assert entry["treatment_members_completed"] == "0/46"
 
 
 def test_governance_doc_present() -> None:
     text = GOVERNANCE_PATH.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1" in text
-    assert "DEFINITION_ONLY_PREREGISTERED" in text
     assert REQUIRED_HYPOTHESIS_ID in text
