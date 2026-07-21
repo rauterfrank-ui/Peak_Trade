@@ -1,0 +1,53 @@
+{
+  "baseline_declared_config_digest": "1f166bd81b099f7e79edc9e9700028a7db74d6ef46806ffbcd6ee44845a53c9a",
+  "baseline_effective_config_digest": "072c42bc82e7c07e14fbcc32c51608b4a072d9d76198a349f3c2023c3c6e47ce",
+  "baseline_signal": 0,
+  "binding_fix_surface": "MV2_WIRING_MOD_CAPTURE_ALIAS_OPEN_SIDE_BINDING_FIX",
+  "composite_exit_trigger_first_of": [
+    "midband",
+    "max_holding"
+  ],
+  "declared_configs_differ": false,
+  "effective_configs_differ": true,
+  "exit_bars_observed": 1,
+  "exits_forced_by_gate": 1,
+  "first_divergence_or_collapse_boundary": "wiring_mod.capture_backtest_engine_position_feedback_v1",
+  "max_holding_exit_count": 1,
+  "max_holding_synthetic_check": {
+    "composite_exit_trigger_first_of": [
+      "max_holding"
+    ],
+    "exits_forced_by_gate": 1,
+    "max_holding_exit_count": 1,
+    "midband_exit_count": 0,
+    "passed": true,
+    "reason": "max_holding_synthetic_ok",
+    "treatment_signal": 1
+  },
+  "mechanism_id": "canonical_bollinger_side_aware_middle_band_exit_with_frozen_max_holding_horizon_v1",
+  "midband_exit_count": 1,
+  "midband_synthetic_check": {
+    "baseline_signal": 0,
+    "composite_exit_trigger_first_of": [
+      "midband"
+    ],
+    "exit_bars_observed": 1,
+    "exits_forced_by_gate": 1,
+    "max_holding_exit_count": 0,
+    "midband_exit_count": 1,
+    "open_side_binding_observed": true,
+    "passed": true,
+    "reason": "midband_synthetic_ok",
+    "synthetic_divergence_observed": true,
+    "treatment_signal": 1
+  },
+  "open_side_binding_observed": true,
+  "passed": true,
+  "reason": "measurement_validity_prerequisites_passed",
+  "result_class": null,
+  "synthetic_divergence_expected": true,
+  "synthetic_divergence_observed": true,
+  "treatment_declared_config_digest": "1f166bd81b099f7e79edc9e9700028a7db74d6ef46806ffbcd6ee44845a53c9a",
+  "treatment_effective_config_digest": "1cc76ec47e76e843724cc94803079355a3512de5af162117533e964ca34ee6fd",
+  "treatment_signal": 1
+}

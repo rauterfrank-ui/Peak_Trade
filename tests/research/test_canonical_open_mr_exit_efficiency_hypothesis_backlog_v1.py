@@ -1,4 +1,4 @@
-"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (V6 def-only)."""
+"""Contract tests for canonical open MR exit-efficiency hypothesis backlog (V6 terminal FAIL)."""
 
 from __future__ import annotations
 
@@ -36,19 +36,17 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
     assert GOVERNANCE_PATH.is_file()
 
 
-def test_repo_backlog_one_definition_only_v6_preregistered() -> None:
+def test_repo_backlog_zero_preregistered_v6_terminal_fail() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["preregistered_count"] == 1
-    assert report["terminal_count"] == 5
+    assert report["preregistered_count"] == 0
+    assert report["terminal_count"] == 6
     assert report["open_unpreregistered_count"] == 0
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert report["preregistered_hypothesis_id"] == REQUIRED_V6_HYPOTHESIS_ID
-    assert report["development_run_count"] == 5
+    assert report["preregistered_hypothesis_id"] is None
+    assert report["development_run_count"] == 6
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
-    assert report["result_class"] == "INFRASTRUCTURE_FAILURE"
-    assert report["economic_verdict"] == "NOT_EVALUATED"
     assert report["rerun_allowed"] is False
     assert report["runtime_locked"] is True
     assert report["v2_evaluation_run_count"] == 1
@@ -67,31 +65,20 @@ def test_repo_backlog_one_definition_only_v6_preregistered() -> None:
         REQUIRED_V3_HYPOTHESIS_ID,
         REQUIRED_V4_HYPOTHESIS_ID,
         REQUIRED_V5_HYPOTHESIS_ID,
+        REQUIRED_V6_HYPOTHESIS_ID,
     }
     assert report["v5_evaluation_run_count"] == 1
     assert report["v5_result_class"] == "INFRASTRUCTURE_FAILURE"
     assert report["v5_is_rerun_of_v4"] is False
 
 
-def test_definition_only_v6_and_terminal_entry_shape() -> None:
+def test_zero_preregistered_and_terminal_entry_shape() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
+    assert backlog["preregistered_hypotheses"] == []
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
     assert backlog["open_unpreregistered_candidates"] == []
-    pref = backlog["preregistered_hypotheses"][0]
-    assert pref["hypothesis_id"] == REQUIRED_V6_HYPOTHESIS_ID
-    assert pref["status"] == "DEFINITION_ONLY_PREREGISTERED"
-    assert pref["evaluation_run_count"] == 0
-    assert pref["evaluation_authorized"] is False
-    assert pref["evaluation_executed"] is False
-    assert pref["result_class"] == "NOT_EVALUATED"
-    assert pref["mechanism_id"] == REQUIRED_V6_MECHANISM_ID
-    assert pref["identical_exit_mechanism_to_development_v5"] is False
-    assert pref["identical_economic_hypothesis_to_development_v5"] is False
-    assert pref["economic_change_vs_development_v5"] is True
-    assert pref["v5_rerun_forbidden"] is True
-    assert pref["predecessor_partial_metrics_used"] is False
-    assert len(backlog["terminal_hypotheses"]) == 5
+    assert backlog["development_run_count"] == 6
+    assert len(backlog["terminal_hypotheses"]) == 6
     by_id = {e["hypothesis_id"]: e for e in backlog["terminal_hypotheses"]}
     v1 = by_id[REQUIRED_HYPOTHESIS_ID]
     assert v1["status"] == "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
@@ -132,7 +119,23 @@ def test_definition_only_v6_and_terminal_entry_shape() -> None:
     assert v5["baseline_members_completed"] == "3/46"
     assert v5["treatment_members_completed"] == "0/46"
     assert "NO_V5_RERUN" in backlog["explicit_non_actions"]
-    assert "NO_V6_EVALUATION_IN_THIS_SLICE" in backlog["explicit_non_actions"]
+    v6 = by_id[REQUIRED_V6_HYPOTHESIS_ID]
+    assert v6["status"] == "TERMINAL_FAIL"
+    assert v6["evaluation_run_count"] == 1
+    assert v6["result_class"] == "FAIL"
+    assert v6["economic_verdict"] == "FAIL"
+    assert v6["decision_reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert v6["acceptance_criteria_met"] is False
+    assert v6["fail"] is True
+    assert v6["pass"] is False
+    assert v6["rerun_allowed"] is False
+    assert v6["mechanism_id"] == REQUIRED_V6_MECHANISM_ID
+    assert v6["identical_exit_mechanism_to_development_v5"] is False
+    assert v6["economic_change_vs_development_v5"] is True
+    assert v6["baseline_members_completed"] == "46/46"
+    assert v6["treatment_members_completed"] == "46/46"
+    assert "NO_V6_RERUN" in backlog["explicit_non_actions"]
+    assert "NO_V6_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
     assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V6_AUTO_CREATE" not in backlog["explicit_non_actions"]
     assert "NO_V5_AUTO_CREATE" not in backlog["explicit_non_actions"]
@@ -140,12 +143,14 @@ def test_definition_only_v6_and_terminal_entry_shape() -> None:
     assert "NO_V4_AUTO_CREATE" not in backlog["explicit_non_actions"]
 
 
-def test_governance_doc_mentions_v6_definition_only_and_v5_terminal() -> None:
+def test_governance_doc_mentions_v6_terminal_fail() -> None:
     text = (
         REPO / "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
     ).read_text(encoding="utf-8")
     assert "V6" in text
-    assert "DEFINITION_ONLY" in text or "definition-only" in text.lower()
+    assert "TERMINAL_FAIL" in text or "FAIL" in text
+    assert "NET_PROFIT_FACTOR_NOT_IMPROVED" in text
+    assert "zero" in text.lower() or "Zero" in text or "preregistered_count_exact=0" in text
     assert "V5" in text or "v5" in text.lower()
     assert "V4" in text
     assert "INFRASTRUCTURE_FAILURE" in text or "Infrastructure" in text

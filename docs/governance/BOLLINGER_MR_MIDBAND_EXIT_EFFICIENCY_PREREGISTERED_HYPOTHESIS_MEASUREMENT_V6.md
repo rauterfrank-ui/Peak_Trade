@@ -7,8 +7,11 @@ artifact: bollinger_mr_midband_exit_efficiency_preregistered_hypothesis_measurem
 
 ## Status
 
-`DEFINITION_ONLY_PREREGISTERED` — no evaluation authorized or executed in this slice.
-`EVALUATION_RUN_COUNT=0` &#47; `RUN_LIMIT=1`.
+Superseded by terminal DEVELOPMENT evaluation closeout:
+`DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;FAIL` (`REASON=NET_PROFIT_FACTOR_NOT_IMPROVED`).
+`EVALUATION_RUN_COUNT=1` &#47; `RUN_LIMIT=1` &#47; `RERUN_ALLOWED=false`.
+Evaluate evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v6&#47;`.
+Governance closeout: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.md`.
 
 ## Identity
 

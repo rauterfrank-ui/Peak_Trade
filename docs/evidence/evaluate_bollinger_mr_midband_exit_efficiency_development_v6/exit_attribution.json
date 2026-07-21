@@ -1,0 +1,25 @@
+{
+  "baseline": {
+    "exit_bars_observed": 0,
+    "exit_efficiency_gate_enabled": false,
+    "exits_forced_by_gate": 0,
+    "instruments_with_forced_exits_count": 0,
+    "max_holding_exit_count": 0,
+    "midband_exit_count": 0
+  },
+  "exit_divergence_observed": true,
+  "exit_reasons_differ": true,
+  "exit_time_differs": true,
+  "exits_forced_by_gate": 326,
+  "max_holding_exit_count": 10,
+  "midband_exit_count": 318,
+  "trade_count_differs": true,
+  "treatment": {
+    "exit_bars_observed": 326,
+    "exit_efficiency_gate_enabled": true,
+    "exits_forced_by_gate": 326,
+    "instruments_with_forced_exits_count": 31,
+    "max_holding_exit_count": 10,
+    "midband_exit_count": 318
+  }
+}

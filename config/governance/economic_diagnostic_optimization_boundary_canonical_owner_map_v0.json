@@ -871,6 +871,16 @@
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V6.md"
       ],
       "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V6 after terminal V5 INFRASTRUCTURE_FAILURE; EVALUATION_RUN_COUNT=0; genuine economic change vs V5 (midband-cross OR frozen max-holding-horizon=48h); reuses V5 process-lifecycle checkpoint; not a V5/V4/V3/V2/V1 rerun; no V5 partial metrics; no evaluation/runtime/orders."
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6": {
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v6/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v6.py",
+        "tests/research/test_bollinger_mr_midband_exit_efficiency_development_evaluation_v6.py",
+        "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.md"
+      ],
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0\u21921): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6."
     }
   }
 }
