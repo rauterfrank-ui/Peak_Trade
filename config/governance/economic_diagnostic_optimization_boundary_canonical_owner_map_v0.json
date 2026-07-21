@@ -644,7 +644,7 @@
         "tests/research/test_canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.py",
         "docs/governance/CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1.md"
       ],
-      "note": "Definition-only governance SSOT versioning the canonical open MR entry-eligibility hypothesis backlog after six terminal FAILs (including MACD histogram-countertrend); zero DEFINITION_ONLY_PREREGISTERED hypotheses and exactly one NEXT_ELIGIBLE_FOR_PREREGISTRATION (ADX DI direction confirmation); no further evaluation, holdout access, runtime activation, or productive authority mutation in this evaluation transition."
+      "note": "Definition-only governance SSOT versioning the canonical open MR entry-eligibility hypothesis backlog after six terminal FAILs (including MACD histogram-countertrend); exactly one DEFINITION_ONLY_PREREGISTERED hypothesis (ADX DI direction confirmation) with empty open candidate queue; no evaluation, holdout access, runtime activation, or productive authority mutation in this preregistration transition."
     },
     "MA_TREND_ALIGNMENT_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
       "path_prefixes": [
@@ -665,6 +665,16 @@
         "docs/governance/MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md"
       ],
       "note": "Single preregistered DEVELOPMENT-only offline evaluation of MACD(12,26,9) histogram-sign countertrend pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=FAIL, NET_PROFIT_FACTOR_NOT_IMPROVED); research-only entry-eligibility gate; read-only reuse of entry_effective decision/gate helpers and regime_gated shared_portfolio_equity_research_v1; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
+    },
+    "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "path_prefixes": [
+        "src/research/adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
+        "tests/research/test_adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
+        "config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_hypothesis_v1/",
+        "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
+      ],
+      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation."
     }
   }
 }

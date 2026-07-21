@@ -33,6 +33,7 @@ FORBIDDEN_FEATURE_FAMILIES = frozenset(
         "adx_level_range_admission",
         "price_vs_ma_trend_alignment",
         "macd_histogram_sign_countertrend",
+        "adx_di_direction_confirmation",
     }
 )
 REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
@@ -41,6 +42,9 @@ MA_TREND_ALIGNMENT_HYPOTHESIS_ID = (
 )
 MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID = (
     "MACD_HISTOGRAM_COUNTERTREND_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
+)
+ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID = (
+    "ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1"
 )
 FORBIDDEN_EMBEDDED_RESULT_KEYS = frozenset(
     {
@@ -265,10 +269,6 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(rules.get("economic_gate_closed") is True, "ECONOMIC_GATE_NOT_CLOSED")
     _assert_true(rules.get("promotion_closed") is True, "PROMOTION_NOT_CLOSED")
-    _assert_true(
-        rules.get("exactly_one_next_eligible_for_preregistration") is True,
-        "EXACTLY_ONE_NEXT_RULE_MISSING",
-    )
 
     candidate_ids: list[str] = []
     ranks: list[int] = []
@@ -345,29 +345,43 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
             hyp_id,
         )
 
-    _assert_true(len(next_eligible) == 1, "EXACTLY_ONE_NEXT_ELIGIBLE", str(next_eligible))
-    _assert_true(
-        sorted(ranks) == list(range(1, len(candidates) + 1)), "PRIORITY_RANKS_NOT_PERMUTATION"
-    )
-    _assert_true(len(set(totals)) == len(totals), "PRIORITY_TOTAL_TIE")
+    if len(candidates) == 0:
+        _assert_true(min_c == 0, "OPEN_EMPTY_REQUIRES_MIN_ZERO")
+        _assert_true(
+            rules.get("exactly_one_next_eligible_for_preregistration") is False,
+            "EMPTY_OPEN_MUST_DISABLE_EXACTLY_ONE_NEXT_RULE",
+        )
+        _assert_true(len(next_eligible) == 0, "EMPTY_OPEN_MUST_HAVE_NO_NEXT_ELIGIBLE")
+        ordered: list[Any] = []
+    else:
+        _assert_true(
+            rules.get("exactly_one_next_eligible_for_preregistration") is True,
+            "EXACTLY_ONE_NEXT_RULE_MISSING",
+        )
+        _assert_true(len(next_eligible) == 1, "EXACTLY_ONE_NEXT_ELIGIBLE", str(next_eligible))
+        _assert_true(
+            sorted(ranks) == list(range(1, len(candidates) + 1)),
+            "PRIORITY_RANKS_NOT_PERMUTATION",
+        )
+        _assert_true(len(set(totals)) == len(totals), "PRIORITY_TOTAL_TIE")
 
-    ordered = sorted(candidates, key=lambda c: int(c["priority_rank"]))
-    _assert_true(
-        ordered[0].get("queue_status") == NEXT_ELIGIBLE,
-        "NEXT_ELIGIBLE_NOT_RANK_ONE",
-    )
-    for candidate in ordered[1:]:
-        _assert_true(candidate.get("queue_status") == QUEUED, "NON_NEXT_NOT_QUEUED")
+        ordered = sorted(candidates, key=lambda c: int(c["priority_rank"]))
+        _assert_true(
+            ordered[0].get("queue_status") == NEXT_ELIGIBLE,
+            "NEXT_ELIGIBLE_NOT_RANK_ONE",
+        )
+        for candidate in ordered[1:]:
+            _assert_true(candidate.get("queue_status") == QUEUED, "NON_NEXT_NOT_QUEUED")
 
-    # Deterministic descending score order must match ascending rank.
-    score_order = sorted(
-        candidates,
-        key=lambda c: (-int(c["priority_score_total"]), str(c["hypothesis_id"])),
-    )
-    _assert_true(
-        [c["hypothesis_id"] for c in score_order] == [c["hypothesis_id"] for c in ordered],
-        "PRIORITY_ORDER_NOT_DETERMINISTIC",
-    )
+        # Deterministic descending score order must match ascending rank.
+        score_order = sorted(
+            candidates,
+            key=lambda c: (-int(c["priority_score_total"]), str(c["hypothesis_id"])),
+        )
+        _assert_true(
+            [c["hypothesis_id"] for c in score_order] == [c["hypothesis_id"] for c in ordered],
+            "PRIORITY_ORDER_NOT_DETERMINISTIC",
+        )
 
     criteria = backlog.get("priority_criteria")
     _assert_true(isinstance(criteria, Mapping), "PRIORITY_CRITERIA_MISSING")
@@ -385,6 +399,10 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true(
         MACD_HISTOGRAM_COUNTERTREND_HYPOTHESIS_ID not in candidate_ids,
         "MACD_HISTOGRAM_COUNTERTREND_MUST_NOT_BE_OPEN_CANDIDATE",
+    )
+    _assert_true(
+        ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID not in candidate_ids,
+        "ADX_DI_DIRECTION_CONFIRMATION_MUST_NOT_BE_OPEN_CANDIDATE",
     )
 
     preregistered = backlog.get("preregistered_hypotheses") or []
@@ -420,8 +438,8 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         )
         preregistered_ids.append(hyp_id)
     _assert_true(
-        preregistered_ids == [],
-        "PREREGISTERED_MUST_BE_EMPTY_AFTER_MACD_TERMINAL",
+        preregistered_ids == [ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID],
+        "PREREGISTERED_MUST_BE_EXACTLY_ADX_DI",
         str(preregistered_ids),
     )
     _assert_true(
@@ -435,7 +453,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "terminal_hypothesis_count": len(REQUIRED_TERMINAL_HYPOTHESIS_IDS),
         "open_candidate_count": len(candidates),
         "preregistered_count": len(preregistered_ids),
-        "next_eligible_hypothesis_id": next_eligible[0],
+        "next_eligible_hypothesis_id": next_eligible[0] if next_eligible else None,
         "priority_order": [c["hypothesis_id"] for c in ordered],
         "development_run_count": 0,
         "evaluation_authorized": False,

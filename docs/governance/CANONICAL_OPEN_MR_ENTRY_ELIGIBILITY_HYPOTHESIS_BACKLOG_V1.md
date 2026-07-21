@@ -5,8 +5,9 @@
 `OPEN_BACKLOG` — versioned canonical SSOT for open Mean-Reversion entry-eligibility
 research candidates. Definition-only governance. No evaluation, no backtest, no
 holdout access, no runtime activation, no productive trading-logic mutation in this
-slice. Open preregistrations are empty after the MACD histogram-countertrend
-terminal FAIL.
+slice. Open candidates are empty after ADX DI direction-confirmation definition-only
+preregistration. Exactly one hypothesis is `DEFINITION_ONLY_PREREGISTERED` and
+awaiting a separate evaluation GO.
 
 ## Binding
 
@@ -41,25 +42,29 @@ terminal FAIL.
    `docs/evidence/evaluate_macd_histogram_countertrend_mr_eligibility_development_v1/`)
 
 Semantic duplicates and parameter retunes of these terminals are forbidden.
-`price_vs_ma_trend_alignment` and `macd_histogram_sign_countertrend` remain
-forbidden for remaining open candidates.
+`price_vs_ma_trend_alignment`, `macd_histogram_sign_countertrend`, and
+`adx_di_direction_confirmation` remain forbidden for any future open candidates.
 
 ## Preregistered
 
-None. `preregistered_hypotheses=[]`.
+Exactly one:
+
+| Hypothesis ID | Status | Queue | Eval authorized | Dev run count |
+|---|---|---|---|---:|
+| `ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` | `DEFINITION_ONLY_PREREGISTERED` | `PREREGISTERED_AWAITING_EVALUATION_GO` | false | 0 |
+
+Contract:
+`config/research/adx_di_direction_confirmation_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json`
 
 ## Open candidates (deterministic priority)
 
-Priority criteria are locked a priori (semantic distance, entry-effectiveness,
+None. `open_candidates=[]`. No `NEXT_ELIGIBLE_FOR_PREREGISTRATION` while the single
+preregistered ADX DI hypothesis awaits evaluation GO.
+
+Priority criteria remain locked a priori (semantic distance, entry-effectiveness,
 measurability, low complexity, low overfit risk, repo support). No performance-based
-selection. No ties. Evaluation of the next eligible candidate is **NOT authorized**
-by this MACD evaluation transition.
-
-| Rank | Hypothesis ID | Queue |
-|---:|---|---|
-| 1 | `ADX_DI_DIRECTION_CONFIRMATION_MR_ENTRY_ELIGIBILITY_NON_BITCOIN_PERPETUALS_V1` | `NEXT_ELIGIBLE_FOR_PREREGISTRATION` |
-
-All open candidates are `OPEN_UNPREREGISTERED`.
+selection. Evaluation of the preregistered ADX DI hypothesis is **NOT authorized**
+by this definition-only preregistration transition.
 
 ## Governance rules
 
@@ -69,10 +74,12 @@ All open candidates are `OPEN_UNPREREGISTERED`.
 - No holdout use
 - No candidate combination / multi-gate stacks
 - No reprioritization without a separate versioned governance PR
-- Evaluation only after a separate preregistration PR and operator GO
-- No auto-evaluation of the next eligible candidate from this transition
+- Evaluation only after a separate evaluation PR and operator GO
+- No auto-evaluation of the preregistered ADX DI hypothesis from this transition
 - No reopen of terminal hypotheses
 - Runtime / shadow / paper / testnet / live / orders remain locked
+- `exactly_one_next_eligible_for_preregistration=false` while open queue is empty
+- `open_candidate_count_min=0`
 
 ## Gates
 
@@ -80,14 +87,13 @@ All open candidates are `OPEN_UNPREREGISTERED`.
 - Economic offline gate unchanged/closed
 - `PRODUCTIVE_TRADING_LOGIC_CHANGED=false`
 - `AUTHORITY_CHANGED=false`
-- `EVALUATION_EXECUTED=false` (for remaining open candidates)
-- `DEVELOPMENT_RUN_COUNT=0` (backlog-level; MACD consumed its single authorized run)
+- `EVALUATION_EXECUTED=false`
+- `DEVELOPMENT_RUN_COUNT=0` (backlog-level and preregistered ADX DI)
 
 ## Next step
 
-`REQUEST_DEFINITION_ONLY_PREREGISTRATION_PR_FOR_ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_V1`
+`REVIEW_AND_MERGE_ADX_DI_DIRECTION_CONFIRMATION_PREREGISTRATION_BEFORE_ANY_EVALUATION`
 
-Definition-only preregistration of ADX DI direction confirmation (and any later
-evaluation) requires a separate PR and operator GO. This MACD evaluation transition
-does not authorize further preregistration, evaluation, holdout access, or productive
-authority change. No second MACD evaluation run is permitted.
+Development evaluation of ADX DI direction confirmation requires a separate PR and
+operator GO after this definition-only preregistration merges. This transition does
+not authorize evaluation, holdout access, or productive authority change. No second MACD evaluation run is permitted. No reopen of terminal hypotheses.
