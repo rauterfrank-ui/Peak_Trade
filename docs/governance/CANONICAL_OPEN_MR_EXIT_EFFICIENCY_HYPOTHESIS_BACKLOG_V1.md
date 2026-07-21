@@ -8,6 +8,7 @@
 - V6 reason: `NET_PROFIT_FACTOR_NOT_IMPROVED`
 - V6 economic delta vs V5: composite midband-cross OR frozen max-holding-horizon=48h
 - No V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7 auto-create.
+- Evidence-only V6 failure attribution completed (does not authorize V7).
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
@@ -96,6 +97,8 @@ Exactly six:
   — `RERUN_ALLOWED=false`
   — Evidence: `docs&#47;evidence&#47;evaluate_bollinger_mr_midband_exit_efficiency_development_v6&#47;`
   — Governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.md`
+  — Failure attribution (evidence-only): `docs&#47;evidence&#47;attribute_bollinger_mr_midband_exit_efficiency_v6_failure&#47;`
+  — Attribution governance: `docs&#47;governance&#47;BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION.md`
 
 ## Explicit exclusions
 

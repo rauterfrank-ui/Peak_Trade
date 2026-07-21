@@ -69,7 +69,7 @@
     "preregistered_count_exact": 0,
     "open_unpreregistered_count_exact": 0
   },
-  "governance_note": "Zero DEFINITION_ONLY_PREREGISTERED exit-efficiency hypotheses. V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE; V3 terminal FAIL; V4/V5 terminal INFRASTRUCTURE_FAILURE; V6 terminal FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED) after one authorized DEVELOPMENT evaluation. No V1-V6 rerun. No V7 auto-create. Economic offline gate closed; promotion closed; no runtime/orders.",
+  "governance_note": "Zero DEFINITION_ONLY_PREREGISTERED exit-efficiency hypotheses. V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE; V3 terminal FAIL; V4/V5 terminal INFRASTRUCTURE_FAILURE; V6 terminal FAIL (NET_PROFIT_FACTOR_NOT_IMPROVED) after one authorized DEVELOPMENT evaluation. Evidence-only V6 failure attribution completed; does not authorize V7/preregistration/rerun. No V1-V6 rerun. No V7 auto-create. Economic offline gate closed; promotion closed; no runtime/orders.",
   "explicit_non_actions": [
     "NO_V1_RERUN",
     "NO_V1_PARTIAL_RESULT_REUSE",
@@ -368,7 +368,12 @@
       "contract_ref": "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v6.json",
       "governance_ref": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.md",
       "evidence_ref": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/",
-      "parent_diagnostic_evidence_ref": "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/"
+      "parent_diagnostic_evidence_ref": "docs/evidence/bollinger_mr_economic_failure_decomposition_development_v1/",
+      "failure_attribution_completed": true,
+      "failure_attribution_ref": "docs/evidence/attribute_bollinger_mr_midband_exit_efficiency_v6_failure/",
+      "failure_attribution_governance_ref": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION.md",
+      "failure_attribution_authorizes_v7": false,
+      "failure_attribution_mutates_v6_result": false
     }
   ]
 }

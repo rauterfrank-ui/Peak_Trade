@@ -1,0 +1,244 @@
+{
+  "all_negative": [
+    {
+      "baseline_net_pnl": 804.3564865161165,
+      "cost_delta": 309.44714175446404,
+      "gross_pnl_delta": -984.9130668806004,
+      "instrument_id": "okx:linear_perpetual:APE:USDT:USDT:perp",
+      "net_pnl_delta": -1294.3602086350643,
+      "trade_count_delta": 52,
+      "treatment_net_pnl": -490.0037221189478
+    },
+    {
+      "baseline_net_pnl": 297.5898303492793,
+      "cost_delta": 224.38262109108527,
+      "gross_pnl_delta": -560.6739049490911,
+      "instrument_id": "okx:linear_perpetual:ENS:USDT:USDT:perp",
+      "net_pnl_delta": -785.0565260401764,
+      "trade_count_delta": 38,
+      "treatment_net_pnl": -487.46669569089715
+    },
+    {
+      "baseline_net_pnl": 335.0455726128481,
+      "cost_delta": 192.18786992072205,
+      "gross_pnl_delta": -429.91672503696475,
+      "instrument_id": "okx:linear_perpetual:MANA:USDT:USDT:perp",
+      "net_pnl_delta": -622.1045949576869,
+      "trade_count_delta": 32,
+      "treatment_net_pnl": -287.05902234483875
+    },
+    {
+      "baseline_net_pnl": 856.9330751866755,
+      "cost_delta": 255.54394223067786,
+      "gross_pnl_delta": -287.7923604983637,
+      "instrument_id": "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+      "net_pnl_delta": -543.3363027290413,
+      "trade_count_delta": 41,
+      "treatment_net_pnl": 313.59677245763413
+    },
+    {
+      "baseline_net_pnl": 381.9325980732771,
+      "cost_delta": 103.48131880851795,
+      "gross_pnl_delta": -352.9065189695433,
+      "instrument_id": "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+      "net_pnl_delta": -456.3878377780612,
+      "trade_count_delta": 17,
+      "treatment_net_pnl": -74.45523970478413
+    },
+    {
+      "baseline_net_pnl": 316.8006435909954,
+      "cost_delta": 153.2189716031612,
+      "gross_pnl_delta": -180.94058762309436,
+      "instrument_id": "okx:linear_perpetual:ADA:USDT:USDT:perp",
+      "net_pnl_delta": -334.1595592262555,
+      "trade_count_delta": 25,
+      "treatment_net_pnl": -17.358915635260143
+    },
+    {
+      "baseline_net_pnl": 473.3272740761246,
+      "cost_delta": 43.282027077216185,
+      "gross_pnl_delta": -244.29018769467697,
+      "instrument_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "net_pnl_delta": -287.5722147718932,
+      "trade_count_delta": 7,
+      "treatment_net_pnl": 185.75505930423142
+    },
+    {
+      "baseline_net_pnl": -331.4768233399917,
+      "cost_delta": 329.4893180098276,
+      "gross_pnl_delta": 134.96402608725722,
+      "instrument_id": "okx:linear_perpetual:YGG:USDT:USDT:perp",
+      "net_pnl_delta": -194.5252919225702,
+      "trade_count_delta": 55,
+      "treatment_net_pnl": -526.0021152625619
+    },
+    {
+      "baseline_net_pnl": 0.0,
+      "cost_delta": 6.077422564596541,
+      "gross_pnl_delta": -50.019938803263564,
+      "instrument_id": "okx:linear_perpetual:ONT:USDT:USDT:perp",
+      "net_pnl_delta": -56.09736136786011,
+      "trade_count_delta": 1,
+      "treatment_net_pnl": -56.09736136786011
+    },
+    {
+      "baseline_net_pnl": -56.07499999999966,
+      "cost_delta": 23.894150971799522,
+      "gross_pnl_delta": 10.22527587770987,
+      "instrument_id": "okx:linear_perpetual:XLM:USDT:USDT:perp",
+      "net_pnl_delta": -13.668875094089657,
+      "trade_count_delta": 4,
+      "treatment_net_pnl": -69.74387509408932
+    },
+    {
+      "baseline_net_pnl": -55.76140056249955,
+      "cost_delta": 0.015409498991158621,
+      "gross_pnl_delta": -0.12682715219060725,
+      "instrument_id": "okx:linear_perpetual:BCH:USDT:USDT:perp",
+      "net_pnl_delta": -0.14223665118176854,
+      "trade_count_delta": 0,
+      "treatment_net_pnl": -55.90363721368132
+    }
+  ],
+  "schema_version": "attribute_bollinger_mr_midband_exit_efficiency_v6_failure_instrument_concentration.v1",
+  "total_net_pnl_delta": -1270.6009652502403,
+  "worst10": [
+    {
+      "baseline_net_pnl": 804.3564865161165,
+      "cost_delta": 309.44714175446404,
+      "gross_pnl_delta": -984.9130668806004,
+      "instrument_id": "okx:linear_perpetual:APE:USDT:USDT:perp",
+      "net_pnl_delta": -1294.3602086350643,
+      "trade_count_delta": 52,
+      "treatment_net_pnl": -490.0037221189478
+    },
+    {
+      "baseline_net_pnl": 297.5898303492793,
+      "cost_delta": 224.38262109108527,
+      "gross_pnl_delta": -560.6739049490911,
+      "instrument_id": "okx:linear_perpetual:ENS:USDT:USDT:perp",
+      "net_pnl_delta": -785.0565260401764,
+      "trade_count_delta": 38,
+      "treatment_net_pnl": -487.46669569089715
+    },
+    {
+      "baseline_net_pnl": 335.0455726128481,
+      "cost_delta": 192.18786992072205,
+      "gross_pnl_delta": -429.91672503696475,
+      "instrument_id": "okx:linear_perpetual:MANA:USDT:USDT:perp",
+      "net_pnl_delta": -622.1045949576869,
+      "trade_count_delta": 32,
+      "treatment_net_pnl": -287.05902234483875
+    },
+    {
+      "baseline_net_pnl": 856.9330751866755,
+      "cost_delta": 255.54394223067786,
+      "gross_pnl_delta": -287.7923604983637,
+      "instrument_id": "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+      "net_pnl_delta": -543.3363027290413,
+      "trade_count_delta": 41,
+      "treatment_net_pnl": 313.59677245763413
+    },
+    {
+      "baseline_net_pnl": 381.9325980732771,
+      "cost_delta": 103.48131880851795,
+      "gross_pnl_delta": -352.9065189695433,
+      "instrument_id": "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+      "net_pnl_delta": -456.3878377780612,
+      "trade_count_delta": 17,
+      "treatment_net_pnl": -74.45523970478413
+    },
+    {
+      "baseline_net_pnl": 316.8006435909954,
+      "cost_delta": 153.2189716031612,
+      "gross_pnl_delta": -180.94058762309436,
+      "instrument_id": "okx:linear_perpetual:ADA:USDT:USDT:perp",
+      "net_pnl_delta": -334.1595592262555,
+      "trade_count_delta": 25,
+      "treatment_net_pnl": -17.358915635260143
+    },
+    {
+      "baseline_net_pnl": 473.3272740761246,
+      "cost_delta": 43.282027077216185,
+      "gross_pnl_delta": -244.29018769467697,
+      "instrument_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "net_pnl_delta": -287.5722147718932,
+      "trade_count_delta": 7,
+      "treatment_net_pnl": 185.75505930423142
+    },
+    {
+      "baseline_net_pnl": -331.4768233399917,
+      "cost_delta": 329.4893180098276,
+      "gross_pnl_delta": 134.96402608725722,
+      "instrument_id": "okx:linear_perpetual:YGG:USDT:USDT:perp",
+      "net_pnl_delta": -194.5252919225702,
+      "trade_count_delta": 55,
+      "treatment_net_pnl": -526.0021152625619
+    },
+    {
+      "baseline_net_pnl": 0.0,
+      "cost_delta": 6.077422564596541,
+      "gross_pnl_delta": -50.019938803263564,
+      "instrument_id": "okx:linear_perpetual:ONT:USDT:USDT:perp",
+      "net_pnl_delta": -56.09736136786011,
+      "trade_count_delta": 1,
+      "treatment_net_pnl": -56.09736136786011
+    },
+    {
+      "baseline_net_pnl": -56.07499999999966,
+      "cost_delta": 23.894150971799522,
+      "gross_pnl_delta": 10.22527587770987,
+      "instrument_id": "okx:linear_perpetual:XLM:USDT:USDT:perp",
+      "net_pnl_delta": -13.668875094089657,
+      "trade_count_delta": 4,
+      "treatment_net_pnl": -69.74387509408932
+    }
+  ],
+  "worst5": [
+    {
+      "baseline_net_pnl": 804.3564865161165,
+      "cost_delta": 309.44714175446404,
+      "gross_pnl_delta": -984.9130668806004,
+      "instrument_id": "okx:linear_perpetual:APE:USDT:USDT:perp",
+      "net_pnl_delta": -1294.3602086350643,
+      "trade_count_delta": 52,
+      "treatment_net_pnl": -490.0037221189478
+    },
+    {
+      "baseline_net_pnl": 297.5898303492793,
+      "cost_delta": 224.38262109108527,
+      "gross_pnl_delta": -560.6739049490911,
+      "instrument_id": "okx:linear_perpetual:ENS:USDT:USDT:perp",
+      "net_pnl_delta": -785.0565260401764,
+      "trade_count_delta": 38,
+      "treatment_net_pnl": -487.46669569089715
+    },
+    {
+      "baseline_net_pnl": 335.0455726128481,
+      "cost_delta": 192.18786992072205,
+      "gross_pnl_delta": -429.91672503696475,
+      "instrument_id": "okx:linear_perpetual:MANA:USDT:USDT:perp",
+      "net_pnl_delta": -622.1045949576869,
+      "trade_count_delta": 32,
+      "treatment_net_pnl": -287.05902234483875
+    },
+    {
+      "baseline_net_pnl": 856.9330751866755,
+      "cost_delta": 255.54394223067786,
+      "gross_pnl_delta": -287.7923604983637,
+      "instrument_id": "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+      "net_pnl_delta": -543.3363027290413,
+      "trade_count_delta": 41,
+      "treatment_net_pnl": 313.59677245763413
+    },
+    {
+      "baseline_net_pnl": 381.9325980732771,
+      "cost_delta": 103.48131880851795,
+      "gross_pnl_delta": -352.9065189695433,
+      "instrument_id": "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+      "net_pnl_delta": -456.3878377780612,
+      "trade_count_delta": 17,
+      "treatment_net_pnl": -74.45523970478413
+    }
+  ]
+}

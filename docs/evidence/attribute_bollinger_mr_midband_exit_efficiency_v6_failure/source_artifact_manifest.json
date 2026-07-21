@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    {
+      "key": "backlog",
+      "path": "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
+      "sha256": "a273320f4a7d08a5204edb648fbbc16c5df2d7835ca2b383b46688a40b295a9b"
+    },
+    {
+      "key": "baseline_metrics",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/baseline_metrics.json",
+      "sha256": "dfc1c83f9e1a658b0c0b96811d78b3168356ca87c859262d1f48cd74f1dccae6"
+    },
+    {
+      "key": "comparison_decision",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/comparison_decision.json",
+      "sha256": "516e1f240cd941d6d876f0293db88654f18db8f845e90012514415f38a5fcfe7"
+    },
+    {
+      "key": "contract",
+      "path": "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v6.json",
+      "sha256": "0053f7465b63a1e870c59442f2d30f6144ae20f8b7e9c8bf1275bba5c95e56be"
+    },
+    {
+      "key": "evaluate_summary",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/summary.json",
+      "sha256": "608b1ff80333ffdb3f79566b419e57f3aeb2ac51b4edb98071b571e834bf4330"
+    },
+    {
+      "key": "exit_attribution",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/exit_attribution.json",
+      "sha256": "e617d0950d44dcfdf0145cc60b56613ee19fced951b7e3129af59610c0e7c4ec"
+    },
+    {
+      "key": "instrument_attribution",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/instrument_attribution.json",
+      "sha256": "0809c00f57dfdd174a97cac0cfb30d43d008068beeab53fea92cc73018639345"
+    },
+    {
+      "key": "preregistration_summary",
+      "path": "docs/evidence/preregister_bollinger_mr_midband_exit_efficiency_hypothesis_v6/summary.json",
+      "sha256": "2cac53911133a06c3c731a9f352e442e99835a726b33ce2036193080fb602d0d"
+    },
+    {
+      "key": "run_slot_claim",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/run_slot_claim.json",
+      "sha256": "a0a89c0ab15724c359aebbc7b4f06662f563a7189cf5eaccddd351643d10f167"
+    },
+    {
+      "key": "trade_ledger_baseline",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/trade_ledger_baseline.json",
+      "sha256": "04a88ce698d9375a04f447f9050e529aa565aba7a7e08e1d2a9d4b81058379ed"
+    },
+    {
+      "key": "trade_ledger_treatment",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/trade_ledger_treatment.json",
+      "sha256": "e335e610b4a8b806c5bb49963ef5fe58dac346f0839052da22b818c12f8f8eea"
+    },
+    {
+      "key": "treatment_metrics",
+      "path": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v6/treatment_metrics.json",
+      "sha256": "9656c9cc15b7b81c90309d58f9a756765047bcf0f6c24c66b33fb79f765e5a9f"
+    }
+  ],
+  "manifest_note": "Binding digests of committed source artifacts only; portfolio equity CSVs listed in V6 MANIFEST but absent from committed tree are not used.",
+  "origin_main": "98aede46fcecc7dffb5b515f4bd87b06fd2eecb7",
+  "schema_version": "attribute_bollinger_mr_midband_exit_efficiency_v6_failure_source_manifest.v1",
+  "source_hypothesis_id": "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V6",
+  "source_preregistration_digest": "9ddcd32d78b3b3f60c168321404b2270a770409d46a3bff036f7dbc5eefd8fa5",
+  "source_result_digest": "608b1ff80333ffdb3f79566b419e57f3aeb2ac51b4edb98071b571e834bf4330",
+  "source_run_count": 1,
+  "source_terminal_classification": "FAIL"
+}
