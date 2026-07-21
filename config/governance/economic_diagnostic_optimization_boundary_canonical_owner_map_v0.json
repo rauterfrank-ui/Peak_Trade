@@ -293,7 +293,7 @@
       ]
     },
     "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY V5 candidate after V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE, V3 terminal FAIL, and V4 terminal INFRASTRUCTURE_FAILURE; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders.",
+      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY V8 candidate after V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE, V3 terminal FAIL, V4/V5 terminal INFRASTRUCTURE_FAILURE, V6 terminal FAIL, and V7 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders.",
       "path_prefixes": [
         "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
         "src/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py",
@@ -771,6 +771,16 @@
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
+      ]
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V8": {
+      "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit reentry-cooldown V8 after terminal V7 INCONCLUSIVE_INFRASTRUCTURE_FAILURE (FROZEN_EXIT_PARAMETERS_MISMATCH); EVALUATION_RUN_COUNT=0; control=exact V6 semantics; treatment=same-side reentry cooldown 24h; complete exit_mechanism.frozen_parameters SSOT; pre-authorization parity validator; not a V7 reopen/retry; no evaluation/runtime/orders.",
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py",
+        "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v8.json",
+        "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V8.md"
       ]
     }
   },

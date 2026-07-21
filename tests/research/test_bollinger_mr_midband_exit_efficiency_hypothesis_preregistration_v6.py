@@ -211,9 +211,9 @@ def test_owner_map_and_backlog_consistency() -> None:
     assert len(backlog["preregistered_hypotheses"]) == 1
     assert (
         backlog["preregistered_hypotheses"][0]["hypothesis_id"]
-        == "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7"
+        == "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V8"
     )
-    assert backlog["development_run_count"] == 6
+    assert backlog["development_run_count"] == 7
     terminal_ids = {e["hypothesis_id"] for e in backlog["terminal_hypotheses"]}
     assert REQUIRED_HYPOTHESIS_ID in terminal_ids
     assert REQUIRED_PREDECESSOR_HYPOTHESIS_ID in terminal_ids

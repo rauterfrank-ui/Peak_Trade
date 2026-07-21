@@ -626,6 +626,16 @@
     "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v7/timing_proof.txt",
     "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v7/timing_proof_meta.txt",
     "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V7.md",
+    "src/research/bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py",
+    "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py",
+    "config/research/bollinger_mr_midband_exit_reentry_cooldown_preregistered_economic_hypothesis_measurement_contract_v8.json",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/README.md",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/summary.json",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/split_manifest.json",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/safety_attestation.md",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/timing_proof.txt",
+    "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_hypothesis_v8/timing_proof_meta.txt",
+    "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V8.md",
     "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
     "src/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py",
     "tests/research/test_canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py",
@@ -712,6 +722,7 @@
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_V6_PREREGISTRATION_WIRING",
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6_WIRING",
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_V7_PREREGISTRATION_WIRING",
+    "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_V8_PREREGISTRATION_WIRING",
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V7_WIRING",
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7_WIRING",
     "TECHNICAL_INDEPENDENT_DEV_PANEL_QUARANTINE_RELEASE_V1_WIRING",
@@ -790,6 +801,7 @@
     "Includes definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit-efficiency V6 after terminal V5 INFRASTRUCTURE_FAILURE; EVALUATION_RUN_COUNT=0; genuine economic exit change (midband-cross OR frozen max-holding-horizon=48h); reuses process-lifecycle checkpoint V5; not a V5/V4/V3/V2/V1 rerun; no V5 partial/economic import; V1-V5 remain terminal unchanged; no evaluation/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V6.",
     "Includes evaluation surfaces (composite mechanism/gate, constants_v6/measurement_validity_preflight_v6/panel_runner_v6, runner script, focused tests, governance stub) for exactly one future DEVELOPMENT_ONLY evaluation of Bollinger/MR composite exit-efficiency V6; measurement-validity fail-closed preflight; MV2 wiring_mod capture-alias binding fix; V6 contract remains DEFINITION_ONLY_PREREGISTERED with evaluation_run_count=0 in this slice; no evaluation executed here; evidence directory is created only by a future authorized run (not pre-created); not a V1-V5 rerun; no holdout; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
     "Includes definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit reentry-cooldown V7 after terminal V6 FAIL + evidence-only attribution; EVALUATION_RUN_COUNT=0; control=exact V6 composite midband/max-hold semantics; treatment=same-side reentry cooldown 24 PT1H bars after forced midband; not a V6 rerun; no V6 partial/economic import; V1-V6 remain terminal unchanged; no evaluation/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V7.",
+    "Includes definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit reentry-cooldown V8 after terminal V7 INCONCLUSIVE_INFRASTRUCTURE_FAILURE (FROZEN_EXIT_PARAMETERS_MISMATCH); EVALUATION_RUN_COUNT=0; control=exact V6 composite midband/max-hold semantics; treatment=same-side reentry cooldown 24 PT1H bars; complete exit_mechanism.frozen_parameters SSOT; pre-authorization frozen-parameter parity validator blocks runner authorization without slot/panel consumption; not a V7 reopen/retry; V1-V7 remain terminal unchanged; no evaluation/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V8.",
     "Includes IMPLEMENTATION_ONLY evaluation wiring surfaces for Bollinger/MR midband exit reentry-cooldown V7 bound to Operator Clarification Authority B1-B6; preregistration digest and semantics remain immutable; EVALUATION_RUN_COUNT=0; default CLI preflight-only; evaluate requires hypothesis-specific authorization flag AND effective ratification/lifecycle authorization (prereg evaluation_authorized field remains false); evaluate evidence directory is not pre-created; no evaluation executed here; no holdout; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V7.",
     "Includes V7 Operator Clarification Authority overlay (B1-B6) over immutable preregistration digest 4e39138698628ea9d9ee7119050aba5d5398d765808878c4d26be3102d60e680; binds decision/preflight/state/gate/runner/lifecycle; allows READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION -> EVALUATION_AUTHORIZED via separate ratification; evaluation_run_count=0; no evaluation/panel/holdout/runtime/orders in clarification slice. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7.",
     "Includes independent DEVELOPMENT panel quarantine release contract (byte-identical quarantine to RELEASED_DEVELOPMENT_ONLY); no transform; no holdout; does not authorize evaluation. Owner surface: INDEPENDENT_DEV_PANEL_QUARANTINE_RELEASE_V1.",
@@ -808,5 +820,9 @@
     "SCHEDULER_EFFECT": "NONE"
   },
   "runtime_activation": false,
-  "scope_id": "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_V1"
+  "scope_id": "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_V1",
+  "authorized_path_prefixes": [],
+  "authorized_scope_tokens": [
+    "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_V8_PREREGISTRATION_WIRING"
+  ]
 }

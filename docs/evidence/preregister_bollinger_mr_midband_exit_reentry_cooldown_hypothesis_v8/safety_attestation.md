@@ -1,0 +1,12 @@
+# Safety attestation — V8 definition-only preregistration
+
+- LIVE_AUTHORIZED=false
+- ORDERS_ALLOWED=false
+- SCHEDULER_RUNTIME_ALLOWED=false
+- RUNNER_STARTED=false
+- RUN_SLOT_CONSUMED=false
+- PANEL_ACCESSED=false
+- HOLDOUT_ACCESSED=false
+- V7_REOPENED=false
+- EVALUATION_EXECUTED=false
+- PRE_AUTHORIZATION_PARITY_REQUIRED=true

@@ -2,15 +2,18 @@
 
 ## Current SSOT status
 
-- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ZERO_PREREGISTERED_V7_TERMINAL`
-- Preregistered: exactly zero (`preregistered_count_exact=0`)
+- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_ONE_DEFINITION_ONLY_V8_PREREGISTERED`
+- Preregistered: exactly one (`preregistered_count_exact=1`) — V8 reentry-cooldown
 - Terminal: V1&#47;V2&#47;V7 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3&#47;V6 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`
-- V7: `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`; `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
+- V7 remains terminal: `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`; `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
 - V7: `RUNNER_START_COUNT=1`; `RUN_SLOT_CONSUMED=true`; `RERUN_ALLOWED=false`; `V7_REOPEN_ALLOWED=false`
-- V7: no development metrics; no economic PASS&#47;FAIL; not strategy-fail; not measurement-pass
+- V7: no development metrics; no economic PASS&#47;FAIL; not strategy-fail; not measurement-pass; no reopen
+- V8: `DEFINITION_ONLY_PREREGISTERED`; `EVALUATION_RUN_COUNT=0`; `RUNNER_STARTED=false`; `RUN_SLOT_CONSUMED=false`
+- V8 digest: `610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c`
+- V8 structural hardening: complete `exit_mechanism.frozen_parameters` + pre-authorization parity validator
 - V6 reason: `NET_PROFIT_FACTOR_NOT_IMPROVED`
-- No V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V8 auto-create.
-- `NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
+- No V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7 reopen. No V8 evaluation in this slice. No V9 auto-create.
+- `NEXT_CANONICAL_ACTION=AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION`
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
@@ -38,7 +41,7 @@ No holdout access. No runtime activation. No productive trading-logic mutation.
 
 ## Preregistered hypotheses
 
-Exactly zero (`preregistered_count_exact=0`).
+Exactly one (`preregistered_count_exact=1`): `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V8` (`DEFINITION_ONLY_PREREGISTERED`, run count `0`).
 
 ## Terminal hypotheses
 
@@ -134,10 +137,10 @@ Exactly seven:
 
 ## Next separate action
 
-`NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
+`NEXT_CANONICAL_ACTION=AWAIT_SEPARATE_OPERATOR_GO_FOR_V8_DEVELOPMENT_EVALUATION`
 
-No V7 rerun. No V7 reopen. No V8 auto-create. No runner start.
+No V7 rerun. No V7 reopen. No V8 evaluation in this slice. No V9 auto-create. No runner start.
 
 ## V7 terminal closeout
 
-V7 DEVELOPMENT evaluation consumed its one-shot slot and terminated as `INCONCLUSIVE_INFRASTRUCTURE_FAILURE` (`FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`, `FAILURE_TIMING=BEFORE_PANEL_ACCESS`, diagnostic `PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST`). Zero preregistered hypotheses remain. No development metrics. No economic PASS&#47;FAIL. Not a strategy-fail. Not a measurement-pass. No V7 rerun. No V7 reopen. No V8 auto-create.
+V7 DEVELOPMENT evaluation consumed its one-shot slot and terminated as `INCONCLUSIVE_INFRASTRUCTURE_FAILURE` (`FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`, `FAILURE_TIMING=BEFORE_PANEL_ACCESS`, diagnostic `PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST`). V7 remains terminal and unreopened. A separate V8 definition-only preregistration now exists with complete frozen-parameter SSOT and pre-authorization parity validation; V8 evaluation is not authorized in this slice. No V7 rerun. No V7 reopen. No V9 auto-create.

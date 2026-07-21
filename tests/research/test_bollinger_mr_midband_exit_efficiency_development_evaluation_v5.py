@@ -166,4 +166,4 @@ def test_v4_and_v5_contracts_and_backlog() -> None:
     assert v5["rerun_allowed"] is False
     backlog = load_and_validate_repo_backlog(REPO)
     assert backlog["preregistered_count"] == 1
-    assert backlog["development_run_count"] == 6
+    assert backlog["development_run_count"] == 7

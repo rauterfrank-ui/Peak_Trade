@@ -1,0 +1,20 @@
+{
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "final_development_confirmation": {
+    "end_exclusive": "2023-08-16T05:55:00Z",
+    "start": "2023-05-20T00:00:00Z"
+  },
+  "holdout_forbidden": true,
+  "max_feature_lookback_hours": 20,
+  "max_holding_horizon_hours": 48,
+  "method": "CHRONOLOGICAL_60_20_20_FLOOR_HOUR",
+  "split_intervals_sha256": "a35783bf0268c174dfe585c9839ba45cc6e3835021699786f4490a0d8c9b33db",
+  "train_definition": {
+    "end_exclusive": "2023-02-20T19:00:00Z",
+    "start": "2022-06-01T03:55:17Z"
+  },
+  "validation": {
+    "end_exclusive": "2023-05-20T00:00:00Z",
+    "start": "2023-02-20T19:00:00Z"
+  }
+}
