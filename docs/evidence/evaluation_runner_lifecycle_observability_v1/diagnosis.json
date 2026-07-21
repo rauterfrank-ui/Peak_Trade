@@ -1,0 +1,38 @@
+{
+  "schema_version": "evaluation_runner_lifecycle_observability_fix_evidence.v1",
+  "ROOT_CAUSE_STATUS": "NOT_IDENTIFIED",
+  "HISTORICAL_PROCESS_DEATH_CAUSE": "UNKNOWN",
+  "HISTORICAL_NOTE": "PR #5392 / BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY development evaluation died after baseline member 2/46 with process_exit_code=null and no traceback. Concrete historical kill class (SIGTERM vs parent reap vs other) remains unproven.",
+  "GENERIC_OBSERVABILITY_GAP_CONFIRMED": true,
+  "FIRST_DIVERGENCE_BOUNDARY": "after_stdout_member_progress_before_durable_lifecycle_persist_or_exit_harvest",
+  "FIRST_DIVERGENCE_LOCUS": "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v1/panel_runner_v1.py member-loop progress emit (stdout-only prior to this fix)",
+  "SYNTHETIC_REPRODUCTION": true,
+  "SYNTHETIC_FAILURE_MODES_COVERED": [
+    "WORKER_EXCEPTION",
+    "NONZERO_EXIT",
+    "SIGNAL_TERMINATION",
+    "NO_RESULT_ABRUPT_EOF",
+    "TIMEOUT_OR_MISSING_HEARTBEAT",
+    "PERSISTENCE_FAILURE_AFTER_MEMBER"
+  ],
+  "GENERIC_FIX_CLASS": "evaluation_runner_lifecycle_observability_v1",
+  "GENERIC_FIX_SURFACES": [
+    "atomic_heartbeat_and_member_progress",
+    "catchable_signal_handlers",
+    "exit_code_and_signal_normalization",
+    "supervised_child_reap_and_pipe_drain",
+    "exception_type_and_truncated_traceback_persist",
+    "incomplete_run_INCONCLUSIVE_INFRASTRUCTURE_FAILURE_no_autorun"
+  ],
+  "RERUN_EXECUTED": false,
+  "HOLDOUT_DATA_ACCESSED": false,
+  "EVALUATION_RUN_COUNT_UNCHANGED": true,
+  "EVALUATION_RUN_COUNT_BEFORE": 1,
+  "EVALUATION_RUN_COUNT_AFTER": 1,
+  "STRATEGY_SEMANTICS_CHANGED": false,
+  "MASTER_V2_OR_DOUBLE_PLAY_CHANGED": false,
+  "RISK_SIZING_EXECUTION_CHANGED": false,
+  "RUNTIME_ACTIVATED": false,
+  "ORDERS_SENT": false,
+  "related_historical_evidence": "docs/evidence/evaluate_bollinger_mr_midband_exit_efficiency_development_v1/process_death_root_cause.json"
+}
