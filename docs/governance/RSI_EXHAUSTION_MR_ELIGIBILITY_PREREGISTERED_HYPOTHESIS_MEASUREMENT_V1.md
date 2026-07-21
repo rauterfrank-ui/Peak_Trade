@@ -19,7 +19,7 @@
 
 Canonical `rsi_exhaustion_filter` from repo SSOT defaults where
 `config/config.toml` `[strategy.rsi_strategy]` and `[strategy.rsi_reversion_v1]`
-agree, computed via the causal `src/strategies/rsi.py::calculate_rsi` (EWM,
+agree, computed via the causal `src&#47;strategies&#47;rsi.py` (`calculate_rsi`) (EWM,
 `span=14`, `adjust=False`) — the Wilder-smoothing strategy-class variant is
 explicitly excluded:
 

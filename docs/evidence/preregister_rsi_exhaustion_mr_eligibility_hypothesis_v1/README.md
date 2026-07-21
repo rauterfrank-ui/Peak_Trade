@@ -30,7 +30,7 @@ contract against the sealed independent DEVELOPMENT_ONLY panel. No evaluation ru
 
 Pre-entry RSI(14) exhaustion-confirmation eligibility filter only (canonical
 `rsi_exhaustion_filter` defaults, agreeing between `[strategy.rsi_strategy]` and
-`[strategy.rsi_reversion_v1]`; calculator SSOT `src/strategies/rsi.py::calculate_rsi`,
+`[strategy.rsi_reversion_v1]`; calculator SSOT `src&#47;strategies&#47;rsi.py` (`calculate_rsi`),
 EWM causal, not Wilder). Master V2 / Double-Play remain sole direction authority.
 No productive trading-logic change in this slice.
 
