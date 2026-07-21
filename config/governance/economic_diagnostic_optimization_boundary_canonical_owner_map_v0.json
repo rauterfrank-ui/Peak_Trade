@@ -714,7 +714,17 @@
         "docs/evidence/preregister_adx_di_direction_confirmation_mr_eligibility_holdout_v2/",
         "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V2.md"
       ],
-      "note": "Definition-only holdout preregistration v2 for ADX DI direction-confirmation MR eligibility after terminal holdout V1 ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN and the generic MV2 replay signal-index binding repair; new evaluation ID; run-limit=1; no V1 rerun; no holdout data access; no backtest; no economic metrics; no productive authority mutation."
+      "note": "Holdout preregistration v2 for ADX DI direction-confirmation MR eligibility; evaluation executed and terminal as FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); V1 remains terminal ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN; no productive authority mutation."
+    },
+    "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_EVALUATION_V2": {
+      "path_prefixes": [
+        "src/research/adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v2/",
+        "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2.py",
+        "tests/research/test_adx_di_direction_confirmation_mr_eligibility_holdout_evaluation_v2.py",
+        "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/",
+        "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V2.md"
+      ],
+      "note": "Single authorized HOLDOUT v2 evaluation of Wilder ADX(14) +DI/-DI direction-confirmation MR eligibility versus immutable bollinger baseline on the sealed FINAL_AUDIT panel (holdout_run_count 1/1, RESULT_CLASS=FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED); new evaluation ID not a V1 rerun; economic offline gate remains closed; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders."
     }
   }
 }

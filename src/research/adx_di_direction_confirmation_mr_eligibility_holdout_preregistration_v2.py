@@ -85,6 +85,24 @@ DEFINITION_ONLY_VERDICT = (
     "HOLDOUT_HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED_AWAITING_SEPARATE_EXECUTION_GO"
 )
 DEFINITION_ONLY_NEXT_CANONICAL_STEP = "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_V2_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
+TERMINAL_EXECUTED_STATUS = "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
+ALLOWED_TERMINAL_RESULT_CLASSES = (
+    "PASS",
+    "FAIL",
+    "INCONCLUSIVE",
+    "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+)
+TERMINAL_OVERLAY_KEYS = frozenset(
+    {
+        "holdout_executed",
+        "terminal_holdout_result_class",
+        "terminal_holdout_reason",
+        "evaluation_evidence_ref",
+    }
+)
+EVALUATION_EVIDENCE_REL_PATH = (
+    "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v2/"
+)
 V1_TERMINAL_RESULT_CLASS = "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN"
 V1_EVALUATION_EVIDENCE_REL_PATH = (
     "docs/evidence/evaluate_adx_di_direction_confirmation_mr_eligibility_holdout_v1/"
@@ -104,9 +122,25 @@ def canonical_json_sha256(payload: Mapping[str, Any]) -> str:
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
-def compute_holdout_preregistration_digest(contract: Mapping[str, Any]) -> str:
+def definition_body_for_preregistration_digest(contract: Mapping[str, Any]) -> dict[str, Any]:
+    """Reconstruct the frozen definition-only body used for the preregistration digest.
+
+    Post-execution terminal overlays (run count / status / verdict / result class)
+    are stripped or forced back to their definition-only values so the immutable
+    preregistration identity remains ``EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST``.
+    """
     body = {k: v for k, v in contract.items() if k != "holdout_preregistration_digest"}
-    return canonical_json_sha256(body)
+    for key in TERMINAL_OVERLAY_KEYS:
+        body.pop(key, None)
+    body["status"] = DEFINITION_ONLY_STATUS
+    body["verdict"] = DEFINITION_ONLY_VERDICT
+    body["holdout_run_count"] = 0
+    body["next_canonical_step"] = DEFINITION_ONLY_NEXT_CANONICAL_STEP
+    return body
+
+
+def compute_holdout_preregistration_digest(contract: Mapping[str, Any]) -> str:
+    return canonical_json_sha256(definition_body_for_preregistration_digest(contract))
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -196,7 +230,17 @@ def validate_holdout_preregistration_contract(
     if contract.get("slice_class") != "DEFINITION_ONLY":
         raise HoldoutPreregistrationError("SLICE_MUST_BE_DEFINITION_ONLY")
     assert_holdout_execution_blocked_by_definition_contract(contract)
-    if contract.get("status") != DEFINITION_ONLY_STATUS:
+    status = contract.get("status")
+    if status == TERMINAL_EXECUTED_STATUS:
+        return _validate_terminal_executed_holdout_contract(
+            contract,
+            acquisition_contract=acquisition_contract,
+            dataset_split_policy=dataset_split_policy,
+            bollinger_archive=bollinger_archive,
+            development_contract=development_contract,
+            v1_contract=v1_contract,
+        )
+    if status != DEFINITION_ONLY_STATUS:
         raise HoldoutPreregistrationError("STATUS_MISMATCH")
     if contract.get("verdict") != DEFINITION_ONLY_VERDICT:
         raise HoldoutPreregistrationError("VERDICT_MISMATCH")
@@ -541,6 +585,73 @@ def validate_holdout_preregistration_contract(
     }
 
 
+def _validate_terminal_executed_holdout_contract(
+    contract: Mapping[str, Any],
+    *,
+    acquisition_contract: Mapping[str, Any] | None = None,
+    dataset_split_policy: Mapping[str, Any] | None = None,
+    bollinger_archive: Mapping[str, Any] | None = None,
+    development_contract: Mapping[str, Any] | None = None,
+    v1_contract: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Validate post-execution terminal overlays without mutating definition identity."""
+    if int(contract.get("holdout_run_count") or 0) != 1:
+        raise HoldoutPreregistrationError("HOLDOUT_RUN_COUNT_MUST_BE_1_AFTER_EXECUTION")
+    if int(contract.get("holdout_run_limit") or 0) != 1:
+        raise HoldoutPreregistrationError("HOLDOUT_RUN_LIMIT_MUST_BE_1")
+    if int(contract.get("holdout_runs_allowed") or 0) != 1:
+        raise HoldoutPreregistrationError("HOLDOUT_RUNS_ALLOWED_MUST_BE_1")
+    if contract.get("holdout_executed") is not True:
+        raise HoldoutPreregistrationError("HOLDOUT_EXECUTED_MUST_BE_TRUE")
+    result_class = str(contract.get("terminal_holdout_result_class") or "")
+    if result_class not in ALLOWED_TERMINAL_RESULT_CLASSES:
+        raise HoldoutPreregistrationError("TERMINAL_RESULT_CLASS_INVALID")
+    if not str(contract.get("terminal_holdout_reason") or "").strip():
+        raise HoldoutPreregistrationError("TERMINAL_REASON_REQUIRED")
+    if contract.get("evaluation_evidence_ref") != EVALUATION_EVIDENCE_REL_PATH:
+        raise HoldoutPreregistrationError("EVALUATION_EVIDENCE_REF_MISMATCH")
+    if contract.get("retry_forbidden") is not True:
+        raise HoldoutPreregistrationError("LOCK_REQUIRED:retry_forbidden")
+    if contract.get("post_result_tuning_forbidden") is not True:
+        raise HoldoutPreregistrationError("LOCK_REQUIRED:post_result_tuning_forbidden")
+    if contract.get("reopen_after_terminal_result_forbidden_without_new_hypothesis_id") is not True:
+        raise HoldoutPreregistrationError(
+            "LOCK_REQUIRED:reopen_after_terminal_result_forbidden_without_new_hypothesis_id"
+        )
+    if contract.get("hypothesis_id") != REQUIRED_HYPOTHESIS_ID:
+        raise HoldoutPreregistrationError("HYPOTHESIS_ID_MISMATCH")
+    if contract.get("new_evaluation_not_rerun") is not True:
+        raise HoldoutPreregistrationError("NEW_EVALUATION_NOT_RERUN_REQUIRED")
+    if contract.get("v1_rerun_forbidden") is not True:
+        raise HoldoutPreregistrationError("V1_RERUN_MUST_BE_FORBIDDEN")
+
+    definition_view = definition_body_for_preregistration_digest(contract)
+    definition_view["holdout_preregistration_digest"] = contract.get(
+        "holdout_preregistration_digest"
+    )
+    report = validate_holdout_preregistration_contract(
+        definition_view,
+        acquisition_contract=acquisition_contract,
+        dataset_split_policy=dataset_split_policy,
+        bollinger_archive=bollinger_archive,
+        development_contract=development_contract,
+        v1_contract=v1_contract,
+    )
+    report.update(
+        {
+            "definition_only": False,
+            "holdout_executed": True,
+            "holdout_run_count": 1,
+            "terminal_holdout_result_class": result_class,
+            "terminal_holdout_reason": str(contract.get("terminal_holdout_reason")),
+            "evaluation_evidence_ref": EVALUATION_EVIDENCE_REL_PATH,
+            "execution_authorized": False,
+            "new_evaluation_not_rerun": True,
+        }
+    )
+    return report
+
+
 def preflight_holdout_execution_gates(contract: Mapping[str, Any]) -> dict[str, Any]:
     stored_digest = str(contract.get("holdout_preregistration_digest") or "")
     if stored_digest != EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST:
@@ -592,11 +703,14 @@ __all__ = [
     "REQUIRED_FROZEN_FILTER_PARAMETERS",
     "REQUIRED_HYPOTHESIS_ID",
     "REQUIRED_PREDECESSOR_HYPOTHESIS_ID",
+    "TERMINAL_EXECUTED_STATUS",
+    "EVALUATION_EVIDENCE_REL_PATH",
     "assert_execution_go_present",
     "assert_holdout_execution_blocked_by_definition_contract",
     "assert_holdout_run_not_yet_consumed",
     "canonical_json_sha256",
     "compute_holdout_preregistration_digest",
+    "definition_body_for_preregistration_digest",
     "expected_holdout_split_digest",
     "load_and_validate_repo_holdout_contract",
     "materialize_holdout_split_definition",

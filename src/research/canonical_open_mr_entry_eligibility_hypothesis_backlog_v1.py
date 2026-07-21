@@ -452,45 +452,11 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
             hyp_id,
         )
         _assert_true(hyp_id not in candidate_ids, "PREREGISTERED_STILL_OPEN", hyp_id)
-        if hyp_id == ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID:
-            _assert_true(
-                entry.get("status") == REQUIRED_HOLDOUT_V2_PREREGISTERED_STATUS,
-                "PREREGISTERED_HOLDOUT_V2_STATUS",
-                hyp_id,
-            )
-            _assert_true(
-                entry.get("new_evaluation_not_rerun") is True,
-                "PREREGISTERED_HOLDOUT_V2_MUST_BE_NEW_EVALUATION",
-                hyp_id,
-            )
-            _assert_true(
-                entry.get("predecessor_holdout_hypothesis_id")
-                == ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID,
-                "PREREGISTERED_HOLDOUT_V2_PREDECESSOR",
-                hyp_id,
-            )
-            _assert_true(
-                entry.get("predecessor_holdout_result_class")
-                == "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
-                "PREREGISTERED_HOLDOUT_V2_PREDECESSOR_RESULT",
-                hyp_id,
-            )
-            _assert_true(
-                "holdout_run_count" in entry and int(entry["holdout_run_count"]) == 0,
-                "PREREGISTERED_HOLDOUT_V2_RUN_COUNT",
-                hyp_id,
-            )
-            _assert_true(
-                int(entry.get("holdout_run_limit")) == 1,
-                "PREREGISTERED_HOLDOUT_V2_RUN_LIMIT",
-                hyp_id,
-            )
-        else:
-            _assert_true(
-                entry.get("status") == REQUIRED_PREREGISTERED_STATUS,
-                "PREREGISTERED_STATUS",
-                hyp_id,
-            )
+        _assert_true(
+            entry.get("status") == REQUIRED_PREREGISTERED_STATUS,
+            "PREREGISTERED_STATUS",
+            hyp_id,
+        )
         _assert_true(
             entry.get("evaluation_authorized") is False,
             "PREREGISTERED_EVALUATION_AUTHORIZED",
@@ -503,9 +469,52 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         )
         preregistered_ids.append(hyp_id)
     _assert_true(
-        preregistered_ids == [ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID],
-        "PREREGISTERED_MUST_BE_EXACTLY_ADX_DI_HOLDOUT_V2",
+        preregistered_ids == [],
+        "PREREGISTERED_MUST_BE_EMPTY_AFTER_HOLDOUT_V2_TERMINAL",
         str(preregistered_ids),
+    )
+    adx_entry = None
+    for entry in terminals:
+        if entry.get("hypothesis_id") == ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID:
+            adx_entry = entry
+            break
+    _assert_true(adx_entry is not None, "ADX_DI_TERMINAL_ENTRY_MISSING")
+    assert isinstance(adx_entry, Mapping)
+    _assert_true(
+        adx_entry.get("successor_holdout_evaluation_hypothesis_id")
+        == ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID,
+        "HOLDOUT_V2_SUCCESSOR_ID",
+    )
+    _assert_true(
+        adx_entry.get("successor_holdout_preregistration_status")
+        == "HOLDOUT_EVALUATION_EXECUTED_TERMINAL",
+        "HOLDOUT_V2_SUCCESSOR_STATUS",
+    )
+    _assert_true(
+        int(adx_entry.get("successor_holdout_run_count") or 0) == 1,
+        "HOLDOUT_V2_SUCCESSOR_RUN_COUNT",
+    )
+    _assert_true(
+        int(adx_entry.get("successor_holdout_run_limit") or 0) == 1,
+        "HOLDOUT_V2_SUCCESSOR_RUN_LIMIT",
+    )
+    _assert_true(
+        adx_entry.get("successor_holdout_executed") is True, "HOLDOUT_V2_SUCCESSOR_EXECUTED"
+    )
+    _assert_true(
+        adx_entry.get("successor_holdout_result_class") == "FAIL",
+        "HOLDOUT_V2_SUCCESSOR_RESULT",
+    )
+    _assert_true(
+        adx_entry.get("successor_new_evaluation_not_rerun") is True,
+        "HOLDOUT_V2_SUCCESSOR_NEW_EVAL",
+    )
+    _assert_true(
+        int(adx_entry.get("holdout_run_count") or 0) == 1, "V1_HOLDOUT_RUN_COUNT_PRESERVED"
+    )
+    _assert_true(
+        adx_entry.get("holdout_result_class") == "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+        "V1_HOLDOUT_RESULT_PRESERVED",
     )
     _assert_true(
         ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID in REQUIRED_TERMINAL_PASS_HYPOTHESIS_IDS,
