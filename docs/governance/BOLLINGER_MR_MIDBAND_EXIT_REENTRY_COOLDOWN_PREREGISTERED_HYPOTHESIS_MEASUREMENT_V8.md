@@ -38,7 +38,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 - Predecessor V7: `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V7`
   (`INCONCLUSIVE_INFRASTRUCTURE_FAILURE`, `FROZEN_EXIT_PARAMETERS_MISMATCH`, run count `1`, no reopen)
 - Attribution: `docs&#47;evidence&#47;attribute_bollinger_mr_midband_exit_efficiency_v6_failure&#47;`
-- Pre-auth validator: `src&#47;research&#47;bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py::validate_pre_authorization_frozen_parameter_parity`
+- Pre-auth validator module: `src&#47;research&#47;bollinger_mr_midband_exit_reentry_cooldown_hypothesis_preregistration_v8.py`
+  (function `validate_pre_authorization_frozen_parameter_parity`)
 
 ## Causal boundary
 
