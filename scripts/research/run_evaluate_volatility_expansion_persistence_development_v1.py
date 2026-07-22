@@ -4,8 +4,8 @@
 Modes:
   - preflight (default): bind digests/guards/evidence schema; no panel; no run.
   - dry-validate: prove executable-path contracts without runner start or counters.
-  - evaluate: requires machine-checkable authorization; fail-closed while
-    development_evaluation_authorized=false on HEAD.
+  - evaluate: requires machine-checkable authorization + panel execution boundary;
+    consumes the single development run slot only when evaluation executes.
 
 Generic LIVE/SHADOW/TESTNET/SCHEDULER flags cannot authorize this runner.
 """
@@ -42,21 +42,21 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "VEP v1 DEVELOPMENT evaluation entry point "
-            "(default: preflight; evaluate remains unauthorized on HEAD)."
+            "(default: preflight; evaluate requires auth + panel boundary)."
         )
     )
     parser.add_argument(
         "--mode",
         choices=("preflight", "dry-validate", "evaluate"),
         default="preflight",
-        help="preflight (default), dry-validate, or evaluate (auth fail-closed on HEAD).",
+        help="preflight (default), dry-validate, or evaluate (authorized panel path).",
     )
     parser.add_argument(
         "--authorize-single-development-evaluation",
         default="",
         help=(
-            f"Must equal {HYPOTHESIS_ID}; still fail-closed while "
-            "development_evaluation_authorized=false on HEAD."
+            f"Must equal {HYPOTHESIS_ID}; evaluate still fail-closed without "
+            "valid authorization and bound panel execution boundary."
         ),
     )
     parser.add_argument(
