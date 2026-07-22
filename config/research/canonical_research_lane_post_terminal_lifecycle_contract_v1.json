@@ -1,0 +1,330 @@
+{
+  "artifact_kind": "canonical_research_lane_post_terminal_lifecycle_contract",
+  "artifact_version": "v1",
+  "authority_effect": "NONE",
+  "backtest_authorized": false,
+  "canonical_docs_owner": "docs/governance/CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1.md",
+  "canonical_lane_states": [
+    "OPEN_BACKLOG",
+    "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+    "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+    "LANE_CLOSED_NO_FURTHER_RESEARCH"
+  ],
+  "canonical_owner_module": "src/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.py",
+  "canonical_ssot": true,
+  "contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
+  "evaluation_authorized": false,
+  "exactly_one_authoritative_truth": true,
+  "forbidden_transitions": [
+    {
+      "code": "AUTO_CREATE_SUCCESSOR",
+      "from_any": true,
+      "reason": "Successor identity must be an explicit operator decision with hypothesis_id and mechanism definition."
+    },
+    {
+      "code": "EXECUTABLE_GO_WITHOUT_TARGET",
+      "from_any": true,
+      "reason": "GO alone is never executable without a concrete target (successor identity, closeout decision, or enumerated lane action)."
+    },
+    {
+      "code": "OPEN_BACKLOG_WITH_EMPTY_INVENTORY",
+      "from": "OPEN_BACKLOG",
+      "to": "OPEN_BACKLOG",
+      "reason": "OPEN_BACKLOG requires non-empty open or preregistered inventory."
+    },
+    {
+      "code": "CLOSED_WITH_IMPLICIT_SUCCESSOR",
+      "from": "LANE_CLOSED_NO_FURTHER_RESEARCH",
+      "to": "OPEN_BACKLOG",
+      "reason": "Closed lanes may reopen only via explicit reopen decision plus new hypothesis identity; implicit successors are forbidden."
+    },
+    {
+      "code": "MUTATE_HISTORICAL_EVALUATION_EVIDENCE",
+      "from_any": true,
+      "reason": "Evaluation evidence, metrics, run-slot claims, and result digests are immutable after seal."
+    },
+    {
+      "code": "MUTATE_HISTORICAL_PREREGISTRATION_DIGEST",
+      "from_any": true,
+      "reason": "Preregistration economic contracts and digests are immutable after seal."
+    },
+    {
+      "code": "AUTO_CLOSE_ON_TERMINAL",
+      "from_any": true,
+      "reason": "Terminal PASS/FAIL never auto-closes a lane; closeout requires an explicit operator closeout decision."
+    },
+    {
+      "code": "AUTO_AWAIT_ON_TERMINAL",
+      "from_any": true,
+      "reason": "Empty inventory after terminal does not imply awaiting successor without an explicit waiting declaration."
+    }
+  ],
+  "governance_note": "Shared conceptual lifecycle grammar for research lanes after the active hypothesis becomes terminal and inventories may be empty. Does not migrate Entry-Eligibility or Exit-Efficiency backlog SSOTs in this slice.",
+  "immutability_policy": {
+    "authorization_summaries_class": "HISTORICAL_SNAPSHOT_NOT_LIVE_MIRROR",
+    "immutable_artifact_classes": [
+      "PREREGISTRATION_ECONOMIC_CONTRACT",
+      "PREREGISTRATION_DIGEST",
+      "EVALUATION_EVIDENCE",
+      "EVALUATION_METRICS",
+      "RUN_SLOT_CLAIM",
+      "RESULT_DIGEST",
+      "EXECUTED_AUTHORIZATION_RATIFICATION_SNAPSHOT",
+      "EXECUTED_OPERATOR_CLARIFICATION_AUTHORITY_SNAPSHOT"
+    ],
+    "live_authority_and_ratification_after_execution": "MUST_NOT_MUTATE_SEALED_SNAPSHOT_OBJECTS",
+    "mutable_artifact_classes": [
+      "LANE_BACKLOG_STATUS",
+      "LANE_NEXT_CANONICAL_STEP",
+      "LANE_OPERATOR_DECISION_RECORD"
+    ],
+    "mutable_surface_rule": "Only the live lane backlog SSOT (and explicitly marked live decision records) may change after execution; historical authority/ratification/evidence objects remain sealed snapshots and must not be rewritten to mirror live next-step changes."
+  },
+  "implementation_authorized": false,
+  "invalid_states": [
+    {
+      "code": "EXECUTABLE_GO_WITH_NO_TARGET",
+      "description": "Operator GO present without concrete target identity (successor hypothesis_id, closeout decision id, or enumerated action target)."
+    },
+    {
+      "code": "AUTO_CREATED_SUCCESSOR",
+      "description": "Successor hypothesis created without explicit operator decision naming hypothesis_id and mechanism."
+    },
+    {
+      "code": "OPEN_LANE_EMPTY_INVENTORY_WITHOUT_WAITING_SEMANTICS",
+      "description": "status=OPEN_BACKLOG while open and preregistered inventories are empty and no explicit awaiting/closed decision is recorded."
+    },
+    {
+      "code": "CLOSED_LANE_WITH_IMPLICIT_SUCCESSOR",
+      "description": "status=LANE_CLOSED_NO_FURTHER_RESEARCH while an implicit or unnamed successor is assumed."
+    },
+    {
+      "code": "HISTORICAL_EVALUATION_EVIDENCE_MUTATION",
+      "description": "Any rewrite of sealed evaluation evidence, metrics, run-slot claims, or result digests."
+    },
+    {
+      "code": "AWAITING_WITHOUT_EXPLICIT_WAITING_DECISION",
+      "description": "status=AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS without an explicit operator waiting decision record."
+    },
+    {
+      "code": "CLOSED_WITHOUT_EXPLICIT_CLOSEOUT_DECISION",
+      "description": "status=LANE_CLOSED_NO_FURTHER_RESEARCH without an explicit operator closeout decision record."
+    }
+  ],
+  "migration_deferred": {
+    "entry_eligibility_backlog_ssot": "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json",
+    "entry_eligibility_impact": "Currently status=OPEN_BACKLOG with empty open_candidates and empty preregistered_hypotheses; under this contract that combination is invalid (OPEN_LANE_EMPTY_INVENTORY_WITHOUT_WAITING_SEMANTICS). Cross-lane token CLOSED_NO_OPEN_CANDIDATES is not a canonical lane status. Migration requires a separate operator-authorized slice.",
+    "exit_efficiency_backlog_ssot": "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
+    "exit_efficiency_impact": "Currently status=OPEN_BACKLOG with empty open_unpreregistered_candidates and empty preregistered_hypotheses after V8 TERMINAL_PASS; under this contract that combination is invalid. Migration to AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS or LANE_CLOSED_NO_FURTHER_RESEARCH requires a separate operator-authorized slice; historical V8 artifacts must remain immutable.",
+    "migrate_in_this_slice": false
+  },
+  "non_goals": [
+    "NO_ENTRY_ELIGIBILITY_MIGRATION",
+    "NO_EXIT_EFFICIENCY_MIGRATION",
+    "NO_V9_OR_SUCCESSOR_CREATION",
+    "NO_HOLDOUT",
+    "NO_EVALUATION",
+    "NO_RUNNER",
+    "NO_RUN_SLOT",
+    "NO_PROMOTION",
+    "NO_RUNTIME_ORDERS_LIVE_SHADOW_TESTNET_SCHEDULER_CAPITAL"
+  ],
+  "operator_decision_contract": {
+    "closeout_requires_explicit_closeout_decision": true,
+    "create_successor_requires_explicit_hypothesis_id_and_mechanism": true,
+    "enumerated_decisions": [
+      "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+      "CLOSE_LANE_NO_FURTHER_RESEARCH",
+      "CREATE_SUCCESSOR_HYPOTHESIS",
+      "REOPEN_CLOSED_LANE_WITH_NEW_HYPOTHESIS_IDENTITY"
+    ],
+    "go_alone_never_executable_without_concrete_target": true,
+    "reopen_closed_lane_requires_new_explicit_hypothesis_identity": true
+  },
+  "ownership": {
+    "closeout_and_reopen_decisions": "Explicit operator decision recorded on the lane backlog SSOT; vocabulary/validity owned by this shared lifecycle contract.",
+    "lane_status": "Lane-specific backlog SSOT owns the current status value; this shared contract owns the canonical status vocabulary, predicates, and transition legality.",
+    "post_terminal_transition": "This shared contract owns legal post-terminal transitions; the lane backlog SSOT records the applied transition under operator authorization.",
+    "successor_identity": "Explicit operator CREATE_SUCCESSOR_HYPOTHESIS decision plus new preregistration artifact; never auto-created by evaluation closeout."
+  },
+  "post_terminal_transitions": {
+    "FAIL": {
+      "if_inventory_non_empty": {
+        "deterministic_next": "REMAIN_OR_ENTER_OPEN_BACKLOG",
+        "owner": "lane_backlog_ssot_under_shared_transition_legality"
+      },
+      "if_inventory_empty": {
+        "deterministic_next": null,
+        "required_operator_decision_state": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+        "allowed_operator_decisions": [
+          "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+          "CLOSE_LANE_NO_FURTHER_RESEARCH",
+          "CREATE_SUCCESSOR_HYPOTHESIS"
+        ],
+        "forbidden_auto_actions": [
+          "AUTO_CREATE_SUCCESSOR",
+          "AUTO_CLOSE_ON_TERMINAL",
+          "AUTO_AWAIT_ON_TERMINAL",
+          "EXECUTABLE_GO_WITHOUT_TARGET"
+        ]
+      },
+      "shared_forbiddens": [
+        "NO_RETUNE_SAME_HYPOTHESIS_IDENTITY",
+        "NO_HISTORICAL_EVIDENCE_MUTATION",
+        "NO_PROMOTION_OR_RUNTIME_FROM_TERMINAL_FAIL"
+      ]
+    },
+    "PASS": {
+      "if_inventory_non_empty": {
+        "deterministic_next": "REMAIN_OR_ENTER_OPEN_BACKLOG",
+        "owner": "lane_backlog_ssot_under_shared_transition_legality"
+      },
+      "if_inventory_empty": {
+        "deterministic_next": null,
+        "required_operator_decision_state": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+        "allowed_operator_decisions": [
+          "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+          "CLOSE_LANE_NO_FURTHER_RESEARCH",
+          "CREATE_SUCCESSOR_HYPOTHESIS"
+        ],
+        "forbidden_auto_actions": [
+          "AUTO_CREATE_SUCCESSOR",
+          "AUTO_CLOSE_ON_TERMINAL",
+          "AUTO_AWAIT_ON_TERMINAL",
+          "EXECUTABLE_GO_WITHOUT_TARGET"
+        ]
+      },
+      "shared_forbiddens": [
+        "NO_HOLDOUT_OR_PROMOTION_IMPLIED_BY_PASS_ALONE",
+        "NO_RUNTIME_FROM_DEVELOPMENT_PASS",
+        "NO_HISTORICAL_EVIDENCE_MUTATION",
+        "NO_RERUN_CONSUMED_RUN_SLOT"
+      ]
+    },
+    "applies_to_result_classes": [
+      "PASS",
+      "FAIL",
+      "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+      "INFRASTRUCTURE_FAILURE"
+    ],
+    "note": "PASS and FAIL share the empty-inventory operator-decision requirement. Lane-specific policies may further restrict which enumerated decisions are admissible, but may not invent auto-successor, auto-close, or executable GO without target."
+  },
+  "productive_trading_logic_included": false,
+  "runtime_effect": "NONE",
+  "runtime_policy": {
+    "capital_activated": false,
+    "live_authorized": false,
+    "orders_allowed": false,
+    "paper_activated": false,
+    "runtime_activated": false,
+    "scheduler_authorized": false,
+    "shadow_activated": false,
+    "testnet_activated": false
+  },
+  "schema_version": "canonical_research_lane_post_terminal_lifecycle_contract.v1",
+  "slice_class": "DEFINITION_ONLY_SHARED_LIFECYCLE_CONTRACT",
+  "state_definitions": {
+    "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS": {
+      "inventory_requirement": "EMPTY_OPEN_AND_PREREGISTERED",
+      "requires_explicit_operator_decision": "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+      "semantics": "Lane inventories are empty and all existing hypotheses are terminal; the operator has explicitly declared that the lane awaits a successor hypothesis. Waiting is named; no successor identity exists yet; GO alone is not executable.",
+      "totality_class": "ENUMERATED_OPERATOR_DECISION"
+    },
+    "LANE_CLOSED_NO_FURTHER_RESEARCH": {
+      "inventory_requirement": "EMPTY_OPEN_AND_PREREGISTERED",
+      "requires_explicit_operator_decision": "CLOSE_LANE_NO_FURTHER_RESEARCH",
+      "semantics": "Lane intentionally closed with no further research action. Reopening requires an explicit reopen decision and a new hypothesis identity; closed lanes must not carry an implicit successor.",
+      "totality_class": "TERMINAL_CLOSED_STATE"
+    },
+    "OPEN_BACKLOG": {
+      "inventory_requirement": "NON_EMPTY_OPEN_OR_PREREGISTERED",
+      "semantics": "Backlog actively open with candidates: at least one open_unpreregistered candidate and/or at least one preregistered hypothesis exists. OPEN_BACKLOG is invalid when both inventories are empty.",
+      "totality_class": "DETERMINISTIC_OR_ENUMERATED_WITHIN_INVENTORY"
+    },
+    "POST_TERMINAL_OPERATOR_DECISION_REQUIRED": {
+      "inventory_requirement": "EMPTY_OPEN_AND_PREREGISTERED",
+      "semantics": "Active hypothesis is terminal and both open and preregistered inventories are empty, but the operator has not yet recorded an explicit awaiting, closeout, or successor-creation decision. This state exists so empty-inventory openness is never implied.",
+      "totality_class": "ENUMERATED_OPERATOR_DECISION"
+    }
+  },
+  "totality_invariant": {
+    "definition": "Every reachable canonical lane state must have exactly one of: (1) a deterministic canonical next transition, (2) an explicitly enumerated operator decision set, or (3) a terminal closed state.",
+    "state_totality_class": {
+      "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS": "ENUMERATED_OPERATOR_DECISION",
+      "LANE_CLOSED_NO_FURTHER_RESEARCH": "TERMINAL_CLOSED_STATE",
+      "OPEN_BACKLOG": "DETERMINISTIC_OR_ENUMERATED_WITHIN_INVENTORY",
+      "POST_TERMINAL_OPERATOR_DECISION_REQUIRED": "ENUMERATED_OPERATOR_DECISION"
+    }
+  },
+  "transitions": [
+    {
+      "from": "OPEN_BACKLOG",
+      "to": "OPEN_BACKLOG",
+      "owner": "lane_backlog_ssot",
+      "trigger": "INVENTORY_REMAINS_NON_EMPTY_AFTER_HYPOTHESIS_TERMINAL",
+      "kind": "DETERMINISTIC"
+    },
+    {
+      "from": "OPEN_BACKLOG",
+      "to": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+      "owner": "lane_backlog_ssot_under_shared_contract",
+      "trigger": "ACTIVE_HYPOTHESIS_TERMINAL_AND_INVENTORIES_EMPTY",
+      "kind": "DETERMINISTIC"
+    },
+    {
+      "from": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+      "to": "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+      "owner": "operator_decision_on_lane_backlog_ssot",
+      "trigger": "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+      "kind": "OPERATOR_DECISION"
+    },
+    {
+      "from": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+      "to": "LANE_CLOSED_NO_FURTHER_RESEARCH",
+      "owner": "operator_decision_on_lane_backlog_ssot",
+      "trigger": "CLOSE_LANE_NO_FURTHER_RESEARCH",
+      "kind": "OPERATOR_DECISION"
+    },
+    {
+      "from": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+      "to": "OPEN_BACKLOG",
+      "owner": "operator_decision_plus_preregistration_artifact",
+      "trigger": "CREATE_SUCCESSOR_HYPOTHESIS",
+      "requires": [
+        "explicit_hypothesis_id",
+        "explicit_mechanism_definition"
+      ],
+      "kind": "OPERATOR_DECISION"
+    },
+    {
+      "from": "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+      "to": "OPEN_BACKLOG",
+      "owner": "operator_decision_plus_preregistration_artifact",
+      "trigger": "CREATE_SUCCESSOR_HYPOTHESIS",
+      "requires": [
+        "explicit_hypothesis_id",
+        "explicit_mechanism_definition"
+      ],
+      "kind": "OPERATOR_DECISION"
+    },
+    {
+      "from": "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+      "to": "LANE_CLOSED_NO_FURTHER_RESEARCH",
+      "owner": "operator_decision_on_lane_backlog_ssot",
+      "trigger": "CLOSE_LANE_NO_FURTHER_RESEARCH",
+      "kind": "OPERATOR_DECISION"
+    },
+    {
+      "from": "LANE_CLOSED_NO_FURTHER_RESEARCH",
+      "to": "OPEN_BACKLOG",
+      "owner": "operator_decision_plus_new_hypothesis_identity",
+      "trigger": "REOPEN_CLOSED_LANE_WITH_NEW_HYPOTHESIS_IDENTITY",
+      "requires": [
+        "explicit_reopen_decision",
+        "new_explicit_hypothesis_identity",
+        "explicit_mechanism_definition"
+      ],
+      "kind": "OPERATOR_DECISION"
+    }
+  ]
+}
