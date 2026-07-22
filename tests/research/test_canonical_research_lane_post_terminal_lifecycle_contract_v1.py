@@ -267,12 +267,17 @@ def test_migration_deferred_and_production_lanes_untouched() -> None:
         REPO_ROOT / "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json"
     )
     entry_payload = json.loads(entry.read_text(encoding="utf-8"))
-    exit_payload = exit_eff.read_text(encoding="utf-8")
+    exit_payload = json.loads(exit_eff.read_text(encoding="utf-8"))
     assert entry_payload["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
     assert entry_payload["lifecycle_contract_id"] == CONTRACT_ID
     assert entry_payload["lane_auto_closed"] is False
+    assert exit_payload["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert exit_payload["lifecycle_contract_id"] == CONTRACT_ID
+    assert exit_payload["lane_auto_closed"] is False
+    assert exit_payload["entry_eligibility_lane_status"] == (
+        "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    )
+    assert "CLOSED_NO_OPEN_CANDIDATES" not in json.dumps(exit_payload)
     assert contract["migration_deferred"].get("entry_eligibility_migrated") is True
-    assert contract["migration_deferred"].get("exit_efficiency_migrated") is False
-    assert '"status": "OPEN_BACKLOG"' in exit_payload
-    assert "LANE_CLOSED_NO_FURTHER_RESEARCH" not in exit_payload
-    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" not in exit_payload
+    assert contract["migration_deferred"].get("exit_efficiency_migrated") is True
+    assert "LANE_CLOSED_NO_FURTHER_RESEARCH" not in json.dumps(exit_payload)

@@ -12,7 +12,7 @@
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
   "development_run_count": 8,
   "entry_eligibility_backlog_ref": "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json",
-  "entry_eligibility_lane_status": "CLOSED_NO_OPEN_CANDIDATES",
+  "entry_eligibility_lane_status": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
   "evaluation_authorized": false,
   "evaluation_results_embedded": false,
   "exactly_one_authoritative_truth": true,
@@ -66,7 +66,7 @@
     "NO_HOLDOUT_AFTER_PASS",
     "NO_RUNTIME_PROMOTION_FROM_DEVELOPMENT_PASS"
   ],
-  "governance_note": "V8 DEVELOPMENT evaluation executed once and terminated as PASS (ALL_PASS_REQUIRES_MET) on sealed DEVELOPMENT_ONLY panel; run slot consumed; rerun/reopen forbidden. Open DEFINITION_ONLY queue empty (preregistered_count_exact=0). V1-V7 remain terminal unchanged. Economic offline gate remains closed; promotion closed; no holdout; no runtime/orders. Next requires separate Operator-GO for any new definition-only preregistration.",
+  "governance_note": "Migrated onto CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1 as sole lane-status authority. Status=POST_TERMINAL_OPERATOR_DECISION_REQUIRED because inventories are empty and V1-V8 are terminal, without an explicit closeout or awaiting-successor decision (auto-close forbidden). V8 DEVELOPMENT evaluation executed once and terminated as PASS (ALL_PASS_REQUIRES_MET) on sealed DEVELOPMENT_ONLY panel; run slot consumed; rerun/reopen forbidden. Open DEFINITION_ONLY queue empty (preregistered_count_exact=0). V1-V7 remain terminal unchanged. Economic offline gate remains closed; promotion closed; no holdout; no runtime/orders. Next requires separate Operator-GO with concrete target under the shared lifecycle operator-decision contract. Entry Eligibility is not modified in this slice; cross-lane status mirror uses the sibling canonical lifecycle status.",
   "governance_rules": {
     "candidate_combination_forbidden": true,
     "cost_model_weakening_forbidden": true,
@@ -119,7 +119,13 @@
   "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
   "short_side_hypothesis_preregistered": false,
   "slice_class": "DEFINITION_ONLY_PREREGISTRATION",
-  "status": "OPEN_BACKLOG",
+  "status": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+  "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
+  "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
+  "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
+  "explicit_closeout_decision": false,
+  "explicit_waiting_decision": false,
+  "lane_auto_closed": false,
   "terminal_hypotheses": [
     {
       "baseline_members_completed": "2/46",
@@ -517,5 +523,6 @@
       "v8_rerun_forbidden": true
     }
   ],
-  "verdict": "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_V8_TERMINAL_PASS_AWAITING_OPERATOR_GO_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION"
+  "verdict": "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_V8_TERMINAL_PASS_AWAITING_OPERATOR_GO_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION",
+  "entry_eligibility_lane_status_authority": "SIBLING_ENTRY_ELIGIBILITY_BACKLOG_UNDER_SHARED_LIFECYCLE_CONTRACT_V1"
 }

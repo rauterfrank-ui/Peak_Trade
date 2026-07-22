@@ -158,9 +158,11 @@ Shared-contract definition slice remains non-migrating (`migrate_in_this_slice: 
 
 - Entry-Eligibility backlog has been migrated in a separate operator-authorized slice to
   `POST_TERMINAL_OPERATOR_DECISION_REQUIRED` under this contract as sole lane-status authority
-  (no auto-close). Cross-lane status label `CLOSED_NO_OPEN_CANDIDATES` remains non-canonical.
-- Exit-Efficiency backlog currently still uses `OPEN_BACKLOG` with empty inventory
-  after V8 `TERMINAL_PASS` and remains deferred.
+  (no auto-close).
+- Exit-Efficiency backlog has been migrated in a separate operator-authorized slice to
+  `POST_TERMINAL_OPERATOR_DECISION_REQUIRED` under this contract as sole lane-status authority
+  (no auto-close). The non-canonical cross-lane label `CLOSED_NO_OPEN_CANDIDATES` is removed
+  from the Exit-Efficiency SSOT.
 
 Historical V8 economic, evaluation, run-slot, and preregistration artifacts remain immutable.
 
