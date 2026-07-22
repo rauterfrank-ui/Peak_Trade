@@ -98,6 +98,25 @@ def test_material_difference_and_closed_siblings_immutable() -> None:
     assert "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1" in independence["forbidden_lineage_refs"]
 
 
+def test_post_terminal_fields_and_strategy_id_reconciled() -> None:
+    payload = _load(PROGRAM_PATH)
+    assert payload["strategy_id"] == "volatility_expansion_pullback_continuation"
+    assert payload["development_evaluation_authorized"] is False
+    assert payload["lane_backlog_status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert payload["active_hypothesis_inventory_empty"] is True
+    assert payload["next_canonical_step"].startswith("OPERATOR_ENUMERATED_DECISION_REQUIRED")
+    assert (
+        "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+        in payload["causal_independence"]["forbidden_lineage_refs"]
+    )
+    assert (
+        payload["causal_independence"][
+            "not_a_retry_of_terminal_volatility_expansion_pullback_continuation_v1"
+        ]
+        is True
+    )
+
+
 def test_fail_closed_on_authorization_mutation() -> None:
     payload = _load(PROGRAM_PATH)
     bad = copy.deepcopy(payload)
@@ -116,12 +135,17 @@ def test_fail_closed_on_authorization_mutation() -> None:
     bad4["runtime_policy"]["orders_allowed"] = True
     with pytest.raises(ProgramValidationError, match="RUNTIME_POLICY_ORDERS_ALLOWED_TRUE"):
         validate_program_contract(bad4)
+    bad5 = copy.deepcopy(payload)
+    bad5["development_evaluation_authorized"] = True
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE"):
+        validate_program_contract(bad5)
 
 
 def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in text
+    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" in text
     assert "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in owners

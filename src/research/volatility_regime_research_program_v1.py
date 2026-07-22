@@ -66,13 +66,32 @@ def validate_program_contract(
     )
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("development_evaluation_authorized") is True,
-        "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
+        payload.get("development_evaluation_authorized") is False,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
     _require(
         payload.get("development_evaluation_executed") is False,
         "DEVELOPMENT_EVALUATION_EXECUTED_TRUE",
     )
+    _require(
+        payload.get("strategy_id") == "volatility_expansion_pullback_continuation",
+        "STRATEGY_ID_DRIFT",
+    )
+    _require(
+        payload.get("lane_backlog_status") == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+        "LANE_BACKLOG_STATUS_MISMATCH",
+    )
+    _require(
+        payload.get("next_canonical_step")
+        == "OPERATOR_ENUMERATED_DECISION_REQUIRED_VIA_POST_VEPC_LIFECYCLE_DECISION_PACKET_V1",
+        "NEXT_STEP_STALE",
+    )
+    _require(
+        payload.get("operator_decision_packet_ref")
+        == "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
+        "DECISION_PACKET_REF_MISSING",
+    )
+    _require(payload.get("active_hypothesis_inventory_empty") is True, "INVENTORY_NOT_EMPTY")
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED_TRUE")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(
@@ -159,8 +178,14 @@ def validate_program_contract(
         "VOLATILITY_DECAY_BREAKOUT_V1",
         "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
         "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
+        "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
     ):
         _require(required in forbidden, f"MISSING_FORBIDDEN_LINEAGE:{required}")
+    _require(
+        independence.get("not_a_retry_of_terminal_volatility_expansion_pullback_continuation_v1")
+        is True,
+        "VEPC_RETRY_NOT_FORBIDDEN",
+    )
     md = payload.get("material_difference_vs_terminal_coiled_spring") or {}
     _require(
         md.get("prior_terminal_hypothesis_id") == REQUIRED_PRIOR_HYPOTHESIS,
@@ -242,8 +267,12 @@ def validate_program_contract(
         _require(exitb.get("status") == REQUIRED_CLOSED, "EXIT_LANE_NOT_CLOSED")
         _require(cs.get("status") == REQUIRED_CS_CLOSED, "CS_MOMENTUM_LANE_NOT_CLOSED")
         backlog = load_json(repo_root / str(payload.get("lane_backlog_ref")))
-        _require(backlog.get("status") == "OPEN_BACKLOG", "LANE_BACKLOG_NOT_OPEN")
+        _require(
+            backlog.get("status") == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+            "LANE_BACKLOG_NOT_POST_TERMINAL",
+        )
         _require(backlog.get("program_id") == REQUIRED_PROGRAM_ID, "BACKLOG_PROGRAM_MISMATCH")
+        _require(backlog.get("preregistered_hypotheses") == [], "BACKLOG_PREREG_NONEMPTY")
 
     return {
         "valid": True,
