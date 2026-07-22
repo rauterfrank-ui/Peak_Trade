@@ -874,6 +874,34 @@
         "tests/backtest/test_walkforward*"
       ]
     },
+    "VOLATILITY_COMPRESSION_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only preregistration of own-instrument volatility compression→expansion→channel-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(20)/close percentile-rank admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VOL_BREAKOUT_COILED_SPRING explicit; no strategy producer; no evaluation/holdout/runtime/orders.",
+      "path_prefixes": [
+        "config/research/volatility_compression_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/volatility_compression_breakout_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_volatility_compression_breakout_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_volatility_compression_breakout_hypothesis_v1/"
+      ]
+    },
+    "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
+      "note": "Open backlog SSOT for volatility-regime research program with exactly one definition-only preregistration; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit and closed CS momentum lanes remain unreopened.",
+      "path_prefixes": [
+        "config/research/volatility_regime_hypothesis_backlog_v1.json",
+        "src/research/volatility_regime_hypothesis_backlog_v1.py",
+        "tests/research/test_volatility_regime_hypothesis_backlog_v1.py",
+        "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.md"
+      ]
+    },
+    "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
+      "note": "Definition-only research-program SSOT for operator-authorized volatility-regime compression-breakout hypothesis; causal independence from closed Bollinger Entry/Exit and CS momentum lanes; material difference vs terminal vol_breakout coiled-spring; no strategy producer; no evaluation/holdout/runtime/orders.",
+      "path_prefixes": [
+        "config/research/volatility_regime_research_program_v1.json",
+        "src/research/volatility_regime_research_program_v1.py",
+        "tests/research/test_volatility_regime_research_program_v1.py",
+        "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md"
+      ]
+    },
     "WALK_FORWARD_MONTE_CARLO_STRESS_AND_PARAMETER_SENSITIVITY": {
       "path_globs": [
         "tests/research/test_offline_parameter_sensitivity_surface_v0.py",

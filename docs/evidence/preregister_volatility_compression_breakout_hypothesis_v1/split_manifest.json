@@ -1,0 +1,24 @@
+{
+  "derived_from_results": false,
+  "embargo_hours": 168,
+  "final_development_confirmation": {
+    "end_exclusive": "2023-08-16T05:55:00Z",
+    "start": "2023-05-20T00:00:00Z"
+  },
+  "method": "CHRONOLOGICAL_60_20_20_FLOOR_HOUR",
+  "note": "Reuses the canonical DEVELOPMENT_ONLY chronological split digest; definition-only — no panel raw access.",
+  "overlap": false,
+  "panel_end_exclusive": "2023-08-16T05:55:00Z",
+  "panel_start": "2022-06-01T03:55:17Z",
+  "purge_hours": 216,
+  "schema_version": "preregister_volatility_compression_breakout_split_manifest.v1",
+  "split_intervals_sha256": "a35783bf0268c174dfe585c9839ba45cc6e3835021699786f4490a0d8c9b33db",
+  "train_definition": {
+    "end_exclusive": "2023-02-20T19:00:00Z",
+    "start": "2022-06-01T03:55:17Z"
+  },
+  "validation": {
+    "end_exclusive": "2023-05-20T00:00:00Z",
+    "start": "2023-02-20T19:00:00Z"
+  }
+}
