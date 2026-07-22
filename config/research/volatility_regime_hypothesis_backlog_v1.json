@@ -43,7 +43,7 @@
     "NO_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_EVALUATION_IN_THIS_SLICE"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "Active definition-only preregistration VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1 after VDBX terminal FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT. VCB/VEP/VDB/VDBX remain terminal. No retry. No Development evaluation in this slice.",
+  "governance_note": "Active VCEB v1 strategy implementation + unauthorized Development-evaluation entry point after VDBX terminal FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT. VCB/VEP/VDB/VDBX remain terminal. No retry. Development evaluation remains unauthorized; run slot unused.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -62,7 +62,7 @@
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "REVIEW_AND_MERGE_STRATEGY_IMPLEMENTATION_PLUS_UNAUTHORIZED_ENTRY_POINT_THEN_SEPARATE_OPERATOR_GO_FOR_DEVELOPMENT_EVALUATION_AUTHORIZATION",
   "open_unpreregistered_candidates": [],
   "preregistered_hypotheses": [
     {
@@ -73,7 +73,7 @@
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
-      "implementation_present": false,
+      "implementation_present": true,
       "predecessor_strategy_id": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
       "preregistration_evidence_ref": "docs/evidence/preregister_volatility_contraction_expansion_breakout_hypothesis_v1/",
       "rerun_allowed": false,

@@ -1,0 +1,26 @@
+# Evaluate volatility contraction-expansion breakout development v1 — entry point only
+
+```text
+SLICE=EVALUATE_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_DEVELOPMENT_V1
+STATUS=ENTRY_POINT_MATERIALIZED_EVALUATION_UNAUTHORIZED
+DEVELOPMENT_EVALUATION_AUTHORIZED=false
+EVALUATION_EXECUTED=false
+RUNNER_STARTED=false
+DEVELOPMENT_DATASET_LOADED=false
+HOLDOUT_ACCESSED=false
+RUN_COUNT=0
+RUNNER_START_COUNT=0
+DEVELOPMENT_SLOT_CONSUMED=false
+```
+
+Placeholder evidence directory for the canonical entry point.
+No evaluation has been executed. Authorization remains closed.
+
+---
+docs_token: DOCS_TOKEN_EVALUATE_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_DEVELOPMENT_V1_ENTRY_POINT_PLACEHOLDER
+STATUS: ENTRY_POINT_MATERIALIZED_EVALUATION_UNAUTHORIZED
+scope: research, offline-only, non-authorizing, evidence-placeholder
+LIVE_AUTHORIZED: false
+ORDERS_ALLOWED: false
+SCHEDULER_RUNTIME_ALLOWED: false
+---
