@@ -121,7 +121,7 @@ def test_operator_authorized_thresholds_and_time_segments_complete() -> None:
     assert tsd["generic_walk_forward_v1_bound"] is False
     assert tsd["illustrative_60_20_20_partition_is_not_authority"] is True
     assert contract["evaluation_authorized"] is False
-    assert contract["development_evaluation_authorized"] is False
+    assert contract["development_evaluation_authorized"] is True
 
 
 def test_bounded_development_grid_governance() -> None:

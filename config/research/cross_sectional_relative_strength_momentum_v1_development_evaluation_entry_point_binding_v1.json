@@ -4,7 +4,7 @@
   "authority_effect": "NONE",
   "canonical_ssot": true,
   "cli_ref": "scripts/research/run_evaluate_cross_sectional_relative_strength_momentum_development_v1.py",
-  "config_digest": "738b5b487ddca487b658240e010fd3b605db8f2ef2976d0c5fdb7e576f98af05",
+  "config_digest": "e97275d219dd0e69b0f0f98bdc2806810727c52117303173c3a57a0086a681c4",
   "dataset_binding": {
     "dataset_class": "DEVELOPMENT_ONLY",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
@@ -14,7 +14,7 @@
       "offline_economic_reevaluation_sealed_long_panel_v1"
     ]
   },
-  "development_evaluation_authorized": false,
+  "development_evaluation_authorized": true,
   "development_evaluation_executed": false,
   "development_run_count": 0,
   "development_run_limit": 1,
@@ -22,7 +22,7 @@
   "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
   "evaluation_authorized": false,
   "evidence_ref": "docs/evidence/evaluate_cross_sectional_relative_strength_momentum_development_v1/",
-  "frozen_measurement_contract_digest": "1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158",
+  "frozen_measurement_contract_digest": "54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed",
   "frozen_measurement_contract_ref": "config/research/cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_ref": "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
   "holdout_authorized": false,

@@ -2,10 +2,10 @@
 
 ## Status
 
-`EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED`
+`EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED`
 
 Executable development-evaluation path is present under the canonical entry point.
-Authorization remains fail-closed (`development_evaluation_authorized=false`).
+Development evaluation is authorized (`development_evaluation_authorized=true`); execution still requires a separate operator GO and has not run.
 No development evaluation executed. Run counts remain `0`.
 
 ## Owner
@@ -29,7 +29,7 @@ Modes:
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
   (`DEVELOPMENT_ONLY`)
 - Measurement contract digest (frozen):
-  `1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158`
+  `54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed`
 - Entry-point binding:
   `config/research/cross_sectional_relative_strength_momentum_v1_development_evaluation_entry_point_binding_v1.json`
 - Lifecycle authority:
@@ -56,11 +56,11 @@ Modes:
 
 No evaluation run, no holdout access, no retry, no threshold change, no result
 calibration, no Master-V2/Double-Play/risk/sizing/execution/runtime activation,
-economic/promotion gates remain closed. Authorization flags stay false.
+economic/promotion gates remain closed. Development evaluation authorization is true; evaluation not executed.
 
 ## Next step
 
-`MERGE_READINESS_AUDIT_THEN_SQUASH_MERGE_THEN_EXECUTE_EXACTLY_ONE_PREVIOUSLY_AUTHORIZED_BOUNDED_DEVELOPMENT_RUN`
+`AWAIT_SEPARATE_OPERATOR_GO_THEN_EXECUTE_EXACTLY_ONE_PREVIOUSLY_AUTHORIZED_BOUNDED_DEVELOPMENT_EVALUATION_RUN`
 
 ## Explicitly false
 
@@ -69,6 +69,6 @@ economic/promotion gates remain closed. Authorization flags stay false.
 - `SHADOW=false`
 - `TESTNET=false`
 - `HOLDOUT_ACCESS=false`
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
+- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
 - `EVALUATION_EXECUTED=false`
 - `RUNNER_STARTED=false`

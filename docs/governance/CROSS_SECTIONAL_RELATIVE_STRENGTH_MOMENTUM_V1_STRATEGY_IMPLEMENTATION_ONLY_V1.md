@@ -10,7 +10,7 @@
 - Signal family: `CROSS_SECTIONAL_MOMENTUM`
 - Directional form: `D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION`
 - Implementation binding: `config&#47;research&#47;cross_sectional_relative_strength_momentum_v1_strategy_implementation_binding_v1.json`
-- Frozen measurement contract digest: `1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158` (unmutated)
+- Frozen measurement contract digest: `54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed` (unmutated)
 - Score: `src&#47;research&#47;cross_sectional_relative_strength_momentum_v1_score_v1.py`
 - Selection: `src&#47;research&#47;cross_sectional_relative_strength_momentum_v1_selection_v1.py`
 

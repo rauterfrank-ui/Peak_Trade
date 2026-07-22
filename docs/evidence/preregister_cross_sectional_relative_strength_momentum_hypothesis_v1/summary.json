@@ -1,7 +1,7 @@
 {
   "backtest_executed": false,
   "base_sha": "d648cb606840f1286437e8533e0a21db24be3033",
-  "contract_digest": "1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158",
+  "contract_digest": "54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed",
   "contract_ref": "config/research/cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "cost_model_fixed": true,
   "dataset_class": "DEVELOPMENT_ONLY",
@@ -24,6 +24,7 @@
   "holdout_forbidden": true,
   "hypothesis_count": 1,
   "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1",
+  "minimum_rebalance_observations": 30,
   "multiple_testing_budget": 1,
   "next_recommended_action": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "orders_sent": false,
@@ -49,12 +50,11 @@
   "strategy_implementation_present": false,
   "target_phenomenon": "PERSISTENCE_OF_RELATIVE_RETURNS_ACROSS_NON_BTC_LINEAR_USDT_FUTURES",
   "testnet_activated": false,
+  "thresholds_ex_ante_operator_authorized": true,
+  "thresholds_not_result_calibrated": true,
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+  "time_segment_robustness_pass_ratio": 0.5,
   "train_period": "2022-06-01T03:55:17Z..2023-02-20T19:00:00Z",
   "treatment_type": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_RANKING_SELECTION",
-  "validation_period": "2023-02-20T19:00:00Z..2023-05-20T00:00:00Z",
-  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "minimum_rebalance_observations": 30,
-  "time_segment_robustness_pass_ratio": 0.5,
-  "thresholds_ex_ante_operator_authorized": true,
-  "thresholds_not_result_calibrated": true
+  "validation_period": "2023-02-20T19:00:00Z..2023-05-20T00:00:00Z"
 }
