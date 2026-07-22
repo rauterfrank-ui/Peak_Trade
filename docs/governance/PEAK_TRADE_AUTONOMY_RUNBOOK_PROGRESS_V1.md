@@ -1,10 +1,14 @@
 
-### VEPC v1 strategy implementation + unauthorized development entry path
+### VEPC v1 historical development slot CONSUMED_NO_RETRY
 
 - Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
-- Status: `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED`
-- `DEVELOPMENT_EVALUATION_EXECUTED=false`, `DEVELOPMENT_RUN_COUNT=0`, `DEVELOPMENT_SLOT_CONSUMED=false`
-- Canonical entry point (productively bound, evaluate unauthorized until separate GO): `scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py`
+- Status: `DEVELOPMENT_SLOT_CONSUMED_NO_RETRY`
+- `DEVELOPMENT_EVALUATION_EXECUTED=false`, `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`
+- Historical slot: `CONSUMED_NO_RETRY` (fail-closed `UNPAIRABLE_ENTRY_NO_EXIT`; no durable successful evaluation evidence; no retry)
+- Baseline end-of-series pairing: canonical EOI then EOP (already bound in domain owners; no productive semantics change in this sync)
+- Decision record: `docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_HISTORICAL_SLOT_CONSUMED_NO_RETRY_AND_BASELINE_END_OF_SERIES_PAIRING_V1.md`
+- Next step: separate operator GO for successor hypothesis or infrastructure scope only; no evaluation; no retry; no holdout
+- Canonical entry point (slot consumed; evaluate unauthorized): `scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py`
 
 ## Registry-Metadaten
 
