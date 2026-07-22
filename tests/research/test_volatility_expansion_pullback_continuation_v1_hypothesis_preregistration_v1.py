@@ -125,9 +125,8 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
     assert md["vceb_retry_forbidden"] is True
     assert md["not_a_repair_or_retry_of_vceb_v1"] is True
     backlog = _load(BACKLOG_PATH)
-    assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
-        REQUIRED_STRATEGY_IDENTITY
-    )
+    assert backlog["preregistered_hypotheses"] == []
+    assert backlog["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
     assert terminals == {
         "VOLATILITY_COMPRESSION_BREAKOUT_V1",
@@ -135,7 +134,9 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
         "VOLATILITY_DECAY_BREAKOUT_V1",
         "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
         "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
+        "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
     }
+    assert REQUIRED_STRATEGY_IDENTITY in terminals
     program = _load(PROGRAM_PATH)
     assert program["strategy_identity"] == REQUIRED_STRATEGY_IDENTITY
     assert REQUIRED_PREDECESSOR in program["causal_independence"]["forbidden_lineage_refs"]

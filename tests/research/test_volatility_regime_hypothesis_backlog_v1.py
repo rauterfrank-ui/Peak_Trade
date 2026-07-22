@@ -33,12 +33,12 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_backlog_open_with_one_preregistration() -> None:
+def test_repo_backlog_post_terminal_empty_inventory() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["status"] == "OPEN_BACKLOG"
-    assert report["preregistered_count"] == 1
-    assert report["terminal_count"] == 5
+    assert report["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert report["preregistered_count"] == 0
+    assert report["terminal_count"] == 6
     assert (
         report["hypothesis_id"]
         == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
@@ -53,9 +53,11 @@ def test_repo_backlog_open_with_one_preregistration() -> None:
     assert report["holdout_forbidden"] is True
     assert report["promotion_eligible"] is False
     assert report["retry_allowed"] is False
+    assert report["explicit_closeout_decision"] is False
+    assert report["explicit_waiting_decision"] is False
 
 
-def test_sibling_closed_lanes_and_inventory() -> None:
+def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     backlog = _load(BACKLOG_PATH)
     siblings = backlog["closed_sibling_lanes"]
     assert siblings["entry_eligibility_lane_status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
@@ -66,7 +68,8 @@ def test_sibling_closed_lanes_and_inventory() -> None:
     assert _load(EXIT_BACKLOG)["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert _load(CS_PROGRAM)["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     assert backlog["open_unpreregistered_candidates"] == []
-    assert len(backlog["terminal_hypotheses"]) == 5
+    assert backlog["preregistered_hypotheses"] == []
+    assert len(backlog["terminal_hypotheses"]) == 6
     terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
     assert terminals["VOLATILITY_COMPRESSION_BREAKOUT_V1"]["terminal_result"] == (
         "FAIL_CLOSED_NO_RETRY"
@@ -83,18 +86,15 @@ def test_sibling_closed_lanes_and_inventory() -> None:
     assert terminals["VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1"]["fail_reason"].endswith(
         "UNPAIRABLE_ENTRY_NO_EXIT"
     )
+    vepc = terminals["VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"]
+    assert vepc["status"] == "TERMINAL_FAIL"
+    assert vepc["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
+    assert vepc["historical_slot_status"] == "CONSUMED_NO_RETRY"
+    assert vepc["retry_allowed"] is False
+    assert vepc["reopen_allowed"] is False
     assert backlog["sealed_holdout_binding_status"] == "UNBOUND_UNTOUCHED"
-    hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["implementation_present"] is True
-    assert hyp["holdout_allowed"] is False
-    assert hyp["development_run_limit"] == 1
-    assert hyp["development_run_count"] == 1
-    assert hyp["runner_start_count"] == 1
-    assert hyp["run_slot_consumed"] is True
-    assert hyp["historical_slot_status"] == "CONSUMED_NO_RETRY"
-    assert hyp["status"] == "DEVELOPMENT_SLOT_CONSUMED_NO_RETRY"
-    assert hyp["baseline_id"] == "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1"
-    assert hyp["strategy_identity"] == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+    assert backlog["required_treatment_type"] == "NONE_UNTIL_CREATE_SUCCESSOR_HYPOTHESIS"
+    assert backlog["next_canonical_step"].startswith("OPERATOR_ENUMERATED_DECISION_REQUIRED")
 
 
 def test_fail_closed_mutations() -> None:
@@ -115,14 +115,18 @@ def test_fail_closed_mutations() -> None:
     bad4["closed_sibling_lanes"]["reopen_forbidden"] = False
     with pytest.raises(BacklogValidationError, match="SIBLING_REOPEN_NOT_FORBIDDEN"):
         validate_backlog_contract(bad4)
+    bad5 = copy.deepcopy(payload)
+    bad5["status"] = "OPEN_BACKLOG"
+    with pytest.raises(BacklogValidationError, match="STATUS_NOT_POST_TERMINAL"):
+        validate_backlog_contract(bad5)
 
 
 def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in text
-    assert "OPEN_BACKLOG" in text
+    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" in text
+    assert "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in text
     assert "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1" in text
-    assert "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in owners
