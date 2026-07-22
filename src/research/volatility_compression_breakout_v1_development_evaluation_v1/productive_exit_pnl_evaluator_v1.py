@@ -66,6 +66,13 @@ ExitReasonV1 = Literal[
     "TRAILING_STOP",
     "REGIME_EXIT",
     "TIME_EXIT",
+    # Strategy-emitted exit reasons (VDBX and successors with explicit exit state
+    # machines). Widened here, not duplicated, so this remains the sole productive
+    # exit/PnL evaluator for both declarative and strategy-emitted exit semantics.
+    "SIGNAL_EXIT",
+    "REGIME_INVALIDATION",
+    "END_OF_INSTRUMENT_LIQUIDATION",
+    "END_OF_PANEL_LIQUIDATION",
 ]
 
 
@@ -313,7 +320,9 @@ def simulate_arm_roundtrips_v1(
         exit_i: int | None = None
         exit_reason: ExitReasonV1 | None = None
         exit_price = 0.0
-        for j in range(fill_i + 1, min(n, fill_i + 1 + max_bars)):
+        # Exclusive end must include bar fill_i + max_bars, where held == max_bars
+        # (TIME_EXIT fires at held >= max_bars); off-by-one fixed from fill_i + 1 + max_bars.
+        for j in range(fill_i + 1, min(n, fill_i + max_bars + 1)):
             high = float(frame.loc[j, "high"])
             low = float(frame.loc[j, "low"])
             close = float(frame.loc[j, "close"])
@@ -504,6 +513,40 @@ def evaluate_arm_productive_pnl_v1(
     )
 
 
+def _agg_arms_v1(
+    *,
+    panel_series: Sequence[InstrumentPanelSeriesV1],
+    arms: tuple[ArmEventSeriesV1, ...],
+    arm_id: str,
+    effective_cost: EffectiveBacktestCostConfigV0,
+) -> ArmPnLResultV1:
+    """Aggregate multi-instrument declarative-exit arms with identical evaluator."""
+    all_trades: list[RoundtripTradeV1] = []
+    events = 0
+    sleeve_ids = [str(arm.instrument_id) for arm in arms]
+    for arm in arms:
+        one = evaluate_arm_productive_pnl_v1(
+            panel_series=panel_series, arm=arm, effective_cost=effective_cost
+        )
+        all_trades.extend(one.trades)
+        events += one.evaluable_entry_events
+    metrics = _metrics_from_trades(all_trades, sleeve_instrument_ids=sleeve_ids)
+    return ArmPnLResultV1(
+        arm_id=arm_id,
+        trades=tuple(all_trades),
+        evaluable_entry_events=events,
+        gross_return=metrics["gross_return"],
+        net_return=metrics["net_return"],
+        gross_profit_factor=metrics["gross_profit_factor"],
+        net_profit_factor=metrics["net_profit_factor"],
+        gross_pnl=metrics["gross_pnl"],
+        net_expectancy=metrics["net_expectancy"],
+        sharpe=metrics["sharpe"],
+        max_drawdown=metrics["max_drawdown"],
+        trade_count=int(metrics["trade_count"]),
+    )
+
+
 def evaluate_treatment_and_baseline_productive_pnl_v1(
     *,
     dataset_id: str,
@@ -512,7 +555,7 @@ def evaluate_treatment_and_baseline_productive_pnl_v1(
     cost_execution_binding: Mapping[str, Any],
     cost_multiplier: float = 1.0,
 ) -> tuple[ArmPnLResultV1, ArmPnLResultV1]:
-    """Identical productive PnL semantics for treatment and baseline arms."""
+    """Identical productive PnL semantics for treatment and baseline arms (declarative)."""
     assert_development_dataset_only(dataset_id)
     if handoff.holdout_accessed if hasattr(handoff, "holdout_accessed") else False:
         raise ValueError("HOLDOUT_ACCESSED_TRUE")
@@ -524,33 +567,140 @@ def evaluate_treatment_and_baseline_productive_pnl_v1(
     if not handoff.baseline:
         raise ValueError("EMPTY_BASELINE_ARMS")
 
-    # Aggregate multi-instrument arms with identical evaluator + contracted portfolio.
-    def _agg(arms: tuple[ArmEventSeriesV1, ...], arm_id: str) -> ArmPnLResultV1:
-        all_trades: list[RoundtripTradeV1] = []
-        events = 0
-        sleeve_ids = [str(arm.instrument_id) for arm in arms]
-        for arm in arms:
-            one = evaluate_arm_productive_pnl_v1(
-                panel_series=panel_series, arm=arm, effective_cost=effective
-            )
-            all_trades.extend(one.trades)
-            events += one.evaluable_entry_events
-        metrics = _metrics_from_trades(all_trades, sleeve_instrument_ids=sleeve_ids)
-        return ArmPnLResultV1(
-            arm_id=arm_id,
-            trades=tuple(all_trades),
-            evaluable_entry_events=events,
-            gross_return=metrics["gross_return"],
-            net_return=metrics["net_return"],
-            gross_profit_factor=metrics["gross_profit_factor"],
-            net_profit_factor=metrics["net_profit_factor"],
-            gross_pnl=metrics["gross_pnl"],
-            net_expectancy=metrics["net_expectancy"],
-            sharpe=metrics["sharpe"],
-            max_drawdown=metrics["max_drawdown"],
-            trade_count=int(metrics["trade_count"]),
-        )
+    treatment = _agg_arms_v1(
+        panel_series=panel_series,
+        arms=handoff.treatment,
+        arm_id="TREATMENT",
+        effective_cost=effective,
+    )
+    baseline = _agg_arms_v1(
+        panel_series=panel_series,
+        arms=handoff.baseline,
+        arm_id="BASELINE",
+        effective_cost=effective,
+    )
+    return treatment, baseline
 
-    treatment = _agg(handoff.treatment, "TREATMENT")
-    baseline = _agg(handoff.baseline, "BASELINE")
+
+def realize_strategy_emitted_roundtrips_v1(
+    *,
+    panel_series: Sequence[InstrumentPanelSeriesV1],
+    strategy_roundtrips: Sequence[Any],
+    effective_cost: EffectiveBacktestCostConfigV0,
+) -> tuple[RoundtripTradeV1, ...]:
+    """Realize PnL directly from strategy-emitted roundtrips. No evaluator-side exit search.
+
+    Each item in ``strategy_roundtrips`` must expose: ``instrument_id``, ``side``,
+    ``fill_index``, ``exit_index``, ``entry_price``, ``exit_price``, ``exit_reason``, and
+    optionally ``stop_price_at_entry`` (duck-typed; avoids a reverse import from this
+    shared VCB module onto any strategy-specific panel-wiring dataclass). Position sizing
+    reuses the canonical ATR20 initial-stop sizing primitive (identical to the
+    declarative-exit arms) via ``_position_size_from_atr_stop_v1``; this is the sole
+    productive PnL truth for strategy-emitted-exit treatment arms.
+    """
+    by_id = {s.instrument_id: s for s in panel_series}
+    trades: list[RoundtripTradeV1] = []
+    for rt in strategy_roundtrips:
+        instrument_id = str(rt.instrument_id)
+        if instrument_id not in by_id:
+            raise ValueError(f"ROUNDTRIP_INSTRUMENT_MISSING:{instrument_id}")
+        frame = _panel_to_frame(by_id[instrument_id])
+        n = len(frame)
+        fill_i = int(rt.fill_index)
+        exit_i = int(rt.exit_index)
+        if not (0 <= fill_i < n) or not (0 <= exit_i < n) or exit_i <= fill_i:
+            raise ValueError(f"STRATEGY_ROUNDTRIP_INDEX_INVALID:{instrument_id}:{fill_i}:{exit_i}")
+        side = str(rt.side).upper()
+        if side not in {"LONG", "SHORT"}:
+            raise ValueError(f"ENTRY_SIDE_INVALID:{side}")
+        atr = compute_atr20_v1(frame["high"], frame["low"], frame["close"])
+        atr_entry = float(atr.iloc[fill_i])
+        entry_price = float(rt.entry_price)
+        if not (atr_entry == atr_entry) or atr_entry <= 0:
+            raise ValueError(f"ATR_INVALID_AT_ENTRY:{instrument_id}:{fill_i}")
+        size = _position_size_from_atr_stop_v1(entry_price=entry_price, atr_at_entry=atr_entry)
+        stop_price_at_entry = float(getattr(rt, "stop_price_at_entry", entry_price))
+        trades.append(
+            _realize_roundtrip_v1(
+                instrument_id=instrument_id,
+                side=side.lower(),
+                entry_index=fill_i,
+                exit_index=exit_i,
+                entry_time=str(frame.loc[fill_i, "timestamp_utc"]),
+                exit_time=str(frame.loc[exit_i, "timestamp_utc"]),
+                entry_price=entry_price,
+                exit_price=float(rt.exit_price),
+                size=size,
+                stop_price_at_entry=stop_price_at_entry,
+                exit_reason=str(rt.exit_reason),  # type: ignore[arg-type]
+                effective_cost=effective_cost,
+            )
+        )
+    return tuple(trades)
+
+
+def evaluate_treatment_strategy_emitted_and_baseline_productive_pnl_v1(
+    *,
+    dataset_id: str,
+    panel_series: Sequence[InstrumentPanelSeriesV1],
+    handoff: Any,
+    cost_execution_binding: Mapping[str, Any],
+    cost_multiplier: float = 1.0,
+) -> tuple[ArmPnLResultV1, ArmPnLResultV1]:
+    """Treatment PnL realized from strategy-emitted roundtrips; baseline via declarative path.
+
+    ``handoff`` must expose ``treatment_strategy_roundtrips`` (strategy-emitted exits,
+    duck-typed per :func:`realize_strategy_emitted_roundtrips_v1`), ``treatment``
+    (``ArmEventSeriesV1`` tuples, used only for evaluable-event counting), and
+    ``baseline`` (``ArmEventSeriesV1`` tuples, realized via the identical declarative
+    exit-search path as every other package's baseline arm). This is the sole productive
+    PnL truth for strategy-emitted-exit strategies; no second PnL/equity/stats truth.
+    """
+    assert_development_dataset_only(dataset_id)
+    if getattr(handoff, "holdout_accessed", False):
+        raise ValueError("HOLDOUT_ACCESSED_TRUE")
+    effective = build_effective_cost_config_from_binding_v1(
+        cost_execution_binding, cost_multiplier=cost_multiplier
+    )
+    strategy_roundtrips = tuple(getattr(handoff, "treatment_strategy_roundtrips", None) or ())
+    if not strategy_roundtrips:
+        raise ValueError("EMPTY_TREATMENT_STRATEGY_ROUNDTRIPS")
+    if not handoff.baseline:
+        raise ValueError("EMPTY_BASELINE_ARMS")
+
+    treatment_trades = realize_strategy_emitted_roundtrips_v1(
+        panel_series=panel_series,
+        strategy_roundtrips=strategy_roundtrips,
+        effective_cost=effective,
+    )
+    treatment_sleeve_ids = sorted({str(rt.instrument_id) for rt in strategy_roundtrips})
+    treatment_metrics = _metrics_from_trades(
+        treatment_trades, sleeve_instrument_ids=treatment_sleeve_ids
+    )
+    treatment_arms = tuple(getattr(handoff, "treatment", None) or ())
+    evaluable_events = (
+        sum(arm.evaluable_entry_event_count for arm in treatment_arms)
+        if treatment_arms
+        else len(treatment_trades)
+    )
+    treatment = ArmPnLResultV1(
+        arm_id="TREATMENT",
+        trades=treatment_trades,
+        evaluable_entry_events=evaluable_events,
+        gross_return=treatment_metrics["gross_return"],
+        net_return=treatment_metrics["net_return"],
+        gross_profit_factor=treatment_metrics["gross_profit_factor"],
+        net_profit_factor=treatment_metrics["net_profit_factor"],
+        gross_pnl=treatment_metrics["gross_pnl"],
+        net_expectancy=treatment_metrics["net_expectancy"],
+        sharpe=treatment_metrics["sharpe"],
+        max_drawdown=treatment_metrics["max_drawdown"],
+        trade_count=int(treatment_metrics["trade_count"]),
+    )
+    baseline = _agg_arms_v1(
+        panel_series=panel_series,
+        arms=tuple(handoff.baseline),
+        arm_id="BASELINE",
+        effective_cost=effective,
+    )
     return treatment, baseline

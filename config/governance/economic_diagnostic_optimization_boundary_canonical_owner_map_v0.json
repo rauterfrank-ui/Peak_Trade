@@ -971,6 +971,19 @@
         "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
+    "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1: executable evaluate path with strategy-emitted exits + productive exit/PnL evaluator reuse from VCB package (not duplicated). Development evaluation authorized; run counters remain 0 until the single bounded productive evaluation executes; no holdout/runtime/orders; hypothesis parameters unchanged.",
+      "path_prefixes": [
+        "config/research/volatility_decay_breakout_with_explicit_decay_exit_v1_development_evaluation_entry_point_binding_v1.json",
+        "docs/evidence/evaluate_volatility_decay_breakout_with_explicit_decay_exit_development_v1/",
+        "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "scripts/research/run_evaluate_volatility_decay_breakout_with_explicit_decay_exit_development_v1.py",
+        "src/research/volatility_decay_breakout_with_explicit_decay_exit_v1_development_evaluation_v1/",
+        "tests/research/test_volatility_decay_breakout_with_explicit_decay_exit_v1_development_evaluation_entry_point_v1.py",
+        "tests/research/test_volatility_decay_breakout_with_explicit_decay_exit_v1_development_evaluation_executable_path_v1.py",
+        "tests/research/test_volatility_decay_breakout_with_explicit_decay_exit_v1_development_evaluation_fail_closed_report_v1.py"
+      ]
+    },
     "VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
       "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_EXPANSION_PERSISTENCE_V1: executable evaluate path with materialized panel execution boundary (loader/wiring/injectable boundary); productive exit/PnL evaluator referenced from VCB package (not duplicated). Development evaluation authorized on HEAD; run counters remain 0 until a separate operator GO executes the single bounded development evaluation; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
       "path_prefixes": [

@@ -65,8 +65,8 @@ def validate_backlog_contract(
     _require(payload.get("lane_auto_closed") is False, "LANE_AUTO_CLOSED")
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
     _require(
-        payload.get("development_evaluation_authorized") is False,
-        "DEVELOPMENT_EVALUATION_AUTHORIZED",
+        payload.get("development_evaluation_authorized") is True,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
     )
     _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
@@ -76,8 +76,8 @@ def validate_backlog_contract(
     )
     _require(payload.get("dataset_id") == REQUIRED_DATASET, "DATASET_ID_MISMATCH")
     _require(payload.get("dataset_class") == "DEVELOPMENT_ONLY", "DATASET_CLASS")
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
     rules = payload.get("governance_rules") or {}
     _require(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_NOT_1")
@@ -93,13 +93,16 @@ def validate_backlog_contract(
     hyp = prereg[0]
     _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
-    _require(hyp.get("status") == "DEFINITION_ONLY_PREREGISTERED", "HYPOTHESIS_STATUS")
+    _require(
+        hyp.get("status") == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL_CLOSED",
+        "HYPOTHESIS_STATUS",
+    )
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
-    _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NOT_ZERO")
+    _require(hyp.get("development_run_count") == 1, "HYP_RUN_COUNT_NOT_ONE")
     _require(hyp.get("development_run_limit") == 1, "HYP_RUN_LIMIT_NOT_ONE")
     _require(hyp.get("implementation_present") is True, "HYP_IMPLEMENTATION_PRESENT")
-    _require(hyp.get("run_slot_consumed") is False, "HYP_RUN_SLOT_CONSUMED")
-    _require(hyp.get("runner_start_count") == 0, "HYP_RUNNER_START_NOT_ZERO")
+    _require(hyp.get("run_slot_consumed") is True, "HYP_RUN_SLOT_NOT_CONSUMED")
+    _require(hyp.get("runner_start_count") == 1, "HYP_RUNNER_START_NOT_ONE")
     _require(hyp.get("holdout_allowed") is False, "HYP_HOLDOUT_ALLOWED")
     _require(hyp.get("retry_allowed") is False, "HYP_RETRY_ALLOWED")
     terminals = payload.get("terminal_hypotheses") or []
@@ -148,7 +151,7 @@ def validate_backlog_contract(
         "terminal_count": 3,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "strategy_identity": REQUIRED_STRATEGY_IDENTITY,
-        "development_run_count": 0,
+        "development_run_count": 1,
         "dataset_id": REQUIRED_DATASET,
         "evaluation_authorized": False,
         "holdout_forbidden": True,

@@ -47,9 +47,9 @@
   "corrective_measurement_reevaluation_authorized": false,
   "corrective_measurement_reevaluation_count": 1,
   "corrective_measurement_reevaluation_limit": 1,
-  "development_evaluation_authorized": false,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "evaluation_authorized": false,
   "evaluation_run_count": 0,
@@ -77,7 +77,7 @@
     "NO_SYNTHETIC_RESULTS",
     "NO_RUN_SLOT_CONSUMPTION"
   ],
-  "governance_note": "Active hypothesis is VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1 after terminal VDB FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT. Development evaluation unauthorized. Predecessor VDB/VEP/VCB artifacts unchanged.",
+  "governance_note": "Active hypothesis VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1 development slot consumed FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT. Predecessor VDB/VEP/VCB artifacts unchanged. No retry.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_NON_BITCOIN_PERPETUALS_V1",
@@ -91,8 +91,8 @@
       "baseline": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1 isolates incremental value of volatility-decay admission",
       "compression_gate": "no compression-regime prerequisite; coiled-spring used coincident vol filter",
       "dataset_universe": "sealed DEVELOPMENT_ONLY non-BTC OKX linear USDT perpetual panel vs single-instrument short window",
-      "entry": "entry only after confirmed high→low vol decay plus channel break inside t+1..t+8; never on confirmation bar t",
-      "expansion_gate": "requires high→low decay (t-1>=0.70 to t<0.40 with falling ATR) rather than coincident high-vol filter",
+      "entry": "entry only after confirmed high\u2192low vol decay plus channel break inside t+1..t+8; never on confirmation bar t",
+      "expansion_gate": "requires high\u2192low decay (t-1>=0.70 to t<0.40 with falling ATR) rather than coincident high-vol filter",
       "program_identity": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 / VOLATILITY_DECAY_BREAKOUT_V1; not a rename of vol_breakout/v1",
       "vol_estimator": "ATR(14)/close percentile-rank regime state vs prior ATR(14) absolute-level vol_percentile=50 filter"
     },
@@ -108,7 +108,7 @@
   "material_difference_vs_volatility_compression_breakout_v1": {
     "differences": {
       "compression_prerequisite": "VCB requires sustained compression; VDB requires none",
-      "entry_timing": "VDB forbids entry on decay confirmation bar t; admits only in t+1..t+8 after high→low decay",
+      "entry_timing": "VDB forbids entry on decay confirmation bar t; admits only in t+1..t+8 after high\u2192low decay",
       "expansion_definition": "VCB expands after compression (>=0.75); VDB requires decay from >=0.70 to <0.40 with falling ATR",
       "persistence_semantics": "VDB uses post-decay window t+1..t+8 with rearm at >=0.70; not VCB compression cycle",
       "vol_estimator_period": "VCB ATR(20); VDB ATR(14)"
@@ -134,7 +134,7 @@
   },
   "material_difference_vs_volatility_expansion_persistence_v1": {
     "differences": {
-      "admission_polarity": "VEP admits after expansion persistence; VDBX admits after high→low decay",
+      "admission_polarity": "VEP admits after expansion persistence; VDBX admits after high\u2192low decay",
       "confirmation_rule": "VEP two-bar >=0.80 rising ATR; VDBX t-1>=0.70 to t<0.40 falling ATR",
       "entry_window": "VEP t+1..t+6; VDBX t+1..t+8",
       "not_an_exit_repair": "VDBX is a new identity after VDB terminal; not a VEP exit rename",
@@ -149,9 +149,9 @@
   },
   "measurement_contract_ref": "config/research/volatility_decay_breakout_with_explicit_decay_exit_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "measurement_repair_merge_commit": "00a820f080973600378c3c2d5513905ee07217e9",
-  "next_canonical_step": "REVIEW_AND_MERGE_THEN_SEPARATE_OPERATOR_GO_FOR_DEVELOPMENT_EVALUATION",
-  "operator_decision": "AUTHORIZE_VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_DEFINITION_AND_IMPLEMENTATION",
-  "operator_decision_token": "OPERATOR_DECISION_VDBX_V1_PREREGISTRATION_AND_STRATEGY_IMPLEMENTATION",
+  "next_canonical_step": "NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE",
+  "operator_decision": "AUTHORIZE_AND_EXECUTE_VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_DEVELOPMENT_EVALUATION",
+  "operator_decision_token": "OPERATOR_DECISION_VDBX_V1_DEVELOPMENT_EVALUATION",
   "original_development_run_count": 1,
   "portfolio_aggregation_id": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
   "productive_trading_logic_included": false,
@@ -166,8 +166,8 @@
   },
   "promotion_authorized": false,
   "retry_allowed": false,
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_authorized": false,
   "runtime_effect": "NONE",
   "runtime_policy": {
@@ -193,5 +193,5 @@
   "strategy_implementation_present": false,
   "strategy_version": "v1",
   "target_phenomenon": "VOLATILITY_DECAY_AFTER_HIGH_VOL_THEN_CHANNEL_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT",
-  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_DEFINITION_ONLY_OPEN_WITH_VDBX_V1_PREREGISTRATION"
+  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_VDBX_V1_DEVELOPMENT_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
 }

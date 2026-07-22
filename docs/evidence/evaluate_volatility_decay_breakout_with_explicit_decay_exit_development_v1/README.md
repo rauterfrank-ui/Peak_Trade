@@ -1,0 +1,48 @@
+# Evaluate volatility decay breakout with explicit decay exit development v1 — terminal FAIL_CLOSED
+
+```text
+SLICE=EVALUATE_VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_DEVELOPMENT_V1
+BASE_SHA=ab3ed1dbb893b9e04177e5f7e1a909a49b27b374
+STRATEGY_ID=VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1
+PREDECESSOR_STRATEGY_ID=VOLATILITY_DECAY_BREAKOUT_V1
+BASELINE_ID=UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1
+PROGRAM_ID=VOLATILITY_REGIME_RESEARCH_PROGRAM_V1
+DATASET=pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1
+PORTFOLIO_AGGREGATION_ID=RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1
+STATUS=FAIL_CLOSED
+REASON=UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:AGLD:USDT:USDT:perp:10575
+EVALUATION_EXECUTED=false
+RUNNER_STARTED=true
+CLI_REPORTED_RUNNER_STARTED=false
+DEVELOPMENT_DATASET_LOADED=true
+SLOT_CONSUMPTION_BOUNDARY=PRODUCTIVE_EVALUATOR_BEGAN_ON_MATERIALIZED_DEVELOPMENT_PANEL
+RUN_BUDGET_CONSUMED=true
+EVALUATION_RUN_COUNT=1
+RUNNER_START_COUNT=1
+HOLDOUT_ACCESSED=false
+RETRY_FORBIDDEN=true
+PREREGISTERED_GATES=NOT_EVALUATED
+PRODUCTIVE_PNL_EVALUATOR_REUSED=true
+SECOND_PNL_TRUTH_CREATED=false
+STRATEGY_EMITTED_EXITS_BOUND_FOR_TREATMENT=true
+```
+
+## Exact command (single authorized attempt; budget consumed)
+
+```bash
+python3 scripts/research/run_evaluate_volatility_decay_breakout_with_explicit_decay_exit_development_v1.py --mode evaluate --authorize-single-development-evaluation VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_NON_BITCOIN_PERPETUALS_V1
+```
+
+Authorized single development-evaluation attempt on `ab3ed1dbb893b9e04177e5f7e1a909a49b27b374` entered the evaluate path with
+the panel execution boundary and productive exit/PnL evaluator bound (treatment via strategy-emitted
+exits; baseline via shared declarative path), then fail-closed with `UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:AGLD:USDT:USDT:perp:10575` during productive
+PnL pairing. No retry. Acceptance criteria were not evaluated.
+
+---
+docs_token: DOCS_TOKEN_EVALUATE_VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_DEVELOPMENT_V1_FAIL_CLOSED_UNPAIRABLE
+STATUS: FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT
+scope: research, offline-only, terminal-development-evidence
+LIVE_AUTHORIZED: false
+ORDERS_ALLOWED: false
+SCHEDULER_RUNTIME_ALLOWED: false
+---
