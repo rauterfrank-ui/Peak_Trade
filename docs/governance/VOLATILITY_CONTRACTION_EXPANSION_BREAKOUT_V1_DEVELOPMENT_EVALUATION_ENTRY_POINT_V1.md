@@ -4,12 +4,12 @@ DOCS_TOKEN_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_E
 
 ## Status
 
-`EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED`
+`EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED`
 
 Executable development-evaluation path is present under the canonical entry point.
-Development evaluation remains unauthorized on the entry-point binding
-(`development_evaluation_authorized=false`). No development evaluation executed.
-Run counts remain `0`.
+Development evaluation is authorized (`development_evaluation_authorized=true`);
+execution still requires a separate operator GO and has not run.
+No development evaluation executed. Run counts remain `0`.
 
 ## Owner
 
@@ -23,7 +23,7 @@ Modes:
 
 - `preflight` (default): no panel open, no runner start, no slot claim
 - `dry-validate`: prove executable-path contracts without runner start or counter mutation
-- `evaluate`: requires machine-checkable authorization (token **and** repo flags); fail-closed on HEAD
+- `evaluate`: requires machine-checkable authorization (token **and** repo flags); panel execution remains a separate operator GO
 
 ## Bindings
 
@@ -44,8 +44,31 @@ Modes:
 
 ## Non-actions
 
-- No Development evaluation authorization or execution in this slice
+- No Development evaluation execution in this slice
 - No holdout access
 - No run-slot consumption
 - No parameter / hypothesis mutation
 - No Shadow / Testnet / Live / Orders
+- Development evaluation authorization is true; evaluation not executed
+
+## Next step
+
+`AWAIT_SEPARATE_OPERATOR_GO_THEN_EXECUTE_EXACTLY_ONE_PREVIOUSLY_AUTHORIZED_BOUNDED_DEVELOPMENT_EVALUATION_RUN`
+
+## Explicitly false
+
+- `SHADOW=false`
+- `TESTNET=false`
+- `HOLDOUT_ACCESS=false`
+- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
+- `EVALUATION_EXECUTED=false`
+- `RUNNER_STARTED=false`
+
+---
+docs_token: DOCS_TOKEN_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
+STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED
+scope: research, offline-only, authorizing-only, no-evaluation-execution
+LIVE_AUTHORIZED: false
+ORDERS_ALLOWED: false
+SCHEDULER_RUNTIME_ALLOWED: false
+---
