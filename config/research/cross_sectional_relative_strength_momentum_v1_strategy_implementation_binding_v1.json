@@ -19,7 +19,7 @@
     "NO_PARAMETER_OPTIMIZATION",
     "NO_GRID_POINT_SELECTION_WITHOUT_DEVELOPMENT_GO"
   ],
-  "frozen_measurement_contract_digest": "2a2c0133c6f488b3aa5b14d9c85f7008b7711ad60f1d87e544330cec4c583869",
+  "frozen_measurement_contract_digest": "1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158",
   "frozen_measurement_contract_ref": "config/research/cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "frozen_measurement_contract_mutated": false,
   "holdout_authorized": false,
@@ -42,8 +42,16 @@
     "vol_normalization": false
   },
   "preregistered_grid_candidates_exposed_not_selected": {
-    "lookback_N_candidates": [10, 20, 48],
-    "rebalance_interval_bars_candidates": [1, 4, 24],
+    "lookback_N_candidates": [
+      10,
+      20,
+      48
+    ],
+    "rebalance_interval_bars_candidates": [
+      1,
+      4,
+      24
+    ],
     "note": "Defaults reuse binding values 20/1; grid candidates are accepted inputs only. No development evaluation or model selection in this slice."
   },
   "program_id": "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1",

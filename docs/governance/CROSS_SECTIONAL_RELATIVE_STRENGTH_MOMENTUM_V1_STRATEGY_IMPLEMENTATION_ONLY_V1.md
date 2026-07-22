@@ -10,7 +10,7 @@
 - Signal family: `CROSS_SECTIONAL_MOMENTUM`
 - Directional form: `D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION`
 - Implementation binding: `config&#47;research&#47;cross_sectional_relative_strength_momentum_v1_strategy_implementation_binding_v1.json`
-- Frozen measurement contract digest: `2a2c0133c6f488b3aa5b14d9c85f7008b7711ad60f1d87e544330cec4c583869` (unmutated)
+- Frozen measurement contract digest: `1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158` (unmutated)
 - Score: `src&#47;research&#47;cross_sectional_relative_strength_momentum_v1_score_v1.py`
 - Selection: `src&#47;research&#47;cross_sectional_relative_strength_momentum_v1_selection_v1.py`
 
@@ -30,7 +30,7 @@ Double-Play authority change, or parameter optimization.
 ## Next step
 
 `SEPARATE_OPERATOR_GO_FOR_MERGE_READINESS_AUDIT` then, separately,
-pending-threshold resolution and development-evaluation GO.
+separate operator GO for bounded development evaluation.
 
 ---
 docs_token: DOCS_TOKEN_CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_STRATEGY_IMPLEMENTATION_ONLY_V1

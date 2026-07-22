@@ -11,7 +11,7 @@
     "reproducibility_required": true,
     "seed_policy": "frozen_when_stochastic_components_absent"
   },
-  "contract_digest": "2a2c0133c6f488b3aa5b14d9c85f7008b7711ad60f1d87e544330cec4c583869",
+  "contract_digest": "1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -48,7 +48,7 @@
     "sole_directional_transition_authority": "trading.master_v2.double_play_state.transition_state"
   },
   "economic_admission_contract": {
-    "evaluation_blocked_while_any_threshold_pending": true,
+    "evaluation_blocked_while_any_threshold_pending": false,
     "fail_reasons": {
       "CONCENTRATION_DOMINANCE": "worst1_abs_net_share > 0.5",
       "COST_STRESS_NOT_SURVIVED": "net_profit_factor at 1.5x costs < 1.0",
@@ -57,7 +57,10 @@
       "INSUFFICIENT_UNIVERSE_BREADTH": "observed eligible members < 5",
       "MAX_DRAWDOWN_BREACH": "abs(max_drawdown) > 0.25",
       "NET_PROFIT_FACTOR_BELOW_THRESHOLD": "net_profit_factor < 1.3 at canonical 1.0x costs",
-      "PENDING_THRESHOLD_UNRESOLVED": "evaluation attempted while REQUIRED_BUT_THRESHOLD_PENDING_OPERATOR_GOVERNANCE remains"
+      "PENDING_THRESHOLD_UNRESOLVED": "evaluation attempted while required admission thresholds remain unresolved",
+      "INSUFFICIENT_REBALANCE_OBSERVATIONS": "valid_evaluable_rebalance_observation_count < minimum_rebalance_observations",
+      "ROBUSTNESS_SAMPLE_INSUFFICIENT": "fewer than four evaluable chronological equal-duration quarters",
+      "TIME_SEGMENT_ROBUSTNESS_FAIL": "passing_segment_count / 4 < time_segment_robustness_pass_ratio"
     },
     "pass_requires_all": [
       "evaluable",
@@ -71,12 +74,12 @@
       "worst1_abs_net_share <= single_trade_dominance_limit",
       "canonical_cost_multiplier_result_uses_1_0x",
       "cost_stress_1_5x_net_profit_factor >= cost_stress_1_5x_net_profit_factor_min",
-      "deterministic_repro_digest_match"
+      "deterministic_repro_digest_match",
+      "valid_evaluable_rebalance_observation_count >= minimum_rebalance_observations",
+      "all_four_time_segments_evaluable",
+      "time_segment_robustness_pass_ratio >= time_segment_robustness_pass_ratio_min"
     ],
-    "pending_threshold_keys": [
-      "minimum_rebalance_observations",
-      "time_segment_robustness_pass_ratio"
-    ],
+    "pending_threshold_keys": [],
     "primary_decision_metric": "NET_PROFIT_FACTOR",
     "thresholds": {
       "cost_stress_1_5x_net_profit_factor_min": {
@@ -105,9 +108,12 @@
         "value": 0.0
       },
       "minimum_rebalance_observations": {
-        "source": "No distinct canonical rebalance-observation threshold found beyond trade_count; evaluation remains blocked for this gate until operator resolves",
-        "status": "REQUIRED_BUT_THRESHOLD_PENDING_OPERATOR_GOVERNANCE",
-        "value": null
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "semantics": "Count only valid evaluable rebalance timestamps in the full DEVELOPMENT evaluation. Do not count trades, bars, instruments, orders, discarded rebalances, or invalid cross-sections. Existing stricter sample gates remain additionally effective.",
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION minimum_rebalance_observations=30; ex ante; not calibrated from development/treatment/holdout/evaluation results",
+        "status": "CONFIGURED",
+        "value": 30
       },
       "minimum_trade_count": {
         "source": "economic_validity_policy_v1 minimum_trade_count",
@@ -125,9 +131,12 @@
         "value": 0.5
       },
       "time_segment_robustness_pass_ratio": {
-        "source": "economic_validity_policy_v1 walk_forward/oos ratios exist for full STEP29M suite but are not yet bound as admission companions for this definition-only program",
-        "status": "REQUIRED_BUT_THRESHOLD_PENDING_OPERATOR_GOVERNANCE",
-        "value": null
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "semantics": "pass_ratio = passing_segment_count / 4 under TIME_SEGMENT_DEFINITION_ID=CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1; threshold 0.5 requires at least two PASS segments; all four segments must be evaluable; non-evaluable segments are not PASS and are not removed from the denominator",
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION binding 0.5 to economic_validity_policy_v1 walk-forward/OOS pass-ratio convention as operator governance; ex ante; not result-calibrated; not a silent generic_walk_forward_v1 binding",
+        "status": "CONFIGURED",
+        "value": 0.5
       }
     }
   },
@@ -272,7 +281,7 @@
   "strategy_version": "v1",
   "target_phenomenon": "PERSISTENCE_OF_RELATIVE_RETURNS_ACROSS_NON_BTC_LINEAR_USDT_FUTURES",
   "terminal_decision_semantics": {
-    "blocked_class": "EVALUATION_BLOCKED_PENDING_THRESHOLD_GOVERNANCE",
+    "blocked_class": "EVALUATION_UNAUTHORIZED_AWAITING_SEPARATE_OPERATOR_GO",
     "definition_only_does_not_create_economic_evidence": true,
     "fail_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL",
     "pass_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS"
@@ -286,5 +295,36 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED"
+  "verdict": "DEFINITION_ONLY_PREREGISTERED_THRESHOLDS_AND_TIME_SEGMENTS_COMPLETE_AWAITING_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION",
+  "time_segment_definition": {
+    "all_segments_must_be_evaluable": true,
+    "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+    "bar_frequency": "PT1H",
+    "boundary_rule": "Partition the full DEVELOPMENT evaluation period into exactly four chronological, disjoint, contiguous equal-duration segments computed only from period start, end_exclusive, and total duration; round boundaries to the canonical PT1H bar grid of the bound DEVELOPMENT dataset.",
+    "denominator": 4,
+    "development_period": {
+      "end_exclusive": "2023-08-16T05:55:00Z",
+      "holdout_excluded": true,
+      "period_adjustment_forbidden": true,
+      "source": "seal_registry_published_common_panel_bounds_bound_by_preregistration_evidence",
+      "start": "2022-06-01T03:55:17Z"
+    },
+    "expected_minimum_passing_segments": 2,
+    "generic_walk_forward_v1_bound": false,
+    "illustrative_60_20_20_partition_is_not_authority": true,
+    "illustrative_60_20_20_partition_mutation_forbidden": true,
+    "non_evaluable_segments_are_pass": false,
+    "non_evaluable_segments_removed_from_denominator": false,
+    "not_result_calibrated": true,
+    "remainder_rule": "If total canonical bars are not divisible by four, assign remaining bars deterministically to the earliest segments in chronological order, at most one extra bar each. Every DEVELOPMENT bar timestamp belongs to exactly one segment.",
+    "segment_ids": [
+      "TIME_SEGMENT_Q1",
+      "TIME_SEGMENT_Q2",
+      "TIME_SEGMENT_Q3",
+      "TIME_SEGMENT_Q4"
+    ],
+    "segment_pass_semantics": "A segment is PASS only if all already-preregistered economic, cost, sample, drawdown, and net-profit-factor gates applicable to treatment-vs-control admission are satisfied within that segment using the same canonical measurement semantics as the full DEVELOPMENT evaluation. No cross-segment compensation. No separate segment-specific thresholds.",
+    "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+    "total_time_segments": 4
+  }
 }
