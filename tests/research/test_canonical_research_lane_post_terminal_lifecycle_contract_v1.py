@@ -268,14 +268,18 @@ def test_migration_deferred_and_production_lanes_untouched() -> None:
     )
     entry_payload = json.loads(entry.read_text(encoding="utf-8"))
     exit_payload = json.loads(exit_eff.read_text(encoding="utf-8"))
-    assert entry_payload["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert entry_payload["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
     assert entry_payload["lifecycle_contract_id"] == CONTRACT_ID
     assert entry_payload["lane_auto_closed"] is False
-    assert exit_payload["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert entry_payload["explicit_waiting_decision"] is True
+    assert entry_payload["explicit_closeout_decision"] is False
+    assert exit_payload["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
     assert exit_payload["lifecycle_contract_id"] == CONTRACT_ID
     assert exit_payload["lane_auto_closed"] is False
+    assert exit_payload["explicit_waiting_decision"] is True
+    assert exit_payload["explicit_closeout_decision"] is False
     assert exit_payload["entry_eligibility_lane_status"] == (
-        "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+        "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
     )
     assert "CLOSED_NO_OPEN_CANDIDATES" not in json.dumps(exit_payload)
     assert contract["migration_deferred"].get("entry_eligibility_migrated") is True
