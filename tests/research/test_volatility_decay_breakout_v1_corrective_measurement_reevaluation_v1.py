@@ -18,7 +18,7 @@ from src.research.volatility_decay_breakout_v1_development_evaluation_v1.binding
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constants_v1 import (
     BASELINE_ID,
-    CORRECTIVE_AUTHORIZE_TOKEN,
+    CORRECTIVE_AUTHORIZE_GO_TOKEN,
     CORRECTIVE_EVIDENCE_REL_PATH,
     DATASET_ID,
     ENTRY_POINT_BINDING_REL_PATH,
@@ -159,7 +159,7 @@ def test_corrective_auth_rejects_wrong_token() -> None:
         REPO, authorize_token="WRONG_TOKEN"
     )
     assert decision.authorized is False
-    assert "CORRECTIVE_AUTHORIZE_TOKEN_MISMATCH" in decision.reason_codes
+    assert "CORRECTIVE_AUTHORIZE_GO_TOKEN_MISMATCH" in decision.reason_codes
 
 
 def test_corrective_auth_rejects_when_development_counters_not_one(
@@ -191,7 +191,7 @@ def test_corrective_auth_rejects_when_development_counters_not_one(
         str(Path("config/research") / binding_src.name),
     )
     decision = resolve_corrective_measurement_reevaluation_authorization_v1(
-        tmp_path, authorize_token=CORRECTIVE_AUTHORIZE_TOKEN
+        tmp_path, authorize_token=CORRECTIVE_AUTHORIZE_GO_TOKEN
     )
     assert decision.authorized is False
     assert "DEVELOPMENT_COUNTERS_NOT_PRESERVED_AT_ONE" in decision.reason_codes
@@ -199,7 +199,7 @@ def test_corrective_auth_rejects_when_development_counters_not_one(
 
 def test_corrective_auth_rejects_when_slot_exhausted_on_head() -> None:
     decision = resolve_corrective_measurement_reevaluation_authorization_v1(
-        REPO, authorize_token=CORRECTIVE_AUTHORIZE_TOKEN
+        REPO, authorize_token=CORRECTIVE_AUTHORIZE_GO_TOKEN
     )
     assert decision.authorized is False
     assert "CORRECTIVE_REEVALUATION_LIMIT_EXHAUSTED" in decision.reason_codes

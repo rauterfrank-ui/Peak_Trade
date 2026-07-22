@@ -83,7 +83,7 @@ LIFECYCLE_AUTHORITY_REL_PATH = "config/research/volatility_regime_hypothesis_bac
 PROGRAM_REL_PATH = "config/research/volatility_regime_research_program_v1.json"
 EVIDENCE_REL_PATH = "docs/evidence/evaluate_volatility_decay_breakout_development_v1/"
 # Bounded corrective measurement reevaluation (distinct from development_run_count).
-CORRECTIVE_AUTHORIZE_TOKEN = "VOLATILITY_DECAY_BREAKOUT_CORRECTIVE_MEASUREMENT_REEVALUATION_V1"
+CORRECTIVE_AUTHORIZE_GO_TOKEN = "VOLATILITY_DECAY_BREAKOUT_CORRECTIVE_MEASUREMENT_REEVALUATION_V1"
 CORRECTIVE_MEASUREMENT_REEVALUATION_LIMIT = 1
 CORRECTIVE_EVIDENCE_REL_PATH = (
     "docs/evidence/evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_v1/"

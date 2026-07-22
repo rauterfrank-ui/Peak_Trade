@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constants_v1 import (
-    CORRECTIVE_AUTHORIZE_TOKEN,
+    CORRECTIVE_AUTHORIZE_GO_TOKEN,
     CORRECTIVE_MEASUREMENT_REEVALUATION_LIMIT,
     ENTRY_POINT_BINDING_REL_PATH,
     HYPOTHESIS_ID,
@@ -131,9 +131,9 @@ def resolve_corrective_measurement_reevaluation_authorization_v1(
 ) -> CorrectiveAuthorizationDecisionV1:
     """Authorize exactly one corrective measurement reevaluation (fail-closed)."""
     reasons: list[str] = []
-    token_ok = authorize_token == CORRECTIVE_AUTHORIZE_TOKEN
-    if not token_ok:
-        reasons.append("CORRECTIVE_AUTHORIZE_TOKEN_MISMATCH")
+    authorize_ok = authorize_token == CORRECTIVE_AUTHORIZE_GO_TOKEN
+    if not authorize_ok:
+        reasons.append("CORRECTIVE_AUTHORIZE_GO_TOKEN_MISMATCH")
 
     contract = _load(repo_root, MEASUREMENT_CONTRACT_REL_PATH)
     program = _load(repo_root, PROGRAM_REL_PATH)
@@ -207,7 +207,7 @@ def resolve_corrective_measurement_reevaluation_authorization_v1(
         reasons.append("LIVE_AUTHORIZED_TRUE")
 
     authorized = (
-        token_ok
+        authorize_ok
         and contract_auth
         and program_auth
         and binding_auth
@@ -222,7 +222,7 @@ def resolve_corrective_measurement_reevaluation_authorization_v1(
         reasons = ()
     return CorrectiveAuthorizationDecisionV1(
         authorized=authorized,
-        authorize_token_valid=token_ok,
+        authorize_token_valid=authorize_ok,
         contract_corrective_authorized=contract_auth,
         program_corrective_authorized=program_auth,
         binding_corrective_authorized=binding_auth,

@@ -28,7 +28,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constants_v1 import (  # noqa: E402
-    CORRECTIVE_AUTHORIZE_TOKEN,
+    CORRECTIVE_AUTHORIZE_GO_TOKEN,
     CORRECTIVE_EVIDENCE_REL_PATH,
     EVIDENCE_REL_PATH,
     HYPOTHESIS_ID,
@@ -73,7 +73,7 @@ def main(argv: list[str] | None = None) -> int:
         "--authorize-corrective-measurement-reevaluation",
         default="",
         help=(
-            f"Must equal {CORRECTIVE_AUTHORIZE_TOKEN}; required for --mode corrective-reevaluate."
+            f"Must equal {CORRECTIVE_AUTHORIZE_GO_TOKEN}; required for --mode corrective-reevaluate."
         ),
     )
     parser.add_argument(
