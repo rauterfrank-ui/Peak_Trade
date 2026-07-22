@@ -20,7 +20,7 @@ DataFrame as an alignment gap (via `aligned.isna().any().any()` + `dropna()`).
 On the sealed DEVELOPMENT archive:
 
 - timestamp intersection length equals each member length (no missing timestamps)
-- required OHLCV columns (`open/high/low/close/volume`) have **zero** NaNs on the grid
+- required OHLCV columns (`open&#47;high&#47;low&#47;close&#47;volume`) have **zero** NaNs on the grid
 - auxiliary column `volatility_estimate` contains warmup NaNs (46–59 rows)
 
 Therefore the fail-closed exit was caused by **auxiliary-column warmup NaNs**, not by
