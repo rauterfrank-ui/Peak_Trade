@@ -24,18 +24,18 @@ from src.research.volatility_expansion_pullback_continuation_v1_development_eval
 REPO = Path(__file__).resolve().parents[2]
 
 
-def test_entry_point_productively_bound_slot_unused() -> None:
+def test_entry_point_productively_bound_slot_consumed_no_retry() -> None:
     binding = load_and_validate_entry_point_binding(REPO)
     assert binding["strategy_identity"] == STRATEGY_IDENTITY
     assert binding["dataset_binding"]["dataset_id"] == DATASET_ID
     assert binding["dataset_binding"]["dataset_class"] == "DEVELOPMENT_ONLY"
     assert binding["holdout_forbidden"] is True
-    assert binding["development_run_count"] == 0
-    assert binding["runner_start_count"] == 0
+    assert binding["development_run_count"] == 1
+    assert binding["runner_start_count"] == 1
     assert binding["development_evaluation_executed"] is False
     assert binding["productive_pnl_evaluator_duplicated"] is False
     assert (REPO / PRODUCTIVE_PNL_EVALUATOR_REL_PATH).is_file()
-    assert binding["status"] == "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED"
+    assert binding["status"] == "RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
 
 
 def test_preflight_dry_validate_do_not_consume_slot() -> None:
@@ -50,4 +50,4 @@ def test_preflight_dry_validate_do_not_consume_slot() -> None:
     report = validate_repo_entry_point(REPO)
     assert report["valid"] is True
     assert report["evaluation_executed"] is False
-    assert report["run_counters"]["contract_development_run_count"] == 0
+    assert report["run_counters"]["contract_development_run_count"] == 1

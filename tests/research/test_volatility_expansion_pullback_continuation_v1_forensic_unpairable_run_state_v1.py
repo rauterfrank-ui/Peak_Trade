@@ -124,8 +124,8 @@ def _synthetic_agld_geometry_panel() -> tuple[InstrumentPanelSeriesV1, int]:
     return series, entry_i
 
 
-def test_baseline_declarative_pairing_fail_closed_agld_end_of_series_geometry() -> None:
-    """Documents PRODUCTIVE_EXIT_PAIRING_DEFECT: late SHORT entry, no EOI/EOP close."""
+def test_baseline_declarative_pairing_eoi_closes_agld_end_of_series_geometry() -> None:
+    """Canonical EOI pairs late SHORT entry when TIME_EXIT is unreachable (no retry)."""
     series, entry_i = _synthetic_agld_geometry_panel()
     n = len(series.bars)
     lag = int(SIGNAL_LAG_BARS_V1)
@@ -145,14 +145,18 @@ def test_baseline_declarative_pairing_fail_closed_agld_end_of_series_geometry() 
         entry_sides=sides,
         entry_event_mask=mask,
     )
-    with pytest.raises(ValueError, match=r"UNPAIRABLE_ENTRY_NO_EXIT:.*:\d+$") as excinfo:
-        evaluate_arm_productive_pnl_v1(
-            panel_series=[series],
-            arm=arm,
-            effective_cost=_effective_cost(),
-        )
-    assert f":{entry_i}" in str(excinfo.value)
-    assert FORENSIC_INSTRUMENT_ID in str(excinfo.value)
+    result = evaluate_arm_productive_pnl_v1(
+        panel_series=[series],
+        arm=arm,
+        effective_cost=_effective_cost(),
+    )
+    assert result.trade_count == 1
+    tr = result.trades[0]
+    assert tr.exit_reason == "END_OF_INSTRUMENT_LIQUIDATION"
+    assert tr.exit_index == n - 1
+    assert tr.entry_index == fill_i
+    assert tr.side == "short"
+    assert tr.instrument_id == FORENSIC_INSTRUMENT_ID
 
 
 class _RaisingBoundary(FakeExecutionBoundaryV1):
@@ -205,7 +209,7 @@ def _panel_for_boundary() -> PanelLoadResultV1:
 
 
 def test_technical_fail_after_runner_start_persists_durable_slot_claim(tmp_path: Path) -> None:
-    """RUN_STATE_ACCOUNTING: runner_started=true + durable claim even if metrics absent."""
+    """CONSUMED_NO_RETRY: exhausted SSOT slot rejects any further authorized evaluate."""
     panel = _panel_for_boundary()
     n = len(panel.timestamps_utc)
     arm = ArmEventSeriesV1(
@@ -261,28 +265,17 @@ def test_technical_fail_after_runner_start_persists_durable_slot_claim(tmp_path:
         ),
         wiring_handoff=handoff,
     )
-    result = run_authorized_development_evaluation_v1(
-        REPO,
-        authorize_token=HYPOTHESIS_ID,
-        output_dir=tmp_path,
-        execution_boundary=boundary,
-        authorization_decision=_authorized_decision(),
-        persist_evidence=True,
-    )
-    assert result.status == "FAIL_CLOSED"
-    assert result.runner_started is True
-    assert result.evaluation_executed is False
-    assert result.development_dataset_loaded is True
-    assert result.reason is not None
-    assert "UNPAIRABLE_ENTRY_NO_EXIT" in result.reason
-    assert FORENSIC_INSTRUMENT_ID in result.reason
-    assert str(FORENSIC_ENTRY_INDEX) in result.reason
-    assert slot_already_consumed(tmp_path) is True
-    assert (tmp_path / "summary.json").is_file()
-    assert (tmp_path / "run_slot_claim.json").is_file()
-    assert (tmp_path / "registry.json").is_file()
-    with pytest.raises(Exception, match="RETRY_OR_SLOT_REUSE_REJECTED"):
-        assert_no_slot_reuse(tmp_path)
+    with pytest.raises(Exception, match="RUN_LIMIT_EXHAUSTED|RETRY_OR_SLOT_REUSE_REJECTED"):
+        run_authorized_development_evaluation_v1(
+            REPO,
+            authorize_token=HYPOTHESIS_ID,
+            output_dir=tmp_path,
+            execution_boundary=boundary,
+            authorization_decision=_authorized_decision(),
+            persist_evidence=True,
+        )
+    assert slot_already_consumed(tmp_path) is False
+    assert boundary.backtest_calls == 0
 
 
 def test_forensic_index_constants_match_observed_incident() -> None:
@@ -294,3 +287,29 @@ def test_forensic_index_constants_match_observed_incident() -> None:
     fill_i = FORENSIC_ENTRY_INDEX + lag
     assert FORENSIC_SERIES_LENGTH - (fill_i + 1) == 9
     assert int(EXIT_PARAMS_DECLARATIVE_V1["time_exit_max_bars"]) == 48
+
+
+def test_historical_vepc_slot_consumed_no_retry_governance_recorded() -> None:
+    """Historical VEPC slot remains CONSUMED_NO_RETRY; no eval retry authorized."""
+    import json
+
+    decision = (
+        REPO / "docs/governance/"
+        "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_HISTORICAL_SLOT_"
+        "CONSUMED_NO_RETRY_AND_BASELINE_END_OF_SERIES_PAIRING_V1.md"
+    )
+    text = decision.read_text(encoding="utf-8")
+    assert "CONSUMED_NO_RETRY" in text
+    assert "NO Development evaluation re-execution" in text
+    binding = json.loads(
+        (
+            REPO / "config/research/"
+            "volatility_expansion_pullback_continuation_v1_development_evaluation_"
+            "entry_point_binding_v1.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert binding["development_run_count"] == 1
+    assert binding["runner_start_count"] == 1
+    assert binding["status"] == "RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
+    assert binding["development_evaluation_executed"] is False
+    assert binding["retry_forbidden"] is True

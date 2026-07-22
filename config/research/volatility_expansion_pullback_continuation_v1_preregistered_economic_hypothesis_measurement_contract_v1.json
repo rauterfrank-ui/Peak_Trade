@@ -73,7 +73,7 @@
       "rearm_requires_new_full_expansion_state_of_min_4_bars": true,
       "reset_on_pullback_invalidation_without_continuation": true,
       "reset_on_successful_entry": true,
-      "semantics_note": "Edge claim is continuation after a limited pullback inside a confirmed expansion regime — not VCEB joint contraction->expansion breakout, not VEP persistence release, not decay.",
+      "semantics_note": "Edge claim is continuation after a limited pullback inside a confirmed expansion regime \u2014 not VCEB joint contraction->expansion breakout, not VEP persistence release, not decay.",
       "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
       "vcb_style_multi_bar_release_window_forbidden": true,
       "vceb_joint_contraction_expansion_break_forbidden": true
@@ -144,7 +144,7 @@
     "seed_policy": "frozen_when_stochastic_components_absent",
     "treatment_arm": "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
   },
-  "contract_digest": "ace1944f5b81065d52ce5b650a52e4de3c6f4817b54648b3a0c758fb2f2355eb",
+  "contract_digest": "e4bd724549670e434aa95c4b3703ceaa012bda777b005f08ae11441b7ecea03a",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -167,7 +167,7 @@
   "development_evaluation_authorized": true,
   "development_evaluation_executed": false,
   "development_evaluation_runs_allowed": 1,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "directional_form": {
     "double_play_remains_sole_authority": true,
     "hypothesis_emits_admission_and_direction_intent_only": true,
@@ -299,7 +299,7 @@
       }
     }
   },
-  "economic_hypothesis": "On the DEVELOPMENT_ONLY non-BTC linear USDT futures panel, a confirmed own-instrument realized-volatility expansion state (4 consecutive bars with RV24 percentile >= 0.65) followed by a directional impulse and then a bounded pullback (15%-50% of impulse range within <=8 bars) yields a verifiable edge only when price resumes in the impulse direction. After canonical fees and slippage, this expansion->pullback->continuation admission is hypothesized to produce a more robust economic expectation than the identical unconditional 20-bar channel-breakout baseline. The edge is continuation after limited pullback inside expansion — not VCEB joint contraction->expansion breakout, not VEP persistence release, and not a decay signal.",
+  "economic_hypothesis": "On the DEVELOPMENT_ONLY non-BTC linear USDT futures panel, a confirmed own-instrument realized-volatility expansion state (4 consecutive bars with RV24 percentile >= 0.65) followed by a directional impulse and then a bounded pullback (15%-50% of impulse range within <=8 bars) yields a verifiable edge only when price resumes in the impulse direction. After canonical fees and slippage, this expansion->pullback->continuation admission is hypothesized to produce a more robust economic expectation than the identical unconditional 20-bar channel-breakout baseline. The edge is continuation after limited pullback inside expansion \u2014 not VCEB joint contraction->expansion breakout, not VEP persistence release, and not a decay signal.",
   "evaluation_authorized": false,
   "evaluation_run_count_authorized": 1,
   "event_sufficiency_gates": {
@@ -397,6 +397,7 @@
     "live_or_authenticated_account_endpoints",
     "non_development_only_datasets"
   ],
+  "governance_note": "VEPC v1 historical development slot CONSUMED_NO_RETRY after fail-closed UNPAIRABLE_ENTRY_NO_EXIT on baseline declarative pairing (AGLD/10575). No retry. No evaluation re-execution. Baseline EOI/EOP pairing aligned to canonical productive ledger policy in a separate non-evaluating scope. LIVE/ORDERS/HOLDOUT closed.",
   "holdout_authorized": false,
   "holdout_based_parameter_selection_forbidden": true,
   "holdout_forbidden": true,
@@ -561,8 +562,8 @@
     "retry_forbidden": true,
     "second_development_run_forbidden": true
   },
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "live_authorized": false,

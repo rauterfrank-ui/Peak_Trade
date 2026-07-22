@@ -2,12 +2,15 @@
 
 ## Status
 
-`EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED`
+`RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`
 
-Canonical entry point is productively bound to the strategy producer, shared channel core,
-and reused productive PnL evaluator. DEVELOPMENT_ONLY dataset is bound. Holdout is
-blocked. Run-limit/slot guards are enforceable before runner start. No development
-evaluation has been executed; slot remains unused (`DEVELOPMENT_RUN_COUNT=0`).
+Historical development slot status: `CONSUMED_NO_RETRY`.
+Accounting defect does not authorize retry. No evaluation re-execution.
+Baseline declarative EOI/EOP pairing is aligned to the canonical productive ledger
+policy in a separate non-evaluating governance scope.
+
+Canonical decision record:
+`docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_HISTORICAL_SLOT_CONSUMED_NO_RETRY_AND_BASELINE_END_OF_SERIES_PAIRING_V1.md`
 
 ## Canonical entry point
 
@@ -20,12 +23,13 @@ evaluation has been executed; slot remains unused (`DEVELOPMENT_RUN_COUNT=0`).
 ## Safety
 
 - `DEVELOPMENT_EVALUATION_EXECUTED=false`
-- `DEVELOPMENT_RUN_COUNT=0`
-- `DEVELOPMENT_SLOT_CONSUMED=false`
+- `DEVELOPMENT_RUN_COUNT=1`
+- `DEVELOPMENT_SLOT_CONSUMED=true`
+- `HISTORICAL_VEPC_SLOT_STATUS=CONSUMED_NO_RETRY`
+- `EVALUATION_RETRY_AUTHORIZED=false`
 - `HOLDOUT_ACCESSED=false`
 - `LIVE_AUTHORIZED=false`
 - `ORDERS=false`
 - Productive PnL evaluator reused (not duplicated)
-- Separate operator GO required before any evaluate execution
 
 docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1

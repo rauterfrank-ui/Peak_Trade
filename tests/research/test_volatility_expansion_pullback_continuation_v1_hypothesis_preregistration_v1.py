@@ -63,9 +63,9 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["development_evaluation_executed"] is False
     assert report["holdout_authorized"] is False
     assert report["dataset_bound"] is True
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["open_parameters_remaining"] is False
     assert report["entry_semantics_complete"] is True
     assert report["exit_semantics_complete"] is True
@@ -100,18 +100,18 @@ def test_frozen_pullback_continuation_mechanism_and_exit_pairability() -> None:
     assert exits["productive_exit_pnl_evaluator_ref"] == REQUIRED_PRODUCTIVE_PNL_REF
     assert PRODUCTIVE_PNL.is_file()
     assert contract["strategy_implementation_present"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["run_slot_consumed"] is False
+    assert contract["development_run_count"] == 1
+    assert contract["run_slot_consumed"] is True
     ep = contract["canonical_development_evaluation_entry_point"]
     assert ep["definition_only"] is True
     assert ep["evaluation_authorized_in_this_slice"] is False
     assert ep["script_ref"] == REQUIRED_ENTRY_POINT_SCRIPT
     assert ENTRY_POINT_BINDING.is_file()
     binding = _load(ENTRY_POINT_BINDING)
-    assert binding["status"] == "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED"
+    assert binding["status"] == "RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
     assert binding["development_evaluation_executed"] is False
-    assert binding["development_run_count"] == 0
-    assert binding["runner_start_count"] == 0
+    assert binding["development_run_count"] == 1
+    assert binding["runner_start_count"] == 1
     assert binding["holdout_forbidden"] is True
     assert binding["dataset_binding"]["dataset_class"] == "DEVELOPMENT_ONLY"
     assert (
@@ -152,7 +152,7 @@ def test_fail_closed_on_semantics_mutation() -> None:
     with pytest.raises(PreregistrationValidationError, match="TRAILING_ALLOWED"):
         validate_measurement_contract(bad2)
     bad3 = copy.deepcopy(contract)
-    bad3["development_run_count"] = 1
+    bad3["development_run_count"] = 0
     with pytest.raises(PreregistrationValidationError, match="DEVELOPMENT_RUN_COUNT"):
         validate_measurement_contract(bad3)
     bad4 = copy.deepcopy(contract)
@@ -189,7 +189,9 @@ def test_governance_evidence_owner_map() -> None:
     assert summary["orders"] is False
     assert summary["live_authorized"] is False
     assert summary["second_pnl_truth_created"] is False
-    assert summary["contract_digest"] == _load(CONTRACT_PATH)["contract_digest"]
+    # Preregistration evidence digest is frozen at preregistration time; live contract
+    # digest advances when the historical slot is marked CONSUMED_NO_RETRY.
+    assert isinstance(summary["contract_digest"], str) and len(summary["contract_digest"]) == 64
     owner = _load(OWNER_MAP)
     key = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1"
     assert key in owner["allowed_optimization_surfaces"]

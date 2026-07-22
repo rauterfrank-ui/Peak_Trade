@@ -83,13 +83,14 @@ def resolve_measurement_contract(repo_root: Path) -> dict[str, Any]:
         tsd.get("time_segment_definition_id") == TIME_SEGMENT_DEFINITION_ID,
         "TIME_SEGMENT_DEFINITION_MISMATCH",
     )
-    # Pre-execution executable-path state: slot unused; evaluation not executed.
+    # Historical slot CONSUMED_NO_RETRY; evaluation not re-executed.
     _require(
         contract.get("development_evaluation_authorized") is True,
         "DEV_EVAL_AUTH_FALSE_ON_CONTRACT",
     )
-    _require(contract.get("development_run_count") == 0, "DEV_RUN_COUNT_NOT_ZERO")
-    _require(contract.get("runner_start_count") == 0, "RUNNER_START_NOT_ZERO")
+    _require(contract.get("development_run_count") == 1, "DEV_RUN_COUNT_NOT_ONE")
+    _require(contract.get("runner_start_count") == 1, "RUNNER_START_NOT_ONE")
+    _require(contract.get("run_slot_consumed") is True, "RUN_SLOT_NOT_CONSUMED")
     _require(
         contract.get("development_evaluation_executed") is False,
         "DEV_EVAL_EXECUTED_TRUE",
@@ -293,15 +294,18 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         },
         "development_evaluation_authorized": True,
         "development_evaluation_executed": False,
-        "development_run_count": 0,
+        "development_run_count": 1,
         "development_run_limit": 1,
         "economic_gate_open": False,
-        "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+        "entry_point_status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
         "evaluation_authorized": False,
         "evidence_ref": "docs/evidence/evaluate_volatility_expansion_pullback_continuation_development_v1/",
         "frozen_measurement_contract_digest": FROZEN_MEASUREMENT_CONTRACT_DIGEST,
         "frozen_measurement_contract_ref": MEASUREMENT_CONTRACT_REL_PATH,
-        "governance_ref": GOVERNANCE_REL_PATH,
+        "governance_ref": (
+            "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_"
+            "HISTORICAL_SLOT_CONSUMED_NO_RETRY_AND_BASELINE_END_OF_SERIES_PAIRING_V1.md"
+        ),
         "holdout_authorized": False,
         "holdout_forbidden": True,
         "hypothesis_id": contract["hypothesis_id"],
@@ -323,7 +327,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
             "vol_state": VOL_STATE_REL_PATH.replace("/", ".").removesuffix(".py"),
         },
         "runner_present": True,
-        "runner_start_count": 0,
+        "runner_start_count": 1,
         "runtime_effect": "NONE",
         "runtime_policy": {
             "capital_activated": False,
@@ -342,15 +346,15 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "shared_channel_core_ref": SHARED_CHANNEL_CORE_REL_PATH,
         "signal_family": SIGNAL_FAMILY,
         "slice_class": "STRATEGY_IMPLEMENTATION_PLUS_UNAUTHORIZED_DEVELOPMENT_ENTRY_POINT",
-        "status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+        "status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
         "strategy_id": STRATEGY_ID,
         "strategy_identity": STRATEGY_IDENTITY,
         "strategy_params_digest": strategy_params_digest,
         "strategy_version": STRATEGY_VERSION,
         "time_segment_definition_id": TIME_SEGMENT_DEFINITION_ID,
         "verdict": (
-            "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_"
-            "FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
+            "HISTORICAL_DEVELOPMENT_SLOT_CONSUMED_NO_RETRY_AWAITING_SEPARATE_OPERATOR_GO_"
+            "FOR_SUCCESSOR_OR_INFRASTRUCTURE_SCOPE"
         ),
     }
 

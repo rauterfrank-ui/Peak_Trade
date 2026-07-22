@@ -8,8 +8,9 @@ Open volatility-regime research backlog under `VOLATILITY_REGIME_RESEARCH_PROGRA
 
 - Preregistered hypothesis: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
 - Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
-- Status: `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED`
-- `DEVELOPMENT_RUN_COUNT=0`, `DEVELOPMENT_SLOT_CONSUMED=false`
+- Status: `DEVELOPMENT_SLOT_CONSUMED_NO_RETRY`
+- `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`
+- Historical slot: `CONSUMED_NO_RETRY` (no retry; no evaluation re-execution)
 - Predecessor terminal: `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`
   (`FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`)
 
@@ -23,12 +24,13 @@ Open volatility-regime research backlog under `VOLATILITY_REGIME_RESEARCH_PROGRA
 
 ## Inventory
 
-- preregistered=1 (`VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`, implementation present, run_count=0, slot not consumed)
+- preregistered=1 (`VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`, slot consumed, no retry)
 - terminal=5 (all `FAIL_CLOSED_NO_RETRY`; retry forbidden)
 - open unpreregistered candidates=0
 
 ## Next step
 
-Await separate operator GO for bounded Development evaluation execution.
+Separate operator GO required for any successor hypothesis or further infrastructure scope.
+No VEPC evaluation retry.
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1

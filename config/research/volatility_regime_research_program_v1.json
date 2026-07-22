@@ -55,7 +55,7 @@
   "corrective_measurement_reevaluation_limit": 1,
   "development_evaluation_authorized": true,
   "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "evaluation_authorized": false,
   "evaluation_run_count": 0,
@@ -85,7 +85,7 @@
     "NO_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_RETRY",
     "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE"
   ],
-  "governance_note": "VEPC v1 definition-only preregistration after terminal VCEB FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT. No Development evaluation. No VCEB/VDBX/VDB/VEP/VCB retry. LIVE/ORDERS/HOLDOUT closed.",
+  "governance_note": "VEPC v1 historical development slot CONSUMED_NO_RETRY. No retry. Baseline EOI/EOP pairing governance recorded separately. LIVE/ORDERS/HOLDOUT closed.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
@@ -203,8 +203,8 @@
   },
   "promotion_authorized": false,
   "retry_allowed": false,
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_authorized": false,
   "runtime_effect": "NONE",
   "runtime_policy": {
@@ -230,5 +230,5 @@
   "strategy_implementation_present": true,
   "strategy_version": "v1",
   "target_phenomenon": "VOLATILITY_EXPANSION_THEN_LIMITED_PULLBACK_CONTINUATION",
-  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_VEPC_V1_DEFINITION_ONLY_PREREGISTERED_AWAITING_STRATEGY_IMPLEMENTATION_GO"
+  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_VEPC_V1_HISTORICAL_SLOT_CONSUMED_NO_RETRY"
 }
