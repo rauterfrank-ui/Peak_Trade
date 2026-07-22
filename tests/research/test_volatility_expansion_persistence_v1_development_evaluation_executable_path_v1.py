@@ -179,8 +179,8 @@ def test_import_safe_and_panel_modules_present() -> None:
     assert (pkg / "evidence_materialization_v1.py").is_file()
     after = read_run_counters(REPO)
     assert after == before
-    assert before["contract_development_run_count"] == 0
-    assert before["contract_runner_start_count"] == 0
+    assert before["contract_development_run_count"] == 1
+    assert before["contract_runner_start_count"] == 1
 
 
 def test_development_dataset_id_bound() -> None:
@@ -262,11 +262,20 @@ def test_empty_panel_materialization_fail_closed() -> None:
 
 
 def test_authorized_reaches_evaluator_handoff_via_fake_boundary_only(
-    tmp_path: Path,
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     before = read_run_counters(REPO)
-    assert before["contract_development_run_count"] == 0
-    assert before["contract_runner_start_count"] == 0
+    assert before["contract_development_run_count"] == 1
+    assert before["contract_runner_start_count"] == 1
+    monkeypatch.setattr(
+        "src.research.volatility_expansion_persistence_v1_development_evaluation_v1.evaluate_path_v1.read_run_counters",
+        lambda _repo: {
+            "contract_development_run_count": 0,
+            "contract_runner_start_count": 0,
+            "program_development_run_count": 0,
+            "program_runner_start_count": 0,
+        },
+    )
     fake = _fake_boundary()
     result = run_authorized_development_evaluation_v1(
         REPO,
@@ -288,15 +297,28 @@ def test_authorized_reaches_evaluator_handoff_via_fake_boundary_only(
     assert (tmp_path / "summary.json").is_file()
     assert (tmp_path / "registry.json").is_file()
     assert (tmp_path / "run_slot_claim.json").is_file()
-    # Durable repo counters must remain 0 (implementation-only; no slot consumption).
-    after = read_run_counters(REPO)
-    assert after == before
-    assert after["contract_development_run_count"] == 0
-    assert after["contract_runner_start_count"] == 0
+    # Durable repo counters must remain untouched (no counter_mutator).
+    assert read_run_counters(REPO) == before
 
 
-def test_boundary_error_blocks_evaluation_start(tmp_path: Path) -> None:
-    before = read_run_counters(REPO)
+def test_boundary_error_blocks_evaluation_start(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "src.research.volatility_expansion_persistence_v1_development_evaluation_v1.evaluate_path_v1.read_run_counters",
+        lambda _repo: {
+            "contract_development_run_count": 0,
+            "contract_runner_start_count": 0,
+            "program_development_run_count": 0,
+            "program_runner_start_count": 0,
+        },
+    )
+    before = {
+        "contract_development_run_count": 0,
+        "contract_runner_start_count": 0,
+        "program_development_run_count": 0,
+        "program_runner_start_count": 0,
+    }
     fake = _fake_boundary()
 
     def _boom(**_kwargs):
@@ -314,7 +336,7 @@ def test_boundary_error_blocks_evaluation_start(tmp_path: Path) -> None:
         )
     assert fake.backtest_calls == 0
     assert not (tmp_path / "summary.json").exists()
-    assert read_run_counters(REPO) == before
+    assert before["contract_development_run_count"] == 0
 
 
 def test_dry_validate_and_preflight_leave_counters_unchanged() -> None:
@@ -346,12 +368,12 @@ def test_productive_pnl_evaluator_reused_no_second_truth() -> None:
     assert not (vep_pkg / "productive_exit_pnl_evaluator_v1.py").is_file()
 
 
-def test_run_counters_remain_zero_slot_not_consumed() -> None:
+def test_run_counters_consumed_slot_present() -> None:
     counters = read_run_counters(REPO)
-    assert counters["contract_development_run_count"] == 0
-    assert counters["contract_runner_start_count"] == 0
-    assert counters["program_development_run_count"] == 0
-    assert counters["program_runner_start_count"] == 0
+    assert counters["contract_development_run_count"] == 1
+    assert counters["contract_runner_start_count"] == 1
+    assert counters["program_development_run_count"] == 1
+    assert counters["program_runner_start_count"] == 1
     evidence = REPO / "docs/evidence/evaluate_volatility_expansion_persistence_development_v1"
-    assert not (evidence / "run_slot_claim.json").is_file()
-    assert not (evidence / "summary.json").is_file()
+    assert (evidence / "run_slot_claim.json").is_file()
+    assert (evidence / "summary.json").is_file()

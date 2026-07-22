@@ -37,8 +37,8 @@
     "relative_strength_dependency": false
   },
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "evaluation_authorized": false,
   "evaluation_run_count": 0,
@@ -121,8 +121,8 @@
   },
   "promotion_authorized": false,
   "retry_allowed": false,
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_authorized": false,
   "runtime_effect": "NONE",
   "runtime_policy": {
