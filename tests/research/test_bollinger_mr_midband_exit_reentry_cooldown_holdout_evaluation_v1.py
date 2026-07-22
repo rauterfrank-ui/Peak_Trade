@@ -150,9 +150,11 @@ def test_canonical_lifecycle_vocabulary_excludes_invented_awaiting_label() -> No
     entry_bl = _load(
         REPO / "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
     )
-    assert exit_bl["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert exit_bl["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert exit_bl["explicit_closeout_decision"] is True
     assert entry_bl["status"] == REQUIRED_ENTRY_LANE_STATUS
     assert exit_bl["preregistered_hypotheses"] == []
+    assert exit_bl["open_unpreregistered_candidates"] == []
 
 
 def test_go_absent_blocks() -> None:
@@ -406,3 +408,53 @@ def test_evaluate_evidence_dir_present_and_run_count_one() -> None:
     assert summary["orders_sent"] is False
     assert (evaluate / ".holdout_run_consumed").is_file()
     assert (evaluate / ".holdout_runner_started").read_text(encoding="utf-8").strip() == "1"
+
+
+def test_lane_close_does_not_reenable_holdout_authority(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Closed Exit lane still fail-closes holdout structural preflight (no re-run)."""
+    from src.research.bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1 import (
+        structural_preflight_v1 as sp,
+    )
+
+    exit_bl = _load(
+        REPO / "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json"
+    )
+    assert exit_bl["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert exit_bl["explicit_closeout_decision"] is True
+    assert exit_bl["preregistered_hypotheses"] == []
+    monkeypatch.setattr(sp, "git_head_sha", lambda repo: "f" * 40)
+    with pytest.raises(
+        HoldoutPreregistrationError,
+        match=(
+            "EXIT_LANE_STATUS_MISMATCH|PREREGISTERED_SUCCESSOR_COUNT_MUST_BE_1|"
+            "HOLDOUT_V1_RUN_ALREADY_CONSUMED|HOLDOUT_RUN_SLOT|SUCCESSOR_RUN_COUNT"
+        ),
+    ):
+        run_structural_preflight(
+            repo_root=REPO,
+            output_dir=tmp_path,
+            environ=_auth_env("f" * 40),
+            require_authorization=True,
+        )
+
+
+def test_holdout_terminal_evidence_invariants_unchanged_by_lane_closeout() -> None:
+    summary = _load(
+        REPO
+        / "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/summary.json"
+    )
+    assert summary["result_class"] == "FAIL"
+    assert summary["decision"]["reason"] == "NET_PROFIT_FACTOR_NOT_IMPROVED"
+    assert int(summary["holdout_run_count"]) == 1
+    assert int(summary["runner_start_count"]) == 1
+    assert summary["no_retry"] is True
+    assert abs(float(summary["baseline_metrics"]["net_profit_factor"]) - 0.5774036019332512) < 1e-12
+    assert (
+        abs(float(summary["treatment_metrics"]["net_profit_factor"]) - 0.5280135615083571) < 1e-12
+    )
+    contract = _load(CONTRACT_PATH)
+    assert contract["holdout_run_count"] == 1
+    assert contract["status"] == "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
+    assert contract["terminal_holdout_result_class"] == "FAIL"
