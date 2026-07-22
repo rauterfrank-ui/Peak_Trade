@@ -1,3 +1,11 @@
+
+### VEPC v1 definition-only preregistration (post-VCEB terminal)
+
+- Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
+- Status: `DEFINITION_ONLY_PREREGISTERED`
+- `DEVELOPMENT_EVALUATION_EXECUTED=false`, `DEVELOPMENT_RUN_COUNT=0`, `DEVELOPMENT_SLOT_CONSUMED=false`
+- Canonical entry point (definition/binding only): `scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py`
+
 ## Registry-Metadaten
 
 > **Feldklarstellung:** `LAST_VERIFIED_ORIGIN_MAIN` = zuletzt separat post-merge gegen diese Registry verifizierter `origin&#47;main`-Stand. PR-Basis-SHA und Squash-Merge-Commit werden in `_MERGE_COMMIT`- bzw. `_CLOSEOUT_EVIDENCE_REF`-Feldern getrennt geführt; kein erneuter rein selbstreferenzieller SHA-Refresh ist kanonischer Folgeschritt.
