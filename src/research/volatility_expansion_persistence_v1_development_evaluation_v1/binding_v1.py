@@ -83,8 +83,8 @@ def resolve_measurement_contract(repo_root: Path) -> dict[str, Any]:
         tsd.get("time_segment_definition_id") == TIME_SEGMENT_DEFINITION_ID,
         "TIME_SEGMENT_DEFINITION_MISMATCH",
     )
-    # Preregistration already reserves development_evaluation_authorized=true;
-    # execution remains gated by the entry-point binding (kept false in this slice).
+    # Three authority surfaces authorize development evaluation; panel execution remains
+    # a separate operator GO (run counters must still be zero in this authorization slice).
     _require(
         contract.get("development_evaluation_authorized") is True,
         "DEV_EVAL_AUTH_FALSE_ON_CONTRACT",
@@ -265,7 +265,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
             "holdout_forbidden": True,
             "holdout_ids_rejected": sorted(FORBIDDEN_HOLDOUT_IDS),
         },
-        "development_evaluation_authorized": False,
+        "development_evaluation_authorized": True,
         "development_evaluation_executed": False,
         "development_run_count": 0,
         "development_run_limit": 1,
@@ -324,7 +324,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "time_segment_definition_id": TIME_SEGMENT_DEFINITION_ID,
         "verdict": (
             "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_"
-            "FOR_DEVELOPMENT_EVALUATION_AUTHORIZATION"
+            "FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
         ),
     }
 

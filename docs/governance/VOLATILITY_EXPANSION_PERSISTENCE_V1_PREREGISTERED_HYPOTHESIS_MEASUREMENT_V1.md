@@ -57,12 +57,12 @@ confirmation with persistence window; not a parameter repair&#47;retry of
 
 ## Next step
 
-`REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
+`DEVELOPMENT_EVALUATION_AUTHORIZED_AWAITING_BOUNDED_EXECUTION_GO`
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_PERSISTENCE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1
 STATUS: DEFINITION_ONLY_PREREGISTERED
-scope: research, offline-only, non-authorizing, definition-only preregistration
+scope: research, offline-only, authorizing-only, definition-only preregistration
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
