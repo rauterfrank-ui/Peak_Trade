@@ -335,7 +335,7 @@
       ]
     },
     "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; exactly one DEFINITION_ONLY_PREREGISTERED DEVELOPMENT_ONLY V8 candidate after V1/V2 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE, V3 terminal FAIL, V4/V5 terminal INFRASTRUCTURE_FAILURE, V6 terminal FAIL, and V7 terminal INCONCLUSIVE_INFRASTRUCTURE_FAILURE; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders.",
+      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; migrated to POST_TERMINAL_OPERATOR_DECISION_REQUIRED under shared research-lane post-terminal lifecycle contract V1 as sole lane-status authority after V8 DEVELOPMENT TERMINAL_PASS; empty open candidate queue and empty preregistered list; V1-V8 terminal; no auto-close; no SHORT-side parallel hypothesis; no holdout candidate; no evaluation/runtime/orders.",
       "path_prefixes": [
         "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
         "src/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py",
@@ -344,7 +344,7 @@
       ]
     },
     "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1": {
-      "note": "Shared definition-only research-lane post-terminal lifecycle contract; canonical lane-state vocabulary, totality invariant, operator-decision contract, and historical-immutability/live-mirror policy. Does not migrate Entry-Eligibility or Exit-Efficiency backlog SSOTs; no evaluation/runtime/orders.",
+      "note": "Shared definition-only research-lane post-terminal lifecycle contract; canonical lane-state vocabulary, totality invariant, operator-decision contract, and historical-immutability/live-mirror policy. Entry-Eligibility and Exit-Efficiency backlog SSOTs migrate in separate operator-authorized slices; no evaluation/runtime/orders.",
       "path_prefixes": [
         "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
         "src/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.py",

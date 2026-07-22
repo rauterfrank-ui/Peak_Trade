@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import copy
 import json
 from pathlib import Path
+
+import pytest
 
 from src.research.canonical_open_mr_exit_efficiency_hypothesis_backlog_v1 import (
     BACKLOG_REL_PATH,
@@ -19,8 +22,10 @@ from src.research.canonical_open_mr_exit_efficiency_hypothesis_backlog_v1 import
     REQUIRED_V6_MECHANISM_ID,
     REQUIRED_V7_HYPOTHESIS_ID,
     REQUIRED_V8_HYPOTHESIS_ID,
+    BacklogValidationError,
     assert_exactly_one_exit_efficiency_backlog_ssot,
     load_and_validate_repo_backlog,
+    validate_backlog_contract,
 )
 
 REPO = Path(__file__).resolve().parents[2]
@@ -41,6 +46,13 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
 def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
+    assert report["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert report["lifecycle_contract_id"] == (
+        "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1"
+    )
+    assert report["lifecycle_authority"] == (
+        "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
+    )
     assert report["preregistered_count"] == 0
     assert report["terminal_count"] == 8
     assert report["open_unpreregistered_count"] == 0
@@ -85,6 +97,15 @@ def test_one_preregistered_v8_and_v7_terminal_entry_shape() -> None:
     assert backlog["preregistered_hypotheses"] == []
     assert backlog["governance_rules"]["preregistered_count_exact"] == 0
     assert backlog["open_unpreregistered_candidates"] == []
+    assert backlog["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert backlog["lifecycle_authority"] == (
+        "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
+    )
+    assert backlog["explicit_closeout_decision"] is False
+    assert backlog["explicit_waiting_decision"] is False
+    assert backlog["lane_auto_closed"] is False
+    assert backlog["entry_eligibility_lane_status"] == ("POST_TERMINAL_OPERATOR_DECISION_REQUIRED")
+    assert "CLOSED_NO_OPEN_CANDIDATES" not in json.dumps(backlog)
     assert backlog["development_run_count"] == 8
     assert len(backlog["terminal_hypotheses"]) == 8
     by_id = {e["hypothesis_id"]: e for e in backlog["terminal_hypotheses"]}
@@ -196,6 +217,10 @@ def test_governance_doc_mentions_v8_prereg_and_v7_terminal() -> None:
     text = (
         REPO / "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
     ).read_text(encoding="utf-8")
+    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" in text
+    assert "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1" in text
+    assert "OPEN_BACKLOG` is invalid" in text or "OPEN_BACKLOG is invalid" in text
+    assert "CLOSED_NO_OPEN_CANDIDATES" in text  # mentioned as removed/non-canonical
     assert "V6" in text
     assert "TERMINAL_FAIL" in text or "FAIL" in text
     assert "NET_PROFIT_FACTOR_NOT_IMPROVED" in text
@@ -211,3 +236,37 @@ def test_governance_doc_mentions_v8_prereg_and_v7_terminal() -> None:
     assert "V4" in text
     assert "INFRASTRUCTURE_FAILURE" in text or "Infrastructure" in text
     assert "NO_V8" in text or "No V8" in text or "No V8 auto-create" in text
+
+
+def test_rejects_open_backlog_with_empty_inventory() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["status"] = "OPEN_BACKLOG"
+    with pytest.raises(
+        BacklogValidationError, match="STATUS_NOT_POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    ):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_missing_shared_lifecycle_authority() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["lifecycle_authority"] = "LANE_LOCAL_STATUS_AUTHORITY"
+    with pytest.raises(BacklogValidationError, match="LIFECYCLE_AUTHORITY_MISMATCH"):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_auto_close_flag() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["lane_auto_closed"] = True
+    with pytest.raises(BacklogValidationError, match="LANE_AUTO_CLOSED_FORBIDDEN"):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_noncanonical_entry_eligibility_status_label() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["entry_eligibility_lane_status"] = "CLOSED_NO_OPEN_CANDIDATES"
+    with pytest.raises(BacklogValidationError, match="ENTRY_ELIGIBILITY_LANE_STATUS_NOT_CANONICAL"):
+        validate_backlog_contract(bad)

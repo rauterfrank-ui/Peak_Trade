@@ -2,7 +2,9 @@
 
 ## Current SSOT status
 
-- Verdict: `CANONICAL_OPEN_MR_EXIT_EFFICIENCY_BACKLOG_V8_TERMINAL_PASS_AWAITING_OPERATOR_GO_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
+- Lane status: `POST_TERMINAL_OPERATOR_DECISION_REQUIRED` under shared lifecycle contract V1
+- Lifecycle authority (sole): `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
+- Auto-close: forbidden (`lane_auto_closed=false`)
 - Preregistered: none (`preregistered_count_exact=0`)
 - Terminal: V1&#47;V2&#47;V7 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3&#47;V6 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`; V8 `TERMINAL_PASS`
 - V7 remains terminal unreopened: `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`; `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
@@ -11,12 +13,12 @@
 - V8 panel digest: `4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca`
 - Development run count: `8`
 - No V8&#47;V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7&#47;V8 reopen. No V9 auto-create. No holdout after PASS. No runtime promotion from DEVELOPMENT PASS.
-- `NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
+- `NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION` (GO alone is not executable without a concrete target under the shared operator-decision contract)
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
 docs_token: DOCS_TOKEN_CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1
-STATUS: OPEN_BACKLOG
+STATUS: POST_TERMINAL_OPERATOR_DECISION_REQUIRED
 scope: research, offline-only, non-authorizing, terminal-governance closeout
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
@@ -25,14 +27,22 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## Status
 
-`OPEN_BACKLOG` — versioned canonical SSOT for Mean-Reversion exit-efficiency
-research candidates. Zero preregistered hypotheses. V1–V8 are terminal.
-No holdout access. No runtime activation. No productive trading-logic mutation.
+`POST_TERMINAL_OPERATOR_DECISION_REQUIRED` — migrated onto the shared research-lane
+post-terminal lifecycle contract. Inventories are empty; V1–V8 are terminal; no
+explicit closeout and no explicit awaiting-successor decision has been recorded.
+Auto-close is forbidden.
+
+Lane-status vocabulary and post-terminal legality are owned solely by
+`CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`.
+`OPEN_BACKLOG` is invalid for this empty-inventory posture.
+The non-canonical cross-lane label `CLOSED_NO_OPEN_CANDIDATES` is removed; the
+sibling Entry Eligibility status mirror uses the canonical lifecycle status only.
 
 ## Binding
 
 - SSOT: `config&#47;research&#47;canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json`
 - Validator: `src&#47;research&#47;canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py`
+- Lifecycle authority (sole): `config&#47;research&#47;canonical_research_lane_post_terminal_lifecycle_contract_v1.json`
 - Baseline (immutable): `bollinger_bands_v2_full_canonical_system_economic_binding_v1`
 - Required treatment type: `POST_ENTRY_EXIT_EFFICIENCY_MECHANISM`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
@@ -150,14 +160,22 @@ Exactly eight:
 - No holdout candidate
 - No cost-structure-weakening hypothesis
 - No entry-eligibility reopen
+- No lane auto-close
 - Open unpreregistered exit-efficiency candidates: empty
 
 ## Next separate action
 
 `NEXT_CANONICAL_ACTION=OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION`
 
+Enumerated shared-contract operator decisions remain available (not executed here):
+
+- `DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`
+- `CLOSE_LANE_NO_FURTHER_RESEARCH`
+- `CREATE_SUCCESSOR_HYPOTHESIS` (requires explicit `hypothesis_id` + mechanism)
+
 No V8 rerun. No V8 reopen. No holdout. No runtime&#47;orders. No V9 auto-create.
 
 ## V8 terminal closeout
 
 V8 DEVELOPMENT evaluation consumed its one-shot slot and terminated as `PASS` (`DECISION_REASON=ALL_PASS_REQUIRES_MET`) on the sealed DEVELOPMENT_ONLY panel. V8 remains terminal and unreopened. PASS is a development evaluation result only — not a trading, shadow, testnet, scheduler, or live authorization. Economic offline gate remains closed; promotion remains closed. No V8 rerun. No V8 reopen. No V9 auto-create.
+Historical V8 economic, evaluation, run-slot, and preregistration artifacts remain immutable.
