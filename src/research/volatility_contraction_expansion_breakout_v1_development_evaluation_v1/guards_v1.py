@@ -124,6 +124,24 @@ def assert_run_counters_unchanged(before: Mapping[str, int], after: Mapping[str,
         _require(after.get(key) == value, f"RUN_COUNTER_MUTATED:{key}")
 
 
+def slot_already_consumed(output_dir: Path) -> bool:
+    summary_path = output_dir / "summary.json"
+    if not summary_path.is_file():
+        return False
+    try:
+        existing = json.loads(summary_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return int(existing.get("evaluation_run_count", -1)) >= 1 or bool(
+        existing.get("evaluation_executed")
+    )
+
+
+def assert_no_slot_reuse(output_dir: Path) -> None:
+    if slot_already_consumed(output_dir):
+        raise GuardError("RETRY_OR_SLOT_REUSE_REJECTED")
+
+
 def preflight_guards(repo_root: Path) -> dict[str, Any]:
     """Entry-point preflight: development evaluation authorized; counters remain zero."""
     assert_dataset_allowed(DATASET_ID)

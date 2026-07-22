@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from src.research.volatility_contraction_expansion_breakout_v1_development_evaluation_v1.binding_v1 import (
+    assert_exit_state_machine_bound,
     assert_shared_channel_core_bound,
     compute_config_digest,
     compute_strategy_params_digest,
@@ -52,6 +53,7 @@ def run_preflight_only(repo_root: Path, *, output_dir: Path | None = None) -> di
     """Static preflight: bind digests, segments, guards, evidence schema. No panel open."""
     guard_report = preflight_guards(repo_root)
     assert_shared_channel_core_bound()
+    assert_exit_state_machine_bound()
     binding = materialize_entry_point_binding_payload(repo_root)
     contract = resolve_measurement_contract(repo_root)
     segments = partition_chronological_equal_duration_quarters_v1()

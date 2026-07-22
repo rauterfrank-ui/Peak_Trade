@@ -4,11 +4,12 @@ DOCS_TOKEN_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_E
 
 ## Status
 
-`EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED`
+`EXECUTABLE_EVALUATE_PATH_PRESENT_PANEL_BOUNDARY_MATERIALIZED_DEVELOPMENT_EVALUATION_AUTHORIZED`
 
 Executable development-evaluation path is present under the canonical entry point.
-Development evaluation is authorized (`development_evaluation_authorized=true`);
-execution still requires a separate operator GO and has not run.
+Panel execution boundary (loader/wiring/injectable boundary/admission/evidence) is
+materialized. Development evaluation is authorized (`development_evaluation_authorized=true`);
+productive execution still requires a separate operator GO and has not run.
 No development evaluation executed. Run counts remain `0`.
 
 ## Owner
@@ -23,7 +24,8 @@ Modes:
 
 - `preflight` (default): no panel open, no runner start, no slot claim
 - `dry-validate`: prove executable-path contracts without runner start or counter mutation
-- `evaluate`: requires machine-checkable authorization (token **and** repo flags); panel execution remains a separate operator GO
+- `evaluate`: requires machine-checkable authorization (token **and** repo flags); productive
+  panel evaluation still requires a separate operator GO
 
 ## Bindings
 
@@ -41,6 +43,9 @@ Modes:
 - Productive PnL evaluator (reused, not duplicated):
   `src&#47;research&#47;volatility_compression_breakout_v1_development_evaluation_v1&#47;productive_exit_pnl_evaluator_v1.py`
 - Shared channel core: `src&#47;research&#47;price_channel_breakout_core_v1.py`
+- Panel boundary modules:
+  `panel_loader_v1` / `panel_wiring_v1` / `execution_boundary_v1` /
+  `admission_gates_v1` / `evidence_materialization_v1`
 
 ## Non-actions
 
@@ -49,6 +54,7 @@ Modes:
 - No run-slot consumption
 - No parameter / hypothesis mutation
 - No Shadow / Testnet / Live / Orders
+- No second PnL truth
 - Development evaluation authorization is true; evaluation not executed
 
 ## Next step
@@ -66,8 +72,8 @@ Modes:
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED
-scope: research, offline-only, authorizing-only, no-evaluation-execution
+STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_PANEL_BOUNDARY_MATERIALIZED_DEVELOPMENT_EVALUATION_AUTHORIZED
+scope: research, offline-only, panel-boundary-only, no-evaluation-execution
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false

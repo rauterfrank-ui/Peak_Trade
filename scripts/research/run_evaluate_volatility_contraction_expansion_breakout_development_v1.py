@@ -4,8 +4,8 @@
 Modes:
   - preflight (default): bind digests/guards/evidence schema; no panel; no run.
   - dry-validate: prove executable-path contracts without runner start or counters.
-  - evaluate: requires machine-checkable authorization; fail-closed while
-    development_evaluation_authorized=false on HEAD.
+  - evaluate: requires machine-checkable authorization; panel boundary is materialized
+    but productive evaluation still requires a separate operator GO.
 
 Generic LIVE/SHADOW/TESTNET/SCHEDULER flags cannot authorize this runner.
 """
@@ -41,22 +41,22 @@ from src.research.volatility_contraction_expansion_breakout_v1_development_evalu
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "VDB v1 DEVELOPMENT evaluation entry point "
-            "(default: preflight; evaluate remains unauthorized on HEAD)."
+            "VCEB v1 DEVELOPMENT evaluation entry point "
+            "(default: preflight; panel boundary present; productive evaluate needs separate GO)."
         )
     )
     parser.add_argument(
         "--mode",
         choices=("preflight", "dry-validate", "evaluate"),
         default="preflight",
-        help="preflight (default), dry-validate, or evaluate (auth fail-closed on HEAD).",
+        help="preflight (default), dry-validate, or evaluate (authorization-gated).",
     )
     parser.add_argument(
         "--authorize-single-development-evaluation",
         default="",
         help=(
-            f"Must equal {HYPOTHESIS_ID}; still fail-closed while "
-            "development_evaluation_authorized=false on HEAD."
+            f"Must equal {HYPOTHESIS_ID}; productive evaluate still requires a separate "
+            "operator GO and must not be invoked from this panel-boundary slice."
         ),
     )
     parser.add_argument(
