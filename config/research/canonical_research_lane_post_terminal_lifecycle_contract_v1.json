@@ -113,7 +113,7 @@
   ],
   "migration_deferred": {
     "entry_eligibility_backlog_ssot": "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json",
-    "entry_eligibility_impact": "Currently status=OPEN_BACKLOG with empty open_candidates and empty preregistered_hypotheses; under this contract that combination is invalid (OPEN_LANE_EMPTY_INVENTORY_WITHOUT_WAITING_SEMANTICS). Cross-lane token CLOSED_NO_OPEN_CANDIDATES is not a canonical lane status. Migration requires a separate operator-authorized slice.",
+    "entry_eligibility_impact": "Currently status=OPEN_BACKLOG with empty open_candidates and empty preregistered_hypotheses; under this contract that combination is invalid (OPEN_LANE_EMPTY_INVENTORY_WITHOUT_WAITING_SEMANTICS). Cross-lane status label CLOSED_NO_OPEN_CANDIDATES is not a canonical lane status. Migration requires a separate operator-authorized slice.",
     "exit_efficiency_backlog_ssot": "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
     "exit_efficiency_impact": "Currently status=OPEN_BACKLOG with empty open_unpreregistered_candidates and empty preregistered_hypotheses after V8 TERMINAL_PASS; under this contract that combination is invalid. Migration to AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS or LANE_CLOSED_NO_FURTHER_RESEARCH requires a separate operator-authorized slice; historical V8 artifacts must remain immutable.",
     "migrate_in_this_slice": false

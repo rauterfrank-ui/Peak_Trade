@@ -157,7 +157,7 @@ Mapping:
 Migration deferred (`migrate_in_this_slice: false`):
 
 - Entry-Eligibility backlog currently uses `OPEN_BACKLOG` with empty inventory
-  and a non-canonical cross-lane token `CLOSED_NO_OPEN_CANDIDATES`.
+  and a non-canonical cross-lane status label `CLOSED_NO_OPEN_CANDIDATES`.
 - Exit-Efficiency backlog currently uses `OPEN_BACKLOG` with empty inventory
   after V8 `TERMINAL_PASS`.
 
