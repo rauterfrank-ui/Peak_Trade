@@ -440,12 +440,13 @@
       ]
     },
     "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "Infrastructure-only DEVELOPMENT evaluation entry point/owner for CS relative-strength momentum v1: CLI preflight, digest/dataset/time-segment/rebalance-observation/evidence-schema/guards, wiring into canonical single-slot backtest metrics owners. Evaluation remains unauthorized; no runner start, no run-slot consumption, no holdout/runtime/orders; measurement thresholds and strategy score/selection semantics unchanged.",
+      "note": "DEVELOPMENT evaluation entry point/owner for CS relative-strength momentum v1: executable evaluate path under fail-closed authorization, CLI preflight/dry-validate, digests/dataset/time-segment/rebalance-observation/evidence-registry/admission gates, wiring into canonical single-slot backtest metrics owners. Evaluation remains unauthorized on HEAD; no runner start/run-slot consumption without separate operator GO; no holdout/runtime/orders; measurement thresholds and strategy score/selection semantics unchanged.",
       "path_prefixes": [
         "src/research/cross_sectional_relative_strength_momentum_v1_development_evaluation_v1/",
         "scripts/research/run_evaluate_cross_sectional_relative_strength_momentum_development_v1.py",
         "config/research/cross_sectional_relative_strength_momentum_v1_development_evaluation_entry_point_binding_v1.json",
         "tests/research/test_cross_sectional_relative_strength_momentum_v1_development_evaluation_entry_point_v1.py",
+        "tests/research/test_cross_sectional_relative_strength_momentum_v1_development_evaluation_executable_path_v1.py",
         "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
         "docs/evidence/evaluate_cross_sectional_relative_strength_momentum_development_v1/"
       ]
