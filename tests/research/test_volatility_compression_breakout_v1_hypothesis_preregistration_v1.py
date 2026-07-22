@@ -53,8 +53,8 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["evaluation_authorized"] is False
     assert report["holdout_authorized"] is False
     assert report["dataset_bound"] is True
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
     assert report["open_parameters_remaining"] is False
     assert report["material_difference_explicit"] is True
     assert report["exit_semantics_frozen"] is True
@@ -153,8 +153,8 @@ def test_definition_semantics_complete_bindings() -> None:
     assert contract["development_evaluation_authorized"] is True
     assert contract["strategy_implementation_present"] is False
     assert contract["implementation_authorized"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["runner_start_count"] == 0
+    assert contract["development_run_count"] == 1
+    assert contract["runner_start_count"] == 1
 
 
 def test_fail_closed_on_semantics_mutation() -> None:
@@ -268,8 +268,8 @@ def test_governance_evidence_owner_map() -> None:
     assert summary["evaluation_executed"] is False
     assert summary["holdout_accessed"] is False
     assert summary["dataset_loaded"] is False
-    assert summary["development_run_count"] == 0
-    assert summary["runner_start_count"] == 0
+    assert summary["development_run_count"] == 1
+    assert summary["runner_start_count"] == 1
     assert summary["open_parameters_remaining"] is False
     assert summary["material_difference_from_terminal_coiled_spring_explicit"] is True
     assert summary["definition_semantics_complete"] is True

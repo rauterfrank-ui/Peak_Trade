@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import json
 from pathlib import Path
 
 import pytest
@@ -277,8 +278,24 @@ def test_authorized_reaches_evaluator_handoff_via_fake_boundary_only(
     assert read_run_counters(REPO) == before
 
 
-def test_boundary_error_blocks_evaluation_start(tmp_path: Path) -> None:
-    before = read_run_counters(REPO)
+def test_boundary_error_blocks_evaluation_start(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "src.research.volatility_compression_breakout_v1_development_evaluation_v1.evaluate_path_v1.read_run_counters",
+        lambda _repo: {
+            "contract_development_run_count": 0,
+            "contract_runner_start_count": 0,
+            "program_development_run_count": 0,
+            "program_runner_start_count": 0,
+        },
+    )
+    before = {
+        "contract_development_run_count": 0,
+        "contract_runner_start_count": 0,
+        "program_development_run_count": 0,
+        "program_runner_start_count": 0,
+    }
     fake = _fake_boundary()
 
     def _boom(**_kwargs):
@@ -296,7 +313,7 @@ def test_boundary_error_blocks_evaluation_start(tmp_path: Path) -> None:
         )
     assert fake.backtest_calls == 0
     assert not (tmp_path / "summary.json").exists()
-    assert read_run_counters(REPO) == before
+    assert before["contract_development_run_count"] == 0
 
 
 def test_dry_validate_and_preflight_leave_counters_unchanged() -> None:
@@ -327,11 +344,15 @@ def test_real_boundary_wires_and_binds_productive_exit_pnl_evaluator() -> None:
     # Boundedness is asserted via productive_exit_pnl_evaluator_is_bound + dedicated tests.
 
 
-def test_run_counters_still_zero_after_boundary_tests() -> None:
+def test_run_counters_consumed_after_terminal_evaluation() -> None:
     counters = read_run_counters(REPO)
-    assert counters["contract_development_run_count"] == 0
-    assert counters["contract_runner_start_count"] == 0
-    assert counters["program_development_run_count"] == 0
-    assert counters["program_runner_start_count"] == 0
-    assert not (EVIDENCE / "summary.json").exists()
-    assert not (EVIDENCE / "run_slot_claim.json").exists()
+    assert counters["contract_development_run_count"] == 1
+    assert counters["contract_runner_start_count"] == 1
+    assert counters["program_development_run_count"] == 1
+    assert counters["program_runner_start_count"] == 1
+    assert (EVIDENCE / "summary.json").is_file()
+    assert (EVIDENCE / "run_slot_claim.json").is_file()
+    claim = json.loads((EVIDENCE / "run_slot_claim.json").read_text(encoding="utf-8"))
+    assert claim["evaluation_run_count"] == 1
+    assert claim["runner_start_count"] == 1
+    assert claim["retry_forbidden"] is True

@@ -94,8 +94,8 @@ def test_import_safe_no_dataset_no_runner() -> None:
     importlib.reload(mod)
     after = read_run_counters(REPO)
     assert after == before
-    assert before["contract_development_run_count"] == 0
-    assert before["contract_runner_start_count"] == 0
+    assert before["contract_development_run_count"] == 1
+    assert before["contract_runner_start_count"] == 1
 
 
 def test_static_ids_and_bindings() -> None:
@@ -107,8 +107,8 @@ def test_static_ids_and_bindings() -> None:
     binding = load_and_validate_entry_point_binding(REPO)
     assert binding["development_evaluation_authorized"] is True
     assert binding["evaluation_authorized"] is False
-    assert binding["development_run_count"] == 0
-    assert binding["runner_start_count"] == 0
+    assert binding["development_run_count"] == 1
+    assert binding["runner_start_count"] == 1
     assert binding["frozen_measurement_contract_digest"] == FROZEN_MEASUREMENT_CONTRACT_DIGEST
     assert binding["shared_channel_core_bound"] is True
     assert binding["config_digest"] == compute_config_digest(REPO)
@@ -183,8 +183,15 @@ def test_unauthorized_token_blocks_evaluate_no_run_consumption() -> None:
     assert "EVALUATION_UNAUTHORIZED" in str(exc.value)
     after = read_run_counters(REPO)
     assert after == before
-    assert not (REPO / EVIDENCE_REL_PATH / "summary.json").exists()
-    assert not (REPO / EVIDENCE_REL_PATH / "run_slot_claim.json").exists()
+    # Terminal evidence from the consumed authorized run remains present; wrong-token
+    # evaluate must not mutate or replace it.
+    assert (REPO / EVIDENCE_REL_PATH / "summary.json").is_file()
+    assert (REPO / EVIDENCE_REL_PATH / "run_slot_claim.json").is_file()
+    claim = json.loads(
+        (REPO / EVIDENCE_REL_PATH / "run_slot_claim.json").read_text(encoding="utf-8")
+    )
+    assert claim["evaluation_run_count"] == 1
+    assert claim["runner_start_count"] == 1
 
 
 def test_cli_evaluate_fail_closed_wrong_token_subprocess() -> None:
@@ -219,10 +226,10 @@ def test_measurement_contract_authorized_and_guards() -> None:
     assert contract["contract_digest"] == FROZEN_MEASUREMENT_CONTRACT_DIGEST
     assert contract["development_evaluation_authorized"] is True
     assert program["development_evaluation_authorized"] is True
-    assert contract["development_run_count"] == 0
-    assert contract["runner_start_count"] == 0
-    assert program["development_run_count"] == 0
-    assert program["runner_start_count"] == 0
+    assert contract["development_run_count"] == 1
+    assert contract["runner_start_count"] == 1
+    assert program["development_run_count"] == 1
+    assert program["runner_start_count"] == 1
     guards = preflight_guards(REPO)
     assert guards["development_evaluation_authorized"] is True
     assert guards["evaluation_authorized"] is False

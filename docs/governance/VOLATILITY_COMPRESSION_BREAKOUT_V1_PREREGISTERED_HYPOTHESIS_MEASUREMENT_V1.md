@@ -12,7 +12,7 @@
 - Signal family: `VOLATILITY_REGIME`
 - Target phenomenon: `VOLATILITY_COMPRESSION_TO_EXPANSION_TRANSITION`
 - Baseline: `UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1`
-- Contract digest: `e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785`
+- Contract digest: `7a4ba7b765a7e7cc16155cb77b1448536b79a5416e2d758039a5574a82a74519`
 
 ## Frozen mechanism (operator-authorized)
 
@@ -57,7 +57,7 @@ Explicit and checkable against terminal
 
 ## Contract digest
 
-`e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785`
+`7a4ba7b765a7e7cc16155cb77b1448536b79a5416e2d758039a5574a82a74519`
 
 ## Next step
 

@@ -1,0 +1,22 @@
+{
+  "budget_consumed": true,
+  "config_digest": "e4d9d3c3e178fb354925f8efd9f8e00d0f57b4aee1755185eedf3f2a33a64f9a",
+  "dataset_digest": "NOT_RESOLVED_PRODUCTIVE_PNL_OVERFLOW",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "evaluation_executed": false,
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_volatility_compression_breakout_development_v1",
+  "evidence_ref": "docs/evidence/evaluate_volatility_compression_breakout_development_v1/",
+  "holdout_accessed": false,
+  "hypothesis_id": "VOLATILITY_COMPRESSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
+  "process_exit_code": 2,
+  "reason": "UNEXPECTED:OverflowError:(34, 'Result too large')",
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "runner_started": true,
+  "schema_version": "evaluate_volatility_compression_breakout_registry.v1",
+  "strategy_identity": "VOLATILITY_COMPRESSION_BREAKOUT_V1",
+  "strategy_params_digest": "44416d77afb70d21b2e977448fa198a3b3d83a0e3ba9d823bee91af06b6a185e",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW"
+}

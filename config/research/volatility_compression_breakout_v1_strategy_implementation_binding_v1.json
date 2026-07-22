@@ -26,7 +26,7 @@
     "NO_PARAMETER_OPTIMIZATION",
     "NO_PREREGISTRATION_MUTATION"
   ],
-  "frozen_measurement_contract_digest": "e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785",
+  "frozen_measurement_contract_digest": "7a4ba7b765a7e7cc16155cb77b1448536b79a5416e2d758039a5574a82a74519",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/volatility_compression_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "holdout_authorized": false,
@@ -65,8 +65,8 @@
     "testnet_activated": false
   },
   "schema_version": "volatility_compression_breakout_v1_strategy_implementation_binding.v1",
-  "shared_channel_core_present": true,
   "shared_channel_core_owner": "research.price_channel_breakout_core_v1",
+  "shared_channel_core_present": true,
   "signal_family": "VOLATILITY_REGIME",
   "slice_class": "STRATEGY_IMPLEMENTATION_ONLY",
   "source_definition_base_sha": "37521e9611f1f3c7ba3dce6f247e35933117d42a",

@@ -2,11 +2,13 @@
 
 ## Status
 
-`EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED`
+`EXECUTABLE_EVALUATE_PATH_PRESENT_RUN_SLOT_CONSUMED_FAIL_CLOSED`
 
 Executable development-evaluation path is present under the canonical entry point.
-Development evaluation is authorized (`development_evaluation_authorized=true`); execution still requires a separate operator GO and has not run.
-No development evaluation executed. Run counts remain `0`.
+The single authorized development-evaluation run slot is consumed
+(`development_run_count=1`, `runner_start_count=1`) after fail-closed
+`UNEXPECTED:OverflowError:(34, 'Result too large')` during productive PnL/metrics.
+Retry is forbidden. Holdout remains unbound.
 
 ## Owner
 
@@ -20,7 +22,7 @@ Modes:
 
 - `preflight` (default): no panel open, no runner start, no slot claim
 - `dry-validate`: prove executable-path contracts without runner start or counter mutation
-- `evaluate`: requires machine-checkable authorization (token **and** repo flags); panel execution remains a separate operator GO
+- `evaluate`: requires machine-checkable authorization; run slot already consumed — retry rejected
 
 ## Bindings
 
@@ -30,8 +32,8 @@ Modes:
 - Signal family: `VOLATILITY_REGIME`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
   (`DEVELOPMENT_ONLY`)
-- Measurement contract digest (frozen):
-  `e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785`
+- Measurement contract digest (counters/slot fields updated after terminal run):
+  `7a4ba7b765a7e7cc16155cb77b1448536b79a5416e2d758039a5574a82a74519`
 - Entry-point binding:
   `config&#47;research&#47;volatility_compression_breakout_v1_development_evaluation_entry_point_binding_v1.json`
 - Shared channel core: `src&#47;research&#47;price_channel_breakout_core_v1.py`
@@ -43,16 +45,15 @@ Modes:
 - `TIME_SEGMENT_DEFINITION_ID=CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1`
 - Exactly 4 chronological equal-duration quarters; remainder to earliest segments
 
-## Explicit non-actions in this slice
+## Explicit non-actions after terminalization
 
-No evaluation run, no dataset load, no holdout access, no retry,
-no threshold change, no result calibration, no Master-V2/Double-Play/risk/sizing/execution
-mutation, no runtime activation. Economic/promotion gates remain closed.
-Development evaluation authorization is true; evaluation not executed.
+No retry, no holdout access, no threshold change, no result calibration,
+no Master-V2/Double-Play/risk/sizing/execution mutation, no runtime activation.
+Economic/promotion gates remain closed.
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_THEN_EXECUTE_EXACTLY_ONE_PREVIOUSLY_AUTHORIZED_BOUNDED_DEVELOPMENT_EVALUATION_RUN`
+`NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_OVERFLOW_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
 
 ## Explicitly false
 
@@ -63,12 +64,13 @@ Development evaluation authorization is true; evaluation not executed.
 - `HOLDOUT_ACCESS=false`
 - `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
 - `EVALUATION_EXECUTED=false`
-- `RUNNER_STARTED=false`
+- `RUNNER_STARTED=true`
+- `RUN_SLOT_CONSUMED=true`
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED
-scope: research, offline-only, authorizing-only, no-evaluation-execution
+STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_RUN_SLOT_CONSUMED_FAIL_CLOSED
+scope: research, offline-only, terminal-development-evidence
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
