@@ -11,7 +11,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 Single authorized holdout run for successor
 `BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_HOLDOUT_V1`
-completed as `FAIL` / `NET_PROFIT_FACTOR_NOT_IMPROVED` (run count `1/1`).
+completed as `FAIL` / `NET_PROFIT_FACTOR_NOT_IMPROVED` (run count `1&#47;1`).
 
 ## Lifecycle authority
 
