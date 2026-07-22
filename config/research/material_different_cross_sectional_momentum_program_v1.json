@@ -25,7 +25,8 @@
     "prior_terminal_relative_strength_v0_retry_forbidden": true
   },
   "development_evaluation_authorized": true,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "evaluation_authorized": false,
   "evaluation_run_count": 0,
@@ -74,8 +75,8 @@
     "promotion_gate_open": false
   },
   "promotion_authorized": false,
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_authorized": false,
   "runtime_effect": "NONE",
   "runtime_policy": {

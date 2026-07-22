@@ -74,9 +74,9 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         payload.get("strategy_implementation_present") is False,
         "STRATEGY_IMPLEMENTATION_PRESENT",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
 
     directional = payload.get("directional_form") or {}
     _require(
@@ -187,8 +187,8 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         "definition_only": True,
         "evaluation_authorized": False,
         "holdout_authorized": False,
-        "development_run_count": 0,
-        "runner_start_count": 0,
+        "development_run_count": 1,
+        "runner_start_count": 1,
         "pending_threshold_keys": [],
         "evaluation_blocked_while_pending": False,
         "time_segment_definition_id": REQUIRED_TIME_SEGMENT_DEFINITION_ID,

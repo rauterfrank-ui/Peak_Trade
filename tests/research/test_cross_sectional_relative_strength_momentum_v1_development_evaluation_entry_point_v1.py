@@ -256,8 +256,8 @@ def test_panel_wiring_reuses_orchestrator_shape_without_runtime() -> None:
 
 def test_preflight_authorized_no_evaluate_execution_or_run_consumption() -> None:
     before = read_run_counters(REPO)
-    assert before["contract_development_run_count"] == 0
-    assert before["contract_runner_start_count"] == 0
+    assert before["contract_development_run_count"] == 1
+    assert before["contract_runner_start_count"] == 1
     preflight = run_preflight_only(REPO)
     assert preflight["runner_started"] is False
     assert preflight["evaluation_executed"] is False
@@ -277,10 +277,10 @@ def test_preflight_authorized_no_evaluate_execution_or_run_consumption() -> None
     assert guards["development_evaluation_authorized"] is True
     contract = _load(CONTRACT)
     program = _load(PROGRAM)
-    assert contract["development_run_count"] == 0
-    assert contract["runner_start_count"] == 0
-    assert program["development_run_count"] == 0
-    assert program["runner_start_count"] == 0
+    assert contract["development_run_count"] == 1
+    assert contract["runner_start_count"] == 1
+    assert program["development_run_count"] == 1
+    assert program["runner_start_count"] == 1
     assert contract["evaluation_authorized"] is False
     assert contract["development_evaluation_authorized"] is True
     assert program["development_evaluation_authorized"] is True

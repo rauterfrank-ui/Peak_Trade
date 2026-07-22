@@ -62,9 +62,9 @@ def validate_program_contract(
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(payload.get("promotion_authorized") is False, "PROMOTION_AUTHORIZED_TRUE")
     _require(payload.get("runtime_authorized") is False, "RUNTIME_AUTHORIZED_TRUE")
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NONZERO")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NONZERO")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
     _require(
         payload.get("strategy_implementation_present") is True,
         "STRATEGY_IMPLEMENTATION_PRESENT_FALSE",
@@ -130,8 +130,8 @@ def validate_program_contract(
         "holdout_authorized": False,
         "evaluation_authorized": False,
         "promotion_eligible": False,
-        "development_run_count": 0,
-        "runner_start_count": 0,
+        "development_run_count": 1,
+        "runner_start_count": 1,
     }
 
 
