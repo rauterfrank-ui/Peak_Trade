@@ -120,7 +120,7 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
     assert md_vdbx["not_a_repair_or_retry_of_vdbx_v1"] is True
     backlog = _load(BACKLOG_PATH)
     assert backlog["preregistered_hypotheses"] == []
-    assert backlog["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert backlog["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
     assert REQUIRED_STRATEGY_IDENTITY in terminals
     assert "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in terminals

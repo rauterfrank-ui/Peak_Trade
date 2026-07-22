@@ -1090,7 +1090,7 @@
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Post-VEPC lane backlog SSOT at POST_TERMINAL_OPERATOR_DECISION_REQUIRED; inventories empty; six terminal FAIL_CLOSED_NO_RETRY hypotheses including VEPC CONSUMED_NO_RETRY; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit and CS momentum lanes remain unreopened; enumerated operator decision packet required before AWAIT/CLOSE/CREATE_SUCCESSOR.",
+      "note": "Post-VEPC lane backlog SSOT at AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS after DECLARE_AWAITING applied; explicit_waiting_decision=true; inventories empty; six terminal FAIL_CLOSED_NO_RETRY hypotheses including VEPC CONSUMED_NO_RETRY; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit and CS momentum lanes remain unreopened; remaining CLOSE/CREATE each require separate exact operator GO.",
       "path_prefixes": [
         "config/research/volatility_regime_hypothesis_backlog_v1.json",
         "src/research/volatility_regime_hypothesis_backlog_v1.py",
@@ -1099,7 +1099,7 @@
       ]
     },
     "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1": {
-      "note": "Governance-only operator decision packet after VEPC CONSUMED_NO_RETRY terminalization; enumerates DECLARE_AWAITING / CLOSE_LANE / CREATE_SUCCESSOR only; does not apply any decision; no evaluation/holdout/LIVE/orders.",
+      "note": "Governance-only operator decision packet after VEPC CONSUMED_NO_RETRY terminalization; DECLARE_AWAITING applied (awaiting_declared=true); CLOSE_LANE / CREATE_SUCCESSOR remain OPERATOR_GO_REQUIRED; no successor created; no closeout; no evaluation/holdout/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
         "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
@@ -1108,7 +1108,7 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Definition-only research-program SSOT for volatility-regime lane after VEPC terminalization; lane backlog POST_TERMINAL_OPERATOR_DECISION_REQUIRED; strategy_id reconciled to volatility_expansion_pullback_continuation; development evaluation unauthorized; no holdout/runtime/orders; sibling Entry/Exit and CS momentum lanes remain unreopened.",
+      "note": "Definition-only research-program SSOT for volatility-regime lane after VEPC terminalization; lane backlog AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS; strategy_id reconciled to volatility_expansion_pullback_continuation; development evaluation unauthorized; no holdout/runtime/orders; sibling Entry/Exit and CS momentum lanes remain unreopened.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",

@@ -102,9 +102,11 @@ def test_post_terminal_fields_and_strategy_id_reconciled() -> None:
     payload = _load(PROGRAM_PATH)
     assert payload["strategy_id"] == "volatility_expansion_pullback_continuation"
     assert payload["development_evaluation_authorized"] is False
-    assert payload["lane_backlog_status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert payload["lane_backlog_status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
     assert payload["active_hypothesis_inventory_empty"] is True
-    assert payload["next_canonical_step"].startswith("OPERATOR_ENUMERATED_DECISION_REQUIRED")
+    assert payload["next_canonical_step"].startswith(
+        "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_ENUMERATED_FOLLOW_ON_REQUIRED"
+    )
     assert (
         "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
         in payload["causal_independence"]["forbidden_lineage_refs"]
@@ -145,7 +147,7 @@ def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in text
-    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" in text
+    assert "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS" in text
     assert "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in owners

@@ -16,7 +16,7 @@ GOVERNANCE_REL_PATH = "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.m
 DECISION_PACKET_REL_PATH = (
     "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json"
 )
-REQUIRED_STATUS = "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+REQUIRED_STATUS = "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
 REQUIRED_PROGRAM_ID = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
 REQUIRED_VEPC_HYPOTHESIS_ID = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
 REQUIRED_VEPC_STRATEGY_IDENTITY = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
@@ -44,7 +44,8 @@ REQUIRED_CLOSED = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_CS_CLOSED = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_DATASET = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
 REQUIRED_NEXT_STEP = (
-    "OPERATOR_ENUMERATED_DECISION_REQUIRED_VIA_POST_VEPC_LIFECYCLE_DECISION_PACKET_V1"
+    "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_ENUMERATED_FOLLOW_ON_REQUIRED_"
+    "CLOSE_LANE_OR_CREATE_SUCCESSOR_VIA_POST_VEPC_PACKET_V1"
 )
 REQUIRED_TREATMENT = "NONE_UNTIL_CREATE_SUCCESSOR_HYPOTHESIS"
 
@@ -66,13 +67,13 @@ def validate_backlog_contract(
     payload: Mapping[str, Any], *, repo_root: Path | None = None
 ) -> dict[str, Any]:
     _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID_MISMATCH")
-    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_POST_TERMINAL")
+    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_AWAITING")
     _require(
         payload.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
         "LIFECYCLE_CONTRACT_MISMATCH",
     )
     _require(payload.get("explicit_closeout_decision") is False, "CLOSEOUT_DECISION_TRUE")
-    _require(payload.get("explicit_waiting_decision") is False, "WAITING_DECISION_TRUE")
+    _require(payload.get("explicit_waiting_decision") is True, "WAITING_DECISION_FALSE")
     _require(payload.get("lane_auto_closed") is False, "LANE_AUTO_CLOSED")
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
     _require(
@@ -151,6 +152,11 @@ def validate_backlog_contract(
         "NO_AUTO_CREATE_SUCCESSOR",
         "NO_AUTO_CLOSE_LANE",
         "NO_AUTO_AWAIT_SUCCESSOR",
+        "NO_IMPLICIT_CLOSE_LANE_AUTHORIZATION",
+        "NO_IMPLICIT_CREATE_SUCCESSOR_AUTHORIZATION",
+        "NO_SUCCESSOR_IDENTITY_INFERRED",
+        "NO_CLOSEOUT_APPLICATION_IN_THIS_SLICE",
+        "NO_SUCCESSOR_HYPOTHESIS_CREATION_IN_THIS_SLICE",
     ):
         _require(required in non_actions, f"MISSING_NON_ACTION:{required}")
 
@@ -166,6 +172,9 @@ def validate_backlog_contract(
             packet.get("lane_status") == REQUIRED_STATUS,
             "DECISION_PACKET_LANE_STATUS",
         )
+        _require(packet.get("awaiting_declared") is True, "DECISION_PACKET_AWAITING_FALSE")
+        _require(packet.get("closeout_applied") is False, "DECISION_PACKET_CLOSEOUT_TRUE")
+        _require(packet.get("successor_created") is False, "DECISION_PACKET_SUCCESSOR_TRUE")
 
     return {
         "valid": True,
@@ -182,7 +191,7 @@ def validate_backlog_contract(
         "promotion_eligible": False,
         "retry_allowed": False,
         "explicit_closeout_decision": False,
-        "explicit_waiting_decision": False,
+        "explicit_waiting_decision": True,
     }
 
 
