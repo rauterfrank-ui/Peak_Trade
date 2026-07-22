@@ -22,6 +22,7 @@
 - Validator: `src/research/volatility_regime_hypothesis_backlog_v1.py`
 - Program: `config/research/volatility_regime_research_program_v1.json`
 - Measurement contract: `config/research/volatility_expansion_persistence_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
+- Strategy implementation binding: `config/research/volatility_expansion_persistence_v1_strategy_implementation_binding_v1.json` (`implementation_present=true`; evaluation still unauthorized)
 
 ## Inventories
 

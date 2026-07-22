@@ -70,7 +70,7 @@ def test_sibling_closed_lanes_and_inventory() -> None:
     assert term["status"] == "TERMINAL_FAIL"
     assert backlog["sealed_holdout_binding_status"] == "UNBOUND_UNTOUCHED"
     hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["implementation_present"] is False
+    assert hyp["implementation_present"] is True
     assert hyp["holdout_allowed"] is False
     assert hyp["development_run_limit"] == 1
     assert hyp["development_run_count"] == 0
