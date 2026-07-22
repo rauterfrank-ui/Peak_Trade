@@ -32,6 +32,7 @@ from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constan
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.evaluate_path_v1 import (
     dry_validate_evaluate_path_v1,
     run_authorized_development_evaluation_v1,
+    run_corrective_measurement_reevaluation_v1,
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.evidence_schema_v1 import (
     empty_evidence_surface_template,
@@ -135,6 +136,28 @@ def run_evaluate_fail_closed(
     )
     if not result.authorization.get("authorized"):
         raise GuardError(result.reason or "EVALUATION_UNAUTHORIZED")
+    return result.to_dict()
+
+
+def run_corrective_measurement_reevaluation_fail_closed(
+    repo_root: Path,
+    *,
+    authorize_token: str,
+    output_dir: Path,
+    execution_boundary=None,
+    counter_mutator=None,
+) -> dict[str, Any]:
+    """Corrective reevaluation: fail-closed without authorization; preserves development counters."""
+    result = run_corrective_measurement_reevaluation_v1(
+        repo_root,
+        authorize_token=authorize_token,
+        output_dir=output_dir,
+        persist_evidence=True,
+        execution_boundary=execution_boundary,
+        counter_mutator=counter_mutator,
+    )
+    if not result.authorization.get("authorized"):
+        raise GuardError(result.reason or "CORRECTIVE_REEVALUATION_UNAUTHORIZED")
     return result.to_dict()
 
 

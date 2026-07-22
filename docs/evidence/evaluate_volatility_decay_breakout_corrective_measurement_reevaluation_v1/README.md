@@ -1,0 +1,57 @@
+# Evaluate volatility decay breakout — corrective measurement reevaluation v1
+
+```text
+SLICE=EVALUATE_VOLATILITY_DECAY_BREAKOUT_CORRECTIVE_MEASUREMENT_REEVALUATION_V1
+BASE_SHA=00a820f080973600378c3c2d5513905ee07217e9
+MEASUREMENT_REPAIR_MERGE_COMMIT=00a820f080973600378c3c2d5513905ee07217e9
+PORTFOLIO_AGGREGATION_ID=RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1
+STRATEGY_ID=VOLATILITY_DECAY_BREAKOUT_V1
+DATASET=pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1
+STATUS=FAIL_CLOSED
+REASON=UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:DOGE:USDT:USDT:perp:10574
+EVALUATION_EXECUTED=false
+CORRECTIVE_EVALUATION_EXECUTED=false
+RUNNER_STARTED=true
+CLI_REPORTED_RUNNER_STARTED=false
+DEVELOPMENT_DATASET_LOADED=true
+CORRECTIVE_SLOT_CONSUMED=true
+CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT=1
+CORRECTIVE_MEASUREMENT_REEVALUATION_LIMIT=1
+ORIGINAL_DEVELOPMENT_RUN_COUNT=1
+DEVELOPMENT_RUN_COUNT=1
+RUNNER_START_COUNT=1
+HOLDOUT_ACCESSED=false
+RETRY_FORBIDDEN=true
+TERMINAL_CORRECTIVE_VERDICT=CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT
+SUPERSEDED_DEVELOPMENT_EVIDENCE=docs/evidence/evaluate_volatility_decay_breakout_development_v1/
+DEVELOPMENT_ARTIFACTS_PRESERVED_UNMODIFIED=true
+PREREGISTERED_GATES=NOT_EVALUATED
+PRODUCTIVE_EXIT_PNL_EVALUATOR_BOUND=true
+PRODUCTIVE_PNL_EVALUATOR_REUSED=true
+SECOND_PNL_TRUTH_CREATED=false
+```
+
+## Exact command (single authorized corrective attempt; slot consumed)
+
+```bash
+python3 scripts/research/run_evaluate_volatility_decay_breakout_development_v1.py --mode corrective-reevaluate --authorize-corrective-measurement-reevaluation VOLATILITY_DECAY_BREAKOUT_CORRECTIVE_MEASUREMENT_REEVALUATION_V1
+```
+
+Authorized single corrective measurement reevaluation on `00a820f080973600378c3c2d5513905ee07217e9` after
+measurement repair entered the corrective evaluate path with the panel execution
+boundary and productive exit/PnL evaluator bound, then fail-closed with
+`UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:DOGE:USDT:USDT:perp:10574` during productive PnL pairing.
+Corrective slot consumed (`CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT=1/1`).
+Development counters preserved (`DEVELOPMENT_RUN_COUNT=1`, `RUNNER_START_COUNT=1`).
+No corrective retry. Prior development evidence under
+`docs/evidence/evaluate_volatility_decay_breakout_development_v1/` remains unmodified (supersession
+audit only).
+
+---
+docs_token: DOCS_TOKEN_EVALUATE_VOLATILITY_DECAY_BREAKOUT_CORRECTIVE_MEASUREMENT_REEVALUATION_V1_FAIL_CLOSED_UNPAIRABLE
+STATUS: FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT
+scope: research, offline-only, corrective-measurement-reevaluation-terminal
+LIVE_AUTHORIZED: false
+ORDERS_ALLOWED: false
+SCHEDULER_RUNTIME_ALLOWED: false
+---

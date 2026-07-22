@@ -5,7 +5,10 @@ Modes:
   - preflight (default): bind digests/guards/evidence schema; no panel; no run.
   - dry-validate: prove executable-path contracts without runner start or counters.
   - evaluate: requires machine-checkable authorization; fail-closed while
-    development_evaluation_authorized=false on HEAD.
+    development slot is exhausted (development_run_count=1).
+  - corrective-reevaluate: bounded corrective measurement reevaluation after the
+    equal-weight sleeve repair; preserves development_run_count/runner_start_count
+    at 1 and writes new evidence only.
 
 Generic LIVE/SHADOW/TESTNET/SCHEDULER flags cannot authorize this runner.
 """
@@ -25,10 +28,13 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constants_v1 import (  # noqa: E402
+    CORRECTIVE_AUTHORIZE_TOKEN,
+    CORRECTIVE_EVIDENCE_REL_PATH,
     EVIDENCE_REL_PATH,
     HYPOTHESIS_ID,
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.entry_point_v1 import (  # noqa: E402
+    run_corrective_measurement_reevaluation_fail_closed,
     run_dry_validate,
     run_evaluate_fail_closed,
     run_preflight_only,
@@ -42,21 +48,32 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "VDB v1 DEVELOPMENT evaluation entry point "
-            "(default: preflight; evaluate remains unauthorized on HEAD)."
+            "(default: preflight; evaluate remains fail-closed once slot consumed; "
+            "corrective-reevaluate is a separate bounded path)."
         )
     )
     parser.add_argument(
         "--mode",
-        choices=("preflight", "dry-validate", "evaluate"),
+        choices=("preflight", "dry-validate", "evaluate", "corrective-reevaluate"),
         default="preflight",
-        help="preflight (default), dry-validate, or evaluate (auth fail-closed on HEAD).",
+        help=(
+            "preflight (default), dry-validate, evaluate (auth fail-closed when slot "
+            "exhausted), or corrective-reevaluate (separate corrective token)."
+        ),
     )
     parser.add_argument(
         "--authorize-single-development-evaluation",
         default="",
         help=(
             f"Must equal {HYPOTHESIS_ID}; still fail-closed while "
-            "development_evaluation_authorized=false on HEAD."
+            "development run slot is exhausted."
+        ),
+    )
+    parser.add_argument(
+        "--authorize-corrective-measurement-reevaluation",
+        default="",
+        help=(
+            f"Must equal {CORRECTIVE_AUTHORIZE_TOKEN}; required for --mode corrective-reevaluate."
         ),
     )
     parser.add_argument(
@@ -93,6 +110,16 @@ def main(argv: list[str] | None = None) -> int:
 
         if args.mode == "dry-validate":
             report = run_dry_validate(REPO_ROOT)
+            print(json.dumps(report, sort_keys=True, default=str))
+            return 0
+
+        if args.mode == "corrective-reevaluate":
+            output_dir = args.output_dir or (REPO_ROOT / CORRECTIVE_EVIDENCE_REL_PATH)
+            report = run_corrective_measurement_reevaluation_fail_closed(
+                REPO_ROOT,
+                authorize_token=args.authorize_corrective_measurement_reevaluation,
+                output_dir=Path(output_dir),
+            )
             print(json.dumps(report, sort_keys=True, default=str))
             return 0
 

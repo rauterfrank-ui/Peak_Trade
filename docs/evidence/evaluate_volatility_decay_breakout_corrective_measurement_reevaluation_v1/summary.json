@@ -1,0 +1,115 @@
+{
+  "artifact_digests": {
+    "run_stderr.txt": "16a8f810e070ecef51386b3c9840feb58784b8c6eeb4c81a8fff77b425cdc2cf",
+    "run_stdout.txt": "6d021b73fa5da51514fb9aeeb272065ee12e8de178388d84eefccab3d64d243f",
+    "run_timing.txt": "37544fb0b2567ce188d902cfd393c04d467280db7c1f04acde133fdf6ea909b1"
+  },
+  "base_sha": "00a820f080973600378c3c2d5513905ee07217e9",
+  "baseline_max_drawdown": "NOT_EXECUTED",
+  "baseline_net_return": "NOT_EXECUTED",
+  "baseline_profit_factor": "NOT_EXECUTED",
+  "baseline_trade_count": "NOT_EXECUTED",
+  "budget_consumed": true,
+  "config_digest": "6b7f870624ac13519f932c05ae7d889e8c74082539c2300ec681ba0325d1b00f",
+  "corrective_evaluation_executed": false,
+  "corrective_measurement_reevaluation_count": 1,
+  "corrective_slot_consumed": true,
+  "dataset_digest": "NOT_RESOLVED_UNPAIRABLE_ENTRY_NO_EXIT",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_artifacts_preserved_unmodified": true,
+  "development_dataset_loaded": true,
+  "development_run_count_note": "DEVELOPMENT_RUN_COUNT_AND_RUNNER_START_COUNT_PRESERVED_AT_ONE_CORRECTIVE_SLOT_CONSUMED_SEPARATELY",
+  "development_run_count_preserved": 1,
+  "economic_gate_pass": false,
+  "end_utc": "2026-07-22T17:24:05Z",
+  "evaluable_treatment_breakout_events": "NOT_EXECUTED",
+  "evaluation_executed": false,
+  "exact_command": "python3 scripts/research/run_evaluate_volatility_decay_breakout_development_v1.py --mode corrective-reevaluate --authorize-corrective-measurement-reevaluation VOLATILITY_DECAY_BREAKOUT_CORRECTIVE_MEASUREMENT_REEVALUATION_V1",
+  "fees": "NOT_EXECUTED",
+  "gates": "NOT_EVALUATED_UNPAIRABLE_ENTRY_NO_EXIT",
+  "gross_profit_factor": "NOT_EXECUTED",
+  "gross_return": "NOT_EXECUTED",
+  "holdout_accessed": false,
+  "key_metrics": "NOT_COMPUTED",
+  "live": false,
+  "max_drawdown": "NOT_EXECUTED",
+  "measurement_repair_merge_commit": "00a820f080973600378c3c2d5513905ee07217e9",
+  "net_profit_factor": "NOT_EXECUTED",
+  "net_return": "NOT_EXECUTED",
+  "orders": false,
+  "original_development_run_count": 1,
+  "passing_segments": "NOT_EXECUTED",
+  "portfolio_aggregation_id": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+  "preregistered_gate_result": "NOT_EVALUATED",
+  "process_exit_code": 2,
+  "reason": "UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:DOGE:USDT:USDT:perp:10574",
+  "retry_forbidden": true,
+  "runner_start_reported_by_cli": false,
+  "runner_started": true,
+  "runtime_activated": false,
+  "schema_version": "evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_summary.v1",
+  "segment_boundaries": [
+    {
+      "evaluable_treatment_breakout_events": "NOT_EXECUTED",
+      "range": "NOT_EXECUTED",
+      "result": "NOT_EXECUTED",
+      "segment_id": "TIME_SEGMENT_Q1"
+    },
+    {
+      "evaluable_treatment_breakout_events": "NOT_EXECUTED",
+      "range": "NOT_EXECUTED",
+      "result": "NOT_EXECUTED",
+      "segment_id": "TIME_SEGMENT_Q2"
+    },
+    {
+      "evaluable_treatment_breakout_events": "NOT_EXECUTED",
+      "range": "NOT_EXECUTED",
+      "result": "NOT_EXECUTED",
+      "segment_id": "TIME_SEGMENT_Q3"
+    },
+    {
+      "evaluable_treatment_breakout_events": "NOT_EXECUTED",
+      "range": "NOT_EXECUTED",
+      "result": "NOT_EXECUTED",
+      "segment_id": "TIME_SEGMENT_Q4"
+    }
+  ],
+  "segment_results": [
+    {
+      "result": "NOT_EXECUTED",
+      "segment_id": "TIME_SEGMENT_Q1"
+    },
+    {
+      "result": "NOT_EXECUTED",
+      "segment_id": "TIME_SEGMENT_Q2"
+    },
+    {
+      "result": "NOT_EXECUTED",
+      "segment_id": "TIME_SEGMENT_Q3"
+    },
+    {
+      "result": "NOT_EXECUTED",
+      "segment_id": "TIME_SEGMENT_Q4"
+    }
+  ],
+  "shadow": false,
+  "sharpe": "NOT_EXECUTED",
+  "slippage": "NOT_EXECUTED",
+  "start_utc": "2026-07-22T17:23:37Z",
+  "status": "FAIL_CLOSED",
+  "strategy_params_digest": "d6d4722020acdd4bbd45eb9df8decbad62cb86cba98bca1d137a77418a329426",
+  "success_criteria_met": false,
+  "superseded_development_evidence_ref": "docs/evidence/evaluate_volatility_decay_breakout_development_v1/",
+  "terminal_corrective_verdict": "CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
+  "testnet": false,
+  "time_segment_count": 4,
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+  "time_segment_robustness_pass_ratio": "NOT_EXECUTED",
+  "total_cost_drag": "NOT_EXECUTED",
+  "trade_count": "NOT_EXECUTED",
+  "treatment_max_drawdown": "NOT_EXECUTED",
+  "treatment_net_return": "NOT_EXECUTED",
+  "treatment_profit_factor": "NOT_EXECUTED",
+  "treatment_trade_count": "NOT_EXECUTED",
+  "turnover": "NOT_EXECUTED"
+}

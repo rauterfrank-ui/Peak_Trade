@@ -1,0 +1,1 @@
+{"evaluation_executed": false, "reason": "UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:DOGE:USDT:USDT:perp:10574", "runner_started": false, "status": "FAIL_CLOSED"}

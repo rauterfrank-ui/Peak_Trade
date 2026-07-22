@@ -121,6 +121,9 @@
     "treatment_arm": "VOLATILITY_DECAY_BREAKOUT_V1"
   },
   "contract_digest": "2d0922f0bf4a2082a032320f1a03316012682ea4021a1677e30c481fa620590c",
+  "corrective_measurement_reevaluation_authorized": true,
+  "corrective_measurement_reevaluation_count": 1,
+  "corrective_measurement_reevaluation_limit": 1,
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -390,8 +393,10 @@
     "prior_terminal_result": "FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
     "vep_retry_forbidden": true
   },
+  "measurement_repair_merge_commit": "00a820f080973600378c3c2d5513905ee07217e9",
   "multiple_testing_budget": 1,
   "optimization_forbidden": true,
+  "original_development_run_count": 1,
   "parameter_governance": {
     "all_parameters_preregistered": true,
     "definition_semantics_complete": true,

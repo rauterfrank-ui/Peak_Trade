@@ -2,13 +2,25 @@
 
 ## Status
 
-`RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW`
+`CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`
 
 Executable development-evaluation path and panel execution boundary are present.
-The single authorized evaluate attempt fail-closed during productive PnL/metrics
-materialization with `UNEXPECTED:OverflowError:(34, 'Result too large')`.
-Durable run slot consumed (`DEVELOPMENT_RUN_COUNT=1`, `RUNNER_START_COUNT=1`).
-No retry.
+The single authorized development evaluate attempt fail-closed during productive
+PnL/metrics materialization with `UNEXPECTED:OverflowError:(34, 'Result too large')`
+under an invalid instrument-count-scaled portfolio measurement.
+Durable development run slot consumed (`DEVELOPMENT_RUN_COUNT=1`, `RUNNER_START_COUNT=1`).
+No development retry.
+
+A separate bounded corrective measurement reevaluation executed once after
+measurement repair merge `00a820f080973600378c3c2d5513905ee07217e9`
+(`PORTFOLIO_AGGREGATION_ID=RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1`)
+and fail-closed with
+`UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:DOGE:USDT:USDT:perp:10574`.
+Corrective slot consumed (`CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT=1/1`).
+Development counters preserved at `1`. No corrective retry.
+New evidence under
+`docs/evidence/evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_v1/`
+(prior development evidence preserved unmodified; supersession audited).
 
 ## Owner
 
@@ -16,7 +28,16 @@ No retry.
 
 ## Canonical entry point
 
-`scripts&#47;research&#47;run_evaluate_volatility_decay_breakout_development_v1.py`
+`scripts/research/run_evaluate_volatility_decay_breakout_development_v1.py`
+
+### Corrective CLI (executed; slot consumed; no retry)
+
+```bash
+python3 scripts/research/run_evaluate_volatility_decay_breakout_development_v1.py \
+  --mode corrective-reevaluate \
+  --authorize-corrective-measurement-reevaluation \
+  VOLATILITY_DECAY_BREAKOUT_CORRECTIVE_MEASUREMENT_REEVALUATION_V1
+```
 
 ## Bindings
 
@@ -28,14 +49,17 @@ No retry.
 - Measurement contract digest:
   `2d0922f0bf4a2082a032320f1a03316012682ea4021a1677e30c481fa620590c`
 - Productive PnL evaluator (reused):
-  `src&#47;research&#47;volatility_compression_breakout_v1_development_evaluation_v1&#47;productive_exit_pnl_evaluator_v1.py`
-- Terminal evidence: `docs&#47;evidence&#47;evaluate_volatility_decay_breakout_development_v1&#47;summary.json`
-- Archival panel-boundary report retained:
-  `docs&#47;evidence&#47;evaluate_volatility_decay_breakout_development_v1&#47;fail_closed_report.json`
+  `src/research/volatility_compression_breakout_v1_development_evaluation_v1/productive_exit_pnl_evaluator_v1.py`
+- Portfolio aggregation:
+  `RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1`
+- Terminal development evidence (superseded measurement; preserved):
+  `docs/evidence/evaluate_volatility_decay_breakout_development_v1/summary.json`
+- Terminal corrective evidence (FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT):
+  `docs/evidence/evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_v1/summary.json`
 
 ## Next step
 
-`NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
+`NO_RETRY_CORRECTIVE_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO`
 
 ## Explicitly false
 
@@ -44,15 +68,14 @@ No retry.
 - `SHADOW=false`
 - `TESTNET=false`
 - `HOLDOUT_ACCESS=false`
-- `RETRY_FORBIDDEN=true`
-- `EVALUATION_EXECUTED=false` (metrics incomplete; overflow before gate evaluation)
-- `RUNNER_STARTED=true`
-- `RUN_SLOT_CONSUMED=true`
+- `RETRY_FORBIDDEN=true` (development and corrective retry)
+- `DEVELOPMENT_RUN_COUNT=1` (preserved across corrective execution)
+- `CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT=1` (slot consumed; no retry)
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW
-scope: research, offline-only, terminal-development-evidence
+STATUS: CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT
+scope: research, offline-only, corrective-measurement-reevaluation-terminal
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false

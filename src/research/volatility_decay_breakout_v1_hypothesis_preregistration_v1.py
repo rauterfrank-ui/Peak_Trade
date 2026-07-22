@@ -58,8 +58,22 @@ def _canonical_dumps(payload: Mapping[str, Any]) -> str:
     return json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
 
 
+_DIGEST_EXCLUDED_KEYS = frozenset(
+    {
+        "contract_digest",
+        "provenance",
+        # Post-freeze corrective governance (must not mutate frozen measurement digest).
+        "corrective_measurement_reevaluation_authorized",
+        "corrective_measurement_reevaluation_count",
+        "corrective_measurement_reevaluation_limit",
+        "measurement_repair_merge_commit",
+        "original_development_run_count",
+    }
+)
+
+
 def compute_contract_digest(payload: Mapping[str, Any]) -> str:
-    body = {k: v for k, v in payload.items() if k not in ("contract_digest", "provenance")}
+    body = {k: v for k, v in payload.items() if k not in _DIGEST_EXCLUDED_KEYS}
     return hashlib.sha256(_canonical_dumps(body).encode("utf-8")).hexdigest()
 
 
