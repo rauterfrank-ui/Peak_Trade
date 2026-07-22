@@ -944,7 +944,8 @@
         "scripts/research/run_evaluate_volatility_contraction_expansion_breakout_development_v1.py",
         "src/research/volatility_contraction_expansion_breakout_v1_development_evaluation_v1/",
         "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_entry_point_v1.py",
-        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_executable_path_v1.py"
+        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_executable_path_v1.py",
+        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_fail_closed_report_v1.py"
       ]
     },
     "VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
