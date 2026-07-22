@@ -11,14 +11,14 @@ PROGRAM_REL_PATH = "config/research/volatility_regime_research_program_v1.json"
 GOVERNANCE_REL_PATH = "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md"
 REQUIRED_PROGRAM_ID = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
 REQUIRED_STATUS = "DEFINITION_ONLY_PROGRAM_OPEN"
-REQUIRED_STRATEGY_IDENTITY = "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1"
+REQUIRED_STRATEGY_IDENTITY = "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1"
 REQUIRED_SIGNAL_FAMILY = "VOLATILITY_REGIME"
-REQUIRED_TARGET_PHENOMENON = (
-    "VOLATILITY_DECAY_AFTER_HIGH_VOL_THEN_CHANNEL_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT"
-)
+REQUIRED_TARGET_PHENOMENON = "VOLATILITY_CONTRACTION_TO_EXPANSION_JOINT_DIRECTIONAL_BREAKOUT"
 REQUIRED_PRIOR_HYPOTHESIS = "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1"
 REQUIRED_PRIOR_VCB = "VOLATILITY_COMPRESSION_BREAKOUT_V1"
 REQUIRED_PRIOR_VEP = "VOLATILITY_EXPANSION_PERSISTENCE_V1"
+REQUIRED_PRIOR_VDB = "VOLATILITY_DECAY_BREAKOUT_V1"
+REQUIRED_PRIOR_VDBX = "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1"
 CLOSED_ENTRY_BACKLOG = (
     "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
 )
@@ -68,6 +68,10 @@ def validate_program_contract(
         payload.get("development_evaluation_authorized") is True,
         "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
     )
+    _require(
+        payload.get("development_evaluation_executed") is False,
+        "DEVELOPMENT_EVALUATION_EXECUTED_TRUE",
+    )
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED_TRUE")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(
@@ -85,14 +89,10 @@ def validate_program_contract(
         payload.get("strategy_implementation_authorized_in_this_slice") is False,
         "STRATEGY_IMPLEMENTATION_AUTHORIZED",
     )
-    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
+    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
     _require(payload.get("development_run_limit") == 1, "DEVELOPMENT_RUN_LIMIT_NOT_ONE")
-    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
-    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED_FALSE")
-    _require(
-        payload.get("development_evaluation_executed") is True,
-        "DEVELOPMENT_EVALUATION_EXECUTED_FALSE",
-    )
+    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
+    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED_TRUE")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
     gates = payload.get("promotion_and_economic_gate_policy") or {}
     _require(gates.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE_TRUE")
@@ -138,6 +138,10 @@ def validate_program_contract(
         independence.get("not_a_retry_of_terminal_volatility_expansion_persistence_v1") is True,
         "VEP_RETRY_NOT_FORBIDDEN",
     )
+    _require(
+        independence.get("not_a_retry_of_terminal_volatility_decay_breakout_v1") is True,
+        "VDB_RETRY_NOT_FORBIDDEN",
+    )
     forbidden = set(independence.get("forbidden_lineage_refs") or [])
     for required in (
         "vol_breakout/v1_unchanged_binding_retry",
@@ -147,6 +151,7 @@ def validate_program_contract(
         "VOLATILITY_COMPRESSION_BREAKOUT_V1",
         "VOLATILITY_EXPANSION_PERSISTENCE_V1",
         "VOLATILITY_DECAY_BREAKOUT_V1",
+        "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
     ):
         _require(required in forbidden, f"MISSING_FORBIDDEN_LINEAGE:{required}")
     md = payload.get("material_difference_vs_terminal_coiled_spring") or {}
@@ -176,11 +181,11 @@ def validate_program_contract(
     _require(md_vcb.get("not_a_parameter_change_of_vcb_v1") is True, "VCB_PARAM_CHANGE")
     vcb_diffs = md_vcb.get("differences") or {}
     for key in (
-        "compression_prerequisite",
-        "entry_timing",
-        "expansion_definition",
-        "persistence_semantics",
-        "vol_estimator_period",
+        "admission_structure",
+        "release_window",
+        "exit_semantics",
+        "target_phenomenon",
+        "vol_estimator_family",
     ):
         _require(bool(vcb_diffs.get(key)), f"MISSING_VCB_MATERIAL_DIFFERENCE:{key}")
     md_vep = payload.get("material_difference_vs_volatility_expansion_persistence_v1") or {}
@@ -201,11 +206,19 @@ def validate_program_contract(
 
     md_vdb = payload.get("material_difference_vs_volatility_decay_breakout_v1") or {}
     _require(
-        md_vdb.get("predecessor_strategy_identity") == "VOLATILITY_DECAY_BREAKOUT_V1",
+        md_vdb.get("predecessor_strategy_identity") == REQUIRED_PRIOR_VDB,
         "PRIOR_VDB_MISMATCH",
     )
     _require(md_vdb.get("vdb_retry_forbidden") is True, "VDB_RETRY_ALLOWED")
     _require(md_vdb.get("not_a_corrective_retry_of_vdb_v1") is True, "VDB_CORRECTIVE_RETRY")
+
+    md_vdbx = (
+        payload.get("material_difference_vs_volatility_decay_breakout_with_explicit_decay_exit_v1")
+        or {}
+    )
+    _require(md_vdbx.get("prior_strategy_identity") == REQUIRED_PRIOR_VDBX, "PRIOR_VDBX_MISMATCH")
+    _require(md_vdbx.get("vdbx_retry_forbidden") is True, "VDBX_RETRY_ALLOWED")
+    _require(md_vdbx.get("not_a_repair_or_retry_of_vdbx_v1") is True, "VDBX_REPAIR")
 
     if repo_root is not None:
         entry = load_json(repo_root / CLOSED_ENTRY_BACKLOG)
@@ -229,9 +242,9 @@ def validate_program_contract(
         "holdout_authorized": False,
         "evaluation_authorized": False,
         "promotion_eligible": False,
-        "development_run_count": 1,
-        "runner_start_count": 1,
-        "run_slot_consumed": True,
+        "development_run_count": 0,
+        "runner_start_count": 0,
+        "run_slot_consumed": False,
         "retry_allowed": False,
         "material_difference_explicit": True,
         "material_difference_from_vcb_v1": True,

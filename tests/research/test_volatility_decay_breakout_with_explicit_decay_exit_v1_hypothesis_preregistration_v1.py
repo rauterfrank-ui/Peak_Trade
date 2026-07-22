@@ -89,11 +89,15 @@ def test_exit_semantics_and_material_difference() -> None:
     assert md["not_a_corrective_retry_of_vdb_v1"] is True
     assert contract["predecessor_strategy_id"] == REQUIRED_PREDECESSOR
     backlog = _load(BACKLOG_PATH)
-    assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == REQUIRED_STRATEGY_IDENTITY
+    assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
+        "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1"
+    )
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
     assert "VOLATILITY_DECAY_BREAKOUT_V1" in terminals
+    assert REQUIRED_STRATEGY_IDENTITY in terminals
     program = _load(PROGRAM_PATH)
-    assert program["strategy_identity"] == REQUIRED_STRATEGY_IDENTITY
+    assert program["strategy_identity"] == "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1"
+    assert REQUIRED_STRATEGY_IDENTITY in program["causal_independence"]["forbidden_lineage_refs"]
 
 
 def test_fail_closed_on_semantics_mutation() -> None:

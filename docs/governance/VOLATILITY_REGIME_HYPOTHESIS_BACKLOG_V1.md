@@ -3,37 +3,40 @@
 ## Status
 
 `OPEN_BACKLOG` — exactly one definition-only preregistered successor
-(`VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`) after terminal
-`VOLATILITY_DECAY_BREAKOUT_V1` `FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`,
-prior terminal `VOLATILITY_EXPANSION_PERSISTENCE_V1`, and prior terminal
+(`VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`) after terminal
+`VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
+`FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`, prior terminal
+`VOLATILITY_DECAY_BREAKOUT_V1`, prior terminal
+`VOLATILITY_EXPANSION_PERSISTENCE_V1`, and prior terminal
 `VOLATILITY_COMPRESSION_BREAKOUT_V1`.
 
 ## Identity
 
 - Program: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`
-- Preregistered hypothesis: `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_NON_BITCOIN_PERPETUALS_V1`
-- Strategy: `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
-- Predecessor: `VOLATILITY_DECAY_BREAKOUT_V1`
+- Preregistered hypothesis: `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1`
+- Strategy: `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`
+- Predecessor: `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
 - Signal family: `VOLATILITY_REGIME`
 - Terminal: `VOLATILITY_COMPRESSION_BREAKOUT_V1`, `VOLATILITY_EXPANSION_PERSISTENCE_V1`,
-  `VOLATILITY_DECAY_BREAKOUT_V1` (all `FAIL_CLOSED_NO_RETRY`; retry forbidden)
+  `VOLATILITY_DECAY_BREAKOUT_V1`, `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
+  (all `FAIL_CLOSED_NO_RETRY`; retry forbidden)
 
 ## Binding
 
 - SSOT: `config/research/volatility_regime_hypothesis_backlog_v1.json`
 - Validator: `src/research/volatility_regime_hypothesis_backlog_v1.py`
-- Measurement contract: `config/research/volatility_decay_breakout_with_explicit_decay_exit_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
+- Measurement contract: `config/research/volatility_contraction_expansion_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
 
 ## Inventory
 
 - open_unpreregistered=0
-- preregistered=1 (`VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`, run_count=1, slot consumed FAIL_CLOSED)
-- terminal=3 (VCB + VEP + VDB) plus VDBX development-slot terminal FAIL_CLOSED
+- preregistered=1 (`VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`, run_count=0, slot not consumed)
+- terminal=4 (VCB + VEP + VDB + VDBX)
 - sibling lanes closed / reopen forbidden
 
 ## Next step
 
-`NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
+`REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1
