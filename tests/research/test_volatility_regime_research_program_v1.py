@@ -40,7 +40,7 @@ def test_repo_program_definition_only_open() -> None:
     report = load_and_validate_repo_program(REPO)
     assert report["valid"] is True
     assert report["definition_only"] is True
-    assert report["strategy_implementation_present"] is False
+    assert report["strategy_implementation_present"] is True
     assert report["program_id"] == "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
     assert report["status"] == "DEFINITION_ONLY_PROGRAM_OPEN"
     assert report["strategy_identity"] == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
@@ -109,8 +109,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["strategy_implementation_present"] = True
-    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_TRUE"):
+    bad3["strategy_implementation_present"] = False
+    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_FALSE"):
         validate_program_contract(bad3)
     bad4 = copy.deepcopy(payload)
     bad4["runtime_policy"]["orders_allowed"] = True

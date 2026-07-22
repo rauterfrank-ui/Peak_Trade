@@ -1,8 +1,13 @@
-# VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1 — Development Evaluation Entry Point (Definition/Binding Only)
+# VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1 — Development Evaluation Entry Point
 
 ## Status
 
-`DEFINITION_ONLY_UNAUTHORIZED_BINDING`
+`EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED`
+
+Canonical entry point is productively bound to the strategy producer, shared channel core,
+and reused productive PnL evaluator. DEVELOPMENT_ONLY dataset is bound. Holdout is
+blocked. Run-limit/slot guards are enforceable before runner start. No development
+evaluation has been executed; slot remains unused (`DEVELOPMENT_RUN_COUNT=0`).
 
 ## Canonical entry point
 
@@ -14,13 +19,13 @@
 
 ## Safety
 
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=false` in this binding slice
 - `DEVELOPMENT_EVALUATION_EXECUTED=false`
 - `DEVELOPMENT_RUN_COUNT=0`
 - `DEVELOPMENT_SLOT_CONSUMED=false`
 - `HOLDOUT_ACCESSED=false`
 - `LIVE_AUTHORIZED=false`
 - `ORDERS=false`
-- No runner package materialized in this PREREGISTRATION_ONLY slice
+- Productive PnL evaluator reused (not duplicated)
+- Separate operator GO required before any evaluate execution
 
 docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1

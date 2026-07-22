@@ -1,10 +1,10 @@
 
-### VEPC v1 definition-only preregistration (post-VCEB terminal)
+### VEPC v1 strategy implementation + unauthorized development entry path
 
 - Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
-- Status: `DEFINITION_ONLY_PREREGISTERED`
+- Status: `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED`
 - `DEVELOPMENT_EVALUATION_EXECUTED=false`, `DEVELOPMENT_RUN_COUNT=0`, `DEVELOPMENT_SLOT_CONSUMED=false`
-- Canonical entry point (definition/binding only): `scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py`
+- Canonical entry point (productively bound, evaluate unauthorized until separate GO): `scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py`
 
 ## Registry-Metadaten
 

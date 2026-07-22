@@ -8,7 +8,7 @@ Open volatility-regime research backlog under `VOLATILITY_REGIME_RESEARCH_PROGRA
 
 - Preregistered hypothesis: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
 - Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
-- Status: `DEFINITION_ONLY_PREREGISTERED`
+- Status: `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED`
 - `DEVELOPMENT_RUN_COUNT=0`, `DEVELOPMENT_SLOT_CONSUMED=false`
 - Predecessor terminal: `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`
   (`FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`)
@@ -23,12 +23,12 @@ Open volatility-regime research backlog under `VOLATILITY_REGIME_RESEARCH_PROGRA
 
 ## Inventory
 
-- preregistered=1 (`VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`, run_count=0, slot not consumed)
+- preregistered=1 (`VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`, implementation present, run_count=0, slot not consumed)
 - terminal=5 (all `FAIL_CLOSED_NO_RETRY`; retry forbidden)
 - open unpreregistered candidates=0
 
 ## Next step
 
-Review/merge definition-only preregistration, then separate operator GO for strategy implementation, then separate GO for Development evaluation.
+Await separate operator GO for bounded Development evaluation execution.
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1

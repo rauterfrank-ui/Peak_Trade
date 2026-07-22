@@ -81,10 +81,10 @@ def validate_program_contract(
     )
     _require(payload.get("promotion_authorized") is False, "PROMOTION_AUTHORIZED_TRUE")
     _require(payload.get("runtime_authorized") is False, "RUNTIME_AUTHORIZED_TRUE")
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED_TRUE")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED_FALSE")
     _require(
-        payload.get("strategy_implementation_present") is False,
-        "STRATEGY_IMPLEMENTATION_PRESENT_TRUE",
+        payload.get("strategy_implementation_present") is True,
+        "STRATEGY_IMPLEMENTATION_PRESENT_FALSE",
     )
     _require(
         payload.get("strategy_implementation_authorized_in_this_slice") is False,
@@ -252,7 +252,7 @@ def validate_program_contract(
         "strategy_identity": REQUIRED_STRATEGY_IDENTITY,
         "signal_family": REQUIRED_SIGNAL_FAMILY,
         "definition_only": True,
-        "strategy_implementation_present": False,
+        "strategy_implementation_present": True,
         "holdout_authorized": False,
         "evaluation_authorized": False,
         "promotion_eligible": False,
