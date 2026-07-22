@@ -2,13 +2,13 @@
 
 ## Status
 
-`FAIL_CLOSED_AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED`
+`PANEL_EXECUTION_BOUNDARY_PRESENT_AWAITING_SEPARATE_DEVELOPMENT_EVALUATION_GO`
 
-Executable development-evaluation path is present and development evaluation is
-authorized (`development_evaluation_authorized=true`). The single authorized
-evaluate attempt fail-closed before panel open because
-`AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED_IN_THIS_SLICE`. Durable
-run counts remain `0`.
+Executable development-evaluation path is present. Development evaluation is
+authorized (`development_evaluation_authorized=true`). The panel execution
+boundary (loader / wiring / injectable execution boundary / productive PnL
+handoff) is materialized. Durable run counts remain `0`. Evaluation has **not**
+been executed in this implementation-only slice.
 
 ## Owner
 
@@ -22,7 +22,7 @@ Modes:
 
 - `preflight` (default): no panel open, no runner start, no slot claim
 - `dry-validate`: prove executable-path contracts without runner start or counter mutation
-- `evaluate`: requires machine-checkable authorization (token **and** repo flags); panel execution remains a separate operator GO
+- `evaluate`: requires machine-checkable authorization (token **and** repo flags); single bounded run remains a separate operator GO
 
 ## Bindings
 
@@ -39,6 +39,8 @@ Modes:
 - Productive PnL evaluator (reused, not duplicated):
   `src&#47;research&#47;volatility_compression_breakout_v1_development_evaluation_v1&#47;productive_exit_pnl_evaluator_v1.py`
 - Shared channel core: `src&#47;research&#47;price_channel_breakout_core_v1.py`
+- Panel execution boundary:
+  `src&#47;research&#47;volatility_expansion_persistence_v1_development_evaluation_v1&#47;execution_boundary_v1.py`
 - Lifecycle authority:
   `config&#47;research&#47;volatility_regime_hypothesis_backlog_v1.json`
 
@@ -52,11 +54,11 @@ Modes:
 No evaluation run, no dataset load, no holdout access, no retry,
 no threshold change, no result calibration, no Master-V2&#47;Double-Play&#47;risk&#47;sizing&#47;execution
 mutation, no runtime activation. Economic&#47;promotion gates remain closed. No second PnL truth.
-Development evaluation authorization is true; evaluation not executed.
+Development evaluation authorization is true; evaluation not executed; slot not consumed.
 
 ## Next step
 
-`SEPARATE_OPERATOR_GO_TO_MATERIALIZE_PANEL_EXECUTION_BOUNDARY_THEN_SINGLE_BOUNDED_DEVELOPMENT_EVALUATION`
+`SEPARATE_OPERATOR_GO_FOR_SINGLE_BOUNDED_DEVELOPMENT_EVALUATION`
 
 ## Explicitly false
 
@@ -71,7 +73,7 @@ Development evaluation authorization is true; evaluation not executed.
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: FAIL_CLOSED_AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED
+STATUS: PANEL_EXECUTION_BOUNDARY_PRESENT_AWAITING_SEPARATE_DEVELOPMENT_EVALUATION_GO
 scope: research, offline-only, fail-closed-evidence, no-run-slot-consumption
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
