@@ -922,6 +922,19 @@
         "docs/evidence/forensic_classify_vep_v1_unpairable_entry_no_exit_v1/"
       ]
     },
+    "VOLATILITY_DECAY_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "note": "Strategy-implementation-only surfaces for VOLATILITY_DECAY_BREAKOUT_V1 (shared 20-bar price-channel core + ATR14/close percentile vol-state + high→low decay admission + unconditional baseline + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced not duplicated; no Master-V2/Double-Play/risk/execution mutation; VEP/VCB retry forbidden.",
+      "path_prefixes": [
+        "src/research/price_channel_breakout_core_v1.py",
+        "src/research/volatility_decay_breakout_v1_vol_state_v1.py",
+        "src/research/volatility_decay_breakout_v1_strategy_v1.py",
+        "src/research/unconditional_20_bar_price_channel_breakout_v1.py",
+        "src/research/volatility_decay_breakout_v1_strategy_implementation_binding_v1.py",
+        "config/research/volatility_decay_breakout_v1_strategy_implementation_binding_v1.json",
+        "tests/research/test_volatility_decay_breakout_v1_strategy_implementation_v1.py",
+        "docs/governance/VOLATILITY_DECAY_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+      ]
+    },
     "VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
       "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_EXPANSION_PERSISTENCE_V1: executable evaluate path with materialized panel execution boundary (loader/wiring/injectable boundary); productive exit/PnL evaluator referenced from VCB package (not duplicated). Development evaluation authorized on HEAD; run counters remain 0 until a separate operator GO executes the single bounded development evaluation; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
       "path_prefixes": [

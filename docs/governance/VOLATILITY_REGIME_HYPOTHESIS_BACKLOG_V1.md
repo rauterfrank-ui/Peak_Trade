@@ -21,6 +21,8 @@ and prior terminal `VOLATILITY_COMPRESSION_BREAKOUT_V1` `FAIL_CLOSED_NO_RETRY`.
 - SSOT: `config/research/volatility_regime_hypothesis_backlog_v1.json`
 - Validator: `src/research/volatility_regime_hypothesis_backlog_v1.py`
 - Forensic prior: `docs/evidence/forensic_classify_vep_v1_unpairable_entry_no_exit_v1/`
+- Measurement contract: `config/research/volatility_decay_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
+- Strategy implementation binding: `config/research/volatility_decay_breakout_v1_strategy_implementation_binding_v1.json` (`implementation_present=true`; evaluation still unauthorized)
 
 ## Inventory
 
