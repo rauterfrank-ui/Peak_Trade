@@ -1,4 +1,4 @@
-"""Definition-only contract tests for CS momentum program v1."""
+"""Definition-only contract tests for CS momentum program v1 (closed)."""
 
 from __future__ import annotations
 
@@ -40,28 +40,38 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_program_definition_only() -> None:
+def test_repo_program_closed_terminal_no_successor() -> None:
     report = load_and_validate_repo_program(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is False
+    assert report["definition_only"] is True
     assert report["strategy_implementation_present"] is True
     assert report["program_id"] == "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1"
+    assert report["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     assert report["strategy_identity"] == "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1"
+    assert report["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
     assert report["holdout_authorized"] is False
     assert report["evaluation_authorized"] is False
     assert report["promotion_eligible"] is False
     assert report["development_run_count"] == 1
     assert report["runner_start_count"] == 1
+    assert report["run_budget_consumed"] is True
+    assert report["successor_found"] is False
+    assert report["next_eligible"] == "NONE"
+    assert report["retry_allowed"] is False
+    assert report["reopen_allowed"] is False
 
 
 def test_causal_independence_and_no_core_mutation_flags() -> None:
     payload = _load(PROGRAM_PATH)
     assert payload["strategy_implementation_present"] is True
-    assert payload["strategy_implementation_authorized_in_this_slice"] is True
-    assert payload["implementation_authorized"] is True
+    assert payload["strategy_implementation_authorized_in_this_slice"] is False
+    assert payload["implementation_authorized"] is False
     assert payload["run_slot_consumed"] is True
+    assert payload["run_budget_consumed"] is True
     assert payload["holdout_forbidden"] is True
     assert payload["runtime_authorized"] is False
+    assert payload["create_successor_hypothesis"] is False
+    assert payload["automatic_successor_creation"] is False
     independence = payload["causal_independence"]
     assert independence["independent_from_closed_entry_eligibility_lane"] is True
     assert independence["independent_from_closed_exit_efficiency_lane"] is True
@@ -106,15 +116,20 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["strategy_implementation_present"] = False
-    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_FALSE"):
+    bad3["reopen_allowed"] = True
+    with pytest.raises(ProgramValidationError, match="REOPEN_ALLOWED"):
         validate_program_contract(bad3)
+    bad4 = copy.deepcopy(payload)
+    bad4["run_slot_consumed"] = False
+    with pytest.raises(ProgramValidationError, match="RUN_SLOT_CONSUMED"):
+        validate_program_contract(bad4)
 
 
 def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
-    assert "DOCS_TOKEN_MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1" in (
-        GOVERNANCE.read_text(encoding="utf-8")
-    )
+    text = GOVERNANCE.read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1" in text
+    assert "PROGRAM_CLOSED_NO_FURTHER_RESEARCH" in text
+    assert "FAIL_CLOSED_NO_RETRY" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1" in owners

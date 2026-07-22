@@ -274,7 +274,8 @@ def test_preflight_authorized_no_evaluate_execution_or_run_consumption() -> None
     assert guards["exactly_one_run_guard_present"] is True
     assert guards["retry_guard_present"] is True
     assert guards["holdout_guard_present"] is True
-    assert guards["development_evaluation_authorized"] is True
+    assert guards["development_evaluation_authorized"] is False
+    assert guards["program_status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     contract = _load(CONTRACT)
     program = _load(PROGRAM)
     assert contract["development_run_count"] == 1
@@ -283,7 +284,10 @@ def test_preflight_authorized_no_evaluate_execution_or_run_consumption() -> None
     assert program["runner_start_count"] == 1
     assert contract["evaluation_authorized"] is False
     assert contract["development_evaluation_authorized"] is True
-    assert program["development_evaluation_authorized"] is True
+    assert program["development_evaluation_authorized"] is False
+    assert program["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
+    assert program["retry_allowed"] is False
+    assert program["reopen_allowed"] is False
     runtime = contract["runtime_policy"]
     assert runtime["live_authorized"] is False
     assert runtime["orders_allowed"] is False
