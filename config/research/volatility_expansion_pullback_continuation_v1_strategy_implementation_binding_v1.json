@@ -35,7 +35,7 @@
     "NO_TRAILING_STOP",
     "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE"
   ],
-  "frozen_measurement_contract_digest": "ace1944f5b81065d52ce5b650a52e4de3c6f4817b54648b3a0c758fb2f2355eb",
+  "frozen_measurement_contract_digest": "e4bd724549670e434aa95c4b3703ceaa012bda777b005f08ae11441b7ecea03a",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/volatility_expansion_pullback_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "holdout_authorized": false,

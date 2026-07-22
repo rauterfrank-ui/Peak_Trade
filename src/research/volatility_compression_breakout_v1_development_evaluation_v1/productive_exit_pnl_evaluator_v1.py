@@ -276,8 +276,15 @@ def simulate_arm_roundtrips_v1(
     panel_series: Sequence[InstrumentPanelSeriesV1],
     arm: ArmEventSeriesV1,
     effective_cost: EffectiveBacktestCostConfigV0,
+    is_panel_last_bar_mask: Sequence[bool] | None = None,
 ) -> tuple[RoundtripTradeV1, ...]:
-    """Pair entry events with first-event-wins exits; fail-closed if unpairable."""
+    """Pair entry events with first-event-wins exits; fail-closed if unpairable.
+
+    End-of-series policy matches the productive ledger / strategy-emitted contract:
+    after protective/regime/time exits, ``END_OF_INSTRUMENT_LIQUIDATION`` then
+    ``END_OF_PANEL_LIQUIDATION`` at last-bar close (same fee/slippage/timestamp
+    primitives). Same-bar fill+exit remains forbidden (no fill on final bar).
+    """
     by_id = {s.instrument_id: s for s in panel_series}
     if arm.instrument_id not in by_id:
         raise ValueError(f"ARM_INSTRUMENT_MISSING:{arm.instrument_id}")
@@ -295,6 +302,17 @@ def simulate_arm_roundtrips_v1(
 
     trades: list[RoundtripTradeV1] = []
     n = len(frame)
+    if is_panel_last_bar_mask is None:
+        panel_last = [False] * n
+        if n:
+            panel_last[-1] = True
+    else:
+        if len(is_panel_last_bar_mask) != n:
+            raise ValueError(
+                f"PANEL_LAST_MASK_LEN_MISMATCH:{arm.instrument_id}:"
+                f"{len(is_panel_last_bar_mask)}:{n}"
+            )
+        panel_last = [bool(x) for x in is_panel_last_bar_mask]
     i = 0
     while i < len(arm.entry_event_mask):
         if not arm.entry_event_mask[i]:
@@ -320,9 +338,10 @@ def simulate_arm_roundtrips_v1(
         exit_i: int | None = None
         exit_reason: ExitReasonV1 | None = None
         exit_price = 0.0
-        # Exclusive end must include bar fill_i + max_bars, where held == max_bars
-        # (TIME_EXIT fires at held >= max_bars); off-by-one fixed from fill_i + 1 + max_bars.
-        for j in range(fill_i + 1, min(n, fill_i + max_bars + 1)):
+        # Inclusive of instrument/panel last bar so EOI/EOP can pair late entries
+        # when TIME_EXIT is geometrically unreachable. Still excludes the fill bar.
+        search_end = n
+        for j in range(fill_i + 1, search_end):
             high = float(frame.loc[j, "high"])
             low = float(frame.loc[j, "low"])
             close = float(frame.loc[j, "close"])
@@ -348,6 +367,11 @@ def simulate_arm_roundtrips_v1(
             held = j - fill_i
             if held >= max_bars:
                 candidates.append((3, "TIME_EXIT", close))
+            is_last_instrument_bar = j == n - 1
+            if is_last_instrument_bar:
+                candidates.append((4, "END_OF_INSTRUMENT_LIQUIDATION", close))
+            if panel_last[j]:
+                candidates.append((5, "END_OF_PANEL_LIQUIDATION", close))
             if candidates:
                 candidates.sort(key=lambda t: t[0])
                 _, exit_reason, exit_price = candidates[0]

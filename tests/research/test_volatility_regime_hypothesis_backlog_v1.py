@@ -88,10 +88,11 @@ def test_sibling_closed_lanes_and_inventory() -> None:
     assert hyp["implementation_present"] is True
     assert hyp["holdout_allowed"] is False
     assert hyp["development_run_limit"] == 1
-    assert hyp["development_run_count"] == 0
-    assert hyp["runner_start_count"] == 0
-    assert hyp["run_slot_consumed"] is False
-    assert hyp["status"] == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
+    assert hyp["development_run_count"] == 1
+    assert hyp["runner_start_count"] == 1
+    assert hyp["run_slot_consumed"] is True
+    assert hyp["historical_slot_status"] == "CONSUMED_NO_RETRY"
+    assert hyp["status"] == "DEVELOPMENT_SLOT_CONSUMED_NO_RETRY"
     assert hyp["baseline_id"] == "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1"
     assert hyp["strategy_identity"] == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
 

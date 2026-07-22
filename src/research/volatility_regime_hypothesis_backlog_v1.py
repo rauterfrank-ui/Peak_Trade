@@ -96,15 +96,16 @@ def validate_backlog_contract(
     _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(
-        hyp.get("status") == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
+        hyp.get("status") == "DEVELOPMENT_SLOT_CONSUMED_NO_RETRY",
         "HYPOTHESIS_STATUS",
     )
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
-    _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NOT_ZERO")
+    _require(hyp.get("development_run_count") == 1, "HYP_RUN_COUNT_NOT_ONE")
     _require(hyp.get("development_run_limit") == 1, "HYP_RUN_LIMIT_NOT_ONE")
     _require(hyp.get("implementation_present") is True, "HYP_IMPLEMENTATION_PRESENT_FALSE")
-    _require(hyp.get("run_slot_consumed") is False, "HYP_RUN_SLOT_CONSUMED")
-    _require(hyp.get("runner_start_count") == 0, "HYP_RUNNER_START_NOT_ZERO")
+    _require(hyp.get("run_slot_consumed") is True, "HYP_RUN_SLOT_NOT_CONSUMED")
+    _require(hyp.get("runner_start_count") == 1, "HYP_RUNNER_START_NOT_ONE")
+    _require(hyp.get("historical_slot_status") == "CONSUMED_NO_RETRY", "HYP_HISTORICAL_SLOT")
     _require(hyp.get("holdout_allowed") is False, "HYP_HOLDOUT_ALLOWED")
     _require(hyp.get("retry_allowed") is False, "HYP_RETRY_ALLOWED")
     terminals = payload.get("terminal_hypotheses") or []

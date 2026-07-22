@@ -90,10 +90,10 @@ def validate_program_contract(
         payload.get("strategy_implementation_authorized_in_this_slice") is False,
         "STRATEGY_IMPLEMENTATION_AUTHORIZED",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
     _require(payload.get("development_run_limit") == 1, "DEVELOPMENT_RUN_LIMIT_NOT_ONE")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED_TRUE")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_NOT_CONSUMED")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
     gates = payload.get("promotion_and_economic_gate_policy") or {}
     _require(gates.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE_TRUE")
@@ -256,9 +256,9 @@ def validate_program_contract(
         "holdout_authorized": False,
         "evaluation_authorized": False,
         "promotion_eligible": False,
-        "development_run_count": 0,
-        "runner_start_count": 0,
-        "run_slot_consumed": False,
+        "development_run_count": 1,
+        "runner_start_count": 1,
+        "run_slot_consumed": True,
         "retry_allowed": False,
         "material_difference_explicit": True,
         "material_difference_from_vcb_v1": True,
