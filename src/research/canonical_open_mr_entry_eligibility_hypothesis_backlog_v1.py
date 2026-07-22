@@ -2,6 +2,9 @@
 
 Definition-only governance. No preregistration, backtest, economic metrics,
 holdout access, runtime activation, or productive trading-logic mutation.
+
+Lane status vocabulary and post-terminal legality are owned solely by
+CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1.
 """
 
 from __future__ import annotations
@@ -10,10 +13,19 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
+from src.research.canonical_research_lane_post_terminal_lifecycle_contract_v1 import (
+    CONTRACT_ID as LIFECYCLE_CONTRACT_ID,
+    CONTRACT_REL_PATH as LIFECYCLE_CONTRACT_REL_PATH,
+    ResearchLaneLifecycleContractError,
+    resolve_post_terminal_transition,
+    validate_lane_snapshot,
+)
+
 PACKAGE_MARKER = "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1=true"
 BACKLOG_REL_PATH = "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
 GOVERNANCE_REL_PATH = "docs/governance/CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1.md"
-REQUIRED_STATUS = "OPEN_BACKLOG"
+REQUIRED_STATUS = "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+REQUIRED_LIFECYCLE_AUTHORITY = "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
 REQUIRED_DATASET_ID = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
 REQUIRED_TREATMENT_TYPE = "ENTRY_EFFECTIVE_PRE_ENTRY_ELIGIBILITY_FILTER"
 HOLDOUT_OPAQUE_ID = "offline_economic_reevaluation_sealed_long_panel_v1"
@@ -141,7 +153,25 @@ def compute_priority_score_total(scores: Mapping[str, Any]) -> int:
 
 def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     """Validate the canonical open MR eligibility backlog SSOT fail-closed."""
-    _assert_true(backlog.get("status") == REQUIRED_STATUS, "STATUS_NOT_OPEN_BACKLOG")
+    _assert_true(
+        backlog.get("status") == REQUIRED_STATUS,
+        "STATUS_NOT_POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+    )
+    _assert_true(
+        backlog.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
+        "LIFECYCLE_CONTRACT_ID_MISMATCH",
+    )
+    _assert_true(
+        backlog.get("lifecycle_contract_ref") == LIFECYCLE_CONTRACT_REL_PATH,
+        "LIFECYCLE_CONTRACT_REF_MISMATCH",
+    )
+    _assert_true(
+        backlog.get("lifecycle_authority") == REQUIRED_LIFECYCLE_AUTHORITY,
+        "LIFECYCLE_AUTHORITY_MISMATCH",
+    )
+    _assert_true(backlog.get("explicit_closeout_decision") is False, "UNEXPECTED_CLOSEOUT_DECISION")
+    _assert_true(backlog.get("explicit_waiting_decision") is False, "UNEXPECTED_WAITING_DECISION")
+    _assert_true(backlog.get("lane_auto_closed") is False, "LANE_AUTO_CLOSED_FORBIDDEN")
     _assert_true(backlog.get("canonical_ssot") is True, "NOT_CANONICAL_SSOT")
     _assert_true(
         backlog.get("exactly_one_authoritative_truth") is True,
@@ -525,9 +555,50 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "MACD_MUST_BE_TERMINAL",
     )
 
+    # Shared post-terminal lifecycle is the sole status authority.
+    lifecycle_snapshot = {
+        "status": backlog.get("status"),
+        "open_unpreregistered_candidates": list(candidates),
+        "preregistered_hypotheses": list(preregistered),
+        "explicit_closeout_decision": bool(backlog.get("explicit_closeout_decision")),
+        "explicit_waiting_decision": bool(backlog.get("explicit_waiting_decision")),
+        "go_executable": False,
+        "auto_created_successor": False,
+        "implicit_successor": False,
+        "lane_auto_closed": bool(backlog.get("lane_auto_closed")),
+    }
+    try:
+        lifecycle_report = validate_lane_snapshot(lifecycle_snapshot)
+    except ResearchLaneLifecycleContractError as exc:
+        raise BacklogValidationError(f"LIFECYCLE_CONTRACT_REJECTED:{exc}") from exc
+    _assert_true(lifecycle_report.get("valid") is True, "LIFECYCLE_SNAPSHOT_INVALID")
+    _assert_true(
+        lifecycle_report.get("status") == REQUIRED_STATUS,
+        "LIFECYCLE_STATUS_DRIFT",
+    )
+    _assert_true(
+        lifecycle_report.get("inventory_non_empty") is False,
+        "LIFECYCLE_INVENTORY_MUST_BE_EMPTY",
+    )
+    resolved = resolve_post_terminal_transition(
+        result_class="FAIL",
+        inventory_non_empty_flag=False,
+    )
+    _assert_true(
+        resolved.get("next_state") == REQUIRED_STATUS,
+        "POST_TERMINAL_RESOLUTION_DRIFT",
+        str(resolved.get("next_state")),
+    )
+    _assert_true(
+        resolved.get("operator_decision_required") is True,
+        "POST_TERMINAL_OPERATOR_DECISION_NOT_REQUIRED",
+    )
+
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
+        "lifecycle_contract_id": LIFECYCLE_CONTRACT_ID,
+        "lifecycle_authority": REQUIRED_LIFECYCLE_AUTHORITY,
         "terminal_hypothesis_count": len(REQUIRED_TERMINAL_HYPOTHESIS_IDS),
         "open_candidate_count": len(candidates),
         "preregistered_count": len(preregistered_ids),
