@@ -11,7 +11,7 @@
 - Signal family: `VOLATILITY_REGIME`
 - Baseline: `UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1`
 - Implementation binding: `config&#47;research&#47;volatility_decay_breakout_v1_strategy_implementation_binding_v1.json`
-- Frozen measurement contract digest: `d56ee1f11f697d6734c505c436be325060d956023573ef5cfd64aa010d00fa3f`
+- Frozen measurement contract digest: `2d0922f0bf4a2082a032320f1a03316012682ea4021a1677e30c481fa620590c`
 - Shared channel core: `src&#47;research&#47;price_channel_breakout_core_v1.py`
 - Vol state: `src&#47;research&#47;volatility_decay_breakout_v1_vol_state_v1.py`
 - Strategy: `src&#47;research&#47;volatility_decay_breakout_v1_strategy_v1.py`

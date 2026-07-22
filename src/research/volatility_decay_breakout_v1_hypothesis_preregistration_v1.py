@@ -90,9 +90,9 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         payload.get("strategy_implementation_present") is False,
         "STRATEGY_IMPLEMENTATION_PRESENT",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
     run_limit = payload.get("run_limit") or {}
     _require(run_limit.get("development_run_limit") == 1, "RUN_LIMIT_NOT_ONE")
     _require(run_limit.get("retry_forbidden") is True, "RETRY_NOT_FORBIDDEN")
@@ -305,8 +305,8 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         "evaluation_authorized": False,
         "holdout_authorized": False,
         "dataset_bound": True,
-        "development_run_count": 0,
-        "runner_start_count": 0,
+        "development_run_count": 1,
+        "runner_start_count": 1,
         "open_parameters_remaining": False,
         "definition_semantics_complete": True,
         "decay_event_consumption": "SINGLE_USE",

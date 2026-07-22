@@ -5,7 +5,7 @@
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
   "canonical_ssot": true,
   "cli_ref": "scripts/research/run_evaluate_volatility_decay_breakout_development_v1.py",
-  "config_digest": "778fc1e9fe79f57ed545c4461e43a257ebbe64aea859a0a29c13cb0d11beb1de",
+  "config_digest": "6b7f870624ac13519f932c05ae7d889e8c74082539c2300ec681ba0325d1b00f",
   "dataset_binding": {
     "dataset_class": "DEVELOPMENT_ONLY",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
@@ -16,14 +16,14 @@
     ]
   },
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "economic_gate_open": false,
-  "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+  "entry_point_status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
   "evaluation_authorized": false,
   "evidence_ref": "docs/evidence/evaluate_volatility_decay_breakout_development_v1/",
-  "frozen_measurement_contract_digest": "d56ee1f11f697d6734c505c436be325060d956023573ef5cfd64aa010d00fa3f",
+  "frozen_measurement_contract_digest": "2d0922f0bf4a2082a032320f1a03316012682ea4021a1677e30c481fa620590c",
   "frozen_measurement_contract_ref": "config/research/volatility_decay_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_ref": "docs/governance/VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
   "holdout_authorized": false,
@@ -45,7 +45,7 @@
     "vol_state": "src.research.volatility_decay_breakout_v1_vol_state_v1"
   },
   "runner_present": true,
-  "runner_start_count": 0,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
@@ -62,11 +62,11 @@
   "shared_channel_core_ref": "src/research/price_channel_breakout_core_v1.py",
   "signal_family": "VOLATILITY_REGIME",
   "slice_class": "DEVELOPMENT_EVALUATION_EXECUTABLE_PATH_IMPLEMENTATION_ONLY",
-  "status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+  "status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
   "strategy_id": "volatility_decay_breakout",
   "strategy_identity": "VOLATILITY_DECAY_BREAKOUT_V1",
   "strategy_params_digest": "d6d4722020acdd4bbd45eb9df8decbad62cb86cba98bca1d137a77418a329426",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW"
 }

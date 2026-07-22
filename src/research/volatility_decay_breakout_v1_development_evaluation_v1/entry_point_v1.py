@@ -123,6 +123,7 @@ def run_evaluate_fail_closed(
     *,
     authorize_token: str,
     output_dir: Path,
+    execution_boundary=None,
 ) -> dict[str, Any]:
     """Evaluate path: fail-closed without authorization; never starts runner when denied."""
     result = run_authorized_development_evaluation_v1(
@@ -130,6 +131,7 @@ def run_evaluate_fail_closed(
         authorize_token=authorize_token,
         output_dir=output_dir,
         persist_evidence=True,
+        execution_boundary=execution_boundary,
     )
     if not result.authorization.get("authorized"):
         raise GuardError(result.reason or "EVALUATION_UNAUTHORIZED")

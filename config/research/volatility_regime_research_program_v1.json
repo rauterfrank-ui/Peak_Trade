@@ -41,8 +41,8 @@
     "relative_strength_dependency": false
   },
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "evaluation_authorized": false,
   "evaluation_run_count": 0,
@@ -70,7 +70,7 @@
     "NO_SYNTHETIC_RESULTS",
     "NO_RUN_SLOT_CONSUMPTION"
   ],
-  "governance_note": "Operator-authorized definition-only successor hypothesis VOLATILITY_DECAY_BREAKOUT_V1 inside VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 after terminal VEP-V1 FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT. Materially independent high→low vol decay admission. No strategy producer, evaluation, holdout, runtime, or promotion in this slice.",
+  "governance_note": "Operator-authorized VOLATILITY_DECAY_BREAKOUT_V1 development evaluation executed once and fail-closed at PRODUCTIVE_PNL_OVERFLOW. Durable run slot consumed (1/1). No retry. Holdout/runtime/orders remain closed. Successor hypothesis requires separate operator GO.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "VOLATILITY_DECAY_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
@@ -128,7 +128,7 @@
     "vep_retry_forbidden": true
   },
   "measurement_contract_ref": "config/research/volatility_decay_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE",
   "operator_decision": "AUTHORIZE_VOLATILITY_DECAY_BREAKOUT_V1_DEFINITION_ONLY_PREREGISTRATION",
   "operator_decision_token": "OPERATOR_DECISION_VOLATILITY_DECAY_BREAKOUT_V1_DEFINITION_ONLY",
   "productive_trading_logic_included": false,
@@ -143,8 +143,8 @@
   },
   "promotion_authorized": false,
   "retry_allowed": false,
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_authorized": false,
   "runtime_effect": "NONE",
   "runtime_policy": {

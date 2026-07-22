@@ -89,9 +89,9 @@ def resolve_measurement_contract(repo_root: Path) -> dict[str, Any]:
         contract.get("development_evaluation_authorized") is True,
         "DEV_EVAL_AUTH_FALSE_ON_CONTRACT",
     )
-    _require(contract.get("development_evaluation_executed") is False, "DEV_EVAL_EXECUTED_TRUE")
-    _require(contract.get("development_run_count") == 0, "DEV_RUN_COUNT_NOT_ZERO")
-    _require(contract.get("runner_start_count") == 0, "RUNNER_START_NOT_ZERO")
+    _require(contract.get("development_evaluation_executed") is True, "DEV_EVAL_EXECUTED_FALSE")
+    _require(contract.get("development_run_count") == 1, "DEV_RUN_COUNT_NOT_ONE")
+    _require(contract.get("runner_start_count") == 1, "RUNNER_START_NOT_ONE")
     exit_sem = contract.get("exit_semantics") or {}
     _require(
         exit_sem.get("productive_exit_pnl_evaluator_ref") == PRODUCTIVE_PNL_EVALUATOR_REL_PATH,
@@ -267,11 +267,11 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
             "holdout_ids_rejected": sorted(FORBIDDEN_HOLDOUT_IDS),
         },
         "development_evaluation_authorized": True,
-        "development_evaluation_executed": False,
-        "development_run_count": 0,
+        "development_evaluation_executed": True,
+        "development_run_count": 1,
         "development_run_limit": 1,
         "economic_gate_open": False,
-        "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+        "entry_point_status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
         "evaluation_authorized": False,
         "evidence_ref": "docs/evidence/evaluate_volatility_decay_breakout_development_v1/",
         "frozen_measurement_contract_digest": FROZEN_MEASUREMENT_CONTRACT_DIGEST,
@@ -298,7 +298,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
             "vol_state": VOL_STATE_REL_PATH.replace("/", ".").removesuffix(".py"),
         },
         "runner_present": True,
-        "runner_start_count": 0,
+        "runner_start_count": 1,
         "runtime_effect": "NONE",
         "runtime_policy": {
             "capital_activated": False,
@@ -317,7 +317,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "shared_channel_core_ref": SHARED_CHANNEL_CORE_REL_PATH,
         "signal_family": SIGNAL_FAMILY,
         "slice_class": "DEVELOPMENT_EVALUATION_EXECUTABLE_PATH_IMPLEMENTATION_ONLY",
-        "status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+        "status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
         "strategy_id": STRATEGY_ID,
         "strategy_identity": STRATEGY_IDENTITY,
         "strategy_params_digest": strategy_params_digest,

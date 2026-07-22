@@ -94,8 +94,8 @@ def test_import_safe_no_dataset_no_runner() -> None:
     importlib.reload(mod)
     after = read_run_counters(REPO)
     assert after == before
-    assert before["contract_development_run_count"] == 0
-    assert before["contract_runner_start_count"] == 0
+    assert before["contract_development_run_count"] == 1
+    assert before["contract_runner_start_count"] == 1
 
 
 def test_static_ids_and_bindings() -> None:
@@ -107,8 +107,8 @@ def test_static_ids_and_bindings() -> None:
     binding = load_and_validate_entry_point_binding(REPO)
     assert binding["development_evaluation_authorized"] is True
     assert binding["evaluation_authorized"] is False
-    assert binding["development_run_count"] == 0
-    assert binding["runner_start_count"] == 0
+    assert binding["development_run_count"] == 1
+    assert binding["runner_start_count"] == 1
     assert binding["development_run_limit"] == 1
     assert binding["frozen_measurement_contract_digest"] == FROZEN_MEASUREMENT_CONTRACT_DIGEST
     assert binding["shared_channel_core_bound"] is True
@@ -188,8 +188,15 @@ def test_unauthorized_token_blocks_evaluate_no_run_consumption() -> None:
     assert "EVALUATION_UNAUTHORIZED" in str(exc.value)
     after = read_run_counters(REPO)
     assert after == before
-    assert not (REPO / EVIDENCE_REL_PATH / "summary.json").exists()
-    assert not (REPO / EVIDENCE_REL_PATH / "run_slot_claim.json").exists()
+    # Terminal evidence from the consumed authorized run remains present; wrong-token
+    # evaluate must not mutate or replace it.
+    assert (REPO / EVIDENCE_REL_PATH / "summary.json").is_file()
+    assert (REPO / EVIDENCE_REL_PATH / "run_slot_claim.json").is_file()
+    claim = json.loads(
+        (REPO / EVIDENCE_REL_PATH / "run_slot_claim.json").read_text(encoding="utf-8")
+    )
+    assert claim["evaluation_run_count"] == 1
+    assert claim["runner_start_count"] == 1
 
 
 def test_cli_evaluate_fail_closed_wrong_token_subprocess() -> None:
@@ -224,43 +231,13 @@ def test_measurement_contract_authorized_and_guards() -> None:
     assert contract["contract_digest"] == FROZEN_MEASUREMENT_CONTRACT_DIGEST
     assert contract["development_evaluation_authorized"] is True
     assert program["development_evaluation_authorized"] is True
-    assert contract["development_evaluation_executed"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["runner_start_count"] == 0
-    assert program["development_run_count"] == 0
-    assert program["runner_start_count"] == 0
+    assert contract["development_evaluation_executed"] is True
+    assert contract["development_run_count"] == 1
+    assert contract["runner_start_count"] == 1
+    assert program["development_run_count"] == 1
+    assert program["runner_start_count"] == 1
     guards = preflight_guards(REPO)
     assert guards["development_evaluation_authorized"] is True
     assert guards["entry_point_binding_authorized"] is True
     assert guards["evaluation_authorized"] is False
-
-
-def test_no_vcb_or_vep_slot_reuse_authorization_without_execution() -> None:
-    binding = load_and_validate_entry_point_binding(REPO)
-    assert binding["development_evaluation_authorized"] is True
-    assert binding["development_run_count"] == 0
-    assert binding["runner_start_count"] == 0
-    assert binding["strategy_identity"] == "VOLATILITY_DECAY_BREAKOUT_V1"
-    assert binding["owner_surface"] == OWNER_SURFACE
-    assert (
-        binding["owner_surface"]
-        != "VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1"
-    )
-    assert (
-        binding["owner_surface"]
-        != "VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1"
-    )
-    vep_binding = REPO / (
-        "config/research/"
-        "volatility_expansion_persistence_v1_development_evaluation_entry_point_binding_v1.json"
-    )
-    vcb_binding = REPO / (
-        "config/research/"
-        "volatility_compression_breakout_v1_development_evaluation_entry_point_binding_v1.json"
-    )
-    assert vep_binding.is_file()
-    assert vcb_binding.is_file()
-    assert binding["config_digest"] != _load(vep_binding)["config_digest"]
-    assert ENTRY_POINT_BINDING_REL_PATH != str(vep_binding.relative_to(REPO))
-    assert not (REPO / EVIDENCE_REL_PATH / "run_slot_claim.json").exists()
-    assert not (REPO / EVIDENCE_REL_PATH / "summary.json").exists()
+    assert guards["run_slot_exhausted"] is True

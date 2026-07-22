@@ -120,7 +120,7 @@
     "seed_policy": "frozen_when_stochastic_components_absent",
     "treatment_arm": "VOLATILITY_DECAY_BREAKOUT_V1"
   },
-  "contract_digest": "d56ee1f11f697d6734c505c436be325060d956023573ef5cfd64aa010d00fa3f",
+  "contract_digest": "2d0922f0bf4a2082a032320f1a03316012682ea4021a1677e30c481fa620590c",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -141,9 +141,9 @@
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
+  "development_evaluation_executed": true,
   "development_evaluation_runs_allowed": 1,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "directional_form": {
     "double_play_remains_sole_authority": true,
     "hypothesis_emits_admission_and_direction_intent_only": true,
@@ -453,8 +453,8 @@
     "retry_forbidden": true,
     "second_development_run_forbidden": true
   },
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "live_authorized": false,
