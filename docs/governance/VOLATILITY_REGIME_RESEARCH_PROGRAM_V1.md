@@ -34,7 +34,7 @@ the terminal binding.
 ## Gates (definition-only)
 
 - `EVALUATION_AUTHORIZED=false`
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
+- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
 - `HOLDOUT_AUTHORIZED=false` / `HOLDOUT_FORBIDDEN=true` / `HOLDOUT_BOUND=false`
 - `DEVELOPMENT_DATASET_BOUND=true` (`pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`)
 - `PROMOTION_AUTHORIZED=false` / `PROMOTION_ELIGIBLE=false`

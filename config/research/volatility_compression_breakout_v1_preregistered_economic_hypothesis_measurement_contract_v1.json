@@ -112,7 +112,7 @@
     "seed_policy": "frozen_when_stochastic_components_absent",
     "treatment_arm": "VOLATILITY_COMPRESSION_BREAKOUT_V1"
   },
-  "contract_digest": "3b9e65121dd359742b427f3fba6aab18622858aca93e2f5400e617c8cbbcf069",
+  "contract_digest": "e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -132,7 +132,7 @@
   "dataset_bound": true,
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
-  "development_evaluation_authorized": false,
+  "development_evaluation_authorized": true,
   "development_evaluation_executed": false,
   "development_evaluation_runs_allowed": 1,
   "development_run_count": 0,

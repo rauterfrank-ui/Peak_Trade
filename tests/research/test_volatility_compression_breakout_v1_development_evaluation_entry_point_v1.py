@@ -60,6 +60,7 @@ CONTRACT = REPO / (
     "volatility_compression_breakout_v1_preregistered_economic_hypothesis_"
     "measurement_contract_v1.json"
 )
+PROGRAM = REPO / "config/research/volatility_regime_research_program_v1.json"
 
 
 def _load(path: Path) -> dict:
@@ -104,7 +105,7 @@ def test_static_ids_and_bindings() -> None:
     assert DATASET_ID == "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
     assert TIME_SEGMENT_DEFINITION_ID == "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1"
     binding = load_and_validate_entry_point_binding(REPO)
-    assert binding["development_evaluation_authorized"] is False
+    assert binding["development_evaluation_authorized"] is True
     assert binding["evaluation_authorized"] is False
     assert binding["development_run_count"] == 0
     assert binding["runner_start_count"] == 0
@@ -140,7 +141,7 @@ def test_exactly_one_run_and_retry_guards() -> None:
         assert_retry_forbidden(retry_requested=True, development_run_count=0, runner_start_count=0)
 
 
-def test_preflight_and_validate_keep_unauthorized() -> None:
+def test_preflight_authorized_no_evaluate_execution_or_run_consumption() -> None:
     before = read_run_counters(REPO)
     report = run_preflight_only(REPO)
     assert report["status"] == "PREFLIGHT_PASS_EVALUATION_UNAUTHORIZED"
@@ -148,23 +149,35 @@ def test_preflight_and_validate_keep_unauthorized() -> None:
     assert report["evaluation_executed"] is False
     assert report["development_dataset_loaded"] is False
     assert report["holdout_accessed"] is False
-    assert report["development_evaluation_authorized"] is False
+    assert report["development_evaluation_authorized"] is True
+    assert report["entry_point_binding"]["development_evaluation_authorized"] is True
+    # Authorization-only slice: do not invoke --mode evaluate / runner.
     validated = validate_repo_entry_point(REPO)
     assert validated["valid"] is True
-    assert validated["development_evaluation_authorized"] is False
+    assert validated["development_evaluation_authorized"] is True
     after = read_run_counters(REPO)
     assert after == before
 
 
-def test_missing_authorization_blocks_evaluate() -> None:
-    before = read_run_counters(REPO)
+def test_repo_authorization_authorized_on_head() -> None:
     decision = resolve_authorization_decision_v1(REPO, authorize_token=HYPOTHESIS_ID)
+    assert decision.authorized is True
+    assert decision.authorize_token_valid is True
+    assert decision.repo_development_evaluation_authorized is True
+    assert decision.program_development_evaluation_authorized is True
+    assert decision.entry_point_binding_authorized is True
+    assert decision.reason_codes == ()
+
+
+def test_unauthorized_token_blocks_evaluate_no_run_consumption() -> None:
+    before = read_run_counters(REPO)
+    decision = resolve_authorization_decision_v1(REPO, authorize_token="WRONG_TOKEN")
     assert decision.authorized is False
-    assert "CONTRACT_DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE" in decision.reason_codes
+    assert "AUTHORIZE_TOKEN_MISMATCH" in decision.reason_codes
     with pytest.raises(GuardError) as exc:
         run_evaluate_fail_closed(
             REPO,
-            authorize_token=HYPOTHESIS_ID,
+            authorize_token="WRONG_TOKEN",
             output_dir=REPO / EVIDENCE_REL_PATH,
         )
     assert "EVALUATION_UNAUTHORIZED" in str(exc.value)
@@ -174,7 +187,7 @@ def test_missing_authorization_blocks_evaluate() -> None:
     assert not (REPO / EVIDENCE_REL_PATH / "run_slot_claim.json").exists()
 
 
-def test_cli_evaluate_fail_closed_subprocess() -> None:
+def test_cli_evaluate_fail_closed_wrong_token_subprocess() -> None:
     before = read_run_counters(REPO)
     proc = subprocess.run(
         [
@@ -183,7 +196,7 @@ def test_cli_evaluate_fail_closed_subprocess() -> None:
             "--mode",
             "evaluate",
             "--authorize-single-development-evaluation",
-            HYPOTHESIS_ID,
+            "WRONG_TOKEN",
         ],
         cwd=REPO,
         capture_output=True,
@@ -200,11 +213,16 @@ def test_cli_evaluate_fail_closed_subprocess() -> None:
     assert after == before
 
 
-def test_measurement_contract_unchanged_and_guards() -> None:
+def test_measurement_contract_authorized_and_guards() -> None:
     contract = _load(CONTRACT)
+    program = _load(PROGRAM)
     assert contract["contract_digest"] == FROZEN_MEASUREMENT_CONTRACT_DIGEST
-    assert contract["development_evaluation_authorized"] is False
+    assert contract["development_evaluation_authorized"] is True
+    assert program["development_evaluation_authorized"] is True
     assert contract["development_run_count"] == 0
     assert contract["runner_start_count"] == 0
+    assert program["development_run_count"] == 0
+    assert program["runner_start_count"] == 0
     guards = preflight_guards(REPO)
-    assert guards["development_evaluation_authorized"] is False
+    assert guards["development_evaluation_authorized"] is True
+    assert guards["evaluation_authorized"] is False

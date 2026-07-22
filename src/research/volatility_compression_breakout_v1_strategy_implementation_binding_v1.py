@@ -15,7 +15,7 @@ MEASUREMENT_REL_PATH = (
     "volatility_compression_breakout_v1_preregistered_economic_hypothesis_"
     "measurement_contract_v1.json"
 )
-REQUIRED_DIGEST = "3b9e65121dd359742b427f3fba6aab18622858aca93e2f5400e617c8cbbcf069"
+REQUIRED_DIGEST = "e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785"
 REQUIRED_IMPL_FILES = (
     "src/research/price_channel_breakout_core_v1.py",
     "src/research/volatility_compression_breakout_v1_vol_state_v1.py",

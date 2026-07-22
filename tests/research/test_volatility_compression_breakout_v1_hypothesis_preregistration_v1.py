@@ -150,7 +150,7 @@ def test_definition_semantics_complete_bindings() -> None:
     assert frozen["max_expansion_triggers_per_release_cycle"] == 1
     assert contract["parameter_governance"]["definition_semantics_complete"] is True
     assert contract["evaluation_authorized"] is False
-    assert contract["development_evaluation_authorized"] is False
+    assert contract["development_evaluation_authorized"] is True
     assert contract["strategy_implementation_present"] is False
     assert contract["implementation_authorized"] is False
     assert contract["development_run_count"] == 0

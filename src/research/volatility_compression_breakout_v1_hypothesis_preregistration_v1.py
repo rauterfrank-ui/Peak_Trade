@@ -70,7 +70,7 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
     _require(payload.get("dataset_bound") is True, "DATASET_NOT_BOUND")
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
     _require(
-        payload.get("development_evaluation_authorized") is False,
+        payload.get("development_evaluation_authorized") is True,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")

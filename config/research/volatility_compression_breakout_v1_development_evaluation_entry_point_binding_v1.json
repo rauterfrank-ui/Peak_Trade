@@ -5,7 +5,7 @@
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
   "canonical_ssot": true,
   "cli_ref": "scripts/research/run_evaluate_volatility_compression_breakout_development_v1.py",
-  "config_digest": "de364ee71990c13e73b7bbc4127a41fcc974cd185d47038436bf6690669340c2",
+  "config_digest": "8d54a68174cbd539486a4651c36f38e51bfeb8bab586bc3168c3ef6fe33d5543",
   "dataset_binding": {
     "dataset_class": "DEVELOPMENT_ONLY",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
@@ -15,7 +15,7 @@
       "offline_economic_reevaluation_sealed_long_panel_v1"
     ]
   },
-  "development_evaluation_authorized": false,
+  "development_evaluation_authorized": true,
   "development_evaluation_executed": false,
   "development_run_count": 0,
   "development_run_limit": 1,
@@ -23,7 +23,7 @@
   "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
   "evaluation_authorized": false,
   "evidence_ref": "docs/evidence/evaluate_volatility_compression_breakout_development_v1/",
-  "frozen_measurement_contract_digest": "3b9e65121dd359742b427f3fba6aab18622858aca93e2f5400e617c8cbbcf069",
+  "frozen_measurement_contract_digest": "e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785",
   "frozen_measurement_contract_ref": "config/research/volatility_compression_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_ref": "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
   "holdout_authorized": false,
@@ -65,5 +65,5 @@
   "strategy_params_digest": "44416d77afb70d21b2e977448fa198a3b3d83a0e3ba9d823bee91af06b6a185e",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_DEVELOPMENT_EVALUATION_AUTHORIZATION"
+  "verdict": "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
 }

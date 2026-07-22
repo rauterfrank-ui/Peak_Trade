@@ -875,7 +875,7 @@
       ]
     },
     "VOLATILITY_COMPRESSION_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of own-instrument volatility compression→expansion→channel-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(20)/close percentile-rank admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VOL_BREAKOUT_COILED_SPRING explicit; no strategy producer; no evaluation/holdout/runtime/orders.",
+      "note": "Definition-only preregistration of own-instrument volatility compression→expansion→channel-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(20)/close percentile-rank admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VOL_BREAKOUT_COILED_SPRING explicit; development evaluation authorized; evaluation not executed; no holdout/runtime/orders.",
       "path_prefixes": [
         "config/research/volatility_compression_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
         "src/research/volatility_compression_breakout_v1_hypothesis_preregistration_v1.py",
@@ -898,7 +898,7 @@
       ]
     },
     "VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_COMPRESSION_BREAKOUT_V1: executable evaluate path under fail-closed authorization, CLI preflight/dry-validate, digests/dataset/time-segment/evidence bindings, shared channel-core reuse for treatment and baseline. Development evaluation remains unauthorized on HEAD; no runner start/run-slot consumption; no holdout/runtime/orders; measurement thresholds and strategy/baseline semantics unchanged.",
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_COMPRESSION_BREAKOUT_V1: executable evaluate path under fail-closed authorization, CLI preflight/dry-validate, digests/dataset/time-segment/evidence bindings, shared channel-core reuse for treatment and baseline. Development evaluation authorized on HEAD; no runner start/run-slot consumption without separate execution GO; no holdout/runtime/orders; measurement thresholds and strategy/baseline semantics unchanged.",
       "path_prefixes": [
         "config/research/volatility_compression_breakout_v1_development_evaluation_entry_point_binding_v1.json",
         "docs/evidence/evaluate_volatility_compression_breakout_development_v1/",
@@ -918,7 +918,7 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Definition-only research-program SSOT for operator-authorized volatility-regime compression-breakout hypothesis; causal independence from closed Bollinger Entry/Exit and CS momentum lanes; material difference vs terminal vol_breakout coiled-spring; no strategy producer; no evaluation/holdout/runtime/orders.",
+      "note": "Definition-only research-program SSOT for operator-authorized volatility-regime compression-breakout hypothesis; causal independence from closed Bollinger Entry/Exit and CS momentum lanes; material difference vs terminal vol_breakout coiled-spring; development evaluation authorized (not executed); no holdout/runtime/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",
