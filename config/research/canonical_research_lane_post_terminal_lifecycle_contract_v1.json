@@ -113,10 +113,12 @@
   ],
   "migration_deferred": {
     "entry_eligibility_backlog_ssot": "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json",
-    "entry_eligibility_impact": "Currently status=OPEN_BACKLOG with empty open_candidates and empty preregistered_hypotheses; under this contract that combination is invalid (OPEN_LANE_EMPTY_INVENTORY_WITHOUT_WAITING_SEMANTICS). Cross-lane status label CLOSED_NO_OPEN_CANDIDATES is not a canonical lane status. Migration requires a separate operator-authorized slice.",
+    "entry_eligibility_impact": "Migrated to status=POST_TERMINAL_OPERATOR_DECISION_REQUIRED with shared lifecycle contract as sole lane-status authority; inventories remain empty; no auto-close; no explicit awaiting or closeout decision recorded in the migration slice. Cross-lane status label CLOSED_NO_OPEN_CANDIDATES on Exit-Efficiency remains non-canonical and is deferred with Exit-Efficiency migration.",
     "exit_efficiency_backlog_ssot": "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
     "exit_efficiency_impact": "Currently status=OPEN_BACKLOG with empty open_unpreregistered_candidates and empty preregistered_hypotheses after V8 TERMINAL_PASS; under this contract that combination is invalid. Migration to AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS or LANE_CLOSED_NO_FURTHER_RESEARCH requires a separate operator-authorized slice; historical V8 artifacts must remain immutable.",
-    "migrate_in_this_slice": false
+    "migrate_in_this_slice": false,
+    "entry_eligibility_migrated": true,
+    "exit_efficiency_migrated": false
   },
   "non_goals": [
     "NO_ENTRY_ELIGIBILITY_MIGRATION",

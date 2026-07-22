@@ -154,16 +154,15 @@ Mapping:
 
 ## Migration deferred
 
-Migration deferred (`migrate_in_this_slice: false`):
+Shared-contract definition slice remains non-migrating (`migrate_in_this_slice: false`).
 
-- Entry-Eligibility backlog currently uses `OPEN_BACKLOG` with empty inventory
-  and a non-canonical cross-lane status label `CLOSED_NO_OPEN_CANDIDATES`.
-- Exit-Efficiency backlog currently uses `OPEN_BACKLOG` with empty inventory
-  after V8 `TERMINAL_PASS`.
+- Entry-Eligibility backlog has been migrated in a separate operator-authorized slice to
+  `POST_TERMINAL_OPERATOR_DECISION_REQUIRED` under this contract as sole lane-status authority
+  (no auto-close). Cross-lane status label `CLOSED_NO_OPEN_CANDIDATES` remains non-canonical.
+- Exit-Efficiency backlog currently still uses `OPEN_BACKLOG` with empty inventory
+  after V8 `TERMINAL_PASS` and remains deferred.
 
-Both are compatibility consequences identified by this contract and require
-separate operator-authorized migration slices. Historical V8 economic,
-evaluation, run-slot, and preregistration artifacts remain immutable.
+Historical V8 economic, evaluation, run-slot, and preregistration artifacts remain immutable.
 
 ## Safety
 

@@ -47,7 +47,13 @@ def test_exactly_one_backlog_ssot_exists() -> None:
 def test_repo_backlog_validates() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["status"] == "OPEN_BACKLOG"
+    assert report["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert report["lifecycle_contract_id"] == (
+        "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1"
+    )
+    assert report["lifecycle_authority"] == (
+        "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
+    )
     assert report["terminal_hypothesis_count"] == 7
     assert report["open_candidate_count"] == 0
     assert report["preregistered_count"] == 0
@@ -88,8 +94,16 @@ def test_adx_di_terminal_pass_and_queue_empty() -> None:
     assert (
         "adx_di_direction_confirmation" in backlog["forbidden_feature_families_for_open_candidates"]
     )
+    assert backlog["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert backlog["lifecycle_authority"] == (
+        "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
+    )
+    assert backlog["explicit_closeout_decision"] is False
+    assert backlog["explicit_waiting_decision"] is False
+    assert backlog["lane_auto_closed"] is False
     assert backlog["verdict"] == (
-        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_BACKLOG_EMPTY_AFTER_ADX_DI_HOLDOUT_V2_TERMINAL_FAIL"
+        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_POST_TERMINAL_OPERATOR_DECISION_REQUIRED_"
+        "AFTER_ADX_DI_HOLDOUT_V2_TERMINAL_FAIL"
     )
     assert (
         backlog["next_canonical_step"]
@@ -272,7 +286,9 @@ def test_validator_rejects_nonzero_development_run_count() -> None:
 
 def test_governance_doc_marks_terminal_pass_and_closed_gate() -> None:
     text = GOVERNANCE_PATH.read_text(encoding="utf-8")
-    assert "OPEN_BACKLOG" in text
+    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" in text
+    assert "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1" in text
+    assert "OPEN_BACKLOG` is invalid" in text or "OPEN_BACKLOG is invalid" in text
     assert "PROMOTION_ELIGIBLE=false" in text
     assert ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID in text
     assert ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID in text
@@ -285,3 +301,29 @@ def test_governance_doc_marks_terminal_pass_and_closed_gate() -> None:
     assert "ALL_PASS_REQUIRES_MET" in text
     assert "Economic offline gate remains closed" in text or "economic gate closed" in text.lower()
     assert "must not be re-run" in text or "Do **not** re-run" in text
+
+
+def test_rejects_open_backlog_with_empty_inventory() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["status"] = "OPEN_BACKLOG"
+    with pytest.raises(
+        BacklogValidationError, match="STATUS_NOT_POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    ):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_missing_shared_lifecycle_authority() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["lifecycle_authority"] = "LANE_LOCAL_STATUS_AUTHORITY"
+    with pytest.raises(BacklogValidationError, match="LIFECYCLE_AUTHORITY_MISMATCH"):
+        validate_backlog_contract(bad)
+
+
+def test_rejects_auto_close_flag() -> None:
+    backlog = _load(BACKLOG_PATH)
+    bad = copy.deepcopy(backlog)
+    bad["lane_auto_closed"] = True
+    with pytest.raises(BacklogValidationError, match="LANE_AUTO_CLOSED_FORBIDDEN"):
+        validate_backlog_contract(bad)

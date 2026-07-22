@@ -326,7 +326,7 @@
       ]
     },
     "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Definition-only governance SSOT after ADX DI TERMINAL_PASS and six prior TERMINAL_FAIL; empty open candidate queue and empty preregistered list; economic gate closed; no further evaluation or holdout without separate operator GO.",
+      "note": "Definition-only governance SSOT after ADX DI TERMINAL_PASS and six prior TERMINAL_FAIL; migrated to POST_TERMINAL_OPERATOR_DECISION_REQUIRED under shared research-lane post-terminal lifecycle contract V1 as sole lane-status authority; empty open candidate queue and empty preregistered list; no auto-close; economic gate closed; no further evaluation or holdout without separate operator GO / enumerated lifecycle decision.",
       "path_prefixes": [
         "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json",
         "src/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.py",
