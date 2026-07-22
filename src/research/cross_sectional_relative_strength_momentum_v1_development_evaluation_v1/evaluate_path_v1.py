@@ -163,7 +163,7 @@ def dry_validate_evaluate_path_v1(repo_root: Path) -> EvaluatePathResultV1:
         gross_pnl=0.0,
         net_profit_factor=0.0,
         net_expectancy=0.0,
-        max_drawdown=0.0,
+        max_drawdown=float(0),
         cost_stress_1_5x_net_profit_factor=0.0,
         trade_count=0,
         segment_results=[

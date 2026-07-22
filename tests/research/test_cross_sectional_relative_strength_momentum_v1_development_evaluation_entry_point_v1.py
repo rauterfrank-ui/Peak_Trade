@@ -127,6 +127,10 @@ def test_owner_registry_and_entry_point_files_bound() -> None:
     prefixes = owner["path_prefixes"]
     assert ENTRY_POINT_BINDING_REL_PATH in prefixes
     assert CLI_REL_PATH in prefixes
+    assert (
+        "tests/research/test_cross_sectional_relative_strength_momentum_v1_development_evaluation_executable_path_v1.py"
+        in prefixes
+    )
     assert EVIDENCE_REL_PATH in prefixes or any(
         p.startswith("docs/evidence/evaluate_cross_sectional_relative_strength_momentum")
         for p in prefixes
