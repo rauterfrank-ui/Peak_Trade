@@ -1,7 +1,7 @@
 {
   "backtest_executed": false,
   "base_sha": "d648cb606840f1286437e8533e0a21db24be3033",
-  "contract_digest": "2a2c0133c6f488b3aa5b14d9c85f7008b7711ad60f1d87e544330cec4c583869",
+  "contract_digest": "1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158",
   "contract_ref": "config/research/cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "cost_model_fixed": true,
   "dataset_class": "DEVELOPMENT_ONLY",
@@ -15,7 +15,7 @@
   "economic_gate_open": false,
   "economic_metrics_computed": false,
   "economic_validity_offline_gate_changed": false,
-  "evaluation_blocked_while_any_threshold_pending": true,
+  "evaluation_blocked_while_any_threshold_pending": false,
   "evaluation_executed": false,
   "evaluation_run_count": 0,
   "final_dev_confirmation_period": "2023-05-20T00:00:00Z..2023-08-16T05:55:00Z",
@@ -25,13 +25,10 @@
   "hypothesis_count": 1,
   "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1",
   "multiple_testing_budget": 1,
-  "next_recommended_action": "REVIEW_AND_MERGE_DEFINITION_ONLY_PR_BEFORE_ANY_STRATEGY_IMPLEMENTATION_OR_DEVELOPMENT_EVALUATION",
+  "next_recommended_action": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION",
   "orders_sent": false,
   "pass_fail_thresholds_preregistered": true,
-  "pending_threshold_keys": [
-    "minimum_rebalance_observations",
-    "time_segment_robustness_pass_ratio"
-  ],
+  "pending_threshold_keys": [],
   "productive_trading_logic_changed": false,
   "program_id": "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1",
   "promotion_eligible": false,
@@ -54,5 +51,10 @@
   "testnet_activated": false,
   "train_period": "2022-06-01T03:55:17Z..2023-02-20T19:00:00Z",
   "treatment_type": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_RANKING_SELECTION",
-  "validation_period": "2023-02-20T19:00:00Z..2023-05-20T00:00:00Z"
+  "validation_period": "2023-02-20T19:00:00Z..2023-05-20T00:00:00Z",
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+  "minimum_rebalance_observations": 30,
+  "time_segment_robustness_pass_ratio": 0.5,
+  "thresholds_ex_ante_operator_authorized": true,
+  "thresholds_not_result_calibrated": true
 }

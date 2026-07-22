@@ -2,8 +2,9 @@
 
 ## Status
 
-`DEFINITION_ONLY_PREREGISTERED` — hypothesis and measurement contract frozen;
-no strategy implementation; no evaluation.
+`DEFINITION_ONLY_PREREGISTERED` — hypothesis and measurement contract complete for
+development admission thresholds and time-segment robustness; no evaluation
+authorized in this slice.
 
 ## Binding
 
@@ -13,7 +14,7 @@ no strategy implementation; no evaluation.
 - Target phenomenon: `PERSISTENCE_OF_RELATIVE_RETURNS_ACROSS_NON_BTC_LINEAR_USDT_FUTURES`
 - Program: `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
 - Contract: `config&#47;research&#47;cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
-- Digest: `2a2c0133c6f488b3aa5b14d9c85f7008b7711ad60f1d87e544330cec4c583869`
+- Digest: `1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1` (`DEVELOPMENT_ONLY`)
 - Evidence: `docs&#47;evidence&#47;preregister_cross_sectional_relative_strength_momentum_hypothesis_v1&#47;`
 - Multiple-testing budget: `1`
@@ -63,12 +64,32 @@ higher `net_profit_factor`, then lower `abs(max_drawdown)`, then lower
 ## Economic admission
 
 Configured thresholds reuse repository-native sources where available
-(e.g. `economic_validity_policy_v1`, gross PF≥1.0, cost-stress 1.5x PF≥1.0).
+(e.g. `economic_validity_policy_v1`, gross PF≥1.0, cost-stress 1.5x PF≥1.0), plus
+explicit operator-authorized robustness admission thresholds:
 
-Pending (evaluation blocked until operator resolves):
+- `minimum_rebalance_observations` = `30`
+  (`EXPLICIT_OPERATOR_AUTHORIZATION`; valid evaluable rebalance timestamps only;
+  not trades&#47;bars&#47;instruments&#47;orders; `not_result_calibrated=true`)
+- `time_segment_robustness_pass_ratio` = `0.5`
+  (`EXPLICIT_OPERATOR_AUTHORIZATION`; aligned to `economic_validity_policy_v1`
+  pass-ratio convention as governance binding; `not_result_calibrated=true`)
 
-- `minimum_rebalance_observations` → `REQUIRED_BUT_THRESHOLD_PENDING_OPERATOR_GOVERNANCE`
-- `time_segment_robustness_pass_ratio` → `REQUIRED_BUT_THRESHOLD_PENDING_OPERATOR_GOVERNANCE`
+## Time-segment robustness (operator-bound)
+
+- `TIME_SEGMENT_DEFINITION_ID=CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1`
+- Development period only: `2022-06-01T03:55:17Z` .. `2023-08-16T05:55:00Z`
+  (seal-registry published common panel bounds; holdout excluded; period
+  adjustment forbidden)
+- Exactly four chronological equal-duration quarters: `TIME_SEGMENT_Q1`..`Q4`
+- Remainder bars assigned to earliest segments (≤1 extra each)
+- Denominator always 4; non-evaluable segments are not PASS and are not removed
+- All four segments must be evaluable; otherwise `ROBUSTNESS_SAMPLE_INSUFFICIENT`
+- Segment PASS uses the same preregistered economic&#47;cost&#47;sample&#47;drawdown&#47;net-PF
+  gates as full development evaluation (no segment-specific invented thresholds)
+- Minimum passing segments: `2` (`0.5 * 4`)
+- Illustrative evidence `CHRONOLOGICAL_60_20_20_FLOOR_HOUR` partition is **not**
+  authority and is not mutated
+- `generic_walk_forward_v1` is **not** bound
 
 ## Causal independence
 
@@ -79,18 +100,17 @@ and not an unchanged `cross_sectional_relative_strength&#47;v0` binding retry.
 
 - `EVALUATION_AUTHORIZED=false`
 - `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
-- `HOLDOUT_AUTHORIZED=false` / `HOLDOUT_FORBIDDEN=true`
+- `HOLDOUT_AUTHORIZED=false` &#47; `HOLDOUT_FORBIDDEN=true`
 - `PROMOTION_ELIGIBLE=false`
 - Economic offline gate unchanged&#47;closed
 - No runtime &#47; shadow &#47; testnet &#47; live &#47; orders
-- `STRATEGY_IMPLEMENTATION_PRESENT=false`
-- `DEVELOPMENT_RUN_COUNT=0` / `RUNNER_START_COUNT=0`
+- `STRATEGY_IMPLEMENTATION_PRESENT=false` on this measurement contract artifact
+- `DEVELOPMENT_RUN_COUNT=0` &#47; `RUNNER_START_COUNT=0`
+- Pending admission thresholds: none
 
 ## Next step
 
-Review and merge this definition-only PR before any strategy implementation or
-development evaluation. Separate operator GO required for implementation, then
-for evaluation; pending thresholds must be resolved before evaluation.
+`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION`
 
 ---
 docs_token: DOCS_TOKEN_CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1

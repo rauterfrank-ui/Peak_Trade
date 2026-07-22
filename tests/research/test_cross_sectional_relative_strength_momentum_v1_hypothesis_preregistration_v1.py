@@ -14,6 +14,7 @@ from src.research.cross_sectional_relative_strength_momentum_v1_hypothesis_prere
     EVIDENCE_REL_PATH,
     REQUIRED_DIRECTIONAL_FORM,
     REQUIRED_HYPOTHESIS_ID,
+    REQUIRED_TIME_SEGMENT_DEFINITION_ID,
     PreregistrationValidationError,
     compute_contract_digest,
     load_and_validate_repo_contract,
@@ -53,7 +54,9 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["holdout_authorized"] is False
     assert report["development_run_count"] == 0
     assert report["runner_start_count"] == 0
-    assert report["evaluation_blocked_while_pending"] is True
+    assert report["evaluation_blocked_while_pending"] is False
+    assert report["pending_threshold_keys"] == []
+    assert report["time_segment_definition_id"] == REQUIRED_TIME_SEGMENT_DEFINITION_ID
     contract = _load(CONTRACT_PATH)
     assert compute_contract_digest(contract) == contract["contract_digest"]
 
@@ -83,19 +86,40 @@ def test_directional_form_d_and_independence() -> None:
         assert forbidden in program["causal_independence"]["forbidden_lineage_refs"]
 
 
-def test_pending_thresholds_block_evaluation() -> None:
+def test_operator_authorized_thresholds_and_time_segments_complete() -> None:
     contract = _load(CONTRACT_PATH)
     admission = contract["economic_admission_contract"]
-    assert admission["evaluation_blocked_while_any_threshold_pending"] is True
-    assert set(admission["pending_threshold_keys"]) == {
-        "minimum_rebalance_observations",
-        "time_segment_robustness_pass_ratio",
-    }
-    for key in admission["pending_threshold_keys"]:
-        assert (
-            admission["thresholds"][key]["status"]
-            == "REQUIRED_BUT_THRESHOLD_PENDING_OPERATOR_GOVERNANCE"
-        )
+    assert admission["evaluation_blocked_while_any_threshold_pending"] is False
+    assert admission["pending_threshold_keys"] == []
+    assert admission["thresholds"]["minimum_rebalance_observations"]["value"] == 30
+    assert admission["thresholds"]["minimum_rebalance_observations"]["status"] == "CONFIGURED"
+    assert (
+        admission["thresholds"]["minimum_rebalance_observations"]["authority"]
+        == "EXPLICIT_OPERATOR_AUTHORIZATION"
+    )
+    assert (
+        admission["thresholds"]["minimum_rebalance_observations"]["not_result_calibrated"] is True
+    )
+    assert admission["thresholds"]["time_segment_robustness_pass_ratio"]["value"] == 0.5
+    assert admission["thresholds"]["time_segment_robustness_pass_ratio"]["status"] == "CONFIGURED"
+    assert (
+        admission["thresholds"]["time_segment_robustness_pass_ratio"]["authority"]
+        == "EXPLICIT_OPERATOR_AUTHORIZATION"
+    )
+    assert (
+        admission["thresholds"]["time_segment_robustness_pass_ratio"]["not_result_calibrated"]
+        is True
+    )
+    tsd = contract["time_segment_definition"]
+    assert tsd["time_segment_definition_id"] == REQUIRED_TIME_SEGMENT_DEFINITION_ID
+    assert tsd["total_time_segments"] == 4
+    assert tsd["denominator"] == 4
+    assert tsd["expected_minimum_passing_segments"] == 2
+    assert tsd["all_segments_must_be_evaluable"] is True
+    assert tsd["non_evaluable_segments_are_pass"] is False
+    assert tsd["non_evaluable_segments_removed_from_denominator"] is False
+    assert tsd["generic_walk_forward_v1_bound"] is False
+    assert tsd["illustrative_60_20_20_partition_is_not_authority"] is True
     assert contract["evaluation_authorized"] is False
     assert contract["development_evaluation_authorized"] is False
 
@@ -145,6 +169,10 @@ def test_fail_closed_on_digest_or_runtime_mutation() -> None:
     bad3["directional_form"]["selected"] = "A_TOP_RANKED_LONG_ONLY"
     with pytest.raises(PreregistrationValidationError, match="DIRECTIONAL_FORM_NOT_D"):
         validate_measurement_contract(bad3)
+    bad4 = copy.deepcopy(contract)
+    bad4["time_segment_definition"]["generic_walk_forward_v1_bound"] = True
+    with pytest.raises(PreregistrationValidationError, match="WALK_FORWARD_BOUND"):
+        validate_measurement_contract(bad4)
 
 
 def test_governance_evidence_owner_map() -> None:
@@ -167,4 +195,11 @@ def test_governance_evidence_owner_map() -> None:
     assert (
         "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1"
         in owners
+    )
+    # illustrative 60/20/20 evidence partition remains present and unchanged as non-authority
+    split = _load(EVIDENCE / "split_manifest.json")
+    assert split["method"] == "CHRONOLOGICAL_60_20_20_FLOOR_HOUR"
+    assert (
+        split["split_intervals_sha256"]
+        == "a35783bf0268c174dfe585c9839ba45cc6e3835021699786f4490a0d8c9b33db"
     )

@@ -47,11 +47,11 @@ execution&#47;runtime mutation.
 ## Implementation
 
 - Binding: `config&#47;research&#47;cross_sectional_relative_strength_momentum_v1_strategy_implementation_binding_v1.json`
-- Measurement contract digest remains frozen; evaluation still unauthorized.
+- Measurement contract thresholds and time-segment definition complete; evaluation still unauthorized.
 
 ## Next step
 
-`REVIEW_DEFINITION_ONLY_PREREGISTRATION_AWAITING_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
+`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION`
 
 ---
 docs_token: DOCS_TOKEN_MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1

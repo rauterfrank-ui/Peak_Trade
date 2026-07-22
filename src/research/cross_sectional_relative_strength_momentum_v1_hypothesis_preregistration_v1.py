@@ -23,7 +23,8 @@ EVIDENCE_REL_PATH = (
 REQUIRED_HYPOTHESIS_ID = "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1"
 REQUIRED_DIRECTIONAL_FORM = "D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION"
 REQUIRED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
-PENDING_THRESHOLD_KEYS = frozenset(
+REQUIRED_TIME_SEGMENT_DEFINITION_ID = "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1"
+CONFIGURED_ROBUSTNESS_THRESHOLD_KEYS = frozenset(
     {
         "minimum_rebalance_observations",
         "time_segment_robustness_pass_ratio",
@@ -89,18 +90,12 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
 
     admission = payload.get("economic_admission_contract") or {}
     _require(
-        admission.get("evaluation_blocked_while_any_threshold_pending") is True,
-        "PENDING_NOT_BLOCKING",
+        admission.get("evaluation_blocked_while_any_threshold_pending") is False,
+        "PENDING_STILL_BLOCKING",
     )
     pending = set(admission.get("pending_threshold_keys") or [])
-    _require(pending == PENDING_THRESHOLD_KEYS, "PENDING_THRESHOLD_KEYS_MISMATCH")
+    _require(pending == set(), "PENDING_THRESHOLD_KEYS_NONEMPTY")
     thresholds = admission.get("thresholds") or {}
-    for key in PENDING_THRESHOLD_KEYS:
-        row = thresholds.get(key) or {}
-        _require(
-            row.get("status") == "REQUIRED_BUT_THRESHOLD_PENDING_OPERATOR_GOVERNANCE",
-            f"PENDING_STATUS:{key}",
-        )
     for key, expected in (
         ("gross_profit_factor_min", 1.0),
         ("net_profit_factor_min", 1.3),
@@ -109,10 +104,48 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         ("min_eligible_members_for_rank", 5),
         ("single_trade_dominance_limit", 0.5),
         ("cost_stress_1_5x_net_profit_factor_min", 1.0),
+        ("minimum_rebalance_observations", 30),
+        ("time_segment_robustness_pass_ratio", 0.5),
     ):
         row = thresholds.get(key) or {}
         _require(row.get("status") == "CONFIGURED", f"THRESHOLD_NOT_CONFIGURED:{key}")
         _require(row.get("value") == expected, f"THRESHOLD_VALUE:{key}")
+    for key in CONFIGURED_ROBUSTNESS_THRESHOLD_KEYS:
+        row = thresholds.get(key) or {}
+        _require(row.get("authority") == "EXPLICIT_OPERATOR_AUTHORIZATION", f"THRESHOLD_AUTH:{key}")
+        _require(row.get("not_result_calibrated") is True, f"THRESHOLD_CALIBRATED:{key}")
+
+    tsd = payload.get("time_segment_definition") or {}
+    _require(
+        tsd.get("time_segment_definition_id") == REQUIRED_TIME_SEGMENT_DEFINITION_ID,
+        "TIME_SEGMENT_DEFINITION_ID",
+    )
+    _require(tsd.get("authority") == "EXPLICIT_OPERATOR_AUTHORIZATION", "TIME_SEGMENT_AUTH")
+    _require(tsd.get("not_result_calibrated") is True, "TIME_SEGMENT_CALIBRATED")
+    _require(tsd.get("total_time_segments") == 4, "TIME_SEGMENT_COUNT")
+    _require(tsd.get("denominator") == 4, "TIME_SEGMENT_DENOMINATOR")
+    _require(tsd.get("expected_minimum_passing_segments") == 2, "TIME_SEGMENT_MIN_PASS")
+    _require(tsd.get("all_segments_must_be_evaluable") is True, "TIME_SEGMENT_ALL_EVALUABLE")
+    _require(tsd.get("non_evaluable_segments_are_pass") is False, "TIME_SEGMENT_NONEVAL_PASS")
+    _require(
+        tsd.get("non_evaluable_segments_removed_from_denominator") is False,
+        "TIME_SEGMENT_NONEVAL_REMOVED",
+    )
+    _require(tsd.get("generic_walk_forward_v1_bound") is False, "WALK_FORWARD_BOUND")
+    _require(
+        tsd.get("illustrative_60_20_20_partition_is_not_authority") is True,
+        "PARTITION_60_20_20_AS_AUTHORITY",
+    )
+    _require(
+        tsd.get("segment_ids")
+        == [
+            "TIME_SEGMENT_Q1",
+            "TIME_SEGMENT_Q2",
+            "TIME_SEGMENT_Q3",
+            "TIME_SEGMENT_Q4",
+        ],
+        "TIME_SEGMENT_IDS",
+    )
 
     grid = (payload.get("parameter_governance") or {}).get("development_only_bounded_grid") or {}
     _require(grid.get("authorized") is True, "GRID_NOT_AUTHORIZED")
@@ -156,8 +189,9 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         "holdout_authorized": False,
         "development_run_count": 0,
         "runner_start_count": 0,
-        "pending_threshold_keys": sorted(PENDING_THRESHOLD_KEYS),
-        "evaluation_blocked_while_pending": True,
+        "pending_threshold_keys": [],
+        "evaluation_blocked_while_pending": False,
+        "time_segment_definition_id": REQUIRED_TIME_SEGMENT_DEFINITION_ID,
     }
 
 
