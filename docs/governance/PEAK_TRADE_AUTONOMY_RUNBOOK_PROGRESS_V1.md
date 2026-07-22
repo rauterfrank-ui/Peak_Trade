@@ -1,17 +1,20 @@
 
-### Post-VEPC lane lifecycle operator decision packet
+### Post-VEPC DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS applied
 
-- Scope: `VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1`
-- Status: `OPERATOR_DECISION_PACKET_READY` (no decision applied)
-- Lane backlog: `POST_TERMINAL_OPERATOR_DECISION_REQUIRED`
-- VEPC inventory: moved to `terminal_hypotheses` (`FAIL_CLOSED_NO_RETRY` / `CONSUMED_NO_RETRY`)
+- Scope: `VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1`
+- Applied decision: `DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`
+- Packet status: `OPERATOR_DECISION_APPLIED_AWAITING_DECLARED`
+- Lane backlog: `AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`
+- `explicit_waiting_decision=true`; `explicit_closeout_decision=false`; `awaiting_declared=true`
+- VEPC inventory: remains in `terminal_hypotheses` (`FAIL_CLOSED_NO_RETRY` / `CONSUMED_NO_RETRY`)
 - Inventories empty: preregistered=0, open_unpreregistered=0
+- Successor created: `false`; closeout applied: `false`
 - Decision packet: `docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md`
-- Enumerated follow-on GO tokens only:
-  `GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1` |
+- Remaining follow-on GO tokens only:
   `GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1` |
   `GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1`
-- Explicit non-actions: no evaluation; no VEPC retry; no holdout; no auto-create/await/close; no LIVE/orders
+- CREATE requires explicit `hypothesis_id` + mechanism; GO alone is not executable
+- Explicit non-actions: no evaluation; no VEPC retry; no holdout; no auto-create/close; no implicit CLOSE/CREATE; no LIVE/orders
 
 ### VEPC v1 historical development slot CONSUMED_NO_RETRY (superseded inventory posture)
 
@@ -21,7 +24,7 @@
 - Historical slot: `CONSUMED_NO_RETRY` (fail-closed `UNPAIRABLE_ENTRY_NO_EXIT`; no durable successful evaluation evidence; no retry)
 - Baseline end-of-series pairing: canonical EOI then EOP (already bound in domain owners; no productive semantics change in this sync)
 - Decision record: `docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_HISTORICAL_SLOT_CONSUMED_NO_RETRY_AND_BASELINE_END_OF_SERIES_PAIRING_V1.md`
-- Next step: apply one enumerated post-terminal decision via separate operator GO; no evaluation; no retry; no holdout
+- Next step: remaining enumerated follow-on from awaiting state via separate operator GO; no evaluation; no retry; no holdout
 - Canonical entry point (slot consumed; evaluate unauthorized): `scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py`
 
 ## Registry-Metadaten
@@ -101,8 +104,8 @@
 | `NEXT_RUNBOOK_STEP_BLOCK_REASON` | `FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_TERMINAL_FAIL_UNCHANGED_RETRY_FORBIDDEN` |
 | `NEXT_CANONICAL_STEP` | `NO_UNCHANGED_RETRY_REQUIRES_NEW_DISTINCT_FULL_CANONICAL_SYSTEM_BINDING_OR_EVIDENCE_CLASS` |
 | `NEXT_CANONICAL_ACTION` | `NO_UNCHANGED_RETRY_REQUIRES_NEW_DISTINCT_FULL_CANONICAL_SYSTEM_BINDING_OR_EVIDENCE_CLASS` |
-| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `VOLATILITY_REGIME_POST_TERMINAL_ENUMERATED_DECISION_APPLICATION_V1` |
-| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `ONE_OF[GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1,GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1,GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1]` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `VOLATILITY_REGIME_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_FOLLOW_ON_V1` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `ONE_OF[GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1,GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1]` |
 | `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION_STATUS` | `EVIDENCE_ONLY_COMPLETE` |
 | `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION_REF` | `docs/evidence/attribute_bollinger_mr_midband_exit_efficiency_v6_failure/` |
 | `BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION_AUTHORIZES_V7` | `false` |
@@ -157,7 +160,7 @@
 | `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_RETRY_ALLOWED` | `false` |
 | `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_REOPEN_ALLOWED` | `false` |
 | `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_STATUS` | `DEFINITION_ONLY_PROGRAM_OPEN` |
-| `VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1_STATUS` | `POST_TERMINAL_OPERATOR_DECISION_REQUIRED` |
+| `VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1_STATUS` | `AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` |
 | `VOLATILITY_COMPRESSION_BREAKOUT_V1_PREREGISTRATION_STATUS` | `TERMINAL_FAIL` |
 | `VOLATILITY_COMPRESSION_BREAKOUT_V1_TERMINAL_RESULT` | `FAIL_CLOSED_NO_RETRY` |
 | `VOLATILITY_COMPRESSION_BREAKOUT_V1_SIGNAL_FAMILY` | `VOLATILITY_REGIME` |

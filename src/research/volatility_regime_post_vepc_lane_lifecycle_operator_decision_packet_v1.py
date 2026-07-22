@@ -20,8 +20,8 @@ GOVERNANCE_REL_PATH = (
 BACKLOG_REL_PATH = "config/research/volatility_regime_hypothesis_backlog_v1.json"
 PROGRAM_REL_PATH = "config/research/volatility_regime_research_program_v1.json"
 REQUIRED_PACKET_ID = "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1"
-REQUIRED_STATUS = "OPERATOR_DECISION_PACKET_READY"
-REQUIRED_LANE_STATUS = "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+REQUIRED_STATUS = "OPERATOR_DECISION_APPLIED_AWAITING_DECLARED"
+REQUIRED_LANE_STATUS = "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
 REQUIRED_DECISIONS = (
     "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
     "CLOSE_LANE_NO_FURTHER_RESEARCH",
@@ -32,6 +32,11 @@ REQUIRED_GO_TOKENS = (
     "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
     "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1",
 )
+REQUIRED_REMAINING_GO_TOKENS = (
+    "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
+    "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1",
+)
+REQUIRED_NEXT_SCOPE = "VOLATILITY_REGIME_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_FOLLOW_ON_V1"
 
 
 class DecisionPacketValidationError(ValueError):
@@ -51,7 +56,7 @@ def validate_decision_packet_contract(
     payload: Mapping[str, Any], *, repo_root: Path | None = None
 ) -> dict[str, Any]:
     _require(payload.get("packet_id") == REQUIRED_PACKET_ID, "PACKET_ID_MISMATCH")
-    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_READY")
+    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_AWAITING_DECLARED")
     _require(payload.get("lane_status") == REQUIRED_LANE_STATUS, "LANE_STATUS_MISMATCH")
     _require(
         payload.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
@@ -64,9 +69,12 @@ def validate_decision_packet_contract(
     _require(payload.get("holdout_accessed") is False, "HOLDOUT_ACCESSED")
     _require(payload.get("live_authorized") is False, "LIVE_AUTHORIZED")
     _require(payload.get("orders_allowed") is False, "ORDERS_ALLOWED")
-    _require(payload.get("decision_application_authorized") is False, "DECISION_APPLIED")
+    _require(
+        payload.get("decision_application_authorized") is False,
+        "REMAINING_DECISIONS_IMPLICITLY_AUTHORIZED",
+    )
     _require(payload.get("closeout_applied") is False, "CLOSEOUT_APPLIED")
-    _require(payload.get("awaiting_declared") is False, "AWAITING_DECLARED")
+    _require(payload.get("awaiting_declared") is True, "AWAITING_NOT_DECLARED")
     _require(payload.get("successor_created") is False, "SUCCESSOR_CREATED")
     _require(payload.get("auto_create_successor_forbidden") is True, "AUTO_CREATE_ALLOWED")
     _require(payload.get("auto_await_forbidden") is True, "AUTO_AWAIT_ALLOWED")
@@ -78,6 +86,12 @@ def validate_decision_packet_contract(
     _require(decision_ids == REQUIRED_DECISIONS, "DECISION_IDS_MISMATCH")
     go_tokens = tuple(d.get("go_token") for d in decisions)
     _require(go_tokens == REQUIRED_GO_TOKENS, "GO_TOKENS_MISMATCH")
+    _require(decisions[0].get("status") == "APPLIED", "DECLARE_NOT_APPLIED")
+    _require(decisions[1].get("status") == "OPERATOR_GO_REQUIRED", "CLOSE_NOT_PENDING")
+    _require(
+        decisions[2].get("status") == "OPERATOR_GO_REQUIRED_PLUS_HYPOTHESIS_ID_AND_MECHANISM",
+        "CREATE_NOT_PENDING",
+    )
 
     create = decisions[2]
     _require(create.get("requires_hypothesis_id") is True, "CREATE_HYPOTHESIS_ID_OPTIONAL")
@@ -97,20 +111,16 @@ def validate_decision_packet_contract(
     ):
         _require(required in forbidden, f"MISSING_FORBIDDEN:{required}")
 
-    _require(
-        payload.get("next_admissible_scope")
-        == "VOLATILITY_REGIME_POST_TERMINAL_ENUMERATED_DECISION_APPLICATION_V1",
-        "NEXT_SCOPE_MISMATCH",
-    )
+    _require(payload.get("next_admissible_scope") == REQUIRED_NEXT_SCOPE, "NEXT_SCOPE_MISMATCH")
     next_tokens = list(payload.get("next_admissible_scope_go_tokens") or [])
-    _require(next_tokens == list(REQUIRED_GO_TOKENS), "NEXT_GO_TOKENS_MISMATCH")
+    _require(next_tokens == list(REQUIRED_REMAINING_GO_TOKENS), "NEXT_GO_TOKENS_MISMATCH")
 
     if repo_root is not None:
         backlog = load_json(repo_root / BACKLOG_REL_PATH)
         program = load_json(repo_root / PROGRAM_REL_PATH)
         _require(
             backlog.get("status") == REQUIRED_LANE_STATUS,
-            "BACKLOG_NOT_POST_TERMINAL",
+            "BACKLOG_NOT_AWAITING",
         )
         _require(backlog.get("preregistered_hypotheses") == [], "BACKLOG_PREREG_NONEMPTY")
         _require(
@@ -118,7 +128,7 @@ def validate_decision_packet_contract(
             "BACKLOG_OPEN_NONEMPTY",
         )
         _require(backlog.get("explicit_closeout_decision") is False, "BACKLOG_CLOSEOUT_TRUE")
-        _require(backlog.get("explicit_waiting_decision") is False, "BACKLOG_WAITING_TRUE")
+        _require(backlog.get("explicit_waiting_decision") is True, "BACKLOG_WAITING_FALSE")
         terminals = {t.get("strategy_identity") for t in (backlog.get("terminal_hypotheses") or [])}
         _require(
             "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in terminals,
@@ -145,8 +155,13 @@ def validate_decision_packet_contract(
         "status": REQUIRED_STATUS,
         "lane_status": REQUIRED_LANE_STATUS,
         "decision_count": 3,
+        "awaiting_declared": True,
+        "closeout_applied": False,
+        "successor_created": False,
         "decision_application_authorized": False,
         "evaluation_authorized": False,
+        "evaluation_executed": False,
+        "holdout_accessed": False,
         "live_authorized": False,
         "orders_allowed": False,
     }

@@ -7,7 +7,7 @@
   "auto_close_forbidden": true,
   "canonical_ssot": true,
   "closeout_applied": false,
-  "awaiting_declared": false,
+  "awaiting_declared": true,
   "successor_created": false,
   "decision_application_authorized": false,
   "enumerated_operator_decisions": [
@@ -17,7 +17,7 @@
       "requires_mechanism_definition": false,
       "resulting_lane_status": "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
       "go_token": "GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1",
-      "status": "OPERATOR_GO_REQUIRED"
+      "status": "APPLIED"
     },
     {
       "decision_id": "CLOSE_LANE_NO_FURTHER_RESEARCH",
@@ -49,16 +49,15 @@
     "MUTATE_SEALED_HISTORICAL_EVIDENCE"
   ],
   "governance_doc_ref": "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
-  "governance_note": "Materializes the post-VEPC enumerated operator decision surface required by CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1 after VEPC CONSUMED_NO_RETRY terminalization. Does not apply CLOSE/AWAIT/CREATE. LIVE/ORDERS/HOLDOUT closed.",
+  "governance_note": "Applied DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS only under CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1. Lane now AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS. Remaining CLOSE_LANE / CREATE_SUCCESSOR each require a separate exact operator GO; CREATE additionally requires hypothesis_id + mechanism. No evaluation, holdout, LIVE, or orders.",
   "holdout_accessed": false,
   "lane_backlog_ref": "config/research/volatility_regime_hypothesis_backlog_v1.json",
-  "lane_status": "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+  "lane_status": "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
   "live_authorized": false,
-  "next_admissible_scope": "VOLATILITY_REGIME_POST_TERMINAL_ENUMERATED_DECISION_APPLICATION_V1",
+  "next_admissible_scope": "VOLATILITY_REGIME_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_FOLLOW_ON_V1",
   "next_admissible_scope_go_tokens": [
-    "GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1",
     "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
     "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1"
   ],
@@ -74,6 +73,6 @@
   "schema_version": "volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet.v1",
   "scope_classification": "GOVERNANCE_ONLY_OPERATOR_DECISION_PACKET_NO_EXECUTION",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
-  "status": "OPERATOR_DECISION_PACKET_READY",
-  "verdict": "POST_VEPC_LANE_POST_TERMINAL_OPERATOR_DECISION_PACKET_READY_NO_APPLICATION"
+  "status": "OPERATOR_DECISION_APPLIED_AWAITING_DECLARED",
+  "verdict": "POST_VEPC_LANE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_DECLARED_NO_SUCCESSOR_NO_CLOSEOUT"
 }

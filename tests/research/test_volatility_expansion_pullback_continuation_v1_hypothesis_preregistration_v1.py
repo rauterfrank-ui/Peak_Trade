@@ -126,7 +126,7 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
     assert md["not_a_repair_or_retry_of_vceb_v1"] is True
     backlog = _load(BACKLOG_PATH)
     assert backlog["preregistered_hypotheses"] == []
-    assert backlog["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert backlog["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
     assert terminals == {
         "VOLATILITY_COMPRESSION_BREAKOUT_V1",

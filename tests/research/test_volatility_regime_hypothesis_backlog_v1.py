@@ -33,10 +33,10 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_backlog_post_terminal_empty_inventory() -> None:
+def test_repo_backlog_awaiting_explicit_successor_empty_inventory() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert report["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
     assert report["preregistered_count"] == 0
     assert report["terminal_count"] == 6
     assert (
@@ -54,7 +54,7 @@ def test_repo_backlog_post_terminal_empty_inventory() -> None:
     assert report["promotion_eligible"] is False
     assert report["retry_allowed"] is False
     assert report["explicit_closeout_decision"] is False
-    assert report["explicit_waiting_decision"] is False
+    assert report["explicit_waiting_decision"] is True
 
 
 def test_sibling_closed_lanes_and_terminal_inventory() -> None:
@@ -94,7 +94,9 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert vepc["reopen_allowed"] is False
     assert backlog["sealed_holdout_binding_status"] == "UNBOUND_UNTOUCHED"
     assert backlog["required_treatment_type"] == "NONE_UNTIL_CREATE_SUCCESSOR_HYPOTHESIS"
-    assert backlog["next_canonical_step"].startswith("OPERATOR_ENUMERATED_DECISION_REQUIRED")
+    assert backlog["next_canonical_step"].startswith(
+        "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_ENUMERATED_FOLLOW_ON_REQUIRED"
+    )
 
 
 def test_fail_closed_mutations() -> None:
@@ -117,15 +119,20 @@ def test_fail_closed_mutations() -> None:
         validate_backlog_contract(bad4)
     bad5 = copy.deepcopy(payload)
     bad5["status"] = "OPEN_BACKLOG"
-    with pytest.raises(BacklogValidationError, match="STATUS_NOT_POST_TERMINAL"):
+    with pytest.raises(BacklogValidationError, match="STATUS_NOT_AWAITING"):
         validate_backlog_contract(bad5)
+    bad6 = copy.deepcopy(payload)
+    bad6["explicit_waiting_decision"] = False
+    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_FALSE"):
+        validate_backlog_contract(bad6)
 
 
 def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in text
-    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" in text
+    assert "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS" in text
+    assert "explicit_waiting_decision=true" in text
     assert "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in text
     assert "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]

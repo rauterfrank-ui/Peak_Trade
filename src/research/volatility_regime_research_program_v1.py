@@ -78,12 +78,15 @@ def validate_program_contract(
         "STRATEGY_ID_DRIFT",
     )
     _require(
-        payload.get("lane_backlog_status") == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+        payload.get("lane_backlog_status") == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
         "LANE_BACKLOG_STATUS_MISMATCH",
     )
     _require(
         payload.get("next_canonical_step")
-        == "OPERATOR_ENUMERATED_DECISION_REQUIRED_VIA_POST_VEPC_LIFECYCLE_DECISION_PACKET_V1",
+        == (
+            "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_ENUMERATED_FOLLOW_ON_REQUIRED_"
+            "CLOSE_LANE_OR_CREATE_SUCCESSOR_VIA_POST_VEPC_PACKET_V1"
+        ),
         "NEXT_STEP_STALE",
     )
     _require(
@@ -268,9 +271,11 @@ def validate_program_contract(
         _require(cs.get("status") == REQUIRED_CS_CLOSED, "CS_MOMENTUM_LANE_NOT_CLOSED")
         backlog = load_json(repo_root / str(payload.get("lane_backlog_ref")))
         _require(
-            backlog.get("status") == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
-            "LANE_BACKLOG_NOT_POST_TERMINAL",
+            backlog.get("status") == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+            "LANE_BACKLOG_NOT_AWAITING",
         )
+        _require(backlog.get("explicit_waiting_decision") is True, "BACKLOG_WAITING_FALSE")
+        _require(backlog.get("explicit_closeout_decision") is False, "BACKLOG_CLOSEOUT_TRUE")
         _require(backlog.get("program_id") == REQUIRED_PROGRAM_ID, "BACKLOG_PROGRAM_MISMATCH")
         _require(backlog.get("preregistered_hypotheses") == [], "BACKLOG_PREREG_NONEMPTY")
 
