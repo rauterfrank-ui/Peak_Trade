@@ -874,27 +874,18 @@
         "tests/backtest/test_walkforward*"
       ]
     },
-    "VOLATILITY_EXPANSION_PERSISTENCE_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of own-instrument volatility expansion-persistence v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(14)/close percentile-rank expansion confirmation + persistence window admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VCB-V1 and coiled-spring explicit; development evaluation authorized; evaluation not executed; no holdout/runtime/orders; productive PnL evaluator referenced only.",
+    "VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_COMPRESSION_BREAKOUT_V1: executable evaluate path with panel execution boundary and productive exit/PnL evaluator bound to canonical BacktestEngine fee/slippage/gross-PnL primitives; authorized on HEAD; no evaluation execution/run-slot consumption without separate GO; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
       "path_prefixes": [
-        "config/research/volatility_expansion_persistence_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-        "src/research/volatility_expansion_persistence_v1_hypothesis_preregistration_v1.py",
-        "tests/research/test_volatility_expansion_persistence_v1_hypothesis_preregistration_v1.py",
-        "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
-        "docs/evidence/preregister_volatility_expansion_persistence_hypothesis_v1/"
-      ]
-    },
-    "VOLATILITY_EXPANSION_PERSISTENCE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
-      "note": "Strategy-implementation-only surfaces for VOLATILITY_EXPANSION_PERSISTENCE_V1 (shared 20-bar price-channel core + ATR14/close percentile vol-state + expansion confirmation/persistence admission + unconditional baseline + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced not duplicated; no Master-V2/Double-Play/risk/execution mutation.",
-      "path_prefixes": [
-        "src/research/price_channel_breakout_core_v1.py",
-        "src/research/volatility_expansion_persistence_v1_vol_state_v1.py",
-        "src/research/volatility_expansion_persistence_v1_strategy_v1.py",
-        "src/research/unconditional_20_bar_price_channel_breakout_v1.py",
-        "src/research/volatility_expansion_persistence_v1_strategy_implementation_binding_v1.py",
-        "config/research/volatility_expansion_persistence_v1_strategy_implementation_binding_v1.json",
-        "tests/research/test_volatility_expansion_persistence_v1_strategy_implementation_v1.py",
-        "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+        "config/research/volatility_compression_breakout_v1_development_evaluation_entry_point_binding_v1.json",
+        "docs/evidence/evaluate_volatility_compression_breakout_development_v1/",
+        "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "scripts/research/run_evaluate_volatility_compression_breakout_development_v1.py",
+        "src/research/volatility_compression_breakout_v1_development_evaluation_v1/",
+        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_entry_point_v1.py",
+        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_executable_path_v1.py",
+        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_fail_closed_report_v1.py",
+        "tests/research/test_volatility_compression_breakout_v1_productive_exit_pnl_evaluator_v1.py"
       ]
     },
     "VOLATILITY_COMPRESSION_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
@@ -920,18 +911,51 @@
         "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
-    "VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_COMPRESSION_BREAKOUT_V1: executable evaluate path with panel execution boundary and productive exit/PnL evaluator bound to canonical BacktestEngine fee/slippage/gross-PnL primitives; authorized on HEAD; no evaluation execution/run-slot consumption without separate GO; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
+    "VOLATILITY_DECAY_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only preregistration of own-instrument volatility decay-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures after terminal VEP-V1 UNPAIRABLE_ENTRY_NO_EXIT; frozen ATR(14)/close high→low decay admission + channel-breakout baseline; material difference vs VEP/VCB/coiled-spring explicit; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced only; VEP retry/exit-repair forbidden.",
       "path_prefixes": [
-        "config/research/volatility_compression_breakout_v1_development_evaluation_entry_point_binding_v1.json",
-        "docs/evidence/evaluate_volatility_compression_breakout_development_v1/",
-        "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
-        "scripts/research/run_evaluate_volatility_compression_breakout_development_v1.py",
-        "src/research/volatility_compression_breakout_v1_development_evaluation_v1/",
-        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_entry_point_v1.py",
-        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_executable_path_v1.py",
-        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_fail_closed_report_v1.py",
-        "tests/research/test_volatility_compression_breakout_v1_productive_exit_pnl_evaluator_v1.py"
+        "config/research/volatility_decay_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/volatility_decay_breakout_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_volatility_decay_breakout_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/VOLATILITY_DECAY_BREAKOUT_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_volatility_decay_breakout_hypothesis_v1/",
+        "docs/evidence/forensic_classify_vep_v1_unpairable_entry_no_exit_v1/"
+      ]
+    },
+    "VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_EXPANSION_PERSISTENCE_V1: executable evaluate path with materialized panel execution boundary (loader/wiring/injectable boundary); productive exit/PnL evaluator referenced from VCB package (not duplicated). Development evaluation authorized on HEAD; run counters remain 0 until a separate operator GO executes the single bounded development evaluation; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
+      "path_prefixes": [
+        "config/research/volatility_expansion_persistence_v1_development_evaluation_entry_point_binding_v1.json",
+        "docs/evidence/evaluate_volatility_expansion_persistence_development_v1/",
+        "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "scripts/research/run_evaluate_volatility_expansion_persistence_development_v1.py",
+        "src/research/volatility_expansion_persistence_v1_development_evaluation_v1/",
+        "tests/research/test_volatility_expansion_persistence_v1_development_evaluation_entry_point_v1.py",
+        "tests/research/test_volatility_expansion_persistence_v1_development_evaluation_executable_path_v1.py",
+        "tests/research/test_volatility_expansion_persistence_v1_development_evaluation_fail_closed_report_v1.py"
+      ]
+    },
+    "VOLATILITY_EXPANSION_PERSISTENCE_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only preregistration of own-instrument volatility expansion-persistence v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(14)/close percentile-rank expansion confirmation + persistence window admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VCB-V1 and coiled-spring explicit; development evaluation authorized; evaluation not executed; no holdout/runtime/orders; productive PnL evaluator referenced only.",
+      "path_prefixes": [
+        "config/research/volatility_expansion_persistence_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/volatility_expansion_persistence_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_volatility_expansion_persistence_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_volatility_expansion_persistence_hypothesis_v1/"
+      ]
+    },
+    "VOLATILITY_EXPANSION_PERSISTENCE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "note": "Strategy-implementation-only surfaces for VOLATILITY_EXPANSION_PERSISTENCE_V1 (shared 20-bar price-channel core + ATR14/close percentile vol-state + expansion confirmation/persistence admission + unconditional baseline + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced not duplicated; no Master-V2/Double-Play/risk/execution mutation.",
+      "path_prefixes": [
+        "src/research/price_channel_breakout_core_v1.py",
+        "src/research/volatility_expansion_persistence_v1_vol_state_v1.py",
+        "src/research/volatility_expansion_persistence_v1_strategy_v1.py",
+        "src/research/unconditional_20_bar_price_channel_breakout_v1.py",
+        "src/research/volatility_expansion_persistence_v1_strategy_implementation_binding_v1.py",
+        "config/research/volatility_expansion_persistence_v1_strategy_implementation_binding_v1.json",
+        "tests/research/test_volatility_expansion_persistence_v1_strategy_implementation_v1.py",
+        "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
@@ -972,19 +996,6 @@
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
-      ]
-    },
-    "VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_EXPANSION_PERSISTENCE_V1: executable evaluate path with materialized panel execution boundary (loader/wiring/injectable boundary); productive exit/PnL evaluator referenced from VCB package (not duplicated). Development evaluation authorized on HEAD; run counters remain 0 until a separate operator GO executes the single bounded development evaluation; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
-      "path_prefixes": [
-        "config/research/volatility_expansion_persistence_v1_development_evaluation_entry_point_binding_v1.json",
-        "docs/evidence/evaluate_volatility_expansion_persistence_development_v1/",
-        "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
-        "scripts/research/run_evaluate_volatility_expansion_persistence_development_v1.py",
-        "src/research/volatility_expansion_persistence_v1_development_evaluation_v1/",
-        "tests/research/test_volatility_expansion_persistence_v1_development_evaluation_entry_point_v1.py",
-        "tests/research/test_volatility_expansion_persistence_v1_development_evaluation_executable_path_v1.py",
-        "tests/research/test_volatility_expansion_persistence_v1_development_evaluation_fail_closed_report_v1.py"
       ]
     }
   },

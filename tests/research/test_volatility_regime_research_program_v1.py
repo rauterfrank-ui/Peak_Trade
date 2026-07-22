@@ -43,17 +43,18 @@ def test_repo_program_definition_only_open() -> None:
     assert report["strategy_implementation_present"] is False
     assert report["program_id"] == "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
     assert report["status"] == "DEFINITION_ONLY_PROGRAM_OPEN"
-    assert report["strategy_identity"] == "VOLATILITY_EXPANSION_PERSISTENCE_V1"
+    assert report["strategy_identity"] == "VOLATILITY_DECAY_BREAKOUT_V1"
     assert report["signal_family"] == "VOLATILITY_REGIME"
     assert report["holdout_authorized"] is False
     assert report["evaluation_authorized"] is False
     assert report["promotion_eligible"] is False
-    assert report["development_run_count"] == 1
-    assert report["runner_start_count"] == 1
-    assert report["run_slot_consumed"] is True
+    assert report["development_run_count"] == 0
+    assert report["runner_start_count"] == 0
+    assert report["run_slot_consumed"] is False
     assert report["retry_allowed"] is False
     assert report["material_difference_explicit"] is True
     assert report["material_difference_from_vcb_v1"] is True
+    assert report["material_difference_from_vep_v1"] is True
     assert report["causally_independent_from_cs_momentum"] is True
 
 
@@ -66,6 +67,9 @@ def test_material_difference_and_closed_siblings_immutable() -> None:
     md_vcb = payload["material_difference_vs_volatility_compression_breakout_v1"]
     assert md_vcb["prior_strategy_identity"] == "VOLATILITY_COMPRESSION_BREAKOUT_V1"
     assert md_vcb["vcb_retry_forbidden"] is True
+    md_vep = payload["material_difference_vs_volatility_expansion_persistence_v1"]
+    assert md_vep["prior_strategy_identity"] == "VOLATILITY_EXPANSION_PERSISTENCE_V1"
+    assert md_vep["vep_retry_forbidden"] is True
     closeout = _load(COILED_SPRING_CLOSEOUT)
     assert closeout["same_binding_retry_allowed"] is False
     assert closeout["current_research_generation_closed"] is True
@@ -76,6 +80,7 @@ def test_material_difference_and_closed_siblings_immutable() -> None:
     assert independence["cross_sectional_momentum_dependency"] is False
     assert independence["independent_from_closed_cross_sectional_momentum_lane"] is True
     assert "VOLATILITY_COMPRESSION_BREAKOUT_V1" in independence["forbidden_lineage_refs"]
+    assert "VOLATILITY_EXPANSION_PERSISTENCE_V1" in independence["forbidden_lineage_refs"]
 
 
 def test_fail_closed_on_authorization_mutation() -> None:
@@ -85,8 +90,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="EVALUATION_AUTHORIZED_TRUE"):
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["development_run_count"] = 0
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
+    bad2["development_run_count"] = 1
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
     bad3["strategy_implementation_present"] = True
@@ -102,8 +107,6 @@ def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in text
-    assert "DEFINITION_ONLY_PROGRAM_OPEN" in text
-    assert "VOLATILITY_EXPANSION_PERSISTENCE_V1" in text
-    assert "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1" in text
+    assert "VOLATILITY_DECAY_BREAKOUT_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in owners

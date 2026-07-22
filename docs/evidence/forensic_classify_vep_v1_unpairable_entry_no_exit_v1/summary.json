@@ -1,0 +1,27 @@
+{
+  "base_sha": "1cbf47479ea24139f24816ac95846dc0cc410779",
+  "classification_basis": [
+    "Productive exit/PnL evaluator intentionally fail-closes when entry occurs too late for lag+exit window (contract test documents this path).",
+    "Failure raised during TREATMENT arm aggregation before baseline aggregation; index is entry-event index on CHZ.",
+    "Same productive evaluator paired successfully for VCB until PRODUCTIVE_PNL_OVERFLOW; pairing path itself is not generically broken.",
+    "VEP is entry-only by design; exits are realized by reused productive evaluator from declarative params — not missing strategy exit events.",
+    "Immutable task boundary forbids mutating productive PnL evaluator; late-panel incomplete roundtrip is measurement fail-closed for this hypothesis slot.",
+    "No evidence of hypothesis-independent boundary defect requiring infrastructure-only repair without changing sole PnL truth."
+  ],
+  "evaluation_executed": false,
+  "fail_reason": "UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:CHZ:USDT:USDT:perp:10575",
+  "forensic_class": "HYPOTHESIS_TERMINAL",
+  "holdout_accessed": false,
+  "next_strategy_identity": "VOLATILITY_DECAY_BREAKOUT_V1",
+  "not_indeterminate": true,
+  "not_infrastructure_boundary_defect": true,
+  "prior_prs": [
+    5444,
+    5445,
+    5446
+  ],
+  "prior_strategy_identity": "VOLATILITY_EXPANSION_PERSISTENCE_V1",
+  "runner_start_count": 0,
+  "schema_version": "forensic_classify_vep_v1_unpairable_entry_no_exit.v1",
+  "scope_type": "DEFINITION_ONLY"
+}

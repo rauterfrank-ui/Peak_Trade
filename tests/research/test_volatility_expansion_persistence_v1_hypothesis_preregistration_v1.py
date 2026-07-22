@@ -188,11 +188,11 @@ def test_material_difference_vs_vcb_and_coiled_spring() -> None:
     assert "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1" in forbidden
     assert "VOLATILITY_COMPRESSION_BREAKOUT_V1" in forbidden
     backlog = _load(BACKLOG_PATH)
+    terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
+    assert "VOLATILITY_EXPANSION_PERSISTENCE_V1" in terminals
+    assert "VOLATILITY_COMPRESSION_BREAKOUT_V1" in terminals
     assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
-        "VOLATILITY_EXPANSION_PERSISTENCE_V1"
-    )
-    assert backlog["terminal_hypotheses"][0]["strategy_identity"] == (
-        "VOLATILITY_COMPRESSION_BREAKOUT_V1"
+        "VOLATILITY_DECAY_BREAKOUT_V1"
     )
 
 

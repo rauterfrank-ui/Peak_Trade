@@ -3,16 +3,16 @@
 ## Status
 
 `DEFINITION_ONLY_PROGRAM_OPEN` — operator-authorized definition-only lane for
-`VOLATILITY_EXPANSION_PERSISTENCE_V1` after terminal
-`VOLATILITY_COMPRESSION_BREAKOUT_V1` `FAIL_CLOSED_NO_RETRY`.
+`VOLATILITY_DECAY_BREAKOUT_V1` after terminal
+`VOLATILITY_EXPANSION_PERSISTENCE_V1` `FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`.
 
 ## Identity
 
 - Program: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`
-- Strategy: `VOLATILITY_EXPANSION_PERSISTENCE_V1`
+- Strategy: `VOLATILITY_DECAY_BREAKOUT_V1`
 - Signal family: `VOLATILITY_REGIME`
-- Target phenomenon: `VOLATILITY_EXPANSION_PERSISTENCE_AFTER_CONFIRMED_EXPANSION`
-- Hypothesis: `VOLATILITY_EXPANSION_PERSISTENCE_NON_BITCOIN_PERPETUALS_V1`
+- Target phenomenon: `VOLATILITY_DECAY_AFTER_HIGH_VOL_THEN_CHANNEL_BREAKOUT`
+- Hypothesis: `VOLATILITY_DECAY_BREAKOUT_NON_BITCOIN_PERPETUALS_V1`
 - Baseline: `UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1`
 
 ## Binding
@@ -20,40 +20,36 @@
 - SSOT: `config/research/volatility_regime_research_program_v1.json`
 - Validator: `src/research/volatility_regime_research_program_v1.py`
 - Lane backlog: `config/research/volatility_regime_hypothesis_backlog_v1.json`
-- Measurement contract: `config/research/volatility_expansion_persistence_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
+- Measurement contract: `config/research/volatility_decay_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
 - Lifecycle authority (sole): `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
 
-## Material difference vs terminal coiled spring
+## Material difference vs terminal VEP-V1
 
-Against `VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1` &#47; `vol_breakout&#47;v1`:
-regime state uses ATR(14)&#47;close percentile rank (lookback 120), requires two
-consecutive high-vol bars at >=0.80 with transition from below 0.80 and rising
-normalized ATR, then directional continuation inside t+1..t+6; baseline is
-unconditional channel breakout isolating admission value. Not a rename, reopen,
-or parameter retry of the terminal binding.
+High→low vol decay admission (percentile from >=0.70 to <0.40 with falling
+normalized ATR) and post-decay window t+1..t+8; not expansion persistence;
+not an exit repair of `UNPAIRABLE_ENTRY_NO_EXIT`.
 
 ## Material difference vs VCB-V1
 
-No compression prerequisite; no entry on confirmation bar t; ATR(14) vs ATR(20);
-fixed persistence window with rearm below 0.80; not a repair&#47;retry of
-`VOLATILITY_COMPRESSION_BREAKOUT_V1`.
+No compression prerequisite; decay transition vs compression→expansion;
+ATR(14) vs ATR(20).
 
 ## Gates (definition-only)
 
 - `EVALUATION_AUTHORIZED=false`
 - `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
-- `HOLDOUT_AUTHORIZED=false` &#47; `HOLDOUT_FORBIDDEN=true` &#47; `HOLDOUT_BOUND=false`
+- `HOLDOUT_AUTHORIZED=false` / `HOLDOUT_FORBIDDEN=true` / `HOLDOUT_BOUND=false`
 - `DEVELOPMENT_DATASET_BOUND=true` (`pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`)
-- `PROMOTION_AUTHORIZED=false` &#47; `PROMOTION_ELIGIBLE=false`
+- `PROMOTION_AUTHORIZED=false` / `PROMOTION_ELIGIBLE=false`
 - `RUNTIME_AUTHORIZED=false`
-- `DEVELOPMENT_RUN_COUNT=0` &#47; `RUNNER_START_COUNT=0` &#47; `RUN_LIMIT=1`
+- `DEVELOPMENT_RUN_COUNT=0` / `RUNNER_START_COUNT=0` / `RUN_LIMIT=1`
 - `STRATEGY_IMPLEMENTATION_PRESENT=false`
 - `RETRY_ALLOWED=false`
 
 ## Non-actions
 
-No evaluation, runner, dataset load, holdout access, VCB retry, reopen,
-CS-momentum lane reopen, Master V2&#47;Double-Play&#47;risk&#47;execution&#47;runtime mutation.
+No evaluation, runner, dataset load, holdout access, VEP/VCB retry, reopen,
+CS-momentum lane reopen, Master V2/Double-Play/risk/execution/runtime mutation.
 
 ## Next step
 
