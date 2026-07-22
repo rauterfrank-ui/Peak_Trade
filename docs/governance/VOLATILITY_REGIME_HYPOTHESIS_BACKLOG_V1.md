@@ -1,48 +1,34 @@
-# Volatility Regime Hypothesis Backlog v1
+# VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1
 
-## Status
+Status: `OPEN_BACKLOG`
 
-`OPEN_BACKLOG` — exactly one definition-only preregistered successor
-(`VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`) after terminal
-`VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
-`FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`, prior terminal
-`VOLATILITY_DECAY_BREAKOUT_V1`, prior terminal
-`VOLATILITY_EXPANSION_PERSISTENCE_V1`, and prior terminal
-`VOLATILITY_COMPRESSION_BREAKOUT_V1`.
+Open volatility-regime research backlog under `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`.
 
-## Identity
+## Current open preregistration
 
-- Program: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`
-- Preregistered hypothesis: `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1`
-- Strategy: `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`
-- Predecessor: `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
-- Signal family: `VOLATILITY_REGIME`
-- Terminal: `VOLATILITY_COMPRESSION_BREAKOUT_V1`, `VOLATILITY_EXPANSION_PERSISTENCE_V1`,
-  `VOLATILITY_DECAY_BREAKOUT_V1`, `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
-  (all `FAIL_CLOSED_NO_RETRY`; retry forbidden)
+- Preregistered hypothesis: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
+- Status: `DEFINITION_ONLY_PREREGISTERED`
+- `DEVELOPMENT_RUN_COUNT=0`, `DEVELOPMENT_SLOT_CONSUMED=false`
+- Predecessor terminal: `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`
+  (`FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`)
 
-## Binding
+## Terminal hypotheses (retry forbidden)
 
-- SSOT: `config/research/volatility_regime_hypothesis_backlog_v1.json`
-- Validator: `src/research/volatility_regime_hypothesis_backlog_v1.py`
-- Measurement contract: `config/research/volatility_contraction_expansion_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
+- `VOLATILITY_COMPRESSION_BREAKOUT_V1`
+- `VOLATILITY_EXPANSION_PERSISTENCE_V1`
+- `VOLATILITY_DECAY_BREAKOUT_V1`
+- `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
+- `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`
 
 ## Inventory
 
-- open_unpreregistered=0
-- preregistered=1 (`VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`, run_count=0, slot not consumed)
-- terminal=4 (VCB + VEP + VDB + VDBX)
-- sibling lanes closed / reopen forbidden
+- preregistered=1 (`VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`, run_count=0, slot not consumed)
+- terminal=5 (all `FAIL_CLOSED_NO_RETRY`; retry forbidden)
+- open unpreregistered candidates=0
 
 ## Next step
 
-`REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
+Review/merge definition-only preregistration, then separate operator GO for strategy implementation, then separate GO for Development evaluation.
 
----
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1
-STATUS: OPEN_BACKLOG
-scope: research, offline-only, non-authorizing, definition-governance
-LIVE_AUTHORIZED: false
-ORDERS_ALLOWED: false
-SCHEDULER_RUNTIME_ALLOWED: false
----

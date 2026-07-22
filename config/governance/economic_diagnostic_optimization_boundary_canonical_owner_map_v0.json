@@ -911,6 +911,19 @@
         "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
+    "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1: development evaluation slot consumed FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT; productive exit/PnL evaluator reused from VCB package (not duplicated). No retry; no holdout/runtime/orders; strategy/baseline parameters unchanged; VDBX/VDB/VEP/VCB artifacts unchanged.",
+      "path_prefixes": [
+        "config/research/volatility_contraction_expansion_breakout_v1_development_evaluation_entry_point_binding_v1.json",
+        "docs/evidence/evaluate_volatility_contraction_expansion_breakout_development_v1/",
+        "docs/governance/VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "scripts/research/run_evaluate_volatility_contraction_expansion_breakout_development_v1.py",
+        "src/research/volatility_contraction_expansion_breakout_v1_development_evaluation_v1/",
+        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_entry_point_v1.py",
+        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_executable_path_v1.py",
+        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_fail_closed_report_v1.py"
+      ]
+    },
     "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
       "note": "Definition-only preregistration of VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1 after terminal VDBX FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT; frozen realized-vol contraction->expansion joint breakout admission + pairable exit precedence; productive PnL evaluator referenced only; no Development evaluation/holdout/runtime/orders; VDBX/VDB/VEP/VCB retry forbidden.",
       "path_prefixes": [
@@ -933,19 +946,6 @@
         "config/research/volatility_contraction_expansion_breakout_v1_strategy_implementation_binding_v1.json",
         "tests/research/test_volatility_contraction_expansion_breakout_v1_strategy_and_exit_state_machine_v1.py",
         "docs/governance/VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
-      ]
-    },
-    "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1: development evaluation slot consumed FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT; productive exit/PnL evaluator reused from VCB package (not duplicated). No retry; no holdout/runtime/orders; strategy/baseline parameters unchanged; VDBX/VDB/VEP/VCB artifacts unchanged.",
-      "path_prefixes": [
-        "config/research/volatility_contraction_expansion_breakout_v1_development_evaluation_entry_point_binding_v1.json",
-        "docs/evidence/evaluate_volatility_contraction_expansion_breakout_development_v1/",
-        "docs/governance/VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
-        "scripts/research/run_evaluate_volatility_contraction_expansion_breakout_development_v1.py",
-        "src/research/volatility_contraction_expansion_breakout_v1_development_evaluation_v1/",
-        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_entry_point_v1.py",
-        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_executable_path_v1.py",
-        "tests/research/test_volatility_contraction_expansion_breakout_v1_development_evaluation_fail_closed_report_v1.py"
       ]
     },
     "VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
@@ -1055,6 +1055,19 @@
         "config/research/volatility_expansion_persistence_v1_strategy_implementation_binding_v1.json",
         "tests/research/test_volatility_expansion_persistence_v1_strategy_implementation_v1.py",
         "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+      ]
+    },
+    "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only preregistration of VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1 after terminal VCEB FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT; expansion then limited pullback continuation + explicit invalidation/time/protective exits; productive PnL evaluator referenced only; no Development evaluation/holdout/runtime/orders; VCEB/VDBX/VDB/VEP/VCB retry forbidden.",
+      "path_prefixes": [
+        "config/research/volatility_expansion_pullback_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/volatility_expansion_pullback_continuation_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_volatility_expansion_pullback_continuation_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_volatility_expansion_pullback_continuation_hypothesis_v1/",
+        "config/research/volatility_expansion_pullback_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+        "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py"
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {

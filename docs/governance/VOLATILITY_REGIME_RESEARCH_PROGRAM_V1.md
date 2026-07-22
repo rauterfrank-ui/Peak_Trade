@@ -1,39 +1,30 @@
-# Volatility Regime Research Program v1
+# VOLATILITY_REGIME_RESEARCH_PROGRAM_V1
 
-## Status
+Definition-only research-program SSOT for operator-authorized volatility-regime hypotheses.
 
-`DEFINITION_ONLY_PROGRAM_OPEN`
+## Active identity
 
-## Active hypothesis
+- Program: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`
+- Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
+- Hypothesis: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Target: `VOLATILITY_EXPANSION_THEN_LIMITED_PULLBACK_CONTINUATION`
+- Slice: definition-only preregistration (no Development evaluation executed)
 
-- `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`
-- Predecessor terminal: `VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1`
-  (`FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`)
-- Also terminal: `VOLATILITY_DECAY_BREAKOUT_V1`, `VOLATILITY_EXPANSION_PERSISTENCE_V1`,
-  `VOLATILITY_COMPRESSION_BREAKOUT_V1`
+## Terminal predecessors (retry forbidden)
 
-## Binding
+Includes VCB, VEP, VDB, VDBX, and `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1` (`FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`).
 
-- SSOT: `config/research/volatility_regime_research_program_v1.json`
-- Backlog: `config/research/volatility_regime_hypothesis_backlog_v1.json`
-- Measurement contract: `config/research/volatility_contraction_expansion_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
+## Safety
 
-## Gates
-
-- Definition-only preregistration (no Development evaluation executed)
-- Holdout unbound / forbidden
-- Live / orders / scheduler closed
-- No retry of terminal VDBX/VDB/VEP/VCB without new separate Operator-GO
+- `DEVELOPMENT_RUN_COUNT=0`
+- `DEVELOPMENT_SLOT_CONSUMED=false`
+- `HOLDOUT_ACCESSED=false`
+- `LIVE_AUTHORIZED=false`
+- `ORDERS=false`
+- Master V2 / Double-Play / Risk / Sizing / Execution unchanged
 
 ## Next step
 
-`REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
+Separate operator GO for strategy implementation, then Development evaluation.
 
----
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1
-STATUS: DEFINITION_ONLY_PROGRAM_OPEN
-scope: research, offline-only, non-authorizing, definition-governance
-LIVE_AUTHORIZED: false
-ORDERS_ALLOWED: false
-SCHEDULER_RUNTIME_ALLOWED: false
----

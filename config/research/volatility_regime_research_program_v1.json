@@ -30,7 +30,9 @@
       "volatility_compression_breakout/v1_retry",
       "volatility_decay_breakout/v1_retry",
       "volatility_decay_breakout_with_explicit_decay_exit/v1_retry",
-      "volatility_expansion_persistence/v1_retry"
+      "volatility_expansion_persistence/v1_retry",
+      "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
+      "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1"
     ],
     "funding_dependency": false,
     "independent_from_closed_cross_sectional_momentum_lane": true,
@@ -40,6 +42,7 @@
     "not_a_parameter_retry_of_closed_lanes": true,
     "not_a_retry_of_terminal_vol_breakout_coiled_spring": true,
     "not_a_retry_of_terminal_volatility_compression_breakout_v1": true,
+    "not_a_retry_of_terminal_volatility_contraction_expansion_breakout_v1": true,
     "not_a_retry_of_terminal_volatility_decay_breakout_v1": true,
     "not_a_retry_of_terminal_volatility_decay_breakout_with_explicit_decay_exit_v1": true,
     "not_a_retry_of_terminal_volatility_expansion_persistence_v1": true,
@@ -51,8 +54,8 @@
   "corrective_measurement_reevaluation_count": 1,
   "corrective_measurement_reevaluation_limit": 1,
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": true,
-  "development_run_count": 1,
+  "development_evaluation_executed": false,
+  "development_run_count": 0,
   "development_run_limit": 1,
   "evaluation_authorized": false,
   "evaluation_run_count": 0,
@@ -83,10 +86,10 @@
     "NO_VOLATILITY_DECAY_BREAKOUT_V1_RETRY",
     "NO_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_RETRY"
   ],
-  "governance_note": "VCEB v1 single authorized Development evaluation consumed run slot and fail-closed with UNPAIRABLE_ENTRY_NO_EXIT. No retry. No new hypothesis started. Predecessor VDBX/VDB/VEP/VCB artifacts unchanged. LIVE/ORDERS/HOLDOUT remain closed.",
+  "governance_note": "VEPC v1 definition-only preregistration after terminal VCEB FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT. No Development evaluation. No VCEB/VDBX/VDB/VEP/VCB retry. LIVE/ORDERS/HOLDOUT closed.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
-  "hypothesis_id": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
+  "hypothesis_id": "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
   "implementation_authorized": false,
   "lane_backlog_ref": "config/research/volatility_regime_hypothesis_backlog_v1.json",
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
@@ -99,7 +102,7 @@
       "dataset_universe": "sealed DEVELOPMENT_ONLY non-BTC OKX linear USDT perpetual panel vs single-instrument short window",
       "entry": "entry only after joint same-bar expansion+directional break; execution at open of t+1",
       "expansion_gate": "requires prior contraction then relative+absolute RV expansion, not coincident high-vol filter",
-      "program_identity": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 / VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1; not a rename of vol_breakout/v1",
+      "program_identity": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 / VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1; not a rename of vol_breakout/v1",
       "vol_estimator": "realized volatility close-to-close stdev(24) percentile-rank vs prior ATR(14) absolute-level vol_percentile=50 filter"
     },
     "prior_terminal_binding_ref": "config/research/vol_breakout_v1_versioned_research_binding_v0.json",
@@ -124,6 +127,21 @@
     "prior_strategy_identity": "VOLATILITY_COMPRESSION_BREAKOUT_V1",
     "prior_terminal_result": "FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
     "vcb_retry_forbidden": true
+  },
+  "material_difference_vs_volatility_contraction_expansion_breakout_v1": {
+    "differences": {
+      "admission_structure": "VCEB joint contraction->expansion break; VEPC expansion then limited pullback then continuation",
+      "causal_claim": "pullback-continuation inside expansion vs CONTRACTION->EXPANSION joint transition",
+      "entry_timing": "VEPC forbids immediate post-expansion breakout; VCEB enters t+1 after joint break",
+      "exit_semantics": "VEPC pullback-structure invalidation; VCEB opposite-break invalidation",
+      "no_contraction_prerequisite": "VEPC does not require 8-bar contraction",
+      "target_phenomenon": "VOLATILITY_EXPANSION_THEN_LIMITED_PULLBACK_CONTINUATION vs VOLATILITY_CONTRACTION_TO_EXPANSION_JOINT_DIRECTIONAL_BREAKOUT"
+    },
+    "not_a_parameter_change_of_vceb_v1": true,
+    "not_a_repair_or_retry_of_vceb_v1": true,
+    "prior_strategy_identity": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
+    "prior_terminal_result": "FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
+    "vceb_retry_forbidden": true
   },
   "material_difference_vs_volatility_decay_breakout_v1": {
     "differences": {
@@ -167,10 +185,10 @@
     "prior_terminal_result": "FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
     "vep_retry_forbidden": true
   },
-  "measurement_contract_ref": "config/research/volatility_contraction_expansion_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+  "measurement_contract_ref": "config/research/volatility_expansion_pullback_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "measurement_repair_merge_commit": "00a820f080973600378c3c2d5513905ee07217e9",
-  "next_canonical_step": "REVIEW_AND_MERGE_STRATEGY_IMPLEMENTATION_PLUS_UNAUTHORIZED_ENTRY_POINT_THEN_SEPARATE_OPERATOR_GO_FOR_DEVELOPMENT_EVALUATION_AUTHORIZATION",
-  "operator_decision": "AUTHORIZE_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_PLUS_UNAUTHORIZED_ENTRY_POINT",
+  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION",
+  "operator_decision": "AUTHORIZE_VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION",
   "operator_decision_token": "OPERATOR_DECISION_VCEB_V1_STRATEGY_IMPL_PLUS_UNAUTHORIZED_ENTRY_POINT",
   "original_development_run_count": 1,
   "portfolio_aggregation_id": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
@@ -186,8 +204,8 @@
   },
   "promotion_authorized": false,
   "retry_allowed": false,
-  "run_slot_consumed": true,
-  "runner_start_count": 1,
+  "run_slot_consumed": false,
+  "runner_start_count": 0,
   "runtime_authorized": false,
   "runtime_effect": "NONE",
   "runtime_policy": {
@@ -208,10 +226,10 @@
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
   "status": "DEFINITION_ONLY_PROGRAM_OPEN",
   "strategy_id": "volatility_contraction_expansion_breakout",
-  "strategy_identity": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
+  "strategy_identity": "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
   "strategy_implementation_authorized_in_this_slice": false,
   "strategy_implementation_present": false,
   "strategy_version": "v1",
-  "target_phenomenon": "VOLATILITY_CONTRACTION_TO_EXPANSION_JOINT_DIRECTIONAL_BREAKOUT",
-  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_VCEB_V1_RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
+  "target_phenomenon": "VOLATILITY_EXPANSION_THEN_LIMITED_PULLBACK_CONTINUATION",
+  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_VEPC_V1_DEFINITION_ONLY_PREREGISTERED_AWAITING_STRATEGY_IMPLEMENTATION_GO"
 }

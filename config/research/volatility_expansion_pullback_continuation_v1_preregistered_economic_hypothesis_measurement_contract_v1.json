@@ -1,0 +1,658 @@
+{
+  "admission_mechanism": {
+    "continuation_entry": {
+      "ambiguity_fail_closed_no_entry": true,
+      "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "bitcoin_excluded": true,
+      "continuation_rule_long": "close_strictly_above_pullback_swing_high",
+      "continuation_rule_short": "close_strictly_below_pullback_swing_low",
+      "direction_emitted_explicitly": true,
+      "double_play_remains_sole_downstream_authority": true,
+      "earliest_entry_bar_open": "first_open_after_continuation_confirmation_bar",
+      "entry_only_after_pullback_then_continuation": true,
+      "ex_ante_exit_reachability_required": true,
+      "long_short_mutually_exclusive": true,
+      "max_entries_per_expansion_pullback_sequence": 1,
+      "min_post_fill_bars_required_inclusive": 48,
+      "no_entry_on_expansion_confirmation_bar": true,
+      "no_immediate_post_expansion_breakout_entry": true,
+      "same_bar_lookahead_forbidden": true,
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "spot_excluded": true,
+      "universe": "OKX_LINEAR_USDT_NON_BTC_PERPETUAL_PANEL"
+    },
+    "directional_impulse": {
+      "ambiguity_fail_closed_no_impulse": true,
+      "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "bitcoin_excluded": true,
+      "channel_lookback_completed_bars": 20,
+      "impulse_requires_directional_break_while_expansion_active": true,
+      "long_rule": "close_strictly_above_highest_high_of_prior_20_completed_bars",
+      "long_short_mutually_exclusive": true,
+      "same_bar_lookahead_forbidden": true,
+      "short_rule": "close_strictly_below_lowest_low_of_prior_20_completed_bars",
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "spot_excluded": true,
+      "trigger_bar_excluded_from_channel": true,
+      "universe": "OKX_LINEAR_USDT_NON_BTC_PERPETUAL_PANEL"
+    },
+    "expansion_state": {
+      "lookahead_forbidden": true,
+      "min_consecutive_completed_bars": 4,
+      "must_be_fully_confirmed_from_past_completed_bars_only": true,
+      "percentile_inclusive_min": 0.65,
+      "rule": {
+        "normalized_rv_percentile_each_of_last_4_completed_bars_inclusive_min": 0.65,
+        "requires_exact_consecutive_bars": true
+      },
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "tolerance_gap_bars": 0
+    },
+    "pullback_requirement": {
+      "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "entry_on_expansion_confirmation_bar_forbidden": true,
+      "immediate_breakout_entry_without_pullback_forbidden": true,
+      "lookahead_forbidden": true,
+      "max_pullback_bars_inclusive": 8,
+      "max_pullback_fraction_of_impulse_range": 0.5,
+      "min_pullback_fraction_of_impulse_range": 0.15,
+      "pullback_must_not_break_impulse_extreme": true,
+      "pullback_required_before_entry": true,
+      "semantics_note": "After confirmed expansion and a directional impulse break, entry is forbidden until a bounded pullback (15%-50% of impulse range within <=8 bars) completes without breaking the impulse extreme.",
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+    },
+    "transition_event_lifecycle": {
+      "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "contraction_admission_not_required": true,
+      "decay_admission_not_required": true,
+      "event_consumption": "SINGLE_USE",
+      "expansion_persistence_multi_bar_release_window_forbidden": true,
+      "immediate_joint_breakout_on_expansion_bar_forbidden": true,
+      "max_entries_per_expansion_pullback_sequence": 1,
+      "overlapping_or_parallel_events_forbidden": true,
+      "rearm_requires_new_full_expansion_state_of_min_4_bars": true,
+      "reset_on_pullback_invalidation_without_continuation": true,
+      "reset_on_successful_entry": true,
+      "semantics_note": "Edge claim is continuation after a limited pullback inside a confirmed expansion regime — not VCEB joint contraction->expansion breakout, not VEP persistence release, not decay.",
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "vcb_style_multi_bar_release_window_forbidden": true,
+      "vceb_joint_contraction_expansion_break_forbidden": true
+    },
+    "vol_estimator": {
+      "family": "REALIZED_VOLATILITY",
+      "lookahead_forbidden": true,
+      "method": "CLOSE_TO_CLOSE_LOG_RETURN_STDEV",
+      "normalization": "NONE_RAW_STDEV",
+      "normalized_metric_name": "normalized_rv",
+      "past_only": true,
+      "percentile_metric": {
+        "average_rank_forbidden": true,
+        "current_value_shift_to_exclusively_historical_window_forbidden": true,
+        "lookahead_forbidden": true,
+        "metric": "PERCENTILE_RANK_OF_REALIZED_VOLATILITY_24",
+        "midrank_forbidden": true,
+        "percentile_rank_formula": "count(window_values <= current_value) / count(window_values)",
+        "percentile_rank_min_valid_observations": 120,
+        "percentile_rank_range": [
+          0.0,
+          1.0
+        ],
+        "percentile_rank_requires_exact_lookback_observations": true,
+        "percentile_rank_window_includes_current_value": true,
+        "percentile_tie_method": "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+        "rolling_lookback_bars": 120,
+        "strict_less_than_tie_method_forbidden": true,
+        "vol_breakout_rolling_last_pct_rank_not_authority": true
+      },
+      "period": 24,
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+    }
+  },
+  "artifact_kind": "preregistered_economic_hypothesis_measurement_contract",
+  "artifact_version": "v1",
+  "authority_effect": "NONE",
+  "backtest_authorized": false,
+  "baseline": {
+    "atr_percentile_decay_condition_absent": true,
+    "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
+    "compression_condition_absent": true,
+    "contraction_expansion_joint_admission_absent": true,
+    "decay_admission_absent": true,
+    "expansion_persistence_admission_absent": true,
+    "expansion_pullback_continuation_admission_absent": true,
+    "frozen": true,
+    "identical_channel_breakout_rule": true,
+    "identical_exit_cost_sizing_portfolio_semantics": true,
+    "no_reimplementation_or_semantic_mutation": true,
+    "sole_difference_vs_treatment": "VOLATILITY_EXPANSION_LIMITED_PULLBACK_CONTINUATION_ADMISSION",
+    "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+  },
+  "bounded_preregistered_development_grid_authorized": false,
+  "canonical_development_evaluation_entry_point": {
+    "binding_ref": "config/research/volatility_expansion_pullback_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+    "definition_only": true,
+    "evaluation_authorized_in_this_slice": false,
+    "implementation_present": false,
+    "script_ref": "scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py",
+    "status": "DEFINITION_ONLY_UNAUTHORIZED_BINDING"
+  },
+  "comparison_semantics": {
+    "control_arm": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
+    "deterministic": true,
+    "note": "Treatment vs unconditional 20-bar channel breakout baseline; sole difference is expansion-confirmed limited-pullback continuation admission. Not a VCEB/VEP/VDB/VDBX/VCB parameter retry.",
+    "reproducibility_required": true,
+    "seed_policy": "frozen_when_stochastic_components_absent",
+    "treatment_arm": "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+  },
+  "contract_digest": "ace1944f5b81065d52ce5b650a52e4de3c6f4817b54648b3a0c758fb2f2355eb",
+  "costs": {
+    "canonical_cost_multiplier": 1.0,
+    "cost_model_weakening_forbidden": true,
+    "fee_bps_per_side": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "half_spread_bps": 5.0,
+    "predefined_cost_stress_multipliers": [
+      0.5,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "slippage_bps_per_side": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0",
+    "spread_model_version": "research_conservative_bps_v1"
+  },
+  "dataset_bound": true,
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": false,
+  "development_evaluation_runs_allowed": 1,
+  "development_run_count": 0,
+  "directional_form": {
+    "double_play_remains_sole_authority": true,
+    "hypothesis_emits_admission_and_direction_intent_only": true,
+    "label": "own-instrument mutually exclusive continuation after limited pullback in confirmed expansion",
+    "rationale": "Direction comes from the impulse established under confirmed expansion; entry only after bounded pullback then continuation. Double-Play remains sole directional transition authority.",
+    "rejected_forms": {
+      "CROSS_SECTIONAL_RANKING": "Cross-sectional ranking forbidden for this signal family.",
+      "DUAL_LONG_AND_SHORT_SAME_TRIGGER": "LONG and SHORT are mutually exclusive; ambiguity fails closed.",
+      "IMMEDIATE_EXPANSION_BREAKOUT_WITHOUT_PULLBACK": "Immediate post-expansion breakout without pullback is forbidden.",
+      "JOINT_CONTRACTION_EXPANSION_BREAKOUT": "VCEB-style joint contraction->expansion breakout is forbidden.",
+      "MOMENTUM_RANK_DIRECTION": "Breakout direction must not be derived from momentum ranking.",
+      "RELATIVE_STRENGTH_RANKING": "Relative-strength ranking forbidden."
+    },
+    "selected": "OWN_INSTRUMENT_MUTUALLY_EXCLUSIVE_PULLBACK_CONTINUATION",
+    "semantics": "After expansion state (>=4 bars RV percentile >=0.65) and directional impulse, wait for bounded pullback then continue in impulse direction. No entry on expansion confirmation bar; no immediate breakout without pullback.",
+    "sole_directional_transition_authority": "trading.master_v2.double_play_state.transition_state"
+  },
+  "economic_admission_contract": {
+    "evaluation_blocked_while_any_threshold_pending": false,
+    "fail_reasons": {
+      "COST_STRESS_NOT_SURVIVED": "net_profit_factor at 1.5x costs < 1.0",
+      "GROSS_EDGE_NOT_MEANINGFUL": "gross_profit_factor < 1.0 OR gross_pnl <= 0",
+      "INSTRUMENT_PNL_CONCENTRATION_BREACH": "max_single_instrument_positive_gross_pnl_share > 0.35",
+      "INSUFFICIENT_EVALUABLE_EVENTS": "evaluable_treatment_breakout_events < 50",
+      "INSUFFICIENT_EVENTS_PER_TIME_SEGMENT": "any segment has < 10 evaluable treatment events",
+      "INSUFFICIENT_EXECUTED_TRADES": "executed_treatment_trades < 30",
+      "MAX_DRAWDOWN_ABS_BREACH": "abs(max_drawdown) > 0.25",
+      "MAX_DRAWDOWN_NOT_IMPROVED_VS_BASELINE": "abs(treatment_max_drawdown) > abs(baseline_max_drawdown)",
+      "NET_NOT_IMPROVED_VS_BASELINE": "treatment net_profit_factor not strictly greater than baseline",
+      "NET_PROFIT_FACTOR_BELOW_THRESHOLD": "net_profit_factor < 1.3 at canonical 1.0x costs",
+      "NET_RETURN_NOT_IMPROVED_VS_BASELINE": "treatment net_return not strictly greater than baseline",
+      "NON_FINITE_NUMERIC_RESULT": "NaN/Inf/Overflow observed => FAIL_CLOSED",
+      "PENDING_THRESHOLD_UNRESOLVED": "evaluation attempted while required admission thresholds remain unresolved",
+      "POST_HOC_TUNING_ATTEMPTED": "parameter or threshold mutation after result inspection",
+      "ROBUSTNESS_SAMPLE_INSUFFICIENT": "fewer than four evaluable chronological equal-duration quarters",
+      "TIME_SEGMENT_ROBUSTNESS_FAIL": "passing_segment_count / 4 < time_segment_robustness_pass_ratio"
+    },
+    "pass_requires_all": [
+      "evaluable",
+      "evaluable_treatment_breakout_events >= min_evaluable_treatment_breakout_events",
+      "executed_treatment_trades >= min_executed_treatment_trades",
+      "each_time_segment_evaluable_treatment_events >= min_evaluable_treatment_events_per_time_segment",
+      "gross_profit_factor >= gross_profit_factor_min",
+      "gross_pnl > 0",
+      "net_profit_factor >= net_profit_factor_min",
+      "net_profit_factor_treatment > net_profit_factor_baseline",
+      "net_return_treatment > net_return_baseline",
+      "net_expectancy >= minimum_net_expectancy",
+      "abs(max_drawdown) <= maximum_max_drawdown",
+      "abs(max_drawdown_treatment) <= abs(max_drawdown_baseline)",
+      "max_single_instrument_positive_gross_pnl_share <= max_single_instrument_positive_gross_pnl_share_max",
+      "all_numeric_results_finite",
+      "canonical_cost_multiplier_result_uses_1_0x",
+      "cost_stress_1_5x_net_profit_factor >= cost_stress_1_5x_net_profit_factor_min",
+      "deterministic_repro_digest_match",
+      "all_four_time_segments_evaluable",
+      "time_segment_robustness_pass_ratio >= time_segment_robustness_pass_ratio_min"
+    ],
+    "pending_threshold_keys": [],
+    "primary_decision_metric": "NET_PROFIT_FACTOR",
+    "secondary_metrics": [
+      "NET_RETURN_AFTER_COSTS",
+      "NET_EXPECTANCY",
+      "MAX_DRAWDOWN",
+      "GROSS_PROFIT_FACTOR",
+      "INSTRUMENT_PNL_CONCENTRATION"
+    ],
+    "thresholds": {
+      "cost_stress_1_5x_net_profit_factor_min": {
+        "source": "Survival interpretation under predefined 1.5x cost stress; PF>=1.0",
+        "status": "CONFIGURED",
+        "value": 1.0
+      },
+      "gross_profit_factor_min": {
+        "source": "bollinger_mr_economic_failure_decomposition classify_v1 ENTRY_GROSS_EDGE_PRESENT",
+        "status": "CONFIGURED",
+        "value": 1.0
+      },
+      "max_single_instrument_positive_gross_pnl_share_max": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION max_single_instrument_positive_gross_pnl_share_max=0.35",
+        "status": "CONFIGURED",
+        "value": 0.35
+      },
+      "maximum_max_drawdown": {
+        "source": "economic_validity_policy_v1 maximum_max_drawdown",
+        "status": "CONFIGURED",
+        "value": 0.25
+      },
+      "min_evaluable_treatment_breakout_events": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION min_evaluable_treatment_breakout_events=50",
+        "status": "CONFIGURED",
+        "value": 50
+      },
+      "min_evaluable_treatment_events_per_time_segment": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION min_events_per_segment=10",
+        "status": "CONFIGURED",
+        "value": 10
+      },
+      "min_executed_treatment_trades": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION min_executed_treatment_trades=30; also respects economic_validity_policy_v1 minimum_trade_count floor semantics for executed trades",
+        "status": "CONFIGURED",
+        "value": 30
+      },
+      "minimum_net_expectancy": {
+        "source": "economic_validity_policy_v1 minimum_net_expectancy",
+        "status": "CONFIGURED",
+        "value": 0.0
+      },
+      "net_profit_factor_min": {
+        "source": "economic_validity_policy_v1 minimum_profit_factor / config.toml strategy_validation min_profit_factor",
+        "status": "CONFIGURED",
+        "value": 1.3
+      },
+      "time_segment_robustness_pass_ratio": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "semantics": "pass_ratio = passing_segment_count / 4 under CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1; threshold 0.5 requires at least two PASS segments",
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION binding 0.5 to economic_validity_policy_v1 walk-forward/OOS pass-ratio convention",
+        "status": "CONFIGURED",
+        "value": 0.5
+      }
+    }
+  },
+  "economic_hypothesis": "On the DEVELOPMENT_ONLY non-BTC linear USDT futures panel, a confirmed own-instrument realized-volatility expansion state (4 consecutive bars with RV24 percentile >= 0.65) followed by a directional impulse and then a bounded pullback (15%-50% of impulse range within <=8 bars) yields a verifiable edge only when price resumes in the impulse direction. After canonical fees and slippage, this expansion->pullback->continuation admission is hypothesized to produce a more robust economic expectation than the identical unconditional 20-bar channel-breakout baseline. The edge is continuation after limited pullback inside expansion — not VCEB joint contraction->expansion breakout, not VEP persistence release, and not a decay signal.",
+  "evaluation_authorized": false,
+  "evaluation_run_count_authorized": 1,
+  "event_sufficiency_gates": {
+    "both_event_and_trade_gates_required": true,
+    "event_definition": "unique_admission_trigger_before_position_or_portfolio_conflict_resolution_not_trade_or_fill",
+    "frozen": true,
+    "min_evaluable_treatment_breakout_events": 50,
+    "min_evaluable_treatment_events_per_time_segment": 10,
+    "min_executed_treatment_trades": 30,
+    "post_result_threshold_mutation_forbidden": true,
+    "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+    "time_segment_count": 4
+  },
+  "evidence_paths": {
+    "canonical_development_evaluation_entry_point_binding_ref": "config/research/volatility_expansion_pullback_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+    "canonical_development_evaluation_entry_point_script_ref": "scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py",
+    "future_development_evaluation_evidence_ref": "docs/evidence/evaluate_volatility_expansion_pullback_continuation_development_v1/",
+    "governance_ref": "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "preregistration_evidence_ref": "docs/evidence/preregister_volatility_expansion_pullback_continuation_hypothesis_v1/"
+  },
+  "exit_semantics": {
+    "add_to_loser_forbidden": true,
+    "bind_existing_canonical_productive_exit_pnl_evaluator": true,
+    "end_of_instrument_liquidation": {
+      "authorized": true
+    },
+    "end_of_panel_liquidation": {
+      "authorized": true
+    },
+    "every_admitted_entry_must_have_reachable_exit": true,
+    "ex_ante_exit_reachability_required": true,
+    "first_event_wins": true,
+    "frozen": true,
+    "initial_stop_atr_multiple": 1.5,
+    "initial_stop_atr_normalization": "ATR_DIV_CLOSE",
+    "initial_stop_atr_period": 14,
+    "new_authority_creation_forbidden": true,
+    "new_pnl_implementation_forbidden": true,
+    "precedence_ascending_wins_first": [
+      "INITIAL_STOP",
+      "PULLBACK_STRUCTURE_INVALIDATION",
+      "REGIME_INVALIDATION",
+      "TIME_EXIT",
+      "END_OF_INSTRUMENT_LIQUIDATION",
+      "END_OF_PANEL_LIQUIDATION"
+    ],
+    "productive_exit_pnl_evaluator_ref": "src/research/volatility_compression_breakout_v1_development_evaluation_v1/productive_exit_pnl_evaluator_v1.py",
+    "pullback_structure_invalidation": {
+      "authorized": true,
+      "long_rule": "close_strictly_below_pullback_swing_low",
+      "short_rule": "close_strictly_above_pullback_swing_high",
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+    },
+    "pyramiding_forbidden": true,
+    "regime_invalidation_percentile_rank_lt": 0.4,
+    "reuse_canonical_fees_slippage_stop_risk_sizing_execution": true,
+    "reversal_forbidden": true,
+    "same_bar_entry_exit": {
+      "same_bar_fill_and_non_terminal_exit_forbidden": true
+    },
+    "scale_in_forbidden": true,
+    "second_equity_truth_forbidden": true,
+    "second_pnl_truth_forbidden": true,
+    "second_stats_truth_forbidden": true,
+    "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+    "synthetic_fills_solely_to_pair_trades_forbidden": true,
+    "time_exit_max_bars": 48,
+    "trailing_stop_forbidden": true,
+    "trailing_stop_not_used": true
+  },
+  "explicit_non_actions": [
+    "NO_EVALUATION_IN_THIS_SLICE",
+    "NO_RUNNER",
+    "NO_DATASET_LOAD",
+    "NO_HOLDOUT_ACCESS",
+    "NO_STRATEGY_PRODUCER_IMPLEMENTATION",
+    "NO_PROMOTION",
+    "NO_RUNTIME",
+    "NO_ENTRY_OR_EXIT_LANE_REOPEN",
+    "NO_CS_MOMENTUM_LANE_REOPEN",
+    "NO_VOL_BREAKOUT_V1_RETRY",
+    "NO_VOLATILITY_COMPRESSION_BREAKOUT_V1_RETRY",
+    "NO_VOLATILITY_EXPANSION_PERSISTENCE_V1_RETRY",
+    "NO_VOLATILITY_DECAY_BREAKOUT_V1_RETRY",
+    "NO_VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_RETRY",
+    "NO_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_RETRY",
+    "NO_VCB_PARAMETER_RETUNE",
+    "NO_POST_HOC_TUNING",
+    "NO_SECOND_PNL_TRUTH",
+    "NO_RUN_SLOT_CONSUMPTION"
+  ],
+  "forbidden_data_sources": [
+    "offline_economic_reevaluation_sealed_long_panel_v1",
+    "any_sealed_holdout_raw_or_derived_artifacts",
+    "live_or_authenticated_account_endpoints",
+    "non_development_only_datasets"
+  ],
+  "holdout_authorized": false,
+  "holdout_based_parameter_selection_forbidden": true,
+  "holdout_forbidden": true,
+  "hypothesis_count": 1,
+  "hypothesis_id": "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "hypothesis_statement": "Nach bestaetigter Realized-Volatilitaets-Expansion entsteht nur dann verwertbare Trendfortsetzung, wenn zuerst ein begrenzter Pullback gegen die Impulsrichtung erfolgt und anschliessend die Richtung fortgesetzt wird. Der Edge stammt aus Expansion->Pullback->Continuation, nicht aus einem unmittelbaren Breakout auf der Expansions-Bar, nicht aus VCEB Joint-Transition und nicht aus einem Decay-Signal.",
+  "implementation_authorized": false,
+  "material_difference_vs_terminal_coiled_spring": {
+    "differences": {
+      "baseline": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1 isolates incremental value of expansion-pullback-continuation admission",
+      "compression_gate": "VEPC requires confirmed expansion then limited pullback; coiled-spring used coincident high-vol filter",
+      "dataset_universe": "sealed DEVELOPMENT_ONLY non-BTC OKX linear USDT perpetual panel vs single-instrument short window",
+      "entry": "entry only after expansion+impulse+bounded pullback+continuation; never immediate expansion-bar breakout",
+      "expansion_gate": "requires multi-bar RV expansion state then pullback continuation, not coincident high-vol filter",
+      "program_identity": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 / VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1; not a rename of vol_breakout/v1",
+      "vol_estimator": "realized volatility close-to-close stdev(24) percentile-rank vs prior ATR(14) absolute-level vol_percentile=50 filter"
+    },
+    "prior_terminal_binding_ref": "config/research/vol_breakout_v1_versioned_research_binding_v0.json",
+    "prior_terminal_closeout_governance_ref": "docs/governance/VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md",
+    "prior_terminal_closeout_ref": "config/research/vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0.json",
+    "prior_terminal_hypothesis_id": "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1",
+    "rename_or_parameter_retry_of_terminal_coiled_spring_forbidden": true,
+    "reopen_of_terminal_vol_breakout_v1_forbidden": true,
+    "same_binding_retry_allowed": false,
+    "unchanged_binding_retry_forbidden": true
+  },
+  "material_difference_vs_volatility_compression_breakout_v1": {
+    "differences": {
+      "admission_structure": "VEPC: expansion then limited pullback then continuation; VCB: compression then multi-bar release then channel",
+      "exit_semantics": "VEPC binds pullback-structure invalidation + protective/time exits without trailing; VCB used trailing stop",
+      "release_window": "VEPC forbids immediate post-expansion breakout and VCB release offsets; pullback required",
+      "target_phenomenon": "VEPC expansion-pullback-continuation vs VCB compression-to-expansion release",
+      "vol_estimator_family": "VEPC realized volatility(24); VCB ATR(20)/close"
+    },
+    "not_a_parameter_change_of_vcb_v1": true,
+    "not_a_repair_or_retry_of_vcb_v1": true,
+    "prior_strategy_identity": "VOLATILITY_COMPRESSION_BREAKOUT_V1",
+    "prior_terminal_result": "FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
+    "vcb_retry_forbidden": true
+  },
+  "material_difference_vs_volatility_contraction_expansion_breakout_v1": {
+    "differences": {
+      "admission_structure": "VCEB joint contraction->expansion + same-bar channel break; VEPC confirmed expansion then required pullback then continuation",
+      "causal_claim": "VEPC edge is pullback-continuation inside expansion; VCEB edge is CONTRACTION->EXPANSION joint transition",
+      "entry_timing": "VCEB enters t+1 after joint break; VEPC forbids immediate post-expansion breakout and requires pullback first",
+      "exit_semantics": "VCEB opposite-break invalidation; VEPC pullback-structure invalidation + protective/time exits",
+      "no_contraction_prerequisite": "VEPC does not require an 8-bar contraction state",
+      "target_phenomenon": "VOLATILITY_EXPANSION_THEN_LIMITED_PULLBACK_CONTINUATION vs VOLATILITY_CONTRACTION_TO_EXPANSION_JOINT_DIRECTIONAL_BREAKOUT"
+    },
+    "not_a_parameter_change_of_vceb_v1": true,
+    "not_a_repair_or_retry_of_vceb_v1": true,
+    "prior_strategy_identity": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
+    "prior_terminal_result": "FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
+    "vceb_retry_forbidden": true
+  },
+  "material_difference_vs_volatility_decay_breakout_v1": {
+    "differences": {
+      "admission_polarity": "VEPC expansion then pullback continuation; VDB high->low decay",
+      "entry_window": "VEPC after pullback+continuation only; VDB t+1..t+8 post-decay window",
+      "exit_semantics": "VEPC pullback-structure invalidation without trailing; VDB declarative trailing+regime exits",
+      "target_phenomenon": "expansion-pullback-continuation vs decay-then-breakout",
+      "vol_estimator_family": "VEPC realized volatility(24); VDB ATR(14)/close"
+    },
+    "not_a_parameter_change_of_vdb_v1": true,
+    "not_a_repair_or_retry_of_vdb_v1": true,
+    "predecessor_strategy_identity": "VOLATILITY_DECAY_BREAKOUT_V1",
+    "predecessor_terminal_result": "FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
+    "vdb_retry_forbidden": true
+  },
+  "material_difference_vs_volatility_decay_breakout_with_explicit_decay_exit_v1": {
+    "differences": {
+      "admission_polarity": "VEPC expansion-pullback-continuation; VDBX decay-then-breakout",
+      "causal_claim": "edge from continuation after limited pullback in expansion vs decay-after-high-vol",
+      "exit_ownership": "VEPC preregisters pullback-structure+protective/time exits; VDBX strategy-owned decay exit SM with trailing",
+      "vol_estimator_family": "VEPC realized volatility(24); VDBX ATR(14)/close"
+    },
+    "not_a_parameter_change_of_vdbx_v1": true,
+    "not_a_repair_or_retry_of_vdbx_v1": true,
+    "prior_strategy_identity": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
+    "prior_terminal_result": "FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
+    "vdbx_retry_forbidden": true
+  },
+  "material_difference_vs_volatility_expansion_persistence_v1": {
+    "differences": {
+      "admission_polarity": "VEP admits after expansion persistence into a release window; VEPC requires pullback then continuation inside expansion",
+      "confirmation_rule": "VEP two-bar ATR persistence; VEPC 4-bar RV expansion then bounded pullback fractions",
+      "entry_window": "VEP t+1..t+6 persistence release; VEPC entry only after pullback+continuation confirmation",
+      "not_an_exit_repair": "VEPC is a new identity after VCEB terminal; not a VEP/VCEB exit rename",
+      "rearm_rule": "VEP rearm below persistence thr; VEPC rearm requires new full 4-bar expansion state",
+      "target_phenomenon": "VEP expansion persistence; VEPC expansion-pullback-continuation"
+    },
+    "not_a_parameter_change_of_vep_v1": true,
+    "not_a_repair_or_retry_of_vep_v1": true,
+    "prior_strategy_identity": "VOLATILITY_EXPANSION_PERSISTENCE_V1",
+    "prior_terminal_result": "FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
+    "vep_retry_forbidden": true
+  },
+  "multiple_testing_budget": 1,
+  "optimization_forbidden": true,
+  "parameter_governance": {
+    "all_parameters_preregistered": true,
+    "definition_semantics_complete": true,
+    "development_only_bounded_grid": {
+      "authorized": false,
+      "note": "No parameter grid; all mechanism thresholds are frozen singleton operator authorizations."
+    },
+    "frozen_parameters": {
+      "channel_lookback_bars": 20,
+      "continuation_requires_pullback_first": true,
+      "event_consumption": "SINGLE_USE",
+      "ex_ante_exit_reachability_required": true,
+      "expansion_min_consecutive_bars": 4,
+      "expansion_percentile_inclusive_min": 0.65,
+      "immediate_breakout_without_pullback_forbidden": true,
+      "initial_stop_atr_multiple": 1.5,
+      "initial_stop_atr_period": 14,
+      "max_entries_per_expansion_pullback_sequence": 1,
+      "max_pullback_bars_inclusive": 8,
+      "max_pullback_fraction_of_impulse_range": 0.5,
+      "min_post_fill_bars_required_inclusive": 48,
+      "min_pullback_fraction_of_impulse_range": 0.15,
+      "percentile_lookback_bars": 120,
+      "percentile_rank_min_valid_observations": 120,
+      "percentile_rank_window_includes_current_value": true,
+      "percentile_tie_method": "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+      "realized_volatility_period": 24,
+      "regime_invalidation_percentile_lt": 0.4,
+      "time_exit_max_bars": 48,
+      "trailing_stop_forbidden": true,
+      "vol_estimator_family": "REALIZED_VOLATILITY"
+    },
+    "open_parameters_remaining": false,
+    "post_hoc_tuning_forbidden": true,
+    "tbd_forbidden": true
+  },
+  "portfolio": {
+    "portfolio_aggregation_id": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+    "preserve_canonical_equal_weight": true
+  },
+  "post_hoc_threshold_adjustment_forbidden": true,
+  "predecessor_strategy_id": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
+  "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
+  "promotion_and_economic_gate_policy": {
+    "economic_gate_open": false,
+    "economic_validity_offline_gate_changed": false,
+    "economic_validity_offline_gate_pass": false,
+    "promotion_eligible": false
+  },
+  "provenance": {
+    "created_on_base_sha": "f45342fabcff6390f43a3012028ec9e486ce577e",
+    "definition_only": true,
+    "digest_algorithm": "sha256",
+    "digest_input": "canonical_json_sort_keys_indent_2_of_contract_without_contract_digest_and_provenance",
+    "forensic_class": "HYPOTHESIS_TERMINAL",
+    "operator_authorization_note": "Operator-authorized materially independent successor hypothesis under VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 after VCEB FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT; definition/preregistration only. VCEB/VDBX/VDB/VEP/VCB retry forbidden.",
+    "prior_terminal_strategy_identity": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1"
+  },
+  "repeat_after_result_inspection_forbidden": true,
+  "run_limit": {
+    "development_run_limit": 1,
+    "holdout_run_limit": 0,
+    "retry_forbidden": true,
+    "second_development_run_forbidden": true
+  },
+  "run_slot_consumed": false,
+  "runner_start_count": 0,
+  "runtime_effect": "NONE",
+  "runtime_policy": {
+    "live_authorized": false,
+    "orders_allowed": false,
+    "paper_activated": false,
+    "runtime_activated": false,
+    "scheduler_authorized": false,
+    "shadow_activated": false,
+    "testnet_activated": false
+  },
+  "schema_version": "volatility_expansion_pullback_continuation_v1_preregistered_economic_hypothesis_measurement_contract.v1",
+  "sealed_holdout_binding_status": "UNBOUND_UNTOUCHED",
+  "sealed_holdout_content_inspection_authorized": false,
+  "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "shared_authority_constraints": {
+    "capital_allocation_mutation_forbidden": true,
+    "double_play_sole_directional_transition_authority": true,
+    "execution_kernel_mutation_forbidden": true,
+    "master_v2_mutation_forbidden": true,
+    "promotion_authority_mutation_forbidden": true,
+    "reconciliation_mutation_forbidden": true,
+    "risk_authority_mutation_forbidden": true,
+    "runtime_wiring_mutation_forbidden": true,
+    "safety_authority_mutation_forbidden": true
+  },
+  "signal_family": "VOLATILITY_REGIME",
+  "slice_class": "DEFINITION_ONLY",
+  "status": "DEFINITION_ONLY_PREREGISTERED",
+  "strategy_id": "volatility_expansion_pullback_continuation",
+  "strategy_identity": "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
+  "strategy_implementation_present": false,
+  "strategy_version": "v1",
+  "target_phenomenon": "VOLATILITY_EXPANSION_THEN_LIMITED_PULLBACK_CONTINUATION",
+  "terminal_decision_semantics": {
+    "blocked_class": "EVALUATION_UNAUTHORIZED_AWAITING_SEPARATE_OPERATOR_GO",
+    "definition_only_does_not_create_economic_evidence": true,
+    "fail_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_NO_RETRY",
+    "on_fail": {
+      "post_hoc_tuning_forbidden": true,
+      "reopen_allowed": false,
+      "retry_allowed": false,
+      "terminal_result": "FAIL_CLOSED_NO_RETRY"
+    },
+    "on_pass": {
+      "automatic_holdout_forbidden": true,
+      "holdout_requires_separate_preregistration": true,
+      "promotion_or_runtime_activation_forbidden": true,
+      "terminal_result": "DEVELOPMENT_PASS_HOLDOUT_PREREGISTRATION_ELIGIBLE_ONLY"
+    },
+    "pass_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS"
+  },
+  "time_segment_definition": {
+    "all_segments_must_be_evaluable": true,
+    "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+    "bar_frequency": "PT1H",
+    "boundary_rule": "Partition the full DEVELOPMENT evaluation period into exactly four chronological, disjoint, contiguous equal-duration segments computed only from period start, end_exclusive, and total duration; round boundaries to the canonical PT1H bar grid of the bound DEVELOPMENT dataset.",
+    "denominator": 4,
+    "development_period": {
+      "end_exclusive": "2023-08-16T05:55:00Z",
+      "holdout_excluded": true,
+      "period_adjustment_forbidden": true,
+      "source": "seal_registry_published_common_panel_bounds_bound_by_preregistration_evidence",
+      "start": "2022-06-01T03:55:17Z"
+    },
+    "expected_minimum_passing_segments": 2,
+    "generic_walk_forward_v1_bound": false,
+    "illustrative_60_20_20_partition_is_not_authority": true,
+    "illustrative_60_20_20_partition_mutation_forbidden": true,
+    "non_evaluable_segments_are_pass": false,
+    "non_evaluable_segments_removed_from_denominator": false,
+    "not_result_calibrated": true,
+    "remainder_rule": "If total canonical bars are not divisible by four, assign remaining bars deterministically to the earliest segments in chronological order, at most one extra bar each. Every DEVELOPMENT bar timestamp belongs to exactly one segment.",
+    "segment_ids": [
+      "TIME_SEGMENT_Q1",
+      "TIME_SEGMENT_Q2",
+      "TIME_SEGMENT_Q3",
+      "TIME_SEGMENT_Q4"
+    ],
+    "segment_pass_semantics": "A segment is PASS only if all already-preregistered economic, cost, sample, drawdown, event-sufficiency, and net-profit-factor gates applicable to treatment-vs-baseline admission are satisfied within that segment using the same canonical measurement semantics as the full DEVELOPMENT evaluation.",
+    "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+    "total_time_segments": 4
+  },
+  "unbounded_parameter_sweeps_forbidden": true,
+  "universe_constraints": {
+    "bitcoin_excluded": true,
+    "futures_only": true,
+    "instrument_class": "LINEAR_USDT_PERPETUAL",
+    "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+    "spot_excluded": true,
+    "venue": "OKX"
+  },
+  "verdict": "DEFINITION_ONLY_PREREGISTERED_SEMANTICS_COMPLETE_AWAITING_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
+}
