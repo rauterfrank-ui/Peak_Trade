@@ -1,0 +1,528 @@
+{
+  "admission_mechanism": {
+    "directional_entry": {
+      "ambiguity_fail_closed_no_entry": true,
+      "bitcoin_excluded": true,
+      "channel_lookback_completed_bars": 20,
+      "direction_emitted_explicitly": true,
+      "double_play_remains_sole_downstream_authority": true,
+      "earliest_entry_bar_open": "t_plus_1",
+      "entry_on_expansion_confirmation_bar_t_forbidden": true,
+      "entry_on_t_minus_1_or_t_minus_2_forbidden": true,
+      "long_rule": "close_strictly_above_highest_high_of_prior_20_completed_bars",
+      "long_short_mutually_exclusive": true,
+      "max_entries_per_expansion_event": 1,
+      "otherwise_no_entry": true,
+      "same_bar_lookahead_forbidden": true,
+      "short_rule": "close_strictly_below_lowest_low_of_prior_20_completed_bars",
+      "signal_observed_after_completed_bar_t": true,
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "spot_excluded": true,
+      "trigger_bar_excluded_from_channel": true,
+      "universe": "OKX_LINEAR_USDT_NON_BTC_PERPETUAL_PANEL"
+    },
+    "expansion_confirmation": {
+      "bars_required_at_or_above_threshold": 2,
+      "confirmation_bar_index_label": "t",
+      "earliest_entry_after_confirmation": "open_of_t_plus_1",
+      "lookahead_forbidden": true,
+      "must_be_fully_confirmed_from_past_completed_bars_only": true,
+      "normalized_atr_strictly_increasing_on_confirmation_bar": true,
+      "prior_bar_must_also_meet_threshold": true,
+      "rule": {
+        "normalized_atr_percentile_t": ">= 0.80",
+        "normalized_atr_percentile_t_minus_1": ">= 0.80",
+        "normalized_atr_percentile_t_minus_2": "< 0.80",
+        "normalized_atr_t_gt_normalized_atr_t_minus_1": true
+      },
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "threshold_inclusive_min": 0.8
+    },
+    "expansion_event_lifecycle": {
+      "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "compression_regime_not_required": true,
+      "event_consumption": "SINGLE_USE",
+      "max_entries_per_expansion_event": 1,
+      "new_full_expansion_confirmation_required_after_use_or_expiry": true,
+      "no_entry_on_initial_compression_release_or_breakout_bar": true,
+      "overlapping_or_parallel_events_forbidden": true,
+      "persistence_window_bars": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "persistence_window_end_offset_after_confirmation_bar": 6,
+      "persistence_window_offsets_inclusive": true,
+      "persistence_window_start_offset_after_confirmation_bar": 1,
+      "rearm_requires_normalized_atr_percentile_below_threshold_for_at_least_one_completed_bar": true,
+      "rearm_threshold_exclusive_max": 0.8,
+      "reset_on_event_expiry_after_offset_6": true,
+      "reset_on_successful_entry": true,
+      "semantics_note": "An expansion event is confirmed on completed bar t under the frozen two-bar high-vol transition rule. The event remains eligible for directional confirmation on bars t+1..t+6 inclusive. Direction observed on bar u in that window yields execution at open of u+1. After use or expiry, a new full confirmation is required and rearm requires at least one completed bar with normalized_atr_percentile < 0.80.",
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+    },
+    "vol_estimator": {
+      "family": "ATR",
+      "lookahead_forbidden": true,
+      "normalization": "ATR_DIV_CLOSE",
+      "normalized_metric_name": "normalized_atr",
+      "past_only": true,
+      "percentile_metric": {
+        "average_rank_forbidden": true,
+        "current_value_shift_to_exclusively_historical_window_forbidden": true,
+        "lookahead_forbidden": true,
+        "metric": "PERCENTILE_RANK_OF_NORMALIZED_ATR14",
+        "midrank_forbidden": true,
+        "percentile_rank_formula": "count(window_values <= current_value) / count(window_values)",
+        "percentile_rank_min_valid_observations": 120,
+        "percentile_rank_range": [
+          0.0,
+          1.0
+        ],
+        "percentile_rank_requires_exact_lookback_observations": true,
+        "percentile_rank_window_includes_current_value": true,
+        "percentile_tie_method": "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+        "rolling_lookback_bars": 120,
+        "strict_less_than_tie_method_forbidden": true,
+        "vol_breakout_rolling_last_pct_rank_not_authority": true
+      },
+      "period": 14,
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+    }
+  },
+  "artifact_kind": "preregistered_economic_hypothesis_measurement_contract",
+  "artifact_version": "v1",
+  "authority_effect": "NONE",
+  "backtest_authorized": false,
+  "baseline": {
+    "atr_percentile_expansion_condition_absent": true,
+    "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
+    "compression_condition_absent": true,
+    "expansion_persistence_admission_absent": true,
+    "frozen": true,
+    "identical_channel_breakout_rule": true,
+    "identical_exit_cost_sizing_portfolio_semantics": true,
+    "no_reimplementation_or_semantic_mutation": true,
+    "sole_difference_vs_treatment": "EXPANSION_PERSISTENCE_ADMISSION",
+    "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+  },
+  "bounded_preregistered_development_grid_authorized": false,
+  "comparison_semantics": {
+    "control_arm": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
+    "deterministic": true,
+    "note": "Treatment vs unconditional 20-bar channel breakout baseline; sole difference is expansion-persistence admission after causally confirmed high-vol expansion. Not a VCB-V1 parameter retry and not a vol_breakout/v1 unchanged binding retry.",
+    "reproducibility_required": true,
+    "seed_policy": "frozen_when_stochastic_components_absent",
+    "treatment_arm": "VOLATILITY_EXPANSION_PERSISTENCE_V1"
+  },
+  "contract_digest": "92e2117ce7e60fe771c4d6e1d6d1aeb8645af80512e21cb9ff21fc4477c7c70e",
+  "costs": {
+    "canonical_cost_multiplier": 1.0,
+    "cost_model_weakening_forbidden": true,
+    "fee_bps_per_side": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "half_spread_bps": 5.0,
+    "predefined_cost_stress_multipliers": [
+      0.5,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "slippage_bps_per_side": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0",
+    "spread_model_version": "research_conservative_bps_v1"
+  },
+  "dataset_bound": true,
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": false,
+  "development_evaluation_runs_allowed": 1,
+  "development_run_count": 0,
+  "directional_form": {
+    "double_play_remains_sole_authority": true,
+    "hypothesis_emits_admission_and_direction_intent_only": true,
+    "label": "own-instrument mutually exclusive channel breakout after confirmed expansion persistence",
+    "rationale": "Direction comes only from the preregistered own-instrument price-boundary event inside the persistence window after confirmed expansion; Double-Play remains sole directional transition authority; research strategy must not override Double-Play.",
+    "rejected_forms": {
+      "CROSS_SECTIONAL_RANKING": "Cross-sectional ranking forbidden for this signal family.",
+      "DUAL_LONG_AND_SHORT_SAME_TRIGGER": "LONG and SHORT are mutually exclusive; ambiguity fails closed.",
+      "MOMENTUM_RANK_DIRECTION": "Breakout direction must not be derived from momentum ranking.",
+      "RELATIVE_STRENGTH_RANKING": "Relative-strength ranking forbidden."
+    },
+    "selected": "OWN_INSTRUMENT_MUTUALLY_EXCLUSIVE_CHANNEL_BREAKOUT",
+    "semantics": "After confirmed expansion event on bar t, within persistence offsets 1..6, LONG iff close > max(high of prior 20 completed bars); SHORT iff close < min(low of prior 20 completed bars); else no entry. Execution at next bar open.",
+    "sole_directional_transition_authority": "trading.master_v2.double_play_state.transition_state"
+  },
+  "economic_admission_contract": {
+    "evaluation_blocked_while_any_threshold_pending": false,
+    "fail_reasons": {
+      "COST_STRESS_NOT_SURVIVED": "net_profit_factor at 1.5x costs < 1.0",
+      "GROSS_EDGE_NOT_MEANINGFUL": "gross_profit_factor < 1.0 OR gross_pnl <= 0",
+      "INSTRUMENT_PNL_CONCENTRATION_BREACH": "max_single_instrument_positive_gross_pnl_share > 0.35",
+      "INSUFFICIENT_EVALUABLE_EVENTS": "evaluable_treatment_breakout_events < 50",
+      "INSUFFICIENT_EVENTS_PER_TIME_SEGMENT": "any segment has < 10 evaluable treatment events",
+      "INSUFFICIENT_EXECUTED_TRADES": "executed_treatment_trades < 30",
+      "MAX_DRAWDOWN_ABS_BREACH": "abs(max_drawdown) > 0.25",
+      "MAX_DRAWDOWN_NOT_IMPROVED_VS_BASELINE": "abs(treatment_max_drawdown) > abs(baseline_max_drawdown)",
+      "NET_NOT_IMPROVED_VS_BASELINE": "treatment net_profit_factor not strictly greater than baseline",
+      "NET_PROFIT_FACTOR_BELOW_THRESHOLD": "net_profit_factor < 1.3 at canonical 1.0x costs",
+      "NET_RETURN_NOT_IMPROVED_VS_BASELINE": "treatment net_return not strictly greater than baseline",
+      "NON_FINITE_NUMERIC_RESULT": "NaN/Inf/Overflow observed => FAIL_CLOSED",
+      "PENDING_THRESHOLD_UNRESOLVED": "evaluation attempted while required admission thresholds remain unresolved",
+      "POST_HOC_TUNING_ATTEMPTED": "parameter or threshold mutation after result inspection",
+      "ROBUSTNESS_SAMPLE_INSUFFICIENT": "fewer than four evaluable chronological equal-duration quarters",
+      "TIME_SEGMENT_ROBUSTNESS_FAIL": "passing_segment_count / 4 < time_segment_robustness_pass_ratio"
+    },
+    "pass_requires_all": [
+      "evaluable",
+      "evaluable_treatment_breakout_events >= min_evaluable_treatment_breakout_events",
+      "executed_treatment_trades >= min_executed_treatment_trades",
+      "each_time_segment_evaluable_treatment_events >= min_evaluable_treatment_events_per_time_segment",
+      "gross_profit_factor >= gross_profit_factor_min",
+      "gross_pnl > 0",
+      "net_profit_factor >= net_profit_factor_min",
+      "net_profit_factor_treatment > net_profit_factor_baseline",
+      "net_return_treatment > net_return_baseline",
+      "net_expectancy >= minimum_net_expectancy",
+      "abs(max_drawdown) <= maximum_max_drawdown",
+      "abs(max_drawdown_treatment) <= abs(max_drawdown_baseline)",
+      "max_single_instrument_positive_gross_pnl_share <= max_single_instrument_positive_gross_pnl_share_max",
+      "all_numeric_results_finite",
+      "canonical_cost_multiplier_result_uses_1_0x",
+      "cost_stress_1_5x_net_profit_factor >= cost_stress_1_5x_net_profit_factor_min",
+      "deterministic_repro_digest_match",
+      "all_four_time_segments_evaluable",
+      "time_segment_robustness_pass_ratio >= time_segment_robustness_pass_ratio_min"
+    ],
+    "pending_threshold_keys": [],
+    "primary_decision_metric": "NET_PROFIT_FACTOR",
+    "secondary_metrics": [
+      "NET_RETURN_AFTER_COSTS",
+      "NET_EXPECTANCY",
+      "MAX_DRAWDOWN",
+      "GROSS_PROFIT_FACTOR",
+      "INSTRUMENT_PNL_CONCENTRATION"
+    ],
+    "thresholds": {
+      "cost_stress_1_5x_net_profit_factor_min": {
+        "source": "Survival interpretation under predefined 1.5x cost stress; PF>=1.0",
+        "status": "CONFIGURED",
+        "value": 1.0
+      },
+      "gross_profit_factor_min": {
+        "source": "bollinger_mr_economic_failure_decomposition classify_v1 ENTRY_GROSS_EDGE_PRESENT",
+        "status": "CONFIGURED",
+        "value": 1.0
+      },
+      "max_single_instrument_positive_gross_pnl_share_max": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION max_single_instrument_positive_gross_pnl_share_max=0.35",
+        "status": "CONFIGURED",
+        "value": 0.35
+      },
+      "maximum_max_drawdown": {
+        "source": "economic_validity_policy_v1 maximum_max_drawdown",
+        "status": "CONFIGURED",
+        "value": 0.25
+      },
+      "min_evaluable_treatment_breakout_events": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION min_evaluable_treatment_breakout_events=50",
+        "status": "CONFIGURED",
+        "value": 50
+      },
+      "min_evaluable_treatment_events_per_time_segment": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION min_events_per_segment=10",
+        "status": "CONFIGURED",
+        "value": 10
+      },
+      "min_executed_treatment_trades": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION min_executed_treatment_trades=30; also respects economic_validity_policy_v1 minimum_trade_count floor semantics for executed trades",
+        "status": "CONFIGURED",
+        "value": 30
+      },
+      "minimum_net_expectancy": {
+        "source": "economic_validity_policy_v1 minimum_net_expectancy",
+        "status": "CONFIGURED",
+        "value": 0.0
+      },
+      "net_profit_factor_min": {
+        "source": "economic_validity_policy_v1 minimum_profit_factor / config.toml strategy_validation min_profit_factor",
+        "status": "CONFIGURED",
+        "value": 1.3
+      },
+      "time_segment_robustness_pass_ratio": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "semantics": "pass_ratio = passing_segment_count / 4 under CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1; threshold 0.5 requires at least two PASS segments",
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION binding 0.5 to economic_validity_policy_v1 walk-forward/OOS pass-ratio convention",
+        "status": "CONFIGURED",
+        "value": 0.5
+      }
+    }
+  },
+  "economic_hypothesis": "On the DEVELOPMENT_ONLY non-BTC linear USDT futures panel, after a causally confirmed own-instrument ATR(14)/close expansion (two consecutive high-vol bars with transition from below 0.80), entering only within a fixed persistence window on a confirmed 20-bar price-channel breakout yields, after canonical fees and slippage, a more robust economic expectation than the identical unconditional 20-bar channel-breakout baseline.",
+  "evaluation_authorized": false,
+  "evaluation_run_count_authorized": 1,
+  "event_sufficiency_gates": {
+    "both_event_and_trade_gates_required": true,
+    "event_definition": "unique_admission_trigger_before_position_or_portfolio_conflict_resolution_not_trade_or_fill",
+    "frozen": true,
+    "min_evaluable_treatment_breakout_events": 50,
+    "min_evaluable_treatment_events_per_time_segment": 10,
+    "min_executed_treatment_trades": 30,
+    "post_result_threshold_mutation_forbidden": true,
+    "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+    "time_segment_count": 4
+  },
+  "evidence_paths": {
+    "future_development_evaluation_evidence_ref": "docs/evidence/evaluate_volatility_expansion_persistence_development_v1/",
+    "governance_ref": "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "preregistration_evidence_ref": "docs/evidence/preregister_volatility_expansion_persistence_hypothesis_v1/"
+  },
+  "exit_semantics": {
+    "add_to_loser_forbidden": true,
+    "bind_existing_canonical_productive_exit_pnl_evaluator": true,
+    "first_event_wins": true,
+    "frozen": true,
+    "initial_stop_atr_multiple": 1.5,
+    "new_authority_creation_forbidden": true,
+    "new_pnl_implementation_forbidden": true,
+    "productive_exit_pnl_evaluator_ref": "src/research/volatility_compression_breakout_v1_development_evaluation_v1/productive_exit_pnl_evaluator_v1.py",
+    "pyramiding_forbidden": true,
+    "regime_exit_percentile_rank_lt": 0.5,
+    "reuse_canonical_fees_slippage_stop_risk_sizing_execution": true,
+    "reversal_forbidden": true,
+    "scale_in_forbidden": true,
+    "second_pnl_truth_forbidden": true,
+    "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+    "time_exit_max_bars": 48,
+    "trailing_stop_atr_multiple": 2.0,
+    "trailing_stop_risk_reducing_only": true
+  },
+  "explicit_non_actions": [
+    "NO_EVALUATION_IN_THIS_SLICE",
+    "NO_RUNNER",
+    "NO_DATASET_LOAD",
+    "NO_HOLDOUT_ACCESS",
+    "NO_STRATEGY_PRODUCER_IMPLEMENTATION",
+    "NO_PROMOTION",
+    "NO_RUNTIME",
+    "NO_ENTRY_OR_EXIT_LANE_REOPEN",
+    "NO_CS_MOMENTUM_LANE_REOPEN",
+    "NO_VOL_BREAKOUT_V1_RETRY",
+    "NO_VOLATILITY_COMPRESSION_BREAKOUT_V1_RETRY",
+    "NO_POST_HOC_TUNING",
+    "NO_SECOND_PNL_TRUTH"
+  ],
+  "forbidden_data_sources": [
+    "offline_economic_reevaluation_sealed_long_panel_v1",
+    "any_sealed_holdout_raw_or_derived_artifacts",
+    "live_or_authenticated_account_endpoints",
+    "non_development_only_datasets"
+  ],
+  "holdout_authorized": false,
+  "holdout_based_parameter_selection_forbidden": true,
+  "holdout_forbidden": true,
+  "hypothesis_count": 1,
+  "hypothesis_id": "VOLATILITY_EXPANSION_PERSISTENCE_NON_BITCOIN_PERPETUALS_V1",
+  "hypothesis_statement": "Nach bereits bestaetigter Volatilitaetsausweitung besteht eine zeitlich begrenzte Persistenz gerichteter Preisbewegungen. Eine Strategie, die nicht den initialen Compression-Breakout handelt, sondern erst nach kausal bestaetigter Expansion innerhalb eines festen Persistenzfensters einsteigt, verbessert gegenueber dem unconditional 20-bar price-channel breakout die vorregistrierten oekonomischen Zielmetriken.",
+  "implementation_authorized": false,
+  "material_difference_vs_terminal_coiled_spring": {
+    "differences": {
+      "baseline": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1 isolates incremental value of expansion-persistence admission",
+      "compression_gate": "no compression-regime prerequisite; coiled-spring used coincident vol filter without sustained compression gate",
+      "dataset_universe": "sealed DEVELOPMENT_ONLY non-BTC OKX linear USDT perpetual panel vs single-instrument inst-eth-usdt-perp short window",
+      "entry": "entry only after confirmed expansion plus directional continuation inside t+1..t+6; never on confirmation bar t",
+      "expansion_gate": "requires two consecutive completed bars at percentile>=0.80 with transition from below 0.80 and rising normalized ATR vs coincident high-vol filter",
+      "program_identity": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 / VOLATILITY_EXPANSION_PERSISTENCE_V1; not a rename of vol_breakout/v1",
+      "vol_estimator": "ATR(14)/close percentile-rank regime state vs prior ATR(14) absolute-level vol_percentile=50 filter"
+    },
+    "prior_terminal_binding_ref": "config/research/vol_breakout_v1_versioned_research_binding_v0.json",
+    "prior_terminal_closeout_governance_ref": "docs/governance/VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md",
+    "prior_terminal_closeout_ref": "config/research/vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0.json",
+    "prior_terminal_hypothesis_id": "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1",
+    "rename_or_parameter_retry_of_terminal_coiled_spring_forbidden": true,
+    "reopen_of_terminal_vol_breakout_v1_forbidden": true,
+    "same_binding_retry_allowed": false,
+    "unchanged_binding_retry_forbidden": true
+  },
+  "material_difference_vs_volatility_compression_breakout_v1": {
+    "differences": {
+      "compression_prerequisite": "VCB requires sustained compression percentile<=0.20 for 12 bars; VEP requires no compression regime",
+      "entry_timing": "VCB may enter on expansion/release path tied to compression cycle; VEP forbids entry on confirmation bar t and on any initial compression-release/breakout bar",
+      "expansion_definition": "VCB expansion is percentile>=0.75 within release offsets after compression; VEP requires two consecutive bars >=0.80 with prior bar <0.80 and rising normalized ATR",
+      "persistence_semantics": "VEP admits directional continuation only inside fixed post-confirmation window t+1..t+6 with single-use event and rearm below 0.80",
+      "vol_estimator_period": "VCB ATR(20); VEP ATR(14)"
+    },
+    "not_a_parameter_change_of_vcb_v1": true,
+    "not_a_repair_or_retry_of_vcb_v1": true,
+    "prior_strategy_identity": "VOLATILITY_COMPRESSION_BREAKOUT_V1",
+    "prior_terminal_result": "FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
+    "vcb_retry_forbidden": true
+  },
+  "multiple_testing_budget": 1,
+  "optimization_forbidden": true,
+  "parameter_governance": {
+    "all_parameters_preregistered": true,
+    "definition_semantics_complete": true,
+    "development_only_bounded_grid": {
+      "authorized": false,
+      "note": "No parameter grid; all mechanism thresholds are frozen singleton operator authorizations."
+    },
+    "frozen_parameters": {
+      "atr_normalization": "ATR_DIV_CLOSE",
+      "atr_period": 14,
+      "channel_lookback_bars": 20,
+      "earliest_entry_offset_after_confirmation": 1,
+      "expansion_confirmation_threshold": 0.8,
+      "expansion_event_consumption": "SINGLE_USE",
+      "expansion_rearm_requires_percentile_below_threshold": true,
+      "initial_stop_atr_multiple": 1.5,
+      "max_entries_per_expansion_event": 1,
+      "percentile_lookback_bars": 120,
+      "percentile_rank_min_valid_observations": 120,
+      "percentile_rank_window_includes_current_value": true,
+      "percentile_tie_method": "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+      "persistence_window_end_offset": 6,
+      "persistence_window_start_offset": 1,
+      "regime_exit_percentile_lt": 0.5,
+      "signal_lag_bars": 1,
+      "time_exit_max_bars": 48,
+      "trailing_stop_atr_multiple": 2.0
+    },
+    "open_parameters_remaining": false,
+    "post_hoc_tuning_forbidden": true,
+    "tbd_forbidden": true
+  },
+  "portfolio": {
+    "portfolio_aggregation_id": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+    "preserve_canonical_equal_weight": true
+  },
+  "post_hoc_threshold_adjustment_forbidden": true,
+  "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
+  "promotion_and_economic_gate_policy": {
+    "economic_gate_open": false,
+    "economic_validity_offline_gate_changed": false,
+    "economic_validity_offline_gate_pass": false,
+    "promotion_eligible": false
+  },
+  "provenance": {
+    "created_on_base_sha": "e40f4ff9023543b1a38a89c8436780c355a02803",
+    "definition_only": true,
+    "digest_algorithm": "sha256",
+    "digest_input": "canonical_json_sort_keys_indent_2_of_contract_without_contract_digest_and_provenance",
+    "operator_authorization_note": "Operator-authorized materially independent successor hypothesis under VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 after VCB-V1 FAIL_CLOSED_NO_RETRY; definition/preregistration only."
+  },
+  "repeat_after_result_inspection_forbidden": true,
+  "run_limit": {
+    "development_run_limit": 1,
+    "holdout_run_limit": 0,
+    "retry_forbidden": true,
+    "second_development_run_forbidden": true
+  },
+  "run_slot_consumed": false,
+  "runner_start_count": 0,
+  "runtime_effect": "NONE",
+  "runtime_policy": {
+    "live_authorized": false,
+    "orders_allowed": false,
+    "paper_activated": false,
+    "runtime_activated": false,
+    "scheduler_authorized": false,
+    "shadow_activated": false,
+    "testnet_activated": false
+  },
+  "schema_version": "volatility_expansion_persistence_v1_preregistered_economic_hypothesis_measurement_contract.v1",
+  "sealed_holdout_binding_status": "UNBOUND_UNTOUCHED",
+  "sealed_holdout_content_inspection_authorized": false,
+  "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "shared_authority_constraints": {
+    "capital_allocation_mutation_forbidden": true,
+    "double_play_sole_directional_transition_authority": true,
+    "execution_kernel_mutation_forbidden": true,
+    "master_v2_mutation_forbidden": true,
+    "promotion_authority_mutation_forbidden": true,
+    "reconciliation_mutation_forbidden": true,
+    "risk_authority_mutation_forbidden": true,
+    "runtime_wiring_mutation_forbidden": true,
+    "safety_authority_mutation_forbidden": true
+  },
+  "signal_family": "VOLATILITY_REGIME",
+  "slice_class": "DEFINITION_ONLY",
+  "status": "DEFINITION_ONLY_PREREGISTERED",
+  "strategy_id": "volatility_expansion_persistence",
+  "strategy_identity": "VOLATILITY_EXPANSION_PERSISTENCE_V1",
+  "strategy_implementation_present": false,
+  "strategy_version": "v1",
+  "target_phenomenon": "VOLATILITY_EXPANSION_PERSISTENCE_AFTER_CONFIRMED_EXPANSION",
+  "terminal_decision_semantics": {
+    "blocked_class": "EVALUATION_UNAUTHORIZED_AWAITING_SEPARATE_OPERATOR_GO",
+    "definition_only_does_not_create_economic_evidence": true,
+    "fail_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_NO_RETRY",
+    "on_fail": {
+      "post_hoc_tuning_forbidden": true,
+      "reopen_allowed": false,
+      "retry_allowed": false,
+      "terminal_result": "FAIL_CLOSED_NO_RETRY"
+    },
+    "on_pass": {
+      "automatic_holdout_forbidden": true,
+      "holdout_requires_separate_preregistration": true,
+      "promotion_or_runtime_activation_forbidden": true,
+      "terminal_result": "DEVELOPMENT_PASS_HOLDOUT_PREREGISTRATION_ELIGIBLE_ONLY"
+    },
+    "pass_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS"
+  },
+  "time_segment_definition": {
+    "all_segments_must_be_evaluable": true,
+    "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+    "bar_frequency": "PT1H",
+    "boundary_rule": "Partition the full DEVELOPMENT evaluation period into exactly four chronological, disjoint, contiguous equal-duration segments computed only from period start, end_exclusive, and total duration; round boundaries to the canonical PT1H bar grid of the bound DEVELOPMENT dataset.",
+    "denominator": 4,
+    "development_period": {
+      "end_exclusive": "2023-08-16T05:55:00Z",
+      "holdout_excluded": true,
+      "period_adjustment_forbidden": true,
+      "source": "seal_registry_published_common_panel_bounds_bound_by_preregistration_evidence",
+      "start": "2022-06-01T03:55:17Z"
+    },
+    "expected_minimum_passing_segments": 2,
+    "generic_walk_forward_v1_bound": false,
+    "illustrative_60_20_20_partition_is_not_authority": true,
+    "illustrative_60_20_20_partition_mutation_forbidden": true,
+    "non_evaluable_segments_are_pass": false,
+    "non_evaluable_segments_removed_from_denominator": false,
+    "not_result_calibrated": true,
+    "remainder_rule": "If total canonical bars are not divisible by four, assign remaining bars deterministically to the earliest segments in chronological order, at most one extra bar each. Every DEVELOPMENT bar timestamp belongs to exactly one segment.",
+    "segment_ids": [
+      "TIME_SEGMENT_Q1",
+      "TIME_SEGMENT_Q2",
+      "TIME_SEGMENT_Q3",
+      "TIME_SEGMENT_Q4"
+    ],
+    "segment_pass_semantics": "A segment is PASS only if all already-preregistered economic, cost, sample, drawdown, event-sufficiency, and net-profit-factor gates applicable to treatment-vs-baseline admission are satisfied within that segment using the same canonical measurement semantics as the full DEVELOPMENT evaluation.",
+    "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+    "total_time_segments": 4
+  },
+  "unbounded_parameter_sweeps_forbidden": true,
+  "universe_constraints": {
+    "bitcoin_excluded": true,
+    "futures_only": true,
+    "instrument_class": "LINEAR_USDT_PERPETUAL",
+    "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+    "spot_excluded": true,
+    "venue": "OKX"
+  },
+  "verdict": "DEFINITION_ONLY_PREREGISTERED_SEMANTICS_COMPLETE_AWAITING_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
+}

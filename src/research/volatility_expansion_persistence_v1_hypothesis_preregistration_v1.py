@@ -1,0 +1,442 @@
+"""Definition-only preregistration validator for volatility expansion persistence v1."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+from typing import Any, Mapping
+
+PACKAGE_MARKER = "VOLATILITY_EXPANSION_PERSISTENCE_V1_HYPOTHESIS_PREREGISTRATION=true"
+CONTRACT_REL_PATH = (
+    "config/research/"
+    "volatility_expansion_persistence_v1_preregistered_economic_hypothesis_"
+    "measurement_contract_v1.json"
+)
+GOVERNANCE_REL_PATH = (
+    "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
+)
+EVIDENCE_REL_PATH = "docs/evidence/preregister_volatility_expansion_persistence_hypothesis_v1/"
+REQUIRED_HYPOTHESIS_ID = "VOLATILITY_EXPANSION_PERSISTENCE_NON_BITCOIN_PERPETUALS_V1"
+REQUIRED_STRATEGY_IDENTITY = "VOLATILITY_EXPANSION_PERSISTENCE_V1"
+REQUIRED_PROGRAM_ID = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
+REQUIRED_SIGNAL_FAMILY = "VOLATILITY_REGIME"
+REQUIRED_TARGET = "VOLATILITY_EXPANSION_PERSISTENCE_AFTER_CONFIRMED_EXPANSION"
+REQUIRED_DIRECTIONAL_FORM = "OWN_INSTRUMENT_MUTUALLY_EXCLUSIVE_CHANNEL_BREAKOUT"
+REQUIRED_BASELINE_ID = "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1"
+REQUIRED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
+REQUIRED_TIME_SEGMENT_DEFINITION_ID = "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1"
+REQUIRED_DATASET = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
+REQUIRED_PRIOR = "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1"
+REQUIRED_PRIOR_VCB = "VOLATILITY_COMPRESSION_BREAKOUT_V1"
+REQUIRED_PRODUCTIVE_PNL_REF = (
+    "src/research/volatility_compression_breakout_v1_development_evaluation_v1/"
+    "productive_exit_pnl_evaluator_v1.py"
+)
+CONFIGURED_OPERATOR_THRESHOLD_KEYS = frozenset(
+    {
+        "min_evaluable_treatment_breakout_events",
+        "min_executed_treatment_trades",
+        "min_evaluable_treatment_events_per_time_segment",
+        "time_segment_robustness_pass_ratio",
+        "max_single_instrument_positive_gross_pnl_share_max",
+    }
+)
+
+
+class PreregistrationValidationError(ValueError):
+    """Fail-closed measurement-contract validation error."""
+
+
+def _require(cond: bool, code: str) -> None:
+    if not cond:
+        raise PreregistrationValidationError(code)
+
+
+def _canonical_dumps(payload: Mapping[str, Any]) -> str:
+    return json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+def compute_contract_digest(payload: Mapping[str, Any]) -> str:
+    body = {k: v for k, v in payload.items() if k not in ("contract_digest", "provenance")}
+    return hashlib.sha256(_canonical_dumps(body).encode("utf-8")).hexdigest()
+
+
+def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
+    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_DEFINITION_ONLY")
+    _require(payload.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID")
+    _require(
+        payload.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY,
+        "STRATEGY_IDENTITY",
+    )
+    _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID")
+    _require(payload.get("signal_family") == REQUIRED_SIGNAL_FAMILY, "SIGNAL_FAMILY")
+    _require(payload.get("target_phenomenon") == REQUIRED_TARGET, "TARGET_PHENOMENON")
+    _require(payload.get("dataset_id") == REQUIRED_DATASET, "DATASET_ID")
+    _require(payload.get("dataset_bound") is True, "DATASET_NOT_BOUND")
+    _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
+    _require(
+        payload.get("development_evaluation_authorized") is True,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED",
+    )
+    _require(
+        payload.get("development_evaluation_executed") is False,
+        "DEVELOPMENT_EVALUATION_EXECUTED",
+    )
+    _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
+    _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
+    _require(
+        payload.get("sealed_holdout_binding_status") == "UNBOUND_UNTOUCHED",
+        "HOLDOUT_NOT_UNBOUND",
+    )
+    _require(
+        payload.get("strategy_implementation_present") is False,
+        "STRATEGY_IMPLEMENTATION_PRESENT",
+    )
+    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    run_limit = payload.get("run_limit") or {}
+    _require(run_limit.get("development_run_limit") == 1, "RUN_LIMIT_NOT_ONE")
+    _require(run_limit.get("retry_forbidden") is True, "RETRY_NOT_FORBIDDEN")
+
+    directional = payload.get("directional_form") or {}
+    _require(directional.get("selected") == REQUIRED_DIRECTIONAL_FORM, "DIRECTIONAL_FORM")
+    _require(
+        directional.get("double_play_remains_sole_authority") is True,
+        "DOUBLE_PLAY_NOT_SOLE",
+    )
+
+    baseline = payload.get("baseline") or {}
+    _require(baseline.get("baseline_id") == REQUIRED_BASELINE_ID, "BASELINE_ID")
+    _require(baseline.get("frozen") is True, "BASELINE_NOT_FROZEN")
+    _require(
+        baseline.get("sole_difference_vs_treatment") == "EXPANSION_PERSISTENCE_ADMISSION",
+        "BASELINE_SOLE_DIFF",
+    )
+    _require(
+        baseline.get("no_reimplementation_or_semantic_mutation") is True,
+        "BASELINE_REIMPLEMENTED",
+    )
+
+    admission = payload.get("admission_mechanism") or {}
+    vol = admission.get("vol_estimator") or {}
+    _require(vol.get("period") == 14, "ATR_PERIOD")
+    _require(vol.get("normalization") == "ATR_DIV_CLOSE", "ATR_NORMALIZATION")
+    _require(vol.get("lookahead_forbidden") is True, "LOOKAHEAD")
+    pct = vol.get("percentile_metric") or {}
+    _require(pct.get("rolling_lookback_bars") == 120, "PERCENTILE_LOOKBACK")
+    _require(
+        pct.get("percentile_tie_method") == "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+        "PERCENTILE_TIE_METHOD",
+    )
+    _require(
+        pct.get("percentile_rank_formula")
+        == "count(window_values <= current_value) / count(window_values)",
+        "PERCENTILE_RANK_FORMULA",
+    )
+    _require(
+        pct.get("percentile_rank_window_includes_current_value") is True,
+        "PERCENTILE_CURRENT_NOT_INCLUDED",
+    )
+    _require(pct.get("percentile_rank_min_valid_observations") == 120, "PERCENTILE_MIN_OBS")
+    _require(
+        pct.get("percentile_rank_requires_exact_lookback_observations") is True,
+        "PERCENTILE_EXACT_LOOKBACK",
+    )
+    _require(pct.get("midrank_forbidden") is True, "MIDRANK_ALLOWED")
+    _require(pct.get("average_rank_forbidden") is True, "AVERAGE_RANK_ALLOWED")
+    _require(pct.get("strict_less_than_tie_method_forbidden") is True, "STRICT_LT_ALLOWED")
+    _require(
+        pct.get("vol_breakout_rolling_last_pct_rank_not_authority") is True,
+        "VOL_BREAKOUT_PCT_RANK_AS_AUTHORITY",
+    )
+    _require(pct.get("lookahead_forbidden") is True, "PERCENTILE_LOOKAHEAD")
+    _require(
+        pct.get("current_value_shift_to_exclusively_historical_window_forbidden") is True,
+        "CURRENT_VALUE_HISTORICAL_SHIFT",
+    )
+
+    expansion = admission.get("expansion_confirmation") or {}
+    _require(expansion.get("threshold_inclusive_min") == 0.80, "EXPANSION_THR")
+    _require(expansion.get("bars_required_at_or_above_threshold") == 2, "EXPANSION_BARS")
+    _require(
+        expansion.get("normalized_atr_strictly_increasing_on_confirmation_bar") is True,
+        "EXPANSION_ATR_NOT_INCREASING",
+    )
+    _require(
+        expansion.get("must_be_fully_confirmed_from_past_completed_bars_only") is True,
+        "EXPANSION_NOT_PAST_ONLY",
+    )
+    _require(
+        expansion.get("earliest_entry_after_confirmation") == "open_of_t_plus_1",
+        "EARLIEST_ENTRY",
+    )
+
+    lifecycle = admission.get("expansion_event_lifecycle") or {}
+    _require(lifecycle.get("event_consumption") == "SINGLE_USE", "EVENT_NOT_SINGLE_USE")
+    _require(lifecycle.get("compression_regime_not_required") is True, "COMPRESSION_REQUIRED")
+    _require(
+        lifecycle.get("no_entry_on_initial_compression_release_or_breakout_bar") is True,
+        "INITIAL_BREAKOUT_ENTRY_ALLOWED",
+    )
+    _require(
+        lifecycle.get("persistence_window_start_offset_after_confirmation_bar") == 1,
+        "PERSISTENCE_START",
+    )
+    _require(
+        lifecycle.get("persistence_window_end_offset_after_confirmation_bar") == 6,
+        "PERSISTENCE_END",
+    )
+    _require(
+        lifecycle.get("persistence_window_bars") == [1, 2, 3, 4, 5, 6],
+        "PERSISTENCE_BARS",
+    )
+    _require(lifecycle.get("max_entries_per_expansion_event") == 1, "MAX_ENTRIES_NOT_ONE")
+    _require(
+        lifecycle.get(
+            "rearm_requires_normalized_atr_percentile_below_threshold_for_at_least_one_completed_bar"
+        )
+        is True,
+        "REARM_NOT_BOUND",
+    )
+    _require(lifecycle.get("rearm_threshold_exclusive_max") == 0.80, "REARM_THRESHOLD")
+    _require(
+        lifecycle.get("new_full_expansion_confirmation_required_after_use_or_expiry") is True,
+        "NEW_EVENT_NOT_REQUIRED",
+    )
+    _require(
+        lifecycle.get("overlapping_or_parallel_events_forbidden") is True,
+        "OVERLAPPING_EVENTS_ALLOWED",
+    )
+
+    entry = admission.get("directional_entry") or {}
+    _require(entry.get("channel_lookback_completed_bars") == 20, "CHANNEL_LOOKBACK")
+    _require(entry.get("ambiguity_fail_closed_no_entry") is True, "AMBIGUITY_FAIL_CLOSED")
+    _require(entry.get("same_bar_lookahead_forbidden") is True, "SAME_BAR_LOOKAHEAD")
+    _require(
+        entry.get("entry_on_expansion_confirmation_bar_t_forbidden") is True,
+        "ENTRY_ON_T_ALLOWED",
+    )
+    _require(
+        entry.get("double_play_remains_sole_downstream_authority") is True,
+        "DOUBLE_PLAY_DOWNSTREAM",
+    )
+
+    exits = payload.get("exit_semantics") or {}
+    _require(exits.get("frozen") is True, "EXIT_NOT_FROZEN")
+    _require(exits.get("initial_stop_atr_multiple") == 1.5, "INITIAL_STOP")
+    _require(exits.get("trailing_stop_atr_multiple") == 2.0, "TRAILING_STOP")
+    _require(exits.get("regime_exit_percentile_rank_lt") == 0.50, "REGIME_EXIT")
+    _require(exits.get("time_exit_max_bars") == 48, "TIME_EXIT")
+    _require(exits.get("first_event_wins") is True, "FIRST_EVENT")
+    _require(exits.get("reversal_forbidden") is True, "REVERSAL")
+    _require(exits.get("scale_in_forbidden") is True, "SCALE_IN")
+    _require(exits.get("pyramiding_forbidden") is True, "PYRAMIDING")
+    _require(exits.get("new_pnl_implementation_forbidden") is True, "NEW_PNL_ALLOWED")
+    _require(exits.get("second_pnl_truth_forbidden") is True, "SECOND_PNL_TRUTH")
+    _require(
+        exits.get("productive_exit_pnl_evaluator_ref") == REQUIRED_PRODUCTIVE_PNL_REF,
+        "PRODUCTIVE_PNL_REF",
+    )
+    _require(
+        exits.get("bind_existing_canonical_productive_exit_pnl_evaluator") is True,
+        "PRODUCTIVE_PNL_NOT_BOUND",
+    )
+
+    events = payload.get("event_sufficiency_gates") or {}
+    _require(events.get("frozen") is True, "EVENT_GATES_NOT_FROZEN")
+    _require(events.get("min_evaluable_treatment_breakout_events") == 50, "MIN_EVENTS")
+    _require(events.get("min_executed_treatment_trades") == 30, "MIN_TRADES")
+    _require(events.get("min_evaluable_treatment_events_per_time_segment") == 10, "MIN_SEG_EVENTS")
+    _require(events.get("both_event_and_trade_gates_required") is True, "BOTH_GATES")
+
+    economic = payload.get("economic_admission_contract") or {}
+    _require(
+        economic.get("evaluation_blocked_while_any_threshold_pending") is False,
+        "PENDING_STILL_BLOCKING",
+    )
+    pending = set(economic.get("pending_threshold_keys") or [])
+    _require(pending == set(), "PENDING_THRESHOLD_KEYS_NONEMPTY")
+    pass_all = set(economic.get("pass_requires_all") or [])
+    for required in (
+        "net_return_treatment > net_return_baseline",
+        "net_profit_factor_treatment > net_profit_factor_baseline",
+        "abs(max_drawdown_treatment) <= abs(max_drawdown_baseline)",
+        "max_single_instrument_positive_gross_pnl_share <= max_single_instrument_positive_gross_pnl_share_max",
+        "all_numeric_results_finite",
+    ):
+        _require(required in pass_all, f"MISSING_PASS_REQUIREMENT:{required}")
+    thresholds = economic.get("thresholds") or {}
+    for key, expected in (
+        ("gross_profit_factor_min", 1.0),
+        ("net_profit_factor_min", 1.3),
+        ("maximum_max_drawdown", 0.25),
+        ("min_evaluable_treatment_breakout_events", 50),
+        ("min_executed_treatment_trades", 30),
+        ("min_evaluable_treatment_events_per_time_segment", 10),
+        ("cost_stress_1_5x_net_profit_factor_min", 1.0),
+        ("time_segment_robustness_pass_ratio", 0.5),
+        ("max_single_instrument_positive_gross_pnl_share_max", 0.35),
+    ):
+        row = thresholds.get(key) or {}
+        _require(row.get("status") == "CONFIGURED", f"THRESHOLD_NOT_CONFIGURED:{key}")
+        _require(row.get("value") == expected, f"THRESHOLD_VALUE:{key}")
+    for key in CONFIGURED_OPERATOR_THRESHOLD_KEYS:
+        row = thresholds.get(key) or {}
+        _require(row.get("authority") == "EXPLICIT_OPERATOR_AUTHORIZATION", f"THRESHOLD_AUTH:{key}")
+        _require(row.get("not_result_calibrated") is True, f"THRESHOLD_CALIBRATED:{key}")
+
+    costs = payload.get("costs") or {}
+    _require(costs.get("fee_bps_per_side") == 10.0, "FEE_BPS")
+    _require(costs.get("slippage_bps_per_side") == 5.0, "SLIPPAGE_BPS")
+
+    param_gov = payload.get("parameter_governance") or {}
+    _require(param_gov.get("open_parameters_remaining") is False, "OPEN_PARAMETERS")
+    _require(param_gov.get("all_parameters_preregistered") is True, "NOT_ALL_PREREGISTERED")
+    _require(param_gov.get("post_hoc_tuning_forbidden") is True, "POST_HOC_TUNING")
+    _require(param_gov.get("definition_semantics_complete") is True, "SEMANTICS_INCOMPLETE")
+    frozen = param_gov.get("frozen_parameters") or {}
+    _require(frozen.get("atr_period") == 14, "FROZEN_ATR_PERIOD")
+    _require(
+        frozen.get("percentile_tie_method") == "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+        "FROZEN_TIE_METHOD",
+    )
+    _require(
+        frozen.get("percentile_rank_window_includes_current_value") is True,
+        "FROZEN_CURRENT_INCLUDED",
+    )
+    _require(frozen.get("expansion_confirmation_threshold") == 0.80, "FROZEN_EXPANSION_THR")
+    _require(frozen.get("expansion_event_consumption") == "SINGLE_USE", "FROZEN_EVENT_MODE")
+    _require(frozen.get("persistence_window_start_offset") == 1, "FROZEN_PERSISTENCE_START")
+    _require(frozen.get("persistence_window_end_offset") == 6, "FROZEN_PERSISTENCE_END")
+    _require(frozen.get("max_entries_per_expansion_event") == 1, "FROZEN_MAX_ENTRIES")
+    grid = param_gov.get("development_only_bounded_grid") or {}
+    _require(grid.get("authorized") is False, "GRID_AUTHORIZED")
+
+    md = payload.get("material_difference_vs_terminal_coiled_spring") or {}
+    _require(md.get("prior_terminal_hypothesis_id") == REQUIRED_PRIOR, "PRIOR_HYPOTHESIS")
+    _require(md.get("unchanged_binding_retry_forbidden") is True, "UNCHANGED_RETRY")
+    diffs = md.get("differences") or {}
+    for key in (
+        "vol_estimator",
+        "compression_gate",
+        "expansion_gate",
+        "entry",
+        "baseline",
+        "program_identity",
+    ):
+        _require(bool(diffs.get(key)), f"MISSING_MATERIAL_DIFFERENCE:{key}")
+
+    md_vcb = payload.get("material_difference_vs_volatility_compression_breakout_v1") or {}
+    _require(md_vcb.get("prior_strategy_identity") == REQUIRED_PRIOR_VCB, "PRIOR_VCB")
+    _require(md_vcb.get("vcb_retry_forbidden") is True, "VCB_RETRY_ALLOWED")
+    _require(md_vcb.get("not_a_parameter_change_of_vcb_v1") is True, "VCB_PARAM_CHANGE")
+    _require(md_vcb.get("not_a_repair_or_retry_of_vcb_v1") is True, "VCB_REPAIR")
+    vcb_diffs = md_vcb.get("differences") or {}
+    for key in (
+        "compression_prerequisite",
+        "entry_timing",
+        "expansion_definition",
+        "persistence_semantics",
+        "vol_estimator_period",
+    ):
+        _require(bool(vcb_diffs.get(key)), f"MISSING_VCB_MATERIAL_DIFFERENCE:{key}")
+
+    tsd = payload.get("time_segment_definition") or {}
+    _require(
+        tsd.get("time_segment_definition_id") == REQUIRED_TIME_SEGMENT_DEFINITION_ID,
+        "TIME_SEGMENT_DEFINITION_ID",
+    )
+    _require(tsd.get("authority") == "EXPLICIT_OPERATOR_AUTHORIZATION", "TIME_SEGMENT_AUTH")
+    _require(tsd.get("total_time_segments") == 4, "TIME_SEGMENT_COUNT")
+    _require(tsd.get("all_segments_must_be_evaluable") is True, "TIME_SEGMENT_ALL_EVALUABLE")
+    _require(tsd.get("generic_walk_forward_v1_bound") is False, "WALK_FORWARD_BOUND")
+
+    on_fail = (payload.get("terminal_decision_semantics") or {}).get("on_fail") or {}
+    _require(on_fail.get("retry_allowed") is False, "ON_FAIL_RETRY")
+    _require(on_fail.get("post_hoc_tuning_forbidden") is True, "ON_FAIL_TUNING")
+    _require(on_fail.get("terminal_result") == "FAIL_CLOSED_NO_RETRY", "ON_FAIL_TERMINAL")
+    on_pass = (payload.get("terminal_decision_semantics") or {}).get("on_pass") or {}
+    _require(on_pass.get("automatic_holdout_forbidden") is True, "ON_PASS_AUTO_HOLDOUT")
+    _require(
+        on_pass.get("holdout_requires_separate_preregistration") is True,
+        "ON_PASS_HOLDOUT_NOT_SEPARATE",
+    )
+    _require(
+        on_pass.get("promotion_or_runtime_activation_forbidden") is True,
+        "ON_PASS_PROMOTION_ALLOWED",
+    )
+
+    shared = payload.get("shared_authority_constraints") or {}
+    for key in (
+        "master_v2_mutation_forbidden",
+        "double_play_sole_directional_transition_authority",
+        "risk_authority_mutation_forbidden",
+        "execution_kernel_mutation_forbidden",
+    ):
+        _require(shared.get(key) is True, f"SHARED_AUTH_{key.upper()}")
+
+    gates = payload.get("promotion_and_economic_gate_policy") or {}
+    _require(gates.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE")
+    _require(gates.get("economic_gate_open") is False, "ECONOMIC_GATE_OPEN")
+    runtime = payload.get("runtime_policy") or {}
+    for key in (
+        "runtime_activated",
+        "shadow_activated",
+        "paper_activated",
+        "testnet_activated",
+        "live_authorized",
+        "orders_allowed",
+        "scheduler_authorized",
+    ):
+        _require(runtime.get(key) is False, f"RUNTIME_FLAG_{key.upper()}")
+
+    digest = compute_contract_digest(payload)
+    _require(payload.get("contract_digest") == digest, "CONTRACT_DIGEST_MISMATCH")
+
+    return {
+        "valid": True,
+        "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
+        "directional_form": REQUIRED_DIRECTIONAL_FORM,
+        "baseline_id": REQUIRED_BASELINE_ID,
+        "contract_digest": digest,
+        "definition_only": True,
+        "evaluation_authorized": False,
+        "holdout_authorized": False,
+        "dataset_bound": True,
+        "development_run_count": 0,
+        "runner_start_count": 0,
+        "open_parameters_remaining": False,
+        "definition_semantics_complete": True,
+        "percentile_tie_method": "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+        "percentile_current_value_included": True,
+        "expansion_event_consumption": "SINGLE_USE",
+        "persistence_window_bars": [1, 2, 3, 4, 5, 6],
+        "material_difference_explicit": True,
+        "material_difference_from_vcb_v1": True,
+        "exit_semantics_frozen": True,
+        "event_sufficiency_frozen": True,
+        "productive_pnl_evaluator_referenced": True,
+        "second_pnl_truth_created": False,
+        "pending_threshold_keys": [],
+        "time_segment_definition_id": REQUIRED_TIME_SEGMENT_DEFINITION_ID,
+    }
+
+
+def reject_holdout_dataset_or_path(token: str) -> None:
+    """Fail closed on sealed-holdout identifiers or paths."""
+    lowered = str(token).lower()
+    if (
+        "offline_economic_reevaluation_sealed_long_panel_v1" in lowered
+        or "holdout" in lowered
+        or "final_audit" in lowered
+    ):
+        raise PreregistrationValidationError("HOLDOUT_ACCESS_FORBIDDEN")
+
+
+def load_and_validate_repo_contract(repo_root: Path) -> dict[str, Any]:
+    path = repo_root / CONTRACT_REL_PATH
+    _require(path.is_file(), "CONTRACT_MISSING")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return validate_measurement_contract(payload)
