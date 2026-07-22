@@ -3,9 +3,10 @@
 Definition-only governance. No evaluation, backtest, holdout access, runtime
 activation, or productive trading-logic mutation.
 
-Post V8 terminal PASS closeout: zero DEFINITION_ONLY_PREREGISTERED candidates;
-V1-V8 terminal (V8 PASS after one authorized DEVELOPMENT evaluation);
-development_run_count=8; no V8 rerun/reopen; no V9 auto-create; economic/promotion closed.
+Post holdout V1 terminal FAIL + explicit operator CLOSE_LANE_NO_FURTHER_RESEARCH:
+zero DEFINITION_ONLY_PREREGISTERED candidates; empty open inventory;
+V1-V8 terminal (V8 DEVELOPMENT PASS; HOLDOUT_V1 FAIL once); development_run_count=8;
+no V8/V7 rerun/reopen; no V9 auto-create; no successor synthesis; economic/promotion closed.
 
 Lane status vocabulary and post-terminal legality are owned solely by
 CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1.
@@ -28,8 +29,9 @@ from src.research.canonical_research_lane_post_terminal_lifecycle_contract_v1 im
 PACKAGE_MARKER = "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1=true"
 BACKLOG_REL_PATH = "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json"
 GOVERNANCE_REL_PATH = "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
-REQUIRED_STATUS = "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
-REQUIRED_OPERATOR_DECISION = "CREATE_SUCCESSOR_HYPOTHESIS"
+REQUIRED_STATUS = "LANE_CLOSED_NO_FURTHER_RESEARCH"
+REQUIRED_OPERATOR_DECISION = "CLOSE_LANE_NO_FURTHER_RESEARCH"
+REQUIRED_NEXT_CANONICAL_STEP = "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
 REQUIRED_LIFECYCLE_AUTHORITY = "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
 ENTRY_ELIGIBILITY_BACKLOG_REL_PATH = (
     "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
@@ -114,8 +116,9 @@ REQUIRED_TERMINAL_FAIL_STATUS = "TERMINAL_FAIL"
 REQUIRED_TERMINAL_INFRA_STATUS = "TERMINAL_INFRASTRUCTURE_FAILURE"
 REQUIRED_TERMINAL_PASS_STATUS = "TERMINAL_PASS"
 REQUIRED_V7_NEXT_STEP = "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
-REQUIRED_V8_NEXT_STEP = "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY"
+REQUIRED_V8_NEXT_STEP = "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
 REQUIRED_AWAITING_NEXT_STEP = REQUIRED_V8_NEXT_STEP
+REQUIRED_CLOSED_NEXT_STEP = REQUIRED_NEXT_CANONICAL_STEP
 REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_HOLDOUT_PREREGISTERED"
 REQUIRED_HOLDOUT_TERMINAL_STATUS = "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
 REQUIRED_HOLDOUT_TERMINAL_RESULT_CLASS = "FAIL"
@@ -123,7 +126,7 @@ REQUIRED_HOLDOUT_TERMINAL_REASON = "NET_PROFIT_FACTOR_NOT_IMPROVED"
 REQUIRED_HOLDOUT_EVALUATION_EVIDENCE_REF = (
     "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/"
 )
-REQUIRED_BACKLOG_VERDICT_AFTER_HOLDOUT_TERMINAL = "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_POST_TERMINAL_OPERATOR_DECISION_REQUIRED_AFTER_HOLDOUT_V1_TERMINAL_FAIL"
+REQUIRED_BACKLOG_VERDICT_AFTER_HOLDOUT_TERMINAL = "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_LANE_CLOSED_NO_FURTHER_RESEARCH_AFTER_EXPLICIT_OPERATOR_CLOSEOUT_AFTER_HOLDOUT_V1_TERMINAL_FAIL"
 REQUIRED_V7_DIAGNOSTIC_CLASS = "PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST"
 REQUIRED_V8_DECISION_REASON = "ALL_PASS_REQUIRES_MET"
 REQUIRED_V8_LIFECYCLE_TERMINAL = "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS"
@@ -276,7 +279,7 @@ def _assert_terminal_infrastructure_entry(
 def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true(
         backlog.get("status") == REQUIRED_STATUS,
-        "STATUS_NOT_POST_TERMINAL_OPERATOR_DECISION_REQUIRED",
+        "STATUS_NOT_LANE_CLOSED_NO_FURTHER_RESEARCH",
     )
     _assert_true(
         backlog.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
@@ -290,9 +293,13 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         backlog.get("lifecycle_authority") == REQUIRED_LIFECYCLE_AUTHORITY,
         "LIFECYCLE_AUTHORITY_MISMATCH",
     )
-    _assert_true(backlog.get("explicit_closeout_decision") is False, "UNEXPECTED_CLOSEOUT_DECISION")
+    _assert_true(backlog.get("explicit_closeout_decision") is True, "CLOSEOUT_DECISION_REQUIRED")
     _assert_true(backlog.get("explicit_waiting_decision") is False, "WAITING_DECISION_FORBIDDEN")
     _assert_true(backlog.get("lane_auto_closed") is False, "LANE_AUTO_CLOSED_FORBIDDEN")
+    _assert_true(
+        backlog.get("next_canonical_step") == REQUIRED_NEXT_CANONICAL_STEP,
+        "NEXT_CANONICAL_STEP_MISMATCH",
+    )
     _assert_true(
         backlog.get("entry_eligibility_lane_status") == REQUIRED_ENTRY_ELIGIBILITY_LANE_STATUS,
         "ENTRY_ELIGIBILITY_LANE_STATUS_NOT_CANONICAL",
@@ -417,7 +424,12 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true(backlog.get("evaluation_authorized") is False, "TOP_EVAL_AUTHORIZED")
     _assert_true(
         backlog.get("next_canonical_step") == REQUIRED_V8_NEXT_STEP,
-        "NEXT_STEP_AFTER_HOLDOUT_TERMINAL",
+        "NEXT_STEP_AFTER_LANE_CLOSEOUT",
+    )
+    _assert_true(
+        "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY"
+        not in str(backlog.get("next_canonical_step") or ""),
+        "STALE_POST_HOLDOUT_REVIEW_POINTER_FORBIDDEN",
     )
     _assert_true(
         backlog.get("verdict") == REQUIRED_BACKLOG_VERDICT_AFTER_HOLDOUT_TERMINAL,
@@ -684,6 +696,27 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true("NO_V7_AUTO_CREATE" in non_actions, "NO_V7_AUTO_CREATE_REQUIRED")
     _assert_true("NO_V8_AUTO_CREATE" in non_actions, "NO_V8_AUTO_CREATE_REQUIRED")
     _assert_true("NO_V9_AUTO_CREATE" in non_actions, "NO_V9_AUTO_CREATE_REQUIRED")
+    _assert_true(
+        "NO_IMPLICIT_SUCCESSOR_AFTER_CLOSE" in non_actions,
+        "NO_IMPLICIT_SUCCESSOR_AFTER_CLOSE_REQUIRED",
+    )
+    _assert_true("NO_AUTO_REOPEN" in non_actions, "NO_AUTO_REOPEN_REQUIRED")
+    _assert_true(
+        "NO_REOPEN_WITHOUT_NEW_HYPOTHESIS_ID" in non_actions,
+        "NO_REOPEN_WITHOUT_NEW_HYPOTHESIS_ID_REQUIRED",
+    )
+    _assert_true(
+        "NO_SUCCESSOR_SYNTHESIS_FROM_ATTRIBUTION_CANDIDATES" in non_actions,
+        "NO_SUCCESSOR_SYNTHESIS_FROM_ATTRIBUTION_REQUIRED",
+    )
+    _assert_true(
+        "NO_RETRY_AFTER_HOLDOUT_FAIL" in non_actions,
+        "NO_RETRY_AFTER_HOLDOUT_FAIL_REQUIRED",
+    )
+    _assert_true(
+        "NO_POST_RESULT_TUNING_AFTER_HOLDOUT" in non_actions,
+        "NO_POST_RESULT_TUNING_AFTER_HOLDOUT_REQUIRED",
+    )
     _assert_true("NO_V6_AUTO_CREATE" not in non_actions, "NO_V6_AUTO_CREATE_MUST_BE_ABSENT")
     _assert_true("NO_V5_AUTO_CREATE" not in non_actions, "NO_V5_AUTO_CREATE_MUST_BE_ABSENT")
     _assert_true("NO_V3_ECONOMIC_RESULT_IMPORT" in non_actions, "NO_V3_ECON_IMPORT_REQUIRED")
@@ -717,7 +750,8 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         result_class="PASS",
         inventory_non_empty_flag=False,
     )
-    # Shared contract empty-inventory resolution remains the pre-decision holding state.
+    # Empty-inventory post-terminal resolution still yields the pre-decision holding
+    # state; the live lane has already executed CLOSE_LANE_NO_FURTHER_RESEARCH.
     _assert_true(
         resolved.get("next_state") == POST_TERMINAL_EMPTY_INVENTORY_STATE,
         "POST_TERMINAL_RESOLUTION_DRIFT",
@@ -729,7 +763,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(
         REQUIRED_OPERATOR_DECISION in (resolved.get("allowed_operator_decisions") or []),
-        "CREATE_SUCCESSOR_NOT_IN_ALLOWED_DECISIONS",
+        "CLOSE_LANE_NOT_IN_ALLOWED_DECISIONS",
     )
 
     # Read-only sibling mirror: Entry Eligibility status under shared contract (no mutation).
@@ -790,9 +824,10 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "valid": True,
         "status": REQUIRED_STATUS,
         "explicit_waiting_decision": False,
-        "explicit_closeout_decision": False,
+        "explicit_closeout_decision": True,
         "lane_auto_closed": False,
         "operator_decision": REQUIRED_OPERATOR_DECISION,
+        "next_canonical_step": REQUIRED_NEXT_CANONICAL_STEP,
         "lifecycle_contract_id": LIFECYCLE_CONTRACT_ID,
         "lifecycle_authority": REQUIRED_LIFECYCLE_AUTHORITY,
         "preregistered_count": 0,
