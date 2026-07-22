@@ -25,7 +25,7 @@
   "hypothesis_count": 1,
   "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1",
   "multiple_testing_budget": 1,
-  "next_recommended_action": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION",
+  "next_recommended_action": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "orders_sent": false,
   "pass_fail_thresholds_preregistered": true,
   "pending_threshold_keys": [],
