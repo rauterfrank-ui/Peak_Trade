@@ -70,7 +70,7 @@ def validate_backlog_contract(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED_FALSE")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(
         payload.get("sealed_holdout_binding_status") == "UNBOUND_UNTOUCHED",
@@ -95,11 +95,14 @@ def validate_backlog_contract(
     hyp = prereg[0]
     _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
-    _require(hyp.get("status") == "DEFINITION_ONLY_PREREGISTERED", "HYPOTHESIS_STATUS")
+    _require(
+        hyp.get("status") == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
+        "HYPOTHESIS_STATUS",
+    )
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
     _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NOT_ZERO")
     _require(hyp.get("development_run_limit") == 1, "HYP_RUN_LIMIT_NOT_ONE")
-    _require(hyp.get("implementation_present") is False, "HYP_IMPLEMENTATION_PRESENT")
+    _require(hyp.get("implementation_present") is True, "HYP_IMPLEMENTATION_PRESENT_FALSE")
     _require(hyp.get("run_slot_consumed") is False, "HYP_RUN_SLOT_CONSUMED")
     _require(hyp.get("runner_start_count") == 0, "HYP_RUNNER_START_NOT_ZERO")
     _require(hyp.get("holdout_allowed") is False, "HYP_HOLDOUT_ALLOWED")

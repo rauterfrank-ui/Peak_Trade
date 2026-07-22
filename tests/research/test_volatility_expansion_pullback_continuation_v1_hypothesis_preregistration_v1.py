@@ -108,9 +108,15 @@ def test_frozen_pullback_continuation_mechanism_and_exit_pairability() -> None:
     assert ep["script_ref"] == REQUIRED_ENTRY_POINT_SCRIPT
     assert ENTRY_POINT_BINDING.is_file()
     binding = _load(ENTRY_POINT_BINDING)
-    assert binding["status"] == "DEFINITION_ONLY_UNAUTHORIZED_BINDING"
+    assert binding["status"] == "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED"
     assert binding["development_evaluation_executed"] is False
     assert binding["development_run_count"] == 0
+    assert binding["runner_start_count"] == 0
+    assert binding["holdout_forbidden"] is True
+    assert binding["dataset_binding"]["dataset_class"] == "DEVELOPMENT_ONLY"
+    assert (
+        REPO / "src/research/volatility_expansion_pullback_continuation_v1_strategy_v1.py"
+    ).is_file()
 
 
 def test_material_difference_vs_terminals_and_bindings() -> None:

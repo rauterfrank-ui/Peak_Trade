@@ -85,13 +85,13 @@ def test_sibling_closed_lanes_and_inventory() -> None:
     )
     assert backlog["sealed_holdout_binding_status"] == "UNBOUND_UNTOUCHED"
     hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["implementation_present"] is False
+    assert hyp["implementation_present"] is True
     assert hyp["holdout_allowed"] is False
     assert hyp["development_run_limit"] == 1
     assert hyp["development_run_count"] == 0
     assert hyp["runner_start_count"] == 0
     assert hyp["run_slot_consumed"] is False
-    assert hyp["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert hyp["status"] == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
     assert hyp["baseline_id"] == "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1"
     assert hyp["strategy_identity"] == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
 
