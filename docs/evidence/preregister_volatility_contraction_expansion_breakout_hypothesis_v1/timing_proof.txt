@@ -1,0 +1,31 @@
+TIMING_PROOF_STATUS=PASS
+timestamp=2026-07-22T19:27:10Z
+SELECTOR_MODE=PR_BOUNDED_FULL
+SELECTOR_REASON=category_central_src_requires_full
+BASE_SHA=87ee3c24c0cb3a1d74ed5b53e9072cbd21d7f41d
+SLICE=PREREGISTER_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_HYPOTHESIS_V1
+
+focused_command=.venv/bin/python -m pytest tests/research/test_volatility_contraction_expansion_breakout_v1_hypothesis_preregistration_v1.py tests/research/test_volatility_regime_hypothesis_backlog_v1.py tests/research/test_volatility_regime_research_program_v1.py tests/research/test_volatility_decay_breakout_with_explicit_decay_exit_v1_hypothesis_preregistration_v1.py tests/research/test_volatility_decay_breakout_v1_hypothesis_preregistration_v1.py tests/research/test_volatility_expansion_persistence_v1_hypothesis_preregistration_v1.py -q --tb=line
+focused_wallclock_seconds=1
+focused_exit_code=0
+focused_test_count_passed=33
+
+path_equivalent_command=.venv/bin/python -m pytest tests/ci/test_ci_diff_aware_test_selection_v1.py tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py tests/ci/test_pr_head_sha_required_checks_liveness_guard.py tests/ci/test_required_checks_config.py tests/ci/test_required_checks_hygiene.py tests/ci/test_workflows_no_pull_request_target_contract_v0.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py tests/test_stability_smoke.py -q --tb=line
+wallclock_seconds=36
+exit_code=0
+test_count_passed=716
+TARGET_MAX_SECONDS=840
+HARD_STOP_SECONDS=900
+MINIMUM_SAFETY_MARGIN_SECONDS=180
+
+RUFF_FORMAT_RESULT=PASS
+RUFF_CHECK_RESULT=PASS
+DOCS_TOKEN_POLICY_RESULT=PASS
+DOCS_REFERENCE_TARGETS_RESULT=PASS
+DEFINITION_ONLY=true
+NO_EVALUATION_RUNNER=true
+NO_DATASET_LOAD=true
+NO_HOLDOUT_ACCESS=true
+RUNNER_START_COUNT=0
+DEVELOPMENT_EVALUATION_EXECUTED=false
+DEVELOPMENT_SLOT_CONSUMED=false
