@@ -2,12 +2,13 @@
 
 ## Status
 
-`EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED`
+`FAIL_CLOSED_AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED`
 
-Executable development-evaluation path is present under the canonical entry point.
-Development evaluation is authorized (`development_evaluation_authorized=true`);
-execution still requires a separate operator GO and has not run.
-No development evaluation executed. Run counts remain `0`.
+Executable development-evaluation path is present and development evaluation is
+authorized (`development_evaluation_authorized=true`). The single authorized
+evaluate attempt fail-closed before panel open because
+`AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED_IN_THIS_SLICE`. Durable
+run counts remain `0`.
 
 ## Owner
 
@@ -55,7 +56,7 @@ Development evaluation authorization is true; evaluation not executed.
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_THEN_EXECUTE_EXACTLY_ONE_PREVIOUSLY_AUTHORIZED_BOUNDED_DEVELOPMENT_EVALUATION_RUN`
+`SEPARATE_OPERATOR_GO_TO_MATERIALIZE_PANEL_EXECUTION_BOUNDARY_THEN_SINGLE_BOUNDED_DEVELOPMENT_EVALUATION`
 
 ## Explicitly false
 
@@ -70,8 +71,8 @@ Development evaluation authorization is true; evaluation not executed.
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED
-scope: research, offline-only, authorizing-only, no-evaluation-execution
+STATUS: FAIL_CLOSED_AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED
+scope: research, offline-only, fail-closed-evidence, no-run-slot-consumption
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
