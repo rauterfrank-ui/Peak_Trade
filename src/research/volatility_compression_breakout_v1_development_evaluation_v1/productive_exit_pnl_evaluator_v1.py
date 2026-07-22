@@ -28,6 +28,10 @@ from src.backtest.engine import (
 )
 from src.backtest.stats import compute_backtest_stats
 from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import InstrumentPanelSeriesV1
+from src.research.regime_gated_standaside_mr_development_evaluation_v1.shared_portfolio_equity_research_v1 import (
+    PORTFOLIO_AGGREGATION_ID,
+    build_equal_weight_portfolio_equity,
+)
 from src.research.volatility_compression_breakout_v1_development_evaluation_v1.constants_v1 import (
     DATASET_ID,
     FEE_BPS_PER_SIDE,
@@ -52,6 +56,10 @@ PRODUCTIVE_EXIT_PNL_EVALUATOR_OWNER = (
 )
 CANONICAL_PNL_PRIMITIVE_OWNER = "backtest.engine._compute_directional_gross_pnl_v0"
 UNIT_RISK_NOTIONAL_V1 = 1.0
+# Canonical RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1 shared book capital.
+SHARED_INITIAL_CAPITAL_V1 = 10_000.0
+HOURLY_PERIODS_PER_YEAR_V1 = 24 * 365
+_FLAT_SLEEVE_ANCHOR_UTC = pd.Timestamp("1970-01-01T00:00:00Z")
 
 ExitReasonV1 = Literal[
     "INITIAL_STOP",
@@ -359,8 +367,83 @@ def simulate_arm_roundtrips_v1(
     return tuple(trades)
 
 
-def _metrics_from_trades(trades: Sequence[RoundtripTradeV1]) -> dict[str, float]:
+def _as_utc_timestamp(value: str) -> pd.Timestamp:
+    ts = pd.Timestamp(value)
+    if ts.tzinfo is None:
+        return ts.tz_localize("UTC")
+    return ts.tz_convert("UTC")
+
+
+def _flat_sleeve_equity_v1() -> pd.Series:
+    """No-trade sleeve: constant unit-risk cash; equal-weight dilutes inactive sleeves."""
+    return pd.Series(
+        [UNIT_RISK_NOTIONAL_V1],
+        index=pd.DatetimeIndex([_FLAT_SLEEVE_ANCHOR_UTC]),
+        dtype=float,
+    )
+
+
+def _sleeve_equity_curve_from_trades_v1(trades: Sequence[RoundtripTradeV1]) -> pd.Series:
+    """Build one instrument sleeve equity from existing roundtrip net PnL truth."""
     if not trades:
+        return _flat_sleeve_equity_v1()
+    ordered = sorted(
+        trades,
+        key=lambda tr: (
+            str(tr.exit_time),
+            str(tr.entry_time),
+            tr.instrument_id,
+            int(tr.entry_index),
+            int(tr.exit_index),
+        ),
+    )
+    t0 = _as_utc_timestamp(ordered[0].entry_time)
+    times: list[pd.Timestamp] = [t0]
+    values: list[float] = [UNIT_RISK_NOTIONAL_V1]
+    running = UNIT_RISK_NOTIONAL_V1
+    for tr in ordered:
+        running += float(tr.pnl)
+        times.append(_as_utc_timestamp(tr.exit_time))
+        values.append(running)
+    series = pd.Series(values, index=pd.DatetimeIndex(times), dtype=float)
+    if series.index.duplicated().any():
+        series = series[~series.index.duplicated(keep="last")]
+    return series
+
+
+def _combined_portfolio_equity_from_trades_v1(
+    trades: Sequence[RoundtripTradeV1],
+    *,
+    sleeve_instrument_ids: Sequence[str] | None = None,
+) -> pd.Series:
+    """Sole gate-facing equity: RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1."""
+    if PORTFOLIO_AGGREGATION_ID != "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1":
+        raise ValueError(f"PORTFOLIO_AGGREGATION_ID_DRIFT:{PORTFOLIO_AGGREGATION_ID}")
+    by_instrument: dict[str, list[RoundtripTradeV1]] = {}
+    for tr in trades:
+        by_instrument.setdefault(str(tr.instrument_id), []).append(tr)
+    sleeve_ids = (
+        [str(x) for x in sleeve_instrument_ids]
+        if sleeve_instrument_ids is not None
+        else sorted(by_instrument)
+    )
+    if not sleeve_ids:
+        raise ValueError("EMPTY_SLEEVE_INSTRUMENT_IDS")
+    sleeves: dict[str, pd.Series] = {}
+    for instrument_id in sleeve_ids:
+        sleeves[instrument_id] = _sleeve_equity_curve_from_trades_v1(
+            by_instrument.get(instrument_id, [])
+        )
+    return build_equal_weight_portfolio_equity(sleeves, initial_capital=SHARED_INITIAL_CAPITAL_V1)
+
+
+def _metrics_from_trades(
+    trades: Sequence[RoundtripTradeV1],
+    *,
+    sleeve_instrument_ids: Sequence[str] | None = None,
+) -> dict[str, float]:
+    """Gate-facing metrics from equal-weight normalized sleeve combine equity only."""
+    if not trades and not sleeve_instrument_ids:
         return {
             "gross_return": 0.0,
             "net_return": 0.0,
@@ -373,14 +456,10 @@ def _metrics_from_trades(trades: Sequence[RoundtripTradeV1]) -> dict[str, float]
             "trade_count": 0.0,
         }
     records = [t.to_stats_record() for t in trades]
-    equity = pd.Series(
-        [UNIT_RISK_NOTIONAL_V1]
-        + [
-            UNIT_RISK_NOTIONAL_V1 + sum(tr.pnl for tr in trades[: idx + 1])
-            for idx in range(len(trades))
-        ]
+    equity = _combined_portfolio_equity_from_trades_v1(
+        trades, sleeve_instrument_ids=sleeve_instrument_ids
     )
-    stats = compute_backtest_stats(records, equity, periods_per_year=24 * 365)
+    stats = compute_backtest_stats(records, equity, periods_per_year=HOURLY_PERIODS_PER_YEAR_V1)
     gross_pnls = [t.gross_pnl for t in trades]
     gross_wins = sum(x for x in gross_pnls if x > 0)
     gross_losses = sum(-x for x in gross_pnls if x < 0)
@@ -392,7 +471,7 @@ def _metrics_from_trades(trades: Sequence[RoundtripTradeV1]) -> dict[str, float]
         "gross_profit_factor": float(gpf),
         "net_profit_factor": float(stats.get("profit_factor") or 0.0),
         "gross_pnl": float(sum(gross_pnls)),
-        "net_expectancy": float(sum(net_pnls) / len(net_pnls)),
+        "net_expectancy": float(sum(net_pnls) / len(net_pnls)) if net_pnls else 0.0,
         "sharpe": float(stats.get("sharpe") or 0.0),
         "max_drawdown": float(abs(stats.get("max_drawdown") or 0.0)),
         "trade_count": float(len(trades)),
@@ -408,7 +487,7 @@ def evaluate_arm_productive_pnl_v1(
     trades = simulate_arm_roundtrips_v1(
         panel_series=panel_series, arm=arm, effective_cost=effective_cost
     )
-    metrics = _metrics_from_trades(trades)
+    metrics = _metrics_from_trades(trades, sleeve_instrument_ids=(arm.instrument_id,))
     return ArmPnLResultV1(
         arm_id=arm.arm_id,
         trades=trades,
@@ -445,17 +524,18 @@ def evaluate_treatment_and_baseline_productive_pnl_v1(
     if not handoff.baseline:
         raise ValueError("EMPTY_BASELINE_ARMS")
 
-    # Aggregate multi-instrument arms with identical evaluator.
+    # Aggregate multi-instrument arms with identical evaluator + contracted portfolio.
     def _agg(arms: tuple[ArmEventSeriesV1, ...], arm_id: str) -> ArmPnLResultV1:
         all_trades: list[RoundtripTradeV1] = []
         events = 0
+        sleeve_ids = [str(arm.instrument_id) for arm in arms]
         for arm in arms:
             one = evaluate_arm_productive_pnl_v1(
                 panel_series=panel_series, arm=arm, effective_cost=effective
             )
             all_trades.extend(one.trades)
             events += one.evaluable_entry_events
-        metrics = _metrics_from_trades(all_trades)
+        metrics = _metrics_from_trades(all_trades, sleeve_instrument_ids=sleeve_ids)
         return ArmPnLResultV1(
             arm_id=arm_id,
             trades=tuple(all_trades),
