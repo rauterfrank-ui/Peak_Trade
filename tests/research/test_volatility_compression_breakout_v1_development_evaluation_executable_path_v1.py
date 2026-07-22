@@ -35,7 +35,6 @@ from src.research.volatility_compression_breakout_v1_development_evaluation_v1.e
     BacktestMetricsBundleV1,
     FakeExecutionBoundaryV1,
     PanelLoadResultV1,
-    RealExecutionBoundaryV1,
 )
 from src.research.volatility_compression_breakout_v1_development_evaluation_v1.guards_v1 import (
     GuardError,
@@ -317,14 +316,15 @@ def test_dry_validate_and_preflight_leave_counters_unchanged() -> None:
     assert read_run_counters(REPO) == before
 
 
-def test_real_boundary_wires_but_does_not_invent_pnl_without_exit_evaluator() -> None:
-    """Unit-level: Real wiring path is bound; productive PnL evaluator remains unbound."""
-    panel = _synthetic_panel()
-    real = RealExecutionBoundaryV1()
-    # Real load would open the sealed archive; skip load. Prove run_canonical_backtest
-    # wires then fail-closes without inventing PnL.
-    with pytest.raises(ValueError, match="PRODUCTIVE_EXIT_PNL_EVALUATOR_NOT_BOUND"):
-        real.run_canonical_backtest(panel, cost_execution_binding={}, cost_multiplier=1.0)
+def test_real_boundary_wires_and_binds_productive_exit_pnl_evaluator() -> None:
+    """Unit-level: Real wiring path is bound to productive exit/PnL evaluator."""
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        productive_exit_pnl_evaluator_is_bound,
+    )
+
+    assert productive_exit_pnl_evaluator_is_bound() is True
+    # Keep Fake-path coverage elsewhere; Real load would open the sealed archive.
+    # Boundedness is asserted via productive_exit_pnl_evaluator_is_bound + dedicated tests.
 
 
 def test_run_counters_still_zero_after_boundary_tests() -> None:

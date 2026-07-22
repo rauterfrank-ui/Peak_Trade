@@ -137,15 +137,42 @@ class RealExecutionBoundaryV1:
         cost_execution_binding: Mapping[str, Any],
         cost_multiplier: float = 1.0,
     ) -> BacktestMetricsBundleV1:
-        """Wire treatment/baseline, then hand off to productive PnL evaluator.
+        """Wire treatment/baseline, then realize PnL via productive exit evaluator."""
+        from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+            evaluate_treatment_and_baseline_productive_pnl_v1,
+            productive_exit_pnl_evaluator_is_bound,
+        )
 
-        Exit-state / cost PnL evaluation is not bound in this panel-boundary slice.
-        """
-        _ = (cost_execution_binding, cost_multiplier)
+        if not productive_exit_pnl_evaluator_is_bound():
+            raise ValueError("PRODUCTIVE_EXIT_PNL_EVALUATOR_NOT_BOUND")
         handoff = self.wire_treatment_baseline(panel)
-        raise ValueError(
-            "PRODUCTIVE_EXIT_PNL_EVALUATOR_NOT_BOUND:"
-            f"evaluable_treatment_events={handoff.evaluable_treatment_breakout_events}"
+        treatment, baseline = evaluate_treatment_and_baseline_productive_pnl_v1(
+            dataset_id=panel.dataset_id,
+            panel_series=panel.panel_series,
+            handoff=handoff,
+            cost_execution_binding=cost_execution_binding,
+            cost_multiplier=cost_multiplier,
+        )
+        return BacktestMetricsBundleV1(
+            gross_return=treatment.gross_return,
+            net_return=treatment.net_return,
+            gross_profit_factor=treatment.gross_profit_factor,
+            net_profit_factor=treatment.net_profit_factor,
+            gross_pnl=treatment.gross_pnl,
+            net_expectancy=treatment.net_expectancy,
+            sharpe=treatment.sharpe,
+            max_drawdown=treatment.max_drawdown,
+            trade_count=treatment.trade_count,
+            evaluable_treatment_breakout_events=treatment.evaluable_entry_events,
+            baseline_net_profit_factor=baseline.net_profit_factor,
+            baseline_gross_profit_factor=baseline.gross_profit_factor,
+            baseline_trade_count=baseline.trade_count,
+            cost_multiplier=float(cost_multiplier),
+            extras={
+                "productive_exit_pnl_evaluator_bound": True,
+                "baseline_trade_count": baseline.trade_count,
+                "treatment_trade_count": treatment.trade_count,
+            },
         )
 
 

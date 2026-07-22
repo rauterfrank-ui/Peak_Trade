@@ -898,7 +898,7 @@
       ]
     },
     "VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_COMPRESSION_BREAKOUT_V1: executable evaluate path with injectable panel execution boundary; authorized on HEAD; single bounded attempt fail-closed at PRODUCTIVE_EXIT_PNL_EVALUATOR_NOT_BOUND without run-slot consumption; no holdout/runtime/orders; measurement thresholds and strategy/baseline semantics unchanged.",
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_COMPRESSION_BREAKOUT_V1: executable evaluate path with panel execution boundary and productive exit/PnL evaluator bound to canonical BacktestEngine fee/slippage/gross-PnL primitives; authorized on HEAD; no evaluation execution/run-slot consumption without separate GO; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
       "path_prefixes": [
         "config/research/volatility_compression_breakout_v1_development_evaluation_entry_point_binding_v1.json",
         "docs/evidence/evaluate_volatility_compression_breakout_development_v1/",
@@ -907,7 +907,8 @@
         "src/research/volatility_compression_breakout_v1_development_evaluation_v1/",
         "tests/research/test_volatility_compression_breakout_v1_development_evaluation_entry_point_v1.py",
         "tests/research/test_volatility_compression_breakout_v1_development_evaluation_executable_path_v1.py",
-        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_fail_closed_report_v1.py"
+        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_fail_closed_report_v1.py",
+        "tests/research/test_volatility_compression_breakout_v1_productive_exit_pnl_evaluator_v1.py"
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
