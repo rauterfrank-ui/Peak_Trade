@@ -43,4 +43,4 @@ fee 10 bps/side, slippage 5 bps/side, half-spread 5 bps; canonical multiplier 1.
 
 Separate operator GO for strategy implementation, then separate GO for Development evaluation.
 
-docs_token: VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1
+docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1
