@@ -1,7 +1,8 @@
 """Frozen constants for VDB v1 DEVELOPMENT evaluation entry point.
 
-Infrastructure-only. Does not authorize or execute evaluation. Measurement-contract
-thresholds and strategy/baseline semantics remain unchanged.
+Development evaluation is authorized on the three authority surfaces; execution still
+requires a separate operator GO. Measurement-contract thresholds and strategy/baseline
+semantics remain unchanged.
 """
 
 from __future__ import annotations

@@ -1,8 +1,8 @@
 """Authorization decision for VDB v1 development evaluation.
 
 Fail-closed: token match alone is insufficient; measurement-contract, program, and
-entry-point-binding flags must also authorize development evaluation. This
-entry-point-only slice keeps the entry-point binding unauthorized.
+entry-point-binding flags must also authorize development evaluation. Development
+evaluation is authorized on HEAD; panel execution remains a separate operator GO.
 """
 
 from __future__ import annotations
