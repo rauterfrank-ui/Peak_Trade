@@ -84,9 +84,24 @@ def assert_evaluation_unauthorized_for_this_slice(repo_root: Path) -> None:
 
 
 def assert_development_evaluation_authorization_surfaces(repo_root: Path) -> None:
-    """Require consistent development_evaluation_authorized=true on contract+program."""
+    """Validate development-authorization surfaces against live program posture.
+
+    Sealed measurement contract may retain historical ``development_evaluation_authorized=true``.
+    After program closeout, the live program SSOT must revoke authorization.
+    """
     contract = json.loads((repo_root / MEASUREMENT_CONTRACT_REL_PATH).read_text(encoding="utf-8"))
     program = json.loads((repo_root / PROGRAM_REL_PATH).read_text(encoding="utf-8"))
+    _require(contract.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
+    _require(program.get("evaluation_authorized") is False, "PROGRAM_EVALUATION_AUTHORIZED_TRUE")
+    if program.get("status") == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH":
+        _require(
+            program.get("development_evaluation_authorized") is False,
+            "PROGRAM_DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE_WHEN_CLOSED",
+        )
+        _require(program.get("retry_allowed") is False, "PROGRAM_RETRY_ALLOWED_WHEN_CLOSED")
+        _require(program.get("reopen_allowed") is False, "PROGRAM_REOPEN_ALLOWED_WHEN_CLOSED")
+        _require(program.get("run_slot_consumed") is True, "PROGRAM_RUN_SLOT_NOT_CONSUMED")
+        return
     _require(
         contract.get("development_evaluation_authorized") is True,
         "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
@@ -95,8 +110,6 @@ def assert_development_evaluation_authorization_surfaces(repo_root: Path) -> Non
         program.get("development_evaluation_authorized") is True,
         "PROGRAM_DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
     )
-    _require(contract.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
-    _require(program.get("evaluation_authorized") is False, "PROGRAM_EVALUATION_AUTHORIZED_TRUE")
 
 
 def assert_authorize_token(token: str) -> None:
@@ -158,7 +171,12 @@ def preflight_guards(repo_root: Path) -> dict[str, Any]:
             runner_start_count=counters["contract_runner_start_count"],
         )
     contract = json.loads((repo_root / MEASUREMENT_CONTRACT_REL_PATH).read_text(encoding="utf-8"))
+    program = json.loads((repo_root / PROGRAM_REL_PATH).read_text(encoding="utf-8"))
     assert_runtime_inactive(contract.get("runtime_policy"))
+    live_dev_auth = (
+        contract.get("development_evaluation_authorized") is True
+        and program.get("development_evaluation_authorized") is True
+    )
     return {
         "valid": True,
         "dataset_id": DATASET_ID,
@@ -166,7 +184,8 @@ def preflight_guards(repo_root: Path) -> dict[str, Any]:
         "exactly_one_run_guard_present": True,
         "retry_guard_present": True,
         "evaluation_authorized": False,
-        "development_evaluation_authorized": True,
+        "development_evaluation_authorized": live_dev_auth,
+        "program_status": program.get("status"),
         "run_slot_exhausted": (
             counters["contract_development_run_count"] >= DEVELOPMENT_RUN_LIMIT
             or counters["contract_runner_start_count"] >= DEVELOPMENT_RUN_LIMIT

@@ -653,7 +653,7 @@
       ]
     },
     "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Open backlog SSOT for material-different cross-sectional momentum program with exactly one definition-only preregistration; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit lanes remain LANE_CLOSED_NO_FURTHER_RESEARCH unreopened.",
+      "note": "Closed lane SSOT for material-different cross-sectional momentum program after CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1 FAIL_CLOSED_NO_RETRY; inventories empty of open/preregistered candidates; terminal hypothesis recorded; no successor; retry/reopen forbidden; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit lanes remain LANE_CLOSED_NO_FURTHER_RESEARCH unreopened.",
       "path_prefixes": [
         "config/research/material_different_cross_sectional_momentum_hypothesis_backlog_v1.json",
         "src/research/material_different_cross_sectional_momentum_hypothesis_backlog_v1.py",
@@ -662,7 +662,7 @@
       ]
     },
     "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1": {
-      "note": "Definition-only research-program SSOT for operator-authorized material-different cross-sectional momentum hypothesis; no strategy producer; development evaluation authorized (not executed); no holdout/runtime/orders; causal independence from closed Bollinger Entry/Exit lanes and failed filter bindings.",
+      "note": "Closed research-program SSOT after CS-RS-Momentum v1 FAIL_CLOSED_NO_RETRY; run budget consumed (1/1); no successor; no retry/reopen; no holdout/runtime/orders; causal independence from closed Bollinger Entry/Exit lanes retained; new research requires separate operator authorization and preregistration.",
       "path_prefixes": [
         "config/research/material_different_cross_sectional_momentum_program_v1.json",
         "src/research/material_different_cross_sectional_momentum_program_v1.py",

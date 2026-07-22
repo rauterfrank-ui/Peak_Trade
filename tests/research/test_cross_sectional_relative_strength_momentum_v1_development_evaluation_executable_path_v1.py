@@ -158,14 +158,14 @@ def _authorized_decision():
     )
 
 
-def test_repo_authorization_authorized_on_head() -> None:
+def test_repo_authorization_fail_closed_after_lane_close() -> None:
     decision = resolve_authorization_decision_v1(REPO, authorize_token=HYPOTHESIS_ID)
-    assert decision.authorized is True
+    assert decision.authorized is False
     assert decision.authorize_token_valid is True
     assert decision.repo_development_evaluation_authorized is True
-    assert decision.program_development_evaluation_authorized is True
+    assert decision.program_development_evaluation_authorized is False
     assert decision.entry_point_binding_authorized is True
-    assert decision.reason_codes == ()
+    assert "PROGRAM_DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE" in decision.reason_codes
 
 
 def test_unauthorized_blocks_before_runner_start(tmp_path: Path) -> None:
