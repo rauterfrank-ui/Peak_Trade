@@ -18,14 +18,14 @@
 
 ## Gates
 
-- Development evaluation unauthorized for the active hypothesis
+- Development evaluation slot consumed (`FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`)
 - Holdout unbound / forbidden
 - Live / orders / scheduler closed
-- No retry of terminal VDB/VEP/VCB
+- No retry of terminal VDB/VEP/VCB/VDBX without new separate Operator-GO
 
 ## Next step
 
-`REVIEW_AND_MERGE_THEN_SEPARATE_OPERATOR_GO_FOR_DEVELOPMENT_EVALUATION`
+`NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1

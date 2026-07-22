@@ -6,7 +6,7 @@
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
   "baseline_implementation_present": true,
   "canonical_ssot": true,
-  "development_evaluation_authorized": false,
+  "development_evaluation_authorized": true,
   "directional_form": "OWN_INSTRUMENT_MUTUALLY_EXCLUSIVE_CHANNEL_BREAKOUT",
   "double_play_remains_sole_authority": true,
   "entry_only_implementation": false,
@@ -32,7 +32,7 @@
     "NO_EVALUATOR_SIDE_EXIT_RECONSTRUCTION",
     "NO_PREDECESSOR_ARTIFACT_MUTATION"
   ],
-  "frozen_measurement_contract_digest": "29c7f4ca71955f9cc620fc91c248f0bb3029943a52d0bd132febf08fc81d0b3a",
+  "frozen_measurement_contract_digest": "a49b13ecf9047fb1557537fcdd44bd1dc76359985c579048bf39c99436522434",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/volatility_decay_breakout_with_explicit_decay_exit_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "holdout_authorized": false,

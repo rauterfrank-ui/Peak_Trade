@@ -52,11 +52,13 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["directional_form"] == REQUIRED_DIRECTIONAL_FORM
     assert report["baseline_id"] == REQUIRED_BASELINE_ID
     assert report["evaluation_authorized"] is False
-    assert report["development_evaluation_authorized"] is False
-    assert report["development_evaluation_executed"] is False
+    # Operator GO executed the single development-evaluation run; slot consumed.
+    assert report["development_evaluation_authorized"] is True
+    assert report["development_evaluation_executed"] is True
     assert report["holdout_authorized"] is False
     assert report["dataset_bound"] is True
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
     assert report["open_parameters_remaining"] is False
     assert report["exit_state_machine_complete"] is True
     assert report["exit_precedence_complete"] is True
@@ -105,8 +107,8 @@ def test_fail_closed_on_semantics_mutation() -> None:
     with pytest.raises(PreregistrationValidationError, match="VDB_RETRY_ALLOWED"):
         validate_measurement_contract(bad2)
     bad3 = copy.deepcopy(contract)
-    bad3["development_evaluation_authorized"] = True
-    with pytest.raises(PreregistrationValidationError, match="DEV_EVAL_AUTHORIZED"):
+    bad3["development_evaluation_authorized"] = False
+    with pytest.raises(PreregistrationValidationError, match="DEV_EVAL_NOT_AUTHORIZED"):
         validate_measurement_contract(bad3)
 
 

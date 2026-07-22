@@ -126,7 +126,7 @@
     "seed_policy": "frozen_when_stochastic_components_absent",
     "treatment_arm": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1"
   },
-  "contract_digest": "29c7f4ca71955f9cc620fc91c248f0bb3029943a52d0bd132febf08fc81d0b3a",
+  "contract_digest": "a49b13ecf9047fb1557537fcdd44bd1dc76359985c579048bf39c99436522434",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -146,10 +146,10 @@
   "dataset_bound": true,
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
-  "development_evaluation_authorized": false,
-  "development_evaluation_executed": false,
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": true,
   "development_evaluation_runs_allowed": 1,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "directional_form": {
     "double_play_remains_sole_authority": true,
     "hypothesis_emits_admission_direction_and_exit_intent": true,
@@ -282,7 +282,7 @@
       }
     }
   },
-  "economic_hypothesis": "On the DEVELOPMENT_ONLY non-BTC linear USDT futures panel, after a causally confirmed own-instrument ATR(14)/close high-vol→low-vol decay transition, entering only within a fixed post-decay window on a confirmed 20-bar price-channel breakout, and exiting via an explicit deterministic decay-exit state machine that guarantees reachable exits for every admitted entry, yields after canonical fees and slippage a more robust economic expectation than the identical unconditional 20-bar channel-breakout baseline.",
+  "economic_hypothesis": "On the DEVELOPMENT_ONLY non-BTC linear USDT futures panel, after a causally confirmed own-instrument ATR(14)/close high-vol\u2192low-vol decay transition, entering only within a fixed post-decay window on a confirmed 20-bar price-channel breakout, and exiting via an explicit deterministic decay-exit state machine that guarantees reachable exits for every admitted entry, yields after canonical fees and slippage a more robust economic expectation than the identical unconditional 20-bar channel-breakout baseline.",
   "evaluation_authorized": false,
   "evaluation_run_count_authorized": 1,
   "event_sufficiency_gates": {
@@ -397,16 +397,16 @@
   "holdout_forbidden": true,
   "hypothesis_count": 1,
   "hypothesis_id": "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_NON_BITCOIN_PERPETUALS_V1",
-  "hypothesis_statement": "Nach bestaetigtem High-Vol→Low-Vol-Decay und Channel-Breakout im Fenster t+1..t+8 liefert eine explizite, deterministische Decay-Exit-State-Machine mit ex-ante Exit-Erreichbarkeit und Terminal-Liquidation oekonomisch robustere Roundtrips als unconditional Channel-Breakouts, ohne post-hoc Pairing oder Evaluator-seitige Exit-Rekonstruktion.",
+  "hypothesis_statement": "Nach bestaetigtem High-Vol\u2192Low-Vol-Decay und Channel-Breakout im Fenster t+1..t+8 liefert eine explizite, deterministische Decay-Exit-State-Machine mit ex-ante Exit-Erreichbarkeit und Terminal-Liquidation oekonomisch robustere Roundtrips als unconditional Channel-Breakouts, ohne post-hoc Pairing oder Evaluator-seitige Exit-Rekonstruktion.",
   "implementation_authorized": true,
   "material_difference_vs_terminal_coiled_spring": {
     "differences": {
       "baseline": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1 isolates incremental value of decay admission plus explicit exits",
       "compression_gate": "no compression-regime prerequisite; coiled-spring used coincident vol filter",
       "dataset_universe": "sealed DEVELOPMENT_ONLY non-BTC OKX linear USDT perpetual panel vs single-instrument short window",
-      "entry": "entry only after confirmed high→low vol decay plus channel break inside t+1..t+8 with exit-reachability gate",
+      "entry": "entry only after confirmed high\u2192low vol decay plus channel break inside t+1..t+8 with exit-reachability gate",
       "exit": "explicit deterministic exit state machine with precedence and terminal liquidation",
-      "expansion_gate": "requires high→low decay rather than coincident high-vol filter",
+      "expansion_gate": "requires high\u2192low decay rather than coincident high-vol filter",
       "program_identity": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1 / VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
       "vol_estimator": "ATR(14)/close percentile-rank regime state vs prior ATR(14) absolute-level vol_percentile=50 filter"
     },
@@ -422,7 +422,7 @@
   "material_difference_vs_volatility_compression_breakout_v1": {
     "differences": {
       "compression_prerequisite": "VCB requires sustained compression; this hypothesis requires none",
-      "entry_timing": "admits only in t+1..t+8 after high→low decay; never on confirmation bar t",
+      "entry_timing": "admits only in t+1..t+8 after high\u2192low decay; never on confirmation bar t",
       "exit_state_machine": "explicit strategy-owned exit SM with SIGNAL_EXIT and terminal liquidation; VCB was declarative entry-only",
       "expansion_definition": "VCB expands after compression; this requires decay from >=0.70 to <0.40 with falling ATR",
       "persistence_semantics": "post-decay window t+1..t+8 with rearm at >=0.70; not VCB compression cycle",
@@ -454,7 +454,7 @@
   },
   "material_difference_vs_volatility_expansion_persistence_v1": {
     "differences": {
-      "admission_polarity": "VEP admits after expansion persistence; this admits after high→low decay",
+      "admission_polarity": "VEP admits after expansion persistence; this admits after high\u2192low decay",
       "confirmation_rule": "VEP two-bar >=0.80 rising ATR; this t-1>=0.70 to t<0.40 falling ATR",
       "entry_window": "VEP t+1..t+6; this t+1..t+8",
       "exit_state_machine": "explicit strategy exit SM with reachability; VEP was entry-only declarative",
@@ -544,8 +544,8 @@
     "retry_forbidden": true,
     "second_development_run_forbidden": true
   },
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "live_authorized": false,

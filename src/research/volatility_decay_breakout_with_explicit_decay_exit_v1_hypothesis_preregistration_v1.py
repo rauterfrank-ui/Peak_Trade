@@ -80,8 +80,10 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
     _require(payload.get("dataset_id") == REQUIRED_DATASET, "DATASET_ID")
     _require(payload.get("dataset_bound") is True, "DATASET_NOT_BOUND")
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
-    _require(payload.get("development_evaluation_authorized") is False, "DEV_EVAL_AUTHORIZED")
-    _require(payload.get("development_evaluation_executed") is False, "DEV_EVAL_EXECUTED")
+    # Terminal post-execution state after the single authorized Development evaluation
+    # consumed the run slot with FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT.
+    _require(payload.get("development_evaluation_authorized") is True, "DEV_EVAL_NOT_AUTHORIZED")
+    _require(payload.get("development_evaluation_executed") is True, "DEV_EVAL_NOT_EXECUTED")
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(
@@ -89,9 +91,9 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         "HOLDOUT_NOT_UNBOUND",
     )
     _require(payload.get("strategy_implementation_present") is True, "STRATEGY_IMPL_MISSING")
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_NOT_CONSUMED")
     run_limit = payload.get("run_limit") or {}
     _require(run_limit.get("development_run_limit") == 1, "RUN_LIMIT_NOT_ONE")
     _require(run_limit.get("retry_forbidden") is True, "RETRY_NOT_FORBIDDEN")
@@ -188,12 +190,12 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         "directional_form": REQUIRED_DIRECTIONAL_FORM,
         "baseline_id": REQUIRED_BASELINE_ID,
         "evaluation_authorized": False,
-        "development_evaluation_authorized": False,
-        "development_evaluation_executed": False,
+        "development_evaluation_authorized": True,
+        "development_evaluation_executed": True,
         "holdout_authorized": False,
         "dataset_bound": True,
-        "development_run_count": 0,
-        "runner_start_count": 0,
+        "development_run_count": 1,
+        "runner_start_count": 1,
         "open_parameters_remaining": False,
         "exit_state_machine_complete": True,
         "exit_precedence_complete": True,
