@@ -39,18 +39,19 @@ def _load(path: Path) -> dict:
 def test_repo_holdout_contract_validates() -> None:
     report = load_and_validate_repo_holdout_contract(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
-    assert report["holdout_executed"] is False
+    assert report["definition_only"] is False
+    assert report["holdout_executed"] is True
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     assert report["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
     assert report["mechanism_id"] == REQUIRED_MECHANISM_ID
-    assert report["holdout_run_count"] == 0
+    assert report["holdout_run_count"] == 1
     assert report["holdout_run_limit"] == 1
     assert report["execution_authorized"] is False
     assert report["holdout_split_digest"] == EXPECTED_HOLDOUT_SPLIT_DIGEST
     assert report["holdout_preregistration_digest"] == EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST
     assert report["v8_preregistration_digest"] == REQUIRED_V8_PREREGISTRATION_DIGEST
     assert report["frozen_mechanism_match"] is True
+    assert report["terminal_holdout_result_class"] == "FAIL"
 
 
 def test_hypothesis_id_is_new_and_not_v8_reuse() -> None:
@@ -58,8 +59,8 @@ def test_hypothesis_id_is_new_and_not_v8_reuse() -> None:
     assert contract["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
     assert contract["hypothesis_id"] != REQUIRED_PREDECESSOR_HYPOTHESIS_ID
     assert contract["predecessor_hypothesis_id"] == REQUIRED_PREDECESSOR_HYPOTHESIS_ID
-    assert contract["holdout_run_count"] == 0
-    assert contract["status"] == "DEFINITION_ONLY_HOLDOUT_PREREGISTERED"
+    assert contract["holdout_run_count"] == 1
+    assert contract["status"] == "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
 
 
 def test_v8_development_contract_unchanged_and_holdout_forbidden() -> None:
@@ -87,7 +88,7 @@ def test_execution_go_absent_by_default() -> None:
     assert_execution_go_present(environ={OPERATOR_GO_ENV: "true"})
 
 
-def test_evidence_and_governance_exist_without_evaluate_dir() -> None:
+def test_evidence_and_governance_exist_with_evaluate_dir() -> None:
     assert GOVERNANCE.is_file()
     assert (EVIDENCE / "README.md").is_file()
     assert (EVIDENCE / "summary.json").is_file()
@@ -95,4 +96,6 @@ def test_evidence_and_governance_exist_without_evaluate_dir() -> None:
     assert (EVIDENCE / "safety_attestation.md").is_file()
     assert (EVIDENCE / "timing_proof.txt").is_file()
     evaluate = REPO / "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1"
-    assert not evaluate.exists()
+    assert evaluate.is_dir()
+    assert (evaluate / "summary.json").is_file()
+    assert (evaluate / ".holdout_run_consumed").is_file()

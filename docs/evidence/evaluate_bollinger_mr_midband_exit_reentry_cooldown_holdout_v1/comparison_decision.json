@@ -1,0 +1,10 @@
+{
+  "checks": {
+    "control_net_profit_factor": 0.5774036019332512,
+    "treatment_net_profit_factor": 0.5280135615083571
+  },
+  "economic_verdict": "FAIL",
+  "evaluable": true,
+  "reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+  "result_class": "FAIL"
+}

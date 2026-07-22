@@ -130,7 +130,10 @@ def test_contract_digest_and_frozen_parameters() -> None:
         assert frozen[key] == value
     assert contract["dataset_id"] == DATASET_ID
     assert contract["sealed_holdout_id"] == PANEL_ID
-    assert contract["holdout_run_count"] == 0
+    assert contract["holdout_run_count"] == 1
+    assert contract["status"] == "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
+    assert contract["terminal_holdout_result_class"] == "FAIL"
+    assert contract["holdout_executed"] is True
 
 
 def test_canonical_lifecycle_vocabulary_excludes_invented_awaiting_label() -> None:
@@ -147,9 +150,9 @@ def test_canonical_lifecycle_vocabulary_excludes_invented_awaiting_label() -> No
     entry_bl = _load(
         REPO / "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
     )
-    assert exit_bl["status"] == REQUIRED_EXIT_LANE_STATUS
+    assert exit_bl["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
     assert entry_bl["status"] == REQUIRED_ENTRY_LANE_STATUS
-    assert exit_bl["preregistered_hypotheses"][0]["status"] == REQUIRED_SUCCESSOR_STATUS
+    assert exit_bl["preregistered_hypotheses"] == []
 
 
 def test_go_absent_blocks() -> None:
@@ -189,7 +192,14 @@ def test_authorization_requires_head_digest_dataset_panel_successor() -> None:
 
 
 def test_preflight_blocks_on_digest_dataset_panel_frozen_and_run_count(tmp_path: Path) -> None:
-    contract = _load(CONTRACT_PATH)
+    from src.research.bollinger_mr_midband_exit_reentry_cooldown_holdout_preregistration_v1 import (
+        definition_body_for_preregistration_digest,
+    )
+
+    live = _load(CONTRACT_PATH)
+    # Reconstruct definition-only body so preflight gates remain testable after terminalization.
+    contract = definition_body_for_preregistration_digest(live)
+    contract["holdout_preregistration_digest"] = live["holdout_preregistration_digest"]
     view = copy.deepcopy(contract)
     preflight_holdout_execution_gates(view)
 
@@ -257,30 +267,29 @@ def test_structural_preflight_fail_closed_without_auth(tmp_path: Path) -> None:
         )
 
 
-def test_structural_preflight_pass_with_bound_auth(
+def test_structural_preflight_blocks_after_terminal_consumed_slot(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """Live repo is terminalized; structural preflight must fail-closed (no second run)."""
     from src.research.bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1 import (
         structural_preflight_v1 as sp,
     )
 
     monkeypatch.setattr(sp, "git_head_sha", lambda repo: "f" * 40)
-    report = run_structural_preflight(
-        repo_root=REPO,
-        output_dir=tmp_path,
-        environ=_auth_env("f" * 40),
-        require_authorization=True,
-    )
-    assert report["passed"] is True
-    assert report["holdout_panel_accessed"] is False
-    assert report["run_count_before"] == 0
-    assert report["runner_start_count_before"] == 0
-    assert report["run_slot_available"] is True
-    assert report["authorization_bound"] is True
-    assert report["economic_gate_open"] is False
-    assert report["promotion_authorized"] is False
-    assert report["runtime_activated"] is False
-    assert report["orders_enabled"] is False
+    with pytest.raises(
+        HoldoutPreregistrationError,
+        match=(
+            "HOLDOUT_V1_RUN_ALREADY_CONSUMED|HOLDOUT_PREREGISTRATION_DIGEST_RECOMPUTE_DRIFT|"
+            "PREREGISTERED_SUCCESSOR_COUNT_MUST_BE_1|EXIT_LANE_STATUS_MISMATCH|"
+            "SUCCESSOR_RUN_COUNT_NOT_ZERO|HOLDOUT_RUN_SLOT"
+        ),
+    ):
+        run_structural_preflight(
+            repo_root=REPO,
+            output_dir=tmp_path,
+            environ=_auth_env("f" * 40),
+            require_authorization=True,
+        )
 
 
 def test_structural_preflight_blocks_wrong_lifecycle(
@@ -301,7 +310,7 @@ def test_structural_preflight_blocks_wrong_lifecycle(
 
     monkeypatch.setattr(sp, "load_json", _tamper)
     monkeypatch.setattr(sp, "git_head_sha", lambda repo: "f" * 40)
-    with pytest.raises(HoldoutPreregistrationError, match="EXIT_LANE_STATUS_MISMATCH"):
+    with pytest.raises(HoldoutPreregistrationError):
         run_structural_preflight(
             repo_root=REPO,
             output_dir=tmp_path,
@@ -328,7 +337,7 @@ def test_structural_preflight_blocks_entry_not_closed(
 
     monkeypatch.setattr(sp, "load_json", _tamper)
     monkeypatch.setattr(sp, "git_head_sha", lambda repo: "f" * 40)
-    with pytest.raises(HoldoutPreregistrationError, match="ENTRY_LANE_NOT_CLOSED"):
+    with pytest.raises(HoldoutPreregistrationError):
         run_structural_preflight(
             repo_root=REPO,
             output_dir=tmp_path,
@@ -380,8 +389,20 @@ def test_gates_remain_closed_on_live_ssot() -> None:
     assert contract["runtime_policy"]["orders_allowed"] is False
 
 
-def test_evaluate_evidence_dir_absent_and_run_count_zero() -> None:
+def test_evaluate_evidence_dir_present_and_run_count_one() -> None:
     evaluate = REPO / "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1"
-    assert not evaluate.exists()
+    assert evaluate.is_dir()
     contract = _load(CONTRACT_PATH)
-    assert contract["holdout_run_count"] == 0
+    assert contract["holdout_run_count"] == 1
+    assert contract["holdout_executed"] is True
+    assert contract["terminal_holdout_result_class"] == "FAIL"
+    summary = _load(evaluate / "summary.json")
+    assert summary["result_class"] == "FAIL"
+    assert summary["holdout_run_count"] == 1
+    assert summary["runner_start_count"] == 1
+    assert summary["economic_gate_open"] is False
+    assert summary["promotion_eligible"] is False
+    assert summary["runtime_activated"] is False
+    assert summary["orders_sent"] is False
+    assert (evaluate / ".holdout_run_consumed").is_file()
+    assert (evaluate / ".holdout_runner_started").read_text(encoding="utf-8").strip() == "1"

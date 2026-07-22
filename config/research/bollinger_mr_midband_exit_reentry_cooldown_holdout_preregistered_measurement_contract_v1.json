@@ -4,8 +4,8 @@
   "schema_version": "bollinger_mr_midband_exit_reentry_cooldown_holdout_preregistered_measurement_contract.v1",
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
-  "status": "DEFINITION_ONLY_HOLDOUT_PREREGISTERED",
-  "verdict": "HOLDOUT_HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED_AWAITING_SEPARATE_EXECUTION_GO",
+  "status": "HOLDOUT_EVALUATION_EXECUTED_TERMINAL",
+  "verdict": "HOLDOUT_TERMINAL_FAIL",
   "slice_class": "DEFINITION_ONLY",
   "evaluation_authorized": false,
   "backtest_authorized": false,
@@ -32,7 +32,7 @@
     "v8_rerun_forbidden": true,
     "identical_mechanism_required": true
   },
-  "holdout_run_count": 0,
+  "holdout_run_count": 1,
   "holdout_run_limit": 1,
   "holdout_runs_allowed": 1,
   "retry_forbidden": true,
@@ -540,8 +540,12 @@
     "NO_MECHANISM_OR_PARAMETER_MUTATION_VS_V8",
     "NO_REOPEN_WITHOUT_NEW_HYPOTHESIS_ID"
   ],
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN",
+  "next_canonical_step": "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY",
   "frozen_v8_mechanism_match_required": true,
   "frozen_v8_contract_digest_required": "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c",
-  "holdout_preregistration_digest": "a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d"
+  "holdout_preregistration_digest": "a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d",
+  "holdout_executed": true,
+  "terminal_holdout_result_class": "FAIL",
+  "terminal_holdout_reason": "NET_PROFIT_FACTOR_NOT_IMPROVED",
+  "evaluation_evidence_ref": "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/"
 }

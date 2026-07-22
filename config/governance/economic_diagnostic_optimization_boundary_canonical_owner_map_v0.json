@@ -286,7 +286,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only holdout confirmation preregistration of frozen V8 midband exit reentry-cooldown (hypothesis HOLDOUT_V1; digest a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d; V8 digest 610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c); holdout_run_count=0; execution unauthorized; no holdout data access; no runner; no runtime/orders.",
+      "note": "Holdout confirmation preregistration of frozen V8 midband exit reentry-cooldown (hypothesis HOLDOUT_V1; digest a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d); evaluation executed terminal FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); V8 digest immutable; no second run; no runtime/orders.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_preregistration_v1.py",
         "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_holdout_preregistration_v1.py",
@@ -835,11 +835,12 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1": {
-      "note": "Holdout evaluation wiring for frozen Exit V8 successor HOLDOUT_V1; structural preflight + bound authorization + declared runner/package; holdout_run_count remains 0; no execution/panel access in wiring slice; economic/promotion/runtime/orders closed.",
+      "note": "Single authorized HOLDOUT_V1 evaluation of frozen Exit V8 midband reentry-cooldown treatment on sealed FINAL_AUDIT panel; terminal FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); economic/promotion/runtime/orders closed; V7/V8 terminals unchanged.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1.py",
         "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1.py",
+        "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/",
         "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.md"
       ]
     }

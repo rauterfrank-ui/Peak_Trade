@@ -84,6 +84,20 @@ DEFINITION_ONLY_VERDICT = (
     "HOLDOUT_HYPOTHESIS_AND_MEASUREMENT_CONTRACT_PREREGISTERED_AWAITING_SEPARATE_EXECUTION_GO"
 )
 DEFINITION_ONLY_NEXT_CANONICAL_STEP = "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
+TERMINAL_EXECUTED_STATUS = "HOLDOUT_EVALUATION_EXECUTED_TERMINAL"
+TERMINAL_EXECUTED_VERDICT = "HOLDOUT_TERMINAL_FAIL"
+TERMINAL_EXECUTED_NEXT_CANONICAL_STEP = "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY"
+ALLOWED_TERMINAL_RESULT_CLASSES = (
+    "PASS",
+    "FAIL",
+    "INCONCLUSIVE",
+    "INCONCLUSIVE_INFRASTRUCTURE_FAILURE",
+    "ARTIFACT_OR_EXECUTION_FAILURE_NO_RERUN",
+    "INVALID_MEASUREMENT_BINDING_MISSING",
+    "INVALID_MEASUREMENT_IDENTICAL_ARMS",
+    "INVALID_MEASUREMENT_IDENTICAL_EFFECTIVE_CONFIGS",
+    "INVALID_MEASUREMENT_NO_EXIT_OBSERVABILITY",
+)
 TERMINAL_OVERLAY_KEYS = frozenset(
     {
         "holdout_executed",
@@ -91,6 +105,9 @@ TERMINAL_OVERLAY_KEYS = frozenset(
         "terminal_holdout_reason",
         "evaluation_evidence_ref",
     }
+)
+EVALUATION_EVIDENCE_REL_PATH = (
+    "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/"
 )
 
 
@@ -211,7 +228,12 @@ def validate_holdout_preregistration_contract(
 ) -> dict[str, Any]:
     _assert_true(contract.get("slice_class") == "DEFINITION_ONLY", "SLICE_MUST_BE_DEFINITION_ONLY")
     assert_holdout_execution_blocked_by_definition_contract(contract)
-    _assert_true(contract.get("status") == DEFINITION_ONLY_STATUS, "STATUS_MISMATCH")
+    status = contract.get("status")
+    if status == TERMINAL_EXECUTED_STATUS:
+        return _validate_terminal_executed_holdout_contract(
+            contract, development_contract=development_contract
+        )
+    _assert_true(status == DEFINITION_ONLY_STATUS, "STATUS_MISMATCH")
     _assert_true(contract.get("verdict") == DEFINITION_ONLY_VERDICT, "VERDICT_MISMATCH")
     _assert_true(contract.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _assert_true(
@@ -412,6 +434,62 @@ def validate_holdout_preregistration_contract(
         "v8_preregistration_digest": REQUIRED_V8_PREREGISTRATION_DIGEST,
         "frozen_mechanism_match": True,
     }
+
+
+def _validate_terminal_executed_holdout_contract(
+    contract: Mapping[str, Any],
+    *,
+    development_contract: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Validate post-execution terminal overlays without mutating definition identity."""
+    _assert_true(int(contract.get("holdout_run_count") or 0) == 1, "HOLDOUT_RUN_COUNT_MUST_BE_1")
+    _assert_true(int(contract.get("holdout_run_limit") or 0) == 1, "HOLDOUT_RUN_LIMIT_MUST_BE_1")
+    _assert_true(
+        int(contract.get("holdout_runs_allowed") or 0) == 1, "HOLDOUT_RUNS_ALLOWED_MUST_BE_1"
+    )
+    _assert_true(contract.get("holdout_executed") is True, "HOLDOUT_EXECUTED_MUST_BE_TRUE")
+    result_class = str(contract.get("terminal_holdout_result_class") or "")
+    _assert_true(result_class in ALLOWED_TERMINAL_RESULT_CLASSES, "TERMINAL_RESULT_CLASS_INVALID")
+    _assert_true(
+        bool(str(contract.get("terminal_holdout_reason") or "").strip()),
+        "TERMINAL_REASON_REQUIRED",
+    )
+    _assert_true(
+        contract.get("evaluation_evidence_ref") == EVALUATION_EVIDENCE_REL_PATH,
+        "EVALUATION_EVIDENCE_REF_MISMATCH",
+    )
+    _assert_true(contract.get("verdict") == TERMINAL_EXECUTED_VERDICT, "TERMINAL_VERDICT_MISMATCH")
+    _assert_true(
+        contract.get("next_canonical_step") == TERMINAL_EXECUTED_NEXT_CANONICAL_STEP,
+        "TERMINAL_NEXT_STEP_MISMATCH",
+    )
+    for key in (
+        "retry_forbidden",
+        "restart_forbidden",
+        "post_result_tuning_forbidden",
+        "reopen_after_terminal_result_forbidden_without_new_hypothesis_id",
+    ):
+        _assert_true(contract.get(key) is True, f"LOCK_REQUIRED:{key}")
+    _assert_true(contract.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
+
+    definition_view = definition_body_for_preregistration_digest(contract)
+    definition_view["holdout_preregistration_digest"] = contract.get(
+        "holdout_preregistration_digest"
+    )
+    report = validate_holdout_preregistration_contract(
+        definition_view, development_contract=development_contract
+    )
+    report.update(
+        {
+            "definition_only": False,
+            "holdout_executed": True,
+            "holdout_run_count": 1,
+            "terminal_holdout_result_class": result_class,
+            "terminal_holdout_reason": contract.get("terminal_holdout_reason"),
+            "evaluation_evidence_ref": EVALUATION_EVIDENCE_REL_PATH,
+        }
+    )
+    return report
 
 
 def load_and_validate_repo_holdout_contract(repo_root: Path | None = None) -> dict[str, Any]:
