@@ -19,7 +19,7 @@
 - Vol estimator: ATR(20)/close, past-only
 - Compression: percentile rank lookback 120, threshold <=0.20, min duration 12 bars
 - Percentile tie method: `WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF`
-  (`count(window_values <= current_value) / count(window_values)`)
+  (`count(window_values <= current_value) &#47; count(window_values)`)
 - Current ATR20-normalized value is included as the last observation in the 120-window
 - Expansion: percentile rank >=0.75 on release offsets 1..6 inclusive after last compression bar
 - Compression cycle: `SINGLE_USE`; reset on successful entry, channel-miss, and window expiry
