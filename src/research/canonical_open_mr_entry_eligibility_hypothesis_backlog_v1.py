@@ -24,11 +24,9 @@ from src.research.canonical_research_lane_post_terminal_lifecycle_contract_v1 im
 PACKAGE_MARKER = "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1=true"
 BACKLOG_REL_PATH = "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
 GOVERNANCE_REL_PATH = "docs/governance/CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1.md"
-REQUIRED_STATUS = "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-REQUIRED_OPERATOR_DECISION = "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-REQUIRED_NEXT_CANONICAL_STEP = (
-    "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET"
-)
+REQUIRED_STATUS = "LANE_CLOSED_NO_FURTHER_RESEARCH"
+REQUIRED_OPERATOR_DECISION = "CLOSE_LANE_NO_FURTHER_RESEARCH"
+REQUIRED_NEXT_CANONICAL_STEP = "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
 POST_TERMINAL_EMPTY_INVENTORY_STATE = "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
 REQUIRED_LIFECYCLE_AUTHORITY = "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
 REQUIRED_DATASET_ID = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
@@ -160,7 +158,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     """Validate the canonical open MR eligibility backlog SSOT fail-closed."""
     _assert_true(
         backlog.get("status") == REQUIRED_STATUS,
-        "STATUS_NOT_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+        "STATUS_NOT_LANE_CLOSED_NO_FURTHER_RESEARCH",
     )
     _assert_true(
         backlog.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
@@ -174,8 +172,8 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         backlog.get("lifecycle_authority") == REQUIRED_LIFECYCLE_AUTHORITY,
         "LIFECYCLE_AUTHORITY_MISMATCH",
     )
-    _assert_true(backlog.get("explicit_closeout_decision") is False, "UNEXPECTED_CLOSEOUT_DECISION")
-    _assert_true(backlog.get("explicit_waiting_decision") is True, "WAITING_DECISION_REQUIRED")
+    _assert_true(backlog.get("explicit_closeout_decision") is True, "CLOSEOUT_DECISION_REQUIRED")
+    _assert_true(backlog.get("explicit_waiting_decision") is False, "WAITING_DECISION_FORBIDDEN")
     _assert_true(backlog.get("lane_auto_closed") is False, "LANE_AUTO_CLOSED_FORBIDDEN")
     _assert_true(
         backlog.get("next_canonical_step") == REQUIRED_NEXT_CANONICAL_STEP,
@@ -599,7 +597,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         inventory_non_empty_flag=False,
     )
     # Empty-inventory post-terminal resolution still yields the pre-decision holding
-    # state; the live lane has already executed DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS.
+    # state; the live lane has already executed CLOSE_LANE_NO_FURTHER_RESEARCH.
     _assert_true(
         resolved.get("next_state") == POST_TERMINAL_EMPTY_INVENTORY_STATE,
         "POST_TERMINAL_RESOLUTION_DRIFT",
@@ -611,14 +609,14 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(
         REQUIRED_OPERATOR_DECISION in (resolved.get("allowed_operator_decisions") or []),
-        "DECLARE_AWAITING_NOT_IN_ALLOWED_DECISIONS",
+        "CLOSE_LANE_NOT_IN_ALLOWED_DECISIONS",
     )
 
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
-        "explicit_waiting_decision": True,
-        "explicit_closeout_decision": False,
+        "explicit_waiting_decision": False,
+        "explicit_closeout_decision": True,
         "lane_auto_closed": False,
         "operator_decision": REQUIRED_OPERATOR_DECISION,
         "lifecycle_contract_id": LIFECYCLE_CONTRACT_ID,

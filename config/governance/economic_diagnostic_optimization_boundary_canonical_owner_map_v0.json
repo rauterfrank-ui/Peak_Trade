@@ -15,7 +15,7 @@
       ]
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
-      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
+      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
       "path_prefixes": [
         "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/",
         "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1.py",
@@ -65,7 +65,7 @@
       ]
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation.",
+      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation.",
       "path_prefixes": [
         "src/research/adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
         "tests/research/test_adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
@@ -147,7 +147,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5": {
-      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0→1): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.",
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0\u21921): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v5/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v5.py",
@@ -157,7 +157,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6": {
-      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0→1): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0\u21921): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v6/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v6.py",
@@ -285,6 +285,16 @@
         "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8/"
       ]
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only holdout confirmation preregistration of frozen V8 midband exit reentry-cooldown (hypothesis HOLDOUT_V1; digest a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d; V8 digest 610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c); holdout_run_count=0; execution unauthorized; no holdout data access; no runner; no runtime/orders.",
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_preregistration_v1.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_holdout_preregistration_v1.py",
+        "config/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_preregistered_measurement_contract_v1.json",
+        "docs/evidence/preregister_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_PREREGISTERED_MEASUREMENT_V1.md"
+      ]
+    },
     "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V7": {
       "note": "Definition-only preregistration of DEVELOPMENT_ONLY Bollinger/MR midband exit reentry-cooldown V7 after terminal V6 FAIL + evidence-only attribution; EVALUATION_RUN_COUNT=0; control=exact V6 semantics; treatment=same-side reentry cooldown 24h after forced midband; not a V6 rerun; no V6 partial import; no evaluation/runtime/orders.",
       "path_prefixes": [
@@ -326,7 +336,7 @@
       ]
     },
     "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Definition-only governance SSOT after ADX DI TERMINAL_PASS and six prior TERMINAL_FAIL; explicit operator DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS under shared research-lane post-terminal lifecycle contract V1 as sole lane-status authority (status=AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS; explicit_waiting_decision=true; lane_auto_closed=false); empty open candidate queue and empty preregistered list; no successor invented; economic gate closed; no further evaluation or holdout without separate enumerated CREATE_SUCCESSOR_HYPOTHESIS decision with concrete target.",
+      "note": "Canonical SSOT backlog for open MR entry-eligibility hypotheses; explicit operator CLOSE_LANE_NO_FURTHER_RESEARCH under shared research-lane post-terminal lifecycle contract V1 (status=LANE_CLOSED_NO_FURTHER_RESEARCH; explicit_closeout_decision=true; lane_auto_closed=false); inventories empty; historical terminals immutable; no runtime/orders.",
       "path_prefixes": [
         "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json",
         "src/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.py",
@@ -335,7 +345,7 @@
       ]
     },
     "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; explicit operator DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS under shared research-lane post-terminal lifecycle contract V1 as sole lane-status authority after V8 DEVELOPMENT TERMINAL_PASS (status=AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS; explicit_waiting_decision=true; lane_auto_closed=false); empty inventories; V1-V8 terminal and V8 digest immutable; evaluation closeout is not lane closeout; awaiting authorizes neither V9 nor holdout nor runtime/orders.",
+      "note": "Canonical SSOT backlog for open MR exit-efficiency hypotheses; explicit operator CREATE_SUCCESSOR_HYPOTHESIS under shared lifecycle contract V1 after V8 TERMINAL_PASS (status=OPEN_BACKLOG; holdout successor HOLDOUT_V1 DEFINITION_ONLY_PREREGISTERED; digest a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d); V8 identity unreopened; holdout execution unauthorized; Entry sibling LANE_CLOSED_NO_FURTHER_RESEARCH; Economic/promotion closed; no runtime/orders.",
       "path_prefixes": [
         "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json",
         "src/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py",

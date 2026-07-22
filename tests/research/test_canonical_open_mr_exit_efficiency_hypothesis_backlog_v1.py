@@ -46,22 +46,25 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
 def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-    assert report["explicit_waiting_decision"] is True
+    assert report["status"] == "OPEN_BACKLOG"
+    assert report["explicit_waiting_decision"] is False
     assert report["explicit_closeout_decision"] is False
     assert report["lane_auto_closed"] is False
-    assert report["operator_decision"] == "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+    assert report["operator_decision"] == "CREATE_SUCCESSOR_HYPOTHESIS"
     assert report["lifecycle_contract_id"] == (
         "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1"
     )
     assert report["lifecycle_authority"] == (
         "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
     )
-    assert report["preregistered_count"] == 0
+    assert report["preregistered_count"] == 1
     assert report["terminal_count"] == 8
     assert report["open_unpreregistered_count"] == 0
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert report["preregistered_hypothesis_id"] is None
+    assert (
+        report["preregistered_hypothesis_id"]
+        == "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_HOLDOUT_V1"
+    )
     assert report["development_run_count"] == 8
     assert report["evaluation_authorized"] is False
     assert report["v7_evaluation_run_count"] == 1
@@ -69,6 +72,7 @@ def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
     assert report["v8_evaluation_run_count"] == 1
     assert report["v8_result_class"] == "PASS"
     assert report["holdout_forbidden"] is True
+    assert report.get("holdout_candidate_preregistered", True) is True
     assert report["rerun_allowed"] is False
     assert report["runtime_locked"] is True
     assert report["v2_evaluation_run_count"] == 1
@@ -98,17 +102,17 @@ def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
 
 def test_one_preregistered_v8_and_v7_terminal_entry_shape() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert backlog["preregistered_hypotheses"] == []
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
     assert backlog["open_unpreregistered_candidates"] == []
-    assert backlog["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+    assert backlog["status"] == "OPEN_BACKLOG"
     assert backlog["lifecycle_authority"] == (
         "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
     )
     assert backlog["explicit_closeout_decision"] is False
-    assert backlog["explicit_waiting_decision"] is True
+    assert backlog["explicit_waiting_decision"] is False
     assert backlog["lane_auto_closed"] is False
-    assert backlog["entry_eligibility_lane_status"] == ("AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS")
+    assert backlog["entry_eligibility_lane_status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert "CLOSED_NO_OPEN_CANDIDATES" not in json.dumps(backlog)
     assert backlog["development_run_count"] == 8
     assert len(backlog["terminal_hypotheses"]) == 8
@@ -175,7 +179,8 @@ def test_one_preregistered_v8_and_v7_terminal_entry_shape() -> None:
     assert "NO_V8_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
     assert "NO_V8_RERUN" in backlog["explicit_non_actions"]
     assert "NO_V8_REOPEN" in backlog["explicit_non_actions"]
-    assert "NO_HOLDOUT_AFTER_PASS" in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_AFTER_PASS" not in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_OF_V8_DEVELOPMENT_IDENTITY" in backlog["explicit_non_actions"]
     assert "NO_RUNTIME_PROMOTION_FROM_DEVELOPMENT_PASS" in backlog["explicit_non_actions"]
     assert "NO_V9_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V7_AUTO_CREATE" in backlog["explicit_non_actions"]
@@ -209,7 +214,7 @@ def test_one_preregistered_v8_and_v7_terminal_entry_shape() -> None:
     assert v8["baseline_members_completed"] == "46/46"
     assert v8["treatment_members_completed"] == "46/46"
     assert backlog["next_canonical_step"] == (
-        "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET"
+        "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
     )
     assert v8["development_preregistration_digest"] == (
         "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c"
@@ -239,7 +244,10 @@ def test_governance_doc_mentions_v8_prereg_and_v7_terminal() -> None:
     assert "ALL_PASS_REQUIRES_MET" in text
     assert "FROZEN_EXIT_PARAMETERS_MISMATCH" in text
     assert "BEFORE_PANEL_ACCESS" in text
-    assert "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET" in text
+    assert (
+        "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
+        in text
+    )
     assert "Evaluation closeout is not" in text or "not a lane closeout" in text.lower()
     assert "neither V9" in text or "neither V9," in text or "authorizes neither V9" in text
     assert "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c" in text
@@ -252,9 +260,12 @@ def test_governance_doc_mentions_v8_prereg_and_v7_terminal() -> None:
 def test_rejects_open_backlog_with_empty_inventory() -> None:
     backlog = _load(BACKLOG_PATH)
     bad = copy.deepcopy(backlog)
-    bad["status"] = "OPEN_BACKLOG"
+    bad["preregistered_hypotheses"] = []
+    bad["governance_rules"] = dict(bad["governance_rules"])
+    bad["governance_rules"]["preregistered_count_exact"] = 0
+    bad["holdout_candidate_preregistered"] = False
     with pytest.raises(
-        BacklogValidationError, match="STATUS_NOT_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+        BacklogValidationError, match="HOLDOUT_CANDIDATE_NOT_PREREGISTERED|PREREGISTERED_COUNT"
     ):
         validate_backlog_contract(bad)
 
@@ -285,12 +296,12 @@ def test_rejects_noncanonical_entry_eligibility_status_label() -> None:
 
 def test_explicit_waiting_transition_invariants_and_v8_digest_immutable() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert backlog["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-    assert backlog["explicit_waiting_decision"] is True
+    assert backlog["status"] == "OPEN_BACKLOG"
+    assert backlog["explicit_waiting_decision"] is False
     assert backlog["explicit_closeout_decision"] is False
     assert backlog["lane_auto_closed"] is False
     assert backlog["open_unpreregistered_candidates"] == []
-    assert backlog["preregistered_hypotheses"] == []
+    assert len(backlog["preregistered_hypotheses"]) == 1
     assert backlog["runtime_policy"]["runtime_activated"] is False
     assert backlog["runtime_policy"]["orders_allowed"] is False
     assert backlog["holdout_forbidden"] is True
@@ -302,12 +313,13 @@ def test_explicit_waiting_transition_invariants_and_v8_digest_immutable() -> Non
         "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c"
     )
     assert "NO_V9_AUTO_CREATE" in backlog["explicit_non_actions"]
-    assert "NO_HOLDOUT_AFTER_PASS" in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_AFTER_PASS" not in backlog["explicit_non_actions"]
+    assert "NO_HOLDOUT_OF_V8_DEVELOPMENT_IDENTITY" in backlog["explicit_non_actions"]
 
 
-def test_rejects_awaiting_without_explicit_waiting_decision() -> None:
+def test_rejects_open_backlog_with_waiting_decision() -> None:
     backlog = _load(BACKLOG_PATH)
     bad = copy.deepcopy(backlog)
-    bad["explicit_waiting_decision"] = False
-    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_REQUIRED"):
+    bad["explicit_waiting_decision"] = True
+    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_FORBIDDEN"):
         validate_backlog_contract(bad)

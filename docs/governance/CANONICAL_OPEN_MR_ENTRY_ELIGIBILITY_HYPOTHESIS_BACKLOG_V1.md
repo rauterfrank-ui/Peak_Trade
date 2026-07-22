@@ -2,13 +2,13 @@
 
 ## Status
 
-`AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` — explicit operator decision
-`DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` recorded under the shared
+`LANE_CLOSED_NO_FURTHER_RESEARCH` — explicit operator decision
+`CLOSE_LANE_NO_FURTHER_RESEARCH` recorded under the shared
 research-lane post-terminal lifecycle contract. Inventories are empty; all
-hypotheses are terminal; `explicit_waiting_decision=true`;
-`explicit_closeout_decision=false`; `lane_auto_closed=false`. This is an
-explicit operator decision, not an auto-await. No successor hypothesis has been
-created or preregistered. Auto-close remains forbidden.
+hypotheses are terminal; `explicit_closeout_decision=true`;
+`explicit_waiting_decision=false`; `lane_auto_closed=false`. This is an
+explicit operator closeout decision, not an auto-close. Historical evidence
+and terminal results remain immutable. Reopen requires a new hypothesis identity.
 
 Lane-status vocabulary and post-terminal legality are owned solely by
 `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`.
@@ -54,13 +54,11 @@ None. Holdout V2 is no longer preregistered; it is terminal-executed.
 
 ## Next step
 
-`AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET`
+`LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO`
 
-The lane awaits an explicitly named successor hypothesis. Waiting is named; no
-successor identity exists yet. GO alone is never executable without a concrete
-target. A later `CREATE_SUCCESSOR_HYPOTHESIS` requires explicit `hypothesis_id` +
-mechanism. `CLOSE_LANE_NO_FURTHER_RESEARCH` remains available only via a separate
-explicit closeout decision. The historical pointer
+The lane is intentionally closed with no further entry-eligibility research.
+Reopening requires `REOPEN_CLOSED_LANE_WITH_NEW_HYPOTHESIS_IDENTITY` with a new
+explicit hypothesis identity and mechanism. GO alone is never executable. The historical pointer
 `REVIEW_DEFINITION_ONLY_EXIT_EFFICIENCY_PREREGISTRATION_NO_ENTRY_ELIGIBILITY_REOPEN`
 is no longer the current canonical next step.
 
@@ -79,7 +77,7 @@ No parallel SHORT-side hypothesis. No holdout candidate.
 
 - `PROMOTION_ELIGIBLE=false`
 - `open_candidates=[]`
-- `status=AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`
+- `status=LANE_CLOSED_NO_FURTHER_RESEARCH`
 - `explicit_waiting_decision=true`
 - `explicit_closeout_decision=false`
 - `lane_auto_closed=false`
