@@ -27,11 +27,10 @@
     "NO_RUNTIME",
     "NO_ENTRY_LANE_REOPEN",
     "NO_EXIT_LANE_REOPEN",
-    "NO_TERMINAL_RESULT_MUTATION",
-    "NO_STRATEGY_PRODUCER_IN_THIS_SLICE"
+    "NO_TERMINAL_RESULT_MUTATION"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "Open backlog with exactly one definition-only preregistered hypothesis under shared lifecycle contract. Closed Entry/Exit Bollinger MR lanes remain immutable and unreopened.",
+  "governance_note": "Open backlog with one preregistered hypothesis; strategy implementation surfaces present. Evaluation/holdout/promotion/runtime remain closed. Closed Entry/Exit lanes untouched.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -45,12 +44,12 @@
     "strategy_implementation_requires_separate_operator_go": true
   },
   "holdout_forbidden": true,
-  "implementation_authorized": false,
+  "implementation_authorized": true,
   "lane_auto_closed": false,
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "REVIEW_DEFINITION_ONLY_PREREGISTRATION_AWAITING_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "STRATEGY_IMPLEMENTATION_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_PENDING_THRESHOLD_RESOLUTION_THEN_DEVELOPMENT_EVALUATION",
   "open_unpreregistered_candidates": [],
   "preregistered_hypotheses": [
     {
@@ -60,7 +59,8 @@
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1",
-      "implementation_present": false,
+      "implementation_binding_ref": "config/research/cross_sectional_relative_strength_momentum_v1_strategy_implementation_binding_v1.json",
+      "implementation_present": true,
       "preregistration_evidence_ref": "docs/evidence/preregister_cross_sectional_relative_strength_momentum_hypothesis_v1/",
       "rerun_allowed": false,
       "signal_family": "CROSS_SECTIONAL_MOMENTUM",
@@ -99,7 +99,7 @@
   "schema_version": "material_different_cross_sectional_momentum_hypothesis_backlog.v1",
   "sealed_holdout_content_inspection_authorized": false,
   "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
-  "slice_class": "DEFINITION_ONLY_GOVERNANCE",
+  "slice_class": "STRATEGY_IMPLEMENTATION_ONLY",
   "status": "OPEN_BACKLOG",
   "terminal_hypotheses": [],
   "universe_scope": {

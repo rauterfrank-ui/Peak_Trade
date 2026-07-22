@@ -10,7 +10,7 @@ PACKAGE_MARKER = "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1=true"
 PROGRAM_REL_PATH = "config/research/material_different_cross_sectional_momentum_program_v1.json"
 GOVERNANCE_REL_PATH = "docs/governance/MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1.md"
 REQUIRED_PROGRAM_ID = "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1"
-REQUIRED_STATUS = "DEFINITION_ONLY_PROGRAM_OPEN"
+REQUIRED_STATUS = "STRATEGY_IMPLEMENTATION_PRESENT_PROGRAM_OPEN"
 REQUIRED_STRATEGY_IDENTITY = "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1"
 REQUIRED_SIGNAL_FAMILY = "CROSS_SECTIONAL_MOMENTUM"
 REQUIRED_TARGET_PHENOMENON = "PERSISTENCE_OF_RELATIVE_RETURNS_ACROSS_NON_BTC_LINEAR_USDT_FUTURES"
@@ -40,7 +40,8 @@ def validate_program_contract(
     _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID_MISMATCH")
     _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_DEFINITION_ONLY_OPEN")
     _require(
-        payload.get("slice_class") == "DEFINITION_ONLY_GOVERNANCE", "SLICE_NOT_DEFINITION_ONLY"
+        payload.get("slice_class") == "STRATEGY_IMPLEMENTATION_ONLY",
+        "SLICE_NOT_STRATEGY_IMPLEMENTATION_ONLY",
     )
     _require(payload.get("authority_effect") == "NONE", "AUTHORITY_EFFECT_NOT_NONE")
     _require(payload.get("runtime_effect") == "NONE", "RUNTIME_EFFECT_NOT_NONE")
@@ -65,13 +66,14 @@ def validate_program_contract(
     _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NONZERO")
     _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
     _require(
-        payload.get("strategy_implementation_present") is False,
-        "STRATEGY_IMPLEMENTATION_PRESENT",
+        payload.get("strategy_implementation_present") is True,
+        "STRATEGY_IMPLEMENTATION_PRESENT_FALSE",
     )
     _require(
-        payload.get("strategy_implementation_authorized_in_this_slice") is False,
-        "STRATEGY_IMPLEMENTATION_AUTHORIZED",
+        payload.get("strategy_implementation_authorized_in_this_slice") is True,
+        "STRATEGY_IMPLEMENTATION_NOT_AUTHORIZED",
     )
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED_FALSE")
     gates = payload.get("promotion_and_economic_gate_policy") or {}
     _require(gates.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE_TRUE")
     _require(gates.get("economic_gate_open") is False, "ECONOMIC_GATE_OPEN")
@@ -123,7 +125,8 @@ def validate_program_contract(
         "program_id": REQUIRED_PROGRAM_ID,
         "status": REQUIRED_STATUS,
         "strategy_identity": REQUIRED_STRATEGY_IDENTITY,
-        "definition_only": True,
+        "definition_only": False,
+        "strategy_implementation_present": True,
         "holdout_authorized": False,
         "evaluation_authorized": False,
         "promotion_eligible": False,
