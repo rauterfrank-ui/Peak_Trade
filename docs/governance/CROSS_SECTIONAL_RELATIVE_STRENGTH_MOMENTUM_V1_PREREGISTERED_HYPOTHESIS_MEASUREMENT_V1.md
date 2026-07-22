@@ -14,7 +14,7 @@ authorized in this slice.
 - Target phenomenon: `PERSISTENCE_OF_RELATIVE_RETURNS_ACROSS_NON_BTC_LINEAR_USDT_FUTURES`
 - Program: `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
 - Contract: `config&#47;research&#47;cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
-- Digest: `54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed`
+- Digest: `761b69268f465bcd4c4d07373f718ae267872810195d7ae2727c98c3e18757e8`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1` (`DEVELOPMENT_ONLY`)
 - Evidence: `docs&#47;evidence&#47;preregister_cross_sectional_relative_strength_momentum_hypothesis_v1&#47;`
 - Multiple-testing budget: `1`

@@ -154,5 +154,5 @@ def test_implementation_binding_and_frozen_measurement_digest() -> None:
     assert report["holdout_authorized"] is False
     assert (
         report["frozen_digest"]
-        == "54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed"
+        == "761b69268f465bcd4c4d07373f718ae267872810195d7ae2727c98c3e18757e8"
     )

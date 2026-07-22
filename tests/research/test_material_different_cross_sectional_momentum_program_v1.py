@@ -50,8 +50,8 @@ def test_repo_program_definition_only() -> None:
     assert report["holdout_authorized"] is False
     assert report["evaluation_authorized"] is False
     assert report["promotion_eligible"] is False
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
 
 
 def test_causal_independence_and_no_core_mutation_flags() -> None:
@@ -59,7 +59,7 @@ def test_causal_independence_and_no_core_mutation_flags() -> None:
     assert payload["strategy_implementation_present"] is True
     assert payload["strategy_implementation_authorized_in_this_slice"] is True
     assert payload["implementation_authorized"] is True
-    assert payload["run_slot_consumed"] is False
+    assert payload["run_slot_consumed"] is True
     assert payload["holdout_forbidden"] is True
     assert payload["runtime_authorized"] is False
     independence = payload["causal_independence"]
@@ -102,8 +102,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="EVALUATION_AUTHORIZED_TRUE"):
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["development_run_count"] = 1
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NONZERO"):
+    bad2["development_run_count"] = 2
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
     bad3["strategy_implementation_present"] = False

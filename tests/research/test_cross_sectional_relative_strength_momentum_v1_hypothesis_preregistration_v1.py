@@ -52,8 +52,8 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["directional_form"] == REQUIRED_DIRECTIONAL_FORM
     assert report["evaluation_authorized"] is False
     assert report["holdout_authorized"] is False
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
     assert report["evaluation_blocked_while_pending"] is False
     assert report["pending_threshold_keys"] == []
     assert report["time_segment_definition_id"] == REQUIRED_TIME_SEGMENT_DEFINITION_ID
@@ -189,8 +189,8 @@ def test_governance_evidence_owner_map() -> None:
     summary = _load(EVIDENCE / "summary.json")
     assert summary["evaluation_executed"] is False
     assert summary["holdout_accessed"] is False
-    assert summary["development_run_count"] == 0
-    assert summary["runner_start_count"] == 0
+    assert summary["development_run_count"] == 1
+    assert summary["runner_start_count"] == 1
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert (
         "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1"

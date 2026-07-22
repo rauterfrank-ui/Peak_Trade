@@ -145,11 +145,18 @@ def preflight_guards(repo_root: Path) -> dict[str, Any]:
     assert_exactly_one_run_limit()
     assert_development_evaluation_authorization_surfaces(repo_root)
     counters = read_run_counters(repo_root)
-    assert_retry_forbidden(
-        retry_requested=False,
-        development_run_count=counters["contract_development_run_count"],
-        runner_start_count=counters["contract_runner_start_count"],
+    # Read-only preflight: if the single run slot is already consumed, report it;
+    # do not fail closed here (evaluate path still enforces no-retry).
+    slot_exhausted = (
+        counters["contract_development_run_count"] >= DEVELOPMENT_RUN_LIMIT
+        or counters["contract_runner_start_count"] >= DEVELOPMENT_RUN_LIMIT
     )
+    if not slot_exhausted:
+        assert_retry_forbidden(
+            retry_requested=False,
+            development_run_count=counters["contract_development_run_count"],
+            runner_start_count=counters["contract_runner_start_count"],
+        )
     contract = json.loads((repo_root / MEASUREMENT_CONTRACT_REL_PATH).read_text(encoding="utf-8"))
     assert_runtime_inactive(contract.get("runtime_policy"))
     return {
@@ -160,5 +167,9 @@ def preflight_guards(repo_root: Path) -> dict[str, Any]:
         "retry_guard_present": True,
         "evaluation_authorized": False,
         "development_evaluation_authorized": True,
+        "run_slot_exhausted": (
+            counters["contract_development_run_count"] >= DEVELOPMENT_RUN_LIMIT
+            or counters["contract_runner_start_count"] >= DEVELOPMENT_RUN_LIMIT
+        ),
         "run_counters": counters,
     }

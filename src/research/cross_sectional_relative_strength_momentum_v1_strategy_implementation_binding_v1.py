@@ -18,7 +18,7 @@ MEASUREMENT_REL_PATH = (
     "cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_"
     "measurement_contract_v1.json"
 )
-REQUIRED_DIGEST = "54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed"
+REQUIRED_DIGEST = "761b69268f465bcd4c4d07373f718ae267872810195d7ae2727c98c3e18757e8"
 REQUIRED_IMPL_FILES = (
     "src/research/cross_sectional_relative_strength_momentum_v1_score_v1.py",
     "src/research/cross_sectional_relative_strength_momentum_v1_selection_v1.py",

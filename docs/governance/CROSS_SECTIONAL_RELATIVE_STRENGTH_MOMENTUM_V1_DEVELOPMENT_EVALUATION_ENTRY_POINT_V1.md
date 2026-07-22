@@ -29,7 +29,7 @@ Modes:
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
   (`DEVELOPMENT_ONLY`)
 - Measurement contract digest (frozen):
-  `54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed`
+  `761b69268f465bcd4c4d07373f718ae267872810195d7ae2727c98c3e18757e8`
 - Entry-point binding:
   `config/research/cross_sectional_relative_strength_momentum_v1_development_evaluation_entry_point_binding_v1.json`
 - Lifecycle authority:
