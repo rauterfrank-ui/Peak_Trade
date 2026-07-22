@@ -176,6 +176,13 @@ def assert_execution_go_present(*, environ: Mapping[str, str] | None = None) -> 
         )
 
 
+def assert_holdout_run_not_yet_consumed(contract: Mapping[str, Any]) -> None:
+    if int(contract.get("holdout_run_count") or 0) != 0:
+        raise HoldoutPreregistrationError("HOLDOUT_V1_RUN_ALREADY_CONSUMED")
+    if contract.get("holdout_executed") is True:
+        raise HoldoutPreregistrationError("HOLDOUT_V1_ALREADY_EXECUTED")
+
+
 def assert_holdout_execution_blocked_by_definition_contract(
     contract: Mapping[str, Any],
 ) -> None:
@@ -412,3 +419,54 @@ def load_and_validate_repo_holdout_contract(repo_root: Path | None = None) -> di
     contract = load_json(root / CONTRACT_REL_PATH)
     development = load_json(root / DEV_CONTRACT_REL_PATH)
     return validate_holdout_preregistration_contract(contract, development_contract=development)
+
+
+def preflight_holdout_execution_gates(contract: Mapping[str, Any]) -> dict[str, Any]:
+    """Fail-closed gates before any sealed holdout panel access.
+
+    Pure contract/identity checks only — no panel I/O.
+    """
+    stored_digest = str(contract.get("holdout_preregistration_digest") or "")
+    if stored_digest != EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST:
+        raise HoldoutPreregistrationError("HOLDOUT_PREREGISTRATION_DIGEST_DRIFT")
+    split_digest = str((contract.get("splits") or {}).get("split_intervals_sha256") or "")
+    if split_digest != EXPECTED_HOLDOUT_SPLIT_DIGEST:
+        raise HoldoutPreregistrationError("HOLDOUT_SPLIT_DIGEST_DRIFT")
+    if contract.get("hypothesis_id") != REQUIRED_HYPOTHESIS_ID:
+        raise HoldoutPreregistrationError("HYPOTHESIS_ID_MISMATCH")
+    if contract.get("dataset_id") != REQUIRED_DATASET_ID:
+        raise HoldoutPreregistrationError("DATASET_ID_MISMATCH")
+    if contract.get("sealed_holdout_id") != HOLDOUT_OPAQUE_ID:
+        raise HoldoutPreregistrationError("PANEL_ID_MISMATCH")
+    frozen = (contract.get("exit_mechanism") or {}).get("frozen_parameters") or {}
+    for key, value in REQUIRED_FROZEN_PARAMETERS.items():
+        if frozen.get(key) != value:
+            raise HoldoutPreregistrationError(f"FROZEN_PARAM_MISMATCH:{key}")
+    cooldown = (contract.get("exit_mechanism") or {}).get("cooldown") or {}
+    if int(cooldown.get("cooldown_bars") or -1) != REQUIRED_COOLDOWN_BARS:
+        raise HoldoutPreregistrationError("COOLDOWN_BARS_MISMATCH")
+    recomputed = compute_holdout_preregistration_digest(contract)
+    if recomputed != EXPECTED_HOLDOUT_PREREGISTRATION_DIGEST:
+        raise HoldoutPreregistrationError("HOLDOUT_PREREGISTRATION_DIGEST_RECOMPUTE_DRIFT")
+    assert_holdout_run_not_yet_consumed(contract)
+    if int(contract.get("holdout_run_limit") or 0) != 1:
+        raise HoldoutPreregistrationError("HOLDOUT_RUN_LIMIT_MUST_BE_1")
+    promo = contract.get("promotion_and_economic_gate_policy") or {}
+    if promo.get("economic_gate_open") is not False:
+        raise HoldoutPreregistrationError("ECONOMIC_GATE_MUST_REMAIN_CLOSED")
+    if promo.get("promotion_eligible") is not False:
+        raise HoldoutPreregistrationError("PROMOTION_MUST_REMAIN_CLOSED")
+    runtime = contract.get("runtime_policy") or {}
+    for key in ("runtime_activated", "orders_allowed", "live_authorized"):
+        if runtime.get(key) is not False:
+            raise HoldoutPreregistrationError(f"RUNTIME_UNLOCKED:{key}")
+    return {
+        "holdout_preregistration_digest": stored_digest,
+        "holdout_split_digest": split_digest,
+        "holdout_run_count_before": int(contract.get("holdout_run_count") or 0),
+        "holdout_run_limit": int(contract.get("holdout_run_limit") or 0),
+        "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
+        "dataset_id": REQUIRED_DATASET_ID,
+        "panel_id": HOLDOUT_OPAQUE_ID,
+        "gates_passed": True,
+    }

@@ -15,7 +15,7 @@
       ]
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
-      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
+      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
       "path_prefixes": [
         "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/",
         "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1.py",
@@ -65,7 +65,7 @@
       ]
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation.",
+      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation.",
       "path_prefixes": [
         "src/research/adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
         "tests/research/test_adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
@@ -147,7 +147,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5": {
-      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0\u21921): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.",
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0→1): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v5/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v5.py",
@@ -157,7 +157,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6": {
-      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0\u21921): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0→1): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v6/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v6.py",
@@ -1004,5 +1004,16 @@
     "authorized_scope_class": "TECHNICAL_CANONICAL_WIRING_ONLY",
     "contract_path": "config/governance/technical_canonical_wiring_authorization_v1.json",
     "note": "Narrow fail-closed override for versioned technical wiring paths only; does not waive MASTER_V2_MUTATION_ALLOWED=false."
+  },
+  "owners": {
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1": {
+      "note": "Holdout evaluation wiring for frozen Exit V8 successor HOLDOUT_V1; structural preflight + bound authorization + declared runner/package; holdout_run_count remains 0; no execution/panel access in wiring slice; economic/promotion/runtime/orders closed.",
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1.py",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.md"
+      ]
+    }
   }
 }
