@@ -20,7 +20,7 @@ the exception is raised in `compute_calmar_ratio` when:
 
 1. equity has non-zero drawdown (annualization path is entered),
 2. `total_return` is explosively large,
-3. `years = (len(equity)-1) / periods_per_year` is small (hourly `24*365`).
+3. `years = (len(equity)-1) &#47; periods_per_year` is small (hourly `24*365`).
 
 Python's `**` raises `OverflowError` before the existing `np.isfinite` guard runs.
 
