@@ -285,6 +285,16 @@
         "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_development_v8/"
       ]
     },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1": {
+      "note": "Single authorized HOLDOUT_V1 evaluation of frozen Exit V8 midband reentry-cooldown treatment on sealed FINAL_AUDIT panel; terminal FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); economic/promotion/runtime/orders closed; V7/V8 terminals unchanged.",
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1.py",
+        "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.md"
+      ]
+    },
     "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_PREREGISTRATION_DEFINITION_ONLY_V1": {
       "note": "Holdout confirmation preregistration of frozen V8 midband exit reentry-cooldown (hypothesis HOLDOUT_V1; digest a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d); evaluation executed terminal FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); V8 digest immutable; no second run; no runtime/orders.",
       "path_prefixes": [
@@ -427,6 +437,16 @@
         "src/research/linear_evidence/offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
         "src/research/linear_evidence/offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py",
         "src/research/linear_evidence/offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0.py"
+      ]
+    },
+    "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only preregistration of cross-sectional relative-strength momentum v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; directional form D mutually exclusive single-slot selection; bounded DEV grid frozen; pending admission thresholds block evaluation; no strategy producer; no evaluation/holdout/runtime/orders; closed Entry/Exit Bollinger lanes untouched.",
+      "path_prefixes": [
+        "config/research/cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/cross_sectional_relative_strength_momentum_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_cross_sectional_relative_strength_momentum_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_cross_sectional_relative_strength_momentum_hypothesis_v1/"
       ]
     },
     "DATA_BINDING_REPAIR": {
@@ -606,6 +626,24 @@
         "config/research/macd_histogram_countertrend_mr_eligibility_preregistered_economic_hypothesis_measurement_contract_v1.json",
         "docs/evidence/preregister_macd_histogram_countertrend_mr_eligibility_hypothesis_v1/",
         "docs/governance/MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
+      ]
+    },
+    "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_HYPOTHESIS_BACKLOG_V1": {
+      "note": "Open backlog SSOT for material-different cross-sectional momentum program with exactly one definition-only preregistration; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit lanes remain LANE_CLOSED_NO_FURTHER_RESEARCH unreopened.",
+      "path_prefixes": [
+        "config/research/material_different_cross_sectional_momentum_hypothesis_backlog_v1.json",
+        "src/research/material_different_cross_sectional_momentum_hypothesis_backlog_v1.py",
+        "tests/research/test_material_different_cross_sectional_momentum_hypothesis_backlog_v1.py",
+        "docs/governance/MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_HYPOTHESIS_BACKLOG_V1.md"
+      ]
+    },
+    "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1": {
+      "note": "Definition-only research-program SSOT for operator-authorized material-different cross-sectional momentum hypothesis; no strategy producer; no evaluation/holdout/runtime/orders; causal independence from closed Bollinger Entry/Exit lanes and failed filter bindings.",
+      "path_prefixes": [
+        "config/research/material_different_cross_sectional_momentum_program_v1.json",
+        "src/research/material_different_cross_sectional_momentum_program_v1.py",
+        "tests/research/test_material_different_cross_sectional_momentum_program_v1.py",
+        "docs/governance/MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1.md"
       ]
     },
     "MA_TREND_ALIGNMENT_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
@@ -832,16 +870,6 @@
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
-      ]
-    },
-    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1": {
-      "note": "Single authorized HOLDOUT_V1 evaluation of frozen Exit V8 midband reentry-cooldown treatment on sealed FINAL_AUDIT panel; terminal FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); economic/promotion/runtime/orders closed; V7/V8 terminals unchanged.",
-      "path_prefixes": [
-        "src/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1/",
-        "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1.py",
-        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1.py",
-        "docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/",
-        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.md"
       ]
     }
   },
