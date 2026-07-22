@@ -41,7 +41,7 @@ Authorized single corrective measurement reevaluation on `00a820f080973600378c3c
 measurement repair entered the corrective evaluate path with the panel execution
 boundary and productive exit/PnL evaluator bound, then fail-closed with
 `UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:DOGE:USDT:USDT:perp:10574` during productive PnL pairing.
-Corrective slot consumed (`CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT=1/1`).
+Corrective slot consumed (`CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT=1&#47;1`).
 Development counters preserved (`DEVELOPMENT_RUN_COUNT=1`, `RUNNER_START_COUNT=1`).
 No corrective retry. Prior development evidence under
 `docs/evidence/evaluate_volatility_decay_breakout_development_v1/` remains unmodified (supersession

@@ -16,7 +16,7 @@ measurement repair merge `00a820f080973600378c3c2d5513905ee07217e9`
 (`PORTFOLIO_AGGREGATION_ID=RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1`)
 and fail-closed with
 `UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:DOGE:USDT:USDT:perp:10574`.
-Corrective slot consumed (`CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT=1/1`).
+Corrective slot consumed (`CORRECTIVE_MEASUREMENT_REEVALUATION_COUNT=1&#47;1`).
 Development counters preserved at `1`. No corrective retry.
 New evidence under
 `docs/evidence/evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_v1/`
