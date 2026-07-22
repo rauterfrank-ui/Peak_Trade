@@ -17,7 +17,7 @@ after VEPC historical development slot terminalization.
 - Strategy: `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1`
 - Historical slot: `CONSUMED_NO_RETRY`
 - Terminal result: `FAIL_CLOSED_NO_RETRY`
-- Fail reason: `HISTORICAL_DEVELOPMENT_SLOT_CONSUMED_NO_RETRY/FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`
+- Fail reason: `HISTORICAL_DEVELOPMENT_SLOT_CONSUMED_NO_RETRY&#47;FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`
 - Retry forbidden; reopen forbidden
 
 ## Operator decision packet
