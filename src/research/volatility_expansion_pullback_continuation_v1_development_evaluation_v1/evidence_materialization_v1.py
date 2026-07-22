@@ -41,8 +41,9 @@ def build_run_slot_claim_v1(
     strategy_params_digest: str,
     dataset_id: str,
     dataset_digest: str,
+    slot_consumption_boundary: str | None = None,
 ) -> dict[str, Any]:
-    return {
+    payload: dict[str, Any] = {
         "schema_version": "evaluate_volatility_expansion_pullback_continuation_run_slot_claim.v1",
         "evaluation_run_id": EVALUATION_RUN_ID,
         "hypothesis_id": HYPOTHESIS_ID,
@@ -56,6 +57,52 @@ def build_run_slot_claim_v1(
         "retry_forbidden": True,
         "holdout_accessed": False,
     }
+    if slot_consumption_boundary is not None:
+        payload["slot_consumption_boundary"] = slot_consumption_boundary
+    return payload
+
+
+def build_technical_fail_closed_summary_v1(
+    *,
+    config_digest: str,
+    strategy_params_digest: str,
+    dataset_id: str,
+    dataset_digest: str,
+    reason: str,
+    development_dataset_loaded: bool,
+    terminal_development_verdict: str,
+) -> dict[str, Any]:
+    """Durable fail-closed surface after runner start; does not invent metrics."""
+    from src.research.volatility_expansion_pullback_continuation_v1_development_evaluation_v1.evidence_schema_v1 import (
+        empty_evidence_surface_template,
+    )
+
+    evidence = empty_evidence_surface_template(
+        config_digest=config_digest,
+        strategy_params_digest=strategy_params_digest,
+        dataset_id=dataset_id,
+        dataset_digest=dataset_digest,
+    )
+    evidence.update(
+        {
+            "status": "FAIL_CLOSED",
+            "reason": reason,
+            "evaluation_executed": False,
+            "evaluation_run_count": 1,
+            "runner_started": True,
+            "runner_start_count": 1,
+            "budget_consumed": True,
+            "retry_forbidden": True,
+            "development_dataset_loaded": development_dataset_loaded,
+            "terminal_development_verdict": terminal_development_verdict,
+            "slot_consumption_boundary": (
+                "RUNNER_STARTED_BEFORE_TECHNICAL_FAIL_CLOSED_PRE_EVIDENCE_SUCCESS_PATH"
+            ),
+            "productive_pnl_semantics_changed": False,
+            "holdout_accessed": False,
+        }
+    )
+    return evidence
 
 
 def build_registry_metadata_v1(

@@ -125,6 +125,19 @@ def assert_run_counters_unchanged(before: Mapping[str, int], after: Mapping[str,
 
 
 def slot_already_consumed(output_dir: Path) -> bool:
+    """Durable slot lock: success path OR technical fail-closed after runner start."""
+    claim_path = output_dir / "run_slot_claim.json"
+    if claim_path.is_file():
+        try:
+            claim = json.loads(claim_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            claim = {}
+        if (
+            int(claim.get("evaluation_run_count", -1)) >= 1
+            or int(claim.get("runner_start_count", -1)) >= 1
+        ):
+            return True
+
     summary_path = output_dir / "summary.json"
     if not summary_path.is_file():
         return False
@@ -132,9 +145,15 @@ def slot_already_consumed(output_dir: Path) -> bool:
         existing = json.loads(summary_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return False
-    return int(existing.get("evaluation_run_count", -1)) >= 1 or bool(
-        existing.get("evaluation_executed")
-    )
+    if int(existing.get("evaluation_run_count", -1)) >= 1:
+        return True
+    if bool(existing.get("evaluation_executed")):
+        return True
+    if bool(existing.get("budget_consumed")):
+        return True
+    if bool(existing.get("runner_started")) and str(existing.get("status", "")) == "FAIL_CLOSED":
+        return True
+    return False
 
 
 def assert_no_slot_reuse(output_dir: Path) -> None:
