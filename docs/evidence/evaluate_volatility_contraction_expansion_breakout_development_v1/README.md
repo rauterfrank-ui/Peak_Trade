@@ -1,9 +1,10 @@
-# Evaluate volatility contraction-expansion breakout development v1 — entry point only
+# Evaluate volatility contraction-expansion breakout development v1 — panel boundary
 
 ```text
 SLICE=EVALUATE_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_DEVELOPMENT_V1
-STATUS=EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED
+STATUS=EXECUTABLE_EVALUATE_PATH_PRESENT_PANEL_BOUNDARY_MATERIALIZED_DEVELOPMENT_EVALUATION_AUTHORIZED
 DEVELOPMENT_EVALUATION_AUTHORIZED=true
+PANEL_BOUNDARY_MATERIALIZED=true
 EVALUATION_EXECUTED=false
 RUNNER_STARTED=false
 DEVELOPMENT_DATASET_LOADED=false
@@ -14,12 +15,13 @@ DEVELOPMENT_SLOT_CONSUMED=false
 ```
 
 Placeholder evidence directory for the canonical entry point.
-Development evaluation is authorized; no evaluation has been executed.
+Panel execution boundary is materialized; development evaluation is authorized;
+no evaluation has been executed.
 
 ---
 docs_token: DOCS_TOKEN_EVALUATE_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_DEVELOPMENT_V1_ENTRY_POINT_PLACEHOLDER
-STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED
-scope: research, offline-only, authorizing-only, evidence-placeholder
+STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_PANEL_BOUNDARY_MATERIALIZED_DEVELOPMENT_EVALUATION_AUTHORIZED
+scope: research, offline-only, panel-boundary-only, evidence-placeholder
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false

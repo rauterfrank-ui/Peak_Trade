@@ -1,8 +1,9 @@
 """Frozen constants for VCEB v1 DEVELOPMENT evaluation entry point.
 
-Development evaluation is authorized on the three authority surfaces; execution still
-requires a separate operator GO. Measurement-contract thresholds and strategy/baseline
-semantics remain unchanged.
+Development evaluation is authorized on the three authority surfaces; the panel
+execution boundary is materialized. Productive evaluation still requires a separate
+operator GO. Measurement-contract thresholds and strategy/baseline semantics remain
+unchanged.
 """
 
 from __future__ import annotations
@@ -47,6 +48,18 @@ DEVELOPMENT_END_EXCLUSIVE = "2023-08-16T05:55:00Z"
 
 DEVELOPMENT_RUN_LIMIT = 1
 RETRY_FORBIDDEN = True
+
+# Preregistered measurement-contract thresholds (economic_admission_contract).
+MIN_EVALUABLE_TREATMENT_BREAKOUT_EVENTS = 50
+MIN_EVALUABLE_TREATMENT_EVENTS_PER_TIME_SEGMENT = 10
+MIN_EXECUTED_TREATMENT_TRADES = 30
+TIME_SEGMENT_ROBUSTNESS_PASS_RATIO = 0.5
+MINIMUM_PASSING_SEGMENTS = 2
+GROSS_PROFIT_FACTOR_MIN = 1.0
+NET_PROFIT_FACTOR_MIN = 1.3
+COST_STRESS_1_5X_NET_PROFIT_FACTOR_MIN = 1.0
+MAXIMUM_MAX_DRAWDOWN = 0.25
+MINIMUM_NET_EXPECTANCY = 0.0
 
 FROZEN_MEASUREMENT_CONTRACT_DIGEST = (
     "e2e5414041c04ed756fe1315938eb49a8196caf416d33feb58055d641c7f5784"

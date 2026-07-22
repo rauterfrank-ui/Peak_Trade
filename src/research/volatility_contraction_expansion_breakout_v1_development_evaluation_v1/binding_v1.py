@@ -213,6 +213,25 @@ def assert_shared_channel_core_bound() -> None:
     )
 
 
+def assert_exit_state_machine_bound() -> None:
+    """The strategy producer must import the frozen VCEB exit state machine (no local reimpl)."""
+    from src.research import (
+        volatility_contraction_expansion_breakout_v1_exit_state_machine_v1 as exit_sm,
+    )
+    from src.research import (
+        volatility_contraction_expansion_breakout_v1_strategy_v1 as strategy,
+    )
+
+    _require(
+        strategy.evaluate_exit_on_bar_v1 is exit_sm.evaluate_exit_on_bar_v1,
+        "STRATEGY_EXIT_SM_DRIFT",
+    )
+    _require(
+        strategy.open_position_from_fill_v1 is exit_sm.open_position_from_fill_v1,
+        "STRATEGY_EXIT_SM_OPEN_POSITION_DRIFT",
+    )
+
+
 def compute_config_digest(repo_root: Path) -> str:
     contract = resolve_measurement_contract(repo_root)
     impl = load_json(repo_root, IMPLEMENTATION_BINDING_REL_PATH)
@@ -250,6 +269,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
     _require(impl.get("development_evaluation_authorized") is False, "IMPL_BINDING_AUTH_TRUE")
     assert_dataset_allowed(DATASET_ID)
     assert_shared_channel_core_bound()
+    assert_exit_state_machine_bound()
     pnl_path = repo_root / PRODUCTIVE_PNL_EVALUATOR_REL_PATH
     _require(pnl_path.is_file(), "PRODUCTIVE_PNL_EVALUATOR_MISSING")
     config_digest = compute_config_digest(repo_root)
