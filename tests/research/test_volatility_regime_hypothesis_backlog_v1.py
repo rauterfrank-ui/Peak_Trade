@@ -38,10 +38,10 @@ def test_repo_backlog_open_with_one_preregistration() -> None:
     assert report["valid"] is True
     assert report["status"] == "OPEN_BACKLOG"
     assert report["preregistered_count"] == 1
-    assert report["terminal_count"] == 1
-    assert report["hypothesis_id"] == "VOLATILITY_EXPANSION_PERSISTENCE_NON_BITCOIN_PERPETUALS_V1"
-    assert report["strategy_identity"] == "VOLATILITY_EXPANSION_PERSISTENCE_V1"
-    assert report["development_run_count"] == 1
+    assert report["terminal_count"] == 2
+    assert report["hypothesis_id"] == "VOLATILITY_DECAY_BREAKOUT_NON_BITCOIN_PERPETUALS_V1"
+    assert report["strategy_identity"] == "VOLATILITY_DECAY_BREAKOUT_V1"
+    assert report["development_run_count"] == 0
     assert (
         report["dataset_id"]
         == "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
@@ -63,21 +63,24 @@ def test_sibling_closed_lanes_and_inventory() -> None:
     assert _load(EXIT_BACKLOG)["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert _load(CS_PROGRAM)["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     assert backlog["open_unpreregistered_candidates"] == []
-    assert len(backlog["terminal_hypotheses"]) == 1
-    term = backlog["terminal_hypotheses"][0]
-    assert term["strategy_identity"] == "VOLATILITY_COMPRESSION_BREAKOUT_V1"
-    assert term["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
-    assert term["status"] == "TERMINAL_FAIL"
+    assert len(backlog["terminal_hypotheses"]) == 2
+    terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
+    assert terminals["VOLATILITY_COMPRESSION_BREAKOUT_V1"]["terminal_result"] == (
+        "FAIL_CLOSED_NO_RETRY"
+    )
+    assert terminals["VOLATILITY_EXPANSION_PERSISTENCE_V1"]["fail_reason"].endswith(
+        "UNPAIRABLE_ENTRY_NO_EXIT"
+    )
     assert backlog["sealed_holdout_binding_status"] == "UNBOUND_UNTOUCHED"
     hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["implementation_present"] is True
+    assert hyp["implementation_present"] is False
     assert hyp["holdout_allowed"] is False
     assert hyp["development_run_limit"] == 1
-    assert hyp["development_run_count"] == 1
-    assert hyp["runner_start_count"] == 1
-    assert hyp["run_slot_consumed"] is True
+    assert hyp["development_run_count"] == 0
+    assert hyp["runner_start_count"] == 0
+    assert hyp["run_slot_consumed"] is False
     assert hyp["baseline_id"] == "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1"
-    assert hyp["strategy_identity"] == "VOLATILITY_EXPANSION_PERSISTENCE_V1"
+    assert hyp["strategy_identity"] == "VOLATILITY_DECAY_BREAKOUT_V1"
 
 
 def test_fail_closed_mutations() -> None:
@@ -91,8 +94,8 @@ def test_fail_closed_mutations() -> None:
     with pytest.raises(BacklogValidationError, match="RETRY_ALLOWED"):
         validate_backlog_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["development_run_count"] = 0
-    with pytest.raises(BacklogValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
+    bad3["development_run_count"] = 1
+    with pytest.raises(BacklogValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_backlog_contract(bad3)
     bad4 = copy.deepcopy(payload)
     bad4["closed_sibling_lanes"]["reopen_forbidden"] = False
@@ -105,6 +108,6 @@ def test_governance_and_owner_map() -> None:
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in text
     assert "OPEN_BACKLOG" in text
-    assert "VOLATILITY_EXPANSION_PERSISTENCE_V1" in text
+    assert "VOLATILITY_DECAY_BREAKOUT_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in owners
