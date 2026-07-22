@@ -56,8 +56,8 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["evaluation_authorized"] is False
     assert report["holdout_authorized"] is False
     assert report["dataset_bound"] is True
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
     assert report["open_parameters_remaining"] is False
     assert report["material_difference_explicit"] is True
     assert report["material_difference_from_vcb_v1"] is True
@@ -106,9 +106,9 @@ def test_frozen_mechanism_and_baseline_isolation() -> None:
     assert contract["costs"]["slippage_bps_per_side"] == 5.0
     assert contract["strategy_implementation_present"] is False
     assert contract["parameter_governance"]["open_parameters_remaining"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["runner_start_count"] == 0
-    assert contract["run_slot_consumed"] is False
+    assert contract["development_run_count"] == 1
+    assert contract["runner_start_count"] == 1
+    assert contract["run_slot_consumed"] is True
 
 
 def test_definition_semantics_complete_bindings() -> None:
@@ -231,7 +231,7 @@ def test_fail_closed_on_digest_or_runtime_mutation() -> None:
     with pytest.raises(PreregistrationValidationError, match="EXIT_NOT_FROZEN"):
         validate_measurement_contract(bad5)
     bad6 = copy.deepcopy(contract)
-    bad6["development_run_count"] = 1
+    bad6["development_run_count"] = 0
     with pytest.raises(PreregistrationValidationError, match="DEVELOPMENT_RUN_COUNT"):
         validate_measurement_contract(bad6)
 
@@ -251,8 +251,8 @@ def test_governance_evidence_owner_map() -> None:
     assert summary["evaluation_executed"] is False
     assert summary["holdout_accessed"] is False
     assert summary["dataset_loaded"] is False
-    assert summary["development_run_count"] == 0
-    assert summary["runner_start_count"] == 0
+    assert summary["development_run_count"] == 1
+    assert summary["runner_start_count"] == 1
     assert summary["open_parameters_remaining"] is False
     assert summary["material_difference_from_vcb_v1_explicit"] is True
     assert summary["definition_semantics_complete"] is True

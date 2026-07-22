@@ -1,4 +1,5 @@
-exit_code=2
-start_utc=2026-07-22T13:33:22Z
-end_utc=2026-07-22T13:33:22Z
-base_sha=c3479e0b3547eb0aaadf8595cec351d0a9f1467e
+start_utc=2026-07-22T14:06:41Z
+end_utc=2026-07-22T14:07:05Z
+real 23.76
+user 22.53
+sys 0.85

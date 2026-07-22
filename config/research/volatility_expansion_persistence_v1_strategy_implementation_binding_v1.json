@@ -28,7 +28,7 @@
     "NO_VOLATILITY_COMPRESSION_BREAKOUT_V1_RETRY",
     "NO_SECOND_PNL_TRUTH"
   ],
-  "frozen_measurement_contract_digest": "92e2117ce7e60fe771c4d6e1d6d1aeb8645af80512e21cb9ff21fc4477c7c70e",
+  "frozen_measurement_contract_digest": "3718bb162de2af9f613638336a5bd093f977e610dc8dfcdb22621ec186623b86",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/volatility_expansion_persistence_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "holdout_authorized": false,

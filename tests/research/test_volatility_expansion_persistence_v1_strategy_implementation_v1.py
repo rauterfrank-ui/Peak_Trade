@@ -424,7 +424,7 @@ def test_implementation_binding_valid_and_measurement_unmutated() -> None:
     report = load_and_validate_repo_binding(REPO)
     assert report["valid"] is True
     assert report["evaluation_authorized"] is False
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     assert report["productive_pnl_evaluator_reused"] is True
     assert report["second_pnl_truth_created"] is False
 
@@ -457,4 +457,4 @@ def test_import_safe_no_side_effects() -> None:
 
     assert s.STRATEGY_IDENTITY_V1 == "VOLATILITY_EXPANSION_PERSISTENCE_V1"
     assert v.ATR_PERIOD_V1 == 14
-    assert b.REQUIRED_DIGEST.startswith("92e2117c")
+    assert b.REQUIRED_DIGEST.startswith("3718bb16")

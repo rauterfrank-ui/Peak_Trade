@@ -1,1 +1,1 @@
-{"development_dataset_loaded": false, "evaluation_executed": false, "holdout_accessed": false, "reason": "AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED_IN_THIS_SLICE", "runner_started": false, "status": "FAIL_CLOSED"}
+{"evaluation_executed": false, "reason": "UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:CHZ:USDT:USDT:perp:10575", "runner_started": false, "status": "FAIL_CLOSED"}

@@ -15,7 +15,7 @@ MEASUREMENT_REL_PATH = (
     "volatility_expansion_persistence_v1_preregistered_economic_hypothesis_"
     "measurement_contract_v1.json"
 )
-REQUIRED_DIGEST = "92e2117ce7e60fe771c4d6e1d6d1aeb8645af80512e21cb9ff21fc4477c7c70e"
+REQUIRED_DIGEST = "3718bb162de2af9f613638336a5bd093f977e610dc8dfcdb22621ec186623b86"
 REQUIRED_IMPL_FILES = (
     "src/research/price_channel_breakout_core_v1.py",
     "src/research/volatility_expansion_persistence_v1_vol_state_v1.py",
@@ -125,9 +125,9 @@ def validate_implementation_binding(
             "MEASUREMENT_CONTRACT_IMPL_FLAG_MUTATED",
         )
         _require(measurement.get("evaluation_authorized") is False, "MEASUREMENT_EVAL_AUTH")
-        _require(measurement.get("development_run_count") == 0, "MEASUREMENT_RUN_COUNT")
-        _require(measurement.get("runner_start_count") == 0, "MEASUREMENT_RUNNER_START")
-        _require(measurement.get("run_slot_consumed") is False, "MEASUREMENT_RUN_SLOT")
+        _require(measurement.get("development_run_count") == 1, "MEASUREMENT_RUN_COUNT")
+        _require(measurement.get("runner_start_count") == 1, "MEASUREMENT_RUNNER_START")
+        _require(measurement.get("run_slot_consumed") is True, "MEASUREMENT_RUN_SLOT")
         frozen = (measurement.get("parameter_governance") or {}).get("frozen_parameters") or {}
         _require(frozen.get("atr_period") == 14, "MEASUREMENT_ATR_PERIOD")
         _require(frozen.get("expansion_confirmation_threshold") == 0.80, "MEASUREMENT_EXP_THR")
@@ -148,7 +148,7 @@ def validate_implementation_binding(
         "baseline_id": REQUIRED_BASELINE_ID,
         "productive_pnl_evaluator_reused": True,
         "second_pnl_truth_created": False,
-        "development_run_count": 0,
+        "development_run_count": 1,
     }
 
 

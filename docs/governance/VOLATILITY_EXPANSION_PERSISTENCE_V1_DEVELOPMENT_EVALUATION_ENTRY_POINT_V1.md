@@ -2,13 +2,13 @@
 
 ## Status
 
-`PANEL_EXECUTION_BOUNDARY_PRESENT_AWAITING_SEPARATE_DEVELOPMENT_EVALUATION_GO`
+`RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`
 
-Executable development-evaluation path is present. Development evaluation is
-authorized (`development_evaluation_authorized=true`). The panel execution
-boundary (loader / wiring / injectable execution boundary / productive PnL
-handoff) is materialized. Durable run counts remain `0`. Evaluation has **not**
-been executed in this implementation-only slice.
+Executable development-evaluation path is present under the canonical entry point.
+The single authorized development-evaluation run slot is consumed
+(`development_run_count=1`, `runner_start_count=1`) after fail-closed
+`UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:CHZ:USDT:USDT:perp:10575`
+during productive PnL pairing. Retry is forbidden. Holdout remains unbound.
 
 ## Owner
 
@@ -22,7 +22,7 @@ Modes:
 
 - `preflight` (default): no panel open, no runner start, no slot claim
 - `dry-validate`: prove executable-path contracts without runner start or counter mutation
-- `evaluate`: requires machine-checkable authorization (token **and** repo flags); single bounded run remains a separate operator GO
+- `evaluate`: requires machine-checkable authorization; single bounded run slot is now consumed
 
 ## Bindings
 
@@ -32,8 +32,8 @@ Modes:
 - Signal family: `VOLATILITY_REGIME`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
   (`DEVELOPMENT_ONLY`)
-- Measurement contract digest (frozen):
-  `92e2117ce7e60fe771c4d6e1d6d1aeb8645af80512e21cb9ff21fc4477c7c70e`
+- Measurement contract digest (frozen after slot terminalization):
+  `3718bb162de2af9f613638336a5bd093f977e610dc8dfcdb22621ec186623b86`
 - Entry-point binding:
   `config&#47;research&#47;volatility_expansion_persistence_v1_development_evaluation_entry_point_binding_v1.json`
 - Productive PnL evaluator (reused, not duplicated):
@@ -49,16 +49,15 @@ Modes:
 - `TIME_SEGMENT_DEFINITION_ID=CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1`
 - Exactly 4 chronological equal-duration quarters; remainder to earliest segments
 
-## Explicit non-actions in this slice
+## Explicit non-actions after this terminal slice
 
-No evaluation run, no dataset load, no holdout access, no retry,
-no threshold change, no result calibration, no Master-V2&#47;Double-Play&#47;risk&#47;sizing&#47;execution
-mutation, no runtime activation. Economic&#47;promotion gates remain closed. No second PnL truth.
-Development evaluation authorization is true; evaluation not executed; slot not consumed.
+No retry, no threshold change, no result calibration, no Master-V2&#47;Double-Play&#47;risk&#47;sizing&#47;execution
+mutation, no runtime activation, no holdout access. Economic&#47;promotion gates remain closed.
+No second PnL truth.
 
 ## Next step
 
-`SEPARATE_OPERATOR_GO_FOR_SINGLE_BOUNDED_DEVELOPMENT_EVALUATION`
+`NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
 
 ## Explicitly false
 
@@ -69,12 +68,13 @@ Development evaluation authorization is true; evaluation not executed; slot not 
 - `HOLDOUT_ACCESS=false`
 - `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
 - `EVALUATION_EXECUTED=false`
-- `RUNNER_STARTED=false`
+- `RUNNER_STARTED=true`
+- `RUN_SLOT_CONSUMED=true`
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: PANEL_EXECUTION_BOUNDARY_PRESENT_AWAITING_SEPARATE_DEVELOPMENT_EVALUATION_GO
-scope: research, offline-only, fail-closed-evidence, no-run-slot-consumption
+STATUS: RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT
+scope: research, offline-only, fail-closed-evidence, run-slot-consumed
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
