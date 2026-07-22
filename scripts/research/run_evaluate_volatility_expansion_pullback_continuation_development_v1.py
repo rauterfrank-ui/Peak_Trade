@@ -104,6 +104,8 @@ def main(argv: list[str] | None = None) -> int:
             output_dir=Path(output_dir),
         )
         print(json.dumps(report, sort_keys=True, default=str))
+        if report.get("status") != "EVALUATION_COMPLETE":
+            return 2
         return 0
     except GuardError as exc:
         print(

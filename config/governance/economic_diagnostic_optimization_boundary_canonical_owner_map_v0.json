@@ -1068,7 +1068,7 @@
       ]
     },
     "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
-      "note": "Strategy implementation + unauthorized productive development entry path for VEPC v1; exit SM with pullback-structure invalidation; productive PnL evaluator reused; no Development evaluation execution/slot consumption/holdout/runtime/orders.",
+      "note": "Strategy implementation + productive development entry path for VEPC v1; exit SM with pullback-structure invalidation; productive PnL evaluator reused; forensic run-state accounting for technical fail-closed after runner start; no holdout/runtime/orders; no PnL pairing semantics change in accounting fix.",
       "path_prefixes": [
         "src/research/volatility_expansion_pullback_continuation_v1_strategy_v1.py",
         "src/research/volatility_expansion_pullback_continuation_v1_exit_state_machine_v1.py",
@@ -1081,7 +1081,8 @@
         "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
         "scripts/research/run_evaluate_volatility_expansion_pullback_continuation_development_v1.py",
         "tests/research/test_volatility_expansion_pullback_continuation_v1_strategy_implementation_v1.py",
-        "tests/research/test_volatility_expansion_pullback_continuation_v1_development_evaluation_entry_point_v1.py"
+        "tests/research/test_volatility_expansion_pullback_continuation_v1_development_evaluation_entry_point_v1.py",
+        "tests/research/test_volatility_expansion_pullback_continuation_v1_forensic_unpairable_run_state_v1.py"
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
