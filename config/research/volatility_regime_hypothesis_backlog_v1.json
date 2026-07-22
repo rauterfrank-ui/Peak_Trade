@@ -67,7 +67,7 @@
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "VOLATILITY_EXPANSION_PERSISTENCE_NON_BITCOIN_PERPETUALS_V1",
-      "implementation_present": false,
+      "implementation_present": true,
       "preregistration_evidence_ref": "docs/evidence/preregister_volatility_expansion_persistence_hypothesis_v1/",
       "rerun_allowed": false,
       "retry_allowed": false,
