@@ -48,9 +48,9 @@ def test_repo_program_definition_only_open() -> None:
     assert report["holdout_authorized"] is False
     assert report["evaluation_authorized"] is False
     assert report["promotion_eligible"] is False
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["retry_allowed"] is False
     assert report["material_difference_explicit"] is True
     assert report["causally_independent_from_cs_momentum"] is True
@@ -80,8 +80,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="EVALUATION_AUTHORIZED_TRUE"):
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["development_run_count"] = 1
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
+    bad2["development_run_count"] = 0
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
     bad3["strategy_implementation_present"] = True

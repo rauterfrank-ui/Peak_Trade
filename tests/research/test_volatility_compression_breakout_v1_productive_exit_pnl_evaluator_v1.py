@@ -136,8 +136,8 @@ def test_import_safe_no_runner_no_counter_mutation() -> None:
     assert CANONICAL_PNL_PRIMITIVE_OWNER.endswith("_compute_directional_gross_pnl_v0")
     after = read_run_counters(REPO)
     assert after == before
-    assert after["contract_runner_start_count"] == 0
-    assert after["contract_development_run_count"] == 0
+    assert after["contract_runner_start_count"] == 1
+    assert after["contract_development_run_count"] == 1
 
 
 def test_productive_evaluator_bound_and_reuses_engine_primitives() -> None:
@@ -251,7 +251,7 @@ def test_prior_125_treatment_events_recognized_without_evaluation() -> None:
     arm = _arm(arm_id="T", instrument_id="INST_A", n=125, entry_indexes=list(range(125)))
     assert arm.evaluable_entry_event_count == 125
     assert read_run_counters(REPO) == before
-    assert before["contract_runner_start_count"] == 0
+    assert before["contract_runner_start_count"] == 1
 
 
 def test_real_boundary_no_longer_raises_unbound() -> None:

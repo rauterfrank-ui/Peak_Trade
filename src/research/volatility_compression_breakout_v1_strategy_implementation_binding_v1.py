@@ -15,7 +15,7 @@ MEASUREMENT_REL_PATH = (
     "volatility_compression_breakout_v1_preregistered_economic_hypothesis_"
     "measurement_contract_v1.json"
 )
-REQUIRED_DIGEST = "e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785"
+REQUIRED_DIGEST = "7a4ba7b765a7e7cc16155cb77b1448536b79a5416e2d758039a5574a82a74519"
 REQUIRED_IMPL_FILES = (
     "src/research/price_channel_breakout_core_v1.py",
     "src/research/volatility_compression_breakout_v1_vol_state_v1.py",
@@ -107,8 +107,8 @@ def validate_implementation_binding(
             "MEASUREMENT_CONTRACT_IMPL_FLAG_MUTATED",
         )
         _require(measurement.get("evaluation_authorized") is False, "MEASUREMENT_EVAL_AUTH")
-        _require(measurement.get("development_run_count") == 0, "MEASUREMENT_RUN_COUNT")
-        _require(measurement.get("runner_start_count") == 0, "MEASUREMENT_RUNNER_START")
+        _require(measurement.get("development_run_count") == 1, "MEASUREMENT_RUN_COUNT")
+        _require(measurement.get("runner_start_count") == 1, "MEASUREMENT_RUNNER_START")
 
     return {
         "valid": True,

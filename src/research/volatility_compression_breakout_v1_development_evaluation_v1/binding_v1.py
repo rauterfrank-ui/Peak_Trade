@@ -83,8 +83,8 @@ def resolve_measurement_contract(repo_root: Path) -> dict[str, Any]:
         "TIME_SEGMENT_DEFINITION_MISMATCH",
     )
     _require(contract.get("development_evaluation_authorized") is True, "DEV_EVAL_AUTH_FALSE")
-    _require(contract.get("development_run_count") == 0, "DEV_RUN_COUNT_NOT_ZERO")
-    _require(contract.get("runner_start_count") == 0, "RUNNER_START_NOT_ZERO")
+    _require(contract.get("development_run_count") == 1, "DEV_RUN_COUNT_NOT_ONE")
+    _require(contract.get("runner_start_count") == 1, "RUNNER_START_NOT_ONE")
     return contract
 
 
@@ -244,8 +244,8 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
             "holdout_ids_rejected": sorted(FORBIDDEN_HOLDOUT_IDS),
         },
         "development_evaluation_authorized": True,
-        "development_evaluation_executed": False,
-        "development_run_count": 0,
+        "development_evaluation_executed": True,
+        "development_run_count": 1,
         "development_run_limit": 1,
         "economic_gate_open": False,
         "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
@@ -270,7 +270,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
             "vol_state": VOL_STATE_REL_PATH.replace("/", ".").removesuffix(".py"),
         },
         "runner_present": True,
-        "runner_start_count": 0,
+        "runner_start_count": 1,
         "runtime_effect": "NONE",
         "runtime_policy": {
             "capital_activated": False,

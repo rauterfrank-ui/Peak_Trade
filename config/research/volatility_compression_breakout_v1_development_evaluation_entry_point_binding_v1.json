@@ -5,7 +5,7 @@
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
   "canonical_ssot": true,
   "cli_ref": "scripts/research/run_evaluate_volatility_compression_breakout_development_v1.py",
-  "config_digest": "8d54a68174cbd539486a4651c36f38e51bfeb8bab586bc3168c3ef6fe33d5543",
+  "config_digest": "e4d9d3c3e178fb354925f8efd9f8e00d0f57b4aee1755185eedf3f2a33a64f9a",
   "dataset_binding": {
     "dataset_class": "DEVELOPMENT_ONLY",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
@@ -16,14 +16,14 @@
     ]
   },
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "economic_gate_open": false,
   "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
   "evaluation_authorized": false,
   "evidence_ref": "docs/evidence/evaluate_volatility_compression_breakout_development_v1/",
-  "frozen_measurement_contract_digest": "e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785",
+  "frozen_measurement_contract_digest": "7a4ba7b765a7e7cc16155cb77b1448536b79a5416e2d758039a5574a82a74519",
   "frozen_measurement_contract_ref": "config/research/volatility_compression_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_ref": "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
   "holdout_authorized": false,
@@ -42,7 +42,7 @@
     "vol_state": "src.research.volatility_compression_breakout_v1_vol_state_v1"
   },
   "runner_present": true,
-  "runner_start_count": 0,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
