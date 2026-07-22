@@ -247,7 +247,7 @@ def test_owner_map_and_backlog_consistency() -> None:
     assert "NO_V9_AUTO_CREATE" in backlog["explicit_non_actions"]
     assert "NO_V8_EVALUATION_IN_THIS_SLICE" not in backlog["explicit_non_actions"]
     assert backlog["next_canonical_step"] == (
-        "OPERATOR_GO_REQUIRED_FOR_ANY_NEW_DEFINITION_ONLY_PREREGISTRATION"
+        "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET"
     )
 
 

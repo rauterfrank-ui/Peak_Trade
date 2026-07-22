@@ -2,10 +2,13 @@
 
 ## Status
 
-`POST_TERMINAL_OPERATOR_DECISION_REQUIRED` — migrated onto the shared research-lane
-post-terminal lifecycle contract. Inventories are empty; all hypotheses are
-terminal; no explicit closeout and no explicit awaiting-successor decision has
-been recorded. Auto-close is forbidden.
+`AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` — explicit operator decision
+`DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` recorded under the shared
+research-lane post-terminal lifecycle contract. Inventories are empty; all
+hypotheses are terminal; `explicit_waiting_decision=true`;
+`explicit_closeout_decision=false`; `lane_auto_closed=false`. This is an
+explicit operator decision, not an auto-await. No successor hypothesis has been
+created or preregistered. Auto-close remains forbidden.
 
 Lane-status vocabulary and post-terminal legality are owned solely by
 `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`.
@@ -46,34 +49,39 @@ None. Holdout V2 is no longer preregistered; it is terminal-executed.
 - No second V2 holdout run without a new hypothesis ID
 - No post-result tuning
 - Economic gate closed; promotion closed; no runtime/orders
-- No lane auto-close; closeout or successor requires an explicit operator decision
-  under the shared lifecycle contract
+- No lane auto-close; creating a successor or closing the lane later requires a
+  further explicit operator decision under the shared lifecycle contract
 
 ## Next step
 
+`AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET`
+
+The lane awaits an explicitly named successor hypothesis. Waiting is named; no
+successor identity exists yet. GO alone is never executable without a concrete
+target. A later `CREATE_SUCCESSOR_HYPOTHESIS` requires explicit `hypothesis_id` +
+mechanism. `CLOSE_LANE_NO_FURTHER_RESEARCH` remains available only via a separate
+explicit closeout decision. The historical pointer
 `REVIEW_DEFINITION_ONLY_EXIT_EFFICIENCY_PREREGISTRATION_NO_ENTRY_ELIGIBILITY_REOPEN`
+is no longer the current canonical next step.
 
-Operator decisions still required for this lane under the shared contract remain
-enumerated as: declare awaiting successor, close lane, or create successor with
-explicit `hypothesis_id` + mechanism. This migration does not execute any of them.
-
-## Next research question (consumed into exit-efficiency lane)
+## Next research question (historically consumed into exit-efficiency lane)
 
 `Given COSTS_DESTROY_MARGINAL_EDGE on the sealed DEVELOPMENT_ONLY Bollinger&#47;MR baseline (marginal gross PF~1.01, all-SHORT book), does a cost-structure or holding&#47;exit-efficiency change class exist that preserves gross edge without retuning terminal entry-eligibility parameters or reopening exhausted filter families?`
 
-Consumed by sibling exit-efficiency SSOT
+Historically consumed by sibling exit-efficiency SSOT
 `config&#47;research&#47;canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json`
-as exactly one `DEFINITION_ONLY_PREREGISTERED` hypothesis
-`BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1`
-(`EVALUATION_RUN_COUNT=0`). Entry-eligibility `open_candidates` remains empty.
-No entry-eligibility reopen. No parallel SHORT-side hypothesis. No holdout candidate.
-Exit-Efficiency backlog is not migrated in this slice.
+as the then-preregistered hypothesis
+`BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_NON_BITCOIN_PERPETUALS_DEVELOPMENT_V1`.
+Entry-eligibility `open_candidates` remains empty. No entry-eligibility reopen.
+No parallel SHORT-side hypothesis. No holdout candidate.
 
 ## Explicit locks
 
 - `PROMOTION_ELIGIBLE=false`
 - `open_candidates=[]`
-- `status=POST_TERMINAL_OPERATOR_DECISION_REQUIRED`
+- `status=AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`
+- `explicit_waiting_decision=true`
+- `explicit_closeout_decision=false`
 - `lane_auto_closed=false`
 - ADX DI DEVELOPMENT remains `TERMINAL_PASS` / `ALL_PASS_REQUIRES_MET`
 - Economic offline gate remains closed
