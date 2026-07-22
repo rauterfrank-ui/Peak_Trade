@@ -78,3 +78,35 @@ def test_compute_backtest_stats_negative_equity_no_type_error():
     assert isinstance(stats["calmar"], float)
     assert math.isfinite(stats["calmar"])
     assert stats["calmar"] <= 0.0
+
+
+def test_compute_calmar_ratio_positive_annualization_overflow_returns_finite_sentinel():
+    """VCB/VDB productive-PnL class: huge equity vs start=1 must not raise OverflowError.
+
+    Reproduces ``OverflowError: (34, 'Result too large')`` from
+    ``annualization_base ** (1 / years)`` when total_return is explosive, years is
+    tiny (hourly ppy), and drawdown is non-zero so annualization is attempted.
+    """
+    unit = 1.0
+    pnls = [1e8 if i % 5 else -2e7 for i in range(30)]
+    equity = pd.Series([unit] + [unit + sum(pnls[: i + 1]) for i in range(len(pnls))])
+
+    calmar = compute_calmar_ratio(equity, periods_per_year=24 * 365)
+
+    assert isinstance(calmar, float)
+    assert math.isfinite(calmar)
+    assert calmar == _CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL
+
+
+def test_compute_backtest_stats_positive_annualization_overflow_no_overflow_error():
+    """Productive evaluator metrics path must remain fail-closed finite under explosion."""
+    unit = 1.0
+    pnls = [1e8 if i % 5 else -2e7 for i in range(30)]
+    equity = pd.Series([unit] + [unit + sum(pnls[: i + 1]) for i in range(len(pnls))])
+    trades = [{"pnl": float(p)} for p in pnls]
+
+    stats = compute_backtest_stats(trades, equity, periods_per_year=24 * 365)
+
+    assert math.isfinite(float(stats["calmar"]))
+    assert math.isfinite(float(stats["total_return"]))
+    assert stats["calmar"] == _CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL
