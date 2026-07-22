@@ -70,7 +70,7 @@ def validate_backlog_contract(
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
     _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NONZERO")
     _require(hyp.get("holdout_allowed") is False, "HYP_HOLDOUT_ALLOWED")
-    _require(hyp.get("implementation_present") is False, "HYP_IMPLEMENTATION_PRESENT")
+    _require(hyp.get("implementation_present") is True, "HYP_IMPLEMENTATION_PRESENT_FALSE")
     siblings = payload.get("closed_sibling_lanes") or {}
     _require(
         siblings.get("entry_eligibility_lane_status") == REQUIRED_CLOSED,

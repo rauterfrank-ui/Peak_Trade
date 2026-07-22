@@ -2,7 +2,7 @@
 
 ## Status
 
-`DEFINITION_ONLY_PROGRAM_OPEN` — operator-authorized new research program;
+`STRATEGY_IMPLEMENTATION_PRESENT_PROGRAM_OPEN` — operator-authorized new research program;
 definition&#47;preregistration only.
 
 ## Identity
@@ -35,7 +35,7 @@ ADX-DI, regime-gated standaside, MA&#47;MACD&#47;RSI entry filters, and unchange
 - `PROMOTION_AUTHORIZED=false` / `PROMOTION_ELIGIBLE=false`
 - `RUNTIME_AUTHORIZED=false`
 - `DEVELOPMENT_RUN_COUNT=0` / `RUNNER_START_COUNT=0`
-- `STRATEGY_IMPLEMENTATION_PRESENT=false`
+- `STRATEGY_IMPLEMENTATION_PRESENT=true`
 - `RUN_SLOT_CONSUMED=false`
 
 ## Non-actions
@@ -44,13 +44,18 @@ No evaluation, runner, holdout access, strategy producer, backtest, synthetic
 results, Entry&#47;Exit reopen, terminal-result mutation, Master V2&#47;Double-Play&#47;risk&#47;
 execution&#47;runtime mutation.
 
+## Implementation
+
+- Binding: `config&#47;research&#47;cross_sectional_relative_strength_momentum_v1_strategy_implementation_binding_v1.json`
+- Measurement contract digest remains frozen; evaluation still unauthorized.
+
 ## Next step
 
 `REVIEW_DEFINITION_ONLY_PREREGISTRATION_AWAITING_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
 
 ---
 docs_token: DOCS_TOKEN_MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1
-STATUS: DEFINITION_ONLY_PROGRAM_OPEN
+STATUS: STRATEGY_IMPLEMENTATION_PRESENT_PROGRAM_OPEN
 scope: research, offline-only, non-authorizing, definition-governance
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false

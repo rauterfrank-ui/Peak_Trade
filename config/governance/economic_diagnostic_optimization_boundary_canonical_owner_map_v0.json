@@ -449,6 +449,17 @@
         "docs/evidence/preregister_cross_sectional_relative_strength_momentum_hypothesis_v1/"
       ]
     },
+    "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "note": "Strategy-implementation-only surfaces for CS relative-strength momentum v1 (raw trailing log-return score + single-top1 rank-intent selection + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; no Master-V2/Double-Play mutation.",
+      "path_prefixes": [
+        "src/research/cross_sectional_relative_strength_momentum_v1_score_v1.py",
+        "src/research/cross_sectional_relative_strength_momentum_v1_selection_v1.py",
+        "src/research/cross_sectional_relative_strength_momentum_v1_strategy_implementation_binding_v1.py",
+        "config/research/cross_sectional_relative_strength_momentum_v1_strategy_implementation_binding_v1.json",
+        "tests/research/test_cross_sectional_relative_strength_momentum_v1_score_and_selection_v1.py",
+        "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+      ]
+    },
     "DATA_BINDING_REPAIR": {
       "path_prefixes": [
         "src/research/offline_source_evidence_",

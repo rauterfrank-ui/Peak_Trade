@@ -32,7 +32,7 @@ Exactly one:
 - `CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1`
   — `DEFINITION_ONLY_PREREGISTERED`
   — `DEVELOPMENT_RUN_COUNT=0`
-  — `IMPLEMENTATION_PRESENT=false`
+  — `IMPLEMENTATION_PRESENT=true`
   — `EVALUATION_AUTHORIZED=false`
   — `HOLDOUT_ALLOWED=false`
   — Contract: `config&#47;research&#47;cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`

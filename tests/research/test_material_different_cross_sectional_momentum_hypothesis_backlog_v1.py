@@ -58,7 +58,7 @@ def test_sibling_closed_lanes_mirrored_and_live() -> None:
     assert backlog["terminal_hypotheses"] == []
     assert backlog["open_unpreregistered_candidates"] == []
     hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["implementation_present"] is False
+    assert hyp["implementation_present"] is True
     assert hyp["holdout_allowed"] is False
     assert hyp["development_run_count"] == 0
 

@@ -43,7 +43,8 @@ def _load(path: Path) -> dict:
 def test_repo_program_definition_only() -> None:
     report = load_and_validate_repo_program(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["definition_only"] is False
+    assert report["strategy_implementation_present"] is True
     assert report["program_id"] == "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1"
     assert report["strategy_identity"] == "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1"
     assert report["holdout_authorized"] is False
@@ -55,8 +56,9 @@ def test_repo_program_definition_only() -> None:
 
 def test_causal_independence_and_no_core_mutation_flags() -> None:
     payload = _load(PROGRAM_PATH)
-    assert payload["strategy_implementation_present"] is False
-    assert payload["strategy_implementation_authorized_in_this_slice"] is False
+    assert payload["strategy_implementation_present"] is True
+    assert payload["strategy_implementation_authorized_in_this_slice"] is True
+    assert payload["implementation_authorized"] is True
     assert payload["run_slot_consumed"] is False
     assert payload["holdout_forbidden"] is True
     assert payload["runtime_authorized"] is False
@@ -104,8 +106,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NONZERO"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["strategy_implementation_present"] = True
-    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT"):
+    bad3["strategy_implementation_present"] = False
+    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_FALSE"):
         validate_program_contract(bad3)
 
 
