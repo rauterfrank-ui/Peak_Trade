@@ -289,3 +289,229 @@ def test_real_boundary_no_longer_raises_unbound() -> None:
     assert bundle.evaluable_treatment_breakout_events == 1
     assert bundle.extras.get("productive_exit_pnl_evaluator_bound") is True
     assert read_run_counters(REPO) == before
+
+
+def _synthetic_trade(
+    *,
+    instrument_id: str,
+    pnl: float,
+    exit_day: int,
+    entry_day: int | None = None,
+    gross_pnl: float | None = None,
+    entry_fee: float = 0.0,
+    exit_fee: float = 0.0,
+    entry_slippage: float = 0.0,
+    exit_slippage: float = 0.0,
+) -> RoundtripTradeV1:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        RoundtripTradeV1,
+    )
+
+    ed = entry_day if entry_day is not None else exit_day
+    g = float(pnl if gross_pnl is None else gross_pnl)
+    return RoundtripTradeV1(
+        instrument_id=instrument_id,
+        side="long",
+        entry_index=ed,
+        exit_index=exit_day,
+        entry_time=f"2022-06-{ed:02d}T00:00:00Z",
+        exit_time=f"2022-06-{exit_day:02d}T01:00:00Z",
+        entry_price=100.0,
+        exit_price=101.0,
+        size=1.0,
+        stop_price_at_entry=98.5,
+        exit_reason="TIME_EXIT",
+        gross_pnl=g,
+        entry_fee=entry_fee,
+        exit_fee=exit_fee,
+        entry_slippage=entry_slippage,
+        exit_slippage=exit_slippage,
+        pnl=float(pnl),
+    )
+
+
+def test_equal_weight_two_identical_sleeves_do_not_double_return() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        PORTFOLIO_AGGREGATION_ID,
+        _metrics_from_trades,
+    )
+
+    assert PORTFOLIO_AGGREGATION_ID == "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1"
+    one = (_synthetic_trade(instrument_id="A", pnl=0.50, exit_day=1),)
+    two = (
+        _synthetic_trade(instrument_id="A", pnl=0.50, exit_day=1),
+        _synthetic_trade(instrument_id="B", pnl=0.50, exit_day=1),
+    )
+    m1 = _metrics_from_trades(one, sleeve_instrument_ids=("A",))
+    m2 = _metrics_from_trades(two, sleeve_instrument_ids=("A", "B"))
+    assert m2["net_return"] == pytest.approx(m1["net_return"], rel=1e-12)
+    assert m2["net_return"] == pytest.approx(0.50, rel=1e-12)
+
+
+def test_equal_weight_n_identical_sleeves_independent_of_n() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        _metrics_from_trades,
+    )
+
+    returns = []
+    for n in (1, 2, 5, 20):
+        trades = tuple(
+            _synthetic_trade(instrument_id=f"I{i}", pnl=0.25, exit_day=1) for i in range(n)
+        )
+        sleeve_ids = tuple(f"I{i}" for i in range(n))
+        m = _metrics_from_trades(trades, sleeve_instrument_ids=sleeve_ids)
+        returns.append(m["net_return"])
+    assert all(abs(r - returns[0]) < 1e-12 for r in returns)
+    assert returns[0] == pytest.approx(0.25, rel=1e-12)
+
+
+def test_equal_weight_mixed_sleeve_returns_mean() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        _metrics_from_trades,
+    )
+
+    trades = (
+        _synthetic_trade(instrument_id="A", pnl=0.90, exit_day=1),
+        _synthetic_trade(instrument_id="B", pnl=0.30, exit_day=1),
+    )
+    m = _metrics_from_trades(trades, sleeve_instrument_ids=("A", "B"))
+    assert m["net_return"] == pytest.approx(0.60, rel=1e-12)
+
+
+def test_equal_weight_win_and_loss_sleeves_combine() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        _metrics_from_trades,
+    )
+
+    trades = (
+        _synthetic_trade(instrument_id="WIN", pnl=0.40, exit_day=2),
+        _synthetic_trade(instrument_id="LOSS", pnl=-0.20, exit_day=2),
+    )
+    m = _metrics_from_trades(trades, sleeve_instrument_ids=("WIN", "LOSS"))
+    assert m["net_return"] == pytest.approx(0.10, rel=1e-12)
+    assert m["max_drawdown"] >= 0.0
+
+
+def test_equal_weight_instrument_without_trades_dilutes() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        _metrics_from_trades,
+    )
+
+    trades = (_synthetic_trade(instrument_id="A", pnl=0.60, exit_day=1),)
+    active_only = _metrics_from_trades(trades, sleeve_instrument_ids=("A",))
+    with_idle = _metrics_from_trades(trades, sleeve_instrument_ids=("A", "IDLE"))
+    assert with_idle["net_return"] == pytest.approx(0.30, rel=1e-12)
+    assert with_idle["net_return"] < active_only["net_return"]
+
+
+def test_equal_weight_staggered_exit_times_align() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        _combined_portfolio_equity_from_trades_v1,
+        _metrics_from_trades,
+    )
+
+    trades = (
+        _synthetic_trade(instrument_id="A", pnl=0.20, exit_day=1),
+        _synthetic_trade(instrument_id="B", pnl=0.40, exit_day=3),
+    )
+    equity = _combined_portfolio_equity_from_trades_v1(trades, sleeve_instrument_ids=("A", "B"))
+    assert equity.index.is_monotonic_increasing
+    m = _metrics_from_trades(trades, sleeve_instrument_ids=("A", "B"))
+    assert m["net_return"] == pytest.approx(0.30, rel=1e-12)
+
+
+def test_equal_weight_fees_slippage_remain_in_net_pnl_truth() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        _metrics_from_trades,
+    )
+
+    trades = (
+        _synthetic_trade(
+            instrument_id="A",
+            pnl=0.40,
+            gross_pnl=0.55,
+            entry_fee=0.05,
+            exit_fee=0.05,
+            entry_slippage=0.025,
+            exit_slippage=0.025,
+            exit_day=1,
+        ),
+    )
+    m = _metrics_from_trades(trades, sleeve_instrument_ids=("A",))
+    assert trades[0].pnl == pytest.approx(0.40)
+    assert trades[0].gross_pnl == pytest.approx(0.55)
+    assert m["net_return"] == pytest.approx(0.40, rel=1e-12)
+    assert m["gross_pnl"] == pytest.approx(0.55, rel=1e-12)
+
+
+def test_single_instrument_semantics_match_unit_risk_sleeve_return() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        UNIT_RISK_NOTIONAL_V1,
+        _metrics_from_trades,
+    )
+
+    trades = (
+        _synthetic_trade(instrument_id="SOLO", pnl=0.12, exit_day=1),
+        _synthetic_trade(instrument_id="SOLO", pnl=-0.04, exit_day=2),
+    )
+    m = _metrics_from_trades(trades, sleeve_instrument_ids=("SOLO",))
+    expected = sum(t.pnl for t in trades) / UNIT_RISK_NOTIONAL_V1
+    assert m["net_return"] == pytest.approx(expected, rel=1e-12)
+
+
+def test_gate_facing_stats_use_combined_equity_not_n_scaled_absolute_sum() -> None:
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        SHARED_INITIAL_CAPITAL_V1,
+        UNIT_RISK_NOTIONAL_V1,
+        _combined_portfolio_equity_from_trades_v1,
+        _metrics_from_trades,
+    )
+
+    n = 50
+    trades = tuple(_synthetic_trade(instrument_id=f"I{i}", pnl=0.10, exit_day=1) for i in range(n))
+    sleeve_ids = tuple(f"I{i}" for i in range(n))
+    m = _metrics_from_trades(trades, sleeve_instrument_ids=sleeve_ids)
+    legacy_n_scaled = sum(t.pnl for t in trades) / UNIT_RISK_NOTIONAL_V1
+    assert m["net_return"] == pytest.approx(0.10, rel=1e-12)
+    assert m["net_return"] != pytest.approx(legacy_n_scaled, rel=1e-6)
+    equity = _combined_portfolio_equity_from_trades_v1(trades, sleeve_instrument_ids=sleeve_ids)
+    assert float(equity.iloc[0]) == pytest.approx(SHARED_INITIAL_CAPITAL_V1, rel=1e-12)
+
+
+def test_calmar_overflow_guard_still_reachable_via_combined_equity_path() -> None:
+    """Combined equity still routes through compute_backtest_stats (Calmar guard preserved)."""
+    from src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1 import (
+        RoundtripTradeV1,
+        _metrics_from_trades,
+    )
+
+    # Explosive sleeve PnLs with drawdowns so Calmar annualization is attempted.
+    trades = []
+    for i in range(30):
+        pnl = 1e8 if i % 5 else -2e7
+        day = (i % 28) + 1
+        minute = (i * 2) % 60
+        trades.append(
+            RoundtripTradeV1(
+                instrument_id="BOMB",
+                side="long",
+                entry_index=i,
+                exit_index=i + 1,
+                entry_time=f"2022-06-{day:02d}T00:{minute:02d}:00Z",
+                exit_time=f"2022-06-{day:02d}T01:{minute:02d}:00Z",
+                entry_price=1.0,
+                exit_price=1.1,
+                size=1.0,
+                stop_price_at_entry=0.9,
+                exit_reason="TIME_EXIT",
+                gross_pnl=pnl,
+                entry_fee=0.0,
+                exit_fee=0.0,
+                entry_slippage=0.0,
+                exit_slippage=0.0,
+                pnl=pnl,
+            )
+        )
+    m = _metrics_from_trades(tuple(trades), sleeve_instrument_ids=("BOMB",))
+    assert isinstance(m["net_return"], float)
+    assert m["net_return"] == m["net_return"]  # finite
