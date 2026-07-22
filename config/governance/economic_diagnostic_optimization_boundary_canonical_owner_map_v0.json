@@ -950,6 +950,27 @@
         "docs/governance/VOLATILITY_DECAY_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
+    "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only preregistration of VDBX explicit-decay-exit successor after terminal VDB UNPAIRABLE_ENTRY_NO_EXIT; frozen decay entry + explicit exit state machine; productive PnL evaluator referenced only; no Development evaluation/holdout/runtime/orders; VDB/VEP/VCB retry forbidden.",
+      "path_prefixes": [
+        "config/research/volatility_decay_breakout_with_explicit_decay_exit_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/volatility_decay_breakout_with_explicit_decay_exit_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_volatility_decay_breakout_with_explicit_decay_exit_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_volatility_decay_breakout_with_explicit_decay_exit_hypothesis_v1/"
+      ]
+    },
+    "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "note": "Strategy + explicit exit state machine for VDBX v1; reuses VDB vol-state/channel core; productive PnL evaluator referenced not duplicated; no evaluation/holdout/runtime/orders; no predecessor artifact mutation.",
+      "path_prefixes": [
+        "src/research/volatility_decay_breakout_with_explicit_decay_exit_v1_exit_state_machine_v1.py",
+        "src/research/volatility_decay_breakout_with_explicit_decay_exit_v1_strategy_v1.py",
+        "src/research/volatility_decay_breakout_with_explicit_decay_exit_v1_strategy_implementation_binding_v1.py",
+        "config/research/volatility_decay_breakout_with_explicit_decay_exit_v1_strategy_implementation_binding_v1.json",
+        "tests/research/test_volatility_decay_breakout_with_explicit_decay_exit_v1_strategy_and_exit_state_machine_v1.py",
+        "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+      ]
+    },
     "VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
       "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_EXPANSION_PERSISTENCE_V1: executable evaluate path with materialized panel execution boundary (loader/wiring/injectable boundary); productive exit/PnL evaluator referenced from VCB package (not duplicated). Development evaluation authorized on HEAD; run counters remain 0 until a separate operator GO executes the single bounded development evaluation; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
       "path_prefixes": [
@@ -987,7 +1008,7 @@
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Open backlog SSOT for volatility-regime research program with exactly one definition-only preregistration (VEP-V1) and terminal VCB-V1 FAIL_CLOSED_NO_RETRY; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit and closed CS momentum lanes remain unreopened.",
+      "note": "Open backlog SSOT for volatility-regime research program with exactly one definition-only preregistration (VEP-V1) and terminal VCB-V1 FAIL_CLOSED_NO_RETRY; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit and closed CS momentum lanes remain unreopened. Active open preregistration is VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1; VDB terminal.",
       "path_prefixes": [
         "config/research/volatility_regime_hypothesis_backlog_v1.json",
         "src/research/volatility_regime_hypothesis_backlog_v1.py",
@@ -996,7 +1017,7 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Definition-only research-program SSOT for operator-authorized volatility-regime expansion-persistence hypothesis VEP-V1; causal independence from closed Bollinger Entry/Exit and CS momentum lanes; material difference vs terminal coiled-spring and terminal VCB-V1; development evaluation authorized (not executed); no holdout/runtime/orders.",
+      "note": "Definition-only research-program SSOT for operator-authorized volatility-regime expansion-persistence hypothesis VEP-V1; causal independence from closed Bollinger Entry/Exit and CS momentum lanes; material difference vs terminal coiled-spring and terminal VCB-V1; development evaluation authorized (not executed); no holdout/runtime/orders. Active open preregistration is VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1; VDB terminal.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",
