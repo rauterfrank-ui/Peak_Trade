@@ -26,6 +26,10 @@ Materializes the preregistered VEPC v1 strategy producer and exit state machine:
 - No Shadow / Testnet / Live / Orders
 - No VCEB / VDBX / VDB / VEP / VCB retry
 
+## Policy Critic note
+
+RISK_LIMIT_JUSTIFICATION: literals resembling max_drawdown are frozen research economic-admission thresholds / empty-metrics placeholders only; no productive risk-limit raise; LIVE_AUTHORIZED=false; ORDERS=false.
+
 ## Binding
 
 `config/research/volatility_expansion_pullback_continuation_v1_strategy_implementation_binding_v1.json`
