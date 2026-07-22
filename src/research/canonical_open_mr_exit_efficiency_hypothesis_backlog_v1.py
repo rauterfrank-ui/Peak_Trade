@@ -28,13 +28,13 @@ from src.research.canonical_research_lane_post_terminal_lifecycle_contract_v1 im
 PACKAGE_MARKER = "CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1=true"
 BACKLOG_REL_PATH = "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json"
 GOVERNANCE_REL_PATH = "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md"
-REQUIRED_STATUS = "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-REQUIRED_OPERATOR_DECISION = "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+REQUIRED_STATUS = "OPEN_BACKLOG"
+REQUIRED_OPERATOR_DECISION = "CREATE_SUCCESSOR_HYPOTHESIS"
 REQUIRED_LIFECYCLE_AUTHORITY = "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
 ENTRY_ELIGIBILITY_BACKLOG_REL_PATH = (
     "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
 )
-REQUIRED_ENTRY_ELIGIBILITY_LANE_STATUS = "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+REQUIRED_ENTRY_ELIGIBILITY_LANE_STATUS = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_ENTRY_ELIGIBILITY_STATUS_AUTHORITY = (
     "SIBLING_ENTRY_ELIGIBILITY_BACKLOG_UNDER_SHARED_LIFECYCLE_CONTRACT_V1"
 )
@@ -76,6 +76,13 @@ REQUIRED_V8_MECHANISM_ID = REQUIRED_V7_MECHANISM_ID
 REQUIRED_V8_PREREGISTRATION_DIGEST = (
     "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c"
 )
+REQUIRED_HOLDOUT_V1_HYPOTHESIS_ID = (
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_HOLDOUT_V1"
+)
+REQUIRED_HOLDOUT_V1_PREREGISTRATION_DIGEST = (
+    "a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d"
+)
+REQUIRED_HOLDOUT_SPLIT_DIGEST = "e29eeb4e9d264e1529a0c7419d707ce84df7919ee6ed95a833612fca46a7184d"
 REQUIRED_V8_PREDECESSOR_RESULT_DIGEST = (
     "86fd0b862fa74b9fc3f28ddc63eede0258caded9cfbc35b1d9d9c5fbdf851fd6"
 )
@@ -106,14 +113,10 @@ REQUIRED_TERMINAL_STATUS = "TERMINAL_INCONCLUSIVE_INFRASTRUCTURE_FAILURE"
 REQUIRED_TERMINAL_FAIL_STATUS = "TERMINAL_FAIL"
 REQUIRED_TERMINAL_INFRA_STATUS = "TERMINAL_INFRASTRUCTURE_FAILURE"
 REQUIRED_TERMINAL_PASS_STATUS = "TERMINAL_PASS"
-REQUIRED_V7_NEXT_STEP = (
-    "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET"
-)
-REQUIRED_V8_NEXT_STEP = (
-    "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET"
-)
+REQUIRED_V7_NEXT_STEP = "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
+REQUIRED_V8_NEXT_STEP = REQUIRED_V7_NEXT_STEP
 REQUIRED_AWAITING_NEXT_STEP = REQUIRED_V8_NEXT_STEP
-REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_PREREGISTERED"
+REQUIRED_PREREGISTERED_STATUS = "DEFINITION_ONLY_HOLDOUT_PREREGISTERED"
 REQUIRED_V7_DIAGNOSTIC_CLASS = "PRE_PANEL_FROZEN_EXIT_PARAMETERS_MISMATCH_NO_PANEL_BACKTEST"
 REQUIRED_V8_DECISION_REASON = "ALL_PASS_REQUIRES_MET"
 REQUIRED_V8_LIFECYCLE_TERMINAL = "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS"
@@ -266,7 +269,7 @@ def _assert_terminal_infrastructure_entry(
 def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true(
         backlog.get("status") == REQUIRED_STATUS,
-        "STATUS_NOT_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
+        "STATUS_NOT_OPEN_BACKLOG",
     )
     _assert_true(
         backlog.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
@@ -281,7 +284,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "LIFECYCLE_AUTHORITY_MISMATCH",
     )
     _assert_true(backlog.get("explicit_closeout_decision") is False, "UNEXPECTED_CLOSEOUT_DECISION")
-    _assert_true(backlog.get("explicit_waiting_decision") is True, "WAITING_DECISION_REQUIRED")
+    _assert_true(backlog.get("explicit_waiting_decision") is False, "WAITING_DECISION_FORBIDDEN")
     _assert_true(backlog.get("lane_auto_closed") is False, "LANE_AUTO_CLOSED_FORBIDDEN")
     _assert_true(
         backlog.get("entry_eligibility_lane_status") == REQUIRED_ENTRY_ELIGIBILITY_LANE_STATUS,
@@ -332,8 +335,8 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "SHORT_SIDE_HYPOTHESIS_PREREGISTERED",
     )
     _assert_true(
-        backlog.get("holdout_candidate_preregistered") is False,
-        "HOLDOUT_CANDIDATE_PREREGISTERED",
+        backlog.get("holdout_candidate_preregistered") is True,
+        "HOLDOUT_CANDIDATE_NOT_PREREGISTERED",
     )
     _assert_true(
         backlog.get("cost_structure_hypothesis_preregistered") is False,
@@ -397,17 +400,47 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(rules.get("economic_gate_closed") is True, "ECONOMIC_GATE_NOT_CLOSED")
     _assert_true(rules.get("promotion_closed") is True, "PROMOTION_NOT_CLOSED")
-    _assert_true(rules.get("preregistered_count_exact") == 0, "PREREGISTERED_COUNT_RULE")
+    _assert_true(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_RULE")
     _assert_true(rules.get("open_unpreregistered_count_exact") == 0, "OPEN_COUNT_RULE")
 
     preregistered = backlog.get("preregistered_hypotheses")
     _assert_true(isinstance(preregistered, list), "PREREGISTERED_MISSING")
     assert isinstance(preregistered, list)
-    _assert_true(len(preregistered) == 0, "PREREGISTERED_COUNT", str(len(preregistered)))
+    _assert_true(len(preregistered) == 1, "PREREGISTERED_COUNT", str(len(preregistered)))
+    holdout = preregistered[0]
+    _assert_true(isinstance(holdout, Mapping), "PREREGISTERED_ENTRY_TYPE")
+    assert isinstance(holdout, Mapping)
+    _assert_true(
+        holdout.get("hypothesis_id") == REQUIRED_HOLDOUT_V1_HYPOTHESIS_ID,
+        "HOLDOUT_V1_ID",
+    )
+    _assert_true(holdout.get("status") == REQUIRED_PREREGISTERED_STATUS, "HOLDOUT_V1_STATUS")
+    _assert_true(holdout.get("mechanism_id") == REQUIRED_V8_MECHANISM_ID, "HOLDOUT_V1_MECHANISM")
+    _assert_true(
+        holdout.get("predecessor_hypothesis_id") == REQUIRED_V8_HYPOTHESIS_ID,
+        "HOLDOUT_V1_PREDECESSOR",
+    )
+    _assert_true(
+        holdout.get("frozen_v8_contract_digest") == REQUIRED_V8_PREREGISTRATION_DIGEST,
+        "HOLDOUT_V1_V8_DIGEST",
+    )
+    _assert_true(
+        holdout.get("holdout_preregistration_digest") == REQUIRED_HOLDOUT_V1_PREREGISTRATION_DIGEST,
+        "HOLDOUT_V1_DIGEST",
+    )
+    _assert_true(
+        holdout.get("holdout_split_digest") == REQUIRED_HOLDOUT_SPLIT_DIGEST,
+        "HOLDOUT_V1_SPLIT",
+    )
+    _assert_true("holdout_run_count" in holdout, "HOLDOUT_V1_RUN_COUNT_MISSING")
+    _assert_true(int(holdout["holdout_run_count"]) == 0, "HOLDOUT_V1_RUN_COUNT")
+    _assert_true(int(holdout.get("holdout_run_limit") or 0) == 1, "HOLDOUT_V1_RUN_LIMIT")
+    _assert_true(holdout.get("evaluation_authorized") is False, "HOLDOUT_V1_EVAL_AUTH")
+    _assert_true(holdout.get("holdout_execution_authorized") is False, "HOLDOUT_V1_EXEC_AUTH")
     _assert_true(backlog.get("evaluation_authorized") is False, "TOP_EVAL_AUTHORIZED")
     _assert_true(
         backlog.get("next_canonical_step") == REQUIRED_V8_NEXT_STEP,
-        "NEXT_STEP_AFTER_V8_TERMINAL",
+        "NEXT_STEP_AFTER_V8_HOLDOUT_PREREG",
     )
 
     terminal = backlog.get("terminal_hypotheses")
@@ -639,7 +672,22 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true("NO_V7_REOPEN" in non_actions, "NO_V7_REOPEN_REQUIRED")
     _assert_true("NO_V8_RERUN" in non_actions, "NO_V8_RERUN_REQUIRED")
     _assert_true("NO_V8_REOPEN" in non_actions, "NO_V8_REOPEN_REQUIRED")
-    _assert_true("NO_HOLDOUT_AFTER_PASS" in non_actions, "NO_HOLDOUT_AFTER_PASS_REQUIRED")
+    _assert_true(
+        "NO_HOLDOUT_AFTER_PASS" not in non_actions,
+        "NO_HOLDOUT_AFTER_PASS_MUST_BE_ABSENT_FOR_SUCCESSOR",
+    )
+    _assert_true(
+        "NO_HOLDOUT_PREREGISTRATION" not in non_actions,
+        "NO_HOLDOUT_PREREGISTRATION_MUST_BE_ABSENT_FOR_SUCCESSOR",
+    )
+    _assert_true(
+        "NO_HOLDOUT_OF_V8_DEVELOPMENT_IDENTITY" in non_actions,
+        "NO_HOLDOUT_OF_V8_DEVELOPMENT_IDENTITY_REQUIRED",
+    )
+    _assert_true(
+        "NO_HOLDOUT_EXCEPT_PREREGISTERED_HOLDOUT_V1_SUCCESSOR" in non_actions,
+        "NO_HOLDOUT_EXCEPT_PREREGISTERED_HOLDOUT_V1_SUCCESSOR_REQUIRED",
+    )
     _assert_true(
         "NO_RUNTIME_PROMOTION_FROM_DEVELOPMENT_PASS" in non_actions,
         "NO_RUNTIME_PROMOTION_FROM_DEVELOPMENT_PASS_REQUIRED",
@@ -681,15 +729,15 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     _assert_true(lifecycle_report.get("valid") is True, "LIFECYCLE_SNAPSHOT_INVALID")
     _assert_true(lifecycle_report.get("status") == REQUIRED_STATUS, "LIFECYCLE_STATUS_DRIFT")
     _assert_true(
-        lifecycle_report.get("inventory_non_empty") is False,
-        "LIFECYCLE_INVENTORY_MUST_BE_EMPTY",
+        lifecycle_report.get("inventory_non_empty") is True,
+        "LIFECYCLE_INVENTORY_MUST_BE_NON_EMPTY",
     )
     resolved = resolve_post_terminal_transition(
         result_class="PASS",
         inventory_non_empty_flag=False,
     )
-    # Empty-inventory post-terminal resolution still yields the pre-decision holding
-    # state; the live lane has already executed DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS.
+    # Shared contract empty-inventory resolution remains the pre-decision holding state;
+    # the live lane has already executed CREATE_SUCCESSOR_HYPOTHESIS into OPEN_BACKLOG.
     _assert_true(
         resolved.get("next_state") == POST_TERMINAL_EMPTY_INVENTORY_STATE,
         "POST_TERMINAL_RESOLUTION_DRIFT",
@@ -701,7 +749,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
     )
     _assert_true(
         REQUIRED_OPERATOR_DECISION in (resolved.get("allowed_operator_decisions") or []),
-        "DECLARE_AWAITING_NOT_IN_ALLOWED_DECISIONS",
+        "CREATE_SUCCESSOR_NOT_IN_ALLOWED_DECISIONS",
     )
 
     # Read-only sibling mirror: Entry Eligibility status under shared contract (no mutation).
@@ -714,28 +762,51 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         str(entry_backlog.get("status")),
     )
     _assert_true(
-        entry_backlog.get("explicit_waiting_decision") is True,
-        "ENTRY_ELIGIBILITY_SIBLING_WAITING_DECISION_REQUIRED",
+        entry_backlog.get("explicit_closeout_decision") is True,
+        "ENTRY_ELIGIBILITY_SIBLING_CLOSEOUT_DECISION_REQUIRED",
+    )
+    _assert_true(
+        entry_backlog.get("explicit_waiting_decision") is False,
+        "ENTRY_ELIGIBILITY_SIBLING_WAITING_MUST_BE_FALSE",
     )
     _assert_true(
         backlog.get("entry_eligibility_lane_status") == entry_backlog.get("status"),
         "ENTRY_ELIGIBILITY_STATUS_MIRROR_MISMATCH",
     )
 
+    # V8 terminal annotations for holdout successor (identity itself remains holdout_allowed=false).
+    v8 = by_id[REQUIRED_V8_HYPOTHESIS_ID]
+    _assert_true(v8.get("holdout_allowed") is False, "V8_HOLDOUT_ALLOWED_MUST_REMAIN_FALSE")
+    _assert_true(
+        v8.get("holdout_preregistration_status") == REQUIRED_PREREGISTERED_STATUS,
+        "V8_HOLDOUT_PREREG_STATUS",
+    )
+    _assert_true(
+        v8.get("successor_holdout_evaluation_hypothesis_id") == REQUIRED_HOLDOUT_V1_HYPOTHESIS_ID,
+        "V8_SUCCESSOR_HOLDOUT_ID",
+    )
+    _assert_true(
+        v8.get("holdout_preregistration_digest") == REQUIRED_HOLDOUT_V1_PREREGISTRATION_DIGEST,
+        "V8_HOLDOUT_PREREG_DIGEST",
+    )
+    _assert_true("holdout_run_count" in v8, "V8_HOLDOUT_RUN_COUNT_MISSING")
+    _assert_true(int(v8["holdout_run_count"]) == 0, "V8_HOLDOUT_RUN_COUNT")
+    _assert_true(v8.get("holdout_executed") is False, "V8_HOLDOUT_EXECUTED")
+
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
-        "explicit_waiting_decision": True,
+        "explicit_waiting_decision": False,
         "explicit_closeout_decision": False,
         "lane_auto_closed": False,
         "operator_decision": REQUIRED_OPERATOR_DECISION,
         "lifecycle_contract_id": LIFECYCLE_CONTRACT_ID,
         "lifecycle_authority": REQUIRED_LIFECYCLE_AUTHORITY,
-        "preregistered_count": 0,
+        "preregistered_count": 1,
         "terminal_count": 8,
         "open_unpreregistered_count": 0,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
-        "preregistered_hypothesis_id": None,
+        "preregistered_hypothesis_id": REQUIRED_HOLDOUT_V1_HYPOTHESIS_ID,
         "terminal_hypothesis_ids": [
             REQUIRED_HYPOTHESIS_ID,
             REQUIRED_V2_HYPOTHESIS_ID,
@@ -750,7 +821,7 @@ def validate_backlog_contract(backlog: Mapping[str, Any]) -> dict[str, Any]:
         "evaluation_authorized": False,
         "holdout_forbidden": True,
         "short_side_hypothesis_preregistered": False,
-        "holdout_candidate_preregistered": False,
+        "holdout_candidate_preregistered": True,
         "runtime_locked": True,
         "result_class": "PASS",
         "economic_verdict": "PASS",

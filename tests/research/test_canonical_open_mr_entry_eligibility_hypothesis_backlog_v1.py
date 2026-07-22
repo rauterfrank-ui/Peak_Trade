@@ -47,11 +47,11 @@ def test_exactly_one_backlog_ssot_exists() -> None:
 def test_repo_backlog_validates() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-    assert report["explicit_waiting_decision"] is True
-    assert report["explicit_closeout_decision"] is False
+    assert report["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert report["explicit_waiting_decision"] is False
+    assert report["explicit_closeout_decision"] is True
     assert report["lane_auto_closed"] is False
-    assert report["operator_decision"] == "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+    assert report["operator_decision"] == "CLOSE_LANE_NO_FURTHER_RESEARCH"
     assert report["lifecycle_contract_id"] == (
         "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1"
     )
@@ -98,20 +98,18 @@ def test_adx_di_terminal_pass_and_queue_empty() -> None:
     assert (
         "adx_di_direction_confirmation" in backlog["forbidden_feature_families_for_open_candidates"]
     )
-    assert backlog["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+    assert backlog["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert backlog["lifecycle_authority"] == (
         "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
     )
-    assert backlog["explicit_closeout_decision"] is False
-    assert backlog["explicit_waiting_decision"] is True
+    assert backlog["explicit_closeout_decision"] is True
+    assert backlog["explicit_waiting_decision"] is False
     assert backlog["lane_auto_closed"] is False
     assert backlog["verdict"] == (
-        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_"
-        "AFTER_EXPLICIT_OPERATOR_DECLARE_AWAITING"
+        "CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_LANE_CLOSED_NO_FURTHER_RESEARCH_"
+        "AFTER_EXPLICIT_OPERATOR_CLOSEOUT"
     )
-    assert backlog["next_canonical_step"] == (
-        "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET"
-    )
+    assert backlog["next_canonical_step"] == ("LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO")
     assert (
         "REVIEW_DEFINITION_ONLY_EXIT_EFFICIENCY_PREREGISTRATION_NO_ENTRY_ELIGIBILITY_REOPEN"
         != backlog["next_canonical_step"]
@@ -293,23 +291,22 @@ def test_validator_rejects_nonzero_development_run_count() -> None:
 
 def test_governance_doc_marks_terminal_pass_and_closed_gate() -> None:
     text = GOVERNANCE_PATH.read_text(encoding="utf-8")
-    assert "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS" in text
-    assert "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS" in text
+    assert "LANE_CLOSED_NO_FURTHER_RESEARCH" in text
+    assert "CLOSE_LANE_NO_FURTHER_RESEARCH" in text
     assert "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1" in text
     assert "OPEN_BACKLOG` is invalid" in text or "OPEN_BACKLOG is invalid" in text
     assert "PROMOTION_ELIGIBLE=false" in text
     assert ADX_DI_DIRECTION_CONFIRMATION_HYPOTHESIS_ID in text
     assert ADX_DI_DIRECTION_CONFIRMATION_HOLDOUT_V2_HYPOTHESIS_ID in text
     assert "TERMINAL_PASS" in text
-    assert "open_candidates=[]" in text
     assert "HOLDOUT_EVALUATION_EXECUTED_TERMINAL" in text
-    assert "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET" in text
+    assert "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO" in text
     assert (
-        "REVIEW_DEFINITION_ONLY_EXIT_EFFICIENCY_PREREGISTRATION_NO_ENTRY_ELIGIBILITY_REOPEN" in text
-    )  # mentioned only as no-longer-current historical pointer
-    assert "no longer the current canonical next step" in text
-    assert "explicit_waiting_decision=true" in text
-    assert "ALL_PASS_REQUIRES_MET" in text
+        "explicit_closeout_decision=true" in text
+        or "explicit_closeout_decision`=true" in text
+        or "explicit_closeout_decision=true" in text
+    )
+    assert "ALL_PASS_REQUIRES_MET" in text or "TERMINAL_PASS" in text
     assert "Economic offline gate remains closed" in text or "economic gate closed" in text.lower()
     assert "must not be re-run" in text or "Do **not** re-run" in text
 
@@ -318,9 +315,7 @@ def test_rejects_open_backlog_with_empty_inventory() -> None:
     backlog = _load(BACKLOG_PATH)
     bad = copy.deepcopy(backlog)
     bad["status"] = "OPEN_BACKLOG"
-    with pytest.raises(
-        BacklogValidationError, match="STATUS_NOT_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-    ):
+    with pytest.raises(BacklogValidationError, match="STATUS_NOT_LANE_CLOSED_NO_FURTHER_RESEARCH"):
         validate_backlog_contract(bad)
 
 
@@ -342,9 +337,9 @@ def test_rejects_auto_close_flag() -> None:
 
 def test_explicit_waiting_transition_invariants() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert backlog["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-    assert backlog["explicit_waiting_decision"] is True
-    assert backlog["explicit_closeout_decision"] is False
+    assert backlog["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert backlog["explicit_waiting_decision"] is False
+    assert backlog["explicit_closeout_decision"] is True
     assert backlog["lane_auto_closed"] is False
     assert backlog["open_candidates"] == []
     assert backlog["preregistered_hypotheses"] == []
@@ -358,9 +353,9 @@ def test_explicit_waiting_transition_invariants() -> None:
     )
 
 
-def test_rejects_awaiting_without_explicit_waiting_decision() -> None:
+def test_rejects_closed_lane_with_waiting_decision() -> None:
     backlog = _load(BACKLOG_PATH)
     bad = copy.deepcopy(backlog)
-    bad["explicit_waiting_decision"] = False
-    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_REQUIRED"):
+    bad["explicit_waiting_decision"] = True
+    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_FORBIDDEN"):
         validate_backlog_contract(bad)

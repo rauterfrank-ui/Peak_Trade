@@ -2,8 +2,8 @@
 
 ## Current SSOT status
 
-- Lane status: `AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` under shared lifecycle contract V1
-- Explicit operator decision: `DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`
+- Lane status: `OPEN_BACKLOG` under shared lifecycle contract V1
+- Explicit operator decision: `CREATE_SUCCESSOR_HYPOTHESIS`
 - Lifecycle authority (sole): `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
 - Auto-close: forbidden (`lane_auto_closed=false`)
 - Explicit waiting: `explicit_waiting_decision=true`
@@ -16,12 +16,12 @@
 - V8 panel digest: `4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca`
 - Development run count: `8`
 - No V8&#47;V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7&#47;V8 reopen. No V9 auto-create. No holdout after PASS. No runtime promotion from DEVELOPMENT PASS.
-- `NEXT_CANONICAL_ACTION=AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET`
+- `NEXT_CANONICAL_ACTION=REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN`
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
 docs_token: DOCS_TOKEN_CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1
-STATUS: AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS
+STATUS: OPEN_BACKLOG_WITH_HOLDOUT_SUCCESSOR_PREREGISTERED
 scope: research, offline-only, non-authorizing, terminal-governance awaiting successor
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
@@ -152,7 +152,7 @@ Exactly eight:
 - No V1&#47;V2&#47;V3&#47;V4&#47;V5&#47;V6 rerun under consumed preregistrations
 - No V3&#47;V4&#47;V5&#47;V6 partial-result, checkpoint, or economic-result reuse
 - No holdout after FAIL&#47;INFRASTRUCTURE_FAILURE
-- No holdout after PASS
+- No holdout of V8 DEVELOPMENT identity (successor HOLDOUT_V1 only)
 - No retuning after FAIL&#47;INFRASTRUCTURE_FAILURE
 - No V7 rerun &#47; no V7 reopen
 - No V8 rerun &#47; no V8 reopen
@@ -161,7 +161,7 @@ Exactly eight:
 - No V8 auto-create
 - No V9 auto-create
 - No parallel SHORT-side hypothesis
-- No holdout candidate
+- Holdout candidate preregistered: HOLDOUT_V1 (definition-only; execution unauthorized)
 - No cost-structure-weakening hypothesis
 - No entry-eligibility reopen
 - No lane auto-close
@@ -169,7 +169,7 @@ Exactly eight:
 
 ## Next separate action
 
-`NEXT_CANONICAL_ACTION=AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_NO_EXECUTABLE_GO_WITHOUT_CONCRETE_TARGET`
+`NEXT_CANONICAL_ACTION=REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN`
 
 Awaiting is named. No successor identity exists yet. Enumerated further
 operator decisions from this state:
