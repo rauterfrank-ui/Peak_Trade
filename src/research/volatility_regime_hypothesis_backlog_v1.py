@@ -97,7 +97,7 @@ def validate_backlog_contract(
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
     _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NOT_ZERO")
     _require(hyp.get("development_run_limit") == 1, "HYP_RUN_LIMIT_NOT_ONE")
-    _require(hyp.get("implementation_present") is False, "HYP_IMPLEMENTATION_PRESENT")
+    _require(hyp.get("implementation_present") is True, "HYP_IMPLEMENTATION_PRESENT")
     _require(hyp.get("run_slot_consumed") is False, "HYP_RUN_SLOT_CONSUMED")
     _require(hyp.get("runner_start_count") == 0, "HYP_RUNNER_START_NOT_ZERO")
     _require(hyp.get("holdout_allowed") is False, "HYP_HOLDOUT_ALLOWED")
