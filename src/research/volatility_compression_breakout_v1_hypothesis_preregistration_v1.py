@@ -117,12 +117,117 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         compression.get("range_ratio_substitution_forbidden") is True,
         "RANGE_RATIO_SUBSTITUTION",
     )
+    _require(
+        compression.get("percentile_tie_method") == "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+        "PERCENTILE_TIE_METHOD",
+    )
+    _require(
+        compression.get("percentile_rank_formula")
+        == "count(window_values <= current_value) / count(window_values)",
+        "PERCENTILE_RANK_FORMULA",
+    )
+    _require(
+        compression.get("percentile_rank_window_includes_current_value") is True,
+        "PERCENTILE_CURRENT_NOT_INCLUDED",
+    )
+    _require(
+        compression.get("percentile_rank_min_valid_observations") == 120,
+        "PERCENTILE_MIN_OBS",
+    )
+    _require(
+        compression.get("percentile_rank_requires_exact_lookback_observations") is True,
+        "PERCENTILE_EXACT_LOOKBACK",
+    )
+    _require(compression.get("midrank_forbidden") is True, "MIDRANK_ALLOWED")
+    _require(compression.get("average_rank_forbidden") is True, "AVERAGE_RANK_ALLOWED")
+    _require(
+        compression.get("strict_less_than_tie_method_forbidden") is True,
+        "STRICT_LT_ALLOWED",
+    )
+    _require(
+        compression.get("vol_breakout_rolling_last_pct_rank_not_authority") is True,
+        "VOL_BREAKOUT_PCT_RANK_AS_AUTHORITY",
+    )
+    _require(compression.get("lookahead_forbidden") is True, "PERCENTILE_LOOKAHEAD")
+    _require(
+        compression.get("current_value_shift_to_exclusively_historical_window_forbidden") is True,
+        "CURRENT_VALUE_HISTORICAL_SHIFT",
+    )
     duration = admission.get("min_compression_duration") or {}
     _require(duration.get("bars") == 12, "MIN_COMPRESSION_BARS")
     _require(duration.get("tolerance_gap_bars") == 0, "COMPRESSION_TOLERANCE")
     expansion = admission.get("expansion_release") or {}
     _require(expansion.get("threshold_inclusive_min") == 0.75, "EXPANSION_THR")
     _require(expansion.get("max_bars_after_last_compression_bar") == 6, "EXPANSION_MAX_GAP")
+    _require(
+        expansion.get("release_window_start_offset_after_last_compression_bar") == 1,
+        "RELEASE_START_OFFSET",
+    )
+    _require(
+        expansion.get("release_window_end_offset_after_last_compression_bar") == 6,
+        "RELEASE_END_OFFSET",
+    )
+    _require(expansion.get("release_window_offsets_inclusive") is True, "RELEASE_INCLUSIVE")
+    _require(
+        expansion.get("last_compression_bar_is_not_a_release_bar") is True,
+        "LAST_COMPRESSION_IS_RELEASE",
+    )
+    _require(
+        expansion.get("multiple_expansion_triggers_per_release_window_allowed") is False,
+        "MULTI_TRIGGER_ALLOWED",
+    )
+    _require(
+        expansion.get("max_expansion_triggers_per_release_cycle") == 1,
+        "MAX_TRIGGERS_NOT_ONE",
+    )
+    cycle = admission.get("compression_cycle_lifecycle") or {}
+    _require(cycle.get("compression_cycle_consumption") == "SINGLE_USE", "CYCLE_NOT_SINGLE_USE")
+    _require(
+        cycle.get("compression_state_reset_on_successful_entry") is True,
+        "RESET_ON_ENTRY_FALSE",
+    )
+    _require(
+        cycle.get("compression_state_reset_on_channel_miss_at_expansion_trigger") is True,
+        "RESET_ON_CHANNEL_MISS_FALSE",
+    )
+    _require(
+        cycle.get("compression_state_reset_on_release_window_expiry") is True,
+        "RESET_ON_EXPIRY_FALSE",
+    )
+    _require(
+        cycle.get("first_qualifying_expansion_trigger_consumes_cycle") is True,
+        "FIRST_TRIGGER_NOT_CONSUMING",
+    )
+    _require(
+        cycle.get("channel_miss_at_first_expansion_trigger_discards_cycle_immediately") is True,
+        "CHANNEL_MISS_NOT_DISCARD",
+    )
+    _require(
+        cycle.get("no_expansion_trigger_within_offsets_1_to_6_expires_cycle_after_offset_6")
+        is True,
+        "WINDOW_EXPIRY_NOT_BOUND",
+    )
+    _require(
+        cycle.get("new_compression_sequence_required_after_reset_before_new_cycle") is True,
+        "NEW_COMPRESSION_AFTER_RESET_NOT_REQUIRED",
+    )
+    _require(
+        cycle.get("release_cycle_opens_on_first_bar_after_last_qualifying_compression_bar") is True,
+        "RELEASE_OPEN_OFFSET_NOT_BOUND",
+    )
+    _require(
+        cycle.get("overlapping_or_parallel_cycles_forbidden") is True,
+        "OVERLAPPING_CYCLES_ALLOWED",
+    )
+    _require(
+        cycle.get("release_cycle_offsets") == [1, 2, 3, 4, 5, 6],
+        "RELEASE_CYCLE_OFFSETS",
+    )
+    _require(
+        cycle.get("further_expansion_triggers_in_same_cycle_forbidden_even_after_channel_miss")
+        is True,
+        "FURTHER_TRIGGERS_ALLOWED",
+    )
     entry = admission.get("directional_entry") or {}
     _require(entry.get("channel_lookback_completed_bars") == 20, "CHANNEL_LOOKBACK")
     _require(entry.get("ambiguity_fail_closed_no_entry") is True, "AMBIGUITY_FAIL_CLOSED")
@@ -179,6 +284,26 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
     _require(param_gov.get("open_parameters_remaining") is False, "OPEN_PARAMETERS")
     _require(param_gov.get("all_parameters_preregistered") is True, "NOT_ALL_PREREGISTERED")
     _require(param_gov.get("post_hoc_tuning_forbidden") is True, "POST_HOC_TUNING")
+    _require(param_gov.get("definition_semantics_complete") is True, "SEMANTICS_INCOMPLETE")
+    frozen = param_gov.get("frozen_parameters") or {}
+    _require(
+        frozen.get("percentile_tie_method") == "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+        "FROZEN_TIE_METHOD",
+    )
+    _require(
+        frozen.get("percentile_rank_window_includes_current_value") is True,
+        "FROZEN_CURRENT_INCLUDED",
+    )
+    _require(frozen.get("compression_cycle_consumption") == "SINGLE_USE", "FROZEN_CYCLE_MODE")
+    _require(
+        frozen.get("release_window_start_offset_after_last_compression_bar") == 1,
+        "FROZEN_RELEASE_START",
+    )
+    _require(
+        frozen.get("release_window_end_offset_after_last_compression_bar") == 6,
+        "FROZEN_RELEASE_END",
+    )
+    _require(frozen.get("max_expansion_triggers_per_release_cycle") == 1, "FROZEN_MAX_TRIGGERS")
     grid = param_gov.get("development_only_bounded_grid") or {}
     _require(grid.get("authorized") is False, "GRID_AUTHORIZED")
 
@@ -250,6 +375,12 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         "development_run_count": 0,
         "runner_start_count": 0,
         "open_parameters_remaining": False,
+        "definition_semantics_complete": True,
+        "percentile_tie_method": "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
+        "percentile_current_value_included": True,
+        "compression_cycle_consumption": "SINGLE_USE",
+        "release_window_offsets": [1, 2, 3, 4, 5, 6],
+        "max_expansion_triggers_per_release_cycle": 1,
         "material_difference_explicit": True,
         "exit_semantics_frozen": True,
         "event_sufficiency_frozen": True,

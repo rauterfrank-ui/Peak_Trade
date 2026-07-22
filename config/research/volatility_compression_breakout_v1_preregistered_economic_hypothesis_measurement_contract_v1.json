@@ -1,12 +1,51 @@
 {
   "admission_mechanism": {
+    "compression_cycle_lifecycle": {
+      "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "channel_miss_at_first_expansion_trigger_discards_cycle_immediately": true,
+      "compression_cycle_consumption": "SINGLE_USE",
+      "compression_state_reset_on_channel_miss_at_expansion_trigger": true,
+      "compression_state_reset_on_release_window_expiry": true,
+      "compression_state_reset_on_successful_entry": true,
+      "first_qualifying_expansion_trigger_consumes_cycle": true,
+      "further_expansion_triggers_in_same_cycle_forbidden_even_after_channel_miss": true,
+      "new_compression_sequence_required_after_reset_before_new_cycle": true,
+      "no_expansion_trigger_within_offsets_1_to_6_expires_cycle_after_offset_6": true,
+      "overlapping_or_parallel_cycles_forbidden": true,
+      "release_cycle_offsets": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "release_cycle_opens_on_first_bar_after_last_qualifying_compression_bar": true,
+      "semantics_note": "A qualifying compression sequence opens exactly one release cycle. The cycle starts on the first bar after the last qualifying compression bar and spans inclusive offsets 1..6. The first qualifying expansion trigger consumes the cycle whether the channel break yields LONG, SHORT, or NONE (CHANNEL_MISS). CHANNEL_MISS discards immediately. Absence of any expansion trigger within offsets 1..6 expires the cycle after offset 6. After any reset, a fresh 12-bar compression sequence is required. Overlapping/parallel cycles forbidden. Max one expansion trigger per release cycle.",
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+    },
     "compression_metric": {
+      "average_rank_forbidden": true,
       "bollinger_squeeze_substitution_forbidden": true,
       "compression_threshold_inclusive_max": 0.2,
+      "current_value_shift_to_exclusively_historical_window_forbidden": true,
+      "lookahead_forbidden": true,
       "metric": "PERCENTILE_RANK_OF_NORMALIZED_ATR20",
+      "midrank_forbidden": true,
+      "percentile_rank_formula": "count(window_values <= current_value) / count(window_values)",
+      "percentile_rank_min_valid_observations": 120,
+      "percentile_rank_range": [
+        0.0,
+        1.0
+      ],
+      "percentile_rank_requires_exact_lookback_observations": true,
+      "percentile_rank_window_includes_current_value": true,
+      "percentile_tie_method": "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
       "range_ratio_substitution_forbidden": true,
       "rolling_lookback_bars": 120,
-      "source": "EXPLICIT_OPERATOR_AUTHORIZATION"
+      "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
+      "strict_less_than_tie_method_forbidden": true,
+      "vol_breakout_rolling_last_pct_rank_not_authority": true
     },
     "directional_entry": {
       "ambiguity_fail_closed_no_entry": true,
@@ -22,9 +61,15 @@
       "universe": "OKX_LINEAR_USDT_NON_BTC_PERPETUAL_PANEL"
     },
     "expansion_release": {
+      "last_compression_bar_is_not_a_release_bar": true,
       "max_bars_after_last_compression_bar": 6,
+      "max_expansion_triggers_per_release_cycle": 1,
       "momentum_ranking_forbidden_for_direction": true,
+      "multiple_expansion_triggers_per_release_window_allowed": false,
       "must_follow_valid_compression_state": true,
+      "release_window_end_offset_after_last_compression_bar": 6,
+      "release_window_offsets_inclusive": true,
+      "release_window_start_offset_after_last_compression_bar": 1,
       "source": "EXPLICIT_OPERATOR_AUTHORIZATION",
       "threshold_inclusive_min": 0.75
     },
@@ -67,7 +112,7 @@
     "seed_policy": "frozen_when_stochastic_components_absent",
     "treatment_arm": "VOLATILITY_COMPRESSION_BREAKOUT_V1"
   },
-  "contract_digest": "01b88e863470b44a1b0a7fa312f514b503de78cbcb499be638ea39b60fae3113",
+  "contract_digest": "3b9e65121dd359742b427f3fba6aab18622858aca93e2f5400e617c8cbbcf069",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -288,6 +333,7 @@
   "optimization_forbidden": true,
   "parameter_governance": {
     "all_parameters_preregistered": true,
+    "definition_semantics_complete": true,
     "development_only_bounded_grid": {
       "authorized": false,
       "note": "No parameter grid; all mechanism thresholds are frozen singleton operator authorizations."
@@ -296,13 +342,26 @@
       "atr_normalization": "ATR_DIV_CLOSE",
       "atr_period": 20,
       "channel_lookback_bars": 20,
+      "compression_cycle_consumption": "SINGLE_USE",
       "compression_percentile_max": 0.2,
+      "compression_state_reset_on_channel_miss_at_expansion_trigger": true,
+      "compression_state_reset_on_release_window_expiry": true,
+      "compression_state_reset_on_successful_entry": true,
       "expansion_percentile_min": 0.75,
       "initial_stop_atr_multiple": 1.5,
+      "last_compression_bar_is_not_a_release_bar": true,
       "max_bars_compression_to_expansion": 6,
+      "max_expansion_triggers_per_release_cycle": 1,
       "min_compression_duration_bars": 12,
+      "multiple_expansion_triggers_per_release_window_allowed": false,
       "percentile_lookback_bars": 120,
+      "percentile_rank_min_valid_observations": 120,
+      "percentile_rank_window_includes_current_value": true,
+      "percentile_tie_method": "WEAK_LESS_THAN_OR_EQUAL_EMPIRICAL_CDF",
       "regime_exit_percentile_lt": 0.5,
+      "release_window_end_offset_after_last_compression_bar": 6,
+      "release_window_offsets_inclusive": true,
+      "release_window_start_offset_after_last_compression_bar": 1,
       "signal_lag_bars": 1,
       "time_exit_max_bars": 48,
       "trailing_stop_atr_multiple": 2.0
@@ -326,8 +385,10 @@
   "provenance": {
     "created_on_base_sha": "fd9b1cd214413a56cf6fb26b09a33f8364fb6972",
     "definition_only": true,
+    "definition_semantics_completed_on_base_sha": "3b15165b2bf1216dda74f49b278f557411a15505",
     "digest_algorithm": "sha256",
-    "digest_input": "canonical_json_sort_keys_indent_2_of_contract_without_contract_digest_and_provenance"
+    "digest_input": "canonical_json_sort_keys_indent_2_of_contract_without_contract_digest_and_provenance",
+    "semantics_completion_note": "Operator-authorized binding of percentile tie method, current-value-in-window, release off-by-one offsets 1..6, and single-use compression-cycle consumption/reset."
   },
   "repeat_after_result_inspection_forbidden": true,
   "run_limit": {
@@ -423,5 +484,5 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "DEFINITION_ONLY_PREREGISTERED_ALL_PARAMETERS_FROZEN_AWAITING_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
+  "verdict": "DEFINITION_ONLY_PREREGISTERED_SEMANTICS_COMPLETE_AWAITING_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
 }

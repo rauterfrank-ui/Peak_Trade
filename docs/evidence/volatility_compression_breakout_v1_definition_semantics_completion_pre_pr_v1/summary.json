@@ -1,0 +1,20 @@
+{
+  "artifact_kind": "definition_semantics_completion_pre_pr_timing_proof",
+  "base_sha": "3b15165b2bf1216dda74f49b278f557411a15505",
+  "contract_digest": "3b9e65121dd359742b427f3fba6aab18622858aca93e2f5400e617c8cbbcf069",
+  "definition_semantics_complete": true,
+  "evaluation_authorized": false,
+  "evaluation_executed": false,
+  "hard_stop_seconds": 900,
+  "hypothesis_id": "VOLATILITY_COMPRESSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
+  "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
+  "pytest_passed": 732,
+  "safety_margin_seconds": 180,
+  "selector_mode": "PR_BOUNDED_FULL",
+  "selector_reason": "category_central_src_requires_full",
+  "strategy_identity": "VOLATILITY_COMPRESSION_BREAKOUT_V1",
+  "strategy_implementation_present": false,
+  "target_max_seconds": 840,
+  "timing_proof_status": "PASS",
+  "wallclock_seconds": 37
+}
