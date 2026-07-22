@@ -2,27 +2,28 @@
 
 ## Current SSOT status
 
-- Lane status: `OPEN_BACKLOG` under shared lifecycle contract V1
-- Explicit operator decision: `CREATE_SUCCESSOR_HYPOTHESIS`
+- Lane status: `POST_TERMINAL_OPERATOR_DECISION_REQUIRED` under shared lifecycle contract V1
+- Explicit operator decision pending (no awaiting/closeout/successor recorded in this slice)
 - Lifecycle authority (sole): `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
 - Auto-close: forbidden (`lane_auto_closed=false`)
-- Explicit waiting: `explicit_waiting_decision=true`
+- Explicit waiting: `explicit_waiting_decision=false`
 - Explicit closeout: `explicit_closeout_decision=false` (lane is **not** closed)
 - Preregistered: none (`preregistered_count_exact=0`)
 - Terminal: V1&#47;V2&#47;V7 `INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; V3&#47;V6 `FAIL`; V4&#47;V5 `INFRASTRUCTURE_FAILURE`; V8 `TERMINAL_PASS`
+- Holdout V1 terminal FAIL: `RESULT_CLASS=FAIL`; `REASON=NET_PROFIT_FACTOR_NOT_IMPROVED`; `HOLDOUT_RUN_COUNT=1`; evidence under `docs/evidence/evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1/`
 - V7 remains terminal unreopened: `RESULT_CLASS=INCONCLUSIVE_INFRASTRUCTURE_FAILURE`; `FAILURE_CLASS=FROZEN_EXIT_PARAMETERS_MISMATCH`; `FAILURE_TIMING=BEFORE_PANEL_ACCESS`
 - V8 terminal PASS: `RESULT_CLASS=PASS`; `DECISION_REASON=ALL_PASS_REQUIRES_MET`; `EVALUATION_RUN_COUNT=1`; `RUN_SLOT_CONSUMED=true`; `RERUN_ALLOWED=false`; `V8_REOPEN_ALLOWED=false`
-- V8 digest: `610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c` (immutable; unchanged by awaiting)
+- V8 digest: `610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c` (immutable)
 - V8 panel digest: `4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca`
 - Development run count: `8`
-- No V8&#47;V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7&#47;V8 reopen. No V9 auto-create. No holdout after PASS. No runtime promotion from DEVELOPMENT PASS.
-- `NEXT_CANONICAL_ACTION=REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN`
+- No V8&#47;V7&#47;V6&#47;V5&#47;V4&#47;V3&#47;V2&#47;V1 rerun. No V7&#47;V8 reopen. No V9 auto-create. No second holdout run. No runtime promotion from DEVELOPMENT PASS.
+- `NEXT_CANONICAL_ACTION=REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY`
 - Economic&#47;promotion gates closed. No runtime&#47;orders.
 
 ---
 docs_token: DOCS_TOKEN_CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1
-STATUS: OPEN_BACKLOG_WITH_HOLDOUT_SUCCESSOR_PREREGISTERED
-scope: research, offline-only, non-authorizing, terminal-governance awaiting successor
+STATUS: POST_TERMINAL_OPERATOR_DECISION_REQUIRED_AFTER_HOLDOUT_V1_TERMINAL_FAIL
+scope: research, offline-only, non-authorizing, terminal-governance
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
@@ -30,11 +31,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## Status
 
-`AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` — explicit operator decision
-`DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` recorded under the shared
-research-lane post-terminal lifecycle contract. Inventories are empty; V1–V8 are
-terminal; waiting is named; no successor identity exists yet. Auto-close is
-forbidden. Evaluation closeout of V8 is **not** a lane closeout.
+`POST_TERMINAL_OPERATOR_DECISION_REQUIRED` — after the single authorized holdout
+successor terminated as `FAIL` / `NET_PROFIT_FACTOR_NOT_IMPROVED`, inventories are
+empty and no explicit awaiting, closeout, or successor-creation decision is
+recorded yet. Auto-close is forbidden.
 
 Lane-status vocabulary and post-terminal legality are owned solely by
 `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`.
@@ -152,7 +152,7 @@ Exactly eight:
 - No V1&#47;V2&#47;V3&#47;V4&#47;V5&#47;V6 rerun under consumed preregistrations
 - No V3&#47;V4&#47;V5&#47;V6 partial-result, checkpoint, or economic-result reuse
 - No holdout after FAIL&#47;INFRASTRUCTURE_FAILURE
-- No holdout of V8 DEVELOPMENT identity (successor HOLDOUT_V1 only)
+- No holdout of V8 DEVELOPMENT identity (successor HOLDOUT_V1 only; now terminal)
 - No retuning after FAIL&#47;INFRASTRUCTURE_FAILURE
 - No V7 rerun &#47; no V7 reopen
 - No V8 rerun &#47; no V8 reopen
@@ -161,20 +161,22 @@ Exactly eight:
 - No V8 auto-create
 - No V9 auto-create
 - No parallel SHORT-side hypothesis
-- Holdout candidate preregistered: HOLDOUT_V1 (definition-only; execution unauthorized)
+- No second HOLDOUT_V1 run &#47; no retry after holdout FAIL
 - No cost-structure-weakening hypothesis
 - No entry-eligibility reopen
 - No lane auto-close
 - Open unpreregistered exit-efficiency candidates: empty
+- Preregistered hypotheses: empty (`preregistered_count_exact=0`)
 
 ## Next separate action
 
-`NEXT_CANONICAL_ACTION=REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN`
+`NEXT_CANONICAL_ACTION=REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY`
 
-Awaiting is named. No successor identity exists yet. Enumerated further
-operator decisions from this state:
+Lane is in `POST_TERMINAL_OPERATOR_DECISION_REQUIRED`. Enumerated further
+operator decisions from this state (shared contract):
 
 - `CREATE_SUCCESSOR_HYPOTHESIS` (requires explicit `hypothesis_id` + mechanism)
+- `DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` (requires explicit waiting decision; transitions toward `AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS`)
 - `CLOSE_LANE_NO_FURTHER_RESEARCH` (requires explicit closeout decision)
 
 GO alone is never executable without a concrete target. Awaiting authorizes

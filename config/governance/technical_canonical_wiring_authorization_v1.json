@@ -886,6 +886,6 @@
   "scope_id": "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_V1",
   "authorized_surface_notes": [
     "Includes shared definition-only canonical research-lane post-terminal lifecycle contract (state vocabulary, totality, operator-decision, immutability/live-mirror policy); does not migrate Entry-Eligibility or Exit-Efficiency backlog SSOTs; no evaluation/holdout/runtime/orders. Owner surface: CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1.",
-    "Includes Holdout evaluation wiring for Bollinger/MR midband exit reentry-cooldown HOLDOUT_V1 (structural preflight, bound authorization, declared runner/package); holdout_run_count remains 0; no holdout data access/execution in this slice; no economic/promotion/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1."
+    "Includes Holdout evaluation for Bollinger/MR midband exit reentry-cooldown HOLDOUT_V1 executed once and terminal as FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); no second run; no economic/promotion/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1."
   ]
 }

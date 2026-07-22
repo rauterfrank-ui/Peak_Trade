@@ -43,10 +43,10 @@ def test_exactly_one_exit_efficiency_backlog_ssot() -> None:
     assert GOVERNANCE_PATH.is_file()
 
 
-def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
+def test_repo_backlog_post_holdout_terminal_empty_inventory() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["status"] == "OPEN_BACKLOG"
+    assert report["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
     assert report["explicit_waiting_decision"] is False
     assert report["explicit_closeout_decision"] is False
     assert report["lane_auto_closed"] is False
@@ -57,14 +57,11 @@ def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
     assert report["lifecycle_authority"] == (
         "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
     )
-    assert report["preregistered_count"] == 1
+    assert report["preregistered_count"] == 0
     assert report["terminal_count"] == 8
     assert report["open_unpreregistered_count"] == 0
     assert report["hypothesis_id"] == REQUIRED_HYPOTHESIS_ID
-    assert (
-        report["preregistered_hypothesis_id"]
-        == "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_NON_BITCOIN_PERPETUALS_HOLDOUT_V1"
-    )
+    assert report["preregistered_hypothesis_id"] is None
     assert report["development_run_count"] == 8
     assert report["evaluation_authorized"] is False
     assert report["v7_evaluation_run_count"] == 1
@@ -72,7 +69,7 @@ def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
     assert report["v8_evaluation_run_count"] == 1
     assert report["v8_result_class"] == "PASS"
     assert report["holdout_forbidden"] is True
-    assert report.get("holdout_candidate_preregistered", True) is True
+    assert report.get("holdout_candidate_preregistered", True) is False
     assert report["rerun_allowed"] is False
     assert report["runtime_locked"] is True
     assert report["v2_evaluation_run_count"] == 1
@@ -100,12 +97,12 @@ def test_repo_backlog_one_definition_only_v8_preregistered() -> None:
     assert report["v5_is_rerun_of_v4"] is False
 
 
-def test_one_preregistered_v8_and_v7_terminal_entry_shape() -> None:
+def test_empty_preregistered_after_holdout_terminal_and_v7_v8_shape() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    assert backlog["governance_rules"]["preregistered_count_exact"] == 1
+    assert len(backlog["preregistered_hypotheses"]) == 0
+    assert backlog["governance_rules"]["preregistered_count_exact"] == 0
     assert backlog["open_unpreregistered_candidates"] == []
-    assert backlog["status"] == "OPEN_BACKLOG"
+    assert backlog["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
     assert backlog["lifecycle_authority"] == (
         "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY"
     )
@@ -213,9 +210,12 @@ def test_one_preregistered_v8_and_v7_terminal_entry_shape() -> None:
     assert v8["v8_reopen_allowed"] is False
     assert v8["baseline_members_completed"] == "46/46"
     assert v8["treatment_members_completed"] == "46/46"
-    assert backlog["next_canonical_step"] == (
-        "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
-    )
+    assert backlog["next_canonical_step"] == "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY"
+    assert backlog["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
+    assert backlog["preregistered_hypotheses"] == []
+    assert v8["holdout_executed"] is True
+    assert v8["holdout_run_count"] == 1
+    assert v8["holdout_result_class"] == "FAIL"
     assert v8["development_preregistration_digest"] == (
         "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c"
     )
@@ -244,10 +244,8 @@ def test_governance_doc_mentions_v8_prereg_and_v7_terminal() -> None:
     assert "ALL_PASS_REQUIRES_MET" in text
     assert "FROZEN_EXIT_PARAMETERS_MISMATCH" in text
     assert "BEFORE_PANEL_ACCESS" in text
-    assert (
-        "REVIEW_AND_MERGE_DEFINITION_ONLY_HOLDOUT_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_EXACTLY_ONE_HOLDOUT_RUN"
-        in text
-    )
+    assert "REVIEW_TERMINAL_HOLDOUT_FAIL_NO_RETRY" in text
+    assert "POST_TERMINAL_OPERATOR_DECISION_REQUIRED" in text
     assert "Evaluation closeout is not" in text or "not a lane closeout" in text.lower()
     assert "neither V9" in text or "neither V9," in text or "authorizes neither V9" in text
     assert "610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c" in text
@@ -260,12 +258,14 @@ def test_governance_doc_mentions_v8_prereg_and_v7_terminal() -> None:
 def test_rejects_open_backlog_with_empty_inventory() -> None:
     backlog = _load(BACKLOG_PATH)
     bad = copy.deepcopy(backlog)
+    bad["status"] = "OPEN_BACKLOG"
     bad["preregistered_hypotheses"] = []
     bad["governance_rules"] = dict(bad["governance_rules"])
     bad["governance_rules"]["preregistered_count_exact"] = 0
     bad["holdout_candidate_preregistered"] = False
     with pytest.raises(
-        BacklogValidationError, match="HOLDOUT_CANDIDATE_NOT_PREREGISTERED|PREREGISTERED_COUNT"
+        BacklogValidationError,
+        match="STATUS_NOT_POST_TERMINAL|LIFECYCLE_CONTRACT_REJECTED|OPEN_LANE_EMPTY",
     ):
         validate_backlog_contract(bad)
 
@@ -296,12 +296,12 @@ def test_rejects_noncanonical_entry_eligibility_status_label() -> None:
 
 def test_explicit_waiting_transition_invariants_and_v8_digest_immutable() -> None:
     backlog = _load(BACKLOG_PATH)
-    assert backlog["status"] == "OPEN_BACKLOG"
+    assert backlog["status"] == "POST_TERMINAL_OPERATOR_DECISION_REQUIRED"
     assert backlog["explicit_waiting_decision"] is False
     assert backlog["explicit_closeout_decision"] is False
     assert backlog["lane_auto_closed"] is False
     assert backlog["open_unpreregistered_candidates"] == []
-    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert len(backlog["preregistered_hypotheses"]) == 0
     assert backlog["runtime_policy"]["runtime_activated"] is False
     assert backlog["runtime_policy"]["orders_allowed"] is False
     assert backlog["holdout_forbidden"] is True
