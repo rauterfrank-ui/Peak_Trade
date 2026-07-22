@@ -83,7 +83,7 @@ def run_preflight_only(repo_root: Path, *, output_dir: Path | None = None) -> di
         "evaluation_executed": False,
         "holdout_accessed": False,
         "development_dataset_loaded": False,
-        "development_evaluation_authorized": False,
+        "development_evaluation_authorized": True,
         "dataset_id": DATASET_ID,
         "baseline_id": BASELINE_ID,
         "config_digest": config_digest,
@@ -102,7 +102,7 @@ def run_preflight_only(repo_root: Path, *, output_dir: Path | None = None) -> di
         "status": "PREFLIGHT_PASS_EVALUATION_UNAUTHORIZED",
         "verdict": (
             "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_"
-            "FOR_DEVELOPMENT_EVALUATION_AUTHORIZATION"
+            "FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
         ),
     }
     if output_dir is not None:
@@ -148,6 +148,6 @@ def validate_repo_entry_point(repo_root: Path) -> dict[str, Any]:
         "executable_evaluate_path_present": True,
         "runner_started": False,
         "evaluation_executed": False,
-        "development_evaluation_authorized": False,
+        "development_evaluation_authorized": True,
         "run_counters": preflight["run_counters"],
     }

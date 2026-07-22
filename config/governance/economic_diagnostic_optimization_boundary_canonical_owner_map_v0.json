@@ -912,7 +912,7 @@
       ]
     },
     "VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_DECAY_BREAKOUT_V1: executable evaluate path present but unauthorized; productive exit/PnL evaluator referenced from VCB package (not duplicated); no evaluation execution/run-slot consumption; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged; VCB/VEP slots not reused.",
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_DECAY_BREAKOUT_V1: executable evaluate path under fail-closed authorization; productive exit/PnL evaluator referenced from VCB package (not duplicated). Development evaluation authorized on HEAD; no runner start/run-slot consumption without separate execution GO; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged; VCB/VEP slots not reused.",
       "path_prefixes": [
         "config/research/volatility_decay_breakout_v1_development_evaluation_entry_point_binding_v1.json",
         "docs/evidence/evaluate_volatility_decay_breakout_development_v1/",
