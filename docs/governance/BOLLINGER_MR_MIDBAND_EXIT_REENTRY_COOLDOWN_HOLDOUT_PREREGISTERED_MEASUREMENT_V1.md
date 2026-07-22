@@ -16,7 +16,7 @@ Definition-only holdout confirmation successor for frozen Exit Efficiency V8.
 - V8 digest (immutable): `610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c`
 - Holdout preregistration digest: `a0658fe3fb883939ed2a2de2c426f2e4edf21eeeb91d1b902d45b4d05a38fd1d`
 - Mechanism identical to V8; parameters frozen; no retune
-- Holdout run count: `0/1`; execution unauthorized until separate Operator GO
+- Holdout run count: `0&#47;1`; execution unauthorized until separate Operator GO
 - V8 identity remains `holdout_allowed=false` (not reopened/reused/rerun)
 
 ## Explicit non-actions
