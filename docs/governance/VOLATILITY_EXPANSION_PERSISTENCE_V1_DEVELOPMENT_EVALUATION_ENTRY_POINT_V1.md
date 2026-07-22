@@ -2,12 +2,12 @@
 
 ## Status
 
-`EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED`
+`EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED`
 
 Executable development-evaluation path is present under the canonical entry point.
-Development evaluation remains unauthorized on the entry-point binding
-(`development_evaluation_authorized=false`). No development evaluation executed.
-Run counts remain `0`.
+Development evaluation is authorized (`development_evaluation_authorized=true`);
+execution still requires a separate operator GO and has not run.
+No development evaluation executed. Run counts remain `0`.
 
 ## Owner
 
@@ -21,7 +21,7 @@ Modes:
 
 - `preflight` (default): no panel open, no runner start, no slot claim
 - `dry-validate`: prove executable-path contracts without runner start or counter mutation
-- `evaluate`: requires machine-checkable authorization (token **and** repo flags); fail-closed on HEAD
+- `evaluate`: requires machine-checkable authorization (token **and** repo flags); panel execution remains a separate operator GO
 
 ## Bindings
 
@@ -48,13 +48,14 @@ Modes:
 
 ## Explicit non-actions in this slice
 
-No evaluation run, no authorization flip, no dataset load, no holdout access, no retry,
+No evaluation run, no dataset load, no holdout access, no retry,
 no threshold change, no result calibration, no Master-V2&#47;Double-Play&#47;risk&#47;sizing&#47;execution
 mutation, no runtime activation. Economic&#47;promotion gates remain closed. No second PnL truth.
+Development evaluation authorization is true; evaluation not executed.
 
 ## Next step
 
-`SEPARATE_OPERATOR_GO_FOR_DEVELOPMENT_EVALUATION_AUTHORIZATION`
+`AWAIT_SEPARATE_OPERATOR_GO_THEN_EXECUTE_EXACTLY_ONE_PREVIOUSLY_AUTHORIZED_BOUNDED_DEVELOPMENT_EVALUATION_RUN`
 
 ## Explicitly false
 
@@ -63,14 +64,14 @@ mutation, no runtime activation. Economic&#47;promotion gates remain closed. No 
 - `SHADOW=false`
 - `TESTNET=false`
 - `HOLDOUT_ACCESS=false`
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
+- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
 - `EVALUATION_EXECUTED=false`
 - `RUNNER_STARTED=false`
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED
-scope: research, offline-only, non-authorizing, entry-point-infrastructure
+STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_DEVELOPMENT_EVALUATION_AUTHORIZED
+scope: research, offline-only, authorizing-only, no-evaluation-execution
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false

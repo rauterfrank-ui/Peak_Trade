@@ -78,6 +78,36 @@ def assert_authorize_token(token: str) -> None:
     _require(token == HYPOTHESIS_ID, "AUTHORIZE_TOKEN_MISMATCH")
 
 
+def assert_evaluation_unauthorized_for_this_slice(repo_root: Path) -> None:
+    """Legacy helper: general evaluation/holdout remain closed; development may be authorized."""
+    contract = json.loads((repo_root / MEASUREMENT_CONTRACT_REL_PATH).read_text(encoding="utf-8"))
+    program = json.loads((repo_root / PROGRAM_REL_PATH).read_text(encoding="utf-8"))
+    _require(contract.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
+    _require(program.get("evaluation_authorized") is False, "PROGRAM_EVALUATION_AUTHORIZED_TRUE")
+
+
+def assert_development_evaluation_authorization_surfaces(repo_root: Path) -> None:
+    """Require consistent development_evaluation_authorized=true on contract+program+binding."""
+    contract = json.loads((repo_root / MEASUREMENT_CONTRACT_REL_PATH).read_text(encoding="utf-8"))
+    program = json.loads((repo_root / PROGRAM_REL_PATH).read_text(encoding="utf-8"))
+    binding = json.loads((repo_root / ENTRY_POINT_BINDING_REL_PATH).read_text(encoding="utf-8"))
+    _require(
+        contract.get("development_evaluation_authorized") is True,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
+    )
+    _require(
+        program.get("development_evaluation_authorized") is True,
+        "PROGRAM_DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
+    )
+    _require(
+        binding.get("development_evaluation_authorized") is True,
+        "ENTRY_POINT_BINDING_DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
+    )
+    _require(contract.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
+    _require(program.get("evaluation_authorized") is False, "PROGRAM_EVALUATION_AUTHORIZED_TRUE")
+    _require(binding.get("evaluation_authorized") is False, "BINDING_EVALUATION_AUTHORIZED_TRUE")
+
+
 def read_run_counters(repo_root: Path) -> dict[str, int]:
     contract = json.loads((repo_root / MEASUREMENT_CONTRACT_REL_PATH).read_text(encoding="utf-8"))
     program = json.loads((repo_root / PROGRAM_REL_PATH).read_text(encoding="utf-8"))
@@ -95,11 +125,7 @@ def assert_run_counters_unchanged(before: Mapping[str, int], after: Mapping[str,
 
 
 def preflight_guards(repo_root: Path) -> dict[str, Any]:
-    """Entry-point-only preflight: entry-point binding must remain unauthorized on HEAD.
-
-    Measurement-contract / program may already reserve development_evaluation_authorized=true
-    from preregistration; the entry-point binding remains the execution gate and stays false.
-    """
+    """Entry-point preflight: development evaluation authorized; counters remain zero."""
     assert_dataset_allowed(DATASET_ID)
     assert_holdout_guard(dataset_id=DATASET_ID)
     assert_exactly_one_run_limit()
@@ -114,13 +140,7 @@ def preflight_guards(repo_root: Path) -> dict[str, Any]:
     binding = json.loads((repo_root / ENTRY_POINT_BINDING_REL_PATH).read_text(encoding="utf-8"))
     assert_runtime_inactive(contract.get("runtime_policy"))
     assert_runtime_inactive(binding.get("runtime_policy"))
-    _require(contract.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
-    _require(program.get("evaluation_authorized") is False, "PROGRAM_EVALUATION_AUTHORIZED_TRUE")
-    _require(binding.get("evaluation_authorized") is False, "BINDING_EVALUATION_AUTHORIZED_TRUE")
-    _require(
-        binding.get("development_evaluation_authorized") is False,
-        "ENTRY_POINT_BINDING_DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
-    )
+    assert_development_evaluation_authorization_surfaces(repo_root)
     _require(
         binding.get("development_evaluation_executed") is False,
         "ENTRY_POINT_BINDING_DEVELOPMENT_EVALUATION_EXECUTED_TRUE",
@@ -136,8 +156,8 @@ def preflight_guards(repo_root: Path) -> dict[str, Any]:
         "exactly_one_run_guard_present": True,
         "retry_guard_present": True,
         "evaluation_authorized": False,
-        "development_evaluation_authorized": False,
-        "entry_point_binding_authorized": False,
+        "development_evaluation_authorized": True,
+        "entry_point_binding_authorized": True,
         "program_status": program.get("status"),
         "run_slot_exhausted": False,
         "run_counters": counters,
