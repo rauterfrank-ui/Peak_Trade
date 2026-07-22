@@ -211,7 +211,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "development_run_count": 0,
         "development_run_limit": 1,
         "economic_gate_open": False,
-        "entry_point_status": "MATERIALIZED_PREFLIGHT_ONLY",
+        "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
         "evaluation_authorized": False,
         "evidence_ref": (
             "docs/evidence/evaluate_cross_sectional_relative_strength_momentum_development_v1/"
@@ -260,14 +260,17 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         ),
         "score_formula_version": SCORE_FORMULA_VERSION,
         "signal_family": SIGNAL_FAMILY,
-        "slice_class": "DEVELOPMENT_EVALUATION_ENTRY_POINT_INFRASTRUCTURE_ONLY",
-        "status": "ENTRY_POINT_MATERIALIZED_EVALUATION_UNAUTHORIZED",
+        "slice_class": "DEVELOPMENT_EVALUATION_EXECUTABLE_PATH_IMPLEMENTATION_ONLY",
+        "status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
         "strategy_id": STRATEGY_ID,
         "strategy_identity": STRATEGY_IDENTITY,
         "strategy_params_digest": strategy_params_digest,
         "strategy_version": STRATEGY_VERSION,
         "time_segment_definition_id": TIME_SEGMENT_DEFINITION_ID,
-        "verdict": "ENTRY_POINT_BOUND_AWAITING_SEPARATE_OPERATOR_GO_FOR_EVALUATION_EXECUTION",
+        "verdict": (
+            "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_"
+            "FOR_EVALUATION_EXECUTION"
+        ),
     }
 
 

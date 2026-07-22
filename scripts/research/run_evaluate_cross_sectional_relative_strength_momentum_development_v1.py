@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 """Canonical DEVELOPMENT evaluation entry point for CS RS momentum v1.
 
-Default mode is preflight-only (no panel access, no run-slot claim, no evaluation).
-
-Evaluate mode remains fail-closed until a separate operator GO flips
-development_evaluation_authorized under the lifecycle authority. This infrastructure
-slice does not start a runner and does not consume the run slot.
-
-Example (preflight only):
-
-  PYTHONPATH=src:. python3 scripts/research/run_evaluate_cross_sectional_relative_strength_momentum_development_v1.py \\
-    --mode preflight
+Modes:
+  - preflight (default): bind digests/guards/evidence schema; no panel; no run.
+  - dry-validate: prove executable-path contracts without runner start or counters.
+  - evaluate: requires machine-checkable authorization; fail-closed while
+    development_evaluation_authorized=false on HEAD.
 
 Generic LIVE/SHADOW/TESTNET/SCHEDULER flags cannot authorize this runner.
 """
@@ -34,6 +29,7 @@ from src.research.cross_sectional_relative_strength_momentum_v1_development_eval
     HYPOTHESIS_ID,
 )
 from src.research.cross_sectional_relative_strength_momentum_v1_development_evaluation_v1.entry_point_v1 import (  # noqa: E402
+    run_dry_validate,
     run_evaluate_fail_closed,
     run_preflight_only,
 )
@@ -46,25 +42,28 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "CS RS momentum v1 DEVELOPMENT evaluation entry point "
-            "(default: preflight-only; evaluate remains unauthorized)."
+            "(default: preflight; evaluate remains unauthorized on HEAD)."
         )
     )
     parser.add_argument(
         "--mode",
-        choices=("preflight", "evaluate"),
+        choices=("preflight", "dry-validate", "evaluate"),
         default="preflight",
-        help="preflight (default) or evaluate (fail-closed while unauthorized).",
+        help="preflight (default), dry-validate, or evaluate (auth fail-closed on HEAD).",
     )
     parser.add_argument(
         "--authorize-single-development-evaluation",
         default="",
-        help=f"Must equal {HYPOTHESIS_ID}; still fail-closed while unauthorized on HEAD.",
+        help=(
+            f"Must equal {HYPOTHESIS_ID}; still fail-closed while "
+            "development_evaluation_authorized=false on HEAD."
+        ),
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
-        help="Optional output directory for preflight report JSON.",
+        help="Optional output directory for preflight report / evaluate evidence.",
     )
     parser.add_argument(
         "--live",
@@ -104,17 +103,23 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         if args.mode == "preflight":
-            out = args.output_dir
-            report = run_preflight_only(REPO_ROOT, output_dir=out)
+            report = run_preflight_only(REPO_ROOT, output_dir=args.output_dir)
+            print(json.dumps(report, sort_keys=True, default=str))
+            return 0
+
+        if args.mode == "dry-validate":
+            report = run_dry_validate(REPO_ROOT)
             print(json.dumps(report, sort_keys=True, default=str))
             return 0
 
         output_dir = args.output_dir or (REPO_ROOT / EVIDENCE_REL_PATH)
-        run_evaluate_fail_closed(
+        report = run_evaluate_fail_closed(
             REPO_ROOT,
             authorize_token=args.authorize_single_development_evaluation,
             output_dir=Path(output_dir),
         )
+        print(json.dumps(report, sort_keys=True, default=str))
+        return 0
     except GuardError as exc:
         print(
             json.dumps(
@@ -142,8 +147,6 @@ def main(argv: list[str] | None = None) -> int:
             )
         )
         return 2
-
-    return 2
 
 
 if __name__ == "__main__":

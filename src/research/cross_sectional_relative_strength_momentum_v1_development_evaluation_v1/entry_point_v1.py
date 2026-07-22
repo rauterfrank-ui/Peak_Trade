@@ -1,7 +1,8 @@
-"""Development-evaluation entry point for CS RS momentum v1 (preflight-only by default).
+"""Development-evaluation entry point for CS RS momentum v1.
 
-Evaluate mode remains fail-closed while development_evaluation_authorized=false.
-No runner start / run-slot consumption in the infrastructure slice.
+Preflight and dry-validate never start a runner or consume run budget.
+Evaluate requires machine-checkable authorization; unauthorized calls fail closed
+before the execution boundary.
 """
 
 from __future__ import annotations
@@ -22,10 +23,13 @@ from src.research.cross_sectional_relative_strength_momentum_v1_development_eval
     CLI_REL_PATH,
     DATASET_ID,
     EVIDENCE_REL_PATH,
-    HYPOTHESIS_ID,
     OWNER_SURFACE,
     PACKAGE_MARKER,
     TIME_SEGMENT_DEFINITION_ID,
+)
+from src.research.cross_sectional_relative_strength_momentum_v1_development_evaluation_v1.evaluate_path_v1 import (
+    dry_validate_evaluate_path_v1,
+    run_authorized_development_evaluation_v1,
 )
 from src.research.cross_sectional_relative_strength_momentum_v1_development_evaluation_v1.evidence_schema_v1 import (
     empty_evidence_surface_template,
@@ -33,9 +37,6 @@ from src.research.cross_sectional_relative_strength_momentum_v1_development_eval
 )
 from src.research.cross_sectional_relative_strength_momentum_v1_development_evaluation_v1.guards_v1 import (
     GuardError,
-    assert_authorize_token,
-    assert_evaluation_unauthorized_for_this_slice,
-    assert_no_slot_reuse,
     preflight_guards,
     read_run_counters,
 )
@@ -90,8 +91,12 @@ def run_preflight_only(repo_root: Path, *, output_dir: Path | None = None) -> di
         "cli_ref": CLI_REL_PATH,
         "evidence_ref": EVIDENCE_REL_PATH,
         "run_counters": read_run_counters(repo_root),
+        "executable_evaluate_path_present": True,
         "status": "PREFLIGHT_PASS_EVALUATION_UNAUTHORIZED",
-        "verdict": "ENTRY_POINT_MATERIALIZED_AWAITING_SEPARATE_OPERATOR_GO_FOR_EVALUATION_EXECUTION",
+        "verdict": (
+            "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_"
+            "FOR_EVALUATION_EXECUTION"
+        ),
     }
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -102,27 +107,39 @@ def run_preflight_only(repo_root: Path, *, output_dir: Path | None = None) -> di
     return report
 
 
+def run_dry_validate(repo_root: Path) -> dict[str, Any]:
+    """Dry-validate executable path contracts without runner start or counter mutation."""
+    return dry_validate_evaluate_path_v1(repo_root).to_dict()
+
+
 def run_evaluate_fail_closed(
     repo_root: Path,
     *,
     authorize_token: str,
     output_dir: Path,
 ) -> dict[str, Any]:
-    """Evaluate path: fail-closed while evaluation remains unauthorized. Never starts a run."""
-    assert_authorize_token(authorize_token)
-    assert_no_slot_reuse(output_dir)
-    assert_evaluation_unauthorized_for_this_slice(repo_root)
-    # Explicit fail-closed: infrastructure exists, execution not authorized on HEAD.
-    raise GuardError(f"EVALUATION_UNAUTHORIZED_AWAITING_SEPARATE_OPERATOR_GO:{HYPOTHESIS_ID}")
+    """Evaluate path: fail-closed without authorization; never starts runner when denied."""
+    result = run_authorized_development_evaluation_v1(
+        repo_root,
+        authorize_token=authorize_token,
+        output_dir=output_dir,
+        persist_evidence=True,
+    )
+    if not result.authorization.get("authorized"):
+        raise GuardError(result.reason or "EVALUATION_UNAUTHORIZED")
+    return result.to_dict()
 
 
 def validate_repo_entry_point(repo_root: Path) -> dict[str, Any]:
     binding = load_and_validate_entry_point_binding(repo_root)
     preflight = run_preflight_only(repo_root)
+    dry = dry_validate_evaluate_path_v1(repo_root)
     return {
         "valid": True,
         "binding_status": binding["status"],
         "preflight_status": preflight["status"],
+        "dry_validate_status": dry.status,
+        "executable_evaluate_path_present": True,
         "runner_started": False,
         "evaluation_executed": False,
         "run_counters": preflight["run_counters"],

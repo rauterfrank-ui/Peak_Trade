@@ -19,7 +19,7 @@
   "development_run_count": 0,
   "development_run_limit": 1,
   "economic_gate_open": false,
-  "entry_point_status": "MATERIALIZED_PREFLIGHT_ONLY",
+  "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
   "evaluation_authorized": false,
   "evidence_ref": "docs/evidence/evaluate_cross_sectional_relative_strength_momentum_development_v1/",
   "frozen_measurement_contract_digest": "1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158",
@@ -56,12 +56,12 @@
   "schema_version": "cross_sectional_relative_strength_momentum_v1_development_evaluation_entry_point_binding.v1",
   "score_formula_version": "raw_trailing_log_return_fixed_lookback_v1",
   "signal_family": "CROSS_SECTIONAL_MOMENTUM",
-  "slice_class": "DEVELOPMENT_EVALUATION_ENTRY_POINT_INFRASTRUCTURE_ONLY",
-  "status": "ENTRY_POINT_MATERIALIZED_EVALUATION_UNAUTHORIZED",
+  "slice_class": "DEVELOPMENT_EVALUATION_EXECUTABLE_PATH_IMPLEMENTATION_ONLY",
+  "status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
   "strategy_id": "cross_sectional_relative_strength_momentum",
   "strategy_identity": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1",
   "strategy_params_digest": "685164cb33367062c0ecf709ef30a172565ad89b79347eb198b9827da8e8438a",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "ENTRY_POINT_BOUND_AWAITING_SEPARATE_OPERATOR_GO_FOR_EVALUATION_EXECUTION"
+  "verdict": "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_EVALUATION_EXECUTION"
 }
