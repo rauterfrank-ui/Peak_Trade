@@ -50,8 +50,8 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["evaluation_authorized"] is False
     assert report["holdout_authorized"] is False
     assert report["dataset_bound"] is True
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
     assert report["open_parameters_remaining"] is False
     assert report["material_difference_from_vcb_v1"] is True
     assert report["material_difference_from_vep_v1"] is True
@@ -80,8 +80,8 @@ def test_frozen_decay_mechanism_and_baseline_isolation() -> None:
     )
     assert PRODUCTIVE_PNL.is_file()
     assert contract["strategy_implementation_present"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["run_slot_consumed"] is False
+    assert contract["development_run_count"] == 1
+    assert contract["run_slot_consumed"] is True
 
 
 def test_material_difference_vs_vep_vcb() -> None:
@@ -122,7 +122,7 @@ def test_fail_closed_on_semantics_mutation() -> None:
     with pytest.raises(PreregistrationValidationError, match="VEP_RETRY_ALLOWED"):
         validate_measurement_contract(bad2)
     bad3 = copy.deepcopy(contract)
-    bad3["development_run_count"] = 1
+    bad3["development_run_count"] = 0
     with pytest.raises(PreregistrationValidationError, match="DEVELOPMENT_RUN_COUNT"):
         validate_measurement_contract(bad3)
     bad4 = copy.deepcopy(contract)

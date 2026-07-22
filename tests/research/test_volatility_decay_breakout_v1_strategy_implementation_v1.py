@@ -335,7 +335,7 @@ def test_implementation_binding_and_owner_map() -> None:
     assert report["evaluation_authorized"] is False
     assert report["productive_pnl_evaluator_reused"] is True
     assert report["second_pnl_truth_created"] is False
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     owners = __import__("json").loads(
         (
             REPO
@@ -360,5 +360,5 @@ def test_backlog_marks_implementation_present() -> None:
     hyp = backlog["preregistered_hypotheses"][0]
     assert hyp["strategy_identity"] == "VOLATILITY_DECAY_BREAKOUT_V1"
     assert hyp["implementation_present"] is True
-    assert hyp["run_slot_consumed"] is False
-    assert hyp["development_run_count"] == 0
+    assert hyp["run_slot_consumed"] is True
+    assert hyp["development_run_count"] == 1

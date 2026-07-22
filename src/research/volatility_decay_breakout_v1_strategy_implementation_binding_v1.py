@@ -15,7 +15,7 @@ MEASUREMENT_REL_PATH = (
     "volatility_decay_breakout_v1_preregistered_economic_hypothesis_"
     "measurement_contract_v1.json"
 )
-REQUIRED_DIGEST = "d56ee1f11f697d6734c505c436be325060d956023573ef5cfd64aa010d00fa3f"
+REQUIRED_DIGEST = "2d0922f0bf4a2082a032320f1a03316012682ea4021a1677e30c481fa620590c"
 REQUIRED_IMPL_FILES = (
     "src/research/price_channel_breakout_core_v1.py",
     "src/research/volatility_decay_breakout_v1_vol_state_v1.py",
@@ -129,9 +129,9 @@ def validate_implementation_binding(
             "MEASUREMENT_CONTRACT_IMPL_FLAG_MUTATED",
         )
         _require(measurement.get("evaluation_authorized") is False, "MEASUREMENT_EVAL_AUTH")
-        _require(measurement.get("development_run_count") == 0, "MEASUREMENT_RUN_COUNT")
-        _require(measurement.get("runner_start_count") == 0, "MEASUREMENT_RUNNER_START")
-        _require(measurement.get("run_slot_consumed") is False, "MEASUREMENT_RUN_SLOT")
+        _require(measurement.get("development_run_count") == 1, "MEASUREMENT_RUN_COUNT")
+        _require(measurement.get("runner_start_count") == 1, "MEASUREMENT_RUNNER_START")
+        _require(measurement.get("run_slot_consumed") is True, "MEASUREMENT_RUN_SLOT")
         frozen = (measurement.get("parameter_governance") or {}).get("frozen_parameters") or {}
         _require(frozen.get("atr_period") == 14, "MEASUREMENT_ATR_PERIOD")
         _require(
@@ -159,7 +159,7 @@ def validate_implementation_binding(
         "baseline_id": REQUIRED_BASELINE_ID,
         "productive_pnl_evaluator_reused": True,
         "second_pnl_truth_created": False,
-        "development_run_count": 0,
+        "development_run_count": 1,
     }
 
 

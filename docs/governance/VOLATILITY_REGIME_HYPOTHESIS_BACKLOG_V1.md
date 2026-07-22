@@ -27,7 +27,7 @@ and prior terminal `VOLATILITY_COMPRESSION_BREAKOUT_V1` `FAIL_CLOSED_NO_RETRY`.
 ## Inventory
 
 - open_unpreregistered=0
-- preregistered=1 (`VOLATILITY_DECAY_BREAKOUT_V1`, run_count=0)
+- preregistered=1 (`VOLATILITY_DECAY_BREAKOUT_V1`, run_count=1 (slot consumed; PRODUCTIVE_PNL_OVERFLOW))
 - terminal=2 (VCB + VEP)
 - sibling lanes closed / reopen forbidden
 

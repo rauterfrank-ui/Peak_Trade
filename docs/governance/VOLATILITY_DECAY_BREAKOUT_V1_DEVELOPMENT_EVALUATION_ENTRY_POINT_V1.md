@@ -2,13 +2,13 @@
 
 ## Status
 
-`FAIL_CLOSED_AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED`
+`RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW`
 
-Executable development-evaluation path is present and development evaluation is
-authorized (`development_evaluation_authorized=true`). The single authorized
-evaluate attempt fail-closed before panel open because
-`AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED_IN_THIS_SLICE`. Durable
-run counts remain `0`.
+Executable development-evaluation path and panel execution boundary are present.
+The single authorized evaluate attempt fail-closed during productive PnL/metrics
+materialization with `UNEXPECTED:OverflowError:(34, 'Result too large')`.
+Durable run slot consumed (`DEVELOPMENT_RUN_COUNT=1`, `RUNNER_START_COUNT=1`).
+No retry.
 
 ## Owner
 
@@ -18,47 +18,24 @@ run counts remain `0`.
 
 `scripts&#47;research&#47;run_evaluate_volatility_decay_breakout_development_v1.py`
 
-Modes:
-
-- `preflight` (default): no panel open, no runner start, no slot claim
-- `dry-validate`: prove executable-path contracts without runner start or counter mutation
-- `evaluate`: requires machine-checkable authorization (token **and** repo flags); panel execution remains a separate operator GO
-
 ## Bindings
 
 - Strategy identity: `VOLATILITY_DECAY_BREAKOUT_V1`
+- Previous strategy: `VOLATILITY_EXPANSION_PERSISTENCE_V1`
 - Baseline: `UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1`
 - Program: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`
-- Signal family: `VOLATILITY_REGIME`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
-  (`DEVELOPMENT_ONLY`)
-- Measurement contract digest (frozen):
-  `d56ee1f11f697d6734c505c436be325060d956023573ef5cfd64aa010d00fa3f`
-- Entry-point binding:
-  `config&#47;research&#47;volatility_decay_breakout_v1_development_evaluation_entry_point_binding_v1.json`
-- Productive PnL evaluator (reused, not duplicated):
+- Measurement contract digest:
+  `2d0922f0bf4a2082a032320f1a03316012682ea4021a1677e30c481fa620590c`
+- Productive PnL evaluator (reused):
   `src&#47;research&#47;volatility_compression_breakout_v1_development_evaluation_v1&#47;productive_exit_pnl_evaluator_v1.py`
-- Shared channel core: `src&#47;research&#47;price_channel_breakout_core_v1.py`
-- Lifecycle authority:
-  `config&#47;research&#47;volatility_regime_hypothesis_backlog_v1.json`
-- Canonical reference pattern: VEP PR &#35;5444
-
-## Time-segment binding (preregistered, unchanged)
-
-- `TIME_SEGMENT_DEFINITION_ID=CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1`
-- Exactly 4 chronological equal-duration quarters; remainder to earliest segments
-
-## Explicit non-actions in this slice
-
-No evaluation run, no dataset load, no holdout access, no retry,
-no threshold change, no result calibration, no Master-V2&#47;Double-Play&#47;risk&#47;sizing&#47;execution
-mutation, no runtime activation. Economic&#47;promotion gates remain closed. No second PnL truth.
-Development evaluation authorization is true; evaluation not executed.
-No reuse of VCB-V1 or VEP-V1 development slots.
+- Terminal evidence: `docs&#47;evidence&#47;evaluate_volatility_decay_breakout_development_v1&#47;summary.json`
+- Archival panel-boundary report retained:
+  `docs&#47;evidence&#47;evaluate_volatility_decay_breakout_development_v1&#47;fail_closed_report.json`
 
 ## Next step
 
-`SEPARATE_OPERATOR_GO_TO_MATERIALIZE_PANEL_EXECUTION_BOUNDARY_THEN_SINGLE_BOUNDED_DEVELOPMENT_EVALUATION`
+`NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
 
 ## Explicitly false
 
@@ -67,14 +44,15 @@ No reuse of VCB-V1 or VEP-V1 development slots.
 - `SHADOW=false`
 - `TESTNET=false`
 - `HOLDOUT_ACCESS=false`
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
-- `EVALUATION_EXECUTED=false`
-- `RUNNER_STARTED=false`
+- `RETRY_FORBIDDEN=true`
+- `EVALUATION_EXECUTED=false` (metrics incomplete; overflow before gate evaluation)
+- `RUNNER_STARTED=true`
+- `RUN_SLOT_CONSUMED=true`
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: FAIL_CLOSED_AUTHORIZED_PANEL_EXECUTION_BOUNDARY_NOT_MATERIALIZED
-scope: research, offline-only, fail-closed-evidence, no-run-slot-consumption
+STATUS: RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW
+scope: research, offline-only, terminal-development-evidence
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
