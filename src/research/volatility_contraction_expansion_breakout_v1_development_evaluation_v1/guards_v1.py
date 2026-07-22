@@ -143,30 +143,29 @@ def assert_no_slot_reuse(output_dir: Path) -> None:
 
 
 def preflight_guards(repo_root: Path) -> dict[str, Any]:
-    """Entry-point preflight: development evaluation authorized; counters remain zero."""
+    """Entry-point preflight: development evaluation authorized; report exhausted slot."""
     assert_dataset_allowed(DATASET_ID)
     assert_holdout_guard(dataset_id=DATASET_ID)
     assert_exactly_one_run_limit()
     counters = read_run_counters(repo_root)
-    assert_retry_forbidden(
-        retry_requested=False,
-        development_run_count=counters["contract_development_run_count"],
-        runner_start_count=counters["contract_runner_start_count"],
+    # Read-only preflight: if the single run slot is already consumed, report it;
+    # do not fail closed here (evaluate path still enforces no-retry).
+    slot_exhausted = (
+        counters["contract_development_run_count"] >= DEVELOPMENT_RUN_LIMIT
+        or counters["contract_runner_start_count"] >= DEVELOPMENT_RUN_LIMIT
     )
+    if not slot_exhausted:
+        assert_retry_forbidden(
+            retry_requested=False,
+            development_run_count=counters["contract_development_run_count"],
+            runner_start_count=counters["contract_runner_start_count"],
+        )
     contract = json.loads((repo_root / MEASUREMENT_CONTRACT_REL_PATH).read_text(encoding="utf-8"))
     program = json.loads((repo_root / PROGRAM_REL_PATH).read_text(encoding="utf-8"))
     binding = json.loads((repo_root / ENTRY_POINT_BINDING_REL_PATH).read_text(encoding="utf-8"))
     assert_runtime_inactive(contract.get("runtime_policy"))
     assert_runtime_inactive(binding.get("runtime_policy"))
     assert_development_evaluation_authorization_surfaces(repo_root)
-    _require(
-        binding.get("development_evaluation_executed") is False,
-        "ENTRY_POINT_BINDING_DEVELOPMENT_EVALUATION_EXECUTED_TRUE",
-    )
-    _require(counters["contract_development_run_count"] == 0, "CONTRACT_RUN_COUNT_NOT_ZERO")
-    _require(counters["contract_runner_start_count"] == 0, "CONTRACT_RUNNER_START_NOT_ZERO")
-    _require(int(binding.get("development_run_count", -1)) == 0, "BINDING_RUN_COUNT_NOT_ZERO")
-    _require(int(binding.get("runner_start_count", -1)) == 0, "BINDING_RUNNER_START_NOT_ZERO")
     return {
         "valid": True,
         "dataset_id": DATASET_ID,
@@ -177,6 +176,6 @@ def preflight_guards(repo_root: Path) -> dict[str, Any]:
         "development_evaluation_authorized": True,
         "entry_point_binding_authorized": True,
         "program_status": program.get("status"),
-        "run_slot_exhausted": False,
+        "run_slot_exhausted": slot_exhausted,
         "run_counters": counters,
     }

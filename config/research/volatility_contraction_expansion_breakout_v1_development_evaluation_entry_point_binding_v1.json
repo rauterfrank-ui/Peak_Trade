@@ -5,7 +5,7 @@
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
   "canonical_ssot": true,
   "cli_ref": "scripts/research/run_evaluate_volatility_contraction_expansion_breakout_development_v1.py",
-  "config_digest": "9a1a7045a12067811c29c879fa15eb547678b16da5822d3245d1519931abac09",
+  "config_digest": "71fdf43b9fbfe99fd64e8a36a7f39d73b0843e748852d442c9abc4d484999914",
   "dataset_binding": {
     "dataset_class": "DEVELOPMENT_ONLY",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
@@ -16,14 +16,14 @@
     ]
   },
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "economic_gate_open": false,
-  "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+  "entry_point_status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
   "evaluation_authorized": false,
   "evidence_ref": "docs/evidence/evaluate_volatility_contraction_expansion_breakout_development_v1/",
-  "frozen_measurement_contract_digest": "e2e5414041c04ed756fe1315938eb49a8196caf416d33feb58055d641c7f5784",
+  "frozen_measurement_contract_digest": "222a4127834a837d2afc23e97849b075360755bd720288340fea097c1f03ff8e",
   "frozen_measurement_contract_ref": "config/research/volatility_contraction_expansion_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_ref": "docs/governance/VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
   "holdout_authorized": false,
@@ -45,7 +45,7 @@
     "vol_state": "src.research.volatility_contraction_expansion_breakout_v1_vol_state_v1"
   },
   "runner_present": true,
-  "runner_start_count": 0,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
@@ -62,11 +62,11 @@
   "shared_channel_core_ref": "src/research/price_channel_breakout_core_v1.py",
   "signal_family": "VOLATILITY_REGIME",
   "slice_class": "DEVELOPMENT_EVALUATION_EXECUTABLE_PATH_IMPLEMENTATION_ONLY",
-  "status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+  "status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT",
   "strategy_id": "volatility_contraction_expansion_breakout",
   "strategy_identity": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
   "strategy_params_digest": "1ec5ed9c87caa6135d157292fcf9aa3e2557b133e4d6188b434f92930701e17c",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
 }

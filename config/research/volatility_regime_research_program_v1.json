@@ -51,8 +51,8 @@
   "corrective_measurement_reevaluation_count": 1,
   "corrective_measurement_reevaluation_limit": 1,
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "evaluation_authorized": false,
   "evaluation_run_count": 0,
@@ -80,9 +80,10 @@
     "NO_SYNTHETIC_RESULTS",
     "NO_RUN_SLOT_CONSUMPTION",
     "NO_VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_RETRY",
-    "NO_VOLATILITY_DECAY_BREAKOUT_V1_RETRY"
+    "NO_VOLATILITY_DECAY_BREAKOUT_V1_RETRY",
+    "NO_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_RETRY"
   ],
-  "governance_note": "Active hypothesis VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1 strategy implementation + unauthorized Development-evaluation entry point after VDBX FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT. Predecessor VDBX/VDB/VEP/VCB artifacts unchanged. Development evaluation remains unauthorized.",
+  "governance_note": "VCEB v1 single authorized Development evaluation consumed run slot and fail-closed with UNPAIRABLE_ENTRY_NO_EXIT. No retry. No new hypothesis started. Predecessor VDBX/VDB/VEP/VCB artifacts unchanged. LIVE/ORDERS/HOLDOUT remain closed.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
@@ -185,8 +186,8 @@
   },
   "promotion_authorized": false,
   "retry_allowed": false,
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_authorized": false,
   "runtime_effect": "NONE",
   "runtime_policy": {
@@ -212,5 +213,5 @@
   "strategy_implementation_present": false,
   "strategy_version": "v1",
   "target_phenomenon": "VOLATILITY_CONTRACTION_TO_EXPANSION_JOINT_DIRECTIONAL_BREAKOUT",
-  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_OPEN_WITH_VCEB_V1_STRATEGY_IMPL_UNAUTHORIZED_ENTRY_POINT"
+  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_VCEB_V1_RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
 }

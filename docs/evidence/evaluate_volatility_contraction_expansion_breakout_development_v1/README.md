@@ -1,27 +1,46 @@
-# Evaluate volatility contraction-expansion breakout development v1 — panel boundary
+# Evaluate volatility contraction-expansion breakout development v1 — terminal FAIL_CLOSED
 
 ```text
 SLICE=EVALUATE_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_DEVELOPMENT_V1
-STATUS=EXECUTABLE_EVALUATE_PATH_PRESENT_PANEL_BOUNDARY_MATERIALIZED_DEVELOPMENT_EVALUATION_AUTHORIZED
-DEVELOPMENT_EVALUATION_AUTHORIZED=true
-PANEL_BOUNDARY_MATERIALIZED=true
+BASE_SHA=e0d90625664139765ade4fc43fb4679421d0d5d5
+STRATEGY_ID=VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1
+PREDECESSOR_STRATEGY_ID=VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1
+BASELINE_ID=UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1
+PROGRAM_ID=VOLATILITY_REGIME_RESEARCH_PROGRAM_V1
+DATASET=pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1
+STATUS=FAIL_CLOSED
+REASON=UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:AGLD:USDT:USDT:perp:10575
 EVALUATION_EXECUTED=false
-RUNNER_STARTED=false
-DEVELOPMENT_DATASET_LOADED=false
+RUNNER_STARTED=true
+CLI_REPORTED_RUNNER_STARTED=false
+DEVELOPMENT_DATASET_LOADED=true
+SLOT_CONSUMPTION_BOUNDARY=PRODUCTIVE_EVALUATOR_BEGAN_ON_MATERIALIZED_DEVELOPMENT_PANEL
+RUN_BUDGET_CONSUMED=true
+EVALUATION_RUN_COUNT=1
+RUNNER_START_COUNT=1
 HOLDOUT_ACCESSED=false
-RUN_COUNT=0
-RUNNER_START_COUNT=0
-DEVELOPMENT_SLOT_CONSUMED=false
+RETRY_FORBIDDEN=true
+PREREGISTERED_GATES=NOT_EVALUATED
+PRODUCTIVE_PNL_EVALUATOR_REUSED=true
+SECOND_PNL_TRUTH_CREATED=false
+STRATEGY_EMITTED_EXITS_BOUND_FOR_TREATMENT=true
 ```
 
-Placeholder evidence directory for the canonical entry point.
-Panel execution boundary is materialized; development evaluation is authorized;
-no evaluation has been executed.
+## Exact command (single authorized attempt; budget consumed)
+
+```bash
+python3 scripts/research/run_evaluate_volatility_contraction_expansion_breakout_development_v1.py --mode evaluate --authorize-single-development-evaluation VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1
+```
+
+Authorized single development-evaluation attempt on `e0d90625664139765ade4fc43fb4679421d0d5d5` entered the evaluate path with
+the panel execution boundary and productive exit/PnL evaluator bound (treatment via strategy-emitted
+exits; baseline via shared declarative path), then fail-closed with `UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:AGLD:USDT:USDT:perp:10575` during productive
+PnL pairing. No retry. Acceptance criteria were not evaluated. No new hypothesis started.
 
 ---
-docs_token: DOCS_TOKEN_EVALUATE_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_DEVELOPMENT_V1_ENTRY_POINT_PLACEHOLDER
-STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_PANEL_BOUNDARY_MATERIALIZED_DEVELOPMENT_EVALUATION_AUTHORIZED
-scope: research, offline-only, panel-boundary-only, evidence-placeholder
+docs_token: DOCS_TOKEN_EVALUATE_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_DEVELOPMENT_V1_FAIL_CLOSED_UNPAIRABLE
+STATUS: FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT
+scope: research, offline-only, terminal-development-evidence
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
