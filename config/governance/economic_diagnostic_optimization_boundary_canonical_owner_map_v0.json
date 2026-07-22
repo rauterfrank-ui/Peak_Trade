@@ -442,13 +442,14 @@
     "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
       "note": "DEVELOPMENT evaluation entry point/owner for CS relative-strength momentum v1: executable evaluate path under fail-closed authorization, CLI preflight/dry-validate, digests/dataset/time-segment/rebalance-observation/evidence-registry/admission gates, wiring into canonical single-slot backtest metrics owners. Development evaluation authorized on HEAD; no runner start/run-slot consumption without separate execution GO; no holdout/runtime/orders; measurement thresholds and strategy score/selection semantics unchanged.",
       "path_prefixes": [
-        "src/research/cross_sectional_relative_strength_momentum_v1_development_evaluation_v1/",
-        "scripts/research/run_evaluate_cross_sectional_relative_strength_momentum_development_v1.py",
         "config/research/cross_sectional_relative_strength_momentum_v1_development_evaluation_entry_point_binding_v1.json",
+        "docs/evidence/evaluate_cross_sectional_relative_strength_momentum_development_v1/",
+        "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "scripts/research/run_evaluate_cross_sectional_relative_strength_momentum_development_v1.py",
+        "src/research/cross_sectional_relative_strength_momentum_v1_development_evaluation_v1/",
         "tests/research/test_cross_sectional_relative_strength_momentum_v1_development_evaluation_entry_point_v1.py",
         "tests/research/test_cross_sectional_relative_strength_momentum_v1_development_evaluation_executable_path_v1.py",
-        "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
-        "docs/evidence/evaluate_cross_sectional_relative_strength_momentum_development_v1/"
+        "tests/research/test_cross_sectional_relative_strength_momentum_v1_panel_loader_alignment_repair_v1.py"
       ]
     },
     "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {

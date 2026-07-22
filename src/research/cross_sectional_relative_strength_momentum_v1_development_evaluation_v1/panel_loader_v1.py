@@ -1,6 +1,11 @@
 """Load DEVELOPMENT-only panel into InstrumentPanelSeriesV1 for CS RS momentum eval.
 
 Reuses sealed independent DEVELOPMENT panel loader. Holdout paths are rejected.
+
+Alignment contract:
+  Timestamp intersection must be complete for required OHLCV columns consumed by
+  PanelBarV1. Auxiliary research columns (e.g. volatility_estimate warmup NaNs)
+  must not be treated as timestamp alignment gaps.
 """
 
 from __future__ import annotations
@@ -22,6 +27,21 @@ from src.research.regime_gated_standaside_mr_development_evaluation_v1.dev_panel
     load_member_bars,
     verify_development_panel_hashes,
 )
+
+# Columns required to materialize PanelBarV1. Auxiliary columns may be present
+# with legitimate warmup/diagnostic NaNs and are ignored for alignment.
+REQUIRED_PANEL_BAR_COLUMNS: tuple[str, ...] = ("open", "high", "low", "close", "volume")
+
+
+def _require_ohlcv_alignment(aligned: pd.DataFrame, *, instrument_id: str) -> pd.DataFrame:
+    """Fail closed only when required OHLCV values are missing on the common grid."""
+    missing = [c for c in REQUIRED_PANEL_BAR_COLUMNS if c not in aligned.columns]
+    if missing:
+        raise ValueError(f"OHLCV_COLUMNS_MISSING:{instrument_id}:{','.join(missing)}")
+    required = aligned.loc[:, list(REQUIRED_PANEL_BAR_COLUMNS)]
+    if required.isna().any().any():
+        raise ValueError(f"ALIGNMENT_GAP:{instrument_id}")
+    return required
 
 
 def load_instrument_panel_series_from_development_archive_v1(
@@ -63,13 +83,12 @@ def load_instrument_panel_series_from_development_archive_v1(
     series_list: list[InstrumentPanelSeriesV1] = []
     for canon, frame in sorted(frames.items()):
         aligned = frame.reindex(common_index)
-        if aligned.isna().any().any():
-            aligned = aligned.dropna()
-            # Fail closed if alignment drops rows — intersection should already be clean.
-            if len(aligned) != len(common_index):
-                raise ValueError(f"ALIGNMENT_GAP:{canon}")
+        required = _require_ohlcv_alignment(aligned, instrument_id=canon)
         bars: list[PanelBarV1] = []
-        for ts, row in zip(timestamps, aligned.itertuples(index=False), strict=True):
+        rows = list(required.itertuples(index=False))
+        if len(rows) != len(timestamps):
+            raise ValueError(f"TIMESTAMP_ROW_LENGTH_MISMATCH:{canon}")
+        for ts, row in zip(timestamps, rows):
             bars.append(
                 PanelBarV1(
                     instrument_id=canon,
