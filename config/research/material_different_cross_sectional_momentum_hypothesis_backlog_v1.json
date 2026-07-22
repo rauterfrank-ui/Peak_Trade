@@ -30,7 +30,7 @@
     "NO_TERMINAL_RESULT_MUTATION"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "Operator-authorized STRATEGY_IMPLEMENTATION_ONLY present; pending admission thresholds and CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1 time-segment definition now bound on the measurement contract. Evaluation/holdout/promotion/runtime remain closed.",
+  "governance_note": "DEVELOPMENT evaluation entry-point/owner infrastructure materialized; evaluation remains unauthorized. Holdout/promotion/runtime remain closed. Awaiting separate operator GO for exactly one bounded DEVELOPMENT evaluation execution.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -49,7 +49,7 @@
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "open_unpreregistered_candidates": [],
   "preregistered_hypotheses": [
     {
