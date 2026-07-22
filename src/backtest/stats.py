@@ -178,7 +178,13 @@ def compute_calmar_ratio(equity: pd.Series, periods_per_year: int = 252) -> floa
     if annualization_base <= 0.0:
         return float(_CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL)
 
-    annual_return = annualization_base ** (1 / years) - 1
+    # Positive explosion (e.g. huge total_return / tiny years) raises OverflowError
+    # from Python's ``**`` before a non-finite float is returned. Mirror the
+    # existing non-finite fail-closed contract — do not crash metrics callers.
+    try:
+        annual_return = annualization_base ** (1 / years) - 1.0
+    except OverflowError:
+        return float(_CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL)
     if not np.isfinite(annual_return):
         return float(_CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL)
 

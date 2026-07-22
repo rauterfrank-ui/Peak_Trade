@@ -1,0 +1,33 @@
+{
+  "schema_version": "forensic_productive_pnl_overflow_calmar_annualization.v1",
+  "scope_type": "INFRASTRUCTURE_ONLY",
+  "base_sha": "c1e20a28faee4242d93309942ee4548826c5d668",
+  "related_prs": [5451],
+  "strategies_affected": [
+    "VOLATILITY_COMPRESSION_BREAKOUT_V1",
+    "VOLATILITY_DECAY_BREAKOUT_V1"
+  ],
+  "terminal_evidence_reason": "UNEXPECTED:OverflowError:(34, 'Result too large')",
+  "productive_pnl_reexecuted": false,
+  "development_evaluation_reexecuted": false,
+  "holdout_accessed": false,
+  "strategy_parameters_changed": false,
+  "hypothesis_changed": false,
+  "second_pnl_truth_created": false,
+  "first_loss_boundary": "src/backtest/stats.py::compute_calmar_ratio",
+  "overflow_class": "ACCUMULATION",
+  "root_cause": "compute_calmar_ratio annualizes via annualization_base ** (1/years). For explosively large positive total_return and small years, Python raises OverflowError:(34,'Result too large') before the existing np.isfinite guard. Productive exit/PnL evaluator always calls compute_backtest_stats (which always computes calmar) even though VCB/VDB gates do not consume calmar.",
+  "upstream_amplifier_not_repaired_here": "productive_exit_pnl_evaluator_v1._metrics_from_trades builds equity as UNIT_RISK_NOTIONAL(1.0)+cumsum(absolute multi-instrument quote PnL), which can produce huge total_return vs start=1. Changing that alters evaluation metric semantics and requires separate operator GO.",
+  "synthetic_reproduction": {
+    "periods_per_year": 8760,
+    "equity_start": 1.0,
+    "pnl_pattern": "[1e8 if i%5 else -2e7 for i in range(30)]",
+    "observed_exception": "OverflowError:(34, 'Result too large')"
+  },
+  "infrastructure_only_fix": "Catch OverflowError around the annualization power and return the existing catastrophic non-finite sentinel; no strategy/hypothesis/PnL-primitive change.",
+  "regression_tests": [
+    "tests/backtest/test_stats_calmar_negative_equity_v0.py::test_compute_calmar_ratio_positive_annualization_overflow_returns_finite_sentinel",
+    "tests/backtest/test_stats_calmar_negative_equity_v0.py::test_compute_backtest_stats_positive_annualization_overflow_no_overflow_error"
+  ],
+  "next_canonical_action": "MERGE_INFRA_CALMAR_OVERFLOW_GUARD_THEN_SEPARATE_OPERATOR_GO_IF_EQUITY_SCALING_SEMANTICS_OR_NEW_HYPOTHESIS_REQUIRED"
+}
