@@ -833,6 +833,15 @@
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
       ]
+    },
+    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1": {
+      "note": "Holdout evaluation wiring for frozen Exit V8 successor HOLDOUT_V1; structural preflight + bound authorization + declared runner/package; holdout_run_count remains 0; no execution/panel access in wiring slice; economic/promotion/runtime/orders closed.",
+      "path_prefixes": [
+        "src/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1/",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1.py",
+        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1.py",
+        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.md"
+      ]
     }
   },
   "forbidden_mutation_surfaces": {
@@ -1004,16 +1013,5 @@
     "authorized_scope_class": "TECHNICAL_CANONICAL_WIRING_ONLY",
     "contract_path": "config/governance/technical_canonical_wiring_authorization_v1.json",
     "note": "Narrow fail-closed override for versioned technical wiring paths only; does not waive MASTER_V2_MUTATION_ALLOWED=false."
-  },
-  "owners": {
-    "BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1": {
-      "note": "Holdout evaluation wiring for frozen Exit V8 successor HOLDOUT_V1; structural preflight + bound authorization + declared runner/package; holdout_run_count remains 0; no execution/panel access in wiring slice; economic/promotion/runtime/orders closed.",
-      "path_prefixes": [
-        "src/research/bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1/",
-        "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1.py",
-        "tests/research/test_bollinger_mr_midband_exit_reentry_cooldown_holdout_evaluation_v1.py",
-        "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.md"
-      ]
-    }
   }
 }
