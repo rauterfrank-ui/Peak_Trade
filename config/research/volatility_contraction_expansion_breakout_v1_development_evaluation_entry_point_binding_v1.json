@@ -15,7 +15,7 @@
       "offline_economic_reevaluation_sealed_long_panel_v1"
     ]
   },
-  "development_evaluation_authorized": false,
+  "development_evaluation_authorized": true,
   "development_evaluation_executed": false,
   "development_run_count": 0,
   "development_run_limit": 1,
@@ -68,5 +68,5 @@
   "strategy_params_digest": "1ec5ed9c87caa6135d157292fcf9aa3e2557b133e4d6188b434f92930701e17c",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_DEVELOPMENT_EVALUATION_AUTHORIZATION"
+  "verdict": "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
 }
