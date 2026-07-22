@@ -82,6 +82,18 @@ ENTRY_POINT_BINDING_REL_PATH = (
 LIFECYCLE_AUTHORITY_REL_PATH = "config/research/volatility_regime_hypothesis_backlog_v1.json"
 PROGRAM_REL_PATH = "config/research/volatility_regime_research_program_v1.json"
 EVIDENCE_REL_PATH = "docs/evidence/evaluate_volatility_decay_breakout_development_v1/"
+# Bounded corrective measurement reevaluation (distinct from development_run_count).
+CORRECTIVE_AUTHORIZE_GO_TOKEN = "VOLATILITY_DECAY_BREAKOUT_CORRECTIVE_MEASUREMENT_REEVALUATION_V1"
+CORRECTIVE_MEASUREMENT_REEVALUATION_LIMIT = 1
+CORRECTIVE_EVIDENCE_REL_PATH = (
+    "docs/evidence/evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_v1/"
+)
+SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH = EVIDENCE_REL_PATH
+MEASUREMENT_REPAIR_MERGE_COMMIT = "00a820f080973600378c3c2d5513905ee07217e9"
+PORTFOLIO_AGGREGATION_ID = "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1"
+CORRECTIVE_EVALUATION_RUN_ID = (
+    "evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_v1"
+)
 GOVERNANCE_REL_PATH = (
     "docs/governance/VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md"
 )

@@ -7,11 +7,16 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constants_v1 import (
+    CORRECTIVE_EVALUATION_RUN_ID,
+    CORRECTIVE_EVIDENCE_REL_PATH,
     EVALUATION_RUN_ID,
     EVIDENCE_REL_PATH,
     HYPOTHESIS_ID,
+    MEASUREMENT_REPAIR_MERGE_COMMIT,
+    PORTFOLIO_AGGREGATION_ID,
     REQUIRED_EVIDENCE_METRIC_KEYS,
     STRATEGY_IDENTITY,
+    SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH,
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.evidence_schema_v1 import (
     validate_evidence_surface_complete,
@@ -58,6 +63,52 @@ def build_run_slot_claim_v1(
     }
 
 
+def build_corrective_run_slot_claim_v1(
+    *,
+    config_digest: str,
+    strategy_params_digest: str,
+    dataset_id: str,
+    dataset_digest: str,
+) -> dict[str, Any]:
+    return {
+        "schema_version": (
+            "evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_claim.v1"
+        ),
+        "evaluation_run_id": CORRECTIVE_EVALUATION_RUN_ID,
+        "hypothesis_id": HYPOTHESIS_ID,
+        "strategy_identity": STRATEGY_IDENTITY,
+        "corrective_measurement_reevaluation_count": 1,
+        "original_development_run_count": 1,
+        "development_run_count": 1,
+        "runner_start_count": 1,
+        "measurement_repair_merge_commit": MEASUREMENT_REPAIR_MERGE_COMMIT,
+        "portfolio_aggregation_id": PORTFOLIO_AGGREGATION_ID,
+        "config_digest": config_digest,
+        "strategy_params_digest": strategy_params_digest,
+        "dataset_id": dataset_id,
+        "dataset_digest": dataset_digest,
+        "retry_forbidden": True,
+        "holdout_accessed": False,
+        "superseded_development_evidence_ref": SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH,
+    }
+
+
+def build_supersession_audit_v1() -> dict[str, Any]:
+    return {
+        "schema_version": (
+            "evaluate_volatility_decay_breakout_corrective_measurement_supersession.v1"
+        ),
+        "superseded_evidence_ref": SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH,
+        "replacement_evidence_ref": CORRECTIVE_EVIDENCE_REL_PATH,
+        "supersession_reason": "INVALID_INSTRUMENT_COUNT_SCALED_PORTFOLIO_MEASUREMENT",
+        "measurement_repair_merge_commit": MEASUREMENT_REPAIR_MERGE_COMMIT,
+        "portfolio_aggregation_id": PORTFOLIO_AGGREGATION_ID,
+        "original_development_run_count": 1,
+        "development_artifacts_preserved_unmodified": True,
+        "corrective_measurement_reevaluation_count": 1,
+    }
+
+
 def build_registry_metadata_v1(
     *,
     evaluation_executed: bool,
@@ -92,6 +143,46 @@ def build_registry_metadata_v1(
     }
 
 
+def build_corrective_registry_metadata_v1(
+    *,
+    evaluation_executed: bool,
+    runner_started: bool,
+    config_digest: str,
+    strategy_params_digest: str,
+    dataset_id: str,
+    dataset_digest: str,
+    terminal_corrective_verdict: str,
+    holdout_accessed: bool = False,
+) -> dict[str, Any]:
+    return {
+        "schema_version": (
+            "evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_registry.v1"
+        ),
+        "evaluation_run_id": CORRECTIVE_EVALUATION_RUN_ID,
+        "hypothesis_id": HYPOTHESIS_ID,
+        "strategy_identity": STRATEGY_IDENTITY,
+        "evaluation_executed": evaluation_executed,
+        "corrective_evaluation_executed": evaluation_executed,
+        "runner_started": runner_started,
+        "evaluation_run_count": 1,
+        "runner_start_count": 1,
+        "corrective_measurement_reevaluation_count": 1,
+        "original_development_run_count": 1,
+        "development_evaluation_authorized": True,
+        "corrective_measurement_reevaluation_authorized": True,
+        "holdout_accessed": holdout_accessed,
+        "config_digest": config_digest,
+        "strategy_params_digest": strategy_params_digest,
+        "dataset_id": dataset_id,
+        "dataset_digest": dataset_digest,
+        "terminal_development_verdict": terminal_corrective_verdict,
+        "measurement_repair_merge_commit": MEASUREMENT_REPAIR_MERGE_COMMIT,
+        "portfolio_aggregation_id": PORTFOLIO_AGGREGATION_ID,
+        "evidence_ref": CORRECTIVE_EVIDENCE_REL_PATH,
+        "superseded_development_evidence_ref": SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH,
+    }
+
+
 def validate_registry_contract_v1(payload: Mapping[str, Any]) -> dict[str, Any]:
     missing = [k for k in REQUIRED_REGISTRY_KEYS if k not in payload]
     if missing:
@@ -116,6 +207,8 @@ def write_evidence_bundle_v1(
     summary: Mapping[str, Any],
     registry: Mapping[str, Any],
     run_slot_claim: Mapping[str, Any] | None = None,
+    supersession: Mapping[str, Any] | None = None,
+    claim_filename: str = "run_slot_claim.json",
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "summary.json").write_text(
@@ -127,7 +220,12 @@ def write_evidence_bundle_v1(
         encoding="utf-8",
     )
     if run_slot_claim is not None:
-        (output_dir / "run_slot_claim.json").write_text(
+        (output_dir / claim_filename).write_text(
             json.dumps(run_slot_claim, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+    if supersession is not None:
+        (output_dir / "supersession.json").write_text(
+            json.dumps(supersession, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
             encoding="utf-8",
         )

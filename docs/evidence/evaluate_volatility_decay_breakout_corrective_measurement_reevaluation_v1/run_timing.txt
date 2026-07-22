@@ -1,0 +1,6 @@
+exit_code=2
+start_utc=2026-07-22T17:23:37Z
+end_utc=2026-07-22T17:24:05Z
+wallclock_seconds=28.66
+base_sha=00a820f080973600378c3c2d5513905ee07217e9
+measurement_repair_merge_commit=00a820f080973600378c3c2d5513905ee07217e9

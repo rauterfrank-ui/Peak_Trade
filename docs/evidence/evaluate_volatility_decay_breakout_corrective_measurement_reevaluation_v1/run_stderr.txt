@@ -1,0 +1,6 @@
+/Users/frnkhrz/Peak_Trade/src/backtest/stats.py:104: RuntimeWarning: overflow encountered in scalar power
+  cagr = (1.0 + mean_ret) ** annual_factor - 1.0 if mean_ret is not None else 0.0
+/Users/frnkhrz/Peak_Trade/src/backtest/stats.py:104: RuntimeWarning: overflow encountered in scalar power
+  cagr = (1.0 + mean_ret) ** annual_factor - 1.0 if mean_ret is not None else 0.0
+/Users/frnkhrz/Peak_Trade/src/backtest/stats.py:104: RuntimeWarning: overflow encountered in scalar power
+  cagr = (1.0 + mean_ret) ** annual_factor - 1.0 if mean_ret is not None else 0.0

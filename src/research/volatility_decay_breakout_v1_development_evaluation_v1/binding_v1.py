@@ -12,6 +12,8 @@ from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constan
     BASELINE_ID,
     BASELINE_IMPL_REL_PATH,
     CLI_REL_PATH,
+    CORRECTIVE_EVIDENCE_REL_PATH,
+    CORRECTIVE_MEASUREMENT_REEVALUATION_LIMIT,
     DATASET_CLASS,
     DATASET_ID,
     ENTRY_POINT_BINDING_REL_PATH,
@@ -23,7 +25,9 @@ from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constan
     IMPLEMENTATION_BINDING_REL_PATH,
     LIFECYCLE_AUTHORITY_REL_PATH,
     MEASUREMENT_CONTRACT_REL_PATH,
+    MEASUREMENT_REPAIR_MERGE_COMMIT,
     OWNER_SURFACE,
+    PORTFOLIO_AGGREGATION_ID,
     PRODUCTIVE_PNL_EVALUATOR_REL_PATH,
     PROGRAM_ID,
     SHARED_CHANNEL_CORE_OWNER,
@@ -34,6 +38,7 @@ from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constan
     STRATEGY_IDENTITY,
     STRATEGY_IMPL_REL_PATH,
     STRATEGY_VERSION,
+    SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH,
     TIME_SEGMENT_DEFINITION_ID,
     VOL_STATE_REL_PATH,
 )
@@ -99,6 +104,28 @@ def resolve_measurement_contract(repo_root: Path) -> dict[str, Any]:
     )
     _require(exit_sem.get("second_pnl_truth_forbidden") is True, "SECOND_PNL_TRUTH_ALLOWED")
     _require(exit_sem.get("new_pnl_implementation_forbidden") is True, "NEW_PNL_IMPL_ALLOWED")
+    if contract.get("corrective_measurement_reevaluation_authorized") is True:
+        _require(
+            str(contract.get("measurement_repair_merge_commit") or "")
+            == MEASUREMENT_REPAIR_MERGE_COMMIT,
+            "MEASUREMENT_REPAIR_MERGE_COMMIT_MISMATCH",
+        )
+        portfolio = contract.get("portfolio") or {}
+        _require(
+            str(portfolio.get("portfolio_aggregation_id") or "") == PORTFOLIO_AGGREGATION_ID,
+            "PORTFOLIO_AGGREGATION_ID_MISMATCH",
+        )
+        _require(
+            int(contract.get("corrective_measurement_reevaluation_limit", -1))
+            == CORRECTIVE_MEASUREMENT_REEVALUATION_LIMIT,
+            "CORRECTIVE_REEVALUATION_LIMIT_DRIFT",
+        )
+        corrective_count = int(contract.get("corrective_measurement_reevaluation_count", -1))
+        _require(corrective_count in (0, 1), "CORRECTIVE_REEVALUATION_COUNT_OUT_OF_RANGE")
+        _require(
+            int(contract.get("original_development_run_count", -1)) == 1,
+            "ORIGINAL_DEVELOPMENT_RUN_COUNT_NOT_ONE",
+        )
     return contract
 
 
@@ -250,6 +277,34 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
     _require(pnl_path.is_file(), "PRODUCTIVE_PNL_EVALUATOR_MISSING")
     config_digest = compute_config_digest(repo_root)
     strategy_params_digest = compute_strategy_params_digest(contract)
+    corrective_authorized = contract.get("corrective_measurement_reevaluation_authorized") is True
+    corrective_count = int(contract.get("corrective_measurement_reevaluation_count", 0))
+    if corrective_authorized and corrective_count >= 1:
+        status = (
+            "CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_"
+            "PRIOR_DEVELOPMENT_SLOT_CONSUMED_INVALID_MEASUREMENT_SUPERSEDED"
+        )
+        entry_point_status = status
+        verdict = (
+            "CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_DEVELOPMENT_COUNTERS_PRESERVED_AT_ONE"
+        )
+    elif corrective_authorized:
+        status = (
+            "CORRECTIVE_MEASUREMENT_REEVALUATION_AUTHORIZED_AWAITING_EXECUTION_"
+            "PRIOR_DEVELOPMENT_SLOT_CONSUMED_INVALID_MEASUREMENT"
+        )
+        entry_point_status = status
+        verdict = (
+            "CORRECTIVE_MEASUREMENT_REEVALUATION_AUTHORIZED_AWAITING_BOUNDED_EXECUTION_"
+            "DEVELOPMENT_COUNTERS_PRESERVED_AT_ONE"
+        )
+    else:
+        status = "RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW"
+        entry_point_status = status
+        verdict = (
+            "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_"
+            "FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
+        )
     return {
         "artifact_kind": (
             "volatility_decay_breakout_v1_development_evaluation_entry_point_binding"
@@ -260,6 +315,10 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "canonical_ssot": True,
         "cli_ref": CLI_REL_PATH,
         "config_digest": config_digest,
+        "corrective_evidence_ref": CORRECTIVE_EVIDENCE_REL_PATH,
+        "corrective_measurement_reevaluation_authorized": corrective_authorized,
+        "corrective_measurement_reevaluation_count": corrective_count,
+        "corrective_measurement_reevaluation_limit": CORRECTIVE_MEASUREMENT_REEVALUATION_LIMIT,
         "dataset_binding": {
             "dataset_class": DATASET_CLASS,
             "dataset_id": DATASET_ID,
@@ -271,7 +330,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "development_run_count": 1,
         "development_run_limit": 1,
         "economic_gate_open": False,
-        "entry_point_status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
+        "entry_point_status": entry_point_status,
         "evaluation_authorized": False,
         "evidence_ref": "docs/evidence/evaluate_volatility_decay_breakout_development_v1/",
         "frozen_measurement_contract_digest": FROZEN_MEASUREMENT_CONTRACT_DIGEST,
@@ -282,7 +341,12 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "hypothesis_id": contract["hypothesis_id"],
         "implementation_binding_ref": IMPLEMENTATION_BINDING_REL_PATH,
         "lifecycle_authority_ref": LIFECYCLE_AUTHORITY_REL_PATH,
+        "measurement_repair_merge_commit": str(
+            contract.get("measurement_repair_merge_commit") or MEASUREMENT_REPAIR_MERGE_COMMIT
+        ),
+        "original_development_run_count": 1,
         "owner_surface": OWNER_SURFACE,
+        "portfolio_aggregation_id": PORTFOLIO_AGGREGATION_ID,
         "productive_exit_pnl_evaluator_ref": PRODUCTIVE_PNL_EVALUATOR_REL_PATH,
         "productive_pnl_evaluator_duplicated": False,
         "program_id": PROGRAM_ID,
@@ -317,16 +381,14 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "shared_channel_core_ref": SHARED_CHANNEL_CORE_REL_PATH,
         "signal_family": SIGNAL_FAMILY,
         "slice_class": "DEVELOPMENT_EVALUATION_EXECUTABLE_PATH_IMPLEMENTATION_ONLY",
-        "status": "RUN_SLOT_CONSUMED_FAIL_CLOSED_PRODUCTIVE_PNL_OVERFLOW",
+        "status": status,
         "strategy_id": STRATEGY_ID,
         "strategy_identity": STRATEGY_IDENTITY,
         "strategy_params_digest": strategy_params_digest,
         "strategy_version": STRATEGY_VERSION,
+        "superseded_development_evidence_ref": SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH,
         "time_segment_definition_id": TIME_SEGMENT_DEFINITION_ID,
-        "verdict": (
-            "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_"
-            "FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
-        ),
+        "verdict": verdict,
     }
 
 
@@ -351,6 +413,14 @@ def load_and_validate_entry_point_binding(repo_root: Path) -> dict[str, Any]:
         "shared_channel_core_bound",
         "productive_exit_pnl_evaluator_ref",
         "productive_pnl_evaluator_duplicated",
+        "corrective_measurement_reevaluation_authorized",
+        "corrective_measurement_reevaluation_count",
+        "corrective_measurement_reevaluation_limit",
+        "measurement_repair_merge_commit",
+        "portfolio_aggregation_id",
+        "corrective_evidence_ref",
+        "superseded_development_evidence_ref",
+        "original_development_run_count",
     ):
         _require(loaded.get(key) == expected.get(key), f"ENTRY_POINT_BINDING_DRIFT:{key}")
     return loaded

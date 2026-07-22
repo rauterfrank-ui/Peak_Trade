@@ -3,6 +3,10 @@
 Authorization is fail-closed. Dry-validate never starts the runner, opens a panel,
 or consumes run budget. Real evaluate requires repo authorization flags + token and
 an injectable execution boundary (real or fake).
+
+Corrective measurement reevaluation reuses the same productive PnL path and writes
+to a distinct evidence directory without mutating prior development evidence or
+incrementing development_run_count / runner_start_count.
 """
 
 from __future__ import annotations
@@ -11,13 +15,18 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
+from src.research.regime_gated_standaside_mr_development_evaluation_v1.shared_portfolio_equity_research_v1 import (
+    PORTFOLIO_AGGREGATION_ID as SHARED_PORTFOLIO_AGGREGATION_ID,
+)
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.admission_gates_v1 import (
     evaluate_admission_gates_v1,
     evaluate_segment_local_result_v1,
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.authorization_v1 import (
     AuthorizationDecisionV1,
+    CorrectiveAuthorizationDecisionV1,
     resolve_authorization_decision_v1,
+    resolve_corrective_measurement_reevaluation_authorization_v1,
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.binding_v1 import (
     assert_shared_channel_core_bound,
@@ -28,16 +37,23 @@ from src.research.volatility_decay_breakout_v1_development_evaluation_v1.binding
     resolve_measurement_contract,
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.constants_v1 import (
+    CORRECTIVE_EVIDENCE_REL_PATH,
     DATASET_ID,
     DEVELOPMENT_RUN_LIMIT,
     EVIDENCE_REL_PATH,
+    MEASUREMENT_REPAIR_MERGE_COMMIT,
     MIN_EVALUABLE_TREATMENT_BREAKOUT_EVENTS,
+    PORTFOLIO_AGGREGATION_ID,
+    SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH,
     TIME_SEGMENT_DEFINITION_ID,
     TIME_SEGMENT_ROBUSTNESS_PASS_RATIO,
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.evidence_materialization_v1 import (
+    build_corrective_registry_metadata_v1,
+    build_corrective_run_slot_claim_v1,
     build_registry_metadata_v1,
     build_run_slot_claim_v1,
+    build_supersession_audit_v1,
     validate_evidence_and_registry_contracts_v1,
     write_evidence_bundle_v1,
 )
@@ -51,13 +67,18 @@ from src.research.volatility_decay_breakout_v1_development_evaluation_v1.executi
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.guards_v1 import (
     GuardError,
+    assert_corrective_measurement_reevaluation_allowed,
+    assert_development_counters_preserved_at_one,
     assert_exactly_one_run_limit,
     assert_holdout_guard,
+    assert_no_corrective_slot_reuse,
     assert_no_slot_reuse,
     assert_retry_forbidden,
     assert_runtime_inactive,
     assert_run_counters_unchanged,
+    mutate_corrective_measurement_reevaluation_counters_v1,
     preflight_guards,
+    read_corrective_counters,
     read_run_counters,
 )
 from src.research.volatility_decay_breakout_v1_development_evaluation_v1.time_segments_v1 import (
@@ -117,6 +138,20 @@ def _auth_dict(decision: AuthorizationDecisionV1) -> dict[str, Any]:
             decision.program_development_evaluation_authorized
         ),
         "entry_point_binding_authorized": decision.entry_point_binding_authorized,
+        "reason_codes": list(decision.reason_codes),
+    }
+
+
+def _corrective_auth_dict(decision: CorrectiveAuthorizationDecisionV1) -> dict[str, Any]:
+    return {
+        "authorized": decision.authorized,
+        "authorize_token_valid": decision.authorize_token_valid,
+        "contract_corrective_authorized": decision.contract_corrective_authorized,
+        "program_corrective_authorized": decision.program_corrective_authorized,
+        "binding_corrective_authorized": decision.binding_corrective_authorized,
+        "development_counters_preserved": decision.development_counters_preserved,
+        "measurement_repair_commit_bound": decision.measurement_repair_commit_bound,
+        "portfolio_aggregation_bound": decision.portfolio_aggregation_bound,
         "reason_codes": list(decision.reason_codes),
     }
 
@@ -246,60 +281,26 @@ def _segment_results_from_metrics(
     return out
 
 
-def run_authorized_development_evaluation_v1(
-    repo_root: Path,
-    *,
-    authorize_token: str,
-    output_dir: Path | None = None,
-    archive_root: Path | None = None,
-    execution_boundary: ExecutionBoundaryV1 | None = None,
-    authorization_decision: AuthorizationDecisionV1 | None = None,
-    persist_evidence: bool = True,
-    counter_mutator: Callable[[Path], None] | None = None,
-) -> EvaluatePathResultV1:
-    """Executable evaluate path. Requires authorization before runner start."""
-    before = read_run_counters(repo_root)
-    decision = authorization_decision or resolve_authorization_decision_v1(
-        repo_root, authorize_token=authorize_token
-    )
-    auth = _auth_dict(decision)
-    if not decision.authorized:
-        return EvaluatePathResultV1(
-            status="FAIL_CLOSED",
-            mode="evaluate",
-            runner_started=False,
-            evaluation_executed=False,
-            holdout_accessed=False,
-            development_dataset_loaded=False,
-            authorization=auth,
-            run_counters=before,
-            evidence_surface=None,
-            registry=None,
-            gates=None,
-            terminal_development_verdict="EVALUATION_UNAUTHORIZED",
-            executable_path_reached=False,
-            reason="EVALUATION_UNAUTHORIZED:" + ",".join(decision.reason_codes or ("UNKNOWN",)),
+def _assert_portfolio_aggregation_bound() -> None:
+    if SHARED_PORTFOLIO_AGGREGATION_ID != PORTFOLIO_AGGREGATION_ID:
+        raise GuardError(
+            f"PORTFOLIO_AGGREGATION_ID_DRIFT:{SHARED_PORTFOLIO_AGGREGATION_ID}"
+            f"!={PORTFOLIO_AGGREGATION_ID}"
         )
+    if PORTFOLIO_AGGREGATION_ID != "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1":
+        raise GuardError(f"PORTFOLIO_AGGREGATION_ID_UNEXPECTED:{PORTFOLIO_AGGREGATION_ID}")
 
-    out_dir = output_dir or (repo_root / EVIDENCE_REL_PATH)
-    assert_no_slot_reuse(out_dir)
-    assert_exactly_one_run_limit()
-    assert_holdout_guard(dataset_id=DATASET_ID)
-    assert_retry_forbidden(
-        retry_requested=False,
-        development_run_count=before["contract_development_run_count"],
-        runner_start_count=before["contract_runner_start_count"],
-    )
-    contract = resolve_measurement_contract(repo_root)
-    assert_runtime_inactive(contract.get("runtime_policy"))
-    assert_shared_channel_core_bound()
-    config_digest = compute_config_digest(repo_root)
-    binding = load_and_validate_entry_point_binding(repo_root)
-    if str(binding.get("config_digest")) != config_digest:
-        raise GuardError("CONFIG_DIGEST_MISMATCH")
 
-    boundary = execution_boundary or RealExecutionBoundaryV1()
-    runner_started = True
+def _run_panel_metrics_and_gates(
+    *,
+    repo_root: Path,
+    archive_root: Path | None,
+    boundary: ExecutionBoundaryV1,
+    contract: Mapping[str, Any],
+    config_digest: str,
+) -> tuple[Any, BacktestMetricsBundleV1, BacktestMetricsBundleV1, list[dict[str, Any]], Any]:
+    """Shared productive panel → metrics → admission gates (single PnL truth)."""
+    _assert_portfolio_aggregation_bound()
     panel = boundary.load_development_panel(
         repo_root=repo_root,
         archive_root=archive_root,
@@ -354,6 +355,70 @@ def run_authorized_development_evaluation_v1(
         max_drawdown=canonical.max_drawdown,
         cost_stress_1_5x_net_profit_factor=stress.net_profit_factor,
         segment_results=segment_results,
+    )
+    return panel, canonical, stress, segment_results, gates
+
+
+def run_authorized_development_evaluation_v1(
+    repo_root: Path,
+    *,
+    authorize_token: str,
+    output_dir: Path | None = None,
+    archive_root: Path | None = None,
+    execution_boundary: ExecutionBoundaryV1 | None = None,
+    authorization_decision: AuthorizationDecisionV1 | None = None,
+    persist_evidence: bool = True,
+    counter_mutator: Callable[[Path], None] | None = None,
+) -> EvaluatePathResultV1:
+    """Executable evaluate path. Requires authorization before runner start."""
+    before = read_run_counters(repo_root)
+    decision = authorization_decision or resolve_authorization_decision_v1(
+        repo_root, authorize_token=authorize_token
+    )
+    auth = _auth_dict(decision)
+    if not decision.authorized:
+        return EvaluatePathResultV1(
+            status="FAIL_CLOSED",
+            mode="evaluate",
+            runner_started=False,
+            evaluation_executed=False,
+            holdout_accessed=False,
+            development_dataset_loaded=False,
+            authorization=auth,
+            run_counters=before,
+            evidence_surface=None,
+            registry=None,
+            gates=None,
+            terminal_development_verdict="EVALUATION_UNAUTHORIZED",
+            executable_path_reached=False,
+            reason="EVALUATION_UNAUTHORIZED:" + ",".join(decision.reason_codes or ("UNKNOWN",)),
+        )
+
+    out_dir = output_dir or (repo_root / EVIDENCE_REL_PATH)
+    assert_no_slot_reuse(out_dir)
+    assert_exactly_one_run_limit()
+    assert_holdout_guard(dataset_id=DATASET_ID)
+    assert_retry_forbidden(
+        retry_requested=False,
+        development_run_count=before["contract_development_run_count"],
+        runner_start_count=before["contract_runner_start_count"],
+    )
+    contract = resolve_measurement_contract(repo_root)
+    assert_runtime_inactive(contract.get("runtime_policy"))
+    assert_shared_channel_core_bound()
+    config_digest = compute_config_digest(repo_root)
+    binding = load_and_validate_entry_point_binding(repo_root)
+    if str(binding.get("config_digest")) != config_digest:
+        raise GuardError("CONFIG_DIGEST_MISMATCH")
+
+    boundary = execution_boundary or RealExecutionBoundaryV1()
+    runner_started = True
+    panel, canonical, _stress, segment_results, gates = _run_panel_metrics_and_gates(
+        repo_root=repo_root,
+        archive_root=archive_root,
+        boundary=boundary,
+        contract=contract,
+        config_digest=config_digest,
     )
     terminal = (
         "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/PASS"
@@ -422,6 +487,193 @@ def run_authorized_development_evaluation_v1(
         status="EVALUATION_COMPLETE",
         mode="evaluate",
         runner_started=runner_started,
+        evaluation_executed=True,
+        holdout_accessed=False,
+        development_dataset_loaded=True,
+        authorization=auth,
+        run_counters=after,
+        evidence_surface=evidence,
+        registry=registry,
+        gates=gates.to_dict(),
+        terminal_development_verdict=terminal,
+        executable_path_reached=True,
+        reason=None,
+    )
+
+
+def run_corrective_measurement_reevaluation_v1(
+    repo_root: Path,
+    *,
+    authorize_token: str,
+    output_dir: Path | None = None,
+    archive_root: Path | None = None,
+    execution_boundary: ExecutionBoundaryV1 | None = None,
+    authorization_decision: CorrectiveAuthorizationDecisionV1 | None = None,
+    persist_evidence: bool = True,
+    counter_mutator: Callable[[Path], None] | None = None,
+) -> EvaluatePathResultV1:
+    """Exactly one corrective measurement reevaluation; preserves development counters."""
+    before = read_run_counters(repo_root)
+    corrective_before = read_corrective_counters(repo_root)
+    assert_development_counters_preserved_at_one(corrective_before)
+    decision = (
+        authorization_decision
+        or resolve_corrective_measurement_reevaluation_authorization_v1(
+            repo_root, authorize_token=authorize_token
+        )
+    )
+    auth = _corrective_auth_dict(decision)
+    if not decision.authorized:
+        return EvaluatePathResultV1(
+            status="FAIL_CLOSED",
+            mode="corrective-reevaluate",
+            runner_started=False,
+            evaluation_executed=False,
+            holdout_accessed=False,
+            development_dataset_loaded=False,
+            authorization=auth,
+            run_counters=before,
+            evidence_surface=None,
+            registry=None,
+            gates=None,
+            terminal_development_verdict="CORRECTIVE_REEVALUATION_UNAUTHORIZED",
+            executable_path_reached=False,
+            reason=(
+                "CORRECTIVE_REEVALUATION_UNAUTHORIZED:"
+                + ",".join(decision.reason_codes or ("UNKNOWN",))
+            ),
+        )
+
+    out_dir = output_dir or (repo_root / CORRECTIVE_EVIDENCE_REL_PATH)
+    if out_dir.resolve() == (repo_root / EVIDENCE_REL_PATH).resolve():
+        raise GuardError("CORRECTIVE_MUST_NOT_WRITE_DEVELOPMENT_EVIDENCE_DIR")
+    assert_no_corrective_slot_reuse(out_dir)
+    assert_corrective_measurement_reevaluation_allowed(repo_root, retry_requested=False)
+    assert_holdout_guard(dataset_id=DATASET_ID)
+    contract = resolve_measurement_contract(repo_root)
+    assert_runtime_inactive(contract.get("runtime_policy"))
+    if (
+        str(contract.get("measurement_repair_merge_commit") or "")
+        != MEASUREMENT_REPAIR_MERGE_COMMIT
+    ):
+        raise GuardError("MEASUREMENT_REPAIR_MERGE_COMMIT_MISMATCH")
+    portfolio = contract.get("portfolio") or {}
+    if str(portfolio.get("portfolio_aggregation_id") or "") != PORTFOLIO_AGGREGATION_ID:
+        raise GuardError("PORTFOLIO_AGGREGATION_ID_MISMATCH")
+    assert_shared_channel_core_bound()
+    _assert_portfolio_aggregation_bound()
+    config_digest = compute_config_digest(repo_root)
+    binding = load_and_validate_entry_point_binding(repo_root)
+    if str(binding.get("config_digest")) != config_digest:
+        raise GuardError("CONFIG_DIGEST_MISMATCH")
+    if str(binding.get("measurement_repair_merge_commit") or "") != MEASUREMENT_REPAIR_MERGE_COMMIT:
+        raise GuardError("BINDING_MEASUREMENT_REPAIR_MERGE_COMMIT_MISMATCH")
+    if str(binding.get("portfolio_aggregation_id") or "") != PORTFOLIO_AGGREGATION_ID:
+        raise GuardError("BINDING_PORTFOLIO_AGGREGATION_ID_MISMATCH")
+
+    boundary = execution_boundary or RealExecutionBoundaryV1()
+    panel, canonical, _stress, segment_results, gates = _run_panel_metrics_and_gates(
+        repo_root=repo_root,
+        archive_root=archive_root,
+        boundary=boundary,
+        contract=contract,
+        config_digest=config_digest,
+    )
+    terminal = (
+        "CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_TERMINAL/PASS"
+        if gates.all_pass
+        else "CORRECTIVE_MEASUREMENT_REEVALUATION_EXECUTED_TERMINAL/FAIL"
+    )
+    strategy_params_digest = compute_strategy_params_digest(contract)
+    evidence = {
+        "schema_version": (
+            "evaluate_volatility_decay_breakout_corrective_measurement_reevaluation_summary.v1"
+        ),
+        "evaluation_executed": True,
+        "corrective_evaluation_executed": True,
+        "runner_started": True,
+        "development_dataset_loaded": True,
+        "time_segment_definition_id": TIME_SEGMENT_DEFINITION_ID,
+        "time_segment_count": 4,
+        "config_digest": config_digest,
+        "strategy_params_digest": strategy_params_digest,
+        "dataset_id": panel.dataset_id,
+        "dataset_digest": panel.dataset_digest,
+        "gross_return": canonical.gross_return,
+        "net_return": canonical.net_return,
+        "gross_profit_factor": canonical.gross_profit_factor,
+        "net_profit_factor": canonical.net_profit_factor,
+        "max_drawdown": canonical.max_drawdown,
+        "trade_count": canonical.trade_count,
+        "evaluable_treatment_breakout_events": canonical.evaluable_treatment_breakout_events,
+        "baseline_net_profit_factor": canonical.baseline_net_profit_factor,
+        "segment_boundaries": segment_results,
+        "segment_results": [
+            {"segment_id": s["segment_id"], "result": s["result"]} for s in segment_results
+        ],
+        "passing_segments": sum(1 for s in segment_results if s["result"] == "PASS"),
+        "time_segment_robustness_pass_ratio": (
+            sum(1 for s in segment_results if s["result"] == "PASS") / 4.0
+        ),
+        "gates": gates.to_dict(),
+        "holdout_accessed": False,
+        "economic_gate_pass": gates.all_pass,
+        "corrective_measurement_reevaluation_count": 1,
+        "original_development_run_count": 1,
+        "measurement_repair_merge_commit": MEASUREMENT_REPAIR_MERGE_COMMIT,
+        "portfolio_aggregation_id": PORTFOLIO_AGGREGATION_ID,
+        "superseded_development_evidence_ref": SUPERSEDED_DEVELOPMENT_EVIDENCE_REL_PATH,
+        "development_artifacts_preserved_unmodified": True,
+    }
+    registry = build_corrective_registry_metadata_v1(
+        evaluation_executed=True,
+        runner_started=True,
+        config_digest=config_digest,
+        strategy_params_digest=strategy_params_digest,
+        dataset_id=panel.dataset_id,
+        dataset_digest=panel.dataset_digest,
+        terminal_corrective_verdict=terminal,
+        holdout_accessed=False,
+    )
+    validate_evidence_and_registry_contracts_v1(evidence, registry)
+    claim = build_corrective_run_slot_claim_v1(
+        config_digest=config_digest,
+        strategy_params_digest=strategy_params_digest,
+        dataset_id=panel.dataset_id,
+        dataset_digest=panel.dataset_digest,
+    )
+    supersession = build_supersession_audit_v1()
+    if persist_evidence:
+        write_evidence_bundle_v1(
+            out_dir,
+            summary=evidence,
+            registry=registry,
+            run_slot_claim=claim,
+            supersession=supersession,
+            claim_filename="corrective_run_slot_claim.json",
+        )
+    # Default durable mutator; tests may pass a no-op to avoid repo mutation.
+    effective_mutator = (
+        mutate_corrective_measurement_reevaluation_counters_v1
+        if counter_mutator is None
+        else counter_mutator
+    )
+    effective_mutator(repo_root)
+
+    after = read_run_counters(repo_root)
+    assert_run_counters_unchanged(before, after)
+    assert_development_counters_preserved_at_one(
+        {
+            "contract_development_run_count": after["contract_development_run_count"],
+            "contract_runner_start_count": after["contract_runner_start_count"],
+            "program_development_run_count": after["program_development_run_count"],
+            "program_runner_start_count": after["program_runner_start_count"],
+        }
+    )
+    return EvaluatePathResultV1(
+        status="CORRECTIVE_REEVALUATION_COMPLETE",
+        mode="corrective-reevaluate",
+        runner_started=True,
         evaluation_executed=True,
         holdout_accessed=False,
         development_dataset_loaded=True,
