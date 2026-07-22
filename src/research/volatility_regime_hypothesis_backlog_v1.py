@@ -15,18 +15,22 @@ BACKLOG_REL_PATH = "config/research/volatility_regime_hypothesis_backlog_v1.json
 GOVERNANCE_REL_PATH = "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.md"
 REQUIRED_STATUS = "OPEN_BACKLOG"
 REQUIRED_PROGRAM_ID = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
-REQUIRED_HYPOTHESIS_ID = "VOLATILITY_DECAY_BREAKOUT_NON_BITCOIN_PERPETUALS_V1"
-REQUIRED_STRATEGY_IDENTITY = "VOLATILITY_DECAY_BREAKOUT_V1"
+REQUIRED_HYPOTHESIS_ID = (
+    "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_NON_BITCOIN_PERPETUALS_V1"
+)
+REQUIRED_STRATEGY_IDENTITY = "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1"
 REQUIRED_TERMINAL_STRATEGY_IDENTITIES = frozenset(
     {
         "VOLATILITY_COMPRESSION_BREAKOUT_V1",
         "VOLATILITY_EXPANSION_PERSISTENCE_V1",
+        "VOLATILITY_DECAY_BREAKOUT_V1",
     }
 )
 REQUIRED_TERMINAL_HYPOTHESIS_IDS = frozenset(
     {
         "VOLATILITY_COMPRESSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
         "VOLATILITY_EXPANSION_PERSISTENCE_NON_BITCOIN_PERPETUALS_V1",
+        "VOLATILITY_DECAY_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
     }
 )
 REQUIRED_CLOSED = "LANE_CLOSED_NO_FURTHER_RESEARCH"
@@ -72,8 +76,8 @@ def validate_backlog_contract(
     )
     _require(payload.get("dataset_id") == REQUIRED_DATASET, "DATASET_ID_MISMATCH")
     _require(payload.get("dataset_class") == "DEVELOPMENT_ONLY", "DATASET_CLASS")
-    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
-    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
+    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
+    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
     rules = payload.get("governance_rules") or {}
     _require(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_NOT_1")
@@ -91,15 +95,15 @@ def validate_backlog_contract(
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(hyp.get("status") == "DEFINITION_ONLY_PREREGISTERED", "HYPOTHESIS_STATUS")
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
-    _require(hyp.get("development_run_count") == 1, "HYP_RUN_COUNT_NOT_ZERO")
+    _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NOT_ZERO")
     _require(hyp.get("development_run_limit") == 1, "HYP_RUN_LIMIT_NOT_ONE")
     _require(hyp.get("implementation_present") is True, "HYP_IMPLEMENTATION_PRESENT")
-    _require(hyp.get("run_slot_consumed") is True, "HYP_RUN_SLOT_CONSUMED")
-    _require(hyp.get("runner_start_count") == 1, "HYP_RUNNER_START_NOT_ZERO")
+    _require(hyp.get("run_slot_consumed") is False, "HYP_RUN_SLOT_CONSUMED")
+    _require(hyp.get("runner_start_count") == 0, "HYP_RUNNER_START_NOT_ZERO")
     _require(hyp.get("holdout_allowed") is False, "HYP_HOLDOUT_ALLOWED")
     _require(hyp.get("retry_allowed") is False, "HYP_RETRY_ALLOWED")
     terminals = payload.get("terminal_hypotheses") or []
-    _require(len(terminals) == 2, "TERMINAL_LEN_NOT_2")
+    _require(len(terminals) == 3, "TERMINAL_LEN_NOT_3")
     term_ids = {t.get("hypothesis_id") for t in terminals}
     term_strats = {t.get("strategy_identity") for t in terminals}
     _require(term_ids == REQUIRED_TERMINAL_HYPOTHESIS_IDS, "TERMINAL_HYPOTHESIS_IDS")
@@ -141,10 +145,10 @@ def validate_backlog_contract(
         "status": REQUIRED_STATUS,
         "program_id": REQUIRED_PROGRAM_ID,
         "preregistered_count": 1,
-        "terminal_count": 2,
+        "terminal_count": 3,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "strategy_identity": REQUIRED_STRATEGY_IDENTITY,
-        "development_run_count": 1,
+        "development_run_count": 0,
         "dataset_id": REQUIRED_DATASET,
         "evaluation_authorized": False,
         "holdout_forbidden": True,

@@ -43,14 +43,14 @@ def test_repo_program_definition_only_open() -> None:
     assert report["strategy_implementation_present"] is False
     assert report["program_id"] == "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
     assert report["status"] == "DEFINITION_ONLY_PROGRAM_OPEN"
-    assert report["strategy_identity"] == "VOLATILITY_DECAY_BREAKOUT_V1"
+    assert report["strategy_identity"] == "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1"
     assert report["signal_family"] == "VOLATILITY_REGIME"
     assert report["holdout_authorized"] is False
     assert report["evaluation_authorized"] is False
     assert report["promotion_eligible"] is False
-    assert report["development_run_count"] == 1
-    assert report["runner_start_count"] == 1
-    assert report["run_slot_consumed"] is True
+    assert report["development_run_count"] == 0
+    assert report["runner_start_count"] == 0
+    assert report["run_slot_consumed"] is False
     assert report["retry_allowed"] is False
     assert report["material_difference_explicit"] is True
     assert report["material_difference_from_vcb_v1"] is True
@@ -90,8 +90,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="EVALUATION_AUTHORIZED_TRUE"):
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["development_run_count"] = 0
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
+    bad2["development_run_count"] = 1
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
     bad3["strategy_implementation_present"] = True
@@ -107,6 +107,6 @@ def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in text
-    assert "VOLATILITY_DECAY_BREAKOUT_V1" in text
+    assert "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in owners

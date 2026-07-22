@@ -357,8 +357,9 @@ def test_backlog_marks_implementation_present() -> None:
             encoding="utf-8"
         )
     )
-    hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["strategy_identity"] == "VOLATILITY_DECAY_BREAKOUT_V1"
+    terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
+    hyp = terminals["VOLATILITY_DECAY_BREAKOUT_V1"]
     assert hyp["implementation_present"] is True
     assert hyp["run_slot_consumed"] is True
     assert hyp["development_run_count"] == 1
+    assert hyp["status"] == "TERMINAL_FAIL"

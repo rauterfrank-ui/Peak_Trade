@@ -1,0 +1,10 @@
+{
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_period": {
+    "end_exclusive": "2023-08-16T05:55:00Z",
+    "start": "2022-06-01T03:55:17Z"
+  },
+  "holdout_bound": false,
+  "raw_panel_accessed": false,
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1"
+}
