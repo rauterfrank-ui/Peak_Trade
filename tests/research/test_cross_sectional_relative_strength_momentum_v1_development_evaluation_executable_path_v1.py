@@ -149,11 +149,14 @@ def _authorized_decision():
     )
 
 
-def test_repo_authorization_fail_closed_on_head() -> None:
+def test_repo_authorization_authorized_on_head() -> None:
     decision = resolve_authorization_decision_v1(REPO, authorize_token=HYPOTHESIS_ID)
-    assert decision.authorized is False
+    assert decision.authorized is True
     assert decision.authorize_token_valid is True
-    assert "CONTRACT_DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE" in decision.reason_codes
+    assert decision.repo_development_evaluation_authorized is True
+    assert decision.program_development_evaluation_authorized is True
+    assert decision.entry_point_binding_authorized is True
+    assert decision.reason_codes == ()
 
 
 def test_unauthorized_blocks_before_runner_start(tmp_path: Path) -> None:
@@ -165,7 +168,7 @@ def test_unauthorized_blocks_before_runner_start(tmp_path: Path) -> None:
     )
     result = run_authorized_development_evaluation_v1(
         REPO,
-        authorize_token=HYPOTHESIS_ID,
+        authorize_token="WRONG_TOKEN",
         output_dir=tmp_path,
         execution_boundary=fake,
         persist_evidence=False,
@@ -180,7 +183,7 @@ def test_unauthorized_blocks_before_runner_start(tmp_path: Path) -> None:
     with pytest.raises(GuardError, match="EVALUATION_UNAUTHORIZED"):
         run_evaluate_fail_closed(
             REPO,
-            authorize_token=HYPOTHESIS_ID,
+            authorize_token="WRONG_TOKEN",
             output_dir=tmp_path,
         )
     assert read_run_counters(REPO) == before
@@ -296,7 +299,7 @@ def test_dataset_config_digest_and_time_segment_bindings() -> None:
     assert binding["time_segment_definition_id"] == TIME_SEGMENT_DEFINITION_ID
     assert binding["config_digest"] == preflight["config_digest"]
     assert binding["status"] == "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED"
-    assert binding["development_evaluation_authorized"] is False
+    assert binding["development_evaluation_authorized"] is True
 
 
 def test_holdout_forbidden_on_fake_boundary_and_guards(tmp_path: Path) -> None:
@@ -364,7 +367,7 @@ def test_implementation_only_head_flags_remain_closed() -> None:
             "measurement_contract_v1.json"
         ).read_text(encoding="utf-8")
     )
-    assert contract["development_evaluation_authorized"] is False
+    assert contract["development_evaluation_authorized"] is True
     assert contract["development_run_count"] == 0
     assert contract["runner_start_count"] == 0
     assert contract["holdout_authorized"] is False

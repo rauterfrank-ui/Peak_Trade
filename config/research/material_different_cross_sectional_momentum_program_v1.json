@@ -24,7 +24,7 @@
     "prior_terminal_relative_strength_v0_binding_digest": "84148813b30300eebb4ead67fdf680974181b417c89380ac4a6c368b6d61b70e",
     "prior_terminal_relative_strength_v0_retry_forbidden": true
   },
-  "development_evaluation_authorized": false,
+  "development_evaluation_authorized": true,
   "development_run_count": 0,
   "development_run_limit": 1,
   "evaluation_authorized": false,

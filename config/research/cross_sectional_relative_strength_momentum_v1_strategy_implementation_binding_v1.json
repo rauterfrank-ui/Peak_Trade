@@ -19,9 +19,9 @@
     "NO_PARAMETER_OPTIMIZATION",
     "NO_GRID_POINT_SELECTION_WITHOUT_DEVELOPMENT_GO"
   ],
-  "frozen_measurement_contract_digest": "1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158",
-  "frozen_measurement_contract_ref": "config/research/cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+  "frozen_measurement_contract_digest": "54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed",
   "frozen_measurement_contract_mutated": false,
+  "frozen_measurement_contract_ref": "config/research/cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_NON_BITCOIN_PERPETUALS_V1",
@@ -47,12 +47,12 @@
       20,
       48
     ],
+    "note": "Defaults reuse binding values 20/1; grid candidates are accepted inputs only. No development evaluation or model selection in this slice.",
     "rebalance_interval_bars_candidates": [
       1,
       4,
       24
-    ],
-    "note": "Defaults reuse binding values 20/1; grid candidates are accepted inputs only. No development evaluation or model selection in this slice."
+    ]
   },
   "program_id": "MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1",
   "promotion_eligible": false,
@@ -73,8 +73,8 @@
   "selection_mode": "single_top1_by_score_desc",
   "signal_family": "CROSS_SECTIONAL_MOMENTUM",
   "slice_class": "STRATEGY_IMPLEMENTATION_ONLY",
-  "source_definition_pr": 5422,
   "source_definition_base_sha": "a6d87c8240f7e185700f153418e0ad1a822ebdf2",
+  "source_definition_pr": 5422,
   "status": "STRATEGY_IMPLEMENTATION_PRESENT",
   "strategy_id": "cross_sectional_relative_strength_momentum",
   "strategy_identity": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1",

@@ -14,7 +14,7 @@ authorized in this slice.
 - Target phenomenon: `PERSISTENCE_OF_RELATIVE_RETURNS_ACROSS_NON_BTC_LINEAR_USDT_FUTURES`
 - Program: `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
 - Contract: `config&#47;research&#47;cross_sectional_relative_strength_momentum_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
-- Digest: `1d7f855027df438629765566cb559310820ab6699b6351bddc1577b1f731c158`
+- Digest: `54a6e4222ecb286a579780c53dddf509f2308f3b997ebef9e3a123a95ae1c3ed`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1` (`DEVELOPMENT_ONLY`)
 - Evidence: `docs&#47;evidence&#47;preregister_cross_sectional_relative_strength_momentum_hypothesis_v1&#47;`
 - Multiple-testing budget: `1`
@@ -99,7 +99,7 @@ and not an unchanged `cross_sectional_relative_strength&#47;v0` binding retry.
 ## Gates
 
 - `EVALUATION_AUTHORIZED=false`
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
+- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
 - `HOLDOUT_AUTHORIZED=false` &#47; `HOLDOUT_FORBIDDEN=true`
 - `PROMOTION_ELIGIBLE=false`
 - Economic offline gate unchanged&#47;closed
@@ -110,7 +110,7 @@ and not an unchanged `cross_sectional_relative_strength&#47;v0` binding retry.
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
+`DEVELOPMENT_EVALUATION_AUTHORIZED_AWAITING_BOUNDED_EXECUTION_GO`
 
 ---
 docs_token: DOCS_TOKEN_CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1

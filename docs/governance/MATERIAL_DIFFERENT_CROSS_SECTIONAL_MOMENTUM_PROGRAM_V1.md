@@ -30,7 +30,7 @@ ADX-DI, regime-gated standaside, MA&#47;MACD&#47;RSI entry filters, and unchange
 ## Gates (definition-only)
 
 - `EVALUATION_AUTHORIZED=false`
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
+- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
 - `HOLDOUT_AUTHORIZED=false` / `HOLDOUT_FORBIDDEN=true`
 - `PROMOTION_AUTHORIZED=false` / `PROMOTION_ELIGIBLE=false`
 - `RUNTIME_AUTHORIZED=false`

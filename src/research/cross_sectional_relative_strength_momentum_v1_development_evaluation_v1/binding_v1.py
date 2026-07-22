@@ -206,7 +206,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
             "holdout_forbidden": True,
             "holdout_ids_rejected": sorted(FORBIDDEN_HOLDOUT_IDS),
         },
-        "development_evaluation_authorized": False,
+        "development_evaluation_authorized": True,
         "development_evaluation_executed": False,
         "development_run_count": 0,
         "development_run_limit": 1,

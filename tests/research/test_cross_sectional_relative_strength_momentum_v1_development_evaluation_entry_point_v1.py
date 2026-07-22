@@ -254,7 +254,7 @@ def test_panel_wiring_reuses_orchestrator_shape_without_runtime() -> None:
     assert result.final_slot_side in {SlotSide.FLAT, SlotSide.LONG, SlotSide.SHORT}
 
 
-def test_preflight_and_evaluate_fail_closed_no_run_consumption() -> None:
+def test_preflight_authorized_no_evaluate_execution_or_run_consumption() -> None:
     before = read_run_counters(REPO)
     assert before["contract_development_run_count"] == 0
     assert before["contract_runner_start_count"] == 0
@@ -263,12 +263,8 @@ def test_preflight_and_evaluate_fail_closed_no_run_consumption() -> None:
     assert preflight["evaluation_executed"] is False
     assert preflight["holdout_accessed"] is False
     assert preflight["time_segment_definition_id"] == TIME_SEGMENT_DEFINITION_ID
-    with pytest.raises(GuardError, match="EVALUATION_UNAUTHORIZED"):
-        run_evaluate_fail_closed(
-            REPO,
-            authorize_token=HYPOTHESIS_ID,
-            output_dir=REPO / EVIDENCE_REL_PATH,
-        )
+    assert preflight["entry_point_binding"]["development_evaluation_authorized"] is True
+    # Authorization-only slice: do not invoke --mode evaluate / runner.
     after = read_run_counters(REPO)
     assert after == before
     report = validate_repo_entry_point(REPO)
@@ -278,6 +274,7 @@ def test_preflight_and_evaluate_fail_closed_no_run_consumption() -> None:
     assert guards["exactly_one_run_guard_present"] is True
     assert guards["retry_guard_present"] is True
     assert guards["holdout_guard_present"] is True
+    assert guards["development_evaluation_authorized"] is True
     contract = _load(CONTRACT)
     program = _load(PROGRAM)
     assert contract["development_run_count"] == 0
@@ -285,7 +282,8 @@ def test_preflight_and_evaluate_fail_closed_no_run_consumption() -> None:
     assert program["development_run_count"] == 0
     assert program["runner_start_count"] == 0
     assert contract["evaluation_authorized"] is False
-    assert contract["development_evaluation_authorized"] is False
+    assert contract["development_evaluation_authorized"] is True
+    assert program["development_evaluation_authorized"] is True
     runtime = contract["runtime_policy"]
     assert runtime["live_authorized"] is False
     assert runtime["orders_allowed"] is False
