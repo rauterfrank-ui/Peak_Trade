@@ -2,7 +2,7 @@
   "backtest_executed": false,
   "base_sha": "fd9b1cd214413a56cf6fb26b09a33f8364fb6972",
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
-  "contract_digest": "3b9e65121dd359742b427f3fba6aab18622858aca93e2f5400e617c8cbbcf069",
+  "contract_digest": "e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785",
   "definition_semantics_complete": true,
   "contract_ref": "config/research/volatility_compression_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "cost_model_fixed": true,

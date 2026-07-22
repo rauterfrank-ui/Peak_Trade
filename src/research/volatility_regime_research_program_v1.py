@@ -61,8 +61,8 @@ def validate_program_contract(
     )
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("development_evaluation_authorized") is False,
-        "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
+        payload.get("development_evaluation_authorized") is True,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
     )
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED_TRUE")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")

@@ -1,7 +1,8 @@
 """Frozen constants for VCB v1 DEVELOPMENT evaluation entry point.
 
-Infrastructure-only. Does not authorize or execute evaluation. Measurement-contract
-thresholds and strategy/baseline semantics remain unchanged.
+Development evaluation is authorized on the three authority surfaces; execution still
+requires a separate operator GO. Measurement-contract thresholds and strategy/baseline
+semantics remain unchanged.
 """
 
 from __future__ import annotations
@@ -46,7 +47,7 @@ DEVELOPMENT_RUN_LIMIT = 1
 RETRY_FORBIDDEN = True
 
 FROZEN_MEASUREMENT_CONTRACT_DIGEST = (
-    "3b9e65121dd359742b427f3fba6aab18622858aca93e2f5400e617c8cbbcf069"
+    "e8edbb7d2cbc55fa7ca979b3f1fc882fa56c03bd91cc2e708f0100342fae3785"
 )
 
 FEE_BPS_PER_SIDE = 10.0

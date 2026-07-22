@@ -33,7 +33,7 @@
     "order_book_dependency": false,
     "relative_strength_dependency": false
   },
-  "development_evaluation_authorized": false,
+  "development_evaluation_authorized": true,
   "development_run_count": 0,
   "development_run_limit": 1,
   "evaluation_authorized": false,

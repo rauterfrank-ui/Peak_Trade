@@ -1,7 +1,8 @@
 """Authorization decision for VCB v1 development evaluation.
 
 Fail-closed: token match alone is insufficient; repo lifecycle flags must also
-authorize development evaluation. This entry-point-only slice keeps repo flags false.
+authorize development evaluation. Development evaluation is authorized on HEAD;
+panel execution remains a separate operator GO.
 """
 
 from __future__ import annotations
