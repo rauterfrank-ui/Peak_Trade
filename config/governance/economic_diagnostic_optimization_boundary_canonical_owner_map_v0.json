@@ -936,7 +936,7 @@
       ]
     },
     "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1: panel execution boundary materialized (loader/wiring/injectable boundary); productive exit/PnL evaluator reused from VCB package (not duplicated). Development evaluation authorized on HEAD; no runner start/run-slot consumption without separate execution GO; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged; VDBX/VDB/VEP/VCB slots not reused.",
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1: development evaluation slot consumed FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT; productive exit/PnL evaluator reused from VCB package (not duplicated). No retry; no holdout/runtime/orders; strategy/baseline parameters unchanged; VDBX/VDB/VEP/VCB artifacts unchanged.",
       "path_prefixes": [
         "config/research/volatility_contraction_expansion_breakout_v1_development_evaluation_entry_point_binding_v1.json",
         "docs/evidence/evaluate_volatility_contraction_expansion_breakout_development_v1/",

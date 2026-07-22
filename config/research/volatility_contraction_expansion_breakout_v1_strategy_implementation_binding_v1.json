@@ -34,7 +34,7 @@
     "NO_EVALUATOR_SIDE_EXIT_RECONSTRUCTION",
     "NO_TRAILING_STOP"
   ],
-  "frozen_measurement_contract_digest": "e2e5414041c04ed756fe1315938eb49a8196caf416d33feb58055d641c7f5784",
+  "frozen_measurement_contract_digest": "222a4127834a837d2afc23e97849b075360755bd720288340fea097c1f03ff8e",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/volatility_contraction_expansion_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "holdout_authorized": false,

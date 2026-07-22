@@ -4,13 +4,12 @@ DOCS_TOKEN_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_E
 
 ## Status
 
-`EXECUTABLE_EVALUATE_PATH_PRESENT_PANEL_BOUNDARY_MATERIALIZED_DEVELOPMENT_EVALUATION_AUTHORIZED`
+`RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT`
 
-Executable development-evaluation path is present under the canonical entry point.
-Panel execution boundary (loader/wiring/injectable boundary/admission/evidence) is
-materialized. Development evaluation is authorized (`development_evaluation_authorized=true`);
-productive execution still requires a separate operator GO and has not run.
-No development evaluation executed. Run counts remain `0`.
+Single authorized Development evaluation on base `e0d90625664139765ade4fc43fb4679421d0d5d5`
+entered the evaluate path with panel boundary + productive exit/PnL evaluator bound, then
+fail-closed with `UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:AGLD:USDT:USDT:perp:10575`.
+Run slot consumed. No retry. No new hypothesis started.
 
 ## Owner
 
@@ -22,58 +21,50 @@ No development evaluation executed. Run counts remain `0`.
 
 Modes:
 
-- `preflight` (default): no panel open, no runner start, no slot claim
-- `dry-validate`: prove executable-path contracts without runner start or counter mutation
-- `evaluate`: requires machine-checkable authorization (token **and** repo flags); productive
-  panel evaluation still requires a separate operator GO
+- `preflight` (default): no panel open, no runner start; reports exhausted slot after terminal run
+- `dry-validate`: prove executable-path contracts without counter mutation
+- `evaluate`: authorization-gated; slot exhausted — retry forbidden
 
 ## Bindings
 
 - Strategy identity: `VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1`
 - Baseline: `UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1`
 - Program: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`
-- Signal family: `VOLATILITY_REGIME`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
-  (`DEVELOPMENT_ONLY`)
-- Time segments: `CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1`
-- Measurement contract digest (frozen):
-  `e2e5414041c04ed756fe1315938eb49a8196caf416d33feb58055d641c7f5784`
-- Entry-point binding:
-  `config&#47;research&#47;volatility_contraction_expansion_breakout_v1_development_evaluation_entry_point_binding_v1.json`
+- Measurement contract digest (post-slot):
+  `222a4127834a837d2afc23e97849b075360755bd720288340fea097c1f03ff8e`
+- Evidence:
+  `docs&#47;evidence&#47;evaluate_volatility_contraction_expansion_breakout_development_v1&#47;`
 - Productive PnL evaluator (reused, not duplicated):
   `src&#47;research&#47;volatility_compression_breakout_v1_development_evaluation_v1&#47;productive_exit_pnl_evaluator_v1.py`
-- Shared channel core: `src&#47;research&#47;price_channel_breakout_core_v1.py`
-- Panel boundary modules:
-  `panel_loader_v1` / `panel_wiring_v1` / `execution_boundary_v1` /
-  `admission_gates_v1` / `evidence_materialization_v1`
 
 ## Non-actions
 
-- No Development evaluation execution in this slice
+- No retry / no second development run
 - No holdout access
-- No run-slot consumption
-- No parameter / hypothesis mutation
+- No parameter / hypothesis mutation after result knowledge
 - No Shadow / Testnet / Live / Orders
 - No second PnL truth
-- Development evaluation authorization is true; evaluation not executed
+- No new hypothesis started in this slice
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_THEN_EXECUTE_EXACTLY_ONE_PREVIOUSLY_AUTHORIZED_BOUNDED_DEVELOPMENT_EVALUATION_RUN`
+`NO_RETRY_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
 
 ## Explicitly false
 
 - `SHADOW=false`
 - `TESTNET=false`
 - `HOLDOUT_ACCESS=false`
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
-- `EVALUATION_EXECUTED=false`
-- `RUNNER_STARTED=false`
+- `LIVE_AUTHORIZED=false`
+- `ORDERS=false`
+- `DEVELOPMENT_SLOT_CONSUMED=true`
+- `DEVELOPMENT_RUN_COUNT=1`
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: EXECUTABLE_EVALUATE_PATH_PRESENT_PANEL_BOUNDARY_MATERIALIZED_DEVELOPMENT_EVALUATION_AUTHORIZED
-scope: research, offline-only, panel-boundary-only, no-evaluation-execution
+STATUS: RUN_SLOT_CONSUMED_FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT
+scope: research, offline-only, terminal-development-evidence
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false

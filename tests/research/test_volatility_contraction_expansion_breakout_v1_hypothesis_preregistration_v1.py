@@ -55,12 +55,12 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["baseline_id"] == REQUIRED_BASELINE_ID
     assert report["evaluation_authorized"] is False
     assert report["development_evaluation_authorized"] is True
-    assert report["development_evaluation_executed"] is False
+    assert report["development_evaluation_executed"] is True
     assert report["holdout_authorized"] is False
     assert report["dataset_bound"] is True
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["open_parameters_remaining"] is False
     assert report["entry_semantics_complete"] is True
     assert report["exit_semantics_complete"] is True
@@ -101,8 +101,8 @@ def test_frozen_joint_transition_mechanism_and_exit_pairability() -> None:
     assert exits["productive_exit_pnl_evaluator_ref"] == REQUIRED_PRODUCTIVE_PNL_REF
     assert PRODUCTIVE_PNL.is_file()
     assert contract["strategy_implementation_present"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["run_slot_consumed"] is False
+    assert contract["development_run_count"] == 1
+    assert contract["run_slot_consumed"] is True
     assert contract["baseline"]["sole_difference_vs_treatment"] == (
         "VOLATILITY_CONTRACTION_EXPANSION_JOINT_ADMISSION"
     )
@@ -152,7 +152,7 @@ def test_fail_closed_on_semantics_mutation() -> None:
     with pytest.raises(PreregistrationValidationError, match="VCB_RETRY_ALLOWED"):
         validate_measurement_contract(bad3)
     bad4 = copy.deepcopy(contract)
-    bad4["development_run_count"] = 1
+    bad4["development_run_count"] = 2
     with pytest.raises(PreregistrationValidationError, match="DEVELOPMENT_RUN_COUNT"):
         validate_measurement_contract(bad4)
     bad5 = copy.deepcopy(contract)
@@ -181,9 +181,9 @@ def test_governance_evidence_owner_map() -> None:
     summary = _load(EVIDENCE / "summary.json")
     assert summary["evaluation_executed"] is False
     assert summary["holdout_accessed"] is False
-    assert summary["development_run_count"] == 0
-    assert summary["runner_start_count"] == 0
-    assert summary["development_evaluation_executed"] is False
+    assert summary["development_run_count"] == 1
+    assert summary["runner_start_count"] == 1
+    assert summary["development_evaluation_executed"] is True
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert (
         "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1"

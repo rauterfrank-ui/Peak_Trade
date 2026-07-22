@@ -1,0 +1,5 @@
+exit_code=2
+start_utc=2026-07-22T20:30:40Z
+end_utc=2026-07-22T20:31:14Z
+base_sha=e0d90625664139765ade4fc43fb4679421d0d5d5
+exact_command=python3 scripts/research/run_evaluate_volatility_contraction_expansion_breakout_development_v1.py --mode evaluate --authorize-single-development-evaluation VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1 --output-dir docs/evidence/evaluate_volatility_contraction_expansion_breakout_development_v1

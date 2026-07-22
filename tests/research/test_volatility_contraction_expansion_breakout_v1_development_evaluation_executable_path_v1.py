@@ -209,8 +209,8 @@ def test_import_safe_and_panel_modules_present() -> None:
     assert (pkg / "evidence_materialization_v1.py").is_file()
     after = read_run_counters(REPO)
     assert after == before
-    assert before["contract_development_run_count"] == 0
-    assert before["contract_runner_start_count"] == 0
+    assert before["contract_development_run_count"] == 1
+    assert before["contract_runner_start_count"] == 1
 
 
 def test_development_dataset_id_bound() -> None:
@@ -240,25 +240,12 @@ def test_dry_validate_no_runner_no_counter_mutation() -> None:
     assert after == before
 
 
-def test_fake_boundary_evaluate_writes_slot_claim_then_blocks_reuse(tmp_path: Path) -> None:
+def test_fake_boundary_evaluate_blocked_when_run_slot_exhausted(tmp_path: Path) -> None:
     before = read_run_counters(REPO)
-    assert before["contract_development_run_count"] == 0
+    assert before["contract_development_run_count"] == 1
+    assert before["contract_runner_start_count"] == 1
     out = tmp_path / "evidence"
-    result = run_authorized_development_evaluation_v1(
-        REPO,
-        authorize_token=HYPOTHESIS_ID,
-        output_dir=out,
-        execution_boundary=_fake_boundary(),
-        authorization_decision=_authorized_decision(),
-        persist_evidence=True,
-    )
-    assert result.evaluation_executed is True
-    assert result.runner_started is True
-    assert (out / "run_slot_claim.json").is_file()
-    assert (out / "summary.json").is_file()
-    # Repo counters remain zero until a separate productive execution GO mutates them.
-    assert read_run_counters(REPO) == before
-    with pytest.raises(GuardError, match="RETRY_OR_SLOT_REUSE_REJECTED"):
+    with pytest.raises(GuardError, match="RUN_LIMIT_EXHAUSTED"):
         run_authorized_development_evaluation_v1(
             REPO,
             authorize_token=HYPOTHESIS_ID,
@@ -267,11 +254,13 @@ def test_fake_boundary_evaluate_writes_slot_claim_then_blocks_reuse(tmp_path: Pa
             authorization_decision=_authorized_decision(),
             persist_evidence=True,
         )
+    assert not (out / "run_slot_claim.json").exists()
+    assert read_run_counters(REPO) == before
 
 
-def test_empty_panel_fail_closed_no_slot_claim(tmp_path: Path) -> None:
+def test_empty_panel_path_blocked_by_exhausted_slot(tmp_path: Path) -> None:
     out = tmp_path / "evidence_empty"
-    with pytest.raises((GuardError, ValueError)):
+    with pytest.raises(GuardError, match="RUN_LIMIT_EXHAUSTED"):
         run_authorized_development_evaluation_v1(
             REPO,
             authorize_token=HYPOTHESIS_ID,
@@ -281,7 +270,7 @@ def test_empty_panel_fail_closed_no_slot_claim(tmp_path: Path) -> None:
             persist_evidence=True,
         )
     assert not (out / "run_slot_claim.json").is_file()
-    assert read_run_counters(REPO)["contract_development_run_count"] == 0
+    assert read_run_counters(REPO)["contract_development_run_count"] == 1
 
 
 def test_preflight_still_safe_with_executable_path() -> None:

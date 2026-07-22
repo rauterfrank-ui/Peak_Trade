@@ -1,0 +1,22 @@
+{
+  "budget_consumed": true,
+  "config_digest": "71fdf43b9fbfe99fd64e8a36a7f39d73b0843e748852d442c9abc4d484999914",
+  "dataset_digest": "NOT_RESOLVED_UNPAIRABLE_ENTRY_NO_EXIT",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": true,
+  "evaluation_executed": false,
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_volatility_contraction_expansion_breakout_development_v1",
+  "evidence_ref": "docs/evidence/evaluate_volatility_contraction_expansion_breakout_development_v1/",
+  "holdout_accessed": false,
+  "hypothesis_id": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
+  "process_exit_code": 2,
+  "reason": "UNEXPECTED:ValueError:UNPAIRABLE_ENTRY_NO_EXIT:okx:linear_perpetual:AGLD:USDT:USDT:perp:10575",
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "runner_started": true,
+  "schema_version": "evaluate_volatility_contraction_expansion_breakout_registry.v1",
+  "strategy_identity": "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
+  "strategy_params_digest": "1ec5ed9c87caa6135d157292fcf9aa3e2557b133e4d6188b434f92930701e17c",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL_CLOSED_UNPAIRABLE_ENTRY_NO_EXIT"
+}
