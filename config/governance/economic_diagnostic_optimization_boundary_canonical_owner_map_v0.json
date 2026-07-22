@@ -898,14 +898,15 @@
       ]
     },
     "VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
-      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_COMPRESSION_BREAKOUT_V1: executable evaluate path under fail-closed authorization, CLI preflight/dry-validate, digests/dataset/time-segment/evidence bindings, shared channel-core reuse for treatment and baseline. Development evaluation authorized on HEAD; no runner start/run-slot consumption without separate execution GO; no holdout/runtime/orders; measurement thresholds and strategy/baseline semantics unchanged.",
+      "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_COMPRESSION_BREAKOUT_V1: executable evaluate path with injectable panel execution boundary (panel_loader/wiring), CLI preflight/dry-validate, digests/dataset/time-segment/evidence bindings, shared channel-core reuse for treatment and baseline. Development evaluation authorized on HEAD; productive exit/PnL evaluator handoff bound via Fake in tests; no runner start/run-slot consumption without separate execution GO; no holdout/runtime/orders; measurement thresholds and strategy/baseline semantics unchanged.",
       "path_prefixes": [
         "config/research/volatility_compression_breakout_v1_development_evaluation_entry_point_binding_v1.json",
         "docs/evidence/evaluate_volatility_compression_breakout_development_v1/",
         "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
         "scripts/research/run_evaluate_volatility_compression_breakout_development_v1.py",
         "src/research/volatility_compression_breakout_v1_development_evaluation_v1/",
-        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_entry_point_v1.py"
+        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_entry_point_v1.py",
+        "tests/research/test_volatility_compression_breakout_v1_development_evaluation_executable_path_v1.py"
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {

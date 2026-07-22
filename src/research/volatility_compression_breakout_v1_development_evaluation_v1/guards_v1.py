@@ -101,6 +101,26 @@ def assert_authorize_token(token: str) -> None:
     _require(token == HYPOTHESIS_ID, "AUTHORIZE_TOKEN_MISMATCH")
 
 
+def slot_already_consumed(output_dir: Path) -> bool:
+    if (output_dir / "run_slot_claim.json").is_file():
+        return True
+    summary_path = output_dir / "summary.json"
+    if not summary_path.is_file():
+        return False
+    try:
+        existing = json.loads(summary_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return int(existing.get("evaluation_run_count", -1)) >= 1 or bool(
+        existing.get("evaluation_executed")
+    )
+
+
+def assert_no_slot_reuse(output_dir: Path) -> None:
+    if slot_already_consumed(output_dir):
+        raise GuardError("RETRY_OR_SLOT_REUSE_REJECTED")
+
+
 def read_run_counters(repo_root: Path) -> dict[str, int]:
     contract = json.loads((repo_root / MEASUREMENT_CONTRACT_REL_PATH).read_text(encoding="utf-8"))
     program = json.loads((repo_root / PROGRAM_REL_PATH).read_text(encoding="utf-8"))
