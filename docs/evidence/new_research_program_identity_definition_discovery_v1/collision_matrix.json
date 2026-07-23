@@ -1,0 +1,224 @@
+{
+  "artifact_kind": "new_research_program_identity_definition_discovery_collision_matrix",
+  "artifact_version": "v1",
+  "authority_effect": "NONE",
+  "base_sha": "98767e5a24b6b4fa94c6bde2ae2a82a7d87409fe",
+  "candidates_compared": [
+    {
+      "authority_interaction": "CONSUME_DOUBLE_PLAY_ONLY",
+      "candidate_id": "CS_SHORT_HORIZON_RETURN_REVERSAL",
+      "cost_turnover_sensitivity": "MEDIUM",
+      "data_availability": "HIGH_EXISTING_PIT_OHLCV",
+      "falsifiability": "HIGH",
+      "leakage_risk": "LOW",
+      "mechanism_independence": "HIGH",
+      "operational_complexity": "LOW",
+      "pit_safety": "HIGH",
+      "reject_reason": null,
+      "selected": true,
+      "selection_bias_risk": "LOW_SINGLE_FROZEN_POINT",
+      "terminal_overlap": "OPPOSITE_POLARITY_TO_CS_MOMENTUM_NOT_RETRY"
+    },
+    {
+      "authority_interaction": "CONSUME_DOUBLE_PLAY_ONLY",
+      "candidate_id": "PAIRWISE_LEAD_LAG_SPILLOVER_ELEVATION",
+      "cost_turnover_sensitivity": "HIGH",
+      "data_availability": "HIGH",
+      "falsifiability": "MEDIUM",
+      "leakage_risk": "MEDIUM",
+      "mechanism_independence": "MEDIUM",
+      "operational_complexity": "HIGH",
+      "pit_safety": "HIGH",
+      "reject_reason": "Existing partial lead-lag spillover artifacts; elevating would collide with unfinished binding ratification rather than invent a clean new program SSOT.",
+      "selected": false,
+      "selection_bias_risk": "HIGH_GRAPH_PARAMS",
+      "terminal_overlap": "PARTIAL_EXISTING_SCOPE_ARTIFACTS"
+    },
+    {
+      "authority_interaction": "CONSUME_DOUBLE_PLAY_ONLY",
+      "candidate_id": "RELATIVE_VOLUME_CONFIRMATION_BREAKOUT",
+      "cost_turnover_sensitivity": "MEDIUM",
+      "data_availability": "MEDIUM_VOLUME_COVERAGE",
+      "falsifiability": "MEDIUM",
+      "leakage_risk": "MEDIUM",
+      "mechanism_independence": "MEDIUM",
+      "operational_complexity": "MEDIUM",
+      "pit_safety": "MEDIUM",
+      "reject_reason": "Semantic proximity to closed volatility-regime breakout admissions and weaker volume-coverage guarantees.",
+      "selected": false,
+      "selection_bias_risk": "MEDIUM",
+      "terminal_overlap": "NEAR_VOL_REGIME_BREAKOUT_FAMILY"
+    },
+    {
+      "authority_interaction": "CONSUME_DOUBLE_PLAY_ONLY",
+      "candidate_id": "REALIZED_SKEWNESS_CRASH_RISK_FADE",
+      "cost_turnover_sensitivity": "MEDIUM",
+      "data_availability": "MEDIUM",
+      "falsifiability": "MEDIUM",
+      "leakage_risk": "MEDIUM",
+      "mechanism_independence": "HIGH",
+      "operational_complexity": "HIGH",
+      "pit_safety": "MEDIUM",
+      "reject_reason": "No established skewness measurement convention in repo; higher estimator degrees of freedom.",
+      "selected": false,
+      "selection_bias_risk": "HIGH",
+      "terminal_overlap": "LOW"
+    },
+    {
+      "candidate_id": "FUNDING_RATE_FLEET_REOPEN",
+      "reject_reason": "Fleet COMPLETE_NO_PASS; near-duplicate funding reopen forbidden.",
+      "selected": false
+    },
+    {
+      "candidate_id": "OI_FAMILY_REOPEN",
+      "reject_reason": "OI variants terminal/insufficient-sample; unchanged retry forbidden.",
+      "selected": false
+    },
+    {
+      "candidate_id": "VOL_REGIME_OR_CS_MOMENTUM_REOPEN",
+      "reject_reason": "Programs closed; GO forbids reopen/rename/retry of terminal slots.",
+      "selected": false
+    }
+  ],
+  "canonical_ssot": true,
+  "evaluation_authorized": false,
+  "exhausted_or_closed_families": [
+    {
+      "family": "ENTRY_ELIGIBILITY",
+      "refs": [
+        "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
+      ],
+      "reuse_forbidden": true,
+      "status": "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    },
+    {
+      "family": "EXIT_LOGIC",
+      "refs": [
+        "config/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.json"
+      ],
+      "reuse_forbidden": true,
+      "status": "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    },
+    {
+      "family": "CROSS_SECTIONAL_MOMENTUM",
+      "note": "Terminal FAIL_CLOSED_NO_RETRY on persistence polarity; opposite reversal polarity is not a parameter retune.",
+      "refs": [
+        "config/research/material_different_cross_sectional_momentum_program_v1.json"
+      ],
+      "reuse_forbidden": true,
+      "status": "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
+    },
+    {
+      "family": "VOLATILITY_REGIME",
+      "refs": [
+        "config/research/volatility_regime_research_program_v1.json"
+      ],
+      "reuse_forbidden": true,
+      "status": "PROGRAM_CLOSED_NO_FURTHER_RESEARCH",
+      "terminal_last": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
+    },
+    {
+      "family": "REALIZED_VOLATILITY_RANKING",
+      "refs": [
+        "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1",
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+      ],
+      "reuse_forbidden": true,
+      "status": "TERMINAL_BOTH_HALVES"
+    },
+    {
+      "family": "MEAN_REVERSION_SINGLE_INSTRUMENT",
+      "refs": [
+        "bollinger_bands_mean_reversion",
+        "regime_gated_standaside"
+      ],
+      "reuse_forbidden": true,
+      "status": "LANES_CLOSED_AND_FLEET_NO_PASS"
+    },
+    {
+      "family": "TREND_ALIGNMENT",
+      "refs": [
+        "ma_trend_alignment_entry_filter"
+      ],
+      "reuse_forbidden": true,
+      "status": "TERMINAL_FAIL_IN_ENTRY_LANE"
+    },
+    {
+      "family": "COUNTERTREND_CONFIRMATION",
+      "refs": [
+        "macd_histogram_countertrend_entry_filter",
+        "rsi_exhaustion_entry_filter"
+      ],
+      "reuse_forbidden": true,
+      "status": "TERMINAL_FAIL_IN_ENTRY_LANE"
+    },
+    {
+      "family": "DIRECTIONAL_CONFIRMATION",
+      "refs": [
+        "adx_di_direction_confirmation"
+      ],
+      "reuse_forbidden": true,
+      "status": "TERMINAL_FAIL_IN_ENTRY_LANE"
+    },
+    {
+      "family": "TERM_STRUCTURE",
+      "refs": [
+        "VOLATILITY_TERM_STRUCTURE_REVERSION_V1",
+        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
+      ],
+      "reuse_forbidden": true,
+      "status": "TERMINAL_BOTH_HALVES"
+    },
+    {
+      "family": "CROSS_SECTIONAL_FUNDING_RATE",
+      "refs": [
+        "config/research/post_pr4936_cross_sectional_funding_rate_research_fleet_complete_no_pass_scope_definition_v0.json"
+      ],
+      "reuse_forbidden": true,
+      "status": "FLEET_COMPLETE_NO_PASS"
+    },
+    {
+      "family": "OPEN_INTEREST",
+      "refs": [
+        "cross_sectional_open_interest_zscore_reversion/v0",
+        "cross_sectional_open_interest_delta_rank/v0",
+        "cross_sectional_open_interest_level_rank/v0"
+      ],
+      "reuse_forbidden": true,
+      "status": "TERMINAL_OR_INSUFFICIENT_SAMPLE"
+    },
+    {
+      "family": "LEAD_LAG_PANEL_MEDIAN_DIFFUSION",
+      "refs": [
+        "cross_sectional_futures_lead_lag_information_diffusion/v0"
+      ],
+      "reuse_forbidden": true,
+      "status": "TERMINAL_PARENT"
+    },
+    {
+      "family": "MASTER_V2_DOUBLE_PLAY_NEAR",
+      "mutation_forbidden": true,
+      "refs": [
+        "trading.master_v2.double_play_state.transition_state"
+      ],
+      "status": "AUTHORITY_CONSUME_ONLY"
+    }
+  ],
+  "operator_go": "NEW_RESEARCH_PROGRAM_IDENTITY_DEFINITION_DISCOVERY_V1",
+  "runtime_effect": "NONE",
+  "schema_version": "new_research_program_identity_definition_discovery_collision_matrix.v1",
+  "scope_id": "NEW_RESEARCH_PROGRAM_IDENTITY_DEFINITION_DISCOVERY_V1",
+  "selected_causal_mechanism": "SHORT_HORIZON_CROSS_SECTIONAL_RELATIVE_RETURN_REVERSAL_VIA_NEGATED_TRAILING_LOG_RETURN_RANK",
+  "selected_hypothesis_id": "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_NON_BITCOIN_PERPETUALS_V1",
+  "selected_program_id": "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1",
+  "selection_rationale": {
+    "priority_order": [
+      "falsifiability",
+      "semantic_non_collision",
+      "measurable_on_existing_pit_ohlcv",
+      "bounded_scope",
+      "zero_runtime_authority_change"
+    ],
+    "why_selected": "Opposite causal polarity to terminal CS momentum using the same PIT OHLCV panel, without RV/funding/OI estimators, with a single frozen lookback/rebalance point and fail-closed economic admission gates."
+  }
+}

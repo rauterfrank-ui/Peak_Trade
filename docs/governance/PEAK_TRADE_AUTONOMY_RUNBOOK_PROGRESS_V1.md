@@ -1,3 +1,18 @@
+### NEW_RESEARCH_PROGRAM_IDENTITY_DEFINITION_DISCOVERY_V1 → CS short-horizon return reversal
+
+- Scope: `NEW_RESEARCH_PROGRAM_IDENTITY_DEFINITION_DISCOVERY_V1`
+- Decision: `DEFINE_NEW_INDEPENDENT_RESEARCH_PROGRAM_IDENTITY`
+- Program: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1` (`DEFINITION_ONLY`)
+- Family: `CROSS_SECTIONAL_RETURN_REVERSAL`
+- Lane backlog: `OPEN_BACKLOG` (preregistered=1, open_unpreregistered=0, terminal=0)
+- First hypothesis: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_NON_BITCOIN_PERPETUALS_V1` (`PREREGISTERED_DEFINITION_ONLY`)
+- Causal mechanism: negated trailing log-return cross-sectional single-slot reversal (lookback_N=24, rebalance=4)
+- Closed predecessors linked as exclusions only: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`, `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
+- `EVALUATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0`; holdout untouched; economic gate closed
+- Next admissible GO: separate implementation or bounded DEVELOPMENT evaluation GO (not authorized here)
+- Explicit non-actions: no vol-regime/CS-momentum reopen; no evaluation/runtime/LIVE/orders
+
+
 ### Post-CSLRVC CLOSE_LANE_NO_FURTHER_RESEARCH (no successor)
 
 - Scope: `VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
