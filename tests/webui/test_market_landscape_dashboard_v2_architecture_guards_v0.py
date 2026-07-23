@@ -597,3 +597,58 @@ def test_economic_summary_forbids_gate_status_alias_and_selector_logic() -> None
         "CanonicalOwnerRefV1(", 1
     )[0]
     assert 'reuse_status="REUSED"' in economic_block
+
+
+def test_owner_registry_diagnostics_summary_option_a_keep_not_bound() -> None:
+    """Phase 4.6C: diagnostics_summary stays NOT_BOUND; ReadModel is not its source."""
+    registry_text = (LANDSCAPE_PKG / "owner_registry.py").read_text(encoding="utf-8")
+    assert 'slot="diagnostics_summary"' in registry_text
+    diagnostics_block = registry_text.split('slot="diagnostics_summary"', 1)[1].split(
+        "CanonicalOwnerRefV1(", 1
+    )[0]
+    assert 'owner_module="UNRESOLVED"' in diagnostics_block
+    assert 'owner_symbol="UNRESOLVED"' in diagnostics_block
+    assert 'reuse_status="NOT_BOUND"' in diagnostics_block
+    assert "Phase 4.6C" in diagnostics_block
+    assert "OPTION_A_KEEP_NOT_BOUND" in diagnostics_block
+    assert "consumer-contract redesign" in diagnostics_block
+    assert "WorkflowDashboardReadModelV1" in diagnostics_block
+    assert "MUST NOT" in diagnostics_block
+    # Must not silently reclaim WorkflowDashboardReadModelV1 as bound owner/source.
+    assert 'owner_module="webui.workflow_dashboard_readmodel_v1.types"' not in diagnostics_block
+    assert 'owner_symbol="WorkflowDashboardReadModelV1"' not in diagnostics_block
+    assert 'reuse_status="PROJECTION_ONLY"' not in diagnostics_block
+    assert 'reuse_status="REUSED"' not in diagnostics_block
+
+    # No diagnostics producer / typed injection / project_* adapter authorized.
+    landscape_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in _iter_py_files(LANDSCAPE_PKG)
+    )
+    producer = PRODUCER_BINDING.read_text(encoding="utf-8")
+    for token in (
+        "project_diagnostics_summary",
+        "project_diagnostics_",
+        "bind_diagnostics",
+    ):
+        assert token not in landscape_text, token
+        assert token not in producer, token
+    assert "WorkflowDashboardReadModelV1" not in producer
+
+    runbook = (
+        REPO
+        / "docs"
+        / "ops"
+        / "market_dashboard"
+        / "PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md"
+    ).read_text(encoding="utf-8")
+    assert "##### 4.6C — Diagnostics Summary Contract Architecture Ratification" in runbook
+    assert "RATIFY_OPTION_A_KEEP_NOT_BOUND=true" in runbook
+    assert "DIAGNOSTICS_SUMMARY_STATUS=NOT_BOUND" in runbook
+    assert "SOLE_DIAGNOSTICS_OWNER=UNRESOLVED" in runbook
+    assert "OPTION_B_NEW_DOMAIN_NEUTRAL_DIAGNOSTICS_EVIDENCE=REJECTED" in runbook
+    assert "OPTION_D_SOURCE_HEALTH_ONLY=REJECTED" in runbook
+    assert (
+        "OPTION_C_MULTIPLE_DOMAIN_SPECIFIC_DIAGNOSTICS=DEFERRED_SEPARATE_OPERATOR_AUTHORIZED_REDESIGN"
+        in runbook
+    )
+    assert "WORKFLOW_DASHBOARD_READMODEL_V1=NON_SOURCE_PROJECTION_ONLY" in runbook

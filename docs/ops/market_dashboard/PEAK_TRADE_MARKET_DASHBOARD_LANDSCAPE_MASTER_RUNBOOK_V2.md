@@ -715,12 +715,55 @@ policy_digest
 Rules: direct copy only; no recomputation; no promotion/research-workflow/
 risk-capital-sizing fields; optional source absences remain absent/None.
 
-##### 4.6B+ — Binding / Research / Diagnostics (not started in 4.6A)
+##### 4.6B — Economic Explicit Injection Binding (RATIFIED separately)
 
 - Explicit injection binding of one EconomicViabilityEvidenceV1 instance
-- Diagnostics ausdrücklich non-authoritative
 - keine Anlageempfehlung
 - Lifecycle context only after separate ratification
+
+##### 4.6C — Diagnostics Summary Contract Architecture Ratification (RATIFIED OPTION A)
+
+```text
+PHASE=PHASE_4_6C_DIAGNOSTICS_SUMMARY_CONTRACT_ARCHITECTURE_RATIFICATION
+RATIFY_OPTION_A_KEEP_NOT_BOUND=true
+DIAGNOSTICS_SUMMARY_STATUS=NOT_BOUND
+SOLE_DIAGNOSTICS_OWNER=UNRESOLVED
+IMPLEMENTATION_AUTHORIZED=false
+TYPED_INJECTION_BOUNDARY_AUTHORIZED=false
+SUMMARY_PRODUCER_EVIDENCE_RATIFIED=false
+CONSUMER_CONTRACT_REDESIGN_REQUIRED=true
+WORKFLOW_DASHBOARD_READMODEL_V1=NON_SOURCE_PROJECTION_ONLY
+OPTION_B_NEW_DOMAIN_NEUTRAL_DIAGNOSTICS_EVIDENCE=REJECTED
+OPTION_D_SOURCE_HEALTH_ONLY=REJECTED
+OPTION_C_MULTIPLE_DOMAIN_SPECIFIC_DIAGNOSTICS=DEFERRED_SEPARATE_OPERATOR_AUTHORIZED_REDESIGN
+```
+
+**A_STATUS — RATIFIED KEEP NOT_BOUND**
+
+- `diagnostics_summary` remains `NOT_BOUND`.
+- Sole owner remains `UNRESOLVED`.
+- No diagnostics producer, adapter, typed injection boundary, or evidence
+  contract is authorized by this decision.
+- `DiagnosticsSummarySnapshotV1` MUST NOT be bound to
+  `WorkflowDashboardReadModelV1`.
+- `WorkflowDashboardReadModelV1` remains `NON_SOURCE` / `PROJECTION_ONLY`.
+- `summary` is not ratified as producer-owned evidence; treat as
+  unresolved/presenter-oriented semantics until a separate consumer-contract
+  redesign is ratified.
+- No inference, cross-source aggregation, archive selection, or free-text
+  evidence generation is permitted.
+
+**REJECTED / DEFERRED**
+
+- OPTION_B (new domain-neutral diagnostics evidence): explicitly rejected.
+- OPTION_D (source-health only): explicitly rejected.
+- OPTION_C (multiple domain-specific diagnostics): architecturally admissible
+  only as a future separately authorized surface-and-contract redesign phase;
+  not part of this closeout.
+
+Canonical owner registry note:
+`src/webui/market_dashboard_landscape_v2/owner_registry.py` slot
+`diagnostics_summary` → `reuse_status=NOT_BOUND`, `owner=UNRESOLVED`.
 
 #### 4.7 Autonomy State
 
@@ -1427,7 +1470,8 @@ KNOWN_INTENTIONAL_LOCKS=[
   "LIVE/ORDERS/SCHEDULER fail-closed",
   "Strategy Signal Selection D / Slice 2 blocked",
   "Ops Double Play projection-only",
-  "Phase 4 producer binding not authorized in this PR"
+  "Phase 4 producer binding not authorized in this PR",
+  "Phase 4.6C diagnostics_summary OPTION_A KEEP_NOT_BOUND (owner UNRESOLVED; WorkflowDashboardReadModelV1 NON_SOURCE)"
 ]
 
 PHASE_PR_MAPPING=[
