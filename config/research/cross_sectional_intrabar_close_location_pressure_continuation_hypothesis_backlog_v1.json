@@ -40,7 +40,7 @@
     "NO_IMPLICIT_SUCCESSOR"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "Open backlog with exactly one preregistered definition-only hypothesis after terminal path-efficiency DEVELOPMENT_FAIL. Evaluation unauthorized. Open CSRHR sibling must remain unchanged. Closed programs remain closed collision exclusions.",
+  "governance_note": "Open backlog with exactly one preregistered hypothesis; strategy implementation present under separate operator GO. Evaluation unauthorized; development_run_count remains 0. Open CSRHR sibling must remain unchanged. Closed programs remain closed collision exclusions.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -55,12 +55,12 @@
     "strategy_implementation_requires_separate_operator_go": true
   },
   "holdout_forbidden": true,
-  "implementation_authorized": false,
+  "implementation_authorized": true,
   "lane_auto_closed": false,
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_OR_BOUNDED_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "next_eligible": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
   "open_sibling_lanes": {
     "continuation_forbidden": true,
@@ -80,7 +80,7 @@
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
-      "implementation_present": false,
+      "implementation_present": true,
       "preregistration_evidence_ref": "docs/evidence/preregister_cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_v1/",
       "reopen_allowed": false,
       "rerun_allowed": false,
@@ -97,7 +97,7 @@
     }
   ],
   "preregistration_authorized_in_this_slice": true,
-  "productive_trading_logic_included": false,
+  "productive_trading_logic_included": true,
   "program_id": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1",
   "program_ref": "config/research/cross_sectional_intrabar_close_location_pressure_continuation_research_program_v1.json",
   "promotion_and_economic_gate_policy": {
@@ -140,6 +140,6 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "OPEN_BACKLOG_ONE_PREREGISTERED_DEFINITION_ONLY_HYPOTHESIS_EVALUATION_UNAUTHORIZED",
+  "verdict": "OPEN_BACKLOG_ONE_PREREGISTERED_HYPOTHESIS_STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
   "workstream_id": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_WORKSTREAM_V1"
 }

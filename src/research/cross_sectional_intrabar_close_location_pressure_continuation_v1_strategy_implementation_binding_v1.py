@@ -1,0 +1,186 @@
+"""Validator for CS intrabar CLV pressure continuation v1 strategy-implementation binding."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, Mapping
+
+PACKAGE_MARKER = (
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_"
+    "STRATEGY_IMPLEMENTATION_BINDING=true"
+)
+BINDING_REL_PATH = (
+    "config/research/"
+    "cross_sectional_intrabar_close_location_pressure_continuation_v1_"
+    "strategy_implementation_binding_v1.json"
+)
+MEASUREMENT_REL_PATH = (
+    "config/research/"
+    "cross_sectional_intrabar_close_location_pressure_continuation_v1_preregistered_"
+    "economic_hypothesis_measurement_contract_v1.json"
+)
+CSRHR_BACKLOG_REL_PATH = (
+    "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json"
+)
+REQUIRED_DIGEST = "2bc7e062d41bca4dee5c1b4a36c4e108903d5825cf5819f9214e8799cd98f859"
+REQUIRED_IMPL_FILES = (
+    "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_score_v1.py",
+    "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_selection_v1.py",
+)
+REQUIRED_STRATEGY_IDENTITY = "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1"
+REQUIRED_PROGRAM_ID = (
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1"
+)
+REQUIRED_WORKSTREAM_ID = (
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_WORKSTREAM_V1"
+)
+REQUIRED_HYPOTHESIS_ID = (
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
+)
+REQUIRED_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_"
+    "STRATEGY_IMPLEMENTATION_ONLY_V1"
+)
+
+
+class ImplementationBindingValidationError(ValueError):
+    """Fail-closed implementation-binding validation error."""
+
+
+def _require(cond: bool, code: str) -> None:
+    if not cond:
+        raise ImplementationBindingValidationError(code)
+
+
+def validate_implementation_binding(
+    payload: Mapping[str, Any], *, repo_root: Path | None = None
+) -> dict[str, Any]:
+    _require(
+        payload.get("status") == "STRATEGY_IMPLEMENTATION_PRESENT",
+        "STATUS_NOT_IMPLEMENTATION_PRESENT",
+    )
+    _require(payload.get("strategy_implementation_present") is True, "IMPL_PRESENT_FALSE")
+    _require(payload.get("implementation_authorized") is True, "IMPL_NOT_AUTHORIZED")
+    _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
+    _require(
+        payload.get("development_evaluation_authorized") is False,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED",
+    )
+    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
+    _require(payload.get("runner_present") is False, "RUNNER_PRESENT")
+    _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
+    _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
+    _require(payload.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE")
+    _require(payload.get("backtest_authorized") is False, "BACKTEST_AUTHORIZED")
+    _require(payload.get("master_v2_mutation") is False, "MASTER_V2_MUTATION")
+    _require(
+        payload.get("double_play_remains_sole_authority") is True,
+        "DOUBLE_PLAY_NOT_SOLE",
+    )
+    _require(payload.get("strategy_parameters_changed") is False, "STRATEGY_PARAMETERS_CHANGED")
+    _require(
+        payload.get("frozen_measurement_contract_digest") == REQUIRED_DIGEST,
+        "DIGEST_MISMATCH",
+    )
+    _require(
+        payload.get("frozen_measurement_contract_mutated") is False,
+        "MEASUREMENT_CONTRACT_MUTATED",
+    )
+    _require(
+        payload.get("directional_form") == "D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION",
+        "DIRECTIONAL_FORM",
+    )
+    _require(payload.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
+    _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID")
+    _require(payload.get("workstream_id") == REQUIRED_WORKSTREAM_ID, "WORKSTREAM_ID")
+    _require(payload.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID")
+    _require(payload.get("operator_go_token") == REQUIRED_GO_TOKEN, "GO_TOKEN")
+    _require(
+        payload.get("score_formula_version")
+        == "mean_intrabar_close_location_value_fixed_lookback_v1",
+        "SCORE_FORMULA",
+    )
+    _require(payload.get("selection_mode") == "single_top1_by_score_desc", "SELECTION_MODE")
+    params = payload.get("parameter_defaults") or {}
+    _require(params.get("lookback_n") == 36, "LOOKBACK_N")
+    _require(params.get("rebalance_interval_bars") == 6, "REBALANCE_INTERVAL")
+    _require(params.get("signal_lag_bars") == 1, "SIGNAL_LAG")
+    _require(params.get("min_eligible_members_for_rank") == 5, "MIN_ELIGIBLE")
+    _require(params.get("vol_normalization") is False, "VOL_NORM")
+    non_actions = set(payload.get("explicit_non_actions") or [])
+    for required in (
+        "NO_EVALUATION",
+        "NO_RUNNER",
+        "NO_HOLDOUT_ACCESS",
+        "NO_CSRHR_MUTATION",
+        "NO_CSRHR_CONTINUE",
+        "NO_CSRHR_SEMANTIC_REUSE",
+        "NO_PATH_EFFICIENCY_RETRY",
+        "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE",
+    ):
+        _require(required in non_actions, f"MISSING_NON_ACTION_{required}")
+    impl_files = tuple(payload.get("implementation_files") or ())
+    _require(impl_files == REQUIRED_IMPL_FILES, "IMPL_FILES_MISMATCH")
+    runtime = payload.get("runtime_policy") or {}
+    for key in (
+        "runtime_activated",
+        "shadow_activated",
+        "testnet_activated",
+        "live_authorized",
+        "orders_allowed",
+        "scheduler_authorized",
+        "capital_activated",
+        "paper_activated",
+    ):
+        _require(runtime.get(key) is False, f"RUNTIME_{key.upper()}")
+
+    if repo_root is not None:
+        for rel in REQUIRED_IMPL_FILES:
+            _require((repo_root / rel).is_file(), f"MISSING_IMPL_FILE:{rel}")
+        meas_path = repo_root / MEASUREMENT_REL_PATH
+        _require(meas_path.is_file(), "MEASUREMENT_CONTRACT_MISSING")
+        measurement = json.loads(meas_path.read_text(encoding="utf-8"))
+        _require(
+            measurement.get("contract_digest") == REQUIRED_DIGEST,
+            "LIVE_MEASUREMENT_DIGEST_MISMATCH",
+        )
+        _require(
+            measurement.get("strategy_implementation_present") is False,
+            "MEASUREMENT_CONTRACT_IMPL_FLAG_MUTATED",
+        )
+        _require(measurement.get("evaluation_authorized") is False, "MEASUREMENT_EVAL_FLIPPED")
+        _require(measurement.get("development_run_count") == 0, "MEASUREMENT_DEV_RUN_CONSUMED")
+        csrhr = json.loads((repo_root / CSRHR_BACKLOG_REL_PATH).read_text(encoding="utf-8"))
+        _require(csrhr.get("status") == "OPEN_BACKLOG", "CSRHR_MUTATED")
+        _require(csrhr.get("development_run_count") == 0, "CSRHR_DEV_RUN_MUTATED")
+
+    return {
+        "valid": True,
+        "strategy_implementation_present": True,
+        "evaluation_authorized": False,
+        "development_run_count": int(payload.get("development_run_count") or 0),
+        "holdout_authorized": False,
+        "frozen_digest": REQUIRED_DIGEST,
+        "directional_form": "D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION",
+        "csrhr_unchanged": True,
+    }
+
+
+def load_and_validate_repo_binding(repo_root: Path) -> dict[str, Any]:
+    path = repo_root / BINDING_REL_PATH
+    _require(path.is_file(), "BINDING_MISSING")
+    return validate_implementation_binding(
+        json.loads(path.read_text(encoding="utf-8")), repo_root=repo_root
+    )
+
+
+__all__ = [
+    "BINDING_REL_PATH",
+    "ImplementationBindingValidationError",
+    "PACKAGE_MARKER",
+    "REQUIRED_DIGEST",
+    "load_and_validate_repo_binding",
+    "validate_implementation_binding",
+]

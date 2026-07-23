@@ -86,9 +86,9 @@ def validate_program_contract(
     _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
     _require(payload.get("run_budget_consumed") is False, "RUN_BUDGET_CONSUMED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
     _require(
-        payload.get("strategy_implementation_present") is False,
+        payload.get("strategy_implementation_present") is True,
         "STRATEGY_IMPLEMENTATION_PRESENT",
     )
     _require(payload.get("runtime_authorized") is False, "RUNTIME_AUTHORIZED")

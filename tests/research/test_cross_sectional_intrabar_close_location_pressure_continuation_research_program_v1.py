@@ -77,9 +77,12 @@ def test_causal_independence_and_frozen_identities() -> None:
     )
     assert payload["development_run_limit"] == 1
     assert payload["retry_policy"]["after_development_fail"] == "FAIL_CLOSED_NO_RETRY"
-    assert payload["strategy_implementation_present"] is False
+    assert payload["strategy_implementation_present"] is True
+    assert payload["implementation_authorized"] is True
     assert payload["runtime_policy"]["live_authorized"] is False
     assert payload["promotion_and_economic_gate_policy"]["economic_gate_open"] is False
+    assert payload["development_run_count"] == 0
+    assert payload["evaluation_authorized"] is False
 
 
 def test_fail_closed_on_authorization_mutation() -> None:

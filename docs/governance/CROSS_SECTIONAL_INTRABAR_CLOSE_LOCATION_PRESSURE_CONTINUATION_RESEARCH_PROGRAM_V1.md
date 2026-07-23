@@ -44,8 +44,9 @@ of the close path.
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
 - PIT: sealed DEVELOPMENT_ONLY panel; holdout unbound/untouched
 
-## Gates (definition-only)
+## Gates
 
+- `STRATEGY_IMPLEMENTATION_PRESENT=true` (under separate implementation GO)
 - `EVALUATION_AUTHORIZED=false`
 - `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
 - `DEVELOPMENT_RUN_COUNT=0` / `RUNNER_START_COUNT=0` / `RUN_SLOT_CONSUMED=false`
@@ -58,7 +59,6 @@ of the close path.
 
 ## Separate GO requirements
 
-- Strategy implementation requires a separate operator GO
 - Bounded DEVELOPMENT evaluation requires a separate operator GO
 - Holdout remains forbidden until a future explicit holdout GO (not authorized here)
 
@@ -70,7 +70,7 @@ orders, or promotion claims.
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_OR_BOUNDED_DEVELOPMENT_EVALUATION`
+`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
 
 ---
 docs_token: DOCS_TOKEN_CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1
