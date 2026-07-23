@@ -4,12 +4,13 @@ Status: `OPEN_BACKLOG`
 
 Open volatility-regime research backlog under `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`
 after explicit operator decision `CREATE_SUCCESSOR_HYPOTHESIS` (authorized by
-`CONTINUE_PEAK_TRADE_NEXT_CANONICAL_SCOPE`) with definition-only preregistration of
-`VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1`.
+`CONTINUE_PEAK_TRADE_NEXT_CANONICAL_SCOPE`) with VEFCF strategy implementation present
+and Development evaluation still unauthorized/unexecuted.
 
 ## Current inventory
 
 - preregistered=1 (`VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1`)
+- hyp status: `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED`
 - open unpreregistered candidates=0
 - terminal=6 (VCB, VEP, VDB, VDBX, VCEB, VEPC) — all `FAIL_CLOSED_NO_RETRY`
 
@@ -35,8 +36,8 @@ after explicit operator decision `CREATE_SUCCESSOR_HYPOTHESIS` (authorized by
 
 ## Next step
 
-`REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
+`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
 
-No VEPC evaluation retry. No Development evaluation in this slice. LIVE/ORDERS/HOLDOUT closed.
+No VEPC evaluation retry. No Development evaluation executed in this slice. LIVE/ORDERS/HOLDOUT closed.
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1
