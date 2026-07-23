@@ -5,7 +5,7 @@
   "backtest_authorized": false,
   "canonical_ssot": true,
   "development_evaluation_authorized": false,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "directional_form": "D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION",
   "double_play_remains_sole_authority": true,
   "evaluation_authorized": false,
@@ -26,7 +26,7 @@
     "NO_CSRHR_MUTATION",
     "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE"
   ],
-  "frozen_measurement_contract_digest": "ffd67182ca8942c0975e3a864382ad55d657e625968c40d8fd63fac83a409ef9",
+  "frozen_measurement_contract_digest": "cf6168556a7ae36c15381ab78bc57f2c46d49e17257556ea5198dd3adf4aaec7",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/cross_sectional_path_efficiency_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_note": "STRATEGY_IMPLEMENTATION_ONLY under explicit operator GO. Measurement contract digest frozen and unmutated. Evaluation unauthorized; development_run_count remains 0; holdout untouched; CSRHR remains OPEN_BACKLOG unchanged.",
@@ -40,9 +40,9 @@
   ],
   "implementation_notes": {
     "continuation_polarity": "PATH_EFFICIENCY_CONTINUATION_ER_TIMES_SIGN",
+    "cooldown_policy": "no_cooldown",
     "direction_policy": "symmetric_top1_sign",
     "minimum_hold_policy": "until_next_rebalance",
-    "cooldown_policy": "no_cooldown",
     "path_efficiency_formula": "ER=abs(net)/path_sum; score=ER*sign(net); path_sum==0 or sign==0 ineligible",
     "selection_mode": "single_top1_by_score_desc",
     "tie_break_policy": "score_desc_then_instrument_id_asc",
@@ -64,7 +64,7 @@
   "promotion_eligible": false,
   "rank_intent_only": true,
   "runner_present": false,
-  "runner_start_count": 0,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,

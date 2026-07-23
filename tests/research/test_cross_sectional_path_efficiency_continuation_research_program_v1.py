@@ -53,8 +53,8 @@ def test_repo_program_definition_only_evaluation_unauthorized() -> None:
     assert report["workstream_id"] == "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_WORKSTREAM_V1"
     assert report["status"] == "DEFINITION_ONLY"
     assert report["evaluation_authorized"] is False
-    assert report["implementation_authorized"] is False
-    assert report["development_run_count"] == 0
+    assert report["implementation_authorized"] is True
+    assert report["development_run_count"] == 1
     assert report["holdout_forbidden"] is True
     assert GOVERNANCE.is_file()
 
@@ -77,7 +77,7 @@ def test_causal_independence_and_frozen_identities() -> None:
     )
     assert payload["development_run_limit"] == 1
     assert payload["retry_policy"]["after_development_fail"] == "FAIL_CLOSED_NO_RETRY"
-    assert payload["strategy_implementation_present"] is False
+    assert payload["strategy_implementation_present"] is True
     assert payload["runtime_policy"]["live_authorized"] is False
     assert payload["promotion_and_economic_gate_policy"]["economic_gate_open"] is False
     assert payload["sealed_holdout_binding_status"] == "UNBOUND_UNTOUCHED_ACCESS_FORBIDDEN"
@@ -90,12 +90,12 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="EVALUATION_AUTHORIZED_TRUE"):
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["development_run_count"] = 1
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
+    bad2["development_run_count"] = 0
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["implementation_authorized"] = True
-    with pytest.raises(ProgramValidationError, match="IMPLEMENTATION_AUTHORIZED"):
+    bad3["holdout_forbidden"] = False
+    with pytest.raises(ProgramValidationError, match="HOLDOUT_NOT_FORBIDDEN"):
         validate_program_contract(bad3)
 
 

@@ -1,0 +1,194 @@
+{
+  "artifact_digests": {
+    "README.md": "1f576290bcbb7d7b47a08de988fd7c3282b9f7b896c62dcf93addfbcaf1451c3",
+    "registry.json": "35cdb015f306c0e1922d0fd244481a3835f479605b0fd1d78342bd9ce0b964b5",
+    "run_result.json": "928ca30a9b9278e7e7c566f4bd9eb423b6bcbe18e8731ecafcfaddc1fa717bff",
+    "run_slot_claim.json": "1ea65ce5bf659b339307c9dcfe9190175ce573f9f490914cf8dc68ffb571cdd5",
+    "safety_attestation.md": "8505884c3a4c1fe2a1eb8cd994e74c2b9ff0059245d79327db88051652a513b7",
+    "summary.json": "193a014f2c21cf7e9b422b28d092e3ad01a8939f430cc2f3c64800cd6c484412"
+  },
+  "authorized_run_limit": 1,
+  "base_sha": "56dd807de01e81df4f51372062511ce242fa74fa",
+  "budget_consumed": true,
+  "config_digest": "087b1769caa1b4b5c527aa31abb7db143a0c7d225d606f76ea1f02d7d8c16d98",
+  "csrhr_state": "OPEN_BACKLOG",
+  "csrhr_unchanged": true,
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "deterministic_reproducibility_verified": true,
+  "development_evaluation_authorized": true,
+  "development_result": "DEVELOPMENT_FAIL",
+  "development_run_count_after": 1,
+  "development_run_count_before": 0,
+  "economic_gate_open": false,
+  "end_utc": "2026-07-23T09:11:41Z",
+  "evaluation_authorized": false,
+  "evaluation_executed": true,
+  "exact_command": "python3 scripts/research/run_evaluate_cross_sectional_path_efficiency_continuation_development_v1.py --mode evaluate --authorize-single-development-evaluation CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "fees": 9573.417386082243,
+  "gates": {
+    "all_pass": false,
+    "all_segments_evaluable": {
+      "gate_id": "ALL_SEGMENTS_EVALUABLE",
+      "observed": 4,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 4
+    },
+    "canonical_cost": {
+      "gate_id": "CANONICAL_COST",
+      "observed": {
+        "canonical_cost_multiplier": 1.0,
+        "net_expectancy": 5.4659254362919505,
+        "net_profit_factor": 1.039277340521052,
+        "worst1_abs_net_share": 0.03538405276271822
+      },
+      "passed": false,
+      "reason_code": "NET_PROFIT_FACTOR_BELOW_THRESHOLD",
+      "threshold": {
+        "minimum_net_expectancy": 0.0,
+        "net_profit_factor_min": 1.3,
+        "single_trade_dominance_limit": 0.5
+      }
+    },
+    "cost_stress": {
+      "gate_id": "COST_STRESS",
+      "observed": 0.9855865251588035,
+      "passed": false,
+      "reason_code": "COST_STRESS_NOT_SURVIVED",
+      "threshold": 1.0
+    },
+    "gross_edge": {
+      "gate_id": "GROSS_EDGE",
+      "observed": {
+        "gross_pnl": 13417.311818281594,
+        "gross_profit_factor": 1.1449101753919395
+      },
+      "passed": true,
+      "reason_code": null,
+      "threshold": {
+        "gross_pnl_gt": 0.0,
+        "gross_profit_factor_min": 1.0
+      }
+    },
+    "max_drawdown": {
+      "gate_id": "MAX_DRAWDOWN",
+      "observed": -0.9174563849679119,
+      "passed": false,
+      "reason_code": "MAX_DRAWDOWN_BREACH",
+      "threshold": 0.25
+    },
+    "sample_sufficiency": {
+      "gate_id": "SAMPLE_SUFFICIENCY",
+      "observed": 1317,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 30
+    },
+    "time_segment_robustness": {
+      "gate_id": "TIME_SEGMENT_ROBUSTNESS",
+      "observed": {
+        "pass_ratio": 0.0,
+        "passing_segments": 0
+      },
+      "passed": false,
+      "reason_code": "TIME_SEGMENT_ROBUSTNESS_FAIL",
+      "threshold": 0.5
+    },
+    "trade_sample": {
+      "gate_id": "TRADE_SAMPLE",
+      "observed": 705,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 50
+    }
+  },
+  "gross_profit_factor": 1.1449101753919395,
+  "gross_return": -0.5729522953882874,
+  "holdout_accessed": false,
+  "holdout_touched": false,
+  "hypothesis_id": "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "instrument_count": 46,
+  "live": false,
+  "long_trade_count": null,
+  "lookback_n": 48,
+  "max_drawdown": -0.9174563849679119,
+  "measurement_contract_digest": "cf6168556a7ae36c15381ab78bc57f2c46d49e17257556ea5198dd3adf4aaec7",
+  "measurement_contract_digest_pre_exec_authorized": "7de14020dc9a6975e56bd4221260742b27f34018e6fddc23973590ebd927be06",
+  "measurement_contract_digest_preregistration_original": "ffd67182ca8942c0975e3a864382ad55d657e625968c40d8fd63fac83a409ef9",
+  "net_profit_factor": 1.039277340521052,
+  "net_return": -0.5729522953882873,
+  "orders": false,
+  "passing_segments": 0,
+  "period_end": "2023-08-16T05:00:00Z",
+  "period_start": "2022-06-01T04:00:00Z",
+  "preregistered_gate_result": "FAIL",
+  "program_id": "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1",
+  "promotion_eligible": false,
+  "rebalance_interval_bars": 8,
+  "retry_forbidden": true,
+  "run_id": "evaluate_cross_sectional_path_efficiency_continuation_development_v1",
+  "runner_started": true,
+  "schema_version": "evaluate_cross_sectional_path_efficiency_continuation_development_summary.v1",
+  "scope_id": "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
+  "segment_boundaries": [
+    {
+      "range": "2022-06-01T04:00:00Z..2022-09-19T11:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q1",
+      "valid_rebalance_observations": 324
+    },
+    {
+      "range": "2022-09-19T11:00:00Z..2023-01-07T17:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q2",
+      "valid_rebalance_observations": 331
+    },
+    {
+      "range": "2023-01-07T17:00:00Z..2023-04-27T23:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q3",
+      "valid_rebalance_observations": 331
+    },
+    {
+      "range": "2023-04-27T23:00:00Z..2023-08-16T05:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q4",
+      "valid_rebalance_observations": 331
+    }
+  ],
+  "segment_results": [
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q1"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q2"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q3"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q4"
+    }
+  ],
+  "shadow": false,
+  "sharpe": 0.5173842449427937,
+  "short_trade_count": null,
+  "signal_lag_bars": 1,
+  "slippage": 4786.7086930411215,
+  "status": "EVALUATION_COMPLETE",
+  "strategy_identity": "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1",
+  "strategy_params_digest": "b8f21f66870a03902dacaedc118e68d242098759d9d7752960a7c9c59493b381",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL",
+  "testnet": false,
+  "time_segment_robustness_pass_ratio": 0.0,
+  "total_cost_drag": 14360.126079123365,
+  "trade_count": 705,
+  "turnover": 705.0,
+  "valid_rebalance_observations": 1317,
+  "workstream_id": "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_WORKSTREAM_V1"
+}

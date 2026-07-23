@@ -67,22 +67,22 @@ def validate_program_contract(
     _require(payload.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("development_evaluation_authorized") is False,
+        payload.get("development_evaluation_authorized") is True,
         "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
     _require(
-        payload.get("development_evaluation_executed") is False,
+        payload.get("development_evaluation_executed") is True,
         "DEVELOPMENT_EVALUATION_EXECUTED_TRUE",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
     _require(payload.get("development_run_limit") == 1, "DEVELOPMENT_RUN_LIMIT_NOT_1")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
-    _require(payload.get("run_budget_consumed") is False, "RUN_BUDGET_CONSUMED")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ZERO")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
+    _require(payload.get("run_budget_consumed") is True, "RUN_BUDGET_CONSUMED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
     _require(
-        payload.get("strategy_implementation_present") is False,
+        payload.get("strategy_implementation_present") is True,
         "STRATEGY_IMPLEMENTATION_PRESENT",
     )
     _require(payload.get("runtime_authorized") is False, "RUNTIME_AUTHORIZED")
@@ -166,8 +166,8 @@ def validate_program_contract(
         "status": REQUIRED_STATUS,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "evaluation_authorized": False,
-        "implementation_authorized": False,
-        "development_run_count": 0,
+        "implementation_authorized": True,
+        "development_run_count": 1,
         "holdout_forbidden": True,
     }
 
