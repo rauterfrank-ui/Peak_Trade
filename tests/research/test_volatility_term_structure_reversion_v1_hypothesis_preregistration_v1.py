@@ -132,9 +132,7 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
     assert REQUIRED_PREDECESSOR in terminals
     assert REQUIRED_STRATEGY_IDENTITY in terminals
     program = _load(PROGRAM_PATH)
-    assert program["strategy_identity"] == (
-        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
-    )
+    assert program["strategy_identity"] == ("VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1")
     assert REQUIRED_PREDECESSOR in program["causal_independence"]["forbidden_lineage_refs"]
     assert REQUIRED_STRATEGY_IDENTITY in program["causal_independence"]["forbidden_lineage_refs"]
 
