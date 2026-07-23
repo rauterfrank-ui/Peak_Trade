@@ -15,9 +15,14 @@ from scripts.ops.primary_evidence_retention_v0 import (
     write_manifest_sha256 as _write_manifest_sha256,
 )
 from src.webui.market_dashboard_landscape_producer_binding_v2 import (
+    DECISION_EVIDENCE_SCHEMA_VERSION,
+    DECISION_PRODUCER_MODULE,
+    DECISION_SOURCE_KIND,
     LANDSCAPE_PHASE41_MAX_AGE_SECONDS,
     LANDSCAPE_PHASE42_MAX_AGE_SECONDS,
+    LANDSCAPE_PHASE43A_MAX_AGE_SECONDS,
     REASON_ARCHIVE_ROOT_UNSET,
+    REASON_DECISION_NOT_PERSISTED,
     REASON_MARKET_CONTEXT_NOT_PERSISTED,
     REASON_PRODUCER_DATA_STALE,
     REASON_PRODUCER_TIMESTAMP_INVALID,
@@ -39,6 +44,7 @@ from src.webui.market_dashboard_landscape_v2 import (
     serialize_projection,
 )
 from src.webui.market_dashboard_landscape_v2.projections import (
+    project_canonical_decision_snapshot_v1,
     project_dynamic_scope_snapshot_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.types import (
@@ -55,6 +61,8 @@ PRODUCER_FRESH = datetime(2026, 7, 23, 17, 0, 0, tzinfo=timezone.utc)
 PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE41_MAX_AGE_SECONDS + 3600)
 SCOPE_PRODUCER_FRESH = datetime(2026, 7, 23, 16, 30, 0, tzinfo=timezone.utc)
 SCOPE_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE42_MAX_AGE_SECONDS + 7200)
+DECISION_PRODUCER_FRESH = datetime(2026, 7, 23, 16, 0, 0, tzinfo=timezone.utc)
+DECISION_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE43A_MAX_AGE_SECONDS + 7200)
 REPO = Path(__file__).resolve().parents[2]
 SCRATCH_ROOT = REPO / "tests" / "_durable_archive_scratch"
 
@@ -119,7 +127,12 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
 ) -> None:
     monkeypatch.delenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", raising=False)
     slots = bind_market_universe_slots(generated_at=STAMP)
-    assert set(slots) == {"market_instrument", "universe_ranking", "dynamic_scope"}
+    assert set(slots) == {
+        "market_instrument",
+        "universe_ranking",
+        "dynamic_scope",
+        "canonical_decision",
+    }
     assert slots["market_instrument"].availability is Availability.MISSING_SOURCE
     assert REASON_MARKET_CONTEXT_NOT_PERSISTED in slots["market_instrument"].reason_codes
     assert slots["universe_ranking"].availability is Availability.MISSING_SOURCE
@@ -129,6 +142,11 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
     assert slots["dynamic_scope"].scope_state is None
     assert slots["dynamic_scope"].current_scope_ref is None
     assert slots["dynamic_scope"].next_scope_ref is None
+    assert slots["canonical_decision"].availability is Availability.MISSING_SOURCE
+    assert REASON_DECISION_NOT_PERSISTED in slots["canonical_decision"].reason_codes
+    assert slots["canonical_decision"].decision is None
+    assert slots["canonical_decision"].direction is None
+    assert slots["canonical_decision"].blockers == (REASON_DECISION_NOT_PERSISTED,)
 
 
 def test_bind_rejects_inventing_market_without_required_fields() -> None:
@@ -428,11 +446,14 @@ def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_inject
     assert page.market_instrument.availability is Availability.AVAILABLE
     assert page.dynamic_scope.availability is Availability.MISSING_SOURCE
     assert REASON_SCOPE_NOT_PERSISTED in page.dynamic_scope.reason_codes
-    assert page.canonical_decision.availability is Availability.NOT_BOUND
+    assert page.canonical_decision.availability is Availability.MISSING_SOURCE
+    assert REASON_DECISION_NOT_PERSISTED in page.canonical_decision.reason_codes
     ctx = present_market_landscape_v2(page)
-    assert ctx["phase"] == "PHASE_4_2_DYNAMIC_SCOPE_LIFECYCLE_BINDING"
+    assert ctx["phase"] == "PHASE_4_3A_CANONICAL_DECISION_PROJECTION_BINDING"
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["scope"]["availability"] == "MISSING_SOURCE"
+    assert ctx["decision"]["availability"] == "MISSING_SOURCE"
+    assert ctx["double_play"]["availability"] == "NOT_BOUND"
     assert ctx["regime"]["availability"] == "NOT_BOUND"
     assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
     assert ctx["switch"]["availability"] == "NOT_BOUND"
@@ -448,6 +469,24 @@ def _scope_fields(**overrides: object) -> dict[str, object]:
         "effective_at": SCOPE_PRODUCER_FRESH,
         "semantic_digest": "a" * 64,
         "source_reference": "scope://btc-1",
+    }
+    base.update(overrides)
+    return base
+
+
+def _decision_fields(**overrides: object) -> dict[str, object]:
+    """Bounded test-injection payload — not durable dashboard truth."""
+    base: dict[str, object] = {
+        "instrument_id": "BTC-USDT-SWAP",
+        "decision_outcome": "observe",
+        "next_direction_state": "neutral_observe",
+        "reason_codes": ("WARMUP_ACTIVE", "NO_ENTRY"),
+        "decision_id": "decision-abc123",
+        "evidence_schema_version": DECISION_EVIDENCE_SCHEMA_VERSION,
+        "semantic_digest": "c" * 64,
+        "generated_at": DECISION_PRODUCER_FRESH,
+        "effective_at": DECISION_PRODUCER_FRESH,
+        "source_reference": "decision://bounded-test-injection",
     }
     base.update(overrides)
     return base
@@ -564,3 +603,119 @@ def test_regime_bull_bear_switch_remain_not_bound_for_all_scope_states() -> None
         assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
         assert ctx["switch"]["availability"] == "NOT_BOUND"
         assert ctx["global_strip"]["regime"] == "NOT_BOUND"
+        assert ctx["double_play"]["availability"] == "NOT_BOUND"
+
+
+def test_project_canonical_decision_field_copy_immutable() -> None:
+    snap = project_canonical_decision_snapshot_v1(
+        instrument_id="BTC-USDT-SWAP",
+        decision="observe",
+        direction="neutral_observe",
+        reason_codes=("WARMUP_ACTIVE", "NO_ENTRY"),
+        blockers=(),
+        decision_id="decision-abc123",
+        evidence_schema_version=DECISION_EVIDENCE_SCHEMA_VERSION,
+        evidence_digest="c" * 64,
+        generated_at=DECISION_PRODUCER_FRESH,
+        effective_at=DECISION_PRODUCER_FRESH,
+        source_reference="decision://bounded-test-injection",
+    )
+    assert snap.availability is Availability.AVAILABLE
+    assert snap.decision == "observe"
+    assert snap.direction == "neutral_observe"
+    assert snap.reason_codes == ("WARMUP_ACTIVE", "NO_ENTRY")
+    assert snap.blockers == ()
+    assert snap.provenance.producer_module == DECISION_PRODUCER_MODULE
+    assert snap.provenance.source_kind == DECISION_SOURCE_KIND
+    assert snap.provenance.generated_at == DECISION_PRODUCER_FRESH
+    with pytest.raises(FrozenInstanceError):
+        snap.decision = "x"  # type: ignore[misc]
+
+
+def test_bind_canonical_decision_available_exact_projection() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        canonical_decision_fields=_decision_fields(),
+    )
+    decision = slots["canonical_decision"]
+    assert decision.availability is Availability.AVAILABLE
+    assert decision.decision == "observe"
+    assert decision.direction == "neutral_observe"
+    assert decision.reason_codes == ("WARMUP_ACTIVE", "NO_ENTRY")
+    assert decision.blockers == ()
+    assert decision.decision_id == "decision-abc123"
+    assert decision.evidence_schema_version == DECISION_EVIDENCE_SCHEMA_VERSION
+    assert decision.provenance.evidence_digest == "c" * 64
+    assert decision.provenance.producer_module == DECISION_PRODUCER_MODULE
+    assert decision.provenance.source_kind == DECISION_SOURCE_KIND
+    assert decision.provenance.generated_at == DECISION_PRODUCER_FRESH
+    assert decision.provenance.effective_at == DECISION_PRODUCER_FRESH
+    assert decision.freshness.observed_at == DECISION_PRODUCER_FRESH
+    assert decision.freshness.is_stale is False
+    # reason_codes must not be copied into blockers
+    assert set(decision.reason_codes).isdisjoint(set(decision.blockers))
+
+
+def test_bind_canonical_decision_rejects_missing_required_keys() -> None:
+    with pytest.raises(KeyError, match="canonical_decision_fields missing"):
+        bind_market_universe_slots(
+            generated_at=STAMP,
+            canonical_decision_fields={"instrument_id": "BTC-USDT-SWAP"},
+        )
+
+
+def test_bind_canonical_decision_invalid_naive_timestamp() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        canonical_decision_fields=_decision_fields(
+            generated_at=datetime(2026, 7, 23, 16, 0, 0),  # naive
+            effective_at=None,
+        ),
+    )
+    decision = slots["canonical_decision"]
+    assert decision.availability is Availability.INVALID
+    assert REASON_PRODUCER_TIMESTAMP_INVALID in decision.reason_codes
+    assert decision.decision is None
+    assert decision.direction is None
+
+
+def test_bind_canonical_decision_stale_retains_canonical_facts() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        canonical_decision_fields=_decision_fields(
+            generated_at=DECISION_PRODUCER_STALE,
+            effective_at=DECISION_PRODUCER_STALE,
+        ),
+    )
+    decision = slots["canonical_decision"]
+    assert decision.availability is Availability.STALE
+    assert decision.decision == "observe"
+    assert decision.direction == "neutral_observe"
+    assert decision.reason_codes == ("WARMUP_ACTIVE", "NO_ENTRY")
+    assert decision.blockers == ()
+    assert decision.freshness.is_stale is True
+    assert decision.freshness.stale_reason == REASON_PRODUCER_DATA_STALE
+    assert decision.provenance.generated_at == DECISION_PRODUCER_STALE
+    # Observation clock must not replace producer timestamps.
+    assert decision.provenance.generated_at != STAMP
+    assert decision.freshness.observed_at == DECISION_PRODUCER_STALE
+
+
+def test_bind_canonical_decision_does_not_bind_double_play() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        canonical_decision_fields=_decision_fields(),
+    )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert page.canonical_decision.availability is Availability.AVAILABLE
+    assert page.double_play.availability is Availability.NOT_BOUND
+    assert ctx["double_play"]["availability"] == "NOT_BOUND"
+    assert ctx["phase"] == "PHASE_4_3A_CANONICAL_DECISION_PROJECTION_BINDING"
+    assert ctx["product_flags"]["phase_4_3a_binding_active"] is True
+    assert ctx["decision"]["fields"]["decision"] == "observe"
+    assert ctx["decision"]["fields"]["direction"] == "neutral_observe"
+    assert ctx["decision"]["blockers"] == []

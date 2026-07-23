@@ -234,16 +234,29 @@ def project_canonical_decision_snapshot_v1(
     source_reference: str | None,
     git_sha: str | None = None,
     producer_module: str = "trading.master_v2.canonical_trading_decision_evidence_v1",
+    source_kind: str = "canonical_trading_decision_evidence",
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
 ) -> CanonicalDecisionSnapshotV1:
     """Project already-computed decision evidence fields into a Landscape snapshot.
 
     Forbidden: inventing decision/direction, synthesizing reason codes, or
     deriving blockers from non-evidence sources.
+    generated_at/effective_at must be producer timestamps — never page-assembly time.
+    Blockers must remain empty when the canonical evidence has no blockers field.
     """
     if not instrument_id or not decision or not direction:
-        raise ValueError("instrument_id, decision, and direction are required for AVAILABLE")
+        raise ValueError("instrument_id, decision, and direction are required for AVAILABLE/STALE")
     if not evidence_schema_version:
         raise ValueError("evidence_schema_version required")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_canonical_decision only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
     codes = tuple(str(code) for code in reason_codes)
     block = tuple(str(code) for code in blockers)
     schema_id = f"{SCHEMA_FAMILY}.canonical_decision.{SCHEMA_VERSION}"
@@ -253,24 +266,24 @@ def project_canonical_decision_snapshot_v1(
         producer_module=producer_module,
         generated_at=generated_at,
         effective_at=effective_at,
-        source_kind="canonical_trading_decision_evidence",
+        source_kind=source_kind,
         source_reference=source_reference,
         evidence_digest=evidence_digest,
         git_sha=git_sha,
-        availability=Availability.AVAILABLE,
+        availability=availability,
     )
     freshness = FreshnessV1(
         observed_at=generated_at,
-        max_age_seconds=None,
-        is_stale=False,
-        stale_reason=None,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
     )
     return CanonicalDecisionSnapshotV1(
         schema_id=schema_id,
         schema_version=SCHEMA_VERSION,
         provenance=provenance,
         freshness=freshness,
-        availability=Availability.AVAILABLE,
+        availability=availability,
         instrument_id=instrument_id,
         decision=decision,
         direction=direction,

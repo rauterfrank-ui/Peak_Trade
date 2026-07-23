@@ -1,7 +1,8 @@
-"""Phase 4.1 + 4.2 read-only producer binding for Market Landscape V2.
+"""Phase 4.1 + 4.2 + 4.3A read-only producer binding for Market Landscape V2.
 
-Binds market_instrument, universe_ranking, and dynamic_scope lifecycle identity.
-Regime / bull-bear / switch remain unbound (Phase 4.2 exclusions).
+Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity,
+and canonical_decision evidence projection.
+Regime / bull-bear / switch / Double Play remain unbound.
 Lives outside market_dashboard_landscape_v2 so that package stays free of
 trading/webui producer imports (architecture guard).
 
@@ -9,9 +10,11 @@ Fail-closed:
 - Wired slots without durable producer output → MISSING_SOURCE / INVALID
 - Producer timestamps preserved; page-assembly time is observation-only
 - Aged producer snapshots → STALE (never silently refreshed)
-- Never fabricate OHLCV, ranking, eligibility, selected instrument, or scope
-- Never call scope initializers, trailing-scope runtime owners, or switch owners
-- No decision / Double Play / risk / safety / execution binding
+- Never fabricate OHLCV, ranking, eligibility, selected instrument, scope,
+  or decisions
+- Never call scope initializers, trailing-scope runtime owners, switch owners,
+  or decision/Double Play producers
+- No Double Play / risk / safety / execution binding
 """
 
 from __future__ import annotations
@@ -24,11 +27,13 @@ from typing import Any, Mapping
 
 from .market_dashboard_landscape_v2.availability import Availability
 from .market_dashboard_landscape_v2.projections import (
+    project_canonical_decision_snapshot_v1,
     project_dynamic_scope_snapshot_v1,
     project_market_instrument_snapshot_v1,
     project_universe_ranking_snapshot_v1,
 )
 from .market_dashboard_landscape_v2.unavailable import (
+    unavailable_canonical_decision,
     unavailable_dynamic_scope,
     unavailable_market_instrument,
     unavailable_universe_ranking,
@@ -43,13 +48,15 @@ from .workflow_dashboard_readmodel_v1.universe_selection_reader_v1 import (
 # Reuse the existing workflow-dashboard archive env — no second archive owner.
 ENV_ARCHIVE_ROOT = "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT"
 
-# F2 consuming-surface max_allowed_staleness_seconds for Landscape Phase 4.1/4.2.
+# F2 consuming-surface max_allowed_staleness_seconds for Landscape Phase 4.1+.
 # Declared here as the dashboard consumer policy; never invent freshness via now().
 LANDSCAPE_PHASE41_MAX_AGE_SECONDS = 86_400
 LANDSCAPE_PHASE42_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
+LANDSCAPE_PHASE43A_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 
 REASON_MARKET_CONTEXT_NOT_PERSISTED = "CANONICAL_MARKET_CONTEXT_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_SCOPE_NOT_PERSISTED = "CANONICAL_SCOPE_SNAPSHOT_NOT_PERSISTED_FOR_DASHBOARD"
+REASON_DECISION_NOT_PERSISTED = "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_UNIVERSE_ABSENT = "UNIVERSE_SELECTION_READMODEL_ABSENT"
 REASON_ARCHIVE_ROOT_UNSET = "UNIVERSE_ARCHIVE_ROOT_UNSET"
 REASON_SELECTED_FORBIDDEN_SYMBOL = "SELECTED_INSTRUMENT_FORBIDDEN_BTC_USD_OR_SPOT_DUMMY"
@@ -62,12 +69,16 @@ REASON_PRODUCER_DATA_STALE = "PRODUCER_DATA_EXCEEDED_LANDSCAPE_MAX_AGE"
 
 SCOPE_PRODUCER_MODULE = "trading.master_v2.canonical_scope_initialization_v1"
 SCOPE_SOURCE_KIND = "canonical_scope_snapshot"
+DECISION_PRODUCER_MODULE = "trading.master_v2.canonical_trading_decision_evidence_v1"
+DECISION_SOURCE_KIND = "canonical_trading_decision_evidence"
+DECISION_EVIDENCE_SCHEMA_VERSION = "canonical_trading_decision_evidence_v1"
 
 PHASE_4_1_BOUND_SLOTS: tuple[str, ...] = (
     "market_instrument",
     "universe_ranking",
 )
 PHASE_4_2_BOUND_SLOTS: tuple[str, ...] = ("dynamic_scope",)
+PHASE_4_3A_BOUND_SLOTS: tuple[str, ...] = ("canonical_decision",)
 
 _ISO8601_UTC_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|\+00:00)$")
 
@@ -516,6 +527,133 @@ def _bind_dynamic_scope_lifecycle(
     )
 
 
+def _bind_canonical_decision(
+    *,
+    as_of: datetime,
+    git_sha: str | None,
+    canonical_decision_fields: Mapping[str, Any] | None,
+) -> Any:
+    """Project injected CanonicalTradingDecisionEvidenceV1-compatible fields.
+
+    No durable dashboard decision readmodel. Without injection → MISSING_SOURCE.
+    Never runs decision producers, Double Play composers, or switch owners.
+    Blockers remain empty — evidence has no direct blockers field.
+    """
+    if canonical_decision_fields is None:
+        return unavailable_canonical_decision(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_DECISION_NOT_PERSISTED,
+        )
+
+    required = (
+        "instrument_id",
+        "decision_outcome",
+        "next_direction_state",
+        "decision_id",
+        "evidence_schema_version",
+    )
+    missing = [key for key in required if key not in canonical_decision_fields]
+    if missing:
+        raise KeyError(f"canonical_decision_fields missing required keys: {missing}")
+
+    instrument_id = str(canonical_decision_fields["instrument_id"])
+    decision_outcome = str(canonical_decision_fields["decision_outcome"])
+    next_direction_state = str(canonical_decision_fields["next_direction_state"])
+    decision_id = str(canonical_decision_fields["decision_id"])
+    evidence_schema_version = str(canonical_decision_fields["evidence_schema_version"])
+
+    if not instrument_id or not decision_outcome or not next_direction_state:
+        return unavailable_canonical_decision(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason="CANONICAL_DECISION_REQUIRED_FIELDS_EMPTY",
+        )
+    if not evidence_schema_version:
+        return unavailable_canonical_decision(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason="CANONICAL_DECISION_SCHEMA_VERSION_MISSING",
+        )
+
+    generated_at_raw = canonical_decision_fields.get("generated_at")
+    producer_at, gen_error = _resolve_injected_aware_timestamp(generated_at_raw)
+    if gen_error is not None:
+        return unavailable_canonical_decision(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=gen_error,
+        )
+    if producer_at is None:
+        return unavailable_canonical_decision(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_MISSING,
+        )
+
+    effective_at: datetime | None = None
+    if "effective_at" in canonical_decision_fields:
+        effective_at, eff_error = _resolve_injected_aware_timestamp(
+            canonical_decision_fields.get("effective_at")
+        )
+        if eff_error is not None:
+            return unavailable_canonical_decision(
+                availability=Availability.INVALID,
+                generated_at=as_of,
+                reason=eff_error,
+            )
+
+    try:
+        availability, is_stale, stale_reason = classify_producer_freshness(
+            producer_at=producer_at,
+            as_of=as_of,
+            max_age_seconds=LANDSCAPE_PHASE43A_MAX_AGE_SECONDS,
+        )
+    except ValueError:
+        return unavailable_canonical_decision(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_INVALID,
+        )
+
+    # Exact field copy — preserve injection order; never sort/enrich/reinterpret.
+    raw_codes = canonical_decision_fields.get("reason_codes", ()) or ()
+    reason_codes = tuple(str(code) for code in raw_codes)
+
+    evidence_digest = canonical_decision_fields.get("semantic_digest")
+    if evidence_digest is None:
+        evidence_digest = canonical_decision_fields.get("evidence_digest")
+    if evidence_digest is not None:
+        evidence_digest = str(evidence_digest)
+        if not evidence_digest:
+            evidence_digest = None
+
+    return project_canonical_decision_snapshot_v1(
+        instrument_id=instrument_id,
+        decision=decision_outcome,
+        direction=next_direction_state,
+        reason_codes=reason_codes,
+        blockers=(),  # no direct blockers field on CanonicalTradingDecisionEvidenceV1
+        decision_id=decision_id,
+        evidence_schema_version=evidence_schema_version,
+        evidence_digest=evidence_digest,
+        generated_at=producer_at,
+        effective_at=effective_at,
+        source_reference=(
+            None
+            if canonical_decision_fields.get("source_reference") is None
+            else str(canonical_decision_fields.get("source_reference"))
+        ),
+        git_sha=git_sha,
+        producer_module=DECISION_PRODUCER_MODULE,
+        source_kind=DECISION_SOURCE_KIND,
+        availability=availability,
+        max_age_seconds=LANDSCAPE_PHASE43A_MAX_AGE_SECONDS,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+
+
 def bind_market_universe_slots(
     *,
     generated_at: datetime,
@@ -523,8 +661,9 @@ def bind_market_universe_slots(
     git_sha: str | None = None,
     market_instrument_fields: Mapping[str, Any] | None = None,
     dynamic_scope_fields: Mapping[str, Any] | None = None,
+    canonical_decision_fields: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Return Phase 4.1+4.2 slot overrides (market, universe, dynamic_scope).
+    """Return Phase 4.1+4.2+4.3A slot overrides.
 
     ``generated_at`` is the dashboard observation/as-of clock only. It must never
     overwrite producer provenance timestamps or fabricate freshness.
@@ -536,6 +675,11 @@ def bind_market_universe_slots(
     dynamic_scope_fields accepts already-computed CanonicalScopeSnapshotV1-
     compatible lifecycle identity fields plus producer wall-clock timestamps.
     Without injection, dynamic_scope is MISSING_SOURCE (no durable readmodel).
+
+    canonical_decision_fields accepts already-computed
+    CanonicalTradingDecisionEvidenceV1-compatible fields plus producer
+    wall-clock timestamps. Without injection, canonical_decision is
+    MISSING_SOURCE (no durable readmodel). Double Play remains unbound.
     """
     if generated_at.tzinfo is None:
         raise ValueError("generated_at must be timezone-aware")
@@ -551,6 +695,11 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         dynamic_scope_fields=dynamic_scope_fields,
+    )
+    decision = _bind_canonical_decision(
+        as_of=as_of,
+        git_sha=git_sha,
+        canonical_decision_fields=canonical_decision_fields,
     )
 
     if market_instrument_fields is not None:
@@ -685,4 +834,5 @@ def bind_market_universe_slots(
         "market_instrument": market,
         "universe_ranking": universe,
         "dynamic_scope": scope,
+        "canonical_decision": decision,
     }

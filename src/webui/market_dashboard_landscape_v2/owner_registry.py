@@ -62,7 +62,12 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         owner_symbol="CanonicalTradingDecisionEvidenceV1",
         authority_class="decision",
         reuse_status="REUSED",
-        notes="Immutable decision evidence projected field-for-field; no recomputation.",
+        notes=(
+            "Phase 4.3A: Landscape projects CanonicalTradingDecisionEvidenceV1 "
+            "field-for-field (decision_outcome/next_direction_state/reason_codes/"
+            "decision_id); blockers remain empty (no direct evidence field); "
+            "no recomputation; Double Play deferred to Phase 4.3B."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="double_play",
