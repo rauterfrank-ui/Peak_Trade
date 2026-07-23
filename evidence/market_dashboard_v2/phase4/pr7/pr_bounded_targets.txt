@@ -1,0 +1,13 @@
+PRODUCTION:
+src/webui/market_dashboard_landscape_producer_binding_v2.py
+src/webui/market_dashboard_landscape_v2/projections.py
+src/webui/market_dashboard_landscape_v2/owner_registry.py
+src/webui/market_dashboard_landscape_v2/presenter.py
+templates/peak_trade_dashboard/market_landscape_v2.html
+TESTS:
+tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py
+tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py
+tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py
+EVIDENCE:
+evidence/market_dashboard_v2/phase4/pr7/

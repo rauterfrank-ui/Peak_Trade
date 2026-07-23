@@ -1,0 +1,271 @@
+<!-- templates/peak_trade_dashboard/base.html -->
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Market Dashboard Landscape V2 — Peak_Trade</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Phase 1B: self-hosted design tokens + layout + purged utilities (no Tailwind CDN) -->
+    <link
+      rel="stylesheet"
+      href="/static/css/peak_trade_dashboard_design_tokens_v1.css"
+      data-market-design-token-owner-v1="true"
+      data-canonical-design-token-owner="true"
+    />
+    <link rel="stylesheet" href="/static/css/peak_trade_dashboard_layout_v1.css" />
+    <link
+      rel="stylesheet"
+      href="/static/css/peak_trade_dashboard_utilities_v1.css"
+      data-market-utilities-css-v1="true"
+    />
+    <meta name="peak-trade-browser-network-allowlist" content="self-only" />
+    <style>
+      /* Custom animation for running indicator */
+      @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+      .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+    </style>
+    
+<link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-4a-canonical-safety-projection-binding" />
+<meta name="peak-trade-dashboard-authority" content="false" />
+<meta name="peak-trade-live-authorized" content="false" />
+
+  </head>
+  <body class="bg-slate-950 text-slate-100 mdl-v2-body">
+    <div class="min-h-screen">
+      
+<header class="mdl-v2-app-chrome" data-mdl-app-chrome="true">
+  <a href="/" class="mdl-v2-app-chrome__home">Peak_Trade</a>
+  <span class="mdl-v2-app-chrome__label">Market Landscape V2</span>
+  <span class="mdl-v2-chip">READ-ONLY · LIVE LOCKED</span>
+</header>
+
+
+      <main class="mdl-v2-main">
+        
+<main
+  class="mdl-v2"
+  data-market-landscape-v2="true"
+  data-market-dashboard-authority="false"
+  data-live-authorized="false"
+  data-orders="false"
+  data-phase="PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+  data-runtime-bridge="BOUND_NOT_ACTIVATED"
+  aria-label="Market Dashboard Landscape V2 read-only workspace"
+>
+  <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
+    <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">
+      <div class="mdl-v2-strip__brand">
+        <span class="mdl-v2-kicker">Market</span>
+        <span class="mdl-v2-chip mdl-v2-chip--quiet">READ-ONLY CONSUMER</span>
+      </div>
+      <dl class="mdl-v2-strip__facts">
+        <div><dt>Instrument</dt><dd data-mdl-field="instrument">MISSING_SOURCE</dd></div>
+        <div><dt>Venue</dt><dd data-mdl-field="venue">MISSING_SOURCE</dd></div>
+        <div><dt>Scope</dt><dd data-mdl-field="scope">MISSING_SOURCE</dd></div>
+        <div><dt>Regime</dt><dd data-mdl-field="regime">NOT_BOUND</dd></div>
+        <div>
+          <dt>Runtime</dt>
+          <dd data-mdl-field="runtime" title="product_shell_constant_non_authoritative">BOUND_NOT_ACTIVATED</dd>
+        </div>
+        <div><dt>Freshness</dt><dd data-mdl-field="freshness">MISSING_SOURCE</dd></div>
+        <div>
+          <dt>Safety</dt>
+          <dd
+            data-mdl-field="safety"
+            data-availability="MISSING_SOURCE"
+            title="CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD"
+          >MISSING_SOURCE</dd>
+        </div>
+      </dl>
+    </header>
+
+    <div class="mdl-v2-workspace" data-mdl-workspace="true">
+      <aside class="mdl-v2-rail mdl-v2-rail--left" data-mdl-region="UNIVERSE_RANK_RAIL" aria-label="Universe and rank">
+        <h2>Universe</h2>
+        <ul class="mdl-v2-rail-rows" aria-label="Universe projection">
+          <li>
+            <span class="mdl-v2-rail-rows__label">Watchlist</span>
+            <span class="mdl-v2-state" data-availability="MISSING_SOURCE" data-mdl-field="universe_watchlist">MISSING_SOURCE</span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Selected</span>
+            <span class="mdl-v2-state" data-mdl-field="selected_instrument">
+              MISSING_SOURCE
+            </span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Membership</span>
+            <span class="mdl-v2-state" data-mdl-field="universe_membership">MISSING_SOURCE</span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Rank</span>
+            <span class="mdl-v2-state" data-mdl-field="rank_status">MISSING_SOURCE</span>
+          </li>
+        </ul>
+        
+      </aside>
+
+      <section
+        class="mdl-v2-primary"
+        data-mdl-region="PRIMARY_MARKET_WORKSPACE"
+        data-mdl-chart-region="true"
+        aria-label="Primary market workspace"
+      >
+        <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="false">
+          <div class="mdl-v2-chart__chrome">
+            <h2>Chart</h2>
+            <span class="mdl-v2-state" data-availability="MISSING_SOURCE">MISSING_SOURCE</span>
+          </div>
+          <div class="mdl-v2-chart__stage" role="img" aria-label="Primary chart MISSING_SOURCE — market identity / OHLCV not persisted for dashboard; no OHLCV fabricated.">
+            <p class="mdl-v2-chart__message">Primary chart MISSING_SOURCE — market identity / OHLCV not persisted for dashboard; no OHLCV fabricated.</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="mdl-v2-rail mdl-v2-rail--right" data-mdl-region="SYSTEM_CONTEXT_RAIL" aria-label="System context">
+        <h2>Context</h2>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Lifecycle</dt>
+            <dd data-mdl-field="scope_lifecycle" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Current Scope</dt>
+            <dd data-mdl-field="current_scope_ref" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Next Scope</dt>
+            <dd data-mdl-field="next_scope_ref" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Scope Freshness</dt>
+            <dd data-mdl-field="scope_freshness" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Regime</dt>
+            <dd data-mdl-field="regime" data-availability="NOT_BOUND">NOT_BOUND</dd>
+          </div>
+          <div>
+            <dt>Bull/Bear</dt>
+            <dd data-mdl-field="bull_bear" data-availability="NOT_BOUND">NOT_BOUND</dd>
+          </div>
+          <div>
+            <dt>Switch</dt>
+            <dd data-mdl-field="switch" data-availability="NOT_BOUND">NOT_BOUND</dd>
+          </div>
+          <div><dt>Source Health</dt><dd data-availability="MISSING_SOURCE">MISSING_SOURCE</dd></div>
+        </dl>
+      </aside>
+    </div>
+
+    <section
+      class="mdl-v2-decision"
+      data-mdl-region="CANONICAL_DECISION_STRIP"
+      data-mdl-decision-strip="true"
+      aria-label="Canonical decision strip"
+    >
+      <dl class="mdl-v2-decision__grid">
+        <div>
+          <dt>Decision</dt>
+          <dd data-mdl-field="decision" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
+          </dd>
+        </div>
+        <div>
+          <dt>Direction</dt>
+          <dd data-mdl-field="direction" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
+          </dd>
+        </div>
+        <div>
+          <dt>Double Play</dt>
+          <dd data-mdl-field="double_play" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
+          </dd>
+        </div>
+        <div>
+          <dt>Why</dt>
+          <dd data-mdl-field="reason_codes" data-availability="MISSING_SOURCE">
+            
+              MISSING_SOURCE · CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD
+            
+          </dd>
+        </div>
+        <div>
+          <dt>Blockers</dt>
+          <dd data-mdl-field="blockers" data-availability="NOT_BOUND">NOT_BOUND</dd>
+        </div>
+        <div>
+          <dt>Confidence</dt>
+          <dd data-mdl-field="confidence" data-availability="NOT_BOUND">NOT_BOUND</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="mdl-v2-ops" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
+      <div class="mdl-v2-ops__col">
+        <h3>Risk / Sizing / Capital</h3>
+        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
+      </div>
+      <div class="mdl-v2-ops__col">
+        <h3>Execution / Reconciliation</h3>
+        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
+      </div>
+      <div class="mdl-v2-ops__col">
+        <h3>Economic</h3>
+        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
+      </div>
+    </section>
+
+    <section class="mdl-v2-timeline" data-mdl-region="EVENT_DECISION_TIMELINE" aria-label="Event and decision timeline">
+      <div class="mdl-v2-timeline__head">
+        <h2>Timeline</h2>
+        <span class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</span>
+      </div>
+      <p class="mdl-v2-timeline__empty">Event / Decision Timeline NOT_BOUND — no invented history.</p>
+    </section>
+
+    <details
+      class="mdl-v2-engineering"
+      data-mdl-region="ENGINEERING_DRAWER"
+      data-mdl-engineering="true"
+    >
+      <summary>Engineering · provenance / schemas / diagnostics</summary>
+      <div class="mdl-v2-engineering__body">
+        <p><strong>Generated:</strong> <span class="font-mono">2026-07-23T21:45:16.027706Z</span></p>
+        <p><strong>Page schema:</strong> <span class="font-mono">market_dashboard_landscape_page_snapshot.v1</span></p>
+        <p><strong>Runtime bridge:</strong> <span class="font-mono">BOUND_NOT_ACTIVATED</span> (product_shell_constant_non_authoritative)</p>
+        <p><strong>Incomplete slots:</strong> autonomy_stage, canonical_decision, diagnostics_summary, double_play, dynamic_scope, economic_summary, execution_reconciliation, market_instrument, risk_sizing_capital, safety_authority, universe_ranking</p>
+        <pre class="mdl-v2-pre" tabindex="0">{
+  "autonomy_stage": "NOT_BOUND",
+  "canonical_decision": "MISSING_SOURCE",
+  "diagnostics_summary": "NOT_BOUND",
+  "double_play": "MISSING_SOURCE",
+  "dynamic_scope": "MISSING_SOURCE",
+  "economic_summary": "NOT_BOUND",
+  "execution_reconciliation": "NOT_BOUND",
+  "market_instrument": "MISSING_SOURCE",
+  "risk_sizing_capital": "NOT_BOUND",
+  "safety_authority": "MISSING_SOURCE",
+  "universe_ranking": "MISSING_SOURCE"
+}</pre>
+      </div>
+    </details>
+  </div>
+</main>
+<script src="/static/js/market_dashboard_landscape_v2.js" defer></script>
+
+      </main>
+
+      <footer class="border-t border-slate-800/50 bg-slate-900/30 mt-8">
+        <div class="max-w-6xl mx-auto px-4 py-3 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <span>Peak_Trade Dashboard v1.2 · Read-Only · Shadow/Testnet Mode · R&D Dashboard (Phase 76)
+            · Companion Run UI default <code class="text-slate-400">127.0.0.1:8010</code> (local;
+            README)</span>
+          <span>🔒 Live-Execution ist deaktiviert</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -55,6 +55,9 @@ FORBIDDEN_NAME_TOKENS_IN_LANDSCAPE = (
     "recompute_sizing",
     "select_direction",
     "switch_scope",
+    "evaluate_offline_killswitch_boundary_v0",
+    "bind_killswitch_boundary_offline_replay_evidence_v0",
+    "evaluate_capital_risk_sizing_v1",
 )
 
 FORBIDDEN_SECOND_TRUTH_DEFINITIONS = (
@@ -62,6 +65,8 @@ FORBIDDEN_SECOND_TRUTH_DEFINITIONS = (
     "def evaluate_double_play",
     "def compute_position_size",
     "def compute_risk_budget",
+    "class KillSwitch",
+    "def evaluate_offline_killswitch_boundary_v0",
 )
 
 FORBIDDEN_TEMPLATE_TOKENS = (
@@ -75,6 +80,23 @@ FORBIDDEN_TEMPLATE_TOKENS = (
     "Submit Order",
     "Arm Runtime",
     "Activate Runtime",
+    "Trigger Kill",
+    "Recover Kill",
+    "Resume Trading",
+)
+
+FORBIDDEN_WEBUI_SAFETY_CALLS = (
+    "evaluate_offline_killswitch_boundary_v0",
+    "bind_killswitch_boundary_offline_replay_evidence_v0",
+    "derive_killswitch_boundary_mode_v0",
+)
+
+FORBIDDEN_HEALTHY_SAFETY_DEFAULTS = (
+    'kill_switch_state="ACTIVE"',
+    "kill_switch_state='ACTIVE'",
+    'kill_switch_state="normal"',
+    "kill_switch_state='normal'",
+    "veto_active=False",
 )
 
 
@@ -211,6 +233,9 @@ def test_landscape_shell_template_has_no_write_controls() -> None:
     assert 'data-market-dashboard-authority="false"' in text
     assert "method=" not in text.lower()
     assert re.search(r"<form\b", text, flags=re.IGNORECASE) is None
+    assert "phase4-4a-canonical-safety-projection-binding" in text
+    assert 'data-mdl-field="safety"' in text
+    assert "<button" not in text.lower()
 
 
 def test_projection_helpers_are_field_copy_only() -> None:
@@ -220,6 +245,7 @@ def test_projection_helpers_are_field_copy_only() -> None:
     assert "project_market_instrument_snapshot_v1" in proj
     assert "project_universe_ranking_snapshot_v1" in proj
     assert "project_dynamic_scope_snapshot_v1" in proj
+    assert "project_safety_authority_snapshot_v1" in proj
     assert "Forbidden" in proj
     tree = ast.parse(proj)
     # Guard against executable references, not documentation mentions.
@@ -227,9 +253,16 @@ def test_projection_helpers_are_field_copy_only() -> None:
         if isinstance(node, ast.Name):
             assert node.id not in {"transition_state", "RuntimeScopeState"}
         if isinstance(node, ast.Attribute):
-            assert node.attr not in {"transition_state", "RuntimeScopeState"}
+            assert node.attr not in {
+                "transition_state",
+                "RuntimeScopeState",
+                "trigger",
+                "request_recovery",
+                "complete_recovery",
+            }
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             assert node.func.id != "initialize_canonical_scope"
+            assert node.func.id not in FORBIDDEN_WEBUI_SAFETY_CALLS
         if isinstance(node, ast.ImportFrom):
             assert node.level > 0 or (node.module or "").split(".", 1)[0] in {
                 "__future__",
@@ -245,6 +278,8 @@ def test_projection_helpers_are_field_copy_only() -> None:
             continue
         assert "canonical_trading_decision_evidence" not in module
         assert "double_play_dashboard_display" not in module
+        assert "killswitch_boundary" not in module
+        assert "kill_switch" not in module
         assert "execution" not in module
         assert "order" not in module
 
@@ -253,12 +288,14 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
     assert PRODUCER_BINDING.is_file()
     text = PRODUCER_BINDING.read_text(encoding="utf-8")
     assert "bind_market_universe_slots" in text
-    assert "Phase 4.2" in text or "4.2" in text or "4.3A" in text or "4.3B" in text
+    assert "4.4A" in text
     assert "project_dynamic_scope_snapshot_v1" in text
     assert "project_canonical_decision_snapshot_v1" in text
     assert "project_double_play_snapshot_v1" in text
+    assert "project_safety_authority_snapshot_v1" in text
     assert "canonical_decision_fields" in text
     assert "double_play_fields" in text
+    assert "safety_authority_fields" in text
     tree = ast.parse(text)
     for node in ast.walk(tree):
         if isinstance(node, ast.Name):
@@ -267,6 +304,8 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
                 "RuntimeScopeState",
                 "compose_double_play_decision",
                 "build_dashboard_display_snapshot",
+                "KillSwitch",
+                *FORBIDDEN_WEBUI_SAFETY_CALLS,
             }
         if isinstance(node, ast.Attribute):
             assert node.attr not in {
@@ -274,12 +313,17 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
                 "RuntimeScopeState",
                 "compose_double_play_decision",
                 "build_dashboard_display_snapshot",
+                "trigger",
+                "request_recovery",
+                "complete_recovery",
+                "save",
             }
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             assert node.func.id not in {
                 "initialize_canonical_scope",
                 "compose_double_play_decision",
                 "build_dashboard_display_snapshot",
+                *FORBIDDEN_WEBUI_SAFETY_CALLS,
             }
     assert "@router.post" not in text
     assert "place_order" not in text
@@ -287,6 +331,11 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
     assert "workflow_dashboard_runtime_v1" not in text
     assert "execution_watch_api" not in text
     assert "double_play_dashboard_display_json_route" not in text
+    assert "StatePersistence" not in text
+    assert "RiskGate" not in text
+    assert "evaluate_capital_risk_sizing_v1" not in text
+    for needle in FORBIDDEN_HEALTHY_SAFETY_DEFAULTS:
+        assert needle not in text, needle
     for module, level in _import_modules(PRODUCER_BINDING):
         if level > 0:
             continue
@@ -297,10 +346,25 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
         assert "double_play_dashboard_display" not in module
         assert "canonical_scope_initialization" not in module
         assert "canonical_trading_decision_evidence" not in module
+        assert "killswitch_boundary" not in module
+        assert "kill_switch" not in module
+        assert "risk_gate" not in module
+        assert "capital_risk_sizing" not in module
     # Landscape package must not import the binding module (keeps contracts pure).
     for path in _iter_py_files(LANDSCAPE_PKG):
         for module, level in _import_modules(path):
             assert "market_dashboard_landscape_producer_binding_v2" not in module
+
+
+def test_owner_registry_distinguishes_safety_authority_from_projection_source() -> None:
+    registry_text = (LANDSCAPE_PKG / "owner_registry.py").read_text(encoding="utf-8")
+    assert 'slot="safety_authority"' in registry_text
+    assert 'owner_module="src.risk_layer.kill_switch"' in registry_text
+    assert "AUTHORITY_EFFECT=NONE" in registry_text
+    assert "killswitch_boundary_offline_replay_binding_adapter_v0" in registry_text
+    assert 'reuse_status="REUSED"' in registry_text
+    assert 'slot="risk_sizing_capital"' in registry_text
+    assert 'reuse_status="NOT_BOUND"' in registry_text
 
 
 def test_shell_router_wires_phase41_through_phase43b_binding() -> None:
@@ -317,6 +381,8 @@ def test_shell_router_wires_phase41_through_phase43b_binding() -> None:
                 "RuntimeScopeState",
                 "compose_double_play_decision",
                 "build_dashboard_display_snapshot",
+                "KillSwitch",
+                *FORBIDDEN_WEBUI_SAFETY_CALLS,
             }
         if isinstance(node, ast.Attribute):
             assert node.attr not in {
@@ -324,12 +390,15 @@ def test_shell_router_wires_phase41_through_phase43b_binding() -> None:
                 "RuntimeScopeState",
                 "compose_double_play_decision",
                 "build_dashboard_display_snapshot",
+                "trigger",
+                "request_recovery",
             }
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             assert node.func.id not in {
                 "initialize_canonical_scope",
                 "compose_double_play_decision",
                 "build_dashboard_display_snapshot",
+                *FORBIDDEN_WEBUI_SAFETY_CALLS,
             }
     assert "@router.post" not in text
     assert "workflow_dashboard_runtime_v1" not in text
@@ -342,6 +411,38 @@ def test_shell_router_wires_phase41_through_phase43b_binding() -> None:
         assert "double_play_state" not in module
         assert "double_play_composition" not in module
         assert "double_play_dashboard_display" not in module
+        assert "kill_switch" not in module
+        assert "killswitch_boundary" not in module
+
+
+def test_webui_has_no_killswitch_mutation_or_offline_evaluator_calls() -> None:
+    """Scoped to Landscape shell surfaces — not the entire webui tree."""
+    surfaces = (
+        LANDSCAPE_PKG,
+        PRODUCER_BINDING,
+        SHELL_ROUTER,
+    )
+    paths: list[Path] = []
+    for surface in surfaces:
+        if surface.is_dir():
+            paths.extend(_iter_py_files(surface))
+        elif surface.is_file():
+            paths.append(surface)
+    hits: list[str] = []
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        tree = ast.parse(text)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call):
+                if isinstance(node.func, ast.Name) and node.func.id in FORBIDDEN_WEBUI_SAFETY_CALLS:
+                    hits.append(f"{path.relative_to(REPO)}:{node.func.id}")
+                if isinstance(node.func, ast.Attribute) and node.func.attr in {
+                    "trigger",
+                    "request_recovery",
+                    "complete_recovery",
+                }:
+                    hits.append(f"{path.relative_to(REPO)}:.{node.func.attr}")
+    assert hits == [], hits
 
 
 def test_shell_router_forbidden_import_count_zero() -> None:

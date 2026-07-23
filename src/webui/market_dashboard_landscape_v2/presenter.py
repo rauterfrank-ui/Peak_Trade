@@ -1,6 +1,6 @@
 """Presenter for Market Dashboard Landscape V2 — display formatting only.
 
-No decision, risk, sizing, scope, or Double Play authority logic.
+No decision, risk, sizing, scope, Double Play, or Safety authority logic.
 """
 
 from __future__ import annotations
@@ -73,6 +73,21 @@ def _slot_view(snap: _ProjectionBase) -> dict[str, Any]:
             }
         },
     }
+
+
+def _safety_strip_display(page: MarketDashboardPageSnapshotV1) -> str:
+    """Format KillSwitch state + veto from exact projected fields only."""
+    snap = page.safety_authority
+    if snap.availability not in (Availability.AVAILABLE, Availability.STALE):
+        return AVAILABILITY_LABELS[snap.availability]
+    parts: list[str] = []
+    if snap.kill_switch_state is not None:
+        parts.append(str(snap.kill_switch_state))
+    if snap.veto_active is not None:
+        parts.append(f"veto={snap.veto_active}")
+    if not parts:
+        return AVAILABILITY_LABELS[snap.availability]
+    return " · ".join(parts)
 
 
 def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str, Any]:
@@ -158,7 +173,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "runtime_bridge_display": page.runtime_bridge_display,
         "shell_authority_class": page.shell_authority_class,
         "consumer_role": "read_only_consumer",
-        "phase": "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING",
+        "phase": "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING",
         "global_strip": {
             "instrument": instrument_display,
             "venue": _display_value(
@@ -170,9 +185,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "runtime_state": page.runtime_bridge_display,
             "runtime_state_class": page.shell_authority_class,
             "freshness": health.freshness.to_json_dict(),
-            "safety_status": _display_value(
-                page.safety_authority.kill_switch_state, page.safety_authority.availability
-            ),
+            "safety_status": _safety_strip_display(page),
             "source_health": health.availability.value,
         },
         "market": market,
@@ -245,6 +258,9 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "phase_4_3b_bound_slots": [
                 "double_play",
             ],
+            "phase_4_4a_bound_slots": [
+                "safety_authority",
+            ],
             "slots": {
                 "market_instrument": market,
                 "universe_ranking": universe,
@@ -272,6 +288,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "phase_4_2_binding_active": True,
             "phase_4_3a_binding_active": True,
             "phase_4_3b_binding_active": True,
+            "phase_4_4a_binding_active": True,
             "phase_4_full_pass": False,
             "phase_4_authorized": True,
             "operator_skeleton_approval": "PENDING",

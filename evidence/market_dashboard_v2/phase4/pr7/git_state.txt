@@ -1,0 +1,24 @@
+BRANCH=feat/market-dashboard-landscape-phase-4-4a-canonical-safety-binding
+HEAD=2d17dca4efca7eb501766c10b11ad412005a1c94
+SLICE_ID=PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING
+
+## feat/market-dashboard-landscape-phase-4-4a-canonical-safety-binding
+ M config/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0.json
+ M config/research/bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding_v0.json
+ M src/webui/market_dashboard_landscape_producer_binding_v2.py
+ M src/webui/market_dashboard_landscape_v2/owner_registry.py
+ M src/webui/market_dashboard_landscape_v2/presenter.py
+ M src/webui/market_dashboard_landscape_v2/projections.py
+ M templates/peak_trade_dashboard/market_landscape_v2.html
+ M tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+?? .comparison_metric_input_pytest_outputs/
+?? evidence/market_dashboard_landscape_v2_pr1/
+?? evidence/market_dashboard_v2/phase3/
+?? evidence/market_dashboard_v2/phase4/pr3/
+?? evidence/market_dashboard_v2/phase4/pr4/
+?? evidence/market_dashboard_v2/phase4/pr7/
+?? tests/.pytest_archive_roots/
+
