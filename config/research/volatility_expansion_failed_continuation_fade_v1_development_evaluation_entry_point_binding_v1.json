@@ -5,7 +5,7 @@
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
   "canonical_ssot": true,
   "cli_ref": "scripts/research/run_evaluate_volatility_expansion_failed_continuation_fade_development_v1.py",
-  "config_digest": "7701843f71123be12da38adae3e6057a806dd2301e550fca4488d7b03b1c3bab",
+  "config_digest": "95d0ecac31ff451503c46d8f31cde0b691dd96a36700b3c9b83e4140b468cc1b",
   "dataset_binding": {
     "dataset_class": "DEVELOPMENT_ONLY",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
@@ -16,14 +16,14 @@
     ]
   },
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "economic_gate_open": false,
-  "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+  "entry_point_status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL",
   "evaluation_authorized": false,
   "evidence_ref": "docs/evidence/evaluate_volatility_expansion_failed_continuation_fade_development_v1/",
-  "frozen_measurement_contract_digest": "744c74727043edc35613f58274d28b80c6a065f56dbc75ac0af204689678a92c",
+  "frozen_measurement_contract_digest": "f96dea3f110efde3272caccd6776e48694c039f9a5d50eeafad56652b382fd0f",
   "frozen_measurement_contract_ref": "config/research/volatility_expansion_failed_continuation_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_ref": "docs/governance/VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
   "holdout_authorized": false,
@@ -45,7 +45,7 @@
     "vol_state": "src.research.volatility_expansion_failed_continuation_fade_v1_vol_state_v1"
   },
   "runner_present": true,
-  "runner_start_count": 0,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
@@ -61,12 +61,12 @@
   "shared_channel_core_bound": true,
   "shared_channel_core_ref": "src/research/price_channel_breakout_core_v1.py",
   "signal_family": "VOLATILITY_REGIME",
-  "slice_class": "STRATEGY_IMPLEMENTATION_PLUS_UNAUTHORIZED_DEVELOPMENT_ENTRY_POINT",
-  "status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED",
+  "slice_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
+  "status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL",
   "strategy_id": "volatility_expansion_failed_continuation_fade",
   "strategy_identity": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
   "strategy_params_digest": "42317597e610280fd0cdbc66db19bd0e877cacdcadd5b4b44829989d2ef22de4",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
 }

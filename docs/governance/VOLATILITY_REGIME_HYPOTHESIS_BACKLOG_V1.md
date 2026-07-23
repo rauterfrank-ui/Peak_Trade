@@ -3,25 +3,23 @@
 Status: `OPEN_BACKLOG`
 
 Open volatility-regime research backlog under `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`
-after explicit operator decision `CREATE_SUCCESSOR_HYPOTHESIS` (authorized by
-`CONTINUE_PEAK_TRADE_NEXT_CANONICAL_SCOPE`) with VEFCF strategy implementation present
-and Development evaluation still unauthorized/unexecuted.
+after VEFCF v1 bounded DEVELOPMENT evaluation completed with `DEVELOPMENT_FAIL`
+(single run slot consumed; retry forbidden).
 
 ## Current inventory
 
 - preregistered=1 (`VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1`)
-- hyp status: `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED`
+- hyp status: `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL`
+- `development_run_count=1`, `run_slot_consumed=true`
 - open unpreregistered candidates=0
 - terminal=6 (VCB, VEP, VDB, VDBX, VCEB, VEPC) — all `FAIL_CLOSED_NO_RETRY`
 
-## Applied operator decision
+## Applied operator decision (historical)
 
-- Decision: `CREATE_SUCCESSOR_HYPOTHESIS`
+- Decision: `CREATE_SUCCESSOR_HYPOTHESIS` (created VEFCF)
 - Authorization: `CONTINUE_PEAK_TRADE_NEXT_CANONICAL_SCOPE`
-- Enumerated GO token (packet): `GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1` (APPLIED)
-- `hypothesis_id`: `VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1`
-- Mechanism: `OWN_INSTRUMENT_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_ADMISSION`
-- `explicit_waiting_decision=false` (waiting resolved by successor creation)
+- VEFCF Development evaluation executed once under separate GO; result `DEVELOPMENT_FAIL`
+- `explicit_waiting_decision=false`
 - `explicit_closeout_decision=false`
 - `lane_auto_closed=false`
 - CLOSE_LANE remains not applied
@@ -36,8 +34,6 @@ and Development evaluation still unauthorized/unexecuted.
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
-
-No VEPC evaluation retry. No Development evaluation executed in this slice. LIVE/ORDERS/HOLDOUT closed.
+`NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1

@@ -155,11 +155,11 @@ def test_import_safety_and_binding() -> None:
     assert compute_prior_high_low_channel_bounds_v1 is core_bounds
     assert classify_price_channel_break_v1 is core_classify
     ep = load_and_validate_entry_point_binding(REPO)
-    assert ep["status"] == "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_UNAUTHORIZED"
-    assert ep["development_run_count"] == 0
-    assert ep["runner_start_count"] == 0
+    assert ep["status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
+    assert ep["development_run_count"] == 1
+    assert ep["runner_start_count"] == 1
     assert ep["evaluation_authorized"] is False
-    assert ep["development_evaluation_executed"] is False
+    assert ep["development_evaluation_executed"] is True
     assert ep["productive_pnl_evaluator_duplicated"] is False
 
 
@@ -168,12 +168,12 @@ def test_entry_point_preflight_and_dry_validate_no_slot_consume() -> None:
     assert pre["runner_started"] is False
     assert pre["evaluation_executed"] is False
     assert pre["holdout_accessed"] is False
-    assert pre["run_counters"]["contract_development_run_count"] == 0
+    assert pre["run_counters"]["contract_development_run_count"] == 1
     dry = run_dry_validate(REPO)
     assert dry["runner_started"] is False
     assert dry["evaluation_executed"] is False
     assert dry["status"] == "DRY_VALIDATE_PASS_EXECUTABLE_PATH_PRESENT"
-    assert dry["run_counters"]["contract_development_run_count"] == 0
+    assert dry["run_counters"]["contract_development_run_count"] == 1
 
 
 def test_ex_ante_reachability_gate() -> None:

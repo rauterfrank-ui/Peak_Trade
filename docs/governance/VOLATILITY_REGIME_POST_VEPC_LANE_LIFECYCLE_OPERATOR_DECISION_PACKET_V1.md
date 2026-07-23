@@ -2,7 +2,7 @@
 
 ---
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1
-STATUS: OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VEFCF_STRATEGY_IMPLEMENTATION_PRESENT
+STATUS: OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VEFCF_DEVELOPMENT_FAIL_SLOT_CONSUMED
 scope: governance, documentation-only, non-authorizing, offline-only
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
@@ -12,18 +12,20 @@ HOLDOUT_ACCESSED: false
 
 > **Applied decisions:** `DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` (historical) and
 > `CREATE_SUCCESSOR_HYPOTHESIS` (historical) with explicit VEFCF identity + mechanism.
-> Strategy implementation is now present. `CLOSE_LANE_NO_FURTHER_RESEARCH` remains **not**
-> applied and requires a separate exact GO. No evaluation executed.
+> VEFCF bounded DEVELOPMENT evaluation executed once under separate GO → `DEVELOPMENT_FAIL`
+> (slot consumed). `CLOSE_LANE_NO_FURTHER_RESEARCH` remains **not** applied and requires a
+> separate exact GO. No holdout. No VEFCF retry.
 
 ## A. Verdict
 
 | Feld | Wert |
 |---|---|
 | `PACKET_ID` | `VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1` |
-| `VERDICT` | `POST_VEPC_VEFCF_V1_STRATEGY_IMPLEMENTATION_PRESENT_AWAITING_BOUNDED_DEVELOPMENT_EVALUATION` |
+| `VERDICT` | `POST_VEPC_VEFCF_V1_RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL` |
 | `LANE_STATUS` | `OPEN_BACKLOG` |
 | `PREDECESSOR` | `VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1` |
 | `PREDECESSOR_RESULT` | `FAIL_CLOSED_NO_RETRY` / `CONSUMED_NO_RETRY` / `UNPAIRABLE_ENTRY_NO_EXIT` |
+| `VEFCF_RESULT` | `DEVELOPMENT_FAIL` / slot consumed / no retry |
 | `CLOSEOUT_APPLIED` | `false` |
 | `AWAITING_DECLARED` | `true` (historical) |
 | `SUCCESSOR_CREATED` | `true` |
@@ -38,7 +40,7 @@ HOLDOUT_ACCESSED: false
 1. VEPC moved to `terminal_hypotheses` (prior)
 2. Lane: `POST_TERMINAL_OPERATOR_DECISION_REQUIRED` → `AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` (prior DECLARE)
 3. Applied: `AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS` → `OPEN_BACKLOG` via `CREATE_SUCCESSOR_HYPOTHESIS`
-4. VEFCF strategy implementation present; evaluation unauthorized/unexecuted
+4. VEFCF strategy implementation present; then bounded DEVELOPMENT evaluation executed once → `DEVELOPMENT_FAIL`
 5. No closeout
 
 ## C. Enumerated operator decisions
@@ -52,16 +54,19 @@ HOLDOUT_ACCESSED: false
 ## D. Explicit non-actions in this slice
 
 - NO VEPC evaluation retry / re-execution
+- NO VEFCF evaluation retry / re-execution
 - NO holdout access
 - NO LIVE / orders / runtime authority
 - NO auto-create successor
-- NO Development evaluation execution
 - NO application of CLOSE_LANE
-- NO mutation of sealed historical VEPC/VCEB/… evidence digests
+- NO mutation of sealed historical VEPC/VCEB/… evidence digests beyond VEFCF slot terminalization
 
 ## E. Next admissible scope
 
 ```text
-CURRENT_ADMISSIBLE_NEXT_SCOPE=VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1
-CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN=GO_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1
+CURRENT_ADMISSIBLE_NEXT_SCOPE=VOLATILITY_REGIME_POST_VEFCF_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1
+CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKENS=
+  GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1 |
+  GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1 |
+  GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1
 ```

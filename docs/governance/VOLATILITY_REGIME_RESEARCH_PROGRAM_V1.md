@@ -9,19 +9,20 @@ Status: `DEFINITION_ONLY_PROGRAM_OPEN`
 - Target: `VOLATILITY_EXPANSION_THEN_FAILED_CONTINUATION_FADE`
 - Lane backlog: `OPEN_BACKLOG`
 - `strategy_implementation_present=true`
-- `DEVELOPMENT_EVALUATION_AUTHORIZED=true` (surfaces; execution still requires separate GO)
-- `DEVELOPMENT_EVALUATION_EXECUTED=false`
-- `DEVELOPMENT_RUN_COUNT=0` / `RUN_SLOT_CONSUMED=false`
+- `DEVELOPMENT_EVALUATION_AUTHORIZED=true`
+- `DEVELOPMENT_EVALUATION_EXECUTED=true`
+- `DEVELOPMENT_RUN_COUNT=1` / `RUN_SLOT_CONSUMED=true`
+- Terminal development verdict: `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL`
 
 ## Lifecycle
 
 - CREATE_SUCCESSOR applied after DECLARE_AWAITING; CLOSE_LANE not applied
-- Strategy implementation present; next step is bounded Development evaluation execution
+- Bounded DEVELOPMENT evaluation executed once; gates failed; retry forbidden
 - Predecessor VEPC remains terminal `CONSUMED_NO_RETRY`
 - Causal claim opposite to VEPC: fade failed continuation vs continue after pullback
 
 ## Safety
 
-LIVE/ORDERS/SHADOW/PAPER/TESTNET/SCHEDULER/HOLDOUT closed. No evaluation executed in this slice.
+LIVE/ORDERS/SHADOW/PAPER/TESTNET/SCHEDULER/HOLDOUT closed. Economic/promotion gates closed.
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1

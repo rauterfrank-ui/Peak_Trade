@@ -1022,6 +1022,18 @@
         "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
+    "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
+      "authority_effect": "NONE",
+      "note": "Bounded DEVELOPMENT evaluation execution for VEFCF v1; single run slot consumed with DEVELOPMENT_FAIL; retry/holdout/promotion/runtime/LIVE/orders forbidden.",
+      "owner_paths": [
+        "docs/evidence/evaluate_volatility_expansion_failed_continuation_fade_development_v1/",
+        "docs/governance/VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "config/research/volatility_expansion_failed_continuation_fade_v1_development_evaluation_entry_point_binding_v1.json",
+        "config/research/volatility_expansion_failed_continuation_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "scripts/research/run_evaluate_volatility_expansion_failed_continuation_fade_development_v1.py"
+      ],
+      "runtime_effect": "NONE"
+    },
     "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
       "note": "Definition-only preregistration of VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1 after CREATE_SUCCESSOR; failed-continuation fade opposite VEPC causal claim; measurement contract remains frozen; VEPC/VCEB/VDBX/VDB/VEP/VCB retry forbidden.",
       "path_prefixes": [
@@ -1116,7 +1128,7 @@
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Post-CREATE_SUCCESSOR lane backlog SSOT at OPEN_BACKLOG with VEFCF v1 strategy implementation present and evaluation unauthorized; VEPC remains terminal CONSUMED_NO_RETRY; evaluation/holdout/promotion/runtime closed; CLOSE_LANE remains not applied.",
+      "note": "Post-VEFCF DEVELOPMENT_FAIL slot-consumed lane SSOT; OPEN_BACKLOG; VEFCF retry forbidden; next scope post-VEFCF lifecycle operator decision; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_hypothesis_backlog_v1.json",
         "src/research/volatility_regime_hypothesis_backlog_v1.py",
@@ -1125,7 +1137,7 @@
       ]
     },
     "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1": {
-      "note": "Governance operator decision packet after VEPC CONSUMED_NO_RETRY; CREATE_SUCCESSOR APPLIED for VEFCF; strategy implementation present; next scope bounded Development evaluation execution; CLOSE_LANE remains OPERATOR_GO_REQUIRED; no evaluation/holdout/LIVE/orders.",
+      "note": "Post-VEFCF DEVELOPMENT_FAIL slot-consumed lane SSOT; OPEN_BACKLOG; VEFCF retry forbidden; next scope post-VEFCF lifecycle operator decision; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
         "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
@@ -1134,7 +1146,7 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Definition-only research-program SSOT for volatility-regime lane after VEFCF strategy implementation; lane backlog OPEN_BACKLOG; strategy_implementation_present=true; development evaluation authorized on surfaces but not executed; no holdout/runtime/orders.",
+      "note": "Post-VEFCF DEVELOPMENT_FAIL slot-consumed lane SSOT; OPEN_BACKLOG; VEFCF retry forbidden; next scope post-VEFCF lifecycle operator decision; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",
