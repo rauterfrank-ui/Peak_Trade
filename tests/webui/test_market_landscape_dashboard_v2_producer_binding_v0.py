@@ -330,9 +330,7 @@ def test_forbidden_btc_usd_archive_fails_closed_exact_contract_invalid(
     archive_root: Path,
 ) -> None:
     archive = _write_truth_universe_archive(archive_root, selected_symbol="BTC/USD")
-    u = bind_market_universe_slots(generated_at=STAMP, archive_root=archive)[
-        "universe_ranking"
-    ]
+    u = bind_market_universe_slots(generated_at=STAMP, archive_root=archive)["universe_ranking"]
     assert u.availability is Availability.INVALID
     assert list(u.reason_codes) == ["CONTRACT_INVALID"]
     assert u.selected_instrument_id is None
@@ -360,9 +358,7 @@ def test_binder_forbidden_selected_symbol_exact_reason(
         lambda _root: poisoned,
     )
     slots = bind_market_universe_slots(generated_at=STAMP, archive_root=archive_root)
-    assert list(slots["universe_ranking"].reason_codes) == [
-        REASON_SELECTED_FORBIDDEN_SYMBOL
-    ]
+    assert list(slots["universe_ranking"].reason_codes) == [REASON_SELECTED_FORBIDDEN_SYMBOL]
 
 
 def test_source_contradiction_fails_closed(archive_root: Path) -> None:
