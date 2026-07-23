@@ -44,6 +44,7 @@ def serialize_projection(snapshot: Any) -> dict[str, Any]:
         payload.update(
             {
                 "ranking": [dict(row) for row in snapshot.ranking],
+                "universe": [dict(row) for row in snapshot.universe],
                 "selected_instrument_id": snapshot.selected_instrument_id,
                 "reason_codes": list(snapshot.reason_codes),
             }

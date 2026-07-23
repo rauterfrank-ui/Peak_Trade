@@ -78,6 +78,52 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
     health = page.source_health
 
     chart_availability = page.market_instrument.availability
+    if chart_availability is Availability.AVAILABLE:
+        chart_message = (
+            "Primary chart market instrument bound; OHLCV producer still unbound "
+            "(no fabricated candles)."
+        )
+    elif chart_availability is Availability.MISSING_SOURCE:
+        chart_message = (
+            "Primary chart MISSING_SOURCE — market identity / OHLCV not persisted "
+            "for dashboard; no OHLCV fabricated."
+        )
+    elif chart_availability is Availability.INVALID:
+        chart_message = (
+            "Primary chart INVALID — market producer output rejected; no OHLCV fabricated."
+        )
+    else:
+        chart_message = "Primary chart NOT_BOUND — no OHLCV fabricated for Landscape shell."
+
+    ranking_rows: list[dict[str, Any]] = []
+    universe_rows: list[dict[str, Any]] = []
+    selected_instrument_id = None
+    membership_label = AVAILABILITY_LABELS[page.universe_ranking.availability]
+    ranking_label = AVAILABILITY_LABELS[page.universe_ranking.availability]
+    if page.universe_ranking.availability is Availability.AVAILABLE:
+        ranking_rows = [dict(row) for row in page.universe_ranking.ranking]
+        universe_rows = [dict(row) for row in page.universe_ranking.universe]
+        selected_instrument_id = page.universe_ranking.selected_instrument_id
+        if not ranking_rows:
+            ranking_label = "NOT_AVAILABLE"
+        if selected_instrument_id and universe_rows:
+            membership = {str(row.get("symbol")) for row in universe_rows}
+            membership_label = (
+                "IN_UNIVERSE" if selected_instrument_id in membership else "NOT_IN_UNIVERSE"
+            )
+        elif selected_instrument_id is None:
+            membership_label = "NOT_AVAILABLE"
+        elif not universe_rows:
+            membership_label = "NOT_AVAILABLE"
+
+    instrument_display = (
+        selected_instrument_id
+        if selected_instrument_id
+        else _display_value(
+            page.market_instrument.instrument_id, page.market_instrument.availability
+        )
+    )
+
     return {
         "page_schema_id": page.schema_id,
         "generated_at": page.generated_at.isoformat().replace("+00:00", "Z"),
@@ -85,11 +131,9 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "runtime_bridge_display": page.runtime_bridge_display,
         "shell_authority_class": page.shell_authority_class,
         "consumer_role": "read_only_consumer",
-        "phase": "PHASE_3_LANDSCAPE_SHELL",
+        "phase": "PHASE_4_1_MARKET_UNIVERSE_BINDING",
         "global_strip": {
-            "instrument": _display_value(
-                page.market_instrument.instrument_id, page.market_instrument.availability
-            ),
+            "instrument": instrument_display,
             "venue": _display_value(
                 page.market_instrument.venue, page.market_instrument.availability
             ),
@@ -107,6 +151,19 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         },
         "market": market,
         "universe": universe,
+        "universe_ranking_rows": ranking_rows,
+        "universe_membership_rows": universe_rows,
+        "selected_instrument_id": selected_instrument_id,
+        "universe_rail": {
+            "watchlist_availability": page.universe_ranking.availability.value,
+            "watchlist_label": AVAILABILITY_LABELS[page.universe_ranking.availability],
+            # Membership of selected in projected universe rows — not a separate
+            # eligibility producer / ranking recomputation.
+            "membership_label": membership_label,
+            "eligibility_label": membership_label,
+            "rank_label": ranking_label,
+            "selected_instrument_id": selected_instrument_id,
+        },
         "scope": scope,
         "decision": decision,
         "double_play": double_play,
@@ -129,11 +186,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "availability": chart_availability.value,
             "availability_label": AVAILABILITY_LABELS[chart_availability],
             "bound": chart_availability is Availability.AVAILABLE,
-            "message": (
-                "Primary chart bound to market read-model."
-                if chart_availability is Availability.AVAILABLE
-                else "Primary chart NOT_BOUND — no OHLCV fabricated for Landscape shell."
-            ),
+            "message": chart_message,
             "ohlcv": None,
         },
         "timeline": {
@@ -145,6 +198,10 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "engineering": {
             "label": "Engineering drawer — diagnostic / non-authoritative",
             "missing_state_hints": list(MISSING_STATE_REASON_HINTS),
+            "phase_4_1_bound_slots": [
+                "market_instrument",
+                "universe_ranking",
+            ],
             "slots": {
                 "market_instrument": market,
                 "universe_ranking": universe,
@@ -168,7 +225,9 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "scheduler": False,
             "write_endpoints": False,
             "dashboard_authority": False,
-            "phase_4_authorized": False,
+            "phase_4_1_binding_active": True,
+            "phase_4_full_pass": False,
+            "phase_4_authorized": True,
             "operator_skeleton_approval": "PENDING",
         },
     }

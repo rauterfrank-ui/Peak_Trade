@@ -1,8 +1,9 @@
-"""Page aggregate for Market Dashboard Landscape V2 (Phase 3 shell).
+"""Page aggregate for Market Dashboard Landscape V2.
 
 Read-only composition of Phase 2 projection slots. Does not recompute
-decision, direction, risk, sizing, scope, or Double Play. Phase 3 shell
-loads explicit NOT_BOUND slots until Phase 4 producer binding.
+decision, direction, risk, sizing, scope, or Double Play. Phase 4.1 route
+supplies market_instrument / universe_ranking overrides; other slots stay
+explicit NOT_BOUND until later Phase 4 bindings.
 """
 
 from __future__ import annotations
@@ -88,8 +89,8 @@ def _slot_map_from_bundle(bundle: Mapping[str, Any]) -> dict[str, Any]:
 class MarketDashboardReadServiceV1:
     """Sole page-aggregate owner for Landscape V2 shell.
 
-    Consumes Phase 2 unavailable/NOT_BOUND factories only in this PR.
-    No producer imports; no domain recomputation.
+    Accepts optional slot_overrides from the read-only producer-binding layer.
+    No producer imports inside this package; no domain recomputation.
     """
 
     def load_page_snapshot(

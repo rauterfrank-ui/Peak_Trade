@@ -17,6 +17,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 LANDSCAPE_PKG = REPO / "src" / "webui" / "market_dashboard_landscape_v2"
 SHELL_ROUTER = REPO / "src" / "webui" / "market_dashboard_landscape_shell_router_v2.py"
+PRODUCER_BINDING = REPO / "src" / "webui" / "market_dashboard_landscape_producer_binding_v2.py"
 WEBUI_ROOT = REPO / "src" / "webui"
 TEMPLATES_ROOT = REPO / "templates" / "peak_trade_dashboard"
 LANDSCAPE_TEMPLATE = TEMPLATES_ROOT / "market_landscape_v2.html"
@@ -216,6 +217,9 @@ def test_projection_helpers_are_field_copy_only() -> None:
     proj_path = LANDSCAPE_PKG / "projections.py"
     proj = proj_path.read_text(encoding="utf-8")
     assert "project_canonical_decision_snapshot_v1" in proj
+    assert "project_market_instrument_snapshot_v1" in proj
+    assert "project_universe_ranking_snapshot_v1" in proj
+    assert "project_dynamic_scope_snapshot_v1" not in proj
     assert "Forbidden" in proj
     tree = ast.parse(proj)
     for node in ast.walk(tree):
@@ -235,6 +239,37 @@ def test_projection_helpers_are_field_copy_only() -> None:
         assert "double_play_dashboard_display" not in module
         assert "execution" not in module
         assert "order" not in module
+
+
+def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
+    assert PRODUCER_BINDING.is_file()
+    text = PRODUCER_BINDING.read_text(encoding="utf-8")
+    assert "bind_market_universe_slots" in text
+    assert "dynamic_scope" not in text or "Phase 4.2" in text
+    assert "@router.post" not in text
+    assert "place_order" not in text
+    assert "activate_runtime" not in text
+    assert "workflow_dashboard_runtime_v1" not in text
+    assert "execution_watch_api" not in text
+    for module, level in _import_modules(PRODUCER_BINDING):
+        if level > 0:
+            continue
+        for prefix in FORBIDDEN_IMPORT_PREFIXES:
+            assert not (module == prefix or module.startswith(prefix + ".")), module
+    # Landscape package must not import the binding module (keeps contracts pure).
+    for path in _iter_py_files(LANDSCAPE_PKG):
+        for module, level in _import_modules(path):
+            assert "market_dashboard_landscape_producer_binding_v2" not in module
+
+
+def test_shell_router_wires_phase41_binding_only() -> None:
+    text = SHELL_ROUTER.read_text(encoding="utf-8")
+    assert "bind_market_universe_slots" in text
+    assert "bind_market_universe_scope_slots" not in text
+    assert "slot_overrides=phase41_slots" in text or "slot_overrides" in text
+    assert "@router.post" not in text
+    assert "workflow_dashboard_runtime_v1" not in text
+    assert "execution_watch_api" not in text
 
 
 def test_shell_router_forbidden_import_count_zero() -> None:

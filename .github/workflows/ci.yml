@@ -421,6 +421,8 @@ jobs:
             tests/webui/test_market_dashboard_tombstone_v1.py \
             tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py \
             tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py \
+            tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py \
+            tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py \
             -q --tb=short -m "not network and not external_tools"
 
   # ============================================================================
