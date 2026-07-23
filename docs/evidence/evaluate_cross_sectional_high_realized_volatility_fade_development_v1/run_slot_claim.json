@@ -1,0 +1,14 @@
+{
+  "config_digest": "c0584833e5fc0abae24dfb1b11b0d7def5edcbf03e60ad41bbe43dc132f9e2af",
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_cross_sectional_high_realized_volatility_fade_development_v1",
+  "holdout_accessed": false,
+  "hypothesis_id": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1",
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "schema_version": "evaluate_cross_sectional_high_realized_volatility_fade_run_slot_claim.v1",
+  "strategy_identity": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1",
+  "strategy_params_digest": "d2287c628ebcf0935f9f0b59ee1b5a1ae458fa57914408dbd1e73d4a5ea21e1f"
+}

@@ -162,7 +162,7 @@
     "seed_policy": "frozen_when_stochastic_components_absent",
     "treatment_arm": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
   },
-  "contract_digest": "9a174a153907f3fd42ecdddd456e58e2a8a01c1ddd081456303ef888704eb8f8",
+  "contract_digest": "3c9d664555d9b1f3c3240765449dc6fa3c693e7af10db579971d6a0560ec15a7",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -183,9 +183,9 @@
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
+  "development_evaluation_executed": true,
   "development_evaluation_runs_allowed": 1,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "directional_form": {
     "double_play_remains_sole_authority": true,
     "hypothesis_emits_admission_and_direction_intent_only": true,
@@ -440,7 +440,7 @@
     "live_or_authenticated_account_endpoints",
     "non_development_only_datasets"
   ],
-  "governance_note": "CREATE_SUCCESSOR after VTDC DEVELOPMENT_FAIL (slot consumed). CSHRVF tests cross-sectional high realized-volatility fade — materially distinct axis from own-instrument term-structure and expansion/compression machines. Definition-only; no strategy implementation; no evaluation; no run-slot consumption; holdout untouched.",
+  "governance_note": "CSHRVF v1 bounded DEVELOPMENT evaluation executed once; DEVELOPMENT_FAIL on preregistered admission gates (net PF/cost stress/max drawdown/time-segment robustness). Slot consumed. No retry. No holdout. Economic/promotion/runtime/live gates closed. No VTDC/VTSR/VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry.",
   "holdout_authorized": false,
   "holdout_based_parameter_selection_forbidden": true,
   "holdout_forbidden": true,
@@ -609,7 +609,7 @@
     "vtsr_retry_forbidden": true
   },
   "multiple_testing_budget": 1,
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_ONLY",
+  "next_canonical_step": "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE",
   "operator_authorization_note": "Operator GO GO_VOLATILITY_REGIME_POST_VTDC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1 / GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1 applied CREATE_SUCCESSOR → CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1.",
   "optimization_forbidden": true,
   "parameter_governance": {
@@ -681,8 +681,8 @@
     "retry_forbidden": true,
     "second_development_run_forbidden": true
   },
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "live_authorized": false,

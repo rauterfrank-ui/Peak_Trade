@@ -62,7 +62,10 @@ REQUIRED_TERMINAL_HYPOTHESIS_IDS = frozenset(
 REQUIRED_CLOSED = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_CS_CLOSED = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_DATASET = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
-REQUIRED_NEXT_STEP = "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
+REQUIRED_NEXT_STEP = (
+    "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_"
+    "FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
+)
 REQUIRED_TREATMENT = "OWN_INSTRUMENT_CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_ADMISSION"
 REQUIRED_CONTRACT = (
     "config/research/cross_sectional_high_realized_volatility_fade_v1_preregistered_"
@@ -108,8 +111,8 @@ def validate_backlog_contract(
     )
     _require(payload.get("dataset_id") == REQUIRED_DATASET, "DATASET_ID_MISMATCH")
     _require(payload.get("dataset_class") == "DEVELOPMENT_ONLY", "DATASET_CLASS")
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
     _require(payload.get("next_canonical_step") == REQUIRED_NEXT_STEP, "NEXT_STEP_STALE")
     _require(payload.get("required_treatment_type") == REQUIRED_TREATMENT, "TREATMENT_STALE")
@@ -132,12 +135,12 @@ def validate_backlog_contract(
     _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(
-        hyp.get("status") == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
+        hyp.get("status") == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
         "HYPOTHESIS_STATUS",
     )
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
-    _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NOT_ZERO")
-    _require(hyp.get("run_slot_consumed") is False, "HYP_SLOT_CONSUMED")
+    _require(hyp.get("development_run_count") == 1, "HYP_RUN_COUNT_NOT_ONE")
+    _require(hyp.get("run_slot_consumed") is True, "HYP_SLOT_NOT_CONSUMED")
     _require(hyp.get("implementation_present") is True, "HYP_IMPL_PRESENT_FALSE")
     _require(hyp.get("predecessor_strategy_id") == REQUIRED_PREDECESSOR, "HYP_PREDECESSOR")
     _require(hyp.get("contract_ref") == REQUIRED_CONTRACT, "HYP_CONTRACT_REF")
@@ -250,7 +253,7 @@ def validate_backlog_contract(
         "terminal_count": 9,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "strategy_identity": REQUIRED_STRATEGY_IDENTITY,
-        "development_run_count": 0,
+        "development_run_count": 1,
         "dataset_id": REQUIRED_DATASET,
         "evaluation_authorized": False,
         "holdout_forbidden": True,
