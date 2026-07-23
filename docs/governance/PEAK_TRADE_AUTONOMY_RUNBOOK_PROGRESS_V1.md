@@ -1,3 +1,22 @@
+### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEFINITION_ONLY_PREREGISTRATION_V1
+
+- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEFINITION_ONLY_PREREGISTRATION_V1`
+- Decision: `PERSIST_NEW_INDEPENDENT_RESEARCH_PROGRAM_SSOT_AND_PREREGISTRATION`
+- Workstream: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1` (`DEFINITION_ONLY`)
+- Family: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE`
+- Lane backlog: `OPEN_BACKLOG` (preregistered=1, open_unpreregistered=0, terminal=0)
+- First hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1` (`PREREGISTERED_DEFINITION_ONLY`)
+- Causal mechanism: negated mean open-gap `log(O&#47;C_prev)` cross-sectional single-slot fade (`lookback_N=30`, `rebalance=5`, `lag=1`)
+- Candidates ranked: open-gap pressure fade > Amihud illiquidity-pressure fade > wick-asymmetry fade
+- Separate open sibling CSRHR remains `OPEN_BACKLOG` unchanged (no continue/reuse/mutation)
+- Terminal CLV and path-efficiency DEVELOPMENT_FAIL linked as collision exclusions only (no retry/rename)
+- Closed predecessors linked as exclusions only: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`, `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
+- `EVALUATION_AUTHORIZED=false`; `IMPLEMENTATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0`; `DEVELOPMENT_RUN_LIMIT=1`; `FAIL_CLOSED_NO_RETRY=true`; holdout unbound/untouched/access forbidden; economic gate closed
+- Next admissible GO: separate implementation or bounded DEVELOPMENT evaluation GO (not authorized here)
+- Explicit non-actions: no CSRHR continue/reuse/mutation; no CLV/path-efficiency retry; no vol-regime/CS-momentum reopen; no evaluation/runtime/LIVE/orders
+
+
 ### CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1
 
 - Scope: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
