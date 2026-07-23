@@ -5,7 +5,8 @@ Status: `DEFINITION_ONLY_PROGRAM_OPEN`
 - Strategy: `CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1`
 - Hypothesis: `CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1`
 - Lane backlog: `OPEN_BACKLOG`
-- Slice: post-VTDC CREATE_SUCCESSOR definition-only preregistration
+- Slice: strategy implementation present; evaluation unauthorized
+- Predecessor VTDC terminal `DEVELOPMENT_FAIL` (slot consumed; retry forbidden)
 - `DEVELOPMENT_RUN_COUNT=0`, `RUNNER_START_COUNT=0`, `RUN_SLOT_CONSUMED=false`
 - Holdout untouched; economic/promotion/runtime/LIVE/orders closed
 - No VTDC/VTSR/VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry; no CS-momentum reopen
@@ -18,6 +19,6 @@ instrument term-structure (VTSR/VTDC) and from closed CS return-momentum ranking
 
 ## Next step
 
-`REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
+`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1

@@ -58,16 +58,16 @@
     "VTSR_RETRY"
   ],
   "governance_doc_ref": "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
-  "governance_note": "CREATE_SUCCESSOR applied: CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1 definition-only preregistered after VTDC DEVELOPMENT_FAIL (slot consumed, no retry). VTDC moved to terminal_hypotheses. No strategy implementation; no evaluation; holdout untouched. Rejected: further term-structure variant, expansion/compression retry, own-instrument RV transition, standaside-only, CLOSE_LANE, CS-momentum reopen.",
+  "governance_note": "CSHRVF v1 strategy implementation present after post-VTDC CREATE_SUCCESSOR. Evaluation unauthorized; no run-slot consumption; holdout untouched. Next=separate GO for bounded Development evaluation.",
   "holdout_accessed": false,
   "lane_backlog_ref": "config/research/volatility_regime_hypothesis_backlog_v1.json",
   "lane_status": "OPEN_BACKLOG",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
   "live_authorized": false,
-  "next_admissible_scope": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1",
+  "next_admissible_scope": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
   "next_admissible_scope_go_tokens": [
-    "GO_CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1"
+    "GO_CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1"
   ],
   "orders_allowed": false,
   "packet_id": "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1",
@@ -81,10 +81,10 @@
   "schema_version": "volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet.v1",
   "scope_classification": "GOVERNANCE_ONLY_OPERATOR_DECISION_PACKET_NO_EXECUTION",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
-  "status": "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSHRVF_DEFINITION_ONLY",
+  "status": "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSHRVF_STRATEGY_IMPLEMENTATION_PRESENT",
   "successor_created": true,
   "successor_hypothesis_id": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1",
   "successor_measurement_contract_ref": "config/research/cross_sectional_high_realized_volatility_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "successor_strategy_identity": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1",
-  "verdict": "POST_VTDC_CSHRVF_V1_DEFINITION_ONLY_PREREGISTERED"
+  "verdict": "POST_VTDC_CSHRVF_V1_STRATEGY_IMPLEMENTATION_PRESENT_OPEN_BACKLOG"
 }
