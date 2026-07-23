@@ -115,6 +115,14 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert cshrvf["status"] == "TERMINAL_FAIL"
     assert cshrvf["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
     assert cshrvf["run_slot_consumed"] is True
+    assert cshrvf["development_run_count"] == 1
+    assert cshrvf["runner_start_count"] == 1
+    assert cshrvf["retry_allowed"] is False
+    assert cshrvf["rerun_allowed"] is False
+    assert cshrvf["reopen_allowed"] is False
+    assert hyp["runner_start_count"] == 0
+    assert hyp["development_run_count"] == 0
+    assert hyp["run_slot_consumed"] is False
 
 
 def test_fail_closed_mutations() -> None:

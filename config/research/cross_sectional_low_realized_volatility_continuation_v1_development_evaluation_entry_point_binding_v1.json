@@ -5,7 +5,7 @@
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
   "canonical_ssot": true,
   "cli_ref": "scripts/research/run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py",
-  "config_digest": "5bc8d742e8f1b1d5652a82e721f9836386806a51890bda388ad18c1895cbcb90",
+  "config_digest": "f606ef823d09e9c8bbe34620ca65e80188fa679cd3e99e1f47d5a65bd3b27d19",
   "dataset_binding": {
     "dataset_class": "DEVELOPMENT_ONLY",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
@@ -40,12 +40,10 @@
   "reused_canonical_owners": {
     "baseline": "src.research.unconditional_20_bar_price_channel_breakout_v1",
     "productive_exit_pnl_evaluator": "src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1",
-    "shared_channel_core": "research.price_channel_breakout_core_v1",
-    "strategy": "src.research.cross_sectional_high_realized_volatility_fade_v1_strategy_v1",
-    "vol_state": "src.research.cross_sectional_high_realized_volatility_fade_v1_vol_state_v1"
+    "shared_channel_core": "research.price_channel_breakout_core_v1"
   },
-  "runner_present": true,
-  "runner_start_count": 1,
+  "runner_present": false,
+  "runner_start_count": 0,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
@@ -61,13 +59,12 @@
   "shared_channel_core_bound": true,
   "shared_channel_core_ref": "src/research/price_channel_breakout_core_v1.py",
   "signal_family": "VOLATILITY_REGIME",
-  "slice_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
-  "status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL",
+  "slice_class": "DEFINITION_ONLY_GOVERNANCE",
+  "status": "DEFINITION_BOUND_EVALUATION_UNAUTHORIZED",
   "strategy_id": "cross_sectional_low_realized_volatility_continuation",
   "strategy_identity": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1",
   "strategy_implementation_present": false,
-  "strategy_params_digest": "d2287c628ebcf0935f9f0b59ee1b5a1ae458fa57914408dbd1e73d4a5ea21e1f",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
+  "verdict": "DEFINITION_ONLY_ENTRY_POINT_UNAUTHORIZED_NO_EVALUATION"
 }

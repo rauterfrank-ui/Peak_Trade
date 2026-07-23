@@ -31,6 +31,14 @@ CLI = (
     REPO
     / "scripts/research/run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py"
 )
+ENTRY_POINT_BINDING_PATH = (
+    REPO
+    / "config/research/cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_binding_v1.json"
+)
+CSHRVF_ENTRY_POINT_BINDING_PATH = (
+    REPO
+    / "config/research/cross_sectional_high_realized_volatility_fade_v1_development_evaluation_entry_point_binding_v1.json"
+)
 
 
 def _load(path: Path) -> dict:
@@ -128,3 +136,67 @@ def test_placeholder_cli_fail_closed() -> None:
     assert payload["status"] == "FAIL_CLOSED"
     assert payload["evaluation_executed"] is False if "evaluation_executed" in payload else True
     assert payload["holdout_accessed"] is False
+
+
+def test_successor_entry_point_binding_definition_only_not_terminal_fail() -> None:
+    binding = _load(ENTRY_POINT_BINDING_PATH)
+    assert binding["hypothesis_id"] == (
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
+    )
+    assert binding["status"] == "DEFINITION_BOUND_EVALUATION_UNAUTHORIZED"
+    assert binding["entry_point_status"] == "DEFINITION_BOUND_EVALUATION_UNAUTHORIZED"
+    assert binding["slice_class"] == "DEFINITION_ONLY_GOVERNANCE"
+    assert binding["verdict"] == "DEFINITION_ONLY_ENTRY_POINT_UNAUTHORIZED_NO_EVALUATION"
+    assert binding["development_run_count"] == 0
+    assert binding["runner_start_count"] == 0
+    assert binding["runner_present"] is False
+    assert binding["development_evaluation_executed"] is False
+    assert binding["development_evaluation_authorized"] is False
+    assert binding["evaluation_authorized"] is False
+    assert binding["strategy_implementation_present"] is False
+    assert binding["holdout_authorized"] is False
+    assert binding["holdout_forbidden"] is True
+    assert "strategy_params_digest" not in binding
+    owners = binding["reused_canonical_owners"]
+    assert "strategy" not in owners
+    assert "vol_state" not in owners
+    assert "FAIL" not in str(binding["status"])
+    assert "TERMINAL" not in str(binding["slice_class"])
+    assert "TERMINAL" not in str(binding["verdict"])
+
+
+def test_predecessor_cshrvf_terminal_fail_not_projected_onto_successor() -> None:
+    backlog = _load(BACKLOG_PATH)
+    terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
+    cshrvf = terminals["CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"]
+    assert cshrvf["status"] == "TERMINAL_FAIL"
+    assert cshrvf["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
+    assert cshrvf["run_slot_consumed"] is True
+    assert cshrvf["development_run_count"] == 1
+    assert cshrvf["runner_start_count"] == 1
+    assert cshrvf["retry_allowed"] is False
+    assert cshrvf["rerun_allowed"] is False
+    assert cshrvf["reopen_allowed"] is False
+
+    successor = backlog["preregistered_hypotheses"][0]
+    assert successor["strategy_identity"] == (
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+    )
+    assert successor["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert successor["development_run_count"] == 0
+    assert successor["run_slot_consumed"] is False
+    assert successor["implementation_present"] is False
+
+    cshrvf_binding = _load(CSHRVF_ENTRY_POINT_BINDING_PATH)
+    assert cshrvf_binding["status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
+    assert cshrvf_binding["development_run_count"] == 1
+    assert cshrvf_binding["runner_start_count"] == 1
+    assert cshrvf_binding["development_evaluation_executed"] is True
+
+    successor_binding = _load(ENTRY_POINT_BINDING_PATH)
+    assert successor_binding["runner_start_count"] == 0
+    assert successor_binding["development_run_count"] == 0
+    assert successor_binding["development_evaluation_executed"] is False
+    assert successor_binding["status"] != cshrvf_binding["status"]
+    assert successor_binding["slice_class"] != cshrvf_binding["slice_class"]
+    assert successor_binding["runner_start_count"] != cshrvf_binding["runner_start_count"]
