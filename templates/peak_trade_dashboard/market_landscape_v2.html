@@ -11,8 +11,8 @@
 {% block app_chrome %}
 <header class="mdl-v2-app-chrome" data-mdl-app-chrome="true">
   <a href="/" class="mdl-v2-app-chrome__home">Peak_Trade</a>
-  <span class="mdl-v2-app-chrome__label">Market Landscape V2 · read-only</span>
-  <span class="mdl-v2-badge mdl-v2-badge--ro">LIVE LOCKED</span>
+  <span class="mdl-v2-app-chrome__label">Market Landscape V2</span>
+  <span class="mdl-v2-chip">READ-ONLY · LIVE LOCKED</span>
 </header>
 {% endblock %}
 
@@ -27,156 +27,155 @@
   data-runtime-bridge="{{ runtime_bridge_display }}"
   aria-label="Market Dashboard Landscape V2 read-only workspace"
 >
-  <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">
-    <div class="mdl-v2-strip__brand">
-      <span class="mdl-v2-kicker">Peak_Trade · Landscape V2</span>
-      <span class="mdl-v2-badge mdl-v2-badge--ro">READ-ONLY CONSUMER</span>
-    </div>
-    <dl class="mdl-v2-strip__facts">
-      <div><dt>Instrument</dt><dd data-mdl-field="instrument">{{ global_strip.instrument }}</dd></div>
-      <div><dt>Venue</dt><dd data-mdl-field="venue">{{ global_strip.venue }}</dd></div>
-      <div><dt>Scope</dt><dd data-mdl-field="scope">{{ global_strip.scope }}</dd></div>
-      <div><dt>Regime</dt><dd data-mdl-field="regime">{{ global_strip.regime }}</dd></div>
-      <div>
-        <dt>Runtime</dt>
-        <dd data-mdl-field="runtime" title="{{ shell_authority_class }}">{{ global_strip.runtime_state }}</dd>
+  <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
+    <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">
+      <div class="mdl-v2-strip__brand">
+        <span class="mdl-v2-kicker">Market</span>
+        <span class="mdl-v2-chip mdl-v2-chip--quiet">READ-ONLY CONSUMER</span>
       </div>
-      <div><dt>Freshness</dt><dd data-mdl-field="freshness">{{ source_health.availability }}</dd></div>
-      <div><dt>Safety</dt><dd data-mdl-field="safety">{{ global_strip.safety_status }}</dd></div>
-    </dl>
-  </header>
+      <dl class="mdl-v2-strip__facts">
+        <div><dt>Instrument</dt><dd data-mdl-field="instrument">{{ global_strip.instrument }}</dd></div>
+        <div><dt>Venue</dt><dd data-mdl-field="venue">{{ global_strip.venue }}</dd></div>
+        <div><dt>Scope</dt><dd data-mdl-field="scope">{{ global_strip.scope }}</dd></div>
+        <div><dt>Regime</dt><dd data-mdl-field="regime">{{ global_strip.regime }}</dd></div>
+        <div>
+          <dt>Runtime</dt>
+          <dd data-mdl-field="runtime" title="{{ shell_authority_class }}">{{ global_strip.runtime_state }}</dd>
+        </div>
+        <div><dt>Freshness</dt><dd data-mdl-field="freshness">{{ source_health.availability }}</dd></div>
+        <div><dt>Safety</dt><dd data-mdl-field="safety">{{ global_strip.safety_status }}</dd></div>
+      </dl>
+    </header>
 
-  <div class="mdl-v2-workspace" data-mdl-workspace="true">
-    <aside class="mdl-v2-rail mdl-v2-rail--left" data-mdl-region="UNIVERSE_RANK_RAIL" aria-label="Universe and rank">
-      <h2>Universe / Rank</h2>
-      <p class="mdl-v2-state" data-availability="{{ universe.availability }}">{{ universe.availability_label }}</p>
-      <p class="mdl-v2-note">Projection-only placeholder. Ranking bound in later Phase 4 PR.</p>
-      <ul class="mdl-v2-empty-list" aria-label="Watchlist unavailable">
-        <li>Watchlist {{ universe.availability_label }}</li>
-        <li>Eligibility {{ universe.availability_label }}</li>
-      </ul>
-    </aside>
+    <div class="mdl-v2-workspace" data-mdl-workspace="true">
+      <aside class="mdl-v2-rail mdl-v2-rail--left" data-mdl-region="UNIVERSE_RANK_RAIL" aria-label="Universe and rank">
+        <h2>Universe</h2>
+        <ul class="mdl-v2-rail-rows" aria-label="Watchlist unavailable">
+          <li>
+            <span class="mdl-v2-rail-rows__label">Watchlist</span>
+            <span class="mdl-v2-state" data-availability="{{ universe.availability }}">{{ universe.availability_label }}</span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Eligibility</span>
+            <span class="mdl-v2-state" data-availability="{{ universe.availability }}">{{ universe.availability_label }}</span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Rank</span>
+            <span class="mdl-v2-state" data-availability="{{ universe.availability }}">{{ universe.availability_label }}</span>
+          </li>
+        </ul>
+      </aside>
+
+      <section
+        class="mdl-v2-primary"
+        data-mdl-region="PRIMARY_MARKET_WORKSPACE"
+        data-mdl-chart-region="true"
+        aria-label="Primary market workspace"
+      >
+        <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="{{ chart.bound|lower }}">
+          <div class="mdl-v2-chart__chrome">
+            <h2>Chart</h2>
+            <span class="mdl-v2-state" data-availability="{{ chart.availability }}">{{ chart.availability_label }}</span>
+          </div>
+          <div class="mdl-v2-chart__stage" role="img" aria-label="{{ chart.message }}">
+            <p class="mdl-v2-chart__message">{{ chart.message }}</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="mdl-v2-rail mdl-v2-rail--right" data-mdl-region="SYSTEM_CONTEXT_RAIL" aria-label="System context">
+        <h2>Context</h2>
+        <dl class="mdl-v2-kv">
+          <div><dt>Scope</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
+          <div><dt>Regime</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
+          <div><dt>Switch</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
+          <div><dt>Source Health</dt><dd data-availability="{{ source_health.availability }}">{{ source_health.availability }}</dd></div>
+        </dl>
+      </aside>
+    </div>
 
     <section
-      class="mdl-v2-primary"
-      data-mdl-region="PRIMARY_MARKET_WORKSPACE"
-      data-mdl-chart-region="true"
-      aria-label="Primary market workspace"
+      class="mdl-v2-decision"
+      data-mdl-region="CANONICAL_DECISION_STRIP"
+      data-mdl-decision-strip="true"
+      aria-label="Canonical decision strip"
     >
-      <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="{{ chart.bound|lower }}">
-        <div class="mdl-v2-chart__chrome">
-          <h2>Primary Chart</h2>
-          <span class="mdl-v2-state" data-availability="{{ chart.availability }}">{{ chart.availability_label }}</span>
+      <dl class="mdl-v2-decision__grid">
+        <div>
+          <dt>Decision</dt>
+          <dd data-mdl-field="decision" data-availability="{{ decision.availability }}">
+            {% if decision.is_available %}{{ decision.fields.decision }}{% else %}{{ decision.availability_label }}{% endif %}
+          </dd>
         </div>
-        <div class="mdl-v2-chart__stage" role="img" aria-label="{{ chart.message }}">
-          <p class="mdl-v2-chart__message">{{ chart.message }}</p>
-          <p class="mdl-v2-note">No fabricated OHLCV. No demo portfolio. Fail-closed missing state.</p>
+        <div>
+          <dt>Direction</dt>
+          <dd data-mdl-field="direction" data-availability="{{ decision.availability }}">
+            {% if decision.is_available %}{{ decision.fields.direction }}{% else %}{{ decision.availability_label }}{% endif %}
+          </dd>
         </div>
+        <div>
+          <dt>Double Play</dt>
+          <dd data-mdl-field="double_play" data-availability="{{ double_play.availability }}">
+            {% if double_play.is_available %}{{ double_play.fields.overall_status }}{% else %}{{ double_play.availability_label }}{% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt>Why</dt>
+          <dd data-mdl-field="reason_codes">
+            {% if decision.reason_codes %}{{ decision.reason_codes|join(", ") }}{% else %}{{ decision.availability_label }}{% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt>Blockers</dt>
+          <dd data-mdl-field="blockers">
+            {% if decision.blockers %}{{ decision.blockers|join(", ") }}{% else %}{{ decision.availability_label }}{% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt>Confidence</dt>
+          <dd data-mdl-field="confidence" data-availability="NOT_BOUND">NOT_BOUND</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="mdl-v2-ops" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
+      <div class="mdl-v2-ops__col">
+        <h3>Risk / Sizing / Capital</h3>
+        <p class="mdl-v2-state" data-availability="{{ risk.availability }}">{{ risk.availability_label }}</p>
+      </div>
+      <div class="mdl-v2-ops__col">
+        <h3>Execution / Reconciliation</h3>
+        <p class="mdl-v2-state" data-availability="{{ execution.availability }}">{{ execution.availability_label }}</p>
+      </div>
+      <div class="mdl-v2-ops__col">
+        <h3>Economic</h3>
+        <p class="mdl-v2-state" data-availability="{{ economic.availability }}">{{ economic.availability_label }}</p>
       </div>
     </section>
 
-    <aside class="mdl-v2-rail mdl-v2-rail--right" data-mdl-region="SYSTEM_CONTEXT_RAIL" aria-label="System context">
-      <h2>System Context</h2>
-      <dl class="mdl-v2-kv">
-        <div><dt>Dynamic Scope</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
-        <div><dt>Market Context / Regime</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
-        <div><dt>Switch State</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
-        <div><dt>Source Health</dt><dd data-availability="{{ source_health.availability }}">{{ source_health.availability }}</dd></div>
-      </dl>
-      <p class="mdl-v2-note">No UI-side derivation. Canonical owners remain outside this surface.</p>
-    </aside>
+    <section class="mdl-v2-timeline" data-mdl-region="EVENT_DECISION_TIMELINE" aria-label="Event and decision timeline">
+      <div class="mdl-v2-timeline__head">
+        <h2>Timeline</h2>
+        <span class="mdl-v2-state" data-availability="{{ timeline.availability }}">{{ timeline.availability_label }}</span>
+      </div>
+      <p class="mdl-v2-timeline__empty">{{ timeline.message }}</p>
+    </section>
+
+    <details
+      class="mdl-v2-engineering"
+      data-mdl-region="ENGINEERING_DRAWER"
+      data-mdl-engineering="true"
+    >
+      <summary>Engineering · provenance / schemas / diagnostics</summary>
+      <div class="mdl-v2-engineering__body">
+        <p><strong>Generated:</strong> <span class="font-mono">{{ generated_at }}</span></p>
+        <p><strong>Page schema:</strong> <span class="font-mono">{{ page_schema_id }}</span></p>
+        <p><strong>Runtime bridge:</strong> <span class="font-mono">{{ runtime_bridge_display }}</span> ({{ shell_authority_class }})</p>
+        <p><strong>Incomplete slots:</strong> {{ source_health.incomplete_slots|join(", ") }}</p>
+        <pre class="mdl-v2-pre" tabindex="0">{{ source_health.slot_availability | tojson(indent=2) }}</pre>
+      </div>
+    </details>
   </div>
-
-  <section
-    class="mdl-v2-decision"
-    data-mdl-region="CANONICAL_DECISION_STRIP"
-    data-mdl-decision-strip="true"
-    aria-label="Canonical decision strip"
-  >
-    <h2>Canonical Decision</h2>
-    <dl class="mdl-v2-decision__grid">
-      <div>
-        <dt>Decision</dt>
-        <dd data-mdl-field="decision" data-availability="{{ decision.availability }}">
-          {% if decision.is_available %}{{ decision.fields.decision }}{% else %}{{ decision.availability_label }}{% endif %}
-        </dd>
-      </div>
-      <div>
-        <dt>Direction</dt>
-        <dd data-mdl-field="direction" data-availability="{{ decision.availability }}">
-          {% if decision.is_available %}{{ decision.fields.direction }}{% else %}{{ decision.availability_label }}{% endif %}
-        </dd>
-      </div>
-      <div>
-        <dt>Double Play</dt>
-        <dd data-mdl-field="double_play" data-availability="{{ double_play.availability }}">
-          {% if double_play.is_available %}{{ double_play.fields.overall_status }}{% else %}{{ double_play.availability_label }}{% endif %}
-        </dd>
-      </div>
-      <div>
-        <dt>Reason Codes</dt>
-        <dd data-mdl-field="reason_codes">
-          {% if decision.reason_codes %}{{ decision.reason_codes|join(", ") }}{% else %}{{ decision.availability_label }}{% endif %}
-        </dd>
-      </div>
-      <div>
-        <dt>Blockers</dt>
-        <dd data-mdl-field="blockers">
-          {% if decision.blockers %}{{ decision.blockers|join(", ") }}{% else %}{{ decision.availability_label }}{% endif %}
-        </dd>
-      </div>
-      <div>
-        <dt>Confidence</dt>
-        <dd data-mdl-field="confidence" data-availability="NOT_BOUND">NOT_BOUND</dd>
-      </div>
-    </dl>
-  </section>
-
-  <section class="mdl-v2-secondary" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Secondary status">
-    <article>
-      <h3>Risk / Sizing / Capital</h3>
-      <p class="mdl-v2-state" data-availability="{{ risk.availability }}">{{ risk.availability_label }}</p>
-      <p class="mdl-v2-note">Read-only projection · not authority</p>
-    </article>
-    <article>
-      <h3>Execution / Reconciliation</h3>
-      <p class="mdl-v2-state" data-availability="{{ execution.availability }}">{{ execution.availability_label }}</p>
-      <p class="mdl-v2-note">Read-only projection · not authority</p>
-    </article>
-    <article>
-      <h3>Economic Status</h3>
-      <p class="mdl-v2-state" data-availability="{{ economic.availability }}">{{ economic.availability_label }}</p>
-      <p class="mdl-v2-note">Evidence only · promotion path separate</p>
-    </article>
-  </section>
-
-  <section class="mdl-v2-timeline" data-mdl-region="EVENT_DECISION_TIMELINE" aria-label="Event and decision timeline">
-    <h2>Event / Decision Timeline</h2>
-    <p class="mdl-v2-state" data-availability="{{ timeline.availability }}">{{ timeline.availability_label }}</p>
-    <p class="mdl-v2-note">{{ timeline.message }}</p>
-  </section>
-
-  <details
-    class="mdl-v2-engineering"
-    data-mdl-region="ENGINEERING_DRAWER"
-    data-mdl-engineering="true"
-  >
-    <summary>Engineering drawer — provenance · schemas · digests · diagnostics (non-authoritative)</summary>
-    <div class="mdl-v2-engineering__body">
-      <p><strong>Generated:</strong> <span class="font-mono">{{ generated_at }}</span></p>
-      <p><strong>Page schema:</strong> <span class="font-mono">{{ page_schema_id }}</span></p>
-      <p><strong>Shell runtime constant:</strong> <span class="font-mono">{{ runtime_bridge_display }}</span> ({{ shell_authority_class }})</p>
-      <p><strong>Incomplete slots:</strong> {{ source_health.incomplete_slots|join(", ") }}</p>
-      <pre class="mdl-v2-pre" tabindex="0">{{ source_health.slot_availability | tojson(indent=2) }}</pre>
-      <p class="mdl-v2-note">Missing-state vocabulary includes AVAILABLE, NOT_BOUND, MISSING_SOURCE, STALE, INVALID. SCHEMA_MISMATCH / INVALID_PROVENANCE surface as INVALID + reason codes when bound.</p>
-    </div>
-  </details>
-
-  <footer class="mdl-v2-footer">
-    <span>Phase 4 producer binding not authorized.</span>
-    <span>OPERATOR_SKELETON_APPROVAL={{ product_flags.operator_skeleton_approval }}</span>
-    <span>LIVE_AUTHORIZED=false · ORDERS=false · NO WRITE CONTROLS</span>
-  </footer>
 </main>
 <script src="/static/js/market_dashboard_landscape_v2.js" defer></script>
 {% endblock %}

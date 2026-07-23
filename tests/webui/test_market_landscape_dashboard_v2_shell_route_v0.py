@@ -55,8 +55,11 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
         assert landmark in html, landmark
     assert "NOT_BOUND" in html
     assert "BOUND_NOT_ACTIVATED" in html
-    assert "no OHLCV fabricated" in html.lower() or "No fabricated OHLCV" in html
-
+    assert "no ohlcv fabricated" in html.lower()
+    assert 'data-mdl-outer-workspace="true"' in html
+    assert "mdl-v2-ops" in html
+    assert "OPERATOR_SKELETON_APPROVAL" not in html
+    assert "Phase 4 producer binding" not in html
 
 def test_get_market_has_no_write_or_order_controls(client: TestClient) -> None:
     html = client.get("/market").text
