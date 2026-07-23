@@ -88,7 +88,9 @@ sufficiency). Fail → `FAIL_CLOSED_NO_RETRY`.
 
 ## Gates &#47; Safety claims
 
-`STRATEGY_IMPLEMENTED=false`, `EVALUATION_EXECUTED=false`, `PROMOTION_AUTHORIZED=false`,
+`STRATEGY_IMPLEMENTED=true` (implementation binding), measurement-contract field remains
+frozen `strategy_implementation_present=false` per lane convention.
+`EVALUATION_EXECUTED=false`, `PROMOTION_AUTHORIZED=false`,
 `RUNTIME_AUTHORIZED=false`, `SHADOW_AUTHORIZED=false`, `TESTNET_AUTHORIZED=false`,
 `LIVE_AUTHORIZED=false`, `ORDERS=false`.
 
@@ -100,15 +102,16 @@ sufficiency). Fail → `FAIL_CLOSED_NO_RETRY`.
 
 - Script: `scripts&#47;research&#47;run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py`
 - Binding: `config&#47;research&#47;cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_binding_v1.json`
+- Implementation binding: `config&#47;research&#47;cross_sectional_low_realized_volatility_continuation_v1_strategy_implementation_binding_v1.json`
 - Unauthorized in this slice; no evaluation executed.
 
 ## Next step
 
-Separate operator GO for strategy implementation, then separate GO for Development evaluation.
+Separate operator GO for bounded Development evaluation.
 
 ## Allowed next scope
 
-- `CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
-- GO token: `GO_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- `CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- GO token: `GO_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
 
 docs_token: DOCS_TOKEN_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1

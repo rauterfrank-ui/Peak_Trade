@@ -5,7 +5,7 @@ Status: `DEFINITION_ONLY_PROGRAM_OPEN`
 - Strategy: `CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1`
 - Hypothesis: `CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
 - Lane backlog: `OPEN_BACKLOG`
-- Slice: definition-only preregistration; strategy implementation unauthorized
+- Slice: strategy implementation present; Development evaluation unauthorized
 - Predecessor CSHRVF terminal `DEVELOPMENT_FAIL` (slot consumed; retry forbidden)
 - `DEVELOPMENT_RUN_COUNT=0`, `RUNNER_START_COUNT=0`, `RUN_SLOT_CONSUMED=false`
 - Holdout untouched; economic/promotion/runtime/LIVE/orders closed
@@ -20,6 +20,6 @@ CS return-momentum ranking.
 
 ## Next step
 
-`REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION`
+`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1

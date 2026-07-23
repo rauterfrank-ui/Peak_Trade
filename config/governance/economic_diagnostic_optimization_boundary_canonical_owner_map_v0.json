@@ -491,6 +491,18 @@
         "scripts/research/run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py"
       ]
     },
+    "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "note": "Strategy implementation only for CSLRVC v1; cross-sectional low RV-level rank continuation with short-horizon return; exit SM with CS-vol-rank normalization (>0.45); productive PnL evaluator reused; no Development evaluation execution/slot consumption/holdout/runtime/orders.",
+      "path_prefixes": [
+        "src/research/cross_sectional_low_realized_volatility_continuation_v1_strategy_v1.py",
+        "src/research/cross_sectional_low_realized_volatility_continuation_v1_exit_state_machine_v1.py",
+        "src/research/cross_sectional_low_realized_volatility_continuation_v1_vol_state_v1.py",
+        "src/research/cross_sectional_low_realized_volatility_continuation_v1_strategy_implementation_binding_v1.py",
+        "config/research/cross_sectional_low_realized_volatility_continuation_v1_strategy_implementation_binding_v1.json",
+        "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+        "tests/research/test_cross_sectional_low_realized_volatility_continuation_v1_strategy_implementation_v1.py"
+      ]
+    },
     "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
       "note": "DEVELOPMENT evaluation entry point/owner for CS relative-strength momentum v1: executable evaluate path under fail-closed authorization, CLI preflight/dry-validate, digests/dataset/time-segment/rebalance-observation/evidence-registry/admission gates, wiring into canonical single-slot backtest metrics owners. Development evaluation authorized on HEAD; no runner start/run-slot consumption without separate execution GO; no holdout/runtime/orders; measurement thresholds and strategy score/selection semantics unchanged.",
       "path_prefixes": [
@@ -1180,7 +1192,7 @@
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 definition-only OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 strategy implementation present OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_hypothesis_backlog_v1.json",
         "src/research/volatility_regime_hypothesis_backlog_v1.py",
@@ -1189,7 +1201,7 @@
       ]
     },
     "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1": {
-      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 definition-only OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 strategy implementation present OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
         "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
@@ -1198,7 +1210,7 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 definition-only OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 strategy implementation present OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",

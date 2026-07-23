@@ -126,11 +126,11 @@
     "NO_VTDC_V1_RETRY",
     "NO_VTSR_V1_RETRY"
   ],
-  "governance_note": "CREATE_SUCCESSOR applied: CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1 definition-only preregistered after CSHRVF DEVELOPMENT_FAIL (slot consumed, no retry). CSHRVF moved to terminal_hypotheses. No strategy implementation; no evaluation; holdout untouched. Rejected: CSHRVF retune, further term-structure variant, expansion/compression retry, own-instrument RV transition, standaside-only, CLOSE_LANE, CS-momentum reopen.",
+  "governance_note": "CSLRVC v1 strategy implementation present after post-CSHRVF CREATE_SUCCESSOR. Evaluation unauthorized; no run-slot consumption; holdout untouched. Next=separate GO for bounded Development evaluation.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
-  "implementation_authorized": false,
+  "implementation_authorized": true,
   "lane_backlog_ref": "config/research/volatility_regime_hypothesis_backlog_v1.json",
   "lane_backlog_status": "OPEN_BACKLOG",
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
@@ -304,7 +304,7 @@
   },
   "measurement_contract_ref": "config/research/cross_sectional_low_realized_volatility_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "measurement_repair_merge_commit": "00a820f080973600378c3c2d5513905ee07217e9",
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "operator_decision": "CREATE_SUCCESSOR_HYPOTHESIS_CSLRVC_V1_DEFINITION_ONLY_PREREGISTRATION",
   "operator_decision_packet_ref": "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
   "operator_decision_token": "GO_VOLATILITY_REGIME_POST_CSHRVF_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1",
@@ -347,7 +347,7 @@
   "strategy_id": "cross_sectional_low_realized_volatility_continuation",
   "strategy_identity": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1",
   "strategy_implementation_authorized_in_this_slice": false,
-  "strategy_implementation_present": false,
+  "strategy_implementation_present": true,
   "strategy_version": "v1",
   "successor_selection_rationale": {
     "alternatives_rejected": {
@@ -366,5 +366,5 @@
     "why_preferred": "After CSHRVF high-half fade DEVELOPMENT_FAIL, the opposite CS-RV-rank half (low-vol continuation with signed return) is the unused v1-forbidden half of the same estimator axis — materially distinct without recycling terminal families."
   },
   "target_phenomenon": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION",
-  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_OPEN_BACKLOG_CSLRVC_V1_DEFINITION_ONLY_PREREGISTERED"
+  "verdict": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1_OPEN_BACKLOG_CSLRVC_V1_STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
 }

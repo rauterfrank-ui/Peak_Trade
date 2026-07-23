@@ -182,10 +182,11 @@ def test_predecessor_cshrvf_terminal_fail_not_projected_onto_successor() -> None
     assert successor["strategy_identity"] == (
         "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
     )
-    assert successor["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert successor["status"] == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
     assert successor["development_run_count"] == 0
     assert successor["run_slot_consumed"] is False
-    assert successor["implementation_present"] is False
+    assert successor["implementation_present"] is True
+    assert successor["runner_start_count"] == 0
 
     cshrvf_binding = _load(CSHRVF_ENTRY_POINT_BINDING_PATH)
     assert cshrvf_binding["status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
