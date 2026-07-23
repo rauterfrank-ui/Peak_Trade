@@ -8,7 +8,7 @@ Availability states — never silent defaults.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, Union
 
 from .availability import Availability
 from .provenance import FreshnessV1, SnapshotProvenanceV1
@@ -77,10 +77,12 @@ class UniverseRankingSnapshotV1(_ProjectionBase):
     ranking: tuple[Mapping[str, Any], ...]
     selected_instrument_id: str | None
     reason_codes: tuple[str, ...]
+    universe: tuple[Mapping[str, Any], ...] = ()
 
     def __post_init__(self) -> None:
         super().__post_init__()
         object.__setattr__(self, "ranking", tuple(dict(row) for row in self.ranking))
+        object.__setattr__(self, "universe", tuple(dict(row) for row in self.universe))
         object.__setattr__(self, "reason_codes", tuple(self.reason_codes))
 
 
@@ -208,19 +210,19 @@ class DiagnosticsSummarySnapshotV1(_ProjectionBase):
         object.__setattr__(self, "reason_codes", tuple(self.reason_codes))
 
 
-ProjectionSnapshot = (
-    MarketInstrumentSnapshotV1
-    | UniverseRankingSnapshotV1
-    | DynamicScopeSnapshotV1
-    | CanonicalDecisionSnapshotV1
-    | DoublePlaySnapshotV1
-    | RiskSizingCapitalSnapshotV1
-    | SafetyAuthoritySnapshotV1
-    | ExecutionReconciliationSnapshotV1
-    | EconomicSummarySnapshotV1
-    | AutonomyStageSnapshotV1
-    | DiagnosticsSummarySnapshotV1
-)
+ProjectionSnapshot = Union[
+    MarketInstrumentSnapshotV1,
+    UniverseRankingSnapshotV1,
+    DynamicScopeSnapshotV1,
+    CanonicalDecisionSnapshotV1,
+    DoublePlaySnapshotV1,
+    RiskSizingCapitalSnapshotV1,
+    SafetyAuthoritySnapshotV1,
+    ExecutionReconciliationSnapshotV1,
+    EconomicSummarySnapshotV1,
+    AutonomyStageSnapshotV1,
+    DiagnosticsSummarySnapshotV1,
+]
 
 
 def projection_envelope_dict(snapshot: _ProjectionBase) -> dict[str, Any]:

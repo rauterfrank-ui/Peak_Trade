@@ -29,16 +29,20 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         owner_module="trading.master_v2.canonical_market_context_v1",
         owner_symbol="CanonicalMarketContextV1",
         authority_class="market_context",
-        reuse_status="PROJECTION_ONLY",
-        notes="Producer exists; Landscape projection unbound until PR3.",
+        reuse_status="REUSED",
+        notes=(
+            "Phase 4.1: identity may also project from universe_selection "
+            "selected_future when CanonicalMarketContext is not persisted for dashboard; "
+            "OHLCV remains unbound."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="universe_ranking",
         owner_module="webui.workflow_dashboard_readmodel_v1.universe_selection_contract_v1",
         owner_symbol="universe_selection_readmodel.v1",
         authority_class="universe_projection",
-        reuse_status="PROJECTION_ONLY",
-        notes="Observability universe contract reused as source shape; not Market UI.",
+        reuse_status="REUSED",
+        notes="Phase 4.1: Landscape binds verify-before-trust universe_selection_readmodel.v1.",
     ),
     CanonicalOwnerRefV1(
         slot="dynamic_scope",

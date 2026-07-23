@@ -11,8 +11,120 @@ from .contracts import (
     SCHEMA_VERSION,
     CanonicalDecisionSnapshotV1,
     DoublePlaySnapshotV1,
+    MarketInstrumentSnapshotV1,
+    UniverseRankingSnapshotV1,
 )
 from .provenance import FreshnessV1, SnapshotProvenanceV1
+
+
+def project_market_instrument_snapshot_v1(
+    *,
+    instrument_id: str,
+    venue: str | None,
+    market_type: str | None,
+    mark_price: float | None,
+    reason_codes: Sequence[str],
+    generated_at: datetime,
+    effective_at: datetime | None,
+    source_reference: str | None,
+    evidence_digest: str | None = None,
+    git_sha: str | None = None,
+    producer_module: str = "trading.master_v2.canonical_market_context_v1",
+    source_kind: str = "canonical_market_context",
+) -> MarketInstrumentSnapshotV1:
+    """Project already-computed market identity fields into a Landscape snapshot.
+
+    Forbidden: inventing instrument/venue/mark_price, fabricating OHLCV, or
+    deriving futures/spot eligibility from symbol heuristics.
+    market_type and mark_price may remain None when the producer did not supply them.
+    """
+    if not instrument_id:
+        raise ValueError("instrument_id required for AVAILABLE")
+    schema_id = f"{SCHEMA_FAMILY}.market_instrument.{SCHEMA_VERSION}"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module=producer_module,
+        generated_at=generated_at,
+        effective_at=effective_at,
+        source_kind=source_kind,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        availability=Availability.AVAILABLE,
+    )
+    freshness = FreshnessV1(
+        observed_at=generated_at,
+        max_age_seconds=None,
+        is_stale=False,
+        stale_reason=None,
+    )
+    return MarketInstrumentSnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=Availability.AVAILABLE,
+        instrument_id=instrument_id,
+        venue=venue,
+        market_type=market_type,
+        mark_price=None if mark_price is None else float(mark_price),
+        reason_codes=tuple(str(code) for code in reason_codes),
+    )
+
+
+def project_universe_ranking_snapshot_v1(
+    *,
+    ranking: Sequence[Mapping[str, Any]],
+    selected_instrument_id: str | None,
+    reason_codes: Sequence[str],
+    generated_at: datetime,
+    effective_at: datetime | None,
+    source_reference: str | None,
+    universe: Sequence[Mapping[str, Any]] = (),
+    evidence_digest: str | None = None,
+    git_sha: str | None = None,
+    producer_module: str = ("webui.workflow_dashboard_readmodel_v1.universe_selection_contract_v1"),
+) -> UniverseRankingSnapshotV1:
+    """Project an existing universe_selection ranking into Landscape form.
+
+    Forbidden: recomputing ranks, inventing selected instruments, or enriching
+    rows with decision/risk/sizing semantics.
+    """
+    ranking_rows = tuple(dict(row) for row in ranking)
+    universe_rows = tuple(dict(row) for row in universe)
+    if not ranking_rows and not universe_rows and not selected_instrument_id:
+        raise ValueError("ranking, universe, or selected_instrument_id required for AVAILABLE")
+    schema_id = f"{SCHEMA_FAMILY}.universe_ranking.{SCHEMA_VERSION}"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module=producer_module,
+        generated_at=generated_at,
+        effective_at=effective_at,
+        source_kind="universe_selection_readmodel",
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        availability=Availability.AVAILABLE,
+    )
+    freshness = FreshnessV1(
+        observed_at=generated_at,
+        max_age_seconds=None,
+        is_stale=False,
+        stale_reason=None,
+    )
+    return UniverseRankingSnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=Availability.AVAILABLE,
+        ranking=ranking_rows,
+        universe=universe_rows,
+        selected_instrument_id=selected_instrument_id,
+        reason_codes=tuple(str(code) for code in reason_codes),
+    )
 
 
 def project_canonical_decision_snapshot_v1(

@@ -1,8 +1,8 @@
 """Market Dashboard Landscape V2 — read-only projection contracts + page shell.
 
-Consumer foundation and Phase 3 page aggregate/presenter. Route lives in
-market_dashboard_landscape_shell_router_v2. No runtime activation, orders,
-or domain recomputation.
+Consumer foundation, page aggregate/presenter, and Phase 4.1 binding via
+market_dashboard_landscape_producer_binding_v2 (outside this package).
+No runtime activation, orders, or domain recomputation.
 """
 
 from __future__ import annotations
@@ -37,6 +37,8 @@ from .presenter import present_market_landscape_v2
 from .projections import (
     project_canonical_decision_snapshot_v1,
     project_double_play_snapshot_v1,
+    project_market_instrument_snapshot_v1,
+    project_universe_ranking_snapshot_v1,
 )
 from .provenance import FreshnessV1, SnapshotProvenanceV1
 from .serialization import dumps_projection_canonical, serialize_projection
@@ -85,5 +87,7 @@ __all__ = [
     "present_market_landscape_v2",
     "project_canonical_decision_snapshot_v1",
     "project_double_play_snapshot_v1",
+    "project_market_instrument_snapshot_v1",
+    "project_universe_ranking_snapshot_v1",
     "serialize_projection",
 ]

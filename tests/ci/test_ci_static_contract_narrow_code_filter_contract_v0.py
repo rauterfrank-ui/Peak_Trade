@@ -62,6 +62,8 @@ WEBUI_BOUNDED_PYTEST_MODULES = (
     "tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py",
     "tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py",
     "tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py",
+    "tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py",
+    "tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py",
 )
 
 

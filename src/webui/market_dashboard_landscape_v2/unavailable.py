@@ -150,6 +150,7 @@ def unavailable_universe_ranking(
         ),
         availability=availability,
         ranking=(),
+        universe=(),
         selected_instrument_id=None,
         reason_codes=(reason,),
     )

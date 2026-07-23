@@ -53,13 +53,18 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-market-landscape-v2="true"' in html
     for landmark in LANDMARKS:
         assert landmark in html, landmark
-    assert "NOT_BOUND" in html
+    assert "PHASE_4_1_MARKET_UNIVERSE_BINDING" in html
     assert "BOUND_NOT_ACTIVATED" in html
     assert "no ohlcv fabricated" in html.lower()
+    assert "BTC/USD" not in html
+    assert "btc_usd_dummy" not in html.lower()
     assert 'data-mdl-outer-workspace="true"' in html
     assert "mdl-v2-ops" in html
+    assert 'data-mdl-field="selected_instrument"' in html
+    assert 'data-mdl-field="eligibility"' in html
+    # Decision / scope remain unbound in Phase 4.1
+    assert "NOT_BOUND" in html
     assert "OPERATOR_SKELETON_APPROVAL" not in html
-    assert "Phase 4 producer binding" not in html
 
 
 def test_get_market_has_no_write_or_order_controls(client: TestClient) -> None:
@@ -111,12 +116,14 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     assert ctx["product_flags"]["dashboard_authority"] is False
     assert ctx["product_flags"]["live_authorized"] is False
     assert ctx["product_flags"]["write_endpoints"] is False
+    assert ctx["product_flags"]["phase_4_1_binding_active"] is True
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["decision"]["availability_label"] == "NOT_BOUND"
     assert ctx["global_strip"]["instrument"] == "NOT_BOUND"
     # Must not invent HOLD/FLAT
     assert ctx["decision"]["fields"]["decision"] is None
     assert ctx["decision"]["fields"]["direction"] is None
+    assert ctx["phase"] == "PHASE_4_1_MARKET_UNIVERSE_BINDING"
 
 
 def test_shell_assets_exist() -> None:

@@ -1,4 +1,4 @@
-"""Real Chrome Playwright evidence for Market Landscape V2 Phase 3 shell."""
+"""Real Chrome Playwright evidence for Market Landscape V2 Phase 4.1 binding."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from playwright.sync_api import sync_playwright
 from src.webui.app import create_app
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase3" / "pr2"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase4" / "pr3"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -99,10 +99,13 @@ def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
 
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1
+                assert root.get_attribute("data-phase") == "PHASE_4_1_MARKET_UNIVERSE_BINDING"
                 chart = page.locator("[data-mdl-chart-region='true']")
                 decision = page.locator("[data-mdl-decision-strip='true']")
                 assert chart.count() == 1
                 assert decision.count() == 1
+                assert page.locator('[data-mdl-field="selected_instrument"]').count() == 1
+                assert page.locator('[data-mdl-field="eligibility"]').count() == 1
 
                 chart_box = chart.bounding_box()
                 decision_box = decision.bounding_box()
@@ -119,6 +122,10 @@ def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
                 assert page.locator("form").count() == 0
                 assert page.get_by_text("NOT_BOUND").count() > 0
                 assert page.get_by_text("BOUND_NOT_ACTIVATED").count() > 0
+                assert page.get_by_text("BTC/USD").count() == 0
+                body_text = page.locator("body").inner_text()
+                assert "place_order" not in body_text
+                assert "Submit Order" not in body_text
 
                 shot_path = EVIDENCE_DIR / shot_name
                 page.screenshot(path=str(shot_path), full_page=False)
