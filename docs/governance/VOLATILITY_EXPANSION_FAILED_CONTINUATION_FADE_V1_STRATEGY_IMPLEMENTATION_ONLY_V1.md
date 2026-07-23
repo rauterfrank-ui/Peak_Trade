@@ -31,9 +31,12 @@ Materializes the preregistered VEFCF v1 strategy producer and exit state machine
 
 ## Policy Critic note
 
-RISK_LIMIT_JUSTIFICATION: literals resembling max_drawdown are frozen research economic-admission
-thresholds / empty-metrics placeholders only; no productive risk-limit raise;
-LIVE_AUTHORIZED=false; ORDERS=false.
+RISK_LIMIT_JUSTIFICATION: Not a productive risk-limit raise and not a change to Master-V2 /
+Double-Play / live risk authorities. Policy Critic matched research-only literals:
+`MAXIMUM_MAX_DRAWDOWN = 0.25` (frozen preregistered economic-admission threshold from the
+measurement contract) and `max_drawdown=0.0` (empty-metrics / unevaluated scaffolding).
+No live/runtime risk limits, leverage, daily-loss limits, or order-path risk gates are
+modified. LIVE_AUTHORIZED=false; ORDERS=false; productive risk authorities unchanged.
 
 ## Binding
 
