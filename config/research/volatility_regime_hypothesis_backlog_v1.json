@@ -38,7 +38,6 @@
     "NO_RETRY_AFTER_DEVELOPMENT_FAIL",
     "NO_RUNTIME",
     "NO_RUN_SLOT_CONSUMPTION",
-    "NO_STRATEGY_IMPLEMENTATION_IN_THIS_SLICE",
     "NO_TERMINAL_RESULT_MUTATION",
     "NO_VDB_CORRECTIVE_SLOT_REUSE",
     "NO_VEFCF_V1_RETRY",
@@ -53,7 +52,7 @@
     "NO_VOL_BREAKOUT_V1_RETRY"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "CREATE_SUCCESSOR applied after VEFCF DEVELOPMENT_FAIL slot consumed: VTSR v1 definition-only preregistered. VEFCF moved to terminal_hypotheses. No retry of VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB. No evaluation/holdout/runtime/orders.",
+  "governance_note": "VTSR v1 strategy implementation present under separate GO; evaluation unauthorized; VEFCF remains terminal FAIL_CLOSED_NO_RETRY. No holdout/runtime/orders.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -67,12 +66,12 @@
     "strategy_implementation_requires_separate_operator_go": true
   },
   "holdout_forbidden": true,
-  "implementation_authorized": false,
+  "implementation_authorized": true,
   "lane_auto_closed": false,
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "open_unpreregistered_candidates": [],
   "operator_decision_packet_ref": "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
   "preregistered_hypotheses": [
@@ -84,7 +83,7 @@
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1",
-      "implementation_present": false,
+      "implementation_present": true,
       "predecessor_strategy_id": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
       "preregistration_evidence_ref": "docs/evidence/preregister_volatility_term_structure_reversion_hypothesis_v1/",
       "rerun_allowed": false,
@@ -92,7 +91,7 @@
       "run_slot_consumed": false,
       "runner_start_count": 0,
       "signal_family": "VOLATILITY_REGIME",
-      "status": "DEFINITION_ONLY_PREREGISTERED",
+      "status": "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
       "strategy_id": "volatility_term_structure_reversion",
       "strategy_identity": "VOLATILITY_TERM_STRUCTURE_REVERSION_V1",
       "strategy_version": "v1",
@@ -101,7 +100,7 @@
     }
   ],
   "preregistration_authorized_in_this_slice": true,
-  "productive_trading_logic_included": false,
+  "productive_trading_logic_included": true,
   "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
   "program_ref": "config/research/volatility_regime_research_program_v1.json",
   "promotion_and_economic_gate_policy": {
