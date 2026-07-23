@@ -652,3 +652,100 @@ def test_owner_registry_diagnostics_summary_option_a_keep_not_bound() -> None:
         in runbook
     )
     assert "WORKFLOW_DASHBOARD_READMODEL_V1=NON_SOURCE_PROJECTION_ONLY" in runbook
+
+
+def test_owner_registry_autonomy_stage_option_d_keep_not_bound() -> None:
+    """Phase 4.7B OPTION_D: autonomy_stage NOT_BOUND; no aggregate; runtime separate."""
+    from datetime import datetime, timezone
+
+    from webui.market_dashboard_landscape_v2.availability import Availability
+    from webui.market_dashboard_landscape_v2.owner_registry import owner_registry_by_slot
+    from webui.market_dashboard_landscape_v2.unavailable import default_not_bound_bundle
+
+    entry = owner_registry_by_slot()["autonomy_stage"]
+    assert entry.owner_module == "NONE"
+    assert entry.owner_symbol == "NONE"
+    assert entry.reuse_status == "NOT_BOUND"
+    assert entry.authority_class == "autonomy"
+    stamp = datetime(2026, 7, 24, 0, 0, 0, tzinfo=timezone.utc)
+    snap = default_not_bound_bundle(generated_at=stamp)["autonomy_stage"]
+    assert snap.availability is Availability.NOT_BOUND
+    assert snap.autonomy_stage is None
+    assert snap.runtime_bridge_status is None
+
+    registry_text = (LANDSCAPE_PKG / "owner_registry.py").read_text(encoding="utf-8")
+    assert 'slot="autonomy_stage"' in registry_text
+    autonomy_block = registry_text.split('slot="autonomy_stage"', 1)[1].split(
+        "CanonicalOwnerRefV1(", 1
+    )[0]
+    assert 'owner_module="NONE"' in autonomy_block
+    assert 'owner_symbol="NONE"' in autonomy_block
+    assert 'reuse_status="NOT_BOUND"' in autonomy_block
+    assert 'authority_class="autonomy"' in autonomy_block
+    assert "Phase 4.7B" in autonomy_block
+    assert "OPTION_D" in autonomy_block
+    assert "docs-only" in autonomy_block
+    assert "AUTHORITY_EFFECT=NONE" in autonomy_block
+    assert "NON_SOURCE" in autonomy_block
+    assert "WorkflowDashboardReadModelV1" in autonomy_block
+    assert "MUST NOT" in autonomy_block
+    # Runtime bridge status must not be named as autonomy_stage owner/source.
+    assert "runtime_bridge_pre_activation_gate_v0" not in autonomy_block
+    assert 'owner_symbol="BOUND_NOT_ACTIVATED"' not in autonomy_block
+    assert 'authority_class="runtime_status"' not in autonomy_block
+    assert "CANONICAL_RUNTIME_ENTRYPOINT_STATUS" in autonomy_block
+    assert "separate fact" in autonomy_block
+    # Must not reclaim WorkflowDashboardReadModelV1 or other productive owners.
+    assert 'owner_module="webui.workflow_dashboard_readmodel_v1.types"' not in autonomy_block
+    assert 'owner_symbol="WorkflowDashboardReadModelV1"' not in autonomy_block
+    assert "promotion_economic_gate_v1" in autonomy_block
+    assert 'reuse_status="REUSED"' not in autonomy_block
+    assert 'reuse_status="PROJECTION_ONLY"' not in autonomy_block
+
+    # Runtime State vs Autonomy Stage remain distinct registry semantics.
+    assert 'slot="autonomy_stage"' in registry_text
+    assert "BOUND_NOT_ACTIVATED" in registry_text
+    assert "separate fact and NON_SOURCE for autonomy_stage" in autonomy_block
+
+    # No Autonomy producer / injection / project_autonomy_* adapter.
+    landscape_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in _iter_py_files(LANDSCAPE_PKG)
+    )
+    producer = PRODUCER_BINDING.read_text(encoding="utf-8")
+    projections = (LANDSCAPE_PKG / "projections.py").read_text(encoding="utf-8")
+    contracts = (LANDSCAPE_PKG / "contracts.py").read_text(encoding="utf-8")
+    for token in (
+        "project_autonomy_",
+        "project_autonomy_stage",
+        "bind_autonomy",
+        "AutonomyStateAggregate",
+        "CanonicalAutonomyState",
+    ):
+        assert token not in landscape_text, token
+        assert token not in producer, token
+        assert token not in projections, token
+    assert "class AutonomyStageSnapshotV1" in contracts
+    assert "class AutonomyStateAggregate" not in contracts
+    assert "WorkflowDashboardReadModelV1" not in producer
+
+    runbook = (
+        REPO
+        / "docs"
+        / "ops"
+        / "market_dashboard"
+        / "PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md"
+    ).read_text(encoding="utf-8")
+    assert "PHASE_4_7A_RATIFIED_OPTION_D=true" in runbook
+    assert "RATIFY_OPTION_D_NO_CANONICAL_AGGREGATE_REQUIRED=true" in runbook
+    assert "AUTONOMY_STAGE_BINDING_STATUS=NOT_BOUND" in runbook
+    assert "AUTONOMY_AGGREGATE_REQUIRED=false" in runbook
+    assert "AUTONOMY_BINDING_COMPLETE_BY_EXPLICIT_NOT_BOUND=true" in runbook
+    assert "SOLE_AUTONOMY_OWNER=NONE" in runbook
+    assert "SOLE_AUTONOMY_PRODUCER=NONE" in runbook
+    assert "SOLE_AUTONOMY_CONTRACT=NONE" in runbook
+    assert "CROSS_SOURCE_SYNTHESIS_AUTHORIZED=false" in runbook
+    assert "WORKFLOW_DASHBOARD_READMODEL_V1=NON_SOURCE" in runbook
+    assert "DASHBOARD_CAN_BE_OWNER=false" in runbook
+    # Visible-fact registry keeps Runtime State distinct from Autonomy Stage.
+    assert "| Runtime State | Runtime Bridge State |" in runbook
+    assert "OPTION_D; docs-only ladder; no productive aggregate" in runbook

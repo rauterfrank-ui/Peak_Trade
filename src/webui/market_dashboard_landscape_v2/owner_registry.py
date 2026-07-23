@@ -132,11 +132,25 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
     ),
     CanonicalOwnerRefV1(
         slot="autonomy_stage",
-        owner_module="trading.master_v2.runtime_bridge_pre_activation_gate_v0",
-        owner_symbol="BOUND_NOT_ACTIVATED",
-        authority_class="runtime_status",
+        owner_module="NONE",
+        owner_symbol="NONE",
+        authority_class="autonomy",
         reuse_status="NOT_BOUND",
-        notes="Runtime BOUND_NOT_ACTIVATED is intentional; display-only later.",
+        notes=(
+            "Phase 4.7B OPTION_D closeout: autonomy_stage remains NOT_BOUND; "
+            "no canonical productive Autonomy State aggregate required; "
+            "sole owner/producer/contract=NONE; Autonomy stages 0–7 are "
+            "docs-only informative review vocabulary (not productive "
+            "operational state); AUTHORITY_EFFECT=NONE; runtime bridge status "
+            "(BOUND_NOT_ACTIVATED / CANONICAL_RUNTIME_ENTRYPOINT_STATUS) is a "
+            "separate fact and NON_SOURCE for autonomy_stage; "
+            "RuntimeBridgePreActivationGate, promotion_economic_gate_v1, "
+            "KillSwitch, scheduler/worker, and WorkflowDashboardReadModelV1 "
+            "MUST NOT be named as autonomy_stage owner/source; "
+            "cross-source synthesis into Autonomy state unauthorized; "
+            "dashboard cannot own or infer Autonomy state; "
+            "binding/producer/contract/adapter/injection authorized=false."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="diagnostics_summary",
