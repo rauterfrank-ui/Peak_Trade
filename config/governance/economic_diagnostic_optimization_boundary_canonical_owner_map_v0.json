@@ -619,6 +619,18 @@
         "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
+    "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
+      "authority_effect": "NONE",
+      "note": "Bounded single-slot DEVELOPMENT evaluation execution for CS open-gap pressure fade v1. Exactly one authorized run. No holdout/runtime/orders. CSRHR untouched. Economic gate closed unless contract admits otherwise.",
+      "path_prefixes": [
+        "src/research/cross_sectional_open_gap_pressure_fade_v1_development_evaluation_v1/",
+        "config/research/cross_sectional_open_gap_pressure_fade_v1_development_evaluation_entry_point_binding_v1.json",
+        "scripts/research/run_evaluate_cross_sectional_open_gap_pressure_fade_development_v1.py",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_v1_development_evaluation_v1.py",
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "docs/evidence/evaluate_cross_sectional_open_gap_pressure_fade_development_v1/"
+      ]
+    },
     "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
       "authority_effect": "NONE",
       "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; closed sibling lanes unreopened.",

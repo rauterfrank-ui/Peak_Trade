@@ -23,13 +23,13 @@
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
   "development_evaluation_authorized": false,
-  "development_run_count": 0,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "evaluation_authorized": false,
   "evaluation_results_embedded": false,
   "exactly_one_authoritative_truth": true,
   "explicit_closeout_decision": false,
   "explicit_non_actions": [
-    "NO_EVALUATION",
     "NO_HOLDOUT_ACCESS",
     "NO_VOL_REGIME_REOPEN",
     "NO_CS_MOMENTUM_REOPEN",
@@ -43,7 +43,7 @@
     "NO_IMPLICIT_SUCCESSOR"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "Open backlog with exactly one preregistered definition-only hypothesis after terminal CLV DEVELOPMENT_FAIL. Evaluation unauthorized. CSRHR sibling remains OPEN_BACKLOG unchanged. Closed/terminal programs are collision exclusions only.",
+  "governance_note": "Single DEVELOPMENT slot consumed with DEVELOPMENT_FAIL. Retry forbidden. CSRHR remains OPEN_BACKLOG untouched. Holdout remains sealed.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -58,12 +58,12 @@
     "strategy_implementation_requires_separate_operator_go": true
   },
   "holdout_forbidden": true,
-  "implementation_authorized": false,
+  "implementation_authorized": true,
   "lane_auto_closed": false,
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_OR_BOUNDED_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "AWAIT_OPERATOR_GO_FOR_MERGE_AND_CLOSEOUT_OR_HOLDOUT",
   "next_eligible": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1",
   "open_sibling_lanes": {
     "continuation_forbidden": true,
@@ -78,20 +78,20 @@
     {
       "baseline_id": "UNCONDITIONAL_CROSS_SECTIONAL_EQUAL_WEIGHT_OR_NO_RANK_CONTROL_NOT_USED_ABSOLUTE_ADMISSION",
       "contract_ref": "config/research/cross_sectional_open_gap_pressure_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-      "development_run_count": 0,
+      "development_run_count": 1,
       "development_run_limit": 1,
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1",
-      "implementation_present": false,
+      "implementation_present": true,
       "preregistration_evidence_ref": "docs/evidence/preregister_cross_sectional_open_gap_pressure_fade_hypothesis_v1/",
       "reopen_allowed": false,
       "rerun_allowed": false,
       "retry_allowed": false,
-      "run_slot_consumed": false,
-      "runner_start_count": 0,
+      "run_slot_consumed": true,
+      "runner_start_count": 1,
       "signal_family": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE",
-      "status": "PREREGISTERED_DEFINITION_ONLY",
+      "status": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL",
       "strategy_id": "cross_sectional_open_gap_pressure_fade",
       "strategy_identity": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1",
       "strategy_version": "v1",
@@ -115,7 +115,7 @@
   "required_treatment_type": "OWN_INSTRUMENT_CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_ADMISSION",
   "requires_new_separate_operator_authorization": false,
   "retry_allowed": false,
-  "runner_start_count": 0,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
@@ -143,6 +143,6 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "OPEN_BACKLOG_ONE_PREREGISTERED_DEFINITION_ONLY_HYPOTHESIS_EVALUATION_UNAUTHORIZED",
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_SINGLE_SLOT_CONSUMED",
   "workstream_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_WORKSTREAM_V1"
 }

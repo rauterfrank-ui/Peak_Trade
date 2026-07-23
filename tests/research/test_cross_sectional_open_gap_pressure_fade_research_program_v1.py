@@ -39,7 +39,7 @@ def test_repo_program_definition_only_evaluation_unauthorized() -> None:
     assert report["program_id"] == "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1"
     assert report["status"] == "DEFINITION_ONLY"
     assert report["evaluation_authorized"] is False
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     assert report["holdout_forbidden"] is True
     assert GOVERNANCE.is_file()
 
@@ -69,7 +69,7 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="EVALUATION_AUTHORIZED_TRUE"):
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["development_run_count"] = 1
+    bad2["development_run_count"] = 2
     with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)

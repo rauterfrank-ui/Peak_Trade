@@ -1,0 +1,17 @@
+{
+  "config_digest": "0788caf52967a054bd2cf062e68e8506d590f0f8a2c4c78b9f95d4a1ee37e85b",
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_result": "DEVELOPMENT_FAIL",
+  "development_run_count": 1,
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_cross_sectional_open_gap_pressure_fade_development_v1",
+  "holdout_accessed": false,
+  "hypothesis_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1",
+  "retry_forbidden": true,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
+  "schema_version": "evaluate_cross_sectional_open_gap_pressure_fade_run_slot_claim.v1",
+  "strategy_identity": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1",
+  "strategy_params_digest": "fad7fde126b0d9b30c8be26e84a074f2ec13a0424912113bc8306902a7167bb7"
+}

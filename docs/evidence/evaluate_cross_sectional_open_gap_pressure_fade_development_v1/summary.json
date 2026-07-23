@@ -1,0 +1,194 @@
+{
+  "artifact_digests": {
+    "README.md": "b9f5b1ca8c48c49f182e457bc9d48a6aff0890609e26444ded14fafc9e33b0c4",
+    "registry.json": "2d7a2aa85f09860a0554aa42abad97848d1de396e1dcd42b035944b9ee15fc46",
+    "run_slot_claim.json": "335da2b050085a643c1c764a1c94139aded2e10e13a45efc21ca76405b7014d4",
+    "run_stdout.txt": "bcfef72f9b6daf68d129f5a5e86f4e1b9b77ab6aa05ff1b57aa917ca7f27227d",
+    "safety_attestation.md": "2732ac232eef1f86aa5255c97f08ee660ec1af265ab4e7c8920f6f7bb6083d0d",
+    "summary.json": "cc740aed1fb7c89a1a31ca77abea5f4faad20683589a3f3603c1b80aefdbba3e"
+  },
+  "authorized_run_limit": 1,
+  "base_sha": "114f76a996dc9f3b35b9ed7f95c9f80c7f4ccd92",
+  "budget_consumed": true,
+  "config_digest": "0788caf52967a054bd2cf062e68e8506d590f0f8a2c4c78b9f95d4a1ee37e85b",
+  "cost_stress_1_5x_net_profit_factor": 0.9117712359995376,
+  "csrhr_state": "OPEN_BACKLOG",
+  "csrhr_unchanged": true,
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "deterministic_reproducibility_verified": true,
+  "development_evaluation_authorized": true,
+  "development_result": "DEVELOPMENT_FAIL",
+  "development_run_count_after": 1,
+  "development_run_count_before": 0,
+  "economic_gate_open": false,
+  "end_utc": "2026-07-23T12:00:53Z",
+  "evaluation_authorized": false,
+  "evaluation_executed": true,
+  "exact_command": "python3 scripts/research/run_evaluate_cross_sectional_open_gap_pressure_fade_development_v1.py --mode evaluate --authorize-single-development-evaluation CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1",
+  "fees": 7842.482813254569,
+  "gates": {
+    "all_pass": false,
+    "all_segments_evaluable": {
+      "gate_id": "ALL_SEGMENTS_EVALUABLE",
+      "observed": 4,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 4
+    },
+    "canonical_cost": {
+      "gate_id": "CANONICAL_COST",
+      "observed": {
+        "canonical_cost_multiplier": 1.0,
+        "net_expectancy": -1.4314659476342568,
+        "net_profit_factor": 0.9743735781016153,
+        "worst1_abs_net_share": 0.018378301366329664
+      },
+      "passed": false,
+      "reason_code": "NET_PROFIT_FACTOR_BELOW_THRESHOLD",
+      "threshold": {
+        "minimum_net_expectancy": 0.0,
+        "net_profit_factor_min": 1.3,
+        "single_trade_dominance_limit": 0.5
+      }
+    },
+    "cost_stress": {
+      "gate_id": "COST_STRESS",
+      "observed": 0.9117712359995376,
+      "passed": false,
+      "reason_code": "COST_STRESS_NOT_SURVIVED",
+      "threshold": 1.0
+    },
+    "gross_edge": {
+      "gate_id": "GROSS_EDGE",
+      "observed": {
+        "gross_pnl": 6579.236844032915,
+        "gross_profit_factor": 1.1460163673182189
+      },
+      "passed": true,
+      "reason_code": null,
+      "threshold": {
+        "gross_pnl_gt": 0.0,
+        "gross_profit_factor_min": 1.0
+      }
+    },
+    "max_drawdown": {
+      "gate_id": "MAX_DRAWDOWN",
+      "observed": -0.9173000068102399,
+      "passed": false,
+      "reason_code": "MAX_DRAWDOWN_BREACH",
+      "threshold": 0.25
+    },
+    "sample_sufficiency": {
+      "gate_id": "SAMPLE_SUFFICIENCY",
+      "observed": 2111,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 30
+    },
+    "time_segment_robustness": {
+      "gate_id": "TIME_SEGMENT_ROBUSTNESS",
+      "observed": {
+        "pass_ratio": 0.0,
+        "passing_segments": 0
+      },
+      "passed": false,
+      "reason_code": "TIME_SEGMENT_ROBUSTNESS_FAIL",
+      "threshold": 0.5
+    },
+    "trade_sample": {
+      "gate_id": "TRADE_SAMPLE",
+      "observed": 877,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 50
+    }
+  },
+  "gross_profit_factor": 1.1460163673182189,
+  "gross_return": -0.9105728782476206,
+  "holdout_accessed": false,
+  "holdout_touched": false,
+  "hypothesis_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1",
+  "live": false,
+  "long_attribution": null,
+  "long_trade_count": null,
+  "lookback_n": 30,
+  "max_drawdown": -0.9173000068102399,
+  "measurement_contract_digest": "6b290cb087fd7949ab61801d00dc5e6b18c94ab11c78461944c90efd868e52c9",
+  "measurement_contract_digest_pre_exec_authorized": "a66f1683b1f034b61b3f23ea0b6d9fc70082ba6fe5cade241beed3196525564c",
+  "measurement_contract_digest_preregistration_original": "7f8d361b597825428eecb2f6f791fcef07fe5a0dd92f9613f99b5d15e95b5768",
+  "net_profit_factor": 0.9743735781016153,
+  "net_return": -0.9105728782476206,
+  "orders": false,
+  "passing_segments": 0,
+  "preregistered_gate_result": "FAIL",
+  "program_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1",
+  "promotion_eligible": false,
+  "rebalance_interval_bars": 5,
+  "retry_forbidden": true,
+  "run_id": "evaluate_cross_sectional_open_gap_pressure_fade_development_v1",
+  "runner_started": true,
+  "schema_version": "evaluate_cross_sectional_open_gap_pressure_fade_development_summary.v1",
+  "scope_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
+  "segment_boundaries": [
+    {
+      "range": "2022-06-01T04:00:00Z..2022-09-19T11:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q1",
+      "valid_rebalance_observations": 523
+    },
+    {
+      "range": "2022-09-19T11:00:00Z..2023-01-07T17:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q2",
+      "valid_rebalance_observations": 529
+    },
+    {
+      "range": "2023-01-07T17:00:00Z..2023-04-27T23:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q3",
+      "valid_rebalance_observations": 529
+    },
+    {
+      "range": "2023-04-27T23:00:00Z..2023-08-16T05:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q4",
+      "valid_rebalance_observations": 529
+    }
+  ],
+  "segment_results": [
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q1"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q2"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q3"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q4"
+    }
+  ],
+  "shadow": false,
+  "sharpe": -1.5518768287226175,
+  "short_attribution": null,
+  "short_trade_count": null,
+  "signal_lag_bars": 1,
+  "slippage": 3921.2414066272845,
+  "status": "EVALUATION_COMPLETE",
+  "strategy_identity": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1",
+  "strategy_params_digest": "fad7fde126b0d9b30c8be26e84a074f2ec13a0424912113bc8306902a7167bb7",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL",
+  "testnet": false,
+  "time_segment_robustness_pass_ratio": 0.0,
+  "total_cost_drag": 11763.724219881853,
+  "trade_count": 877,
+  "turnover": 877.0,
+  "valid_rebalance_observations": 2111,
+  "workstream_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_WORKSTREAM_V1"
+}
