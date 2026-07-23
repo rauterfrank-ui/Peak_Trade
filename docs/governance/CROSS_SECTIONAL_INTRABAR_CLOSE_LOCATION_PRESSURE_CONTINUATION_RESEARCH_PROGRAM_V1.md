@@ -52,7 +52,7 @@ of the close path.
 - `HOLDOUT_FORBIDDEN=true`
 - `ECONOMIC_GATE_OPEN=false`
 - `PROMOTION_ELIGIBLE=false`
-- `LIVE/ORDERS/SHADOW/PAPER/TESTNET/SCHEDULER=false`
+- `LIVE&#47;ORDERS&#47;SHADOW&#47;PAPER&#47;TESTNET&#47;SCHEDULER=false`
 - Master V2 / Double-Play / risk / sizing / execution: consume-only, no mutation
 - CSRHR remains `OPEN_BACKLOG` unchanged
 

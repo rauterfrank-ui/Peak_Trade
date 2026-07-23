@@ -16,7 +16,7 @@ preregistered; no evaluation.
 
 - Treatment: mean intrabar close-location value cross-sectional single-slot rank
   (`lookback_N=36`, `rebalance_interval_bars=6`, `signal_lag_bars=1`)
-- CLV bar formula: `0` if `high==low` else `(2*close-high-low)/(high-low)`
+- CLV bar formula: `0` if `high==low` else `(2*close-high-low)&#47;(high-low)`
 - Fail-closed eligibility: non-finite OHLC → ineligible; `score==0` → ineligible;
   eligible &lt; 5 → rebalance not evaluable; no fallback/adaptive selection
 - Baseline: absolute economic admission against frozen thresholds
