@@ -7725,3 +7725,59 @@ READY_FOR_OPERATOR_ARMING=false
 FOLLOWUP_DOCS_SLICE_NEEDED=false
 FOLLOWUP_TEST_GUARD_NEEDED=false
 ```
+
+## Cybersecurity Baseline Refresh V1 — docs/tests hygiene (2026-07-23)
+
+**Scope:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1` · **Mode:** docs/tests-only · **Non-authorizing**
+
+Repo-local refresh of cybersecurity **baseline documentation and static visibility guards**. Reuses existing owners — **no** parallel cyber index, evidence hub, readiness map, or handoff surface.
+
+| Concern | Owner |
+|---------|-------|
+| Root dependency + residual-risk pointers | `SECURITY_NOTES.md` |
+| CI/Actions permissions/secrets/artifacts inventory + action-pin posture | `docs/ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md` |
+| Operator credential boundaries | `docs/ops/runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md` |
+| Policy-enforcement doc drift correction | `docs/ci/CI_POLICY_ENFORCEMENT.md` |
+| Cybersecurity visibility RC (unchanged authority) | this document — § Cybersecurity Visibility Release RC v0 |
+| Action-ref + missing top-level `permissions:` visibility | `tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py` |
+
+**What this slice does:**
+
+- Re-counts workflow security surface numbers from tracked YAML (2026-07-23).
+- Documents accepted residual risks (tag-pinned Actions; missing top-level permissions inventory; no required PR gitleaks job).
+- Adds fail-closed static guards against floating `uses:` refs (`@main`/`@master`/`@latest`/`@head`) and freezes the missing-permissions inventory.
+- Corrects false “no pre-commit / no workflows” claims in `CI_POLICY_ENFORCEMENT.md`.
+
+**What this slice explicitly does not claim or do:**
+
+- No secret rotation, no display of secret values, no GitHub UI/org setting mutation.
+- No Dependabot/CodeQL/platform enablement.
+- No SHA-pin mass migration of Actions, no mass least-privilege workflow rewrite.
+- No Semgrep/SAST/DAST enforcement enablement.
+- No runtime / scheduler / paper / shadow / testnet / live / orders / trading-core / research-scope changes.
+- No unverified `pip-audit` “clean” claim without operator artifact dated to a SHA.
+
+```text
+PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1=true
+CYBERSECURITY_BASELINE_REFRESH_DOCS_TESTS_ONLY=true
+PARALLEL_CYBER_INDEX_CREATED=false
+HOST_SYSTEM_CHANGED=false
+GLOBAL_PACKAGES_CHANGED=false
+EXTERNAL_PLATFORM_SETTINGS_CHANGED=false
+SECRETS_CHANGED=false
+SECRETS_ROTATED=false
+SECRETS_EXPOSED=false
+NETWORK_SECURITY_ACTIONS_EXECUTED=false
+REPO_LOCAL_CHANGES_ONLY=true
+LIVE_AUTHORIZED=false
+ORDERS=false
+SHADOW=false
+TESTNET=false
+TRADING_CORE_CHANGED=false
+RESEARCH_SCOPE_CREATED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+NO_RUNTIME=true
+NO_TRADING_AUTHORITY_CHANGE=true
+```
+
+**Non-authorizing:** Baseline hygiene only; does not authorize runtime, Preflight lift, Master V2 / Double Play changes, or external security-platform configuration.

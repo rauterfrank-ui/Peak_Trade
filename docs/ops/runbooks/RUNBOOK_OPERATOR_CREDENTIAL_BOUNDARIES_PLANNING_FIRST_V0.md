@@ -135,8 +135,10 @@ This is **not** a Kraken setup guide — **no** step-by-step exchange onboarding
 
 ## 11. Existing Repo Anchors (Reuse)
 
+- Root cybersecurity baseline pointers + residual risks: [`SECURITY_NOTES.md`](../../../SECURITY_NOTES.md) (`PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`)
 - CI / permissions / secrets audit index: [CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md](../CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md)
 - Workflow secret reference visibility (names only): `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py`
+- Action-ref / missing top-level permissions visibility: `tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py`
 - Governance **NO_SECRETS** discipline: `tests/governance/policy_critic/` (policy packs / rules — **repo-evidenced** surface)
 
 ---
@@ -172,3 +174,4 @@ No secret values should appear in command output or committed files.
 - **v0.1:** Added `operator-stated` GitHub UI snapshot (Secret Protection, Push protection, secret scanning alert counts) for `rauterfrank-ui&#47;Peak_Trade`, recorded UTC `2026-05-12T22:42Z`. Docs-only; **non-authorizing**.
 - **v0.2:** Added §7 Kraken **credential classification** table (names-only; `operator-stated` custody; active boundary management). No Kraken setup guide; **non-authorizing**.
 - **v0.3:** §7 — clarified that **exchange-side** order permissions are **technical capability only** and **not** a Peak_Trade live/gate approval; restated gate stack and **highest-risk** default for Cursor. Docs-only; **non-authorizing**.
+- **v0.4:** §11 — cross-link cybersecurity baseline refresh V1 owners (`SECURITY_NOTES.md` + action-ref visibility contract). Docs-only; **no** secret rotation; **non-authorizing**.

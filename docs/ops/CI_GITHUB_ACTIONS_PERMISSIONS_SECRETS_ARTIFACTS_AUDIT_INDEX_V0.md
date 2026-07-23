@@ -6,11 +6,13 @@ This is a documentation-only audit index for GitHub Actions / CI permissions, se
 
 This document is not an authorization surface. It does not authorize workflow dispatches, CI behavior changes, runtime execution, scheduler/daemon control, testnet/live activity, broker/exchange/order activity, or any trading-logic change.
 
+**Baseline refresh:** Counts and action-pin notes below were re-derived from a repo-static scan on **2026-07-23** under scope `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`. Root pointer: [`SECURITY_NOTES.md`](../../SECURITY_NOTES.md). Cybervisibility RC remains owned by [`CI_AUDIT_KNOWN_ISSUES.md`](CI_AUDIT_KNOWN_ISSUES.md) — **no** parallel cyber index.
+
 ## Source
 
-- Feasibility report: `/tmp/peak_trade_ci_permissions_secrets_artifact_audit_feasibility_20260510T172521Z/CI_PERMISSIONS_SECRETS_ARTIFACT_AUDIT_FEASIBILITY.md`
+- Feasibility report: `/tmp/peak_trade_ci_permissions_secrets_artifact_audit_feasibility_20260510T172521Z/CI_PERMISSIONS_SECRETS_ARTIFACT_AUDIT_FEASIBILITY.md` (historical)
 - Workflow directory: `.github/workflows/`
-- Workflow files inventoried: `73`
+- Workflow files inventoried: `73` (unchanged file count at 2026-07-23 refresh)
 
 ## Boundary
 
@@ -48,26 +50,39 @@ Docs-only marker — **not** a Tailscale runbook, **not** implementation approva
 
 ## Workflow Surface Counts
 
+Repo-static re-count **2026-07-23** (UTF-8 text parse of `.github&#47;workflows&#47;*.{yml,yaml}`):
+
 - Total workflow files: `73`
 - `workflow_dispatch`: `59`
 - `pull_request_target`: `0`
-- `permissions:` blocks: `39`
-- `secrets.*` references: `16`
-- `GITHUB_TOKEN` references: `4`
-- `actions&#47;upload-artifact`: `42`
-- `actions&#47;download-artifact`: `1`
-- `retention-days`: `36`
-- `curl` / `wget` / `gh` markers: `9`
-- any `*: write` permission markers: `10`
-- `actions: write`: `4`
-- `contents: write`: `2`
-- `id-token: write`: `1`
+- Top-level `permissions:` blocks: `34` (was historically recorded as `39` — prior count overstated / mixed job-level markers; refresh uses **file-level** `^permissions:`)
+- Workflows **without** top-level `permissions:`: `39`
+- Distinct braced `secrets.*` **names**: `7` (`ADD_TO_PROJECT_PAT`, `GITHUB_TOKEN`, `OPENAI_API_KEY`, `PT_EXPORT_ID`, `PT_EXPORT_PREFIX`, `PT_EXPORT_REMOTE`, `PT_RCLONE_CONF_B64`) — names only; values never in-repo
+- Loose `secrets.` token occurrences (incl. comments/docs-in-YAML): `49`
+- Files referencing `GITHUB_TOKEN`: `4`
+- `actions&#47;upload-artifact` step refs: `60`
+- `actions&#47;download-artifact` step refs: `1`
+- `retention-days` markers: `54`
+- Files with `curl` / `wget` / `gh` markers: `13`
+- Files with any `*: write` permission markers: `8`
+- Files with `actions: write`: `4`
+- Files with `contents: write`: `2`
+- Files with `id-token: write`: `1`
+
+## Action pinning posture (2026-07-23)
+
+- SHA-pinned `uses:` refs (`@` + 40-hex): `0`
+- Tag/version-pinned `uses:` refs: `254`
+- Floating mutable refs (`@main` / `@master` / `@latest` / `@head` on `uses:`): `0`
+- **Accepted residual risk:** tag pinning until an explicit SHA-pin migration PR.
+- Fail-closed static guard against floating action refs + frozen missing-permissions inventory: `tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py`
 
 ## Notable Safety Observations
 
 - `pull_request_target` was not found in the static workflow inventory.
 - `secrets.*`, artifact upload/download, and manual dispatch surfaces are present and should remain covered by narrow static contracts rather than broad workflow rewrites.
 - Existing static workflow/dispatch contract tests should be reused before adding new validators.
+- Manual full-audit workflow may upload an SBOM artifact path when an operator runs `scripts/ops/run_full_audit.sh` — that is **not** a required PR gate and does **not** by itself prove provenance/SLSA.
 
 ## Optional Semgrep/SAST Adoption Concept (default-off)
 

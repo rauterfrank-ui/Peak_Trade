@@ -1,7 +1,7 @@
 # CI Policy Enforcement Documentation
 
-**Version:** 1.0  
-**Date:** 2025-12-30  
+**Version:** 1.1  
+**Date:** 2025-12-30 (original) · **Baseline drift refresh:** 2026-07-23 (`PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`)  
 **Purpose:** Document how policy packs are enforced and validate CI configuration
 
 ---
@@ -13,6 +13,14 @@ Peak_Trade uses **Policy Packs** for governance and quality enforcement. This do
 2. How they are intended to be enforced
 3. Current enforcement status
 4. Recommendations for full CI integration
+
+**Reality check (2026-07-23, repo-static — non-authorizing):**
+
+- `.pre-commit-config.yaml` **exists** (EOF/whitespace/YAML/TOML/JSON/large-file hooks + Ruff + local CI required-contexts guard). **gitleaks is not** configured in that file.
+- `.github/workflows/` **exists** with many workflows; required contexts are owned by `config/ci/required_status_checks.json`.
+- Dependency audit: `.github/workflows/audit.yml` runs `pip-audit` (blocking only on dependency-manifest diffs).
+- Secret-scan as a **required PR check** is **not** present; GitHub Push Protection / Secret Protection remain **operator-stated** in the credential runbook (not re-verified here).
+- Prefer [`SECURITY_NOTES.md`](../../SECURITY_NOTES.md) and [`docs/ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md`](../ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md) for current cybersecurity baseline pointers. Sections below may still contain **historical recommendations** — treat “Status: not found” claims as superseded by this reality check.
 
 ---
 
@@ -77,9 +85,9 @@ default_action_on_error: REVIEW_REQUIRED
 
 ### Method 1: Pre-Commit Hooks (Local)
 
-**Status:** ⚠️ Not configured (no `.pre-commit-config.yaml` found)
+**Status (2026-07-23):** ✅ `.pre-commit-config.yaml` is present (hygiene + Ruff + CI required-contexts contract). ❌ gitleaks / detect-secrets hooks are **not** installed in that config. The YAML block below is a **historical recommendation**, not the live hook set.
 
-**Recommended Setup:**
+**Recommended Setup (historical / optional human-gated):**
 
 ```yaml
 # .pre-commit-config.yaml
@@ -124,9 +132,9 @@ pre-commit run --all-files
 
 ### Method 2: GitHub Actions (CI/CD)
 
-**Status:** ❓ No `.github/workflows/` directory found
+**Status (2026-07-23):** ✅ `.github/workflows/` exists (73 workflow files at baseline refresh). Canonical required contexts: `config/ci/required_status_checks.json`. The illustrative workflow YAML below is a **historical recommendation**, not a description of the live `ci.yml`.
 
-**Recommended Workflow:**
+**Recommended Workflow (historical illustration only):**
 
 ```yaml
 # .github/workflows/ci.yml
