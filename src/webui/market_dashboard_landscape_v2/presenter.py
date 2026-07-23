@@ -187,18 +187,15 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "consumer_role": "read_only_consumer",
         "phase": "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING",
         "global_strip": {
+            # Compact ops summary only. Scope lifecycle + Regime primary in Context rail.
+            # Do not expose availability under a Freshness label (Phase 5 PR1).
             "instrument": instrument_display,
             "venue": _display_value(
                 page.market_instrument.venue, page.market_instrument.availability
             ),
-            "scope": scope_lifecycle_display,
-            # Regime / bull-bear / switch stay NOT_BOUND — never mirror scope availability.
-            "regime": AVAILABILITY_LABELS[Availability.NOT_BOUND],
             "runtime_state": page.runtime_bridge_display,
             "runtime_state_class": page.shell_authority_class,
-            "freshness": health.freshness.to_json_dict(),
             "safety_status": _safety_strip_display(page),
-            "source_health": health.availability.value,
         },
         "market": market,
         "universe": universe,

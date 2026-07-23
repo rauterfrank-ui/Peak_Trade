@@ -637,7 +637,8 @@ def test_regime_bull_bear_switch_remain_not_bound_for_all_scope_states() -> None
         assert ctx["regime"]["availability"] == "NOT_BOUND"
         assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
         assert ctx["switch"]["availability"] == "NOT_BOUND"
-        assert ctx["global_strip"]["regime"] == "NOT_BOUND"
+        assert "regime" not in ctx["global_strip"]
+        assert "scope" not in ctx["global_strip"]
         assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
 
 

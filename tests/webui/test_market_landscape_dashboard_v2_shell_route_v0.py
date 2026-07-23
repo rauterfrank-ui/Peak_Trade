@@ -67,6 +67,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-mdl-field="regime"' in html
     assert 'data-mdl-field="bull_bear"' in html
     assert 'data-mdl-field="switch"' in html
+    assert 'data-mdl-field="source_health"' in html
     assert 'data-mdl-field="blockers" data-availability="NOT_BOUND"' in html
     assert 'data-mdl-field="confidence" data-availability="NOT_BOUND"' in html
     # Decision + DP + Safety wired but absent without injection; Regime / Switch stay NOT_BOUND
@@ -91,6 +92,48 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert "<button" not in html.lower()
     assert "Trigger Kill" not in html
     assert "Recover Kill" not in html
+
+
+def _region_html(html: str, region: str) -> str:
+    marker = f'data-mdl-region="{region}"'
+    start = html.index(marker)
+    # Regions are sibling sections/asides/headers; cut until next region or end of shell.
+    rest = html[start:]
+    next_region = rest.find('data-mdl-region="', len(marker))
+    return rest if next_region < 0 else rest[:next_region]
+
+
+def test_get_market_duplicate_status_facts_have_single_primary_location(
+    client: TestClient,
+) -> None:
+    """Phase 5 PR1: Regime/Scope lifecycle/Source Health each have one primary surface."""
+    html = client.get("/market").text
+    strip = _region_html(html, "GLOBAL_SYSTEM_STRIP")
+    context = _region_html(html, "SYSTEM_CONTEXT_RAIL")
+
+    # Regime: Context only (not Global Strip).
+    assert 'data-mdl-field="regime"' not in strip
+    assert context.count('data-mdl-field="regime"') == 1
+    assert 'data-availability="NOT_BOUND"' in context.split('data-mdl-field="regime"', 1)[1][:200]
+
+    # Scope lifecycle: Context Lifecycle only (not Global Strip Scope).
+    assert 'data-mdl-field="scope"' not in strip
+    assert context.count('data-mdl-field="scope_lifecycle"') == 1
+    assert 'data-mdl-field="scope_freshness"' not in html
+
+    # Freshness must not relabel aggregate availability in the strip.
+    assert "<dt>Freshness</dt>" not in strip
+    assert 'data-mdl-field="freshness"' not in strip
+
+    # Source Health remains the sole operator-visible aggregate availability fact.
+    assert 'data-mdl-field="source_health"' not in strip
+    assert context.count('data-mdl-field="source_health"') == 1
+
+    # Strip retains compact ops facts only.
+    assert 'data-mdl-field="instrument"' in strip
+    assert 'data-mdl-field="venue"' in strip
+    assert 'data-mdl-field="runtime"' in strip
+    assert 'data-mdl-field="safety"' in strip
 
 
 def test_get_market_has_no_write_or_order_controls(client: TestClient) -> None:
@@ -153,6 +196,10 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     assert ctx["economic"]["availability_label"] == "NOT_BOUND"
     assert ctx["global_strip"]["instrument"] == "NOT_BOUND"
     assert ctx["global_strip"]["safety_status"] == "NOT_BOUND"
+    assert "scope" not in ctx["global_strip"]
+    assert "regime" not in ctx["global_strip"]
+    assert "freshness" not in ctx["global_strip"]
+    assert "source_health" not in ctx["global_strip"]
     assert ctx["risk"]["availability"] == "NOT_BOUND"
     assert ctx["regime"]["availability"] == "NOT_BOUND"
     assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
@@ -161,6 +208,9 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     assert ctx["decision"]["fields"]["decision"] is None
     assert ctx["decision"]["fields"]["direction"] is None
     assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+    # Aggregate availability remains on source_health only (not under Freshness).
+    assert ctx["source_health"]["availability"] == "NOT_BOUND"
+    assert "observed_at" in ctx["source_health"]["freshness"]
 
 
 def test_shell_assets_exist() -> None:

@@ -34,15 +34,13 @@
         <span class="mdl-v2-chip mdl-v2-chip--quiet">READ-ONLY CONSUMER</span>
       </div>
       <dl class="mdl-v2-strip__facts">
+        {# Strip = compact ops summary. Scope/Regime live in Context; do not alias availability as Freshness. #}
         <div><dt>Instrument</dt><dd data-mdl-field="instrument">{{ global_strip.instrument }}</dd></div>
         <div><dt>Venue</dt><dd data-mdl-field="venue">{{ global_strip.venue }}</dd></div>
-        <div><dt>Scope</dt><dd data-mdl-field="scope">{{ global_strip.scope }}</dd></div>
-        <div><dt>Regime</dt><dd data-mdl-field="regime">{{ global_strip.regime }}</dd></div>
         <div>
           <dt>Runtime</dt>
           <dd data-mdl-field="runtime" title="{{ shell_authority_class }}">{{ global_strip.runtime_state }}</dd>
         </div>
-        <div><dt>Freshness</dt><dd data-mdl-field="freshness">{{ source_health.availability }}</dd></div>
         <div>
           <dt>Safety</dt>
           <dd
@@ -122,10 +120,6 @@
             <dd data-mdl-field="next_scope_ref" data-availability="{{ scope.availability }}">{{ scope.next_scope_ref_display }}</dd>
           </div>
           <div>
-            <dt>Scope Freshness</dt>
-            <dd data-mdl-field="scope_freshness" data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd>
-          </div>
-          <div>
             <dt>Regime</dt>
             <dd data-mdl-field="regime" data-availability="{{ regime.availability }}">{{ regime.availability_label }}</dd>
           </div>
@@ -137,7 +131,10 @@
             <dt>Switch</dt>
             <dd data-mdl-field="switch" data-availability="{{ switch.availability }}">{{ switch.availability_label }}</dd>
           </div>
-          <div><dt>Source Health</dt><dd data-availability="{{ source_health.availability }}">{{ source_health.availability }}</dd></div>
+          <div>
+            <dt>Source Health</dt>
+            <dd data-mdl-field="source_health" data-availability="{{ source_health.availability }}">{{ source_health.availability }}</dd>
+          </div>
         </dl>
       </aside>
     </div>

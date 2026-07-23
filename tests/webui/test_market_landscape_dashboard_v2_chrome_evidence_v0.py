@@ -1,4 +1,4 @@
-"""Real Chrome Playwright evidence for Market Landscape V2 Phase 4.4A binding."""
+"""Real Chrome Playwright evidence for Market Landscape V2 Phase 5 PR1."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase4" / "pr7"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr1"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -82,6 +82,20 @@ def _collect_injected_safety_html() -> str:
         status={"project": "Peak_Trade"},
         **context,
     )
+
+
+def _assert_no_duplicate_status_facts(page) -> None:  # type: ignore[no-untyped-def]
+    strip = page.locator('[data-mdl-region="GLOBAL_SYSTEM_STRIP"]')
+    context = page.locator('[data-mdl-region="SYSTEM_CONTEXT_RAIL"]')
+    assert strip.locator('[data-mdl-field="regime"]').count() == 0
+    assert context.locator('[data-mdl-field="regime"]').count() == 1
+    assert strip.locator('[data-mdl-field="scope"]').count() == 0
+    assert context.locator('[data-mdl-field="scope_lifecycle"]').count() == 1
+    assert page.locator('[data-mdl-field="scope_freshness"]').count() == 0
+    assert strip.locator('[data-mdl-field="freshness"]').count() == 0
+    assert strip.get_by_text("Freshness", exact=True).count() == 0
+    assert strip.locator('[data-mdl-field="source_health"]').count() == 0
+    assert context.locator('[data-mdl-field="source_health"]').count() == 1
 
 
 def _run_chrome_against_html(
@@ -148,6 +162,7 @@ def _run_chrome_against_html(
                 decision = page.locator("[data-mdl-decision-strip='true']")
                 assert chart.count() == 1
                 assert decision.count() == 1
+                _assert_no_duplicate_status_facts(page)
 
                 if expect_safety_available:
                     safety = page.locator(
