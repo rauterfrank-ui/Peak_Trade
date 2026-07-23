@@ -33,17 +33,19 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_backlog_open_with_cshrvf_preregistered() -> None:
+def test_repo_backlog_open_with_cslrvc_preregistered() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
     assert report["status"] == "OPEN_BACKLOG"
     assert report["preregistered_count"] == 1
-    assert report["terminal_count"] == 9
+    assert report["terminal_count"] == 10
     assert report["hypothesis_id"] == (
-        "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1"
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
     )
-    assert report["strategy_identity"] == ("CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1")
-    assert report["development_run_count"] == 1
+    assert report["strategy_identity"] == (
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+    )
+    assert report["development_run_count"] == 0
     assert (
         report["dataset_id"]
         == "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
@@ -69,12 +71,12 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert backlog["open_unpreregistered_candidates"] == []
     assert len(backlog["preregistered_hypotheses"]) == 1
     hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["strategy_identity"] == "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
-    assert hyp["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL"
-    assert hyp["implementation_present"] is True
-    assert hyp["run_slot_consumed"] is True
-    assert hyp["development_run_count"] == 1
-    assert len(backlog["terminal_hypotheses"]) == 9
+    assert hyp["strategy_identity"] == "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+    assert hyp["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert hyp["implementation_present"] is False
+    assert hyp["run_slot_consumed"] is False
+    assert hyp["development_run_count"] == 0
+    assert len(backlog["terminal_hypotheses"]) == 10
     terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
     assert terminals["VOLATILITY_COMPRESSION_BREAKOUT_V1"]["terminal_result"] == (
         "FAIL_CLOSED_NO_RETRY"
@@ -102,13 +104,25 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert vtdc["retry_allowed"] is False
     assert backlog["sealed_holdout_binding_status"] == "UNBOUND_UNTOUCHED"
     assert backlog["required_treatment_type"] == (
-        "OWN_INSTRUMENT_CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_ADMISSION"
+        "OWN_INSTRUMENT_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_ADMISSION"
     )
     assert backlog["next_canonical_step"] == (
-        "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_"
-        "FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
+        "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
     )
-    assert backlog["implementation_authorized"] is True
+    assert backlog["implementation_authorized"] is False
+    terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
+    cshrvf = terminals["CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"]
+    assert cshrvf["status"] == "TERMINAL_FAIL"
+    assert cshrvf["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
+    assert cshrvf["run_slot_consumed"] is True
+    assert cshrvf["development_run_count"] == 1
+    assert cshrvf["runner_start_count"] == 1
+    assert cshrvf["retry_allowed"] is False
+    assert cshrvf["rerun_allowed"] is False
+    assert cshrvf["reopen_allowed"] is False
+    assert hyp["runner_start_count"] == 0
+    assert hyp["development_run_count"] == 0
+    assert hyp["run_slot_consumed"] is False
 
 
 def test_fail_closed_mutations() -> None:
@@ -122,8 +136,8 @@ def test_fail_closed_mutations() -> None:
     with pytest.raises(BacklogValidationError, match="RETRY_ALLOWED"):
         validate_backlog_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["development_run_count"] = 0
-    with pytest.raises(BacklogValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
+    bad3["development_run_count"] = 1
+    with pytest.raises(BacklogValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_backlog_contract(bad3)
     bad4 = copy.deepcopy(payload)
     bad4["closed_sibling_lanes"]["reopen_forbidden"] = False
@@ -144,6 +158,7 @@ def test_governance_and_owner_map() -> None:
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in text
     assert "OPEN_BACKLOG" in text
+    assert "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1" in text
     assert "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1" in text
     assert "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1" in text
     assert "VOLATILITY_TERM_STRUCTURE_REVERSION_V1" in text
