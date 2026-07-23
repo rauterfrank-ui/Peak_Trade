@@ -31,15 +31,26 @@ def project_market_instrument_snapshot_v1(
     git_sha: str | None = None,
     producer_module: str = "trading.master_v2.canonical_market_context_v1",
     source_kind: str = "canonical_market_context",
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
 ) -> MarketInstrumentSnapshotV1:
     """Project already-computed market identity fields into a Landscape snapshot.
 
     Forbidden: inventing instrument/venue/mark_price, fabricating OHLCV, or
     deriving futures/spot eligibility from symbol heuristics.
     market_type and mark_price may remain None when the producer did not supply them.
+    generated_at/effective_at must be producer timestamps — never page-assembly time.
     """
     if not instrument_id:
-        raise ValueError("instrument_id required for AVAILABLE")
+        raise ValueError("instrument_id required for AVAILABLE/STALE projection")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_market_instrument only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
     schema_id = f"{SCHEMA_FAMILY}.market_instrument.{SCHEMA_VERSION}"
     provenance = SnapshotProvenanceV1(
         schema_id=schema_id,
@@ -51,20 +62,20 @@ def project_market_instrument_snapshot_v1(
         source_reference=source_reference,
         evidence_digest=evidence_digest,
         git_sha=git_sha,
-        availability=Availability.AVAILABLE,
+        availability=availability,
     )
     freshness = FreshnessV1(
         observed_at=generated_at,
-        max_age_seconds=None,
-        is_stale=False,
-        stale_reason=None,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
     )
     return MarketInstrumentSnapshotV1(
         schema_id=schema_id,
         schema_version=SCHEMA_VERSION,
         provenance=provenance,
         freshness=freshness,
-        availability=Availability.AVAILABLE,
+        availability=availability,
         instrument_id=instrument_id,
         venue=venue,
         market_type=market_type,
@@ -85,16 +96,29 @@ def project_universe_ranking_snapshot_v1(
     evidence_digest: str | None = None,
     git_sha: str | None = None,
     producer_module: str = ("webui.workflow_dashboard_readmodel_v1.universe_selection_contract_v1"),
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
 ) -> UniverseRankingSnapshotV1:
     """Project an existing universe_selection ranking into Landscape form.
 
     Forbidden: recomputing ranks, inventing selected instruments, or enriching
     rows with decision/risk/sizing semantics.
+    generated_at/effective_at must be producer timestamps — never page-assembly time.
     """
     ranking_rows = tuple(dict(row) for row in ranking)
     universe_rows = tuple(dict(row) for row in universe)
     if not ranking_rows and not universe_rows and not selected_instrument_id:
-        raise ValueError("ranking, universe, or selected_instrument_id required for AVAILABLE")
+        raise ValueError(
+            "ranking, universe, or selected_instrument_id required for AVAILABLE/STALE"
+        )
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_universe_ranking only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
     schema_id = f"{SCHEMA_FAMILY}.universe_ranking.{SCHEMA_VERSION}"
     provenance = SnapshotProvenanceV1(
         schema_id=schema_id,
@@ -106,20 +130,20 @@ def project_universe_ranking_snapshot_v1(
         source_reference=source_reference,
         evidence_digest=evidence_digest,
         git_sha=git_sha,
-        availability=Availability.AVAILABLE,
+        availability=availability,
     )
     freshness = FreshnessV1(
         observed_at=generated_at,
-        max_age_seconds=None,
-        is_stale=False,
-        stale_reason=None,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
     )
     return UniverseRankingSnapshotV1(
         schema_id=schema_id,
         schema_version=SCHEMA_VERSION,
         provenance=provenance,
         freshness=freshness,
-        availability=Availability.AVAILABLE,
+        availability=availability,
         ranking=ranking_rows,
         universe=universe_rows,
         selected_instrument_id=selected_instrument_id,

@@ -105,7 +105,7 @@ def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
                 assert chart.count() == 1
                 assert decision.count() == 1
                 assert page.locator('[data-mdl-field="selected_instrument"]').count() == 1
-                assert page.locator('[data-mdl-field="eligibility"]').count() == 1
+                assert page.locator('[data-mdl-field="universe_membership"]').count() == 1
 
                 chart_box = chart.bounding_box()
                 decision_box = decision.bounding_box()

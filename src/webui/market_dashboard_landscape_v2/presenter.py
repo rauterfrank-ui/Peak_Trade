@@ -157,6 +157,9 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "universe_rail": {
             "watchlist_availability": page.universe_ranking.availability.value,
             "watchlist_label": AVAILABILITY_LABELS[page.universe_ranking.availability],
+            # Membership of selected in projected universe rows — not a separate
+            # eligibility producer / ranking recomputation.
+            "membership_label": membership_label,
             "eligibility_label": membership_label,
             "rank_label": ranking_label,
             "selected_instrument_id": selected_instrument_id,

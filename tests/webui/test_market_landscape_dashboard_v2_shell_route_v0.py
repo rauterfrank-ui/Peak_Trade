@@ -61,7 +61,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-mdl-outer-workspace="true"' in html
     assert "mdl-v2-ops" in html
     assert 'data-mdl-field="selected_instrument"' in html
-    assert 'data-mdl-field="eligibility"' in html
+    assert 'data-mdl-field="universe_membership"' in html
     # Decision / scope remain unbound in Phase 4.1
     assert "NOT_BOUND" in html
     assert "OPERATOR_SKELETON_APPROVAL" not in html
