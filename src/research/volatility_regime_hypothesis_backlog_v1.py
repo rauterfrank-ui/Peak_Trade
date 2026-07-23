@@ -16,12 +16,14 @@ GOVERNANCE_REL_PATH = "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.m
 DECISION_PACKET_REL_PATH = (
     "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json"
 )
-REQUIRED_STATUS = "OPEN_BACKLOG"
+REQUIRED_STATUS = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_PROGRAM_ID = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
-REQUIRED_HYPOTHESIS_ID = (
+REQUIRED_TERMINAL_CSLRVC_HYPOTHESIS_ID = (
     "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
 )
-REQUIRED_STRATEGY_IDENTITY = "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+REQUIRED_TERMINAL_CSLRVC_STRATEGY_IDENTITY = (
+    "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+)
 REQUIRED_PREDECESSOR = "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
 REQUIRED_VEPC_HYPOTHESIS_ID = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
 REQUIRED_VEPC_STRATEGY_IDENTITY = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
@@ -51,6 +53,7 @@ REQUIRED_TERMINAL_STRATEGY_IDENTITIES = frozenset(
         "VOLATILITY_TERM_STRUCTURE_REVERSION_V1",
         "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1",
         "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1",
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1",
     }
 )
 REQUIRED_TERMINAL_HYPOTHESIS_IDS = frozenset(
@@ -65,15 +68,13 @@ REQUIRED_TERMINAL_HYPOTHESIS_IDS = frozenset(
         "VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1",
         "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
         "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1",
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
     }
 )
 REQUIRED_CLOSED = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_CS_CLOSED = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_DATASET = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
-REQUIRED_NEXT_STEP = (
-    "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_"
-    "FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
-)
+REQUIRED_NEXT_STEP = "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
 REQUIRED_TREATMENT = "OWN_INSTRUMENT_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_ADMISSION"
 REQUIRED_CONTRACT = (
     "config/research/cross_sectional_low_realized_volatility_continuation_v1_preregistered_"
@@ -98,20 +99,22 @@ def validate_backlog_contract(
     payload: Mapping[str, Any], *, repo_root: Path | None = None
 ) -> dict[str, Any]:
     _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID_MISMATCH")
-    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_OPEN_BACKLOG")
+    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_LANE_CLOSED")
     _require(
         payload.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
         "LIFECYCLE_CONTRACT_MISMATCH",
     )
-    _require(payload.get("explicit_closeout_decision") is False, "CLOSEOUT_DECISION_TRUE")
+    _require(payload.get("explicit_closeout_decision") is True, "CLOSEOUT_DECISION_REQUIRED")
     _require(payload.get("explicit_waiting_decision") is False, "WAITING_DECISION_TRUE")
     _require(payload.get("lane_auto_closed") is False, "LANE_AUTO_CLOSED")
+    _require(payload.get("create_successor_hypothesis") is False, "CREATE_SUCCESSOR_TRUE")
+    _require(payload.get("successor_found") is False, "SUCCESSOR_FOUND_TRUE")
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
     _require(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
-    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED_FALSE")
+    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED_TRUE")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(
         payload.get("sealed_holdout_binding_status") == "UNBOUND_UNTOUCHED",
@@ -122,14 +125,16 @@ def validate_backlog_contract(
     _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
     _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
+    _require(payload.get("reopen_allowed") is False, "REOPEN_ALLOWED")
     _require(payload.get("next_canonical_step") == REQUIRED_NEXT_STEP, "NEXT_STEP_STALE")
+    _require(payload.get("next_eligible") == "NONE", "NEXT_ELIGIBLE_NOT_NONE")
     _require(payload.get("required_treatment_type") == REQUIRED_TREATMENT, "TREATMENT_STALE")
     _require(
         payload.get("operator_decision_packet_ref") == DECISION_PACKET_REL_PATH,
         "DECISION_PACKET_REF_MISSING",
     )
     rules = payload.get("governance_rules") or {}
-    _require(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_NOT_1")
+    _require(rules.get("preregistered_count_exact") == 0, "PREREGISTERED_COUNT_NOT_0")
     _require(
         rules.get("open_unpreregistered_count_exact") == 0,
         "OPEN_UNPREREGISTERED_NOT_0",
@@ -138,26 +143,31 @@ def validate_backlog_contract(
     _require(rules.get("development_runs_per_hypothesis") == 1, "DEV_RUNS_PER_HYP_NOT_1")
     _require(payload.get("open_unpreregistered_candidates") == [], "OPEN_CANDIDATES_NONEMPTY")
     prereg = payload.get("preregistered_hypotheses") or []
-    _require(len(prereg) == 1, "PREREGISTERED_LEN_NOT_1")
-    hyp = prereg[0]
-    _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
-    _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
-    _require(
-        hyp.get("status") == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
-        "HYPOTHESIS_STATUS",
-    )
-    _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
-    _require(hyp.get("development_run_count") == 1, "HYP_RUN_COUNT_NOT_ONE")
-    _require(hyp.get("run_slot_consumed") is True, "HYP_SLOT_NOT_CONSUMED")
-    _require(hyp.get("implementation_present") is True, "HYP_IMPL_PRESENT_FALSE")
-    _require(hyp.get("predecessor_strategy_id") == REQUIRED_PREDECESSOR, "HYP_PREDECESSOR")
-    _require(hyp.get("contract_ref") == REQUIRED_CONTRACT, "HYP_CONTRACT_REF")
+    _require(len(prereg) == 0, "PREREGISTERED_LEN_NOT_0")
     terminals = payload.get("terminal_hypotheses") or []
-    _require(len(terminals) == 10, "TERMINAL_LEN_NOT_10")
+    _require(len(terminals) == 11, "TERMINAL_LEN_NOT_11")
     term_ids = {t.get("hypothesis_id") for t in terminals}
     term_strats = {t.get("strategy_identity") for t in terminals}
     _require(term_ids == REQUIRED_TERMINAL_HYPOTHESIS_IDS, "TERMINAL_HYPOTHESIS_IDS")
     _require(term_strats == REQUIRED_TERMINAL_STRATEGY_IDENTITIES, "TERMINAL_STRATEGY_IDENTITIES")
+    cslrvc = next(
+        t
+        for t in terminals
+        if t.get("strategy_identity") == REQUIRED_TERMINAL_CSLRVC_STRATEGY_IDENTITY
+    )
+    _require(
+        cslrvc.get("hypothesis_id") == REQUIRED_TERMINAL_CSLRVC_HYPOTHESIS_ID,
+        "CSLRVC_HYPOTHESIS_ID",
+    )
+    _require(cslrvc.get("status") == "TERMINAL_FAIL", "CSLRVC_STATUS")
+    _require(cslrvc.get("terminal_result") == "FAIL_CLOSED_NO_RETRY", "CSLRVC_TERMINAL_RESULT")
+    _require(cslrvc.get("retry_allowed") is False, "CSLRVC_RETRY_ALLOWED")
+    _require(cslrvc.get("reopen_allowed") is False, "CSLRVC_REOPEN_ALLOWED")
+    _require(cslrvc.get("run_slot_consumed") is True, "CSLRVC_SLOT_NOT_CONSUMED")
+    _require(cslrvc.get("development_run_count") == 1, "CSLRVC_RUN_COUNT_NOT_ONE")
+    _require(cslrvc.get("runner_start_count") == 1, "CSLRVC_RUNNER_START_NOT_ONE")
+    _require(cslrvc.get("predecessor_strategy_id") == REQUIRED_PREDECESSOR, "CSLRVC_PREDECESSOR")
+    _require(cslrvc.get("contract_ref") == REQUIRED_CONTRACT, "CSLRVC_CONTRACT_REF")
     vepc = next(
         t for t in terminals if t.get("strategy_identity") == REQUIRED_VEPC_STRATEGY_IDENTITY
     )
@@ -238,10 +248,12 @@ def validate_backlog_contract(
         "NO_VTDC_V1_RETRY",
         "NO_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_RETRY",
         "NO_CSHRVF_V1_RETRY",
+        "NO_CSLRVC_V1_RETRY",
         "NO_AUTO_CREATE_SUCCESSOR",
         "NO_AUTO_CLOSE_LANE",
         "NO_AUTO_AWAIT_SUCCESSOR",
-        "NO_CLOSEOUT_APPLICATION_IN_THIS_SLICE",
+        "NO_CREATE_SUCCESSOR_HYPOTHESIS_IN_THIS_SLICE",
+        "NO_IMPLICIT_SUCCESSOR_AFTER_CLOSE",
         "NO_RETRY_AFTER_DEVELOPMENT_FAIL",
         "NO_CS_MOMENTUM_LANE_REOPEN",
     ):
@@ -256,29 +268,34 @@ def validate_backlog_contract(
         _require(exitb.get("status") == REQUIRED_CLOSED, "LIVE_EXIT_NOT_CLOSED")
         _require(cs.get("status") == REQUIRED_CS_CLOSED, "LIVE_CS_MOMENTUM_NOT_CLOSED")
         _require(packet.get("lane_status") == REQUIRED_STATUS, "DECISION_PACKET_LANE_STATUS")
-        _require(packet.get("successor_created") is True, "DECISION_PACKET_SUCCESSOR_FALSE")
-        _require(packet.get("closeout_applied") is False, "DECISION_PACKET_CLOSEOUT_TRUE")
+        _require(packet.get("closeout_applied") is True, "DECISION_PACKET_CLOSEOUT_FALSE")
         _require(
-            packet.get("successor_hypothesis_id") == REQUIRED_HYPOTHESIS_ID,
-            "DECISION_PACKET_SUCCESSOR_ID",
+            packet.get("new_successor_created_in_this_decision") is False,
+            "DECISION_PACKET_NEW_SUCCESSOR_TRUE",
+        )
+        _require(
+            packet.get("predecessor_terminal_strategy_identity")
+            == REQUIRED_TERMINAL_CSLRVC_STRATEGY_IDENTITY,
+            "DECISION_PACKET_PREDECESSOR",
         )
 
     return {
         "valid": True,
         "status": REQUIRED_STATUS,
         "program_id": REQUIRED_PROGRAM_ID,
-        "preregistered_count": 1,
-        "terminal_count": 10,
-        "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
-        "strategy_identity": REQUIRED_STRATEGY_IDENTITY,
+        "preregistered_count": 0,
+        "terminal_count": 11,
+        "hypothesis_id": REQUIRED_TERMINAL_CSLRVC_HYPOTHESIS_ID,
+        "strategy_identity": REQUIRED_TERMINAL_CSLRVC_STRATEGY_IDENTITY,
         "development_run_count": 1,
         "dataset_id": REQUIRED_DATASET,
         "evaluation_authorized": False,
         "holdout_forbidden": True,
         "promotion_eligible": False,
         "retry_allowed": False,
-        "explicit_closeout_decision": False,
+        "explicit_closeout_decision": True,
         "explicit_waiting_decision": False,
+        "successor_found": False,
     }
 
 

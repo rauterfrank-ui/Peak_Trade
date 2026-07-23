@@ -10,7 +10,7 @@ PACKAGE_MARKER = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1=true"
 PROGRAM_REL_PATH = "config/research/volatility_regime_research_program_v1.json"
 GOVERNANCE_REL_PATH = "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md"
 REQUIRED_PROGRAM_ID = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
-REQUIRED_STATUS = "DEFINITION_ONLY_PROGRAM_OPEN"
+REQUIRED_STATUS = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_STRATEGY_IDENTITY = "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
 REQUIRED_SIGNAL_FAMILY = "VOLATILITY_REGIME"
 REQUIRED_TARGET_PHENOMENON = "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION"
@@ -34,10 +34,8 @@ CLOSED_CS_MOMENTUM_PROGRAM = (
 )
 REQUIRED_CLOSED = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_CS_CLOSED = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
-REQUIRED_NEXT_STEP = (
-    "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_"
-    "FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
-)
+REQUIRED_NEXT_STEP = "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
+REQUIRED_LANE_STATUS = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 
 
 class ProgramValidationError(ValueError):
@@ -57,7 +55,7 @@ def validate_program_contract(
     payload: Mapping[str, Any], *, repo_root: Path | None = None
 ) -> dict[str, Any]:
     _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID_MISMATCH")
-    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_DEFINITION_ONLY_OPEN")
+    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_PROGRAM_CLOSED")
     _require(
         payload.get("slice_class") == "DEFINITION_ONLY_GOVERNANCE",
         "SLICE_NOT_DEFINITION_ONLY_GOVERNANCE",
@@ -75,8 +73,8 @@ def validate_program_contract(
     )
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("development_evaluation_authorized") is True,
-        "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
+        payload.get("development_evaluation_authorized") is False,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
     _require(
         payload.get("development_evaluation_executed") is True,
@@ -87,16 +85,26 @@ def validate_program_contract(
         "STRATEGY_ID_DRIFT",
     )
     _require(
-        payload.get("lane_backlog_status") == "OPEN_BACKLOG",
+        payload.get("lane_backlog_status") == REQUIRED_LANE_STATUS,
         "LANE_BACKLOG_STATUS_MISMATCH",
     )
     _require(payload.get("next_canonical_step") == REQUIRED_NEXT_STEP, "NEXT_STEP_STALE")
+    _require(payload.get("next_eligible") == "NONE", "NEXT_ELIGIBLE_NOT_NONE")
+    _require(payload.get("explicit_closeout_decision") is True, "CLOSEOUT_DECISION_REQUIRED")
+    _require(payload.get("create_successor_hypothesis") is False, "CREATE_SUCCESSOR_TRUE")
+    _require(payload.get("successor_found") is False, "SUCCESSOR_FOUND_TRUE")
+    _require(payload.get("reopen_allowed") is False, "REOPEN_ALLOWED")
     _require(
         payload.get("operator_decision_packet_ref")
         == "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
         "DECISION_PACKET_REF_MISSING",
     )
-    _require(payload.get("active_hypothesis_inventory_empty") is False, "INVENTORY_EMPTY")
+    _require(
+        payload.get("operator_decision_token")
+        == "GO_VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1",
+        "OPERATOR_DECISION_TOKEN",
+    )
+    _require(payload.get("active_hypothesis_inventory_empty") is True, "INVENTORY_NONEMPTY")
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED_TRUE")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(
@@ -105,7 +113,7 @@ def validate_program_contract(
     )
     _require(payload.get("promotion_authorized") is False, "PROMOTION_AUTHORIZED_TRUE")
     _require(payload.get("runtime_authorized") is False, "RUNTIME_AUTHORIZED_TRUE")
-    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED_FALSE")
+    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED_TRUE")
     _require(
         payload.get("strategy_implementation_present") is True,
         "STRATEGY_IMPLEMENTATION_PRESENT_FALSE",
@@ -198,12 +206,22 @@ def validate_program_contract(
         "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
         "VOLATILITY_TERM_STRUCTURE_REVERSION_V1",
         "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1",
+        "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1",
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1",
+        "cross_sectional_low_realized_volatility_continuation/v1_retry",
     ):
         _require(required in forbidden, f"MISSING_FORBIDDEN_LINEAGE:{required}")
     _require(
         independence.get("not_a_retry_of_terminal_volatility_expansion_pullback_continuation_v1")
         is True,
         "VEPC_RETRY_NOT_FORBIDDEN",
+    )
+    _require(
+        independence.get(
+            "not_a_retry_of_terminal_cross_sectional_low_realized_volatility_continuation_v1"
+        )
+        is True,
+        "CSLRVC_RETRY_NOT_FORBIDDEN",
     )
     md = payload.get("material_difference_vs_terminal_coiled_spring") or {}
     _require(
@@ -329,16 +347,15 @@ def validate_program_contract(
         _require(exitb.get("status") == REQUIRED_CLOSED, "EXIT_LANE_NOT_CLOSED")
         _require(cs.get("status") == REQUIRED_CS_CLOSED, "CS_MOMENTUM_LANE_NOT_CLOSED")
         backlog = load_json(repo_root / str(payload.get("lane_backlog_ref")))
-        _require(backlog.get("status") == "OPEN_BACKLOG", "LANE_BACKLOG_NOT_OPEN")
+        _require(backlog.get("status") == REQUIRED_LANE_STATUS, "LANE_BACKLOG_NOT_CLOSED")
         _require(backlog.get("explicit_waiting_decision") is False, "BACKLOG_WAITING_TRUE")
-        _require(backlog.get("explicit_closeout_decision") is False, "BACKLOG_CLOSEOUT_TRUE")
+        _require(backlog.get("explicit_closeout_decision") is True, "BACKLOG_CLOSEOUT_FALSE")
+        _require(backlog.get("successor_found") is False, "BACKLOG_SUCCESSOR_FOUND")
         _require(backlog.get("program_id") == REQUIRED_PROGRAM_ID, "BACKLOG_PROGRAM_MISMATCH")
         prereg = backlog.get("preregistered_hypotheses") or []
-        _require(len(prereg) == 1, "BACKLOG_PREREG_LEN")
-        _require(
-            prereg[0].get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY,
-            "BACKLOG_PREREG_STRATEGY",
-        )
+        _require(len(prereg) == 0, "BACKLOG_PREREG_LEN")
+        terminals = {t.get("strategy_identity") for t in (backlog.get("terminal_hypotheses") or [])}
+        _require(REQUIRED_STRATEGY_IDENTITY in terminals, "BACKLOG_CSLRVC_NOT_TERMINAL")
 
     return {
         "valid": True,
@@ -355,6 +372,8 @@ def validate_program_contract(
         "runner_start_count": 1,
         "run_slot_consumed": True,
         "retry_allowed": False,
+        "successor_found": False,
+        "explicit_closeout_decision": True,
         "material_difference_explicit": True,
         "material_difference_from_vcb_v1": True,
         "material_difference_from_vep_v1": True,

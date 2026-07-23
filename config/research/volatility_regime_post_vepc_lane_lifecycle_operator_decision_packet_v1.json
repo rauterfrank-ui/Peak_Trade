@@ -7,7 +7,7 @@
   "auto_create_successor_forbidden": true,
   "awaiting_declared": true,
   "canonical_ssot": true,
-  "closeout_applied": false,
+  "closeout_applied": true,
   "decision_application_authorized": false,
   "enumerated_operator_decisions": [
     {
@@ -19,12 +19,15 @@
       "status": "APPLIED"
     },
     {
+      "authorization_token": "GO_VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1",
       "decision_id": "CLOSE_LANE_NO_FURTHER_RESEARCH",
       "go_token": "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
       "requires_hypothesis_id": false,
       "requires_mechanism_definition": false,
       "resulting_lane_status": "LANE_CLOSED_NO_FURTHER_RESEARCH",
-      "status": "OPERATOR_GO_REQUIRED"
+      "status": "APPLIED",
+      "terminal_predecessor_hypothesis_id": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+      "terminal_predecessor_strategy_identity": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
     },
     {
       "applied_hypothesis_id": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
@@ -44,6 +47,7 @@
   "exactly_one_authoritative_truth": true,
   "forbidden_actions": [
     "AUTO_CREATE_SUCCESSOR",
+    "CREATE_SUCCESSOR_WITHOUT_NEW_AXIS",
     "CSHRVF_RETRY",
     "CSLRVC_RETRY",
     "CS_MOMENTUM_LANE_REOPEN",
@@ -51,43 +55,58 @@
     "EXECUTABLE_GO_WITHOUT_TARGET",
     "FURTHER_TERM_STRUCTURE_VARIANT",
     "HOLDOUT_ACCESS",
+    "IMPLICIT_SUCCESSOR_AFTER_CLOSE",
     "LIVE_ORDERS",
     "MUTATE_SEALED_HISTORICAL_EVIDENCE",
+    "REOPEN_WITHOUT_NEW_PROGRAM_IDENTITY",
     "VEFCF_RETRY",
     "VEPC_RETRY",
     "VTDC_RETRY",
     "VTSR_RETRY"
   ],
   "governance_doc_ref": "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
-  "governance_note": "CSLRVC v1 bounded DEVELOPMENT evaluation executed once; DEVELOPMENT_FAIL on preregistered admission gates (gross edge/net PF/cost stress/max drawdown/time-segment robustness). Slot consumed. No retry. No holdout. Economic/promotion/runtime/live gates closed. No CSHRVF/VTDC/VTSR/VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry.",
+  "governance_note": "Post-CSLRVC DEVELOPMENT_FAIL lifecycle decision applied CLOSE_LANE_NO_FURTHER_RESEARCH. CSLRVC slot consumed (development_run_count=1); retry forbidden; holdout untouched. Both CS-RV-rank halves and all prior vol-regime families terminal. No CREATE_SUCCESSOR in this decision. Historical CREATE_SUCCESSOR→CSLRVC after CSHRVF remains recorded. Economic/promotion/runtime/LIVE/orders closed.",
   "holdout_accessed": false,
   "lane_backlog_ref": "config/research/volatility_regime_hypothesis_backlog_v1.json",
-  "lane_status": "OPEN_BACKLOG",
+  "lane_status": "LANE_CLOSED_NO_FURTHER_RESEARCH",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
   "live_authorized": false,
-  "next_admissible_scope": "VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1",
-  "next_admissible_scope_go_tokens": [
-    "GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1",
-    "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
-    "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1"
-  ],
+  "next_admissible_scope": "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO",
+  "next_admissible_scope_go_tokens": [],
   "orders_allowed": false,
   "packet_id": "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1",
   "predecessor_fail_reason": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL",
-  "predecessor_terminal_hypothesis_id": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1",
+  "predecessor_terminal_hypothesis_id": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
   "predecessor_terminal_result": "FAIL_CLOSED_NO_RETRY",
-  "predecessor_terminal_strategy_identity": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1",
+  "predecessor_terminal_strategy_identity": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1",
   "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
   "program_ref": "config/research/volatility_regime_research_program_v1.json",
   "runtime_effect": "NONE",
   "schema_version": "volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet.v1",
   "scope_classification": "GOVERNANCE_ONLY_OPERATOR_DECISION_PACKET_NO_EXECUTION",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
-  "status": "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSLRVC_DEVELOPMENT_FAIL_SLOT_CONSUMED",
+  "status": "OPERATOR_DECISION_APPLIED_CLOSE_LANE_NO_FURTHER_RESEARCH_AFTER_CSLRVC_DEVELOPMENT_FAIL",
   "successor_created": true,
   "successor_hypothesis_id": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
   "successor_measurement_contract_ref": "config/research/cross_sectional_low_realized_volatility_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "successor_strategy_identity": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1",
-  "verdict": "POST_CSHRVF_CSLRVC_V1_RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
+  "verdict": "POST_CSLRVC_LANE_CLOSED_NO_FURTHER_RESEARCH_NO_SUCCESSOR",
+  "new_successor_created_in_this_decision": false,
+  "closeout_selection_rationale": {
+    "alternatives_rejected": {
+      "CREATE_SUCCESSOR_HYPOTHESIS": "No unused falsifiable own-instrument vol-regime axis remains: CS-RV high/low halves, term-structure elevated/depressed halves, and expansion/compression/decay/pullback/failed-continuation families are all terminal; dispersion/standaside are not trade hypotheses under Double-Play.",
+      "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS": "Already historically applied; empty inventory with no defensible successor makes awaiting non-productive. Explicit closeout preferred.",
+      "CSLRVC_PARAMETER_RETUNE_OR_LOW_HALF_RETRY": "CSLRVC DEVELOPMENT_FAIL consumed the single run slot; retune/retry forbidden.",
+      "CSHRVF_RETRY": "CSHRVF already terminal DEVELOPMENT_FAIL; retry forbidden.",
+      "CS_MOMENTUM_RETURN_RANKING_REOPEN": "Sibling CS momentum lane PROGRAM_CLOSED_NO_FURTHER_RESEARCH; reopen forbidden.",
+      "CROSS_SECTIONAL_VOLATILITY_DISPERSION_ONLY": "Previously deferred; still lacks falsifiable own-instrument trade hypothesis.",
+      "FURTHER_TERM_STRUCTURE_VARIANT": "VTSR and VTDC halves already terminal.",
+      "VOLATILITY_EXPANSION_COMPRESSION_RETRY": "Expansion/compression family already terminal."
+    },
+    "decision_applied": "CLOSE_LANE_NO_FURTHER_RESEARCH",
+    "selected_lane": "NONE",
+    "selected_successor": "NONE",
+    "why_preferred": "After CSLRVC low-half continuation DEVELOPMENT_FAIL, the unused CS-RV-rank half that justified post-CSHRVF CREATE_SUCCESSOR is exhausted. No remaining materially distinct falsifiable successor is available without recycling terminal families."
+  }
 }

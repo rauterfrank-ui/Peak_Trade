@@ -1206,7 +1206,7 @@
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 strategy implementation present OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSLRVC CLOSE_LANE_NO_FURTHER_RESEARCH applied; lane/program closed; CSLRVC DEVELOPMENT_FAIL slot consumed; no successor; holdout/promotion/runtime/LIVE/orders closed.",
       "path_prefixes": [
         "config/research/volatility_regime_hypothesis_backlog_v1.json",
         "src/research/volatility_regime_hypothesis_backlog_v1.py",
@@ -1215,7 +1215,7 @@
       ]
     },
     "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1": {
-      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 strategy implementation present OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSLRVC CLOSE_LANE_NO_FURTHER_RESEARCH applied; lane/program closed; CSLRVC DEVELOPMENT_FAIL slot consumed; no successor; holdout/promotion/runtime/LIVE/orders closed.",
       "path_prefixes": [
         "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
         "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
@@ -1224,7 +1224,7 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 strategy implementation present OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSLRVC CLOSE_LANE_NO_FURTHER_RESEARCH applied; lane/program closed; CSLRVC DEVELOPMENT_FAIL slot consumed; no successor; holdout/promotion/runtime/LIVE/orders closed.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",
@@ -1330,6 +1330,26 @@
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
+      ]
+    },
+    "VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1": {
+      "authority_effect": "NONE",
+      "note": "Lifecycle operator decision after CSLRVC DEVELOPMENT_FAIL: apply CLOSE_LANE_NO_FURTHER_RESEARCH; definition/governance only; no successor create; no evaluation/holdout/runtime/LIVE/orders.",
+      "path_prefixes": [
+        "config/research/volatility_regime_hypothesis_backlog_v1.json",
+        "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
+        "config/research/volatility_regime_research_program_v1.json",
+        "docs/evidence/volatility_regime_post_cslrvc_close_lane_lifecycle_decision_v1/",
+        "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+        "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.md",
+        "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
+        "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md",
+        "src/research/volatility_regime_hypothesis_backlog_v1.py",
+        "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
+        "src/research/volatility_regime_research_program_v1.py",
+        "tests/research/test_volatility_regime_hypothesis_backlog_v1.py",
+        "tests/research/test_volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
+        "tests/research/test_volatility_regime_research_program_v1.py"
       ]
     }
   },
