@@ -58,10 +58,7 @@ REQUIRED_TERMINAL_HYPOTHESIS_IDS = frozenset(
 REQUIRED_CLOSED = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_CS_CLOSED = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_DATASET = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
-REQUIRED_NEXT_STEP = (
-    "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_"
-    "FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
-)
+REQUIRED_NEXT_STEP = "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
 REQUIRED_TREATMENT = "OWN_INSTRUMENT_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_ADMISSION"
 REQUIRED_CONTRACT = (
     "config/research/volatility_term_structure_depressed_continuation_v1_preregistered_"
@@ -99,7 +96,7 @@ def validate_backlog_contract(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED_TRUE")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED_FALSE")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(
         payload.get("sealed_holdout_binding_status") == "UNBOUND_UNTOUCHED",
@@ -130,11 +127,14 @@ def validate_backlog_contract(
     hyp = prereg[0]
     _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
-    _require(hyp.get("status") == "DEFINITION_ONLY_PREREGISTERED", "HYPOTHESIS_STATUS")
+    _require(
+        hyp.get("status") == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
+        "HYPOTHESIS_STATUS",
+    )
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
     _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NOT_ZERO")
     _require(hyp.get("run_slot_consumed") is False, "HYP_SLOT_CONSUMED")
-    _require(hyp.get("implementation_present") is False, "HYP_IMPL_PRESENT_TRUE")
+    _require(hyp.get("implementation_present") is True, "HYP_IMPL_PRESENT_FALSE")
     _require(hyp.get("predecessor_strategy_id") == REQUIRED_PREDECESSOR, "HYP_PREDECESSOR")
     _require(hyp.get("contract_ref") == REQUIRED_CONTRACT, "HYP_CONTRACT_REF")
     terminals = payload.get("terminal_hypotheses") or []
