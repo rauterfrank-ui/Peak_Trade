@@ -5,7 +5,7 @@
   "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
   "canonical_ssot": true,
   "cli_ref": "scripts/research/run_evaluate_volatility_term_structure_depressed_continuation_development_v1.py",
-  "config_digest": "9e8e42e3df4c56206d5d70e7b778df5fde5e6d5cc68cacf447f0ac88fce29622",
+  "config_digest": "4b77cb27bfe1fe264c60684dcecccd506e185061464aa3ca4c38ff464bc19b3e",
   "dataset_binding": {
     "dataset_class": "DEVELOPMENT_ONLY",
     "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
@@ -15,22 +15,23 @@
       "offline_economic_reevaluation_sealed_long_panel_v1"
     ]
   },
-  "development_evaluation_authorized": false,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "economic_gate_open": false,
-  "entry_point_status": "DEFINITION_ONLY_UNAUTHORIZED",
+  "entry_point_status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL",
   "evaluation_authorized": false,
-  "evidence_ref": "docs/evidence/preregister_volatility_term_structure_depressed_continuation_hypothesis_v1/",
-  "frozen_measurement_contract_digest": "280eaec6dca1cb8e6cf1c62ec2ff5913abcf659a03811cadf6d0e01188d45ec8",
+  "evidence_ref": "docs/evidence/evaluate_volatility_term_structure_depressed_continuation_development_v1/",
+  "frozen_measurement_contract_digest": "84a21655045d792afbbfd8c62b68cf2cdbf17220a9c9528fd7f2aaa7913624ca",
   "frozen_measurement_contract_ref": "config/research/volatility_term_structure_depressed_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_ref": "docs/governance/VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "implementation_binding_ref": "config/research/volatility_term_structure_depressed_continuation_v1_strategy_implementation_binding_v1.json",
   "lifecycle_authority_ref": "config/research/volatility_regime_hypothesis_backlog_v1.json",
-  "owner_surface": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1",
+  "owner_surface": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1",
   "productive_exit_pnl_evaluator_ref": "src/research/volatility_compression_breakout_v1_development_evaluation_v1/productive_exit_pnl_evaluator_v1.py",
   "productive_pnl_evaluator_duplicated": false,
   "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
@@ -39,10 +40,12 @@
   "reused_canonical_owners": {
     "baseline": "src.research.unconditional_20_bar_price_channel_breakout_v1",
     "productive_exit_pnl_evaluator": "src.research.volatility_compression_breakout_v1_development_evaluation_v1.productive_exit_pnl_evaluator_v1",
-    "shared_channel_core": "research.price_channel_breakout_core_v1"
+    "shared_channel_core": "research.price_channel_breakout_core_v1",
+    "strategy": "src.research.volatility_term_structure_depressed_continuation_v1_strategy_v1",
+    "vol_state": "src.research.volatility_term_structure_depressed_continuation_v1_vol_state_v1"
   },
-  "runner_present": false,
-  "runner_start_count": 0,
+  "runner_present": true,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
@@ -58,11 +61,12 @@
   "shared_channel_core_bound": true,
   "shared_channel_core_ref": "src/research/price_channel_breakout_core_v1.py",
   "signal_family": "VOLATILITY_REGIME",
-  "slice_class": "DEFINITION_ONLY_GOVERNANCE",
-  "status": "DEFINITION_ONLY_UNAUTHORIZED",
+  "slice_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
+  "status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL",
   "strategy_id": "volatility_term_structure_depressed_continuation",
   "strategy_identity": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1",
+  "strategy_params_digest": "5f3d6ea634c38f7a76411e9fd275e8581b4f6cc15259f26980ff09d42a7b8adb",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "DEFINITION_ONLY_ENTRY_POINT_UNAUTHORIZED_NO_EVALUATION"
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
 }

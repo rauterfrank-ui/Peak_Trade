@@ -1154,6 +1154,20 @@
         "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md"
       ]
     },
+    "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
+      "authority_effect": "NONE",
+      "note": "Bounded DEVELOPMENT evaluation execution for VTDC v1; single run slot consumed with DEVELOPMENT_FAIL; retry/holdout/promotion/runtime/LIVE/orders forbidden.",
+      "path_prefixes": [
+        "docs/evidence/evaluate_volatility_term_structure_depressed_continuation_development_v1/",
+        "docs/governance/VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "config/research/volatility_term_structure_depressed_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+        "config/research/volatility_term_structure_depressed_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "scripts/research/run_evaluate_volatility_term_structure_depressed_continuation_development_v1.py",
+        "src/research/volatility_term_structure_depressed_continuation_v1_development_evaluation_v1/",
+        "tests/research/test_volatility_term_structure_depressed_continuation_v1_development_evaluation_entry_point_v1.py"
+      ],
+      "runtime_effect": "NONE"
+    },
     "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
       "note": "Definition-only CREATE_SUCCESSOR after VTSR DEVELOPMENT_FAIL; VTDC depressed short/long RV term-structure continuation; measurement contract frozen; no evaluation/holdout/runtime/orders; VTSR/VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry forbidden.",
       "path_prefixes": [

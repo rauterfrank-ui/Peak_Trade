@@ -48,9 +48,9 @@ def test_repo_program_definition_only_open() -> None:
     assert report["holdout_authorized"] is False
     assert report["evaluation_authorized"] is False
     assert report["promotion_eligible"] is False
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["retry_allowed"] is False
     assert report["material_difference_explicit"] is True
     assert report["material_difference_from_vcb_v1"] is True
@@ -118,11 +118,11 @@ def test_material_difference_and_closed_siblings_immutable() -> None:
 def test_post_create_successor_fields_and_strategy_id_reconciled() -> None:
     payload = _load(PROGRAM_PATH)
     assert payload["strategy_id"] == "volatility_term_structure_depressed_continuation"
-    assert payload["development_evaluation_authorized"] is False
+    assert payload["development_evaluation_authorized"] is True
     assert payload["lane_backlog_status"] == "OPEN_BACKLOG"
     assert payload["active_hypothesis_inventory_empty"] is False
     assert payload["next_canonical_step"] == (
-        "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
+        "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
     )
     assert payload["strategy_implementation_present"] is True
     assert payload["implementation_authorized"] is True
@@ -141,8 +141,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="EVALUATION_AUTHORIZED_TRUE"):
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["development_run_count"] = 1
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
+    bad2["development_run_count"] = 0
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
     bad3["strategy_implementation_present"] = False
@@ -153,8 +153,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="RUNTIME_POLICY_ORDERS_ALLOWED_TRUE"):
         validate_program_contract(bad4)
     bad5 = copy.deepcopy(payload)
-    bad5["development_evaluation_authorized"] = True
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE"):
+    bad5["development_evaluation_authorized"] = False
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE"):
         validate_program_contract(bad5)
 
 

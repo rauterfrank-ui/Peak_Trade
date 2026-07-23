@@ -45,8 +45,8 @@ def test_repo_contract_definition_only_preregistered() -> None:
         "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
     )
     assert report["strategy_identity"] == ("VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1")
-    assert report["development_run_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_run_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["strategy_implementation_present"] is False
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
@@ -102,7 +102,7 @@ def test_fail_closed_on_semantics_mutation() -> None:
     with pytest.raises(PreregistrationValidationError, match="DIRECTION_RULE"):
         validate_measurement_contract(bad2)
     bad3 = copy.deepcopy(contract)
-    bad3["development_run_count"] = 1
+    bad3["development_run_count"] = 0
     with pytest.raises(PreregistrationValidationError, match="DEVELOPMENT_RUN_COUNT"):
         validate_measurement_contract(bad3)
     bad4 = copy.deepcopy(contract)

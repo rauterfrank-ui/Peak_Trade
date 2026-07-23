@@ -5,10 +5,10 @@ Status: `DEFINITION_ONLY_PROGRAM_OPEN`
 - Strategy: `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1`
 - Hypothesis: `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
 - Lane backlog: `OPEN_BACKLOG`
-- Slice: strategy implementation present; evaluation unauthorized
-- Predecessor VTSR terminal `DEVELOPMENT_FAIL` (slot consumed; retry forbidden)
-- Holdout untouched; economic&#47;promotion&#47;runtime&#47;LIVE&#47;orders closed
-- No VTSR&#47;VEFCF&#47;VEPC&#47;VCEB&#47;VDBX&#47;VDB&#47;VEP&#47;VCB retry
+- Slice: VTDC bounded DEVELOPMENT evaluation executed once; `DEVELOPMENT_FAIL`; slot consumed
+- `DEVELOPMENT_RUN_COUNT=1`, `RUNNER_START_COUNT=1`, `RUN_SLOT_CONSUMED=true`
+- Holdout untouched; economic/promotion/runtime/LIVE/orders closed
+- No VTDC/VTSR/VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry
 
 ## Causal claim
 
@@ -18,6 +18,6 @@ reversion fade.
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
+`NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1
