@@ -136,10 +136,11 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
         "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
         "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
         "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
+        "VOLATILITY_TERM_STRUCTURE_REVERSION_V1",
     }
     assert REQUIRED_STRATEGY_IDENTITY in terminals
     program = _load(PROGRAM_PATH)
-    assert program["strategy_identity"] == ("VOLATILITY_TERM_STRUCTURE_REVERSION_V1")
+    assert program["strategy_identity"] == ("VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1")
     assert REQUIRED_STRATEGY_IDENTITY in program["causal_independence"]["forbidden_lineage_refs"]
     assert REQUIRED_PREDECESSOR in program["causal_independence"]["forbidden_lineage_refs"]
 

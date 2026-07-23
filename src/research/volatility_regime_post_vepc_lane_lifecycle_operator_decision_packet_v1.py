@@ -20,7 +20,7 @@ GOVERNANCE_REL_PATH = (
 BACKLOG_REL_PATH = "config/research/volatility_regime_hypothesis_backlog_v1.json"
 PROGRAM_REL_PATH = "config/research/volatility_regime_research_program_v1.json"
 REQUIRED_PACKET_ID = "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1"
-REQUIRED_STATUS = "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_DEVELOPMENT_FAIL_SLOT_CONSUMED"
+REQUIRED_STATUS = "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTDC_DEFINITION_ONLY"
 REQUIRED_LANE_STATUS = "OPEN_BACKLOG"
 REQUIRED_DECISIONS = (
     "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
@@ -33,15 +33,16 @@ REQUIRED_GO_TOKENS = (
     "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1",
 )
 REQUIRED_NEXT_SCOPE = (
-    "VOLATILITY_REGIME_POST_VTSR_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1"
+    "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1"
 )
 REQUIRED_NEXT_GO_TOKENS = (
-    "GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1",
-    "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
-    "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1",
+    "GO_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1",
 )
-REQUIRED_SUCCESSOR_HYPOTHESIS_ID = "VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1"
-REQUIRED_SUCCESSOR_STRATEGY = "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
+REQUIRED_SUCCESSOR_HYPOTHESIS_ID = (
+    "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
+)
+REQUIRED_SUCCESSOR_STRATEGY = "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
+REQUIRED_PREDECESSOR_STRATEGY = "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
 
 
 class DecisionPacketValidationError(ValueError):
@@ -92,6 +93,10 @@ def validate_decision_packet_contract(
         payload.get("successor_strategy_identity") == REQUIRED_SUCCESSOR_STRATEGY,
         "SUCCESSOR_STRATEGY",
     )
+    _require(
+        payload.get("predecessor_terminal_strategy_identity") == REQUIRED_PREDECESSOR_STRATEGY,
+        "PREDECESSOR_STRATEGY",
+    )
 
     decisions = payload.get("enumerated_operator_decisions") or []
     _require(len(decisions) == 3, "DECISION_COUNT_NOT_3")
@@ -119,7 +124,7 @@ def validate_decision_packet_contract(
     )
     _require(
         create.get("authorization_token")
-        == "GO_VOLATILITY_REGIME_POST_VEFCF_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1",
+        == "GO_VOLATILITY_REGIME_POST_VTSR_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1",
         "CREATE_AUTH_TOKEN",
     )
 
@@ -161,16 +166,17 @@ def validate_decision_packet_contract(
             "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in terminals,
             "VEPC_NOT_TERMINAL",
         )
+        _require(REQUIRED_PREDECESSOR_STRATEGY in terminals, "VTSR_NOT_TERMINAL")
         _require(
             program.get("lane_backlog_status") == REQUIRED_LANE_STATUS,
             "PROGRAM_LANE_STATUS_MISMATCH",
         )
         _require(
-            program.get("development_evaluation_authorized") is True,
-            "PROGRAM_DEV_EVAL_AUTHORIZED_FALSE",
+            program.get("development_evaluation_authorized") is False,
+            "PROGRAM_DEV_EVAL_AUTHORIZED_TRUE",
         )
         _require(
-            program.get("strategy_id") == "volatility_term_structure_reversion",
+            program.get("strategy_id") == "volatility_term_structure_depressed_continuation",
             "PROGRAM_STRATEGY_ID_DRIFT",
         )
         gov = repo_root / GOVERNANCE_REL_PATH
@@ -185,13 +191,15 @@ def validate_decision_packet_contract(
         "awaiting_declared": True,
         "closeout_applied": False,
         "successor_created": True,
+        "successor_hypothesis_id": REQUIRED_SUCCESSOR_HYPOTHESIS_ID,
+        "successor_strategy_identity": REQUIRED_SUCCESSOR_STRATEGY,
         "decision_application_authorized": False,
+        "next_admissible_scope": REQUIRED_NEXT_SCOPE,
         "evaluation_authorized": False,
         "evaluation_executed": False,
         "holdout_accessed": False,
         "live_authorized": False,
         "orders_allowed": False,
-        "successor_hypothesis_id": REQUIRED_SUCCESSOR_HYPOTHESIS_ID,
     }
 
 

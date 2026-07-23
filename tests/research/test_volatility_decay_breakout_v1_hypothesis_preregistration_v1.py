@@ -95,7 +95,7 @@ def test_material_difference_vs_vep_vcb() -> None:
     assert md_vcb["vcb_retry_forbidden"] is True
     backlog = _load(BACKLOG_PATH)
     assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
-        "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
+        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
     )
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
     assert "VOLATILITY_DECAY_BREAKOUT_V1" in terminals
@@ -105,7 +105,7 @@ def test_material_difference_vs_vep_vcb() -> None:
         "VOLATILITY_EXPANSION_PERSISTENCE_V1"
         in program["causal_independence"]["forbidden_lineage_refs"]
     )
-    assert program["strategy_identity"] == ("VOLATILITY_TERM_STRUCTURE_REVERSION_V1")
+    assert program["strategy_identity"] == ("VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1")
 
 
 def test_fail_closed_on_semantics_mutation() -> None:
