@@ -1,3 +1,15 @@
+### Post-VTDC CREATE_SUCCESSOR → CSHRVF v1 definition-only preregistered
+
+- Scope: `VOLATILITY_REGIME_POST_VTDC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
+- Decision: `CREATE_SUCCESSOR_HYPOTHESIS` → `CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSHRVF_DEFINITION_ONLY`
+- VTDC: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden / holdout untouched
+- CSHRVF: `DEFINITION_ONLY_PREREGISTERED`; no evaluation; no strategy implementation in this slice
+- Next admissible GO: `GO_CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Explicit non-actions: no VTDC&#47;VTSR&#47;VEFCF&#47;VEPC retry; no further term-structure variant; no CS-momentum reopen; no CSHRVF evaluation; no holdout; no CLOSE_LANE auto-apply; no LIVE&#47;orders
+
+
 ### Post-VTDC DEVELOPMENT_FAIL → slot consumed
 
 - Scope: `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`

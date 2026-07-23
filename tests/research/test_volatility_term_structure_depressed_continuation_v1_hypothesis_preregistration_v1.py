@@ -74,13 +74,18 @@ def test_material_difference_vs_vtsr_and_lane_inventory() -> None:
     )
     backlog = _load(BACKLOG_PATH)
     assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
-        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
+        "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
     )
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
+    assert "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1" in terminals
     assert "VOLATILITY_TERM_STRUCTURE_REVERSION_V1" in terminals
     assert "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1" in terminals
     program = _load(PROGRAM_PATH)
-    assert program["strategy_identity"] == ("VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1")
+    assert program["strategy_identity"] == ("CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1")
+    assert (
+        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
+        in program["causal_independence"]["forbidden_lineage_refs"]
+    )
     assert (
         "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
         in program["causal_independence"]["forbidden_lineage_refs"]
