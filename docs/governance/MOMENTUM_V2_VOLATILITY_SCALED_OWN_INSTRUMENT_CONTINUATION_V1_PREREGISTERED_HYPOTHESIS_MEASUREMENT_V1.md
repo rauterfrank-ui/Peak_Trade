@@ -29,7 +29,7 @@ DEVELOPMENT_ONLY non-BTC OKX perpetual panel.
 
 ## Treatment variable
 
-- `vol_scaled_momentum = (close / close.shift(N) - 1) / std(one_bar_simple_returns, N)`
+- `vol_scaled_momentum = (close &#47; close.shift(N) - 1) &#47; std(one_bar_simple_returns, N)`
 - PIT-safe; completed bars only; `signal_lag_bars=1`
 - Long ENTRY on upward cross of `vol_scaled_entry_z=1.0`
 - EXIT on downward cross of `vol_scaled_exit_z=0.0`
