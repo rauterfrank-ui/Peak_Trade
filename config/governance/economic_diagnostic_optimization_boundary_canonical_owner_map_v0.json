@@ -1351,6 +1351,39 @@
         "tests/research/test_volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
         "tests/research/test_volatility_regime_research_program_v1.py"
       ]
+    },
+    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only SSOT for new independent CS short-horizon return-reversal research program after volatility-regime closeout; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; closed vol-regime and CS-momentum programs remain closed collision exclusions.",
+      "path_prefixes": [
+        "config/research/cross_sectional_short_horizon_return_reversal_research_program_v1.json",
+        "config/research/cross_sectional_short_horizon_return_reversal_program_definition_operator_decision_packet_v1.json",
+        "src/research/cross_sectional_short_horizon_return_reversal_research_program_v1.py",
+        "tests/research/test_cross_sectional_short_horizon_return_reversal_research_program_v1.py",
+        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1.md",
+        "docs/evidence/new_research_program_identity_definition_discovery_v1/"
+      ]
+    },
+    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1": {
+      "authority_effect": "NONE",
+      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; sibling closed lanes unreopened.",
+      "path_prefixes": [
+        "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json",
+        "src/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.py",
+        "tests/research/test_cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.py",
+        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only preregistration of negated trailing-log-return CS reversal measurement contract on sealed DEVELOPMENT_ONLY panel; no evaluation; no strategy implementation; no holdout.",
+      "path_prefixes": [
+        "config/research/cross_sectional_short_horizon_return_reversal_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/cross_sectional_short_horizon_return_reversal_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_cross_sectional_short_horizon_return_reversal_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_cross_sectional_short_horizon_return_reversal_hypothesis_v1/"
+      ]
     }
   },
   "forbidden_mutation_surfaces": {
