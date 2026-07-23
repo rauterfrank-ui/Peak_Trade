@@ -36,7 +36,7 @@ def test_repo_backlog_open_one_preregistered_definition_only() -> None:
         report["next_eligible"]
         == "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
     )
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
 
 
 def test_sibling_lanes_remain_closed_and_csrhr_open() -> None:

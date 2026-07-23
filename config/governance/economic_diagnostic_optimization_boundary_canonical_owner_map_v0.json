@@ -453,20 +453,6 @@
       ],
       "runtime_effect": "NONE"
     },
-    "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
-      "authority_effect": "NONE",
-      "note": "Bounded DEVELOPMENT evaluation execution for CSLRVC v1; single run slot consumed with DEVELOPMENT_FAIL; retry/holdout/promotion/runtime/LIVE/orders forbidden.",
-      "path_prefixes": [
-        "docs/evidence/evaluate_cross_sectional_low_realized_volatility_continuation_development_v1/",
-        "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
-        "config/research/cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_binding_v1.json",
-        "config/research/cross_sectional_low_realized_volatility_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-        "scripts/research/run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py",
-        "src/research/cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_v1/",
-        "tests/research/test_cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_v1.py"
-      ],
-      "runtime_effect": "NONE"
-    },
     "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
       "note": "Definition-only CREATE_SUCCESSOR after VTDC DEVELOPMENT_FAIL; CSHRVF cross-sectional high RV-level rank fade; measurement contract frozen; no evaluation/holdout/runtime/orders; VTDC/VTSR/VEFCF/VEPC/CS-momentum reopen forbidden.",
       "path_prefixes": [
@@ -492,6 +478,77 @@
         "tests/research/test_cross_sectional_high_realized_volatility_fade_v1_strategy_implementation_v1.py"
       ]
     },
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
+      "authority_effect": "NONE",
+      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; path-efficiency terminal DEVELOPMENT_FAIL no retry; closed sibling lanes unreopened.",
+      "path_prefixes": [
+        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_backlog_v1.json",
+        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_backlog_v1.py",
+        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_backlog_v1.py",
+        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only SSOT for new independent CS intrabar close-location pressure continuation research program after terminal path-efficiency DEVELOPMENT_FAIL; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; CSRHR remains OPEN_BACKLOG untouched; closed vol-regime/CS-momentum and terminal path-efficiency remain collision exclusions.",
+      "path_prefixes": [
+        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_research_program_v1.json",
+        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_program_definition_operator_decision_packet_v1.json",
+        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_research_program_v1.py",
+        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_research_program_v1.py",
+        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1.md",
+        "docs/evidence/cross_sectional_intrabar_close_location_pressure_continuation_definition_discovery_v1/"
+      ]
+    },
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
+      "authority_effect": "NONE",
+      "note": "Bounded single-slot DEVELOPMENT evaluation execution for CS intrabar CLV pressure continuation v1. Slot consumed (count=1). No holdout/runtime/orders. CSRHR untouched. Economic gate closed.",
+      "path_prefixes": [
+        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_development_evaluation_v1/",
+        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+        "scripts/research/run_evaluate_cross_sectional_intrabar_close_location_pressure_continuation_development_v1.py",
+        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_v1_development_evaluation_v1.py",
+        "docs/evidence/evaluate_cross_sectional_intrabar_close_location_pressure_continuation_development_v1/",
+        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only preregistration of mean intrabar close-location-value CS continuation measurement contract on sealed DEVELOPMENT_ONLY panel; no evaluation; no strategy implementation; no holdout.",
+      "path_prefixes": [
+        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_v1/"
+      ]
+    },
+    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Strategy-implementation-only surfaces for CS intrabar CLV pressure continuation v1 (mean CLV score + single-top1 rank-intent selection + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; development_run_count remains 0; CSRHR remains OPEN_BACKLOG untouched; no Master-V2/Double-Play mutation.",
+      "path_prefixes": [
+        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_score_v1.py",
+        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_selection_v1.py",
+        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_strategy_implementation_binding_v1.py",
+        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_strategy_implementation_binding_v1.json",
+        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_v1_score_and_selection_v1.py",
+        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
+      "authority_effect": "NONE",
+      "note": "Bounded DEVELOPMENT evaluation execution for CSLRVC v1; single run slot consumed with DEVELOPMENT_FAIL; retry/holdout/promotion/runtime/LIVE/orders forbidden.",
+      "path_prefixes": [
+        "docs/evidence/evaluate_cross_sectional_low_realized_volatility_continuation_development_v1/",
+        "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "config/research/cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+        "config/research/cross_sectional_low_realized_volatility_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "scripts/research/run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py",
+        "src/research/cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_v1/",
+        "tests/research/test_cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_v1.py"
+      ],
+      "runtime_effect": "NONE"
+    },
     "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
       "note": "Definition-only CREATE_SUCCESSOR after CSHRVF DEVELOPMENT_FAIL; CSLRVC cross-sectional low RV-level rank continuation; measurement contract frozen; no evaluation/holdout/runtime/orders; CSHRVF/VTDC/VTSR/VEFCF/VEPC/CS-momentum reopen forbidden.",
       "path_prefixes": [
@@ -515,6 +572,62 @@
         "config/research/cross_sectional_low_realized_volatility_continuation_v1_strategy_implementation_binding_v1.json",
         "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
         "tests/research/test_cross_sectional_low_realized_volatility_continuation_v1_strategy_implementation_v1.py"
+      ]
+    },
+    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
+      "authority_effect": "NONE",
+      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; closed sibling lanes unreopened.",
+      "path_prefixes": [
+        "config/research/cross_sectional_path_efficiency_continuation_hypothesis_backlog_v1.json",
+        "src/research/cross_sectional_path_efficiency_continuation_hypothesis_backlog_v1.py",
+        "tests/research/test_cross_sectional_path_efficiency_continuation_hypothesis_backlog_v1.py",
+        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only SSOT for new independent CS path-efficiency continuation research program; separate from open CSRHR; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; closed vol-regime and CS-momentum remain closed collision exclusions.",
+      "path_prefixes": [
+        "config/research/cross_sectional_path_efficiency_continuation_research_program_v1.json",
+        "config/research/cross_sectional_path_efficiency_continuation_program_definition_operator_decision_packet_v1.json",
+        "src/research/cross_sectional_path_efficiency_continuation_research_program_v1.py",
+        "tests/research/test_cross_sectional_path_efficiency_continuation_research_program_v1.py",
+        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
+      "authority_effect": "NONE",
+      "note": "Bounded single-slot DEVELOPMENT evaluation execution for CS path-efficiency continuation v1. Slot consumed (count=1). No holdout/runtime/orders. CSRHR untouched. Economic gate closed.",
+      "path_prefixes": [
+        "src/research/cross_sectional_path_efficiency_continuation_v1_development_evaluation_v1/",
+        "config/research/cross_sectional_path_efficiency_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+        "scripts/research/run_evaluate_cross_sectional_path_efficiency_continuation_development_v1.py",
+        "tests/research/test_cross_sectional_path_efficiency_continuation_v1_development_evaluation_v1.py",
+        "docs/evidence/evaluate_cross_sectional_path_efficiency_continuation_development_v1/",
+        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only preregistration of path-efficiency*sign CS continuation measurement contract on sealed DEVELOPMENT_ONLY panel; no evaluation; no strategy implementation; no holdout.",
+      "path_prefixes": [
+        "config/research/cross_sectional_path_efficiency_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/cross_sectional_path_efficiency_continuation_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_cross_sectional_path_efficiency_continuation_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_cross_sectional_path_efficiency_continuation_hypothesis_v1/"
+      ]
+    },
+    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Strategy-implementation-only surfaces for CS path-efficiency continuation v1 (Kaufman ER*sign score + single-top1 rank-intent selection + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; development_run_count unchanged; CSRHR remains OPEN_BACKLOG untouched; no Master-V2/Double-Play mutation.",
+      "path_prefixes": [
+        "src/research/cross_sectional_path_efficiency_continuation_v1_score_v1.py",
+        "src/research/cross_sectional_path_efficiency_continuation_v1_selection_v1.py",
+        "src/research/cross_sectional_path_efficiency_continuation_v1_strategy_implementation_binding_v1.py",
+        "config/research/cross_sectional_path_efficiency_continuation_v1_strategy_implementation_binding_v1.json",
+        "tests/research/test_cross_sectional_path_efficiency_continuation_v1_score_and_selection_v1.py",
+        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
     "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
@@ -549,6 +662,39 @@
         "config/research/cross_sectional_relative_strength_momentum_v1_strategy_implementation_binding_v1.json",
         "tests/research/test_cross_sectional_relative_strength_momentum_v1_score_and_selection_v1.py",
         "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1": {
+      "authority_effect": "NONE",
+      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; sibling closed lanes unreopened.",
+      "path_prefixes": [
+        "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json",
+        "src/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.py",
+        "tests/research/test_cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.py",
+        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only SSOT for new independent CS short-horizon return-reversal research program after volatility-regime closeout; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; closed vol-regime and CS-momentum programs remain closed collision exclusions.",
+      "path_prefixes": [
+        "config/research/cross_sectional_short_horizon_return_reversal_research_program_v1.json",
+        "config/research/cross_sectional_short_horizon_return_reversal_program_definition_operator_decision_packet_v1.json",
+        "src/research/cross_sectional_short_horizon_return_reversal_research_program_v1.py",
+        "tests/research/test_cross_sectional_short_horizon_return_reversal_research_program_v1.py",
+        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1.md",
+        "docs/evidence/new_research_program_identity_definition_discovery_v1/"
+      ]
+    },
+    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only preregistration of negated trailing-log-return CS reversal measurement contract on sealed DEVELOPMENT_ONLY panel; no evaluation; no strategy implementation; no holdout.",
+      "path_prefixes": [
+        "config/research/cross_sectional_short_horizon_return_reversal_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/cross_sectional_short_horizon_return_reversal_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_cross_sectional_short_horizon_return_reversal_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_cross_sectional_short_horizon_return_reversal_hypothesis_v1/"
       ]
     },
     "DATA_BINDING_REPAIR": {
@@ -1214,6 +1360,26 @@
         "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.md"
       ]
     },
+    "VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1": {
+      "authority_effect": "NONE",
+      "note": "Lifecycle operator decision after CSLRVC DEVELOPMENT_FAIL: apply CLOSE_LANE_NO_FURTHER_RESEARCH; definition/governance only; no successor create; no evaluation/holdout/runtime/LIVE/orders.",
+      "path_prefixes": [
+        "config/research/volatility_regime_hypothesis_backlog_v1.json",
+        "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
+        "config/research/volatility_regime_research_program_v1.json",
+        "docs/evidence/volatility_regime_post_cslrvc_close_lane_lifecycle_decision_v1/",
+        "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+        "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.md",
+        "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
+        "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md",
+        "src/research/volatility_regime_hypothesis_backlog_v1.py",
+        "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
+        "src/research/volatility_regime_research_program_v1.py",
+        "tests/research/test_volatility_regime_hypothesis_backlog_v1.py",
+        "tests/research/test_volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
+        "tests/research/test_volatility_regime_research_program_v1.py"
+      ]
+    },
     "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1": {
       "note": "Post-CSLRVC CLOSE_LANE_NO_FURTHER_RESEARCH applied; lane/program closed; CSLRVC DEVELOPMENT_FAIL slot consumed; no successor; holdout/promotion/runtime/LIVE/orders closed.",
       "path_prefixes": [
@@ -1330,160 +1496,6 @@
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
-      ]
-    },
-    "VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1": {
-      "authority_effect": "NONE",
-      "note": "Lifecycle operator decision after CSLRVC DEVELOPMENT_FAIL: apply CLOSE_LANE_NO_FURTHER_RESEARCH; definition/governance only; no successor create; no evaluation/holdout/runtime/LIVE/orders.",
-      "path_prefixes": [
-        "config/research/volatility_regime_hypothesis_backlog_v1.json",
-        "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
-        "config/research/volatility_regime_research_program_v1.json",
-        "docs/evidence/volatility_regime_post_cslrvc_close_lane_lifecycle_decision_v1/",
-        "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
-        "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.md",
-        "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
-        "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md",
-        "src/research/volatility_regime_hypothesis_backlog_v1.py",
-        "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
-        "src/research/volatility_regime_research_program_v1.py",
-        "tests/research/test_volatility_regime_hypothesis_backlog_v1.py",
-        "tests/research/test_volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
-        "tests/research/test_volatility_regime_research_program_v1.py"
-      ]
-    },
-    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1": {
-      "authority_effect": "NONE",
-      "note": "Definition-only SSOT for new independent CS short-horizon return-reversal research program after volatility-regime closeout; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; closed vol-regime and CS-momentum programs remain closed collision exclusions.",
-      "path_prefixes": [
-        "config/research/cross_sectional_short_horizon_return_reversal_research_program_v1.json",
-        "config/research/cross_sectional_short_horizon_return_reversal_program_definition_operator_decision_packet_v1.json",
-        "src/research/cross_sectional_short_horizon_return_reversal_research_program_v1.py",
-        "tests/research/test_cross_sectional_short_horizon_return_reversal_research_program_v1.py",
-        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1.md",
-        "docs/evidence/new_research_program_identity_definition_discovery_v1/"
-      ]
-    },
-    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1": {
-      "authority_effect": "NONE",
-      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; sibling closed lanes unreopened.",
-      "path_prefixes": [
-        "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json",
-        "src/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.py",
-        "tests/research/test_cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.py",
-        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1.md"
-      ]
-    },
-    "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "authority_effect": "NONE",
-      "note": "Definition-only preregistration of negated trailing-log-return CS reversal measurement contract on sealed DEVELOPMENT_ONLY panel; no evaluation; no strategy implementation; no holdout.",
-      "path_prefixes": [
-        "config/research/cross_sectional_short_horizon_return_reversal_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-        "src/research/cross_sectional_short_horizon_return_reversal_v1_hypothesis_preregistration_v1.py",
-        "tests/research/test_cross_sectional_short_horizon_return_reversal_v1_hypothesis_preregistration_v1.py",
-        "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
-        "docs/evidence/preregister_cross_sectional_short_horizon_return_reversal_hypothesis_v1/"
-      ]
-    },
-    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1": {
-      "authority_effect": "NONE",
-      "note": "Definition-only SSOT for new independent CS path-efficiency continuation research program; separate from open CSRHR; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; closed vol-regime and CS-momentum remain closed collision exclusions.",
-      "path_prefixes": [
-        "config/research/cross_sectional_path_efficiency_continuation_research_program_v1.json",
-        "config/research/cross_sectional_path_efficiency_continuation_program_definition_operator_decision_packet_v1.json",
-        "src/research/cross_sectional_path_efficiency_continuation_research_program_v1.py",
-        "tests/research/test_cross_sectional_path_efficiency_continuation_research_program_v1.py",
-        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1.md"
-      ]
-    },
-    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
-      "authority_effect": "NONE",
-      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; closed sibling lanes unreopened.",
-      "path_prefixes": [
-        "config/research/cross_sectional_path_efficiency_continuation_hypothesis_backlog_v1.json",
-        "src/research/cross_sectional_path_efficiency_continuation_hypothesis_backlog_v1.py",
-        "tests/research/test_cross_sectional_path_efficiency_continuation_hypothesis_backlog_v1.py",
-        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md"
-      ]
-    },
-    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "authority_effect": "NONE",
-      "note": "Definition-only preregistration of path-efficiency*sign CS continuation measurement contract on sealed DEVELOPMENT_ONLY panel; no evaluation; no strategy implementation; no holdout.",
-      "path_prefixes": [
-        "config/research/cross_sectional_path_efficiency_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-        "src/research/cross_sectional_path_efficiency_continuation_v1_hypothesis_preregistration_v1.py",
-        "tests/research/test_cross_sectional_path_efficiency_continuation_v1_hypothesis_preregistration_v1.py",
-        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
-        "docs/evidence/preregister_cross_sectional_path_efficiency_continuation_hypothesis_v1/"
-      ]
-    },
-    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
-      "authority_effect": "NONE",
-      "note": "Strategy-implementation-only surfaces for CS path-efficiency continuation v1 (Kaufman ER*sign score + single-top1 rank-intent selection + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; development_run_count unchanged; CSRHR remains OPEN_BACKLOG untouched; no Master-V2/Double-Play mutation.",
-      "path_prefixes": [
-        "src/research/cross_sectional_path_efficiency_continuation_v1_score_v1.py",
-        "src/research/cross_sectional_path_efficiency_continuation_v1_selection_v1.py",
-        "src/research/cross_sectional_path_efficiency_continuation_v1_strategy_implementation_binding_v1.py",
-        "config/research/cross_sectional_path_efficiency_continuation_v1_strategy_implementation_binding_v1.json",
-        "tests/research/test_cross_sectional_path_efficiency_continuation_v1_score_and_selection_v1.py",
-        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
-      ]
-    },
-    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
-      "authority_effect": "NONE",
-      "note": "Bounded single-slot DEVELOPMENT evaluation execution for CS path-efficiency continuation v1. Slot consumed (count=1). No holdout/runtime/orders. CSRHR untouched. Economic gate closed.",
-      "path_prefixes": [
-        "src/research/cross_sectional_path_efficiency_continuation_v1_development_evaluation_v1/",
-        "config/research/cross_sectional_path_efficiency_continuation_v1_development_evaluation_entry_point_binding_v1.json",
-        "scripts/research/run_evaluate_cross_sectional_path_efficiency_continuation_development_v1.py",
-        "tests/research/test_cross_sectional_path_efficiency_continuation_v1_development_evaluation_v1.py",
-        "docs/evidence/evaluate_cross_sectional_path_efficiency_continuation_development_v1/",
-        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md"
-      ]
-    },
-    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1": {
-      "authority_effect": "NONE",
-      "note": "Definition-only SSOT for new independent CS intrabar close-location pressure continuation research program after terminal path-efficiency DEVELOPMENT_FAIL; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; CSRHR remains OPEN_BACKLOG untouched; closed vol-regime/CS-momentum and terminal path-efficiency remain collision exclusions.",
-      "path_prefixes": [
-        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_research_program_v1.json",
-        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_program_definition_operator_decision_packet_v1.json",
-        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_research_program_v1.py",
-        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_research_program_v1.py",
-        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1.md",
-        "docs/evidence/cross_sectional_intrabar_close_location_pressure_continuation_definition_discovery_v1/"
-      ]
-    },
-    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
-      "authority_effect": "NONE",
-      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; path-efficiency terminal DEVELOPMENT_FAIL no retry; closed sibling lanes unreopened.",
-      "path_prefixes": [
-        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_backlog_v1.json",
-        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_backlog_v1.py",
-        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_backlog_v1.py",
-        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md"
-      ]
-    },
-    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "authority_effect": "NONE",
-      "note": "Definition-only preregistration of mean intrabar close-location-value CS continuation measurement contract on sealed DEVELOPMENT_ONLY panel; no evaluation; no strategy implementation; no holdout.",
-      "path_prefixes": [
-        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_hypothesis_preregistration_v1.py",
-        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_v1_hypothesis_preregistration_v1.py",
-        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
-        "docs/evidence/preregister_cross_sectional_intrabar_close_location_pressure_continuation_hypothesis_v1/"
-      ]
-    },
-    "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
-      "authority_effect": "NONE",
-      "note": "Strategy-implementation-only surfaces for CS intrabar CLV pressure continuation v1 (mean CLV score + single-top1 rank-intent selection + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; development_run_count remains 0; CSRHR remains OPEN_BACKLOG untouched; no Master-V2/Double-Play mutation.",
-      "path_prefixes": [
-        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_score_v1.py",
-        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_selection_v1.py",
-        "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_strategy_implementation_binding_v1.py",
-        "config/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_strategy_implementation_binding_v1.json",
-        "tests/research/test_cross_sectional_intrabar_close_location_pressure_continuation_v1_score_and_selection_v1.py",
-        "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     }
   },

@@ -23,7 +23,7 @@ MEASUREMENT_REL_PATH = (
 CSRHR_BACKLOG_REL_PATH = (
     "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json"
 )
-REQUIRED_DIGEST = "2bc7e062d41bca4dee5c1b4a36c4e108903d5825cf5819f9214e8799cd98f859"
+REQUIRED_DIGEST = "5ad3210f8b02151122aff1846f08003fcdf62f662be372a425184a4b76734cb4"
 REQUIRED_IMPL_FILES = (
     "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_score_v1.py",
     "src/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_selection_v1.py",
@@ -67,8 +67,8 @@ def validate_implementation_binding(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
     _require(payload.get("runner_present") is False, "RUNNER_PRESENT")
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
@@ -151,7 +151,7 @@ def validate_implementation_binding(
             "MEASUREMENT_CONTRACT_IMPL_FLAG_MUTATED",
         )
         _require(measurement.get("evaluation_authorized") is False, "MEASUREMENT_EVAL_FLIPPED")
-        _require(measurement.get("development_run_count") == 0, "MEASUREMENT_DEV_RUN_CONSUMED")
+        _require(measurement.get("development_run_count") == 1, "MEASUREMENT_DEV_RUN_CONSUMED")
         csrhr = json.loads((repo_root / CSRHR_BACKLOG_REL_PATH).read_text(encoding="utf-8"))
         _require(csrhr.get("status") == "OPEN_BACKLOG", "CSRHR_MUTATED")
         _require(csrhr.get("development_run_count") == 0, "CSRHR_DEV_RUN_MUTATED")

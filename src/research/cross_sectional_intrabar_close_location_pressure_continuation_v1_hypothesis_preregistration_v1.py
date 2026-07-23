@@ -71,7 +71,7 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
     )
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
     _require(
-        payload.get("development_evaluation_authorized") is False,
+        payload.get("development_evaluation_authorized") is True,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
@@ -80,9 +80,9 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         payload.get("strategy_implementation_present") is False,
         "STRATEGY_IMPLEMENTATION_PRESENT",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
     directional = payload.get("directional_form") or {}
     _require(directional.get("selected") == REQUIRED_DIRECTIONAL_FORM, "DIRECTIONAL_FORM")
     _require(
@@ -139,7 +139,7 @@ def validate_measurement_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
         "contract_digest": digest,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "evaluation_authorized": False,
-        "development_run_count": 0,
+        "development_run_count": 1,
     }
 
 
