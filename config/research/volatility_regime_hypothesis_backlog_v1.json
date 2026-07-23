@@ -23,7 +23,6 @@
   "explicit_closeout_decision": false,
   "explicit_non_actions": [
     "NO_EVALUATION",
-    "NO_RUNNER",
     "NO_DATASET_LOAD",
     "NO_HOLDOUT_ACCESS",
     "NO_PROMOTION",
@@ -32,7 +31,6 @@
     "NO_EXIT_LANE_REOPEN",
     "NO_CS_MOMENTUM_LANE_REOPEN",
     "NO_TERMINAL_RESULT_MUTATION",
-    "NO_STRATEGY_PRODUCER_IN_THIS_SLICE",
     "NO_VOL_BREAKOUT_V1_RETRY",
     "NO_VOLATILITY_COMPRESSION_BREAKOUT_V1_RETRY",
     "NO_VOLATILITY_EXPANSION_PERSISTENCE_V1_RETRY",
@@ -44,15 +42,15 @@
     "NO_VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_RETRY",
     "NO_VEPC_V1_RETRY",
     "NO_EVALUATION_IN_THIS_SLICE",
-    "NO_STRATEGY_PRODUCER_IMPLEMENTATION",
     "NO_RUN_SLOT_CONSUMPTION",
     "NO_AUTO_CREATE_SUCCESSOR",
     "NO_AUTO_CLOSE_LANE",
     "NO_AUTO_AWAIT_SUCCESSOR",
-    "NO_CLOSEOUT_APPLICATION_IN_THIS_SLICE"
+    "NO_CLOSEOUT_APPLICATION_IN_THIS_SLICE",
+    "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "CREATE_SUCCESSOR_HYPOTHESIS applied under CONTINUE_PEAK_TRADE_NEXT_CANONICAL_SCOPE after AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS: VEFCF v1 definition-only preregistered. Lane status OPEN_BACKLOG with preregistered=1; VEPC remains terminal CONSUMED_NO_RETRY; no evaluation; no holdout; LIVE/ORDERS closed; CLOSE_LANE not applied.",
+  "governance_note": "VEFCF v1 strategy implementation + unauthorized productive development entry path after definition-only preregistration. No Development evaluation executed. Slot unused. No VEPC/VCEB/VDBX/VDB/VEP/VCB retry. LIVE/ORDERS/HOLDOUT closed.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -66,12 +64,12 @@
     "strategy_implementation_requires_separate_operator_go": true
   },
   "holdout_forbidden": true,
-  "implementation_authorized": false,
+  "implementation_authorized": true,
   "lane_auto_closed": false,
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "open_unpreregistered_candidates": [],
   "operator_decision_packet_ref": "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
   "preregistered_hypotheses": [
@@ -83,7 +81,7 @@
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1",
-      "implementation_present": false,
+      "implementation_present": true,
       "predecessor_strategy_id": "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
       "preregistration_evidence_ref": "docs/evidence/preregister_volatility_expansion_failed_continuation_fade_hypothesis_v1/",
       "rerun_allowed": false,
@@ -91,7 +89,7 @@
       "run_slot_consumed": false,
       "runner_start_count": 0,
       "signal_family": "VOLATILITY_REGIME",
-      "status": "DEFINITION_ONLY_PREREGISTERED",
+      "status": "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
       "strategy_id": "volatility_expansion_failed_continuation_fade",
       "strategy_identity": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
       "strategy_version": "v1",
@@ -100,7 +98,7 @@
     }
   ],
   "preregistration_authorized_in_this_slice": true,
-  "productive_trading_logic_included": false,
+  "productive_trading_logic_included": true,
   "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
   "program_ref": "config/research/volatility_regime_research_program_v1.json",
   "promotion_and_economic_gate_policy": {
@@ -129,7 +127,7 @@
   "sealed_holdout_binding_status": "UNBOUND_UNTOUCHED",
   "sealed_holdout_content_inspection_authorized": false,
   "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
-  "slice_class": "DEFINITION_ONLY_GOVERNANCE",
+  "slice_class": "STRATEGY_IMPLEMENTATION_PLUS_UNAUTHORIZED_DEVELOPMENT_ENTRY_POINT",
   "status": "OPEN_BACKLOG",
   "terminal_hypotheses": [
     {
@@ -303,5 +301,5 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "VOLATILITY_REGIME_LANE_OPEN_BACKLOG_VEFCF_V1_DEFINITION_ONLY_PREREGISTERED_AFTER_CREATE_SUCCESSOR"
+  "verdict": "VOLATILITY_REGIME_LANE_OPEN_BACKLOG_VEFCF_V1_STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
 }

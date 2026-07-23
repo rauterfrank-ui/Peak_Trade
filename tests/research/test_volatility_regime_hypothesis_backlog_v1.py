@@ -70,7 +70,8 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert len(backlog["preregistered_hypotheses"]) == 1
     hyp = backlog["preregistered_hypotheses"][0]
     assert hyp["strategy_identity"] == "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
-    assert hyp["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert hyp["status"] == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
+    assert hyp["implementation_present"] is True
     assert hyp["run_slot_consumed"] is False
     assert len(backlog["terminal_hypotheses"]) == 6
     terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
@@ -87,8 +88,8 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert backlog["required_treatment_type"] == (
         "OWN_INSTRUMENT_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_ADMISSION"
     )
-    assert backlog["next_canonical_step"].startswith(
-        "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO"
+    assert backlog["next_canonical_step"] == (
+        "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
     )
 
 

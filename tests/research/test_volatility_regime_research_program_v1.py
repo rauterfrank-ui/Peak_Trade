@@ -40,7 +40,7 @@ def test_repo_program_definition_only_open() -> None:
     report = load_and_validate_repo_program(REPO)
     assert report["valid"] is True
     assert report["definition_only"] is True
-    assert report["strategy_implementation_present"] is False
+    assert report["strategy_implementation_present"] is True
     assert report["program_id"] == "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
     assert report["status"] == "DEFINITION_ONLY_PROGRAM_OPEN"
     assert report["strategy_identity"] == "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
@@ -109,11 +109,11 @@ def test_material_difference_and_closed_siblings_immutable() -> None:
 def test_post_create_successor_fields_and_strategy_id_reconciled() -> None:
     payload = _load(PROGRAM_PATH)
     assert payload["strategy_id"] == "volatility_expansion_failed_continuation_fade"
-    assert payload["development_evaluation_authorized"] is False
+    assert payload["development_evaluation_authorized"] is True
     assert payload["lane_backlog_status"] == "OPEN_BACKLOG"
     assert payload["active_hypothesis_inventory_empty"] is False
-    assert payload["next_canonical_step"].startswith(
-        "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO"
+    assert payload["next_canonical_step"] == (
+        "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
     )
     assert (
         payload["causal_independence"][
@@ -134,16 +134,16 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["strategy_implementation_present"] = True
-    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_TRUE"):
+    bad3["strategy_implementation_present"] = False
+    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_FALSE"):
         validate_program_contract(bad3)
     bad4 = copy.deepcopy(payload)
     bad4["runtime_policy"]["orders_allowed"] = True
     with pytest.raises(ProgramValidationError, match="RUNTIME_POLICY_ORDERS_ALLOWED_TRUE"):
         validate_program_contract(bad4)
     bad5 = copy.deepcopy(payload)
-    bad5["development_evaluation_authorized"] = True
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE"):
+    bad5["development_evaluation_authorized"] = False
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE"):
         validate_program_contract(bad5)
 
 

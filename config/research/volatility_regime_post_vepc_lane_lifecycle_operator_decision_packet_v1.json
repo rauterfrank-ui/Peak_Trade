@@ -52,16 +52,16 @@
     "AUTO_CREATE_SUCCESSOR"
   ],
   "governance_doc_ref": "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
-  "governance_note": "CREATE_SUCCESSOR_HYPOTHESIS applied under CONTINUE_PEAK_TRADE_NEXT_CANONICAL_SCOPE with explicit hypothesis_id VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1 and failed-continuation fade mechanism. Lane OPEN_BACKLOG; DECLARE_AWAITING remains historically APPLIED; CLOSE_LANE remains OPERATOR_GO_REQUIRED and not applied. No evaluation/holdout/LIVE/orders.",
+  "governance_note": "VEFCF v1 strategy implementation present under separate GO; CREATE_SUCCESSOR remains historically APPLIED; lane OPEN_BACKLOG; next admissible scope is bounded Development evaluation execution. No evaluation executed; no holdout; LIVE/ORDERS closed; CLOSE_LANE remains OPERATOR_GO_REQUIRED.",
   "holdout_accessed": false,
   "lane_backlog_ref": "config/research/volatility_regime_hypothesis_backlog_v1.json",
   "lane_status": "OPEN_BACKLOG",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
   "live_authorized": false,
-  "next_admissible_scope": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1",
+  "next_admissible_scope": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
   "next_admissible_scope_go_tokens": [
-    "GO_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1"
+    "GO_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1"
   ],
   "orders_allowed": false,
   "packet_id": "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1",
@@ -75,10 +75,10 @@
   "schema_version": "volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet.v1",
   "scope_classification": "GOVERNANCE_ONLY_OPERATOR_DECISION_PACKET_NO_EXECUTION",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
-  "status": "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VEFCF_PREREGISTERED",
+  "status": "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VEFCF_STRATEGY_IMPLEMENTATION_PRESENT",
   "successor_created": true,
   "successor_hypothesis_id": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1",
   "successor_measurement_contract_ref": "config/research/volatility_expansion_failed_continuation_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "successor_strategy_identity": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
-  "verdict": "POST_VEPC_CREATE_SUCCESSOR_VEFCF_V1_DEFINITION_ONLY_PREREGISTERED_OPEN_BACKLOG"
+  "verdict": "POST_VEPC_VEFCF_V1_STRATEGY_IMPLEMENTATION_PRESENT_AWAITING_BOUNDED_DEVELOPMENT_EVALUATION"
 }
