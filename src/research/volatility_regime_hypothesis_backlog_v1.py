@@ -18,11 +18,15 @@ DECISION_PACKET_REL_PATH = (
 )
 REQUIRED_STATUS = "OPEN_BACKLOG"
 REQUIRED_PROGRAM_ID = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
-REQUIRED_HYPOTHESIS_ID = "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1"
-REQUIRED_STRATEGY_IDENTITY = "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
-REQUIRED_PREDECESSOR = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+REQUIRED_HYPOTHESIS_ID = "VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1"
+REQUIRED_STRATEGY_IDENTITY = "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
+REQUIRED_PREDECESSOR = "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
 REQUIRED_VEPC_HYPOTHESIS_ID = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
 REQUIRED_VEPC_STRATEGY_IDENTITY = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+REQUIRED_VEFCF_HYPOTHESIS_ID = (
+    "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1"
+)
+REQUIRED_VEFCF_STRATEGY_IDENTITY = "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
 REQUIRED_TERMINAL_STRATEGY_IDENTITIES = frozenset(
     {
         "VOLATILITY_COMPRESSION_BREAKOUT_V1",
@@ -31,6 +35,7 @@ REQUIRED_TERMINAL_STRATEGY_IDENTITIES = frozenset(
         "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
         "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
         "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
     }
 )
 REQUIRED_TERMINAL_HYPOTHESIS_IDS = frozenset(
@@ -41,15 +46,19 @@ REQUIRED_TERMINAL_HYPOTHESIS_IDS = frozenset(
         "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_NON_BITCOIN_PERPETUALS_V1",
         "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_NON_BITCOIN_PERPETUALS_V1",
         "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1",
     }
 )
 REQUIRED_CLOSED = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_CS_CLOSED = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_DATASET = "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
-REQUIRED_NEXT_STEP = "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
-REQUIRED_TREATMENT = "OWN_INSTRUMENT_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_ADMISSION"
+REQUIRED_NEXT_STEP = (
+    "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_"
+    "FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
+)
+REQUIRED_TREATMENT = "OWN_INSTRUMENT_VOLATILITY_TERM_STRUCTURE_REVERSION_ADMISSION"
 REQUIRED_CONTRACT = (
-    "config/research/volatility_expansion_failed_continuation_fade_v1_preregistered_"
+    "config/research/volatility_term_structure_reversion_v1_preregistered_"
     "economic_hypothesis_measurement_contract_v1.json"
 )
 
@@ -84,7 +93,7 @@ def validate_backlog_contract(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
-    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED_FALSE")
+    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(
         payload.get("sealed_holdout_binding_status") == "UNBOUND_UNTOUCHED",
@@ -92,8 +101,8 @@ def validate_backlog_contract(
     )
     _require(payload.get("dataset_id") == REQUIRED_DATASET, "DATASET_ID_MISMATCH")
     _require(payload.get("dataset_class") == "DEVELOPMENT_ONLY", "DATASET_CLASS")
-    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
-    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
+    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
+    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
     _require(payload.get("next_canonical_step") == REQUIRED_NEXT_STEP, "NEXT_STEP_STALE")
     _require(payload.get("required_treatment_type") == REQUIRED_TREATMENT, "TREATMENT_STALE")
@@ -115,18 +124,15 @@ def validate_backlog_contract(
     hyp = prereg[0]
     _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
-    _require(
-        hyp.get("status") == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
-        "HYPOTHESIS_STATUS",
-    )
+    _require(hyp.get("status") == "DEFINITION_ONLY_PREREGISTERED", "HYPOTHESIS_STATUS")
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVAL_AUTHORIZED")
-    _require(hyp.get("development_run_count") == 1, "HYP_RUN_COUNT_NOT_ONE")
-    _require(hyp.get("run_slot_consumed") is True, "HYP_SLOT_NOT_CONSUMED")
-    _require(hyp.get("implementation_present") is True, "HYP_IMPL_PRESENT_FALSE")
+    _require(hyp.get("development_run_count") == 0, "HYP_RUN_COUNT_NOT_ZERO")
+    _require(hyp.get("run_slot_consumed") is False, "HYP_SLOT_CONSUMED")
+    _require(hyp.get("implementation_present") is False, "HYP_IMPL_PRESENT")
     _require(hyp.get("predecessor_strategy_id") == REQUIRED_PREDECESSOR, "HYP_PREDECESSOR")
     _require(hyp.get("contract_ref") == REQUIRED_CONTRACT, "HYP_CONTRACT_REF")
     terminals = payload.get("terminal_hypotheses") or []
-    _require(len(terminals) == 6, "TERMINAL_LEN_NOT_6")
+    _require(len(terminals) == 7, "TERMINAL_LEN_NOT_7")
     term_ids = {t.get("hypothesis_id") for t in terminals}
     term_strats = {t.get("strategy_identity") for t in terminals}
     _require(term_ids == REQUIRED_TERMINAL_HYPOTHESIS_IDS, "TERMINAL_HYPOTHESIS_IDS")
@@ -141,6 +147,15 @@ def validate_backlog_contract(
     _require(vepc.get("retry_allowed") is False, "VEPC_RETRY_ALLOWED")
     _require(vepc.get("reopen_allowed") is False, "VEPC_REOPEN_ALLOWED")
     _require(vepc.get("run_slot_consumed") is True, "VEPC_SLOT_NOT_CONSUMED")
+    vefcf = next(
+        t for t in terminals if t.get("strategy_identity") == REQUIRED_VEFCF_STRATEGY_IDENTITY
+    )
+    _require(vefcf.get("hypothesis_id") == REQUIRED_VEFCF_HYPOTHESIS_ID, "VEFCF_HYPOTHESIS_ID")
+    _require(vefcf.get("status") == "TERMINAL_FAIL", "VEFCF_STATUS")
+    _require(vefcf.get("terminal_result") == "FAIL_CLOSED_NO_RETRY", "VEFCF_TERMINAL_RESULT")
+    _require(vefcf.get("retry_allowed") is False, "VEFCF_RETRY_ALLOWED")
+    _require(vefcf.get("reopen_allowed") is False, "VEFCF_REOPEN_ALLOWED")
+    _require(vefcf.get("run_slot_consumed") is True, "VEFCF_SLOT_NOT_CONSUMED")
     for term in terminals:
         _require(term.get("status") == "TERMINAL_FAIL", "TERMINAL_STATUS")
         _require(term.get("terminal_result") == "FAIL_CLOSED_NO_RETRY", "TERMINAL_RESULT")
@@ -167,14 +182,15 @@ def validate_backlog_contract(
     non_actions = set(payload.get("explicit_non_actions") or [])
     for required in (
         "NO_VEPC_V1_RETRY",
-        "NO_VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_RETRY",
         "NO_VEFCF_V1_RETRY",
         "NO_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_RETRY",
+        "NO_VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_RETRY",
         "NO_AUTO_CREATE_SUCCESSOR",
         "NO_AUTO_CLOSE_LANE",
         "NO_AUTO_AWAIT_SUCCESSOR",
         "NO_CLOSEOUT_APPLICATION_IN_THIS_SLICE",
-        "NO_RETRY_AFTER_DEVELOPMENT_FAIL",
+        "NO_EVALUATION_IN_THIS_SLICE",
+        "NO_RUN_SLOT_CONSUMPTION",
     ):
         _require(required in non_actions, f"MISSING_NON_ACTION:{required}")
 
@@ -199,10 +215,10 @@ def validate_backlog_contract(
         "status": REQUIRED_STATUS,
         "program_id": REQUIRED_PROGRAM_ID,
         "preregistered_count": 1,
-        "terminal_count": 6,
+        "terminal_count": 7,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "strategy_identity": REQUIRED_STRATEGY_IDENTITY,
-        "development_run_count": 1,
+        "development_run_count": 0,
         "dataset_id": REQUIRED_DATASET,
         "evaluation_authorized": False,
         "holdout_forbidden": True,

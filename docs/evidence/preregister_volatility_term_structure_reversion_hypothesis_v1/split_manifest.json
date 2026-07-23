@@ -1,0 +1,7 @@
+{
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "holdout_accessed": false,
+  "holdout_bound": false,
+  "split_role": "DEVELOPMENT_PRE_HOLDOUT"
+}
