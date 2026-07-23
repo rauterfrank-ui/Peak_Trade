@@ -607,6 +607,18 @@
         "docs/evidence/preregister_cross_sectional_open_gap_pressure_fade_hypothesis_v1/"
       ]
     },
+    "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Strategy-implementation-only surfaces for CS open-gap pressure fade v1 (negated mean open-gap score + single-top1 rank-intent selection + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; development_run_count remains 0; run slot unconsumed; CSRHR remains OPEN_BACKLOG untouched; no Master-V2/Double-Play mutation; not a CLV pressure retry.",
+      "path_prefixes": [
+        "src/research/cross_sectional_open_gap_pressure_fade_v1_score_v1.py",
+        "src/research/cross_sectional_open_gap_pressure_fade_v1_selection_v1.py",
+        "src/research/cross_sectional_open_gap_pressure_fade_v1_strategy_implementation_binding_v1.py",
+        "config/research/cross_sectional_open_gap_pressure_fade_v1_strategy_implementation_binding_v1.json",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_v1_score_and_selection_v1.py",
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+      ]
+    },
     "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
       "authority_effect": "NONE",
       "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; closed sibling lanes unreopened.",
