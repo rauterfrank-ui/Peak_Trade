@@ -140,11 +140,22 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
     ),
     CanonicalOwnerRefV1(
         slot="diagnostics_summary",
-        owner_module="webui.workflow_dashboard_readmodel_v1.types",
-        owner_symbol="WorkflowDashboardReadModelV1",
+        owner_module="UNRESOLVED",
+        owner_symbol="UNRESOLVED",
         authority_class="diagnostics",
-        reuse_status="PROJECTION_ONLY",
-        notes="Observability diagnostics reused as reference; no second owner.",
+        reuse_status="NOT_BOUND",
+        notes=(
+            "Phase 4.6C OPTION_A_KEEP_NOT_BOUND ratified: diagnostics_summary "
+            "remains NOT_BOUND; sole owner UNRESOLVED; implementation authorized="
+            "false; typed injection authorized=false; consumer-contract redesign "
+            "required before any future binding; WorkflowDashboardReadModelV1 is "
+            "NON_SOURCE/PROJECTION_ONLY and MUST NOT be named as diagnostics "
+            "owner/source; summary is unresolved/presenter-oriented semantics "
+            "until a separate redesign is ratified; OPTION_B_NEW_DOMAIN_NEUTRAL_"
+            "DIAGNOSTICS_EVIDENCE rejected; OPTION_D_SOURCE_HEALTH_ONLY rejected; "
+            "OPTION_C_MULTIPLE_DOMAIN_SPECIFIC_DIAGNOSTICS deferred to a separate "
+            "operator-authorized redesign phase (not this PR)."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="source_health",

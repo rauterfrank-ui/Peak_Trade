@@ -420,3 +420,25 @@ def test_economic_owner_registry_ratified_bound() -> None:
     assert "economic_viability_status" in entry.notes
     assert "explicit injection only" in entry.notes
     assert "MISSING_SOURCE" in entry.notes
+
+
+def test_diagnostics_summary_owner_registry_option_a_not_bound() -> None:
+    """Phase 4.6C OPTION_A: diagnostics_summary NOT_BOUND; owner UNRESOLVED."""
+    entry = owner_registry_by_slot()["diagnostics_summary"]
+    assert entry.owner_module == "UNRESOLVED"
+    assert entry.owner_symbol == "UNRESOLVED"
+    assert entry.reuse_status == "NOT_BOUND"
+    assert entry.authority_class == "diagnostics"
+    assert "Phase 4.6C" in entry.notes
+    assert "OPTION_A_KEEP_NOT_BOUND" in entry.notes
+    assert "WorkflowDashboardReadModelV1" in entry.notes
+    assert "NON_SOURCE" in entry.notes
+    assert "consumer-contract redesign" in entry.notes
+    assert "OPTION_B" in entry.notes
+    assert "OPTION_D" in entry.notes
+    assert "OPTION_C" in entry.notes
+    # Default runtime availability remains NOT_BOUND (no silent rebinding).
+    bundle = default_not_bound_bundle(generated_at=STAMP)
+    snap = bundle["diagnostics_summary"]
+    assert snap.availability is Availability.NOT_BOUND
+    assert serialize_projection(snap)["availability"] == "NOT_BOUND"
