@@ -7,7 +7,7 @@
 - Family: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE`
 - Lane backlog: `OPEN_BACKLOG` (preregistered=1, open_unpreregistered=0, terminal=0)
 - First hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1` (`PREREGISTERED_DEFINITION_ONLY`)
-- Causal mechanism: negated mean open-gap `log(O/C_prev)` cross-sectional single-slot fade (`lookback_N=30`, `rebalance=5`, `lag=1`)
+- Causal mechanism: negated mean open-gap `log(O&#47;C_prev)` cross-sectional single-slot fade (`lookback_N=30`, `rebalance=5`, `lag=1`)
 - Candidates ranked: open-gap pressure fade > Amihud illiquidity-pressure fade > wick-asymmetry fade
 - Separate open sibling CSRHR remains `OPEN_BACKLOG` unchanged (no continue/reuse/mutation)
 - Terminal CLV and path-efficiency DEVELOPMENT_FAIL linked as collision exclusions only (no retry/rename)

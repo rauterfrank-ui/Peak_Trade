@@ -14,7 +14,7 @@ preregistered; no evaluation.
 ## Research question
 
 Do instruments with extreme trailing mean open-gaps
-`gap_t = log(open_t / close_{t-1})` on the sealed non-BTC PT1H perpetual panel
+`gap_t = log(open_t &#47; close_{t-1})` on the sealed non-BTC PT1H perpetual panel
 fade enough after canonical costs that a single frozen negated-mean-gap
 cross-sectional single-slot treatment passes absolute economic admission gates?
 
@@ -31,7 +31,7 @@ and not a path-efficiency rename.
 
 - Treatment: negated mean open-gap cross-sectional single-slot rank
   (`lookback_N=30`, `rebalance_interval_bars=5`, `signal_lag_bars=1`)
-- Score formula: for each lagged bar b, `gap_b=log(open_b/close_{b-1})`;
+- Score formula: for each lagged bar b, `gap_b=log(open_b&#47;close_{b-1})`;
   `score_i=-mean(gap_b)`; fail-closed on non-finite OHLC / non-positive prior
   close / zero score; rank `score_desc` then `instrument_id_asc`; select top1;
   direction=`sign(top1_score)`

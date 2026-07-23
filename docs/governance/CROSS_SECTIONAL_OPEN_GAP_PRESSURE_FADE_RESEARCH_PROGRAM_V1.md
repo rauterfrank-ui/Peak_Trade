@@ -29,7 +29,7 @@ Evaluation unauthorized.
 
 ## Causal mechanism
 
-Mean PT1H open-gap `log(open_t / close_{t-1})` ranks temporary liquidity/inventory
+Mean PT1H open-gap `log(open_t &#47; close_{t-1})` ranks temporary liquidity/inventory
 pressure at bar opens. Extreme gap pressure is expected to fade cross-sectionally
 over a frozen holding cadence (`lookback_N=30`, `rebalance=5`, `lag=1`, score
 polarity negated). Isolates the discontinuous open-gap component; not CSRHR
@@ -53,7 +53,7 @@ close-to-close reversal, not CLV close-location continuation, not path-efficienc
 - `HOLDOUT_FORBIDDEN=true`
 - `ECONOMIC_GATE_OPEN=false`
 - `PROMOTION_ELIGIBLE=false`
-- `LIVE/ORDERS/SHADOW/PAPER/TESTNET/SCHEDULER=false`
+- `LIVE&#47;ORDERS&#47;SHADOW&#47;PAPER&#47;TESTNET&#47;SCHEDULER=false`
 - Master V2 / Double-Play / risk / sizing / execution: consume-only, no mutation
 - Separate open sibling CSRHR remains `OPEN_BACKLOG` unchanged
 
