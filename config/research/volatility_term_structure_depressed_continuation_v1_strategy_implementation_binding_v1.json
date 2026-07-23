@@ -39,10 +39,10 @@
     "NO_TRAILING_STOP",
     "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE"
   ],
-  "frozen_measurement_contract_digest": "280eaec6dca1cb8e6cf1c62ec2ff5913abcf659a03811cadf6d0e01188d45ec8",
+  "frozen_measurement_contract_digest": "84a21655045d792afbbfd8c62b68cf2cdbf17220a9c9528fd7f2aaa7913624ca",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/volatility_term_structure_depressed_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-  "governance_note": "VTDC v1 strategy implementation present after post-VTSR CREATE_SUCCESSOR. Evaluation unauthorized. No run-slot consumption. Holdout untouched. VTSR/VEFCF/VEPC retry forbidden.",
+  "governance_note": "VTDC v1 bounded DEVELOPMENT evaluation executed once; DEVELOPMENT_FAIL on preregistered admission gates (gross PF/net PF/cost stress/max drawdown/time-segment robustness). Slot consumed. No retry. No holdout. Economic/promotion/runtime/live gates closed. No VTSR/VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry. Strategy implementation unchanged; evaluation slot consumed.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",

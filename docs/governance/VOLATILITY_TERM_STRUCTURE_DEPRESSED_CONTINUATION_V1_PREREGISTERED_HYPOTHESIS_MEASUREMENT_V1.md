@@ -60,7 +60,7 @@ sufficiency). Fail → `FAIL_CLOSED_NO_RETRY`.
 
 ## Run limit
 
-`DEVELOPMENT_RUN_LIMIT=1`, `DEVELOPMENT_RUN_COUNT=0`, `DEVELOPMENT_SLOT_CONSUMED=false`,
+`DEVELOPMENT_RUN_LIMIT=1`, `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`,
 `RETRY_FORBIDDEN=true`, `HOLDOUT_RUN_LIMIT=0`.
 
 ## Holdout prohibition
@@ -69,27 +69,27 @@ sufficiency). Fail → `FAIL_CLOSED_NO_RETRY`.
 
 ## Gates &#47; Safety claims
 
-`STRATEGY_IMPLEMENTED=false`, `EVALUATION_EXECUTED=false`, `PROMOTION_AUTHORIZED=false`,
+`STRATEGY_IMPLEMENTED=true`, `EVALUATION_EXECUTED=true`, `PROMOTION_AUTHORIZED=false`,
 `RUNTIME_AUTHORIZED=false`, `SHADOW_AUTHORIZED=false`, `TESTNET_AUTHORIZED=false`,
 `LIVE_AUTHORIZED=false`, `ORDERS=false`.
 
 ## Contract digest
 
-`280eaec6dca1cb8e6cf1c62ec2ff5913abcf659a03811cadf6d0e01188d45ec8`
+`84a21655045d792afbbfd8c62b68cf2cdbf17220a9c9528fd7f2aaa7913624ca`
 
 ## Canonical Development Evaluation Entry Point (definition&#47;binding only)
 
 - Script: `scripts&#47;research&#47;run_evaluate_volatility_term_structure_depressed_continuation_development_v1.py`
 - Binding: `config&#47;research&#47;volatility_term_structure_depressed_continuation_v1_development_evaluation_entry_point_binding_v1.json`
-- Unauthorized in this slice; no evaluation executed.
+- Status: `RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL`; evidence under evaluate_volatility_term_structure_depressed_continuation_development_v1/
 
 ## Next step
 
-Separate operator GO for strategy implementation, then separate GO for Development evaluation.
+`NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE`
 
 ## Allowed next scope
 
-- `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
-- GO token: `GO_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- `VOLATILITY_REGIME_POST_VTDC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
+- GO tokens: lifecycle DECLARE / CLOSE_LANE / CREATE_SUCCESSOR
 
 docs_token: DOCS_TOKEN_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1

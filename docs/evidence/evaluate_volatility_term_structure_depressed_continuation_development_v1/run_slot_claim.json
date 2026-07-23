@@ -1,0 +1,14 @@
+{
+  "config_digest": "90261fee4da2a76a32643cda31f40bfaaf842917a47ce3586d4ff5e958bfe693",
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "evaluation_run_count": 1,
+  "evaluation_run_id": "evaluate_volatility_term_structure_depressed_continuation_development_v1",
+  "holdout_accessed": false,
+  "hypothesis_id": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "schema_version": "evaluate_volatility_term_structure_depressed_continuation_run_slot_claim.v1",
+  "strategy_identity": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1",
+  "strategy_params_digest": "5f3d6ea634c38f7a76411e9fd275e8581b4f6cc15259f26980ff09d42a7b8adb"
+}

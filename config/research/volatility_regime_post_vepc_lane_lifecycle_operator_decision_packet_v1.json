@@ -51,20 +51,22 @@
     "MUTATE_SEALED_HISTORICAL_EVIDENCE",
     "VEFCF_RETRY",
     "VEPC_RETRY",
-    "VTDC_EVALUATION_IN_THIS_SLICE",
+    "VTDC_RETRY",
     "VTSR_RETRY"
   ],
   "governance_doc_ref": "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
-  "governance_note": "VTDC v1 strategy implementation present after post-VTSR CREATE_SUCCESSOR. Evaluation unauthorized; no run-slot consumption; holdout untouched. Next=separate GO for bounded Development evaluation.",
+  "governance_note": "VTDC v1 bounded DEVELOPMENT evaluation executed once; DEVELOPMENT_FAIL on preregistered admission gates (gross PF/net PF/cost stress/max drawdown/time-segment robustness). Slot consumed. No retry. No holdout. Economic/promotion/runtime/live gates closed. No VTSR/VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry.",
   "holdout_accessed": false,
   "lane_backlog_ref": "config/research/volatility_regime_hypothesis_backlog_v1.json",
   "lane_status": "OPEN_BACKLOG",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
   "live_authorized": false,
-  "next_admissible_scope": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
+  "next_admissible_scope": "VOLATILITY_REGIME_POST_VTDC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1",
   "next_admissible_scope_go_tokens": [
-    "GO_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1"
+    "GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1",
+    "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
+    "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1"
   ],
   "orders_allowed": false,
   "packet_id": "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1",
@@ -78,10 +80,10 @@
   "schema_version": "volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet.v1",
   "scope_classification": "GOVERNANCE_ONLY_OPERATOR_DECISION_PACKET_NO_EXECUTION",
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
-  "status": "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTDC_STRATEGY_IMPLEMENTATION_PRESENT",
+  "status": "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTDC_DEVELOPMENT_FAIL_SLOT_CONSUMED",
   "successor_created": true,
   "successor_hypothesis_id": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
   "successor_measurement_contract_ref": "config/research/volatility_term_structure_depressed_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "successor_strategy_identity": "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1",
-  "verdict": "POST_VTSR_CREATE_SUCCESSOR_VTDC_V1_STRATEGY_IMPLEMENTATION_PRESENT_OPEN_BACKLOG"
+  "verdict": "POST_VTSR_VTDC_V1_RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
 }
