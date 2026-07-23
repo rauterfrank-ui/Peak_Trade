@@ -1194,6 +1194,18 @@
         "scripts/research/run_evaluate_cross_sectional_high_realized_volatility_fade_development_v1.py"
       ]
     },
+    "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "note": "Strategy implementation only for CSHRVF v1; cross-sectional high RV-level rank fade opposite short-horizon return; exit SM with CS-vol-rank normalization (<0.55); productive PnL evaluator reused; no Development evaluation execution/slot consumption/holdout/runtime/orders.",
+      "path_prefixes": [
+        "src/research/cross_sectional_high_realized_volatility_fade_v1_strategy_v1.py",
+        "src/research/cross_sectional_high_realized_volatility_fade_v1_exit_state_machine_v1.py",
+        "src/research/cross_sectional_high_realized_volatility_fade_v1_vol_state_v1.py",
+        "src/research/cross_sectional_high_realized_volatility_fade_v1_strategy_implementation_binding_v1.py",
+        "config/research/cross_sectional_high_realized_volatility_fade_v1_strategy_implementation_binding_v1.json",
+        "docs/governance/CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+        "tests/research/test_cross_sectional_high_realized_volatility_fade_v1_strategy_implementation_v1.py"
+      ]
+    },
     "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
       "note": "Strategy implementation only for VTDC v1; depressed short/long RV term-structure continuation; exit SM with term-structure normalization (>0.45); productive PnL evaluator reused; no Development evaluation execution/slot consumption/holdout/runtime/orders.",
       "path_prefixes": [
