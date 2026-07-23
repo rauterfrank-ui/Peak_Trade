@@ -253,48 +253,82 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
     assert PRODUCER_BINDING.is_file()
     text = PRODUCER_BINDING.read_text(encoding="utf-8")
     assert "bind_market_universe_slots" in text
-    assert "Phase 4.2" in text
+    assert "Phase 4.2" in text or "4.2" in text or "4.3A" in text
     assert "project_dynamic_scope_snapshot_v1" in text
+    assert "project_canonical_decision_snapshot_v1" in text
+    assert "canonical_decision_fields" in text
     tree = ast.parse(text)
     for node in ast.walk(tree):
         if isinstance(node, ast.Name):
-            assert node.id not in {"transition_state", "RuntimeScopeState"}
+            assert node.id not in {
+                "transition_state",
+                "RuntimeScopeState",
+                "compose_double_play_decision",
+                "build_dashboard_display_snapshot",
+            }
         if isinstance(node, ast.Attribute):
-            assert node.attr not in {"transition_state", "RuntimeScopeState"}
+            assert node.attr not in {
+                "transition_state",
+                "RuntimeScopeState",
+                "compose_double_play_decision",
+                "build_dashboard_display_snapshot",
+            }
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-            assert node.func.id != "initialize_canonical_scope"
+            assert node.func.id not in {
+                "initialize_canonical_scope",
+                "compose_double_play_decision",
+                "build_dashboard_display_snapshot",
+            }
     assert "@router.post" not in text
     assert "place_order" not in text
     assert "activate_runtime" not in text
     assert "workflow_dashboard_runtime_v1" not in text
     assert "execution_watch_api" not in text
+    assert "double_play_dashboard_display_json_route" not in text
     for module, level in _import_modules(PRODUCER_BINDING):
         if level > 0:
             continue
         for prefix in FORBIDDEN_IMPORT_PREFIXES:
             assert not (module == prefix or module.startswith(prefix + ".")), module
         assert "double_play_state" not in module
+        assert "double_play_composition" not in module
+        assert "double_play_dashboard_display" not in module
         assert "canonical_scope_initialization" not in module
+        assert "canonical_trading_decision_evidence" not in module
     # Landscape package must not import the binding module (keeps contracts pure).
     for path in _iter_py_files(LANDSCAPE_PKG):
         for module, level in _import_modules(path):
             assert "market_dashboard_landscape_producer_binding_v2" not in module
 
 
-def test_shell_router_wires_phase41_and_phase42_binding() -> None:
+def test_shell_router_wires_phase41_phase42_and_phase43a_binding() -> None:
     text = SHELL_ROUTER.read_text(encoding="utf-8")
     assert "bind_market_universe_slots" in text
     assert "bind_market_universe_scope_slots" not in text
     assert "slot_overrides" in text
-    assert "Phase 4.2" in text or "4.2" in text
+    assert "Phase 4.3A" in text or "4.3A" in text
     tree = ast.parse(text)
     for node in ast.walk(tree):
         if isinstance(node, ast.Name):
-            assert node.id not in {"transition_state", "RuntimeScopeState"}
+            assert node.id not in {
+                "transition_state",
+                "RuntimeScopeState",
+                "compose_double_play_decision",
+                "build_dashboard_display_snapshot",
+            }
         if isinstance(node, ast.Attribute):
-            assert node.attr not in {"transition_state", "RuntimeScopeState"}
+            assert node.attr not in {
+                "transition_state",
+                "RuntimeScopeState",
+                "compose_double_play_decision",
+                "build_dashboard_display_snapshot",
+            }
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-            assert node.func.id != "initialize_canonical_scope"
+            assert node.func.id not in {
+                "initialize_canonical_scope",
+                "compose_double_play_decision",
+                "build_dashboard_display_snapshot",
+            }
     assert "@router.post" not in text
     assert "workflow_dashboard_runtime_v1" not in text
     assert "execution_watch_api" not in text
@@ -302,7 +336,10 @@ def test_shell_router_wires_phase41_and_phase42_binding() -> None:
         if level > 0:
             continue
         assert "canonical_scope_initialization" not in module
+        assert "canonical_trading_decision_evidence" not in module
         assert "double_play_state" not in module
+        assert "double_play_composition" not in module
+        assert "double_play_dashboard_display" not in module
 
 
 def test_shell_router_forbidden_import_count_zero() -> None:

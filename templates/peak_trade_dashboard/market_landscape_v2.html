@@ -4,7 +4,7 @@
 {% block main_class %}mdl-v2-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-2-dynamic-scope-lifecycle-binding" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-3a-canonical-decision-projection-binding" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 {% endblock %}
@@ -23,7 +23,7 @@
   data-market-dashboard-authority="false"
   data-live-authorized="false"
   data-orders="false"
-  data-phase="PHASE_4_2_DYNAMIC_SCOPE_LIFECYCLE_BINDING"
+  data-phase="{{ phase }}"
   data-runtime-bridge="{{ runtime_bridge_display }}"
   aria-label="Market Dashboard Landscape V2 read-only workspace"
 >
@@ -145,13 +145,13 @@
         <div>
           <dt>Decision</dt>
           <dd data-mdl-field="decision" data-availability="{{ decision.availability }}">
-            {% if decision.is_available %}{{ decision.fields.decision }}{% else %}{{ decision.availability_label }}{% endif %}
+            {% if decision.is_available or decision.is_stale %}{{ decision.fields.decision }}{% else %}{{ decision.availability_label }}{% endif %}
           </dd>
         </div>
         <div>
           <dt>Direction</dt>
           <dd data-mdl-field="direction" data-availability="{{ decision.availability }}">
-            {% if decision.is_available %}{{ decision.fields.direction }}{% else %}{{ decision.availability_label }}{% endif %}
+            {% if decision.is_available or decision.is_stale %}{{ decision.fields.direction }}{% else %}{{ decision.availability_label }}{% endif %}
           </dd>
         </div>
         <div>
@@ -162,15 +162,17 @@
         </div>
         <div>
           <dt>Why</dt>
-          <dd data-mdl-field="reason_codes">
-            {% if decision.reason_codes %}{{ decision.reason_codes|join(", ") }}{% else %}{{ decision.availability_label }}{% endif %}
+          <dd data-mdl-field="reason_codes" data-availability="{{ decision.availability }}">
+            {% if decision.is_available or decision.is_stale %}
+              {% if decision.reason_codes %}{{ decision.reason_codes|join(", ") }}{% else %}—{% endif %}
+            {% else %}
+              {{ decision.availability_label }}{% if decision.reason_codes %} · {{ decision.reason_codes|join(", ") }}{% endif %}
+            {% endif %}
           </dd>
         </div>
         <div>
           <dt>Blockers</dt>
-          <dd data-mdl-field="blockers">
-            {% if decision.blockers %}{{ decision.blockers|join(", ") }}{% else %}{{ decision.availability_label }}{% endif %}
-          </dd>
+          <dd data-mdl-field="blockers" data-availability="NOT_BOUND">NOT_BOUND</dd>
         </div>
         <div>
           <dt>Confidence</dt>

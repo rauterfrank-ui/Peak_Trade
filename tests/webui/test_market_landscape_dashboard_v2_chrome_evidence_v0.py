@@ -1,4 +1,4 @@
-"""Real Chrome Playwright evidence for Market Landscape V2 Phase 4.2 binding."""
+"""Real Chrome Playwright evidence for Market Landscape V2 Phase 4.3A binding."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from playwright.sync_api import sync_playwright
 from src.webui.app import create_app
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase4" / "pr4"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase4" / "pr5"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -100,7 +100,7 @@ def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1
                 assert root.get_attribute("data-phase") == (
-                    "PHASE_4_2_DYNAMIC_SCOPE_LIFECYCLE_BINDING"
+                    "PHASE_4_3A_CANONICAL_DECISION_PROJECTION_BINDING"
                 )
                 chart = page.locator("[data-mdl-chart-region='true']")
                 decision = page.locator("[data-mdl-decision-strip='true']")
@@ -113,6 +113,24 @@ def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
                 assert page.locator('[data-mdl-field="regime"]').count() >= 1
                 assert page.locator('[data-mdl-field="bull_bear"]').count() == 1
                 assert page.locator('[data-mdl-field="switch"]').count() == 1
+                assert (
+                    page.locator(
+                        '[data-mdl-field="blockers"][data-availability="NOT_BOUND"]'
+                    ).count()
+                    == 1
+                )
+                assert (
+                    page.locator(
+                        '[data-mdl-field="confidence"][data-availability="NOT_BOUND"]'
+                    ).count()
+                    == 1
+                )
+                assert (
+                    page.locator(
+                        '[data-mdl-field="double_play"][data-availability="NOT_BOUND"]'
+                    ).count()
+                    == 1
+                )
 
                 chart_box = chart.bounding_box()
                 decision_box = decision.bounding_box()

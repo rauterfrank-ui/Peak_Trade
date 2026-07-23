@@ -1,0 +1,19 @@
+## feat/market-dashboard-landscape-phase-4-3a-canonical-decision-binding
+ M config/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0.json
+ M config/research/bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding_v0.json
+ M src/webui/market_dashboard_landscape_producer_binding_v2.py
+ M src/webui/market_dashboard_landscape_shell_router_v2.py
+ M src/webui/market_dashboard_landscape_v2/owner_registry.py
+ M src/webui/market_dashboard_landscape_v2/presenter.py
+ M src/webui/market_dashboard_landscape_v2/projections.py
+ M templates/peak_trade_dashboard/market_landscape_v2.html
+ M tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+?? .comparison_metric_input_pytest_outputs/
+?? evidence/market_dashboard_landscape_v2_pr1/
+?? evidence/market_dashboard_v2/
+?? tests/.pytest_archive_roots/
+ba5a8b2caf27d6ea48c6db7d932c6ef8680c5cd6
+SLICE_ID=PHASE_4_3A_CANONICAL_DECISION_PROJECTION_BINDING
