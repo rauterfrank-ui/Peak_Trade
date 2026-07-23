@@ -1167,6 +1167,20 @@
         "scripts/research/run_evaluate_volatility_term_structure_reversion_development_v1.py"
       ]
     },
+    "VOLATILITY_TERM_STRUCTURE_REVERSION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
+      "authority_effect": "NONE",
+      "note": "Bounded DEVELOPMENT evaluation execution for VTSR v1; single run slot consumed with DEVELOPMENT_FAIL; retry/holdout/promotion/runtime/LIVE/orders forbidden.",
+      "path_prefixes": [
+        "docs/evidence/evaluate_volatility_term_structure_reversion_development_v1/",
+        "docs/governance/VOLATILITY_TERM_STRUCTURE_REVERSION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "config/research/volatility_term_structure_reversion_v1_development_evaluation_entry_point_binding_v1.json",
+        "config/research/volatility_term_structure_reversion_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "scripts/research/run_evaluate_volatility_term_structure_reversion_development_v1.py",
+        "src/research/volatility_term_structure_reversion_v1_development_evaluation_v1/",
+        "tests/research/test_volatility_term_structure_reversion_v1_development_evaluation_entry_point_v1.py"
+      ],
+      "runtime_effect": "NONE"
+    },
     "VOLATILITY_TERM_STRUCTURE_REVERSION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
       "note": "Strategy implementation only for VTSR v1; elevated short/long RV term-structure reversion fade; exit SM with term-structure normalization; productive PnL evaluator reused; no Development evaluation execution/slot consumption/holdout/runtime/orders.",
       "path_prefixes": [

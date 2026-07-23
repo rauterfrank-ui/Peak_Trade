@@ -1,0 +1,6 @@
+START_UTC=2026-07-23T02:01:04Z
+base_sha=87455d9330e2465420c2d083dd7b9d34c60c6d47
+exact_command=python3 scripts/research/run_evaluate_volatility_term_structure_reversion_development_v1.py --mode evaluate --authorize-single-development-evaluation VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1
+exit_code=0
+start_utc=2026-07-23T02:01:04Z
+end_utc=2026-07-23T02:05:00Z
