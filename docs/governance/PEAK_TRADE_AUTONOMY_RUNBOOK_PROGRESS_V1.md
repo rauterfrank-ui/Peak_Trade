@@ -1,3 +1,19 @@
+### CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1
+
+- Scope: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Decision: `STRATEGY_IMPLEMENTATION_ONLY`
+- Workstream: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1`
+- Hypothesis: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Strategy: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1` (`STRATEGY_IMPLEMENTATION_PRESENT`)
+- Binding: `config&#47;research&#47;cross_sectional_path_efficiency_continuation_v1_strategy_implementation_binding_v1.json`
+- Frozen measurement digest: `ffd67182ca8942c0975e3a864382ad55d657e625968c40d8fd63fac83a409ef9` (unmutated)
+- Score/selection: Kaufman ER*sign fixed lookback (`lookback_N=48`, `rebalance=8`, `lag=1`) + `single_top1_by_score_desc` / `symmetric_top1_sign`
+- `EVALUATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0` unchanged; holdout untouched; CSRHR remains `OPEN_BACKLOG` unchanged
+- Explicit non-actions: no evaluation/runner/holdout/runtime/LIVE/orders; no CSRHR continue/reuse/mutation; no parameter optimization
+- Next admissible GO: separate PR-merge GO, then separately bounded DEVELOPMENT evaluation GO
+
+
 ### CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_PROGRAM_SSOT_AND_PREREGISTRATION_PERSISTENCE_ONLY_V1
 
 - Scope: `CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_PROGRAM_SSOT_AND_PREREGISTRATION_PERSISTENCE_ONLY_V1`
