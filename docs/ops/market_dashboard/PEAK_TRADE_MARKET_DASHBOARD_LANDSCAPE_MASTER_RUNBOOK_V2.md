@@ -821,7 +821,7 @@ as inputs to one Autonomy aggregate.
 
 Canonical owner registry note:
 `src/webui/market_dashboard_landscape_v2/owner_registry.py` slot
-`autonomy_stage` → `reuse_status=NOT_BOUND`, `owner=NONE`, `source/contract=NONE`.
+`autonomy_stage` → `reuse_status=NOT_BOUND`, `owner=NONE`, `source&#47;contract=NONE`.
 
 ### Gate pro Bindung
 
