@@ -34,6 +34,10 @@ from src.webui.market_dashboard_landscape_v2 import (
     project_universe_ranking_snapshot_v1,
     serialize_projection,
 )
+from src.webui.workflow_dashboard_readmodel_v1.types import (
+    SelectedFutureDisplayV1,
+    UniverseSelectionDashboardSliceV1,
+)
 from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
     READMODEL_FILENAME,
     READMODELS_DIRNAME,
@@ -322,17 +326,43 @@ def test_multi_row_ranking_order_preserved(archive_root: Path) -> None:
     assert [row["rank"] for row in slots["universe_ranking"].ranking] == [1, 2]
 
 
-def test_forbidden_btc_usd_selected_fails_closed_strict(archive_root: Path) -> None:
+def test_forbidden_btc_usd_archive_fails_closed_exact_contract_invalid(
+    archive_root: Path,
+) -> None:
     archive = _write_truth_universe_archive(archive_root, selected_symbol="BTC/USD")
-    slots = bind_market_universe_slots(generated_at=STAMP, archive_root=archive)
-    assert slots["universe_ranking"].availability is Availability.INVALID
-    codes = list(slots["universe_ranking"].reason_codes)
-    assert codes, "expected explicit fail-closed reason codes"
-    assert REASON_SELECTED_FORBIDDEN_SYMBOL in codes or any(
-        "CONTRACT_INVALID" == code or "BTC" in code for code in codes
+    u = bind_market_universe_slots(generated_at=STAMP, archive_root=archive)[
+        "universe_ranking"
+    ]
+    assert u.availability is Availability.INVALID
+    assert list(u.reason_codes) == ["CONTRACT_INVALID"]
+    assert u.selected_instrument_id is None
+    assert u.ranking == ()
+
+
+def test_binder_forbidden_selected_symbol_exact_reason(
+    monkeypatch: pytest.MonkeyPatch,
+    archive_root: Path,
+) -> None:
+    poisoned = UniverseSelectionDashboardSliceV1(
+        loaded=True,
+        load_errors=(),
+        generated_at=PRODUCER_FRESH.isoformat().replace("+00:00", "Z"),
+        selected_future=SelectedFutureDisplayV1(
+            row_id="s1",
+            symbol="BTC/USD",
+            rank=1,
+            truth_status="PERSISTED",
+        ),
     )
-    assert slots["universe_ranking"].selected_instrument_id is None
-    assert slots["universe_ranking"].availability is not Availability.AVAILABLE
+    monkeypatch.setattr(
+        "src.webui.market_dashboard_landscape_producer_binding_v2."
+        "try_load_universe_selection_for_dashboard",
+        lambda _root: poisoned,
+    )
+    slots = bind_market_universe_slots(generated_at=STAMP, archive_root=archive_root)
+    assert list(slots["universe_ranking"].reason_codes) == [
+        REASON_SELECTED_FORBIDDEN_SYMBOL
+    ]
 
 
 def test_source_contradiction_fails_closed(archive_root: Path) -> None:
