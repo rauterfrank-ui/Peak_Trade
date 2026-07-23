@@ -60,7 +60,10 @@ def test_panel_present_when_gate_enabled(client_on: TestClient) -> None:
 def test_btc_usd_not_paper_instrument_truth(client_on: TestClient) -> None:
     html = client_on.get("/observability").text
     assert "selected_symbol" not in html or "BTC/USD" not in html.split("Instrument")[1][:500]
-    assert "Removed Market Dashboard BTC/USD dummy is not Paper Run Truth" in html
+    assert (
+        "Removed Market Dashboard BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth."
+        in html
+    )
 
 
 def test_no_forms_or_post(client_on: TestClient) -> None:
@@ -82,8 +85,9 @@ def test_safety_flags_false(client_on: TestClient) -> None:
 
 def test_market_without_last_paper_primary_panel(client_off: TestClient) -> None:
     response = client_off.get("/market")
-    assert response.status_code == 404
-    html = response.text.lower()
-    assert "market dashboard" not in html
+    assert response.status_code == 200
+    html = response.text
+    assert 'data-market-landscape-v2="true"' in html
+    assert 'data-observability-last-paper-run-panel-v0="true"' not in html
     assert "data-market-dashboard-product-surface-v1" not in html
-    assert "architecture reset in progress" not in html
+    assert "architecture reset in progress" not in html.lower()
