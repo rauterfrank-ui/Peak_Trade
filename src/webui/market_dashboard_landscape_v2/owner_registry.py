@@ -92,11 +92,19 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
     ),
     CanonicalOwnerRefV1(
         slot="safety_authority",
-        owner_module="trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0",
-        owner_symbol="killswitch_boundary_offline_replay_binding",
+        owner_module="src.risk_layer.kill_switch",
+        owner_symbol="KillSwitch",
         authority_class="safety_veto",
-        reuse_status="NOT_BOUND",
-        notes="Safety remains independent veto; Landscape unbound until PR5.",
+        reuse_status="REUSED",
+        notes=(
+            "Phase 4.4A: Landscape projects injected KillSwitch/boundary fields "
+            "field-for-field (kill_switch_state/veto_active/reason_codes); "
+            "authority owner remains src.risk_layer.kill_switch; "
+            "projection/evidence source "
+            "trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 "
+            "is non-authority wiring/parity only; dashboard AUTHORITY_EFFECT=NONE; "
+            "no trigger/recover; no offline evaluator; no live state-file autoload."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="execution_reconciliation",

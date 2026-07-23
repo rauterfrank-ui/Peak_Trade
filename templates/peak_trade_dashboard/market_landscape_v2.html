@@ -4,7 +4,7 @@
 {% block main_class %}mdl-v2-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-3b-canonical-double-play-projection-binding" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-4a-canonical-safety-projection-binding" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 {% endblock %}
@@ -43,7 +43,14 @@
           <dd data-mdl-field="runtime" title="{{ shell_authority_class }}">{{ global_strip.runtime_state }}</dd>
         </div>
         <div><dt>Freshness</dt><dd data-mdl-field="freshness">{{ source_health.availability }}</dd></div>
-        <div><dt>Safety</dt><dd data-mdl-field="safety">{{ global_strip.safety_status }}</dd></div>
+        <div>
+          <dt>Safety</dt>
+          <dd
+            data-mdl-field="safety"
+            data-availability="{{ safety.availability }}"
+            title="{% if safety.reason_codes %}{{ safety.reason_codes|join(', ') }}{% endif %}"
+          >{{ global_strip.safety_status }}</dd>
+        </div>
       </dl>
     </header>
 

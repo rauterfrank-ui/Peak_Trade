@@ -24,6 +24,7 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     LANDSCAPE_PHASE42_MAX_AGE_SECONDS,
     LANDSCAPE_PHASE43A_MAX_AGE_SECONDS,
     LANDSCAPE_PHASE43B_MAX_AGE_SECONDS,
+    LANDSCAPE_PHASE44A_MAX_AGE_SECONDS,
     REASON_ARCHIVE_ROOT_UNSET,
     REASON_DECISION_NOT_PERSISTED,
     REASON_DOUBLE_PLAY_NOT_PERSISTED,
@@ -31,9 +32,13 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     REASON_PRODUCER_DATA_STALE,
     REASON_PRODUCER_TIMESTAMP_INVALID,
     REASON_PRODUCER_TIMESTAMP_MISSING,
+    REASON_SAFETY_NOT_PERSISTED,
     REASON_SCOPE_NOT_PERSISTED,
     REASON_SELECTED_FORBIDDEN_SYMBOL,
     REASON_SOURCE_CONTRADICTION,
+    SAFETY_AUTHORITY_OWNER_MODULE,
+    SAFETY_EVIDENCE_PRODUCER_MODULE,
+    SAFETY_SOURCE_KIND,
     SCOPE_PRODUCER_MODULE,
     SCOPE_SOURCE_KIND,
     bind_market_universe_slots,
@@ -51,6 +56,7 @@ from src.webui.market_dashboard_landscape_v2.projections import (
     project_canonical_decision_snapshot_v1,
     project_double_play_snapshot_v1,
     project_dynamic_scope_snapshot_v1,
+    project_safety_authority_snapshot_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.types import (
     SelectedFutureDisplayV1,
@@ -70,6 +76,8 @@ DECISION_PRODUCER_FRESH = datetime(2026, 7, 23, 16, 0, 0, tzinfo=timezone.utc)
 DECISION_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE43A_MAX_AGE_SECONDS + 7200)
 DP_PRODUCER_FRESH = datetime(2026, 7, 23, 15, 30, 0, tzinfo=timezone.utc)
 DP_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE43B_MAX_AGE_SECONDS + 7200)
+SAFETY_PRODUCER_FRESH = datetime(2026, 7, 23, 15, 0, 0, tzinfo=timezone.utc)
+SAFETY_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE44A_MAX_AGE_SECONDS + 7200)
 REPO = Path(__file__).resolve().parents[2]
 SCRATCH_ROOT = REPO / "tests" / "_durable_archive_scratch"
 
@@ -140,6 +148,7 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
         "dynamic_scope",
         "canonical_decision",
         "double_play",
+        "safety_authority",
     }
     assert slots["market_instrument"].availability is Availability.MISSING_SOURCE
     assert REASON_MARKET_CONTEXT_NOT_PERSISTED in slots["market_instrument"].reason_codes
@@ -161,6 +170,10 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
     assert slots["double_play"].panel_summaries == ()
     assert slots["double_play"].live_authorization is False
     assert slots["double_play"].display_only is True
+    assert slots["safety_authority"].availability is Availability.MISSING_SOURCE
+    assert REASON_SAFETY_NOT_PERSISTED in slots["safety_authority"].reason_codes
+    assert slots["safety_authority"].kill_switch_state is None
+    assert slots["safety_authority"].veto_active is None
 
 
 def test_bind_rejects_inventing_market_without_required_fields() -> None:
@@ -463,7 +476,7 @@ def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_inject
     assert page.canonical_decision.availability is Availability.MISSING_SOURCE
     assert REASON_DECISION_NOT_PERSISTED in page.canonical_decision.reason_codes
     ctx = present_market_landscape_v2(page)
-    assert ctx["phase"] == "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["scope"]["availability"] == "MISSING_SOURCE"
     assert ctx["decision"]["availability"] == "MISSING_SOURCE"
@@ -729,9 +742,10 @@ def test_bind_canonical_decision_does_not_bind_double_play() -> None:
     assert page.double_play.availability is Availability.MISSING_SOURCE
     assert REASON_DOUBLE_PLAY_NOT_PERSISTED in page.double_play.blockers
     assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
-    assert ctx["phase"] == "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
     assert ctx["product_flags"]["phase_4_3a_binding_active"] is True
     assert ctx["product_flags"]["phase_4_3b_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
     assert ctx["decision"]["fields"]["decision"] == "observe"
     assert ctx["decision"]["fields"]["direction"] == "neutral_observe"
     assert ctx["decision"]["blockers"] == []
@@ -895,4 +909,128 @@ def test_decision_and_double_play_remain_separate_projections() -> None:
     assert page.double_play.overall_status == "display_blocked"
     assert ctx["decision"]["fields"]["decision"] == "observe"
     assert ctx["double_play"]["fields"]["overall_status"] == "display_blocked"
-    assert ctx["phase"] == "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+
+
+def _safety_authority_fields(**overrides: object) -> dict[str, object]:
+    """Bounded test-injection payload — not durable dashboard truth."""
+    base: dict[str, object] = {
+        "kill_switch_state": "KILLED",
+        "veto_active": True,
+        "reason_codes": ("killswitch_block_new", "reconciliation_required"),
+        "generated_at": SAFETY_PRODUCER_FRESH,
+        "saved_at": SAFETY_PRODUCER_FRESH,
+        "killswitch_owner_ref": SAFETY_AUTHORITY_OWNER_MODULE,
+        "semantic_digest": "e" * 64,
+    }
+    base.update(overrides)
+    return base
+
+
+def test_project_safety_authority_field_copy_immutable() -> None:
+    snap = project_safety_authority_snapshot_v1(
+        kill_switch_state="KILLED",
+        veto_active=True,
+        reason_codes=("killswitch_block_new",),
+        generated_at=SAFETY_PRODUCER_FRESH,
+        source_reference=SAFETY_AUTHORITY_OWNER_MODULE,
+        evidence_digest="e" * 64,
+    )
+    assert snap.availability is Availability.AVAILABLE
+    assert snap.kill_switch_state == "KILLED"
+    assert snap.veto_active is True
+    assert snap.reason_codes == ("killswitch_block_new",)
+    assert snap.provenance.producer_module == SAFETY_EVIDENCE_PRODUCER_MODULE
+    assert snap.provenance.source_kind == SAFETY_SOURCE_KIND
+    with pytest.raises(FrozenInstanceError):
+        snap.kill_switch_state = "ACTIVE"  # type: ignore[misc]
+
+
+def test_bind_safety_available_exact_projection() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        safety_authority_fields=_safety_authority_fields(),
+    )
+    safety = slots["safety_authority"]
+    assert safety.availability is Availability.AVAILABLE
+    assert safety.kill_switch_state == "KILLED"
+    assert safety.veto_active is True
+    assert safety.reason_codes == ("killswitch_block_new", "reconciliation_required")
+    assert safety.provenance.producer_module == SAFETY_EVIDENCE_PRODUCER_MODULE
+    assert safety.provenance.source_kind == SAFETY_SOURCE_KIND
+    assert safety.provenance.source_reference == SAFETY_AUTHORITY_OWNER_MODULE
+    assert safety.provenance.evidence_digest == "e" * 64
+    assert safety.provenance.generated_at == SAFETY_PRODUCER_FRESH
+    assert safety.provenance.effective_at == SAFETY_PRODUCER_FRESH
+    assert safety.freshness.is_stale is False
+    # Risk / capital / sizing remain unbound (not returned by Phase 4.4A binding).
+    assert "risk_sizing_capital" not in slots
+
+
+def test_bind_safety_rejects_missing_required_keys() -> None:
+    with pytest.raises(KeyError, match="safety_authority_fields missing"):
+        bind_market_universe_slots(
+            generated_at=STAMP,
+            safety_authority_fields={"kill_switch_state": "KILLED"},
+        )
+
+
+def test_bind_safety_rejects_non_bool_veto() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        safety_authority_fields=_safety_authority_fields(veto_active="yes"),
+    )
+    safety = slots["safety_authority"]
+    assert safety.availability is Availability.INVALID
+    assert "CANONICAL_SAFETY_VETO_ACTIVE_INVALID" in safety.reason_codes
+    assert safety.kill_switch_state is None
+    assert safety.veto_active is None
+
+
+def test_bind_safety_no_healthy_default_invented() -> None:
+    slots = bind_market_universe_slots(generated_at=STAMP)
+    safety = slots["safety_authority"]
+    assert safety.availability is Availability.MISSING_SOURCE
+    assert safety.kill_switch_state is None
+    assert safety.veto_active is None
+    assert safety.kill_switch_state != "ACTIVE"
+    assert safety.kill_switch_state != "normal"
+
+
+def test_bind_safety_stale_retains_exact_fields() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        safety_authority_fields=_safety_authority_fields(
+            generated_at=SAFETY_PRODUCER_STALE,
+            saved_at=SAFETY_PRODUCER_STALE,
+        ),
+    )
+    safety = slots["safety_authority"]
+    assert safety.availability is Availability.STALE
+    assert safety.kill_switch_state == "KILLED"
+    assert safety.veto_active is True
+    assert safety.reason_codes == ("killswitch_block_new", "reconciliation_required")
+    assert REASON_PRODUCER_DATA_STALE in safety.freshness.stale_reason
+
+
+def test_safety_does_not_bind_risk_capital_sizing() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        safety_authority_fields=_safety_authority_fields(),
+    )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert page.safety_authority.availability is Availability.AVAILABLE
+    assert page.risk_sizing_capital.availability is Availability.NOT_BOUND
+    assert page.risk_sizing_capital.risk_status is None
+    assert page.risk_sizing_capital.sizing_status is None
+    assert page.risk_sizing_capital.capital_status is None
+    assert page.risk_sizing_capital.quantity is None
+    assert ctx["risk"]["availability"] == "NOT_BOUND"
+    assert ctx["global_strip"]["safety_status"] == "KILLED · veto=True"
+    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+    assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
+    assert ctx["product_flags"]["dashboard_authority"] is False

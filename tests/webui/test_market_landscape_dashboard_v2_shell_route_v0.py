@@ -53,7 +53,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-market-landscape-v2="true"' in html
     for landmark in LANDMARKS:
         assert landmark in html, landmark
-    assert "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING" in html
+    assert "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING" in html
     assert "BOUND_NOT_ACTIVATED" in html
     assert "no ohlcv fabricated" in html.lower()
     assert "BTC/USD" not in html
@@ -69,7 +69,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-mdl-field="switch"' in html
     assert 'data-mdl-field="blockers" data-availability="NOT_BOUND"' in html
     assert 'data-mdl-field="confidence" data-availability="NOT_BOUND"' in html
-    # Decision + DP wired but absent without injection; Regime / Switch stay NOT_BOUND
+    # Decision + DP + Safety wired but absent without injection; Regime / Switch stay NOT_BOUND
     assert "NOT_BOUND" in html
     assert "MISSING_SOURCE" in html
     assert "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD" in html or (
@@ -78,7 +78,16 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert "CANONICAL_DOUBLE_PLAY_DISPLAY_NOT_PERSISTED_FOR_DASHBOARD" in html or (
         'data-mdl-field="double_play" data-availability="MISSING_SOURCE"' in html
     )
+    assert 'data-mdl-field="safety"' in html
+    assert 'data-availability="MISSING_SOURCE"' in html
+    assert "MISSING_SOURCE" in html
+    # Safety strip value is MISSING_SOURCE without injection.
+    assert ">MISSING_SOURCE</dd>" in html or "MISSING_SOURCE" in html
+    assert "Risk / Sizing / Capital" in html
     assert "OPERATOR_SKELETON_APPROVAL" not in html
+    assert "<button" not in html.lower()
+    assert "Trigger Kill" not in html
+    assert "Recover Kill" not in html
 
 
 def test_get_market_has_no_write_or_order_controls(client: TestClient) -> None:
@@ -134,16 +143,19 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     assert ctx["product_flags"]["phase_4_2_binding_active"] is True
     assert ctx["product_flags"]["phase_4_3a_binding_active"] is True
     assert ctx["product_flags"]["phase_4_3b_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["decision"]["availability_label"] == "NOT_BOUND"
     assert ctx["global_strip"]["instrument"] == "NOT_BOUND"
+    assert ctx["global_strip"]["safety_status"] == "NOT_BOUND"
+    assert ctx["risk"]["availability"] == "NOT_BOUND"
     assert ctx["regime"]["availability"] == "NOT_BOUND"
     assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
     assert ctx["switch"]["availability"] == "NOT_BOUND"
     # Must not invent HOLD/FLAT
     assert ctx["decision"]["fields"]["decision"] is None
     assert ctx["decision"]["fields"]["direction"] is None
-    assert ctx["phase"] == "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
 
 
 def test_shell_assets_exist() -> None:

@@ -13,6 +13,7 @@ from .contracts import (
     DoublePlaySnapshotV1,
     DynamicScopeSnapshotV1,
     MarketInstrumentSnapshotV1,
+    SafetyAuthoritySnapshotV1,
     UniverseRankingSnapshotV1,
 )
 from .provenance import FreshnessV1, SnapshotProvenanceV1
@@ -361,4 +362,69 @@ def project_double_play_snapshot_v1(
         blockers=tuple(str(code) for code in blockers),
         display_only=True,
         live_authorization=False,
+    )
+
+
+def project_safety_authority_snapshot_v1(
+    *,
+    kill_switch_state: str,
+    veto_active: bool,
+    reason_codes: Sequence[str],
+    generated_at: datetime,
+    source_reference: str | None,
+    evidence_digest: str | None = None,
+    git_sha: str | None = None,
+    producer_module: str = "trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0",
+    source_kind: str = "killswitch_boundary_offline_replay_boundary",
+    effective_at: datetime | None = None,
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
+) -> SafetyAuthoritySnapshotV1:
+    """Project already-computed KillSwitch / boundary fields into Landscape form.
+
+    Forbidden: instantiating KillSwitch, calling trigger/recover, calling
+    evaluate_offline_killswitch_boundary_v0 or any bind_* evaluator, inventing
+    healthy/default safety state, or deriving veto from Risk/Capital/Sizing.
+    generated_at/effective_at must be producer timestamps — never page-assembly time.
+    """
+    if not kill_switch_state:
+        raise ValueError("kill_switch_state required for AVAILABLE/STALE")
+    if not isinstance(veto_active, bool):
+        raise TypeError("veto_active must be bool")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_safety_authority only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
+    schema_id = f"{SCHEMA_FAMILY}.safety_authority.{SCHEMA_VERSION}"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module=producer_module,
+        generated_at=generated_at,
+        effective_at=generated_at if effective_at is None else effective_at,
+        source_kind=source_kind,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        availability=availability,
+    )
+    freshness = FreshnessV1(
+        observed_at=generated_at,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+    return SafetyAuthoritySnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=availability,
+        kill_switch_state=str(kill_switch_state),
+        veto_active=veto_active,
+        reason_codes=tuple(str(code) for code in reason_codes),
     )
