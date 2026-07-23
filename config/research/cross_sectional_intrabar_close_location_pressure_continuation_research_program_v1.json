@@ -45,19 +45,17 @@
   "create_successor_hypothesis": false,
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
-  "development_evaluation_authorized": false,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
   "evaluation_authorized": false,
-  "evaluation_run_count": 0,
+  "evaluation_run_count": 1,
   "exactly_one_authoritative_truth": true,
   "explicit_closeout_decision": false,
   "explicit_non_actions": [
-    "NO_EVALUATION",
     "NO_BACKTEST",
     "NO_HOLDOUT_ACCESS",
-    "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE",
     "NO_VOL_REGIME_REOPEN",
     "NO_CS_MOMENTUM_REOPEN",
     "NO_CS_MOMENTUM_PARAMETER_RETUNE",
@@ -74,7 +72,7 @@
     "NO_RUN_SLOT_CONSUMPTION"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "New independent research program identity after terminal DEVELOPMENT_FAIL of CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1. Strategy implementation present under separate operator GO; evaluation still unauthorized; development_run_count remains 0. Closed programs and open CSRHR linked only as collision exclusions; CSRHR must remain unchanged.",
+  "governance_note": "Single authorized DEVELOPMENT evaluation executed: DEVELOPMENT_FAIL. Run slot consumed (count=1); retry forbidden. Holdout untouched; CSRHR remains OPEN_BACKLOG; economic gate closed; no promotion/runtime/LIVE/orders.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "holdout_run_limit": 0,
@@ -95,7 +93,7 @@
     "vs_volatility_regime": "Causal source is intrabar close location pressure, not realized-volatility compression/expansion/term-structure/CS-RV-rank admissions."
   },
   "measurement_contract_ref": "config/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
+  "next_canonical_step": "AWAIT_OPERATOR_GO_FOR_PR_MERGE_THEN_TERMINAL_CLOSEOUT",
   "next_eligible": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
   "operator_decision": "PERSIST_NEW_INDEPENDENT_RESEARCH_PROGRAM_SSOT_AND_PREREGISTRATION",
   "operator_decision_packet_ref": "config/research/cross_sectional_intrabar_close_location_pressure_continuation_program_definition_operator_decision_packet_v1.json",
@@ -121,9 +119,9 @@
     "parameter_retune_forbidden": true,
     "unchanged_binding_retry_forbidden": true
   },
-  "run_budget_consumed": false,
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_budget_consumed": true,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_authorized": false,
   "runtime_effect": "NONE",
   "runtime_policy": {
@@ -164,6 +162,6 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "CS_INTRABAR_CLV_PRESSURE_CONTINUATION_STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL_SLOT_CONSUMED_NO_RETRY",
   "workstream_id": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_WORKSTREAM_V1"
 }

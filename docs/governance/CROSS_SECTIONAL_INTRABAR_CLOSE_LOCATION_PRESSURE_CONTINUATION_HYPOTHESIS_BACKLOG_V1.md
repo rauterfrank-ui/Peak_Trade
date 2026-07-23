@@ -6,8 +6,8 @@ Status: `OPEN_BACKLOG`
 - Workstream: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_WORKSTREAM_V1`
 - preregistered=1 / open_unpreregistered=0 / terminal=0
 - Next eligible: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1` (`PREREGISTERED_DEFINITION_ONLY`, `implementation_present=true`)
-- Development run count: 0 / limit 1 / retry forbidden
-- Strategy implementation present; evaluation unauthorized; holdout forbidden; economic gate closed
+- Development run count: 1 / limit 1 / retry forbidden
+- Terminal DEVELOPMENT_FAIL; slot consumed; evaluation unauthorized; holdout forbidden; economic gate closed
 - Open sibling CSRHR: `OPEN_BACKLOG` mutation/continuation/reuse forbidden
 - Closed exclusions: vol-regime, CS-momentum, entry/exit MR; path-efficiency terminal DEVELOPMENT_FAIL no retry
 - Next: `AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`

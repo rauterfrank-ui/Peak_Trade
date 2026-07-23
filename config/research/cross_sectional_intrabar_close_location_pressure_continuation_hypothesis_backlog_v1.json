@@ -21,7 +21,7 @@
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
   "development_evaluation_authorized": false,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "evaluation_authorized": false,
   "evaluation_results_embedded": false,
   "exactly_one_authoritative_truth": true,
@@ -40,7 +40,7 @@
     "NO_IMPLICIT_SUCCESSOR"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "Open backlog with exactly one preregistered hypothesis; strategy implementation present under separate operator GO. Evaluation unauthorized; development_run_count remains 0. Open CSRHR sibling must remain unchanged. Closed programs remain closed collision exclusions.",
+  "governance_note": "Terminal DEVELOPMENT_FAIL after single authorized evaluation. Slot consumed; retry forbidden. CSRHR sibling remains OPEN_BACKLOG unchanged. Holdout untouched; economic gate closed.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -60,7 +60,7 @@
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
+  "next_canonical_step": "AWAIT_OPERATOR_GO_FOR_PR_MERGE_THEN_TERMINAL_CLOSEOUT",
   "next_eligible": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
   "open_sibling_lanes": {
     "continuation_forbidden": true,
@@ -75,7 +75,7 @@
     {
       "baseline_id": "UNCONDITIONAL_CROSS_SECTIONAL_EQUAL_WEIGHT_OR_NO_RANK_CONTROL_NOT_USED_ABSOLUTE_ADMISSION",
       "contract_ref": "config/research/cross_sectional_intrabar_close_location_pressure_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-      "development_run_count": 0,
+      "development_run_count": 1,
       "development_run_limit": 1,
       "evaluation_authorized": false,
       "holdout_allowed": false,
@@ -85,10 +85,10 @@
       "reopen_allowed": false,
       "rerun_allowed": false,
       "retry_allowed": false,
-      "run_slot_consumed": false,
-      "runner_start_count": 0,
+      "run_slot_consumed": true,
+      "runner_start_count": 1,
       "signal_family": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE",
-      "status": "PREREGISTERED_DEFINITION_ONLY",
+      "status": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL",
       "strategy_id": "cross_sectional_intrabar_close_location_pressure_continuation",
       "strategy_identity": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1",
       "strategy_version": "v1",
@@ -112,7 +112,7 @@
   "required_treatment_type": "OWN_INSTRUMENT_CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_ADMISSION",
   "requires_new_separate_operator_authorization": false,
   "retry_allowed": false,
-  "runner_start_count": 0,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
@@ -140,6 +140,6 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "OPEN_BACKLOG_ONE_PREREGISTERED_HYPOTHESIS_STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED",
+  "verdict": "OPEN_BACKLOG_TERMINAL_DEVELOPMENT_FAIL_SLOT_CONSUMED_NO_RETRY",
   "workstream_id": "CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_WORKSTREAM_V1"
 }
