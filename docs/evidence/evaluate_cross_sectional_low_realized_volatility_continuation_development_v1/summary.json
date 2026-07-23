@@ -1,0 +1,193 @@
+{
+  "artifact_digests": {
+    "run_stderr.txt": "48e10f9f40d0fa2f66160f6fcd5ea2f43a8ffc984fc82ece94b97712cd93eb3f",
+    "run_stdout.txt": "3e94460d322871283cd4afb5a45c34e9fd275ff3d14fed367f3aac58ffc0ce45",
+    "run_timing.txt": "48e10f9f40d0fa2f66160f6fcd5ea2f43a8ffc984fc82ece94b97712cd93eb3f"
+  },
+  "base_sha": "35a6a90a4e43c80f6dc7bfc6b5d155340f3788c6",
+  "baseline_id": "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1",
+  "baseline_net_profit_factor": 0.4312549800852556,
+  "baseline_net_return": -152.33925550838336,
+  "budget_consumed": true,
+  "config_digest": "13e87d27c555960767cd4c21a1e80cf195a4f4500bbfebfd10f5bcd187f3403a",
+  "dataset_digest": "4a1978fe0e69a6cd7b19b32f5f95882cfdc3e36397aaec87bce2c4139ab1cfca",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_dataset_loaded": true,
+  "economic_gate_pass": false,
+  "end_utc": "2026-07-23T05:59:07Z",
+  "evaluable_treatment_breakout_events": 1758,
+  "evaluation_executed": true,
+  "evaluation_run_count": 1,
+  "evaluator_reconstruction_used_for_treatment": false,
+  "exact_command": "python3 scripts/research/run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py --mode evaluate --authorize-single-development-evaluation CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "exit_reason_attribution": {
+    "CROSS_SECTIONAL_VOL_RANK_NORMALIZATION_INVALIDATION": 371,
+    "INITIAL_STOP": 1079,
+    "REGIME_INVALIDATION": 213,
+    "TIME_EXIT": 95
+  },
+  "frozen_measurement_contract_digest_post_exec": "e5bea387a3898142f25e593b3d5f88b749fd12d3302e1be6e0f7b1cfb72381f3",
+  "frozen_measurement_contract_digest_pre_exec": "c729254d3113a5b853721b18eecf292d744c23eaeee680c6035617f0f525b6a1",
+  "gates": {
+    "all_pass": false,
+    "all_segments_evaluable": {
+      "gate_id": "ALL_SEGMENTS_EVALUABLE",
+      "observed": 4,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 4
+    },
+    "baseline_improvement": {
+      "gate_id": "BASELINE_IMPROVEMENT",
+      "observed": {
+        "baseline_net_profit_factor": 0.4312549800852556,
+        "treatment_net_profit_factor": 0.6714624663994068
+      },
+      "passed": true,
+      "reason_code": null,
+      "threshold": "treatment > baseline"
+    },
+    "canonical_cost": {
+      "gate_id": "CANONICAL_COST",
+      "observed": {
+        "net_expectancy": -0.2620798989735877,
+        "net_profit_factor": 0.6714624663994068
+      },
+      "passed": false,
+      "reason_code": "NET_PROFIT_FACTOR_BELOW_THRESHOLD",
+      "threshold": 1.3
+    },
+    "cost_stress": {
+      "gate_id": "COST_STRESS",
+      "observed": 0.5757120398784036,
+      "passed": false,
+      "reason_code": "COST_STRESS_NOT_SURVIVED",
+      "threshold": 1.0
+    },
+    "gross_edge": {
+      "gate_id": "GROSS_EDGE",
+      "observed": {
+        "gross_pnl": -69.28313099307809,
+        "gross_profit_factor": 0.9383927473214758
+      },
+      "passed": false,
+      "reason_code": "GROSS_EDGE_NOT_MEANINGFUL",
+      "threshold": 1.0
+    },
+    "max_drawdown": {
+      "gate_id": "MAX_DRAWDOWN",
+      "observed": 9.330838278456861,
+      "passed": false,
+      "reason_code": "MAX_DRAWDOWN_BREACH",
+      "threshold": 0.25
+    },
+    "sample_sufficiency": {
+      "gate_id": "SAMPLE_SUFFICIENCY",
+      "observed": 1758,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 50
+    },
+    "segment_event_sufficiency": {
+      "gate_id": "SEGMENT_EVENT_SUFFICIENCY",
+      "observed": [
+        416,
+        493,
+        426,
+        423
+      ],
+      "passed": true,
+      "reason_code": null,
+      "threshold": 10
+    },
+    "time_segment_robustness": {
+      "gate_id": "TIME_SEGMENT_ROBUSTNESS",
+      "observed": {
+        "pass_ratio": 0.0,
+        "passing_segments": 0
+      },
+      "passed": false,
+      "reason_code": "TIME_SEGMENT_ROBUSTNESS_FAIL",
+      "threshold": 0.5
+    },
+    "trades_sufficiency": {
+      "gate_id": "TRADES_SUFFICIENCY",
+      "observed": 1758,
+      "passed": true,
+      "reason_code": null,
+      "threshold": 30
+    }
+  },
+  "gross_profit_factor": 0.9383927473214758,
+  "gross_return": -10.016010052077544,
+  "holdout_accessed": false,
+  "hypothesis_id": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "long_trade_count": 820,
+  "max_drawdown": 9.330838278456861,
+  "net_profit_factor": 0.6714624663994068,
+  "net_return": -10.016010052077544,
+  "passing_segments": 0,
+  "productive_exit_pnl_evaluator_bound": true,
+  "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
+  "promotion_authorized": false,
+  "retry_forbidden": true,
+  "runner_start_count": 1,
+  "runner_started": true,
+  "schema_version": "evaluate_cross_sectional_low_realized_volatility_continuation_development_summary.v1",
+  "scope_id": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
+  "segment_boundaries": [
+    {
+      "evaluable_treatment_breakout_events": 416,
+      "range": "2022-06-01T04:00:00Z..2022-09-19T11:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q1"
+    },
+    {
+      "evaluable_treatment_breakout_events": 493,
+      "range": "2022-09-19T11:00:00Z..2023-01-07T17:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q2"
+    },
+    {
+      "evaluable_treatment_breakout_events": 426,
+      "range": "2023-01-07T17:00:00Z..2023-04-27T23:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q3"
+    },
+    {
+      "evaluable_treatment_breakout_events": 423,
+      "range": "2023-04-27T23:00:00Z..2023-08-16T05:00:00Z",
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q4"
+    }
+  ],
+  "segment_results": [
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q1"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q2"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q3"
+    },
+    {
+      "result": "FAIL",
+      "segment_id": "TIME_SEGMENT_Q4"
+    }
+  ],
+  "short_trade_count": 938,
+  "strategy_emitted_exits_used_for_treatment": true,
+  "strategy_id": "cross_sectional_low_realized_volatility_continuation",
+  "strategy_identity": "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1",
+  "strategy_params_digest": "85da9e95a90fe07e41f3827e02f949469063052d152fa1bb56cb8bf1c2123128",
+  "terminal_development_verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL",
+  "time_segment_count": 4,
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+  "time_segment_robustness_pass_ratio": 0.0,
+  "trade_count": 1758,
+  "wallclock_seconds": 120.85
+}

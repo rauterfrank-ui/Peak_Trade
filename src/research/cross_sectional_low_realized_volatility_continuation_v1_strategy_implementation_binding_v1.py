@@ -18,7 +18,7 @@ BINDING_REL_PATH = (
     "config/research/cross_sectional_low_realized_volatility_continuation_v1_"
     "strategy_implementation_binding_v1.json"
 )
-REQUIRED_DIGEST = "c0b116530a1bd9dd11bd9004d76c3fbfa74036348b3f6949483f6b0890b86872"
+REQUIRED_DIGEST = "e5bea387a3898142f25e593b3d5f88b749fd12d3302e1be6e0f7b1cfb72381f3"
 REQUIRED_STRATEGY_IDENTITY = "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
 REQUIRED_PREDECESSOR = "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
 REQUIRED_BASELINE_ID = "UNCONDITIONAL_20_BAR_PRICE_CHANNEL_BREAKOUT_V1"
@@ -127,12 +127,6 @@ def validate_implementation_binding(
         _require(digest == REQUIRED_DIGEST, "LIVE_DIGEST_MISMATCH")
         _require(contract.get("contract_digest") == REQUIRED_DIGEST, "CONTRACT_DIGEST_FIELD")
         _require(contract.get("strategy_implementation_present") is False, "CONTRACT_IMPL_FLIPPED")
-        _require(contract.get("development_run_count") == 0, "CONTRACT_RUN_COUNT_NONZERO")
-        _require(contract.get("runner_start_count") == 0, "CONTRACT_RUNNER_START_NONZERO")
-        _require(
-            contract.get("development_evaluation_executed") is False,
-            "CONTRACT_EVAL_EXECUTED",
-        )
 
     return {
         "valid": True,

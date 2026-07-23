@@ -453,6 +453,20 @@
       ],
       "runtime_effect": "NONE"
     },
+    "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
+      "authority_effect": "NONE",
+      "note": "Bounded DEVELOPMENT evaluation execution for CSLRVC v1; single run slot consumed with DEVELOPMENT_FAIL; retry/holdout/promotion/runtime/LIVE/orders forbidden.",
+      "path_prefixes": [
+        "docs/evidence/evaluate_cross_sectional_low_realized_volatility_continuation_development_v1/",
+        "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "config/research/cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+        "config/research/cross_sectional_low_realized_volatility_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "scripts/research/run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py",
+        "src/research/cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_v1/",
+        "tests/research/test_cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_v1.py"
+      ],
+      "runtime_effect": "NONE"
+    },
     "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
       "note": "Definition-only CREATE_SUCCESSOR after VTDC DEVELOPMENT_FAIL; CSHRVF cross-sectional high RV-level rank fade; measurement contract frozen; no evaluation/holdout/runtime/orders; VTDC/VTSR/VEFCF/VEPC/CS-momentum reopen forbidden.",
       "path_prefixes": [

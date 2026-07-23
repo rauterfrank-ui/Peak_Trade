@@ -126,16 +126,16 @@ def test_import_safety_and_binding() -> None:
     assert (REPO / PRODUCTIVE_EXIT_PNL_EVALUATOR_REF_V1).is_file()
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     assert contract["strategy_implementation_present"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["runner_start_count"] == 0
-    assert contract["development_evaluation_executed"] is False
-    assert contract["run_slot_consumed"] is False
+    assert contract["development_run_count"] == 1
+    assert contract["runner_start_count"] == 1
+    assert contract["development_evaluation_executed"] is True
+    assert contract["run_slot_consumed"] is True
     assert contract["contract_digest"] == REQUIRED_DIGEST
     entry = json.loads(ENTRY_POINT.read_text(encoding="utf-8"))
-    assert entry["entry_point_status"] == "DEFINITION_BOUND_EVALUATION_UNAUTHORIZED"
-    assert entry["development_run_count"] == 0
-    assert entry["runner_start_count"] == 0
-    assert entry["development_evaluation_executed"] is False
+    assert entry["entry_point_status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
+    assert entry["development_run_count"] == 1
+    assert entry["runner_start_count"] == 1
+    assert entry["development_evaluation_executed"] is True
     assert entry["evaluation_authorized"] is False
 
 
@@ -360,8 +360,8 @@ def test_governance_registry_and_owner_map_consistency() -> None:
         )
     )
     assert program["strategy_implementation_present"] is True
-    assert program["development_run_count"] == 0
-    assert program["runner_start_count"] == 0
+    assert program["development_run_count"] == 1
+    assert program["runner_start_count"] == 1
     assert program["evaluation_authorized"] is False
     backlog = json.loads(
         (REPO / "config/research/volatility_regime_hypothesis_backlog_v1.json").read_text(
@@ -371,9 +371,9 @@ def test_governance_registry_and_owner_map_consistency() -> None:
     hyp = backlog["preregistered_hypotheses"][0]
     assert hyp["strategy_identity"] == "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
     assert hyp["implementation_present"] is True
-    assert hyp["development_run_count"] == 0
-    assert hyp["runner_start_count"] == 0
-    assert hyp["status"] == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
+    assert hyp["development_run_count"] == 1
+    assert hyp["runner_start_count"] == 1
+    assert hyp["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL"
     terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
     cshrvf = terminals["CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"]
     assert cshrvf["status"] == "TERMINAL_FAIL"
