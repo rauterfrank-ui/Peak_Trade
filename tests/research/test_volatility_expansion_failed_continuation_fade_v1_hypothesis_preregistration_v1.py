@@ -134,13 +134,13 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
     assert len(backlog["preregistered_hypotheses"]) == 1
     assert backlog["status"] == "OPEN_BACKLOG"
     assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
-        "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
+        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
     )
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
     assert REQUIRED_PREDECESSOR in terminals
     assert REQUIRED_STRATEGY_IDENTITY in terminals
     program = _load(PROGRAM_PATH)
-    assert program["strategy_identity"] == "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
+    assert program["strategy_identity"] == "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
     assert REQUIRED_PREDECESSOR in program["causal_independence"]["forbidden_lineage_refs"]
     assert REQUIRED_STRATEGY_IDENTITY in program["causal_independence"]["forbidden_lineage_refs"]
 

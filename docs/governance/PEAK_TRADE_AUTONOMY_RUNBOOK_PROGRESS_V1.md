@@ -1,16 +1,26 @@
 
 
-### Post-VTSR DEVELOPMENT_FAIL (slot consumed)
+### Post-VTSR CREATE_SUCCESSOR → VTDC v1 definition-only preregistered
+
+- Scope: `VOLATILITY_REGIME_POST_VTSR_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1`
+- Decision: `CREATE_SUCCESSOR_HYPOTHESIS` → `VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTDC_DEFINITION_ONLY`
+- VTSR: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden / holdout untouched
+- VTDC: `DEFINITION_ONLY_PREREGISTERED`; no evaluation; no strategy implementation in this slice
+- Next admissible GO: `GO_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Explicit non-actions: no VTSR&#47;VEFCF&#47;VEPC retry; no VTDC evaluation; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
+
+### Post-VTSR DEVELOPMENT_FAIL (slot consumed) (historical)
 
 - Scope: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
 - Strategy: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1`
 - Status: `RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL` / `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;FAIL`
-- Lane backlog: `OPEN_BACKLOG`
-- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_DEVELOPMENT_FAIL_SLOT_CONSUMED`
+- Lane backlog: `OPEN_BACKLOG` (then awaiting post-VTSR lifecycle GO)
+- Packet status (then): `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_DEVELOPMENT_FAIL_SLOT_CONSUMED`
 - `DEVELOPMENT_EVALUATION_EXECUTED=true`, `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`
 - Evidence: `docs/evidence/evaluate_volatility_term_structure_reversion_development_v1/`
 - Canonical entry point (slot consumed; retry forbidden): `scripts&#47;research&#47;run_evaluate_volatility_term_structure_reversion_development_v1.py`
-- Next admissible GO family: post-VTSR lane lifecycle (`DECLARE_AWAITING` / `CLOSE_LANE` / `CREATE_SUCCESSOR`)
 - Explicit non-actions: no VTSR retry; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
 
 ### Post-VEFCF CREATE_SUCCESSOR → VTSR v1 strategy implementation present (historical)

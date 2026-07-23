@@ -192,7 +192,7 @@ def test_material_difference_vs_vcb_and_coiled_spring() -> None:
     assert "VOLATILITY_EXPANSION_PERSISTENCE_V1" in terminals
     assert "VOLATILITY_COMPRESSION_BREAKOUT_V1" in terminals
     assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
-        "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
+        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
     )
     assert "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1" in terminals
 
