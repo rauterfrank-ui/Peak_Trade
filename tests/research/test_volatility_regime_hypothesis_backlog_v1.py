@@ -43,7 +43,7 @@ def test_repo_backlog_open_with_vtsr_preregistered() -> None:
         "VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1"
     )
     assert report["strategy_identity"] == "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     assert (
         report["dataset_id"]
         == "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1"
@@ -70,9 +70,11 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert len(backlog["preregistered_hypotheses"]) == 1
     hyp = backlog["preregistered_hypotheses"][0]
     assert hyp["strategy_identity"] == "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
-    assert hyp["status"] == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
+    assert hyp["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL"
     assert hyp["implementation_present"] is True
-    assert hyp["run_slot_consumed"] is False
+    assert hyp["run_slot_consumed"] is True
+    assert hyp["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
+    assert hyp["fail_reason"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
     assert len(backlog["terminal_hypotheses"]) == 7
     terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
     assert terminals["VOLATILITY_COMPRESSION_BREAKOUT_V1"]["terminal_result"] == (
@@ -94,7 +96,8 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
         "OWN_INSTRUMENT_VOLATILITY_TERM_STRUCTURE_REVERSION_ADMISSION"
     )
     assert backlog["next_canonical_step"] == (
-        "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
+        "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_"
+        "FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
     )
 
 
@@ -109,8 +112,8 @@ def test_fail_closed_mutations() -> None:
     with pytest.raises(BacklogValidationError, match="RETRY_ALLOWED"):
         validate_backlog_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["development_run_count"] = 1
-    with pytest.raises(BacklogValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
+    bad3["development_run_count"] = 0
+    with pytest.raises(BacklogValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
         validate_backlog_contract(bad3)
     bad4 = copy.deepcopy(payload)
     bad4["closed_sibling_lanes"]["reopen_forbidden"] = False

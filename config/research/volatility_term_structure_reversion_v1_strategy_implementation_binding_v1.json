@@ -37,10 +37,10 @@
     "NO_TRAILING_STOP",
     "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE"
   ],
-  "frozen_measurement_contract_digest": "be7c71e48cbe343a17e692b815a800d6ba4fe0c3923af7134b5111c41ca25e6d",
+  "frozen_measurement_contract_digest": "48ee1c1f128cf613a2fbdc414909eb812bd54f1528ede1563b022cc7c254c8c5",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/volatility_term_structure_reversion_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-  "governance_note": "VTSR v1 strategy implementation present; elevated short/long RV term-structure reversion fade; exit SM with term-structure normalization; Development evaluation unauthorized in this slice; no holdout/runtime/orders; no VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry.",
+  "governance_note": "VTSR v1 bounded DEVELOPMENT evaluation executed once; DEVELOPMENT_FAIL on preregistered admission gates (net PF/cost stress/max drawdown/time-segment robustness). Slot consumed. No retry. No holdout. Economic/promotion/runtime/live gates closed. No VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1",
@@ -69,7 +69,7 @@
   "predecessor_strategy_id": "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
   "program_id": "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1",
   "promotion_eligible": false,
-  "runner_present": false,
+  "runner_present": true,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "capital_activated": false,
@@ -92,5 +92,5 @@
   "strategy_parameters_changed": false,
   "strategy_version": "v1",
   "target_phenomenon": "SHORT_VS_LONG_REALIZED_VOLATILITY_TERM_STRUCTURE_REVERSION",
-  "verdict": "STRATEGY_IMPLEMENTATION_BOUND_EVALUATION_STILL_UNAUTHORIZED"
+  "verdict": "STRATEGY_IMPLEMENTATION_BOUND_EXECUTABLE_ENTRY_PATH_PRESENT_EVALUATION_STILL_UNAUTHORIZED"
 }

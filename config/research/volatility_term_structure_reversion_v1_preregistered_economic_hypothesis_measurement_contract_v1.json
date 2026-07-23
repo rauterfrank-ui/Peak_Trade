@@ -110,7 +110,7 @@
     "evaluation_authorized_in_this_slice": false,
     "implementation_present": false,
     "script_ref": "scripts/research/run_evaluate_volatility_term_structure_reversion_development_v1.py",
-    "status": "DEFINITION_ONLY_UNAUTHORIZED"
+    "status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
   },
   "causal_independence": {
     "forbidden_lineage_refs": [
@@ -128,7 +128,7 @@
     "seed_policy": "frozen_when_stochastic_components_absent",
     "treatment_arm": "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
   },
-  "contract_digest": "be7c71e48cbe343a17e692b815a800d6ba4fe0c3923af7134b5111c41ca25e6d",
+  "contract_digest": "48ee1c1f128cf613a2fbdc414909eb812bd54f1528ede1563b022cc7c254c8c5",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -149,9 +149,9 @@
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
   "development_evaluation_authorized": true,
-  "development_evaluation_executed": false,
+  "development_evaluation_executed": true,
   "development_evaluation_runs_allowed": 1,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "directional_form": {
     "double_play_remains_sole_authority": true,
     "hypothesis_emits_admission_and_direction_intent_only": true,
@@ -392,7 +392,7 @@
     "live_or_authenticated_account_endpoints",
     "non_development_only_datasets"
   ],
-  "governance_note": "Definition-only CREATE_SUCCESSOR after VEFCF DEVELOPMENT_FAIL (slot consumed). Causal claim: elevated short-vs-long RV term-structure ratio mean-reverts in subsequent own-instrument returns. Not a retry of VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB. No evaluation/holdout/runtime/orders in this slice.",
+  "governance_note": "VTSR v1 bounded DEVELOPMENT evaluation executed once; DEVELOPMENT_FAIL on preregistered admission gates (net PF/cost stress/max drawdown/time-segment robustness). Slot consumed. No retry. No holdout. Economic/promotion/runtime/live gates closed. No VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry.",
   "holdout_authorized": false,
   "holdout_based_parameter_selection_forbidden": true,
   "holdout_forbidden": true,
@@ -592,8 +592,8 @@
     "retry_forbidden": true,
     "second_development_run_forbidden": true
   },
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "live_authorized": false,
@@ -685,5 +685,5 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "DEFINITION_ONLY_PREREGISTERED_SEMANTICS_COMPLETE_AWAITING_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
 }

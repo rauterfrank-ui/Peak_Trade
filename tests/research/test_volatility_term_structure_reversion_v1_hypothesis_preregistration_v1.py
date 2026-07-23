@@ -60,12 +60,12 @@ def test_repo_contract_definition_only_digest() -> None:
     assert report["baseline_id"] == REQUIRED_BASELINE_ID
     assert report["evaluation_authorized"] is False
     assert report["development_evaluation_authorized"] is True
-    assert report["development_evaluation_executed"] is False
+    assert report["development_evaluation_executed"] is True
     assert report["holdout_authorized"] is False
     assert report["dataset_bound"] is True
-    assert report["development_run_count"] == 0
-    assert report["runner_start_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_run_count"] == 1
+    assert report["runner_start_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["open_parameters_remaining"] is False
     assert report["entry_semantics_complete"] is True
     assert report["exit_semantics_complete"] is True
@@ -101,18 +101,19 @@ def test_frozen_term_structure_reversion_mechanism_and_exit_pairability() -> Non
     assert exits["productive_exit_pnl_evaluator_ref"] == REQUIRED_PRODUCTIVE_PNL_REF
     assert PRODUCTIVE_PNL.is_file()
     assert contract["strategy_implementation_present"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["run_slot_consumed"] is False
+    assert contract["development_run_count"] == 1
+    assert contract["run_slot_consumed"] is True
     ep = contract["canonical_development_evaluation_entry_point"]
     assert ep["definition_only"] is True
     assert ep["evaluation_authorized_in_this_slice"] is False
     assert ep["script_ref"] == REQUIRED_ENTRY_POINT_SCRIPT
+    assert ep["status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
     assert ENTRY_POINT_BINDING.is_file()
     binding = _load(ENTRY_POINT_BINDING)
-    assert binding["status"] == "DEFINITION_ONLY_UNAUTHORIZED"
-    assert binding["development_evaluation_executed"] is False
-    assert binding["development_run_count"] == 0
-    assert binding["runner_start_count"] == 0
+    assert binding["status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
+    assert binding["development_evaluation_executed"] is True
+    assert binding["development_run_count"] == 1
+    assert binding["runner_start_count"] == 1
     assert binding["holdout_forbidden"] is True
 
 
@@ -146,7 +147,7 @@ def test_fail_closed_on_semantics_mutation() -> None:
     with pytest.raises(PreregistrationValidationError, match="TRAILING_ALLOWED"):
         validate_measurement_contract(bad2)
     bad3 = copy.deepcopy(contract)
-    bad3["development_run_count"] = 1
+    bad3["development_run_count"] = 0
     with pytest.raises(PreregistrationValidationError, match="DEVELOPMENT_RUN_COUNT"):
         validate_measurement_contract(bad3)
     bad4 = copy.deepcopy(contract)
@@ -175,8 +176,10 @@ def test_governance_evidence_owner_map() -> None:
     }
     assert required.issubset({p.name for p in EVIDENCE.iterdir() if p.is_file()})
     summary = _load(EVIDENCE / "summary.json")
-    assert summary["development_run_count"] == 0
-    assert summary["run_slot_consumed"] is False
+    assert summary["development_run_count"] == 1
+    assert summary["run_slot_consumed"] is True
+    assert summary["runner_start_count"] == 1
+    assert summary["development_evaluation_executed"] is True
     assert summary["holdout_accessed"] is False
     assert summary["orders"] is False
     assert summary["live_authorized"] is False

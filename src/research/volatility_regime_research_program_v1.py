@@ -68,12 +68,12 @@ def validate_program_contract(
     )
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("development_evaluation_authorized") is False,
-        "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
+        payload.get("development_evaluation_authorized") is True,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
     )
     _require(
-        payload.get("development_evaluation_executed") is False,
-        "DEVELOPMENT_EVALUATION_EXECUTED_TRUE",
+        payload.get("development_evaluation_executed") is True,
+        "DEVELOPMENT_EVALUATION_EXECUTED_FALSE",
     )
     _require(
         payload.get("strategy_id") == "volatility_term_structure_reversion",
@@ -85,7 +85,10 @@ def validate_program_contract(
     )
     _require(
         payload.get("next_canonical_step")
-        == "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
+        == (
+            "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_"
+            "FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
+        ),
         "NEXT_STEP_STALE",
     )
     _require(
@@ -111,10 +114,10 @@ def validate_program_contract(
         payload.get("strategy_implementation_authorized_in_this_slice") is False,
         "STRATEGY_IMPLEMENTATION_AUTHORIZED",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
     _require(payload.get("development_run_limit") == 1, "DEVELOPMENT_RUN_LIMIT_NOT_ONE")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_NOT_CONSUMED")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
     gates = payload.get("promotion_and_economic_gate_policy") or {}
     _require(gates.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE_TRUE")
@@ -299,9 +302,9 @@ def validate_program_contract(
         "holdout_authorized": False,
         "evaluation_authorized": False,
         "promotion_eligible": False,
-        "development_run_count": 0,
-        "runner_start_count": 0,
-        "run_slot_consumed": False,
+        "development_run_count": 1,
+        "runner_start_count": 1,
+        "run_slot_consumed": True,
         "retry_allowed": False,
         "material_difference_explicit": True,
         "material_difference_from_vcb_v1": True,

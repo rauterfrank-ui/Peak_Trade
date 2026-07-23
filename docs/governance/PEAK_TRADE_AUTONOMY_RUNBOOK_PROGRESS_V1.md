@@ -1,16 +1,27 @@
 
 
-### Post-VEFCF CREATE_SUCCESSOR → VTSR v1 strategy implementation present
+### Post-VTSR DEVELOPMENT_FAIL (slot consumed)
+
+- Scope: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Strategy: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1`
+- Status: `RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL` / `DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL&#47;FAIL`
+- Lane backlog: `OPEN_BACKLOG`
+- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_DEVELOPMENT_FAIL_SLOT_CONSUMED`
+- `DEVELOPMENT_EVALUATION_EXECUTED=true`, `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`
+- Evidence: `docs/evidence/evaluate_volatility_term_structure_reversion_development_v1/`
+- Canonical entry point (slot consumed; retry forbidden): `scripts&#47;research&#47;run_evaluate_volatility_term_structure_reversion_development_v1.py`
+- Next admissible GO family: post-VTSR lane lifecycle (`DECLARE_AWAITING` / `CLOSE_LANE` / `CREATE_SUCCESSOR`)
+- Explicit non-actions: no VTSR retry; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
+
+### Post-VEFCF CREATE_SUCCESSOR → VTSR v1 strategy implementation present (historical)
 
 - Scope: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
 - Strategy: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1`
-- Status: `STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED`
-- Lane backlog: `OPEN_BACKLOG`
-- Packet status: `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_STRATEGY_IMPLEMENTATION_PRESENT`
+- Status: superseded by DEVELOPMENT_FAIL slot consumption
+- Historical: strategy producer + exit SM present; Development evaluation then executed under separate GO
+- Packet status (then): `OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VTSR_STRATEGY_IMPLEMENTATION_PRESENT`
 - VEFCF: terminal `DEVELOPMENT_FAIL` / slot consumed / retry forbidden / holdout untouched
-- VTSR: strategy producer + exit SM present; no Development evaluation executed
-- Next admissible GO: `GO_VOLATILITY_TERM_STRUCTURE_REVERSION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
-- Explicit non-actions: no VEFCF retry; no VTSR evaluation execution; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
+- Explicit non-actions: no VEFCF retry; no holdout; no CLOSE_LANE auto-apply; no LIVE/orders
 
 ### Post-VEFCF CREATE_SUCCESSOR → VTSR v1 definition-only preregistered (historical)
 
