@@ -36,13 +36,13 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_program_definition_only_open() -> None:
+def test_repo_program_closed_after_cslrvc_development_fail() -> None:
     report = load_and_validate_repo_program(REPO)
     assert report["valid"] is True
     assert report["definition_only"] is True
     assert report["strategy_implementation_present"] is True
     assert report["program_id"] == "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
-    assert report["status"] == "DEFINITION_ONLY_PROGRAM_OPEN"
+    assert report["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     assert report["strategy_identity"] == (
         "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
     )
@@ -54,6 +54,8 @@ def test_repo_program_definition_only_open() -> None:
     assert report["runner_start_count"] == 1
     assert report["run_slot_consumed"] is True
     assert report["retry_allowed"] is False
+    assert report["successor_found"] is False
+    assert report["explicit_closeout_decision"] is True
     assert report["material_difference_explicit"] is True
     assert report["material_difference_from_vcb_v1"] is True
     assert report["material_difference_from_vep_v1"] is True
@@ -130,18 +132,18 @@ def test_material_difference_and_closed_siblings_immutable() -> None:
     assert "VOLATILITY_TERM_STRUCTURE_REVERSION_V1" in independence["forbidden_lineage_refs"]
 
 
-def test_post_create_successor_fields_and_strategy_id_reconciled() -> None:
+def test_post_close_lane_fields_and_strategy_id_reconciled() -> None:
     payload = _load(PROGRAM_PATH)
     assert payload["strategy_id"] == "cross_sectional_low_realized_volatility_continuation"
-    assert payload["development_evaluation_authorized"] is True
-    assert payload["lane_backlog_status"] == "OPEN_BACKLOG"
-    assert payload["active_hypothesis_inventory_empty"] is False
-    assert payload["next_canonical_step"] == (
-        "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_"
-        "FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
-    )
+    assert payload["development_evaluation_authorized"] is False
+    assert payload["lane_backlog_status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert payload["active_hypothesis_inventory_empty"] is True
+    assert payload["next_canonical_step"] == "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
     assert payload["strategy_implementation_present"] is True
-    assert payload["implementation_authorized"] is True
+    assert payload["implementation_authorized"] is False
+    assert payload["create_successor_hypothesis"] is False
+    assert payload["successor_found"] is False
+    assert payload["explicit_closeout_decision"] is True
     assert (
         payload["causal_independence"][
             "not_a_retry_of_terminal_volatility_term_structure_reversion_v1"
@@ -157,6 +159,12 @@ def test_post_create_successor_fields_and_strategy_id_reconciled() -> None:
     assert (
         payload["causal_independence"][
             "not_a_retry_of_terminal_cross_sectional_high_realized_volatility_fade_v1"
+        ]
+        is True
+    )
+    assert (
+        payload["causal_independence"][
+            "not_a_retry_of_terminal_cross_sectional_low_realized_volatility_continuation_v1"
         ]
         is True
     )
@@ -181,17 +189,24 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="RUNTIME_POLICY_ORDERS_ALLOWED_TRUE"):
         validate_program_contract(bad4)
     bad5 = copy.deepcopy(payload)
-    bad5["development_evaluation_authorized"] = False
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE"):
+    bad5["development_evaluation_authorized"] = True
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE"):
         validate_program_contract(bad5)
+    bad6 = copy.deepcopy(payload)
+    bad6["successor_found"] = True
+    with pytest.raises(ProgramValidationError, match="SUCCESSOR_FOUND_TRUE"):
+        validate_program_contract(bad6)
 
 
 def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in text
-    assert "OPEN_BACKLOG" in text
+    assert "PROGRAM_CLOSED_NO_FURTHER_RESEARCH" in text
     assert "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1" in text
-    assert "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE" in text or "CSHRVF" in text
+    assert "CLOSE_LANE_NO_FURTHER_RESEARCH" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in owners
+    assert "VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1" in (
+        owners
+    )

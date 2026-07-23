@@ -33,12 +33,12 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_backlog_open_with_cslrvc_preregistered() -> None:
+def test_repo_backlog_closed_after_cslrvc_development_fail() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["status"] == "OPEN_BACKLOG"
-    assert report["preregistered_count"] == 1
-    assert report["terminal_count"] == 10
+    assert report["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert report["preregistered_count"] == 0
+    assert report["terminal_count"] == 11
     assert report["hypothesis_id"] == (
         "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
     )
@@ -54,8 +54,9 @@ def test_repo_backlog_open_with_cslrvc_preregistered() -> None:
     assert report["holdout_forbidden"] is True
     assert report["promotion_eligible"] is False
     assert report["retry_allowed"] is False
-    assert report["explicit_closeout_decision"] is False
+    assert report["explicit_closeout_decision"] is True
     assert report["explicit_waiting_decision"] is False
+    assert report["successor_found"] is False
 
 
 def test_sibling_closed_lanes_and_terminal_inventory() -> None:
@@ -69,14 +70,10 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert _load(EXIT_BACKLOG)["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert _load(CS_PROGRAM)["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     assert backlog["open_unpreregistered_candidates"] == []
-    assert len(backlog["preregistered_hypotheses"]) == 1
-    hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["strategy_identity"] == "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
-    assert hyp["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL"
-    assert hyp["implementation_present"] is True
-    assert hyp["run_slot_consumed"] is True
-    assert hyp["development_run_count"] == 1
-    assert len(backlog["terminal_hypotheses"]) == 10
+    assert backlog["preregistered_hypotheses"] == []
+    assert backlog["create_successor_hypothesis"] is False
+    assert backlog["successor_found"] is False
+    assert len(backlog["terminal_hypotheses"]) == 11
     terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
     assert terminals["VOLATILITY_COMPRESSION_BREAKOUT_V1"]["terminal_result"] == (
         "FAIL_CLOSED_NO_RETRY"
@@ -106,12 +103,8 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert backlog["required_treatment_type"] == (
         "OWN_INSTRUMENT_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_ADMISSION"
     )
-    assert backlog["next_canonical_step"] == (
-        "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_"
-        "FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
-    )
-    assert backlog["implementation_authorized"] is True
-    terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
+    assert backlog["next_canonical_step"] == "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
+    assert backlog["implementation_authorized"] is False
     cshrvf = terminals["CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"]
     assert cshrvf["status"] == "TERMINAL_FAIL"
     assert cshrvf["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
@@ -121,9 +114,15 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert cshrvf["retry_allowed"] is False
     assert cshrvf["rerun_allowed"] is False
     assert cshrvf["reopen_allowed"] is False
-    assert hyp["runner_start_count"] == 1
-    assert hyp["development_run_count"] == 1
-    assert hyp["run_slot_consumed"] is True
+    cslrvc = terminals["CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"]
+    assert cslrvc["status"] == "TERMINAL_FAIL"
+    assert cslrvc["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
+    assert cslrvc["run_slot_consumed"] is True
+    assert cslrvc["development_run_count"] == 1
+    assert cslrvc["runner_start_count"] == 1
+    assert cslrvc["retry_allowed"] is False
+    assert cslrvc["reopen_allowed"] is False
+    assert cslrvc["predecessor_strategy_id"] == "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
 
 
 def test_fail_closed_mutations() -> None:
@@ -145,24 +144,29 @@ def test_fail_closed_mutations() -> None:
     with pytest.raises(BacklogValidationError, match="SIBLING_REOPEN_NOT_FORBIDDEN"):
         validate_backlog_contract(bad4)
     bad5 = copy.deepcopy(payload)
-    bad5["status"] = "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-    with pytest.raises(BacklogValidationError, match="STATUS_NOT_OPEN_BACKLOG"):
+    bad5["status"] = "OPEN_BACKLOG"
+    with pytest.raises(BacklogValidationError, match="STATUS_NOT_LANE_CLOSED"):
         validate_backlog_contract(bad5)
     bad6 = copy.deepcopy(payload)
-    bad6["explicit_waiting_decision"] = True
-    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_TRUE"):
+    bad6["explicit_closeout_decision"] = False
+    with pytest.raises(BacklogValidationError, match="CLOSEOUT_DECISION_REQUIRED"):
         validate_backlog_contract(bad6)
+    bad7 = copy.deepcopy(payload)
+    bad7["successor_found"] = True
+    with pytest.raises(BacklogValidationError, match="SUCCESSOR_FOUND_TRUE"):
+        validate_backlog_contract(bad7)
 
 
 def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in text
-    assert "OPEN_BACKLOG" in text
+    assert "LANE_CLOSED_NO_FURTHER_RESEARCH" in text
     assert "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1" in text
     assert "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1" in text
-    assert "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1" in text
-    assert "VOLATILITY_TERM_STRUCTURE_REVERSION_V1" in text
-    assert "VEFCF" in text or "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE" in text
+    assert "CLOSE_LANE_NO_FURTHER_RESEARCH" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in owners
+    assert "VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1" in (
+        owners
+    )

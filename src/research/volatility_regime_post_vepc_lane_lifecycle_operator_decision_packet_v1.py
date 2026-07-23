@@ -20,8 +20,10 @@ GOVERNANCE_REL_PATH = (
 BACKLOG_REL_PATH = "config/research/volatility_regime_hypothesis_backlog_v1.json"
 PROGRAM_REL_PATH = "config/research/volatility_regime_research_program_v1.json"
 REQUIRED_PACKET_ID = "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1"
-REQUIRED_STATUS = "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSLRVC_DEVELOPMENT_FAIL_SLOT_CONSUMED"
-REQUIRED_LANE_STATUS = "OPEN_BACKLOG"
+REQUIRED_STATUS = (
+    "OPERATOR_DECISION_APPLIED_CLOSE_LANE_NO_FURTHER_RESEARCH_AFTER_CSLRVC_DEVELOPMENT_FAIL"
+)
+REQUIRED_LANE_STATUS = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_DECISIONS = (
     "DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS",
     "CLOSE_LANE_NO_FURTHER_RESEARCH",
@@ -32,19 +34,15 @@ REQUIRED_GO_TOKENS = (
     "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
     "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1",
 )
-REQUIRED_NEXT_SCOPE = (
-    "VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1"
-)
-REQUIRED_NEXT_GO_TOKENS = (
-    "GO_VOLATILITY_REGIME_DECLARE_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_V1",
-    "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
-    "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1",
-)
-REQUIRED_SUCCESSOR_HYPOTHESIS_ID = (
+REQUIRED_NEXT_SCOPE = "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
+REQUIRED_HISTORICAL_SUCCESSOR_HYPOTHESIS_ID = (
     "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
 )
-REQUIRED_SUCCESSOR_STRATEGY = "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
-REQUIRED_PREDECESSOR_STRATEGY = "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
+REQUIRED_HISTORICAL_SUCCESSOR_STRATEGY = "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+REQUIRED_PREDECESSOR_STRATEGY = "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+REQUIRED_CLOSE_AUTH = (
+    "GO_VOLATILITY_REGIME_POST_CSLRVC_DEVELOPMENT_FAIL_LANE_LIFECYCLE_OPERATOR_DECISION_V1"
+)
 
 
 class DecisionPacketValidationError(ValueError):
@@ -64,7 +62,7 @@ def validate_decision_packet_contract(
     payload: Mapping[str, Any], *, repo_root: Path | None = None
 ) -> dict[str, Any]:
     _require(payload.get("packet_id") == REQUIRED_PACKET_ID, "PACKET_ID_MISMATCH")
-    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_CREATE_APPLIED")
+    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_CLOSE_APPLIED")
     _require(payload.get("lane_status") == REQUIRED_LANE_STATUS, "LANE_STATUS_MISMATCH")
     _require(
         payload.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
@@ -81,18 +79,22 @@ def validate_decision_packet_contract(
         payload.get("decision_application_authorized") is False,
         "REMAINING_DECISIONS_IMPLICITLY_AUTHORIZED",
     )
-    _require(payload.get("closeout_applied") is False, "CLOSEOUT_APPLIED")
+    _require(payload.get("closeout_applied") is True, "CLOSEOUT_NOT_APPLIED")
     _require(payload.get("awaiting_declared") is True, "AWAITING_NOT_DECLARED")
-    _require(payload.get("successor_created") is True, "SUCCESSOR_NOT_CREATED")
+    _require(payload.get("successor_created") is True, "HISTORICAL_SUCCESSOR_NOT_RECORDED")
+    _require(
+        payload.get("new_successor_created_in_this_decision") is False,
+        "NEW_SUCCESSOR_CREATED",
+    )
     _require(payload.get("auto_create_successor_forbidden") is True, "AUTO_CREATE_ALLOWED")
     _require(payload.get("auto_await_forbidden") is True, "AUTO_AWAIT_ALLOWED")
     _require(payload.get("auto_close_forbidden") is True, "AUTO_CLOSE_ALLOWED")
     _require(
-        payload.get("successor_hypothesis_id") == REQUIRED_SUCCESSOR_HYPOTHESIS_ID,
+        payload.get("successor_hypothesis_id") == REQUIRED_HISTORICAL_SUCCESSOR_HYPOTHESIS_ID,
         "SUCCESSOR_HYPOTHESIS_ID",
     )
     _require(
-        payload.get("successor_strategy_identity") == REQUIRED_SUCCESSOR_STRATEGY,
+        payload.get("successor_strategy_identity") == REQUIRED_HISTORICAL_SUCCESSOR_STRATEGY,
         "SUCCESSOR_STRATEGY",
     )
     _require(
@@ -107,8 +109,20 @@ def validate_decision_packet_contract(
     go_tokens = tuple(d.get("go_token") for d in decisions)
     _require(go_tokens == REQUIRED_GO_TOKENS, "GO_TOKENS_MISMATCH")
     _require(decisions[0].get("status") == "APPLIED", "DECLARE_NOT_APPLIED")
-    _require(decisions[1].get("status") == "OPERATOR_GO_REQUIRED", "CLOSE_NOT_PENDING")
+    _require(decisions[1].get("status") == "APPLIED", "CLOSE_NOT_APPLIED")
     _require(decisions[2].get("status") == "APPLIED", "CREATE_NOT_APPLIED")
+
+    close = decisions[1]
+    _require(close.get("authorization_token") == REQUIRED_CLOSE_AUTH, "CLOSE_AUTH_TOKEN")
+    _require(
+        close.get("terminal_predecessor_strategy_identity") == REQUIRED_PREDECESSOR_STRATEGY,
+        "CLOSE_PREDECESSOR_STRATEGY",
+    )
+    _require(
+        close.get("terminal_predecessor_hypothesis_id")
+        == REQUIRED_HISTORICAL_SUCCESSOR_HYPOTHESIS_ID,
+        "CLOSE_PREDECESSOR_HYPOTHESIS",
+    )
 
     create = decisions[2]
     _require(create.get("requires_hypothesis_id") is True, "CREATE_HYPOTHESIS_ID_OPTIONAL")
@@ -117,11 +131,11 @@ def validate_decision_packet_contract(
         "CREATE_MECHANISM_OPTIONAL",
     )
     _require(
-        create.get("applied_hypothesis_id") == REQUIRED_SUCCESSOR_HYPOTHESIS_ID,
+        create.get("applied_hypothesis_id") == REQUIRED_HISTORICAL_SUCCESSOR_HYPOTHESIS_ID,
         "CREATE_APPLIED_HYPOTHESIS",
     )
     _require(
-        create.get("applied_strategy_identity") == REQUIRED_SUCCESSOR_STRATEGY,
+        create.get("applied_strategy_identity") == REQUIRED_HISTORICAL_SUCCESSOR_STRATEGY,
         "CREATE_APPLIED_STRATEGY",
     )
     _require(
@@ -139,53 +153,54 @@ def validate_decision_packet_contract(
         "VTSR_RETRY",
         "VTDC_RETRY",
         "CSHRVF_RETRY",
+        "CSLRVC_RETRY",
         "HOLDOUT_ACCESS",
         "LIVE_ORDERS",
         "EVALUATION_EXECUTION",
+        "IMPLICIT_SUCCESSOR_AFTER_CLOSE",
     ):
         _require(required in forbidden, f"MISSING_FORBIDDEN:{required}")
 
     _require(payload.get("next_admissible_scope") == REQUIRED_NEXT_SCOPE, "NEXT_SCOPE_MISMATCH")
     next_tokens = list(payload.get("next_admissible_scope_go_tokens") or [])
-    _require(next_tokens == list(REQUIRED_NEXT_GO_TOKENS), "NEXT_GO_TOKENS_MISMATCH")
+    _require(next_tokens == [], "NEXT_GO_TOKENS_NONEMPTY")
+
+    rationale = payload.get("closeout_selection_rationale") or {}
+    _require(
+        rationale.get("decision_applied") == "CLOSE_LANE_NO_FURTHER_RESEARCH",
+        "CLOSEOUT_RATIONALE_DECISION",
+    )
+    _require(rationale.get("selected_successor") == "NONE", "CLOSEOUT_SUCCESSOR_NOT_NONE")
 
     if repo_root is not None:
         backlog = load_json(repo_root / BACKLOG_REL_PATH)
         program = load_json(repo_root / PROGRAM_REL_PATH)
-        _require(backlog.get("status") == REQUIRED_LANE_STATUS, "BACKLOG_NOT_OPEN")
+        _require(backlog.get("status") == REQUIRED_LANE_STATUS, "BACKLOG_NOT_CLOSED")
+        _require(backlog.get("explicit_closeout_decision") is True, "BACKLOG_CLOSEOUT_FALSE")
+        _require(backlog.get("successor_found") is False, "BACKLOG_SUCCESSOR_FOUND")
         prereg = backlog.get("preregistered_hypotheses") or []
-        _require(len(prereg) == 1, "BACKLOG_PREREG_LEN")
-        _require(
-            prereg[0].get("hypothesis_id") == REQUIRED_SUCCESSOR_HYPOTHESIS_ID,
-            "BACKLOG_PREREG_ID",
-        )
+        _require(len(prereg) == 0, "BACKLOG_PREREG_LEN")
         _require(
             backlog.get("open_unpreregistered_candidates") == [],
             "BACKLOG_OPEN_NONEMPTY",
         )
-        _require(backlog.get("explicit_closeout_decision") is False, "BACKLOG_CLOSEOUT_TRUE")
-        _require(backlog.get("explicit_waiting_decision") is False, "BACKLOG_WAITING_TRUE")
         terminals = {t.get("strategy_identity") for t in (backlog.get("terminal_hypotheses") or [])}
         _require(
             "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in terminals,
             "VEPC_NOT_TERMINAL",
         )
-        _require(REQUIRED_PREDECESSOR_STRATEGY in terminals, "VTDC_NOT_TERMINAL")
+        _require(REQUIRED_PREDECESSOR_STRATEGY in terminals, "CSLRVC_NOT_TERMINAL")
         _require(
-            "VOLATILITY_TERM_STRUCTURE_REVERSION_V1" in terminals,
-            "VTSR_NOT_TERMINAL",
+            "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1" in terminals,
+            "CSHRVF_NOT_TERMINAL",
         )
         _require(
             program.get("lane_backlog_status") == REQUIRED_LANE_STATUS,
             "PROGRAM_LANE_STATUS_MISMATCH",
         )
         _require(
-            program.get("development_evaluation_authorized") is True,
-            "PROGRAM_DEV_EVAL_AUTHORIZED_FALSE",
-        )
-        _require(
-            program.get("strategy_id") == "cross_sectional_low_realized_volatility_continuation",
-            "PROGRAM_STRATEGY_ID_DRIFT",
+            program.get("status") == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH",
+            "PROGRAM_NOT_CLOSED",
         )
         gov = repo_root / GOVERNANCE_REL_PATH
         _require(gov.is_file(), "GOVERNANCE_DOC_MISSING")
@@ -197,12 +212,11 @@ def validate_decision_packet_contract(
         "lane_status": REQUIRED_LANE_STATUS,
         "decision_count": 3,
         "awaiting_declared": True,
-        "closeout_applied": False,
+        "closeout_applied": True,
         "successor_created": True,
-        "successor_hypothesis_id": REQUIRED_SUCCESSOR_HYPOTHESIS_ID,
-        "successor_strategy_identity": REQUIRED_SUCCESSOR_STRATEGY,
+        "new_successor_created_in_this_decision": False,
+        "successor_hypothesis_id": REQUIRED_HISTORICAL_SUCCESSOR_HYPOTHESIS_ID,
         "decision_application_authorized": False,
-        "next_admissible_scope": REQUIRED_NEXT_SCOPE,
         "evaluation_authorized": False,
         "evaluation_executed": False,
         "holdout_accessed": False,
@@ -213,5 +227,5 @@ def validate_decision_packet_contract(
 
 def load_and_validate_repo_decision_packet(repo_root: Path) -> dict[str, Any]:
     path = repo_root / PACKET_REL_PATH
-    _require(path.is_file(), "PACKET_SSOT_MISSING")
+    _require(path.is_file(), "DECISION_PACKET_SSOT_MISSING")
     return validate_decision_packet_contract(load_json(path), repo_root=repo_root)
