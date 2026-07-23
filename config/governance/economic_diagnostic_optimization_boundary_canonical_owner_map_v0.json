@@ -1022,6 +1022,19 @@
         "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
       ]
     },
+    "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only preregistration of VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1 after CREATE_SUCCESSOR under CONTINUE_PEAK_TRADE_NEXT_CANONICAL_SCOPE; failed-continuation fade opposite VEPC causal claim; productive PnL evaluator referenced only; no Development evaluation/holdout/runtime/orders; VEPC/VCEB/VDBX/VDB/VEP/VCB retry forbidden.",
+      "path_prefixes": [
+        "config/research/volatility_expansion_failed_continuation_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "config/research/volatility_expansion_failed_continuation_fade_v1_development_evaluation_entry_point_binding_v1.json",
+        "src/research/volatility_expansion_failed_continuation_fade_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_volatility_expansion_failed_continuation_fade_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/governance/VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "docs/evidence/preregister_volatility_expansion_failed_continuation_fade_hypothesis_v1/",
+        "scripts/research/run_evaluate_volatility_expansion_failed_continuation_fade_development_v1.py"
+      ]
+    },
     "VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
       "note": "DEVELOPMENT evaluation entry point/owner for VOLATILITY_EXPANSION_PERSISTENCE_V1: executable evaluate path with materialized panel execution boundary (loader/wiring/injectable boundary); productive exit/PnL evaluator referenced from VCB package (not duplicated). Development evaluation authorized on HEAD; run counters remain 0 until a separate operator GO executes the single bounded development evaluation; no holdout/runtime/orders; measurement thresholds and strategy/baseline parameters unchanged.",
       "path_prefixes": [
@@ -1090,7 +1103,7 @@
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Post-VEPC lane backlog SSOT at AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS after DECLARE_AWAITING applied; explicit_waiting_decision=true; inventories empty; six terminal FAIL_CLOSED_NO_RETRY hypotheses including VEPC CONSUMED_NO_RETRY; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit and CS momentum lanes remain unreopened; remaining CLOSE/CREATE each require separate exact operator GO.",
+      "note": "Post-CREATE_SUCCESSOR lane backlog SSOT at OPEN_BACKLOG with VEFCF v1 definition-only preregistered; VEPC remains terminal CONSUMED_NO_RETRY; evaluation/holdout/promotion/runtime closed; sibling Entry/Exit and CS momentum lanes remain unreopened; CLOSE_LANE remains not applied.",
       "path_prefixes": [
         "config/research/volatility_regime_hypothesis_backlog_v1.json",
         "src/research/volatility_regime_hypothesis_backlog_v1.py",
@@ -1099,7 +1112,7 @@
       ]
     },
     "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1": {
-      "note": "Governance-only operator decision packet after VEPC CONSUMED_NO_RETRY terminalization; DECLARE_AWAITING applied (awaiting_declared=true); CLOSE_LANE / CREATE_SUCCESSOR remain OPERATOR_GO_REQUIRED; no successor created; no closeout; no evaluation/holdout/LIVE/orders.",
+      "note": "Governance operator decision packet after VEPC CONSUMED_NO_RETRY; DECLARE_AWAITING historically APPLIED; CREATE_SUCCESSOR APPLIED for VEFCF v1; CLOSE_LANE remains OPERATOR_GO_REQUIRED; lane OPEN_BACKLOG; no evaluation/holdout/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
         "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
@@ -1108,7 +1121,7 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Definition-only research-program SSOT for volatility-regime lane after VEPC terminalization; lane backlog AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS; strategy_id reconciled to volatility_expansion_pullback_continuation; development evaluation unauthorized; no holdout/runtime/orders; sibling Entry/Exit and CS momentum lanes remain unreopened.",
+      "note": "Definition-only research-program SSOT for volatility-regime lane after CREATE_SUCCESSOR; lane backlog OPEN_BACKLOG; strategy_id reconciled to volatility_expansion_failed_continuation_fade; development evaluation unauthorized; no holdout/runtime/orders; sibling lanes unreopened.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",

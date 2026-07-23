@@ -40,21 +40,22 @@ def test_repo_program_definition_only_open() -> None:
     report = load_and_validate_repo_program(REPO)
     assert report["valid"] is True
     assert report["definition_only"] is True
-    assert report["strategy_implementation_present"] is True
+    assert report["strategy_implementation_present"] is False
     assert report["program_id"] == "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
     assert report["status"] == "DEFINITION_ONLY_PROGRAM_OPEN"
-    assert report["strategy_identity"] == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+    assert report["strategy_identity"] == "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
     assert report["signal_family"] == "VOLATILITY_REGIME"
     assert report["holdout_authorized"] is False
     assert report["evaluation_authorized"] is False
     assert report["promotion_eligible"] is False
-    assert report["development_run_count"] == 1
-    assert report["runner_start_count"] == 1
-    assert report["run_slot_consumed"] is True
+    assert report["development_run_count"] == 0
+    assert report["runner_start_count"] == 0
+    assert report["run_slot_consumed"] is False
     assert report["retry_allowed"] is False
     assert report["material_difference_explicit"] is True
     assert report["material_difference_from_vcb_v1"] is True
     assert report["material_difference_from_vep_v1"] is True
+    assert report["material_difference_from_vepc_v1"] is True
     assert report["causally_independent_from_cs_momentum"] is True
 
 
@@ -80,6 +81,9 @@ def test_material_difference_and_closed_siblings_immutable() -> None:
     md_vceb = payload["material_difference_vs_volatility_contraction_expansion_breakout_v1"]
     assert md_vceb["prior_strategy_identity"] == ("VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1")
     assert md_vceb["vceb_retry_forbidden"] is True
+    md_vepc = payload["material_difference_vs_volatility_expansion_pullback_continuation_v1"]
+    assert md_vepc["prior_strategy_identity"] == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+    assert md_vepc["vepc_retry_forbidden"] is True
     closeout = _load(COILED_SPRING_CLOSEOUT)
     assert closeout["same_binding_retry_allowed"] is False
     assert closeout["current_research_generation_closed"] is True
@@ -96,20 +100,20 @@ def test_material_difference_and_closed_siblings_immutable() -> None:
         in independence["forbidden_lineage_refs"]
     )
     assert "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1" in independence["forbidden_lineage_refs"]
-
-
-def test_post_terminal_fields_and_strategy_id_reconciled() -> None:
-    payload = _load(PROGRAM_PATH)
-    assert payload["strategy_id"] == "volatility_expansion_pullback_continuation"
-    assert payload["development_evaluation_authorized"] is False
-    assert payload["lane_backlog_status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-    assert payload["active_hypothesis_inventory_empty"] is True
-    assert payload["next_canonical_step"].startswith(
-        "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_ENUMERATED_FOLLOW_ON_REQUIRED"
-    )
+    assert "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in independence["forbidden_lineage_refs"]
     assert (
-        "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
-        in payload["causal_independence"]["forbidden_lineage_refs"]
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1" in independence["forbidden_lineage_refs"]
+    )
+
+
+def test_post_create_successor_fields_and_strategy_id_reconciled() -> None:
+    payload = _load(PROGRAM_PATH)
+    assert payload["strategy_id"] == "volatility_expansion_failed_continuation_fade"
+    assert payload["development_evaluation_authorized"] is False
+    assert payload["lane_backlog_status"] == "OPEN_BACKLOG"
+    assert payload["active_hypothesis_inventory_empty"] is False
+    assert payload["next_canonical_step"].startswith(
+        "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO"
     )
     assert (
         payload["causal_independence"][
@@ -127,11 +131,11 @@ def test_fail_closed_on_authorization_mutation() -> None:
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
     bad2["development_run_count"] = 2
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["strategy_implementation_present"] = False
-    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_FALSE"):
+    bad3["strategy_implementation_present"] = True
+    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_TRUE"):
         validate_program_contract(bad3)
     bad4 = copy.deepcopy(payload)
     bad4["runtime_policy"]["orders_allowed"] = True
@@ -147,7 +151,7 @@ def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in text
-    assert "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS" in text
-    assert "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1" in text
+    assert "OPEN_BACKLOG" in text
+    assert "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1" in owners

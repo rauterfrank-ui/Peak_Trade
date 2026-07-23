@@ -28,18 +28,21 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_decision_packet_awaiting_declared() -> None:
+def test_repo_decision_packet_create_successor_applied() -> None:
     report = load_and_validate_repo_decision_packet(REPO)
     assert report["valid"] is True
     assert report["packet_id"] == (
         "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1"
     )
-    assert report["status"] == "OPERATOR_DECISION_APPLIED_AWAITING_DECLARED"
-    assert report["lane_status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+    assert report["status"] == "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_VEFCF_PREREGISTERED"
+    assert report["lane_status"] == "OPEN_BACKLOG"
     assert report["decision_count"] == 3
     assert report["awaiting_declared"] is True
     assert report["closeout_applied"] is False
-    assert report["successor_created"] is False
+    assert report["successor_created"] is True
+    assert report["successor_hypothesis_id"] == (
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1"
+    )
     assert report["decision_application_authorized"] is False
     assert report["evaluation_authorized"] is False
     assert report["evaluation_executed"] is False
@@ -63,19 +66,22 @@ def test_enumerated_decisions_and_go_tokens() -> None:
     ]
     assert decisions[0]["status"] == "APPLIED"
     assert decisions[1]["status"] == "OPERATOR_GO_REQUIRED"
-    assert decisions[2]["status"] == "OPERATOR_GO_REQUIRED_PLUS_HYPOTHESIS_ID_AND_MECHANISM"
+    assert decisions[2]["status"] == "APPLIED"
     assert decisions[2]["requires_hypothesis_id"] is True
     assert decisions[2]["requires_mechanism_definition"] is True
+    assert decisions[2]["applied_hypothesis_id"] == (
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1"
+    )
+    assert decisions[2]["authorization_token"] == "CONTINUE_PEAK_TRADE_NEXT_CANONICAL_SCOPE"
     assert packet["auto_create_successor_forbidden"] is True
     assert packet["closeout_applied"] is False
     assert packet["awaiting_declared"] is True
-    assert packet["successor_created"] is False
+    assert packet["successor_created"] is True
     assert packet["next_admissible_scope"] == (
-        "VOLATILITY_REGIME_AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_FOLLOW_ON_V1"
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1"
     )
     assert packet["next_admissible_scope_go_tokens"] == [
-        "GO_VOLATILITY_REGIME_CLOSE_LANE_NO_FURTHER_RESEARCH_V1",
-        "GO_VOLATILITY_REGIME_CREATE_SUCCESSOR_HYPOTHESIS_V1",
+        "GO_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1"
     ]
 
 
@@ -86,8 +92,8 @@ def test_fail_closed_mutations() -> None:
     with pytest.raises(DecisionPacketValidationError, match="EVALUATION_AUTHORIZED"):
         validate_decision_packet_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["successor_created"] = True
-    with pytest.raises(DecisionPacketValidationError, match="SUCCESSOR_CREATED"):
+    bad2["successor_created"] = False
+    with pytest.raises(DecisionPacketValidationError, match="SUCCESSOR_NOT_CREATED"):
         validate_decision_packet_contract(bad2)
     bad3 = copy.deepcopy(payload)
     bad3["auto_create_successor_forbidden"] = False
@@ -98,12 +104,12 @@ def test_fail_closed_mutations() -> None:
     with pytest.raises(DecisionPacketValidationError, match="DECISION_COUNT_NOT_3"):
         validate_decision_packet_contract(bad4)
     bad5 = copy.deepcopy(payload)
-    bad5["awaiting_declared"] = False
-    with pytest.raises(DecisionPacketValidationError, match="AWAITING_NOT_DECLARED"):
+    bad5["closeout_applied"] = True
+    with pytest.raises(DecisionPacketValidationError, match="CLOSEOUT_APPLIED"):
         validate_decision_packet_contract(bad5)
     bad6 = copy.deepcopy(payload)
-    bad6["closeout_applied"] = True
-    with pytest.raises(DecisionPacketValidationError, match="CLOSEOUT_APPLIED"):
+    bad6["lane_status"] = "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+    with pytest.raises(DecisionPacketValidationError, match="LANE_STATUS_MISMATCH"):
         validate_decision_packet_contract(bad6)
 
 
@@ -113,9 +119,9 @@ def test_governance_and_owner_map() -> None:
     assert (
         "DOCS_TOKEN_VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1" in text
     )
-    assert "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS" in text
-    assert "AWAITING_DECLARED` | `true`" in text
+    assert "OPEN_BACKLOG" in text
+    assert "SUCCESSOR_CREATED` | `true`" in text
     assert "CREATE_SUCCESSOR_HYPOTHESIS" in text
-    assert "CLOSE_LANE_NO_FURTHER_RESEARCH" in text
+    assert "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1" in owners
