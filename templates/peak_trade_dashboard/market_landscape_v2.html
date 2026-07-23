@@ -4,7 +4,7 @@
 {% block main_class %}mdl-v2-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-4a-canonical-safety-projection-binding" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-6b-economic-evidence-explicit-injection-binding" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 {% endblock %}
@@ -199,7 +199,11 @@
       </div>
       <div class="mdl-v2-ops__col">
         <h3>Economic</h3>
-        <p class="mdl-v2-state" data-availability="{{ economic.availability }}">{{ economic.availability_label }}</p>
+        <p
+          class="mdl-v2-state"
+          data-availability="{{ economic.availability }}"
+          data-mdl-field="economic"
+        >{{ economic.status_display }}</p>
       </div>
     </section>
 

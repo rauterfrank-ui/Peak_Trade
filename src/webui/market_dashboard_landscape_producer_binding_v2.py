@@ -1,8 +1,9 @@
-"""Phase 4.1 + 4.2 + 4.3A + 4.3B + 4.4A read-only producer binding for Market Landscape V2.
+"""Phase 4.1 + 4.2 + 4.3A + 4.3B + 4.4A + 4.6B read-only producer binding for Market Landscape V2.
 
 Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity,
-canonical_decision evidence, double_play display projection, and safety
-authority KillSwitch/boundary field projection.
+canonical_decision evidence, double_play display projection, safety
+authority KillSwitch/boundary field projection, and economic summary
+EconomicViabilityEvidenceV1 field projection.
 Regime / bull-bear / switch remain unbound.
 Lives outside market_dashboard_landscape_v2 so that package stays free of
 trading/webui producer imports (architecture guard).
@@ -12,11 +13,15 @@ Fail-closed:
 - Producer timestamps preserved; page-assembly time is observation-only
 - Aged producer snapshots → STALE (never silently refreshed)
 - Never fabricate OHLCV, ranking, eligibility, selected instrument, scope,
-  decisions, Double Play composition, or Safety/KillSwitch state
+  decisions, Double Play composition, Safety/KillSwitch state, or economic
+  metrics/status
 - Never call scope initializers, trailing-scope runtime owners, switch owners,
   decision producers, compose_double_play_decision, or build_dashboard_display_snapshot
 - Never instantiate KillSwitch, call trigger/recover, evaluate_offline_killswitch_boundary_v0,
   or any bind_* Safety evaluator; no live state-file autoload
+- Never discover/select EconomicViabilityEvidenceV1 instances (no filesystem,
+  registry, latest-file, or environment selector)
+- Never bind promotion_economic_gate_v1 or infer lifecycle labels
 - No risk / capital / sizing / execution binding
 """
 
@@ -33,6 +38,7 @@ from .market_dashboard_landscape_v2.projections import (
     project_canonical_decision_snapshot_v1,
     project_double_play_snapshot_v1,
     project_dynamic_scope_snapshot_v1,
+    project_economic_summary_snapshot_v1,
     project_market_instrument_snapshot_v1,
     project_safety_authority_snapshot_v1,
     project_universe_ranking_snapshot_v1,
@@ -41,6 +47,7 @@ from .market_dashboard_landscape_v2.unavailable import (
     unavailable_canonical_decision,
     unavailable_double_play,
     unavailable_dynamic_scope,
+    unavailable_economic_summary,
     unavailable_market_instrument,
     unavailable_safety_authority,
     unavailable_universe_ranking,
@@ -62,12 +69,14 @@ LANDSCAPE_PHASE42_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE43A_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE43B_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE44A_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
+LANDSCAPE_PHASE46B_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 
 REASON_MARKET_CONTEXT_NOT_PERSISTED = "CANONICAL_MARKET_CONTEXT_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_SCOPE_NOT_PERSISTED = "CANONICAL_SCOPE_SNAPSHOT_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_DECISION_NOT_PERSISTED = "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_DOUBLE_PLAY_NOT_PERSISTED = "CANONICAL_DOUBLE_PLAY_DISPLAY_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_SAFETY_NOT_PERSISTED = "CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD"
+REASON_ECONOMIC_NOT_PERSISTED = "CANONICAL_ECONOMIC_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_UNIVERSE_ABSENT = "UNIVERSE_SELECTION_READMODEL_ABSENT"
 REASON_ARCHIVE_ROOT_UNSET = "UNIVERSE_ARCHIVE_ROOT_UNSET"
 REASON_SELECTED_FORBIDDEN_SYMBOL = "SELECTED_INSTRUMENT_FORBIDDEN_BTC_USD_OR_SPOT_DUMMY"
@@ -91,6 +100,9 @@ SAFETY_EVIDENCE_PRODUCER_MODULE = (
     "trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0"
 )
 SAFETY_SOURCE_KIND = "killswitch_boundary_offline_replay_boundary"
+ECONOMIC_PRODUCER_MODULE = "backtest.economic_viability_evidence_v1"
+ECONOMIC_SOURCE_KIND = "economic_viability_evidence_v1"
+ECONOMIC_CONTRACT_SCHEMA_VERSION = "v1"
 
 PHASE_4_1_BOUND_SLOTS: tuple[str, ...] = (
     "market_instrument",
@@ -100,6 +112,7 @@ PHASE_4_2_BOUND_SLOTS: tuple[str, ...] = ("dynamic_scope",)
 PHASE_4_3A_BOUND_SLOTS: tuple[str, ...] = ("canonical_decision",)
 PHASE_4_3B_BOUND_SLOTS: tuple[str, ...] = ("double_play",)
 PHASE_4_4A_BOUND_SLOTS: tuple[str, ...] = ("safety_authority",)
+PHASE_4_6B_BOUND_SLOTS: tuple[str, ...] = ("economic_summary",)
 
 _ISO8601_UTC_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|\+00:00)$")
 
@@ -947,6 +960,279 @@ def _bind_safety_authority(
     )
 
 
+def _metric_mapping(raw: Any) -> dict[str, Any]:
+    """Copy MetricFieldV1.to_dict() shape or an already-projected mapping."""
+    if hasattr(raw, "to_dict") and callable(raw.to_dict):
+        return dict(raw.to_dict())
+    if isinstance(raw, Mapping):
+        return dict(raw)
+    raise TypeError("metric fields must be MetricFieldV1 or Mapping")
+
+
+def economic_viability_evidence_fields_from_v1(
+    evidence: Any,
+    *,
+    generated_at: datetime,
+    source_reference: str | None = None,
+) -> dict[str, Any]:
+    """Extract direct EconomicViabilityEvidenceV1 fields for injection.
+
+    Does not recompute metrics, apply thresholds, or invent lifecycle/promotion.
+    ``generated_at`` is supplied by the upstream injector (not fabricated here).
+    """
+    from src.backtest.economic_viability_evidence_v1 import EconomicViabilityEvidenceV1
+
+    if not isinstance(evidence, EconomicViabilityEvidenceV1):
+        raise TypeError("evidence must be EconomicViabilityEvidenceV1")
+    status = evidence.status
+    status_value = status.value if hasattr(status, "value") else str(status)
+    return {
+        "status": status_value,
+        "economic_validity_proven": evidence.economic_validity_proven,
+        "profitability_claim_allowed": evidence.profitability_claim_allowed,
+        "policy_threshold_status": evidence.policy_threshold_status,
+        "policy_version": evidence.policy_version,
+        "authority_effect": evidence.authority_effect,
+        "runtime_effect": evidence.runtime_effect,
+        "order_effect": evidence.order_effect,
+        "reason_codes": tuple(evidence.reason_codes),
+        "profit_factor": _metric_mapping(evidence.profit_factor),
+        "net_return": _metric_mapping(evidence.net_return),
+        "max_drawdown": _metric_mapping(evidence.max_drawdown),
+        "sharpe": _metric_mapping(evidence.sharpe),
+        "trade_count": _metric_mapping(evidence.trade_count),
+        "funding_drag": _metric_mapping(evidence.funding_drag),
+        "contract_version": evidence.contract_version,
+        "owner": evidence.owner,
+        "strategy_id": evidence.strategy_id,
+        "strategy_version": evidence.strategy_version,
+        "config_digest": evidence.config_digest,
+        "implementation_digest": evidence.implementation_digest,
+        "data_digest": evidence.data_digest,
+        "manifest_digest": evidence.manifest_digest,
+        "wiring_chain_digest": evidence.wiring_chain_digest,
+        "policy_digest": evidence.policy_digest,
+        "generated_at": generated_at,
+        "source_reference": source_reference,
+        "evidence_digest": evidence.manifest_digest,
+    }
+
+
+def project_economic_viability_evidence_v1(
+    evidence: Any,
+    *,
+    generated_at: datetime,
+    as_of: datetime | None = None,
+    git_sha: str | None = None,
+    source_reference: str | None = None,
+) -> Any:
+    """Pure field-for-field projection of one injected EconomicViabilityEvidenceV1.
+
+    No I/O, no selector, no promotion/lifecycle inference, no metric recomputation.
+    """
+    fields = economic_viability_evidence_fields_from_v1(
+        evidence,
+        generated_at=generated_at,
+        source_reference=source_reference,
+    )
+    stamp = generated_at if as_of is None else as_of
+    if stamp.tzinfo is None:
+        raise ValueError("as_of/generated_at must be timezone-aware")
+    return _bind_economic_summary(
+        as_of=stamp.astimezone(timezone.utc),
+        git_sha=git_sha,
+        economic_viability_evidence_fields=fields,
+    )
+
+
+def _bind_economic_summary(
+    *,
+    as_of: datetime,
+    git_sha: str | None,
+    economic_viability_evidence_fields: Mapping[str, Any] | None,
+) -> Any:
+    """Project injected EconomicViabilityEvidenceV1-compatible fields.
+
+    No durable dashboard economic readmodel. Without injection → MISSING_SOURCE.
+    Never discovers evidence files, never binds promotion_economic_gate_v1,
+    and never infers DEVELOPMENT/HOLDOUT/SEALED from paths.
+    """
+    if economic_viability_evidence_fields is None:
+        return unavailable_economic_summary(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_ECONOMIC_NOT_PERSISTED,
+        )
+
+    required = (
+        "status",
+        "economic_validity_proven",
+        "profitability_claim_allowed",
+        "policy_threshold_status",
+        "policy_version",
+        "authority_effect",
+        "runtime_effect",
+        "order_effect",
+        "profit_factor",
+        "net_return",
+        "max_drawdown",
+        "sharpe",
+        "trade_count",
+        "funding_drag",
+        "contract_version",
+        "owner",
+        "strategy_id",
+        "strategy_version",
+        "config_digest",
+        "implementation_digest",
+        "data_digest",
+        "manifest_digest",
+        "wiring_chain_digest",
+        "policy_digest",
+    )
+    missing = [key for key in required if key not in economic_viability_evidence_fields]
+    if missing:
+        raise KeyError(f"economic_viability_evidence_fields missing required keys: {missing}")
+
+    status_raw = economic_viability_evidence_fields["status"]
+    economic_viability_status = (
+        status_raw.value if hasattr(status_raw, "value") else str(status_raw)
+    )
+    if not economic_viability_status:
+        return unavailable_economic_summary(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason="CANONICAL_ECONOMIC_STATUS_EMPTY",
+        )
+
+    economic_validity_proven = economic_viability_evidence_fields["economic_validity_proven"]
+    profitability_claim_allowed = economic_viability_evidence_fields["profitability_claim_allowed"]
+    runtime_effect = economic_viability_evidence_fields["runtime_effect"]
+    order_effect = economic_viability_evidence_fields["order_effect"]
+    if not isinstance(economic_validity_proven, bool):
+        return unavailable_economic_summary(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason="CANONICAL_ECONOMIC_VALIDITY_PROVEN_INVALID",
+        )
+    if not isinstance(profitability_claim_allowed, bool):
+        return unavailable_economic_summary(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason="CANONICAL_ECONOMIC_PROFITABILITY_CLAIM_INVALID",
+        )
+    if not isinstance(runtime_effect, bool) or not isinstance(order_effect, bool):
+        return unavailable_economic_summary(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason="CANONICAL_ECONOMIC_EFFECT_FLAGS_INVALID",
+        )
+
+    generated_at_raw = economic_viability_evidence_fields.get("generated_at")
+    producer_at, gen_error = _resolve_injected_aware_timestamp(generated_at_raw)
+    if gen_error is not None:
+        return unavailable_economic_summary(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=gen_error,
+        )
+    if producer_at is None:
+        return unavailable_economic_summary(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_MISSING,
+        )
+
+    effective_at: datetime | None = None
+    if "effective_at" in economic_viability_evidence_fields:
+        effective_at, eff_error = _resolve_injected_aware_timestamp(
+            economic_viability_evidence_fields.get("effective_at")
+        )
+        if eff_error is not None:
+            return unavailable_economic_summary(
+                availability=Availability.INVALID,
+                generated_at=as_of,
+                reason=eff_error,
+            )
+
+    try:
+        availability, is_stale, stale_reason = classify_producer_freshness(
+            producer_at=producer_at,
+            as_of=as_of,
+            max_age_seconds=LANDSCAPE_PHASE46B_MAX_AGE_SECONDS,
+        )
+    except ValueError:
+        return unavailable_economic_summary(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_INVALID,
+        )
+
+    raw_reasons = economic_viability_evidence_fields.get("reason_codes", ()) or ()
+    reason_codes = tuple(str(code) for code in raw_reasons)
+
+    evidence_digest = economic_viability_evidence_fields.get("evidence_digest")
+    if evidence_digest is None:
+        evidence_digest = economic_viability_evidence_fields.get("manifest_digest")
+    if evidence_digest is not None:
+        evidence_digest = str(evidence_digest)
+        if not evidence_digest:
+            evidence_digest = None
+
+    source_reference = economic_viability_evidence_fields.get("source_reference")
+    if source_reference is not None:
+        source_reference = str(source_reference)
+
+    evidence_ref = economic_viability_evidence_fields.get("evidence_ref")
+    if evidence_ref is not None:
+        evidence_ref = str(evidence_ref)
+
+    producer_module = str(
+        economic_viability_evidence_fields.get("producer_module", ECONOMIC_PRODUCER_MODULE)
+    )
+    source_kind = str(economic_viability_evidence_fields.get("source_kind", ECONOMIC_SOURCE_KIND))
+
+    return project_economic_summary_snapshot_v1(
+        economic_viability_status=economic_viability_status,
+        economic_validity_proven=economic_validity_proven,
+        profitability_claim_allowed=profitability_claim_allowed,
+        policy_threshold_status=str(economic_viability_evidence_fields["policy_threshold_status"]),
+        policy_version=str(economic_viability_evidence_fields["policy_version"]),
+        authority_effect=str(economic_viability_evidence_fields["authority_effect"]),
+        runtime_effect=runtime_effect,
+        order_effect=order_effect,
+        reason_codes=reason_codes,
+        profit_factor=_metric_mapping(economic_viability_evidence_fields["profit_factor"]),
+        net_return=_metric_mapping(economic_viability_evidence_fields["net_return"]),
+        max_drawdown=_metric_mapping(economic_viability_evidence_fields["max_drawdown"]),
+        sharpe=_metric_mapping(economic_viability_evidence_fields["sharpe"]),
+        trade_count=_metric_mapping(economic_viability_evidence_fields["trade_count"]),
+        funding_drag=_metric_mapping(economic_viability_evidence_fields["funding_drag"]),
+        contract_version=str(economic_viability_evidence_fields["contract_version"]),
+        owner=str(economic_viability_evidence_fields["owner"]),
+        strategy_id=str(economic_viability_evidence_fields["strategy_id"]),
+        strategy_version=str(economic_viability_evidence_fields["strategy_version"]),
+        config_digest=str(economic_viability_evidence_fields["config_digest"]),
+        implementation_digest=str(economic_viability_evidence_fields["implementation_digest"]),
+        data_digest=str(economic_viability_evidence_fields["data_digest"]),
+        manifest_digest=str(economic_viability_evidence_fields["manifest_digest"]),
+        wiring_chain_digest=str(economic_viability_evidence_fields["wiring_chain_digest"]),
+        policy_digest=str(economic_viability_evidence_fields["policy_digest"]),
+        generated_at=producer_at,
+        effective_at=effective_at,
+        source_reference=source_reference,
+        evidence_ref=evidence_ref,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        producer_module=producer_module,
+        source_kind=source_kind,
+        availability=availability,
+        max_age_seconds=LANDSCAPE_PHASE46B_MAX_AGE_SECONDS,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+
+
 def bind_market_universe_slots(
     *,
     generated_at: datetime,
@@ -957,8 +1243,9 @@ def bind_market_universe_slots(
     canonical_decision_fields: Mapping[str, Any] | None = None,
     double_play_fields: Mapping[str, Any] | None = None,
     safety_authority_fields: Mapping[str, Any] | None = None,
+    economic_viability_evidence_fields: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Return Phase 4.1+4.2+4.3A+4.3B+4.4A slot overrides.
+    """Return Phase 4.1+4.2+4.3A+4.3B+4.4A+4.6B slot overrides.
 
     ``generated_at`` is the dashboard observation/as-of clock only. It must never
     overwrite producer provenance timestamps or fabricate freshness.
@@ -985,6 +1272,11 @@ def bind_market_universe_slots(
     compatible fields (kill_switch_state, veto_active, reason_codes) plus
     producer wall-clock timestamps. Without injection, safety_authority is
     MISSING_SOURCE. Never calls KillSwitch.trigger/recover or offline evaluators.
+
+    economic_viability_evidence_fields accepts already-selected
+    EconomicViabilityEvidenceV1-compatible fields plus producer wall-clock
+    timestamps. Without injection, economic_summary is MISSING_SOURCE.
+    Never discovers evidence artifacts or binds promotion_economic_gate_v1.
     """
     if generated_at.tzinfo is None:
         raise ValueError("generated_at must be timezone-aware")
@@ -1015,6 +1307,11 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         safety_authority_fields=safety_authority_fields,
+    )
+    economic = _bind_economic_summary(
+        as_of=as_of,
+        git_sha=git_sha,
+        economic_viability_evidence_fields=economic_viability_evidence_fields,
     )
 
     if market_instrument_fields is not None:
@@ -1152,4 +1449,5 @@ def bind_market_universe_slots(
         "canonical_decision": decision,
         "double_play": double_play,
         "safety_authority": safety,
+        "economic_summary": economic,
     }

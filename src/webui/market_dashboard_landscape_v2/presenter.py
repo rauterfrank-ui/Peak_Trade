@@ -90,6 +90,16 @@ def _safety_strip_display(page: MarketDashboardPageSnapshotV1) -> str:
     return " · ".join(parts)
 
 
+def _economic_status_display(page: MarketDashboardPageSnapshotV1) -> str:
+    """Format economic viability status from exact projected fields only."""
+    snap = page.economic_summary
+    if snap.availability not in (Availability.AVAILABLE, Availability.STALE):
+        return AVAILABILITY_LABELS[snap.availability]
+    if snap.economic_viability_status is not None:
+        return str(snap.economic_viability_status)
+    return AVAILABILITY_LABELS[snap.availability]
+
+
 def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str, Any]:
     """Format page snapshot for SSR template context (presentation only)."""
     market = _slot_view(page.market_instrument)
@@ -166,6 +176,8 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
     else:
         next_scope_ref_display = AVAILABILITY_LABELS[page.dynamic_scope.availability]
 
+    economic_status_display = _economic_status_display(page)
+
     return {
         "page_schema_id": page.schema_id,
         "generated_at": page.generated_at.isoformat().replace("+00:00", "Z"),
@@ -173,7 +185,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "runtime_bridge_display": page.runtime_bridge_display,
         "shell_authority_class": page.shell_authority_class,
         "consumer_role": "read_only_consumer",
-        "phase": "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING",
+        "phase": "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING",
         "global_strip": {
             "instrument": instrument_display,
             "venue": _display_value(
@@ -217,7 +229,10 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "risk": risk,
         "safety": safety,
         "execution": execution,
-        "economic": economic,
+        "economic": {
+            **economic,
+            "status_display": economic_status_display,
+        },
         "autonomy": autonomy,
         "diagnostics": diagnostics,
         "source_health": {
@@ -261,6 +276,9 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "phase_4_4a_bound_slots": [
                 "safety_authority",
             ],
+            "phase_4_6b_bound_slots": [
+                "economic_summary",
+            ],
             "slots": {
                 "market_instrument": market,
                 "universe_ranking": universe,
@@ -270,7 +288,10 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
                 "risk_sizing_capital": risk,
                 "safety_authority": safety,
                 "execution_reconciliation": execution,
-                "economic_summary": economic,
+                "economic_summary": {
+                    **economic,
+                    "status_display": economic_status_display,
+                },
                 "autonomy_stage": autonomy,
                 "diagnostics_summary": diagnostics,
             },
@@ -289,6 +310,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "phase_4_3a_binding_active": True,
             "phase_4_3b_binding_active": True,
             "phase_4_4a_binding_active": True,
+            "phase_4_6b_binding_active": True,
             "phase_4_full_pass": False,
             "phase_4_authorized": True,
             "operator_skeleton_approval": "PENDING",

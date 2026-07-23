@@ -142,7 +142,7 @@ def _run_chrome_against_html(
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1
                 assert root.get_attribute("data-phase") == (
-                    "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+                    "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
                 )
                 chart = page.locator("[data-mdl-chart-region='true']")
                 decision = page.locator("[data-mdl-decision-strip='true']")

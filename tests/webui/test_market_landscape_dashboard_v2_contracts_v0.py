@@ -412,11 +412,11 @@ def test_economic_summary_immutable_and_serializable() -> None:
     assert parsed["profit_factor"] == {"semantic": "COMPUTED", "value": 1.25}
 
 
-def test_economic_owner_registry_ratified_not_bound() -> None:
+def test_economic_owner_registry_ratified_bound() -> None:
     entry = owner_registry_by_slot()["economic_summary"]
     assert entry.owner_module == "backtest.economic_viability_evidence_v1"
     assert entry.owner_symbol == "EconomicViabilityEvidenceV1"
-    assert entry.reuse_status == "NOT_BOUND"
+    assert entry.reuse_status == "REUSED"
     assert "economic_viability_status" in entry.notes
-    assert "EXPLICIT_UPSTREAM_INJECTION_ONLY" in entry.notes
-    assert "economic_gate_status" in entry.notes
+    assert "explicit injection only" in entry.notes
+    assert "MISSING_SOURCE" in entry.notes
