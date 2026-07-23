@@ -951,6 +951,33 @@
         "docs/governance/MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1.md"
       ]
     },
+    "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
+      "note": "Definition-only SSOT backlog for new independent Momentum-V2 vol-scaled own-instrument continuation research lane after docs-only Momentum surface disambiguation; exactly one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; closed CS momentum and pending momentum_1h/v2 raw binding remain untouched collision exclusions.",
+      "path_prefixes": [
+        "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog_v1.json",
+        "src/research/momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog_v1.py",
+        "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md"
+      ]
+    },
+    "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1": {
+      "note": "Definition-only SSOT for new independent Momentum-V2 research program identity testing volatility-scaled own-instrument momentum vs frozen raw momentum_1h baseline; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; registry MomentumStrategy unchanged; pending momentum_1h/v2 raw evaluation untouched.",
+      "path_prefixes": [
+        "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_research_program_v1.json",
+        "src/research/momentum_v2_volatility_scaled_own_instrument_continuation_research_program_v1.py",
+        "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_program_definition_operator_decision_packet_v1.json",
+        "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1.md"
+      ]
+    },
+    "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only preregistration of a single DEVELOPMENT_ONLY Momentum-V2 volatility-scaled own-instrument continuation measurement contract vs frozen raw momentum_1h ENTRY/EXIT baseline; no backtest, no economic metrics, no holdout access, no productive authority mutation, no registry second truth.",
+      "path_prefixes": [
+        "src/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_momentum_v2_volatility_scaled_own_instrument_continuation_v1_hypothesis_preregistration_v1.py",
+        "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "docs/evidence/preregister_momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_v1/",
+        "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md"
+      ]
+    },
     "MA_TREND_ALIGNMENT_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
       "note": "Single preregistered DEVELOPMENT-only offline evaluation of SMA(50) side-aware with-trend admission pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=FAIL, NET_PROFIT_FACTOR_NOT_IMPROVED); research-only entry-eligibility gate; read-only reuse of entry_effective decision/gate helpers and regime_gated shared_portfolio_equity_research_v1; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
       "path_prefixes": [
