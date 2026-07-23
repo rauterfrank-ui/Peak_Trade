@@ -34,7 +34,9 @@ def test_repo_decision_packet_create_successor_applied() -> None:
     assert report["packet_id"] == (
         "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1"
     )
-    assert report["status"] == ("OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSLRVC_DEFINITION_ONLY")
+    assert report["status"] == (
+        "OPERATOR_DECISION_APPLIED_CREATE_SUCCESSOR_CSLRVC_STRATEGY_IMPLEMENTATION_PRESENT"
+    )
     assert report["lane_status"] == "OPEN_BACKLOG"
     assert report["decision_count"] == 3
     assert report["awaiting_declared"] is True
@@ -80,10 +82,10 @@ def test_enumerated_decisions_and_go_tokens() -> None:
     assert packet["awaiting_declared"] is True
     assert packet["successor_created"] is True
     assert packet["next_admissible_scope"] == (
-        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1"
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1"
     )
     assert packet["next_admissible_scope_go_tokens"] == [
-        "GO_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1",
+        "GO_CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
     ]
 
 

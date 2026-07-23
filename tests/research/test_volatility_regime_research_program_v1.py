@@ -40,7 +40,7 @@ def test_repo_program_definition_only_open() -> None:
     report = load_and_validate_repo_program(REPO)
     assert report["valid"] is True
     assert report["definition_only"] is True
-    assert report["strategy_implementation_present"] is False
+    assert report["strategy_implementation_present"] is True
     assert report["program_id"] == "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
     assert report["status"] == "DEFINITION_ONLY_PROGRAM_OPEN"
     assert report["strategy_identity"] == (
@@ -137,11 +137,10 @@ def test_post_create_successor_fields_and_strategy_id_reconciled() -> None:
     assert payload["lane_backlog_status"] == "OPEN_BACKLOG"
     assert payload["active_hypothesis_inventory_empty"] is False
     assert payload["next_canonical_step"] == (
-        "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_"
-        "FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
+        "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION"
     )
-    assert payload["strategy_implementation_present"] is False
-    assert payload["implementation_authorized"] is False
+    assert payload["strategy_implementation_present"] is True
+    assert payload["implementation_authorized"] is True
     assert (
         payload["causal_independence"][
             "not_a_retry_of_terminal_volatility_term_structure_reversion_v1"
@@ -173,8 +172,8 @@ def test_fail_closed_on_authorization_mutation() -> None:
     with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["strategy_implementation_present"] = True
-    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_TRUE"):
+    bad3["strategy_implementation_present"] = False
+    with pytest.raises(ProgramValidationError, match="STRATEGY_IMPLEMENTATION_PRESENT_FALSE"):
         validate_program_contract(bad3)
     bad4 = copy.deepcopy(payload)
     bad4["runtime_policy"]["orders_allowed"] = True
