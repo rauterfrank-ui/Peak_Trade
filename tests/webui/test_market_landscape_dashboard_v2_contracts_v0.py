@@ -9,11 +9,13 @@ from pathlib import Path
 
 import pytest
 
+from src.backtest.economic_viability_evidence_v1 import EconomicViabilityStatus
 from src.webui.market_dashboard_landscape_v2 import (
     AVAILABILITY_VALUES,
     SCHEMA_VERSION,
     Availability,
     CanonicalDecisionSnapshotV1,
+    EconomicSummarySnapshotV1,
     build_source_health_from_snapshots,
     default_not_bound_bundle,
     dumps_projection_canonical,
@@ -22,8 +24,13 @@ from src.webui.market_dashboard_landscape_v2 import (
     project_double_play_snapshot_v1,
     serialize_projection,
 )
+from src.webui.market_dashboard_landscape_v2.provenance import (
+    FreshnessV1,
+    SnapshotProvenanceV1,
+)
 from src.webui.market_dashboard_landscape_v2.unavailable import (
     unavailable_canonical_decision,
+    unavailable_economic_summary,
 )
 
 REPO = Path(__file__).resolve().parents[2]
@@ -228,3 +235,188 @@ def test_package_lives_under_webui_not_deleted_names() -> None:
     assert pkg.is_dir()
     deleted = REPO / "src" / "webui" / "market_dashboard_readmodels_v1"
     assert not deleted.exists()
+
+
+def _economic_available_snapshot(
+    *,
+    status: EconomicViabilityStatus,
+    economic_validity_proven: bool,
+    policy_threshold_status: str,
+) -> EconomicSummarySnapshotV1:
+    """Construct AVAILABLE economic summary by direct field copy (no producer load)."""
+    schema_id = "market_dashboard_landscape_projection.economic_summary.v1"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module="backtest.economic_viability_evidence_v1",
+        generated_at=STAMP,
+        effective_at=STAMP,
+        source_kind="economic_viability_evidence_v1",
+        source_reference="evidence://economic-test",
+        evidence_digest="b" * 64,
+        git_sha="deadbeef",
+        availability=Availability.AVAILABLE,
+    )
+    freshness = FreshnessV1(
+        observed_at=STAMP,
+        max_age_seconds=None,
+        is_stale=False,
+        stale_reason=None,
+    )
+    metric = {"semantic": "COMPUTED", "value": 1.25}
+    return EconomicSummarySnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=Availability.AVAILABLE,
+        economic_viability_status=status.value,
+        economic_validity_proven=economic_validity_proven,
+        profitability_claim_allowed=False,
+        policy_threshold_status=policy_threshold_status,
+        policy_version="economic_validity_policy_v1",
+        authority_effect="NONE",
+        runtime_effect=False,
+        order_effect=False,
+        reason_codes=("REASON_A", "REASON_B"),
+        profit_factor=dict(metric),
+        net_return={"semantic": "COMPUTED", "value": 0.01},
+        max_drawdown={"semantic": "COMPUTED", "value": -0.05},
+        sharpe={"semantic": "COMPUTED", "value": 0.5},
+        trade_count={"semantic": "COMPUTED", "value": 12.0},
+        funding_drag={"semantic": "COMPUTED", "value": -0.001},
+        evidence_ref="evidence://economic-test",
+        contract_version="v1",
+        owner="backtest.economic_viability_evidence_v1",
+        strategy_id="strategy_x",
+        strategy_version="1",
+        config_digest="c" * 64,
+        implementation_digest="d" * 64,
+        data_digest="e" * 64,
+        manifest_digest="f" * 64,
+        wiring_chain_digest="g" * 64,
+        policy_digest="h" * 64,
+    )
+
+
+def test_economic_viability_status_preserves_exact_source_enum() -> None:
+    for status in EconomicViabilityStatus:
+        snap = _economic_available_snapshot(
+            status=status,
+            economic_validity_proven=False,
+            policy_threshold_status="BELOW_THRESHOLD",
+        )
+        assert snap.economic_viability_status == status.value
+        payload = serialize_projection(snap)
+        assert payload["economic_viability_status"] == status.value
+        assert "economic_gate_status" not in payload
+
+
+def test_economic_validity_proven_copied_not_recomputed() -> None:
+    # Intentionally inconsistent with PROMISING status — proves no policy recompute.
+    snap = _economic_available_snapshot(
+        status=EconomicViabilityStatus.RESEARCH_ONLY,
+        economic_validity_proven=True,
+        policy_threshold_status="BELOW_THRESHOLD",
+    )
+    assert snap.economic_validity_proven is True
+    assert snap.economic_viability_status == "RESEARCH_ONLY"
+    assert snap.policy_threshold_status == "BELOW_THRESHOLD"
+
+
+def test_policy_threshold_status_remains_distinct_from_viability_status() -> None:
+    snap = _economic_available_snapshot(
+        status=EconomicViabilityStatus.ECONOMICALLY_VIABLE_OFFLINE,
+        economic_validity_proven=True,
+        policy_threshold_status="PASS",
+    )
+    assert snap.economic_viability_status == "ECONOMICALLY_VIABLE_OFFLINE"
+    assert snap.policy_threshold_status == "PASS"
+    assert snap.economic_viability_status != snap.policy_threshold_status
+
+
+def test_economic_gate_status_forbidden_for_evi_status() -> None:
+    snap = _economic_available_snapshot(
+        status=EconomicViabilityStatus.PROMISING,
+        economic_validity_proven=False,
+        policy_threshold_status="BELOW_THRESHOLD",
+    )
+    assert not hasattr(snap, "economic_gate_status")
+    fields = set(EconomicSummarySnapshotV1.__dataclass_fields__)
+    assert "economic_viability_status" in fields
+    assert "economic_gate_status" not in fields
+
+
+def test_economic_summary_promotion_lifecycle_risk_fields_absent() -> None:
+    snap = _economic_available_snapshot(
+        status=EconomicViabilityStatus.PROMISING,
+        economic_validity_proven=False,
+        policy_threshold_status="BELOW_THRESHOLD",
+    )
+    fields = set(snap.__dataclass_fields__)
+    forbidden = {
+        "economic_gate_status",
+        "promotion_economic_gate_status",
+        "promotion_eligibility",
+        "promotion_status",
+        "DEVELOPMENT_ONLY",
+        "HOLDOUT",
+        "SEALED_LONG_PANEL",
+        "TERMINAL",
+        "PREREGISTRATION_ONLY",
+        "NOT_EVALUATED",
+        "lifecycle_label",
+        "research_lifecycle",
+        "risk_status",
+        "sizing_status",
+        "capital_status",
+        "quantity",
+        "position_size",
+        "risk_budget",
+    }
+    assert fields.isdisjoint(forbidden)
+    payload = serialize_projection(snap)
+    assert set(payload).isdisjoint(forbidden)
+
+
+def test_zero_injected_economic_source_remains_not_bound() -> None:
+    snap = unavailable_economic_summary(
+        availability=Availability.NOT_BOUND,
+        generated_at=STAMP,
+        reason="LANDSCAPE_V2_SLOT_NOT_BOUND",
+    )
+    assert snap.availability is Availability.NOT_BOUND
+    assert snap.economic_viability_status is None
+    assert snap.economic_validity_proven is None
+    assert snap.policy_threshold_status is None
+    assert snap.profit_factor is None
+    assert snap.evidence_ref is None
+    bundle = default_not_bound_bundle(generated_at=STAMP)
+    assert bundle["economic_summary"].availability is Availability.NOT_BOUND
+
+
+def test_economic_summary_immutable_and_serializable() -> None:
+    snap = _economic_available_snapshot(
+        status=EconomicViabilityStatus.ECONOMICALLY_VIABLE_OFFLINE,
+        economic_validity_proven=True,
+        policy_threshold_status="PASS",
+    )
+    with pytest.raises(FrozenInstanceError):
+        snap.economic_viability_status = "RESEARCH_ONLY"  # type: ignore[misc]
+    first = dumps_projection_canonical(snap)
+    second = dumps_projection_canonical(snap)
+    assert first == second
+    parsed = json.loads(first)
+    assert parsed["economic_viability_status"] == "ECONOMICALLY_VIABLE_OFFLINE"
+    assert parsed["reason_codes"] == ["REASON_A", "REASON_B"]
+    assert parsed["profit_factor"] == {"semantic": "COMPUTED", "value": 1.25}
+
+
+def test_economic_owner_registry_ratified_not_bound() -> None:
+    entry = owner_registry_by_slot()["economic_summary"]
+    assert entry.owner_module == "backtest.economic_viability_evidence_v1"
+    assert entry.owner_symbol == "EconomicViabilityEvidenceV1"
+    assert entry.reuse_status == "NOT_BOUND"
+    assert "economic_viability_status" in entry.notes
+    assert "EXPLICIT_UPSTREAM_INJECTION_ONLY" in entry.notes
+    assert "economic_gate_status" in entry.notes

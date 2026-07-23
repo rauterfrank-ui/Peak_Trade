@@ -178,13 +178,58 @@ class ExecutionReconciliationSnapshotV1(_ProjectionBase):
 
 @dataclass(frozen=True)
 class EconomicSummarySnapshotV1(_ProjectionBase):
-    economic_gate_status: str | None
-    evidence_ref: str | None
+    """Minimal direct projection of EconomicViabilityEvidenceV1 (Phase 4.6A).
+
+    Ratified status field is ``economic_viability_status`` — the exact
+    ``EconomicViabilityEvidenceV1.status`` enum value. Forbidden alias:
+    ``economic_gate_status`` (must not represent EVI status or promotion gate).
+
+    Metrics retain MetricFieldV1 dict shape (semantic/value/reason_code) with
+    no recomputation. Lifecycle and promotion fields are intentionally absent.
+    """
+
+    economic_viability_status: str | None
+    economic_validity_proven: bool | None
+    profitability_claim_allowed: bool | None
+    policy_threshold_status: str | None
+    policy_version: str | None
+    authority_effect: str | None
+    runtime_effect: bool | None
+    order_effect: bool | None
     reason_codes: tuple[str, ...]
+    profit_factor: Mapping[str, Any] | None
+    net_return: Mapping[str, Any] | None
+    max_drawdown: Mapping[str, Any] | None
+    sharpe: Mapping[str, Any] | None
+    trade_count: Mapping[str, Any] | None
+    funding_drag: Mapping[str, Any] | None
+    evidence_ref: str | None
+    contract_version: str | None
+    owner: str | None
+    strategy_id: str | None
+    strategy_version: str | None
+    config_digest: str | None
+    implementation_digest: str | None
+    data_digest: str | None
+    manifest_digest: str | None
+    wiring_chain_digest: str | None
+    policy_digest: str | None
 
     def __post_init__(self) -> None:
         super().__post_init__()
         object.__setattr__(self, "reason_codes", tuple(self.reason_codes))
+
+        def _freeze_metric(value: Mapping[str, Any] | None) -> Mapping[str, Any] | None:
+            if value is None:
+                return None
+            return dict(value)
+
+        object.__setattr__(self, "profit_factor", _freeze_metric(self.profit_factor))
+        object.__setattr__(self, "net_return", _freeze_metric(self.net_return))
+        object.__setattr__(self, "max_drawdown", _freeze_metric(self.max_drawdown))
+        object.__setattr__(self, "sharpe", _freeze_metric(self.sharpe))
+        object.__setattr__(self, "trade_count", _freeze_metric(self.trade_count))
+        object.__setattr__(self, "funding_drag", _freeze_metric(self.funding_drag))
 
 
 @dataclass(frozen=True)
