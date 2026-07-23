@@ -122,23 +122,35 @@ def compute_cross_sectional_rv_rank_wide_panel_v1(
 
     No forward-fill. Incomplete / ineligible / undersized rows → NaN ranks.
     Future rows are never used (row-local only).
+
+    Vectorized WEAK_LEQ empirical-CDF ranks matching
+    ``compute_cross_sectional_rv_level_rank_at_timestamp_v1`` semantics
+    (BTC/spot columns are omitted from the ranking universe and receive NaN).
     """
     if panel_members_required_min != PANEL_MEMBERS_REQUIRED_MIN_V1:
         raise ValueError("panel_members_required_min_must_match_preregistration")
     if rv_wide.ndim != 2:
         raise ValueError("rv_wide_must_be_2d")
 
-    ranks = pd.DataFrame(index=rv_wide.index, columns=rv_wide.columns, dtype=float)
-    for ts in rv_wide.index:
-        row = rv_wide.loc[ts]
-        mapping = {str(col): float(row[col]) for col in rv_wide.columns}
-        ranked = compute_cross_sectional_rv_level_rank_at_timestamp_v1(
-            mapping, panel_members_required_min=panel_members_required_min
-        )
-        for col in rv_wide.columns:
-            value = ranked.get(str(col))
-            ranks.at[ts, col] = float(value) if value is not None else np.nan
-    return ranks.astype(float)
+    eligible_mask = np.array(
+        [is_cshrvf_eligible_instrument_v1(str(col)) for col in rv_wide.columns],
+        dtype=bool,
+    )
+    values = rv_wide.to_numpy(dtype=np.float64, copy=False)
+    n_rows, n_cols = values.shape
+    out = np.full((n_rows, n_cols), np.nan, dtype=np.float64)
+    for row_i in range(n_rows):
+        row = values[row_i]
+        finite_eligible = eligible_mask & np.isfinite(row)
+        finite_count = int(finite_eligible.sum())
+        if finite_count < panel_members_required_min:
+            continue
+        finite_vals = row[finite_eligible]
+        sorted_vals = np.sort(finite_vals)
+        leq_counts = np.searchsorted(sorted_vals, finite_vals, side="right")
+        ranks_finite = leq_counts.astype(np.float64) / float(finite_count)
+        out[row_i, finite_eligible] = ranks_finite
+    return pd.DataFrame(out, index=rv_wide.index, columns=rv_wide.columns, dtype=float)
 
 
 def compute_vol_state_instrument_column_v1(

@@ -45,8 +45,8 @@ def test_repo_contract_definition_only_preregistered() -> None:
         "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1"
     )
     assert report["strategy_identity"] == ("CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1")
-    assert report["development_run_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_run_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["strategy_implementation_present"] is False
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
@@ -137,5 +137,5 @@ def test_placeholder_cli_fail_closed() -> None:
     assert proc.returncode == 2
     payload = json.loads(proc.stdout)
     assert payload["status"] == "FAIL_CLOSED"
-    assert payload["development_evaluation_executed"] is False
+    assert payload["evaluation_executed"] is False
     assert payload["holdout_accessed"] is False

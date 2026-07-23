@@ -43,10 +43,10 @@
     "NO_TRAILING_STOP",
     "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE"
   ],
-  "frozen_measurement_contract_digest": "9a174a153907f3fd42ecdddd456e58e2a8a01c1ddd081456303ef888704eb8f8",
+  "frozen_measurement_contract_digest": "3c9d664555d9b1f3c3240765449dc6fa3c693e7af10db579971d6a0560ec15a7",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/cross_sectional_high_realized_volatility_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-  "governance_note": "CSHRVF v1 strategy implementation present after post-VTDC CREATE_SUCCESSOR. Evaluation unauthorized; no run-slot consumption; holdout untouched. Next=separate GO for bounded Development evaluation. Measurement contract remains frozen.",
+  "governance_note": "CSHRVF v1 bounded DEVELOPMENT evaluation executed once; DEVELOPMENT_FAIL on preregistered admission gates (net PF/cost stress/max drawdown/time-segment robustness). Slot consumed. No retry. No holdout. Economic/promotion/runtime/live gates closed. No VTDC/VTSR/VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry. Measurement contract digest terminalized after slot consume.",
   "holdout_authorized": false,
   "holdout_forbidden": true,
   "hypothesis_id": "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1",

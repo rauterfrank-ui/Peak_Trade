@@ -84,7 +84,6 @@ def test_import_safety_and_binding() -> None:
     assert report["evaluation_authorized"] is False
     assert report["development_evaluation_authorized"] is False
     assert report["frozen_measurement_contract_digest"] == REQUIRED_DIGEST
-    assert report["development_run_count"] == 0
     assert STRATEGY_IDENTITY_V1 == "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
     assert HYPOTHESIS_ID_V1 == (
         "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_NON_BITCOIN_PERPETUALS_V1"
@@ -119,8 +118,8 @@ def test_import_safety_and_binding() -> None:
     assert (REPO / PRODUCTIVE_EXIT_PNL_EVALUATOR_REF_V1).is_file()
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     assert contract["strategy_implementation_present"] is False
-    assert contract["development_run_count"] == 0
-    assert contract["run_slot_consumed"] is False
+    assert contract["development_run_count"] == 1
+    assert contract["run_slot_consumed"] is True
     assert contract["contract_digest"] == REQUIRED_DIGEST
 
 
@@ -319,7 +318,7 @@ def test_governance_registry_and_owner_map_consistency() -> None:
         )
     )
     assert program["strategy_implementation_present"] is True
-    assert program["development_run_count"] == 0
+    assert program["development_run_count"] == 1
     assert program["evaluation_authorized"] is False
     backlog = json.loads(
         (REPO / "config/research/volatility_regime_hypothesis_backlog_v1.json").read_text(
@@ -328,5 +327,5 @@ def test_governance_registry_and_owner_map_consistency() -> None:
     )
     hyp = backlog["preregistered_hypotheses"][0]
     assert hyp["implementation_present"] is True
-    assert hyp["development_run_count"] == 0
-    assert hyp["status"] == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
+    assert hyp["development_run_count"] == 1
+    assert hyp["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL"
