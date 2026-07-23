@@ -65,9 +65,11 @@ def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
                 page = context.new_page()
                 page.on(
                     "console",
-                    lambda msg: console_errors.append(f"{msg.type}:{msg.text}")
-                    if msg.type == "error"
-                    else None,
+                    lambda msg: (
+                        console_errors.append(f"{msg.type}:{msg.text}")
+                        if msg.type == "error"
+                        else None
+                    ),
                 )
                 page.on("pageerror", lambda exc: page_errors.append(str(exc)))
 

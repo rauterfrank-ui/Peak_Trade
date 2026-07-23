@@ -7,7 +7,7 @@ The Peak Trade **legacy** Market Dashboard product was intentionally removed and
 - Independent domain producers (trading, risk, execution, economic, diagnostics, market-data) remain domain-owned.
 
 **Successor surface (authorized Phase 3 Landscape Shell only):**  
-`GET /market` is restored as the **Market Dashboard Landscape V2** read-only consumer shell.
+`GET &#47;market` is restored as the **Market Dashboard Landscape V2** read-only consumer shell.
 
 - Pure read-only GET route; no write/action/order/runtime controls.
 - Consumes Phase 2 Landscape projection contracts; unbound producers render as `NOT_BOUND`.

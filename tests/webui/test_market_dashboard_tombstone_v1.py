@@ -106,8 +106,9 @@ def test_tombstone_doc_present() -> None:
     assert TOMBSTONE.is_file()
     text = TOMBSTONE.read_text(encoding="utf-8")
     assert "intentionally" in text.lower()
-    assert "GET /market" in text
-    assert "&#47;market" not in text
+    # Docs token policy requires illustrative path encoding (GET &#47;market).
+    assert "GET &#47;market" in text
+    assert "GET /market" not in text
     assert "Landscape V2" in text or "landscape v2" in text.lower()
 
 
