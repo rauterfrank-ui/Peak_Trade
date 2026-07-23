@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0
 status: draft
 scope: docs-only, non-authorizing strategy surface map
-last_updated: 2026-04-27
+last_updated: 2026-07-23
 ---
 
 # Master V2 Strategy Visual Map to Repo Surface Map V0
@@ -73,9 +73,25 @@ The examples below are discovered surfaces or representative names consistent wi
 | Mean-Reversion / Oscillator | `rsi_reversion`, `mean_reversion`, `mean_reversion_channel`, `MeanReversionStrategy`, `MeanReversionChannelStrategy` | `src/strategies/`, `config/`, `tests/` | Reversion signal, oscillator state, filter context. |
 | Regime / Context | `regime_aware_portfolio`, `RegimeAwarePortfolioStrategy`, `regime_strategy` | `src/strategies/`, `config/`, `tests/` | Regime or market-context label, portfolio context, dashboard explanation. |
 | Core / Research Strategies | `BollingerBandsStrategy`, `BreakoutStrategy`, `CompositeStrategy`, `DonchianBreakoutStrategy`, `MACDStrategy`, `MACrossoverStrategy` | `src/strategies/`, `tests/`, research or docs surfaces | Candidate signal, score, research evidence, comparison baseline. |
-| Trend / Momentum | `MomentumStrategy`, `TrendFollowingStrategy`, trend or momentum config keys | `src/strategies/`, `config/`, `tests/` | Directional filter, momentum score, candidate context. |
+| Trend / Momentum | `momentum_1h` / `MomentumStrategy`, `TrendFollowingStrategy`, trend or momentum config keys | `src/strategies/`, `config/`, `tests/` | Library candidate signal / score / context only. **Not** Master V2 Directional Assessment, **not** default Decision-Core wiring (Class B unwired for `momentum_1h`). |
 | Feature or Helper surfaces | helper functions or feature builders such as RSI, momentum, or regime helpers | code and tests | Feature production only; not strategy authority. |
 | Unclear / Needs Review | any discovered name without clear canonical role | mixed | Must not be promoted without review. |
+
+### 4.1 Momentum surface disambiguation (non-authorizing)
+
+Homonymous names are **not** the same component:
+
+| Surface | Role | Must not be read as |
+| --- | --- | --- |
+| `momentum_1h` | Strategy-Library registry ID | Default Master V2 / Double Play producer |
+| `MomentumStrategy` (`src/strategies/momentum.py`) | Executable library implementation | A class named `MomentumV2`; Decision / Side / Scope / Composition authority |
+| `momentum_1h&#47;v2` / `MOMENTUM_HORIZON_V2` | Research / offline-evaluation binding generation only | Second registry implementation or new strategy module |
+| `feat-momentum-v1` | Feature-ref **label** in Directional Assessment inputs | Executable strategy wiring |
+| `strat-momentum-v1` | Fixture / harness suitability strategy id | Identical to `momentum_1h` |
+| `momentum_feature_set` | Market-context / evidence carrier field | Directional Assessment producer input |
+| Master V2 Directional Assessment | `price_path` / `compute_signal_strength` | Output of `MomentumStrategy` |
+
+There is **no** productive `MomentumV2` class and **no** `momentum_v2` module under `src&#47;strategies/`. <!-- pt:ref-target-ignore --> Presence of any momentum-named surface in this map does **not** imply default Integrated Offline Replay wiring.
 
 ## 5. Strategy Status Lanes
 

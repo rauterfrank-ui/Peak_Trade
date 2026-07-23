@@ -249,7 +249,8 @@ echo "%"
 - **Result:** WARN
 - **Severity:** WARN
 - **Rules triggered:**
-  - EXECUTION_ENDPOINT_TOUCH (files: src/strategies/momentum_v2.py)
+  - EXECUTION_ENDPOINT_TOUCH (files: src&#47;strategies&#47;momentum.py) <!-- pt:ref-target-ignore -->
+    - Note: illustrative example only; there is no productive `MomentumV2` class and no `momentum_v2` strategy module.
 - **Classification:** TRUE_POSITIVE
 - **Operator action:**
   - Added test plan covering edge cases

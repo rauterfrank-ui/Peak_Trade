@@ -43,15 +43,16 @@ stop_pct = 0.02
 
 ---
 
-## 2️⃣ **Momentum**
+## 2️⃣ **Momentum** (`momentum_1h` / `MomentumStrategy`)
 
-**Typ:** Trend-Following  
-**Datei:** `src/strategies/momentum.py`
+**Typ:** Trend-Following (Strategy-Library)  
+**Datei:** `src/strategies/momentum.py`  
+**Registry-ID:** `momentum_1h` — **nicht** eine Klasse `MomentumV2`; Research-Binding `momentum_1h&#47;v2` ist nur Offline-Evaluation-Generation, keine zweite Registry-Implementierung.  
+**Master V2:** Class B unwired — kein Default-Producer in `integrated_offline_trading_logic_replay_v1`. Directional Assessment bleibt `price_path`-basiert.
 
 ### Konzept
 - **Momentum** = (Close heute / Close vor N Tagen) - 1
-- **Entry:** Momentum > entry_threshold (z.B. 2%)
-- **Exit:** Momentum < exit_threshold (z.B. -1%)
+- **Signal-Semantik:** `+1` = LONG ENTRY EVENT, `-1` = EXIT EVENT, `0` = NONE (`-1` ist **kein** SHORT ENTRY; `entry_side=NONE`)
 
 ### Parameter
 ```toml
@@ -66,6 +67,7 @@ stop_pct = 0.025
 - ✅ Erfasst starke Trends früh
 - ✅ Flexibel über Thresholds
 - ❌ Sensitiv auf Lookback-Periode
+- ❌ Keine Decision-/Side-/Composition-Authority; Homonyme `feat-momentum-v1` / `strat-momentum-v1` / `momentum_feature_set` sind Label/Fixture/Context, nicht dieses Modul
 
 ---
 
