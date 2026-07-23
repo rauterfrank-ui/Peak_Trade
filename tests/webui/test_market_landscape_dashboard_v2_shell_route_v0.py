@@ -61,6 +61,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert "OPERATOR_SKELETON_APPROVAL" not in html
     assert "Phase 4 producer binding" not in html
 
+
 def test_get_market_has_no_write_or_order_controls(client: TestClient) -> None:
     html = client.get("/market").text
     assert "<form" not in html.lower()
