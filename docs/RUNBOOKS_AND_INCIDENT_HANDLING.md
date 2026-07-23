@@ -1,5 +1,7 @@
 # Peak_Trade – Runbooks & Incident-Handling
 
+> **Cybersecurity baseline cross-link (2026-07-23):** [`SECURITY_NOTES.md`](../SECURITY_NOTES.md) (`PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`) — pointers only; **no** claim that incident drills or secret rotation were executed in that refresh.
+
 > **Status:** Phase 25 – Governance & Safety-Dokumentation
 > **Scope:** Runbooks für Shadow-Modus, Vorlagen für Testnet/Live
 > **Hinweis:** Runbooks sind lebende Dokumente, die bei Bedarf aktualisiert werden

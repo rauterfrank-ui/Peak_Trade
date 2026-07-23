@@ -1,8 +1,9 @@
 # Disaster Recovery Runbook
 
 > **Version:** 1.0  
-> **Last Updated:** December 2024  
-> **Owner:** Peak_Trade Operations Team
+> **Last Updated:** December 2024 (procedural body) · **Baseline cross-link:** 2026-07-23 (`PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1` → [`SECURITY_NOTES.md`](../SECURITY_NOTES.md))  
+> **Owner:** Peak_Trade Operations Team  
+> **Note:** This runbook does **not** claim secret rotation or external platform recovery drills were executed during the cybersecurity baseline refresh.
 
 ## Overview
 
