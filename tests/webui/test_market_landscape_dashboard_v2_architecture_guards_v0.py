@@ -246,3 +246,59 @@ def test_shell_router_forbidden_import_count_zero() -> None:
             if module == prefix or module.startswith(prefix + "."):
                 hits.append(module)
     assert hits == []
+
+
+def test_landscape_v2_css_has_no_visible_structural_divider_lines() -> None:
+    """Phase-3 product composition: zero visible structural lines on /market.
+
+    Scoped only to Market Landscape V2 CSS selectors — not global WebUI CSS.
+    """
+    css_path = REPO / "static" / "css" / "market_dashboard_landscape_v2.css"
+    assert css_path.is_file()
+    text = css_path.read_text(encoding="utf-8")
+    # Strip comments so documentation mentions of "border" do not trip the guard.
+    code = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
+
+    forbidden_patterns = (
+        r"border-top\s*:\s*[^;]*solid",
+        r"border-bottom\s*:\s*[^;]*solid",
+        r"border-left\s*:\s*[^;]*solid",
+        r"border-right\s*:\s*[^;]*solid",
+        r"border\s*:\s*\d+px\s+solid",
+        r"border\s*:\s*1px",
+        r"repeating-linear-gradient\s*\(",
+        r"<hr\b",
+    )
+    hits: list[str] = []
+    for pattern in forbidden_patterns:
+        for match in re.finditer(pattern, code, flags=re.I):
+            hits.append(f"{pattern} @ {match.group(0)!r}")
+    assert hits == [], f"VISIBLE_STRUCTURAL_LINE_SOURCES={hits}"
+
+    # Non-none box-shadow with length is a structural line substitute.
+    shadow_hits: list[str] = []
+    for match in re.finditer(r"box-shadow\s*:\s*([^;]+);", code, flags=re.I):
+        value = match.group(1).strip().lower()
+        if value != "none" and "none !" not in value and re.search(r"\d+px", value):
+            shadow_hits.append(f"box-shadow @ {match.group(0)!r}")
+    assert shadow_hits == [], f"VISIBLE_SHADOW_LINE_SOURCES={shadow_hits}"
+
+    for selector in (
+        ".mdl-v2-strip",
+        ".mdl-v2-workspace",
+        ".mdl-v2-rail",
+        ".mdl-v2-primary",
+        ".mdl-v2-chart__stage",
+        ".mdl-v2-decision",
+        ".mdl-v2-ops",
+        ".mdl-v2-timeline",
+        ".mdl-v2-engineering",
+        ".mdl-v2-shell",
+        ".mdl-v2-app-chrome",
+    ):
+        assert selector in code, selector
+    assert "border-top: 1px solid" not in code
+    assert "border-bottom: 1px solid" not in code
+    assert "border-left: 1px solid" not in code
+    assert "border-right: 1px solid" not in code
+    assert "--mdl-rule" not in code

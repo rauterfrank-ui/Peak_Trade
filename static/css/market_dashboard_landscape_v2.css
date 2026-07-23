@@ -3,12 +3,19 @@
  * CANONICAL_OWNER: static/css/market_dashboard_landscape_v2.css
  * READ_ONLY / NO_TRADING_SEMANTICS / NO_RUNTIME_AUTHORITY
  *
- * Composition: frameless workspace. No per-region cards. Regions separated
- * by spacing and very low-contrast horizontal rules only.
+ * Composition invariant: ZERO visible structural divider lines.
+ * Structure via spacing, alignment, typography and density only.
+ * No border/outline/box-shadow/hr/pseudo/gradient rules that read as lines.
  */
 
 .mdl-v2-body {
   overflow-x: hidden;
+  background: #070b12;
+}
+
+/* Neutralize base layout chrome lines on this page only */
+.mdl-v2-body footer {
+  display: none !important;
 }
 
 .mdl-v2-main {
@@ -21,8 +28,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 6px 16px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  padding: 8px 18px 4px;
+  border: 0;
   background: #070b12;
   position: sticky;
   top: 0;
@@ -44,7 +51,6 @@
 }
 
 .mdl-v2 {
-  --mdl-rule: rgba(148, 163, 184, 0.1);
   --mdl-bg: #070b12;
   --mdl-ink: #e2e8f0;
   --mdl-muted: #8b9bb0;
@@ -52,9 +58,9 @@
   --mdl-chart-min: min(56vh, 580px);
   box-sizing: border-box;
   max-width: 100vw;
-  min-height: calc(100vh - 40px);
+  min-height: calc(100vh - 36px);
   margin: 0;
-  padding: 8px 18px 14px;
+  padding: 4px 18px 16px;
   color: var(--mdl-ink);
   background: var(--mdl-bg);
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
@@ -64,15 +70,25 @@
 .mdl-v2 *::before,
 .mdl-v2 *::after {
   box-sizing: border-box;
+  border: 0 !important;
+  outline: none;
+  box-shadow: none !important;
 }
 
-/* No outer card frame — continuous workspace surface */
+/* Focus ring only when keyboard-focused — not a structural layout line */
+.mdl-v2 a:focus-visible,
+.mdl-v2 summary:focus-visible,
+.mdl-v2 [tabindex]:focus-visible {
+  outline: 1px solid rgba(125, 211, 252, 0.7);
+  outline-offset: 2px;
+}
+
 .mdl-v2-shell {
-  border: 0;
   background: transparent;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 48px);
+  gap: 0;
 }
 
 .mdl-v2-strip {
@@ -81,9 +97,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px 18px;
-  padding: 6px 0 10px;
-  border: 0;
-  border-bottom: 1px solid var(--mdl-rule);
+  padding: 4px 0 14px;
   background: transparent;
 }
 
@@ -107,7 +121,6 @@
   text-transform: uppercase;
   color: #64748b;
   padding: 0;
-  border: 0;
   background: transparent;
 }
 
@@ -145,21 +158,18 @@
 .mdl-v2-workspace {
   display: grid;
   grid-template-columns: minmax(150px, 190px) minmax(0, 1fr) minmax(160px, 210px);
-  column-gap: 22px;
+  column-gap: 28px;
   row-gap: 0;
   min-height: var(--mdl-chart-min);
   flex: 1 1 auto;
-  padding: 10px 0 4px;
-  border: 0;
+  padding: 8px 0 18px;
 }
 
 .mdl-v2-rail,
 .mdl-v2-primary {
-  border: 0 !important;
   background: transparent;
   padding: 4px 0;
   min-height: 0;
-  box-shadow: none;
   border-radius: 0;
 }
 
@@ -167,7 +177,7 @@
 .mdl-v2-primary h2,
 .mdl-v2-timeline h2,
 .mdl-v2-ops h3 {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   font-size: 11px;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -180,7 +190,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 7px;
+  gap: 8px;
 }
 
 .mdl-v2-rail-rows li {
@@ -213,36 +223,20 @@
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .mdl-v2-chart__stage {
   flex: 1;
   margin: 0;
-  border: 0 !important;
   border-radius: 0;
-  outline: none;
-  box-shadow: none;
-  background:
-    linear-gradient(180deg, rgba(15, 23, 42, 0.08), rgba(2, 6, 23, 0.2)),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 55px,
-      rgba(148, 163, 184, 0.03) 56px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 55px,
-      rgba(148, 163, 184, 0.03) 56px
-    );
+  background: transparent;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 16px;
+  padding: 12px;
   min-height: calc(var(--mdl-chart-min) - 24px);
 }
 
@@ -270,7 +264,7 @@
 .mdl-v2-kv {
   margin: 0;
   display: grid;
-  gap: 8px;
+  gap: 9px;
 }
 
 .mdl-v2-kv > div {
@@ -296,23 +290,20 @@
 }
 
 .mdl-v2-decision {
-  border: 0;
-  border-top: 1px solid var(--mdl-rule);
   background: transparent;
-  padding: 12px 0 10px;
+  padding: 18px 0 14px;
 }
 
 .mdl-v2-decision__grid {
   margin: 0;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  column-gap: 18px;
-  row-gap: 8px;
+  column-gap: 22px;
+  row-gap: 10px;
 }
 
 .mdl-v2-decision__grid > div {
   min-width: 0;
-  border: 0 !important;
   padding: 0;
 }
 
@@ -325,7 +316,7 @@
 }
 
 .mdl-v2-decision__grid dd {
-  margin: 3px 0 0;
+  margin: 4px 0 0;
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 13px;
   font-weight: 600;
@@ -337,23 +328,18 @@
 .mdl-v2-ops {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: 28px;
-  border: 0;
-  border-top: 1px solid var(--mdl-rule);
-  padding: 10px 0;
+  column-gap: 32px;
+  padding: 16px 0 12px;
   background: transparent;
 }
 
 .mdl-v2-ops__col {
   padding: 0;
-  border: 0 !important;
 }
 
 .mdl-v2-timeline {
-  border: 0;
-  border-top: 1px solid var(--mdl-rule);
   background: transparent;
-  padding: 8px 0 6px;
+  padding: 14px 0 10px;
 }
 
 .mdl-v2-timeline__head {
@@ -367,16 +353,14 @@
 }
 
 .mdl-v2-timeline__empty {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   font-size: 11px;
   color: var(--mdl-muted);
 }
 
 .mdl-v2-engineering {
-  border: 0;
-  border-top: 1px solid var(--mdl-rule);
   background: transparent;
-  padding: 4px 0 2px;
+  padding: 10px 0 2px;
 }
 
 .mdl-v2-engineering summary {
@@ -405,7 +389,6 @@
   overflow: auto;
   max-height: 180px;
   padding: 8px 0;
-  border: 0;
   background: transparent;
   color: #64748b;
   font-size: 11px;
@@ -414,7 +397,7 @@
 @media (max-width: 1280px) {
   .mdl-v2-workspace {
     grid-template-columns: minmax(130px, 160px) minmax(0, 1fr) minmax(140px, 180px);
-    column-gap: 16px;
+    column-gap: 18px;
   }
 
   .mdl-v2-decision__grid {
