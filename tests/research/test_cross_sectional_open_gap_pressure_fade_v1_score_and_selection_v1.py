@@ -377,9 +377,9 @@ def test_implementation_binding_and_counters_unchanged() -> None:
     assert report["strategy_implementation_present"] is True
     assert report["implementation_matches_preregistration"] is True
     assert report["evaluation_authorized"] is False
-    assert report["development_evaluation_executed"] is False
-    assert report["development_run_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_evaluation_executed"] is True
+    assert report["development_run_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["holdout_authorized"] is False
     assert report["double_play_remains_sole_authority"] is True
 
@@ -387,15 +387,20 @@ def test_implementation_binding_and_counters_unchanged() -> None:
     live_digest = compute_contract_digest(measurement)
     assert measurement["contract_digest"] == live_digest
     assert report["frozen_digest"] == live_digest
-    assert live_digest == "7f8d361b597825428eecb2f6f791fcef07fe5a0dd92f9613f99b5d15e95b5768"
-    assert measurement["development_run_count"] == 0
-    assert measurement["run_slot_consumed"] is False
-    assert measurement["development_evaluation_executed"] is False
+    assert live_digest == "6b290cb087fd7949ab61801d00dc5e6b18c94ab11c78461944c90efd868e52c9"
+    assert measurement["development_evaluation_authorized"] is True
+    assert measurement["development_run_count"] == 1
+    assert measurement["run_slot_consumed"] is True
+    assert measurement["development_evaluation_executed"] is True
     assert measurement["strategy_implementation_present"] is False
 
     binding = json.loads(BINDING.read_text(encoding="utf-8"))
-    assert binding["development_run_count"] == 0
-    assert binding["run_slot_consumed"] is False
-    assert binding["development_evaluation_executed"] is False
+    assert binding["development_evaluation_authorized"] is True
+    assert binding["development_run_count"] == 1
+    assert binding["run_slot_consumed"] is True
+    assert binding["development_evaluation_executed"] is True
+    assert binding["preregistration_original_digest"] == (
+        "7f8d361b597825428eecb2f6f791fcef07fe5a0dd92f9613f99b5d15e95b5768"
+    )
     assert binding["parameter_defaults"]["lookback_n"] == 30
     assert binding["parameter_defaults"]["rebalance_interval_bars"] == 5

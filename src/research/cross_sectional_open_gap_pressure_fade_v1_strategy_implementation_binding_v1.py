@@ -59,17 +59,17 @@ def validate_implementation_binding(
     )
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
     _require(
-        payload.get("development_evaluation_authorized") is False,
+        payload.get("development_evaluation_authorized") is True,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
     _require(
-        payload.get("development_evaluation_executed") is False,
+        payload.get("development_evaluation_executed") is True,
         "DEVELOPMENT_EVALUATION_EXECUTED",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
-    _require(payload.get("runner_present") is False, "RUNNER_PRESENT")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
+    _require(payload.get("runner_present") is True, "RUNNER_PRESENT")
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(payload.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE")
@@ -110,16 +110,12 @@ def validate_implementation_binding(
     _require(params.get("rebalance_interval_bars") != 6, "CLV_REBALANCE_RESIDUE")
     non_actions = set(payload.get("explicit_non_actions") or [])
     for required in (
-        "NO_EVALUATION",
-        "NO_RUNNER",
         "NO_HOLDOUT_ACCESS",
         "NO_CSRHR_MUTATION",
         "NO_CSRHR_CONTINUE",
         "NO_CSRHR_SEMANTIC_REUSE",
         "NO_PATH_EFFICIENCY_RETRY",
         "NO_CLV_PRESSURE_RETRY",
-        "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE",
-        "NO_RUN_SLOT_CONSUMPTION",
     ):
         _require(required in non_actions, f"MISSING_NON_ACTION_{required}")
     impl_files = tuple(payload.get("implementation_files") or ())
@@ -158,11 +154,15 @@ def validate_implementation_binding(
         )
         _require(measurement.get("evaluation_authorized") is False, "MEASUREMENT_EVAL_FLIPPED")
         _require(
-            measurement.get("development_evaluation_executed") is False,
+            measurement.get("development_evaluation_authorized") is True,
+            "MEASUREMENT_DEV_EVAL_NOT_AUTHORIZED",
+        )
+        _require(
+            measurement.get("development_evaluation_executed") is True,
             "MEASUREMENT_DEV_EVAL_EXECUTED",
         )
-        _require(measurement.get("development_run_count") == 0, "MEASUREMENT_DEV_RUN_MUTATED")
-        _require(measurement.get("run_slot_consumed") is False, "MEASUREMENT_RUN_SLOT_MUTATED")
+        _require(measurement.get("development_run_count") == 1, "MEASUREMENT_DEV_RUN_MUTATED")
+        _require(measurement.get("run_slot_consumed") is True, "MEASUREMENT_RUN_SLOT_MUTATED")
         csrhr = json.loads((repo_root / CSRHR_BACKLOG_REL_PATH).read_text(encoding="utf-8"))
         _require(csrhr.get("status") == "OPEN_BACKLOG", "CSRHR_MUTATED")
         _require(csrhr.get("development_run_count") == 0, "CSRHR_DEV_RUN_MUTATED")
@@ -172,9 +172,10 @@ def validate_implementation_binding(
         "strategy_implementation_present": True,
         "implementation_matches_preregistration": True,
         "evaluation_authorized": False,
-        "development_evaluation_executed": False,
-        "development_run_count": 0,
-        "run_slot_consumed": False,
+        "development_evaluation_authorized": True,
+        "development_evaluation_executed": True,
+        "development_run_count": 1,
+        "run_slot_consumed": True,
         "holdout_authorized": False,
         "frozen_digest": frozen_digest,
         "directional_form": "D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION",
