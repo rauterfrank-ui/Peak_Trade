@@ -66,7 +66,7 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
             "Phase 4.3A: Landscape projects CanonicalTradingDecisionEvidenceV1 "
             "field-for-field (decision_outcome/next_direction_state/reason_codes/"
             "decision_id); blockers remain empty (no direct evidence field); "
-            "no recomputation; Double Play deferred to Phase 4.3B."
+            "no recomputation; Double Play is a separate Phase 4.3B slot."
         ),
     ),
     CanonicalOwnerRefV1(
@@ -75,7 +75,12 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         owner_symbol="DoublePlayDashboardDisplaySnapshot",
         authority_class="double_play",
         reuse_status="REUSED",
-        notes="Existing DP display snapshot; Landscape wraps with Availability/provenance.",
+        notes=(
+            "Phase 4.3B: Landscape projects DoublePlayDashboardDisplaySnapshot "
+            "field-for-field (overall_status/panel_summaries/blockers); "
+            "display_only=True; live_authorization=False; no compose/build calls; "
+            "pending/armed remain unbound (not on display snapshot)."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="risk_sizing_capital",

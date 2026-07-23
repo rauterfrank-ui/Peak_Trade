@@ -1,0 +1,16 @@
+tests/ci/test_ci_diff_aware_test_selection_v1.py
+tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py
+tests/ci/test_pr_head_sha_required_checks_liveness_guard.py
+tests/ci/test_required_checks_config.py
+tests/ci/test_required_checks_hygiene.py
+tests/ci/test_workflows_no_pull_request_target_contract_v0.py
+tests/test_data_contracts.py
+tests/test_error_taxonomy.py
+tests/test_resilience.py
+tests/test_stability_smoke.py
+tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py
+tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py
+tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py
+tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py

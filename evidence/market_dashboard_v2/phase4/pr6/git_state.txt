@@ -1,0 +1,28 @@
+On branch feat/market-dashboard-landscape-phase-4-3b-canonical-double-play-binding
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   config/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0.json
+	modified:   config/research/bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding_v0.json
+	modified:   src/webui/market_dashboard_landscape_producer_binding_v2.py
+	modified:   src/webui/market_dashboard_landscape_shell_router_v2.py
+	modified:   src/webui/market_dashboard_landscape_v2/owner_registry.py
+	modified:   src/webui/market_dashboard_landscape_v2/presenter.py
+	modified:   src/webui/market_dashboard_landscape_v2/projections.py
+	modified:   templates/peak_trade_dashboard/market_landscape_v2.html
+	modified:   tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py
+	modified:   tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py
+	modified:   tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py
+	modified:   tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.comparison_metric_input_pytest_outputs/
+	evidence/market_dashboard_landscape_v2_pr1/
+	evidence/market_dashboard_v2/phase3/
+	evidence/market_dashboard_v2/phase4/pr3/
+	evidence/market_dashboard_v2/phase4/pr4/
+	evidence/market_dashboard_v2/phase4/pr6/
+	tests/.pytest_archive_roots/
+
+no changes added to commit (use "git add" and/or "git commit -a")
