@@ -37,6 +37,7 @@ from .presenter import present_market_landscape_v2
 from .projections import (
     project_canonical_decision_snapshot_v1,
     project_double_play_snapshot_v1,
+    project_economic_summary_snapshot_v1,
     project_market_instrument_snapshot_v1,
     project_universe_ranking_snapshot_v1,
 )
@@ -87,6 +88,7 @@ __all__ = [
     "present_market_landscape_v2",
     "project_canonical_decision_snapshot_v1",
     "project_double_play_snapshot_v1",
+    "project_economic_summary_snapshot_v1",
     "project_market_instrument_snapshot_v1",
     "project_universe_ranking_snapshot_v1",
     "serialize_projection",

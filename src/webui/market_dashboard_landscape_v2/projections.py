@@ -12,6 +12,7 @@ from .contracts import (
     CanonicalDecisionSnapshotV1,
     DoublePlaySnapshotV1,
     DynamicScopeSnapshotV1,
+    EconomicSummarySnapshotV1,
     MarketInstrumentSnapshotV1,
     SafetyAuthoritySnapshotV1,
     UniverseRankingSnapshotV1,
@@ -427,4 +428,120 @@ def project_safety_authority_snapshot_v1(
         kill_switch_state=str(kill_switch_state),
         veto_active=veto_active,
         reason_codes=tuple(str(code) for code in reason_codes),
+    )
+
+
+def project_economic_summary_snapshot_v1(
+    *,
+    economic_viability_status: str,
+    economic_validity_proven: bool,
+    profitability_claim_allowed: bool,
+    policy_threshold_status: str,
+    policy_version: str,
+    authority_effect: str,
+    runtime_effect: bool,
+    order_effect: bool,
+    reason_codes: Sequence[str],
+    profit_factor: Mapping[str, Any],
+    net_return: Mapping[str, Any],
+    max_drawdown: Mapping[str, Any],
+    sharpe: Mapping[str, Any],
+    trade_count: Mapping[str, Any],
+    funding_drag: Mapping[str, Any],
+    contract_version: str,
+    owner: str,
+    strategy_id: str,
+    strategy_version: str,
+    config_digest: str,
+    implementation_digest: str,
+    data_digest: str,
+    manifest_digest: str,
+    wiring_chain_digest: str,
+    policy_digest: str,
+    generated_at: datetime,
+    source_reference: str | None,
+    evidence_ref: str | None = None,
+    evidence_digest: str | None = None,
+    git_sha: str | None = None,
+    producer_module: str = "backtest.economic_viability_evidence_v1",
+    source_kind: str = "economic_viability_evidence_v1",
+    effective_at: datetime | None = None,
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
+) -> EconomicSummarySnapshotV1:
+    """Project already-selected EconomicViabilityEvidenceV1 fields field-for-field.
+
+    Forbidden: recomputing metrics, synthesizing PASS/FAIL, mapping promotion
+    gate status, inferring lifecycle labels, or selecting among evidence instances.
+    generated_at/effective_at must be producer timestamps — never page-assembly time.
+    """
+    if not economic_viability_status:
+        raise ValueError("economic_viability_status required for AVAILABLE/STALE")
+    if not isinstance(economic_validity_proven, bool):
+        raise TypeError("economic_validity_proven must be bool")
+    if not isinstance(profitability_claim_allowed, bool):
+        raise TypeError("profitability_claim_allowed must be bool")
+    if not isinstance(runtime_effect, bool):
+        raise TypeError("runtime_effect must be bool")
+    if not isinstance(order_effect, bool):
+        raise TypeError("order_effect must be bool")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_economic_summary only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
+    schema_id = f"{SCHEMA_FAMILY}.economic_summary.{SCHEMA_VERSION}"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module=producer_module,
+        generated_at=generated_at,
+        effective_at=generated_at if effective_at is None else effective_at,
+        source_kind=source_kind,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        availability=availability,
+    )
+    freshness = FreshnessV1(
+        observed_at=generated_at,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+    return EconomicSummarySnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=availability,
+        economic_viability_status=str(economic_viability_status),
+        economic_validity_proven=economic_validity_proven,
+        profitability_claim_allowed=profitability_claim_allowed,
+        policy_threshold_status=str(policy_threshold_status),
+        policy_version=str(policy_version),
+        authority_effect=str(authority_effect),
+        runtime_effect=runtime_effect,
+        order_effect=order_effect,
+        reason_codes=tuple(str(code) for code in reason_codes),
+        profit_factor=dict(profit_factor),
+        net_return=dict(net_return),
+        max_drawdown=dict(max_drawdown),
+        sharpe=dict(sharpe),
+        trade_count=dict(trade_count),
+        funding_drag=dict(funding_drag),
+        evidence_ref=None if evidence_ref is None else str(evidence_ref),
+        contract_version=str(contract_version),
+        owner=str(owner),
+        strategy_id=str(strategy_id),
+        strategy_version=str(strategy_version),
+        config_digest=str(config_digest),
+        implementation_digest=str(implementation_digest),
+        data_digest=str(data_digest),
+        manifest_digest=str(manifest_digest),
+        wiring_chain_digest=str(wiring_chain_digest),
+        policy_digest=str(policy_digest),
     )

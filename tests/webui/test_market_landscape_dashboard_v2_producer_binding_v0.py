@@ -28,6 +28,7 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     REASON_ARCHIVE_ROOT_UNSET,
     REASON_DECISION_NOT_PERSISTED,
     REASON_DOUBLE_PLAY_NOT_PERSISTED,
+    REASON_ECONOMIC_NOT_PERSISTED,
     REASON_MARKET_CONTEXT_NOT_PERSISTED,
     REASON_PRODUCER_DATA_STALE,
     REASON_PRODUCER_TIMESTAMP_INVALID,
@@ -42,7 +43,9 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     SCOPE_PRODUCER_MODULE,
     SCOPE_SOURCE_KIND,
     bind_market_universe_slots,
+    economic_viability_evidence_fields_from_v1,
     parse_producer_utc_timestamp,
+    project_economic_viability_evidence_v1,
 )
 from src.webui.market_dashboard_landscape_v2 import (
     Availability,
@@ -149,6 +152,7 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
         "canonical_decision",
         "double_play",
         "safety_authority",
+        "economic_summary",
     }
     assert slots["market_instrument"].availability is Availability.MISSING_SOURCE
     assert REASON_MARKET_CONTEXT_NOT_PERSISTED in slots["market_instrument"].reason_codes
@@ -174,6 +178,10 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
     assert REASON_SAFETY_NOT_PERSISTED in slots["safety_authority"].reason_codes
     assert slots["safety_authority"].kill_switch_state is None
     assert slots["safety_authority"].veto_active is None
+    assert slots["economic_summary"].availability is Availability.MISSING_SOURCE
+    assert REASON_ECONOMIC_NOT_PERSISTED in slots["economic_summary"].reason_codes
+    assert slots["economic_summary"].economic_viability_status is None
+    assert slots["economic_summary"].profit_factor is None
 
 
 def test_bind_rejects_inventing_market_without_required_fields() -> None:
@@ -476,7 +484,7 @@ def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_inject
     assert page.canonical_decision.availability is Availability.MISSING_SOURCE
     assert REASON_DECISION_NOT_PERSISTED in page.canonical_decision.reason_codes
     ctx = present_market_landscape_v2(page)
-    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["scope"]["availability"] == "MISSING_SOURCE"
     assert ctx["decision"]["availability"] == "MISSING_SOURCE"
@@ -742,7 +750,7 @@ def test_bind_canonical_decision_does_not_bind_double_play() -> None:
     assert page.double_play.availability is Availability.MISSING_SOURCE
     assert REASON_DOUBLE_PLAY_NOT_PERSISTED in page.double_play.blockers
     assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
-    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
     assert ctx["product_flags"]["phase_4_3a_binding_active"] is True
     assert ctx["product_flags"]["phase_4_3b_binding_active"] is True
     assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
@@ -909,7 +917,7 @@ def test_decision_and_double_play_remain_separate_projections() -> None:
     assert page.double_play.overall_status == "display_blocked"
     assert ctx["decision"]["fields"]["decision"] == "observe"
     assert ctx["double_play"]["fields"]["overall_status"] == "display_blocked"
-    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
 
 
 def _safety_authority_fields(**overrides: object) -> dict[str, object]:
@@ -1031,6 +1039,302 @@ def test_safety_does_not_bind_risk_capital_sizing() -> None:
     assert page.risk_sizing_capital.quantity is None
     assert ctx["risk"]["availability"] == "NOT_BOUND"
     assert ctx["global_strip"]["safety_status"] == "KILLED · veto=True"
-    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
     assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_6b_binding_active"] is True
     assert ctx["product_flags"]["dashboard_authority"] is False
+
+
+def _metric(*, value: float | None = None, semantic: str = "COMPUTED") -> dict[str, object]:
+    payload: dict[str, object] = {"semantic": semantic}
+    if value is not None:
+        payload["value"] = value
+    return payload
+
+
+def _economic_fields(**overrides: object) -> dict[str, object]:
+    base: dict[str, object] = {
+        "status": "ECONOMICALLY_VIABLE_OFFLINE",
+        "economic_validity_proven": True,
+        "profitability_claim_allowed": False,
+        "policy_threshold_status": "PASS",
+        "policy_version": "economic_validity_policy_v1",
+        "authority_effect": "NONE",
+        "runtime_effect": False,
+        "order_effect": False,
+        "reason_codes": ("SENTINEL_REASON_A", "SENTINEL_REASON_B"),
+        "profit_factor": _metric(value=1.77),
+        "net_return": _metric(value=0.123),
+        "max_drawdown": _metric(value=-0.045),
+        "sharpe": _metric(value=0.88),
+        "trade_count": _metric(value=42.0),
+        "funding_drag": _metric(value=-0.003),
+        "contract_version": "v1",
+        "owner": "backtest.economic_viability_evidence_v1",
+        "strategy_id": "sentinel_strategy",
+        "strategy_version": "sentinel_v9",
+        "config_digest": "c" * 64,
+        "implementation_digest": "i" * 64,
+        "data_digest": "d" * 64,
+        "manifest_digest": "m" * 64,
+        "wiring_chain_digest": "w" * 64,
+        "policy_digest": "p" * 64,
+        "generated_at": SAFETY_PRODUCER_FRESH,
+        "source_reference": "evidence://economic/sentinel",
+        "evidence_digest": "m" * 64,
+    }
+    base.update(overrides)
+    return base
+
+
+def _make_economic_evidence(**overrides: object):
+    from src.backtest.economic_viability_evidence_v1 import (
+        EconomicViabilityEvidenceV1,
+        EconomicViabilityStatus,
+        MetricFieldV1,
+        MetricSemantic,
+    )
+
+    def mf(value: float | None = None) -> MetricFieldV1:
+        if value is None:
+            return MetricFieldV1(semantic=MetricSemantic.NOT_COMPUTED)
+        return MetricFieldV1(semantic=MetricSemantic.COMPUTED, value=value)
+
+    kwargs: dict[str, object] = {
+        "contract_version": "v1",
+        "owner": "backtest.economic_viability_evidence_v1",
+        "strategy_id": "sentinel_strategy",
+        "strategy_version": "sentinel_v9",
+        "instrument_id_or_universe": "ETH-USDT-SWAP",
+        "canonical_trading_logic_version": "v1",
+        "data_period": "p",
+        "training_period": "p",
+        "validation_period": "p",
+        "out_of_sample_period": "p",
+        "fee_model_version": "backtest_cost_v0",
+        "slippage_model_version": "backtest_cost_v0",
+        "funding_model_version": "funding_v1",
+        "execution_model_version": "research_conservative_bps_v1",
+        "config_digest": "c" * 64,
+        "implementation_digest": "i" * 64,
+        "data_digest": "d" * 64,
+        "gross_return": mf(0.2),
+        "net_return": mf(0.123),
+        "net_expectancy": mf(0.01),
+        "profit_factor": mf(1.77),
+        "sharpe": mf(0.88),
+        "sortino": mf(),
+        "max_drawdown": mf(-0.045),
+        "calmar": mf(),
+        "trade_count": mf(42.0),
+        "turnover": mf(),
+        "fee_drag": mf(),
+        "funding_drag": mf(-0.003),
+        "slippage_impact": mf(),
+        "tail_loss": mf(),
+        "time_in_market": mf(),
+        "long_contribution": mf(),
+        "short_contribution": mf(),
+        "regime_breakdown": {},
+        "portfolio_contribution": {},
+        "walk_forward_results": {},
+        "monte_carlo_results": {},
+        "stress_results": {},
+        "parameter_sensitivity_results": {},
+        "parameter_neighbor_degradation": mf(),
+        "single_trade_profit_contribution": mf(),
+        "single_regime_profit_contribution": mf(),
+        "status": EconomicViabilityStatus.ECONOMICALLY_VIABLE_OFFLINE,
+        "reason_codes": ("SENTINEL_REASON_A", "SENTINEL_REASON_B"),
+        "manifest_digest": "m" * 64,
+        "wiring_chain_digest": "w" * 64,
+        "randomness_seed": 7,
+        "data_admissibility": {},
+        "cost_binding": {},
+        "policy_version": "economic_validity_policy_v1",
+        "policy_digest": "p" * 64,
+        "policy_threshold_status": "PASS",
+        "economic_validity_proven": True,
+        "profitability_claim_allowed": False,
+        "authority_effect": "NONE",
+        "runtime_effect": False,
+        "order_effect": False,
+    }
+    kwargs.update(overrides)
+    return EconomicViabilityEvidenceV1(**kwargs)
+
+
+def test_economic_missing_source_without_injection() -> None:
+    slots = bind_market_universe_slots(generated_at=STAMP)
+    economic = slots["economic_summary"]
+    assert economic.availability is Availability.MISSING_SOURCE
+    assert REASON_ECONOMIC_NOT_PERSISTED in economic.reason_codes
+    assert economic.economic_viability_status is None
+    assert economic.economic_validity_proven is None
+    assert economic.policy_threshold_status is None
+    assert economic.profit_factor is None
+    assert economic.evidence_ref is None
+
+
+def test_economic_field_for_field_injection_via_fields() -> None:
+    fields = _economic_fields()
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        economic_viability_evidence_fields=fields,
+    )
+    economic = slots["economic_summary"]
+    assert economic.availability is Availability.AVAILABLE
+    assert economic.economic_viability_status == "ECONOMICALLY_VIABLE_OFFLINE"
+    assert economic.economic_validity_proven is True
+    assert economic.profitability_claim_allowed is False
+    assert economic.policy_threshold_status == "PASS"
+    assert economic.policy_version == "economic_validity_policy_v1"
+    assert economic.authority_effect == "NONE"
+    assert economic.runtime_effect is False
+    assert economic.order_effect is False
+    assert economic.reason_codes == ("SENTINEL_REASON_A", "SENTINEL_REASON_B")
+    assert economic.profit_factor == {"semantic": "COMPUTED", "value": 1.77}
+    assert economic.net_return == {"semantic": "COMPUTED", "value": 0.123}
+    assert economic.max_drawdown == {"semantic": "COMPUTED", "value": -0.045}
+    assert economic.sharpe == {"semantic": "COMPUTED", "value": 0.88}
+    assert economic.trade_count == {"semantic": "COMPUTED", "value": 42.0}
+    assert economic.funding_drag == {"semantic": "COMPUTED", "value": -0.003}
+    assert economic.contract_version == "v1"
+    assert economic.owner == "backtest.economic_viability_evidence_v1"
+    assert economic.strategy_id == "sentinel_strategy"
+    assert economic.strategy_version == "sentinel_v9"
+    assert economic.config_digest == "c" * 64
+    assert economic.implementation_digest == "i" * 64
+    assert economic.data_digest == "d" * 64
+    assert economic.manifest_digest == "m" * 64
+    assert economic.wiring_chain_digest == "w" * 64
+    assert economic.policy_digest == "p" * 64
+    assert economic.provenance.evidence_digest == "m" * 64
+    assert economic.provenance.source_reference == "evidence://economic/sentinel"
+    assert economic.provenance.producer_module.endswith("economic_viability_evidence_v1")
+    payload = serialize_projection(economic)
+    assert "economic_gate_status" not in payload
+    assert "promotion" not in payload
+    assert "HOLDOUT" not in payload
+    assert "DEVELOPMENT" not in payload
+    assert "SEALED" not in payload
+
+
+def test_economic_explicit_evidence_object_projection_immutable() -> None:
+    evidence = _make_economic_evidence()
+    before = (
+        evidence.status.value,
+        evidence.economic_validity_proven,
+        evidence.profit_factor.to_dict(),
+        evidence.reason_codes,
+        evidence.manifest_digest,
+    )
+    snap = project_economic_viability_evidence_v1(
+        evidence,
+        generated_at=SAFETY_PRODUCER_FRESH,
+        as_of=STAMP,
+        source_reference="path/DEVELOPMENT/HOLDOUT/SEALED/artifact.json",
+    )
+    assert snap.availability is Availability.AVAILABLE
+    assert snap.economic_viability_status == "ECONOMICALLY_VIABLE_OFFLINE"
+    assert snap.economic_validity_proven is True
+    assert snap.profit_factor == {"semantic": "COMPUTED", "value": 1.77}
+    assert snap.reason_codes == ("SENTINEL_REASON_A", "SENTINEL_REASON_B")
+    payload = serialize_projection(snap)
+    assert payload.get("lifecycle_label") is None
+    assert "DEVELOPMENT_ONLY" not in payload
+    assert "HOLDOUT" not in payload
+    assert "SEALED_LONG_PANEL" not in payload
+    assert before == (
+        evidence.status.value,
+        evidence.economic_validity_proven,
+        evidence.profit_factor.to_dict(),
+        evidence.reason_codes,
+        evidence.manifest_digest,
+    )
+    with pytest.raises(FrozenInstanceError):
+        snap.economic_viability_status = "RESEARCH_ONLY"  # type: ignore[misc]
+
+
+def test_economic_validity_proven_not_recomputed_from_status() -> None:
+    fields = _economic_fields(
+        status="RESEARCH_ONLY",
+        economic_validity_proven=True,
+        policy_threshold_status="BELOW_THRESHOLD",
+    )
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        economic_viability_evidence_fields=fields,
+    )
+    economic = slots["economic_summary"]
+    assert economic.economic_viability_status == "RESEARCH_ONLY"
+    assert economic.economic_validity_proven is True
+    assert economic.policy_threshold_status == "BELOW_THRESHOLD"
+
+
+def test_economic_promotion_isolation() -> None:
+    fields = _economic_fields()
+    fields["promotion_economic_gate_status"] = "PASS"
+    fields["promotion_eligibility"] = True
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        economic_viability_evidence_fields=fields,
+    )
+    economic = slots["economic_summary"]
+    payload = serialize_projection(economic)
+    assert "promotion_economic_gate_status" not in payload
+    assert "promotion_eligibility" not in payload
+    assert economic.economic_viability_status == "ECONOMICALLY_VIABLE_OFFLINE"
+    assert economic.authority_effect == "NONE"
+
+
+def test_economic_no_lifecycle_inference_from_source_reference() -> None:
+    fields = _economic_fields(
+        source_reference="artifacts/DEVELOPMENT/HOLDOUT/SEALED/run.json",
+        status="PROMISING",
+        economic_validity_proven=False,
+        policy_threshold_status="BELOW_THRESHOLD",
+    )
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        economic_viability_evidence_fields=fields,
+    )
+    economic = slots["economic_summary"]
+    payload = serialize_projection(economic)
+    for forbidden in (
+        "DEVELOPMENT_ONLY",
+        "HOLDOUT",
+        "SEALED_LONG_PANEL",
+        "TERMINAL",
+        "PREREGISTRATION_ONLY",
+        "NOT_EVALUATED",
+        "lifecycle_label",
+        "research_lifecycle",
+    ):
+        assert forbidden not in payload
+    assert economic.provenance.source_reference == ("artifacts/DEVELOPMENT/HOLDOUT/SEALED/run.json")
+
+
+def test_economic_page_aggregate_and_presenter_injection() -> None:
+    evidence = _make_economic_evidence()
+    fields = economic_viability_evidence_fields_from_v1(
+        evidence,
+        generated_at=SAFETY_PRODUCER_FRESH,
+        source_reference="evidence://economic/page",
+    )
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        economic_viability_evidence_fields=fields,
+    )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert page.economic_summary.availability is Availability.AVAILABLE
+    assert page.economic_summary.economic_viability_status == ("ECONOMICALLY_VIABLE_OFFLINE")
+    assert ctx["economic"]["availability"] == "AVAILABLE"
+    assert ctx["economic"]["status_display"] == "ECONOMICALLY_VIABLE_OFFLINE"
+    assert ctx["product_flags"]["phase_4_6b_binding_active"] is True
+    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+    assert page.risk_sizing_capital.availability is Availability.NOT_BOUND

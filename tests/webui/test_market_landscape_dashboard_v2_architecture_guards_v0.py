@@ -233,8 +233,9 @@ def test_landscape_shell_template_has_no_write_controls() -> None:
     assert 'data-market-dashboard-authority="false"' in text
     assert "method=" not in text.lower()
     assert re.search(r"<form\b", text, flags=re.IGNORECASE) is None
-    assert "phase4-4a-canonical-safety-projection-binding" in text
+    assert "phase4-6b-economic-evidence-explicit-injection-binding" in text
     assert 'data-mdl-field="safety"' in text
+    assert 'data-mdl-field="economic"' in text
     assert "<button" not in text.lower()
 
 
@@ -246,6 +247,7 @@ def test_projection_helpers_are_field_copy_only() -> None:
     assert "project_universe_ranking_snapshot_v1" in proj
     assert "project_dynamic_scope_snapshot_v1" in proj
     assert "project_safety_authority_snapshot_v1" in proj
+    assert "project_economic_summary_snapshot_v1" in proj
     assert "Forbidden" in proj
     tree = ast.parse(proj)
     # Guard against executable references, not documentation mentions.
@@ -280,6 +282,7 @@ def test_projection_helpers_are_field_copy_only() -> None:
         assert "double_play_dashboard_display" not in module
         assert "killswitch_boundary" not in module
         assert "kill_switch" not in module
+        assert "economic_viability_evidence" not in module
         assert "execution" not in module
         assert "order" not in module
 
@@ -288,11 +291,14 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
     assert PRODUCER_BINDING.is_file()
     text = PRODUCER_BINDING.read_text(encoding="utf-8")
     assert "bind_market_universe_slots" in text
-    assert "4.4A" in text
+    assert "4.6B" in text
     assert "project_dynamic_scope_snapshot_v1" in text
     assert "project_canonical_decision_snapshot_v1" in text
     assert "project_double_play_snapshot_v1" in text
     assert "project_safety_authority_snapshot_v1" in text
+    assert "project_economic_summary_snapshot_v1" in text
+    assert "economic_viability_evidence_fields" in text
+    assert "project_economic_viability_evidence_v1" in text
     assert "canonical_decision_fields" in text
     assert "double_play_fields" in text
     assert "safety_authority_fields" in text
@@ -334,6 +340,14 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
     assert "StatePersistence" not in text
     assert "RiskGate" not in text
     assert "evaluate_capital_risk_sizing_v1" not in text
+    assert "latest_economic" not in text
+    assert "discover_economic" not in text
+    assert "resolve_latest_economic" not in text
+    # Documentation may mention promotion_economic_gate_v1 as a separate owner;
+    # forbid executable imports / bindings of that owner.
+    assert "from src.governance" not in text
+    assert "import promotion_economic_gate" not in text
+    assert "promotion_economic_gate_v1(" not in text
     for needle in FORBIDDEN_HEALTHY_SAFETY_DEFAULTS:
         assert needle not in text, needle
     for module, level in _import_modules(PRODUCER_BINDING):
@@ -350,6 +364,7 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
         assert "kill_switch" not in module
         assert "risk_gate" not in module
         assert "capital_risk_sizing" not in module
+        assert "promotion_economic_gate" not in module
     # Landscape package must not import the binding module (keeps contracts pure).
     for path in _iter_py_files(LANDSCAPE_PKG):
         for module, level in _import_modules(path):
@@ -365,6 +380,22 @@ def test_owner_registry_distinguishes_safety_authority_from_projection_source() 
     assert 'reuse_status="REUSED"' in registry_text
     assert 'slot="risk_sizing_capital"' in registry_text
     assert 'reuse_status="NOT_BOUND"' in registry_text
+
+
+def test_owner_registry_economic_summary_reused_explicit_injection() -> None:
+    registry_text = (LANDSCAPE_PKG / "owner_registry.py").read_text(encoding="utf-8")
+    assert 'slot="economic_summary"' in registry_text
+    assert 'owner_module="backtest.economic_viability_evidence_v1"' in registry_text
+    assert "EconomicViabilityEvidenceV1" in registry_text
+    assert "Phase 4.6B" in registry_text
+    assert "explicit injection only" in registry_text
+    assert "MISSING_SOURCE" in registry_text
+    assert "promotion_economic_gate_v1 remains a separate owner" in registry_text
+    # Ensure economic slot is REUSED (bound), not left NOT_BOUND.
+    economic_block = registry_text.split('slot="economic_summary"', 1)[1].split(
+        "CanonicalOwnerRefV1(", 1
+    )[0]
+    assert 'reuse_status="REUSED"' in economic_block
 
 
 def test_shell_router_wires_phase41_through_phase43b_binding() -> None:
@@ -513,7 +544,7 @@ def test_landscape_v2_css_has_no_visible_structural_divider_lines() -> None:
 
 
 def test_economic_summary_forbids_gate_status_alias_and_selector_logic() -> None:
-    """Phase 4.6A: economic_viability_status only; no discovery/selector binding."""
+    """Phase 4.6B: economic_viability_status only; injection binding; no discovery."""
     contracts = (LANDSCAPE_PKG / "contracts.py").read_text(encoding="utf-8")
     unavailable = (LANDSCAPE_PKG / "unavailable.py").read_text(encoding="utf-8")
     serialization = (LANDSCAPE_PKG / "serialization.py").read_text(encoding="utf-8")
@@ -528,12 +559,12 @@ def test_economic_summary_forbids_gate_status_alias_and_selector_logic() -> None
     assert "economic_gate_status" not in unavailable
     assert "economic_gate_status" not in serialization
 
-    # No Phase 4.6B projection/binding yet.
-    assert "project_economic_summary" not in projections
-    assert "economic_viability_evidence" not in producer
-    assert "bind_economic" not in producer
+    assert "project_economic_summary_snapshot_v1" in projections
+    assert "project_economic_viability_evidence_v1" in producer
+    assert "economic_viability_evidence_fields" in producer
+    assert "REASON_ECONOMIC_NOT_PERSISTED" in producer
 
-    # No repository-wide evidence discovery / latest-file selector in Landscape.
+    # No repository-wide evidence discovery / latest-file selector.
     forbidden_selector_tokens = (
         "latest_economic",
         "discover_economic",
@@ -560,6 +591,9 @@ def test_economic_summary_forbids_gate_status_alias_and_selector_logic() -> None
         assert re.search(rf"\b{label}\s*:", contracts) is None
 
     assert 'slot="economic_summary"' in registry
-    assert "EXPLICIT_UPSTREAM_INJECTION_ONLY" in registry
     assert "EconomicViabilityEvidenceV1" in registry
-    assert 'reuse_status="NOT_BOUND"' in registry
+    assert "Phase 4.6B" in registry
+    economic_block = registry.split('slot="economic_summary"', 1)[1].split(
+        "CanonicalOwnerRefV1(", 1
+    )[0]
+    assert 'reuse_status="REUSED"' in economic_block

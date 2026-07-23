@@ -119,16 +119,15 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         owner_module="backtest.economic_viability_evidence_v1",
         owner_symbol="EconomicViabilityEvidenceV1",
         authority_class="economic_evidence",
-        reuse_status="NOT_BOUND",
+        reuse_status="REUSED",
         notes=(
-            "Phase 4.6A: EconomicSummarySnapshotV1 ratified as minimal direct "
-            "projection of EconomicViabilityEvidenceV1; status field is "
-            "economic_viability_status (exact EVI.status enum; economic_gate_status "
-            "forbidden for this value); promotion_economic_gate_v1 remains a "
-            "separate owner; selector policy=EXPLICIT_UPSTREAM_INJECTION_ONLY "
-            "(zero→NOT_BOUND; one→field-for-field; many→INVALID/"
-            "AMBIGUOUS_ECONOMIC_EVIDENCE_SOURCE); lifecycle context ABSENT; "
-            "binding deferred to Phase 4.6B."
+            "Phase 4.6B: Landscape projects injected EconomicViabilityEvidenceV1 "
+            "field-for-field (economic_viability_status=status enum value; "
+            "economic_validity_proven/policy_threshold_status/metrics/digests); "
+            "AUTHORITY_EFFECT=NONE; explicit injection only; without injection "
+            "MISSING_SOURCE; no filesystem/registry/latest selector; "
+            "promotion_economic_gate_v1 remains a separate owner; lifecycle "
+            "labels ABSENT (not inferred)."
         ),
     ),
     CanonicalOwnerRefV1(

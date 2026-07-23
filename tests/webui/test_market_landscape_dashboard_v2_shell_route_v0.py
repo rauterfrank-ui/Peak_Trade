@@ -53,7 +53,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-market-landscape-v2="true"' in html
     for landmark in LANDMARKS:
         assert landmark in html, landmark
-    assert "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING" in html
+    assert "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING" in html
     assert "BOUND_NOT_ACTIVATED" in html
     assert "no ohlcv fabricated" in html.lower()
     assert "BTC/USD" not in html
@@ -79,10 +79,13 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
         'data-mdl-field="double_play" data-availability="MISSING_SOURCE"' in html
     )
     assert 'data-mdl-field="safety"' in html
+    assert 'data-mdl-field="economic"' in html
     assert 'data-availability="MISSING_SOURCE"' in html
     assert "MISSING_SOURCE" in html
     # Safety strip value is MISSING_SOURCE without injection.
     assert ">MISSING_SOURCE</dd>" in html or "MISSING_SOURCE" in html
+    # Economic region is MISSING_SOURCE without injection (wired slot, no evidence).
+    assert 'data-mdl-field="economic"' in html
     assert "Risk / Sizing / Capital" in html
     assert "OPERATOR_SKELETON_APPROVAL" not in html
     assert "<button" not in html.lower()
@@ -144,8 +147,10 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     assert ctx["product_flags"]["phase_4_3a_binding_active"] is True
     assert ctx["product_flags"]["phase_4_3b_binding_active"] is True
     assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_6b_binding_active"] is True
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["decision"]["availability_label"] == "NOT_BOUND"
+    assert ctx["economic"]["availability_label"] == "NOT_BOUND"
     assert ctx["global_strip"]["instrument"] == "NOT_BOUND"
     assert ctx["global_strip"]["safety_status"] == "NOT_BOUND"
     assert ctx["risk"]["availability"] == "NOT_BOUND"
@@ -155,7 +160,7 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     # Must not invent HOLD/FLAT
     assert ctx["decision"]["fields"]["decision"] is None
     assert ctx["decision"]["fields"]["direction"] is None
-    assert ctx["phase"] == "PHASE_4_4A_CANONICAL_SAFETY_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
 
 
 def test_shell_assets_exist() -> None:
