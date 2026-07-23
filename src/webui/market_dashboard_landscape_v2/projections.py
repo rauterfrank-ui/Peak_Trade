@@ -304,36 +304,59 @@ def project_double_play_snapshot_v1(
     evidence_digest: str | None = None,
     git_sha: str | None = None,
     producer_module: str = "trading.master_v2.double_play_dashboard_display",
+    source_kind: str = "double_play_dashboard_display",
+    effective_at: datetime | None = None,
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
+    display_only: bool = True,
+    live_authorization: bool = False,
 ) -> DoublePlaySnapshotV1:
-    """Project an existing Double Play display snapshot into Landscape form."""
+    """Project an existing Double Play display snapshot into Landscape form.
+
+    Forbidden: calling compose_double_play_decision / build_dashboard_display_snapshot,
+    inventing overall_status/panels/blockers, or granting live_authorization.
+    generated_at/effective_at must be producer timestamps — never page-assembly time.
+    """
     if not overall_status:
-        raise ValueError("overall_status required for AVAILABLE")
+        raise ValueError("overall_status required for AVAILABLE/STALE")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_double_play only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
+    if live_authorization is not False:
+        raise ValueError("live_authorization must remain False")
+    if availability in (Availability.AVAILABLE, Availability.STALE) and not display_only:
+        raise ValueError("AVAILABLE/STALE DoublePlaySnapshot must be display_only=True")
     schema_id = f"{SCHEMA_FAMILY}.double_play.{SCHEMA_VERSION}"
     provenance = SnapshotProvenanceV1(
         schema_id=schema_id,
         schema_version=SCHEMA_VERSION,
         producer_module=producer_module,
         generated_at=generated_at,
-        effective_at=generated_at,
-        source_kind="double_play_dashboard_display",
+        effective_at=generated_at if effective_at is None else effective_at,
+        source_kind=source_kind,
         source_reference=source_reference,
         evidence_digest=evidence_digest,
         git_sha=git_sha,
-        availability=Availability.AVAILABLE,
+        availability=availability,
     )
     freshness = FreshnessV1(
         observed_at=generated_at,
-        max_age_seconds=None,
-        is_stale=False,
-        stale_reason=None,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
     )
     return DoublePlaySnapshotV1(
         schema_id=schema_id,
         schema_version=SCHEMA_VERSION,
         provenance=provenance,
         freshness=freshness,
-        availability=Availability.AVAILABLE,
-        overall_status=overall_status,
+        availability=availability,
+        overall_status=str(overall_status),
         panel_summaries=tuple(dict(row) for row in panel_summaries),
         blockers=tuple(str(code) for code in blockers),
         display_only=True,

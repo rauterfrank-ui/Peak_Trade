@@ -4,7 +4,7 @@
 {% block main_class %}mdl-v2-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-3a-canonical-decision-projection-binding" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-3b-canonical-double-play-projection-binding" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 {% endblock %}
@@ -157,7 +157,7 @@
         <div>
           <dt>Double Play</dt>
           <dd data-mdl-field="double_play" data-availability="{{ double_play.availability }}">
-            {% if double_play.is_available %}{{ double_play.fields.overall_status }}{% else %}{{ double_play.availability_label }}{% endif %}
+            {% if double_play.is_available or double_play.is_stale %}{{ double_play.fields.overall_status }}{% else %}{{ double_play.availability_label }}{% endif %}
           </dd>
         </div>
         <div>

@@ -1,11 +1,12 @@
-"""GET /market Landscape Shell router (Phase 4.3A canonical decision binding).
+"""GET /market Landscape Shell router (Phase 4.3B canonical Double Play binding).
 
 Read-only SSR surface. No POST/PUT/PATCH/DELETE. No command endpoints.
 No execution / order / runtime-activation imports.
 Phase 4.1 binds market_instrument / universe_ranking fail-closed.
 Phase 4.2 binds dynamic_scope lifecycle identity fail-closed (injection only).
 Phase 4.3A binds canonical_decision fail-closed (injection only).
-Regime / bull-bear / switch / Double Play and later Phase 4 slots remain unbound.
+Phase 4.3B binds double_play display fail-closed (injection only).
+Regime / bull-bear / switch and later Phase 4 slots remain unbound.
 """
 
 from __future__ import annotations
@@ -42,7 +43,7 @@ def get_templates() -> Jinja2Templates:
 
 @router.get("/market", response_class=HTMLResponse, name="market_landscape_v2")
 async def market_landscape_dashboard(request: Request) -> Any:
-    """Read-only Landscape surface with Phase 4.1+4.2+4.3A producer binding."""
+    """Read-only Landscape surface with Phase 4.1+4.2+4.3A+4.3B producer binding."""
     # Lazy import avoids circular import during create_app().
     from .app import get_project_status
 

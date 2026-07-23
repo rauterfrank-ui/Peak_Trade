@@ -158,7 +158,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "runtime_bridge_display": page.runtime_bridge_display,
         "shell_authority_class": page.shell_authority_class,
         "consumer_role": "read_only_consumer",
-        "phase": "PHASE_4_3A_CANONICAL_DECISION_PROJECTION_BINDING",
+        "phase": "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING",
         "global_strip": {
             "instrument": instrument_display,
             "venue": _display_value(
@@ -242,6 +242,9 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "phase_4_3a_bound_slots": [
                 "canonical_decision",
             ],
+            "phase_4_3b_bound_slots": [
+                "double_play",
+            ],
             "slots": {
                 "market_instrument": market,
                 "universe_ranking": universe,
@@ -268,6 +271,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "phase_4_1_binding_active": True,
             "phase_4_2_binding_active": True,
             "phase_4_3a_binding_active": True,
+            "phase_4_3b_binding_active": True,
             "phase_4_full_pass": False,
             "phase_4_authorized": True,
             "operator_skeleton_approval": "PENDING",

@@ -253,10 +253,12 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
     assert PRODUCER_BINDING.is_file()
     text = PRODUCER_BINDING.read_text(encoding="utf-8")
     assert "bind_market_universe_slots" in text
-    assert "Phase 4.2" in text or "4.2" in text or "4.3A" in text
+    assert "Phase 4.2" in text or "4.2" in text or "4.3A" in text or "4.3B" in text
     assert "project_dynamic_scope_snapshot_v1" in text
     assert "project_canonical_decision_snapshot_v1" in text
+    assert "project_double_play_snapshot_v1" in text
     assert "canonical_decision_fields" in text
+    assert "double_play_fields" in text
     tree = ast.parse(text)
     for node in ast.walk(tree):
         if isinstance(node, ast.Name):
@@ -301,12 +303,12 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
             assert "market_dashboard_landscape_producer_binding_v2" not in module
 
 
-def test_shell_router_wires_phase41_phase42_and_phase43a_binding() -> None:
+def test_shell_router_wires_phase41_through_phase43b_binding() -> None:
     text = SHELL_ROUTER.read_text(encoding="utf-8")
     assert "bind_market_universe_slots" in text
     assert "bind_market_universe_scope_slots" not in text
     assert "slot_overrides" in text
-    assert "Phase 4.3A" in text or "4.3A" in text
+    assert "Phase 4.3B" in text or "4.3B" in text
     tree = ast.parse(text)
     for node in ast.walk(tree):
         if isinstance(node, ast.Name):

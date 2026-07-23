@@ -18,11 +18,15 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     DECISION_EVIDENCE_SCHEMA_VERSION,
     DECISION_PRODUCER_MODULE,
     DECISION_SOURCE_KIND,
+    DOUBLE_PLAY_PRODUCER_MODULE,
+    DOUBLE_PLAY_SOURCE_KIND,
     LANDSCAPE_PHASE41_MAX_AGE_SECONDS,
     LANDSCAPE_PHASE42_MAX_AGE_SECONDS,
     LANDSCAPE_PHASE43A_MAX_AGE_SECONDS,
+    LANDSCAPE_PHASE43B_MAX_AGE_SECONDS,
     REASON_ARCHIVE_ROOT_UNSET,
     REASON_DECISION_NOT_PERSISTED,
+    REASON_DOUBLE_PLAY_NOT_PERSISTED,
     REASON_MARKET_CONTEXT_NOT_PERSISTED,
     REASON_PRODUCER_DATA_STALE,
     REASON_PRODUCER_TIMESTAMP_INVALID,
@@ -45,6 +49,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 )
 from src.webui.market_dashboard_landscape_v2.projections import (
     project_canonical_decision_snapshot_v1,
+    project_double_play_snapshot_v1,
     project_dynamic_scope_snapshot_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.types import (
@@ -63,6 +68,8 @@ SCOPE_PRODUCER_FRESH = datetime(2026, 7, 23, 16, 30, 0, tzinfo=timezone.utc)
 SCOPE_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE42_MAX_AGE_SECONDS + 7200)
 DECISION_PRODUCER_FRESH = datetime(2026, 7, 23, 16, 0, 0, tzinfo=timezone.utc)
 DECISION_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE43A_MAX_AGE_SECONDS + 7200)
+DP_PRODUCER_FRESH = datetime(2026, 7, 23, 15, 30, 0, tzinfo=timezone.utc)
+DP_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE43B_MAX_AGE_SECONDS + 7200)
 REPO = Path(__file__).resolve().parents[2]
 SCRATCH_ROOT = REPO / "tests" / "_durable_archive_scratch"
 
@@ -132,6 +139,7 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
         "universe_ranking",
         "dynamic_scope",
         "canonical_decision",
+        "double_play",
     }
     assert slots["market_instrument"].availability is Availability.MISSING_SOURCE
     assert REASON_MARKET_CONTEXT_NOT_PERSISTED in slots["market_instrument"].reason_codes
@@ -147,6 +155,12 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
     assert slots["canonical_decision"].decision is None
     assert slots["canonical_decision"].direction is None
     assert slots["canonical_decision"].blockers == (REASON_DECISION_NOT_PERSISTED,)
+    assert slots["double_play"].availability is Availability.MISSING_SOURCE
+    assert REASON_DOUBLE_PLAY_NOT_PERSISTED in slots["double_play"].blockers
+    assert slots["double_play"].overall_status is None
+    assert slots["double_play"].panel_summaries == ()
+    assert slots["double_play"].live_authorization is False
+    assert slots["double_play"].display_only is True
 
 
 def test_bind_rejects_inventing_market_without_required_fields() -> None:
@@ -449,11 +463,11 @@ def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_inject
     assert page.canonical_decision.availability is Availability.MISSING_SOURCE
     assert REASON_DECISION_NOT_PERSISTED in page.canonical_decision.reason_codes
     ctx = present_market_landscape_v2(page)
-    assert ctx["phase"] == "PHASE_4_3A_CANONICAL_DECISION_PROJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING"
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["scope"]["availability"] == "MISSING_SOURCE"
     assert ctx["decision"]["availability"] == "MISSING_SOURCE"
-    assert ctx["double_play"]["availability"] == "NOT_BOUND"
+    assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
     assert ctx["regime"]["availability"] == "NOT_BOUND"
     assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
     assert ctx["switch"]["availability"] == "NOT_BOUND"
@@ -603,7 +617,7 @@ def test_regime_bull_bear_switch_remain_not_bound_for_all_scope_states() -> None
         assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
         assert ctx["switch"]["availability"] == "NOT_BOUND"
         assert ctx["global_strip"]["regime"] == "NOT_BOUND"
-        assert ctx["double_play"]["availability"] == "NOT_BOUND"
+        assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
 
 
 def test_project_canonical_decision_field_copy_immutable() -> None:
@@ -712,10 +726,173 @@ def test_bind_canonical_decision_does_not_bind_double_play() -> None:
     )
     ctx = present_market_landscape_v2(page)
     assert page.canonical_decision.availability is Availability.AVAILABLE
-    assert page.double_play.availability is Availability.NOT_BOUND
-    assert ctx["double_play"]["availability"] == "NOT_BOUND"
-    assert ctx["phase"] == "PHASE_4_3A_CANONICAL_DECISION_PROJECTION_BINDING"
+    assert page.double_play.availability is Availability.MISSING_SOURCE
+    assert REASON_DOUBLE_PLAY_NOT_PERSISTED in page.double_play.blockers
+    assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
+    assert ctx["phase"] == "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING"
     assert ctx["product_flags"]["phase_4_3a_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_3b_binding_active"] is True
     assert ctx["decision"]["fields"]["decision"] == "observe"
     assert ctx["decision"]["fields"]["direction"] == "neutral_observe"
     assert ctx["decision"]["blockers"] == []
+
+
+def _double_play_fields(**overrides: object) -> dict[str, object]:
+    """Bounded test-injection payload — not durable dashboard truth."""
+    base: dict[str, object] = {
+        "overall_status": "display_ready",
+        "panel_summaries": (
+            {
+                "name": "composition",
+                "status": "display_ready",
+                "summary": "Composition: ELIGIBLE_MODEL_ONLY — data-only; not trading-ready.",
+                "blockers": (),
+            },
+            {
+                "name": "state_transition",
+                "status": "display_ready",
+                "summary": "Transition allowed (model label): NOOP",
+                "blockers": (),
+            },
+        ),
+        "blockers": (),
+        "display_only": True,
+        "live_authorization": False,
+        "generated_at": DP_PRODUCER_FRESH,
+        "effective_at": DP_PRODUCER_FRESH,
+        "source_reference": "double-play://bounded-test-injection",
+        "evidence_digest": "d" * 64,
+    }
+    base.update(overrides)
+    return base
+
+
+def test_project_double_play_field_copy_immutable() -> None:
+    snap = project_double_play_snapshot_v1(
+        overall_status="display_ready",
+        panel_summaries=({"name": "composition", "status": "display_ready"},),
+        blockers=(),
+        generated_at=DP_PRODUCER_FRESH,
+        source_reference="double-play://bounded-test-injection",
+        evidence_digest="d" * 64,
+    )
+    assert snap.availability is Availability.AVAILABLE
+    assert snap.overall_status == "display_ready"
+    assert snap.panel_summaries[0]["name"] == "composition"
+    assert snap.blockers == ()
+    assert snap.display_only is True
+    assert snap.live_authorization is False
+    assert snap.provenance.producer_module == DOUBLE_PLAY_PRODUCER_MODULE
+    assert snap.provenance.source_kind == DOUBLE_PLAY_SOURCE_KIND
+    with pytest.raises(FrozenInstanceError):
+        snap.overall_status = "x"  # type: ignore[misc]
+
+
+def test_bind_double_play_available_exact_projection() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        double_play_fields=_double_play_fields(),
+    )
+    dp = slots["double_play"]
+    assert dp.availability is Availability.AVAILABLE
+    assert dp.overall_status == "display_ready"
+    assert dp.panel_summaries[0]["name"] == "composition"
+    assert dp.panel_summaries[0]["status"] == "display_ready"
+    assert dp.panel_summaries[1]["name"] == "state_transition"
+    assert dp.blockers == ()
+    assert dp.display_only is True
+    assert dp.live_authorization is False
+    assert dp.provenance.producer_module == DOUBLE_PLAY_PRODUCER_MODULE
+    assert dp.provenance.source_kind == DOUBLE_PLAY_SOURCE_KIND
+    assert dp.provenance.evidence_digest == "d" * 64
+    assert dp.provenance.generated_at == DP_PRODUCER_FRESH
+    assert dp.freshness.observed_at == DP_PRODUCER_FRESH
+    assert dp.freshness.is_stale is False
+
+
+def test_bind_double_play_rejects_missing_required_keys() -> None:
+    with pytest.raises(KeyError, match="double_play_fields missing"):
+        bind_market_universe_slots(
+            generated_at=STAMP,
+            double_play_fields={"overall_status": "display_ready"},
+        )
+
+
+def test_bind_double_play_invalid_naive_timestamp() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        double_play_fields=_double_play_fields(
+            generated_at=datetime(2026, 7, 23, 15, 30, 0),  # naive
+            effective_at=None,
+        ),
+    )
+    dp = slots["double_play"]
+    assert dp.availability is Availability.INVALID
+    assert REASON_PRODUCER_TIMESTAMP_INVALID in dp.blockers
+    assert dp.overall_status is None
+
+
+def test_bind_double_play_rejects_live_authorization_true() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        double_play_fields=_double_play_fields(live_authorization=True),
+    )
+    dp = slots["double_play"]
+    assert dp.availability is Availability.INVALID
+    assert "CANONICAL_DOUBLE_PLAY_LIVE_AUTHORIZATION_FORBIDDEN" in dp.blockers
+    assert dp.overall_status is None
+
+
+def test_bind_double_play_stale_retains_display_facts() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        double_play_fields=_double_play_fields(
+            generated_at=DP_PRODUCER_STALE,
+            effective_at=DP_PRODUCER_STALE,
+        ),
+    )
+    dp = slots["double_play"]
+    assert dp.availability is Availability.STALE
+    assert dp.overall_status == "display_ready"
+    assert dp.panel_summaries[0]["name"] == "composition"
+    assert dp.blockers == ()
+    assert dp.freshness.is_stale is True
+    assert dp.freshness.stale_reason == REASON_PRODUCER_DATA_STALE
+    assert dp.provenance.generated_at == DP_PRODUCER_STALE
+    assert dp.provenance.generated_at != STAMP
+
+
+def test_decision_and_double_play_remain_separate_projections() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        canonical_decision_fields=_decision_fields(),
+        double_play_fields=_double_play_fields(
+            blockers=("survival_blocked",),
+            panel_summaries=(
+                {
+                    "name": "composition",
+                    "status": "display_blocked",
+                    "summary": "Composition blocked (data-only).",
+                    "blockers": ("survival_blocked",),
+                },
+            ),
+            overall_status="display_blocked",
+        ),
+    )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert page.canonical_decision.availability is Availability.AVAILABLE
+    assert page.double_play.availability is Availability.AVAILABLE
+    # No cross-enrichment: Decision reason codes stay Decision-only.
+    assert page.canonical_decision.reason_codes == ("WARMUP_ACTIVE", "NO_ENTRY")
+    assert page.canonical_decision.blockers == ()
+    assert "survival_blocked" not in page.canonical_decision.reason_codes
+    assert "WARMUP_ACTIVE" not in page.double_play.blockers
+    assert page.double_play.blockers == ("survival_blocked",)
+    assert page.double_play.overall_status == "display_blocked"
+    assert ctx["decision"]["fields"]["decision"] == "observe"
+    assert ctx["double_play"]["fields"]["overall_status"] == "display_blocked"
+    assert ctx["phase"] == "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING"

@@ -1,4 +1,4 @@
-"""Real Chrome Playwright evidence for Market Landscape V2 Phase 4.3A binding."""
+"""Real Chrome Playwright evidence for Market Landscape V2 Phase 4.3B binding."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from playwright.sync_api import sync_playwright
 from src.webui.app import create_app
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase4" / "pr5"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase4" / "pr6"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -100,7 +100,7 @@ def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1
                 assert root.get_attribute("data-phase") == (
-                    "PHASE_4_3A_CANONICAL_DECISION_PROJECTION_BINDING"
+                    "PHASE_4_3B_CANONICAL_DOUBLE_PLAY_PROJECTION_BINDING"
                 )
                 chart = page.locator("[data-mdl-chart-region='true']")
                 decision = page.locator("[data-mdl-decision-strip='true']")
@@ -127,7 +127,13 @@ def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
                 )
                 assert (
                     page.locator(
-                        '[data-mdl-field="double_play"][data-availability="NOT_BOUND"]'
+                        '[data-mdl-field="double_play"][data-availability="MISSING_SOURCE"]'
+                    ).count()
+                    == 1
+                )
+                assert (
+                    page.locator(
+                        '[data-mdl-field="decision"][data-availability="MISSING_SOURCE"]'
                     ).count()
                     == 1
                 )

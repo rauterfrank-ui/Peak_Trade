@@ -1,0 +1,59 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 781 items
+
+tests/ci/test_ci_diff_aware_test_selection_v1.py ....................... [  2%]
+........................................................................ [ 12%]
+........................................................................ [ 21%]
+........................................................................ [ 30%]
+........................................................................ [ 39%]
+........................................................................ [ 49%]
+........................................................................ [ 58%]
+.............                                                            [ 59%]
+tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py ..... [ 60%]
+............................................................             [ 68%]
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py ..... [ 68%]
+...........................................................              [ 76%]
+tests/ci/test_pr_head_sha_required_checks_liveness_guard.py ..........   [ 77%]
+tests/ci/test_required_checks_config.py ....                             [ 78%]
+tests/ci/test_required_checks_hygiene.py ............                    [ 79%]
+tests/ci/test_workflows_no_pull_request_target_contract_v0.py .........  [ 80%]
+tests/test_data_contracts.py .................                           [ 83%]
+tests/test_error_taxonomy.py ..............................              [ 86%]
+tests/test_resilience.py .............................                   [ 90%]
+tests/test_stability_smoke.py ........                                   [ 91%]
+tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py .. [ 91%]
+...............................                                          [ 95%]
+tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py ......... [ 97%]
+....                                                                     [ 97%]
+tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py . [ 97%]
+...........                                                              [ 99%]
+tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py ......  [ 99%]
+tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py .   [100%]
+
+=============================== warnings summary ===============================
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:49
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:49: PytestCollectionWarning: cannot collect test class 'TestLayer' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    class TestLayer(StrEnum):
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:209
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:209: PytestCollectionWarning: cannot collect test class 'TestownerRuntimeEvidence' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:217
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:217: PytestCollectionWarning: cannot collect test class 'TestownerRuntimeReport' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:431
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:431: PytestCollectionWarning: cannot collect test class 'TestownerCategoryProvenanceReport' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534
+  /Users/frnkhrz/Peak_Trade/tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py:534: PytestCollectionWarning: cannot collect test class 'TestownerBudgetInventoryRow' because it has a __init__ constructor (from: tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py)
+    @_frozen_reporting_dataclass(frozen=True, slots=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 781 passed, 5 warnings in 38.57s =======================
