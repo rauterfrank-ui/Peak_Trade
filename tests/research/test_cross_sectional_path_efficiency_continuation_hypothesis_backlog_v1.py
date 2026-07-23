@@ -32,7 +32,7 @@ def test_repo_backlog_open_one_preregistered_definition_only() -> None:
     assert report["status"] == "OPEN_BACKLOG"
     assert report["preregistered_count"] == 1
     assert report["evaluation_authorized"] is False
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     assert (
         report["next_eligible"]
         == "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
@@ -63,8 +63,8 @@ def test_fail_closed_on_evaluation_authorization() -> None:
     with pytest.raises(BacklogValidationError, match="EVALUATION_AUTHORIZED"):
         validate_backlog_contract(bad)
     bad2 = copy.deepcopy(payload)
-    bad2["development_run_count"] = 1
-    with pytest.raises(BacklogValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
+    bad2["development_run_count"] = 0
+    with pytest.raises(BacklogValidationError, match="DEVELOPMENT_RUN_COUNT"):
         validate_backlog_contract(bad2)
 
 

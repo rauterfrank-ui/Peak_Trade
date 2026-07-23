@@ -37,7 +37,7 @@ def test_repo_contract_definition_only_digest_and_frozen_params() -> None:
     assert report["definition_only"] is True
     assert report["evaluation_authorized"] is False
     assert report["implementation_authorized"] is False
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     assert report["development_run_limit"] == 1
     assert (
         report["hypothesis_id"]

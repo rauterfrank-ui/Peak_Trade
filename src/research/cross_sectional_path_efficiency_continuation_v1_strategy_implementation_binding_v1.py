@@ -21,7 +21,7 @@ MEASUREMENT_REL_PATH = (
 CSRHR_BACKLOG_REL_PATH = (
     "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json"
 )
-REQUIRED_DIGEST = "ffd67182ca8942c0975e3a864382ad55d657e625968c40d8fd63fac83a409ef9"
+REQUIRED_DIGEST = "cf6168556a7ae36c15381ab78bc57f2c46d49e17257556ea5198dd3adf4aaec7"
 REQUIRED_IMPL_FILES = (
     "src/research/cross_sectional_path_efficiency_continuation_v1_score_v1.py",
     "src/research/cross_sectional_path_efficiency_continuation_v1_selection_v1.py",
@@ -58,8 +58,8 @@ def validate_implementation_binding(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
     _require(payload.get("runner_present") is False, "RUNNER_PRESENT")
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
@@ -141,7 +141,7 @@ def validate_implementation_binding(
             "MEASUREMENT_CONTRACT_IMPL_FLAG_MUTATED",
         )
         _require(measurement.get("evaluation_authorized") is False, "MEASUREMENT_EVAL_FLIPPED")
-        _require(measurement.get("development_run_count") == 0, "MEASUREMENT_DEV_RUN_MUTATED")
+        _require(measurement.get("development_run_count") == 1, "MEASUREMENT_DEV_RUN_NOT_CONSUMED")
         csrhr = json.loads((repo_root / CSRHR_BACKLOG_REL_PATH).read_text(encoding="utf-8"))
         _require(csrhr.get("status") == "OPEN_BACKLOG", "CSRHR_MUTATED")
         _require(csrhr.get("development_run_count") == 0, "CSRHR_DEV_RUN_MUTATED")
@@ -150,7 +150,7 @@ def validate_implementation_binding(
         "valid": True,
         "strategy_implementation_present": True,
         "evaluation_authorized": False,
-        "development_run_count": 0,
+        "development_run_count": int(payload.get("development_run_count") or 0),
         "holdout_authorized": False,
         "frozen_digest": REQUIRED_DIGEST,
         "directional_form": "D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION",

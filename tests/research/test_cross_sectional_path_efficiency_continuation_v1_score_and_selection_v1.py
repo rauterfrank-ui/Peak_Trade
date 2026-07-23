@@ -293,7 +293,7 @@ def test_implementation_binding_guards_and_csrhr_unchanged() -> None:
     assert report["valid"] is True
     assert report["strategy_implementation_present"] is True
     assert report["evaluation_authorized"] is False
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     assert report["holdout_authorized"] is False
     assert report["frozen_digest"] == REQUIRED_DIGEST
     assert report["csrhr_unchanged"] is True
@@ -303,12 +303,12 @@ def test_implementation_binding_guards_and_csrhr_unchanged() -> None:
     assert csrhr["development_run_count"] == 0
 
     program = json.loads(PROGRAM.read_text(encoding="utf-8"))
-    assert program["development_run_count"] == 0
+    assert program["development_run_count"] == 1
     assert program["evaluation_authorized"] is False
-    assert program["strategy_implementation_present"] is False
+    assert program["strategy_implementation_present"] is True
 
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
-    assert contract["development_run_count"] == 0
+    assert contract["development_run_count"] == 1
     assert contract["evaluation_authorized"] is False
     assert contract["strategy_implementation_present"] is False
     assert contract["contract_digest"] == REQUIRED_DIGEST

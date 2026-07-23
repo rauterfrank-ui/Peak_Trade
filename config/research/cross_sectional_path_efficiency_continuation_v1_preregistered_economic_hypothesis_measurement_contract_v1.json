@@ -11,7 +11,7 @@
     "reproducibility_required": true,
     "seed_policy": "frozen_when_stochastic_components_absent"
   },
-  "contract_digest": "ffd67182ca8942c0975e3a864382ad55d657e625968c40d8fd63fac83a409ef9",
+  "contract_digest": "cf6168556a7ae36c15381ab78bc57f2c46d49e17257556ea5198dd3adf4aaec7",
   "costs": {
     "canonical_cost_multiplier": 1.0,
     "cost_model_weakening_forbidden": true,
@@ -30,10 +30,10 @@
   },
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
-  "development_evaluation_authorized": false,
-  "development_evaluation_executed": false,
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": true,
   "development_evaluation_runs_allowed": 1,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "directional_form": {
     "double_play_remains_sole_authority": true,
     "hypothesis_emits_rank_intent_only": true,
@@ -146,17 +146,16 @@
     "preregistration_evidence_ref": "docs/evidence/preregister_cross_sectional_path_efficiency_continuation_hypothesis_v1/"
   },
   "explicit_non_actions": [
-    "NO_EVALUATION_IN_THIS_SLICE",
     "NO_RUNNER",
     "NO_HOLDOUT_ACCESS",
-    "NO_STRATEGY_PRODUCER_IMPLEMENTATION",
     "NO_PROMOTION",
     "NO_RUNTIME",
     "NO_CS_MOMENTUM_RETRY",
     "NO_VOL_REGIME_REOPEN",
     "NO_CSRHR_CONTINUE",
     "NO_CSRHR_SEMANTIC_REUSE",
-    "NO_CSRHR_MUTATION"
+    "NO_CSRHR_MUTATION",
+    "NO_SECOND_DEVELOPMENT_RUN"
   ],
   "forbidden_data_sources": [
     "offline_economic_reevaluation_sealed_long_panel_v1",
@@ -215,8 +214,8 @@
     "retry_forbidden": true,
     "second_development_run_forbidden": true
   },
-  "run_slot_consumed": false,
-  "runner_start_count": 0,
+  "run_slot_consumed": true,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "live_authorized": false,
@@ -266,7 +265,7 @@
     "safety_authority_mutation_forbidden": true
   },
   "signal_family": "CROSS_SECTIONAL_PATH_EFFICIENCY",
-  "slice_class": "DEFINITION_ONLY",
+  "slice_class": "BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "status": "DEFINITION_ONLY_PREREGISTERED",
   "strategy_id": "cross_sectional_path_efficiency_continuation",
   "strategy_identity": "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1",
