@@ -44,7 +44,7 @@
     "NO_TRAILING_STOP",
     "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE"
   ],
-  "frozen_measurement_contract_digest": "c0b116530a1bd9dd11bd9004d76c3fbfa74036348b3f6949483f6b0890b86872",
+  "frozen_measurement_contract_digest": "e5bea387a3898142f25e593b3d5f88b749fd12d3302e1be6e0f7b1cfb72381f3",
   "frozen_measurement_contract_mutated": false,
   "frozen_measurement_contract_ref": "config/research/cross_sectional_low_realized_volatility_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
   "governance_note": "CSLRVC v1 strategy implementation present after post-CSHRVF CREATE_SUCCESSOR. Evaluation unauthorized; no run-slot consumption; holdout untouched. Next=separate GO for bounded Development evaluation. CSHRVF terminal DEVELOPMENT_FAIL remains slot-consumed with no retry.",

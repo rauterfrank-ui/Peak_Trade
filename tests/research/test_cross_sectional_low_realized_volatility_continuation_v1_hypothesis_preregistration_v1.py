@@ -54,8 +54,8 @@ def test_repo_contract_definition_only_preregistered() -> None:
         == "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
     )
     assert report["strategy_identity"] == "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
-    assert report["development_run_count"] == 0
-    assert report["run_slot_consumed"] is False
+    assert report["development_run_count"] == 1
+    assert report["run_slot_consumed"] is True
     assert report["strategy_implementation_present"] is False
     assert report["evaluation_authorized"] is False
     assert report["holdout_forbidden"] is True
@@ -121,7 +121,7 @@ def test_digest_stable_and_artifacts_present() -> None:
     )
 
 
-def test_placeholder_cli_fail_closed() -> None:
+def test_unauthorized_cli_evaluate_fail_closed() -> None:
     import subprocess
 
     proc = subprocess.run(
@@ -130,39 +130,36 @@ def test_placeholder_cli_fail_closed() -> None:
         capture_output=True,
         text=True,
         check=False,
+        env={**dict(**{k: v for k, v in __import__("os").environ.items()}), "PYTHONPATH": "src:."},
     )
     assert proc.returncode == 2
     payload = json.loads(proc.stdout)
     assert payload["status"] == "FAIL_CLOSED"
-    assert payload["evaluation_executed"] is False if "evaluation_executed" in payload else True
-    assert payload["holdout_accessed"] is False
+    assert payload.get("evaluation_executed") is False
+    assert payload.get("holdout_accessed") is False
 
 
-def test_successor_entry_point_binding_definition_only_not_terminal_fail() -> None:
+def test_successor_entry_point_binding_slot_consumed_development_fail() -> None:
     binding = _load(ENTRY_POINT_BINDING_PATH)
     assert binding["hypothesis_id"] == (
         "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
     )
-    assert binding["status"] == "DEFINITION_BOUND_EVALUATION_UNAUTHORIZED"
-    assert binding["entry_point_status"] == "DEFINITION_BOUND_EVALUATION_UNAUTHORIZED"
-    assert binding["slice_class"] == "DEFINITION_ONLY_GOVERNANCE"
-    assert binding["verdict"] == "DEFINITION_ONLY_ENTRY_POINT_UNAUTHORIZED_NO_EVALUATION"
-    assert binding["development_run_count"] == 0
-    assert binding["runner_start_count"] == 0
-    assert binding["runner_present"] is False
-    assert binding["development_evaluation_executed"] is False
-    assert binding["development_evaluation_authorized"] is False
+    assert binding["status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
+    assert binding["entry_point_status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
+    assert binding["slice_class"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL"
+    assert binding["verdict"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
+    assert binding["development_run_count"] == 1
+    assert binding["runner_start_count"] == 1
+    assert binding["runner_present"] is True
+    assert binding["development_evaluation_executed"] is True
+    assert binding["development_evaluation_authorized"] is True
     assert binding["evaluation_authorized"] is False
-    assert binding["strategy_implementation_present"] is False
     assert binding["holdout_authorized"] is False
     assert binding["holdout_forbidden"] is True
-    assert "strategy_params_digest" not in binding
+    assert "strategy_params_digest" in binding
     owners = binding["reused_canonical_owners"]
-    assert "strategy" not in owners
-    assert "vol_state" not in owners
-    assert "FAIL" not in str(binding["status"])
-    assert "TERMINAL" not in str(binding["slice_class"])
-    assert "TERMINAL" not in str(binding["verdict"])
+    assert "strategy" in owners
+    assert "vol_state" in owners
 
 
 def test_predecessor_cshrvf_terminal_fail_not_projected_onto_successor() -> None:
@@ -182,11 +179,11 @@ def test_predecessor_cshrvf_terminal_fail_not_projected_onto_successor() -> None
     assert successor["strategy_identity"] == (
         "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
     )
-    assert successor["status"] == "STRATEGY_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED"
-    assert successor["development_run_count"] == 0
-    assert successor["run_slot_consumed"] is False
+    assert successor["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL"
+    assert successor["development_run_count"] == 1
+    assert successor["run_slot_consumed"] is True
     assert successor["implementation_present"] is True
-    assert successor["runner_start_count"] == 0
+    assert successor["runner_start_count"] == 1
 
     cshrvf_binding = _load(CSHRVF_ENTRY_POINT_BINDING_PATH)
     assert cshrvf_binding["status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
@@ -195,9 +192,9 @@ def test_predecessor_cshrvf_terminal_fail_not_projected_onto_successor() -> None
     assert cshrvf_binding["development_evaluation_executed"] is True
 
     successor_binding = _load(ENTRY_POINT_BINDING_PATH)
-    assert successor_binding["runner_start_count"] == 0
-    assert successor_binding["development_run_count"] == 0
-    assert successor_binding["development_evaluation_executed"] is False
-    assert successor_binding["status"] != cshrvf_binding["status"]
-    assert successor_binding["slice_class"] != cshrvf_binding["slice_class"]
-    assert successor_binding["runner_start_count"] != cshrvf_binding["runner_start_count"]
+    assert successor_binding["runner_start_count"] == 1
+    assert successor_binding["development_run_count"] == 1
+    assert successor_binding["development_evaluation_executed"] is True
+    assert successor_binding["status"] == "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
+    assert successor_binding["hypothesis_id"] != cshrvf_binding["hypothesis_id"]
+    assert successor_binding["strategy_identity"] != cshrvf_binding["strategy_identity"]
