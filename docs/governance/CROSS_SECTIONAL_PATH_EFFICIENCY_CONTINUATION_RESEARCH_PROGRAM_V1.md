@@ -28,7 +28,7 @@
 
 ## Causal mechanism
 
-Kaufman path-efficiency of trailing PT1H closes (`ER = |net_log_return| / path_sum`)
+Kaufman path-efficiency of trailing PT1H closes (`ER = |net_log_return| &#47; path_sum`)
 times `sign(net_log_return)` ranks instruments for directional continuation. Not
 endpoint-return momentum, not negated-return reversal (CSRHR), not RV-rank.
 
