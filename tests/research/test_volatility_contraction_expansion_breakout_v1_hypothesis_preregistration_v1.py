@@ -122,7 +122,7 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
     assert backlog["status"] == "OPEN_BACKLOG"
     assert len(backlog["preregistered_hypotheses"]) == 1
     assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
-        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
+        "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
     )
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
     assert REQUIRED_STRATEGY_IDENTITY in terminals
@@ -134,9 +134,10 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
         "VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1",
         "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1",
         "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
     }
     program = _load(PROGRAM_PATH)
-    assert program["strategy_identity"] == ("VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1")
+    assert program["strategy_identity"] == ("VOLATILITY_TERM_STRUCTURE_REVERSION_V1")
     assert REQUIRED_STRATEGY_IDENTITY in program["causal_independence"]["forbidden_lineage_refs"]
 
 

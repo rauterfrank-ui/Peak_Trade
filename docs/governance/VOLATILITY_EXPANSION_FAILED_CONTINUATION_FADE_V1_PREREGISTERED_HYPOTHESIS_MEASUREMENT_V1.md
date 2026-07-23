@@ -2,7 +2,7 @@
 
 ## Status
 
-`DEFINITION_ONLY_PREREGISTERED` — no Development evaluation executed.
+`DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL` — single Development run slot consumed; retry forbidden.
 
 ## Identity
 
@@ -50,7 +50,7 @@ stress [0.5, 1.0, 1.5, 2.0].
 
 ## Gates
 
-`DEVELOPMENT_RUN_LIMIT=1`, `DEVELOPMENT_RUN_COUNT=0`, `DEVELOPMENT_SLOT_CONSUMED=false`,
+`DEVELOPMENT_RUN_LIMIT=1`, `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_SLOT_CONSUMED=true`,
 `HOLDOUT_ACCESSED=false`, `LIVE_AUTHORIZED=false`, `ORDERS=false`.
 
 ## Canonical Development Evaluation Entry Point (definition/binding only)
@@ -61,6 +61,6 @@ stress [0.5, 1.0, 1.5, 2.0].
 
 ## Next step
 
-Separate operator GO for strategy implementation, then separate GO for Development evaluation.
+No retry. Next research requires a new separately operator-authorized hypothesis or infrastructure scope (VTSR successor created under post-VEFCF GO).
 
 docs_token: DOCS_TOKEN_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1

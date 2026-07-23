@@ -1128,7 +1128,7 @@
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Post-VEFCF DEVELOPMENT_FAIL slot-consumed lane SSOT; OPEN_BACKLOG; VEFCF retry forbidden; next scope post-VEFCF lifecycle operator decision; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-VEFCF CREATE_SUCCESSOR VTSR v1 definition-only OPEN_BACKLOG; VEFCF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=VTSR strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_hypothesis_backlog_v1.json",
         "src/research/volatility_regime_hypothesis_backlog_v1.py",
@@ -1137,7 +1137,7 @@
       ]
     },
     "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1": {
-      "note": "Post-VEFCF DEVELOPMENT_FAIL slot-consumed lane SSOT; OPEN_BACKLOG; VEFCF retry forbidden; next scope post-VEFCF lifecycle operator decision; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-VEFCF CREATE_SUCCESSOR VTSR v1 definition-only OPEN_BACKLOG; VEFCF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=VTSR strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
         "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
@@ -1146,12 +1146,25 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Post-VEFCF DEVELOPMENT_FAIL slot-consumed lane SSOT; OPEN_BACKLOG; VEFCF retry forbidden; next scope post-VEFCF lifecycle operator decision; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-VEFCF CREATE_SUCCESSOR VTSR v1 definition-only OPEN_BACKLOG; VEFCF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=VTSR strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",
         "tests/research/test_volatility_regime_research_program_v1.py",
         "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md"
+      ]
+    },
+    "VOLATILITY_TERM_STRUCTURE_REVERSION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only CREATE_SUCCESSOR after VEFCF DEVELOPMENT_FAIL; VTSR short/long RV term-structure reversion; no evaluation/holdout/runtime/orders; VEFCF/VEPC/VCEB/VDBX/VDB/VEP/VCB retry forbidden.",
+      "path_prefixes": [
+        "config/research/volatility_term_structure_reversion_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "config/research/volatility_term_structure_reversion_v1_development_evaluation_entry_point_binding_v1.json",
+        "src/research/volatility_term_structure_reversion_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_volatility_term_structure_reversion_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/VOLATILITY_TERM_STRUCTURE_REVERSION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/governance/VOLATILITY_TERM_STRUCTURE_REVERSION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "docs/evidence/preregister_volatility_term_structure_reversion_hypothesis_v1/",
+        "scripts/research/run_evaluate_volatility_term_structure_reversion_development_v1.py"
       ]
     },
     "WALK_FORWARD_MONTE_CARLO_STRESS_AND_PARAMETER_SENSITIVITY": {
