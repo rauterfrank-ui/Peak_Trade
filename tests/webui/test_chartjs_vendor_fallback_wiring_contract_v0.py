@@ -55,12 +55,18 @@ def _html(client: TestClient, path: str) -> str:
 
 
 def test_market_dashboard_chartjs_shells_absent(client: TestClient) -> None:
-    for path in ("/market", "/market/double-play"):
-        response = client.get(path)
-        assert response.status_code == 404
-        body = response.text.lower()
-        assert "peak-trade-market-chartjs-vendor-v1" not in body
-        assert "market-v0-shell" not in body
+    # Landscape V2 shell is present at /market; legacy Chart.js market shells stay gone.
+    response = client.get("/market")
+    assert response.status_code == 200
+    body = response.text.lower()
+    assert "peak-trade-market-chartjs-vendor-v1" not in body
+    assert "market-v0-shell" not in body
+    for path in ("/market/double-play",):
+        legacy = client.get(path)
+        assert legacy.status_code == 404
+        legacy_body = legacy.text.lower()
+        assert "peak-trade-market-chartjs-vendor-v1" not in legacy_body
+        assert "market-v0-shell" not in legacy_body
 
 
 def test_chartjs_vendor_primary_r_and_d_charts_v1(client: TestClient) -> None:

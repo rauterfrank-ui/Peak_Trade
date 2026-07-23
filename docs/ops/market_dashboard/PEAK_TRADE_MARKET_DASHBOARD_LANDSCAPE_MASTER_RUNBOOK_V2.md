@@ -2,7 +2,7 @@
 
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
-**Status:** `READMODEL_FOUNDATION_COMPLETE_PHASE_3_NOT_AUTHORIZED`  
+**Status:** `PHASE_3_LANDSCAPE_SHELL_IMPLEMENTED_OPERATOR_APPROVAL_PENDING`  
 **Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`  
 **Primärbrowser:** Google Chrome / Playwright Real Chrome  
 **Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand  
@@ -14,13 +14,14 @@
 CANONICAL_REPO_PATH=docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 REPO_INGESTION_DATE=2026-07-23
 SOURCE_FILENAME=PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
-SOURCE_CONTENT_SHA256=65999c98fc4503e5c185e61f97fc98dedca1204a952e94bddd5c4f25fe46af38
-BASE_SHA_AT_INGESTION=82f71bbef835e6a63453190b5eb1e3d4c2ef1884
-PHASE_3_AUTHORIZED=false
-IMPLEMENTATION_AUTHORIZATION_STATUS=PHASE_2_COMPLETE_PHASE_3_NOT_AUTHORIZED
+PHASE_3_AUTHORIZED=true
+PHASE_3_PR_2_SCOPE=LANDSCAPE_SHELL_ONLY
+IMPLEMENTATION_AUTHORIZATION_STATUS=PHASE_3_SHELL_IN_PROGRESS_OPERATOR_APPROVAL_PENDING
+PHASE_4_AUTHORIZED=false
+OPERATOR_SKELETON_APPROVAL=PENDING
 ```
 
-**Phasen-/PR-Mapping (explizit, keine stille Geschichtsrewrite):** Runbook-**PHASE 2** (ReadModel Foundation / Source Health) entspricht dem gemergten Implementierungs-**PR #5499** („PR 1 — ReadModel Contracts and Guards“). Runbook-**PHASE 3** / Implementierungs-**PR 2** (Landscape Shell) ist **nicht** autorisiert. PHASE 0 / PHASE 1 sind in diesem Repo **nicht** als abgeschlossene Durable-Artefakte belegt und werden hier **nicht** als complete beansprucht.
+**Phasen-/PR-Mapping (explizit, keine stille Geschichtsrewrite):** Runbook-**PHASE 2** (ReadModel Foundation / Source Health) entspricht dem gemergten Implementierungs-**PR #5499** („PR 1 — ReadModel Contracts and Guards“). Runbook-**PHASE 3** / Implementierungs-**PR 2** (Landscape Shell) ist unter `OPERATOR_GO=PHASE_3_PR_2_LANDSCAPE_SHELL_ONLY` autorisiert; Operator-Skeleton-Approval bleibt `PENDING` bis Screenshot-Review.
 
 ---
 
@@ -1282,17 +1283,22 @@ CANONICAL_PRINCIPLE=
 Market Dashboard is a pure read-only consumer with zero trading,
 runtime, scheduler, promotion, capital or execution authority.
 
-CURRENT_PHASE=BETWEEN_PHASE_2_AND_PHASE_3
+CURRENT_PHASE=PHASE_3_LANDSCAPE_SHELL
 LAST_COMPLETED_PHASE=PHASE_2
-LAST_MERGED_PR=5499
-CURRENT_MAIN_SHA=82f71bbef835e6a63453190b5eb1e3d4c2ef1884
-OPEN_PR=NONE
+LAST_MERGED_PR=5500
+PHASE_3_PR=2
+BRANCH=feat/market-dashboard-landscape-shell-v2
+BASE_SHA_EXPECTED=e18a16e138d643cac5748c8ccafaea0b871a80c8
+OPEN_PR=SEE_PR_AFTER_OPEN
 
 READMODEL_FOUNDATION_COMPLETE=true
 PR_1_MERGED=true
 SOURCE_HEALTH_IMPLEMENTED=true
 ARCHITECTURE_GUARDS_IMPLEMENTED=true
-PHASE_3_AUTHORIZED=false
+PHASE_3_AUTHORIZED=true
+PHASE_3_SHELL_IMPLEMENTED=true
+OPERATOR_SKELETON_APPROVAL=PENDING
+PHASE_4_AUTHORIZED=false
 
 CORE_ARCHITECTURE_VALID=true
 CORE_CHANGE_REQUIRED=false
@@ -1310,18 +1316,32 @@ Decision / Why / Blocker immediately visible.
 No governance card wall.
 No order or activation controls.
 
-CURRENT_MARKET_ROUTE=ABSENT_404_TOMBSTONE
+CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_PHASE_3_SHELL_200
 CURRENT_BOUND_SOURCES=[
   "src/webui/market_dashboard_landscape_v2 (read-only projection contracts)",
-  "CanonicalTradingDecisionEvidenceV1 (reuse pointer)",
-  "DoublePlayDashboardDisplaySnapshot (reuse pointer)"
+  "page_aggregate MarketDashboardReadServiceV1 (NOT_BOUND bundle + source health)",
+  "presenter present_market_landscape_v2 (formatting only)",
+  "shell runtime constant BOUND_NOT_ACTIVATED (non-authoritative product metadata)"
+]
+NOT_BOUND_SOURCES=[
+  "market_instrument / OHLCV chart",
+  "universe_ranking",
+  "dynamic_scope / regime / switch",
+  "canonical_decision / confidence",
+  "double_play",
+  "risk_sizing_capital",
+  "safety_authority",
+  "execution_reconciliation",
+  "economic_summary",
+  "autonomy_stage producer binding",
+  "diagnostics_summary",
+  "event_decision_timeline"
 ]
 MISSING_READ_PROJECTIONS=[
-  "page aggregate / Landscape Shell bindings (Phase 3+)",
-  "market/universe/scope UI binding (PR 3)",
-  "decision/DP UI binding (PR 4)",
-  "safety/risk/execution UI binding (PR 5)",
-  "economic/diagnostics/autonomy UI binding (PR 6)"
+  "market/universe/scope UI binding (PR 3 / Phase 4.1-4.2)",
+  "decision/DP UI binding (PR 4 / Phase 4.3)",
+  "safety/risk/execution UI binding (PR 5 / Phase 4.4-4.5)",
+  "economic/diagnostics/autonomy UI binding (PR 6 / Phase 4.6-4.7)"
 ]
 MISSING_PRODUCERS=[]
 KNOWN_INTENTIONAL_LOCKS=[
@@ -1329,19 +1349,18 @@ KNOWN_INTENTIONAL_LOCKS=[
   "LIVE/ORDERS/SCHEDULER fail-closed",
   "Strategy Signal Selection D / Slice 2 blocked",
   "Ops Double Play projection-only",
-  "GET /market intentionally absent until Phase 3 Landscape Shell"
+  "Phase 4 producer binding not authorized in this PR"
 ]
 
 PHASE_PR_MAPPING=[
   "Runbook PHASE 2 == Implementation PR #5499 (labeled PR 1 ReadModel Contracts)",
-  "Runbook PHASE 3 == future Implementation PR 2 Landscape Shell (NOT authorized)",
+  "Runbook PHASE 3 == Implementation PR 2 Landscape Shell (this PR; operator approval pending)",
   "PHASE 0 / PHASE 1 not claimed complete in-repo (no durable Phase 0/1 artifacts)"
 ]
 
 NEXT_CANONICAL_ACTION=
-Complete and merge this docs-only canonical runbook ingestion PR.
-After merge, prepare the bounded Phase 3 / PR 2 Landscape Shell command.
-Do not implement PR 2 in this workstream.
+Operator reviews Phase 3 screenshots and PR.
+Do not start Phase 4 producer binding without a new OPERATOR_GO.
 
 SEPARATE_GO_REQUIRED_FOR=[
   "Core changes",
@@ -1354,7 +1373,7 @@ SEPARATE_GO_REQUIRED_FOR=[
   "Promotion",
   "Live",
   "Mass cleanup",
-  "Phase 3 / PR 2 Landscape Shell implementation"
+  "Phase 4 producer binding"
 ]
 ```
 

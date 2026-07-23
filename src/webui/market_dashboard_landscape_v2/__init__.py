@@ -1,6 +1,7 @@
-"""Market Dashboard Landscape V2 — read-only projection contracts.
+"""Market Dashboard Landscape V2 — read-only projection contracts + page shell.
 
-Consumer foundation only. No routes, templates, runtime activation, orders,
+Consumer foundation and Phase 3 page aggregate/presenter. Route lives in
+market_dashboard_landscape_shell_router_v2. No runtime activation, orders,
 or domain recomputation.
 """
 
@@ -27,6 +28,12 @@ from .owner_registry import (
     REQUIRED_PROJECTION_SLOTS,
     owner_registry_by_slot,
 )
+from .page_aggregate import (
+    PAGE_AGGREGATE_SCHEMA_ID,
+    MarketDashboardPageSnapshotV1,
+    MarketDashboardReadServiceV1,
+)
+from .presenter import present_market_landscape_v2
 from .projections import (
     project_canonical_decision_snapshot_v1,
     project_double_play_snapshot_v1,
@@ -57,8 +64,11 @@ __all__ = [
     "ExecutionReconciliationSnapshotV1",
     "FreshnessV1",
     "LAYER_VERSION",
+    "MarketDashboardPageSnapshotV1",
+    "MarketDashboardReadServiceV1",
     "MarketInstrumentSnapshotV1",
     "PACKAGE_MARKER",
+    "PAGE_AGGREGATE_SCHEMA_ID",
     "REQUIRED_PROJECTION_SLOTS",
     "RiskSizingCapitalSnapshotV1",
     "SCHEMA_FAMILY",
@@ -72,6 +82,7 @@ __all__ = [
     "dumps_projection_canonical",
     "owner_registry_by_slot",
     "parse_availability",
+    "present_market_landscape_v2",
     "project_canonical_decision_snapshot_v1",
     "project_double_play_snapshot_v1",
     "serialize_projection",

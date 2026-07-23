@@ -2,20 +2,24 @@
 
 Prevents:
 - Landscape package importing mutable runtime / execution / order APIs
-- UI templates importing Landscape via forbidden execution paths
+- UI templates importing execution/runtime activation APIs
 - Duplicate truth owners inside the Landscape package
 - UI-side recomputation of decision / risk / sizing
+- Write/action forms on GET /market Landscape shell
 """
 
 from __future__ import annotations
 
 import ast
+import re
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 LANDSCAPE_PKG = REPO / "src" / "webui" / "market_dashboard_landscape_v2"
+SHELL_ROUTER = REPO / "src" / "webui" / "market_dashboard_landscape_shell_router_v2.py"
 WEBUI_ROOT = REPO / "src" / "webui"
 TEMPLATES_ROOT = REPO / "templates" / "peak_trade_dashboard"
+LANDSCAPE_TEMPLATE = TEMPLATES_ROOT / "market_landscape_v2.html"
 
 FORBIDDEN_IMPORT_PREFIXES = (
     "src.execution",
@@ -52,12 +56,24 @@ FORBIDDEN_NAME_TOKENS_IN_LANDSCAPE = (
     "switch_scope",
 )
 
-# Decision/risk/sizing truth must remain outside this consumer package.
 FORBIDDEN_SECOND_TRUTH_DEFINITIONS = (
     "class CanonicalTradingDecisionEvidence",
     "def evaluate_double_play",
     "def compute_position_size",
     "def compute_risk_budget",
+)
+
+FORBIDDEN_TEMPLATE_TOKENS = (
+    "execution_watch_api",
+    "place_order",
+    "submit_order",
+    "activate_runtime",
+    "arm_live",
+    'method="post"',
+    'method="POST"',
+    "Submit Order",
+    "Arm Runtime",
+    "Activate Runtime",
 )
 
 
@@ -120,11 +136,9 @@ def test_no_ui_side_recomputation_markers() -> None:
         text = path.read_text(encoding="utf-8")
         for token in FORBIDDEN_NAME_TOKENS_IN_LANDSCAPE:
             if token in text:
-                # Allow mentions inside forbid-lists / docstrings that say "Forbidden:"
                 if f'"{token}"' in text or f"'{token}'" in text:
                     continue
                 if "Forbidden" in text and token in text:
-                    # still fail if defined as function
                     tree = ast.parse(text)
                     for node in ast.walk(tree):
                         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -149,18 +163,10 @@ def test_no_second_truth_owner_definitions() -> None:
     assert hits == [], f"SECOND_TRUTH_OWNERS={hits}"
 
 
-def test_webui_templates_do_not_import_execution_or_landscape_runtime() -> None:
+def test_webui_templates_do_not_import_execution_or_runtime_activation() -> None:
     """No Jinja/HTML surface may reference order/execution activation APIs."""
     if not TEMPLATES_ROOT.is_dir():
         return
-    forbidden_substrings = (
-        "execution_watch_api",
-        "place_order",
-        "submit_order",
-        "activate_runtime",
-        "arm_live",
-        "market_dashboard_landscape_v2",  # no UI wiring in PR1
-    )
     hits: list[str] = []
     for path in TEMPLATES_ROOT.rglob("*"):
         if not path.is_file():
@@ -168,17 +174,42 @@ def test_webui_templates_do_not_import_execution_or_landscape_runtime() -> None:
         if path.suffix.lower() not in {".html", ".js", ".css", ".jinja", ".j2"}:
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
-        for token in forbidden_substrings:
+        for token in (
+            "execution_watch_api",
+            "place_order",
+            "submit_order",
+            "activate_runtime",
+            "arm_live",
+        ):
             if token in text:
                 hits.append(f"{path.relative_to(REPO)}:{token}")
     assert hits == [], f"template forbidden refs: {hits}"
 
 
-def test_no_market_route_wired_in_app_for_landscape_v2() -> None:
+def test_market_route_wired_read_only_for_landscape_v2() -> None:
     app_text = (WEBUI_ROOT / "app.py").read_text(encoding="utf-8")
-    assert "market_dashboard_landscape_v2" not in app_text
-    assert '@app.get("/market"' not in app_text
+    assert "market_dashboard_landscape_shell_router_v2" in app_text
+    assert "set_market_landscape_shell_config" in app_text
     assert "create_market_router" not in app_text
+    router_text = SHELL_ROUTER.read_text(encoding="utf-8")
+    assert '@router.get("/market"' in router_text
+    assert "@router.post" not in router_text
+    assert "@router.put" not in router_text
+    assert "@router.patch" not in router_text
+    assert "@router.delete" not in router_text
+    for prefix in FORBIDDEN_IMPORT_PREFIXES:
+        assert prefix not in router_text, prefix
+
+
+def test_landscape_shell_template_has_no_write_controls() -> None:
+    assert LANDSCAPE_TEMPLATE.is_file()
+    text = LANDSCAPE_TEMPLATE.read_text(encoding="utf-8")
+    for token in FORBIDDEN_TEMPLATE_TOKENS:
+        assert token not in text, token
+    assert 'data-market-landscape-v2="true"' in text
+    assert 'data-market-dashboard-authority="false"' in text
+    assert "method=" not in text.lower()
+    assert re.search(r"<form\b", text, flags=re.IGNORECASE) is None
 
 
 def test_projection_helpers_are_field_copy_only() -> None:
@@ -197,7 +228,6 @@ def test_projection_helpers_are_field_copy_only() -> None:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 assert alias.name.split(".", 1)[0] in {"__future__", "datetime", "typing"}
-    # Must not import producer evidence modules as runtime dependencies.
     for module, level in _import_modules(proj_path):
         if level > 0:
             continue
@@ -205,3 +235,14 @@ def test_projection_helpers_are_field_copy_only() -> None:
         assert "double_play_dashboard_display" not in module
         assert "execution" not in module
         assert "order" not in module
+
+
+def test_shell_router_forbidden_import_count_zero() -> None:
+    hits: list[str] = []
+    for module, level in _import_modules(SHELL_ROUTER):
+        if level > 0:
+            continue
+        for prefix in FORBIDDEN_IMPORT_PREFIXES:
+            if module == prefix or module.startswith(prefix + "."):
+                hits.append(module)
+    assert hits == []
