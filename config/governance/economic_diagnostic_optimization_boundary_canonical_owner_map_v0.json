@@ -1416,6 +1416,18 @@
         "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
         "docs/evidence/preregister_cross_sectional_path_efficiency_continuation_hypothesis_v1/"
       ]
+    },
+    "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Strategy-implementation-only surfaces for CS path-efficiency continuation v1 (Kaufman ER*sign score + single-top1 rank-intent selection + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; development_run_count unchanged; CSRHR remains OPEN_BACKLOG untouched; no Master-V2/Double-Play mutation.",
+      "path_prefixes": [
+        "src/research/cross_sectional_path_efficiency_continuation_v1_score_v1.py",
+        "src/research/cross_sectional_path_efficiency_continuation_v1_selection_v1.py",
+        "src/research/cross_sectional_path_efficiency_continuation_v1_strategy_implementation_binding_v1.py",
+        "config/research/cross_sectional_path_efficiency_continuation_v1_strategy_implementation_binding_v1.json",
+        "tests/research/test_cross_sectional_path_efficiency_continuation_v1_score_and_selection_v1.py",
+        "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+      ]
     }
   },
   "forbidden_mutation_surfaces": {
