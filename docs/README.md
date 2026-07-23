@@ -12,7 +12,7 @@
 
 **New to Peak_Trade (product overview)?**
 1. Read: [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) – Architecture, Strategy Registry, Config, Quick Start
-2. Market Dashboard Architecture Reset & Rebuild SSOT (read-only, no runtime/trading authorization): [product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md) — see [product/README.md](product/README.md)
+2. Market Dashboard Landscape V2 (canonical planning/execution runbook; read-only consumer; no runtime/trading authorization): [ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) — historical Architecture Reset v1.0: [product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md](product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md); removed product tombstone: [webui/MARKET_DASHBOARD_REMOVED.md](webui/MARKET_DASHBOARD_REMOVED.md)
 3. Run your first backtest: `python3 scripts&#47;run_strategy_from_config.py --strategy ma_crossover`
 4. Explore: [What changed recently?](DOCUMENTATION_UPDATE_SUMMARY.md)
 

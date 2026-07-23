@@ -151,6 +151,7 @@ OLS / Offline Linear Evidence ist Economic-Validation-**Support**, keine Runtime
 | Dokument | Rolle |
 |----------|-------|
 | [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Kanonische Vollautonomie-SSOT |
+| [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Market Dashboard Landscape V2 (read-only consumer planning; non-authorizing) |
 | [`docs/ops/runbooks/README.md`](../ops/runbooks/README.md) | Operative Runbooks |
 | [`docs/ops/RUNBOOK_INDEX.md`](../ops/RUNBOOK_INDEX.md) | Index |
 | [`docs/DISASTER_RECOVERY_RUNBOOK.md`](../DISASTER_RECOVERY_RUNBOOK.md) | DR |

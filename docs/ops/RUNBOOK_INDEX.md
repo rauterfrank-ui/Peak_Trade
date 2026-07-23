@@ -26,6 +26,13 @@
 | **Durable Ursprungssnapshot** | `…&#47;planning&#47;peak_trade_master_execution_runbook_v1_20260626T233500Z` (Archive) | Unveränderlicher verified Origin (`MANIFEST_VERIFY_RC=0`) |
 | **Desktop-Lesekopie** | `/Users/frnkhrz/Desktop/Peak_Trade_Master_Execution_Runbook_V1.md` | **Nicht kanonisch** — Convenience only |
 
+## Market Dashboard Landscape V2 (read-only consumer; non-authorizing)
+
+| Artefakt | Pfad | Rolle |
+|----------|------|-------|
+| **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; **keine** Trading-/Runtime-/Order-Authority; Phase 3 Shell separat GO |
+| **Removed product tombstone** | [../webui/MARKET_DASHBOARD_REMOVED.md](../webui/MARKET_DASHBOARD_REMOVED.md) | `GET &#47;market` absent until separately authorized Shell |
+
 ---
 
 ## Runbooks
