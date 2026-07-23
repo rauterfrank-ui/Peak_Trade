@@ -60,7 +60,7 @@ def validate_backlog_contract(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
     _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
@@ -83,6 +83,7 @@ def validate_backlog_contract(
     _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(hyp.get("status") == REQUIRED_HYP_STATUS, "HYPOTHESIS_STATUS")
+    _require(hyp.get("implementation_present") is True, "HYP_IMPLEMENTATION_PRESENT")
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVALUATION_AUTHORIZED")
     _require(hyp.get("development_run_count") == 0, "HYP_DEVELOPMENT_RUN_COUNT")
     _require(hyp.get("development_run_limit") == 1, "HYP_DEVELOPMENT_RUN_LIMIT")

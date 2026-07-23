@@ -1,3 +1,19 @@
+### CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1
+
+- Scope: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Decision: `STRATEGY_IMPLEMENTATION_ONLY`
+- Workstream: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1`
+- Hypothesis: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Strategy: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1` (`STRATEGY_IMPLEMENTATION_PRESENT`)
+- Binding: `config&#47;research&#47;cross_sectional_intrabar_close_location_pressure_continuation_v1_strategy_implementation_binding_v1.json`
+- Frozen measurement digest: `2bc7e062d41bca4dee5c1b4a36c4e108903d5825cf5819f9214e8799cd98f859` (unmutated)
+- Score/selection: mean intrabar CLV fixed lookback (`lookback_N=36`, `rebalance=6`, `lag=1`) + `single_top1_by_score_desc` / `symmetric_top1_sign`
+- `EVALUATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0` unchanged; holdout untouched; CSRHR remains `OPEN_BACKLOG` unchanged
+- Explicit non-actions: no evaluation/runner/holdout/runtime/LIVE/orders; no CSRHR continue/reuse/mutation; no path-efficiency retry; no parameter optimization
+- Next admissible GO: separate PR-merge GO, then separately bounded DEVELOPMENT evaluation GO
+
+
 ### CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION_V1
 
 - Scope: `CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION_V1`
