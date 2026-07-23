@@ -33,17 +33,16 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_backlog_awaiting_explicit_successor_empty_inventory() -> None:
+def test_repo_backlog_open_with_vefcf_preregistered() -> None:
     report = load_and_validate_repo_backlog(REPO)
     assert report["valid"] is True
-    assert report["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
-    assert report["preregistered_count"] == 0
+    assert report["status"] == "OPEN_BACKLOG"
+    assert report["preregistered_count"] == 1
     assert report["terminal_count"] == 6
-    assert (
-        report["hypothesis_id"]
-        == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
+    assert report["hypothesis_id"] == (
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_NON_BITCOIN_PERPETUALS_V1"
     )
-    assert report["strategy_identity"] == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+    assert report["strategy_identity"] == "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
     assert report["development_run_count"] == 0
     assert (
         report["dataset_id"]
@@ -54,7 +53,7 @@ def test_repo_backlog_awaiting_explicit_successor_empty_inventory() -> None:
     assert report["promotion_eligible"] is False
     assert report["retry_allowed"] is False
     assert report["explicit_closeout_decision"] is False
-    assert report["explicit_waiting_decision"] is True
+    assert report["explicit_waiting_decision"] is False
 
 
 def test_sibling_closed_lanes_and_terminal_inventory() -> None:
@@ -68,23 +67,15 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert _load(EXIT_BACKLOG)["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert _load(CS_PROGRAM)["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     assert backlog["open_unpreregistered_candidates"] == []
-    assert backlog["preregistered_hypotheses"] == []
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    hyp = backlog["preregistered_hypotheses"][0]
+    assert hyp["strategy_identity"] == "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
+    assert hyp["status"] == "DEFINITION_ONLY_PREREGISTERED"
+    assert hyp["run_slot_consumed"] is False
     assert len(backlog["terminal_hypotheses"]) == 6
     terminals = {t["strategy_identity"]: t for t in backlog["terminal_hypotheses"]}
     assert terminals["VOLATILITY_COMPRESSION_BREAKOUT_V1"]["terminal_result"] == (
         "FAIL_CLOSED_NO_RETRY"
-    )
-    assert terminals["VOLATILITY_EXPANSION_PERSISTENCE_V1"]["fail_reason"].endswith(
-        "UNPAIRABLE_ENTRY_NO_EXIT"
-    )
-    assert terminals["VOLATILITY_DECAY_BREAKOUT_V1"]["fail_reason"].endswith(
-        "UNPAIRABLE_ENTRY_NO_EXIT"
-    )
-    assert terminals["VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1"][
-        "fail_reason"
-    ].endswith("UNPAIRABLE_ENTRY_NO_EXIT")
-    assert terminals["VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1"]["fail_reason"].endswith(
-        "UNPAIRABLE_ENTRY_NO_EXIT"
     )
     vepc = terminals["VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"]
     assert vepc["status"] == "TERMINAL_FAIL"
@@ -93,9 +84,11 @@ def test_sibling_closed_lanes_and_terminal_inventory() -> None:
     assert vepc["retry_allowed"] is False
     assert vepc["reopen_allowed"] is False
     assert backlog["sealed_holdout_binding_status"] == "UNBOUND_UNTOUCHED"
-    assert backlog["required_treatment_type"] == "NONE_UNTIL_CREATE_SUCCESSOR_HYPOTHESIS"
+    assert backlog["required_treatment_type"] == (
+        "OWN_INSTRUMENT_VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_ADMISSION"
+    )
     assert backlog["next_canonical_step"].startswith(
-        "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS_ENUMERATED_FOLLOW_ON_REQUIRED"
+        "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO"
     )
 
 
@@ -118,12 +111,12 @@ def test_fail_closed_mutations() -> None:
     with pytest.raises(BacklogValidationError, match="SIBLING_REOPEN_NOT_FORBIDDEN"):
         validate_backlog_contract(bad4)
     bad5 = copy.deepcopy(payload)
-    bad5["status"] = "OPEN_BACKLOG"
-    with pytest.raises(BacklogValidationError, match="STATUS_NOT_AWAITING"):
+    bad5["status"] = "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+    with pytest.raises(BacklogValidationError, match="STATUS_NOT_OPEN_BACKLOG"):
         validate_backlog_contract(bad5)
     bad6 = copy.deepcopy(payload)
-    bad6["explicit_waiting_decision"] = False
-    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_FALSE"):
+    bad6["explicit_waiting_decision"] = True
+    with pytest.raises(BacklogValidationError, match="WAITING_DECISION_TRUE"):
         validate_backlog_contract(bad6)
 
 
@@ -131,9 +124,8 @@ def test_governance_and_owner_map() -> None:
     assert GOVERNANCE.is_file()
     text = GOVERNANCE.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in text
-    assert "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS" in text
-    assert "explicit_waiting_decision=true" in text
+    assert "OPEN_BACKLOG" in text
+    assert "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1" in text
     assert "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in text
-    assert "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1" in text
     owners = _load(OWNER_MAP)["allowed_optimization_surfaces"]
     assert "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1" in owners

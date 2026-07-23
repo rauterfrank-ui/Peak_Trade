@@ -119,8 +119,11 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
     assert md_vdbx["vdbx_retry_forbidden"] is True
     assert md_vdbx["not_a_repair_or_retry_of_vdbx_v1"] is True
     backlog = _load(BACKLOG_PATH)
-    assert backlog["preregistered_hypotheses"] == []
-    assert backlog["status"] == "AWAITING_EXPLICIT_SUCCESSOR_HYPOTHESIS"
+    assert backlog["status"] == "OPEN_BACKLOG"
+    assert len(backlog["preregistered_hypotheses"]) == 1
+    assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
+        "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
+    )
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
     assert REQUIRED_STRATEGY_IDENTITY in terminals
     assert "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1" in terminals
@@ -133,7 +136,7 @@ def test_material_difference_vs_terminals_and_bindings() -> None:
         "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
     }
     program = _load(PROGRAM_PATH)
-    assert program["strategy_identity"] == "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
+    assert program["strategy_identity"] == ("VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1")
     assert REQUIRED_STRATEGY_IDENTITY in program["causal_independence"]["forbidden_lineage_refs"]
 
 
