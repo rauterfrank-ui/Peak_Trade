@@ -49,8 +49,12 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         owner_module="trading.master_v2.canonical_scope_initialization_v1",
         owner_symbol="CanonicalScopeLifecycleState",
         authority_class="dynamic_scope",
-        reuse_status="PROJECTION_ONLY",
-        notes="Scope authority remains Master V2; Landscape projects only.",
+        reuse_status="REUSED",
+        notes=(
+            "Phase 4.2: Landscape projects CanonicalScopeSnapshotV1 lifecycle "
+            "identity only (scope_state/current_scope_ref); Regime/Switch/"
+            "RuntimeScopeState/transition_state remain unbound."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="canonical_decision",

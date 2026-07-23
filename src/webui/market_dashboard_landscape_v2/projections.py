@@ -11,6 +11,7 @@ from .contracts import (
     SCHEMA_VERSION,
     CanonicalDecisionSnapshotV1,
     DoublePlaySnapshotV1,
+    DynamicScopeSnapshotV1,
     MarketInstrumentSnapshotV1,
     UniverseRankingSnapshotV1,
 )
@@ -147,6 +148,73 @@ def project_universe_ranking_snapshot_v1(
         ranking=ranking_rows,
         universe=universe_rows,
         selected_instrument_id=selected_instrument_id,
+        reason_codes=tuple(str(code) for code in reason_codes),
+    )
+
+
+def project_dynamic_scope_snapshot_v1(
+    *,
+    scope_state: str,
+    current_scope_ref: str,
+    reason_codes: Sequence[str],
+    generated_at: datetime,
+    effective_at: datetime | None,
+    source_reference: str | None,
+    next_scope_ref: str | None = None,
+    evidence_digest: str | None = None,
+    git_sha: str | None = None,
+    producer_module: str = "trading.master_v2.canonical_scope_initialization_v1",
+    source_kind: str = "canonical_scope_snapshot",
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
+) -> DynamicScopeSnapshotV1:
+    """Project already-computed canonical scope lifecycle identity fields.
+
+    Forbidden: inventing lifecycle state/refs, deriving regime/bull-bear/switch,
+    calling scope initializers or switch-transition owners, or using page-assembly
+    time as producer freshness.
+    generated_at/effective_at must be producer timestamps — never page-assembly time.
+    """
+    if not scope_state:
+        raise ValueError("scope_state required for AVAILABLE/STALE projection")
+    if not current_scope_ref:
+        raise ValueError("current_scope_ref required for AVAILABLE/STALE projection")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_dynamic_scope only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
+    schema_id = f"{SCHEMA_FAMILY}.dynamic_scope.{SCHEMA_VERSION}"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module=producer_module,
+        generated_at=generated_at,
+        effective_at=effective_at,
+        source_kind=source_kind,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        availability=availability,
+    )
+    freshness = FreshnessV1(
+        observed_at=generated_at,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+    return DynamicScopeSnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=availability,
+        scope_state=str(scope_state),
+        current_scope_ref=str(current_scope_ref),
+        next_scope_ref=None if next_scope_ref is None else str(next_scope_ref),
         reason_codes=tuple(str(code) for code in reason_codes),
     )
 

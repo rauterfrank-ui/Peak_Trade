@@ -16,13 +16,17 @@ from scripts.ops.primary_evidence_retention_v0 import (
 )
 from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     LANDSCAPE_PHASE41_MAX_AGE_SECONDS,
+    LANDSCAPE_PHASE42_MAX_AGE_SECONDS,
     REASON_ARCHIVE_ROOT_UNSET,
     REASON_MARKET_CONTEXT_NOT_PERSISTED,
     REASON_PRODUCER_DATA_STALE,
     REASON_PRODUCER_TIMESTAMP_INVALID,
     REASON_PRODUCER_TIMESTAMP_MISSING,
+    REASON_SCOPE_NOT_PERSISTED,
     REASON_SELECTED_FORBIDDEN_SYMBOL,
     REASON_SOURCE_CONTRADICTION,
+    SCOPE_PRODUCER_MODULE,
+    SCOPE_SOURCE_KIND,
     bind_market_universe_slots,
     parse_producer_utc_timestamp,
 )
@@ -33,6 +37,9 @@ from src.webui.market_dashboard_landscape_v2 import (
     project_market_instrument_snapshot_v1,
     project_universe_ranking_snapshot_v1,
     serialize_projection,
+)
+from src.webui.market_dashboard_landscape_v2.projections import (
+    project_dynamic_scope_snapshot_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.types import (
     SelectedFutureDisplayV1,
@@ -46,6 +53,8 @@ from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 im
 STAMP = datetime(2026, 7, 23, 18, 0, 0, tzinfo=timezone.utc)
 PRODUCER_FRESH = datetime(2026, 7, 23, 17, 0, 0, tzinfo=timezone.utc)
 PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE41_MAX_AGE_SECONDS + 3600)
+SCOPE_PRODUCER_FRESH = datetime(2026, 7, 23, 16, 30, 0, tzinfo=timezone.utc)
+SCOPE_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE42_MAX_AGE_SECONDS + 7200)
 REPO = Path(__file__).resolve().parents[2]
 SCRATCH_ROOT = REPO / "tests" / "_durable_archive_scratch"
 
@@ -110,11 +119,16 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
 ) -> None:
     monkeypatch.delenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", raising=False)
     slots = bind_market_universe_slots(generated_at=STAMP)
-    assert set(slots) == {"market_instrument", "universe_ranking"}
+    assert set(slots) == {"market_instrument", "universe_ranking", "dynamic_scope"}
     assert slots["market_instrument"].availability is Availability.MISSING_SOURCE
     assert REASON_MARKET_CONTEXT_NOT_PERSISTED in slots["market_instrument"].reason_codes
     assert slots["universe_ranking"].availability is Availability.MISSING_SOURCE
     assert REASON_ARCHIVE_ROOT_UNSET in slots["universe_ranking"].reason_codes
+    assert slots["dynamic_scope"].availability is Availability.MISSING_SOURCE
+    assert REASON_SCOPE_NOT_PERSISTED in slots["dynamic_scope"].reason_codes
+    assert slots["dynamic_scope"].scope_state is None
+    assert slots["dynamic_scope"].current_scope_ref is None
+    assert slots["dynamic_scope"].next_scope_ref is None
 
 
 def test_bind_rejects_inventing_market_without_required_fields() -> None:
@@ -394,7 +408,7 @@ def test_missing_ranking_and_selected_still_fail_closed(archive_root: Path) -> N
     assert slots2["market_instrument"].availability is Availability.MISSING_SOURCE
 
 
-def test_page_aggregate_applies_phase41_without_touching_decision_or_scope() -> None:
+def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_injection() -> None:
     slots = bind_market_universe_slots(
         generated_at=STAMP,
         market_instrument_fields={
@@ -412,10 +426,141 @@ def test_page_aggregate_applies_phase41_without_touching_decision_or_scope() -> 
         slot_overrides=slots,
     )
     assert page.market_instrument.availability is Availability.AVAILABLE
-    assert page.dynamic_scope.availability is Availability.NOT_BOUND
+    assert page.dynamic_scope.availability is Availability.MISSING_SOURCE
+    assert REASON_SCOPE_NOT_PERSISTED in page.dynamic_scope.reason_codes
     assert page.canonical_decision.availability is Availability.NOT_BOUND
     ctx = present_market_landscape_v2(page)
-    assert ctx["phase"] == "PHASE_4_1_MARKET_UNIVERSE_BINDING"
+    assert ctx["phase"] == "PHASE_4_2_DYNAMIC_SCOPE_LIFECYCLE_BINDING"
     assert ctx["chart"]["ohlcv"] is None
-    assert ctx["scope"]["availability"] == "NOT_BOUND"
+    assert ctx["scope"]["availability"] == "MISSING_SOURCE"
+    assert ctx["regime"]["availability"] == "NOT_BOUND"
+    assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
+    assert ctx["switch"]["availability"] == "NOT_BOUND"
     assert "membership_label" in ctx["universe_rail"]
+
+
+def _scope_fields(**overrides: object) -> dict[str, object]:
+    base: dict[str, object] = {
+        "lifecycle_state": "scope_valid",
+        "scope_id": "scope-btc-1",
+        "reason_codes": ("SCOPE_INITIALIZED",),
+        "generated_at": SCOPE_PRODUCER_FRESH,
+        "effective_at": SCOPE_PRODUCER_FRESH,
+        "semantic_digest": "a" * 64,
+        "source_reference": "scope://btc-1",
+    }
+    base.update(overrides)
+    return base
+
+
+def test_project_dynamic_scope_field_copy_immutable() -> None:
+    snap = project_dynamic_scope_snapshot_v1(
+        scope_state="scope_valid",
+        current_scope_ref="scope-btc-1",
+        next_scope_ref="scope-btc-2",
+        reason_codes=("SCOPE_INITIALIZED",),
+        generated_at=SCOPE_PRODUCER_FRESH,
+        effective_at=SCOPE_PRODUCER_FRESH,
+        source_reference="scope://btc-1",
+        evidence_digest="b" * 64,
+    )
+    assert snap.availability is Availability.AVAILABLE
+    assert snap.scope_state == "scope_valid"
+    assert snap.current_scope_ref == "scope-btc-1"
+    assert snap.next_scope_ref == "scope-btc-2"
+    assert snap.provenance.producer_module == SCOPE_PRODUCER_MODULE
+    assert snap.provenance.source_kind == SCOPE_SOURCE_KIND
+    assert snap.provenance.generated_at == SCOPE_PRODUCER_FRESH
+    with pytest.raises(FrozenInstanceError):
+        snap.scope_state = "x"  # type: ignore[misc]
+
+
+def test_bind_dynamic_scope_available_exact_projection() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        dynamic_scope_fields=_scope_fields(next_scope_ref="scope-btc-2"),
+    )
+    scope = slots["dynamic_scope"]
+    assert scope.availability is Availability.AVAILABLE
+    assert scope.scope_state == "scope_valid"
+    assert scope.current_scope_ref == "scope-btc-1"
+    assert scope.next_scope_ref == "scope-btc-2"
+    assert scope.reason_codes == ("SCOPE_INITIALIZED",)
+    assert scope.provenance.producer_module == SCOPE_PRODUCER_MODULE
+    assert scope.provenance.source_kind == SCOPE_SOURCE_KIND
+    assert scope.provenance.evidence_digest == "a" * 64
+    assert scope.provenance.generated_at == SCOPE_PRODUCER_FRESH
+    assert scope.provenance.effective_at == SCOPE_PRODUCER_FRESH
+    assert scope.freshness.observed_at == SCOPE_PRODUCER_FRESH
+    assert scope.freshness.is_stale is False
+
+
+def test_bind_dynamic_scope_null_next_scope_not_invented() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        dynamic_scope_fields=_scope_fields(),
+    )
+    assert slots["dynamic_scope"].next_scope_ref is None
+    slots2 = bind_market_universe_slots(
+        generated_at=STAMP,
+        dynamic_scope_fields=_scope_fields(next_scope_ref=None),
+    )
+    assert slots2["dynamic_scope"].next_scope_ref is None
+
+
+def test_bind_dynamic_scope_invalid_naive_timestamp() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        dynamic_scope_fields=_scope_fields(
+            generated_at=datetime(2026, 7, 23, 16, 30, 0),  # naive
+            effective_at=None,
+        ),
+    )
+    scope = slots["dynamic_scope"]
+    assert scope.availability is Availability.INVALID
+    assert REASON_PRODUCER_TIMESTAMP_INVALID in scope.reason_codes
+    assert scope.scope_state is None
+    assert scope.provenance.generated_at == STAMP  # observation stamp on unavailable only
+
+
+def test_bind_dynamic_scope_stale_retains_lifecycle_facts() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        dynamic_scope_fields=_scope_fields(
+            generated_at=SCOPE_PRODUCER_STALE,
+            effective_at=SCOPE_PRODUCER_STALE,
+            next_scope_ref="scope-next",
+        ),
+    )
+    scope = slots["dynamic_scope"]
+    assert scope.availability is Availability.STALE
+    assert scope.scope_state == "scope_valid"
+    assert scope.current_scope_ref == "scope-btc-1"
+    assert scope.next_scope_ref == "scope-next"
+    assert scope.reason_codes == ("SCOPE_INITIALIZED",)
+    assert scope.freshness.is_stale is True
+    assert scope.freshness.stale_reason == REASON_PRODUCER_DATA_STALE
+    assert scope.provenance.generated_at == SCOPE_PRODUCER_STALE
+
+
+def test_regime_bull_bear_switch_remain_not_bound_for_all_scope_states() -> None:
+    cases = (
+        None,
+        _scope_fields(),
+        _scope_fields(generated_at=SCOPE_PRODUCER_STALE, effective_at=SCOPE_PRODUCER_STALE),
+        _scope_fields(generated_at=datetime(2026, 7, 23, 16, 30, 0)),
+    )
+    for fields in cases:
+        slots = bind_market_universe_slots(
+            generated_at=STAMP,
+            dynamic_scope_fields=fields,
+        )
+        page = MarketDashboardReadServiceV1().load_page_snapshot(
+            generated_at=STAMP,
+            slot_overrides=slots,
+        )
+        ctx = present_market_landscape_v2(page)
+        assert ctx["regime"]["availability"] == "NOT_BOUND"
+        assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
+        assert ctx["switch"]["availability"] == "NOT_BOUND"
+        assert ctx["global_strip"]["regime"] == "NOT_BOUND"
