@@ -159,11 +159,14 @@ def test_btc_not_workflow_truth(client_on: TestClient) -> None:
 
 def test_market_separation(client_off: TestClient) -> None:
     response = client_off.get("/market")
-    assert response.status_code == 404
+    assert response.status_code == 200
     html = response.text.lower()
-    assert "market dashboard" not in html
+    assert "data-market-landscape-v2" in html
     assert "data-market-dashboard-product-surface-v1" not in html
     assert "architecture reset in progress" not in html
+    # Landscape shell must remain distinct from Observability Hub runtime panels.
+    assert "data-observability-status-summary" not in html
+    assert "workflow_dashboard" not in html
 
 
 def test_persisted_readmodel_renders_futures_only_values(

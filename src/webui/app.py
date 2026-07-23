@@ -191,6 +191,10 @@ from .double_play_dashboard_display_json_route_v0 import (
     build_static_dashboard_display_dict,
     router as double_play_dashboard_display_json_v0_router,
 )
+from .market_dashboard_landscape_shell_router_v2 import (
+    router as market_dashboard_landscape_shell_router_v2,
+    set_market_landscape_shell_config,
+)
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -525,6 +529,10 @@ def create_app() -> FastAPI:
 
     # Master V2 Double Play — read-only dashboard display JSON (pure snapshot; no I/O)
     app.include_router(double_play_dashboard_display_json_v0_router)
+
+    # Market Dashboard Landscape V2 — Phase 3 read-only shell (GET /market)
+    set_market_landscape_shell_config(templates)
+    app.include_router(market_dashboard_landscape_shell_router_v2)
 
     # JSON API Alias für /api/ops/workflows
     @app.get("/api/ops/workflows")

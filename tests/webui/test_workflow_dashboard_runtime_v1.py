@@ -203,6 +203,8 @@ def test_futures_operator_consumer_wires_runtime_builder() -> None:
     assert "build_workflow_dashboard_display_context" in source
     assert "workflow_dashboard" in source
     assert "market_surface.py" not in source
+    # Landscape V2 owns GET /market via dedicated shell router — not this runtime.
+    assert "market_dashboard_landscape_shell_router_v2" in source
     assert '@app.get("/market"' not in source
 
 

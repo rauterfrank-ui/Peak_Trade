@@ -177,11 +177,12 @@
   >
     <div class="space-y-1.5">
       <h2 class="text-sm font-semibold text-sky-200/95 tracking-wide uppercase text-[11px]">
-        Market Dashboard — Removed
+        Market Dashboard — Legacy Removed / Landscape V2 Shell
       </h2>
       <p class="text-xs text-sky-100/80 leading-relaxed">
-        The Market Dashboard product (<span class="font-mono">GET /market</span>) was intentionally removed.
-        See <span class="font-mono">docs/webui/MARKET_DASHBOARD_REMOVED.md</span>. No rebuild is authorized here.
+        The legacy Market Dashboard product was intentionally removed.
+        See <span class="font-mono">docs/webui/MARKET_DASHBOARD_REMOVED.md</span>.
+        Landscape V2 restores read-only <span class="font-mono">GET /market</span> as a consumer shell only.
       </p>
     </div>
     <ul class="list-disc pl-5 space-y-1.5 text-xs text-sky-100/90 leading-relaxed">
@@ -195,7 +196,7 @@
       <li>Market display is not Futures readiness.</li>
       <li>Market display is not Paper/Testnet/Live/order readiness.</li>
       <li>Market display is not trading authority.</li>
-      <li>Removed Market Dashboard BTC/USD dummy is not Paper Run Truth.</li>
+      <li>Removed Market Dashboard BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth.</li>
     </ul>
     <div
       class="rounded-lg border border-slate-800/50 bg-slate-950/30 px-3 py-3 space-y-2"
@@ -205,7 +206,8 @@
         Route status
       </h3>
       <p class="text-xs text-slate-400 m-0 font-mono">
-        GET /market — intentionally absent (normal not-found). No alias, redirect, or placeholder.
+        GET /market — Landscape V2 Phase 3 read-only shell (no write/order/runtime controls).
+        Legacy aliases remain absent.
       </p>
     </div>
   </section>
