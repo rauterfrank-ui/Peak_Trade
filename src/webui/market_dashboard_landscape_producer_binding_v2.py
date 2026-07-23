@@ -1,7 +1,7 @@
-"""Phase 4.1 read-only producer binding for Market Landscape V2.
+"""Phase 4.1 + 4.2 read-only producer binding for Market Landscape V2.
 
-Binds market_instrument and universe_ranking only.
-Dynamic scope / regime / switch remain unbound (Phase 4.2).
+Binds market_instrument, universe_ranking, and dynamic_scope lifecycle identity.
+Regime / bull-bear / switch remain unbound (Phase 4.2 exclusions).
 Lives outside market_dashboard_landscape_v2 so that package stays free of
 trading/webui producer imports (architecture guard).
 
@@ -9,8 +9,9 @@ Fail-closed:
 - Wired slots without durable producer output → MISSING_SOURCE / INVALID
 - Producer timestamps preserved; page-assembly time is observation-only
 - Aged producer snapshots → STALE (never silently refreshed)
-- Never fabricate OHLCV, ranking, eligibility, or selected instrument
-- No decision / Double Play / risk / safety / execution / scope binding
+- Never fabricate OHLCV, ranking, eligibility, selected instrument, or scope
+- Never call scope initializers, trailing-scope runtime owners, or switch owners
+- No decision / Double Play / risk / safety / execution binding
 """
 
 from __future__ import annotations
@@ -23,10 +24,12 @@ from typing import Any, Mapping
 
 from .market_dashboard_landscape_v2.availability import Availability
 from .market_dashboard_landscape_v2.projections import (
+    project_dynamic_scope_snapshot_v1,
     project_market_instrument_snapshot_v1,
     project_universe_ranking_snapshot_v1,
 )
 from .market_dashboard_landscape_v2.unavailable import (
+    unavailable_dynamic_scope,
     unavailable_market_instrument,
     unavailable_universe_ranking,
 )
@@ -40,11 +43,13 @@ from .workflow_dashboard_readmodel_v1.universe_selection_reader_v1 import (
 # Reuse the existing workflow-dashboard archive env — no second archive owner.
 ENV_ARCHIVE_ROOT = "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT"
 
-# F2 consuming-surface max_allowed_staleness_seconds for Landscape Phase 4.1.
+# F2 consuming-surface max_allowed_staleness_seconds for Landscape Phase 4.1/4.2.
 # Declared here as the dashboard consumer policy; never invent freshness via now().
 LANDSCAPE_PHASE41_MAX_AGE_SECONDS = 86_400
+LANDSCAPE_PHASE42_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 
 REASON_MARKET_CONTEXT_NOT_PERSISTED = "CANONICAL_MARKET_CONTEXT_NOT_PERSISTED_FOR_DASHBOARD"
+REASON_SCOPE_NOT_PERSISTED = "CANONICAL_SCOPE_SNAPSHOT_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_UNIVERSE_ABSENT = "UNIVERSE_SELECTION_READMODEL_ABSENT"
 REASON_ARCHIVE_ROOT_UNSET = "UNIVERSE_ARCHIVE_ROOT_UNSET"
 REASON_SELECTED_FORBIDDEN_SYMBOL = "SELECTED_INSTRUMENT_FORBIDDEN_BTC_USD_OR_SPOT_DUMMY"
@@ -55,10 +60,14 @@ REASON_PRODUCER_TIMESTAMP_MISSING = "PRODUCER_TIMESTAMP_MISSING"
 REASON_PRODUCER_TIMESTAMP_INVALID = "PRODUCER_TIMESTAMP_INVALID"
 REASON_PRODUCER_DATA_STALE = "PRODUCER_DATA_EXCEEDED_LANDSCAPE_MAX_AGE"
 
+SCOPE_PRODUCER_MODULE = "trading.master_v2.canonical_scope_initialization_v1"
+SCOPE_SOURCE_KIND = "canonical_scope_snapshot"
+
 PHASE_4_1_BOUND_SLOTS: tuple[str, ...] = (
     "market_instrument",
     "universe_ranking",
 )
+PHASE_4_2_BOUND_SLOTS: tuple[str, ...] = ("dynamic_scope",)
 
 _ISO8601_UTC_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|\+00:00)$")
 
@@ -367,14 +376,155 @@ def _market_from_universe_selected(
     )
 
 
+def _enum_or_str(value: Any) -> str:
+    if hasattr(value, "value"):
+        return str(value.value)
+    return str(value)
+
+
+def _resolve_injected_aware_timestamp(
+    raw: Any,
+) -> tuple[datetime | None, str | None]:
+    """Return (aware_utc_dt, error_reason). None+None means absent."""
+    if raw is None:
+        return None, None
+    if isinstance(raw, datetime):
+        if raw.tzinfo is None:
+            return None, REASON_PRODUCER_TIMESTAMP_INVALID
+        return raw.astimezone(timezone.utc), None
+    if isinstance(raw, str):
+        try:
+            parsed = parse_producer_utc_timestamp(raw)
+        except ValueError:
+            return None, REASON_PRODUCER_TIMESTAMP_INVALID
+        return parsed, None
+    return None, REASON_PRODUCER_TIMESTAMP_INVALID
+
+
+def _bind_dynamic_scope_lifecycle(
+    *,
+    as_of: datetime,
+    git_sha: str | None,
+    dynamic_scope_fields: Mapping[str, Any] | None,
+) -> Any:
+    """Project injected CanonicalScopeSnapshotV1-compatible lifecycle fields.
+
+    No durable dashboard scope readmodel. Without injection → MISSING_SOURCE.
+    Never runs canonical scope initialization or switch-transition owners.
+    """
+    if dynamic_scope_fields is None:
+        return unavailable_dynamic_scope(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_SCOPE_NOT_PERSISTED,
+        )
+
+    if "scope_state" in dynamic_scope_fields and dynamic_scope_fields["scope_state"] is not None:
+        scope_state = _enum_or_str(dynamic_scope_fields["scope_state"])
+    elif (
+        "lifecycle_state" in dynamic_scope_fields
+        and dynamic_scope_fields["lifecycle_state"] is not None
+    ):
+        scope_state = _enum_or_str(dynamic_scope_fields["lifecycle_state"])
+    else:
+        raise KeyError(
+            "dynamic_scope_fields missing required keys: ['scope_state'|'lifecycle_state']"
+        )
+
+    if (
+        "current_scope_ref" in dynamic_scope_fields
+        and dynamic_scope_fields["current_scope_ref"] is not None
+    ):
+        current_scope_ref = str(dynamic_scope_fields["current_scope_ref"])
+    elif "scope_id" in dynamic_scope_fields and dynamic_scope_fields["scope_id"] is not None:
+        current_scope_ref = str(dynamic_scope_fields["scope_id"])
+    else:
+        raise KeyError(
+            "dynamic_scope_fields missing required keys: ['current_scope_ref'|'scope_id']"
+        )
+
+    next_scope_ref: str | None = None
+    if "next_scope_ref" in dynamic_scope_fields:
+        raw_next = dynamic_scope_fields["next_scope_ref"]
+        next_scope_ref = None if raw_next is None else str(raw_next)
+
+    generated_at_raw = dynamic_scope_fields.get("generated_at")
+    producer_at, gen_error = _resolve_injected_aware_timestamp(generated_at_raw)
+    if gen_error is not None:
+        return unavailable_dynamic_scope(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=gen_error,
+        )
+    if producer_at is None:
+        return unavailable_dynamic_scope(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_MISSING,
+        )
+
+    effective_at: datetime | None = None
+    if "effective_at" in dynamic_scope_fields:
+        effective_at, eff_error = _resolve_injected_aware_timestamp(
+            dynamic_scope_fields.get("effective_at")
+        )
+        if eff_error is not None:
+            return unavailable_dynamic_scope(
+                availability=Availability.INVALID,
+                generated_at=as_of,
+                reason=eff_error,
+            )
+
+    try:
+        availability, is_stale, stale_reason = classify_producer_freshness(
+            producer_at=producer_at,
+            as_of=as_of,
+            max_age_seconds=LANDSCAPE_PHASE42_MAX_AGE_SECONDS,
+        )
+    except ValueError:
+        return unavailable_dynamic_scope(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_INVALID,
+        )
+
+    reason_codes = tuple(str(code) for code in dynamic_scope_fields.get("reason_codes", ()) or ())
+    evidence_digest = dynamic_scope_fields.get("evidence_digest")
+    if evidence_digest is None:
+        evidence_digest = dynamic_scope_fields.get("semantic_digest")
+
+    return project_dynamic_scope_snapshot_v1(
+        scope_state=scope_state,
+        current_scope_ref=current_scope_ref,
+        next_scope_ref=next_scope_ref,
+        reason_codes=reason_codes,
+        generated_at=producer_at,
+        effective_at=effective_at,
+        source_reference=(
+            None
+            if dynamic_scope_fields.get("source_reference") is None
+            else str(dynamic_scope_fields.get("source_reference"))
+        ),
+        evidence_digest=None if evidence_digest is None else str(evidence_digest),
+        git_sha=git_sha,
+        producer_module=SCOPE_PRODUCER_MODULE,
+        source_kind=SCOPE_SOURCE_KIND,
+        availability=availability,
+        max_age_seconds=LANDSCAPE_PHASE42_MAX_AGE_SECONDS,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+
+
 def bind_market_universe_slots(
     *,
     generated_at: datetime,
     archive_root: str | Path | None = None,
     git_sha: str | None = None,
     market_instrument_fields: Mapping[str, Any] | None = None,
+    dynamic_scope_fields: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Return Phase 4.1 slot overrides (market_instrument + universe_ranking).
+    """Return Phase 4.1+4.2 slot overrides (market, universe, dynamic_scope).
 
     ``generated_at`` is the dashboard observation/as-of clock only. It must never
     overwrite producer provenance timestamps or fabricate freshness.
@@ -382,6 +532,10 @@ def bind_market_universe_slots(
     market_instrument_fields accepts already-computed CanonicalMarketContext
     field dicts for tests and future durable loaders. Those fields must carry
     producer ``generated_at`` and/or ``effective_at``.
+
+    dynamic_scope_fields accepts already-computed CanonicalScopeSnapshotV1-
+    compatible lifecycle identity fields plus producer wall-clock timestamps.
+    Without injection, dynamic_scope is MISSING_SOURCE (no durable readmodel).
     """
     if generated_at.tzinfo is None:
         raise ValueError("generated_at must be timezone-aware")
@@ -392,6 +546,11 @@ def bind_market_universe_slots(
         as_of=as_of,
         archive_root=root,
         git_sha=git_sha,
+    )
+    scope = _bind_dynamic_scope_lifecycle(
+        as_of=as_of,
+        git_sha=git_sha,
+        dynamic_scope_fields=dynamic_scope_fields,
     )
 
     if market_instrument_fields is not None:
@@ -525,4 +684,5 @@ def bind_market_universe_slots(
     return {
         "market_instrument": market,
         "universe_ranking": universe,
+        "dynamic_scope": scope,
     }

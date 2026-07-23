@@ -4,7 +4,7 @@
 {% block main_class %}mdl-v2-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-1-market-universe-binding" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-2-dynamic-scope-lifecycle-binding" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 {% endblock %}
@@ -23,7 +23,7 @@
   data-market-dashboard-authority="false"
   data-live-authorized="false"
   data-orders="false"
-  data-phase="PHASE_4_1_MARKET_UNIVERSE_BINDING"
+  data-phase="PHASE_4_2_DYNAMIC_SCOPE_LIFECYCLE_BINDING"
   data-runtime-bridge="{{ runtime_bridge_display }}"
   aria-label="Market Dashboard Landscape V2 read-only workspace"
 >
@@ -102,9 +102,34 @@
       <aside class="mdl-v2-rail mdl-v2-rail--right" data-mdl-region="SYSTEM_CONTEXT_RAIL" aria-label="System context">
         <h2>Context</h2>
         <dl class="mdl-v2-kv">
-          <div><dt>Scope</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
-          <div><dt>Regime</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
-          <div><dt>Switch</dt><dd data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd></div>
+          <div>
+            <dt>Lifecycle</dt>
+            <dd data-mdl-field="scope_lifecycle" data-availability="{{ scope.availability }}">{{ scope.lifecycle_display }}</dd>
+          </div>
+          <div>
+            <dt>Current Scope</dt>
+            <dd data-mdl-field="current_scope_ref" data-availability="{{ scope.availability }}">{{ scope.current_scope_ref_display }}</dd>
+          </div>
+          <div>
+            <dt>Next Scope</dt>
+            <dd data-mdl-field="next_scope_ref" data-availability="{{ scope.availability }}">{{ scope.next_scope_ref_display }}</dd>
+          </div>
+          <div>
+            <dt>Scope Freshness</dt>
+            <dd data-mdl-field="scope_freshness" data-availability="{{ scope.availability }}">{{ scope.availability_label }}</dd>
+          </div>
+          <div>
+            <dt>Regime</dt>
+            <dd data-mdl-field="regime" data-availability="{{ regime.availability }}">{{ regime.availability_label }}</dd>
+          </div>
+          <div>
+            <dt>Bull/Bear</dt>
+            <dd data-mdl-field="bull_bear" data-availability="{{ bull_bear.availability }}">{{ bull_bear.availability_label }}</dd>
+          </div>
+          <div>
+            <dt>Switch</dt>
+            <dd data-mdl-field="switch" data-availability="{{ switch.availability }}">{{ switch.availability_label }}</dd>
+          </div>
           <div><dt>Source Health</dt><dd data-availability="{{ source_health.availability }}">{{ source_health.availability }}</dd></div>
         </dl>
       </aside>

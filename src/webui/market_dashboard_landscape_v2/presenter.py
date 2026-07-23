@@ -27,11 +27,23 @@ MISSING_STATE_REASON_HINTS = (
     "INVALID_PROVENANCE",
 )
 
+_NOT_BOUND_VIEW: dict[str, Any] = {
+    "availability": Availability.NOT_BOUND.value,
+    "availability_label": AVAILABILITY_LABELS[Availability.NOT_BOUND],
+}
+
 
 def _display_value(raw: Any, availability: Availability) -> str:
     if availability is not Availability.AVAILABLE or raw is None:
         return AVAILABILITY_LABELS[availability]
     return str(raw)
+
+
+def _lifecycle_fact_display(raw: Any, availability: Availability) -> str:
+    """Retain producer lifecycle facts for AVAILABLE and STALE; never invent."""
+    if availability in (Availability.AVAILABLE, Availability.STALE) and raw is not None:
+        return str(raw)
+    return AVAILABILITY_LABELS[availability]
 
 
 def _slot_view(snap: _ProjectionBase) -> dict[str, Any]:
@@ -41,6 +53,7 @@ def _slot_view(snap: _ProjectionBase) -> dict[str, Any]:
         "availability": availability.value,
         "availability_label": AVAILABILITY_LABELS[availability],
         "is_available": availability is Availability.AVAILABLE,
+        "is_stale": availability is Availability.STALE,
         "reason_codes": list(getattr(snap, "reason_codes", ()) or ()),
         "blockers": list(getattr(snap, "blockers", ()) or ()),
         "provenance": payload.get("provenance"),
@@ -124,6 +137,20 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         )
     )
 
+    scope_lifecycle_display = _lifecycle_fact_display(
+        page.dynamic_scope.scope_state, page.dynamic_scope.availability
+    )
+    current_scope_ref_display = _lifecycle_fact_display(
+        page.dynamic_scope.current_scope_ref, page.dynamic_scope.availability
+    )
+    if page.dynamic_scope.availability in (Availability.AVAILABLE, Availability.STALE):
+        if page.dynamic_scope.next_scope_ref is None:
+            next_scope_ref_display = "—"
+        else:
+            next_scope_ref_display = str(page.dynamic_scope.next_scope_ref)
+    else:
+        next_scope_ref_display = AVAILABILITY_LABELS[page.dynamic_scope.availability]
+
     return {
         "page_schema_id": page.schema_id,
         "generated_at": page.generated_at.isoformat().replace("+00:00", "Z"),
@@ -131,16 +158,15 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "runtime_bridge_display": page.runtime_bridge_display,
         "shell_authority_class": page.shell_authority_class,
         "consumer_role": "read_only_consumer",
-        "phase": "PHASE_4_1_MARKET_UNIVERSE_BINDING",
+        "phase": "PHASE_4_2_DYNAMIC_SCOPE_LIFECYCLE_BINDING",
         "global_strip": {
             "instrument": instrument_display,
             "venue": _display_value(
                 page.market_instrument.venue, page.market_instrument.availability
             ),
-            "scope": _display_value(
-                page.dynamic_scope.scope_state, page.dynamic_scope.availability
-            ),
-            "regime": AVAILABILITY_LABELS[page.dynamic_scope.availability],
+            "scope": scope_lifecycle_display,
+            # Regime / bull-bear / switch stay NOT_BOUND — never mirror scope availability.
+            "regime": AVAILABILITY_LABELS[Availability.NOT_BOUND],
             "runtime_state": page.runtime_bridge_display,
             "runtime_state_class": page.shell_authority_class,
             "freshness": health.freshness.to_json_dict(),
@@ -164,7 +190,15 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "rank_label": ranking_label,
             "selected_instrument_id": selected_instrument_id,
         },
-        "scope": scope,
+        "scope": {
+            **scope,
+            "lifecycle_display": scope_lifecycle_display,
+            "current_scope_ref_display": current_scope_ref_display,
+            "next_scope_ref_display": next_scope_ref_display,
+        },
+        "regime": dict(_NOT_BOUND_VIEW),
+        "bull_bear": dict(_NOT_BOUND_VIEW),
+        "switch": dict(_NOT_BOUND_VIEW),
         "decision": decision,
         "double_play": double_play,
         "risk": risk,
@@ -202,6 +236,9 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
                 "market_instrument",
                 "universe_ranking",
             ],
+            "phase_4_2_bound_slots": [
+                "dynamic_scope",
+            ],
             "slots": {
                 "market_instrument": market,
                 "universe_ranking": universe,
@@ -226,6 +263,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             "write_endpoints": False,
             "dashboard_authority": False,
             "phase_4_1_binding_active": True,
+            "phase_4_2_binding_active": True,
             "phase_4_full_pass": False,
             "phase_4_authorized": True,
             "operator_skeleton_approval": "PENDING",

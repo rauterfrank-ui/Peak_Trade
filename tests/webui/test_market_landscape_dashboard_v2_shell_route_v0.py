@@ -53,7 +53,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-market-landscape-v2="true"' in html
     for landmark in LANDMARKS:
         assert landmark in html, landmark
-    assert "PHASE_4_1_MARKET_UNIVERSE_BINDING" in html
+    assert "PHASE_4_2_DYNAMIC_SCOPE_LIFECYCLE_BINDING" in html
     assert "BOUND_NOT_ACTIVATED" in html
     assert "no ohlcv fabricated" in html.lower()
     assert "BTC/USD" not in html
@@ -62,8 +62,14 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert "mdl-v2-ops" in html
     assert 'data-mdl-field="selected_instrument"' in html
     assert 'data-mdl-field="universe_membership"' in html
-    # Decision / scope remain unbound in Phase 4.1
+    assert 'data-mdl-field="scope_lifecycle"' in html
+    assert 'data-mdl-field="current_scope_ref"' in html
+    assert 'data-mdl-field="regime"' in html
+    assert 'data-mdl-field="bull_bear"' in html
+    assert 'data-mdl-field="switch"' in html
+    # Decision remains unbound; Regime/Bull-Bear/Switch stay NOT_BOUND
     assert "NOT_BOUND" in html
+    assert "MISSING_SOURCE" in html
     assert "OPERATOR_SKELETON_APPROVAL" not in html
 
 
@@ -117,13 +123,17 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     assert ctx["product_flags"]["live_authorized"] is False
     assert ctx["product_flags"]["write_endpoints"] is False
     assert ctx["product_flags"]["phase_4_1_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_2_binding_active"] is True
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["decision"]["availability_label"] == "NOT_BOUND"
     assert ctx["global_strip"]["instrument"] == "NOT_BOUND"
+    assert ctx["regime"]["availability"] == "NOT_BOUND"
+    assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
+    assert ctx["switch"]["availability"] == "NOT_BOUND"
     # Must not invent HOLD/FLAT
     assert ctx["decision"]["fields"]["decision"] is None
     assert ctx["decision"]["fields"]["direction"] is None
-    assert ctx["phase"] == "PHASE_4_1_MARKET_UNIVERSE_BINDING"
+    assert ctx["phase"] == "PHASE_4_2_DYNAMIC_SCOPE_LIFECYCLE_BINDING"
 
 
 def test_shell_assets_exist() -> None:

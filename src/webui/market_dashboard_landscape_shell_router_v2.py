@@ -1,9 +1,10 @@
-"""GET /market Landscape Shell router (Phase 4.1 market/universe binding).
+"""GET /market Landscape Shell router (Phase 4.2 dynamic-scope lifecycle binding).
 
 Read-only SSR surface. No POST/PUT/PATCH/DELETE. No command endpoints.
 No execution / order / runtime-activation imports.
 Phase 4.1 binds market_instrument / universe_ranking fail-closed.
-Dynamic scope and later Phase 4 slots remain unbound.
+Phase 4.2 binds dynamic_scope lifecycle identity fail-closed (injection only).
+Regime / bull-bear / switch and later Phase 4 slots remain unbound.
 """
 
 from __future__ import annotations
@@ -40,16 +41,17 @@ def get_templates() -> Jinja2Templates:
 
 @router.get("/market", response_class=HTMLResponse, name="market_landscape_v2")
 async def market_landscape_dashboard(request: Request) -> Any:
-    """Read-only Landscape surface with Phase 4.1 market/universe binding."""
+    """Read-only Landscape surface with Phase 4.1+4.2 producer binding."""
     # Lazy import avoids circular import during create_app().
     from .app import get_project_status
 
     generated_at = datetime.now(timezone.utc)
-    phase41_slots = bind_market_universe_slots(generated_at=generated_at, git_sha=None)
+    # Observation clock only — never used as producer freshness inside binding.
+    phase_slots = bind_market_universe_slots(generated_at=generated_at, git_sha=None)
     page = _READ_SERVICE.load_page_snapshot(
         generated_at=generated_at,
         git_sha=None,
-        slot_overrides=phase41_slots,
+        slot_overrides=phase_slots,
     )
     context = present_market_landscape_v2(page)
     return get_templates().TemplateResponse(

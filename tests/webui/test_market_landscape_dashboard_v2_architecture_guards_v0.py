@@ -219,10 +219,17 @@ def test_projection_helpers_are_field_copy_only() -> None:
     assert "project_canonical_decision_snapshot_v1" in proj
     assert "project_market_instrument_snapshot_v1" in proj
     assert "project_universe_ranking_snapshot_v1" in proj
-    assert "project_dynamic_scope_snapshot_v1" not in proj
+    assert "project_dynamic_scope_snapshot_v1" in proj
     assert "Forbidden" in proj
     tree = ast.parse(proj)
+    # Guard against executable references, not documentation mentions.
     for node in ast.walk(tree):
+        if isinstance(node, ast.Name):
+            assert node.id not in {"transition_state", "RuntimeScopeState"}
+        if isinstance(node, ast.Attribute):
+            assert node.attr not in {"transition_state", "RuntimeScopeState"}
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            assert node.func.id != "initialize_canonical_scope"
         if isinstance(node, ast.ImportFrom):
             assert node.level > 0 or (node.module or "").split(".", 1)[0] in {
                 "__future__",
@@ -232,6 +239,7 @@ def test_projection_helpers_are_field_copy_only() -> None:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 assert alias.name.split(".", 1)[0] in {"__future__", "datetime", "typing"}
+    assert "from trading.master_v2.double_play_state" not in proj
     for module, level in _import_modules(proj_path):
         if level > 0:
             continue
@@ -245,7 +253,16 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
     assert PRODUCER_BINDING.is_file()
     text = PRODUCER_BINDING.read_text(encoding="utf-8")
     assert "bind_market_universe_slots" in text
-    assert "dynamic_scope" not in text or "Phase 4.2" in text
+    assert "Phase 4.2" in text
+    assert "project_dynamic_scope_snapshot_v1" in text
+    tree = ast.parse(text)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name):
+            assert node.id not in {"transition_state", "RuntimeScopeState"}
+        if isinstance(node, ast.Attribute):
+            assert node.attr not in {"transition_state", "RuntimeScopeState"}
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            assert node.func.id != "initialize_canonical_scope"
     assert "@router.post" not in text
     assert "place_order" not in text
     assert "activate_runtime" not in text
@@ -256,20 +273,36 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
             continue
         for prefix in FORBIDDEN_IMPORT_PREFIXES:
             assert not (module == prefix or module.startswith(prefix + ".")), module
+        assert "double_play_state" not in module
+        assert "canonical_scope_initialization" not in module
     # Landscape package must not import the binding module (keeps contracts pure).
     for path in _iter_py_files(LANDSCAPE_PKG):
         for module, level in _import_modules(path):
             assert "market_dashboard_landscape_producer_binding_v2" not in module
 
 
-def test_shell_router_wires_phase41_binding_only() -> None:
+def test_shell_router_wires_phase41_and_phase42_binding() -> None:
     text = SHELL_ROUTER.read_text(encoding="utf-8")
     assert "bind_market_universe_slots" in text
     assert "bind_market_universe_scope_slots" not in text
-    assert "slot_overrides=phase41_slots" in text or "slot_overrides" in text
+    assert "slot_overrides" in text
+    assert "Phase 4.2" in text or "4.2" in text
+    tree = ast.parse(text)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name):
+            assert node.id not in {"transition_state", "RuntimeScopeState"}
+        if isinstance(node, ast.Attribute):
+            assert node.attr not in {"transition_state", "RuntimeScopeState"}
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            assert node.func.id != "initialize_canonical_scope"
     assert "@router.post" not in text
     assert "workflow_dashboard_runtime_v1" not in text
     assert "execution_watch_api" not in text
+    for module, level in _import_modules(SHELL_ROUTER):
+        if level > 0:
+            continue
+        assert "canonical_scope_initialization" not in module
+        assert "double_play_state" not in module
 
 
 def test_shell_router_forbidden_import_count_zero() -> None:
