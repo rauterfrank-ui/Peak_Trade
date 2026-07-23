@@ -5,7 +5,7 @@ Status: `DEFINITION_ONLY_PROGRAM_OPEN`
 - Strategy: `VOLATILITY_TERM_STRUCTURE_REVERSION_V1`
 - Hypothesis: `VOLATILITY_TERM_STRUCTURE_REVERSION_NON_BITCOIN_PERPETUALS_V1`
 - Lane backlog: `OPEN_BACKLOG`
-- Slice: definition-only preregistration after post-VEFCF CREATE_SUCCESSOR
+- Slice: strategy implementation present; Development evaluation unauthorized
 - VEFCF terminal `DEVELOPMENT_FAIL` (slot consumed; retry forbidden)
 - No Development evaluation executed for VTSR
 - Holdout untouched; economic/promotion/runtime/LIVE/orders closed
@@ -18,6 +18,6 @@ from all prior vol-regime breakout/continuation identities.
 
 ## Next step
 
-Separate operator GO for VTSR strategy implementation, then Development evaluation.
+Separate operator GO for bounded Development evaluation execution.
 
 docs_token: DOCS_TOKEN_VOLATILITY_REGIME_RESEARCH_PROGRAM_V1
