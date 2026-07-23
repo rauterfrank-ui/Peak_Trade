@@ -468,7 +468,7 @@ Die neue Surface vollständig spezifizieren, bevor produktive UI gebaut wird.
 | Runtime State | Runtime Bridge State | canonical status | `MISSING` | Header |
 | Kill Switch | Safety Authority | veto authority | `MISSING` | Header/Risk |
 | Economic Gate | Economic Evidence | promotion-only | `MISSING` | Secondary |
-| Autonomy Stage | Autonomy/Governance State | canonical status | `NOT_BOUND` | Secondary |
+| Autonomy Stage | NONE (OPTION_D; docs-only ladder; no productive aggregate) | non-source / NOT_BOUND | `NOT_BOUND` | Secondary |
 
 ### Gate
 
@@ -765,12 +765,63 @@ Canonical owner registry note:
 `src/webui/market_dashboard_landscape_v2/owner_registry.py` slot
 `diagnostics_summary` → `reuse_status=NOT_BOUND`, `owner=UNRESOLVED`.
 
-#### 4.7 Autonomy State
+#### 4.7 Autonomy State — Architecture Ratification Closeout (RATIFIED OPTION D)
 
-- aktuelle Autonomy-Stufe
-- erfüllte/nicht erfüllte Gates
-- nächste formal zulässige Stufe
-- `future-only` klar von `active` trennen
+```text
+PHASE=PHASE_4_7B_AUTONOMY_OPTION_D_CLOSEOUT
+PHASE_4_7A_RATIFIED_OPTION_D=true
+RATIFY_OPTION_D_NO_CANONICAL_AGGREGATE_REQUIRED=true
+AUTONOMY_STAGE_BINDING_STATUS=NOT_BOUND
+AUTONOMY_AGGREGATE_REQUIRED=false
+AUTONOMY_BINDING_COMPLETE_BY_EXPLICIT_NOT_BOUND=true
+SOLE_AUTONOMY_OWNER=NONE
+SOLE_AUTONOMY_PRODUCER=NONE
+SOLE_AUTONOMY_CONTRACT=NONE
+SOURCE_TYPE=DOCS_ONLY
+AUTHORITY_EFFECT=NONE
+STAGE_LADDER_PRODUCTIVE_OR_DOCS_ONLY=DOCS_ONLY
+CROSS_SOURCE_SYNTHESIS_AUTHORIZED=false
+WORKFLOW_DASHBOARD_READMODEL_V1=NON_SOURCE
+DASHBOARD_CAN_BE_OWNER=false
+BINDING_AUTHORIZED=false
+PRODUCER_CREATION_AUTHORIZED=false
+CONTRACT_CREATION_AUTHORIZED=false
+ADAPTER_CREATION_AUTHORIZED=false
+DASHBOARD_INJECTION_AUTHORIZED=false
+```
+
+**D_STATUS — RATIFIED NO CANONICAL AGGREGATE; KEEP NOT_BOUND**
+
+- `autonomy_stage` remains explicitly `NOT_BOUND`.
+- Phase 4.7 does **not** require a canonical unified Autonomy-State aggregate.
+- Autonomy stages 0–7 remain **docs-only informative review vocabulary**
+  (roadmap §3.1 / Runtime Lane Taxonomy §12). They are **not** productive
+  operational state.
+- Autonomy stage is **not** runtime bridge status (`BOUND_NOT_ACTIVATED` /
+  `CANONICAL_RUNTIME_ENTRYPOINT_STATUS` remain a separate Runtime State fact).
+- Autonomy stage is **not** promotion eligibility, scheduler status, worker/
+  job status, safety veto, capital authorization, operator-GO, or live
+  authorization.
+- Separate canonical facts may be displayed only through their own
+  independently ratified source families.
+- No cross-source synthesis into an Autonomy state is allowed.
+- `WorkflowDashboardReadModelV1` remains `NON_SOURCE`.
+- The Market Dashboard cannot own or infer Autonomy state.
+- No Autonomy producer, contract, adapter, projection helper, or dashboard
+  injection is authorized by this closeout.
+
+**Product intent (unchanged, not binding under OPTION_D)**
+
+Operators may still *want* a future coherent Autonomy readout. Under OPTION_D
+that intent stays aspirational / `NOT_BOUND` until a separate, explicitly
+authorized architecture decision supersedes this closeout. Do **not** calculate
+a next permissible stage, synthesize gate results into one ladder state, or treat
+Runtime Bridge / Pre-Activation / Promotion / Scheduler / Worker / Operator-GO
+as inputs to one Autonomy aggregate.
+
+Canonical owner registry note:
+`src/webui/market_dashboard_landscape_v2/owner_registry.py` slot
+`autonomy_stage` → `reuse_status=NOT_BOUND`, `owner=NONE`, `source/contract=NONE`.
 
 ### Gate pro Bindung
 
@@ -1454,7 +1505,7 @@ NOT_BOUND_SOURCES=[
   "safety_authority",
   "execution_reconciliation",
   "economic_summary",
-  "autonomy_stage producer binding",
+  "autonomy_stage (OPTION_D explicit NOT_BOUND; no producer/contract)",
   "diagnostics_summary",
   "event_decision_timeline"
 ]
@@ -1462,7 +1513,7 @@ MISSING_READ_PROJECTIONS=[
   "market/universe/scope UI binding (PR 3 / Phase 4.1-4.2)",
   "decision/DP UI binding (PR 4 / Phase 4.3)",
   "safety/risk/execution UI binding (PR 5 / Phase 4.4-4.5)",
-  "economic/diagnostics/autonomy UI binding (PR 6 / Phase 4.6-4.7)"
+  "economic/diagnostics UI binding (PR 6 / Phase 4.6); autonomy remains OPTION_D NOT_BOUND"
 ]
 MISSING_PRODUCERS=[]
 KNOWN_INTENTIONAL_LOCKS=[
@@ -1471,7 +1522,8 @@ KNOWN_INTENTIONAL_LOCKS=[
   "Strategy Signal Selection D / Slice 2 blocked",
   "Ops Double Play projection-only",
   "Phase 4 producer binding not authorized in this PR",
-  "Phase 4.6C diagnostics_summary OPTION_A KEEP_NOT_BOUND (owner UNRESOLVED; WorkflowDashboardReadModelV1 NON_SOURCE)"
+  "Phase 4.6C diagnostics_summary OPTION_A KEEP_NOT_BOUND (owner UNRESOLVED; WorkflowDashboardReadModelV1 NON_SOURCE)",
+  "Phase 4.7A/4.7B autonomy_stage OPTION_D KEEP_NOT_BOUND (aggregate not required; owner/producer/contract=NONE; runtime bridge status separate NON_SOURCE)"
 ]
 
 PHASE_PR_MAPPING=[
