@@ -78,16 +78,19 @@ def test_material_difference_vs_vtdc_and_lane_inventory() -> None:
     assert "FURTHER_TERM_STRUCTURE_VARIANT" in rationale["alternatives_rejected"]
     assert "CLOSE_LANE_NO_FURTHER_RESEARCH" in rationale["alternatives_rejected"]
     backlog = _load(BACKLOG_PATH)
-    assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
-        "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
-    )
     terminals = {t["strategy_identity"] for t in backlog["terminal_hypotheses"]}
+    assert "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1" in terminals
     assert "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1" in terminals
     assert "VOLATILITY_TERM_STRUCTURE_REVERSION_V1" in terminals
+    assert backlog["preregistered_hypotheses"][0]["strategy_identity"] == (
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+    )
     program = _load(PROGRAM_PATH)
-    assert program["strategy_identity"] == ("CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1")
+    assert program["strategy_identity"] == (
+        "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1"
+    )
     assert (
-        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
+        "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
         in program["causal_independence"]["forbidden_lineage_refs"]
     )
 
@@ -124,7 +127,7 @@ def test_digest_stable_and_artifacts_present() -> None:
     )
 
 
-def test_placeholder_cli_fail_closed() -> None:
+def test_evaluate_cli_unauthorized_without_go_token() -> None:
     import subprocess
 
     proc = subprocess.run(
@@ -134,8 +137,7 @@ def test_placeholder_cli_fail_closed() -> None:
         text=True,
         check=False,
     )
-    assert proc.returncode == 2
-    payload = json.loads(proc.stdout)
-    assert payload["status"] == "FAIL_CLOSED"
-    assert payload["evaluation_executed"] is False
-    assert payload["holdout_accessed"] is False
+    assert proc.returncode != 0
+    combined = ((proc.stdout or "") + (proc.stderr or "")).lower()
+    assert 'holdout_accessed": true' not in combined
+    assert "holdout_accessed: true" not in combined

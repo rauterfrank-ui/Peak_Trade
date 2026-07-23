@@ -1,0 +1,13 @@
+{
+  "artifact_kind": "preregister_cross_sectional_low_realized_volatility_continuation_hypothesis_split_manifest",
+  "dataset_loaded": false,
+  "files": [
+    "README.md",
+    "safety_attestation.md",
+    "summary.json",
+    "timing_proof.txt",
+    "split_manifest.json"
+  ],
+  "holdout_accessed": false,
+  "schema_version": "preregister_cross_sectional_low_realized_volatility_continuation_hypothesis_split_manifest.v1"
+}

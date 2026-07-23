@@ -478,6 +478,19 @@
         "tests/research/test_cross_sectional_high_realized_volatility_fade_v1_strategy_implementation_v1.py"
       ]
     },
+    "CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only CREATE_SUCCESSOR after CSHRVF DEVELOPMENT_FAIL; CSLRVC cross-sectional low RV-level rank continuation; measurement contract frozen; no evaluation/holdout/runtime/orders; CSHRVF/VTDC/VTSR/VEFCF/VEPC/CS-momentum reopen forbidden.",
+      "path_prefixes": [
+        "config/research/cross_sectional_low_realized_volatility_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "config/research/cross_sectional_low_realized_volatility_continuation_v1_development_evaluation_entry_point_binding_v1.json",
+        "src/research/cross_sectional_low_realized_volatility_continuation_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_cross_sectional_low_realized_volatility_continuation_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "docs/evidence/preregister_cross_sectional_low_realized_volatility_continuation_hypothesis_v1/",
+        "scripts/research/run_evaluate_cross_sectional_low_realized_volatility_continuation_development_v1.py"
+      ]
+    },
     "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1": {
       "note": "DEVELOPMENT evaluation entry point/owner for CS relative-strength momentum v1: executable evaluate path under fail-closed authorization, CLI preflight/dry-validate, digests/dataset/time-segment/rebalance-observation/evidence-registry/admission gates, wiring into canonical single-slot backtest metrics owners. Development evaluation authorized on HEAD; no runner start/run-slot consumption without separate execution GO; no holdout/runtime/orders; measurement thresholds and strategy score/selection semantics unchanged.",
       "path_prefixes": [
@@ -1167,7 +1180,7 @@
       ]
     },
     "VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1": {
-      "note": "Post-VTSR CREATE_SUCCESSOR VTDC v1 strategy implementation present OPEN_BACKLOG; VTSR terminal FAIL_CLOSED_NO_RETRY slot consumed; next=VTDC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 definition-only OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_hypothesis_backlog_v1.json",
         "src/research/volatility_regime_hypothesis_backlog_v1.py",
@@ -1176,7 +1189,7 @@
       ]
     },
     "VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1": {
-      "note": "Post-VTSR CREATE_SUCCESSOR VTDC v1 strategy implementation present OPEN_BACKLOG; VTSR terminal FAIL_CLOSED_NO_RETRY slot consumed; next=VTDC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 definition-only OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.json",
         "src/research/volatility_regime_post_vepc_lane_lifecycle_operator_decision_packet_v1.py",
@@ -1185,7 +1198,7 @@
       ]
     },
     "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1": {
-      "note": "Post-VTSR CREATE_SUCCESSOR VTDC v1 strategy implementation present OPEN_BACKLOG; VTSR terminal FAIL_CLOSED_NO_RETRY slot consumed; next=VTDC bounded Development evaluation; no holdout/promotion/runtime/LIVE/orders.",
+      "note": "Post-CSHRVF CREATE_SUCCESSOR CSLRVC v1 definition-only OPEN_BACKLOG; CSHRVF terminal FAIL_CLOSED_NO_RETRY slot consumed; next=CSLRVC strategy implementation; no holdout/promotion/runtime/LIVE/orders.",
       "path_prefixes": [
         "config/research/volatility_regime_research_program_v1.json",
         "src/research/volatility_regime_research_program_v1.py",
