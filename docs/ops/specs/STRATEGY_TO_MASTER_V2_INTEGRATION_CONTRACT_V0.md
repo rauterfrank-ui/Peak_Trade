@@ -1,8 +1,8 @@
 ---
 title: Strategy to Master V2 Integration Contract v0
 status: DRAFT
-last_updated: 2026-04-24
-repo_ref: main@fcec89f760d6
+last_updated: 2026-07-23
+repo_ref: main@a2818c8ce379
 scope: docs-only strategy governance contract
 docs_token: DOCS_TOKEN_STRATEGY_TO_MASTER_V2_INTEGRATION_CONTRACT_V0
 ---
@@ -49,9 +49,12 @@ Strategy registry fields are catalog and compatibility metadata unless explicitl
 | `tier` | Classification or maturity label. | Live-readiness proof. |
 | `is_live_ready` | Historical or catalog signal requiring Master V2 validation. | Standalone live enablement. |
 | `allowed_environments` | Compatibility hint for tooling and validation. | Permission to execute in those environments. |
+| `supported_sides` | Catalog/compatibility metadata emitted by the generic registry entry builder. Must be read against the producer signal contract; it is not proof of LONG/SHORT entry authority. | Claim that the strategy emits SHORT entries, owns Bull/Bear state, or feeds Directional Assessment. |
 | `research` wording | Review and experimentation status. | Production authorization. |
 | `production` wording | Maturity label requiring contextual validation. | Broker/exchange order permission. |
 | `double-play` wording | Potential future observation or candidate input. | Double Play authority. |
+
+Known catalog overclaim (docs-only; no registry mutation in this contract): `momentum_1h` / `MomentumStrategy` currently appears with registry `supported_sides=("long","short")` via the generic builder, while the productive signal contract is `+1` LONG ENTRY event, `-1` EXIT event, `0` NONE (`entry_side=NONE`). `-1` is not a SHORT entry. No safe local registry override exists without changing the shared builder contract or Suitability side-eligibility derived from snapshots; leave metadata unchanged until a dedicated, fail-closed owner GO. Homonyms `feat-momentum-v1`, `strat-momentum-v1`, `momentum_feature_set`, and research `momentum_1h&#47;v2` are not this library implementation and are not default Decision-Core wiring.
 
 ## 5. Master V2 compatible strategy classification
 

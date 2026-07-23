@@ -68,7 +68,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | Strategy: `ma_crossover` | B | Non-operational | Strategy · `registry.py` | Unwired | Wire (via Suitability snapshot) |
 | Strategy: `rsi_reversion` | B | Non-operational | Strategy · `registry.py` | Unwired | Wire |
 | Strategy: `breakout_donchian` | B | Non-operational | Strategy · `registry.py` | Unwired | Wire |
-| Strategy: `momentum_1h` | B | Non-operational | Strategy · `registry.py` | Unwired | Wire |
+| Strategy: `momentum_1h` | B | Non-operational | Strategy · `registry.py` → `MomentumStrategy` | Unwired (documented Class B; not a defect) | Wire only after separate Operator GO; do **not** confuse with research `momentum_1h&#47;v2`, label `feat-momentum-v1`, fixture `strat-momentum-v1`, or context field `momentum_feature_set`. Registry `supported_sides` may overclaim SHORT vs producer `+1` ENTRY / `-1` EXIT / `0` NONE — metadata-only; no safe local registry fix without shared-builder / Suitability side-effects. |
 | Strategy: `bollinger_bands` | B | Non-operational | Strategy · `registry.py` | Unwired | Wire |
 | Strategy: `macd` | B | Non-operational | Strategy · `registry.py` | Unwired | Wire |
 | Strategy: `trend_following` | B | Non-operational | Strategy · `registry.py` | Unwired | Wire |
