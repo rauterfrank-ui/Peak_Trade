@@ -638,11 +638,89 @@ Die Shell schrittweise mit echten Systemprojektionen füllen.
 
 #### 4.6 Economic, Research und Diagnostics
 
-- Economic Gate
-- PF, Net Return, MaxDD, Cost Drag, Trades/Sample
-- Development/Holdout/Sealed-Kontext
+##### 4.6A — Economic Dashboard Contract Ratification (RATIFIED)
+
+Canonical owners (separate):
+
+```text
+CANONICAL_ECONOMIC_OWNER=backtest.economic_viability_evidence_v1
+CANONICAL_ECONOMIC_CONTRACT=EconomicViabilityEvidenceV1
+CANONICAL_ECONOMIC_SCHEMA_VERSION=v1
+CANONICAL_PROMOTION_OWNER=governance.promotion_loop.promotion_economic_gate_v1
+ECONOMIC_AND_PROMOTION_SEPARATE=true
+```
+
+**A_STATUS — RATIFIED**
+
+- Terminal economic outcome projects from `EconomicViabilityEvidenceV1.status`.
+- Dashboard contract field: `economic_viability_status` (exact enum value).
+- Forbidden contract field for this value: `economic_gate_status`.
+- Do not map to `promotion_economic_gate_v1` or infer promotion eligibility.
+- `economic_validity_proven` and `policy_threshold_status` remain distinct direct fields.
+
+**B_SELECTOR — RATIFIED AS EXPLICIT INJECTION ONLY**
+
+- Selection owner: `UPSTREAM_NOT_MARKET_DASHBOARD`.
+- Dashboard must never discover or choose among repository evidence instances.
+- Zero injected candidate → `availability=NOT_BOUND`.
+- Exactly one valid injected candidate → field-for-field projection after validation.
+- More than one injected candidate → fail closed `INVALID` +
+  `AMBIGUOUS_ECONOMIC_EVIDENCE_SOURCE`.
+- Invalid schema/digest/manifest/owner/contract → fail closed `INVALID`,
+  no partial economic facts.
+
+**C_LIFECYCLE — RATIFIED ABSENT**
+
+Intentionally absent from `EconomicSummarySnapshotV1` for Phase 4.6B:
+
+- `DEVELOPMENT_ONLY`, `HOLDOUT`, `SEALED_LONG_PANEL`, `TERMINAL`,
+  `PREREGISTRATION_ONLY`, `NOT_EVALUATED`
+
+Missing lifecycle context is not an error until a later independent context
+contract is separately ratified.
+
+**D_CONTRACT — RATIFIED MINIMAL DIRECT PROJECTION**
+
+`EconomicSummarySnapshotV1` fields (plus existing availability/provenance envelope):
+
+```text
+economic_viability_status
+economic_validity_proven
+profitability_claim_allowed
+policy_threshold_status
+policy_version
+authority_effect
+runtime_effect
+order_effect
+reason_codes
+profit_factor
+net_return
+max_drawdown
+sharpe
+trade_count
+funding_drag
+evidence_ref
+contract_version
+owner
+strategy_id
+strategy_version
+config_digest
+implementation_digest
+data_digest
+manifest_digest
+wiring_chain_digest
+policy_digest
+```
+
+Rules: direct copy only; no recomputation; no promotion/research-workflow/
+risk-capital-sizing fields; optional source absences remain absent/None.
+
+##### 4.6B+ — Binding / Research / Diagnostics (not started in 4.6A)
+
+- Explicit injection binding of one EconomicViabilityEvidenceV1 instance
 - Diagnostics ausdrücklich non-authoritative
 - keine Anlageempfehlung
+- Lifecycle context only after separate ratification
 
 #### 4.7 Autonomy State
 

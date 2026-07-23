@@ -122,11 +122,40 @@ def serialize_projection(snapshot: Any) -> dict[str, Any]:
         return payload
     if isinstance(snapshot, EconomicSummarySnapshotV1):
         payload = _base(snapshot)
+
+        def _metric(value: Any) -> dict[str, Any] | None:
+            if value is None:
+                return None
+            return dict(value)
+
         payload.update(
             {
-                "economic_gate_status": snapshot.economic_gate_status,
-                "evidence_ref": snapshot.evidence_ref,
+                "economic_viability_status": snapshot.economic_viability_status,
+                "economic_validity_proven": snapshot.economic_validity_proven,
+                "profitability_claim_allowed": snapshot.profitability_claim_allowed,
+                "policy_threshold_status": snapshot.policy_threshold_status,
+                "policy_version": snapshot.policy_version,
+                "authority_effect": snapshot.authority_effect,
+                "runtime_effect": snapshot.runtime_effect,
+                "order_effect": snapshot.order_effect,
                 "reason_codes": list(snapshot.reason_codes),
+                "profit_factor": _metric(snapshot.profit_factor),
+                "net_return": _metric(snapshot.net_return),
+                "max_drawdown": _metric(snapshot.max_drawdown),
+                "sharpe": _metric(snapshot.sharpe),
+                "trade_count": _metric(snapshot.trade_count),
+                "funding_drag": _metric(snapshot.funding_drag),
+                "evidence_ref": snapshot.evidence_ref,
+                "contract_version": snapshot.contract_version,
+                "owner": snapshot.owner,
+                "strategy_id": snapshot.strategy_id,
+                "strategy_version": snapshot.strategy_version,
+                "config_digest": snapshot.config_digest,
+                "implementation_digest": snapshot.implementation_digest,
+                "data_digest": snapshot.data_digest,
+                "manifest_digest": snapshot.manifest_digest,
+                "wiring_chain_digest": snapshot.wiring_chain_digest,
+                "policy_digest": snapshot.policy_digest,
             }
         )
         return payload

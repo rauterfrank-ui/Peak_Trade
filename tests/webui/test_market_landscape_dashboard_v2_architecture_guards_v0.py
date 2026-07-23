@@ -510,3 +510,56 @@ def test_landscape_v2_css_has_no_visible_structural_divider_lines() -> None:
     assert "border-left: 1px solid" not in code
     assert "border-right: 1px solid" not in code
     assert "--mdl-rule" not in code
+
+
+def test_economic_summary_forbids_gate_status_alias_and_selector_logic() -> None:
+    """Phase 4.6A: economic_viability_status only; no discovery/selector binding."""
+    contracts = (LANDSCAPE_PKG / "contracts.py").read_text(encoding="utf-8")
+    unavailable = (LANDSCAPE_PKG / "unavailable.py").read_text(encoding="utf-8")
+    serialization = (LANDSCAPE_PKG / "serialization.py").read_text(encoding="utf-8")
+    projections = (LANDSCAPE_PKG / "projections.py").read_text(encoding="utf-8")
+    producer = PRODUCER_BINDING.read_text(encoding="utf-8")
+    registry = (LANDSCAPE_PKG / "owner_registry.py").read_text(encoding="utf-8")
+
+    assert "economic_viability_status" in contracts
+    assert "class EconomicSummarySnapshotV1" in contracts
+    # Forbidden alias must not appear as a live contract field assignment.
+    assert re.search(r"\beconomic_gate_status\s*:", contracts) is None
+    assert "economic_gate_status" not in unavailable
+    assert "economic_gate_status" not in serialization
+
+    # No Phase 4.6B projection/binding yet.
+    assert "project_economic_summary" not in projections
+    assert "economic_viability_evidence" not in producer
+    assert "bind_economic" not in producer
+
+    # No repository-wide evidence discovery / latest-file selector in Landscape.
+    forbidden_selector_tokens = (
+        "latest_economic",
+        "discover_economic",
+        "select_economic_evidence",
+        "resolve_latest_economic",
+        "find_economic_viability_evidence",
+    )
+    landscape_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in _iter_py_files(LANDSCAPE_PKG)
+    )
+    for token in forbidden_selector_tokens:
+        assert token not in landscape_text, token
+        assert token not in producer, token
+
+    # Lifecycle labels must not be projected fields on the economic contract.
+    for label in (
+        "DEVELOPMENT_ONLY",
+        "HOLDOUT",
+        "SEALED_LONG_PANEL",
+        "TERMINAL",
+        "PREREGISTRATION_ONLY",
+        "NOT_EVALUATED",
+    ):
+        assert re.search(rf"\b{label}\s*:", contracts) is None
+
+    assert 'slot="economic_summary"' in registry
+    assert "EXPLICIT_UPSTREAM_INJECTION_ONLY" in registry
+    assert "EconomicViabilityEvidenceV1" in registry
+    assert 'reuse_status="NOT_BOUND"' in registry
