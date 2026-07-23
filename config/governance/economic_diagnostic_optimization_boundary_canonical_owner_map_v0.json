@@ -574,6 +574,39 @@
         "tests/research/test_cross_sectional_low_realized_volatility_continuation_v1_strategy_implementation_v1.py"
       ]
     },
+    "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_HYPOTHESIS_BACKLOG_V1": {
+      "authority_effect": "NONE",
+      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; CLV and path-efficiency terminal DEVELOPMENT_FAIL no retry; closed sibling lanes unreopened.",
+      "path_prefixes": [
+        "config/research/cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.json",
+        "src/research/cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.py",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.py",
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_HYPOTHESIS_BACKLOG_V1.md"
+      ]
+    },
+    "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only SSOT for new independent CS open-gap pressure fade research program after terminal CLV DEVELOPMENT_FAIL; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; CSRHR remains OPEN_BACKLOG untouched; closed vol-regime/CS-momentum and terminal path-efficiency/CLV remain collision exclusions.",
+      "path_prefixes": [
+        "config/research/cross_sectional_open_gap_pressure_fade_research_program_v1.json",
+        "config/research/cross_sectional_open_gap_pressure_fade_program_definition_operator_decision_packet_v1.json",
+        "src/research/cross_sectional_open_gap_pressure_fade_research_program_v1.py",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_research_program_v1.py",
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1.md",
+        "docs/evidence/cross_sectional_open_gap_pressure_fade_definition_discovery_v1/"
+      ]
+    },
+    "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "authority_effect": "NONE",
+      "note": "Definition-only preregistration of negated mean open-gap CS fade measurement contract on sealed DEVELOPMENT_ONLY panel; no evaluation; no strategy implementation; no holdout.",
+      "path_prefixes": [
+        "config/research/cross_sectional_open_gap_pressure_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "src/research/cross_sectional_open_gap_pressure_fade_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/evidence/preregister_cross_sectional_open_gap_pressure_fade_hypothesis_v1/"
+      ]
+    },
     "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
       "authority_effect": "NONE",
       "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; closed sibling lanes unreopened.",

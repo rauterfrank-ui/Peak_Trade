@@ -1,0 +1,294 @@
+{
+  "artifact_kind": "preregistered_economic_hypothesis_measurement_contract",
+  "artifact_version": "v1",
+  "authority_effect": "NONE",
+  "backtest_authorized": false,
+  "bounded_preregistered_development_grid_authorized": false,
+  "comparison_semantics": {
+    "control_arm": "none_absolute_admission_against_frozen_thresholds",
+    "deterministic": true,
+    "note": "Absolute economic admission gates; not a Bollinger delta, CS-momentum control, CSRHR close-to-close reversal control, CLV pressure control, or path-efficiency control delta.",
+    "reproducibility_required": true,
+    "seed_policy": "frozen_when_stochastic_components_absent"
+  },
+  "contract_digest": "7f8d361b597825428eecb2f6f791fcef07fe5a0dd92f9613f99b5d15e95b5768",
+  "costs": {
+    "canonical_cost_multiplier": 1.0,
+    "cost_model_weakening_forbidden": true,
+    "fee_bps_per_side": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "half_spread_bps": 5.0,
+    "predefined_cost_stress_multipliers": [
+      0.5,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "slippage_bps_per_side": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0",
+    "spread_model_version": "research_conservative_bps_v1"
+  },
+  "dataset_class": "DEVELOPMENT_ONLY",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+  "development_evaluation_authorized": false,
+  "development_evaluation_executed": false,
+  "development_evaluation_runs_allowed": 1,
+  "development_run_count": 0,
+  "directional_form": {
+    "double_play_remains_sole_authority": true,
+    "hypothesis_emits_rank_intent_only": true,
+    "label": "mutually exclusive directional selection",
+    "rationale": "Reuse canonical single-slot ranking semantics with negated mean open-gap scores so the top1 instrument is the strongest open-gap fade candidate under symmetric_top1_sign.",
+    "rejected_forms": {
+      "A_TOP_RANKED_LONG_ONLY": "Would discard the canonical symmetric_top1_sign single-slot convention.",
+      "B_BOTTOM_RANKED_SHORT_ONLY": "bottom1_selection_allowed=false in canonical ranking semantics.",
+      "C_MARKET_NEUTRAL_TOP_VS_BOTTOM": "dual_rank_forbidden=true under single-slot orchestrator."
+    },
+    "selected": "D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION",
+    "semantics": "gap_b=log(open_b/close_{b-1}); score_i=-mean(gap over lookback); single_top1_by_score_desc with symmetric_top1_sign; positive top1 score implies LONG_TOP1 intent (fade extreme gap-down); negative top1 score implies SHORT_TOP1 intent (fade extreme gap-up).",
+    "sole_directional_transition_authority": "trading.master_v2.double_play_state.transition_state"
+  },
+  "economic_admission_contract": {
+    "evaluation_blocked_while_any_threshold_pending": false,
+    "fail_reasons": {
+      "CONCENTRATION_DOMINANCE": "worst1_abs_net_share > 0.5",
+      "COST_STRESS_NOT_SURVIVED": "net_profit_factor at 1.5x costs < 1.0",
+      "GROSS_EDGE_NOT_MEANINGFUL": "gross_profit_factor < 1.0 OR gross_pnl <= 0",
+      "INSUFFICIENT_REBALANCE_OBSERVATIONS": "valid_evaluable_rebalance_observation_count < minimum_rebalance_observations",
+      "INSUFFICIENT_TRADE_SAMPLE": "trade_count < 50",
+      "INSUFFICIENT_UNIVERSE_BREADTH": "observed eligible members < 5",
+      "MAX_DRAWDOWN_BREACH": "abs(max_drawdown) > 0.25",
+      "NET_PROFIT_FACTOR_BELOW_THRESHOLD": "net_profit_factor < 1.3 at canonical 1.0x costs",
+      "TIME_SEGMENT_ROBUSTNESS_FAIL": "passing_segment_count / 4 < time_segment_robustness_pass_ratio"
+    },
+    "pass_requires_all": [
+      "evaluable",
+      "trade_count >= minimum_trade_count",
+      "min_eligible_members_observed >= min_eligible_members_for_rank",
+      "gross_profit_factor >= gross_profit_factor_min",
+      "gross_pnl > 0",
+      "net_profit_factor >= net_profit_factor_min",
+      "net_expectancy >= minimum_net_expectancy",
+      "abs(max_drawdown) <= maximum_max_drawdown",
+      "worst1_abs_net_share <= single_trade_dominance_limit",
+      "canonical_cost_multiplier_result_uses_1_0x",
+      "cost_stress_1_5x_net_profit_factor >= cost_stress_1_5x_net_profit_factor_min",
+      "deterministic_repro_digest_match",
+      "valid_evaluable_rebalance_observation_count >= minimum_rebalance_observations",
+      "all_four_time_segments_evaluable",
+      "time_segment_robustness_pass_ratio >= time_segment_robustness_pass_ratio_min"
+    ],
+    "pending_threshold_keys": [],
+    "primary_decision_metric": "NET_PROFIT_FACTOR",
+    "thresholds": {
+      "cost_stress_1_5x_net_profit_factor_min": {
+        "source": "canonical cost-stress survival PF>=1.0",
+        "status": "CONFIGURED",
+        "value": 1.0
+      },
+      "gross_profit_factor_min": {
+        "source": "ENTRY_GROSS_EDGE_PRESENT convention gpf>=1.0 and gross_pnl>0",
+        "status": "CONFIGURED",
+        "value": 1.0
+      },
+      "maximum_max_drawdown": {
+        "source": "economic_validity_policy_v1 maximum_max_drawdown",
+        "status": "CONFIGURED",
+        "value": 0.25
+      },
+      "min_eligible_members_for_rank": {
+        "source": "cross_sectional ranking numeric binding min_eligible_members_for_rank",
+        "status": "CONFIGURED",
+        "value": 5
+      },
+      "minimum_net_expectancy": {
+        "source": "economic_validity_policy_v1 minimum_net_expectancy",
+        "status": "CONFIGURED",
+        "value": 0.0
+      },
+      "minimum_rebalance_observations": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION minimum_rebalance_observations=30; ex ante",
+        "status": "CONFIGURED",
+        "value": 30
+      },
+      "minimum_trade_count": {
+        "source": "economic_validity_policy_v1 minimum_trade_count",
+        "status": "CONFIGURED",
+        "value": 50
+      },
+      "net_profit_factor_min": {
+        "source": "economic_validity_policy_v1 minimum_profit_factor",
+        "status": "CONFIGURED",
+        "value": 1.3
+      },
+      "single_trade_dominance_limit": {
+        "source": "economic_validity_policy_v1 single_trade_dominance_limit",
+        "status": "CONFIGURED",
+        "value": 0.5
+      },
+      "time_segment_robustness_pass_ratio": {
+        "authority": "EXPLICIT_OPERATOR_AUTHORIZATION",
+        "not_result_calibrated": true,
+        "source": "EXPLICIT_OPERATOR_AUTHORIZATION binding 0.5; ex ante",
+        "status": "CONFIGURED",
+        "value": 0.5
+      }
+    }
+  },
+  "economic_hypothesis": "On the DEVELOPMENT_ONLY non-BTC linear USDT futures panel, instruments whose trailing PT1H opens gap persistently away from the prior close imprint temporary liquidity/inventory pressure that fades cross-sectionally, so a frozen negated mean open-gap ranking treatment yields jointly positive gross and net economics after canonical costs, survives 1.5x cost stress, and meets sample/breadth/drawdown/robustness gates.",
+  "evaluation_authorized": false,
+  "evaluation_run_count_authorized": 1,
+  "evidence_paths": {
+    "future_development_evaluation_evidence_ref": "docs/evidence/evaluate_cross_sectional_open_gap_pressure_fade_development_v1/",
+    "governance_ref": "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "preregistration_evidence_ref": "docs/evidence/preregister_cross_sectional_open_gap_pressure_fade_hypothesis_v1/"
+  },
+  "explicit_non_actions": [
+    "NO_EVALUATION_IN_THIS_SLICE",
+    "NO_RUNNER",
+    "NO_HOLDOUT_ACCESS",
+    "NO_STRATEGY_PRODUCER_IMPLEMENTATION",
+    "NO_PROMOTION",
+    "NO_RUNTIME",
+    "NO_CS_MOMENTUM_RETRY",
+    "NO_VOL_REGIME_REOPEN",
+    "NO_CSRHR_CONTINUE",
+    "NO_CSRHR_SEMANTIC_REUSE",
+    "NO_CSRHR_MUTATION",
+    "NO_PATH_EFFICIENCY_RETRY",
+    "NO_CLV_PRESSURE_RETRY",
+    "NO_AMIHUD_OR_BODY_RATIO_OR_WICK_VARIANT_IN_THIS_SLICE"
+  ],
+  "forbidden_data_sources": [
+    "offline_economic_reevaluation_sealed_long_panel_v1",
+    "any_sealed_holdout_raw_or_derived_artifacts",
+    "live_or_authenticated_account_endpoints",
+    "non_development_only_datasets"
+  ],
+  "holdout_authorized": false,
+  "holdout_based_parameter_selection_forbidden": true,
+  "holdout_forbidden": true,
+  "hypothesis_count": 1,
+  "hypothesis_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1",
+  "hypothesis_statement": "Assets whose trailing PT1H opens gap farther from the prior close than peers in the eligible non-BTC linear USDT futures universe may fade that open-gap pressure over a predefined forward holding window, and a deterministic cross-sectional ranking process on negated mean open-gap may generate gross edge sufficient to survive canonical fees, slippage, and predefined cost stress.",
+  "implementation_authorized": false,
+  "multiple_testing_budget": 1,
+  "optimization_forbidden": true,
+  "parameter_governance": {
+    "development_only_bounded_grid": {
+      "authorized": false,
+      "note": "Single frozen parameter point only; no grid. Distinct from CSRHR(24/4), CLV(36/6), path-efficiency(48/8)."
+    },
+    "frozen_non_grid_parameters": {
+      "cooldown_policy": "no_cooldown",
+      "lookback_N": 30,
+      "min_eligible_members_for_rank": 5,
+      "minimum_hold_policy": "until_next_rebalance",
+      "rebalance_interval_bars": 5,
+      "selection_count_fixed_n": 1,
+      "signal_lag_bars": 1,
+      "strategy_stop": "none",
+      "vol_normalization": false
+    }
+  },
+  "portfolio": {
+    "portfolio_aggregation_id": "RESEARCH_EQUAL_WEIGHT_NORMALIZED_SLEEVE_COMBINE_V1",
+    "preserve_canonical_equal_weight": true
+  },
+  "post_hoc_threshold_adjustment_forbidden": true,
+  "program_id": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1",
+  "promotion_and_economic_gate_policy": {
+    "economic_gate_open": false,
+    "economic_validity_offline_gate_changed": false,
+    "economic_validity_offline_gate_pass": false,
+    "promotion_eligible": false
+  },
+  "provenance": {
+    "created_on_base_sha": "52282283f57d63fe0fa2f485bda259f9deace3fd",
+    "definition_only": true,
+    "digest_algorithm": "sha256",
+    "digest_input": "canonical_json_sort_keys_indent_2_of_contract_without_contract_digest_and_provenance"
+  },
+  "repeat_after_result_inspection_forbidden": true,
+  "run_limit": {
+    "development_run_limit": 1,
+    "holdout_run_limit": 0,
+    "retry_forbidden": true,
+    "second_development_run_forbidden": true
+  },
+  "run_slot_consumed": false,
+  "runner_start_count": 0,
+  "runtime_effect": "NONE",
+  "runtime_policy": {
+    "live_authorized": false,
+    "orders_allowed": false,
+    "paper_activated": false,
+    "runtime_activated": false,
+    "scheduler_authorized": false,
+    "shadow_activated": false,
+    "testnet_activated": false
+  },
+  "schema_version": "cross_sectional_open_gap_pressure_fade_v1_preregistered_economic_hypothesis_measurement_contract.v1",
+  "score_and_selection": {
+    "adaptive_thresholding_forbidden": true,
+    "cooldown_policy": "no_cooldown",
+    "eligibility_fail_closed": {
+      "eligible_count_lt_min_rebalance_not_evaluable": true,
+      "fallback_selection_forbidden": true,
+      "missing_prior_close_ineligible": true,
+      "non_finite_ohlc_ineligible": true,
+      "non_positive_prior_close_ineligible": true,
+      "score_zero_ineligible": true
+    },
+    "minimum_hold_policy": "until_next_rebalance",
+    "not_a_clv_pressure_retry_or_rename": true,
+    "not_a_cs_momentum_parameter_retune": true,
+    "not_a_csrhr_continuation_or_semantic_reuse": true,
+    "not_a_path_efficiency_retry_or_rename": true,
+    "not_a_relative_volume_breakout_retry": true,
+    "not_volatility_normalized_relative_strength_v0": true,
+    "polarity": "OPEN_GAP_PRESSURE_FADE_NEGATED_MEAN_GAP",
+    "quantile_selection_forbidden_in_v1": true,
+    "rebalance_policy_class": "fixed_N_bar_cadence",
+    "score_family_policy": "negated_mean_open_gap_fixed_lookback_v1",
+    "score_formula_expression": "for each lagged bar b in lookback_N requiring prior close c_prev: if any of open_b,c_prev non-finite or c_prev<=0 then ineligible; gap_b=log(open_b/c_prev); score_i=-mean(gap_b); if score_i==0 then ineligible; rank by score_desc then instrument_id_asc; select single top1; direction=sign(top1_score)",
+    "selection_count_fixed_n": 1,
+    "selection_mode": "single_top1_by_score_desc",
+    "signal_lag_bars": 1,
+    "tie_break_policy": "score_desc_then_instrument_id_asc"
+  },
+  "sealed_holdout_binding_status": "UNBOUND_UNTOUCHED_ACCESS_FORBIDDEN",
+  "sealed_holdout_content_inspection_authorized": false,
+  "sealed_holdout_id": "offline_economic_reevaluation_sealed_long_panel_v1",
+  "shared_authority_constraints": {
+    "capital_allocation_mutation_forbidden": true,
+    "double_play_sole_directional_transition_authority": true,
+    "execution_kernel_mutation_forbidden": true,
+    "master_v2_mutation_forbidden": true,
+    "promotion_authority_mutation_forbidden": true,
+    "reconciliation_mutation_forbidden": true,
+    "risk_authority_mutation_forbidden": true,
+    "runtime_wiring_mutation_forbidden": true,
+    "safety_authority_mutation_forbidden": true
+  },
+  "signal_family": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE",
+  "slice_class": "DEFINITION_ONLY",
+  "status": "DEFINITION_ONLY_PREREGISTERED",
+  "strategy_id": "cross_sectional_open_gap_pressure_fade",
+  "strategy_identity": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1",
+  "strategy_implementation_present": false,
+  "strategy_version": "v1",
+  "target_phenomenon": "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE",
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+  "treatment_type": "OWN_INSTRUMENT_CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_ADMISSION",
+  "universe_scope": {
+    "bitcoin_excluded": true,
+    "frequency": "PT1H",
+    "instrument_class": "LINEAR_USDT_PERPETUAL",
+    "panel_class": "DEVELOPMENT_ONLY_PRE_HOLDOUT",
+    "spot_excluded": true,
+    "venue": "OKX"
+  }
+}
