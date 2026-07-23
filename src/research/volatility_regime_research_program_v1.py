@@ -11,11 +11,9 @@ PROGRAM_REL_PATH = "config/research/volatility_regime_research_program_v1.json"
 GOVERNANCE_REL_PATH = "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md"
 REQUIRED_PROGRAM_ID = "VOLATILITY_REGIME_RESEARCH_PROGRAM_V1"
 REQUIRED_STATUS = "DEFINITION_ONLY_PROGRAM_OPEN"
-REQUIRED_STRATEGY_IDENTITY = "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
+REQUIRED_STRATEGY_IDENTITY = "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1"
 REQUIRED_SIGNAL_FAMILY = "VOLATILITY_REGIME"
-REQUIRED_TARGET_PHENOMENON = (
-    "SHORT_VS_LONG_REALIZED_VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION"
-)
+REQUIRED_TARGET_PHENOMENON = "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE"
 REQUIRED_PRIOR_HYPOTHESIS = "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1"
 REQUIRED_PRIOR_VCB = "VOLATILITY_COMPRESSION_BREAKOUT_V1"
 REQUIRED_PRIOR_VEP = "VOLATILITY_EXPANSION_PERSISTENCE_V1"
@@ -25,6 +23,7 @@ REQUIRED_PRIOR_VCEB = "VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1"
 REQUIRED_PRIOR_VEPC = "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1"
 REQUIRED_PRIOR_VEFCF = "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1"
 REQUIRED_PRIOR_VTSR = "VOLATILITY_TERM_STRUCTURE_REVERSION_V1"
+REQUIRED_PRIOR_VTDC = "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1"
 CLOSED_ENTRY_BACKLOG = (
     "config/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.json"
 )
@@ -34,7 +33,10 @@ CLOSED_CS_MOMENTUM_PROGRAM = (
 )
 REQUIRED_CLOSED = "LANE_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_CS_CLOSED = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
-REQUIRED_NEXT_STEP = "NO_RETRY_SLOT_CONSUMED_DEVELOPMENT_FAIL_REQUIRES_NEW_SEPARATE_OPERATOR_GO_FOR_NEW_HYPOTHESIS_OR_INFRASTRUCTURE_SCOPE"
+REQUIRED_NEXT_STEP = (
+    "REVIEW_AND_MERGE_DEFINITION_ONLY_PREREGISTRATION_THEN_SEPARATE_OPERATOR_GO_"
+    "FOR_STRATEGY_IMPLEMENTATION_THEN_DEVELOPMENT_EVALUATION"
+)
 
 
 class ProgramValidationError(ValueError):
@@ -72,15 +74,15 @@ def validate_program_contract(
     )
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("development_evaluation_authorized") is True,
-        "DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE",
+        payload.get("development_evaluation_authorized") is False,
+        "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
     _require(
-        payload.get("development_evaluation_executed") is True,
-        "DEVELOPMENT_EVALUATION_EXECUTED_FALSE",
+        payload.get("development_evaluation_executed") is False,
+        "DEVELOPMENT_EVALUATION_EXECUTED_TRUE",
     )
     _require(
-        payload.get("strategy_id") == "volatility_term_structure_depressed_continuation",
+        payload.get("strategy_id") == "cross_sectional_high_realized_volatility_fade",
         "STRATEGY_ID_DRIFT",
     )
     _require(
@@ -102,19 +104,19 @@ def validate_program_contract(
     )
     _require(payload.get("promotion_authorized") is False, "PROMOTION_AUTHORIZED_TRUE")
     _require(payload.get("runtime_authorized") is False, "RUNTIME_AUTHORIZED_TRUE")
-    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED_FALSE")
+    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("strategy_implementation_present") is True,
-        "STRATEGY_IMPLEMENTATION_PRESENT_FALSE",
+        payload.get("strategy_implementation_present") is False,
+        "STRATEGY_IMPLEMENTATION_PRESENT_TRUE",
     )
     _require(
         payload.get("strategy_implementation_authorized_in_this_slice") is False,
         "STRATEGY_IMPLEMENTATION_AUTHORIZED",
     )
-    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
+    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
     _require(payload.get("development_run_limit") == 1, "DEVELOPMENT_RUN_LIMIT_NOT_ONE")
-    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
-    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_NOT_CONSUMED")
+    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
+    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
     _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
     gates = payload.get("promotion_and_economic_gate_policy") or {}
     _require(gates.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE_TRUE")
@@ -173,6 +175,13 @@ def validate_program_contract(
         independence.get("not_a_retry_of_terminal_volatility_term_structure_reversion_v1") is True,
         "VTSR_RETRY_NOT_FORBIDDEN",
     )
+    _require(
+        independence.get(
+            "not_a_retry_of_terminal_volatility_term_structure_depressed_continuation_v1"
+        )
+        is True,
+        "VTDC_RETRY_NOT_FORBIDDEN",
+    )
     forbidden = set(independence.get("forbidden_lineage_refs") or [])
     for required in (
         "vol_breakout/v1_unchanged_binding_retry",
@@ -187,6 +196,7 @@ def validate_program_contract(
         "VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1",
         "VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1",
         "VOLATILITY_TERM_STRUCTURE_REVERSION_V1",
+        "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1",
     ):
         _require(required in forbidden, f"MISSING_FORBIDDEN_LINEAGE:{required}")
     _require(
@@ -290,6 +300,26 @@ def validate_program_contract(
     ):
         _require(bool(vtsr_diffs.get(key)), f"MISSING_VTSR_MATERIAL_DIFFERENCE:{key}")
 
+    md_vtdc = (
+        payload.get("material_difference_vs_volatility_term_structure_depressed_continuation_v1")
+        or {}
+    )
+    _require(md_vtdc.get("prior_strategy_identity") == REQUIRED_PRIOR_VTDC, "PRIOR_VTDC_MISMATCH")
+    _require(md_vtdc.get("vtdc_retry_forbidden") is True, "VTDC_RETRY_ALLOWED")
+    _require(md_vtdc.get("not_a_parameter_change_of_vtdc_v1") is True, "VTDC_PARAM_CHANGE")
+    _require(md_vtdc.get("not_a_repair_or_retry_of_vtdc_v1") is True, "VTDC_REPAIR")
+    vtdc_diffs = md_vtdc.get("differences") or {}
+    for key in (
+        "admission_polarity",
+        "causal_claim",
+        "direction_rule",
+        "exit_normalization",
+        "forbidden_half",
+        "target_phenomenon",
+        "estimator_axis",
+    ):
+        _require(bool(vtdc_diffs.get(key)), f"MISSING_VTDC_MATERIAL_DIFFERENCE:{key}")
+
     if repo_root is not None:
         entry = load_json(repo_root / CLOSED_ENTRY_BACKLOG)
         exitb = load_json(repo_root / CLOSED_EXIT_BACKLOG)
@@ -316,13 +346,13 @@ def validate_program_contract(
         "strategy_identity": REQUIRED_STRATEGY_IDENTITY,
         "signal_family": REQUIRED_SIGNAL_FAMILY,
         "definition_only": True,
-        "strategy_implementation_present": True,
+        "strategy_implementation_present": False,
         "holdout_authorized": False,
         "evaluation_authorized": False,
         "promotion_eligible": False,
-        "development_run_count": 1,
-        "runner_start_count": 1,
-        "run_slot_consumed": True,
+        "development_run_count": 0,
+        "runner_start_count": 0,
+        "run_slot_consumed": False,
         "retry_allowed": False,
         "material_difference_explicit": True,
         "material_difference_from_vcb_v1": True,

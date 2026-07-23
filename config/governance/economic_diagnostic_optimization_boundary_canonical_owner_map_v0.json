@@ -1181,6 +1181,19 @@
         "scripts/research/run_evaluate_volatility_term_structure_depressed_continuation_development_v1.py"
       ]
     },
+    "CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
+      "note": "Definition-only CREATE_SUCCESSOR after VTDC DEVELOPMENT_FAIL; CSHRVF cross-sectional high RV-level rank fade; measurement contract frozen; no evaluation/holdout/runtime/orders; VTDC/VTSR/VEFCF/VEPC/CS-momentum reopen forbidden.",
+      "path_prefixes": [
+        "config/research/cross_sectional_high_realized_volatility_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
+        "config/research/cross_sectional_high_realized_volatility_fade_v1_development_evaluation_entry_point_binding_v1.json",
+        "src/research/cross_sectional_high_realized_volatility_fade_v1_hypothesis_preregistration_v1.py",
+        "tests/research/test_cross_sectional_high_realized_volatility_fade_v1_hypothesis_preregistration_v1.py",
+        "docs/governance/CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+        "docs/governance/CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+        "docs/evidence/preregister_cross_sectional_high_realized_volatility_fade_hypothesis_v1/",
+        "scripts/research/run_evaluate_cross_sectional_high_realized_volatility_fade_development_v1.py"
+      ]
+    },
     "VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
       "note": "Strategy implementation only for VTDC v1; depressed short/long RV term-structure continuation; exit SM with term-structure normalization (>0.45); productive PnL evaluator reused; no Development evaluation execution/slot consumption/holdout/runtime/orders.",
       "path_prefixes": [
