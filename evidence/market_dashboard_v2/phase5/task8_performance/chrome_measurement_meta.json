@@ -1,0 +1,17 @@
+{
+  "timestamp_utc": "2026-07-24T18:16:11Z",
+  "browser_channel_attempt": "chrome",
+  "runs_per_viewport": 3,
+  "viewports": [
+    {
+      "width": 1512,
+      "height": 982
+    },
+    {
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "cache_mode": "disabled_via_cdp_when_available",
+  "stale_pid_note": "review_server.sh status STALE_PID not repaired; Playwright route-fulfill used"
+}

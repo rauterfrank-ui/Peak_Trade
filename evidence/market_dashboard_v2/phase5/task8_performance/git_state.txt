@@ -1,0 +1,26 @@
+TIMESTAMP_UTC=2026-07-24T18:16:53Z
+EXPECTED_BASE_SHA=c48a020547c4343bdaf67cf7134daa80ef9b8253
+ACTUAL_BASE_SHA=c48a020547c4343bdaf67cf7134daa80ef9b8253
+MAIN_SHA=c48a020547c4343bdaf67cf7134daa80ef9b8253
+ORIGIN_MAIN_SHA=c48a020547c4343bdaf67cf7134daa80ef9b8253
+CURRENT_BRANCH=main
+MAIN_EQUALS_ORIGIN_MAIN=true
+EXPECTED_BASE_SHA_MATCH=true
+OPEN_PRS=[]
+REVIEW_SERVER_STATUS:
+STATUS=STALE_PID
+PID_FILE=/Users/frnkhrz/Peak_Trade/.run/webui_review_server/review_server.pid
+STALE_PID_VALUE=8089
+PORT=8000
+HOST=127.0.0.1
+GIT_STATUS_PORCELAIN:
+ M config/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0.json
+ M config/research/bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding_v0.json
+?? .comparison_metric_input_pytest_outputs/
+?? .playwright-mcp/
+?? evidence/market_dashboard_landscape_v2_pr1/
+?? evidence/market_dashboard_v2/phase3/
+?? evidence/market_dashboard_v2/phase4/pr3/
+?? evidence/market_dashboard_v2/phase4/pr4/
+?? evidence/market_dashboard_v2/phase5/task8_performance/
+?? tests/.pytest_archive_roots/

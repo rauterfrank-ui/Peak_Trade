@@ -1,0 +1,19 @@
+TIMESTAMP_UTC=2026-07-24T18:16:53Z
+OS=Darwin 25.5.0 arm64
+PYTHON=3.11.14 via uv run
+UV=uv (local)
+MEASUREMENT_ENVIRONMENT=local_macos_controlled_localhost
+ROUTE_HARNESS=fastapi.TestClient in-process ASGI
+CHROME_HARNESS=playwright channel=chrome route-fulfill HTML+static
+CACHE_MODE=CDP Network.setCacheDisabled when available
+MEASURED_RUN_COUNT_ROUTE=30_after_5_warmup
+MEASURED_RUN_COUNT_CHROME_PER_VIEWPORT=3
+BROWSER_IDENTITY=Google Chrome via Playwright channel=chrome 150.0.7871.182
+VIEWPORTS=1512x982,1920x1080
+PERFORMANCE_BUDGET_RATIFIED=false
+LIMITATIONS=not laboratory-grade; not production-network; review_server STALE_PID not repaired; route-fulfill localhost
+COMMANDS<<EOF
+PYTHONPATH=. uv run python evidence/market_dashboard_v2/phase5/task8_performance/_measure_route_assets.py
+PYTHONPATH=. uv run python evidence/market_dashboard_v2/phase5/task8_performance/_measure_chrome.py
+uv run pytest tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py tests/webui/test_market_landscape_dashboard_v2_accessibility_baseline_v0.py tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py -q
+EOF
