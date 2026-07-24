@@ -166,7 +166,11 @@ def test_market_separation(client_off: TestClient) -> None:
     assert "architecture reset in progress" not in html
     # Landscape shell must remain distinct from Observability Hub runtime panels.
     assert "data-observability-status-summary" not in html
-    assert "workflow_dashboard" not in html
+    assert "data-workflow-dashboard-v1" not in html
+    # Exact producer_module provenance in the secondary Engineering drawer may
+    # contain module paths such as webui.workflow_dashboard_readmodel_v1.* —
+    # that is diagnostic truth, not Observability Hub UI embedding.
+    assert 'data-mdl-eng-field="producer_module"' in html
 
 
 def test_persisted_readmodel_renders_futures_only_values(

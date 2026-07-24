@@ -191,6 +191,60 @@ def test_get_market_decision_why_blocker_primary_reading_flow(client: TestClient
     assert "MISSING_SOURCE ·" not in blockers_dd
 
 
+def test_get_market_engineering_drawer_renders_existing_slot_diagnostics(
+    client: TestClient,
+) -> None:
+    """Phase 5 PR4: Engineering drawer surfaces presenter engineering.slots exactly."""
+    response = client.get("/market")
+    assert response.status_code == 200
+    html = response.text
+    drawer = _region_html(html, "ENGINEERING_DRAWER")
+
+    assert 'data-mdl-engineering="true"' in drawer
+    assert "<summary>Engineering · provenance / schemas / diagnostics</summary>" in drawer
+    # Closed by default: the engineering details open-tag (before body) has no open attr.
+    eng_open_tag = html.split('data-mdl-engineering="true"', 1)[0].rsplit("<details", 1)[-1]
+    eng_open_tag = "<details" + eng_open_tag.split(">", 1)[0] + ">"
+    assert " open" not in eng_open_tag
+    assert 'open="' not in eng_open_tag
+    assert "open'" not in eng_open_tag
+
+    assert 'data-mdl-engineering-slots="true"' in drawer
+    assert 'data-mdl-engineering-slot="canonical_decision"' in drawer
+    assert 'data-mdl-engineering-slot="market_instrument"' in drawer
+    assert drawer.count('data-mdl-engineering-slot="') == 11
+
+    decision = drawer.split('data-mdl-engineering-slot="canonical_decision"', 1)[1].split(
+        "</article>", 1
+    )[0]
+    assert 'data-mdl-eng-field="availability">MISSING_SOURCE</dd>' in decision
+    assert 'data-mdl-eng-field="schema_id"' in decision
+    assert "market_dashboard_landscape_projection.canonical_decision.v1" in decision
+    assert 'data-mdl-eng-field="schema_version"' in decision
+    assert 'data-mdl-eng-field="producer_module"' in decision
+    assert "trading.master_v2.canonical_trading_decision_evidence_v1" in decision
+    assert 'data-mdl-eng-field="source_reference"' in decision
+    assert "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD" in decision
+    assert 'data-mdl-eng-field="reason_codes"' in decision
+    assert 'data-mdl-eng-field="freshness_observed_at"' in decision
+    assert 'data-mdl-eng-field="provenance_generated_at"' in decision
+
+    # Exact availability vocabulary; no HEALTHY/OK aliases.
+    assert "HEALTHY" not in drawer
+    assert ">OK</dd>" not in drawer
+    assert "PASS" not in drawer.split("data-mdl-engineering-slots", 1)[1]
+
+    # Existing Source Health compaction and Decision→Why→Blocker remain intact.
+    assert 'data-mdl-source-health="true"' in html
+    assert 'data-mdl-source-health-summary="true"' in html
+    assert 'data-mdl-decision-primary="true"' in html
+    assert 'data-mdl-why-primary="true"' in html
+    assert "<button" not in html.lower()
+    assert "place_order" not in html
+    assert "activate_runtime" not in html
+    assert "arm_live" not in html
+
+
 def test_get_market_has_no_write_or_order_controls(client: TestClient) -> None:
     html = client.get("/market").text
     assert "<form" not in html.lower()

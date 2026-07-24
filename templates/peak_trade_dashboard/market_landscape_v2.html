@@ -256,11 +256,87 @@
     >
       <summary>Engineering · provenance / schemas / diagnostics</summary>
       <div class="mdl-v2-engineering__body">
+        {# Phase 5 PR4: render existing engineering presenter truth only — no invented diagnostics. #}
+        <p class="mdl-v2-engineering__meta" data-mdl-engineering-label="true">{{ engineering.label }}</p>
         <p><strong>Generated:</strong> <span class="font-mono">{{ generated_at }}</span></p>
         <p><strong>Page schema:</strong> <span class="font-mono">{{ page_schema_id }}</span></p>
         <p><strong>Runtime bridge:</strong> <span class="font-mono">{{ runtime_bridge_display }}</span> ({{ shell_authority_class }})</p>
         <p><strong>Incomplete slots:</strong> {{ source_health.incomplete_slots|join(", ") }}</p>
-        <pre class="mdl-v2-pre" tabindex="0">{{ source_health.slot_availability | tojson(indent=2) }}</pre>
+        {% if engineering.missing_state_hints %}
+        <p>
+          <strong>Missing-state vocabulary:</strong>
+          <span class="font-mono" data-mdl-engineering-missing-hints="true">{{ engineering.missing_state_hints|join(", ") }}</span>
+        </p>
+        {% endif %}
+        <div class="mdl-v2-engineering__slots" data-mdl-engineering-slots="true">
+          {% for slot, view in engineering.slots|dictsort %}
+          <article
+            class="mdl-v2-engineering__slot"
+            data-mdl-engineering-slot="{{ slot }}"
+            data-availability="{{ view.availability }}"
+          >
+            <h3 class="mdl-v2-engineering__slot-name">{{ slot }}</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">{{ view.availability }}</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">{{ view.schema_id }}</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">{{ view.schema_version }}</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">{% if view.provenance and view.provenance.producer_module is not none %}{{ view.provenance.producer_module }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">{% if view.provenance and view.provenance.source_kind is not none %}{{ view.provenance.source_kind }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">{% if view.provenance and view.provenance.source_reference is not none %}{{ view.provenance.source_reference }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">{% if view.provenance and view.provenance.generated_at is not none %}{{ view.provenance.generated_at }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">{% if view.provenance and view.provenance.effective_at is not none %}{{ view.provenance.effective_at }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">{% if view.freshness and view.freshness.observed_at is not none %}{{ view.freshness.observed_at }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">{% if view.freshness and view.freshness.is_stale is not none %}{{ view.freshness.is_stale | tojson }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">{% if view.freshness and view.freshness.stale_reason is not none %}{{ view.freshness.stale_reason }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">{% if view.reason_codes %}{{ view.reason_codes|join(", ") }}{% endif %}</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">{% if view.provenance and view.provenance.evidence_digest is not none %}{{ view.provenance.evidence_digest }}{% else %}null{% endif %}</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">{% if view.provenance and view.provenance.git_sha is not none %}{{ view.provenance.git_sha }}{% else %}null{% endif %}</dd>
+              </div>
+            </dl>
+          </article>
+          {% endfor %}
+        </div>
       </div>
     </details>
   </div>

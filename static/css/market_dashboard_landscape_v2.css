@@ -509,6 +509,75 @@
   color: var(--mdl-muted);
 }
 
+.mdl-v2-engineering__meta {
+  margin: 0 0 8px;
+  color: #475569;
+}
+
+.mdl-v2-engineering__slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px 18px;
+  margin-top: 10px;
+  max-height: 42vh;
+  overflow: auto;
+  padding: 0 0 4px;
+}
+
+.mdl-v2-engineering__slot {
+  min-width: 0;
+  padding: 0;
+}
+
+.mdl-v2-engineering__slot-name {
+  margin: 0 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.mdl-v2-engineering__kv {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.mdl-v2-engineering__kv > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 38%) minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+
+.mdl-v2-engineering__kv dt {
+  margin: 0;
+  font-size: 9px;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  color: #475569;
+}
+
+.mdl-v2-engineering__kv dd {
+  margin: 0;
+  font-size: 10px;
+  color: #94a3b8;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.mdl-v2-engineering__slot[data-availability="MISSING_SOURCE"] [data-mdl-eng-field="availability"],
+.mdl-v2-engineering__slot[data-availability="NOT_BOUND"] [data-mdl-eng-field="availability"],
+.mdl-v2-engineering__slot[data-availability="STALE"] [data-mdl-eng-field="availability"],
+.mdl-v2-engineering__slot[data-availability="INVALID"] [data-mdl-eng-field="availability"] {
+  color: var(--mdl-warn);
+}
+
+.mdl-v2-engineering__slot[data-availability="AVAILABLE"] [data-mdl-eng-field="availability"] {
+  color: #86efac;
+}
+
 .mdl-v2-pre {
   overflow: auto;
   max-height: 180px;
