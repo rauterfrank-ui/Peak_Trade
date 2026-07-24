@@ -1,0 +1,4 @@
+SHELL_ROUTE_TESTS_PASS=true
+NODE_IDS=tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+PROOF=pytest_exit_0
+EVIDENCE_GENERATED_AT=2026-07-23T18:00:00Z

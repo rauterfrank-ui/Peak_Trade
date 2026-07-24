@@ -1,4 +1,4 @@
-"""Real Chrome Playwright evidence for Market Landscape V2 Phase 5 PR3."""
+"""Real Chrome Playwright evidence for Market Landscape V2 Phase 5 PR4."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr3"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr4"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -188,6 +188,67 @@ def _assert_decision_why_blocker_reading_flow(page) -> dict[str, object]:  # typ
     }
 
 
+def _assert_engineering_drawer_completeness(page) -> dict[str, object]:  # type: ignore[no-untyped-def]
+    """Phase 5 PR4: closed-by-default drawer renders existing engineering.slots."""
+    engineering = page.locator("[data-mdl-engineering]")
+    assert engineering.count() == 1
+    assert engineering.evaluate("el => el.open") is False
+
+    slots = page.locator("[data-mdl-engineering-slots='true']")
+    assert slots.count() == 1
+    assert page.locator("[data-mdl-engineering-slot]").count() == 11
+
+    decision = page.locator('[data-mdl-engineering-slot="canonical_decision"]')
+    assert decision.count() == 1
+    assert decision.get_attribute("data-availability") == "MISSING_SOURCE"
+    # text_content includes closed <details> descendants; inner_text does not.
+    assert (
+        decision.locator('[data-mdl-eng-field="availability"]').text_content() or ""
+    ).strip() == "MISSING_SOURCE"
+    schema_id = (decision.locator('[data-mdl-eng-field="schema_id"]').text_content() or "").strip()
+    assert schema_id == "market_dashboard_landscape_projection.canonical_decision.v1"
+    source_ref = (
+        decision.locator('[data-mdl-eng-field="source_reference"]').text_content() or ""
+    ).strip()
+    assert source_ref == "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD"
+    reason_codes = (
+        decision.locator('[data-mdl-eng-field="reason_codes"]').text_content() or ""
+    ).strip()
+    assert "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD" in reason_codes
+    producer = (
+        decision.locator('[data-mdl-eng-field="producer_module"]').text_content() or ""
+    ).strip()
+    assert producer == "trading.master_v2.canonical_trading_decision_evidence_v1"
+
+    body_text = engineering.text_content() or ""
+    assert "HEALTHY" not in body_text
+    assert "\nOK\n" not in body_text
+
+    # Keyboard: summary is focusable; Escape closes an opened drawer.
+    summary = engineering.locator("summary")
+    assert summary.count() == 1
+    summary.focus()
+    assert summary.evaluate("el => document.activeElement === el") is True
+    page.keyboard.press("Enter")
+    assert engineering.evaluate("el => el.open") is True
+    assert decision.is_visible()
+    assert decision.locator('[data-mdl-eng-field="availability"]').inner_text().strip() == (
+        "MISSING_SOURCE"
+    )
+    page.keyboard.press("Escape")
+    assert engineering.evaluate("el => el.open") is False
+
+    return {
+        "slot_count": 11,
+        "canonical_decision_availability": "MISSING_SOURCE",
+        "schema_id": schema_id,
+        "source_reference": source_ref,
+        "reason_codes": reason_codes,
+        "producer_module": producer,
+        "escape_closes": True,
+    }
+
+
 def _run_chrome_against_html(
     *,
     html: str,
@@ -254,6 +315,7 @@ def _run_chrome_against_html(
                 assert decision.count() == 1
                 _assert_no_duplicate_status_facts(page)
                 reading_flow = _assert_decision_why_blocker_reading_flow(page)
+                engineering_diag = _assert_engineering_drawer_completeness(page)
 
                 if expect_safety_available:
                     safety = page.locator(
@@ -308,8 +370,30 @@ def _run_chrome_against_html(
                 assert "Trigger Kill" not in body_text
                 assert "Recover Kill" not in body_text
 
+                # Closed-state screenshot (drawer remains closed after Escape assertion).
                 shot_path = EVIDENCE_DIR / f"{shot_prefix}{shot_name}"
                 page.screenshot(path=str(shot_path), full_page=False)
+
+                # Open-state screenshot with visible per-slot engineering diagnostics.
+                engineering = page.locator("[data-mdl-engineering]")
+                engineering.locator("summary").click()
+                assert engineering.evaluate("el => el.open") is True
+                open_shot_name = (
+                    f"{shot_prefix}{shot_name.replace('market_', 'market_drawer_open_', 1)}"
+                )
+                open_path = EVIDENCE_DIR / open_shot_name
+                page.locator(
+                    '[data-mdl-engineering-slot="canonical_decision"]'
+                ).scroll_into_view_if_needed()
+                page.screenshot(path=str(open_path), full_page=False)
+                page.keyboard.press("Escape")
+                assert engineering.evaluate("el => el.open") is False
+
+                overflow_open_cycle = page.evaluate(
+                    "() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1"
+                )
+                assert overflow_open_cycle is False
+
                 results[f"{shot_prefix}{shot_name}"] = {
                     "viewport": [width, height],
                     "channel": channel,
@@ -320,6 +404,8 @@ def _run_chrome_against_html(
                     "viewport_metrics": viewport_metrics,
                     "blockers": reading_flow["blockers"],
                     "confidence": reading_flow["confidence"],
+                    "engineering": engineering_diag,
+                    "drawer_open_shot": open_shot_name,
                 }
                 context.close()
         finally:

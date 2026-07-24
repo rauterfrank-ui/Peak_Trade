@@ -1,0 +1,3 @@
+ARCHITECTURE_GUARDS_PASS=true
+PROOF=tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py
+EVIDENCE_GENERATED_AT=2026-07-23T18:00:00Z
