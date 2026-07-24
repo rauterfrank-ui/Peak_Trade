@@ -1,0 +1,4 @@
+============================= test session starts ==============================
+collected 1 item
+tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py::test_get_market_duplicate_status_facts_have_single_primary_location PASSED
+============================== 1 passed ==============================

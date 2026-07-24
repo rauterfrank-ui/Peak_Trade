@@ -131,9 +131,30 @@
             <dt>Switch</dt>
             <dd data-mdl-field="switch" data-availability="{{ switch.availability }}">{{ switch.availability_label }}</dd>
           </div>
-          <div>
+          <div class="mdl-v2-source-health" data-mdl-source-health="true">
             <dt>Source Health</dt>
-            <dd data-mdl-field="source_health" data-availability="{{ source_health.availability }}">{{ source_health.availability }}</dd>
+            <dd
+              class="mdl-v2-source-health__body"
+              data-mdl-field="source_health"
+              data-availability="{{ source_health.availability }}"
+            >
+              <span
+                class="mdl-v2-source-health__summary"
+                data-mdl-source-health-summary="true"
+              >{{ source_health.summary_display }}</span>
+              <ul class="mdl-v2-source-health__sources" aria-label="Source availability and freshness">
+                {% for src in source_health.sources %}
+                <li
+                  data-mdl-source-slot="{{ src.slot }}"
+                  data-availability="{{ src.availability }}"
+                  data-freshness="{{ src.freshness_display }}"
+                >
+                  <span class="mdl-v2-source-health__name">{{ src.label }}</span>
+                  <span class="mdl-v2-source-health__line">{{ src.line_display }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+            </dd>
           </div>
         </dl>
       </aside>

@@ -289,6 +289,82 @@
   text-align: right;
 }
 
+/* Phase 5 PR3: compact Source Health + Freshness in Context (secondary) */
+.mdl-v2-source-health {
+  align-items: flex-start;
+}
+
+.mdl-v2-source-health__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mdl-v2-source-health__summary {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--mdl-warn);
+  letter-spacing: 0.01em;
+  text-align: right;
+  word-break: break-word;
+}
+
+.mdl-v2-source-health__body[data-availability="AVAILABLE"] .mdl-v2-source-health__summary {
+  color: #86efac;
+}
+
+.mdl-v2-source-health__sources {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  max-width: 220px;
+}
+
+.mdl-v2-source-health__sources li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mdl-v2-source-health__name {
+  flex: 0 0 auto;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mdl-muted);
+}
+
+.mdl-v2-source-health__line {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9px;
+  color: var(--mdl-warn);
+  text-align: right;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+
+.mdl-v2-source-health__sources li[data-availability="AVAILABLE"] .mdl-v2-source-health__line {
+  color: #86efac;
+}
+
+.mdl-v2-source-health__sources li[data-availability="STALE"] .mdl-v2-source-health__line {
+  color: #fbbf24;
+}
+
+.mdl-v2-source-health__sources li[data-availability="INVALID"] .mdl-v2-source-health__line {
+  color: #f87171;
+}
+
 .mdl-v2-decision {
   background: transparent;
   padding: 18px 0 14px;
