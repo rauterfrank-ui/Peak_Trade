@@ -69,12 +69,26 @@ MANIFEST_VERIFY_RC=0
 | Futures testnet endpoint inventory (offline) | `src/ops/bounded_futures_testnet_adapter_contract_v0.py` |
 | U1 upstream adapter | `src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py` |
 | U2b loader guard | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
+| OKX → governed packet producer charter (docs-only) | [OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md](OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md) |
 
-Future provider probes and loaders must extend this chain — **not** fork a second market-data SSOT or dashboard polling surface.
+Future provider probes and loaders must extend this chain — **not** fork a second market-data SSOT or dashboard polling surface. Current canonical venue is **OKX / `okx_europe_eea`**; sealed-OKX → `futures_producer_packet_governed.v1` boundaries are owned by the OKX producer charter (docs-only; producer not implemented).
 
 ## 5. Canonical provider registry (charter phase)
 
-### 5.1 Kraken Futures — public market-data-only (candidate)
+### 5.0 Current venue vs historical Kraken provenance
+
+| Marker | Value |
+|--------|-------|
+| Current canonical venue | `okx_europe_eea` / OKX |
+| Kraken classification | **Historical provenance only** |
+| Kraken as current U2b/U2c source for OKX facts | **Forbidden** |
+| OKX sealed → governed packet producer | Charter only — [OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md](OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md); **not implemented** |
+| OKX `min_notional` derivation | **Not authorized** (`OKX_MIN_NOTIONAL_DERIVATION_AUTHORIZED=false`) |
+| OKX `captured_at` freshness mapping | **Not authorized** (`OKX_CAPTURED_AT_MAPPING_AUTHORIZED=false`) |
+
+§5.1 Kraken Futures public registry remains for **migration/audit traceability** and residual historical U5b/U5c/U5d evidence paths only. It must **not** be read as the current governed metadata source for OKX production facts.
+
+### 5.1 Kraken Futures — public market-data-only (historical / migration candidate)
 
 | Field | Value |
 |-------|-------|
@@ -181,6 +195,7 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 | **U5b** | Kraken Futures public probe (isolated CLI + mocked tests) | `probe_kraken_futures_public_market_data_v1.py` |
 | **U5c** | U5b raw evidence → U2c governed snapshot candidate transform contract (docs/tests-only) | §12 this document |
 | **U5d** | Offline transform candidate validation CLI (no network; confirm token) | `transform_kraken_futures_raw_to_u2c_candidate_v1.py` |
+| **OKX producer charter** | Sealed OKX → `futures_producer_packet_governed.v1` boundary (docs-only) | [OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md](OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md) |
 | U2b write / Truth-GO | Governed snapshot intake | not authorized |
 
 ## 11. Tests

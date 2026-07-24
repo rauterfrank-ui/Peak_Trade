@@ -58,8 +58,9 @@ MANIFEST_VERIFY_RC=0
 | U3 producer / Slice 4 evidence | `src/webui/workflow_dashboard_readmodel_v1/universe_selection_producer_v1.py` |
 | U3 reader | `src/webui/workflow_dashboard_readmodel_v1/universe_selection_reader_v1.py` |
 | U2c governed snapshot template (docs-only) | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) |
+| OKX → governed packet producer charter (docs-only) | [OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md](OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md) |
 
-U2b must extend this chain — **not** fork a second real-source system, evidence index, or handoff surface.
+U2b must extend this chain — **not** fork a second real-source system, evidence index, or handoff surface. The OKX producer charter ratifies sealed-OKX → `futures_producer_packet_governed.v1` boundaries only; it does **not** implement a producer, fetch, intake acceptance, selection, or readmodel write.
 
 ## 5. Minimum required fields (real source → `FuturesProducerPacket`)
 
@@ -198,6 +199,7 @@ U2B_BLOCKED=true
 | U2b | Real-source loader guard | on main |
 | **U2c Template** | Governed metadata snapshot template (docs-only) | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) |
 | **U5** | Real futures market-data source charter (docs-only) | [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) |
+| **OKX producer charter** | Sealed OKX → `futures_producer_packet_governed.v1` boundary (docs-only) | [OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md](OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md) |
 
 ## 11. Tests
 
