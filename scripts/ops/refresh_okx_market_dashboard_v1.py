@@ -140,7 +140,9 @@ def refresh_okx_market_dashboard_v1(
 
         adapted = map_futures_packets_to_universe_selection_readmodel(upstream_input)
         if adapted.status not in {"ok", "partial"}:
-            _die(f"ERR: universe adapter status={adapted.status} reasons={adapted.rejection_reasons}")
+            _die(
+                f"ERR: universe adapter status={adapted.status} reasons={adapted.rejection_reasons}"
+            )
 
         write_result = write_universe_selection_readmodel(
             resolved_root,
