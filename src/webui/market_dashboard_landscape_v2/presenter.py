@@ -189,7 +189,11 @@ def _present_source_health_compact(
     }
 
 
-def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str, Any]:
+def present_market_landscape_v2(
+    page: MarketDashboardPageSnapshotV1,
+    *,
+    ohlcv_readmodel: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     """Format page snapshot for SSR template context (presentation only)."""
     market = _slot_view(page.market_instrument)
     universe = _slot_view(page.universe_ranking)
@@ -205,7 +209,22 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
     health = page.source_health
 
     chart_availability = page.market_instrument.availability
-    if chart_availability in (Availability.AVAILABLE, Availability.STALE):
+    ohlcv_bound = False
+    ohlcv_payload: dict[str, Any] | None = None
+    if isinstance(ohlcv_readmodel, Mapping) and ohlcv_readmodel.get("bar_count"):
+        ohlcv_bound = True
+        ohlcv_payload = dict(ohlcv_readmodel)
+        freshness = str(ohlcv_readmodel.get("freshness_state") or "")
+        if freshness == "stale":
+            chart_availability = Availability.STALE
+        elif chart_availability not in (Availability.AVAILABLE, Availability.STALE):
+            chart_availability = Availability.AVAILABLE
+        chart_message = (
+            "Primary chart bound to materialized OKX OHLCV readmodel "
+            f"(bars={ohlcv_readmodel.get('bar_count')}, interval="
+            f"{ohlcv_readmodel.get('interval')})."
+        )
+    elif chart_availability in (Availability.AVAILABLE, Availability.STALE):
         chart_message = (
             "Primary chart market instrument bound; OHLCV producer still unbound "
             "(no fabricated candles)."
@@ -340,9 +359,15 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "chart": {
             "availability": chart_availability.value,
             "availability_label": AVAILABILITY_LABELS[chart_availability],
-            "bound": chart_availability in (Availability.AVAILABLE, Availability.STALE),
+            "bound": ohlcv_bound
+            or chart_availability in (Availability.AVAILABLE, Availability.STALE),
             "message": chart_message,
-            "ohlcv": None,
+            "ohlcv": ohlcv_payload,
+            "interval": (ohlcv_payload or {}).get("interval"),
+            "bar_count": (ohlcv_payload or {}).get("bar_count"),
+            "gap_count": (ohlcv_payload or {}).get("gap_count"),
+            "freshness_state": (ohlcv_payload or {}).get("freshness_state"),
+            "last_closed_timestamp": (ohlcv_payload or {}).get("last_closed_timestamp"),
         },
         "timeline": {
             "availability": Availability.NOT_BOUND.value,

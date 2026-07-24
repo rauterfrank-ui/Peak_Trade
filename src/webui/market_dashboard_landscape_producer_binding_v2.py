@@ -397,10 +397,16 @@ def _market_from_universe_selected(
     if stale_reason:
         reason_codes.append(stale_reason)
 
+    market_type = None
+    for row in (*universe_snap.universe, *universe_snap.ranking):
+        if row.get("symbol") == selected and row.get("market_type"):
+            market_type = str(row["market_type"])
+            break
+
     return project_market_instrument_snapshot_v1(
         instrument_id=str(selected),
         venue=venue,
-        market_type=None,
+        market_type=market_type,
         mark_price=None,
         reason_codes=tuple(reason_codes),
         generated_at=producer_at,
@@ -414,6 +420,39 @@ def _market_from_universe_selected(
         is_stale=is_stale,
         stale_reason=stale_reason,
     )
+
+
+def load_bound_okx_ohlcv_readmodel_v1(
+    *,
+    archive_root: str | Path | None = None,
+    selected_instrument_id: str | None,
+    selected_venue: str | None,
+) -> dict[str, Any] | None:
+    """Read-only load of materialized OKX OHLCV; no network; identity fail-closed."""
+    if not selected_instrument_id:
+        return None
+    root = resolve_landscape_archive_root(archive_root)
+    if root is None:
+        return None
+    from src.ops.okx_selected_instrument_ohlcv_readmodel_v1 import load_ohlcv_readmodel_v1
+
+    try:
+        data = load_ohlcv_readmodel_v1(root)
+    except Exception:  # noqa: BLE001
+        return None
+    if not data:
+        return None
+    if str(data.get("instrument_id") or "") != str(selected_instrument_id):
+        return None
+    if selected_venue and str(data.get("venue") or "").lower() not in {
+        str(selected_venue).lower(),
+        "okx",
+        "okx_europe_eea",
+    }:
+        return None
+    if str(data.get("venue") or "").lower() not in {"okx", "okx_europe_eea"}:
+        return None
+    return dict(data)
 
 
 def _enum_or_str(value: Any) -> str:

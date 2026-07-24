@@ -8,7 +8,8 @@ via universe_selection_readmodel.v1 — no Env required when the default exists.
 Phase 4.2 binds dynamic_scope lifecycle identity fail-closed (injection only).
 Phase 4.3A binds canonical_decision fail-closed (injection only).
 Phase 4.3B binds double_play display fail-closed (injection only).
-OHLCV remains unbound. Regime / bull-bear / switch stay unbound.
+OHLCV binds from materialized okx_selected_instrument_ohlcv_readmodel.v1 only.
+Regime / bull-bear / switch stay unbound.
 """
 
 from __future__ import annotations
@@ -20,7 +21,10 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from .market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
+from .market_dashboard_landscape_producer_binding_v2 import (
+    bind_market_universe_slots,
+    load_bound_okx_ohlcv_readmodel_v1,
+)
 from .market_dashboard_landscape_v2.page_aggregate import MarketDashboardReadServiceV1
 from .market_dashboard_landscape_v2.presenter import present_market_landscape_v2
 
@@ -57,7 +61,25 @@ async def market_landscape_dashboard(request: Request) -> Any:
         git_sha=None,
         slot_overrides=phase_slots,
     )
-    context = present_market_landscape_v2(page)
+    ohlcv = load_bound_okx_ohlcv_readmodel_v1(
+        selected_instrument_id=page.market_instrument.instrument_id
+        or page.universe_ranking.selected_instrument_id,
+        selected_venue=page.market_instrument.venue,
+    )
+    context = present_market_landscape_v2(page, ohlcv_readmodel=ohlcv)
+    if ohlcv is not None:
+        eng = context.setdefault("engineering", {})
+        eng["okx_ohlcv"] = {
+            "schema_name": ohlcv.get("schema_name"),
+            "selection_bundle_id": ohlcv.get("selection_bundle_id"),
+            "raw_capture_digest": ohlcv.get("raw_capture_digest"),
+            "captured_at": ohlcv.get("captured_at"),
+            "effective_at": ohlcv.get("effective_at"),
+            "freshness_state": ohlcv.get("freshness_state"),
+            "interval": ohlcv.get("interval"),
+            "bar_count": ohlcv.get("bar_count"),
+            "gap_count": ohlcv.get("gap_count"),
+        }
     return get_templates().TemplateResponse(
         request,
         "market_landscape_v2.html",
