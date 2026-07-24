@@ -136,6 +136,53 @@ def test_get_market_duplicate_status_facts_have_single_primary_location(
     assert 'data-mdl-field="safety"' in strip
 
 
+def test_get_market_decision_why_blocker_primary_reading_flow(client: TestClient) -> None:
+    """Phase 5 PR2: Decision → Why → Blockers are the primary hierarchy; no semantic enrichment."""
+    html = client.get("/market").text
+    decision = _region_html(html, "CANONICAL_DECISION_STRIP")
+
+    assert 'data-mdl-decision-primary="true"' in decision
+    assert 'data-mdl-decision-secondary="true"' in decision
+    assert 'data-mdl-decision-primary-fact="decision"' in decision
+    assert 'data-mdl-decision-primary-fact="why"' in decision
+    assert 'data-mdl-decision-primary-fact="blockers"' in decision
+    assert 'data-mdl-decision-secondary-fact="direction"' in decision
+    assert 'data-mdl-decision-secondary-fact="double_play"' in decision
+    assert 'data-mdl-decision-secondary-fact="confidence"' in decision
+    assert 'data-mdl-why-primary="true"' in decision
+
+    primary = decision.split('data-mdl-decision-primary="true"', 1)[1].split(
+        'data-mdl-decision-secondary="true"', 1
+    )[0]
+    secondary = decision.split('data-mdl-decision-secondary="true"', 1)[1]
+
+    # Primary order: Decision before Why before Blockers.
+    assert primary.index('data-mdl-field="decision"') < primary.index(
+        'data-mdl-field="reason_codes"'
+    )
+    assert primary.index('data-mdl-field="reason_codes"') < primary.index(
+        'data-mdl-field="blockers"'
+    )
+    assert 'data-mdl-field="direction"' not in primary
+    assert 'data-mdl-field="double_play"' not in primary
+    assert 'data-mdl-field="confidence"' not in primary
+
+    # Secondary retains Direction / Double Play / Confidence only.
+    assert 'data-mdl-field="direction"' in secondary
+    assert 'data-mdl-field="double_play"' in secondary
+    assert 'data-mdl-field="confidence"' in secondary
+    assert 'data-mdl-field="decision"' not in secondary
+    assert 'data-mdl-field="reason_codes"' not in secondary
+    assert 'data-mdl-field="blockers"' not in secondary
+
+    # Honest NOT_BOUND; no reason_codes copied into blockers.
+    assert 'data-mdl-field="blockers" data-availability="NOT_BOUND">NOT_BOUND</dd>' in decision
+    assert 'data-mdl-field="confidence" data-availability="NOT_BOUND">NOT_BOUND</dd>' in decision
+    blockers_dd = decision.split('data-mdl-field="blockers"', 1)[1].split("</dd>", 1)[0]
+    assert "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD" not in blockers_dd
+    assert "MISSING_SOURCE ·" not in blockers_dd
+
+
 def test_get_market_has_no_write_or_order_controls(client: TestClient) -> None:
     html = client.get("/market").text
     assert "<form" not in html.lower()

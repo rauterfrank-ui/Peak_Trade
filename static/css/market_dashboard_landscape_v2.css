@@ -292,22 +292,36 @@
 .mdl-v2-decision {
   background: transparent;
   padding: 18px 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.mdl-v2-decision__grid {
+/* Phase 5 PR2: Decision → Why → Blockers primary reading flow */
+.mdl-v2-decision__primary {
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  column-gap: 22px;
-  row-gap: 10px;
+  grid-template-columns: minmax(140px, 0.9fr) minmax(260px, 2.4fr) minmax(140px, 0.9fr);
+  column-gap: 28px;
+  row-gap: 8px;
+  align-items: start;
 }
 
-.mdl-v2-decision__grid > div {
+.mdl-v2-decision__secondary {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 28px;
+  row-gap: 6px;
+  align-items: start;
+}
+
+.mdl-v2-decision__fact {
   min-width: 0;
   padding: 0;
 }
 
-.mdl-v2-decision__grid dt {
+.mdl-v2-decision__fact dt {
   margin: 0;
   font-size: 10px;
   text-transform: uppercase;
@@ -315,11 +329,45 @@
   color: var(--mdl-muted);
 }
 
-.mdl-v2-decision__grid dd {
+.mdl-v2-decision__fact--primary dt {
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.mdl-v2-decision__fact--secondary dt {
+  color: #64748b;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.mdl-v2-decision__fact dd {
   margin: 4px 0 0;
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 13px;
   font-weight: 600;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.mdl-v2-decision__fact--primary dd {
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--mdl-ink);
+}
+
+.mdl-v2-decision__why {
+  /* Primary Why must wrap fully — no destructive nowrap/ellipsis */
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  max-width: 100%;
+}
+
+.mdl-v2-decision__fact--secondary dd {
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -400,15 +448,21 @@
     column-gap: 18px;
   }
 
-  .mdl-v2-decision__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .mdl-v2-decision__primary {
+    grid-template-columns: minmax(120px, 0.85fr) minmax(220px, 2.2fr) minmax(120px, 0.85fr);
+    column-gap: 18px;
+  }
+
+  .mdl-v2-decision__secondary {
+    column-gap: 18px;
   }
 }
 
 @media (max-width: 980px) {
   .mdl-v2-workspace,
   .mdl-v2-ops,
-  .mdl-v2-decision__grid {
+  .mdl-v2-decision__primary,
+  .mdl-v2-decision__secondary {
     grid-template-columns: 1fr;
   }
 }

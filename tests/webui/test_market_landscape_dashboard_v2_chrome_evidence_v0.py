@@ -1,4 +1,4 @@
-"""Real Chrome Playwright evidence for Market Landscape V2 Phase 5 PR1."""
+"""Real Chrome Playwright evidence for Market Landscape V2 Phase 5 PR2."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr1"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr2"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -35,6 +35,36 @@ VIEWPORTS = (
 
 STAMP = datetime(2026, 7, 23, 18, 0, 0, tzinfo=timezone.utc)
 SAFETY_PRODUCER_FRESH = datetime(2026, 7, 23, 15, 0, 0, tzinfo=timezone.utc)
+# Fixed evidence clock — must not use wall-clock datetime.now (byte-stable artifacts).
+EVIDENCE_GENERATED_AT = STAMP
+EVIDENCE_GENERATED_AT_ISO = "2026-07-23T18:00:00Z"
+
+
+def _render_landscape_html(*, safety_authority_fields: dict | None = None) -> str:
+    """Render Landscape HTML with a fixed generated_at for deterministic evidence."""
+    if safety_authority_fields is None:
+        slots = bind_market_universe_slots(generated_at=EVIDENCE_GENERATED_AT)
+    else:
+        slots = bind_market_universe_slots(
+            generated_at=EVIDENCE_GENERATED_AT,
+            safety_authority_fields=safety_authority_fields,
+        )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=EVIDENCE_GENERATED_AT,
+        slot_overrides=slots,
+    )
+    context = present_market_landscape_v2(page)
+    env = Environment(
+        loader=FileSystemLoader(str(REPO / "templates" / "peak_trade_dashboard")),
+        autoescape=select_autoescape(["html", "xml"]),
+    )
+    template = env.get_template("market_landscape_v2.html")
+    html = template.render(
+        status={"project": "Peak_Trade"},
+        **context,
+    )
+    assert EVIDENCE_GENERATED_AT_ISO in html
+    return html
 
 
 @pytest.fixture(scope="module")
@@ -48,16 +78,21 @@ def live_server_url() -> str:
 
 
 def _collect_asgi_html() -> str:
+    """Default-shell evidence HTML with fixed generated_at (no wall-clock drift).
+
+    Live ASGI /market uses datetime.now; evidence artifacts must remain byte-stable
+    across reruns, so this path mirrors the default binding with EVIDENCE_GENERATED_AT.
+    """
+    # Smoke: live route still serves /market.
     client = TestClient(create_app())
     response = client.get("/market")
     assert response.status_code == 200
-    return response.text
+    return _render_landscape_html()
 
 
 def _collect_injected_safety_html() -> str:
     """Test-only DI path: inject Safety fields; never auto-loads live state."""
-    slots = bind_market_universe_slots(
-        generated_at=STAMP,
+    return _render_landscape_html(
         safety_authority_fields={
             "kill_switch_state": "KILLED",
             "veto_active": True,
@@ -67,20 +102,6 @@ def _collect_injected_safety_html() -> str:
             "killswitch_owner_ref": SAFETY_AUTHORITY_OWNER_MODULE,
             "semantic_digest": "e" * 64,
         },
-    )
-    page = MarketDashboardReadServiceV1().load_page_snapshot(
-        generated_at=STAMP,
-        slot_overrides=slots,
-    )
-    context = present_market_landscape_v2(page)
-    env = Environment(
-        loader=FileSystemLoader(str(REPO / "templates" / "peak_trade_dashboard")),
-        autoescape=select_autoescape(["html", "xml"]),
-    )
-    template = env.get_template("market_landscape_v2.html")
-    return template.render(
-        status={"project": "Peak_Trade"},
-        **context,
     )
 
 
@@ -96,6 +117,66 @@ def _assert_no_duplicate_status_facts(page) -> None:  # type: ignore[no-untyped-
     assert strip.get_by_text("Freshness", exact=True).count() == 0
     assert strip.locator('[data-mdl-field="source_health"]').count() == 0
     assert context.locator('[data-mdl-field="source_health"]').count() == 1
+
+
+def _assert_decision_why_blocker_reading_flow(page) -> dict[str, object]:  # type: ignore[no-untyped-def]
+    """Phase 5 PR2: primary hierarchy + fully readable Why (no destructive ellipsis)."""
+    strip = page.locator("[data-mdl-decision-strip='true']")
+    primary = strip.locator('[data-mdl-decision-primary="true"]')
+    secondary = strip.locator('[data-mdl-decision-secondary="true"]')
+    assert primary.count() == 1
+    assert secondary.count() == 1
+    assert primary.locator('[data-mdl-decision-primary-fact="decision"]').count() == 1
+    assert primary.locator('[data-mdl-decision-primary-fact="why"]').count() == 1
+    assert primary.locator('[data-mdl-decision-primary-fact="blockers"]').count() == 1
+    assert secondary.locator('[data-mdl-decision-secondary-fact="direction"]').count() == 1
+    assert secondary.locator('[data-mdl-decision-secondary-fact="double_play"]').count() == 1
+    assert secondary.locator('[data-mdl-decision-secondary-fact="confidence"]').count() == 1
+
+    why = page.locator('[data-mdl-why-primary="true"]')
+    assert why.count() == 1
+    why_text = why.inner_text().strip()
+    assert why_text
+    assert "…" not in why_text
+    assert why_text.endswith("…") is False
+
+    style = why.evaluate(
+        """(el) => {
+          const cs = getComputedStyle(el);
+          return {
+            whiteSpace: cs.whiteSpace,
+            overflow: cs.overflow,
+            textOverflow: cs.textOverflow,
+            scrollWidth: el.scrollWidth,
+            clientWidth: el.clientWidth,
+            scrollHeight: el.scrollHeight,
+            clientHeight: el.clientHeight,
+          };
+        }"""
+    )
+    assert style["whiteSpace"] in ("normal", "pre-wrap", "break-spaces")
+    assert style["overflow"] in ("visible", "auto")
+    assert style["textOverflow"] in ("clip", "")
+    # Fully readable: no horizontal clipping of Why content.
+    assert int(style["scrollWidth"]) <= int(style["clientWidth"]) + 1
+    assert int(style["scrollHeight"]) <= int(style["clientHeight"]) + 1
+
+    blockers = page.locator('[data-mdl-field="blockers"]')
+    confidence = page.locator('[data-mdl-field="confidence"]')
+    assert blockers.count() == 1
+    assert confidence.count() == 1
+    assert blockers.get_attribute("data-availability") == "NOT_BOUND"
+    assert confidence.get_attribute("data-availability") == "NOT_BOUND"
+    assert blockers.inner_text().strip() == "NOT_BOUND"
+    assert confidence.inner_text().strip() == "NOT_BOUND"
+    assert "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD" not in blockers.inner_text()
+
+    return {
+        "why_text": why_text,
+        "why_style": style,
+        "blockers": blockers.inner_text().strip(),
+        "confidence": confidence.inner_text().strip(),
+    }
 
 
 def _run_chrome_against_html(
@@ -163,6 +244,7 @@ def _run_chrome_against_html(
                 assert chart.count() == 1
                 assert decision.count() == 1
                 _assert_no_duplicate_status_facts(page)
+                reading_flow = _assert_decision_why_blocker_reading_flow(page)
 
                 if expect_safety_available:
                     safety = page.locator(
@@ -192,6 +274,22 @@ def _run_chrome_against_html(
                     "() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1"
                 )
                 assert overflow is False
+                viewport_metrics = page.evaluate(
+                    """() => ({
+                      scrollWidth: document.documentElement.scrollWidth,
+                      clientWidth: document.documentElement.clientWidth,
+                      horizontal_overflow:
+                        document.documentElement.scrollWidth >
+                        document.documentElement.clientWidth + 1,
+                      chart_present:
+                        document.querySelector('[data-mdl-chart-region="true"]') !== null,
+                      engineering_open:
+                        document.querySelector('[data-mdl-engineering]')?.open === true,
+                    })"""
+                )
+                assert viewport_metrics["horizontal_overflow"] is False
+                assert viewport_metrics["chart_present"] is True
+                assert viewport_metrics["engineering_open"] is False
 
                 assert page.locator("form").count() == 0
                 assert page.locator("button").count() == 0
@@ -207,6 +305,12 @@ def _run_chrome_against_html(
                     "viewport": [width, height],
                     "channel": channel,
                     "safety_available": expect_safety_available,
+                    "why_text": reading_flow["why_text"],
+                    "why_fully_readable": True,
+                    "primary_why_destructive_ellipsis": False,
+                    "viewport_metrics": viewport_metrics,
+                    "blockers": reading_flow["blockers"],
+                    "confidence": reading_flow["confidence"],
                 }
                 context.close()
         finally:

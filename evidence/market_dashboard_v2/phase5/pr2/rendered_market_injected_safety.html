@@ -1,30 +1,56 @@
-{% extends "base.html" %}
-{% block title %}Market Dashboard Landscape V2 — Peak_Trade{% endblock %}
-{% block body_class %}mdl-v2-body{% endblock %}
-{% block main_class %}mdl-v2-main{% endblock %}
-{% block extra_head %}
+<!-- templates/peak_trade_dashboard/base.html -->
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Market Dashboard Landscape V2 — Peak_Trade</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Phase 1B: self-hosted design tokens + layout + purged utilities (no Tailwind CDN) -->
+    <link
+      rel="stylesheet"
+      href="/static/css/peak_trade_dashboard_design_tokens_v1.css"
+      data-market-design-token-owner-v1="true"
+      data-canonical-design-token-owner="true"
+    />
+    <link rel="stylesheet" href="/static/css/peak_trade_dashboard_layout_v1.css" />
+    <link
+      rel="stylesheet"
+      href="/static/css/peak_trade_dashboard_utilities_v1.css"
+      data-market-utilities-css-v1="true"
+    />
+    <meta name="peak-trade-browser-network-allowlist" content="self-only" />
+    <style>
+      /* Custom animation for running indicator */
+      @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+      .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+    </style>
+    
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
 <meta name="peak-trade-market-landscape-v2" content="phase4-6b-economic-evidence-explicit-injection-binding" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
-{% endblock %}
-{% block app_chrome %}
+
+  </head>
+  <body class="bg-slate-950 text-slate-100 mdl-v2-body">
+    <div class="min-h-screen">
+      
 <header class="mdl-v2-app-chrome" data-mdl-app-chrome="true">
   <a href="/" class="mdl-v2-app-chrome__home">Peak_Trade</a>
   <span class="mdl-v2-app-chrome__label">Market Landscape V2</span>
   <span class="mdl-v2-chip">READ-ONLY · LIVE LOCKED</span>
 </header>
-{% endblock %}
 
-{% block content %}
+
+      <main class="mdl-v2-main">
+        
 <main
   class="mdl-v2"
   data-market-landscape-v2="true"
   data-market-dashboard-authority="false"
   data-live-authorized="false"
   data-orders="false"
-  data-phase="{{ phase }}"
-  data-runtime-bridge="{{ runtime_bridge_display }}"
+  data-phase="PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+  data-runtime-bridge="BOUND_NOT_ACTIVATED"
   aria-label="Market Dashboard Landscape V2 read-only workspace"
 >
   <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
@@ -34,20 +60,20 @@
         <span class="mdl-v2-chip mdl-v2-chip--quiet">READ-ONLY CONSUMER</span>
       </div>
       <dl class="mdl-v2-strip__facts">
-        {# Strip = compact ops summary. Scope/Regime live in Context; do not alias availability as Freshness. #}
-        <div><dt>Instrument</dt><dd data-mdl-field="instrument">{{ global_strip.instrument }}</dd></div>
-        <div><dt>Venue</dt><dd data-mdl-field="venue">{{ global_strip.venue }}</dd></div>
+        
+        <div><dt>Instrument</dt><dd data-mdl-field="instrument">MISSING_SOURCE</dd></div>
+        <div><dt>Venue</dt><dd data-mdl-field="venue">MISSING_SOURCE</dd></div>
         <div>
           <dt>Runtime</dt>
-          <dd data-mdl-field="runtime" title="{{ shell_authority_class }}">{{ global_strip.runtime_state }}</dd>
+          <dd data-mdl-field="runtime" title="product_shell_constant_non_authoritative">BOUND_NOT_ACTIVATED</dd>
         </div>
         <div>
           <dt>Safety</dt>
           <dd
             data-mdl-field="safety"
-            data-availability="{{ safety.availability }}"
-            title="{% if safety.reason_codes %}{{ safety.reason_codes|join(', ') }}{% endif %}"
-          >{{ global_strip.safety_status }}</dd>
+            data-availability="AVAILABLE"
+            title="killswitch_block_new, reconciliation_required"
+          >KILLED · veto=True</dd>
         </div>
       </dl>
     </header>
@@ -58,33 +84,24 @@
         <ul class="mdl-v2-rail-rows" aria-label="Universe projection">
           <li>
             <span class="mdl-v2-rail-rows__label">Watchlist</span>
-            <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="universe_watchlist">{{ universe_rail.watchlist_label }}</span>
+            <span class="mdl-v2-state" data-availability="MISSING_SOURCE" data-mdl-field="universe_watchlist">MISSING_SOURCE</span>
           </li>
           <li>
             <span class="mdl-v2-rail-rows__label">Selected</span>
             <span class="mdl-v2-state" data-mdl-field="selected_instrument">
-              {% if universe_rail.selected_instrument_id %}{{ universe_rail.selected_instrument_id }}{% else %}{{ universe.availability_label }}{% endif %}
+              MISSING_SOURCE
             </span>
           </li>
           <li>
             <span class="mdl-v2-rail-rows__label">Membership</span>
-            <span class="mdl-v2-state" data-mdl-field="universe_membership">{{ universe_rail.membership_label }}</span>
+            <span class="mdl-v2-state" data-mdl-field="universe_membership">MISSING_SOURCE</span>
           </li>
           <li>
             <span class="mdl-v2-rail-rows__label">Rank</span>
-            <span class="mdl-v2-state" data-mdl-field="rank_status">{{ universe_rail.rank_label }}</span>
+            <span class="mdl-v2-state" data-mdl-field="rank_status">MISSING_SOURCE</span>
           </li>
         </ul>
-        {% if universe_ranking_rows %}
-        <ul class="mdl-v2-rail-rows mdl-v2-rail-rows--ranked" aria-label="Ranking rows" data-mdl-ranking-rows="true">
-          {% for row in universe_ranking_rows[:12] %}
-          <li>
-            <span class="mdl-v2-rail-rows__label">#{{ row.rank }} {{ row.symbol }}</span>
-            <span class="mdl-v2-state">{% if row.display_score is not none %}{{ row.display_score }}{% else %}—{% endif %}</span>
-          </li>
-          {% endfor %}
-        </ul>
-        {% endif %}
+        
       </aside>
 
       <section
@@ -93,13 +110,13 @@
         data-mdl-chart-region="true"
         aria-label="Primary market workspace"
       >
-        <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="{{ chart.bound|lower }}">
+        <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="false">
           <div class="mdl-v2-chart__chrome">
             <h2>Chart</h2>
-            <span class="mdl-v2-state" data-availability="{{ chart.availability }}">{{ chart.availability_label }}</span>
+            <span class="mdl-v2-state" data-availability="MISSING_SOURCE">MISSING_SOURCE</span>
           </div>
-          <div class="mdl-v2-chart__stage" role="img" aria-label="{{ chart.message }}">
-            <p class="mdl-v2-chart__message">{{ chart.message }}</p>
+          <div class="mdl-v2-chart__stage" role="img" aria-label="Primary chart MISSING_SOURCE — market identity / OHLCV not persisted for dashboard; no OHLCV fabricated.">
+            <p class="mdl-v2-chart__message">Primary chart MISSING_SOURCE — market identity / OHLCV not persisted for dashboard; no OHLCV fabricated.</p>
           </div>
         </div>
       </section>
@@ -109,31 +126,31 @@
         <dl class="mdl-v2-kv">
           <div>
             <dt>Lifecycle</dt>
-            <dd data-mdl-field="scope_lifecycle" data-availability="{{ scope.availability }}">{{ scope.lifecycle_display }}</dd>
+            <dd data-mdl-field="scope_lifecycle" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
           </div>
           <div>
             <dt>Current Scope</dt>
-            <dd data-mdl-field="current_scope_ref" data-availability="{{ scope.availability }}">{{ scope.current_scope_ref_display }}</dd>
+            <dd data-mdl-field="current_scope_ref" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
           </div>
           <div>
             <dt>Next Scope</dt>
-            <dd data-mdl-field="next_scope_ref" data-availability="{{ scope.availability }}">{{ scope.next_scope_ref_display }}</dd>
+            <dd data-mdl-field="next_scope_ref" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
           </div>
           <div>
             <dt>Regime</dt>
-            <dd data-mdl-field="regime" data-availability="{{ regime.availability }}">{{ regime.availability_label }}</dd>
+            <dd data-mdl-field="regime" data-availability="NOT_BOUND">NOT_BOUND</dd>
           </div>
           <div>
             <dt>Bull/Bear</dt>
-            <dd data-mdl-field="bull_bear" data-availability="{{ bull_bear.availability }}">{{ bull_bear.availability_label }}</dd>
+            <dd data-mdl-field="bull_bear" data-availability="NOT_BOUND">NOT_BOUND</dd>
           </div>
           <div>
             <dt>Switch</dt>
-            <dd data-mdl-field="switch" data-availability="{{ switch.availability }}">{{ switch.availability_label }}</dd>
+            <dd data-mdl-field="switch" data-availability="NOT_BOUND">NOT_BOUND</dd>
           </div>
           <div>
             <dt>Source Health</dt>
-            <dd data-mdl-field="source_health" data-availability="{{ source_health.availability }}">{{ source_health.availability }}</dd>
+            <dd data-mdl-field="source_health" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
           </div>
         </dl>
       </aside>
@@ -145,7 +162,7 @@
       data-mdl-decision-strip="true"
       aria-label="Canonical decision strip"
     >
-      {# Phase 5 PR2: Decision → Why → Blockers primary; Direction/DP/Confidence secondary. #}
+      
       <dl
         class="mdl-v2-decision__primary"
         data-mdl-decision-primary="true"
@@ -153,8 +170,8 @@
       >
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--primary" data-mdl-decision-primary-fact="decision">
           <dt>Decision</dt>
-          <dd data-mdl-field="decision" data-availability="{{ decision.availability }}">
-            {% if decision.is_available or decision.is_stale %}{{ decision.fields.decision }}{% else %}{{ decision.availability_label }}{% endif %}
+          <dd data-mdl-field="decision" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
           </dd>
         </div>
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--primary mdl-v2-decision__fact--why" data-mdl-decision-primary-fact="why">
@@ -163,13 +180,11 @@
             class="mdl-v2-decision__why"
             data-mdl-field="reason_codes"
             data-mdl-why-primary="true"
-            data-availability="{{ decision.availability }}"
+            data-availability="MISSING_SOURCE"
           >
-            {% if decision.is_available or decision.is_stale %}
-              {% if decision.reason_codes %}{{ decision.reason_codes|join(", ") }}{% else %}—{% endif %}
-            {% else %}
-              {{ decision.availability_label }}{% if decision.reason_codes %} · {{ decision.reason_codes|join(", ") }}{% endif %}
-            {% endif %}
+            
+              MISSING_SOURCE · CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD
+            
           </dd>
         </div>
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--primary" data-mdl-decision-primary-fact="blockers">
@@ -184,14 +199,14 @@
       >
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="direction">
           <dt>Direction</dt>
-          <dd data-mdl-field="direction" data-availability="{{ decision.availability }}">
-            {% if decision.is_available or decision.is_stale %}{{ decision.fields.direction }}{% else %}{{ decision.availability_label }}{% endif %}
+          <dd data-mdl-field="direction" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
           </dd>
         </div>
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="double_play">
           <dt>Double Play</dt>
-          <dd data-mdl-field="double_play" data-availability="{{ double_play.availability }}">
-            {% if double_play.is_available or double_play.is_stale %}{{ double_play.fields.overall_status }}{% else %}{{ double_play.availability_label }}{% endif %}
+          <dd data-mdl-field="double_play" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
           </dd>
         </div>
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="confidence">
@@ -204,28 +219,28 @@
     <section class="mdl-v2-ops" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
       <div class="mdl-v2-ops__col">
         <h3>Risk / Sizing / Capital</h3>
-        <p class="mdl-v2-state" data-availability="{{ risk.availability }}">{{ risk.availability_label }}</p>
+        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
       </div>
       <div class="mdl-v2-ops__col">
         <h3>Execution / Reconciliation</h3>
-        <p class="mdl-v2-state" data-availability="{{ execution.availability }}">{{ execution.availability_label }}</p>
+        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
       </div>
       <div class="mdl-v2-ops__col">
         <h3>Economic</h3>
         <p
           class="mdl-v2-state"
-          data-availability="{{ economic.availability }}"
+          data-availability="MISSING_SOURCE"
           data-mdl-field="economic"
-        >{{ economic.status_display }}</p>
+        >MISSING_SOURCE</p>
       </div>
     </section>
 
     <section class="mdl-v2-timeline" data-mdl-region="EVENT_DECISION_TIMELINE" aria-label="Event and decision timeline">
       <div class="mdl-v2-timeline__head">
         <h2>Timeline</h2>
-        <span class="mdl-v2-state" data-availability="{{ timeline.availability }}">{{ timeline.availability_label }}</span>
+        <span class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</span>
       </div>
-      <p class="mdl-v2-timeline__empty">{{ timeline.message }}</p>
+      <p class="mdl-v2-timeline__empty">Event / Decision Timeline NOT_BOUND — no invented history.</p>
     </section>
 
     <details
@@ -235,14 +250,39 @@
     >
       <summary>Engineering · provenance / schemas / diagnostics</summary>
       <div class="mdl-v2-engineering__body">
-        <p><strong>Generated:</strong> <span class="font-mono">{{ generated_at }}</span></p>
-        <p><strong>Page schema:</strong> <span class="font-mono">{{ page_schema_id }}</span></p>
-        <p><strong>Runtime bridge:</strong> <span class="font-mono">{{ runtime_bridge_display }}</span> ({{ shell_authority_class }})</p>
-        <p><strong>Incomplete slots:</strong> {{ source_health.incomplete_slots|join(", ") }}</p>
-        <pre class="mdl-v2-pre" tabindex="0">{{ source_health.slot_availability | tojson(indent=2) }}</pre>
+        <p><strong>Generated:</strong> <span class="font-mono">2026-07-23T18:00:00Z</span></p>
+        <p><strong>Page schema:</strong> <span class="font-mono">market_dashboard_landscape_page_snapshot.v1</span></p>
+        <p><strong>Runtime bridge:</strong> <span class="font-mono">BOUND_NOT_ACTIVATED</span> (product_shell_constant_non_authoritative)</p>
+        <p><strong>Incomplete slots:</strong> autonomy_stage, canonical_decision, diagnostics_summary, double_play, dynamic_scope, economic_summary, execution_reconciliation, market_instrument, risk_sizing_capital, universe_ranking</p>
+        <pre class="mdl-v2-pre" tabindex="0">{
+  "autonomy_stage": "NOT_BOUND",
+  "canonical_decision": "MISSING_SOURCE",
+  "diagnostics_summary": "NOT_BOUND",
+  "double_play": "MISSING_SOURCE",
+  "dynamic_scope": "MISSING_SOURCE",
+  "economic_summary": "MISSING_SOURCE",
+  "execution_reconciliation": "NOT_BOUND",
+  "market_instrument": "MISSING_SOURCE",
+  "risk_sizing_capital": "NOT_BOUND",
+  "safety_authority": "AVAILABLE",
+  "universe_ranking": "MISSING_SOURCE"
+}</pre>
       </div>
     </details>
   </div>
 </main>
 <script src="/static/js/market_dashboard_landscape_v2.js" defer></script>
-{% endblock %}
+
+      </main>
+
+      <footer class="border-t border-slate-800/50 bg-slate-900/30 mt-8">
+        <div class="max-w-6xl mx-auto px-4 py-3 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <span>Peak_Trade Dashboard v1.2 · Read-Only · Shadow/Testnet Mode · R&D Dashboard (Phase 76)
+            · Companion Run UI default <code class="text-slate-400">127.0.0.1:8010</code> (local;
+            README)</span>
+          <span>🔒 Live-Execution ist deaktiviert</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
