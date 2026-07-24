@@ -69,11 +69,12 @@ def test_environment_override_wins_over_default(
 
 
 def test_default_is_deterministic_absolute_and_cwd_independent(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest
 ) -> None:
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
     monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
-    home = tmp_path / "home"
-    home.mkdir()
+    home = durable_isolated_home(monkeypatch, request, label="archive_root_deterministic")
     first = canonical_default_workflow_dashboard_archive_root(
         home=home, platform="darwin", environ={}
     )
@@ -91,11 +92,13 @@ def test_default_is_deterministic_absolute_and_cwd_independent(
 
 
 def test_resolver_performs_no_filesystem_creation(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
     monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
-    home = tmp_path / "home_no_create"
-    home.mkdir()
+    home = durable_isolated_home(monkeypatch, request, label="archive_root_no_create")
     default = canonical_default_workflow_dashboard_archive_root(
         home=home, platform="darwin", environ={}
     )
@@ -120,11 +123,13 @@ def test_resolver_performs_no_filesystem_creation(
 
 
 def test_fixture_tmp_and_repo_not_selected_as_default(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
     monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
-    home = tmp_path / "home"
-    home.mkdir()
+    home = durable_isolated_home(monkeypatch, request, label="archive_root_reject_tmp")
     default = canonical_default_workflow_dashboard_archive_root(
         home=home, platform="darwin", environ={}, repo_root=REPO_ROOT
     )
@@ -142,6 +147,53 @@ def test_fixture_tmp_and_repo_not_selected_as_default(
     assert linux_default == (
         home.resolve() / ".local" / "state" / "peak_trade" / "workflow_dashboard_v1"
     )
+
+
+def test_home_under_ephemeral_tmp_rejected_for_canonical_default() -> None:
+    """Genuine /tmp-backed HOME must not become a canonical default (CI parity)."""
+    import tempfile
+
+    with tempfile.TemporaryDirectory(dir="/tmp") as raw:
+        home = Path(raw) / "home"
+        home.mkdir()
+        with pytest.raises(
+            WorkflowDashboardArchiveRootError, match="DEFAULT_ARCHIVE_ROOT_UNDER_TMP"
+        ):
+            canonical_default_workflow_dashboard_archive_root(
+                home=home, platform="linux", environ={}, repo_root=REPO_ROOT
+            )
+        with pytest.raises(
+            WorkflowDashboardArchiveRootError, match="DEFAULT_ARCHIVE_ROOT_UNDER_TMP"
+        ):
+            canonical_default_workflow_dashboard_archive_root(
+                home=home, platform="darwin", environ={}, repo_root=REPO_ROOT
+            )
+
+
+def test_platform_path_matrix_durable_homes(
+    monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest
+) -> None:
+    """macOS / Linux / GitHub-runner-style durable homes remain safe; no Env required."""
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
+    home = durable_isolated_home(monkeypatch, request, label="archive_root_path_matrix")
+    darwin = canonical_default_workflow_dashboard_archive_root(
+        home=home, platform="darwin", environ={}, repo_root=REPO_ROOT
+    )
+    linux = canonical_default_workflow_dashboard_archive_root(
+        home=home, platform="linux", environ={}, repo_root=REPO_ROOT
+    )
+    # GitHub-hosted Linux runners use a durable /home/runner style home; same linux shape.
+    gha_like = canonical_default_workflow_dashboard_archive_root(
+        home=home, platform="linux", environ={}, repo_root=REPO_ROOT
+    )
+    assert darwin == (
+        home.resolve() / "Library" / "Application Support" / "Peak_Trade" / "workflow_dashboard_v1"
+    )
+    assert linux == home.resolve() / ".local" / "state" / "peak_trade" / "workflow_dashboard_v1"
+    assert gha_like == linux
+    assert not str(darwin).startswith("/tmp")
+    assert not str(linux).startswith("/tmp")
 
 
 def test_invalid_explicit_path_shape_fails_closed() -> None:
@@ -166,17 +218,14 @@ def test_existing_env_workflows_remain_compatible(
 
 
 def test_unconfigured_when_default_missing_preserves_runtime_semantics(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
     monkeypatch.setenv(ENV_ENABLED, "1")
     monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
-    # Point home at a temp home so default cannot accidentally exist.
-    home = tmp_path / "isolated_home"
-    home.mkdir()
-    monkeypatch.setenv("HOME", str(home))
-    # Also clear LOCALAPPDATA/XDG noise for portability.
-    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
-    monkeypatch.delenv("LOCALAPPDATA", raising=False)
+    durable_isolated_home(monkeypatch, request, label="archive_root_unconfigured")
     ctx = build_workflow_dashboard_display_context()
     assert ctx["display_status"] == "unconfigured"
     assert ctx["section_visible"] is False
@@ -200,23 +249,26 @@ def test_missing_readmodel_under_resolved_root_remains_missing_source(
 
 
 def test_unset_root_still_reports_archive_root_unset(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
     from datetime import datetime, timezone
 
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
     monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
-    home = tmp_path / "home"
-    home.mkdir()
-    monkeypatch.setenv("HOME", str(home))
-    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
+    durable_isolated_home(monkeypatch, request, label="archive_root_unset")
     slots = bind_market_universe_slots(generated_at=datetime.now(timezone.utc))
     assert slots["universe_ranking"].availability is Availability.MISSING_SOURCE
     assert REASON_ARCHIVE_ROOT_UNSET in slots["universe_ranking"].reason_codes
 
 
-def test_linux_and_windows_default_shapes(tmp_path: Path) -> None:
-    home = tmp_path / "home"
-    home.mkdir()
+def test_linux_and_windows_default_shapes(
+    monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest
+) -> None:
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
+    home = durable_isolated_home(monkeypatch, request, label="archive_root_linux_win")
     linux = canonical_default_workflow_dashboard_archive_root(
         home=home, platform="linux", environ={}, repo_root=REPO_ROOT
     )

@@ -427,7 +427,7 @@ def test_shell_assets_exist() -> None:
 
 def test_get_market_default_path_projects_selected_instrument_without_env(
     monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> None:
     """Canonical default archive root (no Env) binds Selected Future + venue."""
     import json
@@ -446,11 +446,9 @@ def test_get_market_default_path_projects_selected_instrument_without_env(
     )
 
     monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
-    home = tmp_path / "home"
-    home.mkdir()
-    monkeypatch.setenv("HOME", str(home))
-    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
-    monkeypatch.delenv("LOCALAPPDATA", raising=False)
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
+    home = durable_isolated_home(monkeypatch, request, label="shell_route_default_path")
 
     archive_root = canonical_default_workflow_dashboard_archive_root(
         home=home, platform=sys.platform, environ={}, repo_root=REPO

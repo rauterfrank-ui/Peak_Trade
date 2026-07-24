@@ -1354,18 +1354,18 @@ def test_economic_page_aggregate_and_presenter_injection() -> None:
     assert page.risk_sizing_capital.availability is Availability.NOT_BOUND
 
 
-def _isolate_home_without_archive_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
-    monkeypatch.delenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", raising=False)
-    home = tmp_path / "default_home"
-    home.mkdir()
-    monkeypatch.setenv("HOME", str(home))
-    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
-    monkeypatch.delenv("LOCALAPPDATA", raising=False)
-    return home
+def _isolate_home_without_archive_env(
+    monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest
+) -> Path:
+    """Isolate HOME for no-env canonical-default assertions (not under /tmp)."""
+    from tests.webui.archive_root_durable_home_v1 import durable_isolated_home
+
+    return durable_isolated_home(monkeypatch, request, label="producer_binding_default_path")
 
 
 def test_exact_canonical_default_path_resolution_without_env(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
     import sys
 
@@ -1374,7 +1374,7 @@ def test_exact_canonical_default_path_resolution_without_env(
         resolve_workflow_dashboard_archive_root,
     )
 
-    home = _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    home = _isolate_home_without_archive_env(monkeypatch, request)
     expected = canonical_default_workflow_dashboard_archive_root(
         home=home, platform=sys.platform, environ={}, repo_root=REPO
     )
@@ -1392,7 +1392,8 @@ def test_exact_canonical_default_path_resolution_without_env(
 
 
 def test_default_path_binds_selected_instrument_and_venue_without_env(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
     import sys
 
@@ -1400,7 +1401,7 @@ def test_default_path_binds_selected_instrument_and_venue_without_env(
         canonical_default_workflow_dashboard_archive_root,
     )
 
-    home = _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    home = _isolate_home_without_archive_env(monkeypatch, request)
     default_root = canonical_default_workflow_dashboard_archive_root(
         home=home, platform=sys.platform, environ={}, repo_root=REPO
     )
@@ -1435,9 +1436,10 @@ def test_default_path_binds_selected_instrument_and_venue_without_env(
 
 
 def test_default_path_missing_archive_remains_fail_closed(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
-    _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    _isolate_home_without_archive_env(monkeypatch, request)
     slots = bind_market_universe_slots(generated_at=STAMP)
     assert slots["universe_ranking"].availability is Availability.MISSING_SOURCE
     assert REASON_ARCHIVE_ROOT_UNSET in slots["universe_ranking"].reason_codes
@@ -1445,7 +1447,8 @@ def test_default_path_missing_archive_remains_fail_closed(
 
 
 def test_default_path_missing_readmodel_remains_fail_closed(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
     import sys
 
@@ -1453,7 +1456,7 @@ def test_default_path_missing_readmodel_remains_fail_closed(
         canonical_default_workflow_dashboard_archive_root,
     )
 
-    home = _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    home = _isolate_home_without_archive_env(monkeypatch, request)
     default_root = canonical_default_workflow_dashboard_archive_root(
         home=home, platform=sys.platform, environ={}, repo_root=REPO
     )
@@ -1464,7 +1467,8 @@ def test_default_path_missing_readmodel_remains_fail_closed(
 
 
 def test_default_path_invalid_schema_remains_fail_closed(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    request: pytest.FixtureRequest,
 ) -> None:
     import sys
 
@@ -1472,7 +1476,7 @@ def test_default_path_invalid_schema_remains_fail_closed(
         canonical_default_workflow_dashboard_archive_root,
     )
 
-    home = _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    home = _isolate_home_without_archive_env(monkeypatch, request)
     default_root = canonical_default_workflow_dashboard_archive_root(
         home=home, platform=sys.platform, environ={}, repo_root=REPO
     )
