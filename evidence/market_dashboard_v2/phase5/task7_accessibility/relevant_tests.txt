@@ -1,0 +1,28 @@
+STATIC_TESTS:
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 34 items / 1 deselected / 33 selected
+
+tests/webui/test_market_landscape_dashboard_v2_accessibility_baseline_v0.py . [  3%]
+...                                                                      [ 12%]
+tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py ....... [ 33%]
+...                                                                      [ 42%]
+tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py . [ 45%]
+..................                                                       [100%]
+
+======================= 33 passed, 1 deselected in 0.90s =======================
+
+CHROME_TEST:
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 1 item
+
+tests/webui/test_market_landscape_dashboard_v2_accessibility_baseline_v0.py . [100%]
+
+============================== 1 passed in 2.08s ===============================

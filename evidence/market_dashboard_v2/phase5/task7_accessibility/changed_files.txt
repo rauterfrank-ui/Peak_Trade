@@ -1,0 +1,11 @@
+PRODUCTION:
+  templates/peak_trade_dashboard/market_landscape_v2.html
+  static/css/market_dashboard_landscape_v2.css
+  static/js/market_dashboard_landscape_v2.js
+TESTS:
+  tests/webui/test_market_landscape_dashboard_v2_accessibility_baseline_v0.py
+  tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+DOCS:
+  docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+EVIDENCE:
+  evidence/market_dashboard_v2/phase5/task7_accessibility/

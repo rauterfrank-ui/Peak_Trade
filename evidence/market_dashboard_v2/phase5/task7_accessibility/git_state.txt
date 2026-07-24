@@ -1,0 +1,6 @@
+EXPECTED_BASE_SHA=3398fc89e20c941bcefcfa67de9f8cadf3cc9561
+ACTUAL_HEAD=3398fc89e20c941bcefcfa67de9f8cadf3cc9561
+BRANCH=feat/market-dashboard-phase-5-task7-accessibility-baseline
+ORIGIN_MAIN=3398fc89e20c941bcefcfa67de9f8cadf3cc9561
+DATE_UTC=2026-07-24T18:01:58Z
+OPEN_PRS=[]

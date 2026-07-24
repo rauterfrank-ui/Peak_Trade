@@ -1,0 +1,40 @@
+{
+  "market_focus_1512x982.png": {
+    "viewport": [
+      1512,
+      982
+    ],
+    "channel": "chrome",
+    "focus_outline": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(125, 211, 252)"
+    },
+    "tab_order": [
+      "a.mdl-v2-app-chrome__home",
+      "details > summary"
+    ],
+    "escape_restores_focus": true,
+    "hidden_content_not_focusable": true,
+    "no_horizontal_overflow": true
+  },
+  "market_focus_1920x1080.png": {
+    "viewport": [
+      1920,
+      1080
+    ],
+    "channel": "chrome",
+    "focus_outline": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(125, 211, 252)"
+    },
+    "tab_order": [
+      "a.mdl-v2-app-chrome__home",
+      "details > summary"
+    ],
+    "escape_restores_focus": true,
+    "hidden_content_not_focusable": true,
+    "no_horizontal_overflow": true
+  }
+}

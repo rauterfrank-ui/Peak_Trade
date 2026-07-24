@@ -17,7 +17,8 @@
 {% endblock %}
 
 {% block content %}
-<main
+{# base.html already provides the page main landmark; do not nest another. #}
+<div
   class="mdl-v2"
   data-market-landscape-v2="true"
   data-market-dashboard-authority="false"
@@ -25,12 +26,12 @@
   data-orders="false"
   data-phase="{{ phase }}"
   data-runtime-bridge="{{ runtime_bridge_display }}"
-  aria-label="Market Dashboard Landscape V2 read-only workspace"
+  data-mdl-a11y-baseline="task7"
 >
   <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
     <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">
       <div class="mdl-v2-strip__brand">
-        <span class="mdl-v2-kicker">Market</span>
+        <h1 class="mdl-v2-kicker">Market Landscape</h1>
         <span class="mdl-v2-chip mdl-v2-chip--quiet">READ-ONLY CONSUMER</span>
       </div>
       <dl class="mdl-v2-strip__facts">
@@ -255,7 +256,11 @@
       data-mdl-engineering="true"
     >
       <summary>Engineering · provenance / schemas / diagnostics</summary>
-      <div class="mdl-v2-engineering__body">
+      <div
+        class="mdl-v2-engineering__body"
+        id="mdl-v2-engineering-body"
+        data-mdl-engineering-body="true"
+      >
         {# Phase 5 PR4: render existing engineering presenter truth only — no invented diagnostics. #}
         <p class="mdl-v2-engineering__meta" data-mdl-engineering-label="true">{{ engineering.label }}</p>
         <p><strong>Generated:</strong> <span class="font-mono">{{ generated_at }}</span></p>
@@ -340,6 +345,6 @@
       </div>
     </details>
   </div>
-</main>
+</div>
 <script src="/static/js/market_dashboard_landscape_v2.js" defer></script>
 {% endblock %}

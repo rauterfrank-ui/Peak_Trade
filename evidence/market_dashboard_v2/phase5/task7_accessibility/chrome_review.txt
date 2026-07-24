@@ -1,0 +1,12 @@
+CHROME_REVIEW_STATUS=PARTIAL
+CANONICAL_REVIEW_SERVER_STATUS=STALE_PID
+CANONICAL_REVIEW_SERVER_AUTO_REPAIR=false
+CANONICAL_REVIEW_SERVER_USED=false
+BLOCKER=review_server.sh status returned STALE_PID (pidfile present, process gone); per TASK_7 fail-closed policy no auto-repair and no invented Chrome PASS via review-server path.
+PLAYWRIGHT_REAL_CHROME_ROUTE_FULFILL=PASS
+PLAYWRIGHT_CHANNEL=chrome (test harness; falls back to chromium only if chrome channel unavailable)
+PLAYWRIGHT_ASSERTIONS=keyboard tab order, focus-visible outline, engineering Enter/Escape, hidden content not focusable, no keyboard trap into closed drawer body, no horizontal overflow, no console/page errors
+VIEWPORTS=1512x982,1920x1080
+SCREENSHOTS=market_focus_1512x982.png,market_focus_1920x1080.png
+OPERATOR_PRODUCT_GATE=false
+NOTE=Automated DOM/Playwright evidence may PASS while canonical review-server operator product gate remains false.
