@@ -1,8 +1,9 @@
 """Canonical durable archive-root contract for Workflow/Market Dashboard.
 
 Sole owner of archive-root *location* resolution for dashboard consumers.
-Does not create directories, does not write readmodels, does not authorize
-trading, and does not autoload Universe onto GET /market.
+Does not create directories, does not write readmodels, and does not authorize
+trading. GET /market consumers may resolve this root (explicit → Env →
+canonical default) to read-only-load universe_selection_readmodel.v1.
 """
 
 from __future__ import annotations

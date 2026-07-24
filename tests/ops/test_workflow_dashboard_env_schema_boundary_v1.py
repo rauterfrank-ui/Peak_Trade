@@ -33,10 +33,13 @@ def test_archive_root_contract_doc_exists() -> None:
     assert "resolve_workflow_dashboard_archive_root" in doc
     assert "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT" in doc
     assert "canonical_default" in doc or "Canonical default" in doc
+    assert "GET &#47;market" in doc
+    assert "universe_selection_readmodel.v1" in doc
     assert (
         "resolver_creates_filesystem" in doc
         or "never** creates" in doc.lower()
         or "Never creates" in doc
+        or "never** creates filesystem" in doc.lower()
     )
 
 

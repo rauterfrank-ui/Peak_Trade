@@ -24,7 +24,8 @@
   "empty_directory_is_valid_data": false,
   "notes": [
     "Sole configuration owner for Workflow/Market Dashboard durable archive root location.",
-    "Does not authorize live trading, orders, runtime activation, or dashboard Universe autoload.",
+    "Does not authorize live trading, orders, or runtime activation.",
+    "GET /market may read-only bind universe_selection_readmodel.v1 via this resolved root without Env when the canonical default directory exists.",
     "Missing readmodels under a resolved root remain fail-closed MISSING_SOURCE at consumer boundaries.",
     "PEAK_TRADE_DATA_ARCHIVE_ROOT and review_server .run/ state are non-owners for this contract."
   ]

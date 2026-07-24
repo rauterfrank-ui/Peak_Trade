@@ -2,11 +2,13 @@
 
 Read-only SSR surface. No POST/PUT/PATCH/DELETE. No command endpoints.
 No execution / order / runtime-activation imports.
-Phase 4.1 binds market_instrument / universe_ranking fail-closed.
+Phase 4.1 binds market_instrument / universe_ranking fail-closed from the
+canonical Workflow Dashboard archive root (explicit → Env → platform default)
+via universe_selection_readmodel.v1 — no Env required when the default exists.
 Phase 4.2 binds dynamic_scope lifecycle identity fail-closed (injection only).
 Phase 4.3A binds canonical_decision fail-closed (injection only).
 Phase 4.3B binds double_play display fail-closed (injection only).
-Regime / bull-bear / switch and later Phase 4 slots remain unbound.
+OHLCV remains unbound. Regime / bull-bear / switch stay unbound.
 """
 
 from __future__ import annotations

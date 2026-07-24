@@ -37,6 +37,7 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     REASON_SCOPE_NOT_PERSISTED,
     REASON_SELECTED_FORBIDDEN_SYMBOL,
     REASON_SOURCE_CONTRADICTION,
+    REASON_UNIVERSE_ABSENT,
     SAFETY_AUTHORITY_OWNER_MODULE,
     SAFETY_EVIDENCE_PRODUCER_MODULE,
     SAFETY_SOURCE_KIND,
@@ -1351,3 +1352,187 @@ def test_economic_page_aggregate_and_presenter_injection() -> None:
     assert ctx["product_flags"]["phase_4_6b_binding_active"] is True
     assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
     assert page.risk_sizing_capital.availability is Availability.NOT_BOUND
+
+
+def _isolate_home_without_archive_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
+    monkeypatch.delenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", raising=False)
+    home = tmp_path / "default_home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
+    monkeypatch.delenv("LOCALAPPDATA", raising=False)
+    return home
+
+
+def test_exact_canonical_default_path_resolution_without_env(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import sys
+
+    from src.webui.workflow_dashboard_archive_root_v1 import (
+        canonical_default_workflow_dashboard_archive_root,
+        resolve_workflow_dashboard_archive_root,
+    )
+
+    home = _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    expected = canonical_default_workflow_dashboard_archive_root(
+        home=home, platform=sys.platform, environ={}, repo_root=REPO
+    )
+    assert expected.is_absolute()
+    assert expected.name == "workflow_dashboard_v1"
+    assert "Peak_Trade" in expected.parts or "peak_trade" in expected.parts
+    assert resolve_workflow_dashboard_archive_root(require_existing_directory=True) is None
+    expected.mkdir(parents=True)
+    resolved = resolve_workflow_dashboard_archive_root(require_existing_directory=True)
+    assert resolved == expected.resolve()
+    assert resolved is not None
+    readmodel = resolved / READMODELS_DIRNAME / READMODEL_FILENAME
+    assert readmodel.name == "universe_selection_readmodel.v1.json"
+    assert readmodel.parent.name == "readmodels"
+
+
+def test_default_path_binds_selected_instrument_and_venue_without_env(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import sys
+
+    from src.webui.workflow_dashboard_archive_root_v1 import (
+        canonical_default_workflow_dashboard_archive_root,
+    )
+
+    home = _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    default_root = canonical_default_workflow_dashboard_archive_root(
+        home=home, platform=sys.platform, environ={}, repo_root=REPO
+    )
+    archive = _write_truth_universe_archive(
+        default_root,
+        selected_symbol="ETH-USDT-SWAP",
+    )
+    slots = bind_market_universe_slots(generated_at=STAMP)
+    assert slots["universe_ranking"].availability is Availability.AVAILABLE
+    assert slots["universe_ranking"].selected_instrument_id == "ETH-USDT-SWAP"
+    assert slots["market_instrument"].availability is Availability.AVAILABLE
+    assert slots["market_instrument"].instrument_id == "ETH-USDT-SWAP"
+    assert slots["market_instrument"].venue == "OKX"
+    assert slots["market_instrument"].mark_price is None
+    assert "SELECTED_INSTRUMENT_IDENTITY_FROM_UNIVERSE_SELECTION" in (
+        slots["market_instrument"].reason_codes
+    )
+    ctx = present_market_landscape_v2(
+        MarketDashboardReadServiceV1().load_page_snapshot(
+            generated_at=STAMP,
+            slot_overrides=slots,
+        )
+    )
+    assert ctx["global_strip"]["instrument"] == "ETH-USDT-SWAP"
+    assert ctx["global_strip"]["venue"] == "OKX"
+    assert ctx["selected_instrument_id"] == "ETH-USDT-SWAP"
+    assert ctx["source_health"]["slot_availability"]["universe_ranking"] == "AVAILABLE"
+    assert "OHLCV" in ctx["chart"]["message"].upper() or "ohlcv" in ctx["chart"]["message"].lower()
+    assert "unbound" in ctx["chart"]["message"].lower()
+    # Explicit injection still unused; default path alone sufficed.
+    assert archive == default_root
+
+
+def test_default_path_missing_archive_remains_fail_closed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    slots = bind_market_universe_slots(generated_at=STAMP)
+    assert slots["universe_ranking"].availability is Availability.MISSING_SOURCE
+    assert REASON_ARCHIVE_ROOT_UNSET in slots["universe_ranking"].reason_codes
+    assert slots["market_instrument"].availability is Availability.MISSING_SOURCE
+
+
+def test_default_path_missing_readmodel_remains_fail_closed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import sys
+
+    from src.webui.workflow_dashboard_archive_root_v1 import (
+        canonical_default_workflow_dashboard_archive_root,
+    )
+
+    home = _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    default_root = canonical_default_workflow_dashboard_archive_root(
+        home=home, platform=sys.platform, environ={}, repo_root=REPO
+    )
+    default_root.mkdir(parents=True)
+    slots = bind_market_universe_slots(generated_at=STAMP)
+    assert slots["universe_ranking"].availability is Availability.MISSING_SOURCE
+    assert REASON_UNIVERSE_ABSENT in slots["universe_ranking"].reason_codes
+
+
+def test_default_path_invalid_schema_remains_fail_closed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import sys
+
+    from src.webui.workflow_dashboard_archive_root_v1 import (
+        canonical_default_workflow_dashboard_archive_root,
+    )
+
+    home = _isolate_home_without_archive_env(monkeypatch, tmp_path)
+    default_root = canonical_default_workflow_dashboard_archive_root(
+        home=home, platform=sys.platform, environ={}, repo_root=REPO
+    )
+    readmodels = default_root / READMODELS_DIRNAME
+    readmodels.mkdir(parents=True)
+    bad = {
+        "schema_name": "universe_selection_readmodel.v1",
+        "schema_version": 1,
+        "generated_at": "2026-07-23T17:00:00Z",
+        "source_run_id": "bad",
+        "source_stage": "paper",
+        "non_authorizing": True,
+        "universe": [],
+        "ranking": [],
+        "selected_future": {
+            "row_id": "s-btc",
+            "symbol": "BTC/USD",
+            "rank": 1,
+            "truth_status": "PERSISTED",
+        },
+        "market_snapshot": {
+            "truth_status": "PERSISTED",
+            "source_kind": "governed_producer",
+            "snapshot_id": "snap-bad",
+            "exchange": "OKX",
+            "captured_at": "2026-07-23T16:59:00Z",
+        },
+        "evidence": {
+            "producer_contract": "universe_selection_producer.v1",
+            "storage_target": "readmodels/universe_selection_readmodel.v1.json",
+            "links": [],
+        },
+        "missing_truth": {
+            "universe": "UNIVERSE_SOURCE_NOT_PERSISTED",
+            "ranking": "TOP20_RANKING_NOT_PERSISTED",
+            "selected_future": "PERSISTED",
+            "future_detail": "AVAILABLE",
+            "orders_fills_pnl": "NOT_PERSISTED",
+        },
+    }
+    (readmodels / READMODEL_FILENAME).write_text(
+        json.dumps(bad, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    _write_manifest_sha256(readmodels)
+    slots = bind_market_universe_slots(generated_at=STAMP)
+    assert slots["universe_ranking"].availability is Availability.INVALID
+
+
+def test_bind_market_universe_slots_has_no_write_capability() -> None:
+    import inspect
+
+    from src.webui import market_dashboard_landscape_producer_binding_v2 as mod
+
+    source = inspect.getsource(mod)
+    for token in (
+        "write_universe_selection_readmodel",
+        "write_missing_truth_universe_selection_readmodel",
+        "os.replace",
+        "Path.write_text",
+        "open(",
+    ):
+        assert token not in source
+    assert "try_load_universe_selection_for_dashboard" in source
