@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -128,8 +129,15 @@ def test_get_market_duplicate_status_facts_have_single_primary_location(
     # Source Health remains the sole operator-visible aggregate availability fact.
     assert 'data-mdl-field="source_health"' not in strip
     assert context.count('data-mdl-field="source_health"') == 1
-
-    # Strip retains compact ops facts only.
+    assert 'data-mdl-source-health="true"' in context
+    assert 'data-mdl-source-health-summary="true"' in context
+    assert " · " in context.split('data-mdl-source-health-summary="true"', 1)[1][:200]
+    assert 'data-mdl-source-slot="canonical_decision"' in context
+    assert 'data-mdl-source-slot="market_instrument"' in context
+    # Compact freshness must not reappear as a strip Freshness alias.
+    assert context.count('data-mdl-field="source_health"') == html.count(
+        'data-mdl-field="source_health"'
+    )
     assert 'data-mdl-field="instrument"' in strip
     assert 'data-mdl-field="venue"' in strip
     assert 'data-mdl-field="runtime"' in strip
@@ -258,6 +266,99 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     # Aggregate availability remains on source_health only (not under Freshness).
     assert ctx["source_health"]["availability"] == "NOT_BOUND"
     assert "observed_at" in ctx["source_health"]["freshness"]
+    assert ctx["source_health"]["freshness_display"] == "2026-07-23T16:00:00Z"
+    assert ctx["source_health"]["summary_display"] == "NOT_BOUND · 2026-07-23T16:00:00Z"
+    assert len(ctx["source_health"]["sources"]) == 11
+    decision_src = next(
+        src for src in ctx["source_health"]["sources"] if src["slot"] == "canonical_decision"
+    )
+    assert decision_src["availability"] == "NOT_BOUND"
+    assert decision_src["freshness_display"] == "2026-07-23T16:00:00Z"
+    assert " · " in decision_src["line_display"]
+    assert "HEALTHY" not in json.dumps(ctx["source_health"])
+    assert "OK" != ctx["source_health"]["availability"]
+
+
+def test_presenter_source_health_freshness_states_distinct() -> None:
+    """STALE / INVALID / MISSING_SOURCE / NOT_BOUND remain distinct; freshness fail-closed."""
+    from src.webui.market_dashboard_landscape_v2.presenter import (
+        _FRESHNESS_UNAVAILABLE,
+        _format_freshness_display,
+        _source_line_display,
+    )
+
+    service = MarketDashboardReadServiceV1()
+    stale = unavailable_canonical_decision(
+        availability=Availability.STALE,
+        generated_at=STAMP,
+        reason="EVIDENCE_STALE",
+    )
+    invalid = unavailable_canonical_decision(
+        availability=Availability.INVALID,
+        generated_at=STAMP,
+        reason="SCHEMA_MISMATCH",
+    )
+    missing = unavailable_canonical_decision(
+        availability=Availability.MISSING_SOURCE,
+        generated_at=STAMP,
+        reason="CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD",
+    )
+
+    stale_page = service.load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides={"canonical_decision": stale},
+    )
+    stale_ctx = present_market_landscape_v2(stale_page)
+    stale_src = next(
+        src for src in stale_ctx["source_health"]["sources"] if src["slot"] == "canonical_decision"
+    )
+    assert stale_src["availability"] == "STALE"
+    assert stale_src["is_stale"] is True
+    assert stale_src["freshness_display"] == "2026-07-23T16:00:00Z"
+    assert stale_src["line_display"].startswith("STALE · ")
+    assert stale_ctx["source_health"]["availability"] == "STALE"
+
+    invalid_page = service.load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides={"canonical_decision": invalid},
+    )
+    invalid_ctx = present_market_landscape_v2(invalid_page)
+    invalid_src = next(
+        src
+        for src in invalid_ctx["source_health"]["sources"]
+        if src["slot"] == "canonical_decision"
+    )
+    assert invalid_src["availability"] == "INVALID"
+    assert invalid_src["availability"] != "MISSING_SOURCE"
+    assert invalid_src["availability"] != "NOT_BOUND"
+    assert invalid_ctx["source_health"]["availability"] == "INVALID"
+
+    missing_page = service.load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides={"canonical_decision": missing},
+    )
+    missing_ctx = present_market_landscape_v2(missing_page)
+    missing_src = next(
+        src
+        for src in missing_ctx["source_health"]["sources"]
+        if src["slot"] == "canonical_decision"
+    )
+    assert missing_src["availability"] == "MISSING_SOURCE"
+    assert missing_src["availability"] != "INVALID"
+    assert missing_src["availability"] != "NOT_BOUND"
+
+    # Fail-closed when freshness payload is absent from a slot view.
+    assert _format_freshness_display(None) == _FRESHNESS_UNAVAILABLE
+    assert _format_freshness_display({}) == _FRESHNESS_UNAVAILABLE
+    assert _format_freshness_display({"observed_at": ""}) == _FRESHNESS_UNAVAILABLE
+    assert (
+        _source_line_display(
+            availability="AVAILABLE",
+            freshness_display=_FRESHNESS_UNAVAILABLE,
+        )
+        == f"AVAILABLE · {_FRESHNESS_UNAVAILABLE}"
+    )
+    assert "HEALTHY" not in json.dumps(stale_ctx["source_health"])
 
 
 def test_shell_assets_exist() -> None:

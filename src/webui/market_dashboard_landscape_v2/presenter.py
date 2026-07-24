@@ -11,6 +11,7 @@ from .availability import Availability
 from .contracts import _ProjectionBase
 from .page_aggregate import MarketDashboardPageSnapshotV1
 from .serialization import serialize_projection
+from .source_health import DashboardSourceHealthSnapshotV1
 
 AVAILABILITY_LABELS: Mapping[Availability, str] = {
     Availability.AVAILABLE: "AVAILABLE",
@@ -26,6 +27,23 @@ MISSING_STATE_REASON_HINTS = (
     "SCHEMA_MISMATCH",
     "INVALID_PROVENANCE",
 )
+
+# Presentation labels only — no authority / ownership semantics.
+_SOURCE_SLOT_LABELS: Mapping[str, str] = {
+    "market_instrument": "Market",
+    "universe_ranking": "Universe",
+    "dynamic_scope": "Scope",
+    "canonical_decision": "Decision",
+    "double_play": "Double Play",
+    "risk_sizing_capital": "Risk",
+    "safety_authority": "Safety",
+    "execution_reconciliation": "Execution",
+    "economic_summary": "Economic",
+    "autonomy_stage": "Autonomy",
+    "diagnostics_summary": "Diagnostics",
+}
+
+_FRESHNESS_UNAVAILABLE = "FRESHNESS_UNAVAILABLE"
 
 _NOT_BOUND_VIEW: dict[str, Any] = {
     "availability": Availability.NOT_BOUND.value,
@@ -98,6 +116,70 @@ def _economic_status_display(page: MarketDashboardPageSnapshotV1) -> str:
     if snap.economic_viability_status is not None:
         return str(snap.economic_viability_status)
     return AVAILABILITY_LABELS[snap.availability]
+
+
+def _format_freshness_display(freshness: Mapping[str, Any] | None) -> str:
+    """Format canonical freshness for display; never invent timestamps or health."""
+    if not isinstance(freshness, Mapping):
+        return _FRESHNESS_UNAVAILABLE
+    observed = freshness.get("observed_at")
+    if observed is None or not str(observed).strip():
+        return _FRESHNESS_UNAVAILABLE
+    return str(observed)
+
+
+def _source_line_display(*, availability: str, freshness_display: str) -> str:
+    return f"{availability} · {freshness_display}"
+
+
+def _present_source_health_compact(
+    *,
+    health: DashboardSourceHealthSnapshotV1,
+    slot_views: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Compact Context-rail projection from existing Source Health + slot freshness."""
+    freshness = health.freshness.to_json_dict()
+    freshness_display = _format_freshness_display(freshness)
+    availability = health.availability.value
+    sources: list[dict[str, Any]] = []
+    for slot, state in sorted(health.slot_availability.items()):
+        view = slot_views.get(slot) or {}
+        slot_availability = str(view.get("availability") or state.value)
+        slot_freshness_display = _format_freshness_display(
+            view.get("freshness") if isinstance(view.get("freshness"), Mapping) else None
+        )
+        sources.append(
+            {
+                "slot": slot,
+                "label": _SOURCE_SLOT_LABELS.get(slot, slot),
+                "availability": slot_availability,
+                "freshness_display": slot_freshness_display,
+                "line_display": _source_line_display(
+                    availability=slot_availability,
+                    freshness_display=slot_freshness_display,
+                ),
+                "is_stale": bool(
+                    isinstance(view.get("freshness"), Mapping)
+                    and view.get("freshness", {}).get("is_stale") is True
+                ),
+            }
+        )
+    return {
+        "availability": availability,
+        "availability_label": AVAILABILITY_LABELS[health.availability],
+        "slot_availability": {
+            slot: state.value for slot, state in sorted(health.slot_availability.items())
+        },
+        "incomplete_slots": list(health.incomplete_slots),
+        "provenance": health.provenance.to_json_dict(),
+        "freshness": freshness,
+        "freshness_display": freshness_display,
+        "summary_display": _source_line_display(
+            availability=availability,
+            freshness_display=freshness_display,
+        ),
+        "sources": sources,
+    }
 
 
 def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str, Any]:
@@ -232,15 +314,22 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         },
         "autonomy": autonomy,
         "diagnostics": diagnostics,
-        "source_health": {
-            "availability": health.availability.value,
-            "slot_availability": {
-                slot: state.value for slot, state in sorted(health.slot_availability.items())
+        "source_health": _present_source_health_compact(
+            health=health,
+            slot_views={
+                "market_instrument": market,
+                "universe_ranking": universe,
+                "dynamic_scope": scope,
+                "canonical_decision": decision,
+                "double_play": double_play,
+                "risk_sizing_capital": risk,
+                "safety_authority": safety,
+                "execution_reconciliation": execution,
+                "economic_summary": economic,
+                "autonomy_stage": autonomy,
+                "diagnostics_summary": diagnostics,
             },
-            "incomplete_slots": list(health.incomplete_slots),
-            "provenance": health.provenance.to_json_dict(),
-            "freshness": health.freshness.to_json_dict(),
-        },
+        ),
         "chart": {
             "availability": chart_availability.value,
             "availability_label": AVAILABILITY_LABELS[chart_availability],

@@ -1,4 +1,4 @@
-"""Real Chrome Playwright evidence for Market Landscape V2 Phase 5 PR2."""
+"""Real Chrome Playwright evidence for Market Landscape V2 Phase 5 PR3."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr2"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr3"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -117,6 +117,15 @@ def _assert_no_duplicate_status_facts(page) -> None:  # type: ignore[no-untyped-
     assert strip.get_by_text("Freshness", exact=True).count() == 0
     assert strip.locator('[data-mdl-field="source_health"]').count() == 0
     assert context.locator('[data-mdl-field="source_health"]').count() == 1
+    assert context.locator('[data-mdl-source-health="true"]').count() == 1
+    summary = context.locator('[data-mdl-source-health-summary="true"]')
+    assert summary.count() == 1
+    summary_text = summary.inner_text().strip()
+    assert " · " in summary_text
+    assert context.locator('[data-mdl-source-slot="canonical_decision"]').count() == 1
+    assert context.locator('[data-mdl-source-slot="market_instrument"]').count() == 1
+    # Aggregate Source Health field remains unique across the page.
+    assert page.locator('[data-mdl-field="source_health"]').count() == 1
 
 
 def _assert_decision_why_blocker_reading_flow(page) -> dict[str, object]:  # type: ignore[no-untyped-def]
