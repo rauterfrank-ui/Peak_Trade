@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
 import os
@@ -23,8 +24,13 @@ from src.ops.okx_public_market_data_client_v1 import OkxPublicMarketDataClientV1
 PACKAGE_MARKER = "OKX_SELECTED_INSTRUMENT_OHLCV_READMODEL_V1=true"
 OHLCV_SCHEMA = "okx_selected_instrument_ohlcv_readmodel.v1"
 OHLCV_RELATIVE_PATH = "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+UNIVERSE_SELECTION_RELATIVE_PATH = "readmodels/universe_selection_readmodel.v1.json"
+REFRESH_LOCK_NAME = ".okx_selected_instrument_ohlcv_refresh.lock"
 DEFAULT_BAR = "1H"
 DEFAULT_LIMIT = 100
+# Bounded default for PT1H candles: continuous snapshot refresh without OKX hammering.
+# Derived from candle timeframe (1H); not faster than necessary for closed-bar cadence.
+DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS = 60
 
 
 class OkxOhlcvReadmodelError(ValueError):
@@ -249,3 +255,149 @@ def load_ohlcv_readmodel_v1(archive_root: Path) -> Mapping[str, Any] | None:
     if data.get("schema_name") != OHLCV_SCHEMA:
         raise OkxOhlcvReadmodelError("OHLCV_SCHEMA_MISMATCH")
     return data
+
+
+def _parse_aware_utc(raw: Any) -> datetime | None:
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(raw.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return None
+    return parsed.astimezone(timezone.utc)
+
+
+def resolve_selected_instrument_for_ohlcv_refresh_v1(
+    archive_root: Path,
+) -> dict[str, Any]:
+    """Resolve canonical selected OKX instrument from universe_selection_readmodel.v1."""
+    selection_path = archive_root / UNIVERSE_SELECTION_RELATIVE_PATH
+    if not selection_path.is_file():
+        raise OkxOhlcvReadmodelError("MISSING_SOURCE:UNIVERSE_SELECTION")
+    payload = json.loads(selection_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise OkxOhlcvReadmodelError("INVALID:UNIVERSE_SELECTION_NOT_OBJECT")
+    selected = payload.get("selected_future")
+    if not isinstance(selected, dict):
+        raise OkxOhlcvReadmodelError("MISSING_SOURCE:SELECTED_INSTRUMENT")
+    symbol = str(selected.get("symbol") or "").strip()
+    if not symbol:
+        raise OkxOhlcvReadmodelError("MISSING_SOURCE:SELECTED_INSTRUMENT")
+    if "BTC" in symbol.upper().split("-"):
+        raise OkxOhlcvReadmodelError("INVALID:BTC_EXCLUDED")
+    venue = "okx"
+    for row in payload.get("universe") or []:
+        if isinstance(row, dict) and str(row.get("symbol") or "") == symbol and row.get("exchange"):
+            venue = str(row["exchange"]).strip().lower() or "okx"
+            break
+    if venue not in {"okx", "okx_europe_eea"}:
+        raise OkxOhlcvReadmodelError("INVALID:SELECTED_VENUE_NOT_OKX")
+    bundle_id = str(
+        payload.get("source_run_id")
+        or (payload.get("evidence") or {}).get("source_run_id")
+        or "universe_selection_readmodel.v1"
+    )
+    return {
+        "selected_instrument": symbol,
+        "selected_provider_instrument_id": symbol,
+        "selected_venue": venue,
+        "selection_bundle_id": bundle_id,
+        "selection_path": selection_path,
+    }
+
+
+def refresh_selected_okx_ohlcv_readmodel_from_archive_v1(
+    *,
+    archive_root: Path,
+    client: OkxPublicMarketDataClientV1 | None = None,
+    bar: str = DEFAULT_BAR,
+    min_interval_seconds: int = DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS,
+    force: bool = False,
+) -> dict[str, Any]:
+    """Rate-limited public OHLCV rematerialization for the canonically selected instrument.
+
+    Fail-closed: provider/network errors do not invent candles or rewrite the
+    readmodel with fabricated bars. Concurrent refreshes are exclusive via flock.
+    """
+    root = archive_root.expanduser().resolve()
+    root.mkdir(parents=True, exist_ok=True)
+    lock_path = root / REFRESH_LOCK_NAME
+    lock_fh = lock_path.open("w", encoding="utf-8")
+    try:
+        try:
+            fcntl.flock(lock_fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise OkxOhlcvReadmodelError("REFRESH_IN_PROGRESS") from exc
+
+        selection = resolve_selected_instrument_for_ohlcv_refresh_v1(root)
+        existing = load_ohlcv_readmodel_v1(root)
+        if existing is not None:
+            if str(existing.get("instrument_id") or "") != selection["selected_instrument"]:
+                raise OkxOhlcvReadmodelError("INVALID:INSTRUMENT_MISMATCH")
+            if str(existing.get("venue") or "").lower() not in {"okx", "okx_europe_eea"}:
+                raise OkxOhlcvReadmodelError("INVALID:OHLCV_VENUE_NOT_OKX")
+            captured_at = _parse_aware_utc(existing.get("captured_at"))
+            if not force and captured_at is not None and min_interval_seconds > 0:
+                age = (datetime.now(timezone.utc) - captured_at).total_seconds()
+                if age < float(min_interval_seconds):
+                    return {
+                        "status": "SKIPPED_RECENT",
+                        "refresh_attempted": False,
+                        "selected_instrument": selection["selected_instrument"],
+                        "selected_venue": selection["selected_venue"],
+                        "captured_at": existing.get("captured_at"),
+                        "last_timestamp": existing.get("last_timestamp"),
+                        "digest": hashlib.sha256(
+                            json.dumps(existing, sort_keys=True).encode()
+                        ).hexdigest(),
+                        "ohlcv": dict(existing),
+                    }
+
+        try:
+            materialize = materialize_selected_okx_ohlcv_readmodel_v1(
+                archive_root=root,
+                selected_instrument=selection["selected_instrument"],
+                selected_provider_instrument_id=selection["selected_provider_instrument_id"],
+                selected_venue=selection["selected_venue"],
+                selection_bundle_id=selection["selection_bundle_id"],
+                selection_path=selection["selection_path"],
+                bar=bar,
+                client=client,
+            )
+        except Exception as exc:  # noqa: BLE001 — surface provider failures fail-closed
+            retained = load_ohlcv_readmodel_v1(root)
+            return {
+                "status": "REFRESH_FAILED",
+                "refresh_attempted": True,
+                "refresh_error": f"{type(exc).__name__}:{exc}",
+                "selected_instrument": selection["selected_instrument"],
+                "selected_venue": selection["selected_venue"],
+                "captured_at": None if retained is None else retained.get("captured_at"),
+                "last_timestamp": None if retained is None else retained.get("last_timestamp"),
+                "digest": None
+                if retained is None
+                else hashlib.sha256(json.dumps(retained, sort_keys=True).encode()).hexdigest(),
+                "ohlcv": None if retained is None else dict(retained),
+                "fabricated": False,
+            }
+
+        refreshed = load_ohlcv_readmodel_v1(root)
+        return {
+            "status": "OK",
+            "refresh_attempted": True,
+            "selected_instrument": selection["selected_instrument"],
+            "selected_venue": selection["selected_venue"],
+            "captured_at": None if refreshed is None else refreshed.get("captured_at"),
+            "last_timestamp": None if refreshed is None else refreshed.get("last_timestamp"),
+            "digest": materialize.get("digest"),
+            "ohlcv": None if refreshed is None else dict(refreshed),
+            "materialize": materialize,
+        }
+    finally:
+        try:
+            fcntl.flock(lock_fh.fileno(), fcntl.LOCK_UN)
+        except Exception:  # noqa: BLE001
+            pass
+        lock_fh.close()
