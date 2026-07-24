@@ -150,9 +150,7 @@ class OkxPublicMarketDataClientV1:
                 if not isinstance(payload, dict):
                     raise OkxPublicMarketDataClientError("PAYLOAD_NOT_OBJECT")
                 provider_code = str(payload.get("code") if payload.get("code") is not None else "")
-                provider_message = str(
-                    payload.get("msg") if payload.get("msg") is not None else ""
-                )
+                provider_message = str(payload.get("msg") if payload.get("msg") is not None else "")
                 if provider_code != "0":
                     raise OkxPublicMarketDataClientError(
                         f"PROVIDER_CODE_{provider_code}:{provider_message}"
