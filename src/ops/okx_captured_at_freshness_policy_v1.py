@@ -105,7 +105,9 @@ def build_okx_capture_clocks_v1(
     )
 
 
-def freshness_threshold_seconds(source_type: str, *, policy: Mapping[str, Any] | None = None) -> int:
+def freshness_threshold_seconds(
+    source_type: str, *, policy: Mapping[str, Any] | None = None
+) -> int:
     thresholds = dict(DEFAULT_THRESHOLDS_SECONDS)
     if policy is not None:
         raw = policy.get("freshness_thresholds_seconds") or {}
