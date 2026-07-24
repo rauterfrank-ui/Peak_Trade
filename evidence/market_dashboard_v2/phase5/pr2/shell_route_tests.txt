@@ -8,4 +8,4 @@ collected 8 items
 tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py ....... [ 87%]
 .                                                                        [100%]
 
-============================== 8 passed in 0.70s ===============================
+============================== 8 passed in 0.73s ===============================

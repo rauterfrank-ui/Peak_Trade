@@ -35,6 +35,36 @@ VIEWPORTS = (
 
 STAMP = datetime(2026, 7, 23, 18, 0, 0, tzinfo=timezone.utc)
 SAFETY_PRODUCER_FRESH = datetime(2026, 7, 23, 15, 0, 0, tzinfo=timezone.utc)
+# Fixed evidence clock — must not use wall-clock datetime.now (byte-stable artifacts).
+EVIDENCE_GENERATED_AT = STAMP
+EVIDENCE_GENERATED_AT_ISO = "2026-07-23T18:00:00Z"
+
+
+def _render_landscape_html(*, safety_authority_fields: dict | None = None) -> str:
+    """Render Landscape HTML with a fixed generated_at for deterministic evidence."""
+    if safety_authority_fields is None:
+        slots = bind_market_universe_slots(generated_at=EVIDENCE_GENERATED_AT)
+    else:
+        slots = bind_market_universe_slots(
+            generated_at=EVIDENCE_GENERATED_AT,
+            safety_authority_fields=safety_authority_fields,
+        )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=EVIDENCE_GENERATED_AT,
+        slot_overrides=slots,
+    )
+    context = present_market_landscape_v2(page)
+    env = Environment(
+        loader=FileSystemLoader(str(REPO / "templates" / "peak_trade_dashboard")),
+        autoescape=select_autoescape(["html", "xml"]),
+    )
+    template = env.get_template("market_landscape_v2.html")
+    html = template.render(
+        status={"project": "Peak_Trade"},
+        **context,
+    )
+    assert EVIDENCE_GENERATED_AT_ISO in html
+    return html
 
 
 @pytest.fixture(scope="module")
@@ -48,16 +78,21 @@ def live_server_url() -> str:
 
 
 def _collect_asgi_html() -> str:
+    """Default-shell evidence HTML with fixed generated_at (no wall-clock drift).
+
+    Live ASGI /market uses datetime.now; evidence artifacts must remain byte-stable
+    across reruns, so this path mirrors the default binding with EVIDENCE_GENERATED_AT.
+    """
+    # Smoke: live route still serves /market.
     client = TestClient(create_app())
     response = client.get("/market")
     assert response.status_code == 200
-    return response.text
+    return _render_landscape_html()
 
 
 def _collect_injected_safety_html() -> str:
     """Test-only DI path: inject Safety fields; never auto-loads live state."""
-    slots = bind_market_universe_slots(
-        generated_at=STAMP,
+    return _render_landscape_html(
         safety_authority_fields={
             "kill_switch_state": "KILLED",
             "veto_active": True,
@@ -67,20 +102,6 @@ def _collect_injected_safety_html() -> str:
             "killswitch_owner_ref": SAFETY_AUTHORITY_OWNER_MODULE,
             "semantic_digest": "e" * 64,
         },
-    )
-    page = MarketDashboardReadServiceV1().load_page_snapshot(
-        generated_at=STAMP,
-        slot_overrides=slots,
-    )
-    context = present_market_landscape_v2(page)
-    env = Environment(
-        loader=FileSystemLoader(str(REPO / "templates" / "peak_trade_dashboard")),
-        autoescape=select_autoescape(["html", "xml"]),
-    )
-    template = env.get_template("market_landscape_v2.html")
-    return template.render(
-        status={"project": "Peak_Trade"},
-        **context,
     )
 
 
