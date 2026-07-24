@@ -423,3 +423,105 @@ def test_shell_assets_exist() -> None:
     assert (REPO / "templates/peak_trade_dashboard/market_landscape_v2.html").is_file()
     assert (REPO / "static/css/market_dashboard_landscape_v2.css").is_file()
     assert (REPO / "static/js/market_dashboard_landscape_v2.js").is_file()
+
+
+def test_get_market_default_path_projects_selected_instrument_without_env(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Canonical default archive root (no Env) binds Selected Future + venue."""
+    import json
+    import sys
+
+    from scripts.ops.primary_evidence_retention_v0 import (
+        write_manifest_sha256 as _write_manifest_sha256,
+    )
+    from src.webui.workflow_dashboard_archive_root_v1 import (
+        ENV_ARCHIVE_ROOT,
+        canonical_default_workflow_dashboard_archive_root,
+    )
+    from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
+        READMODEL_FILENAME,
+        READMODELS_DIRNAME,
+    )
+
+    monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
+    monkeypatch.delenv("LOCALAPPDATA", raising=False)
+
+    archive_root = canonical_default_workflow_dashboard_archive_root(
+        home=home, platform=sys.platform, environ={}, repo_root=REPO
+    )
+    readmodels = archive_root / READMODELS_DIRNAME
+    readmodels.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema_name": "universe_selection_readmodel.v1",
+        "schema_version": 1,
+        "generated_at": "2026-07-24T17:00:00Z",
+        "source_run_id": "shell_default_path_v1",
+        "source_stage": "paper",
+        "non_authorizing": True,
+        "fixture_marked": False,
+        "universe": [
+            {
+                "row_id": "u-eth",
+                "symbol": "ETH-USDT-SWAP",
+                "rank": 1,
+                "exchange": "OKX",
+            }
+        ],
+        "ranking": [
+            {
+                "row_id": "r-eth",
+                "symbol": "ETH-USDT-SWAP",
+                "rank": 1,
+                "exchange": "OKX",
+                "display_score": 0.9,
+            }
+        ],
+        "selected_future": {
+            "row_id": "s-eth",
+            "symbol": "ETH-USDT-SWAP",
+            "rank": 1,
+            "truth_status": "PERSISTED",
+            "selection_reason": "top_ranked",
+        },
+        "market_snapshot": {
+            "truth_status": "PERSISTED",
+            "source_kind": "governed_producer",
+            "snapshot_id": "snap-shell-1",
+            "exchange": "OKX",
+            "captured_at": "2026-07-24T16:59:00Z",
+        },
+        "evidence": {
+            "producer_contract": "universe_selection_producer.v1",
+            "storage_target": "readmodels/universe_selection_readmodel.v1.json",
+            "links": [],
+        },
+        "missing_truth": {
+            "universe": "PERSISTED",
+            "ranking": "PERSISTED",
+            "selected_future": "PERSISTED",
+            "future_detail": "AVAILABLE",
+            "orders_fills_pnl": "NOT_PERSISTED",
+        },
+    }
+    (readmodels / READMODEL_FILENAME).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    _write_manifest_sha256(readmodels)
+
+    client = TestClient(create_app())
+    response = client.get("/market")
+    assert response.status_code == 200
+    html = response.text
+    assert "ETH-USDT-SWAP" in html
+    assert "OKX" in html
+    assert "BTC/USD" not in html
+    assert "no ohlcv fabricated" in html.lower() or "ohlcv producer still unbound" in html.lower()
+    assert "<form" not in html.lower()
+    assert 'method="post"' not in html.lower()
+    assert "place_order" not in html.lower()

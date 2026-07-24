@@ -57,6 +57,13 @@ def _display_value(raw: Any, availability: Availability) -> str:
     return str(raw)
 
 
+def _identity_fact_display(raw: Any, availability: Availability) -> str:
+    """Retain selected-instrument / venue identity for AVAILABLE and STALE."""
+    if availability in (Availability.AVAILABLE, Availability.STALE) and raw is not None:
+        return str(raw)
+    return AVAILABILITY_LABELS[availability]
+
+
 def _lifecycle_fact_display(raw: Any, availability: Availability) -> str:
     """Retain producer lifecycle facts for AVAILABLE and STALE; never invent."""
     if availability in (Availability.AVAILABLE, Availability.STALE) and raw is not None:
@@ -198,7 +205,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
     health = page.source_health
 
     chart_availability = page.market_instrument.availability
-    if chart_availability is Availability.AVAILABLE:
+    if chart_availability in (Availability.AVAILABLE, Availability.STALE):
         chart_message = (
             "Primary chart market instrument bound; OHLCV producer still unbound "
             "(no fabricated candles)."
@@ -220,7 +227,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
     selected_instrument_id = None
     membership_label = AVAILABILITY_LABELS[page.universe_ranking.availability]
     ranking_label = AVAILABILITY_LABELS[page.universe_ranking.availability]
-    if page.universe_ranking.availability is Availability.AVAILABLE:
+    if page.universe_ranking.availability in (Availability.AVAILABLE, Availability.STALE):
         ranking_rows = [dict(row) for row in page.universe_ranking.ranking]
         universe_rows = [dict(row) for row in page.universe_ranking.universe]
         selected_instrument_id = page.universe_ranking.selected_instrument_id
@@ -239,7 +246,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
     instrument_display = (
         selected_instrument_id
         if selected_instrument_id
-        else _display_value(
+        else _identity_fact_display(
             page.market_instrument.instrument_id, page.market_instrument.availability
         )
     )
@@ -272,7 +279,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
             # Compact ops summary only. Scope lifecycle + Regime primary in Context rail.
             # Do not expose availability under a Freshness label (Phase 5 PR1).
             "instrument": instrument_display,
-            "venue": _display_value(
+            "venue": _identity_fact_display(
                 page.market_instrument.venue, page.market_instrument.availability
             ),
             "runtime_state": page.runtime_bridge_display,
@@ -333,7 +340,7 @@ def present_market_landscape_v2(page: MarketDashboardPageSnapshotV1) -> dict[str
         "chart": {
             "availability": chart_availability.value,
             "availability_label": AVAILABILITY_LABELS[chart_availability],
-            "bound": chart_availability is Availability.AVAILABLE,
+            "bound": chart_availability in (Availability.AVAILABLE, Availability.STALE),
             "message": chart_message,
             "ohlcv": None,
         },

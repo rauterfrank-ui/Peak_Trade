@@ -30,6 +30,7 @@ This document defines the **normative persistence contract** for **`universe_sel
 | Storage target | `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json` |
 | Validation module | `src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py` |
 | Dashboard consumer (Slice 3+) | `src/webui/workflow_dashboard_readmodel_v1/builder.py` |
+| Market Landscape consumer | `src/webui/market_dashboard_landscape_producer_binding_v2.py` (`bind_market_universe_slots` on `GET &#47;market`) — Selected Future identity + venue only; **no** OHLCV |
 | Workflow SSR gate | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + archive root via [WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md](WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md) (Env override still supported) |
 | Archive root owner | `src/webui/workflow_dashboard_archive_root_v1.py` |
 

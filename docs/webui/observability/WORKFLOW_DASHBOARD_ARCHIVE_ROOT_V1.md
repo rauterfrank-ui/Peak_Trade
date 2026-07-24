@@ -11,8 +11,15 @@ This contract owns **where** the archive root is resolved. It does **not**:
 - authorize live trading, orders, runtime activation, or scheduler work;
 - create directories during import or resolution;
 - write or copy readmodels;
-- autoload Universe onto `GET &#47;market`;
-- change visible dashboard panels by itself.
+- invent Universe &#47; Selected Future &#47; OHLCV when the readmodel is absent.
+
+**Market Landscape consumer (authorized after archive-root contract):**
+`GET &#47;market` resolves this archive root (explicit → Env override → canonical
+default) and read-only-loads `universe_selection_readmodel.v1` via
+`bind_market_universe_slots`. No Env var is required when the canonical default
+directory exists with a manifest-verified readmodel. Missing &#47; invalid
+readmodels remain fail-closed `MISSING_SOURCE` &#47; `INVALID`. OHLCV, Decision,
+Risk, Execution, and Timeline stay unbound in the Universe default-path slice.
 
 ## Ownership
 
