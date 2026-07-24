@@ -189,7 +189,9 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         if note.startswith("GAP_COUNT:"):
             gap_count = int(note.split(":", 1)[1])
 
-    raw_path = archive_root / "raw" / "okx_ohlcv" / f"{selected_provider_instrument_id}_{okx_bar}.json"
+    raw_path = (
+        archive_root / "raw" / "okx_ohlcv" / f"{selected_provider_instrument_id}_{okx_bar}.json"
+    )
     _atomic_write_text(raw_path, envelope.raw_body_utf8)
 
     doc = {
