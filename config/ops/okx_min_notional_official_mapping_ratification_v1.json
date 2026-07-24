@@ -1,0 +1,61 @@
+{
+  "schema_id": "okx_min_notional_official_mapping_ratification_v1",
+  "schema_version": 1,
+  "mapping_ratification_id": "okx_min_notional_official_mapping_ratification_v1",
+  "non_authorizing": true,
+  "dashboard_authority": false,
+  "trading_authorization": false,
+  "live_authorized": false,
+  "orders": false,
+  "OKX_MIN_NOTIONAL_DIRECT_FIELD_AVAILABLE": false,
+  "OKX_MIN_NOTIONAL_MAPPING_AUTHORIZED": true,
+  "MAPPING_INPUTS_PROVIDER_AUTHENTIC": true,
+  "REFERENCE_PRICE_REQUIRED": true,
+  "INVERSE_OR_AMBIGUOUS_CONTRACTS_FAIL_CLOSED": true,
+  "DASHBOARD_AUTHORITY": false,
+  "TRADING_AUTHORIZATION": false,
+  "owner_module": "src.ops.okx_min_notional_mapping_v1",
+  "owner_symbol": "map_okx_linear_swap_min_notional_v1",
+  "formula_id": "OKX_LINEAR_SWAP_MIN_QUOTE_NOTIONAL_FROM_MINSZ_CTVAL_MARKPX_V1",
+  "formula_version": "v1",
+  "min_notional_kind": "REFERENCE_PRICE_DERIVED_FROM_PROVIDER_AUTHENTIC_FIELDS",
+  "eligible_ct_type": ["linear"],
+  "eligible_inst_type": ["SWAP"],
+  "eligible_settle_ccy": ["USDT"],
+  "reference_price_type": "okx_public_mark_price",
+  "reference_price_endpoint": "/api/v5/public/mark-price",
+  "instruments_endpoint": "/api/v5/public/instruments",
+  "official_documentation_reference": "https://www.okx.com/docs-v5/en/#public-data-rest-api-get-instruments",
+  "official_mark_price_documentation_reference": "https://www.okx.com/docs-v5/en/#public-data-rest-api-get-mark-price",
+  "formula_semantics": {
+    "minimum_contract_quantity": "Decimal(minSz)",
+    "minimum_base_quantity": "minimum_contract_quantity * Decimal(ctVal)",
+    "computed_min_notional": "minimum_base_quantity * Decimal(markPx)",
+    "units": {
+      "minimum_contract_quantity": "contracts",
+      "ctVal": "base_currency_per_contract",
+      "ctValCcy": "base_currency",
+      "reference_price": "quote_currency_per_base",
+      "computed_min_notional": "quote_currency_notional_at_reference_price"
+    },
+    "note": "Not a timeless provider constant. Persist kind + reference-price provenance always."
+  },
+  "reject_when": [
+    "ctType != linear",
+    "ctValCcy does not match base asset of uly/instId",
+    "settleCcy not in eligible_settle_ccy",
+    "missing minSz/ctVal/markPx",
+    "non-positive Decimal inputs",
+    "stale reference price beyond freshness threshold",
+    "BTC / Spot / inverse / ambiguous units"
+  ],
+  "forbidden": [
+    "hardcoded_price",
+    "dashboard_displayed_price",
+    "local_estimate",
+    "kraken_price",
+    "cross_exchange_price",
+    "float_money_arithmetic",
+    "storing_derived_value_as_unqualified_static_exchange_minimum"
+  ]
+}
