@@ -1,0 +1,15 @@
+94446c5cb3c054bb25cf5da2b807d909ce91721c
+feat/market-dashboard-phase-5-pr2-decision-why-blocker-reading-flow
+ M config/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0.json
+ M config/research/bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding_v0.json
+ M static/css/market_dashboard_landscape_v2.css
+ M templates/peak_trade_dashboard/market_landscape_v2.html
+ M tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+?? .comparison_metric_input_pytest_outputs/
+?? evidence/market_dashboard_landscape_v2_pr1/
+?? evidence/market_dashboard_v2/phase3/
+?? evidence/market_dashboard_v2/phase4/pr3/
+?? evidence/market_dashboard_v2/phase4/pr4/
+?? evidence/market_dashboard_v2/phase5/pr2/
+?? tests/.pytest_archive_roots/
