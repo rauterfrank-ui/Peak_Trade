@@ -4,33 +4,28 @@ from __future__ import annotations
 
 import logging
 import os
-from pathlib import Path
 from typing import Any
 
+from .workflow_dashboard_archive_root_v1 import (
+    ENV_ARCHIVE_ROOT,
+    resolve_workflow_dashboard_archive_root,
+)
 from .workflow_dashboard_readmodel_v1 import build_workflow_dashboard_readmodel_v1, to_json_dict
 
 logger = logging.getLogger(__name__)
 
 ENV_ENABLED = "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED"
-ENV_ARCHIVE_ROOT = "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT"
 
 
 def _dashboard_enabled() -> bool:
     return (os.getenv(ENV_ENABLED) or "").strip() == "1"
 
 
-def _resolved_archive_root() -> Path | None:
-    raw = (os.getenv(ENV_ARCHIVE_ROOT) or "").strip()
-    if not raw:
-        return None
-    p = Path(raw).expanduser()
-    try:
-        p = p.resolve(strict=True)
-    except OSError:
-        return None
-    if not p.is_dir():
-        return None
-    return p
+def _resolved_archive_root():
+    # Shared contract owner: explicit N/A here; Env override; then canonical default.
+    # require_existing_directory=True preserves unconfigured semantics when the
+    # default path has not been created by an explicit writer.
+    return resolve_workflow_dashboard_archive_root(require_existing_directory=True)
 
 
 def build_workflow_dashboard_display_context() -> dict[str, Any]:

@@ -1,0 +1,31 @@
+{
+  "schema_id": "workflow_dashboard_archive_root_v1",
+  "schema_version": 1,
+  "non_authorizing": true,
+  "owner_module": "src.webui.workflow_dashboard_archive_root_v1",
+  "owner_symbol": "resolve_workflow_dashboard_archive_root",
+  "config_contract_path": "config/webui/workflow_dashboard_archive_root_v1.json",
+  "env_override": "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT",
+  "precedence": [
+    "explicit_injection",
+    "environment_override",
+    "canonical_default"
+  ],
+  "canonical_default": {
+    "convention": "platform_aware_user_state",
+    "darwin": "~/Library/Application Support/Peak_Trade/workflow_dashboard_v1",
+    "linux": "${XDG_STATE_HOME:-~/.local/state}/peak_trade/workflow_dashboard_v1",
+    "win32": "%LOCALAPPDATA%/Peak_Trade/workflow_dashboard_v1"
+  },
+  "resolver_creates_filesystem": false,
+  "fixture_fallback_allowed": false,
+  "repo_local_runtime_truth_allowed": false,
+  "tmp_default_allowed": false,
+  "empty_directory_is_valid_data": false,
+  "notes": [
+    "Sole configuration owner for Workflow/Market Dashboard durable archive root location.",
+    "Does not authorize live trading, orders, runtime activation, or dashboard Universe autoload.",
+    "Missing readmodels under a resolved root remain fail-closed MISSING_SOURCE at consumer boundaries.",
+    "PEAK_TRADE_DATA_ARCHIVE_ROOT and review_server .run/ state are non-owners for this contract."
+  ]
+}

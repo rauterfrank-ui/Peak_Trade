@@ -30,7 +30,8 @@ This document defines the **normative persistence contract** for **`universe_sel
 | Storage target | `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json` |
 | Validation module | `src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py` |
 | Dashboard consumer (Slice 3+) | `src/webui/workflow_dashboard_readmodel_v1/builder.py` |
-| Workflow SSR gate | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` |
+| Workflow SSR gate | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + archive root via [WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md](WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md) (Env override still supported) |
+| Archive root owner | `src/webui/workflow_dashboard_archive_root_v1.py` |
 
 ## 4. Required top-level fields
 
@@ -237,7 +238,7 @@ Governed bundles with `u2b_candidate_validation_only=true` and `candidate_valida
 
 **Module:** `src/webui/workflow_dashboard_readmodel_v1/universe_selection_reader_v1.py`  
 **Consumer:** `src/webui/workflow_dashboard_readmodel_v1/builder.py`  
-**SSR gate:** `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` (unchanged)  
+**SSR gate:** `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + archive root via [WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md](WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md) (Env override still supported)  
 **Tests:** `tests/webui/test_universe_selection_reader_v1.py`
 
 **Storage path:** `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json`

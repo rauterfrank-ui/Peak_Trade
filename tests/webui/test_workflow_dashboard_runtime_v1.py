@@ -123,9 +123,16 @@ def test_display_context_invalid_enabled_fail_closed(monkeypatch: pytest.MonkeyP
     assert ctx["readmodel"] is None
 
 
-def test_display_context_unconfigured_fail_soft(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_display_context_unconfigured_fail_soft(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     monkeypatch.setenv(ENV_ENABLED, "1")
     monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
+    monkeypatch.delenv("LOCALAPPDATA", raising=False)
     ctx = build_workflow_dashboard_display_context()
     assert ctx["gate_enabled"] is True
     assert ctx["section_visible"] is False
@@ -282,9 +289,16 @@ def test_disabled_context_is_deterministic(monkeypatch: pytest.MonkeyPatch) -> N
     assert first == second
 
 
-def test_unconfigured_context_is_deterministic(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_unconfigured_context_is_deterministic(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     monkeypatch.setenv(ENV_ENABLED, "1")
     monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
+    monkeypatch.delenv("LOCALAPPDATA", raising=False)
     first = build_workflow_dashboard_display_context()
     second = deepcopy(first)
     assert build_workflow_dashboard_display_context() == second

@@ -8,10 +8,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_workflow_dashboard_env_constants_in_runtime_module() -> None:
+    from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT as ROOT_ENV
     from src.webui.workflow_dashboard_runtime_v1 import ENV_ARCHIVE_ROOT, ENV_ENABLED
 
     assert ENV_ENABLED == "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED"
     assert ENV_ARCHIVE_ROOT == "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT"
+    assert ENV_ARCHIVE_ROOT == ROOT_ENV
 
 
 def test_observability_hub_doc_documents_workflow_dashboard() -> None:
@@ -21,6 +23,21 @@ def test_observability_hub_doc_documents_workflow_dashboard() -> None:
     assert "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED" in doc
     assert "workflow_dashboard_readmodel.v1" in doc
     assert "UNIVERSE_SOURCE_NOT_PERSISTED" in doc
+    assert "WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md" in doc
+
+
+def test_archive_root_contract_doc_exists() -> None:
+    doc_path = PROJECT_ROOT / "docs/webui/observability/WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md"
+    assert doc_path.is_file()
+    doc = doc_path.read_text(encoding="utf-8")
+    assert "resolve_workflow_dashboard_archive_root" in doc
+    assert "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT" in doc
+    assert "canonical_default" in doc or "Canonical default" in doc
+    assert (
+        "resolver_creates_filesystem" in doc
+        or "never** creates" in doc.lower()
+        or "Never creates" in doc
+    )
 
 
 def test_universe_selection_contract_doc_exists() -> None:
