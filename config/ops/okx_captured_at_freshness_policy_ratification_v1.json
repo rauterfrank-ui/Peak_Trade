@@ -1,0 +1,47 @@
+{
+  "schema_id": "okx_captured_at_freshness_policy_ratification_v1",
+  "schema_version": 1,
+  "policy_ratification_id": "okx_captured_at_freshness_policy_ratification_v1",
+  "non_authorizing": true,
+  "dashboard_authority": false,
+  "trading_authorization": false,
+  "OKX_CAPTURED_AT_SEMANTICS_PROVEN": true,
+  "OKX_CAPTURED_AT_MAPPING_AUTHORIZED": true,
+  "OKX_CAPTURED_AT_POLICY_STATUS": "RATIFIED",
+  "owner_module": "src.ops.okx_captured_at_freshness_policy_v1",
+  "owner_symbol": "build_okx_capture_clocks_v1",
+  "timestamp_policy": {
+    "capture_started_at": "local_utc_clock_immediately_before_request",
+    "response_received_at": "local_utc_clock_immediately_after_complete_response",
+    "provider_timestamp": "exact_okx_timestamp_when_supplied",
+    "captured_at": "response_received_at",
+    "effective_at": "provider_timestamp_when_semantics_valid_else_null",
+    "filesystem_mtime_forbidden": true,
+    "git_timestamp_forbidden": true,
+    "storage_format": "UTC_ISO8601"
+  },
+  "freshness_thresholds_seconds": {
+    "instrument_metadata": 86400,
+    "reference_mark_price": 120,
+    "ohlcv_latest_candle": 7200,
+    "universe_selection": 86400,
+    "dashboard_aggregate": 86400
+  },
+  "stale_render_policy": {
+    "stale_data_loadable_when_contract_permits": true,
+    "must_render_STALE_visibly": true,
+    "silent_fresh_render_forbidden": true
+  },
+  "capture_record_required_fields": [
+    "request_url",
+    "request_path",
+    "query_parameters",
+    "http_status",
+    "provider_code",
+    "provider_message",
+    "capture_started_at",
+    "response_received_at",
+    "captured_at",
+    "raw_payload_digest"
+  ]
+}
