@@ -243,19 +243,28 @@
   background: transparent;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 12px;
+  justify-content: flex-start;
+  align-items: stretch;
+  text-align: left;
+  padding: 8px 0 0;
   min-height: calc(var(--mdl-chart-min) - 24px);
+  position: relative;
 }
 
 .mdl-v2-chart__message {
-  margin: 0;
+  margin: 0 0 8px;
   font-size: 13px;
   font-weight: 500;
   color: #94a3b8;
-  max-width: 36rem;
+  max-width: 48rem;
+}
+
+.mdl-v2-chart__canvas {
+  display: block;
+  width: 100%;
+  flex: 1;
+  min-height: calc(var(--mdl-chart-min) - 64px);
+  max-width: 100%;
 }
 
 .mdl-v2-state {

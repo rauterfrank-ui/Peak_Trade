@@ -359,8 +359,16 @@ def _market_from_universe_selected(
             generated_at=as_of,
             reason=REASON_PRODUCER_TIMESTAMP_MISSING,
         )
+    # Canonical OKX intake may persist market_snapshot.captured_at as null while
+    # still providing universe generated_at + exchange. Prefer captured_at when
+    # present; otherwise consume the readmodel generated_at (never invent now()).
+    producer_ts_raw = slice_v1.market_snapshot.captured_at
+    if producer_ts_raw is None or (
+        isinstance(producer_ts_raw, str) and not producer_ts_raw.strip()
+    ):
+        producer_ts_raw = slice_v1.generated_at
     try:
-        producer_at = parse_producer_utc_timestamp(slice_v1.market_snapshot.captured_at)
+        producer_at = parse_producer_utc_timestamp(producer_ts_raw)
     except ValueError:
         return unavailable_market_instrument(
             availability=Availability.INVALID,

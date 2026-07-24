@@ -64,6 +64,84 @@ def _identity_fact_display(raw: Any, availability: Availability) -> str:
     return AVAILABILITY_LABELS[availability]
 
 
+def _venue_display(raw: Any, availability: Availability) -> str:
+    """Project venue label from canonical readmodel value; never invent a venue."""
+    if availability not in (Availability.AVAILABLE, Availability.STALE) or raw is None:
+        return AVAILABILITY_LABELS[availability]
+    text = str(raw).strip()
+    if not text:
+        return AVAILABILITY_LABELS[availability]
+    lowered = text.lower()
+    if lowered == "okx" or lowered.startswith("okx_"):
+        return "OKX"
+    return text
+
+
+def _finite_ohlc_float(raw: Any) -> float | None:
+    """Coerce canonical decimal/string OHLC to a finite browser float; never invent."""
+    if raw is None:
+        return None
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return None
+    if value != value or value in (float("inf"), float("-inf")):
+        return None
+    return value
+
+
+def serialize_ohlcv_browser_payload_v1(
+    ohlcv_readmodel: Mapping[str, Any] | None,
+) -> dict[str, Any] | None:
+    """Build browser-consumable OHLCV payload with finite numeric OHLC values.
+
+    Source bars may store OHLC as decimal strings (canonical readmodel). This
+    projection never fabricates candles; missing/non-finite values fail closed.
+    """
+    if not isinstance(ohlcv_readmodel, Mapping):
+        return None
+    bars_raw = ohlcv_readmodel.get("bars")
+    if not isinstance(bars_raw, list) or not bars_raw:
+        return None
+    bars: list[dict[str, Any]] = []
+    for row in bars_raw:
+        if not isinstance(row, Mapping):
+            return None
+        ts = row.get("ts")
+        if not isinstance(ts, str) or not ts.strip():
+            return None
+        open_v = _finite_ohlc_float(row.get("open"))
+        high_v = _finite_ohlc_float(row.get("high"))
+        low_v = _finite_ohlc_float(row.get("low"))
+        close_v = _finite_ohlc_float(row.get("close"))
+        if None in (open_v, high_v, low_v, close_v):
+            return None
+        assert open_v is not None and high_v is not None
+        assert low_v is not None and close_v is not None
+        bars.append(
+            {
+                "ts": ts.strip(),
+                "open": open_v,
+                "high": high_v,
+                "low": low_v,
+                "close": close_v,
+            }
+        )
+    venue_raw = ohlcv_readmodel.get("venue")
+    venue_display = None
+    if isinstance(venue_raw, str) and venue_raw.strip():
+        venue_display = _venue_display(venue_raw, Availability.AVAILABLE)
+    return {
+        "instrument_id": ohlcv_readmodel.get("instrument_id"),
+        "venue": venue_display or venue_raw,
+        "interval": ohlcv_readmodel.get("interval"),
+        "bar_count": len(bars),
+        "first_timestamp": bars[0]["ts"],
+        "last_timestamp": bars[-1]["ts"],
+        "bars": bars,
+    }
+
+
 def _lifecycle_fact_display(raw: Any, availability: Availability) -> str:
     """Retain producer lifecycle facts for AVAILABLE and STALE; never invent."""
     if availability in (Availability.AVAILABLE, Availability.STALE) and raw is not None:
@@ -211,19 +289,27 @@ def present_market_landscape_v2(
     chart_availability = page.market_instrument.availability
     ohlcv_bound = False
     ohlcv_payload: dict[str, Any] | None = None
+    browser_payload = serialize_ohlcv_browser_payload_v1(ohlcv_readmodel)
     if isinstance(ohlcv_readmodel, Mapping) and ohlcv_readmodel.get("bar_count"):
-        ohlcv_bound = True
         ohlcv_payload = dict(ohlcv_readmodel)
         freshness = str(ohlcv_readmodel.get("freshness_state") or "")
         if freshness == "stale":
             chart_availability = Availability.STALE
         elif chart_availability not in (Availability.AVAILABLE, Availability.STALE):
             chart_availability = Availability.AVAILABLE
-        chart_message = (
-            "Primary chart bound to materialized OKX OHLCV readmodel "
-            f"(bars={ohlcv_readmodel.get('bar_count')}, interval="
-            f"{ohlcv_readmodel.get('interval')})."
-        )
+        if browser_payload is None:
+            ohlcv_bound = False
+            chart_message = (
+                "Primary chart OHLCV readmodel present but not browser-serializable "
+                "(non-finite or invalid OHLC); no fabricated candles."
+            )
+        else:
+            ohlcv_bound = True
+            chart_message = (
+                "Primary chart bound to materialized OKX OHLCV readmodel "
+                f"(bars={browser_payload.get('bar_count')}, interval="
+                f"{ohlcv_readmodel.get('interval')})."
+            )
     elif chart_availability in (Availability.AVAILABLE, Availability.STALE):
         chart_message = (
             "Primary chart market instrument bound; OHLCV producer still unbound "
@@ -298,7 +384,7 @@ def present_market_landscape_v2(
             # Compact ops summary only. Scope lifecycle + Regime primary in Context rail.
             # Do not expose availability under a Freshness label (Phase 5 PR1).
             "instrument": instrument_display,
-            "venue": _identity_fact_display(
+            "venue": _venue_display(
                 page.market_instrument.venue, page.market_instrument.availability
             ),
             "runtime_state": page.runtime_bridge_display,
@@ -359,15 +445,20 @@ def present_market_landscape_v2(
         "chart": {
             "availability": chart_availability.value,
             "availability_label": AVAILABILITY_LABELS[chart_availability],
-            "bound": ohlcv_bound
+            "bound": bool(browser_payload)
+            or ohlcv_bound
             or chart_availability in (Availability.AVAILABLE, Availability.STALE),
             "message": chart_message,
             "ohlcv": ohlcv_payload,
-            "interval": (ohlcv_payload or {}).get("interval"),
-            "bar_count": (ohlcv_payload or {}).get("bar_count"),
+            "browser_payload": browser_payload,
+            "has_browser_series": browser_payload is not None,
+            "interval": (browser_payload or ohlcv_payload or {}).get("interval"),
+            "bar_count": (browser_payload or ohlcv_payload or {}).get("bar_count"),
             "gap_count": (ohlcv_payload or {}).get("gap_count"),
             "freshness_state": (ohlcv_payload or {}).get("freshness_state"),
             "last_closed_timestamp": (ohlcv_payload or {}).get("last_closed_timestamp"),
+            "first_timestamp": (browser_payload or {}).get("first_timestamp"),
+            "last_timestamp": (browser_payload or {}).get("last_timestamp"),
         },
         "timeline": {
             "availability": Availability.NOT_BOUND.value,
