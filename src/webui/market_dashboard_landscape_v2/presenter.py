@@ -114,9 +114,10 @@ def serialize_ohlcv_browser_payload_v1(
     Source bars may store OHLC as decimal strings (canonical readmodel). This
     projection never fabricates candles; missing/non-finite values fail closed.
 
-    Chart digest excludes captured_at so metadata-only refresh does not imply
-    a market-value change. Open (provisional) bars may expose display_close from
-    authentic live_mark_price without rewriting closed candle OHLC.
+    Identity domains (local browser payload only):
+    - candle_series_digest: authentic timestamp + O/H/L/C (+ confirm) only
+    - metadata_digest: captured_at / freshness / provenance clocks
+    - live_mark_price: distinct annotation — never mutates candle close/geometry
     """
     if not isinstance(ohlcv_readmodel, Mapping):
         return None
@@ -125,7 +126,7 @@ def serialize_ohlcv_browser_payload_v1(
         return None
     live_mark = _finite_ohlc_float(ohlcv_readmodel.get("live_mark_price"))
     bars: list[dict[str, Any]] = []
-    for idx, row in enumerate(bars_raw):
+    for row in bars_raw:
         if not isinstance(row, Mapping):
             return None
         ts = row.get("ts")
@@ -146,15 +147,7 @@ def serialize_ohlcv_browser_payload_v1(
             confirm = confirm_raw
         else:
             confirm = str(confirm_raw) in {"1", "true", "True"}
-        provisional = not confirm
-        display_close = close_v
-        display_high = high_v
-        display_low = low_v
-        # Only the current open candle may tip with authentic mark; closed bars stay stable.
-        if provisional and idx == len(bars_raw) - 1 and live_mark is not None:
-            display_close = live_mark
-            display_high = max(high_v, live_mark)
-            display_low = min(low_v, live_mark)
+        # Geometry uses authentic OHLC only — mark never overwrites close/high/low.
         bars.append(
             {
                 "ts": ts.strip(),
@@ -162,24 +155,21 @@ def serialize_ohlcv_browser_payload_v1(
                 "high": high_v,
                 "low": low_v,
                 "close": close_v,
-                "display_close": display_close,
-                "display_high": display_high,
-                "display_low": display_low,
+                "display_close": close_v,
+                "display_high": high_v,
+                "display_low": low_v,
                 "confirm": confirm,
-                "provisional": provisional,
+                "provisional": not confirm,
             }
         )
     venue_raw = ohlcv_readmodel.get("venue")
     venue_display = None
     if isinstance(venue_raw, str) and venue_raw.strip():
         venue_display = _venue_display(venue_raw, Availability.AVAILABLE)
-    # Market-value digest: OHLC + live mark tip — never captured_at alone.
-    chart_digest_source = {
+    candle_series_source = {
         "instrument_id": ohlcv_readmodel.get("instrument_id"),
         "venue": venue_display or venue_raw,
         "interval": ohlcv_readmodel.get("interval"),
-        "last_closed_timestamp": ohlcv_readmodel.get("last_closed_timestamp"),
-        "live_mark_price": live_mark,
         "bars": [
             {
                 "ts": b["ts"],
@@ -187,24 +177,35 @@ def serialize_ohlcv_browser_payload_v1(
                 "high": b["high"],
                 "low": b["low"],
                 "close": b["close"],
-                "display_close": b["display_close"],
-                "display_high": b["display_high"],
-                "display_low": b["display_low"],
                 "confirm": b["confirm"],
             }
             for b in bars
         ],
     }
-    chart_digest = hashlib.sha256(
-        json.dumps(chart_digest_source, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    candle_series_digest = hashlib.sha256(
+        json.dumps(candle_series_source, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
-    # Full payload digest retains captured_at for snapshot identity diagnostics only.
-    digest_source = {
-        **chart_digest_source,
+    metadata_source = {
         "captured_at": ohlcv_readmodel.get("captured_at"),
+        "effective_at": ohlcv_readmodel.get("effective_at"),
+        "freshness_state": ohlcv_readmodel.get("freshness_state"),
+        "is_stale": bool(ohlcv_readmodel.get("is_stale")),
+        "live_mark_price": live_mark,
+        "live_mark_provider_ts": ohlcv_readmodel.get("live_mark_provider_ts"),
+        "gap_count": ohlcv_readmodel.get("gap_count"),
+        "last_closed_timestamp": ohlcv_readmodel.get("last_closed_timestamp"),
     }
+    metadata_digest = hashlib.sha256(
+        json.dumps(metadata_source, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    # Backward-compatible aliases: chart_digest == candle geometry only.
+    chart_digest = candle_series_digest
     payload_digest = hashlib.sha256(
-        json.dumps(digest_source, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        json.dumps(
+            {**candle_series_source, **metadata_source},
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
     ).hexdigest()
     return {
         "schema_name": OHLCV_BROWSER_PAYLOAD_SCHEMA,
@@ -225,6 +226,8 @@ def serialize_ohlcv_browser_payload_v1(
         "live_mark_provider_ts": ohlcv_readmodel.get("live_mark_provider_ts"),
         "live_price_kind": ohlcv_readmodel.get("live_price_kind") or "mark",
         "live_mark_projection": ohlcv_readmodel.get("live_mark_projection"),
+        "candle_series_digest": candle_series_digest,
+        "metadata_digest": metadata_digest,
         "chart_digest": chart_digest,
         "payload_digest": payload_digest,
         "bars": bars,
@@ -552,6 +555,8 @@ def present_market_landscape_v2(
             "effective_at": (browser_payload or ohlcv_payload or {}).get("effective_at"),
             "payload_digest": (browser_payload or {}).get("payload_digest"),
             "chart_digest": (browser_payload or {}).get("chart_digest"),
+            "candle_series_digest": (browser_payload or {}).get("candle_series_digest"),
+            "metadata_digest": (browser_payload or {}).get("metadata_digest"),
             "live_mark_price": (browser_payload or {}).get("live_mark_price"),
             "live_price_kind": (browser_payload or {}).get("live_price_kind"),
             "is_stale": bool((ohlcv_payload or {}).get("is_stale")),

@@ -178,6 +178,12 @@ def build_ohlcv_poll_response_v1(
         if browser_payload is None
         else browser_payload.get("payload_digest"),
         "chart_digest": None if browser_payload is None else browser_payload.get("chart_digest"),
+        "candle_series_digest": None
+        if browser_payload is None
+        else browser_payload.get("candle_series_digest"),
+        "metadata_digest": None
+        if browser_payload is None
+        else browser_payload.get("metadata_digest"),
         "live_mark_price": None
         if browser_payload is None
         else browser_payload.get("live_mark_price"),

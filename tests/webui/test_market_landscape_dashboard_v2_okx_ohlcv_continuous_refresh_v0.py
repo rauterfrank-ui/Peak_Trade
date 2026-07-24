@@ -387,10 +387,10 @@ def test_market_page_exposes_poll_contract_and_no_order_controls(
     assert "kraken" not in html.lower() or "historical" in html.lower()
 
 
-def test_open_candle_mark_update_same_timestamp_changes_chart_not_metadata_only(
+def test_open_candle_mark_update_same_timestamp_is_mark_only_not_geometry(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Same candle ts + changed mark ⇒ chart_digest moves; captured_at-only is insufficient."""
+    """Same candle ts + changed mark ⇒ candle_series_digest stable; mark never mutates close."""
     from src.webui.market_dashboard_landscape_v2.presenter import (
         serialize_ohlcv_browser_payload_v1,
     )
@@ -424,7 +424,10 @@ def test_open_candle_mark_update_same_timestamp_changes_chart_not_metadata_only(
     close1 = first_payload["bars"][-1]["close"]
     display1 = first_payload["bars"][-1]["display_close"]
     chart1 = first_payload["chart_digest"]
+    series1 = first_payload["candle_series_digest"]
+    meta1 = first_payload["metadata_digest"]
     assert first_payload["bars"][-1]["provisional"] is True
+    assert chart1 == series1
 
     second_client = _FakeOkxClient(
         captured_at="2026-07-25T00:00:03Z",
@@ -447,11 +450,15 @@ def test_open_candle_mark_update_same_timestamp_changes_chart_not_metadata_only(
     close2 = second_payload["bars"][-1]["close"]
     display2 = second_payload["bars"][-1]["display_close"]
     chart2 = second_payload["chart_digest"]
+    series2 = second_payload["candle_series_digest"]
+    meta2 = second_payload["metadata_digest"]
     assert ts1 == ts2
     assert close1 == close2
-    assert display1 != display2
-    assert display2 == pytest.approx(9.25e-09)
-    assert chart1 != chart2
+    assert display1 == display2
+    assert display2 == pytest.approx(9.1e-09)
+    assert chart1 == chart2
+    assert series1 == series2
+    assert meta1 != meta2
     assert second_payload["live_mark_price"] == pytest.approx(9.25e-09)
     # Closed bars remain ordered / not duplicated.
     bars = second_payload["bars"]
@@ -530,16 +537,92 @@ def test_captured_at_only_does_not_change_chart_digest(
     second_payload = serialize_ohlcv_browser_payload_v1(second_doc)
     assert first_payload is not None and second_payload is not None
     assert first_payload["chart_digest"] == second_payload["chart_digest"]
+    assert first_payload["candle_series_digest"] == second_payload["candle_series_digest"]
+    assert first_payload["metadata_digest"] != second_payload["metadata_digest"]
     assert first_payload["captured_at"] != second_payload["captured_at"]
     assert first_payload["payload_digest"] != second_payload["payload_digest"]
 
 
-def test_js_uses_display_close_and_chart_digest_not_okx_host() -> None:
+def test_same_timestamp_ohlc_change_moves_candle_series_digest_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Authentic O/H/L/C change at same open-candle ts must move candle_series_digest."""
+    from src.webui.market_dashboard_landscape_v2.presenter import (
+        serialize_ohlcv_browser_payload_v1,
+    )
+
+    archive = tmp_path / "archive"
+    selection = _write_universe(archive)
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
+    materialize_selected_okx_ohlcv_readmodel_v1(
+        archive_root=archive,
+        selected_instrument=INSTRUMENT,
+        selected_provider_instrument_id=INSTRUMENT,
+        selected_venue="okx",
+        selection_bundle_id="bundle-a",
+        selection_path=selection,
+        client=_FakeOkxClient(  # type: ignore[arg-type]
+            captured_at="2026-07-25T00:00:00Z",
+            close_px="0.000000009100",
+            mark_px="0.000000009100",
+        ),
+    )
+    path = archive / "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+    first_payload = serialize_ohlcv_browser_payload_v1(json.loads(path.read_text(encoding="utf-8")))
+    assert first_payload is not None
+    refresh_selected_okx_ohlcv_readmodel_from_archive_v1(
+        archive_root=archive,
+        client=_FakeOkxClient(  # type: ignore[arg-type]
+            captured_at="2026-07-25T00:00:03Z",
+            close_px="0.000000009220",
+            mark_px="0.000000009220",
+        ),
+        force=True,
+    )
+    second_payload = serialize_ohlcv_browser_payload_v1(
+        json.loads(path.read_text(encoding="utf-8"))
+    )
+    assert second_payload is not None
+    assert first_payload["last_timestamp"] == second_payload["last_timestamp"]
+    assert first_payload["bars"][-1]["close"] != second_payload["bars"][-1]["close"]
+    assert first_payload["candle_series_digest"] != second_payload["candle_series_digest"]
+    assert first_payload["chart_digest"] != second_payload["chart_digest"]
+    assert second_payload["bars"][-1]["display_close"] == second_payload["bars"][-1]["close"]
+
+
+def test_js_layout_stability_and_update_classification_contracts() -> None:
     js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
-    assert "display_close" in js
-    assert "chart_digest" in js
+    css = (REPO / "static/css/market_dashboard_landscape_v2.css").read_text(encoding="utf-8")
+    assert "candle_series_digest" in js
+    assert "metadata_digest" in js
+    assert "SAME_TIMESTAMP_LAST_CANDLE_CHANGE" in js
+    assert "MARK_ONLY" in js
+    assert "METADATA_ONLY" in js
+    assert "LAST_CANDLE_IN_PLACE" in js
+    assert "resolveCssBox" in js
+    assert "syncBackingStore" in js
+    assert "devicePixelRatio" in js
+    # Must not feed stage/clientHeight back into canvas.style.height (growth loop).
+    assert "canvas.style.height" not in js
+    assert "canvas.style.width" not in js
+    assert "stage.scrollHeight" not in js
+    assert "stage.clientHeight || 360" not in js
+    assert "Math.max(220, stage.clientHeight" not in js
+    assert "www.okx.com" not in js
+    assert "wss://ws.okx.com" not in js
+    assert "kraken" not in js.lower()
     assert "RECONNECTING" in js
     assert "MAX_BACKOFF_SECONDS" in js
+    # CSS owns fixed stage/meta bands.
+    assert "--mdl-stage-height" in css
+    assert "max-height: var(--mdl-stage-height)" in css
+    assert "max-height: 2.75rem" in css
+    assert "text-overflow: ellipsis" in css
+
+
+def test_js_uses_chart_digest_alias_and_never_okx_host() -> None:
+    js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
+    assert "chart_digest" in js
     assert "www.okx.com" not in js
     assert "wss://ws.okx.com" not in js
     assert "kraken" not in js.lower()
