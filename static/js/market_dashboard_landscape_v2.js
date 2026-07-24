@@ -3,6 +3,7 @@
  * No fetch mutation, no decision/risk/sizing logic, no write endpoints.
  * Renders materialized OHLCV from SSR/poll JSON only (never fabricates candles).
  * Polls the read-only /api/market/landscape/ohlcv snapshot endpoint; never calls OKX.
+ * Chart redraw keys off chart_digest (market values), not captured_at alone.
  */
 (function () {
   "use strict";
@@ -36,10 +37,20 @@
     if (reason) canvas.setAttribute("data-mdl-chart-error", reason);
   }
 
-  function updateMetaFromPayload(payload, availability) {
+  function setConnectionState(state) {
+    var node = root.querySelector("[data-mdl-data-connection-state]");
+    if (node) {
+      node.textContent = state;
+      node.setAttribute("data-connection-state", state);
+    }
+    root.setAttribute("data-mdl-data-connection-state", state);
+  }
+
+  function updateMetaFromPayload(payload, availability, connectionState) {
     var intervalNode = root.querySelector('[data-mdl-field="ohlcv_interval"]');
     var latestNode = root.querySelector('[data-mdl-field="ohlcv_latest_candle_at"]');
     var capturedNode = root.querySelector('[data-mdl-field="ohlcv_captured_at"]');
+    var markNode = root.querySelector('[data-mdl-field="ohlcv_live_mark"]');
     var freshnessNode = root.querySelector('[data-mdl-field="ohlcv_freshness"]');
     var availNode = root.querySelector("[data-mdl-chart-availability]");
     if (intervalNode) {
@@ -50,6 +61,13 @@
     }
     if (capturedNode) {
       capturedNode.textContent = (payload && payload.captured_at) || "—";
+    }
+    if (markNode) {
+      var mark =
+        payload && payload.live_mark_price !== undefined && payload.live_mark_price !== null
+          ? String(payload.live_mark_price)
+          : "—";
+      markNode.textContent = mark;
     }
     if (freshnessNode) {
       var fresh =
@@ -63,6 +81,7 @@
       availNode.textContent = availability;
       availNode.setAttribute("data-availability", availability);
     }
+    if (connectionState) setConnectionState(connectionState);
   }
 
   function renderOhlcvCanvas(optionalPayload) {
@@ -105,9 +124,21 @@
     for (i = 0; i < bars.length; i += 1) {
       var bar = bars[i];
       var o = Number(bar.open);
-      var h = Number(bar.high);
-      var l = Number(bar.low);
-      var c = Number(bar.close);
+      var h = Number(
+        bar.display_high !== undefined && bar.display_high !== null
+          ? bar.display_high
+          : bar.high
+      );
+      var l = Number(
+        bar.display_low !== undefined && bar.display_low !== null
+          ? bar.display_low
+          : bar.low
+      );
+      var c = Number(
+        bar.display_close !== undefined && bar.display_close !== null
+          ? bar.display_close
+          : bar.close
+      );
       if (![o, h, l, c].every(function (v) { return Number.isFinite(v); })) {
         markBlank(canvas, "non_finite_ohlc");
         return;
@@ -188,7 +219,7 @@
       drawnPixels += bodyW * bodyH;
     }
 
-    // Close polyline overlay for continuous series geometry.
+    // Close polyline overlay for continuous series geometry (uses display closes).
     ctx.beginPath();
     ctx.strokeStyle = "#93c5fd";
     ctx.lineWidth = 1.25;
@@ -202,6 +233,8 @@
     drawnPixels += plotW;
 
     var geometryOk = drawnPixels > 0 && canvas.width > 0 && canvas.height > 0;
+    var lastBar = bars[n - 1];
+    var renderedClose = closes[n - 1];
     canvas.setAttribute(
       "data-mdl-chart-geometry",
       geometryOk ? "nonzero" : "absent"
@@ -210,10 +243,23 @@
     canvas.setAttribute("data-mdl-chart-bar-count", String(n));
     canvas.setAttribute("data-mdl-chart-first-ts", String(bars[0].ts || ""));
     canvas.setAttribute("data-mdl-chart-last-ts", String(bars[n - 1].ts || ""));
+    canvas.setAttribute("data-mdl-chart-rendered-close", String(renderedClose));
+    canvas.setAttribute(
+      "data-mdl-chart-candle-close",
+      String(lastBar && lastBar.close !== undefined ? lastBar.close : "")
+    );
+    if (payload.live_mark_price !== undefined && payload.live_mark_price !== null) {
+      canvas.setAttribute(
+        "data-mdl-chart-live-mark",
+        String(payload.live_mark_price)
+      );
+    }
     if (payload.captured_at) {
       canvas.setAttribute("data-mdl-chart-captured-at", String(payload.captured_at));
     }
-    if (payload.payload_digest) {
+    if (payload.chart_digest) {
+      canvas.setAttribute("data-mdl-chart-digest", String(payload.chart_digest));
+    } else if (payload.payload_digest) {
       canvas.setAttribute("data-mdl-chart-digest", String(payload.payload_digest));
     }
     if (payload.instrument_id) {
@@ -229,25 +275,35 @@
       "data-mdl-chart-bound-without-geometry",
       geometryOk ? "false" : "true"
     );
+    root.setAttribute("data-mdl-chart-rendered-close", String(renderedClose));
   }
 
   function startOhlcvPolling() {
     var chart = root.querySelector("[data-mdl-chart]");
     if (!chart) return;
     var pollPath = chart.getAttribute("data-mdl-ohlcv-poll-path") || "";
-    var intervalSeconds = Number(
+    var baseIntervalSeconds = Number(
       chart.getAttribute("data-mdl-ohlcv-poll-interval-seconds") || "0"
     );
-    if (!pollPath || !(intervalSeconds > 0)) return;
+    if (!pollPath || !(baseIntervalSeconds > 0)) return;
     if (pollPath.indexOf("/api/market/") !== 0) return;
 
     var inFlight = false;
     var timerId = null;
-    var lastDigest = "";
+    var lastChartDigest = "";
+    var failStreak = 0;
+    var backoffSeconds = 0;
+    var MAX_BACKOFF_SECONDS = 15;
+    var STALE_AFTER_FAILURES = 3;
+
+    function nextDelaySeconds() {
+      if (backoffSeconds > 0) return backoffSeconds;
+      return baseIntervalSeconds;
+    }
 
     function scheduleNext() {
       if (timerId !== null) window.clearTimeout(timerId);
-      timerId = window.setTimeout(tick, intervalSeconds * 1000);
+      timerId = window.setTimeout(tick, nextDelaySeconds() * 1000);
     }
 
     function tick() {
@@ -261,6 +317,9 @@
       }
       inFlight = true;
       root.setAttribute("data-mdl-ohlcv-poll-in-flight", "true");
+      if (failStreak > 0) {
+        setConnectionState("RECONNECTING");
+      }
       fetch(pollPath, {
         method: "GET",
         credentials: "same-origin",
@@ -280,11 +339,24 @@
           if (body.direct_browser_okx) {
             throw new Error("poll_forbidden_direct_okx");
           }
+          failStreak = 0;
+          backoffSeconds = 0;
           var availability = body.availability || "";
           if (availability) {
             chart.setAttribute("data-availability", availability);
           }
-          updateMetaFromPayload(body.browser_payload || body, availability);
+          var connectionState =
+            body.data_connection_state ||
+            (availability === "MISSING_SOURCE"
+              ? "MISSING_SOURCE"
+              : availability === "STALE"
+                ? "STALE"
+                : "LIVE_DATA");
+          updateMetaFromPayload(
+            body.browser_payload || body,
+            availability,
+            connectionState
+          );
           var message = root.querySelector("[data-mdl-chart-message]");
           if (message && body.refresh && body.refresh.refresh_error) {
             message.setAttribute(
@@ -295,23 +367,51 @@
             message.removeAttribute("data-mdl-ohlcv-refresh-error");
           }
           if (body.browser_payload && body.browser_payload.bars) {
-            var digest = body.browser_payload.payload_digest || "";
-            if (digest !== lastDigest) {
-              lastDigest = digest;
+            var digest =
+              body.browser_payload.chart_digest ||
+              body.browser_payload.payload_digest ||
+              "";
+            if (digest !== lastChartDigest) {
+              lastChartDigest = digest;
               renderOhlcvCanvas(body.browser_payload);
             } else {
-              updateMetaFromPayload(body.browser_payload, availability);
+              updateMetaFromPayload(
+                body.browser_payload,
+                availability,
+                connectionState
+              );
             }
+          } else if (
+            availability === "MISSING_SOURCE" ||
+            connectionState === "MISSING_SOURCE"
+          ) {
+            setConnectionState("MISSING_SOURCE");
           }
           root.setAttribute("data-mdl-ohlcv-poll-status", String(body.status || "OK"));
           root.setAttribute("data-mdl-ohlcv-poll-ok", "true");
+          root.removeAttribute("data-mdl-ohlcv-poll-error");
         })
         .catch(function (err) {
+          failStreak += 1;
+          // Bounded exponential backoff: 1, 2, 4, … capped — no tight retry loop.
+          backoffSeconds = Math.min(
+            MAX_BACKOFF_SECONDS,
+            Math.max(1, Math.pow(2, Math.min(failStreak - 1, 3)))
+          );
           root.setAttribute("data-mdl-ohlcv-poll-ok", "false");
           root.setAttribute(
             "data-mdl-ohlcv-poll-error",
             String((err && err.message) || "poll_failed")
           );
+          root.setAttribute(
+            "data-mdl-ohlcv-poll-backoff-seconds",
+            String(backoffSeconds)
+          );
+          if (failStreak >= STALE_AFTER_FAILURES) {
+            setConnectionState("STALE");
+          } else {
+            setConnectionState("RECONNECTING");
+          }
         })
         .then(function () {
           inFlight = false;
@@ -321,6 +421,13 @@
     }
 
     root.setAttribute("data-mdl-ohlcv-poll-armed", "true");
+    setConnectionState(
+      chart.getAttribute("data-availability") === "MISSING_SOURCE"
+        ? "MISSING_SOURCE"
+        : chart.getAttribute("data-availability") === "STALE"
+          ? "STALE"
+          : "LIVE_DATA"
+    );
     scheduleNext();
   }
 

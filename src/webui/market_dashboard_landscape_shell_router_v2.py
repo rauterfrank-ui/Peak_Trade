@@ -177,6 +177,10 @@ def build_ohlcv_poll_response_v1(
         "payload_digest": None
         if browser_payload is None
         else browser_payload.get("payload_digest"),
+        "chart_digest": None if browser_payload is None else browser_payload.get("chart_digest"),
+        "live_mark_price": None
+        if browser_payload is None
+        else browser_payload.get("live_mark_price"),
         "refresh": {
             "status": refresh_meta.get("status"),
             "refresh_attempted": bool(refresh_meta.get("refresh_attempted")),
@@ -188,6 +192,15 @@ def build_ohlcv_poll_response_v1(
         "orders": False,
         "runtime_activation": False,
         "direct_browser_okx": False,
+        "data_connection_state": (
+            "MISSING_SOURCE"
+            if availability is Availability.MISSING_SOURCE
+            else "STALE"
+            if availability is Availability.STALE or status in {"REFRESH_FAILED", "INVALID"}
+            else "LIVE_DATA"
+            if ohlcv is not None and availability is Availability.AVAILABLE
+            else "MISSING_SOURCE"
+        ),
     }
 
 

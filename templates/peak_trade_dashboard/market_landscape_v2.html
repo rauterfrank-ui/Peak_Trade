@@ -104,6 +104,11 @@
         >
           <div class="mdl-v2-chart__chrome">
             <h2>Chart</h2>
+            <span
+              class="mdl-v2-state"
+              data-mdl-data-connection-state="true"
+              data-connection-state="{{ chart.data_connection_state }}"
+            >{{ chart.data_connection_state }}</span>
             <span class="mdl-v2-state" data-availability="{{ chart.availability }}" data-mdl-chart-availability="true">{{ chart.availability_label }}</span>
           </div>
           <dl class="mdl-v2-chart__meta" data-mdl-ohlcv-meta="true" aria-label="OHLCV freshness">
@@ -118,6 +123,10 @@
             <div>
               <dt>Captured</dt>
               <dd data-mdl-field="ohlcv_captured_at">{% if chart.captured_at %}{{ chart.captured_at }}{% else %}—{% endif %}</dd>
+            </div>
+            <div>
+              <dt>Mark</dt>
+              <dd data-mdl-field="ohlcv_live_mark">{% if chart.live_mark_price is not none %}{{ chart.live_mark_price }}{% else %}—{% endif %}</dd>
             </div>
             <div>
               <dt>Freshness</dt>

@@ -28,9 +28,12 @@ UNIVERSE_SELECTION_RELATIVE_PATH = "readmodels/universe_selection_readmodel.v1.j
 REFRESH_LOCK_NAME = ".okx_selected_instrument_ohlcv_refresh.lock"
 DEFAULT_BAR = "1H"
 DEFAULT_LIMIT = 100
-# Bounded default for PT1H candles: continuous snapshot refresh without OKX hammering.
-# Derived from candle timeframe (1H); not faster than necessary for closed-bar cadence.
-DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS = 60
+# Recent candles endpoint includes the incomplete open candle (confirm=0).
+OKX_CANDLES_PATH = "/api/v5/market/candles"
+OKX_MARK_PRICE_PATH = "/api/v5/public/mark-price"
+LIVE_MARK_PROJECTION_V1 = "okx_ohlcv_live_mark_v1"
+# Bounded dashboard refresh: visible intrabar feedback ≤5s under normal availability.
+DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS = 3
 
 
 class OkxOhlcvReadmodelError(ValueError):
@@ -165,7 +168,7 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
 
     http = client or OkxPublicMarketDataClientV1()
     envelope = http.get_json(
-        "/api/v5/market/history-candles",
+        OKX_CANDLES_PATH,
         {
             "instId": selected_provider_instrument_id,
             "bar": okx_bar,
@@ -195,10 +198,52 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         if note.startswith("GAP_COUNT:"):
             gap_count = int(note.split(":", 1)[1])
 
+    live_mark_price: str | None = None
+    live_mark_provider_ts: str | None = None
+    live_mark_request_url: str | None = None
+    live_mark_raw_digest: str | None = None
+    mark_envelope = http.get_json(
+        OKX_MARK_PRICE_PATH,
+        {
+            "instType": "SWAP",
+            "instId": selected_provider_instrument_id,
+        },
+    )
+    mark_payload = json.loads(mark_envelope.raw_body_utf8)
+    mark_rows = mark_payload.get("data")
+    if not isinstance(mark_rows, list) or not mark_rows:
+        raise OkxOhlcvReadmodelError("MARK_PRICE_EMPTY")
+    mark_row = mark_rows[0]
+    if not isinstance(mark_row, Mapping):
+        raise OkxOhlcvReadmodelError("MARK_PRICE_ROW_INVALID")
+    mark_inst = str(mark_row.get("instId") or "").strip()
+    if mark_inst and mark_inst.upper() != selected_provider_instrument_id.upper():
+        raise OkxOhlcvReadmodelError("MARK_PRICE_INSTRUMENT_MISMATCH")
+    live_mark_price = format(_dec(mark_row.get("markPx"), field="markPx"), "f")
+    live_mark_provider_ts = provider_ms_to_utc_iso(mark_row.get("ts"))
+    live_mark_request_url = mark_envelope.request_url
+    live_mark_raw_digest = mark_envelope.raw_payload_digest
+
     raw_path = (
         archive_root / "raw" / "okx_ohlcv" / f"{selected_provider_instrument_id}_{okx_bar}.json"
     )
     _atomic_write_text(raw_path, envelope.raw_body_utf8)
+    mark_raw_path = (
+        archive_root / "raw" / "okx_mark_price" / f"{selected_provider_instrument_id}.json"
+    )
+    _atomic_write_text(mark_raw_path, mark_envelope.raw_body_utf8)
+
+    # Capture clocks: prefer the later of candles vs mark responses for honest freshness.
+    captured_at = envelope.captured_at
+    effective_at = envelope.effective_at or envelope.captured_at
+    try:
+        candle_cap = datetime.fromisoformat(str(envelope.captured_at).replace("Z", "+00:00"))
+        mark_cap = datetime.fromisoformat(str(mark_envelope.captured_at).replace("Z", "+00:00"))
+        if mark_cap > candle_cap:
+            captured_at = mark_envelope.captured_at
+            effective_at = mark_envelope.effective_at or mark_envelope.captured_at
+    except ValueError:
+        pass
 
     doc = {
         "schema_name": OHLCV_SCHEMA,
@@ -209,12 +254,13 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "market_type": "perpetual",
         "interval": "PT1H",
         "provider_bar": okx_bar,
+        "candle_endpoint": OKX_CANDLES_PATH,
         "instrument_id": selected_instrument,
         "provider_instrument_id": selected_provider_instrument_id,
         "selection_bundle_id": selection_bundle_id,
         "selection_path": str(selection_path.resolve()),
-        "captured_at": envelope.captured_at,
-        "effective_at": envelope.effective_at or envelope.captured_at,
+        "captured_at": captured_at,
+        "effective_at": effective_at,
         "freshness_state": freshness_state,
         "is_stale": is_stale,
         "stale_reason": stale_reason,
@@ -230,6 +276,16 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "volume_unit": "contracts",
         "bars": [b.to_json_dict() for b in bars],
         "notes": notes,
+        # Additive live-mark projection (v1): authentic OKX public mark only.
+        # Does not rewrite closed candle OHLC; browser may use mark for open-bar tip.
+        "live_mark_projection": LIVE_MARK_PROJECTION_V1,
+        "live_mark_price": live_mark_price,
+        "live_mark_provider_ts": live_mark_provider_ts,
+        "live_mark_captured_at": mark_envelope.captured_at,
+        "live_mark_request_url": live_mark_request_url,
+        "live_mark_raw_digest": live_mark_raw_digest,
+        "live_mark_raw_path": str(mark_raw_path.resolve()),
+        "live_price_kind": "mark",
     }
     out_path = archive_root / OHLCV_RELATIVE_PATH
     _atomic_write_text(out_path, json.dumps(doc, indent=2) + "\n")

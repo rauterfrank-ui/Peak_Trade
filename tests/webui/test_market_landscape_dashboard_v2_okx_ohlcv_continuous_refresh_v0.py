@@ -34,15 +34,57 @@ def _iso(dt: datetime) -> str:
 
 
 class _FakeOkxClient:
-    def __init__(self, *, captured_at: str, close_px: str = "0.000000009176") -> None:
+    def __init__(
+        self,
+        *,
+        captured_at: str,
+        close_px: str = "0.000000009176",
+        mark_px: str | None = None,
+    ) -> None:
         self.captured_at = captured_at
         self.close_px = close_px
+        self.mark_px = mark_px if mark_px is not None else close_px
         self.calls = 0
+        self.paths: list[str] = []
 
     def get_json(self, path: str, params: dict[str, str]) -> OkxPublicCaptureEnvelopeV1:
-        assert path == "/api/v5/market/history-candles"
-        assert params["instId"] == INSTRUMENT
         self.calls += 1
+        self.paths.append(path)
+        if path == "/api/v5/public/mark-price":
+            assert params["instId"] == INSTRUMENT
+            assert params["instType"] == "SWAP"
+            body = json.dumps(
+                {
+                    "code": "0",
+                    "msg": "",
+                    "data": [
+                        {
+                            "instId": INSTRUMENT,
+                            "instType": "SWAP",
+                            "markPx": self.mark_px,
+                            "ts": "1784934000123",
+                        }
+                    ],
+                }
+            )
+            return OkxPublicCaptureEnvelopeV1(
+                request_url=f"https://www.okx.com{path}?instId={INSTRUMENT}",
+                request_path=path,
+                query_parameters=dict(params),
+                http_status=200,
+                provider_code="0",
+                provider_message="",
+                capture_started_at=self.captured_at,
+                response_received_at=self.captured_at,
+                captured_at=self.captured_at,
+                effective_at=self.captured_at,
+                provider_timestamp=None,
+                raw_payload_digest="b" * 64,
+                byte_size=len(body.encode("utf-8")),
+                raw_body_utf8=body,
+            )
+        assert path == "/api/v5/market/candles"
+        assert params["instId"] == INSTRUMENT
         start = datetime(2026, 7, 20, 18, 0, 0, tzinfo=timezone.utc)
         rows: list[list[str]] = []
         for i in range(100):
@@ -171,7 +213,10 @@ def test_authentic_okx_maps_and_newer_snapshot_advances(
     assert second["ohlcv"]["instrument_id"] == INSTRUMENT
     assert second["ohlcv"]["venue"] == "okx"
     assert second["ohlcv"]["bars"][-1]["close"] == "0.000000009500"
-    assert client_b.calls == 1
+    assert second["ohlcv"]["live_mark_price"] == "0.000000009500"
+    assert "/api/v5/market/candles" in client_b.paths
+    assert "/api/v5/public/mark-price" in client_b.paths
+    assert client_b.calls == 2
 
 
 def test_provider_failure_does_not_fabricate_or_advance(
@@ -330,6 +375,9 @@ def test_market_page_exposes_poll_contract_and_no_order_controls(
     assert 'data-mdl-field="ohlcv_captured_at"' in html
     assert 'data-mdl-field="ohlcv_latest_candle_at"' in html
     assert 'data-mdl-field="ohlcv_freshness"' in html
+    assert 'data-mdl-field="ohlcv_live_mark"' in html
+    assert "data-mdl-data-connection-state" in html
+    assert "LIVE_DATA" in html or "MISSING_SOURCE" in html or "STALE" in html
     assert "OKX" in html
     assert INSTRUMENT in html
     assert "www.okx.com" not in html
@@ -337,6 +385,174 @@ def test_market_page_exposes_poll_contract_and_no_order_controls(
     assert "place order" not in html.lower()
     assert "LIVE_AUTHORIZED" not in html or 'content="false"' in html
     assert "kraken" not in html.lower() or "historical" in html.lower()
+
+
+def test_open_candle_mark_update_same_timestamp_changes_chart_not_metadata_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Same candle ts + changed mark ⇒ chart_digest moves; captured_at-only is insufficient."""
+    from src.webui.market_dashboard_landscape_v2.presenter import (
+        serialize_ohlcv_browser_payload_v1,
+    )
+
+    archive = tmp_path / "archive"
+    selection = _write_universe(archive)
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
+    first_client = _FakeOkxClient(
+        captured_at="2026-07-25T00:00:00Z",
+        close_px="0.000000009100",
+        mark_px="0.000000009100",
+    )
+    materialize_selected_okx_ohlcv_readmodel_v1(
+        archive_root=archive,
+        selected_instrument=INSTRUMENT,
+        selected_provider_instrument_id=INSTRUMENT,
+        selected_venue="okx",
+        selection_bundle_id="bundle-a",
+        selection_path=selection,
+        client=first_client,  # type: ignore[arg-type]
+    )
+    path = archive / "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+    first_doc = json.loads(path.read_text(encoding="utf-8"))
+    # Honest freshness for connection-state projection (synthetic bars are aged).
+    first_doc["freshness_state"] = "fresh"
+    first_doc["is_stale"] = False
+    path.write_text(json.dumps(first_doc, indent=2) + "\n", encoding="utf-8")
+    first_payload = serialize_ohlcv_browser_payload_v1(first_doc)
+    assert first_payload is not None
+    ts1 = first_payload["last_timestamp"]
+    close1 = first_payload["bars"][-1]["close"]
+    display1 = first_payload["bars"][-1]["display_close"]
+    chart1 = first_payload["chart_digest"]
+    assert first_payload["bars"][-1]["provisional"] is True
+
+    second_client = _FakeOkxClient(
+        captured_at="2026-07-25T00:00:03Z",
+        close_px="0.000000009100",
+        mark_px="0.000000009250",
+    )
+    refreshed = refresh_selected_okx_ohlcv_readmodel_from_archive_v1(
+        archive_root=archive,
+        client=second_client,  # type: ignore[arg-type]
+        force=True,
+    )
+    assert refreshed["status"] == "OK"
+    second_doc = json.loads(path.read_text(encoding="utf-8"))
+    second_doc["freshness_state"] = "fresh"
+    second_doc["is_stale"] = False
+    path.write_text(json.dumps(second_doc, indent=2) + "\n", encoding="utf-8")
+    second_payload = serialize_ohlcv_browser_payload_v1(second_doc)
+    assert second_payload is not None
+    ts2 = second_payload["last_timestamp"]
+    close2 = second_payload["bars"][-1]["close"]
+    display2 = second_payload["bars"][-1]["display_close"]
+    chart2 = second_payload["chart_digest"]
+    assert ts1 == ts2
+    assert close1 == close2
+    assert display1 != display2
+    assert display2 == pytest.approx(9.25e-09)
+    assert chart1 != chart2
+    assert second_payload["live_mark_price"] == pytest.approx(9.25e-09)
+    # Closed bars remain ordered / not duplicated.
+    bars = second_payload["bars"]
+    assert len(bars) == 100
+    assert [b["ts"] for b in bars] == sorted(b["ts"] for b in bars)
+    assert len({b["ts"] for b in bars}) == 100
+    # Closed candle OHLC unchanged relative to first refresh for early bars.
+    assert first_payload["bars"][0]["close"] == bars[0]["close"]
+    assert bars[0]["confirm"] is True
+
+    # Poll response connection state with injected skip refresh (no live OKX).
+    def _skip(**kwargs: Any) -> dict[str, Any]:
+        retained = json.loads(path.read_text(encoding="utf-8"))
+        retained["freshness_state"] = "fresh"
+        retained["is_stale"] = False
+        return {
+            "status": "SKIPPED_RECENT",
+            "refresh_attempted": False,
+            "selected_instrument": INSTRUMENT,
+            "selected_venue": "okx",
+            "captured_at": retained.get("captured_at"),
+            "last_timestamp": retained.get("last_timestamp"),
+            "ohlcv": retained,
+        }
+
+    import src.ops.okx_selected_instrument_ohlcv_readmodel_v1 as ohlcv_mod
+
+    monkeypatch.setattr(
+        ohlcv_mod,
+        "refresh_selected_okx_ohlcv_readmodel_from_archive_v1",
+        _skip,
+    )
+    poll = build_ohlcv_poll_response_v1(force_refresh=False)
+    assert poll["data_connection_state"] == "LIVE_DATA"
+    assert poll["direct_browser_okx"] is False
+    assert poll["orders"] is False
+
+
+def test_captured_at_only_does_not_change_chart_digest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from src.webui.market_dashboard_landscape_v2.presenter import (
+        serialize_ohlcv_browser_payload_v1,
+    )
+
+    archive = tmp_path / "archive"
+    selection = _write_universe(archive)
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
+    client_a = _FakeOkxClient(
+        captured_at="2026-07-25T00:00:00Z",
+        close_px="0.000000009100",
+        mark_px="0.000000009100",
+    )
+    materialize_selected_okx_ohlcv_readmodel_v1(
+        archive_root=archive,
+        selected_instrument=INSTRUMENT,
+        selected_provider_instrument_id=INSTRUMENT,
+        selected_venue="okx",
+        selection_bundle_id="bundle-a",
+        selection_path=selection,
+        client=client_a,  # type: ignore[arg-type]
+    )
+    path = archive / "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+    first_payload = serialize_ohlcv_browser_payload_v1(json.loads(path.read_text(encoding="utf-8")))
+    client_b = _FakeOkxClient(
+        captured_at="2026-07-25T00:00:05Z",
+        close_px="0.000000009100",
+        mark_px="0.000000009100",
+    )
+    refresh_selected_okx_ohlcv_readmodel_from_archive_v1(
+        archive_root=archive,
+        client=client_b,  # type: ignore[arg-type]
+        force=True,
+    )
+    second_doc = json.loads(path.read_text(encoding="utf-8"))
+    second_payload = serialize_ohlcv_browser_payload_v1(second_doc)
+    assert first_payload is not None and second_payload is not None
+    assert first_payload["chart_digest"] == second_payload["chart_digest"]
+    assert first_payload["captured_at"] != second_payload["captured_at"]
+    assert first_payload["payload_digest"] != second_payload["payload_digest"]
+
+
+def test_js_uses_display_close_and_chart_digest_not_okx_host() -> None:
+    js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
+    assert "display_close" in js
+    assert "chart_digest" in js
+    assert "RECONNECTING" in js
+    assert "MAX_BACKOFF_SECONDS" in js
+    assert "www.okx.com" not in js
+    assert "wss://ws.okx.com" not in js
+    assert "kraken" not in js.lower()
+
+
+def test_poll_interval_targets_visible_intrabar_feedback() -> None:
+    from src.webui.market_dashboard_landscape_v2.presenter import (
+        OHLCV_POLL_INTERVAL_SECONDS,
+    )
+
+    assert DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS <= 5
+    assert DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS >= 1
+    assert OHLCV_POLL_INTERVAL_SECONDS == DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS
 
 
 def test_stale_and_missing_source_fail_closed(

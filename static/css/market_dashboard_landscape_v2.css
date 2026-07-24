@@ -234,11 +234,25 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="LIVE_DATA"] {
+  color: #34d399;
+}
+
+.mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="RECONNECTING"] {
+  color: #fbbf24;
+}
+
+.mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="STALE"],
+.mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="MISSING_SOURCE"] {
+  color: #f87171;
 }
 
 .mdl-v2-chart__meta {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px 12px;
   margin: 0 0 8px;
   padding: 0;

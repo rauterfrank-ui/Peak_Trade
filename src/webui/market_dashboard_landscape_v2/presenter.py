@@ -18,6 +18,16 @@ from .source_health import DashboardSourceHealthSnapshotV1
 # Presentation-only poll contract; server owns refresh cadence/materialization.
 OHLCV_POLL_PATH = "/api/market/landscape/ohlcv"
 OHLCV_BROWSER_PAYLOAD_SCHEMA = "market_landscape_ohlcv_browser_payload.v1"
+# Must stay equal to DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS in
+# src.ops.okx_selected_instrument_ohlcv_readmodel_v1 (contract-tested).
+# Landscape package must not import ops owners (architecture guard).
+OHLCV_POLL_INTERVAL_SECONDS = 3
+
+
+def _ohlcv_poll_interval_seconds() -> int:
+    """Presentation mirror of the canonical OKX OHLCV poll cadence."""
+    return int(OHLCV_POLL_INTERVAL_SECONDS)
+
 
 AVAILABILITY_LABELS: Mapping[Availability, str] = {
     Availability.AVAILABLE: "AVAILABLE",
@@ -96,15 +106,6 @@ def _finite_ohlc_float(raw: Any) -> float | None:
     return value
 
 
-def _ohlcv_poll_interval_seconds() -> int:
-    """Reuse canonical OKX OHLCV poll cadence; presentation never invents a second owner."""
-    from src.ops.okx_selected_instrument_ohlcv_readmodel_v1 import (
-        DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS,
-    )
-
-    return int(DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS)
-
-
 def serialize_ohlcv_browser_payload_v1(
     ohlcv_readmodel: Mapping[str, Any] | None,
 ) -> dict[str, Any] | None:
@@ -112,14 +113,19 @@ def serialize_ohlcv_browser_payload_v1(
 
     Source bars may store OHLC as decimal strings (canonical readmodel). This
     projection never fabricates candles; missing/non-finite values fail closed.
+
+    Chart digest excludes captured_at so metadata-only refresh does not imply
+    a market-value change. Open (provisional) bars may expose display_close from
+    authentic live_mark_price without rewriting closed candle OHLC.
     """
     if not isinstance(ohlcv_readmodel, Mapping):
         return None
     bars_raw = ohlcv_readmodel.get("bars")
     if not isinstance(bars_raw, list) or not bars_raw:
         return None
+    live_mark = _finite_ohlc_float(ohlcv_readmodel.get("live_mark_price"))
     bars: list[dict[str, Any]] = []
-    for row in bars_raw:
+    for idx, row in enumerate(bars_raw):
         if not isinstance(row, Mapping):
             return None
         ts = row.get("ts")
@@ -140,6 +146,15 @@ def serialize_ohlcv_browser_payload_v1(
             confirm = confirm_raw
         else:
             confirm = str(confirm_raw) in {"1", "true", "True"}
+        provisional = not confirm
+        display_close = close_v
+        display_high = high_v
+        display_low = low_v
+        # Only the current open candle may tip with authentic mark; closed bars stay stable.
+        if provisional and idx == len(bars_raw) - 1 and live_mark is not None:
+            display_close = live_mark
+            display_high = max(high_v, live_mark)
+            display_low = min(low_v, live_mark)
         bars.append(
             {
                 "ts": ts.strip(),
@@ -147,20 +162,24 @@ def serialize_ohlcv_browser_payload_v1(
                 "high": high_v,
                 "low": low_v,
                 "close": close_v,
+                "display_close": display_close,
+                "display_high": display_high,
+                "display_low": display_low,
                 "confirm": confirm,
-                "provisional": not confirm,
+                "provisional": provisional,
             }
         )
     venue_raw = ohlcv_readmodel.get("venue")
     venue_display = None
     if isinstance(venue_raw, str) and venue_raw.strip():
         venue_display = _venue_display(venue_raw, Availability.AVAILABLE)
-    digest_source = {
+    # Market-value digest: OHLC + live mark tip — never captured_at alone.
+    chart_digest_source = {
         "instrument_id": ohlcv_readmodel.get("instrument_id"),
         "venue": venue_display or venue_raw,
         "interval": ohlcv_readmodel.get("interval"),
         "last_closed_timestamp": ohlcv_readmodel.get("last_closed_timestamp"),
-        "captured_at": ohlcv_readmodel.get("captured_at"),
+        "live_mark_price": live_mark,
         "bars": [
             {
                 "ts": b["ts"],
@@ -168,10 +187,21 @@ def serialize_ohlcv_browser_payload_v1(
                 "high": b["high"],
                 "low": b["low"],
                 "close": b["close"],
+                "display_close": b["display_close"],
+                "display_high": b["display_high"],
+                "display_low": b["display_low"],
                 "confirm": b["confirm"],
             }
             for b in bars
         ],
+    }
+    chart_digest = hashlib.sha256(
+        json.dumps(chart_digest_source, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    # Full payload digest retains captured_at for snapshot identity diagnostics only.
+    digest_source = {
+        **chart_digest_source,
+        "captured_at": ohlcv_readmodel.get("captured_at"),
     }
     payload_digest = hashlib.sha256(
         json.dumps(digest_source, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -191,6 +221,11 @@ def serialize_ohlcv_browser_payload_v1(
         "freshness_state": ohlcv_readmodel.get("freshness_state"),
         "is_stale": bool(ohlcv_readmodel.get("is_stale")),
         "gap_count": ohlcv_readmodel.get("gap_count"),
+        "live_mark_price": live_mark,
+        "live_mark_provider_ts": ohlcv_readmodel.get("live_mark_provider_ts"),
+        "live_price_kind": ohlcv_readmodel.get("live_price_kind") or "mark",
+        "live_mark_projection": ohlcv_readmodel.get("live_mark_projection"),
+        "chart_digest": chart_digest,
         "payload_digest": payload_digest,
         "bars": bars,
     }
@@ -516,9 +551,23 @@ def present_market_landscape_v2(
             "captured_at": (browser_payload or ohlcv_payload or {}).get("captured_at"),
             "effective_at": (browser_payload or ohlcv_payload or {}).get("effective_at"),
             "payload_digest": (browser_payload or {}).get("payload_digest"),
+            "chart_digest": (browser_payload or {}).get("chart_digest"),
+            "live_mark_price": (browser_payload or {}).get("live_mark_price"),
+            "live_price_kind": (browser_payload or {}).get("live_price_kind"),
             "is_stale": bool((ohlcv_payload or {}).get("is_stale")),
             "poll_path": OHLCV_POLL_PATH,
             "poll_interval_seconds": _ohlcv_poll_interval_seconds(),
+            "data_connection_state": (
+                "STALE"
+                if chart_availability is Availability.STALE
+                else "MISSING_SOURCE"
+                if chart_availability is Availability.MISSING_SOURCE
+                else "LIVE_DATA"
+                if browser_payload is not None and chart_availability is Availability.AVAILABLE
+                else "MISSING_SOURCE"
+                if chart_availability in (Availability.INVALID, Availability.NOT_BOUND)
+                else "MISSING_SOURCE"
+            ),
         },
         "timeline": {
             "availability": Availability.NOT_BOUND.value,
