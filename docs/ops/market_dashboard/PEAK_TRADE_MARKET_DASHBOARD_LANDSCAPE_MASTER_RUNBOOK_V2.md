@@ -943,8 +943,8 @@ PHASE_5_PASS=false
 - After this explicit operator deferral, TASK_4 does **not** block Phase-5
   technical closeout.
 - Other Phase-5 gaps remain independently open (including visual density,
-  keyboard/focus accessibility baseline, performance measurement, and the
-  operator product gate).
+  performance measurement, and the operator product gate). TASK_7 keyboard /
+  focus accessibility baseline is implemented (see § TASK_7 below).
 - The existing UI `NOT_BOUND` placeholder remains the required fail-closed
   representation.
 
@@ -958,6 +958,50 @@ PHASE_5_PASS=false
 - This ratification does **not** authorize producer creation, persistence,
   event schemas, Landscape binding, or any Core/Runtime/Strategy/Execution
   change.
+
+### TASK_7 — Keyboard / Focus / Accessibility Baseline (IMPLEMENTED)
+
+```text
+PHASE=PHASE_5_TASK_7_KEYBOARD_FOCUS_ACCESSIBILITY_BASELINE
+TASK_7_STATE=PASS
+TASK_7_IMPLEMENTED=true
+TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED
+PHASE_5_PASS=false
+OPERATOR_PRODUCT_GATE=false
+```
+
+**Established facts (this slice)**
+
+- Single page-level `<h1>` (`Market Landscape`) in the Global System Strip.
+- Nested `<main>` removed from the Landscape template; `base.html` owns the
+  sole page `<main>` landmark. Region landmarks remain via `<header>` /
+  `<aside>` / `<section>` / native `<details>` plus `data-mdl-region` markers.
+- Interactive surface is native-only: app-chrome home `<a>` and Engineering
+  Drawer `<details>`/`<summary>` (Enter/Space native; Escape closes and
+  restores focus to `summary`).
+- No positive `tabindex`, no clickable `div`/`span` controls, no write /
+  order / activation controls.
+- Visible `:focus-visible` ring (2px `#7dd3fc`, offset 3px); universal CSS
+  reset no longer suppresses `outline` globally.
+- Closed Engineering Drawer content is not keyboard-focusable; read-only
+  Decision / Why / Blockers / Source Health / Safety rows stay non-focusable.
+- Instrument / watchlist remain server-rendered read-only facts — no local
+  selection control exists in this surface (nothing invented for a11y theater).
+- No Landscape CSS transitions/animations → reduced-motion treatment
+  `NOT_APPLICABLE` (no new animation introduced).
+
+**Tests / evidence**
+
+- `tests/webui/test_market_landscape_dashboard_v2_accessibility_baseline_v0.py`
+- Existing shell-route + architecture-guard suites remain green.
+- Evidence pack: `evidence/market_dashboard_v2/phase5/task7_accessibility/`
+
+**Unresolved / still open for Phase 5**
+
+- `TASK_8_PERFORMANCE_MEASURED` not started.
+- `TASK_1_VISUAL_DENSITY_OPTIMIZED` not started.
+- Operator product gate remains false; Phase 5 remains incomplete.
+- TASK_4 timeline remains `DEFERRED`.
 
 ---
 

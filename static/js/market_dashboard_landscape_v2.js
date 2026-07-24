@@ -21,6 +21,8 @@
     if (event.key !== "Escape") return;
     if (engineering && engineering.open) {
       engineering.open = false;
+      var summary = engineering.querySelector("summary");
+      if (summary) summary.focus();
     }
   });
 })();

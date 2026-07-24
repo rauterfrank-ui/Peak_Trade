@@ -93,6 +93,10 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert "<button" not in html.lower()
     assert "Trigger Kill" not in html
     assert "Recover Kill" not in html
+    # Phase 5 TASK_7: single page heading + single main landmark.
+    assert html.lower().count("<main") == 1
+    assert '<h1 class="mdl-v2-kicker">Market Landscape</h1>' in html
+    assert 'data-mdl-a11y-baseline="task7"' in html
 
 
 def _region_html(html: str, region: str) -> str:

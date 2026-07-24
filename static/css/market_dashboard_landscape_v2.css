@@ -71,16 +71,25 @@
 .mdl-v2 *::after {
   box-sizing: border-box;
   border: 0 !important;
-  outline: none;
+  /* Do not globally suppress outline — keyboard focus must remain visible. */
   box-shadow: none !important;
 }
 
-/* Focus ring only when keyboard-focused — not a structural layout line */
+/* Mouse click: avoid persistent outline without killing :focus-visible */
+.mdl-v2-body a:focus:not(:focus-visible),
+.mdl-v2-body summary:focus:not(:focus-visible),
+.mdl-v2 a:focus:not(:focus-visible),
+.mdl-v2 summary:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Keyboard focus ring — shape + offset, not color-only (Chrome-visible on dark UI) */
+.mdl-v2-body a:focus-visible,
+.mdl-v2-body summary:focus-visible,
 .mdl-v2 a:focus-visible,
-.mdl-v2 summary:focus-visible,
-.mdl-v2 [tabindex]:focus-visible {
-  outline: 1px solid rgba(125, 211, 252, 0.7);
-  outline-offset: 2px;
+.mdl-v2 summary:focus-visible {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 3px;
 }
 
 .mdl-v2-shell {
@@ -108,6 +117,7 @@
 }
 
 .mdl-v2-kicker {
+  margin: 0;
   font-size: 13px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
