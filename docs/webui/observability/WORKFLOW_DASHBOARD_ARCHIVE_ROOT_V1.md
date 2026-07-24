@@ -4,14 +4,14 @@
 
 Sole configuration owner for the **durable archive root location** used by
 Workflow Dashboard V1 and Market Landscape V2 consumers that read
-`universe_selection_readmodel.v1` under `{ARCHIVE_ROOT}/readmodels/`.
+`universe_selection_readmodel.v1` under `{ARCHIVE_ROOT}&#47;readmodels&#47;`.
 
 This contract owns **where** the archive root is resolved. It does **not**:
 
 - authorize live trading, orders, runtime activation, or scheduler work;
 - create directories during import or resolution;
 - write or copy readmodels;
-- autoload Universe onto `GET /market`;
+- autoload Universe onto `GET &#47;market`;
 - change visible dashboard panels by itself.
 
 ## Ownership
@@ -27,8 +27,8 @@ This contract owns **where** the archive root is resolved. It does **not**:
 Non-owners (must not become a second dashboard archive convention):
 
 - `PEAK_TRADE_DATA_ARCHIVE_ROOT` (research data archive)
-- `scripts/webui/review_server.sh` `.run/webui_review_server` process state
-- `tests/fixtures/**`
+- `scripts/webui/review_server.sh` `.run&#47;webui_review_server` process state
+- `tests&#47;fixtures&#47;**`
 
 ## Precedence
 
@@ -42,15 +42,15 @@ Deterministic, absolute, cwd-independent user-state location:
 
 | Platform | Default |
 |----------|---------|
-| macOS | `~/Library/Application Support/Peak_Trade/workflow_dashboard_v1` |
-| Linux | `${XDG_STATE_HOME:-~/.local/state}/peak_trade/workflow_dashboard_v1` |
-| Windows | `%LOCALAPPDATA%/Peak_Trade/workflow_dashboard_v1` |
+| macOS | `~&#47;Library&#47;Application Support&#47;Peak_Trade&#47;workflow_dashboard_v1` |
+| Linux | `${XDG_STATE_HOME:-~&#47;.local&#47;state}&#47;peak_trade&#47;workflow_dashboard_v1` |
+| Windows | `%LOCALAPPDATA%&#47;Peak_Trade&#47;workflow_dashboard_v1` |
 
 Default selection rejects:
 
 - repository working tree / tracked truth
-- `tests/fixtures`
-- `/tmp` (and tmp-backed `XDG_STATE_HOME`)
+- `tests&#47;fixtures`
+- `&#47;tmp` (and tmp-backed `XDG_STATE_HOME`)
 - bare filesystem root / bare home directory
 
 ## Resolution semantics

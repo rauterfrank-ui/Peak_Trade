@@ -72,7 +72,7 @@ Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observabil
 
 **Contract doc:** [**Universe Selection Read-model Schema v1**](UNIVERSE_SELECTION_READMODEL_V1.md) — `schema_name=universe_selection_readmodel.v1`.
 
-- **Storage target (Slice 2+):** `{ARCHIVE_ROOT}/readmodels/universe_selection_readmodel.v1.json` where `{ARCHIVE_ROOT}` is resolved by [WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md](WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md) (Env override `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` still supported).
+- **Storage target (Slice 2+):** `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json` where `{ARCHIVE_ROOT}` is resolved by [WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md](WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md) (Env override `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` still supported).
 - **Validation (Slice 1):** `src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py` — offline schema only; **no archive writes**, **no runtime I/O**.
 - **Dashboard today:** Panels B–E remain **Missing Truth** (`UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE`). Slice 1 does **not** populate rows.
 - **Slice 3 (future):** `workflow_dashboard_readmodel.v1` builder will read the persisted file when present and manifest-verified; until then Missing Truth stays valid.
