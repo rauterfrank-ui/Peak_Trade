@@ -62,8 +62,9 @@ MANIFEST_VERIFY_RC=0
 | U2b loader validation | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
 | U1 upstream adapter | `src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py` |
 | U5c transform contract (U5b → candidate) | [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12 |
+| OKX → governed packet producer charter (docs-only) | [OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md](OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md) |
 
-This template extends the U4b/U2b chain — **not** a second real-source system, evidence index, or handoff surface. U5b raw evidence reaches this template only via the U5c transform contract — **not** direct report-only intake.
+This template extends the U4b/U2b chain — **not** a second real-source system, evidence index, or handoff surface. U5b raw evidence reaches this template only via the U5c transform contract — **not** direct report-only intake. Current-venue OKX sealed-metadata producer boundaries are ratified separately in the OKX producer charter; that charter does **not** accept intake, weaken strict-complete rules, or authorize `min_notional` derivation.
 
 ## 5. Future snapshot location (operator-supplied later)
 
