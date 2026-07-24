@@ -1,0 +1,9 @@
+SOURCE_ABSENCE_GUARD_PASS=true
+TIMELINE_SLOT_REGISTERED=false
+TIMELINE_AVAILABILITY=NOT_BOUND
+TIMELINE_EVENTS=[]
+NO_PROJECT_TIMELINE_ADAPTER=true
+NO_EXECUTION_BRIDGE_BINDING=true
+NO_REPLAY_EVENT_STREAM_BINDING=true
+NO_FABRICATED_TEMPLATE_EVENTS=true
+PROOF=tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py::test_phase5_task4_timeline_deferral_keeps_not_bound_without_source

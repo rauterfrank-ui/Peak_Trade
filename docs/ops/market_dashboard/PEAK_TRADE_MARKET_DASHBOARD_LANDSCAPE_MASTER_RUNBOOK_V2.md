@@ -863,6 +863,7 @@ Aus dem Skeleton eine belastbare tägliche Operator-Surface machen.
 2. Redundanzen entfernen.
 3. Decision → Why → Blocker als primären Lesefluss schärfen.
 4. Timeline für Zustandsübergänge ergänzen.
+   — **DEFERRED** (explicit operator ratification; see § Phase 5 TASK_4 below).
 5. Source-Health und Freshness kompakt machen.
 6. Engineering Drawer vervollständigen.
 7. Tastatur-/Fokus- und Accessibility-Basis prüfen.
@@ -889,6 +890,74 @@ TECHNICAL_PRODUCT_GATE=true
 OPERATOR_PRODUCT_GATE=true
 DAILY_OBSERVATION_USABLE=true
 ```
+
+Aspirational closeout targets only. Do **not** treat the Gate block above as
+current Phase-5 status. `PHASE_5_PASS` remains false until remaining technical
+gaps and the operator product gate are independently closed.
+
+### TASK_4 — State-Transition Timeline Explicit Phase-5 Deferral (RATIFIED)
+
+```text
+PHASE=PHASE_5_TASK_4_STATE_TRANSITION_TIMELINE_DEFERRAL_RATIFICATION
+OPERATOR_DECISION=B_EXPLICIT_PHASE_5_DEFERRAL
+PERMANENT_NOT_APPLICABLE=false
+TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED
+TASK_4_PHASE_5_BLOCKING=false
+TASK_4_IMPLEMENTED=false
+TASK_4_PERMANENTLY_NOT_APPLICABLE=false
+TIMELINE_SOURCE_AVAILABLE=false
+TIMELINE_SOURCE_REGISTERED=false
+TIMELINE_UI_STATE=NOT_BOUND
+CURRENT_TIMELINE_EVENT_COUNT=0
+CANONICAL_TIMELINE_SOURCE_EXISTS=false
+INVENTED_HISTORY_ALLOWED=false
+RECONSTRUCTED_HISTORY_ALLOWED=false
+FUTURE_PRODUCER_WORK_AUTHORIZED=false
+SEPARATE_OPERATOR_GO_REQUIRED=true
+PHASE_5_PASS=false
+```
+
+**Phase-5 product obligation**
+
+- Display canonical timeline history only if a valid durable source exists.
+- Without such a source, the Landscape MUST keep the honest `NOT_BOUND`
+  placeholder and MUST NOT invent, reconstruct, or synthesize events.
+
+**Current repository truth**
+
+- No eligible durable canonical state-transition / decision-event producer
+  exists for Market Dashboard Landscape V2.
+- `CanonicalTradingDecisionEvidenceV1`, Double Play display snapshots,
+  `RuntimeScopeState`, and `transition_state` / `TransitionDecision` are
+  current-state or single-step semantics — not durable ordered history.
+- Replay projections, live execution timelines, diagnostics, engineering
+  drawer slots, source-health rows, reason-code arrays, browser-local
+  history, and polling-derived diffs are ineligible timeline sources.
+- Owner registry has no `event_decision_timeline` slot; presenter keeps
+  `timeline.availability=NOT_BOUND` and `events=[]`.
+
+**Current Phase-5 resolution**
+
+- `TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED` (not PASS; not permanent
+  NOT_APPLICABLE).
+- After this explicit operator deferral, TASK_4 does **not** block Phase-5
+  technical closeout.
+- Other Phase-5 gaps remain independently open (including visual density,
+  keyboard/focus accessibility baseline, performance measurement, and the
+  operator product gate).
+- The existing UI `NOT_BOUND` placeholder remains the required fail-closed
+  representation.
+
+**Future work (not authorized by this ratification)**
+
+- A separate producer-side durable-history workstream may be proposed later.
+- It requires a separate operator GO and must define canonical owner, event
+  semantics, ordering, timestamps, persistence, retention, provenance,
+  schema versioning, and a read-only projection.
+- Dashboard remains consumer-only.
+- This ratification does **not** authorize producer creation, persistence,
+  event schemas, Landscape binding, or any Core/Runtime/Strategy/Execution
+  change.
 
 ---
 
@@ -1507,7 +1576,7 @@ NOT_BOUND_SOURCES=[
   "economic_summary",
   "autonomy_stage (OPTION_D explicit NOT_BOUND; no producer/contract)",
   "diagnostics_summary",
-  "event_decision_timeline"
+  "event_decision_timeline (Phase 5 TASK_4 DEFERRED; honest NOT_BOUND placeholder; no durable producer)"
 ]
 MISSING_READ_PROJECTIONS=[
   "market/universe/scope UI binding (PR 3 / Phase 4.1-4.2)",
@@ -1515,7 +1584,9 @@ MISSING_READ_PROJECTIONS=[
   "safety/risk/execution UI binding (PR 5 / Phase 4.4-4.5)",
   "economic/diagnostics UI binding (PR 6 / Phase 4.6); autonomy remains OPTION_D NOT_BOUND"
 ]
-MISSING_PRODUCERS=[]
+MISSING_PRODUCERS=[
+  "event_decision_timeline durable ordered transition/decision history (no canonical producer; Phase 5 TASK_4 deferred)"
+]
 KNOWN_INTENTIONAL_LOCKS=[
   "BOUND_NOT_ACTIVATED",
   "LIVE/ORDERS/SCHEDULER fail-closed",
@@ -1523,8 +1594,17 @@ KNOWN_INTENTIONAL_LOCKS=[
   "Ops Double Play projection-only",
   "Phase 4 producer binding not authorized in this PR",
   "Phase 4.6C diagnostics_summary OPTION_A KEEP_NOT_BOUND (owner UNRESOLVED; WorkflowDashboardReadModelV1 NON_SOURCE)",
-  "Phase 4.7A/4.7B autonomy_stage OPTION_D KEEP_NOT_BOUND (aggregate not required; owner/producer/contract=NONE; runtime bridge status separate NON_SOURCE)"
+  "Phase 4.7A/4.7B autonomy_stage OPTION_D KEEP_NOT_BOUND (aggregate not required; owner/producer/contract=NONE; runtime bridge status separate NON_SOURCE)",
+  "Phase 5 TASK_4 event_decision_timeline B_EXPLICIT_PHASE_5_DEFERRAL (NOT_BOUND; invented/reconstructed history forbidden; future producer GO required)"
 ]
+TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED
+TASK_4_PHASE_5_BLOCKING=false
+TASK_4_IMPLEMENTED=false
+TASK_4_PERMANENTLY_NOT_APPLICABLE=false
+TIMELINE_SOURCE_AVAILABLE=false
+TIMELINE_UI_STATE=NOT_BOUND
+FUTURE_PRODUCER_WORK_AUTHORIZED=false
+PHASE_5_PASS=false
 
 PHASE_PR_MAPPING=[
   "Runbook PHASE 2 == Implementation PR #5499 (labeled PR 1 ReadModel Contracts)",
@@ -1547,7 +1627,8 @@ SEPARATE_GO_REQUIRED_FOR=[
   "Promotion",
   "Live",
   "Mass cleanup",
-  "Phase 4 producer binding"
+  "Phase 4 producer binding",
+  "event_decision_timeline durable producer + read-only projection (Phase 5 TASK_4 deferred; FUTURE_PRODUCER_WORK_AUTHORIZED=false)"
 ]
 ```
 
