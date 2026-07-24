@@ -996,12 +996,60 @@ OPERATOR_PRODUCT_GATE=false
 - Existing shell-route + architecture-guard suites remain green.
 - Evidence pack: `evidence/market_dashboard_v2/phase5/task7_accessibility/`
 
+**Unresolved / still open for Phase 5 (pre-TASK_8 closeout note superseded below)**
+
+- Operator product gate remains false; Phase 5 remains incomplete until
+  TASK_1 + operator product gate.
+- TASK_4 timeline remains `DEFERRED`.
+
+### TASK_8 — Performance Measurement (MEASURED)
+
+```text
+PHASE=PHASE_5_TASK_8_PERFORMANCE_MEASURED
+TASK_8_STATE=PASS
+TASK_8_IMPLEMENTED=true
+TASK_4_STATE=DEFERRED
+PHASE_5_PASS=false
+OPERATOR_PRODUCT_GATE=false
+PERFORMANCE_BUDGET_RATIFIED=false
+CHROME_REVIEW_STATUS=PARTIAL
+STALE_PID_ONLY_BLOCKER=true
+```
+
+**Established facts (this slice — measurement only, no production mutation)**
+
+- Exact base SHA `c48a020547c4343bdaf67cf7134daa80ef9b8253` (main == origin/main).
+- GET `/market` HTML response ~49537 bytes (TestClient); page-owned static
+  `market_dashboard_landscape_v2.css` 12057 + `.js` 832 = 12889 bytes;
+  shared base CSS also loaded (~98KB on disk); no duplicate asset loading;
+  no source maps / dev payloads exposed on page assets.
+- Bounded in-process route timing (warmup 5, n=30): p50 ~1.1ms, p95 ~1.4ms,
+  status/byte consistent; **not** a ratified production budget.
+- Real Chrome Playwright (`channel=chrome` 150.x) route-fulfill metrics on
+  1512x982 and 1920x1080 (3 runs each, cache disabled via CDP): DCL/load
+  ~50–70ms local, FCP/LCP ~84–96ms, CLS 0, long tasks 0, 6 requests,
+  ~160670 fulfilled bytes, 678 DOM nodes; primary workspace visible; chart
+  container non-empty; no horizontal overflow; no console/page/network errors.
+- Canonical `review_server.sh status` remains `STALE_PID` — diagnosed only,
+  **not** auto-repaired; Chrome review path therefore PARTIAL while Playwright
+  Real Chrome measurements remain valid evidence.
+- Client JS is a tiny presentation IIFE: no hydration framework, no timers/
+  polling, no network/write calls → `CLIENT_COMPLEXITY_CLASS=PASS`.
+- No numeric performance budget invented; descriptive classification only.
+
+**Tests / evidence**
+
+- Relevant shell / architecture / accessibility / chrome-evidence / contracts /
+  tombstone suites green (67 passed).
+- Evidence pack: `evidence/market_dashboard_v2/phase5/task8_performance/`
+
 **Unresolved / still open for Phase 5**
 
-- `TASK_8_PERFORMANCE_MEASURED` not started.
 - `TASK_1_VISUAL_DENSITY_OPTIMIZED` not started.
 - Operator product gate remains false; Phase 5 remains incomplete.
 - TASK_4 timeline remains `DEFERRED`.
+- Canonical review-server STALE_PID remains an operator/infra follow-up
+  outside this measurement slice.
 
 ---
 

@@ -1,0 +1,60 @@
+{
+  "timestamp_utc": "2026-07-24T18:16:01Z",
+  "harness": "fastapi.testclient.TestClient(create_app()).get('/market')",
+  "command": "uv run python evidence/market_dashboard_v2/phase5/task8_performance/_measure_route_assets.py",
+  "environment": "local_inprocess_asgi_testclient",
+  "warmup_count": 5,
+  "measured_request_count": 30,
+  "min_ms": 1.033,
+  "p50_ms": 1.144,
+  "p95_ms": 1.415,
+  "max_ms": 1.829,
+  "mean_ms": 1.195,
+  "http_status_consistent": true,
+  "statuses_unique": [
+    200
+  ],
+  "response_byte_consistent": true,
+  "response_bytes_unique": [
+    49537
+  ],
+  "errors_timeouts": [],
+  "samples_ms": [
+    1.167,
+    1.185,
+    1.291,
+    1.472,
+    1.233,
+    1.135,
+    1.148,
+    1.048,
+    1.112,
+    1.097,
+    1.829,
+    1.16,
+    1.183,
+    1.135,
+    1.097,
+    1.082,
+    1.25,
+    1.238,
+    1.266,
+    1.116,
+    1.131,
+    1.033,
+    1.141,
+    1.136,
+    1.317,
+    1.242,
+    1.344,
+    1.107,
+    1.115,
+    1.043
+  ],
+  "limitations": [
+    "In-process TestClient ASGI timing, not production network RTT",
+    "No concurrent load; bounded regression sample only",
+    "Wall-clock dependent on local machine; not a ratified budget",
+    "HTML byte size may vary slightly across samples if generated_at drifts"
+  ]
+}

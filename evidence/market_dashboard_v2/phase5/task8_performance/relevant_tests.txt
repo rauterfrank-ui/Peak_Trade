@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 67 items
+
+tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py ....... [ 10%]
+...                                                                      [ 14%]
+tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py . [ 16%]
+..................                                                       [ 43%]
+tests/webui/test_market_landscape_dashboard_v2_accessibility_baseline_v0.py . [ 44%]
+....                                                                     [ 50%]
+tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py ..  [ 53%]
+tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py ......... [ 67%]
+.............                                                            [ 86%]
+tests/webui/test_market_dashboard_tombstone_v1.py .........              [100%]
+
+============================== 67 passed in 5.91s ==============================
+WALLCLOCK_SECONDS=6

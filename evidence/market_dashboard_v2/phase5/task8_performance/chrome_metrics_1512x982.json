@@ -1,0 +1,152 @@
+{
+  "timestamp_utc": "2026-07-24T18:16:11Z",
+  "git_sha_note": "c48a020547c4343bdaf67cf7134daa80ef9b8253",
+  "browser_channel": "chrome",
+  "browser_version": "150.0.7871.182",
+  "viewport": {
+    "width": 1512,
+    "height": 982
+  },
+  "cache_mode": "disabled_via_cdp_Network.setCacheDisabled_when_available",
+  "run_count": 3,
+  "harness": "playwright_sync_chrome_route_fulfill_static_and_html",
+  "measurement_environment": "localhost_controlled_route_fulfill_not_production_network",
+  "limitations": [
+    "Route-fulfill serves local HTML+static; not real TCP to review server",
+    "Canonical review_server.sh may be STALE_PID; not auto-repaired",
+    "Localhost only; not laboratory-grade or production-network performance",
+    "Transferred bytes are fulfilled body sizes, not wire/compressed transfer",
+    "LCP/CLS/longtask exposure depends on Chromium PerformanceObserver support"
+  ],
+  "runs": [
+    {
+      "viewport": {
+        "width": 1512,
+        "height": 982
+      },
+      "timing": {
+        "domContentLoaded_ms": 69.29999999981374,
+        "loadEvent_ms": 69.29999999981374,
+        "responseStart_ms": 40.700000000186265,
+        "fcp_ms": 96,
+        "lcp_ms": 96,
+        "cls": 0,
+        "long_task_count": 0,
+        "long_tasks": [],
+        "dom_node_count": 678,
+        "primary_workspace_visible": true,
+        "chart_container_present": true,
+        "chart_container_non_empty": true,
+        "no_horizontal_overflow": true,
+        "document_scroll_width": 1512,
+        "document_client_width": 1512
+      },
+      "request_count": 6,
+      "request_urls": [
+        "http://127.0.0.1:8765/market",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_design_tokens_v1.css",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_layout_v1.css",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_utilities_v1.css",
+        "http://127.0.0.1:8765/static/css/market_dashboard_landscape_v2.css",
+        "http://127.0.0.1:8765/static/js/market_dashboard_landscape_v2.js"
+      ],
+      "transferred_bytes_fulfilled": 160670,
+      "console_errors": [],
+      "page_errors": [],
+      "failed_network_requests": [],
+      "run_index": 0
+    },
+    {
+      "viewport": {
+        "width": 1512,
+        "height": 982
+      },
+      "timing": {
+        "domContentLoaded_ms": 50.799999999813735,
+        "loadEvent_ms": 52.200000000186265,
+        "responseStart_ms": 38.799999999813735,
+        "fcp_ms": 92,
+        "lcp_ms": 92,
+        "cls": 0,
+        "long_task_count": 0,
+        "long_tasks": [],
+        "dom_node_count": 678,
+        "primary_workspace_visible": true,
+        "chart_container_present": true,
+        "chart_container_non_empty": true,
+        "no_horizontal_overflow": true,
+        "document_scroll_width": 1512,
+        "document_client_width": 1512
+      },
+      "request_count": 6,
+      "request_urls": [
+        "http://127.0.0.1:8765/market",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_design_tokens_v1.css",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_layout_v1.css",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_utilities_v1.css",
+        "http://127.0.0.1:8765/static/css/market_dashboard_landscape_v2.css",
+        "http://127.0.0.1:8765/static/js/market_dashboard_landscape_v2.js"
+      ],
+      "transferred_bytes_fulfilled": 160670,
+      "console_errors": [],
+      "page_errors": [],
+      "failed_network_requests": [],
+      "run_index": 1
+    },
+    {
+      "viewport": {
+        "width": 1512,
+        "height": 982
+      },
+      "timing": {
+        "domContentLoaded_ms": 51.09999999962747,
+        "loadEvent_ms": 52.59999999962747,
+        "responseStart_ms": 39.700000000186265,
+        "fcp_ms": 88,
+        "lcp_ms": 88,
+        "cls": 0,
+        "long_task_count": 0,
+        "long_tasks": [],
+        "dom_node_count": 678,
+        "primary_workspace_visible": true,
+        "chart_container_present": true,
+        "chart_container_non_empty": true,
+        "no_horizontal_overflow": true,
+        "document_scroll_width": 1512,
+        "document_client_width": 1512
+      },
+      "request_count": 6,
+      "request_urls": [
+        "http://127.0.0.1:8765/market",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_design_tokens_v1.css",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_layout_v1.css",
+        "http://127.0.0.1:8765/static/css/peak_trade_dashboard_utilities_v1.css",
+        "http://127.0.0.1:8765/static/css/market_dashboard_landscape_v2.css",
+        "http://127.0.0.1:8765/static/js/market_dashboard_landscape_v2.js"
+      ],
+      "transferred_bytes_fulfilled": 160670,
+      "console_errors": [],
+      "page_errors": [],
+      "failed_network_requests": [],
+      "run_index": 2
+    }
+  ],
+  "aggregate": {
+    "domContentLoaded_ms_median": 51.09999999962747,
+    "loadEvent_ms_median": 52.59999999962747,
+    "fcp_ms_median": 92,
+    "lcp_ms_median": 92,
+    "cls_median": 0,
+    "long_task_count_median": 0,
+    "dom_node_count_last": 678,
+    "request_count_last": 6,
+    "transferred_bytes_last": 160670,
+    "primary_workspace_visible": true,
+    "chart_container_non_empty": true,
+    "no_horizontal_overflow": true,
+    "console_errors": [],
+    "page_errors": [],
+    "failed_network_requests": []
+  },
+  "git_sha": "c48a020547c4343bdaf67cf7134daa80ef9b8253"
+}

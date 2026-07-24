@@ -1,0 +1,63 @@
+TIMESTAMP_UTC=2026-07-24T18:16:01Z
+HTML_RESPONSE_BYTES=49537
+RENDERED_HTML_BYTES=49537
+HTTP_STATUS=200
+STYLESHEET_TAG_COUNT=4
+SCRIPT_TAG_COUNT=1
+INLINE_SCRIPT_TAG_COUNT=0
+PAGE_OWNED_CSS_FILE_COUNT=1
+PAGE_OWNED_JS_FILE_COUNT=1
+DASHBOARD_CSS_BYTES=12057
+DASHBOARD_JS_BYTES=832
+TOTAL_PAGE_OWNED_STATIC_BYTES=12889
+ALL_STATIC_LOADED_BYTES=111133
+SHARED_BASE_CSS_BYTES=98244
+DUPLICATE_ASSET_LOADING=false
+SOURCE_MAPS_OR_DEV_PAYLOADS_EXPOSED=false
+STYLESHEET_HREFS=/static/css/peak_trade_dashboard_design_tokens_v1.css,/static/css/peak_trade_dashboard_layout_v1.css,/static/css/peak_trade_dashboard_utilities_v1.css,/static/css/market_dashboard_landscape_v2.css
+SCRIPT_SRCS=/static/js/market_dashboard_landscape_v2.js
+MINIFIED_HEURISTIC_JSON={"/static/css/peak_trade_dashboard_design_tokens_v1.css": false, "/static/css/peak_trade_dashboard_layout_v1.css": false, "/static/css/peak_trade_dashboard_utilities_v1.css": true, "/static/css/market_dashboard_landscape_v2.css": false, "/static/js/market_dashboard_landscape_v2.js": false}
+ASSETS_JSON=[
+  {
+    "url": "/static/css/peak_trade_dashboard_design_tokens_v1.css",
+    "bytes": 3585,
+    "exists": true,
+    "minified_heuristic": false,
+    "sourceMappingURL": false,
+    "page_owned": false
+  },
+  {
+    "url": "/static/css/peak_trade_dashboard_layout_v1.css",
+    "bytes": 26030,
+    "exists": true,
+    "minified_heuristic": false,
+    "sourceMappingURL": false,
+    "page_owned": false
+  },
+  {
+    "url": "/static/css/peak_trade_dashboard_utilities_v1.css",
+    "bytes": 68629,
+    "exists": true,
+    "minified_heuristic": true,
+    "sourceMappingURL": false,
+    "page_owned": false
+  },
+  {
+    "url": "/static/css/market_dashboard_landscape_v2.css",
+    "bytes": 12057,
+    "exists": true,
+    "minified_heuristic": false,
+    "sourceMappingURL": false,
+    "page_owned": true
+  },
+  {
+    "url": "/static/js/market_dashboard_landscape_v2.js",
+    "bytes": 832,
+    "exists": true,
+    "minified_heuristic": false,
+    "sourceMappingURL": false,
+    "page_owned": true
+  }
+]
+NOTES=no_network_calls_in_page_js;no_obvious_unused_page_specific_asset_refs_detected_without_deleting
+LIMITATION=sizes from on-disk static files + TestClient HTML body; not gzip/brotli transfer encoding
