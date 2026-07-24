@@ -749,3 +749,94 @@ def test_owner_registry_autonomy_stage_option_d_keep_not_bound() -> None:
     # Visible-fact registry keeps Runtime State distinct from Autonomy Stage.
     assert "| Runtime State | Runtime Bridge State |" in runbook
     assert "OPTION_D; docs-only ladder; no productive aggregate" in runbook
+
+
+def test_phase5_task4_timeline_deferral_keeps_not_bound_without_source() -> None:
+    """Phase 5 TASK_4: explicit deferral; timeline stays NOT_BOUND; no invented history."""
+    from datetime import datetime, timezone
+
+    from webui.market_dashboard_landscape_v2.owner_registry import (
+        CANONICAL_OWNER_REGISTRY_V1,
+        owner_registry_by_slot,
+    )
+    from webui.market_dashboard_landscape_v2.page_aggregate import MarketDashboardReadServiceV1
+    from webui.market_dashboard_landscape_v2.presenter import present_market_landscape_v2
+
+    # No timeline / event_decision_timeline source registered.
+    slots = {entry.slot for entry in CANONICAL_OWNER_REGISTRY_V1}
+    assert "event_decision_timeline" not in slots
+    assert "timeline" not in slots
+    assert "event_decision_timeline" not in owner_registry_by_slot()
+    assert "timeline" not in owner_registry_by_slot()
+
+    stamp = datetime(2026, 7, 24, 18, 0, 0, tzinfo=timezone.utc)
+    page = MarketDashboardReadServiceV1().load_page_snapshot(generated_at=stamp)
+    ctx = present_market_landscape_v2(page)
+    timeline = ctx["timeline"]
+    assert timeline["availability"] == "NOT_BOUND"
+    assert timeline["events"] == []
+    assert "no invented history" in timeline["message"].lower()
+
+    landscape_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in _iter_py_files(LANDSCAPE_PKG)
+    )
+    producer = PRODUCER_BINDING.read_text(encoding="utf-8")
+    template = LANDSCAPE_TEMPLATE.read_text(encoding="utf-8")
+    for token in (
+        "project_timeline",
+        "project_event_decision_timeline",
+        "bind_timeline",
+        "bind_event_decision_timeline",
+        "get_execution_timeline",
+        "ExecutionTimelineRow",
+        "reconstruct_timeline",
+        "invent_timeline",
+        "browser_local_timeline",
+        "polling_timeline",
+    ):
+        assert token not in landscape_text, token
+        assert token not in producer, token
+        assert token not in template, token
+
+    # Ineligible sources must not be wired into Landscape timeline.
+    for token in (
+        "execution_bridge",
+        "live.execution_bridge",
+        "src.live.execution_bridge",
+        "project_master_v2_state_event_stream_from_replay",
+    ):
+        assert token not in landscape_text, token
+        assert token not in producer, token
+
+    assert 'data-mdl-region="EVENT_DECISION_TIMELINE"' in template
+    assert "timeline.message" in template
+    # No fabricated static event rows in the template.
+    assert "data-mdl-timeline-event" not in template
+    assert "mdl-v2-timeline__event" not in template
+
+    runbook = (
+        REPO
+        / "docs"
+        / "ops"
+        / "market_dashboard"
+        / "PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md"
+    ).read_text(encoding="utf-8")
+    assert "PHASE_5_TASK_4_STATE_TRANSITION_TIMELINE_DEFERRAL_RATIFICATION" in runbook
+    assert "OPERATOR_DECISION=B_EXPLICIT_PHASE_5_DEFERRAL" in runbook
+    assert "TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED" in runbook
+    assert "TASK_4_PHASE_5_BLOCKING=false" in runbook
+    assert "TASK_4_IMPLEMENTED=false" in runbook
+    assert "TASK_4_PERMANENTLY_NOT_APPLICABLE=false" in runbook
+    assert "TIMELINE_SOURCE_AVAILABLE=false" in runbook
+    assert "TIMELINE_UI_STATE=NOT_BOUND" in runbook
+    assert "INVENTED_HISTORY_ALLOWED=false" in runbook
+    assert "RECONSTRUCTED_HISTORY_ALLOWED=false" in runbook
+    assert "FUTURE_PRODUCER_WORK_AUTHORIZED=false" in runbook
+    assert "SEPARATE_OPERATOR_GO_REQUIRED=true" in runbook
+    assert "CANONICAL_TIMELINE_SOURCE_EXISTS=false" in runbook
+    # Deferral must not silently claim PASS / permanent N/A / Phase-5 closeout.
+    assert "TASK_4_STATE_TRANSITION_TIMELINE=PASS" not in runbook
+    assert "TASK_4_STATE_TRANSITION_TIMELINE=NOT_APPLICABLE_PERMANENTLY" not in runbook
+    assert "CANONICAL_TIMELINE_SOURCE_EXISTS=true" not in runbook
+    # Machine block records PHASE_5_PASS=false (aspirational Gate block remains docs-only).
+    assert "PHASE_5_PASS=false" in runbook
