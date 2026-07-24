@@ -85,7 +85,7 @@ This charter extends the U4b → U2c → U2b → U1 → U3 chain for **OKX seale
 | Role | Proposed owner | Status |
 |------|----------------|--------|
 | **Producer charter SSOT (this doc)** | `docs/webui/observability/OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md` | ratified docs/contract |
-| **Future offline producer implementation** | `scripts/ops/okx_to_futures_producer_packet_governed_v1.py` | **not implemented** |
+| **Future offline producer implementation** | reserved id `okx_to_futures_producer_packet_governed_v1` under the existing `scripts&#47;ops&#47;` offline-transform family | **not implemented** (no file created) |
 | Future `producer_id` | `okx_to_futures_producer_packet_governed_v1` | reserved name only |
 | Governed intake validation (existing) | `futures_producer_packet_real_metadata_source_v1.py` | unchanged; separate GO |
 | Universe selection / readmodel (existing) | `universe_selection_producer_v1.py` / `UNIVERSE_SELECTION_READMODEL_V1.md` | unchanged; separate GO |
@@ -101,13 +101,13 @@ Naming follows the existing offline transform convention (`scripts/ops/transform
 
 | Path (durable archive) | Notes |
 |------------------------|-------|
-| `.../pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_historical_2024_v1/v1/raw/instruments_all_swap_26ea5096d5a45591.json` | N=410 |
-| `.../pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v1/raw/instruments_all_swap_b0cff458ad5955fd.json` | N=410 |
-| `.../pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2/raw/instruments_all_swap_15cade79038045e7.json` | N=419 |
+| `...&#47;pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_historical_2024_v1&#47;v1&#47;raw&#47;instruments_all_swap_26ea5096d5a45591.json` | N=410 |
+| `...&#47;pit_okx_linear_usdt_non_bitcoin_pt1h_panel&#47;v1&#47;raw&#47;instruments_all_swap_b0cff458ad5955fd.json` | N=410 |
+| `...&#47;pit_okx_linear_usdt_non_bitcoin_pt1h_panel&#47;v2&#47;raw&#47;instruments_all_swap_15cade79038045e7.json` | N=419 |
 
 Additional non-`.tmp_` sealed siblings observed under the same archive tree (inventory coverage only; same schema family): `instruments_all_swap_81bf8a97bf85f210.json`, `instruments_all_swap_3d1af89b54f16d93.json`.
 
-Archive root (local, non-repo): `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/`.
+Archive root (local, non-repo): `&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;datasets&#47;admissible_futures&#47;`.
 
 ### 6.2 Schema / root structure
 
@@ -249,7 +249,7 @@ Do **not** mark any item complete. Each requires a **separate operator GO**.
 |-------------|----------------|-------------|----------------------|---------------|-----------------------|----------------------------|
 | `OKX_MIN_NOTIONAL_FIELD_POLICY_OR_AUTHORIZED_MAPPING` | `UNRESOLVED_FAIL_CLOSED` | This charter + F1 + U2c/U2b intake | yes | Provider-authentic field **or** separately ratified mapping (not invented here) | Derivation from `minSz`/`ctVal`/prices/`tickSz`/`lotSz`; numeric/zero/`UNKNOWN` fallbacks | Strict-complete governed packets; U2b strict intake; selected tradable future |
 | `OKX_CAPTURED_AT_FRESHNESS_MAPPING` | `UNRESOLVED_FAIL_CLOSED` / `NOT_BOUND` | This charter + U1/U3 readmodel freshness | yes | Explicit semantic decision distinguishing clocks in §6.5 | Silent use of `listTime`/fetch/artifact time as `captured_at` | Freshness-complete provenance; readmodel `market_snapshot.captured_at` binding |
-| `OKX_TO_GOVERNED_PACKET_PRODUCER_IMPLEMENTATION` | Not implemented | Proposed `scripts/ops/okx_to_futures_producer_packet_governed_v1.py` | yes | This charter on main; min_notional + captured_at decisions or explicit non-strict diagnostic-only scope | Network fetch without GO; Kraken fallback; dual venue owners | Any OKX governed packet creation |
+| `OKX_TO_GOVERNED_PACKET_PRODUCER_IMPLEMENTATION` | Not implemented | Proposed producer id `okx_to_futures_producer_packet_governed_v1` (offline `scripts&#47;ops&#47;` family; file absent) | yes | This charter on main; min_notional + captured_at decisions or explicit non-strict diagnostic-only scope | Network fetch without GO; Kraken fallback; dual venue owners | Any OKX governed packet creation |
 | `GOVERNED_SNAPSHOT_ACCEPTED_FOR_INTAKE_ACCEPTANCE_STEP` | `false` | U2c template + U2b loader | yes | Valid governed bundle + operator acceptance | Auto-accept from producer output | U2b loader write / intake PASS |
 | `UNIVERSE_SELECTION_READMODEL_MATERIALIZATION` | Not authorized by this charter | `UNIVERSE_SELECTION_READMODEL_V1.md` / U3 producer | yes | Intake acceptance + selection policy GO | Dashboard inventing selection | Observability universe/ranking/selected panels |
 | `OBSERVABILITY_TRUTH_GO` | `false` | Observability / Truth-GO owners | yes | Prior gates PASS + explicit Truth-GO token | Equating evidence verify with truth | `observability_truth_allowed=true` |
