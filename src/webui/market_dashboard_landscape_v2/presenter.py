@@ -5,6 +5,8 @@ No decision, risk, sizing, scope, Double Play, or Safety authority logic.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from typing import Any, Mapping
 
 from .availability import Availability
@@ -12,6 +14,10 @@ from .contracts import _ProjectionBase
 from .page_aggregate import MarketDashboardPageSnapshotV1
 from .serialization import serialize_projection
 from .source_health import DashboardSourceHealthSnapshotV1
+
+# Presentation-only poll contract; server owns refresh cadence/materialization.
+OHLCV_POLL_PATH = "/api/market/landscape/ohlcv"
+OHLCV_BROWSER_PAYLOAD_SCHEMA = "market_landscape_ohlcv_browser_payload.v1"
 
 AVAILABILITY_LABELS: Mapping[Availability, str] = {
     Availability.AVAILABLE: "AVAILABLE",
@@ -90,6 +96,15 @@ def _finite_ohlc_float(raw: Any) -> float | None:
     return value
 
 
+def _ohlcv_poll_interval_seconds() -> int:
+    """Reuse canonical OKX OHLCV poll cadence; presentation never invents a second owner."""
+    from src.ops.okx_selected_instrument_ohlcv_readmodel_v1 import (
+        DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS,
+    )
+
+    return int(DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS)
+
+
 def serialize_ohlcv_browser_payload_v1(
     ohlcv_readmodel: Mapping[str, Any] | None,
 ) -> dict[str, Any] | None:
@@ -118,6 +133,13 @@ def serialize_ohlcv_browser_payload_v1(
             return None
         assert open_v is not None and high_v is not None
         assert low_v is not None and close_v is not None
+        confirm_raw = row.get("confirm")
+        if confirm_raw is None:
+            confirm = True
+        elif isinstance(confirm_raw, bool):
+            confirm = confirm_raw
+        else:
+            confirm = str(confirm_raw) in {"1", "true", "True"}
         bars.append(
             {
                 "ts": ts.strip(),
@@ -125,19 +147,51 @@ def serialize_ohlcv_browser_payload_v1(
                 "high": high_v,
                 "low": low_v,
                 "close": close_v,
+                "confirm": confirm,
+                "provisional": not confirm,
             }
         )
     venue_raw = ohlcv_readmodel.get("venue")
     venue_display = None
     if isinstance(venue_raw, str) and venue_raw.strip():
         venue_display = _venue_display(venue_raw, Availability.AVAILABLE)
+    digest_source = {
+        "instrument_id": ohlcv_readmodel.get("instrument_id"),
+        "venue": venue_display or venue_raw,
+        "interval": ohlcv_readmodel.get("interval"),
+        "last_closed_timestamp": ohlcv_readmodel.get("last_closed_timestamp"),
+        "captured_at": ohlcv_readmodel.get("captured_at"),
+        "bars": [
+            {
+                "ts": b["ts"],
+                "open": b["open"],
+                "high": b["high"],
+                "low": b["low"],
+                "close": b["close"],
+                "confirm": b["confirm"],
+            }
+            for b in bars
+        ],
+    }
+    payload_digest = hashlib.sha256(
+        json.dumps(digest_source, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
     return {
+        "schema_name": OHLCV_BROWSER_PAYLOAD_SCHEMA,
+        "schema_version": 1,
         "instrument_id": ohlcv_readmodel.get("instrument_id"),
         "venue": venue_display or venue_raw,
         "interval": ohlcv_readmodel.get("interval"),
         "bar_count": len(bars),
         "first_timestamp": bars[0]["ts"],
         "last_timestamp": bars[-1]["ts"],
+        "last_closed_timestamp": ohlcv_readmodel.get("last_closed_timestamp"),
+        "captured_at": ohlcv_readmodel.get("captured_at"),
+        "effective_at": ohlcv_readmodel.get("effective_at"),
+        "freshness_state": ohlcv_readmodel.get("freshness_state"),
+        "is_stale": bool(ohlcv_readmodel.get("is_stale")),
+        "gap_count": ohlcv_readmodel.get("gap_count"),
+        "payload_digest": payload_digest,
         "bars": bars,
     }
 
@@ -459,6 +513,12 @@ def present_market_landscape_v2(
             "last_closed_timestamp": (ohlcv_payload or {}).get("last_closed_timestamp"),
             "first_timestamp": (browser_payload or {}).get("first_timestamp"),
             "last_timestamp": (browser_payload or {}).get("last_timestamp"),
+            "captured_at": (browser_payload or ohlcv_payload or {}).get("captured_at"),
+            "effective_at": (browser_payload or ohlcv_payload or {}).get("effective_at"),
+            "payload_digest": (browser_payload or {}).get("payload_digest"),
+            "is_stale": bool((ohlcv_payload or {}).get("is_stale")),
+            "poll_path": OHLCV_POLL_PATH,
+            "poll_interval_seconds": _ohlcv_poll_interval_seconds(),
         },
         "timeline": {
             "availability": Availability.NOT_BOUND.value,

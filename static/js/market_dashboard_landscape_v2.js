@@ -1,7 +1,8 @@
 /**
  * Market Dashboard Landscape V2 — presentation-only client helpers.
  * No fetch mutation, no decision/risk/sizing logic, no write endpoints.
- * Renders materialized OHLCV from SSR JSON only (never fabricates candles).
+ * Renders materialized OHLCV from SSR/poll JSON only (never fabricates candles).
+ * Polls the read-only /api/market/landscape/ohlcv snapshot endpoint; never calls OKX.
  */
 (function () {
   "use strict";
@@ -35,7 +36,37 @@
     if (reason) canvas.setAttribute("data-mdl-chart-error", reason);
   }
 
-  function renderOhlcvCanvas() {
+  function updateMetaFromPayload(payload, availability) {
+    var intervalNode = root.querySelector('[data-mdl-field="ohlcv_interval"]');
+    var latestNode = root.querySelector('[data-mdl-field="ohlcv_latest_candle_at"]');
+    var capturedNode = root.querySelector('[data-mdl-field="ohlcv_captured_at"]');
+    var freshnessNode = root.querySelector('[data-mdl-field="ohlcv_freshness"]');
+    var availNode = root.querySelector("[data-mdl-chart-availability]");
+    if (intervalNode) {
+      intervalNode.textContent = (payload && payload.interval) || "—";
+    }
+    if (latestNode) {
+      latestNode.textContent = (payload && payload.last_timestamp) || "—";
+    }
+    if (capturedNode) {
+      capturedNode.textContent = (payload && payload.captured_at) || "—";
+    }
+    if (freshnessNode) {
+      var fresh =
+        (payload && payload.freshness_state && String(payload.freshness_state).toUpperCase()) ||
+        availability ||
+        "—";
+      freshnessNode.textContent = fresh;
+      if (availability) freshnessNode.setAttribute("data-availability", availability);
+    }
+    if (availNode && availability) {
+      availNode.textContent = availability;
+      availNode.setAttribute("data-availability", availability);
+    }
+  }
+
+  function renderOhlcvCanvas(optionalPayload) {
+    var chart = root.querySelector("[data-mdl-chart]");
     var payloadNode = root.querySelector("[data-mdl-ohlcv-json]");
     var canvas = root.querySelector("[data-mdl-chart-canvas]");
     var message = root.querySelector("[data-mdl-chart-message]");
@@ -46,13 +77,20 @@
       return;
     }
 
-    var payload;
-    try {
-      payload = JSON.parse(payloadNode.textContent || "");
-    } catch (err) {
-      markBlank(canvas, "json_parse");
-      return;
+    var payload = optionalPayload;
+    if (!payload) {
+      try {
+        payload = JSON.parse(payloadNode.textContent || "");
+      } catch (err) {
+        markBlank(canvas, "json_parse");
+        return;
+      }
+    } else {
+      payloadNode.textContent = JSON.stringify(payload);
     }
+
+    updateMetaFromPayload(payload, chart && chart.getAttribute("data-availability"));
+
     var bars = payload && payload.bars;
     if (!Array.isArray(bars) || bars.length === 0) {
       markBlank(canvas, "empty_bars");
@@ -172,6 +210,12 @@
     canvas.setAttribute("data-mdl-chart-bar-count", String(n));
     canvas.setAttribute("data-mdl-chart-first-ts", String(bars[0].ts || ""));
     canvas.setAttribute("data-mdl-chart-last-ts", String(bars[n - 1].ts || ""));
+    if (payload.captured_at) {
+      canvas.setAttribute("data-mdl-chart-captured-at", String(payload.captured_at));
+    }
+    if (payload.payload_digest) {
+      canvas.setAttribute("data-mdl-chart-digest", String(payload.payload_digest));
+    }
     if (payload.instrument_id) {
       canvas.setAttribute(
         "data-mdl-chart-instrument",
@@ -187,10 +231,109 @@
     );
   }
 
+  function startOhlcvPolling() {
+    var chart = root.querySelector("[data-mdl-chart]");
+    if (!chart) return;
+    var pollPath = chart.getAttribute("data-mdl-ohlcv-poll-path") || "";
+    var intervalSeconds = Number(
+      chart.getAttribute("data-mdl-ohlcv-poll-interval-seconds") || "0"
+    );
+    if (!pollPath || !(intervalSeconds > 0)) return;
+    if (pollPath.indexOf("/api/market/") !== 0) return;
+
+    var inFlight = false;
+    var timerId = null;
+    var lastDigest = "";
+
+    function scheduleNext() {
+      if (timerId !== null) window.clearTimeout(timerId);
+      timerId = window.setTimeout(tick, intervalSeconds * 1000);
+    }
+
+    function tick() {
+      if (document.hidden) {
+        scheduleNext();
+        return;
+      }
+      if (inFlight) {
+        scheduleNext();
+        return;
+      }
+      inFlight = true;
+      root.setAttribute("data-mdl-ohlcv-poll-in-flight", "true");
+      fetch(pollPath, {
+        method: "GET",
+        credentials: "same-origin",
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("poll_http_" + response.status);
+          }
+          return response.json();
+        })
+        .then(function (body) {
+          if (!body || typeof body !== "object") {
+            throw new Error("poll_invalid_body");
+          }
+          if (body.direct_browser_okx) {
+            throw new Error("poll_forbidden_direct_okx");
+          }
+          var availability = body.availability || "";
+          if (availability) {
+            chart.setAttribute("data-availability", availability);
+          }
+          updateMetaFromPayload(body.browser_payload || body, availability);
+          var message = root.querySelector("[data-mdl-chart-message]");
+          if (message && body.refresh && body.refresh.refresh_error) {
+            message.setAttribute(
+              "data-mdl-ohlcv-refresh-error",
+              String(body.refresh.refresh_error)
+            );
+          } else if (message) {
+            message.removeAttribute("data-mdl-ohlcv-refresh-error");
+          }
+          if (body.browser_payload && body.browser_payload.bars) {
+            var digest = body.browser_payload.payload_digest || "";
+            if (digest !== lastDigest) {
+              lastDigest = digest;
+              renderOhlcvCanvas(body.browser_payload);
+            } else {
+              updateMetaFromPayload(body.browser_payload, availability);
+            }
+          }
+          root.setAttribute("data-mdl-ohlcv-poll-status", String(body.status || "OK"));
+          root.setAttribute("data-mdl-ohlcv-poll-ok", "true");
+        })
+        .catch(function (err) {
+          root.setAttribute("data-mdl-ohlcv-poll-ok", "false");
+          root.setAttribute(
+            "data-mdl-ohlcv-poll-error",
+            String((err && err.message) || "poll_failed")
+          );
+        })
+        .then(function () {
+          inFlight = false;
+          root.setAttribute("data-mdl-ohlcv-poll-in-flight", "false");
+          scheduleNext();
+        });
+    }
+
+    root.setAttribute("data-mdl-ohlcv-poll-armed", "true");
+    scheduleNext();
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", renderOhlcvCanvas);
+    document.addEventListener("DOMContentLoaded", function () {
+      renderOhlcvCanvas();
+      startOhlcvPolling();
+    });
   } else {
     renderOhlcvCanvas();
+    startOhlcvPolling();
   }
-  window.addEventListener("resize", renderOhlcvCanvas);
+  window.addEventListener("resize", function () {
+    renderOhlcvCanvas();
+  });
 })();
