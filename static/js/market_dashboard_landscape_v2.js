@@ -654,14 +654,36 @@
     scheduleNext();
   }
 
+  var resizeTimer = null;
+  var resizeRaf1 = null;
+  var resizeRaf2 = null;
+
+  function paintAfterLayoutSettled() {
+    // Double-rAF waits for CSS layout to settle after viewport/stage size changes
+    // so backing-store width/height are derived from final CSS box × DPR once.
+    if (resizeRaf1 !== null) window.cancelAnimationFrame(resizeRaf1);
+    if (resizeRaf2 !== null) window.cancelAnimationFrame(resizeRaf2);
+    resizeRaf1 = window.requestAnimationFrame(function () {
+      resizeRaf1 = null;
+      resizeRaf2 = window.requestAnimationFrame(function () {
+        resizeRaf2 = null;
+        if (!lastBars || !lastBars.length) {
+          renderOhlcvCanvas();
+          return;
+        }
+        setUpdateClass("VIEWPORT_RESIZE");
+        renderOhlcvCanvas(null, { mode: "FULL_SERIES" });
+      });
+    });
+  }
+
   function onViewportResize() {
-    // True viewport/layout resize only — full series re-render once with CSS box.
-    if (!lastBars || !lastBars.length) {
-      renderOhlcvCanvas();
-      return;
-    }
-    setUpdateClass("VIEWPORT_RESIZE");
-    renderOhlcvCanvas(null, { mode: "FULL_SERIES" });
+    // True viewport/layout resize only — never from poll metadata updates.
+    if (resizeTimer !== null) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(function () {
+      resizeTimer = null;
+      paintAfterLayoutSettled();
+    }, 50);
   }
 
   if (document.readyState === "loading") {
@@ -674,4 +696,30 @@
     startOhlcvPolling();
   }
   window.addEventListener("resize", onViewportResize);
+  if (typeof ResizeObserver === "function") {
+    var stageEl = root.querySelector("[data-mdl-chart-stage]");
+    if (stageEl) {
+      var lastObservedBox = { w: 0, h: 0 };
+      var stageObserverReady = false;
+      var ro = new ResizeObserver(function (entries) {
+        var entry = entries && entries[0];
+        if (!entry || !stageObserverReady) return;
+        var box = entry.contentRect || {};
+        var w = Math.floor(box.width || 0);
+        var h = Math.floor(box.height || 0);
+        if (w <= 0 || h <= 0) return;
+        if (w === lastObservedBox.w && h === lastObservedBox.h) return;
+        lastObservedBox = { w: w, h: h };
+        if (!lastBars || !lastBars.length) return;
+        onViewportResize();
+      });
+      // Seed after first paint so the initial RO callback does not re-render.
+      window.requestAnimationFrame(function () {
+        var r = stageEl.getBoundingClientRect();
+        lastObservedBox = { w: Math.floor(r.width), h: Math.floor(r.height) };
+        stageObserverReady = true;
+        ro.observe(stageEl);
+      });
+    }
+  }
 })();
