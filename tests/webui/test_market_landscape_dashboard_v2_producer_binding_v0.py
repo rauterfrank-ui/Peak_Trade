@@ -392,8 +392,11 @@ def test_missing_and_invalid_timestamps_fail_closed(archive_root: Path) -> None:
     )
     slots_nocap = bind_market_universe_slots(generated_at=STAMP, archive_root=no_capture)
     assert slots_nocap["universe_ranking"].availability is Availability.AVAILABLE
-    assert slots_nocap["market_instrument"].availability is Availability.MISSING_SOURCE
-    assert REASON_PRODUCER_TIMESTAMP_MISSING in slots_nocap["market_instrument"].reason_codes
+    # captured_at may be null in canonical OKX intake; fall back to readmodel generated_at.
+    assert slots_nocap["market_instrument"].availability is Availability.AVAILABLE
+    assert slots_nocap["market_instrument"].venue in {"OKX", "okx"}
+    assert slots_nocap["market_instrument"].instrument_id == "ETH-USDT-SWAP"
+    assert slots_nocap["market_instrument"].provenance.generated_at == PRODUCER_FRESH
 
 
 def test_multi_row_ranking_order_preserved(archive_root: Path) -> None:

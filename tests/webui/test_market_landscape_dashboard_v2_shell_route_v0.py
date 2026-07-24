@@ -56,7 +56,11 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
         assert landmark in html, landmark
     assert "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING" in html
     assert "BOUND_NOT_ACTIVATED" in html
-    assert "no ohlcv fabricated" in html.lower()
+    assert (
+        "no ohlcv fabricated" in html.lower()
+        or "ohlcv producer still unbound" in html.lower()
+        or "primary chart bound to materialized okx ohlcv readmodel" in html.lower()
+    )
     assert "BTC/USD" not in html
     assert "btc_usd_dummy" not in html.lower()
     assert 'data-mdl-outer-workspace="true"' in html

@@ -94,13 +94,23 @@
         data-mdl-chart-region="true"
         aria-label="Primary market workspace"
       >
-        <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="{{ chart.bound|lower }}">
+        <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="{{ chart.bound|lower }}" data-mdl-chart-has-series="{{ chart.has_browser_series|lower }}">
           <div class="mdl-v2-chart__chrome">
             <h2>Chart</h2>
             <span class="mdl-v2-state" data-availability="{{ chart.availability }}">{{ chart.availability_label }}</span>
           </div>
-          <div class="mdl-v2-chart__stage" role="img" aria-label="{{ chart.message }}">
-            <p class="mdl-v2-chart__message">{{ chart.message }}</p>
+          <div class="mdl-v2-chart__stage" role="img" aria-label="{{ chart.message }}" data-mdl-chart-stage="true">
+            <p class="mdl-v2-chart__message" data-mdl-chart-message="true">{{ chart.message }}</p>
+            {% if chart.browser_payload %}
+            <script type="application/json" data-mdl-ohlcv-json="true">{{ chart.browser_payload | tojson }}</script>
+            <canvas
+              class="mdl-v2-chart__canvas"
+              data-mdl-chart-canvas="true"
+              data-mdl-chart-bar-count="0"
+              data-mdl-chart-geometry="absent"
+              aria-hidden="true"
+            ></canvas>
+            {% endif %}
           </div>
         </div>
       </section>

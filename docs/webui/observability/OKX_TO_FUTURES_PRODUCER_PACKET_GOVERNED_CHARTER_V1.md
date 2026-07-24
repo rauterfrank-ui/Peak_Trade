@@ -5,16 +5,18 @@
 ```
 OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1=true
 PRODUCER_CHARTER_RATIFIED=true
-PRODUCER_IMPLEMENTED=false
-NETWORK_FETCH_AUTHORIZED=false
-NETWORK_FETCH_PERFORMED=false
-MARKET_DATA_FETCH=false
+PRODUCER_IMPLEMENTED=true
+NETWORK_FETCH_AUTHORIZED=true
+NETWORK_FETCH_PERFORMED=true
+MARKET_DATA_FETCH=true
 AUTHENTICATED_FETCH=false
-PUBLIC_FETCH=false
-GOVERNED_PACKET_CREATED=false
-GOVERNED_SNAPSHOT_ACCEPTED_FOR_INTAKE=false
-INTAKE_ACCEPTANCE_PERFORMED=false
-UNIVERSE_READMODEL_MATERIALIZED=false
+PUBLIC_FETCH=true
+GOVERNED_PACKET_CREATED=true
+GOVERNED_SNAPSHOT_ACCEPTED_FOR_INTAKE=true
+INTAKE_ACCEPTANCE_PERFORMED=true
+UNIVERSE_READMODEL_MATERIALIZED=true
+OHLCV_READMODEL_MATERIALIZED=true
+DASHBOARD_READONLY_BINDING_IMPLEMENTED=true
 OBSERVABILITY_TRUTH_GRANTED=false
 OBSERVABILITY_TRUTH_GO=false
 LIVE_AUTHORIZED=false
@@ -24,21 +26,25 @@ PAPER=false
 TESTNET=false
 SCHEDULER=false
 RUNTIME_ACTIVATION=false
+RUNTIME_BRIDGE_DISPLAY=BOUND_NOT_ACTIVATED
 KRAKEN_CURRENT_SOURCE=false
 KRAKEN_HISTORICAL_PROVENANCE_ONLY=true
 OKX_MIN_NOTIONAL_PROVIDER_AUTHENTIC=false
-OKX_MIN_NOTIONAL_DERIVATION_AUTHORIZED=false
-OKX_MIN_NOTIONAL_POLICY_STATUS=UNRESOLVED_FAIL_CLOSED
-OKX_CAPTURED_AT_SEMANTICS_PROVEN=false
-OKX_CAPTURED_AT_MAPPING_AUTHORIZED=false
-OKX_CAPTURED_AT_POLICY_STATUS=UNRESOLVED_FAIL_CLOSED
+OKX_MIN_NOTIONAL_DIRECT_FIELD_AVAILABLE=false
+OKX_MIN_NOTIONAL_DERIVATION_AUTHORIZED=true
+OKX_MIN_NOTIONAL_MAPPING_AUTHORIZED=true
+OKX_MIN_NOTIONAL_POLICY_STATUS=RATIFIED_REFERENCE_PRICE_DERIVED
+OKX_MIN_NOTIONAL_FORMULA_ID=OKX_LINEAR_SWAP_MIN_QUOTE_NOTIONAL_FROM_MINSZ_CTVAL_MARKPX_V1
+OKX_CAPTURED_AT_SEMANTICS_PROVEN=true
+OKX_CAPTURED_AT_MAPPING_AUTHORIZED=true
+OKX_CAPTURED_AT_POLICY_STATUS=RATIFIED
 STRICT_COMPLETE_INTAKE_WEAKENED=false
 MANIFEST_VERIFY_RC=0
 ```
 
-**Charter record (docs/contract only):** Normative semantic boundary for a **future** offline producer that would map **sealed provider-authentic OKX instrument metadata** into **`futures_producer_packet_governed.v1`**, then (only under separate GOs) into governed intake acceptance and `universe_selection_readmodel.v1`.
+**Charter record:** Normative semantic boundary for the offline/public OKX producer that maps **provider-authentic OKX instrument metadata** into **`futures_producer_packet_governed.v1`**, then into governed intake acceptance, `universe_selection_readmodel.v1`, selected-instrument OHLCV materialization, and read-only Market Dashboard binding.
 
-This document does **not** implement the producer, fetch data, accept an intake bundle, select an instrument, materialize a dashboard readmodel, or grant observability truth.
+This charter does **not** grant observability Truth-GO, Live, orders, runtime activation, or trading authority. Runtime remains `BOUND_NOT_ACTIVATED`.
 
 ## 2. Non-authority note
 
@@ -192,37 +198,42 @@ Mapping classes:
 - Explicit schema, version, provenance, `non_authorizing=true`, `observability_truth_allowed=false`
 - **No** dashboard-specific semantics, selected-future authority, or Truth-GO markers
 
-### 7.3 `min_notional` policy (current state only)
+### 7.3 `min_notional` policy (ratified)
 
 ```
 OKX_MIN_NOTIONAL_PROVIDER_AUTHENTIC=false
-OKX_MIN_NOTIONAL_DERIVATION_AUTHORIZED=false
-OKX_MIN_NOTIONAL_POLICY_STATUS=UNRESOLVED_FAIL_CLOSED
-min_notional_known=false
+OKX_MIN_NOTIONAL_DIRECT_FIELD_AVAILABLE=false
+OKX_MIN_NOTIONAL_DERIVATION_AUTHORIZED=true
+OKX_MIN_NOTIONAL_MAPPING_AUTHORIZED=true
+OKX_MIN_NOTIONAL_POLICY_STATUS=RATIFIED_REFERENCE_PRICE_DERIVED
+OKX_MIN_NOTIONAL_FORMULA_ID=OKX_LINEAR_SWAP_MIN_QUOTE_NOTIONAL_FROM_MINSZ_CTVAL_MARKPX_V1
 ```
 
-Ratified **current** rules only:
+Ratified rules:
 
-- Provider-authentic `min_notional` is **absent** from sealed OKX instruments artifacts inspected here.
-- **No** derivation from `minSz`, `ctVal`, mark/index/last price, `tickSz`, `lotSz`, or any combination.
-- **No** numeric fallback, zero fallback, or `UNKNOWN` represented as a valid number.
-- Strict-complete packet / U2b strict intake **must fail closed** while this mandatory field remains unresolved.
-- This charter does **not** choose a new economic/sizing policy, authorize a derivation, or weaken U2b intake.
+- Provider-authentic `min_notional` remains **absent** from official OKX instruments payloads.
+- Authorized mapping owner: `src.ops.okx_min_notional_mapping_v1` / config `okx_min_notional_official_mapping_ratification_v1`.
+- Linear USDT SWAP only: `minimum_contract_quantity=Decimal(minSz)`, `minimum_base_quantity=minSz*ctVal`, `computed_min_notional=minimum_base_quantity*Decimal(markPx)`.
+- Kind is always `REFERENCE_PRICE_DERIVED_FROM_PROVIDER_AUTHENTIC_FIELDS` — never an unqualified timeless exchange minimum.
+- Inverse / ambiguous / BTC / Spot / missing mark / stale mark **fail closed**.
+- Kraken prices and dashboard-displayed prices are **forbidden** mapping inputs.
+- Strict-complete U2b intake is **not** weakened.
 
-(Kraken public-view permanent block remains historical reference only — [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12.12 — and must not be reused as a current OKX fact source.)
-
-### 7.4 `captured_at` policy (current state only)
+### 7.4 `captured_at` policy (ratified)
 
 ```
-OKX_CAPTURED_AT_SEMANTICS_PROVEN=false
-OKX_CAPTURED_AT_MAPPING_AUTHORIZED=false
-OKX_CAPTURED_AT_POLICY_STATUS=UNRESOLVED_FAIL_CLOSED
+OKX_CAPTURED_AT_SEMANTICS_PROVEN=true
+OKX_CAPTURED_AT_MAPPING_AUTHORIZED=true
+OKX_CAPTURED_AT_POLICY_STATUS=RATIFIED
 ```
 
-- No proven universe-readmodel `captured_at` mapping from OKX sealed instruments exists.
-- Provider event time, `listTime`, retrieval time, request time, response time, and artifact generation time are **distinct**; none may silently become `captured_at`.
-- Future mapping requires a **separate semantic decision**.
-- Missing mapping remains **`NOT_BOUND`** / fail-closed.
+- Owner: `src.ops.okx_captured_at_freshness_policy_v1` / config `okx_captured_at_freshness_policy_ratification_v1`.
+- `capture_started_at` = local UTC immediately before request.
+- `response_received_at` = local UTC immediately after complete response.
+- `captured_at` := `response_received_at`.
+- `effective_at` := provider timestamp when valid; otherwise null.
+- Filesystem mtime and git timestamps are **forbidden** as market-data clocks.
+- Stale data may remain loadable only when the consumer contract permits it and must render **STALE** visibly.
 
 ### 7.5 Intake boundary
 
