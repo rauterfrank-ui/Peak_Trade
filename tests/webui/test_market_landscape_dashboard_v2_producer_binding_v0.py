@@ -142,8 +142,14 @@ def test_parse_producer_utc_timestamp_deterministic() -> None:
 
 def test_bind_defaults_fail_closed_without_archive_or_fields(
     monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     monkeypatch.delenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", raising=False)
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
+    monkeypatch.delenv("LOCALAPPDATA", raising=False)
     slots = bind_market_universe_slots(generated_at=STAMP)
     assert set(slots) == {
         "market_instrument",
@@ -194,8 +200,14 @@ def test_bind_rejects_inventing_market_without_required_fields() -> None:
 
 def test_bind_available_when_producer_fields_supplied(
     monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     monkeypatch.delenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", raising=False)
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
+    monkeypatch.delenv("LOCALAPPDATA", raising=False)
     slots = bind_market_universe_slots(
         generated_at=STAMP,
         market_instrument_fields={

@@ -47,7 +47,8 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 
 **Route:** **`GET &#47;observability`** only (extends hub; no duplicate route).
 
-- **Gate (default off):** `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` and `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT=<durable archive root>` — implemented in `src/webui/workflow_dashboard_runtime_v1.py`.
+- **Gate (default off):** `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` — implemented in `src/webui/workflow_dashboard_runtime_v1.py`.
+- **Archive root owner:** [WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md](WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md) — sole resolver `src/webui/workflow_dashboard_archive_root_v1.py` (explicit → `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` → canonical user-state default). Env remains a supported override; default does not create directories or invent readmodels.
 - **Readmodel:** `workflow_dashboard_readmodel.v1` with embedded `workflow_pipeline_aggregate.v1` — builder `src/webui/workflow_dashboard_readmodel_v1/`.
 - **Panels (A–J):** Safety, Universe/Top20/Selected/Future missing-truth, Pipeline P1→T3, Orders/Fills/PnL, Evidence, KillSwitch, Next GO.
 - **Missing truth:** `UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE` — **never** inferred from removed Market Dashboard routes or dummy OHLCV fixtures.
@@ -71,7 +72,7 @@ Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observabil
 
 **Contract doc:** [**Universe Selection Read-model Schema v1**](UNIVERSE_SELECTION_READMODEL_V1.md) — `schema_name=universe_selection_readmodel.v1`.
 
-- **Storage target (Slice 2+):** `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json` under `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT`.
+- **Storage target (Slice 2+):** `{ARCHIVE_ROOT}/readmodels/universe_selection_readmodel.v1.json` where `{ARCHIVE_ROOT}` is resolved by [WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md](WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md) (Env override `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` still supported).
 - **Validation (Slice 1):** `src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py` — offline schema only; **no archive writes**, **no runtime I/O**.
 - **Dashboard today:** Panels B–E remain **Missing Truth** (`UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE`). Slice 1 does **not** populate rows.
 - **Slice 3 (future):** `workflow_dashboard_readmodel.v1` builder will read the persisted file when present and manifest-verified; until then Missing Truth stays valid.

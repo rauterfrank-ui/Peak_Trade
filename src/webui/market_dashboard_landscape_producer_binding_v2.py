@@ -27,7 +27,6 @@ Fail-closed:
 
 from __future__ import annotations
 
-import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -52,15 +51,17 @@ from .market_dashboard_landscape_v2.unavailable import (
     unavailable_safety_authority,
     unavailable_universe_ranking,
 )
+from .workflow_dashboard_archive_root_v1 import (
+    ENV_ARCHIVE_ROOT,
+    WorkflowDashboardArchiveRootError,
+    resolve_workflow_dashboard_archive_root,
+)
 from .workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     FORBIDDEN_SELECTED_SYMBOLS,
 )
 from .workflow_dashboard_readmodel_v1.universe_selection_reader_v1 import (
     try_load_universe_selection_for_dashboard,
 )
-
-# Reuse the existing workflow-dashboard archive env — no second archive owner.
-ENV_ARCHIVE_ROOT = "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT"
 
 # F2 consuming-surface max_allowed_staleness_seconds for Landscape Phase 4.1+.
 # Declared here as the dashboard consumer policy; never invent freshness via now().
@@ -120,26 +121,20 @@ _ISO8601_UTC_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?
 def resolve_landscape_archive_root(
     archive_root: str | Path | None = None,
 ) -> Path | None:
-    """Resolve durable archive root for universe_selection readmodel load."""
-    if archive_root is not None:
-        raw = str(archive_root).strip()
-        if not raw:
-            return None
-        path = Path(raw).expanduser()
-        try:
-            path = path.resolve(strict=True)
-        except OSError:
-            return None
-        return path if path.is_dir() else None
-    env_raw = (os.getenv(ENV_ARCHIVE_ROOT) or "").strip()
-    if not env_raw:
-        return None
-    path = Path(env_raw).expanduser()
+    """Resolve durable archive root for universe_selection readmodel load.
+
+    Delegates to the sole Workflow Dashboard archive-root contract owner.
+    Does not create directories. A missing default directory remains None so
+    consumers keep fail-closed MISSING_SOURCE / ARCHIVE_ROOT_UNSET semantics.
+    """
     try:
-        path = path.resolve(strict=True)
-    except OSError:
+        return resolve_workflow_dashboard_archive_root(
+            explicit=archive_root,
+            require_existing_directory=True,
+        )
+    except WorkflowDashboardArchiveRootError:
+        # Explicit empty/invalid injection stays fail-closed as unset for binder.
         return None
-    return path if path.is_dir() else None
 
 
 def parse_producer_utc_timestamp(raw: str | None) -> datetime | None:
