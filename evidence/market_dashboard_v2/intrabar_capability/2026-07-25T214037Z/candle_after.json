@@ -1,0 +1,22 @@
+{
+  "api": {
+    "ts": "2026-07-25T21:00:00Z",
+    "open": 1871.24,
+    "high": 1872.45,
+    "low": 1866.21,
+    "close": 1871.13,
+    "volume": 193036.51,
+    "display_close": 1871.13,
+    "display_high": 1872.45,
+    "display_low": 1866.21,
+    "confirm": false,
+    "provisional": true
+  },
+  "meta": {
+    "captured_at": "2026-07-25T21:41:35Z",
+    "candle_series_digest": "4f6795503f9a9ce0e5bb58c134c6e314b8180cc1aafb65691a636b8077552977",
+    "ohlcv_revision_kind": "SAME_TIMESTAMP_REVISION",
+    "conn": "LIVE_DATA",
+    "implementation_head_sha": "7576f2e1158a9365f2a664a5071cfa7dfda35434"
+  }
+}
