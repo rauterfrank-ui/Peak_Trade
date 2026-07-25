@@ -34,6 +34,11 @@
     });
   }
 
+  // Primary landscape composition assumes the diagnostic drawer starts closed.
+  if (engineering && engineering.open) {
+    engineering.open = false;
+  }
+
   root.addEventListener("keydown", function (event) {
     if (event.key !== "Escape") return;
     if (engineering && engineering.open) {

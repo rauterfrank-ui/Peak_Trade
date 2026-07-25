@@ -177,6 +177,7 @@
   min-height: 0;
   flex: 0 0 auto;
   padding: 4px 0 8px;
+  align-items: start;
 }
 
 .mdl-v2-rail,
@@ -185,6 +186,20 @@
   padding: 4px 0;
   min-height: 0;
   border-radius: 0;
+}
+
+.mdl-v2-rail--right {
+  /* Context rail must not stretch the primary chart column height. */
+  max-height: calc(
+    var(--mdl-stage-height) + var(--mdl-chart-meta-band) + var(--mdl-chart-chrome-band) +
+      var(--mdl-chart-message-band) + 24px
+  );
+  overflow: auto;
+}
+
+.mdl-v2-source-health__sources {
+  max-height: 7.5rem;
+  overflow: auto;
 }
 
 .mdl-v2-rail h2,
@@ -624,7 +639,7 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 10px 18px;
   margin-top: 10px;
-  max-height: 42vh;
+  max-height: 12rem;
   overflow: auto;
   padding: 0 0 4px;
 }
