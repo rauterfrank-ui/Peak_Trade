@@ -92,8 +92,8 @@ blocker.
 ## Canonical STEP 29U / 29V status
 
 ```text
-CANONICAL_SHADOW_MODE_EXISTS=false
-CANONICAL_STEP_29U_BOUND=false
+CANONICAL_SHADOW_MODE_EXISTS=true
+CANONICAL_STEP_29U_BOUND=true
 CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false
 SHADOW_PREPARATION_COMPLETE=false
 AUTHORITY_EFFECT=NONE
@@ -142,7 +142,7 @@ executing the complete offline OKX Futures Shadow preparation chain:
 readiness gate → durable projection writer → projection verifier →
 OKX Futures no-order HOLD cycle → e2e binding result.
 
-Activation readiness may remain `BLOCKED` with `CANONICAL_STEP_29U_ABSENT`
+Activation readiness may remain `BLOCKED` even when Step 29U composition is bound; `CANONICAL_STEP_29U_ABSENT` is cleared on verified binding and must not be re-emitted while bound
 (and related activation gaps). That activation classification remains truthful
 and non-authorizing; it does **not** veto the offline no-order HOLD cycle when
 the offline Shadow-preparation path remains permitted. The binding must not
@@ -205,7 +205,7 @@ ORDERS_SUBMITTED_ANY=false
 NETWORK_ACCESS_ANY=false
 RUNTIME_ACTIVATED_ANY=false
 ACTIVATION_AUTHORITY_GRANTED_ANY=false
-CANONICAL_STEP_29U_ABSENT=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
+CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED
 RUNTIME_BRIDGE=BOUND_NOT_ACTIVATED
 ECONOMIC_VALIDITY=NOT_PROVEN_BLOCKED
 DURABLE_EVIDENCE_PATH=evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak
@@ -216,7 +216,7 @@ The canonical offline OKX Futures Shadow no-order path is proven by a
 post-merge 600.37-second monotonic soak with 1287/1287 complete HOLD cycles
 and no orders, network access or runtime activation.
 
-This operational evidence does **not** resolve `CANONICAL_STEP_29U_ABSENT`,
+The post-merge soak operational evidence alone does **not** resolve composition absence; canonical Step 29U shadow binding does. Soak evidence still does **not** authorize activation,
 does **not** activate runtime, does **not** prove economic validity, and does
 **not** authorize Testnet or Live. False readiness veto of the offline
 no-order cycle (pre-#5544) is resolved by PR #5544; activation blockers remain
@@ -317,7 +317,7 @@ STEP 29U Mindestkontrakt components. Inventory status values are closed-enum:
 ```text
 MINDESTKONTRAKT_GAP_INVENTORY_V0=true
 NOT_STEP_29U_IMPLEMENTATION=true
-STEP_29U_IMPLEMENTED=false
+STEP_29U_IMPLEMENTED=true
 SHADOW_ACTIVATABLE=false
 SHADOW_MODE_ALLOWED=false
 SEPARATE_GO_REQUIRED_FOR_IMPLEMENTATION=true
@@ -594,7 +594,7 @@ That inventory may claim `STEP_29U_INVENTORY_PASS` /
 `STEP_29U_BINDING_SPEC_PASS` and, once the offline capability is present,
 `STEP_29U_IMPLEMENTATION_PASS` for the offline non-activating chain only. It
 must **not** claim activation, must **not** clear
-`CANONICAL_STEP_29U_ABSENT` (activation prerequisite), and must **not**
+activation authorization, and must **not**
 reinterpret the soak as STEP-29U activation/closure.
 
 This readiness producer remains classification-only:

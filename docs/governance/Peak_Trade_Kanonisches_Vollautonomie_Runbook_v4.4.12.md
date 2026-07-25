@@ -3752,18 +3752,21 @@ STEP 29U ist die zukünftige kanonische Ladder-Stufe **Shadow**. Sie liegt nach
 STEP 29T (Zero-Order Runtime) und vor STEP 29V (Paper).
 
 Diese Ratifikation definiert ausschließlich Repository-Semantik, Grenzen,
-Ownership-Anforderungen und verbotene Äquivalenzen. Sie bindet keinen
-kanonischen Shadow Mode und aktiviert nichts.
+Ownership-Anforderungen und verbotene Äquivalenzen. Die offline Composition
+ist in den kanonischen OKX-Futures Shadow no-order Pfad gebunden; Aktivierung
+bleibt unautorisiert.
 
 ```text
 STEP29U_SEMANTICS_RATIFIED=true
-STEP29U_OPERATIONAL_STATUS=SEMANTICALLY_DEFINED_BUT_OPERATIONALLY_UNBOUND
-CANONICAL_STEP_29U_BOUND=false
-CANONICAL_SHADOW_MODE_EXISTS=false
-STEP_29U_IMPLEMENTED=false
+STEP29U_OPERATIONAL_STATUS=OFFLINE_COMPOSITION_BOUND_INTO_CANONICAL_SHADOW_NO_ORDER_NOT_ACTIVATED
+CANONICAL_STEP_29U_BOUND=true
+CANONICAL_SHADOW_MODE_EXISTS=true
+STEP_29U_IMPLEMENTED=true
 STEP_29U_ACTIVATED=false
+CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED
 NON_ACTIVATING=true
 AUTHORITY_EFFECT=NONE
+SHADOW_ACTIVATION_AUTHORIZED=false
 ```
 
 ### Nicht enthalten (verbindlich)

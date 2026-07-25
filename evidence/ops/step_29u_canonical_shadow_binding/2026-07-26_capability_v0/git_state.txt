@@ -1,0 +1,6 @@
+BRANCH=capability/step-29u-canonical-shadow-binding-v0
+BASE_SHA=804a52769f4da4e9293e11e8aa512a6cfe8082d6
+HEAD_SHA=804a52769f4da4e9293e11e8aa512a6cfe8082d6
+ORIGIN_MAIN=804a52769f4da4e9293e11e8aa512a6cfe8082d6
+PRIMARY_CHECKOUT_MUTATED=false
+WORKTREE=/Users/frnkhrz/.peak_trade_worktrees/step29u-canonical-shadow-binding-capability-v0

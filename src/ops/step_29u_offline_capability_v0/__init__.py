@@ -22,7 +22,7 @@ from typing import Any, Callable, Literal, Mapping, Optional
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
 from src.ops.okx_futures_shadow_no_order_entrypoint_v0 import (
     OkxFuturesShadowNoOrderCycleResultV0,
-    run_okx_futures_shadow_no_order_cycle_v0,
+    run_okx_futures_shadow_no_order_cycle_core_v0,
     serialize_okx_futures_shadow_no_order_cycle_result_v0,
 )
 
@@ -545,6 +545,7 @@ def run_step_29u_offline_capability_v0(
     runtime_activation_enabled: bool = False,
     venue: str = REQUIRED_VENUE,
     identity_overrides: Mapping[str, Any] | None = None,
+    ephemeral_pass_when_preverified: bool = False,
 ) -> Step29UOfflineCapabilityResultV0:
     """Single lifecycle owner: validate → bounded cycles → reconcile → evidence."""
     if cycle_count < 1:
@@ -656,6 +657,13 @@ def run_step_29u_offline_capability_v0(
                 result.final_state = SessionStateV0.ERROR.value
                 result.step_29u_verified_offline = False
         elif capability_result == RESULT_PASS:
+            if ephemeral_pass_when_preverified:
+                # Canonical evidence already verified by the shadow binding owner.
+                result.capability_result = RESULT_PASS
+                result.failure_class = failure_class
+                result.reason_codes = reasons
+                result.step_29u_verified_offline = True
+                return result
             # PASS requires finalized verified evidence.
             result.capability_result = RESULT_ERROR
             result.failure_class = FailureClassV0.EVIDENCE_INVALID.value
@@ -733,7 +741,7 @@ def run_step_29u_offline_capability_v0(
         )
 
     _record(SessionStateV0.READY, "identity_valid")
-    runner = cycle_runner or run_okx_futures_shadow_no_order_cycle_v0
+    runner = cycle_runner or run_okx_futures_shadow_no_order_cycle_core_v0
     _record(SessionStateV0.RUNNING, f"start_cycles:{cycle_count}")
 
     for idx in range(cycle_count):

@@ -203,7 +203,9 @@ def test_b_activation_readiness_blocked_still_invokes_offline_no_order_cycle(
     assert result.verification_verified is True
     # Activation truth remains in the durable projection (not invented away).
     projection = json.loads((root / result.projection_path).read_text(encoding="utf-8"))
+    # Temp repo has no verified Step 29U evidence → absence remains truthful.
     assert "CANONICAL_STEP_29U_ABSENT" in projection["blockers"]
+    assert projection["canonical_step_29u_bound"] is False
     assert projection["shadow_preparation_complete"] is False
     assert projection["step_29u_implemented"] is False
     assert projection["activation_authority"] is False

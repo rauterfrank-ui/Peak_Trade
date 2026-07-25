@@ -70,15 +70,15 @@ def test_package_marker_and_schema_identity() -> None:
     assert SCHEMA_ID == PRODUCER_FAMILY
 
 
-def test_default_contract_reports_canonical_shadow_mode_absent() -> None:
+def test_default_contract_reports_canonical_shadow_mode_bound_not_activated() -> None:
     result = _default_result()
-    assert result.canonical_shadow_mode_exists is False
+    assert result.canonical_shadow_mode_exists is True
     assert result.shadow_preparation_complete is False
 
 
-def test_step_29u_unbound() -> None:
+def test_step_29u_bound_observed() -> None:
     result = _default_result()
-    assert result.canonical_step_29u_bound is False
+    assert result.canonical_step_29u_bound is True
 
 
 def test_all_activation_and_order_flags_false() -> None:
@@ -168,7 +168,7 @@ def test_output_deterministic_apart_from_timestamp_convention() -> None:
     assert a.to_dict() == b.to_dict()
     custom = _default_result(evaluated_at="2026-07-25T00:00:00Z")
     assert custom.evaluated_at == "2026-07-25T00:00:00Z"
-    assert custom.canonical_shadow_mode_exists is False
+    assert custom.canonical_shadow_mode_exists is True
 
 
 def test_producer_performs_no_network_access(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -385,13 +385,13 @@ def test_legacy_shadow_paper_remain_non_canonical() -> None:
 def test_step29u_implementation_and_activation_locks_remain() -> None:
     result = _default_result()
     assert result.not_step_29u_implementation is True
-    assert result.step_29u_implemented is False
+    assert result.step_29u_implemented is True
     assert result.shadow_activatable is False
     assert result.shadow_mode_allowed is False
     assert result.separate_go_required_for_implementation is True
     assert result.separate_go_required_for_activation is True
-    assert result.canonical_shadow_mode_exists is False
-    assert result.canonical_step_29u_bound is False
+    assert result.canonical_shadow_mode_exists is True
+    assert result.canonical_step_29u_bound is True
     assert result.shadow_preparation_complete is False
 
 
@@ -428,7 +428,7 @@ def test_docs_declare_mindestkontrakt_inventory_non_activating() -> None:
 
 
 EXPECTED_DEFAULT_BLOCKERS = (
-    "CANONICAL_STEP_29U_ABSENT",
+    # CANONICAL_STEP_29U_ABSENT cleared when verified composition is bound
     "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED",
     "DASHBOARD_BLOCKER_OPEN:MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY",
     "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
@@ -462,11 +462,16 @@ def _materialize_temp_repo(tmp_path: Path) -> tuple[Path, dict]:
     return tmp_path, cfg
 
 
-def _assert_blocked_non_activating(result) -> None:
+def _assert_blocked_non_activating(result, *, expect_step_29u_bound: bool | None = None) -> None:
     assert result.shadow_preparation_complete is False
     assert result.shadow_activatable is False
-    assert result.step_29u_implemented is False
-    assert result.canonical_step_29u_bound is False
+    bound = (
+        bool(result.canonical_step_29u_bound)
+        if expect_step_29u_bound is None
+        else expect_step_29u_bound
+    )
+    assert result.canonical_step_29u_bound is bound
+    assert result.step_29u_implemented is bound
     assert result.shadow_activation_authorized is False
     assert result.paper_activation_authorized is False
     assert result.testnet_activation_authorized is False
@@ -474,7 +479,11 @@ def _assert_blocked_non_activating(result) -> None:
     assert result.runtime_activation_authorized is False
     assert result.live_authorized is False
     assert result.orders_authorized is False
-    assert result.blockers == EXPECTED_DEFAULT_BLOCKERS
+    if bound:
+        assert "CANONICAL_STEP_29U_ABSENT" not in result.blockers
+        assert result.blockers == EXPECTED_DEFAULT_BLOCKERS
+    else:
+        assert result.blockers == ("CANONICAL_STEP_29U_ABSENT",) + EXPECTED_DEFAULT_BLOCKERS
 
 
 def test_default_canonical_config_reference_validation_still_blocked() -> None:
@@ -626,10 +635,12 @@ def test_missing_canonical_step29u_semantics_reference_fails_closed(tmp_path: Pa
         evaluate_shadow_preparation_readiness_gate_v0(repo_root=root, config=mutated)
 
 
-def test_canonical_step29u_reference_does_not_mark_implemented_or_bound() -> None:
-    result = _default_result()
+def test_canonical_step29u_reference_does_not_mark_implemented_or_bound(tmp_path: Path) -> None:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    result = evaluate_shadow_preparation_readiness_gate_v0(repo_root=root)
     cfg = load_shadow_preparation_readiness_gate_config_v0(CONFIG, repo_root=REPO_ROOT)
-    assert (REPO_ROOT / cfg[CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY]).is_file()
+    assert (root / cfg[CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY]).is_file()
+    # Semantics reference alone does not bind; verified Step 29U evidence is required.
     assert result.step_29u_implemented is False
     assert result.canonical_step_29u_bound is False
     assert result.shadow_preparation_complete is False
@@ -835,8 +846,8 @@ def test_projection_preserves_blocked_non_activating_readiness_semantics(
     payload = json.loads((root / rel).read_text(encoding="utf-8"))
     assert payload["shadow_preparation_complete"] is False
     assert payload["shadow_activatable"] is False
-    assert payload["step_29u_implemented"] is False
-    assert payload["canonical_step_29u_bound"] is False
+    assert payload["step_29u_implemented"] is True
+    assert payload["canonical_step_29u_bound"] is True
     for key in ACTIVATION_FLAG_KEYS:
         assert payload[key] is False
     assert payload["authority_effect"] == "NONE"

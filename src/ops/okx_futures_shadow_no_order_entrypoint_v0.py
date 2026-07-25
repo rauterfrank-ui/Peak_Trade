@@ -1,9 +1,9 @@
 """Canonical OKX Futures Shadow no-order entrypoint v0.
 
-Orchestration-only bounded Shadow cycle:
-  OKX Europe X-Perp binding (offline) → Master V2 decision evidence →
-  Risk/Sizing → Safety → non-submitting order-intent projection →
-  reconciliation/audit projection → deterministic exit.
+Sole public entrypoint for the offline OKX Futures Shadow no-order path.
+Invokes the Step-29U-bound composition after verifying canonical Step 29U
+offline evidence. Core Decision→Risk→Execution→Reconciliation remains in
+``run_okx_futures_shadow_no_order_cycle_core_v0`` (consumed by Step 29U).
 
 No network, no credentials, no order-capable client, no scheduler/daemon,
 no Paper fill simulator, no Live/Testnet order submission, no capital mutation.
@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from decimal import Decimal
+from pathlib import Path
 from typing import Any, Mapping, Optional
 
 from src.ops.bounded_futures_testnet_venue_binding_v0 import (
@@ -101,6 +102,12 @@ class OkxFuturesShadowNoOrderCycleResultV0:
     live_activation: bool
     scheduler: bool
     background_process_left_running: bool
+    step_29u_bound: bool = False
+    step_29u_present: bool = False
+    step_29u_evidence_verified: bool = False
+    step_29u_capability_result: str = "NOT_BOUND"
+    canonical_step_29u_absent: bool = True
+    step_29u_binding_owner: str = "NONE"
     schema_id: str = SCHEMA_ID
     schema_version: str = SCHEMA_VERSION
     package_marker: str = PACKAGE_MARKER
@@ -194,7 +201,7 @@ def validate_shadow_no_order_request_v0(
     return tuple(blockers)
 
 
-def run_okx_futures_shadow_no_order_cycle_v0(
+def run_okx_futures_shadow_no_order_cycle_core_v0(
     *,
     mode: str,
     instrument_id: Optional[str] = None,
@@ -206,7 +213,7 @@ def run_okx_futures_shadow_no_order_cycle_v0(
     daemon_enabled: bool = False,
     reference_price: Decimal | None = None,
 ) -> OkxFuturesShadowNoOrderCycleResultV0:
-    """Execute one bounded observable Shadow no-order cycle (offline, fail-closed)."""
+    """Core Decision→Risk→Execution→Reconciliation cycle (no Step 29U binding)."""
     selected = (
         PRODUCTION_INSTRUMENT_ID
         if instrument_id is None or str(instrument_id).strip() == ""
@@ -324,6 +331,43 @@ def run_okx_futures_shadow_no_order_cycle_v0(
         live_activation=False,
         scheduler=False,
         background_process_left_running=False,
+    )
+
+
+def run_okx_futures_shadow_no_order_cycle_v0(
+    *,
+    mode: str,
+    instrument_id: Optional[str] = None,
+    live_enabled: bool = False,
+    order_submission_enabled: bool = False,
+    testnet_order_submission_enabled: bool = False,
+    capital_change_enabled: bool = False,
+    scheduler_enabled: bool = False,
+    daemon_enabled: bool = False,
+    reference_price: Decimal | None = None,
+    repo_root: Path | None = None,
+    evidence_dir: Path | None = None,
+    source_git_sha: str | None = None,
+) -> OkxFuturesShadowNoOrderCycleResultV0:
+    """Sole public entrypoint: Step-29U-bound Shadow no-order cycle."""
+    from src.ops.step_29u_canonical_shadow_binding_v0 import (
+        run_step_29u_bound_okx_futures_shadow_no_order_cycle_v0,
+    )
+
+    return run_step_29u_bound_okx_futures_shadow_no_order_cycle_v0(
+        mode=mode,
+        instrument_id=instrument_id,
+        repo_root=repo_root,
+        evidence_dir=evidence_dir,
+        source_git_sha=source_git_sha,
+        live_enabled=live_enabled,
+        order_submission_enabled=order_submission_enabled,
+        testnet_order_submission_enabled=testnet_order_submission_enabled,
+        capital_change_enabled=capital_change_enabled,
+        scheduler_enabled=scheduler_enabled,
+        daemon_enabled=daemon_enabled,
+        reference_price=reference_price,
+        cycle_core=run_okx_futures_shadow_no_order_cycle_core_v0,
     )
 
 
