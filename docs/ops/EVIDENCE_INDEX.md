@@ -1,5 +1,17 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260726-step-29u-activation-eligibility-inventory"></a>
+- **EV-20260726-STEP-29U-ACTIVATION-ELIGIBILITY-INVENTORY** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating inventory capability | Risk: LOW
+  - Source: [Eligibility inventory contract](runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md) · Owner: `ops.step_29u_activation_eligibility_inventory_v0` · Command: `python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py`
+  - Claim: Machine-readable fail-closed inventory of Step-29U activation
+    prerequisites; evaluator health `STATUS=PASS` with
+    `ACTIVATION_ELIGIBLE=false` and `STEP_29U_ACTIVATED=false` on current
+    canonical sources (binding + post-merge soak recognized; audit/economic/
+    future Operator-GO remain blockers).
+  - Non-claims: not Activation; not Activation Binding; not Activation Readiness
+    approval; does not authorize Runtime/Scheduler/Network/Orders/Paper/Testnet/Live;
+    implementation authorization is not future activation Operator-GO.
+
 <a id="ev-20260726-step-29u-post-merge-shadow-soak"></a>
 - **EV-20260726-STEP-29U-POST-MERGE-SHADOW-SOAK** | Date: 2026-07-26 | Owner: ops | Scope: docs/evidence capability closeout | Risk: LOW
   - Source: [Durable soak bundle](../../evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/) · Contract: [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md) · Merge: `cd6d465c83c6c65733e5d85238aa223d4bffd548` (PR **#5550**)
