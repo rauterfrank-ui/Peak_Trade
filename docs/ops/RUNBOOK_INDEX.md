@@ -30,8 +30,8 @@
 
 | Artefakt | Pfad | Rolle |
 |----------|------|-------|
-| **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; **keine** Trading-/Runtime-/Order-Authority; Phase 3 Shell separat GO |
-| **Removed product tombstone** | [../webui/MARKET_DASHBOARD_REMOVED.md](../webui/MARKET_DASHBOARD_REMOVED.md) | `GET &#47;market` absent until separately authorized Shell |
+| **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; post PR #5548 intrabar on `main`; **keine** Trading-/Runtime-/Order-Authority; Capability-PR-only |
+| **Removed product tombstone** | [../webui/MARKET_DASHBOARD_REMOVED.md](../webui/MARKET_DASHBOARD_REMOVED.md) | Historical removal tombstone; Landscape V2 `/market` is the authorized read-only replacement surface |
 
 ---
 

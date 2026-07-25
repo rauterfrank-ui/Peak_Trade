@@ -2,26 +2,36 @@
 
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
-**Status:** `PHASE_3_LANDSCAPE_SHELL_IMPLEMENTED_OPERATOR_APPROVAL_PENDING`  
+**Status:** `POST_PR_5548_INTRABAR_CAPABILITY_MERGED_RUNTIME_NOT_ACTIVATED`  
 **Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`  
 **Primärbrowser:** Google Chrome / Playwright Real Chrome  
 **Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand  
 **Core-Status:** Master V2 / Double Play / Dynamic Scope / Safety bleiben unverändert  
 **Runtime-Status:** `BOUND_NOT_ACTIVATED` bleibt intentional  
-**Live-Status:** `LIVE_AUTHORIZED=false`, `ORDERS=false`
+**Live-Status:** `LIVE_AUTHORIZED=false`, `ORDERS=false`, `SCHEDULER=false`, `CAPITAL_CHANGE=false`  
+**Hardened designation:** `CAPABILITY_PR_ONLY=true` (Micro-Slices und implizite Draft-PRs untersagt)
 
 ```text
 CANONICAL_REPO_PATH=docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 REPO_INGESTION_DATE=2026-07-23
 SOURCE_FILENAME=PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
-PHASE_3_AUTHORIZED=true
-PHASE_3_PR_2_SCOPE=LANDSCAPE_SHELL_ONLY
-IMPLEMENTATION_AUTHORIZATION_STATUS=PHASE_3_SHELL_IN_PROGRESS_OPERATOR_APPROVAL_PENDING
-PHASE_4_AUTHORIZED=false
-OPERATOR_SKELETON_APPROVAL=PENDING
+RUNBOOK_VERSION=V2
+HARDENED_CAPABILITY_PR_POLICY=true
+CURRENT_MAIN_SHA=6f38df4d833945197e8f472c09f402ee767c85ad
+LAST_MERGED_PR=5548
+LAST_MERGED_PR_VERDICT=CAPABILITY_SCOPE_REVIEW_PASS_SQUASH_MERGED
+CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
+DASHBOARD_IMPLEMENTATION_PRESENT=true
+DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
+RUNTIME_ACTIVATION=false
+TRADING_RUNTIME_NOT_ACTIVATED=true
+OPERATOR_PRODUCT_GATE=PENDING
+NEXT_CAPABILITY_AUTHORIZED=false
 ```
 
-**Phasen-/PR-Mapping (explizit, keine stille Geschichtsrewrite):** Runbook-**PHASE 2** (ReadModel Foundation / Source Health) entspricht dem gemergten Implementierungs-**PR #5499** („PR 1 — ReadModel Contracts and Guards“). Runbook-**PHASE 3** / Implementierungs-**PR 2** (Landscape Shell) ist unter `OPERATOR_GO=PHASE_3_PR_2_LANDSCAPE_SHELL_ONLY` autorisiert; Operator-Skeleton-Approval bleibt `PENDING` bis Screenshot-Review.
+**Unterscheidung (verbindlich):** Dashboard-Implementierung auf `origin/main` ist vorhanden und durch gemergte Capability-PRs belegt. Trading-Runtime bleibt nicht aktiviert; Orders/Scheduler/Capital/Live bleiben false. `IMPLEMENTATION_AUTHORIZED=false` in historischen Ratifikationsblöcken (z. B. Diagnostics 4.6C) bedeutet weiterhin „keine Autorisierung jener speziellen Bindung“, nicht „Dashboard existiert nicht“.
+
+**Phasen-/PR-Mapping (explizit, keine stille Geschichtsrewrite):** Runbook-**PHASE 2** ≡ **PR #5499**. Runbook-**PHASE 3** Shell ≡ **PR #5501**. Spätere Capability-PRs bis **PR #5548** (authentic OKX Futures intrabar) sind gemergt; siehe § Current-State Ledger und §11.
 
 ---
 
@@ -47,6 +57,118 @@ DASHBOARD_CONSUMES_CANONICAL_OUTPUTS=true
 CORE_CHANGE_FROM_DASHBOARD_WORK=false
 RUNTIME_ACTIVATION_FROM_DASHBOARD_WORK=false
 ```
+
+---
+
+## 0.1 Current-State Ledger (post PR #5548)
+
+Repository-backed capability chain on `origin/main` `6f38df4d833945197e8f472c09f402ee767c85ad` (squash-merge of PR #5548). PR numbers below are confirmed via GitHub merge history; do not invent additional PR IDs.
+
+```text
+OKX_CANONICAL_VENUE=true
+FUTURES_ONLY=true
+BTC_EXCLUDED=true
+SPOT_EXCLUDED=true
+GOVERNED_OKX_MARKET_DATA_PRODUCER_PATH=true
+UNIVERSE_SELECTION_BINDING=true                 # PR #5521 / #5526 / #5527
+SELECTED_INSTRUMENT_BINDING=true                # PR #5503 / #5527
+IDENTITY_BINDING=true
+CANONICAL_OHLCV_SNAPSHOT_BINDING=true           # PR #5526 / #5527
+CONTINUOUS_OHLCV_REFRESH=true                   # PR #5528
+PRODUCT_SURFACE_HARDENING=true                  # PR #5513 / #5514 (and related Phase-5 product PRs)
+SOURCE_HEALTH_FRESHNESS_TREATMENT=true          # PR #5515
+ENGINEERING_DRAWER=true                         # PR #5516
+ACCESSIBILITY_BASELINE=true                     # PR #5518
+PERFORMANCE_EVIDENCE=true                       # PR #5519
+BOUNDED_ARCHIVE_ROOT_CONTRACT=true              # PR #5520
+INTRABAR_CAPABILITY_MERGED=true                 # PR #5548
+MODEL_A_CUMULATIVE_INTERVAL_VOLUME=true
+DUPLICATE_TRADE_IDS_IGNORED=true
+STALE_OBSERVATIONS_REJECTED=true
+SAME_TIMESTAMP_VOLUME_NONDECREASING=true
+INTERVAL_ROLLOVER=true
+CLOSED_CANDLE_IMMUTABILITY=true
+```
+
+### PR #5548 — Canonical Record
+
+```text
+PR_NUMBER=5548
+PR_STATE=MERGED
+MERGE_METHOD=SQUASH
+MERGE_COMMIT_SHA=6f38df4d833945197e8f472c09f402ee767c85ad
+IMPLEMENTATION_HEAD_SHA=7576f2e1158a9365f2a664a5071cfa7dfda35434
+EVIDENCE_BUNDLE_HEAD_SHA=c9d3b3839363cd90c8c6b674739baff0ea7cbf85
+FINAL_SEAL_TIP_SHA=91b4a79cc1ab2d8c017ccee4567b6e7c9bd48ec1
+VALID_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T214037Z
+INVALID_HISTORICAL_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T211859Z
+EVIDENCE_MANIFEST_SHA256=1cd1dfff96306087e19d5ca5a235664ddcfbef53b3e8740b4d301f0c5cffe085
+EVIDENCE_THREE_STAGE_IDENTITY_VALID=true
+SELF_REFERENTIAL_SEAL_REQUIRED=false
+CONSOLE_LOG_PRESENT_AND_TRACKED=true
+MANIFEST_INTERNALLY_CONSISTENT=true
+ALL_REQUIRED_CHECKS_PASSED=true
+ADMIN_BYPASS=false
+PRIMARY_CHECKOUT_UNCHANGED_DURING_CAPABILITY=true
+CORE_CHANGED=false
+TRADING_LOGIC_CHANGED=false
+AUTHORITY_CHANGED=false
+RUNTIME_CHANGED=false
+ORDERS_CHANGED=false
+SCHEDULER_CHANGED=false
+CAPITAL_CHANGED=false
+```
+
+**Evidence policy:** Only `2026-07-25T214037Z` is valid PR #5548 product evidence. `2026-07-25T211859Z` remains explicitly invalid historical evidence — do not delete, repair, reinterpret, or silently promote it.
+
+### Confirmed merged Landscape V2 capability PRs (non-exhaustive relative to earlier reset era)
+
+```text
+#5499 ReadModel contracts/guards (PHASE 2)
+#5500 Canonical Landscape V2 runbook ingestion (docs)
+#5501 Landscape Shell (PHASE 3)
+#5503 Market / Universe / Selected-Instrument binding
+#5505 Dynamic Scope lifecycle binding
+#5506 Canonical Decision projection binding
+#5507 Canonical Double Play projection binding
+#5508 Canonical Safety projection binding
+#5509/#5510 Economic contract + explicit injection binding
+#5511 Diagnostics OPTION_A KEEP_NOT_BOUND ratification
+#5512 Autonomy OPTION_D KEEP_NOT_BOUND closeout
+#5513/#5514 Product-surface reading-flow hardening
+#5515 Source health / freshness compact treatment
+#5516 Engineering drawer completion
+#5517 Phase 5 TASK_4 timeline DEFERRED ratification
+#5518 Accessibility baseline
+#5519 Performance measurement evidence
+#5520 Bounded durable archive-root contract
+#5521 Universe Selection on canonical default path
+#5526 OKX universe + selected OHLCV readmodels
+#5527 Market dashboard OKX readmodel binding
+#5528 Continuous read-only OKX OHLCV refresh
+#5548 Authentic OKX Futures intrabar open-candle updates
+```
+
+### Phase / capability gate reconciliation (evidence-backed, not mechanical PASS)
+
+```text
+PHASE_0_FORMAL_ARTIFACTS=PARTIAL          # dedicated inventory/matrix/gap md files absent; discovery satisfied via later capability work
+PHASE_1_SPEC_GATE=PARTIAL                 # landscape IA exists in-repo; OPERATOR_LAYOUT_APPROVAL not an explicit operator product PASS
+PHASE_2_READMODEL_FOUNDATION=PASS         # PR #5499
+PHASE_3_LANDSCAPE_SHELL=PARTIAL           # PR #5501 technical shell merged; OPERATOR_SKELETON/PRODUCT approval still PENDING
+PHASE_4_PRODUCER_BINDINGS=PARTIAL         # market/scope/decision/DP/safety/economic/OKX bound; risk_sizing_capital + execution_reconciliation remain NOT_BOUND
+PHASE_4_6C_DIAGNOSTICS=DEFERRED           # OPTION_A KEEP_NOT_BOUND (ratified)
+PHASE_4_7_AUTONOMY=DEFERRED               # OPTION_D KEEP_NOT_BOUND (ratified)
+PHASE_5_PRODUCT_SURFACE=PARTIAL           # TASK_7/8 PASS; TASK_4 DEFERRED; TASK_1 visual density OPEN; OPERATOR_PRODUCT_GATE=false
+PHASE_6_AUTONOMY_PARALLEL=OPEN
+PHASE_7_PRE_ACTIVATION_OBS=OPEN
+PHASE_8_CLOSEOUT=OPEN
+TECHNICAL_IMPLEMENTATION_INTRABAR=PASS    # PR #5548
+PRODUCT_CAPABILITY_INTRABAR=PASS          # operator-visible open-candle revisions with valid evidence
+OPERATOR_ACCEPTANCE_OVERALL=PENDING       # automated evidence ≠ Operator Product PASS
+RUNTIME_ACTIVATION=NOT_APPLICABLE_FALSE   # intentionally not activated
+```
+
 
 ---
 
@@ -1188,98 +1310,39 @@ DOCS_SSOT_UPDATED=true
 
 ---
 
-## 6. Empfohlene PR-Sequenz
+## 6. Capability-PR-Strategie
 
-Jeder PR ist bounded. Kein Mega-PR.
+Jeder PR bildet eine vollständige Capability mit klarer Definition of Done.
+Historische Planungsnamen „PR 0…8“ unten sind **Capability-Ziele**, keine Aufforderung zu Micro-Slices.
+Micro-Slices und Draft-PRs sind grundsätzlich untersagt, sofern der Operator sie nicht ausdrücklich verlangt.
 
-### PR 0 — Discovery / Ratification Docs Only
+### Verbindliche Capability-Regeln
 
 ```text
-Scope:
-- Current-state inventory
-- Owner/source matrix
-- Gap classification
-- final file/path proposal
-
-No implementation.
+CAPABILITY_PR_ONLY=true
+MICRO_PR_ALLOWED=false
+DRAFT_PR_ALLOWED_ONLY_IF_OPERATOR_REQUESTS=true
+EACH_PR_HAS_DEFINITION_OF_DONE=true
+EACH_PR_DELIVERS_OPERATOR_VISIBLE_VALUE=true
+NO_ARTIFICIAL_SLICE_SPLITTING=true
+MERGE_WHEN_CAPABILITY_COMPLETE=true
 ```
 
-### PR 1 — ReadModel Contracts and Guards
+Eine Capability darf mehrere Producer, ReadModels, Adapter, Tests, Dokumentation und UI-Anteile umfassen, sofern sie gemeinsam eine fachlich abgeschlossene Fähigkeit liefern. Eine künstliche Zerlegung ausschließlich zur Erhöhung der PR-Anzahl ist unzulässig.
+Standing offline GO darf **eine** vollständige, nicht-aktivierende Capability PR abdecken. Draft PR ist verboten, außer der Operator fordert Draft ausdrücklich.
+
+### Capability-Ziele (historische Planungsnamen beibehalten; Status laut Ledger)
 
 ```text
-Scope:
-- missing immutable contracts
-- provenance/freshness
-- unavailable semantics
-- import/static guards
-```
-
-### PR 2 — Landscape Shell
-
-```text
-Scope:
-- route
-- page aggregate skeleton
-- templates/CSS
-- real sources where already safe
-- NOT_BOUND elsewhere
-```
-
-### PR 3 — Market / Universe / Scope Binding
-
-```text
-Scope:
-- market data
-- ranking
-- selected instrument
-- dynamic scope projection
-```
-
-### PR 4 — Decision / Double Play Binding
-
-```text
-Scope:
-- canonical decision evidence
-- canonical DP evidence
-- reasons/blockers
-```
-
-### PR 5 — Safety / Risk / Execution Binding
-
-```text
-Scope:
-- safety authority
-- risk/sizing/capital
-- execution/reconciliation state
-```
-
-### PR 6 — Economic / Diagnostics / Autonomy Binding
-
-```text
-Scope:
-- economic summary
-- diagnostics
-- autonomy status projections
-```
-
-### PR 7 — Product Polish and Operator Review
-
-```text
-Scope:
-- visual hierarchy
-- density
-- timeline
-- engineering drawer
-- Chrome evidence
-```
-
-### PR 8 — Closeout / Cleanup
-
-```text
-Scope:
-- bounded legacy cleanup
-- docs/owner maps
-- permanent regression guards
+Capability 0 Discovery & Architektur-Ratifikation — PARTIAL/effective via later work
+Capability 1 Read-only Foundation — PASS (#5499)
+Capability 2 Marktoberfläche End-to-End / Landscape Shell — PARTIAL technical PASS (#5501); operator product PENDING
+Capability 3 Kanonische Marktbindung (incl. OKX OHLCV + continuous refresh + intrabar) — PASS through #5548 for market/OHLCV path
+Capability 4 Entscheidungsfähigkeit (Decision/DP) — PASS technical (#5506/#5507); operator product PENDING
+Capability 5 Operative Projektion (Safety done #5508; Risk/Sizing/Capital + Execution/Reconciliation) — PARTIAL; NEXT
+Capability 6 Governance & Autonomieprojektion — PARTIAL (economic bound; diagnostics/autonomy ratified NOT_BOUND)
+Capability 7 Produktreife — PARTIAL (drawer/a11y/perf/source-health done; TASK_1 density OPEN; timeline DEFERRED)
+Capability 8 Produktionsabschluss — OPEN
 ```
 
 ---
@@ -1377,7 +1440,7 @@ Automatisierter PASS ist kein Operator Product PASS.
 
 ### Standing GO im Dashboard-Workstream
 
-Nach explizitem Start des jeweiligen bounded PR-Slices zulässig:
+Nach explizitem Operator-Start **einer** vollständigen, nicht-aktivierenden Capability PR zulässig:
 
 - Read-only Discovery
 - Docs
@@ -1386,7 +1449,9 @@ Nach explizitem Start des jeweiligen bounded PR-Slices zulässig:
 - Tests
 - Templates/CSS
 - Chrome Evidence
-- PR-Erstellung
+- Ready (non-draft) Capability-PR-Erstellung, außer Operator verlangt ausdrücklich Draft
+
+Nicht zulässig ohne explizite Operator-Anforderung: Micro-Slices, künstliche Slice-Splits, automatische Draft-PR-Erzeugung.
 
 ### Separates GO zwingend
 
@@ -1558,7 +1623,7 @@ DISCOVERY TASKS
    - existing producer but no dashboard projection
    - historical/legacy source
    - non-authoritative diagnostic source
-10. Recommend a bounded PR sequence. Do not create branches or files.
+10. Recommend one next Capability PR (not Micro-Slices). Do not create branches or files.
 
 FORBIDDEN
 - no Core changes
@@ -1606,7 +1671,7 @@ HARD_STOP=true
 
 ## 11. Übergabeprotokoll für neue Chats
 
-Diesen Abschnitt nach jedem gemergten Dashboard-PR aktualisieren.
+Diesen Abschnitt nach jedem gemergten Dashboard-Capability-PR aktualisieren.
 
 ```text
 PROJECT=PEAK_TRADE
@@ -1616,22 +1681,24 @@ CANONICAL_PRINCIPLE=
 Market Dashboard is a pure read-only consumer with zero trading,
 runtime, scheduler, promotion, capital or execution authority.
 
-CURRENT_PHASE=PHASE_3_LANDSCAPE_SHELL
-LAST_COMPLETED_PHASE=PHASE_2
-LAST_MERGED_PR=5500
-PHASE_3_PR=2
-BRANCH=feat/market-dashboard-landscape-shell-v2
-BASE_SHA_EXPECTED=e18a16e138d643cac5748c8ccafaea0b871a80c8
-OPEN_PR=SEE_PR_AFTER_OPEN
+CURRENT_MAIN_SHA=6f38df4d833945197e8f472c09f402ee767c85ad
+LAST_MERGED_PR=5548
+OPEN_PR=NONE
+CURRENT_PHASE=POST_INTRABAR_CAPABILITY_MERGED_PHASE_5_PARTIAL
+LAST_COMPLETED_TECHNICAL_CAPABILITY=INTRABAR_OPEN_CANDLE_PR_5548
+OPERATOR_PRODUCT_GATE=PENDING
 
-READMODEL_FOUNDATION_COMPLETE=true
-PR_1_MERGED=true
-SOURCE_HEALTH_IMPLEMENTED=true
-ARCHITECTURE_GUARDS_IMPLEMENTED=true
-PHASE_3_AUTHORIZED=true
-PHASE_3_SHELL_IMPLEMENTED=true
-OPERATOR_SKELETON_APPROVAL=PENDING
-PHASE_4_AUTHORIZED=false
+MARKET_DASHBOARD_CANONICAL_CONSUMER=true
+OKX_CANONICAL_VENUE=true
+FUTURES_ONLY=true
+BTC_EXCLUDED=true
+SPOT_EXCLUDED=true
+CANONICAL_OHLCV_BOUND=true
+CONTINUOUS_OHLCV_REFRESH=true
+INTRABAR_CAPABILITY_MERGED=true
+VALID_INTRABAR_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T214037Z
+INVALID_HISTORICAL_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T211859Z
+EVIDENCE_MANIFEST_SHA256=1cd1dfff96306087e19d5ca5a235664ddcfbef53b3e8740b4d301f0c5cffe085
 
 CORE_ARCHITECTURE_VALID=true
 CORE_CHANGE_REQUIRED=false
@@ -1641,40 +1708,46 @@ DOUBLE_PLAY_CANONICAL=true
 DYNAMIC_SCOPE_CANONICAL=true
 SAFETY_AUTHORITY_CANONICAL=true
 RUNTIME_BOUND_NOT_ACTIVATED=true
+LIVE_AUTHORIZED=false
+ORDERS=false
+SCHEDULER=false
+CAPITAL_CHANGE=false
+SHADOW=false
+PAPER=false
+TESTNET=false
 
 TARGET_UI=
 One coherent professional Landscape market workspace.
-Primary chart above the fold.
+Primary chart above the fold with authentic OKX Futures OHLCV + intrabar tip.
 Decision / Why / Blocker immediately visible.
 No governance card wall.
 No order or activation controls.
 
-CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_PHASE_3_SHELL_200
+CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
 CURRENT_BOUND_SOURCES=[
-  "src/webui/market_dashboard_landscape_v2 (read-only projection contracts)",
-  "page_aggregate MarketDashboardReadServiceV1 (NOT_BOUND bundle + source health)",
+  "OKX public market-data producer path (governed; futures-only)",
+  "universe_selection + selected instrument identity",
+  "canonical OHLCV snapshot + continuous refresh + intrabar open-candle (MODEL_A)",
+  "dynamic_scope lifecycle projection",
+  "canonical_decision + double_play display projection",
+  "safety_authority KillSwitch projection",
+  "economic_summary explicit injection projection",
+  "source_health / freshness",
+  "engineering drawer",
+  "page_aggregate MarketDashboardReadServiceV1",
   "presenter present_market_landscape_v2 (formatting only)",
   "shell runtime constant BOUND_NOT_ACTIVATED (non-authoritative product metadata)"
 ]
 NOT_BOUND_SOURCES=[
-  "market_instrument / OHLCV chart",
-  "universe_ranking",
-  "dynamic_scope / regime / switch",
-  "canonical_decision / confidence",
-  "double_play",
-  "risk_sizing_capital",
-  "safety_authority",
-  "execution_reconciliation",
-  "economic_summary",
-  "autonomy_stage (OPTION_D explicit NOT_BOUND; no producer/contract)",
-  "diagnostics_summary",
-  "event_decision_timeline (Phase 5 TASK_4 DEFERRED; honest NOT_BOUND placeholder; no durable producer)"
+  "risk_sizing_capital (owner_registry NOT_BOUND; next capability)",
+  "execution_reconciliation (owner_registry NOT_BOUND; next capability)",
+  "diagnostics_summary (Phase 4.6C OPTION_A KEEP_NOT_BOUND)",
+  "autonomy_stage (Phase 4.7 OPTION_D KEEP_NOT_BOUND)",
+  "event_decision_timeline (Phase 5 TASK_4 DEFERRED; honest NOT_BOUND placeholder)"
 ]
 MISSING_READ_PROJECTIONS=[
-  "market/universe/scope UI binding (PR 3 / Phase 4.1-4.2)",
-  "decision/DP UI binding (PR 4 / Phase 4.3)",
-  "safety/risk/execution UI binding (PR 5 / Phase 4.4-4.5)",
-  "economic/diagnostics UI binding (PR 6 / Phase 4.6); autonomy remains OPTION_D NOT_BOUND"
+  "risk_sizing_capital Landscape binding",
+  "execution_reconciliation Landscape binding"
 ]
 MISSING_PRODUCERS=[
   "event_decision_timeline durable ordered transition/decision history (no canonical producer; Phase 5 TASK_4 deferred)"
@@ -1684,10 +1757,10 @@ KNOWN_INTENTIONAL_LOCKS=[
   "LIVE/ORDERS/SCHEDULER fail-closed",
   "Strategy Signal Selection D / Slice 2 blocked",
   "Ops Double Play projection-only",
-  "Phase 4 producer binding not authorized in this PR",
-  "Phase 4.6C diagnostics_summary OPTION_A KEEP_NOT_BOUND (owner UNRESOLVED; WorkflowDashboardReadModelV1 NON_SOURCE)",
-  "Phase 4.7A/4.7B autonomy_stage OPTION_D KEEP_NOT_BOUND (aggregate not required; owner/producer/contract=NONE; runtime bridge status separate NON_SOURCE)",
-  "Phase 5 TASK_4 event_decision_timeline B_EXPLICIT_PHASE_5_DEFERRAL (NOT_BOUND; invented/reconstructed history forbidden; future producer GO required)"
+  "Phase 4.6C diagnostics_summary OPTION_A KEEP_NOT_BOUND",
+  "Phase 4.7A/4.7B autonomy_stage OPTION_D KEEP_NOT_BOUND",
+  "Phase 5 TASK_4 event_decision_timeline B_EXPLICIT_PHASE_5_DEFERRAL",
+  "PR #5548 invalid historical evidence 2026-07-25T211859Z must not be promoted"
 ]
 TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED
 TASK_4_PHASE_5_BLOCKING=false
@@ -1697,16 +1770,29 @@ TIMELINE_SOURCE_AVAILABLE=false
 TIMELINE_UI_STATE=NOT_BOUND
 FUTURE_PRODUCER_WORK_AUTHORIZED=false
 PHASE_5_PASS=false
+OPERATOR_PRODUCT_GATE=false
+
+CAPABILITY_PR_ONLY=true
+MICRO_PR_ALLOWED=false
+DRAFT_PR_ALLOWED_ONLY_IF_OPERATOR_REQUESTS=true
+EACH_PR_HAS_DEFINITION_OF_DONE=true
+EACH_PR_DELIVERS_OPERATOR_VISIBLE_VALUE=true
+NO_ARTIFICIAL_SLICE_SPLITTING=true
 
 PHASE_PR_MAPPING=[
-  "Runbook PHASE 2 == Implementation PR #5499 (labeled PR 1 ReadModel Contracts)",
-  "Runbook PHASE 3 == Implementation PR 2 Landscape Shell (this PR; operator approval pending)",
-  "PHASE 0 / PHASE 1 not claimed complete in-repo (no durable Phase 0/1 artifacts)"
+  "PHASE 2 == PR #5499",
+  "PHASE 3 Shell == PR #5501",
+  "OKX OHLCV continuous refresh == PR #5528",
+  "Intrabar open-candle == PR #5548 (merge SHA 6f38df4d833945197e8f472c09f402ee767c85ad)"
 ]
 
 NEXT_CANONICAL_ACTION=
-Operator reviews Phase 3 screenshots and PR.
-Do not start Phase 4 producer binding without a new OPERATOR_GO.
+Capability PR: bind Risk/Sizing/Capital + Execution/Reconciliation as one
+coherent read-only operative projection on /market (owner_registry currently
+NOT_BOUND for both slots). Do not reopen PR #5548 intrabar scope. Do not
+activate runtime/orders/scheduler/capital. Do not create Draft unless operator
+explicitly requests Draft. Do not execute until separate OPERATOR_GO for that
+Capability PR.
 
 SEPARATE_GO_REQUIRED_FOR=[
   "Core changes",
@@ -1719,9 +1805,49 @@ SEPARATE_GO_REQUIRED_FOR=[
   "Promotion",
   "Live",
   "Mass cleanup",
-  "Phase 4 producer binding",
-  "event_decision_timeline durable producer + read-only projection (Phase 5 TASK_4 deferred; FUTURE_PRODUCER_WORK_AUTHORIZED=false)"
+  "diagnostics_summary redesign (beyond OPTION_A)",
+  "autonomy_stage aggregate (beyond OPTION_D)",
+  "event_decision_timeline durable producer + read-only projection"
 ]
+```
+
+### Next Capability PR — ready-to-run Cursor command (DO NOT execute in this reconciliation task)
+
+```text
+CAPABILITY_OBJECTIVE=
+Bind risk_sizing_capital and execution_reconciliation as one complete
+read-only operative projection capability on Market Dashboard Landscape V2.
+
+DEFINITION_OF_DONE=
+- owner_registry reuse_status REUSED (or honest STALE/MISSING via injection) for
+  risk_sizing_capital and execution_reconciliation
+- field-for-field projection only; no recomputation; no order/execution imports in UI
+- /market shows operator-visible Risk/Sizing/Capital and Execution/Reconciliation
+  facts or honest NOT_BOUND/MISSING/STALE (no dummy values)
+- architecture guards + focused webui/ops tests green
+- Chrome evidence 1512x982 + 1920x1080
+- CAPABILITY_PR_ONLY Ready PR (not Draft unless operator requests Draft)
+- CORE/RUNTIME/ORDERS/SCHEDULER/CAPITAL unchanged
+
+CURSOR_COMMAND=
+PEAK_TRADE MARKET DASHBOARD LANDSCAPE V2 — NEXT CAPABILITY PR
+MODE=IMPLEMENTATION
+DIRECT_AGENT_ONLY=true
+SUB_AGENTS=false
+AUTO_MERGE=false
+REPO_ROOT=/Users/frnkhrz/Peak_Trade
+BASE_SHA=origin/main
+CAPABILITY_PR_ONLY=true
+MICRO_PR_ALLOWED=false
+DRAFT_PR_ALLOWED_ONLY_IF_OPERATOR_REQUESTS=true
+OBJECTIVE=Bind Risk/Sizing/Capital + Execution/Reconciliation read-only projections on /market as one Capability PR.
+LIVE_AUTHORIZED=false
+ORDERS=false
+SCHEDULER=false
+CAPITAL_CHANGE=false
+RUNTIME_ACTIVATION=false
+FORBIDDEN=reopen PR #5548 intrabar scope; Micro-Slices; implicit Draft PR; Core/strategy/authority/runtime activation changes
+DOD=operator-visible operative projection OR honest missing states; tests+Chrome evidence; Ready non-draft PR; no merge without operator
 ```
 
 ---
@@ -1729,15 +1855,21 @@ SEPARATE_GO_REQUIRED_FOR=[
 ## 12. Abschlussentscheidung
 
 ```text
-STATUS=MARKET_DASHBOARD_V2_READMODEL_FOUNDATION_COMPLETE
-VERDICT=PHASE_2_COMPLETE_VIA_PR_5499; PHASE_3_LANDSCAPE_SHELL_NOT_AUTHORIZED; REMAIN_PURE_READ_ONLY_CONSUMER
+STATUS=MARKET_DASHBOARD_V2_OKX_INTRABAR_CAPABILITY_MERGED_VIA_PR_5548
+VERDICT=DASHBOARD_IMPLEMENTATION_PRESENT_ON_MAIN; INTRABAR_CAPABILITY_PASS; RUNTIME_NOT_ACTIVATED; OPERATOR_PRODUCT_GATE_PENDING; NEXT=RISK_SIZING_AND_EXECUTION_READONLY_BINDING_CAPABILITY
 DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
 LANDSCAPE_TARGET=true
 CORE_CHANGE_AUTHORIZED=false
 RUNTIME_CHANGE_AUTHORIZED=false
-IMPLEMENTATION_AUTHORIZED=false
-PHASE_3_AUTHORIZED=false
-FIRST_ACTION=MERGE_CANONICAL_RUNBOOK_DOCS_INGESTION_THEN_PREPARE_PHASE_3_COMMAND_ONLY
+DASHBOARD_IMPLEMENTATION_PRESENT=true
+CAPABILITY_PR_ONLY=true
+MICRO_PR_ALLOWED=false
+DRAFT_PR_ALLOWED_ONLY_IF_OPERATOR_REQUESTS=true
+LIVE_AUTHORIZED=false
+ORDERS=false
+SCHEDULER=false
+CAPITAL_CHANGE=false
+FIRST_ACTION=OPERATOR_REVIEW_THIS_RUNBOOK_RECONCILIATION_THEN_AUTHORIZE_NEXT_CAPABILITY_PR_COMMAND
 ```
 
 Das Dashboard wird damit weder zu früh als neue fachliche Wahrheit gebaut noch so spät, dass fehlende Observability erst nach Vollautonomie sichtbar wird. Es wächst kontrolliert mit der kanonischen Producer-Landschaft und bleibt dauerhaft eine reine Projektion.
