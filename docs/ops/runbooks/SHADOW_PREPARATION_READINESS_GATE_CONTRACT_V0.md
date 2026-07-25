@@ -135,12 +135,14 @@ READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true
 | Producer | `src/ops/shadow_preparation_readiness_gate_v0.py` |
 | Offline projection pipeline | `src/ops/shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
 | Offline operator entrypoint | `src/ops/shadow_preparation_readiness_offline_operator_entrypoint_v0.py` |
+| Readiness bundle (read-only aggregate) | `src/ops/shadow_preparation_readiness_bundle_v0.py` |
 | Config (static, non-activating) | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |
 | Pipeline focused tests | `tests/ops/test_shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
 | Operator entrypoint focused tests | `tests/ops/test_shadow_preparation_readiness_offline_operator_entrypoint_v0.py` |
+| Bundle focused tests | `tests/ops/test_shadow_preparation_readiness_bundle_v0.py` |
 | Durable projection output (generated) | `out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json` |
 
 ## Fail-closed conditions
@@ -427,6 +429,33 @@ python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0 \
 This command is **not** a scheduler entrypoint and **not** a runtime entrypoint.
 It is offline preparation tooling only. `PIPELINE_BLOCKED` never authorizes
 Shadow, Paper, Testnet, Scheduler, Orders, or Runtime.
+
+### Shadow Preparation Readiness Bundle v0 (read-only aggregate)
+
+```text
+SHADOW_PREPARATION_READINESS_BUNDLE_V0=true
+BUNDLE_ONLY=true
+READ_ONLY=true
+PROJECTION_ONLY=true
+AUTHORITY_EFFECT=NONE
+ACTIVATION_AUTHORITY=false
+ZERO_RUNTIME_ACTIVATION=true
+```
+
+`build_shadow_preparation_readiness_bundle_v0` (producer
+`ops.shadow_preparation_readiness_bundle_v0`) aggregates already-existing
+canonical offline artifacts into one operator-consumption bundle:
+
+- canonical offline projection pipeline result (`to_dict()`);
+- durable projection payload reread from disk (no re-serialization of gate
+  truth);
+- canonical reader/verifier result (`to_dict()`).
+
+It invokes the canonical pipeline exactly once (reusing gate, writer, and
+reader/verifier) and never introduces a second readiness truth. Missing or
+unreadable required artifacts fail closed as `BUNDLE_BLOCKED` with reason codes;
+values are never synthesized. Bundle statuses: `BUNDLE_PASS`, `BUNDLE_BLOCKED`,
+`BUNDLE_ERROR`. The bundle authorizes nothing.
 
 ## Next permitted action
 
