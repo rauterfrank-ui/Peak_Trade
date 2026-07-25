@@ -49,8 +49,20 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
   `FUTURE_OPERATOR_GO_PRESENT=false`,
   `ACTIVATION_ELIGIBLE=false`, `STEP_29U_ACTIVATED=false`
 - Current blockers: truthful economic FAIL; explicit future Operator-GO absent
-- Next action: separate operator review only; Activation remains forbidden
-  without a new explicit Operator-GO
+
+**Economic FAIL closeout + recovery decision inventory (implemented, non-activating):**
+
+- Capability: `STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_RECOVERY_DECISION_V0`
+- Owner: `ops.step_29u_economic_failure_closeout_recovery_decision_v0`
+- Contract: [STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md](../runbooks/STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md)
+- Command: `python scripts/ops/run_step_29u_economic_failure_closeout_recovery_decision_v0.py`
+- Canonical result: `ECONOMIC_CLOSEOUT=COMPLETE`,
+  `ECONOMIC_VALIDITY_STATUS=FAIL`, `ECONOMIC_VALIDITY_PROVEN=false`,
+  `ACTIVATION_ELIGIBLE=false`, `STEP_29U_ACTIVATED=false`,
+  `AUTOMATIC_NEXT_RESEARCH_ACTION_ALLOWED=false`,
+  `OPERATOR_SELECTION_REQUIRED=true`
+- Next action: operator selects an admissible recovery option; no automatic
+  research action; Activation remains forbidden without a new explicit Operator-GO
 
 ---
 
