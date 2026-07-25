@@ -483,6 +483,8 @@ def test_write_github_output_always_emits_explicit_false(
     text = out.read_text(encoding="utf-8")
     assert "reuse=false\n" in text
     assert "reuse=true\n" in text
+    assert "reuse_reason=reuse_not_proven\n" in text
+    assert "reuse_reason=reuse_proven\n" in text
 
 
 @pytest.mark.parametrize("conclusion", ["skipped", "neutral", "cancelled"])
@@ -547,26 +549,46 @@ def test_no_pull_request_target_or_write_permissions_or_base_sha_tooling() -> No
         assert "checks: write" not in text, path
         assert "actions: write" not in text, path
         assert "Checkout base tooling" not in text, path
-        # Verifier bootstrap must use head SHA, never base tooling checkout.
-        assert "exact_head_ready_reuse_tooling_" in text, path
+        assert "exact_head_ready_reuse_tooling_" not in text, path
         assert "github.event.pull_request.head.sha" in text, path
+        # No secrets.* references in Ready-reuse probe env (use github.token).
+        assert (
+            "secrets.GITHUB_TOKEN"
+            not in text.split("Checkout exact PR-head verifier")[1].split("Normalize reuse output")[
+                0
+            ]
+        )
 
 
-def test_safe_bootstrap_fetches_exact_head_and_always_exits_zero() -> None:
+def test_authenticated_exact_head_checkout_bootstrap() -> None:
+    """All five heavy workflows use isolated actions/checkout@v4 sparse bootstrap."""
+    import re
+
     for path, text in _workflow_texts().items():
-        if path.endswith("ci.yml"):
-            assert "Evaluate exact-head Ready reuse" in text
-        else:
-            assert "Exact-head Ready reuse" in text
-        assert "bootstrap_fetch_failed" in text, path
+        assert "Checkout exact PR-head verifier" in text, path
+        assert "uses: actions/checkout@v4" in text, path
+        assert "github.event.pull_request.head.repo.full_name" in text, path
+        assert "ref: ${{ github.event.pull_request.head.sha }}" in text, path
+        assert "path: .ready-reuse-head" in text, path
+        assert "persist-credentials: false" in text, path
+        assert "sparse-checkout-cone-mode: false" in text, path
+        assert "scripts/ci/exact_head_ready_reuse.py" in text, path
+        assert "bootstrap_checkout_failed" in text, path
         assert "bootstrap_sha_mismatch" in text, path
-        assert "verifier_missing_on_head" in text, path
+        assert "bootstrap_verifier_missing" in text, path
+        assert "verifier_execution_failed" in text, path
         assert "set +e" in text, path
         assert 'echo "reuse=false"' in text, path
-        # final exit 0 in bootstrap run block
-        assert "exit 0" in text, path
         assert "continue-on-error: true" in text, path
         assert "Normalize reuse output" in text, path
+        # Raw unauthenticated HTTPS bootstrap fetch must be absent from Ready-reuse probe.
+        probe = text.split("Checkout exact PR-head verifier")[1].split("Normalize reuse output")[0]
+        assert "git fetch https://github.com" not in probe, path
+        assert 'git remote add origin "https://github.com/' not in probe, path
+        assert "http.extraheader" not in probe, path
+        # Exactly one isolated verifier checkout action per workflow.
+        assert text.count("Checkout exact PR-head verifier") == 1, path
+        assert len(re.findall(r"path: \.ready-reuse-head", text)) >= 1, path
 
 
 def test_ci_dependency_graph_prevents_required_skip_cascade() -> None:

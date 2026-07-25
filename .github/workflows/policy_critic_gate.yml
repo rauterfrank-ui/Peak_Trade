@@ -17,16 +17,41 @@ permissions:
   contents: read
   pull-requests: read
   checks: read
+  actions: read
 
 jobs:
   policy-critic-gate:
     name: Policy Critic Gate
     runs-on: ubuntu-latest
     steps:
+      - name: Initialize Ready-reuse fallback
+        id: ready_reuse_default
+        shell: bash
+        run: |
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=bootstrap_not_completed" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout exact PR-head verifier
+        id: ready_reuse_checkout
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: .ready-reuse-head
+          sparse-checkout: |
+            scripts/ci/exact_head_ready_reuse.py
+            scripts/ci/required_checks_config.py
+            config/ci/required_status_checks.json
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+          persist-credentials: false
+
       - name: Exact-head Ready reuse
         id: reuse
+        if: ${{ always() && github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         continue-on-error: true
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ github.token }}
@@ -34,45 +59,39 @@ jobs:
           set +e
           echo "reuse=false" >> "$GITHUB_OUTPUT"
           echo "reuse_reason=init" >> "$GITHUB_OUTPUT"
-          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-          REPO="${{ github.repository }}"
-          TOOL="/tmp/exact_head_ready_reuse_tooling_$$"
-          rm -rf "$TOOL"
-          mkdir -p "$TOOL" || { echo "reuse_reason=bootstrap_mkdir_failed" >> "$GITHUB_OUTPUT"; exit 0; }
-          cd "$TOOL" || { echo "reuse_reason=bootstrap_cd_failed" >> "$GITHUB_OUTPUT"; exit 0; }
-          git init -q
-          git remote add origin "https://github.com/${REPO}.git"
-          git config --local http.https://github.com/.extraheader "AUTHORIZATION: bearer ${GITHUB_TOKEN}"
-          if ! git fetch --depth=1 origin "${HEAD_SHA}"; then
-            echo "reuse_reason=bootstrap_fetch_failed" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          if ! git checkout --force FETCH_HEAD; then
+          if [ "${{ steps.ready_reuse_checkout.outcome }}" != "success" ]; then
             echo "reuse_reason=bootstrap_checkout_failed" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          ACTUAL="$(git rev-parse HEAD)"
-          if [ "${ACTUAL}" != "${HEAD_SHA}" ]; then
+          expected_sha="${{ github.event.pull_request.head.sha }}"
+          actual_sha="$(git -C .ready-reuse-head rev-parse HEAD 2>/dev/null || true)"
+          if [ -z "${actual_sha}" ] || [ "${actual_sha}" != "${expected_sha}" ]; then
             echo "reuse_reason=bootstrap_sha_mismatch" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if [ ! -f scripts/ci/exact_head_ready_reuse.py ] || [ ! -f scripts/ci/required_checks_config.py ] || [ ! -f config/ci/required_status_checks.json ]; then
-            echo "reuse_reason=verifier_missing_on_head" >> "$GITHUB_OUTPUT"
+          if [ ! -f .ready-reuse-head/scripts/ci/exact_head_ready_reuse.py ]; then
+            echo "reuse_reason=bootstrap_verifier_missing" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          export PYTHONPATH="${TOOL}/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
-          python3 scripts/ci/exact_head_ready_reuse.py \
-            --repo "${REPO}" \
-            --head-sha "${HEAD_SHA}" \
+          if [ ! -f .ready-reuse-head/scripts/ci/required_checks_config.py ] || [ ! -f .ready-reuse-head/config/ci/required_status_checks.json ]; then
+            echo "reuse_reason=bootstrap_verifier_missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export PYTHONPATH="${GITHUB_WORKSPACE}/.ready-reuse-head/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
+          python3 .ready-reuse-head/scripts/ci/exact_head_ready_reuse.py \
+            --repo "${{ github.repository }}" \
+            --head-sha "${expected_sha}" \
             --contexts "Policy Critic Gate" \
-            --required-config config/ci/required_status_checks.json \
+            --required-config .ready-reuse-head/config/ci/required_status_checks.json \
             --report-json /tmp/exact_head_ready_reuse_policy_critic.json \
             --write-github-output
           RC=$?
           if [ "${RC}" -ne 0 ]; then
             echo "reuse=false" >> "$GITHUB_OUTPUT"
-            echo "reuse_reason=verifier_exit_${RC}" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=verifier_execution_failed" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+          # Prefer explicit true only; otherwise leave false (normalize step enforces).
           exit 0
 
       - name: Normalize reuse output (fail-closed default false)

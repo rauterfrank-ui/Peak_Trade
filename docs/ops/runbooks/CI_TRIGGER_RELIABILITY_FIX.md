@@ -43,9 +43,16 @@ Canonical Required Context set: `config/ci/required_status_checks.json` (no seco
 
 ### Safe verifier bootstrap
 
-The Ready-reuse probe does **not** rely on the verifier already existing on `pull_request.base.sha`.
+The Ready-reuse probe does **not** rely on the verifier already existing on `pull_request.base.sha`, and does **not** use raw unauthenticated `git fetch` over HTTPS.
 
-Instead, a read-only bootstrap fetches the exact PR head SHA into an isolated `/tmp` tooling directory, proves `git rev-parse HEAD` equals `github.event.pull_request.head.sha`, then runs `scripts/ci/exact_head_ready_reuse.py` from that tree with `contents:read` / `checks:read` / `pull-requests:read` (plus `actions:read` where declared). Any fetch/checkout/path/SHA/API/tooling failure normalizes to `reuse=false` and continues into full validation.
+Instead, on `ready_for_review` an isolated `actions/checkout@v4` sparse-checkout loads only the verifier (+ its SSOT config helper) from:
+
+- `repository: github.event.pull_request.head.repo.full_name`
+- `ref: github.event.pull_request.head.sha` (exact SHA, never branch/base/main)
+- `path: .ready-reuse-head`
+- `persist-credentials: false`
+
+The probe then proves `git -C .ready-reuse-head rev-parse HEAD` equals the PR head SHA and executes only `.ready-reuse-head&#47;scripts&#47;ci&#47;exact_head_ready_reuse.py` with read-only permissions (`contents` / `checks` / `pull-requests` / `actions`: read). Any checkout/path/SHA/API/tooling failure normalizes to `reuse=false` and continues into full validation.
 
 ### Non-goals
 

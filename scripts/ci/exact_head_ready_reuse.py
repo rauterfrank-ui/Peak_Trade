@@ -360,14 +360,16 @@ def normalize_reuse_flag(raw: Optional[str]) -> bool:
     return str(raw or "").strip() == "true"
 
 
-def _write_github_output(reuse: bool) -> None:
+def _write_github_output(reuse: bool, *, reason: Optional[str] = None) -> None:
     path = os.getenv("GITHUB_OUTPUT")
     # Always emit an explicit boolean token (never leave unset).
-    line = f"reuse={'true' if reuse else 'false'}\n"
+    reuse_reason = reason or ("reuse_proven" if reuse else "reuse_not_proven")
+    lines = f"reuse={'true' if reuse else 'false'}\nreuse_reason={reuse_reason}\n"
     if path:
         with open(path, "a", encoding="utf-8") as fh:
-            fh.write(line)
+            fh.write(lines)
     print(f"GITHUB_OUTPUT_REUSE={'true' if reuse else 'false'}")
+    print(f"GITHUB_OUTPUT_REUSE_REASON={reuse_reason}")
 
 
 def resolve_contexts(
@@ -460,7 +462,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
         print(f"EXACT_HEAD_READY_REUSE=false reason=config_error detail={exc}", file=sys.stderr)
         if args.write_github_output:
-            _write_github_output(False)
+            _write_github_output(False, reason="verifier_output_invalid")
         return 2 if args.fail_on_unproven else 0
 
     if not token:
@@ -478,7 +480,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
         print("EXACT_HEAD_READY_REUSE=false reason=missing_token", file=sys.stderr)
         if args.write_github_output:
-            _write_github_output(False)
+            _write_github_output(False, reason="verifier_execution_failed")
         return 2 if args.fail_on_unproven else 0
 
     try:
@@ -521,7 +523,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         print(f"- {d.context}: {d.decision} — {d.detail}")
 
     if args.write_github_output:
-        _write_github_output(reuse_ok)
+        if error:
+            _write_github_output(False, reason="verifier_execution_failed")
+        else:
+            _write_github_output(reuse_ok)
 
     if reuse_ok:
         print("EXACT_HEAD_READY_REUSE=true")
