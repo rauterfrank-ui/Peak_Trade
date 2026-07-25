@@ -134,11 +134,13 @@ READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true
 |------|------|
 | Producer | `src/ops/shadow_preparation_readiness_gate_v0.py` |
 | Offline projection pipeline | `src/ops/shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
+| Offline operator entrypoint | `src/ops/shadow_preparation_readiness_offline_operator_entrypoint_v0.py` |
 | Config (static, non-activating) | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |
 | Pipeline focused tests | `tests/ops/test_shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
+| Operator entrypoint focused tests | `tests/ops/test_shadow_preparation_readiness_offline_operator_entrypoint_v0.py` |
 | Durable projection output (generated) | `out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json` |
 
 ## Fail-closed conditions
@@ -352,6 +354,79 @@ reread projection, then returns `PIPELINE_PASS`, `PIPELINE_BLOCKED`, or
 and verified is `PIPELINE_BLOCKED` (not an execution failure). The pipeline does
 not activate Shadow/Paper/Testnet/Runtime/Scheduler/Orders/Live and does not
 introduce a second readiness truth owner.
+
+### Offline operator entrypoint (CLI only)
+
+```text
+OFFLINE_OPERATOR_ENTRYPOINT_V0=true
+PROJECTION_ONLY=true
+AUTHORITY_EFFECT=NONE
+ACTIVATION_AUTHORITY=false
+NOT_SCHEDULER_ENTRYPOINT=true
+NOT_RUNTIME_ENTRYPOINT=true
+ZERO_RUNTIME_ACTIVATION=true
+```
+
+Canonical invocation (repo-native `python -m`, argparse):
+
+```text
+python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0 \
+  --repo-root . \
+  --output-path out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json \
+  --format text
+```
+
+JSON form:
+
+```text
+python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0 \
+  --repo-root . \
+  --output-path out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json \
+  --format json
+```
+
+Exit-code contract (stable):
+
+| Exit code | Meaning |
+|-----------|---------|
+| `0` | `PIPELINE_PASS` |
+| `2` | `PIPELINE_BLOCKED` (authorizes nothing) |
+| `1` | `PIPELINE_ERROR` or invalid CLI arguments |
+
+`--format text` prints a deterministic `status=PIPELINE_*` summary. `--format json`
+emits the canonical pipeline `to_dict()` object (schema_id/schema_version,
+pipeline_status, projection_path, verification_status, reason_codes,
+authority_effect=NONE, activation_authority=false, projection_only=true). The
+entrypoint invokes the canonical pipeline exactly once and does not duplicate
+gate, writer, reader, verifier, or serialization logic.
+
+Illustrative outcomes (paths encoded per docs-token policy):
+
+```text
+# PASS (exit 0) — illustrative only; current readiness is typically BLOCKED
+python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0 \
+  --repo-root . \
+  --output-path out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json \
+  --format text
+# status=PIPELINE_PASS
+
+# BLOCKED (exit 2) — authorizes nothing; no Shadow/Paper/Testnet/Scheduler/Runtime
+python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0 \
+  --repo-root . \
+  --output-path out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json \
+  --format json
+# {"pipeline_status":"PIPELINE_BLOCKED",...}
+
+# ERROR (exit 1) — missing/invalid inputs fail closed
+python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0 \
+  --repo-root /tmp&#47;missing_repo_root_illustrative \
+  --format text
+# status=PIPELINE_ERROR (or ENTRYPOINT_REPO_ROOT_INVALID)
+```
+
+This command is **not** a scheduler entrypoint and **not** a runtime entrypoint.
+It is offline preparation tooling only. `PIPELINE_BLOCKED` never authorizes
+Shadow, Paper, Testnet, Scheduler, Orders, or Runtime.
 
 ## Next permitted action
 
