@@ -11,16 +11,19 @@ import pytest
 
 from src.ops.shadow_preparation_readiness_gate_v0 import (
     ACTIVATION_FLAG_KEYS,
+    ALLOWED_PREPARATION_STATUSES,
     AUTHORITY_EFFECT_NONE,
     DASHBOARD_BLOCKER_ID_CANONICAL,
     DASHBOARD_BLOCKER_STATE_OPEN,
     DETERMINISTIC_EVALUATED_AT_DEFAULT,
     PACKAGE_MARKER,
     PRODUCER_FAMILY,
+    REQUIRED_MINDESTKONTRAKT_COMPONENT_IDS,
     RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED,
     SCHEMA_ID,
     HistoricalSurfaceClassification,
     HistoricalSurfaceRecordV0,
+    PreparationStatusV0,
     ShadowPreparationReadinessGateError,
     evaluate_shadow_preparation_readiness_gate_v0,
     load_shadow_preparation_readiness_gate_config_v0,
@@ -249,3 +252,115 @@ def test_authority_effect_override_non_none_rejected() -> None:
 def test_dashboard_resolved_override_rejected() -> None:
     with pytest.raises(ShadowPreparationReadinessGateError, match="dashboard_blocker_resolved"):
         _default_result(dashboard_blocker_overrides={"dashboard_blocker_resolved": True})
+
+
+def test_mindestkontrakt_inventory_exact_set_and_stable_order() -> None:
+    result = _default_result()
+    ids = tuple(item.component_id for item in result.mindestkontrakt_inventory)
+    assert ids == REQUIRED_MINDESTKONTRAKT_COMPONENT_IDS
+    assert len(ids) == len(set(ids))
+    assert len(ids) == 20
+
+
+def test_mindestkontrakt_statuses_are_closed_enum_only() -> None:
+    result = _default_result()
+    for item in result.mindestkontrakt_inventory:
+        assert item.preparation_status.value in ALLOWED_PREPARATION_STATUSES
+        assert isinstance(item.preparation_status, PreparationStatusV0)
+
+
+def test_mindestkontrakt_missing_or_unbound_have_blockers() -> None:
+    result = _default_result()
+    for item in result.mindestkontrakt_inventory:
+        if item.preparation_status in (
+            PreparationStatusV0.MISSING,
+            PreparationStatusV0.UNBOUND,
+        ):
+            assert item.blockers, item.component_id
+
+
+def test_mindestkontrakt_no_canonical_executable_shadow_owners() -> None:
+    result = _default_result()
+    by_id = {item.component_id: item for item in result.mindestkontrakt_inventory}
+    for component_id in (
+        "lifecycle_owner",
+        "session_state_machine",
+        "canonical_decision_consumption",
+        "fill_ownership",
+        "fee_ownership",
+        "slippage_ownership",
+        "position_projection",
+        "account_projection",
+    ):
+        item = by_id[component_id]
+        assert item.preparation_status == PreparationStatusV0.MISSING
+        assert item.implementation_path is None
+        assert item.canonical_owner is None
+    assert by_id["execution_simulation_boundary"].preparation_status == (
+        PreparationStatusV0.LEGACY_NON_CANONICAL
+    )
+    assert by_id["execution_simulation_boundary"].implementation_path is None
+
+
+def test_legacy_shadow_paper_remain_non_canonical() -> None:
+    result = _default_result()
+    by_hist = {s.surface_id: s for s in result.historical_surface_classifications}
+    for surface_id in (
+        "phase24_shadow_order_executor",
+        "phase31_shadow_paper_session",
+    ):
+        assert by_hist[surface_id].classification == (
+            HistoricalSurfaceClassification.NON_CANONICAL_STEP29U
+        )
+    legacy = next(
+        item
+        for item in result.mindestkontrakt_inventory
+        if item.component_id == "legacy_surface_non_equivalence"
+    )
+    assert legacy.preparation_status == PreparationStatusV0.PRESENT
+    assert "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U" in legacy.blockers
+
+
+def test_step29u_implementation_and_activation_locks_remain() -> None:
+    result = _default_result()
+    assert result.not_step_29u_implementation is True
+    assert result.step_29u_implemented is False
+    assert result.shadow_activatable is False
+    assert result.shadow_mode_allowed is False
+    assert result.separate_go_required_for_implementation is True
+    assert result.separate_go_required_for_activation is True
+    assert result.canonical_shadow_mode_exists is False
+    assert result.canonical_step_29u_bound is False
+    assert result.shadow_preparation_complete is False
+
+
+def test_step_29v_remains_canonically_undefined() -> None:
+    result = _default_result()
+    assert result.canonical_step_29v_paper_mode_exists is False
+    cfg = load_shadow_preparation_readiness_gate_config_v0(CONFIG)
+    assert "runbook.STEP_29V.paper_absent" in cfg["known_canonical_authority_identifiers"]
+
+
+def test_mindestkontrakt_output_deterministic_machine_readable() -> None:
+    a = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+    b = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+    assert a.to_dict()["mindestkontrakt_inventory"] == b.to_dict()["mindestkontrakt_inventory"]
+    assert isinstance(a.to_dict()["mindestkontrakt_inventory"], list)
+    assert (
+        a.to_dict()["mindestkontrakt_inventory"][0]["component_id"]
+        == (REQUIRED_MINDESTKONTRAKT_COMPONENT_IDS[0])
+    )
+
+
+def test_docs_declare_mindestkontrakt_inventory_non_activating() -> None:
+    text = CONTRACT_DOC.read_text(encoding="utf-8")
+    for token in (
+        "MINDESTKONTRAKT_GAP_INVENTORY_V0=true",
+        "NOT_STEP_29U_IMPLEMENTATION=true",
+        "SHADOW_ACTIVATABLE=false",
+        "CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false",
+        "LEGACY_NON_CANONICAL",
+        "SEPARATE_GO_REQUIRED_FOR_IMPLEMENTATION=true",
+        "SEPARATE_GO_REQUIRED_FOR_ACTIVATION=true",
+    ):
+        assert token in text, token
