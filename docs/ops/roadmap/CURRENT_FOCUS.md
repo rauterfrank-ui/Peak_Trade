@@ -36,7 +36,17 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Runtime = `BOUND_NOT_ACTIVATED`
 - Economic validity = not proven / blocked
 - `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` = OPEN (separate)
-- No activation authorized; next activation-related work needs separate operator GO (Step 29U inventory first)
+- No activation authorized; soak evidence does **not** close Step 29U
+
+**Step 29U inventory (docs/contract, non-implementing):**
+
+- Canonical binding/implementation inventory:
+  [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](../runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md)
+- Terminal claims of that inventory slice:
+  `STEP_29U_INVENTORY_PASS=true`, `STEP_29U_BINDING_SPEC_PASS=true`,
+  `STEP_29U_IMPLEMENTATION_PASS=false`, `STEP_29U_ACTIVATION_PASS=false`
+- Next implementation work requires a **separate operator GO**:
+  `STEP_29U_OFFLINE_CANONICAL_MODE_IDENTITY_BINDING_V0`
 
 ---
 
