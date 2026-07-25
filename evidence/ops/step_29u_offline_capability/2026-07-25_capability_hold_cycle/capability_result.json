@@ -1,0 +1,121 @@
+{
+  "activation_authorized": false,
+  "canonical_step_29u_absent_activation_prerequisite": "OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE",
+  "capability_result": "STEP_29U_OFFLINE_CAPABILITY_PASS",
+  "capital_changed": false,
+  "cycles": [
+    {
+      "cycle_index": 1,
+      "cycle_payload": {
+        "background_process_left_running": false,
+        "blockers": [],
+        "btc_excluded": true,
+        "cli_relpath": "scripts/ops/run_okx_futures_shadow_no_order_v0.py",
+        "decision_result": "hold",
+        "direction": "HOLD",
+        "entrypoint_owner": "ops.okx_futures_shadow_no_order_entrypoint_v0",
+        "exchange_order_submission": false,
+        "execution_intent_result": "NOT_APPLICABLE:NONE",
+        "futures_only": true,
+        "input_provenance": "src.ops.bounded_futures_testnet_venue_binding_v0:default_okx_europe_xperp_production_binding",
+        "instrument": "ETH-USD_UM_XPERP-310404",
+        "live_activation": false,
+        "market_classification": "FUTURES",
+        "order_capable_client_instantiated": false,
+        "package_marker": "OKX_FUTURES_SHADOW_NO_ORDER_ENTRYPOINT_V0=true",
+        "real_order_submission": false,
+        "reason_codes": [
+          "shadow_no_order_mode",
+          "canonical_okx_futures_binding",
+          "hold_no_submission"
+        ],
+        "reconciliation_audit_result": "BOUND_OFFLINE",
+        "risk_sizing_result": "NONE",
+        "safety_result": "PASS",
+        "scheduler": false,
+        "schema_id": "ops.okx_futures_shadow_no_order_entrypoint_v0",
+        "schema_version": "v0",
+        "spot_excluded": true,
+        "terminal_status": "PASS",
+        "testnet_order_submission": false,
+        "venue": "okx_europe"
+      },
+      "decision_reason_codes": [
+        "shadow_no_order_mode",
+        "canonical_okx_futures_binding",
+        "hold_no_submission"
+      ],
+      "decision_result": "hold",
+      "direction": "HOLD",
+      "execution_intent_result": "NOT_APPLICABLE:NONE",
+      "reconciliation_audit_result": "BOUND_OFFLINE",
+      "risk_sizing_result": "NONE",
+      "terminal_status": "PASS"
+    }
+  ],
+  "evidence_dir": null,
+  "evidence_manifest_sha256": null,
+  "failure_class": null,
+  "final_state": "COMPLETED",
+  "identity": {
+    "btc_excluded": true,
+    "canonical_step_29u_reference": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md##STEP_29U",
+    "capability_id": "STEP_29U_OFFLINE_CAPABILITY_V0",
+    "effective_at": "1970-01-01T00:00:00Z",
+    "instrument_class": "USDT_PERPETUAL_FUTURES",
+    "instrument_id": "ETH-USD_UM_XPERP-310404",
+    "mode": "SHADOW_OFFLINE",
+    "network_runtime_allowed": false,
+    "orders_allowed": false,
+    "runtime_activation_allowed": false,
+    "scheduler_allowed": false,
+    "schema_id": "ops.step_29u_offline_capability_v0",
+    "schema_version": "v0",
+    "source_git_sha": "40f356e357d3a8bcb13cae065103bb6d8eda5417",
+    "spot_excluded": true,
+    "venue": "OKX"
+  },
+  "lifecycle_owner": "ops.step_29u_offline_capability_v0",
+  "lifecycle_transitions": [
+    {
+      "from_state": "CREATED",
+      "reason": "start_validation",
+      "to_state": "VALIDATING"
+    },
+    {
+      "from_state": "VALIDATING",
+      "reason": "identity_valid",
+      "to_state": "READY"
+    },
+    {
+      "from_state": "READY",
+      "reason": "start_cycles:1",
+      "to_state": "RUNNING"
+    },
+    {
+      "from_state": "RUNNING",
+      "reason": "reconcile_cycles",
+      "to_state": "RECONCILING"
+    },
+    {
+      "from_state": "RECONCILING",
+      "reason": "cycles_reconciled",
+      "to_state": "COMPLETED"
+    }
+  ],
+  "network_runtime_used": false,
+  "orders_created": false,
+  "orders_submitted": false,
+  "reason_codes": [
+    "BOUNDED_HOLD_CYCLES_COMPLETE"
+  ],
+  "runtime_activated": false,
+  "scheduler_activated": false,
+  "schema_id": "ops.step_29u_offline_capability_v0",
+  "schema_version": "v0",
+  "session_id": "step29u-offline-40f356e357d3-1",
+  "step_29u_activated": false,
+  "step_29u_bound_offline": true,
+  "step_29u_implemented": true,
+  "step_29u_verified_offline": false
+}

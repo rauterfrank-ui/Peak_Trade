@@ -63,7 +63,7 @@ def test_inventory_document_exists_and_declares_non_activating_pass_split_v0() -
     assert "STEP_29U_BINDING_IMPLEMENTATION_INVENTORY_V0=true" in text
     assert "STEP_29U_INVENTORY_PASS=true" in text
     assert "STEP_29U_BINDING_SPEC_PASS=true" in text
-    assert "STEP_29U_IMPLEMENTATION_PASS=false" in text
+    assert "STEP_29U_IMPLEMENTATION_PASS=true" in text
     assert "STEP_29U_ACTIVATION_PASS=false" in text
     assert "AUTHORITY_EFFECT=NONE" in text
     assert "NON_ACTIVATING=true" in text
@@ -73,14 +73,14 @@ def test_inventory_document_exists_and_declares_non_activating_pass_split_v0() -
 def test_inventory_keeps_canonical_absence_open_and_unbound_v0() -> None:
     text = _read(INVENTORY)
     assert "CANONICAL_STEP_29U_ABSENT=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE" in text
-    assert "STEP_29U_IMPLEMENTED=false" in text
+    assert "ABSENCE_MEANS_ACTIVATION_BINDING_ABSENT=true" in text
+    assert "STEP_29U_IMPLEMENTED=true" in text
+    assert "STEP_29U_BOUND_OFFLINE=true" in text
+    assert "STEP_29U_VERIFIED_OFFLINE=true" in text
     assert "STEP_29U_ACTIVATED=false" in text
     assert "CANONICAL_STEP_29U_BOUND=false" in text
-    # Exact positive claims must remain absent (avoid substring matches on
-    # SOAK_DOES_NOT_PROVE_STEP_29U_IMPLEMENTED=true and similar).
     for line in text.splitlines():
         stripped = line.strip()
-        assert stripped != "STEP_29U_IMPLEMENTED=true"
         assert stripped != "STEP_29U_ACTIVATED=true"
         assert stripped != "CANONICAL_STEP_29U_BOUND=true"
 
@@ -89,7 +89,7 @@ def test_inventory_does_not_collapse_state_model_v0() -> None:
     text = _read(INVENTORY)
     for state in REQUIRED_STATES:
         assert state in text, state
-    assert "STEP_29U_STATE_AFTER_THIS_SLICE=BINDING_SPEC_RATIFIED" in text
+    assert "STEP_29U_STATE_AFTER_THIS_SLICE=VERIFIED_OFFLINE" in text
     assert "STEP_29U_STATE_IMPLIES_ABSENCE_CLEARED=false" in text
 
 
@@ -140,10 +140,11 @@ def test_inventory_forbids_readiness_as_binding_authority_v0() -> None:
 def test_inventory_forbids_collapsing_implementation_and_activation_v0() -> None:
     text = _read(INVENTORY)
     assert "FORBIDDEN_IF_INVENTORY_PASS_COLLAPSED_INTO_ACTIVATION_PASS=true" in text
-    assert "STEP_29U_IMPLEMENTATION_AUTHORIZED_BY_THIS_INVENTORY=false" in text
-    assert "STEP_29U_ACTIVATION_AUTHORIZED_BY_THIS_INVENTORY=false" in text
-    assert "SEPARATE_OPERATOR_GO_REQUIRED_FOR_STEP29U_IMPLEMENTATION=true" in text
-    assert "SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_ACTIVATION_STAGE=true" in text
+    assert "FORBIDDEN_IF_OFFLINE_IMPLEMENTED_IMPLIES_ACTIVATED=true" in text
+    assert "ALLOWED_OFFLINE_IMPLEMENTED_WHILE_ACTIVATION_ABSENT_OPEN=true" in text
+    assert "STEP_29U_ACTIVATION_PASS=false" in text
+    assert "STEP_29U_IMPLEMENTATION_DOES_NOT_AUTHORIZE_ACTIVATION=true" in text
+    assert "SEPARATE_OPERATOR_GO_REQUIRED=true" in text
 
 
 def test_inventory_records_external_blocker_policy_without_dashboard_silent_conversion_v0() -> None:
@@ -160,19 +161,26 @@ def test_inventory_records_external_blocker_policy_without_dashboard_silent_conv
     assert "OPERATOR_GO_RELATION=HARD_ACTIVATION_PREREQUISITE" in text
 
 
-def test_inventory_defines_single_next_implementation_slice_v0() -> None:
+def test_inventory_defines_implemented_offline_capability_and_next_activation_gate_v0() -> None:
     text = _read(INVENTORY)
-    assert "NEXT_IMPLEMENTATION_SLICE=STEP_29U_OFFLINE_CANONICAL_MODE_IDENTITY_BINDING_V0" in text
+    assert "IMPLEMENTED_CAPABILITY=STEP_29U_OFFLINE_CAPABILITY_V0" in text
+    assert "STEP_29U_LIFECYCLE_OWNER=ops.step_29u_offline_capability_v0" in text
+    assert "STEP_29U_OPERATOR_COMMAND=" in text
+    assert (
+        "NEXT_AUTHORIZED_SLICE=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO"
+        in text
+    )
     assert "SEPARATE_OPERATOR_GO_REQUIRED=true" in text
-    assert "EXPECTED_TERMINAL_STATE=IMPLEMENTED_OFFLINE_PARTIAL_MODE_IDENTITY_ONLY" in text
 
 
-def test_current_focus_and_readiness_point_to_inventory_without_claiming_impl_v0() -> None:
+def test_current_focus_and_readiness_point_to_inventory_without_claiming_activation_v0() -> None:
     focus = _read(CURRENT_FOCUS)
     readiness = _read(READINESS_CONTRACT)
     assert "STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md" in focus
     assert "STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md" in readiness
     assert "CANONICAL_STEP_29U_ABSENT" in focus
     assert "OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE" in focus
-    assert "STEP_29U_IMPLEMENTED=true" not in focus
+    assert "STEP_29U_IMPLEMENTED=true" in focus
+    assert "STEP_29U_ACTIVATED=false" in focus
     assert "STEP_29U_ACTIVATED=true" not in focus
+    assert "ops.step_29u_offline_capability_v0" in focus

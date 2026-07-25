@@ -8,24 +8,33 @@ non_activating: true
 last_updated: 2026-07-25
 ---
 
-> **Non-authorizing inventory.** This contract removes semantic ambiguity around
-> STEP 29U binding/implementation readiness. It does **not** implement, bind,
-> invoke, schedule, activate, or simulate STEP 29U. It does **not** reinterpret
-> the post-merge 600-second offline no-order soak as STEP-29U PASS or closure.
+> **Non-activating inventory + offline capability pointer.** This contract
+> removes semantic ambiguity around STEP 29U binding/implementation readiness
+> and records the offline capability owner. It does **not** activate Runtime,
+> Scheduler, network Runtime, Paper/Testnet/Live, or orders. It does **not**
+> reinterpret the post-merge 600-second offline no-order soak as STEP-29U
+> activation or closure.
 
 ```text
 STEP_29U_BINDING_IMPLEMENTATION_INVENTORY_V0=true
 STEP_29U_INVENTORY_PASS=true
 STEP_29U_BINDING_SPEC_PASS=true
-STEP_29U_IMPLEMENTATION_PASS=false
+STEP_29U_IMPLEMENTATION_PASS=true
+STEP_29U_OFFLINE_CAPABILITY_PASS_OBSERVED=true
 STEP_29U_ACTIVATION_PASS=false
 CANONICAL_STEP_29U_ABSENT=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
-STEP_29U_IMPLEMENTED=false
+STEP_29U_IMPLEMENTED=true
+STEP_29U_BOUND_OFFLINE=true
+STEP_29U_VERIFIED_OFFLINE=true
 STEP_29U_ACTIVATED=false
 CANONICAL_STEP_29U_BOUND=false
+CANONICAL_STEP_29U_ACTIVATION_BOUND=false
 AUTHORITY_EFFECT=NONE
 NON_ACTIVATING=true
 SECOND_TRUTH_INTRODUCED=false
+STEP_29U_LIFECYCLE_OWNER=ops.step_29u_offline_capability_v0
+STEP_29U_OPERATOR_COMMAND=python scripts/ops/run_step_29u_offline_capability_v0.py --cycle-count N --output-path PATH
+STEP_29U_IMPLEMENTATION_PATH=src/ops/step_29u_offline_capability_v0/__init__.py
 ```
 
 ## 1. Ownership and non-duplication
@@ -102,21 +111,23 @@ States are distinct and must not be collapsed:
 | `SEMANTICALLY_DEFINED` | Runbook STEP 29U body ratified | already true on `origin/main` |
 | `INVENTORIED` | Required components classified; gaps explicit | **yes** |
 | `BINDING_SPEC_RATIFIED` | Ownership/interfaces/pass predicates ratified in docs/contract | **yes** |
-| `IMPLEMENTED_OFFLINE` | Offline implementation exists under separate GO | **no** |
-| `VERIFIED_OFFLINE` | Offline verification evidence for implementation | **no** |
+| `IMPLEMENTED_OFFLINE` | Offline implementation exists under Operator capability GO | **yes** |
+| `VERIFIED_OFFLINE` | Offline verification evidence for implementation | **yes** |
 | `ACTIVATION_ELIGIBLE` | All activation prerequisites satisfied; still not activated | **no** |
 | `ACTIVATED` | Operator-GO activation executed | **no** |
 
 ```text
-STEP_29U_STATE_AFTER_THIS_SLICE=BINDING_SPEC_RATIFIED
+STEP_29U_STATE_AFTER_THIS_SLICE=VERIFIED_OFFLINE
 STEP_29U_STATE_IMPLIES_ABSENCE_CLEARED=false
 CANONICAL_STEP_29U_ABSENT_REMAINS=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
+ABSENCE_MEANS_ACTIVATION_BINDING_ABSENT=true
+ABSENCE_DOES_NOT_MEAN_OFFLINE_IMPL_ABSENT=true
 ```
 
-`BINDING_SPEC_RATIFIED` does **not** clear `CANONICAL_STEP_29U_ABSENT`.
-Absence clears only after a later ratified operational binding that the
-readiness producer is separately authorized to observe — never by this
-inventory alone.
+Offline implementation/verification does **not** clear
+`CANONICAL_STEP_29U_ABSENT`. That token remains the intentional **activation**
+prerequisite. Activation eligibility and activation still require separate
+Operator-GO. The readiness producer still cannot bind/activate STEP 29U.
 
 ## 4. Mechanical pass conditions
 
@@ -145,11 +156,14 @@ True only when all hold:
 
 ### STEP_29U_IMPLEMENTATION_PASS
 
-Reserved for a later separately authorized implementation PR.
+Offline capability implementation is owned by
+`ops.step_29u_offline_capability_v0` and may claim implementation PASS only for
+the offline non-activating chain.
 
 ```text
-STEP_29U_IMPLEMENTATION_PASS=false
-STEP_29U_IMPLEMENTATION_AUTHORIZED_BY_THIS_INVENTORY=false
+STEP_29U_IMPLEMENTATION_PASS=true
+STEP_29U_IMPLEMENTATION_OWNER=ops.step_29u_offline_capability_v0
+STEP_29U_IMPLEMENTATION_DOES_NOT_AUTHORIZE_ACTIVATION=true
 ```
 
 ### STEP_29U_ACTIVATION_PASS
@@ -166,12 +180,13 @@ SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_ACTIVATION_STAGE=true
 ### Forbidden status combinations
 
 ```text
-FORBIDDEN_IF_ABSENT_OPEN_AND_IMPLEMENTED_TRUE=true
 FORBIDDEN_IF_ABSENT_OPEN_AND_ACTIVATED_TRUE=true
-FORBIDDEN_IF_ABSENT_OPEN_AND_BOUND_TRUE=true
+FORBIDDEN_IF_ABSENT_OPEN_AND_ACTIVATION_BOUND_TRUE=true
+FORBIDDEN_IF_OFFLINE_IMPLEMENTED_IMPLIES_ACTIVATED=true
 FORBIDDEN_IF_SOAK_PROVEN_IMPLIES_STEP29U_PASS=true
 FORBIDDEN_IF_READINESS_PROJECTION_CLAIMS_STEP29U_BINDING_AUTHORITY=true
 FORBIDDEN_IF_INVENTORY_PASS_COLLAPSED_INTO_ACTIVATION_PASS=true
+ALLOWED_OFFLINE_IMPLEMENTED_WHILE_ACTIVATION_ABSENT_OPEN=true
 ```
 
 ## 5. STEP_29U_MINIMUM_CONTRACT — component inventory
@@ -282,53 +297,44 @@ MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN
 RUNTIME_BRIDGE_STATE=BOUND_NOT_ACTIVATED
 ```
 
-## 8. Next authorized implementation slice (exactly one)
+## 8. Implemented offline capability (current)
 
 ```text
-NEXT_IMPLEMENTATION_SLICE=STEP_29U_OFFLINE_CANONICAL_MODE_IDENTITY_BINDING_V0
+IMPLEMENTED_CAPABILITY=STEP_29U_OFFLINE_CAPABILITY_V0
+STEP_29U_LIFECYCLE_OWNER=ops.step_29u_offline_capability_v0
+STEP_29U_OPERATOR_COMMAND=python scripts/ops/run_step_29u_offline_capability_v0.py --cycle-count N --output-path PATH
+STEP_29U_IMPLEMENTATION_PATH=src/ops/step_29u_offline_capability_v0/__init__.py
+STEP_29U_EVIDENCE_PATH=evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle/
+REUSES_OKX_FUTURES_OFFLINE_NO_ORDER_CYCLE=true
+```
+
+Composition root chain:
+
+`MODE_IDENTITY → LIFECYCLE_OWNER → SESSION_STATE_MACHINE → DECISION_CONSUMPTION → RISK_CONSUMPTION → NO_ORDER_EXECUTION → RECONCILIATION → AUDIT_EVIDENCE`
+
+## 9. Next authorized activation-adjacent slice
+
+```text
+NEXT_AUTHORIZED_SLICE=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO
 SEPARATE_OPERATOR_GO_REQUIRED=true
-EXPECTED_TERMINAL_STATE=IMPLEMENTED_OFFLINE_PARTIAL_MODE_IDENTITY_ONLY
 ```
 
-Allowed after separate Operator-GO:
+Activation, Scheduler, network Runtime, Paper/Testnet/Live remain unauthorized.
 
-- production family limited to offline, non-activating STEP 29U **mode identity
-  binding** artifacts under `src/ops/` and/or versioned `config/ops/` that
-  reference runbook STEP 29U without expanding readiness-gate authority;
-- focused contract tests proving bind tokens remain non-activating and that
-  `CANONICAL_STEP_29U_ABSENT` stays open until a later readiness-observed
-  operational bind is separately ratified;
-- docs pointers only for that slice.
-
-Prohibited effects:
-
-- runtime activation; Shadow/Paper/Testnet/Live start;
-- orders; network runtime; scheduler/daemon;
-- Master V2 / Double Play / Risk / Safety / Execution semantics mutation;
-- clearing `CANONICAL_STEP_29U_ABSENT` without explicit readiness-contract
-  change under its own GO;
-- claiming `STEP_29U_ACTIVATION_PASS`.
-
-Expected terminal claim after that future slice (not this PR):
+## 10. Explicit non-claims (offline capability)
 
 ```text
-STEP_29U_IMPLEMENTATION_PASS=false_or_partial_offline_only
-STEP_29U_ACTIVATION_PASS=false
-CANONICAL_STEP_29U_ABSENT=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
-RUNTIME_STATUS=BOUND_NOT_ACTIVATED
-```
-
-## 9. Explicit non-claims (this slice)
-
-```text
-STEP_29U_IMPLEMENTED=false
+STEP_29U_IMPLEMENTED=true
+STEP_29U_BOUND_OFFLINE=true
+STEP_29U_VERIFIED_OFFLINE=true
 STEP_29U_ACTIVATED=false
 CANONICAL_STEP_29U_BOUND=false
+CANONICAL_STEP_29U_ABSENT=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
 RUNTIME_ACTIVATED=false
 ORDERS_AUTHORIZED=false
 NETWORK_RUNTIME_USED=false
 SCHEDULER_ACTIVATED=false
-SHADOW_RUNTIME=false
+SHADOW_RUNTIME_ACTIVATED=false
 PAPER=false
 TESTNET=false
 ECONOMIC_VALIDITY_PROVEN=false

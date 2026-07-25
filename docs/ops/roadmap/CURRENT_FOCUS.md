@@ -30,23 +30,27 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Owner status surface:
   [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](../runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md).
 
-**Still open / unchanged:**
+**Step 29U offline capability (non-activating):**
+
+- Owner: `ops.step_29u_offline_capability_v0`
+- Operator command:
+  `python scripts/ops/run_step_29u_offline_capability_v0.py --cycle-count N --output-path PATH`
+- Inventory/contract:
+  [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](../runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md)
+- Status tokens:
+  `STEP_29U_IMPLEMENTED=true`, `STEP_29U_BOUND_OFFLINE=true`,
+  `STEP_29U_VERIFIED_OFFLINE=true`, `STEP_29U_ACTIVATED=false`
+- Evidence:
+  [`evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle/`](../../../evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle/)
+
+**Still open / unchanged (activation and adjacent gates):**
 
 - `CANONICAL_STEP_29U_ABSENT` = OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
+  (activation binding absent; offline implementation is separate)
 - Runtime = `BOUND_NOT_ACTIVATED`
 - Economic validity = not proven / blocked
-- `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` = OPEN (separate)
-- No activation authorized; soak evidence does **not** close Step 29U
-
-**Step 29U inventory (docs/contract, non-implementing):**
-
-- Canonical binding/implementation inventory:
-  [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](../runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md)
-- Terminal claims of that inventory slice:
-  `STEP_29U_INVENTORY_PASS=true`, `STEP_29U_BINDING_SPEC_PASS=true`,
-  `STEP_29U_IMPLEMENTATION_PASS=false`, `STEP_29U_ACTIVATION_PASS=false`
-- Next implementation work requires a **separate operator GO**:
-  `STEP_29U_OFFLINE_CANONICAL_MODE_IDENTITY_BINDING_V0`
+- `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` = OPEN (independent)
+- No Runtime/Scheduler/Paper/Testnet/Live activation authorized
 
 ---
 
