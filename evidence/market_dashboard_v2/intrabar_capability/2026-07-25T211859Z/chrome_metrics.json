@@ -1,0 +1,36 @@
+{
+  "observation_duration_seconds": 52.6,
+  "metrics_before": {
+    "bound": true,
+    "visible": true,
+    "canvas_width": 1020,
+    "canvas_height": 272,
+    "top": 232.5,
+    "bar_count": "100",
+    "last_ts": "2026-07-25T21:00:00Z",
+    "digest": "34f455aa3c53ef054a5c076adecdc33df2bfdaf098a66e94232277af28228eec",
+    "conn": "LIVE_DATA",
+    "update_class": null
+  },
+  "metrics_after": {
+    "bound": true,
+    "visible": true,
+    "canvas_width": 1020,
+    "canvas_height": 272,
+    "top": 232.5,
+    "bar_count": "100",
+    "last_ts": "2026-07-25T21:00:00Z",
+    "digest": "dc102d0a585a076e42ba7367c07064376691c306fec9cebe7276e4ece961d196",
+    "conn": "LIVE_DATA",
+    "update_class": null
+  },
+  "CHART_VERTICAL_SHIFT_PX": 0.0,
+  "CANVAS_DIMENSION_GROWTH": false,
+  "CONSOLE_ERROR_COUNT": 0,
+  "FAILED_REQUEST_COUNT": 0,
+  "BROWSER_TO_OKX_REQUEST_COUNT": 0,
+  "OBSERVED_INTRABAR_REVISION_COUNT": 9,
+  "candle_count_before": "100",
+  "candle_count_after": "100",
+  "DUPLICATE_TIMESTAMP_COUNT": 0
+}

@@ -29,6 +29,9 @@ ALLOWED_PATHS = frozenset(
         "/api/v5/market/tickers",
         "/api/v5/market/history-candles",
         "/api/v5/market/candles",
+        # Public recent trades (no auth). Used server-side only to revise the
+        # selected instrument's open PT1H candle from authentic prints.
+        "/api/v5/market/trades",
     }
 )
 USER_AGENT = "PeakTradeOkxPublicMarketData/1.0 (+read-only; no-credentials; no-orders)"

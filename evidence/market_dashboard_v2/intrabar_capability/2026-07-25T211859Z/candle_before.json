@@ -1,0 +1,21 @@
+{
+  "api": {
+    "ts": "2026-07-25T21:00:00Z",
+    "open": 1871.24,
+    "high": 1871.5,
+    "low": 1866.21,
+    "close": 1868.78,
+    "volume": 141548.2,
+    "display_close": 1868.78,
+    "display_high": 1871.5,
+    "display_low": 1866.21,
+    "confirm": false,
+    "provisional": true
+  },
+  "meta": {
+    "captured_at": "2026-07-25T21:24:10Z",
+    "candle_series_digest": "34f455aa3c53ef054a5c076adecdc33df2bfdaf098a66e94232277af28228eec",
+    "ohlcv_revision_kind": "SAME_TIMESTAMP_REVISION",
+    "conn": "LIVE_DATA"
+  }
+}

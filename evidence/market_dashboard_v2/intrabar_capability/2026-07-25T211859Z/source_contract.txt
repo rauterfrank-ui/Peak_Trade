@@ -1,0 +1,18 @@
+{
+  "schema_name": "market_landscape_ohlcv_poll_response.v1",
+  "open_candle_live_source": "okx_public_trades_into_pt1h_v1",
+  "candle_endpoint": "/api/v5/market/candles",
+  "trades_endpoint": "/api/v5/market/trades",
+  "close_source_semantics": "okx_market_candles_close_plus_public_trades",
+  "mark_source_semantics": "okx_public_mark_price_markPx_metadata_only",
+  "instrument_id": "ETH-USDT-SWAP",
+  "venue": "OKX",
+  "interval": "PT1H",
+  "data_connection_state": "LIVE_DATA",
+  "availability": "AVAILABLE",
+  "raw_capture_digest": "cad457f4400437a61f52421288626332db788866de2d181c1c38be86318e1dd0",
+  "trades_raw_capture_digest": "83408780e64d17a280f36dd565135694a14cdad90622c0678dcd0ddebb97f9b5",
+  "direct_browser_okx": false,
+  "orders": false,
+  "runtime_activation": false
+}

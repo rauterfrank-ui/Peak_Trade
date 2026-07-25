@@ -1,0 +1,17 @@
+{"url": "http://127.0.0.1:8765/market", "method": "GET", "resource": "document"}
+{"url": "http://127.0.0.1:8765/static/css/peak_trade_dashboard_design_tokens_v1.css", "method": "GET", "resource": "stylesheet"}
+{"url": "http://127.0.0.1:8765/static/css/peak_trade_dashboard_layout_v1.css", "method": "GET", "resource": "stylesheet"}
+{"url": "http://127.0.0.1:8765/static/css/peak_trade_dashboard_utilities_v1.css", "method": "GET", "resource": "stylesheet"}
+{"url": "http://127.0.0.1:8765/static/css/market_dashboard_landscape_v2.css", "method": "GET", "resource": "stylesheet"}
+{"url": "http://127.0.0.1:8765/static/js/market_dashboard_landscape_v2.js", "method": "GET", "resource": "script"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
+{"url": "http://127.0.0.1:8765/api/market/landscape/ohlcv", "method": "GET", "resource": "fetch"}
