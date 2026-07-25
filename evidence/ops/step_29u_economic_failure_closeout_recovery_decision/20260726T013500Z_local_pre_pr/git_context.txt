@@ -1,0 +1,4 @@
+EXPECTED_ORIGIN_MAIN_SHA=ed0f92edc32331ae979c66cd4ec40eee5d17b79a
+ACTUAL_ORIGIN_MAIN_SHA=ed0f92edc32331ae979c66cd4ec40eee5d17b79a
+FEATURE_BRANCH=ops/step-29u-economic-failure-closeout-recovery-decision-v0
+WORKTREE_PATH=/Users/frnkhrz/.peak_trade_worktrees/step-29u-economic-failure-closeout-recovery-v0

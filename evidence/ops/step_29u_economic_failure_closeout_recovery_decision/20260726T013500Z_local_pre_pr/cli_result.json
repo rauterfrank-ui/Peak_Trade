@@ -1,0 +1,542 @@
+{
+  "activation_eligible": false,
+  "audit_provenance_status": "COMPLETE",
+  "automatic_next_research_action_allowed": false,
+  "canonical_blockers": [
+    "ECONOMIC_VALIDITY_PROVEN:UNSATISFIED",
+    "EXPLICIT_FUTURE_OPERATOR_GO_PRESENT:ABSENT",
+    "ECONOMIC_VALIDITY_STATUS:FAIL",
+    "AUTOMATIC_NEXT_RESEARCH_ACTION_ALLOWED:false"
+  ],
+  "canonical_economic_evidence": [
+    {
+      "provenance_note": "terminal_final_research_fleet_FAIL_closeout",
+      "relpath": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "schema_version": "post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary.v0",
+      "sha256": "e826cc924111b6ad9da896d60acf3344b34b1c9d6ea175e7e12f58e189ad26f1"
+    },
+    {
+      "provenance_note": "sealed_step29u_economic_validity_result_pr5553",
+      "relpath": "evidence/ops/step_29u_activation_evidence_economic_readiness/20260726T011500Z_local_pre_pr/economic_validity_result.json",
+      "schema_version": "v0",
+      "sha256": "1dadd61cb2e77e8ba2b6f98250ec4c84fbabb9749688dae597f74cddec9ba67a"
+    },
+    {
+      "provenance_note": "economic_validity_offline_gate_pass_authority",
+      "relpath": "config/ops/shadow_preparation_readiness_gate_v0.toml",
+      "schema_version": "shadow_preparation_readiness_gate_v0",
+      "sha256": "d0ebdbcab41aaa1bfb5599bb1fd4f5efe910749a504af145be0348bbe4a77a99"
+    },
+    {
+      "provenance_note": "policy_identity_owner=backtest.economic_validity_policy_v1",
+      "relpath": "src/backtest/economic_validity_policy_v1.py",
+      "schema_version": "economic_validity_policy_v1",
+      "sha256": null
+    },
+    {
+      "provenance_note": "governance_terminalization_and_next_material_boundary",
+      "relpath": "docs/governance/POST_PR4939_FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_V0.md",
+      "schema_version": "v0",
+      "sha256": null
+    }
+  ],
+  "capability_id": "STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_RECOVERY_DECISION_V0",
+  "economic_closeout_status": "COMPLETE",
+  "economic_validity_proven": false,
+  "economic_validity_status": "FAIL",
+  "evaluator_valid": true,
+  "failure_cause_inventory": [
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "CLOSEOUT_BINDS_TERMINAL_FLEET_FAIL_WITHOUT_PER_METRIC_RECOMPUTE",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "economic_validity_offline_gate_pass",
+      "failure_classification": "FLEET_ECONOMIC_VALIDITY_FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": false,
+      "operator_selection_required": true,
+      "required_threshold": true,
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "CLASS_CONFIRMED_IN_FLEET_CLOSEOUT_WITHOUT_NUMERIC_OBSERVED_VALUE",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "FAIL",
+      "failure_classification": "FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "BOUND_BY_economic_validity_policy_v1",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "CLASS_CONFIRMED_IN_FLEET_CLOSEOUT_WITHOUT_NUMERIC_OBSERVED_VALUE",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "NEGATIVE_NET_EDGE",
+      "failure_classification": "NEGATIVE_NET_EDGE",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "BOUND_BY_economic_validity_policy_v1",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "CLASS_CONFIRMED_IN_FLEET_CLOSEOUT_WITHOUT_NUMERIC_OBSERVED_VALUE",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "PROFIT_FACTOR_BELOW_THRESHOLD",
+      "failure_classification": "PROFIT_FACTOR_BELOW_THRESHOLD",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "BOUND_BY_economic_validity_policy_v1",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "CLASS_CONFIRMED_IN_FLEET_CLOSEOUT_WITHOUT_NUMERIC_OBSERVED_VALUE",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "WALK_FORWARD_GATE_FAIL",
+      "failure_classification": "WALK_FORWARD_GATE_FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "BOUND_BY_economic_validity_policy_v1",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "CLASS_CONFIRMED_IN_FLEET_CLOSEOUT_WITHOUT_NUMERIC_OBSERVED_VALUE",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "MONTE_CARLO_GATE_FAIL",
+      "failure_classification": "MONTE_CARLO_GATE_FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "BOUND_BY_economic_validity_policy_v1",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "CLASS_CONFIRMED_IN_FLEET_CLOSEOUT_WITHOUT_NUMERIC_OBSERVED_VALUE",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "STRESS_GATE_FAIL",
+      "failure_classification": "STRESS_GATE_FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "BOUND_BY_economic_validity_policy_v1",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "CLASS_CONFIRMED_IN_FLEET_CLOSEOUT_WITHOUT_NUMERIC_OBSERVED_VALUE",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "OOS_GATE_FAIL",
+      "failure_classification": "OOS_GATE_FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "BOUND_BY_economic_validity_policy_v1",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "AXIS_CONFIRMED_IN_FLEET_CLOSEOUT_NO_CAUSAL_INFERENCE_ADDED",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "signal_edge_insufficiency",
+      "failure_classification": "signal_edge_insufficiency",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "AXIS_CONFIRMED_IN_FLEET_CLOSEOUT_NO_CAUSAL_INFERENCE_ADDED",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "walk_forward_oos_instability",
+      "failure_classification": "walk_forward_oos_instability",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "AXIS_CONFIRMED_IN_FLEET_CLOSEOUT_NO_CAUSAL_INFERENCE_ADDED",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "monte_carlo_negative_return_fragility",
+      "failure_classification": "monte_carlo_negative_return_fragility",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "AXIS_CONFIRMED_IN_FLEET_CLOSEOUT_NO_CAUSAL_INFERENCE_ADDED",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "stress_gate_failure",
+      "failure_classification": "stress_gate_failure",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "AXIS_CONFIRMED_IN_FLEET_CLOSEOUT_NO_CAUSAL_INFERENCE_ADDED",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "profit_factor_below_threshold",
+      "failure_classification": "profit_factor_below_threshold",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "AXIS_CONFIRMED_IN_FLEET_CLOSEOUT_NO_CAUSAL_INFERENCE_ADDED",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "negative_net_edge_across_final_research_fleet",
+      "failure_classification": "negative_net_edge_across_final_research_fleet",
+      "further_research_technically_permitted": true,
+      "observed_value": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "operator_selection_required": true,
+      "required_threshold": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "sample_panel_identity": [
+        "trend_following",
+        "bollinger_bands",
+        "momentum_1h"
+      ],
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "PER_CANDIDATE_VERDICT_ONLY_NO_METRIC_TABLE_IN_CLOSEOUT",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "candidate_result:bollinger_bands",
+      "failure_classification": "FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": "FAIL",
+      "operator_selection_required": true,
+      "required_threshold": "PASS",
+      "sample_panel_identity": "bollinger_bands",
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "PER_CANDIDATE_VERDICT_ONLY_NO_METRIC_TABLE_IN_CLOSEOUT",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "candidate_result:momentum_1h",
+      "failure_classification": "FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": "FAIL",
+      "operator_selection_required": true,
+      "required_threshold": "PASS",
+      "sample_panel_identity": "momentum_1h",
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    },
+    {
+      "canonical_evidence_reference": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+      "confidence_or_evidence_quality_limitation": "PER_CANDIDATE_VERDICT_ONLY_NO_METRIC_TABLE_IN_CLOSEOUT",
+      "cost_assumptions": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT",
+      "failed_gate_or_metric": "candidate_result:trend_following",
+      "failure_classification": "FAIL",
+      "further_research_technically_permitted": true,
+      "observed_value": "FAIL",
+      "operator_selection_required": true,
+      "required_threshold": "PASS",
+      "sample_panel_identity": "trend_following",
+      "terminal_for_tested_hypothesis": true,
+      "trade_count": "NOT_PRESENT_IN_CANONICAL_CLOSEOUT"
+    }
+  ],
+  "generated_at": "2026-07-25T23:34:48Z",
+  "inputs": {
+    "audit_status": "COMPLETE",
+    "eligibility_activation_eligible": false,
+    "fleet_closeout_digest": "e826cc924111b6ad9da896d60acf3344b34b1c9d6ea175e7e12f58e189ad26f1",
+    "fleet_closeout_relpath": "config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json",
+    "policy_owner": "backtest.economic_validity_policy_v1",
+    "policy_version": "economic_validity_policy_v1",
+    "readiness_config_digest": "d0ebdbcab41aaa1bfb5599bb1fd4f5efe910749a504af145be0348bbe4a77a99",
+    "readiness_config_relpath": "config/ops/shadow_preparation_readiness_gate_v0.toml",
+    "sealed_economic_result_digest": "1dadd61cb2e77e8ba2b6f98250ec4c84fbabb9749688dae597f74cddec9ba67a",
+    "sealed_economic_result_relpath": "evidence/ops/step_29u_activation_evidence_economic_readiness/20260726T011500Z_local_pre_pr/economic_validity_result.json"
+  },
+  "operator_selection_required": true,
+  "provenance": {
+    "no_automatic_recovery_selection": true,
+    "no_metric_recomputation": true,
+    "no_strategy_hypothesis_invention": true,
+    "no_threshold_invention": true,
+    "package_marker": "STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_RECOVERY_DECISION_V0=true",
+    "producer_family": "ops.step_29u_economic_failure_closeout_recovery_decision_v0",
+    "reuses_activation_eligibility_inventory": true,
+    "reuses_audit_provenance": true,
+    "reuses_economic_validity_readiness": true,
+    "reuses_fleet_fail_closeout": true
+  },
+  "reasons": [
+    "ELIGIBLE_RECOVERY_OPTION_COUNT=2",
+    "AUTOMATIC_NEXT_RESEARCH_ACTION_ALLOWED=false",
+    "OPERATOR_SELECTION_REQUIRED=true",
+    "CANONICAL_FLEET_VERDICT_FAIL",
+    "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE"
+  ],
+  "recovery_option_inventory": [
+    {
+      "exact_evidence_gap_addressed": "Operator decision surface for already-bound NEGATIVE_EVIDENCE_TERMINAL_FOR_UNCHANGED_BINDINGS",
+      "expected_ci_impact": "FOCUSED_OR_PR_BOUNDED_DOCS_OPS",
+      "expected_production_files": [
+        "docs/ops/roadmap/CURRENT_FOCUS.md",
+        "docs/ops/EVIDENCE_INDEX.md"
+      ],
+      "expected_tests": [
+        "tests/ops/test_step_29u_economic_failure_closeout_recovery_decision_v0.py"
+      ],
+      "explicit_non_goals": [
+        "NO_SAME_BINDING_RETRY",
+        "NO_THRESHOLD_LOWERING",
+        "NO_RUNTIME_AUTHORITY",
+        "NO_STRATEGY_HYPOTHESIS_INVENTION"
+      ],
+      "objective": "Operator-acknowledge terminal retirement of unchanged final research fleet bindings after durable FLEET_ECONOMIC_VALIDITY_FAIL.",
+      "operator_visible_value": "Closes research retry pressure on terminal-failed fleet bindings.",
+      "option_id": "RETIRE_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESES",
+      "prerequisites": [
+        "CANONICAL_FLEET_FAIL_CLOSEOUT_PRESENT",
+        "ECONOMIC_VALIDITY_STATUS_FAIL",
+        "EXPLICIT_OPERATOR_SELECTION"
+      ],
+      "risks": [
+        "MISREAD_AS_ACTIVATION_OR_PROMOTION",
+        "IMPLIED_RETRY_OF_UNCHANGED_BINDINGS"
+      ],
+      "runtime_network_order_impact": "NONE",
+      "status": "ELIGIBLE_FOR_OPERATOR_SELECTION"
+    },
+    {
+      "exact_evidence_gap_addressed": "Step-29U activation blocked by ECONOMIC_VALIDITY_PROVEN=false; admissible research path is material-different scope discovery only",
+      "expected_ci_impact": "DEPENDS_ON_OPERATOR_SELECTED_SCOPE_SLICE",
+      "expected_production_files": [
+        "docs/governance/POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0.md",
+        "config/research/*material*scope*"
+      ],
+      "expected_tests": [
+        "tests/research/*material*scope*"
+      ],
+      "explicit_non_goals": [
+        "NO_ECONOMIC_EVALUATION_EXECUTION_IN_THIS_OPTION",
+        "NO_STEP_29U_ACTIVATION",
+        "NO_UNCHANGED_BINDING_RETRY",
+        "NO_STRATEGY_INVENTION_BY_THIS_CLOSEOUT"
+      ],
+      "objective": "Operator-select already-ratified material-different offline-only research scope discovery/ratification path (no eval in this closeout).",
+      "operator_visible_value": "Restores a governed research path without claiming economic readiness.",
+      "option_id": "RETURN_TO_RATIFIED_MATERIAL_DIFFERENT_RESEARCH_BACKLOG",
+      "prerequisites": [
+        "GO_DEFINE_NEW_VERSIONED_MATERIAL_RESEARCH_SCOPE_AFTER_PR4940_TERMINAL_NEGATIVE_EVIDENCE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0",
+        "NO_EVAL_IN_THIS_CLOSEOUT",
+        "EXPLICIT_OPERATOR_SELECTION"
+      ],
+      "risks": [
+        "SCOPE_CREEP_INTO_EVALUATION_WITHOUT_NEW_GO",
+        "NEAR_DUPLICATE_ARCHETYPE_RETRY"
+      ],
+      "runtime_network_order_impact": "NONE",
+      "status": "ELIGIBLE_FOR_OPERATOR_SELECTION"
+    },
+    {
+      "blocked_reason": "EVIDENCE_DOES_NOT_SUPPORT_SAMPLE_INSUFFICIENCY_AS_PRIMARY_FAILURE",
+      "exact_evidence_gap_addressed": "sample_sufficiency",
+      "expected_ci_impact": "RESEARCH_FOCUSED",
+      "expected_production_files": [
+        "config/research/*sample*"
+      ],
+      "expected_tests": [
+        "tests/research/*sample*"
+      ],
+      "explicit_non_goals": [
+        "NO_THRESHOLD_LOWERING",
+        "NO_UNCHANGED_BINDING_RETRY_WITHOUT_MATERIAL_DIFFERENCE"
+      ],
+      "objective": "Address sample-sufficiency gap if durable evidence classifies it.",
+      "operator_visible_value": "Would clarify whether FAIL is sample-limited.",
+      "option_id": "IMPROVE_SAMPLE_SUFFICIENCY",
+      "prerequisites": [
+        "EVIDENCE_CLASS_INSUFFICIENT_SAMPLE",
+        "EXPLICIT_OPERATOR_SELECTION"
+      ],
+      "risks": [
+        "FALSE_RESCUE_VIA_SAMPLE_EXPANSION_ON_TERMINAL_BINDING"
+      ],
+      "runtime_network_order_impact": "NONE",
+      "status": "BLOCKED"
+    },
+    {
+      "blocked_reason": "PARAMETER_SENSITIVITY_EXECUTION_BLOCKED",
+      "exact_evidence_gap_addressed": "cost_drag_sensitivity",
+      "expected_ci_impact": "RESEARCH_FOCUSED",
+      "expected_production_files": [
+        "config/research/*cost*"
+      ],
+      "expected_tests": [
+        "tests/research/*cost*"
+      ],
+      "explicit_non_goals": [
+        "NO_THRESHOLD_RELAXATION",
+        "NO_RESULT_RESCUE"
+      ],
+      "objective": "Isolate cost-drag contribution if durable evidence supports it.",
+      "operator_visible_value": "Would separate cost drag from signal insufficiency.",
+      "option_id": "ISOLATE_COST_DRAG_SENSITIVITY",
+      "prerequisites": [
+        "COST_AXIS_PRESENT_IN_CANONICAL_EVIDENCE",
+        "EXPLICIT_OPERATOR_SELECTION"
+      ],
+      "risks": [
+        "CAUSAL_OVERCLAIM_WITHOUT_NUMERIC_COST_TABLE"
+      ],
+      "runtime_network_order_impact": "NONE",
+      "status": "BLOCKED"
+    },
+    {
+      "blocked_reason": "STRESS_OR_SAME_BINDING_RETRY_BLOCKED_ON_TERMINAL_FLEET",
+      "exact_evidence_gap_addressed": "robustness_stress_validation",
+      "expected_ci_impact": "RESEARCH_FOCUSED",
+      "expected_production_files": [
+        "config/research/*robustness*"
+      ],
+      "expected_tests": [
+        "tests/research/*robustness*"
+      ],
+      "explicit_non_goals": [
+        "NO_UNCHANGED_BINDING_STRESS_RERUN",
+        "NO_STEP_29U_ACTIVATION"
+      ],
+      "objective": "Re-run robustness/stress validation only if governance admits it for a material-different, newly authorized scope.",
+      "operator_visible_value": "Would only be admissible after material-different scope ratification.",
+      "option_id": "PERFORM_ROBUSTNESS_STRESS_VALIDATION",
+      "prerequisites": [
+        "MATERIAL_DIFFERENT_SCOPE_RATIFIED",
+        "EXPLICIT_OPERATOR_GO_FOR_EVAL"
+      ],
+      "risks": [
+        "SAME_BINDING_STRESS_RETRY_DISGUISED_AS_VALIDATION"
+      ],
+      "runtime_network_order_impact": "NONE",
+      "status": "BLOCKED"
+    }
+  ],
+  "safety_facts": {
+    "ACTIVATION_ELIGIBLE": false,
+    "AUTOMATIC_NEXT_RESEARCH_ACTION_ALLOWED": false,
+    "BTC_EXCLUDED": true,
+    "ECONOMIC_VALIDITY_PROVEN": false,
+    "KRAKEN_LEGACY_EXCLUDED": true,
+    "NETWORK_USED": false,
+    "OPERATOR_SELECTION_REQUIRED": true,
+    "ORDERS_CREATED": false,
+    "ORDERS_SUBMITTED": false,
+    "RUNTIME_ACTIVATED": false,
+    "SCHEDULER_ACTIVATED": false,
+    "SPOT_EXCLUDED": true,
+    "STEP_29U_ACTIVATED": false
+  },
+  "schema_id": "ops.step_29u_economic_failure_closeout_recovery_decision_v0",
+  "schema_version": "v0",
+  "selected_recovery_option_id": null,
+  "status": "PASS",
+  "step_29u_activated": false
+}

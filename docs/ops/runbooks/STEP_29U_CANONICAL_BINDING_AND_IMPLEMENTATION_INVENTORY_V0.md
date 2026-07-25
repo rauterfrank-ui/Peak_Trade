@@ -360,21 +360,29 @@ IMPLEMENTED_BINDING=STEP_29U_CANONICAL_SHADOW_BINDING_V0
 IMPLEMENTED_ELIGIBILITY_INVENTORY=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0
 IMPLEMENTED_AUDIT_PROVENANCE=STEP_29U_AUDIT_PROVENANCE_V0
 IMPLEMENTED_ECONOMIC_READINESS=STEP_29U_ECONOMIC_VALIDITY_READINESS_V0
+IMPLEMENTED_ECONOMIC_FAIL_CLOSEOUT=STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_RECOVERY_DECISION_V0
 ELIGIBILITY_INVENTORY_OWNER=ops.step_29u_activation_eligibility_inventory_v0
 ELIGIBILITY_INVENTORY_COMMAND=python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py
 ELIGIBILITY_INVENTORY_CONTRACT=docs/ops/runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md
+ECONOMIC_FAIL_CLOSEOUT_OWNER=ops.step_29u_economic_failure_closeout_recovery_decision_v0
+ECONOMIC_FAIL_CLOSEOUT_COMMAND=python scripts/ops/run_step_29u_economic_failure_closeout_recovery_decision_v0.py
+ECONOMIC_FAIL_CLOSEOUT_CONTRACT=docs/ops/runbooks/STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md
 STEP_29U_AUDIT_PROVENANCE_COMPLETE=true
 ECONOMIC_VALIDITY_PROVEN=false
+ECONOMIC_CLOSEOUT=COMPLETE
 ACTIVATION_ELIGIBLE=false
 STEP_29U_ACTIVATED=false
+AUTOMATIC_NEXT_RESEARCH_ACTION_ALLOWED=false
+OPERATOR_SELECTION_REQUIRED=true
 SEPARATE_OPERATOR_GO_REQUIRED=true
-NEXT_AUTHORIZED_SLICE=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO
-NEXT_FORMALLY_PERMISSIBLE_STEP=SEPARATE_OPERATOR_REVIEW_ONLY_NO_ACTIVATION
+NEXT_AUTHORIZED_SLICE=OPERATOR_RECOVERY_OPTION_SELECTION_AFTER_ECONOMIC_FAIL_CLOSEOUT
+NEXT_FORMALLY_PERMISSIBLE_STEP=RETURN_TO_OPERATOR_FOR_RECOVERY_OPTION_SELECTION
 ```
 
-The eligibility inventory is **offline / non-activating**. It records blockers
-(including absent future Operator-GO and truthful economic FAIL) and must not
-be read as Activation, Activation Binding, or Activation Readiness approval.
+The eligibility inventory and economic FAIL closeout are **offline / non-activating**.
+They record blockers (including absent future Operator-GO and truthful economic
+FAIL) and admissible recovery options, and must not be read as Activation,
+Activation Binding, Activation Readiness approval, or automatic research selection.
 
 Activation, Scheduler, network Runtime, Paper/Testnet/Live remain unauthorized.
 

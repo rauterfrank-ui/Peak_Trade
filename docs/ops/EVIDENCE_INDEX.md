@@ -1,5 +1,18 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260726-step-29u-economic-failure-closeout-recovery-decision"></a>
+- **EV-20260726-STEP-29U-ECONOMIC-FAILURE-CLOSEOUT-RECOVERY-DECISION** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating capability | Risk: LOW
+  - Source: [Closeout/recovery contract](runbooks/STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md) · Owner: `ops.step_29u_economic_failure_closeout_recovery_decision_v0` · Command: `python scripts/ops/run_step_29u_economic_failure_closeout_recovery_decision_v0.py`
+  - Claim: Economic FAIL closeout `COMPLETE` from canonical fleet terminalization +
+    sealed Step-29U economic readiness evidence; audit provenance remains
+    `COMPLETE` without implying economic READY; recovery options inventoried with
+    `OPERATOR_SELECTION_REQUIRED=true` and
+    `AUTOMATIC_NEXT_RESEARCH_ACTION_ALLOWED=false`;
+    `ACTIVATION_ELIGIBLE=false`; `STEP_29U_ACTIVATED=false`.
+  - Non-claims: not Activation; not strategy hypothesis invention/selection;
+    not evaluation execution; not Runtime/Scheduler/Network/Orders authorization;
+    does not rewrite historical FAIL evidence.
+
 <a id="ev-20260726-step-29u-activation-evidence-economic-readiness"></a>
 - **EV-20260726-STEP-29U-ACTIVATION-EVIDENCE-ECONOMIC-READINESS** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating capability | Risk: LOW
   - Source: [Eligibility inventory contract](runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md) · Owners: `ops.step_29u_activation_eligibility_inventory_v0`, `ops.step_29u_audit_provenance_v0`, `ops.step_29u_economic_validity_readiness_v0` · Command: `python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py`

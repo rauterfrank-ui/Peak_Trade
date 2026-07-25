@@ -156,12 +156,18 @@ authorization may satisfy Operator-GO.
 ## Next formally permissible step
 
 ```text
-NEXT_FORMALLY_PERMISSIBLE_STEP=SEPARATE_OPERATOR_REVIEW_ONLY_NO_ACTIVATION
+NEXT_FORMALLY_PERMISSIBLE_STEP=OPERATOR_RECOVERY_OPTION_SELECTION_AFTER_ECONOMIC_FAIL_CLOSEOUT
 ACTIVATION_REMAINS_FORBIDDEN_WITHOUT_NEW_EXPLICIT_OPERATOR_GO=true
+AUTOMATIC_NEXT_RESEARCH_ACTION_ALLOWED=false
 ```
 
-Activation remains unauthorized. Closing economic FAIL or granting Operator-GO
-requires separate, explicit operator authorization outside this capability.
+Economic FAIL closeout and admissible recovery-option inventory:
+[STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md](STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md)
+(`python scripts/ops/run_step_29u_economic_failure_closeout_recovery_decision_v0.py`).
+
+Activation remains unauthorized. Selecting a recovery option or granting
+Operator-GO requires separate, explicit operator authorization outside the
+eligibility inventory.
 
 ## Explicit non-claims
 
