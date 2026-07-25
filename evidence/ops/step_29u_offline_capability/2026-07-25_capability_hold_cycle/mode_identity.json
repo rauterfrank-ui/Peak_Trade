@@ -12,7 +12,7 @@
   "scheduler_allowed": false,
   "schema_id": "ops.step_29u_offline_capability_v0",
   "schema_version": "v0",
-  "source_git_sha": "40f356e357d3a8bcb13cae065103bb6d8eda5417",
+  "source_git_sha": "cf5d8dab847b4f9e7363a9c16b4f00746134fef6",
   "spot_excluded": true,
   "venue": "OKX"
 }

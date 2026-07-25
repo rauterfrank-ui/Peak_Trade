@@ -71,7 +71,7 @@
     "scheduler_allowed": false,
     "schema_id": "ops.step_29u_offline_capability_v0",
     "schema_version": "v0",
-    "source_git_sha": "40f356e357d3a8bcb13cae065103bb6d8eda5417",
+    "source_git_sha": "cf5d8dab847b4f9e7363a9c16b4f00746134fef6",
     "spot_excluded": true,
     "venue": "OKX"
   },
@@ -113,7 +113,7 @@
   "scheduler_activated": false,
   "schema_id": "ops.step_29u_offline_capability_v0",
   "schema_version": "v0",
-  "session_id": "step29u-offline-40f356e357d3-1",
+  "session_id": "step29u-offline-cf5d8dab847b-1",
   "step_29u_activated": false,
   "step_29u_bound_offline": true,
   "step_29u_implemented": true,
