@@ -150,6 +150,38 @@ Evaluation fails closed when:
 - historical surfaces are ambiguously classified (`UNKNOWN_FAIL_CLOSED`);
 - `authority_effect` is not `NONE`.
 
+
+## STEP 29U Mindestkontrakt gap inventory (preparation only)
+
+This producer emits a deterministic, machine-readable inventory of required
+STEP 29U Mindestkontrakt components. Inventory status values are closed-enum:
+
+- `PRESENT`
+- `MISSING`
+- `UNBOUND`
+- `DOCS_ONLY`
+- `LEGACY_NON_CANONICAL`
+
+```text
+MINDESTKONTRAKT_GAP_INVENTORY_V0=true
+NOT_STEP_29U_IMPLEMENTATION=true
+STEP_29U_IMPLEMENTED=false
+SHADOW_ACTIVATABLE=false
+SHADOW_MODE_ALLOWED=false
+SEPARATE_GO_REQUIRED_FOR_IMPLEMENTATION=true
+SEPARATE_GO_REQUIRED_FOR_ACTIVATION=true
+CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false
+```
+
+The inventory proves preparation gaps only. It does **not** implement STEP 29U,
+bind Master V2 / Double Play to a Shadow session, create a lifecycle, simulate
+orders/fills, or authorize activation. Historical Shadow/Paper surfaces remain
+non-canonical (`LEGACY_NON_CANONICAL` / historical surface classifications).
+
+STEP 29V Paper Mode remains canonically undefined
+(`CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false`). This contract does not define
+STEP 29V semantics.
+
 ## Next permitted action
 
 Continue offline Shadow-preparation classification only. No STEP 29U
