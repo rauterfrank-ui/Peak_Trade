@@ -222,6 +222,43 @@ does **not** activate runtime, does **not** prove economic validity, and does
 no-order cycle (pre-#5544) is resolved by PR #5544; activation blockers remain
 open and separate.
 
+### Post-merge Step 29U bound Shadow no-order soak (operational evidence)
+
+```text
+STEP_29U_POST_MERGE_CANONICAL_SHADOW_SOAK_STATUS=PASS
+TESTED_MERGE_SHA=cd6d465c83c6c65733e5d85238aa223d4bffd548
+PR_NUMBER=5550
+PR_MERGED=true
+CANONICAL_COMMAND=python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow
+SOAK_MONOTONIC_ELAPSED_SECONDS=600.1486984169969
+REQUIRED_WALLCLOCK_SECONDS=600
+TOTAL_CYCLES=1299
+FULL_CHAIN_CYCLES=1299
+TERMINAL_HOLD_CYCLES=1299
+STEP_29U_VERIFIED_CYCLES=1299
+STEP_29U_ABSENT_COUNT=0
+STEP_29U_INVALID_COUNT=0
+ORDERS_CREATED=false
+ORDERS_SUBMITTED=false
+NETWORK_USED=false
+RUNTIME_ACTIVATED=false
+SCHEDULER_ACTIVATED=false
+BTC_EXCLUDED=true
+SPOT_EXCLUDED=true
+KRAKEN_LEGACY_EXCLUDED=true
+CANONICAL_STEP_29U_BOUND=true
+CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED
+STEP_29U_ACTIVATED=false
+RUNTIME_BRIDGE=BOUND_NOT_ACTIVATED
+ECONOMIC_VALIDITY=NOT_PROVEN_BLOCKED
+DURABLE_EVIDENCE_PATH=evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z
+```
+
+This soak proves the merged #5550 composition remains Step-29U-bound for at
+least 600 monotonic seconds with repeated Decision→Risk→Execution→Reconciliation
+HOLD cycles. It does **not** authorize activation, Scheduler, network Runtime,
+Paper, Testnet, or Live.
+
 ### Component commands (not full-chain canonical)
 
 ```text
@@ -258,6 +295,7 @@ canonical operator command.
 | Config (static, non-activating) | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
 | Post-merge 600s offline no-order soak evidence (docs/evidence-only) | `evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/` |
+| Post-merge Step 29U bound Shadow no-order soak evidence | `evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |
 | Pipeline focused tests | `tests/ops/test_shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
