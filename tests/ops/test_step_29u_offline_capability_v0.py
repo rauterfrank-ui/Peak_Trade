@@ -422,6 +422,122 @@ def test_t_evidence_reader_verifier_passes_on_valid_output(tmp_path: Path) -> No
     assert hashlib.sha256(manifest.encode("utf-8")).hexdigest() == result.evidence_manifest_sha256
 
 
+def test_persisted_pass_result_has_verified_offline_true(tmp_path: Path) -> None:
+    result = run_step_29u_offline_capability_v0(
+        repo_root=tmp_path,
+        source_git_sha=GIT_SHA,
+        cycle_count=1,
+        output_path="ev",
+        overwrite_evidence=True,
+        cycle_runner=lambda **kwargs: _pass_cycle(),
+    )
+    assert result.capability_result == RESULT_PASS
+    assert result.step_29u_verified_offline is True
+    on_disk = json.loads((tmp_path / "ev" / "capability_result.json").read_text(encoding="utf-8"))
+    assert on_disk["capability_result"] == RESULT_PASS
+    assert on_disk["step_29u_verified_offline"] is True
+    assert on_disk["step_29u_implemented"] is True
+    assert on_disk["step_29u_bound_offline"] is True
+    assert on_disk["step_29u_activated"] is False
+
+
+def test_pass_cannot_coexist_with_verified_offline_false_on_disk(tmp_path: Path) -> None:
+    from src.ops.step_29u_offline_capability_v0 import write_capability_evidence_manifest_v0
+
+    result = run_step_29u_offline_capability_v0(
+        repo_root=tmp_path,
+        source_git_sha=GIT_SHA,
+        cycle_count=1,
+        output_path="ev",
+        overwrite_evidence=True,
+        cycle_runner=lambda **kwargs: _pass_cycle(),
+    )
+    assert result.capability_result == RESULT_PASS
+    path = tmp_path / "ev" / "capability_result.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["step_29u_verified_offline"] = False
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    artifacts = {
+        name: hashlib.sha256((tmp_path / "ev" / name).read_bytes()).hexdigest()
+        for name in (
+            "capability_result.json",
+            "cycles.json",
+            "lifecycle_transitions.json",
+            "mode_identity.json",
+        )
+    }
+    write_capability_evidence_manifest_v0(evidence_dir=tmp_path / "ev", artifacts=artifacts)
+    ok, reasons = verify_capability_evidence_v0(evidence_dir=tmp_path / "ev")
+    assert ok is False
+    assert "PASS_WITHOUT_VERIFIED_OFFLINE" in reasons
+
+
+def test_manifest_covers_final_persisted_digests_after_writeback(tmp_path: Path) -> None:
+    result = run_step_29u_offline_capability_v0(
+        repo_root=tmp_path,
+        source_git_sha=GIT_SHA,
+        cycle_count=1,
+        output_path="ev",
+        overwrite_evidence=True,
+        cycle_runner=lambda **kwargs: _pass_cycle(),
+    )
+    assert result.capability_result == RESULT_PASS
+    evidence_dir = tmp_path / "ev"
+    for line in (
+        (evidence_dir / "evidence_manifest.sha256").read_text(encoding="utf-8").splitlines()
+    ):
+        if not line.strip():
+            continue
+        digest, name = line.split()
+        actual = hashlib.sha256((evidence_dir / name).read_bytes()).hexdigest()
+        assert actual == digest
+    on_disk = json.loads((evidence_dir / "capability_result.json").read_text(encoding="utf-8"))
+    assert on_disk["step_29u_verified_offline"] is True
+    expected = hashlib.sha256((evidence_dir / "capability_result.json").read_bytes()).hexdigest()
+    listed = {
+        name: digest
+        for digest, name in (
+            line.split()
+            for line in (evidence_dir / "evidence_manifest.sha256").read_text().splitlines()
+            if line.strip()
+        )
+    }
+    assert listed["capability_result.json"] == expected
+
+
+def test_failed_verifier_cannot_produce_final_pass(tmp_path: Path) -> None:
+    from src.ops.step_29u_offline_capability_v0 import write_capability_evidence_manifest_v0
+
+    result = run_step_29u_offline_capability_v0(
+        repo_root=tmp_path,
+        source_git_sha=GIT_SHA,
+        cycle_count=1,
+        output_path="ev",
+        overwrite_evidence=True,
+        cycle_runner=lambda **kwargs: _pass_cycle(),
+    )
+    assert result.capability_result == RESULT_PASS
+    bad = json.loads((tmp_path / "ev" / "capability_result.json").read_text(encoding="utf-8"))
+    bad["capability_result"] = RESULT_PASS
+    bad["step_29u_verified_offline"] = False
+    (tmp_path / "ev" / "capability_result.json").write_text(
+        json.dumps(bad, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    artifacts = {
+        name: hashlib.sha256((tmp_path / "ev" / name).read_bytes()).hexdigest()
+        for name in (
+            "capability_result.json",
+            "cycles.json",
+            "lifecycle_transitions.json",
+            "mode_identity.json",
+        )
+    }
+    write_capability_evidence_manifest_v0(evidence_dir=tmp_path / "ev", artifacts=artifacts)
+    ok, reasons = verify_capability_evidence_v0(evidence_dir=tmp_path / "ev")
+    assert ok is False
+    assert "PASS_WITHOUT_VERIFIED_OFFLINE" in reasons
+
+
 def test_u_readiness_producer_still_cannot_bind_or_activate() -> None:
     text = READINESS.read_text(encoding="utf-8")
     assert "READINESS_PRODUCER_CANNOT_BIND_STEP_29U=true" in text

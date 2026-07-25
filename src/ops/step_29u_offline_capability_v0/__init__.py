@@ -409,39 +409,72 @@ def _atomic_write_text(path: Path, text: str) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _ensure_evidence_dir(*, evidence_dir: Path, overwrite: bool) -> None:
+    if evidence_dir.exists() and any(evidence_dir.iterdir()) and not overwrite:
+        raise Step29UOfflineCapabilityError(
+            f"{FailureClassV0.EVIDENCE_INVALID.value}:EVIDENCE_DIR_NONEMPTY"
+        )
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+
+
+def write_capability_evidence_content_v0(
+    *,
+    result: Step29UOfflineCapabilityResultV0,
+    evidence_dir: Path,
+    overwrite: bool = False,
+) -> dict[str, str]:
+    """Persist content artifacts only (no manifest)."""
+    _ensure_evidence_dir(evidence_dir=evidence_dir, overwrite=overwrite)
+    payload = result.to_dict()
+    artifacts: dict[str, str] = {
+        "capability_result.json": _atomic_write_text(
+            evidence_dir / "capability_result.json",
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        ),
+        "mode_identity.json": _atomic_write_text(
+            evidence_dir / "mode_identity.json",
+            json.dumps(result.identity, indent=2, sort_keys=True) + "\n",
+        ),
+        "lifecycle_transitions.json": _atomic_write_text(
+            evidence_dir / "lifecycle_transitions.json",
+            json.dumps([asdict(t) for t in result.lifecycle_transitions], indent=2) + "\n",
+        ),
+        "cycles.json": _atomic_write_text(
+            evidence_dir / "cycles.json",
+            json.dumps(payload["cycles"], indent=2, sort_keys=True) + "\n",
+        ),
+    }
+    return artifacts
+
+
+def write_capability_evidence_manifest_v0(
+    *,
+    evidence_dir: Path,
+    artifacts: Mapping[str, str],
+) -> str:
+    """Write digest manifest only after all final content files exist."""
+    manifest_lines = [f"{digest}  {name}" for name, digest in sorted(artifacts.items())]
+    manifest_text = "\n".join(manifest_lines) + "\n"
+    _atomic_write_text(evidence_dir / "evidence_manifest.sha256", manifest_text)
+    return hashlib.sha256(manifest_text.encode("utf-8")).hexdigest()
+
+
 def write_capability_evidence_v0(
     *,
     result: Step29UOfflineCapabilityResultV0,
     evidence_dir: Path,
     overwrite: bool = False,
 ) -> str:
-    if evidence_dir.exists() and any(evidence_dir.iterdir()) and not overwrite:
-        raise Step29UOfflineCapabilityError(
-            f"{FailureClassV0.EVIDENCE_INVALID.value}:EVIDENCE_DIR_NONEMPTY"
-        )
-    evidence_dir.mkdir(parents=True, exist_ok=True)
-    artifacts: dict[str, str] = {}
-    payload = result.to_dict()
-    artifacts["capability_result.json"] = _atomic_write_text(
-        evidence_dir / "capability_result.json",
-        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+    """Write final content artifacts then regenerate the digest manifest."""
+    artifacts = write_capability_evidence_content_v0(
+        result=result,
+        evidence_dir=evidence_dir,
+        overwrite=overwrite,
     )
-    artifacts["mode_identity.json"] = _atomic_write_text(
-        evidence_dir / "mode_identity.json",
-        json.dumps(result.identity, indent=2, sort_keys=True) + "\n",
+    return write_capability_evidence_manifest_v0(
+        evidence_dir=evidence_dir,
+        artifacts=artifacts,
     )
-    artifacts["lifecycle_transitions.json"] = _atomic_write_text(
-        evidence_dir / "lifecycle_transitions.json",
-        json.dumps([asdict(t) for t in result.lifecycle_transitions], indent=2) + "\n",
-    )
-    artifacts["cycles.json"] = _atomic_write_text(
-        evidence_dir / "cycles.json",
-        json.dumps(payload["cycles"], indent=2, sort_keys=True) + "\n",
-    )
-    manifest_lines = [f"{digest}  {name}" for name, digest in sorted(artifacts.items())]
-    manifest_text = "\n".join(manifest_lines) + "\n"
-    _atomic_write_text(evidence_dir / "evidence_manifest.sha256", manifest_text)
-    return hashlib.sha256(manifest_text.encode("utf-8")).hexdigest()
 
 
 def verify_capability_evidence_v0(*, evidence_dir: Path) -> tuple[bool, tuple[str, ...]]:
@@ -464,6 +497,16 @@ def verify_capability_evidence_v0(*, evidence_dir: Path) -> tuple[bool, tuple[st
         reasons.append("ORDERS_CLAIMED")
     if payload.get("runtime_activated") is True or payload.get("scheduler_activated") is True:
         reasons.append("RUNTIME_OR_SCHEDULER_CLAIMED")
+    # PASS must never coexist with unverified or contradictory verified claims on disk.
+    if payload.get("capability_result") == RESULT_PASS:
+        if payload.get("step_29u_verified_offline") is not True:
+            reasons.append("PASS_WITHOUT_VERIFIED_OFFLINE")
+        if payload.get("step_29u_implemented") is not True:
+            reasons.append("PASS_WITHOUT_IMPLEMENTED")
+        if payload.get("step_29u_bound_offline") is not True:
+            reasons.append("PASS_WITHOUT_BOUND_OFFLINE")
+        if payload.get("step_29u_activated") is True:
+            reasons.append("PASS_WITH_ACTIVATED")
     for line in manifest_path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
@@ -564,28 +607,54 @@ def run_step_29u_offline_capability_v0(
         result.capability_result = capability_result
         result.failure_class = failure_class
         result.reason_codes = reasons
+        result.step_29u_verified_offline = False
         if output_path:
             try:
                 evidence_dir = resolve_evidence_dir(repo_root=repo_root, output_path=output_path)
-                manifest_sha = write_capability_evidence_v0(
+                result.evidence_dir = str(evidence_dir.relative_to(repo_root.resolve()))
+                # 1) Persist content with verified_offline=false (provisional for PASS).
+                artifacts = write_capability_evidence_content_v0(
                     result=result,
                     evidence_dir=evidence_dir,
                     overwrite=overwrite_evidence,
                 )
-                result.evidence_dir = str(evidence_dir.relative_to(repo_root.resolve()))
+                # 2) For PASS, set verified only after content exists, rewrite result,
+                #    then generate the manifest from final digests and verify on disk.
+                if capability_result == RESULT_PASS:
+                    result.step_29u_verified_offline = True
+                    artifacts = write_capability_evidence_content_v0(
+                        result=result,
+                        evidence_dir=evidence_dir,
+                        overwrite=True,
+                    )
+                manifest_sha = write_capability_evidence_manifest_v0(
+                    evidence_dir=evidence_dir,
+                    artifacts=artifacts,
+                )
                 result.evidence_manifest_sha256 = manifest_sha
                 ok, verify_reasons = verify_capability_evidence_v0(evidence_dir=evidence_dir)
-                result.step_29u_verified_offline = bool(ok and capability_result == RESULT_PASS)
                 if not ok:
+                    # Fail closed: never leave PASS+verified contradiction on disk.
                     result.capability_result = RESULT_ERROR
                     result.failure_class = FailureClassV0.EVIDENCE_INVALID.value
                     result.reason_codes = tuple([*result.reason_codes, *verify_reasons])
                     result.final_state = SessionStateV0.ERROR.value
+                    result.step_29u_verified_offline = False
+                    artifacts = write_capability_evidence_content_v0(
+                        result=result,
+                        evidence_dir=evidence_dir,
+                        overwrite=True,
+                    )
+                    result.evidence_manifest_sha256 = write_capability_evidence_manifest_v0(
+                        evidence_dir=evidence_dir,
+                        artifacts=artifacts,
+                    )
             except Step29UOfflineCapabilityError as exc:
                 result.capability_result = RESULT_ERROR
                 result.failure_class = FailureClassV0.EVIDENCE_INVALID.value
                 result.reason_codes = (*result.reason_codes, str(exc))
                 result.final_state = SessionStateV0.ERROR.value
+                result.step_29u_verified_offline = False
         elif capability_result == RESULT_PASS:
             # PASS requires finalized verified evidence.
             result.capability_result = RESULT_ERROR
@@ -827,6 +896,8 @@ __all__ = [
     "transition_state_v0",
     "resolve_evidence_dir",
     "write_capability_evidence_v0",
+    "write_capability_evidence_content_v0",
+    "write_capability_evidence_manifest_v0",
     "verify_capability_evidence_v0",
     "run_step_29u_offline_capability_v0",
     "result_to_machine_lines",

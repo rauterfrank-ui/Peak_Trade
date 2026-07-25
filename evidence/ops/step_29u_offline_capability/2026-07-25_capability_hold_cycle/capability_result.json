@@ -53,7 +53,7 @@
       "terminal_status": "PASS"
     }
   ],
-  "evidence_dir": null,
+  "evidence_dir": "evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle",
   "evidence_manifest_sha256": null,
   "failure_class": null,
   "final_state": "COMPLETED",
@@ -71,7 +71,7 @@
     "scheduler_allowed": false,
     "schema_id": "ops.step_29u_offline_capability_v0",
     "schema_version": "v0",
-    "source_git_sha": "cf5d8dab847b4f9e7363a9c16b4f00746134fef6",
+    "source_git_sha": "237cfe07850d9a579f73f596bb4df18adddfbe69",
     "spot_excluded": true,
     "venue": "OKX"
   },
@@ -113,9 +113,9 @@
   "scheduler_activated": false,
   "schema_id": "ops.step_29u_offline_capability_v0",
   "schema_version": "v0",
-  "session_id": "step29u-offline-cf5d8dab847b-1",
+  "session_id": "step29u-offline-237cfe07850d-1",
   "step_29u_activated": false,
   "step_29u_bound_offline": true,
   "step_29u_implemented": true,
-  "step_29u_verified_offline": false
+  "step_29u_verified_offline": true
 }
