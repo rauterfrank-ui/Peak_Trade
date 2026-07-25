@@ -133,10 +133,12 @@ READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true
 | Role | Path |
 |------|------|
 | Producer | `src/ops/shadow_preparation_readiness_gate_v0.py` |
+| Offline projection pipeline | `src/ops/shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
 | Config (static, non-activating) | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |
+| Pipeline focused tests | `tests/ops/test_shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
 | Durable projection output (generated) | `out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json` |
 
 ## Fail-closed conditions
@@ -330,6 +332,26 @@ include:
 A verified result may be returned for a valid current projection, but
 verification triggers **no** action, write, activation, scheduler, runtime, or
 order side effect.
+
+### Offline projection pipeline (orchestration only)
+
+```text
+OFFLINE_PROJECTION_PIPELINE_V0=true
+PROJECTION_ONLY=true
+AUTHORITY_EFFECT=NONE
+ACTIVATION_AUTHORITY=false
+ZERO_SIDE_EFFECTS=true
+```
+
+`run_shadow_preparation_readiness_offline_projection_pipeline_v0` (producer
+`ops.shadow_preparation_readiness_offline_projection_pipeline_v0`) composes the
+canonical gate evaluation (exactly once), durable writer, and reader/verifier.
+It proves exact semantic consistency between the evaluated result and the
+reread projection, then returns `PIPELINE_PASS`, `PIPELINE_BLOCKED`, or
+`PIPELINE_ERROR`. A blocked readiness evaluation that is successfully projected
+and verified is `PIPELINE_BLOCKED` (not an execution failure). The pipeline does
+not activate Shadow/Paper/Testnet/Runtime/Scheduler/Orders/Live and does not
+introduce a second readiness truth owner.
 
 ## Next permitted action
 
