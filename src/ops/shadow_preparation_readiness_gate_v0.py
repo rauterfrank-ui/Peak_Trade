@@ -24,6 +24,7 @@ import json
 import os
 import tempfile
 from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Literal, Mapping
@@ -43,6 +44,37 @@ PROJECTION_SCHEMA_ID = "shadow_preparation_readiness_projection"
 PROJECTION_SCHEMA_VERSION = "v0"
 PROJECTION_OUTPUT_PATH_CONFIG_KEY = "readiness_projection_output_path"
 DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH = "out/ops/shadow_preparation_readiness_projection_v0.json"
+PROJECTION_VERIFICATION_SCHEMA_ID = "shadow_preparation_readiness_projection_verification"
+PROJECTION_VERIFICATION_SCHEMA_VERSION = "v0"
+# Offline verifier freshness / clock-skew bounds (module contract; no config authority).
+PROJECTION_VERIFIER_CLOCK_SKEW_SECONDS = 300
+PROJECTION_VERIFIER_FRESHNESS_MAX_AGE_SECONDS = 86_400
+PROJECTION_OVERALL_STATUS_VERIFIED: Literal["VERIFIED"] = "VERIFIED"
+PROJECTION_OVERALL_STATUS_BLOCKED: Literal["BLOCKED"] = "BLOCKED"
+
+REQUIRED_PROJECTION_TOP_LEVEL_FIELDS: tuple[str, ...] = (
+    "schema_id",
+    "schema_version",
+    "evaluated_at",
+    "authority_effect",
+    "activation_authority",
+    "projection_only",
+    "evaluation",
+    "blockers",
+    "shadow_preparation_complete",
+    "shadow_activatable",
+    "step_29u_implemented",
+    "canonical_step_29u_bound",
+    "shadow_activation_authorized",
+    "paper_activation_authorized",
+    "testnet_activation_authorized",
+    "scheduler_activation_authorized",
+    "runtime_activation_authorized",
+    "live_authorized",
+    "orders_authorized",
+    "evaluation_schema_id",
+    "evaluation_schema_version",
+)
 
 # Deterministic evaluation timestamp convention for pure offline contracts:
 # callers may override; default is a fixed epoch sentinel (no wall-clock).
@@ -76,6 +108,14 @@ ACTIVATION_FLAG_KEYS: tuple[str, ...] = (
     "runtime_activation_authorized",
     "live_authorized",
     "orders_authorized",
+)
+
+READY_CLAIM_BOOLEAN_FIELDS: tuple[str, ...] = (
+    "shadow_preparation_complete",
+    "shadow_activatable",
+    "step_29u_implemented",
+    "canonical_step_29u_bound",
+    *ACTIVATION_FLAG_KEYS,
 )
 
 REQUIRED_PREPARATION_GATE_DEFAULTS: tuple[str, ...] = (
@@ -250,6 +290,32 @@ class ShadowPreparationReadinessProjectionWriteMetadataV0:
             "schema_version": self.schema_version,
             "byte_length": self.byte_length,
             "sha256": self.sha256,
+        }
+
+
+@dataclass(frozen=True)
+class ShadowPreparationReadinessProjectionVerificationResultV0:
+    """Non-authoritative offline verification result for a durable projection."""
+
+    overall_status: Literal["VERIFIED", "BLOCKED"]
+    verified: bool
+    reason_codes: tuple[str, ...]
+    projection_path: str
+    schema_id: str | None
+    schema_version: str | None
+    generated_at: str | None
+    evidence_reference_count: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "overall_status": self.overall_status,
+            "verified": self.verified,
+            "reason_codes": list(self.reason_codes),
+            "projection_path": self.projection_path,
+            "schema_id": self.schema_id,
+            "schema_version": self.schema_version,
+            "generated_at": self.generated_at,
+            "evidence_reference_count": self.evidence_reference_count,
         }
 
 
@@ -573,6 +639,454 @@ def write_shadow_preparation_readiness_projection_v0(
         byte_length=len(content),
         sha256=digest,
     )
+
+
+def _blocked_projection_verification(
+    *,
+    projection_path: str,
+    reason_codes: tuple[str, ...],
+    schema_id: str | None = None,
+    schema_version: str | None = None,
+    generated_at: str | None = None,
+    evidence_reference_count: int = 0,
+) -> ShadowPreparationReadinessProjectionVerificationResultV0:
+    return ShadowPreparationReadinessProjectionVerificationResultV0(
+        overall_status=PROJECTION_OVERALL_STATUS_BLOCKED,
+        verified=False,
+        reason_codes=reason_codes,
+        projection_path=projection_path,
+        schema_id=schema_id,
+        schema_version=schema_version,
+        generated_at=generated_at,
+        evidence_reference_count=evidence_reference_count,
+    )
+
+
+def _parse_projection_timestamp(raw: str) -> datetime | None:
+    text = raw.strip()
+    if not text:
+        return None
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _resolve_projection_read_path(
+    *,
+    repo_root: Path,
+    projection_path: str | None,
+    config: Mapping[str, Any] | None,
+    config_path: Path | None,
+) -> tuple[str, Path] | ShadowPreparationReadinessProjectionVerificationResultV0:
+    """Resolve explicit or configured default projection path (no path inference)."""
+    root = repo_root.resolve()
+    if projection_path is None:
+        cfg = (
+            dict(config)
+            if config is not None
+            else load_shadow_preparation_readiness_gate_config_v0(config_path, repo_root=root)
+        )
+        raw_path = cfg.get(PROJECTION_OUTPUT_PATH_CONFIG_KEY)
+        if not isinstance(raw_path, str) or not raw_path.strip():
+            return _blocked_projection_verification(
+                projection_path="",
+                reason_codes=("MISSING_PROJECTION", "PROJECTION_PATH_UNCONFIGURED"),
+            )
+        rel = raw_path.strip()
+    else:
+        if not isinstance(projection_path, str) or not projection_path.strip():
+            return _blocked_projection_verification(
+                projection_path=str(projection_path or ""),
+                reason_codes=("MISSING_PROJECTION", "PROJECTION_PATH_EMPTY"),
+            )
+        rel = projection_path.strip()
+    candidate = Path(rel)
+    if candidate.is_absolute():
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("MISSING_PROJECTION", "PROJECTION_PATH_ABSOLUTE"),
+        )
+    try:
+        resolved = (root / candidate).resolve()
+    except OSError:
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("MISSING_PROJECTION", "PROJECTION_PATH_RESOLVE_FAILED"),
+        )
+    try:
+        resolved.relative_to(root)
+    except ValueError:
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("MISSING_PROJECTION", "PROJECTION_PATH_OUTSIDE_REPO"),
+        )
+    return rel, resolved
+
+
+def _collect_projection_evidence_references(
+    payload: Mapping[str, Any],
+) -> tuple[str, ...]:
+    refs: list[str] = []
+    evaluation = payload.get("evaluation")
+    if not isinstance(evaluation, Mapping):
+        return ()
+    inventory = evaluation.get("mindestkontrakt_inventory")
+    if not isinstance(inventory, list):
+        return ()
+    for item in inventory:
+        if not isinstance(item, Mapping):
+            continue
+        paths = item.get("evidence_paths")
+        if paths is None:
+            continue
+        if not isinstance(paths, list):
+            refs.append("")
+            continue
+        for path in paths:
+            if isinstance(path, str):
+                refs.append(path)
+            else:
+                refs.append("")
+    return tuple(refs)
+
+
+def _projection_claims_ready(payload: Mapping[str, Any]) -> bool:
+    for key in READY_CLAIM_BOOLEAN_FIELDS:
+        if payload.get(key) is True:
+            return True
+    evaluation = payload.get("evaluation")
+    if isinstance(evaluation, Mapping):
+        for key in READY_CLAIM_BOOLEAN_FIELDS:
+            if evaluation.get(key) is True:
+                return True
+    return False
+
+
+def _required_readiness_components_non_ready(payload: Mapping[str, Any]) -> bool:
+    evaluation = payload.get("evaluation")
+    if not isinstance(evaluation, Mapping):
+        return True
+    inventory = evaluation.get("mindestkontrakt_inventory")
+    if not isinstance(inventory, list):
+        return True
+    for item in inventory:
+        if not isinstance(item, Mapping):
+            return True
+        required = item.get("required_for_step29u")
+        status = item.get("preparation_status")
+        if required is True and status in {"MISSING", "UNBOUND"}:
+            return True
+    blockers = payload.get("blockers")
+    if isinstance(blockers, list) and blockers:
+        return True
+    nested_blockers = evaluation.get("blockers")
+    if isinstance(nested_blockers, list) and nested_blockers:
+        return True
+    unmet = evaluation.get("unmet_gates")
+    if isinstance(unmet, list) and unmet:
+        return True
+    return False
+
+
+def verify_shadow_preparation_readiness_projection_v0(
+    *,
+    repo_root: Path,
+    projection_path: str | None = None,
+    config: Mapping[str, Any] | None = None,
+    config_path: Path | None = None,
+    as_of: str | None = None,
+    expected_sha256: str | None = None,
+    permitted_evidence_roots: tuple[Path, ...] | None = None,
+) -> ShadowPreparationReadinessProjectionVerificationResultV0:
+    """Read and verify one durable readiness projection (offline, fail-closed).
+
+    Consumes the existing projection output contract only. Performs no writes,
+    no activation, and no readiness re-evaluation. Returns a verification result
+    without copying the full projection into a new authority object.
+    """
+    root = repo_root.resolve()
+    resolved = _resolve_projection_read_path(
+        repo_root=root,
+        projection_path=projection_path,
+        config=config,
+        config_path=config_path,
+    )
+    if isinstance(resolved, ShadowPreparationReadinessProjectionVerificationResultV0):
+        return resolved
+    rel, destination = resolved
+
+    if not destination.exists() or not destination.is_file():
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("MISSING_PROJECTION",),
+        )
+
+    try:
+        raw = destination.read_bytes()
+    except OSError:
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("MISSING_PROJECTION", "PROJECTION_READ_FAILED"),
+        )
+
+    try:
+        payload_obj = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("INVALID_PROJECTION",),
+        )
+    if not isinstance(payload_obj, dict):
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("INVALID_PROJECTION",),
+        )
+
+    schema_id = payload_obj.get("schema_id")
+    schema_version = payload_obj.get("schema_version")
+    generated_at_raw = payload_obj.get("evaluated_at")
+    generated_at = generated_at_raw if isinstance(generated_at_raw, str) else None
+    evidence_refs = _collect_projection_evidence_references(payload_obj)
+    evidence_count = len(evidence_refs)
+
+    missing_fields = [
+        field for field in REQUIRED_PROJECTION_TOP_LEVEL_FIELDS if field not in payload_obj
+    ]
+    if missing_fields:
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("BLOCKED", *(f"MISSING_FIELD:{field}" for field in missing_fields)),
+            schema_id=schema_id if isinstance(schema_id, str) else None,
+            schema_version=schema_version if isinstance(schema_version, str) else None,
+            generated_at=generated_at,
+            evidence_reference_count=evidence_count,
+        )
+
+    if schema_id != PROJECTION_SCHEMA_ID or schema_version != PROJECTION_SCHEMA_VERSION:
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("SCHEMA_MISMATCH",),
+            schema_id=schema_id if isinstance(schema_id, str) else None,
+            schema_version=schema_version if isinstance(schema_version, str) else None,
+            generated_at=generated_at,
+            evidence_reference_count=evidence_count,
+        )
+
+    if not isinstance(generated_at, str) or not generated_at.strip():
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("BLOCKED", "MISSING_FIELD:evaluated_at"),
+            schema_id=PROJECTION_SCHEMA_ID,
+            schema_version=PROJECTION_SCHEMA_VERSION,
+            generated_at=None,
+            evidence_reference_count=evidence_count,
+        )
+
+    evaluation = payload_obj.get("evaluation")
+    if not isinstance(evaluation, dict):
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("BLOCKED", "MISSING_FIELD:evaluation"),
+            schema_id=PROJECTION_SCHEMA_ID,
+            schema_version=PROJECTION_SCHEMA_VERSION,
+            generated_at=generated_at,
+            evidence_reference_count=evidence_count,
+        )
+
+    inventory = evaluation.get("mindestkontrakt_inventory")
+    if isinstance(inventory, list):
+        for idx, item in enumerate(inventory):
+            if not isinstance(item, dict):
+                return _blocked_projection_verification(
+                    projection_path=rel,
+                    reason_codes=("BLOCKED", f"INVALID_ENUM:mindestkontrakt_inventory:{idx}"),
+                    schema_id=PROJECTION_SCHEMA_ID,
+                    schema_version=PROJECTION_SCHEMA_VERSION,
+                    generated_at=generated_at,
+                    evidence_reference_count=evidence_count,
+                )
+            status = item.get("preparation_status")
+            if status is not None and status not in ALLOWED_PREPARATION_STATUSES:
+                return _blocked_projection_verification(
+                    projection_path=rel,
+                    reason_codes=("BLOCKED", f"INVALID_ENUM:preparation_status:{status}"),
+                    schema_id=PROJECTION_SCHEMA_ID,
+                    schema_version=PROJECTION_SCHEMA_VERSION,
+                    generated_at=generated_at,
+                    evidence_reference_count=evidence_count,
+                )
+
+    surfaces = evaluation.get("historical_surface_classifications")
+    if isinstance(surfaces, list):
+        for idx, item in enumerate(surfaces):
+            if not isinstance(item, dict):
+                continue
+            classification = item.get("classification")
+            if classification is not None and classification not in ALLOWED_CLASSIFICATIONS:
+                return _blocked_projection_verification(
+                    projection_path=rel,
+                    reason_codes=("BLOCKED", f"INVALID_ENUM:classification:{classification}"),
+                    schema_id=PROJECTION_SCHEMA_ID,
+                    schema_version=PROJECTION_SCHEMA_VERSION,
+                    generated_at=generated_at,
+                    evidence_reference_count=evidence_count,
+                )
+
+    if _projection_claims_ready(payload_obj) and _required_readiness_components_non_ready(
+        payload_obj
+    ):
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("CONTRADICTORY_PROJECTION",),
+            schema_id=PROJECTION_SCHEMA_ID,
+            schema_version=PROJECTION_SCHEMA_VERSION,
+            generated_at=generated_at,
+            evidence_reference_count=evidence_count,
+        )
+
+    permitted_roots = tuple(path.resolve() for path in (permitted_evidence_roots or (root,)))
+    for evidence_path in evidence_refs:
+        if not isinstance(evidence_path, str) or not evidence_path.strip():
+            return _blocked_projection_verification(
+                projection_path=rel,
+                reason_codes=("BLOCKED", "EVIDENCE_REFERENCE_INVALID"),
+                schema_id=PROJECTION_SCHEMA_ID,
+                schema_version=PROJECTION_SCHEMA_VERSION,
+                generated_at=generated_at,
+                evidence_reference_count=evidence_count,
+            )
+        rel_evidence = evidence_path.strip()
+        candidate = Path(rel_evidence)
+        if candidate.is_absolute():
+            return _blocked_projection_verification(
+                projection_path=rel,
+                reason_codes=("BLOCKED", "EVIDENCE_PATH_ESCAPE"),
+                schema_id=PROJECTION_SCHEMA_ID,
+                schema_version=PROJECTION_SCHEMA_VERSION,
+                generated_at=generated_at,
+                evidence_reference_count=evidence_count,
+            )
+        try:
+            resolved_evidence = (root / candidate).resolve()
+        except OSError:
+            return _blocked_projection_verification(
+                projection_path=rel,
+                reason_codes=("BLOCKED", "EVIDENCE_REFERENCE_MISSING"),
+                schema_id=PROJECTION_SCHEMA_ID,
+                schema_version=PROJECTION_SCHEMA_VERSION,
+                generated_at=generated_at,
+                evidence_reference_count=evidence_count,
+            )
+        if not any(
+            _path_is_within_root(resolved_evidence, permitted_root)
+            for permitted_root in permitted_roots
+        ):
+            return _blocked_projection_verification(
+                projection_path=rel,
+                reason_codes=("BLOCKED", "EVIDENCE_PATH_ESCAPE"),
+                schema_id=PROJECTION_SCHEMA_ID,
+                schema_version=PROJECTION_SCHEMA_VERSION,
+                generated_at=generated_at,
+                evidence_reference_count=evidence_count,
+            )
+        if not resolved_evidence.exists() or not resolved_evidence.is_file():
+            return _blocked_projection_verification(
+                projection_path=rel,
+                reason_codes=("BLOCKED", "EVIDENCE_REFERENCE_MISSING"),
+                schema_id=PROJECTION_SCHEMA_ID,
+                schema_version=PROJECTION_SCHEMA_VERSION,
+                generated_at=generated_at,
+                evidence_reference_count=evidence_count,
+            )
+
+    digest_candidates: list[str] = []
+    if expected_sha256 is not None:
+        digest_candidates.append(expected_sha256)
+    for key in ("sha256", "content_sha256", "digest"):
+        value = payload_obj.get(key)
+        if isinstance(value, str) and value.strip():
+            digest_candidates.append(value.strip())
+    if digest_candidates:
+        actual = hashlib.sha256(raw).hexdigest()
+        for digest in digest_candidates:
+            if digest.lower() != actual.lower():
+                return _blocked_projection_verification(
+                    projection_path=rel,
+                    reason_codes=("BLOCKED", "DIGEST_MISMATCH"),
+                    schema_id=PROJECTION_SCHEMA_ID,
+                    schema_version=PROJECTION_SCHEMA_VERSION,
+                    generated_at=generated_at,
+                    evidence_reference_count=evidence_count,
+                )
+
+    generated_dt = _parse_projection_timestamp(generated_at)
+    if generated_dt is None:
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("BLOCKED", "INVALID_PROJECTION_TIMESTAMP"),
+            schema_id=PROJECTION_SCHEMA_ID,
+            schema_version=PROJECTION_SCHEMA_VERSION,
+            generated_at=generated_at,
+            evidence_reference_count=evidence_count,
+        )
+    if as_of is None:
+        as_of_dt = datetime.now(timezone.utc)
+    else:
+        as_of_dt = _parse_projection_timestamp(as_of)
+        if as_of_dt is None:
+            return _blocked_projection_verification(
+                projection_path=rel,
+                reason_codes=("BLOCKED", "INVALID_AS_OF_TIMESTAMP"),
+                schema_id=PROJECTION_SCHEMA_ID,
+                schema_version=PROJECTION_SCHEMA_VERSION,
+                generated_at=generated_at,
+                evidence_reference_count=evidence_count,
+            )
+    skew = timedelta(seconds=PROJECTION_VERIFIER_CLOCK_SKEW_SECONDS)
+    max_age = timedelta(seconds=PROJECTION_VERIFIER_FRESHNESS_MAX_AGE_SECONDS)
+    if generated_dt > as_of_dt + skew:
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("BLOCKED", "FUTURE_DATED"),
+            schema_id=PROJECTION_SCHEMA_ID,
+            schema_version=PROJECTION_SCHEMA_VERSION,
+            generated_at=generated_at,
+            evidence_reference_count=evidence_count,
+        )
+    if generated_dt < as_of_dt - max_age:
+        return _blocked_projection_verification(
+            projection_path=rel,
+            reason_codes=("STALE",),
+            schema_id=PROJECTION_SCHEMA_ID,
+            schema_version=PROJECTION_SCHEMA_VERSION,
+            generated_at=generated_at,
+            evidence_reference_count=evidence_count,
+        )
+
+    return ShadowPreparationReadinessProjectionVerificationResultV0(
+        overall_status=PROJECTION_OVERALL_STATUS_VERIFIED,
+        verified=True,
+        reason_codes=(),
+        projection_path=rel,
+        schema_id=PROJECTION_SCHEMA_ID,
+        schema_version=PROJECTION_SCHEMA_VERSION,
+        generated_at=generated_at,
+        evidence_reference_count=evidence_count,
+    )
+
+
+def _path_is_within_root(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
 
 
 def _infer_repo_root() -> Path:
@@ -968,6 +1482,12 @@ __all__ = [
     "PROJECTION_SCHEMA_VERSION",
     "PROJECTION_OUTPUT_PATH_CONFIG_KEY",
     "DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH",
+    "PROJECTION_VERIFICATION_SCHEMA_ID",
+    "PROJECTION_VERIFICATION_SCHEMA_VERSION",
+    "PROJECTION_VERIFIER_CLOCK_SKEW_SECONDS",
+    "PROJECTION_VERIFIER_FRESHNESS_MAX_AGE_SECONDS",
+    "PROJECTION_OVERALL_STATUS_VERIFIED",
+    "PROJECTION_OVERALL_STATUS_BLOCKED",
     "CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY",
     "DETERMINISTIC_EVALUATED_AT_DEFAULT",
     "AUTHORITY_EFFECT_NONE",
@@ -983,10 +1503,12 @@ __all__ = [
     "MindestkontraktComponentRecordV0",
     "ShadowPreparationReadinessGateResultV0",
     "ShadowPreparationReadinessProjectionWriteMetadataV0",
+    "ShadowPreparationReadinessProjectionVerificationResultV0",
     "default_config_path",
     "load_shadow_preparation_readiness_gate_config_v0",
     "evaluate_shadow_preparation_readiness_gate_v0",
     "build_shadow_preparation_readiness_projection_payload_v0",
     "serialize_shadow_preparation_readiness_projection_v0",
     "write_shadow_preparation_readiness_projection_v0",
+    "verify_shadow_preparation_readiness_projection_v0",
 ]

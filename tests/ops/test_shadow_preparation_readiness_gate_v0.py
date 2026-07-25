@@ -24,6 +24,8 @@ from src.ops.shadow_preparation_readiness_gate_v0 import (
     PACKAGE_MARKER,
     PRODUCER_FAMILY,
     PROJECTION_OUTPUT_PATH_CONFIG_KEY,
+    PROJECTION_OVERALL_STATUS_BLOCKED,
+    PROJECTION_OVERALL_STATUS_VERIFIED,
     PROJECTION_SCHEMA_ID,
     PROJECTION_SCHEMA_VERSION,
     REQUIRED_MINDESTKONTRAKT_COMPONENT_IDS,
@@ -37,6 +39,7 @@ from src.ops.shadow_preparation_readiness_gate_v0 import (
     evaluate_shadow_preparation_readiness_gate_v0,
     load_shadow_preparation_readiness_gate_config_v0,
     serialize_shadow_preparation_readiness_projection_v0,
+    verify_shadow_preparation_readiness_projection_v0,
     write_shadow_preparation_readiness_projection_v0,
 )
 
@@ -984,3 +987,265 @@ def test_projection_payload_builder_uses_evaluation_to_dict() -> None:
     assert payload["evaluation"] == evaluation.to_dict()
     raw = serialize_shadow_preparation_readiness_projection_v0(payload)
     assert raw.endswith(b"\n")
+
+
+# ---------------------------------------------------------------------------
+# Durable readiness projection reader / verifier v0
+# ---------------------------------------------------------------------------
+
+
+def _write_verifiable_projection(
+    tmp_path: Path,
+    *,
+    evaluated_at: str,
+    mutate_payload=None,
+) -> tuple[Path, str, dict]:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    out_dir = root / "out" / "ops"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rel = DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH
+    evaluation = evaluate_shadow_preparation_readiness_gate_v0(
+        repo_root=root, evaluated_at=evaluated_at
+    )
+    write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=evaluated_at,
+    )
+    dest = root / rel
+    payload = json.loads(dest.read_text(encoding="utf-8"))
+    if mutate_payload is not None:
+        mutate_payload(payload)
+        dest.write_bytes(serialize_shadow_preparation_readiness_projection_v0(payload))
+        payload = json.loads(dest.read_text(encoding="utf-8"))
+    return root, rel, payload
+
+
+def test_projection_verifier_valid_current_projection(tmp_path: Path) -> None:
+    evaluated_at = "2026-07-25T12:00:00Z"
+    root, rel, _payload = _write_verifiable_projection(tmp_path, evaluated_at=evaluated_at)
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root,
+        projection_path=rel,
+        as_of="2026-07-25T12:00:30Z",
+    )
+    assert result.verified is True
+    assert result.overall_status == PROJECTION_OVERALL_STATUS_VERIFIED
+    assert result.reason_codes == ()
+    assert result.schema_id == PROJECTION_SCHEMA_ID
+    assert result.schema_version == PROJECTION_SCHEMA_VERSION
+    assert result.generated_at == evaluated_at
+    assert result.evidence_reference_count > 0
+
+
+def test_projection_verifier_missing_projection_fails_closed(tmp_path: Path) -> None:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    (root / "out" / "ops").mkdir(parents=True, exist_ok=True)
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root,
+        projection_path=DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH,
+        as_of="2026-07-25T12:00:00Z",
+    )
+    assert result.verified is False
+    assert result.overall_status == PROJECTION_OVERALL_STATUS_BLOCKED
+    assert "MISSING_PROJECTION" in result.reason_codes
+
+
+def test_projection_verifier_invalid_json_fails_closed(tmp_path: Path) -> None:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    dest = root / DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text("{not-json", encoding="utf-8")
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root,
+        projection_path=DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH,
+        as_of="2026-07-25T12:00:00Z",
+    )
+    assert result.verified is False
+    assert "INVALID_PROJECTION" in result.reason_codes
+
+
+def test_projection_verifier_schema_mismatch_fails_closed(tmp_path: Path) -> None:
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path,
+        evaluated_at="2026-07-25T12:00:00Z",
+        mutate_payload=lambda p: p.update(schema_version="v999"),
+    )
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    assert result.verified is False
+    assert "SCHEMA_MISMATCH" in result.reason_codes
+
+
+def test_projection_verifier_missing_mandatory_field_fails_closed(tmp_path: Path) -> None:
+    def _drop(payload: dict) -> None:
+        del payload["blockers"]
+
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-25T12:00:00Z", mutate_payload=_drop
+    )
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    assert result.verified is False
+    assert result.overall_status == PROJECTION_OVERALL_STATUS_BLOCKED
+    assert any(code.startswith("MISSING_FIELD:blockers") for code in result.reason_codes)
+
+
+def test_projection_verifier_contradictory_ready_fails_closed(tmp_path: Path) -> None:
+    def _ready(payload: dict) -> None:
+        payload["shadow_preparation_complete"] = True
+        payload["shadow_activatable"] = True
+
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-25T12:00:00Z", mutate_payload=_ready
+    )
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    assert result.verified is False
+    assert "CONTRADICTORY_PROJECTION" in result.reason_codes
+
+
+def test_projection_verifier_invalid_evidence_reference_fails_closed(tmp_path: Path) -> None:
+    def _bad_ref(payload: dict) -> None:
+        inventory = payload["evaluation"]["mindestkontrakt_inventory"]
+        inventory[0]["evidence_paths"] = ["   "]
+
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-25T12:00:00Z", mutate_payload=_bad_ref
+    )
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    assert result.verified is False
+    assert "EVIDENCE_REFERENCE_INVALID" in result.reason_codes
+
+
+def test_projection_verifier_evidence_path_escape_fails_closed(tmp_path: Path) -> None:
+    def _escape(payload: dict) -> None:
+        inventory = payload["evaluation"]["mindestkontrakt_inventory"]
+        inventory[0]["evidence_paths"] = ["../outside_evidence.txt"]
+
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-25T12:00:00Z", mutate_payload=_escape
+    )
+    outside = tmp_path.parent / "outside_evidence.txt"
+    outside.write_text("escape\n", encoding="utf-8")
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    assert result.verified is False
+    assert "EVIDENCE_PATH_ESCAPE" in result.reason_codes
+
+
+def test_projection_verifier_missing_evidence_target_fails_closed(tmp_path: Path) -> None:
+    def _missing(payload: dict) -> None:
+        inventory = payload["evaluation"]["mindestkontrakt_inventory"]
+        inventory[0]["evidence_paths"] = ["docs/missing_evidence_target_v0.md"]
+
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-25T12:00:00Z", mutate_payload=_missing
+    )
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    assert result.verified is False
+    assert "EVIDENCE_REFERENCE_MISSING" in result.reason_codes
+
+
+def test_projection_verifier_digest_mismatch_fails_closed(tmp_path: Path) -> None:
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-25T12:00:00Z"
+    )
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root,
+        projection_path=rel,
+        as_of="2026-07-25T12:00:00Z",
+        expected_sha256="0" * 64,
+    )
+    assert result.verified is False
+    assert "DIGEST_MISMATCH" in result.reason_codes
+
+
+def test_projection_verifier_future_dated_fails_closed(tmp_path: Path) -> None:
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-25T18:00:00Z"
+    )
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    assert result.verified is False
+    assert "FUTURE_DATED" in result.reason_codes
+
+
+def test_projection_verifier_stale_fails_closed(tmp_path: Path) -> None:
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-20T12:00:00Z"
+    )
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    assert result.verified is False
+    assert "STALE" in result.reason_codes
+
+
+def test_projection_verifier_performs_no_file_writes(tmp_path: Path) -> None:
+    root, rel, _payload = _write_verifiable_projection(
+        tmp_path, evaluated_at="2026-07-25T12:00:00Z"
+    )
+    before = {p.relative_to(root).as_posix(): p.stat().st_mtime_ns for p in root.rglob("*")}
+    result = verify_shadow_preparation_readiness_projection_v0(
+        repo_root=root, projection_path=rel, as_of="2026-07-25T12:00:00Z"
+    )
+    after = {p.relative_to(root).as_posix(): p.stat().st_mtime_ns for p in root.rglob("*")}
+    assert after == before
+    assert result.verified is True
+
+
+def test_projection_verifier_does_not_import_activation_paths() -> None:
+    source = PRODUCER.read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    forbidden = (
+        "src.scheduler",
+        "src.orders",
+        "src.execution",
+        "src.live",
+        "src.webui",
+    )
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                assert not any(alias.name.startswith(p) for p in forbidden)
+        if isinstance(node, ast.ImportFrom) and node.module:
+            assert not any(node.module.startswith(p) for p in forbidden)
+    assert "verify_shadow_preparation_readiness_projection_v0" in source
+    assert "write_shadow_preparation_readiness_projection_v0" in source
+    # Verifier must remain read-only: no activation call sites.
+    for needle in (
+        "activate_shadow",
+        "start_scheduler",
+        "place_order",
+        "enable_paper",
+        "enable_testnet",
+    ):
+        assert needle not in source
+
+
+def test_docs_declare_projection_verifier_contract_tokens() -> None:
+    text = CONTRACT_DOC.read_text(encoding="utf-8")
+    for token in (
+        "PROJECTION_READER_VERIFIER_V0=true",
+        "verify_shadow_preparation_readiness_projection_v0",
+        "MISSING_PROJECTION",
+        "INVALID_PROJECTION",
+        "SCHEMA_MISMATCH",
+        "CONTRADICTORY_PROJECTION",
+        "DIGEST_MISMATCH",
+        "FUTURE_DATED",
+        "STALE",
+        "ZERO_SIDE_EFFECTS=true",
+    ):
+        assert token in text, token
