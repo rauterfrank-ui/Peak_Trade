@@ -258,6 +258,56 @@ def test_docs_contain_mandatory_non_activation_and_non_equivalence_tokens() -> N
         assert token in text, token
 
 
+def test_docs_designate_canonical_offline_shadow_preparation_operator_command() -> None:
+    """Docs designate one full-chain offline operator command; components demoted."""
+    text = CONTRACT_DOC.read_text(encoding="utf-8")
+    canonical_command = (
+        "python scripts/ops/run_okx_futures_shadow_offline_e2e_projection_binding_v0.py "
+        "--mode shadow"
+    )
+    assert "CANONICAL_OFFLINE_SHADOW_PREPARATION_OPERATOR_COMMAND" in text
+    assert canonical_command in text
+    assert "SOLE_CANONICAL_OFFLINE_SHADOW_PREPARATION_OPERATOR_COMMAND=true" in text
+
+    assert "READINESS_ONLY_COMPONENT_OWNER=true" in text
+    assert "READINESS_ONLY_NOT_FULL_CHAIN_CANONICAL_OPERATOR_COMMAND=true" in text
+    assert (
+        "python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0"
+        in text
+    )
+    assert "readiness-only component owner" in text
+    assert "not** the full-chain" in text or "not the full-chain" in text.lower()
+
+    assert "NO_ORDER_ONLY_COMPONENT_OWNER=true" in text
+    assert "NO_ORDER_ONLY_NOT_FULL_CHAIN_CANONICAL_OPERATOR_COMMAND=true" in text
+    assert "python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow" in text
+    assert "no-order cycle component owner" in text
+
+    for token in (
+        "NON_ACTIVATING=true",
+        "does **not** authorize Shadow",
+        "Offline preparation does **not** activate Shadow",
+        "CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false",
+        "Paper simulation is not implemented",
+        "TESTNET_ACTIVATION_AUTHORIZED=false",
+        "LIVE_AUTHORIZED=false",
+        "ORDERS_AUTHORIZED=false",
+        "RUNTIME_ACTIVATION_AUTHORIZED=false",
+    ):
+        assert token in text, token
+
+    forbidden_authorizing = (
+        "RUNTIME_ACTIVATION_AUTHORIZED=true",
+        "ORDERS_AUTHORIZED=true",
+        "TESTNET_ACTIVATION_AUTHORIZED=true",
+        "LIVE_AUTHORIZED=true",
+        "SHADOW_ACTIVATION_AUTHORIZED=true",
+        "PAPER_ACTIVATION_AUTHORIZED=true",
+    )
+    for token in forbidden_authorizing:
+        assert token not in text, token
+
+
 def test_authority_effect_override_non_none_rejected() -> None:
     with pytest.raises(ShadowPreparationReadinessGateError, match="authority_effect_must_be_none"):
         _default_result(authority_effect_override="GRANT")

@@ -128,14 +128,88 @@ READINESS_PRODUCER_CANNOT_IMPLEMENT_STEP_29U=true
 READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true
 ```
 
+## Canonical offline Shadow preparation operator command
+
+```text
+CANONICAL_OFFLINE_SHADOW_PREPARATION_OPERATOR_COMMAND=
+python scripts/ops/run_okx_futures_shadow_offline_e2e_projection_binding_v0.py --mode shadow
+SOLE_CANONICAL_OFFLINE_SHADOW_PREPARATION_OPERATOR_COMMAND=true
+```
+
+The e2e binding CLI above is the **sole canonical operator command** for
+executing the complete offline OKX Futures Shadow preparation chain:
+
+readiness gate → durable projection writer → projection verifier →
+OKX Futures no-order HOLD cycle → e2e binding result.
+
+Related readiness-path component owners (offline projection pipeline,
+readiness-only operator entrypoint, readiness bundle) remain valid for the
+readiness projection subpath and do **not** introduce a second readiness,
+decision, risk, safety, execution, reconciliation, writer, reader, or
+projection truth. They are **not** the full-chain canonical operator command.
+
+The sole canonical command is:
+
+- OKX-only
+- Futures-only
+- BTC-excluding
+- Spot-excluding
+- offline
+- deterministic
+- non-activating
+- non-networked
+- non-ordering
+
+Successful offline cycle semantics remain (composition binding expectations):
+
+```text
+decision=HOLD
+risk_sizing=NONE
+execution=NOT_APPLICABLE:NONE
+reconciliation=BOUND_OFFLINE
+order_submission_count=0
+```
+
+Offline preparation does **not** activate Shadow. Activated Shadow still
+requires a separate operator GO and separate runtime/session/scheduler
+contracts. `CANONICAL_STEP_29U_SHADOW_MODE` remains unbound/absent.
+`CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false` — STEP 29V Paper remains
+undefined/future-only; Paper simulation is not implemented. Testnet and Live
+remain unauthorized and fail-closed.
+
+### Component commands (not full-chain canonical)
+
+```text
+READINESS_ONLY_COMPONENT_COMMAND=
+python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0
+READINESS_ONLY_COMPONENT_OWNER=true
+READINESS_ONLY_NOT_FULL_CHAIN_CANONICAL_OPERATOR_COMMAND=true
+```
+
+Classification: readiness-only component owner; **not** the full-chain
+canonical operator command.
+
+```text
+NO_ORDER_ONLY_COMPONENT_COMMAND=
+python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow
+NO_ORDER_ONLY_COMPONENT_OWNER=true
+NO_ORDER_ONLY_NOT_FULL_CHAIN_CANONICAL_OPERATOR_COMMAND=true
+```
+
+Classification: no-order cycle component owner; **not** the full-chain
+canonical operator command.
+
 ## Owners and artifacts
 
 | Role | Path |
 |------|------|
+| Sole canonical offline Shadow preparation operator command | `scripts/ops/run_okx_futures_shadow_offline_e2e_projection_binding_v0.py` |
+| E2E binding owner (composition-only) | `src/ops/okx_futures_shadow_offline_e2e_projection_binding_v0.py` |
 | Producer | `src/ops/shadow_preparation_readiness_gate_v0.py` |
-| Offline projection pipeline | `src/ops/shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
-| Offline operator entrypoint | `src/ops/shadow_preparation_readiness_offline_operator_entrypoint_v0.py` |
-| Readiness bundle (read-only aggregate) | `src/ops/shadow_preparation_readiness_bundle_v0.py` |
+| Offline projection pipeline (component) | `src/ops/shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
+| Offline operator entrypoint (readiness-only component) | `src/ops/shadow_preparation_readiness_offline_operator_entrypoint_v0.py` |
+| Readiness bundle (read-only aggregate component) | `src/ops/shadow_preparation_readiness_bundle_v0.py` |
+| OKX Futures no-order cycle (component) | `scripts/ops/run_okx_futures_shadow_no_order_v0.py` |
 | Config (static, non-activating) | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
@@ -357,10 +431,12 @@ and verified is `PIPELINE_BLOCKED` (not an execution failure). The pipeline does
 not activate Shadow/Paper/Testnet/Runtime/Scheduler/Orders/Live and does not
 introduce a second readiness truth owner.
 
-### Offline operator entrypoint (CLI only)
+### Offline operator entrypoint (readiness-only component CLI)
 
 ```text
 OFFLINE_OPERATOR_ENTRYPOINT_V0=true
+READINESS_ONLY_COMPONENT_OWNER=true
+READINESS_ONLY_NOT_FULL_CHAIN_CANONICAL_OPERATOR_COMMAND=true
 PROJECTION_ONLY=true
 AUTHORITY_EFFECT=NONE
 ACTIVATION_AUTHORITY=false
@@ -369,7 +445,8 @@ NOT_RUNTIME_ENTRYPOINT=true
 ZERO_RUNTIME_ACTIVATION=true
 ```
 
-Canonical invocation (repo-native `python -m`, argparse):
+Component invocation (readiness-only; **not** the full-chain canonical operator
+command; repo-native `python -m`, argparse):
 
 ```text
 python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0 \
@@ -426,9 +503,11 @@ python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0 \
 # status=PIPELINE_ERROR (or ENTRYPOINT_REPO_ROOT_INVALID)
 ```
 
-This command is **not** a scheduler entrypoint and **not** a runtime entrypoint.
-It is offline preparation tooling only. `PIPELINE_BLOCKED` never authorizes
-Shadow, Paper, Testnet, Scheduler, Orders, or Runtime.
+This command is a **readiness-only component owner**, **not** the full-chain
+canonical operator command, **not** a scheduler entrypoint, and **not** a
+runtime entrypoint. It is offline preparation tooling only.
+`PIPELINE_BLOCKED` never authorizes Shadow, Paper, Testnet, Scheduler, Orders,
+or Runtime.
 
 ### Shadow Preparation Readiness Bundle v0 (read-only aggregate)
 
