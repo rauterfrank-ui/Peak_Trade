@@ -27,6 +27,11 @@ from src.ops.step_29u_activation_eligibility_inventory_v0 import (
     evaluate_step_29u_activation_eligibility_inventory_v0,
     serialize_result_json_v0,
 )
+from src.ops.step_29u_audit_provenance_v0 import STATUS_COMPLETE as AUDIT_COMPLETE
+from src.ops.step_29u_economic_validity_readiness_v0 import (
+    STATUS_FAIL as ECON_FAIL,
+    EconomicValidityReadinessOverridesV0,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CANONICAL_SOAK = REPO_ROOT / "evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z"
@@ -81,12 +86,79 @@ def test_normal_current_state_ineligible() -> None:
     assert result.summary["prerequisite_count"] == len(PREREQUISITE_IDS)
     assert "ECONOMIC_VALIDITY_PROVEN:UNSATISFIED" in result.blockers
     assert "EXPLICIT_FUTURE_OPERATOR_GO_PRESENT:ABSENT" in result.blockers
-    assert "STEP_29U_AUDIT_PROVENANCE_COMPLETE:ABSENT" in result.blockers
+    assert result.audit_provenance_status == AUDIT_COMPLETE
+    assert result.audit_provenance_complete is True
+    assert result.economic_validity_status == ECON_FAIL
+    assert result.economic_validity_proven is False
+    assert result.future_operator_go_present is False
+    assert result.non_operator_prerequisites_complete is False
     by = _by_id(result)
     assert by["STEP_29U_BINDING_PROVEN"].state == STATE_SATISFIED
     assert by["STEP_29U_POST_MERGE_SOAK_PROVEN"].state == STATE_SATISFIED
+    assert by["STEP_29U_AUDIT_PROVENANCE_COMPLETE"].state == STATE_SATISFIED
     assert by["ECONOMIC_VALIDITY_PROVEN"].state == STATE_UNSATISFIED
+    assert by["ECONOMIC_VALIDITY_PROVEN"].reason_code == "ECONOMIC_VALIDITY_FAIL"
     assert by["EXPLICIT_FUTURE_OPERATOR_GO_PRESENT"].state == STATE_ABSENT
+    # Counts must match classifications.
+    assert result.summary["satisfied_count"] == sum(
+        1 for p in result.prerequisites if p.state == STATE_SATISFIED
+    )
+    assert result.summary["unsatisfied_count"] == sum(
+        1 for p in result.prerequisites if p.state == STATE_UNSATISFIED
+    )
+    assert result.summary["absent_count"] == sum(
+        1 for p in result.prerequisites if p.state == STATE_ABSENT
+    )
+    assert result.summary["invalid_count"] == sum(
+        1 for p in result.prerequisites if p.state == STATE_INVALID
+    )
+
+
+def test_audit_false_blocks_eligibility(tmp_path: Path) -> None:
+    empty = tmp_path / "no_soak"
+    empty.mkdir()
+    result = evaluate_step_29u_activation_eligibility_inventory_v0(
+        repo_root=REPO_ROOT,
+        overrides=EligibilityInventoryOverridesV0(soak_dir=empty),
+    )
+    assert result.activation_eligible is False
+    assert result.audit_provenance_complete is False
+    assert any("AUDIT" in b for b in result.blockers)
+
+
+def test_economic_false_blocks_eligibility() -> None:
+    result = evaluate_step_29u_activation_eligibility_inventory_v0(repo_root=REPO_ROOT)
+    assert result.economic_validity_proven is False
+    assert result.activation_eligible is False
+    assert any("ECONOMIC_VALIDITY" in b for b in result.blockers)
+
+
+def test_operator_go_absent_always_blocks_eligibility() -> None:
+    result = evaluate_step_29u_activation_eligibility_inventory_v0(repo_root=REPO_ROOT)
+    assert result.future_operator_go_present is False
+    assert result.activation_eligible is False
+    assert "EXPLICIT_FUTURE_OPERATOR_GO_PRESENT:ABSENT" in result.blockers
+
+
+def test_non_operator_complete_plus_go_absent_remains_ineligible() -> None:
+    # Even if economic were forced PASS, GO absence keeps activation ineligible.
+    result = evaluate_step_29u_activation_eligibility_inventory_v0(
+        repo_root=REPO_ROOT,
+        overrides=EligibilityInventoryOverridesV0(
+            economic_overrides=EconomicValidityReadinessOverridesV0(force_status="PASS"),
+        ),
+    )
+    assert result.economic_validity_proven is True
+    assert result.future_operator_go_present is False
+    assert result.activation_eligible is False
+    assert "EXPLICIT_FUTURE_OPERATOR_GO_PRESENT:ABSENT" in result.blockers
+
+
+def test_no_blocker_silently_disappears() -> None:
+    result = evaluate_step_29u_activation_eligibility_inventory_v0(repo_root=REPO_ROOT)
+    # Economic FAIL and Operator-GO ABSENT must remain visible.
+    assert any(b.startswith("ECONOMIC_VALIDITY_PROVEN:") for b in result.blockers)
+    assert "EXPLICIT_FUTURE_OPERATOR_GO_PRESENT:ABSENT" in result.blockers
 
 
 def test_binding_alone_cannot_establish_eligibility(tmp_path: Path) -> None:
@@ -130,16 +202,17 @@ def test_5551_soak_recognized_with_manifest_digest_and_head() -> None:
     assert exact == EXPECTED_SOAK_TESTED_HEAD_SHA
 
 
-def test_missing_audit_provenance_blocks() -> None:
+def test_audit_provenance_complete_when_chain_valid() -> None:
     result = evaluate_step_29u_activation_eligibility_inventory_v0(repo_root=REPO_ROOT)
-    assert _by_id(result)["STEP_29U_AUDIT_PROVENANCE_COMPLETE"].state == STATE_ABSENT
-    assert "STEP_29U_AUDIT_PROVENANCE_COMPLETE:ABSENT" in result.blockers
+    assert _by_id(result)["STEP_29U_AUDIT_PROVENANCE_COMPLETE"].state == STATE_SATISFIED
+    assert result.audit_provenance_complete is True
 
 
 def test_economic_validity_not_proven_blocks() -> None:
     result = evaluate_step_29u_activation_eligibility_inventory_v0(repo_root=REPO_ROOT)
     assert _by_id(result)["ECONOMIC_VALIDITY_PROVEN"].state == STATE_UNSATISFIED
     assert any("ECONOMIC_VALIDITY" in b for b in result.blockers)
+    assert result.economic_validity_status == ECON_FAIL
 
 
 def test_future_operator_go_absent_blocks() -> None:

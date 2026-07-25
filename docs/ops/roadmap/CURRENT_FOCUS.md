@@ -36,15 +36,20 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - `STEP_29U_ACTIVATED=false`, `CANONICAL_STEP_29U_ACTIVATION_BOUND=false`
 - Runtime = `BOUND_NOT_ACTIVATED`; no Scheduler/Paper/Testnet/Live/network GO
 
-**Eligibility inventory (implemented, non-activating):**
+**Eligibility + evidence/economic readiness (implemented, non-activating):**
 
-- Owner: `ops.step_29u_activation_eligibility_inventory_v0`
+- Capability: `STEP_29U_ACTIVATION_EVIDENCE_AND_ECONOMIC_READINESS_V0`
+- Owners: `ops.step_29u_activation_eligibility_inventory_v0`,
+  `ops.step_29u_audit_provenance_v0`,
+  `ops.step_29u_economic_validity_readiness_v0`
 - Contract: [STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md](../runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md)
 - Command: `python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py`
-- Canonical result remains `ACTIVATION_ELIGIBLE=false` (inventory only — not Activation)
-- Current blockers include: audit provenance absent, economic validity not proven,
-  explicit future Operator-GO absent
-- Next action: separate operator review/merge only; Activation remains forbidden
+- Canonical result: `STEP_29U_AUDIT_PROVENANCE_COMPLETE=true`,
+  `ECONOMIC_VALIDITY_PROVEN=false` (`FAIL`),
+  `FUTURE_OPERATOR_GO_PRESENT=false`,
+  `ACTIVATION_ELIGIBLE=false`, `STEP_29U_ACTIVATED=false`
+- Current blockers: truthful economic FAIL; explicit future Operator-GO absent
+- Next action: separate operator review only; Activation remains forbidden
   without a new explicit Operator-GO
 
 ---

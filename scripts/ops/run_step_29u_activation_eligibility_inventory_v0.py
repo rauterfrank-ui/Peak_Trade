@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """Operator CLI: STEP 29U Activation Eligibility Inventory v0.
 
-Offline, read-only, non-activating. Distinguishes evaluator health (exit code)
-from eligibility result (ACTIVATION_ELIGIBLE field; expected false).
+Offline, read-only, non-activating. Distinguishes evaluator health / evidence
+validity (exit code) from eligibility result (ACTIVATION_ELIGIBLE; expected
+false while future Operator-GO is absent).
+
+Exit codes:
+  0  successful evaluation; activation ineligible
+  2  successful evaluation; non-operator prerequisites complete but GO absent
+  1  invalid input / evidence (fail-closed)
+  3  internal execution failure
 """
 
 from __future__ import annotations
@@ -25,16 +32,25 @@ from src.ops.step_29u_activation_eligibility_inventory_v0 import (  # noqa: E402
     result_to_machine_lines,
     serialize_result_json_v0,
 )
+from src.ops.step_29u_audit_provenance_v0 import (  # noqa: E402
+    Step29UAuditProvenanceError,
+)
+from src.ops.step_29u_economic_validity_readiness_v0 import (  # noqa: E402
+    Step29UEconomicValidityReadinessError,
+)
 
-EXIT_PASS = 0
-EXIT_ERROR = 1
+EXIT_OK_INELIGIBLE = 0
+EXIT_INVALID_INPUT = 1
+EXIT_OK_NON_OPERATOR_COMPLETE_GO_ABSENT = 2
+EXIT_INTERNAL = 3
 
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=(
             "Evaluate STEP 29U activation eligibility inventory (offline, "
-            "fail-closed, non-activating). Inventory only — not Activation."
+            "fail-closed, non-activating). Composes audit/provenance and "
+            "economic-validity readiness. Inventory only — not Activation."
         )
     )
     p.add_argument("--repo-root", type=Path, default=_REPO_ROOT)
@@ -82,16 +98,20 @@ def main(argv: list[str] | None = None) -> int:
                 readiness_config_path=args.readiness_config,
             ),
         )
-    except Step29UActivationEligibilityInventoryError as exc:
-        print(f"STATUS=ERROR", file=sys.stderr)
-        print(f"EVALUATOR_VALID=false", file=sys.stderr)
+    except (
+        Step29UActivationEligibilityInventoryError,
+        Step29UAuditProvenanceError,
+        Step29UEconomicValidityReadinessError,
+    ) as exc:
+        print("STATUS=ERROR", file=sys.stderr)
+        print("EVALUATOR_VALID=false", file=sys.stderr)
         print(f"ERROR={exc}", file=sys.stderr)
-        return EXIT_ERROR
+        return EXIT_INVALID_INPUT
     except Exception as exc:  # noqa: BLE001
-        print(f"STATUS=ERROR", file=sys.stderr)
-        print(f"EVALUATOR_VALID=false", file=sys.stderr)
+        print("STATUS=ERROR", file=sys.stderr)
+        print("EVALUATOR_VALID=false", file=sys.stderr)
         print(f"ERROR={type(exc).__name__}:{exc}", file=sys.stderr)
-        return EXIT_ERROR
+        return EXIT_INTERNAL
 
     if args.output_path is not None:
         out = args.output_path.resolve()
@@ -104,8 +124,15 @@ def main(argv: list[str] | None = None) -> int:
         for line in result_to_machine_lines(result):
             print(line)
 
-    # Nonzero only for evaluator/input failure — not for ACTIVATION_ELIGIBLE=false.
-    return EXIT_PASS if result.evaluator_valid and result.status == "PASS" else EXIT_ERROR
+    if not (result.evaluator_valid and result.status == "PASS"):
+        return EXIT_INVALID_INPUT
+    if (
+        result.non_operator_prerequisites_complete
+        and not result.future_operator_go_present
+        and not result.activation_eligible
+    ):
+        return EXIT_OK_NON_OPERATOR_COMPLETE_GO_ABSENT
+    return EXIT_OK_INELIGIBLE
 
 
 if __name__ == "__main__":

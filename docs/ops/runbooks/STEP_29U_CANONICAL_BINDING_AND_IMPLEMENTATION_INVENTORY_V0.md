@@ -216,7 +216,7 @@ Classification vocabulary (exact):
 | `risk_consumption` | `PRESENT_BUT_UNBOUND` | existing Risk/Sizing authority | risk/sizing outputs | consume-only binding | unbound → offline consume binding after GO | binding digest | must not fork risk authority | Authority reusable; STEP 29U binding missing |
 | `execution_no_order_boundary` | `EXISTING_NON_AUTHORITY_REUSABLE` + `LEGACY` surfaces `FORBIDDEN_FOR_STEP_29U` as canonical | offline OKX Futures no-order owners; Phase-24/31 historical | offline cycle inputs | no-order HOLD execution observation | reuse offline path; never promote legacy to STEP 29U by name | soak + offline binding evidence | orders remain unauthorized | Offline no-order path reusable as non-authority evidence; Phase-24/31 forbidden as STEP 29U |
 | `reconciliation` | `PRESENT_BUT_UNBOUND` | existing reconciliation boundary | execution observation | offline reconciliation result | unbound → STEP 29U session bind after GO | cycle evidence | no second recon truth | Boundary reusable; STEP 29U session bind missing |
-| `evidence_provenance` | `EXISTING_NON_AUTHORITY_REUSABLE` + STEP 29U audit contract `MISSING` | soak bundle + readiness projection | manifests/digests | verifiable evidence refs | inventory may reference; STEP 29U audit owner still missing | sha256 manifests | malformed/missing digest → ERROR/BLOCKED | Soak/readiness evidence reusable; STEP 29U audit contract missing |
+| `evidence_provenance` | `PRESENT` (audit owner `ops.step_29u_audit_provenance_v0`) | soak + offline + binding evidence chain | manifests/digests + linked SHAs | `COMPLETE&#47;ABSENT&#47;INVALID&#47;CONTRADICTORY&#47;STALE&#47;UNVERIFIED` | inventory composes audit result; activation still unauthorized | sha256 manifests | malformed/missing digest → fail-closed | STEP 29U audit/provenance evaluator present; does not authorize activation |
 | `failure_classification` | `MISSING` | none | failure events | closed-enum failure classes | missing → offline contract after GO | contract + tests | unknown failure → fail-closed | Gap |
 | `scheduler_runtime_boundary` | `FUTURE_ONLY` / locked | `runtime_bridge.BOUND_NOT_ACTIVATED` | Operator-GO | still-bound-not-activated unless later GO | must remain non-activated in this slice | bridge status tokens | any activation claim without GO → ERROR | Forbidden to activate here |
 | `operator_go_boundary` | `EXISTING_CANONICAL_REUSABLE` (docs lock) | `runbook.STEP_29U` + readiness contract | explicit GO token | authorization record | docs-only → GO-gated stages | GO evidence | missing GO → BLOCKED | Requirement already documented |
@@ -327,10 +327,16 @@ RUNTIME_BRIDGE_RELATION=HARD_ACTIVATION_PREREQUISITE
 SCHEDULER_RELATION=HARD_ACTIVATION_PREREQUISITE
 NETWORK_RUNTIME_RELATION=HARD_PROHIBITION_UNTIL_EXPLICIT_GO
 OPERATOR_GO_RELATION=HARD_ACTIVATION_PREREQUISITE
-ECONOMIC_VALIDITY_STATUS=NOT_PROVEN_BLOCKED
+ECONOMIC_VALIDITY_STATUS=FAIL
+ECONOMIC_VALIDITY_PROVEN=false
+STEP_29U_AUDIT_PROVENANCE_COMPLETE=true
 MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN
 RUNTIME_BRIDGE_STATE=BOUND_NOT_ACTIVATED
 ```
+
+Economic FAIL is preserved from the canonical fleet closeout /
+readiness gate composition (`ops.step_29u_economic_validity_readiness_v0`).
+It must not be described as unfinished work.
 
 ## 8. Implemented offline capability (current)
 
@@ -352,19 +358,23 @@ Composition root chain:
 ```text
 IMPLEMENTED_BINDING=STEP_29U_CANONICAL_SHADOW_BINDING_V0
 IMPLEMENTED_ELIGIBILITY_INVENTORY=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0
+IMPLEMENTED_AUDIT_PROVENANCE=STEP_29U_AUDIT_PROVENANCE_V0
+IMPLEMENTED_ECONOMIC_READINESS=STEP_29U_ECONOMIC_VALIDITY_READINESS_V0
 ELIGIBILITY_INVENTORY_OWNER=ops.step_29u_activation_eligibility_inventory_v0
 ELIGIBILITY_INVENTORY_COMMAND=python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py
 ELIGIBILITY_INVENTORY_CONTRACT=docs/ops/runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md
+STEP_29U_AUDIT_PROVENANCE_COMPLETE=true
+ECONOMIC_VALIDITY_PROVEN=false
 ACTIVATION_ELIGIBLE=false
 STEP_29U_ACTIVATED=false
 SEPARATE_OPERATOR_GO_REQUIRED=true
-NEXT_AUTHORIZED_SLICE=SEPARATE_OPERATOR_REVIEW_ONLY_NO_ACTIVATION
+NEXT_AUTHORIZED_SLICE=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO
+NEXT_FORMALLY_PERMISSIBLE_STEP=SEPARATE_OPERATOR_REVIEW_ONLY_NO_ACTIVATION
 ```
 
 The eligibility inventory is **offline / non-activating**. It records blockers
-(including absent future Operator-GO, economic validity not proven, and missing
-STEP 29U audit contract) and must not be read as Activation, Activation Binding,
-or Activation Readiness approval.
+(including absent future Operator-GO and truthful economic FAIL) and must not
+be read as Activation, Activation Binding, or Activation Readiness approval.
 
 Activation, Scheduler, network Runtime, Paper/Testnet/Live remain unauthorized.
 

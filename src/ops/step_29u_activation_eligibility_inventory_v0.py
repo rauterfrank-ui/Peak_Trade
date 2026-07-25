@@ -23,10 +23,29 @@ from src.ops.shadow_preparation_readiness_gate_v0 import (
     RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED,
     load_shadow_preparation_readiness_gate_config_v0,
 )
+from src.ops.step_29u_audit_provenance_v0 import (
+    STATUS_ABSENT as AUDIT_STATUS_ABSENT,
+    STATUS_COMPLETE as AUDIT_STATUS_COMPLETE,
+    STATUS_CONTRADICTORY as AUDIT_STATUS_CONTRADICTORY,
+    STATUS_INVALID as AUDIT_STATUS_INVALID,
+    STATUS_STALE as AUDIT_STATUS_STALE,
+    STATUS_UNVERIFIED as AUDIT_STATUS_UNVERIFIED,
+    AuditProvenanceOverridesV0,
+    evaluate_step_29u_audit_provenance_v0,
+)
 from src.ops.step_29u_canonical_shadow_binding_v0 import (
     BINDING_OWNER,
     observe_canonical_step_29u_bound_v0,
     verify_canonical_step_29u_binding_evidence_v0,
+)
+from src.ops.step_29u_economic_validity_readiness_v0 import (
+    STATUS_CONTRADICTORY as ECON_STATUS_CONTRADICTORY,
+    STATUS_ECONOMIC_GATE_CLOSED as ECON_STATUS_GATE_CLOSED,
+    STATUS_FAIL as ECON_STATUS_FAIL,
+    STATUS_MISSING as ECON_STATUS_MISSING,
+    STATUS_PASS as ECON_STATUS_PASS,
+    EconomicValidityReadinessOverridesV0,
+    evaluate_step_29u_economic_validity_readiness_v0,
 )
 
 PACKAGE_MARKER = "STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0=true"
@@ -131,6 +150,12 @@ class ActivationEligibilityInventoryResultV0:
     orders_created: bool
     orders_submitted: bool
     operator_go_present: bool
+    future_operator_go_present: bool
+    non_operator_prerequisites_complete: bool
+    audit_provenance_complete: bool
+    audit_provenance_status: str
+    economic_validity_proven: bool
+    economic_validity_status: str
     btc_excluded: bool
     spot_excluded: bool
     kraken_legacy_excluded: bool
@@ -139,6 +164,7 @@ class ActivationEligibilityInventoryResultV0:
     summary: Mapping[str, int]
     provenance: Mapping[str, Any]
     safety_facts: Mapping[str, Any] = field(default_factory=dict)
+    composed_readiness: Mapping[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -157,6 +183,12 @@ class ActivationEligibilityInventoryResultV0:
             "orders_created": self.orders_created,
             "orders_submitted": self.orders_submitted,
             "operator_go_present": self.operator_go_present,
+            "future_operator_go_present": self.future_operator_go_present,
+            "non_operator_prerequisites_complete": self.non_operator_prerequisites_complete,
+            "audit_provenance_complete": self.audit_provenance_complete,
+            "audit_provenance_status": self.audit_provenance_status,
+            "economic_validity_proven": self.economic_validity_proven,
+            "economic_validity_status": self.economic_validity_status,
             "btc_excluded": self.btc_excluded,
             "spot_excluded": self.spot_excluded,
             "kraken_legacy_excluded": self.kraken_legacy_excluded,
@@ -165,6 +197,7 @@ class ActivationEligibilityInventoryResultV0:
             "summary": dict(self.summary),
             "provenance": dict(self.provenance),
             "safety_facts": dict(self.safety_facts),
+            "composed_readiness": dict(self.composed_readiness),
         }
 
 
@@ -178,6 +211,8 @@ class EligibilityInventoryOverridesV0:
     soak_summary_overlay: Optional[Mapping[str, Any]] = None
     force_unknown_prerequisite: bool = False
     evaluated_main_sha: Optional[str] = None
+    audit_overrides: Optional[AuditProvenanceOverridesV0] = None
+    economic_overrides: Optional[EconomicValidityReadinessOverridesV0] = None
 
 
 def default_repo_root_v0() -> Path:
@@ -622,28 +657,51 @@ def evaluate_step_29u_activation_eligibility_inventory_v0(
                 "KRAKEN_LEGACY_OBSERVED": None,
             }
 
-    # --- Audit provenance (STEP 29U audit owner still missing per inventory SSOT) ---
+    # --- Audit provenance (canonical Step-29U evidence-chain evaluator) ---
+    # Inventory binding_evidence_dir overrides the offline capability evidence path
+    # used by the binding owner; propagate that into audit.offline_dir.
+    if ov.audit_overrides is not None:
+        audit_ov = ov.audit_overrides
+    else:
+        audit_ov = AuditProvenanceOverridesV0(
+            soak_dir=ov.soak_dir,
+            offline_dir=ov.binding_evidence_dir,
+            evaluated_main_sha=evaluated_sha,
+        )
+    audit_result = evaluate_step_29u_audit_provenance_v0(repo_root=root, overrides=audit_ov)
+    audit_state_map = {
+        AUDIT_STATUS_COMPLETE: STATE_SATISFIED,
+        AUDIT_STATUS_ABSENT: STATE_ABSENT,
+        AUDIT_STATUS_INVALID: STATE_INVALID,
+        AUDIT_STATUS_CONTRADICTORY: STATE_INVALID,
+        AUDIT_STATUS_STALE: STATE_INVALID,
+        AUDIT_STATUS_UNVERIFIED: STATE_UNSATISFIED,
+    }
+    audit_prereq_state = audit_state_map.get(audit_result.status, STATE_INVALID)
     records.append(
         _record(
             prerequisite_id="STEP_29U_AUDIT_PROVENANCE_COMPLETE",
             description="Dedicated STEP 29U activation audit/provenance contract complete",
-            canonical_owner="MISSING",
-            source_reference=BINDING_INVENTORY_RUNBOOK,
-            state=STATE_ABSENT,
-            reason_code="STEP_29U_AUDIT_CONTRACT_MISSING",
-            evidence_reference=BINDING_INVENTORY_RUNBOOK,
+            canonical_owner="ops.step_29u_audit_provenance_v0",
+            source_reference="src/ops/step_29u_audit_provenance_v0.py",
+            state=audit_prereq_state,
+            reason_code=f"AUDIT_{audit_result.status}",
+            evidence_reference="src/ops/step_29u_audit_provenance_v0.py",
             evidence_digest=None,
-            observed_value="audit_owner=MISSING",
-            expected_condition="dedicated STEP 29U audit contract owner present and verified",
+            observed_value=(
+                f"status={audit_result.status} "
+                f"complete={str(audit_result.audit_provenance_complete).lower()}"
+            ),
+            expected_condition="audit provenance status=COMPLETE with verified evidence chain",
             evaluated_at=evaluated_at,
         )
     )
-    blockers.append("STEP_29U_AUDIT_PROVENANCE_COMPLETE:ABSENT")
+    if audit_prereq_state != STATE_SATISFIED:
+        blockers.append(f"STEP_29U_AUDIT_PROVENANCE_COMPLETE:{audit_prereq_state}")
 
     # --- Readiness / runtime bridge / economic / authority ---
     if not readiness_path.is_file():
         runtime_state = None
-        econ_pass = None
         activation_flags = {}
         authorities: Sequence[str] = ()
         readiness_state_note = "READINESS_CONFIG_ABSENT"
@@ -656,7 +714,6 @@ def evaluate_step_29u_activation_eligibility_inventory_v0(
             runtime_state = str(
                 cfg.get("runtime_bridge_state") or RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED
             )
-            econ_pass = cfg.get("economic_validity_offline_gate_pass") is True
             activation_flags = {
                 "shadow_activation_authorized": bool(cfg.get("shadow_activation_authorized")),
                 "scheduler_activation_authorized": bool(cfg.get("scheduler_activation_authorized")),
@@ -671,7 +728,6 @@ def evaluate_step_29u_activation_eligibility_inventory_v0(
                 readiness_state_note = "READINESS_ACTIVATION_FLAG_TRUE_INVALID"
         except Exception as exc:  # noqa: BLE001 — fail-closed classification
             runtime_state = None
-            econ_pass = None
             activation_flags = {}
             authorities = ()
             readiness_state_note = f"READINESS_CONFIG_INVALID:{type(exc).__name__}"
@@ -871,58 +927,66 @@ def evaluate_step_29u_activation_eligibility_inventory_v0(
         )
         blockers.append("ORDERS_REMAIN_PROHIBITED:INVALID")
 
-    if econ_pass is True:
-        # Canonical config currently false; if ever true still require durable proof.
-        records.append(
-            _record(
-                prerequisite_id="ECONOMIC_VALIDITY_PROVEN",
-                description="Economic validity offline gate proven",
-                canonical_owner="ops.shadow_preparation_readiness_gate_v0",
-                source_reference=READINESS_CONFIG_RELPATH,
-                state=STATE_UNSATISFIED,
-                reason_code="ECONOMIC_VALIDITY_FLAG_TRUE_WITHOUT_DURABLE_PROOF",
-                evidence_reference=READINESS_CONFIG_RELPATH,
-                evidence_digest=readiness_digest,
-                observed_value="economic_validity_offline_gate_pass=true",
-                expected_condition="durable economic validity proof under separate GO",
-                evaluated_at=evaluated_at,
-            )
+    econ_ov = ov.economic_overrides or EconomicValidityReadinessOverridesV0(
+        readiness_config_path=ov.readiness_config_path,
+    )
+    if ov.readiness_config_path is not None and (
+        ov.economic_overrides is None or ov.economic_overrides.readiness_config_path is None
+    ):
+        econ_ov = EconomicValidityReadinessOverridesV0(
+            readiness_config_path=ov.readiness_config_path,
+            fleet_closeout_path=econ_ov.fleet_closeout_path,
+            force_status=econ_ov.force_status,
+            overlay_gate_pass=econ_ov.overlay_gate_pass,
+            overlay_fleet_verdict=econ_ov.overlay_fleet_verdict,
+            overlay_evidence_class=econ_ov.overlay_evidence_class,
+            claim_thresholds_invented=econ_ov.claim_thresholds_invented,
         )
-        blockers.append("ECONOMIC_VALIDITY_PROVEN:UNSATISFIED")
-    elif readiness_path.is_file() and econ_pass is False:
-        records.append(
-            _record(
-                prerequisite_id="ECONOMIC_VALIDITY_PROVEN",
-                description="Economic validity offline gate proven",
-                canonical_owner="ops.shadow_preparation_readiness_gate_v0",
-                source_reference=READINESS_CONFIG_RELPATH,
-                state=STATE_UNSATISFIED,
-                reason_code="ECONOMIC_VALIDITY_NOT_PROVEN_BLOCKED",
-                evidence_reference=READINESS_CONFIG_RELPATH,
-                evidence_digest=readiness_digest,
-                observed_value="economic_validity_offline_gate_pass=false",
-                expected_condition="economic_validity_offline_gate_pass proven by durable evidence",
-                evaluated_at=evaluated_at,
-            )
-        )
-        blockers.append("ECONOMIC_VALIDITY_PROVEN:UNSATISFIED")
+    econ_result = evaluate_step_29u_economic_validity_readiness_v0(
+        repo_root=root, overrides=econ_ov
+    )
+    if econ_result.status == ECON_STATUS_PASS and econ_result.economic_validity_proven:
+        econ_state = STATE_SATISFIED
+        econ_reason = "ECONOMIC_VALIDITY_PROVEN_PASS"
+    elif econ_result.status == ECON_STATUS_MISSING:
+        econ_state = STATE_ABSENT
+        econ_reason = "ECONOMIC_VALIDITY_SOURCE_ABSENT"
+    elif econ_result.status == ECON_STATUS_CONTRADICTORY:
+        econ_state = STATE_INVALID
+        econ_reason = "ECONOMIC_VALIDITY_CONTRADICTORY"
+    elif econ_result.status == ECON_STATUS_FAIL:
+        # Preserve FAIL truthfully — not "pending" / unfinished work.
+        econ_state = STATE_UNSATISFIED
+        econ_reason = "ECONOMIC_VALIDITY_FAIL"
+    elif econ_result.status == ECON_STATUS_GATE_CLOSED:
+        econ_state = STATE_UNSATISFIED
+        econ_reason = "ECONOMIC_VALIDITY_GATE_CLOSED"
     else:
-        records.append(
-            _record(
-                prerequisite_id="ECONOMIC_VALIDITY_PROVEN",
-                description="Economic validity offline gate proven",
-                canonical_owner="ops.shadow_preparation_readiness_gate_v0",
-                source_reference=READINESS_CONFIG_RELPATH,
-                state=STATE_ABSENT,
-                reason_code="ECONOMIC_VALIDITY_SOURCE_ABSENT",
-                evidence_reference=READINESS_CONFIG_RELPATH,
-                evidence_digest=None,
-                observed_value="absent",
-                expected_condition="economic_validity_offline_gate_pass proven by durable evidence",
-                evaluated_at=evaluated_at,
-            )
+        econ_state = STATE_UNSATISFIED
+        econ_reason = f"ECONOMIC_VALIDITY_{econ_result.status}"
+    records.append(
+        _record(
+            prerequisite_id="ECONOMIC_VALIDITY_PROVEN",
+            description="Economic validity offline gate proven",
+            canonical_owner="ops.step_29u_economic_validity_readiness_v0",
+            source_reference="src/ops/step_29u_economic_validity_readiness_v0.py",
+            state=econ_state,
+            reason_code=econ_reason,
+            evidence_reference=READINESS_CONFIG_RELPATH,
+            evidence_digest=readiness_digest,
+            observed_value=(
+                f"status={econ_result.status} "
+                f"proven={str(econ_result.economic_validity_proven).lower()}"
+            ),
+            expected_condition=(
+                "canonical economic evidence proves PASS under economic_validity_policy_v1; "
+                "no threshold invention"
+            ),
+            evaluated_at=evaluated_at,
         )
-        blockers.append("ECONOMIC_VALIDITY_PROVEN:ABSENT")
+    )
+    if econ_state != STATE_SATISFIED:
+        blockers.append(f"ECONOMIC_VALIDITY_PROVEN:{econ_state}")
 
     required_authorities = {
         "trading.master_v2",
@@ -1156,16 +1220,22 @@ def evaluate_step_29u_activation_eligibility_inventory_v0(
     # Hard terminal defaults for this capability.
     step_29u_activated = False
     operator_go_present = False
+    future_operator_go_present = False
     btc_excluded = soak_safety.get("BTC_OBSERVED") is False
     spot_excluded = soak_safety.get("SPOT_OBSERVED") is False
     kraken_legacy_excluded = soak_safety.get("KRAKEN_LEGACY_OBSERVED") is False
 
-    all_satisfied = all(r.state == STATE_SATISFIED for r in ordered)
     dedup_blockers = tuple(dict.fromkeys(blockers))
+    non_operator_ids = tuple(
+        pid for pid in PREREQUISITE_IDS if pid != "EXPLICIT_FUTURE_OPERATOR_GO_PRESENT"
+    )
+    non_operator_prerequisites_complete = all(
+        by_id[pid].state == STATE_SATISFIED for pid in non_operator_ids
+    )
     # Future activation GO is always absent here; eligibility cannot be true.
     activation_eligible = False
-    if all_satisfied and not dedup_blockers:
-        # Defensive: even a fully satisfied set cannot authorize activation in v0.
+    if non_operator_prerequisites_complete and future_operator_go_present and not dedup_blockers:
+        # Defensive unreachable branch in v0: GO is never inferred.
         activation_eligible = False
 
     return ActivationEligibilityInventoryResultV0(
@@ -1185,6 +1255,12 @@ def evaluate_step_29u_activation_eligibility_inventory_v0(
         orders_created=False,
         orders_submitted=False,
         operator_go_present=operator_go_present,
+        future_operator_go_present=future_operator_go_present,
+        non_operator_prerequisites_complete=non_operator_prerequisites_complete,
+        audit_provenance_complete=audit_result.audit_provenance_complete,
+        audit_provenance_status=audit_result.status,
+        economic_validity_proven=econ_result.economic_validity_proven,
+        economic_validity_status=econ_result.status,
         btc_excluded=btc_excluded,
         spot_excluded=spot_excluded,
         kraken_legacy_excluded=kraken_legacy_excluded,
@@ -1202,6 +1278,8 @@ def evaluate_step_29u_activation_eligibility_inventory_v0(
             "cli_relpath": CLI_RELPATH,
             "implementation_authorization": "IMPLEMENTATION_ONLY_NOT_ACTIVATION",
             "forbidden_import_surfaces": sorted(FORBIDDEN_IMPORT_SURFACES),
+            "audit_owner": "ops.step_29u_audit_provenance_v0",
+            "economic_owner": "ops.step_29u_economic_validity_readiness_v0",
         },
         safety_facts={
             "ACTIVATION_ELIGIBLE": False,
@@ -1212,12 +1290,25 @@ def evaluate_step_29u_activation_eligibility_inventory_v0(
             "ORDERS_CREATED": False,
             "ORDERS_SUBMITTED": False,
             "OPERATOR_GO_PRESENT": False,
+            "FUTURE_OPERATOR_GO_PRESENT": False,
             "RUNTIME_BRIDGE_STATE": runtime_state or "UNKNOWN",
             "SOAK_OBSERVED_RUNTIME_ACTIVATED": soak_safety.get("RUNTIME_ACTIVATED"),
             "SOAK_OBSERVED_SCHEDULER_ACTIVATED": soak_safety.get("SCHEDULER_ACTIVATED"),
             "SOAK_OBSERVED_NETWORK_USED": soak_safety.get("NETWORK_USED"),
             "SOAK_OBSERVED_ORDERS_CREATED": soak_safety.get("ORDERS_CREATED"),
             "SOAK_OBSERVED_ORDERS_SUBMITTED": soak_safety.get("ORDERS_SUBMITTED"),
+        },
+        composed_readiness={
+            "non_operator_prerequisites_complete": non_operator_prerequisites_complete,
+            "audit_provenance_complete": audit_result.audit_provenance_complete,
+            "audit_provenance_status": audit_result.status,
+            "economic_validity_proven": econ_result.economic_validity_proven,
+            "economic_validity_status": econ_result.status,
+            "future_operator_go_present": False,
+            "activation_eligible": False,
+            "step_29u_activated": False,
+            "blockers": list(dedup_blockers),
+            "summary": dict(summary),
         },
     )
 
@@ -1230,6 +1321,13 @@ def result_to_machine_lines(
         f"EVALUATOR_VALID={str(result.evaluator_valid).lower()}",
         f"ACTIVATION_ELIGIBLE={str(result.activation_eligible).lower()}",
         f"STEP_29U_ACTIVATED={str(result.step_29u_activated).lower()}",
+        f"NON_OPERATOR_PREREQUISITES_COMPLETE="
+        f"{str(result.non_operator_prerequisites_complete).lower()}",
+        f"STEP_29U_AUDIT_PROVENANCE_COMPLETE={str(result.audit_provenance_complete).lower()}",
+        f"AUDIT_PROVENANCE_STATUS={result.audit_provenance_status}",
+        f"ECONOMIC_VALIDITY_PROVEN={str(result.economic_validity_proven).lower()}",
+        f"ECONOMIC_VALIDITY_STATUS={result.economic_validity_status}",
+        f"FUTURE_OPERATOR_GO_PRESENT={str(result.future_operator_go_present).lower()}",
         f"PREREQUISITE_COUNT={result.summary['prerequisite_count']}",
         f"SATISFIED_COUNT={result.summary['satisfied_count']}",
         f"UNSATISFIED_COUNT={result.summary['unsatisfied_count']}",
@@ -1247,6 +1345,7 @@ def result_to_machine_lines(
         f"KRAKEN_LEGACY_EXCLUDED={str(result.kraken_legacy_excluded).lower()}",
         f"EVALUATED_MAIN_SHA={result.evaluated_main_sha}",
         f"SCHEMA_ID={result.schema_id}",
+        f"SCHEMA_VERSION={result.schema_version}",
         f"CAPABILITY_ID={result.capability_id}",
     ]
 
