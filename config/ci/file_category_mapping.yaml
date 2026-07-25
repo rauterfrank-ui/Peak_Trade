@@ -22,6 +22,21 @@ categories:
       - "src/ops/*_contract_v0.py"
       - "src/ops/*_contract_v1.py"
     runtime_class: seconds
+  shadow_preparation_readiness_gate_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/shadow_preparation_readiness_gate_v0.py"
+      - "config/ops/shadow_preparation_readiness_gate_v0.toml"
+      - "tests/ops/test_shadow_preparation_readiness_gate_v0.py"
+      - "tests/ops/test_step29u_canonical_semantics_contract_v0.py"
+      - "docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+      - ".github/workflows/ci.yml"
+      - "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"
+    runtime_class: minutes
+    notes: "Exact offline Shadow-preparation readiness-gate owner FOCUSED; executable producer not static_contract; central_src/config_paths FULL preserved for unrelated paths"
   scripts_focused:
     mode: FOCUSED
     globs:

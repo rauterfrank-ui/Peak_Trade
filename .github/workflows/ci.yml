@@ -59,7 +59,7 @@ jobs:
         id: ready_reuse_checkout
         if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         continue-on-error: true
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
@@ -209,7 +209,7 @@ jobs:
             code:
               # Picomatch extglob: offline ops contract modules use static_contract + Fast-Lane (PR #3984 lineage).
               - 'src/!(ops)/**'
-              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py)'
+              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py|shadow_preparation_readiness_gate_v0.py)'
               - 'templates/**'
               # Picomatch extglob (dorny/paths-filter): separate `!` lines do not exclude
               # matched files from `tests/**` (see PR #3728 validation). Split buckets:
@@ -218,6 +218,7 @@ jobs:
               - 'tests/webui/!(test_*_structure_contract*).py'
               - 'scripts/**'
               - 'config/**'
+              - '!config/ops/shadow_preparation_readiness_gate_v0.toml'
               - 'schemas/levelup/**'
               - 'requirements.txt'
               - 'requirements*.txt'
@@ -234,11 +235,12 @@ jobs:
               - 'tests/ops/test_*_env_schema_boundary*.py'
             non_webui_code:
               - 'src/!(ops|webui)/**'
-              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py)'
+              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py|shadow_preparation_readiness_gate_v0.py)'
               - 'templates/!(peak_trade_dashboard)/**'
               - 'tests/!(ci|ops|webui|fixtures)/**'
               - 'scripts/**'
               - 'config/**'
+              - '!config/ops/shadow_preparation_readiness_gate_v0.toml'
               - 'schemas/levelup/**'
               - 'requirements.txt'
               - 'requirements*.txt'

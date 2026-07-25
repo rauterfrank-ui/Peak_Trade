@@ -27,6 +27,7 @@ FOCUSED_CATEGORIES = frozenset(
     {
         "scripts_focused",
         "tests_focused",
+        "shadow_preparation_readiness_gate_focused",
         "ci_bootstrap_focused",
         "strategy_regime_owner_focused",
         "durable_completion_focused",
@@ -910,6 +911,39 @@ CANONICAL_PREFLIGHT_ASSEMBLY_FOCUSED_TESTS: tuple[str, ...] = (
 REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py",
     "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+)
+
+
+SHADOW_PREPARATION_READINESS_GATE_OWNER = "src/ops/shadow_preparation_readiness_gate_v0.py"
+SHADOW_PREPARATION_READINESS_GATE_CONFIG = "config/ops/shadow_preparation_readiness_gate_v0.toml"
+SHADOW_PREPARATION_READINESS_GATE_TEST_OWNER = (
+    "tests/ops/test_shadow_preparation_readiness_gate_v0.py"
+)
+SHADOW_PREPARATION_STEP29U_SEMANTICS_TEST_OWNER = (
+    "tests/ops/test_step29u_canonical_semantics_contract_v0.py"
+)
+SHADOW_PREPARATION_READINESS_GATE_DOCS = (
+    "docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md"
+)
+
+SHADOW_PREPARATION_READINESS_GATE_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        ".github/workflows/ci.yml",
+        "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py",
+    }
+)
+
+REQUIRED_SHADOW_PREPARATION_READINESS_GATE_TEST_OWNERS: tuple[str, ...] = (
+    SHADOW_PREPARATION_READINESS_GATE_TEST_OWNER,
+    SHADOW_PREPARATION_STEP29U_SEMANTICS_TEST_OWNER,
+)
+
+CANONICAL_SHADOW_PREPARATION_READINESS_GATE_FOCUSED_TESTS: tuple[str, ...] = (
+    *REQUIRED_SHADOW_PREPARATION_READINESS_GATE_TEST_OWNERS,
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
 BOUNDED_FUTURES_TESTNET_CONTRACT_OWNER = "src/ops/bounded_futures_testnet_contract_v0.py"
@@ -3843,6 +3877,57 @@ def _try_tiny_order_focused(files: list[str]) -> SelectionResult | None:
     )
 
 
+def _is_shadow_preparation_readiness_gate_scoped_path(path: str) -> bool:
+    return path in {
+        SHADOW_PREPARATION_READINESS_GATE_OWNER,
+        SHADOW_PREPARATION_READINESS_GATE_CONFIG,
+        SHADOW_PREPARATION_READINESS_GATE_TEST_OWNER,
+        SHADOW_PREPARATION_STEP29U_SEMANTICS_TEST_OWNER,
+    }
+
+
+def _is_shadow_preparation_readiness_gate_rebundle_path(path: str) -> bool:
+    return (
+        _is_shadow_preparation_readiness_gate_scoped_path(path)
+        or path == SHADOW_PREPARATION_READINESS_GATE_DOCS
+        or path in SHADOW_PREPARATION_READINESS_GATE_CI_POLICY_PATHS
+    )
+
+
+def _shadow_preparation_readiness_gate_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_SHADOW_PREPARATION_READINESS_GATE_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_SHADOW_PREPARATION_READINESS_GATE_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_SHADOW_PREPARATION_READINESS_GATE_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_shadow_preparation_readiness_gate_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_shadow_preparation_readiness_gate_scoped_path(f) for f in files):
+        return None
+    if not all(_is_shadow_preparation_readiness_gate_rebundle_path(f) for f in files):
+        return None
+    targets = _shadow_preparation_readiness_gate_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = ("src.ops.shadow_preparation_readiness_gate_v0",)
+    return SelectionResult(
+        "FOCUSED",
+        "shadow_preparation_readiness_gate_focused",
+        targets,
+        modules,
+    )
+
+
 def _try_okx_europe_adapter_lifecycle_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
@@ -5261,12 +5346,19 @@ def categorize(path: str) -> str:
         Path(p).name, "test_*_structure_contract*.py"
     ):
         return "static_contract"
+    if p in {
+        SHADOW_PREPARATION_READINESS_GATE_TEST_OWNER,
+        SHADOW_PREPARATION_STEP29U_SEMANTICS_TEST_OWNER,
+    }:
+        return "shadow_preparation_readiness_gate_focused"
     if p.startswith("tests/ci/") or p.startswith("tests/ops/"):
         return "static_contract"
     if p == "pytest.ini" or p.endswith("/conftest.py") or p == "tests/conftest.py":
         return "global_test_infra"
     if _is_strategy_regime_owner_prod(p):
         return "strategy_regime_owner_focused"
+    if p == SHADOW_PREPARATION_READINESS_GATE_OWNER:
+        return "shadow_preparation_readiness_gate_focused"
     if p.startswith("src/"):
         return "central_src"
     if p.startswith("scripts/"):
@@ -5287,6 +5379,10 @@ def categorize(path: str) -> str:
         return "packaging"
     if p == ".coveragerc":
         return "coverage_config"
+    if p == SHADOW_PREPARATION_READINESS_GATE_CONFIG:
+        return "shadow_preparation_readiness_gate_focused"
+    if p == SHADOW_PREPARATION_READINESS_GATE_DOCS:
+        return "shadow_preparation_readiness_gate_focused"
     if p == "Makefile" or p.startswith("config/") or p.startswith("schemas/levelup/"):
         return "config_paths"
     return "unknown"
@@ -5675,6 +5771,10 @@ def resolve_selection(
     if preflight_assembly is not None:
         return preflight_assembly
 
+    shadow_preparation_readiness_gate = _try_shadow_preparation_readiness_gate_focused(normalized)
+    if shadow_preparation_readiness_gate is not None:
+        return shadow_preparation_readiness_gate
+
     okx_europe_adapter_lifecycle = _try_okx_europe_adapter_lifecycle_focused(normalized)
     if okx_europe_adapter_lifecycle is not None:
         return okx_europe_adapter_lifecycle
@@ -5733,6 +5833,19 @@ def resolve_selection(
         if not all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "preflight_assembly_foreign_path_requires_full", ())
         return SelectionResult("FULL", "preflight_assembly_incomplete_or_missing_test_owner", ())
+
+    if any(_is_shadow_preparation_readiness_gate_scoped_path(f) for f in normalized):
+        if not all(_is_shadow_preparation_readiness_gate_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "shadow_preparation_readiness_gate_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "shadow_preparation_readiness_gate_incomplete_or_missing_targets",
+            (),
+        )
 
     if any(_is_okx_europe_adapter_lifecycle_scoped_path(f) for f in normalized):
         if not all(_is_okx_europe_adapter_lifecycle_rebundle_path(f) for f in normalized):

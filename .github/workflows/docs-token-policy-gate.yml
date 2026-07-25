@@ -28,7 +28,7 @@ jobs:
         id: ready_reuse_checkout
         if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         continue-on-error: true
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
