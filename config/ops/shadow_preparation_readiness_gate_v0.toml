@@ -44,6 +44,10 @@ runtime_activation_authorized = false
 live_authorized = false
 orders_authorized = false
 
+# Durable readiness projection output (generated evidence only).
+# Not an activation input. Not written by evaluate/import; requires explicit writer call.
+readiness_projection_output_path = "out/ops/shadow_preparation_readiness_projection_v0.json"
+
 required_preparation_gates = [
   "CANONICAL_STEP_29U_BOUND",
   "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS",

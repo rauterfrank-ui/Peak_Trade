@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import inspect
+import json
+import os
 import socket
 from pathlib import Path
 
@@ -16,9 +19,13 @@ from src.ops.shadow_preparation_readiness_gate_v0 import (
     CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY,
     DASHBOARD_BLOCKER_ID_CANONICAL,
     DASHBOARD_BLOCKER_STATE_OPEN,
+    DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH,
     DETERMINISTIC_EVALUATED_AT_DEFAULT,
     PACKAGE_MARKER,
     PRODUCER_FAMILY,
+    PROJECTION_OUTPUT_PATH_CONFIG_KEY,
+    PROJECTION_SCHEMA_ID,
+    PROJECTION_SCHEMA_VERSION,
     REQUIRED_MINDESTKONTRAKT_COMPONENT_IDS,
     RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED,
     SCHEMA_ID,
@@ -26,8 +33,11 @@ from src.ops.shadow_preparation_readiness_gate_v0 import (
     HistoricalSurfaceRecordV0,
     PreparationStatusV0,
     ShadowPreparationReadinessGateError,
+    build_shadow_preparation_readiness_projection_payload_v0,
     evaluate_shadow_preparation_readiness_gate_v0,
     load_shadow_preparation_readiness_gate_config_v0,
+    serialize_shadow_preparation_readiness_projection_v0,
+    write_shadow_preparation_readiness_projection_v0,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -624,3 +634,353 @@ def test_docs_declare_path_reference_fail_closed_tokens() -> None:
         "directories are rejected",
     ):
         assert token in text, token
+
+
+# ---------------------------------------------------------------------------
+# Durable readiness projection v0 (offline evidence projection only)
+# ---------------------------------------------------------------------------
+
+
+def _projection_out(tmp_path: Path, name: str = "projection.json") -> tuple[Path, str]:
+    parent = tmp_path / "out" / "ops"
+    parent.mkdir(parents=True, exist_ok=True)
+    rel = f"out/ops/{name}"
+    return tmp_path, rel
+
+
+def test_projection_valid_evaluation_writes_expected_document(tmp_path: Path) -> None:
+    root, rel = _projection_out(tmp_path)
+    evaluation = evaluate_shadow_preparation_readiness_gate_v0(
+        repo_root=REPO_ROOT, evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT
+    )
+    meta = write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    dest = root / rel
+    assert dest.is_file()
+    payload = json.loads(dest.read_text(encoding="utf-8"))
+    assert payload["schema_id"] == PROJECTION_SCHEMA_ID
+    assert payload["schema_version"] == PROJECTION_SCHEMA_VERSION
+    assert payload["evaluated_at"] == DETERMINISTIC_EVALUATED_AT_DEFAULT
+    assert payload["evaluation"] == json.loads(json.dumps(evaluation.to_dict()))
+    assert payload["blockers"] == list(EXPECTED_DEFAULT_BLOCKERS)
+    assert meta.output_path == rel
+    assert meta.schema_id == PROJECTION_SCHEMA_ID
+    assert meta.schema_version == PROJECTION_SCHEMA_VERSION
+
+
+def test_projection_fixed_inputs_byte_identical(tmp_path: Path) -> None:
+    root, rel = _projection_out(tmp_path, "a.json")
+    evaluation = evaluate_shadow_preparation_readiness_gate_v0(
+        repo_root=REPO_ROOT, evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT
+    )
+    write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    first = (root / rel).read_bytes()
+    write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    second = (root / rel).read_bytes()
+    assert first == second
+
+
+def test_projection_deterministic_json_ordering_and_trailing_newline(tmp_path: Path) -> None:
+    root, rel = _projection_out(tmp_path)
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+    write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    raw = (root / rel).read_bytes()
+    assert raw.endswith(b"\n")
+    assert not raw.endswith(b"\n\n")
+    text = raw.decode("utf-8")
+    expected = (
+        json.dumps(
+            json.loads(text),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        + "\n"
+    )
+    assert text == expected
+
+
+def test_projection_sha256_metadata_matches_exact_bytes(tmp_path: Path) -> None:
+    root, rel = _projection_out(tmp_path)
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+    meta = write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    raw = (root / rel).read_bytes()
+    assert meta.byte_length == len(raw)
+    assert meta.sha256 == hashlib.sha256(raw).hexdigest()
+
+
+def test_projection_uses_existing_evaluation_without_recomputation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, rel = _projection_out(tmp_path)
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+
+    def _blocked(*_a, **_k):  # pragma: no cover
+        raise AssertionError("evaluate must not be called by writer")
+
+    monkeypatch.setattr(
+        "src.ops.shadow_preparation_readiness_gate_v0.evaluate_shadow_preparation_readiness_gate_v0",
+        _blocked,
+    )
+    meta = write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    payload = json.loads((root / rel).read_text(encoding="utf-8"))
+    assert payload["evaluation"] == json.loads(json.dumps(evaluation.to_dict()))
+    assert meta.sha256
+
+
+def test_projection_does_not_mutate_evaluation_object(tmp_path: Path) -> None:
+    root, rel = _projection_out(tmp_path)
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+    before = evaluation.to_dict()
+    write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    assert evaluation.to_dict() == before
+
+
+def test_projection_preserves_blocked_non_activating_readiness_semantics(
+    tmp_path: Path,
+) -> None:
+    root, rel = _projection_out(tmp_path)
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+    _assert_blocked_non_activating(evaluation)
+    write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    payload = json.loads((root / rel).read_text(encoding="utf-8"))
+    assert payload["shadow_preparation_complete"] is False
+    assert payload["shadow_activatable"] is False
+    assert payload["step_29u_implemented"] is False
+    assert payload["canonical_step_29u_bound"] is False
+    for key in ACTIVATION_FLAG_KEYS:
+        assert payload[key] is False
+    assert payload["authority_effect"] == "NONE"
+    assert payload["activation_authority"] is False
+    assert payload["projection_only"] is True
+    assert payload["blockers"] == list(EXPECTED_DEFAULT_BLOCKERS)
+    _assert_blocked_non_activating(evaluation)
+
+
+def test_projection_absolute_path_fails_closed(tmp_path: Path) -> None:
+    evaluation = _default_result()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="PROJECTION_OUTPUT_PATH_ABSOLUTE"
+    ):
+        write_shadow_preparation_readiness_projection_v0(
+            evaluation=evaluation,
+            repo_root=tmp_path,
+            output_path=str(tmp_path / "out.json"),
+            evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+        )
+
+
+def test_projection_outside_repo_path_fails_closed(tmp_path: Path) -> None:
+    (tmp_path / "out" / "ops").mkdir(parents=True, exist_ok=True)
+    evaluation = _default_result()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="PROJECTION_OUTPUT_PATH_OUTSIDE_REPO"
+    ):
+        write_shadow_preparation_readiness_projection_v0(
+            evaluation=evaluation,
+            repo_root=tmp_path,
+            output_path="../outside_projection.json",
+            evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+        )
+
+
+def test_projection_empty_path_fails_closed(tmp_path: Path) -> None:
+    evaluation = _default_result()
+    with pytest.raises(ShadowPreparationReadinessGateError, match="PROJECTION_OUTPUT_PATH_EMPTY"):
+        write_shadow_preparation_readiness_projection_v0(
+            evaluation=evaluation,
+            repo_root=tmp_path,
+            output_path="   ",
+            evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+        )
+
+
+def test_projection_missing_parent_fails_closed(tmp_path: Path) -> None:
+    evaluation = _default_result()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="PROJECTION_OUTPUT_PARENT_MISSING"
+    ):
+        write_shadow_preparation_readiness_projection_v0(
+            evaluation=evaluation,
+            repo_root=tmp_path,
+            output_path="missing_parent/projection.json",
+            evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+        )
+
+
+def test_projection_directory_target_fails_closed(tmp_path: Path) -> None:
+    target_dir = tmp_path / "out" / "ops" / "projection_dir"
+    target_dir.mkdir(parents=True, exist_ok=True)
+    evaluation = _default_result()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="PROJECTION_OUTPUT_PATH_IS_DIRECTORY"
+    ):
+        write_shadow_preparation_readiness_projection_v0(
+            evaluation=evaluation,
+            repo_root=tmp_path,
+            output_path="out/ops/projection_dir",
+            evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+        )
+
+
+def test_projection_temp_write_failure_leaves_no_partial_destination(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, rel = _projection_out(tmp_path)
+    dest = root / rel
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+
+    import src.ops.shadow_preparation_readiness_gate_v0 as mod
+
+    def _fail_write(self, *_args, **_kwargs):
+        raise OSError("simulated temp write failure")
+
+    monkeypatch.setattr(mod.os, "write", _fail_write)  # unused safeguard
+
+    # Fail at flush/fsync stage after temp creation by patching fsync.
+    def _fail_fsync(_fd):
+        raise OSError("simulated temp write failure")
+
+    monkeypatch.setattr(mod.os, "fsync", _fail_fsync)
+    with pytest.raises(ShadowPreparationReadinessGateError, match="PROJECTION_TEMP_WRITE_FAILED"):
+        write_shadow_preparation_readiness_projection_v0(
+            evaluation=evaluation,
+            repo_root=root,
+            output_path=rel,
+            evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+        )
+    assert not dest.exists()
+    leftovers = list((root / "out" / "ops").glob(".tmp_*"))
+    assert leftovers == []
+
+
+def test_projection_atomic_replace_failure_preserves_previous_destination(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, rel = _projection_out(tmp_path)
+    dest = root / rel
+    previous = b'{"previous":true}\n'
+    dest.write_bytes(previous)
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+
+    import src.ops.shadow_preparation_readiness_gate_v0 as mod
+
+    def _fail_replace(src, dst):
+        raise OSError("simulated replace failure")
+
+    monkeypatch.setattr(mod.os, "replace", _fail_replace)
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="PROJECTION_ATOMIC_REPLACE_FAILED"
+    ):
+        write_shadow_preparation_readiness_projection_v0(
+            evaluation=evaluation,
+            repo_root=root,
+            output_path=rel,
+            evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+        )
+    assert dest.read_bytes() == previous
+    leftovers = list((root / "out" / "ops").glob(".tmp_*"))
+    assert leftovers == []
+
+
+def test_evaluation_alone_writes_no_projection_artifact(tmp_path: Path) -> None:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    before = {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}
+    result = evaluate_shadow_preparation_readiness_gate_v0(repo_root=root)
+    after = {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}
+    assert after == before
+    _assert_blocked_non_activating(result)
+    assert not (root / DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH).exists()
+
+
+def test_projection_writer_independent_of_cwd(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, rel = _projection_out(tmp_path)
+    other = tmp_path / "other_cwd"
+    other.mkdir()
+    monkeypatch.chdir(other)
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+    meta = write_shadow_preparation_readiness_projection_v0(
+        evaluation=evaluation,
+        repo_root=root,
+        output_path=rel,
+        evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT,
+    )
+    assert (root / rel).is_file()
+    assert not (other / rel).exists()
+    assert meta.output_path == rel
+
+
+def test_config_declares_default_projection_output_path() -> None:
+    cfg = load_shadow_preparation_readiness_gate_config_v0(CONFIG, repo_root=REPO_ROOT)
+    assert cfg[PROJECTION_OUTPUT_PATH_CONFIG_KEY] == DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH
+    assert not Path(DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH).is_absolute()
+
+
+def test_docs_declare_durable_projection_contract_tokens() -> None:
+    text = CONTRACT_DOC.read_text(encoding="utf-8")
+    for token in (
+        "PROJECTION_SCHEMA_ID=shadow_preparation_readiness_projection",
+        "PROJECTION_SCHEMA_VERSION=v0",
+        "PROJECTION_ONLY=true",
+        "EXPLICIT_WRITE_CALL_REQUIRED=true",
+        "NOT_READINESS_APPROVAL=true",
+        "NOT_ACTIVATION_AUTHORITY=true",
+        "NOT_SCHEDULER_INPUT=true",
+        "NOT_RUNTIME_COMMAND=true",
+        "NOT_DASHBOARD_AUTHORITY=true",
+        "PROJECTION_OUTPUT_PATH_EMPTY",
+        "write_shadow_preparation_readiness_projection_v0",
+        "out/ops/shadow_preparation_readiness_projection_v0.json",
+    ):
+        assert token in text, token
+
+
+def test_projection_payload_builder_uses_evaluation_to_dict() -> None:
+    evaluation = _default_result(evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT)
+    payload = build_shadow_preparation_readiness_projection_payload_v0(
+        evaluation=evaluation, evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT
+    )
+    assert payload["evaluation"] == evaluation.to_dict()
+    raw = serialize_shadow_preparation_readiness_projection_v0(payload)
+    assert raw.endswith(b"\n")
