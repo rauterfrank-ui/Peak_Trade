@@ -291,6 +291,46 @@ not alter evaluation blocker order or readiness outcome.
 The projection is **not**: STEP-29U implementation; readiness approval;
 activation authority; scheduler input; runtime command; or dashboard authority.
 
+### Durable projection reader / verifier (offline, non-activating)
+
+```text
+PROJECTION_VERIFICATION_SCHEMA_ID=shadow_preparation_readiness_projection_verification
+PROJECTION_VERIFICATION_SCHEMA_VERSION=v0
+PROJECTION_READER_VERIFIER_V0=true
+PROJECTION_ONLY=true
+AUTHORITY_EFFECT=NONE
+ACTIVATION_AUTHORITY=false
+ZERO_SIDE_EFFECTS=true
+NOT_STEP_29U_IMPLEMENTATION=true
+NOT_READINESS_APPROVAL=true
+NOT_ACTIVATION_AUTHORITY=true
+```
+
+`verify_shadow_preparation_readiness_projection_v0` reads one durable projection
+at an **explicit** repository-relative path or the configured default
+`readiness_projection_output_path`. It never searches arbitrary directories and
+never infers an alternate path.
+
+Fail-closed verification outcomes (`overall_status=BLOCKED`, `verified=false`)
+include:
+
+- `MISSING_PROJECTION`
+- `INVALID_PROJECTION`
+- `SCHEMA_MISMATCH`
+- missing mandatory fields / invalid enum values (`BLOCKED`)
+- `CONTRADICTORY_PROJECTION` (READY-like claim while required readiness
+  components remain non-ready)
+- evidence reference invalid / missing / path escape
+- `DIGEST_MISMATCH` when a digest is contractually present
+- `FUTURE_DATED` beyond permitted clock skew
+  (`PROJECTION_VERIFIER_CLOCK_SKEW_SECONDS`)
+- `STALE` beyond freshness max age
+  (`PROJECTION_VERIFIER_FRESHNESS_MAX_AGE_SECONDS`)
+
+A verified result may be returned for a valid current projection, but
+verification triggers **no** action, write, activation, scheduler, runtime, or
+order side effect.
+
 ## Next permitted action
 
 Continue offline Shadow-preparation classification only. No STEP 29U
