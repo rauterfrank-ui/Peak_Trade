@@ -70,27 +70,30 @@ def test_inventory_document_exists_and_declares_non_activating_pass_split_v0() -
     assert "SECOND_TRUTH_INTRODUCED=false" in text
 
 
-def test_inventory_keeps_canonical_absence_open_and_unbound_v0() -> None:
+def test_inventory_records_canonical_shadow_binding_without_activation_v0() -> None:
     text = _read(INVENTORY)
-    assert "CANONICAL_STEP_29U_ABSENT=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE" in text
-    assert "ABSENCE_MEANS_ACTIVATION_BINDING_ABSENT=true" in text
+    assert "CANONICAL_STEP_29U_BOUND=true" in text
+    assert (
+        "CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED" in text
+    )
+    assert "ABSENCE_TOKEN_NO_LONGER_EMITTED_WHEN_BOUND=true" in text
     assert "STEP_29U_IMPLEMENTED=true" in text
     assert "STEP_29U_BOUND_OFFLINE=true" in text
     assert "STEP_29U_VERIFIED_OFFLINE=true" in text
     assert "STEP_29U_ACTIVATED=false" in text
-    assert "CANONICAL_STEP_29U_BOUND=false" in text
+    assert "CANONICAL_STEP_29U_ACTIVATION_BOUND=false" in text
+    assert "ops.step_29u_canonical_shadow_binding_v0" in text
     for line in text.splitlines():
         stripped = line.strip()
         assert stripped != "STEP_29U_ACTIVATED=true"
-        assert stripped != "CANONICAL_STEP_29U_BOUND=true"
 
 
 def test_inventory_does_not_collapse_state_model_v0() -> None:
     text = _read(INVENTORY)
     for state in REQUIRED_STATES:
         assert state in text, state
-    assert "STEP_29U_STATE_AFTER_THIS_SLICE=VERIFIED_OFFLINE" in text
-    assert "STEP_29U_STATE_IMPLIES_ABSENCE_CLEARED=false" in text
+    assert "STEP_29U_STATE_AFTER_THIS_SLICE=CANONICALLY_BOUND_NOT_ACTIVATED" in text
+    assert "STEP_29U_STATE_IMPLIES_ABSENCE_CLEARED=true" in text
 
 
 def test_inventory_classifies_required_components_v0() -> None:
@@ -178,8 +181,8 @@ def test_current_focus_and_readiness_point_to_inventory_without_claiming_activat
     readiness = _read(READINESS_CONTRACT)
     assert "STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md" in focus
     assert "STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md" in readiness
-    assert "CANONICAL_STEP_29U_ABSENT" in focus
-    assert "OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE" in focus
+    assert "CANONICAL_STEP_29U_BOUND=true" in focus
+    assert "CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED" in focus
     assert "STEP_29U_IMPLEMENTED=true" in focus
     assert "STEP_29U_ACTIVATED=false" in focus
     assert "STEP_29U_ACTIVATED=true" not in focus

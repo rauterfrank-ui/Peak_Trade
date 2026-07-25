@@ -42,6 +42,9 @@ def test_a_valid_canonical_non_btc_okx_futures_shadow_cycle_passes() -> None:
     assert result.background_process_left_running is False
     assert result.reconciliation_audit_result
     assert PACKAGE_MARKER in result.package_marker
+    assert result.step_29u_bound is True
+    assert result.step_29u_present is True
+    assert result.canonical_step_29u_absent is False
 
 
 def test_b_btc_instrument_fails_closed() -> None:

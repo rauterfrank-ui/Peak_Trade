@@ -429,30 +429,49 @@ def evaluate_shadow_preparation_readiness_gate_v0(
         default=REQUIRED_PREPARATION_GATE_DEFAULTS,
     )
 
+    from src.ops.step_29u_canonical_shadow_binding_v0 import (
+        observe_canonical_step_29u_bound_v0,
+    )
+
+    step_29u_bound, _bind_reasons = observe_canonical_step_29u_bound_v0(repo_root=root)
+    step_29u_implemented = bool(step_29u_bound)
+
     unmet = list(required_gates)
+    if step_29u_bound and "CANONICAL_STEP_29U_BOUND" in unmet:
+        unmet.remove("CANONICAL_STEP_29U_BOUND")
+
     blockers = [
-        "CANONICAL_STEP_29U_ABSENT",
         "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED",
         "DASHBOARD_BLOCKER_OPEN:MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY",
         "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
         "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U",
         "NO_ACTIVATION_AUTHORIZED",
     ]
+    if not step_29u_bound:
+        blockers.insert(0, "CANONICAL_STEP_29U_ABSENT")
 
-    next_action = (
-        "CONTINUE_OFFLINE_SHADOW_PREPARATION_CLASSIFICATION_ONLY;"
-        "NO_STEP_29U_IMPLEMENTATION;"
-        "NO_ACTIVATION;"
-        "SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_ACTIVATION_STAGE"
-    )
+    if step_29u_bound:
+        next_action = (
+            "CONTINUE_OFFLINE_SHADOW_PREPARATION;"
+            "STEP_29U_CANONICALLY_BOUND_NOT_ACTIVATED;"
+            "NO_ACTIVATION;"
+            "SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_ACTIVATION_STAGE"
+        )
+    else:
+        next_action = (
+            "CONTINUE_OFFLINE_SHADOW_PREPARATION_CLASSIFICATION_ONLY;"
+            "NO_STEP_29U_IMPLEMENTATION;"
+            "NO_ACTIVATION;"
+            "SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_ACTIVATION_STAGE"
+        )
 
     return ShadowPreparationReadinessGateResultV0(
         schema_id=SCHEMA_ID,
         schema_version=SCHEMA_VERSION,
         evaluated_at=evaluated_at or DETERMINISTIC_EVALUATED_AT_DEFAULT,
         authority_effect=AUTHORITY_EFFECT_NONE,
-        canonical_shadow_mode_exists=False,
-        canonical_step_29u_bound=False,
+        canonical_shadow_mode_exists=bool(step_29u_bound),
+        canonical_step_29u_bound=bool(step_29u_bound),
         shadow_preparation_complete=False,
         shadow_activation_authorized=False,
         paper_activation_authorized=False,
@@ -469,7 +488,7 @@ def evaluate_shadow_preparation_readiness_gate_v0(
         dashboard_blocker_waived=False,
         dashboard_blocker_accepted_as_done=False,
         not_step_29u_implementation=True,
-        step_29u_implemented=False,
+        step_29u_implemented=step_29u_implemented,
         shadow_activatable=False,
         shadow_mode_allowed=False,
         separate_go_required_for_implementation=True,

@@ -43,10 +43,17 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Evidence:
   [`evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle/`](../../../evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle/)
 
+**Canonical Step 29U Shadow binding (non-activating):**
+
+- Owner: `ops.step_29u_canonical_shadow_binding_v0`
+- Entrypoint: `ops.okx_futures_shadow_no_order_entrypoint_v0` (Step-29U-bound)
+- Status: `CANONICAL_STEP_29U_BOUND=true`,
+  `CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED`,
+  `STEP_29U_ACTIVATED=false`
+
 **Still open / unchanged (activation and adjacent gates):**
 
-- `CANONICAL_STEP_29U_ABSENT` = OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
-  (activation binding absent; offline implementation is separate)
+- Activation binding remains unauthorized (`CANONICAL_STEP_29U_ACTIVATION_BOUND=false`)
 - Runtime = `BOUND_NOT_ACTIVATED`
 - Economic validity = not proven / blocked
 - `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` = OPEN (independent)

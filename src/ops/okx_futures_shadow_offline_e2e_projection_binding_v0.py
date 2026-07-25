@@ -4,8 +4,9 @@ Composition-only boundary:
   readiness gate → durable readiness projection write → reader/verifier →
   (if offline preparation path permitted) canonical no-order cycle.
 
-Activation readiness may remain BLOCKED (including CANONICAL_STEP_29U_ABSENT);
-that activation gap does not veto the offline no-order preparation cycle when
+Activation readiness may remain BLOCKED for non-29U gates; when verified
+Step 29U evidence is bound, CANONICAL_STEP_29U_ABSENT is not emitted.
+Activation gaps do not veto the offline no-order preparation cycle when
 the offline path remains permitted. Reuses existing canonical owners only. No
 second decision/risk/safety/execution/reconciliation/readiness/writer/reader/
 projection truth. Offline, non-activating.
@@ -449,8 +450,8 @@ def run_okx_futures_shadow_offline_e2e_projection_binding_v0(
         )
 
     # Activation readiness READY is not required for the offline no-order cycle.
-    # Gate blockers such as CANONICAL_STEP_29U_ABSENT remain activation truth and
-    # must not invent a second readiness truth or authorize Shadow activation.
+    # Remaining activation blockers must not invent a second readiness truth or
+    # authorize Shadow activation. Step 29U presence comes from the bound cycle.
     selected = (
         PRODUCTION_INSTRUMENT_ID
         if instrument_id is None or str(instrument_id).strip() == ""

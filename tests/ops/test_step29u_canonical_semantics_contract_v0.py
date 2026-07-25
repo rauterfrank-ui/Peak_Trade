@@ -35,16 +35,17 @@ def _step29u_body() -> str:
 def test_step29u_canonical_body_is_explicit_and_non_empty_v0() -> None:
     body = _step29u_body()
     assert "STEP29U_SEMANTICS_RATIFIED=true" in body
-    assert "SEMANTICALLY_DEFINED_BUT_OPERATIONALLY_UNBOUND" in body
+    assert "OFFLINE_COMPOSITION_BOUND_INTO_CANONICAL_SHADOW_NO_ORDER_NOT_ACTIVATED" in body
 
 
-def test_step29u_declares_unbound_and_unimplemented_invariants_v0() -> None:
+def test_step29u_declares_bound_implemented_not_activated_invariants_v0() -> None:
     body = _step29u_body()
     for marker in (
-        "CANONICAL_STEP_29U_BOUND=false",
-        "CANONICAL_SHADOW_MODE_EXISTS=false",
-        "STEP_29U_IMPLEMENTED=false",
+        "CANONICAL_STEP_29U_BOUND=true",
+        "CANONICAL_SHADOW_MODE_EXISTS=true",
+        "STEP_29U_IMPLEMENTED=true",
         "STEP_29U_ACTIVATED=false",
+        "CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED",
     ):
         assert marker in body, marker
 
@@ -83,17 +84,14 @@ def test_step29u_preserves_open_dashboard_blocker_v0() -> None:
     assert "DASHBOARD_BLOCKER_WAIVED=true" not in body
 
 
-def test_step29u_does_not_declare_canonical_runtime_session_or_scheduler_impl_v0() -> None:
+def test_step29u_does_not_declare_activation_or_scheduler_runtime_v0() -> None:
     body = _step29u_body()
     forbidden = (
         "CANONICAL_SHADOW_SESSION_IMPLEMENTED=true",
         "CANONICAL_SHADOW_SCHEDULER_JOB_BOUND=true",
         "RUNTIME_ACTIVATION_AUTHORIZED=true",
         "SHADOW_ACTIVATION_AUTHORIZED=true",
-        "STEP_29U_IMPLEMENTED=true",
         "STEP_29U_ACTIVATED=true",
-        "CANONICAL_STEP_29U_BOUND=true",
-        "CANONICAL_SHADOW_MODE_EXISTS=true",
     )
     for token in forbidden:
         assert token not in body, token
@@ -116,12 +114,12 @@ def test_step29u_preserves_economic_and_activation_locks_v0() -> None:
         assert marker in body, marker
 
 
-def test_readiness_contract_remains_authority_free_and_not_step29u_impl_v0() -> None:
+def test_readiness_contract_remains_authority_free_and_observes_binding_v0() -> None:
     text = _read(READINESS_CONTRACT)
     assert "AUTHORITY_EFFECT=NONE" in text
     assert "NOT_STEP_29U_IMPLEMENTATION=true" in text
-    assert "CANONICAL_STEP_29U_BOUND=false" in text
-    assert "CANONICAL_SHADOW_MODE_EXISTS=false" in text
+    assert "CANONICAL_STEP_29U_BOUND=true" in text
+    assert "CANONICAL_SHADOW_MODE_EXISTS=true" in text
     assert "READINESS_PRODUCER_CANNOT_BIND_STEP_29U=true" in text
     assert "READINESS_PRODUCER_CANNOT_IMPLEMENT_STEP_29U=true" in text
     assert "READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true" in text

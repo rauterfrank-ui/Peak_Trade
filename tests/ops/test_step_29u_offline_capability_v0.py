@@ -557,7 +557,10 @@ def test_w_preserved_inventory_contract_consistent() -> None:
     text = INVENTORY.read_text(encoding="utf-8")
     assert "STEP_29U_BINDING_IMPLEMENTATION_INVENTORY_V0=true" in text
     assert "STEP_29U_ACTIVATION_PASS=false" in text
-    assert "CANONICAL_STEP_29U_ABSENT=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE" in text
+    assert (
+        "CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED" in text
+    )
+    assert "CANONICAL_STEP_29U_BOUND=true" in text
     assert "STEP_29U_IMPLEMENTED=true" in text
     assert "STEP_29U_BOUND_OFFLINE=true" in text
     assert "ops.step_29u_offline_capability_v0" in text
