@@ -3304,6 +3304,109 @@ def test_selector_okx_europe_adapter_lifecycle_slice3_integration_owner_without_
     )
 
 
+SHADOW_PREPARATION_READINESS_GATE_AGGREGATE = (
+    "src/ops/shadow_preparation_readiness_gate_v0.py",
+    "config/ops/shadow_preparation_readiness_gate_v0.toml",
+    "tests/ops/test_shadow_preparation_readiness_gate_v0.py",
+    "docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md",
+)
+SHADOW_PREPARATION_READINESS_GATE_REQUIRED_TARGETS = (
+    "tests/ops/test_shadow_preparation_readiness_gate_v0.py",
+    "tests/ops/test_step29u_canonical_semantics_contract_v0.py",
+)
+
+
+def test_selector_shadow_preparation_readiness_gate_exact_aggregate_focused() -> None:
+    sel = _run_selector(*SHADOW_PREPARATION_READINESS_GATE_AGGREGATE)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "shadow_preparation_readiness_gate_focused"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_contract_focused"] == "true"
+    assert sel["tests_execute_pr_bounded_full"] == "false"
+    targets = _targets(sel)
+    for owner in SHADOW_PREPARATION_READINESS_GATE_REQUIRED_TARGETS:
+        assert owner in targets
+    assert "src.ops.shadow_preparation_readiness_gate_v0" in _modules(sel)
+
+
+def test_selector_shadow_preparation_readiness_gate_producer_only_focused() -> None:
+    sel = _run_selector("src/ops/shadow_preparation_readiness_gate_v0.py")
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "shadow_preparation_readiness_gate_focused"
+    targets = _targets(sel)
+    for owner in SHADOW_PREPARATION_READINESS_GATE_REQUIRED_TARGETS:
+        assert owner in targets
+
+
+def test_selector_shadow_preparation_readiness_gate_config_only_focused() -> None:
+    sel = _run_selector("config/ops/shadow_preparation_readiness_gate_v0.toml")
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "shadow_preparation_readiness_gate_focused"
+    assert "tests/ops/test_shadow_preparation_readiness_gate_v0.py" in _targets(sel)
+
+
+def test_selector_shadow_preparation_readiness_gate_owner_test_only_focused() -> None:
+    sel = _run_selector("tests/ops/test_shadow_preparation_readiness_gate_v0.py")
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "shadow_preparation_readiness_gate_focused"
+    assert "tests/ops/test_shadow_preparation_readiness_gate_v0.py" in _targets(sel)
+
+
+def test_selector_shadow_preparation_readiness_gate_docs_only_noop() -> None:
+    sel = _run_selector("docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md")
+    assert sel["test_selection_mode"] == "NO_OP"
+    assert sel["test_selection_reason"] == "docs_workflow_or_static_contract_only"
+
+
+def test_selector_shadow_preparation_readiness_gate_plus_unrelated_src_ops_full() -> None:
+    sel = _run_selector(
+        "src/ops/shadow_preparation_readiness_gate_v0.py",
+        "src/ops/unrelated_ops_module.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "shadow_preparation_readiness_gate_foreign_path_requires_full"
+    )
+
+
+def test_selector_shadow_preparation_readiness_gate_plus_unrelated_config_full() -> None:
+    sel = _run_selector(
+        "src/ops/shadow_preparation_readiness_gate_v0.py",
+        "config/ops/unrelated.toml",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "shadow_preparation_readiness_gate_foreign_path_requires_full"
+    )
+
+
+def test_selector_unrelated_src_ops_still_requires_full() -> None:
+    sel = _run_selector("src/ops/unrelated_ops_module.py")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "category_central_src_requires_full"
+
+
+def test_selector_unrelated_config_still_requires_full() -> None:
+    sel = _run_selector("config/ops/unrelated.toml")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "category_config_paths_requires_full"
+
+
+def test_selector_shadow_preparation_readiness_gate_filename_resemblance_not_focused() -> None:
+    sel = _run_selector("src/ops/shadow_preparation_readiness_gate_v1.py")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "category_central_src_requires_full"
+    assert sel["test_selection_reason"] != "shadow_preparation_readiness_gate_focused"
+
+
+def test_mapping_file_includes_shadow_preparation_readiness_gate_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "shadow_preparation_readiness_gate_focused:" in text
+    assert "src/ops/shadow_preparation_readiness_gate_v0.py" in text
+
+
 PE54_TINY_ORDER_FILES = (
     "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
     "tests/ops/test_bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",

@@ -24,7 +24,14 @@ CODE_TEST_GLOBS = (
 STATIC_CONTRACT_WEBUI_GLOB = "tests/webui/test_*_structure_contract*.py"
 STATIC_OPS_CONTRACT_GLOB = "src/ops/*_contract_v0.py"
 STATIC_OPS_CONTRACT_V1_GLOB = "src/ops/*_contract_v1.py"
-SRC_OPS_NON_CONTRACT_GLOB = "src/ops/!(*_contract_v0.py|*_contract_v1.py)"
+SRC_OPS_NON_CONTRACT_GLOB = (
+    "src/ops/!(*_contract_v0.py|*_contract_v1.py|shadow_preparation_readiness_gate_v0.py)"
+)
+SHADOW_PREPARATION_READINESS_GATE_OWNER = "src/ops/shadow_preparation_readiness_gate_v0.py"
+SHADOW_PREPARATION_READINESS_GATE_CONFIG = "config/ops/shadow_preparation_readiness_gate_v0.toml"
+SHADOW_PREPARATION_READINESS_GATE_CONFIG_NEGATION = (
+    "!config/ops/shadow_preparation_readiness_gate_v0.toml"
+)
 SRC_NON_OPS_GLOB = "src/!(ops)/**"
 WEBUI_SURFACE_GLOBS = (
     "src/webui/**",
@@ -36,7 +43,7 @@ WEBUI_SURFACE_GLOBS = (
 )
 NON_WEBUI_CODE_GLOBS = (
     "src/!(ops|webui)/**",
-    "src/ops/!(*_contract_v0.py|*_contract_v1.py)",
+    "src/ops/!(*_contract_v0.py|*_contract_v1.py|shadow_preparation_readiness_gate_v0.py)",
     "templates/!(peak_trade_dashboard)/**",
     "tests/!(ci|ops|webui|fixtures)/**",
     "scripts/**",
@@ -157,6 +164,10 @@ def _is_contract_only_fast_lane_candidate(paths: list[str]) -> bool:
 
 
 def _matches_code_filter(path: str) -> bool:
+    if path == SHADOW_PREPARATION_READINESS_GATE_OWNER:
+        return False
+    if path == SHADOW_PREPARATION_READINESS_GATE_CONFIG:
+        return False
     if path.startswith("templates/"):
         return True
     if _matches_static_contract_ops_offline(path):
@@ -183,6 +194,10 @@ def _matches_webui_surface(path: str) -> bool:
 
 
 def _matches_non_webui_code(path: str) -> bool:
+    if path == SHADOW_PREPARATION_READINESS_GATE_OWNER:
+        return False
+    if path == SHADOW_PREPARATION_READINESS_GATE_CONFIG:
+        return False
     if path in {"requirements.txt", "pyproject.toml", "uv.lock", "pytest.ini", "Makefile"}:
         return True
     if path.startswith("requirements") and path.endswith(".txt"):
@@ -286,6 +301,44 @@ def test_code_filter_narrows_src_ops_contract_v0_modules() -> None:
     assert f"'{SRC_OPS_NON_CONTRACT_GLOB}'" in code_block
     assert "'src/**'" not in code_block
     assert "'templates/**'" in code_block
+
+
+def test_code_filter_excludes_exact_shadow_preparation_readiness_gate_paths() -> None:
+    code_block = _code_block()
+    non_webui = _non_webui_code_block()
+    assert f"'{SRC_OPS_NON_CONTRACT_GLOB}'" in code_block
+    assert f"'{SRC_OPS_NON_CONTRACT_GLOB}'" in non_webui
+    assert f"'{SHADOW_PREPARATION_READINESS_GATE_CONFIG_NEGATION}'" in code_block
+    assert f"'{SHADOW_PREPARATION_READINESS_GATE_CONFIG_NEGATION}'" in non_webui
+    assert _matches_code_filter(SHADOW_PREPARATION_READINESS_GATE_OWNER) is False
+    assert _matches_non_webui_code(SHADOW_PREPARATION_READINESS_GATE_OWNER) is False
+    assert _matches_code_filter(SHADOW_PREPARATION_READINESS_GATE_CONFIG) is False
+    assert _matches_non_webui_code(SHADOW_PREPARATION_READINESS_GATE_CONFIG) is False
+    assert _matches_non_webui_code("src/ops/unrelated_ops_module.py") is True
+    assert _matches_non_webui_code("config/ops/unrelated.toml") is True
+    assert (
+        _run_matrix_for_paths(
+            [
+                SHADOW_PREPARATION_READINESS_GATE_OWNER,
+                SHADOW_PREPARATION_READINESS_GATE_CONFIG,
+                "tests/ops/test_shadow_preparation_readiness_gate_v0.py",
+                "docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md",
+            ]
+        )
+        is False
+    )
+    assert (
+        _run_matrix_for_paths(
+            [SHADOW_PREPARATION_READINESS_GATE_OWNER, "src/ops/unrelated_ops_module.py"]
+        )
+        is True
+    )
+    assert (
+        _run_matrix_for_paths(
+            [SHADOW_PREPARATION_READINESS_GATE_OWNER, "config/ops/unrelated.toml"]
+        )
+        is True
+    )
 
 
 @pytest.mark.parametrize(
