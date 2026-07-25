@@ -585,12 +585,34 @@ values are never synthesized. Bundle statuses: `BUNDLE_PASS`, `BUNDLE_BLOCKED`,
 ## Next permitted action
 
 The offline no-order path is **proven** (`PROVEN_POST_MERGE_600S_SOAK`) and is
-no longer the active blocker for that narrow scope. Next activation-related
-work requires a **separate operator GO** and must begin with STEP 29U
-binding/implementation inventory. No STEP 29U implementation from this
-contract alone. No activation. Runtime remains `BOUND_NOT_ACTIVATED`.
-Economic validity remains not proven / blocked. Dashboard blocker
-`MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` remains OPEN and separate.
+no longer the active blocker for that narrow scope.
+
+STEP 29U binding/implementation inventory (docs/contract only; non-implementing)
+is owned by
+[`STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md`](STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md).
+That inventory may claim `STEP_29U_INVENTORY_PASS` /
+`STEP_29U_BINDING_SPEC_PASS` and, once the offline capability is present,
+`STEP_29U_IMPLEMENTATION_PASS` for the offline non-activating chain only. It
+must **not** claim activation, must **not** clear
+`CANONICAL_STEP_29U_ABSENT` (activation prerequisite), and must **not**
+reinterpret the soak as STEP-29U activation/closure.
+
+This readiness producer remains classification-only:
+
+```text
+READINESS_PRODUCER_CANNOT_BIND_STEP_29U=true
+READINESS_PRODUCER_CANNOT_IMPLEMENT_STEP_29U=true
+READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true
+```
+
+Offline STEP 29U capability owner:
+`ops.step_29u_offline_capability_v0`
+(`scripts/ops/run_step_29u_offline_capability_v0.py`). Activation remains
+unauthorized. Next **activation-eligibility** work requires a **separate
+operator GO**. No activation from this readiness contract alone. Runtime
+remains `BOUND_NOT_ACTIVATED`. Economic validity remains not proven / blocked.
+Dashboard blocker `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` remains OPEN
+and separate.
 
 ## Explicit exclusions
 
