@@ -111,13 +111,13 @@
             >{{ chart.data_connection_state }}</span>
             <span class="mdl-v2-state" data-availability="{{ chart.availability }}" data-mdl-chart-availability="true">{{ chart.availability_label }}</span>
           </div>
-          <dl class="mdl-v2-chart__meta" data-mdl-ohlcv-meta="true" aria-label="OHLCV freshness">
+          <dl class="mdl-v2-chart__meta" data-mdl-ohlcv-meta="true" aria-label="Open candle OHLCV and freshness">
             <div>
               <dt>Interval</dt>
               <dd data-mdl-field="ohlcv_interval">{% if chart.interval %}{{ chart.interval }}{% else %}—{% endif %}</dd>
             </div>
             <div>
-              <dt>Latest candle</dt>
+              <dt>Candle start</dt>
               <dd data-mdl-field="ohlcv_latest_candle_at">{% if chart.last_timestamp %}{{ chart.last_timestamp }}{% else %}—{% endif %}</dd>
             </div>
             <div>
@@ -129,11 +129,28 @@
               <dd data-mdl-field="ohlcv_live_mark">{% if chart.live_mark_price is not none %}{{ chart.live_mark_price }}{% else %}—{% endif %}</dd>
             </div>
             <div>
-              <dt>Freshness</dt>
-              <dd
-                data-mdl-field="ohlcv_freshness"
-                data-availability="{{ chart.availability }}"
-              >{% if chart.freshness_state %}{{ chart.freshness_state|upper }}{% else %}{{ chart.availability_label }}{% endif %}</dd>
+              <dt>Revision</dt>
+              <dd data-mdl-field="ohlcv_revision">{% if chart.ohlcv_revision_kind %}{{ chart.ohlcv_revision_kind }}{% else %}—{% endif %}</dd>
+            </div>
+            <div>
+              <dt>Open</dt>
+              <dd data-mdl-field="ohlcv_open">{% if chart.open_price is not none %}{{ chart.open_price }}{% else %}—{% endif %}</dd>
+            </div>
+            <div>
+              <dt>High</dt>
+              <dd data-mdl-field="ohlcv_high">{% if chart.high_price is not none %}{{ chart.high_price }}{% else %}—{% endif %}</dd>
+            </div>
+            <div>
+              <dt>Low</dt>
+              <dd data-mdl-field="ohlcv_low">{% if chart.low_price is not none %}{{ chart.low_price }}{% else %}—{% endif %}</dd>
+            </div>
+            <div>
+              <dt>Close</dt>
+              <dd data-mdl-field="ohlcv_close">{% if chart.close_price is not none %}{{ chart.close_price }}{% else %}—{% endif %}</dd>
+            </div>
+            <div>
+              <dt>Volume</dt>
+              <dd data-mdl-field="ohlcv_volume">{% if chart.volume is not none %}{{ chart.volume }}{% else %}—{% endif %}</dd>
             </div>
           </dl>
           <div class="mdl-v2-chart__stage" role="img" aria-label="{{ chart.message }}" data-mdl-chart-stage="true">

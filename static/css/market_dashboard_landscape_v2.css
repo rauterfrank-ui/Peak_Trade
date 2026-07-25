@@ -55,12 +55,16 @@
   --mdl-ink: #e2e8f0;
   --mdl-muted: #8b9bb0;
   --mdl-warn: #fbbf24;
-  --mdl-chart-min: min(56vh, 580px);
+  /* Stable primary chart band — leaves room for Decision strip in 982px viewport. */
+  --mdl-stage-height: 300px;
+  --mdl-chart-chrome-band: 1.5rem;
+  --mdl-chart-meta-band: 5.5rem;
+  --mdl-chart-message-band: 1.25rem;
   box-sizing: border-box;
   max-width: 100vw;
-  min-height: calc(100vh - 36px);
+  min-height: 0;
   margin: 0;
-  padding: 4px 18px 16px;
+  padding: 4px 18px 10px;
   color: var(--mdl-ink);
   background: var(--mdl-bg);
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
@@ -96,7 +100,7 @@
   background: transparent;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 48px);
+  min-height: 0;
   gap: 0;
 }
 
@@ -170,9 +174,9 @@
   grid-template-columns: minmax(150px, 190px) minmax(0, 1fr) minmax(160px, 210px);
   column-gap: 28px;
   row-gap: 0;
-  min-height: var(--mdl-chart-min);
-  flex: 1 1 auto;
-  padding: 8px 0 18px;
+  min-height: 0;
+  flex: 0 0 auto;
+  padding: 4px 0 8px;
 }
 
 .mdl-v2-rail,
@@ -218,14 +222,15 @@
 .mdl-v2-primary {
   display: flex;
   flex-direction: column;
-  min-height: var(--mdl-chart-min);
+  min-height: 0;
+  flex: 0 0 auto;
 }
 
 .mdl-v2-chart {
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  min-height: var(--mdl-chart-min);
+  min-height: 0;
 }
 
 .mdl-v2-chart__chrome {
@@ -233,10 +238,10 @@
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   flex-wrap: nowrap;
-  min-height: 1.5rem;
-  max-height: 1.5rem;
+  min-height: var(--mdl-chart-chrome-band);
+  max-height: var(--mdl-chart-chrome-band);
   overflow: hidden;
 }
 
@@ -256,12 +261,12 @@
 .mdl-v2-chart__meta {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px 12px;
-  margin: 0 0 8px;
+  gap: 4px 10px;
+  margin: 0 0 6px;
   padding: 0;
-  /* Reserved fixed band so Captured/Mark text never pushes the chart down. */
-  min-height: 2.75rem;
-  max-height: 2.75rem;
+  /* Two reserved rows: provenance + open-candle O/H/L/C/V (no layout growth). */
+  min-height: var(--mdl-chart-meta-band);
+  max-height: var(--mdl-chart-meta-band);
   overflow: hidden;
   align-content: start;
 }
@@ -295,16 +300,14 @@
 
 @media (max-width: 1100px) {
   .mdl-v2-chart__meta {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    /* Two rows still reserved; do not grow beyond this band on poll. */
-    min-height: 5.5rem;
-    max-height: 5.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-height: 7.5rem;
+    max-height: 7.5rem;
   }
 }
 
 .mdl-v2-chart__stage {
   /* CSS-owned fixed box — polling must never change this height. */
-  --mdl-stage-height: calc(var(--mdl-chart-min) - 88px);
   flex: 0 0 auto;
   margin: 0;
   border-radius: 0;
@@ -314,7 +317,7 @@
   justify-content: flex-start;
   align-items: stretch;
   text-align: left;
-  padding: 8px 0 0;
+  padding: 4px 0 0;
   height: var(--mdl-stage-height);
   min-height: var(--mdl-stage-height);
   max-height: var(--mdl-stage-height);
@@ -467,10 +470,11 @@
 
 .mdl-v2-decision {
   background: transparent;
-  padding: 18px 0 14px;
+  padding: 8px 0 8px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  flex: 0 0 auto;
 }
 
 /* Phase 5 PR2: Decision → Why → Blockers primary reading flow */
@@ -553,8 +557,9 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: 32px;
-  padding: 16px 0 12px;
+  padding: 8px 0 8px;
   background: transparent;
+  flex: 0 0 auto;
 }
 
 .mdl-v2-ops__col {

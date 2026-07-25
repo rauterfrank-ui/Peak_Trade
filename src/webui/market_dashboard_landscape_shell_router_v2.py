@@ -204,7 +204,15 @@ def build_ohlcv_poll_response_v1(
             else "STALE"
             if availability is Availability.STALE or status in {"REFRESH_FAILED", "INVALID"}
             else "LIVE_DATA"
-            if ohlcv is not None and availability is Availability.AVAILABLE
+            if (
+                ohlcv is not None
+                and availability is Availability.AVAILABLE
+                and browser_payload is not None
+                and bool(ohlcv.get("candle_captured_at") or ohlcv.get("captured_at"))
+                and not bool(ohlcv.get("is_stale"))
+                and str(ohlcv.get("freshness_state") or "").lower() != "stale"
+                and bool(ohlcv.get("bars"))
+            )
             else "MISSING_SOURCE"
         ),
     }

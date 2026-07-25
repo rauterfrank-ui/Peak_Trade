@@ -558,9 +558,13 @@ def test_market_page_exposes_poll_contract_and_no_order_controls(
     )
     assert 'data-mdl-field="ohlcv_captured_at"' in html
     assert 'data-mdl-field="ohlcv_latest_candle_at"' in html
-    assert 'data-mdl-field="ohlcv_freshness"' in html
+    assert 'data-mdl-field="ohlcv_open"' in html
+    assert 'data-mdl-field="ohlcv_close"' in html
+    assert 'data-mdl-field="ohlcv_volume"' in html
+    assert 'data-mdl-field="ohlcv_revision"' in html
     assert 'data-mdl-field="ohlcv_live_mark"' in html
     assert "data-mdl-data-connection-state" in html
+    assert 'data-mdl-decision-strip="true"' in html
     assert "LIVE_DATA" in html or "MISSING_SOURCE" in html or "STALE" in html
     assert "OKX" in html
     assert INSTRUMENT in html
@@ -783,6 +787,9 @@ def test_same_timestamp_ohlc_change_moves_candle_series_digest_only(
 def test_js_layout_stability_and_update_classification_contracts() -> None:
     js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
     css = (REPO / "static/css/market_dashboard_landscape_v2.css").read_text(encoding="utf-8")
+    html = (REPO / "templates/peak_trade_dashboard/market_landscape_v2.html").read_text(
+        encoding="utf-8"
+    )
     assert "candle_series_digest" in js
     assert "metadata_digest" in js
     assert "SAME_TIMESTAMP_LAST_CANDLE_CHANGE" in js
@@ -791,6 +798,10 @@ def test_js_layout_stability_and_update_classification_contracts() -> None:
     assert "LAST_CANDLE_IN_PLACE" in js
     assert "volume" in js
     assert "data-mdl-chart-candle-volume" in js
+    assert 'data-mdl-field="ohlcv_open"' in js or 'data-mdl-field="ohlcv_open"' in html
+    assert 'data-mdl-field="ohlcv_close"' in html
+    assert 'data-mdl-field="ohlcv_volume"' in html
+    assert 'data-mdl-field="ohlcv_revision"' in html
     assert "resolveCssBox" in js
     assert "syncBackingStore" in js
     assert "devicePixelRatio" in js
@@ -805,11 +816,75 @@ def test_js_layout_stability_and_update_classification_contracts() -> None:
     assert "kraken" not in js.lower()
     assert "RECONNECTING" in js
     assert "MAX_BACKOFF_SECONDS" in js
-    # CSS owns fixed stage/meta bands.
+    # CSS owns fixed stage/meta bands; chart must not flex-grow the Decision strip away.
     assert "--mdl-stage-height" in css
     assert "max-height: var(--mdl-stage-height)" in css
-    assert "max-height: 2.75rem" in css
+    assert "--mdl-chart-meta-band" in css
+    assert "flex: 0 0 auto" in css
+    assert "min(56vh, 580px)" not in css
+    assert 'data-mdl-decision-strip="true"' in html
     assert "text-overflow: ellipsis" in css
+
+
+def test_live_data_requires_fresh_ohlcv_source_not_mark_cosmetics(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from src.webui.market_dashboard_landscape_v2.presenter import (
+        _ohlcv_data_connection_state,
+        serialize_ohlcv_browser_payload_v1,
+    )
+    from src.webui.market_dashboard_landscape_v2.availability import Availability
+
+    archive = tmp_path / "archive"
+    selection = _write_universe(archive)
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
+    materialize_selected_okx_ohlcv_readmodel_v1(
+        archive_root=archive,
+        selected_instrument=INSTRUMENT,
+        selected_provider_instrument_id=INSTRUMENT,
+        selected_venue="okx",
+        selection_bundle_id="bundle-a",
+        selection_path=selection,
+        client=_FakeOkxClient(captured_at="2026-07-25T00:00:00Z"),
+    )
+    path = archive / "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    doc["freshness_state"] = "fresh"
+    doc["is_stale"] = False
+    payload = serialize_ohlcv_browser_payload_v1(doc)
+    assert payload is not None
+    assert (
+        _ohlcv_data_connection_state(
+            browser_payload=payload,
+            ohlcv_payload=doc,
+            chart_availability=Availability.AVAILABLE,
+        )
+        == "LIVE_DATA"
+    )
+    # Stale OHLCV source must not claim LIVE_DATA even if captured_at text exists.
+    stale = dict(doc)
+    stale["freshness_state"] = "stale"
+    stale["is_stale"] = True
+    assert (
+        _ohlcv_data_connection_state(
+            browser_payload=payload,
+            ohlcv_payload=stale,
+            chart_availability=Availability.STALE,
+        )
+        == "STALE"
+    )
+    # Missing candle capture clock → not LIVE_DATA.
+    no_cap = dict(doc)
+    no_cap.pop("candle_captured_at", None)
+    no_cap["captured_at"] = None
+    assert (
+        _ohlcv_data_connection_state(
+            browser_payload=payload,
+            ohlcv_payload=no_cap,
+            chart_availability=Availability.AVAILABLE,
+        )
+        == "MISSING_SOURCE"
+    )
 
 
 def test_js_uses_chart_digest_alias_and_never_okx_host() -> None:

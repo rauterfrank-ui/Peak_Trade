@@ -64,13 +64,32 @@
     root.setAttribute("data-mdl-ohlcv-update-class", kind);
   }
 
+  function formatMetaNumber(value) {
+    if (value === undefined || value === null || value === "") return "—";
+    var n = Number(value);
+    if (!Number.isFinite(n)) return String(value);
+    if (Math.abs(n) > 0 && Math.abs(n) < 1e-4) return n.toExponential(3);
+    return String(n);
+  }
+
+  function lastBarFromPayload(payload) {
+    if (!payload || !Array.isArray(payload.bars) || !payload.bars.length) return null;
+    return payload.bars[payload.bars.length - 1];
+  }
+
   function updateMetaFromPayload(payload, availability, connectionState) {
     var intervalNode = root.querySelector('[data-mdl-field="ohlcv_interval"]');
     var latestNode = root.querySelector('[data-mdl-field="ohlcv_latest_candle_at"]');
     var capturedNode = root.querySelector('[data-mdl-field="ohlcv_captured_at"]');
     var markNode = root.querySelector('[data-mdl-field="ohlcv_live_mark"]');
-    var freshnessNode = root.querySelector('[data-mdl-field="ohlcv_freshness"]');
+    var revisionNode = root.querySelector('[data-mdl-field="ohlcv_revision"]');
+    var openNode = root.querySelector('[data-mdl-field="ohlcv_open"]');
+    var highNode = root.querySelector('[data-mdl-field="ohlcv_high"]');
+    var lowNode = root.querySelector('[data-mdl-field="ohlcv_low"]');
+    var closeNode = root.querySelector('[data-mdl-field="ohlcv_close"]');
+    var volumeNode = root.querySelector('[data-mdl-field="ohlcv_volume"]');
     var availNode = root.querySelector("[data-mdl-chart-availability]");
+    var last = lastBarFromPayload(payload);
     if (intervalNode) {
       intervalNode.textContent = (payload && payload.interval) || "—";
     }
@@ -78,7 +97,8 @@
       latestNode.textContent = (payload && payload.last_timestamp) || "—";
     }
     if (capturedNode) {
-      capturedNode.textContent = (payload && payload.captured_at) || "—";
+      capturedNode.textContent =
+        (payload && (payload.candle_captured_at || payload.captured_at)) || "—";
     }
     if (markNode) {
       var mark =
@@ -87,14 +107,17 @@
           : "—";
       markNode.textContent = mark;
     }
-    if (freshnessNode) {
-      var fresh =
-        (payload && payload.freshness_state && String(payload.freshness_state).toUpperCase()) ||
-        availability ||
+    if (revisionNode) {
+      revisionNode.textContent =
+        (payload && payload.ohlcv_revision_kind) ||
+        root.getAttribute("data-mdl-ohlcv-update-class") ||
         "—";
-      freshnessNode.textContent = fresh;
-      if (availability) freshnessNode.setAttribute("data-availability", availability);
     }
+    if (openNode) openNode.textContent = last ? formatMetaNumber(last.open) : "—";
+    if (highNode) highNode.textContent = last ? formatMetaNumber(last.high) : "—";
+    if (lowNode) lowNode.textContent = last ? formatMetaNumber(last.low) : "—";
+    if (closeNode) closeNode.textContent = last ? formatMetaNumber(last.close) : "—";
+    if (volumeNode) volumeNode.textContent = last ? formatMetaNumber(last.volume) : "—";
     if (availNode && availability) {
       availNode.textContent = availability;
       availNode.setAttribute("data-availability", availability);
@@ -538,6 +561,8 @@
       metaDigest
     );
     setUpdateClass(kind);
+    // Expose poll classification as revision label (metadata-only ≠ candle motion).
+    payload.ohlcv_revision_kind = payload.ohlcv_revision_kind || kind;
 
     if (kind === "NO_CHANGE") {
       updateMetaFromPayload(payload, availability, connectionState);
@@ -552,8 +577,11 @@
       if (canvas && mark !== undefined && mark !== null) {
         canvas.setAttribute("data-mdl-chart-live-mark", String(mark));
       }
-      if (canvas && payload.captured_at) {
-        canvas.setAttribute("data-mdl-chart-captured-at", String(payload.captured_at));
+      if (canvas && (payload.candle_captured_at || payload.captured_at)) {
+        canvas.setAttribute(
+          "data-mdl-chart-captured-at",
+          String(payload.candle_captured_at || payload.captured_at)
+        );
       }
       root.setAttribute("data-mdl-full-series-clearrect", "false");
       return;

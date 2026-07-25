@@ -374,6 +374,48 @@ def _present_source_health_compact(
     }
 
 
+def _ohlcv_source_feed_is_live(
+    *,
+    browser_payload: Mapping[str, Any] | None,
+    ohlcv_payload: Mapping[str, Any] | None,
+    chart_availability: Availability,
+) -> bool:
+    """LIVE_DATA requires a fresh OHLCV candle feed — not mark/captured_at cosmetics."""
+    if browser_payload is None or chart_availability is not Availability.AVAILABLE:
+        return False
+    source = ohlcv_payload or {}
+    if bool(source.get("is_stale")) or str(source.get("freshness_state") or "").lower() == "stale":
+        return False
+    candle_cap = source.get("candle_captured_at") or source.get("captured_at")
+    if not isinstance(candle_cap, str) or not candle_cap.strip():
+        return False
+    # Reject mark-only documents that never recorded a candle capture clock.
+    if source.get("candle_endpoint") in (None, "") and not source.get("bars"):
+        return False
+    return True
+
+
+def _ohlcv_data_connection_state(
+    *,
+    browser_payload: Mapping[str, Any] | None,
+    ohlcv_payload: Mapping[str, Any] | None,
+    chart_availability: Availability,
+) -> str:
+    if chart_availability is Availability.STALE:
+        return "STALE"
+    if chart_availability is Availability.MISSING_SOURCE:
+        return "MISSING_SOURCE"
+    if _ohlcv_source_feed_is_live(
+        browser_payload=browser_payload,
+        ohlcv_payload=ohlcv_payload,
+        chart_availability=chart_availability,
+    ):
+        return "LIVE_DATA"
+    if chart_availability in (Availability.INVALID, Availability.NOT_BOUND):
+        return "MISSING_SOURCE"
+    return "MISSING_SOURCE"
+
+
 def present_market_landscape_v2(
     page: MarketDashboardPageSnapshotV1,
     *,
@@ -566,7 +608,8 @@ def present_market_landscape_v2(
             "last_closed_timestamp": (ohlcv_payload or {}).get("last_closed_timestamp"),
             "first_timestamp": (browser_payload or {}).get("first_timestamp"),
             "last_timestamp": (browser_payload or {}).get("last_timestamp"),
-            "captured_at": (browser_payload or ohlcv_payload or {}).get("captured_at"),
+            "captured_at": (browser_payload or ohlcv_payload or {}).get("candle_captured_at")
+            or (browser_payload or ohlcv_payload or {}).get("captured_at"),
             "effective_at": (browser_payload or ohlcv_payload or {}).get("effective_at"),
             "payload_digest": (browser_payload or {}).get("payload_digest"),
             "chart_digest": (browser_payload or {}).get("chart_digest"),
@@ -574,19 +617,31 @@ def present_market_landscape_v2(
             "metadata_digest": (browser_payload or {}).get("metadata_digest"),
             "live_mark_price": (browser_payload or {}).get("live_mark_price"),
             "live_price_kind": (browser_payload or {}).get("live_price_kind"),
+            "ohlcv_revision_kind": (browser_payload or ohlcv_payload or {}).get(
+                "ohlcv_revision_kind"
+            ),
+            "open_price": None
+            if not browser_payload or not browser_payload.get("bars")
+            else browser_payload["bars"][-1].get("open"),
+            "high_price": None
+            if not browser_payload or not browser_payload.get("bars")
+            else browser_payload["bars"][-1].get("high"),
+            "low_price": None
+            if not browser_payload or not browser_payload.get("bars")
+            else browser_payload["bars"][-1].get("low"),
+            "close_price": None
+            if not browser_payload or not browser_payload.get("bars")
+            else browser_payload["bars"][-1].get("close"),
+            "volume": None
+            if not browser_payload or not browser_payload.get("bars")
+            else browser_payload["bars"][-1].get("volume"),
             "is_stale": bool((ohlcv_payload or {}).get("is_stale")),
             "poll_path": OHLCV_POLL_PATH,
             "poll_interval_seconds": _ohlcv_poll_interval_seconds(),
-            "data_connection_state": (
-                "STALE"
-                if chart_availability is Availability.STALE
-                else "MISSING_SOURCE"
-                if chart_availability is Availability.MISSING_SOURCE
-                else "LIVE_DATA"
-                if browser_payload is not None and chart_availability is Availability.AVAILABLE
-                else "MISSING_SOURCE"
-                if chart_availability in (Availability.INVALID, Availability.NOT_BOUND)
-                else "MISSING_SOURCE"
+            "data_connection_state": _ohlcv_data_connection_state(
+                browser_payload=browser_payload,
+                ohlcv_payload=ohlcv_payload,
+                chart_availability=chart_availability,
             ),
         },
         "timeline": {
