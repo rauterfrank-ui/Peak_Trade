@@ -35,7 +35,17 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 - `STEP_29U_ACTIVATED=false`, `CANONICAL_STEP_29U_ACTIVATION_BOUND=false`
 - Runtime = `BOUND_NOT_ACTIVATED`; no Scheduler/Paper/Testnet/Live/network GO
-- Next: `STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO`
+
+**Eligibility inventory (implemented, non-activating):**
+
+- Owner: `ops.step_29u_activation_eligibility_inventory_v0`
+- Contract: [STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md](../runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md)
+- Command: `python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py`
+- Canonical result remains `ACTIVATION_ELIGIBLE=false` (inventory only — not Activation)
+- Current blockers include: audit provenance absent, economic validity not proven,
+  explicit future Operator-GO absent
+- Next action: separate operator review/merge only; Activation remains forbidden
+  without a new explicit Operator-GO
 
 ---
 

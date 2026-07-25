@@ -351,9 +351,20 @@ Composition root chain:
 
 ```text
 IMPLEMENTED_BINDING=STEP_29U_CANONICAL_SHADOW_BINDING_V0
-NEXT_AUTHORIZED_SLICE=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO
+IMPLEMENTED_ELIGIBILITY_INVENTORY=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0
+ELIGIBILITY_INVENTORY_OWNER=ops.step_29u_activation_eligibility_inventory_v0
+ELIGIBILITY_INVENTORY_COMMAND=python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py
+ELIGIBILITY_INVENTORY_CONTRACT=docs/ops/runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md
+ACTIVATION_ELIGIBLE=false
+STEP_29U_ACTIVATED=false
 SEPARATE_OPERATOR_GO_REQUIRED=true
+NEXT_AUTHORIZED_SLICE=SEPARATE_OPERATOR_REVIEW_ONLY_NO_ACTIVATION
 ```
+
+The eligibility inventory is **offline / non-activating**. It records blockers
+(including absent future Operator-GO, economic validity not proven, and missing
+STEP 29U audit contract) and must not be read as Activation, Activation Binding,
+or Activation Readiness approval.
 
 Activation, Scheduler, network Runtime, Paper/Testnet/Live remain unauthorized.
 
