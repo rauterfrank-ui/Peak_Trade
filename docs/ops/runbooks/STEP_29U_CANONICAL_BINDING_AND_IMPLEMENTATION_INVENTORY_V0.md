@@ -47,6 +47,7 @@ STEP_29U_IMPLEMENTATION_PATH=src/ops/step_29u_offline_capability_v0/__init__.py
 | Preparation gap classification | `ops.shadow_preparation_readiness_gate_v0` + `config/ops/shadow_preparation_readiness_gate_v0.toml` | Classifies absence / non-readiness only |
 | Binding + implementation inventory contract (this file) | `docs/ops/runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md` | State model + pass predicates; not semantics SSOT |
 | Offline no-order operational evidence | `evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/` | Proves offline HOLD path only |
+| Post-merge Step 29U bound Shadow soak evidence | `evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/` | Proves bound entrypoint soak; not activation |
 
 ```text
 STEP_29U_SEMANTICS_SSOT=runbook.STEP_29U
@@ -274,6 +275,36 @@ not operationally bound. The soak proves a separately permitted offline
 no-order HOLD composition while that activation blocker remains truthful.
 Clearing absence would require a later STEP 29U operational binding /
 implementation under separate Operator-GO — not offline soak evidence alone.
+
+### Post-merge Step 29U bound Shadow soak (after #5550)
+
+Durable evidence:
+`evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/`
+
+```text
+TESTED_MERGE_SHA=cd6d465c83c6c65733e5d85238aa223d4bffd548
+CANONICAL_COMMAND=python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow
+SOAK_MONOTONIC_ELAPSED_SECONDS=600.1486984169969
+TOTAL_CYCLES=1299
+FULL_CHAIN_CYCLES=1299
+TERMINAL_HOLD_CYCLES=1299
+STEP_29U_VERIFIED_CYCLES=1299
+STEP_29U_ABSENT_COUNT=0
+STEP_29U_INVALID_COUNT=0
+ORDERS_CREATED=false
+ORDERS_SUBMITTED=false
+NETWORK_USED=false
+RUNTIME_ACTIVATED=false
+SCHEDULER_ACTIVATED=false
+STEP_29U_BOUND_SOAK_PROVES_COMPOSITION_REMAINS_BOUND=true
+STEP_29U_BOUND_SOAK_DOES_NOT_AUTHORIZE_ACTIVATION=true
+STEP_29U_ACTIVATED=false
+NEXT_FORMALLY_PERMISSIBLE_STEP=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO
+```
+
+This evidence proves the merged canonical binding remains present and verified
+across a ≥600s monotonic offline soak. It does **not** collapse into activation
+PASS and does **not** reopen the historical #5544 soak as Step-29U closure.
 
 ## 7. External blocker policy
 

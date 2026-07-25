@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-07-25
+last_updated: 2026-07-26
 ---
 
 # Current focus
@@ -11,6 +11,31 @@ last_updated: 2026-07-25
 This is **not** produced by Workflow Officer or Update Officer; officers aggregate checks and summaries — they do not replace this note.
 
 **Related:** [Finish Plan (MVP→v1.0)](FINISH_PLAN.md) · [Truth Core](../registry/TRUTH_CORE.md) · [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs (index)](../release/README.md) · [Chat continuity bootstrap](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md)
+
+---
+
+## Post–#5550 Step 29U canonical Shadow binding soak (2026-07-26, evidence closeout)
+
+**Narrow proven result only** (not Shadow/Paper/Testnet/Live activation):
+
+- Tested merge SHA: `cd6d465c83c6c65733e5d85238aa223d4bffd548` (PR **#5550** merged on `origin/main`).
+- Canonical command:
+  `python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow`
+- Monotonic soak: **600.148698s**; **1299/1299** full-chain HOLD cycles;
+  Step 29U verified on every cycle; `STEP_29U_ABSENT_COUNT=0`.
+- Guarantees observed: no orders, no network, no runtime/scheduler activation;
+  BTC/Spot/Kraken-legacy excluded.
+- Durable evidence:
+  [`evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/`](../../../evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/)
+- Owner surfaces:
+  [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](../runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md),
+  [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](../runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md).
+
+**Still locked / next formally permissible step:**
+
+- `STEP_29U_ACTIVATED=false`, `CANONICAL_STEP_29U_ACTIVATION_BOUND=false`
+- Runtime = `BOUND_NOT_ACTIVATED`; no Scheduler/Paper/Testnet/Live/network GO
+- Next: `STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO`
 
 ---
 

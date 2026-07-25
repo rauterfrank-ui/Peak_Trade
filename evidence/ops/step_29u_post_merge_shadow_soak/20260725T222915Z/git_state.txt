@@ -1,0 +1,7 @@
+WORKTREE=/Users/frnkhrz/Peak_Trade/.worktrees/step_29u_post_merge_shadow_soak_closeout_v0
+BRANCH=ops/step-29u-post-merge-shadow-soak-closeout-v0
+HEAD=cd6d465c83c6c65733e5d85238aa223d4bffd548
+ORIGIN_MAIN=cd6d465c83c6c65733e5d85238aa223d4bffd548
+BASE=origin/main@cd6d465c83c6c65733e5d85238aa223d4bffd548
+RECORDED_AT_UTC=2026-07-25T22:29:15Z
+SOAK_INVOCATION_MODE=subprocess_canonical_cli

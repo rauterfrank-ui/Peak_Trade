@@ -1,5 +1,19 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260726-step-29u-post-merge-shadow-soak"></a>
+- **EV-20260726-STEP-29U-POST-MERGE-SHADOW-SOAK** | Date: 2026-07-26 | Owner: ops | Scope: docs/evidence capability closeout | Risk: LOW
+  - Source: [Durable soak bundle](../../evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/) · Contract: [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md) · Merge: `cd6d465c83c6c65733e5d85238aa223d4bffd548` (PR **#5550**)
+
+  - Claim: Post-merge canonical OKX Futures Shadow no-order entrypoint with Step 29U
+    truthfully bound — monotonic soak 600.148698s; 1299/1299 full-chain HOLD
+    cycles; Step 29U verified every cycle; `STEP_29U_ABSENT_COUNT=0`;
+    orders/network/runtime/scheduler activation = false; BTC/Spot/Kraken-legacy
+    excluded. Canonical command:
+    `python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow`.
+  - Non-claims: does **not** activate Step 29U / Shadow / Paper / Testnet / Live;
+    does **not** prove economic validity; runtime remains `BOUND_NOT_ACTIVATED`;
+    activation eligibility inventory remains separate Operator-GO only.
+
 <a id="ev-20260725-okx-shadow-offline-no-order-600s-soak"></a>
 - **EV-20260725-OKX-SHADOW-OFFLINE-NO-ORDER-600S-SOAK** | Date: 2026-07-25 | Owner: ops | Scope: docs/evidence-only closeout | Risk: LOW  
   - Source: [Durable soak bundle](../../evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/) · Contract: [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md) · PR: [#5544](https://github.com/rauterfrank-ui/Peak_Trade/pull/5544) · Merge: `bc7b9309b1f7e2e1411e22b483388331f355d0dd`  

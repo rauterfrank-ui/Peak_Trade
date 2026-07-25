@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade/.worktrees/step_29u_post_merge_shadow_soak_closeout_v0
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 36 items
+
+tests/ops/test_step_29u_canonical_shadow_binding_v0.py ......            [ 16%]
+tests/ops/test_okx_futures_shadow_no_order_entrypoint_v0.py ...........  [ 47%]
+tests/ops/test_step29u_binding_implementation_inventory_contract_v0.py . [ 50%]
+..........                                                               [ 77%]
+tests/ops/test_step29u_canonical_semantics_contract_v0.py ........       [100%]
+
+============================== 36 passed in 1.53s ==============================
