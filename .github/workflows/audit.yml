@@ -9,33 +9,70 @@ on:
   merge_group:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+
 jobs:
   audit:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
+      - name: Checkout base tooling for Ready reuse verifier
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Exact-head Ready reuse
+        id: reuse
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 scripts/ci/exact_head_ready_reuse.py \
+            --repo "${{ github.repository }}" \
+            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --contexts "audit" \
+            --required-config config/ci/required_status_checks.json \
+            --report-json out/ci/exact_head_ready_reuse_audit.json \
+            --write-github-output
+
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ steps.reuse.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: audit — exact-head required context already success"
+
       - name: Checkout
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
 
       - name: Validate PR final report formatting
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         run: |
           chmod +x scripts/validate_pr_report_format.sh
           chmod +x scripts/automation/validate_all_pr_reports.sh
           bash scripts/automation/validate_all_pr_reports.sh
 
       - name: Set up Python
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install (minimal)
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Determine whether audit is enforceable (docs-only scope)
         id: scope
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -53,6 +90,7 @@ jobs:
 
       - name: Run pip-audit (conditional enforcement)
         id: audit
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         shell: bash
         run: |
           set +e
@@ -78,6 +116,7 @@ jobs:
           exit "$RC"
 
       - name: Run audit script (full checks)
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         env:
           OPENAI_API_KEY: "DUMMY_CI_VALUE"
           LIVE_CONFIRM_TOKEN: "DUMMY_CI_VALUE"
@@ -86,12 +125,13 @@ jobs:
           ./scripts/ops/run_audit.sh || echo "⚠️ run_audit.sh findings (non-blocking for pip-audit gate)"
 
       - name: Ops Merge Log Guard (non-blocking for legacy)
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         run: |
           python scripts/audit/check_ops_merge_logs.py \
             || echo "⚠️ Ops merge log violations found (legacy) — non-blocking"
 
       - name: Upload audit artifacts (even if failed)
-        if: always()
+        if: ${{ always() && steps.reuse.outputs.reuse != 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: audit-artifacts

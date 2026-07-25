@@ -28,7 +28,60 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+  actions: read
+
 jobs:
+  # ============================================================================
+  # Exact-head Ready reuse preflight (always runs; reuse=true only on ready_for_review
+  # when Draft already produced successful required contexts for this exact head SHA).
+  # Never job-level-skips required checks; consumers short-circuit heavy steps instead.
+  # ============================================================================
+  ready-exact-head-reuse:
+    name: ready-exact-head-reuse
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      reuse: ${{ steps.verify.outputs.reuse }}
+    steps:
+      - name: Checkout base tooling (not PR head)
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Evaluate exact-head Ready reuse
+        id: verify
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" != "pull_request" ] || [ "${{ github.event.action }}" != "ready_for_review" ]; then
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            echo "EXACT_HEAD_READY_REUSE=false reason=not_ready_for_review"
+            exit 0
+          fi
+          python3 scripts/ci/exact_head_ready_reuse.py \
+            --repo "${{ github.repository }}" \
+            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --contexts "tests (3.11)" "strategy-smoke" \
+            --required-config config/ci/required_status_checks.json \
+            --report-json out/ci/exact_head_ready_reuse_report.json \
+            --write-github-output
+
+      - name: Upload reuse report
+        if: ${{ always() && github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: exact-head-ready-reuse-report
+          path: out/ci/exact_head_ready_reuse_report.json
+          if-no-files-found: ignore
+          retention-days: 14
+
   # ============================================================================
   # Change Detection (pragmatic flow)
   # ============================================================================
@@ -47,6 +100,7 @@ jobs:
   # ============================================================================
   changes:
     runs-on: ubuntu-latest
+    needs: [ready-exact-head-reuse]
     outputs:
       code_changed: ${{ steps.set_outputs.outputs.code_changed }}
       run_matrix: ${{ steps.set_outputs.outputs.run_matrix }}
@@ -252,17 +306,25 @@ jobs:
     name: Evidence Validator
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: changes
+    needs: [changes, ready-exact-head-reuse]
     steps:
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: Evidence Validator skipped heavy work — exact-head required contexts already success"
+
       - name: Checkout
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
 
       - name: Set up Python 3.11
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Cache pip
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -271,11 +333,13 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Generate and validate Evidence Pack (P5B)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         run: scripts/ci/evidence_pack_validation_smoke.sh
 
   # ============================================================================
@@ -285,19 +349,27 @@ jobs:
     name: Fast-Lane
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: changes
+    needs: [changes, ready-exact-head-reuse]
     steps:
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: Fast-Lane skipped heavy work — exact-head required contexts already success"
+
       - name: Checkout
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python 3.11
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Cache pip
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -306,17 +378,19 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
       - name: Stability smoke (fast gate)
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' }}
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
       - name: Durable completion bounded Fast-Lane (diff-aware CONTRACT_FOCUSED)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.fast_lane_contract_mode == 'DURABLE_COMPLETION_BOUNDED' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.fast_lane_contract_mode == 'DURABLE_COMPLETION_BOUNDED' }}
         run: |
           set -euo pipefail
           PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
@@ -326,7 +400,7 @@ jobs:
           pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
 
       - name: Focused Fast-Lane contract check (diff-aware FOCUSED PRs)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.workflow_only != 'true' && needs.changes.outputs.fast_lane_contract_mode != 'DURABLE_COMPLETION_BOUNDED' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.workflow_only != 'true' && needs.changes.outputs.fast_lane_contract_mode != 'DURABLE_COMPLETION_BOUNDED' }}
         run: |
           set -euo pipefail
           PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
@@ -341,7 +415,7 @@ jobs:
           fi
 
       - name: Workflow contract tests (diff-aware CONTRACT_FOCUSED)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.fast_lane_contract_mode == 'CONTRACT_FOCUSED' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.fast_lane_contract_mode == 'CONTRACT_FOCUSED' }}
         run: |
           set -euo pipefail
           PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
@@ -351,7 +425,7 @@ jobs:
           pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
 
       - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract, src/ops contract modules via tests)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.webui_surface_only != 'true' && needs.changes.outputs.tests_execute_focused != 'true' && needs.changes.outputs.workflow_only != 'true' && needs.changes.outputs.fast_lane_contract_mode == 'FULL_STATIC_CONTRACTS' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.webui_surface_only != 'true' && needs.changes.outputs.tests_execute_focused != 'true' && needs.changes.outputs.workflow_only != 'true' && needs.changes.outputs.fast_lane_contract_mode == 'FULL_STATIC_CONTRACTS' }}
         run: |
           set -euo pipefail
           PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
@@ -402,7 +476,7 @@ jobs:
           exit "$SHARD_FAIL"
 
       - name: WebUI bounded pytest (market/observability surface)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.webui_surface_changed == 'true' && needs.changes.outputs.run_matrix != 'true' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.webui_surface_changed == 'true' && needs.changes.outputs.run_matrix != 'true' }}
         env:
           PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED: ""
           PEAK_TRADE_LAST_PAPER_RUN_BUNDLE_ROOT: ""
@@ -438,7 +512,7 @@ jobs:
     name: tests (${{ matrix.python-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    needs: changes
+    needs: [changes, ready-exact-head-reuse]
     # IMPORTANT: No job-level if condition - matrix jobs must always be created
     # to satisfy branch protection rules (e.g., "tests (3.11)" check)
 
@@ -449,8 +523,13 @@ jobs:
         python-version: ['3.9', '3.10', '3.11']
 
     steps:
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: tests (${{ matrix.python-version }}) — exact-head required contexts already success"
+
       - name: Diff-aware test selection summary
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' }}
         run: |
           echo "test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
           echo "test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}"
@@ -464,19 +543,19 @@ jobs:
           echo "focused_module_imports=${{ needs.changes.outputs.focused_module_imports }}"
 
       - name: NO_OP — skip full matrix tests (diff-aware)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
         run: |
           echo "NO_OP diff-aware selection — skipping full matrix for Python ${{ matrix.python-version }}"
           echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
 
       - name: Fail closed on invalid test selection
-        if: ${{ needs.changes.outputs.tests_execute_invalid == 'true' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_invalid == 'true' }}
         run: |
           echo "Invalid test selection — fail-closed"
           exit 1
 
       - name: MATRIX_CONTRACT_FOCUSED — non-canonical version ack (diff-aware)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11' }}
         run: |
           echo "MATRIX_CONTRACT_FOCUSED — required check ack on Python ${{ matrix.python-version }}"
           echo "reason=${{ needs.changes.outputs.matrix_contract_reason }}"
@@ -484,19 +563,19 @@ jobs:
           echo "targets=${{ needs.changes.outputs.matrix_contract_pytest_targets }}"
 
       - name: Checkout
-        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
-        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
-        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -505,14 +584,14 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
       - name: "Stability Smoke Tests (Fast Gate)"
-        if: ${{ needs.changes.outputs.tests_execute_no_op != 'true' && (needs.changes.outputs.tests_execute_pr_bounded_full == 'true' || needs.changes.outputs.tests_execute_exhaustive_full == 'true' || needs.changes.outputs.tests_execute_contract_focused == 'true') }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && (needs.changes.outputs.tests_execute_pr_bounded_full == 'true' || needs.changes.outputs.tests_execute_exhaustive_full == 'true' || needs.changes.outputs.tests_execute_contract_focused == 'true') }}
         id: stability_smoke
         shell: bash
         run: |
@@ -521,14 +600,14 @@ jobs:
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
       - name: "Import and collection smoke (matrix version gate)"
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_pr_bounded_full == 'true' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_pr_bounded_full == 'true' }}
         run: |
           set -euo pipefail
           python -c "import src"
           pytest --collect-only -q tests/test_stability_smoke.py
 
       - name: "Smoke: RL v0.1 Contract Test"
-        if: ${{ needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
         id: rl_v0_1_smoke
         shell: bash
         run: |
@@ -536,14 +615,14 @@ jobs:
           pytest -q tests/test_rl_v0_1_smoke.py
 
       - name: Validate RL v0.1 Contract
-        if: ${{ needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
         id: rl_v0_1_contract
         shell: bash
         run: |
           bash scripts/validate_rl_v0_1.sh
 
       - name: Upload RL validation reports on failure
-        if: ${{ failure() && runner.os == 'Linux' && (steps.rl_v0_1_smoke.outcome == 'failure' || steps.rl_v0_1_contract.outcome == 'failure') }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && failure() && runner.os == 'Linux' && (steps.rl_v0_1_smoke.outcome == 'failure' || steps.rl_v0_1_contract.outcome == 'failure') }}
         uses: actions/upload-artifact@v4
         with:
           name: rl-v0-1-validation-reports-py${{ matrix.python-version }}
@@ -555,7 +634,7 @@ jobs:
           retention-days: 7
 
       - name: Run PR_BOUNDED_FULL tests (matrix)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_pr_bounded_full == 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_pr_bounded_full == 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
         run: |
           set -euo pipefail
           PYTEST_ARGS=(-v --tb=short -m "not network and not external_tools")
@@ -572,12 +651,12 @@ jobs:
           pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
 
       - name: Run EXHAUSTIVE_FULL test suite
-        if: ${{ needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
         run: |
           pytest tests/ -v --tb=short -m "not network and not external_tools"
 
       - name: Run focused tests (matrix)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_contract_focused == 'true' && (needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' || matrix.python-version == '3.11') }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_contract_focused == 'true' && (needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' || matrix.python-version == '3.11') }}
         run: |
           set -euo pipefail
           export PYTHONUNBUFFERED=1
@@ -667,14 +746,14 @@ jobs:
           echo "focused-matrix parallel success lanes=${#PIDS[@]} integration_nodes=${#INTEGRATION_NODES[@]}"
 
       - name: Focused module import smoke
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_contract_focused == 'true' && needs.changes.outputs.focused_module_imports != '' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_contract_focused == 'true' && needs.changes.outputs.focused_module_imports != '' }}
         run: |
           set -euo pipefail
           python3 scripts/ops/ci_test_selection_v1.py --import-smoke-modules "${{ needs.changes.outputs.focused_module_imports }}"
           echo "import smoke ok on Python ${{ matrix.python-version }}"
 
       - name: Run tests with coverage (EXHAUSTIVE_FULL only)
-        if: ${{ needs.changes.outputs.tests_execute_exhaustive_full == 'true' && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
           pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"
 
@@ -698,7 +777,7 @@ jobs:
     name: strategy-smoke
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [changes, tests]  # Run after main tests pass
+    needs: [changes, tests, ready-exact-head-reuse]  # Run after main tests pass
     # IMPORTANT: No job-level if condition - job must always be created
     # to satisfy branch protection rules (e.g., "strategy-smoke" check)
 
@@ -772,7 +851,7 @@ jobs:
     name: PR Gate
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    needs: [changes, fast-lane, tests, strategy-smoke]
+    needs: [changes, fast-lane, tests, strategy-smoke, ready-exact-head-reuse]
     if: always() && !cancelled() && needs.changes.result == 'success'
     steps:
       - name: Require all gates passed

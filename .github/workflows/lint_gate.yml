@@ -15,23 +15,54 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
+  checks: read
 
 jobs:
   lint-gate:
     name: Lint Gate
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout base tooling for Ready reuse verifier
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Exact-head Ready reuse
+        id: reuse
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 scripts/ci/exact_head_ready_reuse.py \
+            --repo "${{ github.repository }}" \
+            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --contexts "Lint Gate" \
+            --required-config config/ci/required_status_checks.json \
+            --report-json out/ci/exact_head_ready_reuse_lint.json \
+            --write-github-output
+
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ steps.reuse.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: Lint Gate — exact-head required context already success"
+
       - name: Checkout code
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Need full history for diff
 
       - name: Fetch base ref (for diff)
-        if: github.event_name == 'pull_request'
+        if: ${{ steps.reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' }}
         run: |
           git fetch origin "${{ github.event.pull_request.base.ref }}"
 
       - name: Formatter policy drift guard (no black enforcement)
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         run: |
           set -euo pipefail
           echo "🛡️  Checking formatter policy (no black enforcement)..."
@@ -39,6 +70,7 @@ jobs:
 
       - name: Detect Python file changes
         id: detect
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         run: |
           set -euo pipefail
 
@@ -87,19 +119,19 @@ jobs:
           echo "applicable=false" >> $GITHUB_OUTPUT
 
       - name: Set up Python
-        if: steps.detect.outputs.applicable == 'true'
+        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install ruff
-        if: steps.detect.outputs.applicable == 'true'
+        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install ruff==0.15.22
 
       - name: Run ruff check
-        if: steps.detect.outputs.applicable == 'true'
+        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
           set -euo pipefail
 
@@ -115,7 +147,7 @@ jobs:
           echo "✅ Ruff check passed"
 
       - name: Run ruff format check
-        if: steps.detect.outputs.applicable == 'true'
+        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
           set -euo pipefail
 
@@ -130,17 +162,19 @@ jobs:
           echo "✅ Code formatting check passed"
 
       - name: Economic diagnostic optimization boundary guard v0
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         run: |
           set -euo pipefail
           echo "🛡️  Checking economic/diagnostic optimization boundary guard..."
           python scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py --base origin/main
 
       - name: Governance AI matrix consistency gate
+        if: ${{ steps.reuse.outputs.reuse != 'true' }}
         run: |
           bash scripts/governance/ai_matrix_consistency_gate.sh
 
       - name: Gate Success (Not Applicable)
-        if: steps.detect.outputs.applicable == 'false'
+        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'false' }}
         run: |
           echo "✅ Lint Gate: Not applicable (no Python files changed)"
           exit 0
