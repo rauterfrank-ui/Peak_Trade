@@ -142,6 +142,12 @@ executing the complete offline OKX Futures Shadow preparation chain:
 readiness gate → durable projection writer → projection verifier →
 OKX Futures no-order HOLD cycle → e2e binding result.
 
+Activation readiness may remain `BLOCKED` with `CANONICAL_STEP_29U_ABSENT`
+(and related activation gaps). That activation classification remains truthful
+and non-authorizing; it does **not** veto the offline no-order HOLD cycle when
+the offline Shadow-preparation path remains permitted. The binding must not
+require activation `READY` before invoking the offline cycle.
+
 Related readiness-path component owners (offline projection pipeline,
 readiness-only operator entrypoint, readiness bundle) remain valid for the
 readiness projection subpath and do **not** introduce a second readiness,
