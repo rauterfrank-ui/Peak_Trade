@@ -45,7 +45,7 @@ Canonical Required Context set: `config/ci/required_status_checks.json` (no seco
 
 The Ready-reuse probe does **not** rely on the verifier already existing on `pull_request.base.sha`, and does **not** use raw unauthenticated `git fetch` over HTTPS.
 
-Instead, on `ready_for_review` an isolated `actions/checkout@v4` sparse-checkout loads only the verifier (+ its SSOT config helper) from:
+Instead, on `ready_for_review` an isolated `actions&#47;checkout@v4` sparse-checkout loads only the verifier (+ its SSOT config helper) from:
 
 - `repository: github.event.pull_request.head.repo.full_name`
 - `ref: github.event.pull_request.head.sha` (exact SHA, never branch/base/main)
