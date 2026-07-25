@@ -60,9 +60,9 @@ A **separate operator GO** is required for any activation-stage work.
 Historical shadow-named surfaces are **not** canonical by name. Existing
 Phase-24 (`ShadowOrderExecutor`, `scripts/run_shadow_execution.py`), Phase-31
 (`ShadowPaperSession`), Shadow-247 wrappers/preflight, `shadow_no_order_proof`,
-`src/data/shadow`, paper/shadow WebUI readmodels, and related surfaces are
-classified as non-equivalent to STEP 29U unless an existing ratified canonical
-binding explicitly proves otherwise.
+`src/data/shadow/__init__.py`, paper/shadow WebUI readmodels, and related
+surfaces are classified as non-equivalent to STEP 29U unless an existing
+ratified canonical binding explicitly proves otherwise.
 
 Classifications used by this contract include:
 
