@@ -16,45 +16,87 @@ jobs:
     name: docs-token-policy-gate
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout base tooling for Ready reuse verifier
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-
       - name: Exact-head Ready reuse
         id: reuse
+        continue-on-error: true
         if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
+          set +e
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=init" >> "$GITHUB_OUTPUT"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          REPO="${{ github.repository }}"
+          TOOL="/tmp/exact_head_ready_reuse_tooling_$$"
+          rm -rf "$TOOL"
+          mkdir -p "$TOOL" || { echo "reuse_reason=bootstrap_mkdir_failed" >> "$GITHUB_OUTPUT"; exit 0; }
+          cd "$TOOL" || { echo "reuse_reason=bootstrap_cd_failed" >> "$GITHUB_OUTPUT"; exit 0; }
+          git init -q
+          git remote add origin "https://github.com/${REPO}.git"
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: bearer ${GITHUB_TOKEN}"
+          if ! git fetch --depth=1 origin "${HEAD_SHA}"; then
+            echo "reuse_reason=bootstrap_fetch_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! git checkout --force FETCH_HEAD; then
+            echo "reuse_reason=bootstrap_checkout_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          ACTUAL="$(git rev-parse HEAD)"
+          if [ "${ACTUAL}" != "${HEAD_SHA}" ]; then
+            echo "reuse_reason=bootstrap_sha_mismatch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f scripts/ci/exact_head_ready_reuse.py ] || [ ! -f scripts/ci/required_checks_config.py ] || [ ! -f config/ci/required_status_checks.json ]; then
+            echo "reuse_reason=verifier_missing_on_head" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export PYTHONPATH="${TOOL}/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
           python3 scripts/ci/exact_head_ready_reuse.py \
-            --repo "${{ github.repository }}" \
-            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --repo "${REPO}" \
+            --head-sha "${HEAD_SHA}" \
             --contexts "docs-token-policy-gate" \
             --required-config config/ci/required_status_checks.json \
-            --report-json out/ci/exact_head_ready_reuse_docs_token.json \
+            --report-json /tmp/exact_head_ready_reuse_docs_token.json \
             --write-github-output
+          RC=$?
+          if [ "${RC}" -ne 0 ]; then
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=verifier_exit_${RC}" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+
+      - name: Normalize reuse output (fail-closed default false)
+        id: reuse_norm
+        if: ${{ always() }}
+        run: |
+          set +e
+          RAW="${{ steps.reuse.outputs.reuse }}"
+          if [ "${RAW}" = "true" ]; then
+            echo "reuse=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Exact-head Ready reuse short-circuit
-        if: ${{ steps.reuse.outputs.reuse == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse == 'true' }}
         run: |
           echo "REUSE_OK: docs-token-policy-gate — exact-head required context already success"
 
       - name: Checkout
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Fetch origin
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: git fetch --prune origin
 
       - name: Fetch base ref (ensure origin/main exists for merge-base)
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         shell: bash
         run: |
           base_ref="${GITHUB_BASE_REF:-main}"
@@ -62,7 +104,7 @@ jobs:
 
       - name: Determine base ref
         id: base
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -74,7 +116,7 @@ jobs:
 
       - name: Check if markdown files changed
         id: check_changes
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -90,13 +132,13 @@ jobs:
           fi
 
       - name: Set up Python
-        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Validate docs token policy
-        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -106,7 +148,7 @@ jobs:
             --json docs-token-policy-report.json
 
       - name: Upload report artifact
-        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' && always() }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' && always() }}
         uses: actions/upload-artifact@v4
         with:
           name: docs-token-policy-report

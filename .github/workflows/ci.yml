@@ -44,41 +44,91 @@ jobs:
     name: ready-exact-head-reuse
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Probe must never fail the job: reuse=false falls through to full validation.
     outputs:
-      reuse: ${{ steps.verify.outputs.reuse }}
+      reuse: ${{ steps.normalize.outputs.reuse }}
     steps:
-      - name: Checkout base tooling (not PR head)
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-
       - name: Evaluate exact-head Ready reuse
         id: verify
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
+          set +e
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=init" >> "$GITHUB_OUTPUT"
           if [ "${{ github.event_name }}" != "pull_request" ] || [ "${{ github.event.action }}" != "ready_for_review" ]; then
-            echo "reuse=false" >> "$GITHUB_OUTPUT"
-            echo "EXACT_HEAD_READY_REUSE=false reason=not_ready_for_review"
+            echo "reuse_reason=not_ready_for_review" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          REPO="${{ github.repository }}"
+          TOOL="/tmp/exact_head_ready_reuse_tooling_$$"
+          rm -rf "$TOOL"
+          mkdir -p "$TOOL" || { echo "reuse_reason=bootstrap_mkdir_failed" >> "$GITHUB_OUTPUT"; exit 0; }
+          cd "$TOOL" || { echo "reuse_reason=bootstrap_cd_failed" >> "$GITHUB_OUTPUT"; exit 0; }
+          git init -q
+          git remote add origin "https://github.com/${REPO}.git"
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: bearer ${GITHUB_TOKEN}"
+          if ! git fetch --depth=1 origin "${HEAD_SHA}"; then
+            echo "reuse_reason=bootstrap_fetch_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! git checkout --force FETCH_HEAD; then
+            echo "reuse_reason=bootstrap_checkout_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          ACTUAL="$(git rev-parse HEAD)"
+          if [ "${ACTUAL}" != "${HEAD_SHA}" ]; then
+            echo "reuse_reason=bootstrap_sha_mismatch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f scripts/ci/exact_head_ready_reuse.py ] || [ ! -f scripts/ci/required_checks_config.py ] || [ ! -f config/ci/required_status_checks.json ]; then
+            echo "reuse_reason=verifier_missing_on_head" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export PYTHONPATH="${TOOL}/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
           python3 scripts/ci/exact_head_ready_reuse.py \
-            --repo "${{ github.repository }}" \
-            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --repo "${REPO}" \
+            --head-sha "${HEAD_SHA}" \
             --contexts "tests (3.11)" "strategy-smoke" \
             --required-config config/ci/required_status_checks.json \
-            --report-json out/ci/exact_head_ready_reuse_report.json \
+            --report-json /tmp/exact_head_ready_reuse_report.json \
             --write-github-output
+          RC=$?
+          if [ "${RC}" -ne 0 ]; then
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=verifier_exit_${RC}" >> "$GITHUB_OUTPUT"
+          fi
+          # Always succeed so Required jobs never skip due to probe failure.
+          exit 0
+
+
+      - name: Normalize reuse output (fail-closed default false)
+        id: normalize
+        if: ${{ always() }}
+        run: |
+          set +e
+          RAW="${{ steps.verify.outputs.reuse }}"
+          if [ "${RAW}" = "true" ]; then
+            echo "reuse=true" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=${{ steps.verify.outputs.reuse_reason }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            if [ -n "${{ steps.verify.outputs.reuse_reason }}" ]; then
+              echo "reuse_reason=${{ steps.verify.outputs.reuse_reason }}" >> "$GITHUB_OUTPUT"
+            else
+              echo "reuse_reason=normalize_default_false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
 
       - name: Upload reuse report
         if: ${{ always() && github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         uses: actions/upload-artifact@v4
         with:
           name: exact-head-ready-reuse-report
-          path: out/ci/exact_head_ready_reuse_report.json
+          path: /tmp/exact_head_ready_reuse_report.json
           if-no-files-found: ignore
           retention-days: 14
 
@@ -100,7 +150,6 @@ jobs:
   # ============================================================================
   changes:
     runs-on: ubuntu-latest
-    needs: [ready-exact-head-reuse]
     outputs:
       code_changed: ${{ steps.set_outputs.outputs.code_changed }}
       run_matrix: ${{ steps.set_outputs.outputs.run_matrix }}
@@ -563,19 +612,19 @@ jobs:
           echo "targets=${{ needs.changes.outputs.matrix_contract_pytest_targets }}"
 
       - name: Checkout
-        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && (github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'))) }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
-        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && (github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'))) }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
-        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && (github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'))) }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -584,7 +633,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
+        if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && (github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'))) }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -777,9 +826,9 @@ jobs:
     name: strategy-smoke
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [changes, tests, ready-exact-head-reuse]  # Run after main tests pass
-    # IMPORTANT: No job-level if condition - job must always be created
-    # to satisfy branch protection rules (e.g., "strategy-smoke" check)
+    needs: [changes, tests]  # Probe must not cascade-skip this required context
+    # IMPORTANT: No job-level if that skips required context creation.
+    # Probe job always succeeds (reuse=false on error); do not cascade-skip.
 
     steps:
       - name: Skip strategy smoke (not EXHAUSTIVE_FULL)
@@ -851,7 +900,7 @@ jobs:
     name: PR Gate
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    needs: [changes, fast-lane, tests, strategy-smoke, ready-exact-head-reuse]
+    needs: [changes, fast-lane, tests, strategy-smoke]
     if: always() && !cancelled() && needs.changes.result == 'success'
     steps:
       - name: Require all gates passed

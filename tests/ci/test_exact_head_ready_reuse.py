@@ -461,3 +461,159 @@ def test_required_context_names_unchanged() -> None:
         "strategy-smoke",
         "tests (3.11)",
     ]
+
+
+def test_normalize_reuse_flag_rejects_truthy_strings() -> None:
+    assert reuse.normalize_reuse_flag("true") is True
+    assert reuse.normalize_reuse_flag("True") is False
+    assert reuse.normalize_reuse_flag("1") is False
+    assert reuse.normalize_reuse_flag("yes") is False
+    assert reuse.normalize_reuse_flag("") is False
+    assert reuse.normalize_reuse_flag(None) is False
+    assert reuse.normalize_reuse_flag("false") is False
+
+
+def test_write_github_output_always_emits_explicit_false(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "github_output"
+    monkeypatch.setenv("GITHUB_OUTPUT", str(out))
+    reuse._write_github_output(False)
+    reuse._write_github_output(True)
+    text = out.read_text(encoding="utf-8")
+    assert "reuse=false\n" in text
+    assert "reuse=true\n" in text
+
+
+@pytest.mark.parametrize("conclusion", ["skipped", "neutral", "cancelled"])
+def test_non_success_conclusions_reject_reuse(conclusion: str) -> None:
+    head = "abc"
+    view = reuse._normalize_check_run(
+        _run(name="Lint Gate", head_sha=head, conclusion=conclusion, check_run_id=1)
+    )
+    assert view is not None
+    _, classification, _ = reuse.select_authoritative_check_run(
+        [view], context="Lint Gate", head_sha=head, expected_app_id=15368
+    )
+    assert classification == "NON_SUCCESS"
+
+
+def test_malformed_verifier_exception_returns_reuse_false(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    cfg = _cfg(tmp_path, ["tests (3.11)"])
+    report = tmp_path / "report.json"
+    monkeypatch.setenv("GITHUB_TOKEN", "t")
+
+    def boom(*_a, **_k):
+        raise ValueError("malformed payload")
+
+    monkeypatch.setattr(reuse, "fetch_check_runs_for_sha", boom)
+    rc = reuse.main(
+        [
+            "--repo",
+            "acme/repo",
+            "--head-sha",
+            "deadbeef",
+            "--required-config",
+            str(cfg),
+            "--contexts",
+            "tests (3.11)",
+            "--report-json",
+            str(report),
+            "--write-github-output",
+        ]
+    )
+    assert rc == 0
+    assert json.loads(report.read_text(encoding="utf-8"))["reuse_ok"] is False
+
+
+def _workflow_texts() -> Dict[str, str]:
+    paths = [
+        ".github/workflows/ci.yml",
+        ".github/workflows/audit.yml",
+        ".github/workflows/docs-token-policy-gate.yml",
+        ".github/workflows/lint_gate.yml",
+        ".github/workflows/policy_critic_gate.yml",
+    ]
+    return {p: Path(p).read_text(encoding="utf-8") for p in paths}
+
+
+def test_no_pull_request_target_or_write_permissions_or_base_sha_tooling() -> None:
+    for path, text in _workflow_texts().items():
+        assert "pull_request_target" not in text, path
+        assert "contents: write" not in text, path
+        assert "pull-requests: write" not in text, path
+        assert "checks: write" not in text, path
+        assert "actions: write" not in text, path
+        assert "Checkout base tooling" not in text, path
+        # Verifier bootstrap must use head SHA, never base tooling checkout.
+        assert "exact_head_ready_reuse_tooling_" in text, path
+        assert "github.event.pull_request.head.sha" in text, path
+
+
+def test_safe_bootstrap_fetches_exact_head_and_always_exits_zero() -> None:
+    for path, text in _workflow_texts().items():
+        if path.endswith("ci.yml"):
+            assert "Evaluate exact-head Ready reuse" in text
+        else:
+            assert "Exact-head Ready reuse" in text
+        assert "bootstrap_fetch_failed" in text, path
+        assert "bootstrap_sha_mismatch" in text, path
+        assert "verifier_missing_on_head" in text, path
+        assert "set +e" in text, path
+        assert 'echo "reuse=false"' in text, path
+        # final exit 0 in bootstrap run block
+        assert "exit 0" in text, path
+        assert "continue-on-error: true" in text, path
+        assert "Normalize reuse output" in text, path
+
+
+def test_ci_dependency_graph_prevents_required_skip_cascade() -> None:
+    import re
+
+    ci = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+    changes = re.search(r"\n  changes:\n(.*?)(\n  [a-zA-Z0-9_-]+:\n)", ci, re.S)
+    assert changes
+    assert "ready-exact-head-reuse" not in changes.group(1)
+
+    strategy = re.search(r"\n  strategy-smoke:\n(.*?)(\n  [a-zA-Z0-9_-]+:\n)", ci, re.S)
+    assert strategy
+    needs_line = next(
+        line for line in strategy.group(1).splitlines() if line.strip().startswith("needs:")
+    )
+    assert "ready-exact-head-reuse" not in needs_line
+    assert "changes" in needs_line and "tests" in needs_line
+
+    pr_gate = re.search(r"\n  pr-gate:\n(.*?)(\n  [a-zA-Z0-9_-]+:\n|\Z)", ci, re.S)
+    assert pr_gate
+    needs_line = next(
+        line for line in pr_gate.group(1).splitlines() if line.strip().startswith("needs:")
+    )
+    assert "ready-exact-head-reuse" not in needs_line
+    assert "if: always()" in pr_gate.group(1)
+
+
+def test_draft_events_do_not_short_circuit_in_gate_workflows() -> None:
+    """Reuse probe is Ready-only; Draft/synchronize keep full validation steps."""
+    for path, text in _workflow_texts().items():
+        if path.endswith("ci.yml"):
+            continue
+        assert "github.event.action == 'ready_for_review'" in text, path
+        # Full validation steps remain gated on reuse != true (default when probe skipped).
+        assert "reuse != 'true'" in text or 'reuse != "true"' in text or "!= 'true'" in text, path
+
+
+def test_ready_reuse_false_keeps_full_validation_steps() -> None:
+    audit = Path(".github/workflows/audit.yml").read_text(encoding="utf-8")
+    assert "steps.reuse_norm.outputs.reuse != 'true'" in audit
+    assert "Run pip-audit" in audit
+    ci = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "needs.ready-exact-head-reuse.outputs.reuse != 'true'" in ci
+
+
+def test_ready_trigger_present_on_all_five_producer_workflows() -> None:
+    for path, text in _workflow_texts().items():
+        assert "ready_for_review" in text, path
+        assert "permissions:" in text, path
+        assert "contents: read" in text, path

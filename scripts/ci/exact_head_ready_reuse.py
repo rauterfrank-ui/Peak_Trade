@@ -355,8 +355,14 @@ def evaluate_contexts(
     return decisions, reuse_ok
 
 
+def normalize_reuse_flag(raw: Optional[str]) -> bool:
+    """Strict truthiness: only the exact token 'true' enables reuse."""
+    return str(raw or "").strip() == "true"
+
+
 def _write_github_output(reuse: bool) -> None:
     path = os.getenv("GITHUB_OUTPUT")
+    # Always emit an explicit boolean token (never leave unset).
     line = f"reuse={'true' if reuse else 'false'}\n"
     if path:
         with open(path, "a", encoding="utf-8") as fh:

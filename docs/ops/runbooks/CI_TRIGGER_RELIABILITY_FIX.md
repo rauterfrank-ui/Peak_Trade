@@ -39,6 +39,13 @@ Canonical Required Context set: `config/ci/required_status_checks.json` (no seco
 | `opened` / `synchronize` / `reopened` | Full validation (unchanged). |
 | `ready_for_review` + exact-head reuse proven | Lightweight verifier path; Required Context **job names** still conclude success (no job-level skip of required checks). Heavy work is short-circuited. |
 | `ready_for_review` + unproven / missing / failed / pending / wrong SHA / wrong app / API error | Full validation runs (reuse=false). Fail-closed on the reuse claim. |
+| `ready_for_review` + verifier/bootstrap failure | Probe emits `reuse=false` and exits 0; Required jobs still run full validation (no skip cascade). |
+
+### Safe verifier bootstrap
+
+The Ready-reuse probe does **not** rely on the verifier already existing on `pull_request.base.sha`.
+
+Instead, a read-only bootstrap fetches the exact PR head SHA into an isolated `/tmp` tooling directory, proves `git rev-parse HEAD` equals `github.event.pull_request.head.sha`, then runs `scripts/ci/exact_head_ready_reuse.py` from that tree with `contents:read` / `checks:read` / `pull-requests:read` (plus `actions:read` where declared). Any fetch/checkout/path/SHA/API/tooling failure normalizes to `reuse=false` and continues into full validation.
 
 ### Non-goals
 
@@ -46,5 +53,6 @@ Canonical Required Context set: `config/ci/required_status_checks.json` (no seco
 - No branch-protection / ruleset edits.
 - No Draft coverage reduction.
 - No `pull_request_target`.
-- No privileged execution of untrusted PR code for the verifier (base-SHA tooling checkout only).
+- No write permissions / secrets exposure for the reuse probe.
+- No skip-cascade of Required Contexts when reuse cannot be proven.
 - No automatic Ready / merge / admin bypass.

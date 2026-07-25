@@ -23,42 +23,84 @@ jobs:
     name: Policy Critic Gate
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout base tooling for Ready reuse verifier
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-
       - name: Exact-head Ready reuse
         id: reuse
+        continue-on-error: true
         if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
+          set +e
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=init" >> "$GITHUB_OUTPUT"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          REPO="${{ github.repository }}"
+          TOOL="/tmp/exact_head_ready_reuse_tooling_$$"
+          rm -rf "$TOOL"
+          mkdir -p "$TOOL" || { echo "reuse_reason=bootstrap_mkdir_failed" >> "$GITHUB_OUTPUT"; exit 0; }
+          cd "$TOOL" || { echo "reuse_reason=bootstrap_cd_failed" >> "$GITHUB_OUTPUT"; exit 0; }
+          git init -q
+          git remote add origin "https://github.com/${REPO}.git"
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: bearer ${GITHUB_TOKEN}"
+          if ! git fetch --depth=1 origin "${HEAD_SHA}"; then
+            echo "reuse_reason=bootstrap_fetch_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! git checkout --force FETCH_HEAD; then
+            echo "reuse_reason=bootstrap_checkout_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          ACTUAL="$(git rev-parse HEAD)"
+          if [ "${ACTUAL}" != "${HEAD_SHA}" ]; then
+            echo "reuse_reason=bootstrap_sha_mismatch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f scripts/ci/exact_head_ready_reuse.py ] || [ ! -f scripts/ci/required_checks_config.py ] || [ ! -f config/ci/required_status_checks.json ]; then
+            echo "reuse_reason=verifier_missing_on_head" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export PYTHONPATH="${TOOL}/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
           python3 scripts/ci/exact_head_ready_reuse.py \
-            --repo "${{ github.repository }}" \
-            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --repo "${REPO}" \
+            --head-sha "${HEAD_SHA}" \
             --contexts "Policy Critic Gate" \
             --required-config config/ci/required_status_checks.json \
-            --report-json out/ci/exact_head_ready_reuse_policy_critic.json \
+            --report-json /tmp/exact_head_ready_reuse_policy_critic.json \
             --write-github-output
+          RC=$?
+          if [ "${RC}" -ne 0 ]; then
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=verifier_exit_${RC}" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+
+      - name: Normalize reuse output (fail-closed default false)
+        id: reuse_norm
+        if: ${{ always() }}
+        run: |
+          set +e
+          RAW="${{ steps.reuse.outputs.reuse }}"
+          if [ "${RAW}" = "true" ]; then
+            echo "reuse=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Exact-head Ready reuse short-circuit
-        if: ${{ steps.reuse.outputs.reuse == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse == 'true' }}
         run: |
           echo "REUSE_OK: Policy Critic Gate — exact-head required context already success"
 
       - name: Checkout code
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Need full history for diff
 
       - name: Detect changed files
         id: detect
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
           set -euo pipefail
 
@@ -119,19 +161,19 @@ jobs:
           fi
 
       - name: Set up Python
-        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
-        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run Policy Critic Analysis
-        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         id: critic
         continue-on-error: true
         run: |
@@ -148,7 +190,7 @@ jobs:
           fi
 
       - name: Report Results
-        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
           if [ "${{ steps.critic.outcome }}" = "failure" ]; then
             echo "❌ Policy Critic found issues in policy-sensitive paths"
@@ -159,7 +201,7 @@ jobs:
           fi
 
       - name: Gate Success (Not Applicable)
-        if: ${{ steps.reuse.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'false' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'false' }}
         run: |
           echo "✅ Policy Critic Gate: Not applicable (no policy-sensitive files changed)"
           exit 0

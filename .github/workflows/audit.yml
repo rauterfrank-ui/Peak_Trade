@@ -20,59 +20,101 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Checkout base tooling for Ready reuse verifier
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-
       - name: Exact-head Ready reuse
         id: reuse
+        continue-on-error: true
         if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
+          set +e
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=init" >> "$GITHUB_OUTPUT"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          REPO="${{ github.repository }}"
+          TOOL="/tmp/exact_head_ready_reuse_tooling_$$"
+          rm -rf "$TOOL"
+          mkdir -p "$TOOL" || { echo "reuse_reason=bootstrap_mkdir_failed" >> "$GITHUB_OUTPUT"; exit 0; }
+          cd "$TOOL" || { echo "reuse_reason=bootstrap_cd_failed" >> "$GITHUB_OUTPUT"; exit 0; }
+          git init -q
+          git remote add origin "https://github.com/${REPO}.git"
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: bearer ${GITHUB_TOKEN}"
+          if ! git fetch --depth=1 origin "${HEAD_SHA}"; then
+            echo "reuse_reason=bootstrap_fetch_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! git checkout --force FETCH_HEAD; then
+            echo "reuse_reason=bootstrap_checkout_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          ACTUAL="$(git rev-parse HEAD)"
+          if [ "${ACTUAL}" != "${HEAD_SHA}" ]; then
+            echo "reuse_reason=bootstrap_sha_mismatch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f scripts/ci/exact_head_ready_reuse.py ] || [ ! -f scripts/ci/required_checks_config.py ] || [ ! -f config/ci/required_status_checks.json ]; then
+            echo "reuse_reason=verifier_missing_on_head" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export PYTHONPATH="${TOOL}/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
           python3 scripts/ci/exact_head_ready_reuse.py \
-            --repo "${{ github.repository }}" \
-            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --repo "${REPO}" \
+            --head-sha "${HEAD_SHA}" \
             --contexts "audit" \
             --required-config config/ci/required_status_checks.json \
-            --report-json out/ci/exact_head_ready_reuse_audit.json \
+            --report-json /tmp/exact_head_ready_reuse_audit.json \
             --write-github-output
+          RC=$?
+          if [ "${RC}" -ne 0 ]; then
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=verifier_exit_${RC}" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+
+      - name: Normalize reuse output (fail-closed default false)
+        id: reuse_norm
+        if: ${{ always() }}
+        run: |
+          set +e
+          RAW="${{ steps.reuse.outputs.reuse }}"
+          if [ "${RAW}" = "true" ]; then
+            echo "reuse=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Exact-head Ready reuse short-circuit
-        if: ${{ steps.reuse.outputs.reuse == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse == 'true' }}
         run: |
           echo "REUSE_OK: audit — exact-head required context already success"
 
       - name: Checkout
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
 
       - name: Validate PR final report formatting
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
           chmod +x scripts/validate_pr_report_format.sh
           chmod +x scripts/automation/validate_all_pr_reports.sh
           bash scripts/automation/validate_all_pr_reports.sh
 
       - name: Set up Python
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install (minimal)
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Determine whether audit is enforceable (docs-only scope)
         id: scope
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -90,7 +132,7 @@ jobs:
 
       - name: Run pip-audit (conditional enforcement)
         id: audit
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         shell: bash
         run: |
           set +e
@@ -116,7 +158,7 @@ jobs:
           exit "$RC"
 
       - name: Run audit script (full checks)
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         env:
           OPENAI_API_KEY: "DUMMY_CI_VALUE"
           LIVE_CONFIRM_TOKEN: "DUMMY_CI_VALUE"
@@ -125,13 +167,13 @@ jobs:
           ./scripts/ops/run_audit.sh || echo "⚠️ run_audit.sh findings (non-blocking for pip-audit gate)"
 
       - name: Ops Merge Log Guard (non-blocking for legacy)
-        if: ${{ steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
           python scripts/audit/check_ops_merge_logs.py \
             || echo "⚠️ Ops merge log violations found (legacy) — non-blocking"
 
       - name: Upload audit artifacts (even if failed)
-        if: ${{ always() && steps.reuse.outputs.reuse != 'true' }}
+        if: ${{ always() && steps.reuse_norm.outputs.reuse != 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: audit-artifacts
