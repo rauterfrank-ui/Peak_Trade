@@ -1,13 +1,24 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260726-step-29u-activation-evidence-economic-readiness"></a>
+- **EV-20260726-STEP-29U-ACTIVATION-EVIDENCE-ECONOMIC-READINESS** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating capability | Risk: LOW
+  - Source: [Eligibility inventory contract](runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md) · Owners: `ops.step_29u_activation_eligibility_inventory_v0`, `ops.step_29u_audit_provenance_v0`, `ops.step_29u_economic_validity_readiness_v0` · Command: `python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py`
+  - Claim: Composed offline evaluation — audit/provenance chain `COMPLETE`;
+    economic validity truthfully `FAIL` / not proven; future Operator-GO
+    `ABSENT`; `ACTIVATION_ELIGIBLE=false`; `STEP_29U_ACTIVATED=false`.
+  - Non-claims: not Activation; not Activation Binding; not Activation Readiness
+    approval; does not authorize Runtime/Scheduler/Network/Orders/Paper/Testnet/Live;
+    economic FAIL is not “pending”; implementation authorization is not future
+    activation Operator-GO.
+
 <a id="ev-20260726-step-29u-activation-eligibility-inventory"></a>
 - **EV-20260726-STEP-29U-ACTIVATION-ELIGIBILITY-INVENTORY** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating inventory capability | Risk: LOW
   - Source: [Eligibility inventory contract](runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md) · Owner: `ops.step_29u_activation_eligibility_inventory_v0` · Command: `python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py`
   - Claim: Machine-readable fail-closed inventory of Step-29U activation
     prerequisites; evaluator health `STATUS=PASS` with
     `ACTIVATION_ELIGIBLE=false` and `STEP_29U_ACTIVATED=false` on current
-    canonical sources (binding + post-merge soak recognized; audit/economic/
-    future Operator-GO remain blockers).
+    canonical sources (binding + post-merge soak + audit complete; economic FAIL
+    and future Operator-GO remain blockers).
   - Non-claims: not Activation; not Activation Binding; not Activation Readiness
     approval; does not authorize Runtime/Scheduler/Network/Orders/Paper/Testnet/Live;
     implementation authorization is not future activation Operator-GO.
