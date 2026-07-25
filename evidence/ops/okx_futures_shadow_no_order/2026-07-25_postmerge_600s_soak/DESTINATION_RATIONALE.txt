@@ -1,0 +1,6 @@
+Chosen durable destination: evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/
+Rationale: no existing okx_futures_shadow_no_order soak hierarchy; top-level evidence/
+already hosts ops-adjacent durable proof bundles (e.g. market_dashboard_*). Prefer
+evidence/ops/... over docs/ops/evidence/*.md-only closeouts so primary binary/text
+soak artifacts remain independently verifiable. docs/ops/EVIDENCE_INDEX.md indexes
+this path; SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md owns status semantics.

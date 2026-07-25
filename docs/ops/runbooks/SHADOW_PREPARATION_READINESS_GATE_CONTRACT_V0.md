@@ -183,6 +183,45 @@ contracts. `CANONICAL_STEP_29U_SHADOW_MODE` remains unbound/absent.
 undefined/future-only; Paper simulation is not implemented. Testnet and Live
 remain unauthorized and fail-closed.
 
+### Post-merge offline no-order E2E soak (operational evidence)
+
+```text
+OFFLINE_OKX_FUTURES_SHADOW_NO_ORDER_E2E_STATUS=PROVEN_POST_MERGE_600S_SOAK
+PR_NUMBER=5544
+PR_MERGED=true
+MERGE_COMMIT_SHA=bc7b9309b1f7e2e1411e22b483388331f355d0dd
+POST_MERGE_ORIGIN_MAIN_SHA=bc7b9309b1f7e2e1411e22b483388331f355d0dd
+SOAK_MONOTONIC_ELAPSED_SECONDS=600.370976375
+INVOCATIONS_TOTAL=1287
+INVOCATIONS_SUCCESSFUL=1287
+INVOCATIONS_FAILED=0
+COMPLETE_FOUR_STAGE_CYCLES=1287
+HOLD_CYCLES=1287
+BINDING_PASS_COUNT=1287
+BINDING_BLOCKED_COUNT=0
+CYCLE_NOT_INVOKED_COUNT=0
+ORDERS_CREATED_ANY=false
+ORDERS_SUBMITTED_ANY=false
+NETWORK_ACCESS_ANY=false
+RUNTIME_ACTIVATED_ANY=false
+ACTIVATION_AUTHORITY_GRANTED_ANY=false
+CANONICAL_STEP_29U_ABSENT=OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
+RUNTIME_BRIDGE=BOUND_NOT_ACTIVATED
+ECONOMIC_VALIDITY=NOT_PROVEN_BLOCKED
+DURABLE_EVIDENCE_PATH=evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak
+SOURCE_EVIDENCE_MANIFEST_SHA256=c1aa75a0794488f3fb9a9b76f9734779f0ab65d00b8be7c81f8fa7654de8747a
+```
+
+The canonical offline OKX Futures Shadow no-order path is proven by a
+post-merge 600.37-second monotonic soak with 1287/1287 complete HOLD cycles
+and no orders, network access or runtime activation.
+
+This operational evidence does **not** resolve `CANONICAL_STEP_29U_ABSENT`,
+does **not** activate runtime, does **not** prove economic validity, and does
+**not** authorize Testnet or Live. False readiness veto of the offline
+no-order cycle (pre-#5544) is resolved by PR #5544; activation blockers remain
+open and separate.
+
 ### Component commands (not full-chain canonical)
 
 ```text
@@ -218,6 +257,7 @@ canonical operator command.
 | OKX Futures no-order cycle (component) | `scripts/ops/run_okx_futures_shadow_no_order_v0.py` |
 | Config (static, non-activating) | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
+| Post-merge 600s offline no-order soak evidence (docs/evidence-only) | `evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |
 | Pipeline focused tests | `tests/ops/test_shadow_preparation_readiness_offline_projection_pipeline_v0.py` |
@@ -544,9 +584,13 @@ values are never synthesized. Bundle statuses: `BUNDLE_PASS`, `BUNDLE_BLOCKED`,
 
 ## Next permitted action
 
-Continue offline Shadow-preparation classification only. No STEP 29U
-implementation. No activation. Separate operator GO required for any
-activation-stage work.
+The offline no-order path is **proven** (`PROVEN_POST_MERGE_600S_SOAK`) and is
+no longer the active blocker for that narrow scope. Next activation-related
+work requires a **separate operator GO** and must begin with STEP 29U
+binding/implementation inventory. No STEP 29U implementation from this
+contract alone. No activation. Runtime remains `BOUND_NOT_ACTIVATED`.
+Economic validity remains not proven / blocked. Dashboard blocker
+`MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` remains OPEN and separate.
 
 ## Explicit exclusions
 

@@ -1,0 +1,1 @@
+/Users/frnkhrz/Peak_Trade/.venv/bin/python scripts/ops/run_okx_futures_shadow_offline_e2e_projection_binding_v0.py --mode shadow

@@ -1,5 +1,19 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260725-okx-shadow-offline-no-order-600s-soak"></a>
+- **EV-20260725-OKX-SHADOW-OFFLINE-NO-ORDER-600S-SOAK** | Date: 2026-07-25 | Owner: ops | Scope: docs/evidence-only closeout | Risk: LOW  
+  - Source: [Durable soak bundle](../../evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/) · Contract: [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md) · PR: [#5544](https://github.com/rauterfrank-ui/Peak_Trade/pull/5544) · Merge: `bc7b9309b1f7e2e1411e22b483388331f355d0dd`  
+  - Claim: Canonical offline OKX Futures Shadow no-order E2E path
+    `PROVEN_POST_MERGE_600S_SOAK` — monotonic soak 600.370976375s; 1287/1287
+    BINDING_PASS HOLD cycles; orders/network/runtime activation = false.
+    Source soak manifest SHA256
+    `c1aa75a0794488f3fb9a9b76f9734779f0ab65d00b8be7c81f8fa7654de8747a`.
+  - Non-claims: does **not** resolve `CANONICAL_STEP_29U_ABSENT` (remains
+    OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE); does **not** prove economic
+    validity; runtime remains `BOUND_NOT_ACTIVATED`; Market Dashboard
+    `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` remains OPEN and separate;
+    no Testnet/Live/orders authorization.
+
 <a id="ev-20260409-canary-manifest-template"></a>
 - **EV-20260409-CANARY-MANIFEST-TEMPLATE** | Date: 2026-04-09 | Owner: ops | Scope: docs-only template | Risk: LOW  
   - Source: [Canary manifest template](templates/CANARY_LIVE_MANIFEST_TEMPLATE.md) · Runbook: [CANARY_LIVE_ENTRY_CRITERIA.md](runbooks/CANARY_LIVE_ENTRY_CRITERIA.md)  
