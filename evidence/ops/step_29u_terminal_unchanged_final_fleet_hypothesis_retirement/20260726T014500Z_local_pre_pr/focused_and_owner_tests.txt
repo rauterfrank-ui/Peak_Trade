@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade/.worktrees/step_29u_terminal_final_fleet_hypothesis_retirement_v0
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 39 items
+
+tests/ops/test_step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.py . [  2%]
+............                                                             [ 33%]
+tests/ops/test_step_29u_economic_failure_closeout_recovery_decision_v0.py . [ 35%]
+............                                                             [ 66%]
+tests/ops/test_post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0_contract.py . [ 69%]
+............                                                             [100%]
+
+============================== 39 passed in 4.90s ==============================

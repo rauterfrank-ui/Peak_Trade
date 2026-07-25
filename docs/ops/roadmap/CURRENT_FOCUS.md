@@ -61,8 +61,28 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
   `ACTIVATION_ELIGIBLE=false`, `STEP_29U_ACTIVATED=false`,
   `AUTOMATIC_NEXT_RESEARCH_ACTION_ALLOWED=false`,
   `OPERATOR_SELECTION_REQUIRED=true`
-- Next action: operator selects an admissible recovery option; no automatic
-  research action; Activation remains forbidden without a new explicit Operator-GO
+
+**Operator-selected retirement of terminal unchanged Final Fleet hypotheses
+(implemented, non-activating):**
+
+- Selected recovery option:
+  `RETIRE_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESES`
+- Capability: `STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0`
+- Owner: `ops.step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0`
+- Contract: [STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md](../runbooks/STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md)
+- Command: `python scripts/ops/run_step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.py`
+- Retired IDs: `trend_following/v1`, `bollinger_bands/v1`, `momentum_1h/v1`
+- Canonical result: `RETIREMENT_STATUS=COMPLETE`,
+  `RETIREMENT_SCOPE=UNCHANGED_FINAL_FLEET_ONLY`,
+  `RETIREMENT_REASON=TERMINAL_ECONOMIC_FAILURE`,
+  `ECONOMIC_VALIDITY_STATUS=FAIL` (unchanged),
+  `ACTIVATION_ELIGIBLE=false`, `STEP_29U_ACTIVATED=false`,
+  `AUTOMATIC_BACKLOG_SELECTION_ALLOWED=false`,
+  `NEXT_RESEARCH_CANDIDATE_SELECTED=false`,
+  `OPERATOR_SELECTION_REQUIRED_FOR_NEXT_MATERIAL_RESEARCH=true`
+- Next formal decision: selection from the ratified materially different
+  research backlog; no automatic research action; Activation remains forbidden
+  without a new explicit Operator-GO
 
 ---
 
