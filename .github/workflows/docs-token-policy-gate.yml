@@ -6,20 +6,116 @@ on:
   merge_group:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+  actions: read
+
 jobs:
   docs_token_policy_gate:
     name: docs-token-policy-gate
     runs-on: ubuntu-latest
     steps:
+      - name: Initialize Ready-reuse fallback
+        id: ready_reuse_default
+        shell: bash
+        run: |
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=bootstrap_not_completed" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout exact PR-head verifier
+        id: ready_reuse_checkout
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: .ready-reuse-head
+          sparse-checkout: |
+            scripts/ci/exact_head_ready_reuse.py
+            scripts/ci/required_checks_config.py
+            config/ci/required_status_checks.json
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Exact-head Ready reuse
+        id: reuse
+        if: ${{ always() && github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=init" >> "$GITHUB_OUTPUT"
+          if [ "${{ steps.ready_reuse_checkout.outcome }}" != "success" ]; then
+            echo "reuse_reason=bootstrap_checkout_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          expected_sha="${{ github.event.pull_request.head.sha }}"
+          actual_sha="$(git -C .ready-reuse-head rev-parse HEAD 2>/dev/null || true)"
+          if [ -z "${actual_sha}" ] || [ "${actual_sha}" != "${expected_sha}" ]; then
+            echo "reuse_reason=bootstrap_sha_mismatch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f .ready-reuse-head/scripts/ci/exact_head_ready_reuse.py ]; then
+            echo "reuse_reason=bootstrap_verifier_missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f .ready-reuse-head/scripts/ci/required_checks_config.py ] || [ ! -f .ready-reuse-head/config/ci/required_status_checks.json ]; then
+            echo "reuse_reason=bootstrap_verifier_missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export PYTHONPATH="${GITHUB_WORKSPACE}/.ready-reuse-head/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
+          python3 .ready-reuse-head/scripts/ci/exact_head_ready_reuse.py \
+            --repo "${{ github.repository }}" \
+            --head-sha "${expected_sha}" \
+            --contexts "docs-token-policy-gate" \
+            --required-config .ready-reuse-head/config/ci/required_status_checks.json \
+            --report-json /tmp/exact_head_ready_reuse_docs_token.json \
+            --write-github-output
+          RC=$?
+          if [ "${RC}" -ne 0 ]; then
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=verifier_execution_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Prefer explicit true only; otherwise leave false (normalize step enforces).
+          exit 0
+
+      - name: Normalize reuse output (fail-closed default false)
+        id: reuse_norm
+        if: ${{ always() }}
+        run: |
+          set +e
+          RAW="${{ steps.reuse.outputs.reuse }}"
+          if [ "${RAW}" = "true" ]; then
+            echo "reuse=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ steps.reuse_norm.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: docs-token-policy-gate — exact-head required context already success"
+
       - name: Checkout
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Fetch origin
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: git fetch --prune origin
 
       - name: Fetch base ref (ensure origin/main exists for merge-base)
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         shell: bash
         run: |
           base_ref="${GITHUB_BASE_REF:-main}"
@@ -27,6 +123,7 @@ jobs:
 
       - name: Determine base ref
         id: base
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -38,6 +135,7 @@ jobs:
 
       - name: Check if markdown files changed
         id: check_changes
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -53,13 +151,13 @@ jobs:
           fi
 
       - name: Set up Python
-        if: steps.check_changes.outputs.changed == 'true'
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Validate docs token policy
-        if: steps.check_changes.outputs.changed == 'true'
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -69,7 +167,7 @@ jobs:
             --json docs-token-policy-report.json
 
       - name: Upload report artifact
-        if: steps.check_changes.outputs.changed == 'true' && always()
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.check_changes.outputs.changed == 'true' && always() }}
         uses: actions/upload-artifact@v4
         with:
           name: docs-token-policy-report

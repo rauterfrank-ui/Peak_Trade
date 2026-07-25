@@ -15,23 +15,115 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
+  checks: read
+  actions: read
 
 jobs:
   lint-gate:
     name: Lint Gate
     runs-on: ubuntu-latest
     steps:
+      - name: Initialize Ready-reuse fallback
+        id: ready_reuse_default
+        shell: bash
+        run: |
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=bootstrap_not_completed" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout exact PR-head verifier
+        id: ready_reuse_checkout
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: .ready-reuse-head
+          sparse-checkout: |
+            scripts/ci/exact_head_ready_reuse.py
+            scripts/ci/required_checks_config.py
+            config/ci/required_status_checks.json
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Exact-head Ready reuse
+        id: reuse
+        if: ${{ always() && github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          echo "reuse=false" >> "$GITHUB_OUTPUT"
+          echo "reuse_reason=init" >> "$GITHUB_OUTPUT"
+          if [ "${{ steps.ready_reuse_checkout.outcome }}" != "success" ]; then
+            echo "reuse_reason=bootstrap_checkout_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          expected_sha="${{ github.event.pull_request.head.sha }}"
+          actual_sha="$(git -C .ready-reuse-head rev-parse HEAD 2>/dev/null || true)"
+          if [ -z "${actual_sha}" ] || [ "${actual_sha}" != "${expected_sha}" ]; then
+            echo "reuse_reason=bootstrap_sha_mismatch" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f .ready-reuse-head/scripts/ci/exact_head_ready_reuse.py ]; then
+            echo "reuse_reason=bootstrap_verifier_missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ ! -f .ready-reuse-head/scripts/ci/required_checks_config.py ] || [ ! -f .ready-reuse-head/config/ci/required_status_checks.json ]; then
+            echo "reuse_reason=bootstrap_verifier_missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export PYTHONPATH="${GITHUB_WORKSPACE}/.ready-reuse-head/scripts/ci${PYTHONPATH:+:${PYTHONPATH}}"
+          python3 .ready-reuse-head/scripts/ci/exact_head_ready_reuse.py \
+            --repo "${{ github.repository }}" \
+            --head-sha "${expected_sha}" \
+            --contexts "Lint Gate" \
+            --required-config .ready-reuse-head/config/ci/required_status_checks.json \
+            --report-json /tmp/exact_head_ready_reuse_lint.json \
+            --write-github-output
+          RC=$?
+          if [ "${RC}" -ne 0 ]; then
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+            echo "reuse_reason=verifier_execution_failed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Prefer explicit true only; otherwise leave false (normalize step enforces).
+          exit 0
+
+      - name: Normalize reuse output (fail-closed default false)
+        id: reuse_norm
+        if: ${{ always() }}
+        run: |
+          set +e
+          RAW="${{ steps.reuse.outputs.reuse }}"
+          if [ "${RAW}" = "true" ]; then
+            echo "reuse=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exact-head Ready reuse short-circuit
+        if: ${{ steps.reuse_norm.outputs.reuse == 'true' }}
+        run: |
+          echo "REUSE_OK: Lint Gate — exact-head required context already success"
+
       - name: Checkout code
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Need full history for diff
 
       - name: Fetch base ref (for diff)
-        if: github.event_name == 'pull_request'
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && github.event_name == 'pull_request' }}
         run: |
           git fetch origin "${{ github.event.pull_request.base.ref }}"
 
       - name: Formatter policy drift guard (no black enforcement)
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
           set -euo pipefail
           echo "🛡️  Checking formatter policy (no black enforcement)..."
@@ -39,6 +131,7 @@ jobs:
 
       - name: Detect Python file changes
         id: detect
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
           set -euo pipefail
 
@@ -87,19 +180,19 @@ jobs:
           echo "applicable=false" >> $GITHUB_OUTPUT
 
       - name: Set up Python
-        if: steps.detect.outputs.applicable == 'true'
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install ruff
-        if: steps.detect.outputs.applicable == 'true'
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install ruff==0.15.22
 
       - name: Run ruff check
-        if: steps.detect.outputs.applicable == 'true'
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
           set -euo pipefail
 
@@ -115,7 +208,7 @@ jobs:
           echo "✅ Ruff check passed"
 
       - name: Run ruff format check
-        if: steps.detect.outputs.applicable == 'true'
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
           set -euo pipefail
 
@@ -130,17 +223,19 @@ jobs:
           echo "✅ Code formatting check passed"
 
       - name: Economic diagnostic optimization boundary guard v0
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
           set -euo pipefail
           echo "🛡️  Checking economic/diagnostic optimization boundary guard..."
           python scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py --base origin/main
 
       - name: Governance AI matrix consistency gate
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
           bash scripts/governance/ai_matrix_consistency_gate.sh
 
       - name: Gate Success (Not Applicable)
-        if: steps.detect.outputs.applicable == 'false'
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'false' }}
         run: |
           echo "✅ Lint Gate: Not applicable (no Python files changed)"
           exit 0
