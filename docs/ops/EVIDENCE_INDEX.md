@@ -4,8 +4,8 @@
 - **EV-20260726-STEP-29U-TERMINAL-UNCHANGED-FINAL-FLEET-HYPOTHESIS-RETIREMENT** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating capability | Risk: LOW
   - Source: [Retirement contract](runbooks/STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md) · Owner: `ops.step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0` · Command: `python scripts/ops/run_step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.py`
   - Claim: Operator selected `RETIRE_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESES`;
-    retired unchanged Final Fleet IDs `trend_following/v1`,
-    `bollinger_bands/v1`, `momentum_1h/v1` with
+    retired unchanged Final Fleet IDs `trend_following&#47;v1`,
+    `bollinger_bands&#47;v1`, `momentum_1h&#47;v1` with
     `RETIREMENT_STATUS=COMPLETE`, `RETIREMENT_SCOPE=UNCHANGED_FINAL_FLEET_ONLY`,
     `RETIREMENT_REASON=TERMINAL_ECONOMIC_FAILURE`; historical evidence preserved;
     economic `FAIL` unchanged; `ACTIVATION_ELIGIBLE=false`;

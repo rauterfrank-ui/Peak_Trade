@@ -61,9 +61,9 @@ KRAKEN_LEGACY_EXCLUDED=true
 
 | Hypothesis ID | Strategy | Version | Terminal verdict |
 |---|---|---|---|
-| `trend_following/v1` | trend_following | v1 | FAIL |
-| `bollinger_bands/v1` | bollinger_bands | v1 | FAIL |
-| `momentum_1h/v1` | momentum_1h | v1 | FAIL |
+| `trend_following&#47;v1` | trend_following | v1 | FAIL |
+| `bollinger_bands&#47;v1` | bollinger_bands | v1 | FAIL |
+| `momentum_1h&#47;v1` | momentum_1h | v1 | FAIL |
 
 Scope is **UNCHANGED_FINAL_FLEET_ONLY**. Materially different research identities
 are not retired by this capability.

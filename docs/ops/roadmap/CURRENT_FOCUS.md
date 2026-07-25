@@ -71,7 +71,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Owner: `ops.step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0`
 - Contract: [STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md](../runbooks/STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md)
 - Command: `python scripts/ops/run_step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.py`
-- Retired IDs: `trend_following/v1`, `bollinger_bands/v1`, `momentum_1h/v1`
+- Retired IDs: `trend_following&#47;v1`, `bollinger_bands&#47;v1`, `momentum_1h&#47;v1`
 - Canonical result: `RETIREMENT_STATUS=COMPLETE`,
   `RETIREMENT_SCOPE=UNCHANGED_FINAL_FLEET_ONLY`,
   `RETIREMENT_REASON=TERMINAL_ECONOMIC_FAILURE`,
