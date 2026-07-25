@@ -261,6 +261,74 @@ def reduce_okx_ohlcv_bars_v1(
     return nxt, "AUTHENTIC_FULL_REPLACE"
 
 
+def merge_open_tip_cumulative_interval_volume_v1(
+    previous_bars: Sequence[Mapping[str, Any] | OhlcvBarV1] | None,
+    next_bars: Sequence[Mapping[str, Any] | OhlcvBarV1],
+) -> tuple[list[OhlcvBarV1], dict[str, Any]]:
+    """MODEL_A: cumulative open-tip volume is monotonic non-decreasing.
+
+    OKX ``/market/candles`` tip volume may temporarily under-report relative to a
+    prior trade-augmented cumulative tip (AUTHENTIC_FULL_REPLACE / window churn).
+    Closed historical candles are never rewritten.
+    """
+    nxt = [_as_ohlcv_bar(b) for b in next_bars]
+    meta: dict[str, Any] = {
+        "volume_semantic_model": "MODEL_A_CUMULATIVE_INTERVAL_VOLUME",
+        "open_tip_volume_preserved": False,
+        "open_tip_high_merged": False,
+        "open_tip_low_merged": False,
+    }
+    if not previous_bars or not nxt:
+        return nxt, meta
+    prev = [_as_ohlcv_bar(b) for b in previous_bars]
+    if not prev:
+        return nxt, meta
+    prev_tip = prev[-1]
+    next_tip = nxt[-1]
+    if prev_tip.ts != next_tip.ts:
+        return nxt, meta
+    if prev_tip.confirm or next_tip.confirm:
+        # Sealed tip must remain immutable; do not re-open or rewrite.
+        return nxt, meta
+    if _dec(next_tip.open, field="open") != _dec(prev_tip.open, field="open"):
+        raise OkxOhlcvReadmodelError(f"OPEN_REGRESSION:{prev_tip.ts}")
+
+    prev_high = _dec(prev_tip.high, field="high")
+    next_high = _dec(next_tip.high, field="high")
+    prev_low = _dec(prev_tip.low, field="low")
+    next_low = _dec(next_tip.low, field="low")
+    prev_vol = _dec(prev_tip.volume, field="volume")
+    next_vol = _dec(next_tip.volume, field="volume")
+
+    merged_high = max(prev_high, next_high)
+    merged_low = min(prev_low, next_low)
+    merged_vol = max(prev_vol, next_vol)
+    meta["open_tip_high_merged"] = merged_high != next_high
+    meta["open_tip_low_merged"] = merged_low != next_low
+    meta["open_tip_volume_preserved"] = merged_vol != next_vol
+
+    if (
+        merged_high == next_high
+        and merged_low == next_low
+        and merged_vol == next_vol
+        and next_tip.close == prev_tip.close
+    ):
+        return nxt, meta
+
+    merged_tip = OhlcvBarV1(
+        ts=next_tip.ts,
+        open=next_tip.open,
+        high=format(merged_high, "f"),
+        low=format(merged_low, "f"),
+        close=next_tip.close,
+        volume=format(merged_vol, "f"),
+        volume_ccy=next_tip.volume_ccy or prev_tip.volume_ccy,
+        confirm=False,
+        provider_ts_ms=next_tip.provider_ts_ms or prev_tip.provider_ts_ms,
+    )
+    return list(nxt[:-1]) + [merged_tip], meta
+
+
 def parse_okx_public_trades_v1(rows: Sequence[Any]) -> list[OkxPublicTradeV1]:
     """Parse OKX public trades rows (newest-first dicts with tradeId/px/sz/side/ts)."""
     out: list[OkxPublicTradeV1] = []
@@ -584,8 +652,37 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
             previously_applied_trade_ids=prev_applied,
         )
     )
+    # Stale trade capture must not overwrite a fresher on-disk open tip.
+    stale_overwrite_rejected = False
+    if isinstance(existing_doc, Mapping) and previous_bars:
+        prior_trades_cap = _parse_aware_utc(existing_doc.get("trades_captured_at"))
+        new_trades_cap = _parse_aware_utc(trades_envelope.captured_at)
+        if (
+            prior_trades_cap is not None
+            and new_trades_cap is not None
+            and new_trades_cap < prior_trades_cap
+            and _as_ohlcv_bar(previous_bars[-1]).ts == bars[-1].ts
+        ):
+            bars = [_as_ohlcv_bar(b) for b in previous_bars]
+            trade_revision_kind = "STALE_SOURCE_REJECTED"
+            applied_trade_ids = [
+                str(x) for x in (existing_doc.get("applied_trade_ids") or []) if str(x)
+            ][-MAX_APPLIED_TRADE_IDS:]
+            trade_meta = {
+                **trade_meta,
+                "stale_source_rejected": True,
+                "prior_trades_captured_at": existing_doc.get("trades_captured_at"),
+                "new_trades_captured_at": trades_envelope.captured_at,
+            }
+            stale_overwrite_rejected = True
+
+    bars, cumulative_meta = merge_open_tip_cumulative_interval_volume_v1(previous_bars, bars)
     if trade_revision_kind in {"SAME_TIMESTAMP_REVISION", "NEW_INTERVAL_APPEND"}:
         revision_kind = trade_revision_kind
+    elif stale_overwrite_rejected:
+        revision_kind = "STALE_SOURCE_REJECTED"
+    elif cumulative_meta.get("open_tip_volume_preserved"):
+        revision_kind = "SAME_TIMESTAMP_REVISION"
     else:
         revision_kind = candle_revision_kind
 
@@ -694,6 +791,9 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "trades_request_url": trades_envelope.request_url,
         "applied_trade_ids": applied_trade_ids,
         "trade_reduce_meta": trade_meta,
+        "volume_semantic_model": "MODEL_A_CUMULATIVE_INTERVAL_VOLUME",
+        "open_tip_cumulative_meta": cumulative_meta,
+        "stale_overwrite_rejected": stale_overwrite_rejected,
         "volume_unit": TRADE_VOLUME_UNIT,
         "trade_volume_unit": TRADE_VOLUME_UNIT,
         "bars": [b.to_json_dict() for b in bars],
@@ -703,6 +803,9 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
             f"CANDLE_REVISION_KIND:{candle_revision_kind}",
             f"TRADE_REVISION_KIND:{trade_revision_kind}",
             f"OPEN_CANDLE_LIVE_SOURCE:{OPEN_CANDLE_LIVE_SOURCE_V1}",
+            "VOLUME_SEMANTIC_MODEL:MODEL_A_CUMULATIVE_INTERVAL_VOLUME",
+            f"OPEN_TIP_VOLUME_PRESERVED:{bool(cumulative_meta.get('open_tip_volume_preserved'))}",
+            f"STALE_OVERWRITE_REJECTED:{stale_overwrite_rejected}",
         ],
         # Additive live-mark projection (v1): authentic OKX public mark only.
         # Distinct fact from candle close — never rewrites OHLCV geometry.

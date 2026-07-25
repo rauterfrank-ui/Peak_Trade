@@ -16,6 +16,7 @@ from src.ops.okx_selected_instrument_ohlcv_readmodel_v1 import (
     OhlcvBarV1,
     OkxPublicTradeV1,
     apply_okx_public_trades_to_open_candle_v1,
+    merge_open_tip_cumulative_interval_volume_v1,
     parse_okx_public_trades_v1,
     reduce_okx_ohlcv_bars_v1,
 )
@@ -188,6 +189,72 @@ def test_candle_reducer_same_timestamp_numeric_contract() -> None:
     assert bars[0].volume == "12"
     bars_n, kind_n = reduce_okx_ohlcv_bars_v1(bars, incoming)
     assert kind_n == "NO_OP"
+
+
+def test_candle_window_churn_does_not_regress_cumulative_open_volume() -> None:
+    """MODEL_A: lower OKX tip volume after prior trade accumulation must not regress."""
+    t0 = "2026-07-25T00:00:00Z"
+    prior = [_bar(ts=t0, o="100", h="105", l="99", c="104", v="1000", confirm=False)]
+    # AUTHENTIC_FULL_REPLACE-style tip with lower candle volume / narrower range.
+    incoming = [
+        _bar(ts="2026-07-24T23:00:00Z", o="90", h="91", l="89", c="90", v="10", confirm=True),
+        _bar(ts=t0, o="100", h="103", l="100", c="102", v="900", confirm=False),
+    ]
+    reduced, kind = reduce_okx_ohlcv_bars_v1(prior, incoming)
+    assert kind == "AUTHENTIC_FULL_REPLACE"
+    merged, meta = merge_open_tip_cumulative_interval_volume_v1(prior, reduced)
+    assert meta["volume_semantic_model"] == "MODEL_A_CUMULATIVE_INTERVAL_VOLUME"
+    assert meta["open_tip_volume_preserved"] is True
+    assert merged[-1].ts == t0
+    assert merged[-1].open == "100"
+    assert merged[-1].volume == "1000"
+    assert merged[-1].high == "105"
+    assert merged[-1].low == "99"
+    assert merged[-1].close == "102"
+    # Closed prefix from incoming remains; prior sealed history not invented.
+    assert merged[0].confirm is True
+    assert merged[0].ts == "2026-07-24T23:00:00Z"
+
+
+def test_overlapping_trade_batches_do_not_double_count_or_regress_volume() -> None:
+    t0 = "2026-07-25T00:00:00Z"
+    bars = [_bar(ts=t0, o="100", h="100", l="100", c="100", v="10", confirm=False)]
+    batch1 = [
+        _trade(trade_id="a", px="101", sz="1", ts_ms=_ms("2026-07-25T00:01:00Z")),
+        _trade(trade_id="b", px="102", sz="2", ts_ms=_ms("2026-07-25T00:02:00Z")),
+    ]
+    # First observation seeds IDs already priced into the candle tip (no double-count).
+    bars_s, kind_s, applied, meta_s = apply_okx_public_trades_to_open_candle_v1(
+        bars, batch1, previously_applied_trade_ids=None
+    )
+    assert kind_s == "NO_OP"
+    assert meta_s["seeded"] is True
+    assert bars_s[0].volume == "10"
+    # Re-apply same batch after seed: duplicates only.
+    bars_d, kind_d, applied_d, meta_d = apply_okx_public_trades_to_open_candle_v1(
+        bars_s, batch1, previously_applied_trade_ids=applied
+    )
+    assert kind_d == "NO_OP"
+    assert meta_d["duplicate_trade_count"] == 2
+    assert bars_d[0].volume == "10"
+    # Later poll returns truncated window (trade "a" gone) plus one new trade.
+    batch2 = [
+        _trade(trade_id="b", px="102", sz="2", ts_ms=_ms("2026-07-25T00:02:00Z")),
+        _trade(trade_id="c", px="103", sz="3", ts_ms=_ms("2026-07-25T00:03:00Z")),
+    ]
+    bars3, kind3, applied3, meta3 = apply_okx_public_trades_to_open_candle_v1(
+        bars_d, batch2, previously_applied_trade_ids=applied_d
+    )
+    assert kind3 == "SAME_TIMESTAMP_REVISION"
+    assert meta3["duplicate_trade_count"] == 1
+    assert meta3["new_trade_count"] == 1
+    assert bars3[0].volume == "13"  # 10 + 3; missing "a" from window does not regress
+    assert set(applied3) >= {"a", "b", "c"}
+    # Cumulative merge against a lower candle tip preserves volume.
+    lower_candle = [_bar(ts=t0, o="100", h="103", l="100", c="103", v="12", confirm=False)]
+    merged, meta = merge_open_tip_cumulative_interval_volume_v1(bars3, lower_candle)
+    assert merged[0].volume == "13"
+    assert meta["open_tip_volume_preserved"] is True
 
 
 def test_parse_okx_public_trades_newest_first_input() -> None:
