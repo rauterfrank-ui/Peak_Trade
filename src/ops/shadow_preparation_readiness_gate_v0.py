@@ -11,11 +11,18 @@ This module:
 - does not implement, activate, schedule, start, simulate, or execute Shadow,
   Paper, Testnet, Runtime, or Orders;
 - has ``authority_effect=NONE`` and cannot modify another owner;
-- performs no network I/O and starts no scheduler/worker/process.
+- performs no network I/O and starts no scheduler/worker/process;
+- may optionally serialize an already-computed readiness evaluation into a
+  durable, projection-only artifact via an explicit writer call (never by
+  evaluation alone).
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
+import os
+import tempfile
 from dataclasses import asdict, dataclass
 from enum import Enum
 from pathlib import Path
@@ -31,6 +38,11 @@ PRODUCER_FAMILY = "ops.shadow_preparation_readiness_gate_v0"
 SCHEMA_ID = "ops.shadow_preparation_readiness_gate_v0"
 SCHEMA_VERSION = "v0"
 CONTRACT_CONFIG_SCHEMA_VERSION = "shadow_preparation_readiness_gate.v0"
+
+PROJECTION_SCHEMA_ID = "shadow_preparation_readiness_projection"
+PROJECTION_SCHEMA_VERSION = "v0"
+PROJECTION_OUTPUT_PATH_CONFIG_KEY = "readiness_projection_output_path"
+DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH = "out/ops/shadow_preparation_readiness_projection_v0.json"
 
 # Deterministic evaluation timestamp convention for pure offline contracts:
 # callers may override; default is a fixed epoch sentinel (no wall-clock).
@@ -221,6 +233,26 @@ class ShadowPreparationReadinessGateResultV0:
         return payload
 
 
+@dataclass(frozen=True)
+class ShadowPreparationReadinessProjectionWriteMetadataV0:
+    """Non-authoritative write metadata for a durable readiness projection."""
+
+    output_path: str
+    schema_id: str
+    schema_version: str
+    byte_length: int
+    sha256: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "output_path": self.output_path,
+            "schema_id": self.schema_id,
+            "schema_version": self.schema_version,
+            "byte_length": self.byte_length,
+            "sha256": self.sha256,
+        }
+
+
 def default_config_path(*, repo_root: Path | None = None) -> Path:
     root = repo_root if repo_root is not None else _infer_repo_root()
     return (root / DEFAULT_CONFIG_RELATIVE_PATH).resolve()
@@ -383,6 +415,163 @@ def evaluate_shadow_preparation_readiness_gate_v0(
         unmet_gates=tuple(unmet),
         blockers=tuple(blockers),
         next_permitted_action=next_action,
+    )
+
+
+def build_shadow_preparation_readiness_projection_payload_v0(
+    *,
+    evaluation: ShadowPreparationReadinessGateResultV0,
+    evaluated_at: str,
+) -> dict[str, Any]:
+    """Build the deterministic projection document from an existing evaluation.
+
+    Does not re-evaluate readiness, filesystem evidence, blockers, or STEP-29U
+    semantics. Consumes ``evaluation.to_dict()`` as the sole evaluation payload.
+    """
+    if not isinstance(evaluated_at, str) or not evaluated_at.strip():
+        raise ShadowPreparationReadinessGateError("PROJECTION_EVALUATED_AT_EMPTY")
+    evaluation_payload = evaluation.to_dict()
+    return {
+        "schema_id": PROJECTION_SCHEMA_ID,
+        "schema_version": PROJECTION_SCHEMA_VERSION,
+        "evaluated_at": evaluated_at.strip(),
+        "authority_effect": AUTHORITY_EFFECT_NONE,
+        "activation_authority": False,
+        "projection_only": True,
+        "evaluation": evaluation_payload,
+        "blockers": list(evaluation.blockers),
+        "shadow_preparation_complete": evaluation.shadow_preparation_complete,
+        "shadow_activatable": evaluation.shadow_activatable,
+        "step_29u_implemented": evaluation.step_29u_implemented,
+        "canonical_step_29u_bound": evaluation.canonical_step_29u_bound,
+        "shadow_activation_authorized": evaluation.shadow_activation_authorized,
+        "paper_activation_authorized": evaluation.paper_activation_authorized,
+        "testnet_activation_authorized": evaluation.testnet_activation_authorized,
+        "scheduler_activation_authorized": evaluation.scheduler_activation_authorized,
+        "runtime_activation_authorized": evaluation.runtime_activation_authorized,
+        "live_authorized": evaluation.live_authorized,
+        "orders_authorized": evaluation.orders_authorized,
+        "evaluation_schema_id": evaluation.schema_id,
+        "evaluation_schema_version": evaluation.schema_version,
+    }
+
+
+def serialize_shadow_preparation_readiness_projection_v0(
+    payload: Mapping[str, Any],
+) -> bytes:
+    """Serialize projection payload to deterministic UTF-8 JSON with trailing newline."""
+    try:
+        text = json.dumps(
+            dict(payload),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    except (TypeError, ValueError) as exc:
+        raise ShadowPreparationReadinessGateError(f"PROJECTION_SERIALIZATION_FAILED:{exc}") from exc
+    return (text + "\n").encode("utf-8")
+
+
+def _resolve_projection_output_path(
+    *,
+    repo_root: Path,
+    output_path: str,
+) -> tuple[str, Path]:
+    """Resolve a repository-relative projection output path (fail-closed)."""
+    if not isinstance(output_path, str) or not output_path.strip():
+        raise ShadowPreparationReadinessGateError("PROJECTION_OUTPUT_PATH_EMPTY")
+    rel = output_path.strip()
+    candidate = Path(rel)
+    if candidate.is_absolute():
+        raise ShadowPreparationReadinessGateError("PROJECTION_OUTPUT_PATH_ABSOLUTE")
+    root = repo_root.resolve()
+    try:
+        resolved = (root / candidate).resolve()
+    except OSError as exc:
+        raise ShadowPreparationReadinessGateError("PROJECTION_OUTPUT_PATH_RESOLVE_FAILED") from exc
+    try:
+        repo_relative = resolved.relative_to(root).as_posix()
+    except ValueError as exc:
+        raise ShadowPreparationReadinessGateError("PROJECTION_OUTPUT_PATH_OUTSIDE_REPO") from exc
+    if resolved.exists() and resolved.is_dir():
+        raise ShadowPreparationReadinessGateError("PROJECTION_OUTPUT_PATH_IS_DIRECTORY")
+    parent = resolved.parent
+    if not parent.exists() or not parent.is_dir():
+        raise ShadowPreparationReadinessGateError("PROJECTION_OUTPUT_PARENT_MISSING")
+    return repo_relative, resolved
+
+
+def _atomic_write_bytes(*, destination: Path, content: bytes) -> None:
+    """Atomically replace destination with content (temp sibling + fsync + replace)."""
+    fd, temp_path = tempfile.mkstemp(
+        dir=destination.parent,
+        prefix=f".tmp_{destination.name}_",
+        suffix=".partial",
+    )
+    closed = False
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            closed = True
+            try:
+                handle.write(content)
+                handle.flush()
+                os.fsync(handle.fileno())
+            except OSError as exc:
+                raise ShadowPreparationReadinessGateError(
+                    f"PROJECTION_TEMP_WRITE_FAILED:{exc}"
+                ) from exc
+        try:
+            os.replace(temp_path, destination)
+        except OSError as exc:
+            raise ShadowPreparationReadinessGateError(
+                f"PROJECTION_ATOMIC_REPLACE_FAILED:{exc}"
+            ) from exc
+    except Exception:
+        if os.path.exists(temp_path):
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
+        raise
+    finally:
+        if not closed:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+
+
+def write_shadow_preparation_readiness_projection_v0(
+    *,
+    evaluation: ShadowPreparationReadinessGateResultV0,
+    repo_root: Path,
+    output_path: str,
+    evaluated_at: str,
+) -> ShadowPreparationReadinessProjectionWriteMetadataV0:
+    """Write one already-computed readiness evaluation as durable projection bytes.
+
+    Offline evidence projection only. Not activation authority. Not STEP-29U.
+    Does not recompute readiness. Evaluation alone remains side-effect free;
+    writing requires this explicit call.
+    """
+    root = repo_root.resolve()
+    repo_relative, destination = _resolve_projection_output_path(
+        repo_root=root,
+        output_path=output_path,
+    )
+    payload = build_shadow_preparation_readiness_projection_payload_v0(
+        evaluation=evaluation,
+        evaluated_at=evaluated_at,
+    )
+    content = serialize_shadow_preparation_readiness_projection_v0(payload)
+    _atomic_write_bytes(destination=destination, content=content)
+    digest = hashlib.sha256(content).hexdigest()
+    return ShadowPreparationReadinessProjectionWriteMetadataV0(
+        output_path=repo_relative,
+        schema_id=PROJECTION_SCHEMA_ID,
+        schema_version=PROJECTION_SCHEMA_VERSION,
+        byte_length=len(content),
+        sha256=digest,
     )
 
 
@@ -775,6 +964,10 @@ __all__ = [
     "SCHEMA_ID",
     "SCHEMA_VERSION",
     "CONTRACT_CONFIG_SCHEMA_VERSION",
+    "PROJECTION_SCHEMA_ID",
+    "PROJECTION_SCHEMA_VERSION",
+    "PROJECTION_OUTPUT_PATH_CONFIG_KEY",
+    "DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH",
     "CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY",
     "DETERMINISTIC_EVALUATED_AT_DEFAULT",
     "AUTHORITY_EFFECT_NONE",
@@ -789,7 +982,11 @@ __all__ = [
     "PreparationStatusV0",
     "MindestkontraktComponentRecordV0",
     "ShadowPreparationReadinessGateResultV0",
+    "ShadowPreparationReadinessProjectionWriteMetadataV0",
     "default_config_path",
     "load_shadow_preparation_readiness_gate_config_v0",
     "evaluate_shadow_preparation_readiness_gate_v0",
+    "build_shadow_preparation_readiness_projection_payload_v0",
+    "serialize_shadow_preparation_readiness_projection_v0",
+    "write_shadow_preparation_readiness_projection_v0",
 ]

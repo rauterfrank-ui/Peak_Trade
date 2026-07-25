@@ -137,6 +137,7 @@ READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |
+| Durable projection output (generated) | `out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json` |
 
 ## Fail-closed conditions
 
@@ -206,6 +207,89 @@ non-canonical (`LEGACY_NON_CANONICAL` / historical surface classifications).
 STEP 29V Paper Mode remains canonically undefined
 (`CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false`). This contract does not define
 STEP 29V semantics.
+
+## Durable readiness projection (projection-only, non-authoritative)
+
+```text
+PROJECTION_SCHEMA_ID=shadow_preparation_readiness_projection
+PROJECTION_SCHEMA_VERSION=v0
+PROJECTION_ONLY=true
+AUTHORITY_EFFECT=NONE
+ACTIVATION_AUTHORITY=false
+EXPLICIT_WRITE_CALL_REQUIRED=true
+NOT_STEP_29U_IMPLEMENTATION=true
+NOT_READINESS_APPROVAL=true
+NOT_ACTIVATION_AUTHORITY=true
+NOT_SCHEDULER_INPUT=true
+NOT_RUNTIME_COMMAND=true
+NOT_DASHBOARD_AUTHORITY=true
+```
+
+An optional durable projection writer may serialize **one already-computed**
+readiness evaluation into immutable, versioned, deterministic UTF-8 JSON bytes
+and atomically replace an explicitly configured repository-relative output path.
+
+- Writing requires an **explicit** writer call
+  (`write_shadow_preparation_readiness_projection_v0`).
+- Evaluation alone remains side-effect free and writes **no** artifact.
+- The writer does **not** recompute readiness, filesystem evidence, blockers, or
+  STEP-29U semantics; it consumes the canonical evaluation payload
+  (`evaluation.to_dict()`).
+- Default configured path:
+  `out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json`
+  (generated evidence/projection only; not an activation input; does not
+  overwrite historical source evidence).
+
+### Deterministic serialization contract
+
+- UTF-8 JSON
+- deterministic key ordering (`sort_keys=true`)
+- deterministic separators (`","`, `":"`)
+- trailing newline explicitly defined
+- fixed `evaluated_at` yields byte-identical output
+- no wall-clock timestamp inside the writer
+- no random IDs
+- no host-specific absolute paths in serialized content
+- complete file replacement only (no append)
+
+### Atomic-write contract
+
+1. serialize complete deterministic bytes
+2. write to a temporary sibling file in the same directory
+3. flush + fsync (where supported)
+4. atomically replace the destination
+5. clean up temporary files on failure
+
+No partial destination is left on write failure. A failed atomic replace must
+preserve any previous complete destination.
+
+### Path containment rules
+
+The projection output path must be:
+
+- explicit and repository-relative
+- resolved inside `repo_root` (independent of current working directory)
+- reject empty values, absolute paths, and traversal outside `repo_root`
+- reject an existing directory target
+- require the parent directory to already exist (fail closed; no silent nested
+  directory creation)
+
+Stable failure reason prefixes include:
+
+- `PROJECTION_OUTPUT_PATH_EMPTY`
+- `PROJECTION_OUTPUT_PATH_ABSOLUTE`
+- `PROJECTION_OUTPUT_PATH_OUTSIDE_REPO`
+- `PROJECTION_OUTPUT_PARENT_MISSING`
+- `PROJECTION_OUTPUT_PATH_IS_DIRECTORY`
+- `PROJECTION_SERIALIZATION_FAILED`
+- `PROJECTION_TEMP_WRITE_FAILED`
+- `PROJECTION_ATOMIC_REPLACE_FAILED`
+
+Write failure must not be converted into a successful readiness result and must
+not alter evaluation blocker order or readiness outcome.
+
+The projection is **not**: STEP-29U implementation; readiness approval;
+activation authority; scheduler input; runtime command; or dashboard authority.
 
 ## Next permitted action
 
