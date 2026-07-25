@@ -96,10 +96,37 @@ CANONICAL_SHADOW_MODE_EXISTS=false
 CANONICAL_STEP_29U_BOUND=false
 CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false
 SHADOW_PREPARATION_COMPLETE=false
+AUTHORITY_EFFECT=NONE
+NOT_STEP_29U_IMPLEMENTATION=true
 ```
 
 Canonical STEP 29U Shadow Mode and STEP 29V Paper Mode do not currently exist
-in the repository as ratified bindings.
+in the repository as ratified **bindings**. The semantic definition of STEP 29U
+is owned exclusively by the canonical runbook section
+`## STEP 29U — Shadow` in
+`docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`.
+
+That runbook section may define STEP 29U as semantically ratified but
+operationally unbound. This readiness contract does **not** duplicate that
+normative body and does **not** become a second STEP 29U SSOT.
+
+### Readiness producer role (narrow)
+
+`ops.shadow_preparation_readiness_gate_v0`:
+
+- classifies preparation truth;
+- proves absence / non-readiness;
+- cannot bind STEP 29U;
+- cannot implement STEP 29U;
+- cannot activate Shadow, Paper, Testnet, Scheduler, Runtime, Live, or Orders.
+
+```text
+READINESS_PRODUCER_CLASSIFIES_PREPARATION_TRUTH=true
+READINESS_PRODUCER_PROVES_ABSENCE_OR_NON_READINESS=true
+READINESS_PRODUCER_CANNOT_BIND_STEP_29U=true
+READINESS_PRODUCER_CANNOT_IMPLEMENT_STEP_29U=true
+READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true
+```
 
 ## Owners and artifacts
 

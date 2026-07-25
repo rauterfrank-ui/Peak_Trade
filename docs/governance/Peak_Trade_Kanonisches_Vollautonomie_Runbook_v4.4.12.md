@@ -3748,6 +3748,171 @@ INTENT_COMPATIBILITY_FIREWALL_PASS
 
 ## STEP 29U — Shadow
 
+STEP 29U ist die zukünftige kanonische Ladder-Stufe **Shadow**. Sie liegt nach
+STEP 29T (Zero-Order Runtime) und vor STEP 29V (Paper).
+
+Diese Ratifikation definiert ausschließlich Repository-Semantik, Grenzen,
+Ownership-Anforderungen und verbotene Äquivalenzen. Sie bindet keinen
+kanonischen Shadow Mode und aktiviert nichts.
+
+```text
+STEP29U_SEMANTICS_RATIFIED=true
+STEP29U_OPERATIONAL_STATUS=SEMANTICALLY_DEFINED_BUT_OPERATIONALLY_UNBOUND
+CANONICAL_STEP_29U_BOUND=false
+CANONICAL_SHADOW_MODE_EXISTS=false
+STEP_29U_IMPLEMENTED=false
+STEP_29U_ACTIVATED=false
+NON_ACTIVATING=true
+AUTHORITY_EFFECT=NONE
+```
+
+### Nicht enthalten (verbindlich)
+
+Diese Semantik-Ratifikation stellt **nicht** bereit und autorisiert **nicht**:
+
+- eine lauffähige Shadow-Session,
+- ein Scheduler-Job oder Worker,
+- einen persistenten Prozess,
+- kontinuierlichen Live-Marktdaten-Konsum,
+- kontinuierliche simulierte Order-Intents,
+- Fill-Execution,
+- Position-/Account-Projektion,
+- Restart/Resume,
+- Runtime-Bridge-Aktivierung,
+- Shadow-/Paper-/Testnet-/Live-Authority.
+
+### Zukünftiges Mindestkontrakt (nicht implementiert)
+
+Eine spätere STEP-29U-Implementation darf nur nach separater, bounded
+Ratifikation mindestens dieser Komponenten existieren:
+
+- canonical mode identity,
+- lifecycle owner,
+- session state machine,
+- canonical decision consumption,
+- execution-simulation boundary,
+- fill/cost model ownership,
+- position/account projection ownership,
+- durable state and restart/resume,
+- failure handling,
+- audit evidence,
+- activation boundary,
+- explicit Operator GO requirements.
+
+Dies sind zukünftige Voraussetzungen, keine implementierten Komponenten und
+keine durch dieses Dokument freigegebenen Dateipfade.
+
+### Authority
+
+STEP 29U darf niemals eine zweite Decision-, Risk-, Safety-, Execution-,
+Promotion- oder Runtime-Authority werden.
+
+Bestehende Sole Authorities bleiben unverändert:
+
+- Master V2 / Double Play für kanonische Decision-Semantik,
+- bestehende Risk/Sizing-Authority,
+- unabhängige Safety/Veto-Authority,
+- bestehende Execution-/Reconciliation-Boundaries,
+- externes Operator GO für Aktivierung.
+
+```text
+NO_SECOND_DECISION_AUTHORITY=true
+NO_SECOND_RISK_AUTHORITY=true
+NO_SECOND_SAFETY_AUTHORITY=true
+NO_SECOND_EXECUTION_AUTHORITY=true
+NO_SECOND_PROMOTION_AUTHORITY=true
+NO_SECOND_RUNTIME_AUTHORITY=true
+```
+
+### Verbotene Äquivalenz
+
+Keines der folgenden Surfaces ist kanonisches STEP 29U:
+
+- Phase 24 `ShadowOrderExecutor` (`src/orders/shadow.py`),
+- `scripts/run_shadow_execution.py`,
+- Phase 31 `ShadowPaperSession` (`src/live/shadow_session.py`),
+- `scripts/run_shadow_paper_session.py`,
+- Shadow-247 Charter, Wrapper oder Preflight,
+- Shadow Preparation Readiness Gate
+  (`ops.shadow_preparation_readiness_gate_v0`),
+- Dashboard-/WebUI-Readmodels,
+- bloße Existenz von Config- oder Job-Definitionen.
+
+```text
+HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U=true
+READINESS_GATE_IS_NOT_STEP_29U=true
+CONFIG_OR_JOB_PRESENCE_IS_NOT_ACTIVATION=true
+```
+
+### Historische Reuse-Regel
+
+Historische Komponenten dürfen nur als **nicht-autoritative**
+Implementierungs-Inputs nach einer späteren, expliziten bounded Ratifikation
+betrachtet werden. Ihre aktuelle Existenz:
+
+- bindet STEP 29U nicht,
+- autorisiert keine Aktivierung,
+- etabliert keine Ownership,
+- beweist keine Readiness,
+- gewährt keine semantische Äquivalenz.
+
+### Economic- und Activation-Locks
+
+```text
+ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
+SHADOW_PREPARATION_COMPLETE=false
+SHADOW_ACTIVATION_AUTHORIZED=false
+PAPER_ACTIVATION_AUTHORIZED=false
+TESTNET_ACTIVATION_AUTHORIZED=false
+SCHEDULER_ACTIVATION_AUTHORIZED=false
+RUNTIME_ACTIVATION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+ORDERS=false
+RUNTIME_BRIDGE_STATE=BOUND_NOT_ACTIVATED
+```
+
+### Dashboard-Blocker
+
+```text
+DASHBOARD_BLOCKER_ID=MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY
+MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN
+DASHBOARD_BLOCKER_STATE=OPEN
+DASHBOARD_BLOCKER_RESOLVED=false
+DASHBOARD_BLOCKER_WAIVED=false
+```
+
+Dieser Docs-only Semantik-Slice wird durch den offenen Dashboard-Blocker
+**nicht** blockiert. Der Blocker bleibt dennoch ein required
+Preparation-/Activation-Gate und darf durch diesen Slice weder resolved
+noch waived noch als erledigt dargestellt werden.
+
+### Next-Step Boundary
+
+Nach dieser Ratifikation ist als nächste Repository-Aktion nur ein
+separat autorisierter, bounded, non-activating Preparation-Slice zulässig.
+Keine STEP-29U-Implementation ist durch diese Dokumentänderung autorisiert.
+
+```text
+NEXT_PERMITTED_CLASS=OFFLINE_NON_ACTIVATING_PREPARATION_ONLY
+STEP_29U_IMPLEMENTATION_AUTHORIZED_BY_THIS_RATIFICATION=false
+```
+
+### Separate Operator GO
+
+Separates Operator GO ist verpflichtend vor:
+
+- kanonischer STEP-29U-Implementation,
+- persistenter Shadow-Session,
+- Scheduler- oder Worker-Start,
+- kontinuierlichem Live-Marktdaten-Job,
+- kontinuierlichen simulierten Order-Intents,
+- Paper / Testnet / Runtime / Live / Orders / Capital / Promotion.
+
+```text
+SEPARATE_OPERATOR_GO_REQUIRED_FOR_STEP29U_IMPLEMENTATION=true
+SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_ACTIVATION_STAGE=true
+```
+
 ## STEP 29V — Paper
 
 ## STEP 29W — Testnet
