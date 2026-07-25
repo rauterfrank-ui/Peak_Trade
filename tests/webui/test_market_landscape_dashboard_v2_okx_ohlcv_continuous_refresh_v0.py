@@ -70,6 +70,7 @@ class _FakeOkxClient:
         low_px: str | None = None,
         open_px: str | None = None,
         volume: str = "10",
+        trades: list[dict[str, str]] | None = None,
     ) -> None:
         self.captured_at = captured_at
         self.close_px = close_px
@@ -78,6 +79,7 @@ class _FakeOkxClient:
         self.low_px = low_px if low_px is not None else close_px
         self.volume = volume
         self.mark_px = mark_px if mark_px is not None else close_px
+        self.trades = list(trades or [])
         self.calls = 0
         self.paths: list[str] = []
 
@@ -114,6 +116,25 @@ class _FakeOkxClient:
                 effective_at=self.captured_at,
                 provider_timestamp=None,
                 raw_payload_digest="b" * 64,
+                byte_size=len(body.encode("utf-8")),
+                raw_body_utf8=body,
+            )
+        if path == "/api/v5/market/trades":
+            assert params["instId"] == INSTRUMENT
+            body = json.dumps({"code": "0", "msg": "", "data": self.trades})
+            return OkxPublicCaptureEnvelopeV1(
+                request_url=f"https://www.okx.com{path}?instId={INSTRUMENT}",
+                request_path=path,
+                query_parameters=dict(params),
+                http_status=200,
+                provider_code="0",
+                provider_message="",
+                capture_started_at=self.captured_at,
+                response_received_at=self.captured_at,
+                captured_at=self.captured_at,
+                effective_at=self.captured_at,
+                provider_timestamp=None,
+                raw_payload_digest="c" * 64,
                 byte_size=len(body.encode("utf-8")),
                 raw_body_utf8=body,
             )
@@ -399,8 +420,93 @@ def test_authentic_okx_maps_and_newer_snapshot_advances(
     assert second["ohlcv"]["live_mark_price"] == "0.000000009500"
     assert second["ohlcv"].get("ohlcv_revision_kind") == "SAME_TIMESTAMP_REVISION"
     assert "/api/v5/market/candles" in client_b.paths
+    assert "/api/v5/market/trades" in client_b.paths
     assert "/api/v5/public/mark-price" in client_b.paths
-    assert client_b.calls == 2
+    assert client_b.calls == 3
+    assert second["ohlcv"].get("open_candle_live_source") == "okx_public_trades_into_pt1h_v1"
+    assert second["ohlcv"].get("trades_endpoint") == "/api/v5/market/trades"
+
+
+def test_public_trades_revise_open_candle_when_candles_static(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Static candles + new authentic trade IDs must revise tip OHLCV and digest."""
+    archive = tmp_path / "archive"
+    selection = _write_universe(archive)
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
+    tip_ms = "1784926800000"  # FakeOkx open tip 2026-07-24T21:00:00Z
+    seed_ms = "1784926900000"
+    new_ms = "1784927400000"
+    seed_trades = [
+        {
+            "instId": INSTRUMENT,
+            "tradeId": "seed-1",
+            "px": "0.000000009100",
+            "sz": "1",
+            "side": "buy",
+            "ts": seed_ms,
+        }
+    ]
+    materialize_selected_okx_ohlcv_readmodel_v1(
+        archive_root=archive,
+        selected_instrument=INSTRUMENT,
+        selected_provider_instrument_id=INSTRUMENT,
+        selected_venue="okx",
+        selection_bundle_id="bundle-a",
+        selection_path=selection,
+        client=_FakeOkxClient(  # type: ignore[arg-type]
+            captured_at="2026-07-24T21:05:00Z",
+            open_px="0.000000009100",
+            high_px="0.000000009100",
+            low_px="0.000000009100",
+            close_px="0.000000009100",
+            volume="10",
+            trades=seed_trades,
+        ),
+    )
+    path = archive / "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+    first = json.loads(path.read_text(encoding="utf-8"))
+    assert first["last_timestamp"].startswith("2026-07-24T21:00:00")
+    assert first["applied_trade_ids"] == ["seed-1"]
+    assert first["bars"][-1]["close"] == "0.000000009100"
+    assert first["bars"][-1]["volume"] == "10"
+
+    new_trades = seed_trades + [
+        {
+            "instId": INSTRUMENT,
+            "tradeId": "new-2",
+            "px": "0.000000009250",
+            "sz": "5",
+            "side": "sell",
+            "ts": new_ms,
+        }
+    ]
+    second = refresh_selected_okx_ohlcv_readmodel_from_archive_v1(
+        archive_root=archive,
+        client=_FakeOkxClient(  # type: ignore[arg-type]
+            captured_at="2026-07-24T21:10:00Z",
+            open_px="0.000000009100",
+            high_px="0.000000009100",
+            low_px="0.000000009100",
+            close_px="0.000000009100",
+            volume="10",
+            trades=new_trades,
+        ),
+        force=True,
+    )
+    assert second["status"] == "OK"
+    tip = second["ohlcv"]["bars"][-1]
+    assert tip["ts"].startswith("2026-07-24T21:00:00")
+    assert tip["open"] == "0.000000009100"
+    assert tip["high"] == "0.000000009250"
+    assert tip["low"] == "0.000000009100"
+    assert tip["close"] == "0.000000009250"
+    assert tip["volume"] == "15"
+    assert second["ohlcv"]["ohlcv_revision_kind"] == "SAME_TIMESTAMP_REVISION"
+    assert second["ohlcv"]["trade_revision_kind"] == "SAME_TIMESTAMP_REVISION"
+    assert second["ohlcv"]["candle_revision_kind"] == "NO_OP"
+    assert "new-2" in second["ohlcv"]["applied_trade_ids"]
+    assert tip_ms  # tip bucket provenance anchor
 
 
 def test_provider_failure_does_not_fabricate_or_advance(

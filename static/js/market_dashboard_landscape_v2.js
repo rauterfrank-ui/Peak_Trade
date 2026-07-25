@@ -566,8 +566,17 @@
       metaDigest
     );
     setUpdateClass(kind);
-    // Expose poll classification as revision label (metadata-only ≠ candle motion).
-    payload.ohlcv_revision_kind = payload.ohlcv_revision_kind || kind;
+    // Prefer client poll class for candle-motion events so sticky server NO_OP
+    // cannot mask an authentic same-timestamp OHLCV change in the Revision field.
+    if (
+      kind === "SAME_TIMESTAMP_LAST_CANDLE_CHANGE" ||
+      kind === "NEW_CANDLE_APPEND" ||
+      kind === "HISTORICAL_SERIES_CHANGE"
+    ) {
+      payload.ohlcv_revision_kind = kind;
+    } else {
+      payload.ohlcv_revision_kind = payload.ohlcv_revision_kind || kind;
+    }
 
     if (kind === "NO_CHANGE") {
       updateMetaFromPayload(payload, availability, connectionState);

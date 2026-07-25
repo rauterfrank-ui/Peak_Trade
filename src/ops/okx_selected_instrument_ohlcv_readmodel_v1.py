@@ -1,4 +1,4 @@
-"""Selected-instrument OKX OHLCV readmodel materializer (public candles only)."""
+"""Selected-instrument OKX OHLCV readmodel materializer (public candles + trades)."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import json
 import os
 import tempfile
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -28,10 +28,17 @@ UNIVERSE_SELECTION_RELATIVE_PATH = "readmodels/universe_selection_readmodel.v1.j
 REFRESH_LOCK_NAME = ".okx_selected_instrument_ohlcv_refresh.lock"
 DEFAULT_BAR = "1H"
 DEFAULT_LIMIT = 100
+DEFAULT_TRADES_LIMIT = 100
+MAX_APPLIED_TRADE_IDS = 500
 # Recent candles endpoint includes the incomplete open candle (confirm=0).
 OKX_CANDLES_PATH = "/api/v5/market/candles"
+# Public recent trades — server-side only; revises the active open PT1H candle.
+OKX_TRADES_PATH = "/api/v5/market/trades"
 OKX_MARK_PRICE_PATH = "/api/v5/public/mark-price"
 LIVE_MARK_PROJECTION_V1 = "okx_ohlcv_live_mark_v1"
+OPEN_CANDLE_LIVE_SOURCE_V1 = "okx_public_trades_into_pt1h_v1"
+# OKX SWAP trade `sz` is contract count (not quote/base currency).
+TRADE_VOLUME_UNIT = "contracts"
 # Bounded dashboard refresh: visible intrabar feedback ≤5s under normal availability.
 DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS = 3
 
@@ -50,6 +57,21 @@ class OhlcvBarV1:
     volume: str
     volume_ccy: str | None
     confirm: bool
+    provider_ts_ms: str
+
+    def to_json_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class OkxPublicTradeV1:
+    """One authentic OKX public trade print (`/api/v5/market/trades`)."""
+
+    trade_id: str
+    price: str
+    size: str
+    side: str
+    ts: str
     provider_ts_ms: str
 
     def to_json_dict(self) -> dict[str, Any]:
@@ -223,6 +245,183 @@ def reduce_okx_ohlcv_bars_v1(
     return nxt, "AUTHENTIC_FULL_REPLACE"
 
 
+def parse_okx_public_trades_v1(rows: Sequence[Any]) -> list[OkxPublicTradeV1]:
+    """Parse OKX public trades rows (newest-first dicts with tradeId/px/sz/side/ts)."""
+    out: list[OkxPublicTradeV1] = []
+    seen: set[str] = set()
+    for raw in rows:
+        if not isinstance(raw, Mapping):
+            continue
+        trade_id = str(raw.get("tradeId") or "").strip()
+        if not trade_id or trade_id in seen:
+            continue
+        ts_iso = provider_ms_to_utc_iso(raw.get("ts"))
+        if ts_iso is None:
+            continue
+        px = format(_dec(raw.get("px"), field="trade_px"), "f")
+        sz = format(_dec(raw.get("sz"), field="trade_sz"), "f")
+        if _dec(sz, field="trade_sz") < 0:
+            raise OkxOhlcvReadmodelError(f"NEGATIVE_TRADE_SIZE:{trade_id}")
+        seen.add(trade_id)
+        out.append(
+            OkxPublicTradeV1(
+                trade_id=trade_id,
+                price=px,
+                size=sz,
+                side=str(raw.get("side") or "").strip().lower(),
+                ts=ts_iso,
+                provider_ts_ms=str(raw.get("ts") or ""),
+            )
+        )
+    out.sort(key=lambda t: (int(t.provider_ts_ms or "0"), t.trade_id))
+    return out
+
+
+def _bucket_start_utc(ts_iso: str, *, interval_seconds: int) -> datetime:
+    dt = datetime.fromisoformat(ts_iso.replace("Z", "+00:00")).astimezone(timezone.utc)
+    if interval_seconds != 3600:
+        raise OkxOhlcvReadmodelError("UNSUPPORTED_TRADE_BUCKET_INTERVAL")
+    return dt.replace(minute=0, second=0, microsecond=0)
+
+
+def apply_okx_public_trades_to_open_candle_v1(
+    bars: Sequence[Mapping[str, Any] | OhlcvBarV1],
+    trades: Sequence[OkxPublicTradeV1],
+    *,
+    previously_applied_trade_ids: Sequence[str] | None = None,
+    interval_seconds: int = 3600,
+) -> tuple[list[OhlcvBarV1], str, list[str], dict[str, Any]]:
+    """Revise the active PT1H candle from authentic OKX public trades.
+
+    Bootstrap rule: when no trade IDs were applied yet, seed IDs already present in
+    the current bucket without mutating geometry (candle bootstrap already priced
+    them). Subsequent new trade IDs revise the open tip:
+
+    - open preserved from candle bootstrap (or first trade when appending a bucket)
+    - high = max(previous high, trade price)
+    - low = min(previous low, trade price)
+    - close = newest applied trade price
+    - volume += trade size (OKX SWAP ``sz`` = contracts)
+    - closed historical candles are never rewritten
+    """
+    if not bars:
+        raise OkxOhlcvReadmodelError("TRADE_REDUCE_EMPTY_BARS")
+    working = [_as_ohlcv_bar(b) for b in bars]
+    working.sort(key=lambda b: b.ts)
+    applied = {str(x) for x in (previously_applied_trade_ids or []) if str(x)}
+    meta: dict[str, Any] = {
+        "old_trade_count": 0,
+        "duplicate_trade_count": 0,
+        "new_trade_count": 0,
+        "seeded": False,
+        "trade_volume_unit": TRADE_VOLUME_UNIT,
+    }
+    if not trades:
+        return working, "NO_OP", sorted(applied)[-MAX_APPLIED_TRADE_IDS:], meta
+
+    tip = working[-1]
+    tip_start = datetime.fromisoformat(tip.ts.replace("Z", "+00:00")).astimezone(timezone.utc)
+    tip_end = tip_start + timedelta(seconds=interval_seconds)
+
+    # First observation after candle bootstrap / new bucket: seed current-bucket
+    # IDs only so candle-included prints are not double-counted into volume.
+    if previously_applied_trade_ids is None:
+        seeded = [
+            t.trade_id
+            for t in trades
+            if tip_start
+            <= datetime.fromisoformat(t.ts.replace("Z", "+00:00")).astimezone(timezone.utc)
+            < tip_end
+        ]
+        meta["seeded"] = True
+        meta["new_trade_count"] = 0
+        return working, "NO_OP", seeded[-MAX_APPLIED_TRADE_IDS:], meta
+
+    revision_kind = "NO_OP"
+    for trade in trades:
+        trade_dt = datetime.fromisoformat(trade.ts.replace("Z", "+00:00")).astimezone(timezone.utc)
+        tip = working[-1]
+        tip_start = datetime.fromisoformat(tip.ts.replace("Z", "+00:00")).astimezone(timezone.utc)
+        tip_end = tip_start + timedelta(seconds=interval_seconds)
+        px = _dec(trade.price, field="trade_px")
+        sz = _dec(trade.size, field="trade_sz")
+
+        if trade_dt < tip_start:
+            meta["old_trade_count"] += 1
+            continue
+
+        if trade.trade_id in applied:
+            meta["duplicate_trade_count"] += 1
+            continue
+
+        if trade_dt >= tip_end:
+            # Next PT1H bucket from an authentic trade print.
+            bucket_ts = _bucket_start_utc(trade.ts, interval_seconds=interval_seconds)
+            # Only append when the trade lands in the immediate next bucket (or later
+            # empty buckets advanced one-at-a-time from the tip).
+            expected_next = tip_end
+            if bucket_ts != expected_next:
+                # Non-adjacent: ignore until candle history realigns (fail-soft).
+                meta["old_trade_count"] += 1
+                continue
+            sealed = tip
+            if not sealed.confirm:
+                sealed = OhlcvBarV1(
+                    ts=sealed.ts,
+                    open=sealed.open,
+                    high=sealed.high,
+                    low=sealed.low,
+                    close=sealed.close,
+                    volume=sealed.volume,
+                    volume_ccy=sealed.volume_ccy,
+                    confirm=True,
+                    provider_ts_ms=sealed.provider_ts_ms,
+                )
+            new_tip = OhlcvBarV1(
+                ts=bucket_ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                open=format(px, "f"),
+                high=format(px, "f"),
+                low=format(px, "f"),
+                close=format(px, "f"),
+                volume=format(sz, "f"),
+                volume_ccy=None,
+                confirm=False,
+                provider_ts_ms=trade.provider_ts_ms,
+            )
+            working = list(working[:-1]) + [sealed, new_tip]
+            applied.add(trade.trade_id)
+            meta["new_trade_count"] += 1
+            revision_kind = "NEW_INTERVAL_APPEND"
+            continue
+
+        # Same open-candle bucket revision.
+        if tip.confirm:
+            # Sealed tip must not be rewritten by late prints.
+            meta["old_trade_count"] += 1
+            continue
+        new_high = max(_dec(tip.high, field="high"), px)
+        new_low = min(_dec(tip.low, field="low"), px)
+        new_vol = _dec(tip.volume, field="volume") + sz
+        new_tip = OhlcvBarV1(
+            ts=tip.ts,
+            open=tip.open,
+            high=format(new_high, "f"),
+            low=format(new_low, "f"),
+            close=format(px, "f"),
+            volume=format(new_vol, "f"),
+            volume_ccy=tip.volume_ccy,
+            confirm=False,
+            provider_ts_ms=trade.provider_ts_ms or tip.provider_ts_ms,
+        )
+        working = list(working[:-1]) + [new_tip]
+        applied.add(trade.trade_id)
+        meta["new_trade_count"] += 1
+        if revision_kind != "NEW_INTERVAL_APPEND":
+            revision_kind = "SAME_TIMESTAMP_REVISION"
+
+    return working, revision_kind, sorted(applied)[-MAX_APPLIED_TRADE_IDS:], meta
+
+
 def parse_okx_history_candles(
     rows: Sequence[Sequence[Any]],
 ) -> tuple[list[OhlcvBarV1], list[str]]:
@@ -334,15 +533,54 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         and isinstance(existing_doc.get("bars"), list)
     ):
         previous_bars = list(existing_doc["bars"])
-    bars, revision_kind = reduce_okx_ohlcv_bars_v1(previous_bars, incoming_bars)
+    bars, candle_revision_kind = reduce_okx_ohlcv_bars_v1(previous_bars, incoming_bars)
+
+    # Public trades revise the open candle when the candles endpoint is static.
+    trades_envelope = http.get_json(
+        OKX_TRADES_PATH,
+        {
+            "instId": selected_provider_instrument_id,
+            "limit": str(DEFAULT_TRADES_LIMIT),
+        },
+    )
+    trades_payload = json.loads(trades_envelope.raw_body_utf8)
+    trades_data = trades_payload.get("data")
+    if not isinstance(trades_data, list):
+        raise OkxOhlcvReadmodelError("TRADES_PAYLOAD_INVALID")
+    trades = parse_okx_public_trades_v1(trades_data)
+    prev_applied: list[str] | None = None
+    if (
+        isinstance(existing_doc, Mapping)
+        and previous_bars
+        and bars
+        and _as_ohlcv_bar(previous_bars[-1]).ts == bars[-1].ts
+        and "applied_trade_ids" in existing_doc
+    ):
+        raw_ids = existing_doc.get("applied_trade_ids")
+        if isinstance(raw_ids, list):
+            prev_applied = [str(x) for x in raw_ids]
+        else:
+            prev_applied = []
+    bars, trade_revision_kind, applied_trade_ids, trade_meta = (
+        apply_okx_public_trades_to_open_candle_v1(
+            bars,
+            trades,
+            previously_applied_trade_ids=prev_applied,
+        )
+    )
+    if trade_revision_kind in {"SAME_TIMESTAMP_REVISION", "NEW_INTERVAL_APPEND"}:
+        revision_kind = trade_revision_kind
+    else:
+        revision_kind = candle_revision_kind
 
     closed = [b for b in bars if b.confirm]
     last_closed = closed[-1] if closed else None
     as_of = utc_now_iso()
     policy = load_freshness_policy_v1()
-    # OHLCV feed freshness keys off the candle capture clock — never mark-only ticks.
-    candle_captured_at = envelope.captured_at
-    candle_effective_at = envelope.effective_at or envelope.captured_at
+    # Live open-candle freshness keys off the public trades capture clock (the
+    # authentic revision source). Mark-only ticks never drive OHLCV freshness.
+    candle_captured_at = trades_envelope.captured_at
+    candle_effective_at = trades_envelope.effective_at or trades_envelope.captured_at
     freshness_state, is_stale, stale_reason = classify_freshness_v1(
         reference_at=candle_captured_at,
         as_of=as_of,
@@ -384,12 +622,16 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         archive_root / "raw" / "okx_ohlcv" / f"{selected_provider_instrument_id}_{okx_bar}.json"
     )
     _atomic_write_text(raw_path, envelope.raw_body_utf8)
+    trades_raw_path = (
+        archive_root / "raw" / "okx_trades" / f"{selected_provider_instrument_id}.json"
+    )
+    _atomic_write_text(trades_raw_path, trades_envelope.raw_body_utf8)
     mark_raw_path = (
         archive_root / "raw" / "okx_mark_price" / f"{selected_provider_instrument_id}.json"
     )
     _atomic_write_text(mark_raw_path, mark_envelope.raw_body_utf8)
 
-    # Primary OHLCV clocks stay on the candles endpoint. Mark has its own capture fields.
+    # Primary live OHLCV clocks follow the public trades capture (open-candle source).
     captured_at = candle_captured_at
     effective_at = candle_effective_at
 
@@ -403,6 +645,9 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "interval": "PT1H",
         "provider_bar": okx_bar,
         "candle_endpoint": OKX_CANDLES_PATH,
+        "trades_endpoint": OKX_TRADES_PATH,
+        "open_candle_live_source": OPEN_CANDLE_LIVE_SOURCE_V1,
+        "open_candle_bootstrap_source": OKX_CANDLES_PATH,
         "instrument_id": selected_instrument,
         "provider_instrument_id": selected_provider_instrument_id,
         "selection_bundle_id": selection_bundle_id,
@@ -411,7 +656,11 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "effective_at": effective_at,
         "candle_captured_at": candle_captured_at,
         "candle_effective_at": candle_effective_at,
+        "candles_captured_at": envelope.captured_at,
+        "trades_captured_at": trades_envelope.captured_at,
         "ohlcv_revision_kind": revision_kind,
+        "candle_revision_kind": candle_revision_kind,
+        "trade_revision_kind": trade_revision_kind,
         "freshness_state": freshness_state,
         "is_stale": is_stale,
         "stale_reason": stale_reason,
@@ -424,9 +673,21 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "raw_capture_digest": envelope.raw_payload_digest,
         "raw_capture_path": str(raw_path.resolve()),
         "request_url": envelope.request_url,
-        "volume_unit": "contracts",
+        "trades_raw_capture_digest": trades_envelope.raw_payload_digest,
+        "trades_raw_capture_path": str(trades_raw_path.resolve()),
+        "trades_request_url": trades_envelope.request_url,
+        "applied_trade_ids": applied_trade_ids,
+        "trade_reduce_meta": trade_meta,
+        "volume_unit": TRADE_VOLUME_UNIT,
+        "trade_volume_unit": TRADE_VOLUME_UNIT,
         "bars": [b.to_json_dict() for b in bars],
-        "notes": [*notes, f"REVISION_KIND:{revision_kind}"],
+        "notes": [
+            *notes,
+            f"REVISION_KIND:{revision_kind}",
+            f"CANDLE_REVISION_KIND:{candle_revision_kind}",
+            f"TRADE_REVISION_KIND:{trade_revision_kind}",
+            f"OPEN_CANDLE_LIVE_SOURCE:{OPEN_CANDLE_LIVE_SOURCE_V1}",
+        ],
         # Additive live-mark projection (v1): authentic OKX public mark only.
         # Distinct fact from candle close — never rewrites OHLCV geometry.
         "live_mark_projection": LIVE_MARK_PROJECTION_V1,
