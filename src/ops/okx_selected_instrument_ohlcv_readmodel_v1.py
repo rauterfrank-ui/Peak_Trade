@@ -81,6 +81,148 @@ def _dec(value: Any, *, field: str) -> Decimal:
     return parsed
 
 
+def _bar_ohlcv_tuple(bar: OhlcvBarV1) -> tuple[str, str, str, str, str]:
+    return (bar.open, bar.high, bar.low, bar.close, bar.volume)
+
+
+def _as_ohlcv_bar(raw: Mapping[str, Any] | OhlcvBarV1) -> OhlcvBarV1:
+    if isinstance(raw, OhlcvBarV1):
+        return raw
+    confirm_raw = raw.get("confirm")
+    if confirm_raw is None:
+        confirm = True
+    elif isinstance(confirm_raw, bool):
+        confirm = confirm_raw
+    else:
+        confirm = str(confirm_raw) in {"1", "true", "True"}
+    return OhlcvBarV1(
+        ts=str(raw["ts"]),
+        open=format(_dec(raw.get("open"), field="open"), "f"),
+        high=format(_dec(raw.get("high"), field="high"), "f"),
+        low=format(_dec(raw.get("low"), field="low"), "f"),
+        close=format(_dec(raw.get("close"), field="close"), "f"),
+        volume=format(_dec(raw.get("volume"), field="volume"), "f"),
+        volume_ccy=(
+            None
+            if raw.get("volume_ccy") in (None, "")
+            else format(_dec(raw.get("volume_ccy"), field="volume_ccy"), "f")
+        ),
+        confirm=confirm,
+        provider_ts_ms=str(raw.get("provider_ts_ms") or ""),
+    )
+
+
+def reduce_okx_ohlcv_bars_v1(
+    previous: Sequence[Mapping[str, Any] | OhlcvBarV1] | None,
+    incoming: Sequence[Mapping[str, Any] | OhlcvBarV1],
+    *,
+    interval_seconds: int = 3600,
+) -> tuple[list[OhlcvBarV1], str]:
+    """Reduce authentic OKX candle series revisions for one selected instrument.
+
+    Revision kinds:
+    - BOOTSTRAP: no previous series
+    - NO_OP: same final timestamp and identical O/H/L/C/V
+    - SAME_TIMESTAMP_REVISION: final timestamp equal, OHLCV changed → replace tip only
+    - NEW_INTERVAL_APPEND: final timestamp advanced by exactly one interval → append once
+    - AUTHENTIC_FULL_REPLACE: longer authentic window / bootstrap alignment from OKX
+
+    Open-candle invariants for SAME_TIMESTAMP_REVISION:
+    open fixed; high may only increase; low may only decrease; close/volume follow source.
+    """
+    if not incoming:
+        raise OkxOhlcvReadmodelError("OHLCV_REDUCE_EMPTY_INCOMING")
+    nxt = [_as_ohlcv_bar(b) for b in incoming]
+    nxt.sort(key=lambda b: b.ts)
+    seen: set[str] = set()
+    for bar in nxt:
+        if bar.ts in seen:
+            raise OkxOhlcvReadmodelError(f"DUPLICATE_CANDLE_TIMESTAMP:{bar.ts}")
+        seen.add(bar.ts)
+
+    if not previous:
+        return nxt, "BOOTSTRAP"
+
+    prev = [_as_ohlcv_bar(b) for b in previous]
+    prev.sort(key=lambda b: b.ts)
+    if not prev:
+        return nxt, "BOOTSTRAP"
+
+    prev_last = prev[-1]
+    next_last = nxt[-1]
+    if prev_last.ts == next_last.ts:
+        if len(prev) != len(nxt):
+            # Same tip timestamp but different window length — accept authentic OKX window
+            # only when historical prefixes for the overlapping closed range are unchanged.
+            return nxt, "AUTHENTIC_FULL_REPLACE"
+        for older_p, older_n in zip(prev[:-1], nxt[:-1]):
+            if older_p.ts != older_n.ts or _bar_ohlcv_tuple(older_p) != _bar_ohlcv_tuple(older_n):
+                # Authentic upstream correction of sealed history → accept OKX window.
+                return nxt, "AUTHENTIC_FULL_REPLACE"
+        if _bar_ohlcv_tuple(prev_last) == _bar_ohlcv_tuple(next_last):
+            # Identical OHLCV at same timestamp is a no-op (preserve prior confirm/metadata).
+            return prev, "NO_OP"
+        # Open-candle revision rules.
+        if _dec(next_last.open, field="open") != _dec(prev_last.open, field="open"):
+            raise OkxOhlcvReadmodelError(f"OPEN_REGRESSION:{prev_last.ts}")
+        if _dec(next_last.high, field="high") < _dec(prev_last.high, field="high"):
+            raise OkxOhlcvReadmodelError(f"HIGH_REGRESSION:{prev_last.ts}")
+        if _dec(next_last.low, field="low") > _dec(prev_last.low, field="low"):
+            raise OkxOhlcvReadmodelError(f"LOW_REGRESSION:{prev_last.ts}")
+        if _dec(next_last.volume, field="volume") < 0:
+            raise OkxOhlcvReadmodelError(f"NEGATIVE_VOLUME:{prev_last.ts}")
+        reduced = list(prev[:-1]) + [next_last]
+        return reduced, "SAME_TIMESTAMP_REVISION"
+
+    prev_dt = datetime.fromisoformat(prev_last.ts.replace("Z", "+00:00"))
+    next_dt = datetime.fromisoformat(next_last.ts.replace("Z", "+00:00"))
+    delta = (next_dt - prev_dt).total_seconds()
+    if abs(delta - float(interval_seconds)) <= 1e-9:
+        # Seal prior tip from incoming prefix when present; else mark previous tip closed.
+        sealed = prev_last
+        if len(nxt) >= 2 and nxt[-2].ts == prev_last.ts:
+            sealed = nxt[-2]
+            if not sealed.confirm:
+                sealed = OhlcvBarV1(
+                    ts=sealed.ts,
+                    open=sealed.open,
+                    high=sealed.high,
+                    low=sealed.low,
+                    close=sealed.close,
+                    volume=sealed.volume,
+                    volume_ccy=sealed.volume_ccy,
+                    confirm=True,
+                    provider_ts_ms=sealed.provider_ts_ms,
+                )
+        elif not sealed.confirm:
+            sealed = OhlcvBarV1(
+                ts=sealed.ts,
+                open=sealed.open,
+                high=sealed.high,
+                low=sealed.low,
+                close=sealed.close,
+                volume=sealed.volume,
+                volume_ccy=sealed.volume_ccy,
+                confirm=True,
+                provider_ts_ms=sealed.provider_ts_ms,
+            )
+        # Historical prefix before sealed tip must remain unchanged when lengths align.
+        if len(prev) >= 2 and len(nxt) >= 2 and nxt[-2].ts == sealed.ts:
+            overlap_prev = prev[:-1]
+            overlap_in = nxt[:-2]
+            if len(overlap_in) == len(overlap_prev):
+                for older_p, older_n in zip(overlap_prev, overlap_in):
+                    if older_p.ts != older_n.ts or _bar_ohlcv_tuple(older_p) != _bar_ohlcv_tuple(
+                        older_n
+                    ):
+                        return nxt, "AUTHENTIC_FULL_REPLACE"
+        reduced = list(prev[:-1]) + [sealed, next_last]
+        return reduced, "NEW_INTERVAL_APPEND"
+
+    # Non-adjacent advance or rewind: accept only full authentic replacement window.
+    return nxt, "AUTHENTIC_FULL_REPLACE"
+
+
 def parse_okx_history_candles(
     rows: Sequence[Sequence[Any]],
 ) -> tuple[list[OhlcvBarV1], list[str]]:
@@ -179,16 +321,30 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
     data = payload.get("data")
     if not isinstance(data, list) or not data:
         raise OkxOhlcvReadmodelError("OHLCV_EMPTY")
-    bars, notes = parse_okx_history_candles(data)
-    if not bars:
+    incoming_bars, notes = parse_okx_history_candles(data)
+    if not incoming_bars:
         raise OkxOhlcvReadmodelError("OHLCV_PARSE_EMPTY")
+
+    existing_doc = load_ohlcv_readmodel_v1(archive_root)
+    previous_bars: list[Any] | None = None
+    if (
+        isinstance(existing_doc, Mapping)
+        and str(existing_doc.get("instrument_id") or "") == selected_instrument
+        and str(existing_doc.get("venue") or "").lower() in {"okx", "okx_europe_eea"}
+        and isinstance(existing_doc.get("bars"), list)
+    ):
+        previous_bars = list(existing_doc["bars"])
+    bars, revision_kind = reduce_okx_ohlcv_bars_v1(previous_bars, incoming_bars)
 
     closed = [b for b in bars if b.confirm]
     last_closed = closed[-1] if closed else None
     as_of = utc_now_iso()
     policy = load_freshness_policy_v1()
+    # OHLCV feed freshness keys off the candle capture clock — never mark-only ticks.
+    candle_captured_at = envelope.captured_at
+    candle_effective_at = envelope.effective_at or envelope.captured_at
     freshness_state, is_stale, stale_reason = classify_freshness_v1(
-        reference_at=(last_closed.ts if last_closed else envelope.captured_at),
+        reference_at=candle_captured_at,
         as_of=as_of,
         source_type="ohlcv_latest_candle",
         policy=policy,
@@ -233,17 +389,9 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
     )
     _atomic_write_text(mark_raw_path, mark_envelope.raw_body_utf8)
 
-    # Capture clocks: prefer the later of candles vs mark responses for honest freshness.
-    captured_at = envelope.captured_at
-    effective_at = envelope.effective_at or envelope.captured_at
-    try:
-        candle_cap = datetime.fromisoformat(str(envelope.captured_at).replace("Z", "+00:00"))
-        mark_cap = datetime.fromisoformat(str(mark_envelope.captured_at).replace("Z", "+00:00"))
-        if mark_cap > candle_cap:
-            captured_at = mark_envelope.captured_at
-            effective_at = mark_envelope.effective_at or mark_envelope.captured_at
-    except ValueError:
-        pass
+    # Primary OHLCV clocks stay on the candles endpoint. Mark has its own capture fields.
+    captured_at = candle_captured_at
+    effective_at = candle_effective_at
 
     doc = {
         "schema_name": OHLCV_SCHEMA,
@@ -261,6 +409,9 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "selection_path": str(selection_path.resolve()),
         "captured_at": captured_at,
         "effective_at": effective_at,
+        "candle_captured_at": candle_captured_at,
+        "candle_effective_at": candle_effective_at,
+        "ohlcv_revision_kind": revision_kind,
         "freshness_state": freshness_state,
         "is_stale": is_stale,
         "stale_reason": stale_reason,
@@ -275,9 +426,9 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "request_url": envelope.request_url,
         "volume_unit": "contracts",
         "bars": [b.to_json_dict() for b in bars],
-        "notes": notes,
+        "notes": [*notes, f"REVISION_KIND:{revision_kind}"],
         # Additive live-mark projection (v1): authentic OKX public mark only.
-        # Does not rewrite closed candle OHLC; browser may use mark for open-bar tip.
+        # Distinct fact from candle close — never rewrites OHLCV geometry.
         "live_mark_projection": LIVE_MARK_PROJECTION_V1,
         "live_mark_price": live_mark_price,
         "live_mark_provider_ts": live_mark_provider_ts,
@@ -297,6 +448,7 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "freshness_state": freshness_state,
         "last_closed_timestamp": last_closed.ts if last_closed else None,
         "first_timestamp": bars[0].ts,
+        "ohlcv_revision_kind": revision_kind,
         "digest": hashlib.sha256(json.dumps(doc, sort_keys=True).encode()).hexdigest(),
     }
 

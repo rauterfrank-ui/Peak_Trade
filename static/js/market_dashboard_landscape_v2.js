@@ -280,6 +280,18 @@
       "data-mdl-chart-candle-close",
       String(bars[n - 1].close !== undefined ? bars[n - 1].close : "")
     );
+    if (bars[n - 1].open !== undefined) {
+      canvas.setAttribute("data-mdl-chart-candle-open", String(bars[n - 1].open));
+    }
+    if (bars[n - 1].high !== undefined) {
+      canvas.setAttribute("data-mdl-chart-candle-high", String(bars[n - 1].high));
+    }
+    if (bars[n - 1].low !== undefined) {
+      canvas.setAttribute("data-mdl-chart-candle-low", String(bars[n - 1].low));
+    }
+    if (bars[n - 1].volume !== undefined) {
+      canvas.setAttribute("data-mdl-chart-candle-volume", String(bars[n - 1].volume));
+    }
     canvas.setAttribute("data-mdl-chart-instance-id", chartInstanceId);
     canvas.setAttribute(
       "data-mdl-full-series-clearrect",
@@ -411,7 +423,8 @@
           Number(prevBars[i].open) !== Number(nextBars[i].open) ||
           Number(prevBars[i].high) !== Number(nextBars[i].high) ||
           Number(prevBars[i].low) !== Number(nextBars[i].low) ||
-          Number(prevBars[i].close) !== Number(nextBars[i].close)
+          Number(prevBars[i].close) !== Number(nextBars[i].close) ||
+          Number(prevBars[i].volume || 0) !== Number(nextBars[i].volume || 0)
         ) {
           histChanged = true;
           break;
@@ -478,6 +491,7 @@
           high: b.high,
           low: b.low,
           close: b.close,
+          volume: b.volume,
           confirm: b.confirm,
         };
       });

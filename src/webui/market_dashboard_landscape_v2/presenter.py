@@ -115,9 +115,9 @@ def serialize_ohlcv_browser_payload_v1(
     projection never fabricates candles; missing/non-finite values fail closed.
 
     Identity domains (local browser payload only):
-    - candle_series_digest: authentic timestamp + O/H/L/C (+ confirm) only
-    - metadata_digest: captured_at / freshness / provenance clocks
-    - live_mark_price: distinct annotation — never mutates candle close/geometry
+    - candle_series_digest: authentic timestamp + O/H/L/C/V (+ confirm)
+    - metadata_digest: captured_at / freshness / mark provenance clocks
+    - live_mark_price: distinct OKX mark fact — never mutates candle close/geometry
     """
     if not isinstance(ohlcv_readmodel, Mapping):
         return None
@@ -136,10 +136,11 @@ def serialize_ohlcv_browser_payload_v1(
         high_v = _finite_ohlc_float(row.get("high"))
         low_v = _finite_ohlc_float(row.get("low"))
         close_v = _finite_ohlc_float(row.get("close"))
-        if None in (open_v, high_v, low_v, close_v):
+        volume_v = _finite_ohlc_float(row.get("volume"))
+        if None in (open_v, high_v, low_v, close_v, volume_v):
             return None
         assert open_v is not None and high_v is not None
-        assert low_v is not None and close_v is not None
+        assert low_v is not None and close_v is not None and volume_v is not None
         confirm_raw = row.get("confirm")
         if confirm_raw is None:
             confirm = True
@@ -147,7 +148,7 @@ def serialize_ohlcv_browser_payload_v1(
             confirm = confirm_raw
         else:
             confirm = str(confirm_raw) in {"1", "true", "True"}
-        # Geometry uses authentic OHLC only — mark never overwrites close/high/low.
+        # Geometry uses authentic OHLCV only — mark never overwrites close/high/low.
         bars.append(
             {
                 "ts": ts.strip(),
@@ -155,6 +156,7 @@ def serialize_ohlcv_browser_payload_v1(
                 "high": high_v,
                 "low": low_v,
                 "close": close_v,
+                "volume": volume_v,
                 "display_close": close_v,
                 "display_high": high_v,
                 "display_low": low_v,
@@ -177,6 +179,7 @@ def serialize_ohlcv_browser_payload_v1(
                 "high": b["high"],
                 "low": b["low"],
                 "close": b["close"],
+                "volume": b["volume"],
                 "confirm": b["confirm"],
             }
             for b in bars
@@ -188,12 +191,16 @@ def serialize_ohlcv_browser_payload_v1(
     metadata_source = {
         "captured_at": ohlcv_readmodel.get("captured_at"),
         "effective_at": ohlcv_readmodel.get("effective_at"),
+        "candle_captured_at": ohlcv_readmodel.get("candle_captured_at")
+        or ohlcv_readmodel.get("captured_at"),
         "freshness_state": ohlcv_readmodel.get("freshness_state"),
         "is_stale": bool(ohlcv_readmodel.get("is_stale")),
         "live_mark_price": live_mark,
         "live_mark_provider_ts": ohlcv_readmodel.get("live_mark_provider_ts"),
+        "live_mark_captured_at": ohlcv_readmodel.get("live_mark_captured_at"),
         "gap_count": ohlcv_readmodel.get("gap_count"),
         "last_closed_timestamp": ohlcv_readmodel.get("last_closed_timestamp"),
+        "ohlcv_revision_kind": ohlcv_readmodel.get("ohlcv_revision_kind"),
     }
     metadata_digest = hashlib.sha256(
         json.dumps(metadata_source, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -224,12 +231,20 @@ def serialize_ohlcv_browser_payload_v1(
         "gap_count": ohlcv_readmodel.get("gap_count"),
         "live_mark_price": live_mark,
         "live_mark_provider_ts": ohlcv_readmodel.get("live_mark_provider_ts"),
+        "live_mark_captured_at": ohlcv_readmodel.get("live_mark_captured_at"),
         "live_price_kind": ohlcv_readmodel.get("live_price_kind") or "mark",
         "live_mark_projection": ohlcv_readmodel.get("live_mark_projection"),
+        "candle_endpoint": ohlcv_readmodel.get("candle_endpoint"),
+        "candle_captured_at": ohlcv_readmodel.get("candle_captured_at")
+        or ohlcv_readmodel.get("captured_at"),
+        "ohlcv_revision_kind": ohlcv_readmodel.get("ohlcv_revision_kind"),
         "candle_series_digest": candle_series_digest,
         "metadata_digest": metadata_digest,
         "chart_digest": chart_digest,
         "payload_digest": payload_digest,
+        "close_source_semantics": "okx_market_candles_close",
+        "volume_source_semantics": "okx_market_candles_vol_contracts",
+        "mark_source_semantics": "okx_public_mark_price_markPx",
         "bars": bars,
     }
 
