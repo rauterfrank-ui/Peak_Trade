@@ -971,7 +971,7 @@ def test_docs_declare_durable_projection_contract_tokens() -> None:
         "NOT_DASHBOARD_AUTHORITY=true",
         "PROJECTION_OUTPUT_PATH_EMPTY",
         "write_shadow_preparation_readiness_projection_v0",
-        "out/ops/shadow_preparation_readiness_projection_v0.json",
+        "out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json",
     ):
         assert token in text, token
 

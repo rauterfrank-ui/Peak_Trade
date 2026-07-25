@@ -137,7 +137,7 @@ READINESS_PRODUCER_CANNOT_ACTIVATE_STEP_29U=true
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |
-| Durable projection output (generated) | `out/ops/shadow_preparation_readiness_projection_v0.json` |
+| Durable projection output (generated) | `out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json` |
 
 ## Fail-closed conditions
 
@@ -236,7 +236,7 @@ and atomically replace an explicitly configured repository-relative output path.
   STEP-29U semantics; it consumes the canonical evaluation payload
   (`evaluation.to_dict()`).
 - Default configured path:
-  `out/ops/shadow_preparation_readiness_projection_v0.json`
+  `out&#47;ops&#47;shadow_preparation_readiness_projection_v0.json`
   (generated evidence/projection only; not an activation input; does not
   overwrite historical source evidence).
 
