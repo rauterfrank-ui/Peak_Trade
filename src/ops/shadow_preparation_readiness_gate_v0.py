@@ -42,6 +42,7 @@ DASHBOARD_BLOCKER_ID_CANONICAL = "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY"
 DASHBOARD_BLOCKER_STATE_OPEN = "OPEN"
 
 DEFAULT_CONFIG_RELATIVE_PATH = Path("config/ops/shadow_preparation_readiness_gate_v0.toml")
+CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY = "canonical_step_29u_semantics_reference"
 
 ALLOWED_CLASSIFICATIONS = frozenset(
     {
@@ -257,7 +258,7 @@ def evaluate_shadow_preparation_readiness_gate_v0(
     historical_surface_overrides: tuple[HistoricalSurfaceRecordV0, ...] | None = None,
 ) -> ShadowPreparationReadinessGateResultV0:
     """Evaluate Shadow-preparation readiness (offline, fail-closed, no side effects)."""
-    root = repo_root if repo_root is not None else _infer_repo_root()
+    root = (repo_root if repo_root is not None else _infer_repo_root()).resolve()
     cfg = (
         dict(config)
         if config is not None
@@ -311,15 +312,18 @@ def evaluate_shadow_preparation_readiness_gate_v0(
         else _parse_historical_surfaces(cfg)
     )
     _assert_surfaces_fail_closed(surfaces)
+    _validate_historical_surface_paths(repo_root=root, surfaces=surfaces)
 
     mindestkontrakt = _parse_mindestkontrakt_inventory(cfg)
     _assert_mindestkontrakt_inventory(mindestkontrakt)
+    _validate_mindestkontrakt_evidence_paths(repo_root=root, records=mindestkontrakt)
 
     canonical_refs = cfg.get("known_canonical_authority_identifiers") or []
     if not isinstance(canonical_refs, list) or not canonical_refs:
         raise ShadowPreparationReadinessGateError(
             "required_canonical_reference_missing:known_canonical_authority_identifiers"
         )
+    _validate_canonical_step_29u_semantics_reference(repo_root=root, cfg=cfg)
 
     required_gates = _parse_string_tuple(
         cfg.get("required_preparation_gates"),
@@ -384,6 +388,89 @@ def evaluate_shadow_preparation_readiness_gate_v0(
 
 def _infer_repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
+
+
+def _require_repo_relative_file(
+    *,
+    repo_root: Path,
+    relative_path: str,
+    context_id: str,
+    code_prefix: str,
+) -> Path:
+    """Fail-closed: require a non-empty repo-relative path that resolves to a file.
+
+    Rejects empty strings, absolute paths, paths escaping ``repo_root`` (including
+    via ``..`` / symlink resolution), missing paths, and directories.
+    """
+    if not isinstance(relative_path, str) or not relative_path.strip():
+        raise ShadowPreparationReadinessGateError(f"{code_prefix}_EMPTY:{context_id}")
+    rel = relative_path.strip()
+    candidate = Path(rel)
+    if candidate.is_absolute():
+        raise ShadowPreparationReadinessGateError(f"{code_prefix}_ABSOLUTE:{context_id}")
+    root = repo_root.resolve()
+    try:
+        resolved = (root / candidate).resolve()
+    except OSError as exc:
+        raise ShadowPreparationReadinessGateError(f"{code_prefix}_MISSING:{context_id}") from exc
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise ShadowPreparationReadinessGateError(
+            f"{code_prefix}_OUTSIDE_REPO:{context_id}"
+        ) from exc
+    if not resolved.exists():
+        raise ShadowPreparationReadinessGateError(f"{code_prefix}_MISSING:{context_id}")
+    if not resolved.is_file():
+        raise ShadowPreparationReadinessGateError(f"{code_prefix}_NOT_FILE:{context_id}")
+    return resolved
+
+
+def _validate_historical_surface_paths(
+    *,
+    repo_root: Path,
+    surfaces: tuple[HistoricalSurfaceRecordV0, ...],
+) -> None:
+    for surface in surfaces:
+        _require_repo_relative_file(
+            repo_root=repo_root,
+            relative_path=surface.path,
+            context_id=surface.surface_id,
+            code_prefix="HISTORICAL_SURFACE_PATH",
+        )
+
+
+def _validate_mindestkontrakt_evidence_paths(
+    *,
+    repo_root: Path,
+    records: tuple[MindestkontraktComponentRecordV0, ...],
+) -> None:
+    for record in records:
+        for evidence_path in record.evidence_paths:
+            _require_repo_relative_file(
+                repo_root=repo_root,
+                relative_path=evidence_path,
+                context_id=record.component_id,
+                code_prefix="EVIDENCE_PATH",
+            )
+
+
+def _validate_canonical_step_29u_semantics_reference(
+    *,
+    repo_root: Path,
+    cfg: Mapping[str, Any],
+) -> None:
+    raw = cfg.get(CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY)
+    if raw is None:
+        raise ShadowPreparationReadinessGateError("CANONICAL_STEP_29U_SEMANTICS_REFERENCE_MISSING")
+    if not isinstance(raw, str):
+        raise ShadowPreparationReadinessGateError("CANONICAL_STEP_29U_SEMANTICS_REFERENCE_INVALID")
+    _require_repo_relative_file(
+        repo_root=repo_root,
+        relative_path=raw,
+        context_id=CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY,
+        code_prefix="CANONICAL_STEP_29U_SEMANTICS_REFERENCE",
+    )
 
 
 def _validate_config_document(doc: Mapping[str, Any]) -> None:
@@ -688,6 +775,7 @@ __all__ = [
     "SCHEMA_ID",
     "SCHEMA_VERSION",
     "CONTRACT_CONFIG_SCHEMA_VERSION",
+    "CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY",
     "DETERMINISTIC_EVALUATED_AT_DEFAULT",
     "AUTHORITY_EFFECT_NONE",
     "RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED",
