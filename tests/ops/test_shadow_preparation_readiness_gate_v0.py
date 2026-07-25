@@ -271,10 +271,7 @@ def test_docs_designate_canonical_offline_shadow_preparation_operator_command() 
 
     assert "READINESS_ONLY_COMPONENT_OWNER=true" in text
     assert "READINESS_ONLY_NOT_FULL_CHAIN_CANONICAL_OPERATOR_COMMAND=true" in text
-    assert (
-        "python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0"
-        in text
-    )
+    assert "python -m src.ops.shadow_preparation_readiness_offline_operator_entrypoint_v0" in text
     assert "readiness-only component owner" in text
     assert "not** the full-chain" in text or "not the full-chain" in text.lower()
 
