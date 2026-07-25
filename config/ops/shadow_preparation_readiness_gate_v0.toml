@@ -21,6 +21,11 @@ known_canonical_authority_identifiers = [
   "runbook.STEP_29V.paper_absent",
 ]
 
+# Single repository-relative STEP 29U semantics/runbook reference.
+# Existence proves the reference file is present only — not binding, not
+# implementation, and not activation authority.
+canonical_step_29u_semantics_reference = "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md"
+
 dashboard_blocker_id = "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY"
 dashboard_blocker_state = "OPEN"
 dashboard_blocker_resolved = false
@@ -86,19 +91,19 @@ notes = "Blocked preflight contract; does not authorize activation."
 
 [[historical_surfaces]]
 surface_id = "shadow_no_order_proof"
-path = "src/shadow_no_order_proof"
+path = "src/shadow_no_order_proof/__init__.py"
 classification = "EVIDENCE_ONLY"
 notes = "Declarative no-order proof markers; not a runtime entrypoint."
 
 [[historical_surfaces]]
 surface_id = "data_shadow_pipeline"
-path = "src/data/shadow"
+path = "src/data/shadow/__init__.py"
 classification = "OFFLINE_REPLAY"
 notes = "Shadow trading data pipeline (tick→OHLCV); blocked from live mode."
 
 [[historical_surfaces]]
 surface_id = "webui_paper_shadow_summary_readmodel"
-path = "src/webui/paper_shadow_summary_readmodel_v0"
+path = "src/webui/paper_shadow_summary_readmodel_v0/__init__.py"
 classification = "HISTORICAL"
 notes = "Paper/shadow WebUI readmodel; observability only; non-authorizing."
 
@@ -385,7 +390,7 @@ canonical_owner = "ops.shadow_preparation_readiness_gate_v0"
 implementation_path = ""
 evidence_paths = [
   "src/ops/shadow_preparation_readiness_gate_v0.py",
-  "src/shadow_no_order_proof",
+  "src/shadow_no_order_proof/__init__.py",
 ]
 blockers = [
   "ORDERS_AUTHORIZED=false",

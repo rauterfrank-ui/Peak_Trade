@@ -13,6 +13,7 @@ from src.ops.shadow_preparation_readiness_gate_v0 import (
     ACTIVATION_FLAG_KEYS,
     ALLOWED_PREPARATION_STATUSES,
     AUTHORITY_EFFECT_NONE,
+    CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY,
     DASHBOARD_BLOCKER_ID_CANONICAL,
     DASHBOARD_BLOCKER_STATE_OPEN,
     DETERMINISTIC_EVALUATED_AT_DEFAULT,
@@ -362,5 +363,264 @@ def test_docs_declare_mindestkontrakt_inventory_non_activating() -> None:
         "LEGACY_NON_CANONICAL",
         "SEPARATE_GO_REQUIRED_FOR_IMPLEMENTATION=true",
         "SEPARATE_GO_REQUIRED_FOR_ACTIVATION=true",
+    ):
+        assert token in text, token
+
+
+EXPECTED_DEFAULT_BLOCKERS = (
+    "CANONICAL_STEP_29U_ABSENT",
+    "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED",
+    "DASHBOARD_BLOCKER_OPEN:MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY",
+    "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
+    "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U",
+    "NO_ACTIVATION_AUTHORIZED",
+)
+
+
+def _collect_required_relative_paths(cfg: dict) -> set[str]:
+    paths: set[str] = set()
+    for surface in cfg["historical_surfaces"]:
+        paths.add(str(surface["path"]).strip())
+    for component in cfg["mindestkontrakt_components"]:
+        for evidence_path in component.get("evidence_paths") or []:
+            paths.add(str(evidence_path).strip())
+    paths.add(str(cfg[CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY]).strip())
+    return paths
+
+
+def _materialize_temp_repo(tmp_path: Path) -> tuple[Path, dict]:
+    """Build an isolated offline repo_root with stub files for all required refs."""
+    cfg = load_shadow_preparation_readiness_gate_config_v0(CONFIG, repo_root=REPO_ROOT)
+    for relative in _collect_required_relative_paths(cfg):
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if not target.exists():
+            target.write_text(f"# stub:{relative}\n", encoding="utf-8")
+    config_dest = tmp_path / "config" / "ops" / "shadow_preparation_readiness_gate_v0.toml"
+    config_dest.parent.mkdir(parents=True, exist_ok=True)
+    config_dest.write_text(CONFIG.read_text(encoding="utf-8"), encoding="utf-8")
+    return tmp_path, cfg
+
+
+def _assert_blocked_non_activating(result) -> None:
+    assert result.shadow_preparation_complete is False
+    assert result.shadow_activatable is False
+    assert result.step_29u_implemented is False
+    assert result.canonical_step_29u_bound is False
+    assert result.shadow_activation_authorized is False
+    assert result.paper_activation_authorized is False
+    assert result.testnet_activation_authorized is False
+    assert result.scheduler_activation_authorized is False
+    assert result.runtime_activation_authorized is False
+    assert result.live_authorized is False
+    assert result.orders_authorized is False
+    assert result.blockers == EXPECTED_DEFAULT_BLOCKERS
+
+
+def test_default_canonical_config_reference_validation_still_blocked() -> None:
+    result = _default_result()
+    _assert_blocked_non_activating(result)
+    cfg = load_shadow_preparation_readiness_gate_config_v0(CONFIG, repo_root=REPO_ROOT)
+    assert CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY in cfg
+    assert (REPO_ROOT / cfg[CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY]).is_file()
+
+
+def test_explicit_temporary_repo_root_works_deterministically(tmp_path: Path) -> None:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    a = evaluate_shadow_preparation_readiness_gate_v0(
+        repo_root=root, evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT
+    )
+    b = evaluate_shadow_preparation_readiness_gate_v0(
+        repo_root=root, evaluated_at=DETERMINISTIC_EVALUATED_AT_DEFAULT
+    )
+    assert a.to_dict() == b.to_dict()
+    _assert_blocked_non_activating(a)
+
+
+def test_missing_historical_surface_file_fails_closed(tmp_path: Path) -> None:
+    root, cfg = _materialize_temp_repo(tmp_path)
+    surface_id = cfg["historical_surfaces"][0]["surface_id"]
+    target = root / cfg["historical_surfaces"][0]["path"]
+    target.unlink()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match=f"HISTORICAL_SURFACE_PATH_MISSING:{surface_id}",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(repo_root=root)
+
+
+def test_historical_surface_directory_fails_closed(tmp_path: Path) -> None:
+    root, cfg = _materialize_temp_repo(tmp_path)
+    surface_id = cfg["historical_surfaces"][0]["surface_id"]
+    target = root / cfg["historical_surfaces"][0]["path"]
+    target.unlink()
+    target.mkdir()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match=f"HISTORICAL_SURFACE_PATH_NOT_FILE:{surface_id}",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(repo_root=root)
+
+
+def test_historical_surface_absolute_path_rejected(tmp_path: Path) -> None:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    absolute = str((root / "src" / "orders" / "shadow.py").resolve())
+    overrides = (
+        HistoricalSurfaceRecordV0(
+            surface_id="phase24_shadow_order_executor",
+            path=absolute,
+            classification=HistoricalSurfaceClassification.NON_CANONICAL_STEP29U,
+        ),
+    )
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match="HISTORICAL_SURFACE_PATH_ABSOLUTE:phase24_shadow_order_executor",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(
+            repo_root=root, historical_surface_overrides=overrides
+        )
+
+
+def test_historical_surface_traversal_outside_repo_rejected(tmp_path: Path) -> None:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    outside = tmp_path.parent / "outside_escape_probe.py"
+    outside.write_text("# outside\n", encoding="utf-8")
+    overrides = (
+        HistoricalSurfaceRecordV0(
+            surface_id="phase24_shadow_order_executor",
+            path="../outside_escape_probe.py",
+            classification=HistoricalSurfaceClassification.NON_CANONICAL_STEP29U,
+        ),
+    )
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match="HISTORICAL_SURFACE_PATH_OUTSIDE_REPO:phase24_shadow_order_executor",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(
+            repo_root=root, historical_surface_overrides=overrides
+        )
+
+
+def test_missing_mindestkontrakt_evidence_file_fails_closed(tmp_path: Path) -> None:
+    root, cfg = _materialize_temp_repo(tmp_path)
+    component = next(c for c in cfg["mindestkontrakt_components"] if c.get("evidence_paths"))
+    component_id = component["component_id"]
+    evidence = component["evidence_paths"][0]
+    (root / evidence).unlink()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match=f"EVIDENCE_PATH_MISSING:{component_id}",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(repo_root=root)
+
+
+def test_evidence_path_directory_fails_closed(tmp_path: Path) -> None:
+    root, cfg = _materialize_temp_repo(tmp_path)
+    component = next(c for c in cfg["mindestkontrakt_components"] if c.get("evidence_paths"))
+    component_id = component["component_id"]
+    evidence = component["evidence_paths"][0]
+    target = root / evidence
+    target.unlink()
+    target.mkdir()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match=f"EVIDENCE_PATH_NOT_FILE:{component_id}",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(repo_root=root)
+
+
+def test_evidence_path_outside_repo_rejected(tmp_path: Path) -> None:
+    root, cfg = _materialize_temp_repo(tmp_path)
+    component = next(
+        c
+        for c in cfg["mindestkontrakt_components"]
+        if c["component_id"] == "execution_simulation_boundary"
+    )
+    mutated = dict(cfg)
+    components = []
+    for item in cfg["mindestkontrakt_components"]:
+        if item["component_id"] == component["component_id"]:
+            replaced = dict(item)
+            replaced["evidence_paths"] = ["../outside_escape_probe.py"]
+            components.append(replaced)
+        else:
+            components.append(item)
+    mutated["mindestkontrakt_components"] = components
+    outside = tmp_path.parent / "outside_escape_probe.py"
+    outside.write_text("# outside\n", encoding="utf-8")
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match="EVIDENCE_PATH_OUTSIDE_REPO:execution_simulation_boundary",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(repo_root=root, config=mutated)
+
+
+def test_missing_canonical_step29u_semantics_reference_fails_closed(tmp_path: Path) -> None:
+    root, cfg = _materialize_temp_repo(tmp_path)
+    mutated = dict(cfg)
+    mutated.pop(CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY, None)
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match="CANONICAL_STEP_29U_SEMANTICS_REFERENCE_MISSING",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(repo_root=root, config=mutated)
+
+
+def test_canonical_step29u_reference_does_not_mark_implemented_or_bound() -> None:
+    result = _default_result()
+    cfg = load_shadow_preparation_readiness_gate_config_v0(CONFIG, repo_root=REPO_ROOT)
+    assert (REPO_ROOT / cfg[CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY]).is_file()
+    assert result.step_29u_implemented is False
+    assert result.canonical_step_29u_bound is False
+    assert result.shadow_preparation_complete is False
+
+
+def test_valid_legacy_evidence_paths_remain_legacy_non_canonical() -> None:
+    result = _default_result()
+    by_id = {item.component_id: item for item in result.mindestkontrakt_inventory}
+    assert by_id["execution_simulation_boundary"].preparation_status == (
+        PreparationStatusV0.LEGACY_NON_CANONICAL
+    )
+    assert by_id["execution_simulation_boundary"].evidence_paths
+    for path in by_id["execution_simulation_boundary"].evidence_paths:
+        assert (REPO_ROOT / path).is_file()
+
+
+def test_valid_references_preserve_blocker_order_and_readiness_semantics() -> None:
+    result = _default_result()
+    _assert_blocked_non_activating(result)
+    assert list(result.blockers) == list(EXPECTED_DEFAULT_BLOCKERS)
+
+
+def test_path_validation_performs_no_file_writes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, _cfg = _materialize_temp_repo(tmp_path)
+    original_write_text = Path.write_text
+    original_write_bytes = Path.write_bytes
+
+    def _block_write_text(self: Path, *args, **kwargs):  # pragma: no cover
+        raise AssertionError(f"unexpected write_text:{self}")
+
+    def _block_write_bytes(self: Path, *args, **kwargs):  # pragma: no cover
+        raise AssertionError(f"unexpected write_bytes:{self}")
+
+    monkeypatch.setattr(Path, "write_text", _block_write_text)
+    monkeypatch.setattr(Path, "write_bytes", _block_write_bytes)
+    result = evaluate_shadow_preparation_readiness_gate_v0(repo_root=root)
+    _assert_blocked_non_activating(result)
+    # Restore is automatic via monkeypatch teardown; keep originals referenced.
+    assert original_write_text is not None
+    assert original_write_bytes is not None
+
+
+def test_docs_declare_path_reference_fail_closed_tokens() -> None:
+    text = CONTRACT_DOC.read_text(encoding="utf-8")
+    for token in (
+        "HISTORICAL_SURFACE_PATH_MISSING",
+        "EVIDENCE_PATH_MISSING",
+        "CANONICAL_STEP_29U_SEMANTICS_REFERENCE",
+        "ShadowPreparationReadinessGateError",
+        "directories are rejected",
     ):
         assert token in text, token

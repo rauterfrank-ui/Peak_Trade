@@ -144,11 +144,36 @@ Evaluation fails closed when:
 
 - config is missing or invalid;
 - a required canonical reference cannot be established;
+- the configured `canonical_step_29u_semantics_reference` is missing, empty,
+  absolute, outside `repo_root`, not a file, or otherwise invalid;
+- any `historical_surfaces[].path` is missing, empty, absolute, outside
+  `repo_root`, not a file (directories are rejected), or otherwise invalid;
+- any configured Mindestkontrakt `evidence_paths` entry is missing, empty,
+  absolute, outside `repo_root`, not a file, or otherwise invalid;
 - contradictory activation state is supplied;
 - any activation flag is true;
 - dashboard blocker state is missing or claims resolved/waived/accepted;
 - historical surfaces are ambiguously classified (`UNKNOWN_FAIL_CLOSED`);
 - `authority_effect` is not `NONE`.
+
+### Repository-relative path / reference validation
+
+Evaluation requires an explicit or deterministically inferred `repo_root`.
+Required repository-relative references are validated before a readiness result
+is accepted. Invalid references raise
+`ShadowPreparationReadinessGateError` (exception fail-closed) and do **not**
+produce a normal BLOCKED readiness result.
+
+Reason-code prefixes (context id appended after `:`):
+
+- `HISTORICAL_SURFACE_PATH_MISSING|NOT_FILE|OUTSIDE_REPO|ABSOLUTE|EMPTY`
+- `EVIDENCE_PATH_MISSING|NOT_FILE|OUTSIDE_REPO|ABSOLUTE|EMPTY`
+- `CANONICAL_STEP_29U_SEMANTICS_REFERENCE_MISSING|NOT_FILE|OUTSIDE_REPO|ABSOLUTE|EMPTY|INVALID`
+
+Existence of `canonical_step_29u_semantics_reference` proves only that the
+canonical STEP 29U semantics/runbook file is present. It does **not** set
+`STEP_29U_IMPLEMENTED`, `CANONICAL_STEP_29U_BOUND`, or
+`SHADOW_PREPARATION_COMPLETE`, and grants no activation authority.
 
 
 ## STEP 29U Mindestkontrakt gap inventory (preparation only)
