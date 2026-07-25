@@ -86,6 +86,12 @@ OPERATOR_SELECTION_REQUIRED=true
 SELECTED_RECOVERY_OPTION_ID=None
 ```
 
+> **Operator follow-up (separate capability):** the operator selected
+> `RETIRE_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESES`. Application of that
+> selection is owned by
+> [STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md](STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md).
+> This closeout inventory remains non-selecting (`SELECTED_RECOVERY_OPTION_ID=None`).
+
 ## Semantics
 
 1. **Economic failure closeout** resolves exact canonical FAIL evidence (paths,

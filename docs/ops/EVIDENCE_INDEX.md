@@ -1,5 +1,20 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260726-step-29u-terminal-unchanged-final-fleet-hypothesis-retirement"></a>
+- **EV-20260726-STEP-29U-TERMINAL-UNCHANGED-FINAL-FLEET-HYPOTHESIS-RETIREMENT** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating capability | Risk: LOW
+  - Source: [Retirement contract](runbooks/STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md) · Owner: `ops.step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0` · Command: `python scripts/ops/run_step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.py`
+  - Claim: Operator selected `RETIRE_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESES`;
+    retired unchanged Final Fleet IDs `trend_following&#47;v1`,
+    `bollinger_bands&#47;v1`, `momentum_1h&#47;v1` with
+    `RETIREMENT_STATUS=COMPLETE`, `RETIREMENT_SCOPE=UNCHANGED_FINAL_FLEET_ONLY`,
+    `RETIREMENT_REASON=TERMINAL_ECONOMIC_FAILURE`; historical evidence preserved;
+    economic `FAIL` unchanged; `ACTIVATION_ELIGIBLE=false`;
+    `NEXT_RESEARCH_CANDIDATE_SELECTED=false`;
+    `OPERATOR_SELECTION_REQUIRED_FOR_NEXT_MATERIAL_RESEARCH=true`.
+  - Non-claims: not Activation; not deletion of history; not global invalidity of
+    all future materially different hypotheses; not automatic backlog selection;
+    not evaluation execution; not Runtime/Scheduler/Network/Orders authorization.
+
 <a id="ev-20260726-step-29u-economic-failure-closeout-recovery-decision"></a>
 - **EV-20260726-STEP-29U-ECONOMIC-FAILURE-CLOSEOUT-RECOVERY-DECISION** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating capability | Risk: LOW
   - Source: [Closeout/recovery contract](runbooks/STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md) · Owner: `ops.step_29u_economic_failure_closeout_recovery_decision_v0` · Command: `python scripts/ops/run_step_29u_economic_failure_closeout_recovery_decision_v0.py`
