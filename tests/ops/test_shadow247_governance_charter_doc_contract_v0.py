@@ -155,3 +155,13 @@ def test_shadow247_governance_charter_doc_forbidden_promotion_phrases_absent_v0(
     lowered = _read().lower()
     for phrase in _FORBIDDEN_PROMOTION_PHRASES_V0:
         assert phrase not in lowered, f"forbidden promotion phrase present: {phrase!r}"
+
+
+def test_shadow247_governance_charter_doc_states_not_canonical_step_29u_v0() -> None:
+    """Charter must remain non-activating and non-equivalent to STEP 29U."""
+    text = _read()
+    assert "**Not canonical STEP 29U:**" in text
+    assert "Scheduler activation is **absent**" in text
+    assert "**No exchange order** can be emitted" in text
+    assert "SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md" in text
+    assert "**STOP_IDLE**" in text

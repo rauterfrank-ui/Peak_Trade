@@ -6,6 +6,8 @@
 - **This document:** governance and activation-path **planning only**. It is **non-authorizing**.
 - **It does not:** approve bounded Shadow smoke, 24h Shadow, 24/7 Shadow, daemon operation, scheduler execution, Paper runtime, Testnet, Live, broker, exchange, credentials, or order submission.
 - **Current operational posture:** **STOP_IDLE** — no run is authorized by this file or by its mere existence in the repository.
+- **Not canonical STEP 29U:** Shadow-247 surfaces named in this charter are **not** automatic equivalents of Runbook STEP 29U Shadow Mode. Scheduler activation is **absent**. **No exchange order** can be emitted from this charter or from default-off Shadow-247 wrappers.
+- **Companion readiness taxonomy (non-activating):** [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md) — preparation/classification only; does not authorize activation.
 
 **Companion (blocked preflight contract, field-level):** [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — remains **BLOCKED** unless a **separate**, explicitly reviewed governance update says otherwise.
 

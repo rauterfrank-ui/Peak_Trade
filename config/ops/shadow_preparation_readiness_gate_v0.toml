@@ -1,0 +1,109 @@
+# Shadow Preparation Readiness Gate v0
+#
+# Static, versioned, non-activating metadata for
+# ops.shadow_preparation_readiness_gate_v0.
+#
+# This file does not authorize Shadow, Paper, Testnet, Scheduler, Runtime,
+# Live, or Orders. It does not implement canonical STEP 29U Shadow Mode.
+# Closing PR #5529 did not resolve MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY.
+
+schema_version = "shadow_preparation_readiness_gate.v0"
+producer_family = "ops.shadow_preparation_readiness_gate_v0"
+authority_effect = "NONE"
+
+# Known canonical authority identifiers (references only; no authority transfer).
+known_canonical_authority_identifiers = [
+  "trading.master_v2",
+  "trading.double_play",
+  "safety.independent_veto",
+  "runtime_bridge.BOUND_NOT_ACTIVATED",
+  "runbook.STEP_29U.shadow_absent",
+  "runbook.STEP_29V.paper_absent",
+]
+
+dashboard_blocker_id = "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY"
+dashboard_blocker_state = "OPEN"
+dashboard_blocker_resolved = false
+dashboard_blocker_waived = false
+dashboard_blocker_accepted_as_done = false
+
+runtime_bridge_state = "BOUND_NOT_ACTIVATED"
+economic_validity_offline_gate_pass = false
+
+# All activation-related values must remain false.
+shadow_activation_authorized = false
+paper_activation_authorized = false
+testnet_activation_authorized = false
+scheduler_activation_authorized = false
+runtime_activation_authorized = false
+live_authorized = false
+orders_authorized = false
+
+required_preparation_gates = [
+  "CANONICAL_STEP_29U_BOUND",
+  "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS",
+  "DASHBOARD_BLOCKER_RESOLVED",
+  "RUNTIME_BRIDGE_ACTIVATION_AUTHORIZED_SEPARATELY",
+  "SHADOW_ACTIVATION_OPERATOR_GO",
+]
+
+# Historical / shadow-named surfaces. Name presence ≠ STEP 29U equivalence.
+[[historical_surfaces]]
+surface_id = "phase24_shadow_order_executor"
+path = "src/orders/shadow.py"
+classification = "NON_CANONICAL_STEP29U"
+notes = "Phase-24 ShadowOrderExecutor; executor without canonical STEP 29U binding."
+
+[[historical_surfaces]]
+surface_id = "phase24_run_shadow_execution_script"
+path = "scripts/run_shadow_execution.py"
+classification = "NON_CANONICAL_STEP29U"
+notes = "Phase-24 shadow/dry-run script; historical offline simulation path."
+
+[[historical_surfaces]]
+surface_id = "phase31_shadow_paper_session"
+path = "src/live/shadow_session.py"
+classification = "NON_CANONICAL_STEP29U"
+notes = "Phase-31 ShadowPaperSession; not automatic STEP 29U equivalence."
+
+[[historical_surfaces]]
+surface_id = "shadow_247_futures_wrapper_skeleton"
+path = "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
+classification = "PREPARATION_ONLY"
+notes = "Shadow-247 wrapper skeleton; STOP_IDLE / non-authorizing preparation."
+
+[[historical_surfaces]]
+surface_id = "shadow_247_governance_charter"
+path = "docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md"
+classification = "PREPARATION_ONLY"
+notes = "Governance charter planning only; not canonical STEP 29U."
+
+[[historical_surfaces]]
+surface_id = "paper_shadow_247_preflight"
+path = "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+classification = "PREPARATION_ONLY"
+notes = "Blocked preflight contract; does not authorize activation."
+
+[[historical_surfaces]]
+surface_id = "shadow_no_order_proof"
+path = "src/shadow_no_order_proof"
+classification = "EVIDENCE_ONLY"
+notes = "Declarative no-order proof markers; not a runtime entrypoint."
+
+[[historical_surfaces]]
+surface_id = "data_shadow_pipeline"
+path = "src/data/shadow"
+classification = "OFFLINE_REPLAY"
+notes = "Shadow trading data pipeline (tick→OHLCV); blocked from live mode."
+
+[[historical_surfaces]]
+surface_id = "webui_paper_shadow_summary_readmodel"
+path = "src/webui/paper_shadow_summary_readmodel_v0"
+classification = "HISTORICAL"
+notes = "Paper/shadow WebUI readmodel; observability only; non-authorizing."
+
+[[historical_surfaces]]
+surface_id = "shadow_order_executor_pipeline_binding"
+path = "src/execution/pipeline.py"
+classification = "EXECUTOR_WITHOUT_CANONICAL_BINDING"
+notes = "Execution pipeline may reference ShadowOrderExecutor; no STEP 29U binding."
