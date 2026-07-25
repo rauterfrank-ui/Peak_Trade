@@ -28,7 +28,7 @@ python scripts/ops/run_okx_futures_shadow_offline_e2e_projection_binding_v0.py -
 |-------|-------|
 | PR | #5544 (merged) |
 | Merge commit / origin/main | `bc7b9309b1f7e2e1411e22b483388331f355d0dd` |
-| Soak worktree | see `git_state.txt` / `primary/soak_worktree.txt` |
+| Soak worktree | see `git_state.txt` / `primary&#47;soak_worktree.txt` |
 
 ## Exact timing
 
@@ -104,7 +104,7 @@ Runtime remains `BOUND_NOT_ACTIVATED`. No activation is authorized.
 
 ## Primary evidence retained
 
-Under `primary/`:
+Under `primary&#47;`:
 
 - `soak_summary.json` — aggregate soak result
 - `progress.jsonl` — 1287 per-invocation records (independent verification source)
@@ -112,7 +112,7 @@ Under `primary/`:
 - `MANIFEST.sha256` — original source soak manifest
   (SHA256=`c1aa75a0794488f3fb9a9b76f9734779f0ab65d00b8be7c81f8fa7654de8747a`)
 - timing / command / git / heartbeat metadata
-- `invocations_sample/` — first/mid/last invocation JSON + stdout/stderr samples
+- `invocations_sample&#47;` — first/mid/last invocation JSON + stdout/stderr samples
 
 Full per-invocation stdout/stderr triples (1287 × 3 = 3861 files) were verified
 in the local source directory
