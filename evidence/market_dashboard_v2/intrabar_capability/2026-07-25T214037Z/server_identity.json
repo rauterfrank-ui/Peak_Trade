@@ -3,7 +3,7 @@
   "WORKTREE": "/Users/frnkhrz/Peak_Trade/.worktrees/market_dashboard_authentic_intrabar_v0",
   "BRANCH": "capability/market-dashboard-authentic-intrabar-v0",
   "IMPLEMENTATION_HEAD_SHA": "7576f2e1158a9365f2a664a5071cfa7dfda35434",
-  "FINAL_PR_HEAD_SHA_AFTER_EVIDENCE_COMMIT": "PENDING_EVIDENCE_COMMIT",
+  "FINAL_PR_HEAD_SHA_AFTER_EVIDENCE_COMMIT": "c9d3b3839363cd90c8c6b674739baff0ea7cbf85",
   "WORKTREE_CLEAN_BEFORE_SERVER_START": true,
   "SERVER_COMMAND": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -m uvicorn src.webui.app:app --host 127.0.0.1 --port 8765 --log-level warning",
   "SERVER_LAUNCHER_PID": "85504",
@@ -14,5 +14,6 @@
   "SERVER_WORKTREE_MATCH": true,
   "SERVER_IMPLEMENTATION_HEAD_MATCH": true,
   "PRIMARY_CHECKOUT_MUTATED": false,
-  "ARCHIVE_ROOT": "/tmp/intrabar_cap_archive_repair"
+  "ARCHIVE_ROOT": "/tmp/intrabar_cap_archive_repair",
+  "EVIDENCE_COMMIT_HEAD_SHA": "c9d3b3839363cd90c8c6b674739baff0ea7cbf85"
 }
