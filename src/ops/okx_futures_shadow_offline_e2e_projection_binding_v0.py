@@ -1,11 +1,14 @@
 """OKX Futures Shadow offline end-to-end projection binding v0.
 
 Composition-only boundary:
-  readiness gate → (if offline path permitted and READY) canonical no-order cycle →
-  durable readiness projection write → reader/verifier.
+  readiness gate → durable readiness projection write → reader/verifier →
+  (if offline preparation path permitted) canonical no-order cycle.
 
-Reuses existing canonical owners only. No second decision/risk/safety/execution/
-reconciliation/readiness/writer/reader/projection truth. Offline, non-activating.
+Activation readiness may remain BLOCKED (including CANONICAL_STEP_29U_ABSENT);
+that activation gap does not veto the offline no-order preparation cycle when
+the offline path remains permitted. Reuses existing canonical owners only. No
+second decision/risk/safety/execution/reconciliation/readiness/writer/reader/
+projection truth. Offline, non-activating.
 """
 
 from __future__ import annotations
@@ -445,37 +448,9 @@ def run_okx_futures_shadow_offline_e2e_projection_binding_v0(
             verification_verified=verification.verified,
         )
 
-    if readiness_status == READINESS_STATUS_BLOCKED:
-        return OkxFuturesShadowOfflineE2EProjectionBindingResultV0(
-            binding_status=BINDING_STATUS_BLOCKED,
-            schema_id=SCHEMA_ID,
-            schema_version=SCHEMA_VERSION,
-            generated_at=generated_at,
-            readiness_result=READINESS_STATUS_BLOCKED,
-            final_decision=None,
-            risk_sizing_result=None,
-            safety_result=None,
-            execution_projection_result=None,
-            reconciliation_result=None,
-            venue=None,
-            instrument_class=None,
-            btc_excluded=None,
-            spot_excluded=None,
-            futures_only=None,
-            order_submission_count=0,
-            order_capable_client_instantiated=False,
-            cycle_invoked=False,
-            projection_path=write_meta.output_path,
-            projection_schema_id=write_meta.schema_id,
-            projection_schema_version=write_meta.schema_version,
-            projection_sha256=write_meta.sha256,
-            verification_status=verification.overall_status,
-            verification_verified=verification.verified,
-            verification_result="PASS",
-            reason_codes=("READINESS_BLOCKED_CYCLE_NOT_INVOKED",),
-            cycle_projection=None,
-        )
-
+    # Activation readiness READY is not required for the offline no-order cycle.
+    # Gate blockers such as CANONICAL_STEP_29U_ABSENT remain activation truth and
+    # must not invent a second readiness truth or authorize Shadow activation.
     selected = (
         PRODUCTION_INSTRUMENT_ID
         if instrument_id is None or str(instrument_id).strip() == ""
@@ -533,7 +508,7 @@ def run_okx_futures_shadow_offline_e2e_projection_binding_v0(
         schema_id=SCHEMA_ID,
         schema_version=SCHEMA_VERSION,
         generated_at=generated_at,
-        readiness_result=READINESS_STATUS_READY,
+        readiness_result=readiness_status,
         final_decision=cycle.decision_result,
         risk_sizing_result=cycle.risk_sizing_result,
         safety_result=cycle.safety_result,

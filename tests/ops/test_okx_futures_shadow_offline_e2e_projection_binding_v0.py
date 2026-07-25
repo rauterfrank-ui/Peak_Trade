@@ -167,9 +167,10 @@ def test_a_valid_hold_cycle_produces_verified_durable_projection(
     assert result.background_process_left_running is False
 
 
-def test_b_readiness_blocked_prevents_cycle_invocation(
+def test_b_activation_readiness_blocked_still_invokes_offline_no_order_cycle(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """Canonical gate stays activation-BLOCKED; offline cycle must still run."""
     root, _cfg = _materialize_temp_repo(tmp_path)
     cycle_calls = {"n": 0}
 
@@ -185,12 +186,27 @@ def test_b_readiness_blocked_prevents_cycle_invocation(
         mode="shadow",
         cycle_runner=_cycle,
     )
-    assert result.binding_status == BINDING_STATUS_BLOCKED
+    assert result.binding_status == BINDING_STATUS_PASS
     assert result.readiness_result == READINESS_STATUS_BLOCKED
-    assert result.cycle_invoked is False
-    assert cycle_calls["n"] == 0
-    assert "READINESS_BLOCKED_CYCLE_NOT_INVOKED" in result.reason_codes
+    assert result.cycle_invoked is True
+    assert cycle_calls["n"] == 1
+    assert result.final_decision == EXPECTED_DECISION
+    assert result.risk_sizing_result == EXPECTED_RISK_SIZING
+    assert result.safety_result == EXPECTED_SAFETY
+    assert result.execution_projection_result == EXPECTED_EXECUTION_PROJECTION
+    assert result.reconciliation_result == EXPECTED_RECONCILIATION
+    assert result.btc_excluded is True
+    assert result.spot_excluded is True
+    assert result.futures_only is True
+    assert result.order_submission_count == 0
+    assert "READINESS_BLOCKED_CYCLE_NOT_INVOKED" not in result.reason_codes
     assert result.verification_verified is True
+    # Activation truth remains in the durable projection (not invented away).
+    projection = json.loads((root / result.projection_path).read_text(encoding="utf-8"))
+    assert "CANONICAL_STEP_29U_ABSENT" in projection["blockers"]
+    assert projection["shadow_preparation_complete"] is False
+    assert projection["step_29u_implemented"] is False
+    assert projection["activation_authority"] is False
 
 
 def test_c_invalid_or_missing_cycle_result_fails_closed(
@@ -510,7 +526,8 @@ def test_n_no_network_and_no_background_after_cli(
     assert result.background_process_left_running is False
     assert opened == []
 
-    # Natural blocked CLI path (no monkeypatch in child): exit 2, no hang.
+    # Natural CLI path (no monkeypatch in child): activation readiness stays
+    # BLOCKED, but offline no-order cycle is invoked; exit 0, no hang.
     proc = subprocess.run(
         [
             sys.executable,
@@ -533,9 +550,13 @@ def test_n_no_network_and_no_background_after_cli(
         check=False,
         timeout=60,
     )
-    assert proc.returncode == 2
+    assert proc.returncode == 0
     payload = json.loads(proc.stdout)
-    assert payload["binding_status"] == BINDING_STATUS_BLOCKED
-    assert payload["cycle_invoked"] is False
+    assert payload["binding_status"] == BINDING_STATUS_PASS
+    assert payload["readiness_result"] == READINESS_STATUS_BLOCKED
+    assert payload["cycle_invoked"] is True
+    assert payload["final_decision"] == EXPECTED_DECISION
+    assert payload["order_submission_count"] == 0
     assert payload["network_access"] is False
     assert payload["background_process_left_running"] is False
+    assert payload["activation_authority"] is False
