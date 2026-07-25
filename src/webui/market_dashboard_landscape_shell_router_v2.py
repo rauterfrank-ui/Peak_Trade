@@ -32,6 +32,7 @@ from .market_dashboard_landscape_v2.availability import Availability
 from .market_dashboard_landscape_v2.page_aggregate import MarketDashboardReadServiceV1
 from .market_dashboard_landscape_v2.presenter import (
     OHLCV_POLL_PATH,
+    _ohlcv_data_connection_state,
     present_market_landscape_v2,
     serialize_ohlcv_browser_payload_v1,
 )
@@ -126,6 +127,10 @@ def build_ohlcv_poll_response_v1(
             "fabricated": False,
         }
 
+    # Prefer page-bound identity; fall back to refresh/resolution identity so a
+    # transient universe MANIFEST drift cannot unbind an authentic OHLCV tip.
+    selected = selected or refresh_meta.get("selected_instrument")
+    selected_venue = selected_venue or refresh_meta.get("selected_venue")
     ohlcv = load_bound_okx_ohlcv_readmodel_v1(
         selected_instrument_id=selected,
         selected_venue=selected_venue,
@@ -133,8 +138,12 @@ def build_ohlcv_poll_response_v1(
     if ohlcv is None and isinstance(refresh_meta.get("ohlcv"), dict):
         # Retained prior snapshot after failed refresh, when identity still matches.
         retained = refresh_meta["ohlcv"]
-        if selected and str(retained.get("instrument_id") or "") == str(selected):
+        retained_id = str(retained.get("instrument_id") or "")
+        if retained_id and (selected is None or retained_id == str(selected)):
             ohlcv = retained
+            selected = selected or retained_id
+            if selected_venue is None:
+                selected_venue = retained.get("venue")
 
     browser_payload = serialize_ohlcv_browser_payload_v1(ohlcv)
     availability = _chart_availability_for_ohlcv(ohlcv)
@@ -177,6 +186,16 @@ def build_ohlcv_poll_response_v1(
         "payload_digest": None
         if browser_payload is None
         else browser_payload.get("payload_digest"),
+        "chart_digest": None if browser_payload is None else browser_payload.get("chart_digest"),
+        "candle_series_digest": None
+        if browser_payload is None
+        else browser_payload.get("candle_series_digest"),
+        "metadata_digest": None
+        if browser_payload is None
+        else browser_payload.get("metadata_digest"),
+        "live_mark_price": None
+        if browser_payload is None
+        else browser_payload.get("live_mark_price"),
         "refresh": {
             "status": refresh_meta.get("status"),
             "refresh_attempted": bool(refresh_meta.get("refresh_attempted")),
@@ -188,6 +207,15 @@ def build_ohlcv_poll_response_v1(
         "orders": False,
         "runtime_activation": False,
         "direct_browser_okx": False,
+        "data_connection_state": (
+            "STALE"
+            if availability is Availability.STALE or status in {"REFRESH_FAILED", "INVALID"}
+            else _ohlcv_data_connection_state(
+                browser_payload=browser_payload,
+                ohlcv_payload=ohlcv,
+                chart_availability=availability,
+            )
+        ),
     }
 
 

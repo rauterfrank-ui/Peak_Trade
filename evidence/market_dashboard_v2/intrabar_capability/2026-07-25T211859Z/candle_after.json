@@ -1,0 +1,38 @@
+{
+  "t": "2026-07-25T21:24:55Z",
+  "elapsed": 44.99,
+  "status": "SKIPPED_RECENT",
+  "conn": "LIVE_DATA",
+  "availability": "AVAILABLE",
+  "refresh": {
+    "status": "SKIPPED_RECENT",
+    "refresh_attempted": false,
+    "refresh_error": null,
+    "fabricated": false
+  },
+  "candle_ts": "2026-07-25T21:00:00Z",
+  "open": 1871.24,
+  "high": 1871.5,
+  "low": 1866.21,
+  "close": 1869.41,
+  "volume": 141588.21,
+  "confirm": false,
+  "captured_at": "2026-07-25T21:24:55Z",
+  "candle_series_digest": "dc102d0a585a076e42ba7367c07064376691c306fec9cebe7276e4ece961d196",
+  "revision": "SAME_TIMESTAMP_REVISION",
+  "trade_revision": "SAME_TIMESTAMP_REVISION",
+  "mark": 1869.37,
+  "direct_browser_okx": false,
+  "chart": {
+    "bound": true,
+    "visible": true,
+    "canvas_width": 1020,
+    "canvas_height": 272,
+    "top": 232.5,
+    "bar_count": "100",
+    "last_ts": "2026-07-25T21:00:00Z",
+    "digest": "dc102d0a585a076e42ba7367c07064376691c306fec9cebe7276e4ece961d196",
+    "conn": "LIVE_DATA",
+    "update_class": null
+  }
+}

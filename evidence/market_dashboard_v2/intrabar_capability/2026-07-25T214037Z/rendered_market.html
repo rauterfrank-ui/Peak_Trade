@@ -1,0 +1,1029 @@
+<!DOCTYPE html><html lang="de"><head>
+    <meta charset="utf-8">
+    <title>Market Dashboard Landscape V2 — Peak_Trade</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Phase 1B: self-hosted design tokens + layout + purged utilities (no Tailwind CDN) -->
+    <link rel="stylesheet" href="/static/css/peak_trade_dashboard_design_tokens_v1.css" data-market-design-token-owner-v1="true" data-canonical-design-token-owner="true">
+    <link rel="stylesheet" href="/static/css/peak_trade_dashboard_layout_v1.css">
+    <link rel="stylesheet" href="/static/css/peak_trade_dashboard_utilities_v1.css" data-market-utilities-css-v1="true">
+    <meta name="peak-trade-browser-network-allowlist" content="self-only">
+    <style>
+      /* Custom animation for running indicator */
+      @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+      .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+    </style>
+    
+<link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css">
+<meta name="peak-trade-market-landscape-v2" content="phase4-6b-economic-evidence-explicit-injection-binding">
+<meta name="peak-trade-dashboard-authority" content="false">
+<meta name="peak-trade-live-authorized" content="false">
+
+  </head>
+  <body class="bg-slate-950 text-slate-100 mdl-v2-body">
+    <div class="min-h-screen">
+      
+<header class="mdl-v2-app-chrome" data-mdl-app-chrome="true">
+  <a href="/" class="mdl-v2-app-chrome__home">Peak_Trade</a>
+  <span class="mdl-v2-app-chrome__label">Market Landscape V2</span>
+  <span class="mdl-v2-chip">READ-ONLY · LIVE LOCKED</span>
+</header>
+
+
+      <main class="mdl-v2-main">
+        
+
+<div class="mdl-v2" data-market-landscape-v2="true" data-market-dashboard-authority="false" data-live-authorized="false" data-orders="false" data-phase="PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING" data-runtime-bridge="BOUND_NOT_ACTIVATED" data-mdl-a11y-baseline="task7" data-mdl-full-series-clearrect="true" data-mdl-chart-bound-without-geometry="false" data-mdl-chart-rendered-close="1871.3" data-mdl-chart-instance-id="mdl-chart-1785015642059" data-mdl-ohlcv-poll-armed="true" data-mdl-data-connection-state="LIVE_DATA" data-mdl-ohlcv-update-class="VIEWPORT_RESIZE">
+  <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
+    <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">
+      <div class="mdl-v2-strip__brand">
+        <h1 class="mdl-v2-kicker">Market Landscape</h1>
+        <span class="mdl-v2-chip mdl-v2-chip--quiet">READ-ONLY CONSUMER</span>
+      </div>
+      <dl class="mdl-v2-strip__facts">
+        
+        <div><dt>Instrument</dt><dd data-mdl-field="instrument">ETH-USDT-SWAP</dd></div>
+        <div><dt>Venue</dt><dd data-mdl-field="venue">OKX</dd></div>
+        <div>
+          <dt>Runtime</dt>
+          <dd data-mdl-field="runtime" title="product_shell_constant_non_authoritative">BOUND_NOT_ACTIVATED</dd>
+        </div>
+        <div>
+          <dt>Safety</dt>
+          <dd data-mdl-field="safety" data-availability="MISSING_SOURCE" title="CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD">MISSING_SOURCE</dd>
+        </div>
+      </dl>
+    </header>
+
+    <div class="mdl-v2-workspace" data-mdl-workspace="true">
+      <aside class="mdl-v2-rail mdl-v2-rail--left" data-mdl-region="UNIVERSE_RANK_RAIL" aria-label="Universe and rank">
+        <h2>Universe</h2>
+        <ul class="mdl-v2-rail-rows" aria-label="Universe projection">
+          <li>
+            <span class="mdl-v2-rail-rows__label">Watchlist</span>
+            <span class="mdl-v2-state" data-availability="AVAILABLE" data-mdl-field="universe_watchlist">AVAILABLE</span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Selected</span>
+            <span class="mdl-v2-state" data-mdl-field="selected_instrument">
+              ETH-USDT-SWAP
+            </span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Membership</span>
+            <span class="mdl-v2-state" data-mdl-field="universe_membership">IN_UNIVERSE</span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Rank</span>
+            <span class="mdl-v2-state" data-mdl-field="rank_status">AVAILABLE</span>
+          </li>
+        </ul>
+        
+        <ul class="mdl-v2-rail-rows mdl-v2-rail-rows--ranked" aria-label="Ranking rows" data-mdl-ranking-rows="true">
+          
+          <li>
+            <span class="mdl-v2-rail-rows__label">#1 ETH-USDT-SWAP</span>
+            <span class="mdl-v2-state">—</span>
+          </li>
+          
+        </ul>
+        
+      </aside>
+
+      <section class="mdl-v2-primary" data-mdl-region="PRIMARY_MARKET_WORKSPACE" data-mdl-chart-region="true" aria-label="Primary market workspace">
+        <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="true" data-mdl-chart-has-series="true" data-mdl-ohlcv-poll-path="/api/market/landscape/ohlcv" data-mdl-ohlcv-poll-interval-seconds="3">
+          <div class="mdl-v2-chart__chrome">
+            <h2>Chart</h2>
+            <span class="mdl-v2-state" data-mdl-data-connection-state="true" data-connection-state="LIVE_DATA">LIVE_DATA</span>
+            <span class="mdl-v2-state" data-availability="AVAILABLE" data-mdl-chart-availability="true">AVAILABLE</span>
+          </div>
+          <dl class="mdl-v2-chart__meta" data-mdl-ohlcv-meta="true" aria-label="Open candle OHLCV and freshness">
+            <div>
+              <dt>Interval</dt>
+              <dd data-mdl-field="ohlcv_interval">PT1H</dd>
+            </div>
+            <div>
+              <dt>Candle start</dt>
+              <dd data-mdl-field="ohlcv_latest_candle_at">2026-07-25T21:00:00Z</dd>
+            </div>
+            <div>
+              <dt>Captured</dt>
+              <dd data-mdl-field="ohlcv_captured_at">2026-07-25T21:40:40Z</dd>
+            </div>
+            <div>
+              <dt>Mark</dt>
+              <dd data-mdl-field="ohlcv_live_mark">1871.29</dd>
+            </div>
+            <div>
+              <dt>Revision</dt>
+              <dd data-mdl-field="ohlcv_revision">SAME_TIMESTAMP_REVISION</dd>
+            </div>
+            <div>
+              <dt>Open</dt>
+              <dd data-mdl-field="ohlcv_open">1871.24</dd>
+            </div>
+            <div>
+              <dt>High</dt>
+              <dd data-mdl-field="ohlcv_high">1872.45</dd>
+            </div>
+            <div>
+              <dt>Low</dt>
+              <dd data-mdl-field="ohlcv_low">1866.21</dd>
+            </div>
+            <div>
+              <dt>Close</dt>
+              <dd data-mdl-field="ohlcv_close">1871.3</dd>
+            </div>
+            <div>
+              <dt>Volume</dt>
+              <dd data-mdl-field="ohlcv_volume">192563.85</dd>
+            </div>
+          </dl>
+          <div class="mdl-v2-chart__stage" role="img" aria-label="Primary chart bound to materialized OKX OHLCV readmodel (bars=100, interval=PT1H)." data-mdl-chart-stage="true">
+            <p class="mdl-v2-chart__message" data-mdl-chart-message="true">Primary chart bound to materialized OKX OHLCV readmodel (bars=100, interval=PT1H).</p>
+            
+            <script type="application/json" data-mdl-ohlcv-json="true">{"bar_count": 100, "bars": [{"close": 1919.06, "confirm": true, "display_close": 1919.06, "display_high": 1922.04, "display_low": 1914.0, "high": 1922.04, "low": 1914.0, "open": 1917.81, "provisional": false, "ts": "2026-07-21T18:00:00Z", "volume": 1032445.74}, {"close": 1922.45, "confirm": true, "display_close": 1922.45, "display_high": 1925.29, "display_low": 1916.98, "high": 1925.29, "low": 1916.98, "open": 1919.06, "provisional": false, "ts": "2026-07-21T19:00:00Z", "volume": 663505.38}, {"close": 1922.0, "confirm": true, "display_close": 1922.0, "display_high": 1925.25, "display_low": 1920.37, "high": 1925.25, "low": 1920.37, "open": 1922.44, "provisional": false, "ts": "2026-07-21T20:00:00Z", "volume": 312135.33}, {"close": 1923.06, "confirm": true, "display_close": 1923.06, "display_high": 1925.84, "display_low": 1918.7, "high": 1925.84, "low": 1918.7, "open": 1922.0, "provisional": false, "ts": "2026-07-21T21:00:00Z", "volume": 399332.15}, {"close": 1919.73, "confirm": true, "display_close": 1919.73, "display_high": 1923.07, "display_low": 1916.67, "high": 1923.07, "low": 1916.67, "open": 1923.07, "provisional": false, "ts": "2026-07-21T22:00:00Z", "volume": 370181.56}, {"close": 1929.21, "confirm": true, "display_close": 1929.21, "display_high": 1931.97, "display_low": 1915.4, "high": 1931.97, "low": 1915.4, "open": 1919.74, "provisional": false, "ts": "2026-07-21T23:00:00Z", "volume": 934948.18}, {"close": 1938.13, "confirm": true, "display_close": 1938.13, "display_high": 1943.5, "display_low": 1927.95, "high": 1943.5, "low": 1927.95, "open": 1929.2, "provisional": false, "ts": "2026-07-22T00:00:00Z", "volume": 1992260.54}, {"close": 1932.54, "confirm": true, "display_close": 1932.54, "display_high": 1939.6, "display_low": 1926.27, "high": 1939.6, "low": 1926.27, "open": 1938.13, "provisional": false, "ts": "2026-07-22T01:00:00Z", "volume": 1247911.74}, {"close": 1929.24, "confirm": true, "display_close": 1929.24, "display_high": 1935.43, "display_low": 1925.51, "high": 1935.43, "low": 1925.51, "open": 1932.51, "provisional": false, "ts": "2026-07-22T02:00:00Z", "volume": 759647.02}, {"close": 1927.41, "confirm": true, "display_close": 1927.41, "display_high": 1934.95, "display_low": 1925.29, "high": 1934.95, "low": 1925.29, "open": 1929.24, "provisional": false, "ts": "2026-07-22T03:00:00Z", "volume": 904681.97}, {"close": 1935.43, "confirm": true, "display_close": 1935.43, "display_high": 1938.17, "display_low": 1927.0, "high": 1938.17, "low": 1927.0, "open": 1927.41, "provisional": false, "ts": "2026-07-22T04:00:00Z", "volume": 770244.17}, {"close": 1918.71, "confirm": true, "display_close": 1918.71, "display_high": 1935.7, "display_low": 1917.2, "high": 1935.7, "low": 1917.2, "open": 1935.44, "provisional": false, "ts": "2026-07-22T05:00:00Z", "volume": 1786320.95}, {"close": 1916.66, "confirm": true, "display_close": 1916.66, "display_high": 1920.33, "display_low": 1911.65, "high": 1920.33, "low": 1911.65, "open": 1918.71, "provisional": false, "ts": "2026-07-22T06:00:00Z", "volume": 1538510.74}, {"close": 1913.51, "confirm": true, "display_close": 1913.51, "display_high": 1918.16, "display_low": 1909.27, "high": 1918.16, "low": 1909.27, "open": 1916.66, "provisional": false, "ts": "2026-07-22T07:00:00Z", "volume": 1233643.75}, {"close": 1920.2, "confirm": true, "display_close": 1920.2, "display_high": 1924.51, "display_low": 1913.04, "high": 1924.51, "low": 1913.04, "open": 1913.5, "provisional": false, "ts": "2026-07-22T08:00:00Z", "volume": 1215869.99}, {"close": 1923.66, "confirm": true, "display_close": 1923.66, "display_high": 1925.81, "display_low": 1918.29, "high": 1925.81, "low": 1918.29, "open": 1920.2, "provisional": false, "ts": "2026-07-22T09:00:00Z", "volume": 964529.96}, {"close": 1929.79, "confirm": true, "display_close": 1929.79, "display_high": 1933.3, "display_low": 1922.26, "high": 1933.3, "low": 1922.26, "open": 1923.67, "provisional": false, "ts": "2026-07-22T10:00:00Z", "volume": 1342035.81}, {"close": 1926.5, "confirm": true, "display_close": 1926.5, "display_high": 1930.7, "display_low": 1921.26, "high": 1930.7, "low": 1921.26, "open": 1929.79, "provisional": false, "ts": "2026-07-22T11:00:00Z", "volume": 986970.76}, {"close": 1916.18, "confirm": true, "display_close": 1916.18, "display_high": 1926.62, "display_low": 1912.08, "high": 1926.62, "low": 1912.08, "open": 1926.51, "provisional": false, "ts": "2026-07-22T12:00:00Z", "volume": 1572579.18}, {"close": 1938.74, "confirm": true, "display_close": 1938.74, "display_high": 1941.67, "display_low": 1916.01, "high": 1941.67, "low": 1916.01, "open": 1916.18, "provisional": false, "ts": "2026-07-22T13:00:00Z", "volume": 3276056.01}, {"close": 1932.15, "confirm": true, "display_close": 1932.15, "display_high": 1956.86, "display_low": 1921.9, "high": 1956.86, "low": 1921.9, "open": 1938.73, "provisional": false, "ts": "2026-07-22T14:00:00Z", "volume": 5584644.71}, {"close": 1941.95, "confirm": true, "display_close": 1941.95, "display_high": 1951.48, "display_low": 1931.87, "high": 1951.48, "low": 1931.87, "open": 1932.15, "provisional": false, "ts": "2026-07-22T15:00:00Z", "volume": 3721714.21}, {"close": 1948.75, "confirm": true, "display_close": 1948.75, "display_high": 1955.41, "display_low": 1933.96, "high": 1955.41, "low": 1933.96, "open": 1941.95, "provisional": false, "ts": "2026-07-22T16:00:00Z", "volume": 2779567.08}, {"close": 1937.46, "confirm": true, "display_close": 1937.46, "display_high": 1949.2, "display_low": 1933.52, "high": 1949.2, "low": 1933.52, "open": 1948.75, "provisional": false, "ts": "2026-07-22T17:00:00Z", "volume": 1573474.88}, {"close": 1929.73, "confirm": true, "display_close": 1929.73, "display_high": 1939.0, "display_low": 1922.15, "high": 1939.0, "low": 1922.15, "open": 1937.45, "provisional": false, "ts": "2026-07-22T18:00:00Z", "volume": 2190386.32}, {"close": 1924.1, "confirm": true, "display_close": 1924.1, "display_high": 1931.12, "display_low": 1920.0, "high": 1931.12, "low": 1920.0, "open": 1929.74, "provisional": false, "ts": "2026-07-22T19:00:00Z", "volume": 997468.57}, {"close": 1925.89, "confirm": true, "display_close": 1925.89, "display_high": 1929.37, "display_low": 1922.0, "high": 1929.37, "low": 1922.0, "open": 1924.1, "provisional": false, "ts": "2026-07-22T20:00:00Z", "volume": 597289.26}, {"close": 1937.89, "confirm": true, "display_close": 1937.89, "display_high": 1939.47, "display_low": 1925.76, "high": 1939.47, "low": 1925.76, "open": 1925.86, "provisional": false, "ts": "2026-07-22T21:00:00Z", "volume": 746625.36}, {"close": 1937.5, "confirm": true, "display_close": 1937.5, "display_high": 1938.38, "display_low": 1929.6, "high": 1938.38, "low": 1929.6, "open": 1937.9, "provisional": false, "ts": "2026-07-22T22:00:00Z", "volume": 527793.31}, {"close": 1933.48, "confirm": true, "display_close": 1933.48, "display_high": 1937.74, "display_low": 1922.09, "high": 1937.74, "low": 1922.09, "open": 1937.5, "provisional": false, "ts": "2026-07-22T23:00:00Z", "volume": 953581.2}, {"close": 1931.2, "confirm": true, "display_close": 1931.2, "display_high": 1940.97, "display_low": 1931.2, "high": 1940.97, "low": 1931.2, "open": 1933.49, "provisional": false, "ts": "2026-07-23T00:00:00Z", "volume": 1053257.36}, {"close": 1927.59, "confirm": true, "display_close": 1927.59, "display_high": 1935.89, "display_low": 1925.68, "high": 1935.89, "low": 1925.68, "open": 1931.2, "provisional": false, "ts": "2026-07-23T01:00:00Z", "volume": 905812.42}, {"close": 1926.78, "confirm": true, "display_close": 1926.78, "display_high": 1928.71, "display_low": 1920.77, "high": 1928.71, "low": 1920.77, "open": 1927.59, "provisional": false, "ts": "2026-07-23T02:00:00Z", "volume": 871837.94}, {"close": 1919.58, "confirm": true, "display_close": 1919.58, "display_high": 1927.17, "display_low": 1916.49, "high": 1927.17, "low": 1916.49, "open": 1926.79, "provisional": false, "ts": "2026-07-23T03:00:00Z", "volume": 1237930.96}, {"close": 1918.93, "confirm": true, "display_close": 1918.93, "display_high": 1925.29, "display_low": 1917.4, "high": 1925.29, "low": 1917.4, "open": 1919.57, "provisional": false, "ts": "2026-07-23T04:00:00Z", "volume": 790212.48}, {"close": 1921.84, "confirm": true, "display_close": 1921.84, "display_high": 1927.92, "display_low": 1917.36, "high": 1927.92, "low": 1917.36, "open": 1918.93, "provisional": false, "ts": "2026-07-23T05:00:00Z", "volume": 980953.78}, {"close": 1924.4, "confirm": true, "display_close": 1924.4, "display_high": 1925.96, "display_low": 1920.0, "high": 1925.96, "low": 1920.0, "open": 1921.83, "provisional": false, "ts": "2026-07-23T06:00:00Z", "volume": 546296.06}, {"close": 1914.9, "confirm": true, "display_close": 1914.9, "display_high": 1924.41, "display_low": 1911.62, "high": 1924.41, "low": 1911.62, "open": 1924.4, "provisional": false, "ts": "2026-07-23T07:00:00Z", "volume": 1639190.53}, {"close": 1925.41, "confirm": true, "display_close": 1925.41, "display_high": 1926.53, "display_low": 1913.6, "high": 1926.53, "low": 1913.6, "open": 1914.9, "provisional": false, "ts": "2026-07-23T08:00:00Z", "volume": 1408168.77}, {"close": 1923.13, "confirm": true, "display_close": 1923.13, "display_high": 1930.97, "display_low": 1922.22, "high": 1930.97, "low": 1922.22, "open": 1925.4, "provisional": false, "ts": "2026-07-23T09:00:00Z", "volume": 1622237.65}, {"close": 1926.99, "confirm": true, "display_close": 1926.99, "display_high": 1929.37, "display_low": 1920.67, "high": 1929.37, "low": 1920.67, "open": 1923.13, "provisional": false, "ts": "2026-07-23T10:00:00Z", "volume": 727119.72}, {"close": 1924.7, "confirm": true, "display_close": 1924.7, "display_high": 1928.0, "display_low": 1923.49, "high": 1928.0, "low": 1923.49, "open": 1926.98, "provisional": false, "ts": "2026-07-23T11:00:00Z", "volume": 438836.81}, {"close": 1903.59, "confirm": true, "display_close": 1903.59, "display_high": 1926.9, "display_low": 1893.4, "high": 1926.9, "low": 1893.4, "open": 1924.71, "provisional": false, "ts": "2026-07-23T12:00:00Z", "volume": 4598196.02}, {"close": 1897.78, "confirm": true, "display_close": 1897.78, "display_high": 1908.21, "display_low": 1894.25, "high": 1908.21, "low": 1894.25, "open": 1903.6, "provisional": false, "ts": "2026-07-23T13:00:00Z", "volume": 2700850.8}, {"close": 1895.71, "confirm": true, "display_close": 1895.71, "display_high": 1906.5, "display_low": 1891.36, "high": 1906.5, "low": 1891.36, "open": 1897.78, "provisional": false, "ts": "2026-07-23T14:00:00Z", "volume": 2509925.32}, {"close": 1894.68, "confirm": true, "display_close": 1894.68, "display_high": 1897.38, "display_low": 1882.05, "high": 1897.38, "low": 1882.05, "open": 1895.71, "provisional": false, "ts": "2026-07-23T15:00:00Z", "volume": 3919219.63}, {"close": 1887.22, "confirm": true, "display_close": 1887.22, "display_high": 1894.82, "display_low": 1883.3, "high": 1894.82, "low": 1883.3, "open": 1894.67, "provisional": false, "ts": "2026-07-23T16:00:00Z", "volume": 1589775.3}, {"close": 1877.6, "confirm": true, "display_close": 1877.6, "display_high": 1891.31, "display_low": 1872.0, "high": 1891.31, "low": 1872.0, "open": 1887.23, "provisional": false, "ts": "2026-07-23T17:00:00Z", "volume": 1769708.56}, {"close": 1879.99, "confirm": true, "display_close": 1879.99, "display_high": 1883.54, "display_low": 1874.88, "high": 1883.54, "low": 1874.88, "open": 1877.59, "provisional": false, "ts": "2026-07-23T18:00:00Z", "volume": 1374284.48}, {"close": 1874.67, "confirm": true, "display_close": 1874.67, "display_high": 1882.5, "display_low": 1867.51, "high": 1882.5, "low": 1867.51, "open": 1880.0, "provisional": false, "ts": "2026-07-23T19:00:00Z", "volume": 1188374.23}, {"close": 1884.93, "confirm": true, "display_close": 1884.93, "display_high": 1887.93, "display_low": 1873.81, "high": 1887.93, "low": 1873.81, "open": 1874.66, "provisional": false, "ts": "2026-07-23T20:00:00Z", "volume": 798350.46}, {"close": 1881.8, "confirm": true, "display_close": 1881.8, "display_high": 1888.31, "display_low": 1879.66, "high": 1888.31, "low": 1879.66, "open": 1884.93, "provisional": false, "ts": "2026-07-23T21:00:00Z", "volume": 583378.83}, {"close": 1882.53, "confirm": true, "display_close": 1882.53, "display_high": 1883.26, "display_low": 1872.54, "high": 1883.26, "low": 1872.54, "open": 1881.8, "provisional": false, "ts": "2026-07-23T22:00:00Z", "volume": 790562.97}, {"close": 1877.45, "confirm": true, "display_close": 1877.45, "display_high": 1883.78, "display_low": 1874.7, "high": 1883.78, "low": 1874.7, "open": 1882.52, "provisional": false, "ts": "2026-07-23T23:00:00Z", "volume": 532814.7}, {"close": 1870.36, "confirm": true, "display_close": 1870.36, "display_high": 1878.3, "display_low": 1858.22, "high": 1878.3, "low": 1858.22, "open": 1877.45, "provisional": false, "ts": "2026-07-24T00:00:00Z", "volume": 2253185.85}, {"close": 1871.73, "confirm": true, "display_close": 1871.73, "display_high": 1876.69, "display_low": 1869.43, "high": 1876.69, "low": 1869.43, "open": 1870.36, "provisional": false, "ts": "2026-07-24T01:00:00Z", "volume": 960005.72}, {"close": 1868.84, "confirm": true, "display_close": 1868.84, "display_high": 1877.46, "display_low": 1863.85, "high": 1877.46, "low": 1863.85, "open": 1871.72, "provisional": false, "ts": "2026-07-24T02:00:00Z", "volume": 1063435.91}, {"close": 1879.6, "confirm": true, "display_close": 1879.6, "display_high": 1880.81, "display_low": 1867.44, "high": 1880.81, "low": 1867.44, "open": 1868.84, "provisional": false, "ts": "2026-07-24T03:00:00Z", "volume": 1088784.85}, {"close": 1875.07, "confirm": true, "display_close": 1875.07, "display_high": 1881.18, "display_low": 1873.7, "high": 1881.18, "low": 1873.7, "open": 1879.61, "provisional": false, "ts": "2026-07-24T04:00:00Z", "volume": 624368.88}, {"close": 1879.92, "confirm": true, "display_close": 1879.92, "display_high": 1881.21, "display_low": 1872.41, "high": 1881.21, "low": 1872.41, "open": 1875.07, "provisional": false, "ts": "2026-07-24T05:00:00Z", "volume": 711944.5}, {"close": 1887.04, "confirm": true, "display_close": 1887.04, "display_high": 1887.5, "display_low": 1877.6, "high": 1887.5, "low": 1877.6, "open": 1879.91, "provisional": false, "ts": "2026-07-24T06:00:00Z", "volume": 1126209.88}, {"close": 1895.15, "confirm": true, "display_close": 1895.15, "display_high": 1908.99, "display_low": 1887.05, "high": 1908.99, "low": 1887.05, "open": 1887.05, "provisional": false, "ts": "2026-07-24T07:00:00Z", "volume": 4517960.18}, {"close": 1887.22, "confirm": true, "display_close": 1887.22, "display_high": 1895.29, "display_low": 1885.18, "high": 1895.29, "low": 1885.18, "open": 1895.16, "provisional": false, "ts": "2026-07-24T08:00:00Z", "volume": 989144.53}, {"close": 1887.23, "confirm": true, "display_close": 1887.23, "display_high": 1888.35, "display_low": 1876.26, "high": 1888.35, "low": 1876.26, "open": 1887.22, "provisional": false, "ts": "2026-07-24T09:00:00Z", "volume": 1572941.63}, {"close": 1882.67, "confirm": true, "display_close": 1882.67, "display_high": 1887.78, "display_low": 1879.15, "high": 1887.78, "low": 1879.15, "open": 1887.22, "provisional": false, "ts": "2026-07-24T10:00:00Z", "volume": 627793.39}, {"close": 1882.9, "confirm": true, "display_close": 1882.9, "display_high": 1883.6, "display_low": 1875.02, "high": 1883.6, "low": 1875.02, "open": 1882.67, "provisional": false, "ts": "2026-07-24T11:00:00Z", "volume": 983627.14}, {"close": 1871.78, "confirm": true, "display_close": 1871.78, "display_high": 1885.08, "display_low": 1871.0, "high": 1885.08, "low": 1871.0, "open": 1882.9, "provisional": false, "ts": "2026-07-24T12:00:00Z", "volume": 1274005.19}, {"close": 1857.13, "confirm": true, "display_close": 1857.13, "display_high": 1874.52, "display_low": 1847.07, "high": 1874.52, "low": 1847.07, "open": 1871.77, "provisional": false, "ts": "2026-07-24T13:00:00Z", "volume": 5203890.77}, {"close": 1862.02, "confirm": true, "display_close": 1862.02, "display_high": 1862.4, "display_low": 1846.9, "high": 1862.4, "low": 1846.9, "open": 1857.12, "provisional": false, "ts": "2026-07-24T14:00:00Z", "volume": 2975243.08}, {"close": 1861.17, "confirm": true, "display_close": 1861.17, "display_high": 1868.58, "display_low": 1853.22, "high": 1868.58, "low": 1853.22, "open": 1862.01, "provisional": false, "ts": "2026-07-24T15:00:00Z", "volume": 2402675.41}, {"close": 1856.57, "confirm": true, "display_close": 1856.57, "display_high": 1865.33, "display_low": 1852.46, "high": 1865.33, "low": 1852.46, "open": 1861.16, "provisional": false, "ts": "2026-07-24T16:00:00Z", "volume": 1258995.89}, {"close": 1865.73, "confirm": true, "display_close": 1865.73, "display_high": 1865.76, "display_low": 1854.26, "high": 1865.76, "low": 1854.26, "open": 1856.57, "provisional": false, "ts": "2026-07-24T17:00:00Z", "volume": 879540.3}, {"close": 1861.78, "confirm": true, "display_close": 1861.78, "display_high": 1866.15, "display_low": 1857.57, "high": 1866.15, "low": 1857.57, "open": 1865.73, "provisional": false, "ts": "2026-07-24T18:00:00Z", "volume": 622892.37}, {"close": 1862.71, "confirm": true, "display_close": 1862.71, "display_high": 1863.5, "display_low": 1857.01, "high": 1863.5, "low": 1857.01, "open": 1861.78, "provisional": false, "ts": "2026-07-24T19:00:00Z", "volume": 383451.59}, {"close": 1859.95, "confirm": true, "display_close": 1859.95, "display_high": 1864.47, "display_low": 1857.14, "high": 1864.47, "low": 1857.14, "open": 1862.71, "provisional": false, "ts": "2026-07-24T20:00:00Z", "volume": 423911.1}, {"close": 1856.88, "confirm": true, "display_close": 1856.88, "display_high": 1860.96, "display_low": 1856.09, "high": 1860.96, "low": 1856.09, "open": 1859.95, "provisional": false, "ts": "2026-07-24T21:00:00Z", "volume": 478498.87}, {"close": 1858.65, "confirm": true, "display_close": 1858.65, "display_high": 1860.8, "display_low": 1855.74, "high": 1860.8, "low": 1855.74, "open": 1856.88, "provisional": false, "ts": "2026-07-24T22:00:00Z", "volume": 306888.64}, {"close": 1860.75, "confirm": true, "display_close": 1860.75, "display_high": 1861.2, "display_low": 1858.09, "high": 1861.2, "low": 1858.09, "open": 1858.64, "provisional": false, "ts": "2026-07-24T23:00:00Z", "volume": 190409.94}, {"close": 1859.5, "confirm": true, "display_close": 1859.5, "display_high": 1863.95, "display_low": 1856.13, "high": 1863.95, "low": 1856.13, "open": 1860.74, "provisional": false, "ts": "2026-07-25T00:00:00Z", "volume": 691118.71}, {"close": 1859.31, "confirm": true, "display_close": 1859.31, "display_high": 1862.92, "display_low": 1857.24, "high": 1862.92, "low": 1857.24, "open": 1859.49, "provisional": false, "ts": "2026-07-25T01:00:00Z", "volume": 522135.16}, {"close": 1858.71, "confirm": true, "display_close": 1858.71, "display_high": 1860.99, "display_low": 1857.43, "high": 1860.99, "low": 1857.43, "open": 1859.3, "provisional": false, "ts": "2026-07-25T02:00:00Z", "volume": 271533.72}, {"close": 1857.87, "confirm": true, "display_close": 1857.87, "display_high": 1859.78, "display_low": 1854.5, "high": 1859.78, "low": 1854.5, "open": 1858.7, "provisional": false, "ts": "2026-07-25T03:00:00Z", "volume": 368655.25}, {"close": 1860.5, "confirm": true, "display_close": 1860.5, "display_high": 1861.75, "display_low": 1857.63, "high": 1861.75, "low": 1857.63, "open": 1857.88, "provisional": false, "ts": "2026-07-25T04:00:00Z", "volume": 303745.29}, {"close": 1857.81, "confirm": true, "display_close": 1857.81, "display_high": 1862.15, "display_low": 1856.06, "high": 1862.15, "low": 1856.06, "open": 1860.49, "provisional": false, "ts": "2026-07-25T05:00:00Z", "volume": 431787.42}, {"close": 1857.7, "confirm": true, "display_close": 1857.7, "display_high": 1859.5, "display_low": 1853.66, "high": 1859.5, "low": 1853.66, "open": 1857.8, "provisional": false, "ts": "2026-07-25T06:00:00Z", "volume": 453848.81}, {"close": 1855.2, "confirm": true, "display_close": 1855.2, "display_high": 1857.9, "display_low": 1855.2, "high": 1857.9, "low": 1855.2, "open": 1857.7, "provisional": false, "ts": "2026-07-25T07:00:00Z", "volume": 274534.84}, {"close": 1853.1, "confirm": true, "display_close": 1853.1, "display_high": 1855.49, "display_low": 1850.46, "high": 1855.49, "low": 1850.46, "open": 1855.2, "provisional": false, "ts": "2026-07-25T08:00:00Z", "volume": 514252.61}, {"close": 1857.56, "confirm": true, "display_close": 1857.56, "display_high": 1858.29, "display_low": 1850.75, "high": 1858.29, "low": 1850.75, "open": 1853.1, "provisional": false, "ts": "2026-07-25T09:00:00Z", "volume": 531618.23}, {"close": 1857.89, "confirm": true, "display_close": 1857.89, "display_high": 1858.67, "display_low": 1856.0, "high": 1858.67, "low": 1856.0, "open": 1857.56, "provisional": false, "ts": "2026-07-25T10:00:00Z", "volume": 334953.16}, {"close": 1856.98, "confirm": true, "display_close": 1856.98, "display_high": 1859.4, "display_low": 1856.67, "high": 1859.4, "low": 1856.67, "open": 1857.89, "provisional": false, "ts": "2026-07-25T11:00:00Z", "volume": 325568.19}, {"close": 1859.33, "confirm": true, "display_close": 1859.33, "display_high": 1859.66, "display_low": 1856.01, "high": 1859.66, "low": 1856.01, "open": 1856.99, "provisional": false, "ts": "2026-07-25T12:00:00Z", "volume": 269338.18}, {"close": 1866.39, "confirm": true, "display_close": 1866.39, "display_high": 1871.98, "display_low": 1859.13, "high": 1871.98, "low": 1859.13, "open": 1859.32, "provisional": false, "ts": "2026-07-25T13:00:00Z", "volume": 1603133.24}, {"close": 1867.89, "confirm": true, "display_close": 1867.89, "display_high": 1868.56, "display_low": 1864.27, "high": 1868.56, "low": 1864.27, "open": 1866.38, "provisional": false, "ts": "2026-07-25T14:00:00Z", "volume": 525065.6}, {"close": 1867.06, "confirm": true, "display_close": 1867.06, "display_high": 1870.76, "display_low": 1866.22, "high": 1870.76, "low": 1866.22, "open": 1867.88, "provisional": false, "ts": "2026-07-25T15:00:00Z", "volume": 472530.77}, {"close": 1867.32, "confirm": true, "display_close": 1867.32, "display_high": 1870.04, "display_low": 1863.77, "high": 1870.04, "low": 1863.77, "open": 1867.05, "provisional": false, "ts": "2026-07-25T16:00:00Z", "volume": 486742.72}, {"close": 1872.25, "confirm": true, "display_close": 1872.25, "display_high": 1874.88, "display_low": 1867.17, "high": 1874.88, "low": 1867.17, "open": 1867.31, "provisional": false, "ts": "2026-07-25T17:00:00Z", "volume": 770057.96}, {"close": 1874.54, "confirm": true, "display_close": 1874.54, "display_high": 1876.79, "display_low": 1871.67, "high": 1876.79, "low": 1871.67, "open": 1872.26, "provisional": false, "ts": "2026-07-25T18:00:00Z", "volume": 640009.09}, {"close": 1873.91, "confirm": true, "display_close": 1873.91, "display_high": 1875.77, "display_low": 1873.54, "high": 1875.77, "low": 1873.54, "open": 1874.54, "provisional": false, "ts": "2026-07-25T19:00:00Z", "volume": 201685.41}, {"close": 1871.23, "confirm": true, "display_close": 1871.23, "display_high": 1874.0, "display_low": 1869.62, "high": 1874.0, "low": 1869.62, "open": 1873.91, "provisional": false, "ts": "2026-07-25T20:00:00Z", "volume": 282694.43}, {"close": 1871.3, "confirm": false, "display_close": 1871.3, "display_high": 1872.45, "display_low": 1866.21, "high": 1872.45, "low": 1866.21, "open": 1871.24, "provisional": true, "ts": "2026-07-25T21:00:00Z", "volume": 192563.85}], "candle_captured_at": "2026-07-25T21:40:40Z", "candle_endpoint": "/api/v5/market/candles", "candle_revision_kind": "SAME_TIMESTAMP_REVISION", "candle_series_digest": "4e3405648961c31b579fb28c446b2328402bc3a5a6fce6ebeee415f3b102509f", "captured_at": "2026-07-25T21:40:40Z", "chart_digest": "4e3405648961c31b579fb28c446b2328402bc3a5a6fce6ebeee415f3b102509f", "close_source_semantics": "okx_market_candles_close_plus_public_trades", "effective_at": "2026-07-25T21:40:37Z", "first_timestamp": "2026-07-21T18:00:00Z", "freshness_state": "fresh", "gap_count": 0, "instrument_id": "ETH-USDT-SWAP", "interval": "PT1H", "is_stale": false, "last_closed_timestamp": "2026-07-25T20:00:00Z", "last_timestamp": "2026-07-25T21:00:00Z", "live_mark_captured_at": "2026-07-25T21:40:40Z", "live_mark_price": 1871.29, "live_mark_projection": "okx_ohlcv_live_mark_v1", "live_mark_provider_ts": "2026-07-25T21:40:40Z", "live_price_kind": "mark", "mark_source_semantics": "okx_public_mark_price_markPx_metadata_only", "metadata_digest": "ad10262268d479120397d4170622da84b5e943735df8a07a1423efb7df5a6ea8", "ohlcv_revision_kind": "SAME_TIMESTAMP_REVISION", "open_candle_bootstrap_source": "/api/v5/market/candles", "open_candle_live_source": "okx_public_trades_into_pt1h_v1", "payload_digest": "6bba02a09ba6164614f8cde73f0e5137480c2612919fbf805a9d48658108ad1d", "raw_capture_digest": "fed73dfbe8bce85142230b304f0a4feac9bce378bde6d81b02658003e4f35ef3", "schema_name": "market_landscape_ohlcv_browser_payload.v1", "schema_version": 1, "trade_revision_kind": "SAME_TIMESTAMP_REVISION", "trades_captured_at": "2026-07-25T21:40:40Z", "trades_endpoint": "/api/v5/market/trades", "trades_raw_capture_digest": "655b1fd05c339ccbc40fff138031e692dad531ebd470cf0af99ad37db20aa146", "venue": "OKX", "volume_source_semantics": "okx_market_candles_vol_contracts_plus_trade_sz"}</script>
+            <canvas class="mdl-v2-chart__canvas" data-mdl-chart-canvas="true" data-mdl-chart-bar-count="100" data-mdl-chart-geometry="nonzero" aria-hidden="true" width="1020" height="272" data-mdl-chart-blank="false" data-mdl-chart-first-ts="2026-07-21T18:00:00Z" data-mdl-chart-last-ts="2026-07-25T21:00:00Z" data-mdl-chart-rendered-close="1871.3" data-mdl-chart-candle-close="1871.3" data-mdl-chart-candle-open="1871.24" data-mdl-chart-candle-high="1872.45" data-mdl-chart-candle-low="1866.21" data-mdl-chart-candle-volume="192563.85" data-mdl-chart-instance-id="mdl-chart-1785015642059" data-mdl-full-series-clearrect="true" data-mdl-chart-live-mark="1871.29" data-mdl-chart-captured-at="2026-07-25T21:40:40Z" data-mdl-chart-digest="4e3405648961c31b579fb28c446b2328402bc3a5a6fce6ebeee415f3b102509f" data-mdl-candle-series-digest="4e3405648961c31b579fb28c446b2328402bc3a5a6fce6ebeee415f3b102509f" data-mdl-metadata-digest="ad10262268d479120397d4170622da84b5e943735df8a07a1423efb7df5a6ea8" data-mdl-chart-instrument="ETH-USDT-SWAP" data-mdl-chart-venue="OKX"></canvas>
+            
+          </div>
+        </div>
+      </section>
+
+      <aside class="mdl-v2-rail mdl-v2-rail--right" data-mdl-region="SYSTEM_CONTEXT_RAIL" aria-label="System context">
+        <h2>Context</h2>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Lifecycle</dt>
+            <dd data-mdl-field="scope_lifecycle" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Current Scope</dt>
+            <dd data-mdl-field="current_scope_ref" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Next Scope</dt>
+            <dd data-mdl-field="next_scope_ref" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Regime</dt>
+            <dd data-mdl-field="regime" data-availability="NOT_BOUND">NOT_BOUND</dd>
+          </div>
+          <div>
+            <dt>Bull/Bear</dt>
+            <dd data-mdl-field="bull_bear" data-availability="NOT_BOUND">NOT_BOUND</dd>
+          </div>
+          <div>
+            <dt>Switch</dt>
+            <dd data-mdl-field="switch" data-availability="NOT_BOUND">NOT_BOUND</dd>
+          </div>
+          <div class="mdl-v2-source-health" data-mdl-source-health="true">
+            <dt>Source Health</dt>
+            <dd class="mdl-v2-source-health__body" data-mdl-field="source_health" data-availability="MISSING_SOURCE">
+              <span class="mdl-v2-source-health__summary" data-mdl-source-health-summary="true">MISSING_SOURCE · 2026-07-25T21:40:42.008630Z</span>
+              <ul class="mdl-v2-source-health__sources" aria-label="Source availability and freshness">
+                
+                <li data-mdl-source-slot="autonomy_stage" data-availability="NOT_BOUND" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Autonomy</span>
+                  <span class="mdl-v2-source-health__line">NOT_BOUND · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="canonical_decision" data-availability="MISSING_SOURCE" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Decision</span>
+                  <span class="mdl-v2-source-health__line">MISSING_SOURCE · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="diagnostics_summary" data-availability="NOT_BOUND" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Diagnostics</span>
+                  <span class="mdl-v2-source-health__line">NOT_BOUND · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="double_play" data-availability="MISSING_SOURCE" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Double Play</span>
+                  <span class="mdl-v2-source-health__line">MISSING_SOURCE · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="dynamic_scope" data-availability="MISSING_SOURCE" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Scope</span>
+                  <span class="mdl-v2-source-health__line">MISSING_SOURCE · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="economic_summary" data-availability="MISSING_SOURCE" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Economic</span>
+                  <span class="mdl-v2-source-health__line">MISSING_SOURCE · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="execution_reconciliation" data-availability="NOT_BOUND" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Execution</span>
+                  <span class="mdl-v2-source-health__line">NOT_BOUND · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="market_instrument" data-availability="AVAILABLE" data-freshness="2026-07-24T21:48:23Z">
+                  <span class="mdl-v2-source-health__name">Market</span>
+                  <span class="mdl-v2-source-health__line">AVAILABLE · 2026-07-24T21:48:23Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="risk_sizing_capital" data-availability="NOT_BOUND" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Risk</span>
+                  <span class="mdl-v2-source-health__line">NOT_BOUND · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="safety_authority" data-availability="MISSING_SOURCE" data-freshness="2026-07-25T21:40:42.008630Z">
+                  <span class="mdl-v2-source-health__name">Safety</span>
+                  <span class="mdl-v2-source-health__line">MISSING_SOURCE · 2026-07-25T21:40:42.008630Z</span>
+                </li>
+                
+                <li data-mdl-source-slot="universe_ranking" data-availability="AVAILABLE" data-freshness="2026-07-24T21:48:23Z">
+                  <span class="mdl-v2-source-health__name">Universe</span>
+                  <span class="mdl-v2-source-health__line">AVAILABLE · 2026-07-24T21:48:23Z</span>
+                </li>
+                
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+
+    <section class="mdl-v2-decision" data-mdl-region="CANONICAL_DECISION_STRIP" data-mdl-decision-strip="true" aria-label="Canonical decision strip">
+      
+      <dl class="mdl-v2-decision__primary" data-mdl-decision-primary="true" aria-label="Primary decision reading flow">
+        <div class="mdl-v2-decision__fact mdl-v2-decision__fact--primary" data-mdl-decision-primary-fact="decision">
+          <dt>Decision</dt>
+          <dd data-mdl-field="decision" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
+          </dd>
+        </div>
+        <div class="mdl-v2-decision__fact mdl-v2-decision__fact--primary mdl-v2-decision__fact--why" data-mdl-decision-primary-fact="why">
+          <dt>Why</dt>
+          <dd class="mdl-v2-decision__why" data-mdl-field="reason_codes" data-mdl-why-primary="true" data-availability="MISSING_SOURCE">
+            
+              MISSING_SOURCE · CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD
+            
+          </dd>
+        </div>
+        <div class="mdl-v2-decision__fact mdl-v2-decision__fact--primary" data-mdl-decision-primary-fact="blockers">
+          <dt>Blockers</dt>
+          <dd data-mdl-field="blockers" data-availability="NOT_BOUND">NOT_BOUND</dd>
+        </div>
+      </dl>
+      <dl class="mdl-v2-decision__secondary" data-mdl-decision-secondary="true" aria-label="Secondary decision context">
+        <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="direction">
+          <dt>Direction</dt>
+          <dd data-mdl-field="direction" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
+          </dd>
+        </div>
+        <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="double_play">
+          <dt>Double Play</dt>
+          <dd data-mdl-field="double_play" data-availability="MISSING_SOURCE">
+            MISSING_SOURCE
+          </dd>
+        </div>
+        <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="confidence">
+          <dt>Confidence</dt>
+          <dd data-mdl-field="confidence" data-availability="NOT_BOUND">NOT_BOUND</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="mdl-v2-ops" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
+      <div class="mdl-v2-ops__col">
+        <h3>Risk / Sizing / Capital</h3>
+        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
+      </div>
+      <div class="mdl-v2-ops__col">
+        <h3>Execution / Reconciliation</h3>
+        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
+      </div>
+      <div class="mdl-v2-ops__col">
+        <h3>Economic</h3>
+        <p class="mdl-v2-state" data-availability="MISSING_SOURCE" data-mdl-field="economic">MISSING_SOURCE</p>
+      </div>
+    </section>
+
+    <section class="mdl-v2-timeline" data-mdl-region="EVENT_DECISION_TIMELINE" aria-label="Event and decision timeline">
+      <div class="mdl-v2-timeline__head">
+        <h2>Timeline</h2>
+        <span class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</span>
+      </div>
+      <p class="mdl-v2-timeline__empty">Event / Decision Timeline NOT_BOUND — no invented history.</p>
+    </section>
+
+    <details class="mdl-v2-engineering" data-mdl-region="ENGINEERING_DRAWER" data-mdl-engineering="true">
+      <summary>Engineering · provenance / schemas / diagnostics</summary>
+      <div class="mdl-v2-engineering__body" id="mdl-v2-engineering-body" data-mdl-engineering-body="true">
+        
+        <p class="mdl-v2-engineering__meta" data-mdl-engineering-label="true">Engineering drawer — diagnostic / non-authoritative</p>
+        <p><strong>Generated:</strong> <span class="font-mono">2026-07-25T21:40:42.008630Z</span></p>
+        <p><strong>Page schema:</strong> <span class="font-mono">market_dashboard_landscape_page_snapshot.v1</span></p>
+        <p><strong>Runtime bridge:</strong> <span class="font-mono">BOUND_NOT_ACTIVATED</span> (product_shell_constant_non_authoritative)</p>
+        <p><strong>Incomplete slots:</strong> autonomy_stage, canonical_decision, diagnostics_summary, double_play, dynamic_scope, economic_summary, execution_reconciliation, risk_sizing_capital, safety_authority</p>
+        
+        <p>
+          <strong>Missing-state vocabulary:</strong>
+          <span class="font-mono" data-mdl-engineering-missing-hints="true">SCHEMA_MISMATCH, INVALID_PROVENANCE</span>
+        </p>
+        
+        <div class="mdl-v2-engineering__slots" data-mdl-engineering-slots="true">
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="autonomy_stage" data-availability="NOT_BOUND">
+            <h3 class="mdl-v2-engineering__slot-name">autonomy_stage</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.autonomy_stage.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">NONE</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="canonical_decision" data-availability="MISSING_SOURCE">
+            <h3 class="mdl-v2-engineering__slot-name">canonical_decision</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.canonical_decision.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">trading.master_v2.canonical_trading_decision_evidence_v1</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="diagnostics_summary" data-availability="NOT_BOUND">
+            <h3 class="mdl-v2-engineering__slot-name">diagnostics_summary</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.diagnostics_summary.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">UNRESOLVED</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="double_play" data-availability="MISSING_SOURCE">
+            <h3 class="mdl-v2-engineering__slot-name">double_play</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.double_play.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">trading.master_v2.double_play_dashboard_display</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">CANONICAL_DOUBLE_PLAY_DISPLAY_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono"></dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="dynamic_scope" data-availability="MISSING_SOURCE">
+            <h3 class="mdl-v2-engineering__slot-name">dynamic_scope</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.dynamic_scope.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">trading.master_v2.canonical_scope_initialization_v1</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">CANONICAL_SCOPE_SNAPSHOT_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">CANONICAL_SCOPE_SNAPSHOT_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="economic_summary" data-availability="MISSING_SOURCE">
+            <h3 class="mdl-v2-engineering__slot-name">economic_summary</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.economic_summary.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">backtest.economic_viability_evidence_v1</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">CANONICAL_ECONOMIC_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">CANONICAL_ECONOMIC_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="execution_reconciliation" data-availability="NOT_BOUND">
+            <h3 class="mdl-v2-engineering__slot-name">execution_reconciliation</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.execution_reconciliation.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="market_instrument" data-availability="AVAILABLE">
+            <h3 class="mdl-v2-engineering__slot-name">market_instrument</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">AVAILABLE</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.market_instrument.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">webui.workflow_dashboard_readmodel_v1.universe_selection_contract_v1</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">universe_selection_selected_instrument</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">/private/tmp/intrabar_cap_archive_repair/readmodels/universe_selection_readmodel.v1.json</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-24T21:48:23Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">2026-07-24T21:48:23Z</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-24T21:48:23Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">SELECTED_INSTRUMENT_IDENTITY_FROM_UNIVERSE_SELECTION</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="risk_sizing_capital" data-availability="NOT_BOUND">
+            <h3 class="mdl-v2-engineering__slot-name">risk_sizing_capital</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.risk_sizing_capital.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="safety_authority" data-availability="MISSING_SOURCE">
+            <h3 class="mdl-v2-engineering__slot-name">safety_authority</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.safety_authority.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">src.risk_layer.kill_switch</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:MISSING_SOURCE</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-25T21:40:42.008630Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+          <article class="mdl-v2-engineering__slot" data-mdl-engineering-slot="universe_ranking" data-availability="AVAILABLE">
+            <h3 class="mdl-v2-engineering__slot-name">universe_ranking</h3>
+            <dl class="mdl-v2-engineering__kv">
+              <div>
+                <dt>availability</dt>
+                <dd data-mdl-eng-field="availability">AVAILABLE</dd>
+              </div>
+              <div>
+                <dt>schema_id</dt>
+                <dd data-mdl-eng-field="schema_id" class="font-mono">market_dashboard_landscape_projection.universe_ranking.v1</dd>
+              </div>
+              <div>
+                <dt>schema_version</dt>
+                <dd data-mdl-eng-field="schema_version" class="font-mono">v1</dd>
+              </div>
+              <div>
+                <dt>producer_module</dt>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">webui.workflow_dashboard_readmodel_v1.universe_selection_contract_v1</dd>
+              </div>
+              <div>
+                <dt>source_kind</dt>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">universe_selection_readmodel</dd>
+              </div>
+              <div>
+                <dt>source_reference</dt>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">/private/tmp/intrabar_cap_archive_repair/readmodels/universe_selection_readmodel.v1.json</dd>
+              </div>
+              <div>
+                <dt>provenance.generated_at</dt>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">2026-07-24T21:48:23Z</dd>
+              </div>
+              <div>
+                <dt>provenance.effective_at</dt>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">2026-07-24T21:48:23Z</dd>
+              </div>
+              <div>
+                <dt>freshness.observed_at</dt>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">2026-07-24T21:48:23Z</dd>
+              </div>
+              <div>
+                <dt>freshness.is_stale</dt>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">false</dd>
+              </div>
+              <div>
+                <dt>freshness.stale_reason</dt>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>reason_codes</dt>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">UNIVERSE_SELECTION_READMODEL_PROJECTED</dd>
+              </div>
+              <div>
+                <dt>evidence_digest</dt>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">null</dd>
+              </div>
+              <div>
+                <dt>git_sha</dt>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">null</dd>
+              </div>
+            </dl>
+          </article>
+          
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+<script src="/static/js/market_dashboard_landscape_v2.js" defer=""></script>
+
+      </main>
+
+      <footer class="border-t border-slate-800/50 bg-slate-900/30 mt-8">
+        <div class="max-w-6xl mx-auto px-4 py-3 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <span>Peak_Trade Dashboard v1.2 · Read-Only · Shadow/Testnet Mode · R&amp;D Dashboard (Phase 76)
+            · Companion Run UI default <code class="text-slate-400">127.0.0.1:8010</code> (local;
+            README)</span>
+          <span>🔒 Live-Execution ist deaktiviert</span>
+        </div>
+      </footer>
+    </div>
+  
+</body></html>

@@ -135,6 +135,7 @@ def test_landscape_package_stdlib_and_relative_only() -> None:
         "dataclasses",
         "datetime",
         "enum",
+        "hashlib",
         "json",
         "typing",
         "__future__",

@@ -1,0 +1,13 @@
+HEAD=c542095fd0f6635231421f5840e7592d985fec94
+ORIGIN_MAIN=c542095fd0f6635231421f5840e7592d985fec94
+ M src/ops/okx_public_market_data_client_v1.py
+ M src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py
+ M src/webui/market_dashboard_landscape_shell_router_v2.py
+ M src/webui/market_dashboard_landscape_v2/presenter.py
+ M static/css/market_dashboard_landscape_v2.css
+ M static/js/market_dashboard_landscape_v2.js
+ M templates/peak_trade_dashboard/market_landscape_v2.html
+ M tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_okx_ohlcv_continuous_refresh_v0.py
+?? evidence/market_dashboard_v2/intrabar_capability/
+?? tests/ops/test_okx_public_trades_open_candle_v1.py

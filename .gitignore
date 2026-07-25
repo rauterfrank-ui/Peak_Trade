@@ -54,6 +54,8 @@ secrets.toml
 
 # Logs
 *.log
+# Tracked Chrome evidence console captures (exact-head manifest contract).
+!evidence/**/console.log
 logs/
 
 # Jupyter

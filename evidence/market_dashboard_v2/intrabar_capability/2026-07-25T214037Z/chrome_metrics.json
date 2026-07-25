@@ -1,0 +1,30 @@
+{
+  "observation_duration_seconds": 53.66,
+  "chart_box_before": {
+    "top": 232.5,
+    "left": 236,
+    "width": 1020,
+    "height": 272,
+    "tag": "CANVAS"
+  },
+  "chart_box_after": {
+    "top": 232.5,
+    "left": 236,
+    "width": 1020,
+    "height": 272,
+    "tag": "CANVAS"
+  },
+  "chart_vertical_shift_px": 0.0,
+  "canvas_dimension_growth": false,
+  "live_label": {
+    "has_live": true,
+    "snippet": "Peak_Trade\nMARKET LANDSCAPE V2\nREAD-ONLY \u00b7 LIVE LOCKED\nMARKET LANDSCAPE\nREAD-ONLY CONSUMER\nINSTRUMENT\nETH-USDT-SWAP\nVENUE\nOKX\nRUNTIME\nBOUND_NOT_ACTIVATED\nSAFETY\nMISSING_SOURCE\nUNIVERSE\nWatchlist\nAVAILABLE\nSelected\nETH-USDT-SWAP\nMembership\nIN_UNIVERSE\nRank\nAVAILABLE\n#1 ETH-USDT-SWAP\n\u2014\nCHART\nLIVE_DATA\nAVAILABLE\nINTERVAL\nPT1H\nCANDLE START\n2026-07-25T21:00:00Z\nCAPTURED\n2026-07-25T21:41:31Z\nMARK\n1871.12\nREVISION\nSAME_TIMESTAMP_LAST_CANDLE_CHANGE\nOPEN\n1871.24\nHIGH\n1872.45\nLOW\n1866.21\nCLOSE\n1871.13\nVOL"
+  },
+  "console_error_count": 0,
+  "failed_request_count": 0,
+  "browser_to_okx_request_count": 0,
+  "observed_intrabar_revision_count": 11,
+  "same_timestamp_volume_regression_count": 0,
+  "primary_chart_visible": true,
+  "implementation_head_sha": "7576f2e1158a9365f2a664a5071cfa7dfda35434"
+}
