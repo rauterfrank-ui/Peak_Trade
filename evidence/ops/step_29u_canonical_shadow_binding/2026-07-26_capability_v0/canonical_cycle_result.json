@@ -8,6 +8,7 @@
   "decision_result": "hold",
   "direction": "HOLD",
   "entrypoint_owner": "ops.okx_futures_shadow_no_order_entrypoint_v0",
+  "exact_head": "b189dbc77684c5b0055fc88ab05838b44dd79060",
   "exchange_order_submission": false,
   "execution_intent_result": "NOT_APPLICABLE:NONE",
   "futures_only": true,
