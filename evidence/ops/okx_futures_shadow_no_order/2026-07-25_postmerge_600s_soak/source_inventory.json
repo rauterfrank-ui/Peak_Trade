@@ -1,0 +1,117 @@
+[
+  {
+    "bytes": 16,
+    "path": "END_MONOTONIC.txt",
+    "sha256": "823363233db81d6aa8270f9d1230705c5b553268c7c68243506207c44a8ea606",
+    "type": ".txt"
+  },
+  {
+    "bytes": 21,
+    "path": "END_UTC.txt",
+    "sha256": "9696db7f7017d61a532a1269e87dab553c5c4d1749c691614b23c3817c156b3c",
+    "type": ".txt"
+  },
+  {
+    "bytes": 65,
+    "path": "EVIDENCE_MANIFEST_SHA256.txt",
+    "sha256": "51e2345482eb662b26b80a7df633ab6128ef3ab52249721e9d56add573088ab1",
+    "type": ".txt"
+  },
+  {
+    "bytes": 371988,
+    "path": "MANIFEST.sha256",
+    "sha256": "c1aa75a0794488f3fb9a9b76f9734779f0ab65d00b8be7c81f8fa7654de8747a",
+    "type": ".sha256"
+  },
+  {
+    "bytes": 16,
+    "path": "START_MONOTONIC.txt",
+    "sha256": "a963b680919696ec3870777d6c8d1f3ac4a38cb302bd933bbf456777b90241ce",
+    "type": ".txt"
+  },
+  {
+    "bytes": 21,
+    "path": "START_UTC.txt",
+    "sha256": "0ff04f5fa61bed241e18ea435f9b0c2b692d63093ffd3240a0375bff42574eb8",
+    "type": ".txt"
+  },
+  {
+    "bytes": 129,
+    "path": "command.txt",
+    "sha256": "ea8b8f1edc1a3ca9862d226b83d9bf3e54d4a35825ec665e49c36b5e2fc5e580",
+    "type": ".txt"
+  },
+  {
+    "bytes": 0,
+    "path": "env_names_relevant.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "type": ".txt"
+  },
+  {
+    "bytes": 41,
+    "path": "git_sha.txt",
+    "sha256": "d46a0f8a54247380ed3dba87b704317644ba7e8191a052f05c489b9c9419c9ab",
+    "type": ".txt"
+  },
+  {
+    "bytes": 0,
+    "path": "git_status_after.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "type": ".txt"
+  },
+  {
+    "bytes": 0,
+    "path": "git_status_before.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "type": ".txt"
+  },
+  {
+    "bytes": 83,
+    "path": "heartbeat.txt",
+    "sha256": "999a8ff1ff57a17aacd1689f36046aa6e2dd7f4f077de42d7c30accf5091d5c6",
+    "type": ".txt"
+  },
+  {
+    "bytes": 2805855,
+    "file_count": 3861,
+    "note": "per-invocation JSON; full set verified against progress.jsonl; samples retained",
+    "path": "invocations/",
+    "type": "dir"
+  },
+  {
+    "bytes": 41,
+    "path": "post_merge_sha.txt",
+    "sha256": "d46a0f8a54247380ed3dba87b704317644ba7e8191a052f05c489b9c9419c9ab",
+    "type": ".txt"
+  },
+  {
+    "bytes": 1086423,
+    "path": "progress.jsonl",
+    "sha256": "66bf98959eba9b5eff66724c268066fe93bf7312d1be7c53c22703c587e5f4c7",
+    "type": ".jsonl"
+  },
+  {
+    "bytes": 221,
+    "path": "progress_300s.json",
+    "sha256": "d4c757200a39502a6ae27f1ffb02a89ce6265e2aa01fb2a50d1f1ff7a554bcdf",
+    "type": ".json"
+  },
+  {
+    "bytes": 15,
+    "path": "python_version.txt",
+    "sha256": "8fa6fee68fb4ca8eda41d4db888f6a2a6b039d072f18375fa9df13d8912037d7",
+    "type": ".txt"
+  },
+  {
+    "bytes": 1256,
+    "path": "soak_summary.json",
+    "sha256": "93e7f56fea1dc9d2d2ce341852cdf26ce292c615a16f60ed497c4fed027771a1",
+    "type": ".json"
+  },
+  {
+    "bytes": 80,
+    "path": "soak_worktree.txt",
+    "sha256": "adc686049a97d2c1ad30d02344e0d579dddd09d3af8a61a95560db74cd16662c",
+    "type": ".txt"
+  }
+]

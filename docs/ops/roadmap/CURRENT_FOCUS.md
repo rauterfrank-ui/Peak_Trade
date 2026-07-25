@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-05-16
+last_updated: 2026-07-25
 ---
 
 # Current focus
@@ -11,6 +11,32 @@ last_updated: 2026-05-16
 This is **not** produced by Workflow Officer or Update Officer; officers aggregate checks and summaries — they do not replace this note.
 
 **Related:** [Finish Plan (MVP→v1.0)](FINISH_PLAN.md) · [Truth Core](../registry/TRUTH_CORE.md) · [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs (index)](../release/README.md) · [Chat continuity bootstrap](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md)
+
+---
+
+## Post–#5544 offline OKX Shadow no-order soak (2026-07-25, evidence closeout)
+
+**Narrow proven result only** (not Shadow/Paper/Testnet/Live complete):
+
+- Offline OKX Futures Shadow no-order E2E:
+  `PROVEN_POST_MERGE_600S_SOAK` on `origin/main`
+  `bc7b9309b1f7e2e1411e22b483388331f355d0dd` (PR **#5544** merged).
+- Soak: 600.370976375s monotonic; **1287/1287** successful complete HOLD cycles;
+  BINDING_PASS=1287; orders/network/runtime activation = **false**.
+- Durable evidence:
+  [`evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/`](../../../evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/)
+  (source soak manifest SHA256
+  `c1aa75a0794488f3fb9a9b76f9734779f0ab65d00b8be7c81f8fa7654de8747a`).
+- Owner status surface:
+  [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](../runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md).
+
+**Still open / unchanged:**
+
+- `CANONICAL_STEP_29U_ABSENT` = OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE
+- Runtime = `BOUND_NOT_ACTIVATED`
+- Economic validity = not proven / blocked
+- `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` = OPEN (separate)
+- No activation authorized; next activation-related work needs separate operator GO (Step 29U inventory first)
 
 ---
 

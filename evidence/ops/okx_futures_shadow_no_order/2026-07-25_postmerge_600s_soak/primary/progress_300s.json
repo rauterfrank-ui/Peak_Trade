@@ -1,0 +1,9 @@
+{
+  "any_safety_invariant_failed": false,
+  "elapsed_monotonic_seconds": 300.09,
+  "fail_count": 0,
+  "invocation_count": 644,
+  "latest_binding": "BINDING_PASS",
+  "latest_terminal_status": "hold",
+  "pass_count": 644
+}
