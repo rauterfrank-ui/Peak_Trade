@@ -109,23 +109,37 @@ def test_selection_near_duplicate_and_bindings() -> None:
     sel = json.loads(SELECTION.read_text(encoding="utf-8"))
     assert sel["selection_authorized"] is True
     assert sel["development_evaluation_authorized"] is False
-    assert sel["development_run_slot_available"] is True
-    assert sel["development_run_slot_consumed"] is False
+    assert sel["development_run_slot_available"] is False
+    assert sel["development_run_slot_consumed"] is True
     binding = load_and_validate_repo_binding(REPO)
     assert binding["valid"] is True
-    assert binding["run_slot_consumed"] is False
-    assert binding["development_run_slot_available"] is True
+    assert binding["run_slot_consumed"] is True
+    assert binding["development_run_slot_available"] is False
+    assert binding["development_evaluation_executed"] is True
     assert binding["frozen_digest"] == REQUIRED_DIGEST
     entry = load_and_validate_repo_entry_point(REPO)
-    assert entry["development_evaluation_authorized"] is False
-    assert entry["development_run_slot_available"] is True
+    assert entry["development_evaluation_authorized"] is True
+    assert entry["development_run_slot_available"] is False
+    assert entry["development_run_slot_consumed"] is True
     backlog = load_and_validate_repo_backlog(REPO)
     assert backlog["valid"] is True
+    assert backlog["status"] == "DEVELOPMENT_FAIL_SLOT_CONSUMED"
     program = load_and_validate_repo_program(REPO)
     assert program["implementation_authorized"] is True
+    assert program["development_evaluation_executed"] is True
     contract = load_and_validate_repo_contract(REPO)
     assert contract["implementation_authorized"] is False  # frozen measurement SSOT
     assert contract["development_run_count"] == 0
+    summary = json.loads(
+        (
+            REPO
+            / "docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/summary.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert summary["status"] == "DEVELOPMENT_FAIL"
+    assert summary["economic_validity"] == "FAIL"
+    assert summary["run_slot_consumed"] is True
+    assert summary["development_run_count"] == 1
 
 
 def test_frozen_signal_equation_and_vol_scaling() -> None:
@@ -274,7 +288,7 @@ def test_no_forbidden_authority_imports_and_registry_untouched() -> None:
     assert "MOMENTUM_V2_VOLATILITY_SCALED" not in momentum
 
 
-def test_retired_momentum_not_reopened_and_slot_unconsumed() -> None:
+def test_retired_momentum_not_reopened_and_slot_consumed_once() -> None:
     near = json.loads(NEAR_DUP.read_text(encoding="utf-8"))
     ids = {c["comparator_id"] for c in near["comparators"]}
     for rid in RETIRED:
@@ -285,7 +299,9 @@ def test_retired_momentum_not_reopened_and_slot_unconsumed() -> None:
             "strategy_implementation_binding_v1.json"
         ).read_text(encoding="utf-8")
     )
-    assert binding["run_slot_consumed"] is False
+    assert binding["run_slot_consumed"] is True
+    assert binding["development_run_count"] == 1
+    assert binding["development_evaluation_executed"] is True
     assert binding["development_evaluation_authorized"] is False
     assert binding["holdout_authorized"] is False
     csrhr = json.loads(
@@ -297,7 +313,7 @@ def test_retired_momentum_not_reopened_and_slot_unconsumed() -> None:
     assert csrhr["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
 
 
-def test_fail_closed_runner_does_not_execute() -> None:
+def test_fail_closed_second_evaluate_rejected_after_slot_consumed() -> None:
     import subprocess
     import sys
 
@@ -306,7 +322,14 @@ def test_fail_closed_runner_does_not_execute() -> None:
         "run_evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1.py"
     )
     proc = subprocess.run(
-        [sys.executable, str(script)],
+        [
+            sys.executable,
+            str(script),
+            "--mode",
+            "evaluate",
+            "--authorize-single-development-evaluation",
+            HYPOTHESIS_ID,
+        ],
         cwd=str(REPO),
         capture_output=True,
         text=True,
@@ -315,5 +338,6 @@ def test_fail_closed_runner_does_not_execute() -> None:
     assert proc.returncode == 2
     payload = json.loads(proc.stdout)
     assert payload["evaluation_executed"] is False
-    assert payload["development_run_slot_consumed"] is False
+    assert payload["runner_started"] is False
     assert payload["holdout_accessed"] is False
+    assert "RETRY_OR_SLOT_REUSE_REJECTED" in str(payload.get("reason") or "")

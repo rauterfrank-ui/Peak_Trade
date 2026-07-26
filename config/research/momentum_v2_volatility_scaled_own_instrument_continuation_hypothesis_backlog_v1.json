@@ -13,7 +13,7 @@
   "dataset_class": "DEVELOPMENT_ONLY",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
   "development_evaluation_authorized": false,
-  "development_run_count": 0,
+  "development_run_count": 1,
   "evaluation_authorized": false,
   "evaluation_results_embedded": false,
   "exactly_one_authoritative_truth": true,
@@ -21,7 +21,6 @@
   "explicit_non_actions": [
     "NO_AUTOMATIC_SELECTION",
     "NO_CS_MOMENTUM_REOPEN",
-    "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE",
     "NO_EVALUATION",
     "NO_HOLDOUT_ACCESS",
     "NO_IMPLICIT_SUCCESSOR",
@@ -30,10 +29,11 @@
     "NO_PROMOTION",
     "NO_REGISTRY_MUTATION",
     "NO_RUNTIME",
-    "NO_SEALED_ACCESS"
+    "NO_SEALED_ACCESS",
+    "NO_SECOND_DEVELOPMENT_RUN"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "Operator selected sole remaining A-ready hypothesis; offline strategy implementation present; Development evaluation capability prepared but unauthorized; run slot available/unconsumed. Closed CS momentum remains closed. Pending momentum_1h/v2 raw binding untouched. Near-duplicate verdict MATERIALLY_DISTINCT.",
+  "governance_note": "Single authorized Development evaluation executed with DEVELOPMENT_FAIL / ECONOMIC_VALIDITY=FAIL; run slot consumed; retry forbidden; Holdout/Sealed/promotion/activation remain closed.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -54,8 +54,8 @@
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
   "near_duplicate_gate_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_near_duplicate_gate_v1.json",
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
-  "next_eligible": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "next_canonical_step": "RETURN_TO_OPERATOR_FOR_TERMINAL_RESULT_DECISION_NO_RERUN",
+  "next_eligible": "NONE",
   "open_unpreregistered_candidates": [],
   "operator_decision_packet_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_program_definition_operator_decision_packet_v1.json",
   "operator_selection_record_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_operator_selection_record_v1.json",
@@ -67,8 +67,11 @@
     {
       "baseline_id": "FROZEN_RAW_RETURN_MOMENTUM_1H_ENTRY_EXIT_EVENT_V1",
       "contract_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-      "development_run_count": 0,
+      "development_evaluation_executed": true,
+      "development_evidence_ref": "docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/",
+      "development_run_count": 1,
       "development_run_limit": 1,
+      "economic_validity": "FAIL",
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
@@ -77,10 +80,10 @@
       "reopen_allowed": false,
       "rerun_allowed": false,
       "retry_allowed": false,
-      "run_slot_consumed": false,
-      "runner_start_count": 0,
+      "run_slot_consumed": true,
+      "runner_start_count": 1,
       "signal_family": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM",
-      "status": "DEFINITION_ONLY_PREREGISTERED_IMPLEMENTATION_PRESENT",
+      "status": "DEVELOPMENT_FAIL",
       "strategy_id": "momentum_v2_volatility_scaled_own_instrument_continuation",
       "strategy_identity": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1",
       "strategy_version": "v1",
@@ -101,8 +104,8 @@
   "reopen_allowed": false,
   "required_treatment_type": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM_CONTINUATION_ADMISSION",
   "retry_allowed": false,
-  "run_budget_consumed": false,
-  "runner_start_count": 0,
+  "run_budget_consumed": true,
+  "runner_start_count": 1,
   "runtime_effect": "NONE",
   "runtime_policy": {
     "live_authorized": false,
@@ -114,9 +117,11 @@
     "testnet_activated": false
   },
   "schema_version": "momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog.v1",
-  "slice_class": "STRATEGY_IMPLEMENTATION_AND_DEV_EVAL_CAPABILITY_PREP_NO_RUN",
-  "status": "OPEN_BACKLOG",
-  "terminal_hypotheses": [],
+  "slice_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
+  "status": "DEVELOPMENT_FAIL_SLOT_CONSUMED",
+  "terminal_hypotheses": [
+    "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
+  ],
   "universe_scope": {
     "bitcoin_excluded": true,
     "frequency": "PT1H",
@@ -125,6 +130,6 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "MOMENTUM_V2_VOL_SCALED_SELECTED_IMPLEMENTATION_PRESENT_SLOT_AVAILABLE",
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL_SLOT_CONSUMED",
   "workstream_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_WORKSTREAM_V1"
 }

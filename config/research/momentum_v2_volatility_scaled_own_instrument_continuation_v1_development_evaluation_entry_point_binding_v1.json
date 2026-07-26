@@ -3,6 +3,8 @@
   "artifact_kind": "momentum_v2_volatility_scaled_own_instrument_continuation_v1_development_evaluation_entry_point_binding",
   "artifact_version": "v1",
   "authority_effect": "NONE",
+  "baseline_id": "FROZEN_RAW_RETURN_MOMENTUM_1H_ENTRY_EXIT_EVENT_V1",
+  "config_digest": "eea93239ab77b7ab105370402595477ccd9fe03b8b41457cc914242410de5533",
   "costs_binding": {
     "cost_model_weakening_forbidden": true,
     "fee_bps_per_side": 10.0,
@@ -11,11 +13,11 @@
     "slippage_model_version": "backtest_slippage_symmetric_v0"
   },
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
-  "development_evaluation_authorized": false,
-  "development_evaluation_executed": false,
-  "development_run_count": 0,
+  "development_evaluation_authorized": true,
+  "development_evaluation_executed": true,
+  "development_run_count": 1,
   "development_run_limit": 1,
-  "development_run_slot_available": true,
+  "development_run_slot_available": false,
   "evaluation_authorized": false,
   "explicit_non_actions": [
     "NO_EXECUTION_WITHOUT_SEPARATE_OPERATOR_GO",
@@ -35,12 +37,13 @@
   "implementation_binding_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_strategy_implementation_binding_v1.json",
   "one_shot_consumption_guard": true,
   "operator_go_token_required_for_execution": "GO_MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
+  "productive_exit_pnl_evaluator_ref": "src/research/volatility_compression_breakout_v1_development_evaluation_v1/productive_exit_pnl_evaluator_v1.py",
   "program_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1",
   "promotion_eligible": false,
   "retry_forbidden": true,
-  "run_slot_consumed": false,
+  "run_slot_consumed": true,
   "runner_script_ref": "scripts/research/run_evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1.py",
-  "runner_start_count": 0,
+  "runner_start_count": 1,
   "runtime_policy": {
     "live_authorized": false,
     "orders_allowed": false,
@@ -52,7 +55,9 @@
   },
   "schema_version": "momentum_v2_vol_scaled_development_evaluation_entry_point_binding.v1",
   "sealed_allowed": false,
-  "status": "PREPARED_SLOT_AVAILABLE_EXECUTION_UNAUTHORIZED",
+  "status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL",
   "strategy_identity": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1",
-  "verdict": "DEVELOPMENT_EVALUATION_CAPABILITY_PREPARED_NOT_EXECUTED"
+  "strategy_params_digest": "9bed61f64c3e2c2c8bd62a940de6298e8f3d721ea4710a9eb613a53955bfde20",
+  "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
 }

@@ -1,4 +1,4 @@
-"""Prepared Development-evaluation entry-point binding validator (no execution)."""
+"""Development-evaluation entry-point binding validator (pre/post execution aware)."""
 
 from __future__ import annotations
 
@@ -37,17 +37,11 @@ def _require(cond: bool, code: str) -> None:
 def validate_entry_point_binding(
     payload: Mapping[str, Any], *, repo_root: Path | None = None
 ) -> dict[str, Any]:
+    _require(payload.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYP")
     _require(
-        payload.get("status") == "PREPARED_SLOT_AVAILABLE_EXECUTION_UNAUTHORIZED",
-        "STATUS",
+        payload.get("frozen_measurement_contract_digest") == REQUIRED_DIGEST,
+        "DIGEST",
     )
-    _require(payload.get("development_evaluation_authorized") is False, "DEV_EVAL_AUTH")
-    _require(payload.get("development_evaluation_executed") is False, "DEV_EVAL_EXECUTED")
-    _require(payload.get("evaluation_authorized") is False, "EVAL_AUTH")
-    _require(payload.get("run_slot_consumed") is False, "SLOT_CONSUMED")
-    _require(payload.get("development_run_slot_available") is True, "SLOT_UNAVAILABLE")
-    _require(payload.get("development_run_count") == 0, "RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START")
     _require(payload.get("holdout_authorized") is False, "HOLDOUT")
     _require(payload.get("sealed_allowed") is False, "SEALED")
     _require(payload.get("promotion_eligible") is False, "PROMOTION")
@@ -58,19 +52,31 @@ def validate_entry_point_binding(
         payload.get("operator_go_token_required_for_execution") == REQUIRED_EXEC_GO,
         "EXEC_GO",
     )
-    _require(
-        payload.get("frozen_measurement_contract_digest") == REQUIRED_DIGEST,
-        "DIGEST",
-    )
-    _require(payload.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYP")
+    authorized = payload.get("development_evaluation_authorized") is True
+    executed = payload.get("development_evaluation_executed") is True
+    consumed = payload.get("run_slot_consumed") is True
+    run_count = int(payload.get("development_run_count") or 0)
+    if executed or consumed or run_count >= 1:
+        _require(authorized is True, "DEV_EVAL_AUTH")
+        _require(run_count == 1, "RUN_COUNT")
+        _require(consumed is True, "SLOT_CONSUMED")
+        _require(payload.get("development_run_slot_available") is False, "SLOT_STILL_AVAILABLE")
+    else:
+        _require(authorized is True, "DEV_EVAL_AUTH")
+        _require(executed is False, "DEV_EVAL_EXECUTED")
+        _require(payload.get("evaluation_authorized") is False, "EVAL_AUTH")
+        _require(consumed is False, "SLOT_CONSUMED")
+        _require(payload.get("development_run_slot_available") is True, "SLOT_UNAVAILABLE")
+        _require(run_count == 0, "RUN_COUNT")
+        _require(int(payload.get("runner_start_count") or 0) == 0, "RUNNER_START")
     if repo_root is not None:
         runner = repo_root / str(payload.get("runner_script_ref"))
         _require(runner.is_file(), "RUNNER_MISSING")
     return {
         "valid": True,
-        "development_evaluation_authorized": False,
-        "development_run_slot_available": True,
-        "development_run_slot_consumed": False,
+        "development_evaluation_authorized": authorized,
+        "development_run_slot_available": bool(payload.get("development_run_slot_available")),
+        "development_run_slot_consumed": consumed,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
     }
 

@@ -21,7 +21,7 @@ GOVERNANCE_REL_PATH = (
     "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_"
     "HYPOTHESIS_BACKLOG_V1.md"
 )
-REQUIRED_STATUS = "OPEN_BACKLOG"
+REQUIRED_STATUS = "DEVELOPMENT_FAIL_SLOT_CONSUMED"
 REQUIRED_PROGRAM_ID = (
     "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1"
 )
@@ -30,7 +30,7 @@ REQUIRED_HYPOTHESIS_ID = (
     "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
 )
 REQUIRED_STRATEGY_IDENTITY = "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1"
-REQUIRED_HYP_STATUS = "DEFINITION_ONLY_PREREGISTERED_IMPLEMENTATION_PRESENT"
+REQUIRED_HYP_STATUS = "DEVELOPMENT_FAIL"
 
 
 class BacklogValidationError(ValueError):
@@ -51,7 +51,7 @@ def validate_backlog_contract(
 ) -> dict[str, Any]:
     _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID_MISMATCH")
     _require(payload.get("workstream_id") == REQUIRED_WORKSTREAM_ID, "WORKSTREAM_ID_MISMATCH")
-    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_OPEN_BACKLOG")
+    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_DEVELOPMENT_FAIL_SLOT_CONSUMED")
     _require(
         payload.get("lifecycle_contract_id") == LIFECYCLE_CONTRACT_ID,
         "LIFECYCLE_CONTRACT_MISMATCH",
@@ -63,11 +63,12 @@ def validate_backlog_contract(
     )
     _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("next_eligible") == REQUIRED_HYPOTHESIS_ID, "NEXT_ELIGIBLE_MISMATCH")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_budget_consumed") is True, "RUN_BUDGET_NOT_CONSUMED")
+    _require(payload.get("next_eligible") == "NONE", "NEXT_ELIGIBLE_MISMATCH")
     _require(payload.get("open_unpreregistered_candidates") == [], "OPEN_CANDIDATES_NONEMPTY")
-    _require(payload.get("terminal_hypotheses") == [], "TERMINAL_NONEMPTY")
+    _require(payload.get("terminal_hypotheses") == [REQUIRED_HYPOTHESIS_ID], "TERMINAL_MISMATCH")
     rules = payload.get("governance_rules") or {}
     _require(rules.get("preregistered_count_exact") == 1, "PREREGISTERED_COUNT_NOT_1")
     _require(rules.get("open_unpreregistered_count_exact") == 0, "OPEN_UNPREREGISTERED_NOT_0")
@@ -84,8 +85,11 @@ def validate_backlog_contract(
     _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "HYPOTHESIS_ID_MISMATCH")
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(hyp.get("status") == REQUIRED_HYP_STATUS, "HYP_STATUS")
-    _require(hyp.get("development_run_count") == 0, "HYP_DEV_RUN_COUNT")
+    _require(hyp.get("development_run_count") == 1, "HYP_DEV_RUN_COUNT")
+    _require(hyp.get("runner_start_count") == 1, "HYP_RUNNER_START_COUNT")
+    _require(hyp.get("run_slot_consumed") is True, "HYP_RUN_SLOT_CONSUMED")
     _require(hyp.get("implementation_present") is True, "IMPLEMENTATION_PRESENT")
+    _require(hyp.get("economic_validity") == "FAIL", "HYP_ECONOMIC_VALIDITY")
     pending = payload.get("pending_separate_scopes_untouched") or {}
     _require(
         pending.get("momentum_1h_v2_raw_binding_hypothesis_id")

@@ -21,7 +21,7 @@ REQUIRED_PROGRAM_ID = (
     "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1"
 )
 REQUIRED_WORKSTREAM_ID = "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_WORKSTREAM_V1"
-REQUIRED_STATUS = "DEFINITION_ONLY"
+REQUIRED_STATUS = "DEVELOPMENT_EVALUATION_EXECUTED_FAIL"
 REQUIRED_SIGNAL_FAMILY = "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM"
 REQUIRED_TARGET = "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM_CONTINUATION"
 REQUIRED_HYPOTHESIS_ID = (
@@ -50,11 +50,13 @@ def validate_program_contract(
 ) -> dict[str, Any]:
     _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID_MISMATCH")
     _require(payload.get("workstream_id") == REQUIRED_WORKSTREAM_ID, "WORKSTREAM_ID_MISMATCH")
-    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_DEFINITION_ONLY")
+    _require(
+        payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_DEVELOPMENT_EVALUATION_EXECUTED_FAIL"
+    )
     _require(payload.get("program_family") == REQUIRED_SIGNAL_FAMILY, "FAMILY")
     _require(
-        payload.get("slice_class") == "DEFINITION_ONLY_GOVERNANCE",
-        "SLICE_NOT_DEFINITION_ONLY_GOVERNANCE",
+        payload.get("slice_class") == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
+        "SLICE_NOT_TERMINAL_FAIL",
     )
     _require(payload.get("authority_effect") == "NONE", "AUTHORITY_EFFECT_NOT_NONE")
     _require(payload.get("runtime_effect") == "NONE", "RUNTIME_EFFECT_NOT_NONE")
@@ -69,13 +71,13 @@ def validate_program_contract(
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
     _require(
-        payload.get("development_evaluation_executed") is False,
+        payload.get("development_evaluation_executed") is True,
         "DEVELOPMENT_EVALUATION_EXECUTED",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
     _require(payload.get("development_run_limit") == 1, "DEVELOPMENT_RUN_LIMIT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
     _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     causal = payload.get("causal_independence") or {}
@@ -102,7 +104,8 @@ def validate_program_contract(
         _require(closed.get("reopen_allowed") is False, "CLOSED_CS_MOM_REOPEN_ALLOWED")
     return {
         "valid": True,
-        "definition_only": True,
+        "definition_only": False,
+        "development_evaluation_executed": True,
         "program_id": REQUIRED_PROGRAM_ID,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "evaluation_authorized": False,
