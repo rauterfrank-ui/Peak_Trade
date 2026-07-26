@@ -22,12 +22,13 @@ v0.2 Features:
 Endpoints:
 - GET  /ops/ci-health        - HTML dashboard page (with interactive controls)
 - GET  /ops/ci-health/status - JSON API für health checks (read-only)
-- POST /ops/ci-health/run    - Trigger check execution (with lock)
+- POST /ops/ci-health/run    - Trigger check execution (with lock; local-admin auth required)
 
 Safety:
 - Offline-lokal, keine externen Secrets
 - Read-only checks, keine destructive operations
 - In-memory lock prevents parallel runs (HTTP 409 on conflict)
+- POST /run requires PEAK_TRADE_WEBUI_LOCAL_ADMIN_TOKEN via X-Peak-Trade-Local-Admin-Token
 """
 
 from __future__ import annotations
@@ -42,9 +43,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+
+from src.webui.local_admin_write_auth_v1 import require_local_admin_write_auth
 
 logger = logging.getLogger(__name__)
 
@@ -469,11 +472,16 @@ async def get_ci_health_status() -> Dict[str, Any]:
 
 
 @router.post("/run")
-async def run_ci_health_checks() -> Dict[str, Any]:
+async def run_ci_health_checks(
+    _authorized=Depends(require_local_admin_write_auth),
+) -> Dict[str, Any]:
     """
     JSON API: Trigger CI & Governance health checks (v0.2 interactive controls).
 
     Executes health checks and returns results (same schema as GET /status).
+
+    Requires local-admin authentication (WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1)
+    before any subprocess execution or report persistence.
 
     Features:
         - In-memory lock prevents parallel runs (HTTP 409 on conflict)
@@ -485,6 +493,7 @@ async def run_ci_health_checks() -> Dict[str, Any]:
         Dict with health check results and summary (same as GET /status)
 
     Raises:
+        HTTPException 401/403/503: Local-admin authentication denial
         HTTPException 409: If another check run is already in progress
     """
     global _LAST_RUN_TIMESTAMP

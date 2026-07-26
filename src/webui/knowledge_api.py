@@ -13,7 +13,9 @@ API-Endpoints für Knowledge Database Integration:
 
 Access Control:
 - GET: Immer verfügbar
-- POST: Nur wenn KNOWLEDGE_READONLY=false UND KNOWLEDGE_WEB_WRITE_ENABLED=true
+- POST: Requires local-admin auth (X-Peak-Trade-Local-Admin-Token) AND
+  KNOWLEDGE_READONLY=false UND KNOWLEDGE_WEB_WRITE_ENABLED=true
+  (env flags are policy gates, not caller identity)
 
 Graceful Degradation:
 - 501 Not Implemented wenn Backend nicht verfügbar
@@ -26,9 +28,10 @@ import logging
 import os
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
+from src.webui.local_admin_write_auth_v1 import require_local_admin_write_auth
 from src.webui.services.knowledge_service import (
     get_knowledge_service,
     is_vector_db_available,
@@ -212,18 +215,22 @@ async def list_snippets(
     summary="Snippet hinzufügen",
     description="Fügt ein neues Dokumenten-Snippet zur Knowledge DB hinzu.",
 )
-async def create_snippet(snippet: SnippetCreate) -> Dict[str, Any]:
+async def create_snippet(
+    snippet: SnippetCreate,
+    _authorized=Depends(require_local_admin_write_auth),
+) -> Dict[str, Any]:
     """
     Füge ein Snippet hinzu.
 
     Requires:
+        - Local-admin auth (X-Peak-Trade-Local-Admin-Token)
         - KNOWLEDGE_READONLY=false
         - KNOWLEDGE_WEB_WRITE_ENABLED=true
 
     Returns:
         Created snippet with ID
     """
-    # Access control checks
+    # Access control checks (identity first, then existing env policy gates)
     require_webui_write_allowed()
     require_backend_available()
 
@@ -314,18 +321,22 @@ async def list_strategies(
     summary="Strategie hinzufügen",
     description="Fügt ein neues Strategie-Dokument zur Knowledge DB hinzu.",
 )
-async def create_strategy(strategy: StrategyCreate) -> Dict[str, Any]:
+async def create_strategy(
+    strategy: StrategyCreate,
+    _authorized=Depends(require_local_admin_write_auth),
+) -> Dict[str, Any]:
     """
     Füge eine Strategie hinzu.
 
     Requires:
+        - Local-admin auth (X-Peak-Trade-Local-Admin-Token)
         - KNOWLEDGE_READONLY=false
         - KNOWLEDGE_WEB_WRITE_ENABLED=true
 
     Returns:
         Created strategy with ID
     """
-    # Access control checks
+    # Access control checks (identity first, then existing env policy gates)
     require_webui_write_allowed()
     require_backend_available()
 

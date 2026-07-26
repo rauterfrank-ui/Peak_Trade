@@ -268,10 +268,11 @@
     <script>
       let autoRefreshInterval = null;
 
-      // Run checks (POST /run)
+      // Run checks (POST /run) — local-admin token via header only; never stored.
       async function runChecks() {
         const runBtn = document.getElementById('run-checks-btn');
         const refreshBtn = document.getElementById('refresh-btn');
+        let localAdminToken = null;
 
         try {
           // Disable buttons and show running state
@@ -280,19 +281,46 @@
           runBtn.textContent = '⏳ Running...';
           hideError();
 
-          // Call API
+          // Ephemeral operator prompt only for this request (not persisted).
+          localAdminToken = window.prompt(
+            'Enter local admin token for this Run-now request (not stored):'
+          );
+          if (!localAdminToken) {
+            showError('Local admin token required to run checks');
+            return;
+          }
+
+          const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          };
+          headers['X-Peak-Trade-Local-Admin-Token'] = localAdminToken;
+
+          // Call API (token only in request header; never in URL)
           const response = await fetch('/ops/ci-health/run', {
             method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
+            headers: headers,
           });
 
           if (!response.ok) {
             if (response.status === 409) {
               const data = await response.json();
               showError(data.detail?.message || 'Another check is already running');
+              return;
+            }
+            if (response.status === 401 || response.status === 403 || response.status === 503) {
+              let msg = `Local-admin auth failed (HTTP ${response.status})`;
+              try {
+                const data = await response.json();
+                if (data.detail?.error) {
+                  msg = data.detail.error;
+                } else if (data.detail?.message) {
+                  msg = data.detail.message;
+                }
+              } catch (_parseErr) {
+                // keep categorical status message
+              }
+              showError(msg);
               return;
             }
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -305,6 +333,8 @@
           console.error('Run checks failed:', error);
           showError(`Failed to run checks: ${error.message}`);
         } finally {
+          // Clear client-side credential reference immediately.
+          localAdminToken = null;
           // Re-enable buttons
           runBtn.disabled = false;
           refreshBtn.disabled = false;
