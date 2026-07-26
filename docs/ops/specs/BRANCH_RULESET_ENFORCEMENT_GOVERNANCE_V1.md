@@ -26,7 +26,7 @@
 ## Canonical protected branch
 
 - GitHub default branch (API): `main`
-- Ruleset target include: `refs/heads/main`
+- Ruleset target include: `refs&#47;heads&#47;main`
 - Enforcement mechanism: Repository ruleset `peak_trade` (`id=11192468`) with `enforcement=active` (not evaluate-only, not disabled)
 - Classic branch protection on `main` remains as a complementary layer; required-check names stay owned by `config/ci/required_status_checks.json`
 
