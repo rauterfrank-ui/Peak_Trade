@@ -365,8 +365,8 @@ def _economic_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]
     snap = page.economic_summary
     availability = snap.availability
     status_display = _economic_status_display(page)
-    # Unavailable projections (including STALE/INVALID helpers with null payload)
-    # keep the availability label on every field — never invent metric values.
+    # Unavailable projections: one canonical status on summary/status; detail
+    # fields stay em-dash (no repeated MISSING_SOURCE badges). Reasons preserved.
     if availability not in (Availability.AVAILABLE, Availability.STALE) or (
         snap.economic_viability_status is None
     ):
@@ -375,15 +375,15 @@ def _economic_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]
         return {
             "summary_display": status_display if status_display else label,
             "status_display": status_display if status_display else label,
-            "validity_display": label,
-            "policy_threshold_display": label,
-            "profit_factor_display": label,
-            "net_return_display": label,
-            "max_drawdown_display": label,
-            "funding_drag_display": label,
-            "trade_count_display": label,
-            "evidence_ref_display": label,
-            "evidence_digest_display": label,
+            "validity_display": "—",
+            "policy_threshold_display": "—",
+            "profit_factor_display": "—",
+            "net_return_display": "—",
+            "max_drawdown_display": "—",
+            "funding_drag_display": "—",
+            "trade_count_display": "—",
+            "evidence_ref_display": "—",
+            "evidence_digest_display": "—",
             "reasons_display": reasons,
             "classification_display": "EVIDENCE_ONLY",
         }
@@ -482,12 +482,13 @@ def _risk_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]:
     snap = page.risk_sizing_capital
     if snap.availability not in (Availability.AVAILABLE, Availability.STALE):
         label = AVAILABILITY_LABELS[snap.availability]
+        # Capability 7 / TASK_1: one status on summary; detail cells stay em-dash.
         return {
             "summary_display": label,
-            "risk_status_display": label,
-            "sizing_status_display": label,
-            "capital_status_display": label,
-            "quantity_display": label,
+            "risk_status_display": "—",
+            "sizing_status_display": "—",
+            "capital_status_display": "—",
+            "quantity_display": "—",
             "reasons_display": (
                 ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
             ),
@@ -526,11 +527,12 @@ def _execution_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str
     snap = page.execution_reconciliation
     if snap.availability not in (Availability.AVAILABLE, Availability.STALE):
         label = AVAILABILITY_LABELS[snap.availability]
+        # Capability 7 / TASK_1: one status on summary; detail cells stay em-dash.
         return {
             "summary_display": label,
-            "execution_status_display": label,
-            "reconciliation_status_display": label,
-            "order_intent_ref_display": label,
+            "execution_status_display": "—",
+            "reconciliation_status_display": "—",
+            "order_intent_ref_display": "—",
             "reasons_display": (
                 ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
             ),
@@ -819,7 +821,7 @@ def present_market_landscape_v2(
         "runtime_bridge_display": page.runtime_bridge_display,
         "shell_authority_class": page.shell_authority_class,
         "consumer_role": "read_only_consumer",
-        "phase": "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT",
+        "phase": "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL",
         "global_strip": {
             # Compact ops summary only. Scope lifecycle + Regime primary in Context rail.
             # Do not expose availability under a Freshness label (Phase 5 PR1).
@@ -1032,6 +1034,8 @@ def present_market_landscape_v2(
             "phase_4_5_binding_active": True,
             "phase_4_6b_binding_active": True,
             "capability_6_alt_a_closeout": True,
+            "capability_7_product_maturity": True,
+            "task1_visual_density": True,
             "phase_4_full_pass": False,
             "phase_4_authorized": True,
             "operator_skeleton_approval": "PENDING",

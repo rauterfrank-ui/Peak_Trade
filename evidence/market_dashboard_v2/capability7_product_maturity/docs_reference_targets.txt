@@ -1,0 +1,2 @@
+DOCS_REFERENCE_TARGETS_RESULT=PASS
+NOTE=verify_docs_reference_targets.sh scanned full tree PASS

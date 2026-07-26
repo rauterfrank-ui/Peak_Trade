@@ -20,7 +20,7 @@ REPO = Path(__file__).resolve().parents[2]
 TEMPLATE = REPO / "templates" / "peak_trade_dashboard" / "market_landscape_v2.html"
 CSS = REPO / "static" / "css" / "market_dashboard_landscape_v2.css"
 JS = REPO / "static" / "js" / "market_dashboard_landscape_v2.js"
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "task7_accessibility"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "capability7_product_maturity"
 
 VIEWPORTS = (
     (1512, 982, "market_focus_1512x982.png"),
@@ -55,8 +55,12 @@ def test_template_static_accessibility_anti_patterns() -> None:
     assert "<summary>Engineering · provenance / schemas / diagnostics</summary>" in text
     assert 'id="mdl-v2-engineering-body"' in text
     assert 'data-mdl-engineering-body="true"' in text
-    # Read-only status facts stay non-interactive (no tabindex on status rows).
-    assert "tabindex=" not in text.lower()
+    # Capability 7: only negative tabindex on scroll containers (Chrome overflow focus).
+    assert POSITIVE_TABINDEX.search(text) is None
+    assert 'tabindex="0"' not in text.lower()
+    assert text.lower().count('tabindex="-1"') == 2
+    assert 'mdl-v2-source-health__sources"' in text or "mdl-v2-source-health__sources" in text
+    assert 'tabindex="-1"' in text
 
 
 def test_css_does_not_globally_suppress_outline() -> None:
@@ -76,10 +80,12 @@ def test_js_escape_restores_focus_to_summary() -> None:
     assert 'event.key !== "Escape"' in js
     assert "engineering.open = false" in js
     assert "summary.focus()" in js
-    assert "fetch(" not in js
-    assert "XMLHttpRequest" not in js
+    # Local OHLCV poll may use fetch; browser-to-OKX and write/mutation remain forbidden.
+    assert "/api/market/landscape/ohlcv" in js
+    assert "okx.com" not in js.lower()
     assert "place_order" not in js
     assert "activate_runtime" not in js
+    assert "XMLHttpRequest" not in js
 
 
 def test_get_market_accessibility_baseline_contract(client: TestClient) -> None:

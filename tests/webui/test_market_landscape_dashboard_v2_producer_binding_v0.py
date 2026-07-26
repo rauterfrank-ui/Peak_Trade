@@ -514,7 +514,7 @@ def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_inject
     assert page.canonical_decision.availability is Availability.MISSING_SOURCE
     assert REASON_DECISION_NOT_PERSISTED in page.canonical_decision.reason_codes
     ctx = present_market_landscape_v2(page)
-    assert ctx["phase"] == "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
+    assert ctx["phase"] == "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL"
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["scope"]["availability"] == "MISSING_SOURCE"
     assert ctx["decision"]["availability"] == "MISSING_SOURCE"
@@ -781,7 +781,7 @@ def test_bind_canonical_decision_does_not_bind_double_play() -> None:
     assert page.double_play.availability is Availability.MISSING_SOURCE
     assert REASON_DOUBLE_PLAY_NOT_PERSISTED in page.double_play.blockers
     assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
-    assert ctx["phase"] == "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
+    assert ctx["phase"] == "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL"
     assert ctx["product_flags"]["phase_4_3a_binding_active"] is True
     assert ctx["product_flags"]["phase_4_3b_binding_active"] is True
     assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
@@ -948,7 +948,7 @@ def test_decision_and_double_play_remain_separate_projections() -> None:
     assert page.double_play.overall_status == "display_blocked"
     assert ctx["decision"]["fields"]["decision"] == "observe"
     assert ctx["double_play"]["fields"]["overall_status"] == "display_blocked"
-    assert ctx["phase"] == "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
+    assert ctx["phase"] == "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL"
 
 
 def _safety_authority_fields(**overrides: object) -> dict[str, object]:
@@ -1073,7 +1073,7 @@ def test_safety_does_not_bind_risk_capital_sizing() -> None:
     assert page.execution_reconciliation.availability is Availability.MISSING_SOURCE
     assert ctx["execution"]["availability"] == "MISSING_SOURCE"
     assert ctx["global_strip"]["safety_status"] == "KILLED · veto=True"
-    assert ctx["phase"] == "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
+    assert ctx["phase"] == "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL"
     assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
     assert ctx["product_flags"]["phase_4_4b_binding_active"] is True
     assert ctx["product_flags"]["phase_4_5_binding_active"] is True
@@ -1372,7 +1372,7 @@ def test_economic_page_aggregate_and_presenter_injection() -> None:
     assert ctx["economic"]["availability"] == "AVAILABLE"
     assert ctx["economic"]["status_display"] == "ECONOMICALLY_VIABLE_OFFLINE"
     assert ctx["product_flags"]["phase_4_6b_binding_active"] is True
-    assert ctx["phase"] == "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
+    assert ctx["phase"] == "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL"
     assert page.risk_sizing_capital.availability is Availability.MISSING_SOURCE
 
 

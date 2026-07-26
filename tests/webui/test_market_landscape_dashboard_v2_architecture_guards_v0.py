@@ -239,7 +239,7 @@ def test_landscape_shell_template_has_no_write_controls() -> None:
     assert 'data-market-dashboard-authority="false"' in text
     assert "method=" not in text.lower()
     assert re.search(r"<form\b", text, flags=re.IGNORECASE) is None
-    assert "phase4-6-capability-6-alt-a-truthful-closeout" in text
+    assert "phase5-capability-7-product-maturity-technical" in text
     assert 'data-mdl-field="safety"' in text
     assert 'data-mdl-field="economic"' in text
     assert "<button" not in text.lower()

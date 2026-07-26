@@ -1,4 +1,4 @@
-"""Real Chrome Playwright evidence for Market Landscape V2 Phase 5 PR4."""
+"""Real Chrome Playwright evidence for Market Landscape V2 Capability 7 product maturity."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr5"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "capability7_product_maturity"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -189,7 +189,7 @@ def _assert_decision_why_blocker_reading_flow(page) -> dict[str, object]:  # typ
 
 
 def _assert_engineering_drawer_completeness(page) -> dict[str, object]:  # type: ignore[no-untyped-def]
-    """Phase 5 PR4: closed-by-default drawer renders existing engineering.slots."""
+    """Capability 7 product maturity: closed-by-default drawer renders existing engineering.slots."""
     engineering = page.locator("[data-mdl-engineering]")
     assert engineering.count() == 1
     assert engineering.evaluate("el => el.open") is False
@@ -307,7 +307,7 @@ def _run_chrome_against_html(
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1
                 assert root.get_attribute("data-phase") == (
-                    "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
+                    "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL"
                 )
                 chart = page.locator("[data-mdl-chart-region='true']")
                 decision = page.locator("[data-mdl-decision-strip='true']")

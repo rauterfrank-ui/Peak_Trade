@@ -1,0 +1,6 @@
+OKX_OHLCV_INTRABAR_REGRESSION=false
+SERIALIZE_REQUIRES_VOLUME=true
+CONTINUOUS_REFRESH_LOCAL_POLL_ONLY=true
+BROWSER_TO_OKX_REQUEST_COUNT=0
+TEST_FILE=tests/webui/test_market_landscape_dashboard_v2_okx_ohlcv_chart_binding_v0.py
+CONTINUOUS_REFRESH_TEST=tests/webui/test_market_landscape_dashboard_v2_okx_ohlcv_continuous_refresh_v0.py
