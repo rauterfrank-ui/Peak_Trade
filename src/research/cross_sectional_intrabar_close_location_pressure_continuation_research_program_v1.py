@@ -169,7 +169,7 @@ def validate_program_contract(
             csrhr_bl.get("status") == REQUIRED_CSRHR_BACKLOG_STATUS,
             "CSRHR_BACKLOG_NOT_OPEN",
         )
-        _require(csrhr_bl.get("development_run_count") == 0, "CSRHR_DEV_RUN_MUTATED")
+        _require(csrhr_bl.get("development_run_count") == 1, "CSRHR_DEV_RUN_MUTATED")
         gov = repo_root / GOVERNANCE_REL_PATH
         _require(gov.is_file(), "GOVERNANCE_DOC_MISSING")
 

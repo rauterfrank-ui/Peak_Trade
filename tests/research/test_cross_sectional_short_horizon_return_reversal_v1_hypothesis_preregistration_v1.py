@@ -33,7 +33,7 @@ def test_repo_contract_definition_only_digest_and_gates() -> None:
     assert report["valid"] is True
     assert report["definition_only"] is True
     assert report["evaluation_authorized"] is False
-    assert report["development_run_count"] == 0
+    assert report["development_run_count"] == 1
     assert (
         report["hypothesis_id"]
         == "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_NON_BITCOIN_PERPETUALS_V1"

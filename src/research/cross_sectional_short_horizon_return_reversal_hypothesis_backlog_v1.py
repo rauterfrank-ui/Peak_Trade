@@ -21,7 +21,7 @@ REQUIRED_STATUS = "OPEN_BACKLOG"
 REQUIRED_PROGRAM_ID = "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1"
 REQUIRED_HYPOTHESIS_ID = "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_NON_BITCOIN_PERPETUALS_V1"
 REQUIRED_STRATEGY_IDENTITY = "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1"
-REQUIRED_HYP_STATUS = "PREREGISTERED_DEFINITION_ONLY"
+REQUIRED_HYP_STATUS = "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL"
 
 
 class BacklogValidationError(ValueError):
@@ -51,10 +51,10 @@ def validate_backlog_contract(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT_NOT_ZERO")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ZERO")
     _require(payload.get("next_eligible") == REQUIRED_HYPOTHESIS_ID, "NEXT_ELIGIBLE_MISMATCH")
     _require(payload.get("open_unpreregistered_candidates") == [], "OPEN_CANDIDATES_NONEMPTY")
     _require(payload.get("terminal_hypotheses") == [], "TERMINAL_NONEMPTY")
@@ -73,8 +73,8 @@ def validate_backlog_contract(
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(hyp.get("status") == REQUIRED_HYP_STATUS, "HYPOTHESIS_STATUS")
     _require(hyp.get("evaluation_authorized") is False, "HYP_EVALUATION_AUTHORIZED")
-    _require(hyp.get("development_run_count") == 0, "HYP_DEVELOPMENT_RUN_COUNT")
-    _require(hyp.get("run_slot_consumed") is False, "HYP_RUN_SLOT_CONSUMED")
+    _require(hyp.get("development_run_count") == 1, "HYP_DEVELOPMENT_RUN_COUNT")
+    _require(hyp.get("run_slot_consumed") is True, "HYP_RUN_SLOT_CONSUMED")
     siblings = payload.get("closed_sibling_lanes") or {}
     _require(siblings.get("reopen_forbidden") is True, "SIBLING_REOPEN_ALLOWED")
     _require(

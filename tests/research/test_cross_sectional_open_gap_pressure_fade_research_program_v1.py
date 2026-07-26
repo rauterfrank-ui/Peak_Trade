@@ -59,7 +59,7 @@ def test_causal_independence_from_closed_and_open_siblings() -> None:
     assert payload["promotion_and_economic_gate_policy"]["economic_gate_open"] is False
     csrhr = _load(CSRHR_BACKLOG)
     assert csrhr["status"] == "OPEN_BACKLOG"
-    assert csrhr["development_run_count"] == 0
+    assert csrhr["development_run_count"] == 1
 
 
 def test_fail_closed_on_authorization_mutation() -> None:

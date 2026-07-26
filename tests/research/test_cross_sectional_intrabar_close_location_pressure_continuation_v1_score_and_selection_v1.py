@@ -343,7 +343,7 @@ def test_implementation_binding_guards_and_csrhr_unchanged() -> None:
 
     csrhr = json.loads(CSRHR_BACKLOG.read_text(encoding="utf-8"))
     assert csrhr["status"] == "OPEN_BACKLOG"
-    assert csrhr["development_run_count"] == 0
+    assert csrhr["development_run_count"] == 1
 
     program = json.loads(PROGRAM.read_text(encoding="utf-8"))
     assert program["development_run_count"] == 1

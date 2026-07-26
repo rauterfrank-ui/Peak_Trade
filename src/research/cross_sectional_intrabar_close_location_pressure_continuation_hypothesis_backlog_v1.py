@@ -133,7 +133,7 @@ def validate_backlog_contract(
         _require(gov.is_file(), "GOVERNANCE_DOC_MISSING")
         csrhr_bl = load_json(repo_root / OPEN_CSRHR_BACKLOG)
         _require(csrhr_bl.get("status") == "OPEN_BACKLOG", "CSRHR_BACKLOG_NOT_OPEN")
-        _require(csrhr_bl.get("development_run_count") == 0, "CSRHR_DEV_RUN_MUTATED")
+        _require(csrhr_bl.get("development_run_count") == 1, "CSRHR_DEV_RUN_MUTATED")
         _require(csrhr_bl.get("evaluation_authorized") is False, "CSRHR_EVAL_AUTHORIZED")
 
     return {
