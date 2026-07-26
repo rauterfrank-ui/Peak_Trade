@@ -1,3 +1,21 @@
 == Docs token policy preflight (changed .md vs origin/main) ==
-✅ No Markdown files to check (changed files (base: origin/main))
-OK: docs token policy preflight passed
+🔍 Scanning 8 Markdown file(s) (changed files (base: origin/main))...
+
+❌ Found 2 violation(s) in 2 file(s):
+
+📄 docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md
+  Line 31: `momentum_1h/v2` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `momentum_1h/v2` with `momentum_1h&#47;v2`
+
+📄 docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1.md
+  Line 51: `LIVE/ORDERS/SHADOW/PAPER/TESTNET/SCHEDULER=false` (ILLUSTRATIVE)
+    → Illustrative path token must use &#47; encoding
+    💡 Replace `LIVE/ORDERS/SHADOW/PAPER/TESTNET/SCHEDULER=false` with `LIVE&#47;ORDERS&#47;SHADOW&#47;PAPER&#47;TESTNET&#47;SCHEDULER=false`
+
+
+Docs token policy preflight FAILED.
+Illustrative inline-code path tokens in Markdown must encode '/' as '&#47;'.
+Examples: `GET &#47;observability`, `readmodels&#47;file.json`, `BTC&#47;USD`
+See: docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md
+Optional dry-run fix: scripts/ops/autofix_docs_token_policy_inline_code_v2.py --dry-run <files>
