@@ -9,13 +9,29 @@
   "precedence": [
     "explicit_injection",
     "environment_override",
-    "canonical_default"
+    "canonical_default",
+    "discovered_governed_okx_archive"
   ],
   "canonical_default": {
     "convention": "platform_aware_user_state",
     "darwin": "~/Library/Application Support/Peak_Trade/workflow_dashboard_v1",
     "linux": "${XDG_STATE_HOME:-~/.local/state}/peak_trade/workflow_dashboard_v1",
     "win32": "%LOCALAPPDATA%/Peak_Trade/workflow_dashboard_v1"
+  },
+  "discovered_governed_okx_archive": {
+    "enabled_when_canonical_default_directory_absent": true,
+    "search_parent": "parent_of_canonical_default",
+    "name_prefix": "workflow_dashboard_v1",
+    "required_readmodels": [
+      "readmodels/universe_selection_readmodel.v1.json",
+      "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+    ],
+    "venue_required": "okx",
+    "product_type": "USDT_PERPETUAL_FUTURES_ONLY",
+    "btc_excluded": true,
+    "spot_excluded": true,
+    "fixture_marked_rejected": true,
+    "creates_filesystem": false
   },
   "resolver_creates_filesystem": false,
   "fixture_fallback_allowed": false,
@@ -26,6 +42,7 @@
     "Sole configuration owner for Workflow/Market Dashboard durable archive root location.",
     "Does not authorize live trading, orders, or runtime activation.",
     "GET /market may read-only bind universe_selection_readmodel.v1 via this resolved root without Env when the canonical default directory exists.",
+    "When the canonical default directory is absent, the resolver may discover the newest sibling archive under the same durable parent that holds authentic governed OKX USDT-perp universe + OHLCV readmodels.",
     "Missing readmodels under a resolved root remain fail-closed MISSING_SOURCE at consumer boundaries.",
     "PEAK_TRADE_DATA_ARCHIVE_ROOT and review_server .run/ state are non-owners for this contract."
   ]

@@ -1,0 +1,46 @@
+{
+  "market_1512x982.png": {
+    "metrics": {
+      "title": "Market Dashboard Landscape V2 \u2014 Peak_Trade",
+      "overflowX": 0,
+      "clsApprox": 0,
+      "chartAboveFold": true,
+      "chartDominant": true,
+      "series": "true",
+      "instrument": "SATS-USDT-SWAP",
+      "venue": "OKX",
+      "runtime": "BOUND_NOT_ACTIVATED",
+      "chartChrome": "CHART\nLIVE_DATA",
+      "hasOKX": true,
+      "hasOrder": false,
+      "duplicateMissingInChrome": 0
+    },
+    "console_errors": [],
+    "viewport": {
+      "w": 1512,
+      "h": 982
+    }
+  },
+  "market_1920x1080.png": {
+    "metrics": {
+      "title": "Market Dashboard Landscape V2 \u2014 Peak_Trade",
+      "overflowX": 0,
+      "clsApprox": 0,
+      "chartAboveFold": true,
+      "chartDominant": true,
+      "series": "true",
+      "instrument": "SATS-USDT-SWAP",
+      "venue": "OKX",
+      "runtime": "BOUND_NOT_ACTIVATED",
+      "chartChrome": "CHART\nLIVE_DATA",
+      "hasOKX": true,
+      "hasOrder": false,
+      "duplicateMissingInChrome": 0
+    },
+    "console_errors": [],
+    "viewport": {
+      "w": 1920,
+      "h": 1080
+    }
+  }
+}
