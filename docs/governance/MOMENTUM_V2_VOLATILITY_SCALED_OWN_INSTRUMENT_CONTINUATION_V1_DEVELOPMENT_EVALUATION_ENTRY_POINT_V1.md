@@ -25,6 +25,11 @@ Status: `DEVELOPMENT_FAIL` (single authorized Development run consumed)
 
 `docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/`
 
+
+## Policy Critic note
+
+RISK_LIMIT_JUSTIFICATION: literals resembling max_drawdown are frozen research economic-admission thresholds / empty-metrics placeholders only (offline Development evaluation closeout); not a productive risk-limit raise; no Master-V2/Double-Play/risk/sizing/execution mutation; LIVE_AUTHORIZED=false; ORDERS=false; HOLDOUT/SEALED untouched; DEVELOPMENT_FAIL terminal result preserved.
+
 ---
 docs_token: DOCS_TOKEN_MOMENTUM_V2_VOL_SCALED_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
 LIVE_AUTHORIZED: false
