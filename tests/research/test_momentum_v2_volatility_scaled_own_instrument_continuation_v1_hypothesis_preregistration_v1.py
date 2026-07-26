@@ -109,7 +109,7 @@ def test_program_and_backlog_definition_only() -> None:
     program = load_and_validate_repo_program(REPO)
     assert program["valid"] is True
     assert program["evaluation_authorized"] is False
-    assert program["implementation_authorized"] is False
+    assert program["implementation_authorized"] is True
     backlog = load_and_validate_repo_backlog(REPO)
     assert backlog["valid"] is True
     assert backlog["preregistered_count"] == 1

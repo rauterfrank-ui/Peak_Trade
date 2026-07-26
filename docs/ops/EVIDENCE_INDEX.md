@@ -1,5 +1,12 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+
+<a id="ev-20260726-momentum-v2-vol-scaled-selection-implementation"></a>
+- **EV-20260726-MOMENTUM-V2-VOL-SCALED-SELECTION-IMPLEMENTATION** | Date: 2026-07-26 | Owner: research | Scope: offline selection + strategy implementation + Dev-eval prep | Risk: LOW
+  - Source: [Implementation evidence](../evidence/implement_momentum_v2_volatility_scaled_own_instrument_continuation_strategy_v1/) · Gate: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_NEAR_DUPLICATE_GATE` · Binding: strategy-implementation + Dev-eval entry-point prep
+  - Claim: Operator selected sole remaining A-ready open-backlog hypothesis; near-duplicate `MATERIALLY_DISTINCT`; offline vol-scaled ENTRY&#47;EXIT emitter implemented; Development slot remains available&#47;unconsumed; evaluation unauthorized.
+  - Non-claims: not Development evaluation execution; not Holdout&#47;Sealed access; not promotion&#47;activation; not Runtime&#47;Scheduler&#47;Orders; not registry MomentumStrategy mutation; not CSRHR reopen.
+
 <a id="ev-20260726-csrhr-v1-terminal-retirement-closeout"></a>
 - **EV-20260726-CSRHR-V1-TERMINAL-RETIREMENT-CLOSEOUT** | Date: 2026-07-26 | Owner: research | Scope: offline definition-only governance closeout | Risk: LOW
   - Source: [Closeout evidence](../evidence/csrhr_v1_terminal_retirement_closeout_v1/) · Lane backlog: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1` · Program: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1` · Lifecycle: `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`

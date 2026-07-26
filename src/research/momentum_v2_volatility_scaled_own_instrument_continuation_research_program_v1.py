@@ -76,7 +76,7 @@ def validate_program_contract(
     _require(payload.get("development_run_limit") == 1, "DEVELOPMENT_RUN_LIMIT")
     _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
     _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     causal = payload.get("causal_independence") or {}
     _require(
@@ -106,7 +106,7 @@ def validate_program_contract(
         "program_id": REQUIRED_PROGRAM_ID,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "evaluation_authorized": False,
-        "implementation_authorized": False,
+        "implementation_authorized": True,
     }
 
 

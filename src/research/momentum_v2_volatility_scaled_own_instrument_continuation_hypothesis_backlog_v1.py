@@ -30,7 +30,7 @@ REQUIRED_HYPOTHESIS_ID = (
     "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1"
 )
 REQUIRED_STRATEGY_IDENTITY = "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1"
-REQUIRED_HYP_STATUS = "DEFINITION_ONLY_PREREGISTERED"
+REQUIRED_HYP_STATUS = "DEFINITION_ONLY_PREREGISTERED_IMPLEMENTATION_PRESENT"
 
 
 class BacklogValidationError(ValueError):
@@ -61,7 +61,7 @@ def validate_backlog_contract(
         payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
-    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED")
+    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
     _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
@@ -85,7 +85,7 @@ def validate_backlog_contract(
     _require(hyp.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(hyp.get("status") == REQUIRED_HYP_STATUS, "HYP_STATUS")
     _require(hyp.get("development_run_count") == 0, "HYP_DEV_RUN_COUNT")
-    _require(hyp.get("implementation_present") is False, "IMPLEMENTATION_PRESENT")
+    _require(hyp.get("implementation_present") is True, "IMPLEMENTATION_PRESENT")
     pending = payload.get("pending_separate_scopes_untouched") or {}
     _require(
         pending.get("momentum_1h_v2_raw_binding_hypothesis_id")
