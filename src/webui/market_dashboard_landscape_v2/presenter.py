@@ -318,6 +318,165 @@ def _economic_status_display(page: MarketDashboardPageSnapshotV1) -> str:
     return AVAILABILITY_LABELS[snap.availability]
 
 
+def _metric_field_display(
+    metric: Mapping[str, Any] | None,
+    *,
+    availability: Availability,
+) -> str:
+    """Present an already-projected MetricFieldV1 mapping exactly (no recomputation)."""
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        return AVAILABILITY_LABELS[availability]
+    if metric is None:
+        return "—"
+    if not isinstance(metric, Mapping):
+        return "—"
+    if metric.get("value") is not None:
+        return str(metric["value"])
+    semantic = metric.get("semantic")
+    reason = metric.get("reason_code")
+    if semantic is not None and reason is not None:
+        return f"{semantic}:{reason}"
+    if semantic is not None:
+        return str(semantic)
+    if reason is not None:
+        return str(reason)
+    return "—"
+
+
+def _scalar_field_display(
+    value: Any,
+    *,
+    availability: Availability,
+) -> str:
+    """Present an already-projected scalar exactly; absent stays em-dash."""
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        return AVAILABILITY_LABELS[availability]
+    if value is None:
+        return "—"
+    return str(value)
+
+
+def _economic_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]:
+    """Format Economic evidence-only ops-band facts from projected fields only.
+
+    Never recomputes metrics, never maps promotion_economic_gate_v1, never invents
+    Development/Holdout/Sealed lifecycle labels.
+    """
+    snap = page.economic_summary
+    availability = snap.availability
+    status_display = _economic_status_display(page)
+    # Unavailable projections (including STALE/INVALID helpers with null payload)
+    # keep the availability label on every field — never invent metric values.
+    if availability not in (Availability.AVAILABLE, Availability.STALE) or (
+        snap.economic_viability_status is None
+    ):
+        label = AVAILABILITY_LABELS[availability]
+        reasons = ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
+        return {
+            "summary_display": status_display if status_display else label,
+            "status_display": status_display if status_display else label,
+            "validity_display": label,
+            "policy_threshold_display": label,
+            "profit_factor_display": label,
+            "net_return_display": label,
+            "max_drawdown_display": label,
+            "funding_drag_display": label,
+            "trade_count_display": label,
+            "evidence_ref_display": label,
+            "evidence_digest_display": label,
+            "reasons_display": reasons,
+            "classification_display": "EVIDENCE_ONLY",
+        }
+
+    validity = (
+        str(snap.economic_validity_proven) if snap.economic_validity_proven is not None else "—"
+    )
+    policy_threshold = _scalar_field_display(
+        snap.policy_threshold_status, availability=availability
+    )
+    evidence_ref = _scalar_field_display(snap.evidence_ref, availability=availability)
+    evidence_digest = "—"
+    if snap.provenance is not None and snap.provenance.evidence_digest is not None:
+        evidence_digest = str(snap.provenance.evidence_digest)
+    elif snap.manifest_digest is not None:
+        evidence_digest = str(snap.manifest_digest)
+    reasons = ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
+    return {
+        "summary_display": status_display,
+        "status_display": status_display,
+        "validity_display": validity,
+        "policy_threshold_display": policy_threshold,
+        "profit_factor_display": _metric_field_display(
+            snap.profit_factor, availability=availability
+        ),
+        "net_return_display": _metric_field_display(snap.net_return, availability=availability),
+        "max_drawdown_display": _metric_field_display(snap.max_drawdown, availability=availability),
+        "funding_drag_display": _metric_field_display(snap.funding_drag, availability=availability),
+        "trade_count_display": _metric_field_display(snap.trade_count, availability=availability),
+        "evidence_ref_display": evidence_ref,
+        "evidence_digest_display": evidence_digest,
+        "reasons_display": reasons,
+        "classification_display": "EVIDENCE_ONLY",
+    }
+
+
+def _diagnostics_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]:
+    """Present diagnostics as ratified NOT_BOUND / NON_AUTHORITATIVE / UNRESOLVED.
+
+    Does not infer health from logs, tests, source-health, or economic evidence.
+    """
+    snap = page.diagnostics_summary
+    availability = snap.availability
+    availability_label = AVAILABILITY_LABELS[availability]
+    # OPTION_A closeout: slot remains unbound; never promote availability to healthy.
+    status = (
+        Availability.NOT_BOUND.value
+        if availability is Availability.NOT_BOUND
+        else availability_label
+    )
+    return {
+        "summary_display": status,
+        "status_display": status,
+        "authority_display": "NON_AUTHORITATIVE",
+        "owner_display": "UNRESOLVED",
+        "availability": availability.value,
+        "availability_label": availability_label,
+        "classification_display": "NON_AUTHORITATIVE",
+    }
+
+
+def _governance_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]:
+    """Present governance/autonomy locks without binding or evaluating gates.
+
+    autonomy_stage / promotion / activation remain NOT_BOUND (OPTION_D).
+    Runtime bridge is the separate shell constant BOUND_NOT_ACTIVATED.
+    OPERATOR_GO_REQUIRED comes from existing product/shell live-lock metadata.
+    """
+    autonomy = page.autonomy_stage
+    autonomy_availability = autonomy.availability
+    autonomy_stage_display = (
+        Availability.NOT_BOUND.value
+        if autonomy_availability is Availability.NOT_BOUND
+        else AVAILABILITY_LABELS[autonomy_availability]
+    )
+    # Never treat shell runtime bridge as autonomy-stage source or ACTIVE runtime.
+    runtime_bridge = str(page.runtime_bridge_display)
+    operator_go_required = True  # LIVE_AUTHORIZED=false shell metadata
+    return {
+        "summary_display": f"{autonomy_stage_display} · {runtime_bridge}",
+        "autonomy_stage_display": autonomy_stage_display,
+        "promotion_eligibility_display": Availability.NOT_BOUND.value,
+        "activation_eligibility_display": Availability.NOT_BOUND.value,
+        "runtime_bridge_display": runtime_bridge,
+        "runtime_bridge_class": str(page.shell_authority_class),
+        "operator_go_required_display": "true" if operator_go_required else "false",
+        "operator_go_required": operator_go_required,
+        "lock_classification_display": "INTENTIONAL_LOCK",
+        "availability": autonomy_availability.value,
+        "availability_label": AVAILABILITY_LABELS[autonomy_availability],
+    }
+
+
 def _risk_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]:
     """Format Risk/Sizing/Capital operative-band facts from projected fields only."""
     snap = page.risk_sizing_capital
@@ -647,6 +806,9 @@ def present_market_landscape_v2(
         next_scope_ref_display = AVAILABILITY_LABELS[page.dynamic_scope.availability]
 
     economic_status_display = _economic_status_display(page)
+    economic_ops = _economic_ops_display(page)
+    diagnostics_ops = _diagnostics_ops_display(page)
+    governance_ops = _governance_ops_display(page)
     risk_ops = _risk_ops_display(page)
     execution_ops = _execution_ops_display(page)
 
@@ -657,7 +819,7 @@ def present_market_landscape_v2(
         "runtime_bridge_display": page.runtime_bridge_display,
         "shell_authority_class": page.shell_authority_class,
         "consumer_role": "read_only_consumer",
-        "phase": "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING",
+        "phase": "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT",
         "global_strip": {
             # Compact ops summary only. Scope lifecycle + Regime primary in Context rail.
             # Do not expose availability under a Freshness label (Phase 5 PR1).
@@ -706,10 +868,18 @@ def present_market_landscape_v2(
         },
         "economic": {
             **economic,
+            **economic_ops,
             "status_display": economic_status_display,
         },
-        "autonomy": autonomy,
-        "diagnostics": diagnostics,
+        "autonomy": {
+            **autonomy,
+            **governance_ops,
+        },
+        "diagnostics": {
+            **diagnostics,
+            **diagnostics_ops,
+        },
+        "governance": governance_ops,
         "source_health": _present_source_health_compact(
             health=health,
             slot_views={
@@ -830,10 +1000,17 @@ def present_market_landscape_v2(
                 },
                 "economic_summary": {
                     **economic,
+                    **economic_ops,
                     "status_display": economic_status_display,
                 },
-                "autonomy_stage": autonomy,
-                "diagnostics_summary": diagnostics,
+                "autonomy_stage": {
+                    **autonomy,
+                    **governance_ops,
+                },
+                "diagnostics_summary": {
+                    **diagnostics,
+                    **diagnostics_ops,
+                },
             },
         },
         "product_flags": {
@@ -845,6 +1022,7 @@ def present_market_landscape_v2(
             "scheduler": False,
             "write_endpoints": False,
             "dashboard_authority": False,
+            "operator_go_required": True,
             "phase_4_1_binding_active": True,
             "phase_4_2_binding_active": True,
             "phase_4_3a_binding_active": True,
@@ -853,6 +1031,7 @@ def present_market_landscape_v2(
             "phase_4_4b_binding_active": True,
             "phase_4_5_binding_active": True,
             "phase_4_6b_binding_active": True,
+            "capability_6_alt_a_closeout": True,
             "phase_4_full_pass": False,
             "phase_4_authorized": True,
             "operator_skeleton_approval": "PENDING",

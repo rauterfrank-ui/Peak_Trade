@@ -26,7 +26,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr4"
+EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "phase5" / "pr5"
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -307,7 +307,7 @@ def _run_chrome_against_html(
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1
                 assert root.get_attribute("data-phase") == (
-                    "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
+                    "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
                 )
                 chart = page.locator("[data-mdl-chart-region='true']")
                 decision = page.locator("[data-mdl-decision-strip='true']")
@@ -334,15 +334,52 @@ def _run_chrome_against_html(
                         == 1
                     )
 
-                # Risk / Execution wired; absent without injection → MISSING_SOURCE.
+                # Risk / Execution / Economic wired; absent without injection → MISSING_SOURCE.
                 assert page.get_by_text("Risk / Sizing / Capital").count() >= 1
                 assert page.get_by_text("Execution / Reconciliation").count() >= 1
+                assert page.get_by_text("Economic", exact=True).count() >= 1
                 ops_risk = page.locator('[data-mdl-ops="risk_sizing_capital"]')
                 ops_exec = page.locator('[data-mdl-ops="execution_reconciliation"]')
+                ops_econ = page.locator('[data-mdl-ops="economic_summary"]')
+                ops_diag = page.locator('[data-mdl-ops="diagnostics_summary"]')
+                ops_gov = page.locator('[data-mdl-ops="governance_autonomy"]')
                 assert ops_risk.locator('[data-availability="MISSING_SOURCE"]').count() >= 1
                 assert ops_exec.locator('[data-availability="MISSING_SOURCE"]').count() >= 1
+                assert ops_econ.locator('[data-availability="MISSING_SOURCE"]').count() >= 1
                 assert ops_risk.locator('[data-mdl-field="risk_status"]').count() == 1
                 assert ops_exec.locator('[data-mdl-field="execution_status"]').count() == 1
+                assert ops_econ.locator('[data-mdl-field="economic_profit_factor"]').count() == 1
+                assert ops_diag.locator('[data-mdl-field="diagnostics_status"]').count() == 1
+                assert (
+                    "NOT_BOUND"
+                    in ops_diag.locator('[data-mdl-field="diagnostics_status"]').inner_text()
+                )
+                assert "NON_AUTHORITATIVE" in ops_diag.inner_text()
+                assert "UNRESOLVED" in ops_diag.inner_text()
+                assert ops_gov.locator('[data-mdl-field="autonomy_stage"]').count() == 1
+                assert (
+                    "NOT_BOUND" in ops_gov.locator('[data-mdl-field="autonomy_stage"]').inner_text()
+                )
+                assert (
+                    "NOT_BOUND"
+                    in ops_gov.locator('[data-mdl-field="promotion_eligibility"]').inner_text()
+                )
+                assert (
+                    "NOT_BOUND"
+                    in ops_gov.locator('[data-mdl-field="activation_eligibility"]').inner_text()
+                )
+                assert (
+                    "BOUND_NOT_ACTIVATED"
+                    in ops_gov.locator('[data-mdl-field="runtime_bridge_lock"]').inner_text()
+                )
+                assert (
+                    "ACTIVE"
+                    not in ops_gov.locator('[data-mdl-field="runtime_bridge_lock"]').inner_text()
+                )
+                assert (
+                    "REQUIRED=true"
+                    in ops_gov.locator('[data-mdl-field="operator_go_required"]').inner_text()
+                )
                 assert page.locator("button").count() == 0
                 assert page.locator("form").count() == 0
 

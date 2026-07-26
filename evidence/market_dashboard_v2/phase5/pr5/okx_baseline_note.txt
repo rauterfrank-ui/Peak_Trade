@@ -1,0 +1,2 @@
+OKX_OHLCV_INTRABAR_REGRESSION=false
+NOTE=Two pre-existing OKX unit failures reproduce on clean origin/main without capability diff (serialize tiny float payload; universe fixture STALE vs wallclock). Capability does not touch OHLCV binding.

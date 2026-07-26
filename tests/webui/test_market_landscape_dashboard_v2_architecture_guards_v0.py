@@ -58,6 +58,11 @@ FORBIDDEN_NAME_TOKENS_IN_LANDSCAPE = (
     "evaluate_offline_killswitch_boundary_v0",
     "bind_killswitch_boundary_offline_replay_evidence_v0",
     "evaluate_capital_risk_sizing_v1",
+    "evaluate_promotion_economic_gate_v1",
+    "evaluate_runtime_bridge_pre_activation_gate_v0",
+    "current_head_default_gate_input_v0",
+    "project_autonomy_stage",
+    "project_diagnostics_summary",
 )
 
 FORBIDDEN_SECOND_TRUTH_DEFINITIONS = (
@@ -234,7 +239,7 @@ def test_landscape_shell_template_has_no_write_controls() -> None:
     assert 'data-market-dashboard-authority="false"' in text
     assert "method=" not in text.lower()
     assert re.search(r"<form\b", text, flags=re.IGNORECASE) is None
-    assert "phase4-5-risk-sizing-and-execution-reconciliation-binding" in text
+    assert "phase4-6-capability-6-alt-a-truthful-closeout" in text
     assert 'data-mdl-field="safety"' in text
     assert 'data-mdl-field="economic"' in text
     assert "<button" not in text.lower()

@@ -1,0 +1,4 @@
+EVIDENCE_CONTENT_MUTATED_AFTER_SEAL=false
+EVIDENCE_AUTHORIZATION=ALT_A_CAPABILITY_6_TRUTHFUL_CLOSEOUT
+SEALED_STATEMENT=Evidence pack sealed after focused gates and Chrome capture; content not mutated after seal.
+SEALED_AT=2026-07-26T03:13:55Z

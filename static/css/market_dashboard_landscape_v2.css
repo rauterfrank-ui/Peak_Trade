@@ -581,6 +581,42 @@
   padding: 0;
 }
 
+.mdl-v2-ops__note {
+  margin: 0 0 6px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mdl-muted);
+}
+
+.mdl-v2-gov {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+  padding: 10px 0 8px;
+  background: transparent;
+  flex: 0 0 auto;
+}
+
+.mdl-v2-gov__col {
+  padding: 0;
+  min-width: 0;
+}
+
+.mdl-v2-gov h3 {
+  margin: 0 0 4px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mdl-muted);
+  font-weight: 600;
+}
+
+.mdl-v2-state--non-authoritative {
+  color: #94a3b8;
+  font-style: italic;
+}
+
 .mdl-v2-timeline {
   background: transparent;
   padding: 14px 0 10px;
@@ -726,6 +762,7 @@
 @media (max-width: 980px) {
   .mdl-v2-workspace,
   .mdl-v2-ops,
+  .mdl-v2-gov,
   .mdl-v2-decision__primary,
   .mdl-v2-decision__secondary {
     grid-template-columns: 1fr;

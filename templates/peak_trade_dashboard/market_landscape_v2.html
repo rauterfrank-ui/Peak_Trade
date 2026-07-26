@@ -4,7 +4,7 @@
 {% block main_class %}mdl-v2-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-5-risk-sizing-and-execution-reconciliation-binding" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-6-capability-6-alt-a-truthful-closeout" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 {% endblock %}
@@ -344,13 +344,123 @@
           </div>
         </dl>
       </div>
-      <div class="mdl-v2-ops__col">
+      <div class="mdl-v2-ops__col" data-mdl-ops="economic_summary">
         <h3>Economic</h3>
         <p
           class="mdl-v2-state"
           data-availability="{{ economic.availability }}"
           data-mdl-field="economic"
+          data-mdl-classification="EVIDENCE_ONLY"
         >{{ economic.status_display }}</p>
+        <p class="mdl-v2-ops__note" data-mdl-field="economic_classification">EVIDENCE_ONLY</p>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Validity</dt>
+            <dd data-mdl-field="economic_validity" data-availability="{{ economic.availability }}">{{ economic.validity_display }}</dd>
+          </div>
+          <div>
+            <dt>Policy Threshold</dt>
+            <dd data-mdl-field="economic_policy_threshold" data-availability="{{ economic.availability }}">{{ economic.policy_threshold_display }}</dd>
+          </div>
+          <div>
+            <dt>Profit Factor</dt>
+            <dd data-mdl-field="economic_profit_factor" data-availability="{{ economic.availability }}">{{ economic.profit_factor_display }}</dd>
+          </div>
+          <div>
+            <dt>Net Return</dt>
+            <dd data-mdl-field="economic_net_return" data-availability="{{ economic.availability }}">{{ economic.net_return_display }}</dd>
+          </div>
+          <div>
+            <dt>Max Drawdown</dt>
+            <dd data-mdl-field="economic_max_drawdown" data-availability="{{ economic.availability }}">{{ economic.max_drawdown_display }}</dd>
+          </div>
+          <div>
+            <dt>Funding Drag</dt>
+            <dd data-mdl-field="economic_funding_drag" data-availability="{{ economic.availability }}">{{ economic.funding_drag_display }}</dd>
+          </div>
+          <div>
+            <dt>Trade Count</dt>
+            <dd data-mdl-field="economic_trade_count" data-availability="{{ economic.availability }}">{{ economic.trade_count_display }}</dd>
+          </div>
+          <div>
+            <dt>Evidence Ref</dt>
+            <dd data-mdl-field="economic_evidence_ref" data-availability="{{ economic.availability }}">{{ economic.evidence_ref_display }}</dd>
+          </div>
+          <div>
+            <dt>Evidence Digest</dt>
+            <dd data-mdl-field="economic_evidence_digest" data-availability="{{ economic.availability }}">{{ economic.evidence_digest_display }}</dd>
+          </div>
+          <div>
+            <dt>Reasons</dt>
+            <dd data-mdl-field="economic_reasons" data-availability="{{ economic.availability }}">{{ economic.reasons_display }}</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="mdl-v2-gov" data-mdl-region="GOVERNANCE_DIAGNOSTICS_REGION" aria-label="Governance and diagnostics">
+      <div class="mdl-v2-gov__col" data-mdl-ops="diagnostics_summary">
+        <h3>Diagnostics</h3>
+        <p
+          class="mdl-v2-state mdl-v2-state--non-authoritative"
+          data-availability="{{ diagnostics.availability }}"
+          data-mdl-field="diagnostics_status"
+          data-mdl-authority="NON_AUTHORITATIVE"
+        >{{ diagnostics.status_display }}</p>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Authority</dt>
+            <dd data-mdl-field="diagnostics_authority" data-availability="{{ diagnostics.availability }}">{{ diagnostics.authority_display }}</dd>
+          </div>
+          <div>
+            <dt>Owner</dt>
+            <dd data-mdl-field="diagnostics_owner" data-availability="{{ diagnostics.availability }}">{{ diagnostics.owner_display }}</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="mdl-v2-gov__col" data-mdl-ops="governance_autonomy">
+        <h3>Governance / Autonomy</h3>
+        <p
+          class="mdl-v2-state"
+          data-availability="{{ autonomy.availability }}"
+          data-mdl-field="governance_summary"
+          data-mdl-lock="INTENTIONAL_LOCK"
+        >{{ autonomy.summary_display }}</p>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Autonomy Stage</dt>
+            <dd data-mdl-field="autonomy_stage" data-availability="{{ autonomy.availability }}">{{ autonomy.autonomy_stage_display }}</dd>
+          </div>
+          <div>
+            <dt>Promotion</dt>
+            <dd data-mdl-field="promotion_eligibility" data-availability="NOT_BOUND">{{ autonomy.promotion_eligibility_display }}</dd>
+          </div>
+          <div>
+            <dt>Activation</dt>
+            <dd data-mdl-field="activation_eligibility" data-availability="NOT_BOUND">{{ autonomy.activation_eligibility_display }}</dd>
+          </div>
+          <div>
+            <dt>Runtime Bridge</dt>
+            <dd
+              data-mdl-field="runtime_bridge_lock"
+              data-availability="{{ autonomy.availability }}"
+              data-mdl-lock-state="{{ autonomy.runtime_bridge_display }}"
+              title="{{ autonomy.runtime_bridge_class }} · intentional lock · not autonomy-stage source"
+            >{{ autonomy.runtime_bridge_display }}</dd>
+          </div>
+          <div>
+            <dt>Operator GO</dt>
+            <dd
+              data-mdl-field="operator_go_required"
+              data-availability="{{ autonomy.availability }}"
+              data-operator-go-required="{{ autonomy.operator_go_required_display }}"
+            >REQUIRED={{ autonomy.operator_go_required_display }}</dd>
+          </div>
+          <div>
+            <dt>Lock Class</dt>
+            <dd data-mdl-field="governance_lock_class" data-availability="{{ autonomy.availability }}">{{ autonomy.lock_classification_display }}</dd>
+          </div>
+        </dl>
       </div>
     </section>
 
