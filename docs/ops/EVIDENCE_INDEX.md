@@ -1,6 +1,13 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+
+<a id="ev-20260726-momentum-v2-vol-scaled-development-evaluation-fail"></a>
+- **EV-20260726-MOMENTUM-V2-VOL-SCALED-DEVELOPMENT-EVALUATION-FAIL** | Date: 2026-07-26 | Owner: research | Scope: offline Development evaluation closeout | Risk: LOW
+  - Source: [Development evaluation evidence](../evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/) · Strategy: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1` · Hypothesis: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+  - Claim: Single authorized Development evaluation executed once; terminal `DEVELOPMENT_FAIL` &#47; economic `FAIL`; run slot consumed (`DEVELOPMENT_RUN_COUNT=1`); Holdout&#47;Sealed not accessed; retry forbidden.
+  - Non-claims: not a second Development run; not Holdout&#47;Sealed access; not promotion&#47;activation; not Runtime&#47;Scheduler&#47;Orders; not parameter retune after result; not CSRHR reopen.
+
 <a id="ev-20260726-momentum-v2-vol-scaled-selection-implementation"></a>
 - **EV-20260726-MOMENTUM-V2-VOL-SCALED-SELECTION-IMPLEMENTATION** | Date: 2026-07-26 | Owner: research | Scope: offline selection + strategy implementation + Dev-eval prep | Risk: LOW
   - Source: [Implementation evidence](../evidence/implement_momentum_v2_volatility_scaled_own_instrument_continuation_strategy_v1/) · Gate: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_NEAR_DUPLICATE_GATE` · Binding: strategy-implementation + Dev-eval entry-point prep

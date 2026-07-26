@@ -15,11 +15,33 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ---
 
+## Post–Momentum V2 vol-scaled Development evaluation terminal fail (2026-07-26)
+
+**Narrow research capability closeout only** (not Holdout, Sealed, promotion, activation, or second Development run):
+
+- Base SHA: `c86e69bd2b18e0d7811e15cec983961a7106c2ed` (`origin&#47;main` after PR **#5559**).
+- Strategy: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1`
+- Hypothesis: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Terminal truth: `DEVELOPMENT_VERDICT=DEVELOPMENT_FAIL`, `ECONOMIC_VALIDITY=FAIL`
+- Slot: `DEVELOPMENT_RUN_COUNT=1`, `DEVELOPMENT_RUN_SLOT_CONSUMED=true`, remaining slots `0`
+- Locked: `HOLDOUT_ACCESSED=false`, `SEALED_ACCESSED=false`,
+  `PROMOTION_ALLOWED=false`, `ACTIVATION_ALLOWED=false`, retry forbidden
+- Evidence:
+  [`docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/`](../../evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/)
+
+**Still locked / next formally permissible step:**
+
+- Return to operator for exact-head forensic review / terminal lifecycle decision
+- No second Development evaluation; no parameter change after result
+- No Runtime / Scheduler / Shadow / Paper / Testnet / Live / Orders GO implied
+
+---
+
 ## Post–Momentum V2 vol-scaled selection + offline implementation (2026-07-26)
 
 **Narrow research capability only** (not Development evaluation execution, Holdout, Sealed, promotion, or activation):
 
-- Base SHA: `123d565b559944b40b37b4ddeb7749fa5e8cae03` (`origin/main` after PR **#5558**).
+- Base SHA: `123d565b559944b40b37b4ddeb7749fa5e8cae03` (`origin&#47;main` after PR **#5558**).
 - Selected hypothesis: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
 - Strategy identity: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1`
 - Near-duplicate verdict: `MATERIALLY_DISTINCT`
@@ -44,7 +66,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 **Narrow governance result only** (not evaluation, Holdout, Sealed, promotion, or activation):
 
-- Base SHA: `56330e3fe527cf803f88faedab1f4ca68af3464d` (`origin/main` after PR **#5557**).
+- Base SHA: `56330e3fe527cf803f88faedab1f4ca68af3464d` (`origin&#47;main` after PR **#5557**).
 - Strategy: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1`
 - Terminal Development truth preserved: `DEVELOPMENT_FAIL` / economic `FAIL`
 - Decision: `CLOSE_LANE_NO_FURTHER_RESEARCH` under
@@ -73,7 +95,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 **Narrow proven result only** (not Shadow/Paper/Testnet/Live activation):
 
-- Tested merge SHA: `cd6d465c83c6c65733e5d85238aa223d4bffd548` (PR **#5550** merged on `origin/main`).
+- Tested merge SHA: `cd6d465c83c6c65733e5d85238aa223d4bffd548` (PR **#5550** merged on `origin&#47;main`).
 - Canonical command:
   `python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow`
 - Monotonic soak: **600.148698s**; **1299/1299** full-chain HOLD cycles;
@@ -146,7 +168,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 **Narrow proven result only** (not Shadow/Paper/Testnet/Live complete):
 
 - Offline OKX Futures Shadow no-order E2E:
-  `PROVEN_POST_MERGE_600S_SOAK` on `origin/main`
+  `PROVEN_POST_MERGE_600S_SOAK` on `origin&#47;main`
   `bc7b9309b1f7e2e1411e22b483388331f355d0dd` (PR **#5544** merged).
 - Soak: 600.370976375s monotonic; **1287/1287** successful complete HOLD cycles;
   BINDING_PASS=1287; orders/network/runtime activation = **false**.

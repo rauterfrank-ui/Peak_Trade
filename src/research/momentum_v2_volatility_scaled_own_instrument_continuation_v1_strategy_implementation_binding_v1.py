@@ -73,7 +73,8 @@ def validate_implementation_binding(
     payload: Mapping[str, Any], *, repo_root: Path | None = None
 ) -> dict[str, Any]:
     _require(
-        payload.get("status") == "STRATEGY_IMPLEMENTATION_PRESENT",
+        payload.get("status")
+        == "STRATEGY_IMPLEMENTATION_PRESENT_DEVELOPMENT_EVALUATION_EXECUTED_FAIL",
         "STATUS_NOT_IMPLEMENTATION_PRESENT",
     )
     _require(payload.get("strategy_implementation_present") is True, "IMPL_PRESENT_FALSE")
@@ -84,15 +85,15 @@ def validate_implementation_binding(
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
     _require(
-        payload.get("development_evaluation_executed") is False,
+        payload.get("development_evaluation_executed") is True,
         "DEVELOPMENT_EVALUATION_EXECUTED",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
     _require(
-        payload.get("development_run_slot_available") is True,
-        "RUN_SLOT_NOT_AVAILABLE",
+        payload.get("development_run_slot_available") is False,
+        "RUN_SLOT_STILL_AVAILABLE",
     )
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
@@ -146,7 +147,7 @@ def validate_implementation_binding(
         "NO_MASTER_V2_MUTATION",
         "NO_DOUBLE_PLAY_AUTHORITY_CHANGE",
         "NO_AUTOMATIC_BACKLOG_SELECTION",
-        "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE",
+        "NO_SECOND_DEVELOPMENT_RUN",
         "NO_REGISTRY_MUTATION",
         "NO_SHORT_ENTRY",
     ):
@@ -198,16 +199,18 @@ def validate_implementation_binding(
         sel = json.loads((repo_root / SELECTION_REL_PATH).read_text(encoding="utf-8"))
         _require(sel.get("selection_authorized") is True, "SELECTION_NOT_AUTHORIZED")
         _require(
-            sel.get("development_run_slot_consumed") is False,
-            "SELECTION_SLOT_CONSUMED",
+            sel.get("development_run_slot_consumed") is True,
+            "SELECTION_SLOT_NOT_CONSUMED",
         )
+        _require(sel.get("development_run_slot_available") is False, "SELECTION_SLOT_AVAILABLE")
         backlog = json.loads((repo_root / BACKLOG_REL_PATH).read_text(encoding="utf-8"))
-        _require(backlog.get("status") == "OPEN_BACKLOG", "BACKLOG_NOT_OPEN")
+        _require(backlog.get("status") == "DEVELOPMENT_FAIL_SLOT_CONSUMED", "BACKLOG_STATUS")
         hyp = (backlog.get("preregistered_hypotheses") or [None])[0]
         _require(hyp is not None, "BACKLOG_HYP_MISSING")
         _require(hyp.get("implementation_present") is True, "BACKLOG_IMPL_PRESENT")
-        _require(hyp.get("run_slot_consumed") is False, "BACKLOG_RUN_SLOT")
-        _require(hyp.get("development_run_count") == 0, "BACKLOG_DEV_RUNS")
+        _require(hyp.get("run_slot_consumed") is True, "BACKLOG_RUN_SLOT")
+        _require(hyp.get("development_run_count") == 1, "BACKLOG_DEV_RUNS")
+        _require(hyp.get("status") == "DEVELOPMENT_FAIL", "BACKLOG_HYP_STATUS")
         _require(backlog.get("development_evaluation_authorized") is False, "BACKLOG_DEV_EVAL")
 
     return {
@@ -215,11 +218,12 @@ def validate_implementation_binding(
         "strategy_implementation_present": True,
         "evaluation_authorized": False,
         "holdout_authorized": False,
-        "run_slot_consumed": False,
-        "development_run_slot_available": True,
+        "run_slot_consumed": True,
+        "development_run_slot_available": False,
         "frozen_digest": REQUIRED_DIGEST,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "near_duplicate_verdict": "MATERIALLY_DISTINCT",
+        "development_evaluation_executed": True,
     }
 
 
