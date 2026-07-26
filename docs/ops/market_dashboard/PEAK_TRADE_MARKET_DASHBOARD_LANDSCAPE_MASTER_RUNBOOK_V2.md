@@ -2,7 +2,7 @@
 
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
-**Status:** `CAPABILITY_8_DOCS_OWNERSHIP_CLOSEOUT_MERGED_VIA_PR_5566_OPERATOR_PRODUCT_GATE_PENDING`  
+**Status:** `FINAL_PRODUCT_STATE_CLOSEOUT_COMPLETE_OPERATOR_PRODUCT_GATE_PASS`  
 **Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`  
 **Primärbrowser:** Google Chrome / Playwright Real Chrome  
 **Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand  
@@ -17,18 +17,32 @@ REPO_INGESTION_DATE=2026-07-23
 SOURCE_FILENAME=PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 RUNBOOK_VERSION=V2
 HARDENED_CAPABILITY_PR_POLICY=true
-CURRENT_MAIN_SHA=02e4081498ee926fa6a3740d65d67be7de4a0c56
-LAST_MERGED_PR=5566  # Cap8 docs/ownership closeout only (squash-merged); does not establish product PASS
+CURRENT_MAIN_SHA=9ff632885422a92e86f9dbeda79aab160bf2346b
+LAST_MERGED_PR=5569  # docs-only Consumer/Anti-SSOT wording after product review; no product/runtime change
 LAST_MERGED_PR_VERDICT=CAPABILITY_SCOPE_REVIEW_PASS_SQUASH_MERGED
 CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
 DASHBOARD_IMPLEMENTATION_PRESENT=true
 DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
 RUNTIME_ACTIVATION=false
+RUNTIME_ACTIVATED=false
 TRADING_RUNTIME_NOT_ACTIVATED=true
-OPERATOR_PRODUCT_GATE=PENDING
+MARKET_DASHBOARD_PHASE_5_PASS=true
+TECHNICAL_PRODUCT_GATE=true
+OPERATOR_PRODUCT_GATE=true
+DAILY_OBSERVATION_USABLE=true
+PHASE_5_PASS=true
+WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE
+OPERATOR_PRODUCT_REVIEW_STATUS=PASS
+OPERATOR_PRODUCT_REVIEW_REVIEWED_SHA=88f2241819dcc160c3ce688a9c7397e7cc8becec
+OPERATOR_PRODUCT_REVIEW_AFTER_PR=5568
+OPERATOR_PRODUCT_REVIEW_SCOPE=READ_ONLY_DAILY_OBSERVATION_SURFACE
+PR_5569_DOCS_ONLY_ANTI_SSOT=true
+PR_5569_DID_NOT_INVALIDATE_PRODUCT_REVIEW=true
 NEXT_CAPABILITY_AUTHORIZED=false  # further product candidates require separate GO
 CAPABILITY_8_DOCS_OWNERSHIP_CLOSEOUT=MERGED
 PRODUCT_APPROVAL_INFERRED=false
+LIVE_AUTHORIZED=false
+ORDERS=false
 ```
 
 **Unterscheidung (verbindlich):** Dashboard-Implementierung auf `origin&#47;main` ist vorhanden und durch gemergte Capability-PRs belegt. Trading-Runtime bleibt nicht aktiviert; Orders/Scheduler/Capital/Live bleiben false. `IMPLEMENTATION_AUTHORIZED=false` in historischen Ratifikationsblöcken (z. B. Diagnostics 4.6C) bedeutet weiterhin „keine Autorisierung jener speziellen Bindung“, nicht „Dashboard existiert nicht“.
@@ -161,13 +175,13 @@ PHASE_3_LANDSCAPE_SHELL=PARTIAL           # PR #5501 technical shell merged; OPE
 PHASE_4_PRODUCER_BINDINGS=PARTIAL         # market/scope/decision/DP/safety/risk/execution/economic/OKX bound; Cap6 ALT_A presents economic fields + honest diagnostics/autonomy NOT_BOUND
 PHASE_4_6C_DIAGNOSTICS=DEFERRED           # OPTION_A KEEP_NOT_BOUND (ratified)
 PHASE_4_7_AUTONOMY=DEFERRED               # OPTION_D KEEP_NOT_BOUND (ratified)
-PHASE_5_PRODUCT_SURFACE=PARTIAL           # TASK_1/7/8 PASS; TASK_4 DEFERRED; OPERATOR_PRODUCT_GATE=false
+PHASE_5_PRODUCT_SURFACE=PASS              # TASK_1/7/8 PASS; TASK_4 DEFERRED non-blocking; OPERATOR_PRODUCT_GATE=true (review SHA 88f2241819dcc160c3ce688a9c7397e7cc8becec)
 PHASE_6_AUTONOMY_PARALLEL=OPEN
 PHASE_7_PRE_ACTIVATION_OBS=OPEN
 PHASE_8_CLOSEOUT=OPEN
 TECHNICAL_IMPLEMENTATION_INTRABAR=PASS    # PR #5548
 PRODUCT_CAPABILITY_INTRABAR=PASS          # operator-visible open-candle revisions with valid evidence
-OPERATOR_ACCEPTANCE_OVERALL=PENDING       # automated evidence ≠ Operator Product PASS
+OPERATOR_ACCEPTANCE_OVERALL=PASS          # Operator Product Review PASS on 88f2241819dcc160c3ce688a9c7397e7cc8becec (post PR #5568); PR #5569 docs-only Anti-SSOT wording did not invalidate
 RUNTIME_ACTIVATION=NOT_APPLICABLE_FALSE   # intentionally not activated
 ```
 
@@ -1015,9 +1029,14 @@ OPERATOR_PRODUCT_GATE=true
 DAILY_OBSERVATION_USABLE=true
 ```
 
-Aspirational closeout targets only. Do **not** treat the Gate block above as
-current Phase-5 status. `PHASE_5_PASS` remains false until remaining technical
-gaps and the operator product gate are independently closed.
+The Gate block above remains the Phase-5 product closeout **definition**.
+Current-state recording (not a rewrite of historical TASK_* ratifications): after
+the Operator Product Review on exact `origin/main` commit
+`88f2241819dcc160c3ce688a9c7397e7cc8becec` (post PR #5568), these criteria are
+`true` for the read-only daily observation surface. TASK_4 timeline remains
+DEFERRED / honest `NOT_BOUND` and non-blocking. PR #5569 later merged docs-only
+Consumer / Anti-SSOT wording on `9ff632885422a92e86f9dbeda79aab160bf2346b` and
+did not change product/runtime behavior or invalidate that review.
 
 ### TASK_4 — State-Transition Timeline Explicit Phase-5 Deferral (RATIFIED)
 
@@ -1713,12 +1732,20 @@ CANONICAL_PRINCIPLE=
 Market Dashboard is a pure read-only consumer with zero trading,
 runtime, scheduler, promotion, capital or execution authority.
 
-CURRENT_MAIN_SHA=02e4081498ee926fa6a3740d65d67be7de4a0c56
-LAST_MERGED_PR=5566
+CURRENT_MAIN_SHA=9ff632885422a92e86f9dbeda79aab160bf2346b
+LAST_MERGED_PR=5569
 OPEN_PR=NONE
-CURRENT_PHASE=POST_CAPABILITY_8_DOCS_CLOSEOUT_OPERATOR_PRODUCT_GATE_PENDING
+CURRENT_PHASE=FINAL_PRODUCT_STATE_CLOSEOUT_COMPLETE
 LAST_COMPLETED_TECHNICAL_CAPABILITY=CAPABILITY_7_PRODUCT_MATURITY_PR_5564_PLUS_REVIEW_SERVER_IDENTITY_PR_5565
-OPERATOR_PRODUCT_GATE=PENDING
+LAST_PRODUCT_CAPABILITY=PR_5568_DAILY_OKX_ARCHIVE_OBSERVATION
+OPERATOR_PRODUCT_REVIEW_REVIEWED_SHA=88f2241819dcc160c3ce688a9c7397e7cc8becec
+OPERATOR_PRODUCT_REVIEW_AFTER_PR=5568
+PR_5569_DOCS_ONLY_ANTI_SSOT=true
+MARKET_DASHBOARD_PHASE_5_PASS=true
+TECHNICAL_PRODUCT_GATE=true
+OPERATOR_PRODUCT_GATE=true
+DAILY_OBSERVATION_USABLE=true
+WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE
 
 MARKET_DASHBOARD_CANONICAL_CONSUMER=true
 OKX_CANONICAL_VENUE=true
@@ -1810,7 +1837,7 @@ KNOWN_INTENTIONAL_LOCKS=[
   "Phase 4.7A/4.7B autonomy_stage OPTION_D KEEP_NOT_BOUND",
   "Phase 5 TASK_4 event_decision_timeline B_EXPLICIT_PHASE_5_DEFERRAL",
   "PR #5548 invalid historical evidence 2026-07-25T211859Z must not be promoted",
-  "OPERATOR_PRODUCT_GATE pending; no Product PASS inference from technical/Chrome evidence"
+  "Operator Product Gate PASS recorded from review SHA 88f2241819dcc160c3ce688a9c7397e7cc8becec; do not re-infer from technical/Chrome evidence alone"
 ]
 TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED
 TASK_4_PHASE_5_BLOCKING=false
@@ -1819,8 +1846,11 @@ TASK_4_PERMANENTLY_NOT_APPLICABLE=false
 TIMELINE_SOURCE_AVAILABLE=false
 TIMELINE_UI_STATE=NOT_BOUND
 FUTURE_PRODUCER_WORK_AUTHORIZED=false
-PHASE_5_PASS=false
-OPERATOR_PRODUCT_GATE=false
+PHASE_5_PASS=true
+MARKET_DASHBOARD_PHASE_5_PASS=true
+TECHNICAL_PRODUCT_GATE=true
+OPERATOR_PRODUCT_GATE=true
+DAILY_OBSERVATION_USABLE=true
 
 CAPABILITY_PR_ONLY=true
 MICRO_PR_ALLOWED=false
@@ -1838,15 +1868,20 @@ PHASE_PR_MAPPING=[
   "Capability 6 ALT_A == PR #5563",
   "Capability 7 product maturity == PR #5564",
   "Cap7 review-server macOS path identity == PR #5565 (merge SHA 33811dc5162b6fff6bb778204024f1d6d4c1b4b5)",
-  "Capability 8 docs/ownership closeout == PR #5566 (merge SHA 02e4081498ee926fa6a3740d65d67be7de4a0c56; docs/ownership closeout only; not product PASS)"
+  "Capability 8 docs/ownership closeout == PR #5566 (merge SHA 02e4081498ee926fa6a3740d65d67be7de4a0c56; docs/ownership closeout only; not product PASS)",
+  "Daily OKX archive observation == PR #5568 (merge SHA 88f2241819dcc160c3ce688a9c7397e7cc8becec; Operator Product Review PASS on this SHA)",
+  "Consumer/Anti-SSOT wording == PR #5569 (merge SHA 9ff632885422a92e86f9dbeda79aab160bf2346b; docs-only; did not invalidate product review)"
 ]
 
-NEXT_CANONICAL_ACTION=SEPARATE_EXPLICIT_OPERATOR_GO_FOR_OPERATOR_PRODUCT_GATE_OR_SUCCESSOR_SCOPE_ONLY
-Capability-8 docs/ownership closeout is already merged via PR #5566
-(merge SHA 02e4081498ee926fa6a3740d65d67be7de4a0c56). No implicit product work.
-Do not infer Product PASS. Do not authorize Runtime, Orders, Scheduler, Capital,
-Promotion, Shadow, Paper, Testnet or Live. OPERATOR_PRODUCT_GATE remains PENDING
-until separate explicit operator ratification.
+NEXT_CANONICAL_ACTION=RETURN_TO_OPERATOR_FOR_SEPARATELY_AUTHORIZED_WORKSTREAM
+WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE
+Operator Product Review PASS is recorded on reviewed SHA
+`88f2241819dcc160c3ce688a9c7397e7cc8becec` (post PR #5568). PR #5569
+(`9ff632885422a92e86f9dbeda79aab160bf2346b`) is subsequent docs-only
+Consumer / Anti-SSOT wording and did not change runtime or product behavior.
+No automatic next Dashboard capability. Do not authorize Runtime, Orders,
+Scheduler, Capital, Promotion, Shadow, Paper, Testnet or Live from this seal.
+Missing Decision/Risk/Safety producers remain fail-closed / NOT_BOUND where unbound.
 
 SEPARATE_GO_REQUIRED_FOR=[
   "Core changes",
@@ -1859,7 +1894,7 @@ SEPARATE_GO_REQUIRED_FOR=[
   "Promotion",
   "Live",
   "Mass cleanup",
-  "Operator Product Gate ratification",
+  "Any new Dashboard capability beyond sealed daily observation truth",
   "diagnostics_summary redesign (beyond OPTION_A)",
   "autonomy_stage aggregate (beyond OPTION_D)",
   "event_decision_timeline durable producer + read-only projection"
@@ -1910,13 +1945,20 @@ DOD=operator-visible operative projection OR honest missing states; tests+Chrome
 ## 12. Abschlussentscheidung
 
 ```text
-STATUS=MARKET_DASHBOARD_V2_CAPABILITY_8_PRODUCTION_CLOSEOUT
-VERDICT=DASHBOARD_IMPLEMENTATION_PRESENT_ON_MAIN; CAPS_1_TO_7_TECHNICAL_RECORDED; CAP8_DOCS_OWNERSHIP_CLOSEOUT_MERGED_VIA_PR_5566; RUNTIME_NOT_ACTIVATED; OPERATOR_PRODUCT_GATE_PENDING; PRODUCT_APPROVAL_INFERRED=false
+STATUS=MARKET_DASHBOARD_V2_FINAL_PRODUCT_STATE_CLOSEOUT_COMPLETE
+VERDICT=DASHBOARD_IMPLEMENTATION_PRESENT_ON_MAIN; CAPS_1_TO_7_TECHNICAL_RECORDED; CAP8_DOCS_OWNERSHIP_CLOSEOUT_MERGED_VIA_PR_5566; PR_5568_DAILY_OBSERVATION_MERGED; OPERATOR_PRODUCT_REVIEW_PASS_ON_88f2241819dcc160c3ce688a9c7397e7cc8becec; PR_5569_DOCS_ONLY_ANTI_SSOT_ON_9ff632885422a92e86f9dbeda79aab160bf2346b; RUNTIME_NOT_ACTIVATED; OPERATOR_PRODUCT_GATE=true; MARKET_DASHBOARD_PHASE_5_PASS=true; DAILY_OBSERVATION_USABLE=true; PRODUCT_APPROVAL_INFERRED=false
 DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
 LANDSCAPE_TARGET=true
 CORE_CHANGE_AUTHORIZED=false
 RUNTIME_CHANGE_AUTHORIZED=false
+RUNTIME_ACTIVATED=false
 DASHBOARD_IMPLEMENTATION_PRESENT=true
+MARKET_DASHBOARD_PHASE_5_PASS=true
+TECHNICAL_PRODUCT_GATE=true
+OPERATOR_PRODUCT_GATE=true
+DAILY_OBSERVATION_USABLE=true
+PHASE_5_PASS=true
+WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE
 CAPABILITY_PR_ONLY=true
 MICRO_PR_ALLOWED=false
 DRAFT_PR_ALLOWED_ONLY_IF_OPERATOR_REQUESTS=true
@@ -1924,7 +1966,7 @@ LIVE_AUTHORIZED=false
 ORDERS=false
 SCHEDULER=false
 CAPITAL_CHANGE=false
-FIRST_ACTION=SEPARATE_EXPLICIT_GO_FOR_OPERATOR_PRODUCT_GATE_OR_SUCCESSOR_SCOPE_ONLY
+FIRST_ACTION=RETURN_TO_OPERATOR_FOR_SEPARATELY_AUTHORIZED_WORKSTREAM
 ```
 
 Das Dashboard ist zu keinem Zeitpunkt eine fachliche Wahrheit. Es ist dauerhaft eine reine read-only Projektion der kanonischen Producer-Landschaft und bleibt ausschließlich Consumer kanonischer ReadModels.

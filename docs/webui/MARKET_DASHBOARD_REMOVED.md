@@ -12,7 +12,7 @@ The Peak Trade **legacy** Market Dashboard product was intentionally removed and
 - Pure read-only GET route; no write/action/order/runtime controls.
 - Unbound or missing producers render as `NOT_BOUND` / `MISSING` / `STALE` / `INVALID`.
 - Does **not** authorize runtime activation, orders, scheduler, shadow/paper/testnet, capital changes, promotion, or live trading.
-- `OPERATOR_PRODUCT_GATE` remains `PENDING` until explicit operator ratification. Technical or Chrome evidence must **not** be inferred as Product PASS.
+- `OPERATOR_PRODUCT_GATE=true` is recorded from the Operator Product Review on exact commit `88f2241819dcc160c3ce688a9c7397e7cc8becec` (post PR #5568; read-only daily observation surface). PR #5569 later added docs-only Consumer / Anti-SSOT wording and did not invalidate that review. Technical or Chrome evidence alone must **not** be re-inferred as a new Product PASS. Dashboard remains non-authority / non-SSOT / non-truth-owner.
 
 Canonical planning/execution authority:  
 [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md)
