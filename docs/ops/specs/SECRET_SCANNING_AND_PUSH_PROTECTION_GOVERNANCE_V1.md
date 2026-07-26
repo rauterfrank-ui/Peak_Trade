@@ -50,7 +50,7 @@ Do not label tracked-tree scanning as complete history protection.
 
 ## GitHub-hosted feature state (API-evidenced snapshot)
 
-Snapshot taken read-only via GitHub API against `rauterfrank-ui/Peak_Trade` during this capability (base `origin/main`):
+Snapshot taken read-only via GitHub API against `rauterfrank-ui&#47;Peak_Trade` during this capability (base `origin/main`):
 
 | Control | Classification | Evidence |
 |---------|----------------|----------|
