@@ -28,7 +28,7 @@ decision recorded. No successor. No selectable inventory remains.
 ## Collision exclusions
 
 - Closed CS relative-strength momentum: reopen forbidden
-- Pending `momentum_1h/v2` / `MOMENTUM_HORIZON_V2_NON_BITCOIN_FUTURES_V2`: untouched
+- Pending `momentum_1h&#47;v2` / `MOMENTUM_HORIZON_V2_NON_BITCOIN_FUTURES_V2`: untouched
 - Registry `momentum_1h` / `MomentumStrategy`: unchanged
 - CSRHR lane remains terminally closed
 
