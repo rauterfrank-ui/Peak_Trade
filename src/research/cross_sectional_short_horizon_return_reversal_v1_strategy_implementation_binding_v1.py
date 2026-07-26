@@ -21,7 +21,7 @@ MEASUREMENT_REL_PATH = (
 BACKLOG_REL_PATH = (
     "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json"
 )
-REQUIRED_DIGEST = "3d983bbfa1db6c319f6c4399549679a5b7fd2d635d8e72d4452330da9059729a"
+REQUIRED_DIGEST = "3ee997a95d2d9ea4de9597b39a816ddbdc9e06d587941334b8d04507e9945b2a"
 REQUIRED_IMPL_FILES = (
     "src/research/cross_sectional_short_horizon_return_reversal_v1_score_v1.py",
     "src/research/cross_sectional_short_horizon_return_reversal_v1_selection_v1.py",
@@ -65,12 +65,16 @@ def validate_implementation_binding(
     _require(payload.get("implementation_authorized") is True, "IMPL_NOT_AUTHORIZED")
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED")
     _require(
-        payload.get("development_evaluation_authorized") is False,
+        payload.get("development_evaluation_authorized") is True,
         "DEVELOPMENT_EVALUATION_AUTHORIZED",
     )
-    _require(payload.get("development_run_count") == 0, "DEVELOPMENT_RUN_COUNT")
-    _require(payload.get("runner_start_count") == 0, "RUNNER_START_COUNT")
-    _require(payload.get("run_slot_consumed") is False, "RUN_SLOT_CONSUMED")
+    _require(
+        payload.get("development_evaluation_executed") is True,
+        "DEVELOPMENT_EVALUATION_EXECUTED",
+    )
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT")
+    _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
     _require(payload.get("holdout_authorized") is False, "HOLDOUT_AUTHORIZED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
     _require(payload.get("promotion_eligible") is False, "PROMOTION_ELIGIBLE")
@@ -112,17 +116,15 @@ def validate_implementation_binding(
     _require(params.get("vol_normalization") is False, "VOL_NORM")
     non_actions = set(payload.get("explicit_non_actions") or [])
     for required in (
-        "NO_EVALUATION",
-        "NO_RUNNER",
         "NO_HOLDOUT_ACCESS",
         "NO_SEALED_ACCESS",
         "NO_PROMOTION",
         "NO_RUNTIME",
         "NO_MASTER_V2_MUTATION",
         "NO_DOUBLE_PLAY_AUTHORITY_CHANGE",
-        "NO_RUN_SLOT_CONSUMPTION",
         "NO_AUTOMATIC_BACKLOG_SELECTION",
         "NO_PRODUCTION_STRATEGY_SELECTION",
+        "NO_RETRY",
     ):
         _require(required in non_actions, f"MISSING_NON_ACTION_{required}")
     impl_files = tuple(payload.get("implementation_files") or ())
@@ -158,7 +160,16 @@ def validate_implementation_binding(
             measurement.get("strategy_implementation_present") is False,
             "MEASUREMENT_CONTRACT_IMPL_FLAG_MUTATED",
         )
-        _require(measurement.get("run_slot_consumed") is False, "MEASUREMENT_RUN_SLOT")
+        _require(measurement.get("run_slot_consumed") is True, "MEASUREMENT_RUN_SLOT")
+        _require(
+            measurement.get("development_evaluation_authorized") is True,
+            "MEASUREMENT_DEV_EVAL_NOT_AUTHORIZED",
+        )
+        _require(
+            measurement.get("development_evaluation_executed") is True,
+            "MEASUREMENT_DEV_EVAL_EXECUTED",
+        )
+        _require(measurement.get("development_run_count") == 1, "MEASUREMENT_DEV_RUN_MUTATED")
         _require(
             measurement.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID,
             "MEASUREMENT_HYPOTHESIS_ID",
@@ -170,8 +181,10 @@ def validate_implementation_binding(
         prereg = backlog.get("preregistered_hypotheses") or []
         _require(len(prereg) == 1, "BACKLOG_PREREG_LEN")
         hyp = prereg[0]
-        _require(hyp.get("status") == "PREREGISTERED_DEFINITION_ONLY", "BACKLOG_HYP_STATUS")
-        _require(hyp.get("run_slot_consumed") is False, "BACKLOG_RUN_SLOT")
+        _require(
+            hyp.get("status") == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL", "BACKLOG_HYP_STATUS"
+        )
+        _require(hyp.get("run_slot_consumed") is True, "BACKLOG_RUN_SLOT")
         _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "BACKLOG_HYP_ID")
 
     return {
@@ -179,7 +192,7 @@ def validate_implementation_binding(
         "strategy_implementation_present": True,
         "evaluation_authorized": False,
         "holdout_authorized": False,
-        "run_slot_consumed": False,
+        "run_slot_consumed": True,
         "frozen_digest": REQUIRED_DIGEST,
         "directional_form": "D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION",
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,

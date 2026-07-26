@@ -94,7 +94,7 @@ def test_evidence_development_fail_and_csrhr_unchanged() -> None:
     assert summary["hypothesis_id"] == HYPOTHESIS_ID
     csrhr = json.loads(CSRHR.read_text(encoding="utf-8"))
     assert csrhr["status"] == "OPEN_BACKLOG"
-    assert csrhr["development_run_count"] == 0
+    assert csrhr["development_run_count"] == 1
 
 
 def test_no_second_evaluation_runner_in_evidence_dir() -> None:

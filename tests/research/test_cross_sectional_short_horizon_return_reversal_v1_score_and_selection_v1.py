@@ -337,7 +337,7 @@ def test_no_evaluation_or_run_slot_or_holdout() -> None:
     report = load_and_validate_repo_binding(REPO)
     assert report["evaluation_authorized"] is False
     assert report["holdout_authorized"] is False
-    assert report["run_slot_consumed"] is False
+    assert report["run_slot_consumed"] is True
     backlog = json.loads(
         (
             REPO
@@ -345,8 +345,8 @@ def test_no_evaluation_or_run_slot_or_holdout() -> None:
         ).read_text(encoding="utf-8")
     )
     hyp = backlog["preregistered_hypotheses"][0]
-    assert hyp["run_slot_consumed"] is False
-    assert hyp["status"] == "PREREGISTERED_DEFINITION_ONLY"
+    assert hyp["run_slot_consumed"] is True
+    assert hyp["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL"
     assert backlog["holdout_forbidden"] is True
     measurement = json.loads(
         (
@@ -356,7 +356,7 @@ def test_no_evaluation_or_run_slot_or_holdout() -> None:
         ).read_text(encoding="utf-8")
     )
     assert measurement["strategy_implementation_present"] is False
-    assert measurement["run_slot_consumed"] is False
+    assert measurement["run_slot_consumed"] is True
     assert measurement["sealed_holdout_content_inspection_authorized"] is False
 
 

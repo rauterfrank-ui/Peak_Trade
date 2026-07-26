@@ -165,7 +165,7 @@ def validate_implementation_binding(
         _require(measurement.get("run_slot_consumed") is True, "MEASUREMENT_RUN_SLOT_MUTATED")
         csrhr = json.loads((repo_root / CSRHR_BACKLOG_REL_PATH).read_text(encoding="utf-8"))
         _require(csrhr.get("status") == "OPEN_BACKLOG", "CSRHR_MUTATED")
-        _require(csrhr.get("development_run_count") == 0, "CSRHR_DEV_RUN_MUTATED")
+        _require(csrhr.get("development_run_count") == 1, "CSRHR_DEV_RUN_MUTATED")
 
     return {
         "valid": True,
