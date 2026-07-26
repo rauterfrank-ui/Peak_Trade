@@ -1927,4 +1927,17 @@ CAPITAL_CHANGE=false
 FIRST_ACTION=SEPARATE_EXPLICIT_GO_FOR_OPERATOR_PRODUCT_GATE_OR_SUCCESSOR_SCOPE_ONLY
 ```
 
-Das Dashboard wird damit weder zu früh als neue fachliche Wahrheit gebaut noch so spät, dass fehlende Observability erst nach Vollautonomie sichtbar wird. Es wächst kontrolliert mit der kanonischen Producer-Landschaft und bleibt dauerhaft eine reine Projektion.
+Das Dashboard ist zu keinem Zeitpunkt eine fachliche Wahrheit. Es ist dauerhaft eine reine read-only Projektion der kanonischen Producer-Landschaft und bleibt ausschließlich Consumer kanonischer ReadModels.
+
+```text
+DASHBOARD_IS_CONSUMER_ONLY=true
+DASHBOARD_IS_AUTHORITY=false
+DASHBOARD_IS_TRUTH_OWNER=false
+DASHBOARD_IS_SSOT=false
+SECOND_TRUTH_ALLOWED=false
+CANONICAL_PRODUCERS_REMAIN_OWNERS=true
+MISSING_DATA_REMAINS_FAIL_CLOSED=true
+NO_DOMAIN_LOGIC_IN_UI=true
+NO_RUNTIME_AUTHORITY=true
+NO_WRITE_PATH=true
+```
