@@ -9,7 +9,9 @@ import os
 import re
 import socket
 import subprocess
+import sys
 import time
+import uuid
 from pathlib import Path
 from urllib.request import urlopen
 
@@ -18,6 +20,29 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS = REPO_ROOT / "scripts" / "webui" / "review_server.sh"
 PLAYWRIGHT_WEBSERVER = REPO_ROOT / "scripts" / "webui" / "review_server_playwright_webserver_v1.py"
+
+
+def _harness_physical_path(target: Path | str) -> str:
+    """Invoke the harness physical_path() helper without starting a server."""
+    extract = subprocess.run(
+        [
+            "bash",
+            "-c",
+            r"""
+set -euo pipefail
+eval "$(sed -n '/^physical_path()/,/^}/p' "$1")"
+physical_path "$2"
+""",
+            "physical_path",
+            str(HARNESS),
+            str(target),
+        ],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert extract.returncode == 0, extract.stdout + extract.stderr
+    return extract.stdout.strip()
 
 
 def _free_port() -> int:
@@ -100,6 +125,52 @@ def test_macos_bash_32_static_compat() -> None:
     assert "readarray" not in text
     assert re.search(r"\buvicorn\b.*--reload", text) is None
     assert "UVICORN_RELOAD=false" in raw
+
+
+def test_identity_ok_uses_physical_path_comparison() -> None:
+    """Static contract: cwd vs REPO_ROOT must not use raw string inequality alone."""
+    raw = HARNESS.read_text(encoding="utf-8")
+    assert "physical_path()" in raw
+    assert "pwd -P" in raw
+    assert "cwd_phys" in raw
+    assert "repo_phys" in raw
+    # Proven bug form must remain gone.
+    assert '[[ -n "$cwd" && "$cwd" != "$REPO_ROOT" ]]' not in raw
+
+
+def test_physical_path_tmp_private_tmp_equivalence_and_distinct_rejection() -> None:
+    """macOS /tmp vs /private/tmp alias equivalence; distinct dirs stay fail-closed."""
+    marker = uuid.uuid4().hex
+    logical_root = Path("/tmp") / f"peak_trade_review_server_path_identity_{marker}"
+    logical_root.mkdir(parents=True, exist_ok=True)
+    other_root = Path("/tmp") / f"peak_trade_review_server_path_identity_other_{marker}"
+    other_root.mkdir(parents=True, exist_ok=True)
+    try:
+        logical = str(logical_root)
+        private_alias = str(Path("/private/tmp") / logical_root.name)
+        assert Path(private_alias).is_dir()
+
+        phys_logical = _harness_physical_path(logical)
+        phys_private = _harness_physical_path(private_alias)
+        assert phys_logical == phys_private
+        assert phys_logical == os.path.realpath(logical)
+
+        if sys.platform == "darwin":
+            # On macOS the lexical forms differ while physical forms match.
+            assert logical != private_alias
+
+        phys_other = _harness_physical_path(other_root)
+        assert phys_other != phys_logical
+
+        # identity_ok comparison contract (physical equality only).
+        assert phys_logical == phys_private
+        assert not (phys_logical == phys_other)
+    finally:
+        for path in (logical_root, other_root):
+            try:
+                path.rmdir()
+            except OSError:
+                pass
 
 
 def test_start_status_idempotent_stop_logs_and_bind(tmp_path: Path, isolated_port: int) -> None:

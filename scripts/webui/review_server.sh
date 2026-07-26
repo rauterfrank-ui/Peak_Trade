@@ -140,6 +140,16 @@ process_cwd() {
   lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p' | head -n 1 || true
 }
 
+# Resolve a directory to its physical path (macOS /tmp -> /private/tmp safe).
+# Bash 3.2 compatible; uses pwd -P (no GNU realpath dependency).
+physical_path() {
+  local target="$1"
+  if [[ -z "$target" || ! -d "$target" ]]; then
+    return 1
+  fi
+  (cd "$target" && pwd -P) 2>/dev/null
+}
+
 listening_pids_on_port() {
   # Prefer lsof; empty string if none
   if command -v lsof >/dev/null 2>&1; then
@@ -163,7 +173,7 @@ pid_list_contains() {
 
 identity_ok() {
   local pid="$1"
-  local cmd cwd
+  local cmd cwd cwd_phys repo_phys
   cmd="$(process_command "$pid")"
   [[ -n "$cmd" ]] || return 1
   # Must be uvicorn ASGI for this app; never trust PID alone.
@@ -183,9 +193,14 @@ identity_ok() {
     *) return 1 ;;
   esac
   cwd="$(process_cwd "$pid")"
-  if [[ -n "$cwd" && "$cwd" != "$REPO_ROOT" ]]; then
-    # Fail closed if cwd is resolvable and not this repo worktree.
-    return 1
+  if [[ -n "$cwd" ]]; then
+    # Compare physical paths so macOS /tmp vs /private/tmp aliases match.
+    cwd_phys="$(physical_path "$cwd" || true)"
+    repo_phys="$(physical_path "$REPO_ROOT" || true)"
+    if [[ -z "$cwd_phys" || -z "$repo_phys" || "$cwd_phys" != "$repo_phys" ]]; then
+      # Fail closed if cwd is resolvable and not this repo worktree.
+      return 1
+    fi
   fi
   return 0
 }
