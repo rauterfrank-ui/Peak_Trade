@@ -1,7 +1,7 @@
 # Security Notes — Peak_Trade Cybersecurity Baseline Pointers
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
-**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26)
+**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26)
 **Last Reviewed (repo-static):** 2026-07-26
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
 **Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, or claim unverified scanner results.
@@ -18,6 +18,8 @@
 | Local bounded secret env file contract | [`docs/ops/specs/LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md`](docs/ops/specs/LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md) |
 | Optional Semgrep/SAST (default-off concept) | [`docs/ops/specs/SEMGREP_SAST_ADOPTION_CONCEPT_V0.md`](docs/ops/specs/SEMGREP_SAST_ADOPTION_CONCEPT_V0.md) |
 | Optional ZAP/DAST (default-off concept) | [`docs/ops/specs/ZAP_DAST_SHADOW_CONCEPT_V0.md`](docs/ops/specs/ZAP_DAST_SHADOW_CONCEPT_V0.md) |
+| Secret hygiene / canonical redaction owner | [`scripts/security/secret_hygiene_redaction_v1.py`](scripts/security/secret_hygiene_redaction_v1.py) + [`docs/ops/specs/SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1.md`](docs/ops/specs/SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1.md) |
+| Tracked secret-like policy gate | [`scripts/ci/check_tracked_credential_hygiene_policy_v1.py`](scripts/ci/check_tracked_credential_hygiene_policy_v1.py) + [`docs/ops/specs/tracked_credential_like_allowlist_v1.json`](docs/ops/specs/tracked_credential_like_allowlist_v1.json) |
 | Incident handling | [`docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`](docs/RUNBOOKS_AND_INCIDENT_HANDLING.md) |
 | Disaster recovery | [`docs/DISASTER_RECOVERY_RUNBOOK.md`](docs/DISASTER_RECOVERY_RUNBOOK.md) |
 | Required CI contexts (branch protection sync, repo-evidenced) | [`config/ci/required_status_checks.json`](config/ci/required_status_checks.json) |
@@ -71,6 +73,8 @@ Historical remediation notes: [`docs/ops/AUDIT_DEPENDENCY_REMEDIATION_2026-01-07
 | GitHub Secret Protection / Push Protection | **Operator-stated** UI snapshot in credential runbook (2026-05-12) — **not** re-verified by this refresh; humans must re-check UI |
 | gitleaks / detect-secrets in pre-commit | **Not** configured in `.pre-commit-config.yaml` |
 | gitleaks as required PR check | **Not** present |
+| Repo-tracked secret-like policy gate (high-confidence classes) | Present: `scripts/ci/check_tracked_credential_hygiene_policy_v1.py` (fail-closed; no secret values printed) |
+| Canonical redaction marker / adapters | `[REDACTED]` via `scripts/security/secret_hygiene_redaction_v1.py` (logging/diagnostics/evidence/WebUI serialization helpers) |
 | Cursor/AI may access real secret values | **Forbidden** (credential runbook) |
 
 **This refresh did not rotate any secrets and did not change external GitHub security settings.**
@@ -123,7 +127,7 @@ Docs live-enable pattern guard: [`scripts/ci/check_docs_no_live_enable_patterns.
 |----|------|------------------------|
 | RR-CB-001 | Actions tag-pinned, not SHA-pinned | **Closed** by `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (full 40-hex SHA pins + regression contract) |
 | RR-CB-002 | Many workflows lack explicit top-level `permissions:` | **Closed** by `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (every workflow declares top-level permissions; write allowlist retained) |
-| RR-CB-003 | No required secret-scanning job on every PR | Rely on GitHub Push Protection (operator-stated) + local discipline; optional gitleaks remains human-gated |
+| RR-CB-003 | No required secret-scanning job on every PR | **Partially closed** by `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` tracked secret-like policy gate (high-confidence classes + bounded allowlist). Optional gitleaks and GitHub Push Protection remain complementary / operator-stated |
 | RR-CB-004 | Semgrep/SAST not enforced | Accepted default-off per concept |
 | RR-CB-005 | Python 3.9 conditional older pins | Prefer 3.11; drop 3.9 only via explicit support decision |
 | RR-CB-006 | Branch-protection UI state not re-snapshotted in this refresh | Reuse `config/ci/required_status_checks.json`; human UI re-verify when needed |
