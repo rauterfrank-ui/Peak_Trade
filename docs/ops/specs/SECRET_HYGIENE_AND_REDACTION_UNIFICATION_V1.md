@@ -61,8 +61,12 @@ Gate scans tracked textual files for high-confidence classes (PEM private key he
 |----|------|-------|
 | RR-SH-001 | Not every historical call site is migrated | Legacy local helpers remain; new boundaries must use the owner |
 | RR-SH-002 | Pattern detection is best-effort | High-entropy opaque secrets without known shape may evade string detectors; sensitive key names still catch structured fields |
-| RR-SH-003 | External gitleaks job still optional | Repo gate covers high-confidence classes; GitHub Push Protection remains operator-stated |
+| RR-SH-003 | External gitleaks job still optional | Repo gate covers high-confidence classes and is CI-enforced via Lint Gate under `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1`; optional gitleaks remains complementary |
 | RR-SH-004 | Generated artifacts outside git | Untracked local evidence may still need operators to run export through adapters |
+| RR-SH-005 | Full Git history not CI-enforced | `HISTORY_SCAN_STATUS=MANUAL_BOUNDED` — see governance spec; do not claim complete history protection |
+
+Governance overlay: [`SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1.md`](SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1.md).
+
 
 ## Explicit non-claims
 
