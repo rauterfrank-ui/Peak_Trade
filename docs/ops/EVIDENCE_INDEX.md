@@ -1,5 +1,15 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260726-csrhr-v1-terminal-retirement-closeout"></a>
+- **EV-20260726-CSRHR-V1-TERMINAL-RETIREMENT-CLOSEOUT** | Date: 2026-07-26 | Owner: research | Scope: offline definition-only governance closeout | Risk: LOW
+  - Source: [Closeout evidence](../evidence/csrhr_v1_terminal_retirement_closeout_v1/) · Lane backlog: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1` · Program: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1` · Lifecycle: `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
+  - Claim: Explicit `CLOSE_LANE_NO_FURTHER_RESEARCH` after CSRHR v1 `DEVELOPMENT_FAIL`;
+    inventories emptied (preregistered=0/open=0/terminal=1); `next_eligible=NONE`;
+    Development/Holdout/Sealed/promotion/activation/automatic-selection paths closed;
+    historical Development evidence preserved unchanged.
+  - Non-claims: not Development rerun; not Holdout/Sealed access; not successor selection;
+    not Runtime/Scheduler/Network/Orders authorization; does not rewrite evaluation metrics.
+
 <a id="ev-20260726-step-29u-terminal-unchanged-final-fleet-hypothesis-retirement"></a>
 - **EV-20260726-STEP-29U-TERMINAL-UNCHANGED-FINAL-FLEET-HYPOTHESIS-RETIREMENT** | Date: 2026-07-26 | Owner: ops | Scope: offline non-activating capability | Risk: LOW
   - Source: [Retirement contract](runbooks/STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md) · Owner: `ops.step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0` · Command: `python scripts/ops/run_step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.py`

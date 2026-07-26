@@ -177,15 +177,19 @@ def validate_implementation_binding(
         backlog_path = repo_root / BACKLOG_REL_PATH
         _require(backlog_path.is_file(), "BACKLOG_MISSING")
         backlog = json.loads(backlog_path.read_text(encoding="utf-8"))
-        _require(backlog.get("status") == "OPEN_BACKLOG", "BACKLOG_NOT_OPEN")
-        prereg = backlog.get("preregistered_hypotheses") or []
-        _require(len(prereg) == 1, "BACKLOG_PREREG_LEN")
-        hyp = prereg[0]
         _require(
-            hyp.get("status") == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL", "BACKLOG_HYP_STATUS"
+            backlog.get("status") == "LANE_CLOSED_NO_FURTHER_RESEARCH",
+            "BACKLOG_NOT_CLOSED",
         )
+        _require(backlog.get("preregistered_hypotheses") == [], "BACKLOG_PREREG_NONEMPTY")
+        terminals = backlog.get("terminal_hypotheses") or []
+        _require(len(terminals) == 1, "BACKLOG_TERMINAL_LEN")
+        hyp = terminals[0]
+        _require(hyp.get("status") == "TERMINAL_FAIL", "BACKLOG_HYP_STATUS")
         _require(hyp.get("run_slot_consumed") is True, "BACKLOG_RUN_SLOT")
         _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "BACKLOG_HYP_ID")
+        _require(hyp.get("retry_allowed") is False, "BACKLOG_RETRY_ALLOWED")
+        _require(hyp.get("holdout_allowed") is False, "BACKLOG_HOLDOUT_ALLOWED")
 
     return {
         "valid": True,

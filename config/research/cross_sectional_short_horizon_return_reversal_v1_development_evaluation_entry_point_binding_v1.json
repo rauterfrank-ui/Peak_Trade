@@ -19,7 +19,7 @@
   "development_run_count": 1,
   "development_run_limit": 1,
   "economic_gate_open": false,
-  "entry_point_status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_EXECUTED",
+  "entry_point_status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL",
   "evaluation_authorized": false,
   "evidence_ref": "docs/evidence/evaluate_cross_sectional_short_horizon_return_reversal_development_v1/",
   "frozen_measurement_contract_digest": "3ee997a95d2d9ea4de9597b39a816ddbdc9e06d587941334b8d04507e9945b2a",
@@ -58,12 +58,12 @@
   "scope_id": "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1",
   "score_formula_version": "negated_raw_trailing_log_return_fixed_lookback_v1",
   "signal_family": "CROSS_SECTIONAL_RETURN_REVERSAL",
-  "slice_class": "DEVELOPMENT_EVALUATION_EXECUTABLE_PATH_IMPLEMENTATION_ONLY",
-  "status": "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_EXECUTED",
+  "slice_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
+  "status": "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL",
   "strategy_id": "cross_sectional_short_horizon_return_reversal",
   "strategy_identity": "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1",
   "strategy_params_digest": "c0944b9cb3c29bb6cfdb8eca72edf7d62d1ce462bfdce77c398ee4ced8fa232d",
   "strategy_version": "v1",
   "time_segment_definition_id": "CHRONOLOGICAL_EQUAL_DURATION_QUARTERS_V1",
-  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL"
+  "verdict": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
 }

@@ -26,14 +26,21 @@ Joint admission failed (`DEVELOPMENT_FAIL`). Economic gate remains closed. Holdo
 untouched. No promotion, runtime, orders, shadow, or testnet activation.
 Activation remains ineligible.
 
+## Terminal retirement closeout
+
+Lane/program closed via explicit `CLOSE_LANE_NO_FURTHER_RESEARCH`.
+CSRHR v1 is absent from Development/Holdout/Sealed/promotion/activation/
+automatic-selection inventories. Historical evaluation evidence remains the
+immutable Development truth.
+
 ## Next step
 
-`RETURN_TO_OPERATOR_FOR_EXACT_HEAD_FORENSIC_REVIEW; NO_HOLDOUT_OR_SEALED_EVALUATION_WITHOUT_NEW_EXPLICIT_GO`
+`LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO`
 
 ---
 docs_token: DOCS_TOKEN_CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1
-STATUS: DEVELOPMENT_FAIL_SLOT_CONSUMED
-scope: research, offline-only, non-authorizing, development-evaluation
+STATUS: RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL_LANE_CLOSED
+scope: research, offline-only, non-authorizing, terminal-retirement-closeout
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false

@@ -97,7 +97,7 @@ def test_hypothesis_and_config_binding() -> None:
     assert report["hypothesis_id"] == HYPOTHESIS_ID
     assert report["frozen_digest"] == REQUIRED_DIGEST
     backlog = load_and_validate_repo_backlog(REPO)
-    assert backlog["status"] == "OPEN_BACKLOG"
+    assert backlog["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     program = load_and_validate_repo_program(REPO)
     assert program["valid"] is True
     prereg = load_and_validate_repo_contract(REPO)
@@ -344,10 +344,13 @@ def test_no_evaluation_or_run_slot_or_holdout() -> None:
             / "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json"
         ).read_text(encoding="utf-8")
     )
-    hyp = backlog["preregistered_hypotheses"][0]
+    assert backlog["preregistered_hypotheses"] == []
+    hyp = backlog["terminal_hypotheses"][0]
     assert hyp["run_slot_consumed"] is True
-    assert hyp["status"] == "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL"
+    assert hyp["status"] == "TERMINAL_FAIL"
+    assert hyp["terminal_result"] == "FAIL_CLOSED_NO_RETRY"
     assert backlog["holdout_forbidden"] is True
+    assert backlog["next_eligible"] == "NONE"
     measurement = json.loads(
         (
             REPO / "config/research/"
@@ -355,7 +358,6 @@ def test_no_evaluation_or_run_slot_or_holdout() -> None:
             "hypothesis_measurement_contract_v1.json"
         ).read_text(encoding="utf-8")
     )
-    assert measurement["strategy_implementation_present"] is False
     assert measurement["run_slot_consumed"] is True
     assert measurement["sealed_holdout_content_inspection_authorized"] is False
 
