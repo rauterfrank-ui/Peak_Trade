@@ -4,7 +4,7 @@
 {% block main_class %}mdl-v2-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-6-capability-6-alt-a-truthful-closeout" />
+<meta name="peak-trade-market-landscape-v2" content="phase5-capability-7-product-maturity-technical" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 {% endblock %}
@@ -27,6 +27,7 @@
   data-phase="{{ phase }}"
   data-runtime-bridge="{{ runtime_bridge_display }}"
   data-mdl-a11y-baseline="task7"
+  data-mdl-density="task1"
 >
   <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
     <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">
@@ -169,7 +170,7 @@
         </div>
       </section>
 
-      <aside class="mdl-v2-rail mdl-v2-rail--right" data-mdl-region="SYSTEM_CONTEXT_RAIL" aria-label="System context">
+      <aside class="mdl-v2-rail mdl-v2-rail--right" data-mdl-region="SYSTEM_CONTEXT_RAIL" aria-label="System context" tabindex="-1">
         <h2>Context</h2>
         <dl class="mdl-v2-kv">
           <div>
@@ -207,7 +208,7 @@
                 class="mdl-v2-source-health__summary"
                 data-mdl-source-health-summary="true"
               >{{ source_health.summary_display }}</span>
-              <ul class="mdl-v2-source-health__sources" aria-label="Source availability and freshness">
+              <ul class="mdl-v2-source-health__sources" aria-label="Source availability and freshness" tabindex="-1">
                 {% for src in source_health.sources %}
                 <li
                   data-mdl-source-slot="{{ src.slot }}"

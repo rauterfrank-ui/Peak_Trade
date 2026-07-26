@@ -1,0 +1,8 @@
+REPO_ROOT=/Users/frnkhrz/Peak_Trade/.worktrees/market_dashboard_product_maturity_chrome_v0
+BRANCH=capability/market-dashboard-product-maturity-chrome-v0
+HEAD=05e8c44c58fce1f521826ee483dfc5f9bf401b5b
+ORIGIN_MAIN=05e8c44c58fce1f521826ee483dfc5f9bf401b5b
+PRIMARY_CHECKOUT_HEAD=b876e2c1cafff70801bbad4be8997386785a6f59
+PRIMARY_CHECKOUT_BRANCH=docs/okx-governed-futures-producer-charter-v1
+WORKTREE_ISOLATED=true
+CAPTURED_AT=2026-07-26T03:41:12Z

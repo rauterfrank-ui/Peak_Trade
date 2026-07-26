@@ -220,6 +220,7 @@ def test_serialize_ohlcv_browser_payload_finite_numeric_ohlc() -> None:
                 "high": "0.000000009731",
                 "low": "0.000000009654",
                 "close": "0.000000009675",
+                "volume": "12.5",
             },
             {
                 "ts": LAST_TS,
@@ -227,6 +228,7 @@ def test_serialize_ohlcv_browser_payload_finite_numeric_ohlc() -> None:
                 "high": "0.000000009201",
                 "low": "0.000000009155",
                 "close": "0.000000009176",
+                "volume": "8.25",
             },
         ],
     }

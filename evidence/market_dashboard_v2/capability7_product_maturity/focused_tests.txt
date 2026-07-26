@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade/.worktrees/market_dashboard_product_maturity_chrome_v0
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 130 items
+
+tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py ....... [  5%]
+.......                                                                  [ 10%]
+tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py . [ 11%]
+..................                                                       [ 25%]
+tests/webui/test_market_landscape_dashboard_v2_accessibility_baseline_v0.py . [ 26%]
+....                                                                     [ 29%]
+tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py .. [ 30%]
+.............................................................            [ 77%]
+tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py ......... [ 84%]
+..............                                                           [ 95%]
+tests/webui/test_market_landscape_dashboard_v2_okx_ohlcv_chart_binding_v0.py . [ 96%]
+...                                                                      [ 98%]
+tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py ..  [100%]
+
+============================= 130 passed in 9.23s ==============================

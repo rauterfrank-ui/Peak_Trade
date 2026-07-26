@@ -55,7 +55,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-market-landscape-v2="true"' in html
     for landmark in LANDMARKS:
         assert landmark in html, landmark
-    assert "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT" in html
+    assert "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL" in html
     assert "BOUND_NOT_ACTIVATED" in html
     assert (
         "no ohlcv fabricated" in html.lower()
@@ -125,6 +125,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert html.lower().count("<main") == 1
     assert '<h1 class="mdl-v2-kicker">Market Landscape</h1>' in html
     assert 'data-mdl-a11y-baseline="task7"' in html
+    assert 'data-mdl-density="task1"' in html
     assert "Promote" not in html
     assert ">ACTIVE<" not in html
     assert ">ELIGIBLE<" not in html
@@ -139,6 +140,40 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert ">ELIGIBLE<" not in gov
     diag = gov.split('data-mdl-ops="diagnostics_summary"', 1)[1][:800]
     assert ">PASS<" not in diag
+
+
+def test_get_market_ops_density_avoids_repeated_missing_badges(client: TestClient) -> None:
+    """Capability 7 TASK_1: unavailable ops details use em-dash; summary keeps status."""
+    html = client.get("/market").text
+    risk = html.split('data-mdl-ops="risk_sizing_capital"', 1)[1].split(
+        'data-mdl-ops="execution_reconciliation"', 1
+    )[0]
+    execution = html.split('data-mdl-ops="execution_reconciliation"', 1)[1].split(
+        'data-mdl-ops="economic_summary"', 1
+    )[0]
+    economic = html.split('data-mdl-ops="economic_summary"', 1)[1].split(
+        'data-mdl-region="GOVERNANCE_DIAGNOSTICS_REGION"', 1
+    )[0]
+
+    def _dd_text(fragment: str, field: str) -> str:
+        chunk = fragment.split(f'data-mdl-field="{field}"', 1)[1]
+        return chunk.split(">", 1)[1].split("<", 1)[0].strip()
+
+    assert 'data-mdl-field="risk_summary"' in risk
+    assert _dd_text(risk, "risk_summary") == "MISSING_SOURCE"
+    # Detail cells must not restate the availability label as visible text.
+    assert _dd_text(risk, "risk_status") == "—"
+    assert _dd_text(risk, "sizing_status") == "—"
+    assert _dd_text(risk, "capital_status") == "—"
+    assert _dd_text(risk, "risk_quantity") == "—"
+    assert _dd_text(execution, "execution_status") == "—"
+    assert _dd_text(execution, "reconciliation_status") == "—"
+    assert _dd_text(economic, "economic_profit_factor") == "—"
+    # Summary / reasons remain the fail-closed carrier.
+    assert _dd_text(economic, "economic") == "MISSING_SOURCE" or "MISSING_SOURCE" in economic
+    assert "MISSING_SOURCE" in risk
+    assert "MISSING_SOURCE" in execution
+    assert "MISSING_SOURCE" in economic
 
 
 def _region_html(html: str, region: str) -> str:
@@ -362,7 +397,7 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     # Must not invent HOLD/FLAT
     assert ctx["decision"]["fields"]["decision"] is None
     assert ctx["decision"]["fields"]["direction"] is None
-    assert ctx["phase"] == "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
+    assert ctx["phase"] == "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL"
     assert ctx["product_flags"]["operator_go_required"] is True
     assert ctx["product_flags"]["capability_6_alt_a_closeout"] is True
     assert ctx["economic"]["classification_display"] == "EVIDENCE_ONLY"
@@ -685,8 +720,11 @@ def test_capability_6_alt_a_economic_fail_fields_presented_exactly() -> None:
         ctx_u = present_market_landscape_v2(page_u)
         label = availability.value
         assert ctx_u["economic"]["status_display"] == label
-        assert ctx_u["economic"]["profit_factor_display"] == label
+        # Capability 7 density: unavailable detail metrics stay em-dash; status carries label.
+        assert ctx_u["economic"]["profit_factor_display"] == "—"
+        assert ctx_u["economic"]["validity_display"] == "—"
         assert reason in ctx_u["economic"]["reason_codes"]
+        assert reason in ctx_u["economic"]["reasons_display"]
 
 
 def test_capability_6_alt_a_diagnostics_and_governance_not_bound() -> None:

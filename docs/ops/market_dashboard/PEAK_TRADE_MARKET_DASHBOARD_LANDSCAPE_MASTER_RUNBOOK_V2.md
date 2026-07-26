@@ -159,7 +159,7 @@ PHASE_3_LANDSCAPE_SHELL=PARTIAL           # PR #5501 technical shell merged; OPE
 PHASE_4_PRODUCER_BINDINGS=PARTIAL         # market/scope/decision/DP/safety/risk/execution/economic/OKX bound; Cap6 ALT_A presents economic fields + honest diagnostics/autonomy NOT_BOUND
 PHASE_4_6C_DIAGNOSTICS=DEFERRED           # OPTION_A KEEP_NOT_BOUND (ratified)
 PHASE_4_7_AUTONOMY=DEFERRED               # OPTION_D KEEP_NOT_BOUND (ratified)
-PHASE_5_PRODUCT_SURFACE=PARTIAL           # TASK_7/8 PASS; TASK_4 DEFERRED; TASK_1 visual density OPEN; OPERATOR_PRODUCT_GATE=false
+PHASE_5_PRODUCT_SURFACE=PARTIAL           # TASK_1/7/8 PASS; TASK_4 DEFERRED; OPERATOR_PRODUCT_GATE=false
 PHASE_6_AUTONOMY_PARALLEL=OPEN
 PHASE_7_PRE_ACTIVATION_OBS=OPEN
 PHASE_8_CLOSEOUT=OPEN
@@ -1167,11 +1167,41 @@ STALE_PID_ONLY_BLOCKER=true
 
 **Unresolved / still open for Phase 5**
 
-- `TASK_1_VISUAL_DENSITY_OPTIMIZED` not started.
-- Operator product gate remains false; Phase 5 remains incomplete.
+- Operator product gate remains false; Phase 5 remains incomplete until
+  independent operator product review.
 - TASK_4 timeline remains `DEFERRED`.
 - Canonical review-server STALE_PID remains an operator/infra follow-up
   outside this measurement slice.
+
+### TASK_1 — Visual Density Optimized (IMPLEMENTED)
+
+```text
+PHASE=PHASE_5_TASK_1_VISUAL_DENSITY_OPTIMIZED
+TASK_1_STATE=PASS
+TASK_1_IMPLEMENTED=true
+TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED
+PHASE_5_PASS=false
+TECHNICAL_PRODUCT_GATE=true
+OPERATOR_PRODUCT_GATE=false
+CAPABILITY=MARKET_DASHBOARD_PRODUCT_MATURITY_AND_CHROME_EVIDENCE_V1
+```
+
+**Established facts (this slice — presentation only)**
+
+- Tighter Landscape spacing (strip/workspace/decision/ops/gov/timeline) without
+  introducing card borders or structural divider lines.
+- Unavailable Risk / Execution / Economic detail cells render as em-dash while
+  the column summary retains the single canonical availability label and reason
+  codes — no repeated MISSING_SOURCE badges on every detail field.
+- Decision → Why → Blockers primary reading flow, Source Health compact rows,
+  Engineering Drawer, keyboard/focus baseline, and honest Timeline `NOT_BOUND`
+  remain intact.
+- No producer, authority, runtime, order, or domain recomputation changes.
+
+**Tests / evidence**
+
+- Shell-route density guard + existing Landscape owner suites.
+- Evidence pack: `evidence/market_dashboard_v2/capability7_product_maturity/`
 
 ---
 
@@ -1341,7 +1371,7 @@ Capability 3 Kanonische Marktbindung (incl. OKX OHLCV + continuous refresh + int
 Capability 4 Entscheidungsfähigkeit (Decision/DP) — PASS technical (#5506/#5507); operator product PENDING
 Capability 5 Operative Projektion (Safety done #5508; Risk/Sizing/Capital + Execution/Reconciliation) — PARTIAL; NEXT
 Capability 6 Governance & Autonomieprojektion — PASS_ALT_A (economic fields presented; diagnostics/autonomy remain ratified NOT_BOUND; no supersession)
-Capability 7 Produktreife — PARTIAL (drawer/a11y/perf/source-health done; TASK_1 density OPEN; timeline DEFERRED)
+Capability 7 Produktreife — TECHNICAL_PASS (TASK_1 density + drawer/a11y/perf/source-health; timeline DEFERRED; OPERATOR_PRODUCT_GATE=false)
 Capability 8 Produktionsabschluss — OPEN
 ```
 
