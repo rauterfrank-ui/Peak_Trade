@@ -10,7 +10,6 @@ evidence/market_dashboard_v2/phase5/pr5/architecture_guards.txt
 evidence/market_dashboard_v2/phase5/pr5/changed_files_pre.txt
 evidence/market_dashboard_v2/phase5/pr5/chrome_test.txt
 evidence/market_dashboard_v2/phase5/pr5/console.log
-evidence/market_dashboard_v2/phase5/pr5/console_injected.log
 evidence/market_dashboard_v2/phase5/pr5/docs_reference_targets.txt
 evidence/market_dashboard_v2/phase5/pr5/docs_token_policy.txt
 evidence/market_dashboard_v2/phase5/pr5/evidence_seal_statement.txt
