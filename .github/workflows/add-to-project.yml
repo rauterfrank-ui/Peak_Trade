@@ -4,18 +4,20 @@ on:
   issues:
     types: [opened]
 
+permissions: {}
+
 jobs:
   add-to-project:
     runs-on: ubuntu-latest
     steps:
       - name: Add issue to project
-        uses: actions/add-to-project@v0.5.0
+        uses: actions/add-to-project@31b3f3ccdc584546fc445612dec3f38ff5edb41c # v0.5.0
         with:
           project-url: https://github.com/users/rauterfrank-ui/projects/1
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
 
       - name: Set status to Backlog
-        uses: titoportas/update-project-fields@v0.1.0
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751 # v0.1.0
         with:
           project-url: https://github.com/users/rauterfrank-ui/projects/1
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}

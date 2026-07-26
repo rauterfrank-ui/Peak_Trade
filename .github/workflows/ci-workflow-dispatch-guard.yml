@@ -14,15 +14,18 @@ on:
       - ".github/workflows/**/*.yaml"
       - "scripts/ops/validate_workflow_dispatch_guards.py"
 
+permissions:
+  contents: read
+
 jobs:
   dispatch-guard:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Detect workflow changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3
         id: changes
         with:
           filters: |
@@ -35,7 +38,7 @@ jobs:
 
       - name: Setup Python
         if: steps.changes.outputs.workflows == 'true'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 

@@ -1,8 +1,9 @@
 # Security Notes — Peak_Trade Cybersecurity Baseline Pointers
 
-**Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`  
-**Last Reviewed (repo-static):** 2026-07-23  
-**Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**  
+**Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
+**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26)
+**Last Reviewed (repo-static):** 2026-07-26
+**Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
 **Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, or claim unverified scanner results.
 
 ---
@@ -78,15 +79,16 @@ Historical remediation notes: [`docs/ops/AUDIT_DEPENDENCY_REMEDIATION_2026-01-07
 
 ## 4. GitHub Actions supply-chain posture (summary)
 
-Repo-static inventory as of **2026-07-23** (see CI GHA audit index for detail):
+Repo-static inventory after **`CYBER_CI_SUPPLY_CHAIN_HARDENING_V1`** (**2026-07-26**; see CI GHA audit index):
 
-- **73** workflow files; **0** `pull_request_target`
-- **0** SHA-pinned `uses:` refs; **254** tag/version-pinned `uses:` refs; **0** floating `@main`/`@master`/`@latest` action refs
-- **34** workflows with top-level `permissions:`; **39** without (default token permissions apply — residual risk)
-- Write-permission surfaces frozen by `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py`
-- Action-ref / missing-permissions visibility: `tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py`
+- **73** workflow files; **0** `pull_request_target`; **0** `permissions: write-all`
+- External GitHub Actions are **full-SHA-pinned** (`uses: owner/repo@<40-hex> # <tag>`): **231** refs / **21** unique actions; **0** floating `@main`/`@master`/`@latest`/`@head`; **0** tag-only external pins
+- Readable release/version comments (`# vX…`) are retained for maintainability; upgrading an Action requires a deliberate SHA refresh (resolve the same tag/commit upstream, do not silently bump majors)
+- **73 / 73** workflows declare explicit top-level `permissions:` (default baseline `contents: read`; `permissions: {}` only where GITHUB_TOKEN scopes are unused)
+- Write-permission surfaces remain a narrow frozen allowlist via `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py`
+- Fail-closed regression owner: `tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py`
 
-**Accepted residual risk:** tag pinning (mutable tags) instead of commit SHA pinning. Full SHA-pin migration is a separate, explicit workflow PR — not part of this baseline refresh.
+**Not claimed by this capability:** GitHub branch protection UI, push protection / secret scanning enablement, Dependabot/CodeQL org toggles, Runtime/Live authorization.
 
 ---
 
@@ -119,8 +121,8 @@ Docs live-enable pattern guard: [`scripts/ci/check_docs_no_live_enable_patterns.
 
 | ID | Risk | Acceptance / follow-up |
 |----|------|------------------------|
-| RR-CB-001 | Actions tag-pinned, not SHA-pinned | Accepted until dedicated pinning PR |
-| RR-CB-002 | Many workflows lack explicit top-level `permissions:` | Inventory frozen; add least-privilege blocks in focused PRs |
+| RR-CB-001 | Actions tag-pinned, not SHA-pinned | **Closed** by `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (full 40-hex SHA pins + regression contract) |
+| RR-CB-002 | Many workflows lack explicit top-level `permissions:` | **Closed** by `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (every workflow declares top-level permissions; write allowlist retained) |
 | RR-CB-003 | No required secret-scanning job on every PR | Rely on GitHub Push Protection (operator-stated) + local discipline; optional gitleaks remains human-gated |
 | RR-CB-004 | Semgrep/SAST not enforced | Accepted default-off per concept |
 | RR-CB-005 | Python 3.9 conditional older pins | Prefer 3.11; drop 3.9 only via explicit support decision |

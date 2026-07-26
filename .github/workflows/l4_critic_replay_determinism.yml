@@ -7,6 +7,8 @@ on:
     branches: ["main", "master"]
   workflow_dispatch:
 
+permissions:
+  contents: read
 concurrency:
   group: l4-critic-determinism-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -21,10 +23,10 @@ jobs:
       critic_changed: ${{ steps.filter.outputs.critic }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Detect L4 Critic changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3
         id: filter
         with:
           filters: |
@@ -60,11 +62,11 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up Python 3.11
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -149,7 +151,7 @@ jobs:
 
       - name: Upload outputs on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: l4-critic-outputs-failed
           path: .tmp/l4_critic_out/
@@ -173,11 +175,11 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up Python 3.11
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -195,7 +197,7 @@ jobs:
 
       - name: Upload test results on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: l4-critic-test-results-failed
           path: |
