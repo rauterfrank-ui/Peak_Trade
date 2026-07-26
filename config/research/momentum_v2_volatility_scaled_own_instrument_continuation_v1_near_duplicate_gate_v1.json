@@ -1,0 +1,85 @@
+{
+  "artifact_kind": "momentum_v2_volatility_scaled_own_instrument_continuation_v1_near_duplicate_gate",
+  "artifact_version": "v1",
+  "authority_effect": "NONE",
+  "base_sha": "123d565b559944b40b37b4ddeb7749fa5e8cae03",
+  "comparators": [
+    {
+      "comparator_id": "momentum_1h/v1",
+      "distinction": "Selected treatment divides raw return by trailing realized vol and uses z thresholds (1.0/0.0); raw thresholds remain frozen baseline only, not retuned treatment.",
+      "entry": 0.02,
+      "exit": -0.01,
+      "lookback": 20,
+      "normalization": "NONE",
+      "semantics": "OWN_INSTRUMENT_ENTRY_EXIT_EVENT",
+      "signal_equation": "raw_simple_return=(close/close.shift(N))-1",
+      "status": "RETIRED_TERMINAL_ECONOMIC_FAILURE_PR5555"
+    },
+    {
+      "comparator_id": "momentum_1h/v2",
+      "distinction": "Versioned raw binding with unchanged thresholds; explicitly excluded from this slice (NO_MOMENTUM_1H_V2_EXECUTION). Not vol-scaled.",
+      "hypothesis_id": "MOMENTUM_HORIZON_V2_NON_BITCOIN_FUTURES_V2",
+      "normalization": "NONE",
+      "signal_equation": "identical_raw_return_thresholds_to_v1",
+      "status": "PENDING_SEPARATE_RAW_BINDING_SCOPE_UNTOUCHED"
+    },
+    {
+      "comparator_id": "post_pr4941_v2_fleet_archetype_retries",
+      "distinction": "Exclusion targets unchanged archetype retries of failed v1 trend/MR/momentum. Selected hypothesis introduces a new treatment variable (vol scaling of score) with frozen distinct z-thresholds while keeping raw momentum as control baseline.",
+      "status": "EXCLUDED_NEAR_DUPLICATE_OF_FAILED_V1_ARCHETYPES"
+    },
+    {
+      "comparator_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1",
+      "distinction": "Cross-sectional ranking polarity vs own-instrument ENTRY/EXIT timing; CS lane reopen forbidden.",
+      "semantics": "CROSS_SECTIONAL_RANK_INTENT",
+      "status": "PROGRAM_CLOSED_DEVELOPMENT_FAIL"
+    },
+    {
+      "comparator_id": "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1",
+      "distinction": "Opposite polarity/family (negated trailing return rank) and terminally retired; reopen forbidden.",
+      "semantics": "CROSS_SECTIONAL_REVERSAL_RANK",
+      "status": "LANE_CLOSED_NO_FURTHER_RESEARCH_PR5558"
+    },
+    {
+      "comparator_id": "trend_following/v1",
+      "distinction": "Different strategy family (trend_following registry), not vol-scaled momentum score.",
+      "status": "RETIRED_PR5555"
+    },
+    {
+      "comparator_id": "bollinger_bands/v1",
+      "distinction": "Mean-reversion band family; not momentum continuation.",
+      "status": "RETIRED_PR5555"
+    }
+  ],
+  "explicit_non_duplicate_proof": [
+    "SOLE_TREATMENT_DIFFERENCE_IS_VOL_SCALING_BEFORE_THRESHOLD_CROSS",
+    "RAW_THRESHOLDS_FROZEN_AS_BASELINE_NOT_RETUNED",
+    "Z_THRESHOLDS_DISTINCT_FROM_RAW_THRESHOLDS",
+    "NOT_CROSS_SECTIONAL_SUBSTITUTION",
+    "NOT_REGISTRY_MOMENTUMSTRATEGY_MUTATION",
+    "NOT_MOMENTUM_1H_V2_RELABEL"
+  ],
+  "implementation_eligible": true,
+  "material_difference_axes": {
+    "claimed_economic_mechanism": "volatility-normalized continuation strength vs frozen raw baseline",
+    "dataset": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1",
+    "entry_direction": "LONG_ENTRY_ONLY",
+    "exit_semantics": "EXIT_EVENT_NO_SHORT_ENTRY",
+    "lookback": 20,
+    "normalization": "std(one_bar_simple_returns, N) required",
+    "parameter_degrees_of_freedom": "frozen non-grid; no search",
+    "ranking_or_own_instrument": "OWN_INSTRUMENT (not cross-sectional rank)",
+    "signal_equation": "raw_return / trailing_realized_vol vs raw_return",
+    "universe": "OKX LINEAR_USDT_PERPETUAL BTC+SPOT excluded"
+  },
+  "runtime_policy": {
+    "live_authorized": false,
+    "orders_allowed": false,
+    "runtime_activated": false,
+    "scheduler_authorized": false
+  },
+  "schema_version": "momentum_v2_vol_scaled_near_duplicate_gate.v1",
+  "selected_hypothesis_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
+  "selected_strategy_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1",
+  "verdict": "MATERIALLY_DISTINCT"
+}

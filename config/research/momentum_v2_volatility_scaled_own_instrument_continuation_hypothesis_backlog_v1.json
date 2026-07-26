@@ -19,18 +19,21 @@
   "exactly_one_authoritative_truth": true,
   "explicit_closeout_decision": false,
   "explicit_non_actions": [
+    "NO_AUTOMATIC_SELECTION",
+    "NO_CS_MOMENTUM_REOPEN",
+    "NO_DEVELOPMENT_EVALUATION_EXECUTION_IN_THIS_SLICE",
     "NO_EVALUATION",
     "NO_HOLDOUT_ACCESS",
-    "NO_CS_MOMENTUM_REOPEN",
+    "NO_IMPLICIT_SUCCESSOR",
     "NO_MOMENTUM_1H_V2_EXECUTION",
-    "NO_REGISTRY_MUTATION",
-    "NO_RUNTIME",
     "NO_ORDERS",
     "NO_PROMOTION",
-    "NO_IMPLICIT_SUCCESSOR"
+    "NO_REGISTRY_MUTATION",
+    "NO_RUNTIME",
+    "NO_SEALED_ACCESS"
   ],
   "explicit_waiting_decision": false,
-  "governance_note": "Open backlog with exactly one preregistered definition-only Momentum-V2 hypothesis. Evaluation unauthorized. Closed CS momentum remains closed. Pending momentum_1h/v2 raw binding evaluation remains a separate reserved scope and is not renamed or executed here.",
+  "governance_note": "Operator selected sole remaining A-ready hypothesis; offline strategy implementation present; Development evaluation capability prepared but unauthorized; run slot available/unconsumed. Closed CS momentum remains closed. Pending momentum_1h/v2 raw binding untouched. Near-duplicate verdict MATERIALLY_DISTINCT.",
   "governance_rules": {
     "development_runs_per_hypothesis": 1,
     "economic_gate_closed": true,
@@ -45,15 +48,17 @@
     "strategy_implementation_requires_separate_operator_go": true
   },
   "holdout_forbidden": true,
-  "implementation_authorized": false,
+  "implementation_authorized": true,
   "lane_auto_closed": false,
   "lifecycle_authority": "SHARED_POST_TERMINAL_LIFECYCLE_CONTRACT_V1_SOLE_AUTHORITY",
   "lifecycle_contract_id": "CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1",
   "lifecycle_contract_ref": "config/research/canonical_research_lane_post_terminal_lifecycle_contract_v1.json",
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_OR_BOUNDED_DEVELOPMENT_EVALUATION",
+  "near_duplicate_gate_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_near_duplicate_gate_v1.json",
+  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "next_eligible": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
   "open_unpreregistered_candidates": [],
   "operator_decision_packet_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_program_definition_operator_decision_packet_v1.json",
+  "operator_selection_record_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_operator_selection_record_v1.json",
   "pending_separate_scopes_untouched": {
     "momentum_1h_v2_offline_economic_evaluation_execution_authorization_supersession_v1": "UNTOUCHED_NOT_EXECUTED_IN_THIS_SLICE",
     "momentum_1h_v2_raw_binding_hypothesis_id": "MOMENTUM_HORIZON_V2_NON_BITCOIN_FUTURES_V2"
@@ -67,7 +72,7 @@
       "evaluation_authorized": false,
       "holdout_allowed": false,
       "hypothesis_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
-      "implementation_present": false,
+      "implementation_present": true,
       "preregistration_evidence_ref": "docs/evidence/preregister_momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_v1/",
       "reopen_allowed": false,
       "rerun_allowed": false,
@@ -75,7 +80,7 @@
       "run_slot_consumed": false,
       "runner_start_count": 0,
       "signal_family": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM",
-      "status": "DEFINITION_ONLY_PREREGISTERED",
+      "status": "DEFINITION_ONLY_PREREGISTERED_IMPLEMENTATION_PRESENT",
       "strategy_id": "momentum_v2_volatility_scaled_own_instrument_continuation",
       "strategy_identity": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1",
       "strategy_version": "v1",
@@ -109,7 +114,7 @@
     "testnet_activated": false
   },
   "schema_version": "momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog.v1",
-  "slice_class": "DEFINITION_ONLY_GOVERNANCE",
+  "slice_class": "STRATEGY_IMPLEMENTATION_AND_DEV_EVAL_CAPABILITY_PREP_NO_RUN",
   "status": "OPEN_BACKLOG",
   "terminal_hypotheses": [],
   "universe_scope": {
@@ -120,6 +125,6 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "MOMENTUM_V2_VOL_SCALED_OWN_INSTRUMENT_CONTINUATION_OPEN_BACKLOG_ONE_PREREGISTERED_DEFINITION_ONLY",
+  "verdict": "MOMENTUM_V2_VOL_SCALED_SELECTED_IMPLEMENTATION_PRESENT_SLOT_AVAILABLE",
   "workstream_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_WORKSTREAM_V1"
 }

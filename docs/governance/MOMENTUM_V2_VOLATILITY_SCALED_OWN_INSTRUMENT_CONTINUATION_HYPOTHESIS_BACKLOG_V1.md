@@ -9,7 +9,10 @@
 - Open unpreregistered candidates: empty
 - Terminal: empty
 - Development run count: `0`
+- Implementation present: `true`
 - Evaluation authorized: `false`
+- Development evaluation authorized: `false`
+- Run slot consumed: `false`
 - Holdout: forbidden &#47; unaccessed
 - Next eligible: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
 
@@ -18,7 +21,7 @@
 Exactly one:
 
 - `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
-  — status `DEFINITION_ONLY_PREREGISTERED`
+  — status `DEFINITION_ONLY_PREREGISTERED_IMPLEMENTATION_PRESENT`
   — baseline `FROZEN_RAW_RETURN_MOMENTUM_1H_ENTRY_EXIT_EVENT_V1`
   — treatment `VOLATILITY_SCALED_MOMENTUM_SCORE_THRESHOLD_CROSS_V1`
   — contract: `config&#47;research&#47;momentum_v2_volatility_scaled_own_instrument_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
@@ -32,7 +35,7 @@ Exactly one:
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_OR_BOUNDED_DEVELOPMENT_EVALUATION`
+`AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
 
 ---
 docs_token: DOCS_TOKEN_MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1

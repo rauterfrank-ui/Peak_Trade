@@ -35,8 +35,9 @@ economics versus the frozen raw-return `momentum_1h` ENTRY&#47;EXIT baseline.
 ## Authority
 
 - `EVALUATION_AUTHORIZED=false`
-- `IMPLEMENTATION_AUTHORIZED=false`
+- `IMPLEMENTATION_AUTHORIZED=true`
 - `DEVELOPMENT_RUN_COUNT=0`
+- `RUN_SLOT_CONSUMED=false`
 - Double-Play remains sole directional transition authority
 - Runtime Bridge remains `BOUND_NOT_ACTIVATED`
 - `LIVE_AUTHORIZED=false`, `ORDERS_ENABLED=false`

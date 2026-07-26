@@ -62,7 +62,7 @@
   "holdout_forbidden": true,
   "holdout_run_limit": 0,
   "hypothesis_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1",
-  "implementation_authorized": false,
+  "implementation_authorized": true,
   "lane_auto_closed": false,
   "lane_backlog_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog_v1.json",
   "lane_backlog_status": "OPEN_BACKLOG",
@@ -76,7 +76,7 @@
     "vs_vol_regime_breakouts": "No ATR percentile decay/compression/expansion admission; score is lookback return / trailing realized vol."
   },
   "measurement_contract_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
-  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_OR_BOUNDED_DEVELOPMENT_EVALUATION",
+  "next_canonical_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION",
   "operator_decision_packet_ref": "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_program_definition_operator_decision_packet_v1.json",
   "program_family": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM",
   "program_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1",
@@ -105,6 +105,7 @@
   "slice_class": "DEFINITION_ONLY_GOVERNANCE",
   "status": "DEFINITION_ONLY",
   "strategy_identity": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1",
+  "strategy_implementation_present": true,
   "target_phenomenon": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM_CONTINUATION",
   "treatment_type": "OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM_CONTINUATION_ADMISSION",
   "universe_scope": {
@@ -115,6 +116,6 @@
     "spot_excluded": true,
     "venue": "OKX"
   },
-  "verdict": "NEW_MOMENTUM_V2_PROGRAM_IDENTITY_PERSISTED_WITH_ONE_PREREGISTERED_HYPOTHESIS_EVALUATION_UNAUTHORIZED",
+  "verdict": "MOMENTUM_V2_PROGRAM_IMPLEMENTATION_PRESENT_EVALUATION_UNAUTHORIZED_SLOT_AVAILABLE",
   "workstream_id": "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_WORKSTREAM_V1"
 }

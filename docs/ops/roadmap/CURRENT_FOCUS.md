@@ -15,6 +15,31 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ---
 
+## Post–Momentum V2 vol-scaled selection + offline implementation (2026-07-26)
+
+**Narrow research capability only** (not Development evaluation execution, Holdout, Sealed, promotion, or activation):
+
+- Base SHA: `123d565b559944b40b37b4ddeb7749fa5e8cae03` (`origin/main` after PR **#5558**).
+- Selected hypothesis: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Strategy identity: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1`
+- Near-duplicate verdict: `MATERIALLY_DISTINCT`
+- Offline strategy implementation present; Development evaluation capability prepared
+- Locked: `DEVELOPMENT_EVALUATION_AUTHORIZED=false`,
+  `DEVELOPMENT_RUN_SLOT_AVAILABLE=true`,
+  `DEVELOPMENT_RUN_SLOT_CONSUMED=false`,
+  `HOLDOUT_ALLOWED=false`, `SEALED_ALLOWED=false`,
+  `PROMOTION_ALLOWED=false`, `ACTIVATION_ALLOWED=false`
+- Evidence:
+  [`docs/evidence/implement_momentum_v2_volatility_scaled_own_instrument_continuation_strategy_v1/`](../../evidence/implement_momentum_v2_volatility_scaled_own_instrument_continuation_strategy_v1/)
+
+**Still locked / next formally permissible step:**
+
+- Separate operator GO required before any Development evaluation execution
+- No Runtime / Scheduler / Shadow / Paper / Testnet / Live / Orders GO implied
+- CSRHR remains terminally closed; no reopen
+
+---
+
 ## Post–CSRHR v1 terminal retirement closeout (2026-07-26)
 
 **Narrow governance result only** (not evaluation, Holdout, Sealed, promotion, or activation):
