@@ -57,7 +57,7 @@ Snapshot taken read-only via GitHub API against `rauterfrank-ui&#47;Peak_Trade` 
 | Secret scanning | **ENFORCED** | `security_and_analysis.secret_scanning.status=enabled` |
 | Push protection | **ENFORCED** | `security_and_analysis.secret_scanning_push_protection.status=enabled` |
 | Branch protection (`main`) | **ENFORCED** | Required status checks + `enforce_admins=true` (API) |
-| Repository ruleset `peak_trade` | **AVAILABLE_NOT_ENFORCED** | Ruleset exists with `enforcement=disabled` |
+| Repository ruleset `peak_trade` | **ENFORCED** | Ruleset `id=11192468` with `enforcement=active`, target `refs/heads/main` (see `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1`) |
 | New dedicated secret-scan check context | **NOT_APPLICABLE** | Enforced inside existing required `Lint Gate` (no BP mutation) |
 
 Repository code does **not** mutate GitHub security settings. Classifications above are evidence snapshots, not authorization to change billing/org policy.
@@ -90,7 +90,7 @@ Repository code does **not** mutate GitHub security settings. Classifications ab
 
 - Optional third-party tools (`gitleaks` / `detect-secrets`) remain **not** configured in pre-commit; complementary only.
 - Full blob-level Git history scanning is not CI-enforced (`HISTORY_SCAN_STATUS=MANUAL_BOUNDED`).
-- Ruleset `peak_trade` remains disabled until an explicit operator enables enforcement (no mutation in this PR).
+- Ruleset `peak_trade` is **ENFORCED** under `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (active on `refs/heads/main`).
 - Non-provider GitHub secret-scanning patterns / validity checks were observed disabled in the API snapshot — operator may enable later without this PR claiming them.
 
 ## Exact local reproduction commands

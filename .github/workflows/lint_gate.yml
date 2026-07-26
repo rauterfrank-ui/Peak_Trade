@@ -238,6 +238,16 @@ jobs:
           #   python3 scripts/ci/check_tracked_credential_hygiene_policy_v1.py
           python3 scripts/ci/check_tracked_credential_hygiene_policy_v1.py
 
+      - name: Branch ruleset enforcement governance v1
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
+        run: |
+          set -euo pipefail
+          echo "🛡️  Verifying branch ruleset enforcement governance (offline evidence)..."
+          # Fail-closed offline verifier against committed sanitized API evidence.
+          # Does not mutate GitHub settings. Local equivalent:
+          #   python3 scripts/ci/check_branch_ruleset_enforcement_governance_v1.py
+          python3 scripts/ci/check_branch_ruleset_enforcement_governance_v1.py
+
       - name: Governance AI matrix consistency gate
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |
