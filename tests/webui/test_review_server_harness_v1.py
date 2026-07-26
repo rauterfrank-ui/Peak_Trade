@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import os
 import re
+import shlex
+import shutil
 import socket
 import subprocess
 import sys
@@ -43,6 +45,36 @@ physical_path "$2"
     )
     assert extract.returncode == 0, extract.stdout + extract.stderr
     return extract.stdout.strip()
+
+
+def _resolve_uv_bin(tmp_path: Path) -> str:
+    """Prefer real uv; otherwise provide a minimal `uv run` shim for CI matrices."""
+    found = shutil.which("uv")
+    if found:
+        return found
+    shim_dir = tmp_path / "_peak_trade_uv_shim"
+    shim_dir.mkdir(parents=True, exist_ok=True)
+    shim = shim_dir / "uv"
+    if not shim.exists():
+        py = shlex.quote(sys.executable)
+        shim.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            f"PY={py}\n"
+            "# Emulate: uv run python -m uvicorn ... using the active test interpreter.\n"
+            'if [[ "${1:-}" == "run" ]]; then\n'
+            "  shift\n"
+            '  if [[ "${1:-}" == "python" || "${1:-}" == "python3" ]]; then\n'
+            "    shift\n"
+            '    exec "$PY" "$@"\n'
+            "  fi\n"
+            '  exec "$@"\n'
+            "fi\n"
+            'exec "$@"\n',
+            encoding="utf-8",
+        )
+        shim.chmod(0o755)
+    return str(shim)
 
 
 def _free_port() -> int:
@@ -91,12 +123,24 @@ def _base_env(tmp_path: Path, port: int, **overrides: str) -> dict[str, str]:
             "PEAK_TRADE_WEBUI_STOP_TIMEOUT_SECONDS": "15",
             "PEAK_TRADE_WEBUI_HEALTH_PATH": "/api/health",
             "PEAK_TRADE_WEBUI_REVIEW_PATH": "/",
+            "PEAK_TRADE_WEBUI_UV": _resolve_uv_bin(tmp_path),
             "LIVE_AUTHORIZED": "false",
             "ORDERS_ALLOWED": "false",
         }
     )
     env.update(overrides)
     return env
+
+
+@pytest.fixture(autouse=True)
+def _harness_uv_env(tmp_path_factory: pytest.TempPathFactory, monkeypatch: pytest.MonkeyPatch):
+    """Ensure harness starts work in CI jobs where `uv` is not on PATH."""
+    if shutil.which("uv"):
+        yield
+        return
+    shim_root = tmp_path_factory.mktemp("harness_uv")
+    monkeypatch.setenv("PEAK_TRADE_WEBUI_UV", _resolve_uv_bin(shim_root))
+    yield
 
 
 def _http_code(url: str, timeout: float = 3.0) -> int:
@@ -138,37 +182,47 @@ def test_identity_ok_uses_physical_path_comparison() -> None:
     assert '[[ -n "$cwd" && "$cwd" != "$REPO_ROOT" ]]' not in raw
 
 
-def test_physical_path_tmp_private_tmp_equivalence_and_distinct_rejection() -> None:
-    """macOS /tmp vs /private/tmp alias equivalence; distinct dirs stay fail-closed."""
-    marker = uuid.uuid4().hex
-    logical_root = Path("/tmp") / f"peak_trade_review_server_path_identity_{marker}"
-    logical_root.mkdir(parents=True, exist_ok=True)
-    other_root = Path("/tmp") / f"peak_trade_review_server_path_identity_other_{marker}"
-    other_root.mkdir(parents=True, exist_ok=True)
-    try:
-        logical = str(logical_root)
-        private_alias = str(Path("/private/tmp") / logical_root.name)
-        assert Path(private_alias).is_dir()
+def test_physical_path_tmp_private_tmp_equivalence_and_distinct_rejection(
+    tmp_path: Path,
+) -> None:
+    """Lexical path aliases resolve equal; distinct directories stay fail-closed.
 
-        phys_logical = _harness_physical_path(logical)
-        phys_private = _harness_physical_path(private_alias)
-        assert phys_logical == phys_private
-        assert phys_logical == os.path.realpath(logical)
+    Portable contract uses a symlink alias (Linux CI has no /private/tmp).
+    On macOS, also prove /tmp vs /private/tmp when that alias exists.
+    """
+    real_dir = tmp_path / "real_worktree"
+    real_dir.mkdir()
+    alias_dir = tmp_path / "alias_worktree_link"
+    alias_dir.symlink_to(real_dir, target_is_directory=True)
+    other_dir = tmp_path / "other_worktree"
+    other_dir.mkdir()
 
-        if sys.platform == "darwin":
-            # On macOS the lexical forms differ while physical forms match.
-            assert logical != private_alias
+    assert str(real_dir) != str(alias_dir)
+    phys_real = _harness_physical_path(real_dir)
+    phys_alias = _harness_physical_path(alias_dir)
+    assert phys_real == phys_alias
+    assert phys_real == os.path.realpath(real_dir)
 
-        phys_other = _harness_physical_path(other_root)
-        assert phys_other != phys_logical
+    phys_other = _harness_physical_path(other_dir)
+    assert phys_other != phys_real
+    assert phys_real == phys_alias
+    assert not (phys_real == phys_other)
 
-        # identity_ok comparison contract (physical equality only).
-        assert phys_logical == phys_private
-        assert not (phys_logical == phys_other)
-    finally:
-        for path in (logical_root, other_root):
+    # macOS-only proven production alias when present.
+    private_tmp = Path("/private/tmp")
+    if private_tmp.is_dir():
+        marker = uuid.uuid4().hex
+        logical_root = Path("/tmp") / f"peak_trade_review_server_path_identity_{marker}"
+        logical_root.mkdir(parents=True, exist_ok=True)
+        try:
+            private_alias = private_tmp / logical_root.name
+            assert private_alias.is_dir()
+            assert _harness_physical_path(logical_root) == _harness_physical_path(private_alias)
+            if sys.platform == "darwin":
+                assert str(logical_root) != str(private_alias)
+        finally:
             try:
-                path.rmdir()
+                logical_root.rmdir()
             except OSError:
                 pass
 
