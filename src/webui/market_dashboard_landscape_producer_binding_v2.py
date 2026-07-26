@@ -1,8 +1,9 @@
-"""Phase 4.1 + 4.2 + 4.3A + 4.3B + 4.4A + 4.6B read-only producer binding for Market Landscape V2.
+"""Phase 4.1–4.5 + 4.6B read-only producer binding for Market Landscape V2.
 
 Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity,
 canonical_decision evidence, double_play display projection, safety
-authority KillSwitch/boundary field projection, and economic summary
+authority KillSwitch/boundary field projection, risk/sizing/capital field
+projection, execution/reconciliation field projection, and economic summary
 EconomicViabilityEvidenceV1 field projection.
 Regime / bull-bear / switch remain unbound.
 Lives outside market_dashboard_landscape_v2 so that package stays free of
@@ -13,16 +14,17 @@ Fail-closed:
 - Producer timestamps preserved; page-assembly time is observation-only
 - Aged producer snapshots → STALE (never silently refreshed)
 - Never fabricate OHLCV, ranking, eligibility, selected instrument, scope,
-  decisions, Double Play composition, Safety/KillSwitch state, or economic
-  metrics/status
+  decisions, Double Play composition, Safety/KillSwitch state, risk/sizing/
+  capital quantities, execution/reconciliation status, or economic metrics
 - Never call scope initializers, trailing-scope runtime owners, switch owners,
   decision producers, compose_double_play_decision, or build_dashboard_display_snapshot
 - Never instantiate KillSwitch, call trigger/recover, evaluate_offline_killswitch_boundary_v0,
   or any bind_* Safety evaluator; no live state-file autoload
+- Never call capital/risk/sizing evaluators, order-intent builders,
+  or offline reconciliation evaluators; no order/execution mutation imports
 - Never discover/select EconomicViabilityEvidenceV1 instances (no filesystem,
   registry, latest-file, or environment selector)
 - Never bind promotion_economic_gate_v1 or infer lifecycle labels
-- No risk / capital / sizing / execution binding
 """
 
 from __future__ import annotations
@@ -38,7 +40,9 @@ from .market_dashboard_landscape_v2.projections import (
     project_double_play_snapshot_v1,
     project_dynamic_scope_snapshot_v1,
     project_economic_summary_snapshot_v1,
+    project_execution_reconciliation_snapshot_v1,
     project_market_instrument_snapshot_v1,
+    project_risk_sizing_capital_snapshot_v1,
     project_safety_authority_snapshot_v1,
     project_universe_ranking_snapshot_v1,
 )
@@ -47,7 +51,9 @@ from .market_dashboard_landscape_v2.unavailable import (
     unavailable_double_play,
     unavailable_dynamic_scope,
     unavailable_economic_summary,
+    unavailable_execution_reconciliation,
     unavailable_market_instrument,
+    unavailable_risk_sizing_capital,
     unavailable_safety_authority,
     unavailable_universe_ranking,
 )
@@ -70,6 +76,8 @@ LANDSCAPE_PHASE42_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE43A_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE43B_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE44A_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
+LANDSCAPE_PHASE44B_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
+LANDSCAPE_PHASE45_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE46B_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 
 REASON_MARKET_CONTEXT_NOT_PERSISTED = "CANONICAL_MARKET_CONTEXT_NOT_PERSISTED_FOR_DASHBOARD"
@@ -77,7 +85,11 @@ REASON_SCOPE_NOT_PERSISTED = "CANONICAL_SCOPE_SNAPSHOT_NOT_PERSISTED_FOR_DASHBOA
 REASON_DECISION_NOT_PERSISTED = "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_DOUBLE_PLAY_NOT_PERSISTED = "CANONICAL_DOUBLE_PLAY_DISPLAY_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_SAFETY_NOT_PERSISTED = "CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD"
+REASON_RISK_SIZING_NOT_PERSISTED = "CANONICAL_RISK_SIZING_CAPITAL_NOT_PERSISTED_FOR_DASHBOARD"
+REASON_EXECUTION_NOT_PERSISTED = "CANONICAL_EXECUTION_RECONCILIATION_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_ECONOMIC_NOT_PERSISTED = "CANONICAL_ECONOMIC_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD"
+REASON_SCHEMA_MISMATCH = "SCHEMA_MISMATCH"
+REASON_INVALID_PROVENANCE = "INVALID_PROVENANCE"
 REASON_UNIVERSE_ABSENT = "UNIVERSE_SELECTION_READMODEL_ABSENT"
 REASON_ARCHIVE_ROOT_UNSET = "UNIVERSE_ARCHIVE_ROOT_UNSET"
 REASON_SELECTED_FORBIDDEN_SYMBOL = "SELECTED_INSTRUMENT_FORBIDDEN_BTC_USD_OR_SPOT_DUMMY"
@@ -104,6 +116,17 @@ SAFETY_SOURCE_KIND = "killswitch_boundary_offline_replay_boundary"
 ECONOMIC_PRODUCER_MODULE = "backtest.economic_viability_evidence_v1"
 ECONOMIC_SOURCE_KIND = "economic_viability_evidence_v1"
 ECONOMIC_CONTRACT_SCHEMA_VERSION = "v1"
+RISK_SIZING_PRODUCER_MODULE = (
+    "trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0"
+)
+RISK_SIZING_SOURCE_KIND = "capital_risk_sizing_offline_replay_binding"
+RISK_SIZING_AUTHORITY_OWNER = "src.governance.capital_risk_sizing_v1"
+EXECUTION_PRODUCER_MODULE = (
+    "trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0"
+)
+EXECUTION_SOURCE_KIND = "canonical_order_intent_offline_replay_binding"
+EXECUTION_AUTHORITY_OWNER = "src.governance.canonical_order_intent_v1"
+LANDSCAPE_PROJECTION_SCHEMA_VERSION = "v1"
 
 PHASE_4_1_BOUND_SLOTS: tuple[str, ...] = (
     "market_instrument",
@@ -113,6 +136,8 @@ PHASE_4_2_BOUND_SLOTS: tuple[str, ...] = ("dynamic_scope",)
 PHASE_4_3A_BOUND_SLOTS: tuple[str, ...] = ("canonical_decision",)
 PHASE_4_3B_BOUND_SLOTS: tuple[str, ...] = ("double_play",)
 PHASE_4_4A_BOUND_SLOTS: tuple[str, ...] = ("safety_authority",)
+PHASE_4_4B_BOUND_SLOTS: tuple[str, ...] = ("risk_sizing_capital",)
+PHASE_4_5_BOUND_SLOTS: tuple[str, ...] = ("execution_reconciliation",)
 PHASE_4_6B_BOUND_SLOTS: tuple[str, ...] = ("economic_summary",)
 
 _ISO8601_UTC_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|\+00:00)$")
@@ -1275,6 +1300,277 @@ def _bind_economic_summary(
     )
 
 
+def _optional_injected_str(raw: Any) -> str | None:
+    if raw is None:
+        return None
+    text = _enum_or_str(raw).strip()
+    return text or None
+
+
+def _bind_risk_sizing_capital(
+    *,
+    as_of: datetime,
+    git_sha: str | None,
+    risk_sizing_capital_fields: Mapping[str, Any] | None,
+) -> Any:
+    """Project injected Risk/Sizing/Capital fields.
+
+    No durable dashboard Risk readmodel. Without injection → MISSING_SOURCE.
+    Never calls capital/risk/sizing evaluators or invents quantity/limits.
+    """
+    if risk_sizing_capital_fields is None:
+        return unavailable_risk_sizing_capital(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_RISK_SIZING_NOT_PERSISTED,
+        )
+
+    schema_version = risk_sizing_capital_fields.get("schema_version")
+    if schema_version is not None and str(schema_version) != LANDSCAPE_PROJECTION_SCHEMA_VERSION:
+        return unavailable_risk_sizing_capital(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_SCHEMA_MISMATCH,
+        )
+
+    for key in ("risk_status", "sizing_status", "capital_status"):
+        if key not in risk_sizing_capital_fields:
+            raise KeyError(f"risk_sizing_capital_fields missing required keys: ['{key}']")
+
+    risk_status = _enum_or_str(risk_sizing_capital_fields["risk_status"]).strip()
+    sizing_status = _enum_or_str(risk_sizing_capital_fields["sizing_status"]).strip()
+    capital_status = _enum_or_str(risk_sizing_capital_fields["capital_status"]).strip()
+    if not risk_status or not sizing_status or not capital_status:
+        return unavailable_risk_sizing_capital(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_INVALID_PROVENANCE,
+        )
+
+    generated_at_raw = risk_sizing_capital_fields.get("generated_at")
+    producer_at, gen_error = _resolve_injected_aware_timestamp(generated_at_raw)
+    if gen_error is not None:
+        return unavailable_risk_sizing_capital(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=gen_error,
+        )
+    if producer_at is None:
+        return unavailable_risk_sizing_capital(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_MISSING,
+        )
+
+    effective_at: datetime | None = None
+    if "effective_at" in risk_sizing_capital_fields:
+        effective_at, eff_error = _resolve_injected_aware_timestamp(
+            risk_sizing_capital_fields.get("effective_at")
+        )
+        if eff_error is not None:
+            return unavailable_risk_sizing_capital(
+                availability=Availability.INVALID,
+                generated_at=as_of,
+                reason=eff_error,
+            )
+
+    try:
+        availability, is_stale, stale_reason = classify_producer_freshness(
+            producer_at=producer_at,
+            as_of=as_of,
+            max_age_seconds=LANDSCAPE_PHASE44B_MAX_AGE_SECONDS,
+        )
+    except ValueError:
+        return unavailable_risk_sizing_capital(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_INVALID,
+        )
+
+    quantity: float | None = None
+    if (
+        "quantity" in risk_sizing_capital_fields
+        and risk_sizing_capital_fields["quantity"] is not None
+    ):
+        try:
+            quantity = float(risk_sizing_capital_fields["quantity"])
+        except (TypeError, ValueError):
+            return unavailable_risk_sizing_capital(
+                availability=Availability.INVALID,
+                generated_at=as_of,
+                reason=REASON_INVALID_PROVENANCE,
+            )
+        if quantity != quantity or quantity in (float("inf"), float("-inf")):
+            return unavailable_risk_sizing_capital(
+                availability=Availability.INVALID,
+                generated_at=as_of,
+                reason=REASON_INVALID_PROVENANCE,
+            )
+        if availability is not Availability.AVAILABLE:
+            quantity = None
+
+    raw_reasons = risk_sizing_capital_fields.get("reason_codes", ()) or ()
+    reason_codes = tuple(str(code) for code in raw_reasons)
+
+    evidence_digest = risk_sizing_capital_fields.get("evidence_digest")
+    if evidence_digest is None:
+        evidence_digest = risk_sizing_capital_fields.get("risk_sizing_ref")
+    if evidence_digest is not None:
+        evidence_digest = str(evidence_digest) or None
+
+    source_reference = risk_sizing_capital_fields.get("source_reference")
+    if source_reference is not None:
+        source_reference = str(source_reference)
+
+    producer_module = str(
+        risk_sizing_capital_fields.get("producer_module", RISK_SIZING_PRODUCER_MODULE)
+    )
+    source_kind = str(risk_sizing_capital_fields.get("source_kind", RISK_SIZING_SOURCE_KIND))
+
+    return project_risk_sizing_capital_snapshot_v1(
+        risk_status=risk_status,
+        sizing_status=sizing_status,
+        capital_status=capital_status,
+        reason_codes=reason_codes,
+        quantity=quantity,
+        generated_at=producer_at,
+        effective_at=effective_at,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        producer_module=producer_module,
+        source_kind=source_kind,
+        availability=availability,
+        max_age_seconds=LANDSCAPE_PHASE44B_MAX_AGE_SECONDS,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+
+
+def _bind_execution_reconciliation(
+    *,
+    as_of: datetime,
+    git_sha: str | None,
+    execution_reconciliation_fields: Mapping[str, Any] | None,
+) -> Any:
+    """Project injected Execution/Reconciliation fields.
+
+    No durable dashboard Execution readmodel. Without injection → MISSING_SOURCE.
+    Never builds order intents, never calls execution/order APIs, never mutates
+    reconciliation. reconciliation_status / order_intent_ref may be absent.
+    """
+    if execution_reconciliation_fields is None:
+        return unavailable_execution_reconciliation(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_EXECUTION_NOT_PERSISTED,
+        )
+
+    schema_version = execution_reconciliation_fields.get("schema_version")
+    if schema_version is not None and str(schema_version) != LANDSCAPE_PROJECTION_SCHEMA_VERSION:
+        return unavailable_execution_reconciliation(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_SCHEMA_MISMATCH,
+        )
+
+    if "execution_status" not in execution_reconciliation_fields:
+        raise KeyError(
+            "execution_reconciliation_fields missing required keys: ['execution_status']"
+        )
+
+    execution_status = _enum_or_str(execution_reconciliation_fields["execution_status"]).strip()
+    if not execution_status:
+        return unavailable_execution_reconciliation(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_INVALID_PROVENANCE,
+        )
+
+    generated_at_raw = execution_reconciliation_fields.get("generated_at")
+    producer_at, gen_error = _resolve_injected_aware_timestamp(generated_at_raw)
+    if gen_error is not None:
+        return unavailable_execution_reconciliation(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=gen_error,
+        )
+    if producer_at is None:
+        return unavailable_execution_reconciliation(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_MISSING,
+        )
+
+    effective_at: datetime | None = None
+    if "effective_at" in execution_reconciliation_fields:
+        effective_at, eff_error = _resolve_injected_aware_timestamp(
+            execution_reconciliation_fields.get("effective_at")
+        )
+        if eff_error is not None:
+            return unavailable_execution_reconciliation(
+                availability=Availability.INVALID,
+                generated_at=as_of,
+                reason=eff_error,
+            )
+
+    try:
+        availability, is_stale, stale_reason = classify_producer_freshness(
+            producer_at=producer_at,
+            as_of=as_of,
+            max_age_seconds=LANDSCAPE_PHASE45_MAX_AGE_SECONDS,
+        )
+    except ValueError:
+        return unavailable_execution_reconciliation(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_INVALID,
+        )
+
+    reconciliation_status = _optional_injected_str(
+        execution_reconciliation_fields.get("reconciliation_status")
+    )
+    order_intent_ref = _optional_injected_str(
+        execution_reconciliation_fields.get("order_intent_ref")
+    )
+
+    raw_reasons = execution_reconciliation_fields.get("reason_codes", ()) or ()
+    reason_codes = tuple(str(code) for code in raw_reasons)
+
+    evidence_digest = execution_reconciliation_fields.get("evidence_digest")
+    if evidence_digest is None:
+        evidence_digest = execution_reconciliation_fields.get("semantic_digest")
+    if evidence_digest is not None:
+        evidence_digest = str(evidence_digest) or None
+
+    source_reference = execution_reconciliation_fields.get("source_reference")
+    if source_reference is not None:
+        source_reference = str(source_reference)
+
+    producer_module = str(
+        execution_reconciliation_fields.get("producer_module", EXECUTION_PRODUCER_MODULE)
+    )
+    source_kind = str(execution_reconciliation_fields.get("source_kind", EXECUTION_SOURCE_KIND))
+
+    return project_execution_reconciliation_snapshot_v1(
+        execution_status=execution_status,
+        reconciliation_status=reconciliation_status,
+        order_intent_ref=order_intent_ref,
+        reason_codes=reason_codes,
+        generated_at=producer_at,
+        effective_at=effective_at,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        producer_module=producer_module,
+        source_kind=source_kind,
+        availability=availability,
+        max_age_seconds=LANDSCAPE_PHASE45_MAX_AGE_SECONDS,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+
+
 def bind_market_universe_slots(
     *,
     generated_at: datetime,
@@ -1285,9 +1581,11 @@ def bind_market_universe_slots(
     canonical_decision_fields: Mapping[str, Any] | None = None,
     double_play_fields: Mapping[str, Any] | None = None,
     safety_authority_fields: Mapping[str, Any] | None = None,
+    risk_sizing_capital_fields: Mapping[str, Any] | None = None,
+    execution_reconciliation_fields: Mapping[str, Any] | None = None,
     economic_viability_evidence_fields: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Return Phase 4.1+4.2+4.3A+4.3B+4.4A+4.6B slot overrides.
+    """Return Phase 4.1–4.5 + 4.6B slot overrides.
 
     ``generated_at`` is the dashboard observation/as-of clock only. It must never
     overwrite producer provenance timestamps or fabricate freshness.
@@ -1314,6 +1612,17 @@ def bind_market_universe_slots(
     compatible fields (kill_switch_state, veto_active, reason_codes) plus
     producer wall-clock timestamps. Without injection, safety_authority is
     MISSING_SOURCE. Never calls KillSwitch.trigger/recover or offline evaluators.
+
+    risk_sizing_capital_fields accepts already-selected Risk/Sizing/Capital
+    display fields (risk_status/sizing_status/capital_status[/quantity]) plus
+    producer wall-clock timestamps. Without injection, risk_sizing_capital is
+    MISSING_SOURCE. Never calls capital/risk/sizing evaluators.
+
+    execution_reconciliation_fields accepts already-selected Execution/
+    Reconciliation display fields (execution_status[/reconciliation_status]/
+    order_intent_ref]) plus producer wall-clock timestamps. Without injection,
+    execution_reconciliation is MISSING_SOURCE. Never builds intents or calls
+    execution/order/reconciliation mutation APIs.
 
     economic_viability_evidence_fields accepts already-selected
     EconomicViabilityEvidenceV1-compatible fields plus producer wall-clock
@@ -1349,6 +1658,16 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         safety_authority_fields=safety_authority_fields,
+    )
+    risk = _bind_risk_sizing_capital(
+        as_of=as_of,
+        git_sha=git_sha,
+        risk_sizing_capital_fields=risk_sizing_capital_fields,
+    )
+    execution = _bind_execution_reconciliation(
+        as_of=as_of,
+        git_sha=git_sha,
+        execution_reconciliation_fields=execution_reconciliation_fields,
     )
     economic = _bind_economic_summary(
         as_of=as_of,
@@ -1490,6 +1809,8 @@ def bind_market_universe_slots(
         "dynamic_scope": scope,
         "canonical_decision": decision,
         "double_play": double_play,
+        "risk_sizing_capital": risk,
         "safety_authority": safety,
+        "execution_reconciliation": execution,
         "economic_summary": economic,
     }

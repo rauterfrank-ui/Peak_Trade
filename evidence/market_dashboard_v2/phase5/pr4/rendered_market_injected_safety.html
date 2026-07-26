@@ -26,7 +26,7 @@
     </style>
     
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-6b-economic-evidence-explicit-injection-binding" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-5-risk-sizing-and-execution-reconciliation-binding" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 
@@ -43,20 +43,21 @@
 
       <main class="mdl-v2-main">
         
-<main
+
+<div
   class="mdl-v2"
   data-market-landscape-v2="true"
   data-market-dashboard-authority="false"
   data-live-authorized="false"
   data-orders="false"
-  data-phase="PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+  data-phase="PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
   data-runtime-bridge="BOUND_NOT_ACTIVATED"
-  aria-label="Market Dashboard Landscape V2 read-only workspace"
+  data-mdl-a11y-baseline="task7"
 >
   <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
     <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">
       <div class="mdl-v2-strip__brand">
-        <span class="mdl-v2-kicker">Market</span>
+        <h1 class="mdl-v2-kicker">Market Landscape</h1>
         <span class="mdl-v2-chip mdl-v2-chip--quiet">READ-ONLY CONSUMER</span>
       </div>
       <dl class="mdl-v2-strip__facts">
@@ -110,13 +111,68 @@
         data-mdl-chart-region="true"
         aria-label="Primary market workspace"
       >
-        <div class="mdl-v2-chart" data-mdl-chart="true" data-chart-bound="false">
+        <div
+          class="mdl-v2-chart"
+          data-mdl-chart="true"
+          data-chart-bound="false"
+          data-mdl-chart-has-series="false"
+          data-mdl-ohlcv-poll-path="/api/market/landscape/ohlcv"
+          data-mdl-ohlcv-poll-interval-seconds="3"
+        >
           <div class="mdl-v2-chart__chrome">
             <h2>Chart</h2>
-            <span class="mdl-v2-state" data-availability="MISSING_SOURCE">MISSING_SOURCE</span>
+            <span
+              class="mdl-v2-state"
+              data-mdl-data-connection-state="true"
+              data-connection-state="MISSING_SOURCE"
+            >MISSING_SOURCE</span>
+            <span class="mdl-v2-state" data-availability="MISSING_SOURCE" data-mdl-chart-availability="true">MISSING_SOURCE</span>
           </div>
-          <div class="mdl-v2-chart__stage" role="img" aria-label="Primary chart MISSING_SOURCE — market identity / OHLCV not persisted for dashboard; no OHLCV fabricated.">
-            <p class="mdl-v2-chart__message">Primary chart MISSING_SOURCE — market identity / OHLCV not persisted for dashboard; no OHLCV fabricated.</p>
+          <dl class="mdl-v2-chart__meta" data-mdl-ohlcv-meta="true" aria-label="Open candle OHLCV and freshness">
+            <div>
+              <dt>Interval</dt>
+              <dd data-mdl-field="ohlcv_interval">—</dd>
+            </div>
+            <div>
+              <dt>Candle start</dt>
+              <dd data-mdl-field="ohlcv_latest_candle_at">—</dd>
+            </div>
+            <div>
+              <dt>Captured</dt>
+              <dd data-mdl-field="ohlcv_captured_at">—</dd>
+            </div>
+            <div>
+              <dt>Mark</dt>
+              <dd data-mdl-field="ohlcv_live_mark">—</dd>
+            </div>
+            <div>
+              <dt>Revision</dt>
+              <dd data-mdl-field="ohlcv_revision">—</dd>
+            </div>
+            <div>
+              <dt>Open</dt>
+              <dd data-mdl-field="ohlcv_open">—</dd>
+            </div>
+            <div>
+              <dt>High</dt>
+              <dd data-mdl-field="ohlcv_high">—</dd>
+            </div>
+            <div>
+              <dt>Low</dt>
+              <dd data-mdl-field="ohlcv_low">—</dd>
+            </div>
+            <div>
+              <dt>Close</dt>
+              <dd data-mdl-field="ohlcv_close">—</dd>
+            </div>
+            <div>
+              <dt>Volume</dt>
+              <dd data-mdl-field="ohlcv_volume">—</dd>
+            </div>
+          </dl>
+          <div class="mdl-v2-chart__stage" role="img" aria-label="Primary chart MISSING_SOURCE — market identity / OHLCV not persisted for dashboard; no OHLCV fabricated." data-mdl-chart-stage="true">
+            <p class="mdl-v2-chart__message" data-mdl-chart-message="true">Primary chart MISSING_SOURCE — market identity / OHLCV not persisted for dashboard; no OHLCV fabricated.</p>
+            
           </div>
         </div>
       </section>
@@ -217,11 +273,11 @@
                 
                 <li
                   data-mdl-source-slot="execution_reconciliation"
-                  data-availability="NOT_BOUND"
+                  data-availability="MISSING_SOURCE"
                   data-freshness="2026-07-23T18:00:00Z"
                 >
                   <span class="mdl-v2-source-health__name">Execution</span>
-                  <span class="mdl-v2-source-health__line">NOT_BOUND · 2026-07-23T18:00:00Z</span>
+                  <span class="mdl-v2-source-health__line">MISSING_SOURCE · 2026-07-23T18:00:00Z</span>
                 </li>
                 
                 <li
@@ -235,11 +291,11 @@
                 
                 <li
                   data-mdl-source-slot="risk_sizing_capital"
-                  data-availability="NOT_BOUND"
+                  data-availability="MISSING_SOURCE"
                   data-freshness="2026-07-23T18:00:00Z"
                 >
                   <span class="mdl-v2-source-health__name">Risk</span>
-                  <span class="mdl-v2-source-health__line">NOT_BOUND · 2026-07-23T18:00:00Z</span>
+                  <span class="mdl-v2-source-health__line">MISSING_SOURCE · 2026-07-23T18:00:00Z</span>
                 </li>
                 
                 <li
@@ -328,13 +384,61 @@
     </section>
 
     <section class="mdl-v2-ops" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
-      <div class="mdl-v2-ops__col">
+      <div class="mdl-v2-ops__col" data-mdl-ops="risk_sizing_capital">
         <h3>Risk / Sizing / Capital</h3>
-        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
+        <p
+          class="mdl-v2-state"
+          data-availability="MISSING_SOURCE"
+          data-mdl-field="risk_summary"
+        >MISSING_SOURCE</p>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Risk</dt>
+            <dd data-mdl-field="risk_status" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Sizing</dt>
+            <dd data-mdl-field="sizing_status" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Capital</dt>
+            <dd data-mdl-field="capital_status" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Quantity</dt>
+            <dd data-mdl-field="risk_quantity" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Reasons</dt>
+            <dd data-mdl-field="risk_reasons" data-availability="MISSING_SOURCE">CANONICAL_RISK_SIZING_CAPITAL_NOT_PERSISTED_FOR_DASHBOARD</dd>
+          </div>
+        </dl>
       </div>
-      <div class="mdl-v2-ops__col">
+      <div class="mdl-v2-ops__col" data-mdl-ops="execution_reconciliation">
         <h3>Execution / Reconciliation</h3>
-        <p class="mdl-v2-state" data-availability="NOT_BOUND">NOT_BOUND</p>
+        <p
+          class="mdl-v2-state"
+          data-availability="MISSING_SOURCE"
+          data-mdl-field="execution_summary"
+        >MISSING_SOURCE</p>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Execution</dt>
+            <dd data-mdl-field="execution_status" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Reconciliation</dt>
+            <dd data-mdl-field="reconciliation_status" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Intent Ref</dt>
+            <dd data-mdl-field="order_intent_ref" data-availability="MISSING_SOURCE">MISSING_SOURCE</dd>
+          </div>
+          <div>
+            <dt>Reasons</dt>
+            <dd data-mdl-field="execution_reasons" data-availability="MISSING_SOURCE">CANONICAL_EXECUTION_RECONCILIATION_NOT_PERSISTED_FOR_DASHBOARD</dd>
+          </div>
+        </dl>
       </div>
       <div class="mdl-v2-ops__col">
         <h3>Economic</h3>
@@ -360,7 +464,11 @@
       data-mdl-engineering="true"
     >
       <summary>Engineering · provenance / schemas / diagnostics</summary>
-      <div class="mdl-v2-engineering__body">
+      <div
+        class="mdl-v2-engineering__body"
+        id="mdl-v2-engineering-body"
+        data-mdl-engineering-body="true"
+      >
         
         <p class="mdl-v2-engineering__meta" data-mdl-engineering-label="true">Engineering drawer — diagnostic / non-authoritative</p>
         <p><strong>Generated:</strong> <span class="font-mono">2026-07-23T18:00:00Z</span></p>
@@ -774,13 +882,13 @@
           <article
             class="mdl-v2-engineering__slot"
             data-mdl-engineering-slot="execution_reconciliation"
-            data-availability="NOT_BOUND"
+            data-availability="MISSING_SOURCE"
           >
             <h3 class="mdl-v2-engineering__slot-name">execution_reconciliation</h3>
             <dl class="mdl-v2-engineering__kv">
               <div>
                 <dt>availability</dt>
-                <dd data-mdl-eng-field="availability">NOT_BOUND</dd>
+                <dd data-mdl-eng-field="availability">MISSING_SOURCE</dd>
               </div>
               <div>
                 <dt>schema_id</dt>
@@ -796,11 +904,11 @@
               </div>
               <div>
                 <dt>source_kind</dt>
-                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:NOT_BOUND</dd>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:MISSING_SOURCE</dd>
               </div>
               <div>
                 <dt>source_reference</dt>
-                <dd data-mdl-eng-field="source_reference" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">CANONICAL_EXECUTION_RECONCILIATION_NOT_PERSISTED_FOR_DASHBOARD</dd>
               </div>
               <div>
                 <dt>provenance.generated_at</dt>
@@ -824,7 +932,7 @@
               </div>
               <div>
                 <dt>reason_codes</dt>
-                <dd data-mdl-eng-field="reason_codes" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">CANONICAL_EXECUTION_RECONCILIATION_NOT_PERSISTED_FOR_DASHBOARD</dd>
               </div>
               <div>
                 <dt>evidence_digest</dt>
@@ -906,13 +1014,13 @@
           <article
             class="mdl-v2-engineering__slot"
             data-mdl-engineering-slot="risk_sizing_capital"
-            data-availability="NOT_BOUND"
+            data-availability="MISSING_SOURCE"
           >
             <h3 class="mdl-v2-engineering__slot-name">risk_sizing_capital</h3>
             <dl class="mdl-v2-engineering__kv">
               <div>
                 <dt>availability</dt>
-                <dd data-mdl-eng-field="availability">NOT_BOUND</dd>
+                <dd data-mdl-eng-field="availability">MISSING_SOURCE</dd>
               </div>
               <div>
                 <dt>schema_id</dt>
@@ -928,11 +1036,11 @@
               </div>
               <div>
                 <dt>source_kind</dt>
-                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:NOT_BOUND</dd>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">unavailable:MISSING_SOURCE</dd>
               </div>
               <div>
                 <dt>source_reference</dt>
-                <dd data-mdl-eng-field="source_reference" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">CANONICAL_RISK_SIZING_CAPITAL_NOT_PERSISTED_FOR_DASHBOARD</dd>
               </div>
               <div>
                 <dt>provenance.generated_at</dt>
@@ -956,7 +1064,7 @@
               </div>
               <div>
                 <dt>reason_codes</dt>
-                <dd data-mdl-eng-field="reason_codes" class="font-mono">LANDSCAPE_V2_SLOT_NOT_BOUND</dd>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">CANONICAL_RISK_SIZING_CAPITAL_NOT_PERSISTED_FOR_DASHBOARD</dd>
               </div>
               <div>
                 <dt>evidence_digest</dt>
@@ -1105,7 +1213,7 @@
       </div>
     </details>
   </div>
-</main>
+</div>
 <script src="/static/js/market_dashboard_landscape_v2.js" defer></script>
 
       </main>

@@ -318,6 +318,86 @@ def _economic_status_display(page: MarketDashboardPageSnapshotV1) -> str:
     return AVAILABILITY_LABELS[snap.availability]
 
 
+def _risk_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]:
+    """Format Risk/Sizing/Capital operative-band facts from projected fields only."""
+    snap = page.risk_sizing_capital
+    if snap.availability not in (Availability.AVAILABLE, Availability.STALE):
+        label = AVAILABILITY_LABELS[snap.availability]
+        return {
+            "summary_display": label,
+            "risk_status_display": label,
+            "sizing_status_display": label,
+            "capital_status_display": label,
+            "quantity_display": label,
+            "reasons_display": (
+                ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
+            ),
+        }
+    quantity_display = "—"
+    if snap.availability is Availability.AVAILABLE and snap.quantity is not None:
+        quantity_display = str(snap.quantity)
+    reasons = ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
+    risk_status = (
+        str(snap.risk_status)
+        if snap.risk_status is not None
+        else AVAILABILITY_LABELS[snap.availability]
+    )
+    sizing_status = (
+        str(snap.sizing_status)
+        if snap.sizing_status is not None
+        else AVAILABILITY_LABELS[snap.availability]
+    )
+    capital_status = (
+        str(snap.capital_status)
+        if snap.capital_status is not None
+        else AVAILABILITY_LABELS[snap.availability]
+    )
+    return {
+        "summary_display": f"{risk_status} · {sizing_status} · {capital_status}",
+        "risk_status_display": risk_status,
+        "sizing_status_display": sizing_status,
+        "capital_status_display": capital_status,
+        "quantity_display": quantity_display,
+        "reasons_display": reasons,
+    }
+
+
+def _execution_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]:
+    """Format Execution/Reconciliation operative-band facts from projected fields only."""
+    snap = page.execution_reconciliation
+    if snap.availability not in (Availability.AVAILABLE, Availability.STALE):
+        label = AVAILABILITY_LABELS[snap.availability]
+        return {
+            "summary_display": label,
+            "execution_status_display": label,
+            "reconciliation_status_display": label,
+            "order_intent_ref_display": label,
+            "reasons_display": (
+                ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
+            ),
+        }
+    execution_status = (
+        str(snap.execution_status)
+        if snap.execution_status is not None
+        else AVAILABILITY_LABELS[snap.availability]
+    )
+    reconciliation_status = (
+        str(snap.reconciliation_status) if snap.reconciliation_status is not None else "—"
+    )
+    order_intent_ref = str(snap.order_intent_ref) if snap.order_intent_ref is not None else "—"
+    reasons = ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
+    summary_parts = [execution_status]
+    if snap.reconciliation_status is not None:
+        summary_parts.append(str(snap.reconciliation_status))
+    return {
+        "summary_display": " · ".join(summary_parts),
+        "execution_status_display": execution_status,
+        "reconciliation_status_display": reconciliation_status,
+        "order_intent_ref_display": order_intent_ref,
+        "reasons_display": reasons,
+    }
+
+
 def _format_freshness_display(freshness: Mapping[str, Any] | None) -> str:
     """Format canonical freshness for display; never invent timestamps or health."""
     if not isinstance(freshness, Mapping):
@@ -567,6 +647,8 @@ def present_market_landscape_v2(
         next_scope_ref_display = AVAILABILITY_LABELS[page.dynamic_scope.availability]
 
     economic_status_display = _economic_status_display(page)
+    risk_ops = _risk_ops_display(page)
+    execution_ops = _execution_ops_display(page)
 
     return {
         "page_schema_id": page.schema_id,
@@ -575,7 +657,7 @@ def present_market_landscape_v2(
         "runtime_bridge_display": page.runtime_bridge_display,
         "shell_authority_class": page.shell_authority_class,
         "consumer_role": "read_only_consumer",
-        "phase": "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING",
+        "phase": "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING",
         "global_strip": {
             # Compact ops summary only. Scope lifecycle + Regime primary in Context rail.
             # Do not expose availability under a Freshness label (Phase 5 PR1).
@@ -613,9 +695,15 @@ def present_market_landscape_v2(
         "switch": dict(_NOT_BOUND_VIEW),
         "decision": decision,
         "double_play": double_play,
-        "risk": risk,
+        "risk": {
+            **risk,
+            **risk_ops,
+        },
         "safety": safety,
-        "execution": execution,
+        "execution": {
+            **execution,
+            **execution_ops,
+        },
         "economic": {
             **economic,
             "status_display": economic_status_display,
@@ -716,6 +804,12 @@ def present_market_landscape_v2(
             "phase_4_4a_bound_slots": [
                 "safety_authority",
             ],
+            "phase_4_4b_bound_slots": [
+                "risk_sizing_capital",
+            ],
+            "phase_4_5_bound_slots": [
+                "execution_reconciliation",
+            ],
             "phase_4_6b_bound_slots": [
                 "economic_summary",
             ],
@@ -725,9 +819,15 @@ def present_market_landscape_v2(
                 "dynamic_scope": scope,
                 "canonical_decision": decision,
                 "double_play": double_play,
-                "risk_sizing_capital": risk,
+                "risk_sizing_capital": {
+                    **risk,
+                    **risk_ops,
+                },
                 "safety_authority": safety,
-                "execution_reconciliation": execution,
+                "execution_reconciliation": {
+                    **execution,
+                    **execution_ops,
+                },
                 "economic_summary": {
                     **economic,
                     "status_display": economic_status_display,
@@ -750,6 +850,8 @@ def present_market_landscape_v2(
             "phase_4_3a_binding_active": True,
             "phase_4_3b_binding_active": True,
             "phase_4_4a_binding_active": True,
+            "phase_4_4b_binding_active": True,
+            "phase_4_5_binding_active": True,
             "phase_4_6b_binding_active": True,
             "phase_4_full_pass": False,
             "phase_4_authorized": True,

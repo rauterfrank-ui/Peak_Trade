@@ -47,6 +47,10 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     economic_viability_evidence_fields_from_v1,
     parse_producer_utc_timestamp,
     project_economic_viability_evidence_v1,
+    REASON_RISK_SIZING_NOT_PERSISTED,
+    REASON_EXECUTION_NOT_PERSISTED,
+    REASON_SCHEMA_MISMATCH,
+    REASON_INVALID_PROVENANCE,
 )
 from src.webui.market_dashboard_landscape_v2 import (
     Availability,
@@ -158,7 +162,9 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
         "dynamic_scope",
         "canonical_decision",
         "double_play",
+        "risk_sizing_capital",
         "safety_authority",
+        "execution_reconciliation",
         "economic_summary",
     }
     assert slots["market_instrument"].availability is Availability.MISSING_SOURCE
@@ -189,6 +195,14 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
     assert REASON_ECONOMIC_NOT_PERSISTED in slots["economic_summary"].reason_codes
     assert slots["economic_summary"].economic_viability_status is None
     assert slots["economic_summary"].profit_factor is None
+    assert slots["risk_sizing_capital"].availability is Availability.MISSING_SOURCE
+    assert REASON_RISK_SIZING_NOT_PERSISTED in slots["risk_sizing_capital"].reason_codes
+    assert slots["risk_sizing_capital"].risk_status is None
+    assert slots["risk_sizing_capital"].quantity is None
+    assert slots["execution_reconciliation"].availability is Availability.MISSING_SOURCE
+    assert REASON_EXECUTION_NOT_PERSISTED in slots["execution_reconciliation"].reason_codes
+    assert slots["execution_reconciliation"].execution_status is None
+    assert slots["execution_reconciliation"].order_intent_ref is None
 
 
 def test_bind_rejects_inventing_market_without_required_fields() -> None:
@@ -500,7 +514,7 @@ def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_inject
     assert page.canonical_decision.availability is Availability.MISSING_SOURCE
     assert REASON_DECISION_NOT_PERSISTED in page.canonical_decision.reason_codes
     ctx = present_market_landscape_v2(page)
-    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
     assert ctx["chart"]["ohlcv"] is None
     assert ctx["scope"]["availability"] == "MISSING_SOURCE"
     assert ctx["decision"]["availability"] == "MISSING_SOURCE"
@@ -767,7 +781,7 @@ def test_bind_canonical_decision_does_not_bind_double_play() -> None:
     assert page.double_play.availability is Availability.MISSING_SOURCE
     assert REASON_DOUBLE_PLAY_NOT_PERSISTED in page.double_play.blockers
     assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
-    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
     assert ctx["product_flags"]["phase_4_3a_binding_active"] is True
     assert ctx["product_flags"]["phase_4_3b_binding_active"] is True
     assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
@@ -934,7 +948,7 @@ def test_decision_and_double_play_remain_separate_projections() -> None:
     assert page.double_play.overall_status == "display_blocked"
     assert ctx["decision"]["fields"]["decision"] == "observe"
     assert ctx["double_play"]["fields"]["overall_status"] == "display_blocked"
-    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
 
 
 def _safety_authority_fields(**overrides: object) -> dict[str, object]:
@@ -988,8 +1002,9 @@ def test_bind_safety_available_exact_projection() -> None:
     assert safety.provenance.generated_at == SAFETY_PRODUCER_FRESH
     assert safety.provenance.effective_at == SAFETY_PRODUCER_FRESH
     assert safety.freshness.is_stale is False
-    # Risk / capital / sizing remain unbound (not returned by Phase 4.4A binding).
-    assert "risk_sizing_capital" not in slots
+    # Risk / capital / sizing wired but absent without injection.
+    assert slots["risk_sizing_capital"].availability is Availability.MISSING_SOURCE
+    assert slots["execution_reconciliation"].availability is Availability.MISSING_SOURCE
 
 
 def test_bind_safety_rejects_missing_required_keys() -> None:
@@ -1049,15 +1064,19 @@ def test_safety_does_not_bind_risk_capital_sizing() -> None:
     )
     ctx = present_market_landscape_v2(page)
     assert page.safety_authority.availability is Availability.AVAILABLE
-    assert page.risk_sizing_capital.availability is Availability.NOT_BOUND
+    assert page.risk_sizing_capital.availability is Availability.MISSING_SOURCE
     assert page.risk_sizing_capital.risk_status is None
     assert page.risk_sizing_capital.sizing_status is None
     assert page.risk_sizing_capital.capital_status is None
     assert page.risk_sizing_capital.quantity is None
-    assert ctx["risk"]["availability"] == "NOT_BOUND"
+    assert ctx["risk"]["availability"] == "MISSING_SOURCE"
+    assert page.execution_reconciliation.availability is Availability.MISSING_SOURCE
+    assert ctx["execution"]["availability"] == "MISSING_SOURCE"
     assert ctx["global_strip"]["safety_status"] == "KILLED · veto=True"
-    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
     assert ctx["product_flags"]["phase_4_4a_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_4b_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_5_binding_active"] is True
     assert ctx["product_flags"]["phase_4_6b_binding_active"] is True
     assert ctx["product_flags"]["dashboard_authority"] is False
 
@@ -1353,8 +1372,8 @@ def test_economic_page_aggregate_and_presenter_injection() -> None:
     assert ctx["economic"]["availability"] == "AVAILABLE"
     assert ctx["economic"]["status_display"] == "ECONOMICALLY_VIABLE_OFFLINE"
     assert ctx["product_flags"]["phase_4_6b_binding_active"] is True
-    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
-    assert page.risk_sizing_capital.availability is Availability.NOT_BOUND
+    assert ctx["phase"] == "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
+    assert page.risk_sizing_capital.availability is Availability.MISSING_SOURCE
 
 
 def _isolate_home_without_archive_env(
@@ -1543,3 +1562,202 @@ def test_bind_market_universe_slots_has_no_write_capability() -> None:
     ):
         assert token not in source
     assert "try_load_universe_selection_for_dashboard" in source
+
+
+RISK_PRODUCER_FRESH = datetime(2026, 7, 23, 15, 0, 0, tzinfo=timezone.utc)
+RISK_PRODUCER_STALE = STAMP - timedelta(seconds=LANDSCAPE_PHASE41_MAX_AGE_SECONDS + 3600)
+EXEC_PRODUCER_FRESH = datetime(2026, 7, 23, 15, 30, 0, tzinfo=timezone.utc)
+
+
+def _risk_sizing_capital_fields(**overrides: object) -> dict[str, object]:
+    """Bounded test-injection payload — not durable dashboard truth."""
+    payload: dict[str, object] = {
+        "risk_status": "PASS",
+        "sizing_status": "PASS",
+        "capital_status": "PASS",
+        "quantity": 0.25,
+        "reason_codes": ("PASS",),
+        "generated_at": RISK_PRODUCER_FRESH,
+        "effective_at": RISK_PRODUCER_FRESH,
+        "source_reference": "risk://bounded-test-injection",
+        "risk_sizing_ref": "r" * 64,
+        "schema_version": "v1",
+    }
+    payload.update(overrides)
+    return payload
+
+
+def _execution_reconciliation_fields(**overrides: object) -> dict[str, object]:
+    """Bounded test-injection payload — not durable dashboard truth."""
+    payload: dict[str, object] = {
+        "execution_status": "BOUND_OFFLINE",
+        "reconciliation_status": "RECONCILED",
+        "order_intent_ref": "intent://" + ("a" * 16),
+        "reason_codes": ("PASS",),
+        "generated_at": EXEC_PRODUCER_FRESH,
+        "effective_at": EXEC_PRODUCER_FRESH,
+        "source_reference": "execution://bounded-test-injection",
+        "semantic_digest": "b" * 64,
+        "schema_version": "v1",
+    }
+    payload.update(overrides)
+    return payload
+
+
+def test_risk_and_execution_field_for_field_injection() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        risk_sizing_capital_fields=_risk_sizing_capital_fields(),
+        execution_reconciliation_fields=_execution_reconciliation_fields(),
+    )
+    risk = slots["risk_sizing_capital"]
+    execution = slots["execution_reconciliation"]
+    assert risk.availability is Availability.AVAILABLE
+    assert risk.risk_status == "PASS"
+    assert risk.sizing_status == "PASS"
+    assert risk.capital_status == "PASS"
+    assert risk.quantity == 0.25
+    assert risk.reason_codes == ("PASS",)
+    assert risk.provenance.source_reference == "risk://bounded-test-injection"
+    assert execution.availability is Availability.AVAILABLE
+    assert execution.execution_status == "BOUND_OFFLINE"
+    assert execution.reconciliation_status == "RECONCILED"
+    assert execution.order_intent_ref == "intent://" + ("a" * 16)
+    assert execution.reason_codes == ("PASS",)
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert ctx["risk"]["availability"] == "AVAILABLE"
+    assert ctx["risk"]["risk_status_display"] == "PASS"
+    assert ctx["risk"]["quantity_display"] == "0.25"
+    assert ctx["execution"]["availability"] == "AVAILABLE"
+    assert ctx["execution"]["execution_status_display"] == "BOUND_OFFLINE"
+    assert ctx["execution"]["reconciliation_status_display"] == "RECONCILED"
+    assert ctx["product_flags"]["phase_4_4b_binding_active"] is True
+    assert ctx["product_flags"]["phase_4_5_binding_active"] is True
+
+
+def test_risk_absent_execution_available() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        execution_reconciliation_fields=_execution_reconciliation_fields(),
+    )
+    assert slots["risk_sizing_capital"].availability is Availability.MISSING_SOURCE
+    assert slots["execution_reconciliation"].availability is Availability.AVAILABLE
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert ctx["risk"]["availability"] == "MISSING_SOURCE"
+    assert ctx["execution"]["availability"] == "AVAILABLE"
+
+
+def test_execution_absent_risk_available() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        risk_sizing_capital_fields=_risk_sizing_capital_fields(),
+    )
+    assert slots["risk_sizing_capital"].availability is Availability.AVAILABLE
+    assert slots["execution_reconciliation"].availability is Availability.MISSING_SOURCE
+
+
+def test_risk_stale_hides_quantity() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        risk_sizing_capital_fields=_risk_sizing_capital_fields(
+            generated_at=RISK_PRODUCER_STALE,
+            effective_at=RISK_PRODUCER_STALE,
+        ),
+    )
+    risk = slots["risk_sizing_capital"]
+    assert risk.availability is Availability.STALE
+    assert risk.risk_status == "PASS"
+    assert risk.quantity is None
+    assert risk.freshness.is_stale is True
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert ctx["risk"]["availability"] == "STALE"
+    assert ctx["risk"]["quantity_display"] == "—"
+
+
+def test_execution_partial_without_reconciliation_status() -> None:
+    fields = _execution_reconciliation_fields()
+    del fields["reconciliation_status"]
+    del fields["order_intent_ref"]
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        execution_reconciliation_fields=fields,
+    )
+    execution = slots["execution_reconciliation"]
+    assert execution.availability is Availability.AVAILABLE
+    assert execution.execution_status == "BOUND_OFFLINE"
+    assert execution.reconciliation_status is None
+    assert execution.order_intent_ref is None
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert ctx["execution"]["reconciliation_status_display"] == "—"
+    assert ctx["execution"]["order_intent_ref_display"] == "—"
+
+
+def test_risk_schema_mismatch_fail_closed() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        risk_sizing_capital_fields=_risk_sizing_capital_fields(schema_version="v9"),
+    )
+    risk = slots["risk_sizing_capital"]
+    assert risk.availability is Availability.INVALID
+    assert REASON_SCHEMA_MISMATCH in risk.reason_codes
+    assert risk.quantity is None
+
+
+def test_execution_invalid_provenance_empty_status() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        execution_reconciliation_fields=_execution_reconciliation_fields(execution_status=""),
+    )
+    execution = slots["execution_reconciliation"]
+    assert execution.availability is Availability.INVALID
+    assert REASON_INVALID_PROVENANCE in execution.reason_codes
+
+
+def test_risk_rejects_missing_required_keys() -> None:
+    with pytest.raises(KeyError, match="risk_sizing_capital_fields missing"):
+        bind_market_universe_slots(
+            generated_at=STAMP,
+            risk_sizing_capital_fields={
+                "risk_status": "PASS",
+                "generated_at": RISK_PRODUCER_FRESH,
+            },
+        )
+
+
+def test_execution_rejects_missing_required_keys() -> None:
+    with pytest.raises(KeyError, match="execution_reconciliation_fields missing"):
+        bind_market_universe_slots(
+            generated_at=STAMP,
+            execution_reconciliation_fields={"generated_at": EXEC_PRODUCER_FRESH},
+        )
+
+
+def test_no_silent_defaults_for_uninjected_operative_slots() -> None:
+    slots = bind_market_universe_slots(generated_at=STAMP)
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    ctx = present_market_landscape_v2(page)
+    assert page.risk_sizing_capital.availability is Availability.MISSING_SOURCE
+    assert page.execution_reconciliation.availability is Availability.MISSING_SOURCE
+    assert page.risk_sizing_capital.quantity is None
+    assert page.execution_reconciliation.order_intent_ref is None
+    assert ctx["risk"]["summary_display"] == "MISSING_SOURCE"
+    assert ctx["execution"]["summary_display"] == "MISSING_SOURCE"

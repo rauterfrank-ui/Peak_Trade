@@ -234,7 +234,7 @@ def test_landscape_shell_template_has_no_write_controls() -> None:
     assert 'data-market-dashboard-authority="false"' in text
     assert "method=" not in text.lower()
     assert re.search(r"<form\b", text, flags=re.IGNORECASE) is None
-    assert "phase4-6b-economic-evidence-explicit-injection-binding" in text
+    assert "phase4-5-risk-sizing-and-execution-reconciliation-binding" in text
     assert 'data-mdl-field="safety"' in text
     assert 'data-mdl-field="economic"' in text
     assert "<button" not in text.lower()
@@ -303,6 +303,10 @@ def test_producer_binding_is_read_only_and_outside_landscape_package() -> None:
     assert "canonical_decision_fields" in text
     assert "double_play_fields" in text
     assert "safety_authority_fields" in text
+    assert "risk_sizing_capital_fields" in text
+    assert "execution_reconciliation_fields" in text
+    assert "project_risk_sizing_capital_snapshot_v1" in text
+    assert "project_execution_reconciliation_snapshot_v1" in text
     tree = ast.parse(text)
     for node in ast.walk(tree):
         if isinstance(node, ast.Name):
@@ -380,7 +384,17 @@ def test_owner_registry_distinguishes_safety_authority_from_projection_source() 
     assert "killswitch_boundary_offline_replay_binding_adapter_v0" in registry_text
     assert 'reuse_status="REUSED"' in registry_text
     assert 'slot="risk_sizing_capital"' in registry_text
-    assert 'reuse_status="NOT_BOUND"' in registry_text
+    risk_block = registry_text.split('slot="risk_sizing_capital"', 1)[1].split(
+        "CanonicalOwnerRefV1(", 1
+    )[0]
+    assert 'reuse_status="REUSED"' in risk_block
+    assert "AUTHORITY_EFFECT=NONE" in risk_block
+    assert 'slot="execution_reconciliation"' in registry_text
+    exec_block = registry_text.split('slot="execution_reconciliation"', 1)[1].split(
+        "CanonicalOwnerRefV1(", 1
+    )[0]
+    assert 'reuse_status="REUSED"' in exec_block
+    assert "AUTHORITY_EFFECT=NONE" in exec_block
 
 
 def test_owner_registry_economic_summary_reused_explicit_injection() -> None:

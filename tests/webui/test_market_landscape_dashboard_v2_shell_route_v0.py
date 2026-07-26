@@ -54,7 +54,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-market-landscape-v2="true"' in html
     for landmark in LANDMARKS:
         assert landmark in html, landmark
-    assert "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING" in html
+    assert "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING" in html
     assert "BOUND_NOT_ACTIVATED" in html
     assert (
         "no ohlcv fabricated" in html.lower()
@@ -93,6 +93,15 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     # Economic region is MISSING_SOURCE without injection (wired slot, no evidence).
     assert 'data-mdl-field="economic"' in html
     assert "Risk / Sizing / Capital" in html
+    assert 'data-mdl-ops="risk_sizing_capital"' in html
+    assert 'data-mdl-ops="execution_reconciliation"' in html
+    assert 'data-mdl-field="risk_status"' in html
+    assert 'data-mdl-field="execution_status"' in html
+    assert 'data-mdl-field="reconciliation_status"' in html
+    assert "<form" not in html.lower()
+    assert "place_order" not in html
+    assert "submit_order" not in html
+    assert "activate_runtime" not in html
     assert "OPERATOR_SKELETON_APPROVAL" not in html
     assert "<button" not in html.lower()
     assert "Trigger Kill" not in html
@@ -324,7 +333,7 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     # Must not invent HOLD/FLAT
     assert ctx["decision"]["fields"]["decision"] is None
     assert ctx["decision"]["fields"]["direction"] is None
-    assert ctx["phase"] == "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+    assert ctx["phase"] == "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
     # Aggregate availability remains on source_health only (not under Freshness).
     assert ctx["source_health"]["availability"] == "NOT_BOUND"
     assert "observed_at" in ctx["source_health"]["freshness"]
