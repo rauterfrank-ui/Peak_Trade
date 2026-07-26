@@ -1011,7 +1011,8 @@
       "path_prefixes": [
         "config/research/momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog_v1.json",
         "src/research/momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog_v1.py",
-        "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md"
+        "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md",
+        "tests/research/test_momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog_v1.py"
       ]
     },
     "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1": {
