@@ -148,6 +148,18 @@ def _http_code(url: str, timeout: float = 3.0) -> int:
         return int(getattr(resp, "status", 200))
 
 
+def _process_command_line(pid: int) -> str:
+    """Full process argv; avoid truncated `ps args` (Linux default width ~80)."""
+    proc_cmdline = Path(f"/proc/{pid}/cmdline")
+    if proc_cmdline.is_file():
+        raw = proc_cmdline.read_bytes().replace(b"\x00", b" ").decode("utf-8", "replace")
+        return raw.strip()
+    return subprocess.check_output(
+        ["ps", "-ww", "-p", str(pid), "-o", "args="],
+        text=True,
+    ).strip()
+
+
 @pytest.fixture()
 def isolated_port() -> int:
     return _free_port()
@@ -266,7 +278,7 @@ def test_start_status_idempotent_stop_logs_and_bind(tmp_path: Path, isolated_por
 
         # Bind localhost only: process command must include 127.0.0.1 and no --reload
         pid = int(kv["PID"])
-        cmd = subprocess.check_output(["ps", "-p", str(pid), "-o", "args="], text=True)
+        cmd = _process_command_line(pid)
         assert "127.0.0.1" in cmd
         assert "--reload" not in cmd
         assert "src.webui.app:app" in cmd
