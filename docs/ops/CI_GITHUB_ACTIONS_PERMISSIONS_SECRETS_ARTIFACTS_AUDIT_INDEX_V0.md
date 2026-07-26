@@ -75,7 +75,7 @@ Repo-static re-count **2026-07-26** after `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (
 - SHA-pinned external `uses:` refs (`@` + 40-hex + `# <tag>` comment): `231` (unique actions: `21`)
 - Tag/version-only external `uses:` refs: `0`
 - Floating mutable refs (`@main` / `@master` / `@latest` / `@head` on `uses:`): `0`
-- Local `./` actions / `docker://` refs: classified separately; none present under `.github/actions/` at this capability
+- Local `./` actions / `docker:&#47;&#47;` refs: classified separately; none present under `.github&#47;actions&#47;` at this capability
 - **Operator upgrade rule:** resolve the intended upstream tag/commit via public GitHub refs, replace the 40-hex SHA, keep the `# <tag>` comment; do not silently bump action majors.
 - Fail-closed regression owner: `tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py`
 - Write-permission allowlist owner: `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py`

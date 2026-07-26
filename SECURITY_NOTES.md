@@ -82,7 +82,7 @@ Historical remediation notes: [`docs/ops/AUDIT_DEPENDENCY_REMEDIATION_2026-01-07
 Repo-static inventory after **`CYBER_CI_SUPPLY_CHAIN_HARDENING_V1`** (**2026-07-26**; see CI GHA audit index):
 
 - **73** workflow files; **0** `pull_request_target`; **0** `permissions: write-all`
-- External GitHub Actions are **full-SHA-pinned** (`uses: owner/repo@<40-hex> # <tag>`): **231** refs / **21** unique actions; **0** floating `@main`/`@master`/`@latest`/`@head`; **0** tag-only external pins
+- External GitHub Actions are **full-SHA-pinned** (`uses: owner&#47;repo@<40-hex> # <tag>`): **231** refs / **21** unique actions; **0** floating `@main`/`@master`/`@latest`/`@head`; **0** tag-only external pins
 - Readable release/version comments (`# vX…`) are retained for maintainability; upgrading an Action requires a deliberate SHA refresh (resolve the same tag/commit upstream, do not silently bump majors)
 - **73 / 73** workflows declare explicit top-level `permissions:` (default baseline `contents: read`; `permissions: {}` only where GITHUB_TOKEN scopes are unused)
 - Write-permission surfaces remain a narrow frozen allowlist via `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py`
