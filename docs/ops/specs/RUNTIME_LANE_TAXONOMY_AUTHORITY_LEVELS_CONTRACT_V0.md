@@ -207,7 +207,7 @@ Non-goals:
 | Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
 | OPS Cockpit non-authority | [OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) |
-| F5 read-only market dashboard (display) — **product removed** | [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) |
+| F5 read-only market dashboard (display) — **legacy product removed**; Landscape V2 successor `GET &#47;market` is the authorized read-only consumer (see tombstone) | [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) |
 | Readiness Evidence Ledger v0 | [build_readiness_evidence_ledger_v0.py](../../../scripts/ops/build_readiness_evidence_ledger_v0.py) |
 | Readiness Ledger Preflight Mirror v0 | [report_readiness_ledger_preflight_mirror_v0.py](../../../scripts/ops/report_readiness_ledger_preflight_mirror_v0.py) |
 | Readiness Gate Snapshot v0 | [report_readiness_gate_snapshot_v0.py](../../../scripts/ops/report_readiness_gate_snapshot_v0.py) |
@@ -476,7 +476,7 @@ Remote host placement **does not** relax manifest, closeout, or preflight rules.
 #### Notion and Market Dashboard (projection-only in this contract)
 
 - Notion: §6a.1 — post-closeout sync only; `NOTION_WRITE_DEFAULT=false`; no writes in this contract slice.
-- Market Dashboard: §6a.2 — read-only Registry v1 projection fields only; no runtime actions; product UI routes `GET &#47;market*` intentionally absent (see [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md)).
+- Market Dashboard: §6a.2 — read-only Registry v1 projection fields only; no runtime actions; **legacy** product UI routes remain intentionally absent (see [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md)). Landscape V2 `GET &#47;market` is the separate authorized read-only consumer shell; §6a.2 run-projection overlay stays disabled-by-default (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false`).
 
 #### S3 (after-finalize-only)
 
@@ -1232,7 +1232,7 @@ POST_CLOSEOUT_PROJECTION_AUTOMATION_DOCS_TESTS_ONLY=true
 | Charter alias | Owner |
 |---|---|
 | `NOTION_POST_CLOSEOUT_SYNC_V0` | §6a.1 — `notion_projection` states; default `disabled`; operator token future-only |
-| `MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0` | §6a.2 — `market_dashboard_projection` states; product `GET &#47;market*` absent; Master V2 / Double Play domain authority unchanged (§9); DP JSON is `/api/master-v2/double-play/dashboard-display.json` (not a Market Dashboard route) |
+| `MARKET_DASHBOARD_READONLY_RUN_PROJECTION_V0` | §6a.2 — `market_dashboard_projection` states; **legacy** product routes intentionally absent; Landscape V2 `GET &#47;market` is the separate read-only consumer (not this overlay); Master V2 / Double Play domain authority unchanged (§9); DP JSON is `GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json` (not a Market Dashboard route) |
 | Shared pointer/status fields | [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) test constants aligned with Registry v1 `runs[]` / `compositions[]` |
 
 **Forbidden in v0 charter slice:** Notion MCP/API writes; new Notion DB schema as productive SSOT; dashboard HTML/template panels or new routes; payload-builder scripts; CI hooks that start runtime; S3/AWS/rclone upload or download; scheduler/daemon/adapter execution; workflow dispatch; Live/Testnet/broker/exchange authority; Master V2 / Double Play route or authority changes; parallel Market Surface, Notion DB, or readmodel SSOT (`NO_PARALLEL_*=true`).
@@ -1343,7 +1343,7 @@ Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test
 - Before durable primary evidence exists outside `/tmp` (`TMP_ONLY_EVIDENCE_INVALID`).
 - Before `MANIFEST.sha256` verify **RC=0** on the durable root.
 - `launchctl` / daemon startup / supervisor auto-start paths.
-- Removed Market Dashboard route path (`GET &#47;market*` — product deleted; not an attach owner; see [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md)).
+- Removed **legacy** Market Dashboard product routes (`GET &#47;market&#47;double-play`, `GET &#47;market&#47;futures`, legacy OHLCV/depth APIs — intentionally absent; not an attach owner; see [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md)). Landscape V2 `GET &#47;market` is not a post-closeout automation attach owner.
 - Notion writer / MCP / API path (§6a.1 / §6a.1.1 remain planning/dry-run until separate charter).
 - Market overlay global enablement path (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED` stays `false` by default).
 - Live / Testnet / broker / exchange execution paths.
@@ -1726,7 +1726,7 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 - No AWS CLI, rclone, S3 uploads, or Notion writes from Dashboard projection paths
 - No broker&#47;exchange authority, testnet&#47;live authority, approval authority, or Double Play / Master V2 authority
 - No parallel Dashboard truth layer; repo contracts, manifests, closeouts, and operator approvals remain canonical
-- No Market Dashboard product routes (`GET &#47;market*` intentionally absent; `MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false`); Master V2 / Double Play domain decision authority remains protected (§9)
+- No **legacy** Market Dashboard product routes (`GET &#47;market&#47;double-play`, `GET &#47;market&#47;futures`, legacy OHLCV/depth APIs intentionally absent; `MARKET_DASHBOARD_DOUBLE_PLAY_TOUCHED=false`); Landscape V2 `GET &#47;market` remains a pure read-only consumer without Double Play / Master V2 authority; Master V2 / Double Play domain decision authority remains protected (§9)
 - No `lane_id=daemon_paper_24h`, no `lane_id=remote_runtime`, no Registry v2
 
 #### Status interpretation
@@ -1735,11 +1735,11 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 - Dashboard status does **not** clear blockers, override manifests&#47;closeouts, or grant gates.
 - `FAIL_CLOSED` remains fail-closed even if displayed on a read-only surface.
 
-#### Surface boundaries (product removed; ops projection fields preserved)
+#### Surface boundaries (legacy product removed; Landscape V2 successor; ops projection fields preserved)
 
-- **Market Dashboard product removed:** [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) is the tombstone chronicle. `GET &#47;market*` is intentionally absent (normal HTTP 404; no redirect, alias, placeholder, or reset shell). No UI consumer is authorized by this deletion.
+- **Legacy Market Dashboard product removed:** [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) is the tombstone chronicle. Legacy aliases remain intentionally absent (normal HTTP 404; no redirect). Landscape V2 `GET &#47;market` is the authorized read-only successor shell and does **not** enable §6a.2 Registry run projection (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false`).
 - **Registry v1 projection fields preserved:** `market_dashboard_projection` / `market_dashboard_projection_allowed` remain ops-only disabled-by-default consumer eligibility markers (this §6a.2).
-- **Master V2 / Double Play domain preserved (not a Market route):** composition **authority** and non-authority boundaries remain unchanged (§9). The surviving read-only display JSON is `GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json` — independent of the removed Market Dashboard product. Registry projection must **not** embed Double Play decision or selection authority.
+- **Master V2 / Double Play domain preserved (not a Market route):** composition **authority** and non-authority boundaries remain unchanged (§9). The surviving read-only display JSON is `GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json` — independent of the removed legacy Market Dashboard product and of Landscape V2 authority. Registry projection must **not** embed Double Play decision or selection authority.
 
 Detail owner for historical F5 / §7h display markers: taxonomy §7h and [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md).
 

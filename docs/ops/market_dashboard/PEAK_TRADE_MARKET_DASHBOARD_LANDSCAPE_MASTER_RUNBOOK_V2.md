@@ -2,7 +2,7 @@
 
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
-**Status:** `POST_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT_OPERATOR_REVIEW_PENDING`  
+**Status:** `CAPABILITY_8_PRODUCTION_CLOSEOUT_OPERATOR_REVIEW_PENDING`  
 **Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`  
 **Primärbrowser:** Google Chrome / Playwright Real Chrome  
 **Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand  
@@ -17,8 +17,8 @@ REPO_INGESTION_DATE=2026-07-23
 SOURCE_FILENAME=PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 RUNBOOK_VERSION=V2
 HARDENED_CAPABILITY_PR_POLICY=true
-CURRENT_MAIN_SHA=9c8a66d4bef0dc5a82bb74bc2a4091e5adff4ba3
-LAST_MERGED_PR=5562  # Risk/Exec binding; Capability 6 ALT_A closeout next/this PR
+CURRENT_MAIN_SHA=33811dc5162b6fff6bb778204024f1d6d4c1b4b5
+LAST_MERGED_PR=5565  # Cap7 review-server macOS /tmp path identity; Cap8 production closeout next/this PR
 LAST_MERGED_PR_VERDICT=CAPABILITY_SCOPE_REVIEW_PASS_SQUASH_MERGED
 CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
 DASHBOARD_IMPLEMENTATION_PRESENT=true
@@ -26,10 +26,12 @@ DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
 RUNTIME_ACTIVATION=false
 TRADING_RUNTIME_NOT_ACTIVATED=true
 OPERATOR_PRODUCT_GATE=PENDING
-NEXT_CAPABILITY_AUTHORIZED=false  # next product candidates require separate GO
+NEXT_CAPABILITY_AUTHORIZED=false  # further product candidates require separate GO
+CAPABILITY_8=PRODUCTION_CLOSEOUT
+PRODUCT_APPROVAL_INFERRED=false
 ```
 
-**Unterscheidung (verbindlich):** Dashboard-Implementierung auf `origin/main` ist vorhanden und durch gemergte Capability-PRs belegt. Trading-Runtime bleibt nicht aktiviert; Orders/Scheduler/Capital/Live bleiben false. `IMPLEMENTATION_AUTHORIZED=false` in historischen Ratifikationsblöcken (z. B. Diagnostics 4.6C) bedeutet weiterhin „keine Autorisierung jener speziellen Bindung“, nicht „Dashboard existiert nicht“.
+**Unterscheidung (verbindlich):** Dashboard-Implementierung auf `origin&#47;main` ist vorhanden und durch gemergte Capability-PRs belegt. Trading-Runtime bleibt nicht aktiviert; Orders/Scheduler/Capital/Live bleiben false. `IMPLEMENTATION_AUTHORIZED=false` in historischen Ratifikationsblöcken (z. B. Diagnostics 4.6C) bedeutet weiterhin „keine Autorisierung jener speziellen Bindung“, nicht „Dashboard existiert nicht“.
 
 **Phasen-/PR-Mapping (explizit, keine stille Geschichtsrewrite):** Runbook-**PHASE 2** ≡ **PR #5499**. Runbook-**PHASE 3** Shell ≡ **PR #5501**. Spätere Capability-PRs bis **PR #5548** (authentic OKX Futures intrabar) sind gemergt; siehe § Current-State Ledger und §11.
 
@@ -62,7 +64,7 @@ RUNTIME_ACTIVATION_FROM_DASHBOARD_WORK=false
 
 ## 0.1 Current-State Ledger (post PR #5548)
 
-Repository-backed capability chain on `origin/main` `6f38df4d833945197e8f472c09f402ee767c85ad` (squash-merge of PR #5548). PR numbers below are confirmed via GitHub merge history; do not invent additional PR IDs.
+Repository-backed capability chain on `origin&#47;main` `6f38df4d833945197e8f472c09f402ee767c85ad` (squash-merge of PR #5548). PR numbers below are confirmed via GitHub merge history; do not invent additional PR IDs.
 
 ```text
 OKX_CANONICAL_VENUE=true
@@ -1366,13 +1368,13 @@ Standing offline GO darf **eine** vollständige, nicht-aktivierende Capability P
 ```text
 Capability 0 Discovery & Architektur-Ratifikation — PARTIAL/effective via later work
 Capability 1 Read-only Foundation — PASS (#5499)
-Capability 2 Marktoberfläche End-to-End / Landscape Shell — PARTIAL technical PASS (#5501); operator product PENDING
+Capability 2 Marktoberfläche End-to-End / Landscape Shell — TECHNICAL_PASS (#5501); operator product PENDING
 Capability 3 Kanonische Marktbindung (incl. OKX OHLCV + continuous refresh + intrabar) — PASS through #5548 for market/OHLCV path
 Capability 4 Entscheidungsfähigkeit (Decision/DP) — PASS technical (#5506/#5507); operator product PENDING
-Capability 5 Operative Projektion (Safety done #5508; Risk/Sizing/Capital + Execution/Reconciliation) — PARTIAL; NEXT
-Capability 6 Governance & Autonomieprojektion — PASS_ALT_A (economic fields presented; diagnostics/autonomy remain ratified NOT_BOUND; no supersession)
-Capability 7 Produktreife — TECHNICAL_PASS (TASK_1 density + drawer/a11y/perf/source-health; timeline DEFERRED; OPERATOR_PRODUCT_GATE=false)
-Capability 8 Produktionsabschluss — OPEN
+Capability 5 Operative Projektion (Safety #5508; Risk/Sizing/Capital + Execution/Reconciliation #5562) — TECHNICAL_PASS
+Capability 6 Governance & Autonomieprojektion — PASS_ALT_A (#5563; economic fields presented; diagnostics/autonomy remain ratified NOT_BOUND; no supersession)
+Capability 7 Produktreife — TECHNICAL_PASS (#5564 density/drawer/a11y/perf/source-health; timeline DEFERRED; review-server identity #5565; OPERATOR_PRODUCT_GATE=false)
+Capability 8 Produktionsabschluss — IN_PROGRESS (docs/ownership closeout only; no product expansion; OPERATOR_PRODUCT_GATE unchanged)
 ```
 
 ---
@@ -1711,11 +1713,11 @@ CANONICAL_PRINCIPLE=
 Market Dashboard is a pure read-only consumer with zero trading,
 runtime, scheduler, promotion, capital or execution authority.
 
-CURRENT_MAIN_SHA=9c8a66d4bef0dc5a82bb74bc2a4091e5adff4ba3
-LAST_MERGED_PR=5548
+CURRENT_MAIN_SHA=33811dc5162b6fff6bb778204024f1d6d4c1b4b5
+LAST_MERGED_PR=5565
 OPEN_PR=NONE
-CURRENT_PHASE=POST_RISK_EXEC_BINDING_PHASE_5_PARTIAL
-LAST_COMPLETED_TECHNICAL_CAPABILITY=INTRABAR_OPEN_CANDLE_PR_5548
+CURRENT_PHASE=CAPABILITY_8_PRODUCTION_CLOSEOUT
+LAST_COMPLETED_TECHNICAL_CAPABILITY=CAPABILITY_7_PRODUCT_MATURITY_PR_5564_PLUS_REVIEW_SERVER_IDENTITY_PR_5565
 OPERATOR_PRODUCT_GATE=PENDING
 
 MARKET_DASHBOARD_CANONICAL_CONSUMER=true
@@ -1729,6 +1731,18 @@ INTRABAR_CAPABILITY_MERGED=true
 VALID_INTRABAR_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T214037Z
 INVALID_HISTORICAL_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T211859Z
 EVIDENCE_MANIFEST_SHA256=1cd1dfff96306087e19d5ca5a235664ddcfbef53b3e8740b4d301f0c5cffe085
+CAPABILITY_7_EVIDENCE_PATH=evidence/market_dashboard_v2/capability7_product_maturity/
+
+CANONICAL_ROUTE=GET_/market
+CANONICAL_TEMPLATE=templates/peak_trade_dashboard/market_landscape_v2.html
+CANONICAL_STATIC_SURFACES=[
+  "static/css/market_dashboard_landscape_v2.css",
+  "static/js/market_dashboard_landscape_v2.js"
+]
+CANONICAL_READ_AGGREGATE=MarketDashboardReadServiceV1+present_market_landscape_v2
+CANONICAL_SHELL_ROUTER=src/webui/market_dashboard_landscape_shell_router_v2.py
+CANONICAL_PRODUCER_BINDING=src/webui/market_dashboard_landscape_producer_binding_v2.py
+LEGACY_PRODUCT_TOMBSTONE=docs/webui/MARKET_DASHBOARD_REMOVED.md
 
 CORE_ARCHITECTURE_VALID=true
 CORE_CHANGE_REQUIRED=false
@@ -1767,6 +1781,7 @@ CURRENT_BOUND_SOURCES=[
   "Capability 6 ALT_A: economic ops-band field presentation (evidence-only)",
   "Capability 6 ALT_A: diagnostics NOT_BOUND + NON_AUTHORITATIVE presentation",
   "Capability 6 ALT_A: autonomy/promotion/activation NOT_BOUND + BOUND_NOT_ACTIVATED lock presentation",
+  "Capability 7: product-maturity density/drawer/a11y/perf/source-health (technical)",
   "source_health / freshness",
   "engineering drawer",
   "page_aggregate MarketDashboardReadServiceV1",
@@ -1794,7 +1809,8 @@ KNOWN_INTENTIONAL_LOCKS=[
   "Phase 4.6C diagnostics_summary OPTION_A KEEP_NOT_BOUND",
   "Phase 4.7A/4.7B autonomy_stage OPTION_D KEEP_NOT_BOUND",
   "Phase 5 TASK_4 event_decision_timeline B_EXPLICIT_PHASE_5_DEFERRAL",
-  "PR #5548 invalid historical evidence 2026-07-25T211859Z must not be promoted"
+  "PR #5548 invalid historical evidence 2026-07-25T211859Z must not be promoted",
+  "OPERATOR_PRODUCT_GATE pending; no Product PASS inference from technical/Chrome evidence"
 ]
 TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED
 TASK_4_PHASE_5_BLOCKING=false
@@ -1817,15 +1833,19 @@ PHASE_PR_MAPPING=[
   "PHASE 2 == PR #5499",
   "PHASE 3 Shell == PR #5501",
   "OKX OHLCV continuous refresh == PR #5528",
-  "Intrabar open-candle == PR #5548 (merge SHA 6f38df4d833945197e8f472c09f402ee767c85ad)"
+  "Intrabar open-candle == PR #5548 (merge SHA 6f38df4d833945197e8f472c09f402ee767c85ad)",
+  "Risk/Exec binding == PR #5562",
+  "Capability 6 ALT_A == PR #5563",
+  "Capability 7 product maturity == PR #5564",
+  "Cap7 review-server macOS path identity == PR #5565 (merge SHA 33811dc5162b6fff6bb778204024f1d6d4c1b4b5)",
+  "Capability 8 production closeout == docs/ownership closeout in progress (no PR yet)"
 ]
 
 NEXT_CANONICAL_ACTION=
-Operator reviews Capability 6 ALT_A truthful closeout (economic field
-presentation + diagnostics/governance NOT_BOUND visibility). Full binding
-of diagnostics/autonomy aggregates remains SEPARATE_GO. Do not activate
-runtime/orders/scheduler/capital. Next product surface candidates
-(separate GO): TASK_1 visual density and/or Operator Product Gate.
+Capability 8 seals docs/ownership truth and permanent regression guards for the
+canonical Landscape V2 read-only consumer. Do not activate runtime/orders/
+scheduler/capital. Do not infer Product PASS. Operator Product Gate remains
+PENDING until separate explicit operator ratification.
 
 SEPARATE_GO_REQUIRED_FOR=[
   "Core changes",
@@ -1838,6 +1858,7 @@ SEPARATE_GO_REQUIRED_FOR=[
   "Promotion",
   "Live",
   "Mass cleanup",
+  "Operator Product Gate ratification",
   "diagnostics_summary redesign (beyond OPTION_A)",
   "autonomy_stage aggregate (beyond OPTION_D)",
   "event_decision_timeline durable producer + read-only projection"
@@ -1888,8 +1909,8 @@ DOD=operator-visible operative projection OR honest missing states; tests+Chrome
 ## 12. Abschlussentscheidung
 
 ```text
-STATUS=MARKET_DASHBOARD_V2_OKX_INTRABAR_CAPABILITY_MERGED_VIA_PR_5548
-VERDICT=DASHBOARD_IMPLEMENTATION_PRESENT_ON_MAIN; INTRABAR_CAPABILITY_PASS; RUNTIME_NOT_ACTIVATED; OPERATOR_PRODUCT_GATE_PENDING; NEXT=RISK_SIZING_AND_EXECUTION_READONLY_BINDING_CAPABILITY
+STATUS=MARKET_DASHBOARD_V2_CAPABILITY_8_PRODUCTION_CLOSEOUT
+VERDICT=DASHBOARD_IMPLEMENTATION_PRESENT_ON_MAIN; CAPS_1_TO_7_TECHNICAL_RECORDED; CAP8_DOCS_OWNERSHIP_CLOSEOUT_IN_PROGRESS; RUNTIME_NOT_ACTIVATED; OPERATOR_PRODUCT_GATE_PENDING; PRODUCT_APPROVAL_INFERRED=false
 DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
 LANDSCAPE_TARGET=true
 CORE_CHANGE_AUTHORIZED=false
@@ -1902,7 +1923,7 @@ LIVE_AUTHORIZED=false
 ORDERS=false
 SCHEDULER=false
 CAPITAL_CHANGE=false
-FIRST_ACTION=OPERATOR_REVIEW_THIS_RUNBOOK_RECONCILIATION_THEN_AUTHORIZE_NEXT_CAPABILITY_PR_COMMAND
+FIRST_ACTION=OPERATOR_EXACT_HEAD_REVIEW_OF_CAPABILITY_8_PR_THEN_SEPARATE_GO_FOR_PRODUCT_GATE_OR_SUCCESSOR_SCOPE
 ```
 
 Das Dashboard wird damit weder zu früh als neue fachliche Wahrheit gebaut noch so spät, dass fehlende Observability erst nach Vollautonomie sichtbar wird. Es wächst kontrolliert mit der kanonischen Producer-Landschaft und bleibt dauerhaft eine reine Projektion.
