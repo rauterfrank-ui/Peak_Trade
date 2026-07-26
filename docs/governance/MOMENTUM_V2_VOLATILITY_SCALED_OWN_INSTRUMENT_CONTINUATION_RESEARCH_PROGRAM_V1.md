@@ -1,57 +1,74 @@
 # Momentum V2 — volatility-scaled own-instrument continuation research program v1
 
-Status: `DEFINITION_ONLY`
+## Status
+
+`PROGRAM_CLOSED_NO_FURTHER_RESEARCH` — closed after Momentum V2 vol-scaled v1
+terminal `DEVELOPMENT_FAIL` via explicit `CLOSE_LANE_NO_FURTHER_RESEARCH`.
+No successor. Historical implementation and Development evidence preserved.
 
 ## Identity
 
 - Program: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1`
 - Workstream: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_WORKSTREAM_V1`
-- Scope: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION_V1`
-- Hypothesis: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
-- Strategy identity (research-only): `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1`
+- Strategy identity: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1`
+- Operator alias: `MOMENTUM_V2_VOL_SCALED_V1`
+- Terminal hypothesis: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1`
+- Signal family: `OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM`
+- Target phenomenon: `OWN_INSTRUMENT_VOLATILITY_SCALED_MOMENTUM_CONTINUATION`
 
-## Purpose
+## Binding
 
-Define exactly one new independent Momentum-V2 research program after the
-docs-only Momentum surface disambiguation. The program tests whether
-**volatility scaling** of own-instrument lookback returns improves post-cost
-economics versus the frozen raw-return `momentum_1h` ENTRY&#47;EXIT baseline.
+- SSOT: `config/research/momentum_v2_volatility_scaled_own_instrument_continuation_research_program_v1.json`
+- Validator: `src/research/momentum_v2_volatility_scaled_own_instrument_continuation_research_program_v1.py`
+- Lane backlog: `config/research/momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog_v1.json`
+- Measurement contract: `config/research/momentum_v2_volatility_scaled_own_instrument_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
+- Decision packet: `config/research/momentum_v2_volatility_scaled_own_instrument_continuation_program_definition_operator_decision_packet_v1.json`
+- Development evidence: `docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/`
+- Closeout evidence: `docs/evidence/momentum_v2_vol_scaled_v1_terminal_retirement_closeout_v1/`
+- Lifecycle authority (sole): `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
 
-## Non-identity clarifications
+## Terminal truth (immutable; from PR #5560)
 
-- Not a class named `MomentumV2` and not a second registry implementation.
-- Registry strategy `momentum_1h` &#47; `MomentumStrategy` remains unchanged.
-- Research binding `momentum_1h&#47;v2` &#47; `MOMENTUM_HORIZON_V2_NON_BITCOIN_FUTURES_V2`
-  remains a separate pending offline-evaluation scope and is **not** renamed,
-  retuned, or executed in this slice.
-- Closed CS relative-strength momentum lane remains closed.
+- `DEVELOPMENT_VERDICT=DEVELOPMENT_FAIL`
+- `ECONOMIC_VALIDITY=FAIL`
+- `DEVELOPMENT_RUN_COUNT=1`
+- `RUN_SLOT_CONSUMED=true`
+- `REMAINING_AUTHORIZED_DEVELOPMENT_RUN_SLOTS=0`
+- `RERUN_PERFORMED=false`
+- `HOLDOUT_ACCESSED=false`
+- `SEALED_ACCESSED=false`
+- `ACTIVATION_ELIGIBLE=false`
+- `AUTOMATIC_SELECTION_ENABLED=false`
+- `PROMOTION_PERFORMED=false`
 
-## Dataset
-
-- `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
-- Class: `DEVELOPMENT_ONLY`
-- BTC excluded; spot excluded; PIT-safe features only
-
-## Authority
+## Gates (closed)
 
 - `EVALUATION_AUTHORIZED=false`
-- `IMPLEMENTATION_AUTHORIZED=true`
-- `DEVELOPMENT_RUN_COUNT=0`
-- `RUN_SLOT_CONSUMED=false`
-- Double-Play remains sole directional transition authority
-- Runtime Bridge remains `BOUND_NOT_ACTIVATED`
-- `LIVE_AUTHORIZED=false`, `ORDERS_ENABLED=false`
+- `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
+- `HOLDOUT_FORBIDDEN=true`
+- `ECONOMIC_GATE_OPEN=false`
+- `PROMOTION_ELIGIBLE=false`
+- `LIVE&#47;ORDERS&#47;SHADOW&#47;PAPER&#47;TESTNET&#47;SCHEDULER=false`
+- Master V2 / Double-Play / risk / sizing / execution: consume-only, no mutation
 
-## SSOT
+## Next step
 
-- Program: `config&#47;research&#47;momentum_v2_volatility_scaled_own_instrument_continuation_research_program_v1.json`
-- Backlog: `config&#47;research&#47;momentum_v2_volatility_scaled_own_instrument_continuation_hypothesis_backlog_v1.json`
-- Contract: `config&#47;research&#47;momentum_v2_volatility_scaled_own_instrument_continuation_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
+`LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO`
+
+New research requires a separately operator-authorized program identity.
+
+## Non-actions
+
+- No Development reevaluation of Momentum V2 vol-scaled v1
+- No Holdout / Sealed access
+- No promotion / activation / automatic selection
+- No runtime / LIVE / orders
+- No successor invention in this slice
 
 ---
 docs_token: DOCS_TOKEN_MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1
-STATUS: DEFINITION_ONLY
-scope: research, offline-only, non-authorizing, definition-governance
+STATUS: PROGRAM_CLOSED_NO_FURTHER_RESEARCH
+scope: research, offline-only, non-authorizing, terminal-retirement-closeout
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false

@@ -204,13 +204,21 @@ def validate_implementation_binding(
         )
         _require(sel.get("development_run_slot_available") is False, "SELECTION_SLOT_AVAILABLE")
         backlog = json.loads((repo_root / BACKLOG_REL_PATH).read_text(encoding="utf-8"))
-        _require(backlog.get("status") == "DEVELOPMENT_FAIL_SLOT_CONSUMED", "BACKLOG_STATUS")
-        hyp = (backlog.get("preregistered_hypotheses") or [None])[0]
-        _require(hyp is not None, "BACKLOG_HYP_MISSING")
+        _require(
+            backlog.get("status") == "LANE_CLOSED_NO_FURTHER_RESEARCH",
+            "BACKLOG_NOT_CLOSED",
+        )
+        _require(backlog.get("preregistered_hypotheses") == [], "BACKLOG_PREREG_NONEMPTY")
+        terminals = backlog.get("terminal_hypotheses") or []
+        _require(len(terminals) == 1, "BACKLOG_TERMINAL_LEN")
+        hyp = terminals[0]
         _require(hyp.get("implementation_present") is True, "BACKLOG_IMPL_PRESENT")
         _require(hyp.get("run_slot_consumed") is True, "BACKLOG_RUN_SLOT")
         _require(hyp.get("development_run_count") == 1, "BACKLOG_DEV_RUNS")
-        _require(hyp.get("status") == "DEVELOPMENT_FAIL", "BACKLOG_HYP_STATUS")
+        _require(hyp.get("status") == "TERMINAL_FAIL", "BACKLOG_HYP_STATUS")
+        _require(hyp.get("hypothesis_id") == REQUIRED_HYPOTHESIS_ID, "BACKLOG_HYP_ID")
+        _require(hyp.get("retry_allowed") is False, "BACKLOG_RETRY_ALLOWED")
+        _require(hyp.get("holdout_allowed") is False, "BACKLOG_HOLDOUT_ALLOWED")
         _require(backlog.get("development_evaluation_authorized") is False, "BACKLOG_DEV_EVAL")
 
     return {

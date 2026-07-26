@@ -15,6 +15,38 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ---
 
+## Post–Momentum V2 vol-scaled v1 terminal retirement closeout (2026-07-26)
+
+**Narrow governance result only** (not evaluation, Holdout, Sealed, promotion, or activation):
+
+- Base SHA: `1b731ec499af4b92a458c9f564965f2c54399c33` (`origin&#47;main` after PR **#5560**).
+- Strategy: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1`
+  (alias `MOMENTUM_V2_VOL_SCALED_V1`)
+- Terminal Development truth preserved: `DEVELOPMENT_FAIL` / economic `FAIL`
+- Decision: `CLOSE_LANE_NO_FURTHER_RESEARCH` under
+  `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
+- Lane/program status: `LANE_CLOSED_NO_FURTHER_RESEARCH` /
+  `PROGRAM_CLOSED_NO_FURTHER_RESEARCH`
+- Inventories: preregistered=0; open=0; terminal=1; `next_eligible=NONE`
+- Slot: `DEVELOPMENT_RUN_SLOT_CONSUMED=true`, remaining authorized slots `0`
+- Fail-closed: `DEVELOPMENT_REEVALUATION_ELIGIBLE=false`,
+  `HOLDOUT_ELIGIBLE=false`, `SEALED_ELIGIBLE=false`,
+  `PROMOTION_ELIGIBLE=false`, `ACTIVATION_ELIGIBLE=false`,
+  `AUTOMATIC_SELECTION_ENABLED=false`
+- Historical evidence preserved:
+  [`docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/`](../../evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/)
+- Closeout evidence:
+  [`docs/evidence/momentum_v2_vol_scaled_v1_terminal_retirement_closeout_v1/`](../../evidence/momentum_v2_vol_scaled_v1_terminal_retirement_closeout_v1/)
+
+**Still locked / next formally permissible step:**
+
+- No Momentum V2 vol-scaled v1 Development rerun, Holdout, Sealed, promotion, or activation path
+- No successor hypothesis selected in this closeout
+- New research requires a separately operator-authorized program identity
+- No Runtime / Scheduler / Shadow / Paper / Testnet / Live / Orders GO implied
+
+---
+
 ## Post–Momentum V2 vol-scaled Development evaluation terminal fail (2026-07-26)
 
 **Narrow research capability closeout only** (not Holdout, Sealed, promotion, activation, or second Development run):
