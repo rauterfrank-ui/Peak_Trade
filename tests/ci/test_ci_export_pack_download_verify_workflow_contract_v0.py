@@ -7,6 +7,7 @@ and never touch remote export-pack storage.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,7 @@ import pytest
 yaml = pytest.importorskip("yaml")
 
 WORKFLOW = Path(".github/workflows/ci-export-pack-download-verify.yml")
+_SHA_PIN_RX = re.compile(r"^[0-9a-f]{40}$", re.IGNORECASE)
 
 
 def _workflow() -> dict[str, Any]:
@@ -90,16 +92,22 @@ def test_workflow_job_permissions_do_not_grant_write_all() -> None:
 
 
 def test_workflow_uses_expected_pinned_core_actions_only() -> None:
+    """Core Actions must be full 40-hex SHA pins (CYBER_CI_SUPPLY_CHAIN_HARDENING_V1)."""
     data = _workflow()
     uses_values = [step["uses"] for step in _all_steps(data) if isinstance(step.get("uses"), str)]
 
-    assert "actions/checkout@v5" in uses_values
-    assert any(value.startswith("actions/setup-python@v") for value in uses_values)
+    checkout_refs = [v for v in uses_values if v.startswith("actions/checkout@")]
+    setup_python_refs = [v for v in uses_values if v.startswith("actions/setup-python@")]
+    assert checkout_refs
+    assert setup_python_refs
 
     for value in uses_values:
         assert "@" in value
+        ref = value.rsplit("@", 1)[1]
+        assert _SHA_PIN_RX.fullmatch(ref), f"expected full SHA pin, got {value!r}"
         assert not value.endswith("@main")
         assert not value.endswith("@master")
+        assert not re.search(r"@v\d+", value), f"tag-only pin forbidden: {value!r}"
 
 
 def test_workflow_contains_guardrails_before_rclone_steps() -> None:
