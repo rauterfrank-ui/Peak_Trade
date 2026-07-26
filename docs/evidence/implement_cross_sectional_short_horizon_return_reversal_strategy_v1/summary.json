@@ -1,0 +1,26 @@
+{
+  "artifact_kind": "csrhr_v1_strategy_implementation_only_evidence",
+  "status": "STRATEGY_IMPLEMENTATION_PRESENT",
+  "hypothesis_id": "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_NON_BITCOIN_PERPETUALS_V1",
+  "base_sha": "c96a61d25c0d97ddadc27032428e41467c576d3c",
+  "expected_origin_main_sha": "c96a61d25c0d97ddadc27032428e41467c576d3c",
+  "development_evaluation_executed": false,
+  "run_slot_consumed": false,
+  "holdout_accessed": false,
+  "sealed_accessed": false,
+  "economic_validity_status": "FAIL",
+  "activation_eligible": false,
+  "authorized_files": [
+    "src/research/cross_sectional_short_horizon_return_reversal_v1_score_v1.py",
+    "src/research/cross_sectional_short_horizon_return_reversal_v1_selection_v1.py",
+    "src/research/cross_sectional_short_horizon_return_reversal_v1_strategy_implementation_binding_v1.py",
+    "config/research/cross_sectional_short_horizon_return_reversal_v1_strategy_implementation_binding_v1.json",
+    "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "tests/research/test_cross_sectional_short_horizon_return_reversal_v1_score_and_selection_v1.py"
+  ],
+  "implementation_files": [
+    "src/research/cross_sectional_short_horizon_return_reversal_v1_score_v1.py",
+    "src/research/cross_sectional_short_horizon_return_reversal_v1_selection_v1.py"
+  ],
+  "frozen_measurement_contract_digest": "3d983bbfa1db6c319f6c4399549679a5b7fd2d635d8e72d4452330da9059729a"
+}
