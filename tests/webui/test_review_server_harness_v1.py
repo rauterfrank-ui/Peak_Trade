@@ -7,9 +7,13 @@ from __future__ import annotations
 
 import os
 import re
+import shlex
+import shutil
 import socket
 import subprocess
+import sys
 import time
+import uuid
 from pathlib import Path
 from urllib.request import urlopen
 
@@ -18,6 +22,59 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HARNESS = REPO_ROOT / "scripts" / "webui" / "review_server.sh"
 PLAYWRIGHT_WEBSERVER = REPO_ROOT / "scripts" / "webui" / "review_server_playwright_webserver_v1.py"
+
+
+def _harness_physical_path(target: Path | str) -> str:
+    """Invoke the harness physical_path() helper without starting a server."""
+    extract = subprocess.run(
+        [
+            "bash",
+            "-c",
+            r"""
+set -euo pipefail
+eval "$(sed -n '/^physical_path()/,/^}/p' "$1")"
+physical_path "$2"
+""",
+            "physical_path",
+            str(HARNESS),
+            str(target),
+        ],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert extract.returncode == 0, extract.stdout + extract.stderr
+    return extract.stdout.strip()
+
+
+def _resolve_uv_bin(tmp_path: Path) -> str:
+    """Prefer real uv; otherwise provide a minimal `uv run` shim for CI matrices."""
+    found = shutil.which("uv")
+    if found:
+        return found
+    shim_dir = tmp_path / "_peak_trade_uv_shim"
+    shim_dir.mkdir(parents=True, exist_ok=True)
+    shim = shim_dir / "uv"
+    if not shim.exists():
+        py = shlex.quote(sys.executable)
+        shim.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            f"PY={py}\n"
+            "# Emulate: uv run python -m uvicorn ... using the active test interpreter.\n"
+            'if [[ "${1:-}" == "run" ]]; then\n'
+            "  shift\n"
+            '  if [[ "${1:-}" == "python" || "${1:-}" == "python3" ]]; then\n'
+            "    shift\n"
+            '    exec "$PY" "$@"\n'
+            "  fi\n"
+            '  exec "$@"\n'
+            "fi\n"
+            'exec "$@"\n',
+            encoding="utf-8",
+        )
+        shim.chmod(0o755)
+    return str(shim)
 
 
 def _free_port() -> int:
@@ -66,6 +123,7 @@ def _base_env(tmp_path: Path, port: int, **overrides: str) -> dict[str, str]:
             "PEAK_TRADE_WEBUI_STOP_TIMEOUT_SECONDS": "15",
             "PEAK_TRADE_WEBUI_HEALTH_PATH": "/api/health",
             "PEAK_TRADE_WEBUI_REVIEW_PATH": "/",
+            "PEAK_TRADE_WEBUI_UV": _resolve_uv_bin(tmp_path),
             "LIVE_AUTHORIZED": "false",
             "ORDERS_ALLOWED": "false",
         }
@@ -74,9 +132,32 @@ def _base_env(tmp_path: Path, port: int, **overrides: str) -> dict[str, str]:
     return env
 
 
+@pytest.fixture(autouse=True)
+def _harness_uv_env(tmp_path_factory: pytest.TempPathFactory, monkeypatch: pytest.MonkeyPatch):
+    """Ensure harness starts work in CI jobs where `uv` is not on PATH."""
+    if shutil.which("uv"):
+        yield
+        return
+    shim_root = tmp_path_factory.mktemp("harness_uv")
+    monkeypatch.setenv("PEAK_TRADE_WEBUI_UV", _resolve_uv_bin(shim_root))
+    yield
+
+
 def _http_code(url: str, timeout: float = 3.0) -> int:
     with urlopen(url, timeout=timeout) as resp:  # noqa: S310 — localhost tests
         return int(getattr(resp, "status", 200))
+
+
+def _process_command_line(pid: int) -> str:
+    """Full process argv; avoid truncated `ps args` (Linux default width ~80)."""
+    proc_cmdline = Path(f"/proc/{pid}/cmdline")
+    if proc_cmdline.is_file():
+        raw = proc_cmdline.read_bytes().replace(b"\x00", b" ").decode("utf-8", "replace")
+        return raw.strip()
+    return subprocess.check_output(
+        ["ps", "-ww", "-p", str(pid), "-o", "args="],
+        text=True,
+    ).strip()
 
 
 @pytest.fixture()
@@ -100,6 +181,62 @@ def test_macos_bash_32_static_compat() -> None:
     assert "readarray" not in text
     assert re.search(r"\buvicorn\b.*--reload", text) is None
     assert "UVICORN_RELOAD=false" in raw
+
+
+def test_identity_ok_uses_physical_path_comparison() -> None:
+    """Static contract: cwd vs REPO_ROOT must not use raw string inequality alone."""
+    raw = HARNESS.read_text(encoding="utf-8")
+    assert "physical_path()" in raw
+    assert "pwd -P" in raw
+    assert "cwd_phys" in raw
+    assert "repo_phys" in raw
+    # Proven bug form must remain gone.
+    assert '[[ -n "$cwd" && "$cwd" != "$REPO_ROOT" ]]' not in raw
+
+
+def test_physical_path_tmp_private_tmp_equivalence_and_distinct_rejection(
+    tmp_path: Path,
+) -> None:
+    """Lexical path aliases resolve equal; distinct directories stay fail-closed.
+
+    Portable contract uses a symlink alias (Linux CI has no /private/tmp).
+    On macOS, also prove /tmp vs /private/tmp when that alias exists.
+    """
+    real_dir = tmp_path / "real_worktree"
+    real_dir.mkdir()
+    alias_dir = tmp_path / "alias_worktree_link"
+    alias_dir.symlink_to(real_dir, target_is_directory=True)
+    other_dir = tmp_path / "other_worktree"
+    other_dir.mkdir()
+
+    assert str(real_dir) != str(alias_dir)
+    phys_real = _harness_physical_path(real_dir)
+    phys_alias = _harness_physical_path(alias_dir)
+    assert phys_real == phys_alias
+    assert phys_real == os.path.realpath(real_dir)
+
+    phys_other = _harness_physical_path(other_dir)
+    assert phys_other != phys_real
+    assert phys_real == phys_alias
+    assert not (phys_real == phys_other)
+
+    # macOS-only proven production alias when present.
+    private_tmp = Path("/private/tmp")
+    if private_tmp.is_dir():
+        marker = uuid.uuid4().hex
+        logical_root = Path("/tmp") / f"peak_trade_review_server_path_identity_{marker}"
+        logical_root.mkdir(parents=True, exist_ok=True)
+        try:
+            private_alias = private_tmp / logical_root.name
+            assert private_alias.is_dir()
+            assert _harness_physical_path(logical_root) == _harness_physical_path(private_alias)
+            if sys.platform == "darwin":
+                assert str(logical_root) != str(private_alias)
+        finally:
+            try:
+                logical_root.rmdir()
+            except OSError:
+                pass
 
 
 def test_start_status_idempotent_stop_logs_and_bind(tmp_path: Path, isolated_port: int) -> None:
@@ -141,7 +278,7 @@ def test_start_status_idempotent_stop_logs_and_bind(tmp_path: Path, isolated_por
 
         # Bind localhost only: process command must include 127.0.0.1 and no --reload
         pid = int(kv["PID"])
-        cmd = subprocess.check_output(["ps", "-p", str(pid), "-o", "args="], text=True)
+        cmd = _process_command_line(pid)
         assert "127.0.0.1" in cmd
         assert "--reload" not in cmd
         assert "src.webui.app:app" in cmd
