@@ -1,7 +1,7 @@
 # Security Notes — Peak_Trade Cybersecurity Baseline Pointers
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
-**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26)
+**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26)
 **Last Reviewed (repo-static):** 2026-07-26
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
 **Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, or claim unverified scanner results.
@@ -22,6 +22,7 @@
 | Tracked secret-like policy gate | [`scripts/ci/check_tracked_credential_hygiene_policy_v1.py`](scripts/ci/check_tracked_credential_hygiene_policy_v1.py) + [`docs/ops/specs/tracked_credential_like_allowlist_v1.json`](docs/ops/specs/tracked_credential_like_allowlist_v1.json) |
 | Secret scanning / push-protection governance | [`docs/ops/specs/SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1.md`](docs/ops/specs/SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1.md) (extends tracked gate; CI via Lint Gate) |
 | Branch ruleset enforcement governance | [`docs/ops/specs/BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1.md`](docs/ops/specs/BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1.md) + [`config/ci/branch_ruleset_enforcement_contract_v1.json`](config/ci/branch_ruleset_enforcement_contract_v1.json) (verifier via Lint Gate; required checks SSOT unchanged) |
+| WebUI local-admin write-surface auth gate | [`docs/ops/specs/WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1.md`](docs/ops/specs/WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1.md) + [`src/webui/local_admin_write_auth_v1.py`](src/webui/local_admin_write_auth_v1.py) (bounded local-admin header auth for admin write/trigger routes; **not** remote-internet-grade identity) |
 | Incident handling | [`docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`](docs/RUNBOOKS_AND_INCIDENT_HANDLING.md) |
 | Disaster recovery | [`docs/DISASTER_RECOVERY_RUNBOOK.md`](docs/DISASTER_RECOVERY_RUNBOOK.md) |
 | Required CI contexts (branch protection sync, repo-evidenced) | [`config/ci/required_status_checks.json`](config/ci/required_status_checks.json) |

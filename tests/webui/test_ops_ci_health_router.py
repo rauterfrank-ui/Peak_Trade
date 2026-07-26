@@ -24,6 +24,24 @@ from src.webui.ops_ci_health_router import (
     router as ci_health_router,
     set_ci_health_config,
 )
+from src.webui.local_admin_write_auth_v1 import (
+    AUTH_HEADER_NAME,
+    AUTH_TOKEN_ENV_NAME,
+)
+
+# Synthetic fixture token — deliberately not shaped like a production secret.
+_FIXTURE_LOCAL_ADMIN_TOKEN = "fixture-token-not-a-secret"
+
+
+def _admin_headers() -> dict[str, str]:
+    return {AUTH_HEADER_NAME: _FIXTURE_LOCAL_ADMIN_TOKEN}
+
+
+@pytest.fixture
+def local_admin_token_env(monkeypatch: pytest.MonkeyPatch) -> str:
+    """Configure the local-admin server token for authenticated POST /run tests."""
+    monkeypatch.setenv(AUTH_TOKEN_ENV_NAME, _FIXTURE_LOCAL_ADMIN_TOKEN)
+    return _FIXTURE_LOCAL_ADMIN_TOKEN
 
 
 @pytest.fixture
@@ -90,7 +108,9 @@ def mock_templates(tmp_path: Path) -> Jinja2Templates:
 
 <script>
   async function runChecks() {
-    const response = await fetch('/ops/ci-health/run', { method: 'POST' });
+    const headers = {'Accept': 'application/json', 'Content-Type': 'application/json'};
+    headers['X-Peak-Trade-Local-Admin-Token'] = window.prompt('token');
+    const response = await fetch('/ops/ci-health/run', { method: 'POST', headers: headers });
   }
   async function refreshStatus() {
     const response = await fetch('/ops/ci-health/status', { method: 'GET' });
@@ -630,9 +650,9 @@ def test_ci_health_snapshot_directory_creation(
 # =============================================================================
 
 
-def test_ci_health_run_endpoint_returns_200(client: TestClient) -> None:
+def test_ci_health_run_endpoint_returns_200(client: TestClient, local_admin_token_env: str) -> None:
     """Test that POST /run endpoint returns 200 with valid JSON."""
-    response = client.post("/ops/ci-health/run")
+    response = client.post("/ops/ci-health/run", headers=_admin_headers())
 
     assert response.status_code == 200
     data = response.json()
@@ -653,11 +673,14 @@ def test_ci_health_run_endpoint_returns_200(client: TestClient) -> None:
     # v0.2 run-specific field
     assert "run_triggered" in data
     assert data["run_triggered"] is True
+    assert local_admin_token_env not in response.text
 
 
-def test_ci_health_run_endpoint_executes_checks(client: TestClient) -> None:
+def test_ci_health_run_endpoint_executes_checks(
+    client: TestClient, local_admin_token_env: str
+) -> None:
     """Test that POST /run actually executes checks."""
-    response = client.post("/ops/ci-health/run")
+    response = client.post("/ops/ci-health/run", headers=_admin_headers())
 
     assert response.status_code == 200
     data = response.json()
@@ -671,18 +694,18 @@ def test_ci_health_run_endpoint_executes_checks(client: TestClient) -> None:
     assert "OK" in statuses or "SKIP" in statuses
 
 
-def test_ci_health_run_parallel_returns_409(client: TestClient) -> None:
+def test_ci_health_run_parallel_returns_409(client: TestClient, local_admin_token_env: str) -> None:
     """Test that parallel run attempts return HTTP 409."""
     # Note: TestClient is synchronous, so we test the lock mechanism directly
     # by calling the endpoint multiple times rapidly
 
     # First call should succeed
-    response1 = client.post("/ops/ci-health/run")
+    response1 = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response1.status_code == 200
 
     # For testing lock behavior, we verify that sequential calls work
     # (lock is released after first call completes)
-    response2 = client.post("/ops/ci-health/run")
+    response2 = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response2.status_code == 200
 
     # Both should have valid data
@@ -695,10 +718,12 @@ def test_ci_health_run_parallel_returns_409(client: TestClient) -> None:
     assert data2["run_triggered"] is True
 
 
-def test_ci_health_run_creates_snapshot(mock_repo_root: Path, client: TestClient) -> None:
+def test_ci_health_run_creates_snapshot(
+    mock_repo_root: Path, client: TestClient, local_admin_token_env: str
+) -> None:
     """Test that POST /run creates snapshot files."""
     # Call run endpoint
-    response = client.post("/ops/ci-health/run")
+    response = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response.status_code == 200
 
     # Check that snapshot files exist
@@ -730,6 +755,9 @@ def test_ci_health_dashboard_contains_buttons(client: TestClient) -> None:
     # Check for fetch API calls
     assert "/ops/ci-health/run" in html, "POST /run endpoint should be referenced"
     assert "/ops/ci-health/status" in html, "GET /status endpoint should be referenced"
+    assert AUTH_HEADER_NAME in html, "Local-admin auth header name should be referenced"
+    assert AUTH_TOKEN_ENV_NAME not in html
+    assert _FIXTURE_LOCAL_ADMIN_TOKEN not in html
 
 
 def test_ci_health_dashboard_has_error_banner(client: TestClient) -> None:
@@ -745,14 +773,16 @@ def test_ci_health_dashboard_has_error_banner(client: TestClient) -> None:
     assert "hideError()" in html, "hideError() function should be present"
 
 
-def test_ci_health_run_sequential_calls_work(client: TestClient) -> None:
+def test_ci_health_run_sequential_calls_work(
+    client: TestClient, local_admin_token_env: str
+) -> None:
     """Test that sequential run calls work (lock is released)."""
     # First call
-    response1 = client.post("/ops/ci-health/run")
+    response1 = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response1.status_code == 200
 
     # Second call (should also succeed since lock was released)
-    response2 = client.post("/ops/ci-health/run")
+    response2 = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response2.status_code == 200
 
     # Both should have valid data
@@ -763,3 +793,53 @@ def test_ci_health_run_sequential_calls_work(client: TestClient) -> None:
     assert "overall_status" in data2
     assert data1["run_triggered"] is True
     assert data2["run_triggered"] is True
+
+
+def test_ci_health_run_rejects_missing_auth_without_side_effects(
+    mock_repo_root: Path, client: TestClient, local_admin_token_env: str
+) -> None:
+    """Unauthenticated POST /run must not execute checks or write reports."""
+    snapshot_dir = mock_repo_root / "reports" / "ops"
+    assert not snapshot_dir.exists()
+
+    with patch(
+        "src.webui.ops_ci_health_router._run_all_checks",
+        side_effect=AssertionError("subprocess path must not run"),
+    ) as mocked:
+        response = client.post("/ops/ci-health/run")
+        assert response.status_code == 401
+        assert response.json()["detail"]["error"] == "LOCAL_ADMIN_AUTH_MISSING"
+        mocked.assert_not_called()
+
+    assert not snapshot_dir.exists()
+    assert local_admin_token_env not in response.text
+
+
+def test_ci_health_run_rejects_invalid_auth_without_side_effects(
+    mock_repo_root: Path, client: TestClient, local_admin_token_env: str
+) -> None:
+    """Invalid-token POST /run must not execute checks or write reports."""
+    snapshot_dir = mock_repo_root / "reports" / "ops"
+    assert not snapshot_dir.exists()
+
+    with patch(
+        "src.webui.ops_ci_health_router._run_all_checks",
+        side_effect=AssertionError("subprocess path must not run"),
+    ) as mocked:
+        response = client.post(
+            "/ops/ci-health/run",
+            headers={AUTH_HEADER_NAME: "wrong-fixture-token"},
+        )
+        assert response.status_code == 403
+        assert response.json()["detail"]["error"] == "LOCAL_ADMIN_AUTH_INVALID"
+        mocked.assert_not_called()
+
+    assert not snapshot_dir.exists()
+    assert local_admin_token_env not in response.text
+
+
+def test_ci_health_get_status_unchanged_without_admin_token(client: TestClient) -> None:
+    """GET /status remains available without local-admin authentication."""
+    response = client.get("/ops/ci-health/status")
+    assert response.status_code == 200
+    assert "overall_status" in response.json()
