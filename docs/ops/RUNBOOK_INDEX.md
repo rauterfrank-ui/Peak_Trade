@@ -30,7 +30,7 @@
 
 | Artefakt | Pfad | Rolle |
 |----------|------|-------|
-| **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; Caps 1–7 technical + Capability-8 docs/ownership closeout on `main` through PR #5566 (`CAPABILITY_8_DOCS_OWNERSHIP_CLOSEOUT=MERGED`); **keine** Trading-/Runtime-/Order-Authority; `OPERATOR_PRODUCT_GATE` pending; `PHASE_5_PASS` / product approval not proven; Capability-PR-only |
+| **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; Caps 1–7 technical + Cap8 docs/ownership + PR #5568 daily observation; Operator Product Review PASS on `88f2241819dcc160c3ce688a9c7397e7cc8becec`; PR #5569 Consumer/Anti-SSOT docs-only on `9ff632885422a92e86f9dbeda79aab160bf2346b`; `OPERATOR_PRODUCT_GATE=true`; `MARKET_DASHBOARD_PHASE_5_PASS=true`; `DAILY_OBSERVATION_USABLE=true`; `WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE`; **keine** Trading-/Runtime-/Order-Authority; Capability-PR-only |
 | **Removed product tombstone** | [../webui/MARKET_DASHBOARD_REMOVED.md](../webui/MARKET_DASHBOARD_REMOVED.md) | Legacy product tombstone; Landscape V2 `GET &#47;market` is the authorized read-only replacement surface |
 
 ---
