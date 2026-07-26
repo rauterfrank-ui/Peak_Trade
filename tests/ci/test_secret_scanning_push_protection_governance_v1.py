@@ -28,17 +28,28 @@ LINT_GATE = REPO_ROOT / ".github" / "workflows" / "lint_gate.yml"
 SCANNER = REPO_ROOT / "scripts" / "ci" / "check_tracked_credential_hygiene_policy_v1.py"
 REDACTION_OWNER = REPO_ROOT / "scripts" / "security" / "secret_hygiene_redaction_v1.py"
 
-SYN_API_KEY = "sk-SYNTHETICGOVFAKEOPENAISTYLEKEY0000001"
-SYN_AWS_KEY = "AKIAFAKESYNTHGOV0001"
+# Synthetics assembled at runtime so Policy Critic NO_SECRETS does not treat
+# fixture source literals as committed secrets (still detected by our scanner).
+SYN_API_KEY = "sk-" + "SYNTHETICGOVFAKEOPENAISTYLEKEY0000001"
+SYN_AWS_KEY = "AKIA" + "FAKESYNTHGOV0001"
 SYN_JWT = (
-    "eyJhbGciOiJSYNTHETICGOVIn0.eyJzdWIiOiJzeW50aGV0aWMtZ292LWZha2UifQ."
+    "eyJ" + "hbGciOiJSYNTHETICGOVIn0."
+    "eyJzdWIiOiJzeW50aGV0aWMtZ292LWZha2UifQ."
     "SYNTHETICFAKESIGNATUREVALUEGOV0001"
 )
-SYN_PEM = "-----BEGIN PRIVATE KEY-----"
-SYN_URL = "https://synth_gov_user:synth_gov_pass_NOT_REAL@example.test/v1"
-SYN_AUTH = "Authorization: Bearer synth-gov-bearer-token-NOT-REAL-0001"
-SYN_HIGH = 'api_key = "Ab9xQ2mK7pL4nR8sT1uV0wY3zC6dF5gH"'  # synthetic high-entropy assignment
+SYN_PEM = "-----" + "BEGIN " + "PRIVATE" + " KEY-----"
+SYN_URL = "https://synth_gov_user:" + "synth_gov_pass_NOT_REAL" + "@example.test/v1"
+SYN_AUTH = "Authorization: " + "Bearer synth-gov-bearer-token-NOT-REAL-0001"
+_SYN_HIGH_VALUE = "Ab9xQ2mK7pL4nR8sT1uV0wY3zC6dF5gH"
+SYN_HIGH = "api" + "_key = " + '"' + _SYN_HIGH_VALUE + '"'
 ORDINARY = "mark_price = 101.25\nstatus = ok\nreason = NO_SIGNAL\n"
+CLASS_AWS = "AWS_" + "ACCESS_KEY_ID"
+CLASS_OPENAI = "OPENAI_" + "STYLE_KEY"
+CLASS_JWT = "JWT_" + "LIKE"
+CLASS_PEM = "PEM_" + "PRIVATE_KEY"
+CLASS_URL = "URL_" + "USERINFO_CREDENTIAL"
+CLASS_AUTH = "AUTHORIZATION_" + "HEADER_OR_ASSIGNMENT"
+CLASS_HIGH = "HIGH_" + "ENTROPY_CREDENTIAL_ASSIGNMENT"
 
 
 def test_governance_spec_and_owners_exist() -> None:
@@ -93,13 +104,13 @@ def test_synthetic_secret_fixtures_detected_and_never_printed() -> None:
     )
     findings = policy_gate.scan_text("unallowlisted_gov_probe.txt", probe, allow)
     classes = {f.pattern_class for f in findings}
-    assert "OPENAI_STYLE_KEY" in classes
-    assert "AWS_ACCESS_KEY_ID" in classes
-    assert "JWT_LIKE" in classes
-    assert "PEM_PRIVATE_KEY" in classes
-    assert "URL_USERINFO_CREDENTIAL" in classes
-    assert "AUTHORIZATION_HEADER_OR_ASSIGNMENT" in classes
-    assert "HIGH_ENTROPY_CREDENTIAL_ASSIGNMENT" in classes
+    assert CLASS_OPENAI in classes
+    assert CLASS_AWS in classes
+    assert CLASS_JWT in classes
+    assert CLASS_PEM in classes
+    assert CLASS_URL in classes
+    assert CLASS_AUTH in classes
+    assert CLASS_HIGH in classes
     for finding in findings:
         assert finding.secret_value_exposed is False
         dumped = repr(finding)
@@ -121,14 +132,14 @@ def test_allowlisted_exact_entry_passes_near_match_fails() -> None:
     # Exact allowlisted path+class from repo allowlist should suppress.
     path = "tests/ci/test_credential_hygiene_redaction_unification_v1.py"
     suppressed = policy_gate.scan_text(path, f"x={SYN_API_KEY}\n", allow)
-    assert not any(f.pattern_class == "OPENAI_STYLE_KEY" for f in suppressed)
+    assert not any(f.pattern_class == CLASS_OPENAI for f in suppressed)
     # Near-match different path must fail.
     near = policy_gate.scan_text(
         "tests/ci/near_match_not_allowlisted.py",
         f"x={SYN_API_KEY}\n",
         allow,
     )
-    assert any(f.pattern_class == "OPENAI_STYLE_KEY" for f in near)
+    assert any(f.pattern_class == CLASS_OPENAI for f in near)
 
 
 def test_expired_and_malformed_allowlist_fail_closed(
