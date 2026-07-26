@@ -1,0 +1,11 @@
+BASE_SHA=9c8a66d4bef0dc5a82bb74bc2a4091e5adff4ba3
+HEAD_SHA=9c8a66d4bef0dc5a82bb74bc2a4091e5adff4ba3
+BRANCH=capability/market-dashboard-gov-econ-diag-autonomy-v0
+ORIGIN_MAIN=9c8a66d4bef0dc5a82bb74bc2a4091e5adff4ba3
+WORKTREE=/Users/frnkhrz/Peak_Trade/.worktrees/market_dashboard_gov_econ_diag_autonomy_v0
+EXPECTED_ORIGIN_MAIN_SHA=9c8a66d4bef0dc5a82bb74bc2a4091e5adff4ba3
+ORIGIN_MAIN_MATCH=true
+OPERATOR_DECISION=ALT_A_AUTHORIZED
+FULL_BINDING_AUTHORIZED=false
+RATIFICATION_SUPERSESSION_AUTHORIZED=false
+CAPTURED_AT=2026-07-26T03:11:51Z

@@ -1,0 +1,8 @@
+== Docs token policy preflight (changed .md vs origin/main) ==
+Using CPython 3.11.14
+Creating virtual environment at: .venv
+   Building peak-trade @ file:///Users/frnkhrz/Peak_Trade/.worktrees/market_dashboard_gov_econ_diag_autonomy_v0
+      Built peak-trade @ file:///Users/frnkhrz/Peak_Trade/.worktrees/market_dashboard_gov_econ_diag_autonomy_v0
+Installed 65 packages in 164ms
+✅ No Markdown files to check (changed files (base: origin/main))
+OK: docs token policy preflight passed

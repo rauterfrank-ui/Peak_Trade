@@ -29,6 +29,7 @@ LANDMARKS = (
     'data-mdl-region="SYSTEM_CONTEXT_RAIL"',
     'data-mdl-region="CANONICAL_DECISION_STRIP"',
     'data-mdl-region="SECONDARY_STATUS_REGION"',
+    'data-mdl-region="GOVERNANCE_DIAGNOSTICS_REGION"',
     'data-mdl-region="EVENT_DECISION_TIMELINE"',
     'data-mdl-region="ENGINEERING_DRAWER"',
 )
@@ -54,7 +55,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-market-landscape-v2="true"' in html
     for landmark in LANDMARKS:
         assert landmark in html, landmark
-    assert "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING" in html
+    assert "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT" in html
     assert "BOUND_NOT_ACTIVATED" in html
     assert (
         "no ohlcv fabricated" in html.lower()
@@ -95,9 +96,23 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert "Risk / Sizing / Capital" in html
     assert 'data-mdl-ops="risk_sizing_capital"' in html
     assert 'data-mdl-ops="execution_reconciliation"' in html
+    assert 'data-mdl-ops="economic_summary"' in html
+    assert 'data-mdl-ops="diagnostics_summary"' in html
+    assert 'data-mdl-ops="governance_autonomy"' in html
     assert 'data-mdl-field="risk_status"' in html
     assert 'data-mdl-field="execution_status"' in html
     assert 'data-mdl-field="reconciliation_status"' in html
+    assert 'data-mdl-field="economic_profit_factor"' in html
+    assert 'data-mdl-field="diagnostics_status"' in html
+    assert 'data-mdl-authority="NON_AUTHORITATIVE"' in html
+    assert 'data-mdl-field="autonomy_stage"' in html
+    assert 'data-mdl-field="promotion_eligibility"' in html
+    assert 'data-mdl-field="activation_eligibility"' in html
+    assert 'data-mdl-field="runtime_bridge_lock"' in html
+    assert 'data-mdl-field="operator_go_required"' in html
+    assert "BOUND_NOT_ACTIVATED" in html
+    assert "REQUIRED=true" in html
+    assert 'data-mdl-classification="EVIDENCE_ONLY"' in html
     assert "<form" not in html.lower()
     assert "place_order" not in html
     assert "submit_order" not in html
@@ -110,6 +125,20 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert html.lower().count("<main") == 1
     assert '<h1 class="mdl-v2-kicker">Market Landscape</h1>' in html
     assert 'data-mdl-a11y-baseline="task7"' in html
+    assert "Promote" not in html
+    assert ">ACTIVE<" not in html
+    assert ">ELIGIBLE<" not in html
+    assert ">READY<" not in html
+    gov = _region_html(html, "GOVERNANCE_DIAGNOSTICS_REGION")
+    assert "NOT_BOUND" in gov
+    assert "NON_AUTHORITATIVE" in gov
+    assert "BOUND_NOT_ACTIVATED" in gov
+    assert "REQUIRED=true" in gov
+    assert ">PASS<" not in gov
+    assert ">ACTIVE<" not in gov
+    assert ">ELIGIBLE<" not in gov
+    diag = gov.split('data-mdl-ops="diagnostics_summary"', 1)[1][:800]
+    assert ">PASS<" not in diag
 
 
 def _region_html(html: str, region: str) -> str:
@@ -333,7 +362,20 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     # Must not invent HOLD/FLAT
     assert ctx["decision"]["fields"]["decision"] is None
     assert ctx["decision"]["fields"]["direction"] is None
-    assert ctx["phase"] == "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
+    assert ctx["phase"] == "PHASE_4_6_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT"
+    assert ctx["product_flags"]["operator_go_required"] is True
+    assert ctx["product_flags"]["capability_6_alt_a_closeout"] is True
+    assert ctx["economic"]["classification_display"] == "EVIDENCE_ONLY"
+    assert ctx["diagnostics"]["status_display"] == "NOT_BOUND"
+    assert ctx["diagnostics"]["authority_display"] == "NON_AUTHORITATIVE"
+    assert ctx["diagnostics"]["owner_display"] == "UNRESOLVED"
+    assert ctx["autonomy"]["autonomy_stage_display"] == "NOT_BOUND"
+    assert ctx["autonomy"]["promotion_eligibility_display"] == "NOT_BOUND"
+    assert ctx["autonomy"]["activation_eligibility_display"] == "NOT_BOUND"
+    assert ctx["autonomy"]["runtime_bridge_display"] == "BOUND_NOT_ACTIVATED"
+    assert ctx["autonomy"]["operator_go_required"] is True
+    assert ctx["governance"]["runtime_bridge_display"] == "BOUND_NOT_ACTIVATED"
+    assert "ACTIVE" not in ctx["autonomy"]["runtime_bridge_display"]
     # Aggregate availability remains on source_health only (not under Freshness).
     assert ctx["source_health"]["availability"] == "NOT_BOUND"
     assert "observed_at" in ctx["source_health"]["freshness"]
@@ -536,3 +578,133 @@ def test_get_market_default_path_projects_selected_instrument_without_env(
     assert "<form" not in html.lower()
     assert 'method="post"' not in html.lower()
     assert "place_order" not in html.lower()
+
+
+def test_capability_6_alt_a_economic_fail_fields_presented_exactly() -> None:
+    """ALT_A: presenter exposes existing economic_summary fields without recomputation."""
+    from src.backtest.economic_viability_evidence_v1 import EconomicViabilityStatus
+    from src.webui.market_dashboard_landscape_v2 import SCHEMA_VERSION
+    from src.webui.market_dashboard_landscape_v2.contracts import EconomicSummarySnapshotV1
+    from src.webui.market_dashboard_landscape_v2.provenance import (
+        FreshnessV1,
+        SnapshotProvenanceV1,
+    )
+    from src.webui.market_dashboard_landscape_v2.unavailable import (
+        unavailable_economic_summary,
+    )
+
+    stamp = STAMP
+    schema_id = "market_dashboard_landscape_projection.economic_summary.v1"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module="backtest.economic_viability_evidence_v1",
+        generated_at=stamp,
+        effective_at=stamp,
+        source_kind="economic_viability_evidence_v1",
+        source_reference="evidence://economic-fail-test",
+        evidence_digest="a" * 64,
+        git_sha="deadbeef",
+        availability=Availability.AVAILABLE,
+    )
+    freshness = FreshnessV1(
+        observed_at=stamp,
+        max_age_seconds=None,
+        is_stale=False,
+        stale_reason=None,
+    )
+    economic = EconomicSummarySnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=Availability.AVAILABLE,
+        economic_viability_status=EconomicViabilityStatus.ROBUSTNESS_FAILED.value,
+        economic_validity_proven=False,
+        profitability_claim_allowed=False,
+        policy_threshold_status="FAIL",
+        policy_version="economic_validity_policy_v1",
+        authority_effect="NONE",
+        runtime_effect=False,
+        order_effect=False,
+        reason_codes=("ECONOMIC_FAIL_TERMINAL",),
+        profit_factor={"semantic": "COMPUTED", "value": 0.42},
+        net_return={"semantic": "COMPUTED", "value": -0.11},
+        max_drawdown={"semantic": "COMPUTED", "value": -0.33},
+        sharpe={"semantic": "COMPUTED", "value": -0.5},
+        trade_count={"semantic": "COMPUTED", "value": 7.0},
+        funding_drag={"semantic": "COMPUTED", "value": -0.002},
+        evidence_ref="evidence://economic-fail-test",
+        contract_version="v1",
+        owner="backtest.economic_viability_evidence_v1",
+        strategy_id="strategy_fail",
+        strategy_version="1",
+        config_digest="c" * 64,
+        implementation_digest="d" * 64,
+        data_digest="e" * 64,
+        manifest_digest="f" * 64,
+        wiring_chain_digest="g" * 64,
+        policy_digest="h" * 64,
+    )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=stamp,
+        slot_overrides={"economic_summary": economic},
+    )
+    ctx = present_market_landscape_v2(page)
+    assert ctx["economic"]["status_display"] == "ROBUSTNESS_FAILED"
+    assert ctx["economic"]["validity_display"] == "False"
+    assert ctx["economic"]["policy_threshold_display"] == "FAIL"
+    assert ctx["economic"]["profit_factor_display"] == "0.42"
+    assert ctx["economic"]["net_return_display"] == "-0.11"
+    assert ctx["economic"]["max_drawdown_display"] == "-0.33"
+    assert ctx["economic"]["funding_drag_display"] == "-0.002"
+    assert ctx["economic"]["trade_count_display"] == "7.0"
+    assert ctx["economic"]["evidence_ref_display"] == "evidence://economic-fail-test"
+    assert ctx["economic"]["evidence_digest_display"] == "a" * 64
+    assert ctx["economic"]["classification_display"] == "EVIDENCE_ONLY"
+    # Terminal FAIL truth remains FAIL (status + policy threshold) — no rewrite to PASS.
+    assert ctx["economic"]["status_display"] != "ECONOMICALLY_VIABLE_OFFLINE"
+    assert ctx["economic"]["policy_threshold_display"] == "FAIL"
+    assert ctx["economic"]["fields"]["profit_factor"]["value"] == 0.42
+    assert ctx["economic"]["fields"]["economic_viability_status"] == "ROBUSTNESS_FAILED"
+
+    for availability, reason in (
+        (Availability.MISSING_SOURCE, "CANONICAL_ECONOMIC_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD"),
+        (Availability.STALE, "PRODUCER_DATA_EXCEEDED_LANDSCAPE_MAX_AGE"),
+        (Availability.INVALID, "INVALID_PROVENANCE"),
+    ):
+        snap = unavailable_economic_summary(
+            availability=availability,
+            generated_at=stamp,
+            reason=reason,
+        )
+        page_u = MarketDashboardReadServiceV1().load_page_snapshot(
+            generated_at=stamp,
+            slot_overrides={"economic_summary": snap},
+        )
+        ctx_u = present_market_landscape_v2(page_u)
+        label = availability.value
+        assert ctx_u["economic"]["status_display"] == label
+        assert ctx_u["economic"]["profit_factor_display"] == label
+        assert reason in ctx_u["economic"]["reason_codes"]
+
+
+def test_capability_6_alt_a_diagnostics_and_governance_not_bound() -> None:
+    """ALT_A: diagnostics/autonomy remain NOT_BOUND; shell lock visible; no ACTIVE."""
+    page = MarketDashboardReadServiceV1().load_page_snapshot(generated_at=STAMP)
+    ctx = present_market_landscape_v2(page)
+    assert ctx["diagnostics"]["status_display"] == "NOT_BOUND"
+    assert ctx["diagnostics"]["authority_display"] == "NON_AUTHORITATIVE"
+    assert ctx["diagnostics"]["owner_display"] == "UNRESOLVED"
+    assert ctx["autonomy"]["autonomy_stage_display"] == "NOT_BOUND"
+    assert ctx["autonomy"]["promotion_eligibility_display"] == "NOT_BOUND"
+    assert ctx["autonomy"]["activation_eligibility_display"] == "NOT_BOUND"
+    assert ctx["autonomy"]["runtime_bridge_display"] == "BOUND_NOT_ACTIVATED"
+    assert ctx["autonomy"]["operator_go_required"] is True
+    assert ctx["product_flags"]["operator_go_required"] is True
+    assert ctx["product_flags"]["live_authorized"] is False
+    assert "ACTIVE" not in ctx["autonomy"]["runtime_bridge_display"]
+    assert ctx["autonomy"]["lock_classification_display"] == "INTENTIONAL_LOCK"
+    # Diagnostics must not override economic/autonomy truth.
+    assert ctx["economic"]["availability"] in {"NOT_BOUND", "MISSING_SOURCE"}
+    assert ctx["diagnostics"]["authority_display"] != "AUTHORITATIVE"

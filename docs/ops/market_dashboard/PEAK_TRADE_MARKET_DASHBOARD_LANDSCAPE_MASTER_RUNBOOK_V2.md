@@ -2,7 +2,7 @@
 
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
-**Status:** `POST_RISK_EXEC_BINDING_CAPABILITY_OPERATOR_REVIEW_PENDING`  
+**Status:** `POST_CAPABILITY_6_ALT_A_TRUTHFUL_CLOSEOUT_OPERATOR_REVIEW_PENDING`  
 **Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`  
 **Primärbrowser:** Google Chrome / Playwright Real Chrome  
 **Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand  
@@ -17,8 +17,8 @@ REPO_INGESTION_DATE=2026-07-23
 SOURCE_FILENAME=PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 RUNBOOK_VERSION=V2
 HARDENED_CAPABILITY_PR_POLICY=true
-CURRENT_MAIN_SHA=ef70b722faf2ade5117d0768549176477ea1b73d
-LAST_MERGED_PR=5548  # tip SHA advanced by research retirement #5561; dashboard capability next
+CURRENT_MAIN_SHA=9c8a66d4bef0dc5a82bb74bc2a4091e5adff4ba3
+LAST_MERGED_PR=5562  # Risk/Exec binding; Capability 6 ALT_A closeout next/this PR
 LAST_MERGED_PR_VERDICT=CAPABILITY_SCOPE_REVIEW_PASS_SQUASH_MERGED
 CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
 DASHBOARD_IMPLEMENTATION_PRESENT=true
@@ -156,7 +156,7 @@ PHASE_0_FORMAL_ARTIFACTS=PARTIAL          # dedicated inventory/matrix/gap md fi
 PHASE_1_SPEC_GATE=PARTIAL                 # landscape IA exists in-repo; OPERATOR_LAYOUT_APPROVAL not an explicit operator product PASS
 PHASE_2_READMODEL_FOUNDATION=PASS         # PR #5499
 PHASE_3_LANDSCAPE_SHELL=PARTIAL           # PR #5501 technical shell merged; OPERATOR_SKELETON/PRODUCT approval still PENDING
-PHASE_4_PRODUCER_BINDINGS=PARTIAL         # market/scope/decision/DP/safety/risk/execution/economic/OKX bound; diagnostics/autonomy remain NOT_BOUND
+PHASE_4_PRODUCER_BINDINGS=PARTIAL         # market/scope/decision/DP/safety/risk/execution/economic/OKX bound; Cap6 ALT_A presents economic fields + honest diagnostics/autonomy NOT_BOUND
 PHASE_4_6C_DIAGNOSTICS=DEFERRED           # OPTION_A KEEP_NOT_BOUND (ratified)
 PHASE_4_7_AUTONOMY=DEFERRED               # OPTION_D KEEP_NOT_BOUND (ratified)
 PHASE_5_PRODUCT_SURFACE=PARTIAL           # TASK_7/8 PASS; TASK_4 DEFERRED; TASK_1 visual density OPEN; OPERATOR_PRODUCT_GATE=false
@@ -1340,7 +1340,7 @@ Capability 2 Marktoberfläche End-to-End / Landscape Shell — PARTIAL technical
 Capability 3 Kanonische Marktbindung (incl. OKX OHLCV + continuous refresh + intrabar) — PASS through #5548 for market/OHLCV path
 Capability 4 Entscheidungsfähigkeit (Decision/DP) — PASS technical (#5506/#5507); operator product PENDING
 Capability 5 Operative Projektion (Safety done #5508; Risk/Sizing/Capital + Execution/Reconciliation) — PARTIAL; NEXT
-Capability 6 Governance & Autonomieprojektion — PARTIAL (economic bound; diagnostics/autonomy ratified NOT_BOUND)
+Capability 6 Governance & Autonomieprojektion — PASS_ALT_A (economic fields presented; diagnostics/autonomy remain ratified NOT_BOUND; no supersession)
 Capability 7 Produktreife — PARTIAL (drawer/a11y/perf/source-health done; TASK_1 density OPEN; timeline DEFERRED)
 Capability 8 Produktionsabschluss — OPEN
 ```
@@ -1681,7 +1681,7 @@ CANONICAL_PRINCIPLE=
 Market Dashboard is a pure read-only consumer with zero trading,
 runtime, scheduler, promotion, capital or execution authority.
 
-CURRENT_MAIN_SHA=ef70b722faf2ade5117d0768549176477ea1b73d
+CURRENT_MAIN_SHA=9c8a66d4bef0dc5a82bb74bc2a4091e5adff4ba3
 LAST_MERGED_PR=5548
 OPEN_PR=NONE
 CURRENT_PHASE=POST_RISK_EXEC_BINDING_PHASE_5_PARTIAL
@@ -1734,6 +1734,9 @@ CURRENT_BOUND_SOURCES=[
   "risk_sizing_capital explicit injection projection",
   "execution_reconciliation explicit injection projection",
   "economic_summary explicit injection projection",
+  "Capability 6 ALT_A: economic ops-band field presentation (evidence-only)",
+  "Capability 6 ALT_A: diagnostics NOT_BOUND + NON_AUTHORITATIVE presentation",
+  "Capability 6 ALT_A: autonomy/promotion/activation NOT_BOUND + BOUND_NOT_ACTIVATED lock presentation",
   "source_health / freshness",
   "engineering drawer",
   "page_aggregate MarketDashboardReadServiceV1",
@@ -1788,10 +1791,11 @@ PHASE_PR_MAPPING=[
 ]
 
 NEXT_CANONICAL_ACTION=
-Operator reviews this Capability PR (Risk/Sizing/Capital + Execution/
-Reconciliation read-only binding). Do not reopen PR #5548 intrabar scope.
-Do not activate runtime/orders/scheduler/capital. Next product surface
-candidates (separate GO): TASK_1 visual density and/or Operator Product Gate.
+Operator reviews Capability 6 ALT_A truthful closeout (economic field
+presentation + diagnostics/governance NOT_BOUND visibility). Full binding
+of diagnostics/autonomy aggregates remains SEPARATE_GO. Do not activate
+runtime/orders/scheduler/capital. Next product surface candidates
+(separate GO): TASK_1 visual density and/or Operator Product Gate.
 
 SEPARATE_GO_REQUIRED_FOR=[
   "Core changes",
