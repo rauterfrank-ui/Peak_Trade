@@ -307,7 +307,7 @@ def _run_chrome_against_html(
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1
                 assert root.get_attribute("data-phase") == (
-                    "PHASE_4_6B_ECONOMIC_EVIDENCE_EXPLICIT_INJECTION_BINDING"
+                    "PHASE_4_5_RISK_SIZING_AND_EXECUTION_RECONCILIATION_BINDING"
                 )
                 chart = page.locator("[data-mdl-chart-region='true']")
                 decision = page.locator("[data-mdl-decision-strip='true']")
@@ -334,12 +334,17 @@ def _run_chrome_against_html(
                         == 1
                     )
 
-                # Risk / Sizing / Capital remain NOT_BOUND in this slice.
+                # Risk / Execution wired; absent without injection → MISSING_SOURCE.
                 assert page.get_by_text("Risk / Sizing / Capital").count() >= 1
-                ops_risk = page.locator(".mdl-v2-ops__col").filter(
-                    has_text="Risk / Sizing / Capital"
-                )
-                assert ops_risk.locator('[data-availability="NOT_BOUND"]').count() >= 1
+                assert page.get_by_text("Execution / Reconciliation").count() >= 1
+                ops_risk = page.locator('[data-mdl-ops="risk_sizing_capital"]')
+                ops_exec = page.locator('[data-mdl-ops="execution_reconciliation"]')
+                assert ops_risk.locator('[data-availability="MISSING_SOURCE"]').count() >= 1
+                assert ops_exec.locator('[data-availability="MISSING_SOURCE"]').count() >= 1
+                assert ops_risk.locator('[data-mdl-field="risk_status"]').count() == 1
+                assert ops_exec.locator('[data-mdl-field="execution_status"]').count() == 1
+                assert page.locator("button").count() == 0
+                assert page.locator("form").count() == 0
 
                 overflow = page.evaluate(
                     "() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1"

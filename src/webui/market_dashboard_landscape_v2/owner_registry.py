@@ -87,8 +87,16 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         owner_module="trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0",
         owner_symbol="capital_risk_sizing_offline_replay_binding",
         authority_class="risk_sizing",
-        reuse_status="NOT_BOUND",
-        notes="No Landscape projection binding yet; NOT_BOUND until PR5.",
+        reuse_status="REUSED",
+        notes=(
+            "Phase 4.4B: Landscape projects injected Risk/Sizing/Capital fields "
+            "field-for-field (risk_status/sizing_status/capital_status/quantity/"
+            "reason_codes); authority owner remains "
+            "src.governance.capital_risk_sizing_v1; offline replay adapter is "
+            "non-authority wiring/parity only; dashboard AUTHORITY_EFFECT=NONE; "
+            "explicit injection only; without injection MISSING_SOURCE; "
+            "never call capital/risk/sizing evaluators or invent quantity."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="safety_authority",
@@ -111,8 +119,18 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         owner_module="trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0",
         owner_symbol="canonical_order_intent_offline_replay_binding",
         authority_class="execution_intent",
-        reuse_status="NOT_BOUND",
-        notes="Order/execution APIs must never be imported by Landscape UI.",
+        reuse_status="REUSED",
+        notes=(
+            "Phase 4.5: Landscape projects injected Execution/Reconciliation "
+            "fields field-for-field (execution_status/reconciliation_status/"
+            "order_intent_ref/reason_codes); authority owner remains "
+            "src.governance.canonical_order_intent_v1; offline replay adapter is "
+            "non-authority wiring/parity only; dashboard AUTHORITY_EFFECT=NONE; "
+            "explicit injection only; without injection MISSING_SOURCE; "
+            "reconciliation_status may be absent (partial) and must not be "
+            "invented; never import order/execution mutation APIs or call "
+            "build_canonical_order_intent_v1 / evaluate_offline_reconciliation_*."
+        ),
     ),
     CanonicalOwnerRefV1(
         slot="economic_summary",

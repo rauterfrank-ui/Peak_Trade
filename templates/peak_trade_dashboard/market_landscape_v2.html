@@ -4,7 +4,7 @@
 {% block main_class %}mdl-v2-main{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v2.css" />
-<meta name="peak-trade-market-landscape-v2" content="phase4-6b-economic-evidence-explicit-injection-binding" />
+<meta name="peak-trade-market-landscape-v2" content="phase4-5-risk-sizing-and-execution-reconciliation-binding" />
 <meta name="peak-trade-dashboard-authority" content="false" />
 <meta name="peak-trade-live-authorized" content="false" />
 {% endblock %}
@@ -288,13 +288,61 @@
     </section>
 
     <section class="mdl-v2-ops" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
-      <div class="mdl-v2-ops__col">
+      <div class="mdl-v2-ops__col" data-mdl-ops="risk_sizing_capital">
         <h3>Risk / Sizing / Capital</h3>
-        <p class="mdl-v2-state" data-availability="{{ risk.availability }}">{{ risk.availability_label }}</p>
+        <p
+          class="mdl-v2-state"
+          data-availability="{{ risk.availability }}"
+          data-mdl-field="risk_summary"
+        >{{ risk.summary_display }}</p>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Risk</dt>
+            <dd data-mdl-field="risk_status" data-availability="{{ risk.availability }}">{{ risk.risk_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Sizing</dt>
+            <dd data-mdl-field="sizing_status" data-availability="{{ risk.availability }}">{{ risk.sizing_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Capital</dt>
+            <dd data-mdl-field="capital_status" data-availability="{{ risk.availability }}">{{ risk.capital_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Quantity</dt>
+            <dd data-mdl-field="risk_quantity" data-availability="{{ risk.availability }}">{{ risk.quantity_display }}</dd>
+          </div>
+          <div>
+            <dt>Reasons</dt>
+            <dd data-mdl-field="risk_reasons" data-availability="{{ risk.availability }}">{{ risk.reasons_display }}</dd>
+          </div>
+        </dl>
       </div>
-      <div class="mdl-v2-ops__col">
+      <div class="mdl-v2-ops__col" data-mdl-ops="execution_reconciliation">
         <h3>Execution / Reconciliation</h3>
-        <p class="mdl-v2-state" data-availability="{{ execution.availability }}">{{ execution.availability_label }}</p>
+        <p
+          class="mdl-v2-state"
+          data-availability="{{ execution.availability }}"
+          data-mdl-field="execution_summary"
+        >{{ execution.summary_display }}</p>
+        <dl class="mdl-v2-kv">
+          <div>
+            <dt>Execution</dt>
+            <dd data-mdl-field="execution_status" data-availability="{{ execution.availability }}">{{ execution.execution_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Reconciliation</dt>
+            <dd data-mdl-field="reconciliation_status" data-availability="{{ execution.availability }}">{{ execution.reconciliation_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Intent Ref</dt>
+            <dd data-mdl-field="order_intent_ref" data-availability="{{ execution.availability }}">{{ execution.order_intent_ref_display }}</dd>
+          </div>
+          <div>
+            <dt>Reasons</dt>
+            <dd data-mdl-field="execution_reasons" data-availability="{{ execution.availability }}">{{ execution.reasons_display }}</dd>
+          </div>
+        </dl>
       </div>
       <div class="mdl-v2-ops__col">
         <h3>Economic</h3>

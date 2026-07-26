@@ -13,7 +13,9 @@ from .contracts import (
     DoublePlaySnapshotV1,
     DynamicScopeSnapshotV1,
     EconomicSummarySnapshotV1,
+    ExecutionReconciliationSnapshotV1,
     MarketInstrumentSnapshotV1,
+    RiskSizingCapitalSnapshotV1,
     SafetyAuthoritySnapshotV1,
     UniverseRankingSnapshotV1,
 )
@@ -544,4 +546,148 @@ def project_economic_summary_snapshot_v1(
         manifest_digest=str(manifest_digest),
         wiring_chain_digest=str(wiring_chain_digest),
         policy_digest=str(policy_digest),
+    )
+
+
+def project_risk_sizing_capital_snapshot_v1(
+    *,
+    risk_status: str,
+    sizing_status: str,
+    capital_status: str,
+    reason_codes: Sequence[str],
+    generated_at: datetime,
+    source_reference: str | None,
+    quantity: float | None = None,
+    evidence_digest: str | None = None,
+    git_sha: str | None = None,
+    producer_module: str = (
+        "trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0"
+    ),
+    source_kind: str = "capital_risk_sizing_offline_replay_binding",
+    effective_at: datetime | None = None,
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
+) -> RiskSizingCapitalSnapshotV1:
+    """Project already-selected Risk/Sizing/Capital fields field-for-field.
+
+    Forbidden: evaluating capital_risk_sizing_v1, inventing quantity/limits,
+    merging unrelated sources, or labeling dashboard projection as authority.
+    quantity is retained only when AVAILABLE (contract forbids quantity on
+    non-AVAILABLE availability, including STALE).
+    """
+    if not risk_status:
+        raise ValueError("risk_status required for AVAILABLE/STALE")
+    if not sizing_status:
+        raise ValueError("sizing_status required for AVAILABLE/STALE")
+    if not capital_status:
+        raise ValueError("capital_status required for AVAILABLE/STALE")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_risk_sizing_capital only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
+    if availability is not Availability.AVAILABLE:
+        quantity = None
+    schema_id = f"{SCHEMA_FAMILY}.risk_sizing_capital.{SCHEMA_VERSION}"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module=producer_module,
+        generated_at=generated_at,
+        effective_at=generated_at if effective_at is None else effective_at,
+        source_kind=source_kind,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        availability=availability,
+    )
+    freshness = FreshnessV1(
+        observed_at=generated_at,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+    return RiskSizingCapitalSnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=availability,
+        risk_status=str(risk_status),
+        sizing_status=str(sizing_status),
+        capital_status=str(capital_status),
+        reason_codes=tuple(str(code) for code in reason_codes),
+        quantity=None if quantity is None else float(quantity),
+    )
+
+
+def project_execution_reconciliation_snapshot_v1(
+    *,
+    execution_status: str,
+    reason_codes: Sequence[str],
+    generated_at: datetime,
+    source_reference: str | None,
+    reconciliation_status: str | None = None,
+    order_intent_ref: str | None = None,
+    evidence_digest: str | None = None,
+    git_sha: str | None = None,
+    producer_module: str = (
+        "trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0"
+    ),
+    source_kind: str = "canonical_order_intent_offline_replay_binding",
+    effective_at: datetime | None = None,
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
+) -> ExecutionReconciliationSnapshotV1:
+    """Project already-selected Execution/Reconciliation fields field-for-field.
+
+    Forbidden: building order intents, calling execution/order APIs, mutating
+    reconciliation, or inventing pipeline/health status. reconciliation_status
+    and order_intent_ref may remain None when the injected producer omitted them
+    (partial source — never fabricated).
+    """
+    if not execution_status:
+        raise ValueError("execution_status required for AVAILABLE/STALE")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_execution_reconciliation only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
+    schema_id = f"{SCHEMA_FAMILY}.execution_reconciliation.{SCHEMA_VERSION}"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module=producer_module,
+        generated_at=generated_at,
+        effective_at=generated_at if effective_at is None else effective_at,
+        source_kind=source_kind,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        availability=availability,
+    )
+    freshness = FreshnessV1(
+        observed_at=generated_at,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+    return ExecutionReconciliationSnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=availability,
+        execution_status=str(execution_status),
+        reconciliation_status=(
+            None if reconciliation_status is None else str(reconciliation_status)
+        ),
+        order_intent_ref=None if order_intent_ref is None else str(order_intent_ref),
+        reason_codes=tuple(str(code) for code in reason_codes),
     )

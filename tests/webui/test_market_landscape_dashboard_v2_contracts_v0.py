@@ -442,3 +442,34 @@ def test_diagnostics_summary_owner_registry_option_a_not_bound() -> None:
     snap = bundle["diagnostics_summary"]
     assert snap.availability is Availability.NOT_BOUND
     assert serialize_projection(snap)["availability"] == "NOT_BOUND"
+
+
+def test_project_risk_and_execution_snapshots_field_copy() -> None:
+    from src.webui.market_dashboard_landscape_v2.projections import (
+        project_execution_reconciliation_snapshot_v1,
+        project_risk_sizing_capital_snapshot_v1,
+    )
+
+    stamp = datetime(2026, 7, 23, 15, 0, 0, tzinfo=timezone.utc)
+    risk = project_risk_sizing_capital_snapshot_v1(
+        risk_status="PASS",
+        sizing_status="PASS",
+        capital_status="PASS",
+        reason_codes=("PASS",),
+        quantity=1.5,
+        generated_at=stamp,
+        source_reference="risk://contract-test",
+    )
+    assert risk.availability is Availability.AVAILABLE
+    assert risk.quantity == 1.5
+    execution = project_execution_reconciliation_snapshot_v1(
+        execution_status="BOUND_OFFLINE",
+        reconciliation_status=None,
+        order_intent_ref=None,
+        reason_codes=("PASS",),
+        generated_at=stamp,
+        source_reference="execution://contract-test",
+    )
+    assert execution.availability is Availability.AVAILABLE
+    assert execution.reconciliation_status is None
+    assert execution.order_intent_ref is None
