@@ -2,7 +2,7 @@
 
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
-**Status:** `CAPABILITY_8_PRODUCTION_CLOSEOUT_OPERATOR_REVIEW_PENDING`  
+**Status:** `CAPABILITY_8_DOCS_OWNERSHIP_CLOSEOUT_MERGED_VIA_PR_5566_OPERATOR_PRODUCT_GATE_PENDING`  
 **Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`  
 **Primärbrowser:** Google Chrome / Playwright Real Chrome  
 **Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand  
@@ -17,8 +17,8 @@ REPO_INGESTION_DATE=2026-07-23
 SOURCE_FILENAME=PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 RUNBOOK_VERSION=V2
 HARDENED_CAPABILITY_PR_POLICY=true
-CURRENT_MAIN_SHA=33811dc5162b6fff6bb778204024f1d6d4c1b4b5
-LAST_MERGED_PR=5565  # Cap7 review-server macOS /tmp path identity; Cap8 production closeout next/this PR
+CURRENT_MAIN_SHA=02e4081498ee926fa6a3740d65d67be7de4a0c56
+LAST_MERGED_PR=5566  # Cap8 docs/ownership closeout only (squash-merged); does not establish product PASS
 LAST_MERGED_PR_VERDICT=CAPABILITY_SCOPE_REVIEW_PASS_SQUASH_MERGED
 CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
 DASHBOARD_IMPLEMENTATION_PRESENT=true
@@ -27,7 +27,7 @@ RUNTIME_ACTIVATION=false
 TRADING_RUNTIME_NOT_ACTIVATED=true
 OPERATOR_PRODUCT_GATE=PENDING
 NEXT_CAPABILITY_AUTHORIZED=false  # further product candidates require separate GO
-CAPABILITY_8=PRODUCTION_CLOSEOUT
+CAPABILITY_8_DOCS_OWNERSHIP_CLOSEOUT=MERGED
 PRODUCT_APPROVAL_INFERRED=false
 ```
 
@@ -1374,7 +1374,7 @@ Capability 4 Entscheidungsfähigkeit (Decision/DP) — PASS technical (#5506/#55
 Capability 5 Operative Projektion (Safety #5508; Risk/Sizing/Capital + Execution/Reconciliation #5562) — TECHNICAL_PASS
 Capability 6 Governance & Autonomieprojektion — PASS_ALT_A (#5563; economic fields presented; diagnostics/autonomy remain ratified NOT_BOUND; no supersession)
 Capability 7 Produktreife — TECHNICAL_PASS (#5564 density/drawer/a11y/perf/source-health; timeline DEFERRED; review-server identity #5565; OPERATOR_PRODUCT_GATE=false)
-Capability 8 Produktionsabschluss — IN_PROGRESS (docs/ownership closeout only; no product expansion; OPERATOR_PRODUCT_GATE unchanged)
+Capability 8 Produktionsabschluss — DOCS_CLOSEOUT_MERGED (#5566; merge SHA 02e4081498ee926fa6a3740d65d67be7de4a0c56; docs/ownership closeout only; OPERATOR_PRODUCT_GATE unchanged PENDING; PRODUCT_APPROVAL_INFERRED=false)
 ```
 
 ---
@@ -1713,10 +1713,10 @@ CANONICAL_PRINCIPLE=
 Market Dashboard is a pure read-only consumer with zero trading,
 runtime, scheduler, promotion, capital or execution authority.
 
-CURRENT_MAIN_SHA=33811dc5162b6fff6bb778204024f1d6d4c1b4b5
-LAST_MERGED_PR=5565
+CURRENT_MAIN_SHA=02e4081498ee926fa6a3740d65d67be7de4a0c56
+LAST_MERGED_PR=5566
 OPEN_PR=NONE
-CURRENT_PHASE=CAPABILITY_8_PRODUCTION_CLOSEOUT
+CURRENT_PHASE=POST_CAPABILITY_8_DOCS_CLOSEOUT_OPERATOR_PRODUCT_GATE_PENDING
 LAST_COMPLETED_TECHNICAL_CAPABILITY=CAPABILITY_7_PRODUCT_MATURITY_PR_5564_PLUS_REVIEW_SERVER_IDENTITY_PR_5565
 OPERATOR_PRODUCT_GATE=PENDING
 
@@ -1838,14 +1838,15 @@ PHASE_PR_MAPPING=[
   "Capability 6 ALT_A == PR #5563",
   "Capability 7 product maturity == PR #5564",
   "Cap7 review-server macOS path identity == PR #5565 (merge SHA 33811dc5162b6fff6bb778204024f1d6d4c1b4b5)",
-  "Capability 8 production closeout == docs/ownership closeout in progress (no PR yet)"
+  "Capability 8 docs/ownership closeout == PR #5566 (merge SHA 02e4081498ee926fa6a3740d65d67be7de4a0c56; docs/ownership closeout only; not product PASS)"
 ]
 
-NEXT_CANONICAL_ACTION=
-Capability 8 seals docs/ownership truth and permanent regression guards for the
-canonical Landscape V2 read-only consumer. Do not activate runtime/orders/
-scheduler/capital. Do not infer Product PASS. Operator Product Gate remains
-PENDING until separate explicit operator ratification.
+NEXT_CANONICAL_ACTION=SEPARATE_EXPLICIT_OPERATOR_GO_FOR_OPERATOR_PRODUCT_GATE_OR_SUCCESSOR_SCOPE_ONLY
+Capability-8 docs/ownership closeout is already merged via PR #5566
+(merge SHA 02e4081498ee926fa6a3740d65d67be7de4a0c56). No implicit product work.
+Do not infer Product PASS. Do not authorize Runtime, Orders, Scheduler, Capital,
+Promotion, Shadow, Paper, Testnet or Live. OPERATOR_PRODUCT_GATE remains PENDING
+until separate explicit operator ratification.
 
 SEPARATE_GO_REQUIRED_FOR=[
   "Core changes",
@@ -1910,7 +1911,7 @@ DOD=operator-visible operative projection OR honest missing states; tests+Chrome
 
 ```text
 STATUS=MARKET_DASHBOARD_V2_CAPABILITY_8_PRODUCTION_CLOSEOUT
-VERDICT=DASHBOARD_IMPLEMENTATION_PRESENT_ON_MAIN; CAPS_1_TO_7_TECHNICAL_RECORDED; CAP8_DOCS_OWNERSHIP_CLOSEOUT_IN_PROGRESS; RUNTIME_NOT_ACTIVATED; OPERATOR_PRODUCT_GATE_PENDING; PRODUCT_APPROVAL_INFERRED=false
+VERDICT=DASHBOARD_IMPLEMENTATION_PRESENT_ON_MAIN; CAPS_1_TO_7_TECHNICAL_RECORDED; CAP8_DOCS_OWNERSHIP_CLOSEOUT_MERGED_VIA_PR_5566; RUNTIME_NOT_ACTIVATED; OPERATOR_PRODUCT_GATE_PENDING; PRODUCT_APPROVAL_INFERRED=false
 DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
 LANDSCAPE_TARGET=true
 CORE_CHANGE_AUTHORIZED=false
@@ -1923,7 +1924,7 @@ LIVE_AUTHORIZED=false
 ORDERS=false
 SCHEDULER=false
 CAPITAL_CHANGE=false
-FIRST_ACTION=OPERATOR_EXACT_HEAD_REVIEW_OF_CAPABILITY_8_PR_THEN_SEPARATE_GO_FOR_PRODUCT_GATE_OR_SUCCESSOR_SCOPE
+FIRST_ACTION=SEPARATE_EXPLICIT_GO_FOR_OPERATOR_PRODUCT_GATE_OR_SUCCESSOR_SCOPE_ONLY
 ```
 
 Das Dashboard wird damit weder zu früh als neue fachliche Wahrheit gebaut noch so spät, dass fehlende Observability erst nach Vollautonomie sichtbar wird. Es wächst kontrolliert mit der kanonischen Producer-Landschaft und bleibt dauerhaft eine reine Projektion.
