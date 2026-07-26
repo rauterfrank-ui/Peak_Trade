@@ -1,3 +1,19 @@
+### MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1
+
+- Scope: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1`
+- Decision: `CLOSE_LANE_NO_FURTHER_RESEARCH`
+- Authorization: `GO_MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1`
+- Program: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1` (`PROGRAM_CLOSED_NO_FURTHER_RESEARCH`)
+- Lane backlog: `LANE_CLOSED_NO_FURTHER_RESEARCH` (preregistered=0, open_unpreregistered=0, terminal=1)
+- Terminal hypothesis: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_NON_BITCOIN_PERPETUALS_V1` (`TERMINAL_FAIL` / `FAIL_CLOSED_NO_RETRY`)
+- Preserved Development truth (PR #5560): `DEVELOPMENT_FAIL`; economic `FAIL`; run slot consumed; remaining slots `0`; no rerun
+- Holdout/Sealed accessed: false; promotion/activation/automatic-selection: false
+- Historical evidence preserved: `docs/evidence/evaluate_momentum_v2_volatility_scaled_own_instrument_continuation_development_v1/`
+- Closeout evidence: `docs/evidence/momentum_v2_vol_scaled_v1_terminal_retirement_closeout_v1/`
+- Next admissible GO: separately authorized new program identity only (not authorized here)
+- Explicit non-actions: no Development reevaluation; no Holdout/Sealed; no promotion/activation; no runtime/LIVE/orders; no successor invention
+
+
 ### CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1
 
 - Scope: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1`

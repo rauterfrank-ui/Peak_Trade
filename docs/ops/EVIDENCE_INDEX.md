@@ -1,6 +1,14 @@
 # Peak_Trade – Evidence Index (v0.15)
 
-
+<a id="ev-20260726-momentum-v2-vol-scaled-v1-terminal-retirement-closeout"></a>
+- **EV-20260726-MOMENTUM-V2-VOL-SCALED-V1-TERMINAL-RETIREMENT-CLOSEOUT** | Date: 2026-07-26 | Owner: research | Scope: offline definition-only governance closeout | Risk: LOW
+  - Source: [Closeout evidence](../evidence/momentum_v2_vol_scaled_v1_terminal_retirement_closeout_v1/) · Lane backlog: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1` · Program: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1` · Lifecycle: `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
+  - Claim: Explicit `CLOSE_LANE_NO_FURTHER_RESEARCH` after Momentum V2 vol-scaled v1 `DEVELOPMENT_FAIL` (PR **#5560** evidence preserved);
+    inventories emptied (preregistered=0/open=0/terminal=1); `next_eligible=NONE`;
+    Development/Holdout/Sealed/promotion/activation/automatic-selection paths closed;
+    historical Development metrics unchanged.
+  - Non-claims: not Development rerun; not Holdout/Sealed access; not successor selection;
+    not Runtime/Scheduler/Network/Orders authorization; does not rewrite evaluation metrics.
 
 <a id="ev-20260726-momentum-v2-vol-scaled-development-evaluation-fail"></a>
 - **EV-20260726-MOMENTUM-V2-VOL-SCALED-DEVELOPMENT-EVALUATION-FAIL** | Date: 2026-07-26 | Owner: research | Scope: offline Development evaluation closeout | Risk: LOW

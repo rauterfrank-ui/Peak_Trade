@@ -123,10 +123,13 @@ def test_selection_near_duplicate_and_bindings() -> None:
     assert entry["development_run_slot_consumed"] is True
     backlog = load_and_validate_repo_backlog(REPO)
     assert backlog["valid"] is True
-    assert backlog["status"] == "DEVELOPMENT_FAIL_SLOT_CONSUMED"
+    assert backlog["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
+    assert backlog["preregistered_count"] == 0
+    assert backlog["terminal_count"] == 1
     program = load_and_validate_repo_program(REPO)
-    assert program["implementation_authorized"] is True
+    assert program["implementation_authorized"] is False
     assert program["development_evaluation_executed"] is True
+    assert program["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     contract = load_and_validate_repo_contract(REPO)
     assert contract["implementation_authorized"] is False  # frozen measurement SSOT
     assert contract["development_run_count"] == 0
@@ -340,4 +343,10 @@ def test_fail_closed_second_evaluate_rejected_after_slot_consumed() -> None:
     assert payload["evaluation_executed"] is False
     assert payload["runner_started"] is False
     assert payload["holdout_accessed"] is False
-    assert "RETRY_OR_SLOT_REUSE_REJECTED" in str(payload.get("reason") or "")
+    reason = str(payload.get("reason") or "")
+    # Terminal retirement closes program authorization before slot-reuse path.
+    assert (
+        "RETRY_OR_SLOT_REUSE_REJECTED" in reason
+        or "PROGRAM_DEVELOPMENT_EVALUATION_AUTHORIZED_FALSE" in reason
+        or "EVALUATION_UNAUTHORIZED" in reason
+    )

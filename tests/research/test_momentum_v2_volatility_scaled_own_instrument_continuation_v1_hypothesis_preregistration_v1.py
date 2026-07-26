@@ -105,14 +105,17 @@ def test_fail_closed_on_digest_or_eval_mutation() -> None:
         validate_measurement_contract(bad4)
 
 
-def test_program_and_backlog_definition_only() -> None:
+def test_program_and_backlog_terminally_retired() -> None:
     program = load_and_validate_repo_program(REPO)
     assert program["valid"] is True
     assert program["evaluation_authorized"] is False
-    assert program["implementation_authorized"] is True
+    assert program["implementation_authorized"] is False
+    assert program["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     backlog = load_and_validate_repo_backlog(REPO)
     assert backlog["valid"] is True
-    assert backlog["preregistered_count"] == 1
+    assert backlog["preregistered_count"] == 0
+    assert backlog["terminal_count"] == 1
+    assert backlog["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert backlog["evaluation_authorized"] is False
 
 
@@ -120,12 +123,14 @@ def test_decision_packet_and_owner_map_consistency() -> None:
     packet = _load(DECISION_PACKET)
     assert (
         packet["scope_id"]
-        == "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION_V1"
+        == "MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1"
     )
     assert (
         packet["go_token"]
-        == "GO_MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_DEFINITION_ONLY_PREREGISTRATION_V1"
+        == "GO_MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_TERMINAL_RETIREMENT_CLOSEOUT_V1"
     )
+    assert packet["decision_id"] == "CLOSE_LANE_NO_FURTHER_RESEARCH"
+    assert packet["lane_status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert packet["evaluation_authorized"] is False
     assert packet["implementation_authorized"] is False
     assert packet["separate_pending_momentum_1h_v2_scope_must_remain_unchanged"] is True
