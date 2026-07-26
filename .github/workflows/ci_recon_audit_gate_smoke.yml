@@ -20,6 +20,9 @@ on:
       - ".github/workflows/ci_recon_audit_gate_smoke.yml"
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   recon-audit-gate-smoke:
     name: Recon Audit Gate Smoke

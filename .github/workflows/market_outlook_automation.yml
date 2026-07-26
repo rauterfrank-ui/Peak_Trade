@@ -11,6 +11,9 @@ on:
   # Scheduled cron removed (cost minimization); manual dispatch only.
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   market_outlook_daily:
     runs-on: ubuntu-latest
@@ -22,10 +25,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
@@ -59,7 +62,7 @@ jobs:
           fi
 
       - name: Upload daily market outlook reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: market-outlook-daily
           path: reports/market_outlook

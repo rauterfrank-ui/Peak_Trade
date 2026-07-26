@@ -35,7 +35,7 @@ jobs:
         id: ready_reuse_checkout
         if: ${{ github.event_name == 'pull_request' && github.event.action == 'ready_for_review' }}
         continue-on-error: true
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
@@ -113,7 +113,7 @@ jobs:
 
       - name: Checkout code
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           fetch-depth: 0  # Need full history for diff
 
@@ -181,7 +181,7 @@ jobs:
 
       - name: Set up Python
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.11'
 

@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Detect existing open PR for head branch
         id: detect
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -92,14 +92,14 @@ jobs:
             core.setOutput("open_pr_exists", "false");
 
       - name: Checkout for PRE_PR enforcement
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           fetch-depth: 0
 
       - name: Re-detect open PR before PRE_PR enforcement
         id: redetect
         if: steps.detect.outputs.open_pr_exists != 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -149,7 +149,7 @@ jobs:
             --check-binding
 
       - name: Create PR if missing
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -258,7 +258,7 @@ jobs:
           echo "$CHANGED"
 
       - name: Dispatch required checks (workflow_dispatch)
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

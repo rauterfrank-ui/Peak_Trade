@@ -41,7 +41,7 @@ jobs:
           test -f reports/status/aws_export_write_smoke.md
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: aws_export_write_smoke
           path: reports/status/aws_export_write_smoke.*

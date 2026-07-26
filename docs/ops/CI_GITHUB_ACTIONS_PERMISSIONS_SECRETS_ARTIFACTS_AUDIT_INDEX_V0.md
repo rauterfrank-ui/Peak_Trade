@@ -6,7 +6,7 @@ This is a documentation-only audit index for GitHub Actions / CI permissions, se
 
 This document is not an authorization surface. It does not authorize workflow dispatches, CI behavior changes, runtime execution, scheduler/daemon control, testnet/live activity, broker/exchange/order activity, or any trading-logic change.
 
-**Baseline refresh:** Counts and action-pin notes below were re-derived from a repo-static scan on **2026-07-23** under scope `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`. Root pointer: [`SECURITY_NOTES.md`](../../SECURITY_NOTES.md). Cybervisibility RC remains owned by [`CI_AUDIT_KNOWN_ISSUES.md`](CI_AUDIT_KNOWN_ISSUES.md) — **no** parallel cyber index.
+**Baseline refresh:** Counts and action-pin notes below were re-derived from a repo-static scan on **2026-07-23** under scope `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`, then updated by capability **`CYBER_CI_SUPPLY_CHAIN_HARDENING_V1`** (**2026-07-26**: full-SHA Action pins + universal top-level `permissions:`). Root pointer: [`SECURITY_NOTES.md`](../../SECURITY_NOTES.md). Cybervisibility RC remains owned by [`CI_AUDIT_KNOWN_ISSUES.md`](CI_AUDIT_KNOWN_ISSUES.md) — **no** parallel cyber index.
 
 ## Source
 
@@ -50,13 +50,14 @@ Docs-only marker — **not** a Tailscale runbook, **not** implementation approva
 
 ## Workflow Surface Counts
 
-Repo-static re-count **2026-07-23** (UTF-8 text parse of `.github&#47;workflows&#47;*.{yml,yaml}`):
+Repo-static re-count **2026-07-26** after `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (UTF-8 text parse of `.github&#47;workflows&#47;*.{yml,yaml}`):
 
 - Total workflow files: `73`
 - `workflow_dispatch`: `59`
 - `pull_request_target`: `0`
-- Top-level `permissions:` blocks: `34` (was historically recorded as `39` — prior count overstated / mixed job-level markers; refresh uses **file-level** `^permissions:`)
-- Workflows **without** top-level `permissions:`: `39`
+- Top-level `permissions:` blocks: `73` (every active workflow)
+- Workflows **without** top-level `permissions:`: `0`
+- `permissions: write-all`: `0`
 - Distinct braced `secrets.*` **names**: `7` (`ADD_TO_PROJECT_PAT`, `GITHUB_TOKEN`, `OPENAI_API_KEY`, `PT_EXPORT_ID`, `PT_EXPORT_PREFIX`, `PT_EXPORT_REMOTE`, `PT_RCLONE_CONF_B64`) — names only; values never in-repo
 - Loose `secrets.` token occurrences (incl. comments/docs-in-YAML): `49`
 - Files referencing `GITHUB_TOKEN`: `4`
@@ -69,13 +70,15 @@ Repo-static re-count **2026-07-23** (UTF-8 text parse of `.github&#47;workflows&
 - Files with `contents: write`: `2`
 - Files with `id-token: write`: `1`
 
-## Action pinning posture (2026-07-23)
+## Action pinning posture (2026-07-26 — `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1`)
 
-- SHA-pinned `uses:` refs (`@` + 40-hex): `0`
-- Tag/version-pinned `uses:` refs: `254`
+- SHA-pinned external `uses:` refs (`@` + 40-hex + `# <tag>` comment): `231` (unique actions: `21`)
+- Tag/version-only external `uses:` refs: `0`
 - Floating mutable refs (`@main` / `@master` / `@latest` / `@head` on `uses:`): `0`
-- **Accepted residual risk:** tag pinning until an explicit SHA-pin migration PR.
-- Fail-closed static guard against floating action refs + frozen missing-permissions inventory: `tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py`
+- Local `./` actions / `docker:&#47;&#47;` refs: classified separately; none present under `.github&#47;actions&#47;` at this capability
+- **Operator upgrade rule:** resolve the intended upstream tag/commit via public GitHub refs, replace the 40-hex SHA, keep the `# <tag>` comment; do not silently bump action majors.
+- Fail-closed regression owner: `tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py`
+- Write-permission allowlist owner: `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py`
 
 ## Notable Safety Observations
 

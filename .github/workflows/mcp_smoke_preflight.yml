@@ -16,6 +16,9 @@ on:
       - ".github/workflows/mcp_smoke_preflight.yml"
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   mcp-smoke-preflight:
     name: MCP Smoke Preflight

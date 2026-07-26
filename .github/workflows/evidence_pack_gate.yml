@@ -18,6 +18,8 @@ on:
     branches: ["main", "master"]
   workflow_dispatch:
 
+permissions:
+  contents: read
 concurrency:
   group: evidence-pack-gate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -35,10 +37,10 @@ jobs:
       evidence_pack_changed: ${{ steps.filter.outputs.evidence_pack }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Detect Evidence Pack changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3
         id: filter
         with:
           filters: |
@@ -73,17 +75,17 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up Python 3.11
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
       - name: Cache pip packages
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
@@ -103,7 +105,7 @@ jobs:
 
       - name: Upload Evidence Pack artifacts
         if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: evidence-packs
           path: .artifacts/evidence_packs/
@@ -136,17 +138,17 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up Python 3.11
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
       - name: Cache pip packages
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
@@ -161,7 +163,7 @@ jobs:
 
       - name: Download Evidence Pack artifacts
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: evidence-packs
           path: .artifacts/evidence_packs/
@@ -211,7 +213,7 @@ jobs:
 
       - name: Upload validation report (JSON)
         if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: evidence-pack-validation-report
           path: .artifacts/validation_report.json
@@ -219,7 +221,7 @@ jobs:
 
       - name: Upload validation summary (text)
         if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: evidence-pack-validation-summary
           path: .artifacts/validation_summary.txt
@@ -227,7 +229,7 @@ jobs:
 
       - name: Upload Evidence Packs
         if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: evidence-packs-validated
           path: .artifacts/evidence_packs/

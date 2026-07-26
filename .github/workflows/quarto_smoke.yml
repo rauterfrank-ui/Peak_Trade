@@ -21,6 +21,9 @@ on:
       - '.github/workflows/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   quarto-smoke:
     name: Render Quarto Smoke Report
@@ -42,13 +45,13 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: "Guard: Quarto no-exec (no executable chunks)"
         run: bash scripts/ci/check_quarto_no_exec.sh
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -59,7 +62,7 @@ jobs:
           echo "no-exec Quarto smoke: no Python runtime deps required"
 
       - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
+        uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2
         with:
           version: 'release'
 
@@ -70,7 +73,7 @@ jobs:
         run: make report-smoke
 
       - name: Upload smoke report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: quarto-smoke-html
           path: reports/quarto/smoke.html

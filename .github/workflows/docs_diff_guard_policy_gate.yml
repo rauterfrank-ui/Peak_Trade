@@ -6,6 +6,9 @@ on:
   merge_group:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   docs_diff_guard_policy_gate:
     name: Docs Diff Guard Policy Gate

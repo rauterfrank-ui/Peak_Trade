@@ -12,6 +12,9 @@ on:
         required: false
         default: 'Manual trigger'
 
+permissions:
+  contents: read
+
 jobs:
   chromadb-tests:
     name: Test Knowledge DB with ChromaDB
@@ -20,10 +23,10 @@ jobs:
 
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: 🐍 Set up Python & uv
-        uses: astral-sh/setup-uv@v1
+        uses: astral-sh/setup-uv@162b8acf397cb069dec09a3f5a9847cf71cfa46a # v1
         with:
           python-version: '3.11'
           cache-key: ${{ runner.os }}-uv-chromadb-${{ hashFiles('uv.lock') }}
@@ -50,7 +53,7 @@ jobs:
           uv run pytest -q tests/test_webui_knowledge_endpoints.py -vv --tb=short
 
       - name: 📊 Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: chromadb-test-results-${{ github.run_number }}
