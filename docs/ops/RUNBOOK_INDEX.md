@@ -30,7 +30,7 @@
 
 | Artefakt | Pfad | Rolle |
 |----------|------|-------|
-| **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; Caps 1–7 on `main` through PR #5565; Capability 8 production closeout; **keine** Trading-/Runtime-/Order-Authority; `OPERATOR_PRODUCT_GATE` pending; Capability-PR-only |
+| **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; Caps 1–7 technical + Capability-8 docs/ownership closeout on `main` through PR #5566 (`CAPABILITY_8_DOCS_OWNERSHIP_CLOSEOUT=MERGED`); **keine** Trading-/Runtime-/Order-Authority; `OPERATOR_PRODUCT_GATE` pending; `PHASE_5_PASS` / product approval not proven; Capability-PR-only |
 | **Removed product tombstone** | [../webui/MARKET_DASHBOARD_REMOVED.md](../webui/MARKET_DASHBOARD_REMOVED.md) | Legacy product tombstone; Landscape V2 `GET &#47;market` is the authorized read-only replacement surface |
 
 ---
