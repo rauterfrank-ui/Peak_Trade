@@ -12,6 +12,36 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 **Related:** [Finish Plan (MVP→v1.0)](FINISH_PLAN.md) · [Truth Core](../registry/TRUTH_CORE.md) · [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs (index)](../release/README.md) · [Chat continuity bootstrap](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md)
 
+
+---
+
+## Post–CSRHR v1 terminal retirement closeout (2026-07-26)
+
+**Narrow governance result only** (not evaluation, Holdout, Sealed, promotion, or activation):
+
+- Base SHA: `56330e3fe527cf803f88faedab1f4ca68af3464d` (`origin/main` after PR **#5557**).
+- Strategy: `CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1`
+- Terminal Development truth preserved: `DEVELOPMENT_FAIL` / economic `FAIL`
+- Decision: `CLOSE_LANE_NO_FURTHER_RESEARCH` under
+  `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
+- Lane/program status: `LANE_CLOSED_NO_FURTHER_RESEARCH` /
+  `PROGRAM_CLOSED_NO_FURTHER_RESEARCH`
+- Inventories: preregistered=0; open=0; terminal=1; `next_eligible=NONE`
+- Fail-closed: `DEVELOPMENT_REEVALUATION_ELIGIBLE=false`,
+  `HOLDOUT_ELIGIBLE=false`, `SEALED_ELIGIBLE=false`,
+  `PROMOTION_ELIGIBLE=false`, `ACTIVATION_ELIGIBLE=false`,
+  `AUTOMATIC_SELECTION_ENABLED=false`
+- Historical evidence preserved:
+  [`docs/evidence/evaluate_cross_sectional_short_horizon_return_reversal_development_v1/`](../../evidence/evaluate_cross_sectional_short_horizon_return_reversal_development_v1/)
+- Closeout evidence:
+  [`docs/evidence/csrhr_v1_terminal_retirement_closeout_v1/`](../../evidence/csrhr_v1_terminal_retirement_closeout_v1/)
+
+**Still locked / next formally permissible step:**
+
+- No CSRHR v1 Development rerun, Holdout, Sealed, promotion, or activation path
+- New research requires a separately operator-authorized program identity
+- No Runtime / Scheduler / Shadow / Paper / Testnet / Live / Orders GO implied
+
 ---
 
 ## Post–#5550 Step 29U canonical Shadow binding soak (2026-07-26, evidence closeout)

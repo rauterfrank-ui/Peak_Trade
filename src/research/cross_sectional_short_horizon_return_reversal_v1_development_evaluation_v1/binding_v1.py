@@ -214,7 +214,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "development_run_limit": 1,
         "economic_gate_open": False,
         "entry_point_status": (
-            "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_EXECUTED"
+            "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
             if contract.get("development_evaluation_executed") is True
             else "EXECUTABLE_EVALUATE_PATH_PRESENT_AWAITING_OR_AUTHORIZED"
         ),
@@ -266,9 +266,9 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         ),
         "score_formula_version": SCORE_FORMULA_VERSION,
         "signal_family": SIGNAL_FAMILY,
-        "slice_class": "DEVELOPMENT_EVALUATION_EXECUTABLE_PATH_IMPLEMENTATION_ONLY",
+        "slice_class": "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL_FAIL",
         "status": (
-            "EXECUTABLE_EVALUATE_PATH_PRESENT_EVALUATION_EXECUTED"
+            "RUN_SLOT_CONSUMED_DEVELOPMENT_FAIL"
             if contract.get("development_evaluation_executed") is True
             else "EXECUTABLE_EVALUATE_PATH_PRESENT_AUTHORIZED_AWAITING_OR_COMPLETE"
         ),
@@ -278,7 +278,7 @@ def materialize_entry_point_binding_payload(repo_root: Path) -> dict[str, Any]:
         "strategy_version": STRATEGY_VERSION,
         "time_segment_definition_id": TIME_SEGMENT_DEFINITION_ID,
         "verdict": (
-            "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL"
+            "DEVELOPMENT_EVALUATION_EXECUTED_TERMINAL/FAIL"
             if contract.get("development_evaluation_executed") is True
             else "DEVELOPMENT_EVALUATION_AUTHORIZED_SINGLE_RUN_SLOT"
         ),

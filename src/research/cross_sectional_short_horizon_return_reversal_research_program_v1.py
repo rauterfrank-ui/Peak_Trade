@@ -1,4 +1,4 @@
-"""Definition-only SSOT validator for CS short-horizon return-reversal program v1."""
+"""Program SSOT validator for CS short-horizon return-reversal after terminal closeout."""
 
 from __future__ import annotations
 
@@ -14,11 +14,12 @@ GOVERNANCE_REL_PATH = (
     "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1.md"
 )
 REQUIRED_PROGRAM_ID = "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1"
-REQUIRED_STATUS = "DEFINITION_ONLY"
+REQUIRED_STATUS = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
 REQUIRED_SIGNAL_FAMILY = "CROSS_SECTIONAL_RETURN_REVERSAL"
 REQUIRED_TARGET = "SHORT_HORIZON_CROSS_SECTIONAL_RELATIVE_RETURN_REVERSAL"
 REQUIRED_HYPOTHESIS_ID = "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_NON_BITCOIN_PERPETUALS_V1"
 REQUIRED_STRATEGY_IDENTITY = "CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1"
+REQUIRED_NEXT_STEP = "LANE_CLOSED_NO_FURTHER_RESEARCH_NO_EXECUTABLE_GO"
 CLOSED_VOL = "config/research/volatility_regime_research_program_v1.json"
 CLOSED_CS_MOM = "config/research/material_different_cross_sectional_momentum_program_v1.json"
 REQUIRED_CLOSED_PROGRAM = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
@@ -41,7 +42,7 @@ def validate_program_contract(
     payload: Mapping[str, Any], *, repo_root: Path | None = None
 ) -> dict[str, Any]:
     _require(payload.get("program_id") == REQUIRED_PROGRAM_ID, "PROGRAM_ID_MISMATCH")
-    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_DEFINITION_ONLY")
+    _require(payload.get("status") == REQUIRED_STATUS, "STATUS_NOT_PROGRAM_CLOSED")
     _require(payload.get("program_family") == "CROSS_SECTIONAL_RETURN_REVERSAL", "FAMILY")
     _require(
         payload.get("slice_class") == "DEFINITION_ONLY_GOVERNANCE",
@@ -55,27 +56,39 @@ def validate_program_contract(
     _require(payload.get("strategy_identity") == REQUIRED_STRATEGY_IDENTITY, "STRATEGY_IDENTITY")
     _require(payload.get("evaluation_authorized") is False, "EVALUATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("development_evaluation_authorized") is True,
+        payload.get("development_evaluation_authorized") is False,
         "DEVELOPMENT_EVALUATION_AUTHORIZED_TRUE",
     )
     _require(
         payload.get("development_evaluation_executed") is True,
         "DEVELOPMENT_EVALUATION_EXECUTED_TRUE",
     )
-    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ZERO")
-    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ZERO")
+    _require(payload.get("development_run_count") == 1, "DEVELOPMENT_RUN_COUNT_NOT_ONE")
+    _require(payload.get("runner_start_count") == 1, "RUNNER_START_COUNT_NOT_ONE")
     _require(payload.get("run_slot_consumed") is True, "RUN_SLOT_CONSUMED")
     _require(payload.get("run_budget_consumed") is True, "RUN_BUDGET_CONSUMED")
     _require(payload.get("holdout_forbidden") is True, "HOLDOUT_NOT_FORBIDDEN")
-    _require(payload.get("implementation_authorized") is True, "IMPLEMENTATION_AUTHORIZED")
+    _require(payload.get("implementation_authorized") is False, "IMPLEMENTATION_AUTHORIZED_TRUE")
     _require(
-        payload.get("strategy_implementation_present") is False,
-        "STRATEGY_IMPLEMENTATION_PRESENT",
+        payload.get("strategy_implementation_present") is True,
+        "STRATEGY_IMPLEMENTATION_NOT_PRESENT",
     )
     _require(payload.get("runtime_authorized") is False, "RUNTIME_AUTHORIZED")
+    _require(payload.get("explicit_closeout_decision") is True, "CLOSEOUT_DECISION_REQUIRED")
+    _require(payload.get("create_successor_hypothesis") is False, "CREATE_SUCCESSOR_TRUE")
+    _require(payload.get("successor_found") is False, "SUCCESSOR_FOUND_TRUE")
+    _require(payload.get("retry_allowed") is False, "RETRY_ALLOWED")
+    _require(payload.get("reopen_allowed") is False, "REOPEN_ALLOWED")
+    _require(payload.get("next_canonical_step") == REQUIRED_NEXT_STEP, "NEXT_STEP_STALE")
+    _require(payload.get("next_eligible") == "NONE", "NEXT_ELIGIBLE_NOT_NONE")
+    _require(payload.get("terminal_result") == "FAIL_CLOSED_NO_RETRY", "TERMINAL_RESULT")
     _require(
-        payload.get("requires_new_separate_operator_authorization_for_evaluation") is True,
-        "EVAL_GO_NOT_REQUIRED",
+        payload.get("terminal_strategy_id") == REQUIRED_STRATEGY_IDENTITY,
+        "TERMINAL_STRATEGY_ID",
+    )
+    _require(
+        payload.get("lane_backlog_status") == "LANE_CLOSED_NO_FURTHER_RESEARCH",
+        "LANE_BACKLOG_NOT_CLOSED",
     )
     independence = payload.get("causal_independence") or {}
     _require(
@@ -125,13 +138,16 @@ def validate_program_contract(
 
     return {
         "valid": True,
-        "definition_only": True,
+        "definition_only": False,
+        "program_closed": True,
         "program_id": REQUIRED_PROGRAM_ID,
         "status": REQUIRED_STATUS,
         "hypothesis_id": REQUIRED_HYPOTHESIS_ID,
         "evaluation_authorized": False,
+        "development_evaluation_authorized": False,
         "development_run_count": 1,
         "holdout_forbidden": True,
+        "next_eligible": "NONE",
     }
 
 
