@@ -52,8 +52,24 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         reuse_status="REUSED",
         notes=(
             "Phase 4.2: Landscape projects CanonicalScopeSnapshotV1 lifecycle "
-            "identity only (scope_state/current_scope_ref); Regime/Switch/"
-            "RuntimeScopeState/transition_state remain unbound."
+            "identity only (scope_state/current_scope_ref). Regime/Bull-Bear/"
+            "Switch bind via separate slot regime_bull_bear_switch."
+        ),
+    ),
+    CanonicalOwnerRefV1(
+        slot="regime_bull_bear_switch",
+        owner_module="trading.master_v2.double_play_state",
+        owner_symbol="SideState+transition_state/TransitionDecision",
+        authority_class="regime_bull_bear_switch",
+        reuse_status="REUSED",
+        notes=(
+            "Explicit injection only. Regime fields project from "
+            "suitability_binding_v1 (regime_id/regime_status). Bull/Bear "
+            "projects SideState exactly. Switch projects "
+            "StateSwitchEvidenceV1 / TransitionDecision fields "
+            "(previous/next side, scope_event_type, transition_allowed, "
+            "transition_reason_code). No transition_state calls; no "
+            "SideState derivation; contradictory side fields fail closed."
         ),
     ),
     CanonicalOwnerRefV1(

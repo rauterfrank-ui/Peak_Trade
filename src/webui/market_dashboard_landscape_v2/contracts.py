@@ -99,6 +99,43 @@ class DynamicScopeSnapshotV1(_ProjectionBase):
 
 
 @dataclass(frozen=True)
+class RegimeBullBearSwitchSnapshotV1(_ProjectionBase):
+    """Read-only projection of Regime + Bull/Bear (SideState) + Switch evidence.
+
+    Field-for-field consumer snapshot only. Does not own or recompute Regime,
+    SideState, or transition_state authority.
+    """
+
+    regime_id: str | None
+    regime_status: str | None
+    side_state: str | None
+    previous_side_state: str | None
+    next_side_state: str | None
+    scope_event_type: str | None
+    transition_allowed: bool | None
+    transition_reason_code: str | None
+    reason_codes: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        object.__setattr__(self, "reason_codes", tuple(self.reason_codes))
+        if self.availability is Availability.AVAILABLE:
+            if (
+                self.regime_id is None
+                or self.regime_status is None
+                or self.side_state is None
+                or self.previous_side_state is None
+                or self.next_side_state is None
+                or self.scope_event_type is None
+                or self.transition_allowed is None
+                or self.transition_reason_code is None
+            ):
+                raise ValueError(
+                    "regime/bull_bear/switch required fields must be present when AVAILABLE"
+                )
+
+
+@dataclass(frozen=True)
 class CanonicalDecisionSnapshotV1(_ProjectionBase):
     instrument_id: str | None
     decision: str | None
@@ -259,6 +296,7 @@ ProjectionSnapshot = Union[
     MarketInstrumentSnapshotV1,
     UniverseRankingSnapshotV1,
     DynamicScopeSnapshotV1,
+    RegimeBullBearSwitchSnapshotV1,
     CanonicalDecisionSnapshotV1,
     DoublePlaySnapshotV1,
     RiskSizingCapitalSnapshotV1,

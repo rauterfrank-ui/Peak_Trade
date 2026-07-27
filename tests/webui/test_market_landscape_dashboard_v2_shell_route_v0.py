@@ -196,7 +196,9 @@ def test_get_market_duplicate_status_facts_have_single_primary_location(
     # Regime: Context only (not Global Strip).
     assert 'data-mdl-field="regime"' not in strip
     assert context.count('data-mdl-field="regime"') == 1
-    assert 'data-availability="NOT_BOUND"' in context.split('data-mdl-field="regime"', 1)[1][:200]
+    assert (
+        'data-availability="MISSING_SOURCE"' in context.split('data-mdl-field="regime"', 1)[1][:200]
+    )
 
     # Scope lifecycle: Context Lifecycle only (not Global Strip Scope).
     assert 'data-mdl-field="scope"' not in strip
@@ -293,7 +295,7 @@ def test_get_market_engineering_drawer_renders_existing_slot_diagnostics(
     assert 'data-mdl-engineering-slots="true"' in drawer
     assert 'data-mdl-engineering-slot="canonical_decision"' in drawer
     assert 'data-mdl-engineering-slot="market_instrument"' in drawer
-    assert drawer.count('data-mdl-engineering-slot="') == 11
+    assert drawer.count('data-mdl-engineering-slot="') == 12
 
     decision = drawer.split('data-mdl-engineering-slot="canonical_decision"', 1)[1].split(
         "</article>", 1
@@ -416,7 +418,7 @@ def test_presenter_formats_only_no_authority_defaults() -> None:
     assert "observed_at" in ctx["source_health"]["freshness"]
     assert ctx["source_health"]["freshness_display"] == "2026-07-23T16:00:00Z"
     assert ctx["source_health"]["summary_display"] == "NOT_BOUND · 2026-07-23T16:00:00Z"
-    assert len(ctx["source_health"]["sources"]) == 11
+    assert len(ctx["source_health"]["sources"]) == 12
     decision_src = next(
         src for src in ctx["source_health"]["sources"] if src["slot"] == "canonical_decision"
     )

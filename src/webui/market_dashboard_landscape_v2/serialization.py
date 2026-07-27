@@ -14,6 +14,7 @@ from .contracts import (
     EconomicSummarySnapshotV1,
     ExecutionReconciliationSnapshotV1,
     MarketInstrumentSnapshotV1,
+    RegimeBullBearSwitchSnapshotV1,
     RiskSizingCapitalSnapshotV1,
     SafetyAuthoritySnapshotV1,
     UniverseRankingSnapshotV1,
@@ -57,6 +58,22 @@ def serialize_projection(snapshot: Any) -> dict[str, Any]:
                 "scope_state": snapshot.scope_state,
                 "current_scope_ref": snapshot.current_scope_ref,
                 "next_scope_ref": snapshot.next_scope_ref,
+                "reason_codes": list(snapshot.reason_codes),
+            }
+        )
+        return payload
+    if isinstance(snapshot, RegimeBullBearSwitchSnapshotV1):
+        payload = _base(snapshot)
+        payload.update(
+            {
+                "regime_id": snapshot.regime_id,
+                "regime_status": snapshot.regime_status,
+                "side_state": snapshot.side_state,
+                "previous_side_state": snapshot.previous_side_state,
+                "next_side_state": snapshot.next_side_state,
+                "scope_event_type": snapshot.scope_event_type,
+                "transition_allowed": snapshot.transition_allowed,
+                "transition_reason_code": snapshot.transition_reason_code,
                 "reason_codes": list(snapshot.reason_codes),
             }
         )

@@ -21,6 +21,7 @@ from .contracts import (
     EconomicSummarySnapshotV1,
     ExecutionReconciliationSnapshotV1,
     MarketInstrumentSnapshotV1,
+    RegimeBullBearSwitchSnapshotV1,
     RiskSizingCapitalSnapshotV1,
     SafetyAuthoritySnapshotV1,
     UniverseRankingSnapshotV1,
@@ -41,6 +42,7 @@ class MarketDashboardPageSnapshotV1:
     market_instrument: MarketInstrumentSnapshotV1
     universe_ranking: UniverseRankingSnapshotV1
     dynamic_scope: DynamicScopeSnapshotV1
+    regime_bull_bear_switch: RegimeBullBearSwitchSnapshotV1
     canonical_decision: CanonicalDecisionSnapshotV1
     double_play: DoublePlaySnapshotV1
     risk_sizing_capital: RiskSizingCapitalSnapshotV1
@@ -71,6 +73,7 @@ def _slot_map_from_bundle(bundle: Mapping[str, Any]) -> dict[str, Any]:
         "market_instrument",
         "universe_ranking",
         "dynamic_scope",
+        "regime_bull_bear_switch",
         "canonical_decision",
         "double_play",
         "risk_sizing_capital",
@@ -123,6 +126,7 @@ class MarketDashboardReadServiceV1:
             market_instrument=slots["market_instrument"],
             universe_ranking=slots["universe_ranking"],
             dynamic_scope=slots["dynamic_scope"],
+            regime_bull_bear_switch=slots["regime_bull_bear_switch"],
             canonical_decision=slots["canonical_decision"],
             double_play=slots["double_play"],
             risk_sizing_capital=slots["risk_sizing_capital"],

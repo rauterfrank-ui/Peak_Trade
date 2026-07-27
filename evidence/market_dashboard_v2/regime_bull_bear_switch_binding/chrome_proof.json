@@ -1,0 +1,25 @@
+{
+  "viewports": {
+    "market_1512x982.png": {
+      "width": 1512,
+      "height": 982,
+      "path": "evidence/market_dashboard_v2/regime_bull_bear_switch_binding/market_1512x982.png",
+      "overflow": false,
+      "regime_text": "trending (known)",
+      "bull_bear_text": "long_active",
+      "switch_text": "long_armed\u2192long_active allowed=True (UPSCOPE_CONFIRMED)"
+    },
+    "market_1920x1080.png": {
+      "width": 1920,
+      "height": 1080,
+      "path": "evidence/market_dashboard_v2/regime_bull_bear_switch_binding/market_1920x1080.png",
+      "overflow": false,
+      "regime_text": "trending (known)",
+      "bull_bear_text": "long_active",
+      "switch_text": "long_armed\u2192long_active allowed=True (UPSCOPE_CONFIRMED)"
+    }
+  },
+  "console_errors": [],
+  "page_errors": [],
+  "browser_channel": "chrome"
+}
