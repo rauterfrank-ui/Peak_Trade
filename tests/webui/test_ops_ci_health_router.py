@@ -4,12 +4,15 @@ Tests for CI & Governance Health Router (ops_ci_health_router.py)
 Covers:
 - WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1 (GET read-only)
 - POST /ops/ci-health/run auth-gated execution + snapshot write
+- WEBUI_CI_HEALTH_TRUE_HTTP_409_LOCK_CONTENTION_COVERAGE_V1
 """
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
+import threading
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -18,9 +21,11 @@ from unittest.mock import patch
 import pytest
 
 pytest.importorskip("fastapi")
+pytest.importorskip("httpx")
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from fastapi.testclient import TestClient
+from httpx import ASGITransport, AsyncClient, Response
 
 from src.webui.local_admin_write_auth_v1 import (
     AUTH_HEADER_NAME,
@@ -31,6 +36,7 @@ from src.webui.ops_ci_health_router import (
     SNAPSHOT_STATE_AVAILABLE,
     SNAPSHOT_STATE_INVALID,
     SNAPSHOT_STATE_STALE,
+    _CHECK_LOCK,
     router as ci_health_router,
     set_ci_health_config,
 )
@@ -603,3 +609,82 @@ def test_ci_health_run_rejects_invalid_auth_without_side_effects(
         mocked.assert_not_called()
     assert not snapshot_dir.exists()
     assert local_admin_token_env not in response.text
+
+
+def test_ci_health_run_true_http_409_lock_contention(
+    test_app: FastAPI, local_admin_token_env: str
+) -> None:
+    """Overlapping HTTP POSTs must hit production `_CHECK_LOCK` → HTTP 409."""
+    entered = threading.Event()
+    release = threading.Event()
+    first_state: dict[str, object] = {}
+
+    def blocking_run_all_checks() -> list[object]:
+        # Handler acquires the real production lock before invoking the runner.
+        assert _CHECK_LOCK.locked()
+        first_state["lock_held_in_runner"] = True
+        entered.set()
+        assert release.wait(timeout=5.0), "timed out waiting to release first request"
+        return []
+
+    async def _post_run() -> Response:
+        transport = ASGITransport(app=test_app)
+        async with AsyncClient(transport=transport, base_url="http://testserver") as client:
+            return await client.post("/ops/ci-health/run", headers=_admin_headers())
+
+    def _run_first_request() -> None:
+        first_state["response"] = asyncio.run(_post_run())
+
+    first_thread = threading.Thread(
+        target=_run_first_request,
+        name="ci-health-true-http-409-first",
+        daemon=True,
+    )
+    try:
+        with patch(
+            "src.webui.ops_ci_health_router._run_all_checks",
+            side_effect=blocking_run_all_checks,
+        ):
+            first_thread.start()
+            assert entered.wait(timeout=5.0), "first request did not enter check runner"
+            assert first_state.get("lock_held_in_runner") is True
+            assert first_thread.is_alive()
+
+            second = asyncio.run(_post_run())
+            assert second.status_code == 409
+            second_payload = second.json()
+            assert isinstance(second_payload, dict)
+            assert "detail" in second_payload
+            assert second_payload["detail"]["error"] == "run_already_in_progress"
+            assert isinstance(second_payload["detail"].get("message"), str)
+            assert second_payload["detail"]["message"]
+
+            release.set()
+            first_thread.join(timeout=5.0)
+            assert not first_thread.is_alive(), "first request thread hung after release"
+
+            first = first_state["response"]
+            assert isinstance(first, Response)
+            assert first.status_code == 200
+            first_data = first.json()
+            assert first_data["run_triggered"] is True
+            assert (
+                isinstance(first_data.get("overall_status"), str) and first_data["overall_status"]
+            )
+            assert local_admin_token_env not in first.text
+            assert local_admin_token_env not in second.text
+    finally:
+        release.set()
+        if first_thread.is_alive():
+            first_thread.join(timeout=5.0)
+
+    assert not first_thread.is_alive(), "first request thread leaked"
+    assert not _CHECK_LOCK.locked(), "production lock remained held after contention"
+
+    third = asyncio.run(_post_run())
+    assert third.status_code == 200
+    third_data = third.json()
+    assert third_data["run_triggered"] is True
+    assert isinstance(third_data.get("overall_status"), str) and third_data["overall_status"]
+    assert local_admin_token_env not in third.text
+    assert not _CHECK_LOCK.locked()
