@@ -558,8 +558,14 @@ def test_ci_health_run_sequential_calls_work(
     response2 = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response1.status_code == 200
     assert response2.status_code == 200
-    assert response1.json()["run_triggered"] is True
-    assert response2.json()["run_triggered"] is True
+    data1 = response1.json()
+    data2 = response2.json()
+    assert "overall_status" in data1
+    assert "overall_status" in data2
+    assert isinstance(data1["overall_status"], str) and data1["overall_status"]
+    assert isinstance(data2["overall_status"], str) and data2["overall_status"]
+    assert data1["run_triggered"] is True
+    assert data2["run_triggered"] is True
 
 
 def test_ci_health_run_rejects_missing_auth_without_side_effects(
@@ -576,6 +582,7 @@ def test_ci_health_run_rejects_missing_auth_without_side_effects(
         assert response.json()["detail"]["error"] == "LOCAL_ADMIN_AUTH_MISSING"
         mocked.assert_not_called()
     assert not snapshot_dir.exists()
+    assert local_admin_token_env not in response.text
 
 
 def test_ci_health_run_rejects_invalid_auth_without_side_effects(
@@ -595,3 +602,4 @@ def test_ci_health_run_rejects_invalid_auth_without_side_effects(
         assert response.json()["detail"]["error"] == "LOCAL_ADMIN_AUTH_INVALID"
         mocked.assert_not_called()
     assert not snapshot_dir.exists()
+    assert local_admin_token_env not in response.text
