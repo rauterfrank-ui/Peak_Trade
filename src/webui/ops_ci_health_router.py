@@ -20,14 +20,18 @@ v0.2 Features:
   - Running state + error handling
 
 Endpoints:
-- GET  /ops/ci-health        - HTML dashboard page (with interactive controls)
-- GET  /ops/ci-health/status - JSON API für health checks (read-only)
-- POST /ops/ci-health/run    - Trigger check execution (with lock; local-admin auth required)
+- GET  /ops/ci-health        - HTML dashboard (strict read-only; persisted snapshot only)
+- GET  /ops/ci-health/status - JSON API (strict read-only; persisted snapshot only)
+- POST /ops/ci-health/run    - Trigger check execution + snapshot write (local-admin auth)
+
+Capability: WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1
+- GET routes never run checks, subprocess, git, or snapshot writers
+- Only POST /run may execute checks and refresh snapshots
 
 Safety:
 - Offline-lokal, keine externen Secrets
-- Read-only checks, keine destructive operations
-- In-memory lock prevents parallel runs (HTTP 409 on conflict)
+- GET is safe/idempotent (no filesystem mutation)
+- In-memory lock prevents parallel POST /run (HTTP 409 on conflict)
 - POST /run requires PEAK_TRADE_WEBUI_LOCAL_ADMIN_TOKEN via X-Peak-Trade-Local-Admin-Token
 """
 
@@ -47,6 +51,7 @@ from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
+from scripts.security.secret_hygiene_redaction_v1 import redact_for_webui_payload
 from src.webui.local_admin_write_auth_v1 import require_local_admin_write_auth
 
 logger = logging.getLogger(__name__)
@@ -61,6 +66,20 @@ _TEMPLATES: Optional[Jinja2Templates] = None
 # In-memory lock for check execution (prevents parallel runs)
 _CHECK_LOCK = threading.Lock()
 _LAST_RUN_TIMESTAMP: Optional[datetime] = None
+
+# Canonical snapshot read contract (GET surfaces only)
+SNAPSHOT_JSON_RELATIVE_PATH = Path("reports") / "ops" / "ci_health_latest.json"
+SNAPSHOT_MAX_BYTES = 1_048_576
+SNAPSHOT_STALE_AFTER_SECONDS = 86_400
+SNAPSHOT_CHECK_FIELD_MAX_CHARS = 4_096
+SNAPSHOT_MAX_CHECKS = 64
+
+SNAPSHOT_STATE_ABSENT = "SNAPSHOT_ABSENT"
+SNAPSHOT_STATE_INVALID = "SNAPSHOT_INVALID"
+SNAPSHOT_STATE_STALE = "SNAPSHOT_STALE"
+SNAPSHOT_STATE_AVAILABLE = "SNAPSHOT_AVAILABLE"
+
+_SNAPSHOT_REQUIRED_TOP_LEVEL = frozenset({"overall_status", "summary", "checks", "generated_at"})
 
 
 @dataclass
@@ -397,6 +416,288 @@ def _write_markdown_summary(file, status_data: Dict[str, Any]) -> None:
 
 
 # =============================================================================
+# Snapshot read path (GET surfaces; no mutation)
+# =============================================================================
+
+
+@dataclass(frozen=True)
+class SnapshotReadModel:
+    """Controlled read-only projection of the canonical CI-health snapshot."""
+
+    state: str
+    message: str
+    data: Dict[str, Any]
+
+
+def _canonical_snapshot_json_path() -> Path:
+    """Return the fixed canonical snapshot path (never derived from request input)."""
+    return get_repo_root() / SNAPSHOT_JSON_RELATIVE_PATH
+
+
+def _empty_summary() -> Dict[str, int]:
+    return {"total": 0, "ok": 0, "warn": 0, "fail": 0, "skip": 0}
+
+
+def _parse_snapshot_timestamp(raw: Any) -> Optional[datetime]:
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    value = raw.strip()
+    if value.endswith("Z"):
+        value = value[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _truncate_text(value: Any, *, max_chars: int = SNAPSHOT_CHECK_FIELD_MAX_CHARS) -> str:
+    if value is None:
+        return ""
+    text = value if isinstance(value, str) else str(value)
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars] + "…[truncated]"
+
+
+def _project_checks(raw_checks: Any) -> List[Dict[str, Any]]:
+    if not isinstance(raw_checks, list):
+        return []
+    projected: List[Dict[str, Any]] = []
+    for item in raw_checks[:SNAPSHOT_MAX_CHECKS]:
+        if not isinstance(item, dict):
+            continue
+        docs_refs = item.get("docs_refs") or []
+        if not isinstance(docs_refs, list):
+            docs_refs = []
+        projected.append(
+            {
+                "check_id": _truncate_text(item.get("check_id", "unknown"), max_chars=128),
+                "title": _truncate_text(item.get("title", "Unknown"), max_chars=256),
+                "description": _truncate_text(item.get("description", ""), max_chars=1024),
+                "status": _truncate_text(item.get("status", "UNKNOWN"), max_chars=32),
+                "exit_code": int(item["exit_code"])
+                if isinstance(item.get("exit_code"), int)
+                else -1,
+                "output": _truncate_text(item.get("output", "")),
+                "error_excerpt": _truncate_text(item.get("error_excerpt", "")),
+                "duration_ms": int(item["duration_ms"])
+                if isinstance(item.get("duration_ms"), int)
+                else 0,
+                "timestamp": _truncate_text(item.get("timestamp", ""), max_chars=64),
+                "script_path": _truncate_text(item.get("script_path", ""), max_chars=512),
+                "docs_refs": [
+                    _truncate_text(ref, max_chars=512)
+                    for ref in docs_refs[:16]
+                    if isinstance(ref, str)
+                ],
+            }
+        )
+    return projected
+
+
+def _checks_as_results(checks: List[Dict[str, Any]]) -> List[HealthCheckResult]:
+    return [
+        HealthCheckResult(
+            check_id=str(c.get("check_id", "unknown")),
+            title=str(c.get("title", "Unknown")),
+            description=str(c.get("description", "")),
+            status=str(c.get("status", "UNKNOWN")),
+            exit_code=int(c.get("exit_code", -1)),
+            output=str(c.get("output", "")),
+            error_excerpt=str(c.get("error_excerpt", "")),
+            duration_ms=int(c.get("duration_ms", 0)),
+            timestamp=str(c.get("timestamp", "")),
+            script_path=str(c.get("script_path", "")),
+            docs_refs=list(c.get("docs_refs") or []),
+        )
+        for c in checks
+    ]
+
+
+def _validate_snapshot_structure(payload: Any) -> Optional[str]:
+    if not isinstance(payload, dict):
+        return "snapshot top-level value must be a JSON object"
+    missing = sorted(_SNAPSHOT_REQUIRED_TOP_LEVEL - set(payload.keys()))
+    if missing:
+        return f"snapshot missing required keys: {', '.join(missing)}"
+    summary = payload.get("summary")
+    if not isinstance(summary, dict):
+        return "snapshot.summary must be an object"
+    for key in ("total", "ok", "warn", "fail", "skip"):
+        if key not in summary:
+            return f"snapshot.summary missing key: {key}"
+    if not isinstance(payload.get("checks"), list):
+        return "snapshot.checks must be an array"
+    if not isinstance(payload.get("overall_status"), str):
+        return "snapshot.overall_status must be a string"
+    if not isinstance(payload.get("generated_at"), str):
+        return "snapshot.generated_at must be a string"
+    return None
+
+
+def read_canonical_ci_health_snapshot() -> SnapshotReadModel:
+    """Read the canonical CI-health JSON snapshot without mutation or execution.
+
+    Returns a controlled state machine:
+    SNAPSHOT_ABSENT | SNAPSHOT_INVALID | SNAPSHOT_STALE | SNAPSHOT_AVAILABLE
+    """
+    path = _canonical_snapshot_json_path()
+    try:
+        if not path.exists():
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_ABSENT,
+                message="No persisted CI-health snapshot is available",
+                data={},
+            )
+        if not path.is_file():
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_INVALID,
+                message="Canonical snapshot path is not a regular file",
+                data={},
+            )
+
+        size = path.stat().st_size
+        if size > SNAPSHOT_MAX_BYTES:
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_INVALID,
+                message="Persisted snapshot exceeds maximum allowed size",
+                data={},
+            )
+
+        raw_bytes = path.read_bytes()
+        try:
+            raw_text = raw_bytes.decode("utf-8")
+        except UnicodeDecodeError:
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_INVALID,
+                message="Persisted snapshot is not valid UTF-8",
+                data={},
+            )
+
+        try:
+            payload = json.loads(raw_text)
+        except json.JSONDecodeError:
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_INVALID,
+                message="Persisted snapshot is not valid JSON",
+                data={},
+            )
+
+        structure_error = _validate_snapshot_structure(payload)
+        if structure_error is not None:
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_INVALID,
+                message=structure_error,
+                data={},
+            )
+
+        checks = _project_checks(payload.get("checks"))
+        summary_raw = payload.get("summary") or {}
+        summary = {
+            "total": int(summary_raw.get("total", len(checks)) or 0),
+            "ok": int(summary_raw.get("ok", 0) or 0),
+            "warn": int(summary_raw.get("warn", 0) or 0),
+            "fail": int(summary_raw.get("fail", 0) or 0),
+            "skip": int(summary_raw.get("skip", 0) or 0),
+        }
+
+        projected = {
+            "overall_status": str(payload.get("overall_status", "UNKNOWN")),
+            "summary": summary,
+            "checks": checks,
+            "generated_at": str(payload.get("generated_at")),
+            "server_timestamp_utc": (
+                str(payload["server_timestamp_utc"])
+                if isinstance(payload.get("server_timestamp_utc"), str)
+                else None
+            ),
+            "git_head_sha": (
+                str(payload["git_head_sha"])
+                if isinstance(payload.get("git_head_sha"), str)
+                else None
+            ),
+            "app_version": (
+                str(payload["app_version"])
+                if isinstance(payload.get("app_version"), str)
+                else "0.2.0"
+            ),
+        }
+
+        # Redact at WebUI serialization boundary (reuse canonical owner).
+        projected = redact_for_webui_payload(projected)
+        if not isinstance(projected, dict):
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_INVALID,
+                message="Snapshot redaction produced an unexpected payload type",
+                data={},
+            )
+
+        ts = _parse_snapshot_timestamp(
+            projected.get("server_timestamp_utc") or projected.get("generated_at")
+        )
+        if ts is None:
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_INVALID,
+                message="Snapshot timestamp is missing or unparseable",
+                data={},
+            )
+
+        age_seconds = (datetime.now(timezone.utc) - ts).total_seconds()
+        if age_seconds > SNAPSHOT_STALE_AFTER_SECONDS:
+            return SnapshotReadModel(
+                state=SNAPSHOT_STATE_STALE,
+                message="Persisted CI-health snapshot is stale; run POST /ops/ci-health/run to refresh",
+                data=projected,
+            )
+
+        return SnapshotReadModel(
+            state=SNAPSHOT_STATE_AVAILABLE,
+            message="Persisted CI-health snapshot is available",
+            data=projected,
+        )
+    except OSError:
+        logger.info("ci_health snapshot read failed with OSError (controlled invalid state)")
+        return SnapshotReadModel(
+            state=SNAPSHOT_STATE_INVALID,
+            message="Persisted snapshot could not be read",
+            data={},
+        )
+
+
+def _status_payload_from_snapshot(read_model: SnapshotReadModel) -> Dict[str, Any]:
+    """Build the GET /status JSON body from a SnapshotReadModel."""
+    data = read_model.data if isinstance(read_model.data, dict) else {}
+    summary = data.get("summary") if isinstance(data.get("summary"), dict) else _empty_summary()
+    checks = data.get("checks") if isinstance(data.get("checks"), list) else []
+    overall = data.get("overall_status")
+    if not isinstance(overall, str) or not overall:
+        overall = "UNKNOWN"
+
+    return {
+        "snapshot_state": read_model.state,
+        "message": read_model.message,
+        "read_only": True,
+        "execution_triggered": False,
+        "overall_status": overall,
+        "summary": {
+            "total": int(summary.get("total", 0) or 0),
+            "ok": int(summary.get("ok", 0) or 0),
+            "warn": int(summary.get("warn", 0) or 0),
+            "fail": int(summary.get("fail", 0) or 0),
+            "skip": int(summary.get("skip", 0) or 0),
+        },
+        "checks": checks,
+        "generated_at": data.get("generated_at"),
+        "server_timestamp_utc": data.get("server_timestamp_utc"),
+        "git_head_sha": data.get("git_head_sha"),
+        "app_version": data.get("app_version") or "0.2.0",
+    }
+
+
+# =============================================================================
 # API ENDPOINTS
 # =============================================================================
 
@@ -404,71 +705,15 @@ def _write_markdown_summary(file, status_data: Dict[str, Any]) -> None:
 @router.get("/status")
 async def get_ci_health_status() -> Dict[str, Any]:
     """
-    JSON API: Get CI & Governance health status (v0.2 with snapshot persistence).
+    JSON API: read the last persisted CI & Governance health snapshot.
 
-    Returns:
-        Dict with health check results and summary.
-
-    v0.2 Features:
-        - Persists snapshot to reports/ops/ci_health_latest.{json,md}
-        - Adds server_timestamp_utc, git_head_sha, app_version
-        - snapshot_write_error field if persistence failed
-        - Always returns 200 OK (even if snapshot write failed)
+    Strict read-only:
+        - no check execution
+        - no subprocess / git
+        - no snapshot write / directory creation
     """
-    results = _run_all_checks()
-
-    # Compute summary
-    total = len(results)
-    ok_count = sum(1 for r in results if r.status == "OK")
-    warn_count = sum(1 for r in results if r.status == "WARN")
-    fail_count = sum(1 for r in results if r.status == "FAIL")
-    skip_count = sum(1 for r in results if r.status == "SKIP")
-
-    overall_status = "OK"
-    if fail_count > 0:
-        overall_status = "FAIL"
-    elif warn_count > 0:
-        overall_status = "WARN"
-
-    # Build response (v0.2: enriched with git/timestamp)
-    response = {
-        "overall_status": overall_status,
-        "summary": {
-            "total": total,
-            "ok": ok_count,
-            "warn": warn_count,
-            "fail": fail_count,
-            "skip": skip_count,
-        },
-        "checks": [
-            {
-                "check_id": r.check_id,
-                "title": r.title,
-                "description": r.description,
-                "status": r.status,
-                "exit_code": r.exit_code,
-                "output": r.output,
-                "error_excerpt": r.error_excerpt,
-                "duration_ms": r.duration_ms,
-                "timestamp": r.timestamp,
-                "script_path": r.script_path,
-                "docs_refs": r.docs_refs,
-            }
-            for r in results
-        ],
-        "generated_at": datetime.now().isoformat(),
-        "server_timestamp_utc": datetime.now(timezone.utc).isoformat(),
-        "git_head_sha": _get_git_head_sha(),
-        "app_version": "0.2.0",  # CI Health API version
-    }
-
-    # v0.2: Persist snapshot (errors do NOT fail the API)
-    snapshot_error = _persist_snapshot(response)
-    if snapshot_error:
-        response["snapshot_write_error"] = snapshot_error
-        logger.warning(f"Snapshot write failed but API returns 200: {snapshot_error}")
-
-    return response
+    read_model = read_canonical_ci_health_snapshot()
+    return _status_payload_from_snapshot(read_model)
 
 
 @router.post("/run")
@@ -598,43 +843,33 @@ async def run_ci_health_checks(
 @router.get("", response_class=HTMLResponse)
 async def ci_health_dashboard(request: Request) -> Any:
     """
-    HTML Dashboard: CI & Governance Health Panel.
+    HTML Dashboard: CI & Governance Health Panel (persisted snapshot only).
 
-    Shows:
-    - Status cards (OK/FAIL/WARN) für jeden Check
-    - Letzte Laufzeit
-    - Kurzer Fehlerauszug (max 20 Zeilen)
-    - Links zu Dokumentation
+    Strict read-only:
+        - no check execution on page load
+        - no subprocess / git
+        - no snapshot write / directory creation
     """
     templates = get_templates()
-    results = _run_all_checks()
+    read_model = read_canonical_ci_health_snapshot()
+    payload = _status_payload_from_snapshot(read_model)
+    results = _checks_as_results(list(payload.get("checks") or []))
 
-    # Compute summary
-    total = len(results)
-    ok_count = sum(1 for r in results if r.status == "OK")
-    warn_count = sum(1 for r in results if r.status == "WARN")
-    fail_count = sum(1 for r in results if r.status == "FAIL")
-    skip_count = sum(1 for r in results if r.status == "SKIP")
-
-    overall_status = "OK"
-    if fail_count > 0:
-        overall_status = "FAIL"
-    elif warn_count > 0:
-        overall_status = "WARN"
+    generated_at = payload.get("generated_at")
+    if isinstance(generated_at, str) and generated_at.strip():
+        display_generated = generated_at
+    else:
+        display_generated = "n/a"
 
     context = {
         "request": request,
         "results": results,
-        "summary": {
-            "total": total,
-            "ok": ok_count,
-            "warn": warn_count,
-            "fail": fail_count,
-            "skip": skip_count,
-        },
-        "overall_status": overall_status,
+        "summary": payload["summary"],
+        "overall_status": payload["overall_status"],
+        "snapshot_state": payload["snapshot_state"],
+        "snapshot_message": payload["message"],
         "repo_root": str(get_repo_root()),
-        "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "generated_at": display_generated,
     }
 
     return templates.TemplateResponse(request, "ops_ci_health.html", context)

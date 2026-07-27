@@ -135,14 +135,16 @@ Stabile Marker fuer Tests/Vertrag:
 
 Das OPS-CI-Panel auf `GET &#47;observability` bleibt eine **statische Erklaer- und Linkflaeche** zu den bestehenden OPS-CI-**GET**-Oberflaechen:
 
-- **`GET &#47;ops&#47;ci-health`** — HTML-Dashboard (dedizierte CI-Health-Oberflaeche; kann dort eigene Schritte anbieten).
-- **`GET &#47;ops&#47;ci-health&#47;status`** — **bevorzugter read-only Status-Pfad** (JSON-Lesestatus vom Server; der Hub aggregiert nicht und ruft nichts serverseitig ab).
+- **`GET &#47;ops&#47;ci-health`** — HTML-Dashboard; liest ausschliesslich den persistierten Snapshot (`reports&#47;ops&#47;ci_health_latest.json`); fuehrt keine Checks aus.
+- **`GET &#47;ops&#47;ci-health&#47;status`** — bevorzugter read-only Status-Pfad; JSON-Projektion des letzten persistierten Snapshots; keine Check-Ausfuehrung, kein Snapshot-Write.
+- **`POST &#47;ops&#47;ci-health&#47;run`** — einzige explizite, Local-Admin-auth-gated Execution- und Snapshot-Write-Flaeche (nicht Teil des Observability Hub).
 
 Semantik und Grenzen (explizit):
 
 - The Observability Hub only links to OPS CI GET surfaces.
-- **`GET &#47;ops&#47;ci-health&#47;status`** ist der bevorzugte read-only Status-Pfad.
-- **`GET &#47;ops&#47;ci-health`** kann das dedizierte CI-Dashboard zeigen; der Hub selbst loest nichts aus.
+- **`GET &#47;ops&#47;ci-health&#47;status`** liest nur den letzten persistierten Snapshot und fuehrt keine Checks aus.
+- **`GET &#47;ops&#47;ci-health`** rendert denselben persistierten Zustand; der Hub selbst loest nichts aus.
+- Check-Ausfuehrung bleibt ausschliesslich bei authentisiertem **`POST &#47;ops&#47;ci-health&#47;run`** (`WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1`).
 - The Hub does not trigger workflows.
 - The Hub does not start GitHub Actions.
 - CI status display is not readiness approval.
