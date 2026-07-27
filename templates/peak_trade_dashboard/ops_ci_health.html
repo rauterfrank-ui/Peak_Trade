@@ -63,8 +63,9 @@
               <div>
                 <h1 class="text-2xl font-bold mb-2">🔧 CI & Governance Health</h1>
                 <p class="text-sm text-slate-400">
-                  Lokale CI-Checks & Governance-Validierung
+                  Persistierter CI-Health-Snapshot (GET read-only; Ausführung nur via POST /run)
                   <span class="ml-2 text-xs text-slate-500" id="generated-at">Generated: {{ generated_at }}</span>
+                  <span class="ml-2 text-xs text-slate-500" id="snapshot-state">State: {{ snapshot_state }}</span>
                 </p>
               </div>
               <!-- Control Buttons (v0.2) -->
@@ -93,6 +94,19 @@
             </div>
           </div>
 
+          <!-- Snapshot read-state banner -->
+          <div id="snapshot-state-banner" class="mb-6 p-4 rounded-lg border
+                      {% if snapshot_state == 'SNAPSHOT_AVAILABLE' %}
+                        bg-emerald-500/10 border-emerald-500/30
+                      {% elif snapshot_state == 'SNAPSHOT_STALE' %}
+                        bg-amber-500/10 border-amber-500/30
+                      {% else %}
+                        bg-slate-500/10 border-slate-500/30
+                      {% endif %}">
+            <div class="text-sm font-semibold mb-1" id="snapshot-state-title">{{ snapshot_state }}</div>
+            <div class="text-xs opacity-80" id="snapshot-state-message">{{ snapshot_message }}</div>
+          </div>
+
           <!-- Error Banner (hidden by default) -->
           <div id="error-banner" class="hidden mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
             <div class="flex items-start gap-3">
@@ -112,12 +126,14 @@
                           bg-emerald-500/10 border-emerald-500/30 text-emerald-300
                         {% elif overall_status == 'WARN' %}
                           bg-amber-500/10 border-amber-500/30 text-amber-300
+                        {% elif overall_status == 'UNKNOWN' %}
+                          bg-slate-500/10 border-slate-500/30 text-slate-300
                         {% else %}
                           bg-red-500/10 border-red-500/30 text-red-300
                         {% endif %}"
                  id="overall-status-badge">
               <div class="text-3xl" id="overall-status-icon">
-                {% if overall_status == 'OK' %}✅{% elif overall_status == 'WARN' %}⚠️{% else %}❌{% endif %}
+                {% if overall_status == 'OK' %}✅{% elif overall_status == 'WARN' %}⚠️{% elif overall_status == 'UNKNOWN' %}ℹ️{% else %}❌{% endif %}
               </div>
               <div>
                 <div class="text-lg font-semibold" id="overall-status-text">{{ overall_status }}</div>
@@ -133,6 +149,12 @@
 
           <!-- Health Checks Grid -->
           <div class="grid gap-4" id="checks-container">
+            {% if not results %}
+            <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-5 text-sm text-slate-400">
+              Keine Check-Ergebnisse im persistierten Snapshot. Explizit
+              <code>POST /ops/ci-health/run</code> mit Local-Admin-Token ausführen.
+            </div>
+            {% endif %}
             {% for result in results %}
             <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-5">
               <!-- Check Header -->
@@ -379,21 +401,30 @@
 
       // Update UI with new data
       function updateUI(data) {
-        // Update timestamp
         const generatedAt = document.getElementById('generated-at');
-        if (generatedAt && data.generated_at) {
-          const date = new Date(data.generated_at);
-          generatedAt.textContent = `Generated: ${date.toLocaleString('de-DE')}`;
+        if (generatedAt) {
+          if (data.generated_at) {
+            const date = new Date(data.generated_at);
+            generatedAt.textContent = `Generated: ${date.toLocaleString('de-DE')}`;
+          } else {
+            generatedAt.textContent = 'Generated: n/a';
+          }
         }
 
-        // Update overall status badge
-        updateOverallStatus(data.overall_status, data.summary);
+        const stateEl = document.getElementById('snapshot-state');
+        if (stateEl && data.snapshot_state) {
+          stateEl.textContent = `State: ${data.snapshot_state}`;
+        }
+        const stateTitle = document.getElementById('snapshot-state-title');
+        const stateMsg = document.getElementById('snapshot-state-message');
+        if (stateTitle && data.snapshot_state) stateTitle.textContent = data.snapshot_state;
+        if (stateMsg && data.message) stateMsg.textContent = data.message;
 
-        // Update checks
-        updateChecks(data.checks);
+        const summary = data.summary || { total: 0, ok: 0, warn: 0, fail: 0, skip: 0 };
+        updateOverallStatus(data.overall_status || 'UNKNOWN', summary);
+        updateChecks(Array.isArray(data.checks) ? data.checks : []);
       }
 
-      // Update overall status badge
       function updateOverallStatus(status, summary) {
         const badge = document.getElementById('overall-status-badge');
         const icon = document.getElementById('overall-status-icon');
@@ -402,42 +433,44 @@
 
         if (!badge || !icon || !text || !summaryEl) return;
 
-        // Update icon
         if (status === 'OK') {
           icon.textContent = '✅';
         } else if (status === 'WARN') {
           icon.textContent = '⚠️';
+        } else if (status === 'UNKNOWN') {
+          icon.textContent = 'ℹ️';
         } else {
           icon.textContent = '❌';
         }
 
-        // Update text
         text.textContent = status;
 
-        // Update summary
-        let summaryText = `${summary.ok}/${summary.total} Checks OK`;
-        if (summary.warn > 0) summaryText += ` · ${summary.warn} Warnings`;
-        if (summary.fail > 0) summaryText += ` · ${summary.fail} Failed`;
-        if (summary.skip > 0) summaryText += ` · ${summary.skip} Skipped`;
+        let summaryText = `${summary.ok || 0}/${summary.total || 0} Checks OK`;
+        if ((summary.warn || 0) > 0) summaryText += ` · ${summary.warn} Warnings`;
+        if ((summary.fail || 0) > 0) summaryText += ` · ${summary.fail} Failed`;
+        if ((summary.skip || 0) > 0) summaryText += ` · ${summary.skip} Skipped`;
         summaryEl.textContent = summaryText;
 
-        // Update badge colors
         badge.className = 'inline-flex items-center gap-3 px-4 py-3 rounded-lg border ';
         if (status === 'OK') {
           badge.className += 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
         } else if (status === 'WARN') {
           badge.className += 'bg-amber-500/10 border-amber-500/30 text-amber-300';
+        } else if (status === 'UNKNOWN') {
+          badge.className += 'bg-slate-500/10 border-slate-500/30 text-slate-300';
         } else {
           badge.className += 'bg-red-500/10 border-red-500/30 text-red-300';
         }
       }
 
-      // Update checks cards
       function updateChecks(checks) {
         const container = document.getElementById('checks-container');
         if (!container) return;
+        if (!checks.length) {
+          container.innerHTML = '<div class="bg-slate-900/50 border border-slate-800 rounded-lg p-5 text-sm text-slate-400">Keine Check-Ergebnisse im persistierten Snapshot. Explizit <code>POST /ops/ci-health/run</code> mit Local-Admin-Token ausführen.</div>';
+          return;
+        }
 
-        // Rebuild checks HTML
         container.innerHTML = checks.map(check => `
           <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-5">
             <div class="flex items-start justify-between mb-3">

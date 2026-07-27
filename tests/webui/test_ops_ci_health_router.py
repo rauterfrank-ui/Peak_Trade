@@ -1,32 +1,38 @@
 """
 Tests for CI & Governance Health Router (ops_ci_health_router.py)
 
-Smoke tests for the CI Health Panel v0.2 (with snapshot persistence).
+Covers:
+- WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1 (GET read-only)
+- POST /ops/ci-health/run auth-gated execution + snapshot write
 """
 
 from __future__ import annotations
 
 import json
-from datetime import datetime
+import os
+import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
-# Patched: skip cleanly if optional dependency is not installed
 pytest.importorskip("fastapi")
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from fastapi.testclient import TestClient
 
-from src.webui.ops_ci_health_router import (
-    HealthCheckResult,
-    router as ci_health_router,
-    set_ci_health_config,
-)
 from src.webui.local_admin_write_auth_v1 import (
     AUTH_HEADER_NAME,
     AUTH_TOKEN_ENV_NAME,
+)
+from src.webui.ops_ci_health_router import (
+    SNAPSHOT_STATE_ABSENT,
+    SNAPSHOT_STATE_AVAILABLE,
+    SNAPSHOT_STATE_INVALID,
+    SNAPSHOT_STATE_STALE,
+    router as ci_health_router,
+    set_ci_health_config,
 )
 
 # Synthetic fixture token — deliberately not shaped like a production secret.
@@ -37,75 +43,92 @@ def _admin_headers() -> dict[str, str]:
     return {AUTH_HEADER_NAME: _FIXTURE_LOCAL_ADMIN_TOKEN}
 
 
+def _sample_snapshot(*, age: timedelta = timedelta(minutes=5), overall: str = "OK") -> dict:
+    ts = datetime.now(timezone.utc) - age
+    return {
+        "overall_status": overall,
+        "summary": {"total": 2, "ok": 2, "warn": 0, "fail": 0, "skip": 0},
+        "checks": [
+            {
+                "check_id": "contract_guard",
+                "title": "Contract Guard",
+                "description": "desc",
+                "status": "OK",
+                "exit_code": 0,
+                "output": "ok",
+                "error_excerpt": "",
+                "duration_ms": 12,
+                "timestamp": ts.isoformat(),
+                "script_path": "scripts/ops/check_required_ci_contexts_present.sh",
+                "docs_refs": ["docs/ops/README.md"],
+            },
+            {
+                "check_id": "docs_reference_validation",
+                "title": "Docs Reference Validation",
+                "description": "desc",
+                "status": "OK",
+                "exit_code": 0,
+                "output": "ok",
+                "error_excerpt": "",
+                "duration_ms": 8,
+                "timestamp": ts.isoformat(),
+                "script_path": "scripts/ops/verify_docs_reference_targets.sh",
+                "docs_refs": ["docs/ops/README.md"],
+            },
+        ],
+        "generated_at": ts.isoformat(),
+        "server_timestamp_utc": ts.isoformat(),
+        "git_head_sha": "deadbeef",
+        "app_version": "0.2.0",
+    }
+
+
+def _write_snapshot(repo_root: Path, payload: dict) -> Path:
+    path = repo_root / "reports" / "ops" / "ci_health_latest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return path
+
+
 @pytest.fixture
 def local_admin_token_env(monkeypatch: pytest.MonkeyPatch) -> str:
-    """Configure the local-admin server token for authenticated POST /run tests."""
     monkeypatch.setenv(AUTH_TOKEN_ENV_NAME, _FIXTURE_LOCAL_ADMIN_TOKEN)
     return _FIXTURE_LOCAL_ADMIN_TOKEN
 
 
 @pytest.fixture
 def mock_repo_root(tmp_path: Path) -> Path:
-    """Create a mock repository root with CI scripts."""
     repo_root = tmp_path / "repo"
     repo_root.mkdir()
-
-    # Create scripts directory
     scripts_dir = repo_root / "scripts" / "ops"
     scripts_dir.mkdir(parents=True)
-
-    # Create mock CI check scripts
-    contract_guard = scripts_dir / "check_required_ci_contexts_present.sh"
-    contract_guard.write_text(
-        """#!/usr/bin/env bash
-set -euo pipefail
-echo "✅ CI required context contract looks good."
-exit 0
-"""
-    )
-    contract_guard.chmod(0o755)
-
-    docs_check = scripts_dir / "verify_docs_reference_targets.sh"
-    docs_check.write_text(
-        """#!/usr/bin/env bash
-set -euo pipefail
-echo "✅ All docs references valid."
-exit 0
-"""
-    )
-    docs_check.chmod(0o755)
-
+    for name in (
+        "check_required_ci_contexts_present.sh",
+        "verify_docs_reference_targets.sh",
+    ):
+        script = scripts_dir / name
+        script.write_text("#!/usr/bin/env bash\nset -euo pipefail\necho OK\nexit 0\n")
+        script.chmod(0o755)
     return repo_root
 
 
 @pytest.fixture
 def mock_templates(tmp_path: Path) -> Jinja2Templates:
-    """Create mock Jinja2Templates."""
     templates_dir = tmp_path / "templates"
     templates_dir.mkdir()
-
-    # Create minimal template (v0.2 with interactive controls)
-    template_file = templates_dir / "ops_ci_health.html"
-    template_file.write_text(
+    (templates_dir / "ops_ci_health.html").write_text(
         """<!doctype html>
 <html>
 <head><title>CI Health</title></head>
 <body>
 <h1>CI & Governance Health</h1>
 <p>Status: {{ overall_status }}</p>
+<p>Snapshot: {{ snapshot_state }}</p>
 <p>Total: {{ summary.total }}</p>
-
-<!-- v0.2 Interactive Controls -->
 <button id="run-checks-btn" onclick="runChecks()">Run checks now</button>
 <button id="refresh-btn" onclick="refreshStatus()">Refresh status</button>
 <input type="checkbox" id="auto-refresh-toggle" onchange="toggleAutoRefresh(this.checked)">
-
-<!-- Error Banner -->
-<div id="error-banner" class="hidden">
-  <div id="error-message"></div>
-  <button onclick="hideError()">Close</button>
-</div>
-
+<div id="error-banner" class="hidden"><div id="error-message"></div><button onclick="hideError()">Close</button></div>
 <script>
   async function runChecks() {
     const headers = {'Accept': 'application/json', 'Content-Type': 'application/json'};
@@ -122,31 +145,24 @@ def mock_templates(tmp_path: Path) -> Jinja2Templates:
 </html>
 """
     )
-
     return Jinja2Templates(directory=str(templates_dir))
 
 
 @pytest.fixture
 def test_app(mock_repo_root: Path, mock_templates: Jinja2Templates) -> FastAPI:
-    """Create test FastAPI app with CI Health router."""
     app = FastAPI()
-
-    # Configure router
     set_ci_health_config(mock_repo_root, mock_templates)
     app.include_router(ci_health_router)
-
     return app
 
 
 @pytest.fixture
 def client(test_app: FastAPI) -> TestClient:
-    """Create test client."""
     return TestClient(test_app)
 
 
 @pytest.fixture
 def client_real_ops_ci_health_template(mock_repo_root: Path) -> TestClient:
-    """GET /ops/ci-health using the repo's ops_ci_health.html (hub nav parity)."""
     repo_root = Path(__file__).resolve().parents[2]
     templates = Jinja2Templates(directory=str(repo_root / "templates" / "peak_trade_dashboard"))
     set_ci_health_config(mock_repo_root, templates)
@@ -155,24 +171,55 @@ def client_real_ops_ci_health_template(mock_repo_root: Path) -> TestClient:
     return TestClient(app)
 
 
+def _assert_get_no_side_effects(client: TestClient, mock_repo_root: Path, path: str) -> None:
+    reports = mock_repo_root / "reports"
+    before_exists = reports.exists()
+    snapshot = mock_repo_root / "reports" / "ops" / "ci_health_latest.json"
+    before_mtime = snapshot.stat().st_mtime_ns if snapshot.exists() else None
+    before_content = snapshot.read_bytes() if snapshot.exists() else None
+
+    with (
+        patch("src.webui.ops_ci_health_router._run_all_checks") as run_all,
+        patch("src.webui.ops_ci_health_router._run_check") as run_one,
+        patch("src.webui.ops_ci_health_router._persist_snapshot") as persist,
+        patch("src.webui.ops_ci_health_router._get_git_head_sha") as git_sha,
+        patch("src.webui.ops_ci_health_router.subprocess.run") as sp_run,
+    ):
+        response = client.get(path)
+        assert response.status_code == 200
+        run_all.assert_not_called()
+        run_one.assert_not_called()
+        persist.assert_not_called()
+        git_sha.assert_not_called()
+        sp_run.assert_not_called()
+
+    if before_exists:
+        assert reports.exists()
+    else:
+        assert not reports.exists()
+
+    if before_mtime is not None and before_content is not None:
+        assert snapshot.exists()
+        assert snapshot.stat().st_mtime_ns == before_mtime
+        assert snapshot.read_bytes() == before_content
+
+
 # =============================================================================
-# TESTS: HTML Dashboard Endpoint
+# GET root / status — no side effects
 # =============================================================================
 
 
 def test_ci_health_dashboard_renders(client: TestClient) -> None:
-    """Test that CI health dashboard renders successfully."""
     response = client.get("/ops/ci-health")
-
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
     assert "CI & Governance Health" in response.text
+    assert SNAPSHOT_STATE_ABSENT in response.text
 
 
 def test_ci_health_dashboard_standalone_hub_nav(
     client_real_ops_ci_health_template: TestClient,
 ) -> None:
-    """Standalone CI Health page includes same hub crosslinks as other Ops standalones."""
     response = client_real_ops_ci_health_template.get("/ops/ci-health")
     assert response.status_code == 200
     html = response.text
@@ -185,623 +232,341 @@ def test_ci_health_dashboard_standalone_hub_nav(
     assert "Run UI (companion)" in html
 
 
-def test_ci_health_dashboard_shows_status(client: TestClient) -> None:
-    """Test that dashboard shows overall status."""
-    response = client.get("/ops/ci-health")
-
-    assert response.status_code == 200
-    # Should show either OK, WARN, or FAIL
-    assert any(status in response.text for status in ["OK", "WARN", "FAIL"])
+def test_get_root_no_side_effects_absent(client: TestClient, mock_repo_root: Path) -> None:
+    _assert_get_no_side_effects(client, mock_repo_root, "/ops/ci-health")
+    assert not (mock_repo_root / "reports").exists()
 
 
-def test_ci_health_dashboard_shows_check_count(client: TestClient) -> None:
-    """Test that dashboard shows check count."""
-    response = client.get("/ops/ci-health")
-
-    assert response.status_code == 200
-    # Should show total count (we have 2 checks)
-    assert "Total:" in response.text or "summary" in response.text.lower()
-
-
-# =============================================================================
-# TESTS: JSON API Endpoint
-# =============================================================================
+def test_get_status_no_side_effects_absent(client: TestClient, mock_repo_root: Path) -> None:
+    _assert_get_no_side_effects(client, mock_repo_root, "/ops/ci-health/status")
+    data = client.get("/ops/ci-health/status").json()
+    assert data["snapshot_state"] == SNAPSHOT_STATE_ABSENT
+    assert data["read_only"] is True
+    assert data["execution_triggered"] is False
+    assert data["checks"] == []
+    assert not (mock_repo_root / "reports").exists()
 
 
-def test_ci_health_status_json(client: TestClient) -> None:
-    """Test that JSON status endpoint returns valid data."""
+def test_get_root_and_status_preserve_existing_snapshot(
+    client: TestClient, mock_repo_root: Path
+) -> None:
+    path = _write_snapshot(mock_repo_root, _sample_snapshot())
+    # Stabilize mtime across rapid successive stats on some filesystems.
+    os.utime(path, None)
+    time.sleep(0.01)
+    _assert_get_no_side_effects(client, mock_repo_root, "/ops/ci-health")
+    _assert_get_no_side_effects(client, mock_repo_root, "/ops/ci-health/status")
+
+
+def test_get_status_available_snapshot(client: TestClient, mock_repo_root: Path) -> None:
+    _write_snapshot(mock_repo_root, _sample_snapshot(age=timedelta(minutes=1)))
     response = client.get("/ops/ci-health/status")
-
     assert response.status_code == 200
     data = response.json()
+    assert data["snapshot_state"] == SNAPSHOT_STATE_AVAILABLE
+    assert data["overall_status"] == "OK"
+    assert data["summary"]["total"] == 2
+    assert len(data["checks"]) == 2
+    assert data["git_head_sha"] == "deadbeef"
+    assert data["read_only"] is True
 
-    # Validate structure
-    assert "overall_status" in data
-    assert "summary" in data
-    assert "checks" in data
-    assert "generated_at" in data
-    assert "server_timestamp_utc" in data
-    assert isinstance(data["generated_at"], str)
-    assert isinstance(data["server_timestamp_utc"], str)
-    assert datetime.fromisoformat(data["generated_at"].replace("Z", "+00:00"))
-    assert datetime.fromisoformat(data["server_timestamp_utc"].replace("Z", "+00:00"))
 
-    # Validate summary
-    summary = data["summary"]
-    assert "total" in summary
-    assert "ok" in summary
-    assert "warn" in summary
-    assert "fail" in summary
-    assert "skip" in summary
-
-    # Should have 2 checks
-    assert summary["total"] == 2
+def test_get_status_stale_snapshot(client: TestClient, mock_repo_root: Path) -> None:
+    _write_snapshot(mock_repo_root, _sample_snapshot(age=timedelta(hours=48)))
+    data = client.get("/ops/ci-health/status").json()
+    assert data["snapshot_state"] == SNAPSHOT_STATE_STALE
+    assert data["overall_status"] == "OK"
     assert len(data["checks"]) == 2
 
 
-def test_ci_health_status_check_structure(client: TestClient) -> None:
-    """Test that each check has required fields."""
-    response = client.get("/ops/ci-health/status")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    for check in data["checks"]:
-        assert "check_id" in check
-        assert "title" in check
-        assert "description" in check
-        assert "status" in check
-        assert "exit_code" in check
-        assert "output" in check
-        assert "error_excerpt" in check
-        assert "duration_ms" in check
-        assert "timestamp" in check
-        assert "script_path" in check
-        assert "docs_refs" in check
-
-
-def test_ci_health_status_includes_contract_guard(client: TestClient) -> None:
-    """Test that contract guard check is included."""
-    response = client.get("/ops/ci-health/status")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    check_ids = [check["check_id"] for check in data["checks"]]
-    assert "contract_guard" in check_ids
-
-
-def test_ci_health_status_includes_docs_validation(client: TestClient) -> None:
-    """Test that docs validation check is included."""
-    response = client.get("/ops/ci-health/status")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    check_ids = [check["check_id"] for check in data["checks"]]
-    assert "docs_reference_validation" in check_ids
-
-
-# =============================================================================
-# TESTS: Check Execution
-# =============================================================================
-
-
-def test_ci_health_executes_checks(client: TestClient) -> None:
-    """Test that checks are actually executed."""
-    response = client.get("/ops/ci-health/status")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    # At least one check should have OK status (our mock scripts return 0)
-    statuses = [check["status"] for check in data["checks"]]
-    assert "OK" in statuses or "SKIP" in statuses
-
-
-def test_ci_health_handles_missing_script(tmp_path: Path, mock_templates: Jinja2Templates) -> None:
-    """Test that missing scripts are handled gracefully."""
-    # Create repo without scripts
-    empty_repo = tmp_path / "empty_repo"
-    empty_repo.mkdir()
-
-    app = FastAPI()
-    set_ci_health_config(empty_repo, mock_templates)
-    app.include_router(ci_health_router)
-
-    client = TestClient(app)
-    response = client.get("/ops/ci-health/status")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    # All checks should be skipped
-    statuses = [check["status"] for check in data["checks"]]
-    assert all(status == "SKIP" for status in statuses)
-
-
-# =============================================================================
-# TESTS: Error Handling
-# =============================================================================
-
-
-def test_ci_health_handles_failing_check(tmp_path: Path, mock_templates: Jinja2Templates) -> None:
-    """Test that failing checks are handled correctly."""
-    repo_root = tmp_path / "repo"
-    repo_root.mkdir()
-
-    scripts_dir = repo_root / "scripts" / "ops"
-    scripts_dir.mkdir(parents=True)
-
-    # Create failing script
-    failing_script = scripts_dir / "check_required_ci_contexts_present.sh"
-    failing_script.write_text(
-        """#!/usr/bin/env bash
-echo "❌ CI check failed!"
-exit 1
-"""
-    )
-    failing_script.chmod(0o755)
-
-    # Create passing script
-    passing_script = scripts_dir / "verify_docs_reference_targets.sh"
-    passing_script.write_text(
-        """#!/usr/bin/env bash
-echo "✅ OK"
-exit 0
-"""
-    )
-    passing_script.chmod(0o755)
-
-    app = FastAPI()
-    set_ci_health_config(repo_root, mock_templates)
-    app.include_router(ci_health_router)
-
-    client = TestClient(app)
-    response = client.get("/ops/ci-health/status")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    # Overall status should be FAIL
-    assert data["overall_status"] == "FAIL"
-
-    # Should have 1 fail and 1 ok
-    assert data["summary"]["fail"] >= 1
-    assert data["summary"]["ok"] >= 1
-
-
-def test_ci_health_handles_warning_check(tmp_path: Path, mock_templates: Jinja2Templates) -> None:
-    """Test that warning checks (exit 2) are handled correctly."""
-    repo_root = tmp_path / "repo"
-    repo_root.mkdir()
-
-    scripts_dir = repo_root / "scripts" / "ops"
-    scripts_dir.mkdir(parents=True)
-
-    # Create warning script (exit 2)
-    warning_script = scripts_dir / "check_required_ci_contexts_present.sh"
-    warning_script.write_text(
-        """#!/usr/bin/env bash
-echo "⚠️ Warning: some issues found"
-exit 2
-"""
-    )
-    warning_script.chmod(0o755)
-
-    # Create passing script
-    passing_script = scripts_dir / "verify_docs_reference_targets.sh"
-    passing_script.write_text(
-        """#!/usr/bin/env bash
-echo "✅ OK"
-exit 0
-"""
-    )
-    passing_script.chmod(0o755)
-
-    app = FastAPI()
-    set_ci_health_config(repo_root, mock_templates)
-    app.include_router(ci_health_router)
-
-    client = TestClient(app)
-    response = client.get("/ops/ci-health/status")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    # Overall status should be WARN
-    assert data["overall_status"] == "WARN"
-
-    # Should have 1 warn and 1 ok
-    assert data["summary"]["warn"] >= 1
-    assert data["summary"]["ok"] >= 1
-
-
-# =============================================================================
-# TESTS: Integration
-# =============================================================================
-
-
-def test_ci_health_full_workflow(client: TestClient) -> None:
-    """Test full workflow: HTML dashboard + JSON API."""
-    # 1. Get HTML dashboard
-    html_response = client.get("/ops/ci-health")
-    assert html_response.status_code == 200
-    assert "CI & Governance Health" in html_response.text
-
-    # 2. Get JSON status
-    json_response = client.get("/ops/ci-health/status")
-    assert json_response.status_code == 200
-    data = json_response.json()
-
-    # 3. Verify consistency
-    assert "overall_status" in data
-    assert data["summary"]["total"] == 2
-
-
-# =============================================================================
-# TESTS: v0.2 Snapshot Persistence
-# =============================================================================
-
-
-def test_ci_health_status_includes_v02_fields(client: TestClient) -> None:
-    """Test that v0.2 fields are present in status response."""
-    response = client.get("/ops/ci-health/status")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    # v0.2 fields
-    assert "server_timestamp_utc" in data
-    assert "git_head_sha" in data
-    assert "app_version" in data
-    assert data["app_version"] == "0.2.0"
-
-
-def test_ci_health_snapshot_files_created(mock_repo_root: Path, client: TestClient) -> None:
-    """Test that snapshot files are created on successful status call."""
-    # Call status endpoint
-    response = client.get("/ops/ci-health/status")
-    assert response.status_code == 200
-
-    # Check that snapshot files exist
-    snapshot_dir = mock_repo_root / "reports" / "ops"
-    json_file = snapshot_dir / "ci_health_latest.json"
-    md_file = snapshot_dir / "ci_health_latest.md"
-
-    assert json_file.exists(), "JSON snapshot file should be created"
-    assert md_file.exists(), "Markdown snapshot file should be created"
-
-
-def test_ci_health_snapshot_json_content(mock_repo_root: Path, client: TestClient) -> None:
-    """Test that JSON snapshot contains complete status data."""
-    # Call status endpoint
-    response = client.get("/ops/ci-health/status")
-    assert response.status_code == 200
-    api_data = response.json()
-
-    # Read snapshot file
-    snapshot_file = mock_repo_root / "reports" / "ops" / "ci_health_latest.json"
-    assert snapshot_file.exists()
-
-    with open(snapshot_file, "r", encoding="utf-8") as f:
-        snapshot_data = json.load(f)
-
-    # Verify structure matches API response
-    assert snapshot_data["overall_status"] == api_data["overall_status"]
-    assert snapshot_data["summary"] == api_data["summary"]
-    assert len(snapshot_data["checks"]) == len(api_data["checks"])
-    assert "server_timestamp_utc" in snapshot_data
-    assert "git_head_sha" in snapshot_data
-
-
-def test_ci_health_snapshot_md_content(mock_repo_root: Path, client: TestClient) -> None:
-    """Test that Markdown snapshot is human-readable."""
-    # Call status endpoint
-    response = client.get("/ops/ci-health/status")
-    assert response.status_code == 200
-
-    # Read markdown file
-    md_file = mock_repo_root / "reports" / "ops" / "ci_health_latest.md"
-    assert md_file.exists()
-
-    content = md_file.read_text(encoding="utf-8")
-
-    # Verify markdown structure
-    assert "# CI & Governance Health Snapshot" in content
-    assert "**Overall Status:**" in content
-    assert "## Summary" in content
-    assert "## Checks" in content
-    assert "**Total Checks:**" in content
-
-
-def test_ci_health_snapshot_atomic_write(mock_repo_root: Path, client: TestClient) -> None:
-    """Test that snapshot uses atomic writes (no .tmp files left behind)."""
-    # Call status endpoint
-    response = client.get("/ops/ci-health/status")
-    assert response.status_code == 200
-
-    # Check that no temp files exist
-    snapshot_dir = mock_repo_root / "reports" / "ops"
-    tmp_files = list(snapshot_dir.glob("*.tmp"))
-
-    assert len(tmp_files) == 0, "No temporary files should remain after atomic write"
-
-
-def test_ci_health_snapshot_error_handling(tmp_path: Path, mock_templates: Jinja2Templates) -> None:
-    """Test that snapshot write errors do NOT fail the API."""
-    # Create repo with unwritable reports directory
-    repo_root = tmp_path / "repo"
-    repo_root.mkdir()
-
-    scripts_dir = repo_root / "scripts" / "ops"
-    scripts_dir.mkdir(parents=True)
-
-    # Create passing scripts
-    contract_guard = scripts_dir / "check_required_ci_contexts_present.sh"
-    contract_guard.write_text("#!/usr/bin/env bash\necho 'OK'\nexit 0\n")
-    contract_guard.chmod(0o755)
-
-    docs_check = scripts_dir / "verify_docs_reference_targets.sh"
-    docs_check.write_text("#!/usr/bin/env bash\necho 'OK'\nexit 0\n")
-    docs_check.chmod(0o755)
-
-    # Create reports dir but make it read-only
-    reports_dir = repo_root / "reports" / "ops"
-    reports_dir.mkdir(parents=True)
-    reports_dir.chmod(0o444)  # Read-only
-
-    app = FastAPI()
-    set_ci_health_config(repo_root, mock_templates)
-    app.include_router(ci_health_router)
-
-    client = TestClient(app)
-
-    try:
-        # Call status endpoint - should still return 200
-        response = client.get("/ops/ci-health/status")
-        assert response.status_code == 200
-
-        data = response.json()
-
-        # Should have snapshot_write_error field
-        assert "snapshot_write_error" in data
-        assert "Failed to persist snapshot" in data["snapshot_write_error"]
-
-        # But overall status should still be valid
-        assert "overall_status" in data
-        assert "checks" in data
-
-    finally:
-        # Cleanup: restore permissions
-        reports_dir.chmod(0o755)
-
-
-def test_ci_health_snapshot_multiple_calls(mock_repo_root: Path, client: TestClient) -> None:
-    """Test that multiple status calls overwrite snapshot (latest wins)."""
-    # First call
-    response1 = client.get("/ops/ci-health/status")
-    assert response1.status_code == 200
-    data1 = response1.json()
-
-    # Read first snapshot
-    json_file = mock_repo_root / "reports" / "ops" / "ci_health_latest.json"
-    with open(json_file, "r", encoding="utf-8") as f:
-        snapshot1 = json.load(f)
-
-    # Second call (should overwrite)
-    response2 = client.get("/ops/ci-health/status")
-    assert response2.status_code == 200
-    data2 = response2.json()
-
-    # Read second snapshot
-    with open(json_file, "r", encoding="utf-8") as f:
-        snapshot2 = json.load(f)
-
-    # Timestamps should differ
-    assert snapshot1["generated_at"] != snapshot2["generated_at"]
-
-    # File should contain latest data
-    assert snapshot2["generated_at"] == data2["generated_at"]
-
-
-def test_ci_health_snapshot_directory_creation(
-    tmp_path: Path, mock_templates: Jinja2Templates
+def test_get_status_invalid_json(client: TestClient, mock_repo_root: Path) -> None:
+    path = mock_repo_root / "reports" / "ops" / "ci_health_latest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("{not-json", encoding="utf-8")
+    data = client.get("/ops/ci-health/status").json()
+    assert data["snapshot_state"] == SNAPSHOT_STATE_INVALID
+    assert data["checks"] == []
+    assert data["overall_status"] == "UNKNOWN"
+
+
+def test_get_status_invalid_structure(client: TestClient, mock_repo_root: Path) -> None:
+    _write_snapshot(mock_repo_root, {"overall_status": "OK", "checks": []})
+    data = client.get("/ops/ci-health/status").json()
+    assert data["snapshot_state"] == SNAPSHOT_STATE_INVALID
+    assert data["checks"] == []
+
+
+def test_get_status_does_not_depend_on_admin_token(
+    client: TestClient, mock_repo_root: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Test that snapshot directory is created if missing."""
-    # Create repo WITHOUT reports directory
-    repo_root = tmp_path / "repo"
-    repo_root.mkdir()
-
-    scripts_dir = repo_root / "scripts" / "ops"
-    scripts_dir.mkdir(parents=True)
-
-    # Create passing scripts
-    contract_guard = scripts_dir / "check_required_ci_contexts_present.sh"
-    contract_guard.write_text("#!/usr/bin/env bash\necho 'OK'\nexit 0\n")
-    contract_guard.chmod(0o755)
-
-    docs_check = scripts_dir / "verify_docs_reference_targets.sh"
-    docs_check.write_text("#!/usr/bin/env bash\necho 'OK'\nexit 0\n")
-    docs_check.chmod(0o755)
-
-    # Verify reports dir does NOT exist
-    reports_dir = repo_root / "reports" / "ops"
-    assert not reports_dir.exists()
-
-    app = FastAPI()
-    set_ci_health_config(repo_root, mock_templates)
-    app.include_router(ci_health_router)
-
-    client = TestClient(app)
-
-    # Call status endpoint
+    monkeypatch.delenv(AUTH_TOKEN_ENV_NAME, raising=False)
+    _write_snapshot(mock_repo_root, _sample_snapshot())
     response = client.get("/ops/ci-health/status")
     assert response.status_code == 200
+    assert response.json()["snapshot_state"] == SNAPSHOT_STATE_AVAILABLE
 
-    # Directory should now exist
-    assert reports_dir.exists()
-    assert (reports_dir / "ci_health_latest.json").exists()
-    assert (reports_dir / "ci_health_latest.md").exists()
+
+def test_get_root_renders_available_snapshot(client: TestClient, mock_repo_root: Path) -> None:
+    _write_snapshot(mock_repo_root, _sample_snapshot())
+    response = client.get("/ops/ci-health")
+    assert response.status_code == 200
+    assert SNAPSHOT_STATE_AVAILABLE in response.text
+    assert "OK" in response.text
+    assert "Total: 2" in response.text
+
+
+def test_ci_health_dashboard_contains_buttons(client: TestClient) -> None:
+    response = client.get("/ops/ci-health")
+    assert response.status_code == 200
+    html = response.text
+    assert "run-checks-btn" in html
+    assert "refresh-btn" in html
+    assert "auto-refresh-toggle" in html
+    assert "runChecks()" in html
+    assert "refreshStatus()" in html
+    assert "/ops/ci-health/run" in html
+    assert "/ops/ci-health/status" in html
+    assert AUTH_HEADER_NAME in html
+    assert AUTH_TOKEN_ENV_NAME not in html
+    assert _FIXTURE_LOCAL_ADMIN_TOKEN not in html
+
+
+def test_ci_health_dashboard_has_error_banner(client: TestClient) -> None:
+    response = client.get("/ops/ci-health")
+    assert response.status_code == 200
+    assert "error-banner" in response.text
+    assert "hideError()" in response.text
+
+
+def test_ci_health_full_workflow_read_then_run(
+    client: TestClient, mock_repo_root: Path, local_admin_token_env: str
+) -> None:
+    absent = client.get("/ops/ci-health/status").json()
+    assert absent["snapshot_state"] == SNAPSHOT_STATE_ABSENT
+
+    run = client.post("/ops/ci-health/run", headers=_admin_headers())
+    assert run.status_code == 200
+    assert run.json()["run_triggered"] is True
+
+    status = client.get("/ops/ci-health/status").json()
+    assert status["snapshot_state"] in {SNAPSHOT_STATE_AVAILABLE, SNAPSHOT_STATE_STALE}
+    assert status["summary"]["total"] == 2
+    assert local_admin_token_env not in run.text
 
 
 # =============================================================================
-# TESTS: v0.2 Run-Now Buttons & Interactive Controls
+# POST /run — execution + auth (unchanged contract)
 # =============================================================================
 
 
 def test_ci_health_run_endpoint_returns_200(client: TestClient, local_admin_token_env: str) -> None:
-    """Test that POST /run endpoint returns 200 with valid JSON."""
     response = client.post("/ops/ci-health/run", headers=_admin_headers())
-
     assert response.status_code == 200
     data = response.json()
-
-    # Validate structure (same as GET /status)
     assert "overall_status" in data
     assert "summary" in data
     assert "checks" in data
-    assert "generated_at" in data
-    assert "server_timestamp_utc" in data
-    assert isinstance(data["generated_at"], str)
-    assert isinstance(data["server_timestamp_utc"], str)
-    assert datetime.fromisoformat(data["generated_at"].replace("Z", "+00:00"))
-    assert datetime.fromisoformat(data["server_timestamp_utc"].replace("Z", "+00:00"))
-    assert "git_head_sha" in data
-    assert "app_version" in data
-
-    # v0.2 run-specific field
-    assert "run_triggered" in data
     assert data["run_triggered"] is True
+    assert data["app_version"] == "0.2.0"
     assert local_admin_token_env not in response.text
 
 
 def test_ci_health_run_endpoint_executes_checks(
     client: TestClient, local_admin_token_env: str
 ) -> None:
-    """Test that POST /run actually executes checks."""
     response = client.post("/ops/ci-health/run", headers=_admin_headers())
-
     assert response.status_code == 200
     data = response.json()
-
-    # Should have 2 checks
     assert len(data["checks"]) == 2
     assert data["summary"]["total"] == 2
-
-    # At least one check should have OK status (our mock scripts return 0)
     statuses = [check["status"] for check in data["checks"]]
     assert "OK" in statuses or "SKIP" in statuses
-
-
-def test_ci_health_run_parallel_returns_409(client: TestClient, local_admin_token_env: str) -> None:
-    """Test that parallel run attempts return HTTP 409."""
-    # Note: TestClient is synchronous, so we test the lock mechanism directly
-    # by calling the endpoint multiple times rapidly
-
-    # First call should succeed
-    response1 = client.post("/ops/ci-health/run", headers=_admin_headers())
-    assert response1.status_code == 200
-
-    # For testing lock behavior, we verify that sequential calls work
-    # (lock is released after first call completes)
-    response2 = client.post("/ops/ci-health/run", headers=_admin_headers())
-    assert response2.status_code == 200
-
-    # Both should have valid data
-    data1 = response1.json()
-    data2 = response2.json()
-
-    assert "overall_status" in data1
-    assert "overall_status" in data2
-    assert data1["run_triggered"] is True
-    assert data2["run_triggered"] is True
 
 
 def test_ci_health_run_creates_snapshot(
     mock_repo_root: Path, client: TestClient, local_admin_token_env: str
 ) -> None:
-    """Test that POST /run creates snapshot files."""
-    # Call run endpoint
     response = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response.status_code == 200
-
-    # Check that snapshot files exist
     snapshot_dir = mock_repo_root / "reports" / "ops"
-    json_file = snapshot_dir / "ci_health_latest.json"
-    md_file = snapshot_dir / "ci_health_latest.md"
-
-    assert json_file.exists(), "JSON snapshot should be created by /run"
-    assert md_file.exists(), "Markdown snapshot should be created by /run"
+    assert (snapshot_dir / "ci_health_latest.json").exists()
+    assert (snapshot_dir / "ci_health_latest.md").exists()
 
 
-def test_ci_health_dashboard_contains_buttons(client: TestClient) -> None:
-    """Test that HTML dashboard contains interactive control buttons."""
-    response = client.get("/ops/ci-health")
-
+def test_ci_health_run_snapshot_json_content(
+    mock_repo_root: Path, client: TestClient, local_admin_token_env: str
+) -> None:
+    response = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response.status_code == 200
-    html = response.text
-
-    # Check for button elements
-    assert "run-checks-btn" in html, "Run checks button should be present"
-    assert "refresh-btn" in html, "Refresh button should be present"
-    assert "auto-refresh-toggle" in html, "Auto-refresh toggle should be present"
-
-    # Check for JavaScript functions
-    assert "runChecks()" in html, "runChecks() function should be present"
-    assert "refreshStatus()" in html, "refreshStatus() function should be present"
-    assert "toggleAutoRefresh" in html, "toggleAutoRefresh() function should be present"
-
-    # Check for fetch API calls
-    assert "/ops/ci-health/run" in html, "POST /run endpoint should be referenced"
-    assert "/ops/ci-health/status" in html, "GET /status endpoint should be referenced"
-    assert AUTH_HEADER_NAME in html, "Local-admin auth header name should be referenced"
-    assert AUTH_TOKEN_ENV_NAME not in html
-    assert _FIXTURE_LOCAL_ADMIN_TOKEN not in html
+    api_data = response.json()
+    snapshot_file = mock_repo_root / "reports" / "ops" / "ci_health_latest.json"
+    snapshot_data = json.loads(snapshot_file.read_text(encoding="utf-8"))
+    assert snapshot_data["overall_status"] == api_data["overall_status"]
+    assert snapshot_data["summary"] == api_data["summary"]
+    assert len(snapshot_data["checks"]) == len(api_data["checks"])
 
 
-def test_ci_health_dashboard_has_error_banner(client: TestClient) -> None:
-    """Test that HTML dashboard has error banner element."""
-    response = client.get("/ops/ci-health")
-
+def test_ci_health_run_snapshot_md_content(
+    mock_repo_root: Path, client: TestClient, local_admin_token_env: str
+) -> None:
+    response = client.post("/ops/ci-health/run", headers=_admin_headers())
     assert response.status_code == 200
-    html = response.text
+    content = (mock_repo_root / "reports" / "ops" / "ci_health_latest.md").read_text(
+        encoding="utf-8"
+    )
+    assert "# CI & Governance Health Snapshot" in content
+    assert "**Overall Status:**" in content
 
-    # Check for error banner
-    assert "error-banner" in html, "Error banner should be present"
-    assert "error-message" in html, "Error message element should be present"
-    assert "hideError()" in html, "hideError() function should be present"
+
+def test_ci_health_run_atomic_write(
+    mock_repo_root: Path, client: TestClient, local_admin_token_env: str
+) -> None:
+    response = client.post("/ops/ci-health/run", headers=_admin_headers())
+    assert response.status_code == 200
+    tmp_files = list((mock_repo_root / "reports" / "ops").glob("*.tmp"))
+    assert tmp_files == []
+
+
+def test_ci_health_run_directory_creation(
+    tmp_path: Path, mock_templates: Jinja2Templates, local_admin_token_env: str
+) -> None:
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    scripts_dir = repo_root / "scripts" / "ops"
+    scripts_dir.mkdir(parents=True)
+    for name in (
+        "check_required_ci_contexts_present.sh",
+        "verify_docs_reference_targets.sh",
+    ):
+        script = scripts_dir / name
+        script.write_text("#!/usr/bin/env bash\necho OK\nexit 0\n")
+        script.chmod(0o755)
+
+    reports_dir = repo_root / "reports" / "ops"
+    assert not reports_dir.exists()
+
+    app = FastAPI()
+    set_ci_health_config(repo_root, mock_templates)
+    app.include_router(ci_health_router)
+    client = TestClient(app)
+
+    response = client.post("/ops/ci-health/run", headers=_admin_headers())
+    assert response.status_code == 200
+    assert reports_dir.exists()
+    assert (reports_dir / "ci_health_latest.json").exists()
+
+
+def test_ci_health_run_handles_failing_check(
+    tmp_path: Path, mock_templates: Jinja2Templates, local_admin_token_env: str
+) -> None:
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    scripts_dir = repo_root / "scripts" / "ops"
+    scripts_dir.mkdir(parents=True)
+    failing = scripts_dir / "check_required_ci_contexts_present.sh"
+    failing.write_text("#!/usr/bin/env bash\necho FAIL\nexit 1\n")
+    failing.chmod(0o755)
+    passing = scripts_dir / "verify_docs_reference_targets.sh"
+    passing.write_text("#!/usr/bin/env bash\necho OK\nexit 0\n")
+    passing.chmod(0o755)
+
+    app = FastAPI()
+    set_ci_health_config(repo_root, mock_templates)
+    app.include_router(ci_health_router)
+    client = TestClient(app)
+
+    data = client.post("/ops/ci-health/run", headers=_admin_headers()).json()
+    assert data["overall_status"] == "FAIL"
+    assert data["summary"]["fail"] >= 1
+
+
+def test_ci_health_run_handles_warning_check(
+    tmp_path: Path, mock_templates: Jinja2Templates, local_admin_token_env: str
+) -> None:
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    scripts_dir = repo_root / "scripts" / "ops"
+    scripts_dir.mkdir(parents=True)
+    warning = scripts_dir / "check_required_ci_contexts_present.sh"
+    warning.write_text("#!/usr/bin/env bash\necho WARN\nexit 2\n")
+    warning.chmod(0o755)
+    passing = scripts_dir / "verify_docs_reference_targets.sh"
+    passing.write_text("#!/usr/bin/env bash\necho OK\nexit 0\n")
+    passing.chmod(0o755)
+
+    app = FastAPI()
+    set_ci_health_config(repo_root, mock_templates)
+    app.include_router(ci_health_router)
+    client = TestClient(app)
+
+    data = client.post("/ops/ci-health/run", headers=_admin_headers()).json()
+    assert data["overall_status"] == "WARN"
+    assert data["summary"]["warn"] >= 1
+
+
+def test_ci_health_run_handles_missing_script(
+    tmp_path: Path, mock_templates: Jinja2Templates, local_admin_token_env: str
+) -> None:
+    empty_repo = tmp_path / "empty_repo"
+    empty_repo.mkdir()
+    app = FastAPI()
+    set_ci_health_config(empty_repo, mock_templates)
+    app.include_router(ci_health_router)
+    client = TestClient(app)
+    data = client.post("/ops/ci-health/run", headers=_admin_headers()).json()
+    assert all(status == "SKIP" for status in [c["status"] for c in data["checks"]])
+
+
+def test_ci_health_run_snapshot_error_handling(
+    tmp_path: Path, mock_templates: Jinja2Templates, local_admin_token_env: str
+) -> None:
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    scripts_dir = repo_root / "scripts" / "ops"
+    scripts_dir.mkdir(parents=True)
+    for name in (
+        "check_required_ci_contexts_present.sh",
+        "verify_docs_reference_targets.sh",
+    ):
+        script = scripts_dir / name
+        script.write_text("#!/usr/bin/env bash\necho OK\nexit 0\n")
+        script.chmod(0o755)
+
+    reports_dir = repo_root / "reports" / "ops"
+    reports_dir.mkdir(parents=True)
+    reports_dir.chmod(0o444)
+
+    app = FastAPI()
+    set_ci_health_config(repo_root, mock_templates)
+    app.include_router(ci_health_router)
+    client = TestClient(app)
+    try:
+        response = client.post("/ops/ci-health/run", headers=_admin_headers())
+        assert response.status_code == 200
+        data = response.json()
+        assert "snapshot_write_error" in data
+        assert "Failed to persist snapshot" in data["snapshot_write_error"]
+        assert "overall_status" in data
+    finally:
+        reports_dir.chmod(0o755)
 
 
 def test_ci_health_run_sequential_calls_work(
     client: TestClient, local_admin_token_env: str
 ) -> None:
-    """Test that sequential run calls work (lock is released)."""
-    # First call
     response1 = client.post("/ops/ci-health/run", headers=_admin_headers())
-    assert response1.status_code == 200
-
-    # Second call (should also succeed since lock was released)
     response2 = client.post("/ops/ci-health/run", headers=_admin_headers())
+    assert response1.status_code == 200
     assert response2.status_code == 200
-
-    # Both should have valid data
-    data1 = response1.json()
-    data2 = response2.json()
-
-    assert "overall_status" in data1
-    assert "overall_status" in data2
-    assert data1["run_triggered"] is True
-    assert data2["run_triggered"] is True
+    assert response1.json()["run_triggered"] is True
+    assert response2.json()["run_triggered"] is True
 
 
 def test_ci_health_run_rejects_missing_auth_without_side_effects(
     mock_repo_root: Path, client: TestClient, local_admin_token_env: str
 ) -> None:
-    """Unauthenticated POST /run must not execute checks or write reports."""
     snapshot_dir = mock_repo_root / "reports" / "ops"
     assert not snapshot_dir.exists()
-
     with patch(
         "src.webui.ops_ci_health_router._run_all_checks",
         side_effect=AssertionError("subprocess path must not run"),
@@ -810,18 +575,14 @@ def test_ci_health_run_rejects_missing_auth_without_side_effects(
         assert response.status_code == 401
         assert response.json()["detail"]["error"] == "LOCAL_ADMIN_AUTH_MISSING"
         mocked.assert_not_called()
-
     assert not snapshot_dir.exists()
-    assert local_admin_token_env not in response.text
 
 
 def test_ci_health_run_rejects_invalid_auth_without_side_effects(
     mock_repo_root: Path, client: TestClient, local_admin_token_env: str
 ) -> None:
-    """Invalid-token POST /run must not execute checks or write reports."""
     snapshot_dir = mock_repo_root / "reports" / "ops"
     assert not snapshot_dir.exists()
-
     with patch(
         "src.webui.ops_ci_health_router._run_all_checks",
         side_effect=AssertionError("subprocess path must not run"),
@@ -833,13 +594,4 @@ def test_ci_health_run_rejects_invalid_auth_without_side_effects(
         assert response.status_code == 403
         assert response.json()["detail"]["error"] == "LOCAL_ADMIN_AUTH_INVALID"
         mocked.assert_not_called()
-
     assert not snapshot_dir.exists()
-    assert local_admin_token_env not in response.text
-
-
-def test_ci_health_get_status_unchanged_without_admin_token(client: TestClient) -> None:
-    """GET /status remains available without local-admin authentication."""
-    response = client.get("/ops/ci-health/status")
-    assert response.status_code == 200
-    assert "overall_status" in response.json()

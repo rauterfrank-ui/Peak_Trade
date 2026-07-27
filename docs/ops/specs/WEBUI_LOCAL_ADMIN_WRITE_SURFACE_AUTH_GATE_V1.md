@@ -36,7 +36,7 @@ A second auth/redaction/scanner/ruleset owner is forbidden.
 | `POST` | `&#47;api&#47;knowledge&#47;snippets` | Mutates Knowledge snippet store |
 | `POST` | `&#47;api&#47;knowledge&#47;strategies` | Mutates Knowledge strategy store |
 
-GET/read-only routes are unchanged by this capability.
+GET/read-only routes are unchanged by this auth capability (no Local-Admin requirement on GET). CI-health GET side-effect elimination is a separate capability: `WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1`.
 
 ## Auth model
 

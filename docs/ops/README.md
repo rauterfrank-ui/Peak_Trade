@@ -16,7 +16,7 @@
 
 - **PR #3237** — Double Play WebUI **read-only** route contract aligned with the pure-stack **dashboard display map** (docs coherence): [`MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md`](specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md), [`MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md`](specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md). **Display/read-only only**; **no** live authorization; **no** order or execution authority; **no** gate bypass and **no** replacement for Master V2, Double Play execution semantics, Risk, Kill Switch, or execution gates.
 
-- **PR #3238** — Observability **read-model** contract **tests** (`tests/webui/test_market_depth_readmodel_v0.py`, `tests/webui/test_paper_shadow_summary_readmodel_v0.py`): **tests-only** fixture-backed regression/readability anchors; **not** operational readiness, telemetry guarantees, or authorization.
+- **PR #3238** — Observability **read-model** contract **tests** (`tests&#47;webui&#47;test_market_depth_readmodel_v0.py`, `tests&#47;webui&#47;test_paper_shadow_summary_readmodel_v0.py`): **tests-only** fixture-backed regression/readability anchors; **not** operational readiness, telemetry guarantees, or authorization.
 
 - **AI/KI CI cost & autonomy (v0)** — Operator policy: paid LLM **default-off** on PR/push/schedule; explicit opt-in for billable paths; InfoStream / Market Outlook / Promptfoo posture: [`AI_KI_COST_AUTONOMY_CI_POLICY_V0.md`](AI_KI_COST_AUTONOMY_CI_POLICY_V0.md).
 
@@ -42,7 +42,7 @@ Ports **8000** (Operator WebUI, `src.webui.app`) and **8010** (live.web, `src.li
 - `/ops` — Ops Cockpit (read-only, local artifacts)
 - `/ops/stage1` — Stage1 ops dashboard
 - `/ops/workflows` — Ops workflow hub
-- `/ops/ci-health` — CI & governance health panel
+- `&#47;ops&#47;ci-health` — CI & governance health panel (GET read-only snapshot; POST `&#47;ops&#47;ci-health&#47;run` auth-gated execution)
 - `/session/{session_id}` — session detail HTML (read-only)
 
 **Additional Operator WebUI nav** (read-only; labels as in the header: `templates/peak_trade_dashboard/base.html`):
