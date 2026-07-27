@@ -1,4 +1,4 @@
-"""Definition-only contract tests for CS open-gap pressure fade program v1."""
+"""Closed-program contract tests for CS open-gap pressure fade program v1."""
 
 from __future__ import annotations
 
@@ -26,39 +26,53 @@ CSRHR_BACKLOG = (
     REPO
     / "config/research/cross_sectional_short_horizon_return_reversal_hypothesis_backlog_v1.json"
 )
+NEXT = (
+    "NEW_DISTINCT_RESEARCH_PROGRAM_OR_FULL_CANONICAL_SYSTEM_BINDING_OR_OTHER_EVIDENCE_CLASS"
+    "_REQUIRES_OPERATOR_RATIFICATION"
+)
 
 
 def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_repo_program_definition_only_evaluation_unauthorized() -> None:
+def test_repo_program_closed_after_development_fail() -> None:
     report = load_and_validate_repo_program(REPO)
     assert report["valid"] is True
-    assert report["definition_only"] is True
+    assert report["program_closed"] is True
+    assert report["definition_only"] is False
     assert report["program_id"] == "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1"
-    assert report["status"] == "DEFINITION_ONLY"
+    assert report["status"] == "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
     assert report["evaluation_authorized"] is False
     assert report["development_run_count"] == 1
+    assert report["development_result"] == "DEVELOPMENT_FAIL"
+    assert report["strategy_implementation_present"] is True
     assert report["holdout_forbidden"] is True
+    assert report["next_canonical_step"] == NEXT
     assert GOVERNANCE.is_file()
 
 
-def test_causal_independence_from_closed_and_open_siblings() -> None:
+def test_causal_independence_from_closed_siblings() -> None:
     payload = _load(PROGRAM_PATH)
     independence = payload["causal_independence"]
     assert independence["independent_from_closed_volatility_regime_program"] is True
     assert independence["independent_from_closed_cross_sectional_momentum_lane"] is True
-    assert independence["independent_from_open_csrhr_program"] is True
+    assert independence["independent_from_closed_csrhr_program"] is True
     assert independence["independent_from_terminal_path_efficiency_continuation"] is True
     assert independence["independent_from_terminal_clv_pressure_continuation"] is True
     assert independence["not_a_clv_pressure_retry_or_rename"] is True
     assert independence["volume_dependency"] is False
-    assert payload["strategy_implementation_present"] is False
+    assert payload["strategy_implementation_present"] is True
+    assert payload["implementation_pr"] == 5495
+    assert payload["development_pr"] == 5496
     assert payload["runtime_policy"]["live_authorized"] is False
     assert payload["promotion_and_economic_gate_policy"]["economic_gate_open"] is False
+    assert (
+        payload["promotion_and_economic_gate_policy"]["economic_validity_offline_gate_pass"]
+        is False
+    )
     csrhr = _load(CSRHR_BACKLOG)
-    assert csrhr["status"] == "OPEN_BACKLOG"
+    assert csrhr["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert csrhr["development_run_count"] == 1
 
 
@@ -70,12 +84,16 @@ def test_fail_closed_on_authorization_mutation() -> None:
         validate_program_contract(bad)
     bad2 = copy.deepcopy(payload)
     bad2["development_run_count"] = 2
-    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ZERO"):
+    with pytest.raises(ProgramValidationError, match="DEVELOPMENT_RUN_COUNT_NOT_ONE"):
         validate_program_contract(bad2)
     bad3 = copy.deepcopy(payload)
-    bad3["status"] = "PROGRAM_CLOSED_NO_FURTHER_RESEARCH"
-    with pytest.raises(ProgramValidationError, match="STATUS_NOT_DEFINITION_ONLY"):
+    bad3["status"] = "DEFINITION_ONLY"
+    with pytest.raises(ProgramValidationError, match="STATUS_NOT_PROGRAM_CLOSED"):
         validate_program_contract(bad3)
+    bad4 = copy.deepcopy(payload)
+    bad4["next_eligible"] = "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1"
+    with pytest.raises(ProgramValidationError, match="NEXT_ELIGIBLE_NOT_NONE"):
+        validate_program_contract(bad4)
 
 
 def test_owner_map_registers_program_surface() -> None:

@@ -2,18 +2,17 @@
 
 ## Status
 
-`DEFINITION_ONLY` — new independent research-program identity after terminal
-`CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION` DEVELOPMENT_FAIL.
-Evaluation unauthorized.
+`PROGRAM_CLOSED_NO_FURTHER_RESEARCH` — closed after Open Gap Pressure Fade v1
+terminal `DEVELOPMENT_FAIL` (PR #5496), with strategy implementation present
+(PR #5495). Documentary/registry truth reconciled; no successor selected.
 
 ## Identity
 
 - Program: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1`
 - Workstream: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_WORKSTREAM_V1`
-- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEFINITION_ONLY_PREREGISTRATION_V1`
 - Family: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE`
 - Strategy identity: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1`
-- First hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1`
+- Terminal hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1`
 - Signal family: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE`
 - Target phenomenon: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE`
 
@@ -23,60 +22,51 @@ Evaluation unauthorized.
 - Validator: `src/research/cross_sectional_open_gap_pressure_fade_research_program_v1.py`
 - Lane backlog: `config/research/cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.json`
 - Measurement contract: `config/research/cross_sectional_open_gap_pressure_fade_v1_preregistered_economic_hypothesis_measurement_contract_v1.json`
-- Decision packet: `config/research/cross_sectional_open_gap_pressure_fade_program_definition_operator_decision_packet_v1.json`
-- Discovery evidence: `docs/evidence/cross_sectional_open_gap_pressure_fade_definition_discovery_v1/`
+- Implementation binding: `config/research/cross_sectional_open_gap_pressure_fade_v1_strategy_implementation_binding_v1.json`
+- Development evidence: `docs/evidence/evaluate_cross_sectional_open_gap_pressure_fade_development_v1/`
 - Lifecycle authority (sole): `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`
 
-## Causal mechanism
+## Terminal truth (immutable; verified)
 
-Mean PT1H open-gap `log(open_t &#47; close_{t-1})` ranks temporary liquidity/inventory
-pressure at bar opens. Extreme gap pressure is expected to fade cross-sectionally
-over a frozen holding cadence (`lookback_N=30`, `rebalance=5`, `lag=1`, score
-polarity negated). Isolates the discontinuous open-gap component; not CSRHR
-close-to-close reversal, not CLV close-location continuation, not path-efficiency.
+- `STRATEGY_IMPLEMENTATION_PRESENT=true` (PR #5495)
+- `DEVELOPMENT_VERDICT=DEVELOPMENT_FAIL` (PR #5496)
+- `DEVELOPMENT_RUN_COUNT=1` / `RUN_SLOT_CONSUMED=true`
+- `EVALUATION_AUTHORIZED=false` / `RETRY_AUTHORIZED=false`
+- `HOLDOUT_ACCESSED=false` / `SEALED_ACCESSED=false`
+- `PROMOTION_ELIGIBLE=false` / `RUNTIME_BOUND=false`
+- `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false`
+- `STEP_29R_ELIGIBLE=false` / `AUTONOMY_IS_NEXT=false`
 
-## Universe / data
-
-- Venue: OKX
-- Futures-only linear USDT perpetuals
-- BTC excluded; spot excluded
-- Timeframe: PT1H
-- Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
-- PIT: sealed DEVELOPMENT_ONLY panel; holdout unbound/untouched/access forbidden
-
-## Gates (definition-only)
+## Gates (closed)
 
 - `EVALUATION_AUTHORIZED=false`
 - `DEVELOPMENT_EVALUATION_AUTHORIZED=false`
-- `DEVELOPMENT_RUN_COUNT=0` / `RUNNER_START_COUNT=0` / `RUN_SLOT_CONSUMED=false`
-- `DEVELOPMENT_RUN_LIMIT=1` / `FAIL_CLOSED_NO_RETRY=true`
+- `DEVELOPMENT_RUN_COUNT=1` / `RUNNER_START_COUNT=1` / `RUN_SLOT_CONSUMED=true`
 - `HOLDOUT_FORBIDDEN=true`
 - `ECONOMIC_GATE_OPEN=false`
 - `PROMOTION_ELIGIBLE=false`
 - `LIVE&#47;ORDERS&#47;SHADOW&#47;PAPER&#47;TESTNET&#47;SCHEDULER=false`
 - Master V2 / Double-Play / risk / sizing / execution: consume-only, no mutation
-- Separate open sibling CSRHR remains `OPEN_BACKLOG` unchanged
-
-## Separate GO requirements
-
-- Strategy implementation requires a separate operator GO
-- Bounded DEVELOPMENT evaluation requires a separate operator GO
-- Holdout remains forbidden until a future explicit holdout GO (not authorized here)
-
-## Non-actions
-
-No evaluation, runner, holdout access, CLV/path-efficiency retry, CSRHR
-continue/reuse/mutation, vol-regime/CS-momentum reopen, Master V2/Double-Play/
-risk/execution/runtime mutation, orders, or promotion claims.
 
 ## Next step
 
-`AWAIT_SEPARATE_OPERATOR_GO_FOR_STRATEGY_IMPLEMENTATION_OR_BOUNDED_DEVELOPMENT_EVALUATION`
+`NEW_DISTINCT_RESEARCH_PROGRAM_OR_FULL_CANONICAL_SYSTEM_BINDING_OR_OTHER_EVIDENCE_CLASS_REQUIRES_OPERATOR_RATIFICATION`
+
+Open Gap Pressure Fade is not an implementation or DEVELOPMENT candidate.
+No new research program or evidence class is selected here.
+
+## Non-actions
+
+- No strategy reimplementation or DEVELOPMENT rerun
+- No Holdout / Sealed advance
+- No promotion / activation / automatic selection
+- No runtime / orders
+- No successor invention in this slice
 
 ---
 docs_token: DOCS_TOKEN_CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1
-STATUS: DEFINITION_ONLY
-scope: research, offline-only, non-authorizing, definition-governance
+STATUS: PROGRAM_CLOSED_NO_FURTHER_RESEARCH
+scope: research, offline-only, non-authorizing, documentary-registry-truth-reconciliation
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false

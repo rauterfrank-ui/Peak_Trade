@@ -24,7 +24,7 @@
       ]
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
-      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
+      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
       "path_prefixes": [
         "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/",
         "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1.py",
@@ -74,7 +74,7 @@
       ]
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation.",
+      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation.",
       "path_prefixes": [
         "src/research/adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
         "tests/research/test_adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
@@ -156,7 +156,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5": {
-      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0\u21921): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.",
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0→1): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v5/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v5.py",
@@ -166,7 +166,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6": {
-      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0\u21921): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0→1): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v6/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v6.py",
@@ -585,29 +585,32 @@
     },
     "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_HYPOTHESIS_BACKLOG_V1": {
       "authority_effect": "NONE",
-      "note": "Open backlog SSOT with exactly one PREREGISTERED_DEFINITION_ONLY hypothesis; evaluation unauthorized; CSRHR sibling open and mutation-forbidden; CLV and path-efficiency terminal DEVELOPMENT_FAIL no retry; closed sibling lanes unreopened.",
+      "note": "Lane closed after terminal DEVELOPMENT_FAIL; next_eligible=NONE; no Open Gap implementation candidate.",
       "path_prefixes": [
         "config/research/cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.json",
         "src/research/cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.py",
         "tests/research/test_cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.py",
-        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_HYPOTHESIS_BACKLOG_V1.md"
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_HYPOTHESIS_BACKLOG_V1.md",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_v1_progress_registry_truth_reconciliation_v1.py"
       ]
     },
     "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1": {
       "authority_effect": "NONE",
-      "note": "Definition-only SSOT for new independent CS open-gap pressure fade research program after terminal CLV DEVELOPMENT_FAIL; one preregistered hypothesis; evaluation/implementation/holdout/runtime/orders unauthorized; CSRHR remains OPEN_BACKLOG untouched; closed vol-regime/CS-momentum and terminal path-efficiency/CLV remain collision exclusions.",
+      "note": "Program closed after PR #5495 implementation + PR #5496 DEVELOPMENT_FAIL; truth-reconciled. No retry/eval/holdout/promotion/runtime.",
       "path_prefixes": [
         "config/research/cross_sectional_open_gap_pressure_fade_research_program_v1.json",
         "config/research/cross_sectional_open_gap_pressure_fade_program_definition_operator_decision_packet_v1.json",
         "src/research/cross_sectional_open_gap_pressure_fade_research_program_v1.py",
         "tests/research/test_cross_sectional_open_gap_pressure_fade_research_program_v1.py",
         "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1.md",
-        "docs/evidence/cross_sectional_open_gap_pressure_fade_definition_discovery_v1/"
+        "docs/evidence/cross_sectional_open_gap_pressure_fade_definition_discovery_v1/",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_v1_progress_registry_truth_reconciliation_v1.py",
+        "docs/evidence/open_gap_pressure_fade_v1_progress_registry_truth_reconciliation_v1/"
       ]
     },
     "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1": {
       "authority_effect": "NONE",
-      "note": "Bounded single-slot DEVELOPMENT evaluation execution for CS open-gap pressure fade v1. Exactly one authorized run. No holdout/runtime/orders. CSRHR untouched. Economic gate closed unless contract admits otherwise.",
+      "note": "Bounded DEVELOPMENT evaluation executed once (PR #5496): DEVELOPMENT_FAIL; slot consumed; retry forbidden.",
       "path_prefixes": [
         "src/research/cross_sectional_open_gap_pressure_fade_v1_development_evaluation_v1/",
         "config/research/cross_sectional_open_gap_pressure_fade_v1_development_evaluation_entry_point_binding_v1.json",
@@ -630,14 +633,15 @@
     },
     "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
       "authority_effect": "NONE",
-      "note": "Strategy-implementation-only surfaces for CS open-gap pressure fade v1 (negated mean open-gap score + single-top1 rank-intent selection + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; development_run_count remains 0; run slot unconsumed; CSRHR remains OPEN_BACKLOG untouched; no Master-V2/Double-Play mutation; not a CLV pressure retry.",
+      "note": "Strategy implementation present (PR #5495); DEVELOPMENT_FAIL slot consumed (PR #5496); evaluation unauthorized.",
       "path_prefixes": [
         "src/research/cross_sectional_open_gap_pressure_fade_v1_score_v1.py",
         "src/research/cross_sectional_open_gap_pressure_fade_v1_selection_v1.py",
         "src/research/cross_sectional_open_gap_pressure_fade_v1_strategy_implementation_binding_v1.py",
         "config/research/cross_sectional_open_gap_pressure_fade_v1_strategy_implementation_binding_v1.json",
         "tests/research/test_cross_sectional_open_gap_pressure_fade_v1_score_and_selection_v1.py",
-        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md"
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_v1_progress_registry_truth_reconciliation_v1.py"
       ]
     },
     "CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1": {
@@ -1270,7 +1274,7 @@
       ]
     },
     "VOLATILITY_COMPRESSION_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of own-instrument volatility compression\u2192expansion\u2192channel-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(20)/close percentile-rank admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VOL_BREAKOUT_COILED_SPRING explicit; development evaluation authorized; evaluation not executed; no holdout/runtime/orders.",
+      "note": "Definition-only preregistration of own-instrument volatility compression→expansion→channel-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(20)/close percentile-rank admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VOL_BREAKOUT_COILED_SPRING explicit; development evaluation authorized; evaluation not executed; no holdout/runtime/orders.",
       "path_prefixes": [
         "config/research/volatility_compression_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
         "src/research/volatility_compression_breakout_v1_hypothesis_preregistration_v1.py",
@@ -1345,7 +1349,7 @@
       ]
     },
     "VOLATILITY_DECAY_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of own-instrument volatility decay-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures after terminal VEP-V1 UNPAIRABLE_ENTRY_NO_EXIT; frozen ATR(14)/close high\u2192low decay admission + channel-breakout baseline; material difference vs VEP/VCB/coiled-spring explicit; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced only; VEP retry/exit-repair forbidden.",
+      "note": "Definition-only preregistration of own-instrument volatility decay-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures after terminal VEP-V1 UNPAIRABLE_ENTRY_NO_EXIT; frozen ATR(14)/close high→low decay admission + channel-breakout baseline; material difference vs VEP/VCB/coiled-spring explicit; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced only; VEP retry/exit-repair forbidden.",
       "path_prefixes": [
         "config/research/volatility_decay_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
         "src/research/volatility_decay_breakout_v1_hypothesis_preregistration_v1.py",
@@ -1356,7 +1360,7 @@
       ]
     },
     "VOLATILITY_DECAY_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
-      "note": "Strategy-implementation-only surfaces for VOLATILITY_DECAY_BREAKOUT_V1 (shared 20-bar price-channel core + ATR14/close percentile vol-state + high\u2192low decay admission + unconditional baseline + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced not duplicated; no Master-V2/Double-Play/risk/execution mutation; VEP/VCB retry forbidden.",
+      "note": "Strategy-implementation-only surfaces for VOLATILITY_DECAY_BREAKOUT_V1 (shared 20-bar price-channel core + ATR14/close percentile vol-state + high→low decay admission + unconditional baseline + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced not duplicated; no Master-V2/Double-Play/risk/execution mutation; VEP/VCB retry forbidden.",
       "path_prefixes": [
         "src/research/price_channel_breakout_core_v1.py",
         "src/research/volatility_decay_breakout_v1_vol_state_v1.py",
@@ -1652,6 +1656,25 @@
         "src/research/linear_evidence/offline_productive_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_rolling_linear_drift_diagnostics_v0.py",
         "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
+      ]
+    },
+    "CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_PROGRESS_REGISTRY_TRUTH_RECONCILIATION_V1": {
+      "authority_effect": "NONE",
+      "note": "Documentary/registry truth reconciliation only after PR #5495/#5496 terminal DEVELOPMENT_FAIL. No strategy/eval/runtime mutation.",
+      "path_prefixes": [
+        "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+        "config/research/cross_sectional_open_gap_pressure_fade_research_program_v1.json",
+        "config/research/cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.json",
+        "src/research/cross_sectional_open_gap_pressure_fade_research_program_v1.py",
+        "src/research/cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.py",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_research_program_v1.py",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_hypothesis_backlog_v1.py",
+        "tests/research/test_cross_sectional_open_gap_pressure_fade_v1_progress_registry_truth_reconciliation_v1.py",
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1.md",
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_HYPOTHESIS_BACKLOG_V1.md",
+        "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+        "docs/evidence/open_gap_pressure_fade_v1_progress_registry_truth_reconciliation_v1/",
+        "docs/evidence/evaluate_cross_sectional_open_gap_pressure_fade_development_v1/"
       ]
     }
   },
