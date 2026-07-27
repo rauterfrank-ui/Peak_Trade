@@ -3876,18 +3876,37 @@ RUNTIME_BRIDGE_STATE=BOUND_NOT_ACTIVATED
 
 ### Dashboard-Blocker
 
+**HISTORICAL (at STEP-29U docs ratification time):**
+`MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN` was recorded as an open
+Dashboard preparation blocker. That historical OPEN claim must not be treated
+as current Market Dashboard product truth.
+
+**CURRENT (repository-proven after PR #5548):** Market Dashboard Landscape V2
+visible intrabar continuity is `PASS` / resolved on the sealed Landscape V2
+consumer surface. Canonical current-state owner:
+`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`
+(`INTRABAR_CAPABILITY=PASS`). This supersession does **not** authorize Shadow,
+Paper, Testnet, Scheduler, Runtime, Orders, Capital, or Live.
+
 ```text
 DASHBOARD_BLOCKER_ID=MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY
-MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN
-DASHBOARD_BLOCKER_STATE=OPEN
-DASHBOARD_BLOCKER_RESOLVED=false
+# HISTORICAL_AT_STEP_29U_RATIFICATION (superseded as current product truth):
+# MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN
+# DASHBOARD_BLOCKER_STATE=OPEN
+# DASHBOARD_BLOCKER_RESOLVED=false
+# CURRENT_POST_PR_5548 (Landscape V2 consumer surface):
+MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=PASS
+DASHBOARD_BLOCKER_STATE=RESOLVED_ON_LANDSCAPE_V2
+DASHBOARD_BLOCKER_RESOLVED=true
 DASHBOARD_BLOCKER_WAIVED=false
+RESOLVED_BY_PR=5548
+CANONICAL_DASHBOARD_CLOSEOUT_OWNER=docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 ```
 
-Dieser Docs-only Semantik-Slice wird durch den offenen Dashboard-Blocker
-**nicht** blockiert. Der Blocker bleibt dennoch ein required
-Preparation-/Activation-Gate und darf durch diesen Slice weder resolved
-noch waived noch als erledigt dargestellt werden.
+Dieser Docs-only Semantik-Slice wurde durch den (damals offenen) Dashboard-Blocker
+**nicht** blockiert. Der historische OPEN-Zustand darf durch diesen Slice weder
+als weiterhin aktuell dargestellt noch als Runtime-/Activation-Freigabe gelesen
+werden.
 
 ### Next-Step Boundary
 

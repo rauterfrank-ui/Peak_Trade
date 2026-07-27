@@ -1,11 +1,11 @@
-"""Phase 4.1–4.5 + 4.6B read-only producer binding for Market Landscape V2.
+"""Phase 4.1–4.5 + 4.2B + 4.6B read-only producer binding for Market Landscape V2.
 
 Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity,
-canonical_decision evidence, double_play display projection, safety
-authority KillSwitch/boundary field projection, risk/sizing/capital field
-projection, execution/reconciliation field projection, and economic summary
-EconomicViabilityEvidenceV1 field projection.
-Regime / bull-bear / switch remain unbound.
+regime_bull_bear_switch (explicit injection; PR #5577), canonical_decision
+evidence, double_play display projection, safety authority KillSwitch/boundary
+field projection, risk/sizing/capital field projection, execution/reconciliation
+field projection, and economic summary EconomicViabilityEvidenceV1 field
+projection.
 Lives outside market_dashboard_landscape_v2 so that package stays free of
 trading/webui producer imports (architecture guard).
 
@@ -14,10 +14,12 @@ Fail-closed:
 - Producer timestamps preserved; page-assembly time is observation-only
 - Aged producer snapshots → STALE (never silently refreshed)
 - Never fabricate OHLCV, ranking, eligibility, selected instrument, scope,
-  decisions, Double Play composition, Safety/KillSwitch state, risk/sizing/
-  capital quantities, execution/reconciliation status, or economic metrics
+  regime/bull-bear/switch, decisions, Double Play composition,
+  Safety/KillSwitch state, risk/sizing/capital quantities,
+  execution/reconciliation status, or economic metrics
 - Never call scope initializers, trailing-scope runtime owners, switch owners,
-  decision producers, compose_double_play_decision, or build_dashboard_display_snapshot
+  transition_state, decision producers, compose_double_play_decision, or
+  build_dashboard_display_snapshot
 - Never instantiate KillSwitch, call trigger/recover, evaluate_offline_killswitch_boundary_v0,
   or any bind_* Safety evaluator; no live state-file autoload
 - Never call capital/risk/sizing evaluators, order-intent builders,
@@ -1803,7 +1805,7 @@ def bind_market_universe_slots(
     execution_reconciliation_fields: Mapping[str, Any] | None = None,
     economic_viability_evidence_fields: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Return Phase 4.1–4.5 + 4.6B slot overrides.
+    """Return Phase 4.1–4.5 + 4.2B + 4.6B slot overrides.
 
     ``generated_at`` is the dashboard observation/as-of clock only. It must never
     overwrite producer provenance timestamps or fabricate freshness.

@@ -1,4 +1,4 @@
-"""GET /market Landscape Shell router (Phase 4.3B canonical Double Play binding).
+"""GET /market Landscape Shell router (read-only Landscape V2).
 
 Read-only SSR surface. No POST/PUT/PATCH/DELETE. No command endpoints.
 No execution / order / runtime-activation imports.
@@ -6,12 +6,13 @@ Phase 4.1 binds market_instrument / universe_ranking fail-closed from the
 canonical Workflow Dashboard archive root (explicit → Env → platform default)
 via universe_selection_readmodel.v1 — no Env required when the default exists.
 Phase 4.2 binds dynamic_scope lifecycle identity fail-closed (injection only).
+Phase 4.2B binds regime_bull_bear_switch fail-closed (explicit injection only;
+PR #5577 — no transition_state calls).
 Phase 4.3A binds canonical_decision fail-closed (injection only).
 Phase 4.3B binds double_play display fail-closed (injection only).
 OHLCV binds from materialized okx_selected_instrument_ohlcv_readmodel.v1 only.
 Continuous refresh: GET /api/market/landscape/ohlcv rate-limits rematerialization
 via the OKX OHLCV readmodel owner; browser polls read-only JSON only.
-Regime / bull-bear / switch stay unbound.
 """
 
 from __future__ import annotations

@@ -33,7 +33,8 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         notes=(
             "Phase 4.1: identity may also project from universe_selection "
             "selected_future when CanonicalMarketContext is not persisted for dashboard; "
-            "OHLCV remains unbound."
+            "OHLCV binds separately via okx_selected_instrument_ohlcv_readmodel.v1 "
+            "(not this identity slot)."
         ),
     ),
     CanonicalOwnerRefV1(

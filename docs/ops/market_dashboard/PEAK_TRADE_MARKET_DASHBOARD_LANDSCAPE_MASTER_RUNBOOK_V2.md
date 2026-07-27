@@ -2,14 +2,15 @@
 
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
-**Status:** `FINAL_PRODUCT_STATE_CLOSEOUT_COMPLETE_OPERATOR_PRODUCT_GATE_PASS`  
-**Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`  
-**Primärbrowser:** Google Chrome / Playwright Real Chrome  
-**Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand  
-**Core-Status:** Master V2 / Double Play / Dynamic Scope / Safety bleiben unverändert  
-**Runtime-Status:** `BOUND_NOT_ACTIVATED` bleibt intentional  
-**Live-Status:** `LIVE_AUTHORIZED=false`, `ORDERS=false`, `SCHEDULER=false`, `CAPITAL_CHANGE=false`  
+**Status:** `FINAL_PRODUCT_STATE_CLOSEOUT_COMPLETE_PLUS_PR5577_REGIME_BINDING_STOP_IDLE`
+**Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`
+**Primärbrowser:** Google Chrome / Playwright Real Chrome
+**Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand
+**Core-Status:** Master V2 / Double Play / Dynamic Scope / Safety bleiben unverändert
+**Runtime-Status:** `BOUND_NOT_ACTIVATED` bleibt intentional
+**Live-Status:** `LIVE_AUTHORIZED=false`, `ORDERS=false`, `SCHEDULER=false`, `CAPITAL_CHANGE=false`
 **Hardened designation:** `CAPABILITY_PR_ONLY=true` (Micro-Slices und implizite Draft-PRs untersagt)
+**Documentation Anchor role:** documentary index only (not a second technical SSOT)
 
 ```text
 CANONICAL_REPO_PATH=docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
@@ -17,12 +18,19 @@ REPO_INGESTION_DATE=2026-07-23
 SOURCE_FILENAME=PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 RUNBOOK_VERSION=V2
 HARDENED_CAPABILITY_PR_POLICY=true
-CURRENT_MAIN_SHA=9ff632885422a92e86f9dbeda79aab160bf2346b
-LAST_MERGED_PR=5569  # docs-only Consumer/Anti-SSOT wording after product review; no product/runtime change
-LAST_MERGED_PR_VERDICT=CAPABILITY_SCOPE_REVIEW_PASS_SQUASH_MERGED
+# CURRENT_MAIN_SHA records the closeout-hygiene baseline (verified origin/main at
+# branch creation for this docs Capability PR). It is not a continuously
+# self-updating pointer; re-verify live SHA before any later mutation.
+CURRENT_MAIN_SHA=cd1fc255192519db145bd1fb3fb3bb01f517586e
+LAST_MERGED_CAPABILITY_PR=5577  # Regime/Bull-Bear/Switch read-only binding
+LAST_MERGED_DOCS_SEAL_PR=5570  # final product-state truth seal (docs-only)
+HISTORICAL_LAST_MERGED_PR_5569=9ff632885422a92e86f9dbeda79aab160bf2346b  # anti-SSOT docs; preserved
 CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
+MARKET_ROUTE_STATE=ACTIVE_200_SSR_READ_ONLY
 DASHBOARD_IMPLEMENTATION_PRESENT=true
 DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
+CURRENT_PHASE=COMPLETE
+LAST_COMPLETED_PHASE=FINAL_PRODUCT_STATE_CLOSEOUT
 RUNTIME_ACTIVATION=false
 RUNTIME_ACTIVATED=false
 TRADING_RUNTIME_NOT_ACTIVATED=true
@@ -30,24 +38,34 @@ MARKET_DASHBOARD_PHASE_5_PASS=true
 TECHNICAL_PRODUCT_GATE=true
 OPERATOR_PRODUCT_GATE=true
 DAILY_OBSERVATION_USABLE=true
+INTRABAR_CAPABILITY=PASS
+REGIME_BULL_BEAR_SWITCH_BINDING=COMPLETE
+CONFIDENCE_FIELD_STATE=NOT_AVAILABLE_NO_CANONICAL_FIELD
 PHASE_5_PASS=true
-WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE
+WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE
 OPERATOR_PRODUCT_REVIEW_STATUS=PASS
 OPERATOR_PRODUCT_REVIEW_REVIEWED_SHA=88f2241819dcc160c3ce688a9c7397e7cc8becec
 OPERATOR_PRODUCT_REVIEW_AFTER_PR=5568
 OPERATOR_PRODUCT_REVIEW_SCOPE=READ_ONLY_DAILY_OBSERVATION_SURFACE
 PR_5569_DOCS_ONLY_ANTI_SSOT=true
 PR_5569_DID_NOT_INVALIDATE_PRODUCT_REVIEW=true
-NEXT_CAPABILITY_AUTHORIZED=false  # further product candidates require separate GO
+NEXT_CAPABILITY_AUTHORIZED=false
+NEXT_CANONICAL_ACTION=STOP_IDLE
+SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_FURTHER_CAPABILITY=true
 CAPABILITY_8_DOCS_OWNERSHIP_CLOSEOUT=MERGED
 PRODUCT_APPROVAL_INFERRED=false
 LIVE_AUTHORIZED=false
 ORDERS=false
+SHADOW=false
+PAPER=false
+TESTNET=false
+SCHEDULER=false
+CAPITAL_CHANGE=false
 ```
 
-**Unterscheidung (verbindlich):** Dashboard-Implementierung auf `origin&#47;main` ist vorhanden und durch gemergte Capability-PRs belegt. Trading-Runtime bleibt nicht aktiviert; Orders/Scheduler/Capital/Live bleiben false. `IMPLEMENTATION_AUTHORIZED=false` in historischen Ratifikationsblöcken (z. B. Diagnostics 4.6C) bedeutet weiterhin „keine Autorisierung jener speziellen Bindung“, nicht „Dashboard existiert nicht“.
+**Unterscheidung (verbindlich):** Dashboard-Implementierung auf `origin&#47;main` ist vorhanden und durch gemergte Capability-PRs belegt. Trading-Runtime bleibt nicht aktiviert; Orders/Scheduler/Capital/Live bleiben false. `IMPLEMENTATION_AUTHORIZED=false` in **historischen** Ratifikationsblöcken (z. B. Diagnostics 4.6C) bedeutet weiterhin „keine Autorisierung jener speziellen Bindung“, nicht „Dashboard existiert nicht“.
 
-**Phasen-/PR-Mapping (explizit, keine stille Geschichtsrewrite):** Runbook-**PHASE 2** ≡ **PR #5499**. Runbook-**PHASE 3** Shell ≡ **PR #5501**. Spätere Capability-PRs bis **PR #5548** (authentic OKX Futures intrabar) sind gemergt; siehe § Current-State Ledger und §11.
+**Phasen-/PR-Mapping (explizit, keine stille Geschichtsrewrite):** Runbook-**PHASE 2** ≡ **PR #5499**. Runbook-**PHASE 3** Shell ≡ **PR #5501**. Spätere Capability-PRs bis **PR #5548** (authentic OKX Futures intrabar) und **PR #5577** (Regime/Bull-Bear/Switch) sind gemergt; siehe §0.1 (historical ledger post-#5548) und §11 (authoritative current closeout).
 
 ---
 
@@ -76,9 +94,13 @@ RUNTIME_ACTIVATION_FROM_DASHBOARD_WORK=false
 
 ---
 
-## 0.1 Current-State Ledger (post PR #5548)
+## 0.1 Current-State Ledger (post PR #5548) — HISTORICAL / SUPERSEDED AS SOLE CURRENT POINTER
 
-Repository-backed capability chain on `origin&#47;main` `6f38df4d833945197e8f472c09f402ee767c85ad` (squash-merge of PR #5548). PR numbers below are confirmed via GitHub merge history; do not invent additional PR IDs.
+**Label:** `HISTORICAL_REFERENCE` — frozen ledger of the post-#5548 intrabar capability seal.
+**Not** the sole current handover. Authoritative current closeout = **§11** (post-#5577 + docs hygiene).
+Later merges (#5562–#5577) are recorded in §11 `PHASE_PR_MAPPING`; this subsection is preserved without silent history rewrite.
+
+Repository-backed capability chain on `origin&#47;main` at the #5548 squash-merge tip `6f38df4d833945197e8f472c09f402ee767c85ad`. PR numbers below are confirmed via GitHub merge history; do not invent additional PR IDs.
 
 ```text
 OKX_CANONICAL_VENUE=true
@@ -328,7 +350,8 @@ Die Seite muss innerhalb weniger Sekunden beantworten:
 │ Eligibility       │                                      │ Source Health     │
 ├───────────────────┴──────────────────────────────────────┴───────────────────┤
 │ CANONICAL DECISION STRIP                                                     │
-│ Decision · Direction · Double Play · Reason Codes · Blockers · Confidence   │
+│ Decision · Direction · Double Play · Reason Codes · Blockers                 │
+│ Confidence = NOT_AVAILABLE_NO_CANONICAL_FIELD (not a required visible fact)  │
 ├────────────────────────────┬─────────────────────────────┬───────────────────┤
 │ RISK / SIZING / CAPITAL    │ EXECUTION / RECONCILIATION  │ ECONOMIC STATUS   │
 │ read-only projection       │ read-only projection        │ evidence only     │
@@ -338,6 +361,8 @@ Die Seite muss innerhalb weniger Sekunden beantworten:
 │ ENGINEERING DRAWER: provenance · schemas · digests · raw codes · diagnostics│
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Confidence (fail-closed):** `CanonicalTradingDecisionEvidenceV1` has **no** proven `confidence` field. Do **not** invent a confidence producer, projection, placeholder authority, or second truth. Target-UI sketches that once listed Confidence are historical aspiration only; current required visible facts exclude Confidence (`CONFIDENCE_FIELD_STATE=NOT_AVAILABLE_NO_CANONICAL_FIELD`). Future binding requires a separately ratified canonical producer + Operator-GO.
 
 ### 3.3 Produktregeln
 
@@ -1723,6 +1748,7 @@ HARD_STOP=true
 ## 11. Übergabeprotokoll für neue Chats
 
 Diesen Abschnitt nach jedem gemergten Dashboard-Capability-PR aktualisieren.
+**Authoritative current closeout** for MARKET_DASHBOARD_LANDSCAPE_V2 (docs hygiene after PR #5577).
 
 ```text
 PROJECT=PEAK_TRADE
@@ -1731,21 +1757,44 @@ WORKSTREAM=MARKET_DASHBOARD_LANDSCAPE_V2
 CANONICAL_PRINCIPLE=
 Market Dashboard is a pure read-only consumer with zero trading,
 runtime, scheduler, promotion, capital or execution authority.
+Documentation Anchor = documentary index only (not a second technical SSOT).
 
-CURRENT_MAIN_SHA=9ff632885422a92e86f9dbeda79aab160bf2346b
-LAST_MERGED_PR=5569
-OPEN_PR=NONE
-CURRENT_PHASE=FINAL_PRODUCT_STATE_CLOSEOUT_COMPLETE
-LAST_COMPLETED_TECHNICAL_CAPABILITY=CAPABILITY_7_PRODUCT_MATURITY_PR_5564_PLUS_REVIEW_SERVER_IDENTITY_PR_5565
-LAST_PRODUCT_CAPABILITY=PR_5568_DAILY_OKX_ARCHIVE_OBSERVATION
+DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER
+CURRENT_PHASE=COMPLETE
+LAST_COMPLETED_PHASE=FINAL_PRODUCT_STATE_CLOSEOUT
+LAST_MERGED_CAPABILITY_PR=5577
+# Closeout-hygiene baseline SHA (verified origin/main at docs/market-dashboard-v2-final-closeout-hygiene branch creation). Not a continuously self-updating pointer.
+CURRENT_MAIN_SHA=cd1fc255192519db145bd1fb3fb3bb01f517586e
+OPEN_PR=5581
+MARKET_ROUTE_STATE=ACTIVE_200_SSR_READ_ONLY
+CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
+
+CORE_ARCHITECTURE_VALID=true
+CORE_CHANGE_REQUIRED=false
+RUNTIME_CHANGE_REQUIRED=false
+RUNTIME_BOUND_NOT_ACTIVATED=true
+
+OPERATOR_PRODUCT_GATE=PASS
 OPERATOR_PRODUCT_REVIEW_REVIEWED_SHA=88f2241819dcc160c3ce688a9c7397e7cc8becec
 OPERATOR_PRODUCT_REVIEW_AFTER_PR=5568
-PR_5569_DOCS_ONLY_ANTI_SSOT=true
+DAILY_OBSERVATION_USABLE=true
+INTRABAR_CAPABILITY=PASS
+INTRABAR_CAPABILITY_MERGED=true
+REGIME_BULL_BEAR_SWITCH_BINDING=COMPLETE
+BOUND_REGIME_BULL_BEAR_SWITCH=true
+REGIME_BULL_BEAR_SWITCH_BINDING_MODE=EXPLICIT_INJECTION_READ_ONLY
+
+CONFIDENCE_FIELD_STATE=NOT_AVAILABLE_NO_CANONICAL_FIELD
+NEXT_CAPABILITY_AUTHORIZED=false
+NEXT_CANONICAL_ACTION=STOP_IDLE
+SEPARATE_OPERATOR_GO_REQUIRED_FOR_ANY_FURTHER_CAPABILITY=true
+WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE
+
 MARKET_DASHBOARD_PHASE_5_PASS=true
 TECHNICAL_PRODUCT_GATE=true
-OPERATOR_PRODUCT_GATE=true
-DAILY_OBSERVATION_USABLE=true
-WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE
+PR_5569_DOCS_ONLY_ANTI_SSOT=true
+PR_5570_FINAL_PRODUCT_SEAL_DOCS=true
+PR_5577_REGIME_BULL_BEAR_SWITCH_BINDING=true
 
 MARKET_DASHBOARD_CANONICAL_CONSUMER=true
 OKX_CANONICAL_VENUE=true
@@ -1754,11 +1803,11 @@ BTC_EXCLUDED=true
 SPOT_EXCLUDED=true
 CANONICAL_OHLCV_BOUND=true
 CONTINUOUS_OHLCV_REFRESH=true
-INTRABAR_CAPABILITY_MERGED=true
 VALID_INTRABAR_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T214037Z
 INVALID_HISTORICAL_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T211859Z
 EVIDENCE_MANIFEST_SHA256=1cd1dfff96306087e19d5ca5a235664ddcfbef53b3e8740b4d301f0c5cffe085
 CAPABILITY_7_EVIDENCE_PATH=evidence/market_dashboard_v2/capability7_product_maturity/
+REGIME_BINDING_EVIDENCE_PATH=evidence/market_dashboard_v2/regime_bull_bear_switch_binding/
 
 CANONICAL_ROUTE=GET_/market
 CANONICAL_TEMPLATE=templates/peak_trade_dashboard/market_landscape_v2.html
@@ -1771,14 +1820,10 @@ CANONICAL_SHELL_ROUTER=src/webui/market_dashboard_landscape_shell_router_v2.py
 CANONICAL_PRODUCER_BINDING=src/webui/market_dashboard_landscape_producer_binding_v2.py
 LEGACY_PRODUCT_TOMBSTONE=docs/webui/MARKET_DASHBOARD_REMOVED.md
 
-CORE_ARCHITECTURE_VALID=true
-CORE_CHANGE_REQUIRED=false
-RUNTIME_CHANGE_REQUIRED=false
 MASTER_V2_CANONICAL=true
 DOUBLE_PLAY_CANONICAL=true
 DYNAMIC_SCOPE_CANONICAL=true
 SAFETY_AUTHORITY_CANONICAL=true
-RUNTIME_BOUND_NOT_ACTIVATED=true
 LIVE_AUTHORIZED=false
 ORDERS=false
 SCHEDULER=false
@@ -1786,6 +1831,7 @@ CAPITAL_CHANGE=false
 SHADOW=false
 PAPER=false
 TESTNET=false
+RUNTIME_ACTIVATION=false
 
 TARGET_UI=
 One coherent professional Landscape market workspace.
@@ -1793,13 +1839,14 @@ Primary chart above the fold with authentic OKX Futures OHLCV + intrabar tip.
 Decision / Why / Blocker immediately visible.
 No governance card wall.
 No order or activation controls.
+Confidence is NOT a required visible fact (no canonical field).
 
-CURRENT_MARKET_ROUTE=GET_/market_LANDSCAPE_V2_OKX_FUTURES_OHLCV_INTRABAR_200
 CURRENT_BOUND_SOURCES=[
   "OKX public market-data producer path (governed; futures-only)",
   "universe_selection + selected instrument identity",
   "canonical OHLCV snapshot + continuous refresh + intrabar open-candle (MODEL_A)",
   "dynamic_scope lifecycle projection",
+  "regime_bull_bear_switch explicit injection projection (PR #5577)",
   "canonical_decision + double_play display projection",
   "safety_authority KillSwitch projection",
   "risk_sizing_capital explicit injection projection",
@@ -1820,11 +1867,11 @@ NOT_BOUND_SOURCES=[
   "autonomy_stage (Phase 4.7 OPTION_D KEEP_NOT_BOUND)",
   "event_decision_timeline (Phase 5 TASK_4 DEFERRED; honest NOT_BOUND placeholder)"
 ]
-MISSING_READ_PROJECTIONS=[
-  "confidence Landscape binding"
-]
-BOUND_REGIME_BULL_BEAR_SWITCH=true
-REGIME_BULL_BEAR_SWITCH_BINDING=EXPLICIT_INJECTION_READ_ONLY
+MISSING_READ_PROJECTIONS=[]
+CONFIDENCE_NOT_A_MISSING_PROJECTION=true
+# Confidence is NOT listed as a missing read projection: CanonicalTradingDecisionEvidenceV1
+# has no confidence field. State = NOT_AVAILABLE_NO_CANONICAL_FIELD (future-only pending
+# separately ratified producer + Operator-GO). Do not invent a second truth.
 MISSING_PRODUCERS=[
   "event_decision_timeline durable ordered transition/decision history (no canonical producer; Phase 5 TASK_4 deferred)"
 ]
@@ -1837,7 +1884,8 @@ KNOWN_INTENTIONAL_LOCKS=[
   "Phase 4.7A/4.7B autonomy_stage OPTION_D KEEP_NOT_BOUND",
   "Phase 5 TASK_4 event_decision_timeline B_EXPLICIT_PHASE_5_DEFERRAL",
   "PR #5548 invalid historical evidence 2026-07-25T211859Z must not be promoted",
-  "Operator Product Gate PASS recorded from review SHA 88f2241819dcc160c3ce688a9c7397e7cc8becec; do not re-infer from technical/Chrome evidence alone"
+  "Operator Product Gate PASS recorded from review SHA 88f2241819dcc160c3ce688a9c7397e7cc8becec; do not re-infer from technical/Chrome evidence alone",
+  "CONFIDENCE_FIELD_STATE=NOT_AVAILABLE_NO_CANONICAL_FIELD"
 ]
 TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED
 TASK_4_PHASE_5_BLOCKING=false
@@ -1870,18 +1918,24 @@ PHASE_PR_MAPPING=[
   "Cap7 review-server macOS path identity == PR #5565 (merge SHA 33811dc5162b6fff6bb778204024f1d6d4c1b4b5)",
   "Capability 8 docs/ownership closeout == PR #5566 (merge SHA 02e4081498ee926fa6a3740d65d67be7de4a0c56; docs/ownership closeout only; not product PASS)",
   "Daily OKX archive observation == PR #5568 (merge SHA 88f2241819dcc160c3ce688a9c7397e7cc8becec; Operator Product Review PASS on this SHA)",
-  "Consumer/Anti-SSOT wording == PR #5569 (merge SHA 9ff632885422a92e86f9dbeda79aab160bf2346b; docs-only; did not invalidate product review)"
+  "Consumer/Anti-SSOT wording == PR #5569 (merge SHA 9ff632885422a92e86f9dbeda79aab160bf2346b; docs-only; did not invalidate product review)",
+  "Final product-state truth seal == PR #5570 (docs-only)",
+  "Regime/Bull-Bear/Switch binding == PR #5577 (merge SHA 9573c229fe886356fcda0a409fd68d1987cc66da)",
+  "Final closeout docs hygiene (this Capability PR) == docs/market-dashboard-v2-final-closeout-hygiene"
 ]
 
-NEXT_CANONICAL_ACTION=RETURN_TO_OPERATOR_FOR_SEPARATELY_AUTHORIZED_WORKSTREAM
-WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE
+NEXT_CANONICAL_ACTION=STOP_IDLE
+WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE
 Operator Product Review PASS is recorded on reviewed SHA
 `88f2241819dcc160c3ce688a9c7397e7cc8becec` (post PR #5568). PR #5569
 (`9ff632885422a92e86f9dbeda79aab160bf2346b`) is subsequent docs-only
 Consumer / Anti-SSOT wording and did not change runtime or product behavior.
+PR #5577 bound regime/bull-bear/switch read-only (explicit injection).
+This docs-hygiene Capability PR reconciles Class-C drift only.
 No automatic next Dashboard capability. Do not authorize Runtime, Orders,
 Scheduler, Capital, Promotion, Shadow, Paper, Testnet or Live from this seal.
-Missing Decision/Risk/Safety producers remain fail-closed / NOT_BOUND where unbound.
+Missing Decision/Risk/Safety durable auto-loads remain fail-closed MISSING_SOURCE
+without injection; intentional NOT_BOUND slots remain NOT_BOUND.
 
 SEPARATE_GO_REQUIRED_FOR=[
   "Core changes",
@@ -1897,7 +1951,8 @@ SEPARATE_GO_REQUIRED_FOR=[
   "Any new Dashboard capability beyond sealed daily observation truth",
   "diagnostics_summary redesign (beyond OPTION_A)",
   "autonomy_stage aggregate (beyond OPTION_D)",
-  "event_decision_timeline durable producer + read-only projection"
+  "event_decision_timeline durable producer + read-only projection",
+  "confidence Landscape binding (requires separately ratified canonical confidence field/producer first)"
 ]
 ```
 
