@@ -40,15 +40,17 @@ EVIDENCE_GENERATED_AT = STAMP
 EVIDENCE_GENERATED_AT_ISO = "2026-07-23T18:00:00Z"
 
 
-def _render_landscape_html(*, safety_authority_fields: dict | None = None) -> str:
+def _render_landscape_html(
+    *,
+    safety_authority_fields: dict | None = None,
+    regime_bull_bear_switch_fields: dict | None = None,
+) -> str:
     """Render Landscape HTML with a fixed generated_at for deterministic evidence."""
-    if safety_authority_fields is None:
-        slots = bind_market_universe_slots(generated_at=EVIDENCE_GENERATED_AT)
-    else:
-        slots = bind_market_universe_slots(
-            generated_at=EVIDENCE_GENERATED_AT,
-            safety_authority_fields=safety_authority_fields,
-        )
+    slots = bind_market_universe_slots(
+        generated_at=EVIDENCE_GENERATED_AT,
+        safety_authority_fields=safety_authority_fields,
+        regime_bull_bear_switch_fields=regime_bull_bear_switch_fields,
+    )
     page = MarketDashboardReadServiceV1().load_page_snapshot(
         generated_at=EVIDENCE_GENERATED_AT,
         slot_overrides=slots,
@@ -196,7 +198,7 @@ def _assert_engineering_drawer_completeness(page) -> dict[str, object]:  # type:
 
     slots = page.locator("[data-mdl-engineering-slots='true']")
     assert slots.count() == 1
-    assert page.locator("[data-mdl-engineering-slot]").count() == 11
+    assert page.locator("[data-mdl-engineering-slot]").count() == 12
 
     decision = page.locator('[data-mdl-engineering-slot="canonical_decision"]')
     assert decision.count() == 1
@@ -239,7 +241,7 @@ def _assert_engineering_drawer_completeness(page) -> dict[str, object]:  # type:
     assert engineering.evaluate("el => el.open") is False
 
     return {
-        "slot_count": 11,
+        "slot_count": 12,
         "canonical_decision_availability": "MISSING_SOURCE",
         "schema_id": schema_id,
         "source_reference": source_ref,

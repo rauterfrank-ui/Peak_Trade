@@ -17,6 +17,7 @@ from .contracts import (
     EconomicSummarySnapshotV1,
     ExecutionReconciliationSnapshotV1,
     MarketInstrumentSnapshotV1,
+    RegimeBullBearSwitchSnapshotV1,
     RiskSizingCapitalSnapshotV1,
     SafetyAuthoritySnapshotV1,
     UniverseRankingSnapshotV1,
@@ -181,6 +182,40 @@ def unavailable_dynamic_scope(
         scope_state=None,
         current_scope_ref=None,
         next_scope_ref=None,
+        reason_codes=(reason,),
+    )
+
+
+def unavailable_regime_bull_bear_switch(
+    *,
+    availability: Availability,
+    generated_at: datetime,
+    reason: str,
+) -> RegimeBullBearSwitchSnapshotV1:
+    provenance = build_unavailable_provenance(
+        slot="regime_bull_bear_switch",
+        availability=availability,
+        generated_at=generated_at,
+        reason=reason,
+    )
+    return RegimeBullBearSwitchSnapshotV1(
+        schema_id=provenance.schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=build_unavailable_freshness(
+            observed_at=generated_at,
+            availability=availability,
+            stale_reason=reason if availability is Availability.STALE else None,
+        ),
+        availability=availability,
+        regime_id=None,
+        regime_status=None,
+        side_state=None,
+        previous_side_state=None,
+        next_side_state=None,
+        scope_event_type=None,
+        transition_allowed=None,
+        transition_reason_code=None,
         reason_codes=(reason,),
     )
 
@@ -445,6 +480,7 @@ UNAVAILABLE_BUILDERS: dict[str, Callable[..., object]] = {
     "market_instrument": unavailable_market_instrument,
     "universe_ranking": unavailable_universe_ranking,
     "dynamic_scope": unavailable_dynamic_scope,
+    "regime_bull_bear_switch": unavailable_regime_bull_bear_switch,
     "canonical_decision": unavailable_canonical_decision,
     "double_play": unavailable_double_play,
     "risk_sizing_capital": unavailable_risk_sizing_capital,

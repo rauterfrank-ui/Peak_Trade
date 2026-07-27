@@ -15,6 +15,7 @@ from .contracts import (
     EconomicSummarySnapshotV1,
     ExecutionReconciliationSnapshotV1,
     MarketInstrumentSnapshotV1,
+    RegimeBullBearSwitchSnapshotV1,
     RiskSizingCapitalSnapshotV1,
     SafetyAuthoritySnapshotV1,
     UniverseRankingSnapshotV1,
@@ -219,6 +220,86 @@ def project_dynamic_scope_snapshot_v1(
         scope_state=str(scope_state),
         current_scope_ref=str(current_scope_ref),
         next_scope_ref=None if next_scope_ref is None else str(next_scope_ref),
+        reason_codes=tuple(str(code) for code in reason_codes),
+    )
+
+
+def project_regime_bull_bear_switch_snapshot_v1(
+    *,
+    regime_id: str,
+    regime_status: str,
+    side_state: str,
+    previous_side_state: str,
+    next_side_state: str,
+    scope_event_type: str,
+    transition_allowed: bool,
+    transition_reason_code: str,
+    reason_codes: Sequence[str],
+    generated_at: datetime,
+    effective_at: datetime | None,
+    source_reference: str | None,
+    evidence_digest: str | None = None,
+    git_sha: str | None = None,
+    producer_module: str = "trading.master_v2.double_play_state",
+    source_kind: str = "regime_bull_bear_switch_projection",
+    availability: Availability = Availability.AVAILABLE,
+    max_age_seconds: int | None = None,
+    is_stale: bool = False,
+    stale_reason: str | None = None,
+) -> RegimeBullBearSwitchSnapshotV1:
+    """Project already-computed Regime / SideState / Switch evidence fields.
+
+    Forbidden: calling transition_state, deriving SideState/ActiveSide, inventing
+    regime_id, or synthesizing across contradictory producers.
+    generated_at/effective_at must be producer timestamps — never page-assembly time.
+    """
+    if not regime_id or not regime_status or not side_state:
+        raise ValueError("regime_id, regime_status, and side_state required")
+    if not previous_side_state or not next_side_state or not scope_event_type:
+        raise ValueError("switch identity fields required for AVAILABLE/STALE")
+    if not transition_reason_code:
+        raise ValueError("transition_reason_code required for AVAILABLE/STALE")
+    if not isinstance(transition_allowed, bool):
+        raise TypeError("transition_allowed must be bool")
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        raise ValueError("project_regime_bull_bear_switch only emits AVAILABLE or STALE")
+    if availability is Availability.AVAILABLE and is_stale:
+        raise ValueError("AVAILABLE cannot be stale")
+    if availability is Availability.STALE and not is_stale:
+        raise ValueError("STALE requires is_stale=True")
+    schema_id = f"{SCHEMA_FAMILY}.regime_bull_bear_switch.{SCHEMA_VERSION}"
+    provenance = SnapshotProvenanceV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        producer_module=producer_module,
+        generated_at=generated_at,
+        effective_at=effective_at,
+        source_kind=source_kind,
+        source_reference=source_reference,
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        availability=availability,
+    )
+    freshness = FreshnessV1(
+        observed_at=generated_at,
+        max_age_seconds=max_age_seconds,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+    return RegimeBullBearSwitchSnapshotV1(
+        schema_id=schema_id,
+        schema_version=SCHEMA_VERSION,
+        provenance=provenance,
+        freshness=freshness,
+        availability=availability,
+        regime_id=str(regime_id),
+        regime_status=str(regime_status),
+        side_state=str(side_state),
+        previous_side_state=str(previous_side_state),
+        next_side_state=str(next_side_state),
+        scope_event_type=str(scope_event_type),
+        transition_allowed=bool(transition_allowed),
+        transition_reason_code=str(transition_reason_code),
         reason_codes=tuple(str(code) for code in reason_codes),
     )
 

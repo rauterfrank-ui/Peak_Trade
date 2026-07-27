@@ -39,6 +39,7 @@ from .market_dashboard_landscape_v2.projections import (
     project_canonical_decision_snapshot_v1,
     project_double_play_snapshot_v1,
     project_dynamic_scope_snapshot_v1,
+    project_regime_bull_bear_switch_snapshot_v1,
     project_economic_summary_snapshot_v1,
     project_execution_reconciliation_snapshot_v1,
     project_market_instrument_snapshot_v1,
@@ -50,6 +51,7 @@ from .market_dashboard_landscape_v2.unavailable import (
     unavailable_canonical_decision,
     unavailable_double_play,
     unavailable_dynamic_scope,
+    unavailable_regime_bull_bear_switch,
     unavailable_economic_summary,
     unavailable_execution_reconciliation,
     unavailable_market_instrument,
@@ -73,6 +75,7 @@ from .workflow_dashboard_readmodel_v1.universe_selection_reader_v1 import (
 # Declared here as the dashboard consumer policy; never invent freshness via now().
 LANDSCAPE_PHASE41_MAX_AGE_SECONDS = 86_400
 LANDSCAPE_PHASE42_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
+LANDSCAPE_PHASE42B_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE43A_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE43B_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 LANDSCAPE_PHASE44A_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
@@ -82,6 +85,10 @@ LANDSCAPE_PHASE46B_MAX_AGE_SECONDS = LANDSCAPE_PHASE41_MAX_AGE_SECONDS
 
 REASON_MARKET_CONTEXT_NOT_PERSISTED = "CANONICAL_MARKET_CONTEXT_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_SCOPE_NOT_PERSISTED = "CANONICAL_SCOPE_SNAPSHOT_NOT_PERSISTED_FOR_DASHBOARD"
+REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED = (
+    "CANONICAL_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED_FOR_DASHBOARD"
+)
+REASON_REGIME_SIDE_SWITCH_CONTRADICTION = "REGIME_BULL_BEAR_SWITCH_FIELD_CONTRADICTION"
 REASON_DECISION_NOT_PERSISTED = "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_DOUBLE_PLAY_NOT_PERSISTED = "CANONICAL_DOUBLE_PLAY_DISPLAY_NOT_PERSISTED_FOR_DASHBOARD"
 REASON_SAFETY_NOT_PERSISTED = "CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD"
@@ -102,6 +109,28 @@ REASON_PRODUCER_DATA_STALE = "PRODUCER_DATA_EXCEEDED_LANDSCAPE_MAX_AGE"
 
 SCOPE_PRODUCER_MODULE = "trading.master_v2.canonical_scope_initialization_v1"
 SCOPE_SOURCE_KIND = "canonical_scope_snapshot"
+REGIME_BULL_BEAR_SWITCH_PRODUCER_MODULE = "trading.master_v2.double_play_state"
+REGIME_BULL_BEAR_SWITCH_SOURCE_KIND = "regime_bull_bear_switch_projection"
+REGIME_OWNER_MODULE = "trading.master_v2.suitability_binding_v1"
+BULL_BEAR_OWNER_MODULE = "trading.master_v2.double_play_state"
+SWITCH_OWNER_MODULE = "trading.master_v2.double_play_state"
+SWITCH_EVIDENCE_MODULE = "trading.master_v2.integrated_offline_trading_logic_replay_v1"
+KNOWN_SIDE_STATES = frozenset(
+    {
+        "neutral_observe",
+        "long_armed",
+        "long_active",
+        "long_blocked",
+        "short_armed",
+        "short_active",
+        "short_blocked",
+        "switch_long_to_short_pending",
+        "switch_short_to_long_pending",
+        "chop_guard_block",
+        "kill_all",
+    }
+)
+KNOWN_REGIME_STATUSES = frozenset({"known", "unknown"})
 DECISION_PRODUCER_MODULE = "trading.master_v2.canonical_trading_decision_evidence_v1"
 DECISION_SOURCE_KIND = "canonical_trading_decision_evidence"
 DECISION_EVIDENCE_SCHEMA_VERSION = "canonical_trading_decision_evidence_v1"
@@ -133,6 +162,7 @@ PHASE_4_1_BOUND_SLOTS: tuple[str, ...] = (
     "universe_ranking",
 )
 PHASE_4_2_BOUND_SLOTS: tuple[str, ...] = ("dynamic_scope",)
+PHASE_4_2B_BOUND_SLOTS: tuple[str, ...] = ("regime_bull_bear_switch",)
 PHASE_4_3A_BOUND_SLOTS: tuple[str, ...] = ("canonical_decision",)
 PHASE_4_3B_BOUND_SLOTS: tuple[str, ...] = ("double_play",)
 PHASE_4_4A_BOUND_SLOTS: tuple[str, ...] = ("safety_authority",)
@@ -623,6 +653,193 @@ def _bind_dynamic_scope_lifecycle(
         source_kind=SCOPE_SOURCE_KIND,
         availability=availability,
         max_age_seconds=LANDSCAPE_PHASE42_MAX_AGE_SECONDS,
+        is_stale=is_stale,
+        stale_reason=stale_reason,
+    )
+
+
+def _bind_regime_bull_bear_switch(
+    *,
+    as_of: datetime,
+    git_sha: str | None,
+    regime_bull_bear_switch_fields: Mapping[str, Any] | None,
+) -> Any:
+    """Project injected Regime / SideState / Switch evidence fields.
+
+    No durable dashboard readmodel. Without injection → MISSING_SOURCE.
+    Never calls transition_state, suitability evaluators, or invents SideState.
+    """
+    if regime_bull_bear_switch_fields is None:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED,
+        )
+
+    schema_version = regime_bull_bear_switch_fields.get("schema_version")
+    if schema_version is not None and str(schema_version) != LANDSCAPE_PROJECTION_SCHEMA_VERSION:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_SCHEMA_MISMATCH,
+        )
+
+    required = (
+        "regime_id",
+        "regime_status",
+        "side_state",
+        "previous_side_state",
+        "next_side_state",
+        "scope_event_type",
+        "transition_allowed",
+        "transition_reason_code",
+    )
+    missing = [key for key in required if key not in regime_bull_bear_switch_fields]
+    if missing:
+        raise KeyError(f"regime_bull_bear_switch_fields missing required keys: {missing}")
+
+    regime_id = _enum_or_str(regime_bull_bear_switch_fields["regime_id"]).strip()
+    regime_status = _enum_or_str(regime_bull_bear_switch_fields["regime_status"]).strip()
+    side_state = _enum_or_str(regime_bull_bear_switch_fields["side_state"]).strip()
+    previous_side_state = _enum_or_str(
+        regime_bull_bear_switch_fields["previous_side_state"]
+    ).strip()
+    next_side_state = _enum_or_str(regime_bull_bear_switch_fields["next_side_state"]).strip()
+    scope_event_type = _enum_or_str(regime_bull_bear_switch_fields["scope_event_type"]).strip()
+    transition_reason_code = _enum_or_str(
+        regime_bull_bear_switch_fields["transition_reason_code"]
+    ).strip()
+    transition_allowed_raw = regime_bull_bear_switch_fields["transition_allowed"]
+
+    if (
+        not regime_id
+        or not regime_status
+        or not side_state
+        or not previous_side_state
+        or not next_side_state
+        or not scope_event_type
+        or not transition_reason_code
+    ):
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_INVALID_PROVENANCE,
+        )
+    if not isinstance(transition_allowed_raw, bool):
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_INVALID_PROVENANCE,
+        )
+    if regime_status not in KNOWN_REGIME_STATUSES:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_SCHEMA_MISMATCH,
+        )
+    if side_state not in KNOWN_SIDE_STATES:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_SCHEMA_MISMATCH,
+        )
+    if previous_side_state not in KNOWN_SIDE_STATES or next_side_state not in KNOWN_SIDE_STATES:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_SCHEMA_MISMATCH,
+        )
+    # Fail-closed: current bull/bear side must match switch next_side_state.
+    if side_state != next_side_state:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_REGIME_SIDE_SWITCH_CONTRADICTION,
+        )
+
+    generated_at_raw = regime_bull_bear_switch_fields.get("generated_at")
+    producer_at, gen_error = _resolve_injected_aware_timestamp(generated_at_raw)
+    if gen_error is not None:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=gen_error,
+        )
+    if producer_at is None:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.MISSING_SOURCE,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_MISSING,
+        )
+
+    effective_at: datetime | None = None
+    if "effective_at" in regime_bull_bear_switch_fields:
+        effective_at, eff_error = _resolve_injected_aware_timestamp(
+            regime_bull_bear_switch_fields.get("effective_at")
+        )
+        if eff_error is not None:
+            return unavailable_regime_bull_bear_switch(
+                availability=Availability.INVALID,
+                generated_at=as_of,
+                reason=eff_error,
+            )
+
+    try:
+        availability, is_stale, stale_reason = classify_producer_freshness(
+            producer_at=producer_at,
+            as_of=as_of,
+            max_age_seconds=LANDSCAPE_PHASE42B_MAX_AGE_SECONDS,
+        )
+    except ValueError:
+        return unavailable_regime_bull_bear_switch(
+            availability=Availability.INVALID,
+            generated_at=as_of,
+            reason=REASON_PRODUCER_TIMESTAMP_INVALID,
+        )
+
+    raw_codes = regime_bull_bear_switch_fields.get("reason_codes", ()) or ()
+    reason_codes = tuple(str(code) for code in raw_codes)
+
+    evidence_digest = regime_bull_bear_switch_fields.get("evidence_digest")
+    if evidence_digest is None:
+        evidence_digest = regime_bull_bear_switch_fields.get("semantic_digest")
+    if evidence_digest is not None:
+        evidence_digest = str(evidence_digest)
+        if not evidence_digest:
+            evidence_digest = None
+
+    producer_module = str(
+        regime_bull_bear_switch_fields.get(
+            "producer_module", REGIME_BULL_BEAR_SWITCH_PRODUCER_MODULE
+        )
+    )
+    source_kind = str(
+        regime_bull_bear_switch_fields.get("source_kind", REGIME_BULL_BEAR_SWITCH_SOURCE_KIND)
+    )
+
+    return project_regime_bull_bear_switch_snapshot_v1(
+        regime_id=regime_id,
+        regime_status=regime_status,
+        side_state=side_state,
+        previous_side_state=previous_side_state,
+        next_side_state=next_side_state,
+        scope_event_type=scope_event_type,
+        transition_allowed=bool(transition_allowed_raw),
+        transition_reason_code=transition_reason_code,
+        reason_codes=reason_codes,
+        generated_at=producer_at,
+        effective_at=effective_at,
+        source_reference=(
+            None
+            if regime_bull_bear_switch_fields.get("source_reference") is None
+            else str(regime_bull_bear_switch_fields.get("source_reference"))
+        ),
+        evidence_digest=evidence_digest,
+        git_sha=git_sha,
+        producer_module=producer_module,
+        source_kind=source_kind,
+        availability=availability,
+        max_age_seconds=LANDSCAPE_PHASE42B_MAX_AGE_SECONDS,
         is_stale=is_stale,
         stale_reason=stale_reason,
     )
@@ -1578,6 +1795,7 @@ def bind_market_universe_slots(
     git_sha: str | None = None,
     market_instrument_fields: Mapping[str, Any] | None = None,
     dynamic_scope_fields: Mapping[str, Any] | None = None,
+    regime_bull_bear_switch_fields: Mapping[str, Any] | None = None,
     canonical_decision_fields: Mapping[str, Any] | None = None,
     double_play_fields: Mapping[str, Any] | None = None,
     safety_authority_fields: Mapping[str, Any] | None = None,
@@ -1597,6 +1815,11 @@ def bind_market_universe_slots(
     dynamic_scope_fields accepts already-computed CanonicalScopeSnapshotV1-
     compatible lifecycle identity fields plus producer wall-clock timestamps.
     Without injection, dynamic_scope is MISSING_SOURCE (no durable readmodel).
+
+    regime_bull_bear_switch_fields accepts already-computed Regime /
+    SideState / StateSwitchEvidenceV1-compatible fields plus producer
+    wall-clock timestamps. Without injection, regime_bull_bear_switch is
+    MISSING_SOURCE. Never calls transition_state or invents SideState.
 
     canonical_decision_fields accepts already-computed
     CanonicalTradingDecisionEvidenceV1-compatible fields plus producer
@@ -1643,6 +1866,11 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         dynamic_scope_fields=dynamic_scope_fields,
+    )
+    regime_bbs = _bind_regime_bull_bear_switch(
+        as_of=as_of,
+        git_sha=git_sha,
+        regime_bull_bear_switch_fields=regime_bull_bear_switch_fields,
     )
     decision = _bind_canonical_decision(
         as_of=as_of,
@@ -1807,6 +2035,7 @@ def bind_market_universe_slots(
         "market_instrument": market,
         "universe_ranking": universe,
         "dynamic_scope": scope,
+        "regime_bull_bear_switch": regime_bbs,
         "canonical_decision": decision,
         "double_play": double_play,
         "risk_sizing_capital": risk,

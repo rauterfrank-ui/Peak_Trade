@@ -1,0 +1,14 @@
+docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+src/webui/market_dashboard_landscape_producer_binding_v2.py
+src/webui/market_dashboard_landscape_v2/__init__.py
+src/webui/market_dashboard_landscape_v2/contracts.py
+src/webui/market_dashboard_landscape_v2/owner_registry.py
+src/webui/market_dashboard_landscape_v2/page_aggregate.py
+src/webui/market_dashboard_landscape_v2/presenter.py
+src/webui/market_dashboard_landscape_v2/projections.py
+src/webui/market_dashboard_landscape_v2/serialization.py
+src/webui/market_dashboard_landscape_v2/unavailable.py
+templates/peak_trade_dashboard/market_landscape_v2.html
+tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py
+tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py
+tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py

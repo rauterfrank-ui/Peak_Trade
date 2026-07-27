@@ -51,6 +51,9 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     REASON_EXECUTION_NOT_PERSISTED,
     REASON_SCHEMA_MISMATCH,
     REASON_INVALID_PROVENANCE,
+    REASON_REGIME_SIDE_SWITCH_CONTRADICTION,
+    REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED,
+    REASON_INVALID_PROVENANCE,
 )
 from src.webui.market_dashboard_landscape_v2 import (
     Availability,
@@ -160,6 +163,7 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
         "market_instrument",
         "universe_ranking",
         "dynamic_scope",
+        "regime_bull_bear_switch",
         "canonical_decision",
         "double_play",
         "risk_sizing_capital",
@@ -176,6 +180,11 @@ def test_bind_defaults_fail_closed_without_archive_or_fields(
     assert slots["dynamic_scope"].scope_state is None
     assert slots["dynamic_scope"].current_scope_ref is None
     assert slots["dynamic_scope"].next_scope_ref is None
+    assert slots["regime_bull_bear_switch"].availability is Availability.MISSING_SOURCE
+    assert (
+        REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED
+        in slots["regime_bull_bear_switch"].reason_codes
+    )
     assert slots["canonical_decision"].availability is Availability.MISSING_SOURCE
     assert REASON_DECISION_NOT_PERSISTED in slots["canonical_decision"].reason_codes
     assert slots["canonical_decision"].decision is None
@@ -519,9 +528,9 @@ def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_inject
     assert ctx["scope"]["availability"] == "MISSING_SOURCE"
     assert ctx["decision"]["availability"] == "MISSING_SOURCE"
     assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
-    assert ctx["regime"]["availability"] == "NOT_BOUND"
-    assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
-    assert ctx["switch"]["availability"] == "NOT_BOUND"
+    assert ctx["regime"]["availability"] == "MISSING_SOURCE"
+    assert ctx["bull_bear"]["availability"] == "MISSING_SOURCE"
+    assert ctx["switch"]["availability"] == "MISSING_SOURCE"
     assert "membership_label" in ctx["universe_rail"]
 
 
@@ -647,7 +656,7 @@ def test_bind_dynamic_scope_stale_retains_lifecycle_facts() -> None:
     assert scope.provenance.generated_at == SCOPE_PRODUCER_STALE
 
 
-def test_regime_bull_bear_switch_remain_not_bound_for_all_scope_states() -> None:
+def test_regime_bull_bear_switch_missing_source_without_injection() -> None:
     cases = (
         None,
         _scope_fields(),
@@ -664,9 +673,12 @@ def test_regime_bull_bear_switch_remain_not_bound_for_all_scope_states() -> None
             slot_overrides=slots,
         )
         ctx = present_market_landscape_v2(page)
-        assert ctx["regime"]["availability"] == "NOT_BOUND"
-        assert ctx["bull_bear"]["availability"] == "NOT_BOUND"
-        assert ctx["switch"]["availability"] == "NOT_BOUND"
+        assert ctx["regime"]["availability"] == "MISSING_SOURCE"
+        assert ctx["bull_bear"]["availability"] == "MISSING_SOURCE"
+        assert ctx["switch"]["availability"] == "MISSING_SOURCE"
+        assert ctx["regime"]["value_display"] == "MISSING_SOURCE"
+        assert "bullish" not in ctx["bull_bear"]["value_display"].lower()
+        assert "bearish" not in ctx["bull_bear"]["value_display"].lower()
         assert "regime" not in ctx["global_strip"]
         assert "scope" not in ctx["global_strip"]
         assert ctx["double_play"]["availability"] == "MISSING_SOURCE"
@@ -1761,3 +1773,136 @@ def test_no_silent_defaults_for_uninjected_operative_slots() -> None:
     assert page.execution_reconciliation.order_intent_ref is None
     assert ctx["risk"]["summary_display"] == "MISSING_SOURCE"
     assert ctx["execution"]["summary_display"] == "MISSING_SOURCE"
+
+
+def _regime_bbs_fields(**overrides: object) -> dict[str, object]:
+    base: dict[str, object] = {
+        "regime_id": "trending",
+        "regime_status": "known",
+        "side_state": "long_active",
+        "previous_side_state": "long_armed",
+        "next_side_state": "long_active",
+        "scope_event_type": "upscope_confirmed",
+        "transition_allowed": True,
+        "transition_reason_code": "UPSCOPE_CONFIRMED",
+        "reason_codes": ("STATE_SWITCH_OK",),
+        "generated_at": SCOPE_PRODUCER_FRESH,
+        "effective_at": SCOPE_PRODUCER_FRESH,
+        "semantic_digest": "b" * 64,
+        "source_reference": "state_switch://1",
+    }
+    base.update(overrides)
+    return base
+
+
+def test_bind_regime_bull_bear_switch_exact_projection() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        regime_bull_bear_switch_fields=_regime_bbs_fields(),
+    )
+    snap = slots["regime_bull_bear_switch"]
+    assert snap.availability is Availability.AVAILABLE
+    assert snap.regime_id == "trending"
+    assert snap.regime_status == "known"
+    assert snap.side_state == "long_active"
+    assert snap.previous_side_state == "long_armed"
+    assert snap.next_side_state == "long_active"
+    assert snap.scope_event_type == "upscope_confirmed"
+    assert snap.transition_allowed is True
+    assert snap.transition_reason_code == "UPSCOPE_CONFIRMED"
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP, slot_overrides=slots
+    )
+    ctx = present_market_landscape_v2(page)
+    assert ctx["regime"]["availability"] == "AVAILABLE"
+    assert ctx["regime"]["value_display"] == "trending (known)"
+    assert ctx["bull_bear"]["value_display"] == "long_active"
+    assert "long_armed→long_active" in ctx["switch"]["value_display"]
+    assert "allowed=True" in ctx["switch"]["value_display"]
+    assert "UPSCOPE_CONFIRMED" in ctx["switch"]["value_display"]
+    # no invented directional gloss
+    assert "bullish" not in ctx["bull_bear"]["value_display"].lower()
+    assert "bearish" not in ctx["bull_bear"]["value_display"].lower()
+    assert "unchanged" not in ctx["switch"]["value_display"].lower()
+
+
+def test_bind_regime_bull_bear_switch_stale_retains_fields() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        regime_bull_bear_switch_fields=_regime_bbs_fields(
+            generated_at=SCOPE_PRODUCER_STALE,
+            effective_at=SCOPE_PRODUCER_STALE,
+        ),
+    )
+    snap = slots["regime_bull_bear_switch"]
+    assert snap.availability is Availability.STALE
+    assert snap.side_state == "long_active"
+    assert snap.freshness.is_stale is True
+    ctx = present_market_landscape_v2(
+        MarketDashboardReadServiceV1().load_page_snapshot(generated_at=STAMP, slot_overrides=slots)
+    )
+    assert ctx["regime"]["availability"] == "STALE"
+    assert ctx["regime"]["value_display"] == "trending (known)"
+
+
+def test_bind_regime_bull_bear_switch_schema_mismatch() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        regime_bull_bear_switch_fields=_regime_bbs_fields(schema_version="v999"),
+    )
+    snap = slots["regime_bull_bear_switch"]
+    assert snap.availability is Availability.INVALID
+    assert REASON_SCHEMA_MISMATCH in snap.reason_codes
+    assert snap.side_state is None
+
+
+def test_bind_regime_bull_bear_switch_invalid_provenance_empty_regime() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        regime_bull_bear_switch_fields=_regime_bbs_fields(regime_id=""),
+    )
+    snap = slots["regime_bull_bear_switch"]
+    assert snap.availability is Availability.INVALID
+    assert REASON_INVALID_PROVENANCE in snap.reason_codes
+
+
+def test_bind_regime_bull_bear_switch_contradiction_fail_closed() -> None:
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        regime_bull_bear_switch_fields=_regime_bbs_fields(
+            side_state="long_active",
+            next_side_state="short_active",
+        ),
+    )
+    snap = slots["regime_bull_bear_switch"]
+    assert snap.availability is Availability.INVALID
+    assert REASON_REGIME_SIDE_SWITCH_CONTRADICTION in snap.reason_codes
+    ctx = present_market_landscape_v2(
+        MarketDashboardReadServiceV1().load_page_snapshot(generated_at=STAMP, slot_overrides=slots)
+    )
+    assert ctx["regime"]["availability"] == "INVALID"
+    assert ctx["bull_bear"]["value_display"] == "INVALID"
+    assert "short_active" not in ctx["bull_bear"]["value_display"]
+
+
+def test_project_regime_bull_bear_switch_no_recompute() -> None:
+    from webui.market_dashboard_landscape_v2.projections import (
+        project_regime_bull_bear_switch_snapshot_v1,
+    )
+
+    snap = project_regime_bull_bear_switch_snapshot_v1(
+        regime_id="chop",
+        regime_status="known",
+        side_state="neutral_observe",
+        previous_side_state="neutral_observe",
+        next_side_state="neutral_observe",
+        scope_event_type="noop",
+        transition_allowed=False,
+        transition_reason_code="NOOP",
+        reason_codes=("OK",),
+        generated_at=SCOPE_PRODUCER_FRESH,
+        effective_at=SCOPE_PRODUCER_FRESH,
+        source_reference="x",
+    )
+    assert snap.regime_id == "chop"
+    assert snap.transition_allowed is False

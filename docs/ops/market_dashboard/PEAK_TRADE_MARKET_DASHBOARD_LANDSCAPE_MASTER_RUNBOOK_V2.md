@@ -1818,13 +1818,13 @@ CURRENT_BOUND_SOURCES=[
 NOT_BOUND_SOURCES=[
   "diagnostics_summary (Phase 4.6C OPTION_A KEEP_NOT_BOUND)",
   "autonomy_stage (Phase 4.7 OPTION_D KEEP_NOT_BOUND)",
-  "event_decision_timeline (Phase 5 TASK_4 DEFERRED; honest NOT_BOUND placeholder)",
-  "regime / bull_bear / switch (lifecycle scope bound; these remain unbound)"
+  "event_decision_timeline (Phase 5 TASK_4 DEFERRED; honest NOT_BOUND placeholder)"
 ]
 MISSING_READ_PROJECTIONS=[
-  "regime / bull_bear / switch Landscape binding",
   "confidence Landscape binding"
 ]
+BOUND_REGIME_BULL_BEAR_SWITCH=true
+REGIME_BULL_BEAR_SWITCH_BINDING=EXPLICIT_INJECTION_READ_ONLY
 MISSING_PRODUCERS=[
   "event_decision_timeline durable ordered transition/decision history (no canonical producer; Phase 5 TASK_4 deferred)"
 ]

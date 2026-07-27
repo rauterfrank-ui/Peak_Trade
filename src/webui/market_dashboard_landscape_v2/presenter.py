@@ -49,6 +49,7 @@ _SOURCE_SLOT_LABELS: Mapping[str, str] = {
     "market_instrument": "Market",
     "universe_ranking": "Universe",
     "dynamic_scope": "Scope",
+    "regime_bull_bear_switch": "Regime/Bull-Bear/Switch",
     "canonical_decision": "Decision",
     "double_play": "Double Play",
     "risk_sizing_capital": "Risk",
@@ -704,6 +705,64 @@ def _ohlcv_data_connection_state(
     return "MISSING_SOURCE"
 
 
+def _regime_context_views(snap: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Split RegimeBullBearSwitchSnapshot into three System Context views.
+
+    Formatting only — never invents bullish/bearish/unchanged defaults.
+    """
+    availability = snap.availability
+    label = AVAILABILITY_LABELS[availability]
+    payload = serialize_projection(snap)
+    base = {
+        "availability": availability.value,
+        "availability_label": label,
+        "is_available": availability is Availability.AVAILABLE,
+        "is_stale": availability is Availability.STALE,
+        "reason_codes": list(getattr(snap, "reason_codes", ()) or ()),
+        "provenance": payload.get("provenance"),
+        "freshness": payload.get("freshness"),
+        "schema_id": snap.schema_id,
+        "schema_version": snap.schema_version,
+    }
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        empty = {**base, "value_display": label, "fields": {}}
+        return empty, dict(empty), dict(empty)
+
+    regime_display = str(snap.regime_id)
+    if snap.regime_status is not None:
+        regime_display = f"{snap.regime_id} ({snap.regime_status})"
+    bull_bear_display = str(snap.side_state)
+    switch_display = (
+        f"{snap.previous_side_state}→{snap.next_side_state} "
+        f"allowed={snap.transition_allowed} ({snap.transition_reason_code})"
+    )
+    regime = {
+        **base,
+        "value_display": regime_display,
+        "fields": {
+            "regime_id": snap.regime_id,
+            "regime_status": snap.regime_status,
+        },
+    }
+    bull_bear = {
+        **base,
+        "value_display": bull_bear_display,
+        "fields": {"side_state": snap.side_state},
+    }
+    switch = {
+        **base,
+        "value_display": switch_display,
+        "fields": {
+            "previous_side_state": snap.previous_side_state,
+            "next_side_state": snap.next_side_state,
+            "scope_event_type": snap.scope_event_type,
+            "transition_allowed": snap.transition_allowed,
+            "transition_reason_code": snap.transition_reason_code,
+        },
+    }
+    return regime, bull_bear, switch
+
+
 def present_market_landscape_v2(
     page: MarketDashboardPageSnapshotV1,
     *,
@@ -713,6 +772,8 @@ def present_market_landscape_v2(
     market = _slot_view(page.market_instrument)
     universe = _slot_view(page.universe_ranking)
     scope = _slot_view(page.dynamic_scope)
+    regime_view, bull_bear_view, switch_view = _regime_context_views(page.regime_bull_bear_switch)
+    regime_bbs = _slot_view(page.regime_bull_bear_switch)
     decision = _slot_view(page.canonical_decision)
     double_play = _slot_view(page.double_play)
     risk = _slot_view(page.risk_sizing_capital)
@@ -854,9 +915,9 @@ def present_market_landscape_v2(
             "current_scope_ref_display": current_scope_ref_display,
             "next_scope_ref_display": next_scope_ref_display,
         },
-        "regime": dict(_NOT_BOUND_VIEW),
-        "bull_bear": dict(_NOT_BOUND_VIEW),
-        "switch": dict(_NOT_BOUND_VIEW),
+        "regime": regime_view,
+        "bull_bear": bull_bear_view,
+        "switch": switch_view,
         "decision": decision,
         "double_play": double_play,
         "risk": {
@@ -888,6 +949,7 @@ def present_market_landscape_v2(
                 "market_instrument": market,
                 "universe_ranking": universe,
                 "dynamic_scope": scope,
+                "regime_bull_bear_switch": regime_bbs,
                 "canonical_decision": decision,
                 "double_play": double_play,
                 "risk_sizing_capital": risk,
@@ -967,6 +1029,9 @@ def present_market_landscape_v2(
             "phase_4_2_bound_slots": [
                 "dynamic_scope",
             ],
+            "phase_4_2b_bound_slots": [
+                "regime_bull_bear_switch",
+            ],
             "phase_4_3a_bound_slots": [
                 "canonical_decision",
             ],
@@ -989,6 +1054,7 @@ def present_market_landscape_v2(
                 "market_instrument": market,
                 "universe_ranking": universe,
                 "dynamic_scope": scope,
+                "regime_bull_bear_switch": regime_bbs,
                 "canonical_decision": decision,
                 "double_play": double_play,
                 "risk_sizing_capital": {
@@ -1027,6 +1093,7 @@ def present_market_landscape_v2(
             "operator_go_required": True,
             "phase_4_1_binding_active": True,
             "phase_4_2_binding_active": True,
+            "phase_4_2b_binding_active": True,
             "phase_4_3a_binding_active": True,
             "phase_4_3b_binding_active": True,
             "phase_4_4a_binding_active": True,

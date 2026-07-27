@@ -1,0 +1,19 @@
+BASE_SHA=1a69ed939349f8599673a2eb50754e25a7dc9ae8
+HEAD=1a69ed939349f8599673a2eb50754e25a7dc9ae8
+BRANCH=capability/market-dashboard-regime-bull-bear-switch-binding-v0
+## capability/market-dashboard-regime-bull-bear-switch-binding-v0...origin/main
+ M docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+ M src/webui/market_dashboard_landscape_producer_binding_v2.py
+ M src/webui/market_dashboard_landscape_v2/__init__.py
+ M src/webui/market_dashboard_landscape_v2/contracts.py
+ M src/webui/market_dashboard_landscape_v2/owner_registry.py
+ M src/webui/market_dashboard_landscape_v2/page_aggregate.py
+ M src/webui/market_dashboard_landscape_v2/presenter.py
+ M src/webui/market_dashboard_landscape_v2/projections.py
+ M src/webui/market_dashboard_landscape_v2/serialization.py
+ M src/webui/market_dashboard_landscape_v2/unavailable.py
+ M templates/peak_trade_dashboard/market_landscape_v2.html
+ M tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py
+ M tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py
+?? evidence/market_dashboard_v2/regime_bull_bear_switch_binding/
