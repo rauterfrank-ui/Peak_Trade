@@ -8,8 +8,8 @@
 
 Ensure:
 
-- `GET /ops/ci-health`
-- `GET /ops/ci-health/status`
+- `GET &#47;ops&#47;ci-health`
+- `GET &#47;ops&#47;ci-health&#47;status`
 
 are safe and idempotent:
 
@@ -19,7 +19,7 @@ are safe and idempotent:
 - no snapshot write / directory creation
 - no hidden refresh
 
-Only authenticated `POST /ops/ci-health/run` may execute checks and refresh snapshots.
+Only authenticated `POST &#47;ops&#47;ci-health&#47;run` may execute checks and refresh snapshots.
 
 ## Canonical owners (reuse)
 
@@ -27,7 +27,7 @@ Only authenticated `POST /ops/ci-health/run` may execute checks and refresh snap
 |------|------|
 | Router / runner / writer / reader | [`src/webui/ops_ci_health_router.py`](../../../src/webui/ops_ci_health_router.py) |
 | Local-admin write auth (unchanged) | [`src/webui/local_admin_write_auth_v1.py`](../../../src/webui/local_admin_write_auth_v1.py) |
-| Snapshot JSON | `reports/ops/ci_health_latest.json` |
+| Snapshot JSON | `reports&#47;ops&#47;ci_health_latest.json` |
 | Redaction boundary (reuse) | [`scripts/security/secret_hygiene_redaction_v1.py`](../../../scripts/security/secret_hygiene_redaction_v1.py) |
 | UI | [`templates/peak_trade_dashboard/ops_ci_health.html`](../../../templates/peak_trade_dashboard/ops_ci_health.html) |
 
@@ -37,9 +37,9 @@ A second CI-health router/runner/writer/auth owner is forbidden.
 
 | Method | Path | Behavior |
 |--------|------|----------|
-| `GET` | `/ops/ci-health` | Render persisted snapshot state only |
-| `GET` | `/ops/ci-health/status` | Return persisted snapshot JSON projection only |
-| `POST` | `/ops/ci-health/run` | Auth-gated execution + snapshot write (unchanged auth model) |
+| `GET` | `&#47;ops&#47;ci-health` | Render persisted snapshot state only |
+| `GET` | `&#47;ops&#47;ci-health&#47;status` | Return persisted snapshot JSON projection only |
+| `POST` | `&#47;ops&#47;ci-health&#47;run` | Auth-gated execution + snapshot write (unchanged auth model) |
 
 ### GET contract
 
@@ -69,7 +69,7 @@ Owned by `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1`:
 
 Reader constraints:
 
-- fixed path only (`reports/ops/ci_health_latest.json`)
+- fixed path only (`reports&#47;ops&#47;ci_health_latest.json`)
 - no request-derived paths
 - bounded file size
 - controlled UTF-8/JSON parsing
