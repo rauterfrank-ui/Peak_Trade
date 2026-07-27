@@ -30,23 +30,59 @@
 - Explicit non-actions: no Development reevaluation; no Holdout/Sealed; no promotion/activation; no runtime/LIVE/orders; no successor invention
 
 
+### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_PROGRESS_REGISTRY_TRUTH_RECONCILIATION_V1
+
+- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_PROGRESS_REGISTRY_TRUTH_RECONCILIATION_V1`
+- Decision: `RECONCILE_TERMINAL_DEVELOPMENT_STATE_TO_REPO_EVIDENCE`
+- Authorization: `GO_CLASS=DOCUMENTARY_AND_REGISTRY_TRUTH_RECONCILIATION_ONLY`
+- Program: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1` (`PROGRAM_CLOSED_NO_FURTHER_RESEARCH`)
+- Lane backlog: `LANE_CLOSED_NO_FURTHER_RESEARCH` (preregistered=0, open_unpreregistered=0, terminal=1)
+- Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1` (`TERMINAL_FAIL` / `FAIL_CLOSED_NO_RETRY`)
+- Verified repo facts: PR #5495 MERGED strategy implementation present; PR #5496 MERGED bounded DEVELOPMENT evaluation `DEVELOPMENT_FAIL`; `DEVELOPMENT_RUN_COUNT=1`; `DEVELOPMENT_SLOT_CONSUMED=true`; retry forbidden
+- Holdout/Sealed accessed: false; promotion eligible: false; runtime bound: false; Economic Validity offline gate: false; STEP 29R eligible: false; Autonomy is next: false
+- Evidence preserved: `docs&#47;evidence&#47;evaluate_cross_sectional_open_gap_pressure_fade_development_v1&#47;`
+- Next canonical step: `NEW_DISTINCT_RESEARCH_PROGRAM_OR_FULL_CANONICAL_SYSTEM_BINDING_OR_OTHER_EVIDENCE_CLASS_REQUIRES_OPERATOR_RATIFICATION`
+- Explicit non-actions: no strategy reimplementation; no DEVELOPMENT rerun; no Holdout/Sealed; no promotion/runtime/orders; no new hypothesis selected
+
+
+### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1
+
+- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1`
+- Decision: `BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION`
+- Capability PR: `#5496` MERGED
+- Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1`
+- Result: `DEVELOPMENT_FAIL` (slot consumed; `development_run_count=1`; retry forbidden)
+- Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
+- Holdout untouched; Sealed untouched; economic gate closed; no promotion/runtime/LIVE/orders
+- Evidence: `docs&#47;evidence&#47;evaluate_cross_sectional_open_gap_pressure_fade_development_v1&#47;`
+- Next admissible GO: none for this hypothesis — requires new distinct program/evidence-class ratification
+
+
+### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1
+
+- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+- Decision: `STRATEGY_IMPLEMENTATION_ONLY`
+- Capability PR: `#5495` MERGED
+- Workstream: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_WORKSTREAM_V1`
+- Program: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1`
+- Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1`
+- Strategy: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1` (`STRATEGY_IMPLEMENTATION_PRESENT=true`)
+- Binding: `config&#47;research&#47;cross_sectional_open_gap_pressure_fade_v1_strategy_implementation_binding_v1.json`
+- Score/selection: negated mean open-gap fixed lookback (`lookback_N=30`, `rebalance=5`, `lag=1`) + `single_top1_by_score_desc` / `symmetric_top1_sign`
+- Post-#5496 truth: `DEVELOPMENT_RUN_COUNT=1`; `EVALUATION_AUTHORIZED=false`; no further Open Gap implementation candidate
+
+
 ### CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEFINITION_ONLY_PREREGISTRATION_V1
 
 - Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEFINITION_ONLY_PREREGISTRATION_V1`
-- Decision: `PERSIST_NEW_INDEPENDENT_RESEARCH_PROGRAM_SSOT_AND_PREREGISTRATION`
+- Status: `HISTORICAL_SUPERSEDED_BY_PR5495_PR5496_AND_TRUTH_RECONCILIATION`
+- Decision (historical): `PERSIST_NEW_INDEPENDENT_RESEARCH_PROGRAM_SSOT_AND_PREREGISTRATION`
 - Workstream: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_WORKSTREAM_V1`
-- Program: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1` (`DEFINITION_ONLY`)
+- Program (current): `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1` (`PROGRAM_CLOSED_NO_FURTHER_RESEARCH`)
 - Family: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE`
-- Lane backlog: `OPEN_BACKLOG` (preregistered=1, open_unpreregistered=0, terminal=0)
-- First hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1` (`PREREGISTERED_DEFINITION_ONLY`)
-- Causal mechanism: negated mean open-gap `log(O&#47;C_prev)` cross-sectional single-slot fade (`lookback_N=30`, `rebalance=5`, `lag=1`)
-- Candidates ranked: open-gap pressure fade > Amihud illiquidity-pressure fade > wick-asymmetry fade
-- Separate open sibling CSRHR remains `OPEN_BACKLOG` unchanged (no continue/reuse/mutation)
-- Terminal CLV and path-efficiency DEVELOPMENT_FAIL linked as collision exclusions only (no retry/rename)
-- Closed predecessors linked as exclusions only: `VOLATILITY_REGIME_RESEARCH_PROGRAM_V1`, `MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1`
-- `EVALUATION_AUTHORIZED=false`; `IMPLEMENTATION_AUTHORIZED=false`; `DEVELOPMENT_RUN_COUNT=0`; `DEVELOPMENT_RUN_LIMIT=1`; `FAIL_CLOSED_NO_RETRY=true`; holdout unbound/untouched/access forbidden; economic gate closed
-- Next admissible GO: separate implementation or bounded DEVELOPMENT evaluation GO (not authorized here)
-- Explicit non-actions: no CSRHR continue/reuse/mutation; no CLV/path-efficiency retry; no vol-regime/CS-momentum reopen; no evaluation/runtime/LIVE/orders
+- Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1` (terminal after DEVELOPMENT_FAIL)
+- Stale fields repaired: prior registry falsely retained `DEFINITION_ONLY` / `IMPLEMENTATION_AUTHORIZED=false` / `DEVELOPMENT_RUN_COUNT=0` / Open Gap as next implementation candidate
+- Current reconciled markers: `STRATEGY_IMPLEMENTATION_PRESENT=true`; `DEVELOPMENT_RUN_EXECUTED=true`; `DEVELOPMENT_RUN_COUNT=1`; `DEVELOPMENT_VERDICT=DEVELOPMENT_FAIL`; `DEVELOPMENT_SLOT_CONSUMED=true`; `EVALUATION_AUTHORIZED=false`; `RETRY_AUTHORIZED=false`
 
 
 ### CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_BOUNDED_DEVELOPMENT_EVALUATION_EXECUTION_V1

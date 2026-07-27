@@ -3,23 +3,25 @@
 ## Status
 
 `STRATEGY_IMPLEMENTATION_PRESENT` under operator GO
-`GO_CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`.
+`GO_CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1`
+(PR #5495 MERGED).
 
-Implementation matches preregistration. Evaluation unauthorized and not executed.
-Development run count remains 0. Run slot remains unconsumed.
+Post-merge terminal truth (PR #5496): one bounded DEVELOPMENT evaluation executed
+with `DEVELOPMENT_FAIL`. Development run count is 1; run slot consumed.
+Evaluation unauthorized for further runs; retry forbidden.
 
 ## Binding
 
-- Scope: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEFINITION_ONLY_PREREGISTRATION_V1`
-- Strategy identity: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1`
+- Capability PR: `#5495` MERGED
 - Hypothesis: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_NON_BITCOIN_PERPETUALS_V1`
+- Strategy identity: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1`
 - Signal family: `CROSS_SECTIONAL_OPEN_GAP_PRESSURE`
 - Directional form: `D_MUTUALLY_EXCLUSIVE_DIRECTIONAL_SELECTION`
 - Dataset: `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_dev_pre_holdout_v1`
 - Implementation binding: `config&#47;research&#47;cross_sectional_open_gap_pressure_fade_v1_strategy_implementation_binding_v1.json`
-- Frozen measurement contract digest: `7f8d361b597825428eecb2f6f791fcef07fe5a0dd92f9613f99b5d15e95b5768` (unmutated)
 - Score: `src&#47;research&#47;cross_sectional_open_gap_pressure_fade_v1_score_v1.py`
 - Selection: `src&#47;research&#47;cross_sectional_open_gap_pressure_fade_v1_selection_v1.py`
+- Development evidence: `docs&#47;evidence&#47;evaluate_cross_sectional_open_gap_pressure_fade_development_v1&#47;`
 
 ## Semantics
 
@@ -33,17 +35,29 @@ Development run count remains 0. Run slot remains unconsumed.
 - Rank intent only; Double-Play remains sole directional transition authority
 - Not a CLV pressure retry; no shared CLV utility; no values 36&#47;6
 
+## Terminal markers after PR #5496
+
+- `DEVELOPMENT_RUN_COUNT=1`
+- `DEVELOPMENT_VERDICT=DEVELOPMENT_FAIL`
+- `DEVELOPMENT_SLOT_CONSUMED=true`
+- `EVALUATION_AUTHORIZED=false`
+- `RETRY_AUTHORIZED=false`
+- `HOLDOUT_ACCESSED=false` / `SEALED_ACCESSED=false`
+- `PROMOTION_ELIGIBLE=false`
+- `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false`
+
 ## Explicit non-actions
 
-No evaluation, runner, holdout access, promotion, runtime, Master V2 mutation,
-Double-Play authority change, parameter optimization, CSRHR continue&#47;reuse&#47;mutation,
-path-efficiency retry, CLV pressure retry, development-run consumption, or
-run-slot consumption.
+No further evaluation, runner reuse, holdout access, promotion, runtime,
+Master V2 mutation, Double-Play authority change, parameter optimization,
+CSRHR continue&#47;reuse&#47;mutation, path-efficiency retry, CLV pressure retry,
+or Open Gap as next implementation candidate.
 
 ## Next step
 
-`EXPLICIT_DEVELOPMENT_EVALUATION_GO` (separate). Until then
-`EVALUATION_AUTHORIZED` remains false and `DEVELOPMENT_RUN_COUNT` remains 0.
+`NEW_DISTINCT_RESEARCH_PROGRAM_OR_FULL_CANONICAL_SYSTEM_BINDING_OR_OTHER_EVIDENCE_CLASS_REQUIRES_OPERATOR_RATIFICATION`
+
+Not `EXPLICIT_DEVELOPMENT_EVALUATION_GO`. No new research program selected here.
 
 ---
 docs_token: DOCS_TOKEN_CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1

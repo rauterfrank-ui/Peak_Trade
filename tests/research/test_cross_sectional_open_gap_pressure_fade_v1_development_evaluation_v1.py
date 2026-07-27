@@ -113,5 +113,5 @@ def test_fake_boundary_blocked_when_slot_already_consumed(tmp_path: Path) -> Non
     with pytest.raises(GuardError, match="RETRY_OR_SLOT_REUSE"):
         assert_no_slot_reuse(evidence)
     csrhr = json.loads(CSRHR.read_text(encoding="utf-8"))
-    assert csrhr["status"] == "OPEN_BACKLOG"
+    assert csrhr["status"] == "LANE_CLOSED_NO_FURTHER_RESEARCH"
     assert csrhr["development_run_count"] == 1
