@@ -147,6 +147,20 @@ A real 6h evidence session requires a **separate** explicit step:
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION
 ```
 
+That successor capability may be present as
+`AUTHORIZATION_AND_EXECUTION_IMPLEMENTATION_READINESS` (contract, GO binding,
+production runner/verifier, OKX read-only telemetry, safety preflight) while
+still keeping:
+
+```text
+PRODUCTION_SESSION_EXECUTED=false
+SESSION_EVIDENCE_VALID=false
+OPERATOR_GO_GRANTED=false
+SESSION_EXECUTION_AUTHORIZED=false
+```
+
+See
+`docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION_V1.md`.
 No automatic transition is implied by this capability or by merge of its PR.
 
 ## Evidence schema (dry-run / future authorized session)
