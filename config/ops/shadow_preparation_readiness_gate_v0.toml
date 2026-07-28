@@ -58,6 +58,24 @@ required_preparation_gates = [
   "SHADOW_ACTIVATION_OPERATOR_GO",
 ]
 
+# Pre-Economic Zero-Order Evidence stage (GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1).
+# Additive reference only. This readiness gate does NOT evaluate or authorize that stage.
+# ECONOMIC_VALIDITY_OFFLINE_GATE_PASS remains required for STEP 29U / Shadow activation.
+# See docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md
+pre_economic_zero_order_evidence_stage_defined = true
+pre_economic_zero_order_evidence_session_contract = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1"
+pre_economic_zero_order_evidence_authority_effect = "NONE"
+pre_economic_zero_order_evidence_activation_effect = "NONE"
+pre_economic_zero_order_evidence_economic_gate_effect = "NONE"
+pre_economic_zero_order_evidence_orders_allowed = false
+pre_economic_zero_order_evidence_broker_writes_allowed = false
+pre_economic_zero_order_evidence_max_duration_seconds = 21600
+pre_economic_zero_order_evidence_default_state = "BLOCKED"
+pre_economic_zero_order_evidence_runtime_execution = "BLOCKED"
+pre_economic_zero_order_evidence_does_not_satisfy_shadow_preparation = true
+pre_economic_zero_order_evidence_does_not_set_economic_validity_offline_gate_pass = true
+pre_economic_zero_order_evidence_contract_ref = "docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md"
+
 # Historical / shadow-named surfaces. Name presence ≠ STEP 29U equivalence.
 [[historical_surfaces]]
 surface_id = "phase24_shadow_order_executor"

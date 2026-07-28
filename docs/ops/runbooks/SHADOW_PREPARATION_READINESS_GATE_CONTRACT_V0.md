@@ -143,6 +143,24 @@ ORDERS=false
 OPEN_BLOCKERS=ECONOMIC_READINESS,RUNTIME_BRIDGE,EXPLICIT_ACTIVATION_GO
 ```
 
+## Pre-Economic Zero-Order Evidence stage (non-equivalence)
+
+```text
+GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1=DEFINED_DEFAULT_BLOCKED
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_STEP_29U=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_SATISFY_SHADOW_PREPARATION=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_SET_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=true
+ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_STILL_REQUIRED_FOR_SHADOW=true
+```
+
+A governed Pre-Economic Zero-Order Evidence stage may exist as an optional
+evidence-only ladder step *before* Economic Validity. It is **not** Shadow
+preparation complete, **not** STEP 29U, and **not** an activation path.
+Canonical session contract:
+`docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`.
+`required_preparation_gates` still includes `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS`.
+
 ## Canonical STEP 29U / 29V status
 
 ```text

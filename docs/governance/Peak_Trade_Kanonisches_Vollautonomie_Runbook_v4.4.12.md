@@ -547,6 +547,54 @@ AND ECONOMIC_VALIDITY_PASS
 
 Weder ein grüner Backtest noch ein grüner Safety-Test genügt allein.
 
+### 3.3A Pre-Economic Zero-Order Evidence Stage (governed exception, additive)
+
+Zwischen Integrated Offline Replay und dem Economic-Validity-Offline-Gate ist
+eine **streng begrenzte** Evidence-Stufe zulässig:
+
+```text
+GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1=true
+```
+
+```text
+INTEGRATED_OFFLINE_REPLAY
+→ PRE_ECONOMIC_ZERO_ORDER_EVIDENCE
+→ ECONOMIC_VALIDITY_OFFLINE_GATE
+→ PROMOTION / STEP 29R / 29T / 29U
+```
+
+Diese Stufe:
+
+- erzeugt ausschließlich Evidence,
+- besitzt keine Promotion-/Shadow-/Runtime-/Trading-Authority
+  (`authority_effect=NONE`, `activation_effect=NONE`, `economic_gate_effect=NONE`),
+- arbeitet ausschließlich Zero-Order (`orders_allowed=false`),
+- blockiert Broker-/Order-Endpunkte (`broker_writes_allowed=false`),
+- erlaubt maximal `21600` Sekunden,
+- erfordert explizites Operator-GO,
+- bricht fail-closed ab bei Order-Intent, Broker-Write, unbekanntem Session-State,
+  Telemetrieverlust, Kill-State-Fehler, Risk-Engine-Fehler oder unvollständiger
+  Entscheidungslogik-Bindung,
+- setzt **nicht** `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS`,
+- autorisiert **nicht** STEP 29R / 29T / 29U / Paper / Testnet / Live.
+
+`ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` bleibt unverändert zwingende Voraussetzung für:
+
+```text
+STEP_29R_RUNTIME_REWIRE
+STEP_29T_ZERO_ORDER_RUNTIME
+STEP_29U_SHADOW
+PAPER
+TESTNET
+LIVE
+```
+
+Kanonischer Session-Contract:
+`docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`.
+Runtime-Ausführung bleibt `BLOCKED`, bis eine separate
+Implementation-Readiness-Capability bestanden ist.
+
 ## 3.4 Vollständigkeitsprinzip vor System-Economic-Evidence
 
 Peak Trade darf erst dann als vollständiges System wirtschaftlich beurteilt werden, wenn die vollständige kanonische Kette implementiert, verdrahtet und manifest-verifiziert ist.
@@ -3742,9 +3790,14 @@ ECONOMIC_VALIDITY_OFFLINE_GATE_PASS
 INTENT_COMPATIBILITY_FIREWALL_PASS
 ```
 
+`PRE_ECONOMIC_ZERO_ORDER_EVIDENCE` ersetzt diese Voraussetzungen nicht.
+
 ## STEP 29S — Fenced Writer and Restart Contract
 
 ## STEP 29T — Zero-Order Runtime
+
+Erfordert weiterhin `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=true`. Die Pre-Economic
+Zero-Order Evidence-Stufe ist **nicht** STEP 29T und autorisiert STEP 29T nicht.
 
 ## STEP 29U — Shadow
 
@@ -4096,6 +4149,18 @@ LEVEL 2.2 darf LEVEL 2 nicht ersetzen. Für System-Economic-Evidence gilt LEVEL 
 - Parameterstabilität,
 - Sequenzrobustheit,
 - Kostenstress.
+
+## LEVEL 3.5 — Pre-Economic Zero-Order Evidence (governed)
+
+- vollständig passiv,
+- Zero-Order only,
+- max. 21600 Sekunden,
+- explizites Operator-GO,
+- keine Economic-/Shadow-/Runtime-Authority,
+- Contract: `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1`.
+
+Diese Stufe ersetzt weder Economic Validity noch LEVEL 4 Zero-Order Runtime
+(STEP 29T) noch LEVEL 5 Shadow (STEP 29U).
 
 ## LEVEL 4 — Zero-Order Runtime
 
@@ -4480,6 +4545,7 @@ Canonical Market Context
 → Realistic Backtest
 → Offline Linear Evidence / OLS Diagnostics
 → Walk-Forward / Monte Carlo / Stress
+→ Pre-Economic Zero-Order Evidence (optional, governed; non-activating)
 → Economic Viability Evidence
 → Promotion Gates
 → Zero-Order Runtime
@@ -4491,7 +4557,9 @@ Canonical Market Context
 → Full Autonomous Production
 ```
 
-Keine Stufe darf übersprungen werden.
+Keine Activation-Stufe darf übersprungen werden. Die Pre-Economic Zero-Order
+Evidence-Stufe ist optional und non-activating; sie ersetzt weder Economic
+Validity noch Zero-Order Runtime noch Shadow.
 
 ---
 
