@@ -95,16 +95,21 @@ STEP_29U_LADDER_ROLE=SHADOW
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_EQUAL_STEP_29U=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_EQUAL_STEP_29T=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EVIDENCE=NOT_AUTHORIZED
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EVIDENCE_VALID=false
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_OPERATOR_GO_GRANTED=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_STILL_REQUIRED_FOR_STEP_29U=true
 ```
 
 Optional governed evidence stage
 `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE` (contract
 `docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`) sits *before*
-Economic Validity and is **not** STEP 29U Shadow. Implementation readiness may
-exist; session evidence remains `NOT_AUTHORIZED` until a separate operator
-authorization step. It cannot clear `ECONOMIC_VALIDITY_PROVEN` or activate Shadow.
+Economic Validity and is **not** STEP 29U Shadow. Implementation readiness and
+authorization/execution readiness may exist; session evidence remains
+`NOT_AUTHORIZED` / `SESSION_EVIDENCE_VALID=false` until a separate operator GO
+against a concrete authorization contract. It cannot clear
+`ECONOMIC_VALIDITY_PROVEN` or activate Shadow.
 ### Authority rule
 
 ```text

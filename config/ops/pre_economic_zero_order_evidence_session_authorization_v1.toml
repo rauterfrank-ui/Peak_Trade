@@ -1,0 +1,46 @@
+# PRE_ECONOMIC_ZERO_ORDER_EVIDENCE session authorization + execution config v1
+# Capability: PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION
+#
+# This file is AUTHORIZATION_AND_EXECUTION_IMPLEMENTATION_READINESS only.
+# Defaults are fail-closed. This PR does NOT execute a real 6h session,
+# does NOT grant Operator-GO, and does NOT set Economic / Shadow / Order authority.
+
+schema_version = "v1"
+capability_id = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION"
+session_contract_id = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1"
+
+implementation_enabled = true
+session_execution_authorized = false
+enabled = false
+armed = false
+dry_run = true
+zero_order_only = true
+orders_allowed = false
+broker_writes_allowed = false
+
+# Read-only public market data may be enabled later with a separate Operator-GO.
+# Canonical default remains blocked / dry-run.
+network_allowed_for_readonly_telemetry = false
+
+venue = "OKX"
+market_type = "SWAP"
+instrument_allowlist = ["ETH-USDT-SWAP"]
+btc_forbidden = true
+spot_forbidden = true
+
+production_session_duration_seconds = 21600
+output_root = "out/ops/pre_economic_zero_order_evidence_session_authorization_v1"
+authorization_contract_path = "config/ops/pre_economic_zero_order_evidence_session_authorization_contract_template_v1.json"
+authorization_consumption_store = "out/ops/pre_economic_zero_order_evidence_session_authorization_v1/consumption"
+
+heartbeat_interval_seconds = 1.0
+stale_threshold_seconds = 5.0
+max_clock_skew_seconds = 30.0
+max_clock_drift_seconds = 30.0
+
+runtime_authority = "NONE"
+allow_unknown_config_fields = false
+
+# Test / CI simulation budget only. Production path requires 21600s.
+maximum_test_runtime_seconds = 30
+allow_test_duration_override = false
