@@ -335,11 +335,24 @@ MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=PASS
 DASHBOARD_BLOCKER_STATE=RESOLVED_ON_LANDSCAPE_V2
 DASHBOARD_BLOCKER_RESOLVED=true
 RUNTIME_BRIDGE_STATE=BOUND_NOT_ACTIVATED
+# Post-merge ratification (PR #5583) — consumer projection only; no second SSOT:
+# CAPABILITY=SHADOW_PREPARATION_DASHBOARD_INTRABAR_BLOCKER_AUTHORITY_RECONCILIATION_V1
+# PR_STATE=MERGED MERGE_METHOD=SQUASH
+# REVIEWED_HEAD_SHA=01606c79c1b84245e542aa4a03474312d3f0c667
+# SQUASH_MERGE_COMMIT_SHA=5944ff89817594853e051aecd76cfd9383449aab
+# EXACT_REVIEWED_HEAD_MERGED=true
+# RULESET_ID=11192468 RULESET_POST_ENFORCEMENT=active
+# REQUIRE_LAST_PUSH_APPROVAL=true RULESET_RESTORE_VERIFIED=true
+# OVERALL_SHADOW_READINESS_READY=false RUNTIME_BOUND_NOT_ACTIVATED=true
+# RUNTIME_ACTIVATED=false SHADOW_ACTIVATED=false PAPER_ACTIVATED=false
+# TESTNET_ACTIVATED=false ORDERS=false
 ```
 
 Economic FAIL is preserved from the canonical fleet closeout /
 readiness gate composition (`ops.step_29u_economic_validity_readiness_v0`).
 It must not be described as unfinished work.
+Dashboard intrabar consumer reconciliation is post-merge-ratified via PR #5583
+on the readiness contract; this inventory remains a consumer pointer only.
 
 ## 8. Implemented offline capability (current)
 
