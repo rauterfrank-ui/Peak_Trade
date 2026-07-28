@@ -75,6 +75,19 @@ pre_economic_zero_order_evidence_runtime_execution = "BLOCKED"
 pre_economic_zero_order_evidence_does_not_satisfy_shadow_preparation = true
 pre_economic_zero_order_evidence_does_not_set_economic_validity_offline_gate_pass = true
 pre_economic_zero_order_evidence_contract_ref = "docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md"
+# Implementation readiness capability (additive). Does NOT authorize a 6h session,
+# does NOT set Economic PASS, does NOT clear Shadow preparation.
+pre_economic_zero_order_evidence_implementation_readiness = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1"
+pre_economic_zero_order_evidence_implementation_readiness_present = true
+pre_economic_zero_order_evidence_session_execution_authorized = false
+pre_economic_zero_order_evidence_session_evidence = "NOT_AUTHORIZED"
+pre_economic_zero_order_evidence_six_hour_session_executed = false
+pre_economic_zero_order_evidence_implementation_does_not_authorize_session = true
+pre_economic_zero_order_evidence_implementation_does_not_weaken_economic_gate = true
+pre_economic_zero_order_evidence_implementation_does_not_weaken_shadow_gate = true
+pre_economic_zero_order_evidence_implementation_runner_ref = "src/ops/pre_economic_zero_order_evidence_session_runner_v1.py"
+pre_economic_zero_order_evidence_implementation_verifier_ref = "src/ops/pre_economic_zero_order_evidence_session_verifier_v1.py"
+pre_economic_zero_order_evidence_implementation_config_ref = "config/ops/pre_economic_zero_order_evidence_session_v1.toml"
 
 # Historical / shadow-named surfaces. Name presence ≠ STEP 29U equivalence.
 [[historical_surfaces]]
