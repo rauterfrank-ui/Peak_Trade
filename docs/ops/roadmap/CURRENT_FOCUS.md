@@ -242,6 +242,18 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
   does not authorize activation)
 - No Runtime/Scheduler/Paper/Testnet/Live activation authorized
 
+**Post-merge ratification (PR #5583):** Shadow Preparation readiness dashboard
+intrabar blocker authority reconciliation
+(`SHADOW_PREPARATION_DASHBOARD_INTRABAR_BLOCKER_AUTHORITY_RECONCILIATION_V1`)
+squash-merged; reviewed head
+`01606c79c1b84245e542aa4a03474312d3f0c667` → merge commit
+`5944ff89817594853e051aecd76cfd9383449aab`;
+`EXACT_REVIEWED_HEAD_MERGED=true`; ruleset `11192468` restored
+`enforcement=active` / `require_last_push_approval=true` after a 5s temporary
+disable; overall Shadow readiness remains false; Economic / Runtime Bridge /
+explicit Activation GO remain open. Canonical record:
+[SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](../runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md).
+
 ---
 
 ## Active goal (one sentence)

@@ -97,6 +97,23 @@
     does **not** prove economic validity; runtime remains `BOUND_NOT_ACTIVATED`;
     activation eligibility inventory remains separate Operator-GO only.
 
+<a id="ev-20260728-shadow-prep-dashboard-intrabar-blocker-authority-reconcile-pr5583"></a>
+- **EV-20260728-SHADOW-PREP-DASHBOARD-INTRABAR-BLOCKER-AUTHORITY-RECONCILE-PR5583** | Date: 2026-07-28 | Owner: ops | Scope: docs post-merge ratification | Risk: LOW
+  - Source: [Readiness gate contract](runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md) · Inventory: [STEP_29U binding inventory](runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md) · PR: [#5583](https://github.com/rauterfrank-ui/Peak_Trade/pull/5583) · Reviewed head: `01606c79c1b84245e542aa4a03474312d3f0c667` · Squash merge: `5944ff89817594853e051aecd76cfd9383449aab`
+  - Claim: Capability
+    `SHADOW_PREPARATION_DASHBOARD_INTRABAR_BLOCKER_AUTHORITY_RECONCILIATION_V1`
+    MERGED (SQUASH); `EXACT_REVIEWED_HEAD_MERGED=true`; required checks
+    COMPLETE/SUCCESS; ruleset `11192468` temporarily disabled 5s then restored
+    `enforcement=active` / `require_last_push_approval=true` with
+    `RULESET_RESTORE_VERIFIED=true` and no permanent governance drift;
+    canonical Dashboard Intrabar consumer state =
+    `PASS` / `RESOLVED_ON_LANDSCAPE_V2`; stale OPEN-only requirement removed;
+    no second SSOT; no new authority owner.
+  - Non-claims: `OVERALL_SHADOW_READINESS_READY=false`;
+    `RUNTIME_BOUND_NOT_ACTIVATED=true`; Runtime/Shadow/Paper/Testnet/Orders
+    remain false; Economic readiness, Runtime Bridge, and explicit Activation GO
+    remain open blockers; does **not** authorize activation.
+
 <a id="ev-20260725-okx-shadow-offline-no-order-600s-soak"></a>
 - **EV-20260725-OKX-SHADOW-OFFLINE-NO-ORDER-600S-SOAK** | Date: 2026-07-25 | Owner: ops | Scope: docs/evidence-only closeout | Risk: LOW  
   - Source: [Durable soak bundle](../../evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/) · Contract: [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md) · PR: [#5544](https://github.com/rauterfrank-ui/Peak_Trade/pull/5544) · Merge: `bc7b9309b1f7e2e1411e22b483388331f355d0dd`  
