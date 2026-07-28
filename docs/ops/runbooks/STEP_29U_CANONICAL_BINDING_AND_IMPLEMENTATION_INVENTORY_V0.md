@@ -92,8 +92,16 @@ inventory is invalid until corrected.
 PREDECESSOR=STEP_29T_ZERO_ORDER_RUNTIME
 SUCCESSOR=STEP_29V_PAPER
 STEP_29U_LADDER_ROLE=SHADOW
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_EQUAL_STEP_29U=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_EQUAL_STEP_29T=true
+ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_STILL_REQUIRED_FOR_STEP_29U=true
 ```
 
+Optional governed evidence stage
+`PRE_ECONOMIC_ZERO_ORDER_EVIDENCE` (contract
+`docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`) sits *before*
+Economic Validity and is **not** STEP 29U Shadow. It cannot clear
+`ECONOMIC_VALIDITY_PROVEN` or activate Shadow.
 ### Authority rule
 
 ```text
