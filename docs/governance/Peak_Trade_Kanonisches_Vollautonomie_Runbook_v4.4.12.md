@@ -555,6 +555,10 @@ eine **streng begrenzte** Evidence-Stufe zulässig:
 ```text
 GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1=true
+SESSION_EXECUTION_AUTHORIZED=false
+SIX_HOUR_SESSION_EXECUTED=false
+SESSION_EVIDENCE=NOT_AUTHORIZED
 ```
 
 ```text
@@ -592,8 +596,13 @@ LIVE
 
 Kanonischer Session-Contract:
 `docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`.
-Runtime-Ausführung bleibt `BLOCKED`, bis eine separate
-Implementation-Readiness-Capability bestanden ist.
+`PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1` belegt die
+technischen Runner-/Emitter-/Telemetry-/Abort-/Verifier-Surfaces (offline
+dry-run). Eine reale 6h-Session bleibt `SESSION_EXECUTION_AUTHORIZED=false` /
+`SIX_HOUR_SESSION_EXECUTED=false` / `SESSION_EVIDENCE=NOT_AUTHORIZED`, bis ein
+separater Operator-Schritt
+`PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION`
+explizit freigegeben wird. Runtime-Ausführung bleibt `BLOCKED`.
 
 ## 3.4 Vollständigkeitsprinzip vor System-Economic-Evidence
 
@@ -4157,10 +4166,15 @@ LEVEL 2.2 darf LEVEL 2 nicht ersetzen. Für System-Economic-Evidence gilt LEVEL 
 - max. 21600 Sekunden,
 - explizites Operator-GO,
 - keine Economic-/Shadow-/Runtime-Authority,
-- Contract: `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1`.
+- Contract: `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1`,
+- Implementation Readiness: `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1`
+  (technisch vorhanden; reale 6h-Session weiterhin `NOT_AUTHORIZED` /
+  `SIX_HOUR_SESSION_EXECUTED=false`).
 
 Diese Stufe ersetzt weder Economic Validity noch LEVEL 4 Zero-Order Runtime
-(STEP 29T) noch LEVEL 5 Shadow (STEP 29U).
+(STEP 29T) noch LEVEL 5 Shadow (STEP 29U). Nächster autorisierter Schritt für
+eine reale Session (separates GO):
+`PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION`.
 
 ## LEVEL 4 — Zero-Order Runtime
 

@@ -157,6 +157,10 @@ authorization may satisfy Operator-GO.
 
 ```text
 GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EXECUTION_AUTHORIZED=false
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EVIDENCE=NOT_AUTHORIZED
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SIX_HOUR_SESSION_EXECUTED=false
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_STEP_29U_ACTIVATION=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_SATISFY_ECONOMIC_VALIDITY_PROVEN=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_SET_ACTIVATION_ELIGIBLE=true
@@ -164,10 +168,12 @@ PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_SET_ACTIVATION_ELIGIBLE=true
 
 The governed Pre-Economic Zero-Order Evidence stage
 (`docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`) may produce
-passive evidence before Economic Validity. It does **not** satisfy
-`ECONOMIC_VALIDITY_PROVEN`, does **not** clear Activation Eligibility, and does
-**not** authorize STEP 29U activation. Prerequisite `ECONOMIC_VALIDITY_PROVEN`
-remains mandatory for any future STEP 29U activation consideration.
+passive evidence before Economic Validity. Implementation readiness for that
+stage may PASS technically; a real 6h session remains unauthorized / not
+executed. It does **not** satisfy `ECONOMIC_VALIDITY_PROVEN`, does **not**
+clear Activation Eligibility, and does **not** authorize STEP 29U activation.
+Prerequisite `ECONOMIC_VALIDITY_PROVEN` remains mandatory for any future
+STEP 29U activation consideration.
 
 ## Next formally permissible step
 

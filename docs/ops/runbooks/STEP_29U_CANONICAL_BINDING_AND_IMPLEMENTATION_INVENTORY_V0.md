@@ -94,14 +94,17 @@ SUCCESSOR=STEP_29V_PAPER
 STEP_29U_LADDER_ROLE=SHADOW
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_EQUAL_STEP_29U=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_EQUAL_STEP_29T=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1=true
+PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_EVIDENCE=NOT_AUTHORIZED
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_STILL_REQUIRED_FOR_STEP_29U=true
 ```
 
 Optional governed evidence stage
 `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE` (contract
 `docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`) sits *before*
-Economic Validity and is **not** STEP 29U Shadow. It cannot clear
-`ECONOMIC_VALIDITY_PROVEN` or activate Shadow.
+Economic Validity and is **not** STEP 29U Shadow. Implementation readiness may
+exist; session evidence remains `NOT_AUTHORIZED` until a separate operator
+authorization step. It cannot clear `ECONOMIC_VALIDITY_PROVEN` or activate Shadow.
 ### Authority rule
 
 ```text
