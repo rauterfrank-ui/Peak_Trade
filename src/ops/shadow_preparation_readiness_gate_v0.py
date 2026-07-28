@@ -83,7 +83,14 @@ DETERMINISTIC_EVALUATED_AT_DEFAULT = "1970-01-01T00:00:00Z"
 AUTHORITY_EFFECT_NONE: Literal["NONE"] = "NONE"
 RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED = "BOUND_NOT_ACTIVATED"
 DASHBOARD_BLOCKER_ID_CANONICAL = "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY"
+# Historical readiness emission only — not current Landscape V2 truth.
 DASHBOARD_BLOCKER_STATE_OPEN = "OPEN"
+DASHBOARD_BLOCKER_STATE_RESOLVED_ON_LANDSCAPE_V2 = "RESOLVED_ON_LANDSCAPE_V2"
+DASHBOARD_INTRABAR_CONTINUITY_PASS = "PASS"
+CANONICAL_DASHBOARD_INTRABAR_TRUTH_RELATIVE_PATH = (
+    "docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md"
+)
+CANONICAL_DASHBOARD_INTRABAR_PASS_TOKEN = "INTRABAR_CAPABILITY=PASS"
 
 DEFAULT_CONFIG_RELATIVE_PATH = Path("config/ops/shadow_preparation_readiness_gate_v0.toml")
 CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY = "canonical_step_29u_semantics_reference"
@@ -374,21 +381,9 @@ def evaluate_shadow_preparation_readiness_gate_v0(
         if value is True:
             raise ShadowPreparationReadinessGateError(f"activation_flag_true_rejected:{key}")
 
+    _validate_canonical_dashboard_intrabar_truth(repo_root=root)
     dashboard = _resolve_dashboard_blocker(cfg, dashboard_blocker_overrides)
-    if dashboard["dashboard_blocker_id"] != DASHBOARD_BLOCKER_ID_CANONICAL:
-        raise ShadowPreparationReadinessGateError(
-            f"dashboard_blocker_id_mismatch:{dashboard['dashboard_blocker_id']!r}"
-        )
-    if dashboard["dashboard_blocker_state"] != DASHBOARD_BLOCKER_STATE_OPEN:
-        raise ShadowPreparationReadinessGateError(
-            f"dashboard_blocker_state_must_be_open:{dashboard['dashboard_blocker_state']!r}"
-        )
-    if dashboard["dashboard_blocker_resolved"] is True:
-        raise ShadowPreparationReadinessGateError("dashboard_blocker_resolved_rejected")
-    if dashboard["dashboard_blocker_waived"] is True:
-        raise ShadowPreparationReadinessGateError("dashboard_blocker_waived_rejected")
-    if dashboard["dashboard_blocker_accepted_as_done"] is True:
-        raise ShadowPreparationReadinessGateError("dashboard_blocker_accepted_as_done_rejected")
+    _assert_dashboard_blocker_matches_canonical_resolved(dashboard)
 
     runtime_bridge_state = str(
         cfg.get("runtime_bridge_state") or RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED
@@ -439,10 +434,13 @@ def evaluate_shadow_preparation_readiness_gate_v0(
     unmet = list(required_gates)
     if step_29u_bound and "CANONICAL_STEP_29U_BOUND" in unmet:
         unmet.remove("CANONICAL_STEP_29U_BOUND")
+    if bool(dashboard["dashboard_blocker_resolved"]) and "DASHBOARD_BLOCKER_RESOLVED" in unmet:
+        unmet.remove("DASHBOARD_BLOCKER_RESOLVED")
 
+    # Dashboard intrabar continuity is resolved on Landscape V2; independent
+    # blockers below keep overall Shadow preparation non-ready / non-activatable.
     blockers = [
         "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED",
-        "DASHBOARD_BLOCKER_OPEN:MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY",
         "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
         "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U",
         "NO_ACTIVATION_AUTHORIZED",
@@ -483,8 +481,8 @@ def evaluate_shadow_preparation_readiness_gate_v0(
         economic_validity_offline_gate_pass=False,
         runtime_bridge_state=RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED,
         dashboard_blocker_id=DASHBOARD_BLOCKER_ID_CANONICAL,
-        dashboard_blocker_state=DASHBOARD_BLOCKER_STATE_OPEN,
-        dashboard_blocker_resolved=False,
+        dashboard_blocker_state=DASHBOARD_BLOCKER_STATE_RESOLVED_ON_LANDSCAPE_V2,
+        dashboard_blocker_resolved=True,
         dashboard_blocker_waived=False,
         dashboard_blocker_accepted_as_done=False,
         not_step_29u_implementation=True,
@@ -1216,18 +1214,63 @@ def _validate_config_document(doc: Mapping[str, Any]) -> None:
         raise ShadowPreparationReadinessGateError("config_economic_validity_offline_gate_pass_true")
     if "dashboard_blocker_id" not in doc:
         raise ShadowPreparationReadinessGateError("config_dashboard_blocker_id_missing")
-    if doc.get("dashboard_blocker_state") not in (None, DASHBOARD_BLOCKER_STATE_OPEN):
-        if doc.get("dashboard_blocker_state") != DASHBOARD_BLOCKER_STATE_OPEN:
-            raise ShadowPreparationReadinessGateError(
-                f"config_dashboard_blocker_state_invalid:{doc.get('dashboard_blocker_state')!r}"
-            )
+    state = doc.get("dashboard_blocker_state")
+    if state not in (
+        None,
+        DASHBOARD_BLOCKER_STATE_RESOLVED_ON_LANDSCAPE_V2,
+    ):
+        raise ShadowPreparationReadinessGateError(
+            f"config_dashboard_blocker_state_invalid:{state!r}"
+        )
+    if doc.get("dashboard_blocker_resolved") is False:
+        raise ShadowPreparationReadinessGateError("config_dashboard_blocker_resolved_must_be_true")
     for bad in (
-        "dashboard_blocker_resolved",
         "dashboard_blocker_waived",
         "dashboard_blocker_accepted_as_done",
     ):
         if doc.get(bad) is True:
             raise ShadowPreparationReadinessGateError(f"config_{bad}_true_rejected")
+
+
+def _validate_canonical_dashboard_intrabar_truth(*, repo_root: Path) -> None:
+    """Consume Landscape V2 as the sole current intrabar continuity authority.
+
+    The readiness gate does not own Market Dashboard truth and does not recompute
+    intrabar continuity. Missing or contradictory owner evidence fails closed.
+    """
+    relative = CANONICAL_DASHBOARD_INTRABAR_TRUTH_RELATIVE_PATH
+    path = _require_repo_relative_file(
+        repo_root=repo_root,
+        relative_path=relative,
+        context_id="canonical_dashboard_intrabar_truth",
+        code_prefix="CANONICAL_DASHBOARD_INTRABAR_TRUTH",
+    )
+    body = path.read_text(encoding="utf-8")
+    if CANONICAL_DASHBOARD_INTRABAR_PASS_TOKEN not in body:
+        raise ShadowPreparationReadinessGateError(
+            "canonical_dashboard_intrabar_pass_token_missing:"
+            f"{CANONICAL_DASHBOARD_INTRABAR_PASS_TOKEN}"
+        )
+
+
+def _assert_dashboard_blocker_matches_canonical_resolved(
+    dashboard: Mapping[str, Any],
+) -> None:
+    if dashboard["dashboard_blocker_id"] != DASHBOARD_BLOCKER_ID_CANONICAL:
+        raise ShadowPreparationReadinessGateError(
+            f"dashboard_blocker_id_mismatch:{dashboard['dashboard_blocker_id']!r}"
+        )
+    state = str(dashboard["dashboard_blocker_state"])
+    if state == DASHBOARD_BLOCKER_STATE_OPEN:
+        raise ShadowPreparationReadinessGateError("dashboard_blocker_state_stale_open_rejected")
+    if state != DASHBOARD_BLOCKER_STATE_RESOLVED_ON_LANDSCAPE_V2:
+        raise ShadowPreparationReadinessGateError(f"dashboard_blocker_state_invalid:{state!r}")
+    if dashboard["dashboard_blocker_resolved"] is not True:
+        raise ShadowPreparationReadinessGateError("dashboard_blocker_resolved_required_true")
+    if dashboard["dashboard_blocker_waived"] is True:
+        raise ShadowPreparationReadinessGateError("dashboard_blocker_waived_rejected")
+    if dashboard["dashboard_blocker_accepted_as_done"] is True:
+        raise ShadowPreparationReadinessGateError("dashboard_blocker_accepted_as_done_rejected")
 
 
 def _resolve_activation_flags(
@@ -1256,9 +1299,9 @@ def _resolve_dashboard_blocker(
             cfg.get("dashboard_blocker_id") or DASHBOARD_BLOCKER_ID_CANONICAL
         ),
         "dashboard_blocker_state": str(
-            cfg.get("dashboard_blocker_state") or DASHBOARD_BLOCKER_STATE_OPEN
+            cfg.get("dashboard_blocker_state") or DASHBOARD_BLOCKER_STATE_RESOLVED_ON_LANDSCAPE_V2
         ),
-        "dashboard_blocker_resolved": bool(cfg.get("dashboard_blocker_resolved", False)),
+        "dashboard_blocker_resolved": bool(cfg.get("dashboard_blocker_resolved", True)),
         "dashboard_blocker_waived": bool(cfg.get("dashboard_blocker_waived", False)),
         "dashboard_blocker_accepted_as_done": bool(
             cfg.get("dashboard_blocker_accepted_as_done", False)
@@ -1513,6 +1556,10 @@ __all__ = [
     "RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED",
     "DASHBOARD_BLOCKER_ID_CANONICAL",
     "DASHBOARD_BLOCKER_STATE_OPEN",
+    "DASHBOARD_BLOCKER_STATE_RESOLVED_ON_LANDSCAPE_V2",
+    "DASHBOARD_INTRABAR_CONTINUITY_PASS",
+    "CANONICAL_DASHBOARD_INTRABAR_TRUTH_RELATIVE_PATH",
+    "CANONICAL_DASHBOARD_INTRABAR_PASS_TOKEN",
     "ALLOWED_PREPARATION_STATUSES",
     "REQUIRED_MINDESTKONTRAKT_COMPONENT_IDS",
     "ShadowPreparationReadinessGateError",

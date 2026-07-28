@@ -6,6 +6,8 @@
 # This file does not authorize Shadow, Paper, Testnet, Scheduler, Runtime,
 # Live, or Orders. It does not implement canonical STEP 29U Shadow Mode.
 # Closing PR #5529 did not resolve MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY.
+# Landscape V2 (PR #5548+) later ratified INTRABAR_CAPABILITY=PASS; this config
+# projects that resolved readiness state and does not own Dashboard truth.
 
 schema_version = "shadow_preparation_readiness_gate.v0"
 producer_family = "ops.shadow_preparation_readiness_gate_v0"
@@ -27,8 +29,8 @@ known_canonical_authority_identifiers = [
 canonical_step_29u_semantics_reference = "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md"
 
 dashboard_blocker_id = "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY"
-dashboard_blocker_state = "OPEN"
-dashboard_blocker_resolved = false
+dashboard_blocker_state = "RESOLVED_ON_LANDSCAPE_V2"
+dashboard_blocker_resolved = true
 dashboard_blocker_waived = false
 dashboard_blocker_accepted_as_done = false
 

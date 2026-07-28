@@ -157,7 +157,13 @@ def test_inventory_records_external_blocker_policy_without_dashboard_silent_conv
         "MARKET_DASHBOARD_INTRABAR_RELATION="
         "INDEPENDENT_WORKSTREAM_AND_ACTIVATION_SEQUENCING_GATE" in text
     )
-    assert "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN" in text
+    assert "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=PASS" in text
+    assert "DASHBOARD_BLOCKER_STATE=RESOLVED_ON_LANDSCAPE_V2" in text
+    assert "DASHBOARD_BLOCKER_RESOLVED=true" in text
+    assert (
+        "HISTORICAL_AT_STEP_29U_RATIFICATION: MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN"
+        in (text)
+    )
     assert "RUNTIME_BRIDGE_RELATION=HARD_ACTIVATION_PREREQUISITE" in text
     assert "SCHEDULER_RELATION=HARD_ACTIVATION_PREREQUISITE" in text
     assert "NETWORK_RUNTIME_RELATION=HARD_PROHIBITION_UNTIL_EXPLICIT_GO" in text
@@ -170,10 +176,12 @@ def test_inventory_defines_implemented_offline_capability_and_next_activation_ga
     assert "STEP_29U_LIFECYCLE_OWNER=ops.step_29u_offline_capability_v0" in text
     assert "STEP_29U_OPERATOR_COMMAND=" in text
     assert (
-        "NEXT_AUTHORIZED_SLICE=STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_ONLY_AFTER_SEPARATE_OPERATOR_GO"
+        "NEXT_AUTHORIZED_SLICE=OPERATOR_SELECTION_FROM_RATIFIED_MATERIALLY_DIFFERENT_RESEARCH_BACKLOG"
         in text
     )
     assert "SEPARATE_OPERATOR_GO_REQUIRED=true" in text
+    assert "MARKET_DASHBOARD_INTRABAR_RESOLVED=true" in text
+    assert "MARKET_DASHBOARD_INTRABAR_RESOLVED=false" not in text
 
 
 def test_current_focus_and_readiness_point_to_inventory_without_claiming_activation_v0() -> None:

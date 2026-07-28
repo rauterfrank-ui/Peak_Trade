@@ -74,20 +74,34 @@ Classifications used by this contract include:
 - `EXECUTOR_WITHOUT_CANONICAL_BINDING`
 - `UNKNOWN_FAIL_CLOSED` (fail-closed — evaluation rejects ambiguous surfaces)
 
-## Dashboard blocker (still OPEN)
+## Dashboard blocker (resolved on Landscape V2)
 
 ```text
+# HISTORICAL (pre-Landscape-V2 / at PR #5529 closeout):
+# DASHBOARD_BLOCKER_STATE=OPEN
+# DASHBOARD_BLOCKER_RESOLVED=false
+# MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN
+#
+# CURRENT (consumer projection of Landscape V2 truth; not a second owner):
 DASHBOARD_BLOCKER_ID=MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY
-DASHBOARD_BLOCKER_STATE=OPEN
-DASHBOARD_BLOCKER_RESOLVED=false
+MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=PASS
+DASHBOARD_BLOCKER_STATE=RESOLVED_ON_LANDSCAPE_V2
+DASHBOARD_BLOCKER_RESOLVED=true
 DASHBOARD_BLOCKER_WAIVED=false
 DASHBOARD_BLOCKER_ACCEPTED_AS_DONE=false
+DASHBOARD_INTRABAR_ACTIVE_READINESS_BLOCKER=false
+CANONICAL_DASHBOARD_INTRABAR_TRUTH_OWNER=docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
 ```
 
-Closing PR #5529 did **not** resolve, waive, or accept the dashboard defect.
-`MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` remains **OPEN** in every
-produced readiness result. This contract must not resolve or waive that
-blocker.
+Closing PR #5529 did **not** resolve the dashboard defect at that time.
+Landscape V2 later ratified visible intrabar continuity as `PASS`
+(`INTRABAR_CAPABILITY=PASS`; readiness projection
+`RESOLVED_ON_LANDSCAPE_V2`). This readiness contract **consumes** that
+canonical truth and does **not** become a second Market Dashboard owner.
+Resolving this blocker does **not** authorize Shadow, Paper, Testnet,
+Scheduler, Runtime, Live, Orders, Capital, or Promotion. Independent
+blockers (Runtime Bridge `BOUND_NOT_ACTIVATED`, economic validity fail,
+missing activation operator GO) remain in force.
 
 ## Canonical STEP 29U / 29V status
 
@@ -649,8 +663,10 @@ Offline STEP 29U capability owner:
 unauthorized. Next **activation-eligibility** work requires a **separate
 operator GO**. No activation from this readiness contract alone. Runtime
 remains `BOUND_NOT_ACTIVATED`. Economic validity remains not proven / blocked.
-Dashboard blocker `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` remains OPEN
-and separate.
+Dashboard intrabar continuity is `PASS` /
+`DASHBOARD_BLOCKER_STATE=RESOLVED_ON_LANDSCAPE_V2` on the Landscape V2 owner
+and is **no longer** an active readiness blocker; resolution does **not**
+authorize activation.
 
 ## Explicit exclusions
 
