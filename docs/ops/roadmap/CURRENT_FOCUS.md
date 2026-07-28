@@ -237,7 +237,9 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Activation binding remains unauthorized (`CANONICAL_STEP_29U_ACTIVATION_BOUND=false`)
 - Runtime = `BOUND_NOT_ACTIVATED`
 - Economic validity = not proven / blocked
-- `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` = OPEN (independent)
+- `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` = PASS /
+  `RESOLVED_ON_LANDSCAPE_V2` (no longer an active readiness blocker;
+  does not authorize activation)
 - No Runtime/Scheduler/Paper/Testnet/Live activation authorized
 
 ---

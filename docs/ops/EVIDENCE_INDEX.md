@@ -108,7 +108,9 @@
   - Non-claims: does **not** resolve `CANONICAL_STEP_29U_ABSENT` (remains
     OPEN_INTENTIONAL_ACTIVATION_PREREQUISITE); does **not** prove economic
     validity; runtime remains `BOUND_NOT_ACTIVATED`; Market Dashboard
-    `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` remains OPEN and separate;
+    `MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY` was recorded OPEN at soak
+    time (historical); current Landscape V2 truth is PASS /
+    `RESOLVED_ON_LANDSCAPE_V2` and does **not** authorize activation;
     no Testnet/Live/orders authorization.
 
 <a id="ev-20260409-canary-manifest-template"></a>

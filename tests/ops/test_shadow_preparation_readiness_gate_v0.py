@@ -16,9 +16,12 @@ from src.ops.shadow_preparation_readiness_gate_v0 import (
     ACTIVATION_FLAG_KEYS,
     ALLOWED_PREPARATION_STATUSES,
     AUTHORITY_EFFECT_NONE,
+    CANONICAL_DASHBOARD_INTRABAR_PASS_TOKEN,
+    CANONICAL_DASHBOARD_INTRABAR_TRUTH_RELATIVE_PATH,
     CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY,
     DASHBOARD_BLOCKER_ID_CANONICAL,
     DASHBOARD_BLOCKER_STATE_OPEN,
+    DASHBOARD_BLOCKER_STATE_RESOLVED_ON_LANDSCAPE_V2,
     DEFAULT_PROJECTION_OUTPUT_RELATIVE_PATH,
     DETERMINISTIC_EVALUATED_AT_DEFAULT,
     PACKAGE_MARKER,
@@ -109,14 +112,25 @@ def test_economic_gate_remains_false_blocked() -> None:
     assert "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED" in result.blockers
 
 
-def test_dashboard_blocker_remains_open_unresolved_unwaived() -> None:
+def test_dashboard_blocker_resolved_on_landscape_v2() -> None:
     result = _default_result()
     assert result.dashboard_blocker_id == DASHBOARD_BLOCKER_ID_CANONICAL
     assert result.dashboard_blocker_id == "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY"
-    assert result.dashboard_blocker_state == DASHBOARD_BLOCKER_STATE_OPEN
-    assert result.dashboard_blocker_resolved is False
+    assert result.dashboard_blocker_state == DASHBOARD_BLOCKER_STATE_RESOLVED_ON_LANDSCAPE_V2
+    assert result.dashboard_blocker_resolved is True
     assert result.dashboard_blocker_waived is False
     assert result.dashboard_blocker_accepted_as_done is False
+    assert "DASHBOARD_BLOCKER_OPEN:MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY" not in (
+        result.blockers
+    )
+    assert "DASHBOARD_BLOCKER_RESOLVED" not in result.unmet_gates
+    assert result.shadow_preparation_complete is False
+    assert result.shadow_activatable is False
+    assert result.runtime_bridge_state == RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED
+    assert result.shadow_activation_authorized is False
+    assert "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED" in result.blockers
+    assert "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED" in result.blockers
+    assert "NO_ACTIVATION_AUTHORIZED" in result.blockers
 
 
 def test_phase24_phase31_surfaces_non_canonical_step29u() -> None:
@@ -250,12 +264,20 @@ def test_docs_contain_mandatory_non_activation_and_non_equivalence_tokens() -> N
         "BOUND_NOT_ACTIVATED",
         "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false",
         "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY",
+        "RESOLVED_ON_LANDSCAPE_V2",
+        "DASHBOARD_BLOCKER_RESOLVED=true",
+        "DASHBOARD_INTRABAR_ACTIVE_READINESS_BLOCKER=false",
         "Closing PR #5529",
         "separate operator GO",
         "NON_ACTIVATING=true",
         "AUTHORITY_EFFECT=NONE",
     ):
         assert token in text, token
+    assert "DASHBOARD_BLOCKER_STATE=OPEN" in text  # historical marker retained
+    assert "DASHBOARD_BLOCKER_STATE=RESOLVED_ON_LANDSCAPE_V2" in text
+    # Current authoritative claim must not require OPEN-only semantics.
+    assert "remains **OPEN** in every" not in text
+    assert "This contract must not resolve or waive that\nblocker." not in text
 
 
 def test_docs_designate_canonical_offline_shadow_preparation_operator_command() -> None:
@@ -310,9 +332,50 @@ def test_authority_effect_override_non_none_rejected() -> None:
         _default_result(authority_effect_override="GRANT")
 
 
-def test_dashboard_resolved_override_rejected() -> None:
-    with pytest.raises(ShadowPreparationReadinessGateError, match="dashboard_blocker_resolved"):
-        _default_result(dashboard_blocker_overrides={"dashboard_blocker_resolved": True})
+def test_dashboard_stale_open_override_rejected() -> None:
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="dashboard_blocker_state_stale_open"
+    ):
+        _default_result(
+            dashboard_blocker_overrides={"dashboard_blocker_state": DASHBOARD_BLOCKER_STATE_OPEN}
+        )
+
+
+def test_dashboard_unresolved_override_rejected() -> None:
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="dashboard_blocker_resolved_required_true"
+    ):
+        _default_result(dashboard_blocker_overrides={"dashboard_blocker_resolved": False})
+
+
+def test_dashboard_waived_or_accepted_override_rejected() -> None:
+    with pytest.raises(ShadowPreparationReadinessGateError, match="dashboard_blocker_waived"):
+        _default_result(dashboard_blocker_overrides={"dashboard_blocker_waived": True})
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="dashboard_blocker_accepted_as_done"
+    ):
+        _default_result(dashboard_blocker_overrides={"dashboard_blocker_accepted_as_done": True})
+
+
+def test_missing_canonical_dashboard_intrabar_truth_fails_closed(tmp_path: Path) -> None:
+    root, cfg = _materialize_temp_repo(tmp_path)
+    truth = root / CANONICAL_DASHBOARD_INTRABAR_TRUTH_RELATIVE_PATH
+    truth.unlink()
+    with pytest.raises(
+        ShadowPreparationReadinessGateError, match="CANONICAL_DASHBOARD_INTRABAR_TRUTH"
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(config=cfg, repo_root=root)
+
+
+def test_contradictory_canonical_dashboard_intrabar_truth_fails_closed(tmp_path: Path) -> None:
+    root, cfg = _materialize_temp_repo(tmp_path)
+    truth = root / CANONICAL_DASHBOARD_INTRABAR_TRUTH_RELATIVE_PATH
+    truth.write_text("# stub without pass token\n", encoding="utf-8")
+    with pytest.raises(
+        ShadowPreparationReadinessGateError,
+        match="canonical_dashboard_intrabar_pass_token_missing",
+    ):
+        evaluate_shadow_preparation_readiness_gate_v0(config=cfg, repo_root=root)
 
 
 def test_mindestkontrakt_inventory_exact_set_and_stable_order() -> None:
@@ -429,8 +492,8 @@ def test_docs_declare_mindestkontrakt_inventory_non_activating() -> None:
 
 EXPECTED_DEFAULT_BLOCKERS = (
     # CANONICAL_STEP_29U_ABSENT cleared when verified composition is bound
+    # DASHBOARD_BLOCKER_OPEN cleared when Landscape V2 INTRABAR_CAPABILITY=PASS
     "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED",
-    "DASHBOARD_BLOCKER_OPEN:MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY",
     "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
     "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U",
     "NO_ACTIVATION_AUTHORIZED",
@@ -445,6 +508,7 @@ def _collect_required_relative_paths(cfg: dict) -> set[str]:
         for evidence_path in component.get("evidence_paths") or []:
             paths.add(str(evidence_path).strip())
     paths.add(str(cfg[CANONICAL_STEP_29U_SEMANTICS_REFERENCE_KEY]).strip())
+    paths.add(CANONICAL_DASHBOARD_INTRABAR_TRUTH_RELATIVE_PATH)
     return paths
 
 
@@ -455,7 +519,13 @@ def _materialize_temp_repo(tmp_path: Path) -> tuple[Path, dict]:
         target = tmp_path / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.exists():
-            target.write_text(f"# stub:{relative}\n", encoding="utf-8")
+            if relative == CANONICAL_DASHBOARD_INTRABAR_TRUTH_RELATIVE_PATH:
+                target.write_text(
+                    f"# stub:{relative}\n{CANONICAL_DASHBOARD_INTRABAR_PASS_TOKEN}\n",
+                    encoding="utf-8",
+                )
+            else:
+                target.write_text(f"# stub:{relative}\n", encoding="utf-8")
     config_dest = tmp_path / "config" / "ops" / "shadow_preparation_readiness_gate_v0.toml"
     config_dest.parent.mkdir(parents=True, exist_ok=True)
     config_dest.write_text(CONFIG.read_text(encoding="utf-8"), encoding="utf-8")

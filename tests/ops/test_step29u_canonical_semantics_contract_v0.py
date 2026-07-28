@@ -74,14 +74,15 @@ def test_step29u_lists_historical_surfaces_as_non_equivalent_v0() -> None:
         assert token in body, token
 
 
-def test_step29u_preserves_open_dashboard_blocker_v0() -> None:
+def test_step29u_records_resolved_dashboard_blocker_current_truth_v0() -> None:
     body = _step29u_body()
-    assert "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN" in body
-    assert "DASHBOARD_BLOCKER_STATE=OPEN" in body
-    assert "DASHBOARD_BLOCKER_RESOLVED=false" in body
+    assert "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=PASS" in body
+    assert "DASHBOARD_BLOCKER_STATE=RESOLVED_ON_LANDSCAPE_V2" in body
+    assert "DASHBOARD_BLOCKER_RESOLVED=true" in body
     assert "DASHBOARD_BLOCKER_WAIVED=false" in body
-    assert "DASHBOARD_BLOCKER_RESOLVED=true" not in body
-    assert "DASHBOARD_BLOCKER_WAIVED=true" not in body
+    # Historical OPEN claim remains visible only as superseded/historical marker.
+    assert "HISTORICAL" in body and "MARKET_DASHBOARD_VISIBLE_INTRABAR_CONTINUITY=OPEN" in body
+    assert "DASHBOARD_BLOCKER_RESOLVED=false" in body  # historical commented/superseded marker
 
 
 def test_step29u_does_not_declare_activation_or_scheduler_runtime_v0() -> None:
