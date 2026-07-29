@@ -1,7 +1,9 @@
 """Observation session lifecycle contract (non-executing).
 
 Defines Start/Timeout/Stop/Lock/Killstate/No-Auto-Promotion semantics.
-Wallclock session execution is permanently refused by this capability.
+Wallclock session execution is refused by this offline capability.
+Successor owner:
+``INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1``.
 """
 
 from __future__ import annotations

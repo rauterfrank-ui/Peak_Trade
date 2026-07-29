@@ -1,5 +1,12 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+
+<a id="ev-20260729-integrated-paper-shadow-observation-wallclock-session-execution-capability-v1"></a>
+- **EV-20260729-INTEGRATED-PAPER-SHADOW-OBSERVATION-WALLCLOCK-SESSION-EXECUTION-CAPABILITY-V1** | Date: 2026-07-29 | Owner: ops | Scope: capability implementation only | Risk: MED
+  - Source: [Capability contract](runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md) · Owner: `ops.integrated_paper_shadow_observation_wallclock_session_execution_v1` · CLI: `python scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py preflight`
+  - Claim: Technical wallclock OKX-EEA REST MD-observe capability with scoped auth consumption, evidence, PASS/FAIL/ABORT; no productive session/network in this PR.
+  - Non-claims: not productive GO/prereg; not real 6h session; not Orders/Testnet/Live/Paper execution; not Economic Validity PASS; not Promotion.
+
 <a id="ev-20260729-paper-shadow-observation-operator-go-session-preregistration-v1"></a>
 - **EV-20260729-PAPER-SHADOW-OBSERVATION-OPERATOR-GO-AND-SESSION-PREREGISTRATION-V1** | Date: 2026-07-29 | Owner: ops | Scope: capability implementation only | Risk: LOW
   - Source: [Capability contract](runbooks/PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1.md) · Owner: `ops.paper_shadow_observation_operator_go_session_preregistration_v1` · CLI: `python scripts/ops/assess_paper_shadow_observation_operator_go_session_preregistration_v1.py --mode discover --json`

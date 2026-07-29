@@ -71,3 +71,13 @@ no_auto_promotion = true
 contract_doc = "docs/ops/runbooks/PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1.md"
 observation_capability_binding = "ops.integrated_paper_shadow_observation_session_v1"
 pipeline_owner = "ops.integrated_paper_shadow_economic_validity_pipeline_v1"
+
+# Scoped wallclock MD-observe (defaults remain false / empty).
+# network_authorized=true only with network_scope=okx_eea_futures_public_md_observe_v1
+# session_execution_authorized=true only with session_execution_scope=paper_shadow_observation_wallclock_v1
+[scoped_wallclock_md_observe]
+network_scope_allowed = ["okx_eea_futures_public_md_observe_v1"]
+session_execution_scope_allowed = ["paper_shadow_observation_wallclock_v1"]
+generic_network_grant_forbidden = true
+generic_session_execution_grant_forbidden = true
+wallclock_successor_capability = "INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1"

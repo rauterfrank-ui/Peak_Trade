@@ -53,7 +53,7 @@ FULL_CANONICAL_SYSTEM_PARITY
 PAPER_SHADOW_OBSERVATION_AUTHORIZED=false
 ORDERS_ALLOWED=false
 BROKER_WRITES_ALLOWED=false
-NETWORK_ALLOWED=false
+NETWORK_ALLOWED=false  # offline IPSO default; wallclock successor uses scoped MD-observe
 CREDENTIALS_ALLOWED=false
 WALLCLOCK_SESSION_EXECUTION_ALLOWED=false
 OPERATOR_GO_GRANTED=false
@@ -85,7 +85,8 @@ says otherwise. Authorization is not Execution.
 ## Session lifecycle
 
 Defines Start / Timeout / Stop / Lock / Killstate / No-Auto-Promotion.
-Wallclock execution is refused (`WALLCLOCK_SESSION_EXECUTION_FORBIDDEN`).
+Wallclock execution is refused here (`WALLCLOCK_SESSION_EXECUTION_FORBIDDEN`).
+Successor: `INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1`.
 Killstate triggers include stale data, gaps, clock drift, invariant violation,
 unexpected write attempt, config drift, duplicate session, evidence sink failure.
 

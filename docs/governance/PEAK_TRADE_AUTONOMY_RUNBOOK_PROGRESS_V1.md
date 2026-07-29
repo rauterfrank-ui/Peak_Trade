@@ -1,3 +1,16 @@
+### INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1
+
+- Scope: `INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1`
+- Decision: `IMPLEMENT_TECHNICAL_WALLCLOCK_MD_OBSERVE_CAPABILITY_NOT_PRODUCTIVE_AUTH`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_PRODUCTIVE_SESSION`
+- Owner: `ops.integrated_paper_shadow_observation_wallclock_session_execution_v1`
+- Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md`
+- Transport: REST-only `https://eea.okx.com`; instrument `ETH-USD_UM_XPERP-310404`
+- Scopes: `okx_eea_futures_public_md_observe_v1` / `paper_shadow_observation_wallclock_v1`
+- Flags: no productive GO/session; Orders/Testnet/Live/Paper/Economic Validity unchanged false
+- Explicit non-actions: no real 6h session in this PR; no real network in CI; no Notion
+
+
 ### PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1
 
 - Scope: `PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1`

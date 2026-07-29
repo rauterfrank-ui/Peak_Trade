@@ -47,7 +47,9 @@ FULL_CANONICAL_SYSTEM_PARITY
    PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1;
    Readiness ≠ Authorization; Authorization ≠ Execution; no session start here)
 → INTEGRATED_PAPER_SHADOW_OBSERVATION
-  (later wallclock/session execution capability — not granted by GO contracts alone)
+  (wallclock MD-observe:
+   INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1;
+   scoped network/session only; not granted by GO alone)
 → INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE
 → INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED
 → ECONOMIC_VALIDITY_PASS

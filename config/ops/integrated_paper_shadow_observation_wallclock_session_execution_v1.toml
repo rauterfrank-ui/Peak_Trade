@@ -1,0 +1,54 @@
+# Integrated Paper-Shadow Observation Wallclock Session Execution Capability v1
+#
+# Technical capability only. Repository defaults do not authorize a productive
+# session. No real network in CI. No Orders/Testnet/Live/Paper execution.
+
+schema_version = "integrated_paper_shadow_observation_wallclock_session_execution.v1"
+producer_family = "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1"
+capability_id = "INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1"
+authority_effect = "NONE"
+activation_effect = "NONE"
+runtime_effect = "NONE"
+order_effect = "NONE"
+economic_gate_effect = "NONE"
+
+venue = "OKX"
+market_type = "FUTURES"
+host = "eea.okx.com"
+transport = "rest_poll_v1"
+instrument_allowlist = ["ETH-USD_UM_XPERP-310404"]
+btc_forbidden = true
+spot_forbidden = true
+
+max_session_duration_seconds = 21600
+poll_interval_seconds = 2.0
+heartbeat_interval_seconds = 5.0
+heartbeat_loss_seconds = 15.0
+max_stale_seconds = 5.0
+max_gap_seconds = 10.0
+max_clock_skew_seconds = 30.0
+max_clock_drift_seconds = 30.0
+consecutive_stale_budget = 3
+max_reconnect_attempts = 10
+max_reconnect_window_seconds = 120
+per_request_max_retries = 2
+session_http_429_budget = 20
+min_quality_window_seconds = 300
+
+network_scope = "okx_eea_futures_public_md_observe_v1"
+session_execution_scope = "paper_shadow_observation_wallclock_v1"
+
+orders_authorized = false
+testnet_authorized = false
+live_authorized = false
+auto_promotion_authorized = false
+credentials_authorized = false
+paper_execution_authorized = false
+economic_validity_pass = false
+promotion_pass = false
+
+evidence_schema = "ops.integrated_paper_shadow_observation_wallclock_evidence_v1"
+contract_doc = "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md"
+pipeline_owner = "ops.integrated_paper_shadow_economic_validity_pipeline_v1"
+go_prereg_owner = "ops.paper_shadow_observation_operator_go_session_preregistration_v1"
+observation_owner = "ops.integrated_paper_shadow_observation_session_v1"
