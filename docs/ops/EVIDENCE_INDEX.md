@@ -1,5 +1,11 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260729-integrated-paper-shadow-observation-session-capability-v1"></a>
+- **EV-20260729-INTEGRATED-PAPER-SHADOW-OBSERVATION-SESSION-CAPABILITY-V1** | Date: 2026-07-29 | Owner: ops | Scope: capability implementation only | Risk: LOW
+  - Source: [Capability contract](runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md) · Owner: `ops.integrated_paper_shadow_observation_session_v1` · CLI: `python scripts/ops/run_integrated_paper_shadow_observation_session_contract_v1.py --mode observation`
+  - Claim: Canonical Integrated Paper-Shadow Observation path surfaces implemented (entrypoint, simulated portfolio economics, readiness producer, lifecycle, OKX Futures market-data policy, durable evidence, bundle verifier); stale Shadow-Prep/Runtime-Bridge contradictions reconciled; all authority flags remain false.
+  - Non-claims: not Operator-GO; not wallclock session; not authorization; not Testnet/Live/Orders; not Runtime-Bridge activation; not Economic Validity PASS.
+
 <a id="ev-20260726-momentum-v2-vol-scaled-v1-terminal-retirement-closeout"></a>
 - **EV-20260726-MOMENTUM-V2-VOL-SCALED-V1-TERMINAL-RETIREMENT-CLOSEOUT** | Date: 2026-07-26 | Owner: research | Scope: offline definition-only governance closeout | Risk: LOW
   - Source: [Closeout evidence](../evidence/momentum_v2_vol_scaled_v1_terminal_retirement_closeout_v1/) · Lane backlog: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1` · Program: `MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1` · Lifecycle: `CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1`

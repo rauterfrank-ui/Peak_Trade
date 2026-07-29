@@ -137,6 +137,7 @@ BROKER_WRITES_PERFORMED=false
 |---|---|
 | Pipeline evaluator | `src/ops/integrated_paper_shadow_economic_validity_pipeline_v1.py` |
 | Pipeline config | `config/ops/integrated_paper_shadow_economic_validity_pipeline_v1.toml` |
+| Integrated Paper-Shadow Observation session capability | `src/ops/integrated_paper_shadow_observation_session_v1/` |
 | Shadow preparation readiness | `src/ops/shadow_preparation_readiness_gate_v0.py` |
 | Promotion economic gate (legacy consumer; offline sub-evidence) | `src/governance/promotion_loop/promotion_economic_gate_v1.py` |
 | Zero-Order contract | `src/ops/pre_economic_zero_order_evidence_session_contract_v1.py` |

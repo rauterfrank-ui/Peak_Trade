@@ -110,6 +110,18 @@ pre_economic_zero_order_evidence_authorization_config_ref = "config/ops/pre_econ
 pre_economic_zero_order_evidence_production_runner_ref = "src/ops/pre_economic_zero_order_evidence_session_production_runner_v1.py"
 pre_economic_zero_order_evidence_production_verifier_ref = "src/ops/pre_economic_zero_order_evidence_session_production_verifier_v1.py"
 
+# Integrated Paper-Shadow Observation Session capability (additive).
+# Implements observation path surfaces only. Does NOT authorize a session,
+# does NOT grant Operator-GO, does NOT set Economic PASS.
+integrated_paper_shadow_observation_session_capability = "INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1"
+integrated_paper_shadow_observation_session_capability_present = true
+integrated_paper_shadow_observation_authorized = false
+integrated_paper_shadow_observation_wallclock_execution_allowed = false
+integrated_paper_shadow_observation_operator_go_granted = false
+integrated_paper_shadow_observation_entrypoint_ref = "src/ops/integrated_paper_shadow_observation_session_v1/entrypoint_v1.py"
+integrated_paper_shadow_observation_readiness_producer_ref = "src/ops/integrated_paper_shadow_observation_session_v1/readiness_producer_v1.py"
+integrated_paper_shadow_observation_contract_ref = "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md"
+
 # Historical / shadow-named surfaces. Name presence ≠ STEP 29U equivalence.
 [[historical_surfaces]]
 surface_id = "phase24_shadow_order_executor"
@@ -185,12 +197,12 @@ evidence_paths = [
   "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md",
 ]
 blockers = [
-  "CANONICAL_STEP_29U_BOUND=false",
-  "CANONICAL_SHADOW_MODE_EXISTS=false",
-  "STEP_29U_IMPLEMENTED=false",
+  "CANONICAL_STEP_29U_ACTIVATION_UNAUTHORIZED=true",
+  "CANONICAL_SHADOW_MODE_ACTIVATION_ABSENT=true",
+  "SEPARATE_OPERATOR_GO_REQUIRED_FOR_ACTIVATION=true",
 ]
-activation_relevance = "blocks_activation_until_bound"
-notes = "Semantics ratified in runbook STEP 29U; operationally unbound; no mode binding."
+activation_relevance = "blocks_activation_until_operator_go"
+notes = "Offline composition binding may be present (CANONICAL_STEP_29U_BOUND observed separately). This inventory row tracks activation absence, not composition absence. CANONICAL_SHADOW_MODE_EXISTS for activatable wallclock mode remains false while activation is unauthorized."
 
 [[mindestkontrakt_components]]
 component_id = "lifecycle_owner"
