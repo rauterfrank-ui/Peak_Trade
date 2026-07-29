@@ -234,13 +234,31 @@ def produce_paper_shadow_observation_readiness_v1(
         )
     )
 
-    # Operator-GO contract is intentionally NOT implemented by this capability.
-    go_contract_present = False
+    # Operator-GO / Session-Preregistration discovery (versioned surfaces required).
+    try:
+        from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.discovery_v1 import (
+            discover_session_preregistration_and_operator_go_contract_present_v1,
+        )
+
+        go_discovery = discover_session_preregistration_and_operator_go_contract_present_v1(
+            repo_root=root
+        )
+        go_contract_present = bool(
+            go_discovery.SESSION_PREREGISTRATION_AND_OPERATOR_GO_CONTRACT_PRESENT
+        )
+        go_evidence = (
+            "discovery_v1_pass"
+            if go_contract_present
+            else ",".join(go_discovery.blockers) or "discovery_fail_closed"
+        )
+    except Exception as exc:  # noqa: BLE001 - discovery fail-closed
+        go_contract_present = False
+        go_evidence = f"go_prereg_discovery_failed:{type(exc).__name__}"
     facts.append(
         ReadinessDiscoveryFactV1(
             "SESSION_PREREGISTRATION_AND_OPERATOR_GO_CONTRACT_PRESENT",
             go_contract_present,
-            "OPERATOR_GO_CONTRACT_ABSENT_BY_CAPABILITY_SCOPE",
+            go_evidence,
         )
     )
 
@@ -365,6 +383,8 @@ def produce_paper_shadow_observation_readiness_v1(
             f"PRODUCER_FAMILY={PRODUCER_FAMILY}",
             "OPERATOR_GO_CONTRACT_ABSENT_KEEPING_READINESS_FAIL_CLOSED"
             if not go_contract_present
-            else "OPERATOR_GO_CONTRACT_PRESENT",
+            else "OPERATOR_GO_AND_SESSION_PREREGISTRATION_DISCOVERY_TRUE",
+            "PAPER_SHADOW_OBSERVATION_AUTHORIZED=false",
+            "READINESS_IS_NOT_AUTHORIZATION",
         ],
     )

@@ -1,0 +1,73 @@
+# Paper-Shadow Observation Operator-GO / Session-Preregistration Capability v1
+#
+# Non-authorizing defaults. No productive session preregistered.
+# No real GO checked in. No plaintext confirm token.
+# Authority effect NONE. Wallclock/session execution forbidden.
+
+schema_version = "paper_shadow_observation_operator_go_session_preregistration.v1"
+producer_family = "ops.paper_shadow_observation_operator_go_session_preregistration_v1"
+capability_id = "PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1"
+authority_effect = "NONE"
+activation_effect = "NONE"
+runtime_effect = "NONE"
+order_effect = "NONE"
+
+preregistration_schema_version = "paper_shadow_observation_session_preregistration.v1"
+operator_go_schema_version = "paper_shadow_observation_operator_go.v1"
+authorization_artifact_schema_version = "paper_shadow_observation_authorization_artifact.v1"
+
+venue_allowed = ["OKX"]
+market_type_allowed = ["FUTURES"]
+observation_mode_required = "observation"
+btc_forbidden = true
+spot_forbidden = true
+
+max_session_duration_seconds = 21600
+min_ttl_seconds = 60
+max_ttl_seconds = 604800
+
+[two_stage_state_machine]
+states = ["disabled", "enabled", "armed", "authorized", "consumed", "expired", "revoked", "rejected"]
+enabled_alone_authorizes = false
+armed_alone_authorizes = false
+authorized_requires_enabled_and_armed = true
+
+[confirm_token_policy]
+policy_id = "ops.paper_shadow_observation_confirm_token_v1"
+prefix = "GO_PSO_SESSION_PREREG_V1_"
+store_plaintext = false
+binding_includes_session_id = true
+binding_includes_scope_digest = true
+binding_includes_expiry = true
+binding_includes_repository_sha = true
+constant_time_compare = true
+replay_guard = true
+
+[replay_policy]
+reject_reused_fingerprint = true
+persist_plaintext_token = false
+
+[allowed_evidence_schemas]
+observation_evidence = ["ops.integrated_paper_shadow_observation_evidence_v1"]
+authorization_artifact = ["paper_shadow_observation_authorization_artifact.v1"]
+
+[authority_boundary]
+orders_authorized = false
+testnet_authorized = false
+live_authorized = false
+auto_promotion_authorized = false
+network_authorized = false
+credentials_authorized = false
+session_execution_authorized = false
+wallclock_session_execution_allowed = false
+economic_validity_pass = false
+paper_shadow_observation_authorized = false
+
+no_order = true
+no_testnet = true
+no_live = true
+no_auto_promotion = true
+
+contract_doc = "docs/ops/runbooks/PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1.md"
+observation_capability_binding = "ops.integrated_paper_shadow_observation_session_v1"
+pipeline_owner = "ops.integrated_paper_shadow_economic_validity_pipeline_v1"
