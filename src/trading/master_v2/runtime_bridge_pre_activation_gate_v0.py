@@ -31,7 +31,7 @@ _GATE_FIELD_ORDER: Tuple[str, ...] = (
     "full_canonical_chain_wired_status",
     "backtest_runtime_decision_parity_status",
     "system_economic_evidence_admissible_status",
-    "economic_validity_offline_gate_status",
+    "integrated_economic_evidence_bundle_verified_status",
     "surface_p_status",
     "canonical_order_intent_adapter_compatibility_status",
     "runtime_rewire_eligibility_status",
@@ -46,7 +46,9 @@ _REQUIRED_NEXT_GATE_BY_FIELD: dict[str, str] = {
     "full_canonical_chain_wired_status": "FULL_CANONICAL_CHAIN_WIRED_PASS",
     "backtest_runtime_decision_parity_status": "BACKTEST_RUNTIME_DECISION_PARITY_PASS",
     "system_economic_evidence_admissible_status": "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE",
-    "economic_validity_offline_gate_status": "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS",
+    "integrated_economic_evidence_bundle_verified_status": (
+        "INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED"
+    ),
     "surface_p_status": "SURFACE_P_STATUS_PASS",
     "canonical_order_intent_adapter_compatibility_status": (
         "CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN"
@@ -67,7 +69,7 @@ class RuntimeBridgePreActivationGateInputV0:
     full_canonical_chain_wired_status: GateStatus
     backtest_runtime_decision_parity_status: GateStatus
     system_economic_evidence_admissible_status: GateStatus
-    economic_validity_offline_gate_status: GateStatus
+    integrated_economic_evidence_bundle_verified_status: GateStatus
     surface_p_status: GateStatus
     canonical_order_intent_adapter_compatibility_status: GateStatus
     runtime_rewire_eligibility_status: GateStatus
@@ -166,7 +168,10 @@ def current_head_default_gate_input_v0() -> RuntimeBridgePreActivationGateInputV
         system_economic_evidence_admissible_status=_bool_to_gate_status(
             final_flags.system_economic_evidence_admissible
         ),
-        economic_validity_offline_gate_status="FAIL",
+        # System economic validity requires INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED.
+        # Legacy ECONOMIC_VALIDITY_OFFLINE_GATE_PASS is sub-evidence only and is not
+        # a Runtime-Bridge pre-activation hard gate after the reconciled ladder.
+        integrated_economic_evidence_bundle_verified_status="FAIL",
         surface_p_status="PASS" if surface_p.parity_status == "PASS" else "FAIL",
         canonical_order_intent_adapter_compatibility_status="FAIL",
         runtime_rewire_eligibility_status="FAIL",

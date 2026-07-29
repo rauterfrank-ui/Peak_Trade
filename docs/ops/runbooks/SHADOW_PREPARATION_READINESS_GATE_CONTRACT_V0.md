@@ -145,7 +145,10 @@ SHADOW_ACTIVATED=false
 PAPER_ACTIVATED=false
 TESTNET_ACTIVATED=false
 ORDERS=false
-OPEN_BLOCKERS=ECONOMIC_READINESS,RUNTIME_BRIDGE,EXPLICIT_ACTIVATION_GO
+OPEN_BLOCKERS=PAPER_SHADOW_OBSERVATION_READINESS,RUNTIME_BRIDGE,EXPLICIT_ACTIVATION_GO
+LEGACY_OFFLINE_ECONOMIC_GATE_ROLE=LEGACY_OFFLINE_SUB_EVIDENCE_ONLY
+LEGACY_OFFLINE_GATE_DOES_NOT_ALONE_BLOCK_PAPER_SHADOW_READINESS=true
+INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1=DEFINED_NOT_AUTHORIZED
 ```
 
 ## Pre-Economic Zero-Order Evidence stage (non-equivalence)
@@ -194,21 +197,28 @@ separate Operator-GO).
 ```text
 CANONICAL_SHADOW_MODE_EXISTS=true
 CANONICAL_STEP_29U_BOUND=true
+CANONICAL_STEP_29U_ACTIVATION_UNAUTHORIZED=true
 CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false
 SHADOW_PREPARATION_COMPLETE=false
 AUTHORITY_EFFECT=NONE
 NOT_STEP_29U_IMPLEMENTATION=true
 ```
 
-Canonical STEP 29U Shadow Mode and STEP 29V Paper Mode do not currently exist
-in the repository as ratified **bindings**. The semantic definition of STEP 29U
-is owned exclusively by the canonical runbook section
-`## STEP 29U — Shadow` in
+`CANONICAL_SHADOW_MODE_EXISTS=true` / `CANONICAL_STEP_29U_BOUND=true` mean the
+**offline composition binding** is present and verified. They do **not** mean
+an activatable wallclock Shadow session exists. Activation remains unauthorized
+(`CANONICAL_STEP_29U_ACTIVATION_UNAUTHORIZED=true`;
+`CANONICAL_STEP_29U_SHADOW_MODE` activation remains unbound/absent).
+
+Canonical STEP 29V Paper Mode does not currently exist as a ratified binding.
+The semantic definition of STEP 29U is owned exclusively by the canonical
+runbook section `## STEP 29U — Shadow` in
 `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`.
 
-That runbook section may define STEP 29U as semantically ratified but
-operationally unbound. This readiness contract does **not** duplicate that
-normative body and does **not** become a second STEP 29U SSOT.
+This readiness contract does **not** duplicate that normative body and does
+**not** become a second STEP 29U SSOT. Integrated Paper-Shadow Observation
+(`INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1`) is a separate
+evidence-generator path and is **not** STEP 29U activation.
 
 ### Readiness producer role (narrow)
 
@@ -278,10 +288,13 @@ order_submission_count=0
 
 Offline preparation does **not** activate Shadow. Activated Shadow still
 requires a separate operator GO and separate runtime/session/scheduler
-contracts. `CANONICAL_STEP_29U_SHADOW_MODE` remains unbound/absent.
+contracts. `CANONICAL_STEP_29U_SHADOW_MODE` **activation** remains
+unbound/absent even when offline composition binding is verified.
 `CANONICAL_STEP_29V_PAPER_MODE_EXISTS=false` — STEP 29V Paper remains
-undefined/future-only; Paper simulation is not implemented. Testnet and Live
-remain unauthorized and fail-closed.
+undefined/future-only; Paper simulation is not implemented as STEP 29V.
+Integrated Paper-Shadow Observation capability may exist as a separate
+non-authorized evidence path and must not be treated as STEP 29U/29V
+activation. Testnet and Live remain unauthorized and fail-closed.
 
 ### Post-merge offline no-order E2E soak (operational evidence)
 

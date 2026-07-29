@@ -1,3 +1,16 @@
+### INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1
+
+- Scope: `INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1`
+- Decision: `IMPLEMENT_CANONICAL_PAPER_SHADOW_OBSERVATION_PATH_NOT_AUTHORIZED`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_SESSION_NO_OPERATOR_GO`
+- Owner: `ops.integrated_paper_shadow_observation_session_v1`
+- Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md`
+- Surfaces: observation entrypoint; simulated portfolio economics; readiness producer; lifecycle; OKX Futures market-data policy; durable evidence; bundle verifier
+- Flags: `PAPER_SHADOW_OBSERVATION_AUTHORIZED=false`; `ORDERS_AUTHORIZED=false`; `TESTNET_AUTHORIZED=false`; `LIVE_AUTHORIZED=false`; `ECONOMIC_VALIDITY_PASS=false`; `WALLCLOCK_SESSION_EXECUTION_ALLOWED=false`
+- Explicit non-actions: no Operator-GO; no wallclock session; no scheduler/daemon start; no network/credentials; no Testnet/Live/Orders; no Runtime-Bridge activation
+- Stale contradiction reconciliation: Shadow-Prep OPEN_BLOCKERS; Runtime-Bridge integrated economic bundle gate; Mindestkontrakt activation-absence wording
+
+
 ### INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1
 
 - Scope: `INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1`
