@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-07-26
+last_updated: 2026-07-29
 ---
 
 # Current focus
@@ -12,6 +12,30 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 **Related:** [Finish Plan (MVP→v1.0)](FINISH_PLAN.md) · [Truth Core](../registry/TRUTH_CORE.md) · [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs (index)](../release/README.md) · [Chat continuity bootstrap](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md)
 
+
+---
+
+## Post–#5587 Pre-Economic Zero-Order wallclock arming (2026-07-29)
+
+**Narrow capability only** (not a 6h session, not Economic PASS, not Shadow/29T/29R):
+
+- Base SHA: `f97741c795b73a57faf7dc6708ccc1e326409ea6` (`origin&#47;main` after PR **#5587**).
+- Capability: `PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1`
+- Truth claim only:
+  `PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_IMPLEMENTED`
+- Two-stage authority: Operator-GO contract **and** short-lived wallclock arming
+- Defaults remain fail-closed (`enabled=false`, `armed=false`, `dry_run=true`,
+  `session_execution_authorized=false`, orders&#47;broker&#47;live&#47;paper&#47;testnet&#47;shadow=false)
+- State Switch bound read-only to
+  `trading.master_v2.double_play_state` (no Switch&#47;Stay placeholder)
+- Operator runbook:
+  [PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1.md](../runbooks/PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1.md)
+
+**Still locked / next formally permissible step:**
+
+- Separate Operator-Arming + subsequent 6h zero-order evidence run
+- No session execution inside the arming capability PR
+- No Economic Validity PASS, Shadow, Paper, Testnet, Live, Orders, or Promotion GO
 
 ---
 

@@ -1,9 +1,11 @@
-# PRE_ECONOMIC_ZERO_ORDER_EVIDENCE session authorization + execution config v1
-# Capability: PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION
+# PRE_ECONOMIC_ZERO_ORDER_EVIDENCE session authorization + wallclock arming config v1
+# Capabilities:
+#   PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION
+#   PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1
 #
-# This file is AUTHORIZATION_AND_EXECUTION_IMPLEMENTATION_READINESS only.
-# Defaults are fail-closed. This PR does NOT execute a real 6h session,
-# does NOT grant Operator-GO, and does NOT set Economic / Shadow / Order authority.
+# Defaults are fail-closed. This PR implements arming capability only.
+# It does NOT execute a real 6h session, does NOT grant Operator-GO,
+# and does NOT set Economic / Shadow / Order authority.
 
 schema_version = "v1"
 capability_id = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION"
@@ -17,6 +19,11 @@ dry_run = true
 zero_order_only = true
 orders_allowed = false
 broker_writes_allowed = false
+broker_write = false
+live_authorized = false
+paper_authorized = false
+testnet_authorized = false
+shadow_activation_authorized = false
 
 # Read-only public market data may be enabled later with a separate Operator-GO.
 # Canonical default remains blocked / dry-run.
@@ -32,6 +39,17 @@ production_session_duration_seconds = 21600
 output_root = "out/ops/pre_economic_zero_order_evidence_session_authorization_v1"
 authorization_contract_path = "config/ops/pre_economic_zero_order_evidence_session_authorization_contract_template_v1.json"
 authorization_consumption_store = "out/ops/pre_economic_zero_order_evidence_session_authorization_v1/consumption"
+
+# Two-stage wallclock arming (separate short-lived lease; defaults unarmed).
+wallclock_arming_required = true
+wallclock_arming_lease_path = "config/ops/pre_economic_zero_order_wallclock_arming_lease_template_v1.json"
+wallclock_arming_consumption_store = "out/ops/pre_economic_zero_order_evidence_session_authorization_v1/arming_consumption"
+wallclock_arming_max_ttl_seconds = 900
+wallclock_execution_authorized = false
+
+# Hypothetical economics (zero-order only).
+fee_bps = 2.0
+slippage_bps = 1.5
 
 heartbeat_interval_seconds = 1.0
 stale_threshold_seconds = 5.0

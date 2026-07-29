@@ -103,8 +103,11 @@ Abort / failure terminals: `ABORTED`, `INCOMPLETE`, `INVALID`, `REVOKED`, `EXPIR
 - No silent resume; process loss → `INCOMPLETE` / `INVALID`.
 - No merging of partial runs into a 6h session.
 - Synthetic / replay evidence cannot satisfy production VALID.
-- Real 6h wallclock execution remains not armed by this PR's CLI
-  (`PRODUCTION_WALLCLOCK_EXECUTION_NOT_ARMED_IN_THIS_PR`).
+- Wallclock arming for a later separate 6h run is owned by
+  `PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1`
+  (`docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1.md`).
+  Two-stage authority (GO + short-lived arming) is required; this authorization
+  readiness surface alone does not start a session.
 
 ## Telemetry / safety
 
@@ -141,11 +144,13 @@ python scripts/ops/run_pre_economic_zero_order_evidence_session_authorization_an
 python scripts/ops/run_pre_economic_zero_order_evidence_session_authorization_and_execution_v1.py verify-production --evidence-root PATH --json
 ```
 
-`production-start` hard-blocks without valid external authorization + GO and,
-in this PR, still refuses real 6h wallclock execution.
+`production-start` hard-blocks without valid external authorization + GO.
+Real 6h wallclock start additionally requires the separate wallclock-arming
+capability and operator confirm (see
+`docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1.md`).
 
 ## Later Operator action (not this PR)
 
-A separate, explicit Operator-GO must be issued against a concrete
-authorization contract (authorization_id + digests + expiry) before any real
-6h session may start.
+A separate, explicit Operator-GO **and** short-lived wallclock arming lease must
+be issued against a concrete authorization contract before any real 6h session
+may start.

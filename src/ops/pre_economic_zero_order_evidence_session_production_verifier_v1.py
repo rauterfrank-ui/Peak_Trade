@@ -20,6 +20,12 @@ from src.ops.pre_economic_zero_order_evidence_session_authorization_v1 import (
     assert_instrument_allowed,
     AuthorizationContractError,
 )
+from src.ops.pre_economic_zero_order_economic_evidence_v1 import (
+    EVIDENCE_FILE,
+    validate_decision_record_completeness,
+    load_decision_records,
+)
+from src.ops.pre_economic_zero_order_wallclock_arming_v1 import TRUTH_CLAIM
 
 PACKAGE_MARKER = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_PRODUCTION_VERIFIER_V1=true"
 RESULT_SESSION_EVIDENCE_VALID = "SESSION_EVIDENCE_VALID"
@@ -37,6 +43,7 @@ REQUIRED_ARTIFACTS = (
     "integrity_manifest.json",
     "evidence_manifest.sha256",
     "closeout.json",
+    "session_economic_summary.json",
 )
 
 
@@ -80,6 +87,10 @@ def verify_production_evidence_root_v1(
         "SHADOW_ACTIVATION_AUTHORIZED=false",
         "ORDERS=false",
         "DOWNSTREAM_GATES_REMAIN_BLOCKED",
+        f"TRUTH_CLAIM={TRUTH_CLAIM}",
+        "PROFITABILITY_PROVEN=false",
+        "SHADOW_READY=false",
+        "PROMOTION_AUTHORIZED=false",
     ]
 
     if not evidence_root.is_dir():
@@ -235,6 +246,33 @@ def verify_production_evidence_root_v1(
     if terminal.get("session_evidence_valid") is True:
         # Evidence must not self-attest; only this verifier decides.
         blockers.append("SELF_ATTESTED_VALID_FORBIDDEN")
+
+    # Economic evidence completeness (zero-order hypothetical decisions).
+    decisions_path = evidence_root / EVIDENCE_FILE
+    if not decisions_path.is_file():
+        blockers.append("ECONOMIC_DECISIONS_ABSENT")
+    else:
+        for row in load_decision_records(decisions_path):
+            blockers.extend(validate_decision_record_completeness(row))
+            if "switch_stay_state" in row:
+                blockers.append("FORBIDDEN_FIELD:switch_stay_state")
+
+    summary_path = evidence_root / "session_economic_summary.json"
+    if summary_path.is_file():
+        try:
+            summary = _load_json(summary_path)
+            if summary.get("economic_validity_pass") is True:
+                blockers.append("FORBIDDEN_TRUTH_CLAIM:ECONOMIC_VALIDITY_PASS")
+            if summary.get("profitability_proven") is True:
+                blockers.append("FORBIDDEN_TRUTH_CLAIM:PROFITABILITY_PROVEN")
+            if summary.get("shadow_ready") is True:
+                blockers.append("FORBIDDEN_TRUTH_CLAIM:SHADOW_READY")
+            if summary.get("promotion_authorized") is True:
+                blockers.append("FORBIDDEN_TRUTH_CLAIM:PROMOTION_AUTHORIZED")
+            if "switch_events" in summary and "state_switch_transitions" not in summary:
+                blockers.append("LEGACY_SWITCH_EVENTS_FIELD_FORBIDDEN")
+        except json.JSONDecodeError as exc:
+            blockers.append(f"ECONOMIC_SUMMARY_PARSE_ERROR:{exc}")
 
     session_evidence = RESULT_SESSION_EVIDENCE_INVALID
     session_valid = False

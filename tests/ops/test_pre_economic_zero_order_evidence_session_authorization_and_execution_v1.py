@@ -76,6 +76,9 @@ def tmp_workspace(tmp_path: Path):
 
 def _write_cfg(path: Path, **overrides) -> str:
     base = CONFIG.read_text(encoding="utf-8")
+    # Legacy auth-only tests default to arming-not-required unless overridden.
+    if "wallclock_arming_required" not in overrides:
+        overrides = {**overrides, "wallclock_arming_required": False}
     # Rewrite output paths into temp.
     text = base
     for key, value in overrides.items():

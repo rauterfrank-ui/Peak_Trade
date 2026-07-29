@@ -558,6 +558,8 @@ PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_READINESS_V1=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION=true
 AUTHORIZATION_AND_EXECUTION_IMPLEMENTATION_READINESS=true
+PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1=true
+PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_IMPLEMENTED=true
 SESSION_EXECUTION_AUTHORIZED=false
 SIX_HOUR_SESSION_EXECUTED=false
 SESSION_EVIDENCE=NOT_AUTHORIZED
@@ -608,11 +610,18 @@ dry-run).
 zusätzlich Authorization-Contract, Operator-GO-Bindung, Produktionspfad,
 OKX-Futures-Read-only-Telemetrie, Safety-Preflight und Production-Verifier als
 `AUTHORIZATION_AND_EXECUTION_IMPLEMENTATION_READINESS` — ohne reale 6h-Ausführung
-und ohne erteiltes Operator-GO. Eine reale 6h-Session bleibt
-`SESSION_EXECUTION_AUTHORIZED=false` / `SIX_HOUR_SESSION_EXECUTED=false` /
-`SESSION_EVIDENCE=NOT_AUTHORIZED` / `OPERATOR_GO_GRANTED=false`, bis ein
-separates, contract-gebundenes Operator-GO explizit erteilt wird. Runtime-
-Ausführung bleibt `BLOCKED`.
+und ohne erteiltes Operator-GO.
+`PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1` macht die Session
+**arming-fähig** (Two-Stage: gültiger Operator-GO-Contract **und** kurzlebiges
+Wallclock-Arming; Truth Claim nur
+`PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_IMPLEMENTED`). Eine reale
+6h-Session bleibt `SESSION_EXECUTION_AUTHORIZED=false` /
+`SIX_HOUR_SESSION_EXECUTED=false` / `SESSION_EVIDENCE=NOT_AUTHORIZED` /
+`OPERATOR_GO_GRANTED=false`, bis separates Operator-Arming und Start erfolgen.
+Bull/Bear **State Switch** bleibt kanonisch an
+`trading.master_v2.double_play_state` gebunden (kein Switch&#47;Stay-Platzhalter).
+Runtime-Ausführung bleibt `BLOCKED`. Ein 6h-Lauf ist erste integrierte
+ökonomische Evidenz, kein finaler Robustheitsnachweis.
 
 ## 3.4 Vollständigkeitsprinzip vor System-Economic-Evidence
 
@@ -4183,12 +4192,16 @@ LEVEL 2.2 darf LEVEL 2 nicht ersetzen. Für System-Economic-Evidence gilt LEVEL 
 - Authorization/Execution Readiness:
   `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION`
   (`AUTHORIZATION_AND_EXECUTION_IMPLEMENTATION_READINESS`;
-  `OPERATOR_GO_GRANTED=false`; `SESSION_EVIDENCE_VALID=false`).
+  `OPERATOR_GO_GRANTED=false`; `SESSION_EVIDENCE_VALID=false`),
+- Wallclock Arming:
+  `PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1`
+  (`PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_IMPLEMENTED`;
+  Two-Stage GO+Arming; `SESSION_EXECUTION_AUTHORIZED=false`).
 
 Diese Stufe ersetzt weder Economic Validity noch LEVEL 4 Zero-Order Runtime
 (STEP 29T) noch LEVEL 5 Shadow (STEP 29U). Nächster autorisierter Schritt für
-eine reale Session bleibt ein separates, contract-gebundenes Operator-GO
-(nicht dieses Readiness-PR).
+eine reale Session bleibt separates Operator-Arming und Start
+(nicht allein dieses Arming-PR).
 
 ## LEVEL 4 — Zero-Order Runtime
 

@@ -20,6 +20,17 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, Protocol
 
+from src.ops.pre_economic_zero_order_decision_cycle_observer_v1 import (
+    DecisionCycleObserverV1,
+)
+from src.ops.pre_economic_zero_order_economic_evidence_v1 import (
+    EVIDENCE_FILE,
+    SUMMARY_FILE,
+    append_decision_jsonl,
+    build_session_economic_summary_v1,
+    load_decision_records,
+    write_session_economic_summary,
+)
 from src.ops.pre_economic_zero_order_evidence_session_authorization_v1 import (
     CAPABILITY_ID,
     PRODUCTION_SESSION_DURATION_SECONDS,
@@ -46,6 +57,13 @@ from src.ops.pre_economic_zero_order_evidence_session_state_machine_v1 import (
     SessionState,
     SessionStateMachineError,
     assert_transition_allowed,
+)
+from src.ops.pre_economic_zero_order_wallclock_arming_v1 import (
+    TRUTH_CLAIM as WALLCLOCK_ARMING_TRUTH_CLAIM,
+    WallclockArmingError,
+    consume_wallclock_arming_one_time_v1,
+    load_wallclock_arming_lease_v1,
+    validate_wallclock_arming_against_go_v1,
 )
 
 PACKAGE_MARKER = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_AUTHORIZATION_AND_EXECUTION=true"
@@ -132,6 +150,22 @@ class ProductionConfigV1:
     # Test-only simulation budget; production path ignores unless explicitly allowed.
     maximum_test_runtime_seconds: int
     allow_test_duration_override: bool
+    broker_write: bool = False
+    live_authorized: bool = False
+    paper_authorized: bool = False
+    testnet_authorized: bool = False
+    shadow_activation_authorized: bool = False
+    wallclock_arming_required: bool = True
+    wallclock_arming_lease_path: str = (
+        "config/ops/pre_economic_zero_order_wallclock_arming_lease_template_v1.json"
+    )
+    wallclock_arming_consumption_store: str = (
+        "out/ops/pre_economic_zero_order_evidence_session_authorization_v1/arming_consumption"
+    )
+    wallclock_arming_max_ttl_seconds: int = 900
+    wallclock_execution_authorized: bool = False
+    fee_bps: float = 2.0
+    slippage_bps: float = 1.5
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
@@ -152,6 +186,11 @@ KNOWN_CONFIG_KEYS = frozenset(
         "zero_order_only",
         "orders_allowed",
         "broker_writes_allowed",
+        "broker_write",
+        "live_authorized",
+        "paper_authorized",
+        "testnet_authorized",
+        "shadow_activation_authorized",
         "network_allowed_for_readonly_telemetry",
         "venue",
         "market_type",
@@ -162,6 +201,13 @@ KNOWN_CONFIG_KEYS = frozenset(
         "output_root",
         "authorization_contract_path",
         "authorization_consumption_store",
+        "wallclock_arming_required",
+        "wallclock_arming_lease_path",
+        "wallclock_arming_consumption_store",
+        "wallclock_arming_max_ttl_seconds",
+        "wallclock_execution_authorized",
+        "fee_bps",
+        "slippage_bps",
         "heartbeat_interval_seconds",
         "stale_threshold_seconds",
         "max_clock_skew_seconds",
@@ -282,6 +328,28 @@ def load_production_config_v1(
         config_digest=_sha256_text(raw_text),
         maximum_test_runtime_seconds=int(_req("maximum_test_runtime_seconds")),
         allow_test_duration_override=bool(_req("allow_test_duration_override")),
+        broker_write=bool(raw.get("broker_write", False)),
+        live_authorized=bool(raw.get("live_authorized", False)),
+        paper_authorized=bool(raw.get("paper_authorized", False)),
+        testnet_authorized=bool(raw.get("testnet_authorized", False)),
+        shadow_activation_authorized=bool(raw.get("shadow_activation_authorized", False)),
+        wallclock_arming_required=bool(raw.get("wallclock_arming_required", True)),
+        wallclock_arming_lease_path=str(
+            raw.get(
+                "wallclock_arming_lease_path",
+                "config/ops/pre_economic_zero_order_wallclock_arming_lease_template_v1.json",
+            )
+        ),
+        wallclock_arming_consumption_store=str(
+            raw.get(
+                "wallclock_arming_consumption_store",
+                "out/ops/pre_economic_zero_order_evidence_session_authorization_v1/arming_consumption",
+            )
+        ),
+        wallclock_arming_max_ttl_seconds=int(raw.get("wallclock_arming_max_ttl_seconds", 900)),
+        wallclock_execution_authorized=bool(raw.get("wallclock_execution_authorized", False)),
+        fee_bps=float(raw.get("fee_bps", 2.0)),
+        slippage_bps=float(raw.get("slippage_bps", 1.5)),
     )
     _validate_production_config(cfg)
     return cfg
@@ -298,7 +366,7 @@ def _validate_production_config(cfg: ProductionConfigV1) -> None:
         raise ProductionRunnerError("CONFIG_RUNTIME_AUTHORITY_MUST_BE_NONE")
     if cfg.orders_allowed is not False:
         raise ProductionRunnerError("CONFIG_ORDERS_MUST_BE_FALSE")
-    if cfg.broker_writes_allowed is not False:
+    if cfg.broker_writes_allowed is not False or cfg.broker_write is not False:
         raise ProductionRunnerError("CONFIG_BROKER_WRITES_MUST_BE_FALSE")
     if not cfg.zero_order_only:
         raise ProductionRunnerError("CONFIG_ZERO_ORDER_MUST_BE_TRUE")
@@ -310,9 +378,17 @@ def _validate_production_config(cfg: ProductionConfigV1) -> None:
         raise ProductionRunnerError("CONFIG_MARKET_TYPE_INVALID")
     if cfg.production_session_duration_seconds != PRODUCTION_SESSION_DURATION_SECONDS:
         raise ProductionRunnerError("CONFIG_PRODUCTION_DURATION_MISMATCH")
+    if cfg.live_authorized or cfg.paper_authorized or cfg.testnet_authorized:
+        raise ProductionRunnerError("CONFIG_LIVE_PAPER_TESTNET_MUST_BE_FALSE")
+    if cfg.shadow_activation_authorized:
+        raise ProductionRunnerError("CONFIG_SHADOW_MUST_BE_FALSE")
+    if cfg.wallclock_arming_max_ttl_seconds <= 0 or cfg.wallclock_arming_max_ttl_seconds > 900:
+        raise ProductionRunnerError("CONFIG_WALLCLOCK_ARMING_TTL_INVALID")
+    if cfg.fee_bps < 0 or cfg.slippage_bps < 0:
+        raise ProductionRunnerError("CONFIG_FEE_OR_SLIPPAGE_NEGATIVE")
     # Canonical defaults remain blocked.
     if cfg.enabled and cfg.armed and cfg.session_execution_authorized and not cfg.dry_run:
-        # Allowed only when an external authorization contract + GO are also valid
+        # Allowed only when external authorization + GO + wallclock arming are also valid
         # at runtime; config alone still does not start a session.
         pass
 
@@ -434,6 +510,7 @@ def preflight_production_session_v1(
     revision_sha: str = "UNKNOWN",
     client: Any = None,
     now: Optional[float] = None,
+    arming_lease_path: Optional[Path] = None,
 ) -> dict[str, Any]:
     cfg = config or load_production_config_v1(repo_root=repo_root)
     blockers: list[str] = []
@@ -442,6 +519,7 @@ def preflight_production_session_v1(
     )
     contract: Optional[AuthorizationContractV1] = None
     auth_result = None
+    arming_result = None
     try:
         contract = load_authorization_contract_v1(
             auth_path,
@@ -465,6 +543,33 @@ def preflight_production_session_v1(
         )
         blockers.extend(auth_result.blockers)
 
+    # Stage 2: wallclock arming lease (required for production wallclock path).
+    if cfg.wallclock_arming_required:
+        lease_path = arming_lease_path or resolve_repo_relative(
+            repo_root=repo_root, relative=cfg.wallclock_arming_lease_path
+        )
+        arming_store = resolve_repo_relative(
+            repo_root=repo_root, relative=cfg.wallclock_arming_consumption_store
+        )
+        try:
+            lease = load_wallclock_arming_lease_v1(lease_path)
+            if contract is None:
+                blockers.append("WALLCLOCK_ARMING_REQUIRES_VALID_GO_CONTRACT")
+            else:
+                arming_result = validate_wallclock_arming_against_go_v1(
+                    lease=lease,
+                    contract=contract,
+                    go_token=go_token,
+                    now=now,
+                    expected_config_digest=cfg.config_digest,
+                    expected_revision_sha=revision_sha if revision_sha != "UNKNOWN" else None,
+                    consumption_store=arming_store,
+                    require_production_flags=True,
+                )
+                blockers.extend(arming_result.blockers)
+        except WallclockArmingError as exc:
+            blockers.append(str(exc))
+
     use_client = client
     if use_client is None:
         if cfg.network_allowed_for_readonly_telemetry and not cfg.dry_run:
@@ -487,14 +592,17 @@ def preflight_production_session_v1(
         "blockers": blockers,
         "config_digest": cfg.config_digest,
         "authorization": None if auth_result is None else auth_result.to_dict(),
+        "wallclock_arming": None if arming_result is None else arming_result.to_dict(),
         "safety_preflight": safety.to_dict(),
         "session_execution_authorized": False,
         "operator_go_granted": False,
         "production_start_allowed": False if blockers else True,
         "notes": [
             "PREFLIGHT_DOES_NOT_START_SESSION",
+            "TWO_STAGE_AUTHORITY_REQUIRED",
             "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false",
             "SHADOW_ACTIVATION_AUTHORIZED=false",
+            f"TRUTH_CLAIM={WALLCLOCK_ARMING_TRUTH_CLAIM}",
         ],
     }
 
@@ -518,12 +626,14 @@ def run_production_session_v1(
     install_signal_handlers: bool = False,
     resume_requested: bool = False,
     merge_partial_runs: Optional[list[Path]] = None,
+    arming_lease_path: Optional[Path] = None,
+    allow_wallclock_sleep: bool = False,
 ) -> ProductionRunResultV1:
     """Run production observation path or fail closed.
 
-    Real 6h wallclock sleep is never performed in unit tests: pass a controllable
-    clock and ``allow_test_simulation=True`` with ``allow_test_duration_override``.
-    Canonical production requires duration==21600 and valid auth+GO.
+    Real 6h wallclock sleep requires two-stage authority (GO + arming lease) and
+    ``allow_wallclock_sleep=True``. Unit tests use a controllable clock with
+    ``allow_test_simulation=True``.
     """
 
     root = repo_root.resolve()
@@ -553,15 +663,19 @@ def run_production_session_v1(
     orders_submitted = 0
     auth_id = ""
     go_fp = ""
+    arming_id = ""
     instrument_id = cfg.instrument_allowlist[0]
     safety_payload: dict[str, Any] = {}
     telemetry_payload: dict[str, Any] = {}
+    economic_summary_payload: dict[str, Any] = {}
+    observer: Optional[DecisionCycleObserverV1] = None
     start_wall = float(clk.wall())
     start_mono = float(clk.mono())
     end_wall = start_wall
     end_mono = start_mono
     mode = "PRODUCTION" if not cfg.dry_run else "DRY_RUN_BLOCKED"
     signal_abort = {"armed": False}
+    cycles_completed = 0
 
     def _handle_signal(_signum: int, _frame: Any) -> None:
         signal_abort["armed"] = True
@@ -619,6 +733,7 @@ def run_production_session_v1(
             revision_sha=revision_sha,
             client=use_client,
             now=float(clk.wall()),
+            arming_lease_path=arming_lease_path,
         )
         safety_payload = pre.get("safety_preflight") or {}
         if not pre.get("ok"):
@@ -632,6 +747,9 @@ def run_production_session_v1(
             auth_payload.get("go_token_fingerprint") or fingerprint_go_token(go_token or "")
         )
         instrument_id = str((contract_dict.get("instrument_allowlist") or [instrument_id])[0])
+        arming_payload = pre.get("wallclock_arming") or {}
+        arming_lease_dict = arming_payload.get("lease") or {}
+        arming_id = str(arming_lease_dict.get("arming_id") or "")
 
         _transition(SessionState.AUTHORIZED, "auth_ok")
         # Consume one-time authorization atomically before RUNNING.
@@ -649,6 +767,20 @@ def run_production_session_v1(
             revision_sha=revision_sha,
             now=float(clk.wall()),
         )
+        if cfg.wallclock_arming_required:
+            lease_path = arming_lease_path or resolve_repo_relative(
+                repo_root=root, relative=cfg.wallclock_arming_lease_path
+            )
+            arming_store = resolve_repo_relative(
+                repo_root=root, relative=cfg.wallclock_arming_consumption_store
+            )
+            lease = load_wallclock_arming_lease_v1(lease_path)
+            consume_wallclock_arming_one_time_v1(
+                store=arming_store,
+                lease=lease,
+                now=float(clk.wall()),
+            )
+            arming_id = lease.arming_id
 
         _transition(SessionState.STARTING, "starting")
         telemetry = OkxFuturesReadOnlyTelemetryV1(
@@ -661,12 +793,18 @@ def run_production_session_v1(
             clock=clk.wall,
             monotonic=clk.mono,
         )
+        observer = DecisionCycleObserverV1(
+            instrument=instrument_id,
+            fee_bps=cfg.fee_bps,
+            slippage_bps=cfg.slippage_bps,
+            switch_stale_after_seconds=cfg.stale_threshold_seconds,
+        )
+        decisions_path = evidence_root / EVIDENCE_FILE
         _transition(SessionState.RUNNING, "running")
 
         cycles = int(max_cycles if max_cycles is not None else max(1, duration))
-        # Controllable simulation: advance clocks instead of sleeping 6h.
         step = float(duration) / float(cycles)
-        for _ in range(cycles):
+        for cycle_idx in range(cycles):
             if signal_abort["armed"]:
                 abort_reason = "SIGNAL_ABORT"
                 raise ProductionRunnerError("SIGNAL_ABORT")
@@ -679,13 +817,26 @@ def run_production_session_v1(
             if snap.stale and snap.connection_status != "CONNECTED":
                 abort_reason = "TELEMETRY_STALE"
                 raise ProductionRunnerError("TELEMETRY_STALE")
+            snap_dict = snap.to_dict()
+            mid = 100.0 + (0.15 * float(cycle_idx)) if allow_test_simulation else None
+            decision = observer.observe(
+                timestamp=float(clk.wall()),
+                cycle_index=cycle_idx,
+                snapshot=snap_dict,
+                mid_price=mid,
+            )
+            append_decision_jsonl(path=decisions_path, record=decision)
+            cycles_completed += 1
             if isinstance(clk, ControllableDualClock):
                 clk.advance(step)
-            # Production SystemDualClock would sleep; refuse silent long sleep in this PR.
-            elif not allow_test_simulation:
-                # Without controllable clock, do not block for 21600s in this capability PR.
-                abort_reason = "PRODUCTION_WALLCLOCK_EXECUTION_NOT_ARMED_IN_THIS_PR"
-                raise ProductionRunnerError("PRODUCTION_WALLCLOCK_EXECUTION_NOT_ARMED_IN_THIS_PR")
+            elif allow_test_simulation:
+                pass
+            elif allow_wallclock_sleep and not cfg.dry_run:
+                remaining = max(0.0, float(duration) - (float(clk.mono()) - start_mono))
+                time.sleep(min(step, remaining))
+            else:
+                abort_reason = "WALLCLOCK_ARMING_SLEEP_NOT_ENABLED"
+                raise ProductionRunnerError("WALLCLOCK_ARMING_SLEEP_NOT_ENABLED")
 
         telemetry_summary = telemetry.summary()
         telemetry_payload = telemetry_summary.to_dict()
@@ -710,6 +861,7 @@ def run_production_session_v1(
     except (
         ProductionRunnerError,
         AuthorizationContractError,
+        WallclockArmingError,
         TelemetryError,
         SessionStateMachineError,
     ) as exc:
@@ -767,6 +919,31 @@ def run_production_session_v1(
     wall_elapsed = max(0.0, end_wall - start_wall)
     mono_elapsed = max(0.0, end_mono - start_mono)
 
+    try:
+        records = load_decision_records(evidence_root / EVIDENCE_FILE)
+        data_gaps = int((telemetry_payload or {}).get("data_gap_events") or 0)
+        switch_transitions = (
+            int(observer.state.state_switch_transitions) if observer is not None else 0
+        )
+        switch_stale = int(observer.state.switch_stale_count) if observer is not None else 0
+        kill_interventions = (
+            int(observer.state.killstate_interventions) if observer is not None else 0
+        )
+        summary = build_session_economic_summary_v1(
+            records=records,
+            runtime_duration_seconds=mono_elapsed,
+            cycles=cycles_completed,
+            data_gaps=data_gaps,
+            state_switch_transitions=switch_transitions,
+            switch_stale_count=switch_stale,
+            killstate_interventions=kill_interventions,
+            verifier_result="PENDING",
+        )
+        write_session_economic_summary(path=evidence_root / SUMMARY_FILE, summary=summary)
+        economic_summary_payload = summary.to_dict()
+    except Exception:
+        economic_summary_payload = {}
+
     identity = {
         "capability_id": CAPABILITY_ID,
         "session_contract_id": SESSION_CONTRACT_ID,
@@ -774,6 +951,7 @@ def run_production_session_v1(
         "session_id": sid,
         "mode": mode,
         "authorization_id": auth_id,
+        "arming_id": arming_id,
         "go_token_fingerprint": go_fp,
         "config_digest": cfg.config_digest,
         "revision_sha": revision_sha,
@@ -785,6 +963,7 @@ def run_production_session_v1(
         "runtime_authority": RUNTIME_AUTHORITY_NONE,
         "synthetic": bool(allow_test_simulation),
         "replayed": False,
+        "truth_claim": WALLCLOCK_ARMING_TRUTH_CLAIM,
     }
     terminal = {
         **identity,
@@ -806,6 +985,7 @@ def run_production_session_v1(
         "economic_gate_effect": "NONE",
         "shadow_activation_eligible": False,
         "atomic_closeout": True,
+        "cycles_completed": cycles_completed,
     }
 
     try:
@@ -816,13 +996,21 @@ def run_production_session_v1(
             "authorization_binding.json",
             {
                 "authorization_id": auth_id,
+                "arming_id": arming_id,
                 "go_token_fingerprint": go_fp,
                 "config_digest": cfg.config_digest,
                 "revision_sha": revision_sha,
+                "truth_claim": WALLCLOCK_ARMING_TRUTH_CLAIM,
             },
         )
         emitter.write_json("safety_preflight.json", safety_payload)
         emitter.write_json("telemetry_summary.json", telemetry_payload)
+        if economic_summary_payload:
+            emitter.write_json(SUMMARY_FILE, economic_summary_payload)
+        if (evidence_root / EVIDENCE_FILE).is_file():
+            emitter.digests[EVIDENCE_FILE] = _sha256_text(
+                (evidence_root / EVIDENCE_FILE).read_text(encoding="utf-8")
+            )
         emitter.write_json("terminal_result.json", terminal)
         emitter.write_json(
             "integrity_manifest.json",
@@ -864,13 +1052,14 @@ def run_production_session_v1(
         session_evidence_status = "SESSION_EVIDENCE_PENDING_VERIFIER"
 
     notes = (
-        "AUTHORIZATION_AND_EXECUTION_IMPLEMENTATION_READINESS",
+        WALLCLOCK_ARMING_TRUTH_CLAIM,
         "PRODUCTION_SESSION_EXECUTED=false",
         "SESSION_EVIDENCE_VALID=false",
         "OPERATOR_GO_GRANTED=false",
         "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false",
         "SHADOW_ACTIVATION_AUTHORIZED=false",
         "ORDERS=false",
+        "DOWNSTREAM_AUTHORITY_GRANTED=false",
     )
     result = ProductionRunResultV1(
         capability_id=CAPABILITY_ID,
