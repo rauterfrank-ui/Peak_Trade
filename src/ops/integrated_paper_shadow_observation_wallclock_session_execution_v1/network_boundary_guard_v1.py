@@ -29,6 +29,8 @@ _FORBIDDEN_ENV_MARKERS = (
     "OKX_API_SECRET",
     "OKX_API_PASSPHRASE",
 )
+_ALLOWED_QUERY_KEYS = frozenset({"instid", "insttype", "uly", "instfamily"})
+_FORBIDDEN_SCHEMES = frozenset({"http", "file", "ftp", "unix", "data", "javascript"})
 
 
 class NetworkBoundaryError(ValueError):
@@ -99,11 +101,16 @@ def assert_method_allowed_v1(method: str) -> list[str]:
 def assert_url_allowed_v1(url: str) -> list[str]:
     blockers: list[str] = []
     parsed = urlparse(str(url or ""))
-    if parsed.scheme != "https":
+    scheme = (parsed.scheme or "").lower()
+    if scheme != "https":
         blockers.append(f"SCHEME_FORBIDDEN:{parsed.scheme}")
+        if scheme in _FORBIDDEN_SCHEMES:
+            blockers.append(f"SCHEME_CLASS_FORBIDDEN:{scheme}")
     host = (parsed.hostname or "").lower()
     if host != CANONICAL_HOST:
         blockers.append(f"HOST_FORBIDDEN:{host or parsed.netloc}")
+    if host in {"localhost", "127.0.0.1", "::1", "www.okx.com", "okx.com"}:
+        blockers.append(f"HOST_CLASS_FORBIDDEN:{host}")
     if parsed.port not in (None, 443):
         blockers.append(f"PORT_FORBIDDEN:{parsed.port}")
     path = parsed.path or ""
@@ -117,10 +124,14 @@ def assert_url_allowed_v1(url: str) -> list[str]:
                 blockers.append(f"PATH_FRAGMENT_FORBIDDEN:{frag}")
     if parsed.username or parsed.password:
         blockers.append("URL_USERINFO_FORBIDDEN")
+    if parsed.fragment:
+        blockers.append("URL_FRAGMENT_FORBIDDEN")
     # Query binding checks
     qs = parse_qs(parsed.query, keep_blank_values=True)
     for key, values in qs.items():
         kl = key.lower()
+        if kl not in _ALLOWED_QUERY_KEYS:
+            blockers.append(f"QUERY_KEY_NOT_ALLOWED:{key}")
         if kl in {"apikey", "secret", "passphrase", "password", "token", "authorization", "sign"}:
             blockers.append(f"SENSITIVE_QUERY_FORBIDDEN:{key}")
         if kl == "instid":

@@ -46,6 +46,15 @@ CAPABILITY_SOURCE_RELPATHS: tuple[str, ...] = (
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/import_surface_guard_v1.py",
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/observation_cycle_adapter_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/__init__.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/constants_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_confirm_token_producer_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_preregistration_producer_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_operator_go_producer_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_authorization_verifier_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/real_http_fetcher_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/issuance_evidence_v1.py",
 )
 
 

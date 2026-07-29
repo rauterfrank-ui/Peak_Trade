@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""CLI for Paper-Shadow wallclock MD-observe capability (no productive defaults).
+"""CLI for Paper-Shadow wallclock MD-observe capability.
 
 preflight / verify-evidence: offline only.
-run: requires verified auth bundle; tests must inject fake transport via library API.
-This CLI refuses real network unless PEAK_TRADE_PSO_WALLCLOCK_ALLOW_REAL_NETWORK=1
-(which is still blocked in repository CI and not used by this PR).
+run: delegates to productive successor path
+  INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1
+  — requires verified productive (non-fixture) authorization; real network additionally
+  requires PEAK_TRADE_PSO_WALLCLOCK_ALLOW_REAL_NETWORK=1 (never sufficient alone).
 """
 
 from __future__ import annotations
@@ -29,6 +30,15 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1 import (  # noqa: E402
     preflight_wallclock_session_v1,
 )
+from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E402,E501
+    REAL_NETWORK_ENV,
+)
+from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_confirm_token_producer_v1 import (  # noqa: E402,E501
+    load_confirm_token_from_file_v1,
+)
+from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1 import (  # noqa: E402,E501
+    run_productive_wallclock_session_from_paths_v1,
+)
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (  # noqa: E402
     redact_mapping_for_logs,
 )
@@ -37,8 +47,10 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.con
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=(
-            "Paper-Shadow wallclock observation capability CLI "
-            "(technical only; no productive authorization defaults)."
+            "Paper-Shadow wallclock observation CLI. "
+            "run requires productive non-fixture authorization; "
+            f"real network also requires {REAL_NETWORK_ENV}=1 (never alone). "
+            "No orders/paper/testnet/live/credentials."
         )
     )
     p.add_argument("command", choices=("preflight", "verify-evidence", "run"))
@@ -49,6 +61,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--evidence-root", type=Path, default=None)
     p.add_argument("--expected-repository-sha", default=None)
     p.add_argument("--fingerprint-ledger", type=Path, default=None)
+    p.add_argument(
+        "--real-network",
+        action="store_true",
+        help=f"Open real public MD transport after consumption (requires {REAL_NETWORK_ENV}=1).",
+    )
     p.add_argument("--json", action="store_true")
     return p
 
@@ -60,18 +77,7 @@ def _load_confirm_token(args: argparse.Namespace) -> str:
     if env_token:
         return env_token
     if args.confirm_token_file is not None:
-        path = args.confirm_token_file
-        if not path.is_file():
-            raise SystemExit("CONFIRM_TOKEN_FILE_MISSING")
-        # Restrictive: single-line token file only.
-        text = path.read_text(encoding="utf-8").strip()
-        if not text or "\n" in text.strip():
-            # allow single trailing newline only
-            lines = [ln for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
-            if len(lines) != 1:
-                raise SystemExit("CONFIRM_TOKEN_FILE_INVALID")
-            text = lines[0].strip()
-        return text
+        return load_confirm_token_from_file_v1(args.confirm_token_file)
     raise SystemExit("CONFIRM_TOKEN_SOURCE_REQUIRED")
 
 
@@ -90,49 +96,53 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result.to_dict(), sort_keys=True, indent=2))
         return 0 if result.verified else 1
 
-    # run — library path for tests; CLI refuses real network by default.
-    if os.environ.get("PEAK_TRADE_PSO_WALLCLOCK_ALLOW_REAL_NETWORK") == "1":
-        payload = {
-            "ok": False,
-            "blockers": ["REAL_NETWORK_CLI_PATH_NOT_ENABLED_IN_THIS_PR"],
-            "capability_id": CAPABILITY_ID,
-            "notes": [
-                "Use library WallclockSessionRuntimeV1 with injected fake transport in tests.",
-                "Productive run requires separate operator authorization outside this PR.",
-            ],
-        }
-        print(json.dumps(payload, sort_keys=True, indent=2))
-        return 2
-
-    # Require args for structural validation but do not open network.
+    # run — productive successor path (fixtures rejected; env alone insufficient).
     missing = []
     for name, val in (
         ("preregistration", args.preregistration),
         ("operator-go", args.operator_go),
         ("authorization-artifact", args.authorization_artifact),
         ("evidence-root", args.evidence_root),
+        ("expected-repository-sha", args.expected_repository_sha),
+        ("fingerprint-ledger", args.fingerprint_ledger),
     ):
         if val is None:
             missing.append(name)
     try:
-        _ = _load_confirm_token(args)
+        token = _load_confirm_token(args)
     except SystemExit as exc:
         missing.append(str(exc))
-    payload = {
-        "ok": False,
-        "blockers": [
-            "CLI_RUN_REFUSES_REAL_NETWORK_WITHOUT_EXPLICIT_ENV",
-            *([f"MISSING_ARG:{m}" for m in missing] if missing else []),
-        ],
-        "capability_id": CAPABILITY_ID,
-        "network_used": False,
-        "session_executed": False,
-        "notes": [
-            "Invoke WallclockSessionRuntimeV1 with fake transport from tests/tools.",
-        ],
-    }
-    print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
-    return 2
+        token = ""
+    if missing:
+        payload = {
+            "ok": False,
+            "blockers": [f"MISSING_ARG:{m}" for m in missing],
+            "capability_id": CAPABILITY_ID,
+            "network_used": False,
+            "session_executed": False,
+            "notes": [
+                "PRODUCTIVE_RUN_REQUIRES_FULL_AUTH_BUNDLE",
+                "FIXTURE_AUTH_REJECTED",
+                f"ENV_FLAG_ALONE_INSUFFICIENT ({REAL_NETWORK_ENV})",
+            ],
+        }
+        print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
+        return 2
+
+    result = run_productive_wallclock_session_from_paths_v1(
+        preregistration_path=args.preregistration,
+        operator_go_path=args.operator_go,
+        authorization_artifact_path=args.authorization_artifact,
+        confirm_token=token,
+        evidence_root=args.evidence_root,
+        expected_repository_sha=str(args.expected_repository_sha),
+        fingerprint_ledger_path=args.fingerprint_ledger,
+        use_real_network=bool(args.real_network),
+        repo_root=_REPO_ROOT,
+        environ=os.environ,
+    )
+    print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))
+    return 0 if result.ok else 1
 
 
 if __name__ == "__main__":
