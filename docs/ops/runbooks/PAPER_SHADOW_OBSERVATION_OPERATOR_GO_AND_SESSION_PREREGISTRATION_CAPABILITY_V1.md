@@ -85,8 +85,11 @@ CLI refuses `start` / `run` / `execute` arguments.
 
 ## Next step
 
-A later capability (session execution) may be selected only after a fresh
-read-only post-merge system review. This capability does not authorize that step.
+Wallclock execution surfaces live under
+`INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1`.
+Productive issuance + real public-MD run are owned by
+`INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1`.
+This capability does not start a session.
 
 
 ## Scoped wallclock MD-observe (successor)
@@ -97,4 +100,8 @@ read-only post-merge system review. This capability does not authorize that step
 `session_execution_scope=paper_shadow_observation_wallclock_v1`.
 GO alone still does not start a session. Execution is owned by
 `INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1`.
-Defaults remain false / empty.
+Productive artifact issuance and real network run are owned by
+`INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1`.
+Defaults remain false / empty. Fixture artifacts remain non-authoritative and
+are rejected for productive authorize/run.
+

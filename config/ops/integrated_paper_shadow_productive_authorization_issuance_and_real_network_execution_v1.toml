@@ -1,0 +1,52 @@
+# Integrated Paper-Shadow Productive Authorization Issuance + Real Network Execution v1
+#
+# Successor to PR #5591 / #5592. Provides productive issuance and real public MD
+# transport. Repository defaults do NOT authorize a session. No Orders/Testnet/Live/
+# Paper execution. Env flag alone is never sufficient.
+
+schema_version = "integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution.v1"
+producer_family = "ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1"
+capability_id = "INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1"
+authority_effect = "NONE"
+activation_effect = "NONE"
+runtime_effect = "NONE"
+order_effect = "NONE"
+economic_gate_effect = "NONE"
+
+venue = "OKX"
+market_type = "FUTURES"
+host = "eea.okx.com"
+host_allowlist = ["eea.okx.com"]
+transport = "rest_poll_v1"
+instrument_allowlist = ["ETH-USD_UM_XPERP-310404"]
+btc_forbidden = true
+spot_forbidden = true
+
+max_session_duration_seconds = 21600
+confirm_token_ttl_seconds = 3600
+connect_timeout_seconds = 5.0
+read_timeout_seconds = 10.0
+max_response_bytes = 1048576
+
+network_scope = "okx_eea_futures_public_md_observe_v1"
+session_execution_scope = "paper_shadow_observation_wallclock_v1"
+
+orders_authorized = false
+testnet_authorized = false
+live_authorized = false
+auto_promotion_authorized = false
+credentials_authorized = false
+paper_execution_authorized = false
+economic_validity_pass = false
+promotion_pass = false
+fixture_non_authoritative_rejected_for_productive_run = true
+env_flag_alone_insufficient = true
+real_network_env = "PEAK_TRADE_PSO_WALLCLOCK_ALLOW_REAL_NETWORK"
+
+wallclock_owner = "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1"
+go_prereg_owner = "ops.paper_shadow_observation_operator_go_session_preregistration_v1"
+observation_owner = "ops.integrated_paper_shadow_observation_session_v1"
+pipeline_owner = "ops.integrated_paper_shadow_economic_validity_pipeline_v1"
+
+contract_doc = "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1.md"
+cli = "scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py"

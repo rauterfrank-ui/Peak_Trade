@@ -85,15 +85,26 @@ python scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.
 ```
 
 `preflight` and `verify-evidence` are offline.
-`run` via CLI refuses real network in this repository path; tests use the
-library runtime with injected fake transport and fake clocks.
+`run` delegates to the successor productive path
+`INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1`
+(verified non-fixture authorization required; real network additionally needs
+`PEAK_TRADE_PSO_WALLCLOCK_ALLOW_REAL_NETWORK=1`, which is never sufficient alone).
+Library tests continue to inject fake transport and fake clocks.
 
-## Explicit non-goals
+## Explicit non-goals (this capability PR #5592)
 
 - Productive preregistration / Operator-GO / confirm token issuance
-- Real 6h session execution in this PR
+  (owned by successor productive-issuance capability)
+- Automatic session grant on merge
 - Paper / Testnet / Live orders
 - Economic Validity PASS
 - Auto-promotion
 - Dashboard authority
 - Zero-Order as substitute
+
+## Successor note
+
+PR #5592 alone was not real-startfähig (`REAL_NETWORK_CLI_PATH_NOT_ENABLED_IN_THIS_PR`,
+no productive issuance, no default real HTTP fetcher). The successor capability
+supplies productive issuance and the real public-MD transport while keeping
+Orders/Paper/Testnet/Live/credentials forbidden.

@@ -1,6 +1,12 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260729-integrated-paper-shadow-productive-authorization-issuance-and-real-network-execution-capability-v1"></a>
+- 2026-07-29 — Integrated Paper-Shadow Productive Authorization Issuance + Real Network Execution Capability v1
+  - Source: [Capability contract](runbooks/INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1.md) · Owner: `ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1` · CLI: `python scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py preflight`
+  - Claim: Productive prereg/confirm-token/GO/authorization issuance + real public OKX-EEA MD transport; consumption-before-network; fixtures rejected for productive run; env flag alone insufficient.
+  - Non-claims: merge does not authorize a session; no Orders/Paper/Testnet/Live; no credentials/private APIs; no Economic Validity/Promotion mutation; no real network in CI.
+
 <a id="ev-20260729-integrated-paper-shadow-observation-wallclock-session-execution-capability-v1"></a>
 - **EV-20260729-INTEGRATED-PAPER-SHADOW-OBSERVATION-WALLCLOCK-SESSION-EXECUTION-CAPABILITY-V1** | Date: 2026-07-29 | Owner: ops | Scope: capability implementation only | Risk: MED
   - Source: [Capability contract](runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md) · Owner: `ops.integrated_paper_shadow_observation_wallclock_session_execution_v1` · CLI: `python scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py preflight`

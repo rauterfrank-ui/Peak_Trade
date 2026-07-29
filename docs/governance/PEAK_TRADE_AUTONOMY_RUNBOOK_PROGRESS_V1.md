@@ -1,3 +1,16 @@
+### INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1
+
+- Scope: `INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1`
+- Decision: `IMPLEMENT_PRODUCTIVE_ISSUANCE_AND_REAL_PUBLIC_MD_RUN_NOT_AUTO_SESSION`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_AUTOMATIC_SESSION`
+- Owner: `ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1`
+- Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1.md`
+- Closes blockers from PR #5592: missing productive issuance; `REAL_NETWORK_CLI_PATH_NOT_ENABLED_IN_THIS_PR`; no default real HTTP fetcher
+- Surfaces: productive prereg/confirm-token/GO/authorization producers; verifiers; real HTTPS EEA public MD fetcher; productive `run` with consumption-before-network
+- Flags: merge does not authorize a session; fixtures rejected for productive run; env flag alone insufficient; Orders/Testnet/Live/Paper/Economic Validity unchanged false
+- Explicit non-actions: no real session in this PR; no real network in CI/tests; no Notion; no authority mutation
+
+
 ### INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1
 
 - Scope: `INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1`
@@ -7,8 +20,9 @@
 - Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md`
 - Transport: REST-only `https://eea.okx.com`; instrument `ETH-USD_UM_XPERP-310404`
 - Scopes: `okx_eea_futures_public_md_observe_v1` / `paper_shadow_observation_wallclock_v1`
-- Flags: no productive GO/session; Orders/Testnet/Live/Paper/Economic Validity unchanged false
+- Flags: no productive GO/session in this PR; Orders/Testnet/Live/Paper/Economic Validity unchanged false
 - Explicit non-actions: no real 6h session in this PR; no real network in CI; no Notion
+- Successor: productive issuance + real MD run under `INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1`
 
 
 ### PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1
