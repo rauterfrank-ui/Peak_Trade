@@ -91,8 +91,19 @@ class TestNoSecretsRule:
 
         assert len(violations) == 0
 
+    def test_no_false_positive_on_short_confirm_material_alias(self):
+        """Regression: confirm_token=_MATERIAL must not trip NO_SECRETS length gate."""
+        rule = NoSecretsRule()
+        # Assemble GO_ identifier at runtime so this test file itself stays clean.
+        material = "GO_PSO_SESSION_PREREG_V1_" + "FIXTURE_NON_AUTHORITATIVE_" + "MATERIAL_9F3A"
+        diff = (
+            "+++ b/tests/ops/test_example_prereg_v1.py\n"
+            "+_MATERIAL = " + '"' + material + '"\n'
+            "+result = produce(confirm_token=_MATERIAL)\n"
+        )
+        violations = rule.check(diff, ["tests/ops/test_example_prereg_v1.py"])
+        assert len(violations) == 0
 
-class TestNoLiveUnlockRule:
     """Tests for live unlock detection rule."""
 
     def test_detects_enable_live_trading(self):
