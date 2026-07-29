@@ -23,7 +23,7 @@ order_effect: NONE
 FULL_CANONICAL_SYSTEM_PARITY
 → INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_PASS
 → PAPER_SHADOW_OBSERVATION_READINESS_PASS
-→ OPERATOR_PAPER_SHADOW_OBSERVATION_GO   # NOT implemented here
+→ OPERATOR_PAPER_SHADOW_OBSERVATION_GO   # see PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1
 → INTEGRATED_PAPER_SHADOW_OBSERVATION
 → INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE
 → INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED
@@ -75,8 +75,12 @@ ECONOMIC_VALIDITY_PASS=false
 
 `produce_paper_shadow_observation_readiness_v1` discovers repository truth and
 evaluates `PAPER_SHADOW_OBSERVATION_READINESS_PASS` through the canonical gate-split
-evaluator. Forced PASS is rejected. Missing Operator-GO contract keeps readiness
-fail-closed. Authorization is never implied by readiness.
+evaluator. Forced PASS is rejected. Session-Preregistration / Operator-GO contract
+presence is discovered from
+`ops.paper_shadow_observation_operator_go_session_preregistration_v1` (file
+existence alone is insufficient). Authorization is never implied by readiness;
+`PAPER_SHADOW_OBSERVATION_AUTHORIZED` remains false unless a verified GO artifact
+says otherwise. Authorization is not Execution.
 
 ## Session lifecycle
 
@@ -94,12 +98,12 @@ Verifier rejects synthetic PASS and never sets system Economic Validity.
 
 ## Explicit non-goals
 
-- Operator-GO grant / arming
 - Wallclock observation session execution
 - Scheduler / daemon start
 - Runtime bridge activation
 - Testnet / Live / Orders
 - Equivalence to Pre-Economic Zero-Order connectivity evidence
+- Operator-GO artifact issuance as a productive default (see separate GO/Prereg capability)
 
 ## Offline operator command (contract only)
 

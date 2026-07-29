@@ -207,9 +207,15 @@ def test_readiness_producer_fail_closed_no_force_pass_deterministic() -> None:
     assert a.to_dict() == b.to_dict()
     assert a.authority_effect == AUTHORITY_EFFECT_NONE
     assert a.PAPER_SHADOW_OBSERVATION_AUTHORIZED is False
-    # Operator-GO contract intentionally absent → readiness remain fail-closed.
-    assert a.PAPER_SHADOW_OBSERVATION_READINESS_PASS is False
-    assert any("SESSION_PREREGISTRATION" in x or "OPERATOR_GO" in x for x in a.readiness_blockers)
+    # Operator-GO / Session-Preregistration surfaces discovered → readiness may pass.
+    # Authorization remains false in repository defaults.
+    go_fact = next(
+        f
+        for f in a.discovery_facts
+        if f["fact_id"] == "SESSION_PREREGISTRATION_AND_OPERATOR_GO_CONTRACT_PRESENT"
+    )
+    assert go_fact["present"] is True
+    assert a.PAPER_SHADOW_OBSERVATION_READINESS_PASS is True
     assert any(
         f["fact_id"] == "SIMULATED_PORTFOLIO_FILL_FEE_SLIPPAGE_PNL_MODEL_DEFINED" and f["present"]
         for f in a.discovery_facts

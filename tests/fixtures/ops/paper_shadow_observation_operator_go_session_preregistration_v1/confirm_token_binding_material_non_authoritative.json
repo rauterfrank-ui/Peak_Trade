@@ -1,0 +1,16 @@
+{
+  "confirm_token_binding_sha256": "8380902ce5088bbf09ffeb7adffd3cf08792dcf2fe2f89b98b5bb1c407f1fbea",
+  "confirm_token_fingerprint": "d3b856140d92fb8e97755613c3fd4422d6cbf1300212c94516910681ea01d0e8",
+  "expected_repository_sha": "cd1bd6fa40d664c22b3f6abeef3cc00cdda72688",
+  "expires_at": 1700003600.0,
+  "fixture_non_authoritative": true,
+  "notes": [
+    "FIXTURE_NON_AUTHORITATIVE",
+    "TOKEN_CONSTRUCTOR_LIVES_ONLY_IN_TEST_CODE",
+    "NOT_A_PRODUCTION_SECRET"
+  ],
+  "plaintext_confirm_token_checked_in": false,
+  "plaintext_token_absent_as_secret": true,
+  "scope_digest": "75223a36ac9e0f05c3da83f76a2e6161c596ad41a4c9d0642f8a847ffb7f8098",
+  "session_id": "pso_fixture_session_non_auth_v1"
+}

@@ -1,10 +1,16 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260729-paper-shadow-observation-operator-go-session-preregistration-v1"></a>
+- **EV-20260729-PAPER-SHADOW-OBSERVATION-OPERATOR-GO-AND-SESSION-PREREGISTRATION-V1** | Date: 2026-07-29 | Owner: ops | Scope: capability implementation only | Risk: LOW
+  - Source: [Capability contract](runbooks/PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1.md) · Owner: `ops.paper_shadow_observation_operator_go_session_preregistration_v1` · CLI: `python scripts/ops/assess_paper_shadow_observation_operator_go_session_preregistration_v1.py --mode discover --json`
+  - Claim: Versioned Session-Preregistration + scoped Operator-GO + Confirm-Token + Authorization-Readiness + Verifier surfaces implemented and wired into observation readiness discovery; repository default `PAPER_SHADOW_OBSERVATION_AUTHORIZED=false`; no productive GO/session checked in.
+  - Non-claims: not wallclock session; not OKX/network; not credentials; not Orders/Testnet/Live; not Runtime-Bridge activation; not Economic Validity PASS; Authorization is not Execution.
+
 <a id="ev-20260729-integrated-paper-shadow-observation-session-capability-v1"></a>
 - **EV-20260729-INTEGRATED-PAPER-SHADOW-OBSERVATION-SESSION-CAPABILITY-V1** | Date: 2026-07-29 | Owner: ops | Scope: capability implementation only | Risk: LOW
   - Source: [Capability contract](runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md) · Owner: `ops.integrated_paper_shadow_observation_session_v1` · CLI: `python scripts/ops/run_integrated_paper_shadow_observation_session_contract_v1.py --mode observation`
   - Claim: Canonical Integrated Paper-Shadow Observation path surfaces implemented (entrypoint, simulated portfolio economics, readiness producer, lifecycle, OKX Futures market-data policy, durable evidence, bundle verifier); stale Shadow-Prep/Runtime-Bridge contradictions reconciled; all authority flags remain false.
-  - Non-claims: not Operator-GO; not wallclock session; not authorization; not Testnet/Live/Orders; not Runtime-Bridge activation; not Economic Validity PASS.
+  - Non-claims: not productive Operator-GO default; not wallclock session; not Testnet/Live/Orders; not Runtime-Bridge activation; not Economic Validity PASS.
 
 <a id="ev-20260726-momentum-v2-vol-scaled-v1-terminal-retirement-closeout"></a>
 - **EV-20260726-MOMENTUM-V2-VOL-SCALED-V1-TERMINAL-RETIREMENT-CLOSEOUT** | Date: 2026-07-26 | Owner: research | Scope: offline definition-only governance closeout | Risk: LOW

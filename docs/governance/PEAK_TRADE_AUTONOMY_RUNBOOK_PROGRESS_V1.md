@@ -1,3 +1,16 @@
+### PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1
+
+- Scope: `PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1`
+- Decision: `IMPLEMENT_SCOPED_OPERATOR_GO_AND_SESSION_PREREGISTRATION_NOT_EXECUTION`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_SESSION_EXECUTION`
+- Owner: `ops.paper_shadow_observation_operator_go_session_preregistration_v1`
+- Contract: `docs/ops/runbooks/PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1.md`
+- Surfaces: preregistration contract; scoped Operator-GO; confirm-token; enabled/armed state machine; authorization readiness producer; authorization artifact; verifier; consumption/revocation contracts; discovery wired into observation readiness
+- Flags: `PAPER_SHADOW_OBSERVATION_AUTHORIZED=false` (repo default); `ORDERS_AUTHORIZED=false`; `TESTNET_AUTHORIZED=false`; `LIVE_AUTHORIZED=false`; `ECONOMIC_VALIDITY_PASS=false`; `SESSION_EXECUTED=false`
+- Explicit non-actions: no wallclock session; no OKX/network; no credentials; no Orders/Testnet/Live; no Runtime-Bridge activation; no productive GO checked in
+- Epistemology: Readiness ≠ Authorization; Authorization ≠ Execution; Wallclock market-data outside this capability
+
+
 ### INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1
 
 - Scope: `INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1`
@@ -7,8 +20,9 @@
 - Contract: `docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md`
 - Surfaces: observation entrypoint; simulated portfolio economics; readiness producer; lifecycle; OKX Futures market-data policy; durable evidence; bundle verifier
 - Flags: `PAPER_SHADOW_OBSERVATION_AUTHORIZED=false`; `ORDERS_AUTHORIZED=false`; `TESTNET_AUTHORIZED=false`; `LIVE_AUTHORIZED=false`; `ECONOMIC_VALIDITY_PASS=false`; `WALLCLOCK_SESSION_EXECUTION_ALLOWED=false`
-- Explicit non-actions: no Operator-GO; no wallclock session; no scheduler/daemon start; no network/credentials; no Testnet/Live/Orders; no Runtime-Bridge activation
+- Explicit non-actions: no Operator-GO grant as productive default; no wallclock session; no scheduler/daemon start; no network/credentials; no Testnet/Live/Orders; no Runtime-Bridge activation
 - Stale contradiction reconciliation: Shadow-Prep OPEN_BLOCKERS; Runtime-Bridge integrated economic bundle gate; Mindestkontrakt activation-absence wording
+- Successor binding: Operator-GO / Session-Preregistration surfaces live under `PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1`
 
 
 ### INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1
