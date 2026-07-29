@@ -38,13 +38,13 @@ FULL_CANONICAL_SYSTEM_PARITY
 | Package | `src/ops/integrated_paper_shadow_observation_session_v1/` |
 | Config | `config/ops/integrated_paper_shadow_observation_session_v1.toml` |
 | Offline CLI | `scripts/ops/run_integrated_paper_shadow_observation_session_contract_v1.py` |
-| Portfolio economics model | `.../portfolio_economics_model_v1.py` |
-| Market-data policy | `.../market_data_policy_v1.py` |
-| Session lifecycle | `.../session_lifecycle_v1.py` |
-| Entrypoint | `.../entrypoint_v1.py` |
-| Readiness producer | `.../readiness_producer_v1.py` |
-| Evidence | `.../evidence_v1.py` |
-| Bundle verifier | `.../bundle_verifier_v1.py` |
+| Portfolio economics model | `...&#47;portfolio_economics_model_v1.py` |
+| Market-data policy | `...&#47;market_data_policy_v1.py` |
+| Session lifecycle | `...&#47;session_lifecycle_v1.py` |
+| Entrypoint | `...&#47;entrypoint_v1.py` |
+| Readiness producer | `...&#47;readiness_producer_v1.py` |
+| Evidence | `...&#47;evidence_v1.py` |
+| Bundle verifier | `...&#47;bundle_verifier_v1.py` |
 | Gate-split owner | `ops.integrated_paper_shadow_economic_validity_pipeline_v1` |
 
 ## Hard invariants

@@ -3,6 +3,7 @@
     "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
     "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
     "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+    "src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py",
     "src/trading/master_v2/strategy_suitability_agreement_material_v1.py",
     "src/trading/master_v2/suitability_binding_v1.py",
     "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
@@ -50,6 +51,7 @@
     "tests/trading/master_v2/test_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
     "tests/trading/master_v2/test_surface_p_boundary_path_bar_sequence_4_way_parity_extension_contract_v0.py",
     "tests/trading/master_v2/test_runtime_bridge_pre_activation_gate_assessment_contract_v0.py",
+    "tests/trading/master_v2/test_runtime_bridge_pre_activation_gate_contract_v0.py",
     "tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_reversal_preparation_scenario_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
@@ -886,6 +888,7 @@
   "scope_id": "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_V1",
   "authorized_surface_notes": [
     "Includes shared definition-only canonical research-lane post-terminal lifecycle contract (state vocabulary, totality, operator-decision, immutability/live-mirror policy); does not migrate Entry-Eligibility or Exit-Efficiency backlog SSOTs; no evaluation/holdout/runtime/orders. Owner surface: CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1.",
-    "Includes Holdout evaluation for Bollinger/MR midband exit reentry-cooldown HOLDOUT_V1 executed once and terminal as FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); no second run; no economic/promotion/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1."
+    "Includes Holdout evaluation for Bollinger/MR midband exit reentry-cooldown HOLDOUT_V1 executed once and terminal as FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); no second run; no economic/promotion/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.",
+    "Includes fail-closed Shadow-Prep reconciliation rename of runtime-bridge pre-activation economic evidence field to integrated economic evidence bundle verified status; no activation, no orders, no readiness PASS coercion. Owner surface: INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1."
   ]
 }
