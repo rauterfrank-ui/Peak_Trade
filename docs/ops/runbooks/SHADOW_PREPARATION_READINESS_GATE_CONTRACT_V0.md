@@ -51,8 +51,13 @@ A **separate operator GO** is required for any activation-stage work.
   authorities.
 - **Safety** remains an independent veto authority.
 - **Runtime Bridge** remains `BOUND_NOT_ACTIVATED`.
-- Economic sequencing remains binding:
-  `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false` (FAIL/BLOCKED).
+- Economic sequencing (reconciled):
+  `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false` remains legacy offline
+  sub-evidence only (`LEGACY_OFFLINE_SUB_EVIDENCE_ONLY`) and does **not** alone
+  block Paper-Shadow observation readiness.
+  System `ECONOMIC_VALIDITY_PASS` requires
+  `INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED` and remains false.
+  `PAPER_SHADOW_OBSERVATION_AUTHORIZED=false`.
 - This producer has `authority_effect=NONE` and cannot modify another owner.
 
 ## Historical surface non-equivalence
@@ -160,17 +165,29 @@ PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_NOT_STEP_29U=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_SATISFY_SHADOW_PREPARATION=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_DOES_NOT_SET_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=true
 PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_IMPLEMENTATION_DOES_NOT_WEAKEN_SHADOW_GATE=true
-ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_STILL_REQUIRED_FOR_SHADOW=true
+ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
+LEGACY_OFFLINE_SUB_EVIDENCE_ONLY=true
+ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_DOES_NOT_ALONE_BLOCK_PAPER_SHADOW_READINESS=true
+PAPER_SHADOW_OBSERVATION_AUTHORIZED=false
+INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED=false
+ECONOMIC_VALIDITY_PASS=false
 ```
 
 A governed Pre-Economic Zero-Order Evidence stage may exist as an optional
-evidence-only ladder step *before* Economic Validity. It is **not** Shadow
-preparation complete, **not** STEP 29U, and **not** an activation path.
+evidence-only ladder step. It is **not** equivalent to
+`INTEGRATED_PAPER_SHADOW_OBSERVATION`, **not** Shadow preparation complete,
+**not** STEP 29U activation, and **not** an activation path.
 Implementation readiness for that stage may be present; a real 6h session
 remains `NOT_AUTHORIZED` / not executed.
 Canonical session contract:
 `docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`.
-`required_preparation_gates` still includes `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS`.
+Canonical gate-split owner:
+`docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md`.
+`required_preparation_gates` no longer treats
+`ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` as the sole Paper-Shadow observation
+readiness blocker; it requires `PAPER_SHADOW_OBSERVATION_READINESS_PASS` and
+`PAPER_SHADOW_OBSERVATION_OPERATOR_GO` (authorization remains false without
+separate Operator-GO).
 
 ## Canonical STEP 29U / 29V status
 

@@ -4,16 +4,18 @@ Capability: GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1
 Session contract: PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1
 
 Offline, non-activating, fail-closed governance contract. Defines a strictly
-bounded, fully passive Zero-Order *evidence* stage that may sit between
-Integrated Offline Replay and ECONOMIC_VALIDITY_OFFLINE_GATE.
+bounded, fully passive Zero-Order *connectivity/runtime evidence* stage.
 
+Zero-Order is **not** equivalent to INTEGRATED_PAPER_SHADOW_OBSERVATION.
 This module:
 - never executes a session runtime;
 - never contacts brokers/exchanges;
 - never creates or submits orders;
 - never sets ECONOMIC_VALIDITY_OFFLINE_GATE_PASS;
-- never sets Shadow / Paper / Testnet / Live / Runtime activation tokens;
-- keeps STEP 29R / 29T / 29U economic prerequisites unchanged.
+- never sets ECONOMIC_VALIDITY_PASS;
+- never sets Paper-Shadow / Testnet / Live / Runtime activation tokens;
+- does not alone block Paper-Shadow observation readiness via the legacy
+  offline gate token.
 """
 
 from __future__ import annotations
@@ -49,26 +51,34 @@ POLICY_SEQUENCE_BEFORE: tuple[str, ...] = (
 )
 
 POLICY_SEQUENCE_AFTER: tuple[str, ...] = (
-    "INTEGRATED_OFFLINE_REPLAY",
-    "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE",
-    "ECONOMIC_VALIDITY_OFFLINE_GATE",
+    "FULL_CANONICAL_SYSTEM_PARITY",
+    "INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_PASS",
+    "INTEGRATED_PAPER_SHADOW_OBSERVATION_READINESS_PASS",
+    "OPERATOR_PAPER_SHADOW_OBSERVATION_GO",
+    "INTEGRATED_PAPER_SHADOW_OBSERVATION",
+    "INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE",
+    "INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED",
+    "ECONOMIC_VALIDITY_PASS",
     "PROMOTION",
-    "STEP_29R_RUNTIME_REWIRE",
-    "STEP_29T_ZERO_ORDER_RUNTIME",
-    "STEP_29U_SHADOW",
+    "TESTNET",
+    "LIVE",
 )
 
-# Surfaces that still require ECONOMIC_VALIDITY_OFFLINE_GATE_PASS unchanged.
+# Surfaces that still require system ECONOMIC_VALIDITY_PASS (integrated bundle).
+# Paper-Shadow observation readiness is intentionally excluded: legacy offline
+# gate alone must not block orderless observation readiness.
 ECONOMIC_GATE_STILL_REQUIRED_FOR: frozenset[str] = frozenset(
     {
         "STEP_29R_RUNTIME_REWIRE",
         "STEP_29T_ZERO_ORDER_RUNTIME",
-        "STEP_29U_SHADOW",
-        "PAPER",
+        "PROMOTION",
         "TESTNET",
         "LIVE",
     }
 )
+
+# Observation readiness is gated by correctness/parity/safety — not offline PASS.
+PAPER_SHADOW_OBSERVATION_READINESS_NOT_BLOCKED_BY_LEGACY_OFFLINE_GATE = True
 
 REQUIRED_DECISION_LOGIC_BINDINGS: tuple[str, ...] = (
     "DOUBLE_PLAY",
@@ -311,9 +321,12 @@ def evaluate_pre_economic_zero_order_evidence_session_contract_v1(
 
     notes = (
         "EVIDENCE_STAGE_ONLY",
+        "ZERO_ORDER_NOT_EQUIVALENT_TO_PAPER_SHADOW",
         "DOES_NOT_SET_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS",
+        "DOES_NOT_SET_ECONOMIC_VALIDITY_PASS",
         "DOES_NOT_AUTHORIZE_SHADOW_OR_RUNTIME",
-        "STEP_29R_29T_29U_STILL_REQUIRE_ECONOMIC_PASS",
+        "LEGACY_OFFLINE_GATE_DOES_NOT_ALONE_BLOCK_PAPER_SHADOW_READINESS",
+        "PROMOTION_TESTNET_LIVE_REQUIRE_ECONOMIC_VALIDITY_PASS",
     )
 
     return PreEconomicZeroOrderEvidenceSessionContractResultV1(
@@ -370,7 +383,12 @@ def assert_economic_gate_unchanged_for_ladder_steps(
 
 
 def economic_gate_blocks_step(step_id: str, *, economic_validity_offline_gate_pass: bool) -> bool:
-    """Return True when ``step_id`` remains blocked by the economic offline gate."""
+    """Return True when ``step_id`` remains blocked pending system economic PASS.
+
+    Legacy offline gate false blocks Promotion/Testnet/Live/29R/29T paths that
+    still require ECONOMIC_VALIDITY_PASS (of which offline evidence is a part).
+    Paper-Shadow observation readiness is not in ECONOMIC_GATE_STILL_REQUIRED_FOR.
+    """
 
     if step_id not in ECONOMIC_GATE_STILL_REQUIRED_FOR:
         return False

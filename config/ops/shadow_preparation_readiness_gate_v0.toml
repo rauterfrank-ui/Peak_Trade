@@ -52,16 +52,25 @@ readiness_projection_output_path = "out/ops/shadow_preparation_readiness_project
 
 required_preparation_gates = [
   "CANONICAL_STEP_29U_BOUND",
-  "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS",
+  "PAPER_SHADOW_OBSERVATION_READINESS_PASS",
   "DASHBOARD_BLOCKER_RESOLVED",
   "RUNTIME_BRIDGE_ACTIVATION_AUTHORIZED_SEPARATELY",
-  "SHADOW_ACTIVATION_OPERATOR_GO",
+  "PAPER_SHADOW_OBSERVATION_OPERATOR_GO",
 ]
 
 # Pre-Economic Zero-Order Evidence stage (GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1).
 # Additive reference only. This readiness gate does NOT evaluate or authorize that stage.
-# ECONOMIC_VALIDITY_OFFLINE_GATE_PASS remains required for STEP 29U / Shadow activation.
+# ECONOMIC_VALIDITY_OFFLINE_GATE_PASS is LEGACY offline sub-evidence only and does NOT
+# alone block Paper-Shadow observation readiness. System ECONOMIC_VALIDITY_PASS requires
+# INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED (offline + paper-shadow).
+# See docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md
 # See docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md
+legacy_offline_gate_role = "LEGACY_OFFLINE_SUB_EVIDENCE_ONLY"
+paper_shadow_observation_readiness_does_not_require_legacy_offline_gate_pass = true
+paper_shadow_observation_authorized = false
+integrated_economic_evidence_bundle_verified = false
+economic_validity_pass = false
+integrated_paper_shadow_economic_validity_pipeline_ref = "ops.integrated_paper_shadow_economic_validity_pipeline_v1"
 pre_economic_zero_order_evidence_stage_defined = true
 pre_economic_zero_order_evidence_session_contract = "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1"
 pre_economic_zero_order_evidence_authority_effect = "NONE"
@@ -394,10 +403,12 @@ evidence_paths = [
   "config/ops/shadow_preparation_readiness_gate_v0.toml",
 ]
 blockers = [
-  "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false",
+  "LEGACY_OFFLINE_ECONOMIC_GATE_SUB_EVIDENCE_NOT_PASS",
+  "ECONOMIC_VALIDITY_PASS=false",
+  "INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED=false",
 ]
-activation_relevance = "blocks_activation_sequencing"
-notes = "Economic offline gate remains FAIL/BLOCKED; preparation inventory may proceed offline."
+activation_relevance = "blocks_activation_sequencing_not_observation_readiness"
+notes = "Legacy offline gate is sub-evidence only; does not alone block Paper-Shadow observation readiness. System ECONOMIC_VALIDITY_PASS still required before Promotion/Testnet/Live."
 
 [[mindestkontrakt_components]]
 component_id = "promotion_gate_relationship"

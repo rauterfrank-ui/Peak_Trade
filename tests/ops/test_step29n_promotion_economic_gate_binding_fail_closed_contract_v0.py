@@ -56,6 +56,9 @@ def _valid_input(**overrides: Any) -> gate.PromotionEconomicGateInputV1:
         "safety_policy_digest": "f" * 64,
         "evidence_admissible": True,
         "economic_validity_offline_gate_pass": True,
+        "integrated_economic_evidence_bundle_verified": True,
+        "offline_economic_evidence_complete": True,
+        "integrated_paper_shadow_evidence_complete": True,
     }
     base.update(overrides)
     return gate.PromotionEconomicGateInputV1(**base)
@@ -279,8 +282,10 @@ class TestFuturesOnlyPolicy:
 class TestProgressRegistryBinding:
     def test_operator_policy_maintain_hold_historical_step29m_snapshot(self) -> None:
         text = PROGRESS_REGISTRY.read_text(encoding="utf-8")
-        assert _field_value(text, "STEP29M_OPERATOR_POLICY_DECISION") == "NO_NEW_CANDIDATE_HOLD"
-        assert _field_value(text, "STEP29M_FLEET_STATUS") == "COMPLETE_NO_PASS"
+        # Historical STEP29M snapshot remains present; registry is prepend-ordered so
+        # first-match helpers are not authoritative for historical rows.
+        assert "| `STEP29M_OPERATOR_POLICY_DECISION` | `NO_NEW_CANDIDATE_HOLD` |" in text
+        assert "| `STEP29M_FLEET_STATUS` | `COMPLETE_NO_PASS` |" in text
 
     def test_step29n_fail_closed_binding_fields(self) -> None:
         text = PROGRESS_REGISTRY.read_text(encoding="utf-8")
