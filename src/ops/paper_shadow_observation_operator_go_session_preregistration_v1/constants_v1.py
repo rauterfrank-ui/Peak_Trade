@@ -22,6 +22,26 @@ REQUIRED_MODE = "observation"
 VENUE_OKX = "OKX"
 MARKET_TYPE_FUTURES = "FUTURES"
 
+# Scoped wallclock MD-observe authority (never generic network/session grant).
+NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1 = "okx_eea_futures_public_md_observe_v1"
+SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1 = (
+    "paper_shadow_observation_wallclock_v1"
+)
+ALLOWED_NETWORK_SCOPES: frozenset[str] = frozenset(
+    {NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1}
+)
+ALLOWED_SESSION_EXECUTION_SCOPES: frozenset[str] = frozenset(
+    {SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1}
+)
+ALLOWED_PREREG_NETWORK_POLICIES: frozenset[str] = frozenset(
+    {
+        "deny",
+        "forbidden",
+        "offline_only",
+        NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1,
+    }
+)
+
 # Bound by observation capability defaults (6h).
 DEFAULT_MAX_SESSION_DURATION_SECONDS = 21600
 MIN_TTL_SECONDS = 60

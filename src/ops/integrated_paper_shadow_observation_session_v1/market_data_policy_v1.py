@@ -39,6 +39,9 @@ class MarketDataPolicyParamsV1:
     max_clock_drift_seconds: float = 30.0
     allow_duplicates: bool = False
     network_allowed: bool = False
+    # When True, network_allowed may be true only for wallclock MD-observe successor.
+    # Offline IPSO defaults keep both false.
+    wallclock_authorized_observe: bool = False
 
 
 @dataclass(frozen=True)
@@ -109,10 +112,14 @@ def evaluate_market_data_sequence_v1(
     """Validate an offline tick sequence. Does not fetch market data."""
     cfg = params or MarketDataPolicyParamsV1()
     result = MarketDataPolicyResultV1(ok=True)
-    if cfg.network_allowed:
+    if cfg.network_allowed and not cfg.wallclock_authorized_observe:
         result.ok = False
         result.blockers.append("NETWORK_FORBIDDEN_FOR_CAPABILITY_DEFAULT")
         return result
+    if cfg.wallclock_authorized_observe and cfg.network_allowed:
+        # Wallclock successor may mark network_allowed for documentation; tick
+        # sequences remain caller-supplied and are still validated offline here.
+        pass
     if cfg.venue.upper() != VENUE_OKX:
         result.ok = False
         result.blockers.append(f"VENUE_FORBIDDEN:{cfg.venue}")

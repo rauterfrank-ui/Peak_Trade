@@ -14,13 +14,16 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.con
     assert_no_plaintext_token_fields,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.constants_v1 import (
+    ALLOWED_PREREG_NETWORK_POLICIES,
     DEFAULT_MAX_SESSION_DURATION_SECONDS,
     MARKET_TYPE_FUTURES,
     MAX_TTL_SECONDS,
     MIN_TTL_SECONDS,
+    NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1,
     OBSERVATION_CAPABILITY_ID,
     PREREGISTRATION_SCHEMA_VERSION,
     REQUIRED_MODE,
+    SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1,
     VENUE_OKX,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.state_machine_v1 import (
@@ -50,6 +53,8 @@ _KNOWN_FIELDS = frozenset(
         "observation_mode",
         "no_order_invariant",
         "network_policy",
+        "network_scope",
+        "session_execution_scope",
         "credential_policy",
         "planned_duration_seconds",
         "earliest_start",
@@ -105,6 +110,8 @@ class SessionPreregistrationContractV1:
     observation_mode: str
     no_order_invariant: bool
     network_policy: str
+    network_scope: str
+    session_execution_scope: str
     credential_policy: str
     planned_duration_seconds: int
     earliest_start: float
@@ -277,6 +284,8 @@ def parse_preregistration_contract_v1(raw: Mapping[str, Any]) -> SessionPreregis
         observation_mode=str(_req(raw, "observation_mode")),
         no_order_invariant=bool(_req(raw, "no_order_invariant")),
         network_policy=str(_req(raw, "network_policy")),
+        network_scope=str(raw.get("network_scope") or "").strip(),
+        session_execution_scope=str(raw.get("session_execution_scope") or "").strip(),
         credential_policy=str(_req(raw, "credential_policy")),
         planned_duration_seconds=int(_req(raw, "planned_duration_seconds")),
         earliest_start=float(_req(raw, "earliest_start")),
@@ -377,8 +386,27 @@ def validate_preregistration_contract_v1(
 
     if not contract.no_order_invariant or not contract.no_orders:
         blockers.append("NO_ORDER_INVARIANT_REQUIRED")
-    if contract.network_policy.strip().lower() not in {"deny", "forbidden", "offline_only"}:
-        blockers.append("NETWORK_POLICY_MUST_DENY")
+    net_pol = contract.network_policy.strip().lower()
+    if net_pol not in {p.lower() for p in ALLOWED_PREREG_NETWORK_POLICIES}:
+        blockers.append("NETWORK_POLICY_FORBIDDEN")
+    if net_pol == NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1:
+        if contract.network_scope != NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1:
+            blockers.append("PREREG_NETWORK_SCOPE_MISMATCH")
+        if (
+            contract.session_execution_scope
+            != SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1
+        ):
+            blockers.append("PREREG_SESSION_EXECUTION_SCOPE_REQUIRED_FOR_MD_OBSERVE")
+    elif contract.network_scope or contract.session_execution_scope:
+        # Offline/deny policies must not carry wallclock scopes.
+        if contract.network_scope not in {"", "deny", "forbidden", "offline_only"}:
+            blockers.append("PREREG_NETWORK_SCOPE_WITHOUT_MD_OBSERVE_POLICY")
+        if contract.session_execution_scope and net_pol in {
+            "deny",
+            "forbidden",
+            "offline_only",
+        }:
+            blockers.append("PREREG_SESSION_EXECUTION_SCOPE_WITHOUT_MD_OBSERVE_POLICY")
     if contract.credential_policy.strip().lower() not in {"deny", "forbidden", "none"}:
         blockers.append("CREDENTIAL_POLICY_MUST_DENY")
     if not contract.no_testnet:

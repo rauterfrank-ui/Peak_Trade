@@ -12,8 +12,12 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.con
     verify_confirm_token_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.constants_v1 import (
+    ALLOWED_NETWORK_SCOPES,
+    ALLOWED_SESSION_EXECUTION_SCOPES,
     AUTHORIZATION_ARTIFACT_SCHEMA_VERSION,
     CAPABILITY_ID,
+    NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1,
+    SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.operator_go_contract_v1 import (
     OperatorGoContractV1,
@@ -53,6 +57,9 @@ _KNOWN_FIELDS = frozenset(
         "session_execution_authorized",
         "network_authorized",
         "credentials_authorized",
+        "network_scope",
+        "session_execution_scope",
+        "paper_execution_authorized",
         "single_use",
         "consumed",
         "revoked",
@@ -91,6 +98,9 @@ class AuthorizationArtifactV1:
     session_execution_authorized: bool
     network_authorized: bool
     credentials_authorized: bool
+    network_scope: str
+    session_execution_scope: str
+    paper_execution_authorized: bool
     single_use: bool
     consumed: bool
     revoked: bool
@@ -197,9 +207,12 @@ def build_authorization_artifact_v1(
         testnet_authorized=False,
         live_authorized=False,
         auto_promotion_authorized=False,
-        session_execution_authorized=False,
-        network_authorized=False,
+        session_execution_authorized=bool(go.session_execution_authorized),
+        network_authorized=bool(go.network_authorized),
         credentials_authorized=False,
+        network_scope=str(go.network_scope or ""),
+        session_execution_scope=str(go.session_execution_scope or ""),
+        paper_execution_authorized=False,
         single_use=True,
         consumed=False,
         revoked=False,
@@ -209,7 +222,11 @@ def build_authorization_artifact_v1(
         ),
         notes=(
             "SCOPED_OBSERVATION_AUTHORIZATION_ONLY",
-            "SESSION_EXECUTION_NOT_GRANTED",
+            (
+                "SESSION_EXECUTION_WALLCLOCK_SCOPED"
+                if go.session_execution_authorized
+                else "SESSION_EXECUTION_NOT_GRANTED"
+            ),
             "ORDERS_AUTHORIZED=false",
             "TESTNET_AUTHORIZED=false",
             "LIVE_AUTHORIZED=false",
@@ -255,6 +272,9 @@ def parse_authorization_artifact_v1(raw: Mapping[str, Any]) -> AuthorizationArti
         session_execution_authorized=bool(_req("session_execution_authorized")),
         network_authorized=bool(_req("network_authorized")),
         credentials_authorized=bool(_req("credentials_authorized")),
+        network_scope=str(raw.get("network_scope") or "").strip(),
+        session_execution_scope=str(raw.get("session_execution_scope") or "").strip(),
+        paper_execution_authorized=bool(raw.get("paper_execution_authorized", False)),
         single_use=bool(_req("single_use")),
         consumed=bool(_req("consumed")),
         revoked=bool(_req("revoked")),
@@ -299,10 +319,33 @@ def validate_authorization_artifact_v1(
         blockers.append("AUTH_NEGATIVE_AUTHORITY_VIOLATION")
     if artifact.auto_promotion_authorized:
         blockers.append("AUTH_AUTO_PROMOTION_VIOLATION")
+    if artifact.credentials_authorized:
+        blockers.append("AUTH_CREDENTIALS_CLAIM_FORBIDDEN")
+    if artifact.paper_execution_authorized:
+        blockers.append("AUTH_PAPER_EXECUTION_CLAIM_FORBIDDEN")
+    if artifact.network_authorized:
+        if artifact.network_scope not in ALLOWED_NETWORK_SCOPES:
+            blockers.append("AUTH_NETWORK_WITHOUT_EXACT_SCOPE")
+        elif artifact.network_scope != NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1:
+            blockers.append(f"AUTH_NETWORK_SCOPE_FORBIDDEN:{artifact.network_scope}")
+    elif artifact.network_scope:
+        blockers.append("AUTH_NETWORK_SCOPE_WITHOUT_NETWORK_AUTHORIZED")
     if artifact.session_execution_authorized:
-        blockers.append("AUTH_SESSION_EXECUTION_CLAIM_FORBIDDEN")
-    if artifact.network_authorized or artifact.credentials_authorized:
-        blockers.append("AUTH_NETWORK_OR_CREDENTIALS_CLAIM_FORBIDDEN")
+        if artifact.session_execution_scope not in ALLOWED_SESSION_EXECUTION_SCOPES:
+            blockers.append("AUTH_SESSION_EXECUTION_WITHOUT_EXACT_SCOPE")
+        elif (
+            artifact.session_execution_scope
+            != SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1
+        ):
+            blockers.append(
+                f"AUTH_SESSION_EXECUTION_SCOPE_FORBIDDEN:{artifact.session_execution_scope}"
+            )
+    elif artifact.session_execution_scope:
+        blockers.append("AUTH_SESSION_EXECUTION_SCOPE_WITHOUT_AUTHORIZED")
+    if artifact.session_execution_authorized and not artifact.network_authorized:
+        blockers.append("AUTH_WALLCLOCK_REQUIRES_NETWORK")
+    if artifact.network_authorized and not artifact.session_execution_authorized:
+        blockers.append("AUTH_NETWORK_REQUIRES_WALLCLOCK")
     if not artifact.single_use:
         blockers.append("AUTH_SINGLE_USE_REQUIRED")
     if artifact.consumed:

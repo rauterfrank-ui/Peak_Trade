@@ -12,13 +12,17 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.con
     assert_no_plaintext_token_fields,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.constants_v1 import (
+    ALLOWED_NETWORK_SCOPES,
+    ALLOWED_SESSION_EXECUTION_SCOPES,
     CAPABILITY_ID,
     DEFAULT_MAX_SESSION_DURATION_SECONDS,
     MARKET_TYPE_FUTURES,
     MAX_TTL_SECONDS,
     MIN_TTL_SECONDS,
+    NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1,
     OPERATOR_GO_SCHEMA_VERSION,
     REQUIRED_MODE,
+    SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1,
     VENUE_OKX,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.preregistration_contract_v1 import (
@@ -52,6 +56,9 @@ _KNOWN_FIELDS = frozenset(
         "network_authorized",
         "credentials_authorized",
         "session_execution_authorized",
+        "network_scope",
+        "session_execution_scope",
+        "paper_execution_authorized",
         "enabled",
         "armed",
         "arming_state",
@@ -100,6 +107,9 @@ class OperatorGoContractV1:
     network_authorized: bool
     credentials_authorized: bool
     session_execution_authorized: bool
+    network_scope: str
+    session_execution_scope: str
+    paper_execution_authorized: bool
     enabled: bool
     armed: bool
     arming_state: str
@@ -215,6 +225,9 @@ def parse_operator_go_contract_v1(raw: Mapping[str, Any]) -> OperatorGoContractV
         network_authorized=bool(_req(raw, "network_authorized")),
         credentials_authorized=bool(_req(raw, "credentials_authorized")),
         session_execution_authorized=bool(_req(raw, "session_execution_authorized")),
+        network_scope=str(raw.get("network_scope") or "").strip(),
+        session_execution_scope=str(raw.get("session_execution_scope") or "").strip(),
+        paper_execution_authorized=bool(raw.get("paper_execution_authorized", False)),
         enabled=enabled,
         armed=armed,
         arming_state=arming_state,
@@ -283,12 +296,31 @@ def validate_operator_go_contract_v1(
         blockers.append("LIVE_AUTHORIZED_FORBIDDEN")
     if go.auto_promotion_authorized:
         blockers.append("AUTO_PROMOTION_AUTHORIZED_FORBIDDEN")
-    if go.network_authorized:
-        blockers.append("NETWORK_AUTHORIZED_FORBIDDEN")
     if go.credentials_authorized:
         blockers.append("CREDENTIALS_AUTHORIZED_FORBIDDEN")
+    if go.paper_execution_authorized:
+        blockers.append("PAPER_EXECUTION_AUTHORIZED_FORBIDDEN")
+    if go.network_authorized:
+        if go.network_scope not in ALLOWED_NETWORK_SCOPES:
+            blockers.append("NETWORK_AUTHORIZED_WITHOUT_EXACT_SCOPE")
+        elif go.network_scope != NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1:
+            blockers.append(f"NETWORK_SCOPE_FORBIDDEN:{go.network_scope}")
+    elif go.network_scope:
+        blockers.append("NETWORK_SCOPE_WITHOUT_NETWORK_AUTHORIZED")
     if go.session_execution_authorized:
-        blockers.append("SESSION_EXECUTION_AUTHORIZED_FORBIDDEN")
+        if go.session_execution_scope not in ALLOWED_SESSION_EXECUTION_SCOPES:
+            blockers.append("SESSION_EXECUTION_AUTHORIZED_WITHOUT_EXACT_SCOPE")
+        elif (
+            go.session_execution_scope
+            != SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1
+        ):
+            blockers.append(f"SESSION_EXECUTION_SCOPE_FORBIDDEN:{go.session_execution_scope}")
+    elif go.session_execution_scope:
+        blockers.append("SESSION_EXECUTION_SCOPE_WITHOUT_SESSION_EXECUTION_AUTHORIZED")
+    if go.session_execution_authorized and not go.network_authorized:
+        blockers.append("WALLCLOCK_SESSION_REQUIRES_NETWORK_SCOPE")
+    if go.network_authorized and not go.session_execution_authorized:
+        blockers.append("NETWORK_SCOPE_REQUIRES_WALLCLOCK_SESSION_EXECUTION")
 
     if (
         go.planned_duration_seconds <= 0

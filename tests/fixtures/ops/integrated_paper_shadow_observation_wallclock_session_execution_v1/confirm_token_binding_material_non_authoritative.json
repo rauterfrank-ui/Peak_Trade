@@ -1,0 +1,13 @@
+{
+  "binding_sha256": "f974d045131f54f41d7ec9cfa732a005908f2f0af0e545f6c1c9ea6c32cf035f",
+  "fingerprint_sha256": "544e943171e49235e3a1eaf4b9a1e60bba149c0fbe096a4d060511a7e1878991",
+  "fixture_non_authoritative": true,
+  "material_fragments": [
+    "GO_PSO_SESSION_PREREG_V1_",
+    "WALLCLOCK_FIXTURE_NON_AUTH_",
+    "MATERIAL_A1B2"
+  ],
+  "notes": [
+    "Assemble fragments in tests; never a production token"
+  ]
+}

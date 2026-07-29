@@ -87,3 +87,14 @@ CLI refuses `start` / `run` / `execute` arguments.
 
 A later capability (session execution) may be selected only after a fresh
 read-only post-merge system review. This capability does not authorize that step.
+
+
+## Scoped wallclock MD-observe (successor)
+
+`network_authorized=true` is legitimate only with
+`network_scope=okx_eea_futures_public_md_observe_v1`.
+`session_execution_authorized=true` is legitimate only with
+`session_execution_scope=paper_shadow_observation_wallclock_v1`.
+GO alone still does not start a session. Execution is owned by
+`INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1`.
+Defaults remain false / empty.

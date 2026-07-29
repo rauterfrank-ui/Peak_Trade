@@ -208,15 +208,30 @@ def produce_paper_shadow_observation_authorization_readiness_v1(
     )
     blockers.extend(token_res.blockers)
 
-    checks.authority_boundary_pass = (
+    from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.constants_v1 import (
+        NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1,
+        SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1,
+    )
+
+    negative_ok = (
         (not go.orders_authorized)
         and (not go.testnet_authorized)
         and (not go.live_authorized)
         and (not go.auto_promotion_authorized)
-        and (not go.session_execution_authorized)
-        and (not go.network_authorized)
         and (not go.credentials_authorized)
+        and (not getattr(go, "paper_execution_authorized", False))
     )
+    if go.network_authorized or go.session_execution_authorized:
+        scoped_ok = (
+            go.network_authorized
+            and go.session_execution_authorized
+            and go.network_scope == NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1
+            and go.session_execution_scope
+            == SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1
+        )
+    else:
+        scoped_ok = True
+    checks.authority_boundary_pass = bool(negative_ok and scoped_ok)
     if not checks.authority_boundary_pass:
         blockers.append("AUTHORITY_BOUNDARY_FAIL")
 
