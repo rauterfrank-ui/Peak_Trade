@@ -127,10 +127,10 @@ READY_CLAIM_BOOLEAN_FIELDS: tuple[str, ...] = (
 
 REQUIRED_PREPARATION_GATE_DEFAULTS: tuple[str, ...] = (
     "CANONICAL_STEP_29U_BOUND",
-    "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS",
+    "PAPER_SHADOW_OBSERVATION_READINESS_PASS",
     "DASHBOARD_BLOCKER_RESOLVED",
     "RUNTIME_BRIDGE_ACTIVATION_AUTHORIZED_SEPARATELY",
-    "SHADOW_ACTIVATION_OPERATOR_GO",
+    "PAPER_SHADOW_OBSERVATION_OPERATOR_GO",
 )
 
 
@@ -437,13 +437,15 @@ def evaluate_shadow_preparation_readiness_gate_v0(
     if bool(dashboard["dashboard_blocker_resolved"]) and "DASHBOARD_BLOCKER_RESOLVED" in unmet:
         unmet.remove("DASHBOARD_BLOCKER_RESOLVED")
 
-    # Dashboard intrabar continuity is resolved on Landscape V2; independent
-    # blockers below keep overall Shadow preparation non-ready / non-activatable.
+    # Landscape V2 intrabar continuity is resolved; independent activation and
+    # observation-authorization blockers remain. Legacy offline economic gate is
+    # reported separately and does NOT alone block Paper-Shadow observation readiness.
     blockers = [
-        "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED",
+        "PAPER_SHADOW_OBSERVATION_NOT_AUTHORIZED",
         "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
         "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U",
         "NO_ACTIVATION_AUTHORIZED",
+        "LEGACY_OFFLINE_ECONOMIC_GATE_SUB_EVIDENCE_NOT_PASS",
     ]
     if not step_29u_bound:
         blockers.insert(0, "CANONICAL_STEP_29U_ABSENT")
@@ -1212,6 +1214,16 @@ def _validate_config_document(doc: Mapping[str, Any]) -> None:
             raise ShadowPreparationReadinessGateError(f"config_activation_flag_true:{key}")
     if doc.get("economic_validity_offline_gate_pass") is True:
         raise ShadowPreparationReadinessGateError("config_economic_validity_offline_gate_pass_true")
+    if doc.get("paper_shadow_observation_authorized") is True:
+        raise ShadowPreparationReadinessGateError(
+            "config_paper_shadow_observation_authorized_true_rejected"
+        )
+    if doc.get("economic_validity_pass") is True:
+        raise ShadowPreparationReadinessGateError("config_economic_validity_pass_true_rejected")
+    if doc.get("integrated_economic_evidence_bundle_verified") is True:
+        raise ShadowPreparationReadinessGateError(
+            "config_integrated_economic_evidence_bundle_verified_true_rejected"
+        )
     if "dashboard_blocker_id" not in doc:
         raise ShadowPreparationReadinessGateError("config_dashboard_blocker_id_missing")
     state = doc.get("dashboard_blocker_state")

@@ -109,7 +109,11 @@ def test_runtime_bridge_bound_not_activated() -> None:
 def test_economic_gate_remains_false_blocked() -> None:
     result = _default_result()
     assert result.economic_validity_offline_gate_pass is False
-    assert "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED" in result.blockers
+    # Legacy offline gate remains reported false as sub-evidence; it is not the
+    # sole Paper-Shadow observation readiness blocker after gate-split reconciliation.
+    assert "LEGACY_OFFLINE_ECONOMIC_GATE_SUB_EVIDENCE_NOT_PASS" in result.blockers
+    assert "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED" not in result.blockers
+    assert "PAPER_SHADOW_OBSERVATION_NOT_AUTHORIZED" in result.blockers
 
 
 def test_dashboard_blocker_resolved_on_landscape_v2() -> None:
@@ -128,7 +132,8 @@ def test_dashboard_blocker_resolved_on_landscape_v2() -> None:
     assert result.shadow_activatable is False
     assert result.runtime_bridge_state == RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED
     assert result.shadow_activation_authorized is False
-    assert "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED" in result.blockers
+    assert "PAPER_SHADOW_OBSERVATION_NOT_AUTHORIZED" in result.blockers
+    assert "LEGACY_OFFLINE_ECONOMIC_GATE_SUB_EVIDENCE_NOT_PASS" in result.blockers
     assert "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED" in result.blockers
     assert "NO_ACTIVATION_AUTHORIZED" in result.blockers
 
@@ -493,10 +498,12 @@ def test_docs_declare_mindestkontrakt_inventory_non_activating() -> None:
 EXPECTED_DEFAULT_BLOCKERS = (
     # CANONICAL_STEP_29U_ABSENT cleared when verified composition is bound
     # DASHBOARD_BLOCKER_OPEN cleared when Landscape V2 INTRABAR_CAPABILITY=PASS
-    "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED",
+    # ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL_BLOCKED retired as sole observation blocker
+    "PAPER_SHADOW_OBSERVATION_NOT_AUTHORIZED",
     "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
     "HISTORICAL_SHADOW_SURFACES_NON_EQUIVALENT_TO_STEP_29U",
     "NO_ACTIVATION_AUTHORIZED",
+    "LEGACY_OFFLINE_ECONOMIC_GATE_SUB_EVIDENCE_NOT_PASS",
 )
 
 

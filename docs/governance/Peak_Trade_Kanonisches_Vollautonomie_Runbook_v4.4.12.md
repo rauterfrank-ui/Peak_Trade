@@ -547,10 +547,77 @@ AND ECONOMIC_VALIDITY_PASS
 
 Weder ein grüner Backtest noch ein grüner Safety-Test genügt allein.
 
-### 3.3A Pre-Economic Zero-Order Evidence Stage (governed exception, additive)
+### 3.3A Integrated Paper-Shadow Economic-Validity Pipeline (reconciled)
 
-Zwischen Integrated Offline Replay und dem Economic-Validity-Offline-Gate ist
-eine **streng begrenzte** Evidence-Stufe zulässig:
+Die kanonische Leiter ist systemzentriert reconciled.
+Offline-Economic-Evidence bleibt obligatorisch für `ECONOMIC_VALIDITY_PASS`,
+ist aber **nicht** länger zwingende Vorbedingung für eine strikt orderlose
+Paper-Shadow-Observation-Readiness.
+
+```text
+INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1=true
+LEGACY_OFFLINE_SUB_EVIDENCE_ONLY=true
+ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
+PAPER_SHADOW_OBSERVATION_READINESS_PASS=false
+PAPER_SHADOW_OBSERVATION_AUTHORIZED=false
+INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED=false
+ECONOMIC_VALIDITY_PASS=false
+PROMOTION_PASS=false
+TESTNET_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+ORDERS_AUTHORIZED=false
+```
+
+#### Alte kanonische Leiter (historisch)
+
+```text
+INTEGRATED_OFFLINE_REPLAY
+→ PRE_ECONOMIC_ZERO_ORDER_EVIDENCE
+→ ECONOMIC_VALIDITY_OFFLINE_GATE
+→ PROMOTION / STEP 29R / 29T / 29U
+```
+
+#### Neue kanonische Leiter
+
+```text
+FULL_CANONICAL_SYSTEM_PARITY
+→ INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_PASS
+→ INTEGRATED_PAPER_SHADOW_OBSERVATION_READINESS_PASS
+→ OPERATOR_PAPER_SHADOW_OBSERVATION_GO
+→ INTEGRATED_PAPER_SHADOW_OBSERVATION
+→ INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE
+→ INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED
+→ ECONOMIC_VALIDITY_PASS
+→ PROMOTION
+→ TESTNET
+→ LIVE
+```
+
+Paper Shadow ist ausschließlich Evidence-Generator und erzeugt weder automatisch
+Economic PASS noch Promotion-, Testnet-, Live- oder Order-Authority.
+Zero-Order Connectivity/Runtime-Evidence ist **nicht** äquivalent zu Paper Shadow.
+`ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` ist Legacy-Offline-Sub-Evidence und darf
+weder allein Paper-Shadow-Readiness blockieren noch allein
+`ECONOMIC_VALIDITY_PASS` setzen.
+
+`ECONOMIC_VALIDITY_PASS` bleibt zwingende Voraussetzung für:
+
+```text
+PROMOTION
+TESTNET
+LIVE
+STEP_29R_RUNTIME_REWIRE
+STEP_29T_ZERO_ORDER_RUNTIME
+```
+
+Kanonischer Pipeline-Owner:
+`docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md`.
+
+### 3.3B Pre-Economic Zero-Order Evidence Stage (governed, additive, non-equivalent)
+
+Zwischen Integrated Offline Replay und integrierter Economic Evidence bleibt
+eine **streng begrenzte** Zero-Order Connectivity/Runtime-Evidence-Stufe
+zulässig. Sie ist **nicht** Paper Shadow.
 
 ```text
 GOVERNED_PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_STAGE_V1=true
@@ -564,18 +631,12 @@ SESSION_EVIDENCE=NOT_AUTHORIZED
 SESSION_EVIDENCE_VALID=false
 OPERATOR_GO_GRANTED=false
 OPERATOR_GO_REQUIRED_LATER=true
-```
-
-```text
-INTEGRATED_OFFLINE_REPLAY
-→ PRE_ECONOMIC_ZERO_ORDER_EVIDENCE
-→ ECONOMIC_VALIDITY_OFFLINE_GATE
-→ PROMOTION / STEP 29R / 29T / 29U
+ZERO_ORDER_NOT_EQUIVALENT_TO_PAPER_SHADOW=true
 ```
 
 Diese Stufe:
 
-- erzeugt ausschließlich Evidence,
+- erzeugt ausschließlich technische Connectivity/Runtime-Evidence,
 - besitzt keine Promotion-/Shadow-/Runtime-/Trading-Authority
   (`authority_effect=NONE`, `activation_effect=NONE`, `economic_gate_effect=NONE`),
 - arbeitet ausschließlich Zero-Order (`orders_allowed=false`),
@@ -586,18 +647,8 @@ Diese Stufe:
   Telemetrieverlust, Kill-State-Fehler, Risk-Engine-Fehler oder unvollständiger
   Entscheidungslogik-Bindung,
 - setzt **nicht** `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS`,
-- autorisiert **nicht** STEP 29R / 29T / 29U / Paper / Testnet / Live.
-
-`ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` bleibt unverändert zwingende Voraussetzung für:
-
-```text
-STEP_29R_RUNTIME_REWIRE
-STEP_29T_ZERO_ORDER_RUNTIME
-STEP_29U_SHADOW
-PAPER
-TESTNET
-LIVE
-```
+- setzt **nicht** `ECONOMIC_VALIDITY_PASS`,
+- autorisiert **nicht** Paper Shadow / Testnet / Live / Orders.
 
 Kanonischer Session-Contract:
 `docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_EVIDENCE_SESSION_V1.md`.
@@ -3805,23 +3856,34 @@ Erst nach:
 
 ```text
 TRADING_LOGIC_COMPLETION_GATE_PASS
-ECONOMIC_VALIDITY_OFFLINE_GATE_PASS
+ECONOMIC_VALIDITY_PASS
+INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED
 INTENT_COMPATIBILITY_FIREWALL_PASS
 ```
 
+`ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` ist Legacy-Offline-Sub-Evidence und ersetzt
+`ECONOMIC_VALIDITY_PASS` nicht.
 `PRE_ECONOMIC_ZERO_ORDER_EVIDENCE` ersetzt diese Voraussetzungen nicht.
 
 ## STEP 29S — Fenced Writer and Restart Contract
 
 ## STEP 29T — Zero-Order Runtime
 
-Erfordert weiterhin `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=true`. Die Pre-Economic
-Zero-Order Evidence-Stufe ist **nicht** STEP 29T und autorisiert STEP 29T nicht.
+Erfordert weiterhin `ECONOMIC_VALIDITY_PASS=true` (integrierte Evidence Bundle
+Verifikation). Legacy `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` allein genügt nicht.
+Die Pre-Economic Zero-Order Evidence-Stufe ist **nicht** STEP 29T und autorisiert
+STEP 29T nicht.
 
-## STEP 29U — Shadow
+## STEP 29U — Shadow / Integrated Paper-Shadow Observation
 
-STEP 29U ist die zukünftige kanonische Ladder-Stufe **Shadow**. Sie liegt nach
-STEP 29T (Zero-Order Runtime) und vor STEP 29V (Paper).
+STEP 29U ist die zukünftige kanonische Ladder-Stufe für integrierte
+orderlose Paper-Shadow-Observation (`INTEGRATED_PAPER_SHADOW_OBSERVATION`).
+Observation-Readiness erfordert Correctness-/Parity-/Safety-Preconditions und
+**nicht** allein `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS`.
+Authorization erfordert separates Operator-GO
+(`PAPER_SHADOW_OBSERVATION_AUTHORIZED`, default false).
+System-`ECONOMIC_VALIDITY_PASS` bleibt Voraussetzung vor Promotion / Testnet / Live
+und entsteht nur aus `INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED`.
 
 Diese Ratifikation definiert ausschließlich Repository-Semantik, Grenzen,
 Ownership-Anforderungen und verbotene Äquivalenzen. Die offline Composition

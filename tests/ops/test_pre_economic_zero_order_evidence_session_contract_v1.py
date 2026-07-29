@@ -153,14 +153,21 @@ def test_economic_gate_still_required_for_29r_29t_29u_and_live_paths() -> None:
     for step in (
         "STEP_29R_RUNTIME_REWIRE",
         "STEP_29T_ZERO_ORDER_RUNTIME",
-        "STEP_29U_SHADOW",
-        "PAPER",
+        "PROMOTION",
         "TESTNET",
         "LIVE",
     ):
         assert step in ECONOMIC_GATE_STILL_REQUIRED_FOR
         assert economic_gate_blocks_step(step, economic_validity_offline_gate_pass=False) is True
         assert economic_gate_blocks_step(step, economic_validity_offline_gate_pass=True) is False
+    # Paper-Shadow observation readiness is not blocked by legacy offline gate alone.
+    assert "STEP_29U_SHADOW" not in ECONOMIC_GATE_STILL_REQUIRED_FOR
+    assert "PAPER" not in ECONOMIC_GATE_STILL_REQUIRED_FOR
+    assert (
+        economic_gate_blocks_step("STEP_29U_SHADOW", economic_validity_offline_gate_pass=False)
+        is False
+    )
+    assert economic_gate_blocks_step("PAPER", economic_validity_offline_gate_pass=False) is False
 
 
 def test_policy_sequence_inserts_pre_economic_stage() -> None:
@@ -173,13 +180,17 @@ def test_policy_sequence_inserts_pre_economic_stage() -> None:
         "STEP_29U_SHADOW",
     )
     assert POLICY_SEQUENCE_AFTER == (
-        "INTEGRATED_OFFLINE_REPLAY",
-        "PRE_ECONOMIC_ZERO_ORDER_EVIDENCE",
-        "ECONOMIC_VALIDITY_OFFLINE_GATE",
+        "FULL_CANONICAL_SYSTEM_PARITY",
+        "INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_PASS",
+        "INTEGRATED_PAPER_SHADOW_OBSERVATION_READINESS_PASS",
+        "OPERATOR_PAPER_SHADOW_OBSERVATION_GO",
+        "INTEGRATED_PAPER_SHADOW_OBSERVATION",
+        "INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE",
+        "INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED",
+        "ECONOMIC_VALIDITY_PASS",
         "PROMOTION",
-        "STEP_29R_RUNTIME_REWIRE",
-        "STEP_29T_ZERO_ORDER_RUNTIME",
-        "STEP_29U_SHADOW",
+        "TESTNET",
+        "LIVE",
     )
     result = evaluate_pre_economic_zero_order_evidence_session_contract_v1()
     assert result.policy_sequence_after == POLICY_SEQUENCE_AFTER

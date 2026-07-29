@@ -76,18 +76,29 @@ INTEGRATED_OFFLINE_REPLAY
 → PROMOTION / STEP 29R / 29T / 29U
 ```
 
-### After (this capability)
+### After (reconciled system-centered ladder)
 
 ```text
-INTEGRATED_OFFLINE_REPLAY
-→ PRE_ECONOMIC_ZERO_ORDER_EVIDENCE
-→ ECONOMIC_VALIDITY_OFFLINE_GATE
-→ PROMOTION / STEP 29R / 29T / 29U
+FULL_CANONICAL_SYSTEM_PARITY
+→ INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_PASS
+→ INTEGRATED_PAPER_SHADOW_OBSERVATION_READINESS_PASS
+→ OPERATOR_PAPER_SHADOW_OBSERVATION_GO
+→ INTEGRATED_PAPER_SHADOW_OBSERVATION
+→ INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE
+→ INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED
+→ ECONOMIC_VALIDITY_PASS
+→ PROMOTION
+→ TESTNET
+→ LIVE
 ```
+
+Zero-Order remains a non-equivalent connectivity/runtime evidence stage and is
+**not** `INTEGRATED_PAPER_SHADOW_OBSERVATION`. See
+`docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md`.
 
 ## Stage semantics
 
-1. Produces **evidence only** (decision/risk/safety/telemetry observation packets).
+1. Produces **connectivity/runtime evidence only** (not simulated economic portfolio evidence).
 2. Holds **no** Promotion-, Shadow-, Runtime-, or Trading-authority (`authority_effect=NONE`, `activation_effect=NONE`).
 3. Works **Zero-Order only** (`orders_allowed=false`).
 4. Broker-/Order-endpoints remain **technically blocked** (`broker_writes_allowed=false`).
@@ -104,11 +115,13 @@ INTEGRATED_OFFLINE_REPLAY
    - HEARTBEAT_TIMEOUT / TELEMETRY_FAILURE / EVIDENCE_WRITE_FAILURE /
      INTEGRITY_FAILURE / CONFIG_MISMATCH / UNEXPECTED_EXCEPTION /
      TIME_BUDGET_EXCEEDED / SIGNAL_ABORT / OPERATOR_ABORT
-8. `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` remains a hard prerequisite for:
+8. Legacy `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` is sub-evidence only and does
+   **not** alone block Paper-Shadow observation readiness. System
+   `ECONOMIC_VALIDITY_PASS` (integrated bundle) remains required for:
    - STEP 29R Runtime Rewire
    - STEP 29T Zero-Order Runtime
-   - STEP 29U Shadow
-   - Paper / Testnet / Live
+   - Promotion / Testnet / Live
+9. Zero-Order evidence must **not** set `ECONOMIC_VALIDITY_PASS`.
 
 ## Required decision-logic bindings (readiness)
 
