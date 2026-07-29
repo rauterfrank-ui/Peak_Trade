@@ -50,10 +50,6 @@ def _valid_input(**overrides: Any) -> gate.PromotionEconomicGateInputV1:
         "robustness_result_digests": ("wf:" + "e" * 61,),
         "safety_policy_digest": "f" * 64,
         "evidence_admissible": True,
-        "economic_validity_offline_gate_pass": True,
-        "integrated_economic_evidence_bundle_verified": True,
-        "offline_economic_evidence_complete": True,
-        "integrated_paper_shadow_evidence_complete": True,
     }
     base.update(overrides)
     return gate.PromotionEconomicGateInputV1(**base)

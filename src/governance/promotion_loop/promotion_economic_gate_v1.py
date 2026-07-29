@@ -72,12 +72,6 @@ REASON_TERMINAL_CANDIDATE_DISPOSITION = "TERMINAL_CANDIDATE_DISPOSITION"
 REASON_CONFIDENCE_SCORE_ONLY = "CONFIDENCE_SCORE_ONLY_PROMOTION_BLOCKED"
 REASON_IN_SAMPLE_PROFIT_ONLY = "IN_SAMPLE_PROFIT_ONLY_PROMOTION_BLOCKED"
 REASON_ZERO_COST_EVIDENCE = "ZERO_COST_EVIDENCE_PROMOTION_BLOCKED"
-REASON_INTEGRATED_EVIDENCE_BUNDLE_NOT_VERIFIED = "INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_NOT_VERIFIED"
-REASON_OFFLINE_ECONOMIC_EVIDENCE_INCOMPLETE = "OFFLINE_ECONOMIC_EVIDENCE_INCOMPLETE"
-REASON_PAPER_SHADOW_EVIDENCE_INCOMPLETE = "INTEGRATED_PAPER_SHADOW_EVIDENCE_INCOMPLETE"
-REASON_LEGACY_OFFLINE_GATE_ALONE_INSUFFICIENT = (
-    "LEGACY_OFFLINE_GATE_ALONE_INSUFFICIENT_FOR_ECONOMIC_VALIDITY_PASS"
-)
 
 STEP29M_FLEET_STATUS_COMPLETE_NO_PASS = "COMPLETE_NO_PASS"
 NO_NEW_CANDIDATE_HOLD_ACTIVE = "ACTIVE"
@@ -244,9 +238,6 @@ class PromotionEconomicGateInputV1:
     step29m_fleet_status: str = ""
     candidate_terminal_disposition: str = ""
     economic_validity_offline_gate_pass: Optional[bool] = None
-    integrated_economic_evidence_bundle_verified: Optional[bool] = None
-    offline_economic_evidence_complete: Optional[bool] = None
-    integrated_paper_shadow_evidence_complete: Optional[bool] = None
     promotion_basis_confidence_only: bool = False
     promotion_basis_in_sample_profit_only: bool = False
     zero_cost_evidence: bool = False
@@ -290,13 +281,6 @@ class PromotionEconomicGateInputV1:
             "step29m_fleet_status": self.step29m_fleet_status,
             "candidate_terminal_disposition": self.candidate_terminal_disposition,
             "economic_validity_offline_gate_pass": self.economic_validity_offline_gate_pass,
-            "integrated_economic_evidence_bundle_verified": (
-                self.integrated_economic_evidence_bundle_verified
-            ),
-            "offline_economic_evidence_complete": self.offline_economic_evidence_complete,
-            "integrated_paper_shadow_evidence_complete": (
-                self.integrated_paper_shadow_evidence_complete
-            ),
             "promotion_basis_confidence_only": self.promotion_basis_confidence_only,
             "promotion_basis_in_sample_profit_only": self.promotion_basis_in_sample_profit_only,
             "zero_cost_evidence": self.zero_cost_evidence,
@@ -477,31 +461,8 @@ def _derive_robustness_pass(input_data: PromotionEconomicGateInputV1) -> Optiona
 
 
 def _derive_economic_validity_pass(input_data: PromotionEconomicGateInputV1) -> Optional[bool]:
-    """System ECONOMIC_VALIDITY_PASS requires verified integrated evidence bundle.
-
-    Legacy ``economic_validity_offline_gate_pass`` is offline sub-evidence only and
-    is never sufficient alone.
-    """
-    bundle = input_data.integrated_economic_evidence_bundle_verified
-    offline_complete = input_data.offline_economic_evidence_complete
-    paper_complete = input_data.integrated_paper_shadow_evidence_complete
-
-    if bundle is False or offline_complete is False or paper_complete is False:
-        return False
-    if bundle is None or offline_complete is None or paper_complete is None:
-        # Fail closed for promotion claims when integrated fields are absent.
-        # Legacy offline-only inputs remain non-passing for system ECONOMIC_VALIDITY_PASS.
-        if input_data.economic_validity_offline_gate_pass is True:
-            return False
-        if input_data.economic_validity_offline_gate_pass is False:
-            return False
-        status_pass = _status_is_pass(input_data.economic_validity_status)
-        if status_pass is False:
-            return False
-        if input_data.economic_validity_proven is False:
-            return False
-        return False
-
+    if input_data.economic_validity_offline_gate_pass is not None:
+        return input_data.economic_validity_offline_gate_pass
     status_pass = _status_is_pass(input_data.economic_validity_status)
     if status_pass is None:
         return None
@@ -558,21 +519,6 @@ def _apply_governance_fail_closed_checks(
         input_data.no_new_candidate_hold_active or input_data.step29m_fleet_status
     ):
         _append_unknown("economic_validity_offline_gate_pass", reason_codes)
-
-    if input_data.integrated_economic_evidence_bundle_verified is False:
-        reason_codes.append(REASON_INTEGRATED_EVIDENCE_BUNDLE_NOT_VERIFIED)
-    elif input_data.integrated_economic_evidence_bundle_verified is None:
-        reason_codes.append(REASON_INTEGRATED_EVIDENCE_BUNDLE_NOT_VERIFIED)
-        if input_data.economic_validity_offline_gate_pass is True:
-            reason_codes.append(REASON_LEGACY_OFFLINE_GATE_ALONE_INSUFFICIENT)
-    if input_data.offline_economic_evidence_complete is False:
-        reason_codes.append(REASON_OFFLINE_ECONOMIC_EVIDENCE_INCOMPLETE)
-    elif input_data.offline_economic_evidence_complete is None:
-        reason_codes.append(REASON_OFFLINE_ECONOMIC_EVIDENCE_INCOMPLETE)
-    if input_data.integrated_paper_shadow_evidence_complete is False:
-        reason_codes.append(REASON_PAPER_SHADOW_EVIDENCE_INCOMPLETE)
-    elif input_data.integrated_paper_shadow_evidence_complete is None:
-        reason_codes.append(REASON_PAPER_SHADOW_EVIDENCE_INCOMPLETE)
 
 
 def compute_promotion_economic_gate_evaluation_digest(
@@ -827,9 +773,6 @@ def evaluate_post_pr4760_governance_bound_promotion_gate_v1(
         step29m_fleet_status=STEP29M_FLEET_STATUS_COMPLETE_NO_PASS,
         candidate_terminal_disposition="",
         economic_validity_offline_gate_pass=False,
-        integrated_economic_evidence_bundle_verified=False,
-        offline_economic_evidence_complete=False,
-        integrated_paper_shadow_evidence_complete=False,
     )
     return evaluate_promotion_economic_gate_v1(
         policy=gate_policy,

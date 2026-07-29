@@ -10,8 +10,8 @@ from src.ops.integrated_paper_shadow_economic_validity_pipeline_v1 import (
     AUTHORITY_EFFECT_NONE,
     CANONICAL_PIPELINE_SEQUENCE,
     FORBIDDEN_ECONOMIC_PASS_EVIDENCE_CLASSES,
+    LEGACY_OFFLINE_GATE_FIELD_NAME,
     LEGACY_OFFLINE_GATE_ROLE,
-    LEGACY_OFFLINE_GATE_TOKEN,
     PACKAGE_MARKER,
     PRODUCER_FAMILY,
     IntegratedPaperShadowEconomicValidityEvidenceInputV1,
@@ -88,7 +88,7 @@ def test_package_identity_and_config_defaults() -> None:
     assert "economic_validity_pass = false" in text
     assert "paper_shadow_observation_authorized = false" in text
     assert "orders_authorized = false" in text
-    assert LEGACY_OFFLINE_GATE_TOKEN in text
+    assert LEGACY_OFFLINE_GATE_FIELD_NAME in text
     assert LEGACY_OFFLINE_GATE_ROLE in text
 
 
@@ -182,50 +182,20 @@ def test_10_promotion_blocked_without_economic_validity_pass() -> None:
         "PROMOTION_BLOCKED_WITHOUT_ECONOMIC_VALIDITY_PASS" in b for b in result.authority_blockers
     )
 
-    # Promotion economic gate: offline alone must not yield system pass without bundle.
-    policy = promo.canonical_promotion_economic_gate_policy_v1()
-    from src.backtest.economic_validity_policy_v1 import canonical_economic_validity_policy_v1
-
-    digest = canonical_economic_validity_policy_v1().policy_digest()
-    input_data = promo.PromotionEconomicGateInputV1(
-        strategy_id="mv2_offline_research",
-        strategy_version="v1",
-        candidate_id="candidate-001",
-        economic_viability_evidence_ref="evidence://admissible/futures/v1/bundle-001",
-        economic_validity_status=promo.PASS_STATUS,
-        economic_validity_proven=True,
-        profitability_claim_allowed=True,
-        robustness_status=promo.PASS_STATUS,
-        data_admissibility_status=promo.PASS_STATUS,
-        evidence_admissibility_status=promo.PASS_STATUS,
-        policy_threshold_status=promo.PASS_STATUS,
-        walk_forward_status=promo.PASS_STATUS,
-        out_of_sample_status=promo.PASS_STATUS,
-        monte_carlo_status=promo.PASS_STATUS,
-        stress_status=promo.PASS_STATUS,
-        parameter_sensitivity_status=promo.PASS_STATUS,
-        reproducibility_status=promo.PASS_STATUS,
-        digest_binding_status=promo.PASS_STATUS,
-        manifest_binding_status=promo.PASS_STATUS,
-        safety_policy_status=promo.PASS_STATUS,
-        futures_only=True,
-        bitcoin_direction_allowed=False,
-        config_digest="a" * 64,
-        implementation_digest="b" * 64,
-        policy_digest=digest,
-        evidence_manifest_digest="c" * 64,
-        dataset_digest="d" * 64,
-        robustness_result_digests=("wf:" + "e" * 61,),
-        safety_policy_digest="f" * 64,
-        evidence_admissible=True,
-        economic_validity_offline_gate_pass=True,
+    # System ECONOMIC_VALIDITY_PASS owner: offline-only claims remain insufficient.
+    offline_only = _economic_bundle_ok(
         integrated_economic_evidence_bundle_verified=False,
         offline_economic_evidence_complete=True,
         integrated_paper_shadow_evidence_complete=False,
+        economic_validity_offline_gate_pass=False,
+        economic_validity_operator_ratification=False,
     )
-    gate_result = promo.evaluate_promotion_economic_gate_v1(
-        policy=policy,
-        input_data=input_data,
+    passed, blockers = evaluate_economic_validity_pass_v1(offline_only)
+    assert passed is False
+    assert any("INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED" in b for b in blockers)
+
+    # Legacy promotion-gate consumer remains fail-closed for current repo posture.
+    gate_result = promo.evaluate_current_repo_promotion_gate_v1(
         evaluation_timestamp="2026-07-29T00:00:00Z",
     )
     assert gate_result.economic_validity_pass is False

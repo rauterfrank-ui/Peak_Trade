@@ -138,10 +138,15 @@ BROKER_WRITES_PERFORMED=false
 | Pipeline evaluator | `src/ops/integrated_paper_shadow_economic_validity_pipeline_v1.py` |
 | Pipeline config | `config/ops/integrated_paper_shadow_economic_validity_pipeline_v1.toml` |
 | Shadow preparation readiness | `src/ops/shadow_preparation_readiness_gate_v0.py` |
-| Promotion economic gate | `src/governance/promotion_loop/promotion_economic_gate_v1.py` |
+| Promotion economic gate (legacy consumer; offline sub-evidence) | `src/governance/promotion_loop/promotion_economic_gate_v1.py` |
 | Zero-Order contract | `src/ops/pre_economic_zero_order_evidence_session_contract_v1.py` |
 | Runbook SSOT | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md` |
 | Contract tests | `tests/ops/test_integrated_paper_shadow_economic_validity_pipeline_v1.py` |
+
+System `ECONOMIC_VALIDITY_PASS` is owned by
+`ops.integrated_paper_shadow_economic_validity_pipeline_v1`. The promotion
+economic gate remains a fail-closed legacy consumer of offline sub-evidence and
+is not mutated by this capability (forbidden promotion/runtime authority surface).
 
 ## Safety invariants preserved
 

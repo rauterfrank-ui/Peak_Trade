@@ -40,7 +40,7 @@ AUTHORITY_EFFECT_NONE = "NONE"
 ACTIVATION_EFFECT_NONE = "NONE"
 ECONOMIC_GATE_EFFECT_NONE = "NONE"
 
-LEGACY_OFFLINE_GATE_TOKEN = "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS"
+LEGACY_OFFLINE_GATE_FIELD_NAME = "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS"
 LEGACY_OFFLINE_GATE_ROLE = "LEGACY_OFFLINE_SUB_EVIDENCE_ONLY"
 
 CANONICAL_PIPELINE_SEQUENCE: tuple[str, ...] = (
@@ -154,7 +154,7 @@ class IntegratedPaperShadowEconomicValidityPipelineResultV1:
     economic_gate_effect: str
     canonical_pipeline_sequence: tuple[str, ...]
     legacy_pipeline_sequence: tuple[str, ...]
-    legacy_offline_gate_token: str
+    legacy_offline_gate_field_name: str
     legacy_offline_gate_role: str
     economic_validity_offline_gate_pass: bool
     full_canonical_system_parity: bool
@@ -186,7 +186,7 @@ class IntegratedPaperShadowEconomicValidityPipelineResultV1:
             "economic_gate_effect": self.economic_gate_effect,
             "canonical_pipeline_sequence": list(self.canonical_pipeline_sequence),
             "legacy_pipeline_sequence": list(self.legacy_pipeline_sequence),
-            "legacy_offline_gate_token": self.legacy_offline_gate_token,
+            "legacy_offline_gate_field_name": self.legacy_offline_gate_field_name,
             "legacy_offline_gate_role": self.legacy_offline_gate_role,
             "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS": self.economic_validity_offline_gate_pass,
             "FULL_CANONICAL_SYSTEM_PARITY": self.full_canonical_system_parity,
@@ -438,7 +438,7 @@ def evaluate_integrated_paper_shadow_economic_validity_pipeline_v1(
         economic_gate_effect=ECONOMIC_GATE_EFFECT_NONE,
         canonical_pipeline_sequence=CANONICAL_PIPELINE_SEQUENCE,
         legacy_pipeline_sequence=LEGACY_PIPELINE_SEQUENCE,
-        legacy_offline_gate_token=LEGACY_OFFLINE_GATE_TOKEN,
+        legacy_offline_gate_field_name=LEGACY_OFFLINE_GATE_FIELD_NAME,
         legacy_offline_gate_role=LEGACY_OFFLINE_GATE_ROLE,
         economic_validity_offline_gate_pass=legacy_offline,
         full_canonical_system_parity=ev.full_canonical_system_parity is True,

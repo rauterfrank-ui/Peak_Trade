@@ -10,7 +10,7 @@ activation_effect = "NONE"
 economic_gate_effect = "NONE"
 
 # Legacy offline sub-evidence token (false-only compatible; never alone sets system PASS).
-legacy_offline_gate_token = "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS"
+legacy_offline_gate_field_name = "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS"
 legacy_offline_gate_role = "LEGACY_OFFLINE_SUB_EVIDENCE_ONLY"
 economic_validity_offline_gate_pass = false
 
