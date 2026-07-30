@@ -93,7 +93,7 @@ Reuses prereg/GO/confirm-token/authorization schemas and builders from
 ## Productive 6h session technical evidence closeout (2026-07-30)
 
 Documentation Anchor:
-`docs/ops/EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`.
+`docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`.
 
 Session `pso_wallclock_prod_69ffce43e0bba94f176d3aa22db7cf17` completed with
 `TECHNICAL_PASS_ECONOMIC_EVIDENCE_NOT_PRODUCED`. Technical / MD / safety /

@@ -9,7 +9,7 @@
 - Durable evidence root: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops/integrated_paper_shadow_productive_6h_20260729T205830Z`
 - Closeout package: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/integrated_paper_shadow_productive_6h_technical_evidence_closeout_20260730T084108Z`
 - Repo pointer: `evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/`
-- Documentation Anchor: `docs/ops/EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`
+- Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`
 - Technical facts: 6h OKX public MD observation; 10243 cycles; 3415 heartbeats; 0 data gaps; terminal `PASS` via `PLANNED_DURATION_REACHED`; no Orders/private API/Paper/Testnet/Live
 - Flags: `TECHNICAL_RUNTIME_EVIDENCE=PASS`; `ECONOMIC_EVIDENCE_COMPLETE=false`; `ECONOMIC_VALIDITY_PASS=false`; `STRATEGY_VALIDITY_PASS=false`; `PROMOTION_ELIGIBLE=false`; `signals_generated=0`; `hypothetical_trades=0`; `all_decisions_hold=true`
 - Explicit non-claims: not Economic/Strategy/Promotion PASS; HOLD/quantity=0 is not a trade; performance KPIs not produced

@@ -142,7 +142,7 @@ BROKER_WRITES_PERFORMED=false
 
 Productive 6h technical observation closeout (2026-07-30) does **not** change
 these flags. Documentation Anchor:
-`docs/ops/EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`.
+`docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`.
 `TECHNICAL_RUNTIME_EVIDENCE=PASS` with `ECONOMIC_EVIDENCE_COMPLETE=false`
 remains outside Economic Validity PASS.
 

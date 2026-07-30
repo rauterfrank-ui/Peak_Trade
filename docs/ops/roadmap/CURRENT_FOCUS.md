@@ -29,7 +29,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Repo pointer:
   [`evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/`](../../../evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/)
 - Documentation Anchor:
-  [`docs/ops/EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`](../EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout)
+  [`docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`](../EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout)
 
 **Still locked / next formally permissible step:**
 
