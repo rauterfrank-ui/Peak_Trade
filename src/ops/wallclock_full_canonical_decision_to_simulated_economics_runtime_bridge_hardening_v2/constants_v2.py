@@ -27,9 +27,13 @@ DEFAULT_ZERO_QUANTITY_FALLBACK_ACTIVE = False
 PRICE_BASIS_CONTRACT_VERSION = "wallclock_bridge_price_basis_explicit_mid_v2"
 FEATURE_PRICE_SOURCE = "explicit_mid_price"
 FILL_REFERENCE_PRICE_SOURCE = "explicit_mid_price"
+# Unchanged semantic label: mid value is obtained from public mark-price markPx.
 MARK_TO_MARKET_PRICE_SOURCE = "explicit_mid_price"
 BID_ASK_POLICY = "COLLAPSED_TO_EXPLICIT_MID_DOCUMENTED"
-REQUIRED_TICKER_PRICE_FIELD = "markPx"
+# Ticker endpoint declared field (not markPx). MarkPx comes from /api/v5/public/mark-price.
+REQUIRED_TICKER_PRICE_FIELD = "last"
+MARK_PRICE_PUBLIC_ENDPOINT = "/api/v5/public/mark-price"
+MARK_PRICE_PUBLIC_FIELD = "markPx"
 
 FEATURE_CONFIG_VERSION = "bridge_feature_regime_pipeline_v2"
 REGIME_CONFIG_VERSION = "bridge_regime_classifier_v2"

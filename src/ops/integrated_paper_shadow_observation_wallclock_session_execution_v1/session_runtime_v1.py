@@ -48,7 +48,20 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (
     EeaPublicMdTransportError,
     EeaPublicMdTransportV1,
-    parse_ticker_mid_price_v1,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.error_classes_v1 import (
+    MarketDataBindingErrorV1,
+    classify_transport_message_v1,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.normalized_market_data_v1 import (
+    dual_identity_provenance_v1,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.productive_md_fetch_v1 import (
+    fetch_normalized_public_market_data_v1,
+    resolve_mapping_with_transport_inventory_v1,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.venue_instrument_mapping_v1 import (
+    VenueInstrumentMappingV1,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1 import (
     HeartbeatTrackerV1,
@@ -179,6 +192,7 @@ class WallclockSessionRuntimeV1:
         self.sequence = 0
         self.reconnect_attempts = 0
         self.reconnect_window_start: float | None = None
+        self.venue_mapping: VenueInstrumentMappingV1 | None = None
         self.quality_fail = False
         self.blockers: list[str] = []
         self.started_wall = 0.0
@@ -335,29 +349,6 @@ class WallclockSessionRuntimeV1:
                     "no_secrets": True,
                 },
             )
-            self.writer.write_immutable_json(
-                "venue_instrument_binding.json",
-                {
-                    "venue": VENUE_OKX,
-                    "market_type": MARKET_TYPE_FUTURES,
-                    "instrument_id": CANONICAL_INSTRUMENT_ID,
-                    "host": CANONICAL_HOST,
-                    "network_scope": NETWORK_SCOPE,
-                    "session_execution_scope": SESSION_EXECUTION_SCOPE,
-                },
-            )
-            self.writer.write_immutable_json(
-                "session_manifest.json",
-                {
-                    "capability_id": CAPABILITY_ID,
-                    "package_marker": PACKAGE_MARKER,
-                    "session_id": session_id,
-                    "wallclock_session_started": True,
-                    "authority_effect": AUTHORITY_EFFECT_NONE,
-                    "execution_class": EXECUTION_CLASS_ANALYTICAL,
-                    "paper_execution": False,
-                },
-            )
         except WallclockEvidenceError as exc:
             self._abort("EVIDENCE_SINK_FAILURE", str(exc))
             return self._finalize_result(session_id=session_id, incomplete=True)
@@ -375,7 +366,7 @@ class WallclockSessionRuntimeV1:
             self._abort("ABORT_DUPLICATE_SESSION", str(exc))
             return self._finalize_result(session_id=session_id, incomplete=True)
 
-        # Open transport only after consume + lock.
+        # Open transport only after consume + lock; resolve venue mapping before MD loop.
         try:
             self._transition(WallclockSessionState.STARTING)
             self.transport.open()
@@ -384,9 +375,58 @@ class WallclockSessionRuntimeV1:
                 "connectivity_events.jsonl",
                 {"event": "transport_opened", "host": CANONICAL_HOST},
             )
+            self.venue_mapping = resolve_mapping_with_transport_inventory_v1(
+                transport=self.transport,
+                canonical_instrument_id=CANONICAL_INSTRUMENT_ID,
+            )
+            provenance = dual_identity_provenance_v1(mapping=self.venue_mapping)
+            self.writer.write_immutable_json(
+                "venue_instrument_binding.json",
+                {
+                    "venue": VENUE_OKX,
+                    "market_type": MARKET_TYPE_FUTURES,
+                    "canonical_instrument_id": self.venue_mapping.canonical_instrument_id,
+                    "instrument_id": self.venue_mapping.canonical_instrument_id,
+                    "venue_instrument_id": self.venue_mapping.venue_instrument_id,
+                    "instrument_type": self.venue_mapping.instrument_type,
+                    "contract_family": self.venue_mapping.contract_family,
+                    "settlement_currency": self.venue_mapping.settlement_currency,
+                    "mapping_source": self.venue_mapping.mapping_source,
+                    "mapping_version": self.venue_mapping.mapping_version,
+                    "mapping_digest": self.venue_mapping.mapping_digest,
+                    "host": CANONICAL_HOST,
+                    "network_scope": NETWORK_SCOPE,
+                    "session_execution_scope": SESSION_EXECUTION_SCOPE,
+                    **provenance,
+                },
+            )
+            self.writer.write_immutable_json(
+                "session_manifest.json",
+                {
+                    "capability_id": CAPABILITY_ID,
+                    "package_marker": PACKAGE_MARKER,
+                    "session_id": session_id,
+                    "wallclock_session_started": True,
+                    "authority_effect": AUTHORITY_EFFECT_NONE,
+                    "execution_class": EXECUTION_CLASS_ANALYTICAL,
+                    "paper_execution": False,
+                    "canonical_instrument_id": self.venue_mapping.canonical_instrument_id,
+                    "venue_instrument_id": self.venue_mapping.venue_instrument_id,
+                    "mapping_digest": self.venue_mapping.mapping_digest,
+                    "mark_price_endpoint": "/api/v5/public/mark-price",
+                    "mark_price_field": "markPx",
+                },
+            )
             self._transition(WallclockSessionState.RUNNING)
+        except MarketDataBindingErrorV1 as exc:
+            self._abort(exc.error_class, str(exc))
+            return self._finalize_result(session_id=session_id, incomplete=True)
         except Exception as exc:  # noqa: BLE001
-            self._abort("ABORT_AFTER_CONSUMPTION", str(exc))
+            err_cls, reconnectable = classify_transport_message_v1(str(exc))
+            if not reconnectable:
+                self._abort(err_cls, str(exc))
+            else:
+                self._abort("ABORT_AFTER_CONSUMPTION", str(exc))
             return self._finalize_result(session_id=session_id, incomplete=True)
 
         self.started_wall = self.clock_wall()
@@ -450,28 +490,45 @@ class WallclockSessionRuntimeV1:
                     break
 
                 try:
-                    fetch = self.transport.fetch_ticker()
-                    price = parse_ticker_mid_price_v1(fetch.payload)
+                    if self.venue_mapping is None:
+                        raise MarketDataBindingErrorV1(
+                            "CANONICAL_INSTRUMENT_MAPPING_MISSING",
+                            "venue_mapping_unset",
+                        )
+                    normalized = fetch_normalized_public_market_data_v1(
+                        transport=self.transport,
+                        mapping=self.venue_mapping,
+                        receive_ts_unix=now_wall,
+                        max_stale_seconds=float(self.config.max_stale_seconds),
+                        include_ticker=True,
+                    )
+                    price = float(normalized.mark_px)
                     self.sequence += 1
                     receive_ts = now_wall
                     tick = ObservationMarketTickV1(
-                        instrument_id=CANONICAL_INSTRUMENT_ID,
+                        instrument_id=normalized.canonical_instrument_id,
                         venue=VENUE_OKX,
                         market_type=MARKET_TYPE_FUTURES,
                         sequence=self.sequence,
-                        event_ts_unix=receive_ts,
+                        event_ts_unix=float(normalized.event_ts_unix),
                         receive_ts_unix=receive_ts,
                         mono_ts=now_mono,
-                        mid_price=float(price),
-                        source="eea_public_rest_ticker",
+                        mid_price=price,
+                        source="eea_public_rest_mark_price",
                     )
                     self.writer.append_event(
                         "market_data_sequence.jsonl",
                         {
                             "sequence": tick.sequence,
                             "mid_price": tick.mid_price,
+                            "mark_px": normalized.mark_px,
                             "receive_ts_unix": tick.receive_ts_unix,
-                            "url": fetch.url,
+                            "event_ts_unix": tick.event_ts_unix,
+                            "canonical_instrument_id": normalized.canonical_instrument_id,
+                            "venue_instrument_id": normalized.venue_instrument_id,
+                            "mark_price_endpoint": normalized.mark_price_endpoint,
+                            "mark_price_field": normalized.mark_price_field,
+                            "mapping_digest": normalized.mapping_digest,
                         },
                     )
                     status, kill = staleness.observe(
@@ -585,6 +642,10 @@ class WallclockSessionRuntimeV1:
                 except (NetworkBoundaryError,) as exc:
                     self._abort("FORBIDDEN_ENDPOINT", str(exc))
                     break
+                except MarketDataBindingErrorV1 as exc:
+                    # Deterministic schema/mapping defects never consume reconnect budget.
+                    self._abort(exc.error_class, str(exc))
+                    break
                 except EeaPublicMdTransportError as exc:
                     msg = str(exc)
                     if "ABORT_CREDENTIAL_OR_AUTH_SURFACE" in msg:
@@ -593,7 +654,11 @@ class WallclockSessionRuntimeV1:
                     if "HTTP_429_BUDGET_EXCEEDED" in msg:
                         self._abort("HTTP_429_BUDGET_EXCEEDED", msg)
                         break
-                    # reconnect path
+                    err_cls, reconnectable = classify_transport_message_v1(msg)
+                    if not reconnectable:
+                        self._abort(err_cls, msg)
+                        break
+                    # reconnect path — transient transport failures only
                     if self.state == WallclockSessionState.RUNNING:
                         self._transition(WallclockSessionState.RECONNECTING)
                     if self.reconnect_window_start is None:
@@ -604,6 +669,8 @@ class WallclockSessionRuntimeV1:
                         {
                             "attempt": self.reconnect_attempts,
                             "error": msg,
+                            "error_class": err_cls,
+                            "reconnectable": True,
                             "mono_ts": now_mono,
                         },
                     )

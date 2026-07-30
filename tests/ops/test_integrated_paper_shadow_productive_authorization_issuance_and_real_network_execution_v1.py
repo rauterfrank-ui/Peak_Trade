@@ -97,17 +97,59 @@ class FakeClock:
         self.mono += float(seconds)
 
 
-def _fake_ticker_fetcher(price: str = "3500.5", calls: list | None = None):
-    body = json.dumps(
-        {"code": "0", "msg": "", "data": [{"instId": CANONICAL_INSTRUMENT_ID, "markPx": price}]}
-    ).encode("utf-8")
-
+def _fake_ticker_fetcher(
+    price: str = "3500.5",
+    calls: list | None = None,
+    *,
+    clock: FakeClock | None = None,
+):
     def fetcher(url: str, method: str, headers: Mapping[str, str], timeout: float):
         if calls is not None:
             calls.append({"url": url, "method": method})
         assert method == "GET"
         assert CANONICAL_HOST in url
-        return 200, body, {"Content-Type": "application/json"}
+        assert f"instId={CANONICAL_INSTRUMENT_ID}" in url
+        ts_ms = int((clock.time() if clock is not None else NOW) * 1000)
+        if "/api/v5/public/instruments" in url:
+            payload = {
+                "code": "0",
+                "msg": "",
+                "data": [
+                    {
+                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "instType": "FUTURES",
+                        "state": "live",
+                    }
+                ],
+            }
+        elif "/api/v5/public/mark-price" in url:
+            payload = {
+                "code": "0",
+                "msg": "",
+                "data": [
+                    {
+                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "markPx": price,
+                        "ts": str(ts_ms),
+                    }
+                ],
+            }
+        elif "/api/v5/market/ticker" in url:
+            payload = {
+                "code": "0",
+                "msg": "",
+                "data": [
+                    {
+                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "last": price,
+                        "bidPx": price,
+                        "askPx": price,
+                    }
+                ],
+            }
+        else:
+            raise AssertionError(f"UNEXPECTED_URL:{url}")
+        return 200, json.dumps(payload).encode("utf-8"), {"Content-Type": "application/json"}
 
     return fetcher
 
@@ -413,7 +455,9 @@ def test_consumption_before_network_and_single_use(tmp_path: Path) -> None:
     calls: list = []
     clock = FakeClock()
     transport = EeaPublicMdTransportV1(
-        fetcher=_fake_ticker_fetcher(calls=calls), sleep=clock.sleep, environ={}
+        fetcher=_fake_ticker_fetcher(calls=calls, clock=clock),
+        sleep=clock.sleep,
+        environ={},
     )
     cfg = WallclockRuntimeConfigV1(
         max_session_duration_seconds=6,
@@ -456,7 +500,9 @@ def test_consumption_before_network_and_single_use(tmp_path: Path) -> None:
 
     clock2 = FakeClock()
     transport2 = EeaPublicMdTransportV1(
-        fetcher=_fake_ticker_fetcher(calls=[]), sleep=clock2.sleep, environ={}
+        fetcher=_fake_ticker_fetcher(calls=[], clock=clock2),
+        sleep=clock2.sleep,
+        environ={},
     )
     replay = run_productive_wallclock_session_v1(
         prereg=prereg,

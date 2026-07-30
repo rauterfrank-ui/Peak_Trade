@@ -147,15 +147,54 @@ def _load_wallclock_go():
     )
 
 
-def _fake_ticker_fetcher(price: str = "3500.5"):
-    body = json.dumps(
-        {"code": "0", "msg": "", "data": [{"instId": CANONICAL_INSTRUMENT_ID, "markPx": price}]}
-    ).encode("utf-8")
+def _fake_ticker_fetcher(price: str = "3500.5", *, clock: FakeClock | None = None):
+    """Fixture public MD fetcher: instruments + mark-price + ticker (no ticker markPx)."""
 
     def fetcher(url: str, method: str, headers: Mapping[str, str], timeout: float):
         assert method == "GET"
         assert CANONICAL_HOST in url
-        return 200, body, {}
+        assert f"instId={CANONICAL_INSTRUMENT_ID}" in url
+        ts_ms = int((clock.time() if clock is not None else NOW) * 1000)
+        if "/api/v5/public/instruments" in url:
+            payload = {
+                "code": "0",
+                "msg": "",
+                "data": [
+                    {
+                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "instType": "FUTURES",
+                        "state": "live",
+                    }
+                ],
+            }
+        elif "/api/v5/public/mark-price" in url:
+            payload = {
+                "code": "0",
+                "msg": "",
+                "data": [
+                    {
+                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "markPx": price,
+                        "ts": str(ts_ms),
+                    }
+                ],
+            }
+        elif "/api/v5/market/ticker" in url:
+            payload = {
+                "code": "0",
+                "msg": "",
+                "data": [
+                    {
+                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "last": price,
+                        "bidPx": price,
+                        "askPx": price,
+                    }
+                ],
+            }
+        else:
+            raise AssertionError(f"UNEXPECTED_URL:{url}")
+        return 200, json.dumps(payload).encode("utf-8"), {}
 
     return fetcher
 
@@ -481,7 +520,7 @@ def test_short_fake_clock_session_pass(tmp_path: Path) -> None:
 
     clock = FakeClock()
     transport = EeaPublicMdTransportV1(
-        fetcher=_fake_ticker_fetcher(),
+        fetcher=_fake_ticker_fetcher(clock=clock),
         sleep=clock.sleep,
         environ={},
     )
@@ -561,7 +600,7 @@ def test_duplicate_session_lock(tmp_path: Path) -> None:
     artifact_path = _write_v2_auth(tmp_path, prereg=prereg, token=material)
     runtime2 = WallclockSessionRuntimeV1(
         evidence_root=evidence_root2,
-        transport=EeaPublicMdTransportV1(fetcher=_fake_ticker_fetcher(), environ={}),
+        transport=EeaPublicMdTransportV1(fetcher=_fake_ticker_fetcher(clock=clock), environ={}),
         config=WallclockRuntimeConfigV1(max_cycles=1, min_quality_window_seconds=0),
         clock_wall=clock.time,
         clock_mono=clock.monotonic,
@@ -593,7 +632,7 @@ def test_evidence_tamper_detected(tmp_path: Path) -> None:
     evidence_root = tmp_path / "tamper_ev"
     runtime = WallclockSessionRuntimeV1(
         evidence_root=evidence_root,
-        transport=EeaPublicMdTransportV1(fetcher=_fake_ticker_fetcher(), environ={}),
+        transport=EeaPublicMdTransportV1(fetcher=_fake_ticker_fetcher(clock=clock), environ={}),
         config=WallclockRuntimeConfigV1(max_cycles=2, min_quality_window_seconds=0),
         clock_wall=clock.time,
         clock_mono=clock.monotonic,

@@ -11,7 +11,6 @@ from urllib.parse import urlencode
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     ALLOWED_PATHS,
     CANONICAL_HOST,
-    CANONICAL_INSTRUMENT_ID,
     DEFAULT_PER_REQUEST_MAX_RETRIES,
     DEFAULT_SESSION_HTTP_429_BUDGET,
     USER_AGENT,
@@ -140,12 +139,35 @@ class EeaPublicMdTransportV1:
                 self.sleep(0.01 * (2**attempt))
         raise EeaPublicMdTransportError(f"FETCH_FAILED:{last_err}") from last_err
 
-    def fetch_ticker(
-        self, *, instrument_id: str = CANONICAL_INSTRUMENT_ID
+    def fetch_instruments(
+        self, *, venue_instrument_id: str, inst_type: str = "FUTURES"
     ) -> TransportFetchResultV1:
+        """Public instruments lookup by native OKX venue_instrument_id only."""
+        if not venue_instrument_id or not str(venue_instrument_id).strip():
+            raise EeaPublicMdTransportError("VENUE_INSTRUMENT_ID_REQUIRED")
+        return self.get_json(
+            "/api/v5/public/instruments",
+            {"instType": inst_type, "instId": str(venue_instrument_id)},
+        )
+
+    def fetch_mark_price(
+        self, *, venue_instrument_id: str, inst_type: str = "FUTURES"
+    ) -> TransportFetchResultV1:
+        """Public mark-price contract. Never accepts Peak_Trade canonical ID param name."""
+        if not venue_instrument_id or not str(venue_instrument_id).strip():
+            raise EeaPublicMdTransportError("VENUE_INSTRUMENT_ID_REQUIRED")
+        return self.get_json(
+            "/api/v5/public/mark-price",
+            {"instType": inst_type, "instId": str(venue_instrument_id)},
+        )
+
+    def fetch_ticker(self, *, venue_instrument_id: str) -> TransportFetchResultV1:
+        """Public ticker for declared last/bid/ask semantics only (not markPx)."""
+        if not venue_instrument_id or not str(venue_instrument_id).strip():
+            raise EeaPublicMdTransportError("VENUE_INSTRUMENT_ID_REQUIRED")
         return self.get_json(
             "/api/v5/market/ticker",
-            {"instId": instrument_id},
+            {"instId": str(venue_instrument_id)},
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -159,17 +181,12 @@ class EeaPublicMdTransportV1:
 
 
 def parse_ticker_mid_price_v1(payload: Mapping[str, Any]) -> float:
-    """Require explicit markPx. No silent last→markPx→ask→bid fallback chain."""
-    data = payload.get("data")
-    if not isinstance(data, list) or not data:
-        raise EeaPublicMdTransportError("TICKER_DATA_MISSING")
-    row = data[0]
-    if not isinstance(row, dict):
-        raise EeaPublicMdTransportError("TICKER_ROW_INVALID")
-    raw = row.get("markPx")
-    if raw is None or raw == "":
-        raise EeaPublicMdTransportError("REQUIRED_PRICE_FIELD_MISSING:markPx")
-    price = float(raw)
-    if price <= 0:
-        raise EeaPublicMdTransportError("REQUIRED_PRICE_FIELD_INVALID:markPx")
-    return price
+    """Deprecated for mark semantics — ticker must not supply markPx.
+
+    Kept as a fail-closed guard so accidental ticker→markPx use aborts without
+    silent last/bid/ask substitution.
+    """
+    del payload  # unused; always fail-closed
+    raise EeaPublicMdTransportError(
+        "REQUIRED_PRICE_FIELD_MISSING:markPx_not_on_ticker_use_public_mark_price"
+    )
