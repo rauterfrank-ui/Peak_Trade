@@ -54,3 +54,14 @@ HARD_STOP=true
 ```
 
 The Desktop runbook remains the normative operator specification.
+
+Normative identity (ratified by
+`PREREGISTRATION_PROBE_FIXTURE_REPOSITORY_SHA_BINDING_V1`):
+
+```text
+RUNBOOK_NORMATIVE_FILENAME=Peak_Trade_Full_System_Paper_Shadow_1h_Runbook_v4_forensic_safe(6).md
+RUNBOOK_SHA256=a7529ef8ba8c5950f6372822b71ac2a5304ae037013288d48d53306d4105ff5a
+LOCAL_OPERATOR_COPY_BYTE_IDENTICAL=true
+```
+
+Probe/fixture evidence must embed `repository_sha` from `git rev-parse HEAD`.

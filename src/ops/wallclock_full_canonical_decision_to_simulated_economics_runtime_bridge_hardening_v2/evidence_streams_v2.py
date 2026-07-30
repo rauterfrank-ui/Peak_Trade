@@ -4,9 +4,16 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any, Callable, Mapping, Optional, Sequence
 
+from src.ops.preregistration_probe_fixture_repository_sha_binding_v1.constants_v1 import (
+    BRIDGED_CAPABILITY,
+)
+from src.ops.preregistration_probe_fixture_repository_sha_binding_v1.repository_sha_source_v1 import (
+    assert_valid_repository_sha_v1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.constants_v2 import (
     AI_LAYER_CAN_OVERRIDE_DECISIONS,
     AI_LAYER_NON_AUTHORITY,
@@ -159,22 +166,39 @@ def persist_hardening_evidence_bundle_v2(
     authorization_status: str = "NOT_APPLICABLE",
     mode: str = "offline_probe",
     exclude_from_economic_metrics: bool = False,
+    repository_sha: Optional[str] = None,
+    probe_type: Optional[str] = None,
+    created_at_utc: Optional[str] = None,
 ) -> dict[str, Any]:
     root = Path(evidence_root)
     root.mkdir(parents=True, exist_ok=True)
 
+    if repository_sha is None:
+        raise ValueError("REPOSITORY_SHA_REQUIRED_NO_DEFAULT")
+    sha = assert_valid_repository_sha_v1(repository_sha, field="repository_sha")
+    if not probe_type or not str(probe_type).strip():
+        raise ValueError("PROBE_TYPE_REQUIRED_NO_DEFAULT")
+    probe_type_s = str(probe_type).strip()
+    created = created_at_utc or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    config_digest = str(cycles[-1].get("config_digest") if cycles else "")
+
     _write_json(
         root / "session_manifest.json",
         {
+            "capability": BRIDGED_CAPABILITY,
             "capability_id": CAPABILITY_ID,
             "package_marker": PACKAGE_MARKER,
             "schema_version": SCHEMA_VERSION,
+            "evidence_schema_version": SCHEMA_VERSION,
             "owner": OWNER,
             "session_id": session_id,
             "mode": mode,
+            "probe_type": probe_type_s,
+            "repository_sha": sha,
+            "created_at_utc": created,
             "session_restart_policy": SESSION_RESTART_POLICY,
             "exclude_from_economic_metrics": exclude_from_economic_metrics,
-            "config_digest": (cycles[-1].get("config_digest") if cycles else ""),
+            "config_digest": config_digest,
         },
     )
     _write_json(
@@ -330,17 +354,39 @@ def persist_hardening_evidence_bundle_v2(
         root / "completion_verdict.json",
         {
             "ok": bool(verification.get("ok")),
+            "capability": BRIDGED_CAPABILITY,
             "capability_id": CAPABILITY_ID,
             "mode": mode,
+            "probe_type": probe_type_s,
+            "repository_sha": sha,
             "exclude_from_economic_metrics": exclude_from_economic_metrics,
         },
     )
 
     digests: dict[str, str] = {}
     for name in REQUIRED_EVIDENCE_STREAMS:
+        if name == "integrity_manifest.json":
+            continue
         path = root / name
         if path.is_file():
             digests[name] = hashlib.sha256(path.read_bytes()).hexdigest()
-    integrity = {"digests": digests, "capability_id": CAPABILITY_ID, "session_id": session_id}
+    integrity = {
+        "digests": digests,
+        "capability": BRIDGED_CAPABILITY,
+        "capability_id": CAPABILITY_ID,
+        "session_id": session_id,
+        "probe_type": probe_type_s,
+        "repository_sha": sha,
+    }
     _write_json(root / "integrity_manifest.json", integrity)
-    return {"ok": True, "evidence_root": str(root), "digests": digests}
+    # Recompute integrity digest after write for attestation callers (self excluded).
+    digests["integrity_manifest.json"] = hashlib.sha256(
+        (root / "integrity_manifest.json").read_bytes()
+    ).hexdigest()
+    return {
+        "ok": True,
+        "evidence_root": str(root),
+        "digests": digests,
+        "repository_sha": sha,
+        "probe_type": probe_type_s,
+    }
