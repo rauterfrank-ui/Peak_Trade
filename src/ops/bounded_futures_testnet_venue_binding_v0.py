@@ -60,6 +60,7 @@ OKX_EEA_PUBLIC_ENDPOINT_ALLOWLIST: frozenset[str] = frozenset(
     {
         "/api/v5/public/time",
         "/api/v5/public/instruments",
+        "/api/v5/public/mark-price",
         "/api/v5/market/ticker",
         "/api/v5/market/tickers",
     }

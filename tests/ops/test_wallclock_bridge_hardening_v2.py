@@ -148,9 +148,10 @@ def test_default_regime_fallback_absent() -> None:
 
 
 def test_explicit_price_basis_no_silent_chain() -> None:
+    # Ticker contract requires declared ticker field (last), not markPx.
     with pytest.raises(PriceBasisErrorV2):
-        extract_explicit_ticker_price_v2({"data": [{"last": "3500"}]})
-    px = extract_explicit_ticker_price_v2({"data": [{"markPx": "3500"}]})
+        extract_explicit_ticker_price_v2({"data": [{"markPx": "3500"}]})
+    px = extract_explicit_ticker_price_v2({"data": [{"last": "3500"}]})
     assert px == 3500.0
 
 
