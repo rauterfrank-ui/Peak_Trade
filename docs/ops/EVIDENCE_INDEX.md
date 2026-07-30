@@ -1,6 +1,13 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260730-wallclock-bridge-hardening-v2"></a>
+- 2026-07-30 — Wallclock Bridge Hardening V2
+  - Source: [Capability contract](runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2.md) · Owner: `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2` · CLI: `python scripts/ops/run_wallclock_bridge_hardening_v2.py preflight`
+  - Claim: Hardens V1 decision→economics bridge with provenance IDs, intent/fill idempotency, forced-wiring isolation, canonical strategy probe, regime fail-closed, explicit markPx price basis, real safety evaluation, required evidence streams, extended reconstruction verifier, stub/fallback scan, machine-derived acceptance gates.
+  - Evidence: [`evidence/ops/wallclock_bridge_hardening_v2/`](../../evidence/ops/wallclock_bridge_hardening_v2/)
+  - Non-claims: not Economic Validity PASS; not Promotion; not Preregistration/Authorization/1h-Run; not Orders/Paper/Testnet/Live.
+
 <a id="ev-20260730-wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1"></a>
 - 2026-07-30 — Wallclock Full Canonical Decision→Simulated Economics Runtime Bridge v1
   - Source: [Capability contract](runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1.md) · Owner: `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1` · CLI: `python scripts/ops/run_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py preflight`

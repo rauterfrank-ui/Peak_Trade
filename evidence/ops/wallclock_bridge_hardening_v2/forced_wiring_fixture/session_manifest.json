@@ -1,0 +1,11 @@
+{
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+  "config_digest": "cf9b5535cb3eb52ab4c6a3a78f06e6d77f8291e9cfb375b948fc09a4c7fbb2c8",
+  "exclude_from_economic_metrics": true,
+  "mode": "forced_wiring_fixture",
+  "owner": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2",
+  "package_marker": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2=true",
+  "schema_version": "v2",
+  "session_id": "forced-wiring-fixture-not-a-productive-session",
+  "session_restart_policy": "NO_IMPLICIT_RESUME"
+}

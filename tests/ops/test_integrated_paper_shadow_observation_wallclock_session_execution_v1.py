@@ -103,7 +103,7 @@ def _load_wallclock_go():
 
 def _fake_ticker_fetcher(price: str = "3500.5"):
     body = json.dumps(
-        {"code": "0", "msg": "", "data": [{"instId": CANONICAL_INSTRUMENT_ID, "last": price}]}
+        {"code": "0", "msg": "", "data": [{"instId": CANONICAL_INSTRUMENT_ID, "markPx": price}]}
     ).encode("utf-8")
 
     def fetcher(url: str, method: str, headers: Mapping[str, str], timeout: float):

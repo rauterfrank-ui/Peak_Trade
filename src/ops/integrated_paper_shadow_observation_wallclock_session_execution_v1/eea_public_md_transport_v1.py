@@ -159,17 +159,17 @@ class EeaPublicMdTransportV1:
 
 
 def parse_ticker_mid_price_v1(payload: Mapping[str, Any]) -> float:
+    """Require explicit markPx. No silent last→markPx→ask→bid fallback chain."""
     data = payload.get("data")
     if not isinstance(data, list) or not data:
         raise EeaPublicMdTransportError("TICKER_DATA_MISSING")
     row = data[0]
     if not isinstance(row, dict):
         raise EeaPublicMdTransportError("TICKER_ROW_INVALID")
-    for key in ("last", "markPx", "askPx", "bidPx"):
-        raw = row.get(key)
-        if raw is None or raw == "":
-            continue
-        price = float(raw)
-        if price > 0:
-            return price
-    raise EeaPublicMdTransportError("TICKER_PRICE_MISSING")
+    raw = row.get("markPx")
+    if raw is None or raw == "":
+        raise EeaPublicMdTransportError("REQUIRED_PRICE_FIELD_MISSING:markPx")
+    price = float(raw)
+    if price <= 0:
+        raise EeaPublicMdTransportError("REQUIRED_PRICE_FIELD_INVALID:markPx")
+    return price

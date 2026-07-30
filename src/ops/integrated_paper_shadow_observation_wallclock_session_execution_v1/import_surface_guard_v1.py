@@ -62,6 +62,19 @@ CAPABILITY_SOURCE_RELPATHS: tuple[str, ...] = (
     "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
     "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/full_economic_reconstruction_verifier_v1.py",
     "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/wallclock_binding_adapter_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/__init__.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/constants_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/wallclock_hardening_binding_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/feature_regime_pipeline_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/safety_binding_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/idempotent_portfolio_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/evidence_streams_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/full_economic_reconstruction_verifier_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/stub_fallback_scan_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/acceptance_gates_v2.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/canonical_strategy_probe_v2.py",
 )
 
 
