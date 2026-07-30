@@ -1,6 +1,12 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260730-preregistration-probe-fixture-repository-sha-binding-v1"></a>
+- 2026-07-30 — Preregistration Probe/Fixture Repository SHA Binding v1
+  - Source: [Capability contract](runbooks/PREREGISTRATION_PROBE_FIXTURE_REPOSITORY_SHA_BINDING_V1.md) · Owner: `ops.preregistration_probe_fixture_repository_sha_binding_v1` · Attestation: [`evidence/ops/preregistration_probe_fixture_repository_sha_binding_v1/ATTESTATION.env`](../../evidence/ops/preregistration_probe_fixture_repository_sha_binding_v1/ATTESTATION.env)
+  - Claim: Ratifies normative forensic 1h runbook identity (`Peak_Trade_Full_System_Paper_Shadow_1h_Runbook_v4_forensic_safe(6).md` / SHA-256 `a7529ef8…`) and fail-closed binds Canonical Strategy Probe + Forced Wiring Fixture evidence to `git rev-parse HEAD` (40 lowercase hex) in session/completion/integrity manifests.
+  - Non-claims: not GO_FOR_PREREGISTRATION; not Authorization; not 1h-Run; not Economic Validity; not Promotion; not Orders/Paper/Testnet/Live.
+
 <a id="ev-20260730-wallclock-bridge-hardening-v2"></a>
 - 2026-07-30 — Wallclock Bridge Hardening V2
   - Source: [Capability contract](runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2.md) · Owner: `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2` · CLI: `python scripts/ops/run_wallclock_bridge_hardening_v2.py preflight`
