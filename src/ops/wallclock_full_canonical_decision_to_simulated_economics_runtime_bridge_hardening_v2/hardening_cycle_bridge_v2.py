@@ -15,6 +15,9 @@ from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_
     SimulatedFillV1,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.constants_v2 import (
+    AI_LAYER_CAN_OVERRIDE_DECISIONS,
+    AI_LAYER_NON_AUTHORITY,
+    AI_LAYER_ROLE,
     CAPABILITY_ID,
     DECISION_AUTHORITY_OWNER,
     ECONOMIC_VALIDITY_PASS,
@@ -679,12 +682,16 @@ def run_hardened_bridge_cycle_v2(
         "default_regime_fallback_active": features.default_regime_fallback_active,
         "synthetic_bid_ask_fallback_active": basis.synthetic_bid_ask_fallback_active,
         "forced_wiring": forced_actionable is not None,
+        "ai_layer_non_authority": AI_LAYER_NON_AUTHORITY,
+        "ai_layer_can_override_decisions": AI_LAYER_CAN_OVERRIDE_DECISIONS,
+        "ai_layer_role": AI_LAYER_ROLE,
         "notes": [
             "HARDENING_V2",
             "ANALYTICAL_SIMULATION_ONLY",
             "NO_ORDERS",
             "NO_IMPLICIT_RESUME",
             "SAFETY_KERNEL_REAL_EVALUATION_BOUND",
+            "AI_LAYER_NON_AUTHORITY",
         ],
     }
     if cycle["execution_eligible"]:

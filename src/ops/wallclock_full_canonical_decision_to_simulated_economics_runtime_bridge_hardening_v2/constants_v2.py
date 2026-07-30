@@ -46,10 +46,29 @@ PROMOTION_PASS = False
 RUNTIME_BRIDGE_LIVE_ACTIVATED = False
 FORCED_FIXTURE_WALLCLOCK_REACHABLE = False
 
+AI_LAYER_NON_AUTHORITY = True
+AI_LAYER_CAN_OVERRIDE_DECISIONS = False
+AI_LAYER_ROLE = "OBSERVABILITY_DIAGNOSE_ONLY_NOT_BOUND_IN_WALLCLOCK_HOT_PATH"
+
 EXECUTION_CLASS_ANALYTICAL = "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION"
 DECISION_AUTHORITY_OWNER = (
     "trading.master_v2.integrated_offline_trading_logic_replay_v1."
     "run_integrated_offline_trading_logic_replay_v1"
+)
+
+# Runbook-required streams that productive wallclock must append per cycle.
+PRODUCTIVE_WALLCLOCK_REQUIRED_APPEND_STREAMS: tuple[str, ...] = (
+    "market_data_sequence.jsonl",
+    "feature_trace.jsonl",
+    "regime_trace.jsonl",
+    "decision_trace.jsonl",
+    "risk_sizing_trace.jsonl",
+    "order_intent_trace.jsonl",
+    "simulated_fill_trace.jsonl",
+    "portfolio_snapshots.jsonl",
+    "equity_curve.jsonl",
+    "runtime_events.jsonl",
+    "killstate_events.jsonl",
 )
 
 REQUIRED_EVIDENCE_STREAMS: tuple[str, ...] = (

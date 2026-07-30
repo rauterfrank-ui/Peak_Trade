@@ -97,5 +97,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
         "bridge_owner": OWNER,
         "hardening_v2": True,
         "hold_stub_bypassed": True,
+        "ai_layer_non_authority": True,
+        "ai_layer_can_override_decisions": False,
     }
     return HardenedWallclockBridgeOutcomeV2(ok=True, bridge_cycle=cycle, labels=labels)

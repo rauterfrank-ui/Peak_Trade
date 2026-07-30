@@ -16,6 +16,7 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     FORCED_FIXTURE_WALLCLOCK_REACHABLE,
     HARDCODED_HOLD_PRESENT,
     OWNER,
+    PRODUCTIVE_WALLCLOCK_REQUIRED_APPEND_STREAMS,
 )
 
 SCAN_ID = f"{OWNER}.stub_fallback_scan_v2"
@@ -91,21 +92,49 @@ def run_stub_fallback_scan_v2(*, repo_root: Path) -> StubFallbackScanResultV2:
         blockers.append("FORCED_FIXTURE_IMPORTED_BY_WALLCLOCK")
         findings["forced_fixture_wallclock_reachable"] = True
 
-    # Observation adapter default HOLD must not be used when bridge required.
+    # Observation adapter must not expose silent HOLD / qty=0 defaults.
     adapter = _read(
         root,
         "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/"
         "observation_cycle_adapter_v1.py",
     )
     if 'intended_side: str = "HOLD"' in adapter:
-        # Allowed only if session_runtime fails closed when bridge disabled.
-        if "BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE" not in runtime:
-            blockers.append("DEFAULT_HOLD_ADAPTER_REACHABLE_WITHOUT_BRIDGE_GUARD")
+        blockers.append("DEFAULT_HOLD_ADAPTER_PARAMETER_PRESENT")
+        findings["default_hold_fallback_active"] = True
+    if 'intended_quantity: Decimal = Decimal("0")' in adapter:
+        blockers.append("DEFAULT_ZERO_QUANTITY_ADAPTER_PARAMETER_PRESENT")
+        findings["default_zero_quantity_fallback_active"] = True
+    if "BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE" not in runtime:
+        blockers.append("DEFAULT_HOLD_ADAPTER_REACHABLE_WITHOUT_BRIDGE_GUARD")
+
+    # Productive wallclock must bind runbook evidence streams (not only offline probes).
+    evidence_writer = _read(
+        root,
+        "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/"
+        "wallclock_evidence_v1.py",
+    )
+    if "append_productive_cycle_evidence_streams_v2" not in runtime:
+        blockers.append("PRODUCTIVE_EVIDENCE_STREAM_BINDER_NOT_CALLED")
+    for stream in PRODUCTIVE_WALLCLOCK_REQUIRED_APPEND_STREAMS:
+        if stream not in evidence_writer:
+            blockers.append(f"PRODUCTIVE_APPEND_STREAM_MISSING:{stream}")
+    if "completion_verdict.json" not in runtime:
+        blockers.append("COMPLETION_VERDICT_NOT_WRITTEN_BY_WALLCLOCK")
+    auth_runtime = _read(
+        root,
+        "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/"
+        "authorization_consumption_runtime_v1.py",
+    )
+    if "authorization_consumption.json" not in auth_runtime and (
+        "authorization_consumption.json" not in runtime
+    ):
+        blockers.append("AUTHORIZATION_CONSUMPTION_JSON_NOT_WRITTEN")
 
     # Placeholder economics writers: require stub=False path and bridge-required guard.
-    if '{"execution_class": EXECUTION_CLASS_ANALYTICAL, "paper_execution": False}' in runtime:
-        if "BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE" not in runtime:
-            blockers.append("ECONOMICS_PLACEHOLDER_WRITER_UNGUARDED")
+    if "BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE" not in runtime:
+        blockers.append("ECONOMICS_PLACEHOLDER_WRITER_UNGUARDED")
+    if '"stub": True' in runtime and "quality_fail = True" not in runtime:
+        blockers.append("ECONOMICS_STUB_WRITER_WITHOUT_QUALITY_FAIL")
 
     # AST: no place_order / submit_order calls in hardening package.
     pkg = root / HARDENING_PKG

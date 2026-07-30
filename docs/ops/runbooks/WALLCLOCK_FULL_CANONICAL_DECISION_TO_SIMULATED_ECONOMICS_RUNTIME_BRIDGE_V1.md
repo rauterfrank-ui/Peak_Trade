@@ -100,6 +100,13 @@ sessions still require separate productive authorization (unchanged).
 - Activating live runtime-bridge order authority
 - Automatic session grant on merge
 
+## Analytical Simulated Execution
+
+Analytical Simulated Execution is purely local. There is no broker/exchange order
+path. A successful 1h wallclock run does **not** establish Economic Validity.
+Forced-wiring fixture evidence is not strategy or Economic Validity evidence.
+The Desktop forensic runbook remains the normative operator specification.
+
 ## Acceptance
 
 1. Wallclock cycles no longer default to HOLD stub when bridge enabled
@@ -109,4 +116,6 @@ sessions still require separate productive authorization (unchanged).
 5. Actionable intents can produce analytical fills with fee/slippage
 6. Portfolio persists across cycles; PnL/equity/drawdown evidence written
 7. Full Economic Reconstruction Verifier PASS on probe evidence
-8. Authority flags remain false
+8. Productive wallclock appends runbook evidence streams per cycle
+9. Authority flags remain false
+10. `GO_FOR_PREREGISTRATION` remains false until post-merge verification against `origin/main` passes

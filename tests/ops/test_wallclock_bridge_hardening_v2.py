@@ -241,3 +241,70 @@ def test_safety_veto_on_killstate() -> None:
 
 def test_capability_identity() -> None:
     assert CAPABILITY_ID.endswith("HARDENING_V2")
+
+
+def test_ai_layer_non_authority_on_cycle() -> None:
+    state, cycles = run_hardened_bridge_cycles_from_mids_v2(
+        [3500.0, 3510.0, 3520.0],
+        session_id="ai-non-auth",
+    )
+    assert cycles
+    for c in cycles:
+        assert c["ai_layer_non_authority"] is True
+        assert c["ai_layer_can_override_decisions"] is False
+        assert "AI_LAYER_NON_AUTHORITY" in c["notes"]
+
+
+def test_productive_evidence_streams_bound_in_wallclock_schema() -> None:
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.wallclock_evidence_v1 import (
+        APPEND_ONLY,
+    )
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.constants_v2 import (
+        PRODUCTIVE_WALLCLOCK_REQUIRED_APPEND_STREAMS,
+    )
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.evidence_streams_v2 import (
+        append_productive_cycle_evidence_streams_v2,
+    )
+
+    for stream in PRODUCTIVE_WALLCLOCK_REQUIRED_APPEND_STREAMS:
+        assert stream in APPEND_ONLY
+    runtime = (
+        REPO_ROOT / "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/"
+        "session_runtime_v1.py"
+    ).read_text(encoding="utf-8")
+    assert "append_productive_cycle_evidence_streams_v2" in runtime
+    assert "completion_verdict.json" in runtime
+
+    state, cycles = run_hardened_bridge_cycles_from_mids_v2(
+        [3500.0, 3510.0, 3520.0, 3600.0],
+        session_id="prod-streams",
+    )
+    written: dict[str, list[dict]] = {}
+
+    def _append(name: str, payload: dict) -> None:
+        written.setdefault(name, []).append(dict(payload))
+
+    for cycle in cycles:
+        append_productive_cycle_evidence_streams_v2(
+            append_event=_append,
+            session_id="prod-streams",
+            cycle=cycle,
+        )
+    assert written["feature_trace.jsonl"]
+    assert written["regime_trace.jsonl"]
+    assert written["risk_sizing_trace.jsonl"]
+    assert written["order_intent_trace.jsonl"]
+    assert written["portfolio_snapshots.jsonl"]
+    assert written["equity_curve.jsonl"]
+    assert written["runtime_events.jsonl"]
+    assert all(e["ai_layer_non_authority"] is True for e in written["order_intent_trace.jsonl"])
+
+
+def test_observation_adapter_no_default_hold() -> None:
+    adapter = (
+        REPO_ROOT / "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/"
+        "observation_cycle_adapter_v1.py"
+    ).read_text(encoding="utf-8")
+    assert 'intended_side: str = "HOLD"' not in adapter
+    assert 'intended_quantity: Decimal = Decimal("0")' not in adapter
+    assert "INTENDED_SIDE_REQUIRED_NO_DEFAULT_HOLD" in adapter

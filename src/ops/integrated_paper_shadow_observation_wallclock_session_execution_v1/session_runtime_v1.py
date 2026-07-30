@@ -77,7 +77,13 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     WallclockEvidenceWriterV1,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.constants_v2 import (
+    AI_LAYER_CAN_OVERRIDE_DECISIONS,
+    AI_LAYER_NON_AUTHORITY,
+    AI_LAYER_ROLE,
     CAPABILITY_ID as DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.evidence_streams_v2 import (
+    append_productive_cycle_evidence_streams_v2,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.full_economic_reconstruction_verifier_v2 import (
     verify_full_economic_reconstruction_v2,
@@ -501,7 +507,14 @@ class WallclockSessionRuntimeV1:
                                     "selected_side": cycle.get("selected_side"),
                                     "intended_action": cycle.get("intended_action"),
                                     "feature_regime": cycle.get("feature_regime"),
-                                    "labels": outcome_bridge.labels,
+                                    "labels": {
+                                        **outcome_bridge.labels,
+                                        "ai_layer_non_authority": AI_LAYER_NON_AUTHORITY,
+                                        "ai_layer_can_override_decisions": (
+                                            AI_LAYER_CAN_OVERRIDE_DECISIONS
+                                        ),
+                                        "ai_layer_role": AI_LAYER_ROLE,
+                                    },
                                     "bridge_capability_id": DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
                                 },
                             )
@@ -528,6 +541,11 @@ class WallclockSessionRuntimeV1:
                                     "simulated_fills.jsonl",
                                     cycle["fill"],
                                 )
+                            append_productive_cycle_evidence_streams_v2(
+                                append_event=self.writer.append_event,
+                                session_id=session_id,
+                                cycle=cycle,
+                            )
                         outcome_ok = outcome_bridge.ok
                         md_blockers = outcome_bridge.md_blockers
                     else:
@@ -712,16 +730,17 @@ class WallclockSessionRuntimeV1:
                 ):
                     portfolio = dict(self.bridge_state.portfolio.snapshot())
                     self.writer.write_immutable_json("portfolio_snapshot.json", portfolio)
-                    self.writer.write_immutable_json(
-                        "economic_metrics.json",
-                        {
-                            **self.bridge_state.portfolio.economic_metrics().to_dict(),
-                            "execution_class": EXECUTION_CLASS_ANALYTICAL,
-                            "analytical_only": True,
-                            "bridge_capability_id": DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
-                            "stub": False,
-                        },
-                    )
+                    metrics_payload = {
+                        **self.bridge_state.portfolio.economic_metrics().to_dict(),
+                        "execution_class": EXECUTION_CLASS_ANALYTICAL,
+                        "analytical_only": True,
+                        "bridge_capability_id": DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
+                        "stub": False,
+                        "ai_layer_non_authority": AI_LAYER_NON_AUTHORITY,
+                        "ai_layer_can_override_decisions": AI_LAYER_CAN_OVERRIDE_DECISIONS,
+                        "forced_fixture_economic_metrics_excluded": True,
+                    }
+                    self.writer.write_immutable_json("economic_metrics.json", metrics_payload)
                     verification = verify_full_economic_reconstruction_v2(
                         cycle_ledger=self.bridge_state.cycle_ledger,
                         fill_ledger=self.bridge_state.fill_ledger,
@@ -732,11 +751,38 @@ class WallclockSessionRuntimeV1:
                         "full_economic_reconstruction_verifier.json",
                         verification.to_dict(),
                     )
+                    self.writer.write_immutable_json(
+                        "completion_verdict.json",
+                        {
+                            "ok": bool(verification.ok),
+                            "capability_id": DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
+                            "mode": "productive_wallclock",
+                            "full_economic_reconstruction_pass": bool(verification.ok),
+                            "ai_layer_non_authority": AI_LAYER_NON_AUTHORITY,
+                            "ai_layer_can_override_decisions": AI_LAYER_CAN_OVERRIDE_DECISIONS,
+                            "exclude_from_economic_metrics": False,
+                            "economic_validity_pass": False,
+                            "promotion_pass": False,
+                        },
+                    )
+                    if not (self.evidence_root / "authorization_consumption.json").exists():
+                        self.writer.write_immutable_json(
+                            "authorization_consumption.json",
+                            {
+                                "status": "CONSUMED" if self.consumed else "NOT_CONSUMED",
+                                "consumed": bool(self.consumed),
+                                "productive_authorization": True,
+                                "mode": "productive_wallclock",
+                                "forced_wiring_fixture": False,
+                            },
+                        )
                     if not verification.ok:
                         self.quality_fail = True
                         self.blockers.extend(verification.blockers)
                 else:
-                    # BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE: no placeholder PASS impression.
+                    # Fail-closed: no economics placeholder PASS impression.
+                    self.quality_fail = True
+                    self.blockers.append("BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE")
                     self.writer.write_immutable_json(
                         "portfolio_snapshot.json",
                         {
@@ -747,7 +793,19 @@ class WallclockSessionRuntimeV1:
                             "blocker": "BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE",
                         },
                     )
+                    self.writer.write_immutable_json(
+                        "completion_verdict.json",
+                        {
+                            "ok": False,
+                            "capability_id": DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
+                            "mode": "productive_wallclock",
+                            "full_economic_reconstruction_pass": False,
+                            "blocker": "BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE",
+                        },
+                    )
             if not (self.evidence_root / "economic_metrics.json").exists():
+                self.quality_fail = True
+                self.blockers.append("ECONOMIC_METRICS_MISSING_BRIDGE_REQUIRED")
                 self.writer.write_immutable_json(
                     "economic_metrics.json",
                     {

@@ -207,6 +207,19 @@ def consume_authorization_for_wallclock_start_v1(
     evidence_writer.write_immutable_json("operator_go.json", go.to_dict())
     evidence_writer.write_immutable_json("authorization_artifact.json", consumed.to_dict())
     evidence_writer.write_immutable_json("authorization_consumption_record.json", record)
+    evidence_writer.write_immutable_json(
+        "authorization_consumption.json",
+        {
+            "status": "CONSUMED",
+            "consumed": True,
+            "productive_authorization": True,
+            "mode": "productive_wallclock",
+            "forced_wiring_fixture": False,
+            "session_id": go.session_id,
+            "authorization_id": artifact.authorization_id,
+            "confirm_token_fingerprint": fp,
+        },
+    )
     evidence_writer.write_immutable_text("scope_digest.txt", prereg.scope_digest())
     evidence_writer.write_immutable_text("repo_sha.txt", expected_repository_sha)
 
