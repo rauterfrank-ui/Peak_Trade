@@ -28,7 +28,7 @@ WALLCLOCK_RUNTIME = (
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/"
     "session_runtime_v1.py"
 )
-FORCED_MODULE_TOKEN = "forced_wiring_fixture_v2"
+FORCED_WIRING_MODULE_MARKER = "forced_wiring_fixture_v2"
 
 
 @dataclass
@@ -87,7 +87,7 @@ def run_stub_fallback_scan_v2(*, repo_root: Path) -> StubFallbackScanResultV2:
 
     # Wallclock must not import forced wiring fixture.
     runtime = _read(root, WALLCLOCK_RUNTIME)
-    if FORCED_MODULE_TOKEN in runtime:
+    if FORCED_WIRING_MODULE_MARKER in runtime:
         blockers.append("FORCED_FIXTURE_IMPORTED_BY_WALLCLOCK")
         findings["forced_fixture_wallclock_reachable"] = True
 
