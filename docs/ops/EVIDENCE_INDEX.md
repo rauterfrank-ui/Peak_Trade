@@ -1,6 +1,12 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260730-wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1"></a>
+- 2026-07-30 — Wallclock Full Canonical Decision→Simulated Economics Runtime Bridge v1
+  - Source: [Capability contract](runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1.md) · Owner: `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1` · CLI: `python scripts/ops/run_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py preflight`
+  - Claim: Wallclock MD→feature/regime→Master-V2/Double-Play→risk/sizing/safety→intended action→analytical fill/fee/slippage→session-persistent portfolio→reconstruction verifier bound; HOLD stub bypassed when bridge enabled; closes 6h closeout next-capability alias.
+  - Non-claims: not Economic Validity PASS; not Promotion; not Orders/Paper/Testnet/Live; not credentials/private APIs; not live runtime-bridge order activation; merge does not authorize a session.
+
 <a id="ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout"></a>
 - 2026-07-30 — Integrated Paper-Shadow productive 6h technical runtime evidence closeout
   - Source: [Repo pointer](../../evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout` · Durable root (outside `/tmp`): `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops/integrated_paper_shadow_productive_6h_20260729T205830Z` · Closeout package: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/integrated_paper_shadow_productive_6h_technical_evidence_closeout_20260730T084108Z`
@@ -8,7 +14,7 @@
   - Claim: `TECHNICAL_PASS_ECONOMIC_EVIDENCE_NOT_PRODUCED` — six-hour productive OKX-EEA public MD observation completed (`PLANNED_DURATION_REACHED`); 10243 observation cycles; 3415 heartbeats; 0 data gaps; no Orders/private API/Paper/Testnet/Live; technical/safety/lifecycle evidence PASS.
   - Classification: `PRIMARY_TECHNICAL_RUNTIME_EVIDENCE=PASS`; `ECONOMIC_EVIDENCE_CLASS=INCOMPLETE_STUB_ONLY`; `ECONOMIC_EVIDENCE_COMPLETE=false`; `ECONOMIC_VALIDITY_PASS=false`; `STRATEGY_VALIDITY_PASS=false`; `PROMOTION_ELIGIBLE=false`.
   - Non-claims: not Economic/Strategy/Promotion PASS; not Paper-Execution evidence; 10243 HOLD / quantity=0 are not trades; performance KPIs not computable; portfolio/fee/slippage/PnL evidence not persisted.
-  - Next capability required: `INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1`.
+  - Next capability required (GO-ratified): `WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1` (alias `INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1`).
 
 <a id="ev-20260729-integrated-paper-shadow-productive-authorization-issuance-and-real-network-execution-capability-v1"></a>
 - 2026-07-29 — Integrated Paper-Shadow Productive Authorization Issuance + Real Network Execution Capability v1

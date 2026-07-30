@@ -53,6 +53,9 @@ APPEND_ONLY = (
     "decision_trace.jsonl",
     "risk_telemetry.jsonl",
     "killstate_events.jsonl",
+    "bridge_cycle_ledger.jsonl",
+    "bridge_fill_ledger.jsonl",
+    "simulated_fills.jsonl",
 )
 
 

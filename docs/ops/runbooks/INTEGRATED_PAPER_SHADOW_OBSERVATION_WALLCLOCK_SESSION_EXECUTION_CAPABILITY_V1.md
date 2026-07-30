@@ -108,3 +108,8 @@ PR #5592 alone was not real-startfähig (`REAL_NETWORK_CLI_PATH_NOT_ENABLED_IN_T
 no productive issuance, no default real HTTP fetcher). The successor capability
 supplies productive issuance and the real public-MD transport while keeping
 Orders/Paper/Testnet/Live/credentials forbidden.
+
+Decision→economics binding (non-HOLD, persistent portfolio, reconstruction
+verifier) is owned by
+`WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1`
+(enabled by default in wallclock runtime config).

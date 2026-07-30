@@ -1,0 +1,51 @@
+{
+  "broker_writes": false,
+  "economic_metrics": {
+    "drawdown": "0.0049719880994",
+    "equity": "99502.80119006000",
+    "exposure": "497.0497000",
+    "fees": "0.09940994000",
+    "fill_count": 1,
+    "funding": "0.000",
+    "hit_rate": "0",
+    "profit_factor": "0",
+    "realized_pnl": "0",
+    "slippage": "0.0497000",
+    "turnover": "497.0497000",
+    "unrealized_pnl": "27.9503000"
+  },
+  "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+  "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+  "model_version": "v1",
+  "orders_submitted": false,
+  "params": {
+    "fee_rate_bps": "2.0",
+    "funding_rate_per_interval": "0",
+    "initial_equity": "100000",
+    "max_leverage": "1",
+    "slippage_bps": "1.0"
+  },
+  "state": {
+    "cash": "99502.85089006000",
+    "cumulative_fees": "0.09940994000",
+    "cumulative_funding": "0.000",
+    "cumulative_slippage": "0.0497000",
+    "equity": "99502.80119006000",
+    "fill_count": 1,
+    "intended_action_count": 8,
+    "max_drawdown": "0.0049719880994",
+    "peak_equity": "100000",
+    "positions": {
+      "ETH-USD_UM_XPERP-310404": {
+        "avg_entry_price": "3550.35500",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "quantity": "0.14",
+        "realized_pnl": "0",
+        "unrealized_pnl": "27.9503000"
+      }
+    },
+    "realized_pnl": "0",
+    "turnover_notional": "497.0497000",
+    "unrealized_pnl": "27.9503000"
+  }
+}
