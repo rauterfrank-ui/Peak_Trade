@@ -8,6 +8,11 @@ from pathlib import Path
 
 import pytest
 
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
+    MANDATORY_SAFETY_BOUNDARIES,
+)
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_artifact_v2 import (
     AuthorizationArtifactV2Error,
     parse_authorization_artifact_v2,
@@ -102,6 +107,8 @@ def _write_v2(tmp_path: Path, token: str | None = None) -> tuple[Path, str, dict
         config_digests=_cfg(),
         safety_boundaries=_safety(),
         confirm_token=tok,
+        venue=AUTHORIZED_VENUE,
+        network_scope=AUTHORIZED_NETWORK_SCOPE,
     )
     path = tmp_path / "authorization_artifact_v2.json"
     result = write_authorization_artifact_v2(output_path=path, artifact_dict=payload)
@@ -140,6 +147,8 @@ def test_unknown_schema_fail_closed() -> None:
                     "effective_session_config": "a" * 64,
                 },
                 "safety_boundaries": _safety(),
+                "venue": AUTHORIZED_VENUE,
+                "network_scope": AUTHORIZED_NETWORK_SCOPE,
                 "confirm_token_fingerprint": "0" * 64,
                 "confirm_token_digest": "sha256:" + "0" * 64,
                 "created_at": 1.0,

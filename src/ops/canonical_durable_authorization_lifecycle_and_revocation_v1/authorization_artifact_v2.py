@@ -12,6 +12,10 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.constan
     AUTHORIZATION_SCHEMA_VERSION,
     TARGET_RUNTIME_CAPABILITY,
 )
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
+)
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.integrity_v1 import (
     integrity_digest_v1,
     stamp_integrity_digest,
@@ -29,6 +33,7 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
     validate_mandatory_session_config_digest_binding_v1,
     validate_mandatory_session_duration_v1,
     validate_mandatory_top_level_safety_flags_v1,
+    validate_mandatory_venue_and_network_scope_fields_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
@@ -48,6 +53,8 @@ _KNOWN_FIELDS = frozenset(
         "session_config_digest",
         "config_digests",
         "safety_boundaries",
+        "venue",
+        "network_scope",
         "confirm_token_fingerprint",
         "confirm_token_digest",
         "confirm_token_binding_sha256",
@@ -97,6 +104,8 @@ class AuthorizationArtifactV2:
     session_config_digest: str
     config_digests: dict[str, str]
     safety_boundaries: dict[str, bool]
+    venue: str
+    network_scope: str
     confirm_token_fingerprint: str
     confirm_token_digest: str
     confirm_token_binding_sha256: str
@@ -177,6 +186,8 @@ def parse_authorization_artifact_v2(raw: Mapping[str, Any]) -> AuthorizationArti
             "session_config_digest",
             "config_digests",
             "safety_boundaries",
+            "venue",
+            "network_scope",
             "confirm_token_fingerprint",
             "confirm_token_digest",
             "created_at",
@@ -212,6 +223,7 @@ def parse_authorization_artifact_v2(raw: Mapping[str, Any]) -> AuthorizationArti
         expires_at = validate_expires_at_present_v1(raw)
         duration = validate_mandatory_session_duration_v1(raw["session_duration_seconds"])
         safety = validate_mandatory_safety_boundaries_v1(raw["safety_boundaries"])
+        venue, network_scope = validate_mandatory_venue_and_network_scope_fields_v1(raw)
         session_config_digest = validate_mandatory_session_config_digest_binding_v1(
             session_config_digest=raw["session_config_digest"],
             config_digests=raw["config_digests"],
@@ -251,6 +263,8 @@ def parse_authorization_artifact_v2(raw: Mapping[str, Any]) -> AuthorizationArti
         session_config_digest=session_config_digest,
         config_digests={str(k): str(v) for k, v in sorted(cfg.items())},
         safety_boundaries=safety,
+        venue=venue,
+        network_scope=network_scope,
         confirm_token_fingerprint=str(raw["confirm_token_fingerprint"]),
         confirm_token_digest=str(raw["confirm_token_digest"]),
         confirm_token_binding_sha256=str(raw.get("confirm_token_binding_sha256") or ""),
@@ -322,6 +336,10 @@ def validate_authorization_artifact_v2(
         blockers.append("AUTHORITY_FLAGS_MUST_BE_FALSE")
     if artifact.forced_wiring_fixture_mode:
         blockers.append("FORCED_WIRING_FIXTURE_MODE_FORBIDDEN")
+    if artifact.venue != AUTHORIZED_VENUE:
+        blockers.append("VENUE_MISMATCH")
+    if artifact.network_scope != AUTHORIZED_NETWORK_SCOPE:
+        blockers.append("NETWORK_SCOPE_MISMATCH")
     if now_unix is not None and now_unix > artifact.expires_at:
         blockers.append("AUTHORIZATION_EXPIRED")
     if artifact.state is AuthorizationStateV2.CONSUMED:

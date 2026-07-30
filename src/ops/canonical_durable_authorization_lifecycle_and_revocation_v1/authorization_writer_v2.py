@@ -28,6 +28,8 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.states_
     AuthorizationStateV2,
 )
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
     EFFECTIVE_SESSION_CONFIG_DIGEST_KEY,
     MANDATORY_SAFETY_BOUNDARIES,
     REQUIRED_SESSION_DURATION_SECONDS,
@@ -36,7 +38,9 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
     compute_effective_session_config_digest_v1,
 )
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.mandatory_bindings_v1 import (
+    validate_mandatory_network_scope_v1,
     validate_mandatory_safety_boundaries_v1,
+    validate_mandatory_venue_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
@@ -90,11 +94,16 @@ def build_authorization_artifact_dict_v2(
     env_overrides: Optional[Mapping[str, Any]] = None,
     defaults: Optional[Mapping[str, Any]] = None,
     notes: Optional[list[str]] = None,
+    venue: Optional[str] = None,
+    network_scope: Optional[str] = None,
 ) -> dict[str, Any]:
     now = float(time.time() if created_at is None else created_at)
     exp = float(expires_at) if expires_at is not None else now + 86400.0
     fp = fingerprint_confirm_token(confirm_token)
     digest = f"sha256:{sha256_text(confirm_token)}"
+    # Venue/network_scope must be provided explicitly (no implicit OKX default).
+    venue_bound = validate_mandatory_venue_v1(venue)
+    network_bound = validate_mandatory_network_scope_v1(network_scope)
     merged_safety = dict(MANDATORY_SAFETY_BOUNDARIES)
     if safety_boundaries:
         merged_safety.update({str(k): v for k, v in safety_boundaries.items()})
@@ -110,6 +119,8 @@ def build_authorization_artifact_dict_v2(
         env_overrides=env_overrides,
         defaults=defaults,
         config_files=file_digests,
+        venue=venue_bound,
+        network_scope=network_bound,
     )
     cfg = dict(sorted(file_digests.items()))
     cfg[EFFECTIVE_SESSION_CONFIG_DIGEST_KEY] = effective
@@ -126,6 +137,8 @@ def build_authorization_artifact_dict_v2(
         "session_config_digest": effective,
         "config_digests": cfg,
         "safety_boundaries": safety,
+        "venue": venue_bound,
+        "network_scope": network_bound,
         "confirm_token_fingerprint": fp,
         "confirm_token_digest": digest,
         "confirm_token_binding_sha256": confirm_token_binding_sha256,
@@ -157,6 +170,8 @@ def build_authorization_artifact_dict_v2(
             "REVOCATION_LOOKUP_REQUIRED",
             "SINGLE_USE",
             "MANDATORY_SAFETY_BINDINGS",
+            f"VENUE={AUTHORIZED_VENUE}",
+            f"NETWORK_SCOPE={AUTHORIZED_NETWORK_SCOPE}",
         ],
     }
     assert_no_plaintext_token_fields(provisional)

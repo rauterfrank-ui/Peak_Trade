@@ -12,6 +12,10 @@ from typing import Any, Callable, Mapping, Optional, Set
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (
     ObservationMarketTickV1,
 )
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
+)
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.wallclock_v2_gatekeeper_v1 import (
     consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1,
 )
@@ -181,6 +185,7 @@ class WallclockSessionRuntimeV1:
         self.started_mono = 0.0
         self.bridge_state = HardenedBridgeSessionStateV2(instrument_id=CANONICAL_INSTRUMENT_ID)
         self.session_id: str = ""
+        self._session_side_effects_allowed = False
 
     def _transition(self, to_state: WallclockSessionState) -> None:
         assert_transition_allowed(from_state=self.state, to_state=to_state)
@@ -265,10 +270,7 @@ class WallclockSessionRuntimeV1:
                 force_verdict=TerminalVerdict.ABORT,
             )
 
-        self.evidence_root.mkdir(parents=True, exist_ok=True)
-        self.writer.ensure_append_files()
-
-        # Import surface preflight (no network, no consume).
+        # Import surface preflight (read-only AST; no evidence mkdir / no consume).
         import_att = attest_wallclock_import_surface_v1(repo_root=self.repo_root)
         if not import_att.ok:
             self.state = WallclockSessionState.INVALID
@@ -279,18 +281,7 @@ class WallclockSessionRuntimeV1:
                 force_verdict=TerminalVerdict.ABORT,
             )
 
-        try:
-            self._transition(WallclockSessionState.AUTH_VERIFIED)
-        except WallclockStateMachineError as exc:
-            self.state = WallclockSessionState.INVALID
-            self.blockers.append(str(exc))
-            return self._finalize_result(
-                session_id=session_id,
-                incomplete=False,
-                force_verdict=TerminalVerdict.ABORT,
-            )
-
-        # Atomic canonical v2 consumption BEFORE any session lock / transport open.
+        # Atomic canonical v2 consumption BEFORE any session lock / evidence / transport.
         consumption = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
             prereg=prereg,
             go=go,
@@ -306,6 +297,8 @@ class WallclockSessionRuntimeV1:
             env_overrides=env_overrides,
             defaults=defaults,
             config_files=config_files,
+            expected_venue=AUTHORIZED_VENUE,
+            expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         )
         if not consumption.ok or not consumption.transport_open_allowed:
             self.state = WallclockSessionState.INVALID
@@ -315,6 +308,11 @@ class WallclockSessionRuntimeV1:
                 incomplete=False,
                 force_verdict=TerminalVerdict.ABORT,
             )
+
+        # Side effects allowed only after successful atomic consumption.
+        self.evidence_root.mkdir(parents=True, exist_ok=True)
+        self.writer.ensure_append_files()
+        self._session_side_effects_allowed = True
 
         self.consumed = True
         try:
@@ -699,7 +697,27 @@ class WallclockSessionRuntimeV1:
                         wall_ts=self.clock_wall(),
                     )
 
-        # Write attestations / counters if missing
+        # Write attestations / counters if missing — only after consumption side effects allowed.
+        if not self._session_side_effects_allowed and not self.consumed:
+            verdict_early = force_verdict or TerminalVerdict.ABORT
+            return WallclockSessionResultV1(
+                terminal_verdict=verdict_early.value
+                if isinstance(verdict_early, TerminalVerdict)
+                else str(verdict_early),
+                state=self.state.value,
+                session_id=session_id,
+                incomplete=False,
+                consumed=False,
+                network_opened=False,
+                cycle_count=0,
+                blockers=list(self.blockers),
+                notes=[
+                    "NO_SESSION_SIDE_EFFECTS_BEFORE_CONSUMPTION",
+                    "EVIDENCE_NOT_CREATED_ON_AUTH_FAILURE",
+                ],
+                evidence_root=str(self.evidence_root),
+            )
+
         try:
             if not (self.evidence_root / "no_order_attestation.json").exists():
                 self.writer.write_immutable_json(

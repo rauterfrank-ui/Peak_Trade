@@ -45,8 +45,13 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
     RealHttpFetcherError,
     make_real_eea_public_md_fetcher_v1,
 )
-from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
-    load_authorization_artifact_v1,
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_artifact_v2 import (
+    parse_authorization_artifact_v2,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
+    CANONICAL_RUNBOOK_SHA256,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     fingerprint_confirm_token,
@@ -172,7 +177,11 @@ def _issue_bundle(tmp_path: Path, *, duration: int = 120):
     go = parse_operator_go_contract_v1(
         load_operator_go_contract_dict_v1(Path(auth_res.operator_go_path))
     )
-    artifact = load_authorization_artifact_v1(Path(auth_res.authorization_artifact_path))
+    artifact = parse_authorization_artifact_v2(
+        __import__("json").loads(
+            Path(auth_res.authorization_artifact_path).read_text(encoding="utf-8")
+        )
+    )
     return prereg, go, artifact, token, Path(auth_res.authorization_artifact_path)
 
 
@@ -180,7 +189,8 @@ def test_productive_preregistration_and_token_hashing(tmp_path: Path) -> None:
     prereg, go, artifact, token, _ = _issue_bundle(tmp_path)
     assert prereg.fixture_non_authoritative is False
     assert go.fixture_non_authoritative is False
-    assert artifact.fixture_non_authoritative is False
+    assert artifact.schema == "authorization_artifact_v2"
+    assert artifact.venue == AUTHORIZED_VENUE
     assert "GO_PSO_SESSION_PREREG_V1_" in token
     art_text = Path(tmp_path / "issuance" / "authorization_artifact.json").read_text(
         encoding="utf-8"
@@ -370,6 +380,8 @@ def _write_v2_for_prereg(tmp_path: Path, *, prereg, token: str) -> Path:
         TARGET_RUNTIME_CAPABILITY,
     )
     from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+        AUTHORIZED_NETWORK_SCOPE,
+        AUTHORIZED_VENUE,
         MANDATORY_SAFETY_BOUNDARIES,
     )
 
@@ -386,6 +398,8 @@ def _write_v2_for_prereg(tmp_path: Path, *, prereg, token: str) -> Path:
         capability=TARGET_RUNTIME_CAPABILITY,
         created_at=NOW,
         expires_at=NOW + 3600,
+        venue=AUTHORIZED_VENUE,
+        network_scope=AUTHORIZED_NETWORK_SCOPE,
     )
     path = tmp_path / "authorization_artifact_v2.json"
     written = write_authorization_artifact_v2(output_path=path, artifact_dict=payload)

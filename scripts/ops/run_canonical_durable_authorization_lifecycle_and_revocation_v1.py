@@ -16,6 +16,10 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
+)
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_writer_v2 import (  # noqa: E402
     build_authorization_artifact_dict_v2,
     new_authorization_id_v2,
@@ -142,6 +146,8 @@ def cmd_write_v2_roundtrip(args: argparse.Namespace) -> int:
         config_digests={"config/ops/example.toml": "0" * 64},
         safety_boundaries={"private_api": False, "order_routing_reachable": False},
         confirm_token=confirm,
+        venue=AUTHORIZED_VENUE,
+        network_scope=AUTHORIZED_NETWORK_SCOPE,
     )
     out = Path(args.output_path)
     result = write_authorization_artifact_v2(output_path=out, artifact_dict=payload)

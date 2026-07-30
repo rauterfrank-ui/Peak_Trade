@@ -8,6 +8,8 @@ from typing import Any, Optional, Set
 
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
     AUTHORIZATION_SCHEMA_REJECTED_LEGACY,
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
 )
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.wallclock_v2_gatekeeper_v1 import (
     consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1,
@@ -92,6 +94,8 @@ def consume_authorization_for_wallclock_start_v1(
         expected_repository_sha=expected_repository_sha,
         fingerprint_ledger_path=fingerprint_ledger_path,
         known_session_ids=known_session_ids,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
     )
     return AuthorizationConsumptionResultV1(
         ok=result.ok,

@@ -7,6 +7,8 @@ import json
 from typing import Any, Mapping, Optional
 
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
     EFFECTIVE_SESSION_CONFIG_DIGEST_VERSION,
     MANDATORY_SAFETY_BOUNDARIES,
     REQUIRED_SESSION_DURATION_SECONDS,
@@ -28,12 +30,16 @@ def normalize_effective_session_config_v1(
     env_overrides: Optional[Mapping[str, Any]] = None,
     defaults: Optional[Mapping[str, Any]] = None,
     config_files: Optional[Mapping[str, str]] = None,
+    venue: str = AUTHORIZED_VENUE,
+    network_scope: str = AUTHORIZED_NETWORK_SCOPE,
 ) -> dict[str, Any]:
     """Build the full effective config material. Order of merge is versioned and explicit."""
     material: dict[str, Any] = {
         "digest_version": EFFECTIVE_SESSION_CONFIG_DIGEST_VERSION,
         "capability": str(capability),
         "session_duration_seconds": int(session_duration_seconds),
+        "venue": str(venue),
+        "network_scope": str(network_scope),
         "safety_boundaries": {
             str(k): bool(v)
             for k, v in sorted((safety_boundaries or MANDATORY_SAFETY_BOUNDARIES).items())
@@ -57,6 +63,8 @@ def compute_effective_session_config_digest_v1(
     env_overrides: Optional[Mapping[str, Any]] = None,
     defaults: Optional[Mapping[str, Any]] = None,
     config_files: Optional[Mapping[str, str]] = None,
+    venue: str = AUTHORIZED_VENUE,
+    network_scope: str = AUTHORIZED_NETWORK_SCOPE,
 ) -> str:
     material = normalize_effective_session_config_v1(
         capability=capability,
@@ -67,6 +75,8 @@ def compute_effective_session_config_digest_v1(
         env_overrides=env_overrides,
         defaults=defaults,
         config_files=config_files,
+        venue=venue,
+        network_scope=network_scope,
     )
     return hashlib.sha256(_canonical_dumps(material).encode("utf-8")).hexdigest()
 
