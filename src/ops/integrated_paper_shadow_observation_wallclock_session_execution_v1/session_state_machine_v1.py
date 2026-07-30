@@ -34,8 +34,13 @@ TERMINAL_STATES = frozenset(
 )
 
 ALLOWED_TRANSITIONS: dict[WallclockSessionState, frozenset[WallclockSessionState]] = {
+    # AUTH_VERIFIED is retained for historical enum compatibility but must never
+    # occur before successful atomic v2 consumption. Productive path: CREATED→CONSUMED.
     WallclockSessionState.CREATED: frozenset(
-        {WallclockSessionState.AUTH_VERIFIED, WallclockSessionState.INVALID}
+        {
+            WallclockSessionState.CONSUMED,
+            WallclockSessionState.INVALID,
+        }
     ),
     WallclockSessionState.AUTH_VERIFIED: frozenset(
         {

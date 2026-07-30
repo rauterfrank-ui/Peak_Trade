@@ -1,11 +1,29 @@
-"""Canonical verifiers for productive issuance artifacts and authorization bundles."""
+"""Canonical verifiers for productive issuance artifacts and authorization bundles (v2 only)."""
 
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Optional
+from typing import Any, Optional
 
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_artifact_v2 import (
+    AuthorizationArtifactV2,
+    load_authorization_artifact_dict_v2,
+    parse_authorization_artifact_v2,
+    validate_authorization_artifact_v2,
+)
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.constants_v1 import (
+    AUTHORIZATION_SCHEMA,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZATION_SCHEMA_REJECTED_LEGACY,
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
+    CANONICAL_RUNBOOK_SHA256,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.v1_quarantine_v1 import (
+    classify_authorization_schema_for_wallclock_v1,
+)
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
     CANONICAL_HOST,
     CANONICAL_INSTRUMENT_ID,
@@ -14,12 +32,8 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
     SCHEMA_VERSION,
     SESSION_EXECUTION_SCOPE,
 )
-from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
-    AuthorizationArtifactV1,
-    load_authorization_artifact_v1,
-    validate_authorization_artifact_v1,
-)
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
+    fingerprint_confirm_token,
     redact_mapping_for_logs,
     verify_confirm_token_v1,
 )
@@ -34,9 +48,6 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.pre
     load_preregistration_contract_dict_v1,
     parse_preregistration_contract_v1,
     validate_preregistration_contract_v1,
-)
-from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.verifier_v1 import (
-    verify_paper_shadow_observation_authorization_bundle_v1,
 )
 
 VERIFIER_ID = "ops.integrated_paper_shadow_productive_authorization_issuance_verifier_v1"
@@ -58,6 +69,7 @@ class ProductiveVerificationResultV1:
                 "verifier_id": VERIFIER_ID,
                 "schema_version": SCHEMA_VERSION,
                 "producer_family": PRODUCER_FAMILY,
+                "canonical_authorization_schema": AUTHORIZATION_SCHEMA,
             }
         )
 
@@ -66,15 +78,12 @@ def _reject_fixture(
     *,
     prereg: SessionPreregistrationContractV1,
     go: OperatorGoContractV1,
-    artifact: Optional[AuthorizationArtifactV1],
 ) -> list[str]:
     blockers: list[str] = []
     if prereg.fixture_non_authoritative:
         blockers.append("FIXTURE_PREREGISTRATION_REJECTED")
     if go.fixture_non_authoritative:
         blockers.append("FIXTURE_OPERATOR_GO_REJECTED")
-    if artifact is not None and artifact.fixture_non_authoritative:
-        blockers.append("FIXTURE_AUTHORIZATION_REJECTED")
     notes_blob = " ".join(prereg.notes) + " " + " ".join(go.notes)
     if "FIXTURE_NON_AUTHORITATIVE" in notes_blob or "NOT_A_PRODUCTION_GO" in notes_blob:
         blockers.append("FIXTURE_NOTES_REJECTED_FOR_PRODUCTIVE")
@@ -155,7 +164,7 @@ def verify_productive_operator_go_v1(
             go, prereg=prereg, now_unix=now_unix, expected_repository_sha=expected_repository_sha
         ).blockers
     )
-    blockers.extend(_reject_fixture(prereg=prereg, go=go, artifact=None))
+    blockers.extend(_reject_fixture(prereg=prereg, go=go))
     if not go.network_authorized or go.network_scope != NETWORK_SCOPE:
         blockers.append("PRODUCTIVE_NETWORK_SCOPE_REQUIRED")
     if not go.session_execution_authorized or go.session_execution_scope != SESSION_EXECUTION_SCOPE:
@@ -172,15 +181,16 @@ def verify_productive_authorization_bundle_v1(
     *,
     prereg: SessionPreregistrationContractV1,
     go: OperatorGoContractV1,
-    artifact: AuthorizationArtifactV1,
+    artifact: AuthorizationArtifactV2,
     confirm_token: str,
     now_unix: float,
     expected_repository_sha: Optional[str] = None,
     previously_seen_fingerprints: frozenset[str] | None = None,
+    expected_runbook_sha256: str = CANONICAL_RUNBOOK_SHA256,
 ) -> ProductiveVerificationResultV1:
     notes = [
-        "VERIFY_PRODUCTIVE_AUTHORIZATION_BUNDLE",
-        "REUSES_LEGACY_BUNDLE_VERIFIER",
+        "VERIFY_PRODUCTIVE_AUTHORIZATION_BUNDLE_V2",
+        "V1_REJECTED",
         "FIXTURES_REJECTED",
     ]
     blockers: list[str] = []
@@ -197,12 +207,26 @@ def verify_productive_authorization_bundle_v1(
             expected_repository_sha=expected_repository_sha,
         ).blockers
     )
-    blockers.extend(
-        validate_authorization_artifact_v1(
-            artifact, now_unix=now_unix, expected_repository_sha=expected_repository_sha
-        ).blockers
+    blockers.extend(_reject_fixture(prereg=prereg, go=go))
+    validated = validate_authorization_artifact_v2(
+        artifact,
+        expected_repository_sha=expected_repository_sha or prereg.expected_repository_sha,
+        expected_runbook_sha256=expected_runbook_sha256,
+        expected_preregistration_id=prereg.session_id,
+        expected_preregistration_digest=prereg.scope_digest(),
+        now_unix=now_unix,
     )
-    blockers.extend(_reject_fixture(prereg=prereg, go=go, artifact=artifact))
+    blockers.extend(validated.blockers)
+    if artifact.schema != AUTHORIZATION_SCHEMA:
+        blockers.append(AUTHORIZATION_SCHEMA_REJECTED_LEGACY)
+    if artifact.venue != AUTHORIZED_VENUE:
+        blockers.append("VENUE_MISMATCH")
+    if artifact.network_scope != AUTHORIZED_NETWORK_SCOPE:
+        blockers.append("NETWORK_SCOPE_MISMATCH")
+    if artifact.preregistration_id != prereg.session_id:
+        blockers.append("PREREGISTRATION_ID_MISMATCH")
+    if artifact.preregistration_digest != prereg.scope_digest():
+        blockers.append("PREREGISTRATION_DIGEST_MISMATCH")
     token_res = verify_productive_confirm_token_challenge_v1(
         confirm_token=confirm_token,
         prereg=prereg,
@@ -210,19 +234,10 @@ def verify_productive_authorization_bundle_v1(
         previously_seen_fingerprints=previously_seen_fingerprints,
     )
     blockers.extend(token_res.blockers)
-    legacy = verify_paper_shadow_observation_authorization_bundle_v1(
-        prereg=prereg,
-        go=go,
-        artifact=artifact,
-        confirm_token=confirm_token,
-        now_unix=now_unix,
-        expected_repository_sha=expected_repository_sha,
-        previously_seen_fingerprints=previously_seen_fingerprints,
-        require_artifact=True,
-    )
-    if not legacy.verified:
-        blockers.extend(legacy.blockers)
-    if artifact.consumed or go.consumed or prereg.consumed:
+    fp = fingerprint_confirm_token(confirm_token)
+    if fp != artifact.confirm_token_fingerprint:
+        blockers.append("CONFIRM_TOKEN_MISMATCH")
+    if go.consumed or prereg.consumed:
         blockers.append("ALREADY_CONSUMED")
     if list(go.instrument_allowlist) != [CANONICAL_INSTRUMENT_ID]:
         blockers.append("INSTRUMENT_MISMATCH")
@@ -252,7 +267,16 @@ def verify_productive_authorization_bundle_paths_v1(
             load_preregistration_contract_dict_v1(preregistration_path)
         )
         go = parse_operator_go_contract_v1(load_operator_go_contract_dict_v1(operator_go_path))
-        artifact = load_authorization_artifact_v1(authorization_artifact_path)
+        raw = load_authorization_artifact_dict_v2(authorization_artifact_path)
+        kind, kind_blockers = classify_authorization_schema_for_wallclock_v1(raw)
+        if kind != "v2":
+            return ProductiveVerificationResultV1(
+                ok=False,
+                verified=False,
+                blockers=sorted(set(kind_blockers or [AUTHORIZATION_SCHEMA_REJECTED_LEGACY])),
+                notes=["VERIFY_PATHS", "V1_OR_LEGACY_REJECTED"],
+            )
+        artifact = parse_authorization_artifact_v2(raw)
     except Exception as exc:  # noqa: BLE001
         return ProductiveVerificationResultV1(
             ok=False,

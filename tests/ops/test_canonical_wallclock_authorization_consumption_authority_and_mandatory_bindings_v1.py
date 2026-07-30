@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import threading
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 import pytest
 
@@ -30,6 +30,8 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
 )
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
     AUTHORIZATION_SCHEMA_REJECTED_LEGACY,
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
     MANDATORY_SAFETY_BOUNDARIES,
 )
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.effective_session_config_digest_v1 import (
@@ -115,6 +117,8 @@ def _write_bound_v2(
         created_at=NOW,
         expires_at=NOW + 3600,
         runtime_overrides=runtime_overrides,
+        venue=AUTHORIZED_VENUE,
+        network_scope=AUTHORIZED_NETWORK_SCOPE,
     )
     path = tmp_path / "authorization_artifact_v2.json"
     result = write_authorization_artifact_v2(output_path=path, artifact_dict=payload)
@@ -146,6 +150,8 @@ def test_v2_happy_path_atomic_consumption_no_session_start(tmp_path: Path) -> No
         artifact_path=path,
         now_unix=NOW,
         expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         fingerprint_ledger_path=tmp_path / "fp.ledger",
     )
     assert result.ok, result.blockers
@@ -203,6 +209,8 @@ def test_v1_quarantine_no_side_effects(tmp_path: Path) -> None:
         artifact_path=artifact_path,
         now_unix=NOW,
         expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         fingerprint_ledger_path=tmp_path / "fp.ledger",
     )
     assert gate.ok is False
@@ -263,6 +271,8 @@ def test_bool_coercion_rejected() -> None:
                 "session_config_digest": "a" * 64,
                 "config_digests": {"effective_session_config": "a" * 64},
                 "safety_boundaries": {**MANDATORY_SAFETY_BOUNDARIES, "private_api": 0},  # type: ignore[dict-item]
+                "venue": AUTHORIZED_VENUE,
+                "network_scope": AUTHORIZED_NETWORK_SCOPE,
                 "confirm_token_fingerprint": "0" * 64,
                 "confirm_token_digest": "sha256:" + "0" * 64,
                 "created_at": 1.0,
@@ -294,6 +304,8 @@ def test_config_digest_match_and_runtime_override_drift(tmp_path: Path) -> None:
         artifact_path=path,
         now_unix=NOW,
         expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         fingerprint_ledger_path=tmp_path / "fp_ok.ledger",
     )
     assert ok.ok, ok.blockers
@@ -311,6 +323,8 @@ def test_config_digest_match_and_runtime_override_drift(tmp_path: Path) -> None:
         artifact_path=path2,
         now_unix=NOW,
         expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         fingerprint_ledger_path=tmp_path / "fp_drift.ledger",
         runtime_overrides={"poll_interval_seconds": 9.9},
     )
@@ -349,6 +363,8 @@ def test_revocation_before_consumption_blocks_side_effects(tmp_path: Path) -> No
         artifact_path=path,
         now_unix=NOW,
         expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         fingerprint_ledger_path=tmp_path / "fp.ledger",
     )
     assert result.ok is False
@@ -377,6 +393,8 @@ def test_parallel_consume_terminal(tmp_path: Path) -> None:
                 artifact_path=path,
                 now_unix=NOW,
                 expected_repository_sha=SHA,
+                expected_venue=AUTHORIZED_VENUE,
+                expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
                 fingerprint_ledger_path=tmp_path / f"fp{idx}.ledger",
             )
             results.append(res.ok)
@@ -419,3 +437,120 @@ def test_no_private_api_imports() -> None:
                 if any(node.module == f or node.module.startswith(f + ".") for f in forbidden):
                     hits.append((str(path), node.module))
     assert hits == []
+
+
+def test_authority_inventory_contract() -> None:
+    from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.authority_inventory_v1 import (
+        verify_productive_authorization_authority_inventory_v1,
+    )
+
+    result = verify_productive_authorization_authority_inventory_v1(repo_root=REPO_ROOT)
+    assert result.ok, result.blockers
+
+
+@pytest.mark.parametrize(
+    "venue",
+    [None, "", "okx", " OKX", "BINANCE", "Okx"],
+)
+def test_venue_mismatch_or_missing_fail_closed(tmp_path: Path, venue: object) -> None:
+    path, token, payload = _write_bound_v2(tmp_path)
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw.pop("integrity_digest", None)
+    raw.pop("digest_scope", None)
+    if venue is None:
+        raw.pop("venue", None)
+    else:
+        raw["venue"] = venue
+    from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.integrity_v1 import (
+        stamp_integrity_digest,
+    )
+
+    stamped = stamp_integrity_digest(raw)
+    path.write_text(json.dumps(stamped, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    evidence = tmp_path / "ev_venue"
+    writer = WallclockEvidenceWriterV1(evidence_root=evidence)
+    result = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
+        prereg=_prereg(),
+        go=_go(),
+        confirm_token=token,
+        evidence_writer=writer,
+        artifact_path=path,
+        now_unix=NOW,
+        expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
+        fingerprint_ledger_path=tmp_path / "fp_venue.ledger",
+    )
+    assert result.ok is False
+    assert result.session_side_effects == 0
+    assert not evidence.exists() or not any(evidence.iterdir())
+
+
+def test_expected_venue_missing_fail_closed(tmp_path: Path) -> None:
+    path, token, _ = _write_bound_v2(tmp_path)
+    evidence = tmp_path / "ev_exp"
+    writer = WallclockEvidenceWriterV1(evidence_root=evidence)
+    result = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
+        prereg=_prereg(),
+        go=_go(),
+        confirm_token=token,
+        evidence_writer=writer,
+        artifact_path=path,
+        now_unix=NOW,
+        expected_repository_sha=SHA,
+        fingerprint_ledger_path=tmp_path / "fp_exp.ledger",
+    )
+    assert result.ok is False
+    assert "EXPECTED_VENUE_MISSING" in result.blockers
+    assert not evidence.exists() or not any(evidence.iterdir())
+
+
+def test_session_runtime_no_evidence_on_venue_mismatch(tmp_path: Path) -> None:
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (
+        EeaPublicMdTransportV1,
+    )
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1 import (
+        WallclockRuntimeConfigV1,
+        WallclockSessionRuntimeV1,
+    )
+
+    path, token, _payload = _write_bound_v2(tmp_path)
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw.pop("integrity_digest", None)
+    raw.pop("digest_scope", None)
+    raw["venue"] = "BINANCE"
+    from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.integrity_v1 import (
+        stamp_integrity_digest,
+    )
+
+    path.write_text(
+        json.dumps(stamp_integrity_digest(raw), indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    evidence = tmp_path / "ev_session_venue"
+    body = json.dumps(
+        {"code": "0", "msg": "", "data": [{"instId": "ETH-USDT-SWAP", "markPx": "1"}]}
+    ).encode("utf-8")
+
+    def fetcher(url: str, method: str, headers: Mapping[str, str], timeout: float):
+        return 200, body, {}
+
+    runtime = WallclockSessionRuntimeV1(
+        evidence_root=evidence,
+        transport=EeaPublicMdTransportV1(fetcher=fetcher, environ={}),
+        config=WallclockRuntimeConfigV1(max_cycles=1, max_session_duration_seconds=1),
+        clock_wall=lambda: NOW,
+        clock_mono=lambda: 1.0,
+        sleep=lambda _s: None,
+        repo_root=REPO_ROOT,
+    )
+    result = runtime.run(
+        prereg=_prereg(),
+        go=_go(),
+        confirm_token=token,
+        artifact_path=path,
+        expected_repository_sha=SHA,
+        fingerprint_ledger_path=tmp_path / "fp_sess.ledger",
+    )
+    assert result.consumed is False
+    assert not evidence.exists()
+    assert runtime.state.value == "INVALID"

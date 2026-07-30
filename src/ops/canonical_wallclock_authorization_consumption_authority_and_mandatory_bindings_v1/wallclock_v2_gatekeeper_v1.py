@@ -8,27 +8,29 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional, Set
 
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_artifact_v2 import (
+    parse_authorization_artifact_v2,
+)
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.consumption_gate_v1 import (
     ConsumptionGateResultV1,
     consume_authorization_artifact_v2,
 )
-from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_artifact_v2 import (
-    parse_authorization_artifact_v2,
-)
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
     AUTHORIZATION_SCHEMA_REJECTED_LEGACY,
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
     TARGET_RUNTIME_CAPABILITY,
 )
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.effective_session_config_digest_v1 import (
     assert_session_config_digest_match_v1,
     compute_effective_session_config_digest_v1,
 )
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.evidence_sink_protocol_v1 import (
+    AuthorizationEvidenceSinkV1,
+)
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.v1_quarantine_v1 import (
     classify_authorization_schema_for_wallclock_v1,
     quarantine_authorization_artifact_v1_result,
-)
-from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.wallclock_evidence_v1 import (
-    WallclockEvidenceWriterV1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     fingerprint_confirm_token,
@@ -72,7 +74,7 @@ def consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
     prereg: SessionPreregistrationContractV1,
     go: OperatorGoContractV1,
     confirm_token: str,
-    evidence_writer: WallclockEvidenceWriterV1,
+    evidence_writer: AuthorizationEvidenceSinkV1,
     artifact_path: Path,
     now_unix: float,
     expected_repository_sha: str,
@@ -83,19 +85,23 @@ def consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
     env_overrides: Optional[Mapping[str, Any]] = None,
     defaults: Optional[Mapping[str, Any]] = None,
     config_files: Optional[Mapping[str, str]] = None,
+    expected_venue: Optional[str] = None,
+    expected_network_scope: Optional[str] = None,
     active_session_found: bool = False,
     resumable_session_found: bool = False,
     stale_session_lock_found: bool = False,
+    persist_wallclock_evidence_after_consumption: bool = True,
 ) -> WallclockV2GatekeeperResultV1:
     """Canonical sole productive wallclock consumption authority.
 
-    No session lock, transport, or start marking occurs here.
-    transport_open_allowed is set only after durable v2 consumption succeeds.
+    No session lock, transport, evidence mkdir, or start marking occurs before
+    durable v2 consumption succeeds. transport_open_allowed is set only after.
     """
     notes = [
         "CANONICAL_V2_WALLCLOCK_GATEKEEPER",
         "SINGLE_PRODUCTIVE_AUTHORIZATION_AUTHORITY",
         "NO_SESSION_SIDE_EFFECTS_BEFORE_CONSUMPTION",
+        "VENUE_BOUND_BEFORE_CONSUMPTION",
     ]
     side_effects = 0
     blockers: list[str] = []
@@ -127,6 +133,21 @@ def consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
             session_side_effects=0,
         )
 
+    # Expected venue/network must be supplied by the caller — no silent OKX default.
+    if expected_venue is None:
+        blockers.append("EXPECTED_VENUE_MISSING")
+    elif type(expected_venue) is not str or expected_venue == "":
+        blockers.append("EXPECTED_VENUE_INVALID")
+    elif expected_venue != AUTHORIZED_VENUE:
+        blockers.append(f"EXPECTED_VENUE_REJECTED:{expected_venue}")
+
+    if expected_network_scope is None:
+        blockers.append("EXPECTED_NETWORK_SCOPE_MISSING")
+    elif type(expected_network_scope) is not str or expected_network_scope == "":
+        blockers.append("EXPECTED_NETWORK_SCOPE_INVALID")
+    elif expected_network_scope != AUTHORIZED_NETWORK_SCOPE:
+        blockers.append(f"EXPECTED_NETWORK_SCOPE_REJECTED:{expected_network_scope}")
+
     pr = validate_preregistration_contract_v1(
         prereg, now_unix=now_unix, expected_repository_sha=expected_repository_sha
     )
@@ -152,6 +173,17 @@ def consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
             notes=notes,
         )
 
+    if artifact.venue != expected_venue:
+        blockers.append("VENUE_MISMATCH")
+    if artifact.network_scope != expected_network_scope:
+        blockers.append("NETWORK_SCOPE_MISMATCH")
+    if artifact.venue != AUTHORIZED_VENUE:
+        blockers.append(f"VENUE_REJECTED:{artifact.venue}")
+    if artifact.network_scope != AUTHORIZED_NETWORK_SCOPE:
+        blockers.append(f"NETWORK_SCOPE_REJECTED:{artifact.network_scope}")
+    if prereg.venue != artifact.venue:
+        blockers.append("PREREG_VENUE_MISMATCH")
+
     live_digest = compute_effective_session_config_digest_v1(
         capability=artifact.capability or TARGET_RUNTIME_CAPABILITY,
         session_duration_seconds=artifact.session_duration_seconds,
@@ -162,6 +194,8 @@ def consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
         defaults=defaults,
         config_files=config_files
         or {k: v for k, v in artifact.config_digests.items() if k != "effective_session_config"},
+        venue=artifact.venue,
+        network_scope=artifact.network_scope,
     )
     blockers.extend(
         assert_session_config_digest_match_v1(
@@ -229,48 +263,53 @@ def consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
             session_side_effects=0,
         )
 
-    # Persist wallclock evidence AFTER durable v2 consumption only.
-    record = {
-        "session_id": go.session_id,
-        "go_id": go.go_id,
-        "authorization_id": artifact.authorization_id,
-        "consumed_at": float(now_unix if now_unix is not None else time.time()),
-        "confirm_token_fingerprint": fp,
-        "scope_digest": prereg.scope_digest(),
-        "expected_repository_sha": expected_repository_sha,
-        "canonical_schema": "authorization_artifact_v2",
-        "consumption_id": consumption.consumption_id,
-        "transport_open_allowed_after_persist": True,
-        "revocation_checked_before_consumption": True,
-        "session_config_digest": artifact.session_config_digest,
-    }
-    evidence_writer.write_immutable_json("prereg.json", prereg.to_dict())
-    evidence_writer.write_immutable_json("operator_go.json", go.to_dict())
-    evidence_writer.write_immutable_json(
-        "authorization_artifact.json",
-        json.loads(artifact_path.read_text(encoding="utf-8")),
-    )
-    evidence_writer.write_immutable_json("authorization_consumption_record.json", record)
-    evidence_writer.write_immutable_json(
-        "authorization_consumption.json",
-        {
-            "status": "CONSUMED",
-            "consumed": True,
-            "productive_authorization": True,
-            "mode": "productive_wallclock_v2",
-            "forced_wiring_fixture": False,
+    if persist_wallclock_evidence_after_consumption:
+        # Persist wallclock evidence AFTER durable v2 consumption only.
+        record = {
             "session_id": go.session_id,
+            "go_id": go.go_id,
             "authorization_id": artifact.authorization_id,
+            "consumed_at": float(now_unix if now_unix is not None else time.time()),
             "confirm_token_fingerprint": fp,
+            "scope_digest": prereg.scope_digest(),
+            "expected_repository_sha": expected_repository_sha,
             "canonical_schema": "authorization_artifact_v2",
-        },
-    )
-    evidence_writer.write_immutable_text("scope_digest.txt", prereg.scope_digest())
-    evidence_writer.write_immutable_text("repo_sha.txt", expected_repository_sha)
-    fingerprint_ledger_path.parent.mkdir(parents=True, exist_ok=True)
-    with fingerprint_ledger_path.open("a", encoding="utf-8") as fh:
-        fh.write(fp + "\n")
-        fh.flush()
+            "consumption_id": consumption.consumption_id,
+            "transport_open_allowed_after_persist": True,
+            "revocation_checked_before_consumption": True,
+            "session_config_digest": artifact.session_config_digest,
+            "venue": artifact.venue,
+            "network_scope": artifact.network_scope,
+        }
+        evidence_writer.write_immutable_json("prereg.json", prereg.to_dict())
+        evidence_writer.write_immutable_json("operator_go.json", go.to_dict())
+        evidence_writer.write_immutable_json(
+            "authorization_artifact.json",
+            json.loads(artifact_path.read_text(encoding="utf-8")),
+        )
+        evidence_writer.write_immutable_json("authorization_consumption_record.json", record)
+        evidence_writer.write_immutable_json(
+            "authorization_consumption.json",
+            {
+                "status": "CONSUMED",
+                "consumed": True,
+                "productive_authorization": True,
+                "mode": "productive_wallclock_v2",
+                "forced_wiring_fixture": False,
+                "session_id": go.session_id,
+                "authorization_id": artifact.authorization_id,
+                "confirm_token_fingerprint": fp,
+                "canonical_schema": "authorization_artifact_v2",
+                "venue": artifact.venue,
+            },
+        )
+        evidence_writer.write_immutable_text("scope_digest.txt", prereg.scope_digest())
+        evidence_writer.write_immutable_text("repo_sha.txt", expected_repository_sha)
+        fingerprint_ledger_path.parent.mkdir(parents=True, exist_ok=True)
+        with fingerprint_ledger_path.open("a", encoding="utf-8") as fh:
+            fh.write(fp + "\n")
+            fh.flush()
+        side_effects = 1
 
     return WallclockV2GatekeeperResultV1(
         ok=True,

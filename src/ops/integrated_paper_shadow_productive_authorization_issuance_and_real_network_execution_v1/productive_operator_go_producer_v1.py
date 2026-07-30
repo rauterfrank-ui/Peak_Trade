@@ -1,4 +1,4 @@
-"""Productive Operator-GO + authorization-artifact issuance (single-use)."""
+"""Productive Operator-GO + authorization_artifact_v2 issuance (single-use)."""
 
 from __future__ import annotations
 
@@ -10,6 +10,26 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_artifact_v2 import (
+    AuthorizationArtifactV2,
+    parse_authorization_artifact_v2,
+)
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_writer_v2 import (
+    build_authorization_artifact_dict_v2,
+    new_authorization_id_v2,
+    write_authorization_artifact_v2,
+)
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.constants_v1 import (
+    AUTHORIZATION_SCHEMA,
+    TARGET_RUNTIME_CAPABILITY,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
+    CANONICAL_RUNBOOK_SHA256,
+    MANDATORY_SAFETY_BOUNDARIES,
+    REQUIRED_SESSION_DURATION_SECONDS,
+)
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
     CANONICAL_HOST,
     CANONICAL_INSTRUMENT_ID,
@@ -20,10 +40,6 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
     SCHEMA_VERSION,
     SESSION_EXECUTION_SCOPE,
     WALLCLOCK_CONFIG_IDENTITY,
-)
-from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
-    AuthorizationArtifactV1,
-    build_authorization_artifact_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
@@ -59,7 +75,7 @@ class ProductiveAuthorizationIssueResultV1:
     authorization_artifact_path: str = ""
     issuance_manifest_path: str = ""
     go: Optional[OperatorGoContractV1] = None
-    artifact: Optional[AuthorizationArtifactV1] = None
+    artifact: Optional[AuthorizationArtifactV2] = None
     notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -79,6 +95,8 @@ class ProductiveAuthorizationIssueResultV1:
             "paper_shadow_observation_authorized": bool(self.ok),
             "session_executed": False,
             "network_used": False,
+            "canonical_authorization_schema": AUTHORIZATION_SCHEMA,
+            "productive_authorization_issuance_v2_only": True,
         }
 
 
@@ -151,6 +169,7 @@ def build_productive_operator_go_dict_v1(
             f"HOST={CANONICAL_HOST}",
             f"INSTRUMENT={CANONICAL_INSTRUMENT_ID}",
             "SCOPED_WALLCLOCK_MD_OBSERVE_ONLY",
+            "AUTHORIZATION_ARTIFACT_V2_ONLY",
         ],
     }
 
@@ -164,12 +183,16 @@ def issue_productive_authorization_v1(
     authorization_id: Optional[str] = None,
     previously_seen_fingerprints: frozenset[str] | None = None,
     known_authorization_ids: frozenset[str] | None = None,
+    runbook_sha256: str = CANONICAL_RUNBOOK_SHA256,
+    venue: Optional[str] = None,
+    network_scope: Optional[str] = None,
 ) -> ProductiveAuthorizationIssueResultV1:
     notes = [
         "PRODUCTIVE_OPERATOR_GO_ISSUANCE",
         "SINGLE_USE_AUTHORIZATION",
         "FIXTURE_NON_AUTHORITATIVE=false",
-        "REUSES_BUILD_AUTHORIZATION_ARTIFACT_V1",
+        "PRODUCTIVE_AUTHORIZATION_ISSUANCE_V2_ONLY",
+        f"CANONICAL_SCHEMA={AUTHORIZATION_SCHEMA}",
     ]
     now = float(time.time() if now_unix is None else now_unix)
     blockers: list[str] = []
@@ -181,6 +204,16 @@ def issue_productive_authorization_v1(
     )
     blockers.extend(pr.blockers)
 
+    # Venue must be explicit and match AUTHORIZED_VENUE — no silent default.
+    venue_value = venue if venue is not None else prereg.venue
+    if venue_value is None or venue_value == "":
+        blockers.append("VENUE_MISSING")
+    elif venue_value != AUTHORIZED_VENUE:
+        blockers.append(f"VENUE_REJECTED:{venue_value}")
+    network_value = network_scope if network_scope is not None else AUTHORIZED_NETWORK_SCOPE
+    if network_value != AUTHORIZED_NETWORK_SCOPE:
+        blockers.append(f"NETWORK_SCOPE_REJECTED:{network_value}")
+
     go_raw = build_productive_operator_go_dict_v1(prereg=prereg, now_unix=now)
     go = parse_operator_go_contract_v1(go_raw)
     gr = validate_operator_go_contract_v1(
@@ -188,44 +221,63 @@ def issue_productive_authorization_v1(
     )
     blockers.extend(gr.blockers)
 
-    auth_id = authorization_id or f"auth_pso_wallclock_prod_{secrets.token_hex(12)}"
+    auth_id = authorization_id or new_authorization_id_v2()
     if known_authorization_ids and auth_id in known_authorization_ids:
         blockers.append("DUPLICATE_AUTHORIZATION_ID")
+    if previously_seen_fingerprints:
+        fp = fingerprint_confirm_token(confirm_token)
+        if fp in previously_seen_fingerprints:
+            blockers.append("CONFIRM_TOKEN_REPLAY")
 
     if blockers:
         return ProductiveAuthorizationIssueResultV1(
             ok=False, blockers=sorted(set(blockers)), notes=notes
         )
 
-    built = build_authorization_artifact_v1(
-        prereg=prereg,
-        go=go,
-        confirm_token=confirm_token,
+    config_digests = {
+        "wallclock_config_identity": hashlib.sha256(
+            (go.config_identity or WALLCLOCK_CONFIG_IDENTITY).encode("utf-8")
+        ).hexdigest(),
+        "productive_code_identity": hashlib.sha256(
+            PRODUCTIVE_CODE_IDENTITY.encode("utf-8")
+        ).hexdigest(),
+    }
+    payload = build_authorization_artifact_dict_v2(
         authorization_id=auth_id,
-        now_unix=now,
-        previously_seen_fingerprints=previously_seen_fingerprints,
+        preregistration_id=prereg.session_id,
+        preregistration_digest=prereg.scope_digest(),
+        repository_sha=prereg.expected_repository_sha,
+        runbook_sha256=runbook_sha256,
+        session_duration_seconds=REQUIRED_SESSION_DURATION_SECONDS,
+        config_digests=config_digests,
+        safety_boundaries=dict(MANDATORY_SAFETY_BOUNDARIES),
+        confirm_token=confirm_token,
+        confirm_token_binding_sha256=prereg.confirm_token_binding_sha256,
+        capability=TARGET_RUNTIME_CAPABILITY,
+        created_at=now,
+        expires_at=float(prereg.expires_at),
+        venue=venue_value,
+        network_scope=network_value,
+        notes=[
+            "PRODUCTIVE_AUTHORIZATION_ARTIFACT_V2",
+            "NOT_A_FIXTURE",
+            "NO_LEGACY_V1",
+        ],
     )
-    if not built.ok or built.artifact is None:
-        return ProductiveAuthorizationIssueResultV1(
-            ok=False,
-            blockers=list(built.blockers) or ["AUTHORIZATION_BUILD_FAILED"],
-            notes=notes,
-        )
-    artifact = built.artifact
-    if artifact.fixture_non_authoritative:
-        return ProductiveAuthorizationIssueResultV1(
-            ok=False,
-            blockers=["FIXTURE_ARTIFACT_FORBIDDEN"],
-            notes=notes,
-        )
-
     output_dir.mkdir(parents=True, exist_ok=True)
     go_path = output_dir / "operator_go.json"
     art_path = output_dir / "authorization_artifact.json"
+    written = write_authorization_artifact_v2(output_path=art_path, artifact_dict=payload)
+    if not written.ok or written.artifact is None:
+        return ProductiveAuthorizationIssueResultV1(
+            ok=False,
+            blockers=list(written.blockers) or ["AUTHORIZATION_V2_WRITE_FAILED"],
+            notes=notes,
+        )
+    artifact = written.artifact
     go_payload = go.to_dict()
-    art_payload = artifact.to_dict()
     _canonical_write_json(go_path, go_payload)
-    _canonical_write_json(art_path, art_payload)
+    art_payload = artifact.to_dict()
     auth_fp = _fingerprint(art_payload)
 
     issuance = {
@@ -233,6 +285,7 @@ def issue_productive_authorization_v1(
         "schema_version": SCHEMA_VERSION,
         "producer_family": PRODUCER_FAMILY,
         "issuance_kind": "productive_authorization",
+        "canonical_authorization_schema": AUTHORIZATION_SCHEMA,
         "session_id": prereg.session_id,
         "go_id": go.go_id,
         "authorization_id": artifact.authorization_id,
@@ -243,10 +296,11 @@ def issue_productive_authorization_v1(
         "config_identity": go.config_identity or WALLCLOCK_CONFIG_IDENTITY,
         "code_identity": PRODUCTIVE_CODE_IDENTITY,
         "expected_repository_sha": go.expected_repository_sha,
-        "venue": go.venue,
+        "runbook_sha256": runbook_sha256,
+        "venue": artifact.venue,
+        "network_scope": artifact.network_scope,
         "instrument": CANONICAL_INSTRUMENT_ID,
         "host": CANONICAL_HOST,
-        "network_scope": NETWORK_SCOPE,
         "session_execution_scope": SESSION_EXECUTION_SCOPE,
         "earliest_start": prereg.earliest_start,
         "expires_at": prereg.expires_at,
@@ -276,6 +330,6 @@ def issue_productive_authorization_v1(
         authorization_artifact_path=str(art_path),
         issuance_manifest_path=str(issuance_path),
         go=go,
-        artifact=artifact,
-        notes=notes + ["PRODUCTIVE_AUTHORIZATION_ISSUED"],
+        artifact=parse_authorization_artifact_v2(art_payload),
+        notes=notes + ["PRODUCTIVE_AUTHORIZATION_ISSUED_V2"],
     )

@@ -26,6 +26,8 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.constan
 )
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
     AUTHORIZATION_SCHEMA_REJECTED_LEGACY,
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
     MANDATORY_SAFETY_BOUNDARIES,
 )
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.wallclock_v2_gatekeeper_v1 import (
@@ -120,6 +122,8 @@ def _write_v2_auth(tmp_path: Path, *, prereg, token: str, auth_id: str | None = 
         capability=TARGET_RUNTIME_CAPABILITY,
         created_at=NOW,
         expires_at=NOW + 3600,
+        venue=AUTHORIZED_VENUE,
+        network_scope=AUTHORIZED_NETWORK_SCOPE,
     )
     path = tmp_path / f"{payload['authorization_id']}.json"
     written = write_authorization_artifact_v2(output_path=path, artifact_dict=payload)
@@ -356,8 +360,13 @@ def test_import_surface_guard_detects_forbidden_and_package_clean() -> None:
 def test_state_machine_rejects_invalid_transition() -> None:
     assert_transition_allowed(
         from_state=WallclockSessionState.CREATED,
-        to_state=WallclockSessionState.AUTH_VERIFIED,
+        to_state=WallclockSessionState.CONSUMED,
     )
+    with pytest.raises(Exception):
+        assert_transition_allowed(
+            from_state=WallclockSessionState.CREATED,
+            to_state=WallclockSessionState.AUTH_VERIFIED,
+        )
     with pytest.raises(Exception):
         assert_transition_allowed(
             from_state=WallclockSessionState.CREATED,
@@ -395,6 +404,8 @@ def test_consume_before_transport_and_replay_guard(tmp_path: Path) -> None:
         artifact_path=v1_path,
         now_unix=NOW,
         expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         fingerprint_ledger_path=tmp_path / "fp_v1.ledger",
     )
     assert rejected.ok is False
@@ -431,6 +442,8 @@ def test_consume_before_transport_and_replay_guard(tmp_path: Path) -> None:
         artifact_path=artifact_path,
         now_unix=NOW,
         expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         fingerprint_ledger_path=ledger,
     )
     assert result.ok, result.blockers
@@ -452,6 +465,8 @@ def test_consume_before_transport_and_replay_guard(tmp_path: Path) -> None:
         artifact_path=artifact_path2,
         now_unix=NOW,
         expected_repository_sha=SHA,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
         fingerprint_ledger_path=ledger,
     )
     assert replay.ok is False

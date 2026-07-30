@@ -5,9 +5,13 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_SCOPE,
+    AUTHORIZED_VENUE,
     EFFECTIVE_SESSION_CONFIG_DIGEST_KEY,
     MANDATORY_SAFETY_BOUNDARIES,
+    NETWORK_SCOPE_FIELD,
     REQUIRED_SESSION_DURATION_SECONDS,
+    VENUE_FIELD,
 )
 
 
@@ -107,3 +111,41 @@ def validate_expires_at_present_v1(raw: Mapping[str, Any]) -> float:
     if type(value) not in (int, float):
         raise MandatoryBindingError("EXPIRES_AT_TYPE")
     return float(value)
+
+
+def validate_mandatory_venue_v1(venue: object) -> str:
+    """Fail-closed venue binding. No default, no coercion, no case/whitespace normalize."""
+    if venue is None:
+        raise MandatoryBindingError("VENUE_MISSING")
+    if type(venue) is not str:
+        raise MandatoryBindingError("VENUE_TYPE")
+    if venue == "":
+        raise MandatoryBindingError("VENUE_EMPTY")
+    if venue != AUTHORIZED_VENUE:
+        raise MandatoryBindingError(f"VENUE_REJECTED:{venue}")
+    return venue
+
+
+def validate_mandatory_network_scope_v1(network_scope: object) -> str:
+    if network_scope is None:
+        raise MandatoryBindingError("NETWORK_SCOPE_MISSING")
+    if type(network_scope) is not str:
+        raise MandatoryBindingError("NETWORK_SCOPE_TYPE")
+    if network_scope == "":
+        raise MandatoryBindingError("NETWORK_SCOPE_EMPTY")
+    if network_scope != AUTHORIZED_NETWORK_SCOPE:
+        raise MandatoryBindingError(f"NETWORK_SCOPE_REJECTED:{network_scope}")
+    return network_scope
+
+
+def validate_mandatory_venue_and_network_scope_fields_v1(
+    raw: Mapping[str, Any],
+) -> tuple[str, str]:
+    if VENUE_FIELD not in raw:
+        raise MandatoryBindingError(f"AUTH_FIELD_MISSING:{VENUE_FIELD}")
+    if NETWORK_SCOPE_FIELD not in raw:
+        raise MandatoryBindingError(f"AUTH_FIELD_MISSING:{NETWORK_SCOPE_FIELD}")
+    return (
+        validate_mandatory_venue_v1(raw[VENUE_FIELD]),
+        validate_mandatory_network_scope_v1(raw[NETWORK_SCOPE_FIELD]),
+    )
