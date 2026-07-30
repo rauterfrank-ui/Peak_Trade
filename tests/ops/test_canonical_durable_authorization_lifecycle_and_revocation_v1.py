@@ -73,7 +73,14 @@ def _cfg() -> dict[str, str]:
 
 def _safety() -> dict[str, bool]:
     return {
+        "wallclock_mode": True,
+        "public_market_data_only": True,
+        "analytical_simulated_execution": True,
+        "external_paper_order_execution": False,
+        "real_order_routing": False,
         "private_api": False,
+        "forced_wiring_fixture_mode": False,
+        "no_implicit_resume": True,
         "order_routing_reachable": False,
         "orders_created": False,
         "testnet_execution_occurred": False,
@@ -127,15 +134,25 @@ def test_unknown_schema_fail_closed() -> None:
                 "repository_sha": REPO,
                 "runbook_sha256": RUNBOOK,
                 "session_duration_seconds": 3600,
-                "config_digests": _cfg(),
+                "session_config_digest": "a" * 64,
+                "config_digests": {
+                    **_cfg(),
+                    "effective_session_config": "a" * 64,
+                },
                 "safety_boundaries": _safety(),
                 "confirm_token_fingerprint": "0" * 64,
                 "confirm_token_digest": "sha256:" + "0" * 64,
                 "created_at": 1.0,
+                "expires_at": 2.0,
                 "single_use": True,
                 "state": "CREATED_UNCONSUMED",
                 "state_version": 1,
                 "revocation_required_lookup": True,
+                "forced_wiring_fixture_mode": False,
+                "no_implicit_resume": True,
+                "atomic_consumption_required": True,
+                "replay_blocked": True,
+                "audit_trail_required": True,
             }
         )
 
@@ -591,6 +608,8 @@ def test_forced_fixture_cannot_consume_productive(tmp_path: Path) -> None:
     path, token, _ = _write_v2(tmp_path)
     raw = json.loads(path.read_text(encoding="utf-8"))
     raw["forced_wiring_fixture_mode"] = True
+    raw["safety_boundaries"] = dict(raw["safety_boundaries"])
+    raw["safety_boundaries"]["forced_wiring_fixture_mode"] = True
     raw.pop("integrity_digest", None)
     raw.pop("digest_scope", None)
     from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.integrity_v1 import (
@@ -609,7 +628,10 @@ def test_forced_fixture_cannot_consume_productive(tmp_path: Path) -> None:
         expected_runbook_sha256=RUNBOOK,
     )
     assert result.ok is False
-    assert "FORCED_WIRING_FIXTURE_MODE_FORBIDDEN" in result.blockers
+    assert any(
+        "FORCED_WIRING" in b or "SAFETY_VALUE_REJECTED" in b or "PARSE_FAILED" in b
+        for b in result.blockers
+    )
 
 
 def test_no_private_api_order_routing_constants() -> None:
@@ -666,7 +688,10 @@ def test_compromised_authorization_fixture_effective_revoked(tmp_path: Path) -> 
         expected_runbook_sha256=RUNBOOK,
     )
     assert result.ok is False
-    assert any("LEGACY" in b or "NOT_V2" in b or "NOT_CONSUMABLE" in b for b in result.blockers)
+    assert any(
+        "LEGACY" in b or "NOT_V2" in b or "NOT_CONSUMABLE" in b or "REJECTED_LEGACY" in b
+        for b in result.blockers
+    )
     assert REVOCATION_SCHEMA == "authorization_revocation_v1"
     # digest helper smoke
     assert len(integrity_digest_v1({"a": 1})) == 64

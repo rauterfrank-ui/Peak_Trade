@@ -37,9 +37,17 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.real_http_fetcher_v1 import (  # noqa: E501
     build_real_eea_public_md_transport_v1,
 )
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_artifact_v2 import (
+    parse_authorization_artifact_v2,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZATION_SCHEMA_REJECTED_LEGACY,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.v1_quarantine_v1 import (
+    classify_authorization_schema_for_wallclock_v1,
+)
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
     AuthorizationArtifactV1,
-    load_authorization_artifact_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.operator_go_contract_v1 import (
     OperatorGoContractV1,
@@ -74,40 +82,55 @@ def assert_productive_run_preconditions_v1(
     *,
     prereg: SessionPreregistrationContractV1,
     go: OperatorGoContractV1,
-    artifact: AuthorizationArtifactV1,
-    confirm_token: str,
+    artifact: AuthorizationArtifactV1 | None = None,
+    confirm_token: str = "",
     now_unix: float,
     expected_repository_sha: str,
     use_real_network: bool,
     environ: Mapping[str, str] | None = None,
     previously_seen_fingerprints: frozenset[str] | None = None,
+    artifact_path: Path | None = None,
 ) -> list[str]:
+    """Productive preconditions. AuthorizationArtifactV1 is never admissible."""
     blockers: list[str] = []
-    verified = verify_productive_authorization_bundle_v1(
-        prereg=prereg,
-        go=go,
-        artifact=artifact,
-        confirm_token=confirm_token,
-        now_unix=now_unix,
-        expected_repository_sha=expected_repository_sha,
-        previously_seen_fingerprints=previously_seen_fingerprints,
-    )
-    blockers.extend(verified.blockers)
-    if (
-        prereg.fixture_non_authoritative
-        or go.fixture_non_authoritative
-        or artifact.fixture_non_authoritative
-    ):
+    if artifact is not None:
+        return [AUTHORIZATION_SCHEMA_REJECTED_LEGACY]
+    if artifact_path is None or not artifact_path.is_file():
+        return ["AUTHORIZATION_ARTIFACT_MISSING"]
+    try:
+        raw = json.loads(artifact_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return ["AUTHORIZATION_PARSE_ERROR"]
+    if not isinstance(raw, dict):
+        return ["AUTHORIZATION_NOT_OBJECT"]
+    kind, kind_blockers = classify_authorization_schema_for_wallclock_v1(raw)
+    if kind != "v2":
+        return sorted(set(kind_blockers or [AUTHORIZATION_SCHEMA_REJECTED_LEGACY]))
+    try:
+        v2 = parse_authorization_artifact_v2(raw)
+    except Exception as exc:  # noqa: BLE001
+        return [f"AUTHORIZATION_PARSE_FAILED:{type(exc).__name__}"]
+    if v2.forced_wiring_fixture_mode:
+        blockers.append("FIXTURE_AUTH_REJECTED_FOR_PRODUCTIVE_RUN")
+    if prereg.fixture_non_authoritative or go.fixture_non_authoritative:
         blockers.append("FIXTURE_AUTH_REJECTED_FOR_PRODUCTIVE_RUN")
     if go.network_scope != NETWORK_SCOPE or go.session_execution_scope != SESSION_EXECUTION_SCOPE:
         blockers.append("SCOPE_BINDING_MISMATCH")
+    if v2.repository_sha != expected_repository_sha:
+        blockers.append("REPOSITORY_SHA_MISMATCH")
     if use_real_network:
         env = environ if environ is not None else os.environ
         if str(env.get(REAL_NETWORK_ENV) or "") != "1":
             blockers.append("REAL_NETWORK_ENV_REQUIRED_AS_ADDITIONAL_GATE")
-        # Env alone is never enough — verified productive auth must also pass.
-        if not verified.ok:
+        if blockers:
             blockers.append("REAL_NETWORK_REQUIRES_VERIFIED_PRODUCTIVE_AUTH")
+    # Keep previously_seen_fingerprints for API compatibility; replay is enforced in gatekeeper.
+    _ = (
+        confirm_token,
+        now_unix,
+        previously_seen_fingerprints,
+        verify_productive_authorization_bundle_v1,
+    )
     return sorted(set(blockers))
 
 
@@ -115,12 +138,12 @@ def run_productive_wallclock_session_v1(
     *,
     prereg: SessionPreregistrationContractV1,
     go: OperatorGoContractV1,
-    artifact: AuthorizationArtifactV1,
     confirm_token: str,
     artifact_path: Path,
     evidence_root: Path,
     expected_repository_sha: str,
     fingerprint_ledger_path: Path,
+    artifact: AuthorizationArtifactV1 | None = None,
     transport: Optional[EeaPublicMdTransportV1] = None,
     use_real_network: bool = False,
     runtime_config: WallclockRuntimeConfigV1 | None = None,
@@ -132,27 +155,33 @@ def run_productive_wallclock_session_v1(
     environ: Mapping[str, str] | None = None,
     previously_seen_fingerprints: frozenset[str] | None = None,
     stop_flag: Optional[Callable[[], bool]] = None,
+    runtime_overrides: Mapping[str, Any] | None = None,
 ) -> ProductiveRunGateResultV1:
-    """Fail-closed productive run. Network only after consumption inside runtime."""
+    """Fail-closed productive run. Network only after canonical v2 consumption inside runtime."""
     notes = [
         f"CAPABILITY_ID={CAPABILITY_ID}",
         "CONSUMPTION_BEFORE_NETWORK",
+        "CANONICAL_AUTHORIZATION_ARTIFACT_V2_ONLY",
         "FIXTURES_REJECTED",
         f"HOST={CANONICAL_HOST}",
     ]
     now = float((clock_wall or time.time)())
+    if artifact is not None:
+        return ProductiveRunGateResultV1(
+            ok=False, blockers=[AUTHORIZATION_SCHEMA_REJECTED_LEGACY], notes=notes
+        )
     blockers = assert_productive_run_preconditions_v1(
         prereg=prereg,
         go=go,
-        artifact=artifact,
+        artifact=None,
         confirm_token=confirm_token,
         now_unix=now,
         expected_repository_sha=expected_repository_sha,
         use_real_network=use_real_network,
         environ=environ,
         previously_seen_fingerprints=previously_seen_fingerprints,
+        artifact_path=artifact_path,
     )
-    # Remove accidental no-op residue if present
     blockers = [b for b in blockers if b]
     if blockers:
         return ProductiveRunGateResultV1(ok=False, blockers=blockers, notes=notes)
@@ -176,7 +205,8 @@ def run_productive_wallclock_session_v1(
     # Wrap open to record ordering evidence.
     evidence_root.mkdir(parents=True, exist_ok=True)
     prereg_fp = _fingerprint_payload(prereg.to_dict())
-    auth_fp = _fingerprint_payload(artifact.to_dict())
+    auth_raw = json.loads(artifact_path.read_text(encoding="utf-8"))
+    auth_fp = _fingerprint_payload(auth_raw if isinstance(auth_raw, dict) else {})
     consumed_at_box: dict[str, float] = {}
     transport_open_at_box: dict[str, float] = {}
 
@@ -264,12 +294,12 @@ def run_productive_wallclock_session_v1(
     result = _run_with_consume_mark(
         prereg=prereg,
         go=go,
-        artifact=artifact,
         confirm_token=confirm_token,
         artifact_path=artifact_path,
         expected_repository_sha=expected_repository_sha,
         fingerprint_ledger_path=fingerprint_ledger_path,
         known_session_ids=known_session_ids,
+        runtime_overrides=runtime_overrides,
         config_snapshot={
             "schema": "productive_wallclock_runtime_v1",
             "capability_id": CAPABILITY_ID,
@@ -307,11 +337,10 @@ def run_productive_wallclock_session_from_paths_v1(
         load_preregistration_contract_dict_v1(preregistration_path)
     )
     go = parse_operator_go_contract_v1(load_operator_go_contract_dict_v1(operator_go_path))
-    artifact = load_authorization_artifact_v1(authorization_artifact_path)
     return run_productive_wallclock_session_v1(
         prereg=prereg,
         go=go,
-        artifact=artifact,
+        artifact=None,
         confirm_token=confirm_token,
         artifact_path=authorization_artifact_path,
         evidence_root=evidence_root,

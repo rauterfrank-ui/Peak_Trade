@@ -1,6 +1,12 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260730-canonical-wallclock-authorization-consumption-authority-and-mandatory-bindings-v1"></a>
+- 2026-07-30 — Canonical Wallclock Authorization Consumption Authority and Mandatory Bindings v1
+  - Source: [Capability contract](runbooks/CANONICAL_WALLCLOCK_AUTHORIZATION_CONSUMPTION_AUTHORITY_AND_MANDATORY_BINDINGS_V1.md) · Owner: `ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1`
+  - Claim: Sole productive wallclock consumption authority is `authorization_artifact_v2` via canonical gatekeeper; `AuthorizationArtifactV1` quarantined as `LEGACY_PRODUCTIVE_AUTHORITY_RETIRED`; mandatory safety/config bindings fail-closed without coercion; all productive wallclock start paths bound to v2 gate.
+  - Non-claims: not GO_FOR_PREREGISTRATION; not authorization creation/consumption; not 1h-run; not Orders/Paper/Testnet/Live; not Economic Validity/Promotion.
+
 <a id="ev-20260730-canonical-durable-authorization-lifecycle-and-revocation-v1"></a>
 - 2026-07-30 — Canonical Durable Authorization Lifecycle and Revocation v1
   - Source: [Capability contract](runbooks/CANONICAL_DURABLE_AUTHORIZATION_LIFECYCLE_AND_REVOCATION_V1.md) · Owner: `ops.canonical_durable_authorization_lifecycle_and_revocation_v1` · CLI: `python scripts/ops/run_canonical_durable_authorization_lifecycle_and_revocation_v1.py preflight`

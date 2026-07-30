@@ -16,8 +16,26 @@ from src.ops.integrated_paper_shadow_observation_session_v1.session_lifecycle_v1
     plan_observation_session_lifecycle_v1,
     refuse_wallclock_session_execution_v1,
 )
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_writer_v2 import (
+    build_authorization_artifact_dict_v2,
+    new_authorization_id_v2,
+    write_authorization_artifact_v2,
+)
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.constants_v1 import (
+    TARGET_RUNTIME_CAPABILITY,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    AUTHORIZATION_SCHEMA_REJECTED_LEGACY,
+    MANDATORY_SAFETY_BOUNDARIES,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.wallclock_v2_gatekeeper_v1 import (
+    consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1,
+)
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.authorization_consumption_runtime_v1 import (
     consume_authorization_for_wallclock_start_v1,
+)
+from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_confirm_token_producer_v1 import (
+    mint_productive_confirm_token_v1,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1 import (
     verify_wallclock_evidence_bundle_v1,
@@ -82,7 +100,31 @@ SHA = "fbfc3fdbae2b966d0ae44044b1d3c3b64da68afd"
 
 
 def _material() -> str:
-    return "GO_PSO_SESSION_PREREG_V1_" + "WALLCLOCK_FIXTURE_NON_AUTH_" + "MATERIAL_A1B2"
+    return mint_productive_confirm_token_v1()
+
+
+RUNBOOK_SHA = "a7529ef8ba8c5950f6372822b71ac2a5304ae037013288d48d53306d4105ff5a"
+
+
+def _write_v2_auth(tmp_path: Path, *, prereg, token: str, auth_id: str | None = None) -> Path:
+    payload = build_authorization_artifact_dict_v2(
+        authorization_id=auth_id or new_authorization_id_v2(),
+        preregistration_id=prereg.session_id,
+        preregistration_digest=prereg.scope_digest(),
+        repository_sha=SHA,
+        runbook_sha256=RUNBOOK_SHA,
+        session_duration_seconds=3600,
+        config_digests={"fixture.toml": "a" * 64},
+        safety_boundaries=dict(MANDATORY_SAFETY_BOUNDARIES),
+        confirm_token=token,
+        capability=TARGET_RUNTIME_CAPABILITY,
+        created_at=NOW,
+        expires_at=NOW + 3600,
+    )
+    path = tmp_path / f"{payload['authorization_id']}.json"
+    written = write_authorization_artifact_v2(output_path=path, artifact_dict=payload)
+    assert written.ok, written.blockers
+    return path
 
 
 def _load_wallclock_prereg():
@@ -327,38 +369,63 @@ def test_consume_before_transport_and_replay_guard(tmp_path: Path) -> None:
     prereg = _load_wallclock_prereg()
     go = _load_wallclock_go()
     material = _material()
-    built = build_authorization_artifact_v1(
-        prereg=prereg,
-        go=go,
-        confirm_token=material,
-        authorization_id="auth_wallclock_fixture_v1",
-        now_unix=NOW,
-    )
-    assert built.ok and built.artifact is not None
-    assert built.artifact.network_authorized is True
-    assert built.artifact.network_scope == NETWORK_SCOPE
-    assert built.artifact.session_execution_scope == SESSION_EXECUTION_SCOPE
-
+    # V1 productive consume is quarantined (synthetic legacy shape; no token material).
     evidence_root = tmp_path / "ev1"
     evidence_root.mkdir()
     writer = WallclockEvidenceWriterV1(evidence_root=evidence_root)
     writer.ensure_append_files()
-    artifact_path = tmp_path / "auth_artifact.json"
-    ledger = tmp_path / "fingerprints.ledger"
-
-    open_calls = {"n": 0}
-
-    def fetcher(url, method, headers, timeout):
-        open_calls["n"] += 1
-        raise AssertionError("transport fetch must not run during consume")
-
-    transport = EeaPublicMdTransportV1(fetcher=fetcher)
-    assert transport.opened is False
-
-    result = consume_authorization_for_wallclock_start_v1(
+    v1_path = tmp_path / "auth_v1.json"
+    v1_payload = {
+        "schema_version": "v1",
+        "capability_id": "PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1",
+        "authorization_id": "auth_wallclock_fixture_v1",
+        "session_id": prereg.session_id,
+        "go_id": go.go_id,
+        "arming_state": "authorized",
+        "consumed": False,
+        "revoked": False,
+        "confirm_token_fingerprint": "0" * 64,
+    }
+    v1_path.write_text(json.dumps(v1_payload, indent=2) + "\n", encoding="utf-8")
+    rejected = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
         prereg=prereg,
         go=go,
-        artifact=built.artifact,
+        confirm_token=material,
+        evidence_writer=writer,
+        artifact_path=v1_path,
+        now_unix=NOW,
+        expected_repository_sha=SHA,
+        fingerprint_ledger_path=tmp_path / "fp_v1.ledger",
+    )
+    assert rejected.ok is False
+    assert AUTHORIZATION_SCHEMA_REJECTED_LEGACY in rejected.blockers
+    # Compatibility wrapper rejects any non-None V1 artifact object without side effects.
+    from types import SimpleNamespace
+
+    wrapper = consume_authorization_for_wallclock_start_v1(
+        prereg=prereg,
+        go=go,
+        artifact=SimpleNamespace(arming_state="authorized"),  # type: ignore[arg-type]
+        confirm_token=material,
+        evidence_writer=writer,
+        artifact_path=v1_path,
+        now_unix=NOW,
+        expected_repository_sha=SHA,
+        fingerprint_ledger_path=tmp_path / "fp_v1b.ledger",
+    )
+    assert wrapper.ok is False
+    assert AUTHORIZATION_SCHEMA_REJECTED_LEGACY in wrapper.blockers
+    assert not (evidence_root / "authorization_consumption_record.json").exists()
+
+    artifact_path = _write_v2_auth(tmp_path, prereg=prereg, token=material)
+    ledger = tmp_path / "fingerprints.ledger"
+    transport = EeaPublicMdTransportV1(
+        fetcher=lambda *a, **k: (_ for _ in ()).throw(AssertionError("no fetch"))
+    )
+    assert transport.opened is False
+    result = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
+        prereg=prereg,
+        go=go,
         confirm_token=material,
         evidence_writer=writer,
         artifact_path=artifact_path,
@@ -366,41 +433,23 @@ def test_consume_before_transport_and_replay_guard(tmp_path: Path) -> None:
         expected_repository_sha=SHA,
         fingerprint_ledger_path=ledger,
     )
-    assert result.ok
+    assert result.ok, result.blockers
     assert result.transport_open_allowed is True
     assert transport.opened is False
-    assert open_calls["n"] == 0
     assert (evidence_root / "authorization_consumption_record.json").is_file()
-    assert artifact_path.is_file()
     consumed_raw = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert consumed_raw["consumed"] is True
+    assert consumed_raw["state"] == "CONSUMED"
 
-    # replay fingerprint
     writer2 = WallclockEvidenceWriterV1(evidence_root=tmp_path / "ev2")
     (tmp_path / "ev2").mkdir()
     writer2.ensure_append_files()
-    built2 = build_authorization_artifact_v1(
+    artifact_path2 = _write_v2_auth(tmp_path / "second", prereg=prereg, token=material)
+    replay = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
         prereg=prereg,
         go=go,
-        confirm_token=material,
-        authorization_id="auth_wallclock_fixture_v2",
-        now_unix=NOW,
-    )
-    # Use fresh unconsumed artifact model but same token fingerprint in ledger
-    from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
-        parse_authorization_artifact_v1,
-    )
-
-    fresh = parse_authorization_artifact_v1(
-        {**built2.artifact.to_dict(), "consumed": False, "arming_state": "authorized"}
-    )
-    replay = consume_authorization_for_wallclock_start_v1(
-        prereg=prereg,
-        go=go,
-        artifact=fresh,
         confirm_token=material,
         evidence_writer=writer2,
-        artifact_path=tmp_path / "auth2.json",
+        artifact_path=artifact_path2,
         now_unix=NOW,
         expected_repository_sha=SHA,
         fingerprint_ledger_path=ledger,
@@ -413,14 +462,7 @@ def test_short_fake_clock_session_pass(tmp_path: Path) -> None:
     prereg = _load_wallclock_prereg()
     go = _load_wallclock_go()
     material = _material()
-    built = build_authorization_artifact_v1(
-        prereg=prereg,
-        go=go,
-        confirm_token=material,
-        authorization_id="auth_wallclock_run_v1",
-        now_unix=NOW,
-    )
-    assert built.ok and built.artifact is not None
+    artifact_path = _write_v2_auth(tmp_path, prereg=prereg, token=material)
 
     clock = FakeClock()
     transport = EeaPublicMdTransportV1(
@@ -444,11 +486,9 @@ def test_short_fake_clock_session_pass(tmp_path: Path) -> None:
         sleep=clock.sleep,
         repo_root=REPO_ROOT,
     )
-    artifact_path = tmp_path / "artifact.json"
     result = runtime.run(
         prereg=prereg,
         go=go,
-        artifact=built.artifact,
         confirm_token=material,
         artifact_path=artifact_path,
         expected_repository_sha=SHA,
@@ -470,13 +510,7 @@ def test_401_aborts_credential_surface(tmp_path: Path) -> None:
     prereg = _load_wallclock_prereg()
     go = _load_wallclock_go()
     material = _material()
-    built = build_authorization_artifact_v1(
-        prereg=prereg,
-        go=go,
-        confirm_token=material,
-        authorization_id="auth_wallclock_401",
-        now_unix=NOW,
-    )
+    artifact_path = _write_v2_auth(tmp_path, prereg=prereg, token=material)
 
     def fetcher(url, method, headers, timeout):
         return 401, b"{}", {}
@@ -494,9 +528,8 @@ def test_401_aborts_credential_surface(tmp_path: Path) -> None:
     result = runtime.run(
         prereg=prereg,
         go=go,
-        artifact=built.artifact,
         confirm_token=material,
-        artifact_path=tmp_path / "a401.json",
+        artifact_path=artifact_path,
         expected_repository_sha=SHA,
         fingerprint_ledger_path=tmp_path / "fp401.ledger",
     )
@@ -508,39 +541,9 @@ def test_duplicate_session_lock(tmp_path: Path) -> None:
     prereg = _load_wallclock_prereg()
     go = _load_wallclock_go()
     material = _material()
-    built = build_authorization_artifact_v1(
-        prereg=prereg,
-        go=go,
-        confirm_token=material,
-        authorization_id="auth_lock_1",
-        now_unix=NOW,
-    )
     clock = FakeClock()
-    evidence_root = tmp_path / "lock_ev"
-    # First runtime consume+lock then leave lock held by writing lock file manually after first run completes (releases).
-    # Instead: acquire lock file before run.
-    evidence_root.mkdir()
-    (evidence_root / "session.lock").write_text("held\n", encoding="utf-8")
-    runtime = WallclockSessionRuntimeV1(
-        evidence_root=evidence_root,
-        transport=EeaPublicMdTransportV1(fetcher=_fake_ticker_fetcher(), environ={}),
-        config=WallclockRuntimeConfigV1(max_cycles=1, min_quality_window_seconds=0),
-        clock_wall=clock.time,
-        clock_mono=clock.monotonic,
-        sleep=clock.sleep,
-        repo_root=REPO_ROOT,
-    )
-    # Consumption writes into evidence_root; lock file already exists -> ABORT after consume
-    # Need empty evidence for immutable writes - use fresh root and pre-create lock after consume is hard.
-    # Simpler: run twice with same session id on different roots but known_session_ids set.
     evidence_root2 = tmp_path / "lock_ev2"
-    built2 = build_authorization_artifact_v1(
-        prereg=prereg,
-        go=go,
-        confirm_token=material,
-        authorization_id="auth_lock_2",
-        now_unix=NOW,
-    )
+    artifact_path = _write_v2_auth(tmp_path, prereg=prereg, token=material)
     runtime2 = WallclockSessionRuntimeV1(
         evidence_root=evidence_root2,
         transport=EeaPublicMdTransportV1(fetcher=_fake_ticker_fetcher(), environ={}),
@@ -553,9 +556,8 @@ def test_duplicate_session_lock(tmp_path: Path) -> None:
     result = runtime2.run(
         prereg=prereg,
         go=go,
-        artifact=built2.artifact,
         confirm_token=material,
-        artifact_path=tmp_path / "alock.json",
+        artifact_path=artifact_path,
         expected_repository_sha=SHA,
         fingerprint_ledger_path=tmp_path / "fplock.ledger",
         known_session_ids={go.session_id},
@@ -571,13 +573,7 @@ def test_evidence_tamper_detected(tmp_path: Path) -> None:
     prereg = _load_wallclock_prereg()
     go = _load_wallclock_go()
     material = _material()
-    built = build_authorization_artifact_v1(
-        prereg=prereg,
-        go=go,
-        confirm_token=material,
-        authorization_id="auth_tamper",
-        now_unix=NOW,
-    )
+    artifact_path = _write_v2_auth(tmp_path, prereg=prereg, token=material)
     clock = FakeClock()
     evidence_root = tmp_path / "tamper_ev"
     runtime = WallclockSessionRuntimeV1(
@@ -592,9 +588,8 @@ def test_evidence_tamper_detected(tmp_path: Path) -> None:
     runtime.run(
         prereg=prereg,
         go=go,
-        artifact=built.artifact,
         confirm_token=material,
-        artifact_path=tmp_path / "atamper.json",
+        artifact_path=artifact_path,
         expected_repository_sha=SHA,
         fingerprint_ledger_path=tmp_path / "fptamper.ledger",
     )

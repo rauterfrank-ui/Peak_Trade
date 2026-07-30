@@ -302,7 +302,9 @@ def test_fixture_rejected_for_productive_run(tmp_path: Path) -> None:
         repo_root=REPO_ROOT,
     )
     assert result.ok is False
-    assert any("FIXTURE" in b for b in result.blockers)
+    assert any(
+        "FIXTURE" in b or "AUTHORIZATION_SCHEMA_REJECTED_LEGACY" in b for b in result.blockers
+    )
     assert calls == []
     assert result.network_opened is False
 
@@ -358,8 +360,42 @@ def test_real_fetcher_redirect_and_size_and_content_type(tmp_path: Path) -> None
         )
 
 
+def _write_v2_for_prereg(tmp_path: Path, *, prereg, token: str) -> Path:
+    from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_writer_v2 import (
+        build_authorization_artifact_dict_v2,
+        new_authorization_id_v2,
+        write_authorization_artifact_v2,
+    )
+    from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.constants_v1 import (
+        TARGET_RUNTIME_CAPABILITY,
+    )
+    from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+        MANDATORY_SAFETY_BOUNDARIES,
+    )
+
+    payload = build_authorization_artifact_dict_v2(
+        authorization_id=new_authorization_id_v2(),
+        preregistration_id=prereg.session_id,
+        preregistration_digest=prereg.scope_digest(),
+        repository_sha=REPO_SHA,
+        runbook_sha256="a7529ef8ba8c5950f6372822b71ac2a5304ae037013288d48d53306d4105ff5a",
+        session_duration_seconds=3600,
+        config_digests={"fixture.toml": "b" * 64},
+        safety_boundaries=dict(MANDATORY_SAFETY_BOUNDARIES),
+        confirm_token=token,
+        capability=TARGET_RUNTIME_CAPABILITY,
+        created_at=NOW,
+        expires_at=NOW + 3600,
+    )
+    path = tmp_path / "authorization_artifact_v2.json"
+    written = write_authorization_artifact_v2(output_path=path, artifact_dict=payload)
+    assert written.ok, written.blockers
+    return path
+
+
 def test_consumption_before_network_and_single_use(tmp_path: Path) -> None:
-    prereg, go, artifact, token, art_path = _issue_bundle(tmp_path, duration=30)
+    prereg, go, _artifact, token, _art_path = _issue_bundle(tmp_path, duration=30)
+    art_path = _write_v2_for_prereg(tmp_path, prereg=prereg, token=token)
     calls: list = []
     clock = FakeClock()
     transport = EeaPublicMdTransportV1(
@@ -376,12 +412,11 @@ def test_consumption_before_network_and_single_use(tmp_path: Path) -> None:
         max_cycles=3,
         shutdown_grace_seconds=0.0,
     )
-    # Ensure no fetch before run
     assert calls == []
     result = run_productive_wallclock_session_v1(
         prereg=prereg,
         go=go,
-        artifact=artifact,
+        artifact=None,
         confirm_token=token,
         artifact_path=art_path,
         evidence_root=tmp_path / "ev1",
@@ -405,9 +440,6 @@ def test_consumption_before_network_and_single_use(tmp_path: Path) -> None:
     assert issuance["consumed_at"] <= issuance["transport_open_at"]
     assert consumption["session_id"] == go.session_id
 
-    # Replay with same auth must fail (consumed artifact on disk + ledger)
-    consumed_art = load_authorization_artifact_v1(art_path)
-    assert consumed_art.consumed is True
     clock2 = FakeClock()
     transport2 = EeaPublicMdTransportV1(
         fetcher=_fake_ticker_fetcher(calls=[]), sleep=clock2.sleep, environ={}
@@ -415,7 +447,7 @@ def test_consumption_before_network_and_single_use(tmp_path: Path) -> None:
     replay = run_productive_wallclock_session_v1(
         prereg=prereg,
         go=go,
-        artifact=consumed_art,
+        artifact=None,
         confirm_token=token,
         artifact_path=art_path,
         evidence_root=tmp_path / "ev2",
@@ -429,18 +461,21 @@ def test_consumption_before_network_and_single_use(tmp_path: Path) -> None:
         sleep=clock2.sleep,
         repo_root=REPO_ROOT,
     )
-    assert replay.ok is False
     assert replay.network_opened is False
+    assert any(
+        "CONFIRM_TOKEN_REPLAY" in b or "ALREADY_CONSUMED" in b or "REVOKED" in b
+        for b in replay.blockers
+    )
 
 
 def test_env_flag_alone_insufficient(tmp_path: Path) -> None:
-    prereg, go, artifact, token, art_path = _issue_bundle(tmp_path, duration=30)
+    prereg, go, _artifact, token, _art_path = _issue_bundle(tmp_path, duration=30)
+    art_path = _write_v2_for_prereg(tmp_path, prereg=prereg, token=token)
     clock = FakeClock()
-    # use_real_network True without env → blocked before transport construction path uses env check
     result = run_productive_wallclock_session_v1(
         prereg=prereg,
         go=go,
-        artifact=artifact,
+        artifact=None,
         confirm_token=token,
         artifact_path=art_path,
         evidence_root=tmp_path / "ev",
