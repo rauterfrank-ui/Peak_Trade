@@ -77,12 +77,23 @@ def _token_matches(artifact: AuthorizationArtifactV2, confirm_token: str) -> boo
 
 def classify_authorization_payload_v1(raw: Mapping[str, Any]) -> tuple[str, list[str]]:
     """Return (kind, blockers). kind in {v2, legacy, unknown}."""
-    if raw.get("schema") == "authorization_artifact_v2":
+    from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+        AUTHORIZATION_SCHEMA_REJECTED_LEGACY,
+    )
+    from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.v1_quarantine_v1 import (
+        classify_authorization_schema_for_wallclock_v1,
+    )
+
+    kind, blockers = classify_authorization_schema_for_wallclock_v1(raw)
+    if kind == "v2":
         return "v2", []
+    if kind in {"legacy_v1", "legacy_formal"}:
+        return "legacy", blockers or [AUTHORIZATION_SCHEMA_REJECTED_LEGACY]
+    # Preserve prior formal classifier signal when applicable.
     legacy = classify_legacy_formal_authorization_v1(raw)
     if legacy.classification == "LEGACY_FORMAL_AUTHORIZATION_V1" or legacy.ok:
-        return "legacy", ["LEGACY_AUTHORIZATION_NOT_CONSUMABLE"]
-    return "unknown", ["AUTHORIZATION_SCHEMA_UNSUPPORTED"]
+        return "legacy", [AUTHORIZATION_SCHEMA_REJECTED_LEGACY]
+    return "unknown", [AUTHORIZATION_SCHEMA_REJECTED_LEGACY]
 
 
 def consume_authorization_artifact_v2(

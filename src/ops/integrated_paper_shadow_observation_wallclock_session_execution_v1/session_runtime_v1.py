@@ -12,9 +12,8 @@ from typing import Any, Callable, Mapping, Optional, Set
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (
     ObservationMarketTickV1,
 )
-from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.authorization_consumption_runtime_v1 import (
-    AuthorizationConsumptionError,
-    consume_authorization_for_wallclock_start_v1,
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.wallclock_v2_gatekeeper_v1 import (
+    consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1 import (
     verify_wallclock_evidence_bundle_v1,
@@ -93,9 +92,6 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.wallclock_hardening_binding_v2 import (
     run_hardened_wallclock_bridge_observation_cycle_v2,
-)
-from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
-    AuthorizationArtifactV1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.operator_go_contract_v1 import (
     OperatorGoContractV1,
@@ -245,15 +241,30 @@ class WallclockSessionRuntimeV1:
         *,
         prereg: SessionPreregistrationContractV1,
         go: OperatorGoContractV1,
-        artifact: AuthorizationArtifactV1,
         confirm_token: str,
         artifact_path: Path,
         expected_repository_sha: str,
         fingerprint_ledger_path: Path,
         known_session_ids: Optional[Set[str]] = None,
         config_snapshot: Optional[Mapping[str, Any]] = None,
+        runtime_overrides: Optional[Mapping[str, Any]] = None,
+        cli_overrides: Optional[Mapping[str, Any]] = None,
+        env_overrides: Optional[Mapping[str, Any]] = None,
+        defaults: Optional[Mapping[str, Any]] = None,
+        config_files: Optional[Mapping[str, str]] = None,
+        artifact: Any = None,
     ) -> WallclockSessionResultV1:
         session_id = go.session_id
+        # Fail-closed: V1 artifact objects are never accepted for productive start.
+        if artifact is not None:
+            self.state = WallclockSessionState.INVALID
+            self.blockers.append("AUTHORIZATION_SCHEMA_REJECTED_LEGACY")
+            return self._finalize_result(
+                session_id=session_id,
+                incomplete=False,
+                force_verdict=TerminalVerdict.ABORT,
+            )
+
         self.evidence_root.mkdir(parents=True, exist_ok=True)
         self.writer.ensure_append_files()
 
@@ -279,11 +290,10 @@ class WallclockSessionRuntimeV1:
                 force_verdict=TerminalVerdict.ABORT,
             )
 
-        # Atomic consumption BEFORE transport open.
-        consumption = consume_authorization_for_wallclock_start_v1(
+        # Atomic canonical v2 consumption BEFORE any session lock / transport open.
+        consumption = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
             prereg=prereg,
             go=go,
-            artifact=artifact,
             confirm_token=confirm_token,
             evidence_writer=self.writer,
             artifact_path=artifact_path,
@@ -291,11 +301,15 @@ class WallclockSessionRuntimeV1:
             expected_repository_sha=expected_repository_sha,
             fingerprint_ledger_path=fingerprint_ledger_path,
             known_session_ids=known_session_ids,
+            runtime_overrides=runtime_overrides,
+            cli_overrides=cli_overrides,
+            env_overrides=env_overrides,
+            defaults=defaults,
+            config_files=config_files,
         )
         if not consumption.ok or not consumption.transport_open_allowed:
             self.state = WallclockSessionState.INVALID
             self.blockers.extend(consumption.blockers)
-            # No consume persisted on failure path inside helper when blockers pre-persist.
             return self._finalize_result(
                 session_id=session_id,
                 incomplete=False,

@@ -22,6 +22,14 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.states_
     AuthorizationStateV2,
     parse_authorization_state_v2,
 )
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.mandatory_bindings_v1 import (
+    MandatoryBindingError,
+    validate_expires_at_present_v1,
+    validate_mandatory_safety_boundaries_v1,
+    validate_mandatory_session_config_digest_binding_v1,
+    validate_mandatory_session_duration_v1,
+    validate_mandatory_top_level_safety_flags_v1,
+)
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
 )
@@ -37,6 +45,7 @@ _KNOWN_FIELDS = frozenset(
         "repository_sha",
         "runbook_sha256",
         "session_duration_seconds",
+        "session_config_digest",
         "config_digests",
         "safety_boundaries",
         "confirm_token_fingerprint",
@@ -85,6 +94,7 @@ class AuthorizationArtifactV2:
     repository_sha: str
     runbook_sha256: str
     session_duration_seconds: int
+    session_config_digest: str
     config_digests: dict[str, str]
     safety_boundaries: dict[str, bool]
     confirm_token_fingerprint: str
@@ -164,15 +174,22 @@ def parse_authorization_artifact_v2(raw: Mapping[str, Any]) -> AuthorizationArti
             "repository_sha",
             "runbook_sha256",
             "session_duration_seconds",
+            "session_config_digest",
             "config_digests",
             "safety_boundaries",
             "confirm_token_fingerprint",
             "confirm_token_digest",
             "created_at",
+            "expires_at",
             "single_use",
             "state",
             "state_version",
             "revocation_required_lookup",
+            "forced_wiring_fixture_mode",
+            "no_implicit_resume",
+            "atomic_consumption_required",
+            "replay_blocked",
+            "audit_trail_required",
         }
         - set(raw)
     )
@@ -188,23 +205,37 @@ def parse_authorization_artifact_v2(raw: Mapping[str, Any]) -> AuthorizationArti
         state = parse_authorization_state_v2(raw["state"])
     except AuthorizationStateError as exc:
         raise AuthorizationArtifactV2Error(str(exc)) from exc
+    top_level_blockers = validate_mandatory_top_level_safety_flags_v1(raw)
+    if top_level_blockers:
+        raise AuthorizationArtifactV2Error(";".join(top_level_blockers))
+    try:
+        expires_at = validate_expires_at_present_v1(raw)
+        duration = validate_mandatory_session_duration_v1(raw["session_duration_seconds"])
+        safety = validate_mandatory_safety_boundaries_v1(raw["safety_boundaries"])
+        session_config_digest = validate_mandatory_session_config_digest_binding_v1(
+            session_config_digest=raw["session_config_digest"],
+            config_digests=raw["config_digests"],
+        )
+    except MandatoryBindingError as exc:
+        raise AuthorizationArtifactV2Error(str(exc)) from exc
     cfg = raw["config_digests"]
-    if not isinstance(cfg, dict) or not cfg:
-        raise AuthorizationArtifactV2Error("CONFIG_DIGESTS_INCOMPLETE")
-    if any(
-        not isinstance(k, str) or not isinstance(v, str) or len(v) != 64 for k, v in cfg.items()
-    ):
-        raise AuthorizationArtifactV2Error("CONFIG_DIGESTS_INVALID")
-    safety = raw["safety_boundaries"]
-    if not isinstance(safety, dict) or not safety:
-        raise AuthorizationArtifactV2Error("SAFETY_BOUNDARIES_INCOMPLETE")
-    duration = int(raw["session_duration_seconds"])
-    if duration <= 0:
-        raise AuthorizationArtifactV2Error("SESSION_DURATION_INVALID")
     if raw.get("single_use") is not True:
         raise AuthorizationArtifactV2Error("SINGLE_USE_REQUIRED")
     if raw.get("revocation_required_lookup") is not True:
         raise AuthorizationArtifactV2Error("REVOCATION_LOOKUP_REQUIRED")
+    # Reject unsafe authority flags without coercion.
+    for flag in (
+        "orders_authorized",
+        "testnet_authorized",
+        "live_authorized",
+        "credentials_authorized",
+        "paper_execution_authorized",
+        "promotion_authority",
+    ):
+        if flag in raw and type(raw[flag]) is not bool:
+            raise AuthorizationArtifactV2Error(f"MANDATORY_BOOL_TYPE:{flag}")
+        if raw.get(flag) is True:
+            raise AuthorizationArtifactV2Error(f"AUTHORITY_FLAG_REJECTED:{flag}")
     notes_raw = raw.get("notes", ())
     notes = tuple(str(x) for x in notes_raw) if isinstance(notes_raw, (list, tuple)) else ()
     artifact = AuthorizationArtifactV2(
@@ -217,13 +248,14 @@ def parse_authorization_artifact_v2(raw: Mapping[str, Any]) -> AuthorizationArti
         repository_sha=str(raw["repository_sha"]),
         runbook_sha256=str(raw["runbook_sha256"]),
         session_duration_seconds=duration,
+        session_config_digest=session_config_digest,
         config_digests={str(k): str(v) for k, v in sorted(cfg.items())},
-        safety_boundaries={str(k): bool(v) for k, v in safety.items()},
+        safety_boundaries=safety,
         confirm_token_fingerprint=str(raw["confirm_token_fingerprint"]),
         confirm_token_digest=str(raw["confirm_token_digest"]),
         confirm_token_binding_sha256=str(raw.get("confirm_token_binding_sha256") or ""),
         created_at=float(raw["created_at"]),
-        expires_at=float(raw.get("expires_at") or raw["created_at"]),
+        expires_at=expires_at,
         single_use=True,
         state=state,
         state_version=int(raw["state_version"]),
@@ -232,19 +264,19 @@ def parse_authorization_artifact_v2(raw: Mapping[str, Any]) -> AuthorizationArti
         if raw.get("consumption_id") in (None, "")
         else str(raw.get("consumption_id")),
         revocation_required_lookup=True,
-        atomic_consumption_required=bool(raw.get("atomic_consumption_required", True)),
-        replay_blocked=bool(raw.get("replay_blocked", True)),
-        audit_trail_required=bool(raw.get("audit_trail_required", True)),
-        forced_wiring_fixture_mode=bool(raw.get("forced_wiring_fixture_mode", False)),
-        no_implicit_resume=bool(raw.get("no_implicit_resume", True)),
-        orders_authorized=bool(raw.get("orders_authorized", False)),
-        testnet_authorized=bool(raw.get("testnet_authorized", False)),
-        live_authorized=bool(raw.get("live_authorized", False)),
-        credentials_authorized=bool(raw.get("credentials_authorized", False)),
-        paper_execution_authorized=bool(raw.get("paper_execution_authorized", False)),
-        promotion_authority=bool(raw.get("promotion_authority", False)),
-        economic_validity_changed=bool(raw.get("economic_validity_changed", False)),
-        session_start_authorized=bool(raw.get("session_start_authorized", False)),
+        atomic_consumption_required=raw.get("atomic_consumption_required") is True,
+        replay_blocked=raw.get("replay_blocked") is True,
+        audit_trail_required=raw.get("audit_trail_required") is True,
+        forced_wiring_fixture_mode=raw["forced_wiring_fixture_mode"] is True,
+        no_implicit_resume=raw["no_implicit_resume"] is True,
+        orders_authorized=False,
+        testnet_authorized=False,
+        live_authorized=False,
+        credentials_authorized=False,
+        paper_execution_authorized=False,
+        promotion_authority=False,
+        economic_validity_changed=bool(raw.get("economic_validity_changed") is True),
+        session_start_authorized=bool(raw.get("session_start_authorized") is True),
         notes=notes,
         integrity_digest=str(raw.get("integrity_digest") or ""),
         digest_scope=str(raw.get("digest_scope") or ""),

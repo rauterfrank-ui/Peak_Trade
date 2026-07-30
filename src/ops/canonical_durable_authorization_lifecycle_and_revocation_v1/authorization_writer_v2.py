@@ -27,6 +27,17 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.integri
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.states_v1 import (
     AuthorizationStateV2,
 )
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    EFFECTIVE_SESSION_CONFIG_DIGEST_KEY,
+    MANDATORY_SAFETY_BOUNDARIES,
+    REQUIRED_SESSION_DURATION_SECONDS,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.effective_session_config_digest_v1 import (
+    compute_effective_session_config_digest_v1,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.mandatory_bindings_v1 import (
+    validate_mandatory_safety_boundaries_v1,
+)
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
     fingerprint_confirm_token,
@@ -65,20 +76,43 @@ def build_authorization_artifact_dict_v2(
     preregistration_digest: str,
     repository_sha: str,
     runbook_sha256: str,
-    session_duration_seconds: int,
-    config_digests: Mapping[str, str],
-    safety_boundaries: Mapping[str, bool],
+    session_duration_seconds: int = REQUIRED_SESSION_DURATION_SECONDS,
+    config_digests: Optional[Mapping[str, str]] = None,
+    safety_boundaries: Optional[Mapping[str, bool]] = None,
     confirm_token: str,
     confirm_token_binding_sha256: str = "",
     capability: str = TARGET_RUNTIME_CAPABILITY,
     created_at: Optional[float] = None,
     expires_at: Optional[float] = None,
+    session_config_digest: Optional[str] = None,
+    runtime_overrides: Optional[Mapping[str, Any]] = None,
+    cli_overrides: Optional[Mapping[str, Any]] = None,
+    env_overrides: Optional[Mapping[str, Any]] = None,
+    defaults: Optional[Mapping[str, Any]] = None,
     notes: Optional[list[str]] = None,
 ) -> dict[str, Any]:
     now = float(time.time() if created_at is None else created_at)
     exp = float(expires_at) if expires_at is not None else now + 86400.0
     fp = fingerprint_confirm_token(confirm_token)
     digest = f"sha256:{sha256_text(confirm_token)}"
+    merged_safety = dict(MANDATORY_SAFETY_BOUNDARIES)
+    if safety_boundaries:
+        merged_safety.update({str(k): v for k, v in safety_boundaries.items()})
+    safety = validate_mandatory_safety_boundaries_v1(merged_safety)
+    file_digests = {str(k): str(v) for k, v in sorted((config_digests or {}).items())}
+    file_digests.pop(EFFECTIVE_SESSION_CONFIG_DIGEST_KEY, None)
+    effective = session_config_digest or compute_effective_session_config_digest_v1(
+        capability=capability,
+        session_duration_seconds=int(session_duration_seconds),
+        safety_boundaries=safety,
+        runtime_overrides=runtime_overrides,
+        cli_overrides=cli_overrides,
+        env_overrides=env_overrides,
+        defaults=defaults,
+        config_files=file_digests,
+    )
+    cfg = dict(sorted(file_digests.items()))
+    cfg[EFFECTIVE_SESSION_CONFIG_DIGEST_KEY] = effective
     provisional = {
         "schema": AUTHORIZATION_SCHEMA,
         "schema_version": AUTHORIZATION_SCHEMA_VERSION,
@@ -89,8 +123,9 @@ def build_authorization_artifact_dict_v2(
         "repository_sha": repository_sha,
         "runbook_sha256": runbook_sha256,
         "session_duration_seconds": int(session_duration_seconds),
-        "config_digests": {str(k): str(v) for k, v in sorted(config_digests.items())},
-        "safety_boundaries": {str(k): bool(v) for k, v in safety_boundaries.items()},
+        "session_config_digest": effective,
+        "config_digests": cfg,
+        "safety_boundaries": safety,
         "confirm_token_fingerprint": fp,
         "confirm_token_digest": digest,
         "confirm_token_binding_sha256": confirm_token_binding_sha256,
@@ -121,6 +156,7 @@ def build_authorization_artifact_dict_v2(
             "NO_PLAINTEXT_TOKEN",
             "REVOCATION_LOOKUP_REQUIRED",
             "SINGLE_USE",
+            "MANDATORY_SAFETY_BINDINGS",
         ],
     }
     assert_no_plaintext_token_fields(provisional)

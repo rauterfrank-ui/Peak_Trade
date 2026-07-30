@@ -15,20 +15,21 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ---
 
-## Post–Canonical Durable Authorization Lifecycle + Revocation V1 (2026-07-30)
+## Post–Canonical Wallclock Authorization Consumption Authority + Mandatory Bindings V1 (2026-07-30)
 
-**Capability implementation focus** (not session grant / replacement authorization / 1h-run):
+**Capability implementation focus** (not preregistration / authorization issuance / 1h-run):
 
-- Capability: `CANONICAL_DURABLE_AUTHORIZATION_LIFECYCLE_AND_REVOCATION_V1`
-- Owner: `ops.canonical_durable_authorization_lifecycle_and_revocation_v1`
-- Contract: [`docs/ops/runbooks/CANONICAL_DURABLE_AUTHORIZATION_LIFECYCLE_AND_REVOCATION_V1.md`](../runbooks/CANONICAL_DURABLE_AUTHORIZATION_LIFECYCLE_AND_REVOCATION_V1.md)
-- Canonical schema `authorization_artifact_v2`; states `CREATED_UNCONSUMED|CONSUMED|REVOKED|INVALIDATED`
-- Append-only `authorization_revocation_v1`; mandatory revocation check before consumption; TOCTOU lock
-- Legacy `formal_authorization_v1` classified never-consumable; revocable by ID+digest without mutating original
-- Flags unchanged false: Orders/Testnet/Live/Paper/Economic Validity/Promotion; no replacement auth; no 1h-run
+- Capability: `CANONICAL_WALLCLOCK_AUTHORIZATION_CONSUMPTION_AUTHORITY_AND_MANDATORY_BINDINGS_V1`
+- Owner: `ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1`
+- Contract: [`docs/ops/runbooks/CANONICAL_WALLCLOCK_AUTHORIZATION_CONSUMPTION_AUTHORITY_AND_MANDATORY_BINDINGS_V1.md`](../runbooks/CANONICAL_WALLCLOCK_AUTHORIZATION_CONSUMPTION_AUTHORITY_AND_MANDATORY_BINDINGS_V1.md)
+- Sole productive wallclock consumption authority: `authorization_artifact_v2` via canonical gatekeeper
+- `AuthorizationArtifactV1` = `LEGACY_PRODUCTIVE_AUTHORITY_RETIRED` (not consumable; no silent upgrade)
+- Mandatory safety/config bindings fail-closed (no coercion/defaults for missing fields)
+- Prior durable lifecycle/revocation capability remains; not weakened
 
 **Still locked:**
 
+- `GO_FOR_PREREGISTRATION=false`
 - `GO_FOR_NEW_AUTHORIZATION_CREATION=false`
 - `GO_FOR_AUTHORIZATION_CONSUMPTION=false`
 - `GO_FOR_1H_RUN=false`
