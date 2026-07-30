@@ -13,10 +13,20 @@ Hardens the merged V1 analytical wallclock decision→economics bridge against t
 Desktop forensic 1h runbook gaps: fill-ledger contract, provenance IDs,
 idempotency, forced wiring isolation, canonical strategy probe, regime
 fail-closed, price-basis explicitness, real safety evaluation, evidence streams,
-extended verifier, stub scan, and machine-derived acceptance gates.
+extended verifier, stub scan, machine-derived acceptance gates, and **productive
+wallclock binding of the full runbook evidence schema** (feature/regime/risk/
+intent/fill/portfolio/equity/runtime streams, completion_verdict,
+authorization_consumption.json).
 
 Does **not** authorize Orders, Paper, Testnet, Live, credentials, Promotion,
 Economic Validity PASS, Preregistration, or a 1h wallclock session.
+
+## Analytical Simulated Execution
+
+Analytical Simulated Execution is **purely local**. There is no broker or
+exchange order path. Forced-wiring fixture evidence is **not** strategy or
+Economic Validity evidence. A future 1h run proves technical runtime integration
+and economic evidence capture only — **not** Economic Validity.
 
 ## CLI
 
@@ -33,6 +43,8 @@ python scripts/ops/run_wallclock_bridge_hardening_v2.py stub-fallback-scan
 SESSION_RESTART_POLICY=NO_IMPLICIT_RESUME
 DEFAULT_REGIME_FALLBACK_ACTIVE=false
 FORCED_FIXTURE_WALLCLOCK_REACHABLE=false
+AI_LAYER_NON_AUTHORITY=true
+AI_LAYER_CAN_OVERRIDE_DECISIONS=false
 ORDERS_AUTHORIZED=false
 LIVE_AUTHORIZED=false
 GO_FOR_PREREGISTRATION=false
@@ -40,3 +52,5 @@ GO_FOR_AUTHORIZATION=false
 GO_FOR_1H_RUN=false
 HARD_STOP=true
 ```
+
+The Desktop runbook remains the normative operator specification.

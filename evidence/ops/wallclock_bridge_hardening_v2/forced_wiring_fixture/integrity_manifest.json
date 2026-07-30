@@ -7,6 +7,7 @@
     "economic_metrics.json": "6f57ddfa5296781c46810247e255366c633c6a94c9f5747290cde14a25e925ca",
     "equity_curve.jsonl": "075207b72b9ab9453e970d741f0b4cd460b9c8064b191d4d5ed0a30e82d766f7",
     "feature_trace.jsonl": "83facf12028a16c72aaf2e9570c59ebe4ec548d0791627a3e90327f84a92b66b",
+    "integrity_manifest.json": "d22ab808016dcc258603f5779a46b6936a95420d6f21a45a2745a6db8f633bbf",
     "killstate_events.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "market_data_sequence.jsonl": "946a7a00fb9583de6b38e5d37d07cb226a9004bf312c5b1d5b05445e6b7cf485",
     "order_intent_trace.jsonl": "99bade1268a6c2ff1275ed56e90506da95b6435edb186ea36beb663a68f65549",

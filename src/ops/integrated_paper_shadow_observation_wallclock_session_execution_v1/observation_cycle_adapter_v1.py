@@ -44,10 +44,18 @@ def run_wallclock_observation_cycle_v1(
     ticks: Sequence[ObservationMarketTickV1],
     reference_price: Decimal,
     wall_now_unix: float,
-    intended_side: str = "HOLD",
-    intended_quantity: Decimal = Decimal("0"),
+    intended_side: str,
+    intended_quantity: Decimal,
 ) -> WallclockObservationCycleOutcomeV1:
-    """Validate ticks then run offline observation cycle (no network inside)."""
+    """Validate ticks then run offline observation cycle (no network inside).
+
+    Defaults for HOLD / quantity=0 are intentionally absent. Callers must supply
+    explicit intended_side and intended_quantity with strategy provenance. The
+    productive wallclock path does not call this adapter when the decision→economics
+    bridge is required (fail-closed BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE).
+    """
+    if not str(intended_side).strip():
+        raise ValueError("INTENDED_SIDE_REQUIRED_NO_DEFAULT_HOLD")
     params = MarketDataPolicyParamsV1(
         venue=VENUE_OKX,
         market_type=MARKET_TYPE_FUTURES,
@@ -79,6 +87,8 @@ def run_wallclock_observation_cycle_v1(
         "orders_submitted": False,
         "credentials_used": False,
         "fills_are_analytical_simulated_only": True,
+        "default_hold_fallback_active": False,
+        "default_zero_quantity_fallback_active": False,
     }
     return WallclockObservationCycleOutcomeV1(
         ok=cycle.terminal_status == "PASS",
