@@ -1,0 +1,28 @@
+# WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2
+
+schema_version = "wallclock_bridge_hardening.v2"
+producer_family = "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2"
+capability_id = "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2"
+hardens_capability = "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1"
+
+session_restart_policy = "NO_IMPLICIT_RESUME"
+default_regime_fallback_active = false
+synthetic_bid_ask_fallback_active = false
+economics_placeholder_writers_active = false
+hardcoded_hold_present = false
+forced_fixture_wallclock_reachable = false
+
+required_ticker_price_field = "markPx"
+price_basis_contract_version = "wallclock_bridge_price_basis_explicit_mid_v2"
+feature_price_source = "explicit_mid_price"
+fill_reference_price_source = "explicit_mid_price"
+mark_to_market_price_source = "explicit_mid_price"
+
+orders_authorized = false
+testnet_authorized = false
+live_authorized = false
+paper_execution_authorized = false
+economic_validity_pass = false
+promotion_pass = false
+
+contract_doc = "docs/ops/runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2.md"

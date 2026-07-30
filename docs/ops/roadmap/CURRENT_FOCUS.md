@@ -15,6 +15,26 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ---
 
+## Post–Wallclock Bridge Hardening V2 (2026-07-30)
+
+**Capability hardening focus** (not Economic Validity PASS / Promotion / session grant):
+
+- Capability: `WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2`
+- Hardens: `WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1`
+- Owner: `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2`
+- Contract: [`docs/ops/runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2.md`](../runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2.md)
+- Provenance IDs, idempotency, forced wiring isolation, canonical strategy probe, regime fail-closed, explicit markPx, real safety evaluation, evidence streams, extended verifier, stub scan, acceptance gates
+- Flags unchanged false: Orders/Testnet/Live/Paper/Economic Validity/Promotion/Preregistration/1h-Run
+
+**Still locked:**
+
+- `GO_FOR_PREREGISTRATION=false`
+- `GO_FOR_AUTHORIZATION=false`
+- `GO_FOR_1H_RUN=false`
+- `HARD_STOP=true`
+
+---
+
 ## Post–Wallclock Full Canonical Decision→Simulated Economics Runtime Bridge (2026-07-30)
 
 **Capability implementation focus** (not Economic Validity PASS / Promotion / session grant):

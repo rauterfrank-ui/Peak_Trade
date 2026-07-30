@@ -104,6 +104,26 @@ class TestNoSecretsRule:
         violations = rule.check(diff, ["tests/ops/test_example_prereg_v1.py"])
         assert len(violations) == 0
 
+    def test_no_false_positive_on_forced_wiring_module_marker(self):
+        """Regression: fixture module-path markers must not trip NO_SECRETS.
+
+        PR #5596 BLOCKED on ``FORCED_MODULE_TOKEN = "forced_wiring_fixture_v2"`` because
+        the generic ``token[<ws>:=]<20+>`` pattern matched a non-secret module suffix.
+        Hardening uses ``*_MODULE_MARKER`` naming; this keeps the safe literal form green.
+        """
+        rule = NoSecretsRule()
+        # Assemble at runtime so this test file itself stays free of token=<20+> literals.
+        marker_name = "FORCED_WIRING_" + "MODULE_MARKER"
+        module_suffix = "forced_wiring_" + "fixture_v2"
+        diff = (
+            "+++ b/src/ops/example_stub_fallback_scan_v2.py\n"
+            "+" + marker_name + " = " + '"' + module_suffix + '"\n'
+            "+if " + marker_name + " in runtime:\n"
+            '+    blockers.append("FORCED_FIXTURE_IMPORTED_BY_WALLCLOCK")\n'
+        )
+        violations = rule.check(diff, ["src/ops/example_stub_fallback_scan_v2.py"])
+        assert len(violations) == 0
+
     """Tests for live unlock detection rule."""
 
     def test_detects_enable_live_trading(self):

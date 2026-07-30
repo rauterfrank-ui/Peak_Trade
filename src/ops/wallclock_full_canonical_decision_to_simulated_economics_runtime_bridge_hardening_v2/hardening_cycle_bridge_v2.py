@@ -1,8 +1,4 @@
-"""Session-stateful wallclock decision→economics cycle bridge.
-
-Sole decision authority: run_integrated_offline_trading_logic_replay_v1.
-Analytical portfolio only. No orders / credentials / live activation.
-"""
+"""Hardened wallclock decision→economics cycle bridge v2."""
 
 from __future__ import annotations
 
@@ -15,19 +11,16 @@ from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
 from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1 import (
+    PortfolioEconomicsModelParamsV1,
     SimulatedFillV1,
-    SimulatedPortfolioEconomicsModelV1,
 )
-from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1 import (
-    AUTHORITY_EFFECT_NONE,
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.constants_v2 import (
     CAPABILITY_ID,
     DECISION_AUTHORITY_OWNER,
     ECONOMIC_VALIDITY_PASS,
     EXECUTION_CLASS_ANALYTICAL,
     FEATURE_WINDOW_MIN,
     LIVE_AUTHORIZED,
-    MIN_PRICE_PATH_LEN,
-    ORDER_EFFECT_NONE,
     ORDERS_AUTHORIZED,
     OWNER,
     PACKAGE_MARKER,
@@ -35,15 +28,29 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     PRICE_PATH_MAX_LEN,
     PROMOTION_PASS,
     RUNTIME_BRIDGE_LIVE_ACTIVATED,
-    RUNTIME_EFFECT_NONE,
     SCHEMA_VERSION,
+    SESSION_RESTART_POLICY,
     TESTNET_AUTHORIZED,
 )
-from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.feature_regime_pipeline_v1 import (
-    compute_feature_regime_from_mid_prices_v1,
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.feature_regime_pipeline_v2 import (
+    compute_feature_regime_from_mid_prices_v2,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.idempotent_portfolio_v2 import (
+    IdempotentPortfolioV2,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.market_data_price_basis_v2 import (
+    ExplicitPriceBasisV2,
+    build_explicit_mid_price_basis_v2,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.provenance_v2 import (
+    build_config_bundle_digest,
+    make_scoped_id,
+    portfolio_state_hash,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.safety_binding_v2 import (
+    evaluate_bridge_safety_v2,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.intended_action_mapper_v1 import (
-    IntendedAnalyticalActionV1,
     map_replay_result_to_intended_analytical_action_v1,
 )
 from trading.master_v2.canonical_market_context_v1 import (
@@ -97,8 +104,6 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
     PolicySignalV0,
     PositionState,
     ReconciliationState,
-    SafetyMode,
-    TradingGate,
 )
 from trading.master_v2.double_play_futures_input import FuturesMarketType
 from trading.master_v2.double_play_state import SideState
@@ -121,12 +126,21 @@ from trading.master_v2.survival_assessment_v1 import (
     SurvivalAssessmentPolicyV1,
 )
 
-_CONFIG_DIGEST = hashlib.sha256(
-    b"wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1-config"
-).hexdigest()
-_IMPL_DIGEST = hashlib.sha256(
-    b"wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1-impl"
-).hexdigest()
+CALL_GRAPH_V2: tuple[str, ...] = (
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "evidence",
+    "full_economic_reconstruction_verifier",
+)
 
 
 def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
@@ -221,9 +235,23 @@ def _iso_now(ts: float) -> str:
     return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
 
 
+def _fill_to_dict(fill: SimulatedFillV1) -> dict[str, Any]:
+    return {
+        "instrument_id": fill.instrument_id,
+        "side": fill.side,
+        "quantity": str(fill.quantity),
+        "mark_price": str(fill.mark_price),
+        "fill_price": str(fill.fill_price),
+        "fee": str(fill.fee),
+        "slippage_cost": str(fill.slippage_cost),
+        "notional": str(fill.notional),
+    }
+
+
 @dataclass
-class BridgeSessionStateV1:
+class HardenedBridgeSessionStateV2:
     instrument_id: str = PRODUCTION_INSTRUMENT_ID
+    session_id: str = ""
     trading_epoch: int = 1
     mid_prices: list[float] = field(default_factory=list)
     side_state: SideState = SideState.LONG_ARMED
@@ -238,11 +266,13 @@ class BridgeSessionStateV1:
     venue_flat: bool = True
     last_evaluated_trading_epoch: int = 0
     cycle_index: int = 0
-    portfolio: SimulatedPortfolioEconomicsModelV1 = field(
-        default_factory=SimulatedPortfolioEconomicsModelV1
-    )
+    portfolio: IdempotentPortfolioV2 = field(default_factory=IdempotentPortfolioV2)
     fill_ledger: list[dict[str, Any]] = field(default_factory=list)
     cycle_ledger: list[dict[str, Any]] = field(default_factory=list)
+    killstate_active: bool = False
+    killstate_trigger: str = ""
+    config_digest: str = ""
+    session_restart_policy: str = SESSION_RESTART_POLICY
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -250,151 +280,16 @@ class BridgeSessionStateV1:
             self.mid_prices = self.mid_prices[-PRICE_PATH_MAX_LEN:]
 
 
-@dataclass
-class BridgeCycleResultV1:
-    ok: bool
-    capability_id: str
-    package_marker: str
-    schema_version: str
-    owner: str
-    cycle_index: int
-    trading_epoch: int
-    instrument_id: str
-    decision_authority_owner: str
-    feature_regime: dict[str, Any]
-    decision_outcome: str
-    direction: str
-    selected_side: str
-    risk_sizing_result: str
-    safety_result: str
-    intended_action: dict[str, Any]
-    fill: Optional[dict[str, Any]]
-    portfolio_snapshot: dict[str, Any]
-    economic_metrics: dict[str, Any]
-    reason_codes: tuple[str, ...]
-    blockers: tuple[str, ...]
-    call_graph: tuple[str, ...]
-    authority_effect: str
-    runtime_effect: str
-    order_effect: str
-    orders_authorized: bool
-    testnet_authorized: bool
-    live_authorized: bool
-    paper_execution_authorized: bool
-    economic_validity_pass: bool
-    promotion_pass: bool
-    runtime_bridge_live_activated: bool
-    execution_class: str
-    execution_eligible: bool
-    notes: tuple[str, ...] = ()
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "ok": self.ok,
-            "capability_id": self.capability_id,
-            "package_marker": self.package_marker,
-            "schema_version": self.schema_version,
-            "owner": self.owner,
-            "cycle_index": self.cycle_index,
-            "trading_epoch": self.trading_epoch,
-            "instrument_id": self.instrument_id,
-            "decision_authority_owner": self.decision_authority_owner,
-            "feature_regime": dict(self.feature_regime),
-            "decision_outcome": self.decision_outcome,
-            "direction": self.direction,
-            "selected_side": self.selected_side,
-            "risk_sizing_result": self.risk_sizing_result,
-            "safety_result": self.safety_result,
-            "intended_action": dict(self.intended_action),
-            "fill": None if self.fill is None else dict(self.fill),
-            "portfolio_snapshot": dict(self.portfolio_snapshot),
-            "economic_metrics": dict(self.economic_metrics),
-            "reason_codes": list(self.reason_codes),
-            "blockers": list(self.blockers),
-            "call_graph": list(self.call_graph),
-            "authority_effect": self.authority_effect,
-            "runtime_effect": self.runtime_effect,
-            "order_effect": self.order_effect,
-            "orders_authorized": self.orders_authorized,
-            "testnet_authorized": self.testnet_authorized,
-            "live_authorized": self.live_authorized,
-            "paper_execution_authorized": self.paper_execution_authorized,
-            "economic_validity_pass": self.economic_validity_pass,
-            "promotion_pass": self.promotion_pass,
-            "runtime_bridge_live_activated": self.runtime_bridge_live_activated,
-            "execution_class": self.execution_class,
-            "execution_eligible": self.execution_eligible,
-            "notes": list(self.notes),
-        }
-
-
-def _fill_to_dict(fill: SimulatedFillV1) -> dict[str, Any]:
-    return {
-        "instrument_id": fill.instrument_id,
-        "side": fill.side,
-        "quantity": str(fill.quantity),
-        "mark_price": str(fill.mark_price),
-        "fill_price": str(fill.fill_price),
-        "fee": str(fill.fee),
-        "slippage_cost": str(fill.slippage_cost),
-        "notional": str(fill.notional),
-    }
-
-
-def _position_fields_from_portfolio(
-    portfolio: SimulatedPortfolioEconomicsModelV1, instrument_id: str
-) -> tuple[PositionState, ExistingPositionSide, PositionManagementContext, bool]:
-    snap = portfolio.snapshot()
-    state = snap.get("state") or {}
-    positions = state.get("positions") or {}
-    pos = positions.get(instrument_id) or {}
-    try:
-        qty = Decimal(str(pos.get("quantity", "0")))
-    except Exception:  # noqa: BLE001
-        qty = Decimal("0")
-    if qty == 0:
-        return (
-            PositionState.FLAT_RECONCILED,
-            ExistingPositionSide.NONE,
-            PositionManagementContext.FLAT,
-            True,
-        )
-    if qty > 0:
-        return (
-            PositionState.OPEN_FULL,
-            ExistingPositionSide.LONG,
-            PositionManagementContext.LONG_POSITION,
-            False,
-        )
-    return (
-        PositionState.OPEN_FULL,
-        ExistingPositionSide.SHORT,
-        PositionManagementContext.SHORT_POSITION,
-        False,
-    )
-
-
-def _update_session_state_from_replay(
-    state: BridgeSessionStateV1,
-    *,
-    result: Any,
-) -> None:
+def _update_session_state_from_replay(state: HardenedBridgeSessionStateV2, *, result: Any) -> None:
     if result.intermediate is None:
         state.last_evaluated_trading_epoch = state.trading_epoch
         state.trading_epoch += 1
-        (
-            state.position_state,
-            state.existing_position_side,
-            state.position_management_context,
-            state.venue_flat,
-        ) = _position_fields_from_portfolio(state.portfolio, state.instrument_id)
         return
     inter = result.intermediate
     try:
         state.side_state = SideState(inter.state_switch.next_side_state)
     except Exception:  # noqa: BLE001
         pass
-    # Map next side into entry/exit direction for the following cycle.
     side_map = {
         SideState.LONG_ARMED: EntryExitDirectionState.LONG_ARMED,
         SideState.LONG_ACTIVE: EntryExitDirectionState.LONG_ACTIVE,
@@ -418,72 +313,110 @@ def _update_session_state_from_replay(
         state.scope_direction_state = ScopeDirectionState.SHORT
     else:
         state.previous_composition_direction_state = CompositionDirectionState.NEUTRAL
+    snap = state.portfolio.snapshot()
+    positions = (snap.get("state") or {}).get("positions") or {}
+    pos = positions.get(state.instrument_id) or {}
+    try:
+        qty = Decimal(str(pos.get("quantity", "0")))
+    except Exception:  # noqa: BLE001
+        qty = Decimal("0")
+    if qty == 0:
+        state.position_state = PositionState.FLAT_RECONCILED
+        state.existing_position_side = ExistingPositionSide.NONE
+        state.position_management_context = PositionManagementContext.FLAT
+        state.venue_flat = True
+    elif qty > 0:
+        state.position_state = PositionState.OPEN_FULL
+        state.existing_position_side = ExistingPositionSide.LONG
+        state.position_management_context = PositionManagementContext.LONG_POSITION
+        state.venue_flat = False
+    else:
+        state.position_state = PositionState.OPEN_FULL
+        state.existing_position_side = ExistingPositionSide.SHORT
+        state.position_management_context = PositionManagementContext.SHORT_POSITION
+        state.venue_flat = False
     state.last_evaluated_trading_epoch = state.trading_epoch
     state.trading_epoch += 1
-    (
-        state.position_state,
-        state.existing_position_side,
-        state.position_management_context,
-        state.venue_flat,
-    ) = _position_fields_from_portfolio(state.portfolio, state.instrument_id)
 
 
-CALL_GRAPH_V1: tuple[str, ...] = (
-    "okx_public_market_data",
-    "feature_pipeline",
-    "regime_pipeline",
-    "master_v2_double_play_integrated_offline_replay",
-    "risk_position_sizing",
-    "safety_kernel",
-    "intended_side_quantity",
-    "analytical_simulated_execution",
-    "simulated_fill_fee_slippage",
-    "session_persistent_portfolio",
-    "realized_unrealized_pnl_equity_drawdown",
-    "evidence",
-    "full_economic_reconstruction_verifier",
-)
-
-
-def run_bridge_cycle_v1(
-    state: BridgeSessionStateV1,
+def run_hardened_bridge_cycle_v2(
+    state: HardenedBridgeSessionStateV2,
     *,
     mid_price: float,
     event_ts_unix: float,
-    session_id: str = "wallclock-bridge-session",
-) -> BridgeCycleResultV1:
-    """Execute one full analytical decision→economics cycle on a mid tick."""
-    if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
-        raise RuntimeError("INVARIANT_VIOLATION_AUTHORITY_FLAGS")
-
-    state.append_mid(mid_price)
+    session_id: str,
+    price_basis: ExplicitPriceBasisV2 | None = None,
+    forced_actionable: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    if state.session_restart_policy != SESSION_RESTART_POLICY:
+        raise RuntimeError("IMPLICIT_RESUME_FORBIDDEN")
+    if state.session_id and state.session_id != session_id:
+        raise RuntimeError("SESSION_ID_MUTATION_FORBIDDEN_NO_IMPLICIT_RESUME")
+    state.session_id = session_id
     state.cycle_index += 1
-    features = compute_feature_regime_from_mid_prices_v1(state.mid_prices)
-    price_path = tuple(state.mid_prices[-PRICE_PATH_MAX_LEN:])
-    if len(price_path) < MIN_PRICE_PATH_LEN:
-        # Seed deterministic second point for contract (warmup still incomplete for features).
+    state.append_mid(mid_price)
+    cycle_id = make_scoped_id("cycle", session_id, state.cycle_index)
+
+    basis = price_basis or build_explicit_mid_price_basis_v2(
+        mid_price=float(mid_price),
+        event_ts_unix=float(event_ts_unix),
+        receive_ts_unix=float(event_ts_unix),
+    )
+    features = compute_feature_regime_from_mid_prices_v2(state.mid_prices)
+    metrics0 = state.portfolio.economic_metrics()
+    safety = evaluate_bridge_safety_v2(
+        killstate_active=state.killstate_active,
+        killstate_trigger=state.killstate_trigger,
+        warmup_complete=features.warmup_complete,
+        regime_ok=features.ok,
+        price_basis_ok=basis.mid_price > 0,
+        max_drawdown=float(metrics0.drawdown),
+        bridge_enabled=True,
+    )
+
+    params = state.portfolio.model.params
+    config_digest = build_config_bundle_digest(
+        feature_config_version=features.feature_config_version,
+        regime_config_version=features.regime_config_version,
+        price_basis_contract_version=basis.price_basis_contract_version,
+        fee_rate_bps=str(params.fee_rate_bps),
+        slippage_bps=str(params.slippage_bps),
+        initial_equity=str(params.initial_equity),
+        feature_window_min=FEATURE_WINDOW_MIN,
+    )
+    if state.config_digest and state.config_digest != config_digest:
+        raise RuntimeError(f"CONFIG_DRIFT:{state.config_digest}:{config_digest}")
+    state.config_digest = config_digest
+
+    decision_id = make_scoped_id("decision", session_id, cycle_id, state.trading_epoch)
+    risk_decision_id = make_scoped_id("risk", decision_id, safety.safety_result)
+    intent_id = make_scoped_id("intent", risk_decision_id, features.feature_digest)
+
+    price_path = tuple(state.mid_prices[-FEATURE_WINDOW_MIN:])
+    if len(price_path) < 2:
         price_path = (float(mid_price), float(mid_price))
 
+    mark = float(features.mark_price or basis.mid_price)
     warmup_status = (
         WarmupStatus.WARMUP_COMPLETE if features.warmup_complete else WarmupStatus.WARMUP_REQUIRED
     )
-    mark = float(features.mark_price or mid_price)
-    input_material = json.dumps(
-        {
-            "capability_id": CAPABILITY_ID,
-            "session_id": session_id,
-            "cycle": state.cycle_index,
-            "trading_epoch": state.trading_epoch,
-            "mid": mark,
-            "regime": features.regime_id,
-        },
-        sort_keys=True,
-    )
-    input_digest = hashlib.sha256(input_material.encode("utf-8")).hexdigest()
+    input_digest = hashlib.sha256(
+        json.dumps(
+            {
+                "capability_id": CAPABILITY_ID,
+                "session_id": session_id,
+                "cycle_id": cycle_id,
+                "mid": mark,
+                "regime": features.regime_id,
+                "feature_digest": features.feature_digest,
+            },
+            sort_keys=True,
+        ).encode("utf-8")
+    ).hexdigest()
 
     market_context = with_computed_input_digest(
         CanonicalMarketContextV1(
-            context_id=f"ctx-{state.instrument_id}-epoch{state.trading_epoch}-wc-bridge-v1",
+            context_id=f"ctx-{state.instrument_id}-epoch{state.trading_epoch}-hardening-v2",
             instrument_id=state.instrument_id,
             market_type=FuturesMarketType.PERPETUAL,
             trading_epoch=state.trading_epoch,
@@ -493,9 +426,9 @@ def run_bridge_cycle_v1(
             bar_finality_status=BarFinalityStatus.FINALIZED,
             mark_price=mark,
             index_price=mark,
-            best_bid=mark * 0.9999,
-            best_ask=mark * 1.0001,
-            spread=mark * 0.0002,
+            best_bid=basis.best_bid,
+            best_ask=basis.best_ask,
+            spread=basis.spread,
             volume=1_000_000.0,
             open_interest=50_000_000.0,
             funding_rate=0.0001,
@@ -513,13 +446,13 @@ def run_bridge_cycle_v1(
     )
 
     replay_input = build_integrated_offline_replay_input_v1(
-        replay_id=f"{session_id}-cycle-{state.cycle_index}",
+        replay_id=f"{session_id}-{cycle_id}",
         instrument_id=state.instrument_id,
         trading_epoch=state.trading_epoch,
         canonical_market_context=market_context,
         market_context_binding_state=CanonicalMarketContextBindingStateV1(),
         scope_prerequisites=ScopeInitializationPrerequisitesV1(
-            required_window_complete=features.warmup_complete,
+            required_window_complete=features.warmup_complete and features.ok,
             instrument_metadata_valid=True,
             finalized_market_context=True,
         ),
@@ -528,7 +461,7 @@ def run_bridge_cycle_v1(
         scope_direction_state=state.scope_direction_state,
         scope_confirmation_state=ScopeConfirmationStateV1(
             candidate_kind=None,
-            candidate_count=1 if features.warmup_complete else 0,
+            candidate_count=1 if features.ok else 0,
             last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
         ),
         scope_cooldown_state=ScopeCooldownStateV1(
@@ -543,7 +476,7 @@ def run_bridge_cycle_v1(
         current_price=mark,
         price_path=price_path,
         directional_confirmation_state=DirectionalConfirmationStateV1(
-            candidate_count=1 if features.warmup_complete else 0,
+            candidate_count=1 if features.ok else 0,
             last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
             last_signal_strength=float(features.momentum_features.get("roc", 0.0)),
         ),
@@ -559,8 +492,8 @@ def run_bridge_cycle_v1(
         direction_state=state.direction_state,
         position_state=state.position_state,
         reconciliation_state=ReconciliationState.RECONCILED,
-        trading_gate=TradingGate.ENTRY_ALLOWED,
-        safety_mode=SafetyMode.NORMAL,
+        trading_gate=safety.trading_gate_enum,
+        safety_mode=safety.safety_mode_enum,
         existing_position_side=state.existing_position_side,
         venue_flat=state.venue_flat,
         cooldown_pass=True,
@@ -568,16 +501,16 @@ def run_bridge_cycle_v1(
         profit_protection_signal=PolicySignalV0(triggered=False),
         time_exit_signal=PolicySignalV0(triggered=False),
         strategy_invalidation_signal=PolicySignalV0(triggered=False),
-        hard_risk_reduction_signal=PolicySignalV0(triggered=False),
-        safety_exit_signal=PolicySignalV0(triggered=False),
+        hard_risk_reduction_signal=safety.hard_risk_signal_obj,
+        safety_exit_signal=safety.safety_exit_signal_obj,
         policies=_default_policies(),
         component_versions=_component_versions(),
         policy_versions=_policy_versions(),
-        config_digest=_CONFIG_DIGEST,
-        implementation_digest=_IMPL_DIGEST,
+        config_digest=config_digest,
+        implementation_digest=hashlib.sha256(CAPABILITY_ID.encode()).hexdigest(),
         input_digest=input_digest,
         expected_component_contracts=_component_versions(),
-        context_reference=f"wallclock-bridge-context-epoch-{state.trading_epoch}",
+        context_reference=f"hardening-v2-context-epoch-{state.trading_epoch}",
         now_tick=state.cycle_index,
     )
 
@@ -588,16 +521,92 @@ def run_bridge_cycle_v1(
         portfolio_snapshot=state.portfolio.snapshot(),
     )
 
+    # Forced wiring overrides only when explicitly supplied (fixture path).
+    if forced_actionable is not None:
+        intended_side = str(forced_actionable.get("intended_side") or "BUY")
+        intended_qty = Decimal(str(forced_actionable.get("intended_quantity") or "0.1"))
+        intended_dict = {
+            "intended_side": intended_side,
+            "intended_quantity": str(intended_qty),
+            "decision_outcome": "forced_wiring_fixture",
+            "selected_side": intended_side.lower(),
+            "intent_action": "FORCED_WIRING",
+            "quantity_source": "forced_wiring_fixture",
+            "safety_blocked": False,
+            "reason_codes": ["FORCED_WIRING_FIXTURE"],
+        }
+    else:
+        # Non-actionable if safety veto or incomplete regime/warmup.
+        if safety.safety_result in {"BLOCKED", "EXIT_ONLY"} and intended.intended_side in {
+            "BUY",
+            "SELL",
+        }:
+            if safety.safety_result == "BLOCKED" or (
+                safety.safety_result == "EXIT_ONLY" and intended.intent_action.startswith("ENTER")
+            ):
+                intended_dict = {
+                    "intended_side": "HOLD",
+                    "intended_quantity": "0",
+                    "decision_outcome": str(intended.decision_outcome),
+                    "selected_side": intended.selected_side,
+                    "intent_action": intended.intent_action,
+                    "quantity_source": "safety_veto",
+                    "safety_blocked": True,
+                    "reason_codes": list(intended.reason_codes)
+                    + [safety.veto_reason or "SAFETY_VETO"],
+                }
+            else:
+                intended_dict = intended.to_dict()
+        else:
+            intended_dict = intended.to_dict()
+            if not features.warmup_complete:
+                intended_dict = {
+                    **intended_dict,
+                    "intended_side": "HOLD",
+                    "intended_quantity": "0",
+                    "quantity_source": "insufficient_history",
+                    "reason_codes": list(intended_dict.get("reason_codes") or [])
+                    + ["INSUFFICIENT_HISTORY"],
+                }
+
+    before_hash = portfolio_state_hash(state.portfolio.snapshot())
+    fill_id = None
+    fill_dict = None
+    side = str(intended_dict["intended_side"])
+    qty = Decimal(str(intended_dict["intended_quantity"]))
+    if side in {"BUY", "SELL"} and qty > 0:
+        fill_id = make_scoped_id("fill", intent_id, mark, qty, side)
     fill_obj = state.portfolio.apply_intended_action(
         instrument_id=state.instrument_id,
-        side=intended.intended_side,
-        quantity=intended.intended_quantity,
+        side=side,
+        quantity=qty if side in {"BUY", "SELL"} else Decimal("0"),
         mark_price=Decimal(str(mark)),
+        intent_id=intent_id,
+        fill_id=fill_id,
     )
-    fill_dict = None if fill_obj is None else _fill_to_dict(fill_obj)
-    if fill_dict is not None:
-        fill_dict["cycle_index"] = state.cycle_index
-        fill_dict["trading_epoch"] = state.trading_epoch
+    after_hash = portfolio_state_hash(state.portfolio.snapshot())
+    if fill_obj is not None:
+        fill_dict = _fill_to_dict(fill_obj)
+        fill_dict.update(
+            {
+                "session_id": session_id,
+                "cycle_id": cycle_id,
+                "decision_id": decision_id,
+                "risk_decision_id": risk_decision_id,
+                "intent_id": intent_id,
+                "fill_id": fill_id,
+                "reference_price": str(mark),
+                "simulated_fill_price": str(fill_obj.fill_price),
+                "slippage_amount": str(fill_obj.slippage_cost),
+                "fee_amount": str(fill_obj.fee),
+                "market_data_reference": basis.market_data_reference,
+                "portfolio_state_before_hash": before_hash,
+                "portfolio_state_after_hash": after_hash,
+                "config_digest": config_digest,
+                "cycle_index": state.cycle_index,
+                "trading_epoch": state.trading_epoch,
+            }
+        )
         state.fill_ledger.append(dict(fill_dict))
 
     _update_session_state_from_replay(state, result=replay)
@@ -606,83 +615,100 @@ def run_bridge_cycle_v1(
     if replay.intermediate and replay.intermediate.capital_risk_sizing_decision is not None:
         sizing_result = str(replay.intermediate.capital_risk_sizing_decision.outcome.value)
 
-    safety_result = "PASS"
-    if any("safety" in str(x).lower() for x in replay.evidence.reason_codes):
-        safety_result = "BOUND_SAFETY"
-    if intended.safety_blocked:
-        safety_result = "BLOCKED_HOLD"
-
-    blockers: list[str] = []
-    if not features.warmup_complete:
-        blockers.append("FEATURE_WARMUP_INCOMPLETE")
-    if not replay.replay_pass and features.warmup_complete:
-        blockers.extend(str(x) for x in replay.fail_reasons)
-
-    cycle = BridgeCycleResultV1(
-        ok=True,  # analytical cycle completed; warmup/observe is still ok for bridge
-        capability_id=CAPABILITY_ID,
-        package_marker=PACKAGE_MARKER,
-        schema_version=SCHEMA_VERSION,
-        owner=OWNER,
-        cycle_index=state.cycle_index,
-        trading_epoch=state.trading_epoch - 1,  # epoch used for this cycle
-        instrument_id=state.instrument_id,
-        decision_authority_owner=DECISION_AUTHORITY_OWNER,
-        feature_regime=features.to_dict(),
-        decision_outcome=str(replay.evidence.decision_outcome),
-        direction=str(
+    econ = state.portfolio.economic_metrics().to_dict()
+    cycle = {
+        "ok": True,
+        "capability_id": CAPABILITY_ID,
+        "package_marker": PACKAGE_MARKER,
+        "schema_version": SCHEMA_VERSION,
+        "owner": OWNER,
+        "session_id": session_id,
+        "cycle_id": cycle_id,
+        "cycle_index": state.cycle_index,
+        "trading_epoch": state.trading_epoch - 1,
+        "instrument_id": state.instrument_id,
+        "decision_authority_owner": DECISION_AUTHORITY_OWNER,
+        "decision_id": decision_id,
+        "risk_decision_id": risk_decision_id,
+        "intent_id": intent_id,
+        "fill_id": fill_id,
+        "feature_regime": features.to_dict(),
+        "feature_digest": features.feature_digest,
+        "regime_digest": features.regime_digest,
+        "config_digest": config_digest,
+        "price_basis": basis.to_dict(),
+        "market_data_reference": basis.market_data_reference,
+        "decision_outcome": str(replay.evidence.decision_outcome),
+        "direction": str(
             replay.evidence.next_direction_state or replay.evidence.previous_direction_state
         ),
-        selected_side=str(replay.evidence.selected_side),
-        risk_sizing_result=sizing_result,
-        safety_result=safety_result,
-        intended_action=intended.to_dict(),
-        fill=fill_dict,
-        portfolio_snapshot=dict(state.portfolio.snapshot()),
-        economic_metrics=state.portfolio.economic_metrics().to_dict(),
-        reason_codes=tuple(replay.evidence.reason_codes),
-        blockers=tuple(blockers),
-        call_graph=CALL_GRAPH_V1,
-        authority_effect=AUTHORITY_EFFECT_NONE,
-        runtime_effect=RUNTIME_EFFECT_NONE,
-        order_effect=ORDER_EFFECT_NONE,
-        orders_authorized=ORDERS_AUTHORIZED,
-        testnet_authorized=TESTNET_AUTHORIZED,
-        live_authorized=LIVE_AUTHORIZED,
-        paper_execution_authorized=PAPER_EXECUTION_AUTHORIZED,
-        economic_validity_pass=ECONOMIC_VALIDITY_PASS,
-        promotion_pass=PROMOTION_PASS,
-        runtime_bridge_live_activated=RUNTIME_BRIDGE_LIVE_ACTIVATED,
-        execution_class=EXECUTION_CLASS_ANALYTICAL,
-        execution_eligible=bool(replay.evidence.execution_eligible),
-        notes=(
+        "selected_side": str(replay.evidence.selected_side),
+        "risk_sizing_result": sizing_result,
+        "safety_evaluation": safety.to_dict(),
+        "safety_result": safety.safety_result,
+        "intended_action": {
+            **intended_dict,
+            "session_id": session_id,
+            "cycle_id": cycle_id,
+            "decision_id": decision_id,
+            "risk_decision_id": risk_decision_id,
+            "intent_id": intent_id,
+            "feature_digest": features.feature_digest,
+            "regime_digest": features.regime_digest,
+            "config_digest": config_digest,
+            "decision_producer": DECISION_AUTHORITY_OWNER,
+        },
+        "fill": fill_dict,
+        "portfolio_state_before_hash": before_hash,
+        "portfolio_state_after_hash": after_hash,
+        "portfolio_snapshot": dict(state.portfolio.snapshot()),
+        "economic_metrics": econ,
+        "reason_codes": list(replay.evidence.reason_codes),
+        "blockers": list(features.blockers),
+        "call_graph": list(CALL_GRAPH_V2),
+        "orders_authorized": ORDERS_AUTHORIZED,
+        "testnet_authorized": TESTNET_AUTHORIZED,
+        "live_authorized": LIVE_AUTHORIZED,
+        "paper_execution_authorized": PAPER_EXECUTION_AUTHORIZED,
+        "economic_validity_pass": ECONOMIC_VALIDITY_PASS,
+        "promotion_pass": PROMOTION_PASS,
+        "runtime_bridge_live_activated": RUNTIME_BRIDGE_LIVE_ACTIVATED,
+        "execution_class": EXECUTION_CLASS_ANALYTICAL,
+        "execution_eligible": False,
+        "session_restart_policy": SESSION_RESTART_POLICY,
+        "default_regime_fallback_active": features.default_regime_fallback_active,
+        "synthetic_bid_ask_fallback_active": basis.synthetic_bid_ask_fallback_active,
+        "forced_wiring": forced_actionable is not None,
+        "notes": [
+            "HARDENING_V2",
             "ANALYTICAL_SIMULATION_ONLY",
             "NO_ORDERS",
-            "NO_BROKER_WRITES",
-            "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
-            f"FEATURE_WINDOW_MIN={FEATURE_WINDOW_MIN}",
-        ),
-    )
-    if cycle.execution_eligible:
-        # Hard fail-closed: bridge must never claim broker execution eligibility.
+            "NO_IMPLICIT_RESUME",
+            "SAFETY_KERNEL_REAL_EVALUATION_BOUND",
+        ],
+    }
+    if cycle["execution_eligible"]:
         raise RuntimeError("EXECUTION_ELIGIBLE_MUST_REMAIN_FALSE")
-
-    state.cycle_ledger.append(cycle.to_dict())
+    state.cycle_ledger.append(cycle)
     return cycle
 
 
-def run_bridge_cycles_from_mids_v1(
+def run_hardened_bridge_cycles_from_mids_v2(
     mid_prices: Sequence[float],
     *,
     start_ts_unix: float = 1_700_000_000.0,
-    session_id: str = "wallclock-bridge-probe",
+    session_id: str = "hardening-v2-probe",
     instrument_id: str = PRODUCTION_INSTRUMENT_ID,
-) -> tuple[BridgeSessionStateV1, list[BridgeCycleResultV1]]:
-    state = BridgeSessionStateV1(instrument_id=instrument_id)
-    results: list[BridgeCycleResultV1] = []
+    portfolio_params: PortfolioEconomicsModelParamsV1 | None = None,
+) -> tuple[HardenedBridgeSessionStateV2, list[dict[str, Any]]]:
+    state = HardenedBridgeSessionStateV2(
+        instrument_id=instrument_id,
+        portfolio=IdempotentPortfolioV2.from_params(portfolio_params),
+    )
+    results: list[dict[str, Any]] = []
     for i, mid in enumerate(mid_prices):
         results.append(
-            run_bridge_cycle_v1(
+            run_hardened_bridge_cycle_v2(
                 state,
                 mid_price=float(mid),
                 event_ts_unix=start_ts_unix + float(i),

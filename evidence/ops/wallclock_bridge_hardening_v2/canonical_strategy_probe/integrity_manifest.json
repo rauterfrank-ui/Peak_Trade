@@ -1,0 +1,21 @@
+{
+  "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_HARDENING_V2",
+  "digests": {
+    "authorization_consumption.json": "710df6abd7863e21e6cb3d47502e480e35c3969326400a9e1522bfef0d3cdcaf",
+    "completion_verdict.json": "1b9aaedbbffb104a781cd4328d0176e09fbefe4aa880725722ad7ccba7f51e07",
+    "decision_trace.jsonl": "1abafddb1af27ac27edb81e2fd025ec6f1852a042e6837b5b28674e391bbbadb",
+    "economic_metrics.json": "922274d8f82975e9cf658019668eadcb025627599feb50066ff4216a08c4efc9",
+    "equity_curve.jsonl": "87212c84d7b2c98b5e2b7c46bad842336b6d8433ba84c3d7ff5d5e25a6e3727f",
+    "feature_trace.jsonl": "ea50cc1b0fd85e36f97a610ae1a1355bdd2e2f633d9be2dd8beace9515248244",
+    "killstate_events.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "market_data_sequence.jsonl": "7f6d52e8da5f29548bba18baa4d76159d5ca8c88fe7b2c3719f4645e536e7c83",
+    "order_intent_trace.jsonl": "6bcf6a6e207c139ada712510fa6696f2d42a08572c80f59f10e8f3a5af816d33",
+    "portfolio_snapshots.jsonl": "2e8ac6f021bbf93a36ed8ac0708f9ffa9dd778bd45bcb697a6b524a2582051f6",
+    "regime_trace.jsonl": "a56be49c023adbb061fe32d3e13d6ea55f4a3479bf09ef0467553aabbffe028d",
+    "risk_sizing_trace.jsonl": "6813096b64d6199656d09d315dcecf3d8ed80385d9b2ac10c78bab693ee3183d",
+    "runtime_events.jsonl": "51f2a9705f5e3a95738fe450b5ab1a4029c4d0cc71a27b966b99cfa5b96d66fc",
+    "session_manifest.json": "5652de2f21a91543636764321df7e025d70e05cdfd1aeb9f7b043349710fb48b",
+    "simulated_fill_trace.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "session_id": "canonical-strategy-probe"
+}
