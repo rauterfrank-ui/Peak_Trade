@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-07-26
+last_updated: 2026-07-30
 ---
 
 # Current focus
@@ -12,6 +12,31 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 **Related:** [Finish Plan (MVP→v1.0)](FINISH_PLAN.md) · [Truth Core](../registry/TRUTH_CORE.md) · [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs (index)](../release/README.md) · [Chat continuity bootstrap](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md)
 
+
+---
+
+## Post–Integrated Paper-Shadow productive 6h technical evidence closeout (2026-07-30)
+
+**Technical runtime evidence only** (not Economic Validity, Strategy Validity, or Promotion):
+
+- Session: `pso_wallclock_prod_69ffce43e0bba94f176d3aa22db7cf17`
+- Baseline SHA: `4d0ad446b00442698ea4a7a385e1f1d9faa19ed2`
+- Closeout verdict: `TECHNICAL_PASS_ECONOMIC_EVIDENCE_NOT_PRODUCED`
+- 6h productive OKX public MD observation; 10243 cycles; 3415 heartbeats; 0 data gaps
+- All decisions HOLD / quantity=0 (not trades; not economic evidence)
+- Flags: `TECHNICAL_RUNTIME_EVIDENCE=PASS`; `ECONOMIC_EVIDENCE_COMPLETE=false`;
+  `ECONOMIC_VALIDITY_PASS=false`; `PROMOTION_ELIGIBLE=false`
+- Repo pointer:
+  [`evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/`](../../../evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/)
+- Documentation Anchor:
+  [`docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`](../EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout)
+
+**Still locked / next formally permissible step:**
+
+- No Economic Validity PASS claim from this session
+- No Strategy / Promotion / Paper / Testnet / Live authority change
+- Next capability:
+  `INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1`
 
 ---
 

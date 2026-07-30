@@ -1,0 +1,331 @@
+{
+  "actual_duration_seconds": 21598.025,
+  "all_decisions_hold": true,
+  "authorization_confirm_token_fingerprint": "9948805ff80ff80d9afa12e6302afeea7cb633be75245ab42fd23bfb38392340",
+  "authorization_consumed_once": true,
+  "canonical_verifier_pass": true,
+  "canonical_verifier_result": "WALLCLOCK_OBSERVATION_EVIDENCE_VERIFIED",
+  "closeout_generated_at_utc": "2026-07-30T08:41:08Z",
+  "closeout_verdict": "TECHNICAL_PASS_ECONOMIC_EVIDENCE_NOT_PRODUCED",
+  "copy_performed": false,
+  "copy_reason": "SOURCE_ALREADY_CANONICAL_DURABLE_ARCHIVE_OUTSIDE_TMP",
+  "data_gaps": 0,
+  "documentation_anchor": "docs/ops/EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout",
+  "durable_closeout_package": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/integrated_paper_shadow_productive_6h_technical_evidence_closeout_20260730T084108Z",
+  "durable_evidence_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops/integrated_paper_shadow_productive_6h_20260729T205830Z",
+  "durable_path_is_canonical_archive": true,
+  "economic_evidence_class": "INCOMPLETE_STUB_ONLY",
+  "economic_evidence_complete": false,
+  "economic_validity_pass": false,
+  "end_time_utc": "2026-07-30T02:59:06Z",
+  "errors_found": 0,
+  "exceptions_found": 0,
+  "exit_code": 0,
+  "exit_reason": "PLANNED_DURATION_REACHED",
+  "expected_duration_seconds": 21600,
+  "fatal_found": 0,
+  "fee_evidence_persisted": false,
+  "files_inventoried": 44,
+  "heartbeats": 3415,
+  "hypothetical_trades": 0,
+  "live_execution_occurred": false,
+  "market_data_observation_evidence": "PASS",
+  "market_data_sequences": 10243,
+  "next_capability_required": "INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1",
+  "notes": [
+    "HOLD_WITH_QUANTITY_ZERO_IS_NOT_A_TRADE",
+    "ECONOMIC_METRICS_STUB_ONLY",
+    "NO_PERFORMANCE_KPIS_COMPUTED",
+    "NO_SECRETS_IN_GIT_OR_NOTION"
+  ],
+  "observation_cycles": 10243,
+  "orders_created": false,
+  "paper_execution_occurred": false,
+  "performance_analysis_complete": false,
+  "pnl_evidence_persisted": false,
+  "portfolio_economics_model_persisted": false,
+  "primary_evidence_class": "PRIMARY_TECHNICAL_RUNTIME_EVIDENCE",
+  "primary_technical_runtime_evidence": true,
+  "private_api_used": false,
+  "promotion_eligible": false,
+  "repository_baseline_sha": "4d0ad446b00442698ea4a7a385e1f1d9faa19ed2",
+  "safety_evidence": "PASS",
+  "schema_id": "ops.integrated_paper_shadow_productive_6h_technical_runtime_evidence_closeout_v1",
+  "schema_version": "v1",
+  "session_id": "pso_wallclock_prod_69ffce43e0bba94f176d3aa22db7cf17",
+  "session_lifecycle_evidence": "PASS",
+  "session_lock_released": true,
+  "session_state": "TIMED_OUT",
+  "signals_generated": 0,
+  "slippage_evidence_persisted": false,
+  "source_evidence_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops/integrated_paper_shadow_productive_6h_20260729T205830Z",
+  "source_file_inventory_count": 44,
+  "source_file_inventory_public": [
+    {
+      "bytes": 1739,
+      "relpath": "authorization/authorization_artifact.json",
+      "secret_redacted_from_git": false,
+      "sha256": "89a221ea497a3054f406fcc168c6825bb85c9829cb7ac41e99b7fde17687a41d"
+    },
+    {
+      "bytes": 2262,
+      "relpath": "authorization/issuance_manifest_authorization.json",
+      "secret_redacted_from_git": false,
+      "sha256": "2ef6c34a6abfdb702cbd16d51ae799fad1494f0e6bd55bd0776aa1b1cf1d27c7"
+    },
+    {
+      "bytes": 2100,
+      "relpath": "authorization/issuance_manifest_preregistration.json",
+      "secret_redacted_from_git": false,
+      "sha256": "b9af0148b9557e9a1b3020a3c59c4ad73802eacea73b0b43d3241ac2afa89906"
+    },
+    {
+      "bytes": 2233,
+      "relpath": "authorization/operator_go.json",
+      "secret_redacted_from_git": false,
+      "sha256": "aeb1cd7c37d40b4caf31d45aa7697794eec8c90dbf089f78e1b36bd18dcf6389"
+    },
+    {
+      "bytes": 3110,
+      "relpath": "authorization/preregistration.json",
+      "secret_redacted_from_git": false,
+      "sha256": "e436856a2e73ad3daee50d69ff739b40f99280d25e4fb19ea490bb9584b092a5"
+    },
+    {
+      "bytes": 1739,
+      "relpath": "evidence/authorization_artifact.json",
+      "secret_redacted_from_git": false,
+      "sha256": "89a221ea497a3054f406fcc168c6825bb85c9829cb7ac41e99b7fde17687a41d"
+    },
+    {
+      "bytes": 711,
+      "relpath": "evidence/authorization_consumption_record.json",
+      "secret_redacted_from_git": false,
+      "sha256": "e877a917fb2b0da6ade683b2e613c50f56cd76b5341583282dce3e82cba387ef"
+    },
+    {
+      "bytes": 186,
+      "relpath": "evidence/config_snapshot.json",
+      "secret_redacted_from_git": false,
+      "sha256": "8917b8e8feed0bb97d8157240f512fe3678e79720d0e0e07f92731bcb0c9a82c"
+    },
+    {
+      "bytes": 50,
+      "relpath": "evidence/connectivity_events.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "a46671de38b2b4c83a9d15c0a819961356e298724cbabc49dca7dd8cc6b27eeb"
+    },
+    {
+      "bytes": 2549644,
+      "relpath": "evidence/decision_trace.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "d1ae66b6c3e699fcae5a747e7640e245c8f144f9fcf9438a26c8aedb807b4e65"
+    },
+    {
+      "bytes": 87,
+      "relpath": "evidence/economic_metrics.json",
+      "secret_redacted_from_git": false,
+      "sha256": "00a57ea78433975705dec14bd476d1c97365d1110c7010c4ad6d0917d263c824"
+    },
+    {
+      "bytes": 2421,
+      "relpath": "evidence/evidence_manifest.sha256",
+      "secret_redacted_from_git": false,
+      "sha256": "f73f1d6daa6a953c48edd487c00a02aa41af82a6653d1be5a625bec2c5d5f82e"
+    },
+    {
+      "bytes": 220533,
+      "relpath": "evidence/heartbeat.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "fc240c190467cb1042dbaafc5abd7ca44138d25a6cb7aa78ead591df51916ab1"
+    },
+    {
+      "bytes": 2535,
+      "relpath": "evidence/integrity_manifest.json",
+      "secret_redacted_from_git": false,
+      "sha256": "39b021d8dbbbf15c7223fe7591f26f117022ffb98c3b2cc6a3084088a8ec0ff5"
+    },
+    {
+      "bytes": 1010,
+      "relpath": "evidence/issuance_manifest.json",
+      "secret_redacted_from_git": false,
+      "sha256": "840ce89c2510eb6dbcd61ff860688ef43b97d364de865e93cd6a8bec35935889"
+    },
+    {
+      "bytes": 0,
+      "relpath": "evidence/killstate_events.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1576985,
+      "relpath": "evidence/market_data_sequence.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "60a0b10fc19ab67733f746b69fa3cba3e7ff78a46bb54533bb66bf4429964848"
+    },
+    {
+      "bytes": 189,
+      "relpath": "evidence/network_boundary_attestation.json",
+      "secret_redacted_from_git": false,
+      "sha256": "cc7ed53824ace0800e996783ca2793f7374073f7685c75a7d903b56af8dc482a"
+    },
+    {
+      "bytes": 84,
+      "relpath": "evidence/no_order_attestation.json",
+      "secret_redacted_from_git": false,
+      "sha256": "93b1d943a9bbbf5614d29a115b0dad6fd972033d75ffb13b50a45dfad6ceadb4"
+    },
+    {
+      "bytes": 45,
+      "relpath": "evidence/observation_cycle_counters.json",
+      "secret_redacted_from_git": false,
+      "sha256": "fe6c116ec28deac9e85d290622b32ffe144e64ce69b37283873b33d5450ddeb0"
+    },
+    {
+      "bytes": 2027,
+      "relpath": "evidence/operator_go.json",
+      "secret_redacted_from_git": false,
+      "sha256": "78f7916aff715fb59f383577f50449fdf807241913d72f0d091dc8727b6dec8e"
+    },
+    {
+      "bytes": 135,
+      "relpath": "evidence/planned_actual_timestamps.json",
+      "secret_redacted_from_git": false,
+      "sha256": "fde3da846d04e3df7297b65b8e70b61daae3614bd747a3a6328cd4b5e77645d8"
+    },
+    {
+      "bytes": 88,
+      "relpath": "evidence/portfolio_snapshot.json",
+      "secret_redacted_from_git": false,
+      "sha256": "de3f0ce3f4fc4d03dda7bacc81cbae1665f83a6eda79cae535c3ae3adb84127f"
+    },
+    {
+      "bytes": 2798,
+      "relpath": "evidence/prereg.json",
+      "secret_redacted_from_git": false,
+      "sha256": "ccd2297c9e4b56f4ea99837db57f4e6f5ab37026dc17923a12664a879aec4cab"
+    },
+    {
+      "bytes": 258,
+      "relpath": "evidence/productive_run_gate.json",
+      "secret_redacted_from_git": false,
+      "sha256": "f83fb63edfe925e17586e7a94d921c56221a20ff9de29b749fa4a7f11d01c1e3"
+    },
+    {
+      "bytes": 0,
+      "relpath": "evidence/reconnect_events.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 41,
+      "relpath": "evidence/repo_sha.txt",
+      "secret_redacted_from_git": false,
+      "sha256": "c7090dda127959f48fb025a6cf0d3791505422d101d235768d518bac4c39b46e"
+    },
+    {
+      "bytes": 675175,
+      "relpath": "evidence/risk_telemetry.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "c06f427b3a2752fac076def043a3c426919a786925453f35651ecd41f29807db"
+    },
+    {
+      "bytes": 81,
+      "relpath": "evidence/runtime_env_fingerprint.json",
+      "secret_redacted_from_git": false,
+      "sha256": "4951ed9a695ab0af9bf8369206944a8a5fad6d4bf84fa02389971eea909c56e2"
+    },
+    {
+      "bytes": 65,
+      "relpath": "evidence/scope_digest.txt",
+      "secret_redacted_from_git": false,
+      "sha256": "d8c63028aa700a70c4ed87defb0aa8f62498a6bda2205e2e9c56405182282eef"
+    },
+    {
+      "bytes": 412,
+      "relpath": "evidence/session_manifest.json",
+      "secret_redacted_from_git": false,
+      "sha256": "bd4eb65f007a37a0c08b301731afc220fb3380d7477b9d214e1ae24321e69e27"
+    },
+    {
+      "bytes": 95,
+      "relpath": "evidence/shutdown_reason.json",
+      "secret_redacted_from_git": false,
+      "sha256": "34c575d968a388f69b61f0a36136c5d19a3913749741589ab3040e04105aeb07"
+    },
+    {
+      "bytes": 0,
+      "relpath": "evidence/stale_events.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 562,
+      "relpath": "evidence/terminal_verdict.json",
+      "secret_redacted_from_git": false,
+      "sha256": "78fb0ec0a0b9b94b5e067b57faf3aa0b43888ad5212dbd34cec5524c51863670"
+    },
+    {
+      "bytes": 224,
+      "relpath": "evidence/venue_instrument_binding.json",
+      "secret_redacted_from_git": false,
+      "sha256": "cfb6342a65d4e67bfbc74f31e597fb9dcaeed9fcbf00ee8367b0c9669da82b28"
+    },
+    {
+      "bytes": 65,
+      "relpath": "fingerprint_ledger.txt",
+      "secret_redacted_from_git": false,
+      "sha256": "eefd1c1c4c9e06a51ac1eed7228204e6c56ef42ac52938cb71ff7764e6638e7a"
+    },
+    {
+      "bytes": 1389,
+      "relpath": "logs/authorize_public.json",
+      "secret_redacted_from_git": false,
+      "sha256": "836f2149dfcfb849aff54e59848e7b9a56525148092352d397d49128f21897c6"
+    },
+    {
+      "bytes": 4363,
+      "relpath": "logs/preregister_public.json",
+      "secret_redacted_from_git": false,
+      "sha256": "715b20d8634751f919baecf6f57ce8644324e9bc58b0b3cc5b4bb45fabd4f5c9"
+    },
+    {
+      "bytes": 210,
+      "relpath": "logs/session_launch_meta.txt",
+      "secret_redacted_from_git": false,
+      "sha256": "38c73d250e51f1fc60ba5de4dff472740970f899a2cf084fee1679cd1354cff0"
+    },
+    {
+      "bytes": 0,
+      "relpath": "logs/session_stderr.log",
+      "secret_redacted_from_git": false,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1252,
+      "relpath": "logs/session_stdout.jsonl",
+      "secret_redacted_from_git": false,
+      "sha256": "31682499636546e58f1c2bfc8294160e1a8d27bf765111278c770e3999682726"
+    },
+    {
+      "bytes": 537,
+      "relpath": "logs/verify_public.json",
+      "secret_redacted_from_git": false,
+      "sha256": "fed01b626773e7af9d40f5a37858849ab230ea561166c459daf56f80e9e763f6"
+    },
+    {
+      "bytes": 1493,
+      "relpath": "run_paths.env",
+      "secret_redacted_from_git": false,
+      "sha256": "be0b1bae988d26f7a09335d1df381ae9aa7becb01f25dd98f5a061aff4cf1401"
+    }
+  ],
+  "source_inventory_sha256": "1fa7f52948796c21ead388f4941e6a87b150cb3dfebd1de534d4627f1bea1d0a",
+  "start_time_utc": "2026-07-29T20:59:08Z",
+  "strategy_validity_pass": false,
+  "technical_runtime_evidence": "PASS",
+  "terminal_verdict": "PASS",
+  "testnet_execution_occurred": false,
+  "total_evidence_bytes": 5059002,
+  "valid_strategy_decisions": 10243
+}
