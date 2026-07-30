@@ -1,0 +1,41 @@
+# WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1
+#
+# Analytical decision→economics wallclock bridge. No Orders/Testnet/Live.
+# Merge does not authorize a session and does not set Economic Validity PASS.
+
+schema_version = "wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge.v1"
+producer_family = "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
+capability_id = "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1"
+closes_next_capability_alias = "INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1"
+
+authority_effect = "NONE"
+activation_effect = "NONE"
+runtime_effect = "NONE"
+order_effect = "NONE"
+economic_gate_effect = "NONE"
+
+decision_authority_owner = "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1"
+portfolio_model_owner = "ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1"
+wallclock_owner = "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1"
+
+decision_economics_bridge_enabled = true
+execution_class = "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION"
+runtime_bridge_live_activated = false
+
+orders_authorized = false
+testnet_authorized = false
+live_authorized = false
+auto_promotion_authorized = false
+credentials_authorized = false
+paper_execution_authorized = false
+economic_validity_pass = false
+promotion_pass = false
+
+instrument_allowlist = ["ETH-USD_UM_XPERP-310404"]
+btc_forbidden = true
+spot_forbidden = true
+
+feature_window_min = 3
+price_path_max_len = 64
+
+contract_doc = "docs/ops/runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1.md"

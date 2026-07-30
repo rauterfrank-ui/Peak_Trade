@@ -15,6 +15,26 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 ---
 
+## Post–Wallclock Full Canonical Decision→Simulated Economics Runtime Bridge (2026-07-30)
+
+**Capability implementation focus** (not Economic Validity PASS / Promotion / session grant):
+
+- Capability: `WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1`
+- Closes alias: `INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1`
+- Owner: `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1`
+- Contract: [`docs/ops/runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1.md`](../runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1.md)
+- Binds MD→feature/regime→Master-V2/Double-Play→risk/sizing/safety→analytical portfolio
+- Flags unchanged false: Orders/Testnet/Live/Paper/Economic Validity/Promotion
+- Live runtime-bridge order authority remains `BOUND_NOT_ACTIVATED`
+
+**Still locked:**
+
+- No automatic session grant on merge
+- No Economic Validity PASS / Promotion
+- No Orders / credentials / private APIs
+
+---
+
 ## Post–Integrated Paper-Shadow productive 6h technical evidence closeout (2026-07-30)
 
 **Technical runtime evidence only** (not Economic Validity, Strategy Validity, or Promotion):
@@ -35,8 +55,8 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 - No Economic Validity PASS claim from this session
 - No Strategy / Promotion / Paper / Testnet / Live authority change
-- Next capability:
-  `INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1`
+- Next capability (implemented under GO name):
+  `WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1`
 
 ---
 

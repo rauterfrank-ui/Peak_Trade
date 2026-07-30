@@ -55,6 +55,13 @@ CAPABILITY_SOURCE_RELPATHS: tuple[str, ...] = (
     "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/real_http_fetcher_v1.py",
     "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py",
     "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/issuance_evidence_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/constants_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/intended_action_mapper_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/full_economic_reconstruction_verifier_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/wallclock_binding_adapter_v1.py",
 )
 
 

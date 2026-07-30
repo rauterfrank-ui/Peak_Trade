@@ -1,3 +1,16 @@
+### WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1
+
+- Scope: `WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1`
+- Decision: `IMPLEMENT_WALLCLOCK_DECISION_TO_SIMULATED_ECONOMICS_BRIDGE_NOT_ORDER_UNLOCK`
+- Authorization: `GO_CLASS=CAPABILITY_IMPLEMENTATION_ONLY_NO_SESSION_NO_PROMOTION`
+- Closes alias: `INTEGRATED_PAPER_SHADOW_STRATEGY_INTENT_AND_PORTFOLIO_ECONOMICS_EVIDENCE_V1`
+- Owner: `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1`
+- Contract: `docs/ops/runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1.md`
+- Surfaces: feature/regime pipeline; sole Master-V2 integrated replay binding; intended-action mapper; session-persistent portfolio; reconstruction verifier; wallclock runtime binding (default enabled)
+- Flags: Orders/Testnet/Live/Paper/Economic Validity/Promotion unchanged false; live runtime-bridge order authority remains BOUND_NOT_ACTIVATED
+- Explicit non-actions: no automatic session grant; no private APIs/credentials; no Promotion; no second decision authority
+
+
 ### INTEGRATED_PAPER_SHADOW_PRODUCTIVE_6H_TECHNICAL_RUNTIME_EVIDENCE_CLOSEOUT_V1
 
 - Scope: productive 6h Integrated Paper-Shadow Observation session evidence closeout

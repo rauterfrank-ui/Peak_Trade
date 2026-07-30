@@ -79,6 +79,18 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     WallclockEvidenceError,
     WallclockEvidenceWriterV1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1 import (
+    CAPABILITY_ID as DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1 import (
+    BridgeSessionStateV1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1 import (
+    verify_full_economic_reconstruction_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.wallclock_binding_adapter_v1 import (
+    run_wallclock_bridge_observation_cycle_v1,
+)
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
     AuthorizationArtifactV1,
 )
@@ -104,6 +116,8 @@ class WallclockRuntimeConfigV1:
     min_quality_window_seconds: int = DEFAULT_MIN_QUALITY_WINDOW_SECONDS
     shutdown_grace_seconds: float = DEFAULT_SHUTDOWN_GRACE_SECONDS
     max_cycles: Optional[int] = None  # test bound; None = duration-driven
+    # Default true: WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1
+    decision_economics_bridge_enabled: bool = True
 
 
 @dataclass
@@ -164,6 +178,8 @@ class WallclockSessionRuntimeV1:
         self.blockers: list[str] = []
         self.started_wall = 0.0
         self.started_mono = 0.0
+        self.bridge_state = BridgeSessionStateV1(instrument_id=CANONICAL_INSTRUMENT_ID)
+        self.session_id: str = ""
 
     def _transition(self, to_state: WallclockSessionState) -> None:
         assert_transition_allowed(from_state=self.state, to_state=to_state)
@@ -454,41 +470,89 @@ class WallclockSessionRuntimeV1:
                         if gap > self.config.max_gap_seconds:
                             self._abort("DATA_GAP", f"gap={gap}")
                             break
-                    ticks = [tick] if last_tick is None else [last_tick, tick]
-                    # For policy sequence continuity use only latest when first
-                    outcome = run_wallclock_observation_cycle_v1(
-                        ticks=[tick],
-                        reference_price=Decimal(str(price)),
-                        wall_now_unix=now_wall,
-                    )
-                    self.cycle_count += 1
-                    if outcome.cycle is not None:
-                        self.writer.append_event(
-                            "decision_trace.jsonl",
-                            {
-                                "cycle": self.cycle_count,
-                                "decision_result": outcome.cycle.decision_result,
-                                "direction": outcome.cycle.direction,
-                                "labels": outcome.labels,
-                            },
+                    ticks = [tick]  # latest tick only for MD policy / bridge cycle
+                    if self.config.decision_economics_bridge_enabled:
+                        outcome_bridge = run_wallclock_bridge_observation_cycle_v1(
+                            bridge_state=self.bridge_state,
+                            ticks=[tick],
+                            reference_price=Decimal(str(price)),
+                            wall_now_unix=now_wall,
+                            session_id=session_id,
                         )
-                        self.writer.append_event(
-                            "risk_telemetry.jsonl",
-                            {
-                                "cycle": self.cycle_count,
-                                "risk_sizing_result": outcome.cycle.risk_sizing_result,
-                                "safety_result": outcome.cycle.safety_result,
-                            },
+                        self.cycle_count += 1
+                        if outcome_bridge.bridge_cycle is not None:
+                            cycle = outcome_bridge.bridge_cycle
+                            self.writer.append_event(
+                                "decision_trace.jsonl",
+                                {
+                                    "cycle": self.cycle_count,
+                                    "decision_result": cycle.decision_outcome,
+                                    "direction": cycle.direction,
+                                    "selected_side": cycle.selected_side,
+                                    "intended_action": cycle.intended_action,
+                                    "feature_regime": cycle.feature_regime,
+                                    "labels": outcome_bridge.labels,
+                                    "bridge_capability_id": DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
+                                },
+                            )
+                            self.writer.append_event(
+                                "risk_telemetry.jsonl",
+                                {
+                                    "cycle": self.cycle_count,
+                                    "risk_sizing_result": cycle.risk_sizing_result,
+                                    "safety_result": cycle.safety_result,
+                                },
+                            )
+                            self.writer.append_event(
+                                "bridge_cycle_ledger.jsonl",
+                                cycle.to_dict(),
+                            )
+                            if cycle.fill is not None:
+                                self.writer.append_event(
+                                    "bridge_fill_ledger.jsonl",
+                                    cycle.fill,
+                                )
+                                self.writer.append_event(
+                                    "simulated_fills.jsonl",
+                                    cycle.fill,
+                                )
+                        outcome_ok = outcome_bridge.ok
+                        md_blockers = outcome_bridge.md_blockers
+                    else:
+                        outcome = run_wallclock_observation_cycle_v1(
+                            ticks=[tick],
+                            reference_price=Decimal(str(price)),
+                            wall_now_unix=now_wall,
                         )
-                    if not outcome.ok:
+                        self.cycle_count += 1
+                        if outcome.cycle is not None:
+                            self.writer.append_event(
+                                "decision_trace.jsonl",
+                                {
+                                    "cycle": self.cycle_count,
+                                    "decision_result": outcome.cycle.decision_result,
+                                    "direction": outcome.cycle.direction,
+                                    "labels": outcome.labels,
+                                },
+                            )
+                            self.writer.append_event(
+                                "risk_telemetry.jsonl",
+                                {
+                                    "cycle": self.cycle_count,
+                                    "risk_sizing_result": outcome.cycle.risk_sizing_result,
+                                    "safety_result": outcome.cycle.safety_result,
+                                },
+                            )
+                        outcome_ok = outcome.ok
+                        md_blockers = outcome.md_blockers
+                    if not outcome_ok:
                         # quality issue unless md kill-like
                         if any(
-                            x.startswith("STALE_") or x.startswith("DATA_GAP")
-                            for x in outcome.md_blockers
+                            x.startswith("STALE_") or x.startswith("DATA_GAP") for x in md_blockers
                         ):
                             self._abort(
-                                outcome.md_blockers[0].split(":")[0],
-                                ",".join(outcome.md_blockers),
+                                md_blockers[0].split(":")[0],
+                                ",".join(md_blockers),
                             )
                             break
                         self.quality_fail = True
@@ -651,10 +715,39 @@ class WallclockSessionRuntimeV1:
                     },
                 )
             if not (self.evidence_root / "portfolio_snapshot.json").exists():
-                self.writer.write_immutable_json(
-                    "portfolio_snapshot.json",
-                    {"execution_class": EXECUTION_CLASS_ANALYTICAL, "paper_execution": False},
-                )
+                if (
+                    self.config.decision_economics_bridge_enabled
+                    and self.bridge_state.cycle_index > 0
+                ):
+                    portfolio = dict(self.bridge_state.portfolio.snapshot())
+                    self.writer.write_immutable_json("portfolio_snapshot.json", portfolio)
+                    self.writer.write_immutable_json(
+                        "economic_metrics.json",
+                        {
+                            **self.bridge_state.portfolio.economic_metrics().to_dict(),
+                            "execution_class": EXECUTION_CLASS_ANALYTICAL,
+                            "analytical_only": True,
+                            "bridge_capability_id": DECISION_ECONOMICS_BRIDGE_CAPABILITY_ID,
+                            "stub": False,
+                        },
+                    )
+                    verification = verify_full_economic_reconstruction_v1(
+                        cycle_ledger=self.bridge_state.cycle_ledger,
+                        fill_ledger=self.bridge_state.fill_ledger,
+                        final_portfolio_snapshot=portfolio,
+                    )
+                    self.writer.write_immutable_json(
+                        "full_economic_reconstruction_verifier.json",
+                        verification.to_dict(),
+                    )
+                    if not verification.ok:
+                        self.quality_fail = True
+                        self.blockers.extend(verification.blockers)
+                else:
+                    self.writer.write_immutable_json(
+                        "portfolio_snapshot.json",
+                        {"execution_class": EXECUTION_CLASS_ANALYTICAL, "paper_execution": False},
+                    )
             if not (self.evidence_root / "economic_metrics.json").exists():
                 self.writer.write_immutable_json(
                     "economic_metrics.json",

@@ -38,6 +38,10 @@ min_quality_window_seconds = 300
 network_scope = "okx_eea_futures_public_md_observe_v1"
 session_execution_scope = "paper_shadow_observation_wallclock_v1"
 
+decision_economics_bridge_enabled = true
+decision_economics_bridge_capability = "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1"
+decision_economics_bridge_owner = "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
+
 orders_authorized = false
 testnet_authorized = false
 live_authorized = false
