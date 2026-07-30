@@ -40,6 +40,16 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.pre
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.verifier_v1 import (
     verify_paper_shadow_observation_authorization_bundle_v1,
 )
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.integrity_v1 import (
+    integrity_digest_v1,
+)
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.lifecycle_lock_v1 import (
+    AuthorizationLifecycleLockV1,
+    LifecycleLockError,
+)
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.revocation_registry_v1 import (
+    is_authorization_revoked_v1,
+)
 
 
 class AuthorizationConsumptionError(RuntimeError):
@@ -175,70 +185,115 @@ def consume_authorization_for_wallclock_start_v1(
     if go.revoked or artifact.revoked or prereg.revoked:
         blockers.append("REVOKED")
 
+    # Mandatory durable revocation lookup (fail-closed) before any consumption.
+    auth_digest = integrity_digest_v1(artifact.to_dict())
+    rev_state = is_authorization_revoked_v1(
+        evidence_root=evidence_writer.evidence_root,
+        authorization_id=artifact.authorization_id,
+        authorization_digest=auth_digest,
+    )
+    if rev_state.blockers:
+        blockers.extend(rev_state.blockers)
+    if rev_state.revoked:
+        blockers.append("AUTHORIZATION_REVOKED")
+        blockers.append("REVOCATION_CHECK_BEFORE_CONSUMPTION_BLOCKED")
+
     unique = sorted(set(blockers))
     if unique:
         return AuthorizationConsumptionResultV1(ok=False, blockers=unique)
 
+    lock = AuthorizationLifecycleLockV1.for_evidence_root(
+        evidence_root=evidence_writer.evidence_root,
+        authorization_id=artifact.authorization_id,
+        owner="consume_authorization_for_wallclock_start_v1",
+    )
+    try:
+        lock.acquire()
+    except LifecycleLockError as exc:
+        return AuthorizationConsumptionResultV1(ok=False, blockers=[str(exc)])
+
     fp = token_res.fingerprint or fingerprint_confirm_token(confirm_token)
     try:
-        consumed = transition_consume_authorization_artifact_v1(artifact, now_unix=now_unix)
-    except Exception as exc:  # noqa: BLE001
-        return AuthorizationConsumptionResultV1(
-            ok=False, blockers=[f"CONSUME_TRANSITION_FAILED:{exc}"]
+        # Re-check revocation under lock (TOCTOU).
+        rev_locked = is_authorization_revoked_v1(
+            evidence_root=evidence_writer.evidence_root,
+            authorization_id=artifact.authorization_id,
+            authorization_digest=auth_digest,
         )
-
-    record = {
-        "session_id": go.session_id,
-        "go_id": go.go_id,
-        "authorization_id": artifact.authorization_id,
-        "consumed_at": now_unix,
-        "confirm_token_fingerprint": fp,
-        "scope_digest": prereg.scope_digest(),
-        "expected_repository_sha": expected_repository_sha,
-        "network_scope": NETWORK_SCOPE,
-        "session_execution_scope": SESSION_EXECUTION_SCOPE,
-        "instrument": CANONICAL_INSTRUMENT_ID,
-        "planned_duration_seconds": go.planned_duration_seconds,
-        "transport_open_allowed_after_persist": True,
-    }
-
-    # Persist order: consumption record, artifact CONSUMED, fingerprint, fsync.
-    evidence_writer.write_immutable_json("prereg.json", prereg.to_dict())
-    evidence_writer.write_immutable_json("operator_go.json", go.to_dict())
-    evidence_writer.write_immutable_json("authorization_artifact.json", consumed.to_dict())
-    evidence_writer.write_immutable_json("authorization_consumption_record.json", record)
-    evidence_writer.write_immutable_json(
-        "authorization_consumption.json",
-        {
-            "status": "CONSUMED",
-            "consumed": True,
-            "productive_authorization": True,
-            "mode": "productive_wallclock",
-            "forced_wiring_fixture": False,
-            "session_id": go.session_id,
-            "authorization_id": artifact.authorization_id,
-            "confirm_token_fingerprint": fp,
-        },
-    )
-    evidence_writer.write_immutable_text("scope_digest.txt", prereg.scope_digest())
-    evidence_writer.write_immutable_text("repo_sha.txt", expected_repository_sha)
-
-    _atomic_write_text(artifact_path, _canonical_json(consumed.to_dict()) + "\n")
-    _append_fingerprint(fingerprint_ledger_path, fp)
-
-    try:
-        fd = os.open(str(evidence_writer.evidence_root), os.O_RDONLY)
+        if rev_locked.blockers or rev_locked.revoked:
+            return AuthorizationConsumptionResultV1(
+                ok=False,
+                blockers=sorted(
+                    set(
+                        list(rev_locked.blockers)
+                        + (["AUTHORIZATION_REVOKED"] if rev_locked.revoked else [])
+                    )
+                ),
+            )
         try:
-            os.fsync(fd)
-        finally:
-            os.close(fd)
-    except OSError as exc:
-        return AuthorizationConsumptionResultV1(ok=False, blockers=[f"EVIDENCE_SINK_FAILURE:{exc}"])
+            consumed = transition_consume_authorization_artifact_v1(artifact, now_unix=now_unix)
+        except Exception as exc:  # noqa: BLE001
+            return AuthorizationConsumptionResultV1(
+                ok=False, blockers=[f"CONSUME_TRANSITION_FAILED:{exc}"]
+            )
 
-    return AuthorizationConsumptionResultV1(
-        ok=True,
-        consumed_artifact=consumed,
-        confirm_token_fingerprint=fp,
-        consumption_record=record,
-        transport_open_allowed=True,
-    )
+        record = {
+            "session_id": go.session_id,
+            "go_id": go.go_id,
+            "authorization_id": artifact.authorization_id,
+            "consumed_at": now_unix,
+            "confirm_token_fingerprint": fp,
+            "scope_digest": prereg.scope_digest(),
+            "expected_repository_sha": expected_repository_sha,
+            "network_scope": NETWORK_SCOPE,
+            "session_execution_scope": SESSION_EXECUTION_SCOPE,
+            "instrument": CANONICAL_INSTRUMENT_ID,
+            "planned_duration_seconds": go.planned_duration_seconds,
+            "transport_open_allowed_after_persist": True,
+            "revocation_checked_before_consumption": True,
+        }
+
+        # Persist order: consumption record, artifact CONSUMED, fingerprint, fsync.
+        evidence_writer.write_immutable_json("prereg.json", prereg.to_dict())
+        evidence_writer.write_immutable_json("operator_go.json", go.to_dict())
+        evidence_writer.write_immutable_json("authorization_artifact.json", consumed.to_dict())
+        evidence_writer.write_immutable_json("authorization_consumption_record.json", record)
+        evidence_writer.write_immutable_json(
+            "authorization_consumption.json",
+            {
+                "status": "CONSUMED",
+                "consumed": True,
+                "productive_authorization": True,
+                "mode": "productive_wallclock",
+                "forced_wiring_fixture": False,
+                "session_id": go.session_id,
+                "authorization_id": artifact.authorization_id,
+                "confirm_token_fingerprint": fp,
+            },
+        )
+        evidence_writer.write_immutable_text("scope_digest.txt", prereg.scope_digest())
+        evidence_writer.write_immutable_text("repo_sha.txt", expected_repository_sha)
+
+        _atomic_write_text(artifact_path, _canonical_json(consumed.to_dict()) + "\n")
+        _append_fingerprint(fingerprint_ledger_path, fp)
+
+        try:
+            fd = os.open(str(evidence_writer.evidence_root), os.O_RDONLY)
+            try:
+                os.fsync(fd)
+            finally:
+                os.close(fd)
+        except OSError as exc:
+            return AuthorizationConsumptionResultV1(
+                ok=False, blockers=[f"EVIDENCE_SINK_FAILURE:{exc}"]
+            )
+
+        return AuthorizationConsumptionResultV1(
+            ok=True,
+            consumed_artifact=consumed,
+            confirm_token_fingerprint=fp,
+            consumption_record=record,
+            transport_open_allowed=True,
+        )
+    finally:
+        lock.release()

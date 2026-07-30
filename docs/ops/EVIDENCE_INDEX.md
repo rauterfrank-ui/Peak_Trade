@@ -1,6 +1,12 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260730-canonical-durable-authorization-lifecycle-and-revocation-v1"></a>
+- 2026-07-30 — Canonical Durable Authorization Lifecycle and Revocation v1
+  - Source: [Capability contract](runbooks/CANONICAL_DURABLE_AUTHORIZATION_LIFECYCLE_AND_REVOCATION_V1.md) · Owner: `ops.canonical_durable_authorization_lifecycle_and_revocation_v1` · CLI: `python scripts/ops/run_canonical_durable_authorization_lifecycle_and_revocation_v1.py preflight`
+  - Claim: Single canonical authorization_artifact_v2 state machine + append-only authorization_revocation_v1; mandatory fail-closed revocation lookup before consumption; legacy formal_authorization_v1 never consumable; productive wallclock consumption path bound to durable revocation check under lifecycle lock.
+  - Non-claims: not GO for replacement authorization; not authorization consumption; not 1h-run; not Orders/Paper/Testnet/Live; not Economic Validity/Promotion; local operative revocation evidence is not repository primary evidence.
+
 <a id="ev-20260730-preregistration-probe-fixture-repository-sha-binding-v1"></a>
 - 2026-07-30 — Preregistration Probe/Fixture Repository SHA Binding v1
   - Source: [Capability contract](runbooks/PREREGISTRATION_PROBE_FIXTURE_REPOSITORY_SHA_BINDING_V1.md) · Owner: `ops.preregistration_probe_fixture_repository_sha_binding_v1` · Attestation: [`evidence/ops/preregistration_probe_fixture_repository_sha_binding_v1/ATTESTATION.env`](../../evidence/ops/preregistration_probe_fixture_repository_sha_binding_v1/ATTESTATION.env)
