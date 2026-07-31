@@ -7,6 +7,7 @@ import json
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal
+from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
@@ -56,6 +57,10 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.intended_action_mapper_v1 import (
     map_replay_result_to_intended_analytical_action_v1,
 )
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationTransportMetadataV1,
+)
+from trading.market_state.time_sample_epoch_semantics_v1 import MarketSampleIdentityV1
 from trading.master_v2.canonical_market_context_v1 import (
     CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
     FEATURE_CONTRACT_VERSION,
@@ -66,6 +71,9 @@ from trading.master_v2.canonical_market_context_v1 import (
     DataIntegrityStatus,
     WarmupStatus,
     with_computed_input_digest,
+)
+from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
+    CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
 )
 from trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
@@ -133,6 +141,7 @@ CALL_GRAPH_V2: tuple[str, ...] = (
     "okx_public_market_data",
     "feature_pipeline",
     "regime_pipeline",
+    "canonical_volatility_productive_runtime_cmc_typed_binding",
     "master_v2_double_play_integrated_offline_replay",
     "risk_position_sizing",
     "safety_kernel",
@@ -144,6 +153,24 @@ CALL_GRAPH_V2: tuple[str, ...] = (
     "evidence",
     "full_economic_reconstruction_verifier",
 )
+
+_DEFAULT_VOL_TYPED_BINDING_VENUE = "okx_europe"
+_DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID = PRODUCTION_INSTRUMENT_ID
+
+
+def _ensure_typed_volatility_binding_host_v1(
+    state: "HardenedBridgeSessionStateV2",
+) -> CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
+    if state.typed_volatility_cmc_binding_host is None:
+        state.typed_volatility_cmc_binding_host = (
+            CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1.create(
+                venue=_DEFAULT_VOL_TYPED_BINDING_VENUE,
+                canonical_instrument_id=str(state.instrument_id),
+                venue_instrument_id=_DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID,
+                persistence_path=state.typed_volatility_persistence_path,
+            )
+        )
+    return state.typed_volatility_cmc_binding_host
 
 
 def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
@@ -276,11 +303,30 @@ class HardenedBridgeSessionStateV2:
     killstate_trigger: str = ""
     config_digest: str = ""
     session_restart_policy: str = SESSION_RESTART_POLICY
+    typed_volatility_cmc_binding_host: (
+        CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1 | None
+    ) = None
+    typed_volatility_persistence_path: Path | None = None
+    last_typed_volatility_binding_telemetry: dict[str, Any] | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
         if len(self.mid_prices) > PRICE_PATH_MAX_LEN:
             self.mid_prices = self.mid_prices[-PRICE_PATH_MAX_LEN:]
+
+    def restore_typed_volatility_binding_host_from_persistence_v1(
+        self,
+        *,
+        persistence_path: Path,
+    ) -> CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
+        """Restart path: restore mark history only; estimate remains fail-closed until PRODUCED."""
+        self.typed_volatility_persistence_path = persistence_path
+        self.typed_volatility_cmc_binding_host = (
+            CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1.restore_from_persistence_v1(
+                persistence_path=persistence_path,
+            )
+        )
+        return self.typed_volatility_cmc_binding_host
 
 
 def _update_session_state_from_replay(state: HardenedBridgeSessionStateV2, *, result: Any) -> None:
@@ -350,6 +396,10 @@ def run_hardened_bridge_cycle_v2(
     session_id: str,
     price_basis: ExplicitPriceBasisV2 | None = None,
     forced_actionable: Mapping[str, Any] | None = None,
+    finalized_pt1m_mark_sample: MarketSampleIdentityV1 | None = None,
+    finalized_pt1m_mark_price: float | None = None,
+    finalized_pt1m_event_time_unix_seconds: float | None = None,
+    finalized_pt1m_transport: ObservationTransportMetadataV1 | None = None,
 ) -> dict[str, Any]:
     if state.session_restart_policy != SESSION_RESTART_POLICY:
         raise RuntimeError("IMPLICIT_RESUME_FORBIDDEN")
@@ -435,6 +485,7 @@ def run_hardened_bridge_cycle_v2(
             volume=1_000_000.0,
             open_interest=50_000_000.0,
             funding_rate=0.0001,
+            # Competing feature_regime float remains until typed bind overwrites atomically.
             volatility_estimate=float(features.volatility_estimate),
             trend_feature_set=dict(features.trend_features),
             momentum_feature_set=dict(features.momentum_features),
@@ -447,6 +498,26 @@ def run_hardened_bridge_cycle_v2(
             input_digest="",
         )
     )
+
+    typed_host = _ensure_typed_volatility_binding_host_v1(state)
+    ingest_sample = finalized_pt1m_mark_sample is not None or (
+        finalized_pt1m_mark_price is not None and finalized_pt1m_event_time_unix_seconds is not None
+    )
+    typed_binding = typed_host.apply_to_market_context_v1(
+        market_context,
+        sample=finalized_pt1m_mark_sample,
+        transport=finalized_pt1m_transport,
+        venue=_DEFAULT_VOL_TYPED_BINDING_VENUE,
+        canonical_instrument_id=str(state.instrument_id),
+        venue_instrument_id=_DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID,
+        event_time_unix_seconds=finalized_pt1m_event_time_unix_seconds,
+        mark_price=finalized_pt1m_mark_price,
+        is_final=True,
+        ingest_sample=ingest_sample,
+    )
+    market_context = typed_binding.context
+    state.last_typed_volatility_binding_telemetry = typed_binding.telemetry.to_dict()
+    _ = input_digest  # retained for provenance continuity with prior bridge evidence shape
 
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"{session_id}-{cycle_id}",
@@ -638,6 +709,12 @@ def run_hardened_bridge_cycle_v2(
         "feature_regime": features.to_dict(),
         "feature_digest": features.feature_digest,
         "regime_digest": features.regime_digest,
+        "canonical_volatility_typed_binding": dict(
+            state.last_typed_volatility_binding_telemetry or {}
+        ),
+        "canonical_market_context_typed_estimate_present": (
+            market_context.canonical_volatility_estimate is not None
+        ),
         "config_digest": config_digest,
         "price_basis": basis.to_dict(),
         "market_data_reference": basis.market_data_reference,
