@@ -176,16 +176,16 @@ Compatibility note:
 
 | Slice | Depends on C1 | Status in this PR |
 | --- | --- | --- |
-| C2 | Accepted DISTINCT observation stream / epoch ownership | not started |
+| C2 | Accepted DISTINCT observation stream / epoch ownership | implemented |
 | C3 | Observation-gated confirmation inputs | implemented (`DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1`) |
-| C4 | Volatility / bar coupling to observation epoch | not started |
+| C4 | Post-confirmation Survival/Suitability/Composition binding + Research C1 DISTINCT parity | implemented (`POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1`) |
 | C5 | Timer / clock migration around observation epoch | not started |
 | C6 | Strategy evaluator advance wiring | not started |
 | C7 | Risk / safety observation gates | not started |
 | C8 | Portfolio / runtime integration | not started |
 | C9 | End-to-end activation / promotion surfaces | not started |
 
-`C2_STARTED=false` … `C9_STARTED=false`
+`C5_STARTED=false` … `C9_STARTED=false`
 
 ## 11. Reason Codes
 

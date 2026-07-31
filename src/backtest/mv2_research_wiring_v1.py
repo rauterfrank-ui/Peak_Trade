@@ -125,19 +125,28 @@ from src.trading.master_v2.deterministic_scope_event_generator_v1 import (
     ScopeDirectionState,
     ScopeEventGeneratorPolicyV1,
 )
-from src.trading.master_v2.directional_assessment_confirmation_integration_v1 import (
+from trading.master_v2.directional_assessment_confirmation_integration_v1 import (
     DirectionalConfirmationSideStateCarrierV1,
     initial_directional_confirmation_side_state_carrier_v1,
 )
-from src.trading.master_v2.directional_assessment_v1 import (
+from trading.master_v2.directional_assessment_v1 import (
     DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
     DirectionalAssessmentPolicyV1,
     DirectionalAssessmentStatus,
     DirectionalAssessmentV1,
     DirectionalConfirmationStateV1,
 )
-from src.trading.market_state.observation_identity_v1 import InstrumentObservationKeyV1
-from src.trading.master_v2.double_play_composition_matrix_v1 import (
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationAcceptanceResultV1,
+    ObservationAcceptanceStateV1,
+    ObservationCandidateV1,
+    ObservationClassification,
+    commit_observation_acceptance_v1,
+    evaluate_distinct_market_observation_v1,
+    initial_observation_acceptance_state_v1,
+)
+from trading.market_state.observation_identity_v1 import InstrumentObservationKeyV1
+from trading.master_v2.double_play_composition_matrix_v1 import (
     DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
     BothCandidateOutcome,
     BothInvalidOutcome,
@@ -147,10 +156,10 @@ from src.trading.master_v2.double_play_composition_matrix_v1 import (
     DoublePlayCompositionResultV1,
     PositionManagementContext,
 )
-from src.trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
+from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     side_state_to_entry_exit_direction,
 )
-from src.trading.master_v2.double_play_entry_exit_policy_v0 import (
+from trading.master_v2.double_play_entry_exit_policy_v0 import (
     ENTRY_EXIT_POLICY_VERSION,
     DoublePlayEntryExitPolicyV0,
     EntryExitDirectionState,
@@ -161,9 +170,9 @@ from src.trading.master_v2.double_play_entry_exit_policy_v0 import (
     SafetyMode,
     TradingGate,
 )
-from src.trading.master_v2.double_play_futures_input import FuturesMarketType
-from src.trading.master_v2.double_play_state import RuntimeScopeState, SideState
-from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+from trading.master_v2.double_play_futures_input import FuturesMarketType
+from trading.master_v2.double_play_state import RuntimeScopeState, SideState
+from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
     IntegratedOfflineReplayInputV1,
     IntegratedOfflineReplayIntermediateV1,
@@ -171,6 +180,9 @@ from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
     scope_direction_from_side_state_v1,
+)
+from trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1 import (
+    POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID,
 )
 from src.trading.master_v2.suitability_binding_v1 import (
     SUITABILITY_RANKING_POLICY_VERSION,
@@ -405,6 +417,13 @@ class MV2IntegratedReplayBarSequenceStateV1:
     confirmation_progress_session_id: str | None = None
     confirmation_progress_venue: str | None = None
     confirmation_progress_instrument: InstrumentObservationKeyV1 | None = None
+    # C1 productive observation acceptor state (caller-owned; Research DISTINCT wiring).
+    observation_acceptance_state: ObservationAcceptanceStateV1 | None = None
+    last_observation_acceptance_result: ObservationAcceptanceResultV1 | None = None
+    # Capability marker for C4 post-confirmation binding (documentation / evidence).
+    post_confirmation_binding_capability_id: str = (
+        POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID
+    )
 
 
 @dataclass(frozen=True)
@@ -1277,6 +1296,9 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
         confirmation_progress_session_id=previous.confirmation_progress_session_id,
         confirmation_progress_venue=previous.confirmation_progress_venue,
         confirmation_progress_instrument=previous.confirmation_progress_instrument,
+        observation_acceptance_state=previous.observation_acceptance_state,
+        last_observation_acceptance_result=previous.last_observation_acceptance_result,
+        post_confirmation_binding_capability_id=previous.post_confirmation_binding_capability_id,
     )
 
 
@@ -1553,6 +1575,17 @@ def _coerce_replay_input_enums_for_integrated_replay_v1(
         explicit_runtime_scope_reset=bool(
             getattr(replay_input, "explicit_runtime_scope_reset", False)
         ),
+        directional_confirmation_progress=getattr(
+            replay_input, "directional_confirmation_progress", None
+        ),
+        observation_acceptance_result=getattr(replay_input, "observation_acceptance_result", None),
+        confirmation_progress_session_id=getattr(
+            replay_input, "confirmation_progress_session_id", None
+        ),
+        confirmation_progress_venue=getattr(replay_input, "confirmation_progress_venue", None),
+        confirmation_progress_instrument=getattr(
+            replay_input, "confirmation_progress_instrument", None
+        ),
     )
 
 
@@ -1706,6 +1739,128 @@ _MV2_RESEARCH_SCOPE_UP_DISTANCE_BPS = 100.0  # 1% of current mark
 _MV2_RESEARCH_SCOPE_ADVERSE_TO_UP_RATIO = 60.0 / 120.0  # legacy 60/120
 _MV2_RESEARCH_SCOPE_REVERSAL_TO_UP_RATIO = 90.0 / 120.0  # legacy 90/120
 _MV2_RESEARCH_SCOPE_BPS_PER_UNIT = 10_000.0
+_MV2_RESEARCH_DEFAULT_VENUE = "research_offline"
+
+
+def resolve_mv2_research_observation_instrument_key_v1(
+    *,
+    instrument_id: str,
+    venue: str | None = None,
+) -> InstrumentObservationKeyV1:
+    resolved_venue = (
+        venue.strip() if isinstance(venue, str) and venue.strip() else _MV2_RESEARCH_DEFAULT_VENUE
+    )
+    return InstrumentObservationKeyV1(
+        venue=resolved_venue,
+        canonical_instrument_id=instrument_id,
+        venue_instrument_id=instrument_id,
+    )
+
+
+def resolve_mv2_research_observation_event_time_v1(
+    *,
+    market_event_time: str | float | int,
+) -> float:
+    """Map research bar market_event_time to C1 venue_event_time (finite float > 0)."""
+    if isinstance(market_event_time, (int, float)) and not isinstance(market_event_time, bool):
+        value = float(market_event_time)
+        _fail_closed(
+            not math.isfinite(value) or value <= 0.0, "research_observation_event_time_invalid"
+        )
+        return value
+    if not isinstance(market_event_time, str) or not market_event_time.strip():
+        raise ValueError("research_observation_event_time_missing")
+    try:
+        ts = pd.Timestamp(market_event_time)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("research_observation_event_time_unparseable") from exc
+    _fail_closed(pd.isna(ts), "research_observation_event_time_invalid")
+    # Prefer UTC epoch seconds; naive timestamps are treated as UTC for determinism.
+    if ts.tzinfo is None:
+        epoch = float(ts.timestamp())
+    else:
+        epoch = float(ts.tz_convert("UTC").timestamp())
+    _fail_closed(
+        not math.isfinite(epoch) or epoch <= 0.0, "research_observation_event_time_non_positive"
+    )
+    return epoch
+
+
+@dataclass(frozen=True)
+class MV2ResearchObservationAcceptanceStepV1:
+    """One research-bar C1 acceptance step (productive acceptor; no research taxonomy)."""
+
+    result: ObservationAcceptanceResultV1
+    state_after: ObservationAcceptanceStateV1
+    session_id: str
+    venue: str
+    instrument: InstrumentObservationKeyV1
+
+
+def accept_mv2_research_bar_market_observation_v1(
+    *,
+    prior_state: ObservationAcceptanceStateV1 | None,
+    instrument_id: str,
+    market_event_time: str | float | int,
+    mark_price: float,
+    session_id: str,
+    venue: str | None = None,
+    input_digest: str | None = None,
+    reset_session: bool = False,
+) -> MV2ResearchObservationAcceptanceStepV1:
+    """Evaluate (+commit on DISTINCT) one research bar via productive C1 authority.
+
+    DISTINCT is bound to the market observation identity (venue/instrument/event_time/mark),
+    not to the Python call. Identical bar repetition yields NON_DISTINCT/DUPLICATE and must
+    not advance confirmation. Fail-closed classifications raise.
+    """
+    _fail_closed(
+        not isinstance(session_id, str) or not session_id.strip(), "research_session_id_invalid"
+    )
+    instrument = resolve_mv2_research_observation_instrument_key_v1(
+        instrument_id=instrument_id,
+        venue=venue,
+    )
+    resolved_venue = instrument.venue
+    if reset_session or prior_state is None:
+        state = initial_observation_acceptance_state_v1(bound_instrument_key=instrument)
+    else:
+        state = prior_state
+        bound = state.bound_instrument_key
+        if bound is not None and (
+            bound.venue != instrument.venue
+            or bound.canonical_instrument_id != instrument.canonical_instrument_id
+            or bound.venue_instrument_id != instrument.venue_instrument_id
+        ):
+            raise ValueError("research_observation_instrument_mismatch")
+    event_time = resolve_mv2_research_observation_event_time_v1(market_event_time=market_event_time)
+    mark = float(mark_price)
+    _fail_closed(not math.isfinite(mark) or mark <= 0.0, "research_observation_mark_invalid")
+    # input_digest binds the research bar into the replay input; it is never C1
+    # distinctness authority (market identity remains venue/instrument/event_time/mark).
+    _ = input_digest
+    candidate = ObservationCandidateV1(
+        venue=resolved_venue,
+        canonical_instrument_id=instrument.canonical_instrument_id,
+        venue_instrument_id=instrument.venue_instrument_id,
+        venue_event_time=event_time,
+        mark_price=mark,
+        transport=None,
+    )
+    result = evaluate_distinct_market_observation_v1(state, candidate)
+    if result.fail_closed:
+        raise ValueError(f"research_observation_fail_closed:{result.reason_code}")
+    if result.classification is ObservationClassification.DISTINCT:
+        state_after = commit_observation_acceptance_v1(current_state=state, result=result)
+    else:
+        state_after = state
+    return MV2ResearchObservationAcceptanceStepV1(
+        result=result,
+        state_after=state_after,
+        session_id=session_id.strip(),
+        venue=resolved_venue,
+        instrument=instrument,
+    )
 
 
 @dataclass(frozen=True)
@@ -1766,6 +1921,11 @@ def _build_replay_input(
     strategy_suitability_agreement_material: Optional[
         StrategySuitabilityAgreementMaterialV1
     ] = None,
+    observation_acceptance_result: ObservationAcceptanceResultV1 | None = None,
+    confirmation_progress_session_id: str | None = None,
+    confirmation_progress_venue: str | None = None,
+    confirmation_progress_instrument: InstrumentObservationKeyV1 | None = None,
+    directional_confirmation_progress: DirectionalConfirmationSideStateCarrierV1 | None = None,
 ) -> IntegratedOfflineReplayInputV1:
     mark_price = float(context.mark_price)
     price_path = project_mv2_agreement_bound_price_path_v1(
@@ -1832,10 +1992,27 @@ def _build_replay_input(
         runtime_scope_bound_instrument_id=sequence_state.runtime_scope_bound_instrument_id,
         dynamic_scope_rules=sequence_state.dynamic_scope_rules,
         explicit_runtime_scope_reset=False,
-        directional_confirmation_progress=sequence_state.directional_confirmation_progress,
-        confirmation_progress_session_id=sequence_state.confirmation_progress_session_id,
-        confirmation_progress_venue=sequence_state.confirmation_progress_venue,
-        confirmation_progress_instrument=sequence_state.confirmation_progress_instrument,
+        directional_confirmation_progress=(
+            directional_confirmation_progress
+            if directional_confirmation_progress is not None
+            else sequence_state.directional_confirmation_progress
+        ),
+        observation_acceptance_result=observation_acceptance_result,
+        confirmation_progress_session_id=(
+            confirmation_progress_session_id
+            if confirmation_progress_session_id is not None
+            else sequence_state.confirmation_progress_session_id
+        ),
+        confirmation_progress_venue=(
+            confirmation_progress_venue
+            if confirmation_progress_venue is not None
+            else sequence_state.confirmation_progress_venue
+        ),
+        confirmation_progress_instrument=(
+            confirmation_progress_instrument
+            if confirmation_progress_instrument is not None
+            else sequence_state.confirmation_progress_instrument
+        ),
     )
 
 
@@ -2501,6 +2678,38 @@ def run_mv2_research_backtest_wiring_v1(
             raise ValueError(
                 f"missing_agreement_material_on_canonical_strategy_path:{exc}"
             ) from exc
+        research_session_id = (
+            sequence_state.confirmation_progress_session_id
+            if sequence_state.confirmation_progress_session_id
+            else f"mv2-research-session:{replay_id}"
+        )
+        observation_step = accept_mv2_research_bar_market_observation_v1(
+            prior_state=sequence_state.observation_acceptance_state,
+            instrument_id=instrument_id,
+            market_event_time=context.market_event_time,
+            mark_price=float(context.mark_price),
+            session_id=research_session_id,
+            venue=sequence_state.confirmation_progress_venue,
+            input_digest=input_digest,
+            reset_session=False,
+        )
+        # Initialize C3 carrier binding on first accepted observation path.
+        confirmation_progress = sequence_state.directional_confirmation_progress
+        if confirmation_progress is None:
+            confirmation_progress = initial_directional_confirmation_side_state_carrier_v1(
+                session_id=observation_step.session_id,
+                venue=observation_step.venue,
+                instrument=observation_step.instrument,
+            )
+        sequence_state = replace(
+            sequence_state,
+            observation_acceptance_state=observation_step.state_after,
+            last_observation_acceptance_result=observation_step.result,
+            directional_confirmation_progress=confirmation_progress,
+            confirmation_progress_session_id=observation_step.session_id,
+            confirmation_progress_venue=observation_step.venue,
+            confirmation_progress_instrument=observation_step.instrument,
+        )
         replay_input = _coerce_replay_input_enums_for_integrated_replay_v1(
             _build_replay_input(
                 replay_id=replay_id,
@@ -2513,6 +2722,11 @@ def run_mv2_research_backtest_wiring_v1(
                 input_digest=input_digest,
                 sequence_state=sequence_state,
                 strategy_suitability_agreement_material=agreement_material,
+                observation_acceptance_result=observation_step.result,
+                confirmation_progress_session_id=observation_step.session_id,
+                confirmation_progress_venue=observation_step.venue,
+                confirmation_progress_instrument=observation_step.instrument,
+                directional_confirmation_progress=confirmation_progress,
             )
         )
         replay_result = run_integrated_offline_trading_logic_replay_v1(replay_input)
@@ -2530,6 +2744,8 @@ def run_mv2_research_backtest_wiring_v1(
         sequence_state = replace(
             sequence_state,
             prior_mark_price=float(context.mark_price),
+            observation_acceptance_state=observation_step.state_after,
+            last_observation_acceptance_result=observation_step.result,
         )
         signal = map_decision_evidence_to_position_signal_v1(replay_result.evidence)
         killswitch_evidence: KillSwitchBoundaryBacktestStateFileEvidenceV0 | None = None

@@ -4,6 +4,24 @@ Integrated Offline Trading Logic Replay v1: pure orchestrator for STEP 29B–29H
 
 Orchestrates canonical component owners without duplicating component logic.
 No I/O, runtime, orders, adapter, quantity, or authority effects.
+
+C4 productive binding owner for:
+  POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1
+
+Authority chain (unchanged):
+  C1 Observation Acceptance
+  → C2 Confirmation Progress
+  → C3 DirectionalAssessmentV1.status  (sole confirmation→status authority)
+  → Survival (domain-only; may evaluate OBSERVE/CANDIDATE; never confirms)
+  → Suitability (domain-only; may evaluate OBSERVE/CANDIDATE; never confirms)
+  → Composition (sole CONFIRMED admissibility + side selection)
+  → Double-Play State
+  → Entry/Exit
+
+COMPOSITION_REMAINS_SOLE_CONFIRMED_ADMISSIBILITY_GATE=true
+SURVIVAL_CONFIRMED_EARLY_GATE=false
+SUITABILITY_CONFIRMED_EARLY_GATE=false
+C4 introduces no persistent state carrier; C3 side carrier remains caller-owned.
 """
 
 from __future__ import annotations
@@ -61,6 +79,11 @@ from trading.master_v2.directional_assessment_confirmation_integration_v1 import
     evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1,
     initial_directional_confirmation_side_state_carrier_v1,
     non_advancing_observation_acceptance_result_v1,
+)
+from trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1 import (
+    POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID,
+    assert_c4_c3_assessment_identity_binding_v1,
+    assert_post_c3_downstream_confirmation_non_authority_v1,
 )
 from trading.master_v2.directional_assessment_v1 import (
     DIRECTIONAL_ASSESSMENT_LAYER_VERSION,
@@ -309,6 +332,9 @@ class IntegratedOfflineReplayIntermediateV1:
     chop_binding_status: str = CHOP_BINDING_STATUS
     confirmation_integration_capability_id: str = (
         DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID
+    )
+    post_confirmation_binding_capability_id: str = (
+        POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID
     )
 
 
@@ -1338,6 +1364,11 @@ def run_integrated_offline_trading_logic_replay_v1(
     bull_assessment = bull_c3.assessment
     bear_assessment = bear_c3.assessment
 
+    # C4: post-C3 Survival → Suitability → Composition binding.
+    # Survival/Suitability consume C3 assessments only; Composition remains the sole
+    # CONFIRMED admissibility gate. No confirmation recompute / no new taxonomy.
+    assert_post_c3_downstream_confirmation_non_authority_v1()
+
     bull_survival = evaluate_survival_assessment_v1(
         _survival_input_for_assessment(inp, bull_assessment),
         inp.policies.survival,
@@ -1373,6 +1404,16 @@ def run_integrated_offline_trading_logic_replay_v1(
         explicit_blocked_reasons=(),
         scope_chop_policy_active=scope_chop_policy_active,
         policy_version=inp.policies.composition.policy_version,
+    )
+    assert_c4_c3_assessment_identity_binding_v1(
+        bull_assessment=bull_assessment,
+        bear_assessment=bear_assessment,
+        bull_survival=bull_survival,
+        bear_survival=bear_survival,
+        bull_suitability=bull_suitability,
+        bear_suitability=bear_suitability,
+        composition_input=composition_inp,
+        trading_epoch=inp.trading_epoch,
     )
     composition_inp = replace(
         composition_inp,
@@ -1664,6 +1705,9 @@ def run_integrated_offline_trading_logic_replay_v1(
         chop_binding_status=CHOP_BINDING_STATUS,
         confirmation_integration_capability_id=(
             DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID
+        ),
+        post_confirmation_binding_capability_id=(
+            POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID
         ),
     )
 

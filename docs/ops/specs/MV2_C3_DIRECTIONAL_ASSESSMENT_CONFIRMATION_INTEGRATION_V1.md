@@ -171,7 +171,7 @@ C3 does **not**:
 - change volatility
 - rebuild Survival / Suitability / Composition / Switch semantics
 - authorize orders, testnet, or live trading
-- start C4+
+- implement C4 (see `MV2_C4_POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1.md`)
 
 ## 12. Test Ownership
 
@@ -180,3 +180,6 @@ Canonical tests:
 - `tests&#47;trading&#47;master_v2&#47;test_directional_assessment_confirmation_integration_v1.py`
 
 Plus C1/C2/DA/replay/double-play regressions.
+
+Post-C3 binding ownership continues in C4:
+`POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1`.

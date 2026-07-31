@@ -66,6 +66,15 @@ AUTHORIZED_C3_DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_FIXTURE = [
     "config/governance/technical_canonical_wiring_authorization_v1.json",
 ]
 
+AUTHORIZED_C4_POST_CONFIRMATION_BINDING_FIXTURE = [
+    "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "src/backtest/mv2_research_wiring_v1.py",
+    "tests/trading/master_v2/test_post_confirmation_survival_suitability_composition_binding_v1.py",
+    "docs/ops/specs/MV2_C4_POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1.md",
+    "config/governance/technical_canonical_wiring_authorization_v1.json",
+]
+
 AUTHORIZED_SURFACE_P_REGISTRY_STATUS_CONTRACT_FIXTURE = [
     "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py",
     "tests/trading/master_v2/test_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
