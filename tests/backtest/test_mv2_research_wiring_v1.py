@@ -17,6 +17,9 @@ from src.trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CanonicalTradingDecisionEvidenceV1,
     with_computed_evidence_semantic_digest,
 )
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationClassification,
+)
 
 
 def _cfg(*, fee_bps: float = 10.0, slippage_bps: float = 5.0) -> Mapping[str, Any]:
@@ -969,3 +972,101 @@ class TestEconomicResearchWarmupGatingRepairV0:
     def test_block_reason_counts_include_warmup_required_skips(self) -> None:
         result = _run_research_warmup(bars=_research_warmup_bars(warmup_count=2, complete_count=1))
         assert result.block_reason_counts[wiring.ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON] == 2
+
+
+def test_c4_research_first_bar_distinct_acceptance() -> None:
+    step = wiring.accept_mv2_research_bar_market_observation_v1(
+        prior_state=None,
+        instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+        market_event_time="2026-06-01T00:00:00+00:00",
+        mark_price=100.0,
+        session_id="research-sess-c4",
+    )
+    assert step.result.classification is ObservationClassification.DISTINCT
+    assert step.result.strategy_advance_allowed is True
+    assert step.state_after.market_observation_epoch.value == 1
+
+
+def test_c4_research_duplicate_bar_cannot_advance() -> None:
+    first = wiring.accept_mv2_research_bar_market_observation_v1(
+        prior_state=None,
+        instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+        market_event_time="2026-06-01T00:00:00+00:00",
+        mark_price=100.0,
+        session_id="research-sess-c4",
+    )
+    second = wiring.accept_mv2_research_bar_market_observation_v1(
+        prior_state=first.state_after,
+        instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+        market_event_time="2026-06-01T00:00:00+00:00",
+        mark_price=100.0,
+        session_id="research-sess-c4",
+    )
+    assert second.result.classification is ObservationClassification.DUPLICATE
+    assert second.result.strategy_advance_allowed is False
+    assert second.state_after == first.state_after
+
+
+def test_c4_research_next_distinct_bar_advances_exactly_once() -> None:
+    first = wiring.accept_mv2_research_bar_market_observation_v1(
+        prior_state=None,
+        instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+        market_event_time="2026-06-01T00:00:00+00:00",
+        mark_price=100.0,
+        session_id="research-sess-c4",
+    )
+    second = wiring.accept_mv2_research_bar_market_observation_v1(
+        prior_state=first.state_after,
+        instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+        market_event_time="2026-06-01T01:00:00+00:00",
+        mark_price=101.0,
+        session_id="research-sess-c4",
+    )
+    assert second.result.classification is ObservationClassification.DISTINCT
+    assert second.state_after.market_observation_epoch.value == 2
+
+
+def test_c4_research_epoch_regression_fail_closed() -> None:
+    first = wiring.accept_mv2_research_bar_market_observation_v1(
+        prior_state=None,
+        instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+        market_event_time="2026-06-01T02:00:00+00:00",
+        mark_price=100.0,
+        session_id="research-sess-c4",
+    )
+    with pytest.raises(ValueError, match="research_observation_fail_closed"):
+        wiring.accept_mv2_research_bar_market_observation_v1(
+            prior_state=first.state_after,
+            instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+            market_event_time="2026-06-01T01:00:00+00:00",
+            mark_price=99.0,
+            session_id="research-sess-c4",
+        )
+
+
+def test_c4_research_explicit_session_reset() -> None:
+    first = wiring.accept_mv2_research_bar_market_observation_v1(
+        prior_state=None,
+        instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+        market_event_time="2026-06-01T00:00:00+00:00",
+        mark_price=100.0,
+        session_id="research-sess-a",
+    )
+    reset = wiring.accept_mv2_research_bar_market_observation_v1(
+        prior_state=first.state_after,
+        instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+        market_event_time="2026-06-01T00:00:00+00:00",
+        mark_price=100.0,
+        session_id="research-sess-b",
+        reset_session=True,
+    )
+    assert reset.result.classification is ObservationClassification.DISTINCT
+    assert reset.state_after.market_observation_epoch.value == 1
+
+
+def test_c4_research_wiring_run_binds_observation_and_c4_capability() -> None:
+    result = _run(bars=_bars(n=3))
+    assert result.bar_outcomes
+    assert wiring.POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID == (
+        "POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1"
+    )

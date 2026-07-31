@@ -728,7 +728,10 @@
     "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
     "src/trading/master_v2/directional_assessment_confirmation_integration_v1.py",
     "src/trading/master_v2/directional_assessment_v1.py",
-    "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py"
+    "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py",
+    "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+    "tests/trading/master_v2/test_post_confirmation_survival_suitability_composition_binding_v1.py",
+    "docs/ops/specs/MV2_C4_POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -874,7 +877,8 @@
     "Includes IMPLEMENTATION_ONLY evaluation wiring surfaces for Bollinger/MR midband exit reentry-cooldown V8 bound to Operator Clarification Authority B1-B6; preregistration digest and semantics remain immutable; EVALUATION_RUN_COUNT=0; default CLI preflight-only; evaluate requires hypothesis-specific authorization flag AND effective ratification/lifecycle authorization (prereg evaluation_authorized field remains false); pre-authorization frozen-parameter parity required before runner authorization/slot; evaluate evidence directory is not pre-created; no evaluation executed here; no holdout; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V8.",
     "Includes V8 Operator Clarification Authority overlay (B1-B6) over immutable preregistration digest 610460038f56bddda426f4169876a4ead00c186d1601256174033b4e4fca0a0c; binds decision/preflight/state/gate/runner/lifecycle; allows READY_FOR_OPERATOR_EVALUATION_AUTHORIZATION -> EVALUATION_AUTHORIZED via separate ratification; evaluation_run_count=0; pre-authorization parity required; no evaluation/panel/holdout/runtime/orders in clarification/wiring slice. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8.",
     "Includes V8 DEVELOPMENT evaluation authorization ratification separate from immutable preregistration; requires pre-authorization parity PASS and released DEVELOPMENT panel; transitions lifecycle to EVALUATION_AUTHORIZED; does not start runner or claim run slot; next step awaits separate run Operator-GO. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V8.",
-    "C3 DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1: authorize exact-file Master-V2 confirmation-integration adapter, legacy DA quarantine comments, and C3 contract tests. No runtime activation, no config/threshold mutation, no broad master_v2 grant."
+    "C3 DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1: authorize exact-file Master-V2 confirmation-integration adapter, legacy DA quarantine comments, and C3 contract tests. No runtime activation, no config/threshold mutation, no broad master_v2 grant.",
+    "C4 POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1: authorize post-C3 Survival/Suitability/Composition binding guards, Research C1 DISTINCT wiring, C4 contract tests and docs. Composition remains sole CONFIRMED admissibility gate. No runtime activation, no parameter/volatility mutation."
   ],
   "pr_specific_exception": false,
   "required_check_waiver": false,
@@ -894,6 +898,7 @@
     "Includes shared definition-only canonical research-lane post-terminal lifecycle contract (state vocabulary, totality, operator-decision, immutability/live-mirror policy); does not migrate Entry-Eligibility or Exit-Efficiency backlog SSOTs; no evaluation/holdout/runtime/orders. Owner surface: CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1.",
     "Includes Holdout evaluation for Bollinger/MR midband exit reentry-cooldown HOLDOUT_V1 executed once and terminal as FAIL/NET_PROFIT_FACTOR_NOT_IMPROVED (run count 1/1); no second run; no economic/promotion/runtime/orders. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.",
     "Includes fail-closed Shadow-Prep reconciliation rename of runtime-bridge pre-activation economic evidence field to integrated economic evidence bundle verified status; no activation, no orders, no readiness PASS coercion. Owner surface: INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.",
-    "DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1 exact-file allowlist for C3 adapter + DA quarantine + C3 tests (offline confirmation integration only)"
+    "DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1 exact-file allowlist for C3 adapter + DA quarantine + C3 tests (offline confirmation integration only)",
+    "POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1 exact-file allowlist for C4 binding guards + Research C1 DISTINCT + C4 tests/docs (offline binding only)"
   ]
 }
