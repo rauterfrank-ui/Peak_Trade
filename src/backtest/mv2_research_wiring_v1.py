@@ -125,6 +125,10 @@ from src.trading.master_v2.deterministic_scope_event_generator_v1 import (
     ScopeDirectionState,
     ScopeEventGeneratorPolicyV1,
 )
+from src.trading.master_v2.directional_assessment_confirmation_integration_v1 import (
+    DirectionalConfirmationSideStateCarrierV1,
+    initial_directional_confirmation_side_state_carrier_v1,
+)
 from src.trading.master_v2.directional_assessment_v1 import (
     DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
     DirectionalAssessmentPolicyV1,
@@ -132,6 +136,7 @@ from src.trading.master_v2.directional_assessment_v1 import (
     DirectionalAssessmentV1,
     DirectionalConfirmationStateV1,
 )
+from src.trading.market_state.observation_identity_v1 import InstrumentObservationKeyV1
 from src.trading.master_v2.double_play_composition_matrix_v1 import (
     DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
     BothCandidateOutcome,
@@ -369,6 +374,7 @@ class MV2IntegratedReplayBarSequenceStateV1:
     scope_direction_state: ScopeDirectionState
     scope_confirmation_state: ScopeConfirmationStateV1
     scope_cooldown_state: ScopeCooldownStateV1
+    # LEGACY_NON_AUTHORITY: retained for API compatibility; not used for confirmation.
     directional_confirmation_state: DirectionalConfirmationStateV1
     previous_composition_direction_state: CompositionDirectionState
     position_management_context: PositionManagementContext
@@ -394,6 +400,11 @@ class MV2IntegratedReplayBarSequenceStateV1:
     dynamic_scope_rules: Any | None = None
     # Prior bar mark for market-context price_path when strategy direction is unbound.
     prior_mark_price: float | None = None
+    # C3 productive confirmation carrier (Bull/Bear isolated).
+    directional_confirmation_progress: DirectionalConfirmationSideStateCarrierV1 | None = None
+    confirmation_progress_session_id: str | None = None
+    confirmation_progress_venue: str | None = None
+    confirmation_progress_instrument: InstrumentObservationKeyV1 | None = None
 
 
 @dataclass(frozen=True)
@@ -1227,14 +1238,12 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
         position_state=entry_exit.position_state,
     )
     scope_confirmation = intermediate.scope_event.next_confirmation_state
-    policies = _default_policies()
-    directional_confirmation_state = project_directional_confirmation_state_from_assessments_v1(
-        bull_assessment=intermediate.bull_assessment,
-        bear_assessment=intermediate.bear_assessment,
-        previous=previous.directional_confirmation_state,
-        next_trading_epoch=next_trading_epoch,
-        candidate_signal_threshold=float(policies.directional.candidate_signal_threshold),
-    )
+    # C3 carrier is the sole productive confirmation projection authority.
+    directional_confirmation_progress = intermediate.directional_confirmation_progress_after
+    if directional_confirmation_progress is None:
+        directional_confirmation_progress = previous.directional_confirmation_progress
+    # Legacy field retained as non-authority placeholder (never projected from assessments).
+    directional_confirmation_state = previous.directional_confirmation_state
     return MV2IntegratedReplayBarSequenceStateV1(
         existing_scope=intermediate.current_scope,
         scope_direction_state=scope_direction_state,
@@ -1264,6 +1273,10 @@ def project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1(
         runtime_scope_bound_instrument_id=intermediate.current_scope.instrument_id,
         dynamic_scope_rules=previous.dynamic_scope_rules,
         prior_mark_price=previous.prior_mark_price,
+        directional_confirmation_progress=directional_confirmation_progress,
+        confirmation_progress_session_id=previous.confirmation_progress_session_id,
+        confirmation_progress_venue=previous.confirmation_progress_venue,
+        confirmation_progress_instrument=previous.confirmation_progress_instrument,
     )
 
 
@@ -1631,7 +1644,27 @@ def project_directional_confirmation_state_from_assessments_v1(
     next_trading_epoch: int,
     candidate_signal_threshold: float,
 ) -> DirectionalConfirmationStateV1:
-    """Feed confirmation state from DA provenance; never from scope candidate_count."""
+    """LEGACY_NON_AUTHORITY / QUARANTINED.
+
+    Historical lossy Bull/Bear merge projector. Must not be used as productive
+    confirmation authority after C3. Retained only so static imports and older
+    research helpers do not break; productive bar projection uses the C3 carrier.
+    """
+    raise RuntimeError(
+        "LEGACY_LOSSY_CROSS_SIDE_PROJECTOR_AUTHORITY_FORBIDDEN:"
+        "use_DirectionalConfirmationSideStateCarrierV1_from_C3_intermediate"
+    )
+
+
+def _legacy_project_directional_confirmation_state_from_assessments_v1_quarantined(
+    *,
+    bull_assessment: DirectionalAssessmentV1,
+    bear_assessment: DirectionalAssessmentV1,
+    previous: DirectionalConfirmationStateV1,
+    next_trading_epoch: int,
+    candidate_signal_threshold: float,
+) -> DirectionalConfirmationStateV1:
+    """Internal quarantine copy — not reachable from productive projection."""
     threshold = float(candidate_signal_threshold)
     active = [
         assessment
@@ -1799,6 +1832,10 @@ def _build_replay_input(
         runtime_scope_bound_instrument_id=sequence_state.runtime_scope_bound_instrument_id,
         dynamic_scope_rules=sequence_state.dynamic_scope_rules,
         explicit_runtime_scope_reset=False,
+        directional_confirmation_progress=sequence_state.directional_confirmation_progress,
+        confirmation_progress_session_id=sequence_state.confirmation_progress_session_id,
+        confirmation_progress_venue=sequence_state.confirmation_progress_venue,
+        confirmation_progress_instrument=sequence_state.confirmation_progress_instrument,
     )
 
 

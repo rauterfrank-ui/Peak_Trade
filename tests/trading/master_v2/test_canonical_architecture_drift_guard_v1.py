@@ -115,7 +115,7 @@ def test_negative_fixture_competing_partial_stage_orchestrator_rejected(
     owner_dir.mkdir(parents=True)
     (owner_dir / owner_rel.name).write_text(
         "def run_integrated_offline_trading_logic_replay_v1(replay_input):\n"
-        "    evaluate_directional_assessment_v1()\n"
+        "    evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1()\n"
         "    evaluate_survival_assessment_v1()\n"
         "    evaluate_suitability_binding_v1()\n"
         "    evaluate_double_play_composition_matrix_v1()\n"
@@ -127,7 +127,7 @@ def test_negative_fixture_competing_partial_stage_orchestrator_rejected(
     rogue.parent.mkdir(parents=True, exist_ok=True)
     rogue.write_text(
         "def run_parallel_total_decision_v0(replay_input):\n"
-        "    evaluate_directional_assessment_v1()\n"
+        "    evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1()\n"
         "    evaluate_survival_assessment_v1()\n"
         "    evaluate_suitability_binding_v1()\n"
         "    evaluate_double_play_composition_matrix_v1()\n"

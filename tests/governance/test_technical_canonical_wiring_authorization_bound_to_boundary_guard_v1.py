@@ -55,6 +55,17 @@ AUTHORIZED_CANONICAL_ARCHITECTURE_DRIFT_GUARD_FIXTURE = [
     "config/governance/technical_canonical_wiring_authorization_v1.json",
 ]
 
+AUTHORIZED_C3_DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_FIXTURE = [
+    "src/trading/master_v2/directional_assessment_confirmation_integration_v1.py",
+    "src/trading/master_v2/directional_assessment_v1.py",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "src/backtest/mv2_research_wiring_v1.py",
+    "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py",
+    "tests/trading/master_v2/_canonical_architecture_drift_guard_helpers_v1.py",
+    "tests/trading/master_v2/test_canonical_architecture_drift_guard_v1.py",
+    "config/governance/technical_canonical_wiring_authorization_v1.json",
+]
+
 AUTHORIZED_SURFACE_P_REGISTRY_STATUS_CONTRACT_FIXTURE = [
     "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py",
     "tests/trading/master_v2/test_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
@@ -111,7 +122,7 @@ class TestTechnicalCanonicalWiringAuthorizationContractV1:
 class TestTechnicalCanonicalWiringAuthorizationNegativeV1:
     def test_unauthorized_master_v2_mutation_fails(self) -> None:
         report = build_boundary_report(
-            ["src/trading/master_v2/directional_assessment_v1.py"],
+            ["src/trading/master_v2/survival_assessment_v1.py"],
             repo_root=REPO_ROOT,
         )
         assert report.admissible is False
@@ -234,7 +245,7 @@ class TestTechnicalCanonicalWiringAuthorizationNegativeV1:
     def test_research_plus_forbidden_core_without_matching_auth_fails(self) -> None:
         changed = [
             "src/research/linear_evidence/cost_model.py",
-            "src/trading/master_v2/directional_assessment_v1.py",
+            "src/trading/master_v2/survival_assessment_v1.py",
         ]
         report = build_boundary_report(changed, repo_root=REPO_ROOT)
         assert report.admissible is False

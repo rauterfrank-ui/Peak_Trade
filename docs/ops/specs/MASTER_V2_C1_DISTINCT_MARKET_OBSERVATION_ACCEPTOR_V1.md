@@ -177,7 +177,7 @@ Compatibility note:
 | Slice | Depends on C1 | Status in this PR |
 | --- | --- | --- |
 | C2 | Accepted DISTINCT observation stream / epoch ownership | not started |
-| C3 | Observation-gated confirmation inputs | not started |
+| C3 | Observation-gated confirmation inputs | implemented (`DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1`) |
 | C4 | Volatility / bar coupling to observation epoch | not started |
 | C5 | Timer / clock migration around observation epoch | not started |
 | C6 | Strategy evaluator advance wiring | not started |

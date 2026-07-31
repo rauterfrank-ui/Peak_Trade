@@ -54,6 +54,14 @@ from trading.master_v2.deterministic_scope_event_generator_v1 import (
     generate_deterministic_scope_event,
     with_computed_scope_event_digest,
 )
+from trading.master_v2.directional_assessment_confirmation_integration_v1 import (
+    DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID,
+    DirectionalConfirmationSideStateCarrierV1,
+    assert_c3_confirmation_authority_exclusive_v1,
+    evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1,
+    initial_directional_confirmation_side_state_carrier_v1,
+    non_advancing_observation_acceptance_result_v1,
+)
 from trading.master_v2.directional_assessment_v1 import (
     DIRECTIONAL_ASSESSMENT_LAYER_VERSION,
     DirectionalAssessmentInputV1,
@@ -62,9 +70,11 @@ from trading.master_v2.directional_assessment_v1 import (
     DirectionalAssessmentV1,
     DirectionalConfirmationStateV1,
     ScopeEventRefV1,
-    evaluate_directional_assessment_v1,
-    with_computed_directional_assessment_digest,
 )
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationAcceptanceResultV1,
+)
+from trading.market_state.observation_identity_v1 import InstrumentObservationKeyV1
 from trading.master_v2.double_play_composition_matrix_v1 import (
     DOUBLE_PLAY_COMPOSITION_MATRIX_LAYER_VERSION,
     CompositionDirectionState,
@@ -209,6 +219,8 @@ class IntegratedOfflineReplayInputV1:
     confirmation_epochs: int
     current_price: float
     price_path: Tuple[float, ...]
+    # LEGACY_NON_AUTHORITY: retained for builder/API compatibility only.
+    # Productive confirmation authority is C3 side-state carrier + C1/C2.
     directional_confirmation_state: DirectionalConfirmationStateV1
     strategy_registry: SuitabilityStrategyRegistryV1
     regime_id: str
@@ -246,6 +258,14 @@ class IntegratedOfflineReplayInputV1:
     runtime_scope_bound_instrument_id: Optional[str] = None
     dynamic_scope_rules: Optional[DynamicScopeRules] = None
     explicit_runtime_scope_reset: bool = False
+    # C3 confirmation integration (caller-owned). When omitted, offline replay uses
+    # initial empty OBSERVE carrier + explicit NON_DISTINCT acceptor placeholder
+    # (never invents DISTINCT; never consults legacy DirectionalConfirmationStateV1).
+    directional_confirmation_progress: Optional[DirectionalConfirmationSideStateCarrierV1] = None
+    observation_acceptance_result: Optional[ObservationAcceptanceResultV1] = None
+    confirmation_progress_session_id: Optional[str] = None
+    confirmation_progress_venue: Optional[str] = None
+    confirmation_progress_instrument: Optional[InstrumentObservationKeyV1] = None
 
 
 @dataclass(frozen=True)
@@ -283,7 +303,13 @@ class IntegratedOfflineReplayIntermediateV1:
     runtime_scope_state_after: RuntimeScopeState
     runtime_scope_reinitialized: bool
     trailing_anchor_used: float
+    directional_confirmation_progress_after: Optional[DirectionalConfirmationSideStateCarrierV1] = (
+        None
+    )
     chop_binding_status: str = CHOP_BINDING_STATUS
+    confirmation_integration_capability_id: str = (
+        DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID
+    )
 
 
 @dataclass(frozen=True)
@@ -385,6 +411,11 @@ def build_integrated_offline_replay_input_v1(
     runtime_scope_bound_instrument_id: Optional[str] = None,
     dynamic_scope_rules: Optional[DynamicScopeRules] = None,
     explicit_runtime_scope_reset: bool = False,
+    directional_confirmation_progress: Optional[DirectionalConfirmationSideStateCarrierV1] = None,
+    observation_acceptance_result: Optional[ObservationAcceptanceResultV1] = None,
+    confirmation_progress_session_id: Optional[str] = None,
+    confirmation_progress_venue: Optional[str] = None,
+    confirmation_progress_instrument: Optional[InstrumentObservationKeyV1] = None,
 ) -> IntegratedOfflineReplayInputV1:
     """Single canonical productive constructor for IntegratedOfflineReplayInputV1.
 
@@ -578,6 +609,27 @@ def build_integrated_offline_replay_input_v1(
         errors.append("dynamic_scope_rules_type_invalid")
     if not isinstance(explicit_runtime_scope_reset, bool):
         errors.append("explicit_runtime_scope_reset_invalid")
+    if directional_confirmation_progress is not None and not _builder_type_name_ok(
+        directional_confirmation_progress, "DirectionalConfirmationSideStateCarrierV1"
+    ):
+        errors.append("directional_confirmation_progress_type_invalid")
+    if observation_acceptance_result is not None and not _builder_type_name_ok(
+        observation_acceptance_result, "ObservationAcceptanceResultV1"
+    ):
+        errors.append("observation_acceptance_result_type_invalid")
+    if confirmation_progress_session_id is not None and (
+        not isinstance(confirmation_progress_session_id, str)
+        or not confirmation_progress_session_id.strip()
+    ):
+        errors.append("confirmation_progress_session_id_invalid")
+    if confirmation_progress_venue is not None and (
+        not isinstance(confirmation_progress_venue, str) or not confirmation_progress_venue.strip()
+    ):
+        errors.append("confirmation_progress_venue_invalid")
+    if confirmation_progress_instrument is not None and not _builder_type_name_ok(
+        confirmation_progress_instrument, "InstrumentObservationKeyV1"
+    ):
+        errors.append("confirmation_progress_instrument_type_invalid")
 
     if errors:
         raise ValueError(";".join(sorted(set(errors))))
@@ -641,6 +693,11 @@ def build_integrated_offline_replay_input_v1(
         runtime_scope_bound_instrument_id=runtime_scope_bound_instrument_id,
         dynamic_scope_rules=dynamic_scope_rules,
         explicit_runtime_scope_reset=bool(explicit_runtime_scope_reset),
+        directional_confirmation_progress=directional_confirmation_progress,
+        observation_acceptance_result=observation_acceptance_result,
+        confirmation_progress_session_id=confirmation_progress_session_id,
+        confirmation_progress_venue=confirmation_progress_venue,
+        confirmation_progress_instrument=confirmation_progress_instrument,
     )
 
 
@@ -934,6 +991,9 @@ def _directional_input_for_side(
     ``compute_signal_strength`` (sign flip for SHORT). Do not mirror the shared path
     here: mirroring plus the SHORT sign flip would invent identical candidate strength
     on both sides from one directional impulse.
+
+    ``confirmation_state`` remains typed for DirectionalAssessmentInputV1 compatibility
+    but is LEGACY_NON_AUTHORITY under C3 (never consulted for status).
     """
     anchor = float(inp.canonical_market_context.mark_price)
     return DirectionalAssessmentInputV1(
@@ -954,6 +1014,60 @@ def _directional_input_for_side(
         explicit_hard_block_reasons=(),
         policy_version=inp.policies.directional.policy_version,
     )
+
+
+def _resolve_c3_confirmation_binding_v1(
+    inp: IntegratedOfflineReplayInputV1,
+) -> tuple[
+    DirectionalConfirmationSideStateCarrierV1,
+    ObservationAcceptanceResultV1,
+    str,
+    str,
+    InstrumentObservationKeyV1,
+]:
+    """Resolve caller-owned C3 binding; never invent DISTINCT observations."""
+    assert_c3_confirmation_authority_exclusive_v1()
+    instrument = inp.confirmation_progress_instrument
+    if instrument is None:
+        venue = (
+            inp.confirmation_progress_venue.strip()
+            if isinstance(inp.confirmation_progress_venue, str)
+            and inp.confirmation_progress_venue.strip()
+            else "offline_replay"
+        )
+        instrument = InstrumentObservationKeyV1(
+            venue=venue,
+            canonical_instrument_id=inp.instrument_id,
+            venue_instrument_id=inp.instrument_id,
+        )
+    venue = (
+        inp.confirmation_progress_venue.strip()
+        if isinstance(inp.confirmation_progress_venue, str)
+        and inp.confirmation_progress_venue.strip()
+        else instrument.venue
+    )
+    session_id = (
+        inp.confirmation_progress_session_id.strip()
+        if isinstance(inp.confirmation_progress_session_id, str)
+        and inp.confirmation_progress_session_id.strip()
+        else f"offline-replay:{inp.replay_id}"
+    )
+    carrier = inp.directional_confirmation_progress
+    if carrier is None:
+        carrier = initial_directional_confirmation_side_state_carrier_v1(
+            session_id=session_id,
+            venue=venue,
+            instrument=instrument,
+        )
+    acceptor = inp.observation_acceptance_result
+    if acceptor is None:
+        acceptor = non_advancing_observation_acceptance_result_v1(
+            bound_instrument_key=instrument,
+            market_observation_epoch=(
+                carrier.bull_confirmation_state.latest_accepted_market_observation_epoch
+            ),
+        )
+    return carrier, acceptor, session_id, venue, instrument
 
 
 def _survival_input_for_assessment(
@@ -1199,12 +1313,30 @@ def run_integrated_offline_trading_logic_replay_v1(
     scope_event_ref = _scope_event_ref_from_evidence(scope_event)
     bull_inp = _directional_input_for_side(inp, DirectionalAssessmentSide.LONG, scope_event_ref)
     bear_inp = _directional_input_for_side(inp, DirectionalAssessmentSide.SHORT, scope_event_ref)
-    bull_assessment = with_computed_directional_assessment_digest(
-        evaluate_directional_assessment_v1(bull_inp, inp.policies.directional)
+    (
+        prior_carrier,
+        observation_acceptance_result,
+        confirmation_session_id,
+        confirmation_venue,
+        confirmation_instrument,
+    ) = _resolve_c3_confirmation_binding_v1(inp)
+    # LEGACY_NON_PRODUCTIVE_CONFIRMATION_AUTHORITY_NOTE:
+    # evaluate_directional_assessment_v1 remains the isolated unit-test DA owner.
+    # Productive confirmation authority is C3 below (not evaluate_directional_assessment_v1).
+    bull_c3, bear_c3, confirmation_progress_after = (
+        evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1(
+            bull_input=bull_inp,
+            bear_input=bear_inp,
+            policy=inp.policies.directional,
+            prior_carrier=prior_carrier,
+            observation_acceptance_result=observation_acceptance_result,
+            session_id=confirmation_session_id,
+            venue=confirmation_venue,
+            instrument=confirmation_instrument,
+        )
     )
-    bear_assessment = with_computed_directional_assessment_digest(
-        evaluate_directional_assessment_v1(bear_inp, inp.policies.directional)
-    )
+    bull_assessment = bull_c3.assessment
+    bear_assessment = bear_c3.assessment
 
     bull_survival = evaluate_survival_assessment_v1(
         _survival_input_for_assessment(inp, bull_assessment),
@@ -1528,7 +1660,11 @@ def run_integrated_offline_trading_logic_replay_v1(
         runtime_scope_state_after=runtime_scope_after,
         runtime_scope_reinitialized=runtime_scope_reinitialized,
         trailing_anchor_used=trailing_anchor_used,
+        directional_confirmation_progress_after=confirmation_progress_after,
         chop_binding_status=CHOP_BINDING_STATUS,
+        confirmation_integration_capability_id=(
+            DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID
+        ),
     )
 
     boundary_ok = (
