@@ -20,7 +20,7 @@ from trading.market_state.observation_identity_v1 import (
     InstrumentObservationKeyV1,
     MarketObservationEpoch,
 )
-from trading.master_v2.directional_confirmation_progress_v1 import (
+from trading.market_state.directional_confirmation_progress_v1 import (
     CONFIRMATION_PROGRESS_CAPABILITY_ID,
     CONFIRMATION_PROGRESS_COMPONENT,
     CONFIRMATION_PROGRESS_PURITY,

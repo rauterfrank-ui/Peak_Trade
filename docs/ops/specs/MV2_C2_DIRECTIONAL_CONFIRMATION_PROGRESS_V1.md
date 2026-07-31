@@ -211,7 +211,15 @@ C2 does **not**:
 
 Canonical tests:
 
-- `tests&#47;trading&#47;master_v2&#47;test_directional_confirmation_progress_v1.py`
+- `tests&#47;trading&#47;market_state&#47;test_directional_confirmation_progress_v1.py`
+
+Implementation location (boundary-admissible, co-located with C1):
+
+- `src&#47;trading&#47;market_state&#47;directional_confirmation_progress_v1.py`
+
+Note: Placement under `market_state` (not `master_v2`) keeps
+`CONFIG_CHANGE=false` while remaining admissible under the economic/diagnostic
+optimization boundary guard, matching the C1 observation-authority package.
 
 Covers initial state, contiguous distinct progress, non-distinct no-ops,
 idempotency, epoch gap/regression, session/instrument/venue/side isolation,

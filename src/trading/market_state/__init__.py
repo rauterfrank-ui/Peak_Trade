@@ -2,6 +2,24 @@
 
 from __future__ import annotations
 
+from trading.market_state.directional_confirmation_progress_v1 import (
+    CONFIRMATION_PROGRESS_CAPABILITY_ID,
+    CONFIRMATION_PROGRESS_COMPONENT,
+    CONFIRMATION_PROGRESS_PURITY,
+    ConfirmationAssessmentSignalV1,
+    ConfirmationAssessmentStateV1,
+    ConfirmationProgressInputV1,
+    ConfirmationProgressReasonCodeV1,
+    ConfirmationProgressResultV1,
+    ConfirmationProgressStateV1,
+    ConfirmationSideV1,
+    confirmation_progress_fingerprint_v1,
+    evaluate_confirmation_progress_v1,
+    initial_confirmation_progress_state_v1,
+    reject_decision_epoch_confirmation_advance_v1,
+    reject_receive_time_confirmation_advance_v1,
+    reject_runtime_cycle_confirmation_advance_v1,
+)
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
     OBSERVATION_ACCEPTOR_COMPONENT,
     OBSERVATION_ACCEPTOR_PURITY,
@@ -30,6 +48,16 @@ from trading.market_state.trading_epoch_compatibility_v1 import (
 )
 
 __all__ = [
+    "CONFIRMATION_PROGRESS_CAPABILITY_ID",
+    "CONFIRMATION_PROGRESS_COMPONENT",
+    "CONFIRMATION_PROGRESS_PURITY",
+    "ConfirmationAssessmentSignalV1",
+    "ConfirmationAssessmentStateV1",
+    "ConfirmationProgressInputV1",
+    "ConfirmationProgressReasonCodeV1",
+    "ConfirmationProgressResultV1",
+    "ConfirmationProgressStateV1",
+    "ConfirmationSideV1",
     "OBSERVATION_ACCEPTOR_COMPONENT",
     "OBSERVATION_ACCEPTOR_PURITY",
     "TRADING_EPOCH_ALIAS_TARGET",
@@ -45,9 +73,15 @@ __all__ = [
     "ObservationTransportMetadataV1",
     "assert_runtime_cycle_assignment_rejected_v1",
     "commit_observation_acceptance_v1",
+    "confirmation_progress_fingerprint_v1",
+    "evaluate_confirmation_progress_v1",
     "evaluate_distinct_market_observation_v1",
+    "initial_confirmation_progress_state_v1",
     "initial_observation_acceptance_state_v1",
     "market_observation_epoch_from_trading_epoch_alias_v1",
     "observation_candidate_from_normalized_public_market_data_v1",
     "observation_identity_from_normalized_public_market_data_v1",
+    "reject_decision_epoch_confirmation_advance_v1",
+    "reject_receive_time_confirmation_advance_v1",
+    "reject_runtime_cycle_confirmation_advance_v1",
 ]
