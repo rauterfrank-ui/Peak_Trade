@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from enum import Enum
-from typing import Tuple
+from typing import Optional, Tuple
 
 DOUBLE_PLAY_STATE_LAYER_VERSION = "v0"
 
@@ -80,7 +80,9 @@ class DynamicScopeRules:
     max_band_width: float = 1.0e6
     min_switch_cooldown_ticks: int = 0
     # Vol proxy for band width in update_dynamic_boundaries; abstract unit.
-    volatility_estimate: float = 1.0
+    # None = unknown / unmaterialized. Productive paths must supply an explicit
+    # quarantined legacy value or a C1-adapted typed float — never invent 1.0.
+    volatility_estimate: Optional[float] = None
     # Switches in rolling window (optional enforcement in transition_state)
     max_switches_per_window: int = 1_000_000
 
@@ -151,6 +153,12 @@ def rules_valid(rules: DynamicScopeRules) -> bool:
         return False
     if rules.max_switches_per_window < 0:
         return False
+    # Band updates require an explicit volatility estimate. None / non-finite /
+    # negative remain invalid (no silent 1.0 constructor materialization).
+    if rules.volatility_estimate is not None:
+        vol = float(rules.volatility_estimate)
+        if vol != vol or vol < 0.0:  # NaN or negative
+            return False
     return True
 
 
@@ -199,7 +207,10 @@ def update_dynamic_boundaries(
         return st
     if st.chop_latched:
         return st
-    band = clamp_band_width(rules.volatility_estimate * mark_price, rules, env)
+    if rules.volatility_estimate is None:
+        # Unknown volatility: freeze trailing (fail-closed; no 1.0 invention).
+        return st
+    band = clamp_band_width(float(rules.volatility_estimate) * mark_price, rules, env)
     if side == ActiveSide.LONG:
         new_anchor = max(st.anchor_price, mark_price) if st.anchor_price > 0 else mark_price
         down = new_anchor - band

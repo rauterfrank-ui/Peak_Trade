@@ -55,10 +55,8 @@ TRADING_LOGIC_EFFECT = False
 PARAMETER_EFFECT = False
 LIVE_AUTHORIZATION = False
 
-# Explicit open hot-path gaps (must remain open; not closed by this capability).
+# Explicit open remaining gaps after typed consumption + C1 binding (C2 closes G1/G2).
 OPEN_HOT_PATH_GAPS: tuple[str, ...] = (
-    "G1_SILENT_0_2_IN_HISTORICAL_BIND",
-    "G2_SILENT_0_02_SCENARIO_INTEGRATED_DEFAULTS",
     "G3_UNTYPED_EXISTING_HOT_PATH_FLOAT",
     "G4_COMPETING_PRODUCERS_DIFFERENT_SCALING",
     "G5_PANEL_1H_REUSES_PT1M_LOOKBACK",

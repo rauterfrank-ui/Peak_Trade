@@ -133,6 +133,10 @@ from trading.master_v2.double_play_state import (
     transition_state,
     update_dynamic_boundaries,
 )
+from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
+    quarantine_explicit_replay_default_volatility_v1,
+    require_admitted_legacy_volatility_float_v1,
+)
 from trading.master_v2.double_play_suitability import (
     SideCompatibility,
     StrategyMetadata,
@@ -218,12 +222,19 @@ _STATIC_LIMITS = StaticHardLimits(
     max_band_width=100.0,
 )
 _RUNTIME_ENVELOPE = RuntimeEnvelope(static=_STATIC_LIMITS, live_authorization=False)
+_SCENARIO_REPLAY_DEFAULT_VOL_QUARANTINE = quarantine_explicit_replay_default_volatility_v1(
+    source_file_or_component=(
+        "src/trading/master_v2/offline_double_play_scenario_replay_v0.py:_DEFAULT_RULES"
+    ),
+)
 _DEFAULT_RULES = DynamicScopeRules(
     min_band_width=1.0,
     max_band_width=50.0,
     min_switch_cooldown_ticks=0,
     max_switches_per_window=1_000_000,
-    volatility_estimate=0.02,
+    volatility_estimate=require_admitted_legacy_volatility_float_v1(
+        _SCENARIO_REPLAY_DEFAULT_VOL_QUARANTINE
+    ),
 )
 _FLAP_RULES = replace(_DEFAULT_RULES, min_switch_cooldown_ticks=5)
 _HIGH_VOL_RULES = replace(_DEFAULT_RULES, volatility_estimate=0.08)

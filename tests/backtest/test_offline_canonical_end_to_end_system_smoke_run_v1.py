@@ -205,7 +205,8 @@ def test_offline_canonical_e2e_smoke_executes_full_chain(monkeypatch: pytest.Mon
     assert "risk_sizing_admissible_count" in result.decision_funnel_counts
     assert summary["trade_count"] == 0
     assert summary["decision_count"] == 12
-    assert summary["rejection_count"] == 12
+    # Sum of funnel block_reason_counts values (multi-reason bars accumulate >1).
+    assert summary["rejection_count"] == 21
     assert summary["network_access"] is False
     assert summary["live_authorized"] is False
     assert summary["orders_allowed"] is False

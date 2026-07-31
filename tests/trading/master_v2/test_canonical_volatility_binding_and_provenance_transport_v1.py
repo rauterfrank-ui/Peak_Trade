@@ -358,16 +358,18 @@ def test_legacy_eligibility_unchanged_without_typed_requirement() -> None:
 
 
 def test_defaults_unchanged_regression() -> None:
-    assert DynamicScopeRules().volatility_estimate == 1.0
+    # C2: constructive default 1.0 removed; bare rules leave volatility unmaterialized.
+    assert DynamicScopeRules().volatility_estimate is None
     assert _DEFAULT_RULES.volatility_estimate == 0.02
     assert _DEFAULT_SCOPE_RULES.volatility_estimate == 0.02
-    # Historical bind default still present in source (C2 not in scope).
     wiring = (ROOT / "src/backtest/mv2_research_wiring_v1.py").read_text(encoding="utf-8")
-    assert 'bar.get("volatility_estimate", 0.2)' in wiring
+    assert 'bar.get("volatility_estimate", 0.2)' not in wiring
+    assert "quarantine_historical_bar_volatility_v1" in wiring
     integrated = (
         ROOT / "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
     ).read_text(encoding="utf-8")
-    assert "max(float(snapshot.volatility_estimate), 1e-9)" in integrated
+    assert "max(float(snapshot.volatility_estimate), 1e-9)" not in integrated
+    assert "admit_positive_volatility_without_strategy_floor_v1" in integrated
 
 
 def test_no_runtime_wiring_flags() -> None:

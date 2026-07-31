@@ -169,6 +169,11 @@ from trading.master_v2.survival_assessment_v1 import (
     SurvivalResultV1,
     evaluate_survival_assessment_v1,
 )
+from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
+    admit_positive_volatility_without_strategy_floor_v1,
+    quarantine_explicit_replay_default_volatility_v1,
+    require_admitted_legacy_volatility_float_v1,
+)
 
 INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION = "v1"
 INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER = (
@@ -182,12 +187,19 @@ _DEFAULT_STATIC_LIMITS = StaticHardLimits(
     max_band_width=100.0,
 )
 _DEFAULT_RUNTIME_ENVELOPE = RuntimeEnvelope(static=_DEFAULT_STATIC_LIMITS, live_authorization=False)
+
+# Explicit legacy replay default (0.02) — quarantined; never a silent typed estimate.
+_REPLAY_DEFAULT_VOL_QUARANTINE = quarantine_explicit_replay_default_volatility_v1(
+    source_file_or_component=(
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:_DEFAULT_SCOPE_RULES"
+    ),
+)
 _DEFAULT_SCOPE_RULES = DynamicScopeRules(
     min_band_width=1.0,
     max_band_width=50.0,
     min_switch_cooldown_ticks=0,
     max_switches_per_window=1_000_000,
-    volatility_estimate=0.02,
+    volatility_estimate=require_admitted_legacy_volatility_float_v1(_REPLAY_DEFAULT_VOL_QUARANTINE),
 )
 # Seed template only — never fed into transition_state as per-cycle empty state.
 _RUNTIME_SCOPE_SEED_TEMPLATE = RuntimeScopeState(
@@ -836,14 +848,25 @@ def _rules_for_cycle_v1(
     snapshot: CanonicalScopeSnapshotV1,
 ) -> DynamicScopeRules:
     if provided is not None:
+        if provided.volatility_estimate is None:
+            raise ValueError("dynamic_scope_rules_volatility_estimate_missing")
         return provided
+    # floor_policy=NONE: admit positive snapshot vol unchanged; never max(..., 1e-9).
+    admitted = admit_positive_volatility_without_strategy_floor_v1(
+        value=float(snapshot.volatility_estimate),
+        source_file_or_component=(
+            "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:"
+            "_rules_for_cycle_v1"
+        ),
+    )
+    volatility_estimate = require_admitted_legacy_volatility_float_v1(admitted)
     return DynamicScopeRules(
         downscope_band_multiplier=_DEFAULT_SCOPE_RULES.downscope_band_multiplier,
         upscope_band_multiplier=_DEFAULT_SCOPE_RULES.upscope_band_multiplier,
         min_band_width=max(float(snapshot.min_scope_band), _DEFAULT_SCOPE_RULES.min_band_width),
         max_band_width=min(float(snapshot.max_scope_band), _DEFAULT_SCOPE_RULES.max_band_width),
         min_switch_cooldown_ticks=_DEFAULT_SCOPE_RULES.min_switch_cooldown_ticks,
-        volatility_estimate=max(float(snapshot.volatility_estimate), 1e-9),
+        volatility_estimate=volatility_estimate,
         max_switches_per_window=_DEFAULT_SCOPE_RULES.max_switches_per_window,
     )
 

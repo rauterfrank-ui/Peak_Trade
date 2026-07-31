@@ -936,6 +936,11 @@ def bind_historical_bar_to_canonical_market_context_v1(
     instrument_id: str,
     trading_epoch: int,
 ) -> CanonicalMarketContextV1:
+    from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
+        quarantine_historical_bar_volatility_v1,
+        require_admitted_legacy_volatility_float_v1,
+    )
+
     _ensure_supported_instrument(instrument_id)
     is_final = bool(bar.get("is_final", True))
     _fail_closed(not is_final, "bar_unfinalized")
@@ -948,6 +953,23 @@ def bind_historical_bar_to_canonical_market_context_v1(
     best_bid = _price(bar, "best_bid")
     best_ask = _price(bar, "best_ask")
     spread = float(bar.get("spread", best_ask - best_bid))
+
+    bar_has_vol = "volatility_estimate" in bar.index
+    raw_vol: float | None
+    if not bar_has_vol:
+        raw_vol = None
+    else:
+        raw = bar["volatility_estimate"]
+        if raw is None or pd.isna(raw):
+            raw_vol = None
+        else:
+            raw_vol = float(raw)
+    quarantine = quarantine_historical_bar_volatility_v1(
+        bar_has_volatility_estimate=bar_has_vol and raw_vol is not None,
+        raw_value=raw_vol,
+    )
+    volatility_estimate = require_admitted_legacy_volatility_float_v1(quarantine)
+
     context = CanonicalMarketContextV1(
         context_id=f"mv2-ctx-{instrument_id}-{trading_epoch}",
         instrument_id=instrument_id,
@@ -967,7 +989,7 @@ def bind_historical_bar_to_canonical_market_context_v1(
         volume=float(bar.get("volume", 0.0)),
         open_interest=float(bar.get("open_interest", 0.0)),
         funding_rate=float(bar.get("funding_rate", 0.0)),
-        volatility_estimate=float(bar.get("volatility_estimate", 0.2)),
+        volatility_estimate=volatility_estimate,
         trend_feature_set={"trend_slope": float(bar.get("trend_slope", 0.01))},
         momentum_feature_set={"momentum": float(bar.get("momentum", 0.01))},
         liquidity_feature_set={"liq_score": float(bar.get("liq_score", 0.9))},

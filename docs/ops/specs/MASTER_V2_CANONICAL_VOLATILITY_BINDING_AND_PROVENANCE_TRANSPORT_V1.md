@@ -91,14 +91,19 @@ eligibility function (G8 global enforcement deferred).
 
 Closed by C1: `G3_TRANSPORT`, `G6_BINDING_SCAFFOLD`, `G11_EVIDENCE_SCHEMA`
 
-Remaining: `G1`, `G2`, `G4`, `G5`, `G7`, `G8`, `G9`, `G10_NUMERIC_MAX_AGE`,
+Remaining: `G4`, `G5`, `G7`, `G8`, `G9`, `G10_NUMERIC_MAX_AGE`,
 `G12`, `G13`, `G14`, `G15`
+
+`G1` / `G2` default quarantine is owned by
+`MASTER_V2_CANONICAL_VOLATILITY_DEFAULT_QUARANTINE_V1`.
 
 ## Scope exclusions
 
-No change to historical `0.2`, scenario `0.02`, rules default `1.0`, floor
-`1e-9`, wallclock&#47;panel producers, survival ratio, futures profile, risk&#47;
-safety&#47;exit&#47;entry&#47;composition, parameter research, runtime&#47;live.
+Historical `0.2`, scenario `0.02`, rules default `1.0`, and floor `1e-9` are
+owned by C2 quarantine (`MASTER_V2_CANONICAL_VOLATILITY_DEFAULT_QUARANTINE_V1`).
+C1 still does not cut over wallclock&#47;panel producers, survival ratio, futures
+profile, risk&#47;safety&#47;exit&#47;entry&#47;composition, parameter research, or
+runtime&#47;live.
 
 ## Rollback boundary
 
