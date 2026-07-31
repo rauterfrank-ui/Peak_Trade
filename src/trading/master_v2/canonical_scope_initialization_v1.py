@@ -349,9 +349,14 @@ def _build_initialized_scope(
     *,
     reason_codes: Tuple[str, ...] = (),
 ) -> CanonicalScopeSnapshotV1:
+    from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+        resolve_legacy_volatility_float_for_consumer_v1,
+    )
+
     bound_context = context if context.input_digest else with_computed_input_digest(context)
     reference_price = float(bound_context.mark_price)
-    volatility_estimate = float(bound_context.volatility_estimate)
+    # Typed present → single owned adapter; typed absent → legacy float unchanged.
+    volatility_estimate = float(resolve_legacy_volatility_float_for_consumer_v1(bound_context))
     initial_volatility_distance = volatility_estimate * reference_price
     scope_band = clamp_scope_band(
         initial_volatility_distance,

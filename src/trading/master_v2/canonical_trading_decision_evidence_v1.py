@@ -11,8 +11,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from dataclasses import dataclass
-from typing import Mapping, Tuple
+from dataclasses import dataclass, replace
+from typing import Any, Mapping, Optional, Tuple
 
 CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION = "v1"
 EVIDENCE_SCHEMA_VERSION = "canonical_trading_decision_evidence_v1"
@@ -42,6 +42,60 @@ class ComponentRefV1:
         if self.semantic_digest and not _valid_sha256_hex(self.semantic_digest):
             msg = "semantic_digest must be empty or a 64-char lowercase sha256 hex"
             raise ValueError(msg)
+
+
+@dataclass(frozen=True)
+class CanonicalVolatilityDecisionEvidenceProvenanceV1:
+    """Versioned volatility estimate identity for decision evidence (O10)."""
+
+    volatility_contract_version: str
+    value: float
+    unit: str
+    horizon: str
+    annualized: bool
+    estimator: str
+    observation_count: int
+    as_of_event_time: str
+    fallback_used: bool
+    source_digest: str
+    typed_estimate_digest: str
+    legacy_adaptation_digest: str
+    stale_status: str
+    validation_result: str
+    volatility_input_binding_digest: str
+    legacy_float_value: float
+
+    def __post_init__(self) -> None:
+        for digest_name in (
+            "source_digest",
+            "typed_estimate_digest",
+            "legacy_adaptation_digest",
+            "volatility_input_binding_digest",
+        ):
+            digest = getattr(self, digest_name)
+            if digest and not _valid_sha256_hex(digest):
+                msg = f"{digest_name} must be empty or a 64-char lowercase sha256 hex"
+                raise ValueError(msg)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "annualized": bool(self.annualized),
+            "as_of_event_time": str(self.as_of_event_time),
+            "estimator": str(self.estimator),
+            "fallback_used": bool(self.fallback_used),
+            "horizon": str(self.horizon),
+            "legacy_adaptation_digest": str(self.legacy_adaptation_digest),
+            "legacy_float_value": float(self.legacy_float_value),
+            "observation_count": int(self.observation_count),
+            "source_digest": str(self.source_digest),
+            "stale_status": str(self.stale_status),
+            "typed_estimate_digest": str(self.typed_estimate_digest),
+            "unit": str(self.unit),
+            "validation_result": str(self.validation_result),
+            "value": float(self.value),
+            "volatility_contract_version": str(self.volatility_contract_version),
+            "volatility_input_binding_digest": str(self.volatility_input_binding_digest),
+        }
 
 
 @dataclass(frozen=True)
@@ -96,6 +150,7 @@ class CanonicalTradingDecisionEvidenceV1:
     reconciliation_unknown_outcome_effect: str = _RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE
     killswitch_boundary_ref: str = ""
     killswitch_boundary_effect: str = _KILLSWITCH_BOUNDARY_EFFECT_NONE
+    volatility_provenance: Optional[CanonicalVolatilityDecisionEvidenceProvenanceV1] = None
 
     def __post_init__(self) -> None:
         if self.semantic_digest and not _valid_sha256_hex(self.semantic_digest):
@@ -114,7 +169,7 @@ def serialize_canonical_trading_decision_evidence_canonical(
     evidence: CanonicalTradingDecisionEvidenceV1,
 ) -> str:
     """Deterministic JSON serialization for semantic digest (excludes semantic_digest)."""
-    payload = {
+    payload: dict[str, Any] = {
         "adapter_compatible": evidence.adapter_compatible,
         "authority_effect": evidence.authority_effect,
         "bear_assessment_ref": evidence.bear_assessment_ref,
@@ -165,6 +220,9 @@ def serialize_canonical_trading_decision_evidence_canonical(
         "state_switch_ref": evidence.state_switch_ref,
         "trading_epoch": evidence.trading_epoch,
     }
+    # Omit None so legacy evidence digests remain unchanged.
+    if evidence.volatility_provenance is not None:
+        payload["volatility_provenance"] = evidence.volatility_provenance.to_dict()
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
@@ -180,57 +238,14 @@ def finalize_offline_replay_decision_evidence_v1(
 ) -> CanonicalTradingDecisionEvidenceV1:
     """Compute semantic digest while preserving offline capital/risk/sizing binding fields."""
     digest = compute_canonical_trading_decision_evidence_semantic_digest(evidence)
-    return CanonicalTradingDecisionEvidenceV1(
-        decision_id=evidence.decision_id,
-        replay_id=evidence.replay_id,
-        instrument_id=evidence.instrument_id,
-        trading_epoch=evidence.trading_epoch,
-        market_context_ref=evidence.market_context_ref,
-        scope_initialization_ref=evidence.scope_initialization_ref,
-        scope_event_ref=evidence.scope_event_ref,
-        bull_assessment_ref=evidence.bull_assessment_ref,
-        bear_assessment_ref=evidence.bear_assessment_ref,
-        state_switch_ref=evidence.state_switch_ref,
-        bull_survival_ref=evidence.bull_survival_ref,
-        bear_survival_ref=evidence.bear_survival_ref,
-        bull_suitability_ref=evidence.bull_suitability_ref,
-        bear_suitability_ref=evidence.bear_suitability_ref,
-        composition_result_ref=evidence.composition_result_ref,
-        entry_exit_policy_ref=evidence.entry_exit_policy_ref,
-        current_scope_ref=evidence.current_scope_ref,
-        next_scope_ref=evidence.next_scope_ref,
-        previous_direction_state=evidence.previous_direction_state,
-        next_direction_state=evidence.next_direction_state,
-        selected_side=evidence.selected_side,
-        selected_strategy_ref=evidence.selected_strategy_ref,
-        decision_outcome=evidence.decision_outcome,
-        entry_or_exit_policy_ref=evidence.entry_or_exit_policy_ref,
-        reason_codes=evidence.reason_codes,
-        decision_precedence_trace=evidence.decision_precedence_trace,
-        component_versions=evidence.component_versions,
-        policy_versions=evidence.policy_versions,
-        config_digest=evidence.config_digest,
-        implementation_digest=evidence.implementation_digest,
-        input_digest=evidence.input_digest,
+    return replace(
+        evidence,
         semantic_digest=digest,
-        evidence_schema_version=evidence.evidence_schema_version,
         execution_eligible=False,
         adapter_compatible=False,
-        quantity_status=evidence.quantity_status,
-        quantity_provenance_ref=evidence.quantity_provenance_ref,
-        risk_sizing_ref=evidence.risk_sizing_ref,
-        order_intent_ref=evidence.order_intent_ref,
         authority_effect=_AUTHORITY_EFFECT_NONE,
         runtime_effect=_RUNTIME_EFFECT_NONE,
         order_effect=_ORDER_EFFECT_NONE,
-        risk_sizing_effect=evidence.risk_sizing_effect,
-        order_intent_effect=evidence.order_intent_effect,
-        safety_boundary_ref=evidence.safety_boundary_ref,
-        safety_boundary_effect=evidence.safety_boundary_effect,
-        reconciliation_unknown_outcome_ref=evidence.reconciliation_unknown_outcome_ref,
-        reconciliation_unknown_outcome_effect=evidence.reconciliation_unknown_outcome_effect,
-        killswitch_boundary_ref=evidence.killswitch_boundary_ref,
-        killswitch_boundary_effect=evidence.killswitch_boundary_effect,
     )
 
 
@@ -238,40 +253,9 @@ def with_computed_evidence_semantic_digest(
     evidence: CanonicalTradingDecisionEvidenceV1,
 ) -> CanonicalTradingDecisionEvidenceV1:
     return finalize_offline_replay_decision_evidence_v1(
-        CanonicalTradingDecisionEvidenceV1(
-            decision_id=evidence.decision_id,
-            replay_id=evidence.replay_id,
-            instrument_id=evidence.instrument_id,
-            trading_epoch=evidence.trading_epoch,
-            market_context_ref=evidence.market_context_ref,
-            scope_initialization_ref=evidence.scope_initialization_ref,
-            scope_event_ref=evidence.scope_event_ref,
-            bull_assessment_ref=evidence.bull_assessment_ref,
-            bear_assessment_ref=evidence.bear_assessment_ref,
-            state_switch_ref=evidence.state_switch_ref,
-            bull_survival_ref=evidence.bull_survival_ref,
-            bear_survival_ref=evidence.bear_survival_ref,
-            bull_suitability_ref=evidence.bull_suitability_ref,
-            bear_suitability_ref=evidence.bear_suitability_ref,
-            composition_result_ref=evidence.composition_result_ref,
-            entry_exit_policy_ref=evidence.entry_exit_policy_ref,
-            current_scope_ref=evidence.current_scope_ref,
-            next_scope_ref=evidence.next_scope_ref,
-            previous_direction_state=evidence.previous_direction_state,
-            next_direction_state=evidence.next_direction_state,
-            selected_side=evidence.selected_side,
-            selected_strategy_ref=evidence.selected_strategy_ref,
-            decision_outcome=evidence.decision_outcome,
-            entry_or_exit_policy_ref=evidence.entry_or_exit_policy_ref,
-            reason_codes=evidence.reason_codes,
-            decision_precedence_trace=evidence.decision_precedence_trace,
-            component_versions=evidence.component_versions,
-            policy_versions=evidence.policy_versions,
-            config_digest=evidence.config_digest,
-            implementation_digest=evidence.implementation_digest,
-            input_digest=evidence.input_digest,
+        replace(
+            evidence,
             semantic_digest="",
-            evidence_schema_version=evidence.evidence_schema_version,
             execution_eligible=False,
             adapter_compatible=False,
             quantity_status=_QUANTITY_STATUS_NOT_BOUND,
@@ -289,6 +273,8 @@ def with_computed_evidence_semantic_digest(
             reconciliation_unknown_outcome_effect=_RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE,
             killswitch_boundary_ref="",
             killswitch_boundary_effect=_KILLSWITCH_BOUNDARY_EFFECT_NONE,
+            # Preserve volatility_provenance when present (identity must survive digesting).
+            volatility_provenance=evidence.volatility_provenance,
         )
     )
 

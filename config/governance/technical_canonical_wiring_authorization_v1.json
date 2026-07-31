@@ -737,7 +737,13 @@
     "docs/ops/specs/MV2_TIME_SAMPLE_EPOCH_SEMANTICS_V1.md",
     "src/trading/master_v2/canonical_volatility_estimate_typed_consumption_contract_v1.py",
     "tests/trading/master_v2/test_canonical_volatility_estimate_typed_consumption_contract_v1.py",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_ESTIMATE_TYPED_CONSUMPTION_CONTRACT_V1.md"
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_ESTIMATE_TYPED_CONSUMPTION_CONTRACT_V1.md",
+    "src/trading/master_v2/canonical_volatility_binding_and_provenance_transport_v1.py",
+    "src/trading/master_v2/canonical_market_context_v1.py",
+    "src/trading/master_v2/canonical_trading_decision_evidence_v1.py",
+    "src/trading/master_v2/canonical_scope_initialization_v1.py",
+    "tests/trading/master_v2/test_canonical_volatility_binding_and_provenance_transport_v1.py",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_BINDING_AND_PROVENANCE_TRANSPORT_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
