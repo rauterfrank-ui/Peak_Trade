@@ -3,9 +3,10 @@
 Closes productive Double-Play typed cutover: Scope / Boundary / Entry authority
 may run only when CMC.canonical_volatility_estimate is present, validated, and
 atomically synchronized with the legacy float. Reuses the existing typed
-eligibility authority — never discards its result. Does not invent max-age,
-global typed-only enforcement, a second estimator/adapter/validator, or
-offline/research/scenario mutations.
+eligibility authority — never discards its result. Attaches non-enforcing
+max-age policy evidence (threshold unresolved). Does not invent a numeric
+threshold, global typed-only enforcement, a second estimator/adapter/validator,
+or offline/research/scenario mutations.
 """
 
 from __future__ import annotations
@@ -64,6 +65,13 @@ from trading.master_v2.canonical_market_context_v1 import (
     ClockTrustStatus,
     DataIntegrityStatus,
 )
+from trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1 import (
+    CanonicalVolatilityMaxAgePolicyEvidenceV1,
+    VolatilityRestartStatusV1,
+    VolatilityReuseStatusV1,
+    derive_presence_status_for_age_policy_v1,
+    evaluate_canonical_volatility_estimate_age_policy_v1,
+)
 
 PACKAGE_MARKER = "MASTER_V2_DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1=true"
 
@@ -81,7 +89,9 @@ TYPED_VOLATILITY_ESTIMATE_MISSING_REASON = "TYPED_VOLATILITY_ESTIMATE_MISSING"
 DOUBLE_PLAY_TYPED_CUTOVER = True
 GLOBAL_TYPED_ONLY_ENFORCEMENT = False
 NUMERIC_MAX_AGE_DECIDED = False
-NUMERIC_MAX_AGE_POLICY_CREATED = False
+# Non-enforcing policy contract exists; threshold value remains unresolved.
+NUMERIC_MAX_AGE_POLICY_CREATED = True
+NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED = False
 LIVE_AUTHORIZATION = False
 HARD_STOP = True
 SECOND_ESTIMATOR_CREATED = False
@@ -92,6 +102,7 @@ VOLATILITY_SEMANTICS_CHANGED = False
 OFFLINE_REPLAY_LEGACY_DEFAULTS_UNCHANGED = True
 RESEARCH_LEGACY_FALLBACKS_UNCHANGED = True
 SCENARIO_REPLAY_UNCHANGED = True
+SEPARATE_FRESHNESS_GATE_CREATED = False
 
 SINGLE_ESTIMATOR_AUTHORITY_PRESERVED = True
 SINGLE_VALIDATION_BOUNDARY_PRESERVED = True
@@ -120,9 +131,11 @@ class DoublePlayTypedVolatilityPresenceGateResultV1:
     block_reasons: Tuple[CanonicalMarketContextBlockReason, ...]
     reason_codes: Tuple[str, ...]
     double_play_typed_cutover: bool = DOUBLE_PLAY_TYPED_CUTOVER
+    # Non-enforcing diagnostic evidence; must not alter Alpha outcomes.
+    max_age_policy_evidence: Optional[CanonicalVolatilityMaxAgePolicyEvidenceV1] = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "alpha_scope_entry_authority_allowed": self.alpha_scope_entry_authority_allowed,
             "block_reasons": [r.value for r in self.block_reasons],
             "double_play_typed_cutover": self.double_play_typed_cutover,
@@ -140,6 +153,9 @@ class DoublePlayTypedVolatilityPresenceGateResultV1:
                 self.eligibility.observation_and_reconciliation_only
             ),
         }
+        if self.max_age_policy_evidence is not None:
+            payload["max_age_policy_evidence"] = self.max_age_policy_evidence.to_dict()
+        return payload
 
 
 def evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
@@ -149,6 +165,8 @@ def evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
         CanonicalMarketContextBindingOutcome.ACCEPTED
     ),
     eligibility: CanonicalMarketContextEligibilityV1 | None = None,
+    reuse_status: VolatilityReuseStatusV1 = VolatilityReuseStatusV1.NOT_APPLICABLE,
+    restart_status: VolatilityRestartStatusV1 = VolatilityRestartStatusV1.NOT_RESTART,
 ) -> DoublePlayTypedVolatilityPresenceGateResultV1:
     """Evaluate productive DP presence gate; reuse (never discard) eligibility."""
     typed_blocks = collect_typed_volatility_binding_block_reasons_v1(context)
@@ -195,15 +213,40 @@ def evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
         if block.value not in reason_codes:
             reason_codes.append(block.value)
 
+    typed_validation_ok = typed_present and not typed_invalid
+    presence_for_age = derive_presence_status_for_age_policy_v1(
+        typed_estimate_present=typed_present,
+        typed_validation_ok=typed_validation_ok,
+        restart_without_estimate=(
+            restart_status
+            in (
+                VolatilityRestartStatusV1.RESTART_WITHOUT_ESTIMATE,
+                VolatilityRestartStatusV1.HISTORY_RESTORE_WITHOUT_ESTIMATE,
+            )
+        ),
+    )
+    max_age_policy_evidence = evaluate_canonical_volatility_estimate_age_policy_v1(
+        estimate=context.canonical_volatility_estimate,
+        reference_market_event_time=context.market_event_time,
+        presence_status=presence_for_age,
+        reuse_status=reuse_status,
+        restart_status=restart_status,
+        clock_trust_status=context.clock_trust_status,
+        data_integrity_status=context.data_integrity_status,
+    )
+    # Presence Alpha authority is unchanged by age evidence (non-enforcing).
+    assert max_age_policy_evidence.enforcement_applied is False
+
     return DoublePlayTypedVolatilityPresenceGateResultV1(
         eligibility=elig,
         typed_estimate_present=typed_present,
-        typed_validation_ok=typed_present and not typed_invalid,
+        typed_validation_ok=typed_validation_ok,
         typed_float_consistent=typed_present and not typed_mismatch and not typed_invalid,
         alpha_scope_entry_authority_allowed=alpha_ok,
         exit_risk_safety_authority_preserved=True,
         block_reasons=tuple(typed_blocks),
         reason_codes=tuple(reason_codes),
+        max_age_policy_evidence=max_age_policy_evidence,
     )
 
 
@@ -490,8 +533,12 @@ def assert_architecture_guards_v1(*, repo_root: Optional[Path] = None) -> dict[s
 
     if GLOBAL_TYPED_ONLY_ENFORCEMENT or LIVE_AUTHORIZATION:
         raise RuntimeError("GLOBAL_TYPED_ONLY_OR_LIVE_FLAG_DRIFT")
-    if NUMERIC_MAX_AGE_DECIDED or NUMERIC_MAX_AGE_POLICY_CREATED:
-        raise RuntimeError("NUMERIC_MAX_AGE_FLAG_DRIFT")
+    if NUMERIC_MAX_AGE_DECIDED or NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED:
+        raise RuntimeError("NUMERIC_MAX_AGE_THRESHOLD_OR_ENFORCEMENT_FLAG_DRIFT")
+    if not NUMERIC_MAX_AGE_POLICY_CREATED:
+        raise RuntimeError("NON_ENFORCING_MAX_AGE_POLICY_CONTRACT_MUST_BE_ATTACHED")
+    if SEPARATE_FRESHNESS_GATE_CREATED:
+        raise RuntimeError("SEPARATE_FRESHNESS_GATE_FORBIDDEN")
     if not DOUBLE_PLAY_TYPED_CUTOVER:
         raise RuntimeError("DOUBLE_PLAY_TYPED_CUTOVER_MUST_BE_TRUE")
     if (
@@ -505,6 +552,8 @@ def assert_architecture_guards_v1(*, repo_root: Optional[Path] = None) -> dict[s
     # Productive path cannot bypass: eligibility evaluate must be referenced.
     if "evaluate_typed_volatility_binding_eligibility_v1" not in code_before_guards:
         raise RuntimeError("PRESENCE_GATE_MUST_REUSE_TYPED_ELIGIBILITY")
+    if "evaluate_canonical_volatility_estimate_age_policy_v1" not in code_before_guards:
+        raise RuntimeError("PRESENCE_GATE_MUST_ATTACH_NON_ENFORCING_MAX_AGE_EVIDENCE")
 
     return {
         "adapter_defs_in_typed": typed_src.count(adapter_def),
@@ -513,6 +562,9 @@ def assert_architecture_guards_v1(*, repo_root: Optional[Path] = None) -> dict[s
         "double_play_typed_cutover": DOUBLE_PLAY_TYPED_CUTOVER,
         "global_typed_only_enforcement": GLOBAL_TYPED_ONLY_ENFORCEMENT,
         "numeric_max_age_decided": NUMERIC_MAX_AGE_DECIDED,
+        "numeric_max_age_policy_created": NUMERIC_MAX_AGE_POLICY_CREATED,
+        "numeric_max_age_enforcement_enabled": NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED,
+        "separate_freshness_gate_created": SEPARATE_FRESHNESS_GATE_CREATED,
         "legacy_float_adaptation_owner": LEGACY_FLOAT_ADAPTATION_OWNER,
         "productive_runtime_caller_owner": PRODUCTIVE_RUNTIME_CALLER_OWNER,
         "presence_gate_owner": PRESENCE_GATE_OWNER,
@@ -531,6 +583,8 @@ def assert_capability_non_goals_v1() -> dict[str, Any]:
         "global_typed_only_enforcement": GLOBAL_TYPED_ONLY_ENFORCEMENT,
         "numeric_max_age_decided": NUMERIC_MAX_AGE_DECIDED,
         "numeric_max_age_policy_created": NUMERIC_MAX_AGE_POLICY_CREATED,
+        "numeric_max_age_enforcement_enabled": NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED,
+        "separate_freshness_gate_created": SEPARATE_FRESHNESS_GATE_CREATED,
         "live_authorization": LIVE_AUTHORIZATION,
         "hard_stop": HARD_STOP,
         "second_estimator_created": SECOND_ESTIMATOR_CREATED,
@@ -548,7 +602,7 @@ def assert_capability_non_goals_v1() -> dict[str, Any]:
         ),
         "package_marker": PACKAGE_MARKER,
         "gaps_remaining": (
-            "C1_G10_NUMERIC_MAX_AGE",
+            "C1_G10_NUMERIC_MAX_AGE_THRESHOLD_VALUE",
             "G3_UNTYPED_EXPLICIT_LEGACY_STILL_ADMISSIBLE",
             "G8_ESTIMATOR_AMBIGUITY_ON_EXPLICIT_LEGACY",
         ),
