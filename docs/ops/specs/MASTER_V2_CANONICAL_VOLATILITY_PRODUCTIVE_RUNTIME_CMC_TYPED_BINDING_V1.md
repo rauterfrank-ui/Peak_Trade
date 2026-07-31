@@ -93,7 +93,7 @@ regular `PRODUCED` outcome. No rematerialize API is added here.
 
 | Artifact | Path |
 |---|---|
-| Binding host | `src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py` |
-| Productive caller | `src&#47;ops&#47;...&#47;hardening_cycle_bridge_v2.py` |
+| Binding host | `src&#47;trading&#47;master_v2&#47;canonical_volatility_productive_runtime_cmc_typed_binding_v1.py` |
+| Productive caller | `src&#47;ops&#47;wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2&#47;hardening_cycle_bridge_v2.py` |
 | Spec | this document |
-| Tests | `tests/trading/master_v2/test_canonical_volatility_productive_runtime_cmc_typed_binding_v1.py` |
+| Tests | `tests&#47;trading&#47;master_v2&#47;test_canonical_volatility_productive_runtime_cmc_typed_binding_v1.py` |
