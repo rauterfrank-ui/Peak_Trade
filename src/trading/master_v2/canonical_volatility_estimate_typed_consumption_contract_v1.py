@@ -331,6 +331,23 @@ def build_canonical_volatility_estimate_v1(
     return validate_canonical_volatility_estimate_v1(estimate)
 
 
+def derive_return_observation_count_from_closed_window_v1(
+    mark_prices: pd.Series,
+    *,
+    as_of_index: Any,
+) -> int:
+    """Derive observation_count from the closed log-return window used by P1.
+
+    Delegates to the materializer provenance helper — no parallel estimator.
+    When a valid estimate exists, the trailing ``LOOKBACK_BARS`` finite returns
+    are the contributing observations (not a blind constant hardcode).
+    """
+    return materializer.count_closed_return_observations_v1(
+        mark_prices,
+        as_of_index=as_of_index,
+    )
+
+
 def materialize_typed_canonical_volatility_estimate_v1(
     mark_prices: pd.Series,
     *,
@@ -365,14 +382,21 @@ def materialize_typed_canonical_volatility_estimate_v1(
         as_of = as_of_event_time
 
     ordered = mark_prices.sort_index().astype(float)
-    # observation_count = number of log-return observations contributing to the estimate
-    # at the selected bar (= lookback when valid).
-    observation_count = MINIMUM_RETURN_OBSERVATIONS
+    # observation_count provenance: closed return window actually used by P1.
+    observation_count = derive_return_observation_count_from_closed_window_v1(
+        ordered,
+        as_of_index=last_ts,
+    )
     prices_for_digest = ordered.loc[:last_ts].astype(float).tolist()
     if len(prices_for_digest) < MINIMUM_PRICE_OBSERVATIONS:
         _raise(
             CanonicalVolatilityTypedConsumptionErrorCode.INSUFFICIENT_OBSERVATIONS,
             f"price_observations={len(prices_for_digest)}:minimum={MINIMUM_PRICE_OBSERVATIONS}",
+        )
+    if observation_count < MINIMUM_RETURN_OBSERVATIONS:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.INSUFFICIENT_OBSERVATIONS,
+            f"return_observations={observation_count}:minimum={MINIMUM_RETURN_OBSERVATIONS}",
         )
 
     return build_canonical_volatility_estimate_v1(
@@ -528,6 +552,7 @@ __all__ = [
     "assert_capability_non_goals_v1",
     "build_canonical_volatility_estimate_v1",
     "compute_source_digest_v1",
+    "derive_return_observation_count_from_closed_window_v1",
     "materialize_typed_canonical_volatility_estimate_v1",
     "reject_implicit_legacy_float_input_v1",
     "validate_canonical_volatility_estimate_v1",
