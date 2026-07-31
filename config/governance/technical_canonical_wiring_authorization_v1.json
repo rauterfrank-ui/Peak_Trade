@@ -758,7 +758,10 @@
     "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
     "src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py",
     "tests/trading/master_v2/test_double_play_runtime_typed_volatility_presence_gate_v1.py",
-    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1.md"
+    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1.md",
+    "src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py",
+    "tests/trading/master_v2/test_canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_POLICY_CONTRACT_AND_NON_ENFORCING_TELEMETRY_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -908,7 +911,8 @@
     "C4 POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1: authorize post-C3 Survival/Suitability/Composition binding guards, Research C1 DISTINCT wiring, C4 contract tests and docs. Composition remains sole CONFIRMED admissibility gate. No runtime activation, no parameter/volatility mutation.",
     "MASTER_V2_CANONICAL_VOLATILITY_TYPED_RUNTIME_PRODUCER_SCAFFOLD_V1: authorize exact-file typed runtime producer scaffold, mark-history host, materializer observation_count provenance helper, typed-factory provenance reuse, focused tests and docs. No runtime cutover, no Double-Play/CMC bind_typed wiring, no parameter-value decision, no broad master_v2 grant.",
     "MASTER_V2_CANONICAL_VOLATILITY_PRODUCTIVE_RUNTIME_CMC_TYPED_BINDING_V1: authorize exact-file productive Producer→bind_typed→CMC host, hardening-bridge productive caller wiring, focused tests and docs. Reuses existing producer/validation/binding/adapter authorities. No Double-Play typed cutover, no numeric max-age, no global typed-only enforcement, no competing-producer mutation, no parameter research, no live/orders.",
-    "MASTER_V2_DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1: authorize exact-file productive Double-Play typed volatility presence gate, replay opt-in flag wiring, hardening-bridge productive gate consumption, eligibility-result reuse on CMC typed binding host, focused tests and docs. Reuses existing eligibility/validation/binding/adapter authorities. No Direct-Typed consumer refactor, no numeric max-age, no global typed-only enforcement, no offline Replay/Research/Scenario default mutation, no parameter research, no live/orders."
+    "MASTER_V2_DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1: authorize exact-file productive Double-Play typed volatility presence gate, replay opt-in flag wiring, hardening-bridge productive gate consumption, eligibility-result reuse on CMC typed binding host, focused tests and docs. Reuses existing eligibility/validation/binding/adapter authorities. No Direct-Typed consumer refactor, no numeric max-age, no global typed-only enforcement, no offline Replay/Research/Scenario default mutation, no parameter research, no live/orders.",
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_POLICY_CONTRACT_AND_NON_ENFORCING_TELEMETRY_V1: authorize exact-file non-enforcing Event-Time max-age policy contract, diagnostic age evidence evaluator, presence-gate evidence attachment, focused tests and docs. Threshold remains UNRESOLVED_MAX_AGE; enforcement_enabled=false; no Alpha age blocking; no second clock/volatility/freshness gate; rematerialization forbidden; no parameter research; no live/orders."
   ],
   "pr_specific_exception": false,
   "required_check_waiver": false,
@@ -932,6 +936,7 @@
     "POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1 exact-file allowlist for C4 binding guards + Research C1 DISTINCT + C4 tests/docs (offline binding only)",
     "CANONICAL_VOLATILITY_TYPED_RUNTIME_PRODUCER_SCAFFOLD_V1 exact-file allowlist for offline producer scaffold + mark history + observation_count provenance (no cutover/wiring)",
     "CANONICAL_VOLATILITY_PRODUCTIVE_RUNTIME_CMC_TYPED_BINDING_V1 exact-file allowlist for productive CMC typed binding host + hardening bridge caller (CMC transport only; no Double-Play typed cutover)",
-    "DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1 exact-file allowlist for productive typed presence gate + replay opt-in + hardening bridge consumption + tests/docs (no Direct-Typed consumer; no numeric max-age; no global typed-only)"
+    "DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1 exact-file allowlist for productive typed presence gate + replay opt-in + hardening bridge consumption + tests/docs (no Direct-Typed consumer; no numeric max-age threshold; no global typed-only)",
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_POLICY_CONTRACT_AND_NON_ENFORCING_TELEMETRY_V1 exact-file allowlist for non-enforcing max-age policy contract + diagnostic age evidence + presence-gate attachment + tests/docs (threshold unresolved; no Alpha enforcement; no second freshness gate)"
   ]
 }
