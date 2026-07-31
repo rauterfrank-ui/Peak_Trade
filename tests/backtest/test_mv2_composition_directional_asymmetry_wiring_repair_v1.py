@@ -246,23 +246,23 @@ def test_confirmation_provenance_from_da_not_scope_count() -> None:
         status=DirectionalAssessmentStatus.OBSERVE,
         signal_strength=-0.02,
     )
-    projected = project_directional_confirmation_state_from_assessments_v1(
-        bull_assessment=bull,
-        bear_assessment=bear,
-        previous=previous,
-        next_trading_epoch=11,
-        candidate_signal_threshold=0.005,
-    )
-    assert projected.last_signal_strength == pytest.approx(0.02)
-    assert projected.candidate_count == 2
-    assert projected.last_evaluated_trading_epoch == 10
+    with pytest.raises(RuntimeError, match="LEGACY_LOSSY_CROSS_SIDE_PROJECTOR_AUTHORITY_FORBIDDEN"):
+        project_directional_confirmation_state_from_assessments_v1(
+            bull_assessment=bull,
+            bear_assessment=bear,
+            previous=previous,
+            next_trading_epoch=11,
+            candidate_signal_threshold=0.005,
+        )
 
     wiring_src = _WIRING.read_text(encoding="utf-8")
     assert "project_directional_confirmation_state_from_assessments_v1" in wiring_src
+    assert "LEGACY_LOSSY_CROSS_SIDE_PROJECTOR_AUTHORITY_FORBIDDEN" in wiring_src
     proj_src = inspect.getsource(
         project_mv2_integrated_replay_bar_sequence_state_from_intermediate_v1
     )
-    assert "project_directional_confirmation_state_from_assessments_v1" in proj_src
+    assert "directional_confirmation_progress_after" in proj_src
+    assert "project_directional_confirmation_state_from_assessments_v1" not in proj_src
     assert "scope_confirmation.candidate_count" not in proj_src
     assert (
         "last_signal_strength=previous.directional_confirmation_state.last_signal_strength"

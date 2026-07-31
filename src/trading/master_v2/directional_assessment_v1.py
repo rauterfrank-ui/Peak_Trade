@@ -108,6 +108,13 @@ class ScopeEventRefV1:
 
 @dataclass(frozen=True)
 class DirectionalConfirmationStateV1:
+    """LEGACY_NON_AUTHORITY confirmation cursor.
+
+    Productive confirmation authority is C3 ``ConfirmationProgressStateV1`` via
+    ``DirectionalConfirmationSideStateCarrierV1``. This dataclass remains only for
+    DirectionalAssessmentInputV1 type compatibility and isolated unit tests.
+    """
+
     candidate_count: int
     last_evaluated_trading_epoch: int
     last_signal_strength: float
@@ -329,6 +336,13 @@ def _status_for_signal(
     confirmation_state: DirectionalConfirmationStateV1,
     epoch_mode: str,
 ) -> Tuple[DirectionalAssessmentStatus, Tuple[str, ...], int]:
+    """LEGACY_NON_PRODUCTIVE_CONFIRMATION_AUTHORITY.
+
+    Retained only for isolated DirectionalAssessment unit contracts.
+    Productive Master-V2 offline replay confirmation authority is C3
+    (``evaluate_directional_assessment_with_confirmation_progress_v1``).
+    Do not wire this helper into productive confirmation paths.
+    """
     if signal_strength < policy.observe_signal_threshold:
         return DirectionalAssessmentStatus.OBSERVE, ("signal_below_observe_threshold",), 0
 
@@ -456,10 +470,15 @@ def evaluate_directional_assessment_v1(
     policy: DirectionalAssessmentPolicyV1,
 ) -> DirectionalAssessmentV1:
     """
-    Deterministic Bull/Bear directional assessment evaluator.
+    Deterministic Bull/Bear directional assessment evaluator (legacy confirmation path).
 
     Fail-closed on untrusted, incomplete, or epoch-invalid inputs. Never mutates
     ``inp.scope_event_ref`` or upstream scope-event evidence.
+
+    LEGACY_NON_PRODUCTIVE_CONFIRMATION_AUTHORITY: confirmation status derivation via
+    trading_epoch / candidate_count is quarantined for unit tests only. Productive
+    Master-V2 offline replay must use
+    ``evaluate_directional_assessment_with_confirmation_progress_v1`` (C3).
     """
     policy_blocks = validate_directional_assessment_policy(
         policy, policy_version=inp.policy_version

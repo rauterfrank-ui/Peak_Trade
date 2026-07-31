@@ -42,7 +42,8 @@ _AUTHORIZED_CONSTRUCTOR_REL_PATH = (
 # Core decision stages composed only by the canonical total decision owner.
 _PARTIAL_DECISION_STAGE_CALLS = frozenset(
     {
-        "evaluate_directional_assessment_v1",
+        "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1",
+        "evaluate_directional_assessment_with_confirmation_progress_v1",
         "evaluate_survival_assessment_v1",
         "evaluate_suitability_binding_v1",
         "evaluate_double_play_composition_matrix_v1",
