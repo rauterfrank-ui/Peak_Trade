@@ -11,15 +11,21 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
-from typing import Mapping, Optional, Tuple
+from typing import TYPE_CHECKING, Mapping, Optional, Tuple
 
 from trading.master_v2.double_play_futures_input import (
     FuturesInputSnapshot,
     FuturesMarketType,
 )
+
+if TYPE_CHECKING:
+    from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
+        CanonicalVolatilityEstimateV1,
+    )
 
 CANONICAL_MARKET_CONTEXT_LAYER_VERSION = "v1"
 FEATURE_CONTRACT_VERSION = "canonical_market_context_feature_contract_v1"
@@ -83,6 +89,9 @@ class CanonicalMarketContextBlockReason(str, Enum):
     OPEN_INTEREST_INVALID = "open_interest_invalid"
     FUNDING_RATE_INVALID = "funding_rate_invalid"
     VOLATILITY_ESTIMATE_INVALID = "volatility_estimate_invalid"
+    TYPED_VOLATILITY_ESTIMATE_MISSING = "typed_volatility_estimate_missing"
+    TYPED_VOLATILITY_ESTIMATE_INVALID = "typed_volatility_estimate_invalid"
+    TYPED_VOLATILITY_LEGACY_FLOAT_MISMATCH = "typed_volatility_legacy_float_mismatch"
     FEATURE_CONTRACT_VERSION_INVALID = "feature_contract_version_invalid"
     DATA_INTEGRITY_UNTRUSTED = "data_integrity_untrusted"
     DATA_INTEGRITY_UNKNOWN = "data_integrity_unknown"
@@ -146,6 +155,8 @@ class CanonicalMarketContextV1:
     warmup_status: WarmupStatus
     feature_contract_version: str = FEATURE_CONTRACT_VERSION
     input_digest: str = ""
+    # Typed transport Model A end-boundary (optional for legacy float-only paths).
+    canonical_volatility_estimate: Optional["CanonicalVolatilityEstimateV1"] = None
 
     def __post_init__(self) -> None:
         if self.input_digest and not _valid_sha256_hex(self.input_digest):
@@ -288,6 +299,9 @@ def validate_canonical_market_context_fields(
         blocks.append(CanonicalMarketContextBlockReason.FUNDING_RATE_INVALID)
     if not _non_negative_finite(context.volatility_estimate):
         blocks.append(CanonicalMarketContextBlockReason.VOLATILITY_ESTIMATE_INVALID)
+    elif context.canonical_volatility_estimate is not None:
+        typed_blocks = _validate_typed_volatility_consistency(context)
+        blocks.extend(typed_blocks)
 
     if (
         not context.feature_contract_version
@@ -316,9 +330,32 @@ def validate_canonical_market_context_fields(
     return tuple(dict.fromkeys(blocks))
 
 
+def _validate_typed_volatility_consistency(
+    context: CanonicalMarketContextV1,
+) -> Tuple[CanonicalMarketContextBlockReason, ...]:
+    """When typed carrier is present, it is authority; float must match adapted value."""
+    from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
+        CanonicalVolatilityTypedConsumptionError,
+        adapt_canonical_volatility_estimate_to_legacy_float_v1,
+        validate_canonical_volatility_estimate_v1,
+    )
+
+    estimate = context.canonical_volatility_estimate
+    if estimate is None:
+        return ()
+    try:
+        validated = validate_canonical_volatility_estimate_v1(estimate)
+        legacy = float(adapt_canonical_volatility_estimate_to_legacy_float_v1(validated))
+    except (CanonicalVolatilityTypedConsumptionError, TypeError, ValueError):
+        return (CanonicalMarketContextBlockReason.TYPED_VOLATILITY_ESTIMATE_INVALID,)
+    if not math.isclose(float(context.volatility_estimate), legacy, rel_tol=0.0, abs_tol=0.0):
+        return (CanonicalMarketContextBlockReason.TYPED_VOLATILITY_LEGACY_FLOAT_MISMATCH,)
+    return ()
+
+
 def serialize_canonical_market_context_canonical(context: CanonicalMarketContextV1) -> str:
     """Deterministic JSON serialization for digest (excludes input_digest field)."""
-    payload = {
+    payload: dict = {
         "bar_finality_status": context.bar_finality_status.value,
         "bar_interval": context.bar_interval,
         "best_ask": context.best_ask,
@@ -349,6 +386,30 @@ def serialize_canonical_market_context_canonical(context: CanonicalMarketContext
         "volume": context.volume,
         "warmup_status": context.warmup_status.value,
     }
+    # Omit None typed carrier so legacy float-only digests remain unchanged.
+    if context.canonical_volatility_estimate is not None:
+        from datetime import timezone
+
+        estimate = context.canonical_volatility_estimate
+        as_of = estimate.as_of_event_time
+        if as_of.tzinfo is None:
+            as_of_iso = as_of.isoformat() + "+00:00"
+        else:
+            as_of_iso = as_of.astimezone(timezone.utc).isoformat()
+        payload["canonical_volatility_estimate"] = {
+            "annualized": bool(estimate.annualized),
+            "as_of_event_time": as_of_iso,
+            "bar_interval_seconds": int(estimate.bar_interval_seconds),
+            "contract_version": str(estimate.contract_version),
+            "estimator": str(estimate.estimator),
+            "fallback_used": bool(estimate.fallback_used),
+            "horizon_seconds": int(estimate.horizon_seconds),
+            "lookback_bars": int(estimate.lookback_bars),
+            "observation_count": int(estimate.observation_count),
+            "source_digest": str(estimate.source_digest),
+            "unit": str(estimate.unit),
+            "value": float(estimate.value),
+        }
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
@@ -360,34 +421,7 @@ def compute_canonical_market_context_input_digest(context: CanonicalMarketContex
 
 def with_computed_input_digest(context: CanonicalMarketContextV1) -> CanonicalMarketContextV1:
     digest = compute_canonical_market_context_input_digest(context)
-    return CanonicalMarketContextV1(
-        context_id=context.context_id,
-        instrument_id=context.instrument_id,
-        market_type=context.market_type,
-        trading_epoch=context.trading_epoch,
-        market_event_time=context.market_event_time,
-        decision_time=context.decision_time,
-        bar_interval=context.bar_interval,
-        bar_finality_status=context.bar_finality_status,
-        mark_price=context.mark_price,
-        index_price=context.index_price,
-        best_bid=context.best_bid,
-        best_ask=context.best_ask,
-        spread=context.spread,
-        volume=context.volume,
-        open_interest=context.open_interest,
-        funding_rate=context.funding_rate,
-        volatility_estimate=context.volatility_estimate,
-        trend_feature_set=context.trend_feature_set,
-        momentum_feature_set=context.momentum_feature_set,
-        liquidity_feature_set=context.liquidity_feature_set,
-        market_structure_feature_set=context.market_structure_feature_set,
-        data_integrity_status=context.data_integrity_status,
-        clock_trust_status=context.clock_trust_status,
-        warmup_status=context.warmup_status,
-        feature_contract_version=context.feature_contract_version,
-        input_digest=digest,
-    )
+    return replace(context, input_digest=digest)
 
 
 def _warmup_blocks_directional_and_scope(
