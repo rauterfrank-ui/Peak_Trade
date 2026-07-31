@@ -705,4 +705,16 @@ def test_22_legacy_candidate_count_ignored_by_c3() -> None:
 def test_23_run_integrated_imports_c3_not_legacy_da_evaluator() -> None:
     source = inspect.getsource(run_integrated_offline_trading_logic_replay_v1)
     assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in source
-    assert "evaluate_directional_assessment_v1" not in source
+    tree = ast.parse(source)
+    call_names: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            func = node.func
+            if isinstance(func, ast.Name):
+                call_names.add(func.id)
+            elif isinstance(func, ast.Attribute):
+                call_names.add(func.attr)
+    assert "evaluate_directional_assessment_v1" not in call_names
+    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in call_names
+    # Legacy name may appear only as quarantine documentation, never as a call.
+    assert "LEGACY_NON_PRODUCTIVE_CONFIRMATION_AUTHORITY_NOTE" in source

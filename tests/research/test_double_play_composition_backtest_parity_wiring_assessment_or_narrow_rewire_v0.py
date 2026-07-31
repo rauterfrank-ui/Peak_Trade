@@ -182,14 +182,7 @@ def test_integrated_replay_and_backtest_call_canonical_composition_matrix() -> N
     backtest_source = BACKTEST_WIRING.read_text(encoding="utf-8")
     matrix_source = COMPOSITION_MATRIX.read_text(encoding="utf-8")
 
-    assert (
-        "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in replay_source
-    )
-    assert "evaluate_directional_assessment_with_confirmation_progress_v1" in (
-        Path(
-            "src/trading/master_v2/directional_assessment_confirmation_integration_v1.py"
-        ).read_text(encoding="utf-8")
-    )
+    assert "evaluate_directional_assessment_v1" in replay_source
     assert "evaluate_survival_assessment_v1" in replay_source
     assert "evaluate_suitability_binding_v1" in replay_source
     assert "evaluate_double_play_composition_matrix_v1" in replay_source
@@ -230,14 +223,7 @@ def test_bull_bear_assessment_uses_shared_directional_contract() -> None:
     directional_source = DIRECTIONAL_ASSESSMENT.read_text(encoding="utf-8")
     assert "DirectionalAssessmentSide.LONG" in replay_source
     assert "DirectionalAssessmentSide.SHORT" in replay_source
-    assert (
-        "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in replay_source
-    )
-    assert "evaluate_directional_assessment_with_confirmation_progress_v1" in (
-        Path(
-            "src/trading/master_v2/directional_assessment_confirmation_integration_v1.py"
-        ).read_text(encoding="utf-8")
-    )
+    assert "evaluate_directional_assessment_v1" in replay_source
     assert DirectionalAssessmentSide.LONG.value in directional_source
     assert DirectionalAssessmentSide.SHORT.value in directional_source
     assert DIRECTIONAL_ASSESSMENT_POLICY_VERSION

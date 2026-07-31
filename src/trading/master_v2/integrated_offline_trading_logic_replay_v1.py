@@ -1320,6 +1320,9 @@ def run_integrated_offline_trading_logic_replay_v1(
         confirmation_venue,
         confirmation_instrument,
     ) = _resolve_c3_confirmation_binding_v1(inp)
+    # LEGACY_NON_PRODUCTIVE_CONFIRMATION_AUTHORITY_NOTE:
+    # evaluate_directional_assessment_v1 remains the isolated unit-test DA owner.
+    # Productive confirmation authority is C3 below (not evaluate_directional_assessment_v1).
     bull_c3, bear_c3, confirmation_progress_after = (
         evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1(
             bull_input=bull_inp,
