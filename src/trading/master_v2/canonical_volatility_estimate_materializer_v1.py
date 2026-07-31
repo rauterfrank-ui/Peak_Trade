@@ -190,6 +190,22 @@ def expected_population_std_for_fixture_v1(mark_prices: Sequence[float]) -> floa
     return float(log_returns.std(ddof=contract.DDOF))
 
 
+def count_closed_return_observations_v1(
+    mark_prices: pd.Series,
+    *,
+    as_of_index: Any,
+) -> int:
+    """Count log-return observations in the closed lookback window ending at as_of.
+
+    Provenance helper for typed carriers. Does not change estimator semantics.
+    """
+    ordered = mark_prices.sort_index().astype(float).loc[:as_of_index]
+    log_returns = _compute_log_returns(ordered).dropna()
+    if log_returns.empty:
+        return 0
+    return int(len(log_returns.iloc[-contract.LOOKBACK_BARS :]))
+
+
 def build_digest_dependency_graph_v1(
     *,
     bars: pd.DataFrame,
@@ -258,6 +274,7 @@ __all__ = [
     "build_before_after_field_diff_v1",
     "build_digest_dependency_graph_v1",
     "compute_canonical_volatility_estimate_from_mark_prices_v1",
+    "count_closed_return_observations_v1",
     "exact_known_61_price_fixture_v1",
     "expected_population_std_for_fixture_v1",
     "materialize_volatility_estimate_on_bars_v1",
