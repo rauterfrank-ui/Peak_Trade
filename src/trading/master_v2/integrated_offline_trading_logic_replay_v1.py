@@ -38,6 +38,7 @@ from trading.master_v2.canonical_market_context_v1 import (
     CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
     CanonicalMarketContextBindingOutcome,
     CanonicalMarketContextBindingStateV1,
+    CanonicalMarketContextEligibilityV1,
     CanonicalMarketContextV1,
     bind_canonical_market_context_event,
     with_computed_input_digest,
@@ -301,6 +302,13 @@ class IntegratedOfflineReplayInputV1:
     confirmation_progress_session_id: Optional[str] = None
     confirmation_progress_venue: Optional[str] = None
     confirmation_progress_instrument: Optional[InstrumentObservationKeyV1] = None
+    # Productive runtime only: require typed volatility presence before DP
+    # scope/boundary/entry authority. Default False preserves offline/research/scenario.
+    require_productive_typed_volatility_presence_gate: bool = False
+    # Optional precomputed eligibility from productive CMC typed binding host.
+    productive_typed_volatility_binding_eligibility: Optional[
+        CanonicalMarketContextEligibilityV1
+    ] = None
 
 
 @dataclass(frozen=True)
@@ -454,6 +462,10 @@ def build_integrated_offline_replay_input_v1(
     confirmation_progress_session_id: Optional[str] = None,
     confirmation_progress_venue: Optional[str] = None,
     confirmation_progress_instrument: Optional[InstrumentObservationKeyV1] = None,
+    require_productive_typed_volatility_presence_gate: bool = False,
+    productive_typed_volatility_binding_eligibility: Optional[
+        CanonicalMarketContextEligibilityV1
+    ] = None,
 ) -> IntegratedOfflineReplayInputV1:
     """Single canonical productive constructor for IntegratedOfflineReplayInputV1.
 
@@ -736,6 +748,12 @@ def build_integrated_offline_replay_input_v1(
         confirmation_progress_session_id=confirmation_progress_session_id,
         confirmation_progress_venue=confirmation_progress_venue,
         confirmation_progress_instrument=confirmation_progress_instrument,
+        require_productive_typed_volatility_presence_gate=bool(
+            require_productive_typed_volatility_presence_gate
+        ),
+        productive_typed_volatility_binding_eligibility=(
+            productive_typed_volatility_binding_eligibility
+        ),
     )
 
 
@@ -1278,6 +1296,96 @@ def run_integrated_offline_trading_logic_replay_v1(
         return IntegratedOfflineReplayResultV1(False, ("missing_market_context_output",), evidence)
 
     bound_context = binding.context
+
+    if inp.require_productive_typed_volatility_presence_gate:
+        from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
+            TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,
+            demote_trading_gate_for_typed_presence_failure_v1,
+            evaluate_double_play_runtime_typed_volatility_presence_gate_v1,
+            evaluate_protection_authority_when_typed_absent_v1,
+            protection_authority_required_v1,
+        )
+
+        presence_gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
+            bound_context,
+            binding_outcome=binding.eligibility.binding_outcome,
+            eligibility=inp.productive_typed_volatility_binding_eligibility,
+        )
+        # Eligibility result is consumed via presence_gate.eligibility (never discarded).
+        _ = presence_gate.eligibility
+
+        if not presence_gate.alpha_scope_entry_authority_allowed:
+            reasons = presence_gate.reason_codes or (TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,)
+            needs_protection = protection_authority_required_v1(
+                position_state=inp.position_state,
+                existing_position_side=inp.existing_position_side,
+                reconciliation_state=inp.reconciliation_state,
+                safety_exit_signal=inp.safety_exit_signal,
+                hard_risk_reduction_signal=inp.hard_risk_reduction_signal,
+                scope_adverse_exit_signal=inp.scope_adverse_exit_signal,
+                profit_protection_signal=inp.profit_protection_signal,
+                time_exit_signal=inp.time_exit_signal,
+                strategy_invalidation_signal=inp.strategy_invalidation_signal,
+                safety_mode=inp.safety_mode,
+            )
+            if needs_protection:
+                protection_decision = evaluate_protection_authority_when_typed_absent_v1(
+                    instrument_id=inp.instrument_id,
+                    trading_epoch=inp.trading_epoch,
+                    context_reference=inp.context_reference,
+                    direction_state=inp.direction_state,
+                    position_state=inp.position_state,
+                    reconciliation_state=inp.reconciliation_state,
+                    trading_gate=demote_trading_gate_for_typed_presence_failure_v1(
+                        inp.trading_gate
+                    ),
+                    safety_mode=inp.safety_mode,
+                    data_integrity_state=bound_context.data_integrity_status,
+                    clock_trust_status=bound_context.clock_trust_status,
+                    cooldown_pass=inp.cooldown_pass,
+                    existing_position_side=inp.existing_position_side,
+                    venue_flat=inp.venue_flat,
+                    scope_adverse_exit_signal=inp.scope_adverse_exit_signal,
+                    profit_protection_signal=inp.profit_protection_signal,
+                    time_exit_signal=inp.time_exit_signal,
+                    strategy_invalidation_signal=inp.strategy_invalidation_signal,
+                    hard_risk_reduction_signal=inp.hard_risk_reduction_signal,
+                    safety_exit_signal=inp.safety_exit_signal,
+                    previous_direction_state=inp.previous_composition_direction_state,
+                    position_management_context=inp.position_management_context,
+                    entry_exit_policy=inp.policies.entry_exit,
+                    gate=presence_gate,
+                )
+                evidence = _blocked_evidence(
+                    inp,
+                    fail_reasons=tuple(
+                        dict.fromkeys((*reasons, *protection_decision.reason_codes))
+                    ),
+                    decision_outcome=protection_decision.decision_outcome.value,
+                )
+                evidence = replace(
+                    evidence,
+                    reason_codes=tuple(
+                        dict.fromkeys((*reasons, *protection_decision.reason_codes))
+                    ),
+                    entry_exit_policy_ref=protection_decision.policy_decision_id,
+                    entry_or_exit_policy_ref=protection_decision.policy_decision_id,
+                    decision_precedence_trace=protection_decision.decision_precedence_trace,
+                    market_context_ref=bound_context.context_id,
+                )
+                evidence = with_computed_evidence_semantic_digest(evidence)
+                return IntegratedOfflineReplayResultV1(
+                    replay_pass=False,
+                    fail_reasons=tuple(dict.fromkeys((*reasons,))),
+                    evidence=evidence,
+                )
+
+            evidence = _blocked_evidence(
+                inp,
+                fail_reasons=reasons,
+                decision_outcome="blocked",
+            )
+            return IntegratedOfflineReplayResultV1(False, reasons, evidence)
 
     scope_init = initialize_canonical_scope(
         bound_context,

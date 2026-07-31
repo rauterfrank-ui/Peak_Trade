@@ -23,7 +23,10 @@ from trading.market_state.distinct_market_observation_acceptor_v1 import (
     ObservationTransportMetadataV1,
 )
 from trading.market_state.time_sample_epoch_semantics_v1 import MarketSampleIdentityV1
-from trading.master_v2.canonical_market_context_v1 import CanonicalMarketContextV1
+from trading.master_v2.canonical_market_context_v1 import (
+    CanonicalMarketContextEligibilityV1,
+    CanonicalMarketContextV1,
+)
 from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
     BINDING_OWNER,
     LEGACY_ADAPTATION_BOUNDARY,
@@ -147,6 +150,9 @@ class ProductiveRuntimeCmcTypedBindingResultV1:
     telemetry: ProductiveRuntimeCmcTypedBindingTelemetryV1
     typed_cutover_fail_closed: bool
     bound_estimate: Optional[CanonicalVolatilityEstimateV1]
+    # Eligibility is always computed and must be consumed by the presence gate —
+    # never discarded.
+    typed_binding_eligibility: CanonicalMarketContextEligibilityV1
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -155,6 +161,15 @@ class ProductiveRuntimeCmcTypedBindingResultV1:
             "bound_estimate_present": self.bound_estimate is not None,
             "producer_outcome": self.producer_result.outcome.value,
             "producer_reason": self.producer_result.reason,
+            "typed_binding_eligibility_block_reasons": [
+                r.value for r in self.typed_binding_eligibility.block_reasons
+            ],
+            "typed_binding_eligibility_scope_allowed": (
+                self.typed_binding_eligibility.scope_confirmation_allowed
+            ),
+            "typed_binding_eligibility_exposure_allowed": (
+                self.typed_binding_eligibility.new_directional_exposure_allowed
+            ),
         }
 
 
@@ -398,10 +413,9 @@ class CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
         )
         self._last_telemetry = telemetry
 
-        # Typed cutover path eligibility is fail-closed when unbound; legacy float path
-        # remains outside this capability (no global typed-only enforcement).
-        if typed_cutover_fail_closed:
-            _ = evaluate_typed_volatility_binding_eligibility_v1(bound_context)
+        # Always compute eligibility and return it for the presence gate to consume.
+        # This capability does not itself authorize Double-Play cutover.
+        typed_binding_eligibility = evaluate_typed_volatility_binding_eligibility_v1(bound_context)
 
         return ProductiveRuntimeCmcTypedBindingResultV1(
             context=bound_context,
@@ -409,6 +423,7 @@ class CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
             telemetry=telemetry,
             typed_cutover_fail_closed=typed_cutover_fail_closed,
             bound_estimate=bound_estimate,
+            typed_binding_eligibility=typed_binding_eligibility,
         )
 
 

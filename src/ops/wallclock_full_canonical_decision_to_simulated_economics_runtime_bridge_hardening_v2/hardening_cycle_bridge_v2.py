@@ -75,6 +75,10 @@ from trading.master_v2.canonical_market_context_v1 import (
 from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
     CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
 )
+from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
+    demote_trading_gate_for_typed_presence_failure_v1,
+    evaluate_double_play_runtime_typed_volatility_presence_gate_v1,
+)
 from trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
     CanonicalScopeInitializationPolicyV1,
@@ -519,6 +523,17 @@ def run_hardened_bridge_cycle_v2(
     state.last_typed_volatility_binding_telemetry = typed_binding.telemetry.to_dict()
     _ = input_digest  # retained for provenance continuity with prior bridge evidence shape
 
+    # Productive Double-Play typed cutover: consume host eligibility; do not discard.
+    presence_gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
+        market_context,
+        eligibility=typed_binding.typed_binding_eligibility,
+    )
+    effective_trading_gate = safety.trading_gate_enum
+    if not presence_gate.alpha_scope_entry_authority_allowed:
+        effective_trading_gate = demote_trading_gate_for_typed_presence_failure_v1(
+            safety.trading_gate_enum
+        )
+
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"{session_id}-{cycle_id}",
         instrument_id=state.instrument_id,
@@ -566,7 +581,7 @@ def run_hardened_bridge_cycle_v2(
         direction_state=state.direction_state,
         position_state=state.position_state,
         reconciliation_state=ReconciliationState.RECONCILED,
-        trading_gate=safety.trading_gate_enum,
+        trading_gate=effective_trading_gate,
         safety_mode=safety.safety_mode_enum,
         existing_position_side=state.existing_position_side,
         venue_flat=state.venue_flat,
@@ -586,6 +601,8 @@ def run_hardened_bridge_cycle_v2(
         expected_component_contracts=_component_versions(),
         context_reference=f"hardening-v2-context-epoch-{state.trading_epoch}",
         now_tick=state.cycle_index,
+        require_productive_typed_volatility_presence_gate=True,
+        productive_typed_volatility_binding_eligibility=(typed_binding.typed_binding_eligibility),
     )
 
     replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
@@ -715,6 +732,7 @@ def run_hardened_bridge_cycle_v2(
         "canonical_market_context_typed_estimate_present": (
             market_context.canonical_volatility_estimate is not None
         ),
+        "double_play_typed_volatility_presence_gate": presence_gate.to_dict(),
         "config_digest": config_digest,
         "price_basis": basis.to_dict(),
         "market_data_reference": basis.market_data_reference,
