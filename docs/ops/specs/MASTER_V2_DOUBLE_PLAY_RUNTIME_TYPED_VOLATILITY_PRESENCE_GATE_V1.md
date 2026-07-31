@@ -66,8 +66,9 @@ HARD_STOP=true
 4. **Lifecycle** — Warmup &#47; restart without estimate &#47; duplicate without prior &#47;
    out-of-order &#47; history gap &#47; persistence &#47; materialization failures remain
    fail-closed until a valid typed estimate is bound. Duplicate&#47;cycle reuse with a
-   valid prior keeps existing reuse semantics. `UNRESOLVED_MAX_AGE` stays
-   telemetry only — no numeric max-age policy.
+   valid prior keeps existing reuse semantics. Non-enforcing max-age policy
+   evidence may be attached; `UNRESOLVED_MAX_AGE` is diagnostic only — no
+   numeric threshold and no Alpha enforcement by age.
 
 5. **Isolation** — Opt-in via
    `require_productive_typed_volatility_presence_gate=True` on the productive
@@ -85,7 +86,7 @@ HARD_STOP=true
 
 ## Explicit non-goals
 
-- no numeric max-age policy
+- no numeric max-age **threshold** decision &#47; Alpha enforcement by age
 - no global typed-only enforcement
 - no Direct-Typed consumer refactor in Scope &#47; Rules &#47; Bridge
 - no second estimator &#47; binder &#47; adapter &#47; validator

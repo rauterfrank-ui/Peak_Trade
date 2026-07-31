@@ -582,7 +582,9 @@ def test_d_offline_research_scenario_isolation() -> None:
 
     non_goals = assert_capability_non_goals_v1()
     assert non_goals["global_typed_only_enforcement"] is False
-    assert non_goals["numeric_max_age_policy_created"] is False
+    assert non_goals["numeric_max_age_policy_created"] is True
+    assert non_goals["numeric_max_age_enforcement_enabled"] is False
+    assert non_goals["numeric_max_age_decided"] is False
     assert non_goals["offline_replay_legacy_defaults_unchanged"] is True
     assert non_goals["research_legacy_fallbacks_unchanged"] is True
     assert non_goals["scenario_replay_unchanged"] is True
