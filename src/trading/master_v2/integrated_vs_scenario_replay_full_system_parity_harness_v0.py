@@ -674,7 +674,7 @@ _DEFAULT_SCENARIO_STATE_SWITCH_RULES = DynamicScopeRules(
     max_band_width=50.0,
     min_switch_cooldown_ticks=0,
     max_switches_per_window=1_000_000,
-    volatility_estimate=0.02,
+    volatility_estimate=0.02,  # explicit legacy harness default (quarantine identity 0.02)
 )
 _EMPTY_SCENARIO_SCOPE_STATE = RuntimeScopeState(
     anchor_price=0.0,

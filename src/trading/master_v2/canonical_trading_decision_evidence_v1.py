@@ -12,7 +12,12 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass, replace
-from typing import Any, Mapping, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Mapping, Optional, Tuple
+
+if TYPE_CHECKING:
+    from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
+        CanonicalVolatilityQuarantineEvidenceProvenanceV1,
+    )
 
 CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION = "v1"
 EVIDENCE_SCHEMA_VERSION = "canonical_trading_decision_evidence_v1"
@@ -151,6 +156,9 @@ class CanonicalTradingDecisionEvidenceV1:
     killswitch_boundary_ref: str = ""
     killswitch_boundary_effect: str = _KILLSWITCH_BOUNDARY_EFFECT_NONE
     volatility_provenance: Optional[CanonicalVolatilityDecisionEvidenceProvenanceV1] = None
+    volatility_quarantine_provenance: Optional[
+        "CanonicalVolatilityQuarantineEvidenceProvenanceV1"
+    ] = None
 
     def __post_init__(self) -> None:
         if self.semantic_digest and not _valid_sha256_hex(self.semantic_digest):
@@ -223,6 +231,10 @@ def serialize_canonical_trading_decision_evidence_canonical(
     # Omit None so legacy evidence digests remain unchanged.
     if evidence.volatility_provenance is not None:
         payload["volatility_provenance"] = evidence.volatility_provenance.to_dict()
+    if evidence.volatility_quarantine_provenance is not None:
+        payload["volatility_quarantine_provenance"] = (
+            evidence.volatility_quarantine_provenance.to_dict()
+        )
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 

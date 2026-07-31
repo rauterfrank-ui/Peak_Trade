@@ -51,6 +51,10 @@ from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import (
     PanelBarV1,
     compute_series_digest,
 )
+from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
+    quarantine_research_fleet_join_volatility_v1,
+    require_admitted_legacy_volatility_float_v1,
+)
 
 PACKAGE_MARKER = (
     "OFFLINE_FINAL_RESEARCH_FLEET_SIGNAL_MATRIX_PRODUCTIVE_INPUT_JOIN_MATERIALIZER_V0=true"
@@ -232,7 +236,9 @@ def panel_bars_to_strategy_dataframe_v0(
                 "volume": float(bar.volume),
                 "open_interest": 10000.0,
                 "funding_rate": 0.0001,
-                "volatility_estimate": 0.2,
+                "volatility_estimate": require_admitted_legacy_volatility_float_v1(
+                    quarantine_research_fleet_join_volatility_v1()
+                ),
                 "is_final": True,
                 "bar_interval": "1h",
             }

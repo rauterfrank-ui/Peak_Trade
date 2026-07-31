@@ -273,8 +273,9 @@ def test_explicit_contract_gates_machine_readable() -> None:
 
 
 def test_open_gaps_remain_documented_and_unclosed() -> None:
-    assert len(typed.OPEN_HOT_PATH_GAPS) == 9
-    assert "G1_SILENT_0_2_IN_HISTORICAL_BIND" in typed.OPEN_HOT_PATH_GAPS
+    assert len(typed.OPEN_HOT_PATH_GAPS) == 7
+    assert "G1_SILENT_0_2_IN_HISTORICAL_BIND" not in typed.OPEN_HOT_PATH_GAPS
+    assert "G2_SILENT_0_02_SCENARIO_INTEGRATED_DEFAULTS" not in typed.OPEN_HOT_PATH_GAPS
     assert "G6_MATERIALIZER_NOT_WIRED_TO_DOUBLE_PLAY" in typed.OPEN_HOT_PATH_GAPS
     assert "G9_FUTURES_PROFILE_PRIMARY_METRIC_OQ001_OPEN" in typed.OPEN_HOT_PATH_GAPS
 
@@ -318,5 +319,5 @@ def test_capability_spec_exists() -> None:
     text = path.read_text(encoding="utf-8")
     assert "SEMANTICS_OWNER" in text
     assert "RUNTIME_EFFECT=false" in text
-    assert "G1_SILENT_0_2_IN_HISTORICAL_BIND" in text
+    assert "G6_MATERIALIZER_NOT_WIRED_TO_DOUBLE_PLAY" in text
     assert "G9_FUTURES_PROFILE_PRIMARY_METRIC_OQ001_OPEN" in text

@@ -74,8 +74,6 @@ GAPS_CLOSED: tuple[str, ...] = (
     "G11_EVIDENCE_SCHEMA",
 )
 GAPS_REMAINING: tuple[str, ...] = (
-    "G1",
-    "G2",
     "G4",
     "G5",
     "G7",

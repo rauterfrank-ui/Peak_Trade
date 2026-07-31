@@ -130,8 +130,6 @@ Not unified with this estimate:
 ## Open hot-path gaps (remain open)
 
 ```
-G1_SILENT_0_2_IN_HISTORICAL_BIND
-G2_SILENT_0_02_SCENARIO_INTEGRATED_DEFAULTS
 G3_UNTYPED_EXISTING_HOT_PATH_FLOAT
 G4_COMPETING_PRODUCERS_DIFFERENT_SCALING
 G5_PANEL_1H_REUSES_PT1M_LOOKBACK
@@ -141,8 +139,9 @@ G8_LEGACY_PATH_NOT_YET_GLOBALLY_ENFORCED
 G9_FUTURES_PROFILE_PRIMARY_METRIC_OQ001_OPEN
 ```
 
-These gaps are intentionally left open. Closing any of them requires a separate
-Operator-GO and must not be performed silently under this capability.
+`G1_SILENT_0_2_IN_HISTORICAL_BIND` and `G2_SILENT_0_02_SCENARIO_INTEGRATED_DEFAULTS`
+are closed by `MASTER_V2_CANONICAL_VOLATILITY_DEFAULT_QUARANTINE_V1` (C2), not by this
+typed-consumption capability.
 
 ## Forbidden without separate GO
 
