@@ -179,13 +179,13 @@ Compatibility note:
 | C2 | Accepted DISTINCT observation stream / epoch ownership | implemented |
 | C3 | Observation-gated confirmation inputs | implemented (`DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1`) |
 | C4 | Post-confirmation Survival/Suitability/Composition binding + Research C1 DISTINCT parity | implemented (`POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1`) |
-| C5 | Timer / clock migration around observation epoch | not started |
+| C5 | Timer / clock / time-sample-epoch semantics around observation epoch | implemented (`MASTER_V2_TIME_SAMPLE_EPOCH_SEMANTICS_V1`) |
 | C6 | Strategy evaluator advance wiring | not started |
 | C7 | Risk / safety observation gates | not started |
 | C8 | Portfolio / runtime integration | not started |
 | C9 | End-to-end activation / promotion surfaces | not started |
 
-`C5_STARTED=false` … `C9_STARTED=false`
+`C5_STARTED=true` (semantics complete; no runtime activation) … `C6_STARTED=false` … `C9_STARTED=false`
 
 ## 11. Reason Codes
 
@@ -214,5 +214,6 @@ Programming/contract faults (for example commit compare mismatch, runtime-cycle 
 Canonical tests:
 
 - `tests&#47;trading&#47;market_state&#47;test_distinct_market_observation_acceptor_v1.py`
+- `tests&#47;trading&#47;market_state&#47;test_time_sample_epoch_semantics_v1.py` (C5 time/sample/epoch semantics)
 
-Covers initial state, DISTINCT/DUPLICATE/TRANSPORT_ONLY/OUT_OF_ORDER/IDENTITY_CONFLICT/INVALID_*, multi-instrument isolation, atomicity, epoch monotonicity properties, poll-rate independence, serialization roundtrip, and trading_epoch compatibility rejection of runtime cycles.
+Covers initial state, DISTINCT/DUPLICATE/TRANSPORT_ONLY/OUT_OF_ORDER/IDENTITY_CONFLICT/INVALID_*, multi-instrument isolation, atomicity, epoch monotonicity properties, poll-rate independence, serialization roundtrip, trading_epoch compatibility rejection of runtime cycles, and C5 Event-Time / DecisionEpoch / RuntimeCycle domain separation.

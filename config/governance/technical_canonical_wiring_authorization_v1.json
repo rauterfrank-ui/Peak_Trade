@@ -731,7 +731,10 @@
     "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py",
     "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
     "tests/trading/master_v2/test_post_confirmation_survival_suitability_composition_binding_v1.py",
-    "docs/ops/specs/MV2_C4_POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1.md"
+    "docs/ops/specs/MV2_C4_POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1.md",
+    "src/trading/market_state/time_sample_epoch_semantics_v1.py",
+    "tests/trading/market_state/test_time_sample_epoch_semantics_v1.py",
+    "docs/ops/specs/MV2_TIME_SAMPLE_EPOCH_SEMANTICS_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
