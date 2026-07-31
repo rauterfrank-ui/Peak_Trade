@@ -3,7 +3,7 @@
 ---
 docs_token: DOCS_TOKEN_MASTER_V2_CANONICAL_VOLATILITY_PRODUCTIVE_RUNTIME_CMC_TYPED_BINDING_V1
 STATUS: CAPABILITY_AVAILABLE
-scope: productive Producer→bind_typed→CMC edge; non-authorizing for Double-Play typed cutover
+scope: productive Producer→bind_typed→CMC edge; typed cutover closed by presence-gate capability
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 RUNTIME_WIRING: true
@@ -21,7 +21,11 @@ HARD_STOP: true
 > mark samples, and on `PRODUCED` binds via the existing
 > `bind_typed_canonical_volatility_estimate_into_market_context_v1` into
 > `CanonicalMarketContextV1`. Does **not** decide numeric max-age, promote
-> defaults, cut over Double-Play typed-only, or replace competing producers.
+> defaults, or replace competing producers. Double-Play typed cutover authority
+> is owned by
+> `MASTER_V2_DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1`
+> (this module remains `DOUBLE_PLAY_TYPED_CUTOVER=false` and always returns
+> typed binding eligibility for that gate to consume).
 
 ## Machine summary
 
