@@ -128,7 +128,7 @@ even if collection later fails.
 
 ## Attempt evidence schema
 
-`canonical_volatility_numeric_max_age_public_md_physical_attempt_evidence/v1`
+`canonical_volatility_numeric_max_age_public_md_physical_attempt_evidence&#47;v1`
 
 One structured row per physical attempt with timing, status, Retry-After,
 backoff source/delay, budget before/after, and terminal/error codes.
