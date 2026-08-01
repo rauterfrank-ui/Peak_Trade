@@ -146,6 +146,21 @@ def produce_productive_research_evidence_from_cycle_v1(
         if abs(recomputed - age_seconds) > 1e-9:
             raise ProductiveEvidenceAccumulationError("age_formula_mismatch")
 
+    # Natural-age lifecycle host is sole produce/reuse authority when bound.
+    # Missing/inconsistent lifecycle state fails closed (no evidence accumulation).
+    if binding.get("natural_age_lifecycle_host_bound") is True:
+        lifecycle_age = binding.get("natural_age_seconds")
+        if lifecycle_age is None:
+            raise ProductiveEvidenceAccumulationError(
+                "natural_age_lifecycle_state_missing_for_evaluable_estimate"
+            )
+        if abs(float(lifecycle_age) - float(age_seconds)) > 1e-9:
+            raise ProductiveEvidenceAccumulationError(
+                "natural_age_lifecycle_age_authority_mismatch"
+            )
+        if float(age_seconds) < 0.0:
+            raise ProductiveEvidenceAccumulationError("negative_age_fail_closed")
+
     source_digest = require_nonempty(
         age.get("source_digest") or binding.get("source_digest"),
         field_name="volatility_source_digest",

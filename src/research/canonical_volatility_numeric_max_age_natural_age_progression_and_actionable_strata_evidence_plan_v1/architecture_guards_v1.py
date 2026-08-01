@@ -92,6 +92,12 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
     ):
         raise RuntimeError("CAPABILITY_GUARD_DRIFT")
 
+    from research.canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.productive_natural_age_lifecycle_binding_v1 import (
+        assert_natural_age_lifecycle_productive_binding_guards_v1,
+    )
+
+    productive_binding = assert_natural_age_lifecycle_productive_binding_guards_v1(repo_root=root)
+
     return {
         "review_mode": REVIEW_MODE_ID,
         "guards_pass": True,
@@ -102,4 +108,16 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
         "blocked_for_parameter_decision": BLOCKED_FOR_PARAMETER_DECISION,
         "ready_for_productive_session_execution": READY_FOR_PRODUCTIVE_SESSION_EXECUTION,
         "ready_for_numeric_max_age_policy_decision": READY_FOR_NUMERIC_MAX_AGE_POLICY_DECISION,
+        "NATURAL_AGE_LIFECYCLE_HOST_PRODUCTIVE_BOUND": productive_binding[
+            "NATURAL_AGE_LIFECYCLE_HOST_PRODUCTIVE_BOUND"
+        ],
+        "LEGACY_PER_SAMPLE_REMATERIALIZATION_UNREACHABLE": productive_binding[
+            "LEGACY_PER_SAMPLE_REMATERIALIZATION_UNREACHABLE"
+        ],
+        "SECOND_AGE_AUTHORITY_PRESENT": productive_binding["SECOND_AGE_AUTHORITY_PRESENT"],
+        "SECOND_DECISION_AUTHORITY_PRESENT": productive_binding[
+            "SECOND_DECISION_AUTHORITY_PRESENT"
+        ],
+        "MASTER_V2_LOGIC_CHANGED": MASTER_V2_LOGIC_CHANGED,
+        "DOUBLE_PLAY_LOGIC_CHANGED": DOUBLE_PLAY_LOGIC_CHANGED,
     }

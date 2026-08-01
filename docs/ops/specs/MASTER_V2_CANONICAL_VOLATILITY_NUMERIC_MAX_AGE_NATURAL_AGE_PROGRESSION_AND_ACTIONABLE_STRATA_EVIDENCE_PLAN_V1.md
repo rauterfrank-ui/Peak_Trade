@@ -112,10 +112,22 @@ actionable long&#47;short&#47;entry strata, counterfactual stale records, and na
 7200s reachability — without artificial delay. This capability does **not**
 register or execute those sessions.
 
+## Productive bridge wiring (follow-on capability)
+
+The lifecycle host is bound into the productive bridge runner by
+
+`MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_BRIDGE_NATURAL_AGE_LIFECYCLE_WIRING_V1`
+
+via `ProductiveNaturalAgeLifecycleCmcBindingHostV1`. That wiring capability owns
+the productive produce&#47;reuse&#47;recompute authority and Age-7200 reachability proof.
+This evidence-plan capability remains the research contract owner for lifecycle,
+strata, counterfactual impact, and coverage plan surfaces.
+
 ## Next later step
 
 A separate operator-authorized Authorization &#47; Execution plan is required before
-any productive session. This capability stops at
+any productive session. The Numeric Max-Age Evidence Derivation phase remains
+research-only. This capability stops at
 
 `READY_FOR_ADDITIONAL_EVIDENCE_AUTHORIZATION_PLAN`.
 
