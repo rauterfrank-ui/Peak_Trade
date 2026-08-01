@@ -72,6 +72,13 @@ from trading.master_v2.canonical_market_context_v1 import (
     WarmupStatus,
     with_computed_input_digest,
 )
+from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1 import (
+    accumulate_max_age_research_evidence_record_from_cycle_v1,
+)
+from trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1 import (
+    VolatilityRestartStatusV1,
+    VolatilityReuseStatusV1,
+)
 from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
     CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
 )
@@ -312,6 +319,9 @@ class HardenedBridgeSessionStateV2:
     ) = None
     typed_volatility_persistence_path: Path | None = None
     last_typed_volatility_binding_telemetry: dict[str, Any] | None = None
+    # Non-enforcing research evidence accumulation (threshold remains unresolved).
+    max_age_research_evidence_ledger: list[dict[str, Any]] = field(default_factory=list)
+    max_age_research_evidence_ledger_path: Path | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -524,9 +534,14 @@ def run_hardened_bridge_cycle_v2(
     _ = input_digest  # retained for provenance continuity with prior bridge evidence shape
 
     # Productive Double-Play typed cutover: consume host eligibility; do not discard.
+    # Wire producer/binding reuse+restart labels into non-enforcing age telemetry.
+    binding_reuse = VolatilityReuseStatusV1(str(typed_binding.telemetry.reuse_status))
+    binding_restart = VolatilityRestartStatusV1(str(typed_binding.telemetry.restart_status))
     presence_gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
         market_context,
         eligibility=typed_binding.typed_binding_eligibility,
+        reuse_status=binding_reuse,
+        restart_status=binding_restart,
     )
     effective_trading_gate = safety.trading_gate_enum
     if not presence_gate.alpha_scope_entry_authority_allowed:
@@ -789,6 +804,12 @@ def run_hardened_bridge_cycle_v2(
             "AI_LAYER_NON_AUTHORITY",
         ],
     }
+    research_join = accumulate_max_age_research_evidence_record_from_cycle_v1(
+        cycle,
+        ledger_path=state.max_age_research_evidence_ledger_path,
+        in_memory_ledger=state.max_age_research_evidence_ledger,
+    )
+    cycle["canonical_volatility_max_age_research_evidence_join"] = research_join.to_dict()
     if cycle["execution_eligible"]:
         raise RuntimeError("EXECUTION_ELIGIBLE_MUST_REMAIN_FALSE")
     state.cycle_ledger.append(cycle)

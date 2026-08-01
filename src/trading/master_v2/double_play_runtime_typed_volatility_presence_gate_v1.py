@@ -166,7 +166,7 @@ def evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
     ),
     eligibility: CanonicalMarketContextEligibilityV1 | None = None,
     reuse_status: VolatilityReuseStatusV1 = VolatilityReuseStatusV1.NOT_APPLICABLE,
-    restart_status: VolatilityRestartStatusV1 = VolatilityRestartStatusV1.NOT_RESTART,
+    restart_status: VolatilityRestartStatusV1 = VolatilityRestartStatusV1.NOT_APPLICABLE,
 ) -> DoublePlayTypedVolatilityPresenceGateResultV1:
     """Evaluate productive DP presence gate; reuse (never discard) eligibility."""
     typed_blocks = collect_typed_volatility_binding_block_reasons_v1(context)
@@ -218,11 +218,7 @@ def evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
         typed_estimate_present=typed_present,
         typed_validation_ok=typed_validation_ok,
         restart_without_estimate=(
-            restart_status
-            in (
-                VolatilityRestartStatusV1.RESTART_WITHOUT_ESTIMATE,
-                VolatilityRestartStatusV1.HISTORY_RESTORE_WITHOUT_ESTIMATE,
-            )
+            restart_status is VolatilityRestartStatusV1.RESTART_WITHOUT_ESTIMATE
         ),
     )
     max_age_policy_evidence = evaluate_canonical_volatility_estimate_age_policy_v1(

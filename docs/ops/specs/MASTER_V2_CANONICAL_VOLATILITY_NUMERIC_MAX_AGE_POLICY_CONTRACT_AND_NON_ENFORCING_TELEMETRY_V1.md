@@ -65,7 +65,13 @@ HARD_STOP=true
 - Rematerialization
 - Separate freshness gate or global staleness gate
 - Live &#47; Testnet &#47; Shadow &#47; order routing
-- Parameter research
+- Numeric threshold selection or parameter-research execution
+  (structural research-design &#47; evidence-accumulation is a separate next capability)
+
+Restart labels used by age telemetry: `NOT_APPLICABLE`,
+`RESTART_WITHOUT_ESTIMATE`, `FIRST_PRODUCTION_AFTER_RESTART`, `UNKNOWN`.
+Producer persistence restores history only and does not rematerialize a typed
+estimate; therefore restore is `RESTART_WITHOUT_ESTIMATE` until PRODUCED.
 
 ## Ratified Event-Time semantics
 
@@ -153,10 +159,11 @@ execution duration must not affect results. Productive isolation remains via
 
 ```
 NEXT_AFTER_THIS_CAPABILITY=
-SEPARATE_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION
+MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_DESIGN_AND_EVIDENCE_ACCUMULATION_CONTRACT_V1
 ```
 
-That later capability is **not** part of this delivery.
+Research-design &#47; evidence-accumulation is a separate capability and must not
+select a numeric threshold or enable Alpha enforcement.
 
 ## Owners
 

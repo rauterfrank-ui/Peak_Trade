@@ -70,7 +70,8 @@ LIVE_AUTHORIZATION = False
 HARD_STOP = True
 
 NEXT_AFTER_THIS_CAPABILITY = (
-    "SEPARATE_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION"
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_"
+    "DESIGN_AND_EVIDENCE_ACCUMULATION_CONTRACT_V1"
 )
 
 _TRUSTED_CLOCK = frozenset({ClockTrustStatus.TRUSTED})
@@ -116,16 +117,28 @@ class VolatilityPresenceStatusV1(str, Enum):
 
 class VolatilityReuseStatusV1(str, Enum):
     NOT_APPLICABLE = "NOT_APPLICABLE"
-    NONE = "NONE"
-    DUPLICATE_REUSE = "DUPLICATE_REUSE"
-    NO_SAMPLE_CYCLE_REUSE = "NO_SAMPLE_CYCLE_REUSE"
-    PROCESS_REUSE = "PROCESS_REUSE"
+    FRESHLY_PRODUCED = "FRESHLY_PRODUCED"
+    NO_SAMPLE_REUSE = "NO_SAMPLE_REUSE"
+    DUPLICATE_SAMPLE_REUSE = "DUPLICATE_SAMPLE_REUSE"
+    OUT_OF_ORDER_REJECTED_REUSE = "OUT_OF_ORDER_REJECTED_REUSE"
+    WARMUP_WITHOUT_ESTIMATE = "WARMUP_WITHOUT_ESTIMATE"
+    UNKNOWN = "UNKNOWN"
 
 
 class VolatilityRestartStatusV1(str, Enum):
-    NOT_RESTART = "NOT_RESTART"
+    """Restart labels for non-enforcing age telemetry.
+
+    Persistence restores mark-history only; typed estimates are never
+    rematerialized across process restart. Restore therefore yields
+    ``RESTART_WITHOUT_ESTIMATE`` until a fresh PRODUCED estimate. There is
+    no restored-existing-estimate status because the producer persistence
+    contract does not rematerialize estimates.
+    """
+
+    NOT_APPLICABLE = "NOT_APPLICABLE"
     RESTART_WITHOUT_ESTIMATE = "RESTART_WITHOUT_ESTIMATE"
-    HISTORY_RESTORE_WITHOUT_ESTIMATE = "HISTORY_RESTORE_WITHOUT_ESTIMATE"
+    FIRST_PRODUCTION_AFTER_RESTART = "FIRST_PRODUCTION_AFTER_RESTART"
+    UNKNOWN = "UNKNOWN"
 
 
 class VolatilityMaxAgeDecisionV1(str, Enum):
@@ -372,7 +385,7 @@ def evaluate_canonical_volatility_estimate_age_policy_v1(
     reference_market_event_time: Union[str, datetime, None],
     presence_status: VolatilityPresenceStatusV1,
     reuse_status: VolatilityReuseStatusV1 = VolatilityReuseStatusV1.NOT_APPLICABLE,
-    restart_status: VolatilityRestartStatusV1 = VolatilityRestartStatusV1.NOT_RESTART,
+    restart_status: VolatilityRestartStatusV1 = VolatilityRestartStatusV1.NOT_APPLICABLE,
     clock_trust_status: ClockTrustStatus = ClockTrustStatus.TRUSTED,
     data_integrity_status: DataIntegrityStatus = DataIntegrityStatus.TRUSTED,
     policy: CanonicalVolatilityNumericMaxAgePolicyContractV1 | None = None,
@@ -388,11 +401,7 @@ def evaluate_canonical_volatility_estimate_age_policy_v1(
 
     # Precedence 1: presence / restart
     if (
-        restart_status
-        in (
-            VolatilityRestartStatusV1.RESTART_WITHOUT_ESTIMATE,
-            VolatilityRestartStatusV1.HISTORY_RESTORE_WITHOUT_ESTIMATE,
-        )
+        restart_status is VolatilityRestartStatusV1.RESTART_WITHOUT_ESTIMATE
         or presence_status is VolatilityPresenceStatusV1.RESTART_UNAVAILABLE
     ):
         return _evidence(
@@ -570,6 +579,78 @@ def derive_presence_status_for_age_policy_v1(
     return VolatilityPresenceStatusV1.PRESENT
 
 
+def derive_reuse_and_restart_status_for_age_policy_v1(
+    *,
+    producer_outcome: str,
+    cycle_without_sample: bool,
+    estimate_bound: bool,
+    restart_without_estimate: bool,
+    first_production_after_restart: bool = False,
+) -> tuple[VolatilityReuseStatusV1, VolatilityRestartStatusV1]:
+    """Map productive producer/binding states onto typed age-telemetry labels.
+
+    Labels are diagnostic only. Reuse must never refresh ``as_of_event_time``.
+    Restart/restore must not rematerialize volatility as a freshness reset.
+    """
+    outcome = str(producer_outcome or "").strip().upper()
+
+    if restart_without_estimate and not estimate_bound:
+        reuse = (
+            VolatilityReuseStatusV1.WARMUP_WITHOUT_ESTIMATE
+            if outcome == "WARMUP"
+            else VolatilityReuseStatusV1.NOT_APPLICABLE
+        )
+        return reuse, VolatilityRestartStatusV1.RESTART_WITHOUT_ESTIMATE
+
+    if first_production_after_restart and outcome == "PRODUCED" and estimate_bound:
+        return (
+            VolatilityReuseStatusV1.FRESHLY_PRODUCED,
+            VolatilityRestartStatusV1.FIRST_PRODUCTION_AFTER_RESTART,
+        )
+
+    if outcome == "PRODUCED" and estimate_bound:
+        return (
+            VolatilityReuseStatusV1.FRESHLY_PRODUCED,
+            VolatilityRestartStatusV1.NOT_APPLICABLE,
+        )
+
+    # No-sample cycles must label process reuse even if last ingest was DUPLICATE.
+    if cycle_without_sample and estimate_bound:
+        return (
+            VolatilityReuseStatusV1.NO_SAMPLE_REUSE,
+            VolatilityRestartStatusV1.NOT_APPLICABLE,
+        )
+
+    if outcome == "DUPLICATE_NOOP" and estimate_bound:
+        return (
+            VolatilityReuseStatusV1.DUPLICATE_SAMPLE_REUSE,
+            VolatilityRestartStatusV1.NOT_APPLICABLE,
+        )
+
+    if outcome == "OUT_OF_ORDER_REJECTED":
+        return (
+            VolatilityReuseStatusV1.OUT_OF_ORDER_REJECTED_REUSE,
+            VolatilityRestartStatusV1.NOT_APPLICABLE,
+        )
+
+    if outcome == "WARMUP" and not estimate_bound:
+        return (
+            VolatilityReuseStatusV1.WARMUP_WITHOUT_ESTIMATE,
+            VolatilityRestartStatusV1.NOT_APPLICABLE,
+        )
+
+    if estimate_bound:
+        return (
+            VolatilityReuseStatusV1.UNKNOWN,
+            VolatilityRestartStatusV1.NOT_APPLICABLE,
+        )
+
+    return (
+        VolatilityReuseStatusV1.NOT_APPLICABLE,
+        VolatilityRestartStatusV1.NOT_APPLICABLE,
+    )
+
+
 def assert_architecture_guards_v1(*, repo_root: Optional[Path] = None) -> dict[str, Any]:
     """Guards: unresolved threshold, no enforcement, no second authorities."""
     root = repo_root or Path(__file__).resolve().parents[3]
@@ -697,6 +778,7 @@ __all__ = [
     "assert_capability_non_goals_v1",
     "build_ratified_unresolved_max_age_policy_contract_v1",
     "derive_presence_status_for_age_policy_v1",
+    "derive_reuse_and_restart_status_for_age_policy_v1",
     "evaluate_canonical_volatility_estimate_age_policy_v1",
     "parse_event_time_instant_v1",
     "validate_canonical_volatility_numeric_max_age_policy_contract_v1",

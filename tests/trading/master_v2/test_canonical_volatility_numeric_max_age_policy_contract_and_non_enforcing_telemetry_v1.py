@@ -283,7 +283,7 @@ def test_08_history_restore_no_estimate_no_fresh_mark(tmp_path: Path) -> None:
     )
     gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
         cycle.context,
-        restart_status=VolatilityRestartStatusV1.HISTORY_RESTORE_WITHOUT_ESTIMATE,
+        restart_status=VolatilityRestartStatusV1.RESTART_WITHOUT_ESTIMATE,
     )
     assert gate.alpha_scope_entry_authority_allowed is False
     assert gate.max_age_policy_evidence is not None
@@ -338,12 +338,12 @@ def test_09_duplicate_reuse_as_of_unchanged_age_grows_with_market_event_time(
     )
     gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
         bound,
-        reuse_status=VolatilityReuseStatusV1.DUPLICATE_REUSE,
+        reuse_status=VolatilityReuseStatusV1.DUPLICATE_SAMPLE_REUSE,
     )
     assert gate.max_age_policy_evidence is not None
     assert gate.max_age_policy_evidence.computed_age_seconds == 600.0
     assert gate.max_age_policy_evidence.reuse_status == (
-        VolatilityReuseStatusV1.DUPLICATE_REUSE.value
+        VolatilityReuseStatusV1.DUPLICATE_SAMPLE_REUSE.value
     )
     assert gate.alpha_scope_entry_authority_allowed is True
 
@@ -380,7 +380,7 @@ def test_11_process_reuse_monotone_age_growth() -> None:
             estimate=estimate,
             reference_market_event_time=AS_OF + timedelta(seconds=seconds),
             presence_status=VolatilityPresenceStatusV1.PRESENT,
-            reuse_status=VolatilityReuseStatusV1.PROCESS_REUSE,
+            reuse_status=VolatilityReuseStatusV1.NO_SAMPLE_REUSE,
         )
         assert evidence.computed_age_seconds is not None
         ages.append(evidence.computed_age_seconds)

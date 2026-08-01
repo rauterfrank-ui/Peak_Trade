@@ -41,6 +41,9 @@ from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_
     CanonicalVolatilityTypedConsumptionError,
     validate_canonical_volatility_estimate_v1,
 )
+from trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1 import (
+    derive_reuse_and_restart_status_for_age_policy_v1,
+)
 from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
     CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
     TypedRuntimeProducerOutcomeV1,
@@ -122,6 +125,8 @@ class ProductiveRuntimeCmcTypedBindingTelemetryV1:
     legacy_float_adaptation_owner: str
     fail_closed_reason: str
     restart_without_estimate: bool
+    reuse_status: str
+    restart_status: str
     max_age_status: str
     typed_cutover_fail_closed: bool
     history_digest: str
@@ -137,6 +142,8 @@ class ProductiveRuntimeCmcTypedBindingTelemetryV1:
             "legacy_float_adaptation_owner": self.legacy_float_adaptation_owner,
             "fail_closed_reason": self.fail_closed_reason,
             "restart_without_estimate": self.restart_without_estimate,
+            "reuse_status": self.reuse_status,
+            "restart_status": self.restart_status,
             "max_age_status": self.max_age_status,
             "typed_cutover_fail_closed": self.typed_cutover_fail_closed,
             "history_digest": self.history_digest,
@@ -291,6 +298,7 @@ class CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
         reuse a previously PRODUCED estimate via the producer output port.
         """
         cycle_without_sample = not ingest_sample
+        restart_pending_before_cycle = self.restart_without_estimate
         if ingest_sample:
             producer_result = self.producer.ingest_finalized_pt1m_mark_sample_v1(
                 sample=sample,
@@ -306,10 +314,12 @@ class CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
             producer_result = self.producer.on_runtime_cycle_without_sample_v1()
 
         outcome = producer_result.outcome
+        first_production_after_restart = False
         if (
             outcome is TypedRuntimeProducerOutcomeV1.PRODUCED
             and producer_result.estimate is not None
         ):
+            first_production_after_restart = restart_pending_before_cycle
             self._produced_since_start_or_restore = True
             self._restart_without_estimate = False
 
@@ -389,6 +399,13 @@ class CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
 
         typed_cutover_fail_closed = not typed_binding_performed
         estimate_for_telemetry = bound_estimate
+        reuse_status, restart_status = derive_reuse_and_restart_status_for_age_policy_v1(
+            producer_outcome=outcome.value,
+            cycle_without_sample=cycle_without_sample,
+            estimate_bound=estimate_for_telemetry is not None,
+            restart_without_estimate=self.restart_without_estimate,
+            first_production_after_restart=first_production_after_restart,
+        )
         telemetry = ProductiveRuntimeCmcTypedBindingTelemetryV1(
             producer_outcome=outcome.value,
             estimate_present=estimate_for_telemetry is not None,
@@ -407,6 +424,8 @@ class CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
             legacy_float_adaptation_owner=LEGACY_FLOAT_ADAPTATION_OWNER,
             fail_closed_reason=fail_reason.value,
             restart_without_estimate=self.restart_without_estimate,
+            reuse_status=reuse_status.value,
+            restart_status=restart_status.value,
             max_age_status=MAX_AGE_STATUS,
             typed_cutover_fail_closed=typed_cutover_fail_closed,
             history_digest=str(self.producer.history.history_digest),
