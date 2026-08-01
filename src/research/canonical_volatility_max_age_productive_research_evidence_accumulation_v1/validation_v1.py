@@ -190,6 +190,13 @@ def validate_productive_evidence_record_v1(
     if payload.get("numeric_threshold_selected") is True:
         reasons.append("numeric_threshold_selected_forbidden")
 
+    if payload.get("synthetic") is True:
+        reasons.append("synthetic_evidence_rejected")
+    if payload.get("fixture") is True:
+        reasons.append("fixture_evidence_rejected")
+    if payload.get("test_data") is True:
+        reasons.append("test_or_fixture_evidence_rejected")
+
     if reasons:
         return ValidationStatusV1.INVALID, tuple(sorted(set(reasons)))
     return ValidationStatusV1.VALID, ()
@@ -272,6 +279,15 @@ def productive_record_from_mapping_v1(
             if payload.get("economic_metrics") is None
             else dict(payload.get("economic_metrics") or {})
         ),
+        campaign_id=optional_text(payload.get("campaign_id")),
+        market_sample_id=optional_text(payload.get("market_sample_id")),
+        productive_input_authority=optional_text(payload.get("productive_input_authority")),
+        source_is_authoritative_bridge_cycle=bool(
+            payload.get("source_is_authoritative_bridge_cycle") or False
+        ),
+        synthetic=bool(payload.get("synthetic") or False),
+        fixture=bool(payload.get("fixture") or False),
+        test_data=bool(payload.get("test_data") or False),
     )
 
 

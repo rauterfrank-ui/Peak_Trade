@@ -396,7 +396,9 @@
         "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/",
         "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
         "tests/research/test_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
-        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1.md"
+        "tests/research/test_canonical_volatility_max_age_productive_bridge_accumulation_binding_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1.md",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1.md"
       ]
     },
     "COST_MODEL_DIAGNOSTICS": {

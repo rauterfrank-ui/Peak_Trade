@@ -818,13 +818,49 @@ def run_hardened_bridge_cycle_v2(
     cycle["canonical_volatility_max_age_research_evidence_join"] = research_join.to_dict()
     # Productive accumulation is diagnostic-only: write failures must not mutate trading.
     if state.productive_evidence_accumulation_state is not None:
-        cycle["productive_research_evidence_accumulation"] = (
-            accumulate_productive_research_evidence_from_cycle_v1(
-                cycle,
-                state=state.productive_evidence_accumulation_state,
-                project_to_join_ledger=False,
-            )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.productive_bridge_binding_v1 import (
+            build_productive_bridge_cycle_authority_v1,
+            iso_from_unix_v1,
+            market_sample_id_from_identity_v1,
+            stamp_productive_bridge_cycle_authority_v1,
         )
+
+        acc_state = state.productive_evidence_accumulation_state
+        sample_for_id = finalized_pt1m_mark_sample
+        if sample_for_id is None:
+            # Fail closed: productive accumulation requires typed MarketSampleIdentity.
+            cycle["productive_research_evidence_accumulation"] = {
+                "error": "productive_bridge_requires_market_sample_identity",
+                "status": "EVIDENCE_WRITE_FAILURE",
+                "trading_behavior_mutated": False,
+            }
+        else:
+            market_sample_id = market_sample_id_from_identity_v1(sample_for_id)
+            receive_time = None
+            if finalized_pt1m_transport is not None:
+                receive_time = iso_from_unix_v1(float(finalized_pt1m_transport.receive_time))
+            campaign_id = acc_state.campaign_id or f"bridge_campaign_{session_id}"
+            authority = build_productive_bridge_cycle_authority_v1(
+                campaign_id=campaign_id,
+                repository_sha=acc_state.repository_sha,
+                session_id=session_id,
+                market_sample_id=market_sample_id,
+            )
+            cycle = stamp_productive_bridge_cycle_authority_v1(
+                cycle,
+                authority=authority,
+                venue=_DEFAULT_VOL_TYPED_BINDING_VENUE,
+                venue_instrument_id=_DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID,
+                receive_time=receive_time,
+                market_sample=sample_for_id.to_dict(),
+            )
+            cycle["productive_research_evidence_accumulation"] = (
+                accumulate_productive_research_evidence_from_cycle_v1(
+                    cycle,
+                    state=acc_state,
+                    project_to_join_ledger=True,
+                )
+            )
     if cycle["execution_eligible"]:
         raise RuntimeError("EXECUTION_ELIGIBLE_MUST_REMAIN_FALSE")
     state.cycle_ledger.append(cycle)
