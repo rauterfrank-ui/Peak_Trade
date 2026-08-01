@@ -381,6 +381,15 @@
         "docs/governance/CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1.md"
       ]
     },
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_EXECUTION_V1": {
+      "note": "Offline research-only numeric max-age parameter study execution (preregistered candidates, splits/embargo, robustness, fail-closed unresolved threshold); no numeric threshold selection, no Alpha/policy enforcement, no Master-V2/Double-Play/risk/sizing/execution mutation, no promotion/runtime/orders.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/",
+        "scripts/ops/run_canonical_volatility_numeric_max_age_parameter_research_execution_v1.py",
+        "tests/research/test_canonical_volatility_numeric_max_age_parameter_research_execution_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_EXECUTION_V1.md"
+      ]
+    },
     "COST_MODEL_DIAGNOSTICS": {
       "path_globs": [
         "tests/research/test_offline_linear_cost_model_diagnostics_*",
