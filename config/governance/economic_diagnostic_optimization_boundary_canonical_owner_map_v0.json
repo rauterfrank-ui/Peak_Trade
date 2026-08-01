@@ -394,15 +394,18 @@
       "note": "Productive non-enforcing research evidence accumulation capability for numeric max-age (session/regime join projection, append-only ledger, coverage readiness, counterfactual age-grid evaluability); no numeric threshold selection, no Alpha/policy enforcement, no Master-V2/Double-Play/risk/sizing/execution mutation, no promotion/runtime/orders; parameter decision remains BLOCKED_FOR_PARAMETER_DECISION.",
       "path_prefixes": [
         "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/",
+        "src/research/canonical_volatility_numeric_max_age_campaign_authorization_v1/",
         "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
         "tests/research/test_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
         "tests/research/test_canonical_volatility_max_age_productive_bridge_accumulation_binding_v1.py",
         "tests/research/test_canonical_volatility_numeric_max_age_productive_research_evidence_accumulation_v1.py",
         "tests/research/test_canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_v1.py",
+        "tests/research/test_canonical_volatility_numeric_max_age_campaign_authorization_v1.py",
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1.md",
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_V1.md",
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1.md",
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_SESSION_PREREGISTRATION_V1.md",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_CAMPAIGN_AUTHORIZATION_V1.md",
         "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_v1.json"
       ]
     },
@@ -413,6 +416,15 @@
         "tests/research/test_canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_v1.py",
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_SESSION_PREREGISTRATION_V1.md",
         "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_v1.json"
+      ]
+    },
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_CAMPAIGN_AUTHORIZATION_V1": {
+      "note": "Campaign authorization capability for the preregistered productive max-age evidence campaign: schema/writer/verifier, TTL expiry, append-only revocation, atomic per-session single-use consumption, CLI modes, and accumulation gatekeeper integration. Capability only — no productive issuance/consumption in this surface, no runtime session, network, evidence write, threshold selection, enforcement, or promotion.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_numeric_max_age_campaign_authorization_v1/",
+        "tests/research/test_canonical_volatility_numeric_max_age_campaign_authorization_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_CAMPAIGN_AUTHORIZATION_V1.md",
+        "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
       ]
     },
     "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1": {
