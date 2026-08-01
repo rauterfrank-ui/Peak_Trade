@@ -2,6 +2,9 @@
 
 Contract capability only. Does not create session preregistrations, issue or
 consume authorization, open network, or execute productive sessions.
+
+Hardened by:
+MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_CONTRACT_HARDENING_V1
 """
 
 from __future__ import annotations
@@ -15,7 +18,11 @@ CAPABILITY_ID = (
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_"
     "SESSION_PREREGISTRATION_CONTRACT_V1"
 )
-REVIEW_MODE_ID = CAPABILITY_ID
+HARDENING_CAPABILITY_ID = (
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_"
+    "SESSION_CONTRACT_HARDENING_V1"
+)
+REVIEW_MODE_ID = HARDENING_CAPABILITY_ID
 CAPABILITY_VERSION = (
     "canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract/v1"
 )
@@ -28,10 +35,14 @@ SCHEMA_NAME = (
     "canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract"
 )
 SCHEMA_VERSION = "v1"
+CONTRACT_VERSION = CAPABILITY_VERSION
 CANDIDATE_SCHEMA_NAME = (
     "canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_candidate"
 )
-CANDIDATE_SCHEMA_VERSION = "v1"
+# Exactly one admissible candidate schema version (no aliases / normalization).
+CANDIDATE_SCHEMA_VERSION = (
+    "canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_candidate/v1"
+)
 
 # Post-merge natural-age wiring baseline (PR #5626 squash merge).
 BOUND_REPOSITORY_SHA = "bb5b1f4572deb451d238f890482254c690c164d2"
@@ -77,6 +88,92 @@ PUBLIC_MD_NETWORK_SCOPE = "OKX_EEA_FUTURES_PUBLIC_MARKET_DATA_READ_ONLY"
 CANONICAL_INSTRUMENT_ID = "ETH-USD_UM_XPERP-310404"
 SESSION_SCOPE = "ADDITIONAL_NATURAL_AGE_EVIDENCE_SESSION_V1"
 
+EXPECTED_VENUE = PUBLIC_MD_VENUE
+EXPECTED_INSTRUMENT = CANONICAL_INSTRUMENT_ID
+EXPECTED_NETWORK_SCOPE = PUBLIC_MD_NETWORK_SCOPE
+EXPECTED_SESSION_SCOPE = SESSION_SCOPE
+
+# Closed-world candidate schema policy (hardening).
+CANDIDATE_SCHEMA_CLOSED_WORLD = True
+NESTED_OBJECTS_PRESENT = True
+UNKNOWN_FIELDS_REJECTED = True
+UNKNOWN_AUTHORITY_FIELDS_REJECTED = True
+CANDIDATE_SCHEMA_VERSION_EXACT_MATCH = True
+VENUE_VALUE_EXACT_MATCH = True
+INSTRUMENT_VALUE_EXACT_MATCH = True
+NETWORK_SCOPE_VALUE_EXACT_MATCH = True
+SESSION_SCOPE_VALUE_EXACT_MATCH = True
+NORMALIZATION_OF_BINDING_VALUES_FORBIDDEN = True
+BINDING_VALUE_NORMALIZATION_FORBIDDEN = True
+
+AUTHORITY_NEGATIVE_CONTRACT_VERSION = (
+    "canonical_volatility_numeric_max_age_additional_evidence_"
+    "session_candidate_authority_negative/v1"
+)
+
+FORBIDDEN_AUTHORITY_FIELD_NAMES: tuple[str, ...] = (
+    "trading_decision_authority",
+    "numeric_max_age_selection_authority",
+    "numeric_max_age_enforcement_authority",
+    "authorization_issuance_authority",
+    "authorization_consumption_authority",
+    "session_execution_authority",
+    "order_routing_authority",
+    "live_trading_authority",
+    "second_age_authority",
+    "second_decision_authority",
+)
+
+ALLOWED_CANDIDATE_TOP_LEVEL_FIELDS: tuple[str, ...] = (
+    "age_7200_observation_required",
+    "authorization_binding",
+    "authorization_required",
+    "campaign_id",
+    "design_digest",
+    "duration_seconds",
+    "evidence_write_authorized",
+    "execution_authorized",
+    "first_produce_required",
+    "forbidden_artificial_controls",
+    "instrument",
+    "maximum_cycles_per_session",
+    "maximum_requests_per_cycle",
+    "maximum_requests_per_session",
+    "minimum_interval_seconds",
+    "multiple_market_regimes_required",
+    "natural_age_progression_required",
+    "network_authorized",
+    "network_scope",
+    "post_first_produce_event_span_seconds",
+    "post_recompute_fresh_observation_required",
+    "preregistration_digest",
+    "recompute_after_age_floor_required",
+    "repository_sha",
+    "runbook_digest",
+    "schema_name",
+    "schema_version",
+    "session_id",
+    "session_preregistration_creation_authorized",
+    "session_scope",
+    "single_use_authorization_required",
+    "target_age_buckets_seconds",
+    "venue",
+)
+
+ALLOWED_AUTHORIZATION_BINDING_FIELDS: tuple[str, ...] = (
+    "authorization_consumption_authorized",
+    "authorization_issuance_authorized",
+    "authorization_required",
+    "campaign_id",
+    "design_digest",
+    "maximum_session_count",
+    "repository_sha",
+    "runbook_digest",
+    "s01_s02_authorization_reuse_forbidden",
+    "session_ids",
+    "single_use_authorization_required",
+)
+
 # Hard non-goals / authority flags
 SESSION_PREREGISTRATION_CREATION_AUTHORIZED = False
 AUTHORIZATION_ISSUANCE_AUTHORIZED = False
@@ -91,11 +188,21 @@ ENTRY_EXIT_PRECEDENCE_CHANGED = False
 RISK_SAFETY_SEMANTICS_CHANGED = False
 SECOND_AGE_AUTHORITY_PRESENT = False
 SECOND_DECISION_AUTHORITY_PRESENT = False
+TRADING_DECISION_AUTHORITY_PRESENT = False
+NUMERIC_MAX_AGE_SELECTION_AUTHORITY_PRESENT = False
+NUMERIC_MAX_AGE_ENFORCEMENT_AUTHORITY_PRESENT = False
+AUTHORIZATION_ISSUANCE_AUTHORITY_PRESENT = False
+AUTHORIZATION_CONSUMPTION_AUTHORITY_PRESENT = False
+SESSION_EXECUTION_AUTHORITY_PRESENT = False
+ORDER_ROUTING_AUTHORITY_PRESENT = False
 HARD_STOP = True
 READY_FOR_ADDITIONAL_SESSION_PREREGISTRATION = False
 READY_FOR_AUTHORIZATION_ISSUANCE = False
 READY_FOR_PRODUCTIVE_SESSION_EXECUTION = False
 READY_FOR_NUMERIC_MAX_AGE_POLICY_DECISION = False
+PREREGISTRATION_CREATED = False
+AUTHORIZATION_ISSUED = False
+SESSION_EXECUTED = False
 
 ARTIFICIAL_DELAY_INJECTION = False
 SYNTHETIC_EVENT_TIME_ADVANCE = False
@@ -115,6 +222,8 @@ FORBIDDEN_ARTIFICIAL_FLAGS: tuple[str, ...] = (
     "EVIDENCE_BACKFILL",
 )
 
+ALLOWED_FORBIDDEN_ARTIFICIAL_CONTROLS_FIELDS: tuple[str, ...] = FORBIDDEN_ARTIFICIAL_FLAGS
+
 OPERATOR_WORKFLOW: tuple[str, ...] = (
     "CONTRACT_CAPABILITY_MERGE",
     "CREATE_ADDITIONAL_SESSION_PREREGISTRATION",
@@ -127,6 +236,8 @@ OPERATOR_WORKFLOW: tuple[str, ...] = (
 )
 
 REQUIRED_CANDIDATE_FIELDS: tuple[str, ...] = (
+    "schema_name",
+    "schema_version",
     "campaign_id",
     "session_id",
     "repository_sha",
@@ -151,6 +262,13 @@ REQUIRED_CANDIDATE_FIELDS: tuple[str, ...] = (
     "multiple_market_regimes_required",
     "authorization_required",
     "single_use_authorization_required",
+    "post_first_produce_event_span_seconds",
+    "authorization_binding",
+    "forbidden_artificial_controls",
+    "session_preregistration_creation_authorized",
+    "execution_authorized",
+    "network_authorized",
+    "evidence_write_authorized",
 )
 
 COVERAGE_REQUIREMENTS: dict[str, bool | int] = {
@@ -163,6 +281,22 @@ COVERAGE_REQUIREMENTS: dict[str, bool | int] = {
     "exit_risk_safety_independence_evidence_required": True,
 }
 
+AUTHORITY_NEGATIVE_CONTRACT: dict[str, object] = {
+    "version": AUTHORITY_NEGATIVE_CONTRACT_VERSION,
+    "trading_decision_authority_present": TRADING_DECISION_AUTHORITY_PRESENT,
+    "numeric_max_age_selection_authority_present": (NUMERIC_MAX_AGE_SELECTION_AUTHORITY_PRESENT),
+    "numeric_max_age_enforcement_authority_present": (
+        NUMERIC_MAX_AGE_ENFORCEMENT_AUTHORITY_PRESENT
+    ),
+    "authorization_issuance_authority_present": AUTHORIZATION_ISSUANCE_AUTHORITY_PRESENT,
+    "authorization_consumption_authority_present": (AUTHORIZATION_CONSUMPTION_AUTHORITY_PRESENT),
+    "session_execution_authority_present": SESSION_EXECUTION_AUTHORITY_PRESENT,
+    "order_routing_authority_present": ORDER_ROUTING_AUTHORITY_PRESENT,
+    "second_age_authority_present": SECOND_AGE_AUTHORITY_PRESENT,
+    "second_decision_authority_present": SECOND_DECISION_AUTHORITY_PRESENT,
+    "forbidden_authority_field_names": list(FORBIDDEN_AUTHORITY_FIELD_NAMES),
+}
+
 ARTIFACT_RELATIVE_PATH = (
     "config/research/"
     "canonical_volatility_numeric_max_age_additional_evidence_"
@@ -173,10 +307,19 @@ SPEC_RELATIVE_PATH = (
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_"
     "SESSION_PREREGISTRATION_CONTRACT_V1.md"
 )
+HARDENING_SPEC_RELATIVE_PATH = (
+    "docs/ops/specs/"
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_"
+    "SESSION_CONTRACT_HARDENING_V1.md"
+)
 
 FORBIDDEN_IMPORT_SUBSTRINGS: tuple[str, ...] = (
     "execution.live",
     "place_order",
     "submit_order",
     "broker_adapter",
+    "trading.master_v2",
+    "trading.double_play",
+    "risk.",
+    "safety.",
 )
