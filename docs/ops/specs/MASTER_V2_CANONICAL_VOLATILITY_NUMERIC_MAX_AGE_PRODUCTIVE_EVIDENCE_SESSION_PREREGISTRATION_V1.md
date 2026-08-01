@@ -141,11 +141,11 @@ Natural reachability only:
 Canonical non-`&#47;tmp` paths:
 
 - productive ledger:
-  `docs&#47;evidence&#47;canonical_volatility_max_age_productive_research_evidence_ledger_v1&#47;productive_research_evidence_ledger.jsonl`
+  `docs&#47;evidence&#47;canonical_volatility_max_age_productive_research_evidence_ledger_v1&#47;productive_research_evidence_ledger.jsonl` <!-- pt:ref-target-ignore -->
 - quarantine ledger:
-  `docs&#47;evidence&#47;canonical_volatility_max_age_productive_research_evidence_ledger_v1&#47;productive_research_evidence_quarantine.jsonl`
+  `docs&#47;evidence&#47;canonical_volatility_max_age_productive_research_evidence_ledger_v1&#47;productive_research_evidence_quarantine.jsonl` <!-- pt:ref-target-ignore -->
 - join projection:
-  `docs&#47;evidence&#47;canonical_volatility_numeric_max_age_research_evidence_ledger_v1&#47;research_evidence_ledger.jsonl`
+  `docs&#47;evidence&#47;canonical_volatility_numeric_max_age_research_evidence_ledger_v1&#47;research_evidence_ledger.jsonl` <!-- pt:ref-target-ignore -->
 
 Campaign-specific paths (not materialized here) cover typed volatility
 persistence, campaign &#47; session manifests, terminal verdict, and evaluability
