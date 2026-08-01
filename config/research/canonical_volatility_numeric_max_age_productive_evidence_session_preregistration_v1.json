@@ -1,0 +1,290 @@
+{
+  "abort_block_criteria": [
+    "REPOSITORY_SHA_DRIFT",
+    "PREREGISTRATION_DIGEST_DRIFT",
+    "DESIGN_DIGEST_DRIFT",
+    "CAMPAIGN_ID_REUSE",
+    "UNAUTHORIZED_SESSION_START",
+    "NETWORK_ACCESS_BEFORE_SEPARATE_AUTHORIZATION",
+    "EVIDENCE_WRITE_BEFORE_SEPARATE_AUTHORIZATION",
+    "ENDPOINT_HOST_METHOD_INSTRUMENT_DRIFT",
+    "PRIVATE_ENDPOINT_OR_CREDENTIAL_REQUIREMENT",
+    "MISSING_TYPED_VOLATILITY_BINDING",
+    "SYNTHETIC_OR_FIXTURE_AUTHORITY",
+    "DUPLICATE_OR_OUT_OF_ORDER_POLICY_DRIFT",
+    "LEDGER_CHAIN_OR_SCHEMA_ERROR",
+    "UNNATURAL_7200_BUCKET_SYNTHESIS",
+    "THRESHOLD_SELECTION",
+    "ENFORCEMENT_ACTIVATION",
+    "ALPHA_STATE_COMPOSITION_MUTATION"
+  ],
+  "authority_state": "PREREGISTERED_UNAUTHORIZED",
+  "campaign_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe",
+  "campaign_purpose": "Preregister a productive Canonical-Volatility numeric max-age research evidence accumulation campaign and independent sessions for a later separately authorized public-read-only market-data campaign; accumulate counterfactual age-grid evidence only; never select or enforce a threshold.",
+  "capability_id": "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_SESSION_PREREGISTRATION_V1",
+  "coverage_plan": {
+    "age_bucket_observation_plan": {
+      "120": {
+        "minimum_distinct_observations": 1,
+        "synthetic_observation_forbidden": true
+      },
+      "1800": {
+        "minimum_distinct_observations": 1,
+        "synthetic_observation_forbidden": true
+      },
+      "300": {
+        "minimum_distinct_observations": 1,
+        "synthetic_observation_forbidden": true
+      },
+      "3600": {
+        "minimum_distinct_observations": 1,
+        "synthetic_observation_forbidden": true
+      },
+      "60": {
+        "minimum_distinct_observations": 1,
+        "synthetic_observation_forbidden": true
+      },
+      "600": {
+        "minimum_distinct_observations": 1,
+        "synthetic_observation_forbidden": true
+      },
+      "7200": {
+        "minimum_distinct_observations": 1,
+        "synthetic_observation_forbidden": true
+      },
+      "900": {
+        "minimum_distinct_observations": 1,
+        "synthetic_observation_forbidden": true
+      }
+    },
+    "enumerated_market_regime_names_invented": false,
+    "enumerated_volatility_regime_names_invented": false,
+    "market_regime_label_authority": "TYPED_FEATURE_REGIME_METADATA_AUTHORITY_ONLY",
+    "minimum_computed_age_observations": 1,
+    "minimum_distinct_evidence_records": 8,
+    "minimum_distinct_observations_per_age_bucket": 1,
+    "minimum_distinct_sessions": 2,
+    "minimum_independent_sessions": 2,
+    "minimum_instruments": 1,
+    "minimum_market_regimes": 2,
+    "minimum_volatility_regimes": 1,
+    "research_age_grid_seconds": [
+      60,
+      120,
+      300,
+      600,
+      900,
+      1800,
+      3600,
+      7200
+    ],
+    "volatility_regime_label_authority": "TYPED_OR_EXPLICIT_RESEARCH_LABEL_AUTHORITY_ONLY"
+  },
+  "created_at_utc": "2026-08-01T00:00:00Z",
+  "design_preregistration_digest": "965f6e09e50e434e363d380c2d62e43041a37ad7d87956e590609a16f011b537",
+  "durable_path_plan": {
+    "campaign_specific_paths": {
+      "campaign_manifest_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/campaign_manifest.json",
+      "evaluability_report_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/evaluability_report.json",
+      "session_manifests_glob": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_*_manifest.json",
+      "terminal_campaign_verdict_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/terminal_campaign_verdict.json",
+      "typed_volatility_persistence_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/typed_volatility_persistence.jsonl"
+    },
+    "foreign_campaign_artifact_overwrite_forbidden": true,
+    "join_projection_path": "docs/evidence/canonical_volatility_numeric_max_age_research_evidence_ledger_v1/research_evidence_ledger.jsonl",
+    "materialization_requires_separate_campaign_authorization": true,
+    "parent_dirs_materialized_by_preregistration": false,
+    "paths_repository_relative": true,
+    "paths_traversal_safe": true,
+    "productive_ledger_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/productive_research_evidence_ledger.jsonl",
+    "quarantine_ledger_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/productive_research_evidence_quarantine.jsonl",
+    "tmp_authority_prohibited": true
+  },
+  "enforcement_authorized": false,
+  "evidence_write_authorized": false,
+  "execution_authorized": false,
+  "lifecycle_transitions": [
+    "PREREGISTERED\u2192AUTHORIZED(separate_authorization)",
+    "AUTHORIZED\u2192ACTIVE",
+    "ACTIVE\u2192COMPLETED|ABORTED"
+  ],
+  "network_authorized": false,
+  "non_promotion_invariants": {
+    "ALPHA_SEMANTICS_CHANGED": false,
+    "AUTO_PROMOTION_ALLOWED": false,
+    "COMPOSITION_AUTHORITY_CHANGED": false,
+    "COUNTERFACTUAL_ONLY": true,
+    "ENFORCEMENT_APPLIED": false,
+    "EXIT_PRECEDENCE_PRESERVED": true,
+    "MAX_AGE_ENFORCEMENT_ENABLED": false,
+    "MAX_AGE_THRESHOLD_SELECTED": false,
+    "REVERSAL_REDUCE_FIRST_PRESERVED": true,
+    "STATE_SEMANTICS_CHANGED": false
+  },
+  "parameter_decision_authorized": false,
+  "preregistration_digest": "1cfc1698796b1b931077cd692c7b0e97bc401f626d7e7b17bba1a777b62a252f",
+  "productive_preregistration_digest": "777e3dd8aa3458f8687cabbadf63016ac478b5385568ee3d54d22c119880a62e",
+  "public_md_plan": {
+    "allowed_endpoints": [
+      "/api/v5/public/time",
+      "/api/v5/public/instruments",
+      "/api/v5/public/mark-price",
+      "/api/v5/market/ticker",
+      "/api/v5/market/tickers"
+    ],
+    "allowed_http_methods": [
+      "GET"
+    ],
+    "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+    "credentials_not_required": true,
+    "credentials_required": false,
+    "feed_activation_requires_separate_authorization": true,
+    "host": "https://eea.okx.com",
+    "instrument_substitution_forbidden": true,
+    "mutation_methods_allowed": false,
+    "network_authorized": false,
+    "order_endpoints_allowed": false,
+    "orders_technically_excluded": true,
+    "plan_status": "PREREGISTERED_UNAUTHORIZED",
+    "private_endpoints_allowed": false,
+    "private_endpoints_excluded": true,
+    "transport": "HTTPS_REST_GET_ONLY",
+    "venue": "OKX",
+    "venue_binding_authority": "ops.bounded_futures_testnet_venue_binding_v0.default_okx_europe_xperp_production_binding",
+    "venue_native_instrument_id": "ETH-USD_UM_XPERP-310404",
+    "venue_native_instrument_id_resolution": "EXISTING_VENUE_BINDING_AUTHORITY_ONLY",
+    "venue_scope": "OKX_EEA_FUTURES_PUBLIC_MARKET_DATA",
+    "websocket_allowed": false
+  },
+  "reachability_7200_plan": {
+    "artificially_stale_timestamp_prohibited": true,
+    "campaign_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe",
+    "duplicate_samples_are_not_new_age_observations": true,
+    "estimate_history_retention": {
+      "as_of_event_time_immutable_after_production": true,
+      "reload_does_not_count_as_new_estimate": true,
+      "restarts_may_reload_same_estimate_history": true,
+      "resume_requires_same_session_id_plus_resume_token_and_restart_generation_plus_one": true
+    },
+    "fail_closed_if_unreachable": {
+      "coverage_incomplete_when_7200_bucket_missing": true,
+      "terminal_verdict_on_missing_natural_reachability": "COVERAGE_INCOMPLETE_FAIL_CLOSED",
+      "unnatural_synthesis_is_abort": true
+    },
+    "minimum_campaign_event_time_span_seconds": 7201,
+    "minimum_campaign_wallclock_span_seconds": 7201,
+    "natural_reachability_required": true,
+    "poll_cycles_are_not_market_time": true,
+    "repository_runtime_bounds": {
+      "campaign_may_accumulate_across_sessions_and_process_restarts": true,
+      "maximum_cycles_per_session": 128,
+      "maximum_sessions_per_run": 8,
+      "minimum_independent_sessions": 2,
+      "no_exact_polling_cadence_as_market_time": true
+    },
+    "session_distribution": {
+      "early_estimate_producer_session_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s01_8a97f48c839c",
+      "independent_sessions": [
+        "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s01_8a97f48c839c",
+        "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s02_c02312c99747"
+      ],
+      "late_age_observation_session_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s02_c02312c99747",
+      "note": "Session 1 produces an early valid VolatilityEstimate whose real as_of_event_time is retained. Later distinct market samples in the same or subsequent independent session(s) naturally increase computed_age_seconds = event_time - volatility_as_of_event_time until >= 7200. Bucket coverage may span multiple sessions and process restarts; no single session is guaranteed to cover every bucket."
+    },
+    "synthetic_market_time_prohibited": true,
+    "target_bucket_seconds": 7200,
+    "volatility_estimate_reuse_outside_lifecycle_prohibited": true
+  },
+  "repository_sha": "e9c1871ea7b493cde9f49eb517910b1a7134fb5b",
+  "required_observation_bindings": [
+    "market_sample_id",
+    "venue",
+    "canonical_instrument_id",
+    "venue_native_instrument_id",
+    "event_time",
+    "receive_time",
+    "source_sequence_or_equivalent",
+    "mark_price",
+    "sample_digest",
+    "volatility_estimate_id",
+    "volatility_as_of_event_time",
+    "computed_age_seconds",
+    "session_id",
+    "restart_generation",
+    "market_regime_label",
+    "volatility_regime_label"
+  ],
+  "research_age_grid_seconds": [
+    60,
+    120,
+    300,
+    600,
+    900,
+    1800,
+    3600,
+    7200
+  ],
+  "sample_event_time_bindings": {
+    "CANONICAL_TIME_DOMAIN": "MARKET_EVENT_TIME",
+    "DECISION_EPOCH_IS_NOT_MARKET_SAMPLE": true,
+    "DISTINCT_OBSERVATION_POLICY_MUST_USE_EXISTING_TYPED_POLICY": true,
+    "DUPLICATE_SAMPLE_CANNOT_CREATE_NEW_AGE_OBSERVATION": true,
+    "OUT_OF_ORDER_POLICY_MUST_USE_EXISTING_TYPED_POLICY": true,
+    "REPEATED_POLL_RESULT_CANNOT_FABRICATE_MARKET_TIME": true,
+    "RUNTIME_CYCLE_IS_NOT_MARKET_SAMPLE": true
+  },
+  "schema_name": "canonical_volatility_numeric_max_age_productive_evidence_session_preregistration",
+  "schema_version": "v1",
+  "sessions": [
+    {
+      "campaign_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe",
+      "expected_durable_paths": {
+        "session_manifest_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_01_manifest.json",
+        "typed_volatility_persistence_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/typed_volatility_persistence.jsonl"
+      },
+      "independent_session": true,
+      "lifecycle_initial_state": "PREREGISTERED",
+      "maximum_cycles_per_session": 128,
+      "maximum_restart_generations": 16,
+      "maximum_sessions_per_run": 8,
+      "no_runtime_side_effects": true,
+      "planned_end_condition": "COMPLETE_WHEN_SESSION_CYCLE_BUDGET_OR_OPERATOR_STOP;ABORT_ON_FAIL_CLOSED_CRITERIA;NO_AUTO_PROMOTION",
+      "planned_start_not_authorized": true,
+      "restart_generation_initial": 0,
+      "resume_policy": {
+        "process_restart_increments_restart_generation_by_one": true,
+        "process_restart_requires_explicit_resume_token": true,
+        "process_restart_requires_same_session_id": true,
+        "restart_cannot_fabricate_coverage": true,
+        "restart_is_not_a_new_independent_session": true
+      },
+      "session_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s01_8a97f48c839c",
+      "session_index": 1
+    },
+    {
+      "campaign_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe",
+      "expected_durable_paths": {
+        "session_manifest_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_02_manifest.json",
+        "typed_volatility_persistence_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/typed_volatility_persistence.jsonl"
+      },
+      "independent_session": true,
+      "lifecycle_initial_state": "PREREGISTERED",
+      "maximum_cycles_per_session": 128,
+      "maximum_restart_generations": 16,
+      "maximum_sessions_per_run": 8,
+      "no_runtime_side_effects": true,
+      "planned_end_condition": "COMPLETE_WHEN_SESSION_CYCLE_BUDGET_OR_OPERATOR_STOP;ABORT_ON_FAIL_CLOSED_CRITERIA;NO_AUTO_PROMOTION",
+      "planned_start_not_authorized": true,
+      "restart_generation_initial": 0,
+      "resume_policy": {
+        "process_restart_increments_restart_generation_by_one": true,
+        "process_restart_requires_explicit_resume_token": true,
+        "process_restart_requires_same_session_id": true,
+        "restart_cannot_fabricate_coverage": true,
+        "restart_is_not_a_new_independent_session": true
+      },
+      "session_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s02_c02312c99747",
+      "session_index": 2
+    }
+  ]
+}

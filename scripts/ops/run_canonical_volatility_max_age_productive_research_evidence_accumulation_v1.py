@@ -216,8 +216,16 @@ def main(argv: list[str] | None = None) -> int:
             "coverage-only",
             "verify-join-load",
             "evaluability-report",
+            "render-session-preregistration",
+            "verify-session-preregistration",
         ),
         default="probe-accumulate",
+    )
+    parser.add_argument(
+        "--session-preregistration-artifact",
+        type=Path,
+        default=None,
+        help="Optional artifact path for verify-session-preregistration.",
     )
     parser.add_argument("--session-id", type=str, default="operator-probe-session")
     parser.add_argument(
@@ -248,6 +256,42 @@ def main(argv: list[str] | None = None) -> int:
 
     repo_root = args.repo_root.resolve()
     sha = args.repository_sha or _git_sha(repo_root)
+
+    if args.mode == "render-session-preregistration":
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
+            SESSION_PREREGISTRATION_RENDER_CLI_MODE,
+        )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
+            render_session_preregistration_v1,
+        )
+
+        payload = render_session_preregistration_v1()
+        payload["cli_mode"] = SESSION_PREREGISTRATION_RENDER_CLI_MODE
+        print(json.dumps(payload, sort_keys=True, indent=2, default=str))
+        return 0
+
+    if args.mode == "verify-session-preregistration":
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
+            SESSION_PREREGISTRATION_ARTIFACT_REL_PATH,
+            SESSION_PREREGISTRATION_VERIFY_CLI_MODE,
+        )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
+            load_and_verify_session_preregistration_artifact_v1,
+            verify_productive_evidence_campaign_session_preregistration_v1,
+        )
+
+        artifact = args.session_preregistration_artifact or (
+            repo_root / SESSION_PREREGISTRATION_ARTIFACT_REL_PATH
+        )
+        if artifact.is_file():
+            result = load_and_verify_session_preregistration_artifact_v1(artifact_path=artifact)
+            result["artifact_path"] = str(artifact)
+        else:
+            result = verify_productive_evidence_campaign_session_preregistration_v1()
+            result["artifact_path"] = None
+        result["cli_mode"] = SESSION_PREREGISTRATION_VERIFY_CLI_MODE
+        print(json.dumps(result, sort_keys=True, indent=2, default=str))
+        return 0 if result.get("status") == "PASS" else 1
 
     if args.mode == "productive-bridge-accumulate":
         from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
