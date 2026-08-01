@@ -75,7 +75,7 @@ CMC &#47; Double-Play volatility authority.
 | estimator | population standard deviation of log returns |
 | ddof | `0` |
 | annualized | `false` |
-| estimator version | `population_std_ddof_0/v1` |
+| estimator version | `population_std_ddof_0&#47;v1` |
 
 Config digest is the ratified feature-contract digest
 (`config&#47;governance&#47;canonical_volatility_estimate_feature_contract_v1.json`).
