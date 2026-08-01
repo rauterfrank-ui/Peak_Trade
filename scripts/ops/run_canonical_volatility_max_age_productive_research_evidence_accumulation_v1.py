@@ -224,6 +224,7 @@ def main(argv: list[str] | None = None) -> int:
             "consume-campaign-authorization",
             "productive-preregistered-session-run",
             "additional-evidence-s03-session-run",
+            "additional-evidence-s03-atomic-reissue-consume-execute",
         ),
         default="probe-accumulate",
     )
@@ -373,6 +374,14 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         default=None,
         help="Temporary root for S03 offline capability probe artifacts.",
+    )
+    parser.add_argument(
+        "--s03-atomic-offline-capability-probe",
+        action="store_true",
+        help=(
+            "Run S03 atomic Auth-v2 reissue→consume→execute offline capability probe "
+            "(isolated tmp artifacts only; no productive auth mutation / no real network)."
+        ),
     )
     parser.add_argument("--session-id", type=str, default="operator-probe-session")
     parser.add_argument(
@@ -685,6 +694,28 @@ def main(argv: list[str] | None = None) -> int:
         result["cli_mode"] = S03_CLI_MODE
         print(json.dumps(result, sort_keys=True, indent=2, default=str))
         return 0 if result.get("status") in {"PASS", "PREFLIGHT_PASS"} else 1
+
+    if args.mode == "additional-evidence-s03-atomic-reissue-consume-execute":
+        from research.canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_v1.constants_v1 import (  # noqa: E501
+            CLI_MODE as S03_ATOMIC_CLI_MODE,
+        )
+        from research.canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_v1.offline_probe_v1 import (  # noqa: E501
+            run_atomic_offline_capability_probe_v1,
+        )
+
+        # Capability merge path: offline probe only. Productive atomic execution
+        # remains a separate post-merge operator GO (no productive mutation here).
+        if not bool(args.s03_atomic_offline_capability_probe):
+            raise SystemExit("s03_atomic_mode_requires_offline_probe_flag_during_capability_merge")
+        tmp_root = args.s03_offline_probe_tmp_root or (repo_root / ".tmp_s03_atomic_offline_probe")
+        result = run_atomic_offline_capability_probe_v1(
+            repo_root=repo_root,
+            tmp_root=Path(tmp_root),
+            execution_sha=str(args.repository_sha or ""),
+        )
+        result["cli_mode"] = S03_ATOMIC_CLI_MODE
+        print(json.dumps(result, sort_keys=True, indent=2, default=str))
+        return 0 if result.get("ok") else 1
 
     if args.mode == "productive-preregistered-session-run":
         from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.constants_v1 import (
