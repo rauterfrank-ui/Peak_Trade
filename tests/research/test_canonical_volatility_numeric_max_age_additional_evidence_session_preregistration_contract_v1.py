@@ -197,6 +197,23 @@ def test_09_artificial_age_time_overrides_rejected() -> None:
 def test_10_repository_sha_binding() -> None:
     contract = build_additional_evidence_session_preregistration_contract_v1()
     assert contract.repository_sha == BOUND_REPOSITORY_SHA
+    assert BOUND_REPOSITORY_SHA == "790065c2417a0006bef97b3496bfef30739e9ff3"
+    accepted = build_example_additional_session_candidate_v1(repository_sha=BOUND_REPOSITORY_SHA)
+    assert (
+        validate_additional_evidence_session_preregistration_candidate_v1(accepted.to_dict())[
+            "valid"
+        ]
+        is True
+    )
+    # Pre-rebase natural-age wiring SHA must remain rejected after rebase.
+    legacy = build_example_additional_session_candidate_v1(
+        repository_sha="bb5b1f4572deb451d238f890482254c690c164d2"
+    )
+    with pytest.raises(
+        AdditionalEvidenceSessionPreregistrationContractError,
+        match="repository_sha_mismatch",
+    ):
+        validate_additional_evidence_session_preregistration_candidate_v1(legacy.to_dict())
     bad = build_example_additional_session_candidate_v1(repository_sha="0" * 40)
     with pytest.raises(
         AdditionalEvidenceSessionPreregistrationContractError,

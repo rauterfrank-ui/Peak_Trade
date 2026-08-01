@@ -123,7 +123,7 @@
   "candidate_schema_version": "canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_candidate/v1",
   "capability_id": "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_PREREGISTRATION_CONTRACT_V1",
   "capability_version": "canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract/v1",
-  "contract_digest": "a9aa97b8a43fd2d268d387fa3b41912f478b9eebba876c0d7ca8803c70402fa7",
+  "contract_digest": "2f69480db4023a257c39205698ed7933f83de9557bb7b265db879cfa1c1ec95c",
   "coverage_requirements": {
     "decision_sensitivity_evidence_required": true,
     "exit_risk_safety_independence_evidence_required": true,
@@ -184,7 +184,7 @@
   "recommended_maximum_cycles_per_session": 200,
   "recommended_maximum_requests_per_session": 200,
   "recompute_after_age_floor_required": true,
-  "repository_sha": "bb5b1f4572deb451d238f890482254c690c164d2",
+  "repository_sha": "790065c2417a0006bef97b3496bfef30739e9ff3",
   "required_candidate_fields": [
     "schema_name",
     "schema_version",

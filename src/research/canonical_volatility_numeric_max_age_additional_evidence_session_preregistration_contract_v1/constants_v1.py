@@ -44,8 +44,9 @@ CANDIDATE_SCHEMA_VERSION = (
     "canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_candidate/v1"
 )
 
-# Post-merge natural-age wiring baseline (PR #5626 squash merge).
-BOUND_REPOSITORY_SHA = "bb5b1f4572deb451d238f890482254c690c164d2"
+# Canonical origin/main binding after additional-evidence contract merge (PR #5628).
+# Rebased from bb5b1f4572deb451d238f890482254c690c164d2 (PR #5626 natural-age wiring).
+BOUND_REPOSITORY_SHA = "790065c2417a0006bef97b3496bfef30739e9ff3"
 BOUND_DESIGN_DIGEST = "965f6e09e50e434e363d380c2d62e43041a37ad7d87956e590609a16f011b537"
 BOUND_RUNBOOK_DIGEST = "c7136936ff18057918dd5a59abda4126c9c7437bf097d5808f67d46c68811445"
 BOUND_PRODUCTIVE_ACCUMULATION_DIGEST = (
