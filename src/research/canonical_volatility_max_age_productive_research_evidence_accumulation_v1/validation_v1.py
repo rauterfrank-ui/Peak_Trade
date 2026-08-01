@@ -288,6 +288,32 @@ def productive_record_from_mapping_v1(
         synthetic=bool(payload.get("synthetic") or False),
         fixture=bool(payload.get("fixture") or False),
         test_data=bool(payload.get("test_data") or False),
+        estimate_age_seconds=(
+            None
+            if payload.get("estimate_age_seconds") is None and payload.get("age_seconds") is None
+            else float(
+                payload.get("estimate_age_seconds")
+                if payload.get("estimate_age_seconds") is not None
+                else payload.get("age_seconds")
+            )
+        ),
+        volatility_regime=optional_text(payload.get("volatility_regime")),
+        config_digest=optional_text(payload.get("config_digest")),
+        code_sha=optional_text(payload.get("code_sha") or payload.get("repository_sha")),
+        exit_path_preservation=bool(payload.get("exit_path_preservation", True)),
+        productive_preregistration_digest=optional_text(
+            payload.get("productive_preregistration_digest")
+        ),
+        estimator_observation_count=(
+            None
+            if payload.get("estimator_observation_count") is None
+            and payload.get("volatility_observation_count") is None
+            else int(
+                payload.get("estimator_observation_count")
+                if payload.get("estimator_observation_count") is not None
+                else payload.get("volatility_observation_count")
+            )
+        ),
     )
 
 
