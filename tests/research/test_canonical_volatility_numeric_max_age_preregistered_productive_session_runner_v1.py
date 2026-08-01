@@ -126,9 +126,22 @@ def _neg_side_effects(result: dict[str, Any] | None = None, *, consumed: bool = 
     assert consumed is False
 
 
+class _FakeMonoClock:
+    def __init__(self) -> None:
+        self.t = 1000.0
+
+    def __call__(self) -> float:
+        return float(self.t)
+
+    def sleep(self, seconds: float) -> None:
+        self.t += float(seconds)
+
+
 def _run_ok(tmp_path: Path, *, session_id: str = SESSION_01_ID, max_cycles: int = 2, **kwargs):
     auth_path, artifact = _write_auth(tmp_path)
     probe = SideEffectProbeV1()
+    clock = kwargs.pop("md_monotonic_clock", None) or _FakeMonoClock()
+    sleep = kwargs.pop("md_sleep", None) or clock.sleep
     result = run_preregistered_productive_session_v1(
         repo_root=ROOT,
         campaign_id=BOUND_CAMPAIGN_ID,
@@ -146,8 +159,10 @@ def _run_ok(tmp_path: Path, *, session_id: str = SESSION_01_ID, max_cycles: int 
         max_cycles=max_cycles,
         evidence_root=tmp_path,
         git_baseline=_baseline(),
-        http_fetcher=_fake_mark_fetcher(),
+        http_fetcher=kwargs.pop("http_fetcher", _fake_mark_fetcher()),
         side_effect_probe=probe,
+        md_sleep=sleep,
+        md_monotonic_clock=clock,
         **kwargs,
     )
     return result, auth_path, artifact, probe
@@ -490,6 +505,7 @@ def test_23_session_02_evidence_unchanged(tmp_path: Path) -> None:
 
 def test_24_fail_closed_terminal_after_consumption(tmp_path: Path) -> None:
     auth_path, artifact = _write_auth(tmp_path)
+    clock = _FakeMonoClock()
 
     def boom_fetcher(url: str, method: str, headers: dict[str, str], timeout: float):
         del url, method, headers, timeout
@@ -513,10 +529,13 @@ def test_24_fail_closed_terminal_after_consumption(tmp_path: Path) -> None:
         evidence_root=tmp_path,
         git_baseline=_baseline(),
         http_fetcher=boom_fetcher,
+        md_sleep=clock.sleep,
+        md_monotonic_clock=clock,
     )
     assert result["authorization_consumed"] is True
     assert result["terminal_state"] == "FAIL_CLOSED_AFTER_CONSUMPTION"
     assert result["terminal_verdict"] == "FAIL_CLOSED_AFTER_AUTHORIZATION_CONSUMPTION"
+    assert result["market_data_request_occurred"] is True
     manifest = Path(result["preflight"]["session_manifest_path"])
     assert manifest.is_file()
     payload = json.loads(manifest.read_text(encoding="utf-8"))
