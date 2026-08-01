@@ -50,18 +50,25 @@ recommending, or enforcing a numeric threshold in this step?
 ## Producer &#47; Consumer &#47; Evidence Graph
 
 ```
-Canonical Volatility Producer (typed, productive, ddof=0, PT60M, annualized=false)
-  → VolatilityEstimateV1 + provenance &#47; source digest
+Productive bridge runner
+  → ProductiveNaturalAgeLifecycleCmcBindingHostV1
+       (NaturalAgeProgressionLifecycleHostV1 = sole produce&#47;reuse&#47;recompute authority)
+  → Typed VolatilityEstimateV1 with immutable as_of during reuse
   → Presence &#47; Trust Gate (unknown entry fail-closed; exit&#47;reduce&#47;risk&#47;safety preserved)
-  → Non-enforcing max-age telemetry (threshold unresolved)
-  → Productive evidence producer (preregistration bound first)
+  → Non-enforcing max-age telemetry (threshold unresolved; natural age from event time)
+  → Productive evidence producer (preregistration bound first; lifecycle age fail-closed)
   → Validation &#47; quarantine (fail-closed)
   → Append-only productive ledger (chained digests)
   → Research join projection (existing join contract)
   → Counterfactual age-grid diagnostics (no decision mutation)
+  → Actionable strata &#47; safety&#47;risk&#47;exit observability (consumers only)
   → Evaluability &#47; robustness report (no winner selection)
   → Later separate Parameter-Decision step (explicit GO required)
 ```
+
+Natural-age lifecycle wiring owner:
+
+`docs&#47;ops&#47;specs&#47;MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_BRIDGE_NATURAL_AGE_LIFECYCLE_WIRING_V1.md`
 
 No node in this graph is Alpha, State, Composition, Risk, Safety, TradingGate,
 order, or threshold-selection authority.

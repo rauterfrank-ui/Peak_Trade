@@ -147,6 +147,12 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
     if "bind_accumulation_state_to_hardened_bridge_session_v1" not in binding_mod:
         raise RuntimeError("PRODUCTIVE_BRIDGE_BINDING_API_MISSING")
 
+    runner_mod = (package_dir / "productive_bridge_runner_v1.py").read_text(encoding="utf-8")
+    if "ProductiveNaturalAgeLifecycleCmcBindingHostV1" not in runner_mod:
+        raise RuntimeError("PRODUCTIVE_BRIDGE_MUST_BIND_NATURAL_AGE_LIFECYCLE_HOST")
+    if "CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1.create" in runner_mod:
+        raise RuntimeError("PRODUCTIVE_BRIDGE_MUST_NOT_CREATE_LEGACY_CMC_BINDING_HOST")
+
     for required_module in (
         "preregistration_v1.py",
         "counterfactual_grid_v1.py",

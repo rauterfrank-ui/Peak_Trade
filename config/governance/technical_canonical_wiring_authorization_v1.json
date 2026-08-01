@@ -852,7 +852,10 @@
     "src/research/canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1/coverage_plan_v1.py",
     "tests/research/test_canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.py",
     "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_NATURAL_AGE_PROGRESSION_AND_ACTIONABLE_STRATA_EVIDENCE_PLAN_V1.md",
-    "config/research/canonical_volatility_numeric_max_age_natural_age_progression_additional_evidence_coverage_plan_v1.json"
+    "config/research/canonical_volatility_numeric_max_age_natural_age_progression_additional_evidence_coverage_plan_v1.json",
+    "src/research/canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1/productive_natural_age_lifecycle_binding_v1.py",
+    "tests/research/test_canonical_volatility_numeric_max_age_productive_bridge_natural_age_lifecycle_wiring_v1.py",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_BRIDGE_NATURAL_AGE_LIFECYCLE_WIRING_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",

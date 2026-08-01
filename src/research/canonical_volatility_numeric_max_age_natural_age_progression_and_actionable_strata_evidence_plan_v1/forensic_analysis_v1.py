@@ -104,4 +104,25 @@ def producer_consumer_call_graph_matrix_v1() -> Mapping[str, Any]:
             "mutates_master_v2_logic": False,
             "enforces_max_age": False,
         },
+        "productive_bridge_wiring": {
+            "module": (
+                "research.canonical_volatility_numeric_max_age_natural_age_progression_"
+                "and_actionable_strata_evidence_plan_v1.productive_natural_age_lifecycle_binding_v1"
+            ),
+            "symbol": "ProductiveNaturalAgeLifecycleCmcBindingHostV1",
+            "bound_by": (
+                "research.canonical_volatility_max_age_productive_research_evidence_"
+                "accumulation_v1.productive_bridge_runner_v1."
+                "run_productive_bridge_accumulation_session_v1"
+            ),
+            "authority": "sole_produce_vs_reuse_vs_recompute_on_productive_evidence_path",
+            "legacy_per_sample_rematerialization_unreachable": True,
+            "consumers_remain_non_authority": [
+                "produce_productive_research_evidence_from_cycle_v1",
+                "join_projection_v1",
+                "counterfactual_grid_v1",
+                "actionable_strata_v1",
+                "safety_observability_v1",
+            ],
+        },
     }

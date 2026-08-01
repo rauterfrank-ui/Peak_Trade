@@ -37,6 +37,11 @@ from research.canonical_volatility_numeric_max_age_natural_age_progression_and_a
 from research.canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.lifecycle_host_v1 import (
     NaturalAgeProgressionLifecycleHostV1,
 )
+from research.canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.productive_natural_age_lifecycle_binding_v1 import (
+    CAPABILITY_ID as PRODUCTIVE_BRIDGE_NATURAL_AGE_WIRING_CAPABILITY_ID,
+    ProductiveNaturalAgeLifecycleCmcBindingHostV1,
+    assert_natural_age_lifecycle_productive_binding_guards_v1,
+)
 from research.canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.recompute_policy_v1 import (
     build_natural_age_research_recompute_policy_v1,
     recompute_trigger_matrix_v1,
@@ -54,11 +59,14 @@ __all__ = [
     "HARD_STOP",
     "NaturalAgeProgressionLifecycleHostV1",
     "PACKAGE_MARKER",
+    "PRODUCTIVE_BRIDGE_NATURAL_AGE_WIRING_CAPABILITY_ID",
+    "ProductiveNaturalAgeLifecycleCmcBindingHostV1",
     "READY_FOR_NUMERIC_MAX_AGE_POLICY_DECISION",
     "READY_FOR_PRODUCTIVE_SESSION_EXECUTION",
     "REVIEW_MODE_ID",
     "VolatilityEstimateLifecycleState",
     "assert_architecture_guards_v1",
+    "assert_natural_age_lifecycle_productive_binding_guards_v1",
     "assign_age_bucket_v1",
     "build_additional_evidence_coverage_plan_v1",
     "build_natural_age_research_recompute_policy_v1",

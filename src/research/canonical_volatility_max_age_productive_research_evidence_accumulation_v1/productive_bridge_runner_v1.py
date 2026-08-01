@@ -246,14 +246,31 @@ def run_productive_bridge_accumulation_session_v1(
     if len(samples) > max_cycles:
         raise ProductiveEvidenceAccumulationError("session_cycle_bound_exceeded")
 
+    from research.canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.productive_natural_age_lifecycle_binding_v1 import (
+        ProductiveNaturalAgeLifecycleCmcBindingHostV1,
+    )
+
     session_start = iso_from_unix_v1(float(samples[0].event_time_unix_seconds))
     bridge_state = HardenedBridgeSessionStateV2(
         instrument_id=canonical_instrument_id,
         typed_volatility_persistence_path=typed_volatility_persistence_path,
     )
+    # Natural-age lifecycle host is the sole produce/reuse/recompute authority on
+    # the productive research evidence path (legacy per-sample rematerialize unbound).
     if typed_volatility_persistence_path and typed_volatility_persistence_path.exists():
-        bridge_state.restore_typed_volatility_binding_host_from_persistence_v1(
-            persistence_path=typed_volatility_persistence_path
+        bridge_state.typed_volatility_cmc_binding_host = (
+            ProductiveNaturalAgeLifecycleCmcBindingHostV1.restore_from_persistence_v1(
+                persistence_path=typed_volatility_persistence_path,
+            )
+        )
+    else:
+        bridge_state.typed_volatility_cmc_binding_host = (
+            ProductiveNaturalAgeLifecycleCmcBindingHostV1.create(
+                venue=venue,
+                canonical_instrument_id=canonical_instrument_id,
+                venue_instrument_id=venue_instrument_id,
+                persistence_path=typed_volatility_persistence_path,
+            )
         )
 
     existing_session = None
