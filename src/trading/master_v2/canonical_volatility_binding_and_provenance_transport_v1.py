@@ -346,6 +346,7 @@ def build_volatility_decision_evidence_provenance_v1(
         stale_status=stale_status,
         validation_result=VolatilityValidationResultV1.ACCEPTED,
     )
+    oldest = validated.oldest_observation_event_time
     return CanonicalVolatilityDecisionEvidenceProvenanceV1(
         volatility_contract_version=validated.contract_version,
         value=float(validated.value),
@@ -363,6 +364,17 @@ def build_volatility_decision_evidence_provenance_v1(
         validation_result=VolatilityValidationResultV1.ACCEPTED.value,
         volatility_input_binding_digest=binding_digest,
         legacy_float_value=float(legacy_float),
+        estimator_version=str(validated.estimator_version),
+        oldest_observation_event_time=(
+            "" if oldest is None else oldest.astimezone(timezone.utc).isoformat()
+        ),
+        config_digest=str(validated.config_digest),
+        fallback_identity=str(validated.fallback_identity),
+        volatility_status="VALID",
+        volatility_reason_codes=("VALID",),
+        volatility_age_seconds=None,
+        max_age_threshold=None,
+        max_age_enforcement_enabled=False,
     )
 
 

@@ -41,11 +41,16 @@ CANONICAL_LOOKBACK_BARS = contract.LOOKBACK_BARS
 CANONICAL_HORIZON = contract.WINDOW_DURATION
 CANONICAL_HORIZON_SECONDS = 3600
 CANONICAL_ESTIMATOR = "POPULATION_STANDARD_DEVIATION_OF_LOG_RETURNS"
+CANONICAL_ESTIMATOR_VERSION = "population_std_ddof_0/v1"
 CANONICAL_DDOF = contract.DDOF
 CANONICAL_ANNUALIZED = contract.OUTPUT_ANNUALIZED
+CANONICAL_BAR_DURATION = contract.BAR_INTERVAL
 MINIMUM_PRICE_OBSERVATIONS = contract.WARMUP_REQUIRED_PRICE_COUNT
 MINIMUM_RETURN_OBSERVATIONS = contract.WARMUP_REQUIRED_RETURN_COUNT
 SUPPORTED_CONTRACT_VERSION = contract.CONTRACT_VERSION
+CANONICAL_PROVENANCE = "CANONICAL_MATERIALIZER_V1"
+CANONICAL_DATA_QUALITY_TRUSTED = "TRUSTED"
+NO_FALLBACK_IDENTITY = "NONE"
 
 IMPLICIT_DEFAULT_ALLOWED = False
 MV2_FALLBACK_0_2_ADMISSIBLE = False
@@ -88,14 +93,19 @@ class CanonicalVolatilityTypedConsumptionErrorCode(str, Enum):
     HORIZON_MISMATCH = "HORIZON_MISMATCH"
     ANNUALIZATION_MISMATCH = "ANNUALIZATION_MISMATCH"
     ESTIMATOR_MISMATCH = "ESTIMATOR_MISMATCH"
+    ESTIMATOR_VERSION_MISMATCH = "ESTIMATOR_VERSION_MISMATCH"
     INSUFFICIENT_OBSERVATIONS = "INSUFFICIENT_OBSERVATIONS"
     EVENT_TIME_INVALID = "EVENT_TIME_INVALID"
+    EVENT_TIME_ORDERING_INVALID = "EVENT_TIME_ORDERING_INVALID"
     FALLBACK_PROHIBITED = "FALLBACK_PROHIBITED"
+    UNKNOWN_FALLBACK_IDENTITY = "UNKNOWN_FALLBACK_IDENTITY"
     SOURCE_DIGEST_INVALID = "SOURCE_DIGEST_INVALID"
+    CONFIG_DIGEST_INVALID = "CONFIG_DIGEST_INVALID"
     CONTRACT_VERSION_UNSUPPORTED = "CONTRACT_VERSION_UNSUPPORTED"
     WARMUP_INCOMPLETE = "WARMUP_INCOMPLETE"
     UNKNOWN_PROVENANCE = "UNKNOWN_PROVENANCE"
     IMPLICIT_FALLBACK_REJECTED = "IMPLICIT_FALLBACK_REJECTED"
+    DATA_QUALITY_INVALID = "DATA_QUALITY_INVALID"
 
 
 class CanonicalVolatilityTypedConsumptionError(ValueError):
@@ -112,7 +122,10 @@ class CanonicalVolatilityTypedConsumptionError(ValueError):
 
 @dataclass(frozen=True)
 class CanonicalVolatilityEstimateV1:
-    """Immutable typed carrier for a validated canonical volatility estimate."""
+    """Immutable typed carrier for a validated canonical volatility estimate.
+
+    Also exposed as ``VolatilityEstimateV1`` for the hot-path closure contract.
+    """
 
     value: float
     unit: str
@@ -126,8 +139,17 @@ class CanonicalVolatilityEstimateV1:
     fallback_used: bool
     source_digest: str
     contract_version: str
+    estimator_version: str = CANONICAL_ESTIMATOR_VERSION
+    minimum_observation_count: int = MINIMUM_RETURN_OBSERVATIONS
+    bar_duration: str = CANONICAL_BAR_DURATION
+    oldest_observation_event_time: datetime | None = None
+    config_digest: str = ""
+    fallback_identity: str = NO_FALLBACK_IDENTITY
+    provenance: str = CANONICAL_PROVENANCE
+    data_quality: str = CANONICAL_DATA_QUALITY_TRUSTED
 
     def to_dict(self) -> dict[str, Any]:
+        oldest = self.oldest_observation_event_time
         return {
             "value": self.value,
             "unit": self.unit,
@@ -136,12 +158,24 @@ class CanonicalVolatilityEstimateV1:
             "horizon_seconds": self.horizon_seconds,
             "annualized": self.annualized,
             "estimator": self.estimator,
+            "estimator_version": self.estimator_version,
             "observation_count": self.observation_count,
+            "minimum_observation_count": self.minimum_observation_count,
+            "bar_duration": self.bar_duration,
             "as_of_event_time": self.as_of_event_time.isoformat(),
+            "oldest_observation_event_time": (None if oldest is None else oldest.isoformat()),
             "fallback_used": self.fallback_used,
+            "fallback_identity": self.fallback_identity,
             "source_digest": self.source_digest,
+            "config_digest": self.config_digest,
+            "provenance": self.provenance,
+            "data_quality": self.data_quality,
             "contract_version": self.contract_version,
         }
+
+
+# Hot-path closure alias — single productive typed carrier (no parallel type).
+VolatilityEstimateV1 = CanonicalVolatilityEstimateV1
 
 
 def _raise(
@@ -241,10 +275,28 @@ def validate_canonical_volatility_estimate_v1(
             CanonicalVolatilityTypedConsumptionErrorCode.ESTIMATOR_MISMATCH,
             f"expected={CANONICAL_ESTIMATOR!r}:actual={estimate.estimator!r}",
         )
+    if estimate.estimator_version != CANONICAL_ESTIMATOR_VERSION:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.ESTIMATOR_VERSION_MISMATCH,
+            f"expected={CANONICAL_ESTIMATOR_VERSION!r}:actual={estimate.estimator_version!r}",
+        )
+    if int(estimate.minimum_observation_count) != MINIMUM_RETURN_OBSERVATIONS:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.INSUFFICIENT_OBSERVATIONS,
+            (
+                f"minimum_observation_count={estimate.minimum_observation_count}"
+                f":expected={MINIMUM_RETURN_OBSERVATIONS}"
+            ),
+        )
     if int(estimate.observation_count) < MINIMUM_RETURN_OBSERVATIONS:
         _raise(
             CanonicalVolatilityTypedConsumptionErrorCode.INSUFFICIENT_OBSERVATIONS,
             f"observation_count={estimate.observation_count}:minimum={MINIMUM_RETURN_OBSERVATIONS}",
+        )
+    if estimate.bar_duration != CANONICAL_BAR_DURATION:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.BAR_INTERVAL_MISMATCH,
+            f"expected={CANONICAL_BAR_DURATION!r}:actual={estimate.bar_duration!r}",
         )
     as_of = estimate.as_of_event_time
     if not isinstance(as_of, datetime) or as_of.tzinfo is None:
@@ -252,10 +304,26 @@ def validate_canonical_volatility_estimate_v1(
             CanonicalVolatilityTypedConsumptionErrorCode.EVENT_TIME_INVALID,
             "as_of_event_time_must_be_timezone_aware",
         )
+    oldest = estimate.oldest_observation_event_time
+    if oldest is None or not isinstance(oldest, datetime) or oldest.tzinfo is None:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.EVENT_TIME_INVALID,
+            "oldest_observation_event_time_must_be_timezone_aware",
+        )
+    if oldest.astimezone(timezone.utc) > as_of.astimezone(timezone.utc):
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.EVENT_TIME_ORDERING_INVALID,
+            "oldest_observation_event_time_after_as_of_event_time",
+        )
     if estimate.fallback_used is not False:
         _raise(
             CanonicalVolatilityTypedConsumptionErrorCode.FALLBACK_PROHIBITED,
             f"fallback_used={estimate.fallback_used!r}",
+        )
+    if estimate.fallback_identity != NO_FALLBACK_IDENTITY:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.UNKNOWN_FALLBACK_IDENTITY,
+            f"fallback_identity={estimate.fallback_identity!r}",
         )
     digest = estimate.source_digest
     if not isinstance(digest, str) or not digest.strip():
@@ -263,12 +331,41 @@ def validate_canonical_volatility_estimate_v1(
             CanonicalVolatilityTypedConsumptionErrorCode.SOURCE_DIGEST_INVALID,
             "source_digest_empty",
         )
+    config_digest = estimate.config_digest
+    if (
+        not isinstance(config_digest, str)
+        or len(config_digest) != 64
+        or any(c not in "0123456789abcdef" for c in config_digest)
+    ):
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.CONFIG_DIGEST_INVALID,
+            "config_digest_must_be_64_char_lowercase_sha256",
+        )
+    if estimate.provenance != CANONICAL_PROVENANCE:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.UNKNOWN_PROVENANCE,
+            f"provenance={estimate.provenance!r}",
+        )
+    if estimate.data_quality != CANONICAL_DATA_QUALITY_TRUSTED:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.DATA_QUALITY_INVALID,
+            f"data_quality={estimate.data_quality!r}",
+        )
     if estimate.contract_version != SUPPORTED_CONTRACT_VERSION:
         _raise(
             CanonicalVolatilityTypedConsumptionErrorCode.CONTRACT_VERSION_UNSUPPORTED,
             f"expected={SUPPORTED_CONTRACT_VERSION!r}:actual={estimate.contract_version!r}",
         )
     return estimate
+
+
+def resolve_canonical_config_digest_v1(*, root: Any = None) -> str:
+    """Deterministic digest of the ratified feature-contract config (single owner)."""
+    from pathlib import Path
+
+    cfg_root = None if root is None else Path(root)
+    payload = contract.load_contract_config_v1(cfg_root)
+    return contract.compute_contract_digest_v1(payload)
 
 
 def build_canonical_volatility_estimate_v1(
@@ -280,10 +377,18 @@ def build_canonical_volatility_estimate_v1(
     horizon_seconds: int = CANONICAL_HORIZON_SECONDS,
     annualized: bool = CANONICAL_ANNUALIZED,
     estimator: str = CANONICAL_ESTIMATOR,
+    estimator_version: str = CANONICAL_ESTIMATOR_VERSION,
     observation_count: int,
+    minimum_observation_count: int = MINIMUM_RETURN_OBSERVATIONS,
+    bar_duration: str = CANONICAL_BAR_DURATION,
     as_of_event_time: datetime,
+    oldest_observation_event_time: datetime | None = None,
     fallback_used: bool = False,
+    fallback_identity: str = NO_FALLBACK_IDENTITY,
     source_digest: str | None = None,
+    config_digest: str | None = None,
+    provenance: str = CANONICAL_PROVENANCE,
+    data_quality: str = CANONICAL_DATA_QUALITY_TRUSTED,
     contract_version: str = SUPPORTED_CONTRACT_VERSION,
     mark_prices: Sequence[float] | None = None,
 ) -> CanonicalVolatilityEstimateV1:
@@ -297,6 +402,11 @@ def build_canonical_volatility_estimate_v1(
         _raise(
             CanonicalVolatilityTypedConsumptionErrorCode.FALLBACK_PROHIBITED,
             "fallback_used_true_rejected_at_factory",
+        )
+    if fallback_identity != NO_FALLBACK_IDENTITY:
+        _raise(
+            CanonicalVolatilityTypedConsumptionErrorCode.UNKNOWN_FALLBACK_IDENTITY,
+            "unknown_fallback_identity_rejected_at_factory",
         )
     digest = source_digest
     if digest is None:
@@ -314,6 +424,17 @@ def build_canonical_volatility_estimate_v1(
             contract_version=contract_version,
             mark_prices=mark_prices,
         )
+    oldest = oldest_observation_event_time
+    if oldest is None:
+        # Closed PT60M window: as_of minus (lookback_bars) × PT1M.
+        from datetime import timedelta
+
+        oldest = as_of_event_time - timedelta(
+            seconds=int(bar_interval_seconds) * int(lookback_bars)
+        )
+    cfg_digest = (
+        config_digest if config_digest is not None else resolve_canonical_config_digest_v1()
+    )
     estimate = CanonicalVolatilityEstimateV1(
         value=float(value),
         unit=unit,
@@ -322,10 +443,18 @@ def build_canonical_volatility_estimate_v1(
         horizon_seconds=horizon_seconds,
         annualized=annualized,
         estimator=estimator,
+        estimator_version=estimator_version,
         observation_count=int(observation_count),
+        minimum_observation_count=int(minimum_observation_count),
+        bar_duration=bar_duration,
         as_of_event_time=as_of_event_time,
+        oldest_observation_event_time=oldest,
         fallback_used=False,
+        fallback_identity=NO_FALLBACK_IDENTITY,
         source_digest=digest,
+        config_digest=cfg_digest,
+        provenance=provenance,
+        data_quality=data_quality,
         contract_version=contract_version,
     )
     return validate_canonical_volatility_estimate_v1(estimate)
@@ -399,10 +528,18 @@ def materialize_typed_canonical_volatility_estimate_v1(
             f"return_observations={observation_count}:minimum={MINIMUM_RETURN_OBSERVATIONS}",
         )
 
+    window_prices = ordered.loc[:last_ts].iloc[-MINIMUM_PRICE_OBSERVATIONS:]
+    oldest_ts = pd.Timestamp(window_prices.index[0])
+    if oldest_ts.tzinfo is None:
+        oldest_ts = oldest_ts.tz_localize("UTC")
+    else:
+        oldest_ts = oldest_ts.tz_convert("UTC")
+
     return build_canonical_volatility_estimate_v1(
         value=value,
         observation_count=observation_count,
         as_of_event_time=as_of,
+        oldest_observation_event_time=oldest_ts.to_pydatetime(),
         mark_prices=prices_for_digest[-MINIMUM_PRICE_OBSERVATIONS:],
     )
 
@@ -518,13 +655,17 @@ def with_mutated_field_for_tests_v1(
 
 __all__ = [
     "CANONICAL_ANNUALIZED",
+    "CANONICAL_BAR_DURATION",
     "CANONICAL_BAR_INTERVAL",
     "CANONICAL_BAR_INTERVAL_SECONDS",
+    "CANONICAL_DATA_QUALITY_TRUSTED",
     "CANONICAL_DDOF",
     "CANONICAL_ESTIMATOR",
+    "CANONICAL_ESTIMATOR_VERSION",
     "CANONICAL_HORIZON",
     "CANONICAL_HORIZON_SECONDS",
     "CANONICAL_LOOKBACK_BARS",
+    "CANONICAL_PROVENANCE",
     "CANONICAL_UNIT",
     "CAPABILITY_ID",
     "CAPABILITY_VERSION",
@@ -538,6 +679,7 @@ __all__ = [
     "MINIMUM_PRICE_OBSERVATIONS",
     "MINIMUM_RETURN_OBSERVATIONS",
     "MV2_FALLBACK_0_2_ADMISSIBLE",
+    "NO_FALLBACK_IDENTITY",
     "NON_ALIAS_VOLATILITY_SURFACES",
     "OPEN_HOT_PATH_GAPS",
     "PACKAGE_MARKER",
@@ -547,6 +689,7 @@ __all__ = [
     "SUPPORTED_CONTRACT_VERSION",
     "TRADING_LOGIC_EFFECT",
     "TYPED_CARRIER_OWNER",
+    "VolatilityEstimateV1",
     "WARMUP_BEHAVIOR",
     "adapt_canonical_volatility_estimate_to_legacy_float_v1",
     "assert_capability_non_goals_v1",
@@ -555,6 +698,7 @@ __all__ = [
     "derive_return_observation_count_from_closed_window_v1",
     "materialize_typed_canonical_volatility_estimate_v1",
     "reject_implicit_legacy_float_input_v1",
+    "resolve_canonical_config_digest_v1",
     "validate_canonical_volatility_estimate_v1",
     "with_mutated_field_for_tests_v1",
 ]

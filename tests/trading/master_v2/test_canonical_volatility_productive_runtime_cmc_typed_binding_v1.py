@@ -178,8 +178,8 @@ def test_c_warmup_fail_closed_no_static_fallback() -> None:
         result.telemetry.fail_closed_reason
         == ProductiveTypedBindingFailClosedReasonV1.WARMUP_NO_ESTIMATE.value
     )
-    # No static fallback literals applied by this capability.
-    assert result.context.volatility_estimate == 0.38
+    # Hot-path closure: untyped float cleared to non-authority placeholder (not 0.38/0.2/0.02/1.0).
+    assert result.context.volatility_estimate == 0.0
     eligibility = evaluate_typed_volatility_binding_eligibility_v1(result.context)
     assert eligibility.new_directional_exposure_allowed is False
     assert eligibility.scope_confirmation_allowed is False
