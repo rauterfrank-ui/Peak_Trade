@@ -176,6 +176,9 @@ def run_productive_bridge_accumulation_session_v1(
     existing_session_mapping: Mapping[str, Any] | None = None,
     max_cycles: int = MAX_PRODUCTIVE_BRIDGE_CYCLES_PER_SESSION,
     complete_session: bool = True,
+    campaign_authorization_artifact_path: Path | None = None,
+    campaign_authorization_evidence_root: Path | None = None,
+    require_campaign_authorization: bool | None = None,
 ) -> dict[str, Any]:
     """Execute one productive session through the canonical hardened bridge call graph."""
     from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
@@ -185,12 +188,49 @@ def run_productive_bridge_accumulation_session_v1(
     from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_v1 import (
         session_from_mapping_v1,
     )
+    from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+        BOUND_CAMPAIGN_ID,
+    )
+    from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.gate_v1 import (
+        require_campaign_authorization_runtime_release_v1,
+    )
+    from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.models_v1 import (
+        CampaignAuthorizationError,
+    )
 
     design = build_ratified_max_age_research_design_contract_v1()
     if repository_sha != repository_sha.strip() or not repository_sha:
         raise ProductiveEvidenceAccumulationError("repository_sha_required")
     if design.preregistration_digest != design.preregistration_digest:
         raise ProductiveEvidenceAccumulationError("preregistration_digest_unavailable")
+
+    must_gate = (
+        True
+        if require_campaign_authorization is True
+        else (
+            False
+            if require_campaign_authorization is False
+            else (
+                campaign_id == BOUND_CAMPAIGN_ID or campaign_authorization_artifact_path is not None
+            )
+        )
+    )
+    runtime_release = None
+    if must_gate:
+        try:
+            runtime_release = require_campaign_authorization_runtime_release_v1(
+                authorization_artifact_path=campaign_authorization_artifact_path,
+                session_id=session_id,
+                campaign_id=campaign_id,
+                evidence_root=Path(
+                    campaign_authorization_evidence_root
+                    if campaign_authorization_evidence_root is not None
+                    else repo_root
+                ),
+                repository_sha=repository_sha,
+            )
+        except CampaignAuthorizationError as exc:
+            raise ProductiveEvidenceAccumulationError(f"campaign_authorization_gate:{exc}") from exc
 
     if not samples:
         return {
@@ -296,6 +336,9 @@ def run_productive_bridge_accumulation_session_v1(
     )
     return {
         "binding_capability_id": PRODUCTIVE_BRIDGE_BINDING_CAPABILITY_ID,
+        "campaign_authorization_release": (
+            None if runtime_release is None else runtime_release.to_dict()
+        ),
         "campaign_id": campaign_id,
         "completion": completion,
         "coverage": coverage.to_dict(),
@@ -326,6 +369,9 @@ def run_productive_bridge_accumulate_v1(
     productive_ledger_path: Path,
     join_ledger_path: Path,
     quarantine_ledger_path: Path,
+    campaign_authorization_artifact_path: Path | None = None,
+    campaign_authorization_evidence_root: Path | None = None,
+    require_campaign_authorization: bool | None = None,
 ) -> dict[str, Any]:
     """Multi-session productive accumulation entry used by the CLI mode."""
     if len(session_plans) > MAX_PRODUCTIVE_BRIDGE_SESSIONS_PER_RUN:
@@ -372,6 +418,9 @@ def run_productive_bridge_accumulate_v1(
                 process_restart=bool(plan.get("process_restart") or False),
                 existing_resume_token=plan.get("resume_token"),
                 existing_session_mapping=plan.get("existing_session"),
+                campaign_authorization_artifact_path=campaign_authorization_artifact_path,
+                campaign_authorization_evidence_root=campaign_authorization_evidence_root,
+                require_campaign_authorization=require_campaign_authorization,
             )
         )
     integrity = assert_ledger_integrity_matrix_v1(
