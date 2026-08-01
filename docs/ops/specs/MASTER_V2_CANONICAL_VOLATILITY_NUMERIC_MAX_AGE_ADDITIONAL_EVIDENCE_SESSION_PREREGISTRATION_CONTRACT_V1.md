@@ -191,7 +191,7 @@ may create additional session preregistrations that satisfy this contract.
 v1 `repository_sha` tip-of-main equality is **not** lawful for new
 authorization readiness. Successor contract:
 
-`canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract/v2`
+`canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract&#47;v2`
 
 See
 `MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_REPOSITORY_SHA_SEMANTICS_RESOLUTION_V1.md`.

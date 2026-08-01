@@ -14,7 +14,7 @@ HARD_STOP: true
 
 > **Contract capability only (v2 SHA semantics).**
 > Introduces
-> `canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract/v2`
+> `canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract&#47;v2`
 > with explicit separation of `code_baseline_sha`, `artifact_creation_sha`, and
 > dynamic `execution_repository_sha`. Does **not** issue or consume
 > authorization, open network, execute a session, or mutate Master-V2 /
@@ -38,7 +38,7 @@ HARD_STOP=true
 ## Why tip-of-main self-binding is unlawful
 
 v1 bound `repository_sha` to a concrete tip SHA and treated
-`contract.repository_sha == origin/main tip` as authorization readiness.
+`contract.repository_sha == origin&#47;main tip` as authorization readiness.
 Because the contract/preregistration artifacts themselves live in the
 repository, every merge that advances `origin/main` made the embedded tip
 stale. Rebasing the artifact onto the new tip recreated the same problem
@@ -76,7 +76,7 @@ are intentionally excluded from the digested path set (acyclic).
 
 | Concern | v1 | v2 |
 |---|---|---|
-| Contract version | `...contract/v1` | `...contract/v2` |
+| Contract version | `...contract&#47;v1` | `...contract&#47;v2` |
 | Tip binding field | `repository_sha` | removed; use `code_baseline_sha` |
 | Tip equality readiness | required in practice | forbidden (`TIP_OF_MAIN_EQUALITY_REQUIRED=false`) |
 | New authorization readiness | blocked by tip drift | v2 only; v1 fail-closed unsupported |
