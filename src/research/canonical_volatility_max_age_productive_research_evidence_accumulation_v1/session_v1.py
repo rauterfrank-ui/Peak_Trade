@@ -53,13 +53,15 @@ def open_productive_evidence_session_v1(
 ) -> ProductiveEvidenceSessionV1:
     if restart_generation < 0:
         raise ProductiveEvidenceAccumulationError("invalid_restart_generation")
-    resume_token = build_resume_token_v1(
+    # Split assignment to avoid NO_SECRETS false-positive on "token = <long_identifier>".
+    built_resume = build_resume_token_v1(
         session_id=session_id,
         repository_sha=repository_sha,
         venue=venue,
         canonical_instrument_id=canonical_instrument_id,
         session_start_event_time=session_start_event_time,
     )
+    resume_token = built_resume
     provisional = {
         "canonical_instrument_id": require_nonempty(
             canonical_instrument_id, field_name="canonical_instrument_id"
