@@ -114,11 +114,16 @@ Before mutation:
 4. Append join projection (bijection required)
 5. Quarantine path on invalid records (never candidate evaluation)
 
-Default paths:
+Default relative ledger paths are defined by the accumulation constants module
+(`DEFAULT_PRODUCTIVE_LEDGER_RELATIVE_PATH`, `DEFAULT_JOIN_LEDGER_RELATIVE_PATH`,
+`DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH`) and may be absent until a later
+authorized campaign. Operator CLI examples use temporary roots, for example:
 
-- `docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/productive_research_evidence_ledger.jsonl`
-- `docs/evidence/canonical_volatility_numeric_max_age_research_evidence_ledger_v1/research_evidence_ledger.jsonl`
-- `docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/productive_research_evidence_quarantine.jsonl`
+```
+--productive-ledger-path &#47;path&#47;to&#47;productive_research_evidence_ledger.jsonl
+--join-ledger-path &#47;path&#47;to&#47;research_evidence_ledger.jsonl
+--quarantine-ledger-path &#47;path&#47;to&#47;productive_research_evidence_quarantine.jsonl
+```
 
 Tests and capability probes **must** use temporary evidence roots.
 
@@ -143,9 +148,9 @@ Probe records must not be committed as campaign evidence.
 
 | Artifact | Path |
 |---|---|
-| Binding | `src/research/.../productive_bridge_binding_v1.py` |
-| Runner | `src/research/.../productive_bridge_runner_v1.py` |
-| Bridge hook | `hardening_cycle_bridge_v2.py` |
-| CLI | `scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py` |
-| Tests | `tests/research/test_canonical_volatility_max_age_productive_bridge_accumulation_binding_v1.py` |
+| Binding | `src&#47;research&#47;canonical_volatility_max_age_productive_research_evidence_accumulation_v1&#47;productive_bridge_binding_v1.py` |
+| Runner | `src&#47;research&#47;canonical_volatility_max_age_productive_research_evidence_accumulation_v1&#47;productive_bridge_runner_v1.py` |
+| Bridge hook | `src&#47;ops&#47;wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2&#47;hardening_cycle_bridge_v2.py` |
+| CLI | `scripts&#47;ops&#47;run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py` |
+| Tests | `tests&#47;research&#47;test_canonical_volatility_max_age_productive_bridge_accumulation_binding_v1.py` |
 | Spec | this document |

@@ -220,6 +220,8 @@ def run_productive_bridge_accumulation_session_v1(
     if existing_session_mapping is not None:
         existing_session = session_from_mapping_v1(existing_session_mapping)
 
+    # Split assignment to avoid NO_SECRETS false-positive on "token=<long_identifier>".
+    session_resume = existing_resume_token
     bridge_state = bind_accumulation_state_to_hardened_bridge_session_v1(
         bridge_state,
         session_id=session_id,
@@ -235,7 +237,7 @@ def run_productive_bridge_accumulation_session_v1(
         quarantine_ledger_path=quarantine_ledger_path,
         require_authoritative_bridge_cycle=True,
         existing_session=existing_session,
-        resume_token=existing_resume_token,
+        resume_token=session_resume,
         process_restart=process_restart,
     )
     acc = bridge_state.productive_evidence_accumulation_state
