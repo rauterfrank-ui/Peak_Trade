@@ -390,6 +390,15 @@
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_EXECUTION_V1.md"
       ]
     },
+    "CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_V1": {
+      "note": "Productive non-enforcing research evidence accumulation capability for numeric max-age (session/regime join projection, append-only ledger, coverage readiness); no numeric threshold selection, no Alpha/policy enforcement, no Master-V2/Double-Play/risk/sizing/execution mutation, no promotion/runtime/orders.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/",
+        "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
+        "tests/research/test_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1.md"
+      ]
+    },
     "COST_MODEL_DIAGNOSTICS": {
       "path_globs": [
         "tests/research/test_offline_linear_cost_model_diagnostics_*",
