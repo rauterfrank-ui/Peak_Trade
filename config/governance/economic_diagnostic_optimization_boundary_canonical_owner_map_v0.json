@@ -24,7 +24,7 @@
       ]
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1": {
-      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
+      "note": "Single preregistered DEVELOPMENT-only offline evaluation of Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility filter versus immutable bollinger baseline (run count 1/1, RESULT_CLASS=PASS, ALL_PASS_REQUIRES_MET); research-only entry-eligibility gate; economic offline gate remains closed; no holdout access; no productive Master-V2/Double-Play/risk/sizing/execution mutation; no promotion/runtime/orders.",
       "path_prefixes": [
         "src/research/adx_di_direction_confirmation_mr_eligibility_development_evaluation_v1/",
         "scripts/research/run_evaluate_adx_di_direction_confirmation_mr_eligibility_development_v1.py",
@@ -74,7 +74,7 @@
       ]
     },
     "ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/−DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation.",
+      "note": "Definition-only preregistration of a single Wilder ADX(14) +DI/\u2212DI direction-confirmation pre-entry MR eligibility measurement contract on the sealed DEVELOPMENT_ONLY panel, orthogonal to six prior FAILs (regime, ATR, RSI, ADX-level, MA, MACD); no backtest, no economic metrics, no holdout access, no productive authority mutation.",
       "path_prefixes": [
         "src/research/adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
         "tests/research/test_adx_di_direction_confirmation_mr_eligibility_hypothesis_preregistration_v1.py",
@@ -156,7 +156,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5": {
-      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0→1): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.",
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR midband exit-efficiency V5 after one authorized run (0\u21921): RESULT_CLASS=INFRASTRUCTURE_FAILURE; DIAGNOSTIC_CLASS=PROCESS_DIED_INCOMPLETE_PANEL_RUN_NO_LIFECYCLE_TERMINAL; baseline 3/46; not a V4/V3/V2/V1 rerun; no V4 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V5 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v5/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v5.py",
@@ -166,7 +166,7 @@
       ]
     },
     "BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6": {
-      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0→1): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
+      "note": "Terminal DEVELOPMENT evaluation closeout for Bollinger/MR composite exit-efficiency V6 after one authorized run (0\u21921): RESULT_CLASS=FAIL; REASON=NET_PROFIT_FACTOR_NOT_IMPROVED; exit divergence observed; treatment binding confirmed; not a V5/V4/V3/V2/V1 rerun; no V5 partial-result reuse; no holdout/runtime/orders; Economic/promotion closed; no Master-V2/Double-Play/risk/sizing/execution mutation; no V6 rerun. Owner surface: BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.",
       "path_prefixes": [
         "src/research/bollinger_mr_midband_exit_efficiency_development_evaluation_v6/",
         "scripts/research/run_evaluate_bollinger_mr_midband_exit_efficiency_development_v6.py",
@@ -419,7 +419,7 @@
       ]
     },
     "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_CAMPAIGN_AUTHORIZATION_V1": {
-      "note": "Campaign authorization capability for the preregistered productive max-age evidence campaign: schema/writer/verifier, TTL expiry, append-only revocation, atomic per-session single-use consumption, CLI modes, and accumulation gatekeeper integration. Capability only — no productive issuance/consumption in this surface, no runtime session, network, evidence write, threshold selection, enforcement, or promotion.",
+      "note": "Campaign authorization capability for the preregistered productive max-age evidence campaign: schema/writer/verifier, TTL expiry, append-only revocation, atomic per-session single-use consumption, CLI modes, and accumulation gatekeeper integration. Capability only \u2014 no productive issuance/consumption in this surface, no runtime session, network, evidence write, threshold selection, enforcement, or promotion.",
       "path_prefixes": [
         "src/research/canonical_volatility_numeric_max_age_campaign_authorization_v1/",
         "tests/research/test_canonical_volatility_numeric_max_age_campaign_authorization_v1.py",
@@ -427,8 +427,17 @@
         "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
       ]
     },
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PREREGISTERED_PRODUCTIVE_SESSION_RUNNER_V1": {
+      "note": "Preregistered productive session runner for the max-age evidence campaign: exact session-id binding, preregistered OKX-EEA public MD source, consume-before-side-effects, terminal fail-closed evidence. Capability only \u2014 no productive session execution, authorization consumption, real market-data, orders, threshold selection, enforcement, or promotion in this surface.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/",
+        "tests/research/test_canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PREREGISTERED_PRODUCTIVE_SESSION_RUNNER_V1.md",
+        "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
+      ]
+    },
     "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1": {
-      "note": "Closes typed volatility contract + single productive producer + Double-Play hot-path wiring; quarantines competing bridge ddof=1×sqrt(n) producer and naked float productive bindings; numeric max-age remains unresolved/disabled; no parameter selection; no Alpha/CHOP/State/Cadence redefinition; no promotion/runtime/orders.",
+      "note": "Closes typed volatility contract + single productive producer + Double-Play hot-path wiring; quarantines competing bridge ddof=1\u00d7sqrt(n) producer and naked float productive bindings; numeric max-age remains unresolved/disabled; no parameter selection; no Alpha/CHOP/State/Cadence redefinition; no promotion/runtime/orders.",
       "path_prefixes": [
         "src/trading/master_v2/canonical_volatility_hot_path_contract_closure_v1.py",
         "tests/trading/master_v2/test_canonical_volatility_hot_path_contract_closure_v1.py",
@@ -1329,7 +1338,7 @@
       ]
     },
     "VOLATILITY_COMPRESSION_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of own-instrument volatility compression→expansion→channel-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(20)/close percentile-rank admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VOL_BREAKOUT_COILED_SPRING explicit; development evaluation authorized; evaluation not executed; no holdout/runtime/orders.",
+      "note": "Definition-only preregistration of own-instrument volatility compression\u2192expansion\u2192channel-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures; frozen ATR(20)/close percentile-rank admission, unconditional channel-breakout baseline, event-sufficiency gates; material difference vs terminal VOL_BREAKOUT_COILED_SPRING explicit; development evaluation authorized; evaluation not executed; no holdout/runtime/orders.",
       "path_prefixes": [
         "config/research/volatility_compression_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
         "src/research/volatility_compression_breakout_v1_hypothesis_preregistration_v1.py",
@@ -1404,7 +1413,7 @@
       ]
     },
     "VOLATILITY_DECAY_BREAKOUT_V1_HYPOTHESIS_PREREGISTRATION_DEFINITION_ONLY_V1": {
-      "note": "Definition-only preregistration of own-instrument volatility decay-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures after terminal VEP-V1 UNPAIRABLE_ENTRY_NO_EXIT; frozen ATR(14)/close high→low decay admission + channel-breakout baseline; material difference vs VEP/VCB/coiled-spring explicit; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced only; VEP retry/exit-repair forbidden.",
+      "note": "Definition-only preregistration of own-instrument volatility decay-breakout v1 measurement contract on DEVELOPMENT_ONLY non-BTC linear USDT futures after terminal VEP-V1 UNPAIRABLE_ENTRY_NO_EXIT; frozen ATR(14)/close high\u2192low decay admission + channel-breakout baseline; material difference vs VEP/VCB/coiled-spring explicit; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced only; VEP retry/exit-repair forbidden.",
       "path_prefixes": [
         "config/research/volatility_decay_breakout_v1_preregistered_economic_hypothesis_measurement_contract_v1.json",
         "src/research/volatility_decay_breakout_v1_hypothesis_preregistration_v1.py",
@@ -1415,7 +1424,7 @@
       ]
     },
     "VOLATILITY_DECAY_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1": {
-      "note": "Strategy-implementation-only surfaces for VOLATILITY_DECAY_BREAKOUT_V1 (shared 20-bar price-channel core + ATR14/close percentile vol-state + high→low decay admission + unconditional baseline + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced not duplicated; no Master-V2/Double-Play/risk/execution mutation; VEP/VCB retry forbidden.",
+      "note": "Strategy-implementation-only surfaces for VOLATILITY_DECAY_BREAKOUT_V1 (shared 20-bar price-channel core + ATR14/close percentile vol-state + high\u2192low decay admission + unconditional baseline + implementation binding). Measurement contract digest frozen; no evaluation/holdout/runtime/orders; productive PnL evaluator referenced not duplicated; no Master-V2/Double-Play/risk/execution mutation; VEP/VCB retry forbidden.",
       "path_prefixes": [
         "src/research/price_channel_breakout_core_v1.py",
         "src/research/volatility_decay_breakout_v1_vol_state_v1.py",

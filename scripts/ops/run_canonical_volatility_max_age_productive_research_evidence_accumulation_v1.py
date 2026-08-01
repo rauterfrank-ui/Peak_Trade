@@ -222,6 +222,7 @@ def main(argv: list[str] | None = None) -> int:
             "verify-campaign-authorization",
             "revoke-campaign-authorization",
             "consume-campaign-authorization",
+            "productive-preregistered-session-run",
         ),
         default="probe-accumulate",
     )
@@ -284,6 +285,73 @@ def main(argv: list[str] | None = None) -> int:
         type=str,
         default=None,
         help="Operator reference for revoke-campaign-authorization.",
+    )
+    parser.add_argument(
+        "--preregistration-id",
+        type=str,
+        default=None,
+        help="Preregistration capability id for productive-preregistered-session-run.",
+    )
+    parser.add_argument(
+        "--authorization-id",
+        type=str,
+        default=None,
+        help="Authorization id binding for productive-preregistered-session-run.",
+    )
+    parser.add_argument(
+        "--authorization-digest",
+        type=str,
+        default=None,
+        help="Authorization artifact digest for productive-preregistered-session-run.",
+    )
+    parser.add_argument(
+        "--expected-branch",
+        type=str,
+        default="main",
+        help="Expected git branch for productive-preregistered-session-run.",
+    )
+    parser.add_argument(
+        "--venue",
+        type=str,
+        default=None,
+        help="Venue binding for productive-preregistered-session-run (required in that mode).",
+    )
+    parser.add_argument(
+        "--instrument-id",
+        type=str,
+        default=None,
+        help="Instrument binding for productive-preregistered-session-run.",
+    )
+    parser.add_argument(
+        "--market-data-scope",
+        type=str,
+        default=None,
+        help="Market-data scope for productive-preregistered-session-run.",
+    )
+    parser.add_argument(
+        "--evidence-scope",
+        type=str,
+        default=None,
+        help="Evidence scope for productive-preregistered-session-run.",
+    )
+    parser.add_argument(
+        "--max-cycles",
+        type=int,
+        default=None,
+        help="Optional cycle bound (<= preregistered session maximum) for session-run.",
+    )
+    parser.add_argument(
+        "--preflight-only",
+        action="store_true",
+        help="Run productive-preregistered-session-run preflight without consume/execute.",
+    )
+    parser.add_argument(
+        "--enable-real-public-md-fetcher",
+        action="store_true",
+        help=(
+            "Explicitly enable real OKX-EEA public GET fetcher for "
+            "productive-preregistered-session-run (forbidden during capability merge)."
+        ),
     )
     parser.add_argument("--session-id", type=str, default="operator-probe-session")
     parser.add_argument(
@@ -537,6 +605,85 @@ def main(argv: list[str] | None = None) -> int:
             print(
                 json.dumps(
                     {"cli_mode": CONSUME_CLI_MODE, "status": "FAIL", "blocker": str(exc)},
+                    sort_keys=True,
+                    indent=2,
+                )
+            )
+            return 1
+
+    if args.mode == "productive-preregistered-session-run":
+        from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.constants_v1 import (
+            CLI_MODE as PREREG_SESSION_CLI_MODE,
+        )
+        from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.models_v1 import (
+            PreregisteredSessionRunnerError,
+        )
+        from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.runner_v1 import (
+            run_preregistered_productive_session_v1,
+        )
+
+        required = {
+            "campaign_id": args.campaign_id,
+            "preregistration_id": args.preregistration_id,
+            "preregistration_digest": args.preregistration_digest,
+            "session_id": None if args.session_id == "operator-probe-session" else args.session_id,
+            "authorization_id": args.authorization_id,
+            "authorization_digest": args.authorization_digest,
+            "campaign_authorization_artifact": args.campaign_authorization_artifact,
+            "repository_sha": args.repository_sha,
+            "venue": args.venue,
+            "instrument_id": args.instrument_id,
+            "market_data_scope": args.market_data_scope,
+            "evidence_scope": args.evidence_scope,
+        }
+        missing = [k for k, v in required.items() if not v]
+        if missing:
+            raise SystemExit("preregistered_session_run_missing:" + ",".join(missing))
+        evidence_root = args.evidence_root.resolve() if args.evidence_root else repo_root
+        http_fetcher = None
+        if args.enable_real_public_md_fetcher:
+            if args.preflight_only:
+                raise SystemExit("real_public_md_fetcher_incompatible_with_preflight_only")
+            from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.real_http_fetcher_v1 import (
+                make_real_eea_public_md_fetcher_v1,
+            )
+
+            http_fetcher, _telemetry = make_real_eea_public_md_fetcher_v1()
+        try:
+            result = run_preregistered_productive_session_v1(
+                repo_root=repo_root,
+                campaign_id=str(args.campaign_id),
+                preregistration_id=str(args.preregistration_id),
+                preregistration_digest=str(args.preregistration_digest),
+                session_id=str(args.session_id),
+                authorization_id=str(args.authorization_id),
+                authorization_digest=str(args.authorization_digest),
+                authorization_artifact_path=Path(args.campaign_authorization_artifact),
+                repository_sha=str(args.repository_sha),
+                expected_branch=str(args.expected_branch),
+                venue=str(args.venue),
+                instrument_id=str(args.instrument_id),
+                market_data_scope=str(args.market_data_scope),
+                evidence_scope=str(args.evidence_scope),
+                max_cycles=args.max_cycles,
+                evidence_root=evidence_root,
+                http_fetcher=http_fetcher,
+                preflight_only=bool(args.preflight_only),
+            )
+            result["cli_mode"] = PREREG_SESSION_CLI_MODE
+            print(json.dumps(result, sort_keys=True, indent=2, default=str))
+            return 0 if result.get("status") in {"PASS", "PREFLIGHT_PASS"} else 1
+        except PreregisteredSessionRunnerError as exc:
+            print(
+                json.dumps(
+                    {
+                        "cli_mode": PREREG_SESSION_CLI_MODE,
+                        "status": "BLOCKED",
+                        "blocker": str(exc),
+                        "authorization_consumed": False,
+                        "session_started": False,
+                        "market_data_request_occurred": False,
+                    },
                     sort_keys=True,
                     indent=2,
                 )
