@@ -428,11 +428,13 @@
       ]
     },
     "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PREREGISTERED_PRODUCTIVE_SESSION_RUNNER_V1": {
-      "note": "Preregistered productive session runner for the max-age evidence campaign: exact session-id binding, preregistered OKX-EEA public MD source, consume-before-side-effects, terminal fail-closed evidence. Capability only \u2014 no productive session execution, authorization consumption, real market-data, orders, threshold selection, enforcement, or promotion in this surface.",
+      "note": "Preregistered productive session runner for the max-age evidence campaign: exact session-id binding, preregistered OKX-EEA public MD source, consume-before-side-effects, terminal fail-closed evidence, plus public-MD pacing/budget/HTTP-429 hardening. Capability only \u2014 no productive session execution, authorization consumption, real market-data, orders, threshold selection, enforcement, or promotion in this surface.",
       "path_prefixes": [
         "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/",
         "tests/research/test_canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.py",
+        "tests/research/test_canonical_volatility_numeric_max_age_public_md_rate_limit_hardening_v1.py",
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PREREGISTERED_PRODUCTIVE_SESSION_RUNNER_V1.md",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_SESSION_PUBLIC_MD_RATE_LIMIT_AND_REQUEST_BUDGET_HARDENING_V1.md",
         "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
       ]
     },
