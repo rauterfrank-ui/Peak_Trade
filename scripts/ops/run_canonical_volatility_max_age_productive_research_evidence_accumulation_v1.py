@@ -215,6 +215,7 @@ def main(argv: list[str] | None = None) -> int:
             "productive-bridge-accumulate",
             "coverage-only",
             "verify-join-load",
+            "evaluability-report",
         ),
         default="probe-accumulate",
     )
@@ -329,6 +330,57 @@ def main(argv: list[str] | None = None) -> int:
             productive_ledger_path=productive,
             quarantine_ledger_path=quarantine,
         )
+        print(json.dumps(result, sort_keys=True, indent=2, default=str))
+        return 0
+
+    if args.mode == "evaluability-report":
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
+            DEFAULT_PRODUCTIVE_LEDGER_RELATIVE_PATH,
+            DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH,
+            EVALUABILITY_CLI_MODE,
+            REVIEW_MODE_ID,
+        )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.evaluability_v1 import (
+            evaluate_productive_evidence_evaluability_v1,
+            parameter_decision_prerequisites_v1,
+        )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.ledger_v1 import (
+            valid_productive_records_from_ledger_v1,
+        )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.preregistration_v1 import (
+            build_productive_evidence_accumulation_preregistration_v1,
+            preregistration_matrix_v1,
+        )
+
+        productive = args.productive_ledger_path or (
+            repo_root / DEFAULT_PRODUCTIVE_LEDGER_RELATIVE_PATH
+        )
+        quarantine = args.quarantine_ledger_path or (
+            repo_root / DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH
+        )
+        records = (
+            valid_productive_records_from_ledger_v1(productive) if Path(productive).exists() else []
+        )
+        prereg = build_productive_evidence_accumulation_preregistration_v1()
+        evaluability = evaluate_productive_evidence_evaluability_v1(records)
+        result = {
+            "cli_mode": EVALUABILITY_CLI_MODE,
+            "review_mode": REVIEW_MODE_ID,
+            "status": "PASS",
+            "productive_evidence_present": bool(records),
+            "evidence_session_count": len(evaluability["session_metrics"]["session_ids"]),
+            "blocked_for_parameter_decision": True,
+            "evidence_sufficient_for_parameter_decision": False,
+            "productive_preregistration_digest": prereg.productive_preregistration_digest,
+            "preregistration_matrix": preregistration_matrix_v1(prereg),
+            "evaluability": evaluability,
+            "parameter_decision_prerequisites": parameter_decision_prerequisites_v1(),
+            "quarantine_ledger_path": str(quarantine),
+            "productive_ledger_path": str(productive),
+            "threshold_status": "UNRESOLVED_MAX_AGE",
+            "numeric_threshold_selected": False,
+            "enforcement_applied": False,
+        }
         print(json.dumps(result, sort_keys=True, indent=2, default=str))
         return 0
 

@@ -9,6 +9,7 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     AGE_REFERENCE_CLOCK,
     AUTHORITATIVE_BRIDGE_CYCLE_OUTPUT_ID,
     EVIDENCE_SCHEMA_VERSION,
+    LEGACY_FALLBACK_VALUES_FORBIDDEN_AS_RESEARCH_TRUTH,
 )
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.models_v1 import (
     DuplicateStatusV1,
@@ -30,6 +31,9 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.validation_v1 import (
     compute_age_seconds_v1,
     finalize_record_digest_v1,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.preregistration_v1 import (
+    assert_preregistration_before_evidence_v1,
 )
 from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1 import (
     build_ratified_max_age_research_design_contract_v1,
@@ -84,7 +88,11 @@ def produce_productive_research_evidence_from_cycle_v1(
     provenance, trust states). Runtime cycle index / poll counts are never used
     as synthetic market evidence.
     """
+    # Preregistration must be bound before any productive evidence materialization.
+    productive_prereg = assert_preregistration_before_evidence_v1()
     design = build_ratified_max_age_research_design_contract_v1()
+    if design.preregistration_digest != productive_prereg.design_preregistration_digest:
+        raise ProductiveEvidenceAccumulationError("design_preregistration_digest_drift")
     binding = dict(cycle.get("canonical_volatility_typed_binding") or {})
     gate = dict(cycle.get("double_play_typed_volatility_presence_gate") or {})
     age = dict(gate.get("max_age_policy_evidence") or {})
@@ -181,6 +189,14 @@ def produce_productive_research_evidence_from_cycle_v1(
     regime_label, regime_source, regime_confidence = map_typed_feature_regime_to_research_label_v1(
         feature_regime
     )
+    volatility_regime = optional_text(feature_regime.get("volatility_regime"))
+    if volatility_regime is None:
+        if regime_label in {"HIGH_VOLATILITY", "LOW_VOLATILITY"}:
+            volatility_regime = regime_label
+        elif regime_label == "STRESS_OR_GAP":
+            volatility_regime = "STRESS_OR_GAP"
+        else:
+            volatility_regime = "UNCLASSIFIED"
 
     def _normalize_trust(raw: Any, *, default: str) -> str:
         text = optional_text(raw)
@@ -207,6 +223,15 @@ def produce_productive_research_evidence_from_cycle_v1(
         volatility_value = feature_regime.get("volatility_estimate")
     if volatility_value is None:
         raise ProductiveEvidenceAccumulationError("volatility_value_required")
+
+    # Legacy naked defaults must never become productive research truth.
+    if bool(binding.get("fallback_used") or feature_regime.get("default_regime_fallback_active")):
+        try:
+            numeric_vol = float(volatility_value)
+        except (TypeError, ValueError) as exc:
+            raise ProductiveEvidenceAccumulationError("volatility_value_not_numeric") from exc
+        if numeric_vol in set(LEGACY_FALLBACK_VALUES_FORBIDDEN_AS_RESEARCH_TRUTH):
+            raise ProductiveEvidenceAccumulationError("legacy_fallback_forbidden_as_research_truth")
 
     volatility_unit = optional_text(binding.get("volatility_unit")) or "DECIMAL_FRACTION"
     horizon = binding.get("volatility_horizon_seconds")
@@ -271,6 +296,16 @@ def produce_productive_research_evidence_from_cycle_v1(
         "campaign_id": optional_text(authority.get("campaign_id") or cycle.get("campaign_id")),
         "canonical_instrument_id": instrument_id,
         "clock_trust_state": clock_trust,
+        "code_sha": require_nonempty(repository_sha, field_name="repository_sha"),
+        "config_digest": optional_text(cycle.get("config_digest"))
+        or sha256_hex_text(
+            "config|"
+            + str(strategy_contract_digest)
+            + "|"
+            + str(volatility_contract_digest)
+            + "|"
+            + source_digest
+        ),
         "counterfactual_eligible": counterfactual_eligible,
         "cycle_id": cycle_id,
         "data_trust_state": data_trust,
@@ -282,13 +317,16 @@ def produce_productive_research_evidence_from_cycle_v1(
             if cycle.get("economic_metrics") is None
             else dict(cycle.get("economic_metrics") or {})
         ),
+        "estimate_age_seconds": float(age_seconds),
         "estimate_created_event_time": optional_text(
             binding.get("estimate_created_event_time") or as_of_event_time
         ),
         "estimate_present": estimate_present,
         "estimate_reused": estimate_reused,
+        "estimator_observation_count": int(observation_count),
         "evidence_record_id": evidence_record_id,
         "evidence_schema_version": EVIDENCE_SCHEMA_VERSION,
+        "exit_path_preservation": True,
         "fallback_used": fallback_used,
         "fixture": bool(
             authority.get("fixture") if "fixture" in authority else cycle.get("fixture") or False
@@ -302,6 +340,7 @@ def produce_productive_research_evidence_from_cycle_v1(
         "productive_input_authority": optional_text(
             authority.get("authority_id") or cycle.get("productive_input_authority")
         ),
+        "productive_preregistration_digest": productive_prereg.productive_preregistration_digest,
         "receive_time": optional_text(cycle.get("receive_time") or binding.get("receive_time")),
         "regime_confidence": regime_confidence,
         "regime_label": regime_label,
@@ -340,6 +379,7 @@ def produce_productive_research_evidence_from_cycle_v1(
         "volatility_estimator": estimator,
         "volatility_horizon_seconds": float(horizon),
         "volatility_observation_count": int(observation_count),
+        "volatility_regime": volatility_regime,
         "volatility_source_digest": source_digest,
         "volatility_unit": volatility_unit,
         "volatility_value": float(volatility_value),
@@ -414,4 +454,13 @@ def produce_productive_research_evidence_from_cycle_v1(
         synthetic=bool(provisional.get("synthetic")),
         fixture=bool(provisional.get("fixture")),
         test_data=bool(provisional.get("test_data")),
+        estimate_age_seconds=float(provisional["estimate_age_seconds"]),
+        volatility_regime=optional_text(provisional.get("volatility_regime")),
+        config_digest=optional_text(provisional.get("config_digest")),
+        code_sha=optional_text(provisional.get("code_sha")),
+        exit_path_preservation=bool(provisional.get("exit_path_preservation", True)),
+        productive_preregistration_digest=optional_text(
+            provisional.get("productive_preregistration_digest")
+        ),
+        estimator_observation_count=int(provisional["estimator_observation_count"]),
     )

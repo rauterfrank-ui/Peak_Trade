@@ -116,6 +116,14 @@ class ProductiveResearchEvidenceRecordV1:
     synthetic: bool = False
     fixture: bool = False
     test_data: bool = False
+    # Numeric productive-accumulation enrichment (diagnostic / join-facing).
+    estimate_age_seconds: Optional[float] = None
+    volatility_regime: Optional[str] = None
+    config_digest: Optional[str] = None
+    code_sha: Optional[str] = None
+    exit_path_preservation: bool = True
+    productive_preregistration_digest: Optional[str] = None
+    estimator_observation_count: Optional[int] = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -126,6 +134,8 @@ class ProductiveResearchEvidenceRecordV1:
             "campaign_id": self.campaign_id,
             "canonical_instrument_id": self.canonical_instrument_id,
             "clock_trust_state": self.clock_trust_state,
+            "code_sha": self.code_sha,
+            "config_digest": self.config_digest,
             "counterfactual_eligible": self.counterfactual_eligible,
             "cycle_id": self.cycle_id,
             "data_trust_state": self.data_trust_state,
@@ -135,11 +145,20 @@ class ProductiveResearchEvidenceRecordV1:
             "economic_metrics": (
                 None if self.economic_metrics is None else dict(self.economic_metrics)
             ),
+            "estimate_age_seconds": (
+                self.age_seconds if self.estimate_age_seconds is None else self.estimate_age_seconds
+            ),
             "estimate_created_event_time": self.estimate_created_event_time,
             "estimate_present": self.estimate_present,
             "estimate_reused": self.estimate_reused,
+            "estimator_observation_count": (
+                self.volatility_observation_count
+                if self.estimator_observation_count is None
+                else self.estimator_observation_count
+            ),
             "evidence_record_id": self.evidence_record_id,
             "evidence_schema_version": self.evidence_schema_version,
+            "exit_path_preservation": self.exit_path_preservation,
             "fallback_used": self.fallback_used,
             "fixture": self.fixture,
             "market_event_time": self.market_event_time,
@@ -147,6 +166,7 @@ class ProductiveResearchEvidenceRecordV1:
             "observation_event_time": self.observation_event_time,
             "preregistration_digest": self.preregistration_digest,
             "productive_input_authority": self.productive_input_authority,
+            "productive_preregistration_digest": self.productive_preregistration_digest,
             "receive_time": self.receive_time,
             "record_digest": self.record_digest,
             "regime_confidence": self.regime_confidence,
@@ -174,6 +194,7 @@ class ProductiveResearchEvidenceRecordV1:
             "volatility_estimator": self.volatility_estimator,
             "volatility_horizon_seconds": self.volatility_horizon_seconds,
             "volatility_observation_count": self.volatility_observation_count,
+            "volatility_regime": self.volatility_regime,
             "volatility_source_digest": self.volatility_source_digest,
             "volatility_unit": self.volatility_unit,
             "volatility_value": self.volatility_value,

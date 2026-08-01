@@ -185,6 +185,8 @@ a separate operator GO.
 | Accumulation package | `src&#47;research&#47;canonical_volatility_max_age_productive_research_evidence_accumulation_v1&#47;` |
 | CLI | `scripts&#47;ops&#47;run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py` |
 | Spec | this document |
+| Numeric productive accumulation review-mode | `docs&#47;ops&#47;specs&#47;MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_V1.md` |
 | Tests | `tests&#47;research&#47;test_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py` |
+| Numeric focused tests | `tests&#47;research&#47;test_canonical_volatility_numeric_max_age_productive_research_evidence_accumulation_v1.py` |
 | Join &#47; preregistration owner | `src&#47;trading&#47;master_v2&#47;canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py` |
 | Research execution consumer | `src&#47;research&#47;canonical_volatility_numeric_max_age_parameter_research_execution_v1&#47;` |

@@ -7,13 +7,17 @@ from typing import Any
 
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
     ALPHA_MUTATION_OCCURRED,
+    BLOCKED_FOR_PARAMETER_DECISION,
     CONFIG_MUTATION_OCCURRED,
+    COUNTERFACTUAL_ONLY,
     ENFORCEMENT_APPLIED,
+    EVIDENCE_SUFFICIENT_FOR_PARAMETER_DECISION,
     FORBIDDEN_IMPORT_SUBSTRINGS,
     HARD_STOP,
     LIVE_AUTHORIZATION,
     LIVE_TESTNET_ORDER_ACTIVATION_OCCURRED,
     NUMERIC_MAX_AGE_DECIDED,
+    NUMERIC_PRODUCTIVE_ACCUMULATION_CAPABILITY_ID,
     NUMERIC_THRESHOLD_SELECTED,
     ORDER_AUTHORITY_INTRODUCED,
     PARAMETER_PROMOTED,
@@ -26,6 +30,7 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     REGIME_LABEL_MUTATES_ALPHA,
     REGIME_LABEL_MUTATES_POLICY,
     REGIME_LABEL_MUTATES_POSITION,
+    REVIEW_MODE_ID,
     THRESHOLD_STATUS,
 )
 
@@ -142,6 +147,30 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
     if "bind_accumulation_state_to_hardened_bridge_session_v1" not in binding_mod:
         raise RuntimeError("PRODUCTIVE_BRIDGE_BINDING_API_MISSING")
 
+    for required_module in (
+        "preregistration_v1.py",
+        "counterfactual_grid_v1.py",
+        "evaluability_v1.py",
+    ):
+        if not (package_dir / required_module).is_file():
+            raise RuntimeError(f"NUMERIC_PRODUCTIVE_MODULE_MISSING:{required_module}")
+
+    prereg_mod = (package_dir / "preregistration_v1.py").read_text(encoding="utf-8")
+    if "RESEARCH_AGE_CANDIDATE_GRID_SECONDS" not in prereg_mod:
+        raise RuntimeError("PREREGISTRATION_RESEARCH_GRID_MISSING")
+    if "NON_PROMOTION_INVARIANT_V1" not in prereg_mod:
+        raise RuntimeError("PREREGISTRATION_NON_PROMOTION_MISSING")
+    if "evaluability-report" not in cli:
+        raise RuntimeError("CLI_MUST_EXPOSE_EVALUABILITY_REPORT_MODE")
+    if not COUNTERFACTUAL_ONLY:
+        raise RuntimeError("COUNTERFACTUAL_ONLY_REQUIRED")
+    if not BLOCKED_FOR_PARAMETER_DECISION:
+        raise RuntimeError("PARAMETER_DECISION_MUST_REMAIN_BLOCKED")
+    if EVIDENCE_SUFFICIENT_FOR_PARAMETER_DECISION:
+        raise RuntimeError("PARAMETER_DECISION_SUFFICIENCY_DRIFT")
+    if REVIEW_MODE_ID != NUMERIC_PRODUCTIVE_ACCUMULATION_CAPABILITY_ID:
+        raise RuntimeError("REVIEW_MODE_ID_DRIFT")
+
     return {
         "guards_pass": True,
         "hard_stop": HARD_STOP,
@@ -150,4 +179,7 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
         "no_policy_mutation_guard_pass": True,
         "regime_label_is_research_metadata_only": REGIME_LABEL_IS_RESEARCH_METADATA_ONLY,
         "threshold_status": THRESHOLD_STATUS,
+        "review_mode_id": REVIEW_MODE_ID,
+        "blocked_for_parameter_decision": BLOCKED_FOR_PARAMETER_DECISION,
+        "counterfactual_only": COUNTERFACTUAL_ONLY,
     }
