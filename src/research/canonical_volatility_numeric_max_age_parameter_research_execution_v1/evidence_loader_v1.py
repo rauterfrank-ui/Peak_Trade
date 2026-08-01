@@ -199,9 +199,7 @@ def load_research_evidence_records_v1(
             raise MaxAgeResearchExecutionError("corrupt_ledger") from exc
         raise MaxAgeResearchExecutionError(f"missing_join:{code}") from exc
 
-    records = tuple(
-        _map_join_to_record(j.to_dict() if hasattr(j, "to_dict") else dict(j)) for j in joins
-    )
+    records = tuple(_map_join_to_record(j.to_dict()) for j in joins)
     _assert_no_cross_identity_conflicts(records)
     return records
 
