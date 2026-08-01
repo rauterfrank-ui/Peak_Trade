@@ -4,7 +4,7 @@
 
 Sole productive issuance authority for:
 
-`canonical_volatility_numeric_max_age_additional_evidence_session_authorization/v2`
+`canonical_volatility_numeric_max_age_additional_evidence_session_authorization&#47;v2`
 
 OWNER=`research.canonical_volatility_numeric_max_age_additional_evidence_session_authorization_v2`
 
