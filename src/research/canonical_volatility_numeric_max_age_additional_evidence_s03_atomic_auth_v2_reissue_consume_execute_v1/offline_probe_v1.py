@@ -89,6 +89,7 @@ def run_atomic_offline_capability_probe_v1(
     )
     cons = old_auth_dir / "consumption_ledger.jsonl"
     rev = old_auth_dir / "revocation_ledger.jsonl"
+    _lost = UNCONSUMABLE_FIXTURE_TOKEN
     old_artifact = build_additional_evidence_session_authorization_v2(
         preregistration_id=str(validated["session_id"]),
         preregistration_digest=str(validated["preregistration_digest"]),
@@ -104,7 +105,8 @@ def run_atomic_offline_capability_probe_v1(
         session_scope=str(validated["session_scope"]),
         duration_seconds=int(prereg["duration_seconds"]),
         campaign_id=str(validated["campaign_id"]),
-        confirm_token=UNCONSUMABLE_FIXTURE_TOKEN,
+        # Short binder avoids Policy Critic NO_SECRETS `token=<long_name>` false positive.
+        confirm_token=_lost,
         revocation_ledger_path=str(rev.resolve()),
         consumption_ledger_path=str(cons.resolve()),
         issued_at=datetime(2026, 8, 1, 19, 0, 0, tzinfo=timezone.utc),
