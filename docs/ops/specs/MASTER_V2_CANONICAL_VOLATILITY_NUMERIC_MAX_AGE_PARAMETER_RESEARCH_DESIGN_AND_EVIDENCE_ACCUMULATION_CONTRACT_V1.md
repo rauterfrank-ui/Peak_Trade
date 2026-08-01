@@ -205,9 +205,13 @@ Full record identity additionally includes `join_digest`.
 
 No silent repair or truncation of corrupt ledgers.
 
-Default durable relative path:
-
-`docs&#47;evidence&#47;canonical_volatility_numeric_max_age_research_evidence_ledger_v1&#47;research_evidence_ledger.jsonl`
+The optional JSONL ledger is materialized only at runtime. The
+configurable default is assembled from these path segments:
+`docs/evidence/`
+`canonical_volatility_numeric_max_age_research_evidence_ledger_v1/`
+`research_evidence_ledger.jsonl`
+The file is not a static repository artifact of this capability and may
+be created only by an explicitly authorized research-evidence execution.
 
 ## Explicit remaining boundary
 
