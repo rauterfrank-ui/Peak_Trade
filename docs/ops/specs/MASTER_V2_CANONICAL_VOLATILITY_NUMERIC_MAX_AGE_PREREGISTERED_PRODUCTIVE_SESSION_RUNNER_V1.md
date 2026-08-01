@@ -126,6 +126,8 @@ Exact match required for:
 - no offline / synthetic / deterministic mark source in this mode
 - markPx from `/api/v5/public/mark-price`
 - runtime cycles do not invent market time
+- public-MD pacing / request-budget / HTTP-429 hardening:
+  `docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_SESSION_PUBLIC_MD_RATE_LIMIT_AND_REQUEST_BUDGET_HARDENING_V1.md`
 
 ## Separation from productive-bridge-accumulate
 

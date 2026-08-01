@@ -43,11 +43,19 @@ from research.canonical_volatility_numeric_max_age_preregistered_productive_sess
 from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.preflight_v1 import (
     run_static_preflight_v1,
 )
+from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.instrument_binding_v1 import (
+    binding_evidence_v1,
+    resolve_preregistered_session_venue_instrument_v1,
+)
+from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1 import (
+    default_public_md_request_pacing_policy_v1,
+)
 from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_source_v1 import (
     PublicMdSourceTelemetryV1,
     assert_no_orders_or_credentials_v1,
     build_preregistered_public_md_transport_v1,
     collect_public_mark_samples_v1,
+    initialize_session_md_controls_v1,
     reject_offline_synthetic_mark_source_v1,
 )
 from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.terminal_v1 import (
@@ -137,6 +145,9 @@ def run_preregistered_productive_session_v1(
     side_effect_probe: Optional[SideEffectProbeV1] = None,
     preflight_only: bool = False,
     require_exact_session_id: Optional[str] = None,
+    instruments_inventory: Optional[Any] = None,
+    md_sleep: Optional[Any] = None,
+    md_monotonic_clock: Optional[Any] = None,
 ) -> dict[str, Any]:
     """Execute one preregistered productive evidence session fail-closed.
 
@@ -144,7 +155,9 @@ def run_preregistered_productive_session_v1(
       1-7) static preflight (no mutation / network)
       8) atomic authorization consumption for exact session_id
       9) session lock + start
-      10) public MD fetch + accumulation via existing productive bridge consumer
+      9b) canonical venue instrument resolution (no network inventory by default)
+      9c) request pacing/budget initialization
+      10) paced public MD fetch + accumulation via existing productive bridge consumer
       11) terminal evidence
     """
     probe = side_effect_probe or SideEffectProbeV1()
@@ -218,6 +231,11 @@ def run_preregistered_productive_session_v1(
     terminal_state = "NOT_STARTED"
     terminal_verdict = "NOT_STARTED"
     blocker = ""
+    resolved_venue_instrument_id = BOUND_VENUE_INSTRUMENT_ID
+    import time as _time
+
+    sleep_fn = md_sleep or _time.sleep
+    mono_fn = md_monotonic_clock or _time.monotonic
 
     try:
         # Step 8 — consume immediately before irreversible session side effects.
@@ -268,20 +286,57 @@ def run_preregistered_productive_session_v1(
         session_started = True
         probe.record("SESSION_STARTED")
 
-        # Step 10 — public MD + accumulation through existing consumer
+        # Step 9b — canonical venue instrument resolution (sealed inventory; no network)
+        mapping = resolve_preregistered_session_venue_instrument_v1(
+            canonical_instrument_id=instrument_id,
+            instruments_inventory=instruments_inventory,
+            expected_canonical_instrument_id=BOUND_INSTRUMENT_ID,
+        )
+        resolved_venue_instrument_id = mapping.venue_instrument_id
+        md_telemetry.instrument_binding = binding_evidence_v1(mapping)
+        probe.record("VENUE_INSTRUMENT_BOUND")
+
+        # Step 9c — pacing / budget initialization before any network request
+        pacing_policy = default_public_md_request_pacing_policy_v1()
+        _policy, _budget, attempt_gate = initialize_session_md_controls_v1(
+            session_id=preflight.session_id,
+            max_cycles=preflight.max_cycles,
+            venue_instrument_id=resolved_venue_instrument_id,
+            telemetry=md_telemetry,
+            policy=pacing_policy,
+            sleep=sleep_fn,
+            monotonic_clock=mono_fn,
+        )
+        probe.record("REQUEST_PACING_BUDGET_INITIALIZED")
+
+        # Step 10 — paced public MD + accumulation through existing consumer
         transport, md_telemetry = build_preregistered_public_md_transport_v1(
-            fetcher=http_fetcher, telemetry=md_telemetry
+            fetcher=http_fetcher,
+            telemetry=md_telemetry,
+            rate_limit_policy=pacing_policy,
+            attempt_gate=attempt_gate,
+            sleep=sleep_fn,
+            monotonic_clock=mono_fn,
+            session_id=preflight.session_id,
         )
         transport.open()
         probe.record("TRANSPORT_OPENED")
         samples = collect_public_mark_samples_v1(
             transport=transport,
             cycle_count=preflight.max_cycles,
-            venue_instrument_id=BOUND_VENUE_INSTRUMENT_ID,
+            venue_instrument_id=resolved_venue_instrument_id,
             canonical_instrument_id=instrument_id,
             poll_interval_seconds=poll_interval_seconds,
+            session_id=preflight.session_id,
+            telemetry=md_telemetry,
+            rate_limit_policy=pacing_policy,
+            attempt_gate=attempt_gate,
+            sleep=sleep_fn,
+            monotonic_clock=mono_fn,
         )
-        md_requested = md_telemetry.fetch_count > 0
+        md_requested = bool(
+            md_telemetry.market_data_request_occurred or md_telemetry.fetch_count > 0
+        )
         probe.record("MARKET_DATA_FETCHED")
         assert_no_orders_or_credentials_v1(md_telemetry)
         if not samples:
@@ -302,7 +357,7 @@ def run_preregistered_productive_session_v1(
             quarantine_ledger_path=Path(preflight.quarantine_ledger_path),
             venue=BRIDGE_SAMPLE_VENUE,
             canonical_instrument_id=instrument_id,
-            venue_instrument_id=BOUND_VENUE_INSTRUMENT_ID,
+            venue_instrument_id=resolved_venue_instrument_id,
             typed_volatility_persistence_path=Path(preflight.typed_volatility_persistence_path),
             campaign_authorization_artifact_path=Path(authorization_artifact_path),
             campaign_authorization_evidence_root=evi_root,
@@ -311,6 +366,7 @@ def run_preregistered_productive_session_v1(
         probe.record("ACCUMULATION_COMPLETE")
         cycles_executed = int(accumulation_report.get("cycles_executed") or 0)
         records_appended = int(accumulation_report.get("records_appended") or 0)
+        md_telemetry.counters.completed_accumulation_cycle_count = cycles_executed
         integrity = dict(accumulation_report.get("integrity") or {})
         transport.close()
 
@@ -319,6 +375,11 @@ def run_preregistered_productive_session_v1(
         status = "PASS"
     except Exception as exc:  # noqa: BLE001
         blocker = str(exc)
+        md_requested = bool(
+            md_requested
+            or md_telemetry.market_data_request_occurred
+            or md_telemetry.fetch_count > 0
+        )
         if auth_consumed:
             terminal_state = "FAIL_CLOSED_AFTER_CONSUMPTION"
             terminal_verdict = "FAIL_CLOSED_AFTER_AUTHORIZATION_CONSUMPTION"
