@@ -72,6 +72,10 @@ from trading.master_v2.canonical_market_context_v1 import (
     WarmupStatus,
     with_computed_input_digest,
 )
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.runtime_v1 import (
+    ProductiveEvidenceAccumulationStateV1,
+    accumulate_productive_research_evidence_from_cycle_v1,
+)
 from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1 import (
     accumulate_max_age_research_evidence_record_from_cycle_v1,
 )
@@ -322,6 +326,8 @@ class HardenedBridgeSessionStateV2:
     # Non-enforcing research evidence accumulation (threshold remains unresolved).
     max_age_research_evidence_ledger: list[dict[str, Any]] = field(default_factory=list)
     max_age_research_evidence_ledger_path: Path | None = None
+    # Optional productive research-evidence accumulation (diagnostic only).
+    productive_evidence_accumulation_state: ProductiveEvidenceAccumulationStateV1 | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -810,6 +816,15 @@ def run_hardened_bridge_cycle_v2(
         in_memory_ledger=state.max_age_research_evidence_ledger,
     )
     cycle["canonical_volatility_max_age_research_evidence_join"] = research_join.to_dict()
+    # Productive accumulation is diagnostic-only: write failures must not mutate trading.
+    if state.productive_evidence_accumulation_state is not None:
+        cycle["productive_research_evidence_accumulation"] = (
+            accumulate_productive_research_evidence_from_cycle_v1(
+                cycle,
+                state=state.productive_evidence_accumulation_state,
+                project_to_join_ledger=False,
+            )
+        )
     if cycle["execution_eligible"]:
         raise RuntimeError("EXECUTION_ELIGIBLE_MUST_REMAIN_FALSE")
     state.cycle_ledger.append(cycle)
