@@ -185,3 +185,17 @@ HARD_STOP=true
 
 After this contract capability merges, a **separate** operator-authorized step
 may create additional session preregistrations that satisfy this contract.
+
+## Migration note (repository SHA semantics)
+
+v1 `repository_sha` tip-of-main equality is **not** lawful for new
+authorization readiness. Successor contract:
+
+`canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract&#47;v2`
+
+See
+`MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_REPOSITORY_SHA_SEMANTICS_RESOLUTION_V1.md`.
+
+v1 remains parseable for historical evidence. New authorization readiness for
+v1 candidates is fail-closed unsupported. PR #5629 tip-rebase approach is
+superseded.

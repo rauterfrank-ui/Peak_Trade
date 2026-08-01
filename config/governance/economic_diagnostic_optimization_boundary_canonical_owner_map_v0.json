@@ -1779,6 +1779,17 @@
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_PREREGISTRATION_CONTRACT_V1.md",
         "config/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1.json"
       ]
+    },
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_REPOSITORY_SHA_SEMANTICS_RESOLUTION_V1": {
+      "note": "Resolves additional-evidence session preregistration repository SHA semantics to immutable ancestor code_baseline_sha + critical-surface digest; v2 contract; supersedes tip-of-main equality and PR #5629 rebase approach; no authorization issuance/consumption, network, session execution, threshold selection/enforcement, or Master-V2/Double-Play/entry-exit/risk/safety mutation.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2/",
+        "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_repository_sha_semantics_resolution_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_REPOSITORY_SHA_SEMANTICS_RESOLUTION_V1.md",
+        "config/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2.json",
+        "config/research/canonical_volatility_numeric_max_age_additional_evidence_critical_surface_manifest_v2.json",
+        "config/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_v2.json"
+      ]
     }
   },
   "forbidden_mutation_surfaces": {
