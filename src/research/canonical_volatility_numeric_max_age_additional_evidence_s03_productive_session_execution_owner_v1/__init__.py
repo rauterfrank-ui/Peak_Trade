@@ -1,8 +1,9 @@
 """Additional-Evidence S03 productive session execution owner v1.
 
 Sole typed execution owner for Auth-v2 → consume-before-side-effects → S03
-natural-age session orchestration. Capability merge does not consume production
-authorization, start a real session, or open network.
+natural-age session orchestration. Productive real-path enablement is active for
+a later separate operator GO; importing this package does not consume auth,
+start a session, or open network.
 """
 
 from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.architecture_guards_v1 import (

@@ -112,17 +112,32 @@ available independent of alpha age gates. Exit precedence and reversal
 reduce-first sequences are preserved observationally without redefining
 Master-V2 trading logic.
 
-## Capability merge invariants
+## Productive enablement state
 
-NO_AUTHORIZATION_CONSUMED  
-NO_REAL_SESSION_STARTED  
-NO_NETWORK_ACTIVITY  
-NO_PRODUCTION_EVIDENCE_CREATED  
-NO_POLICY_SELECTED  
-NO_THRESHOLD_ENFORCED  
+PRODUCTIVE_SESSION_EXECUTION_IN_THIS_CAPABILITY=true  
+REAL_NETWORK_IN_THIS_CAPABILITY=true  
+AUTHORIZATION_CONSUMPTION_IN_THIS_CAPABILITY=true  
+READY_FOR_S03_AUTHORIZATION_CONSUMPTION_AND_EXECUTION=true  
 
-PRODUCTIVE_SESSION_EXECUTION_IN_THIS_CAPABILITY=false  
-READY_FOR_S03_AUTHORIZATION_CONSUMPTION_AND_EXECUTION=false  
+CLI `additional-evidence-s03-session-run` activates:
 
-Real Auth-v2 consumption and wallclock S03 execution require a separate
-explicit operator GO after this capability merges.
+- `offline_probe=false`
+- `enable_real_s03_session_execution=true`
+- `enable_real_public_md_network=true`
+
+Confirm-token channel is interactive getpass/stdin only. No `--confirm-token`.
+
+NUMERIC_MAX_AGE_SELECTED=false  
+POLICY_ENFORCEMENT_ADDED=false  
+HARD_STOP=true  
+
+CURRENT_AUTHORIZATION_REQUIRES_SEPARATE_REVOCATION_AND_REISSUANCE=true  
+
+The currently issued Auth-v2 artifact
+`cv_maxage_additional_evidence_auth_v2_35b30ad054e58d85` has no operator-held
+plaintext confirm token. Separate revocation/reissuance is required before a
+real consumption/execution GO. This capability package does not consume, revoke,
+or reissue that authorization.
+
+Offline probe / preflight paths remain available and must not mutate production
+authorization or production S03 evidence during capability tests.

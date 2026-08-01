@@ -662,6 +662,13 @@ def main(argv: list[str] | None = None) -> int:
         missing = [k for k, v in required.items() if not v]
         if missing:
             raise SystemExit("s03_session_run_missing:" + ",".join(missing))
+        http_fetcher = None
+        if (not bool(args.preflight_only)) and (not bool(args.s03_offline_capability_probe)):
+            from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.real_http_fetcher_v1 import (
+                make_real_eea_public_md_fetcher_v1,
+            )
+
+            http_fetcher, _telemetry = make_real_eea_public_md_fetcher_v1()
         result = run_additional_evidence_s03_productive_session_v1(
             repo_root=repo_root,
             authorization_path=Path(args.s03_authorization_artifact),
@@ -671,7 +678,9 @@ def main(argv: list[str] | None = None) -> int:
             evidence_root=args.evidence_root.resolve() if args.evidence_root else repo_root,
             preflight_only=bool(args.preflight_only),
             offline_probe=False,
-            enable_real_s03_session_execution=False,
+            enable_real_s03_session_execution=True,
+            enable_real_public_md_network=True,
+            http_fetcher=http_fetcher,
         )
         result["cli_mode"] = S03_CLI_MODE
         print(json.dumps(result, sort_keys=True, indent=2, default=str))

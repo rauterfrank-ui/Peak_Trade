@@ -1,7 +1,9 @@
 {
   "AUTH_V2_IS_SOLE_SESSION_AUTHORITY": true,
+  "AUTHORIZATION_CONSUMPTION_IN_THIS_CAPABILITY": true,
   "CONSUME_BEFORE_SIDE_EFFECTS": true,
   "COUNTERFACTUAL_RUNTIME_IS_NON_AUTHORITY": true,
+  "CURRENT_AUTHORIZATION_REQUIRES_SEPARATE_REVOCATION_AND_REISSUANCE": true,
   "MONOTONIC_DURATION_AUTHORITY": true,
   "NO_SECOND_DECISION_AUTHORITY": true,
   "NO_SECOND_EXECUTION_AUTHORITY": true,
@@ -14,11 +16,14 @@
   "bound_session_label": "S03",
   "capability_id": "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_PRODUCTIVE_SESSION_EXECUTION_OWNER_V1",
   "cli_mode": "additional-evidence-s03-session-run",
+  "enablement_review_mode": "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_S03_PRODUCTIVE_AUTH_V2_CONSUMPTION_AND_EXECUTION_ENABLEMENT_V1",
   "hard_stop": true,
+  "numeric_max_age_selected": false,
   "owner": "research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1",
-  "productive_session_execution_in_this_capability": false,
-  "ready_for_s03_authorization_consumption_and_execution": false,
-  "real_network_in_this_capability": false,
+  "policy_enforcement_added": false,
+  "productive_session_execution_in_this_capability": true,
+  "ready_for_s03_authorization_consumption_and_execution": true,
+  "real_network_in_this_capability": true,
   "schema_name": "canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_contract",
   "schema_version": "v1"
 }

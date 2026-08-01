@@ -19,6 +19,7 @@ from research.canonical_volatility_numeric_max_age_additional_evidence_s03_produ
     sha256_fingerprint_plaintext_v1,
 )
 from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.constants_v1 import (
+    AUTHORIZATION_CONSUMPTION_IN_THIS_CAPABILITY,
     BOUND_CAMPAIGN_ID,
     BOUND_CONTRACT_DIGEST,
     BOUND_DURATION_SECONDS,
@@ -33,7 +34,14 @@ from research.canonical_volatility_numeric_max_age_additional_evidence_s03_produ
     BOUND_VENUE,
     CAPABILITY_ID,
     CLI_MODE,
+    CURRENT_AUTHORIZATION_REQUIRES_SEPARATE_REVOCATION_AND_REISSUANCE,
     EXIT_PRECEDENCE_OBSERVED,
+    EXISTING_CLI_OWNER,
+    NUMERIC_MAX_AGE_SELECTED,
+    POLICY_ENFORCEMENT_ADDED,
+    PRODUCTIVE_SESSION_EXECUTION_IN_THIS_CAPABILITY,
+    READY_FOR_S03_AUTHORIZATION_CONSUMPTION_AND_EXECUTION,
+    REAL_NETWORK_IN_THIS_CAPABILITY,
     SIDE_EFFECT_AUTHORIZATION_CONSUMED,
     SIDE_EFFECT_EVIDENCE_CREATION,
     SIDE_EFFECT_NETWORK,
@@ -67,6 +75,9 @@ from research.canonical_volatility_numeric_max_age_additional_evidence_s03_produ
 from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.orchestrator_v1 import (
     preflight_s03_execution_owner_v1,
     run_additional_evidence_s03_productive_session_v1,
+)
+from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.real_session_loop_v1 import (
+    build_injectable_sequence_provider_v1,
 )
 from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.session_lock_v1 import (
     S03SessionLockV1,
@@ -429,8 +440,41 @@ def test_confirm_token_getpass_mismatch() -> None:
         read_confirm_token_interactively_v1(expected_fingerprint=fp, getpass_fn=lambda _p: "")
 
 
-def test_real_execution_refused_in_capability_mode(tmp_path: Path) -> None:
-    path, artifact, _ = _build_temp_auth(tmp_path)
+def test_capability_flags_enabled() -> None:
+    assert PRODUCTIVE_SESSION_EXECUTION_IN_THIS_CAPABILITY is True
+    assert REAL_NETWORK_IN_THIS_CAPABILITY is True
+    assert AUTHORIZATION_CONSUMPTION_IN_THIS_CAPABILITY is True
+    assert READY_FOR_S03_AUTHORIZATION_CONSUMPTION_AND_EXECUTION is True
+    assert NUMERIC_MAX_AGE_SELECTED is False
+    assert POLICY_ENFORCEMENT_ADDED is False
+    assert CURRENT_AUTHORIZATION_REQUIRES_SEPARATE_REVOCATION_AND_REISSUANCE is True
+
+
+def test_architecture_guards_and_cli_mode() -> None:
+    g = assert_architecture_guards_v1(repo_root=ROOT)
+    assert g["guards_pass"] is True
+    assert g["productive_execution_enabled"] is True
+    assert g["cli_real_path_enabled"] is True
+    assert g["confirm_token_cli_argument_absent"] is True
+    assert CLI_MODE == "additional-evidence-s03-session-run"
+    assert CAPABILITY_ID.endswith("S03_PRODUCTIVE_SESSION_EXECUTION_OWNER_V1")
+    cli_text = (ROOT / EXISTING_CLI_OWNER).read_text(encoding="utf-8")
+    assert "enable_real_s03_session_execution=True" in cli_text
+    assert "offline_probe=False" in cli_text
+    assert "--confirm-token" not in cli_text
+
+
+def test_campaign_auth_v1_consume_forbidden_in_owner_package() -> None:
+    orch = (
+        ROOT
+        / "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/orchestrator_v1.py"
+    ).read_text(encoding="utf-8")
+    assert "consume_additional_evidence_session_authorization_v2" in orch
+    assert "consume_campaign_authorization_session_v1" not in orch
+
+
+def test_real_path_token_parameter_forbidden(tmp_path: Path) -> None:
+    path, artifact, cons = _build_temp_auth(tmp_path)
     result = run_additional_evidence_s03_productive_session_v1(
         repo_root=ROOT,
         authorization_path=path,
@@ -438,19 +482,150 @@ def test_real_execution_refused_in_capability_mode(tmp_path: Path) -> None:
         authorization_digest=artifact.authorization_digest,
         repository_sha=EXECUTION_SHA,
         evidence_root=tmp_path / "evi2",
+        confirm_token=OFFLINE_PROBE_TOKEN,
         enable_real_s03_session_execution=True,
+        enable_real_public_md_network=True,
         offline_probe=False,
     )
     assert result["authorization_consumed"] is False
-    assert result["real_session_started"] is False
+    assert result["session_lock_created"] is False
+    assert result["network_activity_occurred"] is False
     assert result["status"] == "BLOCKED"
+    assert "confirm_token_parameter_forbidden_on_real_path" in str(result.get("blocker") or "")
+    assert not cons.exists() or not cons.read_text(encoding="utf-8").strip()
 
 
-def test_architecture_guards_and_cli_mode() -> None:
-    g = assert_architecture_guards_v1(repo_root=ROOT)
-    assert g["guards_pass"] is True
-    assert CLI_MODE == "additional-evidence-s03-session-run"
-    assert CAPABILITY_ID.endswith("S03_PRODUCTIVE_SESSION_EXECUTION_OWNER_V1")
+def test_real_path_token_mismatch_null_side_effects(tmp_path: Path) -> None:
+    path, artifact, cons = _build_temp_auth(tmp_path)
+    result = run_additional_evidence_s03_productive_session_v1(
+        repo_root=ROOT,
+        authorization_path=path,
+        authorization_id=artifact.authorization_id,
+        authorization_digest=artifact.authorization_digest,
+        repository_sha=EXECUTION_SHA,
+        evidence_root=tmp_path / "evi_mismatch",
+        enable_real_s03_session_execution=True,
+        enable_real_public_md_network=True,
+        offline_probe=False,
+        getpass_fn=lambda _p: "WRONG_TOKEN",
+        market_sample_provider=lambda: None,
+        pace_sleep=lambda _s: None,
+    )
+    assert result["authorization_consumed"] is False
+    assert result["session_lock_created"] is False
+    assert result["network_activity_occurred"] is False
+    assert result["evidence_mutation_occurred"] is False
+    assert result["real_session_started"] is False
+    assert not cons.exists() or not cons.read_text(encoding="utf-8").strip()
+
+
+def test_real_path_mock_consume_before_lock_network_evidence(tmp_path: Path) -> None:
+    path, artifact, cons = _build_temp_auth(tmp_path)
+    clock = {"t": 0.0}
+
+    def mono() -> float:
+        return float(clock["t"])
+
+    samples = (
+        MarketSampleV1("mark:a", 1.0, 100.0, 100.1, 0.0),
+        MarketSampleV1("mark:b", 1.1, 160.0, 160.1, 1.0),
+    )
+    provider = build_injectable_sequence_provider_v1(samples)
+
+    def pace(_s: float) -> None:
+        clock["t"] = float(BOUND_DURATION_SECONDS) + 1.0
+
+    result = run_additional_evidence_s03_productive_session_v1(
+        repo_root=ROOT,
+        authorization_path=path,
+        authorization_id=artifact.authorization_id,
+        authorization_digest=artifact.authorization_digest,
+        repository_sha=EXECUTION_SHA,
+        evidence_root=tmp_path / "evi_real",
+        enable_real_s03_session_execution=True,
+        enable_real_public_md_network=True,
+        offline_probe=False,
+        getpass_fn=lambda _p: OFFLINE_PROBE_TOKEN,
+        monotonic_clock=mono,
+        market_sample_provider=provider,
+        pace_sleep=pace,
+    )
+    assert result["status"] == "PASS"
+    assert result["authorization_consumed"] is True
+    assert result["real_session_started"] is True
+    assert result["sufficient_s03_evidence"] is True
+    events = result["side_effect_probe"]["events"]
+    assert events.index("INTERACTIVE_TOKEN_READ") < events.index(SIDE_EFFECT_AUTHORIZATION_CONSUMED)
+    assert events.index(SIDE_EFFECT_AUTHORIZATION_CONSUMED) < events.index(
+        "CONSUMPTION_DURABILITY_CHECK"
+    )
+    assert events.index("CONSUMPTION_DURABILITY_CHECK") < events.index(SIDE_EFFECT_SESSION_LOCK)
+    assert events.index(SIDE_EFFECT_SESSION_LOCK) < events.index(SIDE_EFFECT_NETWORK)
+    assert events.index(SIDE_EFFECT_NETWORK) < events.index(SIDE_EFFECT_EVIDENCE_CREATION)
+    assert "SECOND_CONSUMPTION_REJECTED" in events
+    assert cons.is_file() and cons.read_text(encoding="utf-8").strip()
+
+
+def test_real_path_existing_lock_fail_closed(tmp_path: Path) -> None:
+    path, artifact, _cons = _build_temp_auth(tmp_path)
+    evi = tmp_path / "evi_lock"
+    scope = _scope()
+    # Pre-create lock under the same S03 session dir the orchestrator will use.
+    session_dir = resolve_s03_session_dir_v1(evidence_root=evi)
+    busy = S03SessionLockV1(
+        session_dir=session_dir,
+        bindings=scope,
+        monotonic_clock=lambda: 1.0,
+        process_id=1,
+        owner_identity="busy:1",
+    )
+    busy.acquire()
+    clock = {"t": 0.0}
+
+    def mono() -> float:
+        return float(clock["t"])
+
+    def pace(_s: float) -> None:
+        clock["t"] = float(BOUND_DURATION_SECONDS) + 1.0
+
+    result = run_additional_evidence_s03_productive_session_v1(
+        repo_root=ROOT,
+        authorization_path=path,
+        authorization_id=artifact.authorization_id,
+        authorization_digest=artifact.authorization_digest,
+        repository_sha=EXECUTION_SHA,
+        evidence_root=evi,
+        enable_real_s03_session_execution=True,
+        enable_real_public_md_network=True,
+        offline_probe=False,
+        getpass_fn=lambda _p: OFFLINE_PROBE_TOKEN,
+        monotonic_clock=mono,
+        market_sample_provider=lambda: MarketSampleV1("mark:x", 1.0, 100.0, 100.1, 0.0),
+        pace_sleep=pace,
+    )
+    assert result["authorization_consumed"] is True
+    assert result["status"] == "ABORTED"
+    assert "session_lock_busy" in str(result.get("blocker") or "")
+
+
+def test_preflight_wrong_sha_digest_fail_closed(tmp_path: Path) -> None:
+    path, artifact, _ = _build_temp_auth(tmp_path)
+    with pytest.raises(AdditionalEvidenceS03SessionExecutionOwnerError):
+        preflight_s03_execution_owner_v1(
+            repo_root=ROOT,
+            authorization_path=path,
+            authorization_id=artifact.authorization_id,
+            authorization_digest=artifact.authorization_digest,
+            repository_sha="0" * 40,
+        )
+    with pytest.raises(AdditionalEvidenceS03SessionExecutionOwnerError):
+        preflight_s03_execution_owner_v1(
+            repo_root=ROOT,
+            authorization_path=path,
+            authorization_id=artifact.authorization_id,
+            authorization_digest="f" * 64,
+            repository_sha=EXECUTION_SHA,
+        )
 
 
 def test_preflight_only_no_side_effects(tmp_path: Path) -> None:
