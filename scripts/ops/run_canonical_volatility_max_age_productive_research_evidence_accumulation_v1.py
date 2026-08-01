@@ -223,6 +223,7 @@ def main(argv: list[str] | None = None) -> int:
             "revoke-campaign-authorization",
             "consume-campaign-authorization",
             "productive-preregistered-session-run",
+            "additional-evidence-s03-session-run",
         ),
         default="probe-accumulate",
     )
@@ -352,6 +353,26 @@ def main(argv: list[str] | None = None) -> int:
             "Explicitly enable real OKX-EEA public GET fetcher for "
             "productive-preregistered-session-run (forbidden during capability merge)."
         ),
+    )
+    parser.add_argument(
+        "--s03-offline-capability-probe",
+        action="store_true",
+        help=(
+            "Run Additional-Evidence S03 offline capability probe "
+            "(no production auth consume / no real network)."
+        ),
+    )
+    parser.add_argument(
+        "--s03-authorization-artifact",
+        type=Path,
+        default=None,
+        help="Auth-v2 artifact path for additional-evidence-s03-session-run.",
+    )
+    parser.add_argument(
+        "--s03-offline-probe-tmp-root",
+        type=Path,
+        default=None,
+        help="Temporary root for S03 offline capability probe artifacts.",
     )
     parser.add_argument("--session-id", type=str, default="operator-probe-session")
     parser.add_argument(
@@ -610,6 +631,51 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             return 1
+
+    if args.mode == "additional-evidence-s03-session-run":
+        from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.constants_v1 import (
+            CLI_MODE as S03_CLI_MODE,
+        )
+        from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.offline_probe_v1 import (
+            run_offline_capability_probe_v1,
+        )
+        from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.orchestrator_v1 import (
+            run_additional_evidence_s03_productive_session_v1,
+        )
+
+        if args.s03_offline_capability_probe:
+            tmp_root = args.s03_offline_probe_tmp_root or (repo_root / ".tmp_s03_offline_probe")
+            result = run_offline_capability_probe_v1(
+                repo_root=repo_root,
+                tmp_root=Path(tmp_root),
+                execution_sha=str(args.repository_sha or ""),
+            )
+            result["cli_mode"] = S03_CLI_MODE
+            print(json.dumps(result, sort_keys=True, indent=2, default=str))
+            return 0 if result.get("ok") else 1
+        required = {
+            "authorization_id": args.authorization_id,
+            "authorization_digest": args.authorization_digest,
+            "s03_authorization_artifact": args.s03_authorization_artifact,
+            "repository_sha": args.repository_sha,
+        }
+        missing = [k for k, v in required.items() if not v]
+        if missing:
+            raise SystemExit("s03_session_run_missing:" + ",".join(missing))
+        result = run_additional_evidence_s03_productive_session_v1(
+            repo_root=repo_root,
+            authorization_path=Path(args.s03_authorization_artifact),
+            authorization_id=str(args.authorization_id),
+            authorization_digest=str(args.authorization_digest),
+            repository_sha=str(args.repository_sha),
+            evidence_root=args.evidence_root.resolve() if args.evidence_root else repo_root,
+            preflight_only=bool(args.preflight_only),
+            offline_probe=False,
+            enable_real_s03_session_execution=False,
+        )
+        result["cli_mode"] = S03_CLI_MODE
+        print(json.dumps(result, sort_keys=True, indent=2, default=str))
+        return 0 if result.get("status") in {"PASS", "PREFLIGHT_PASS"} else 1
 
     if args.mode == "productive-preregistered-session-run":
         from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.constants_v1 import (
