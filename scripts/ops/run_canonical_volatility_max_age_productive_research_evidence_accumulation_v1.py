@@ -210,14 +210,108 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--repository-sha", type=str, default=None)
     parser.add_argument(
         "--mode",
-        choices=("probe-accumulate", "coverage-only", "verify-join-load"),
+        choices=(
+            "probe-accumulate",
+            "productive-bridge-accumulate",
+            "coverage-only",
+            "verify-join-load",
+        ),
         default="probe-accumulate",
     )
     parser.add_argument("--session-id", type=str, default="operator-probe-session")
+    parser.add_argument(
+        "--campaign-id",
+        type=str,
+        default=None,
+        help="Required for productive-bridge-accumulate.",
+    )
+    parser.add_argument(
+        "--samples-per-session",
+        type=int,
+        default=62,
+        help="Deterministic productive mark samples per session (bridge path).",
+    )
+    parser.add_argument(
+        "--session-count",
+        type=int,
+        default=2,
+        help="Independent productive sessions for productive-bridge-accumulate.",
+    )
+    parser.add_argument(
+        "--evidence-root",
+        type=Path,
+        default=None,
+        help="Optional isolated evidence root (defaults to repo default ledger paths).",
+    )
     args = parser.parse_args(argv)
 
     repo_root = args.repo_root.resolve()
     sha = args.repository_sha or _git_sha(repo_root)
+
+    if args.mode == "productive-bridge-accumulate":
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
+            DEFAULT_JOIN_LEDGER_RELATIVE_PATH,
+            DEFAULT_PRODUCTIVE_LEDGER_RELATIVE_PATH,
+            DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH,
+            PRODUCTIVE_CLI_MODE,
+        )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.productive_bridge_runner_v1 import (
+            deterministic_productive_mark_path_v1,
+            run_productive_bridge_accumulate_v1,
+        )
+        from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1 import (
+            build_ratified_max_age_research_design_contract_v1,
+        )
+
+        if not args.campaign_id:
+            raise SystemExit("campaign_id_required_for_productive_bridge_accumulate")
+        design = build_ratified_max_age_research_design_contract_v1()
+        evidence_root = args.evidence_root.resolve() if args.evidence_root else repo_root
+        productive = args.productive_ledger_path or (
+            evidence_root / DEFAULT_PRODUCTIVE_LEDGER_RELATIVE_PATH
+        )
+        join = args.join_ledger_path or (evidence_root / DEFAULT_JOIN_LEDGER_RELATIVE_PATH)
+        quarantine = args.quarantine_ledger_path or (
+            evidence_root / DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH
+        )
+        session_plans = []
+        for idx in range(max(0, int(args.session_count))):
+            samples = deterministic_productive_mark_path_v1(
+                count=int(args.samples_per_session),
+                start_unix=1_700_000_000.0 + idx * 100_000.0,
+            )
+            session_plans.append(
+                {
+                    "session_id": f"{args.session_id}-productive-{idx + 1}",
+                    "samples": [
+                        {
+                            "mark_price": s.mark_price,
+                            "event_time_unix_seconds": s.event_time_unix_seconds,
+                            "receive_time_unix_seconds": s.receive_time_unix_seconds,
+                        }
+                        for s in samples
+                    ],
+                    "typed_volatility_persistence_path": str(
+                        evidence_root
+                        / "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1"
+                        / f"typed_vol_persistence_{idx + 1}.json"
+                    ),
+                }
+            )
+        result = run_productive_bridge_accumulate_v1(
+            campaign_id=str(args.campaign_id),
+            repository_sha=sha,
+            session_plans=session_plans,
+            repo_root=repo_root,
+            productive_ledger_path=Path(productive),
+            join_ledger_path=Path(join),
+            quarantine_ledger_path=Path(quarantine),
+        )
+        result["cli_mode"] = PRODUCTIVE_CLI_MODE
+        result["expected_preregistration_digest"] = design.preregistration_digest
+        result["synthetic_probe_used"] = False
+        print(json.dumps(result, sort_keys=True, indent=2, default=str))
+        return 0 if result.get("status") in {"PASS", "NO_ELIGIBLE_PRODUCTIVE_INPUT"} else 1
 
     if args.mode == "coverage-only":
         from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (

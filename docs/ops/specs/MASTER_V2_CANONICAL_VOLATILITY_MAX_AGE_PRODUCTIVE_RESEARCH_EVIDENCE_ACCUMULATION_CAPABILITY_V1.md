@@ -134,18 +134,27 @@ No improvised minima. Missing authority remains blocked &#47; unresolved.
 
 ## Operator process — controlled evidence accumulation
 
+Productive (authoritative bridge cycles only):
+
 ```
 PYTHONPATH=src python3 scripts&#47;ops&#47;run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py \
-  --mode probe-accumulate \
+  --mode productive-bridge-accumulate \
+  --campaign-id &#60;campaign_id&#62; \
+  --evidence-root &#47;tmp&#47;isolated_or_default_root \
   --productive-ledger-path &#47;path&#47;to&#47;productive_research_evidence_ledger.jsonl \
   --join-ledger-path &#47;path&#47;to&#47;research_evidence_ledger.jsonl \
   --quarantine-ledger-path &#47;path&#47;to&#47;productive_research_evidence_quarantine.jsonl
 ```
 
+`probe-accumulate` remains a non-productive diagnostic helper and must not be
+used for authorized productive evidence campaigns.
+
 Productive bridge binding: set
 `HardenedBridgeSessionStateV2.productive_evidence_accumulation_state`
-from `bind_accumulation_state_v1(...)`. Evidence write failures remain
-diagnostic and do not alter trading behavior.
+via `bind_accumulation_state_to_hardened_bridge_session_v1(...)`.
+See also
+`MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1`.
+Evidence write failures remain diagnostic and do not alter trading behavior.
 
 ## Operator process — later research execution
 

@@ -7,6 +7,7 @@ from typing import Any, Mapping, Optional
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
     AGE_FORMULA_VERSION,
     AGE_REFERENCE_CLOCK,
+    AUTHORITATIVE_BRIDGE_CYCLE_OUTPUT_ID,
     EVIDENCE_SCHEMA_VERSION,
 )
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.models_v1 import (
@@ -119,7 +120,7 @@ def produce_productive_research_evidence_from_cycle_v1(
         field_name="market_event_time",
     )
     as_of_event_time = require_nonempty(
-        age.get("estimate_as_of_event_time"),
+        age.get("estimate_as_of_event_time") or binding.get("estimate_as_of_event_time"),
         field_name="as_of_event_time",
     )
     age_seconds = age.get("computed_age_seconds")
@@ -181,6 +182,26 @@ def produce_productive_research_evidence_from_cycle_v1(
         feature_regime
     )
 
+    def _normalize_trust(raw: Any, *, default: str) -> str:
+        text = optional_text(raw)
+        if text is None:
+            return default
+        mapping = {
+            "trusted": "TRUSTED",
+            "TRUSTED": "TRUSTED",
+            "untrusted": "UNTRUSTED",
+            "UNTRUSTED": "UNTRUSTED",
+        }
+        return mapping.get(text, text.upper())
+
+    clock_trust = _normalize_trust(age.get("clock_trust_status"), default="UNTRUSTED")
+    data_trust = _normalize_trust(age.get("data_integrity_status"), default="UNTRUSTED")
+    estimate_present = bool(
+        binding.get("estimate_present")
+        if binding.get("estimate_present") is not None
+        else str(age.get("presence_status") or "").upper() == "PRESENT"
+    )
+
     volatility_value = binding.get("volatility_value")
     if volatility_value is None:
         volatility_value = feature_regime.get("volatility_estimate")
@@ -191,6 +212,13 @@ def produce_productive_research_evidence_from_cycle_v1(
     horizon = binding.get("volatility_horizon_seconds")
     if horizon is None:
         horizon = binding.get("horizon_seconds")
+    if horizon is None and estimate_present:
+        # Canonical typed estimate horizon from the productive CMC binding contract.
+        from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
+            CANONICAL_HORIZON_SECONDS,
+        )
+
+        horizon = CANONICAL_HORIZON_SECONDS
     if horizon is None:
         raise ProductiveEvidenceAccumulationError("unknown_volatility_horizon")
 
@@ -207,14 +235,6 @@ def produce_productive_research_evidence_from_cycle_v1(
         or feature_regime.get("default_regime_fallback_active")
         or cycle.get("synthetic_bid_ask_fallback_active")
         or False
-    )
-
-    clock_trust = optional_text(age.get("clock_trust_status")) or "UNTRUSTED"
-    data_trust = optional_text(age.get("data_integrity_status")) or "UNTRUSTED"
-    estimate_present = bool(
-        binding.get("estimate_present")
-        if binding.get("estimate_present") is not None
-        else age.get("presence_status") == "PRESENT"
     )
 
     strategy_contract_digest = optional_text(
@@ -242,11 +262,13 @@ def produce_productive_research_evidence_from_cycle_v1(
         and not fallback_used
     )
 
+    authority = dict(cycle.get("productive_bridge_cycle_authority") or {})
     provisional: dict[str, Any] = {
         "age_formula_version": AGE_FORMULA_VERSION,
         "age_reference_clock": AGE_REFERENCE_CLOCK,
         "age_seconds": float(age_seconds),
         "as_of_event_time": as_of_event_time,
+        "campaign_id": optional_text(authority.get("campaign_id") or cycle.get("campaign_id")),
         "canonical_instrument_id": instrument_id,
         "clock_trust_state": clock_trust,
         "counterfactual_eligible": counterfactual_eligible,
@@ -268,9 +290,18 @@ def produce_productive_research_evidence_from_cycle_v1(
         "evidence_record_id": evidence_record_id,
         "evidence_schema_version": EVIDENCE_SCHEMA_VERSION,
         "fallback_used": fallback_used,
+        "fixture": bool(
+            authority.get("fixture") if "fixture" in authority else cycle.get("fixture") or False
+        ),
         "market_event_time": market_event_time,
+        "market_sample_id": optional_text(
+            authority.get("market_sample_id") or cycle.get("market_sample_id")
+        ),
         "observation_event_time": market_event_time,
         "preregistration_digest": design.preregistration_digest,
+        "productive_input_authority": optional_text(
+            authority.get("authority_id") or cycle.get("productive_input_authority")
+        ),
         "receive_time": optional_text(cycle.get("receive_time") or binding.get("receive_time")),
         "regime_confidence": regime_confidence,
         "regime_label": regime_label,
@@ -286,7 +317,22 @@ def produce_productive_research_evidence_from_cycle_v1(
         "session_id": session_id,
         "session_start_event_time": session.session_start_event_time,
         "source_estimate_id": source_estimate_id,
+        "source_is_authoritative_bridge_cycle": bool(
+            authority.get("source_is_authoritative_bridge_cycle")
+            or cycle.get("source_is_authoritative_bridge_cycle")
+            or False
+        ),
         "strategy_contract_digest": strategy_contract_digest,
+        "synthetic": bool(
+            authority.get("synthetic")
+            if "synthetic" in authority
+            else cycle.get("synthetic") or False
+        ),
+        "test_data": bool(
+            authority.get("test_data")
+            if "test_data" in authority
+            else cycle.get("test_data") or False
+        ),
         "validation_status": ValidationStatusV1.VALID.value,
         "venue": venue,
         "venue_instrument_id": venue_instrument_id,
@@ -298,6 +344,11 @@ def produce_productive_research_evidence_from_cycle_v1(
         "volatility_unit": volatility_unit,
         "volatility_value": float(volatility_value),
     }
+    if (
+        provisional["source_is_authoritative_bridge_cycle"]
+        and not provisional["productive_input_authority"]
+    ):
+        provisional["productive_input_authority"] = AUTHORITATIVE_BRIDGE_CYCLE_OUTPUT_ID
     provisional["estimate_created_event_time"] = require_nonempty(
         provisional["estimate_created_event_time"],
         field_name="estimate_created_event_time",
@@ -354,4 +405,13 @@ def produce_productive_research_evidence_from_cycle_v1(
         decision_outcome=provisional.get("decision_outcome"),
         selected_side=provisional.get("selected_side"),
         economic_metrics=provisional.get("economic_metrics"),
+        campaign_id=provisional.get("campaign_id"),
+        market_sample_id=provisional.get("market_sample_id"),
+        productive_input_authority=provisional.get("productive_input_authority"),
+        source_is_authoritative_bridge_cycle=bool(
+            provisional.get("source_is_authoritative_bridge_cycle")
+        ),
+        synthetic=bool(provisional.get("synthetic")),
+        fixture=bool(provisional.get("fixture")),
+        test_data=bool(provisional.get("test_data")),
     )

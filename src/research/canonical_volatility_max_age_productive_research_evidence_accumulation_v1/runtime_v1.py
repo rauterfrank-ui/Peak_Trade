@@ -60,6 +60,13 @@ class ProductiveEvidenceAccumulationStateV1:
     in_memory_join_ledger: list[dict[str, Any]] = field(default_factory=list)
     last_result: dict[str, Any] | None = None
     write_failures: list[dict[str, Any]] = field(default_factory=list)
+    campaign_id: Optional[str] = None
+    expected_repository_sha: Optional[str] = None
+    expected_preregistration_digest: Optional[str] = None
+    require_authoritative_bridge_cycle: bool = False
+    seen_market_sample_ids: set[str] = field(default_factory=set)
+    restored_history_record_ids: list[str] = field(default_factory=list)
+    new_estimate_record_ids: list[str] = field(default_factory=list)
 
 
 def bind_accumulation_state_v1(
@@ -110,15 +117,19 @@ def bind_accumulation_state_v1(
         ),
     )
     if restore_reuse_cursor_from_ledger and state.productive_ledger_path.exists():
-        for record in reversed(
-            valid_productive_records_from_ledger_v1(state.productive_ledger_path)
-        ):
-            if record.session_id != session.session_id:
-                continue
-            state.prior_source_estimate_id = record.source_estimate_id
-            state.prior_reuse_count = record.reuse_count
-            state.prior_cycle_id = record.cycle_id
-            break
+        for record in valid_productive_records_from_ledger_v1(state.productive_ledger_path):
+            # Restored history is tracked separately from newly produced estimates.
+            state.restored_history_record_ids.append(record.evidence_record_id)
+            sample_id = None
+            # market_sample_id may be present on newer productive records only.
+            payload = record.to_dict()
+            sample_id = payload.get("market_sample_id")
+            if sample_id:
+                state.seen_market_sample_ids.add(str(sample_id))
+            if record.session_id == session.session_id:
+                state.prior_source_estimate_id = record.source_estimate_id
+                state.prior_reuse_count = record.reuse_count
+                state.prior_cycle_id = record.cycle_id
     return state
 
 
@@ -130,6 +141,63 @@ def accumulate_productive_research_evidence_from_cycle_v1(
 ) -> dict[str, Any]:
     """Diagnostic accumulation path: never mutates trading behavior on write failure."""
     try:
+        if state.require_authoritative_bridge_cycle:
+            from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.productive_bridge_binding_v1 import (
+                authorize_productive_bridge_cycle_input_v1,
+            )
+
+            authorize_productive_bridge_cycle_input_v1(
+                cycle,
+                expected_repository_sha=state.expected_repository_sha or state.repository_sha,
+                expected_preregistration_digest=state.expected_preregistration_digest,
+                require_authoritative=True,
+            )
+            authority = dict(cycle.get("productive_bridge_cycle_authority") or {})
+            binding = dict(cycle.get("canonical_volatility_typed_binding") or {})
+            gate = dict(cycle.get("double_play_typed_volatility_presence_gate") or {})
+            age = dict(gate.get("max_age_policy_evidence") or {})
+            estimate_present = bool(
+                binding.get("estimate_present")
+                if binding.get("estimate_present") is not None
+                else str(age.get("presence_status") or "").upper() == "PRESENT"
+            )
+            if not estimate_present or not age.get("estimate_as_of_event_time"):
+                result = {
+                    "append_result": {"action": "SKIP_NO_ELIGIBLE_PRODUCTIVE_ESTIMATE"},
+                    "capability_id": CAPABILITY_ID,
+                    "capability_version": CAPABILITY_VERSION,
+                    "evidence_record": None,
+                    "evidence_write_failure_behavior": EVIDENCE_WRITE_FAILURE_BEHAVIOR,
+                    "hard_stop": HARD_STOP,
+                    "research_join": None,
+                    "session": state.session.to_dict(),
+                    "status": "PASS",
+                    "threshold_status": THRESHOLD_STATUS,
+                    "trading_behavior_mutated": False,
+                }
+                state.last_result = result
+                return result
+            market_sample_id = str(authority.get("market_sample_id") or "")
+            if market_sample_id and market_sample_id in state.seen_market_sample_ids:
+                result = {
+                    "append_result": {
+                        "action": "DUPLICATE_MARKET_SAMPLE_NO_NEW_AGE_OBSERVATION",
+                        "market_sample_id": market_sample_id,
+                    },
+                    "capability_id": CAPABILITY_ID,
+                    "capability_version": CAPABILITY_VERSION,
+                    "evidence_record": None,
+                    "evidence_write_failure_behavior": EVIDENCE_WRITE_FAILURE_BEHAVIOR,
+                    "hard_stop": HARD_STOP,
+                    "research_join": None,
+                    "session": state.session.to_dict(),
+                    "status": "PASS",
+                    "threshold_status": THRESHOLD_STATUS,
+                    "trading_behavior_mutated": False,
+                }
+                state.last_result = result
+                return result
+
         record = produce_productive_research_evidence_from_cycle_v1(
             cycle,
             session=state.session,
@@ -169,6 +237,10 @@ def accumulate_productive_research_evidence_from_cycle_v1(
             state.prior_source_estimate_id = record.source_estimate_id
             state.prior_reuse_count = record.reuse_count
             state.prior_cycle_id = record.cycle_id
+            state.new_estimate_record_ids.append(record.evidence_record_id)
+            sample_id = record.to_dict().get("market_sample_id")
+            if sample_id:
+                state.seen_market_sample_ids.add(str(sample_id))
 
         result = {
             "append_result": append_result,

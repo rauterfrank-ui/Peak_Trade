@@ -109,6 +109,13 @@ class ProductiveResearchEvidenceRecordV1:
     decision_outcome: Optional[str]
     selected_side: Optional[str]
     economic_metrics: Optional[Mapping[str, Any]]
+    campaign_id: Optional[str] = None
+    market_sample_id: Optional[str] = None
+    productive_input_authority: Optional[str] = None
+    source_is_authoritative_bridge_cycle: bool = False
+    synthetic: bool = False
+    fixture: bool = False
+    test_data: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -116,6 +123,7 @@ class ProductiveResearchEvidenceRecordV1:
             "age_reference_clock": self.age_reference_clock,
             "age_seconds": self.age_seconds,
             "as_of_event_time": self.as_of_event_time,
+            "campaign_id": self.campaign_id,
             "canonical_instrument_id": self.canonical_instrument_id,
             "clock_trust_state": self.clock_trust_state,
             "counterfactual_eligible": self.counterfactual_eligible,
@@ -133,9 +141,12 @@ class ProductiveResearchEvidenceRecordV1:
             "evidence_record_id": self.evidence_record_id,
             "evidence_schema_version": self.evidence_schema_version,
             "fallback_used": self.fallback_used,
+            "fixture": self.fixture,
             "market_event_time": self.market_event_time,
+            "market_sample_id": self.market_sample_id,
             "observation_event_time": self.observation_event_time,
             "preregistration_digest": self.preregistration_digest,
+            "productive_input_authority": self.productive_input_authority,
             "receive_time": self.receive_time,
             "record_digest": self.record_digest,
             "regime_confidence": self.regime_confidence,
@@ -152,7 +163,10 @@ class ProductiveResearchEvidenceRecordV1:
             "session_id": self.session_id,
             "session_start_event_time": self.session_start_event_time,
             "source_estimate_id": self.source_estimate_id,
+            "source_is_authoritative_bridge_cycle": self.source_is_authoritative_bridge_cycle,
             "strategy_contract_digest": self.strategy_contract_digest,
+            "synthetic": self.synthetic,
+            "test_data": self.test_data,
             "validation_status": self.validation_status,
             "venue": self.venue,
             "venue_instrument_id": self.venue_instrument_id,

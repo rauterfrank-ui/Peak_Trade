@@ -790,9 +790,13 @@
     "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/join_projection_v1.py",
     "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/coverage_v1.py",
     "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/runtime_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/productive_bridge_binding_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/productive_bridge_runner_v1.py",
     "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
     "tests/research/test_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1.md"
+    "tests/research/test_canonical_volatility_max_age_productive_bridge_accumulation_binding_v1.py",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1.md",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -970,6 +974,7 @@
     "CANONICAL_VOLATILITY_PRODUCTIVE_RUNTIME_CMC_TYPED_BINDING_V1 exact-file allowlist for productive CMC typed binding host + hardening bridge caller (CMC transport only; no Double-Play typed cutover)",
     "DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1 exact-file allowlist for productive typed presence gate + replay opt-in + hardening bridge consumption + tests/docs (no Direct-Typed consumer; no numeric max-age threshold; no global typed-only)",
     "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_POLICY_CONTRACT_AND_NON_ENFORCING_TELEMETRY_V1 exact-file allowlist for non-enforcing max-age policy contract + diagnostic age evidence + presence-gate attachment + tests/docs (threshold unresolved; no Alpha enforcement; no second freshness gate)",
-    "MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1: authorize exact-file productive non-enforcing research evidence producer, session identity, regime metadata, append-only chained ledger with quarantine/atomic write/resume, join projection compatible with PR #5616 research evidence loader, coverage readiness against existing preregistered minima, hardening-bridge diagnostic binding, focused tests and docs. Explicitly forbids numeric threshold selection, parameter promotion, Alpha/policy/config mutation, enforcement, order/live activation. Threshold remains UNRESOLVED_MAX_AGE; enforcement_applied=false."
+    "MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1: authorize exact-file productive non-enforcing research evidence producer, session identity, regime metadata, append-only chained ledger with quarantine/atomic write/resume, join projection compatible with PR #5616 research evidence loader, coverage readiness against existing preregistered minima, hardening-bridge diagnostic binding, focused tests and docs. Explicitly forbids numeric threshold selection, parameter promotion, Alpha/policy/config mutation, enforcement, order/live activation. Threshold remains UNRESOLVED_MAX_AGE; enforcement_applied=false.",
+    "MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1: authorize productive bridge-cycle input authorization, HardenedBridgeSessionStateV2 accumulation binding, productive-bridge-accumulate CLI/runner, join projection from authoritative bridge cycles, focused tests and docs. No synthetic fallback, no threshold selection, no enforcement, no promotion, no orders/live."
   ]
 }

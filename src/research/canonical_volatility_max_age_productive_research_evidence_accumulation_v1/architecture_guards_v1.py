@@ -117,6 +117,30 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
     ).read_text(encoding="utf-8")
     if "accumulate_productive_research_evidence_from_cycle_v1" not in bridge:
         raise RuntimeError("BRIDGE_MUST_BIND_PRODUCTIVE_EVIDENCE_ACCUMULATION")
+    if "stamp_productive_bridge_cycle_authority_v1" not in bridge:
+        raise RuntimeError("BRIDGE_MUST_STAMP_PRODUCTIVE_BRIDGE_AUTHORITY")
+    if "project_to_join_ledger=True" not in bridge:
+        raise RuntimeError("BRIDGE_MUST_PROJECT_PRODUCTIVE_JOIN_LEDGER")
+
+    cli_path = (
+        root
+        / "scripts/ops"
+        / "run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
+    )
+    cli = cli_path.read_text(encoding="utf-8")
+    if "productive-bridge-accumulate" not in cli:
+        raise RuntimeError("CLI_MUST_EXPOSE_PRODUCTIVE_BRIDGE_ACCUMULATE_MODE")
+    # Productive mode must not call the synthetic probe helper.
+    productive_block_start = cli.find('args.mode == "productive-bridge-accumulate"')
+    if productive_block_start < 0:
+        raise RuntimeError("CLI_PRODUCTIVE_MODE_BLOCK_MISSING")
+    productive_block = cli[productive_block_start : productive_block_start + 2500]
+    if "_synthetic_probe_cycles_v1" in productive_block:
+        raise RuntimeError("PRODUCTIVE_MODE_MUST_NOT_USE_SYNTHETIC_PROBE_CYCLES")
+
+    binding_mod = (package_dir / "productive_bridge_binding_v1.py").read_text(encoding="utf-8")
+    if "bind_accumulation_state_to_hardened_bridge_session_v1" not in binding_mod:
+        raise RuntimeError("PRODUCTIVE_BRIDGE_BINDING_API_MISSING")
 
     return {
         "guards_pass": True,
