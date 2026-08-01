@@ -218,6 +218,10 @@ def main(argv: list[str] | None = None) -> int:
             "evaluability-report",
             "render-session-preregistration",
             "verify-session-preregistration",
+            "render-campaign-authorization",
+            "verify-campaign-authorization",
+            "revoke-campaign-authorization",
+            "consume-campaign-authorization",
         ),
         default="probe-accumulate",
     )
@@ -227,12 +231,66 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Optional artifact path for verify-session-preregistration.",
     )
+    parser.add_argument(
+        "--campaign-authorization-artifact",
+        type=Path,
+        default=None,
+        help="Campaign authorization artifact path (no productive default).",
+    )
+    parser.add_argument(
+        "--campaign-authorization-output",
+        type=Path,
+        default=None,
+        help="Output path for render-campaign-authorization (required; no default).",
+    )
+    parser.add_argument(
+        "--issued-at",
+        type=str,
+        default=None,
+        help="UTC issued_at for render-campaign-authorization (required; no default).",
+    )
+    parser.add_argument(
+        "--earliest-start",
+        type=str,
+        default=None,
+        help="UTC earliest_start for render-campaign-authorization (required; no default).",
+    )
+    parser.add_argument(
+        "--preregistration-digest",
+        type=str,
+        default=None,
+        help="Preregistration digest binding (required for render; no default).",
+    )
+    parser.add_argument(
+        "--session-ids",
+        type=str,
+        default=None,
+        help="Comma-separated authorized session IDs (required for render; no default).",
+    )
+    parser.add_argument(
+        "--authorization-evidence-root",
+        type=Path,
+        default=None,
+        help="Root for resolving revocation/consumption ledger relative paths.",
+    )
+    parser.add_argument(
+        "--revocation-reason",
+        type=str,
+        default=None,
+        help="Reason for revoke-campaign-authorization.",
+    )
+    parser.add_argument(
+        "--operator-reference",
+        type=str,
+        default=None,
+        help="Operator reference for revoke-campaign-authorization.",
+    )
     parser.add_argument("--session-id", type=str, default="operator-probe-session")
     parser.add_argument(
         "--campaign-id",
         type=str,
         default=None,
-        help="Required for productive-bridge-accumulate.",
+        help="Required for productive-bridge-accumulate / campaign authorization modes.",
     )
     parser.add_argument(
         "--samples-per-session",
@@ -293,6 +351,198 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result, sort_keys=True, indent=2, default=str))
         return 0 if result.get("status") == "PASS" else 1
 
+    if args.mode == "render-campaign-authorization":
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.artifact_v1 import (
+            build_campaign_authorization_artifact_v1,
+            write_campaign_authorization_artifact_v1,
+        )
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+            RENDER_CLI_MODE,
+        )
+
+        if not args.campaign_authorization_output:
+            raise SystemExit("campaign_authorization_output_required")
+        if not args.repository_sha:
+            raise SystemExit("repository_sha_required_no_default")
+        if not args.campaign_id:
+            raise SystemExit("campaign_id_required_no_default")
+        if not args.session_ids:
+            raise SystemExit("session_ids_required_no_default")
+        if not args.preregistration_digest:
+            raise SystemExit("preregistration_digest_required_no_default")
+        if not args.issued_at:
+            raise SystemExit("issued_at_required_no_default")
+        if not args.earliest_start:
+            raise SystemExit("earliest_start_required_no_default")
+        session_ids = [s.strip() for s in str(args.session_ids).split(",") if s.strip()]
+        artifact = build_campaign_authorization_artifact_v1(
+            repository_sha=str(args.repository_sha),
+            campaign_id=str(args.campaign_id),
+            session_ids=session_ids,
+            preregistration_digest=str(args.preregistration_digest),
+            issued_at=str(args.issued_at),
+            earliest_start=str(args.earliest_start),
+        )
+        written = write_campaign_authorization_artifact_v1(
+            output_path=Path(args.campaign_authorization_output),
+            artifact=artifact,
+        )
+        result = {
+            "cli_mode": RENDER_CLI_MODE,
+            "status": "PASS",
+            "output_path": str(args.campaign_authorization_output),
+            "artifact_digest": written.artifact_digest,
+            "authorization_id": written.authorization_id,
+            "productive_authorization_issued": False,
+            "note": "Capability render only; not a productive issuance GO.",
+        }
+        print(json.dumps(result, sort_keys=True, indent=2, default=str))
+        return 0
+
+    if args.mode == "verify-campaign-authorization":
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.artifact_v1 import (
+            load_campaign_authorization_artifact_v1,
+            verify_campaign_authorization_artifact_v1,
+        )
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+            VERIFY_CLI_MODE,
+        )
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.models_v1 import (
+            CampaignAuthorizationError,
+        )
+
+        if not args.campaign_authorization_artifact:
+            raise SystemExit("campaign_authorization_artifact_required")
+        try:
+            artifact = verify_campaign_authorization_artifact_v1(
+                load_campaign_authorization_artifact_v1(Path(args.campaign_authorization_artifact)),
+                expected_repository_sha=args.repository_sha,
+                expected_campaign_id=args.campaign_id,
+                expected_session_ids=(
+                    [s.strip() for s in str(args.session_ids).split(",") if s.strip()]
+                    if args.session_ids
+                    else None
+                ),
+                expected_preregistration_digest=args.preregistration_digest,
+            )
+            result = {
+                "cli_mode": VERIFY_CLI_MODE,
+                "status": "PASS",
+                "artifact_digest": artifact.artifact_digest,
+                "authorization_id": artifact.authorization_id,
+                "campaign_id": artifact.campaign_id,
+                "session_ids": list(artifact.session_ids),
+            }
+            print(json.dumps(result, sort_keys=True, indent=2, default=str))
+            return 0
+        except CampaignAuthorizationError as exc:
+            print(
+                json.dumps(
+                    {"cli_mode": VERIFY_CLI_MODE, "status": "FAIL", "blocker": str(exc)},
+                    sort_keys=True,
+                    indent=2,
+                )
+            )
+            return 1
+
+    if args.mode == "revoke-campaign-authorization":
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+            REVOKE_CLI_MODE,
+        )
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.consume_v1 import (
+            revoke_campaign_authorization_v1,
+        )
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.models_v1 import (
+            CampaignAuthorizationError,
+        )
+
+        if not args.campaign_authorization_artifact:
+            raise SystemExit("campaign_authorization_artifact_required")
+        if not args.revocation_reason:
+            raise SystemExit("revocation_reason_required")
+        if not args.operator_reference:
+            raise SystemExit("operator_reference_required")
+        evidence_root = (
+            args.authorization_evidence_root.resolve()
+            if args.authorization_evidence_root
+            else repo_root
+        )
+        try:
+            record = revoke_campaign_authorization_v1(
+                authorization_artifact_path=Path(args.campaign_authorization_artifact),
+                evidence_root=evidence_root,
+                reason=str(args.revocation_reason),
+                operator_reference=str(args.operator_reference),
+            )
+            result = {
+                "cli_mode": REVOKE_CLI_MODE,
+                "status": "PASS",
+                "revocation": record,
+                "authorization_source_mutated": False,
+            }
+            print(json.dumps(result, sort_keys=True, indent=2, default=str))
+            return 0
+        except CampaignAuthorizationError as exc:
+            print(
+                json.dumps(
+                    {"cli_mode": REVOKE_CLI_MODE, "status": "FAIL", "blocker": str(exc)},
+                    sort_keys=True,
+                    indent=2,
+                )
+            )
+            return 1
+
+    if args.mode == "consume-campaign-authorization":
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+            CONSUME_CLI_MODE,
+        )
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.consume_v1 import (
+            consume_campaign_authorization_session_v1,
+        )
+        from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.models_v1 import (
+            CampaignAuthorizationError,
+        )
+
+        if not args.campaign_authorization_artifact:
+            raise SystemExit("campaign_authorization_artifact_required")
+        if not args.session_id or args.session_id == "operator-probe-session":
+            raise SystemExit("session_id_required_no_default_for_consume")
+        if not args.campaign_id:
+            raise SystemExit("campaign_id_required_no_default")
+        evidence_root = (
+            args.authorization_evidence_root.resolve()
+            if args.authorization_evidence_root
+            else repo_root
+        )
+        try:
+            release = consume_campaign_authorization_session_v1(
+                authorization_artifact_path=Path(args.campaign_authorization_artifact),
+                session_id=str(args.session_id),
+                evidence_root=evidence_root,
+                expected_repository_sha=args.repository_sha,
+                expected_campaign_id=str(args.campaign_id),
+                expected_preregistration_digest=args.preregistration_digest,
+            )
+            result = {
+                "cli_mode": CONSUME_CLI_MODE,
+                "status": "PASS",
+                "runtime_release": release.to_dict(),
+                "network_side_effect_occurred": False,
+                "evidence_mutation_occurred": False,
+                "runtime_session_started": False,
+            }
+            print(json.dumps(result, sort_keys=True, indent=2, default=str))
+            return 0
+        except CampaignAuthorizationError as exc:
+            print(
+                json.dumps(
+                    {"cli_mode": CONSUME_CLI_MODE, "status": "FAIL", "blocker": str(exc)},
+                    sort_keys=True,
+                    indent=2,
+                )
+            )
+            return 1
+
     if args.mode == "productive-bridge-accumulate":
         from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
             DEFAULT_JOIN_LEDGER_RELATIVE_PATH,
@@ -343,6 +593,11 @@ def main(argv: list[str] | None = None) -> int:
                     ),
                 }
             )
+        auth_evidence_root = (
+            args.authorization_evidence_root.resolve()
+            if args.authorization_evidence_root
+            else evidence_root
+        )
         result = run_productive_bridge_accumulate_v1(
             campaign_id=str(args.campaign_id),
             repository_sha=sha,
@@ -351,6 +606,11 @@ def main(argv: list[str] | None = None) -> int:
             productive_ledger_path=Path(productive),
             join_ledger_path=Path(join),
             quarantine_ledger_path=Path(quarantine),
+            campaign_authorization_artifact_path=args.campaign_authorization_artifact,
+            campaign_authorization_evidence_root=auth_evidence_root,
+            require_campaign_authorization=(
+                True if args.campaign_authorization_artifact is not None else None
+            ),
         )
         result["cli_mode"] = PRODUCTIVE_CLI_MODE
         result["expected_preregistration_digest"] = design.preregistration_digest
