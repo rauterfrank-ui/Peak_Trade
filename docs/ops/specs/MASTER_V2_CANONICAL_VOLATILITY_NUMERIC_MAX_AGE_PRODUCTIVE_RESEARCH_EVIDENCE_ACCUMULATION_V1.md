@@ -184,6 +184,22 @@ under a separately valid campaign authorization.
 | Focused tests | `tests&#47;research&#47;test_canonical_volatility_numeric_max_age_productive_research_evidence_accumulation_v1.py` |
 | Prior capability spec | `docs&#47;ops&#47;specs&#47;MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_CAPABILITY_V1.md` |
 
+## Session-02 gap and next evidence-plan capability
+
+Productive Session 02 completed with ledger integrity, but all computed ages were
+`0` because each distinct sample rematerialized a fresh estimate
+(`as_of_event_time == market_event_time`). That evidence is insufficient for a
+numeric max-age policy decision.
+
+The follow-on research-only capability
+
+`docs&#47;ops&#47;specs&#47;MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_NATURAL_AGE_PROGRESSION_AND_ACTIONABLE_STRATA_EVIDENCE_PLAN_V1.md`
+
+defines an explicit natural estimate lifecycle, research recompute wiring (not a
+max-age policy), actionable strata projection, and an additional coverage plan
+for later separately authorized sessions. Session 02 must not be retried by that
+plan. No threshold selection or enforcement is introduced there.
+
 ## Non-goals
 
 - numeric max-age decision or recommendation
