@@ -764,7 +764,20 @@
     "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_POLICY_CONTRACT_AND_NON_ENFORCING_TELEMETRY_V1.md",
     "src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py",
     "tests/trading/master_v2/test_canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_DESIGN_AND_EVIDENCE_ACCUMULATION_CONTRACT_V1.md"
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_DESIGN_AND_EVIDENCE_ACCUMULATION_CONTRACT_V1.md",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/__init__.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/architecture_guards_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/constants_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/contracts_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/evaluator_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/evidence_loader_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/robustness_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/runner_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/serialization_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/split_engine_v1.py",
+    "scripts/ops/run_canonical_volatility_numeric_max_age_parameter_research_execution_v1.py",
+    "tests/research/test_canonical_volatility_numeric_max_age_parameter_research_execution_v1.py",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_EXECUTION_V1.md"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",

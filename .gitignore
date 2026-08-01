@@ -125,6 +125,9 @@ out/
 # research artifacts (new listings crawler)
 out/research/new_listings/
 
+# Local-only max-age parameter research execution evidence (execution_id-bound)
+docs/evidence/canonical_volatility_numeric_max_age_parameter_research_execution_v1/
+
 # local scratch (never commit)
 docs/_scratch/
 
