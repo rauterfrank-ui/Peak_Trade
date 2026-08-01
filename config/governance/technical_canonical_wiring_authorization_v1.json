@@ -855,7 +855,18 @@
     "config/research/canonical_volatility_numeric_max_age_natural_age_progression_additional_evidence_coverage_plan_v1.json",
     "src/research/canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1/productive_natural_age_lifecycle_binding_v1.py",
     "tests/research/test_canonical_volatility_numeric_max_age_productive_bridge_natural_age_lifecycle_wiring_v1.py",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_BRIDGE_NATURAL_AGE_LIFECYCLE_WIRING_V1.md"
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_BRIDGE_NATURAL_AGE_LIFECYCLE_WIRING_V1.md",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1/__init__.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1/architecture_guards_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1/authorization_binding_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1/constants_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1/contract_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1/models_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1/uniqueness_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1/validate_v1.py",
+    "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1.py",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_PREREGISTRATION_CONTRACT_V1.md",
+    "config/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1.json"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -1041,6 +1052,7 @@
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PREREGISTERED_PRODUCTIVE_SESSION_RUNNER_V1: authorize preregistered productive session runner: exact session-id binding, preregistered OKX-EEA public MD, consume-before-side-effects, CLI mode productive-preregistered-session-run, terminal fail-closed evidence. Capability only — no productive session execution/consumption/real MD/orders/threshold/enforcement/promotion.",
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_SESSION_PUBLIC_MD_RATE_LIMIT_AND_REQUEST_BUDGET_HARDENING_V1: authorize public-MD pacing/request-budget/HTTP-429 hardening for the preregistered productive session runner (policy modules, instrument binding, shared EEA public-MD transport Retry-After/backoff, focused tests/docs). Ops-safety defaults only; no claimed OKX SLA; no productive session execution/consumption; no threshold/enforcement/promotion/orders.",
     "MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1: authorize productive bridge-cycle input authorization, HardenedBridgeSessionStateV2 accumulation binding, productive-bridge-accumulate CLI/runner, join projection from authoritative bridge cycles, focused tests and docs. No synthetic fallback, no threshold selection, no enforcement, no promotion, no orders/live.",
-    "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1 exact-file allowlist for typed carrier completion, hot-path closure owner, CMC productive binding float clear, hardening-bridge seed quarantine of competing feature_regime volatility proxy, evidence provenance fields, focused tests/docs/config. Numeric max-age remains unresolved/disabled; no parameter selection; no Alpha/CHOP/State/Cadence redefinition; no live/orders."
+    "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1 exact-file allowlist for typed carrier completion, hot-path closure owner, CMC productive binding float clear, hardening-bridge seed quarantine of competing feature_regime volatility proxy, evidence provenance fields, focused tests/docs/config. Numeric max-age remains unresolved/disabled; no parameter selection; no Alpha/CHOP/State/Cadence redefinition; no live/orders.",
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_PREREGISTRATION_CONTRACT_V1: authorize versioned contract floors, uniqueness guards, authorization-binding schema, candidate validation, frozen contract JSON, focused tests and docs for future additional productive evidence sessions after exhausted s01/s02. Contract only — no session preregistration creation, authorization issuance/consumption, network, session execution, threshold selection, enforcement, or promotion."
   ]
 }
