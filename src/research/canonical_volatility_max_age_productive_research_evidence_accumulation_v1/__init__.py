@@ -39,6 +39,11 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     build_productive_evidence_accumulation_preregistration_v1,
     preregistration_matrix_v1,
 )
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
+    build_productive_evidence_campaign_session_preregistration_v1,
+    render_session_preregistration_v1,
+    verify_productive_evidence_campaign_session_preregistration_v1,
+)
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.productive_bridge_binding_v1 import (
     authorize_productive_bridge_cycle_input_v1,
     bind_accumulation_state_to_hardened_bridge_session_v1,
@@ -78,6 +83,7 @@ __all__ = [
     "bind_accumulation_state_to_hardened_bridge_session_v1",
     "bind_accumulation_state_v1",
     "build_productive_evidence_accumulation_preregistration_v1",
+    "build_productive_evidence_campaign_session_preregistration_v1",
     "complete_accumulation_session_v1",
     "evaluate_counterfactual_age_grid_batch_v1",
     "evaluate_counterfactual_age_grid_for_record_v1",
@@ -89,7 +95,9 @@ __all__ = [
     "parameter_decision_prerequisites_v1",
     "preregistration_matrix_v1",
     "reconstruct_coverage_from_ledgers_v1",
+    "render_session_preregistration_v1",
     "run_productive_bridge_accumulate_v1",
     "run_productive_bridge_accumulation_session_v1",
     "valid_productive_records_from_ledger_v1",
+    "verify_productive_evidence_campaign_session_preregistration_v1",
 ]

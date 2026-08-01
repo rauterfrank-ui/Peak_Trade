@@ -151,6 +151,7 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
         "preregistration_v1.py",
         "counterfactual_grid_v1.py",
         "evaluability_v1.py",
+        "session_campaign_preregistration_v1.py",
     ):
         if not (package_dir / required_module).is_file():
             raise RuntimeError(f"NUMERIC_PRODUCTIVE_MODULE_MISSING:{required_module}")
@@ -162,6 +163,17 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
         raise RuntimeError("PREREGISTRATION_NON_PROMOTION_MISSING")
     if "evaluability-report" not in cli:
         raise RuntimeError("CLI_MUST_EXPOSE_EVALUABILITY_REPORT_MODE")
+    if "render-session-preregistration" not in cli:
+        raise RuntimeError("CLI_MUST_EXPOSE_RENDER_SESSION_PREREGISTRATION_MODE")
+    if "verify-session-preregistration" not in cli:
+        raise RuntimeError("CLI_MUST_EXPOSE_VERIFY_SESSION_PREREGISTRATION_MODE")
+    session_prereg = (package_dir / "session_campaign_preregistration_v1.py").read_text(
+        encoding="utf-8"
+    )
+    if '"network_authorized": False' not in session_prereg:
+        raise RuntimeError("SESSION_PREREG_MUST_DECLARE_NETWORK_UNAUTHORIZED")
+    if "parent_dirs_materialized_by_preregistration" not in session_prereg:
+        raise RuntimeError("SESSION_PREREG_MUST_FORBID_PARENT_DIR_MATERIALIZATION")
     if not COUNTERFACTUAL_ONLY:
         raise RuntimeError("COUNTERFACTUAL_ONLY_REQUIRED")
     if not BLOCKED_FOR_PARAMETER_DECISION:
