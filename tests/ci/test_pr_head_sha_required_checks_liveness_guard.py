@@ -279,16 +279,87 @@ def test_liveness_workflow_includes_merge_group_path() -> None:
     assert '--head-sha "${{ github.sha }}"' in workflow
 
 
-def test_liveness_workflow_uses_bounded_420_second_wait() -> None:
-    """Wait must cover tests+(strategy-smoke needs) after SSOT sync made smoke required."""
+def test_liveness_workflow_uses_bounded_600_second_wait() -> None:
+    """Wait must cover tests→strategy-smoke; 420s false-failed on PR #5631 (~514s)."""
     workflow = Path(".github/workflows/pr-head-sha-required-checks-liveness-guard.yml").read_text(
         encoding="utf-8"
     )
-    assert workflow.count("--liveness-wait-seconds 420") == 2
+    assert workflow.count("--liveness-wait-seconds 600") == 2
+    assert "--liveness-wait-seconds 420" not in workflow
     assert "--liveness-wait-seconds 180" not in workflow
     assert "--liveness-wait-seconds 90" not in workflow
-    assert "timeout-minutes: 10" in workflow
+    assert "timeout-minutes: 12" in workflow
     assert "--poll-interval-seconds 5" in workflow
+
+
+def test_delayed_514s_strategy_smoke_passes_within_600s_wait_window(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Regression: strategy-smoke observed ~514s after PR sync on #5631 head 7ab7f746."""
+    config_path = tmp_path / "required_status_checks.json"
+    config_path.write_text(
+        json.dumps(
+            {
+                "required_contexts": ["tests (3.11)", "strategy-smoke"],
+                "ignored_contexts": [],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    report_path = tmp_path / "report.json"
+
+    monkeypatch.setenv("GITHUB_TOKEN", "test-token")
+    monkeypatch.setattr(
+        guard,
+        "_parse_args",
+        lambda: Namespace(
+            subject_kind="pull_request",
+            repo="acme/repo",
+            pr_number=5631,
+            head_sha="7ab7f74632bc326b4604ca2e6b48a2131d6f34fa",
+            required_config=str(config_path),
+            max_prior_commits=5,
+            report_json=str(report_path),
+            liveness_wait_seconds=600,
+            poll_interval_seconds=5,
+        ),
+    )
+    poll_count = {"n": 0}
+
+    def _delayed_snapshot(repo: str, head_sha: str, pr_number: int | None, token: str):
+        poll_count["n"] += 1
+        # Appear just after the previous 420s budget would have expired.
+        if poll_count["n"] < 85:  # 85 * 5s ~= 425s still missing
+            return {"tests (3.11)"}, {}
+        return {"tests (3.11)", "strategy-smoke"}, {}
+
+    monkeypatch.setattr(guard, "_collect_head_snapshot", _delayed_snapshot)
+    monkeypatch.setattr(
+        guard,
+        "_fetch_pr_commits",
+        lambda repo, pr_number, token: [
+            "7ab7f74632bc326b4604ca2e6b48a2131d6f34fa",
+            "3ca63217d24ffa929ba04e408710e6ce5e613f12",
+        ],
+    )
+    monkeypatch.setattr(
+        guard,
+        "_prior_sha_presence",
+        lambda repo, prior_shas, contexts, token: {"strategy-smoke": "3ca63217d24ffa"},
+    )
+    monkeypatch.setattr(guard.time, "sleep", lambda _: None)
+
+    monotonic_values = iter([0.0] + [i * 5.0 for i in range(1, 130)])
+    monkeypatch.setattr(guard.time, "monotonic", lambda: next(monotonic_values))
+
+    assert guard.main() == 0
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    rows = {row["context"]: row for row in report["rows"]}
+    assert rows["tests (3.11)"]["classification"] == "REPORTED_ON_HEAD_SHA"
+    assert rows["strategy-smoke"]["classification"] == "REPORTED_ON_HEAD_SHA"
+    assert report["waited_for_liveness_window"] is True
+    assert report["liveness_wait_seconds"] == 600
 
 
 def test_delayed_119s_check_passes_within_180s_wait_window(
