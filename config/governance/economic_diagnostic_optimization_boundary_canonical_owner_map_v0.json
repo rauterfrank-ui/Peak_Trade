@@ -1810,6 +1810,16 @@
         "config/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_contract_v1.json",
         "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
       ]
+    },
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_ATOMIC_AUTH_V2_REISSUE_CONSUME_EXECUTE_WITH_EPHEMERAL_CONFIRM_TOKEN_V1": {
+      "note": "Orchestration/lifecycle owner for same-process Auth-v2 revoke/reissue/consume/execute with ephemeral confirm-token; reuses mint/issue/revoke and canonical S03 execution owner; no second auth/consume/execution authority; no productive mutation on import.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_v1/",
+        "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_ATOMIC_AUTH_V2_REISSUE_CONSUME_EXECUTE_WITH_EPHEMERAL_CONFIRM_TOKEN_V1.md",
+        "config/research/canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_contract_v1.json",
+        "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
+      ]
     }
   },
   "forbidden_mutation_surfaces": {
