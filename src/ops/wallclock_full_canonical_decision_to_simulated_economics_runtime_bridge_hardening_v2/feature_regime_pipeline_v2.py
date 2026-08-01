@@ -1,4 +1,9 @@
-"""Feature + regime pipeline v2 — no default trending fallback."""
+"""Feature + regime pipeline v2 — no default trending fallback.
+
+``volatility_estimate`` here is a regime-classification proxy only
+(sample variance ddof=1 × sqrt(n)). It is quarantined from productive
+Double-Play / CMC volatility authority — see hot-path contract closure.
+"""
 
 from __future__ import annotations
 
@@ -15,6 +20,11 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.provenance_v2 import (
     digest_mapping,
 )
+
+# Quarantine: not the productive volatility producer / CMC authority.
+VOLATILITY_ESTIMATE_PRODUCTIVE_AUTHORITY = False
+VOLATILITY_ESTIMATE_SEMANTICS = "REGIME_CLASSIFICATION_PROXY_SAMPLE_VAR_DDOF1_SQRT_N_QUARANTINED"
+VOLATILITY_ESTIMATE_IDENTITY = "feature_regime_pipeline_v2.sample_variance_ddof_1_times_sqrt_n"
 
 
 @dataclass(frozen=True)
@@ -39,6 +49,11 @@ class FeatureRegimeSnapshotV2:
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
         payload["blockers"] = list(self.blockers)
+        payload["volatility_estimate_productive_authority"] = (
+            VOLATILITY_ESTIMATE_PRODUCTIVE_AUTHORITY
+        )
+        payload["volatility_estimate_semantics"] = VOLATILITY_ESTIMATE_SEMANTICS
+        payload["volatility_estimate_identity"] = VOLATILITY_ESTIMATE_IDENTITY
         return payload
 
 

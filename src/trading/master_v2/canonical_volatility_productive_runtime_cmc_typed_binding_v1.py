@@ -13,7 +13,7 @@ global typed-only enforcement, or Double-Play typed cutover.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
@@ -34,6 +34,9 @@ from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 
     bind_typed_canonical_volatility_estimate_into_market_context_v1,
     evaluate_typed_volatility_binding_eligibility_v1,
     validate_typed_estimate_for_cmc_binding_v1,
+)
+from trading.master_v2.canonical_volatility_hot_path_contract_closure_v1 import (
+    clear_untyped_productive_volatility_float_v1,
 )
 from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
     LEGACY_ADAPTER_OWNER,
@@ -376,10 +379,7 @@ class CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
             except (CanonicalVolatilityTypedConsumptionError, ValueError, TypeError) as exc:
                 typed_binding_performed = False
                 bound_estimate = None
-                bound_context = replace(
-                    context,
-                    canonical_volatility_estimate=None,
-                )
+                bound_context = clear_untyped_productive_volatility_float_v1(context)
                 fail_reason = ProductiveTypedBindingFailClosedReasonV1.VALIDATION_REJECTED
                 producer_result = TypedRuntimeProducerResultV1(
                     outcome=producer_result.outcome,
@@ -391,9 +391,8 @@ class CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1:
                     sample_digest=producer_result.sample_digest,
                 )
         else:
-            # Fail-closed typed cutover: do not carry a prior typed carrier into this cycle.
-            if context.canonical_volatility_estimate is not None:
-                bound_context = replace(context, canonical_volatility_estimate=None)
+            # Fail-closed typed cutover: do not carry a prior typed carrier / naked float.
+            bound_context = clear_untyped_productive_volatility_float_v1(context)
             typed_binding_performed = False
             bound_estimate = None
 

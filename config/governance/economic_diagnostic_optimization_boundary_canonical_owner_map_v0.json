@@ -401,6 +401,15 @@
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1.md"
       ]
     },
+    "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1": {
+      "note": "Closes typed volatility contract + single productive producer + Double-Play hot-path wiring; quarantines competing bridge ddof=1×sqrt(n) producer and naked float productive bindings; numeric max-age remains unresolved/disabled; no parameter selection; no Alpha/CHOP/State/Cadence redefinition; no promotion/runtime/orders.",
+      "path_prefixes": [
+        "src/trading/master_v2/canonical_volatility_hot_path_contract_closure_v1.py",
+        "tests/trading/master_v2/test_canonical_volatility_hot_path_contract_closure_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1.md",
+        "config/governance/canonical_volatility_hot_path_contract_closure_v1.json"
+      ]
+    },
     "COST_MODEL_DIAGNOSTICS": {
       "path_globs": [
         "tests/research/test_offline_linear_cost_model_diagnostics_*",

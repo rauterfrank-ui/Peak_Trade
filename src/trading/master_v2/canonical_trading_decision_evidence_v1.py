@@ -69,6 +69,15 @@ class CanonicalVolatilityDecisionEvidenceProvenanceV1:
     validation_result: str
     volatility_input_binding_digest: str
     legacy_float_value: float
+    estimator_version: str = ""
+    oldest_observation_event_time: str = ""
+    config_digest: str = ""
+    fallback_identity: str = "NONE"
+    volatility_status: str = "VALID"
+    volatility_reason_codes: Tuple[str, ...] = ()
+    volatility_age_seconds: Optional[float] = None
+    max_age_threshold: Optional[float] = None
+    max_age_enforcement_enabled: bool = False
 
     def __post_init__(self) -> None:
         for digest_name in (
@@ -81,25 +90,43 @@ class CanonicalVolatilityDecisionEvidenceProvenanceV1:
             if digest and not _valid_sha256_hex(digest):
                 msg = f"{digest_name} must be empty or a 64-char lowercase sha256 hex"
                 raise ValueError(msg)
+        if self.config_digest and not _valid_sha256_hex(self.config_digest):
+            msg = "config_digest must be empty or a 64-char lowercase sha256 hex"
+            raise ValueError(msg)
+        if self.max_age_threshold is not None:
+            msg = "max_age_threshold must remain null while unresolved"
+            raise ValueError(msg)
+        if self.max_age_enforcement_enabled:
+            msg = "max_age_enforcement_enabled must remain false"
+            raise ValueError(msg)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "annualized": bool(self.annualized),
             "as_of_event_time": str(self.as_of_event_time),
+            "config_digest": str(self.config_digest),
             "estimator": str(self.estimator),
+            "estimator_version": str(self.estimator_version),
+            "fallback_identity": str(self.fallback_identity),
             "fallback_used": bool(self.fallback_used),
             "horizon": str(self.horizon),
             "legacy_adaptation_digest": str(self.legacy_adaptation_digest),
             "legacy_float_value": float(self.legacy_float_value),
+            "max_age_enforcement_enabled": bool(self.max_age_enforcement_enabled),
+            "max_age_threshold": self.max_age_threshold,
             "observation_count": int(self.observation_count),
+            "oldest_observation_event_time": str(self.oldest_observation_event_time),
             "source_digest": str(self.source_digest),
             "stale_status": str(self.stale_status),
             "typed_estimate_digest": str(self.typed_estimate_digest),
             "unit": str(self.unit),
             "validation_result": str(self.validation_result),
             "value": float(self.value),
+            "volatility_age_seconds": self.volatility_age_seconds,
             "volatility_contract_version": str(self.volatility_contract_version),
             "volatility_input_binding_digest": str(self.volatility_input_binding_digest),
+            "volatility_reason_codes": list(self.volatility_reason_codes),
+            "volatility_status": str(self.volatility_status),
         }
 
 

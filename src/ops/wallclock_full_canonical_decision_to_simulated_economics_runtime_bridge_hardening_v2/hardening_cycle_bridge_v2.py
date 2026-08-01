@@ -83,6 +83,12 @@ from trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_
     VolatilityRestartStatusV1,
     VolatilityReuseStatusV1,
 )
+from trading.master_v2.canonical_volatility_hot_path_contract_closure_v1 import (
+    BRIDGE_COMPETING_PRODUCER_IDENTITY,
+    build_hot_path_volatility_cycle_evidence_v1,
+    productive_cmc_volatility_seed_v1,
+    reject_competing_bridge_producer_as_productive_authority_v1,
+)
 from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
     CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
 )
@@ -505,8 +511,9 @@ def run_hardened_bridge_cycle_v2(
             volume=1_000_000.0,
             open_interest=50_000_000.0,
             funding_rate=0.0001,
-            # Competing feature_regime float remains until typed bind overwrites atomically.
-            volatility_estimate=float(features.volatility_estimate),
+            # Hot-path closure: never seed CMC from competing feature_regime proxy
+            # (sample var ddof=1 × sqrt(n)). Typed bind overwrites atomically.
+            volatility_estimate=productive_cmc_volatility_seed_v1(),
             trend_feature_set=dict(features.trend_features),
             momentum_feature_set=dict(features.momentum_features),
             liquidity_feature_set=dict(features.liquidity_features),
@@ -538,6 +545,11 @@ def run_hardened_bridge_cycle_v2(
     market_context = typed_binding.context
     state.last_typed_volatility_binding_telemetry = typed_binding.telemetry.to_dict()
     _ = input_digest  # retained for provenance continuity with prior bridge evidence shape
+    # Competing bridge producer remains regime-only; never productive CMC authority.
+    reject_competing_bridge_producer_as_productive_authority_v1(
+        source_identity=BRIDGE_COMPETING_PRODUCER_IDENTITY,
+        used_as_cmc_volatility_estimate=False,
+    )
 
     # Productive Double-Play typed cutover: consume host eligibility; do not discard.
     # Wire producer/binding reuse+restart labels into non-enforcing age telemetry.
@@ -753,6 +765,11 @@ def run_hardened_bridge_cycle_v2(
         "canonical_market_context_typed_estimate_present": (
             market_context.canonical_volatility_estimate is not None
         ),
+        "canonical_volatility_hot_path_evidence": build_hot_path_volatility_cycle_evidence_v1(
+            market_context,
+            producer_outcome=str(typed_binding.telemetry.producer_outcome),
+            reason_codes=presence_gate.reason_codes,
+        ).to_dict(),
         "double_play_typed_volatility_presence_gate": presence_gate.to_dict(),
         "config_digest": config_digest,
         "price_basis": basis.to_dict(),
