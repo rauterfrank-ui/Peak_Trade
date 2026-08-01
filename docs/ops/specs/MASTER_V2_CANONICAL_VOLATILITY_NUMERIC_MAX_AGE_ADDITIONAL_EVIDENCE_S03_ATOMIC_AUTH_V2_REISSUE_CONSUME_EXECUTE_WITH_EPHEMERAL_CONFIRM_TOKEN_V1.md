@@ -27,7 +27,7 @@ CLI mode:
 
 ## Problem
 
-Separated `ISSUE → process end / drop plaintext → later CONSUME` is not
+Separated `ISSUE → process end &#47; drop plaintext → later CONSUME` is not
 executable: Auth-v2 consumption requires the exact bound confirm-token
 fingerprint/digest/binding. A newly minted token cannot satisfy a previously
 bound authorization.
