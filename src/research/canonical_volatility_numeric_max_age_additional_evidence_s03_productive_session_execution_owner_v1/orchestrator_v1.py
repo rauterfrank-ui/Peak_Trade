@@ -1,12 +1,13 @@
 """S03 productive session orchestrator: Auth-v2 consume-before-side-effects owner.
 
-Capability default: offline probe / preflight only. Real network execution requires
-a separate later operator GO and is refused while capability execution flags are false.
+Supports offline probe / preflight and the gated productive real path
+(Auth-v2 consume → lock → public-MD → 10860s natural-age S03 evidence).
 """
 
 from __future__ import annotations
 
 import json
+import time
 from pathlib import Path
 from typing import Any, Callable, Optional, Sequence
 
@@ -18,7 +19,12 @@ from research.canonical_volatility_numeric_max_age_additional_evidence_s03_produ
     redact_confirm_token_from_mapping_v1,
 )
 from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.constants_v1 import (
+    AUTHORIZATION_CONSUMPTION_IN_THIS_CAPABILITY,
     BOUND_DURATION_SECONDS,
+    DEFAULT_REAL_SESSION_MAXIMUM_CYCLES,
+    DEFAULT_REAL_SESSION_MINIMUM_INTERVAL_SECONDS,
+    PRODUCTIVE_SESSION_EXECUTION_IN_THIS_CAPABILITY,
+    READY_FOR_S03_AUTHORIZATION_CONSUMPTION_AND_EXECUTION,
     REAL_NETWORK_IN_THIS_CAPABILITY,
     SIDE_EFFECT_AUTHORIZATION_CONSUMED,
     SIDE_EFFECT_EVIDENCE_CREATION,
@@ -58,6 +64,12 @@ from research.canonical_volatility_numeric_max_age_additional_evidence_s03_produ
     assert_no_credentials_v1,
     assert_public_md_request_allowed_v1,
 )
+from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.real_session_loop_v1 import (
+    SampleProvider,
+    assert_real_path_network_preconditions_v1,
+    collect_natural_age_samples_until_duration_v1,
+    default_mark_price_url_v1,
+)
 from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.session_lock_v1 import (
     S03SessionLockV1,
 )
@@ -87,6 +99,7 @@ from research.canonical_volatility_numeric_max_age_additional_evidence_session_p
 GetPassFn = Callable[[str], str]
 MonotonicClock = Callable[[], float]
 WallClock = Callable[[], float]
+SleepFn = Callable[[float], None]
 
 
 def _load_preregistration_v1(*, repo_root: Path) -> dict[str, Any]:
@@ -307,6 +320,9 @@ def run_additional_evidence_s03_productive_session_v1(
     monotonic_clock: Optional[MonotonicClock] = None,
     wall_clock: Optional[WallClock] = None,
     market_samples: Optional[Sequence[MarketSampleV1]] = None,
+    market_sample_provider: Optional[SampleProvider] = None,
+    http_fetcher: Optional[Callable[..., object]] = None,
+    pace_sleep: Optional[SleepFn] = None,
     preflight_only: bool = False,
     offline_probe: bool = False,
     enable_real_s03_session_execution: bool = False,
@@ -316,12 +332,12 @@ def run_additional_evidence_s03_productive_session_v1(
     skip_second_consumption_check: bool = False,
 ) -> dict[str, Any]:
     """Canonical S03 execution owner entrypoint."""
-    import time as _time
-
     probe = side_effect_probe or SideEffectProbeV1()
     root = Path(repo_root)
     evi_root = Path(evidence_root) if evidence_root is not None else root
-    mono = monotonic_clock or _time.monotonic
+    mono = monotonic_clock or time.monotonic
+    wall = wall_clock or time.time
+    sleep_fn = pace_sleep or time.sleep
     session_dir = resolve_s03_session_dir_v1(evidence_root=evi_root)
     auth_consumed = False
     lock: Optional[S03SessionLockV1] = None
@@ -329,6 +345,7 @@ def run_additional_evidence_s03_productive_session_v1(
     lock_removed = False
     network_occurred = False
     evidence_mutated = False
+    real_session_started = False
     actual_duration = 0.0
     terminal_path = ""
     manifest_path = ""
@@ -369,32 +386,47 @@ def run_additional_evidence_s03_productive_session_v1(
                 ).to_dict()
             )
 
-        if enable_real_s03_session_execution and not offline_probe:
+        real_path = bool(enable_real_s03_session_execution) and not bool(offline_probe)
+        if real_path:
+            if not (
+                PRODUCTIVE_SESSION_EXECUTION_IN_THIS_CAPABILITY
+                and AUTHORIZATION_CONSUMPTION_IN_THIS_CAPABILITY
+                and READY_FOR_S03_AUTHORIZATION_CONSUMPTION_AND_EXECUTION
+            ):
+                raise AdditionalEvidenceS03SessionExecutionOwnerError(
+                    "productive_execution_capability_flags_not_enabled"
+                )
+            if enable_real_public_md_network and not REAL_NETWORK_IN_THIS_CAPABILITY:
+                raise AdditionalEvidenceS03SessionExecutionOwnerError(
+                    "real_network_capability_flag_not_enabled"
+                )
+            if confirm_token is not None:
+                raise AdditionalEvidenceS03SessionExecutionOwnerError(
+                    "confirm_token_parameter_forbidden_on_real_path"
+                )
+        elif not offline_probe:
             raise AdditionalEvidenceS03SessionExecutionOwnerError(
-                "real_s03_execution_requires_separate_operator_go_after_capability_merge"
+                "offline_probe_or_real_execution_or_preflight_required"
             )
-        if (
-            enable_real_public_md_network
-            and not REAL_NETWORK_IN_THIS_CAPABILITY
-            and not offline_probe
-        ):
-            raise AdditionalEvidenceS03SessionExecutionOwnerError(
-                "real_network_forbidden_in_capability_mode"
-            )
-        if not offline_probe:
-            raise AdditionalEvidenceS03SessionExecutionOwnerError(
-                "offline_probe_or_preflight_required_in_capability_mode"
-            )
-        if market_samples is None:
+        elif market_samples is None:
             raise AdditionalEvidenceS03SessionExecutionOwnerError(
                 "offline_probe_market_samples_required"
             )
 
         artifact = load_additional_evidence_session_authorization_v2(Path(authorization_path))
-        if token_local is None:
-            fp = expected_confirm_token_fingerprint or artifact.confirm_token_fingerprint
+        probe.record("INTERACTIVE_TOKEN_READ")
+        if real_path:
             token_local = read_confirm_token_interactively_v1(
-                expected_fingerprint=fp,
+                expected_fingerprint=(
+                    expected_confirm_token_fingerprint or artifact.confirm_token_fingerprint
+                ),
+                getpass_fn=getpass_fn,
+            )
+        elif token_local is None:
+            token_local = read_confirm_token_interactively_v1(
+                expected_fingerprint=(
+                    expected_confirm_token_fingerprint or artifact.confirm_token_fingerprint
+                ),
                 getpass_fn=getpass_fn,
             )
 
@@ -414,6 +446,7 @@ def run_additional_evidence_s03_productive_session_v1(
             raise AdditionalEvidenceS03SessionExecutionOwnerError(
                 "consumption_ledger_missing_record"
             )
+        probe.record("CONSUMPTION_DURABILITY_CHECK")
 
         if not skip_second_consumption_check:
             second_rejected = False
@@ -451,18 +484,56 @@ def run_additional_evidence_s03_productive_session_v1(
         assert_s03_consume_before_side_effects_v1(probe.events)
 
         probe.record(SIDE_EFFECT_RUNTIME_INITIALIZATION)
-        demo_url = "https://eea.okx.com/api/v5/public/mark-price?instId=ETH-USD-SWAP"
-        assert_public_md_request_allowed_v1(url=demo_url, method="GET")
+        assert_real_path_network_preconditions_v1()
+        assert_public_md_request_allowed_v1(url=default_mark_price_url_v1(), method="GET")
         assert_no_credentials_v1({})
         probe.record(SIDE_EFFECT_NETWORK)
-        network_occurred = False
         assert_s03_consume_before_side_effects_v1(probe.events)
+
+        samples_for_evidence: Sequence[MarketSampleV1]
+        if offline_probe:
+            network_occurred = False
+            samples_for_evidence = market_samples or ()
+            verdict = "S03_OFFLINE_PROBE_COMPLETE"
+        else:
+            real_session_started = True
+            if not enable_real_public_md_network:
+                raise AdditionalEvidenceS03SessionExecutionOwnerError(
+                    "real_public_md_network_required_for_productive_session"
+                )
+            provider = market_sample_provider
+            if provider is None:
+                if http_fetcher is None:
+                    raise AdditionalEvidenceS03SessionExecutionOwnerError(
+                        "real_market_sample_provider_or_http_fetcher_required"
+                    )
+                from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.public_md_sample_provider_v1 import (
+                    build_s03_public_md_sample_provider_v1,
+                )
+
+                provider = build_s03_public_md_sample_provider_v1(
+                    session_id=bindings.session_id,
+                    http_fetcher=http_fetcher,  # type: ignore[arg-type]
+                    wall_clock=wall,
+                    sleep=sleep_fn,
+                    monotonic_clock=mono,
+                )
+            samples_for_evidence = collect_natural_age_samples_until_duration_v1(
+                duration=duration,
+                sample_provider=provider,
+                pace_sleep=sleep_fn,
+                minimum_interval_seconds=DEFAULT_REAL_SESSION_MINIMUM_INTERVAL_SECONDS,
+                wall_clock=wall,
+                max_cycles=DEFAULT_REAL_SESSION_MAXIMUM_CYCLES,
+            )
+            network_occurred = bool(enable_real_public_md_network)
+            verdict = "S03_PRODUCTIVE_NATURAL_AGE_SESSION_COMPLETE"
 
         probe.record(SIDE_EFFECT_EVIDENCE_CREATION)
         _write_session_cycle_evidence_v1(
             session_dir=session_dir,
             bindings=bindings,
-            samples=market_samples,
+            samples=samples_for_evidence,
             duration=duration,
         )
         evidence_mutated = True
@@ -475,7 +546,6 @@ def run_additional_evidence_s03_productive_session_v1(
         actual_duration = duration.elapsed_seconds()
         sufficient = True
         status = "PASS"
-        verdict = "S03_OFFLINE_PROBE_COMPLETE"
     except Exception as exc:  # noqa: BLE001
         blocker = str(exc)
         if auth_consumed:
@@ -520,7 +590,7 @@ def run_additional_evidence_s03_productive_session_v1(
             session_lock_removed=lock_removed,
             network_activity_occurred=network_occurred,
             evidence_mutation_occurred=evidence_mutated,
-            real_session_started=False,
+            real_session_started=real_session_started,
             requested_duration_seconds=BOUND_DURATION_SECONDS,
             actual_monotonic_duration_seconds=actual_duration,
             evidence_root=str(session_dir),

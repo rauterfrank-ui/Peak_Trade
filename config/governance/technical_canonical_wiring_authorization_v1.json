@@ -911,11 +911,14 @@
     "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/network_boundary_v1.py",
     "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/offline_probe_v1.py",
     "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/orchestrator_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/public_md_sample_provider_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/real_session_loop_v1.py",
     "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/session_lock_v1.py",
     "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/side_effect_order_v1.py",
     "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/terminal_v1.py",
     "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.py",
     "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_PRODUCTIVE_SESSION_EXECUTION_OWNER_V1.md",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_S03_PRODUCTIVE_AUTH_V2_CONSUMPTION_AND_EXECUTION_ENABLEMENT_V1.md",
     "config/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_contract_v1.json"
   ],
   "allowed_surface_classes": [
@@ -1071,7 +1074,8 @@
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_POLICY_CONTRACT_AND_NON_ENFORCING_TELEMETRY_V1: authorize exact-file non-enforcing Event-Time max-age policy contract, diagnostic age evidence evaluator, presence-gate evidence attachment, focused tests and docs. Threshold remains UNRESOLVED_MAX_AGE; enforcement_enabled=false; no Alpha age blocking; no second clock/volatility/freshness gate; rematerialization forbidden; no numeric threshold selection; no live/orders.",
     "MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_RESEARCH_DESIGN_EVIDENCE_ACCUMULATION_V1: authorize exact-file structural research-design and evidence-accumulation prerequisites only \u2014 machine-readable preregistration (digested/immutable), productive reuse/restart labeling into non-enforcing age telemetry, typed research-evidence join with identity/conflict fail-closed guards, diagnostic counterfactual evaluation without Alpha mutation, in-memory and optional JSONL multi-session/multi-regime evidence accumulation, and ledger integrity/duplicate/corruption guards. Explicitly forbids numeric threshold selection, parameter promotion, Alpha mutation, enforcement, productive entry/exit behavior change, live/testnet/order activation, and automatic research execution. Threshold remains UNRESOLVED_MAX_AGE; enforcement_applied=false; no second decision authority.",
     "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1: authorize exact-file typed VolatilityEstimateV1 carrier completion, hot-path closure module, productive CMC float clear-on-fail, hardening-bridge seed quarantine of competing feature_regime volatility proxy, decision-evidence provenance enrichment, focused tests, closure config and docs. Reuses materializer/typed/bind/presence-gate authorities. No numeric max-age threshold, no enforcement, no parameter selection, no Alpha/CHOP/State/Cadence redefinition, no live/orders.",
-    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_PRODUCTIVE_SESSION_EXECUTION_OWNER_V1: authorize typed S03 Auth-v2 session execution owner (consume-before-side-effects, monotonic 10860s, public-MD-only, S03 evidence schema, offline probe, focused tests/docs). Capability only \u2014 no production authorization consumption, no real session, no network, no production evidence, no policy/threshold selection."
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_PRODUCTIVE_SESSION_EXECUTION_OWNER_V1: authorize typed S03 Auth-v2 session execution owner (consume-before-side-effects, monotonic 10860s, public-MD-only, S03 evidence schema, offline probe, focused tests/docs).",
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_S03_PRODUCTIVE_AUTH_V2_CONSUMPTION_AND_EXECUTION_ENABLEMENT_V1: enable productive Auth-v2 consumption/execution flags and CLI real-path wiring on the existing S03 owner; interactive confirm-token only; no production consumption/session/network during enablement PR; current auth requires separate revocation/reissuance; no numeric max-age selection; no policy enforcement."
   ],
   "pr_specific_exception": false,
   "required_check_waiver": false,

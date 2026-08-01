@@ -1,8 +1,8 @@
 """Constants for Additional-Evidence S03 productive session execution owner v1.
 
-Capability only: defines the sole typed execution owner for S03 under Auth-v2.
-Does not consume production authorization, start a real session, open network,
-or write production evidence during capability merge.
+Sole typed execution owner for S03 under Auth-v2. Productive Auth-v2 consumption
+and one 10860s natural-age session are capability-enabled for a later, separately
+authorized operator GO. This module itself performs no consumption/network/session.
 """
 
 from __future__ import annotations
@@ -121,13 +121,28 @@ SYNTHETIC_TIMESTAMP_AGING = False
 MARKET_TIME_FABRICATION = False
 DUPLICATE_SAMPLE_CANNOT_ADVANCE_MARKET_TIME = True
 RUNTIME_CYCLE_CANNOT_ADVANCE_MARKET_TIME = True
-PRODUCTIVE_SESSION_EXECUTION_IN_THIS_CAPABILITY = False
-REAL_NETWORK_IN_THIS_CAPABILITY = False
-AUTHORIZATION_CONSUMPTION_IN_THIS_CAPABILITY = False
+PRODUCTIVE_SESSION_EXECUTION_IN_THIS_CAPABILITY = True
+REAL_NETWORK_IN_THIS_CAPABILITY = True
+AUTHORIZATION_CONSUMPTION_IN_THIS_CAPABILITY = True
 NUMERIC_MAX_AGE_SELECTED = False
 POLICY_ENFORCEMENT_ADDED = False
 HARD_STOP = True
-READY_FOR_S03_AUTHORIZATION_CONSUMPTION_AND_EXECUTION = False
+READY_FOR_S03_AUTHORIZATION_CONSUMPTION_AND_EXECUTION = True
+
+# Enablement review mode (governance documentation; owner package unchanged).
+ENABLEMENT_REVIEW_MODE_ID = (
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_"
+    "SESSION_S03_PRODUCTIVE_AUTH_V2_CONSUMPTION_AND_EXECUTION_ENABLEMENT_V1"
+)
+
+# Active issued auth at enablement time has no operator-held plaintext token.
+CURRENT_AUTHORIZATION_ID_AT_ENABLEMENT = "cv_maxage_additional_evidence_auth_v2_35b30ad054e58d85"
+CURRENT_AUTHORIZATION_PLAINTEXT_TOKEN_AVAILABLE = False
+CURRENT_AUTHORIZATION_REQUIRES_SEPARATE_REVOCATION_AND_REISSUANCE = True
+
+# Production preregistration pacing bounds reused for real-session loop.
+DEFAULT_REAL_SESSION_MINIMUM_INTERVAL_SECONDS = 60.0
+DEFAULT_REAL_SESSION_MAXIMUM_CYCLES = 200
 
 # Observational exit/risk/safety independence (does not redefine Master-V2 logic).
 EXIT_PRECEDENCE_OBSERVED: tuple[str, ...] = (
