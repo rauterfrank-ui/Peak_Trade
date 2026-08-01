@@ -10,6 +10,7 @@ from research.canonical_volatility_numeric_max_age_additional_evidence_session_p
 )
 from research.canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1.constants_v1 import (
     CAPABILITY_ID,
+    HARDENING_CAPABILITY_ID,
     PACKAGE_MARKER,
     REVIEW_MODE_ID,
 )
@@ -35,6 +36,7 @@ __all__ = [
     "AdditionalEvidenceSessionPreregistrationContractError",
     "AdditionalEvidenceSessionPreregistrationContractV1",
     "CAPABILITY_ID",
+    "HARDENING_CAPABILITY_ID",
     "PACKAGE_MARKER",
     "REVIEW_MODE_ID",
     "assert_architecture_guards_v1",

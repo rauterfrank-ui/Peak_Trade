@@ -154,12 +154,46 @@ class AdditionalEvidenceSessionPreregistrationContractV1:
     ready_for_additional_session_preregistration: bool
     ready_for_authorization_issuance: bool
     ready_for_productive_session_execution: bool
+    # Hardening bindings included in contract digest.
+    hardening_capability_id: str
+    candidate_schema_name: str
+    candidate_schema_version: str
+    expected_venue: str
+    expected_instrument: str
+    expected_network_scope: str
+    expected_session_scope: str
+    candidate_schema_closed_world: bool
+    nested_objects_present: bool
+    unknown_fields_rejected: bool
+    unknown_authority_fields_rejected: bool
+    binding_value_normalization_forbidden: bool
+    allowed_candidate_top_level_fields: tuple[str, ...]
+    allowed_authorization_binding_fields: tuple[str, ...]
+    allowed_forbidden_artificial_controls_fields: tuple[str, ...]
+    authority_negative_contract: Mapping[str, Any]
+    age_7200_observation_required: bool
+    recompute_after_age_floor_required: bool
+    post_recompute_fresh_required: bool
+    authorization_per_session_required: bool
+    single_use_authorization_required: bool
 
     def to_dict(self) -> dict[str, Any]:
         return {
+            "age_7200_observation_required": self.age_7200_observation_required,
+            "allowed_authorization_binding_fields": list(self.allowed_authorization_binding_fields),
+            "allowed_candidate_top_level_fields": list(self.allowed_candidate_top_level_fields),
+            "allowed_forbidden_artificial_controls_fields": list(
+                self.allowed_forbidden_artificial_controls_fields
+            ),
+            "authority_negative_contract": dict(self.authority_negative_contract),
             "authorization_binding_schema": dict(self.authorization_binding_schema),
             "authorization_consumption_authorized": self.authorization_consumption_authorized,
             "authorization_issuance_authorized": self.authorization_issuance_authorized,
+            "authorization_per_session_required": self.authorization_per_session_required,
+            "binding_value_normalization_forbidden": self.binding_value_normalization_forbidden,
+            "candidate_schema_closed_world": self.candidate_schema_closed_world,
+            "candidate_schema_name": self.candidate_schema_name,
+            "candidate_schema_version": self.candidate_schema_version,
             "capability_id": self.capability_id,
             "capability_version": self.capability_version,
             "contract_digest": self.contract_digest,
@@ -170,7 +204,12 @@ class AdditionalEvidenceSessionPreregistrationContractV1:
                 self.exhausted_campaign_maximum_session_count
             ),
             "exhausted_session_ids": list(self.exhausted_session_ids),
+            "expected_instrument": self.expected_instrument,
+            "expected_network_scope": self.expected_network_scope,
+            "expected_session_scope": self.expected_session_scope,
+            "expected_venue": self.expected_venue,
             "forbidden_artificial_controls": dict(self.forbidden_artificial_controls),
+            "hardening_capability_id": self.hardening_capability_id,
             "hard_stop": self.hard_stop,
             "maximum_requests_per_cycle": self.maximum_requests_per_cycle,
             "minimum_additional_productive_sessions": (self.minimum_additional_productive_sessions),
@@ -181,10 +220,12 @@ class AdditionalEvidenceSessionPreregistrationContractV1:
                 self.minimum_post_first_produce_event_span_seconds
             ),
             "minimum_session_duration_seconds": self.minimum_session_duration_seconds,
+            "nested_objects_present": self.nested_objects_present,
             "network_access_authorized": self.network_access_authorized,
             "numeric_max_age_enforcing": self.numeric_max_age_enforcing,
             "numeric_max_age_selected": self.numeric_max_age_selected,
             "operator_workflow": list(self.operator_workflow),
+            "post_recompute_fresh_required": self.post_recompute_fresh_required,
             "productive_session_execution_authorized": (
                 self.productive_session_execution_authorized
             ),
@@ -193,6 +234,7 @@ class AdditionalEvidenceSessionPreregistrationContractV1:
             ),
             "ready_for_authorization_issuance": self.ready_for_authorization_issuance,
             "ready_for_productive_session_execution": (self.ready_for_productive_session_execution),
+            "recompute_after_age_floor_required": self.recompute_after_age_floor_required,
             "recommended_maximum_cycles_per_session": (self.recommended_maximum_cycles_per_session),
             "recommended_maximum_requests_per_session": (
                 self.recommended_maximum_requests_per_session
@@ -205,5 +247,8 @@ class AdditionalEvidenceSessionPreregistrationContractV1:
             "session_preregistration_creation_authorized": (
                 self.session_preregistration_creation_authorized
             ),
+            "single_use_authorization_required": self.single_use_authorization_required,
             "target_age_buckets_seconds": list(self.target_age_buckets_seconds),
+            "unknown_authority_fields_rejected": self.unknown_authority_fields_rejected,
+            "unknown_fields_rejected": self.unknown_fields_rejected,
         }

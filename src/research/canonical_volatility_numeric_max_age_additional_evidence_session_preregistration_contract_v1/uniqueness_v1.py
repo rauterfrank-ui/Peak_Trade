@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import AbstractSet, Iterable, Mapping, Sequence
+from typing import AbstractSet, Any, Iterable, Mapping, Sequence
 
 from research.canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1.constants_v1 import (
+    CANDIDATE_SCHEMA_VERSION,
     EXISTING_EXHAUSTED_CAMPAIGN_ID,
     EXISTING_EXHAUSTED_SESSION_IDS,
 )
@@ -93,7 +94,7 @@ def deterministic_additional_session_id_v1(
         [
             campaign_id,
             f"session_index={int(session_index)}",
-            "additional_evidence_session_preregistration_candidate/v1",
+            CANDIDATE_SCHEMA_VERSION,
         ]
     )
     suffix = sha256_hex_text(material)[:12]
