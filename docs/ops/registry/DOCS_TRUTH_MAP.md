@@ -39,6 +39,17 @@ Kanonische **Ausführungssteuerung** und **Progress-Registry** für das Runbook 
 
 **Status:** `CANONICAL_EXECUTION_GOVERNANCE` + `CANONICAL_RUNBOOK_PROGRESS_REGISTRY` — **keine** Runtime-, Order-, Live- oder Authority-Freigabe. Systemweite Rankings sind Ausnahmeverfahren (`SYSTEMWIDE_RANKING_DEFAULT_ALLOWED=false`).
 
+
+## Canonical: Canonical Runtime Truth Map V1 — CURRENT RUNTIME TRUTH
+
+Kanonische **Runtime-Ist-Zustandskarte** (nicht Zielbild, non-authorizing):
+[`docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](../../governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md).
+
+Capability-Closure-/Trading-Path-Arbeitsrunbook:
+[`docs/governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md`](../../governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md).
+
+**Status:** `DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH` — trennt Ist-Zustand von Zielarchitektur. `BOUND_NOT_ACTIVATED` darf nicht als ACTIVE/READY gelesen werden. Dashboard bleibt Consumer-only; Numeric Max-Age bleibt non-enforcing.
+
 ## Canonical: Map of Truth + Vollautonomie-Runbook v4.4.12 — Governance- und Implementierungs-SSOT
 
 **Navigations-Einstieg (keine Semantik):** [`docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md`](../../governance/PEAK_TRADE_MAP_OF_TRUTH.md).

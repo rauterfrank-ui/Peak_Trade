@@ -1,5 +1,9 @@
 # Reconciliation Flow Spec
 
+```text
+DOCUMENT_CLASS=TARGET_ARCHITECTURE
+```
+
 status: DRAFT
 last_updated: 2026-03-12
 owner: Peak_Trade

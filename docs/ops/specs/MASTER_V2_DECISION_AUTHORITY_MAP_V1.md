@@ -1,5 +1,9 @@
 # MASTER V2 — Decision Authority Map v1 (Canonical, Read-Only)
 
+```text
+DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
+```
+
 status: ACTIVE
 last_updated: 2026-06-15
 owner: Peak_Trade

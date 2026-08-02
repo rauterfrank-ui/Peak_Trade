@@ -1,4 +1,8 @@
 # Peak Trade — Kanonisches Vollautonomie-Runbook v4.4
+
+```text
+DOCUMENT_CLASS=HISTORICAL
+```
 ## Core-System-Konsistenz, Reuse-First-Integration & Economic Viability
 
 **Status:** Kanonisches strategisches und operatives Implementierungsrunbook

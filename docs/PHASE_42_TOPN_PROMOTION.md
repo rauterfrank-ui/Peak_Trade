@@ -1,8 +1,16 @@
 # Phase 42 – Top-N Promotion Pipeline
 
+```text
+DOCUMENT_CLASS=HISTORICAL
+TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false
+TOPN_PROMOTION_PIPELINE_IS_NOT_PRODUCTIVE_MULTI_FUTURE_RUNTIME=true
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+```
+
+
 ## Überblick
 
-Phase 42 implementiert eine automatische Pipeline zur Auswahl und Export der besten Konfigurationen aus Strategy-Sweep-Ergebnissen. Die Top-N Kandidaten werden in einem strukturierten TOML-Format exportiert, das direkt für weitere Analysen, Portfolio-Integration oder Live-Deployment verwendet werden kann.
+Phase 42 implementiert eine automatische Pipeline zur Auswahl und Export der besten Konfigurationen aus Strategy-Sweep-Ergebnissen. Die Top-N Kandidaten werden in einem strukturierten TOML-Format exportiert, das für weitere Analysen oder exportierte Kandidatenlisten verwendet werden kann. Dies ist **kein** Nachweis produktiver Top-5-/Top-N-Runtime-Rotation und **keine** Live-Deployment-Freigabe.
 
 ---
 

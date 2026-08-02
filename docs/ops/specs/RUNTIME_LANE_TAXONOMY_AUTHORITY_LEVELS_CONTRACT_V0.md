@@ -1,4 +1,8 @@
 ---
+
+```text
+DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
+```
 docs_token: DOCS_TOKEN_RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0
 status: draft
 scope: docs-only, non-authorizing runtime lane taxonomy and authority levels

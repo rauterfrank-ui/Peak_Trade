@@ -1,5 +1,9 @@
 # STEP 29U Canonical Binding and Implementation Inventory v0
 
+```text
+DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
+```
+
 ---
 status: DRAFT
 scope: docs/contract-only (NO-LIVE)

@@ -1,5 +1,9 @@
 # Peak Trade — Canonical Chain Wiring Repair Master Runbook v2.2
 
+```text
+DOCUMENT_CLASS=TARGET_ARCHITECTURE
+```
+
 ## 0. Dokumentstatus
 
 ```text
