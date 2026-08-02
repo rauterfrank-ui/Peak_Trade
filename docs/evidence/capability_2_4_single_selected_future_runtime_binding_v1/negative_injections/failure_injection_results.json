@@ -1,0 +1,34 @@
+{
+  "ALLOWLIST_SELECTION_AUTHORITY": {
+    "alpha_enabled": false,
+    "blockers": [
+      "ALLOWLIST_SELECTION_AUTHORITY_REJECTED",
+      "ALPHA_BLOCKED"
+    ]
+  },
+  "DIRECT_INSTRUMENT_OVERRIDE": {
+    "alpha_enabled": false,
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "DIRECT_INSTRUMENT_OVERRIDE_REJECTED"
+    ]
+  },
+  "NO_SELECTION": {
+    "alpha_enabled": false,
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "CORRUPT_SELECTION",
+      "NO_SELECTION",
+      "SELECTION_DIGEST_MISMATCH",
+      "SELECTION_MISSING"
+    ]
+  },
+  "SELECTION_STALE_EXPIRED": {
+    "alpha_enabled": false,
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "SELECTION_EXPIRED",
+      "SELECTION_STALE"
+    ]
+  }
+}

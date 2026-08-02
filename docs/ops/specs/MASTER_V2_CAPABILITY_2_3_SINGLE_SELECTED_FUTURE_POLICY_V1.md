@@ -94,7 +94,7 @@ While a position is open on the selected instrument:
 
 ## Explicit non-claims
 
-- Runtime binding / Cap 2.4 is not closed.
+- Runtime binding / Cap 2.4 is owned separately (`CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1`).
 - Alpha / execution / live / testnet / paper are not authorized.
 - Multi-Future runtime is not authorized.
 - Dashboard/UI/readmodel data is never selection authority.

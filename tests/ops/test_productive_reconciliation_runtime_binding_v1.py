@@ -83,7 +83,8 @@ def _seed_persisted(root: Path, positions: tuple[PositionTruthV1, ...]) -> None:
 def test_constants_bound_not_activated() -> None:
     assert CAPABILITY_ID == "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1"
     assert PRODUCTIVE_RECONCILIATION_BOUND is True
-    assert CALL_GRAPH_V1[0] == "productive_reconciliation_startup_gate"
+    assert "productive_reconciliation_startup_gate" in CALL_GRAPH_V1
+    assert CALL_GRAPH_V1[0] == "persisted_single_selected_future"
     assert CALL_GRAPH_V1 == REQUIRED_CALL_GRAPH
 
 
@@ -323,11 +324,14 @@ def test_recovery_never_opens_new_position() -> None:
 
 
 def test_bridge_productive_caller_gates_before_alpha(tmp_path: Path) -> None:
+    # Cap 1.1 recon proof on the shared bridge host; Cap 2.4 selection binding is
+    # proven in test_single_selected_future_runtime_binding_v1 (require_selection_binding).
     state, cycles = run_bridge_cycles_from_mids_v1(
         [3500.0, 3510.0, 3520.0],
         session_id="bridge-recon",
         repository_sha=REPO_SHA,
         reconciliation_state_root=tmp_path,
+        require_selection_binding=False,
     )
     assert state.reconciliation_gate_completed is True
     assert state.reconciliation_alpha_enabled is True
@@ -345,7 +349,7 @@ def test_bridge_productive_caller_gates_before_alpha(tmp_path: Path) -> None:
 
 def test_bridge_blocks_alpha_on_unrecoverable(tmp_path: Path) -> None:
     _seed_persisted(tmp_path, (_pos("ETH-USDT-SWAP", "1"),))
-    state = BridgeSessionStateV1()
+    state = BridgeSessionStateV1(require_selection_binding=False)
     state.reconciliation_state_root = str(tmp_path)
     # Observed opposite side via poisoned portfolio truth path: inject through gate observed.
     from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1 import (

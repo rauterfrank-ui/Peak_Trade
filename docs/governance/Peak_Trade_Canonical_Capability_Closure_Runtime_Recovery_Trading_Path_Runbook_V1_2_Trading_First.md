@@ -1075,12 +1075,41 @@ Diese Capability erzeugt ausschließlich persistierte Selection Authority. Runti
 
 ## Capability 2.4 — Runtime Binding
 
+### Closure markers
+
+```text
+CAPABILITY_ID=CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1
+CODE_EXISTS=true
+BOUND=true
+RUNTIME_REACHABLE=true
+PRODUCTIVE_CALLER_ADDED=true
+RECONCILIATION_BEFORE_ALPHA=true
+ACTIVATED=false
+AUTHORITY_OWNER=ops.single_selected_future_runtime_binding_v1
+SELECTION_AUTHORITY_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+PRODUCTIVE_ENTRYPOINT=scripts/ops/run_single_selected_future_runtime_binding_v1.py
+SPEC=docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+EVIDENCE=docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/
+SELECTED_FUTURE_COUNT=1
+MAX_POSITIONS_EFFECTIVE=1
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+DASHBOARD_AUTHORITY_EFFECT=false
+ALLOWLIST_SELECTION_AUTHORITY=false
+CORE_LOGIC_CHANGE=false
+ACTIVATION_CHANGED=false
+LIVE_PATH_CHANGED=false
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+```
+
 Erforderlicher Call-Graph:
 
 ```text
 Persisted Selected Future
 → validate freshness and integrity
+→ Ranking Snapshot Reference Validation
+→ Governed Universe Instrument Validation
 → bind native instrument
+→ Productive Reconciliation (Cap 1.1)
 → market data
 → features
 → Master V2
@@ -1089,7 +1118,7 @@ Persisted Selected Future
 → simulated economics
 ```
 
-Die Instrument-Allowlist darf nicht länger die alleinige Trading-Selection simulieren.
+Die Instrument-Allowlist darf nicht länger die alleinige Trading-Selection simulieren. Cap 2.3 persistierte Selection ist die alleinige produktive Instrument-Authority; Cap 2.4 ist der alleinige produktive Selection-Consumer im kanonischen Wallclock-Runtime-Host.
 
 ### Restart
 
@@ -1099,24 +1128,26 @@ Nach Restart:
 - Digest prüfen
 - Validity prüfen
 - Ranking Snapshot referenzieren
+- Universe Instrument validieren
+- Venue-native Instrument binden
 - Reconciliation ausführen
 - erst danach Alpha erlauben
 
 ### Tests
 
-- deterministic selection
-- no candidates
-- stale ranking
-- tie
-- selected instrument suspended
-- mark-price missing
-- restart
-- config mismatch
-- SHA mismatch
-- position open during refresh
-- duplicate selection writers
-- dashboard unavailable
-- dashboard contains conflicting display data
+- valid persisted selection reaches market-data binding
+- exact native instrument binding
+- no/stale/expired/corrupt selection blocks alpha
+- digest/SHA/config/ranking/universe mismatch fail-closed
+- suspended/expired/missing mark-price fail-closed
+- dashboard unavailable / conflicting dashboard ignored
+- allowlist cannot become selection authority
+- direct runtime instrument override rejected
+- SELECTED_DEGRADED / EXIT_ONLY / REPLACEMENT_PENDING semantics
+- restart recovery success and corrupt restart fail-closed
+- reconciliation before alpha; reconciliation failure blocks alpha
+- duplicate/conflicting selection consumer rejected
+- max_positions=1; multi-future unauthorized; no live/order path
 
 ---
 

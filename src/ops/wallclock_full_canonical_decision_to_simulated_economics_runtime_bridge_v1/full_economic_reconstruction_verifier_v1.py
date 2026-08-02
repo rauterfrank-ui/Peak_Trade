@@ -40,6 +40,12 @@ class FullEconomicReconstructionResultV1:
 
 
 REQUIRED_CALL_GRAPH: tuple[str, ...] = (
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
     "productive_reconciliation_startup_gate",
     "okx_public_market_data",
     "feature_pipeline",
@@ -52,6 +58,7 @@ REQUIRED_CALL_GRAPH: tuple[str, ...] = (
     "simulated_fill_fee_slippage",
     "session_persistent_portfolio",
     "realized_unrealized_pnl_equity_drawdown",
+    "simulated_economics_no_order_path",
     "evidence",
     "full_economic_reconstruction_verifier",
 )

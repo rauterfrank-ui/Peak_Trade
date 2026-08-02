@@ -36,6 +36,16 @@ from src.ops.productive_reconciliation_runtime_binding_v1.startup_gate_v1 import
 from src.ops.productive_reconciliation_runtime_binding_v1.taxonomy_v1 import (
     ProductiveReconciliationClass,
 )
+from src.ops.single_selected_future_runtime_binding_v1.binding_gate_v1 import (
+    run_single_selected_future_runtime_binding_gate_v1,
+)
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+    CALL_GRAPH_BINDING_PREFIX as SELECTION_BINDING_PREFIX,
+    CALL_GRAPH_STEP as SELECTION_BINDING_STEP,
+)
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+    RuntimeBindingGateResultV1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
     CAPABILITY_ID,
@@ -268,6 +278,16 @@ class BridgeSessionStateV1:
     reconciliation_evidence: Optional[dict[str, Any]] = None
     reconciliation_state_root: Optional[str] = None
     portfolio_single_writer_identity: str = SINGLE_WRITER_IDENTITY
+    # Capability 2.4 — single selected future runtime binding (sole productive instrument authority).
+    selection_binding_completed: bool = False
+    selection_alpha_enabled: bool = False
+    selection_binding_evidence: Optional[dict[str, Any]] = None
+    selection_state_root: Optional[str] = None
+    ranking_state_root: Optional[str] = None
+    universe_state_root: Optional[str] = None
+    venue_native_id: str = ""
+    require_selection_binding: bool = True
+    mark_price_by_native_id: dict[str, Any] = field(default_factory=dict)
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -454,6 +474,8 @@ def _update_session_state_from_replay(
 
 
 CALL_GRAPH_V1: tuple[str, ...] = (
+    *SELECTION_BINDING_PREFIX,
+    SELECTION_BINDING_STEP,
     RECON_CALL_GRAPH_STEP,
     "okx_public_market_data",
     "feature_pipeline",
@@ -466,6 +488,7 @@ CALL_GRAPH_V1: tuple[str, ...] = (
     "simulated_fill_fee_slippage",
     "session_persistent_portfolio",
     "realized_unrealized_pnl_equity_drawdown",
+    "simulated_economics_no_order_path",
     "evidence",
     "full_economic_reconstruction_verifier",
 )
@@ -499,6 +522,180 @@ def _observed_portfolio_truth_from_bridge_state(
         event_time_unix=event_ts_unix,
         wall_time_unix=event_ts_unix,
     )
+
+
+def ensure_single_selected_future_runtime_binding_v1(
+    state: BridgeSessionStateV1,
+    *,
+    session_id: str,
+    event_ts_unix: float,
+    repository_sha: str,
+    observed: Optional[PortfolioTruthSnapshotV1] = None,
+    direct_instrument_override: str | None = None,
+) -> RuntimeBindingGateResultV1:
+    """Capability 2.4: bind Cap 2.3 selection before reconciliation/alpha."""
+    if state.selection_binding_completed:
+        if not state.selection_alpha_enabled and state.require_selection_binding:
+            raise RuntimeError("SELECTION_BINDING_ALPHA_BLOCKED")
+        ev = state.selection_binding_evidence or {}
+        bound = None
+        if state.instrument_id:
+            from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+                BoundInstrumentV1,
+            )
+
+            bound = BoundInstrumentV1(
+                instrument_id=state.instrument_id,
+                venue_native_id=state.venue_native_id,
+                ranking_snapshot_id=str(ev.get("ranking_snapshot_id") or ""),
+                ranking_integrity_digest=str(ev.get("ranking_integrity_digest") or ""),
+                universe_snapshot_id=str(ev.get("universe_snapshot_id") or ""),
+                selection_id=str(ev.get("selection_id") or ""),
+                selection_integrity_digest=str(ev.get("selection_integrity_digest") or ""),
+                selection_state=str(ev.get("selection_state") or ""),
+            )
+        from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+            RuntimeBindingEvidenceV1,
+        )
+
+        return RuntimeBindingGateResultV1(
+            ok=True,
+            alpha_enabled=bool(state.selection_alpha_enabled),
+            new_alpha_allowed=bool(state.selection_alpha_enabled),
+            exit_risk_safety_preserved=True,
+            hard_stop=False,
+            selection_state=str(ev.get("selection_state") or ""),
+            bound=bound,
+            evidence=RuntimeBindingEvidenceV1(
+                capability_id="CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+                schema_version="single_selected_future_runtime_binding.v1",
+                producer_version="single_selected_future_runtime_binding.v1",
+                owner="ops.single_selected_future_runtime_binding_v1",
+                ok=True,
+                alpha_enabled=bool(state.selection_alpha_enabled),
+                new_alpha_allowed=bool(state.selection_alpha_enabled),
+                exit_risk_safety_preserved=True,
+                hard_stop=False,
+                selection_state=str(ev.get("selection_state") or ""),
+                instrument_id=state.instrument_id,
+                venue_native_id=state.venue_native_id,
+                selection_id=str(ev.get("selection_id") or ""),
+                selection_integrity_digest=str(ev.get("selection_integrity_digest") or ""),
+                ranking_snapshot_id=str(ev.get("ranking_snapshot_id") or ""),
+                ranking_integrity_digest=str(ev.get("ranking_integrity_digest") or ""),
+                universe_snapshot_id=str(ev.get("universe_snapshot_id") or ""),
+                repository_sha=repository_sha,
+                config_digest=str(ev.get("config_digest") or ""),
+                reconciliation_before_alpha=True,
+                reconciliation_alpha_enabled=bool(state.reconciliation_alpha_enabled),
+                reason_codes=("CACHED_SESSION_SELECTION_BINDING",),
+                failure_codes=(),
+                call_graph=SELECTION_BINDING_PREFIX,
+            ),
+            blockers=(),
+        )
+
+    if not state.require_selection_binding:
+        # Explicit non-productive research escape hatch — not selection authority.
+        state.selection_binding_completed = True
+        state.selection_alpha_enabled = True
+        state.selection_binding_evidence = {
+            "selection_state": "LEGACY_RESEARCH_UNBOUND",
+            "notes": ["REQUIRE_SELECTION_BINDING_FALSE_NON_PRODUCTIVE"],
+        }
+        from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+            RuntimeBindingEvidenceV1,
+        )
+
+        return RuntimeBindingGateResultV1(
+            ok=True,
+            alpha_enabled=True,
+            new_alpha_allowed=True,
+            exit_risk_safety_preserved=True,
+            hard_stop=False,
+            selection_state="LEGACY_RESEARCH_UNBOUND",
+            bound=None,
+            evidence=RuntimeBindingEvidenceV1(
+                capability_id="CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+                schema_version="single_selected_future_runtime_binding.v1",
+                producer_version="single_selected_future_runtime_binding.v1",
+                owner="ops.single_selected_future_runtime_binding_v1",
+                ok=True,
+                alpha_enabled=True,
+                new_alpha_allowed=True,
+                exit_risk_safety_preserved=True,
+                hard_stop=False,
+                selection_state="LEGACY_RESEARCH_UNBOUND",
+                instrument_id=state.instrument_id,
+                venue_native_id=state.venue_native_id,
+                selection_id="",
+                selection_integrity_digest="",
+                ranking_snapshot_id="",
+                ranking_integrity_digest="",
+                universe_snapshot_id="",
+                repository_sha=repository_sha,
+                config_digest="",
+                reconciliation_before_alpha=False,
+                reconciliation_alpha_enabled=False,
+                reason_codes=("LEGACY_RESEARCH_UNBOUND",),
+                failure_codes=(),
+                call_graph=SELECTION_BINDING_PREFIX,
+                notes=("NON_PRODUCTIVE_ESCAPE_HATCH",),
+            ),
+            blockers=(),
+        )
+
+    if direct_instrument_override:
+        raise RuntimeError("DIRECT_INSTRUMENT_OVERRIDE_REJECTED")
+    if (
+        not state.selection_state_root
+        or not state.ranking_state_root
+        or not state.universe_state_root
+    ):
+        raise RuntimeError("SELECTION_BINDING_ROOTS_REQUIRED")
+    if state.reconciliation_state_root is None:
+        state.reconciliation_state_root = str(
+            Path(tempfile.mkdtemp(prefix="peak_trade_recon_bridge_"))
+        )
+
+    observed_snap = observed or _observed_portfolio_truth_from_bridge_state(
+        state, event_ts_unix=event_ts_unix
+    )
+    gate = run_single_selected_future_runtime_binding_gate_v1(
+        selection_state_root=Path(state.selection_state_root),
+        ranking_state_root=Path(state.ranking_state_root),
+        universe_state_root=Path(state.universe_state_root),
+        repository_sha=repository_sha,
+        session_id=session_id,
+        now_unix=event_ts_unix,
+        reconciliation_state_root=Path(state.reconciliation_state_root),
+        observed_portfolio=observed_snap,
+        mark_price_by_native_id=state.mark_price_by_native_id,
+        direct_instrument_override=direct_instrument_override,
+        allow_research_direct_instrument=False,
+    )
+    state.selection_binding_completed = True
+    state.selection_alpha_enabled = bool(gate.alpha_enabled)
+    state.selection_binding_evidence = gate.evidence.to_dict()
+    if gate.bound is not None:
+        # Cap 2.4: venue-native id is the runtime market-data binding key.
+        state.instrument_id = gate.bound.venue_native_id
+        state.venue_native_id = gate.bound.venue_native_id
+    # Cap 2.4 gate already executed Cap 1.1 reconciliation before alpha.
+    if gate.reconciliation_result is not None:
+        state.reconciliation_gate_completed = True
+        state.reconciliation_alpha_enabled = bool(gate.reconciliation_result.get("alpha_enabled"))
+        state.reconciliation_evidence = dict(gate.reconciliation_result)
+        try:
+            state.reconciliation_state = ReconciliationState(
+                str(
+                    gate.reconciliation_result.get("master_v2_reconciliation_state")
+                    or ReconciliationState.RECONCILIATION_REQUIRED.value
+                )
+            )
+        except Exception:  # noqa: BLE001
+            state.reconciliation_state = ReconciliationState.RECONCILIATION_REQUIRED
+    return gate
 
 
 def ensure_productive_reconciliation_startup_gate_v1(
@@ -573,12 +770,31 @@ def run_bridge_cycle_v1(
     session_id: str = "wallclock-bridge-session",
     repository_sha: str = "OFFLINE_DETERMINISTIC_EVIDENCE",
     reconciliation_state_root: Optional[Path] = None,
+    direct_instrument_override: str | None = None,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
         raise RuntimeError("INVARIANT_VIOLATION_AUTHORITY_FLAGS")
 
+    if reconciliation_state_root is not None:
+        state.reconciliation_state_root = str(reconciliation_state_root)
+
+    # Capability 2.4: persisted selection binds the trading instrument before recon/alpha.
+    selection_gate = ensure_single_selected_future_runtime_binding_v1(
+        state,
+        session_id=session_id,
+        event_ts_unix=event_ts_unix,
+        repository_sha=repository_sha,
+        direct_instrument_override=direct_instrument_override,
+    )
+    if state.require_selection_binding and not selection_gate.alpha_enabled:
+        raise RuntimeError(
+            "SELECTION_BINDING_ALPHA_BLOCKED:"
+            + ",".join(selection_gate.blockers or (selection_gate.selection_state,))
+        )
+
     # Capability 1.1: reconciliation is a mandatory startup gate before alpha.
+    # When Cap 2.4 already ran reconciliation, this call is idempotent/cached.
     gate = ensure_productive_reconciliation_startup_gate_v1(
         state,
         session_id=session_id,
@@ -799,6 +1015,7 @@ def run_bridge_cycle_v1(
             "NO_BROKER_WRITES",
             "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
             "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+            "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
             f"PORTFOLIO_SINGLE_WRITER={state.portfolio_single_writer_identity}",
             f"FEATURE_WINDOW_MIN={FEATURE_WINDOW_MIN}",
         ),
@@ -819,10 +1036,30 @@ def run_bridge_cycles_from_mids_v1(
     instrument_id: str = PRODUCTION_INSTRUMENT_ID,
     repository_sha: str = "OFFLINE_DETERMINISTIC_EVIDENCE",
     reconciliation_state_root: Optional[Path] = None,
+    selection_state_root: Optional[Path] = None,
+    ranking_state_root: Optional[Path] = None,
+    universe_state_root: Optional[Path] = None,
+    mark_price_by_native_id: Optional[Mapping[str, Any]] = None,
+    require_selection_binding: bool = True,
+    allow_direct_instrument_override: bool = False,
 ) -> tuple[BridgeSessionStateV1, list[BridgeCycleResultV1]]:
-    state = BridgeSessionStateV1(instrument_id=instrument_id)
+    if require_selection_binding and instrument_id != PRODUCTION_INSTRUMENT_ID:
+        if not allow_direct_instrument_override:
+            raise RuntimeError("DIRECT_INSTRUMENT_OVERRIDE_REJECTED")
+    state = BridgeSessionStateV1(
+        instrument_id=instrument_id,
+        require_selection_binding=require_selection_binding,
+    )
     if reconciliation_state_root is not None:
         state.reconciliation_state_root = str(reconciliation_state_root)
+    if selection_state_root is not None:
+        state.selection_state_root = str(selection_state_root)
+    if ranking_state_root is not None:
+        state.ranking_state_root = str(ranking_state_root)
+    if universe_state_root is not None:
+        state.universe_state_root = str(universe_state_root)
+    if mark_price_by_native_id is not None:
+        state.mark_price_by_native_id = dict(mark_price_by_native_id)
     results: list[BridgeCycleResultV1] = []
     for i, mid in enumerate(mid_prices):
         results.append(
@@ -833,6 +1070,12 @@ def run_bridge_cycles_from_mids_v1(
                 session_id=session_id,
                 repository_sha=repository_sha,
                 reconciliation_state_root=reconciliation_state_root,
+                direct_instrument_override=(
+                    instrument_id
+                    if allow_direct_instrument_override
+                    and instrument_id != PRODUCTION_INSTRUMENT_ID
+                    else None
+                ),
             )
         )
     return state, results

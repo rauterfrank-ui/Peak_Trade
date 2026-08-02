@@ -1,0 +1,103 @@
+{
+  "ACTIVATED": false,
+  "ACTIVATION_CHANGED": false,
+  "ALLOWLIST_SELECTION_AUTHORITY": false,
+  "BOUND": true,
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "BOUND_NOT_ACTIVATED",
+  "CODE_EXISTS": true,
+  "CORE_LOGIC_CHANGED": false,
+  "DASHBOARD_AUTHORITY_EFFECT": false,
+  "LIVE_PATH_CHANGED": false,
+  "MAX_POSITIONS_EFFECTIVE": 1,
+  "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+  "PERSISTED": true,
+  "PRODUCTIVE_CALLER_ADDED": true,
+  "RECONCILIATION_BEFORE_ALPHA": true,
+  "RESTART_SEMANTICS_PROVEN": true,
+  "RUNTIME_REACHABLE": true,
+  "SELECTED_FUTURE_COUNT": 1,
+  "SELECTION_STATE_SEMANTICS_PROVEN": true,
+  "alpha_enabled": true,
+  "call_graph_after": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_economics_no_order_path",
+    "evidence"
+  ],
+  "call_graph_before": [
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "capability_id": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+  "cycles": 3,
+  "failure_injection_coverage": [
+    "ALLOWLIST_SELECTION_AUTHORITY",
+    "DIRECT_INSTRUMENT_OVERRIDE",
+    "NO_SELECTION",
+    "SELECTION_STALE_EXPIRED"
+  ],
+  "instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+  "negative_injection_results": {
+    "ALLOWLIST_SELECTION_AUTHORITY": {
+      "alpha_enabled": false,
+      "blockers": [
+        "ALLOWLIST_SELECTION_AUTHORITY_REJECTED",
+        "ALPHA_BLOCKED"
+      ]
+    },
+    "DIRECT_INSTRUMENT_OVERRIDE": {
+      "alpha_enabled": false,
+      "blockers": [
+        "ALPHA_BLOCKED",
+        "DIRECT_INSTRUMENT_OVERRIDE_REJECTED"
+      ]
+    },
+    "NO_SELECTION": {
+      "alpha_enabled": false,
+      "blockers": [
+        "ALPHA_BLOCKED",
+        "CORRUPT_SELECTION",
+        "NO_SELECTION",
+        "SELECTION_DIGEST_MISMATCH",
+        "SELECTION_MISSING"
+      ]
+    },
+    "SELECTION_STALE_EXPIRED": {
+      "alpha_enabled": false,
+      "blockers": [
+        "ALPHA_BLOCKED",
+        "SELECTION_EXPIRED",
+        "SELECTION_STALE"
+      ]
+    }
+  },
+  "repository_sha": "ecb4484936b6079f90bde252abef77ff129aea8f",
+  "selection_id": "ssf_7d91109924639d331cfc7405",
+  "selection_integrity_digest": "af2884a448a2b4622e1f3a28f04d94a7249baa5df48717552fca471aa715cccb",
+  "selection_state": "SELECTED_ACTIVE",
+  "venue_native_id": "ADA-USDT-SWAP"
+}
