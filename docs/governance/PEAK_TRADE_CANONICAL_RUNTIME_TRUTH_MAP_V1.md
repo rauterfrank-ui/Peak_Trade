@@ -41,9 +41,9 @@ Navigations-Einstieg (keine Semantik):
 
 | Feld | Wert |
 |------|------|
-| `ORIGIN_MAIN_SHA` | `08b19c8c83f76ab29d99c8c03b8f34504d2b0021` |
-| `VERIFICATION_DATE_UTC` | `2026-08-02T18:30:16Z` |
-| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin&#47;main` at Cap 7.2 truth-map alignment (PR #5657); Post-Capability-7.2 cybersecurity review against that SHA (docs/evidence only; no runtime/network/auth session) |
+| `ORIGIN_MAIN_SHA` | `93409b8c65184d1534ffa84da7a163a037b67fc1` |
+| `VERIFICATION_DATE_UTC` | `2026-08-02T18:58:00Z` |
+| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin&#47;main` at post-PR #5658 main; Phase 9.1 strategy registry closure evidence against that SHA (no runtime/network/auth session) |
 | `REPOSITORY_ROOT` | `/Users/frnkhrz/Peak_Trade_assessment_93b45a7` |
 | `GIT_DIR` | `/Users/frnkhrz/Peak_Trade/.git/worktrees/Peak_Trade_assessment_93b45a7` |
 | `LOCAL_REAL_REPOSITORY` | `true` (linked worktree of Peak_Trade; direct `.git` access) |
@@ -89,12 +89,13 @@ ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
 NEXT_RUNTIME_RUN_ALLOWED=false
 NOTION_REPOSITORY_MIRROR_CURRENT=true
 CYBERSECURITY_REVIEW_CURRENT=true
-STRATEGY_REGISTRY_STATUS=DEFERRED_REQUIRED_CAPABILITY
+STRATEGY_REGISTRY_STATUS=CLOSED
+STRATEGY_REGISTRY_CLOSED=true
 CAP72_WIRING_BLOCKER=false
-PHASE_9_2_LONG_RUNNING_PUBLIC_MD_EVIDENCE_DEPENDENCY=true
+PHASE_9_2_LONG_RUNNING_PUBLIC_MD_EVIDENCE_DEPENDENCY=false
 ```
 
-**Status note (CURRENT vs TARGET):** Capability 7.2 activates the **internal** canonical stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` / `SIMULATED_EXECUTION_ACTIVE=true`) with `PUBLIC_MD_RUNTIME_CAPABLE=true`, but **does not** prove an observed public-MD network run (`PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`, `NETWORK_SESSION_STARTED=false`). Binding inequality: `PUBLIC_MD_RUNTIME_CAPABLE != PUBLIC_MD_NETWORK_SESSION_OBSERVED`. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Post-Capability-7.2 cybersecurity review (`POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1`) proves physical execution separation, public-MD GET-only allowlist, credential/private-endpoint negative controls, and no plaintext secret/token exposure in Cap 7.2 evidence; evidence under `docs/evidence/post_capability_7_2_cybersecurity_review_v1/`. `CYBERSECURITY_REVIEW_CURRENT=true` and Notion repository mirror current=`true` do **not** authorize a public-MD network run: `NEXT_RUNTIME_RUN_ALLOWED=false` remains until separate explicit Owner-GO. Phase 9.1 Strategy Registry = `DEFERRED_REQUIRED_CAPABILITY` (`CAP72_WIRING_BLOCKER=false`; dependency-relevant before Phase 9.2 long-running public-MD evidence). Phase 9.2 remains the separate long-running public-MD simulation evidence program and is **not** prepared or started by this cybersecurity review.
+**Status note (CURRENT vs TARGET):** Capability 7.2 activates the **internal** canonical stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` / `SIMULATED_EXECUTION_ACTIVE=true`) with `PUBLIC_MD_RUNTIME_CAPABLE=true`, but **does not** prove an observed public-MD network run (`PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`, `NETWORK_SESSION_STARTED=false`). Binding inequality: `PUBLIC_MD_RUNTIME_CAPABLE != PUBLIC_MD_NETWORK_SESSION_OBSERVED`. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Post-Capability-7.2 cybersecurity review (`POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1`) proves physical execution separation, public-MD GET-only allowlist, credential/private-endpoint negative controls, and no plaintext secret/token exposure in Cap 7.2 evidence; evidence under `docs/evidence/post_capability_7_2_cybersecurity_review_v1/`. `CYBERSECURITY_REVIEW_CURRENT=true` and Notion repository mirror current=`true` do **not** authorize a public-MD network run: `NEXT_RUNTIME_RUN_ALLOWED=false` remains until separate explicit Owner-GO. Phase 9.1 Strategy Registry Closure (`PHASE_9_1_STRATEGY_REGISTRY_CLOSURE_V1`) sets `STRATEGY_REGISTRY_STATUS=CLOSED` / `STRATEGY_REGISTRY_CLOSED=true` with fail-closed unknown/disabled/legacy handling and no silent authority promotion (`CAP72_WIRING_BLOCKER=false`; Phase 9.2 long-running public-MD evidence dependency on registry closure cleared). Phase 9.2 remains a separate Owner-GO program and is **not** started by Phase 9.1.
 
 ---
 
@@ -293,7 +294,7 @@ numeric max-age non-enforcing; Cap 4.1 readiness is not activation.
 3. Futures accounting runtime wiring — **closed by Capability 3.1**
 4. Canonical runtime pre-activation closure — **closed by Capability 4.1** as historical `READY_FOR_ACTIVATION` (package-local `RUNTIME_ACTIVATED=false`); superseded as global activation truth by Cap 7.2; live activation still forbidden
 5. Canonical stateful no-order activation — **closed by Capability 7.2** (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true`); public-MD network sessions remain separate (Phase 9.2 Owner-GO); `NEXT_RUNTIME_RUN_ALLOWED=false`
-6. Strategy registry full productive binding — `STRATEGY_REGISTRY_STATUS=DEFERRED_REQUIRED_CAPABILITY`; `CAP72_WIRING_BLOCKER=false`; `PHASE_9_2_LONG_RUNNING_PUBLIC_MD_EVIDENCE_DEPENDENCY=true` (Phase 9.1; authority hygiene before long-running public-MD evidence; not a Cap 7.2 wiring defect)
+6. Strategy registry full productive binding — **closed by Phase 9.1** (`PHASE_9_1_STRATEGY_REGISTRY_CLOSURE_V1`; `STRATEGY_REGISTRY_STATUS=CLOSED`; `STRATEGY_REGISTRY_CLOSED=true`; `CAP72_WIRING_BLOCKER=false`; `PHASE_9_2_LONG_RUNNING_PUBLIC_MD_EVIDENCE_DEPENDENCY=false`; evidence under `docs/evidence/capability_phase_9_1_strategy_registry_closure_v1/`)
 7. Config truth alignment for `max_open_positions` effective consumers — **closed by Capability 0.3** (`CONFIG_TRUTH_ALIGNMENT_V1`)
 8. Active-set rotation policy — **registered by Capability 0.4** as `DEFERRED_REQUIRED_CAPABILITY` in `PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1` / `docs/governance/deferred_work_recovery_register_v1.json` (Phase 6; not productive Top-5; implementation/activation unauthorized; prior reminder remains `REMINDER_ONLY`)
 9. Cap 7.1 predecessor-digest hygiene — Cap 7.2 binds Cap 7.1 evidence digest `e19001d4c3bc4f3bd9d5ab91c5d880a39df3c3a0edaea3dc2e3f200c7e62c13b`, but Cap 7.1 result artifacts do not themselves expose a machine-readable predecessor digest to Cap 6.5. Classification: `EVIDENCE_GAP` / **non-run-blocking evidence hygiene**; no Cap 7.1/7.2 evidence mutation in this documentation alignment.
