@@ -2,7 +2,7 @@
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
 **Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02)
-**Last Reviewed (repo-static):** 2026-08-02 (Post-Capability-7.2 cybersecurity review against `origin/main@08b19c8c83f76ab29d99c8c03b8f34504d2b0021`; prior supply-chain/baseline overlays unchanged)
+**Last Reviewed (repo-static):** 2026-08-02 (Post-Capability-7.2 cybersecurity review against `origin&#47;main@08b19c8c83f76ab29d99c8c03b8f34504d2b0021`; prior supply-chain/baseline overlays unchanged)
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
 **Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, start a public-MD network session, consume authorization, or claim unverified scanner results.
 
@@ -125,7 +125,7 @@ Docs live-enable pattern guard: [`scripts/ci/check_docs_no_live_enable_patterns.
 
 ### 6.1 Post-Capability-7.2 cybersecurity review (2026-08-02)
 
-Read-only security review of the activated single-future stateful no-order runtime against `origin/main@08b19c8c83f76ab29d99c8c03b8f34504d2b0021`.
+Read-only security review of the activated single-future stateful no-order runtime against `origin&#47;main@08b19c8c83f76ab29d99c8c03b8f34504d2b0021`.
 
 | Invariant | Proven |
 |-----------|--------|
