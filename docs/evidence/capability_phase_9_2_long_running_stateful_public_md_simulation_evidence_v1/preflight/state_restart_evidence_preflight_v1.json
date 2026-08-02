@@ -29,6 +29,6 @@
   "confirmation_session_id": "phase_9_2_smoke_confirmation_session_v1",
   "evidence_root": "docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1",
   "ok": true,
-  "persistence_root": "var/runtime/phase_9_2/phase_9_2_public_md_smoke_session_v1/5c1daf024b2c",
+  "persistence_root": "var/runtime/phase_9_2/phase_9_2_public_md_smoke_session_v1/870445764c64",
   "runtime_session_id": "phase_9_2_smoke_runtime_session_v1"
 }

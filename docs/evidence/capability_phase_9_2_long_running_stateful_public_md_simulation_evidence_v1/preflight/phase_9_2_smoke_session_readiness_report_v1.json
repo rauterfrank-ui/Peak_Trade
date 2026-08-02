@@ -6,8 +6,8 @@
   "network_session_authorized": false,
   "next_safe_step": "Separate Owner-GO for authorization issuance + smoke session execution with NETWORK_SESSION_ALLOWED=true and AUTHORIZATION_ISSUANCE_ALLOWED=true; do not start network or consume authorization from this preflight.",
   "ok": true,
-  "repository_sha": "5c1daf024b2c693c350b664bcae6ae2cb160543d",
+  "repository_sha": "870445764c64dde8c05cf4ecf672185e2b3480f5",
   "runtime_start_authorized": false,
-  "smoke_contract_digest": "4ad89dfe519522d7e2456fac48b2bc2b81916e573db848aa0ca9628aaad2854b",
+  "smoke_contract_digest": "cf78fa62df0f238c1d0608fe2047fb280aa4e188a55c34a6c8c7830949c50c22",
   "smoke_session_id": "phase_9_2_public_md_smoke_session_v1"
 }

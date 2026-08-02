@@ -18,10 +18,10 @@
     "revocation_ledger"
   ],
   "module_paths": {
-    "authorization_consumption_runtime_v1": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/authorization_consumption_runtime_v1.py",
-    "confirm_token_v1": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/src/ops/paper_shadow_observation_operator_go_session_preregistration_v1/confirm_token_v1.py",
-    "preregistration_contract_v1": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/src/ops/paper_shadow_observation_operator_go_session_preregistration_v1/preregistration_contract_v1.py",
-    "public_md_shadow_authorization_consumption_v1": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/authorization_consumption_v1.py"
+    "authorization_consumption_runtime_v1": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/authorization_consumption_runtime_v1.py",
+    "confirm_token_v1": "src/ops/paper_shadow_observation_operator_go_session_preregistration_v1/confirm_token_v1.py",
+    "preregistration_contract_v1": "src/ops/paper_shadow_observation_operator_go_session_preregistration_v1/preregistration_contract_v1.py",
+    "public_md_shadow_authorization_consumption_v1": "src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/authorization_consumption_v1.py"
   },
   "note": "Preflight identifies canonical paths only; issuance and consumption require a separate Owner-GO.",
   "ok": true,

@@ -1,0 +1,20 @@
+{
+  "authorization_digest_after": "efc71a39b28e22b8b9679f4d6ffce8b3909616971a57270b11867911a2855e1a",
+  "authorization_digest_before": "1e6a8114ab0bc3dc9a1b2b597f1156480845e55f2920b3fe6e0506b162a87156",
+  "authorization_id": "auth_v2_77c0376ec7ba68f8a793b3a652d2d4ab",
+  "confirm_token_fingerprint": "e4b8da801694863af0158b63c2683892caeb6557d61c56af883bc1218859e404",
+  "consumed_at": 1785699709.30081,
+  "consumption_id": "cons_a12d59148858eb1d8206e879",
+  "digest_scope": "sha256_canonical_json_excluding_integrity_digest_and_digest_scope",
+  "integrity_digest": "fa0abae1d22b748d6f1af94a7ad224265733b3cd174e77b5b0a175c6d8e7f219",
+  "notes": [
+    "ATOMIC_CONSUMPTION",
+    "NO_SESSION_START"
+  ],
+  "preregistration_digest": "ad13534d96bb3746085867d09d6e8cb53ee5ebef67886f777f5953cd3f75915d",
+  "preregistration_id": "phase_9_2_public_md_smoke_session_v1",
+  "repository_sha": "870445764c64dde8c05cf4ecf672185e2b3480f5",
+  "schema": "authorization_consumption_record_v1",
+  "schema_version": "v1",
+  "session_started": false
+}
