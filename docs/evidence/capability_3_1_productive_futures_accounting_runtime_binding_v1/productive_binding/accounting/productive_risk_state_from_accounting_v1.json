@@ -1,0 +1,9 @@
+{
+  "contract_size": "1",
+  "initial_margin_required": "0",
+  "liquidation_proximity": null,
+  "maintenance_margin_required": "0",
+  "mark_price": "102.0",
+  "notional": "0",
+  "source": "canonical_futures_accounting"
+}

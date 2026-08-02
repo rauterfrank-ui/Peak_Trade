@@ -1163,6 +1163,32 @@ Die simulierte Futures-Ökonomie muss den vorgesehenen Futures-Accounting-Kernel
 futures_accounting.py
 ```
 
+## Capability 3.1 — Productive Futures Accounting Runtime Binding
+
+### Closure markers
+
+```text
+CAPABILITY_ID=CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1
+CODE_EXISTS=true
+BOUND=true
+RUNTIME_REACHABLE=true
+PRODUCTIVE_CALLER_ADDED=true
+FUTURES_ACCOUNTING_RUNTIME_BOUND=true
+CANONICAL_KERNEL_REUSED=true
+ACCOUNTING_SINGLE_WRITER=true
+RECONCILIATION_BEFORE_ALPHA=true
+ACTIVATED=false
+AUTHORITY_OWNER=ops.productive_futures_accounting_runtime_binding_v1
+CANONICAL_KERNEL_OWNER=src.execution.paper.futures_accounting
+PRODUCTIVE_ENTRYPOINT=scripts/ops/run_single_selected_future_runtime_binding_v1.py
+SPEC=docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+EVIDENCE=docs/evidence/capability_3_1_productive_futures_accounting_runtime_binding_v1/
+CORE_LOGIC_CHANGE=false
+ACTIVATION_CHANGED=false
+LIVE_PATH_CHANGED=false
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+```
+
 ## Anforderungen
 
 - contract multiplier

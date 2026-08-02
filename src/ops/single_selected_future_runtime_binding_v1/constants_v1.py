@@ -75,6 +75,11 @@ CALL_GRAPH = (
     "safety_kernel",
     "intended_side_quantity",
     "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
     "simulated_economics_no_order_path",
     "evidence",
 )

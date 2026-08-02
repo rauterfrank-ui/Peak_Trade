@@ -1,0 +1,118 @@
+{
+  "ACCOUNTING_SINGLE_WRITER": true,
+  "ACTIVATED": false,
+  "ACTIVATION_CHANGED": false,
+  "BOUND": true,
+  "CANONICAL_KERNEL_REUSED": true,
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "BOUND_NOT_ACTIVATED",
+  "CODE_EXISTS": true,
+  "CORE_LOGIC_CHANGED": false,
+  "FUTURES_ACCOUNTING_RUNTIME_BOUND": true,
+  "LIVE_PATH_CHANGED": false,
+  "PRODUCTIVE_CALLER_ADDED": true,
+  "RECONCILIATION_BEFORE_ALPHA": true,
+  "RESTART_SEMANTICS_PROVEN": true,
+  "RUNTIME_REACHABLE": true,
+  "accounting_output_digests": [],
+  "call_graph_after": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "call_graph_before": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "capability_id": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+  "cycles": 4,
+  "failure_injection_coverage": [
+    "CONFLICTING_WRITER",
+    "DUPLICATE_FILL_IDEMPOTENT",
+    "INVALID_CONTRACT_METADATA",
+    "MISSING_MARK",
+    "OVER_REDUCE_FLIP",
+    "PERSISTENCE_INTERRUPTION",
+    "REDUCE_ONLY_VIOLATION",
+    "ZERO_QUANTITY"
+  ],
+  "fill_input_digests": [],
+  "instrument_id": "ADA-USDT-SWAP",
+  "negative_injection_results": {
+    "CONFLICTING_WRITER": {
+      "code": "CONFLICTING_WRITER",
+      "ok": true
+    },
+    "DUPLICATE_FILL_IDEMPOTENT": {
+      "action_code": "IDEMPOTENT_REPLAY",
+      "ok": true
+    },
+    "INVALID_CONTRACT_METADATA": {
+      "code": "INVALID_CONTRACT_METADATA",
+      "ok": true
+    },
+    "MISSING_MARK": {
+      "code": "MISSING_MARK_PRICE",
+      "ok": true
+    },
+    "OVER_REDUCE_FLIP": {
+      "code": "OVER_REDUCE",
+      "ok": true
+    },
+    "PERSISTENCE_INTERRUPTION": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "ok": true
+    },
+    "REDUCE_ONLY_VIOLATION": {
+      "code": "REDUCE_ONLY_VIOLATION",
+      "ok": true
+    },
+    "ZERO_QUANTITY": {
+      "code": "ZERO_QUANTITY",
+      "ok": true
+    }
+  },
+  "portfolio_state_digest_after": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+  "portfolio_state_digest_before": "ded3eb2608a70a2e28040c5e1e7c4faa49be0d27b4ffc4d3e2a3ffb91bf72fbb",
+  "repository_sha": "9f294a2d459812a54f376180494e25eeebed8fa0",
+  "risk_state_digest": "6a1e7a5699321a31c4fe0ec128ba2760251827c5a3c0920a5e614179790c015f",
+  "selection_id": "ssf_1459fce6aab52527e4ccaff4"
+}

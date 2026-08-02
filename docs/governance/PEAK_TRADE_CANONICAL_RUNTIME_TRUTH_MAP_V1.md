@@ -63,7 +63,7 @@ MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false
 UNIVERSE_RANKING_TRADING_AUTHORITY=false
 PRODUCTIVE_RECONCILIATION_BOUND=true
-FUTURES_ACCOUNTING_RUNTIME_BOUND=false
+FUTURES_ACCOUNTING_RUNTIME_BOUND=true
 ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
 ```
@@ -216,6 +216,7 @@ phase1_hard_safety_constants
 | Productive reconciliation host (Capability 1.1 startup gate on wallclock bridge) | `PRODUCTIVE_CANONICAL` (`PRODUCTIVE_RECONCILIATION_BOUND=true`; live/orders still fail-closed) |
 | Governed Futures Universe Producer (Capability 2.1) | `PRODUCTIVE_CANONICAL` universe snapshot owner `ops.governed_futures_universe_producer_v1`; `CODE_EXISTS+BOUND+PERSISTED+RESTART_PROVEN`; `ACTIVATED=false`; ranking/selection/alpha not granted |
 | Productive Futures Ranking Producer (Capability 2.2) | `PRODUCTIVE_CANONICAL` Top-20 candidate-context owner `ops.productive_futures_ranking_producer_v1`; `CODE_EXISTS+BOUND+PERSISTED+RESTART_PROVEN`; `ACTIVATED=false`; `TOP20_IS_CONTEXT_ONLY=true`; selection/alpha/multi-future not granted |
+| Productive Futures Accounting Runtime Binding (Capability 3.1) | `PRODUCTIVE_CANONICAL` owner `ops.productive_futures_accounting_runtime_binding_v1`; reuses `src/execution/paper/futures_accounting.py`; `FUTURES_ACCOUNTING_RUNTIME_BOUND=true`; `ACTIVATED=false`; live/orders fail-closed |
 
 Verification: `CONFIG_TRUTH_ALIGNMENT_V1`; live remains fail-closed; multi-future unauthorized;
 numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
@@ -229,7 +230,7 @@ numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
 | Restart / recovery | DR/runbook surfaces exist; full runtime restart proof | `RESTART_PROVEN=false` for canonical trading runtime (`INSUFFICIENT_EVIDENCE` / `CURRENT_PHASE_GAP`) |
 | Economic Validity Offline Gate | registry authoritative fields | `ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false` / `PASS=false` |
 | Productive reconciliation in runtime host | bound as mandatory startup gate before first decision cycle (Capability 1.1) | `PRODUCTIVE_RECONCILIATION_BOUND=true`; owner `ops.productive_reconciliation_runtime_binding_v1`; alpha only on MATCH / verified reduce-only recovery; live/orders still fail-closed |
-| Futures accounting in runtime path | unwired / not runtime-bound | `FUTURES_ACCOUNTING_RUNTIME_BOUND=false` |
+| Futures accounting in runtime path | bound after simulated fill / before portfolio+risk persistence (Capability 3.1) | `FUTURES_ACCOUNTING_RUNTIME_BOUND=true`; owner `ops.productive_futures_accounting_runtime_binding_v1`; kernel `src/execution/paper/futures_accounting.py`; live/orders still fail-closed |
 
 ### 3.6 Known gaps (current)
 
@@ -369,7 +370,7 @@ Legend for `DOCUMENT_CLASS_*`:
 | `docs/LIVE_OPERATIONAL_RUNBOOKS.md` | HIST/ops index | HIST/non-authorizing | live ops overview | operational wording risk | live ops | non-authorizing | none | “operational” ≠ live-ready | DOCUMENT_CLASS=HISTORICAL + non-authorizing preserved | yes if edited; else inventory only |
 | `docs/governance/READ_ONLY_CANONICAL_CHAIN_AND_ZERO_TRADE_BLOCKER_REAUDIT_V1.md` | CURRENT audit | CURRENT/HIST evidence | reaudit | zero-trade blockers | none | fail-closed | none | none | DOCUMENT_CLASS | yes |
 | `docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md` | governance contract | TARGET/governance | PR#5226 markers | slice complete ≠ economic validity | chain repair | no runtime unlock | blocked slice 2 | “SLICE_1_COMPLETE” is wiring slice, not live | DOCUMENT_CLASS=TARGET_ARCHITECTURE | yes |
-| Futures accounting runtime docs | scattered | INSUFFICIENT_EVIDENCE | — | unwired claim in closure runbook | accounting target | none proven productive | none | productive binding false | keep `FUTURES_ACCOUNTING_RUNTIME_BOUND=false` | no code change |
+| Futures accounting runtime docs | Cap 3.1 spec + evidence | CURRENT bound | Cap 3.1 | productive binding true, not activated | accounting runtime | none live | none | keep `ACTIVATED=false` | DOCUMENT_CLASS + Cap 3.1 evidence | yes if edited |
 | Strategy registry wiring | feature_state_map Class B | CURRENT gap | feature map | many strategies unwired | registry closure later | none live | none | do not call fully integrated | none beyond truth map | inventory only |
 | Shadow / Paper / Testnet / Live policy docs | mixed | CURRENT fail-closed + TARGET later | many | fail-closed | ladder 29U–29Z | safety | blocked | none if fail-closed preserved | no activation language uplift | inventory + guards |
 

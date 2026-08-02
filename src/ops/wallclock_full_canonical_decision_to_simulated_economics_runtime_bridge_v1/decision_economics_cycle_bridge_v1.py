@@ -20,6 +20,19 @@ from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_
     SimulatedFillV1,
     SimulatedPortfolioEconomicsModelV1,
 )
+from src.ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1 import (
+    ProductiveFuturesAccountingSessionV1,
+)
+from src.ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1 import (
+    apply_intended_action_via_canonical_accounting_v1,
+    ensure_accounting_session_v1,
+)
+from src.ops.productive_futures_accounting_runtime_binding_v1.constants_v1 import (
+    CALL_GRAPH_RISK_STEP as ACCOUNTING_RISK_STEP,
+    CALL_GRAPH_STEP as ACCOUNTING_CALL_GRAPH_STEP,
+    FUTURES_ACCOUNTING_RUNTIME_BOUND,
+    SINGLE_WRITER_IDENTITY as ACCOUNTING_SINGLE_WRITER_IDENTITY,
+)
 from src.ops.productive_reconciliation_runtime_binding_v1.constants_v1 import (
     CALL_GRAPH_STEP as RECON_CALL_GRAPH_STEP,
     SINGLE_WRITER_IDENTITY,
@@ -288,6 +301,12 @@ class BridgeSessionStateV1:
     venue_native_id: str = ""
     require_selection_binding: bool = True
     mark_price_by_native_id: dict[str, Any] = field(default_factory=dict)
+    # Capability 3.1 — canonical futures accounting after fill, before portfolio/risk persist.
+    futures_accounting_bound: bool = FUTURES_ACCOUNTING_RUNTIME_BOUND
+    accounting_session: Optional[ProductiveFuturesAccountingSessionV1] = None
+    accounting_state_root: Optional[str] = None
+    accounting_single_writer_identity: str = ACCOUNTING_SINGLE_WRITER_IDENTITY
+    last_accounting_result: Optional[dict[str, Any]] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -486,8 +505,10 @@ CALL_GRAPH_V1: tuple[str, ...] = (
     "intended_side_quantity",
     "analytical_simulated_execution",
     "simulated_fill_fee_slippage",
+    ACCOUNTING_CALL_GRAPH_STEP,
     "session_persistent_portfolio",
     "realized_unrealized_pnl_equity_drawdown",
+    ACCOUNTING_RISK_STEP,
     "simulated_economics_no_order_path",
     "evidence",
     "full_economic_reconstruction_verifier",
@@ -942,16 +963,39 @@ def run_bridge_cycle_v1(
         portfolio_snapshot=state.portfolio.snapshot(),
     )
 
-    fill_obj = state.portfolio.apply_intended_action(
+    # Capability 3.1: simulated fill → canonical futures_accounting → portfolio/risk.
+    if state.accounting_session is None:
+        state.accounting_session = ensure_accounting_session_v1(
+            instrument_id=state.instrument_id,
+            state_root=(Path(state.accounting_state_root) if state.accounting_state_root else None),
+        )
+    accounting_apply = apply_intended_action_via_canonical_accounting_v1(
+        session=state.accounting_session,
+        portfolio=state.portfolio,
         instrument_id=state.instrument_id,
         side=intended.intended_side,
         quantity=intended.intended_quantity,
         mark_price=Decimal(str(mark)),
+        session_id=session_id,
+        cycle_index=state.cycle_index,
+        reduce_only=False,
+        state_root=Path(state.accounting_state_root) if state.accounting_state_root else None,
+        persist=bool(state.accounting_state_root),
+        writer_session_id=session_id,
     )
-    fill_dict = None if fill_obj is None else _fill_to_dict(fill_obj)
+    state.last_accounting_result = dict(accounting_apply.get("accounting") or {})
+    fill_dict = accounting_apply.get("fill")
     if fill_dict is not None:
+        fill_dict = dict(fill_dict)
         fill_dict["cycle_index"] = state.cycle_index
         fill_dict["trading_epoch"] = state.trading_epoch
+        fill_dict["fill_input_digest"] = (accounting_apply.get("accounting") or {}).get(
+            "fill_input_digest"
+        )
+        fill_dict["accounting_output_digest"] = (accounting_apply.get("accounting") or {}).get(
+            "accounting_output_digest"
+        )
+        fill_dict["canonical_futures_accounting"] = True
         state.fill_ledger.append(dict(fill_dict))
 
     _update_session_state_from_replay(state, result=replay)
@@ -1016,6 +1060,9 @@ def run_bridge_cycle_v1(
             "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
             "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
             "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
+            "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+            f"FUTURES_ACCOUNTING_RUNTIME_BOUND={state.futures_accounting_bound}",
+            f"ACCOUNTING_SINGLE_WRITER={state.accounting_single_writer_identity}",
             f"PORTFOLIO_SINGLE_WRITER={state.portfolio_single_writer_identity}",
             f"FEATURE_WINDOW_MIN={FEATURE_WINDOW_MIN}",
         ),
@@ -1042,6 +1089,7 @@ def run_bridge_cycles_from_mids_v1(
     mark_price_by_native_id: Optional[Mapping[str, Any]] = None,
     require_selection_binding: bool = True,
     allow_direct_instrument_override: bool = False,
+    accounting_state_root: Optional[Path] = None,
 ) -> tuple[BridgeSessionStateV1, list[BridgeCycleResultV1]]:
     if require_selection_binding and instrument_id != PRODUCTION_INSTRUMENT_ID:
         if not allow_direct_instrument_override:
@@ -1060,6 +1108,8 @@ def run_bridge_cycles_from_mids_v1(
         state.universe_state_root = str(universe_state_root)
     if mark_price_by_native_id is not None:
         state.mark_price_by_native_id = dict(mark_price_by_native_id)
+    if accounting_state_root is not None:
+        state.accounting_state_root = str(accounting_state_root)
     results: list[BridgeCycleResultV1] = []
     for i, mid in enumerate(mid_prices):
         results.append(

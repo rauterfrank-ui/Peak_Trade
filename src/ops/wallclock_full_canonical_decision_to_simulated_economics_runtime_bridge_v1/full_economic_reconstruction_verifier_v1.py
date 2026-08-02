@@ -12,6 +12,10 @@ from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_
     PortfolioEconomicsModelParamsV1,
     SimulatedPortfolioEconomicsModelV1,
 )
+from src.ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1 import (
+    apply_intended_action_via_canonical_accounting_v1,
+    ensure_accounting_session_v1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1 import (
     CAPABILITY_ID,
     EXECUTION_CLASS_ANALYTICAL,
@@ -56,8 +60,10 @@ REQUIRED_CALL_GRAPH: tuple[str, ...] = (
     "intended_side_quantity",
     "analytical_simulated_execution",
     "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
     "session_persistent_portfolio",
     "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
     "simulated_economics_no_order_path",
     "evidence",
     "full_economic_reconstruction_verifier",
@@ -124,9 +130,14 @@ def verify_full_economic_reconstruction_v1(
     if eq0 is None:
         eq0 = Decimal("100000")
 
+    # Cap 3.1: reconstruct through canonical futures accounting when bound in call graph.
+    use_canonical_accounting = any(
+        "canonical_futures_accounting" in (c.get("call_graph") or ()) for c in cycle_ledger
+    )
     model = SimulatedPortfolioEconomicsModelV1(PortfolioEconomicsModelParamsV1(initial_equity=eq0))
+    accounting_session = None
     reconstructed_fills = 0
-    for cycle in cycle_ledger:
+    for i, cycle in enumerate(cycle_ledger):
         action = cycle.get("intended_action") or {}
         side = str(action.get("intended_side") or "HOLD")
         qty = _dec(action.get("intended_quantity") or "0")
@@ -136,14 +147,35 @@ def verify_full_economic_reconstruction_v1(
             blockers.append("MARK_PRICE_MISSING_FOR_RECONSTRUCTION")
             continue
         instrument_id = str(cycle.get("instrument_id") or "")
-        fill = model.apply_intended_action(
-            instrument_id=instrument_id,
-            side=side,
-            quantity=qty if side in {"BUY", "SELL"} else Decimal("0"),
-            mark_price=mark,
-        )
-        if fill is not None:
-            reconstructed_fills += 1
+        if use_canonical_accounting:
+            if accounting_session is None:
+                accounting_session = ensure_accounting_session_v1(
+                    instrument_id=instrument_id,
+                    state_root=None,
+                    initial_equity=eq0,
+                )
+            applied = apply_intended_action_via_canonical_accounting_v1(
+                session=accounting_session,
+                portfolio=model,
+                instrument_id=instrument_id,
+                side=side,
+                quantity=qty if side.upper() in {"BUY", "SELL"} else Decimal("0"),
+                mark_price=mark,
+                session_id="reconstruction",
+                cycle_index=i + 1,
+                persist=False,
+            )
+            if applied.get("fill") is not None:
+                reconstructed_fills += 1
+        else:
+            fill = model.apply_intended_action(
+                instrument_id=instrument_id,
+                side=side,
+                quantity=qty if side in {"BUY", "SELL"} else Decimal("0"),
+                mark_price=mark,
+            )
+            if fill is not None:
+                reconstructed_fills += 1
 
     metrics = model.economic_metrics()
     expected_equity = None
@@ -164,6 +196,8 @@ def verify_full_economic_reconstruction_v1(
         )
     if expected_fees is not None and _dec(expected_fees) != metrics.fees:
         blockers.append(f"FEES_MISMATCH:reconstructed={metrics.fees}:expected={expected_fees}")
+    if use_canonical_accounting:
+        notes.append("RECONSTRUCTED_VIA_CANONICAL_FUTURES_ACCOUNTING")
 
     if fill_ledger is not None and len(fill_ledger) != reconstructed_fills:
         # Allow MTM-only cycles with no fills; ledger length must match reconstructed fills.
