@@ -1,0 +1,273 @@
+{
+  "ACTIVATED": false,
+  "ACTIVATION_CHANGED": false,
+  "BOUND": true,
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "READY_FOR_ACTIVATION",
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS_BEFORE": "BOUND_NOT_ACTIVATED",
+  "CODE_EXISTS": true,
+  "CORE_LOGIC_CHANGED": false,
+  "LIVE_PATH_CHANGED": false,
+  "PRODUCTIVE_CALLER_ADDED": true,
+  "PRODUCTIVE_RUNTIME_ENTRYPOINT": "scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py",
+  "PRODUCTIVE_RUNTIME_HOST": "scripts/ops/run_single_selected_future_runtime_binding_v1.py",
+  "READY_FOR_ACTIVATION": true,
+  "RUNTIME_ACTIVATED": false,
+  "RUNTIME_REACHABLE": true,
+  "call_graph_after": [
+    "authorization_contract_validation",
+    "session_lock",
+    "governed_futures_universe",
+    "productive_futures_ranking",
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "typed_volatility_presence",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
+    "portfolio_risk_state_persistence",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "call_graph_before": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "capability_id": "CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1",
+  "cycles": 4,
+  "effective_config": {
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+    "config_path": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/config/config.toml",
+    "digest": "3dc0943242932c368141d29aa6ff5b6bcafbb6e35ba8569415ccaa79152a6e6c",
+    "enable_live_trading": false,
+    "live_authorized": false,
+    "max_open_positions": 1,
+    "orders_authorized": false,
+    "paper_execution_authorized": false,
+    "runtime_bridge_live_activated": false,
+    "testnet_authorized": false,
+    "volatility_numeric_max_age_enforcement": false
+  },
+  "exit_risk_safety_independence": {
+    "alpha_enabled": false,
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "MARK_PRICE_MISSING"
+    ],
+    "empty_marks_used": true,
+    "exit_risk_safety_preserved": false,
+    "hard_risk_reduce_reachable": true,
+    "kill_switch_reachable": true,
+    "mandatory_exit_reachable": true,
+    "notes": "Alpha blocked by missing mark/typed-vol presence path; exit/risk/safety/reconciliation remain reachable by design.",
+    "ok": true,
+    "reconciliation_reachable": true,
+    "reduce_only_position_protection_reachable": true,
+    "safety_veto_reachable": true
+  },
+  "failure_injection_coverage": [
+    "AUTHORIZATION_CONSUMPTION_ATTEMPTED",
+    "DASHBOARD_DERIVED_AUTHORITY",
+    "DUPLICATE_WRITER",
+    "FORBIDDEN_STATUS",
+    "LIVE_ORDER_PATH_REACHABLE",
+    "MAX_POSITIONS_GREATER_THAN_ONE",
+    "MISSING_MARK_PRICE",
+    "MISSING_SELECTION",
+    "MISSING_TYPED_VOLATILITY_PRESENCE",
+    "MULTI_FUTURE_ENABLED",
+    "NETWORK_SESSION_STARTED",
+    "NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED",
+    "PARALLEL_LEGACY_AUTHORITY",
+    "PARTIAL_RESTART_STATE",
+    "REPOSITORY_SHA_MISMATCH",
+    "RUNTIME_ACTIVATION_ATTEMPTED",
+    "TESTNET_ORDER_PATH_REACHABLE",
+    "UNSAFE_DEFAULT_FALLBACK",
+    "VERIFIER_FAILURE"
+  ],
+  "gate_flags": {
+    "AUTHORIZATION_NOT_CONSUMED": true,
+    "CONFIG_EFFECTIVE_VALUES_PROVEN": true,
+    "CONFIG_TRUTH_ALIGNED": true,
+    "DASHBOARD_CONSUMER_ONLY": true,
+    "DOUBLE_PLAY_PARITY_PROVEN": true,
+    "DOUBLE_PLAY_RUNTIME_REACHABLE": true,
+    "ECONOMIC_VALIDITY_OFFLINE_GATE_STATE_EXPLICIT": true,
+    "EVIDENCE_VERIFIED": true,
+    "EXIT_PATH_PROVEN": true,
+    "EXIT_RISK_SAFETY_INDEPENDENCE_PROVEN": true,
+    "FUTURES_ACCOUNTING_BOUND": true,
+    "FUTURES_ACCOUNTING_RESTART_PROVEN": true,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "MASTER_V2_RUNTIME_REACHABLE": true,
+    "MAX_POSITIONS_EFFECTIVE_IS_1": true,
+    "MULTI_FUTURE_DISABLED": true,
+    "NATIVE_INSTRUMENT_BOUND": true,
+    "NETWORK_SESSION_NOT_STARTED": true,
+    "NO_LIVE_ORDER_PATH": true,
+    "NO_TESTNET_ORDER_PATH": true,
+    "PORTFOLIO_STATE_PERSISTENCE_PROVEN": true,
+    "PRODUCTIVE_ENTRYPOINT_CALL_GRAPH_PROVEN": true,
+    "RANKING_AUTHORITY_BOUND": true,
+    "RECONCILIATION_BEFORE_ALPHA": true,
+    "RECONCILIATION_BOUND": true,
+    "RECONCILIATION_RESTART_PROVEN": true,
+    "RISK_BOUND": true,
+    "RUNTIME_NOT_ACTIVATED": true,
+    "RUNTIME_TRUTH_MAP_CURRENT": true,
+    "SAFETY_BOUND": true,
+    "SINGLE_SELECTION_INTEGRITY_VALID": true,
+    "SINGLE_SELECTION_PERSISTED": true,
+    "SINGLE_SELECTION_RESTART_PROVEN": true,
+    "TYPED_VOLATILITY_PRESENCE_REACHABLE": true,
+    "UNIVERSE_AUTHORITY_BOUND": true,
+    "VOL_MAX_AGE_ENFORCEMENT_DISABLED": true
+  },
+  "instrument_id": "ADA-USDT-SWAP",
+  "negative_injection_results": {
+    "AUTHORIZATION_CONSUMPTION_ATTEMPTED": {
+      "ok": true
+    },
+    "DASHBOARD_DERIVED_AUTHORITY": {
+      "blockers": [],
+      "dashboard_authority_effect": false,
+      "ok": true
+    },
+    "DUPLICATE_WRITER": {
+      "code": "CONFLICTING_WRITER",
+      "ok": true
+    },
+    "FORBIDDEN_STATUS": {
+      "ok": true,
+      "status": "READY_FOR_ACTIVATION"
+    },
+    "LIVE_ORDER_PATH_REACHABLE": {
+      "ok": true
+    },
+    "MAX_POSITIONS_GREATER_THAN_ONE": {
+      "ok": true,
+      "value": 1
+    },
+    "MISSING_MARK_PRICE": {
+      "blockers": [
+        "ALPHA_BLOCKED",
+        "MARK_PRICE_MISSING"
+      ],
+      "ok": true
+    },
+    "MISSING_SELECTION": {
+      "blockers": [
+        "ALPHA_BLOCKED",
+        "CORRUPT_SELECTION",
+        "NO_SELECTION",
+        "SELECTION_DIGEST_MISMATCH",
+        "SELECTION_MISSING"
+      ],
+      "ok": true
+    },
+    "MISSING_TYPED_VOLATILITY_PRESENCE": {
+      "ok": true,
+      "owner": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1"
+    },
+    "MULTI_FUTURE_ENABLED": {
+      "ok": true,
+      "value": false
+    },
+    "NETWORK_SESSION_STARTED": {
+      "ok": true
+    },
+    "NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED": {
+      "ok": true,
+      "value": false
+    },
+    "PARALLEL_LEGACY_AUTHORITY": {
+      "ok": true
+    },
+    "PARTIAL_RESTART_STATE": {
+      "notes": "restart proof enforced in prove_restart_recovery_v1",
+      "ok": true
+    },
+    "REPOSITORY_SHA_MISMATCH": {
+      "blockers": [
+        "ALPHA_BLOCKED",
+        "CORRUPT_SELECTION",
+        "REPOSITORY_SHA_MISMATCH"
+      ],
+      "ok": true
+    },
+    "RUNTIME_ACTIVATION_ATTEMPTED": {
+      "forbidden": [
+        "ACTIVATED",
+        "ACTIVATED_NO_LIVE_ORDERS",
+        "ACTIVE",
+        "LIVE"
+      ],
+      "ok": true,
+      "status": "READY_FOR_ACTIVATION"
+    },
+    "TESTNET_ORDER_PATH_REACHABLE": {
+      "ok": true
+    },
+    "UNSAFE_DEFAULT_FALLBACK": {
+      "notes": "config truth report permissive_fallbacks_found checked in prove_config_effective_values_v1",
+      "ok": true
+    },
+    "VERIFIER_FAILURE": {
+      "ok": true,
+      "owner": "trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0"
+    }
+  },
+  "repository_sha": "58af5100ef8c307f4dbe5e95fe4a13102272a1b0",
+  "restart_recovery": {
+    "alpha_only_after_reconciliation": true,
+    "evidence_checkpoint_state": true,
+    "futures_accounting_state": true,
+    "ok": true,
+    "persisted_selected_future": true,
+    "portfolio_state": true,
+    "ranking_snapshot_reference": true,
+    "reconciliation_state": true,
+    "risk_state": true,
+    "selection_restart": true,
+    "universe_snapshot_reference": true,
+    "venue_native_instrument_binding": true
+  },
+  "selection_id": "ssf_908758d97ca78c6c6c84eac9"
+}

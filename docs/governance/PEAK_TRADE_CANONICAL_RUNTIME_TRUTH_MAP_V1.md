@@ -37,19 +37,20 @@ Navigations-Einstieg (keine Semantik):
 
 | Feld | Wert |
 |------|------|
-| `ORIGIN_MAIN_SHA` | `7a320ff950d5118e27fcff20c42e56803c57ac37` |
-| `VERIFICATION_DATE_UTC` | `2026-08-02T03:20:00Z` |
-| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin/main` before Capability 0.3 branch creation |
+| `ORIGIN_MAIN_SHA` | `58af5100ef8c307f4dbe5e95fe4a13102272a1b0` |
+| `VERIFICATION_DATE_UTC` | `2026-08-02T05:40:00Z` |
+| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin&#47;main` before Capability 4.1 branch creation |
 | `REPOSITORY_ROOT` | `/Users/frnkhrz/Peak_Trade_assessment_93b45a7` |
 | `GIT_DIR` | `/Users/frnkhrz/Peak_Trade/.git/worktrees/Peak_Trade_assessment_93b45a7` |
 | `LOCAL_REAL_REPOSITORY` | `true` (linked worktree of Peak_Trade; direct `.git` access) |
-| `BASELINE_VALIDITY_RULE` | Every later implementation PR must revalidate against its actual `origin/main`. Counts/paths here are evidence snapshots, not timeless constants. |
-| `CONFIG_TRUTH_ALIGNMENT` | Capability 0.3 owner `ops.config_truth_alignment_contract_v1` — Phase-1 effective values proven; `BOUND_NOT_ACTIVATED` preserved |
+| `BASELINE_VALIDITY_RULE` | Every later implementation PR must revalidate against its actual `origin&#47;main`. Counts/paths here are evidence snapshots, not timeless constants. |
+| `CONFIG_TRUTH_ALIGNMENT` | Capability 0.3 owner `ops.config_truth_alignment_contract_v1` — Phase-1 effective values proven; Cap 4.1 readiness preserves non-activation |
 
 ### Verbindliche aktuelle Semantik (Snapshot)
 
 ```text
-CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=READY_FOR_ACTIVATION
+RUNTIME_ACTIVATED=false
 LIVE_TRADING=FAIL_CLOSED
 DASHBOARD=READ_ONLY_CONSUMER
 DASHBOARD_AUTHORITY_EFFECT=NONE
@@ -64,9 +65,12 @@ TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false
 UNIVERSE_RANKING_TRADING_AUTHORITY=false
 PRODUCTIVE_RECONCILIATION_BOUND=true
 FUTURES_ACCOUNTING_RUNTIME_BOUND=true
+FULL_SINGLE_FUTURE_CALL_GRAPH_PROVEN=true
 ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
 ```
+
+**Status note (CURRENT vs TARGET):** `READY_FOR_ACTIVATION` is current runtime readiness after Capability 4.1. It is not activation. Forbidden synonyms remain: `ACTIVATED`, `ACTIVATED_NO_LIVE_ORDERS`, `LIVE`. Runtime activation remains a separate Owner-GO (TARGET / later phase).
 
 ---
 
@@ -110,29 +114,42 @@ Audit classification categories:
 
 | Entrypoint | Class | Activation | Evidence basis |
 |------------|-------|------------|----------------|
-| `scripts/ops/run_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py` | analytical simulated-economics bridge | `BOUND_NOT_ACTIVATED` for live order runtime; analytical simulation path only | package constants `RUNTIME_BRIDGE_LIVE_ACTIVATED=False`, `ORDERS_AUTHORIZED=False`, `LIVE_AUTHORIZED=False` |
+| `scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py` | Cap 4.1 pre-activation closure entrypoint | `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false` | Cap 4.1 evidence; reuses Cap 2.4 host; no live/orders/auth consumption |
+| `scripts/ops/run_single_selected_future_runtime_binding_v1.py` | Cap 2.4 productive single-future analytical host | host reused by Cap 4.1; not a second canonical host | Cap 2.4 / 3.1 / 4.1 evidence |
+| `scripts/ops/run_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py` | analytical simulated-economics bridge | live order path remains non-activated; analytical simulation path only | package constants `RUNTIME_BRIDGE_LIVE_ACTIVATED=False`, `ORDERS_AUTHORIZED=False`, `LIVE_AUTHORIZED=False` |
 | `scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py` | gated wallclock observation | not default-authorized; requires scoped GO/auth artifacts | Map of Truth / IPSO runbooks; non-authorizing by docs |
 | `scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py` | productive public-MD issuance helper | merge does not authorize session | IPSO productive issuance runbook |
 | `scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py` | research/watchdog evidence accumulation | non-enforcing | max-age research contracts (`ENFORCEMENT_ENABLED=False`) |
-| `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` | offline Master V2 / Double Play decision owner | offline / bound-not-activated | feature_state_map_v1; bridge `DECISION_AUTHORITY_OWNER` |
+| `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` | offline Master V2 / Double Play decision owner | offline / non-activated live | feature_state_map_v1; bridge `DECISION_AUTHORITY_OWNER` |
 
 ### 3.2 Reachable vs bound-not-activated vs blocked call-graphs
 
-**Reachable analytical path (current):**
+**Reachable analytical single-future path (current, Cap 4.1 proven offline):**
 
 ```text
-Public Market Data
-→ gated Wallclock Session (when separately authorized)
-→ analytical Decision/Economics Bridge
-→ integrated offline Master V2 / Double Play
-→ intended action
-→ simulated economics
-→ evidence
+Authorization Contract Validation (offline structural; no consumption)
+→ Analytical Session Lock (local; not network trading session)
+→ Governed Futures Universe
+→ Productive Ranking
+→ Persisted Single Selected Future
+→ Selection Integrity / Venue-Native Binding
+→ Cap 2.4 Runtime Binding + Cap 1.1 Reconciliation
+→ Public Market Data
+→ Feature Pipeline
+→ Typed Volatility Presence
+→ Master V2 / Double Play
+→ Risk / Safety / Intent
+→ Simulated Fill + Canonical Futures Accounting
+→ Portfolio/Risk Persistence
+→ Evidence / Verifier
 ```
 
-**Bound but not activated:**
+Status after Cap 4.1: `CANONICAL_RUNTIME_ENTRYPOINT_STATUS=READY_FOR_ACTIVATION` with `RUNTIME_ACTIVATED=false`.
 
-- Canonical runtime bridge live-order path: `RUNTIME_BRIDGE_LIVE_ACTIVATED=false` → status `BOUND_NOT_ACTIVATED`
+**Bound / ready but not activated:**
+
+- Cap 4.1 pre-activation closure: `READY_FOR_ACTIVATION`; activation remains separate Owner-GO
+- Canonical runtime bridge live-order path: `RUNTIME_BRIDGE_LIVE_ACTIVATED=false` (not live-activated)
 - Master V2 / Double Play offline integration: wired in offline replay / analytical bridge; not live-activated
 - Typed volatility presence / numeric max-age telemetry: bound as watchdog/research; enforcement false
 
@@ -217,9 +234,10 @@ phase1_hard_safety_constants
 | Governed Futures Universe Producer (Capability 2.1) | `PRODUCTIVE_CANONICAL` universe snapshot owner `ops.governed_futures_universe_producer_v1`; `CODE_EXISTS+BOUND+PERSISTED+RESTART_PROVEN`; `ACTIVATED=false`; ranking/selection/alpha not granted |
 | Productive Futures Ranking Producer (Capability 2.2) | `PRODUCTIVE_CANONICAL` Top-20 candidate-context owner `ops.productive_futures_ranking_producer_v1`; `CODE_EXISTS+BOUND+PERSISTED+RESTART_PROVEN`; `ACTIVATED=false`; `TOP20_IS_CONTEXT_ONLY=true`; selection/alpha/multi-future not granted |
 | Productive Futures Accounting Runtime Binding (Capability 3.1) | `PRODUCTIVE_CANONICAL` owner `ops.productive_futures_accounting_runtime_binding_v1`; reuses `src/execution/paper/futures_accounting.py`; `FUTURES_ACCOUNTING_RUNTIME_BOUND=true`; `ACTIVATED=false`; live/orders fail-closed |
+| Single Future Canonical Runtime Pre-Activation Closure (Capability 4.1) | `PRODUCTIVE_CANONICAL` owner `ops.single_future_canonical_runtime_pre_activation_closure_v1`; reuses Cap 2.4 host; `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; live/orders/auth-consumption fail-closed |
 
 Verification: `CONFIG_TRUTH_ALIGNMENT_V1`; live remains fail-closed; multi-future unauthorized;
-numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
+numeric max-age non-enforcing; Cap 4.1 readiness is not activation.
 
 ### 3.5 Persistence / evidence / restart / economic gate
 
@@ -227,18 +245,19 @@ numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
 |---------|----------------|-------|
 | Persistence | session/evidence ledgers under governed ops/research paths | no claim of full restart-proven portfolio persistence |
 | Evidence | IPSO / wallclock bridge / vol-max-age research ledgers; progress registry; config truth alignment report | last baseline SHA for this map: `7a320ff95…` |
-| Restart / recovery | DR/runbook surfaces exist; full runtime restart proof | `RESTART_PROVEN=false` for canonical trading runtime (`INSUFFICIENT_EVIDENCE` / `CURRENT_PHASE_GAP`) |
-| Economic Validity Offline Gate | registry authoritative fields | `ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false` / `PASS=false` |
+| Restart / recovery | Cap 4.1 offline restart/recovery probe for recon/universe/ranking/selection/accounting/portfolio/risk/evidence | `RESTART_PROVEN=true` for Cap 4.1 pre-activation offline closure; live activation still forbidden |
+| Economic Validity Offline Gate | registry authoritative fields | `ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false` / `PASS=false` (explicit; Cap 4.1 requires explicit state) |
 | Productive reconciliation in runtime host | bound as mandatory startup gate before first decision cycle (Capability 1.1) | `PRODUCTIVE_RECONCILIATION_BOUND=true`; owner `ops.productive_reconciliation_runtime_binding_v1`; alpha only on MATCH / verified reduce-only recovery; live/orders still fail-closed |
 | Futures accounting in runtime path | bound after simulated fill / before portfolio+risk persistence (Capability 3.1) | `FUTURES_ACCOUNTING_RUNTIME_BOUND=true`; owner `ops.productive_futures_accounting_runtime_binding_v1`; kernel `src/execution/paper/futures_accounting.py`; live/orders still fail-closed |
+| Cap 4.1 pre-activation closure | full single-future call graph proven offline | `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; evidence under `docs/evidence/capability_4_1_single_future_canonical_runtime_pre_activation_closure_v1/` |
 
 ### 3.6 Known gaps (current)
 
-1. Universe → Ranking → Single Selected Future persistence + runtime authority binding — **Universe producer closed by Capability 2.1**; **Ranking Top-20 candidate context closed by Capability 2.2** (`CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1`); **Single Selected Future policy closed by Capability 2.3** (`CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1`; runtime binding Cap 2.4 still open)
-2. Productive reconciliation host binding — **closed by Capability 1.1** (`CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1`); live activation still forbidden
-3. Futures accounting runtime wiring
-4. Canonical runtime activation (still must remain non-live)
-5. Restart/recovery proof for productive runtime — partial for reconciliation startup gate (Capability 1.1); full trading-runtime restart remains open
+1. Universe → Ranking → Single Selected Future persistence + runtime authority binding — **closed by Capabilities 2.1–2.4**
+2. Productive reconciliation host binding — **closed by Capability 1.1**; live activation still forbidden
+3. Futures accounting runtime wiring — **closed by Capability 3.1**
+4. Canonical runtime pre-activation closure — **closed by Capability 4.1** as `READY_FOR_ACTIVATION` (`RUNTIME_ACTIVATED=false`); live activation still forbidden
+5. Canonical runtime activation / shadow-paper evidence program — still open (Phase 5+; separate Owner-GO)
 6. Strategy registry full productive binding
 7. Config truth alignment for `max_open_positions` effective consumers — **closed by Capability 0.3** (`CONFIG_TRUTH_ALIGNMENT_V1`)
 8. Active-set rotation policy — **registered by Capability 0.4** as `DEFERRED_REQUIRED_CAPABILITY` in `PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1` / `docs/governance/deferred_work_recovery_register_v1.json` (Phase 6; not productive Top-5; implementation/activation unauthorized; prior reminder remains `REMINDER_ONLY`)
@@ -312,8 +331,11 @@ Numeric Volatility Max-Age remains watchdog/research/diagnostic/non-enforcing an
 ## 6. Semantik guards (must remain visible)
 
 ```text
-BOUND_NOT_ACTIVATED != READY
-BOUND_NOT_ACTIVATED != ACTIVE
+READY_FOR_ACTIVATION != ACTIVATED
+READY_FOR_ACTIVATION != ACTIVATED_NO_LIVE_ORDERS
+READY_FOR_ACTIVATION != LIVE
+READY_FOR_ACTIVATION != ACTIVE
+RUNTIME_ACTIVATED=false
 BOUND_NOT_ACTIVATED != ACTIVATED
 LIVE_TRADING=FAIL_CLOSED
 DASHBOARD=READ_ONLY_CONSUMER
