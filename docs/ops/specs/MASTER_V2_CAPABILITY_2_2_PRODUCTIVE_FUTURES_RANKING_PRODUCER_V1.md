@@ -74,7 +74,7 @@ CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
 | Surface | Class |
 |---|---|
 | `ops.governed_futures_universe_producer_v1` | `PRODUCTIVE_REUSABLE` (input only) |
-| `research/cross_sectional_*` ranking bindings | `RESEARCH_ONLY` |
+| `research&#47;cross_sectional_*` ranking bindings | `RESEARCH_ONLY` |
 | `webui` universe_selection / landscape ranking | `DASHBOARD_CONSUMER_ONLY` |
 | `analytics.portfolio_builder.select_top_*` | `LEGACY_DEAUTHORIZED` |
 | `master_v2.FuturesRankingSnapshot` | `ORPHANED_REUSABLE_IMPLEMENTATION` (DTO shape only) |
