@@ -37,13 +37,14 @@ Navigations-Einstieg (keine Semantik):
 
 | Feld | Wert |
 |------|------|
-| `ORIGIN_MAIN_SHA` | `4bac3303bd74967c0c81d02c5de16c431301e12e` |
-| `VERIFICATION_DATE_UTC` | `2026-08-02T02:54:14Z` |
-| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin/main` before branch creation |
+| `ORIGIN_MAIN_SHA` | `7a320ff950d5118e27fcff20c42e56803c57ac37` |
+| `VERIFICATION_DATE_UTC` | `2026-08-02T03:20:00Z` |
+| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin/main` before Capability 0.3 branch creation |
 | `REPOSITORY_ROOT` | `/Users/frnkhrz/Peak_Trade_assessment_93b45a7` |
 | `GIT_DIR` | `/Users/frnkhrz/Peak_Trade/.git/worktrees/Peak_Trade_assessment_93b45a7` |
 | `LOCAL_REAL_REPOSITORY` | `true` (linked worktree of Peak_Trade; direct `.git` access) |
 | `BASELINE_VALIDITY_RULE` | Every later implementation PR must revalidate against its actual `origin/main`. Counts/paths here are evidence snapshots, not timeless constants. |
+| `CONFIG_TRUTH_ALIGNMENT` | Capability 0.3 owner `ops.config_truth_alignment_contract_v1` — Phase-1 effective values proven; `BOUND_NOT_ACTIVATED` preserved |
 
 ### Verbindliche aktuelle Semantik (Snapshot)
 
@@ -158,11 +159,14 @@ Public Market Data
 | Economic validity offline gate | progress registry + economic validity policy surfaces | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false` |
 | Live execution | `src&#47;live` fail-closed / not implemented path | `INTENTIONAL_SAFETY_BARRIER` | <!-- pt:ref-target-ignore -->
 
-### 3.4 Active runtime-config truth (no config mutation; documentary)
+### 3.4 Active runtime-config truth (Capability 0.3 aligned)
 
-Documented/code-constant effective safety posture for Phase-1 analytical bridge:
+Phase-1 effective safety posture for productive entrypoints (owner:
+`src&#47;ops&#47;config_truth_alignment_contract_v1.py`):
 
 ```text
+max_open_positions=1
+enable_live_trading=false
 ORDERS_AUTHORIZED=false
 TESTNET_AUTHORIZED=false
 LIVE_AUTHORIZED=false
@@ -171,22 +175,55 @@ CREDENTIALS_AUTHORIZED=false
 AUTO_PROMOTION_AUTHORIZED=false
 ECONOMIC_VALIDITY_PASS=false
 RUNTIME_BRIDGE_LIVE_ACTIVATED=false
-ENFORCEMENT_ENABLED=false   # numeric max-age
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+ENFORCEMENT_ENABLED=false   # numeric max-age; WATCHDOG_ONLY/RESEARCH_ONLY/DIAGNOSTIC_ONLY
+VOLATILITY_NUMERIC_MAX_AGE_ENFORCEMENT=false
 ```
 
-**Config-consumer caveat (`INSUFFICIENT_EVIDENCE` for global effective max positions):**
+**Effective precedence (deterministic):**
 
-- Code default `src/live/risk_limits.py` exposes `max_open_positions = 5` as a class default.
-- Historical/docs surfaces also mention other values (e.g. `10`, `2`).
-- Phase-1 required semantics remain `PHASE_1_MAX_POSITIONS=1` / `SINGLE_SELECTED_FUTURE`.
-- This Truth Map does **not** mutate config. Effective productive consumer proof for every Phase-1 entrypoint is deferred to Capability 0.3 (`Config Truth Alignment`). Classification: `CURRENT_PHASE_GAP` + partial `INSUFFICIENT_EVIDENCE` until consumer-trace closure.
+```text
+phase1_hard_safety_constants
+→ validated_cli_overrides (cannot enable safety flags; max_open_positions must be 1)
+→ peak_config productive path (config/config.toml)
+→ missing safety flags default false
+→ missing max_open_positions FAIL_CLOSED (no fallback to 5 / None / unlimited)
+```
+
+**Missing / invalid semantics:**
+
+| Key / case | Behavior |
+|---|---|
+| missing `max_open_positions` | fail-closed (no fallback to 5) |
+| `max_open_positions` &lt; 1 or &gt; 1 | fail-closed for Phase 1 |
+| missing safety auth flags | default `false` |
+| safety flag `true` in Phase 1 | rejected |
+| malformed boolean | fail-closed |
+| root `config.toml` (`max_open_positions=10`) | `HISTORICAL` / blocked as Phase-1 authority |
+| `config/config.test.toml` (`=5`) | `TEST_ONLY` / blocked |
+| `LiveRiskLimits.from_config` missing→`None` skip | `PRODUCTIVE_LEGACY`; Phase-1 adapter requires exact `1` |
+
+**Productive config consumers (Capability 0.3 trace):**
+
+| Surface | Class |
+|---|---|
+| Wallclock simulated-economics bridge constants | `PRODUCTIVE_CANONICAL` |
+| IPSO wallclock observation / issuance helpers | `PRODUCTIVE_CANONICAL` |
+| Offline Master V2 replay | `PRODUCTIVE_CANONICAL` |
+| Vol max-age research accumulation | `RESEARCH_ONLY` (non-enforcing) |
+| `LiveRiskLimits.from_config` | `PRODUCTIVE_LEGACY` (aligned via Phase-1 adapter) |
+| Universe/ranking as trading authority | `DEAD_OR_UNREACHABLE` |
+| Productive reconciliation host | `DEAD_OR_UNREACHABLE` |
+
+Verification: `CONFIG_TRUTH_ALIGNMENT_V1`; live remains fail-closed; multi-future unauthorized;
+numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
 
 ### 3.5 Persistence / evidence / restart / economic gate
 
 | Surface | Owner / status | Notes |
 |---------|----------------|-------|
 | Persistence | session/evidence ledgers under governed ops/research paths | no claim of full restart-proven portfolio persistence |
-| Evidence | IPSO / wallclock bridge / vol-max-age research ledgers; progress registry | last baseline SHA for this map: `4bac3303…` |
+| Evidence | IPSO / wallclock bridge / vol-max-age research ledgers; progress registry; config truth alignment report | last baseline SHA for this map: `7a320ff95…` |
 | Restart / recovery | DR/runbook surfaces exist; full runtime restart proof | `RESTART_PROVEN=false` for canonical trading runtime (`INSUFFICIENT_EVIDENCE` / `CURRENT_PHASE_GAP`) |
 | Economic Validity Offline Gate | registry authoritative fields | `ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false` / `PASS=false` |
 | Productive reconciliation in runtime host | present but unbound in STEP-29U inventory | `PRODUCTIVE_RECONCILIATION_BOUND=false` |
@@ -200,7 +237,7 @@ ENFORCEMENT_ENABLED=false   # numeric max-age
 4. Canonical runtime activation (still must remain non-live)
 5. Restart/recovery proof for productive runtime
 6. Strategy registry full productive binding
-7. Config truth alignment for `max_open_positions` effective consumers
+7. Config truth alignment for `max_open_positions` effective consumers — **closed by Capability 0.3** (`CONFIG_TRUTH_ALIGNMENT_V1`)
 8. Active-set rotation policy is deferred design reminder only (not productive Top-5)
 
 ### 3.7 Last verifiable evidence anchors
@@ -339,14 +376,15 @@ DOCUMENTS_INVENTORIED=24_PRIMARY_PLUS_FAMILIES
 CURRENT_RUNTIME_TRUTH_DOCUMENTS=12
 TARGET_ARCHITECTURE_DOCUMENTS=8
 HISTORICAL_DOCUMENTS=4
-INSUFFICIENT_EVIDENCE_ITEMS=3
+INSUFFICIENT_EVIDENCE_ITEMS=2
 ```
 
 `INSUFFICIENT_EVIDENCE_ITEMS`:
 
-1. Global effective `max_open_positions` consumer winner across all Phase-1 productive entrypoints (needs Capability 0.3 trace)
-2. Full restart/recovery proof for canonical trading runtime host
-3. Exhaustive futures-accounting owner/consumer matrix beyond unbound claim
+1. Full restart/recovery proof for canonical trading runtime host
+2. Exhaustive futures-accounting owner/consumer matrix beyond unbound claim
+
+Closed by Capability 0.3: global Phase-1 effective `max_open_positions=1` consumer-trace + fail-closed missing/invalid semantics (`CONFIG_TRUTH_ALIGNMENT_V1`).
 
 ---
 
