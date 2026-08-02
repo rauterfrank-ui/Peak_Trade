@@ -976,6 +976,32 @@ Diese Capability erzeugt ausschließlich persistierten Top-20 Candidate Context.
 
 ## Capability 2.3 — Single Selected Future Policy
 
+### Closure markers
+
+```text
+CAPABILITY_ID=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+CODE_EXISTS=true
+BOUND=true
+RUNTIME_REACHABLE=true
+PERSISTED=true
+RESTART_PROVEN=true
+ACTIVATED=false
+AUTHORITY_OWNER=ops.single_selected_future_policy_v1
+PRODUCTIVE_ENTRYPOINT=scripts/ops/run_single_selected_future_policy_v1.py
+SPEC=docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+EVIDENCE=docs/evidence/capability_2_3_single_selected_future_policy_v1/
+SINGLE_SELECTED_FUTURE=true
+SELECTED_FUTURE_COUNT=1
+MAX_POSITIONS_EFFECTIVE=1
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+SELECTION_AUTHORITY_ADDED=true
+ALPHA_AUTHORITY_ADDED=false
+DASHBOARD_AUTHORITY=false
+CORE_LOGIC_CHANGE=false
+ACTIVATION_CHANGED=false
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+```
+
 ### Phase-1 Semantik
 
 Genau ein Instrument besitzt Selection Authority:
@@ -983,24 +1009,26 @@ Genau ein Instrument besitzt Selection Authority:
 ```text
 selected_future_count=1
 max_positions=1
+SINGLE_SELECTED_FUTURE=true
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 ```
 
 ### Selection-Regeln
 
-Die Policy muss definieren:
+Die Policy definiert deterministisch:
 
-- Ranking-Zeitpunkt
-- Mindestdatenqualität
-- Mindesthistorie
-- Tie-Breaker
+- Ranking-Snapshot und Ranking-Zeitpunkt
+- Mindestdatenqualität und Mindesthistorie
+- reproduzierbare Tie-Breaker
 - Refresh-Cadence
 - Hysterese
 - Mindesthaltezeit der Selection
+- Verhalten bei stale/missing/invalid Ranking- oder Instrument-Daten
 - Verhalten bei Datenverlust
-- Verhalten bei Instrument-Invalidität
 - Verhalten bei offener Position
 - Restart Recovery
-- Manual Override Policy
+- Manual Override Policy (`manual_override_allowed=false`, fail-closed)
+- fail-closed Failure Semantics
 - Evidence
 
 ### Offene Position
@@ -1016,6 +1044,10 @@ SELECTED_EXIT_ONLY
 REPLACEMENT_PENDING
 NO_SELECTION
 ```
+
+- keine neue Alpha-Autorität für ein Ersatzinstrument
+- Risk, Safety, Exit und Reconciliation bleiben am offenen Instrument
+- Replacement nur als persistierter `REPLACEMENT_PENDING`-Zustand
 
 ### Persistence
 
@@ -1036,6 +1068,10 @@ repository_sha
 reason_codes
 state
 ```
+
+### Abgrenzung
+
+Diese Capability erzeugt ausschließlich persistierte Selection Authority. Runtime Binding (Cap 2.4), Master V2, Double Play, Execution und Runtime-Aktivierung bleiben außerhalb. Ranking erzeugt Kandidaten, eröffnet aber keine Position. Dashboard bleibt `READ_ONLY_CONSUMER`.
 
 ## Capability 2.4 — Runtime Binding
 
