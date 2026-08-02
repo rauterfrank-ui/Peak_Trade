@@ -11,6 +11,9 @@ from src.ops.phase_9_2_public_md_session_preflight_v1.constants_v1 import (
     PREDECESSOR_CAPABILITY_ID,
     repo_root_v1,
 )
+from src.ops.phase_9_2_public_md_session_preflight_v1.path_portability_v1 import (
+    to_repository_relative_posix_path_v1,
+)
 from src.ops.single_future_stateful_no_order_runtime_activation_v1.config_v1 import (
     load_activation_config_v1,
 )
@@ -52,7 +55,7 @@ def prove_phase91_closed_v1(*, repo_root: Path | None = None) -> dict[str, Any]:
         "capability_id": result.get("capability_id"),
         "expected_capability_id": PREDECESSOR_CAPABILITY_ID,
         "LEGACY_PARALLEL_AUTHORITY_ABSENT": bool(claims.get("LEGACY_PARALLEL_AUTHORITY_ABSENT")),
-        "result_path": str(result_path.relative_to(root)),
+        "result_path": to_repository_relative_posix_path_v1(result_path, repo_root=root),
     }
 
 

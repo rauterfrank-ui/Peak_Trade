@@ -23,22 +23,52 @@ from src.ops.phase_9_2_public_md_session_preflight_v1.constants_v1 import (
     CONFIRM_TOKEN_OWNER,
     PREREGISTRATION_OWNER,
     PUBLIC_MD_SHADOW_AUTH_OWNER,
+    repo_root_v1,
+)
+from src.ops.phase_9_2_public_md_session_preflight_v1.path_portability_v1 import (
+    PathPortabilityError,
+    to_repository_relative_posix_path_v1,
 )
 from src.ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1 import (
     authorization_consumption_v1 as shadow_auth,
 )
 
 
+def _module_path_repository_relative_v1(source_file: str | None, *, repo_root: Path) -> str:
+    """Persist inspect.getsourcefile() as a repository-relative POSIX path."""
+    raw = source_file or ""
+    try:
+        return to_repository_relative_posix_path_v1(raw, repo_root=repo_root)
+    except PathPortabilityError:
+        # Modules are loaded from the package repository even when evidence is
+        # materialized into an isolated fixture root. Bind to package root.
+        return to_repository_relative_posix_path_v1(raw, repo_root=repo_root_v1())
+
+
 def prove_authorization_and_confirm_token_path_v1(
     *,
     repo_root: Path | None = None,
 ) -> dict[str, Any]:
-    _ = repo_root
+    root = Path(repo_root) if repo_root is not None else repo_root_v1()
     # Identify canonical modules (no issuance / consumption in this preflight).
-    confirm_mod = inspect.getsourcefile(confirm_token_v1) or ""
-    prereg_mod = inspect.getsourcefile(preregistration_contract_v1) or ""
-    wallclock_mod = inspect.getsourcefile(wallclock_auth) or ""
-    shadow_mod = inspect.getsourcefile(shadow_auth) or ""
+    # inspect.getsourcefile returns absolute local paths; persist only
+    # repository-relative POSIX paths for portable evidence digests.
+    confirm_mod = _module_path_repository_relative_v1(
+        inspect.getsourcefile(confirm_token_v1),
+        repo_root=root,
+    )
+    prereg_mod = _module_path_repository_relative_v1(
+        inspect.getsourcefile(preregistration_contract_v1),
+        repo_root=root,
+    )
+    wallclock_mod = _module_path_repository_relative_v1(
+        inspect.getsourcefile(wallclock_auth),
+        repo_root=root,
+    )
+    shadow_mod = _module_path_repository_relative_v1(
+        inspect.getsourcefile(shadow_auth),
+        repo_root=root,
+    )
 
     plaintext_guard = "assert_no_plaintext_token_fields" in dir(confirm_token_v1)
     fingerprint_only = "fingerprint_confirm_token" in dir(confirm_token_v1)
