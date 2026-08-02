@@ -9,7 +9,7 @@
   "source_sha256": "efd8e4a29eb5a670f4e4bb7949bbc95b06d6acb773892a8861a79cc1ed3de5d3",
   "repository_base_sha": "a8653d520ba3563dddb41aa175445d14725ac9b9",
   "canonical_document_sha256": "c3c405ebaf1d0086be81b1e99cd939b72bc9809ed6fa497762afbb767ea0fa02",
-  "ratification_commit_sha": "PENDING_UNTIL_COMMIT",
+  "ratification_commit_sha": "6185b3736058a1547c18fa0490edf59e1185ab09",
   "merge_sha": "PENDING_UNTIL_MERGE_TO_ORIGIN_MAIN",
   "verified_at": "2026-08-02T09:48:42Z",
   "no_parallel_semantic_model": true,
