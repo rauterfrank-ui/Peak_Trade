@@ -1,0 +1,166 @@
+{
+  "CALL_ORDER_FROZEN": "true_for_existing_decision_precedence",
+  "CONFIG_CONSUMERS_FROZEN": true,
+  "CORE_LOGIC_CHANGE": false,
+  "MISSING_WIRING_EDGES_MAY_BE_INSERTED_WITHOUT_PRECEDENCE_CHANGE": true,
+  "PRODUCTIVE_CALLERS_ENUMERATED": true,
+  "PRODUCTIVE_SYMBOLS_ENUMERATED": true,
+  "STATE_OWNERSHIP_FROZEN": true,
+  "authority_flags": {
+    "BULL_BEAR_AUTHORITY_EXACT": true,
+    "COMPOSITION_AUTHORITY_EXACT": true,
+    "DOUBLE_PLAY_AUTHORITY_EXACT": true,
+    "DYNAMIC_SCOPE_AUTHORITY_EXACT": true,
+    "EXIT_PRECEDENCE_EXACT": true,
+    "MASTER_V2_AUTHORITY_EXACT": true,
+    "RISK_AUTHORITY_EXACT": true,
+    "SAFETY_AUTHORITY_EXACT": true
+  },
+  "call_graph_before": [
+    "authorization_contract_validation",
+    "session_lock",
+    "governed_futures_universe",
+    "productive_futures_ranking",
+    "persisted_single_selected_future",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "risk_state_from_accounting",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "capability_id": "CAPABILITY_6_0_CANONICAL_TRADING_LOGIC_AUTHORITY_AND_CALL_ORDER_FREEZE_V1",
+  "config_consumers_frozen": {
+    "adverse_exit_distance": "bridge_local_80.0",
+    "candidate_signal_threshold": "bridge_local_policy",
+    "confirmation_epochs": "bridge_local_DirectionalAssessmentPolicyV1(confirmation_epochs=2)",
+    "confirmation_signal_threshold": "bridge_local_0.01",
+    "reversal_distance": "bridge_local_120.0",
+    "up_distance": "bridge_local_200.0"
+  },
+  "missing_wiring_edges": [
+    "host_to_C1_evaluate_distinct_market_observation_v1",
+    "host_to_C3_observation_acceptance_result",
+    "host_owned_confirmation_session_id_stability",
+    "host_persist_ObservationAcceptanceStateV1",
+    "host_persist_DirectionalConfirmationSideStateCarrierV1",
+    "host_restart_reload_confirmation_state"
+  ],
+  "preparation_for": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+  "productive_host_entrypoints": [
+    "scripts/ops/run_single_future_canonical_runtime_deterministic_offline_evidence_v1.py",
+    "scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py::run_bridge_cycle_v1",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py::run_integrated_offline_trading_logic_replay_v1"
+  ],
+  "productive_symbols": {
+    "BullBear": {
+      "authority_exact": true,
+      "owner": "trading.master_v2.directional_assessment_v1 + C3 side carrier",
+      "symbols": [
+        "DirectionalAssessmentSide",
+        "DirectionalConfirmationSideStateCarrierV1"
+      ]
+    },
+    "C1_DistinctMarketObservationAcceptor": {
+      "gap": "G01_C1_NOT_PRODUCTIVELY_BOUND",
+      "owner": "trading.market_state.distinct_market_observation_acceptor_v1",
+      "productive_caller_before": null,
+      "symbols": [
+        "DistinctMarketObservationAcceptorV1",
+        "evaluate_distinct_market_observation_v1",
+        "commit_observation_acceptance_v1",
+        "ObservationAcceptanceResultV1",
+        "ObservationAcceptanceStateV1",
+        "ObservationCandidateV1"
+      ]
+    },
+    "C2_DirectionalConfirmationProgress": {
+      "gap": "G02_C2_CARRIER_NOT_PERSISTED",
+      "owner": "trading.market_state.directional_confirmation_progress_v1",
+      "productive_caller_before": "trading.master_v2.directional_assessment_confirmation_integration_v1",
+      "symbols": [
+        "evaluate_confirmation_progress_v1",
+        "ConfirmationProgressStateV1",
+        "ConfirmationAssessmentStateV1"
+      ]
+    },
+    "C3_DirectionalAssessmentConfirmationIntegration": {
+      "gap": "G03_C3_RECEIVES_NON_ADVANCING_PLACEHOLDER_FROM_HOST",
+      "owner": "trading.master_v2.directional_assessment_confirmation_integration_v1",
+      "productive_caller_before": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "symbols": [
+        "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1",
+        "DirectionalConfirmationSideStateCarrierV1",
+        "non_advancing_observation_acceptance_result_v1"
+      ]
+    },
+    "DoublePlay": {
+      "authority_exact": true,
+      "owner": "trading.master_v2.double_play_composition_matrix_v1 / double_play_entry_exit_policy_v0",
+      "symbols": [
+        "evaluate_double_play_composition_matrix_v1",
+        "evaluate_double_play_entry_exit_policy_v0"
+      ]
+    },
+    "DynamicScope": {
+      "authority_exact": true,
+      "owner": "trading.master_v2 deterministic_scope_event_generator + runtime scope trailing",
+      "persistence_gap": "CAPABILITY_6_2",
+      "symbols": [
+        "generate_deterministic_scope_event",
+        "RuntimeScopeState",
+        "update_dynamic_boundaries"
+      ]
+    },
+    "ExitPrecedence": {
+      "authority_exact": true,
+      "owner": "evaluate_double_play_entry_exit_policy_v0",
+      "producer_binding_gap": "CAPABILITY_6_5"
+    },
+    "MasterV2": {
+      "authority_exact": true,
+      "owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1",
+      "symbols": [
+        "run_integrated_offline_trading_logic_replay_v1"
+      ]
+    },
+    "Risk": {
+      "authority_exact": true,
+      "owner": "integrated offline replay capital risk sizing path"
+    },
+    "Safety": {
+      "authority_exact": true,
+      "owner": "double_play_entry_exit_policy SafetyMode + bridge safety notes"
+    },
+    "SurvivalSuitabilityComposition": {
+      "authority_exact": true,
+      "owner": "trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1",
+      "symbols": [
+        "evaluate_survival_assessment_v1",
+        "evaluate_suitability_binding_v1",
+        "evaluate_double_play_composition_matrix_v1"
+      ]
+    }
+  },
+  "repository_sha": "53153d3ae716e83180291c9f2b1a3980105a60f2",
+  "runbook_vs_runtime_drift": false,
+  "state_owners": {
+    "confirmation_progress_carrier": "C3_DirectionalConfirmationSideStateCarrierV1_caller_owned_by_host",
+    "confirmation_session_id": "host_confirmation_binding_v1",
+    "master_v2_decision": "run_integrated_offline_trading_logic_replay_v1",
+    "observation_acceptance_state": "C1_domain_contract_caller_owned_by_host",
+    "portfolio_accounting": "ProductiveFuturesAccountingSessionV1"
+  }
+}

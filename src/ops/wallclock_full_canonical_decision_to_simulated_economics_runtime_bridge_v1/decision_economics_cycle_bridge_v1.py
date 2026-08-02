@@ -83,6 +83,22 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.feature_regime_pipeline_v1 import (
     compute_feature_regime_from_mid_prices_v1,
 )
+from src.ops.stateful_confirmation_and_c1_productive_binding_v1.constants_v1 import (
+    CALL_GRAPH_C1_RESULT_STEP,
+    CALL_GRAPH_C1_STEP,
+    CALL_GRAPH_C2_STEP,
+    CALL_GRAPH_C3_STEP,
+    CALL_GRAPH_COMMIT_STEP,
+    DEFAULT_VENUE as CONFIRMATION_DEFAULT_VENUE,
+)
+from src.ops.stateful_confirmation_and_c1_productive_binding_v1.host_binding_v1 import (
+    HostConfirmationBindingV1,
+    ObservationCycleKindV1,
+    commit_host_confirmation_after_replay_v1,
+    confirmation_config_digest_v1,
+    ensure_host_confirmation_binding_v1,
+    evaluate_host_observation_acceptance_v1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.intended_action_mapper_v1 import (
     IntendedAnalyticalActionV1,
     map_replay_result_to_intended_analytical_action_v1,
@@ -307,6 +323,12 @@ class BridgeSessionStateV1:
     accounting_state_root: Optional[str] = None
     accounting_single_writer_identity: str = ACCOUNTING_SINGLE_WRITER_IDENTITY
     last_accounting_result: Optional[dict[str, Any]] = None
+    # Capability 6.1 — stateful C1/C2/C3 confirmation binding (caller-owned durable cursor).
+    confirmation_binding: HostConfirmationBindingV1 = field(
+        default_factory=HostConfirmationBindingV1
+    )
+    confirmation_state_root: Optional[str] = None
+    last_confirmation_commit: Optional[dict[str, Any]] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -497,9 +519,14 @@ CALL_GRAPH_V1: tuple[str, ...] = (
     SELECTION_BINDING_STEP,
     RECON_CALL_GRAPH_STEP,
     "okx_public_market_data",
+    CALL_GRAPH_C1_STEP,
+    CALL_GRAPH_C1_RESULT_STEP,
     "feature_pipeline",
     "regime_pipeline",
+    CALL_GRAPH_C2_STEP,
+    CALL_GRAPH_C3_STEP,
     "master_v2_double_play_integrated_offline_replay",
+    CALL_GRAPH_COMMIT_STEP,
     "risk_position_sizing",
     "safety_kernel",
     "intended_side_quantity",
@@ -792,6 +819,10 @@ def run_bridge_cycle_v1(
     repository_sha: str = "OFFLINE_DETERMINISTIC_EVIDENCE",
     reconciliation_state_root: Optional[Path] = None,
     direct_instrument_override: str | None = None,
+    observation_cycle_kind: ObservationCycleKindV1 | str = ObservationCycleKindV1.MARKET_SAMPLE,
+    force_observation_event_time: float | None = None,
+    confirmation_state_root: Optional[Path] = None,
+    persist_confirmation: bool = True,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
@@ -799,6 +830,8 @@ def run_bridge_cycle_v1(
 
     if reconciliation_state_root is not None:
         state.reconciliation_state_root = str(reconciliation_state_root)
+    if confirmation_state_root is not None:
+        state.confirmation_state_root = str(confirmation_state_root)
 
     # Capability 2.4: persisted selection binds the trading instrument before recon/alpha.
     selection_gate = ensure_single_selected_future_runtime_binding_v1(
@@ -831,8 +864,38 @@ def run_bridge_cycle_v1(
     if state.reconciliation_state is not ReconciliationState.RECONCILED:
         raise RuntimeError("RECONCILIATION_STATE_NOT_RECONCILED")
 
-    state.append_mid(mid_price)
+    # Capability 6.1: bind C1 acceptor + stable confirmation session before features/decision.
+    kind = (
+        observation_cycle_kind
+        if isinstance(observation_cycle_kind, ObservationCycleKindV1)
+        else ObservationCycleKindV1(str(observation_cycle_kind))
+    )
+    ensure_host_confirmation_binding_v1(
+        state.confirmation_binding,
+        instrument_id=state.instrument_id,
+        venue=CONFIRMATION_DEFAULT_VENUE,
+        venue_instrument_id=state.venue_native_id or state.instrument_id,
+        repository_sha=repository_sha,
+        config_digest=confirmation_config_digest_v1(),
+        state_root=(Path(state.confirmation_state_root) if state.confirmation_state_root else None),
+    )
+    # Only market samples (incl. duplicate/out-of-order classifications) append price path.
+    if (
+        kind is ObservationCycleKindV1.MARKET_SAMPLE
+        or kind is ObservationCycleKindV1.DUPLICATE_SAMPLE
+    ):
+        state.append_mid(mid_price)
+    elif kind is ObservationCycleKindV1.OUT_OF_ORDER:
+        state.append_mid(mid_price)
     state.cycle_index += 1
+    observation_acceptance_result = evaluate_host_observation_acceptance_v1(
+        state.confirmation_binding,
+        mid_price=float(mid_price),
+        event_ts_unix=float(event_ts_unix),
+        cycle_index=int(state.cycle_index),
+        kind=kind,
+        force_event_time=force_observation_event_time,
+    )
     features = compute_feature_regime_from_mid_prices_v1(state.mid_prices)
     price_path = tuple(state.mid_prices[-PRICE_PATH_MAX_LEN:])
     if len(price_path) < MIN_PRICE_PATH_LEN:
@@ -954,6 +1017,12 @@ def run_bridge_cycle_v1(
         expected_component_contracts=_component_versions(),
         context_reference=f"wallclock-bridge-context-epoch-{state.trading_epoch}",
         now_tick=state.cycle_index,
+        # Capability 6.1 — real C1 result + caller-owned C3 carrier (no non-advancing placeholder).
+        directional_confirmation_progress=state.confirmation_binding.confirmation_side_carrier,
+        observation_acceptance_result=observation_acceptance_result,
+        confirmation_progress_session_id=state.confirmation_binding.confirmation_session_id,
+        confirmation_progress_venue=state.confirmation_binding.venue,
+        confirmation_progress_instrument=state.confirmation_binding.instrument_key(),
     )
 
     replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
@@ -999,6 +1068,20 @@ def run_bridge_cycle_v1(
         state.fill_ledger.append(dict(fill_dict))
 
     _update_session_state_from_replay(state, result=replay)
+
+    # Capability 6.1 — commit C1 acceptance + C3 carrier; optional durable persistence.
+    carrier_after = None
+    if replay.intermediate is not None:
+        carrier_after = replay.intermediate.directional_confirmation_progress_after
+    state.last_confirmation_commit = dict(
+        commit_host_confirmation_after_replay_v1(
+            state.confirmation_binding,
+            observation_acceptance_result=observation_acceptance_result,
+            confirmation_side_carrier_after=carrier_after,
+            persist=bool(persist_confirmation and state.confirmation_state_root),
+            writer_session_id=session_id,
+        )
+    )
 
     sizing_result = str(replay.evidence.risk_sizing_effect or "NONE")
     if replay.intermediate and replay.intermediate.capital_risk_sizing_decision is not None:
@@ -1061,9 +1144,11 @@ def run_bridge_cycle_v1(
             "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
             "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
             "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+            "C1_C2_C3_CONFIRMATION_PRODUCTIVELY_BOUND",
             f"FUTURES_ACCOUNTING_RUNTIME_BOUND={state.futures_accounting_bound}",
             f"ACCOUNTING_SINGLE_WRITER={state.accounting_single_writer_identity}",
             f"PORTFOLIO_SINGLE_WRITER={state.portfolio_single_writer_identity}",
+            f"CONFIRMATION_SESSION_ID={state.confirmation_binding.confirmation_session_id}",
             f"FEATURE_WINDOW_MIN={FEATURE_WINDOW_MIN}",
         ),
     )
