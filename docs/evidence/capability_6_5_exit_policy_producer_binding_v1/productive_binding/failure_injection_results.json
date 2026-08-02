@@ -1,0 +1,7 @@
+{
+  "FAILURE_INJECTION_PROVEN": true,
+  "config_digest_mismatch_fail_closed": true,
+  "corrupt_exit_state_fail_closed": true,
+  "missing_exit_state_fail_closed": true,
+  "writer_conflict_fail_closed": true
+}
