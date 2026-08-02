@@ -71,7 +71,7 @@ volatility_numeric_max_age_enforcement=false
 | Root `config.toml` max_open_positions=10 | `HISTORICAL` (blocked as Phase-1 authority) |
 | `config/config.test.toml` =5 | `TEST_ONLY` (blocked) |
 | Universe/ranking trading authority | `DEAD_OR_UNREACHABLE` |
-| Productive reconciliation host | `DEAD_OR_UNREACHABLE` |
+| Productive reconciliation host | `PRODUCTIVE_CANONICAL` (Capability 1.1 bound; live/orders fail-closed) |
 
 ## Owner module
 

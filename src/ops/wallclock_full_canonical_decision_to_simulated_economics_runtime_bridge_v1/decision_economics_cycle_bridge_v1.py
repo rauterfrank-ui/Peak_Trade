@@ -8,15 +8,33 @@ from __future__ import annotations
 
 import hashlib
 import json
+import tempfile
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal
+from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
 from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1 import (
     SimulatedFillV1,
     SimulatedPortfolioEconomicsModelV1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.constants_v1 import (
+    CALL_GRAPH_STEP as RECON_CALL_GRAPH_STEP,
+    SINGLE_WRITER_IDENTITY,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
+    PortfolioTruthSnapshotV1,
+    PositionTruthV1,
+    ProductiveReconciliationEvidenceV1,
+    ProductiveReconciliationGateResultV1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.startup_gate_v1 import (
+    run_productive_reconciliation_startup_gate_v1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.taxonomy_v1 import (
+    ProductiveReconciliationClass,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
@@ -243,6 +261,13 @@ class BridgeSessionStateV1:
     )
     fill_ledger: list[dict[str, Any]] = field(default_factory=list)
     cycle_ledger: list[dict[str, Any]] = field(default_factory=list)
+    # Capability 1.1 — productive reconciliation startup gate (no implicit RECONCILED).
+    reconciliation_gate_completed: bool = False
+    reconciliation_alpha_enabled: bool = False
+    reconciliation_state: ReconciliationState = ReconciliationState.RECONCILIATION_REQUIRED
+    reconciliation_evidence: Optional[dict[str, Any]] = None
+    reconciliation_state_root: Optional[str] = None
+    portfolio_single_writer_identity: str = SINGLE_WRITER_IDENTITY
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -429,6 +454,7 @@ def _update_session_state_from_replay(
 
 
 CALL_GRAPH_V1: tuple[str, ...] = (
+    RECON_CALL_GRAPH_STEP,
     "okx_public_market_data",
     "feature_pipeline",
     "regime_pipeline",
@@ -445,16 +471,128 @@ CALL_GRAPH_V1: tuple[str, ...] = (
 )
 
 
+def _observed_portfolio_truth_from_bridge_state(
+    state: BridgeSessionStateV1,
+    *,
+    event_ts_unix: float,
+) -> PortfolioTruthSnapshotV1:
+    """Read canonical analytical execution/position state for reconciliation."""
+    snap = state.portfolio.snapshot()
+    positions_raw = (snap.get("state") or {}).get("positions") or {}
+    positions: list[PositionTruthV1] = []
+    for instrument_id, pos in sorted(positions_raw.items()):
+        positions.append(
+            PositionTruthV1.from_signed(
+                instrument_id=str(instrument_id),
+                signed_quantity=pos.get("quantity", "0"),
+                source_id="analytical_execution_state",
+                mark_price=None,
+                event_time_unix=event_ts_unix,
+                wall_time_unix=event_ts_unix,
+            )
+        )
+    cash = (snap.get("state") or {}).get("cash")
+    return PortfolioTruthSnapshotV1(
+        positions=tuple(positions),
+        cash=None if cash is None else Decimal(str(cash)),
+        source_id="analytical_execution_state",
+        event_time_unix=event_ts_unix,
+        wall_time_unix=event_ts_unix,
+    )
+
+
+def ensure_productive_reconciliation_startup_gate_v1(
+    state: BridgeSessionStateV1,
+    *,
+    session_id: str,
+    event_ts_unix: float,
+    repository_sha: str,
+    state_root: Optional[Path] = None,
+    observed: Optional[PortfolioTruthSnapshotV1] = None,
+) -> ProductiveReconciliationGateResultV1:
+    """Mandatory pre-alpha reconciliation; idempotent per session state."""
+    if state.reconciliation_gate_completed:
+        if not state.reconciliation_alpha_enabled:
+            raise RuntimeError("RECONCILIATION_ALPHA_BLOCKED")
+        ev = state.reconciliation_evidence or {}
+        return ProductiveReconciliationGateResultV1(
+            ok=True,
+            alpha_enabled=True,
+            classification=ProductiveReconciliationClass.MATCH,
+            master_v2_reconciliation_state=state.reconciliation_state.value,
+            hard_stop=False,
+            evidence=ProductiveReconciliationEvidenceV1(
+                capability_id="CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
+                schema_version="productive_reconciliation_runtime_binding.v1",
+                owner="ops.productive_reconciliation_runtime_binding_v1",
+                classification=str(ev.get("classification") or "MATCH"),
+                alpha_enabled=True,
+                pre_state_digest=str(ev.get("pre_state_digest") or ""),
+                observed_state_digest=str(ev.get("observed_state_digest") or ""),
+                post_state_digest=str(ev.get("post_state_digest") or ""),
+                reconciliation_decision="CACHED_SESSION_GATE",
+                repository_sha=repository_sha,
+                single_writer_identity=state.portfolio_single_writer_identity,
+            ),
+            blockers=(),
+        )
+
+    root = Path(state_root) if state_root is not None else None
+    if root is None and state.reconciliation_state_root:
+        root = Path(state.reconciliation_state_root)
+    if root is None:
+        root = Path(tempfile.mkdtemp(prefix="peak_trade_recon_bridge_"))
+    state.reconciliation_state_root = str(root)
+
+    observed_snap = observed or _observed_portfolio_truth_from_bridge_state(
+        state, event_ts_unix=event_ts_unix
+    )
+    gate = run_productive_reconciliation_startup_gate_v1(
+        state_root=root,
+        observed=observed_snap,
+        session_id=session_id,
+        repository_sha=repository_sha,
+        now_unix=event_ts_unix,
+        writer_identity=state.portfolio_single_writer_identity,
+    )
+    state.reconciliation_gate_completed = True
+    state.reconciliation_alpha_enabled = bool(gate.alpha_enabled)
+    state.reconciliation_evidence = gate.evidence.to_dict()
+    try:
+        state.reconciliation_state = ReconciliationState(gate.master_v2_reconciliation_state)
+    except Exception:  # noqa: BLE001
+        state.reconciliation_state = ReconciliationState.RECONCILIATION_REQUIRED
+    return gate
+
+
 def run_bridge_cycle_v1(
     state: BridgeSessionStateV1,
     *,
     mid_price: float,
     event_ts_unix: float,
     session_id: str = "wallclock-bridge-session",
+    repository_sha: str = "OFFLINE_DETERMINISTIC_EVIDENCE",
+    reconciliation_state_root: Optional[Path] = None,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
         raise RuntimeError("INVARIANT_VIOLATION_AUTHORITY_FLAGS")
+
+    # Capability 1.1: reconciliation is a mandatory startup gate before alpha.
+    gate = ensure_productive_reconciliation_startup_gate_v1(
+        state,
+        session_id=session_id,
+        event_ts_unix=event_ts_unix,
+        repository_sha=repository_sha,
+        state_root=reconciliation_state_root,
+    )
+    if not gate.alpha_enabled:
+        raise RuntimeError(
+            "RECONCILIATION_ALPHA_BLOCKED:"
+            + ",".join(gate.blockers or (gate.classification.value,))
+        )
+    if state.reconciliation_state is not ReconciliationState.RECONCILED:
+        raise RuntimeError("RECONCILIATION_STATE_NOT_RECONCILED")
 
     state.append_mid(mid_price)
     state.cycle_index += 1
@@ -558,7 +696,7 @@ def run_bridge_cycle_v1(
         side_state=state.side_state,
         direction_state=state.direction_state,
         position_state=state.position_state,
-        reconciliation_state=ReconciliationState.RECONCILED,
+        reconciliation_state=state.reconciliation_state,
         trading_gate=TradingGate.ENTRY_ALLOWED,
         safety_mode=SafetyMode.NORMAL,
         existing_position_side=state.existing_position_side,
@@ -660,6 +798,8 @@ def run_bridge_cycle_v1(
             "NO_ORDERS",
             "NO_BROKER_WRITES",
             "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
+            "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+            f"PORTFOLIO_SINGLE_WRITER={state.portfolio_single_writer_identity}",
             f"FEATURE_WINDOW_MIN={FEATURE_WINDOW_MIN}",
         ),
     )
@@ -677,8 +817,12 @@ def run_bridge_cycles_from_mids_v1(
     start_ts_unix: float = 1_700_000_000.0,
     session_id: str = "wallclock-bridge-probe",
     instrument_id: str = PRODUCTION_INSTRUMENT_ID,
+    repository_sha: str = "OFFLINE_DETERMINISTIC_EVIDENCE",
+    reconciliation_state_root: Optional[Path] = None,
 ) -> tuple[BridgeSessionStateV1, list[BridgeCycleResultV1]]:
     state = BridgeSessionStateV1(instrument_id=instrument_id)
+    if reconciliation_state_root is not None:
+        state.reconciliation_state_root = str(reconciliation_state_root)
     results: list[BridgeCycleResultV1] = []
     for i, mid in enumerate(mid_prices):
         results.append(
@@ -687,6 +831,8 @@ def run_bridge_cycles_from_mids_v1(
                 mid_price=float(mid),
                 event_ts_unix=start_ts_unix + float(i),
                 session_id=session_id,
+                repository_sha=repository_sha,
+                reconciliation_state_root=reconciliation_state_root,
             )
         )
     return state, results

@@ -923,14 +923,16 @@ def consumer_traces() -> tuple[ConsumerTraceRowV1, ...]:
         ),
         ConsumerTraceRowV1(
             entrypoint="reconciliation-related startup paths",
-            consumer_class=ConsumerClass.DEAD_OR_UNREACHABLE.value,
-            config_loader="n/a — PRODUCTIVE_RECONCILIATION_BOUND=false",
-            config_layer="unbound",
-            override_precedence="n/a",
-            parsed_value_surface="no productive recon host binding",
-            validator="Truth Map / STEP-29U inventory",
-            runtime_consumer="none productive",
-            evidence="PRODUCTIVE_RECONCILIATION_BOUND=false",
+            consumer_class=ConsumerClass.PRODUCTIVE_CANONICAL.value,
+            config_loader="ops.productive_reconciliation_runtime_binding_v1",
+            config_layer="productive runtime binding (Capability 1.1)",
+            override_precedence="startup gate before first decision cycle",
+            parsed_value_surface="PRODUCTIVE_RECONCILIATION_BOUND=true; alpha only on MATCH/verified recovery",
+            validator="run_productive_reconciliation_startup_gate_v1",
+            runtime_consumer=(
+                "wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
+            ),
+            evidence="CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
         ),
     )
 

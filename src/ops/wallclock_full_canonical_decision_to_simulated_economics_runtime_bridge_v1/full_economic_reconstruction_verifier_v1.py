@@ -40,6 +40,7 @@ class FullEconomicReconstructionResultV1:
 
 
 REQUIRED_CALL_GRAPH: tuple[str, ...] = (
+    "productive_reconciliation_startup_gate",
     "okx_public_market_data",
     "feature_pipeline",
     "regime_pipeline",

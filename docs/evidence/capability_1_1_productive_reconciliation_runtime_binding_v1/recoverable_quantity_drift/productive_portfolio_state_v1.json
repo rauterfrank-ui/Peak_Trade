@@ -1,0 +1,22 @@
+{
+  "cash": null,
+  "duplicate": false,
+  "event_time_unix": 1700000000.0,
+  "max_age_seconds": null,
+  "missing": false,
+  "positions": [
+    {
+      "event_time_unix": 1700000000.0,
+      "instrument_id": "ETH-USDT-SWAP",
+      "mark_price": null,
+      "side": "LONG",
+      "signed_quantity": "1",
+      "source_id": "repaired",
+      "wall_time_unix": 1700000000.0
+    }
+  ],
+  "source_id": "reconciled_repaired",
+  "stale": false,
+  "wall_time_unix": 1700000000.0,
+  "writer_conflict": false
+}

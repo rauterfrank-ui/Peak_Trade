@@ -1,0 +1,36 @@
+{
+  "alpha_enabled": true,
+  "applied_mutation": {},
+  "capability_id": "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
+  "classification": "MATCH",
+  "config_digest": "75a265d33e95910ab0ee7925e7c4b701ea8ce6c08bd1713e19ad203343124cf1",
+  "event_time_unix": 1700000000.0,
+  "hard_stop": false,
+  "mutation_plan": {
+    "admissible": false,
+    "reason_codes": [
+      "NO_POSITION_CLEAN"
+    ],
+    "steps": []
+  },
+  "notes": [
+    "RECONCILIATION_BEFORE_ALPHA",
+    "NO_NEW_POSITIONS_IN_RECOVERY",
+    "SINGLE_WRITER_ENFORCED"
+  ],
+  "observed_state_digest": "a27fb00dcaf99c7b3ebb0c9f94a9086d1cf74b0ba20da4ca3af1c33b9c529df1",
+  "owner": "ops.productive_reconciliation_runtime_binding_v1",
+  "post_state_digest": "abed18a9d97a5be6dbce48e82006c4600b0f8e513438f516b8f3524fb156aa14",
+  "pre_state_digest": "36f05b835f0a136d251ea747a4b731ce4c9ee703d7b92257bfdaffff99f51506",
+  "reason_codes": [
+    "NO_POSITION_CLEAN"
+  ],
+  "reconciliation_decision": "CONTINUE",
+  "recovery_attempted": false,
+  "recovery_verified": false,
+  "repository_sha": "5824af75e9c65592b362c935ac707064cfaea099",
+  "schema_version": "productive_reconciliation_runtime_binding.v1",
+  "single_writer_identity": "productive_portfolio_position_state_writer_v1",
+  "verification_result": {},
+  "wall_time_unix": 1700000000.0
+}

@@ -62,7 +62,7 @@ PHASE_1_MAX_POSITIONS=1
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false
 UNIVERSE_RANKING_TRADING_AUTHORITY=false
-PRODUCTIVE_RECONCILIATION_BOUND=false
+PRODUCTIVE_RECONCILIATION_BOUND=true
 FUTURES_ACCOUNTING_RUNTIME_BOUND=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
@@ -213,7 +213,7 @@ phase1_hard_safety_constants
 | Vol max-age research accumulation | `RESEARCH_ONLY` (non-enforcing) |
 | `LiveRiskLimits.from_config` | `PRODUCTIVE_LEGACY` (aligned via Phase-1 adapter) |
 | Universe/ranking as trading authority | `DEAD_OR_UNREACHABLE` |
-| Productive reconciliation host | `DEAD_OR_UNREACHABLE` |
+| Productive reconciliation host (Capability 1.1 startup gate on wallclock bridge) | `PRODUCTIVE_CANONICAL` (`PRODUCTIVE_RECONCILIATION_BOUND=true`; live/orders still fail-closed) |
 
 Verification: `CONFIG_TRUTH_ALIGNMENT_V1`; live remains fail-closed; multi-future unauthorized;
 numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
@@ -226,16 +226,16 @@ numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
 | Evidence | IPSO / wallclock bridge / vol-max-age research ledgers; progress registry; config truth alignment report | last baseline SHA for this map: `7a320ff95…` |
 | Restart / recovery | DR/runbook surfaces exist; full runtime restart proof | `RESTART_PROVEN=false` for canonical trading runtime (`INSUFFICIENT_EVIDENCE` / `CURRENT_PHASE_GAP`) |
 | Economic Validity Offline Gate | registry authoritative fields | `ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false` / `PASS=false` |
-| Productive reconciliation in runtime host | present but unbound in STEP-29U inventory | `PRODUCTIVE_RECONCILIATION_BOUND=false` |
+| Productive reconciliation in runtime host | bound as mandatory startup gate before first decision cycle (Capability 1.1) | `PRODUCTIVE_RECONCILIATION_BOUND=true`; owner `ops.productive_reconciliation_runtime_binding_v1`; alpha only on MATCH / verified reduce-only recovery; live/orders still fail-closed |
 | Futures accounting in runtime path | unwired / not runtime-bound | `FUTURES_ACCOUNTING_RUNTIME_BOUND=false` |
 
 ### 3.6 Known gaps (current)
 
 1. Universe → Ranking → Single Selected Future persistence + runtime authority binding
-2. Productive reconciliation host binding
+2. Productive reconciliation host binding — **closed by Capability 1.1** (`CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1`); live activation still forbidden
 3. Futures accounting runtime wiring
 4. Canonical runtime activation (still must remain non-live)
-5. Restart/recovery proof for productive runtime
+5. Restart/recovery proof for productive runtime — partial for reconciliation startup gate (Capability 1.1); full trading-runtime restart remains open
 6. Strategy registry full productive binding
 7. Config truth alignment for `max_open_positions` effective consumers — **closed by Capability 0.3** (`CONFIG_TRUTH_ALIGNMENT_V1`)
 8. Active-set rotation policy — **registered by Capability 0.4** as `DEFERRED_REQUIRED_CAPABILITY` in `PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1` / `docs/governance/deferred_work_recovery_register_v1.json` (Phase 6; not productive Top-5; implementation/activation unauthorized; prior reminder remains `REMINDER_ONLY`)

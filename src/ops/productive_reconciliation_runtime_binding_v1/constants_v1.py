@@ -1,0 +1,32 @@
+"""Constants for CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1."""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1"
+SCHEMA_VERSION = "productive_reconciliation_runtime_binding.v1"
+PACKAGE_MARKER = "PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1=true"
+OWNER = "ops.productive_reconciliation_runtime_binding_v1"
+PRODUCER_FAMILY = OWNER
+AUTHORITY_OWNER = OWNER
+SINGLE_WRITER_IDENTITY = "productive_portfolio_position_state_writer_v1"
+
+PRODUCTIVE_RECONCILIATION_BOUND = True
+CORE_LOGIC_CHANGE = False
+ACTIVATION_STATE = "BOUND_NOT_ACTIVATED"
+RUNTIME_ACTIVATION_ALLOWED = False
+LIVE_AUTHORIZED = False
+ORDERS_AUTHORIZED = False
+PAPER_EXECUTION_AUTHORIZED = False
+TESTNET_AUTHORIZED = False
+MULTI_FUTURE_RUNTIME_AUTHORIZED = False
+
+PHASE1_MAX_OPEN_POSITIONS = 1
+QUANTITY_TOLERANCE_ABS = "0.00000001"
+
+EVIDENCE_FILENAME = "productive_reconciliation_evidence_v1.json"
+PORTFOLIO_STATE_FILENAME = "productive_portfolio_state_v1.json"
+WRITER_LOCK_FILENAME = "productive_portfolio_writer.lock"
+MANIFEST_FILENAME = "MANIFEST.sha256"
+STAGING_DIRNAME_PREFIX = ".productive_reconciliation_staging_"
+
+CALL_GRAPH_STEP = "productive_reconciliation_startup_gate"
