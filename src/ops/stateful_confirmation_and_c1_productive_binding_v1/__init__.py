@@ -1,0 +1,17 @@
+"""CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1."""
+
+from src.ops.stateful_confirmation_and_c1_productive_binding_v1.constants_v1 import (
+    CAPABILITY_ID,
+    C1_PRODUCTIVELY_BOUND,
+    C2_PRODUCTIVELY_BOUND,
+    C3_PRODUCTIVELY_BOUND,
+    PACKAGE_MARKER,
+)
+
+__all__ = [
+    "CAPABILITY_ID",
+    "C1_PRODUCTIVELY_BOUND",
+    "C2_PRODUCTIVELY_BOUND",
+    "C3_PRODUCTIVELY_BOUND",
+    "PACKAGE_MARKER",
+]

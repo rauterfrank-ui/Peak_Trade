@@ -1,0 +1,20 @@
+{
+  "CHECKPOINT_MISSING_AFTER_PRIOR_COMMIT": {
+    "ok": true
+  },
+  "CHECKPOINT_MISSING_BEFORE_FIRST_STATE": {
+    "ok": true
+  },
+  "CONFIG_DIGEST_MISMATCH": {
+    "ok": true
+  },
+  "CONFLICTING_WRITER": {
+    "ok": true
+  },
+  "CORRUPTED_CHECKPOINT": {
+    "ok": true
+  },
+  "REPOSITORY_SHA_MISMATCH": {
+    "ok": true
+  }
+}
