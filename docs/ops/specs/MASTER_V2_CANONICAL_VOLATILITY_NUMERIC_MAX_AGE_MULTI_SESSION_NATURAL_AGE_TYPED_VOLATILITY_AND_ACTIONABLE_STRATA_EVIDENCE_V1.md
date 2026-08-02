@@ -49,7 +49,7 @@ Prior S03 productive writer scaffolds (removed):
 
 | Scaffold | Location |
 |---|---|
-| `old_vol = 0.12` | `s03_productive_session_execution_owner_v1/orchestrator_v1.py` (removed) |
+| `old_vol = 0.12` | `s03_productive_session_execution_owner_v1&#47;orchestrator_v1.py` (removed) |
 | `fresh_vol = 0.12 + (0.0001 * vol_count)` | same |
 | `fresh_decision = "HOLD" if age < 3600 else "BLOCK_ALPHA_AGE_ONLY"` | same |
 
