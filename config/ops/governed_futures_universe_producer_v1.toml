@@ -1,0 +1,26 @@
+# CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1
+# Productive universe-truth config binding only.
+# Does not authorize ranking, selection, alpha, execution, or runtime activation.
+
+capability_id = "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1"
+owner = "ops.governed_futures_universe_producer_v1"
+schema_version = "governed_futures_universe_snapshot.v1"
+producer_version = "governed_futures_universe_producer.v1"
+
+venue = "okx_eea"
+futures_only = true
+spot_excluded = true
+btc_excluded = true
+max_source_age_seconds = 86400.0
+
+alpha_allowed = false
+ranking_authority_added = false
+selection_authority_added = false
+execution_authority_added = false
+dashboard_authority = false
+multi_future_runtime_authorized = false
+max_positions_effective = 1
+runtime_activation_allowed = false
+live_authorized = false
+network_trading_session_allowed = false
+volatility_numeric_max_age_enforcing = false
