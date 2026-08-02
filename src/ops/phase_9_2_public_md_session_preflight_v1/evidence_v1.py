@@ -47,6 +47,9 @@ from src.ops.phase_9_2_public_md_session_preflight_v1.pacing_safety_v1 import (
     prove_pacing_and_staleness_safety_v1,
 )
 from src.ops.phase_9_2_public_md_session_preflight_v1.parity_v1 import prove_phase92_parity_v1
+from src.ops.phase_9_2_public_md_session_preflight_v1.path_portability_v1 import (
+    assert_no_absolute_local_paths_v1,
+)
 from src.ops.phase_9_2_public_md_session_preflight_v1.prerequisites_v1 import (
     prove_phase92_prerequisites_v1,
 )
@@ -63,7 +66,12 @@ def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def _write_json(path: Path, payload: Dict[str, Any]) -> str:
+def _write_json(path: Path, payload: Dict[str, Any], *, repo_root: Path) -> str:
+    assert_no_absolute_local_paths_v1(
+        payload,
+        repo_root=repo_root,
+        context=path.name,
+    )
     text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
@@ -195,24 +203,34 @@ def build_preflight_evidence_v1(
         out_dir = root / "docs" / "evidence" / EVIDENCE_DIRNAME / EVIDENCE_SUBDIR
         digests: Dict[str, str] = {}
         digests[SMOKE_CONTRACT_FILENAME] = _write_json(
-            out_dir / SMOKE_CONTRACT_FILENAME, contract.to_dict()
+            out_dir / SMOKE_CONTRACT_FILENAME, contract.to_dict(), repo_root=root
         )
         digests[SESSION_LADDER_FILENAME] = _write_json(
-            out_dir / SESSION_LADDER_FILENAME, session_ladder
+            out_dir / SESSION_LADDER_FILENAME, session_ladder, repo_root=root
         )
         digests[PREREQUISITE_MATRIX_FILENAME] = _write_json(
-            out_dir / PREREQUISITE_MATRIX_FILENAME, prerequisites
+            out_dir / PREREQUISITE_MATRIX_FILENAME, prerequisites, repo_root=root
         )
-        digests[NETWORK_PROOF_FILENAME] = _write_json(out_dir / NETWORK_PROOF_FILENAME, network)
-        digests[PACING_PROOF_FILENAME] = _write_json(out_dir / PACING_PROOF_FILENAME, pacing)
-        digests[AUTH_PATH_FILENAME] = _write_json(out_dir / AUTH_PATH_FILENAME, auth_path)
-        digests[RESTART_PROOF_FILENAME] = _write_json(out_dir / RESTART_PROOF_FILENAME, restart)
-        digests[PARITY_PROOF_FILENAME] = _write_json(out_dir / PARITY_PROOF_FILENAME, parity)
+        digests[NETWORK_PROOF_FILENAME] = _write_json(
+            out_dir / NETWORK_PROOF_FILENAME, network, repo_root=root
+        )
+        digests[PACING_PROOF_FILENAME] = _write_json(
+            out_dir / PACING_PROOF_FILENAME, pacing, repo_root=root
+        )
+        digests[AUTH_PATH_FILENAME] = _write_json(
+            out_dir / AUTH_PATH_FILENAME, auth_path, repo_root=root
+        )
+        digests[RESTART_PROOF_FILENAME] = _write_json(
+            out_dir / RESTART_PROOF_FILENAME, restart, repo_root=root
+        )
+        digests[PARITY_PROOF_FILENAME] = _write_json(
+            out_dir / PARITY_PROOF_FILENAME, parity, repo_root=root
+        )
         digests[FAILURE_INJECTION_FILENAME] = _write_json(
-            out_dir / FAILURE_INJECTION_FILENAME, failures
+            out_dir / FAILURE_INJECTION_FILENAME, failures, repo_root=root
         )
         digests[CLAIM_MATRIX_FILENAME] = _write_json(
-            out_dir / CLAIM_MATRIX_FILENAME, claims.to_dict()
+            out_dir / CLAIM_MATRIX_FILENAME, claims.to_dict(), repo_root=root
         )
         readiness = {
             "ok": ready,
@@ -231,7 +249,9 @@ def build_preflight_evidence_v1(
                 "do not start network or consume authorization from this preflight."
             ),
         }
-        digests[READINESS_FILENAME] = _write_json(out_dir / READINESS_FILENAME, readiness)
+        digests[READINESS_FILENAME] = _write_json(
+            out_dir / READINESS_FILENAME, readiness, repo_root=root
+        )
         result = {
             "ok": ready,
             "capability_id": CAPABILITY_ID,
@@ -243,17 +263,21 @@ def build_preflight_evidence_v1(
             "claims": claims.to_dict(),
             "gaps": gaps,
         }
-        digests[RESULT_FILENAME] = _write_json(out_dir / RESULT_FILENAME, result)
+        digests[RESULT_FILENAME] = _write_json(out_dir / RESULT_FILENAME, result, repo_root=root)
         evidence_payload = evidence.to_dict()
-        digests[EVIDENCE_FILENAME] = _write_json(out_dir / EVIDENCE_FILENAME, evidence_payload)
+        digests[EVIDENCE_FILENAME] = _write_json(
+            out_dir / EVIDENCE_FILENAME, evidence_payload, repo_root=root
+        )
         evidence.evidence_digest = digests[EVIDENCE_FILENAME]
         # Rewrite evidence with digest filled.
-        digests[EVIDENCE_FILENAME] = _write_json(out_dir / EVIDENCE_FILENAME, evidence.to_dict())
+        digests[EVIDENCE_FILENAME] = _write_json(
+            out_dir / EVIDENCE_FILENAME, evidence.to_dict(), repo_root=root
+        )
         _write_manifest(out_dir, digests)
 
         # Canonical config mirror (preregistration draft for later Owner-GO).
         config_path = root / CONFIG_RELATIVE_PATH
-        _write_json(config_path, contract.to_dict())
+        _write_json(config_path, contract.to_dict(), repo_root=root)
 
         summary = {
             "ok": ready,
@@ -264,7 +288,11 @@ def build_preflight_evidence_v1(
             "smoke_contract_digest": contract.smoke_contract_digest,
             "evidence_digest": evidence.evidence_digest,
         }
-        _write_json(root / "docs" / "evidence" / EVIDENCE_DIRNAME / "SUMMARY.json", summary)
+        _write_json(
+            root / "docs" / "evidence" / EVIDENCE_DIRNAME / "SUMMARY.json",
+            summary,
+            repo_root=root,
+        )
         # Top-level manifest points at preflight artifacts.
         top_manifest = {
             SMOKE_CONTRACT_FILENAME: digests[SMOKE_CONTRACT_FILENAME],

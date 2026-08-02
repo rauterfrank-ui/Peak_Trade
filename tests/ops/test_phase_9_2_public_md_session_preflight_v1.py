@@ -79,10 +79,12 @@ def test_failure_injections() -> None:
 
 
 def test_build_preflight_evidence_ready() -> None:
+    # materialize=False keeps productive evidence/config byte-identical; portable
+    # materialization coverage lives in test_phase_9_2_evidence_generator_portable_path_v1.
     evidence = build_preflight_evidence_v1(
         repository_sha=REPO_SHA,
         repo_root=REPO_ROOT,
-        materialize=True,
+        materialize=False,
     )
     assert evidence.ok is True
     assert evidence.capability_id == CAPABILITY_ID
