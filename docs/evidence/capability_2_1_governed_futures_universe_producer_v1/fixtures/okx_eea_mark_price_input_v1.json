@@ -1,0 +1,22 @@
+{
+  "code": "0",
+  "data": [
+    {
+      "instId": "ETH-USDT-SWAP",
+      "markPx": "2500"
+    },
+    {
+      "instId": "ETH-USDT-250328",
+      "markPx": "2510"
+    },
+    {
+      "instId": "BTC-USDT-SWAP",
+      "markPx": "60000"
+    },
+    {
+      "instId": "SOL-USDT-SWAP",
+      "markPx": "140"
+    }
+  ],
+  "msg": ""
+}

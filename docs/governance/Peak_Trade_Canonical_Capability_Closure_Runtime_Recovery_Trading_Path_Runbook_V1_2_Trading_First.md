@@ -860,6 +860,26 @@ Discovery
 
 ## Capability 2.1 — Governed Futures Universe Producer
 
+### Closure markers
+
+```text
+CAPABILITY_ID=CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1
+CODE_EXISTS=true
+BOUND=true
+RUNTIME_REACHABLE=true
+PERSISTED=true
+RESTART_PROVEN=true
+ACTIVATED=false
+AUTHORITY_OWNER=ops.governed_futures_universe_producer_v1
+PRODUCTIVE_ENTRYPOINT=scripts/ops/run_governed_futures_universe_producer_v1.py
+SPEC=docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+EVIDENCE=docs/evidence/capability_2_1_governed_futures_universe_producer_v1/
+RANKING_CLOSED=false
+SINGLE_SELECTED_FUTURE_CLOSED=false
+MULTI_FUTURE_CLOSED=false
+ALPHA_ALLOWED=false
+```
+
 ### Anforderungen
 
 - OKX EEA Futures-only
@@ -877,11 +897,15 @@ Discovery
 
 ### Output
 
-Versioniertes Universe Snapshot DTO.
+Versioniertes Universe Snapshot DTO (`governed_futures_universe_snapshot.v1`) mit atomarer Persistence, Single-Writer-Schutz und Restart-Load/Validate.
 
 ### Failure
 
-Keine geeigneten Instrumente → keine Selection → Alpha blockiert.
+Keine geeigneten Instrumente → `UNIVERSE_STATUS=NO_ELIGIBLE_INSTRUMENTS` → keine Selection → `ALPHA_ALLOWED=false`.
+
+### Abgrenzung
+
+Diese Capability erzeugt ausschließlich die kanonische Universe-Wahrheit. Ranking, `SINGLE_SELECTED_FUTURE`, Master V2, Double Play, Execution und Runtime-Aktivierung bleiben außerhalb.
 
 ## Capability 2.2 — Productive Ranking Producer
 
