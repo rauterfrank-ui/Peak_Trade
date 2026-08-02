@@ -1,0 +1,8 @@
+{
+  "ACTIVATED_FORBIDDEN": true,
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "READY_FOR_ACTIVATION",
+  "RUNTIME_ACTIVATED": false,
+  "attempted_activation": false,
+  "ok": true,
+  "status_unchanged": true
+}
