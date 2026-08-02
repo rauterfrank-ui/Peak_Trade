@@ -1,10 +1,10 @@
 # Security Notes — Peak_Trade Cybersecurity Baseline Pointers
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
-**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26)
-**Last Reviewed (repo-static):** 2026-07-26
+**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02)
+**Last Reviewed (repo-static):** 2026-08-02 (Post-Capability-7.2 cybersecurity review against `origin/main@08b19c8c83f76ab29d99c8c03b8f34504d2b0021`; prior supply-chain/baseline overlays unchanged)
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
-**Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, or claim unverified scanner results.
+**Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, start a public-MD network session, consume authorization, or claim unverified scanner results.
 
 ---
 
@@ -28,6 +28,7 @@
 | Required CI contexts (branch protection sync, repo-evidenced) | [`config/ci/required_status_checks.json`](config/ci/required_status_checks.json) |
 | Dependency audit workflow | [`.github/workflows/audit.yml`](.github/workflows/audit.yml) |
 | Manual full audit + optional SBOM export | [`.github/workflows/full_audit_weekly.yml`](.github/workflows/full_audit_weekly.yml) + [`scripts/ops/run_full_audit.sh`](scripts/ops/run_full_audit.sh) |
+| Post-Capability-7.2 no-order runtime cybersecurity review | [`docs/evidence/post_capability_7_2_cybersecurity_review_v1/`](docs/evidence/post_capability_7_2_cybersecurity_review_v1/) + Truth Map `CYBERSECURITY_REVIEW_CURRENT` in [`docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) |
 
 **Docs ≠ Approval. AI ≠ Authority. Secret names ≠ secret values.**
 
@@ -121,6 +122,27 @@ Do **not** treat this file as live authorization. Relevant gates live in Master 
 - `TESTNET=false`
 
 Docs live-enable pattern guard: [`scripts/ci/check_docs_no_live_enable_patterns.sh`](scripts/ci/check_docs_no_live_enable_patterns.sh).
+
+### 6.1 Post-Capability-7.2 cybersecurity review (2026-08-02)
+
+Read-only security review of the activated single-future stateful no-order runtime against `origin/main@08b19c8c83f76ab29d99c8c03b8f34504d2b0021`.
+
+| Invariant | Proven |
+|-----------|--------|
+| `REAL_EXECUTION_ADAPTER_CONSTRUCTED` | `false` |
+| `EXCHANGE_ORDER_SUBMIT_REACHABLE` | `false` |
+| `EXCHANGE_CREDENTIAL_ACCESS_REACHABLE` | `false` |
+| `PRIVATE_ENDPOINT_REACHABLE` / `PUBLIC_MD_PRIVATE_ENDPOINT_REACHABLE` | `false` |
+| `AUTH_HEADER_PRESENT` | `false` |
+| `HTTP_METHOD_ALLOWLIST_GET_ONLY` | `true` |
+| `NETWORK_ALLOWLIST_PUBLIC_MARKET_DATA_ONLY` | `true` |
+| `SIMULATED_EXECUTION_PORT_SEPARATE_FROM_REAL_EXECUTION_PORT` | `true` |
+| `NO_REAL_SUBMIT_ORDER_INTERFACE_IN_NO_ORDER_HOST` | `true` |
+| Cap 7.2 evidence plaintext secret/token scan | no hits |
+| `NOTION_RUNTIME_AUTHORITY` / `NOTION_TRADING_AUTHORITY` | `false` |
+| `NEXT_RUNTIME_RUN_ALLOWED` | remains `false` (review alone does not authorize a run) |
+
+Durable evidence: [`docs/evidence/post_capability_7_2_cybersecurity_review_v1/`](docs/evidence/post_capability_7_2_cybersecurity_review_v1/). Residual low hardening note only: PSO `confirm_token` log-redaction helper is token-key focused; Cap 7.2 never constructs auth headers, and canonical `scripts/security/secret_hygiene_redaction_v1.py` redacts Authorization headers for logging/evidence export.
 
 ---
 
