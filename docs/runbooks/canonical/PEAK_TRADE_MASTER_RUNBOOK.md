@@ -28,8 +28,9 @@ exchange-credential use, no real-capital movement\
 **RATIFICATION_STATE:**
 `OWNER_RATIFIED_AND_MERGE_SHA_BOUND`\
 **REPOSITORY_SHA:** `830441674cd931484e3a88ec441f2e08562c42d2`\
-**DOCUMENT_SHA256:** `a147161e3b26330c77905784da042980e76bb31c14c422ef0341627e476b128d`\
-**VERIFIED_AT:** `2026-08-02T10:12:44Z`\
+**DOCUMENT_SHA256_AUTHORITY:** `RATIFICATION_MANIFEST_CANONICAL_DOCUMENT_SHA256`\
+**DOCUMENT_SHA256_LOCATION:** `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json`\
+**VERIFIED_AT:** `2026-08-02T12:25:09Z`\
 **STALE_IF_HEAD_DIFFERS:** `true`
 
 ------------------------------------------------------------------------
@@ -2905,11 +2906,26 @@ Required canonical metadata after merge:
 RATIFIED_BY_OWNER=true
 REPOSITORY_PATH=<canonical path>
 REPOSITORY_SHA=<merge sha>
-DOCUMENT_SHA256=<digest>
+DOCUMENT_SHA256_AUTHORITY=RATIFICATION_MANIFEST_CANONICAL_DOCUMENT_SHA256
+DOCUMENT_SHA256_LOCATION=<ratification manifest path>
 VERIFIED_AT=<timestamp>
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 STALE_IF_HEAD_DIFFERS=true
+```
+
+Binding digest definition:
+
+``` text
+DIGEST_MODEL=EXTERNAL_MANIFEST_SINGLE_RAW_BYTE_DIGEST_AUTHORITY
+DIGEST_AUTHORITY_FIELD=canonical_document_sha256
+DIGEST_AUTHORITY_LOCATION=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json
+canonical_document_sha256 is the sole authoritative raw-byte digest of this runbook.
+It is computed over the complete final runbook file bytes
+(hashlib.sha256(runbook.read_bytes()).hexdigest() / shasum -a 256).
+This runbook does not embed its own raw-byte digest numerically.
+Historical or prior digests may appear only in expressly historical-named fields.
+No field named DOCUMENT_SHA256 may claim a parallel raw-digest authority.
 ```
 
 The document must never authorize activation, network sessions,
