@@ -26,10 +26,10 @@ exchange-credential use, no real-capital movement\
 **DASHBOARD_AUTHORITY_EFFECT:** `NONE`\
 **REVISION:** `V2.3_SEMANTIC_INTEGRATION_FULL_AUTONOMY_TARGET_RELEASE`\
 **RATIFICATION_STATE:**
-`OWNER_RATIFIED_PENDING_MERGE_SHA_BINDING`\
-**REPOSITORY_SHA:** `PENDING_UNTIL_MERGE_TO_ORIGIN_MAIN`\
-**DOCUMENT_SHA256:** `PENDING_SEE_RATIFICATION_MANIFEST`\
-**VERIFIED_AT:** `PENDING_SEE_RATIFICATION_MANIFEST`\
+`OWNER_RATIFIED_AND_MERGE_SHA_BOUND`\
+**REPOSITORY_SHA:** `830441674cd931484e3a88ec441f2e08562c42d2`\
+**DOCUMENT_SHA256:** `a147161e3b26330c77905784da042980e76bb31c14c422ef0341627e476b128d`\
+**VERIFIED_AT:** `2026-08-02T10:12:44Z`\
 **STALE_IF_HEAD_DIFFERS:** `true`
 
 ------------------------------------------------------------------------
@@ -40,7 +40,7 @@ This runbook is the Owner-ratified canonical implementation and closure plan
 for completing Peak_Trade as a coherent, stateful, restart-safe and
 evidence-proven trading runtime while keeping all exchange-order paths
 disabled. Repository working authority is established by placement and Owner
-ratification; merge-SHA binding remains pending in the ratification manifest.
+ratification; merge-SHA binding is recorded in the ratification manifest.
 
 It defines:
 
