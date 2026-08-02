@@ -41,9 +41,9 @@ Navigations-Einstieg (keine Semantik):
 
 | Feld | Wert |
 |------|------|
-| `ORIGIN_MAIN_SHA` | `92d223830f23cc6034704898f5b96ad2ddffe971` |
-| `VERIFICATION_DATE_UTC` | `2026-08-02T18:15:00Z` |
-| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin&#47;main` after Capability 7.2 merge (PR #5656); post-Cap-7.2 documentation truth-map alignment only |
+| `ORIGIN_MAIN_SHA` | `08b19c8c83f76ab29d99c8c03b8f34504d2b0021` |
+| `VERIFICATION_DATE_UTC` | `2026-08-02T18:30:16Z` |
+| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin&#47;main` at Cap 7.2 truth-map alignment (PR #5657); Post-Capability-7.2 cybersecurity review against that SHA (docs/evidence only; no runtime/network/auth session) |
 | `REPOSITORY_ROOT` | `/Users/frnkhrz/Peak_Trade_assessment_93b45a7` |
 | `GIT_DIR` | `/Users/frnkhrz/Peak_Trade/.git/worktrees/Peak_Trade_assessment_93b45a7` |
 | `LOCAL_REAL_REPOSITORY` | `true` (linked worktree of Peak_Trade; direct `.git` access) |
@@ -87,14 +87,14 @@ FULL_SINGLE_FUTURE_CALL_GRAPH_PROVEN=true
 ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
 NEXT_RUNTIME_RUN_ALLOWED=false
-NOTION_REPOSITORY_MIRROR_CURRENT=false
-CYBERSECURITY_REVIEW_CURRENT=false
+NOTION_REPOSITORY_MIRROR_CURRENT=true
+CYBERSECURITY_REVIEW_CURRENT=true
 STRATEGY_REGISTRY_STATUS=DEFERRED_REQUIRED_CAPABILITY
 CAP72_WIRING_BLOCKER=false
 PHASE_9_2_LONG_RUNNING_PUBLIC_MD_EVIDENCE_DEPENDENCY=true
 ```
 
-**Status note (CURRENT vs TARGET):** Capability 7.2 activates the **internal** canonical stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` / `SIMULATED_EXECUTION_ACTIVE=true`) with `PUBLIC_MD_RUNTIME_CAPABLE=true`, but **does not** prove an observed public-MD network run (`PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`, `NETWORK_SESSION_STARTED=false`). Binding inequality: `PUBLIC_MD_RUNTIME_CAPABLE != PUBLIC_MD_NETWORK_SESSION_OBSERVED`. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Pre-run gates that this documentation capability must not flip: `NEXT_RUNTIME_RUN_ALLOWED=false`, `NOTION_REPOSITORY_MIRROR_CURRENT=false`, `CYBERSECURITY_REVIEW_CURRENT=false`. Phase 9.1 Strategy Registry = `DEFERRED_REQUIRED_CAPABILITY` (`CAP72_WIRING_BLOCKER=false`; dependency-relevant before Phase 9.2 long-running public-MD evidence). Phase 9.2 remains the separate long-running public-MD simulation evidence program and is **not** prepared or started by this documentation alignment.
+**Status note (CURRENT vs TARGET):** Capability 7.2 activates the **internal** canonical stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` / `SIMULATED_EXECUTION_ACTIVE=true`) with `PUBLIC_MD_RUNTIME_CAPABLE=true`, but **does not** prove an observed public-MD network run (`PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`, `NETWORK_SESSION_STARTED=false`). Binding inequality: `PUBLIC_MD_RUNTIME_CAPABLE != PUBLIC_MD_NETWORK_SESSION_OBSERVED`. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Post-Capability-7.2 cybersecurity review (`POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1`) proves physical execution separation, public-MD GET-only allowlist, credential/private-endpoint negative controls, and no plaintext secret/token exposure in Cap 7.2 evidence; evidence under `docs/evidence/post_capability_7_2_cybersecurity_review_v1/`. `CYBERSECURITY_REVIEW_CURRENT=true` and Notion repository mirror current=`true` do **not** authorize a public-MD network run: `NEXT_RUNTIME_RUN_ALLOWED=false` remains until separate explicit Owner-GO. Phase 9.1 Strategy Registry = `DEFERRED_REQUIRED_CAPABILITY` (`CAP72_WIRING_BLOCKER=false`; dependency-relevant before Phase 9.2 long-running public-MD evidence). Phase 9.2 remains the separate long-running public-MD simulation evidence program and is **not** prepared or started by this cybersecurity review.
 
 ---
 
@@ -192,7 +192,7 @@ Cap 4.1/5.1 package constants and evidence still correctly record their own `REA
 - Top-20 → Top-5 productive rotation (`TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false`)
 - Universe/ranking as trading authority (`UNIVERSE_RANKING_TRADING_AUTHORITY=false`)
 - Dashboard write/trading input (`DASHBOARD_TRADING_INPUT=false`)
-- Next public-MD runtime run (`NEXT_RUNTIME_RUN_ALLOWED=false`) until separate Owner-GO after Notion mirror + cybersecurity review
+- Next public-MD runtime run (`NEXT_RUNTIME_RUN_ALLOWED=false`) until separate explicit Owner-GO (Notion mirror current and cybersecurity review current are satisfied; they do not alone authorize a run)
 
 ### 3.3 Authority owners by capability (documentary)
 
@@ -386,8 +386,8 @@ TESTNET_ORDERS=false
 PAPER_EXCHANGE_ORDERS=false
 NETWORK_SESSION_STARTED=false
 NEXT_RUNTIME_RUN_ALLOWED=false
-NOTION_REPOSITORY_MIRROR_CURRENT=false
-CYBERSECURITY_REVIEW_CURRENT=false
+NOTION_REPOSITORY_MIRROR_CURRENT=true
+CYBERSECURITY_REVIEW_CURRENT=true
 DASHBOARD=READ_ONLY_CONSUMER
 DASHBOARD_AUTHORITY_EFFECT=NONE
 DASHBOARD_TRADING_INPUT=false
@@ -403,7 +403,7 @@ TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false
 
 **`RUNTIME_ACTIVATED` ambiguity resolution:** The unqualified global guard `RUNTIME_ACTIVATED=false` is **not** current Cap 7.2 truth. Cap 4.1/5.1 (and similar pre-activation packages) retain package-local `RUNTIME_ACTIVATED=false` as a **historical pre-activation guard**. Authoritative current no-order activation truth is Cap 7.2: `RUNTIME_ACTIVATED=true` with `RUNTIME_ACTIVATED_SCOPE=CAP72_INTERNAL_STATEFUL_NO_ORDER_ONLY`, while `PUBLIC_MD_NETWORK_SESSION_OBSERVED=false` and `NETWORK_SESSION_STARTED=false`.
 
-**Master Runbook §22 “Immediate Next Capability”:** relative to current `ORIGIN_MAIN_SHA=92d223830f23cc6034704898f5b96ad2ddffe971`, the ratified Master Runbook section naming Cap 6.1 as the immediate next capability is **stale**. The runbook remains Owner-ratified semantic authority with `REPOSITORY_SHA=<ratification SHA>` and `STALE_IF_HEAD_DIFFERS=true`; this Truth Map carries the post-Cap-7.2 Ist-Zustand without silently rewriting the ratified runbook body.
+**Master Runbook §22 “Immediate Next Capability”:** relative to current `ORIGIN_MAIN_SHA=08b19c8c83f76ab29d99c8c03b8f34504d2b0021`, the ratified Master Runbook section naming Cap 6.1 as the immediate next capability is **stale**. The runbook remains Owner-ratified semantic authority with `REPOSITORY_SHA=<ratification SHA>` and `STALE_IF_HEAD_DIFFERS=true`; this Truth Map carries the post-Cap-7.2 Ist-Zustand (including post-activation cybersecurity review) without silently rewriting the ratified runbook body.
 
 Protected cores (must not be changed by this documentation capability):
 
@@ -421,7 +421,7 @@ Legend for `DOCUMENT_CLASS_*`:
 
 | DOCUMENT_PATH | CLASS_CURRENT | CLASS_PROPOSED | LAST_RELEVANT_SHA_OR_DATE | RUNTIME_CLAIMS | TARGET_ARCHITECTURE_CLAIMS | AUTHORITY_CLAIMS | ACTIVATION_CLAIMS | CONFLICTS_WITH_CURRENT_REPOSITORY | REQUIRED_CORRECTION | CORRECTION_APPLIED |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md` | CURRENT | CURRENT | `92d223830f23cc6034704898f5b96ad2ddffe971` / 2026-08-02 post-Cap-7.2 alignment | Cap 7.2 Ist-Zustand; no public-MD network session | separated §4 | documentary only | Cap 7.2 no-order only; `NEXT_RUNTIME_RUN_ALLOWED=false` | prior `ORIGIN_MAIN_SHA` lag corrected | align post Cap 7.2 | yes |
+| `docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md` | CURRENT | CURRENT | `08b19c8c83f76ab29d99c8c03b8f34504d2b0021` / 2026-08-02 post-Cap-7.2 cybersecurity review | Cap 7.2 Ist-Zustand; cyber review current; no public-MD network session | none §4 | documentary only | Cap 7.2 no-order only; `NEXT_RUNTIME_RUN_ALLOWED=false`; `CYBERSECURITY_REVIEW_CURRENT=true` | prior SHA lag + cyber-false corrected | align post Cap 7.2 cyber review | yes |
 | `docs/governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md` | CURRENT+working | CURRENT+working | baseline `4bac3303…` | BOUND_NOT_ACTIVATED etc. | §1.1 target separated | owner/operator working authority | fail-closed | internal title V1.1 vs filename V1_2 | store + note mismatch; do not silently rewrite | yes (stored; mismatch documented; repo-admission token encoding + trailing-whitespace normalization only) |
 | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` | navigation | navigation + CURRENT pointer | main @ baseline | LIVE/ORDERS false | autonomy wording risk | no semantics | none | “vollautonomes Handelssystem” can be read as Ist | clarify target vs current; add Truth Map pointer + DOCUMENT_CLASS | yes |
 | `docs/governance/feature_state_map_v1.md` | CURRENT snapshot | CURRENT | header SHA `2f1672bee…` / 2026-07-05 | BOUND_NOT_ACTIVATED; 0 live ops | none primary | decision-core owners | none live | older SHA than baseline | add DOCUMENT_CLASS; keep snapshot caveat | yes |
