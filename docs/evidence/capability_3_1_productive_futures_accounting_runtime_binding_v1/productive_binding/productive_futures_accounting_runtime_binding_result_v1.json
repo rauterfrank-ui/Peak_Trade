@@ -1,0 +1,999 @@
+{
+  "ACTIVATION_CHANGED": false,
+  "AUTHORIZATION_CONSUMED": false,
+  "CANONICAL_KERNEL_REUSED": true,
+  "CORE_LOGIC_CHANGE": false,
+  "FUTURES_ACCOUNTING_RUNTIME_BOUND": true,
+  "LIVE_PATH_CHANGED": false,
+  "NETWORK_SESSION_STARTED": false,
+  "PRODUCTIVE_CALLER_ADDED": true,
+  "RUNTIME_REACHABLE": true,
+  "accounting_evidence": {
+    "accounting_authority_after": "ops.productive_futures_accounting_runtime_binding_v1",
+    "accounting_authority_before": "ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1",
+    "accounting_output_digests": [],
+    "call_graph_after": [
+      "persisted_single_selected_future",
+      "selection_integrity_freshness_validation",
+      "ranking_snapshot_reference_validation",
+      "governed_universe_instrument_validation",
+      "venue_native_instrument_binding",
+      "single_selected_future_runtime_binding",
+      "productive_reconciliation_startup_gate",
+      "okx_public_market_data",
+      "feature_pipeline",
+      "regime_pipeline",
+      "master_v2_double_play_integrated_offline_replay",
+      "risk_position_sizing",
+      "safety_kernel",
+      "intended_side_quantity",
+      "analytical_simulated_execution",
+      "simulated_fill_fee_slippage",
+      "canonical_futures_accounting",
+      "session_persistent_portfolio",
+      "realized_unrealized_pnl_equity_drawdown",
+      "risk_state_from_accounting",
+      "simulated_economics_no_order_path",
+      "evidence",
+      "full_economic_reconstruction_verifier"
+    ],
+    "call_graph_before": [
+      "persisted_single_selected_future",
+      "selection_integrity_freshness_validation",
+      "ranking_snapshot_reference_validation",
+      "governed_universe_instrument_validation",
+      "venue_native_instrument_binding",
+      "single_selected_future_runtime_binding",
+      "productive_reconciliation_startup_gate",
+      "okx_public_market_data",
+      "feature_pipeline",
+      "regime_pipeline",
+      "master_v2_double_play_integrated_offline_replay",
+      "risk_position_sizing",
+      "safety_kernel",
+      "intended_side_quantity",
+      "analytical_simulated_execution",
+      "simulated_fill_fee_slippage",
+      "session_persistent_portfolio",
+      "realized_unrealized_pnl_equity_drawdown",
+      "simulated_economics_no_order_path",
+      "evidence",
+      "full_economic_reconstruction_verifier"
+    ],
+    "canonical_kernel_path": "src/execution/paper/futures_accounting.py",
+    "canonical_kernel_reused": true,
+    "capability_id": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+    "config_digest": "e0677483a3a086db6fd05c8150a95a3acc011b2784eace6a7e11fe83ff7d1261",
+    "contract_metadata_digest": "6e803e292289711557d15c44e30f3927458dac3b619f372a7f4909f7b24354cc",
+    "core_logic_change": false,
+    "failure_injection_results": {
+      "CONFLICTING_WRITER": {
+        "code": "CONFLICTING_WRITER",
+        "ok": true
+      },
+      "DUPLICATE_FILL_IDEMPOTENT": {
+        "action_code": "IDEMPOTENT_REPLAY",
+        "ok": true
+      },
+      "INVALID_CONTRACT_METADATA": {
+        "code": "INVALID_CONTRACT_METADATA",
+        "ok": true
+      },
+      "MISSING_MARK": {
+        "code": "MISSING_MARK_PRICE",
+        "ok": true
+      },
+      "OVER_REDUCE_FLIP": {
+        "code": "OVER_REDUCE",
+        "ok": true
+      },
+      "PERSISTENCE_INTERRUPTION": {
+        "code": "PERSISTENCE_INTERRUPTION",
+        "ok": true
+      },
+      "REDUCE_ONLY_VIOLATION": {
+        "code": "REDUCE_ONLY_VIOLATION",
+        "ok": true
+      },
+      "ZERO_QUANTITY": {
+        "code": "ZERO_QUANTITY",
+        "ok": true
+      }
+    },
+    "fill_input_digests": [],
+    "futures_accounting_runtime_bound": true,
+    "legacy_authority_check": {
+      "allowlist_selection_authority": false,
+      "canonical_kernel_owner": "src.execution.paper.futures_accounting",
+      "canonical_kernel_path": "src/execution/paper/futures_accounting.py",
+      "canonical_kernel_reused": true,
+      "dashboard_authority_effect": false,
+      "direct_instrument_override_allowed": false,
+      "legacy_or_local_surfaces": [
+        {
+          "notes": "Fill/economics shell may remain for non-productive research; Cap 3.1 productive PnL authority is canonical futures_accounting via binding.",
+          "path": "src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py",
+          "productive_accounting_authority": false,
+          "role": "LEGACY_SIMULATED_PORTFOLIO_SHELL"
+        },
+        {
+          "path": "src/execution/position_ledger.py",
+          "productive_accounting_authority": false,
+          "role": "EXECUTION_LEDGER_LOCAL_ACCOUNTING"
+        },
+        {
+          "path": "src/execution/ledger/pnl.py",
+          "productive_accounting_authority": false,
+          "role": "EXECUTION_LEDGER_LOCAL_ACCOUNTING"
+        },
+        {
+          "path": "src/backtest/p28/accounting_v1.py",
+          "productive_accounting_authority": false,
+          "role": "BACKTEST_LOCAL"
+        },
+        {
+          "path": "src/backtest/p29/accounting_v2.py",
+          "productive_accounting_authority": false,
+          "role": "BACKTEST_LOCAL"
+        }
+      ],
+      "productive_accounting_authority": "ops.productive_futures_accounting_runtime_binding_v1",
+      "second_accounting_kernel_created": false,
+      "single_writer_identity": "productive_futures_accounting_portfolio_writer_v1"
+    },
+    "notes": [
+      "CAPABILITY_3_1_PRODUCTIVE_BINDING",
+      "REACHABLE_VIA_CAPABILITY_2_4_ENTRYPOINT_HOST",
+      "FUTURES_ACCOUNTING_RUNTIME_BOUND=True"
+    ],
+    "owner": "ops.productive_futures_accounting_runtime_binding_v1",
+    "portfolio_state_digest_after": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+    "portfolio_state_digest_before": "ded3eb2608a70a2e28040c5e1e7c4faa49be0d27b4ffc4d3e2a3ffb91bf72fbb",
+    "producer_version": "productive_futures_accounting_runtime_binding.v1",
+    "repository_sha": "9f294a2d459812a54f376180494e25eeebed8fa0",
+    "restart_idempotency_proven": true,
+    "risk_state_digest": "6a1e7a5699321a31c4fe0ec128ba2760251827c5a3c0920a5e614179790c015f",
+    "schema_version": "productive_futures_accounting_runtime_binding.v1",
+    "single_writer_identity": "productive_futures_accounting_portfolio_writer_v1",
+    "verification_result": {
+      "call_graph": [
+        "persisted_single_selected_future",
+        "selection_integrity_freshness_validation",
+        "ranking_snapshot_reference_validation",
+        "governed_universe_instrument_validation",
+        "venue_native_instrument_binding",
+        "single_selected_future_runtime_binding",
+        "productive_reconciliation_startup_gate",
+        "okx_public_market_data",
+        "feature_pipeline",
+        "regime_pipeline",
+        "master_v2_double_play_integrated_offline_replay",
+        "risk_position_sizing",
+        "safety_kernel",
+        "intended_side_quantity",
+        "analytical_simulated_execution",
+        "simulated_fill_fee_slippage",
+        "canonical_futures_accounting",
+        "session_persistent_portfolio",
+        "realized_unrealized_pnl_equity_drawdown",
+        "risk_state_from_accounting",
+        "simulated_economics_no_order_path",
+        "evidence",
+        "full_economic_reconstruction_verifier"
+      ],
+      "manifest_verified": true,
+      "ok": true
+    }
+  },
+  "baseline_sha": "9f294a2d459812a54f376180494e25eeebed8fa0",
+  "bridge_call_graph": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "bridge_cycles": [
+    {
+      "authority_effect": "NONE",
+      "blockers": [
+        "FEATURE_WARMUP_INCOMPLETE"
+      ],
+      "call_graph": [
+        "persisted_single_selected_future",
+        "selection_integrity_freshness_validation",
+        "ranking_snapshot_reference_validation",
+        "governed_universe_instrument_validation",
+        "venue_native_instrument_binding",
+        "single_selected_future_runtime_binding",
+        "productive_reconciliation_startup_gate",
+        "okx_public_market_data",
+        "feature_pipeline",
+        "regime_pipeline",
+        "master_v2_double_play_integrated_offline_replay",
+        "risk_position_sizing",
+        "safety_kernel",
+        "intended_side_quantity",
+        "analytical_simulated_execution",
+        "simulated_fill_fee_slippage",
+        "canonical_futures_accounting",
+        "session_persistent_portfolio",
+        "realized_unrealized_pnl_equity_drawdown",
+        "risk_state_from_accounting",
+        "simulated_economics_no_order_path",
+        "evidence",
+        "full_economic_reconstruction_verifier"
+      ],
+      "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+      "cycle_index": 1,
+      "decision_authority_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "decision_outcome": "blocked",
+      "direction": "long_armed",
+      "economic_metrics": {
+        "drawdown": "0",
+        "equity": "100000.00000000",
+        "exposure": 0,
+        "fees": "0",
+        "fill_count": 0,
+        "funding": "0",
+        "hit_rate": "0",
+        "profit_factor": "0",
+        "realized_pnl": "0",
+        "slippage": "0",
+        "turnover": "0",
+        "unrealized_pnl": "0"
+      },
+      "economic_validity_pass": false,
+      "execution_class": "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION",
+      "execution_eligible": false,
+      "feature_regime": {
+        "blockers": [
+          "FEATURE_WARMUP_INCOMPLETE"
+        ],
+        "liquidity_features": {
+          "depth_score": 0.5
+        },
+        "mark_price": 100.5,
+        "market_structure_features": {
+          "range_ratio": 0.0
+        },
+        "momentum_features": {
+          "roc": 0.0,
+          "rsi": 50.0
+        },
+        "ok": false,
+        "regime_id": "unknown",
+        "trend_features": {
+          "slope": 0.0,
+          "strength": 0.0
+        },
+        "volatility_estimate": 0.0,
+        "warmup_complete": false
+      },
+      "fill": null,
+      "instrument_id": "ADA-USDT-SWAP",
+      "intended_action": {
+        "decision_outcome": "blocked",
+        "intended_quantity": "0",
+        "intended_side": "HOLD",
+        "intent_action": "NONE",
+        "quantity_source": "safety_or_fail_closed",
+        "reason_codes": [
+          "warmup_required"
+        ],
+        "safety_blocked": true,
+        "selected_side": "none"
+      },
+      "live_authorized": false,
+      "notes": [
+        "ANALYTICAL_SIMULATION_ONLY",
+        "NO_ORDERS",
+        "NO_BROKER_WRITES",
+        "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
+        "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+        "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
+        "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+        "FUTURES_ACCOUNTING_RUNTIME_BOUND=True",
+        "ACCOUNTING_SINGLE_WRITER=productive_futures_accounting_portfolio_writer_v1",
+        "PORTFOLIO_SINGLE_WRITER=productive_portfolio_position_state_writer_v1",
+        "FEATURE_WINDOW_MIN=3"
+      ],
+      "ok": true,
+      "order_effect": "NONE",
+      "orders_authorized": false,
+      "owner": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+      "package_marker": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1=true",
+      "paper_execution_authorized": false,
+      "portfolio_snapshot": {
+        "broker_writes": false,
+        "economic_metrics": {
+          "drawdown": "0",
+          "equity": "100000.00000000",
+          "exposure": 0,
+          "fees": "0",
+          "fill_count": 0,
+          "funding": "0",
+          "hit_rate": "0",
+          "profit_factor": "0",
+          "realized_pnl": "0",
+          "slippage": "0",
+          "turnover": "0",
+          "unrealized_pnl": "0"
+        },
+        "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+        "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+        "model_version": "v1",
+        "orders_submitted": false,
+        "params": {
+          "fee_rate_bps": "2.0",
+          "funding_rate_per_interval": "0",
+          "initial_equity": "100000",
+          "max_leverage": "1",
+          "slippage_bps": "1.0"
+        },
+        "state": {
+          "cash": "100000",
+          "cumulative_fees": "0",
+          "cumulative_funding": "0",
+          "cumulative_slippage": "0",
+          "equity": "100000.00000000",
+          "fill_count": 0,
+          "intended_action_count": 1,
+          "max_drawdown": "0",
+          "peak_equity": "100000",
+          "positions": {},
+          "realized_pnl": "0",
+          "turnover_notional": "0",
+          "unrealized_pnl": "0"
+        }
+      },
+      "promotion_pass": false,
+      "reason_codes": [
+        "warmup_required"
+      ],
+      "risk_sizing_result": "NONE",
+      "runtime_bridge_live_activated": false,
+      "runtime_effect": "NONE",
+      "safety_result": "BLOCKED_HOLD",
+      "schema_version": "v1",
+      "selected_side": "none",
+      "testnet_authorized": false,
+      "trading_epoch": 1
+    },
+    {
+      "authority_effect": "NONE",
+      "blockers": [
+        "FEATURE_WARMUP_INCOMPLETE"
+      ],
+      "call_graph": [
+        "persisted_single_selected_future",
+        "selection_integrity_freshness_validation",
+        "ranking_snapshot_reference_validation",
+        "governed_universe_instrument_validation",
+        "venue_native_instrument_binding",
+        "single_selected_future_runtime_binding",
+        "productive_reconciliation_startup_gate",
+        "okx_public_market_data",
+        "feature_pipeline",
+        "regime_pipeline",
+        "master_v2_double_play_integrated_offline_replay",
+        "risk_position_sizing",
+        "safety_kernel",
+        "intended_side_quantity",
+        "analytical_simulated_execution",
+        "simulated_fill_fee_slippage",
+        "canonical_futures_accounting",
+        "session_persistent_portfolio",
+        "realized_unrealized_pnl_equity_drawdown",
+        "risk_state_from_accounting",
+        "simulated_economics_no_order_path",
+        "evidence",
+        "full_economic_reconstruction_verifier"
+      ],
+      "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+      "cycle_index": 2,
+      "decision_authority_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "decision_outcome": "blocked",
+      "direction": "long_armed",
+      "economic_metrics": {
+        "drawdown": "0",
+        "equity": "100000.00000000",
+        "exposure": 0,
+        "fees": "0",
+        "fill_count": 0,
+        "funding": "0",
+        "hit_rate": "0",
+        "profit_factor": "0",
+        "realized_pnl": "0",
+        "slippage": "0",
+        "turnover": "0",
+        "unrealized_pnl": "0"
+      },
+      "economic_validity_pass": false,
+      "execution_class": "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION",
+      "execution_eligible": false,
+      "feature_regime": {
+        "blockers": [
+          "FEATURE_WARMUP_INCOMPLETE"
+        ],
+        "liquidity_features": {
+          "depth_score": 0.5
+        },
+        "mark_price": 101.0,
+        "market_structure_features": {
+          "range_ratio": 0.0
+        },
+        "momentum_features": {
+          "roc": 0.0,
+          "rsi": 50.0
+        },
+        "ok": false,
+        "regime_id": "unknown",
+        "trend_features": {
+          "slope": 0.0,
+          "strength": 0.0
+        },
+        "volatility_estimate": 0.0,
+        "warmup_complete": false
+      },
+      "fill": null,
+      "instrument_id": "ADA-USDT-SWAP",
+      "intended_action": {
+        "decision_outcome": "blocked",
+        "intended_quantity": "0",
+        "intended_side": "HOLD",
+        "intent_action": "NONE",
+        "quantity_source": "safety_or_fail_closed",
+        "reason_codes": [
+          "warmup_required"
+        ],
+        "safety_blocked": true,
+        "selected_side": "none"
+      },
+      "live_authorized": false,
+      "notes": [
+        "ANALYTICAL_SIMULATION_ONLY",
+        "NO_ORDERS",
+        "NO_BROKER_WRITES",
+        "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
+        "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+        "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
+        "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+        "FUTURES_ACCOUNTING_RUNTIME_BOUND=True",
+        "ACCOUNTING_SINGLE_WRITER=productive_futures_accounting_portfolio_writer_v1",
+        "PORTFOLIO_SINGLE_WRITER=productive_portfolio_position_state_writer_v1",
+        "FEATURE_WINDOW_MIN=3"
+      ],
+      "ok": true,
+      "order_effect": "NONE",
+      "orders_authorized": false,
+      "owner": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+      "package_marker": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1=true",
+      "paper_execution_authorized": false,
+      "portfolio_snapshot": {
+        "broker_writes": false,
+        "economic_metrics": {
+          "drawdown": "0",
+          "equity": "100000.00000000",
+          "exposure": 0,
+          "fees": "0",
+          "fill_count": 0,
+          "funding": "0",
+          "hit_rate": "0",
+          "profit_factor": "0",
+          "realized_pnl": "0",
+          "slippage": "0",
+          "turnover": "0",
+          "unrealized_pnl": "0"
+        },
+        "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+        "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+        "model_version": "v1",
+        "orders_submitted": false,
+        "params": {
+          "fee_rate_bps": "2.0",
+          "funding_rate_per_interval": "0",
+          "initial_equity": "100000",
+          "max_leverage": "1",
+          "slippage_bps": "1.0"
+        },
+        "state": {
+          "cash": "100000",
+          "cumulative_fees": "0",
+          "cumulative_funding": "0",
+          "cumulative_slippage": "0",
+          "equity": "100000.00000000",
+          "fill_count": 0,
+          "intended_action_count": 2,
+          "max_drawdown": "0",
+          "peak_equity": "100000",
+          "positions": {},
+          "realized_pnl": "0",
+          "turnover_notional": "0",
+          "unrealized_pnl": "0"
+        }
+      },
+      "promotion_pass": false,
+      "reason_codes": [
+        "warmup_required"
+      ],
+      "risk_sizing_result": "NONE",
+      "runtime_bridge_live_activated": false,
+      "runtime_effect": "NONE",
+      "safety_result": "BLOCKED_HOLD",
+      "schema_version": "v1",
+      "selected_side": "none",
+      "testnet_authorized": false,
+      "trading_epoch": 2
+    },
+    {
+      "authority_effect": "NONE",
+      "blockers": [],
+      "call_graph": [
+        "persisted_single_selected_future",
+        "selection_integrity_freshness_validation",
+        "ranking_snapshot_reference_validation",
+        "governed_universe_instrument_validation",
+        "venue_native_instrument_binding",
+        "single_selected_future_runtime_binding",
+        "productive_reconciliation_startup_gate",
+        "okx_public_market_data",
+        "feature_pipeline",
+        "regime_pipeline",
+        "master_v2_double_play_integrated_offline_replay",
+        "risk_position_sizing",
+        "safety_kernel",
+        "intended_side_quantity",
+        "analytical_simulated_execution",
+        "simulated_fill_fee_slippage",
+        "canonical_futures_accounting",
+        "session_persistent_portfolio",
+        "realized_unrealized_pnl_equity_drawdown",
+        "risk_state_from_accounting",
+        "simulated_economics_no_order_path",
+        "evidence",
+        "full_economic_reconstruction_verifier"
+      ],
+      "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+      "cycle_index": 3,
+      "decision_authority_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "decision_outcome": "observe",
+      "direction": "long_armed",
+      "economic_metrics": {
+        "drawdown": "0",
+        "equity": "100000.00000000",
+        "exposure": 0,
+        "fees": "0",
+        "fill_count": 0,
+        "funding": "0",
+        "hit_rate": "0",
+        "profit_factor": "0",
+        "realized_pnl": "0",
+        "slippage": "0",
+        "turnover": "0",
+        "unrealized_pnl": "0"
+      },
+      "economic_validity_pass": false,
+      "execution_class": "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION",
+      "execution_eligible": false,
+      "feature_regime": {
+        "blockers": [],
+        "liquidity_features": {
+          "depth_score": 0.0
+        },
+        "mark_price": 101.5,
+        "market_structure_features": {
+          "range_ratio": 0.009852216748768473
+        },
+        "momentum_features": {
+          "roc": 0.009950248756218905,
+          "rsi": 99.9
+        },
+        "ok": true,
+        "regime_id": "trending",
+        "trend_features": {
+          "slope": 0.004975124378109453,
+          "strength": 0.1990049751243781
+        },
+        "volatility_estimate": 2.4629328604502086e-05,
+        "warmup_complete": true
+      },
+      "fill": null,
+      "instrument_id": "ADA-USDT-SWAP",
+      "intended_action": {
+        "decision_outcome": "observe",
+        "intended_quantity": "0",
+        "intended_side": "HOLD",
+        "intent_action": "NONE",
+        "quantity_source": "non_actionable",
+        "reason_codes": [
+          "observe_only"
+        ],
+        "safety_blocked": false,
+        "selected_side": "none"
+      },
+      "live_authorized": false,
+      "notes": [
+        "ANALYTICAL_SIMULATION_ONLY",
+        "NO_ORDERS",
+        "NO_BROKER_WRITES",
+        "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
+        "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+        "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
+        "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+        "FUTURES_ACCOUNTING_RUNTIME_BOUND=True",
+        "ACCOUNTING_SINGLE_WRITER=productive_futures_accounting_portfolio_writer_v1",
+        "PORTFOLIO_SINGLE_WRITER=productive_portfolio_position_state_writer_v1",
+        "FEATURE_WINDOW_MIN=3"
+      ],
+      "ok": true,
+      "order_effect": "NONE",
+      "orders_authorized": false,
+      "owner": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+      "package_marker": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1=true",
+      "paper_execution_authorized": false,
+      "portfolio_snapshot": {
+        "broker_writes": false,
+        "economic_metrics": {
+          "drawdown": "0",
+          "equity": "100000.00000000",
+          "exposure": 0,
+          "fees": "0",
+          "fill_count": 0,
+          "funding": "0",
+          "hit_rate": "0",
+          "profit_factor": "0",
+          "realized_pnl": "0",
+          "slippage": "0",
+          "turnover": "0",
+          "unrealized_pnl": "0"
+        },
+        "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+        "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+        "model_version": "v1",
+        "orders_submitted": false,
+        "params": {
+          "fee_rate_bps": "2.0",
+          "funding_rate_per_interval": "0",
+          "initial_equity": "100000",
+          "max_leverage": "1",
+          "slippage_bps": "1.0"
+        },
+        "state": {
+          "cash": "100000",
+          "cumulative_fees": "0",
+          "cumulative_funding": "0",
+          "cumulative_slippage": "0",
+          "equity": "100000.00000000",
+          "fill_count": 0,
+          "intended_action_count": 3,
+          "max_drawdown": "0",
+          "peak_equity": "100000",
+          "positions": {},
+          "realized_pnl": "0",
+          "turnover_notional": "0",
+          "unrealized_pnl": "0"
+        }
+      },
+      "promotion_pass": false,
+      "reason_codes": [
+        "observe_only"
+      ],
+      "risk_sizing_result": "NONE",
+      "runtime_bridge_live_activated": false,
+      "runtime_effect": "NONE",
+      "safety_result": "PASS",
+      "schema_version": "v1",
+      "selected_side": "none",
+      "testnet_authorized": false,
+      "trading_epoch": 3
+    },
+    {
+      "authority_effect": "NONE",
+      "blockers": [],
+      "call_graph": [
+        "persisted_single_selected_future",
+        "selection_integrity_freshness_validation",
+        "ranking_snapshot_reference_validation",
+        "governed_universe_instrument_validation",
+        "venue_native_instrument_binding",
+        "single_selected_future_runtime_binding",
+        "productive_reconciliation_startup_gate",
+        "okx_public_market_data",
+        "feature_pipeline",
+        "regime_pipeline",
+        "master_v2_double_play_integrated_offline_replay",
+        "risk_position_sizing",
+        "safety_kernel",
+        "intended_side_quantity",
+        "analytical_simulated_execution",
+        "simulated_fill_fee_slippage",
+        "canonical_futures_accounting",
+        "session_persistent_portfolio",
+        "realized_unrealized_pnl_equity_drawdown",
+        "risk_state_from_accounting",
+        "simulated_economics_no_order_path",
+        "evidence",
+        "full_economic_reconstruction_verifier"
+      ],
+      "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+      "cycle_index": 4,
+      "decision_authority_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "decision_outcome": "observe",
+      "direction": "long_armed",
+      "economic_metrics": {
+        "drawdown": "0",
+        "equity": "100000.00000000",
+        "exposure": 0,
+        "fees": "0",
+        "fill_count": 0,
+        "funding": "0",
+        "hit_rate": "0",
+        "profit_factor": "0",
+        "realized_pnl": "0",
+        "slippage": "0",
+        "turnover": "0",
+        "unrealized_pnl": "0"
+      },
+      "economic_validity_pass": false,
+      "execution_class": "ANALYTICAL_SIMULATION_NOT_PAPER_EXECUTION",
+      "execution_eligible": false,
+      "feature_regime": {
+        "blockers": [],
+        "liquidity_features": {
+          "depth_score": 0.0
+        },
+        "mark_price": 102.0,
+        "market_structure_features": {
+          "range_ratio": 0.014705882352941176
+        },
+        "momentum_features": {
+          "roc": 0.014925373134328358,
+          "rsi": 99.9
+        },
+        "ok": true,
+        "regime_id": "trending",
+        "trend_features": {
+          "slope": 0.004975124378109453,
+          "strength": 0.29850746268656714
+        },
+        "volatility_estimate": 4.244927780388142e-05,
+        "warmup_complete": true
+      },
+      "fill": null,
+      "instrument_id": "ADA-USDT-SWAP",
+      "intended_action": {
+        "decision_outcome": "observe",
+        "intended_quantity": "0",
+        "intended_side": "HOLD",
+        "intent_action": "NONE",
+        "quantity_source": "non_actionable",
+        "reason_codes": [
+          "observe_only"
+        ],
+        "safety_blocked": false,
+        "selected_side": "none"
+      },
+      "live_authorized": false,
+      "notes": [
+        "ANALYTICAL_SIMULATION_ONLY",
+        "NO_ORDERS",
+        "NO_BROKER_WRITES",
+        "SOLE_DECISION_AUTHORITY_INTEGRATED_OFFLINE_REPLAY",
+        "PRODUCTIVE_RECONCILIATION_BEFORE_ALPHA",
+        "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_BEFORE_ALPHA",
+        "CANONICAL_FUTURES_ACCOUNTING_AFTER_FILL",
+        "FUTURES_ACCOUNTING_RUNTIME_BOUND=True",
+        "ACCOUNTING_SINGLE_WRITER=productive_futures_accounting_portfolio_writer_v1",
+        "PORTFOLIO_SINGLE_WRITER=productive_portfolio_position_state_writer_v1",
+        "FEATURE_WINDOW_MIN=3"
+      ],
+      "ok": true,
+      "order_effect": "NONE",
+      "orders_authorized": false,
+      "owner": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+      "package_marker": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1=true",
+      "paper_execution_authorized": false,
+      "portfolio_snapshot": {
+        "broker_writes": false,
+        "economic_metrics": {
+          "drawdown": "0",
+          "equity": "100000.00000000",
+          "exposure": 0,
+          "fees": "0",
+          "fill_count": 0,
+          "funding": "0",
+          "hit_rate": "0",
+          "profit_factor": "0",
+          "realized_pnl": "0",
+          "slippage": "0",
+          "turnover": "0",
+          "unrealized_pnl": "0"
+        },
+        "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+        "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+        "model_version": "v1",
+        "orders_submitted": false,
+        "params": {
+          "fee_rate_bps": "2.0",
+          "funding_rate_per_interval": "0",
+          "initial_equity": "100000",
+          "max_leverage": "1",
+          "slippage_bps": "1.0"
+        },
+        "state": {
+          "cash": "100000",
+          "cumulative_fees": "0",
+          "cumulative_funding": "0",
+          "cumulative_slippage": "0",
+          "equity": "100000.00000000",
+          "fill_count": 0,
+          "intended_action_count": 4,
+          "max_drawdown": "0",
+          "peak_equity": "100000",
+          "positions": {},
+          "realized_pnl": "0",
+          "turnover_notional": "0",
+          "unrealized_pnl": "0"
+        }
+      },
+      "promotion_pass": false,
+      "reason_codes": [
+        "observe_only"
+      ],
+      "risk_sizing_result": "NONE",
+      "runtime_bridge_live_activated": false,
+      "runtime_effect": "NONE",
+      "safety_result": "PASS",
+      "schema_version": "v1",
+      "selected_side": "none",
+      "testnet_authorized": false,
+      "trading_epoch": 4
+    }
+  ],
+  "call_graph_after": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "canonical_futures_accounting",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "risk_state_from_accounting",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "call_graph_before": [
+    "persisted_single_selected_future",
+    "selection_integrity_freshness_validation",
+    "ranking_snapshot_reference_validation",
+    "governed_universe_instrument_validation",
+    "venue_native_instrument_binding",
+    "single_selected_future_runtime_binding",
+    "productive_reconciliation_startup_gate",
+    "okx_public_market_data",
+    "feature_pipeline",
+    "regime_pipeline",
+    "master_v2_double_play_integrated_offline_replay",
+    "risk_position_sizing",
+    "safety_kernel",
+    "intended_side_quantity",
+    "analytical_simulated_execution",
+    "simulated_fill_fee_slippage",
+    "session_persistent_portfolio",
+    "realized_unrealized_pnl_equity_drawdown",
+    "simulated_economics_no_order_path",
+    "evidence",
+    "full_economic_reconstruction_verifier"
+  ],
+  "capability_id": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+  "cycles": 4,
+  "failure_injection_results": {
+    "CONFLICTING_WRITER": {
+      "code": "CONFLICTING_WRITER",
+      "ok": true
+    },
+    "DUPLICATE_FILL_IDEMPOTENT": {
+      "action_code": "IDEMPOTENT_REPLAY",
+      "ok": true
+    },
+    "INVALID_CONTRACT_METADATA": {
+      "code": "INVALID_CONTRACT_METADATA",
+      "ok": true
+    },
+    "MISSING_MARK": {
+      "code": "MISSING_MARK_PRICE",
+      "ok": true
+    },
+    "OVER_REDUCE_FLIP": {
+      "code": "OVER_REDUCE",
+      "ok": true
+    },
+    "PERSISTENCE_INTERRUPTION": {
+      "code": "PERSISTENCE_INTERRUPTION",
+      "ok": true
+    },
+    "REDUCE_ONLY_VIOLATION": {
+      "code": "REDUCE_ONLY_VIOLATION",
+      "ok": true
+    },
+    "ZERO_QUANTITY": {
+      "code": "ZERO_QUANTITY",
+      "ok": true
+    }
+  },
+  "instrument_id": "ADA-USDT-SWAP",
+  "legacy_authority_check": {
+    "allowlist_selection_authority": false,
+    "canonical_kernel_owner": "src.execution.paper.futures_accounting",
+    "canonical_kernel_path": "src/execution/paper/futures_accounting.py",
+    "canonical_kernel_reused": true,
+    "dashboard_authority_effect": false,
+    "direct_instrument_override_allowed": false,
+    "legacy_or_local_surfaces": [
+      {
+        "notes": "Fill/economics shell may remain for non-productive research; Cap 3.1 productive PnL authority is canonical futures_accounting via binding.",
+        "path": "src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py",
+        "productive_accounting_authority": false,
+        "role": "LEGACY_SIMULATED_PORTFOLIO_SHELL"
+      },
+      {
+        "path": "src/execution/position_ledger.py",
+        "productive_accounting_authority": false,
+        "role": "EXECUTION_LEDGER_LOCAL_ACCOUNTING"
+      },
+      {
+        "path": "src/execution/ledger/pnl.py",
+        "productive_accounting_authority": false,
+        "role": "EXECUTION_LEDGER_LOCAL_ACCOUNTING"
+      },
+      {
+        "path": "src/backtest/p28/accounting_v1.py",
+        "productive_accounting_authority": false,
+        "role": "BACKTEST_LOCAL"
+      },
+      {
+        "path": "src/backtest/p29/accounting_v2.py",
+        "productive_accounting_authority": false,
+        "role": "BACKTEST_LOCAL"
+      }
+    ],
+    "productive_accounting_authority": "ops.productive_futures_accounting_runtime_binding_v1",
+    "second_accounting_kernel_created": false,
+    "single_writer_identity": "productive_futures_accounting_portfolio_writer_v1"
+  },
+  "ok": true,
+  "repository_sha": "9f294a2d459812a54f376180494e25eeebed8fa0",
+  "selection_id": "ssf_1459fce6aab52527e4ccaff4"
+}

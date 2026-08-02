@@ -68,6 +68,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--run-bridge-cycles", type=int, default=0)
     parser.add_argument("--mid-price", type=float, default=100.5)
     parser.add_argument("--expected-selection-config-digest", type=str, default=None)
+    parser.add_argument(
+        "--accounting-state-root",
+        type=Path,
+        default=None,
+        help="Optional Cap 3.1 productive futures accounting state root",
+    )
     args = parser.parse_args(argv)
 
     repository_sha = args.repository_sha or _git_sha()
@@ -97,7 +103,16 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     bridge_cycles: list[dict] = []
+    accounting_runtime: dict = {
+        "FUTURES_ACCOUNTING_RUNTIME_BOUND": False,
+        "canonical_futures_accounting_in_call_graph": (
+            "canonical_futures_accounting" in CALL_GRAPH
+        ),
+    }
     if args.run_bridge_cycles > 0 and gate.alpha_enabled and gate.bound is not None:
+        acct_root = args.accounting_state_root
+        if acct_root is None:
+            acct_root = Path(args.evidence_root) / "accounting_state"
         mids = [float(args.mid_price) + (0.1 * i) for i in range(int(args.run_bridge_cycles))]
         _state, cycles = run_bridge_cycles_from_mids_v1(
             mids,
@@ -110,8 +125,18 @@ def main(argv: list[str] | None = None) -> int:
             universe_state_root=args.universe_state_root,
             mark_price_by_native_id=marks,
             require_selection_binding=True,
+            accounting_state_root=acct_root,
         )
         bridge_cycles = [c.to_dict() for c in cycles]
+        accounting_runtime = {
+            "FUTURES_ACCOUNTING_RUNTIME_BOUND": bool(_state.futures_accounting_bound),
+            "canonical_futures_accounting_in_call_graph": all(
+                "canonical_futures_accounting" in (c.call_graph or ()) for c in cycles
+            ),
+            "accounting_single_writer": _state.accounting_single_writer_identity,
+            "last_accounting_result": _state.last_accounting_result,
+            "portfolio_has_accounting_projection": bool(_state.portfolio.snapshot()),
+        }
 
     result = {
         "ok": gate.ok,
@@ -121,6 +146,7 @@ def main(argv: list[str] | None = None) -> int:
         "call_graph_before": list(CALL_GRAPH_BEFORE),
         "call_graph_after": list(CALL_GRAPH),
         "authority_inventory": inventory_instrument_authority_surfaces_v1(),
+        "accounting_runtime": accounting_runtime,
         "CORE_LOGIC_CHANGE": False,
         "DASHBOARD_AUTHORITY_EFFECT": False,
         "ALLOWLIST_SELECTION_AUTHORITY": False,

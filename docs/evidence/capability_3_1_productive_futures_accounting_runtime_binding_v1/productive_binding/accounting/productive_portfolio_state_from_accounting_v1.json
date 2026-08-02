@@ -1,0 +1,14 @@
+{
+  "applied_fill_ids": [],
+  "authority_owner": "ops.productive_futures_accounting_runtime_binding_v1",
+  "canonical_kernel_owner": "src.execution.paper.futures_accounting",
+  "cumulative_fees": "0",
+  "cumulative_slippage": "0",
+  "equity": "100000.00000000",
+  "fill_count": 0,
+  "initial_equity": "100000",
+  "positions": [],
+  "realized_pnl": "0",
+  "single_writer_identity": "productive_futures_accounting_portfolio_writer_v1",
+  "unrealized_pnl": "0"
+}

@@ -1,0 +1,45 @@
+{
+  "applied_fill_results": {},
+  "contract": {
+    "contract_size": "1",
+    "initial_margin_rate": "0.10",
+    "maintenance_margin_rate": "0.05",
+    "max_leverage": "10",
+    "min_qty": "0.0001",
+    "quote_currency": "USDT",
+    "symbol": "ADA-USDT-SWAP",
+    "tick_size": "0.01"
+  },
+  "cumulative_fees": "0",
+  "cumulative_slippage": "0",
+  "fill_order": [],
+  "initial_equity": "100000",
+  "kernel_owner": "src.execution.paper.futures_accounting",
+  "last_mark": "102.0",
+  "portfolio_state": {
+    "applied_fill_ids": [],
+    "authority_owner": "ops.productive_futures_accounting_runtime_binding_v1",
+    "canonical_kernel_owner": "src.execution.paper.futures_accounting",
+    "cumulative_fees": "0",
+    "cumulative_slippage": "0",
+    "equity": "100000.00000000",
+    "fill_count": 0,
+    "initial_equity": "100000",
+    "positions": [],
+    "realized_pnl": "0",
+    "single_writer_identity": "productive_futures_accounting_portfolio_writer_v1",
+    "unrealized_pnl": "0"
+  },
+  "position": null,
+  "realized_pnl": "0",
+  "risk_state": {
+    "contract_size": "1",
+    "initial_margin_required": "0",
+    "liquidation_proximity": null,
+    "maintenance_margin_required": "0",
+    "mark_price": "102.0",
+    "notional": "0",
+    "source": "canonical_futures_accounting"
+  },
+  "writer_identity": "productive_futures_accounting_portfolio_writer_v1"
+}
