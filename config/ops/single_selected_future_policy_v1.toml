@@ -1,0 +1,36 @@
+# CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+# Productive single selected future policy config binding only.
+# Does not authorize alpha, execution, multi-future, or runtime activation.
+
+capability_id = "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1"
+owner = "ops.single_selected_future_policy_v1"
+schema_version = "single_selected_future_selection.v1"
+producer_version = "single_selected_future_policy.v1"
+
+selection_policy_id = "single_selected_future_policy_v1"
+selection_policy_version = "v1"
+selected_future_count = 1
+max_positions_effective = 1
+single_selected_future = true
+multi_future_runtime_authorized = false
+
+max_ranking_age_seconds = 86400.0
+refresh_cadence_seconds = 300.0
+min_holding_period_seconds = 3600.0
+hysteresis_rank_improvement = 1
+min_history_samples = 1
+min_data_quality_status = "PASS"
+venue = "okx_eea"
+
+alpha_allowed = false
+alpha_authority_added = false
+execution_authority_added = false
+dashboard_authority = false
+allowlist_selection_authority = false
+manual_override_allowed = false
+top_n_active_set_authority = false
+runtime_activation_allowed = false
+live_authorized = false
+network_trading_session_allowed = false
+volatility_numeric_max_age_enforcing = false
+core_logic_change = false

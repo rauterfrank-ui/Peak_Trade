@@ -233,7 +233,7 @@ numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
 
 ### 3.6 Known gaps (current)
 
-1. Universe → Ranking → Single Selected Future persistence + runtime authority binding — **Universe producer closed by Capability 2.1**; **Ranking Top-20 candidate context closed by Capability 2.2** (`CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1`; selection/runtime binding still open)
+1. Universe → Ranking → Single Selected Future persistence + runtime authority binding — **Universe producer closed by Capability 2.1**; **Ranking Top-20 candidate context closed by Capability 2.2** (`CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1`); **Single Selected Future policy closed by Capability 2.3** (`CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1`; runtime binding Cap 2.4 still open)
 2. Productive reconciliation host binding — **closed by Capability 1.1** (`CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1`); live activation still forbidden
 3. Futures accounting runtime wiring
 4. Canonical runtime activation (still must remain non-live)

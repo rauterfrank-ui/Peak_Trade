@@ -1,0 +1,118 @@
+{
+  "ACTIVATED": false,
+  "ACTIVATION_CHANGED": false,
+  "ALPHA_ALLOWED": false,
+  "BOUND": true,
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "BOUND_NOT_ACTIVATED",
+  "CODE_EXISTS": true,
+  "CORE_LOGIC_CHANGED": false,
+  "DASHBOARD_AUTHORITY": false,
+  "LIVE_PATH_CHANGED": false,
+  "MAX_POSITIONS_EFFECTIVE": 1,
+  "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+  "OPEN_POSITION_REPLACEMENT_SEMANTICS_PROVEN": true,
+  "PERSISTED": true,
+  "RESTART_PROVEN": true,
+  "RESTART_SEMANTICS_PROVEN": true,
+  "RUNTIME_ACTIVATION_CHANGED": false,
+  "RUNTIME_REACHABLE": true,
+  "SELECTED_FUTURE_COUNT": 1,
+  "SELECTION_AUTHORITY_SINGLE_WRITER": true,
+  "SINGLE_SELECTED_FUTURE": true,
+  "SINGLE_SELECTED_FUTURE_POLICY_IMPLEMENTED": true,
+  "authority_verification": {
+    "ALLOWLIST_SELECTION_AUTHORITY": false,
+    "ALPHA_ALLOWED": false,
+    "ALPHA_AUTHORITY_ADDED": false,
+    "AUTHORITY_OWNER": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+    "CORE_LOGIC_CHANGE": false,
+    "DASHBOARD_AUTHORITY": false,
+    "DASHBOARD_ROLE": "READ_ONLY_CONSUMER",
+    "EXECUTION_AUTHORITY_ADDED": false,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "MANUAL_OVERRIDE_ALLOWED": false,
+    "MAX_POSITIONS_EFFECTIVE": 1,
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+    "OWNER": "ops.single_selected_future_policy_v1",
+    "PRODUCER_VERSION": "single_selected_future_policy.v1",
+    "RUNTIME_ACTIVATION_ALLOWED": false,
+    "SCHEMA_VERSION": "single_selected_future_selection.v1",
+    "SELECTED_FUTURE_COUNT": 1,
+    "SELECTION_AUTHORITY_ADDED": true,
+    "SELECTION_AUTHORITY_OWNER_SINGLE": true,
+    "SELECTION_POLICY_ID": "single_selected_future_policy_v1",
+    "SELECTION_POLICY_VERSION": "v1",
+    "SINGLE_SELECTED_FUTURE": true,
+    "TOP_N_ACTIVE_SET_AUTHORITY": false,
+    "VENUE": "okx_eea"
+  },
+  "capability_id": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+  "config_digest": "c24de8b044460264329240ccd1b603cc91355fadbec24db74accbc1996997cd8",
+  "failure_injection_coverage": [
+    "ALLOWLIST_INPUT_FORBIDDEN",
+    "CONFIG_DIGEST_MISMATCH",
+    "CORRUPT_PERSISTED_SELECTION",
+    "DASHBOARD_INPUT_FORBIDDEN",
+    "DUPLICATE_SELECTION_WRITER",
+    "OPEN_POSITION_BLOCKS_SWITCH",
+    "PARTIAL_WRITE",
+    "PERSISTENCE_WRITE_FAILURE",
+    "RANKING_DIGEST_MISMATCH",
+    "RANKING_SNAPSHOT_STALE",
+    "SELECTION_ID_CONTENT_CONFLICT"
+  ],
+  "instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+  "integrity_digest": "2b7baf530e07573a42f371c9cbd64b893a16bb5b4e87bcc16852c40560711795",
+  "negative_injection_results": {
+    "dashboard_forbidden": [
+      "DASHBOARD_INPUT_FORBIDDEN"
+    ],
+    "duplicate_writer": [
+      "DUPLICATE_SELECTION_WRITER"
+    ],
+    "stale_ranking": [
+      "ALPHA_BLOCKED",
+      "RANKING_SNAPSHOT_STALE"
+    ]
+  },
+  "persistence_verification": {
+    "idempotent_identical": true,
+    "integrity_digest": "2b7baf530e07573a42f371c9cbd64b893a16bb5b4e87bcc16852c40560711795",
+    "ok": true,
+    "persistence_path": "docs/evidence/capability_2_3_single_selected_future_policy_v1/productive_selection/single_selected_future_selection_v1.json",
+    "reloaded_digest": "2b7baf530e07573a42f371c9cbd64b893a16bb5b4e87bcc16852c40560711795",
+    "selection_id": "ssf_4535102470e4542c69cda862",
+    "verification": {
+      "manifest_path": "docs/evidence/capability_2_3_single_selected_future_policy_v1/productive_selection/MANIFEST.sha256",
+      "ok": true
+    }
+  },
+  "previous_state": "NO_SELECTION",
+  "ranking_snapshot_id": "pfr_0f8f19329bd8de687457fab0",
+  "reason_codes": [
+    "INITIAL_SELECTION"
+  ],
+  "repository_sha": "22e6174ce1bcfa94d1256ebfe6bce6525df23022",
+  "restart_verification": {
+    "alpha_allowed_after_restart": false,
+    "alpha_blocked_after_restart": true,
+    "expected_integrity_digest": "2b7baf530e07573a42f371c9cbd64b893a16bb5b4e87bcc16852c40560711795",
+    "failure_codes": [],
+    "identical_canonical_truth": true,
+    "loaded_config_digest": "c24de8b044460264329240ccd1b603cc91355fadbec24db74accbc1996997cd8",
+    "loaded_integrity_digest": "2b7baf530e07573a42f371c9cbd64b893a16bb5b4e87bcc16852c40560711795",
+    "loaded_repository_sha": "22e6174ce1bcfa94d1256ebfe6bce6525df23022",
+    "loaded_selection_id": "ssf_4535102470e4542c69cda862",
+    "loaded_valid_from": "2023-11-14T22:13:20Z",
+    "loaded_valid_until": "2023-11-14T23:13:20Z",
+    "ok": true,
+    "reconstructed": true,
+    "state_after_restart": "SELECTED_ACTIVE"
+  },
+  "selection_id": "ssf_4535102470e4542c69cda862",
+  "selection_input_digest": "b45e56af5c40b11b5be8b46472da3b8edbfe731d313b20d1080c0287533315ff",
+  "selection_policy_id": "single_selected_future_policy_v1",
+  "selection_policy_version": "v1",
+  "state": "SELECTED_ACTIVE",
+  "venue_native_id": "ADA-USDT-SWAP"
+}
