@@ -1,0 +1,12 @@
+{
+  "authorization_consumption_allowed": false,
+  "capability_id": "PHASE_9_1_STRATEGY_REGISTRY_CLOSURE_V1",
+  "core_logic_change": false,
+  "network_session_allowed": false,
+  "note": "Phase 9.1 registry closure config. Classifies proven repository strategies; does not authorize public-MD network sessions, orders, credentials, or silent authority promotion.",
+  "owner": "ops.phase_9_1_strategy_registry_closure_v1",
+  "registry_policy_version": "strategy_registry_policy_v1",
+  "registry_schema_version": "strategy_registry_v1",
+  "schema_version": "phase_9_1_strategy_registry_closure_config.v1",
+  "silent_authority_promotion": false
+}

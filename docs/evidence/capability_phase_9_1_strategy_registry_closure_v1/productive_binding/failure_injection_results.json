@@ -1,0 +1,67 @@
+{
+  "config_digest_mismatch": {
+    "ok": true,
+    "reason": "config_digest_mismatch"
+  },
+  "config_loader_ok": {
+    "ok": true,
+    "reason": "bound"
+  },
+  "config_version_mismatch": {
+    "ok": true,
+    "reason": "config_version_mismatch"
+  },
+  "direct_fill": {
+    "ok": true,
+    "reason": "direct_fill_forbidden:momentum_1h"
+  },
+  "direct_intent": {
+    "ok": true,
+    "reason": "direct_intent_forbidden:momentum_1h"
+  },
+  "direct_order": {
+    "ok": true,
+    "reason": "direct_order_forbidden:momentum_1h"
+  },
+  "disabled_legacy_strategy": {
+    "ok": true,
+    "reason": "legacy_deauthorized_rejected"
+  },
+  "double_play_bypass": {
+    "ok": true,
+    "reason": "double_play_bypass_forbidden:armstrong_cycle"
+  },
+  "legacy_deauthorized_strategy": {
+    "ok": true,
+    "reason": "legacy_deauthorized_rejected"
+  },
+  "master_v2_bypass": {
+    "ok": true,
+    "reason": "master_v2_bypass_forbidden:armstrong_cycle"
+  },
+  "matrix_bypass_flags_absent": {
+    "ok": true,
+    "reason": "all_false"
+  },
+  "missing_registry_config": {
+    "ok": true,
+    "reason": "missing_registry_closure_config"
+  },
+  "ok": true,
+  "risk_bypass": {
+    "ok": true,
+    "reason": "risk_bypass_forbidden:bollinger_bands"
+  },
+  "safety_bypass": {
+    "ok": true,
+    "reason": "safety_bypass_forbidden:bollinger_bands"
+  },
+  "silent_authority_promotion": {
+    "ok": true,
+    "reason": "silent_authority_promotion_forbidden:armstrong_cycle:RESEARCH_INFORMATION->CANONICAL_AUTHORITY"
+  },
+  "unknown_strategy_id": {
+    "ok": true,
+    "reason": "unknown_strategy_id:definitely_not_a_strategy_xyz"
+  }
+}

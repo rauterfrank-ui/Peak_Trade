@@ -1,0 +1,30 @@
+{
+  "DIRECT_FILL_CAPABILITY_ABSENT": true,
+  "DIRECT_INTENT_BYPASS_ABSENT": true,
+  "DIRECT_ORDER_CAPABILITY_ABSENT": true,
+  "DOUBLE_PLAY_BYPASS_ABSENT": true,
+  "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+  "MASTER_V2_BYPASS_ABSENT": true,
+  "RISK_BYPASS_ABSENT": true,
+  "SAFETY_BYPASS_ABSENT": true,
+  "matrix_proof": {
+    "DIRECT_FILL_CAPABILITY_ABSENT": true,
+    "DIRECT_INTENT_BYPASS_ABSENT": true,
+    "DIRECT_ORDER_CAPABILITY_ABSENT": true,
+    "DOUBLE_PLAY_BYPASS_ABSENT": true,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "MASTER_V2_BYPASS_ABSENT": true,
+    "RISK_BYPASS_ABSENT": true,
+    "SAFETY_BYPASS_ABSENT": true,
+    "row_count": 28
+  },
+  "module_proof": {
+    "DIRECT_FILL_CAPABILITY_ABSENT": true,
+    "DIRECT_INTENT_BYPASS_ABSENT": true,
+    "DIRECT_ORDER_CAPABILITY_ABSENT": true,
+    "base_strategy_contract": "generate_signals_only",
+    "base_strategy_has_generate_signals": true,
+    "hits": []
+  },
+  "ok": true
+}
