@@ -1,0 +1,17 @@
+{
+  "alpha_enabled": false,
+  "blockers": [
+    "ALPHA_BLOCKED",
+    "MARK_PRICE_MISSING"
+  ],
+  "empty_marks_used": true,
+  "exit_risk_safety_preserved": false,
+  "hard_risk_reduce_reachable": true,
+  "kill_switch_reachable": true,
+  "mandatory_exit_reachable": true,
+  "notes": "Alpha blocked by missing mark/typed-vol presence path; exit/risk/safety/reconciliation remain reachable by design.",
+  "ok": true,
+  "reconciliation_reachable": true,
+  "reduce_only_position_protection_reachable": true,
+  "safety_veto_reachable": true
+}

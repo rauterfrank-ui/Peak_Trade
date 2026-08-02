@@ -1,0 +1,14 @@
+{
+  "alpha_only_after_reconciliation": true,
+  "evidence_checkpoint_state": true,
+  "futures_accounting_state": true,
+  "ok": true,
+  "persisted_selected_future": true,
+  "portfolio_state": true,
+  "ranking_snapshot_reference": true,
+  "reconciliation_state": true,
+  "risk_state": true,
+  "selection_restart": true,
+  "universe_snapshot_reference": true,
+  "venue_native_instrument_binding": true
+}

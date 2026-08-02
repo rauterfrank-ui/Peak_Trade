@@ -1,0 +1,93 @@
+{
+  "AUTHORIZATION_CONSUMPTION_ATTEMPTED": {
+    "ok": true
+  },
+  "DASHBOARD_DERIVED_AUTHORITY": {
+    "blockers": [],
+    "dashboard_authority_effect": false,
+    "ok": true
+  },
+  "DUPLICATE_WRITER": {
+    "code": "CONFLICTING_WRITER",
+    "ok": true
+  },
+  "FORBIDDEN_STATUS": {
+    "ok": true,
+    "status": "READY_FOR_ACTIVATION"
+  },
+  "LIVE_ORDER_PATH_REACHABLE": {
+    "ok": true
+  },
+  "MAX_POSITIONS_GREATER_THAN_ONE": {
+    "ok": true,
+    "value": 1
+  },
+  "MISSING_MARK_PRICE": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "MARK_PRICE_MISSING"
+    ],
+    "ok": true
+  },
+  "MISSING_SELECTION": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "CORRUPT_SELECTION",
+      "NO_SELECTION",
+      "SELECTION_DIGEST_MISMATCH",
+      "SELECTION_MISSING"
+    ],
+    "ok": true
+  },
+  "MISSING_TYPED_VOLATILITY_PRESENCE": {
+    "ok": true,
+    "owner": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1"
+  },
+  "MULTI_FUTURE_ENABLED": {
+    "ok": true,
+    "value": false
+  },
+  "NETWORK_SESSION_STARTED": {
+    "ok": true
+  },
+  "NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED": {
+    "ok": true,
+    "value": false
+  },
+  "PARALLEL_LEGACY_AUTHORITY": {
+    "ok": true
+  },
+  "PARTIAL_RESTART_STATE": {
+    "notes": "restart proof enforced in prove_restart_recovery_v1",
+    "ok": true
+  },
+  "REPOSITORY_SHA_MISMATCH": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "CORRUPT_SELECTION",
+      "REPOSITORY_SHA_MISMATCH"
+    ],
+    "ok": true
+  },
+  "RUNTIME_ACTIVATION_ATTEMPTED": {
+    "forbidden": [
+      "ACTIVATED",
+      "ACTIVATED_NO_LIVE_ORDERS",
+      "ACTIVE",
+      "LIVE"
+    ],
+    "ok": true,
+    "status": "READY_FOR_ACTIVATION"
+  },
+  "TESTNET_ORDER_PATH_REACHABLE": {
+    "ok": true
+  },
+  "UNSAFE_DEFAULT_FALLBACK": {
+    "notes": "config truth report permissive_fallbacks_found checked in prove_config_effective_values_v1",
+    "ok": true
+  },
+  "VERIFIER_FAILURE": {
+    "ok": true,
+    "owner": "trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0"
+  }
+}
