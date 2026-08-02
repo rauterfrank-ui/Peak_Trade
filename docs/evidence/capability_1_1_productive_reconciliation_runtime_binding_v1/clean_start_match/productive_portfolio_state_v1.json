@@ -1,0 +1,12 @@
+{
+  "cash": null,
+  "duplicate": false,
+  "event_time_unix": 1700000000.0,
+  "max_age_seconds": null,
+  "missing": false,
+  "positions": [],
+  "source_id": "reconciled_match",
+  "stale": false,
+  "wall_time_unix": 1700000000.0,
+  "writer_conflict": false
+}
