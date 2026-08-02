@@ -238,7 +238,7 @@ numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
 5. Restart/recovery proof for productive runtime
 6. Strategy registry full productive binding
 7. Config truth alignment for `max_open_positions` effective consumers — **closed by Capability 0.3** (`CONFIG_TRUTH_ALIGNMENT_V1`)
-8. Active-set rotation policy is deferred design reminder only (not productive Top-5)
+8. Active-set rotation policy — **registered by Capability 0.4** as `DEFERRED_REQUIRED_CAPABILITY` in `PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1` / `docs/governance/deferred_work_recovery_register_v1.json` (Phase 6; not productive Top-5; implementation/activation unauthorized; prior reminder remains `REMINDER_ONLY`)
 
 ### 3.7 Last verifiable evidence anchors
 
@@ -280,7 +280,8 @@ Primary target/governance SSOT documents:
 
 - `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md` — `DOCUMENT_CLASS=TARGET_ARCHITECTURE` (contains Phase-1 safety bounds that remain currently binding)
 - `docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md` — `DOCUMENT_CLASS=TARGET_ARCHITECTURE`
-- `docs/planning/deferred/MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER.md` — deferred required capability reminder (not productive Top-5)
+- `docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md` + `docs/governance/deferred_work_recovery_register_v1.json` — canonical Deferred-Work Recovery Register (Capability 0.4; `MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0` = `DEFERRED_REQUIRED_CAPABILITY`; not productive Top-5)
+- `docs/planning/deferred/MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER.md` — `REMINDER_ONLY` surface; authority superseded by the canonical register
 
 **Forbidden reading:** Do not treat target architecture, DTOs, offline tests, or deactivated bindings as activated runtime capabilities.
 
@@ -358,7 +359,8 @@ Legend for `DOCUMENT_CLASS_*`:
 | `docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md` | CURRENT | CURRENT | contract v0 | MARKET_DASHBOARD_AUTHORITY=false | lane taxonomy | authority levels | none | none material | DOCUMENT_CLASS | yes |
 | `docs/ops/specs/RECONCILIATION_FLOW_SPEC.md` | TARGET/spec | TARGET | spec | pilot/safety recon | recon flow | safety | not productive host-bound | productive recon unbound | DOCUMENT_CLASS=TARGET_ARCHITECTURE | yes |
 | `docs/ops/runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md` | CURRENT | CURRENT | inventory | reconciliation PRESENT_BUT_UNBOUND | later bind | none live | none | none | DOCUMENT_CLASS | yes |
-| `docs/planning/deferred/MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER.md` | deferred reminder | TARGET/deferred | reminder | IMPLEMENTATION_STARTED=false | Top20→TopN later | ranking≠authority | none | Top-5 must not be called productive/regressed | DOCUMENT_CLASS=TARGET_ARCHITECTURE + deferred marker | yes |
+| `docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md` / `docs/governance/deferred_work_recovery_register_v1.json` | CURRENT register | CURRENT | Capability 0.4 | CURRENT_RUNTIME_EFFECT=NONE | Phase-6 deferred rotation | register only | none | Top-5 not productive; multi-future unauthorized | create + register rotation workstream | yes |
+| `docs/planning/deferred/MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER.md` | deferred reminder | REMINDER_ONLY | reminder | IMPLEMENTATION_STARTED=false | Top20→TopN later | ranking≠authority | none | Top-5 must not be called productive/regressed; authority superseded by Deferred-Work Register | DOCUMENT_CLASS=TARGET_ARCHITECTURE + deferred marker + register pointer | yes |
 | `docs/PHASE_42_TOPN_PROMOTION.md` | HIST/TARGET risk | HIST | phase doc | promotion language risk | TopN | INSUFFICIENT_EVIDENCE | INSUFFICIENT_EVIDENCE | may over-claim TopN readiness | DOCUMENT_CLASS=HISTORICAL; no Top5 productive claim | yes |
 | `docs&#47;ops&#47;specs&#47;MASTER_V2_CANONICAL_VOLATILITY_*` (family) | research/CURRENT | CURRENT research | many | watchdog/research | later enforcement discussion only | non-enforcing | research sessions only | enforcement must stay false | no enforcement uplift; family noted | partial (family rule in Truth Map; no mass rewrite) |
 | `docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md` | CURRENT readmodel | CURRENT | webui | universe readmodel | selection UI | not trading authority | none | ranking≠trading authority | DOCUMENT_CLASS + authority false note | yes |

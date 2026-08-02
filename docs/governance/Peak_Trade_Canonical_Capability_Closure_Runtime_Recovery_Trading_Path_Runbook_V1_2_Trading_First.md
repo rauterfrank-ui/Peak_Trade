@@ -731,6 +731,16 @@ Der als Reminder-only identifizierte Workstream `MULTI_FUTURE_ACTIVE_SET_ROTATIO
 
 Diese Capability in Phase 0 ist **nur Design-/Governance-Recovery**, keine Multi-Future-Implementierung und keine Aktivierung.
 
+Kanonisches Register (SSOT):
+
+```text
+docs/governance/deferred_work_recovery_register_v1.json
+docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md
+docs/ops/specs/DEFERRED_WORK_RECOVERY_REGISTER_ROTATION_POLICY_RESUBMISSION_V1.md
+src/ops/deferred_work_recovery_register_contract_v1.py
+tests/governance/test_deferred_work_recovery_register_v1.py
+```
+
 Pflichtartefakte:
 
 - eindeutiger Owner
@@ -1847,16 +1857,45 @@ Nach jeder dritten Capability oder jedem Activation-relevanten Merge muss ein er
 
 ## Deferred Work Register
 
-Jede deferred Capability benötigt:
+Kanonische Authority (Capability 0.4):
 
 ```text
-deferred_reason
-blocking_dependency
-owner_requirement
-target_phase
-review_trigger
-expiry_or_review_date
-current_status
+docs/governance/deferred_work_recovery_register_v1.json
+docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md
+```
+
+Keine parallelen Register. Reminder-only Surfaces (z. B. `docs/planning/deferred/MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER.md`) sind nicht Authority.
+
+Jede deferred Capability benötigt mindestens:
+
+```text
+CAPABILITY_ID
+TITLE
+CLASSIFICATION
+OWNER_REQUIREMENT
+TRADING_PATH_VALUE
+CURRENT_STATE
+TARGET_STATE
+DEFERRED_REASON
+BLOCKING_DEPENDENCIES
+DEPENDENCY_STATUS
+AUTHORITY_OWNER
+TARGET_PHASE
+REVIEW_TRIGGER
+REVIEW_DATE_OR_EVENT
+EXPIRY_OR_REASSESSMENT_RULE
+IMPLEMENTATION_AUTHORIZED
+ACTIVATION_AUTHORIZED
+CORE_LOGIC_CHANGE_ALLOWED
+CURRENT_RUNTIME_EFFECT
+EXPECTED_FUTURE_RUNTIME_EFFECT
+SAFETY_INVARIANTS
+SOURCE_REFERENCES
+REPOSITORY_SHA
+LAST_VERIFIED_AT
+CURRENT_STATUS
+NEXT_REQUIRED_DECISION
+CLOSURE_CRITERIA
 ```
 
 Ein Reminder-only Dokument ohne Review Trigger ist nicht ausreichend.
