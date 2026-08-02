@@ -8,7 +8,7 @@
 
 **Canonical navigation (Governance / Autonomy / Architecture SSOT):**
 1. Start: [governance/PEAK_TRADE_MAP_OF_TRUTH.md](governance/PEAK_TRADE_MAP_OF_TRUTH.md) — Map of Truth (entry only; defines no semantics)
-2. Read the canonical Vollautonomie-Runbook v4.4.12 via that map
+2. Read the Canonical Master Runbook via that map (`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`)
 
 **New to Peak_Trade (product overview)?**
 1. Read: [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) – Architecture, Strategy Registry, Config, Quick Start

@@ -4,30 +4,34 @@
 **Authority:** Keine zweite Trading-, Safety-, Risk-, Sizing-, Economic- oder Runtime-SSOT.
 
 **Einstieg (Discovery):** [`PEAK_TRADE_MAP_OF_TRUTH.md`](PEAK_TRADE_MAP_OF_TRUTH.md) — zentrale Navigation; definiert keine Semantik.
-**Aktuelle normative SSOT:** [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) (via Map of Truth).
+**Aktuelle normative Autorität:** [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) (via Map of Truth).
+**Historische Vorgängerautorität (SUPERSEDED):** [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md).
 
 ```text
 MAP_OF_TRUTH_PATH=docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
-CANONICAL_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md
-NORMATIVE_SSOT_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+CANONICAL_RUNBOOK_PATH=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+NORMATIVE_SSOT_PATH=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
 THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true
 THIS_DOCUMENT_MAY_NOT_OVERRIDE_CANONICAL_RUNBOOK=true
 CURSOR_MUST_READ_CANONICAL_RUNBOOK_FIRST=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
 ```
 
 **Historischer Crosslink-Parent (Contract-Pfad):** [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md)
-**Kanonischer Parent (v4.4.12):** siehe [Map of Truth](PEAK_TRADE_MAP_OF_TRUTH.md).
+**Historischer Parent (v4.4.12, SUPERSEDED):** siehe [Map of Truth](PEAK_TRADE_MAP_OF_TRUTH.md).
 
-## 0. Externe kanonische Quelle (v4.4.12) — Referenz + Repo-Kopie
+## 0. Historische externe Quelle (v4.4.12) — SUPERSEDED Referenz + Repo-Kopie
 
 ```text
 EXTERNAL_CANONICAL_RUNBOOK_SOURCE_FILENAME=Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
 EXTERNAL_CANONICAL_RUNBOOK_SOURCE_VERSION=v4.4.12
 EXTERNAL_CANONICAL_RUNBOOK_SOURCE_PATH=/Users/frnkhrz/Desktop/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
 EXTERNAL_CANONICAL_RUNBOOK_SOURCE_SHA256=00f35015ad6e96d955d7c9913815dc5e54b36988d209cc41c85c98c06abe79d9
-REPO_CANONICAL_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+REPO_CANONICAL_RUNBOOK_PATH=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+HISTORICAL_SUPERSEDED_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
 NORMATIVE_REFERENCE_ONLY=false
 PROGRESS_METADATA_COPIED=false
+STATUS=SUPERSEDED_FOR_V4_4_12
 ```
 
 ## 1. Unveränderliche Grenzen

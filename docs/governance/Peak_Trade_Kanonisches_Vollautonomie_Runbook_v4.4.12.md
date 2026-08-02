@@ -2,7 +2,22 @@
 ## Core-System-Konsistenz, Reuse-First-Integration & Economic Viability
 
 ```text
-DOCUMENT_CLASS=TARGET_ARCHITECTURE
+DOCUMENT_CLASS=HISTORICAL
+STATUS=SUPERSEDED
+NON_CURRENT_RUNTIME_TRUTH=true
+SUPERSEDED_BY=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+> **SUPERSEDED — nicht mehr aktuelle Implementierungs- oder Operationsautorität.**
+> Aktuelle semantische Autorität:
+> [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md).
+> Diese Datei bleibt als historische Vorgängerreferenz erhalten und darf nicht
+> als aktuelle Autorität verwendet werden.
+
+```text
+LEGACY_DOCUMENT_CLASS=TARGET_ARCHITECTURE
 PHASE_1_SAFETY_BOUNDS_REMAIN_CURRENTLY_BINDING=true
 CURRENT_RUNTIME_TRUTH_OWNER=docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md
 ```

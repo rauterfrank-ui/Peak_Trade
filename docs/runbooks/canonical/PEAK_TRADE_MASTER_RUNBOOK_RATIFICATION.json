@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "document_class": "CANONICAL_MASTER_RUNBOOK_RATIFICATION",
+  "canonical_runbook_path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+  "supersedes": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md",
+  "owner_ratified": true,
+  "runtime_authorization_effect": "NONE",
+  "source_filename": "Peak_Trade_Master_Runbook_Canonical_Stateful_No_Order_Finish_V2_3_SEMANTIC_INTEGRATION_FULL_AUTONOMY_UPDATED_v2.md",
+  "source_sha256": "efd8e4a29eb5a670f4e4bb7949bbc95b06d6acb773892a8861a79cc1ed3de5d3",
+  "repository_base_sha": "a8653d520ba3563dddb41aa175445d14725ac9b9",
+  "canonical_document_sha256": "584915e834ce47dcb73f686f070c68b0ed80ca6144ec58633b673c8648e926dc",
+  "ratification_commit_sha": "PENDING_UNTIL_COMMIT",
+  "merge_sha": "PENDING_UNTIL_MERGE_TO_ORIGIN_MAIN",
+  "verified_at": "2026-08-02T09:43:53Z",
+  "no_parallel_semantic_model": true,
+  "live_authorized": false,
+  "testnet_authorized": false,
+  "exchange_orders_authorized": false,
+  "core_logic_changed": false
+}
