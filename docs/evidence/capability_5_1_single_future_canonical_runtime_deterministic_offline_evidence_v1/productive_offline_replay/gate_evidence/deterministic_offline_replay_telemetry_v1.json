@@ -1,0 +1,214 @@
+{
+  "blocked_reason_counts": {
+    "FEATURE_WARMUP_INCOMPLETE": 2
+  },
+  "cycle_count": 12,
+  "decision_outcomes": [
+    "blocked",
+    "blocked",
+    "observe",
+    "observe",
+    "observe",
+    "observe",
+    "observe",
+    "observe",
+    "observe",
+    "observe",
+    "observe",
+    "observe"
+  ],
+  "distinct_observation_count": 12,
+  "duplicate_observation_count": 1,
+  "entry_count": 0,
+  "exit_count": 0,
+  "hold_count": 12,
+  "intended_actions": [
+    {
+      "decision_outcome": "blocked",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "safety_or_fail_closed",
+      "reason_codes": [
+        "warmup_required"
+      ],
+      "safety_blocked": true,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "blocked",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "safety_or_fail_closed",
+      "reason_codes": [
+        "warmup_required"
+      ],
+      "safety_blocked": true,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    },
+    {
+      "decision_outcome": "observe",
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "quantity_source": "non_actionable",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "safety_blocked": false,
+      "selected_side": "none"
+    }
+  ],
+  "max_drawdown": "0",
+  "missing_observation_count": 1,
+  "native_instrument_binding": {
+    "bound": true,
+    "instrument_id": "ADA-USDT-SWAP",
+    "venue_native_id": "ADA-USDT-SWAP"
+  },
+  "numeric_max_age_strata_diagnostic": [
+    {
+      "age_seconds": 0,
+      "enforcement_enabled": false,
+      "instrument_id": "SOL-USDT-SWAP",
+      "max_age_seconds": 3600,
+      "mutates_alpha_risk_safety": false,
+      "stratum": "diagnostic_only"
+    }
+  ],
+  "portfolio_state_digest": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+  "profit_factor": null,
+  "realized_pnl": "0",
+  "reconciliation_result": {
+    "alpha_enabled": true,
+    "bound": true,
+    "ok": true,
+    "reconciliation_before_alpha": true,
+    "selection_binding_completed": true
+  },
+  "reduce_count": 0,
+  "risk_state_digest": "83f61b5625f2854133e48c791190ad630cc88db4676cb861230b1a99fe8afd37",
+  "risk_vetoes": 0,
+  "safety_vetoes": 2,
+  "selected_future_identity": {
+    "instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+    "selection_id": "ssf_2d7e964dba5571df0f1dc5e2",
+    "selection_integrity_digest": "283a89c011410a950c208087a20b2e23e59ac267291b9d94b52c9481b0d0778b",
+    "venue_native_id": "ADA-USDT-SWAP"
+  },
+  "simulated_fills": [],
+  "total_fees": "0",
+  "total_slippage": "0",
+  "turnover": "0",
+  "typed_volatility_presence_events": 1,
+  "unrealized_pnl": "0"
+}

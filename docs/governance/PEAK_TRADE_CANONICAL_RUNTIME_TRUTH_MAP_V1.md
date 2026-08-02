@@ -114,8 +114,9 @@ Audit classification categories:
 
 | Entrypoint | Class | Activation | Evidence basis |
 |------------|-------|------------|----------------|
+| `scripts/ops/run_single_future_canonical_runtime_deterministic_offline_evidence_v1.py` | Cap 5.1 deterministic offline evidence entrypoint | `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; offline replay only | Cap 5.1 evidence; reuses Cap 4.1/2.4 host; fixtures only; no network/auth consumption/activation |
 | `scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py` | Cap 4.1 pre-activation closure entrypoint | `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false` | Cap 4.1 evidence; reuses Cap 2.4 host; no live/orders/auth consumption |
-| `scripts/ops/run_single_selected_future_runtime_binding_v1.py` | Cap 2.4 productive single-future analytical host | host reused by Cap 4.1; not a second canonical host | Cap 2.4 / 3.1 / 4.1 evidence |
+| `scripts/ops/run_single_selected_future_runtime_binding_v1.py` | Cap 2.4 productive single-future analytical host | host reused by Cap 4.1/5.1; not a second canonical host | Cap 2.4 / 3.1 / 4.1 / 5.1 evidence |
 | `scripts/ops/run_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py` | analytical simulated-economics bridge | live order path remains non-activated; analytical simulation path only | package constants `RUNTIME_BRIDGE_LIVE_ACTIVATED=False`, `ORDERS_AUTHORIZED=False`, `LIVE_AUTHORIZED=False` |
 | `scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py` | gated wallclock observation | not default-authorized; requires scoped GO/auth artifacts | Map of Truth / IPSO runbooks; non-authorizing by docs |
 | `scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py` | productive public-MD issuance helper | merge does not authorize session | IPSO productive issuance runbook |
@@ -235,6 +236,7 @@ phase1_hard_safety_constants
 | Productive Futures Ranking Producer (Capability 2.2) | `PRODUCTIVE_CANONICAL` Top-20 candidate-context owner `ops.productive_futures_ranking_producer_v1`; `CODE_EXISTS+BOUND+PERSISTED+RESTART_PROVEN`; `ACTIVATED=false`; `TOP20_IS_CONTEXT_ONLY=true`; selection/alpha/multi-future not granted |
 | Productive Futures Accounting Runtime Binding (Capability 3.1) | `PRODUCTIVE_CANONICAL` owner `ops.productive_futures_accounting_runtime_binding_v1`; reuses `src/execution/paper/futures_accounting.py`; `FUTURES_ACCOUNTING_RUNTIME_BOUND=true`; `ACTIVATED=false`; live/orders fail-closed |
 | Single Future Canonical Runtime Pre-Activation Closure (Capability 4.1) | `PRODUCTIVE_CANONICAL` owner `ops.single_future_canonical_runtime_pre_activation_closure_v1`; reuses Cap 2.4 host; `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; live/orders/auth-consumption fail-closed |
+| Single Future Canonical Runtime Deterministic Offline Evidence (Capability 5.1) | `PRODUCTIVE_CANONICAL` owner `ops.single_future_canonical_runtime_deterministic_offline_evidence_v1`; reuses Cap 4.1/2.4 host; offline fixtures only; `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; no network/auth consumption/activation |
 
 Verification: `CONFIG_TRUTH_ALIGNMENT_V1`; live remains fail-closed; multi-future unauthorized;
 numeric max-age non-enforcing; Cap 4.1 readiness is not activation.
@@ -250,6 +252,7 @@ numeric max-age non-enforcing; Cap 4.1 readiness is not activation.
 | Productive reconciliation in runtime host | bound as mandatory startup gate before first decision cycle (Capability 1.1) | `PRODUCTIVE_RECONCILIATION_BOUND=true`; owner `ops.productive_reconciliation_runtime_binding_v1`; alpha only on MATCH / verified reduce-only recovery; live/orders still fail-closed |
 | Futures accounting in runtime path | bound after simulated fill / before portfolio+risk persistence (Capability 3.1) | `FUTURES_ACCOUNTING_RUNTIME_BOUND=true`; owner `ops.productive_futures_accounting_runtime_binding_v1`; kernel `src/execution/paper/futures_accounting.py`; live/orders still fail-closed |
 | Cap 4.1 pre-activation closure | full single-future call graph proven offline | `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; evidence under `docs/evidence/capability_4_1_single_future_canonical_runtime_pre_activation_closure_v1/` |
+| Cap 5.1 deterministic offline evidence | Cap 4.1 call graph proven under versioned offline market-data replay + restart/digest parity | `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; evidence under `docs/evidence/capability_5_1_single_future_canonical_runtime_deterministic_offline_evidence_v1/` |
 
 ### 3.6 Known gaps (current)
 

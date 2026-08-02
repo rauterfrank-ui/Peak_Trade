@@ -1,0 +1,92 @@
+{
+  "ACCOUNTING_PERSISTENCE_FAILURE": {
+    "notes": "Cap 3.1 single-writer/persistence interruption surfaces reused",
+    "ok": true
+  },
+  "AUTHORIZATION_CONSUMPTION_ATTEMPTED": {
+    "ok": true
+  },
+  "CORRUPTED_PORTFOLIO_CHECKPOINT": {
+    "notes": "corrupt JSON written; load path fail-closed by Cap 3.1 persistence",
+    "ok": true
+  },
+  "CORRUPTED_RISK_CHECKPOINT": {
+    "notes": "corrupt JSON written; load path fail-closed by Cap 3.1 persistence",
+    "ok": true
+  },
+  "DUPLICATE_OBSERVATION": {
+    "duplicate_observation_count": 1,
+    "handled_fail_closed_or_deduped": true,
+    "ok": true
+  },
+  "INVALID_CONTRACT_METADATA": {
+    "error": "INVALID_CONTRACT_METADATA:instType",
+    "ok": true
+  },
+  "LIVE_ORDER_PATH_REACHABLE": {
+    "ok": true
+  },
+  "MISSING_MARK_PRICE": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "MARK_PRICE_MISSING"
+    ],
+    "exit_risk_safety_preserved": true,
+    "ok": true
+  },
+  "MISSING_OBSERVATION": {
+    "missing_observation_count": 1,
+    "ok": true,
+    "skipped_fail_closed": true
+  },
+  "MISSING_TYPED_VOLATILITY": {
+    "exit_risk_safety_preserved": true,
+    "ok": true,
+    "owner": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1"
+  },
+  "MULTI_FUTURE_ENABLED": {
+    "ok": true,
+    "value": false
+  },
+  "NETWORK_ACCESS_OCCURRED": {
+    "ok": true
+  },
+  "NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED": {
+    "ok": true,
+    "value": false
+  },
+  "RUNTIME_ACTIVATION_ATTEMPTED": {
+    "ok": true,
+    "status": "READY_FOR_ACTIVATION"
+  },
+  "SELECTION_DIGEST_MISMATCH": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "CORRUPT_SELECTION",
+      "REPOSITORY_SHA_MISMATCH"
+    ],
+    "exit_risk_safety_preserved": true,
+    "ok": true
+  },
+  "STALE_MARKET_DATA": {
+    "exit_risk_safety_preserved": true,
+    "notes": "empty mark map blocks alpha; exit/risk/safety preserved",
+    "ok": true
+  },
+  "STALE_SELECTION": {
+    "blockers": [
+      "ALPHA_BLOCKED",
+      "SELECTION_EXPIRED",
+      "SELECTION_STALE"
+    ],
+    "exit_risk_safety_preserved": true,
+    "ok": true
+  },
+  "TESTNET_ORDER_PATH_REACHABLE": {
+    "ok": true
+  },
+  "VERIFIER_MISMATCH": {
+    "ok": true,
+    "owner": "trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0"
+  }
+}
