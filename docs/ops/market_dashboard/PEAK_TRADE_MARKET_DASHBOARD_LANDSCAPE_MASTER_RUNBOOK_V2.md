@@ -1,5 +1,15 @@
 # Peak_Trade — Market Dashboard Landscape Master Runbook V2
 
+```text
+DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
+DASHBOARD=READ_ONLY_CONSUMER
+DASHBOARD_AUTHORITY_EFFECT=NONE
+DASHBOARD_TRADING_INPUT=false
+DASHBOARD_SSOT=false
+LANDSCAPE_COMPLETE_MEANS_CONSUMER_CLOSEOUT_ONLY=true
+LANDSCAPE_COMPLETE_DOES_NOT_MEAN_TRADING_RUNTIME_ACTIVATED=true
+```
+
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
 **Status:** `MARKET_DASHBOARD_V2_WORKSTREAM_COMPLETE`

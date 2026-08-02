@@ -1,5 +1,10 @@
 # Peak Trade — Map of Truth
 
+```text
+DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
+DOCUMENT_ROLE=NAVIGATION_ONLY_NO_SEMANTICS
+```
+
 **Rolle:** Zentraler Navigations-Einstieg (Discovery-Only).  
 **Authority:** Keine. Dieses Dokument definiert keine Semantik.
 
@@ -16,18 +21,35 @@ SCHEDULER_RUNTIME_ALLOWED=false
 
 **Dieses Dokument definiert keine Semantik. Es verweist ausschließlich auf die kanonischen Owner.**
 
+**Aktuelle Runtime-Ist-Wahrheit (nicht Zielbild):** [`PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md)
+
+**Capability-Closure-Arbeitsrunbook:** [`Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md`](Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md)
+
 ---
 
 ## 1. Systemzweck
 
-Peak Trade ist ein futures-only, vollautonomes Handelssystem mit:
+Peak Trade ist ein **futures-only** Handelssystem. Das **Zielprogramm** ist vollautonome Runtime-Closure; das ist **nicht** der aktuelle Runtime-Ist-Zustand.
 
-- deterministischer, auditierbarer Handelslogik,
-- realistischer Profitabilitätsvalidierung,
-- unabhängiger Safety Authority,
-- gefenceter Single-Writer-Runtime,
-- vollständiger Reconciliation und sicherer Restart-/Recovery-Semantik,
-- durchgängiger Research → Validation → Promotion → Runtime → Feedback-Kette,
+Aktuell verbindlich (siehe Canonical Runtime Truth Map):
+
+```text
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+LIVE_TRADING=FAIL_CLOSED
+DASHBOARD=READ_ONLY_CONSUMER
+PHASE_1_SELECTION=SINGLE_SELECTED_FUTURE
+PHASE_1_MAX_POSITIONS=1
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+```
+
+Das Zielprogramm umfasst u. a.:
+
+- deterministische, auditierbare Handelslogik,
+- realistische Profitabilitätsvalidierung,
+- unabhängige Safety Authority,
+- gefencete Single-Writer-Runtime,
+- vollständige Reconciliation und sichere Restart-/Recovery-Semantik,
+- durchgängige Research → Validation → Promotion → Runtime → Feedback-Kette,
 - Phase-1 Single-Future-Safety vor späterer Multi-Future-Portfolio-Runtime (nur nach separaten Gates).
 
 Keine Anlageberatung. Keine Live-/Order-/Scheduler-Freigabe allein durch Lektüre.
@@ -95,6 +117,7 @@ Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 
 | Dokument | Rolle |
 |----------|-------|
+| [`PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) | Canonical Runtime Ist-Zustand (CURRENT_RUNTIME_TRUTH; non-authorizing) |
 | [`docs/ops/specs/REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md`](../ops/specs/REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md) | Runtime-Architektur |
 | [`docs/ops/runbooks/README.md`](../ops/runbooks/README.md) | Ops-Runbooks-Index |
 | [`docs/ops/RUNBOOK_INDEX.md`](../ops/RUNBOOK_INDEX.md) | Runbook-Index |

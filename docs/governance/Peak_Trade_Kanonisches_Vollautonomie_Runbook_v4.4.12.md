@@ -1,6 +1,12 @@
 # Peak Trade — Kanonisches Vollautonomie-Runbook v4.4.12
 ## Core-System-Konsistenz, Reuse-First-Integration & Economic Viability
 
+```text
+DOCUMENT_CLASS=TARGET_ARCHITECTURE
+PHASE_1_SAFETY_BOUNDS_REMAIN_CURRENTLY_BINDING=true
+CURRENT_RUNTIME_TRUTH_OWNER=docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md
+```
+
 **Status:** Kanonisches strategisches und operatives Implementierungsrunbook
 **Version:** 4.4.12-full-canonical-system-parity-before-system-economic-evidence
 **Stand:** 12. Juli 2026

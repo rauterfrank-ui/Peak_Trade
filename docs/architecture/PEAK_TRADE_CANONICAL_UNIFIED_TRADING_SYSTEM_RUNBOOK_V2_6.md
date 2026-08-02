@@ -9,6 +9,7 @@ CURRENT_RUNTIME_AUTHORIZATION: false
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 scope: docs-only, strategic-target, non-authorizing
+DOCUMENT_CLASS: TARGET_ARCHITECTURE
 ---
 
 > **Repo-Integrationshinweis (2026-06-28):** Dieses Dokument ist das **kanonische strategische Ziel- und Implementierungsrunbook** für genau **ein** Peak-Trade-Futures-Handelssystem mit zwei intern getrennten Authority-Domänen: **TRADING_DECISION_CORE** und **SAFETY_EXECUTION_RUNTIME_CORE**. Es beschreibt ein **ratifiziertes Zielbild** und Implementierungsleitlinien — **nicht** den vollständig implementierten Ist-Zustand. Reale Code-Owner, Baseline-Bindungen und offene Implementierungsgaps sind durch separates read-only Audit (`canonical_peak_trade_trading_system_baseline_and_owner_binding_audit_v1`) zu binden. **Keine** Live-, Order-, Scheduler-, Shadow-, Paper- oder Testnet-Freigabe durch alleinige Lektüre dieses Dokuments.

@@ -1,5 +1,10 @@
 # Universe Selection Read-model Schema v1
 
+```text
+DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
+UNIVERSE_RANKING_TRADING_AUTHORITY=false
+```
+
 ## 1. Purpose
 
 This document defines the **normative persistence contract** for **`universe_selection_readmodel.v1`**: governed Universe (~50 futures), Top-20 ranking, Selected Future, Future detail metadata, and related evidence links for the **view-only Workflow Dashboard** on **`GET &#47;observability`**.

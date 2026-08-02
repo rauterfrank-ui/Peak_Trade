@@ -1,5 +1,11 @@
 # Feature State Map v1
 
+```text
+DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
+SNAPSHOT_BASELINE_SHA_IN_HEADER_IS_HISTORICAL_EVIDENCE=true
+```
+
+
 **Status:** ACTIVE (read-only governance map)  
 **Erzeugt:** 2026-07-05  
 **Branch:** `main` @ `2f1672bee8761f8d50def3f6ef31cc803824b2e9`  

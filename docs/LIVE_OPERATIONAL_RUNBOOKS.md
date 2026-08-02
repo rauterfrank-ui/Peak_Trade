@@ -1,5 +1,11 @@
 # Peak_Trade – Live Operational Runbooks
 
+```text
+DOCUMENT_CLASS=HISTORICAL
+NON_AUTHORIZING=true
+LIVE_READY_CLAIM=false
+```
+
 > **Phase:** 39 – Live-Deployment-Playbook & Ops-Runbooks
 > **Version:** v1.1
 > **Zweck:** Konkrete Step-by-Step-Anleitungen für Operations
