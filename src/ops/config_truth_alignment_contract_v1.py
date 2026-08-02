@@ -9,12 +9,15 @@ Confirmation / Entry-Exit / Risk / Safety / Selection / Ranking decision logic.
 
 from __future__ import annotations
 
+import ast
 import hashlib
+import importlib.util
 import json
 import os
 from dataclasses import asdict, dataclass, field
 from enum import Enum
 from pathlib import Path
+from types import ModuleType
 from typing import Any, Mapping, Optional, Sequence
 
 from src.core.peak_config import PeakConfig, load_config, resolve_config_path
@@ -72,6 +75,33 @@ _TEST_ONLY_CONFIG = _REPO_ROOT / "config" / "config.test.toml"
 
 class ConfigTruthAlignmentError(ValueError):
     """Fail-closed Phase-1 config truth violation."""
+
+
+def _load_module_from_path(module_name: str, path: Path) -> ModuleType:
+    """Load a module file without executing heavy package ``__init__`` side effects."""
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        raise ConfigTruthAlignmentError(f"MODULE_LOAD_FAIL_CLOSED:{path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _module_level_bool_constant(path: Path, name: str) -> bool:
+    """Read a module-level bool assignment via AST (no import side effects)."""
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except OSError as exc:
+        raise ConfigTruthAlignmentError(f"MODULE_READ_FAIL_CLOSED:{path}") from exc
+    for node in tree.body:
+        if not isinstance(node, ast.Assign):
+            continue
+        for target in node.targets:
+            if isinstance(target, ast.Name) and target.id == name:
+                if isinstance(node.value, ast.Constant) and isinstance(node.value.value, bool):
+                    return bool(node.value.value)
+                raise ConfigTruthAlignmentError(f"MODULE_CONST_NOT_BOOL_FAIL_CLOSED:{path}:{name}")
+    raise ConfigTruthAlignmentError(f"MODULE_CONST_MISSING_FAIL_CLOSED:{path}:{name}")
 
 
 class ConsumerClass(str, Enum):
@@ -272,10 +302,14 @@ def _guard_cli_overrides(cli_overrides: Optional[Mapping[str, Any]]) -> None:
 
 
 def _bridge_constants() -> dict[str, bool]:
-    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1 import (
-        constants_v1 as bridge,
+    bridge = _load_module_from_path(
+        "config_truth_alignment_bridge_constants_v1",
+        _REPO_ROOT
+        / "src"
+        / "ops"
+        / "wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
+        / "constants_v1.py",
     )
-
     return {
         "orders_authorized": bool(bridge.ORDERS_AUTHORIZED),
         "testnet_authorized": bool(bridge.TESTNET_AUTHORIZED),
@@ -286,11 +320,14 @@ def _bridge_constants() -> dict[str, bool]:
 
 
 def _max_age_enforcement_constant() -> bool:
-    from src.trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1 import (
-        ENFORCEMENT_ENABLED,
+    return _module_level_bool_constant(
+        _REPO_ROOT
+        / "src"
+        / "trading"
+        / "master_v2"
+        / "canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py",
+        "ENFORCEMENT_ENABLED",
     )
-
-    return bool(ENFORCEMENT_ENABLED)
 
 
 def _effective_digest(payload: Mapping[str, Any]) -> str:
