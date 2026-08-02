@@ -1,9 +1,18 @@
 {
+  "PHASE_9_2_PUBLIC_MD_SMOKE_SESSION_PASS": true,
   "PHASE_9_2_SMOKE_SESSION_PREFLIGHT_READY": true,
+  "activation_config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+  "authorization_consumed": true,
   "capability_id": "PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_V1",
-  "evidence_digest": "a2ffb263f600d79a68fca4eadb631e7d8be0b225cbc0d02fb8f17c38d326854b",
+  "cycles": 80,
+  "entry_fill_count": 0,
+  "hold_count": 80,
+  "network_opened": true,
   "ok": true,
-  "repository_sha": "5c1daf024b2c693c350b664bcae6ae2cb160543d",
-  "smoke_contract_digest": "4ad89dfe519522d7e2456fac48b2bc2b81916e573db848aa0ca9628aaad2854b",
-  "task_id": "PHASE_9_2_PUBLIC_MD_SESSION_PREFLIGHT_V1"
+  "repository_sha": "870445764c64dde8c05cf4ecf672185e2b3480f5",
+  "session_id": "phase_9_2_public_md_smoke_session_v1",
+  "smoke_contract_digest": "cf78fa62df0f238c1d0608fe2047fb280aa4e188a55c34a6c8c7830949c50c22",
+  "task_id": "PHASE_9_2_SMOKE_SESSION_SHA_REBIND_AUTHORIZATION_AND_EXECUTION_V1",
+  "terminal_verdict": "PASS",
+  "verifier_verified": true
 }

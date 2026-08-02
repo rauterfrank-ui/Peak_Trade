@@ -55,12 +55,12 @@
   "minimum_interval_seconds": 2.0,
   "network_session_authorized": false,
   "per_request_max_retries": 2,
-  "persistence_root": "var/runtime/phase_9_2/phase_9_2_public_md_smoke_session_v1/5c1daf024b2c",
+  "persistence_root": "var/runtime/phase_9_2/phase_9_2_public_md_smoke_session_v1/870445764c64",
   "poll_interval_seconds": 2.0,
   "purpose": "Short public-MD no-order smoke proving EEA allowlist, pacing, staleness, stable session identity, restart-safe state and evidence binding under Cap 7.2 activated stateful simulated runtime.",
   "reconnect_attempt_limit": 3,
   "reconnect_time_limit_seconds": 60,
-  "repository_sha": "5c1daf024b2c693c350b664bcae6ae2cb160543d",
+  "repository_sha": "870445764c64dde8c05cf4ecf672185e2b3480f5",
   "required_metrics": [
     "cycles",
     "distinct_observation_count",
@@ -103,7 +103,7 @@
   "session_http_429_budget": 5,
   "session_id": "phase_9_2_public_md_smoke_session_v1",
   "session_ladder_step": "SMOKE_SESSION",
-  "smoke_contract_digest": "4ad89dfe519522d7e2456fac48b2bc2b81916e573db848aa0ca9628aaad2854b",
+  "smoke_contract_digest": "cf78fa62df0f238c1d0608fe2047fb280aa4e188a55c34a6c8c7830949c50c22",
   "staleness_budget_seconds": 5.0,
   "verifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1"
 }

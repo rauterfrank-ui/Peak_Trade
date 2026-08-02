@@ -64,7 +64,7 @@
       "predecessor_evidence_digest": "e19001d4c3bc4f3bd9d5ab91c5d880a39df3c3a0edaea3dc2e3f200c7e62c13b",
       "predecessor_evidence_present_on_baseline": true,
       "predecessor_merge_sha_baseline": "1d447fcecc4886a690cd9e83da11c2c38995e43f",
-      "repository_sha_at_activation": "5c1daf024b2c693c350b664bcae6ae2cb160543d"
+      "repository_sha_at_activation": "870445764c64dde8c05cf4ecf672185e2b3480f5"
     }
   },
   "gaps": [],
