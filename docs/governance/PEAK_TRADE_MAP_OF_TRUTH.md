@@ -118,6 +118,7 @@ Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 | Dokument | Rolle |
 |----------|-------|
 | [`PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) | Canonical Runtime Ist-Zustand (CURRENT_RUNTIME_TRUTH; non-authorizing) |
+| [`PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md`](PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md) | Deferred-Work Recovery Register (Capability 0.4; Rotation-Policy Wiedervorlage; non-activating) |
 | [`docs/ops/specs/REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md`](../ops/specs/REAL_MARKET_247_RUNTIME_ARCHITECTURE_V1.md) | Runtime-Architektur |
 | [`docs/ops/runbooks/README.md`](../ops/runbooks/README.md) | Ops-Runbooks-Index |
 | [`docs/ops/RUNBOOK_INDEX.md`](../ops/RUNBOOK_INDEX.md) | Runbook-Index |

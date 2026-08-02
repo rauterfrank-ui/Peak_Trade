@@ -5,7 +5,14 @@
 ```text
 DOCUMENT_CLASS=TARGET_ARCHITECTURE
 PROCESS_CLASSIFICATION=DEFERRED_DESIGN_REMINDER_ONLY
+CLASSIFICATION=REMINDER_ONLY
+AUTHORITY_SUPERSEDED_BY_CANONICAL_REGISTER=true
+CANONICAL_REGISTER=docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md
+CANONICAL_REGISTER_JSON=docs/governance/deferred_work_recovery_register_v1.json
+REGISTERED_AS=DEFERRED_REQUIRED_CAPABILITY
 TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false
+TOP5_PRODUCTIVE=false
+TOP5_REGRESSED=false
 TOP5_IS_NOT_EXISTING_PRODUCTIVE_OR_REGRESSED_FUNCTION=true
 SCOPE_CLASSIFICATION=MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_REMINDER_NO_IMPLEMENTATION_NO_RUNTIME_NO_ECONOMIC_EVAL_NO_AUTHORITY
 REMINDER_ID=MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0
@@ -19,7 +26,12 @@ ECONOMIC_EVALUATION_AUTHORIZED=false
 RUNTIME_REWIRE_ADMISSIBLE=false
 ```
 
-This document is a **deferred design reminder only**. It does **not** implement portfolio rotation, active-set allocation, Multi-Future runtime, economic evaluation, or any trading authority. It does **not** modify Backtest Parity Surface work, scheduler, credentials, orders, adapters, shadow, paper, testnet, canary, live, Master V2, Double Play, Risk/Sizing, Safety, Reconciliation, Promotion, or canonical trading logic.
+This document remains a **deferred design reminder only** (`REMINDER_ONLY`). Canonical deferred-capability authority for roadmap recovery is the Deferred-Work Recovery Register:
+
+- [`docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md`](../../governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md)
+- [`docs/governance/deferred_work_recovery_register_v1.json`](../../governance/deferred_work_recovery_register_v1.json)
+
+There the workstream is registered as `DEFERRED_REQUIRED_CAPABILITY` (Phase 6) with machine-readable dependencies and an event-based review trigger. This reminder does **not** implement portfolio rotation, active-set allocation, Multi-Future runtime, economic evaluation, or any trading authority. It does **not** modify Backtest Parity Surface work, scheduler, credentials, orders, adapters, shadow, paper, testnet, canary, live, Master V2, Double Play, Risk/Sizing, Safety, Reconciliation, Promotion, or canonical trading logic.
 
 ## Purpose
 
