@@ -1,18 +1,18 @@
 # Peak_Trade Canonical Capability Closure, Runtime Recovery & Trading-Path Runbook V1.1 — Forensic Reconciled
 
-**Status:** CANONICAL WORKING RUNBOOK — FORENSICALLY RECONCILED  
-**Authority:** Repository-Owner / Operator  
-**Scope:** Peak_Trade Futures-only, Master V2 / Double Play, Research → Shadow → Testnet → Live  
-**Primary Goal:** Alle bestehenden, vergessenen, nur dokumentierten, nur verdrahteten oder nicht aktivierten Capabilities systematisch bis zu einer nachweisbaren, sicheren Runtime-Closure führen – ohne Live-Trading vorzeitig zu aktivieren.  
-**Repository Baseline:** `origin/main@4bac3303bd74967c0c81d02c5de16c431301e12e`  
-**Forensic Comparison Basis:** Cursor audit `PEAK_TRADE_FULL_CAPABILITY_COMPLETENESS_AND_FORGOTTEN_WORK_AUDIT_V1` at the same SHA  
-**Baseline Validity Rule:** Every implementation PR must revalidate the baseline against its actual `origin/main`; counts and paths in the audit are evidence snapshots, not timeless constants.  
-**Initial Runtime Status:** `CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED`  
-**Live Status:** FAIL-CLOSED / NOT IMPLEMENTED / NOT AUTHORIZED  
-**Dashboard Status:** READ-ONLY CONSUMER, niemals Authority oder SSOT  
-**Volatility Numeric Max-Age Status:** WATCHDOG / RESEARCH / DIAGNOSTIC ONLY, nicht enforcing  
-**Multi-Future Status:** NOT AUTHORIZED  
-**Phase-1 Position Limit:** `MAX_POSITIONS=1`  
+**Status:** CANONICAL WORKING RUNBOOK — FORENSICALLY RECONCILED
+**Authority:** Repository-Owner / Operator
+**Scope:** Peak_Trade Futures-only, Master V2 / Double Play, Research → Shadow → Testnet → Live
+**Primary Goal:** Alle bestehenden, vergessenen, nur dokumentierten, nur verdrahteten oder nicht aktivierten Capabilities systematisch bis zu einer nachweisbaren, sicheren Runtime-Closure führen – ohne Live-Trading vorzeitig zu aktivieren.
+**Repository Baseline:** `origin&#47;main@4bac3303bd74967c0c81d02c5de16c431301e12e`
+**Forensic Comparison Basis:** Cursor audit `PEAK_TRADE_FULL_CAPABILITY_COMPLETENESS_AND_FORGOTTEN_WORK_AUDIT_V1` at the same SHA
+**Baseline Validity Rule:** Every implementation PR must revalidate the baseline against its actual `origin/main`; counts and paths in the audit are evidence snapshots, not timeless constants.
+**Initial Runtime Status:** `CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED`
+**Live Status:** FAIL-CLOSED / NOT IMPLEMENTED / NOT AUTHORIZED
+**Dashboard Status:** READ-ONLY CONSUMER, niemals Authority oder SSOT
+**Volatility Numeric Max-Age Status:** WATCHDOG / RESEARCH / DIAGNOSTIC ONLY, nicht enforcing
+**Multi-Future Status:** NOT AUTHORIZED
+**Phase-1 Position Limit:** `MAX_POSITIONS=1`
 **Phase-1 Selection Semantics:** `SINGLE_SELECTED_FUTURE`
 
 ---
@@ -90,16 +90,16 @@ Es ersetzt keine Handelslogik. Es ändert insbesondere nicht automatisch:
 
 Dieses Runbook verfolgt vier gleichzeitig verbindliche Ziele:
 
-1. **Runtime-Wahrheit herstellen**  
+1. **Runtime-Wahrheit herstellen**
    Dokumentation, Config, Call-Graph, Tests und tatsächliche Runtime-Reachability müssen übereinstimmen.
 
-2. **Liegengebliebene Capabilities schließen**  
+2. **Liegengebliebene Capabilities schließen**
    Bestehender Code wird bevorzugt wiederverwendet, aber erst dann als abgeschlossen gewertet, wenn eine vollständige Capability-Closure nachgewiesen ist.
 
-3. **Immer zurück zum Handelsziel arbeiten**  
+3. **Immer zurück zum Handelsziel arbeiten**
    Jede Capability muss nachweisen, welchen konkreten Beitrag sie zur sicheren, realistischen und später aktivierbaren Handels-Runtime leistet.
 
-4. **Fail-closed bleiben**  
+4. **Fail-closed bleiben**
    Live-Trading, Testnet-Execution, Paper-Execution, Multi-Future-Runtime und Runtime-Aktivierung bleiben blockiert, bis die jeweils definierten Gates vollständig und beweisbar erfüllt sind.
 
 ---
@@ -551,7 +551,7 @@ NOTION_ACCURATE
 ACTIVATION_EXPLICIT
 ```
 
-Nicht zutreffende Felder müssen mit Begründung als `N/A` markiert werden.
+Nicht zutreffende Felder müssen mit Begründung als `N&#47;A` markiert werden.
 
 ## 5.2 Status-Regel
 

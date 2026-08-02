@@ -16,7 +16,7 @@ TRADING_CONFIG_MUTATION=false
 ACTIVATION_CHANGE=false
 ```
 
-**Rolle:** Kanonische Ist-Zustandskarte der Runtime-Wahrheit.  
+**Rolle:** Kanonische Ist-Zustandskarte der Runtime-Wahrheit.
 **Nicht-Rolle:** Kein Zielbild, keine Activation-Authority, keine zweite Trading-SSOT.
 
 Normative Governance-/Implementierungs-SSOT bleibt:
@@ -156,7 +156,7 @@ Public Market Data
 | Dashboard / Market UI | Market Dashboard Landscape V2 consumer surfaces | `READ_ONLY_CONSUMER`; `AUTHORITY_EFFECT=NONE` |
 | Numeric volatility max-age | `canonical_volatility_numeric_max_age_*` research/policy contracts | watchdog/research/diagnostic; `enforcement_enabled=false` |
 | Economic validity offline gate | progress registry + economic validity policy surfaces | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false` |
-| Live execution | `src/live` fail-closed / not implemented path | `INTENTIONAL_SAFETY_BARRIER` |
+| Live execution | `src&#47;live` fail-closed / not implemented path | `INTENTIONAL_SAFETY_BARRIER` | <!-- pt:ref-target-ignore -->
 
 ### 3.4 Active runtime-config truth (no config mutation; documentary)
 
@@ -305,7 +305,7 @@ Legend for `DOCUMENT_CLASS_*`:
 | DOCUMENT_PATH | CLASS_CURRENT | CLASS_PROPOSED | LAST_RELEVANT_SHA_OR_DATE | RUNTIME_CLAIMS | TARGET_ARCHITECTURE_CLAIMS | AUTHORITY_CLAIMS | ACTIVATION_CLAIMS | CONFLICTS_WITH_CURRENT_REPOSITORY | REQUIRED_CORRECTION | CORRECTION_APPLIED |
 |---|---|---|---|---|---|---|---|---|---|---|
 | `docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md` | CURRENT | CURRENT | `4bac3303…` / 2026-08-02 | Ist-Zustand only | separated §4 | documentary only | none | none | create | yes |
-| `docs/governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md` | CURRENT+working | CURRENT+working | baseline `4bac3303…` | BOUND_NOT_ACTIVATED etc. | §1.1 target separated | owner/operator working authority | fail-closed | internal title V1.1 vs filename V1_2 | store + note mismatch; do not silently rewrite | yes (stored; mismatch documented) |
+| `docs/governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md` | CURRENT+working | CURRENT+working | baseline `4bac3303…` | BOUND_NOT_ACTIVATED etc. | §1.1 target separated | owner/operator working authority | fail-closed | internal title V1.1 vs filename V1_2 | store + note mismatch; do not silently rewrite | yes (stored; mismatch documented; repo-admission token encoding + trailing-whitespace normalization only) |
 | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` | navigation | navigation + CURRENT pointer | main @ baseline | LIVE/ORDERS false | autonomy wording risk | no semantics | none | “vollautonomes Handelssystem” can be read as Ist | clarify target vs current; add Truth Map pointer + DOCUMENT_CLASS | yes |
 | `docs/governance/feature_state_map_v1.md` | CURRENT snapshot | CURRENT | header SHA `2f1672bee…` / 2026-07-05 | BOUND_NOT_ACTIVATED; 0 live ops | none primary | decision-core owners | none live | older SHA than baseline | add DOCUMENT_CLASS; keep snapshot caveat | yes |
 | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md` | mixed SSOT | TARGET (+ Phase-1 current bounds) | adopted SSOT | Phase-1 MAX_POSITIONS=1; BOUND_NOT_ACTIVATED markers | full autonomy path | canonical SSOT | non-authorizing alone | target can be over-read as complete runtime | DOCUMENT_CLASS header | yes |
@@ -323,7 +323,7 @@ Legend for `DOCUMENT_CLASS_*`:
 | `docs/ops/runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md` | CURRENT | CURRENT | inventory | reconciliation PRESENT_BUT_UNBOUND | later bind | none live | none | none | DOCUMENT_CLASS | yes |
 | `docs/planning/deferred/MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER.md` | deferred reminder | TARGET/deferred | reminder | IMPLEMENTATION_STARTED=false | Top20→TopN later | ranking≠authority | none | Top-5 must not be called productive/regressed | DOCUMENT_CLASS=TARGET_ARCHITECTURE + deferred marker | yes |
 | `docs/PHASE_42_TOPN_PROMOTION.md` | HIST/TARGET risk | HIST | phase doc | promotion language risk | TopN | INSUFFICIENT_EVIDENCE | INSUFFICIENT_EVIDENCE | may over-claim TopN readiness | DOCUMENT_CLASS=HISTORICAL; no Top5 productive claim | yes |
-| `docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_*` (family) | research/CURRENT | CURRENT research | many | watchdog/research | later enforcement discussion only | non-enforcing | research sessions only | enforcement must stay false | no enforcement uplift; family noted | partial (family rule in Truth Map; no mass rewrite) |
+| `docs&#47;ops&#47;specs&#47;MASTER_V2_CANONICAL_VOLATILITY_*` (family) | research/CURRENT | CURRENT research | many | watchdog/research | later enforcement discussion only | non-enforcing | research sessions only | enforcement must stay false | no enforcement uplift; family noted | partial (family rule in Truth Map; no mass rewrite) |
 | `docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md` | CURRENT readmodel | CURRENT | webui | universe readmodel | selection UI | not trading authority | none | ranking≠trading authority | DOCUMENT_CLASS + authority false note | yes |
 | `docs/LIVE_OPERATIONAL_RUNBOOKS.md` | HIST/ops index | HIST/non-authorizing | live ops overview | operational wording risk | live ops | non-authorizing | none | “operational” ≠ live-ready | DOCUMENT_CLASS=HISTORICAL + non-authorizing preserved | yes if edited; else inventory only |
 | `docs/governance/READ_ONLY_CANONICAL_CHAIN_AND_ZERO_TRADE_BLOCKER_REAUDIT_V1.md` | CURRENT audit | CURRENT/HIST evidence | reaudit | zero-trade blockers | none | fail-closed | none | none | DOCUMENT_CLASS | yes |
