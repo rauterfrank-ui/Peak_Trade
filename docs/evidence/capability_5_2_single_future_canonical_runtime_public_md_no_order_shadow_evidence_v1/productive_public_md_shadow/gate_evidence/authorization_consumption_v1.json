@@ -1,0 +1,20 @@
+{
+  "authorization_consumed": true,
+  "authorization_id": "cap52_auth_b70655c3ef6b474a",
+  "capability_id": "CAPABILITY_5_2_SINGLE_FUTURE_CANONICAL_RUNTIME_PUBLIC_MD_NO_ORDER_SHADOW_EVIDENCE_V1",
+  "consumed_at_unix": 1700000100.0,
+  "consumption_digest": "25716e3ba64c8e133cba3d06eab1d4d75a8be6f218bba0f997a507d75dbe8020",
+  "consumption_ledger_path": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/docs/evidence/capability_5_2_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/_build/auth_consumption/consumption_ledger.jsonl",
+  "consumption_marker_path": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/docs/evidence/capability_5_2_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/_build/auth_consumption/cap52_auth_b70655c3ef6b474a.consumed.json",
+  "live_authorized": false,
+  "network_scope": "PUBLIC_MARKET_DATA_ONLY",
+  "ok": true,
+  "one_time_use": true,
+  "orders_authorized": false,
+  "paper_order_execution_authorized": false,
+  "public_market_data_only": true,
+  "repository_sha": "a7a1a5a5466eb619a7284247f794ee34035f6407",
+  "schema": "cap52_public_md_no_order_shadow_authorization_v1",
+  "step": "authorization_contract_validation_and_consumption",
+  "testnet_authorized": false
+}

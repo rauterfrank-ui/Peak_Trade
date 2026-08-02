@@ -1,0 +1,1194 @@
+{
+  "ACTIVATION_CHANGED": false,
+  "AUTHORIZATION_CONSUMED": true,
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS_AFTER": "READY_FOR_ACTIVATION",
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS_BEFORE": "READY_FOR_ACTIVATION",
+  "CORE_LOGIC_CHANGE": false,
+  "LIVE_PATH_CHANGED": false,
+  "NETWORK_ACCESS_OCCURRED": true,
+  "PRODUCTIVE_RUNTIME_ENTRYPOINT": "scripts/ops/run_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1.py",
+  "PRODUCTIVE_RUNTIME_HOST": "scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py",
+  "PUBLIC_MARKET_DATA_ONLY": true,
+  "PUBLIC_MD_NO_ORDER_SHADOW": true,
+  "READY_FOR_ACTIVATION": true,
+  "RUNTIME_ACTIVATED": false,
+  "authority_map": {
+    "accounting_logic_changed": false,
+    "allowlist_selection_authority": false,
+    "authority_map": {
+      "accounting": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+      "bridge_host": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+      "config_truth": "ops.config_truth_alignment_contract_v1",
+      "decision": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+      "deterministic_offline_evidence": "ops.single_future_canonical_runtime_deterministic_offline_evidence_v1",
+      "double_play_parity": "trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0",
+      "pre_activation_closure": "ops.single_future_canonical_runtime_pre_activation_closure_v1",
+      "public_md_client": "ops.okx_public_market_data_client_v1",
+      "public_md_shadow_evidence": "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1",
+      "ranking": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+      "reconciliation": "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
+      "selection": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+      "selection_runtime_binding": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+      "typed_volatility_presence": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+      "universe": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+      "verifier": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1"
+    },
+    "capability_owners_not_duplicated": true,
+    "core_logic_changed": false,
+    "dashboard_authority_effect": false,
+    "dashboard_role": "READ_ONLY_CONSUMER",
+    "direct_instrument_override_allowed": false,
+    "double_play_changed": false,
+    "legacy_or_parallel_surfaces": [
+      {
+        "dashboard_authority_effect": false,
+        "path": "src/webui/market_dashboard_landscape_v2",
+        "productive_runtime_authority": false,
+        "role": "DASHBOARD_READ_ONLY_CONSUMER"
+      }
+    ],
+    "legacy_parallel_authority_absent": true,
+    "master_v2_changed": false,
+    "parallel_accounting_authority_created": false,
+    "parallel_evidence_authority_created": false,
+    "parallel_runtime_authority_created": false,
+    "parallel_selection_authority_created": false,
+    "productive_runtime_host_reused": "scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py",
+    "public_md_shadow_entrypoint": "scripts/ops/run_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1.py",
+    "public_md_shadow_evidence_authority": "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1",
+    "risk_changed": false,
+    "safety_changed": false,
+    "second_canonical_runtime_host_created": false,
+    "selection_authority_unchanged": true
+  },
+  "baseline_sha": "a7a1a5a5466eb619a7284247f794ee34035f6407",
+  "call_graph_after": [
+    "authorization_contract_validation_and_consumption",
+    "session_lock",
+    "governed_futures_universe",
+    "productive_ranking",
+    "persisted_single_selected_future",
+    "native_instrument_binding",
+    "reconciliation",
+    "okx_public_market_data_capture",
+    "public_md_no_order_shadow_replay",
+    "features",
+    "typed_volatility_presence",
+    "Master V2",
+    "Double Play",
+    "risk",
+    "safety",
+    "intent",
+    "simulated_fill",
+    "canonical_futures_accounting",
+    "portfolio_and_risk_persistence",
+    "evidence",
+    "verifier"
+  ],
+  "call_graph_before": [
+    "authorization_contract_validation_offline_fixture",
+    "session_lock",
+    "governed_futures_universe",
+    "productive_ranking",
+    "persisted_single_selected_future",
+    "native_instrument_binding",
+    "reconciliation",
+    "deterministic_offline_market_data_replay",
+    "features",
+    "typed_volatility_presence",
+    "Master V2",
+    "Double Play",
+    "risk",
+    "safety",
+    "intent",
+    "simulated_fill",
+    "canonical_futures_accounting",
+    "portfolio_and_risk_persistence",
+    "evidence",
+    "verifier"
+  ],
+  "canonical_outcome_digest": "f7a75387839ee053ade96e44c460660d2f93f57b88e8c3604e1f20aaf177b50f",
+  "capability_id": "CAPABILITY_5_2_SINGLE_FUTURE_CANONICAL_RUNTIME_PUBLIC_MD_NO_ORDER_SHADOW_EVIDENCE_V1",
+  "capture_digest": "6b7b1bdeefb3d97122ee0ec3865d58a9622854d4ff597784d2853fcff633c980",
+  "config_digest": "6ccf2d9f52461d28cf5b39d09639ec5e9a04c42b02fd7b8637c07ddb9c658349",
+  "gate": {
+    "blockers": [],
+    "bridge_cycle_count": 12,
+    "evidence": {
+      "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "READY_FOR_ACTIVATION",
+      "RUNTIME_ACTIVATED": false,
+      "activation_negative": {
+        "ACTIVATED_FORBIDDEN": true,
+        "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "READY_FOR_ACTIVATION",
+        "RUNTIME_ACTIVATED": false,
+        "attempted_activation": false,
+        "ok": true,
+        "status_unchanged": true
+      },
+      "authorization_consumption": {
+        "authorization_consumed": true,
+        "authorization_id": "cap52_auth_b70655c3ef6b474a",
+        "capability_id": "CAPABILITY_5_2_SINGLE_FUTURE_CANONICAL_RUNTIME_PUBLIC_MD_NO_ORDER_SHADOW_EVIDENCE_V1",
+        "consumed_at_unix": 1700000100.0,
+        "consumption_digest": "25716e3ba64c8e133cba3d06eab1d4d75a8be6f218bba0f997a507d75dbe8020",
+        "consumption_ledger_path": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/docs/evidence/capability_5_2_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/_build/auth_consumption/consumption_ledger.jsonl",
+        "consumption_marker_path": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/docs/evidence/capability_5_2_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/_build/auth_consumption/cap52_auth_b70655c3ef6b474a.consumed.json",
+        "live_authorized": false,
+        "network_scope": "PUBLIC_MARKET_DATA_ONLY",
+        "ok": true,
+        "one_time_use": true,
+        "orders_authorized": false,
+        "paper_order_execution_authorized": false,
+        "public_market_data_only": true,
+        "repository_sha": "a7a1a5a5466eb619a7284247f794ee34035f6407",
+        "schema": "cap52_public_md_no_order_shadow_authorization_v1",
+        "step": "authorization_contract_validation_and_consumption",
+        "testnet_authorized": false
+      },
+      "baseline_sha": "a7a1a5a5466eb619a7284247f794ee34035f6407",
+      "call_graph_after": [
+        "authorization_contract_validation_and_consumption",
+        "session_lock",
+        "governed_futures_universe",
+        "productive_ranking",
+        "persisted_single_selected_future",
+        "native_instrument_binding",
+        "reconciliation",
+        "okx_public_market_data_capture",
+        "public_md_no_order_shadow_replay",
+        "features",
+        "typed_volatility_presence",
+        "Master V2",
+        "Double Play",
+        "risk",
+        "safety",
+        "intent",
+        "simulated_fill",
+        "canonical_futures_accounting",
+        "portfolio_and_risk_persistence",
+        "evidence",
+        "verifier"
+      ],
+      "call_graph_before": [
+        "authorization_contract_validation_offline_fixture",
+        "session_lock",
+        "governed_futures_universe",
+        "productive_ranking",
+        "persisted_single_selected_future",
+        "native_instrument_binding",
+        "reconciliation",
+        "deterministic_offline_market_data_replay",
+        "features",
+        "typed_volatility_presence",
+        "Master V2",
+        "Double Play",
+        "risk",
+        "safety",
+        "intent",
+        "simulated_fill",
+        "canonical_futures_accounting",
+        "portfolio_and_risk_persistence",
+        "evidence",
+        "verifier"
+      ],
+      "canonical_outcome_digest": "f7a75387839ee053ade96e44c460660d2f93f57b88e8c3604e1f20aaf177b50f",
+      "capability_id": "CAPABILITY_5_2_SINGLE_FUTURE_CANONICAL_RUNTIME_PUBLIC_MD_NO_ORDER_SHADOW_EVIDENCE_V1",
+      "capture_digest": "6b7b1bdeefb3d97122ee0ec3865d58a9622854d4ff597784d2853fcff633c980",
+      "config_digest": "6ccf2d9f52461d28cf5b39d09639ec5e9a04c42b02fd7b8637c07ddb9c658349",
+      "failure_injection_results": {
+        "ACCOUNTING_PERSISTENCE_FAILURE": {
+          "ok": true
+        },
+        "AUTHORIZATION_ALREADY_CONSUMED": {
+          "error": "AUTHORIZATION_ALREADY_CONSUMED",
+          "ok": true
+        },
+        "CORRUPTED_PORTFOLIO_CHECKPOINT": {
+          "ok": true
+        },
+        "CORRUPTED_RISK_CHECKPOINT": {
+          "ok": true
+        },
+        "DUPLICATE_OBSERVATION": {
+          "duplicate_observation_count": 1,
+          "ok": true
+        },
+        "LIVE_ORDER_PATH_REACHABLE": {
+          "ok": true
+        },
+        "MISSING_MARK_PRICE": {
+          "blockers": [
+            "ALPHA_BLOCKED",
+            "MARK_PRICE_MISSING"
+          ],
+          "ok": true
+        },
+        "MISSING_OBSERVATION": {
+          "missing_observation_count": 1,
+          "ok": true
+        },
+        "MISSING_TYPED_VOLATILITY": {
+          "ok": true,
+          "owner": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1"
+        },
+        "MULTI_FUTURE_ENABLED": {
+          "ok": true,
+          "value": false
+        },
+        "NUMERIC_MAX_AGE_ENFORCEMENT_ENABLED": {
+          "ok": true
+        },
+        "PAPER_ORDER_PATH_REACHABLE": {
+          "ok": true
+        },
+        "PRIVATE_API_ATTEMPTED": {
+          "notes": "public MD client path allowlist rejects private endpoints",
+          "ok": true
+        },
+        "RUNTIME_ACTIVATION_ATTEMPTED": {
+          "ok": true,
+          "status": "READY_FOR_ACTIVATION"
+        },
+        "SELECTION_DIGEST_MISMATCH": {
+          "blockers": [
+            "ALPHA_BLOCKED",
+            "CORRUPT_SELECTION",
+            "REPOSITORY_SHA_MISMATCH"
+          ],
+          "ok": true
+        },
+        "STALE_MARKET_DATA": {
+          "ok": true
+        },
+        "STALE_SELECTION": {
+          "blockers": [
+            "ALPHA_BLOCKED",
+            "SELECTION_EXPIRED",
+            "SELECTION_STALE"
+          ],
+          "ok": true
+        },
+        "TESTNET_ORDER_PATH_REACHABLE": {
+          "ok": true
+        },
+        "VERIFIER_MISMATCH": {
+          "ok": true,
+          "owner": "trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0"
+        }
+      },
+      "gate_flags": {
+        "ACTIVATION_NEGATIVE_PROVEN": true,
+        "AUTHORIZATION_CONSUMED_ONCE": true,
+        "CAPTURE_THEN_SHADOW_PROVEN": true,
+        "CONFIG_TRUTH_ALIGNED": true,
+        "CORE_LOGIC_UNCHANGED": true,
+        "DETERMINISTIC_SHADOW_REPLAY_PROVEN": true,
+        "DOUBLE_PLAY_PARITY_PROVEN": true,
+        "DOUBLE_PLAY_RUNTIME_REACHABLE": true,
+        "EVIDENCE_VERIFIED": true,
+        "EXIT_PATH_PROVEN": true,
+        "FAILURE_INJECTION_PROVEN": true,
+        "FULL_SINGLE_FUTURE_CALL_GRAPH_PROVEN": true,
+        "FUTURES_ACCOUNTING_BOUND": true,
+        "INDEPENDENT_RUN_DIGEST_MATCH": true,
+        "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+        "MASTER_V2_RUNTIME_REACHABLE": true,
+        "MAX_POSITIONS_EFFECTIVE_IS_1": true,
+        "MULTI_FUTURE_DISABLED": true,
+        "NATIVE_INSTRUMENT_BOUND": true,
+        "NO_LIVE_ORDER_PATH": true,
+        "NO_ORDER_PATH": true,
+        "NO_PAPER_ORDER_PATH": true,
+        "NO_TESTNET_ORDER_PATH": true,
+        "PORTFOLIO_STATE_PERSISTENCE_PROVEN": true,
+        "PUBLIC_MD_CAPTURE_PROVEN": true,
+        "PUBLIC_MD_NETWORK_ONLY": true,
+        "PUBLIC_MD_NO_ORDER_SHADOW": true,
+        "RANKING_AUTHORITY_BOUND": true,
+        "RECONCILIATION_BEFORE_ALPHA": true,
+        "RECONCILIATION_BOUND": true,
+        "RESTART_EVIDENCE_DIGEST_MATCH": true,
+        "RESTART_FINAL_STATE_MATCH": true,
+        "RESTART_RECOVERY_PROVEN": true,
+        "RISK_BOUND": true,
+        "RISK_STATE_PERSISTENCE_PROVEN": true,
+        "RUNTIME_NOT_ACTIVATED": true,
+        "RUNTIME_TRUTH_MAP_CURRENT": true,
+        "SAFETY_BOUND": true,
+        "SINGLE_SELECTION_PERSISTED": true,
+        "TYPED_VOLATILITY_PRESENCE_PROVEN": true,
+        "UNIVERSE_AUTHORITY_BOUND": true,
+        "VERIFIER_PASS": true,
+        "VOL_MAX_AGE_ENFORCEMENT_DISABLED": true
+      },
+      "independent_run": {
+        "match": true,
+        "ok": true,
+        "run_a_digest": "f7a75387839ee053ade96e44c460660d2f93f57b88e8c3604e1f20aaf177b50f",
+        "run_b_digest": "f7a75387839ee053ade96e44c460660d2f93f57b88e8c3604e1f20aaf177b50f"
+      },
+      "legacy_authority_check": {
+        "accounting_logic_changed": false,
+        "allowlist_selection_authority": false,
+        "authority_map": {
+          "accounting": "CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1",
+          "bridge_host": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1",
+          "config_truth": "ops.config_truth_alignment_contract_v1",
+          "decision": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1",
+          "deterministic_offline_evidence": "ops.single_future_canonical_runtime_deterministic_offline_evidence_v1",
+          "double_play_parity": "trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0",
+          "pre_activation_closure": "ops.single_future_canonical_runtime_pre_activation_closure_v1",
+          "public_md_client": "ops.okx_public_market_data_client_v1",
+          "public_md_shadow_evidence": "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1",
+          "ranking": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+          "reconciliation": "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1",
+          "selection": "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+          "selection_runtime_binding": "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+          "typed_volatility_presence": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+          "universe": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+          "verifier": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1"
+        },
+        "capability_owners_not_duplicated": true,
+        "core_logic_changed": false,
+        "dashboard_authority_effect": false,
+        "dashboard_role": "READ_ONLY_CONSUMER",
+        "direct_instrument_override_allowed": false,
+        "double_play_changed": false,
+        "legacy_or_parallel_surfaces": [
+          {
+            "dashboard_authority_effect": false,
+            "path": "src/webui/market_dashboard_landscape_v2",
+            "productive_runtime_authority": false,
+            "role": "DASHBOARD_READ_ONLY_CONSUMER"
+          }
+        ],
+        "legacy_parallel_authority_absent": true,
+        "master_v2_changed": false,
+        "parallel_accounting_authority_created": false,
+        "parallel_evidence_authority_created": false,
+        "parallel_runtime_authority_created": false,
+        "parallel_selection_authority_created": false,
+        "productive_runtime_host_reused": "scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py",
+        "public_md_shadow_entrypoint": "scripts/ops/run_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1.py",
+        "public_md_shadow_evidence_authority": "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1",
+        "risk_changed": false,
+        "safety_changed": false,
+        "second_canonical_runtime_host_created": false,
+        "selection_authority_unchanged": true
+      },
+      "network_order_negative": {
+        "NETWORK_ACCESS_OCCURRED": true,
+        "NO_LIVE_ORDER_PATH": true,
+        "NO_ORDER_PATH": true,
+        "NO_PAPER_ORDER_PATH": true,
+        "NO_TESTNET_ORDER_PATH": true,
+        "ORDERS_ATTEMPTED": false,
+        "PRIVATE_API_USED": false,
+        "PUBLIC_MD_NETWORK_ONLY": true,
+        "RUNTIME_ACTIVATED": false,
+        "hard_forbidden_token_hits": [],
+        "ok": true,
+        "owner": "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1"
+      },
+      "notes": [
+        "CAPABILITY_5_2_PUBLIC_MD_NO_ORDER_SHADOW_EVIDENCE",
+        "READY_FOR_ACTIVATION_NOT_ACTIVATED",
+        "PRODUCTIVE_HOST_REUSED_CAPABILITY_4_1",
+        "CAP51_REPLAY_ENGINE_REUSED_ON_CAPTURED_PUBLIC_MD",
+        "AUTHORIZATION_CONSUMED_ONCE",
+        "PUBLIC_MARKET_DATA_ONLY",
+        "NO_ORDERS",
+        "a1382fb996d7364ec5ffe795d7f5b4ee4bfdf8995e676ce65db3500dabd9cffe"
+      ],
+      "ok": true,
+      "owner": "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1",
+      "producer_version": "single_future_canonical_runtime_public_md_no_order_shadow_evidence.v1",
+      "productive_call_graph_proven": [
+        "authorization_contract_validation_and_consumption",
+        "session_lock",
+        "governed_futures_universe",
+        "productive_ranking",
+        "persisted_single_selected_future",
+        "native_instrument_binding",
+        "reconciliation",
+        "okx_public_market_data_capture",
+        "public_md_no_order_shadow_replay",
+        "features",
+        "typed_volatility_presence",
+        "Master V2",
+        "Double Play",
+        "risk",
+        "safety",
+        "intent",
+        "simulated_fill",
+        "canonical_futures_accounting",
+        "portfolio_and_risk_persistence",
+        "evidence",
+        "verifier"
+      ],
+      "public_md_capture": {
+        "capture_digest": "6b7b1bdeefb3d97122ee0ec3865d58a9622854d4ff597784d2853fcff633c980",
+        "capture_envelopes": [
+          {
+            "byte_size": 102,
+            "capture_started_at": "2026-08-02T06:32:11Z",
+            "captured_at": "2026-08-02T06:32:11Z",
+            "effective_at": null,
+            "http_status": 200,
+            "provider_code": "0",
+            "provider_message": "",
+            "provider_timestamp": null,
+            "query_parameters": {
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP"
+            },
+            "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.5\"}]}",
+            "raw_payload_digest": "0e41241ad4a7f578b5291e0b95562fcf0d144ca00f91b7ad31fba18a3e3cd78b",
+            "request_path": "/api/v5/public/mark-price",
+            "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+            "response_received_at": "2026-08-02T06:32:11Z"
+          },
+          {
+            "byte_size": 103,
+            "capture_started_at": "2026-08-02T06:32:11Z",
+            "captured_at": "2026-08-02T06:32:11Z",
+            "effective_at": null,
+            "http_status": 200,
+            "provider_code": "0",
+            "provider_message": "",
+            "provider_timestamp": null,
+            "query_parameters": {
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP"
+            },
+            "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.51\"}]}",
+            "raw_payload_digest": "dd5a1540724fec631298a37d9fe0961bbfdf3da15b13938a3760d74f7f6c9464",
+            "request_path": "/api/v5/public/mark-price",
+            "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+            "response_received_at": "2026-08-02T06:32:11Z"
+          },
+          {
+            "byte_size": 103,
+            "capture_started_at": "2026-08-02T06:32:11Z",
+            "captured_at": "2026-08-02T06:32:11Z",
+            "effective_at": null,
+            "http_status": 200,
+            "provider_code": "0",
+            "provider_message": "",
+            "provider_timestamp": null,
+            "query_parameters": {
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP"
+            },
+            "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.52\"}]}",
+            "raw_payload_digest": "ed51c442abdbc7e0fcc08ade35355e8d11cadb0ab4a735a2eecd619de78fb0cf",
+            "request_path": "/api/v5/public/mark-price",
+            "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+            "response_received_at": "2026-08-02T06:32:11Z"
+          },
+          {
+            "byte_size": 103,
+            "capture_started_at": "2026-08-02T06:32:11Z",
+            "captured_at": "2026-08-02T06:32:11Z",
+            "effective_at": null,
+            "http_status": 200,
+            "provider_code": "0",
+            "provider_message": "",
+            "provider_timestamp": null,
+            "query_parameters": {
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP"
+            },
+            "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.53\"}]}",
+            "raw_payload_digest": "564a617562b4cdabfbab1b332400962a43f47cd04a8f84f3e983e11e971f3775",
+            "request_path": "/api/v5/public/mark-price",
+            "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+            "response_received_at": "2026-08-02T06:32:11Z"
+          },
+          {
+            "byte_size": 103,
+            "capture_started_at": "2026-08-02T06:32:11Z",
+            "captured_at": "2026-08-02T06:32:11Z",
+            "effective_at": null,
+            "http_status": 200,
+            "provider_code": "0",
+            "provider_message": "",
+            "provider_timestamp": null,
+            "query_parameters": {
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP"
+            },
+            "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.54\"}]}",
+            "raw_payload_digest": "e1e86cfcc081af0e10342a249146ff99c0befc2ac79f27e86e6916da924f7924",
+            "request_path": "/api/v5/public/mark-price",
+            "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+            "response_received_at": "2026-08-02T06:32:11Z"
+          },
+          {
+            "byte_size": 103,
+            "capture_started_at": "2026-08-02T06:32:11Z",
+            "captured_at": "2026-08-02T06:32:11Z",
+            "effective_at": null,
+            "http_status": 200,
+            "provider_code": "0",
+            "provider_message": "",
+            "provider_timestamp": null,
+            "query_parameters": {
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP"
+            },
+            "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.55\"}]}",
+            "raw_payload_digest": "ae6427a591cf2add6bcf9a1472478f740fcd4c4171e204286aa19bdf9a74cebb",
+            "request_path": "/api/v5/public/mark-price",
+            "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+            "response_received_at": "2026-08-02T06:32:11Z"
+          },
+          {
+            "byte_size": 103,
+            "capture_started_at": "2026-08-02T06:32:11Z",
+            "captured_at": "2026-08-02T06:32:11Z",
+            "effective_at": null,
+            "http_status": 200,
+            "provider_code": "0",
+            "provider_message": "",
+            "provider_timestamp": null,
+            "query_parameters": {
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP"
+            },
+            "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.56\"}]}",
+            "raw_payload_digest": "79720b38556e8fcf04864e985eee950f8c8c5b1d641b8cc7f185be4c0fa4f950",
+            "request_path": "/api/v5/public/mark-price",
+            "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+            "response_received_at": "2026-08-02T06:32:11Z"
+          },
+          {
+            "byte_size": 103,
+            "capture_started_at": "2026-08-02T06:32:11Z",
+            "captured_at": "2026-08-02T06:32:11Z",
+            "effective_at": null,
+            "http_status": 200,
+            "provider_code": "0",
+            "provider_message": "",
+            "provider_timestamp": null,
+            "query_parameters": {
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP"
+            },
+            "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.57\"}]}",
+            "raw_payload_digest": "1f13883cdaccf96824a5bb2f34fa51a3947e3bbbf9b1d4a17f4adf98e2cae044",
+            "request_path": "/api/v5/public/mark-price",
+            "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+            "response_received_at": "2026-08-02T06:32:11Z"
+          }
+        ],
+        "client_owner": "ops.okx_public_market_data_client_v1",
+        "envelope_count": 8,
+        "inst_type": "SWAP",
+        "network_access_occurred": true,
+        "network_scope": "PUBLIC_MARKET_DATA_ONLY",
+        "orders_attempted": false,
+        "private_api_used": false,
+        "public_market_data_only": true,
+        "shadow_fixture_payload": {
+          "checkpoint_after_observation_index": 7,
+          "companion_instruments": [
+            {
+              "baseCcy": "ETH",
+              "ctType": "linear",
+              "ctVal": "0.01",
+              "ctValCcy": "ETH",
+              "expTime": "",
+              "instId": "ETH-USDT-SWAP",
+              "instType": "SWAP",
+              "lotSz": "1",
+              "minSz": "1",
+              "quoteCcy": "USDT",
+              "settleCcy": "USDT",
+              "state": "live",
+              "tickSz": "0.01",
+              "uly": "ETH-USDT"
+            },
+            {
+              "baseCcy": "ADA",
+              "ctType": "linear",
+              "ctVal": "0.01",
+              "ctValCcy": "ADA",
+              "expTime": "",
+              "instId": "ADA-USDT-SWAP",
+              "instType": "SWAP",
+              "lotSz": "1",
+              "minSz": "1",
+              "quoteCcy": "USDT",
+              "settleCcy": "USDT",
+              "state": "live",
+              "tickSz": "0.01",
+              "uly": "ADA-USDT"
+            }
+          ],
+          "fixture_id": "cap52_public_md_no_order_shadow_capture_v1",
+          "fixture_version": "single_future_canonical_runtime_deterministic_offline_market_data_fixture.v1",
+          "instrument_metadata": {
+            "baseCcy": "SOL",
+            "ctType": "linear",
+            "ctVal": "0.01",
+            "ctValCcy": "SOL",
+            "expTime": "",
+            "instId": "SOL-USDT-SWAP",
+            "instType": "SWAP",
+            "lotSz": "1",
+            "minSz": "1",
+            "quoteCcy": "USDT",
+            "settleCcy": "USDT",
+            "state": "live",
+            "tickSz": "0.01",
+            "uly": "SOL-USDT"
+          },
+          "mark_price_baseline": {
+            "ADA-USDT-SWAP": "100.5",
+            "ETH-USDT-SWAP": "100.50",
+            "SOL-USDT-SWAP": "100.50"
+          },
+          "notes": [
+            "Fully local deterministic market-data fixture",
+            "Event-time is decision authority; wallclock is never decision authority",
+            "No HTTP, WebSocket, credentials, sleep, or network session",
+            "Typed volatility and mark price are explicit; no silent defaults",
+            "Numeric max-age strata are diagnostic only",
+            "CAP52_PUBLIC_MD_CAPTURE_MATERIALIZED_FROM_TEMPLATE",
+            "venue_native_id=ADA-USDT-SWAP",
+            "assigned_public_md_marks=8"
+          ],
+          "observations": [
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000100.0,
+              "kind": "warmup_flat",
+              "mark_price": "100.5",
+              "missing": false,
+              "observation_id": "obs-001",
+              "sequence_role": "flat_hold",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000101.0,
+              "kind": "warmup_flat",
+              "mark_price": "100.51",
+              "missing": false,
+              "observation_id": "obs-002",
+              "sequence_role": "flat_hold",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000102.0,
+              "kind": "long_setup",
+              "mark_price": "100.52",
+              "missing": false,
+              "observation_id": "obs-003",
+              "sequence_role": "long",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000103.0,
+              "kind": "long_continuation",
+              "mark_price": "100.53",
+              "missing": false,
+              "observation_id": "obs-004",
+              "sequence_role": "long",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000104.0,
+              "kind": "long_entry_window",
+              "mark_price": "100.54",
+              "missing": false,
+              "observation_id": "obs-005",
+              "sequence_role": "entry",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000105.0,
+              "kind": "hold",
+              "mark_price": "100.55",
+              "missing": false,
+              "observation_id": "obs-006",
+              "sequence_role": "hold",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000106.0,
+              "kind": "adverse",
+              "mark_price": "100.56",
+              "missing": false,
+              "observation_id": "obs-007",
+              "sequence_role": "adverse",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000107.0,
+              "kind": "reduce_window",
+              "mark_price": "100.57",
+              "missing": false,
+              "observation_id": "obs-008",
+              "sequence_role": "reduce",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000108.0,
+              "kind": "short_setup",
+              "mark_price": "100.40",
+              "missing": false,
+              "observation_id": "obs-009",
+              "sequence_role": "short",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000109.0,
+              "kind": "short_continuation",
+              "mark_price": "99.80",
+              "missing": false,
+              "observation_id": "obs-010",
+              "sequence_role": "short",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000110.0,
+              "kind": "exit_window",
+              "mark_price": "99.50",
+              "missing": false,
+              "observation_id": "obs-011",
+              "sequence_role": "exit",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000111.0,
+              "kind": "flat_hold",
+              "mark_price": "99.55",
+              "missing": false,
+              "observation_id": "obs-012",
+              "sequence_role": "flat_hold",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": "obs-005",
+              "event_time_unix": 1700000104.0,
+              "kind": "duplicate",
+              "mark_price": "101.80",
+              "missing": false,
+              "observation_id": "obs-005-dup",
+              "sequence_role": "duplicate",
+              "typed_volatility_present": true
+            },
+            {
+              "duplicate_of": null,
+              "event_time_unix": 1700000112.0,
+              "kind": "missing",
+              "mark_price": null,
+              "missing": true,
+              "observation_id": "obs-missing-gap",
+              "sequence_role": "missing",
+              "typed_volatility_present": false
+            }
+          ],
+          "required_sequence_roles": [
+            "long",
+            "short",
+            "flat_hold",
+            "hold",
+            "adverse",
+            "exit",
+            "entry",
+            "reduce",
+            "duplicate",
+            "missing"
+          ],
+          "seed": "cap52-public-md-capture-v1",
+          "seed_policy": "EXPLICIT_VERSIONED_NO_RANDOM",
+          "typed_volatility_baseline": {
+            "SOL-USDT-SWAP": {
+              "numeric_max_age_strata_diagnostic": {
+                "age_seconds": 0,
+                "enforcement_enabled": false,
+                "max_age_seconds": 3600,
+                "stratum": "diagnostic_only"
+              },
+              "presence": true,
+              "typed_volatility_id": "tv_sol_usdt_swap_v1"
+            }
+          }
+        },
+        "venue_native_id": "ADA-USDT-SWAP"
+      },
+      "repository_sha": "a7a1a5a5466eb619a7284247f794ee34035f6407",
+      "restart_recovery": {
+        "RESTART_EVIDENCE_DIGEST_MATCH": true,
+        "RESTART_FINAL_STATE_MATCH": true,
+        "accounting_reloaded": true,
+        "checkpoint_after_observation_index": 7,
+        "cycles_first_segment": 7,
+        "cycles_total_after_resume": 12,
+        "loaded_accounting_portfolio_digest": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+        "loaded_accounting_risk_digest": "aba33933b83f99d4afa02111c3daea20aaa7362f42d815496fbc8a3f6f28988d",
+        "ok": true,
+        "portfolio_reloaded": true,
+        "reconciliation_before_alpha_on_resume": true,
+        "restart_canonical_outcome_digest": "7b979fc52076e6d1171011035a95b1217aee0ead7cf895547f92dee82d7de47c",
+        "risk_reloaded": true,
+        "runtime_checkpoint_reloaded": true,
+        "selection_reloaded": true,
+        "shared_outcome_digest": "140044426850ce1b2bd8a1877b67ec2dd8aab74ba1e83ab9b5f9745caed35cc4",
+        "uninterrupted_canonical_outcome_digest": "f7a75387839ee053ade96e44c460660d2f93f57b88e8c3604e1f20aaf177b50f",
+        "verifier_result": {
+          "blockers": [],
+          "call_graph_complete": true,
+          "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+          "expected_equity": "100000.00000000",
+          "expected_fees": "0",
+          "notes": [
+            "RECONSTRUCTED_VIA_CANONICAL_FUTURES_ACCOUNTING",
+            "cycles=12",
+            "reconstructed_fills=0"
+          ],
+          "ok": true,
+          "reconstructed_equity": "100000.00000000",
+          "reconstructed_fees": "0",
+          "reconstructed_fill_count": 0,
+          "verifier_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1"
+        }
+      },
+      "schema_version": "single_future_canonical_runtime_public_md_no_order_shadow_evidence.v1",
+      "telemetry": {
+        "blocked_reason_counts": {
+          "FEATURE_WARMUP_INCOMPLETE": 2
+        },
+        "cycle_count": 12,
+        "decision_outcomes": [
+          "blocked",
+          "blocked",
+          "observe",
+          "observe",
+          "observe",
+          "observe",
+          "observe",
+          "observe",
+          "observe",
+          "observe",
+          "observe",
+          "observe"
+        ],
+        "distinct_observation_count": 12,
+        "duplicate_observation_count": 1,
+        "entry_count": 0,
+        "exit_count": 0,
+        "hold_count": 12,
+        "intended_actions": [
+          {
+            "decision_outcome": "blocked",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "safety_or_fail_closed",
+            "reason_codes": [
+              "warmup_required"
+            ],
+            "safety_blocked": true,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "blocked",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "safety_or_fail_closed",
+            "reason_codes": [
+              "warmup_required"
+            ],
+            "safety_blocked": true,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          },
+          {
+            "decision_outcome": "observe",
+            "intended_quantity": "0",
+            "intended_side": "HOLD",
+            "intent_action": "NONE",
+            "quantity_source": "non_actionable",
+            "reason_codes": [
+              "observe_only"
+            ],
+            "safety_blocked": false,
+            "selected_side": "none"
+          }
+        ],
+        "max_drawdown": "0",
+        "missing_observation_count": 1,
+        "native_instrument_binding": {
+          "bound": true,
+          "instrument_id": "ADA-USDT-SWAP",
+          "venue_native_id": "ADA-USDT-SWAP"
+        },
+        "numeric_max_age_strata_diagnostic": [
+          {
+            "age_seconds": 0,
+            "enforcement_enabled": false,
+            "instrument_id": "SOL-USDT-SWAP",
+            "max_age_seconds": 3600,
+            "mutates_alpha_risk_safety": false,
+            "stratum": "diagnostic_only"
+          }
+        ],
+        "portfolio_state_digest": "8b667b7575b07197f7c9554f3c1960ab9753855b9b015077a24ffd6c9f2c88ac",
+        "profit_factor": null,
+        "realized_pnl": "0",
+        "reconciliation_result": {
+          "alpha_enabled": true,
+          "bound": true,
+          "ok": true,
+          "reconciliation_before_alpha": true,
+          "selection_binding_completed": true
+        },
+        "reduce_count": 0,
+        "risk_state_digest": "83f61b5625f2854133e48c791190ad630cc88db4676cb861230b1a99fe8afd37",
+        "risk_vetoes": 0,
+        "safety_vetoes": 2,
+        "selected_future_identity": {
+          "instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+          "selection_id": "ssf_976ca24bf6fe11c9dbf18815",
+          "selection_integrity_digest": "36f5bf7da94fdf9a28e090f7a62f3ad856fb998af4af2d05ad1c176abc3e3ea6",
+          "venue_native_id": "ADA-USDT-SWAP"
+        },
+        "simulated_fills": [],
+        "total_fees": "0",
+        "total_slippage": "0",
+        "turnover": "0",
+        "typed_volatility_presence_events": 1,
+        "unrealized_pnl": "0"
+      },
+      "verifier_result": {
+        "blockers": [],
+        "call_graph_complete": true,
+        "capability_id": "WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1",
+        "expected_equity": "100000.00000000",
+        "expected_fees": "0",
+        "notes": [
+          "RECONSTRUCTED_VIA_CANONICAL_FUTURES_ACCOUNTING",
+          "cycles=12",
+          "reconstructed_fills=0"
+        ],
+        "ok": true,
+        "reconstructed_equity": "100000.00000000",
+        "reconstructed_fees": "0",
+        "reconstructed_fill_count": 0,
+        "verifier_id": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1"
+      }
+    },
+    "failure_codes": [],
+    "gate_flags": {
+      "ACTIVATION_NEGATIVE_PROVEN": true,
+      "AUTHORIZATION_CONSUMED_ONCE": true,
+      "CAPTURE_THEN_SHADOW_PROVEN": true,
+      "CONFIG_TRUTH_ALIGNED": true,
+      "CORE_LOGIC_UNCHANGED": true,
+      "DETERMINISTIC_SHADOW_REPLAY_PROVEN": true,
+      "DOUBLE_PLAY_PARITY_PROVEN": true,
+      "DOUBLE_PLAY_RUNTIME_REACHABLE": true,
+      "EVIDENCE_VERIFIED": true,
+      "EXIT_PATH_PROVEN": true,
+      "FAILURE_INJECTION_PROVEN": true,
+      "FULL_SINGLE_FUTURE_CALL_GRAPH_PROVEN": true,
+      "FUTURES_ACCOUNTING_BOUND": true,
+      "INDEPENDENT_RUN_DIGEST_MATCH": true,
+      "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+      "MASTER_V2_RUNTIME_REACHABLE": true,
+      "MAX_POSITIONS_EFFECTIVE_IS_1": true,
+      "MULTI_FUTURE_DISABLED": true,
+      "NATIVE_INSTRUMENT_BOUND": true,
+      "NO_LIVE_ORDER_PATH": true,
+      "NO_ORDER_PATH": true,
+      "NO_PAPER_ORDER_PATH": true,
+      "NO_TESTNET_ORDER_PATH": true,
+      "PORTFOLIO_STATE_PERSISTENCE_PROVEN": true,
+      "PUBLIC_MD_CAPTURE_PROVEN": true,
+      "PUBLIC_MD_NETWORK_ONLY": true,
+      "PUBLIC_MD_NO_ORDER_SHADOW": true,
+      "RANKING_AUTHORITY_BOUND": true,
+      "RECONCILIATION_BEFORE_ALPHA": true,
+      "RECONCILIATION_BOUND": true,
+      "RESTART_EVIDENCE_DIGEST_MATCH": true,
+      "RESTART_FINAL_STATE_MATCH": true,
+      "RESTART_RECOVERY_PROVEN": true,
+      "RISK_BOUND": true,
+      "RISK_STATE_PERSISTENCE_PROVEN": true,
+      "RUNTIME_NOT_ACTIVATED": true,
+      "RUNTIME_TRUTH_MAP_CURRENT": true,
+      "SAFETY_BOUND": true,
+      "SINGLE_SELECTION_PERSISTED": true,
+      "TYPED_VOLATILITY_PRESENCE_PROVEN": true,
+      "UNIVERSE_AUTHORITY_BOUND": true,
+      "VERIFIER_PASS": true,
+      "VOL_MAX_AGE_ENFORCEMENT_DISABLED": true
+    },
+    "hard_stop": false,
+    "ok": true,
+    "ready_for_activation": true,
+    "runtime_activated": false,
+    "shadow_end_to_end": {
+      "authorization_consumed": true,
+      "call_graph": [
+        "authorization_contract_validation_and_consumption",
+        "session_lock",
+        "governed_futures_universe",
+        "productive_ranking",
+        "persisted_single_selected_future",
+        "native_instrument_binding",
+        "reconciliation",
+        "okx_public_market_data_capture",
+        "public_md_no_order_shadow_replay",
+        "features",
+        "typed_volatility_presence",
+        "Master V2",
+        "Double Play",
+        "risk",
+        "safety",
+        "intent",
+        "simulated_fill",
+        "canonical_futures_accounting",
+        "portfolio_and_risk_persistence",
+        "evidence",
+        "verifier"
+      ],
+      "canonical_outcome_digest": "f7a75387839ee053ade96e44c460660d2f93f57b88e8c3604e1f20aaf177b50f",
+      "capture_digest": "6b7b1bdeefb3d97122ee0ec3865d58a9622854d4ff597784d2853fcff633c980",
+      "config_digest": "6ccf2d9f52461d28cf5b39d09639ec5e9a04c42b02fd7b8637c07ddb9c658349",
+      "cycles": 12,
+      "independent_run_digest_match": true,
+      "instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+      "network_access_occurred": true,
+      "ok": true,
+      "public_market_data_only": true,
+      "restart_ok": true
+    },
+    "status": "READY_FOR_ACTIVATION"
+  },
+  "ok": true,
+  "repository_sha": "a7a1a5a5466eb619a7284247f794ee34035f6407",
+  "transport_mode": "LIVE_PUBLIC_MD_PROBE_PLUS_INJECTABLE_SHADOW"
+}

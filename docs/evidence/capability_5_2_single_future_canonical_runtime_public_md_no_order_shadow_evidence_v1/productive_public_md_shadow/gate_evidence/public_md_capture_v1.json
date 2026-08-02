@@ -1,0 +1,404 @@
+{
+  "capture_digest": "6b7b1bdeefb3d97122ee0ec3865d58a9622854d4ff597784d2853fcff633c980",
+  "capture_envelopes": [
+    {
+      "byte_size": 102,
+      "capture_started_at": "2026-08-02T06:32:11Z",
+      "captured_at": "2026-08-02T06:32:11Z",
+      "effective_at": null,
+      "http_status": 200,
+      "provider_code": "0",
+      "provider_message": "",
+      "provider_timestamp": null,
+      "query_parameters": {
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.5\"}]}",
+      "raw_payload_digest": "0e41241ad4a7f578b5291e0b95562fcf0d144ca00f91b7ad31fba18a3e3cd78b",
+      "request_path": "/api/v5/public/mark-price",
+      "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+      "response_received_at": "2026-08-02T06:32:11Z"
+    },
+    {
+      "byte_size": 103,
+      "capture_started_at": "2026-08-02T06:32:11Z",
+      "captured_at": "2026-08-02T06:32:11Z",
+      "effective_at": null,
+      "http_status": 200,
+      "provider_code": "0",
+      "provider_message": "",
+      "provider_timestamp": null,
+      "query_parameters": {
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.51\"}]}",
+      "raw_payload_digest": "dd5a1540724fec631298a37d9fe0961bbfdf3da15b13938a3760d74f7f6c9464",
+      "request_path": "/api/v5/public/mark-price",
+      "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+      "response_received_at": "2026-08-02T06:32:11Z"
+    },
+    {
+      "byte_size": 103,
+      "capture_started_at": "2026-08-02T06:32:11Z",
+      "captured_at": "2026-08-02T06:32:11Z",
+      "effective_at": null,
+      "http_status": 200,
+      "provider_code": "0",
+      "provider_message": "",
+      "provider_timestamp": null,
+      "query_parameters": {
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.52\"}]}",
+      "raw_payload_digest": "ed51c442abdbc7e0fcc08ade35355e8d11cadb0ab4a735a2eecd619de78fb0cf",
+      "request_path": "/api/v5/public/mark-price",
+      "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+      "response_received_at": "2026-08-02T06:32:11Z"
+    },
+    {
+      "byte_size": 103,
+      "capture_started_at": "2026-08-02T06:32:11Z",
+      "captured_at": "2026-08-02T06:32:11Z",
+      "effective_at": null,
+      "http_status": 200,
+      "provider_code": "0",
+      "provider_message": "",
+      "provider_timestamp": null,
+      "query_parameters": {
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.53\"}]}",
+      "raw_payload_digest": "564a617562b4cdabfbab1b332400962a43f47cd04a8f84f3e983e11e971f3775",
+      "request_path": "/api/v5/public/mark-price",
+      "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+      "response_received_at": "2026-08-02T06:32:11Z"
+    },
+    {
+      "byte_size": 103,
+      "capture_started_at": "2026-08-02T06:32:11Z",
+      "captured_at": "2026-08-02T06:32:11Z",
+      "effective_at": null,
+      "http_status": 200,
+      "provider_code": "0",
+      "provider_message": "",
+      "provider_timestamp": null,
+      "query_parameters": {
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.54\"}]}",
+      "raw_payload_digest": "e1e86cfcc081af0e10342a249146ff99c0befc2ac79f27e86e6916da924f7924",
+      "request_path": "/api/v5/public/mark-price",
+      "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+      "response_received_at": "2026-08-02T06:32:11Z"
+    },
+    {
+      "byte_size": 103,
+      "capture_started_at": "2026-08-02T06:32:11Z",
+      "captured_at": "2026-08-02T06:32:11Z",
+      "effective_at": null,
+      "http_status": 200,
+      "provider_code": "0",
+      "provider_message": "",
+      "provider_timestamp": null,
+      "query_parameters": {
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.55\"}]}",
+      "raw_payload_digest": "ae6427a591cf2add6bcf9a1472478f740fcd4c4171e204286aa19bdf9a74cebb",
+      "request_path": "/api/v5/public/mark-price",
+      "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+      "response_received_at": "2026-08-02T06:32:11Z"
+    },
+    {
+      "byte_size": 103,
+      "capture_started_at": "2026-08-02T06:32:11Z",
+      "captured_at": "2026-08-02T06:32:11Z",
+      "effective_at": null,
+      "http_status": 200,
+      "provider_code": "0",
+      "provider_message": "",
+      "provider_timestamp": null,
+      "query_parameters": {
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.56\"}]}",
+      "raw_payload_digest": "79720b38556e8fcf04864e985eee950f8c8c5b1d641b8cc7f185be4c0fa4f950",
+      "request_path": "/api/v5/public/mark-price",
+      "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+      "response_received_at": "2026-08-02T06:32:11Z"
+    },
+    {
+      "byte_size": 103,
+      "capture_started_at": "2026-08-02T06:32:11Z",
+      "captured_at": "2026-08-02T06:32:11Z",
+      "effective_at": null,
+      "http_status": 200,
+      "provider_code": "0",
+      "provider_message": "",
+      "provider_timestamp": null,
+      "query_parameters": {
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "raw_body_utf8": "{\"code\": \"0\", \"msg\": \"\", \"data\": [{\"instId\": \"ADA-USDT-SWAP\", \"instType\": \"SWAP\", \"markPx\": \"100.57\"}]}",
+      "raw_payload_digest": "1f13883cdaccf96824a5bb2f34fa51a3947e3bbbf9b1d4a17f4adf98e2cae044",
+      "request_path": "/api/v5/public/mark-price",
+      "request_url": "https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=ADA-USDT-SWAP",
+      "response_received_at": "2026-08-02T06:32:11Z"
+    }
+  ],
+  "client_owner": "ops.okx_public_market_data_client_v1",
+  "envelope_count": 8,
+  "inst_type": "SWAP",
+  "network_access_occurred": true,
+  "network_scope": "PUBLIC_MARKET_DATA_ONLY",
+  "orders_attempted": false,
+  "private_api_used": false,
+  "public_market_data_only": true,
+  "shadow_fixture_payload": {
+    "checkpoint_after_observation_index": 7,
+    "companion_instruments": [
+      {
+        "baseCcy": "ETH",
+        "ctType": "linear",
+        "ctVal": "0.01",
+        "ctValCcy": "ETH",
+        "expTime": "",
+        "instId": "ETH-USDT-SWAP",
+        "instType": "SWAP",
+        "lotSz": "1",
+        "minSz": "1",
+        "quoteCcy": "USDT",
+        "settleCcy": "USDT",
+        "state": "live",
+        "tickSz": "0.01",
+        "uly": "ETH-USDT"
+      },
+      {
+        "baseCcy": "ADA",
+        "ctType": "linear",
+        "ctVal": "0.01",
+        "ctValCcy": "ADA",
+        "expTime": "",
+        "instId": "ADA-USDT-SWAP",
+        "instType": "SWAP",
+        "lotSz": "1",
+        "minSz": "1",
+        "quoteCcy": "USDT",
+        "settleCcy": "USDT",
+        "state": "live",
+        "tickSz": "0.01",
+        "uly": "ADA-USDT"
+      }
+    ],
+    "fixture_id": "cap52_public_md_no_order_shadow_capture_v1",
+    "fixture_version": "single_future_canonical_runtime_deterministic_offline_market_data_fixture.v1",
+    "instrument_metadata": {
+      "baseCcy": "SOL",
+      "ctType": "linear",
+      "ctVal": "0.01",
+      "ctValCcy": "SOL",
+      "expTime": "",
+      "instId": "SOL-USDT-SWAP",
+      "instType": "SWAP",
+      "lotSz": "1",
+      "minSz": "1",
+      "quoteCcy": "USDT",
+      "settleCcy": "USDT",
+      "state": "live",
+      "tickSz": "0.01",
+      "uly": "SOL-USDT"
+    },
+    "mark_price_baseline": {
+      "ADA-USDT-SWAP": "100.5",
+      "ETH-USDT-SWAP": "100.50",
+      "SOL-USDT-SWAP": "100.50"
+    },
+    "notes": [
+      "Fully local deterministic market-data fixture",
+      "Event-time is decision authority; wallclock is never decision authority",
+      "No HTTP, WebSocket, credentials, sleep, or network session",
+      "Typed volatility and mark price are explicit; no silent defaults",
+      "Numeric max-age strata are diagnostic only",
+      "CAP52_PUBLIC_MD_CAPTURE_MATERIALIZED_FROM_TEMPLATE",
+      "venue_native_id=ADA-USDT-SWAP",
+      "assigned_public_md_marks=8"
+    ],
+    "observations": [
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000100.0,
+        "kind": "warmup_flat",
+        "mark_price": "100.5",
+        "missing": false,
+        "observation_id": "obs-001",
+        "sequence_role": "flat_hold",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000101.0,
+        "kind": "warmup_flat",
+        "mark_price": "100.51",
+        "missing": false,
+        "observation_id": "obs-002",
+        "sequence_role": "flat_hold",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000102.0,
+        "kind": "long_setup",
+        "mark_price": "100.52",
+        "missing": false,
+        "observation_id": "obs-003",
+        "sequence_role": "long",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000103.0,
+        "kind": "long_continuation",
+        "mark_price": "100.53",
+        "missing": false,
+        "observation_id": "obs-004",
+        "sequence_role": "long",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000104.0,
+        "kind": "long_entry_window",
+        "mark_price": "100.54",
+        "missing": false,
+        "observation_id": "obs-005",
+        "sequence_role": "entry",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000105.0,
+        "kind": "hold",
+        "mark_price": "100.55",
+        "missing": false,
+        "observation_id": "obs-006",
+        "sequence_role": "hold",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000106.0,
+        "kind": "adverse",
+        "mark_price": "100.56",
+        "missing": false,
+        "observation_id": "obs-007",
+        "sequence_role": "adverse",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000107.0,
+        "kind": "reduce_window",
+        "mark_price": "100.57",
+        "missing": false,
+        "observation_id": "obs-008",
+        "sequence_role": "reduce",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000108.0,
+        "kind": "short_setup",
+        "mark_price": "100.40",
+        "missing": false,
+        "observation_id": "obs-009",
+        "sequence_role": "short",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000109.0,
+        "kind": "short_continuation",
+        "mark_price": "99.80",
+        "missing": false,
+        "observation_id": "obs-010",
+        "sequence_role": "short",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000110.0,
+        "kind": "exit_window",
+        "mark_price": "99.50",
+        "missing": false,
+        "observation_id": "obs-011",
+        "sequence_role": "exit",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000111.0,
+        "kind": "flat_hold",
+        "mark_price": "99.55",
+        "missing": false,
+        "observation_id": "obs-012",
+        "sequence_role": "flat_hold",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": "obs-005",
+        "event_time_unix": 1700000104.0,
+        "kind": "duplicate",
+        "mark_price": "101.80",
+        "missing": false,
+        "observation_id": "obs-005-dup",
+        "sequence_role": "duplicate",
+        "typed_volatility_present": true
+      },
+      {
+        "duplicate_of": null,
+        "event_time_unix": 1700000112.0,
+        "kind": "missing",
+        "mark_price": null,
+        "missing": true,
+        "observation_id": "obs-missing-gap",
+        "sequence_role": "missing",
+        "typed_volatility_present": false
+      }
+    ],
+    "required_sequence_roles": [
+      "long",
+      "short",
+      "flat_hold",
+      "hold",
+      "adverse",
+      "exit",
+      "entry",
+      "reduce",
+      "duplicate",
+      "missing"
+    ],
+    "seed": "cap52-public-md-capture-v1",
+    "seed_policy": "EXPLICIT_VERSIONED_NO_RANDOM",
+    "typed_volatility_baseline": {
+      "SOL-USDT-SWAP": {
+        "numeric_max_age_strata_diagnostic": {
+          "age_seconds": 0,
+          "enforcement_enabled": false,
+          "max_age_seconds": 3600,
+          "stratum": "diagnostic_only"
+        },
+        "presence": true,
+        "typed_volatility_id": "tv_sol_usdt_swap_v1"
+      }
+    }
+  },
+  "venue_native_id": "ADA-USDT-SWAP"
+}
