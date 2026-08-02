@@ -1,0 +1,23 @@
+"""CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1."""
+
+from src.ops.decision_config_ownership_and_consumer_closure_v1.constants_v1 import (
+    CAPABILITY_ID,
+    PACKAGE_MARKER,
+)
+from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
+    CANONICAL_ADVERSE_EXIT_DISTANCE,
+    CANONICAL_CONFIRMATION_EPOCHS,
+    CANONICAL_DECISION_CONFIG_DIGEST,
+    CANONICAL_REVERSAL_DISTANCE,
+    CANONICAL_UP_DISTANCE,
+)
+
+__all__ = [
+    "CAPABILITY_ID",
+    "PACKAGE_MARKER",
+    "CANONICAL_CONFIRMATION_EPOCHS",
+    "CANONICAL_UP_DISTANCE",
+    "CANONICAL_ADVERSE_EXIT_DISTANCE",
+    "CANONICAL_REVERSAL_DISTANCE",
+    "CANONICAL_DECISION_CONFIG_DIGEST",
+]

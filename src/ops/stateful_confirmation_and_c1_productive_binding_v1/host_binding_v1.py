@@ -63,12 +63,22 @@ class ObservationCycleKindV1(str, Enum):
 
 def confirmation_config_digest_v1(
     *,
-    confirmation_epochs: int = 2,
+    confirmation_epochs: int | None = None,
     confirmation_signal_threshold: float = 0.01,
     candidate_signal_threshold: float = 0.005,
 ) -> str:
+    # Cap 6.3 — confirmation_epochs owned by canonical typed decision-runtime config.
+    from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
+        CANONICAL_CONFIRMATION_EPOCHS,
+    )
+
+    epochs = (
+        int(CANONICAL_CONFIRMATION_EPOCHS)
+        if confirmation_epochs is None
+        else int(confirmation_epochs)
+    )
     material = (
-        f"cap61-config:epochs={confirmation_epochs}:"
+        f"cap61-config:epochs={epochs}:"
         f"conf_thr={confirmation_signal_threshold}:"
         f"cand_thr={candidate_signal_threshold}:owner={OWNER}:sv={STATE_VERSION}"
     )

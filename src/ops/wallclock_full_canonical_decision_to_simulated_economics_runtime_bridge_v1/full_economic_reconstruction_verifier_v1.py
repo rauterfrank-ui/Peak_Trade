@@ -51,6 +51,7 @@ REQUIRED_CALL_GRAPH: tuple[str, ...] = (
     "venue_native_instrument_binding",
     "single_selected_future_runtime_binding",
     "productive_reconciliation_startup_gate",
+    "canonical_decision_runtime_config_bind",
     "okx_public_market_data",
     "distinct_market_observation_acceptor",
     "observation_acceptance_result",

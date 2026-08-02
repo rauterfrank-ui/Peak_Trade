@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
+    CANONICAL_ADVERSE_EXIT_DISTANCE as FROZEN_ADVERSE_EXIT_DISTANCE,
+    CANONICAL_REVERSAL_DISTANCE as FROZEN_REVERSAL_DISTANCE,
+    CANONICAL_UP_DISTANCE as FROZEN_UP_DISTANCE,
+)
+
 CAPABILITY_ID = "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1"
 SCHEMA_VERSION = "dynamic_scope_persistence_binding.v1"
 PRODUCER_VERSION = "dynamic_scope_persistence_binding.v1"
@@ -35,11 +41,6 @@ COMPOSITION_BYPASS_ALLOWED = False
 RISK_BYPASS_ALLOWED = False
 SAFETY_BYPASS_ALLOWED = False
 DIRECT_FILL_INJECTION_ALLOWED = False
-
-# Frozen productive bridge numeric values (must remain unchanged).
-FROZEN_UP_DISTANCE = 200.0
-FROZEN_ADVERSE_EXIT_DISTANCE = 80.0
-FROZEN_REVERSAL_DISTANCE = 120.0
 
 PRODUCTIVE_HOST = (
     "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/"

@@ -99,14 +99,22 @@ from src.ops.stateful_confirmation_and_c1_productive_binding_v1.host_binding_v1 
     ensure_host_confirmation_binding_v1,
     evaluate_host_observation_acceptance_v1,
 )
+from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
+    CANONICAL_CONFIRMATION_EPOCHS,
+)
+from src.ops.decision_config_ownership_and_consumer_closure_v1.constants_v1 import (
+    CALL_GRAPH_CONFIG_BIND_STEP,
+)
+from src.ops.decision_config_ownership_and_consumer_closure_v1.host_binding_v1 import (
+    HostDecisionConfigBindingV1,
+    ensure_host_decision_config_binding_v1,
+    require_bound_decision_config_v1,
+)
 from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
     CALL_GRAPH_PREVIOUS_SCOPE_STEP,
     CALL_GRAPH_SCOPE_COMMIT_STEP,
     CALL_GRAPH_SCOPE_TRANSITION_STEP,
     DEFAULT_VENUE as DYNAMIC_SCOPE_DEFAULT_VENUE,
-    FROZEN_ADVERSE_EXIT_DISTANCE,
-    FROZEN_REVERSAL_DISTANCE,
-    FROZEN_UP_DISTANCE,
 )
 from src.ops.dynamic_scope_persistence_binding_v1.host_binding_v1 import (
     HostDynamicScopeBindingV1,
@@ -193,9 +201,6 @@ from trading.master_v2.survival_assessment_v1 import (
     SurvivalAssessmentPolicyV1,
 )
 
-_CONFIG_DIGEST = hashlib.sha256(
-    b"wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1-config"
-).hexdigest()
 _IMPL_DIGEST = hashlib.sha256(
     b"wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1-impl"
 ).hexdigest()
@@ -218,7 +223,7 @@ def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
             observe_signal_threshold=0.001,
             candidate_signal_threshold=0.005,
             confirmation_signal_threshold=0.01,
-            confirmation_epochs=2,
+            confirmation_epochs=int(CANONICAL_CONFIRMATION_EPOCHS),
             validity_epochs=3,
             policy_version=DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
         ),
@@ -350,6 +355,11 @@ class BridgeSessionStateV1:
     )
     dynamic_scope_state_root: Optional[str] = None
     last_dynamic_scope_commit: Optional[dict[str, Any]] = None
+    # Capability 6.3 — canonical decision-runtime config ownership (typed consumer binding).
+    decision_config_binding: HostDecisionConfigBindingV1 = field(
+        default_factory=HostDecisionConfigBindingV1
+    )
+    decision_config_state_root: Optional[str] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -539,6 +549,7 @@ CALL_GRAPH_V1: tuple[str, ...] = (
     *SELECTION_BINDING_PREFIX,
     SELECTION_BINDING_STEP,
     RECON_CALL_GRAPH_STEP,
+    CALL_GRAPH_CONFIG_BIND_STEP,
     "okx_public_market_data",
     CALL_GRAPH_C1_STEP,
     CALL_GRAPH_C1_RESULT_STEP,
@@ -849,6 +860,8 @@ def run_bridge_cycle_v1(
     persist_confirmation: bool = True,
     dynamic_scope_state_root: Optional[Path] = None,
     persist_dynamic_scope: bool = True,
+    decision_config_state_root: Optional[Path] = None,
+    persist_decision_config: bool = True,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
@@ -860,6 +873,8 @@ def run_bridge_cycle_v1(
         state.confirmation_state_root = str(confirmation_state_root)
     if dynamic_scope_state_root is not None:
         state.dynamic_scope_state_root = str(dynamic_scope_state_root)
+    if decision_config_state_root is not None:
+        state.decision_config_state_root = str(decision_config_state_root)
 
     # Capability 2.4: persisted selection binds the trading instrument before recon/alpha.
     selection_gate = ensure_single_selected_future_runtime_binding_v1(
@@ -892,6 +907,23 @@ def run_bridge_cycle_v1(
     if state.reconciliation_state is not ReconciliationState.RECONCILED:
         raise RuntimeError("RECONCILIATION_STATE_NOT_RECONCILED")
 
+    # Capability 6.3: bind typed canonical decision-runtime config before confirmation/scope/alpha.
+    ensure_host_decision_config_binding_v1(
+        state.decision_config_binding,
+        repository_sha=repository_sha,
+        state_root=(
+            Path(state.decision_config_state_root) if state.decision_config_state_root else None
+        ),
+        predecessor_config_digest_cap61=confirmation_config_digest_v1(),
+        predecessor_config_digest_cap62=dynamic_scope_config_digest_v1(),
+        persist=bool(persist_decision_config and state.decision_config_state_root),
+    )
+    if state.decision_config_binding.alpha_blocked:
+        raise RuntimeError(
+            "DECISION_CONFIG_ALPHA_BLOCKED:" + state.decision_config_binding.alpha_block_reason
+        )
+    decision_cfg = require_bound_decision_config_v1(state.decision_config_binding)
+
     # Capability 6.1: bind C1 acceptor + stable confirmation session before features/decision.
     kind = (
         observation_cycle_kind
@@ -904,7 +936,9 @@ def run_bridge_cycle_v1(
         venue=CONFIRMATION_DEFAULT_VENUE,
         venue_instrument_id=state.venue_native_id or state.instrument_id,
         repository_sha=repository_sha,
-        config_digest=confirmation_config_digest_v1(),
+        config_digest=confirmation_config_digest_v1(
+            confirmation_epochs=int(decision_cfg.confirmation_epochs)
+        ),
         state_root=(Path(state.confirmation_state_root) if state.confirmation_state_root else None),
     )
     # Capability 6.2: reload prior RuntimeScopeState / CanonicalScopeSnapshot before decision.
@@ -913,7 +947,11 @@ def run_bridge_cycle_v1(
         instrument_id=state.instrument_id,
         venue=DYNAMIC_SCOPE_DEFAULT_VENUE,
         repository_sha=repository_sha,
-        config_digest=dynamic_scope_config_digest_v1(),
+        config_digest=dynamic_scope_config_digest_v1(
+            up_distance=float(decision_cfg.up_distance),
+            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+            reversal_distance=float(decision_cfg.reversal_distance),
+        ),
         state_root=(
             Path(state.dynamic_scope_state_root) if state.dynamic_scope_state_root else None
         ),
@@ -1038,10 +1076,10 @@ def run_bridge_cycle_v1(
             remaining_epochs=0,
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
-        up_distance=float(FROZEN_UP_DISTANCE),
-        adverse_exit_distance=float(FROZEN_ADVERSE_EXIT_DISTANCE),
-        reversal_distance=float(FROZEN_REVERSAL_DISTANCE),
-        confirmation_epochs=2,
+        up_distance=float(decision_cfg.up_distance),
+        adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+        reversal_distance=float(decision_cfg.reversal_distance),
+        confirmation_epochs=int(decision_cfg.confirmation_epochs),
         current_price=mark,
         price_path=price_path,
         directional_confirmation_state=DirectionalConfirmationStateV1(
@@ -1075,7 +1113,7 @@ def run_bridge_cycle_v1(
         policies=_default_policies(),
         component_versions=_component_versions(),
         policy_versions=_policy_versions(),
-        config_digest=_CONFIG_DIGEST,
+        config_digest=str(decision_cfg.config_digest()),
         implementation_digest=_IMPL_DIGEST,
         input_digest=input_digest,
         expected_component_contracts=_component_versions(),
