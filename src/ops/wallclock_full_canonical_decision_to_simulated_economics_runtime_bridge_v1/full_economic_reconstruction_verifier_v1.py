@@ -64,6 +64,7 @@ REQUIRED_CALL_GRAPH: tuple[str, ...] = (
     "dynamic_scope_transition",
     "canonical_confirmation_state_commit",
     "canonical_dynamic_scope_state_commit",
+    "decision_path_atomic_runtime_commit",
     "risk_position_sizing",
     "safety_kernel",
     "intended_side_quantity",
@@ -74,6 +75,7 @@ REQUIRED_CALL_GRAPH: tuple[str, ...] = (
     "realized_unrealized_pnl_equity_drawdown",
     "risk_state_from_accounting",
     "simulated_economics_no_order_path",
+    "pending_evidence_cursor_commit",
     "evidence",
     "full_economic_reconstruction_verifier",
 )

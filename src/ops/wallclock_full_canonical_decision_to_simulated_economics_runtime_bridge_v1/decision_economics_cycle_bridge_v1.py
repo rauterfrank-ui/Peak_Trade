@@ -116,6 +116,15 @@ from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
     CALL_GRAPH_SCOPE_TRANSITION_STEP,
     DEFAULT_VENUE as DYNAMIC_SCOPE_DEFAULT_VENUE,
 )
+from src.ops.full_decision_path_atomic_restart_closure_v1.constants_v1 import (
+    CALL_GRAPH_ATOMIC_COMMIT_STEP,
+    CALL_GRAPH_PENDING_EVIDENCE_STEP,
+)
+from src.ops.full_decision_path_atomic_restart_closure_v1.host_binding_v1 import (
+    HostDecisionPathAtomicBindingV1,
+    commit_host_decision_path_atomic_v1,
+    ensure_host_decision_path_atomic_binding_v1,
+)
 from src.ops.dynamic_scope_persistence_binding_v1.host_binding_v1 import (
     HostDynamicScopeBindingV1,
     commit_host_dynamic_scope_after_replay_v1,
@@ -360,6 +369,12 @@ class BridgeSessionStateV1:
         default_factory=HostDecisionConfigBindingV1
     )
     decision_config_state_root: Optional[str] = None
+    # Capability 6.4 — full decision-path atomic restart coordinator (cross-root commit).
+    decision_path_atomic_binding: HostDecisionPathAtomicBindingV1 = field(
+        default_factory=HostDecisionPathAtomicBindingV1
+    )
+    decision_path_atomic_state_root: Optional[str] = None
+    last_decision_path_atomic_commit: Optional[dict[str, Any]] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -562,6 +577,7 @@ CALL_GRAPH_V1: tuple[str, ...] = (
     CALL_GRAPH_SCOPE_TRANSITION_STEP,
     CALL_GRAPH_COMMIT_STEP,
     CALL_GRAPH_SCOPE_COMMIT_STEP,
+    CALL_GRAPH_ATOMIC_COMMIT_STEP,
     "risk_position_sizing",
     "safety_kernel",
     "intended_side_quantity",
@@ -572,6 +588,7 @@ CALL_GRAPH_V1: tuple[str, ...] = (
     "realized_unrealized_pnl_equity_drawdown",
     ACCOUNTING_RISK_STEP,
     "simulated_economics_no_order_path",
+    CALL_GRAPH_PENDING_EVIDENCE_STEP,
     "evidence",
     "full_economic_reconstruction_verifier",
 )
@@ -862,6 +879,9 @@ def run_bridge_cycle_v1(
     persist_dynamic_scope: bool = True,
     decision_config_state_root: Optional[Path] = None,
     persist_decision_config: bool = True,
+    decision_path_atomic_state_root: Optional[Path] = None,
+    accounting_state_root_override: Optional[Path] = None,
+    persist_via_atomic_coordinator: bool = False,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
@@ -875,6 +895,11 @@ def run_bridge_cycle_v1(
         state.dynamic_scope_state_root = str(dynamic_scope_state_root)
     if decision_config_state_root is not None:
         state.decision_config_state_root = str(decision_config_state_root)
+    if decision_path_atomic_state_root is not None:
+        state.decision_path_atomic_state_root = str(decision_path_atomic_state_root)
+    if accounting_state_root_override is not None:
+        state.accounting_state_root = str(accounting_state_root_override)
+    use_atomic = bool(persist_via_atomic_coordinator and state.decision_path_atomic_state_root)
 
     # Capability 2.4: persisted selection binds the trading instrument before recon/alpha.
     selection_gate = ensure_single_selected_future_runtime_binding_v1(
@@ -923,6 +948,25 @@ def run_bridge_cycle_v1(
             "DECISION_CONFIG_ALPHA_BLOCKED:" + state.decision_config_binding.alpha_block_reason
         )
     decision_cfg = require_bound_decision_config_v1(state.decision_config_binding)
+
+    # Capability 6.4: recover atomic coordinator before confirmation/scope/alpha advances.
+    if use_atomic or state.decision_path_atomic_state_root:
+        ensure_host_decision_path_atomic_binding_v1(
+            state.decision_path_atomic_binding,
+            instrument_id=state.instrument_id,
+            repository_sha=repository_sha,
+            config_digest=str(decision_cfg.config_digest()),
+            state_root=(
+                Path(state.decision_path_atomic_state_root)
+                if state.decision_path_atomic_state_root
+                else None
+            ),
+        )
+        if state.decision_path_atomic_binding.alpha_blocked:
+            raise RuntimeError(
+                "DECISION_PATH_ATOMIC_ALPHA_BLOCKED:"
+                + state.decision_path_atomic_binding.alpha_block_reason
+            )
 
     # Capability 6.1: bind C1 acceptor + stable confirmation session before features/decision.
     kind = (
@@ -1159,7 +1203,8 @@ def run_bridge_cycle_v1(
         cycle_index=state.cycle_index,
         reduce_only=False,
         state_root=Path(state.accounting_state_root) if state.accounting_state_root else None,
-        persist=bool(state.accounting_state_root),
+        # Cap 6.4: defer accounting persist into the atomic coordinator when enabled.
+        persist=bool(state.accounting_state_root) and not use_atomic,
         writer_session_id=session_id,
     )
     state.last_accounting_result = dict(accounting_apply.get("accounting") or {})
@@ -1188,7 +1233,7 @@ def run_bridge_cycle_v1(
             state.confirmation_binding,
             observation_acceptance_result=observation_acceptance_result,
             confirmation_side_carrier_after=carrier_after,
-            persist=bool(persist_confirmation and state.confirmation_state_root),
+            persist=bool(persist_confirmation and state.confirmation_state_root and not use_atomic),
             writer_session_id=session_id,
         )
     )
@@ -1228,11 +1273,104 @@ def run_bridge_cycle_v1(
             side_state=str(state.side_state.value),
             host_trading_epoch=int(state.trading_epoch),
             price_path_tail=tuple(float(x) for x in state.mid_prices[-PRICE_PATH_MAX_LEN:]),
-            persist=bool(persist_dynamic_scope and state.dynamic_scope_state_root),
+            persist=bool(
+                persist_dynamic_scope and state.dynamic_scope_state_root and not use_atomic
+            ),
             writer_session_id=session_id,
             runtime_scope_reinitialized=runtime_scope_reinitialized,
         )
     )
+
+    # Capability 6.4 — versioned multi-record transaction across decision-path state roots.
+    if use_atomic:
+        from src.ops.decision_config_ownership_and_consumer_closure_v1.models_v1 import (
+            DecisionConfigBindingStateV1,
+        )
+
+        obs_epoch = 0
+        if state.confirmation_binding.observation_acceptance_state is not None:
+            obs_epoch = int(
+                state.confirmation_binding.observation_acceptance_state.market_observation_epoch.value
+            )
+        fill_key = ""
+        if fill_dict is not None and fill_dict.get("fill_id"):
+            fill_key = str(fill_dict["fill_id"])
+        cfg_state = None
+        if state.decision_config_binding.initialized:
+            cfg_state = DecisionConfigBindingStateV1(
+                state_version="v1",
+                config_version=str(decision_cfg.config_version),
+                schema_version=str(decision_cfg.schema_version),
+                config_digest=str(decision_cfg.config_digest()),
+                confirmation_epochs=int(decision_cfg.confirmation_epochs),
+                up_distance=float(decision_cfg.up_distance),
+                adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+                reversal_distance=float(decision_cfg.reversal_distance),
+                owner=str(decision_cfg.owner),
+                repository_sha=repository_sha,
+                predecessor_capability="CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+                predecessor_config_digest_cap61=confirmation_config_digest_v1(
+                    confirmation_epochs=int(decision_cfg.confirmation_epochs)
+                ),
+                predecessor_config_digest_cap62=dynamic_scope_config_digest_v1(
+                    up_distance=float(decision_cfg.up_distance),
+                    adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+                    reversal_distance=float(decision_cfg.reversal_distance),
+                ),
+                commit_sequence=int(state.decision_config_binding.commit_sequence or 0),
+                source_path=str(getattr(decision_cfg, "source_path", "") or ""),
+            )
+        scope_canonical = None
+        scope_advanced = bool((state.last_dynamic_scope_commit or {}).get("scope_advanced"))
+        if state.dynamic_scope_binding.initialized and scope_advanced:
+            try:
+                scope_canonical = state.dynamic_scope_binding.to_canonical_state()
+            except Exception:  # noqa: BLE001
+                scope_canonical = None
+        state.last_decision_path_atomic_commit = dict(
+            commit_host_decision_path_atomic_v1(
+                state.decision_path_atomic_binding,
+                confirmation_state=state.confirmation_binding.to_canonical_state(),
+                confirmation_state_root=Path(state.confirmation_state_root),
+                dynamic_scope_state=scope_canonical,
+                dynamic_scope_state_root=(
+                    Path(state.dynamic_scope_state_root) if state.dynamic_scope_state_root else None
+                ),
+                decision_config_state=cfg_state,
+                decision_config_state_root=(
+                    Path(state.decision_config_state_root)
+                    if state.decision_config_state_root
+                    else None
+                ),
+                accounting_session=state.accounting_session,
+                accounting_state_root=(
+                    Path(state.accounting_state_root) if state.accounting_state_root else None
+                ),
+                observation_epoch=obs_epoch,
+                fill_idempotency_key=fill_key,
+                writer_session_id=session_id,
+                evidence_payload={
+                    "capability_id": CAPABILITY_ID,
+                    "session_id": session_id,
+                    "cycle_index": state.cycle_index,
+                    "observation_epoch": obs_epoch,
+                    "fill_id": fill_key,
+                },
+                persist_scope=bool(scope_canonical is not None and state.dynamic_scope_state_root),
+                persist_accounting=bool(state.accounting_state_root and state.accounting_session),
+                persist_config=bool(cfg_state is not None and state.decision_config_state_root),
+            )
+        )
+        # Mirror member commit cursors from coordinator result.
+        atomic_out = state.last_decision_path_atomic_commit
+        conf_meta = dict(atomic_out.get("confirmation") or {})
+        if conf_meta.get("commit_sequence") is not None:
+            state.confirmation_binding.commit_sequence = int(conf_meta["commit_sequence"])
+            state.confirmation_binding.prior_commit_seen = True
+        scope_meta = dict(atomic_out.get("dynamic_scope") or {})
+        if scope_meta.get("commit_sequence") is not None:
+            state.dynamic_scope_binding.commit_sequence = int(scope_meta["commit_sequence"])
+            state.dynamic_scope_binding.prior_commit_seen = True
 
     sizing_result = str(replay.evidence.risk_sizing_effect or "NONE")
     if replay.intermediate and replay.intermediate.capital_risk_sizing_decision is not None:

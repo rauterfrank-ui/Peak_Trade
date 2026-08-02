@@ -1,0 +1,100 @@
+{
+  "config_digest_mismatch": {
+    "code": "CONFIG_DIGEST_MISMATCH",
+    "ok": true
+  },
+  "corrupt_checkpoint": {
+    "code": "COMMIT_MARKER_CORRUPT",
+    "ok": true
+  },
+  "crash_after_fill_before_portfolio": {
+    "code": "PERSISTENCE_INTERRUPTION",
+    "ok": true
+  },
+  "crash_after_portfolio_before_evidence_cursor": {
+    "code": "PERSISTENCE_INTERRUPTION",
+    "ok": true
+  },
+  "crash_after_runtime_before_evidence": {
+    "code": "PERSISTENCE_INTERRUPTION",
+    "ok": true,
+    "runtime_commit_present": true
+  },
+  "crash_after_state_before_marker": {
+    "code": "PERSISTENCE_INTERRUPTION",
+    "ok": true
+  },
+  "crash_before_state_write": {
+    "code": "PERSISTENCE_INTERRUPTION",
+    "ok": true,
+    "prior_marker_retained": true
+  },
+  "crash_during_state_write": {
+    "code": "PERSISTENCE_INTERRUPTION",
+    "journal_discarded": true,
+    "ok": true
+  },
+  "duplicate_observation_after_restart": {
+    "epoch_after": 3,
+    "epoch_before": 3,
+    "ok": true,
+    "scope_advanced": false,
+    "scope_sequence_after": 1,
+    "scope_sequence_before": 1
+  },
+  "duplicate_replay_after_restart": {
+    "commit_identity": "3ff0f6e0f37652a0d0dd9dbb48a315fe25d3d7f42e3ad0dea3709d145569f4b0",
+    "ok": true
+  },
+  "evidence_materialization_repeated_fail": {
+    "attempts": 2,
+    "ok": true
+  },
+  "missing_commit_marker": {
+    "ok": true,
+    "recovery": {
+      "discarded": {
+        "journal_discarded": true,
+        "ok": true,
+        "stagings_removed": 0
+      },
+      "ok": true,
+      "pending_evidence": null,
+      "reason": "NO_PRIOR_COMMIT",
+      "recovered": false
+    }
+  },
+  "ok": true,
+  "recovery_idempotent_restart": {
+    "digest": "5308a0c15f740158d2b87c1442379c074ce2f4b86b09654869fd1b111865f908",
+    "ok": true
+  },
+  "repository_sha_mismatch": {
+    "code": "REPOSITORY_SHA_MISMATCH",
+    "ok": true
+  },
+  "restart_during_active_dynamic_scope": {
+    "ok": true,
+    "session_stable": true
+  },
+  "restart_during_candidate": {
+    "ok": true,
+    "session_stable": true
+  },
+  "restart_during_confirmation_observe": {
+    "ok": true,
+    "session_stable": true
+  },
+  "restart_during_confirmed": {
+    "ok": true,
+    "session_stable": true
+  },
+  "restart_with_open_simulated_position": {
+    "ok": true,
+    "session_stable": true
+  },
+  "writer_conflict": {
+    "code": "CONFLICTING_WRITER",
+    "ok": true
+  }
+}
