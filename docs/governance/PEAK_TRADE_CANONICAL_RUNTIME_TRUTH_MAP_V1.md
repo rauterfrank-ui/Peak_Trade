@@ -212,9 +212,10 @@ phase1_hard_safety_constants
 | Offline Master V2 replay | `PRODUCTIVE_CANONICAL` |
 | Vol max-age research accumulation | `RESEARCH_ONLY` (non-enforcing) |
 | `LiveRiskLimits.from_config` | `PRODUCTIVE_LEGACY` (aligned via Phase-1 adapter) |
-| Universe/ranking as trading authority | `DEAD_OR_UNREACHABLE` for ranking/selection trading authority; Capability 2.1 universe producer is `PRODUCTIVE_CANONICAL` universe-truth only (`ALPHA_ALLOWED=false`, no ranking/selection) |
+| Universe/ranking as trading authority | Selection/trading authority remains `DEAD_OR_UNREACHABLE`; Cap 2.1 universe + Cap 2.2 ranking are `PRODUCTIVE_CANONICAL` candidate-context producers only (`ALPHA_ALLOWED=false`, no `SINGLE_SELECTED_FUTURE`) |
 | Productive reconciliation host (Capability 1.1 startup gate on wallclock bridge) | `PRODUCTIVE_CANONICAL` (`PRODUCTIVE_RECONCILIATION_BOUND=true`; live/orders still fail-closed) |
 | Governed Futures Universe Producer (Capability 2.1) | `PRODUCTIVE_CANONICAL` universe snapshot owner `ops.governed_futures_universe_producer_v1`; `CODE_EXISTS+BOUND+PERSISTED+RESTART_PROVEN`; `ACTIVATED=false`; ranking/selection/alpha not granted |
+| Productive Futures Ranking Producer (Capability 2.2) | `PRODUCTIVE_CANONICAL` Top-20 candidate-context owner `ops.productive_futures_ranking_producer_v1`; `CODE_EXISTS+BOUND+PERSISTED+RESTART_PROVEN`; `ACTIVATED=false`; `TOP20_IS_CONTEXT_ONLY=true`; selection/alpha/multi-future not granted |
 
 Verification: `CONFIG_TRUTH_ALIGNMENT_V1`; live remains fail-closed; multi-future unauthorized;
 numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
@@ -232,7 +233,7 @@ numeric max-age non-enforcing; `BOUND_NOT_ACTIVATED` unchanged.
 
 ### 3.6 Known gaps (current)
 
-1. Universe → Ranking → Single Selected Future persistence + runtime authority binding — **Universe producer closed by Capability 2.1** (`CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1`; ranking/selection/runtime binding still open)
+1. Universe → Ranking → Single Selected Future persistence + runtime authority binding — **Universe producer closed by Capability 2.1**; **Ranking Top-20 candidate context closed by Capability 2.2** (`CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1`; selection/runtime binding still open)
 2. Productive reconciliation host binding — **closed by Capability 1.1** (`CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1`); live activation still forbidden
 3. Futures accounting runtime wiring
 4. Canonical runtime activation (still must remain non-live)

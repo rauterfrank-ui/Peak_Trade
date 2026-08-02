@@ -909,6 +909,28 @@ Diese Capability erzeugt ausschließlich die kanonische Universe-Wahrheit. Ranki
 
 ## Capability 2.2 — Productive Ranking Producer
 
+### Closure markers
+
+```text
+CAPABILITY_ID=CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1
+CODE_EXISTS=true
+BOUND=true
+RUNTIME_REACHABLE=true
+PERSISTED=true
+RESTART_PROVEN=true
+ACTIVATED=false
+AUTHORITY_OWNER=ops.productive_futures_ranking_producer_v1
+PRODUCTIVE_ENTRYPOINT=scripts/ops/run_productive_futures_ranking_producer_v1.py
+SPEC=docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+EVIDENCE=docs/evidence/capability_2_2_productive_futures_ranking_producer_v1/
+PRODUCTIVE_RANKING_PRODUCER_IMPLEMENTED=true
+TOP20_CANDIDATE_CONTEXT_AVAILABLE=true
+SINGLE_SELECTED_FUTURE_AUTHORITY=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+ALPHA_ALLOWED=false
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
+```
+
 ### Anforderungen
 
 Ranking muss:
@@ -923,6 +945,17 @@ Ranking muss:
 - keine Position eröffnen
 - keine UI-Daten konsumieren
 
+### Implementierte Ranking-Policy
+
+```text
+RANKING_POLICY_ID=productive_futures_universe_structural_ranking_v1
+RANKING_POLICY_VERSION=v1
+PROVENANCE=Cap 2.1 structural instrument gates as equal binary score components
+TRADE_ALPHA_HEURISTIC=false
+DASHBOARD_HEURISTIC=false
+RESEARCH_FORMULA_IMPORTED=false
+```
+
 ### Verbot
 
 Dashboard-Ranking darf nicht zurück in die Runtime fließen.
@@ -936,6 +969,10 @@ TOP_N_ACTIVE_SET = spätere Multi-Future-Authority nach ratifizierter Rotation P
 ```
 
 `Top-5` ist am Baseline-SHA weder produktiv noch regressiert, sondern eine mögliche spätere Konfiguration von Top-N. Diese Begriffe dürfen in Code, Evidence und Docs nicht vermischt werden.
+
+### Abgrenzung
+
+Diese Capability erzeugt ausschließlich persistierten Top-20 Candidate Context. `SINGLE_SELECTED_FUTURE`, Master V2, Double Play, Execution und Runtime-Aktivierung bleiben außerhalb.
 
 ## Capability 2.3 — Single Selected Future Policy
 
