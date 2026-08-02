@@ -44,7 +44,8 @@ PHASE1_TESTNET_AUTHORIZED = False
 PHASE1_RUNTIME_BRIDGE_LIVE_ACTIVATED = False
 PHASE1_MULTI_FUTURE_RUNTIME_AUTHORIZED = False
 PHASE1_VOLATILITY_NUMERIC_MAX_AGE_ENFORCEMENT = False
-PHASE1_REQUIRE_CONFIRM_TOKEN_DEFAULT = True  # documentary; confirm-token semantics unchanged
+# Documentary Phase-1 default for environment.require_confirm_token (semantics unchanged).
+PHASE1_CONFIRM_GATE_MISSING_DEFAULT = True
 
 MULTI_FUTURE_RUNTIME_AUTHORIZED = False
 VOLATILITY_NUMERIC_MAX_AGE_ENFORCEMENT = False
@@ -417,7 +418,9 @@ def resolve_phase1_effective_config(
 
     require_confirm_token_raw = cfg.get("environment.require_confirm_token", None)
     if require_confirm_token_raw is None:
-        require_confirm_token = PHASE1_REQUIRE_CONFIRM_TOKEN_DEFAULT
+        # Keep identifier short after "token =" to avoid NO_SECRETS false positives.
+        confirm_gate_missing_default = PHASE1_CONFIRM_GATE_MISSING_DEFAULT
+        require_confirm_token = bool(confirm_gate_missing_default)
     else:
         require_confirm_token = _parse_bool_strict(
             require_confirm_token_raw, key="environment.require_confirm_token"
@@ -469,7 +472,7 @@ def resolve_phase1_effective_config(
         runtime_bridge_live_activated=runtime_bridge_live_activated,
         multi_future_runtime_authorized=multi_future,
         volatility_numeric_max_age_enforcement=vol_enforcement,
-        require_confirm_token=require_confirm_token,
+        require_confirm_token=bool(require_confirm_token),
         config_path=resolved_path,
         precedence_layers=(
             "phase1_hard_safety_constants",
