@@ -41,14 +41,16 @@ Navigations-Einstieg (keine Semantik):
 
 | Feld | Wert |
 |------|------|
-| `ORIGIN_MAIN_SHA` | `58af5100ef8c307f4dbe5e95fe4a13102272a1b0` |
-| `VERIFICATION_DATE_UTC` | `2026-08-02T05:40:00Z` |
-| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin&#47;main` before Capability 4.1 branch creation |
+| `ORIGIN_MAIN_SHA` | `92d223830f23cc6034704898f5b96ad2ddffe971` |
+| `VERIFICATION_DATE_UTC` | `2026-08-02T18:15:00Z` |
+| `VERIFICATION_MODE` | local real git worktree; `git fetch origin --prune`; HEAD == `origin&#47;main` after Capability 7.2 merge (PR #5656); post-Cap-7.2 documentation truth-map alignment only |
 | `REPOSITORY_ROOT` | `/Users/frnkhrz/Peak_Trade_assessment_93b45a7` |
 | `GIT_DIR` | `/Users/frnkhrz/Peak_Trade/.git/worktrees/Peak_Trade_assessment_93b45a7` |
 | `LOCAL_REAL_REPOSITORY` | `true` (linked worktree of Peak_Trade; direct `.git` access) |
 | `BASELINE_VALIDITY_RULE` | Every later implementation PR must revalidate against its actual `origin&#47;main`. Counts/paths here are evidence snapshots, not timeless constants. |
-| `CONFIG_TRUTH_ALIGNMENT` | Capability 0.3 owner `ops.config_truth_alignment_contract_v1` — Phase-1 effective values proven; Cap 4.1 readiness preserves non-activation |
+| `CONFIG_TRUTH_ALIGNMENT` | Capability 0.3 owner `ops.config_truth_alignment_contract_v1` — Phase-1 effective values proven; Cap 7.2 activation preserves no-order / no-credential / no-network-session boundary |
+| `MASTER_RUNBOOK_RATIFICATION_SHA` | `830441674cd931484e3a88ec441f2e08562c42d2` (historical ratification binding in `PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json`; **not** current HEAD) |
+| `MASTER_RUNBOOK_STALE_IF_HEAD_DIFFERS` | `true` — ratification `REPOSITORY_SHA` remains the Owner-ratified merge SHA; current runtime Ist-Zustand is this Truth Map at `ORIGIN_MAIN_SHA` above |
 
 ### Verbindliche aktuelle Semantik (Snapshot)
 
@@ -59,7 +61,9 @@ FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true
 SIMULATED_EXECUTION_ACTIVE=true
 PUBLIC_MD_RUNTIME_CAPABLE=true
 PUBLIC_MD_NETWORK_SESSION_OBSERVED=false
+NETWORK_SESSION_STARTED=false
 RUNTIME_ACTIVATED=true
+RUNTIME_ACTIVATED_SCOPE=CAP72_INTERNAL_STATEFUL_NO_ORDER_ONLY
 LIVE_TRADING=FAIL_CLOSED
 LIVE_ORDERS=false
 TESTNET_ORDERS=false
@@ -82,9 +86,15 @@ FUTURES_ACCOUNTING_RUNTIME_BOUND=true
 FULL_SINGLE_FUTURE_CALL_GRAPH_PROVEN=true
 ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
+NEXT_RUNTIME_RUN_ALLOWED=false
+NOTION_REPOSITORY_MIRROR_CURRENT=false
+CYBERSECURITY_REVIEW_CURRENT=false
+STRATEGY_REGISTRY_STATUS=DEFERRED_REQUIRED_CAPABILITY
+CAP72_WIRING_BLOCKER=false
+PHASE_9_2_LONG_RUNNING_PUBLIC_MD_EVIDENCE_DEPENDENCY=true
 ```
 
-**Status note (CURRENT vs TARGET):** Capability 7.2 activates the internal stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE` / `SIMULATED_EXECUTION_ACTIVE`) with public-MD capability but **without** starting a public-MD network session. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Phase 9.2 is the separate long-running public-MD simulation evidence program.
+**Status note (CURRENT vs TARGET):** Capability 7.2 activates the **internal** canonical stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` / `SIMULATED_EXECUTION_ACTIVE=true`) with `PUBLIC_MD_RUNTIME_CAPABLE=true`, but **does not** prove an observed public-MD network run (`PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`, `NETWORK_SESSION_STARTED=false`). Binding inequality: `PUBLIC_MD_RUNTIME_CAPABLE != PUBLIC_MD_NETWORK_SESSION_OBSERVED`. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Pre-run gates that this documentation capability must not flip: `NEXT_RUNTIME_RUN_ALLOWED=false`, `NOTION_REPOSITORY_MIRROR_CURRENT=false`, `CYBERSECURITY_REVIEW_CURRENT=false`. Phase 9.1 Strategy Registry = `DEFERRED_REQUIRED_CAPABILITY` (`CAP72_WIRING_BLOCKER=false`; dependency-relevant before Phase 9.2 long-running public-MD evidence). Phase 9.2 remains the separate long-running public-MD simulation evidence program and is **not** prepared or started by this documentation alignment.
 
 ---
 
@@ -128,10 +138,11 @@ Audit classification categories:
 
 | Entrypoint | Class | Activation | Evidence basis |
 |------------|-------|------------|----------------|
-| `scripts/ops/run_single_future_canonical_runtime_deterministic_offline_evidence_v1.py` | Cap 5.1 deterministic offline evidence entrypoint | `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; offline replay only | Cap 5.1 evidence; reuses Cap 4.1/2.4 host; fixtures only; no network/auth consumption/activation |
-| `scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py` | Cap 4.1 pre-activation closure entrypoint | `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false` | Cap 4.1 evidence; reuses Cap 2.4 host; no live/orders/auth consumption |
-| `scripts/ops/run_single_selected_future_runtime_binding_v1.py` | Cap 2.4 productive single-future analytical host | host reused by Cap 4.1/5.1; not a second canonical host | Cap 2.4 / 3.1 / 4.1 / 5.1 evidence |
-| `scripts/ops/run_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py` | analytical simulated-economics bridge | live order path remains non-activated; analytical simulation path only | package constants `RUNTIME_BRIDGE_LIVE_ACTIVATED=False`, `ORDERS_AUTHORIZED=False`, `LIVE_AUTHORIZED=False` |
+| `scripts/ops/run_single_future_stateful_no_order_runtime_activation_v1.py` | Cap 7.2 single-future stateful no-order activation evidence entrypoint (`ops.single_future_stateful_no_order_runtime_activation_v1`; productive host cycle `ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1.run_bridge_cycle_v1`) | `FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true`; `SIMULATED_EXECUTION_ACTIVE=true`; `PUBLIC_MD_RUNTIME_CAPABLE=true`; `PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`; `NETWORK_SESSION_STARTED=false`; offline activation evidence only (no public-MD network session) | Cap 7.2 evidence under `docs/evidence/capability_7_2_single_future_stateful_no_order_runtime_activation_v1/`; predecessor Cap 7.1 digest-bound; live/testnet/paper/credentials fail-closed |
+| `scripts/ops/run_single_future_canonical_runtime_deterministic_offline_evidence_v1.py` | Cap 5.1 deterministic offline evidence entrypoint | historical Cap 5.1 scope: `READY_FOR_ACTIVATION`; package-local `RUNTIME_ACTIVATED=false`; offline replay only | Cap 5.1 evidence; reuses Cap 4.1/2.4 host; fixtures only; no network/auth consumption; **not** current Cap 7.2 activation authority |
+| `scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py` | Cap 4.1 pre-activation closure entrypoint | historical Cap 4.1 scope: `READY_FOR_ACTIVATION`; package-local `RUNTIME_ACTIVATED=false` | Cap 4.1 evidence; reuses Cap 2.4 host; no live/orders/auth consumption; **not** current Cap 7.2 activation authority |
+| `scripts/ops/run_single_selected_future_runtime_binding_v1.py` | Cap 2.4 productive single-future analytical host | host reused by Cap 4.1/5.1/7.x; not a second canonical activation authority | Cap 2.4 / 3.1 / 4.1 / 5.1 / 7.2 evidence |
+| `scripts/ops/run_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py` | productive wallclock simulated-economics bridge host (Cap 7.2 activation consumer) | Cap 7.2 no-order activation may enable internal simulated execution on this host; live order path remains non-activated (`RUNTIME_BRIDGE_LIVE_ACTIVATED=false`) | Cap 7.2 host binding + package constants `ORDERS_AUTHORIZED=False`, `LIVE_AUTHORIZED=False` |
 | `scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py` | gated wallclock observation | not default-authorized; requires scoped GO/auth artifacts | Map of Truth / IPSO runbooks; non-authorizing by docs |
 | `scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py` | productive public-MD issuance helper | merge does not authorize session | IPSO productive issuance runbook |
 | `scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py` | research/watchdog evidence accumulation | non-enforcing | max-age research contracts (`ENFORCEMENT_ENABLED=False`) |
@@ -139,34 +150,38 @@ Audit classification categories:
 
 ### 3.2 Reachable vs bound-not-activated vs blocked call-graphs
 
-**Reachable analytical single-future path (current, Cap 4.1 proven offline):**
+**Current Cap 7.2 activated single-future no-order path (internal; no public-MD network session observed):**
 
 ```text
-Authorization Contract Validation (offline structural; no consumption)
-→ Analytical Session Lock (local; not network trading session)
-→ Governed Futures Universe
-→ Productive Ranking
+Repository / config integrity + no-order mode validation
+→ Cap 7.2 activation-state validation
 → Persisted Single Selected Future
 → Selection Integrity / Venue-Native Binding
 → Cap 2.4 Runtime Binding + Cap 1.1 Reconciliation
-→ Public Market Data
-→ Feature Pipeline
-→ Typed Volatility Presence
-→ Master V2 / Double Play
+→ Canonical decision-runtime config bind
+→ Stateful decision runtime / canonical intent
+→ SimulatedExecutionPort (no real submit-order interface)
+→ Public-MD-capable observation path (fixtures / offline in Cap 7.2 evidence; network session not started)
+→ Distinct Observation Acceptance (C1) → Features / Regime
+→ Directional Confirmation (C2) → C3 integration
+→ Exit-policy producers → Master V2 / Double Play → Dynamic Scope
 → Risk / Safety / Intent
-→ Simulated Fill + Canonical Futures Accounting
-→ Portfolio/Risk Persistence
-→ Evidence / Verifier
+→ Simulated fill + Fee/Slippage → Canonical Futures Accounting
+→ Portfolio/Risk Persistence → Evidence / Verifier / pending-evidence recovery
 ```
 
-Status after Cap 4.1: `CANONICAL_RUNTIME_ENTRYPOINT_STATUS=READY_FOR_ACTIVATION` with `RUNTIME_ACTIVATED=false`.
+Authoritative Cap 7.2 status: `CANONICAL_RUNTIME_ENTRYPOINT_STATUS=FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE` with `RUNTIME_ACTIVATED=true` scoped to internal stateful no-order only (`RUNTIME_ACTIVATED_SCOPE=CAP72_INTERNAL_STATEFUL_NO_ORDER_ONLY`).
 
-**Bound / ready but not activated:**
+**Historical Cap 4.1 / 5.1 pre-activation path (not current global truth):**
 
-- Cap 4.1 pre-activation closure: `READY_FOR_ACTIVATION`; activation remains separate Owner-GO
+Cap 4.1/5.1 package constants and evidence still correctly record their own `READY_FOR_ACTIVATION` / package-local `RUNTIME_ACTIVATED=false`. Those are **historical pre-activation guards** for those packages and must not be read as the current global Cap 7.2 runtime truth.
+
+**Still bound but not live-/order-activated:**
+
 - Canonical runtime bridge live-order path: `RUNTIME_BRIDGE_LIVE_ACTIVATED=false` (not live-activated)
-- Master V2 / Double Play offline integration: wired in offline replay / analytical bridge; not live-activated
+- Master V2 / Double Play offline integration: wired in offline replay / activated no-order host; not live-activated
 - Typed volatility presence / numeric max-age telemetry: bound as watchdog/research; enforcement false
+- Public-MD network session / Phase 9.2 continuity campaign: capable boundary exists; session not observed / not authorized by Cap 7.2
 
 **Deactivated / not authorized / fail-closed:**
 
@@ -177,6 +192,7 @@ Status after Cap 4.1: `CANONICAL_RUNTIME_ENTRYPOINT_STATUS=READY_FOR_ACTIVATION`
 - Top-20 → Top-5 productive rotation (`TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false`)
 - Universe/ranking as trading authority (`UNIVERSE_RANKING_TRADING_AUTHORITY=false`)
 - Dashboard write/trading input (`DASHBOARD_TRADING_INPUT=false`)
+- Next public-MD runtime run (`NEXT_RUNTIME_RUN_ALLOWED=false`) until separate Owner-GO after Notion mirror + cybersecurity review
 
 ### 3.3 Authority owners by capability (documentary)
 
@@ -275,22 +291,26 @@ numeric max-age non-enforcing; Cap 4.1 readiness is not activation.
 1. Universe → Ranking → Single Selected Future persistence + runtime authority binding — **closed by Capabilities 2.1–2.4**
 2. Productive reconciliation host binding — **closed by Capability 1.1**; live activation still forbidden
 3. Futures accounting runtime wiring — **closed by Capability 3.1**
-4. Canonical runtime pre-activation closure — **closed by Capability 4.1** as `READY_FOR_ACTIVATION` (`RUNTIME_ACTIVATED=false`); live activation still forbidden
-5. Canonical stateful no-order activation — **closed by Capability 7.2** (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true`); public-MD network sessions remain separate (Phase 9.2 Owner-GO)
-6. Strategy registry full productive binding
+4. Canonical runtime pre-activation closure — **closed by Capability 4.1** as historical `READY_FOR_ACTIVATION` (package-local `RUNTIME_ACTIVATED=false`); superseded as global activation truth by Cap 7.2; live activation still forbidden
+5. Canonical stateful no-order activation — **closed by Capability 7.2** (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true`); public-MD network sessions remain separate (Phase 9.2 Owner-GO); `NEXT_RUNTIME_RUN_ALLOWED=false`
+6. Strategy registry full productive binding — `STRATEGY_REGISTRY_STATUS=DEFERRED_REQUIRED_CAPABILITY`; `CAP72_WIRING_BLOCKER=false`; `PHASE_9_2_LONG_RUNNING_PUBLIC_MD_EVIDENCE_DEPENDENCY=true` (Phase 9.1; authority hygiene before long-running public-MD evidence; not a Cap 7.2 wiring defect)
 7. Config truth alignment for `max_open_positions` effective consumers — **closed by Capability 0.3** (`CONFIG_TRUTH_ALIGNMENT_V1`)
 8. Active-set rotation policy — **registered by Capability 0.4** as `DEFERRED_REQUIRED_CAPABILITY` in `PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1` / `docs/governance/deferred_work_recovery_register_v1.json` (Phase 6; not productive Top-5; implementation/activation unauthorized; prior reminder remains `REMINDER_ONLY`)
+9. Cap 7.1 predecessor-digest hygiene — Cap 7.2 binds Cap 7.1 evidence digest `e19001d4c3bc4f3bd9d5ab91c5d880a39df3c3a0edaea3dc2e3f200c7e62c13b`, but Cap 7.1 result artifacts do not themselves expose a machine-readable predecessor digest to Cap 6.5. Classification: `EVIDENCE_GAP` / **non-run-blocking evidence hygiene**; no Cap 7.1/7.2 evidence mutation in this documentation alignment.
 
 ### 3.7 Last verifiable evidence anchors
 
 | Anchor | Path / claim | Class |
 |--------|--------------|-------|
+| Cap 7.2 activation evidence | `docs/evidence/capability_7_2_single_future_stateful_no_order_runtime_activation_v1/` — `FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true`; `PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`; evidence digest `b131c2958c70d587a9a893e21899c1ff8f1143603a6f154d324bdc70287812f7` | CURRENT_RUNTIME_TRUTH |
+| Cap 7.1 lifecycle evidence | `docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/` — Entry/Exit/Fee/Slippage proven; evidence digest `e19001d4c3bc4f3bd9d5ab91c5d880a39df3c3a0edaea3dc2e3f200c7e62c13b` | CURRENT_RUNTIME_TRUTH (predecessor of Cap 7.2) |
 | Feature state map | `docs/governance/feature_state_map_v1.md` — `BOUND_NOT_ACTIVATED` / 0 live operational features | CURRENT_RUNTIME_TRUTH (snapshot SHA older than baseline; semantics still cited) |
 | Bridge constants | `src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/constants_v1.py` | CURRENT_RUNTIME_TRUTH |
 | Max-age non-enforcing | `ENFORCEMENT_ENABLED=False` in max-age policy/research contracts | CURRENT_RUNTIME_TRUTH |
 | Dashboard consumer-only | Market Dashboard Landscape V2 `DASHBOARD_ROLE=PURE_READ_ONLY_CONSUMER` | CURRENT_RUNTIME_TRUTH |
 | Economic gate false | `PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md` authoritative fields | CURRENT_RUNTIME_TRUTH |
-| Forensic runbook baseline | Capability Closure Runbook header @ same SHA | CURRENT_RUNTIME_TRUTH + working runbook |
+| Master Runbook ratification | `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` + `PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json` — `REPOSITORY_SHA=830441674cd931484e3a88ec441f2e08562c42d2`; `STALE_IF_HEAD_DIFFERS=true` | CANONICAL_WORKING_AUTHORITY with acknowledged HEAD staleness; current Ist-Zustand remains this Truth Map |
+| Forensic runbook baseline | Capability Closure Runbook header @ older snapshot SHA | CURRENT_RUNTIME_TRUTH + working runbook |
 
 ---
 
@@ -354,9 +374,20 @@ READY_FOR_ACTIVATION != ACTIVATED
 READY_FOR_ACTIVATION != ACTIVATED_NO_LIVE_ORDERS
 READY_FOR_ACTIVATION != LIVE
 READY_FOR_ACTIVATION != ACTIVE
-RUNTIME_ACTIVATED=false
 BOUND_NOT_ACTIVATED != ACTIVATED
+FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE != PUBLIC_MD_NETWORK_SESSION_OBSERVED
+PUBLIC_MD_RUNTIME_CAPABLE != PUBLIC_MD_NETWORK_SESSION_OBSERVED
+PUBLIC_MD_RUNTIME_CAPABLE != NETWORK_SESSION_STARTED
+RUNTIME_ACTIVATED(CAP72_INTERNAL_STATEFUL_NO_ORDER_ONLY)=true
+HISTORICAL_CAP41_CAP51_PACKAGE_LOCAL_RUNTIME_ACTIVATED=false
 LIVE_TRADING=FAIL_CLOSED
+LIVE_ORDERS=false
+TESTNET_ORDERS=false
+PAPER_EXCHANGE_ORDERS=false
+NETWORK_SESSION_STARTED=false
+NEXT_RUNTIME_RUN_ALLOWED=false
+NOTION_REPOSITORY_MIRROR_CURRENT=false
+CYBERSECURITY_REVIEW_CURRENT=false
 DASHBOARD=READ_ONLY_CONSUMER
 DASHBOARD_AUTHORITY_EFFECT=NONE
 DASHBOARD_TRADING_INPUT=false
@@ -369,6 +400,10 @@ MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 TOP20_OBSERVATION_OR_RESEARCH != TOP5_PRODUCTIVE_ROTATION != TOPN_ACTIVE_SET
 TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false
 ```
+
+**`RUNTIME_ACTIVATED` ambiguity resolution:** The unqualified global guard `RUNTIME_ACTIVATED=false` is **not** current Cap 7.2 truth. Cap 4.1/5.1 (and similar pre-activation packages) retain package-local `RUNTIME_ACTIVATED=false` as a **historical pre-activation guard**. Authoritative current no-order activation truth is Cap 7.2: `RUNTIME_ACTIVATED=true` with `RUNTIME_ACTIVATED_SCOPE=CAP72_INTERNAL_STATEFUL_NO_ORDER_ONLY`, while `PUBLIC_MD_NETWORK_SESSION_OBSERVED=false` and `NETWORK_SESSION_STARTED=false`.
+
+**Master Runbook §22 “Immediate Next Capability”:** relative to current `ORIGIN_MAIN_SHA=92d223830f23cc6034704898f5b96ad2ddffe971`, the ratified Master Runbook section naming Cap 6.1 as the immediate next capability is **stale**. The runbook remains Owner-ratified semantic authority with `REPOSITORY_SHA=<ratification SHA>` and `STALE_IF_HEAD_DIFFERS=true`; this Truth Map carries the post-Cap-7.2 Ist-Zustand without silently rewriting the ratified runbook body.
 
 Protected cores (must not be changed by this documentation capability):
 
@@ -386,7 +421,7 @@ Legend for `DOCUMENT_CLASS_*`:
 
 | DOCUMENT_PATH | CLASS_CURRENT | CLASS_PROPOSED | LAST_RELEVANT_SHA_OR_DATE | RUNTIME_CLAIMS | TARGET_ARCHITECTURE_CLAIMS | AUTHORITY_CLAIMS | ACTIVATION_CLAIMS | CONFLICTS_WITH_CURRENT_REPOSITORY | REQUIRED_CORRECTION | CORRECTION_APPLIED |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md` | CURRENT | CURRENT | `4bac3303…` / 2026-08-02 | Ist-Zustand only | separated §4 | documentary only | none | none | create | yes |
+| `docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md` | CURRENT | CURRENT | `92d223830f23cc6034704898f5b96ad2ddffe971` / 2026-08-02 post-Cap-7.2 alignment | Cap 7.2 Ist-Zustand; no public-MD network session | separated §4 | documentary only | Cap 7.2 no-order only; `NEXT_RUNTIME_RUN_ALLOWED=false` | prior `ORIGIN_MAIN_SHA` lag corrected | align post Cap 7.2 | yes |
 | `docs/governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md` | CURRENT+working | CURRENT+working | baseline `4bac3303…` | BOUND_NOT_ACTIVATED etc. | §1.1 target separated | owner/operator working authority | fail-closed | internal title V1.1 vs filename V1_2 | store + note mismatch; do not silently rewrite | yes (stored; mismatch documented; repo-admission token encoding + trailing-whitespace normalization only) |
 | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` | navigation | navigation + CURRENT pointer | main @ baseline | LIVE/ORDERS false | autonomy wording risk | no semantics | none | “vollautonomes Handelssystem” can be read as Ist | clarify target vs current; add Truth Map pointer + DOCUMENT_CLASS | yes |
 | `docs/governance/feature_state_map_v1.md` | CURRENT snapshot | CURRENT | header SHA `2f1672bee…` / 2026-07-05 | BOUND_NOT_ACTIVATED; 0 live ops | none primary | decision-core owners | none live | older SHA than baseline | add DOCUMENT_CLASS; keep snapshot caveat | yes |
