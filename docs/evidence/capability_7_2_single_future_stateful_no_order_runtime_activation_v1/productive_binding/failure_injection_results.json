@@ -1,0 +1,27 @@
+{
+  "FAILURE_INJECTION_PROVEN": true,
+  "cap71_failure_injection_proven": true,
+  "corrupt_checkpoint_fail_closed": true,
+  "precondition_blocks": {
+    "ACTIVATION_BLOCK_ON_MISSING_PRECONDITION": true,
+    "invalid_instrument_binding": true,
+    "missing_selected_future": true,
+    "reconciliation_mismatch": true,
+    "repository_sha_mismatch": true
+  },
+  "real_execution_adapter_unreachable": true,
+  "rollback": {
+    "ALPHA_BLOCKED_AFTER_FAILED_ACTIVATION": true,
+    "EXIT_RISK_SAFETY_STATE_PRESERVED": true,
+    "FAILED_ACTIVATION_LEAVES_RUNTIME_INACTIVE": true,
+    "ROLLBACK_PROVEN": true,
+    "activation_commit_crash": true,
+    "config_digest_mismatch": true,
+    "explicit_rollback": true,
+    "invalid_instrument_binding": true,
+    "missing_selected_future": true,
+    "reconciliation_mismatch": true,
+    "repository_sha_mismatch": true
+  },
+  "writer_conflict_hard_stop": true
+}
