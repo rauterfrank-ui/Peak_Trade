@@ -177,7 +177,8 @@ Runbook-Referenz (read-only, keine Progress-Metadaten kopiert):
 ```text
 SOURCE_RUNBOOK_REFERENCED=true
 MAP_OF_TRUTH_PATH=docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
-NORMATIVE_SSOT_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+NORMATIVE_SSOT_PATH=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+HISTORICAL_SUPERSEDED_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
 CANONICAL_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md
 NORMATIVE_REFERENCE_ONLY=true
 ```

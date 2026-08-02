@@ -19,7 +19,11 @@ ACTIVATION_CHANGE=false
 **Rolle:** Kanonische Ist-Zustandskarte der Runtime-Wahrheit.
 **Nicht-Rolle:** Kein Zielbild, keine Activation-Authority, keine zweite Trading-SSOT.
 
-Normative Governance-/Implementierungs-SSOT bleibt:
+Aktuelle normative Governance-/Implementierungsautorität:
+
+[`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md)
+
+Historische Vorgängerautorität (SUPERSEDED):
 
 [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md)
 

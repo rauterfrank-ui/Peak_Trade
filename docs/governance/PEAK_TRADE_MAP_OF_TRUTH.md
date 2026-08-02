@@ -56,22 +56,38 @@ Keine Anlageberatung. Keine Live-/Order-/Scheduler-Freigabe allein durch Lektür
 
 ---
 
-## 2. Kanonische SSOT (Vollautonomie-Runbook v4.4.12)
+## 2. Kanonische semantische Autorität (Master Runbook V2.3)
 
-Ab sofort und bis zur vollständigen Systemautonomie ist die **einzige** Architektur-, Governance- und Implementierungs-SSOT:
+Ab sofort und bis zur vollständigen Systemautonomie ist die **einzige** aktuelle Architektur-, Governance- und Implementierungsautorität:
 
 | Rolle | Pfad |
 |-------|------|
-| **Kanonische SSOT (v4.4.12)** | [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) |
+| **Canonical Master Runbook (aktuell)** | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) |
+| **Historische Vorgängerautorität (SUPERSEDED)** | [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) |
+
+```text
+CANONICAL_MASTER_RUNBOOK_PATH=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+CANONICAL_WORKING_AUTHORITY=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+CURSOR_MUST_READ_CANONICAL_RUNBOOK_FIRST=true
+NO_PARALLEL_SEMANTIC_MODEL=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+ORDERS_ALLOWED=false
+```
+
+Historische Vorgängerfelder (nicht aktuell; nur für bestehende Contract-/Progress-Marker und Supersession-Nachweis):
 
 ```text
 CANONICAL_VOLLAUTONOMIE_RUNBOOK_VERSION=v4.4.12
 CANONICAL_VOLLAUTONOMIE_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
 CANONICAL_RUNBOOK_CONTENT_VERSION=4.4.12-full-canonical-system-parity-before-system-economic-evidence
-CURSOR_MUST_READ_CANONICAL_RUNBOOK_FIRST=true
+HISTORICAL_ONLY=true
+STATUS=SUPERSEDED
+SUPERSEDED_BY=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
 ```
 
-Ältere Runbook-Pfade (v4.4 / v4.4.1 / v4.4.10 Dateiname / v2.6) sind **historische Adoption-/Crosslink-Oberflächen**. Normative Semantik kommt ausschließlich aus v4.4.12 über diese Map.
+Ältere Runbook-Pfade (v4.4 / v4.4.1 / v4.4.10 Dateiname / v2.6 / v4.4.12) sind **historische Adoption-/Crosslink-Oberflächen**. Normative Semantik kommt ausschließlich aus dem Canonical Master Runbook über diese Map.
 
 Kurz-Navigationsvertrag (keine zweite SSOT): [`PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md).
 
@@ -143,13 +159,14 @@ Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 
 ## 7. Wichtigste Trading-Logik-Dokumente
 
-Normative Semantik: **nur** die kanonische SSOT v4.4.12 (PART II).
+Normative Semantik: **nur** das Canonical Master Runbook (`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`). Historisch: v4.4.12 (SUPERSEDED).
 
 Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 
 | Dokument | Rolle |
 |----------|-------|
-| [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Master-V2 / Double-Play / Scope / Entry-Exit-Reversal |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) | Master-V2 / Double-Play / Scope / Entry-Exit-Reversal (aktuell) |
+| [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Historische Vorgängerreferenz (SUPERSEDED) |
 | [`Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md`](Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md) | Chain-Wiring-Repair-Vertrag |
 | [`STRATEGY_SIGNAL_CANONICAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1.md`](STRATEGY_SIGNAL_CANONICAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1.md) | Negative Architecture Ratification |
 | [`docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md`](../ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) | Decision-Authority-Map |
@@ -160,7 +177,8 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 
 | Dokument | Rolle |
 |----------|-------|
-| [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | PART III Economic Validity + OLS als Diagnose-Support |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) | Economic Validity / evidence gates (aktuell) |
+| [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Historische PART-III-Vorgängerreferenz (SUPERSEDED) |
 | [`docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md`](../ops/runbooks/INTEGRATED_PAPER_SHADOW_ECONOMIC_VALIDITY_PIPELINE_V1.md) | Gate-Split: Paper-Shadow Observation Readiness vs integriertes Economic Evidence Bundle vs ECONOMIC_VALIDITY_PASS |
 | [`docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md`](../ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_SESSION_CAPABILITY_V1.md) | Kanonischer Observation-Pfad (Entrypoint/Model/Readiness/Evidence) ohne Default-Autorisierung |
 | [`docs/ops/runbooks/PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1.md`](../ops/runbooks/PAPER_SHADOW_OBSERVATION_OPERATOR_GO_AND_SESSION_PREREGISTRATION_CAPABILITY_V1.md) | Session-Preregistration + scoped Operator-GO / Authorization-Readiness (keine Session-Ausführung) |
@@ -182,7 +200,8 @@ Readiness ist nicht Authorization; Authorization ist nicht Execution.
 
 | Dokument | Rolle |
 |----------|-------|
-| [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Kanonische Vollautonomie-SSOT |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) | Canonical Master Runbook (aktuelle semantische Autorität) |
+| [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Historische Vollautonomie-Vorgängerreferenz (SUPERSEDED) |
 | [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Market Dashboard Landscape V2 (canonical read-only consumer planning SSOT; non-authorizing; Documentation Anchor = documentary index only; `OPERATOR_PRODUCT_GATE=true`; `INTRABAR_CAPABILITY=PASS`; `REGIME_BULL_BEAR_SWITCH_BINDING=COMPLETE`; `NEXT_CANONICAL_ACTION=STOP_IDLE`; `WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE`) |
 | [`docs/ops/runbooks/README.md`](../ops/runbooks/README.md) | Operative Runbooks |
 | [`docs/ops/RUNBOOK_INDEX.md`](../ops/RUNBOOK_INDEX.md) | Index |
@@ -193,7 +212,7 @@ Readiness ist nicht Authorization; Authorization ist nicht Execution.
 
 ## 10. Reihenfolge der Implementierung
 
-Maßgeblich ausschließlich in der kanonischen SSOT, Abschnitt **§34 Korrigierte kanonische Implementierungsreihenfolge** (`STEP 29A` … `STEP 29Z`).
+Maßgeblich ausschließlich im Canonical Master Runbook und dessen Capability-Reihenfolge. Historische STEP-29-Übersicht bleibt in der SUPERSEDED-Datei v4.4.12 nachlesbar.
 
 Kurzüberblick (keine lokale Semantik):
 
@@ -223,7 +242,7 @@ Aktueller Progress-Ist: [`PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md`](PEAK_TRAD
 
 ## 11. Hinweise für neue Entwickler
 
-1. **Immer hier starten** — dann die kanonische SSOT v4.4.12 lesen (`CURSOR_MUST_READ_CANONICAL_RUNBOOK_FIRST=true`).
+1. **Immer hier starten** — dann `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` vollständig lesen (`CURSOR_MUST_READ_CANONICAL_RUNBOOK_FIRST=true`).
 2. **Keine Vermutung über Owner** — read-only inventarisieren; Unbekanntheit = fail-closed, keine Mutation.
 3. **Reuse-before-new** — bestehende Owner erweitern; keine parallele SSOT, kein zweites Runbook, keine parallele Pipeline.
 4. **Docs-only vs. Runtime** — diese Map und reine Doku-PRs autorisieren nichts Live-/Order-/Scheduler-seitig.

@@ -14,13 +14,14 @@ Governance-Dokumentation für AI-Autonomie, Policy Enforcement und Compliance im
 
 ## 📋 Core Governance
 
-- **[Map of Truth (Navigations-Einstieg)](PEAK_TRADE_MAP_OF_TRUTH.md)** — Zentraler Einstieg; **keine** Semantik; verweist auf kanonische Owner; SSOT = Vollautonomie-Runbook v4.4.12
+- **[Map of Truth (Navigations-Einstieg)](PEAK_TRADE_MAP_OF_TRUTH.md)** — Zentraler Einstieg; **keine** Semantik; verweist auf kanonische Owner; aktuelle Autorität = Canonical Master Runbook
 - **[Feature State Map v1](feature_state_map_v1.md)** — Kanonische Feature-Klassifikation A–D und NON-OPERATIONAL-Regel (read-only map)
 - **[Drift Cleanup Plan v1](drift_cleanup_plan_v1.md)** — Safe documentation fixes und flagged structural/authority items
 - **[Runbook Execution Governance v1](PEAK_TRADE_RUNBOOK_EXECUTION_GOVERNANCE_V1.md)** — Verbindliche strategische SSOT-Steuerung, Package-Sequenzierung und Ranking-Ausnahmeregel (non-authorizing)
 - **[Autonomy Runbook Progress Registry v1](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md)** — Kanonische Progress-Registry: Runbook-Soll ↔ Repo-Ist (non-authorizing)
-- **[Vollautonomie-Runbook v4.4.12 (aktuelle SSOT)](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md)** — Kanonische Governance- und Implementierungs-SSOT (via Map of Truth; non-authorizing)
-- **[Vollautonomie-Runbook v4.4.10 (Vollfassung)](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md)** — Historische Adoption-/Crosslink-Oberfläche (Pfad für bestehende Contracts; normative Semantik: Map of Truth → v4.4.12; Cursor muss die kanonische Vollfassung zuerst lesen)
+- **[Canonical Master Runbook (aktuelle Autorität)](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md)** — Kanonische Implementierungs- und Operationsautorität (via Map of Truth; `RUNTIME_AUTHORIZATION_EFFECT=NONE`)
+- **[Vollautonomie-Runbook v4.4.12 (SUPERSEDED / historisch)](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md)** — Historische Vorgängerautorität; nicht mehr aktuell
+- **[Vollautonomie-Runbook v4.4.10 (Vollfassung)](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md)** — Historische Adoption-/Crosslink-Oberfläche (Pfad für bestehende Contracts; normative Semantik: Map of Truth → Canonical Master Runbook)
 - **[Implementation Contract (Kurzfassung)](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md)** — Navigations- und Ausführungsleitfaden ohne eigene SSOT-Authority (`THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true`)
 - **[Canonical Chain Wiring Repair Master Runbook v2.2](Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md)** — Kanonischer Governance-/Implementierungsvertrag für Chain-Wiring-Repair (Slice 1 complete; Slice 2 blocked; non-authorizing; `MISSION_COMPLETE=false`)
 - **[Strategy Signal Architecture Ratification Closeout v1](STRATEGY_SIGNAL_CANONICAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1.md)** — Negative Architecture Ratification (Selection D); `SLICE_2_IMPLEMENTATION_BLOCKED=true`; `NEXT_AUTOMATIC_IMPLEMENTATION_SCOPE=NONE`
@@ -42,7 +43,7 @@ Governance-Dokumentation für AI-Autonomie, Policy Enforcement und Compliance im
 - **[OKX Integration Read-Only Audit 2026-07-17](../audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md)** — P3 OKX public/static integration audit; private account state `NOT_VERIFIABLE` (readonly credentials ABSENT; no live private client); `LIVE_AUTHORIZED=false`
 - **[Monitoring Topology Read-Only Audit 2026-07-17](../audits/MONITORING_TOPOLOGY_READ_ONLY_AUDIT_2026-07-17.md)** — corrected-scope P3 topology: Grafana `REMOVED_AS_DESIGNED` (not audited); active = Prometheus metrics SSOT + in-app alert routing
 - **[Prioritätenplan Systemaudit 2026-07-17 (Closeout SSOT)](../audits/Peak_Trade_Prioritaetenplan_Systemaudit_2026-07-17.md)** — kanonischer Prioritätenplan nach PR `#5291`–`#5299` + read-only Audits; Restlücken-Matrix A–E; `CONFIRMED_DEFECT_COUNT=0`; machine SSOT `config/governance/system_audit_plan_closeout_ssot_v1.json`
-- **[Runbook v4.4.1 Multi-Future Target Model Clarification](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md)** — Governance-Clarification: Phase-1 Single-Future bleibt; Multi-Future nur Zielmodell nach separaten Gates (non-authorizing; historische Clarification — maßgeblich: [Map of Truth](PEAK_TRADE_MAP_OF_TRUTH.md) → v4.4.12)
+- **[Runbook v4.4.1 Multi-Future Target Model Clarification](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md)** — Governance-Clarification: Phase-1 Single-Future bleibt; Multi-Future nur Zielmodell nach separaten Gates (non-authorizing; historische Clarification — maßgeblich: [Map of Truth](PEAK_TRADE_MAP_OF_TRUTH.md) → Canonical Master Runbook)
 - **[AI Autonomy Go/No-Go Overview](AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)** — Governance-first guardrails für Cursor Agent (keine Live-Autonomie)
 - **[AI Autonomy Evidence Pack Template](templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md)** — Strukturiertes Template für Autonomie-Evidenz
 - **[Untracked Local Reports Policy](UNTRACKED_LOCAL_REPORTS_POLICY.md)** — Umgang mit lokalen unversionierten Analyse-/Audit-Reports

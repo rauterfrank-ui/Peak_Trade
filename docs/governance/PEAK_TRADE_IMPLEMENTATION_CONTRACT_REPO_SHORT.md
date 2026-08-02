@@ -3,16 +3,18 @@
 **Rolle:** Kurze repo-seitige Navigations- und Ausführungsanweisung.
 **Authority:** Keine zweite Trading-, Safety-, Risk-, Sizing-, Economic- oder Runtime-SSOT.
 **Einstieg:** `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` (defines no semantics).
-**Kanonischer Parent (normativ):** `Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md` via Map of Truth.
+**Kanonischer Parent (normativ):** `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` via Map of Truth.
+**Historische Vorgängerautorität (SUPERSEDED):** `Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`.
 **Historischer Crosslink-Parent:** `Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md` beziehungsweise dessen kanonische Repo-Kopie.
 
 ```text
 MAP_OF_TRUTH_PATH=docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_FILENAME=Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_VERSION=v4.4.12
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_PATH=/Users/frnkhrz/Desktop/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
-EXTERNAL_CANONICAL_RUNBOOK_SOURCE_SHA256=00f35015ad6e96d955d7c9913815dc5e54b36988d209cc41c85c98c06abe79d9
-REPO_CANONICAL_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_FILENAME=Peak_Trade_Master_Runbook_Canonical_Stateful_No_Order_Finish_V2_3_SEMANTIC_INTEGRATION_FULL_AUTONOMY_UPDATED_v2.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_VERSION=V2.3_SEMANTIC_INTEGRATION_FULL_AUTONOMY_TARGET_RELEASE
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_PATH=/Users/frnkhrz/Desktop/Peak_Trade_Master_Runbook_Canonical_Stateful_No_Order_Finish_V2_3_SEMANTIC_INTEGRATION_FULL_AUTONOMY_UPDATED_v2.md
+EXTERNAL_CANONICAL_RUNBOOK_SOURCE_SHA256=efd8e4a29eb5a670f4e4bb7949bbc95b06d6acb773892a8861a79cc1ed3de5d3
+REPO_CANONICAL_RUNBOOK_PATH=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+HISTORICAL_SUPERSEDED_RUNBOOK_PATH=docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
 NORMATIVE_REFERENCE_ONLY=false
 PROGRESS_METADATA_COPIED=false
 ```

@@ -1,7 +1,7 @@
 # Trend Following v2 — Canonical Wiring Map
 
 **Rolle:** Repo-abgeleitete technische Implementierungsmap für den Recovery-Pfad `TREND_FOLLOWING_V2_MANDATORY_BOUNDARY_STATE_FILE_BINDING_REWIRE`.  
-**Keine zweite Trading-SSOT.** Normative Parent-SSOT: [`PEAK_TRADE_MAP_OF_TRUTH.md`](../governance/PEAK_TRADE_MAP_OF_TRUTH.md) → Vollautonomie-Runbook v4.4.12.
+**Keine zweite Trading-SSOT.** Normative Parent-Autorität: [`PEAK_TRADE_MAP_OF_TRUTH.md`](../governance/PEAK_TRADE_MAP_OF_TRUTH.md) → [`PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md). Historisch: Vollautonomie-Runbook v4.4.12 (SUPERSEDED).
 
 Maschinenlesbare Map: [`trend_following_v2_canonical_wiring_v0.json`](trend_following_v2_canonical_wiring_v0.json)
 
