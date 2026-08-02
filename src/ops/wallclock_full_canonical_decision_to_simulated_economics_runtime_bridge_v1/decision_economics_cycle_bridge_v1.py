@@ -116,6 +116,17 @@ from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
     CALL_GRAPH_SCOPE_TRANSITION_STEP,
     DEFAULT_VENUE as DYNAMIC_SCOPE_DEFAULT_VENUE,
 )
+from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
+    CALL_GRAPH_EXIT_PRODUCER_STEP,
+    CALL_GRAPH_EXIT_STATE_COMMIT_STEP,
+)
+from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
+    HostExitPolicyBindingV1,
+    commit_host_exit_policy_state_v1,
+    ensure_host_exit_policy_binding_v1,
+    evaluate_host_exit_policy_producers_v1,
+    exit_policy_config_digest_v1,
+)
 from src.ops.full_decision_path_atomic_restart_closure_v1.constants_v1 import (
     CALL_GRAPH_ATOMIC_COMMIT_STEP,
     CALL_GRAPH_PENDING_EVIDENCE_STEP,
@@ -183,10 +194,8 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
     DoublePlayEntryExitPolicyV0,
     EntryExitDirectionState,
     ExistingPositionSide,
-    PolicySignalV0,
     PositionState,
     ReconciliationState,
-    SafetyMode,
     TradingGate,
 )
 from trading.master_v2.double_play_futures_input import FuturesMarketType
@@ -375,6 +384,10 @@ class BridgeSessionStateV1:
     )
     decision_path_atomic_state_root: Optional[str] = None
     last_decision_path_atomic_commit: Optional[dict[str, Any]] = None
+    # Capability 6.5 — exit-policy producer binding (no unbound false stubs).
+    exit_policy_binding: HostExitPolicyBindingV1 = field(default_factory=HostExitPolicyBindingV1)
+    exit_policy_state_root: Optional[str] = None
+    last_exit_policy_commit: Optional[dict[str, Any]] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -573,11 +586,13 @@ CALL_GRAPH_V1: tuple[str, ...] = (
     CALL_GRAPH_C2_STEP,
     CALL_GRAPH_C3_STEP,
     CALL_GRAPH_PREVIOUS_SCOPE_STEP,
+    CALL_GRAPH_EXIT_PRODUCER_STEP,
     "master_v2_double_play_integrated_offline_replay",
     CALL_GRAPH_SCOPE_TRANSITION_STEP,
     CALL_GRAPH_COMMIT_STEP,
     CALL_GRAPH_SCOPE_COMMIT_STEP,
     CALL_GRAPH_ATOMIC_COMMIT_STEP,
+    CALL_GRAPH_EXIT_STATE_COMMIT_STEP,
     "risk_position_sizing",
     "safety_kernel",
     "intended_side_quantity",
@@ -882,6 +897,8 @@ def run_bridge_cycle_v1(
     decision_path_atomic_state_root: Optional[Path] = None,
     accounting_state_root_override: Optional[Path] = None,
     persist_via_atomic_coordinator: bool = False,
+    exit_policy_state_root: Optional[Path] = None,
+    persist_exit_policy: bool = True,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
@@ -899,6 +916,8 @@ def run_bridge_cycle_v1(
         state.decision_path_atomic_state_root = str(decision_path_atomic_state_root)
     if accounting_state_root_override is not None:
         state.accounting_state_root = str(accounting_state_root_override)
+    if exit_policy_state_root is not None:
+        state.exit_policy_state_root = str(exit_policy_state_root)
     use_atomic = bool(persist_via_atomic_coordinator and state.decision_path_atomic_state_root)
 
     # Capability 2.4: persisted selection binds the trading instrument before recon/alpha.
@@ -1004,6 +1023,21 @@ def run_bridge_cycle_v1(
         raise RuntimeError(
             "DYNAMIC_SCOPE_ALPHA_BLOCKED:" + state.dynamic_scope_binding.alpha_block_reason
         )
+    # Capability 6.5: reload pending exit-policy state before producer evaluation.
+    ensure_host_exit_policy_binding_v1(
+        state.exit_policy_binding,
+        instrument_id=state.instrument_id,
+        repository_sha=repository_sha,
+        config_digest=exit_policy_config_digest_v1(
+            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+            profit_protection_distance=float(decision_cfg.up_distance),
+        ),
+        state_root=(Path(state.exit_policy_state_root) if state.exit_policy_state_root else None),
+    )
+    if state.exit_policy_binding.alpha_blocked:
+        raise RuntimeError(
+            "EXIT_POLICY_ALPHA_BLOCKED:" + state.exit_policy_binding.alpha_block_reason
+        )
     # Restart restore of host cursors required for scope continuity (no silent re-seed).
     if (
         state.dynamic_scope_binding.prior_commit_seen
@@ -1063,6 +1097,63 @@ def run_bridge_cycle_v1(
         sort_keys=True,
     )
     input_digest = hashlib.sha256(input_material.encode("utf-8")).hexdigest()
+
+    # Capability 6.5 — evaluate canonical exit producers (no unbound PolicySignalV0 stubs).
+    has_open_position = not bool(state.venue_flat)
+    entry_price = None
+    if state.accounting_session is not None and getattr(state.accounting_session, "position", None):
+        pos = state.accounting_session.position
+        if pos is not None and getattr(pos, "entry_price", None) is not None:
+            try:
+                entry_price = float(pos.entry_price)
+            except Exception:  # noqa: BLE001
+                entry_price = None
+    if entry_price is None and state.exit_policy_binding.entry_price is not None:
+        entry_price = float(state.exit_policy_binding.entry_price)
+    obs_digest = ""
+    if (
+        observation_acceptance_result is not None
+        and observation_acceptance_result.observation_identity is not None
+    ):
+        ident = observation_acceptance_result.observation_identity
+        obs_digest = hashlib.sha256(
+            f"{ident.venue}:{ident.canonical_instrument_id}:{ident.venue_event_time}:"
+            f"{ident.mark_price}".encode()
+        ).hexdigest()
+    metrics0 = state.portfolio.economic_metrics()
+    _exit_bundle, exit_signals, exit_safety_mode, exit_trading_gate = (
+        evaluate_host_exit_policy_producers_v1(
+            state.exit_policy_binding,
+            mark_price=float(mark),
+            event_ts_unix=float(event_ts_unix),
+            observation_digest=obs_digest,
+            has_open_position=has_open_position,
+            existing_position_side=str(state.existing_position_side.value),
+            entry_price=entry_price,
+            entry_event_time=(
+                float(state.exit_policy_binding.entry_event_time)
+                if state.exit_policy_binding.entry_event_time is not None
+                else float(event_ts_unix)
+                if has_open_position
+                else None
+            ),
+            entry_trading_epoch=(
+                int(state.exit_policy_binding.entry_trading_epoch)
+                if state.exit_policy_binding.entry_trading_epoch is not None
+                else int(state.trading_epoch)
+                if has_open_position
+                else None
+            ),
+            confirmation_binding=state.confirmation_binding,
+            data_integrity_trusted=True,
+            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+            profit_protection_distance=float(decision_cfg.up_distance),
+            warmup_complete=bool(features.warmup_complete),
+            regime_ok=bool(features.ok),
+            price_basis_ok=bool(mark > 0),
+            max_drawdown=float(metrics0.drawdown),
+        )
+    )
 
     market_context = with_computed_input_digest(
         CanonicalMarketContextV1(
@@ -1143,17 +1234,17 @@ def run_bridge_cycle_v1(
         direction_state=state.direction_state,
         position_state=state.position_state,
         reconciliation_state=state.reconciliation_state,
-        trading_gate=TradingGate.ENTRY_ALLOWED,
-        safety_mode=SafetyMode.NORMAL,
+        trading_gate=exit_trading_gate,
+        safety_mode=exit_safety_mode,
         existing_position_side=state.existing_position_side,
         venue_flat=state.venue_flat,
         cooldown_pass=True,
-        scope_adverse_exit_signal=PolicySignalV0(triggered=False),
-        profit_protection_signal=PolicySignalV0(triggered=False),
-        time_exit_signal=PolicySignalV0(triggered=False),
-        strategy_invalidation_signal=PolicySignalV0(triggered=False),
-        hard_risk_reduction_signal=PolicySignalV0(triggered=False),
-        safety_exit_signal=PolicySignalV0(triggered=False),
+        scope_adverse_exit_signal=exit_signals["scope_adverse_exit_signal"],
+        profit_protection_signal=exit_signals["profit_protection_signal"],
+        time_exit_signal=exit_signals["time_exit_signal"],
+        strategy_invalidation_signal=exit_signals["strategy_invalidation_signal"],
+        hard_risk_reduction_signal=exit_signals["hard_risk_reduction_signal"],
+        safety_exit_signal=exit_signals["safety_exit_signal"],
         policies=_default_policies(),
         component_versions=_component_versions(),
         policy_versions=_policy_versions(),
@@ -1372,14 +1463,42 @@ def run_bridge_cycle_v1(
             state.dynamic_scope_binding.commit_sequence = int(scope_meta["commit_sequence"])
             state.dynamic_scope_binding.prior_commit_seen = True
 
+    # Capability 6.5 — commit exit-policy state (same host cycle as Cap 6.4 atomic boundary).
+    if fill_dict is not None and not state.venue_flat:
+        if state.exit_policy_binding.entry_event_time is None:
+            state.exit_policy_binding.entry_event_time = float(event_ts_unix)
+            state.exit_policy_binding.entry_trading_epoch = int(state.trading_epoch)
+        if state.accounting_session is not None and getattr(
+            state.accounting_session, "position", None
+        ):
+            pos = state.accounting_session.position
+            if pos is not None and getattr(pos, "entry_price", None) is not None:
+                try:
+                    state.exit_policy_binding.entry_price = float(pos.entry_price)
+                except Exception:  # noqa: BLE001
+                    pass
+        state.exit_policy_binding.has_open_position = True
+        state.exit_policy_binding.existing_position_side = str(state.existing_position_side.value)
+    if state.venue_flat:
+        state.exit_policy_binding.has_open_position = False
+    state.last_exit_policy_commit = dict(
+        commit_host_exit_policy_state_v1(
+            state.exit_policy_binding,
+            persist=bool(persist_exit_policy and state.exit_policy_state_root),
+            writer_session_id=session_id,
+        )
+    )
+
     sizing_result = str(replay.evidence.risk_sizing_effect or "NONE")
     if replay.intermediate and replay.intermediate.capital_risk_sizing_decision is not None:
         sizing_result = str(replay.intermediate.capital_risk_sizing_decision.outcome.value)
 
     safety_result = "PASS"
+    if _exit_bundle.safety_exit.triggered:
+        safety_result = "BOUND_SAFETY"
     if any("safety" in str(x).lower() for x in replay.evidence.reason_codes):
         safety_result = "BOUND_SAFETY"
-    if intended.safety_blocked:
+    if intended.safety_blocked or exit_trading_gate is TradingGate.BLOCKED:
         safety_result = "BLOCKED_HOLD"
 
     blockers: list[str] = []
