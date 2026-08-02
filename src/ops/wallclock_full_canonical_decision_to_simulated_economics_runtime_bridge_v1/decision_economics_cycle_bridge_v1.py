@@ -99,6 +99,21 @@ from src.ops.stateful_confirmation_and_c1_productive_binding_v1.host_binding_v1 
     ensure_host_confirmation_binding_v1,
     evaluate_host_observation_acceptance_v1,
 )
+from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
+    CALL_GRAPH_PREVIOUS_SCOPE_STEP,
+    CALL_GRAPH_SCOPE_COMMIT_STEP,
+    CALL_GRAPH_SCOPE_TRANSITION_STEP,
+    DEFAULT_VENUE as DYNAMIC_SCOPE_DEFAULT_VENUE,
+    FROZEN_ADVERSE_EXIT_DISTANCE,
+    FROZEN_REVERSAL_DISTANCE,
+    FROZEN_UP_DISTANCE,
+)
+from src.ops.dynamic_scope_persistence_binding_v1.host_binding_v1 import (
+    HostDynamicScopeBindingV1,
+    commit_host_dynamic_scope_after_replay_v1,
+    dynamic_scope_config_digest_v1,
+    ensure_host_dynamic_scope_binding_v1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.intended_action_mapper_v1 import (
     IntendedAnalyticalActionV1,
     map_replay_result_to_intended_analytical_action_v1,
@@ -329,6 +344,12 @@ class BridgeSessionStateV1:
     )
     confirmation_state_root: Optional[str] = None
     last_confirmation_commit: Optional[dict[str, Any]] = None
+    # Capability 6.2 — Dynamic Scope persistence binding (caller-owned durable RuntimeScopeState).
+    dynamic_scope_binding: HostDynamicScopeBindingV1 = field(
+        default_factory=HostDynamicScopeBindingV1
+    )
+    dynamic_scope_state_root: Optional[str] = None
+    last_dynamic_scope_commit: Optional[dict[str, Any]] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -525,8 +546,11 @@ CALL_GRAPH_V1: tuple[str, ...] = (
     "regime_pipeline",
     CALL_GRAPH_C2_STEP,
     CALL_GRAPH_C3_STEP,
+    CALL_GRAPH_PREVIOUS_SCOPE_STEP,
     "master_v2_double_play_integrated_offline_replay",
+    CALL_GRAPH_SCOPE_TRANSITION_STEP,
     CALL_GRAPH_COMMIT_STEP,
+    CALL_GRAPH_SCOPE_COMMIT_STEP,
     "risk_position_sizing",
     "safety_kernel",
     "intended_side_quantity",
@@ -823,6 +847,8 @@ def run_bridge_cycle_v1(
     force_observation_event_time: float | None = None,
     confirmation_state_root: Optional[Path] = None,
     persist_confirmation: bool = True,
+    dynamic_scope_state_root: Optional[Path] = None,
+    persist_dynamic_scope: bool = True,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
@@ -832,6 +858,8 @@ def run_bridge_cycle_v1(
         state.reconciliation_state_root = str(reconciliation_state_root)
     if confirmation_state_root is not None:
         state.confirmation_state_root = str(confirmation_state_root)
+    if dynamic_scope_state_root is not None:
+        state.dynamic_scope_state_root = str(dynamic_scope_state_root)
 
     # Capability 2.4: persisted selection binds the trading instrument before recon/alpha.
     selection_gate = ensure_single_selected_future_runtime_binding_v1(
@@ -879,6 +907,41 @@ def run_bridge_cycle_v1(
         config_digest=confirmation_config_digest_v1(),
         state_root=(Path(state.confirmation_state_root) if state.confirmation_state_root else None),
     )
+    # Capability 6.2: reload prior RuntimeScopeState / CanonicalScopeSnapshot before decision.
+    ensure_host_dynamic_scope_binding_v1(
+        state.dynamic_scope_binding,
+        instrument_id=state.instrument_id,
+        venue=DYNAMIC_SCOPE_DEFAULT_VENUE,
+        repository_sha=repository_sha,
+        config_digest=dynamic_scope_config_digest_v1(),
+        state_root=(
+            Path(state.dynamic_scope_state_root) if state.dynamic_scope_state_root else None
+        ),
+    )
+    if state.dynamic_scope_binding.alpha_blocked:
+        raise RuntimeError(
+            "DYNAMIC_SCOPE_ALPHA_BLOCKED:" + state.dynamic_scope_binding.alpha_block_reason
+        )
+    # Restart restore of host cursors required for scope continuity (no silent re-seed).
+    if (
+        state.dynamic_scope_binding.prior_commit_seen
+        and state.dynamic_scope_binding.runtime_scope_state is not None
+        and state.cycle_index == 0
+    ):
+        state.cycle_index = int(state.dynamic_scope_binding.runtime_scope_state.now_tick)
+        state.trading_epoch = int(state.dynamic_scope_binding.host_trading_epoch)
+        try:
+            state.side_state = SideState(state.dynamic_scope_binding.side_state)
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            state.scope_direction_state = ScopeDirectionState(
+                state.dynamic_scope_binding.scope_direction_state
+            )
+        except Exception:  # noqa: BLE001
+            pass
+        if state.dynamic_scope_binding.price_path_tail and not state.mid_prices:
+            state.mid_prices = [float(x) for x in state.dynamic_scope_binding.price_path_tail]
     # Only market samples (incl. duplicate/out-of-order classifications) append price path.
     if (
         kind is ObservationCycleKindV1.MARKET_SAMPLE
@@ -962,7 +1025,8 @@ def run_bridge_cycle_v1(
             finalized_market_context=True,
         ),
         scope_reinitialization_guard=ScopeReinitializationGuardV1(),
-        existing_scope=None,
+        # Capability 6.2 — previous canonical scope + RuntimeScopeState (no silent None reset).
+        existing_scope=state.dynamic_scope_binding.existing_scope,
         scope_direction_state=state.scope_direction_state,
         scope_confirmation_state=ScopeConfirmationStateV1(
             candidate_kind=None,
@@ -974,9 +1038,9 @@ def run_bridge_cycle_v1(
             remaining_epochs=0,
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
-        up_distance=200.0,
-        adverse_exit_distance=80.0,
-        reversal_distance=120.0,
+        up_distance=float(FROZEN_UP_DISTANCE),
+        adverse_exit_distance=float(FROZEN_ADVERSE_EXIT_DISTANCE),
+        reversal_distance=float(FROZEN_REVERSAL_DISTANCE),
         confirmation_epochs=2,
         current_price=mark,
         price_path=price_path,
@@ -1023,6 +1087,14 @@ def run_bridge_cycle_v1(
         confirmation_progress_session_id=state.confirmation_binding.confirmation_session_id,
         confirmation_progress_venue=state.confirmation_binding.venue,
         confirmation_progress_instrument=state.confirmation_binding.instrument_key(),
+        # Capability 6.2 — bind previous RuntimeScopeState into the next transition.
+        runtime_scope_state=state.dynamic_scope_binding.runtime_scope_state,
+        runtime_scope_bound_instrument_id=(
+            (state.dynamic_scope_binding.runtime_scope_bound_instrument_id or state.instrument_id)
+            if state.dynamic_scope_binding.runtime_scope_state is not None
+            else None
+        ),
+        explicit_runtime_scope_reset=False,
     )
 
     replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
@@ -1080,6 +1152,47 @@ def run_bridge_cycle_v1(
             confirmation_side_carrier_after=carrier_after,
             persist=bool(persist_confirmation and state.confirmation_state_root),
             writer_session_id=session_id,
+        )
+    )
+
+    # Capability 6.2 — commit RuntimeScopeState + CanonicalScopeSnapshot; no silent reinit.
+    current_scope_after = None
+    runtime_scope_after = None
+    runtime_scope_reinitialized = False
+    if replay.intermediate is not None:
+        current_scope_after = replay.intermediate.current_scope
+        runtime_scope_after = replay.intermediate.runtime_scope_state_after
+        runtime_scope_reinitialized = bool(replay.intermediate.runtime_scope_reinitialized)
+    obs_state = state.confirmation_binding.observation_acceptance_state
+    market_epoch = None if obs_state is None else int(obs_state.market_observation_epoch.value)
+    last_event_time = None
+    if (
+        observation_acceptance_result is not None
+        and observation_acceptance_result.observation_identity is not None
+    ):
+        last_event_time = float(observation_acceptance_result.observation_identity.venue_event_time)
+    state.last_dynamic_scope_commit = dict(
+        commit_host_dynamic_scope_after_replay_v1(
+            state.dynamic_scope_binding,
+            observation_acceptance_result=observation_acceptance_result,
+            current_scope=current_scope_after,
+            runtime_scope_state_after=runtime_scope_after,
+            confirmation_session_id=state.confirmation_binding.confirmation_session_id,
+            market_observation_epoch=market_epoch,
+            last_market_event_time=last_event_time,
+            position_context={
+                "position_state": str(state.position_state),
+                "existing_position_side": str(state.existing_position_side),
+                "venue_flat": bool(state.venue_flat),
+                "has_open_position": not bool(state.venue_flat),
+            },
+            scope_direction_state=str(state.scope_direction_state.value),
+            side_state=str(state.side_state.value),
+            host_trading_epoch=int(state.trading_epoch),
+            price_path_tail=tuple(float(x) for x in state.mid_prices[-PRICE_PATH_MAX_LEN:]),
+            persist=bool(persist_dynamic_scope and state.dynamic_scope_state_root),
+            writer_session_id=session_id,
+            runtime_scope_reinitialized=runtime_scope_reinitialized,
         )
     )
 
@@ -1149,7 +1262,10 @@ def run_bridge_cycle_v1(
             f"ACCOUNTING_SINGLE_WRITER={state.accounting_single_writer_identity}",
             f"PORTFOLIO_SINGLE_WRITER={state.portfolio_single_writer_identity}",
             f"CONFIRMATION_SESSION_ID={state.confirmation_binding.confirmation_session_id}",
+            f"DYNAMIC_SCOPE_SESSION_ID={state.dynamic_scope_binding.scope_session_id}",
+            f"DYNAMIC_SCOPE_ADVANCED={state.dynamic_scope_binding.last_scope_advanced}",
             f"FEATURE_WINDOW_MIN={FEATURE_WINDOW_MIN}",
+            "DYNAMIC_SCOPE_PRODUCTIVELY_BOUND",
         ),
     )
     if cycle.execution_eligible:

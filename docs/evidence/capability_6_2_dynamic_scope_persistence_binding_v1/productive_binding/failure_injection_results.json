@@ -1,0 +1,36 @@
+{
+  "CHECKPOINT_MISSING_AFTER_PRIOR_COMMIT": {
+    "ok": true
+  },
+  "CHECKPOINT_MISSING_BEFORE_FIRST_STATE": {
+    "ok": true
+  },
+  "CONFIG_DIGEST_MISMATCH": {
+    "ok": true
+  },
+  "CONFLICTING_WRITER": {
+    "ok": true
+  },
+  "CORRUPTED_CHECKPOINT": {
+    "ok": true
+  },
+  "CRASH_AFTER_COMMIT_BEFORE_EVIDENCE": {
+    "commit_preserved": true,
+    "ok": true
+  },
+  "CRASH_AFTER_STATE_BEFORE_MARKER": {
+    "ok": true
+  },
+  "CRASH_BEFORE_STATE_WRITE": {
+    "ok": true
+  },
+  "CRASH_DURING_STATE_WRITE": {
+    "ok": true
+  },
+  "DUPLICATE_REPLAY_AFTER_RESTART": {
+    "ok": true
+  },
+  "REPOSITORY_SHA_MISMATCH": {
+    "ok": true
+  }
+}

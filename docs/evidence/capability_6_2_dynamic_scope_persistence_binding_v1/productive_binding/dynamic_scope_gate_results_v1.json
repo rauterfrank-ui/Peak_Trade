@@ -1,0 +1,131 @@
+{
+  "capability_id": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+  "failure_injection_results": {
+    "CHECKPOINT_MISSING_AFTER_PRIOR_COMMIT": {
+      "ok": true
+    },
+    "CHECKPOINT_MISSING_BEFORE_FIRST_STATE": {
+      "ok": true
+    },
+    "CONFIG_DIGEST_MISMATCH": {
+      "ok": true
+    },
+    "CONFLICTING_WRITER": {
+      "ok": true
+    },
+    "CORRUPTED_CHECKPOINT": {
+      "ok": true
+    },
+    "CRASH_AFTER_COMMIT_BEFORE_EVIDENCE": {
+      "commit_preserved": true,
+      "ok": true
+    },
+    "CRASH_AFTER_STATE_BEFORE_MARKER": {
+      "ok": true
+    },
+    "CRASH_BEFORE_STATE_WRITE": {
+      "ok": true
+    },
+    "CRASH_DURING_STATE_WRITE": {
+      "ok": true
+    },
+    "DUPLICATE_REPLAY_AFTER_RESTART": {
+      "ok": true
+    },
+    "REPOSITORY_SHA_MISMATCH": {
+      "ok": true
+    }
+  },
+  "gate_flags": {
+    "AUTHORIZATION_NOT_CONSUMED": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CONFIRMATION_SCOPE_HANDOFF_PROVEN": true,
+    "CORE_LOGIC_CHANGE": false,
+    "CORE_LOGIC_UNCHANGED": true,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DETERMINISTIC_REPLAY_PROVEN": true,
+    "DUPLICATE_OBSERVATION_SCOPE_ADVANCE": false,
+    "DUPLICATE_OBSERVATION_SCOPE_ADVANCE_FALSE": true,
+    "DYNAMIC_SCOPE_PRODUCTIVELY_BOUND": true,
+    "DYNAMIC_SCOPE_RESTART_PROVEN": true,
+    "DYNAMIC_SCOPE_STATE_PERSISTED": true,
+    "EVENT_TIME_CONTINUITY_PROVEN": true,
+    "EVIDENCE_VERIFIED": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "FAILURE_INJECTION_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "INSTRUMENT_ISOLATION": true,
+    "NO_LIVE_ORDER_PATH": true,
+    "NO_NETWORK_ACCESS": true,
+    "NO_SAMPLE_SCOPE_ADVANCE": false,
+    "NO_SAMPLE_SCOPE_ADVANCE_FALSE": true,
+    "NO_TESTNET_ORDER_PATH": true,
+    "RISK_PARITY_PROVEN": true,
+    "RUNTIME_ACTIVATED": false,
+    "RUNTIME_NOT_ACTIVATED": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "SCOPE_REINITIALIZATION_ONLY_WHEN_SEMANTICALLY_VALID": true,
+    "SILENT_DYNAMIC_SCOPE_REINITIALIZATION": false,
+    "SILENT_DYNAMIC_SCOPE_REINITIALIZATION_FALSE": true,
+    "SINGLE_WRITER_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "capability_id": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+    "instrument_id": "ETH-USD_UM_XPERP-310404",
+    "venue": "OKX"
+  },
+  "ok": true,
+  "parity_results": {
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CORE_LOGIC_CHANGE": false,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "RISK_PARITY_PROVEN": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "decision_precedence_nodes": [
+      "master_v2_double_play_integrated_offline_replay",
+      "risk_position_sizing",
+      "safety_kernel",
+      "intended_side_quantity"
+    ],
+    "frozen_thresholds": {
+      "adverse_exit_distance": 80.0,
+      "candidate_signal_threshold": 0.005,
+      "confirmation_epochs": 2,
+      "confirmation_signal_threshold": 0.01,
+      "entry_exit_policy_version": "double_play_entry_exit_policy_v0",
+      "reversal_distance": 120.0,
+      "up_distance": 200.0
+    },
+    "inserted_wiring_edges_only": [
+      "canonical_dynamic_scope_state_commit",
+      "dynamic_scope_transition",
+      "previous_canonical_runtime_scope_state"
+    ]
+  },
+  "restart_results": {
+    "DYNAMIC_SCOPE_RESTART_PROVEN": true,
+    "NO_DOUBLE_SCOPE_TRANSITION_AFTER_RESTART": true,
+    "checkpoint_digest": "e6fca17ff5d77216a6b97693d37b5dd9dbd9ffb64a7d0e3f9b235c5d842f0a97",
+    "final_digest_restart": "a2841d5b42107ce682288542d4c711a86404c5f1c73c98a8d07c38bf3685a340",
+    "final_digest_uninterrupted": "a2841d5b42107ce682288542d4c711a86404c5f1c73c98a8d07c38bf3685a340",
+    "loaded_commit_sequence": 2,
+    "loaded_runtime_scope": {
+      "anchor_price": 100.5,
+      "chop_latched": false,
+      "current_downscope_boundary": 50.5,
+      "current_hysteresis_band": 50.0,
+      "current_upscope_boundary": 150.5,
+      "last_completed_side_switch_tick": -1000000,
+      "last_switch_tick": -1000000,
+      "now_tick": 7,
+      "scope_stability_ticks": 0,
+      "switches_in_window": 0,
+      "window_start_tick": 6
+    },
+    "ok": true
+  }
+}
