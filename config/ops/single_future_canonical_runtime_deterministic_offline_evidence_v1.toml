@@ -1,0 +1,54 @@
+# CAPABILITY_5_1_SINGLE_FUTURE_CANONICAL_RUNTIME_DETERMINISTIC_OFFLINE_EVIDENCE_V1
+# Deterministic offline replay evidence config. Does not authorize live/testnet/paper
+# orders, runtime activation, authorization consumption, or network trading sessions.
+
+capability_id = "CAPABILITY_5_1_SINGLE_FUTURE_CANONICAL_RUNTIME_DETERMINISTIC_OFFLINE_EVIDENCE_V1"
+owner = "ops.single_future_canonical_runtime_deterministic_offline_evidence_v1"
+schema_version = "single_future_canonical_runtime_deterministic_offline_evidence.v1"
+producer_version = "single_future_canonical_runtime_deterministic_offline_evidence.v1"
+fixture_version = "single_future_canonical_runtime_deterministic_offline_market_data_fixture.v1"
+fixture_relpath = "config/ops/fixtures/single_future_canonical_runtime_deterministic_offline_market_data_fixture_v1.json"
+
+canonical_runtime_entrypoint_status = "READY_FOR_ACTIVATION"
+runtime_activated = false
+activated = false
+activated_no_live_orders = false
+live = false
+live_trading = false
+testnet_trading = false
+network_session_started = false
+network_access_occurred = false
+offline_replay_only = true
+
+selected_future_count = 1
+max_positions_effective = 1
+multi_future_runtime_authorized = false
+dashboard_authority_effect = false
+dashboard_role = "READ_ONLY_CONSUMER"
+dashboard_consumer_only = true
+allowlist_selection_authority = false
+direct_instrument_override_allowed = false
+core_logic_change = false
+activation_changed = false
+live_path_changed = false
+runtime_activation_allowed = false
+live_authorized = false
+orders_authorized = false
+paper_execution_authorized = false
+testnet_authorized = false
+network_trading_session_allowed = false
+authorization_consumption_allowed = false
+authorization_consumed = false
+volatility_numeric_max_age_enforcing = false
+vol_max_age_enforcement_disabled = true
+vol_max_age_enforcement_enabled = false
+economic_validity_offline_gate_state = false
+economic_validity_offline_gate_state_explicit = true
+
+productive_runtime_host = "scripts/ops/run_single_future_canonical_runtime_pre_activation_closure_v1.py"
+productive_runtime_entrypoint = "scripts/ops/run_single_future_canonical_runtime_deterministic_offline_evidence_v1.py"
+second_canonical_runtime_host_created = false
+parallel_runtime_authority_created = false
+parallel_selection_authority_created = false
+parallel_accounting_authority_created = false
+parallel_evidence_authority_created = false

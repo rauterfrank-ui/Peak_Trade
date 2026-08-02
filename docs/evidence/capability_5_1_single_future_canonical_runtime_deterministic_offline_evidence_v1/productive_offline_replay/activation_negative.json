@@ -1,0 +1,9 @@
+{
+  "ACTIVATED_FORBIDDEN": true,
+  "CANONICAL_RUNTIME_ENTRYPOINT_STATUS": "READY_FOR_ACTIVATION",
+  "RUNTIME_ACTIVATED": false,
+  "attempted_activation": false,
+  "offline_entrypoint_allowed_when_runtime_activated_false": true,
+  "ok": true,
+  "status_unchanged": true
+}

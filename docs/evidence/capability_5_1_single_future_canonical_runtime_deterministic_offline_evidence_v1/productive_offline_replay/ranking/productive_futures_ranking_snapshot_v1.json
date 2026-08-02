@@ -1,0 +1,129 @@
+{
+  "alpha_allowed": false,
+  "authority": {
+    "ALPHA_ALLOWED": false,
+    "ALPHA_AUTHORITY_ADDED": false,
+    "AUTHORITY_OWNER": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+    "DASHBOARD_AUTHORITY": false,
+    "EXECUTION_AUTHORITY_ADDED": false,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+    "OWNER": "ops.productive_futures_ranking_producer_v1",
+    "PRODUCER_VERSION": "productive_futures_ranking_producer.v1",
+    "RANKING_AUTHORITY_OWNER_SINGLE": true,
+    "RANKING_CANDIDATE_CONTEXT_AUTHORITY": true,
+    "RANKING_POLICY_ID": "productive_futures_universe_structural_ranking_v1",
+    "RANKING_POLICY_VERSION": "v1",
+    "SCHEMA_VERSION": "productive_futures_ranking_snapshot.v1",
+    "SELECTION_AUTHORITY_ADDED": false,
+    "TOP20_IS_CONTEXT_ONLY": true,
+    "TOP_N_ACTIVE_SET_AUTHORITY": false,
+    "VENUE": "okx_eea"
+  },
+  "call_graph": [
+    "productive_ranking_entry_point",
+    "load_governed_universe_snapshot",
+    "validate_universe_bindings",
+    "stale_and_integrity_checks",
+    "structural_eligibility_classification",
+    "deterministic_score_and_tie_break",
+    "top20_candidate_context",
+    "atomic_persistence",
+    "snapshot_verification",
+    "restart_reload_proof",
+    "evidence"
+  ],
+  "candidate_count_total": 3,
+  "capability_id": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+  "config_digest": "0c254236bfd600fd507d99d8bb82d29b3b59268a39fa146da96824a3aff6ab47",
+  "dashboard_input_used": false,
+  "eligible_candidate_count": 3,
+  "event_time": "2023-11-14T22:13:20Z",
+  "excluded_candidate_count": 0,
+  "excluded_candidates": [],
+  "failure_codes": [],
+  "integrity_digest": "8cd99710a233b3cfb46e25f9aa150a01e78f2ced1ef627a1c9fc71cf6a169a0f",
+  "multi_future_authority_created": false,
+  "produced_at_wall_time": "2023-11-14T22:15:00Z",
+  "producer_version": "productive_futures_ranking_producer.v1",
+  "ranked_candidates": [
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 1,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
+        "total_score": "6.000000",
+        "venue_native_id": "ADA-USDT-SWAP"
+      },
+      "total_score": 6.0,
+      "venue_native_id": "ADA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 2,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+        "total_score": "6.000000",
+        "venue_native_id": "ETH-USDT-SWAP"
+      },
+      "total_score": 6.0,
+      "venue_native_id": "ETH-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:SOL:USDT:USDT:sol-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 3,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "canonical_instrument_id": "okx_eea:linear_perpetual:SOL:USDT:USDT:sol-usdt-swap",
+        "total_score": "6.000000",
+        "venue_native_id": "SOL-USDT-SWAP"
+      },
+      "total_score": 6.0,
+      "venue_native_id": "SOL-USDT-SWAP"
+    }
+  ],
+  "ranking_policy_id": "productive_futures_universe_structural_ranking_v1",
+  "ranking_policy_provenance": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1 instrument fields + CAPABILITY_2_2 owner requirements (data-quality eligibility, deterministic tie-break, Top-20 candidate context). No trading-alpha heuristic. No arbitrary market-signal weights. Equal structural gate components only.",
+  "ranking_policy_version": "v1",
+  "ranking_snapshot_id": "pfr_63f3f738c52d073802cb4a22",
+  "repository_sha": "e0f6836e5c3c0a21514f920018af3b995ee70a0c",
+  "schema_version": "productive_futures_ranking_snapshot.v1",
+  "selection_authority_created": false,
+  "snapshot_state": "VALID",
+  "top20_candidate_context_limit": 20,
+  "universe_payload_digest": "130ac30bccb7da2b79717662b8d2e5997729a26b1249adb328e194f6a5d6082d",
+  "universe_snapshot_id": "gfu_73a2174ac0b5bf29",
+  "universe_source_digest": "3667e4eede35a0a4ed781f61cfbf6eb2a7fcc466cc4910f3ec159416f6b6808d"
+}
