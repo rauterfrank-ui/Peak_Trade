@@ -1,0 +1,34 @@
+{
+  "AUTHORIZATION_CONSUMED": false,
+  "AUTHORIZATION_ISSUED": false,
+  "AUTHORIZATION_PATH_IDENTIFIED": true,
+  "CONFIRM_TOKEN_CANONICAL_PATH_IDENTIFIED": true,
+  "CONFIRM_TOKEN_ENV": "PEAK_TRADE_PSO_WALLCLOCK_CONFIRM_TOKEN",
+  "CONFIRM_TOKEN_PERSISTED": false,
+  "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": false,
+  "CONFIRM_TOKEN_SHELL_HISTORY": false,
+  "MANUAL_OWNER_TOKEN_CREATION_REQUIRED": false,
+  "bindings_required": [
+    "repository_sha",
+    "config_digest",
+    "session_id",
+    "scope_digest",
+    "confirm_token_binding_sha256",
+    "single_use_consumption",
+    "revocation_ledger"
+  ],
+  "module_paths": {
+    "authorization_consumption_runtime_v1": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/authorization_consumption_runtime_v1.py",
+    "confirm_token_v1": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/src/ops/paper_shadow_observation_operator_go_session_preregistration_v1/confirm_token_v1.py",
+    "preregistration_contract_v1": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/src/ops/paper_shadow_observation_operator_go_session_preregistration_v1/preregistration_contract_v1.py",
+    "public_md_shadow_authorization_consumption_v1": "/Users/frnkhrz/Peak_Trade_assessment_93b45a7/src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/authorization_consumption_v1.py"
+  },
+  "note": "Preflight identifies canonical paths only; issuance and consumption require a separate Owner-GO.",
+  "ok": true,
+  "owners": {
+    "confirm_token": "ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1",
+    "preregistration": "ops.paper_shadow_observation_operator_go_session_preregistration_v1",
+    "public_md_shadow_authorization_consumption": "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1.authorization_consumption_v1",
+    "wallclock_authorization_consumption": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.authorization_consumption_runtime_v1"
+  }
+}

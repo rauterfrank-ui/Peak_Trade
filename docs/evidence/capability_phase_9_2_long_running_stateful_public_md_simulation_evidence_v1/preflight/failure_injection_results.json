@@ -1,0 +1,30 @@
+{
+  "SmokeContractError": "SmokeContractError",
+  "cases": [
+    {
+      "case": "ZERO_INTERVAL_BURST",
+      "ok": true
+    },
+    {
+      "case": "PRIVATE_ENDPOINT",
+      "ok": true
+    },
+    {
+      "case": "AUTH_HEADER",
+      "ok": true
+    },
+    {
+      "case": "NON_EEA_HOST",
+      "ok": true
+    },
+    {
+      "case": "NETWORK_PREAUTH_IN_CONTRACT",
+      "ok": true
+    },
+    {
+      "case": "UNBOUNDED_RECONNECT",
+      "ok": true
+    }
+  ],
+  "ok": true
+}

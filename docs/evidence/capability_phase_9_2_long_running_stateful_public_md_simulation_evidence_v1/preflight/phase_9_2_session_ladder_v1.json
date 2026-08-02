@@ -1,0 +1,15 @@
+{
+  "SESSION_LADDER_DEFINED": true,
+  "current_allowed_step": "SMOKE_SESSION",
+  "ladder": [
+    "SMOKE_SESSION",
+    "ONE_HOUR_GOVERNED_SESSION",
+    "RESTART_RECOVERY_SESSION",
+    "RATE_LIMIT_RECONNECT_SESSION",
+    "PROLONGED_NATURAL_MARKET_SESSION",
+    "ADVERSE_STALE_DATA_SESSION",
+    "MULTI_SESSION_CONTINUITY_CAMPAIGN"
+  ],
+  "note": "Only smoke-session preparation is authorized by this preflight task.",
+  "ok": true
+}
