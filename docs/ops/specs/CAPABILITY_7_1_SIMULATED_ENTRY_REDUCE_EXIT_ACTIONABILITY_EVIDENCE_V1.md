@@ -181,3 +181,16 @@ The only productive binding completeness fix is passing
 `decision.decision_outcome` into `CapitalRiskSizingInputV1` so short/reduce/
 exit remain side-consistent with the already-produced canonical decision
 (default was incorrectly `enter_long`).
+
+## Technical Wiring Authorization
+
+Exact-file technical wiring authorization covers:
+
+`src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py`
+
+Purpose: propagate `decision_outcome` into `CapitalRiskSizingInputV1` so short/reduce/exit
+sizing remains side-consistent on the productive intent pipeline. No rule, threshold, Master V2,
+Double Play, Risk, Safety, or Exit-policy semantic mutation. Surface class:
+
+`TECHNICAL_CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_WIRING`
+
