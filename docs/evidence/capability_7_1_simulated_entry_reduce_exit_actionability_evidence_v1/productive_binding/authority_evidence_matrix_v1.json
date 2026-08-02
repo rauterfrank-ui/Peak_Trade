@@ -1,0 +1,128 @@
+{
+  "core_logic_changed": false,
+  "direct_fill_injection_allowed": false,
+  "forced_intent_allowed": false,
+  "matrix": [
+    {
+      "accounting_consumer": "ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1.AccountingSessionV1.apply_fill",
+      "config_owners": "ops.decision_config_ownership_and_consumer_closure_v1",
+      "controlled_market_inputs": "rising_mids_after_feature_warmup_seed",
+      "event_time_owner": "host_cycle_event_ts_unix",
+      "evidence_record": "long_lifecycle_trace_v1.json",
+      "execution_consumer": "ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1.apply_intended_action_via_canonical_accounting_v1",
+      "expected_canonical_decision": "enter_long \u2192 hold \u2192 profit/adverse/time exit",
+      "expected_intent": "BUY entry then SELL exit/reduce",
+      "forbidden_direct_injection": true,
+      "lifecycle_class": "long_full_cycle",
+      "persistence_commit": "ops.full_decision_path_atomic_restart_closure_v1.persistence_v1.commit_decision_path_atomic_transaction_v1",
+      "productive_caller": "trading.master_v2.double_play_entry_exit_policy_v0.evaluate_double_play_entry_exit_policy_v0",
+      "reconciliation_result": "RECONCILED_BEFORE_ALPHA",
+      "restart_point": "cap64_atomic_commit_marker",
+      "state_roots": [
+        "confirmation",
+        "dynamic_scope",
+        "decision_config",
+        "accounting",
+        "decision_path_atomic",
+        "exit_policy",
+        "reconciliation"
+      ],
+      "verifier_claim": "ENTRY_END_TO_END_EVIDENCE_PROVEN + EXIT_END_TO_END_EVIDENCE_PROVEN"
+    },
+    {
+      "accounting_consumer": "ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1.AccountingSessionV1.apply_fill",
+      "config_owners": "ops.decision_config_ownership_and_consumer_closure_v1",
+      "controlled_market_inputs": "falling_mids_below_default_protective_stop_anchor",
+      "event_time_owner": "host_cycle_event_ts_unix",
+      "evidence_record": "short_lifecycle_trace_v1.json",
+      "execution_consumer": "ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1.apply_intended_action_via_canonical_accounting_v1",
+      "expected_canonical_decision": "enter_short \u2192 hold \u2192 adverse/profit exit",
+      "expected_intent": "SELL entry then BUY exit/reduce",
+      "forbidden_direct_injection": true,
+      "lifecycle_class": "short_full_cycle",
+      "persistence_commit": "ops.full_decision_path_atomic_restart_closure_v1.persistence_v1.commit_decision_path_atomic_transaction_v1",
+      "productive_caller": "trading.master_v2.double_play_entry_exit_policy_v0.evaluate_double_play_entry_exit_policy_v0",
+      "reconciliation_result": "RECONCILED_BEFORE_ALPHA",
+      "restart_point": "cap64_atomic_commit_marker",
+      "state_roots": [
+        "confirmation",
+        "dynamic_scope",
+        "decision_config",
+        "accounting",
+        "decision_path_atomic",
+        "exit_policy",
+        "reconciliation"
+      ],
+      "verifier_claim": "SHORT_LIFECYCLE_PROVEN"
+    },
+    {
+      "accounting_consumer": "ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1.AccountingSessionV1.apply_fill",
+      "config_owners": "ops.decision_config_ownership_and_consumer_closure_v1",
+      "controlled_market_inputs": "profit_protection_path_with_partial_qty",
+      "event_time_owner": "host_cycle_event_ts_unix",
+      "evidence_record": "reduce_lifecycle_trace_v1.json",
+      "execution_consumer": "ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1.apply_intended_action_via_canonical_accounting_v1",
+      "expected_canonical_decision": "reduce then continue/exit",
+      "expected_intent": "partial SELL/BUY reduce",
+      "forbidden_direct_injection": true,
+      "lifecycle_class": "partial_reduce",
+      "persistence_commit": "ops.full_decision_path_atomic_restart_closure_v1.persistence_v1.commit_decision_path_atomic_transaction_v1",
+      "productive_caller": "trading.master_v2.double_play_entry_exit_policy_v0.evaluate_double_play_entry_exit_policy_v0",
+      "reconciliation_result": "RECONCILED_BEFORE_ALPHA",
+      "restart_point": "after_partial_reduce_before_final_exit",
+      "state_roots": [
+        "accounting",
+        "decision_path_atomic",
+        "exit_policy"
+      ],
+      "verifier_claim": "PARTIAL_REDUCE_LIFECYCLE_PROVEN"
+    },
+    {
+      "accounting_consumer": "ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1.AccountingSessionV1.apply_fill",
+      "config_owners": "ops.exit_policy_producer_binding_v1",
+      "controlled_market_inputs": "adverse_distance / profit_distance / time_hold",
+      "event_time_owner": "host_cycle_event_ts_unix",
+      "evidence_record": "failure_injection_results.json + lifecycle traces",
+      "execution_consumer": "ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1.apply_intended_action_via_canonical_accounting_v1",
+      "expected_canonical_decision": "adverse_scope_exit | profit_protection_exit | time_exit",
+      "expected_intent": "exit/reduce intent from Cap 6.5 producers",
+      "forbidden_direct_injection": true,
+      "lifecycle_class": "canonical_exit_ladder",
+      "persistence_commit": "ops.full_decision_path_atomic_restart_closure_v1.persistence_v1.commit_decision_path_atomic_transaction_v1",
+      "productive_caller": "ops.exit_policy_producer_binding_v1.host_binding_v1.evaluate_host_exit_policy_producers_v1",
+      "reconciliation_result": "RECONCILED_BEFORE_ALPHA",
+      "restart_point": "open_position_before_exit",
+      "state_roots": [
+        "exit_policy",
+        "accounting",
+        "decision_path_atomic"
+      ],
+      "verifier_claim": "EXIT_SIMULATED_FILL_OBSERVED"
+    },
+    {
+      "accounting_consumer": "ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1.AccountingSessionV1.apply_fill",
+      "config_owners": "ops.full_decision_path_atomic_restart_closure_v1",
+      "controlled_market_inputs": "duplicate_obs / corrupt_checkpoint / writer_conflict",
+      "event_time_owner": "host_cycle_event_ts_unix",
+      "evidence_record": "restart_recovery_traces_v1.json",
+      "execution_consumer": "ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1.apply_intended_action_via_canonical_accounting_v1",
+      "expected_canonical_decision": "fail-closed or idempotent continuation",
+      "expected_intent": "no duplicate intents/fills",
+      "forbidden_direct_injection": true,
+      "lifecycle_class": "restart_and_failure",
+      "persistence_commit": "ops.full_decision_path_atomic_restart_closure_v1.persistence_v1.commit_decision_path_atomic_transaction_v1",
+      "productive_caller": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+      "reconciliation_result": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1.ensure_productive_reconciliation_startup_gate_v1",
+      "restart_point": "flat | open | confirmation | dynamic_scope",
+      "state_roots": [
+        "decision_path_atomic",
+        "confirmation",
+        "dynamic_scope"
+      ],
+      "verifier_claim": "DETERMINISTIC_REPLAY_PROVEN + EVIDENCE_RECOVERY_IDEMPOTENT"
+    }
+  ],
+  "owner": "ops.simulated_entry_reduce_exit_actionability_evidence_v1",
+  "parallel_decision_authority_created": false,
+  "productive_host": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py"
+}

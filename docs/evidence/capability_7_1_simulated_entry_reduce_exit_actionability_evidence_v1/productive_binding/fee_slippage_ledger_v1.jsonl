@@ -1,0 +1,11 @@
+{"decision_outcome": "enter_long", "fee": "0.07287700", "fill_class": "entry", "fill_id": "fill_32924831e6b6885abb3b5530", "slippage_cost": "0.03692000"}
+{"decision_outcome": "exit", "fee": "0.07732200", "fill_class": "exit", "fill_id": "fill_b1221187d86742ce01b038ce", "slippage_cost": "0.03909728"}
+{"decision_outcome": "enter_long", "fee": "0.03155376", "fill_class": "entry", "fill_id": "fill_76dcddda469c3b6bff67e1bf", "slippage_cost": "0.01596831"}
+{"decision_outcome": "enter_short", "fee": "0.07688064", "fill_class": "entry", "fill_id": "fill_2e065cc2a0366f8358c9627a", "slippage_cost": "0.03875400"}
+{"decision_outcome": "reduce", "fee": "0.07929624", "fill_class": "reduce", "fill_id": "fill_28e9644a49a58cb0f76fd352", "slippage_cost": "0.03924600"}
+{"decision_outcome": "enter_long", "fee": "0.07287700", "fill_class": "entry", "fill_id": "fill_65b123cc77c41a4786e24589", "slippage_cost": "0.03692000"}
+{"decision_outcome": "reduce", "fee": "0.07116240", "fill_class": "reduce", "fill_id": "fill_a10b4f3493631536897f1c6c", "slippage_cost": "0.03608000"}
+{"decision_outcome": "enter_long", "fee": "0.07287700", "fill_class": "entry", "fill_id": "fill_b7594064cb79d9b847a0754f", "slippage_cost": "0.03692000"}
+{"decision_outcome": "exit", "fee": "0.07431960", "fill_class": "exit", "fill_id": "fill_3d72295a027c94213015d980", "slippage_cost": "0.03704160"}
+{"decision_outcome": "enter_long", "fee": "0.07287700", "fill_class": "entry", "fill_id": "fill_7717624cc9ea8a93c55f831d", "slippage_cost": "0.03692000"}
+{"decision_outcome": "exit", "fee": "0.07732200", "fill_class": "exit", "fill_id": "fill_bb040002eea84c3cc42edbeb", "slippage_cost": "0.03909728"}

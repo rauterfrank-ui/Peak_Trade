@@ -1,0 +1,295 @@
+{
+  "adverse": {
+    "feature_warmup_seed": [
+      3500.0,
+      3501.0,
+      3502.0
+    ],
+    "ticks": [
+      {
+        "event_ts_unix": 1700000000.0,
+        "kind": "market_sample",
+        "mid_price": 3572.04,
+        "note": "entry"
+      },
+      {
+        "event_ts_unix": 1700000001.0,
+        "kind": "market_sample",
+        "mid_price": 3643.4808,
+        "note": "entry"
+      },
+      {
+        "event_ts_unix": 1700000002.0,
+        "kind": "market_sample",
+        "mid_price": 3716.3504159999998,
+        "note": "entry"
+      },
+      {
+        "event_ts_unix": 1700000003.0,
+        "kind": "market_sample",
+        "mid_price": 3558.4808,
+        "note": "adverse_exit"
+      }
+    ]
+  },
+  "duplicate": {
+    "feature_warmup_seed": [
+      3500.0,
+      3501.0,
+      3502.0
+    ],
+    "ticks": [
+      {
+        "event_ts_unix": 1700000000.0,
+        "kind": "market_sample",
+        "mid_price": 3572.04,
+        "note": "distinct"
+      },
+      {
+        "event_ts_unix": 1700000000.0,
+        "kind": "duplicate_sample",
+        "mid_price": 3572.04,
+        "note": "duplicate"
+      },
+      {
+        "event_ts_unix": 1700000001.0,
+        "kind": "market_sample",
+        "mid_price": 3643.48,
+        "note": "next_distinct"
+      }
+    ]
+  },
+  "fixture_control_surface": [
+    "market_obs",
+    "prices",
+    "event_time",
+    "order"
+  ],
+  "forbidden_controls": [
+    "forced_intent",
+    "direct_fill_injection",
+    "master_v2_bypass",
+    "risk_bypass",
+    "safety_bypass",
+    "exit_policy_bypass"
+  ],
+  "long": {
+    "feature_warmup_seed": [
+      3500.0,
+      3501.0,
+      3502.0
+    ],
+    "ticks": [
+      {
+        "event_ts_unix": 1700000000.0,
+        "kind": "market_sample",
+        "mid_price": 3572.04,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000001.0,
+        "kind": "market_sample",
+        "mid_price": 3643.4808,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000002.0,
+        "kind": "market_sample",
+        "mid_price": 3716.3504159999998,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000003.0,
+        "kind": "market_sample",
+        "mid_price": 3790.67742432,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000004.0,
+        "kind": "market_sample",
+        "mid_price": 3866.4909728064,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000005.0,
+        "kind": "market_sample",
+        "mid_price": 3943.820792262528,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000006.0,
+        "kind": "market_sample",
+        "mid_price": 4022.6972081077784,
+        "note": "profit_exit_path"
+      }
+    ]
+  },
+  "partial_reduce": {
+    "feature_warmup_seed": [
+      3500.0,
+      3501.0,
+      3502.0
+    ],
+    "ticks": [
+      {
+        "event_ts_unix": 1700000000.0,
+        "kind": "market_sample",
+        "mid_price": 3572.04,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000001.0,
+        "kind": "market_sample",
+        "mid_price": 3643.4808,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000002.0,
+        "kind": "market_sample",
+        "mid_price": 3716.3504159999998,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000003.0,
+        "kind": "market_sample",
+        "mid_price": 3790.67742432,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000004.0,
+        "kind": "market_sample",
+        "mid_price": 3866.4909728064,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000005.0,
+        "kind": "market_sample",
+        "mid_price": 3943.820792262528,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000006.0,
+        "kind": "market_sample",
+        "mid_price": 4022.6972081077784,
+        "note": "profit_exit_path"
+      }
+    ]
+  },
+  "profit": {
+    "feature_warmup_seed": [
+      3500.0,
+      3501.0,
+      3502.0
+    ],
+    "ticks": [
+      {
+        "event_ts_unix": 1700000000.0,
+        "kind": "market_sample",
+        "mid_price": 3572.04,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000001.0,
+        "kind": "market_sample",
+        "mid_price": 3643.4808,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000002.0,
+        "kind": "market_sample",
+        "mid_price": 3716.3504159999998,
+        "note": "bull_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000003.0,
+        "kind": "market_sample",
+        "mid_price": 3790.67742432,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000004.0,
+        "kind": "market_sample",
+        "mid_price": 3866.4909728064,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000005.0,
+        "kind": "market_sample",
+        "mid_price": 3943.820792262528,
+        "note": "profit_exit_path"
+      },
+      {
+        "event_ts_unix": 1700000006.0,
+        "kind": "market_sample",
+        "mid_price": 4022.6972081077784,
+        "note": "profit_exit_path"
+      }
+    ]
+  },
+  "short": {
+    "feature_warmup_seed": [
+      3300.0,
+      3301.0,
+      3302.0
+    ],
+    "ticks": [
+      {
+        "event_ts_unix": 1700000000.0,
+        "kind": "market_sample",
+        "mid_price": 3252.47,
+        "note": "bear_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000001.0,
+        "kind": "market_sample",
+        "mid_price": 3203.68295,
+        "note": "bear_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000002.0,
+        "kind": "market_sample",
+        "mid_price": 3155.6277057499997,
+        "note": "bear_confirm_entry"
+      },
+      {
+        "event_ts_unix": 1700000003.0,
+        "kind": "market_sample",
+        "mid_price": 3303.68295,
+        "note": "adverse_exit_short"
+      }
+    ]
+  },
+  "time": {
+    "feature_warmup_seed": [
+      3500.0,
+      3501.0,
+      3502.0
+    ],
+    "ticks": [
+      {
+        "event_ts_unix": 1700000000.0,
+        "kind": "market_sample",
+        "mid_price": 3572.04,
+        "note": "entry"
+      },
+      {
+        "event_ts_unix": 1700000001.0,
+        "kind": "market_sample",
+        "mid_price": 3643.4808,
+        "note": "entry"
+      },
+      {
+        "event_ts_unix": 1700000002.0,
+        "kind": "market_sample",
+        "mid_price": 3716.3504159999998,
+        "note": "entry"
+      },
+      {
+        "event_ts_unix": 1700003602.0,
+        "kind": "market_sample",
+        "mid_price": 3716.3504159999998,
+        "note": "time_exit"
+      }
+    ]
+  }
+}

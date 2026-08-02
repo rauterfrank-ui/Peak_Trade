@@ -944,7 +944,8 @@
     "src/research/canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_v1/typed_volatility_comparison_v1.py",
     "tests/research/test_canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_v1.py",
     "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_MULTI_SESSION_NATURAL_AGE_TYPED_VOLATILITY_AND_ACTIONABLE_STRATA_EVIDENCE_V1.md",
-    "config/research/canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_contract_v1.json"
+    "config/research/canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_contract_v1.json",
+    "src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -1003,7 +1004,8 @@
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V8_WIRING",
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_WIRING",
     "TECHNICAL_BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_PREREGISTRATION_WIRING",
-    "TECHNICAL_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_WIRING"
+    "TECHNICAL_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_WIRING",
+    "TECHNICAL_CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_WIRING"
   ],
   "authorization_token": "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_V1",
   "authorized_path_prefixes": [],
@@ -1101,7 +1103,8 @@
     "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1: authorize exact-file typed VolatilityEstimateV1 carrier completion, hot-path closure module, productive CMC float clear-on-fail, hardening-bridge seed quarantine of competing feature_regime volatility proxy, decision-evidence provenance enrichment, focused tests, closure config and docs. Reuses materializer/typed/bind/presence-gate authorities. No numeric max-age threshold, no enforcement, no parameter selection, no Alpha/CHOP/State/Cadence redefinition, no live/orders.",
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_PRODUCTIVE_SESSION_EXECUTION_OWNER_V1: authorize typed S03 Auth-v2 session execution owner (consume-before-side-effects, monotonic 10860s, public-MD-only, S03 evidence schema, offline probe, focused tests/docs).",
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_S03_PRODUCTIVE_AUTH_V2_CONSUMPTION_AND_EXECUTION_ENABLEMENT_V1: enable productive Auth-v2 consumption/execution flags and CLI real-path wiring on the existing S03 owner; interactive confirm-token only; no production consumption/session/network during enablement PR; current auth requires separate revocation/reissuance; no numeric max-age selection; no policy enforcement.",
-    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_ATOMIC_AUTH_V2_REISSUE_CONSUME_EXECUTE_WITH_EPHEMERAL_CONFIRM_TOKEN_V1: authorize atomic same-process Auth-v2 revoke/reissue/consume/execute orchestration owner with ephemeral confirm-token handle; reuses mint/issue/revoke and canonical S03 execution owner; offline probe + CLI wiring only in this capability PR; no productive auth mutation/session/network during merge; no token recovery/persistence; no numeric max-age selection; no policy enforcement."
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_ATOMIC_AUTH_V2_REISSUE_CONSUME_EXECUTE_WITH_EPHEMERAL_CONFIRM_TOKEN_V1: authorize atomic same-process Auth-v2 revoke/reissue/consume/execute orchestration owner with ephemeral confirm-token handle; reuses mint/issue/revoke and canonical S03 execution owner; offline probe + CLI wiring only in this capability PR; no productive auth mutation/session/network during merge; no token recovery/persistence; no numeric max-age selection; no policy enforcement.",
+    "CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_EVIDENCE_V1: authorize exact-file semantics-neutral capital-risk sizing input completeness on the intent-pipeline bridge (propagate decision_outcome into CapitalRiskSizingInputV1 so short/reduce/exit stay side-consistent). No threshold/rule/Master-V2 semantic mutation; no live/testnet/orders; no broad master_v2 grant."
   ],
   "pr_specific_exception": false,
   "required_check_waiver": false,
@@ -1135,6 +1138,7 @@
     "MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1: authorize productive bridge-cycle input authorization, HardenedBridgeSessionStateV2 accumulation binding, productive-bridge-accumulate CLI/runner, join projection from authoritative bridge cycles, focused tests and docs. No synthetic fallback, no threshold selection, no enforcement, no promotion, no orders/live.",
     "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1 exact-file allowlist for typed carrier completion, hot-path closure owner, CMC productive binding float clear, hardening-bridge seed quarantine of competing feature_regime volatility proxy, evidence provenance fields, focused tests/docs/config. Numeric max-age remains unresolved/disabled; no parameter selection; no Alpha/CHOP/State/Cadence redefinition; no live/orders.",
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_PREREGISTRATION_CONTRACT_V1: authorize versioned contract floors, uniqueness guards, authorization-binding schema, candidate validation, frozen contract JSON, focused tests and docs for future additional productive evidence sessions after exhausted s01/s02. Contract only \u2014 no session preregistration creation, authorization issuance/consumption, network, session execution, threshold selection, enforcement, or promotion.",
-    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_CONTRACT_HARDENING_V1: authorize fail-closed hardening of additional-evidence session preregistration candidate validator (exact schema-version and scope bindings, closed-world unknown-field rejection including authority fields, contract digest consistency, focused tests/docs). Contract/validator only \u2014 no preregistration creation, authorization issuance/consumption, network, session execution, threshold selection, enforcement, or promotion."
+    "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_CONTRACT_HARDENING_V1: authorize fail-closed hardening of additional-evidence session preregistration candidate validator (exact schema-version and scope bindings, closed-world unknown-field rejection including authority fields, contract digest consistency, focused tests/docs). Contract/validator only \u2014 no preregistration creation, authorization issuance/consumption, network, session execution, threshold selection, enforcement, or promotion.",
+    "CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_EVIDENCE_V1 exact-file allowlist for intent-pipeline bridge decision_outcome propagation into capital-risk sizing input (binding completeness only; CORE_SEMANTICS/RISK_SIZING_SEMANTICS unchanged)."
   ]
 }

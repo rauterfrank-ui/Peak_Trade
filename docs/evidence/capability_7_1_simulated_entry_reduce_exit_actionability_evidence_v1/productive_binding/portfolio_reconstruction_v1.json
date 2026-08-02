@@ -1,0 +1,97 @@
+{
+  "long_portfolio": {
+    "broker_writes": false,
+    "economic_metrics": {
+      "drawdown": "0",
+      "equity": "100025.01302797",
+      "exposure": "157.7688",
+      "fees": "0.18175276",
+      "fill_count": 3,
+      "funding": "0",
+      "hit_rate": "0",
+      "profit_factor": "0",
+      "realized_pnl": "22.14767800",
+      "slippage": "0.09198559",
+      "turnover": "908.7638",
+      "unrealized_pnl": "3.139088324311136"
+    },
+    "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+    "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+    "model_version": "v1",
+    "orders_submitted": false,
+    "params": {
+      "fee_rate_bps": "2.0",
+      "funding_rate_per_interval": "0",
+      "initial_equity": "100000",
+      "max_leverage": "1",
+      "slippage_bps": "1.0"
+    },
+    "state": {
+      "cash": "100021.87393965",
+      "cumulative_fees": "0.18175276",
+      "cumulative_funding": "0",
+      "cumulative_slippage": "0.09198559",
+      "equity": "100025.01302797",
+      "fill_count": 3,
+      "intended_action_count": 7,
+      "max_drawdown": "0",
+      "peak_equity": "100025.01302797",
+      "positions": {
+        "ETH-USD_UM_XPERP-310404": {
+          "avg_entry_price": "3944.22",
+          "instrument_id": "ETH-USD_UM_XPERP-310404",
+          "quantity": "0.04",
+          "realized_pnl": "0",
+          "unrealized_pnl": "3.139088324311136"
+        }
+      },
+      "realized_pnl": "22.14767800",
+      "turnover_notional": "908.7638",
+      "unrealized_pnl": "3.139088324311136"
+    }
+  },
+  "ok": true,
+  "short_portfolio": {
+    "broker_writes": false,
+    "economic_metrics": {
+      "drawdown": "0",
+      "equity": "99987.60852688",
+      "exposure": 0,
+      "fees": "0.15617688",
+      "fill_count": 2,
+      "funding": "0",
+      "hit_rate": "0",
+      "profit_factor": "0",
+      "realized_pnl": "-12.15729624",
+      "slippage": "0.07800000",
+      "turnover": "780.8844",
+      "unrealized_pnl": "0"
+    },
+    "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+    "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+    "model_version": "v1",
+    "orders_submitted": false,
+    "params": {
+      "fee_rate_bps": "2.0",
+      "funding_rate_per_interval": "0",
+      "initial_equity": "100000",
+      "max_leverage": "1",
+      "slippage_bps": "1.0"
+    },
+    "state": {
+      "cash": "99987.60852688",
+      "cumulative_fees": "0.15617688",
+      "cumulative_funding": "0",
+      "cumulative_slippage": "0.07800000",
+      "equity": "99987.60852688",
+      "fill_count": 2,
+      "intended_action_count": 4,
+      "max_drawdown": "0",
+      "peak_equity": "100005.61224067",
+      "positions": {},
+      "realized_pnl": "-12.15729624",
+      "turnover_notional": "780.8844",
+      "unrealized_pnl": "0"
+    }
+  }
+}
