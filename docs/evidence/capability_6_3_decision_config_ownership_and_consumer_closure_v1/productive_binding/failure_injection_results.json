@@ -1,0 +1,35 @@
+{
+  "consumer_unbound": {
+    "code": "PRODUCTIVE_CONSUMER_UNBOUND",
+    "ok": true
+  },
+  "digest_mismatch": {
+    "code": "CONFIG_DIGEST_MISMATCH",
+    "ok": true
+  },
+  "incompatible_version": {
+    "code": "CONFIG_VERSION_INCOMPATIBLE",
+    "ok": true
+  },
+  "invalid_type": {
+    "code": "CONFIG_TYPE_INVALID",
+    "ok": true
+  },
+  "legacy_fallback": {
+    "code": "LEGACY_BRIDGE_FALLBACK_ATTEMPT",
+    "ok": true
+  },
+  "missing_key": {
+    "code": "CONFIG_KEY_MISSING",
+    "ok": true
+  },
+  "ok": true,
+  "parallel_owner": {
+    "code": "PARALLEL_CONFIG_OWNER_CONFLICT",
+    "ok": true
+  },
+  "restart_mismatch": {
+    "code": "CONFIG_EFFECTIVE_VALUE_DRIFT",
+    "ok": true
+  }
+}

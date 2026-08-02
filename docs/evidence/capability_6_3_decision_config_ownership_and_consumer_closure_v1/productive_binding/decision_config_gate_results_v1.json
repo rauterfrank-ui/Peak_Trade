@@ -1,0 +1,116 @@
+{
+  "capability_id": "CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1",
+  "failure_injection_results": {
+    "consumer_unbound": {
+      "code": "PRODUCTIVE_CONSUMER_UNBOUND",
+      "ok": true
+    },
+    "digest_mismatch": {
+      "code": "CONFIG_DIGEST_MISMATCH",
+      "ok": true
+    },
+    "incompatible_version": {
+      "code": "CONFIG_VERSION_INCOMPATIBLE",
+      "ok": true
+    },
+    "invalid_type": {
+      "code": "CONFIG_TYPE_INVALID",
+      "ok": true
+    },
+    "legacy_fallback": {
+      "code": "LEGACY_BRIDGE_FALLBACK_ATTEMPT",
+      "ok": true
+    },
+    "missing_key": {
+      "code": "CONFIG_KEY_MISSING",
+      "ok": true
+    },
+    "ok": true,
+    "parallel_owner": {
+      "code": "PARALLEL_CONFIG_OWNER_CONFLICT",
+      "ok": true
+    },
+    "restart_mismatch": {
+      "code": "CONFIG_EFFECTIVE_VALUE_DRIFT",
+      "ok": true
+    }
+  },
+  "gate_flags": {
+    "AUTHORIZATION_NOT_CONSUMED": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CONFIG_CONSUMER_TRACE_COMPLETE": true,
+    "CONFIG_DIGEST_BOUND": true,
+    "CONFIG_DIGEST_MISMATCH_FAIL_CLOSED": true,
+    "CONFIG_DIGEST_RESTART_PROVEN": true,
+    "CONFIG_HANDOFF_PROVEN": true,
+    "CONFIG_RUNTIME_DRIFT_FALSE": true,
+    "CONFIG_VERSION_EXPLICIT": true,
+    "CONFIRMATION_STATE_COMPATIBLE": true,
+    "CORE_LOGIC_UNCHANGED": true,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DETERMINISTIC_REPLAY_PROVEN": true,
+    "DYNAMIC_SCOPE_STATE_COMPATIBLE": true,
+    "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": true,
+    "EVIDENCE_VERIFIED": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "FAILURE_INJECTION_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "NO_LIVE_ORDER_PATH": true,
+    "NO_NETWORK_ACCESS": true,
+    "NO_PARALLEL_CONFIG_AUTHORITY": true,
+    "NO_SILENT_FALLBACK": true,
+    "NO_TESTNET_ORDER_PATH": true,
+    "ONE_CONFIG_OWNER_PER_RUNTIME_VALUE": true,
+    "PREDECESSOR_DIGEST_BOUND": true,
+    "RISK_PARITY_PROVEN": true,
+    "RUNTIME_NOT_ACTIVATED": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "SUCCESSOR_CONSUMER_IDENTIFIED": true
+  },
+  "ok": true,
+  "parity_results": {
+    "BULL_BEAR_PARITY_PROVEN": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CONFIRMATION_PARITY_PROVEN": true,
+    "CORE_LOGIC_CHANGE": false,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DOUBLE_PLAY_PARITY_PROVEN": true,
+    "DYNAMIC_SCOPE_PARITY_PROVEN": true,
+    "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": true,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "GOLDEN_VECTOR_PARITY_PASS": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "MASTER_V2_PARITY_PROVEN": true,
+    "RISK_PARITY_PROVEN": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "decision_precedence_nodes": [
+      "master_v2_double_play_integrated_offline_replay",
+      "risk_position_sizing",
+      "safety_kernel",
+      "intended_side_quantity"
+    ],
+    "frozen_thresholds": {
+      "adverse_exit_distance": 80.0,
+      "candidate_signal_threshold": 0.005,
+      "confirmation_epochs": 2,
+      "confirmation_signal_threshold": 0.01,
+      "entry_exit_policy_version": "double_play_entry_exit_policy_v0",
+      "reversal_distance": 120.0,
+      "up_distance": 200.0
+    },
+    "inserted_wiring_edges_only": [
+      "canonical_decision_runtime_config_bind"
+    ]
+  },
+  "restart_results": {
+    "confirmation_compatible": true,
+    "dynamic_scope_compatible": true,
+    "first_digest": "59f3062f719dcf4efe73aaa52b74527969aa1fb746b7cb9b12cdd69a5bdfc31b",
+    "loaded_digest": "59f3062f719dcf4efe73aaa52b74527969aa1fb746b7cb9b12cdd69a5bdfc31b",
+    "ok": true,
+    "second_digest": "59f3062f719dcf4efe73aaa52b74527969aa1fb746b7cb9b12cdd69a5bdfc31b"
+  }
+}
