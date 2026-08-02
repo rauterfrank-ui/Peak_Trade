@@ -1,0 +1,26 @@
+# CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1
+# Productive ranking candidate-context config binding only.
+# Does not authorize selection, alpha, execution, multi-future, or runtime activation.
+
+capability_id = "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1"
+owner = "ops.productive_futures_ranking_producer_v1"
+schema_version = "productive_futures_ranking_snapshot.v1"
+producer_version = "productive_futures_ranking_producer.v1"
+
+ranking_policy_id = "productive_futures_universe_structural_ranking_v1"
+ranking_policy_version = "v1"
+top20_candidate_context_limit = 20
+max_universe_age_seconds = 86400.0
+venue = "okx_eea"
+
+alpha_allowed = false
+selection_authority_added = false
+execution_authority_added = false
+dashboard_authority = false
+multi_future_runtime_authorized = false
+top_n_active_set_authority = false
+max_positions_effective = 1
+runtime_activation_allowed = false
+live_authorized = false
+network_trading_session_allowed = false
+volatility_numeric_max_age_enforcing = false
