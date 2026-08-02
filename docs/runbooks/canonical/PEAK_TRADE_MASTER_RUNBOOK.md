@@ -1055,7 +1055,7 @@ ACTIVATION_EXPLICIT
 LIVE_TESTNET_ORDER_BOUNDARY_PRESERVED
 ```
 
-Fields may be `N/A` only with an explicit reason.
+Fields may be `N&#47;A` only with an explicit reason.
 
 ------------------------------------------------------------------------
 
