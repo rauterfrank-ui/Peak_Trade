@@ -258,7 +258,7 @@
     ]
   },
   "registry_snapshot_digest": "01c8f10bd5f23c8bf23a2c231dbb77ba2aa5f6eef5381c5d05e938102286f97e",
-  "repository_sha": "93409b8c65184d1534ffa84da7a163a037b67fc1",
+  "repository_sha": "3395e2a252ea38fd850f8142f9142e412ab5ea21",
   "restart_proof": {
     "RESTART_DETERMINISTIC": true,
     "classification_counts": {

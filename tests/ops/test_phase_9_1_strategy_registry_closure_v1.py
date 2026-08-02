@@ -178,16 +178,13 @@ def test_composition_input_only_host_stub() -> None:
         assert_enabled_for_runtime_authority(HOST_COMPOSITION_STUB_ID)
 
 
-def test_productive_call_graph_integration() -> None:
+def test_productive_call_graph_integration(tmp_path: Path) -> None:
     assert "composition_eligibility_gate" in CALL_GRAPH_V1
     assert "bypass_negative_proof" in CALL_GRAPH_V1
     evidence = build_capability_evidence_v1(
         repository_sha="testsha",
         repo_root=REPO_ROOT,
-        evidence_root=REPO_ROOT
-        / "docs"
-        / "evidence"
-        / "capability_phase_9_1_strategy_registry_closure_v1",
+        evidence_root=tmp_path / "capability_phase_9_1_strategy_registry_closure_v1",
     )
     assert evidence.ok is True
     assert evidence.claims.STRATEGY_REGISTRY_CLOSED is True
@@ -201,13 +198,10 @@ def test_productive_call_graph_integration() -> None:
     assert counts["RESEARCH_INFORMATION"] >= 6
     assert counts["LEGACY_DEAUTHORIZED"] >= 6
     summary = json.loads(
-        (
-            REPO_ROOT
-            / "docs"
-            / "evidence"
-            / "capability_phase_9_1_strategy_registry_closure_v1"
-            / "SUMMARY.json"
-        ).read_text(encoding="utf-8")
+        (tmp_path / "capability_phase_9_1_strategy_registry_closure_v1" / "SUMMARY.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert summary["capability_id"] == CAPABILITY_ID
     assert summary["ok"] is True
+    assert summary["repository_sha"] == "testsha"
