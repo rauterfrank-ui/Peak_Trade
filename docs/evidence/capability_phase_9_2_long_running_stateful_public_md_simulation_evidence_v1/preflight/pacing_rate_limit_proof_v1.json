@@ -1,0 +1,32 @@
+{
+  "BOUNDED_BACKOFF": true,
+  "BOUNDED_RETRY": true,
+  "DUPLICATE_OBSERVATION_DOES_NOT_ADVANCE": true,
+  "EXIT_RISK_SAFETY_PRESERVED_WHERE_APPLICABLE": true,
+  "EXPLICIT_PACING_BUDGET": true,
+  "HTTP_429_CLASSIFIED": true,
+  "MISSING_OBSERVATION_DOES_NOT_ADVANCE": true,
+  "NETWORK_FAILURE_DOES_NOT_FABRICATE_OBSERVATION": true,
+  "NO_ZERO_INTERVAL_REQUEST_BURST": true,
+  "RECONNECT_BUDGET_EXPLICIT": true,
+  "RETRY_AFTER_RESPECTED_WHERE_AVAILABLE": true,
+  "STALENESS_GATE_PROVEN": true,
+  "STALE_DATA_BLOCKS_ALPHA": true,
+  "ok": true,
+  "owner": "research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+  "smoke_policy": {
+    "backoff_initial_seconds": 1.0,
+    "backoff_max_seconds": 30.0,
+    "backoff_multiplier": 2.0,
+    "http_429_contract_version": "canonical_volatility_numeric_max_age_public_md_http_429_contract/v1",
+    "jitter_fraction": 0.1,
+    "maximum_consecutive_rate_limits": 3,
+    "maximum_requests_per_cycle": 3,
+    "maximum_requests_per_session": 120,
+    "minimum_interval_seconds": 2.0,
+    "origin": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1+conservative_safety_defaults_not_official_okx_limits",
+    "retry_after_max_seconds": 60.0,
+    "schema_version": "canonical_volatility_numeric_max_age_public_md_request_pacing_policy/v1"
+  },
+  "zero_interval_policy_rejected": true
+}
