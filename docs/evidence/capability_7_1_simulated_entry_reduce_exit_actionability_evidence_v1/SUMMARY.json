@@ -1,0 +1,22 @@
+{
+  "CORE_LOGIC_CHANGE": false,
+  "ENTRY_END_TO_END_EVIDENCE_PROVEN": true,
+  "EXIT_END_TO_END_EVIDENCE_PROVEN": true,
+  "NONZERO_FEE_EVIDENCE_PROVEN": true,
+  "NONZERO_SLIPPAGE_EVIDENCE_PROVEN": true,
+  "RUNTIME_ACTIVATED": false,
+  "capability_id": "CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_EVIDENCE_V1",
+  "evidence_digest": "e19001d4c3bc4f3bd9d5ab91c5d880a39df3c3a0edaea3dc2e3f200c7e62c13b",
+  "manifest_sha256": "5ab835b3b7d1da5a992b77662a20cff2bcba483c910ca5dae23b3ddc0d67cd57",
+  "metrics": {
+    "ENTRY_FILL_COUNT": 6,
+    "EXIT_FILL_COUNT": 5,
+    "REALIZED_PNL": "8.48489976",
+    "REDUCE_FILL_COUNT": 2,
+    "SIMULATED_FILL_COUNT": 11,
+    "TOTAL_FEES": "0.77936464",
+    "TOTAL_SLIPPAGE": "0.39296447"
+  },
+  "ok": true,
+  "repository_sha": "5d09b88c8ee415cc39ddff3cde1ab1348e1147b3"
+}

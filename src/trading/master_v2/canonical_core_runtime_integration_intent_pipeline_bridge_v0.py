@@ -286,6 +286,9 @@ def build_capital_risk_sizing_input_from_decision_v0(
         config_digest=capital_context.config_digest,
         input_digest=input_digest,
         instrument=instrument,
+        # Propagate actionable outcome so short/reduce/exit stay side-consistent.
+        # Default on CapitalRiskSizingInputV1 is enter_long and must not override short.
+        decision_outcome=str(decision.decision_outcome),
     )
     return sizing_input, ()
 

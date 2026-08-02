@@ -1,0 +1,245 @@
+{
+  "accounting_snapshot": {
+    "position": "None",
+    "realized_pnl": "-12.15729624"
+  },
+  "claims": {
+    "ADVERSE_EXIT_PROVEN": true,
+    "ENTRY_FILL_OBSERVED": true,
+    "ENTRY_INTENT_OBSERVED": true,
+    "EXIT_FILL_OBSERVED": true,
+    "EXIT_INTENT_OBSERVED": true,
+    "PROFIT_EXIT_PROVEN": false,
+    "REDUCE_FILL_OBSERVED": true,
+    "REDUCE_INTENT_OBSERVED": true,
+    "TIME_OR_INVALIDATION_EXIT_PROVEN": false
+  },
+  "digests": {
+    "fills": "973f23d4033de16ac679cca7091a43ac3f6ce81e3d8e6b21b1634ac7a45f1c46",
+    "intents": "5b5a4def10c67bc8fe58589c178bec46e311c9917ae77ec53520c59d85908373",
+    "rows": "7512c4cfcb25305c184de8a8d6b1334ee713fe8fa34ec06f69f79f9e2e0e7314"
+  },
+  "fills": [
+    {
+      "accounting_output_digest": "a3e1f4b8197c96020e089907e515355b86b7eb4f0d090547854a70091f97cfd7",
+      "canonical_futures_accounting": true,
+      "cycle_index": 2,
+      "decision_outcome": "enter_short",
+      "event_time_unix": null,
+      "fee": "0.07688064",
+      "fill_class": "entry",
+      "fill_id": "fill_2e065cc2a0366f8358c9627a",
+      "fill_input_digest": "604226109351d616215a49026d594f0e3558d0e15f590f187be73ff9a2a65b2a",
+      "fill_price": "3203.36",
+      "instrument_id": "ETH-USD_UM_XPERP-310404",
+      "mark_price": "3203.68295",
+      "notional": "384.4032",
+      "quantity": "0.12",
+      "reduce_only": false,
+      "side": "SELL",
+      "slippage_cost": "0.03875400",
+      "trading_epoch": 2
+    },
+    {
+      "accounting_output_digest": "e3a239c60b5e9b8a0b1f88a19b5964ff365818ddf85491a8d43254e5b346064b",
+      "canonical_futures_accounting": true,
+      "cycle_index": 4,
+      "decision_outcome": "reduce",
+      "event_time_unix": null,
+      "fee": "0.07929624",
+      "fill_class": "reduce",
+      "fill_id": "fill_28e9644a49a58cb0f76fd352",
+      "fill_input_digest": "f1549948f5f044129b42bc49ac26a7be38c9d87c6a2d29a81a54ea7aa8606d14",
+      "fill_price": "3304.01",
+      "instrument_id": "ETH-USD_UM_XPERP-310404",
+      "mark_price": "3303.68295",
+      "notional": "396.4812",
+      "quantity": "0.12",
+      "reduce_only": false,
+      "side": "BUY",
+      "slippage_cost": "0.03924600",
+      "trading_epoch": 4
+    }
+  ],
+  "intents": [
+    {
+      "class": "entry",
+      "cycle_index": 2,
+      "decision_outcome": "enter_short",
+      "intended_quantity": "0.12",
+      "intended_side": "SELL",
+      "intent_action": "ENTER_SHORT",
+      "reason_codes": [
+        "entry_short_eligible"
+      ]
+    },
+    {
+      "class": "reduce",
+      "cycle_index": 4,
+      "decision_outcome": "reduce",
+      "intended_quantity": "0.12",
+      "intended_side": "BUY",
+      "intent_action": "NONE",
+      "reason_codes": [
+        "adverse_scope_exit",
+        "adverse_scope_exit_matched",
+        "CANONICAL_DECISION_NOT_ACTIONABLE"
+      ]
+    }
+  ],
+  "metrics": {
+    "cycles": 4,
+    "entry_fill_count": 1,
+    "entry_intent_count": 1,
+    "exit_fill_count": 1,
+    "exit_intent_count": 1,
+    "final_flat": true,
+    "final_position_side": "none",
+    "reason_codes_seen": [
+      "CANONICAL_DECISION_NOT_ACTIONABLE",
+      "adverse_scope_exit",
+      "adverse_scope_exit_matched",
+      "entry_short_eligible",
+      "existing_short_hold",
+      "observe_only"
+    ],
+    "reduce_fill_count": 1,
+    "reduce_intent_count": 1,
+    "simulated_fill_count": 2,
+    "total_fees": "0.15617688",
+    "total_slippage": "0.07800000"
+  },
+  "name": "short_lifecycle",
+  "ok": true,
+  "portfolio_snapshot": {
+    "broker_writes": false,
+    "economic_metrics": {
+      "drawdown": "0",
+      "equity": "99987.60852688",
+      "exposure": 0,
+      "fees": "0.15617688",
+      "fill_count": 2,
+      "funding": "0",
+      "hit_rate": "0",
+      "profit_factor": "0",
+      "realized_pnl": "-12.15729624",
+      "slippage": "0.07800000",
+      "turnover": "780.8844",
+      "unrealized_pnl": "0"
+    },
+    "model_digest": "1eea8eaf5b4d1e7551aea3d7ef3be4878747141b5f17d1510c909c1b67b5f397",
+    "model_id": "ops.integrated_paper_shadow_observation_portfolio_economics_v1",
+    "model_version": "v1",
+    "orders_submitted": false,
+    "params": {
+      "fee_rate_bps": "2.0",
+      "funding_rate_per_interval": "0",
+      "initial_equity": "100000",
+      "max_leverage": "1",
+      "slippage_bps": "1.0"
+    },
+    "state": {
+      "cash": "99987.60852688",
+      "cumulative_fees": "0.15617688",
+      "cumulative_funding": "0",
+      "cumulative_slippage": "0.07800000",
+      "equity": "99987.60852688",
+      "fill_count": 2,
+      "intended_action_count": 4,
+      "max_drawdown": "0",
+      "peak_equity": "100005.61224067",
+      "positions": {},
+      "realized_pnl": "-12.15729624",
+      "turnover_notional": "780.8844",
+      "unrealized_pnl": "0"
+    }
+  },
+  "rows": [
+    {
+      "confirmation_phase": "candidate",
+      "cycle_index": 1,
+      "decision_outcome": "observe",
+      "event_ts_unix": 1700000000.0,
+      "fee": null,
+      "fill_id": null,
+      "fill_quantity": null,
+      "fill_side": null,
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "mid_price": 3252.47,
+      "observation_classification": "distinct",
+      "position_side": "none",
+      "reason_codes": [
+        "observe_only"
+      ],
+      "slippage_cost": null,
+      "venue_flat": true
+    },
+    {
+      "confirmation_phase": "confirmed",
+      "cycle_index": 2,
+      "decision_outcome": "enter_short",
+      "event_ts_unix": 1700000001.0,
+      "fee": "0.07688064",
+      "fill_id": "fill_2e065cc2a0366f8358c9627a",
+      "fill_quantity": "0.12",
+      "fill_side": "SELL",
+      "intended_quantity": "0.12",
+      "intended_side": "SELL",
+      "intent_action": "ENTER_SHORT",
+      "mid_price": 3203.68295,
+      "observation_classification": "distinct",
+      "position_side": "short",
+      "reason_codes": [
+        "entry_short_eligible"
+      ],
+      "slippage_cost": "0.03875400",
+      "venue_flat": false
+    },
+    {
+      "confirmation_phase": "confirmed",
+      "cycle_index": 3,
+      "decision_outcome": "hold",
+      "event_ts_unix": 1700000002.0,
+      "fee": null,
+      "fill_id": null,
+      "fill_quantity": null,
+      "fill_side": null,
+      "intended_quantity": "0",
+      "intended_side": "HOLD",
+      "intent_action": "NONE",
+      "mid_price": 3155.6277057499997,
+      "observation_classification": "distinct",
+      "position_side": "short",
+      "reason_codes": [
+        "existing_short_hold"
+      ],
+      "slippage_cost": null,
+      "venue_flat": false
+    },
+    {
+      "confirmation_phase": "observe",
+      "cycle_index": 4,
+      "decision_outcome": "reduce",
+      "event_ts_unix": 1700000003.0,
+      "fee": "0.07929624",
+      "fill_id": "fill_28e9644a49a58cb0f76fd352",
+      "fill_quantity": "0.12",
+      "fill_side": "BUY",
+      "intended_quantity": "0.12",
+      "intended_side": "BUY",
+      "intent_action": "NONE",
+      "mid_price": 3303.68295,
+      "observation_classification": "distinct",
+      "position_side": "none",
+      "reason_codes": [
+        "adverse_scope_exit",
+        "adverse_scope_exit_matched",
+        "CANONICAL_DECISION_NOT_ACTIONABLE"
+      ],
+      "slippage_cost": "0.03924600",
+      "venue_flat": true
+    }
+  ]
+}
