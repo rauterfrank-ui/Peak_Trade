@@ -1,0 +1,117 @@
+{
+  "NO_LEGACY_HOST_BYPASS": true,
+  "NO_PARALLEL_ACTIVATION_PATH": true,
+  "ONE_CANONICAL_ACTIVATION_AUTHORITY": true,
+  "ONE_CANONICAL_RUNTIME_MODE": true,
+  "ONE_PRODUCTIVE_STATEFUL_HOST": true,
+  "canonical_activation_authority": "ops.single_future_stateful_no_order_runtime_activation_v1",
+  "canonical_runtime_mode_source": "ops.single_future_stateful_no_order_runtime_activation_v1",
+  "legacy_activation_flag_owners": [
+    "ops.single_future_canonical_runtime_pre_activation_closure_v1.constants_v1.RUNTIME_ACTIVATED",
+    "ops.single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1.constants_v1.RUNTIME_ACTIVATED",
+    "ops.simulated_entry_reduce_exit_actionability_evidence_v1.constants_v1.RUNTIME_ACTIVATED",
+    "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1.RUNTIME_BRIDGE_LIVE_ACTIVATED",
+    "ops.shadow_preparation_readiness_gate_v0.runtime_activation_authorized"
+  ],
+  "matrix": [
+    {
+      "CAP_7_2_CHANGE_REQUIRED": true,
+      "CORE_LOGIC_EFFECT": false,
+      "CURRENT_EFFECT": "INACTIVE_UNTIL_CAP72_GATE",
+      "CURRENT_OWNER": "ops.single_future_stateful_no_order_runtime_activation_v1",
+      "FAILURE_BEHAVIOR": "FAIL_CLOSED_ALPHA_BLOCKED",
+      "PERSISTED": true,
+      "PRODUCTIVE_CONSUMER": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1.run_bridge_cycle_v1",
+      "RESTART_LOADED": true,
+      "SYMBOL_OR_CONFIG": "FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE",
+      "TARGET_EFFECT": "ACTIVE_NO_ORDER_STATEFUL_RUNTIME"
+    },
+    {
+      "CAP_7_2_CHANGE_REQUIRED": true,
+      "CORE_LOGIC_EFFECT": false,
+      "CURRENT_EFFECT": "INACTIVE_UNTIL_CAP72_GATE",
+      "CURRENT_OWNER": "ops.single_future_stateful_no_order_runtime_activation_v1",
+      "FAILURE_BEHAVIOR": "FAIL_CLOSED",
+      "PERSISTED": true,
+      "PRODUCTIVE_CONSUMER": "ops.single_future_stateful_no_order_runtime_activation_v1.simulated_execution_port_v1",
+      "RESTART_LOADED": true,
+      "SYMBOL_OR_CONFIG": "SIMULATED_EXECUTION_ACTIVE",
+      "TARGET_EFFECT": "SIMULATED_EXECUTION_PORT_ACTIVE"
+    },
+    {
+      "CAP_7_2_CHANGE_REQUIRED": true,
+      "CORE_LOGIC_EFFECT": false,
+      "CURRENT_EFFECT": "READY_AFTER_PRECONDITIONS",
+      "CURRENT_OWNER": "ops.single_future_stateful_no_order_runtime_activation_v1",
+      "FAILURE_BEHAVIOR": "FAIL_CLOSED",
+      "PERSISTED": true,
+      "PRODUCTIVE_CONSUMER": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1.run_bridge_cycle_v1",
+      "RESTART_LOADED": true,
+      "SYMBOL_OR_CONFIG": "STATEFUL_RUNTIME_READY_FOR_ACTIVATION",
+      "TARGET_EFFECT": "READY_TRUE"
+    },
+    {
+      "CAP_7_2_CHANGE_REQUIRED": true,
+      "CORE_LOGIC_EFFECT": false,
+      "CURRENT_EFFECT": "INTERNAL_SIMULATED_EXECUTION_PUBLIC_MD_CAPABLE_NO_ORDER",
+      "CURRENT_OWNER": "ops.single_future_stateful_no_order_runtime_activation_v1",
+      "FAILURE_BEHAVIOR": "RUNTIME_MODE_MISMATCH_FAIL_CLOSED",
+      "PERSISTED": true,
+      "PRODUCTIVE_CONSUMER": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1.run_bridge_cycle_v1",
+      "RESTART_LOADED": true,
+      "SYMBOL_OR_CONFIG": "runtime_mode",
+      "TARGET_EFFECT": "INTERNAL_SIMULATED_EXECUTION_PUBLIC_MD_CAPABLE_NO_ORDER"
+    },
+    {
+      "CAP_7_2_CHANGE_REQUIRED": true,
+      "CORE_LOGIC_EFFECT": false,
+      "CURRENT_EFFECT": "ONLY_SIMULATED_PORT_CONSTRUCTIBLE",
+      "CURRENT_OWNER": "ops.single_future_stateful_no_order_runtime_activation_v1.simulated_execution_port_v1",
+      "FAILURE_BEHAVIOR": "INVALID_EXECUTION_PORT",
+      "PERSISTED": false,
+      "PRODUCTIVE_CONSUMER": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+      "RESTART_LOADED": true,
+      "SYMBOL_OR_CONFIG": "SimulatedExecutionPortV1",
+      "TARGET_EFFECT": "ONLY_SIMULATED_PORT_CONSTRUCTIBLE"
+    },
+    {
+      "CAP_7_2_CHANGE_REQUIRED": false,
+      "CORE_LOGIC_EFFECT": false,
+      "CURRENT_EFFECT": "false",
+      "CURRENT_OWNER": "bridge.constants_v1 + cap72.config",
+      "FAILURE_BEHAVIOR": "NO_ORDER_MODE_VIOLATION",
+      "PERSISTED": true,
+      "PRODUCTIVE_CONSUMER": "ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1.run_bridge_cycle_v1",
+      "RESTART_LOADED": true,
+      "SYMBOL_OR_CONFIG": "LIVE_ORDERS/TESTNET_ORDERS/PAPER_EXCHANGE_ORDERS",
+      "TARGET_EFFECT": "false"
+    },
+    {
+      "CAP_7_2_CHANGE_REQUIRED": false,
+      "CORE_LOGIC_EFFECT": false,
+      "CURRENT_EFFECT": "false",
+      "CURRENT_OWNER": "ops.wallclock_...constants_v1",
+      "FAILURE_BEHAVIOR": "INVARIANT_VIOLATION",
+      "PERSISTED": false,
+      "PRODUCTIVE_CONSUMER": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+      "RESTART_LOADED": false,
+      "SYMBOL_OR_CONFIG": "RUNTIME_BRIDGE_LIVE_ACTIVATED",
+      "TARGET_EFFECT": "false"
+    },
+    {
+      "CAP_7_2_CHANGE_REQUIRED": false,
+      "CORE_LOGIC_EFFECT": false,
+      "CURRENT_EFFECT": "false_documentation_only",
+      "CURRENT_OWNER": "legacy package constants (non-authoritative)",
+      "FAILURE_BEHAVIOR": "PARALLEL_ACTIVATION_PATH_REJECTED",
+      "PERSISTED": false,
+      "PRODUCTIVE_CONSUMER": "none_for_cap72",
+      "RESTART_LOADED": false,
+      "SYMBOL_OR_CONFIG": "legacy Cap4.1/5.x RUNTIME_ACTIVATED flags",
+      "TARGET_EFFECT": "false_not_reactivated"
+    }
+  ],
+  "ok": true,
+  "productive_stateful_host": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+  "simulated_execution_port_owner": "ops.single_future_stateful_no_order_runtime_activation_v1.simulated_execution_port_v1"
+}

@@ -127,6 +127,11 @@ from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
     evaluate_host_exit_policy_producers_v1,
     exit_policy_config_digest_v1,
 )
+from src.ops.single_future_stateful_no_order_runtime_activation_v1.host_binding_v1 import (
+    HostActivationBindingV1,
+    ensure_host_activation_binding_v1,
+    host_simulated_execution_port_v1,
+)
 from src.ops.full_decision_path_atomic_restart_closure_v1.constants_v1 import (
     CALL_GRAPH_ATOMIC_COMMIT_STEP,
     CALL_GRAPH_PENDING_EVIDENCE_STEP,
@@ -388,6 +393,10 @@ class BridgeSessionStateV1:
     exit_policy_binding: HostExitPolicyBindingV1 = field(default_factory=HostExitPolicyBindingV1)
     exit_policy_state_root: Optional[str] = None
     last_exit_policy_commit: Optional[dict[str, Any]] = None
+    # Capability 7.2 — single-future stateful no-order runtime activation (opt-in).
+    activation_binding: HostActivationBindingV1 = field(default_factory=HostActivationBindingV1)
+    activation_state_root: Optional[str] = None
+    activation_config_path: Optional[str] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -574,10 +583,16 @@ def _update_session_state_from_replay(
 
 
 CALL_GRAPH_V1: tuple[str, ...] = (
+    "repository_config_integrity_check",
+    "no_order_mode_validation",
+    "activation_state_validation",
     *SELECTION_BINDING_PREFIX,
     SELECTION_BINDING_STEP,
     RECON_CALL_GRAPH_STEP,
     CALL_GRAPH_CONFIG_BIND_STEP,
+    "stateful_decision_runtime",
+    "canonical_intent",
+    "simulated_execution_port",
     "okx_public_market_data",
     CALL_GRAPH_C1_STEP,
     CALL_GRAPH_C1_RESULT_STEP,
@@ -899,6 +914,8 @@ def run_bridge_cycle_v1(
     persist_via_atomic_coordinator: bool = False,
     exit_policy_state_root: Optional[Path] = None,
     persist_exit_policy: bool = True,
+    activation_state_root: Optional[Path] = None,
+    activation_config_path: Optional[Path] = None,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
@@ -918,7 +935,37 @@ def run_bridge_cycle_v1(
         state.accounting_state_root = str(accounting_state_root_override)
     if exit_policy_state_root is not None:
         state.exit_policy_state_root = str(exit_policy_state_root)
+    if activation_state_root is not None:
+        state.activation_state_root = str(activation_state_root)
+    if activation_config_path is not None:
+        state.activation_config_path = str(activation_config_path)
     use_atomic = bool(persist_via_atomic_coordinator and state.decision_path_atomic_state_root)
+
+    # Capability 7.2: when enabled, activation/no-order/config gates run before selection.
+    # Selected-future + reconciliation remain Cap 2.4 / Cap 1.1 alpha gates (next steps).
+    if state.activation_binding.enabled:
+        activation_gate = ensure_host_activation_binding_v1(
+            state.activation_binding,
+            instrument_id=state.instrument_id,
+            repository_sha=repository_sha,
+            state_root=(Path(state.activation_state_root) if state.activation_state_root else None),
+            writer_session_id=session_id,
+            config_path=(
+                Path(state.activation_config_path) if state.activation_config_path else None
+            ),
+            selected_future_present=True,
+            instrument_binding_valid=True,
+            reconciliation_ok=True,
+            persist=True,
+        )
+        if activation_gate.alpha_blocked or not activation_gate.alpha_enabled:
+            raise RuntimeError(
+                "ACTIVATION_ALPHA_BLOCKED:"
+                + ",".join(
+                    activation_gate.blockers
+                    or (str(activation_gate.claims.get("alpha_block_reason") or "blocked"),)
+                )
+            )
 
     # Capability 2.4: persisted selection binds the trading instrument before recon/alpha.
     selection_gate = ensure_single_selected_future_runtime_binding_v1(
@@ -1283,21 +1330,40 @@ def run_bridge_cycle_v1(
             instrument_id=state.instrument_id,
             state_root=(Path(state.accounting_state_root) if state.accounting_state_root else None),
         )
-    accounting_apply = apply_intended_action_via_canonical_accounting_v1(
-        session=state.accounting_session,
-        portfolio=state.portfolio,
-        instrument_id=state.instrument_id,
-        side=intended.intended_side,
-        quantity=intended.intended_quantity,
-        mark_price=Decimal(str(mark)),
-        session_id=session_id,
-        cycle_index=state.cycle_index,
-        reduce_only=False,
-        state_root=Path(state.accounting_state_root) if state.accounting_state_root else None,
-        # Cap 6.4: defer accounting persist into the atomic coordinator when enabled.
-        persist=bool(state.accounting_state_root) and not use_atomic,
-        writer_session_id=session_id,
-    )
+    # Cap 7.2: activated no-order host must use SimulatedExecutionPort only.
+    # When activation is disabled (Cap 7.1 path), keep the direct productive delegate.
+    if state.activation_binding.enabled:
+        execution_port = host_simulated_execution_port_v1(state.activation_binding)
+        accounting_apply = execution_port.apply_intended_action(
+            session=state.accounting_session,
+            portfolio=state.portfolio,
+            instrument_id=state.instrument_id,
+            side=intended.intended_side,
+            quantity=intended.intended_quantity,
+            mark_price=Decimal(str(mark)),
+            session_id=session_id,
+            cycle_index=state.cycle_index,
+            reduce_only=False,
+            state_root=Path(state.accounting_state_root) if state.accounting_state_root else None,
+            persist=bool(state.accounting_state_root) and not use_atomic,
+            writer_session_id=session_id,
+        )
+    else:
+        accounting_apply = apply_intended_action_via_canonical_accounting_v1(
+            session=state.accounting_session,
+            portfolio=state.portfolio,
+            instrument_id=state.instrument_id,
+            side=intended.intended_side,
+            quantity=intended.intended_quantity,
+            mark_price=Decimal(str(mark)),
+            session_id=session_id,
+            cycle_index=state.cycle_index,
+            reduce_only=False,
+            state_root=Path(state.accounting_state_root) if state.accounting_state_root else None,
+            # Cap 6.4: defer accounting persist into the atomic coordinator when enabled.
+            persist=bool(state.accounting_state_root) and not use_atomic,
+            writer_session_id=session_id,
+        )
     state.last_accounting_result = dict(accounting_apply.get("accounting") or {})
     fill_dict = accounting_apply.get("fill")
     if fill_dict is not None:

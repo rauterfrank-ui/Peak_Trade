@@ -53,9 +53,19 @@ Navigations-Einstieg (keine Semantik):
 ### Verbindliche aktuelle Semantik (Snapshot)
 
 ```text
-CANONICAL_RUNTIME_ENTRYPOINT_STATUS=READY_FOR_ACTIVATION
-RUNTIME_ACTIVATED=false
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE
+STATEFUL_RUNTIME_READY_FOR_ACTIVATION=true
+FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true
+SIMULATED_EXECUTION_ACTIVE=true
+PUBLIC_MD_RUNTIME_CAPABLE=true
+PUBLIC_MD_NETWORK_SESSION_OBSERVED=false
+RUNTIME_ACTIVATED=true
 LIVE_TRADING=FAIL_CLOSED
+LIVE_ORDERS=false
+TESTNET_ORDERS=false
+PAPER_EXCHANGE_ORDERS=false
+EXCHANGE_CREDENTIAL_USE=false
+REAL_CAPITAL_MOVEMENT=false
 DASHBOARD=READ_ONLY_CONSUMER
 DASHBOARD_AUTHORITY_EFFECT=NONE
 DASHBOARD_TRADING_INPUT=false
@@ -74,7 +84,7 @@ ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
 ```
 
-**Status note (CURRENT vs TARGET):** `READY_FOR_ACTIVATION` is current runtime readiness after Capability 4.1. It is not activation. Forbidden synonyms remain: `ACTIVATED`, `ACTIVATED_NO_LIVE_ORDERS`, `LIVE`. Runtime activation remains a separate Owner-GO (TARGET / later phase).
+**Status note (CURRENT vs TARGET):** Capability 7.2 activates the internal stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE` / `SIMULATED_EXECUTION_ACTIVE`) with public-MD capability but **without** starting a public-MD network session. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Phase 9.2 is the separate long-running public-MD simulation evidence program.
 
 ---
 
@@ -240,7 +250,9 @@ phase1_hard_safety_constants
 | Productive Futures Ranking Producer (Capability 2.2) | `PRODUCTIVE_CANONICAL` Top-20 candidate-context owner `ops.productive_futures_ranking_producer_v1`; `CODE_EXISTS+BOUND+PERSISTED+RESTART_PROVEN`; `ACTIVATED=false`; `TOP20_IS_CONTEXT_ONLY=true`; selection/alpha/multi-future not granted |
 | Productive Futures Accounting Runtime Binding (Capability 3.1) | `PRODUCTIVE_CANONICAL` owner `ops.productive_futures_accounting_runtime_binding_v1`; reuses `src/execution/paper/futures_accounting.py`; `FUTURES_ACCOUNTING_RUNTIME_BOUND=true`; `ACTIVATED=false`; live/orders fail-closed |
 | Single Future Canonical Runtime Pre-Activation Closure (Capability 4.1) | `PRODUCTIVE_CANONICAL` owner `ops.single_future_canonical_runtime_pre_activation_closure_v1`; reuses Cap 2.4 host; `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; live/orders/auth-consumption fail-closed |
-| Single Future Canonical Runtime Deterministic Offline Evidence (Capability 5.1) | `PRODUCTIVE_CANONICAL` owner `ops.single_future_canonical_runtime_deterministic_offline_evidence_v1`; reuses Cap 4.1/2.4 host; offline fixtures only; `READY_FOR_ACTIVATION`; `RUNTIME_ACTIVATED=false`; no network/auth consumption/activation |
+| Single Future Canonical Runtime Deterministic Offline Evidence (Capability 5.1) | `PRODUCTIVE_CANONICAL` owner `ops.single_future_canonical_runtime_deterministic_offline_evidence_v1`; reuses Cap 4.1/2.4 host; offline fixtures only; historical `READY_FOR_ACTIVATION`; no network/auth consumption |
+| Simulated Entry/Reduce/Exit Actionability Evidence (Capability 7.1) | `PRODUCTIVE_CANONICAL` owner `ops.simulated_entry_reduce_exit_actionability_evidence_v1`; end-to-end simulated lifecycle evidence; `RUNTIME_ACTIVATED=false` in Cap 7.1 itself |
+| Single-Future Stateful No-Order Runtime Activation (Capability 7.2) | `PRODUCTIVE_CANONICAL` owner `ops.single_future_stateful_no_order_runtime_activation_v1`; activates no-order stateful runtime; `FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true`; `SIMULATED_EXECUTION_ACTIVE=true`; `PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`; live/testnet/paper/credentials fail-closed |
 
 Verification: `CONFIG_TRUTH_ALIGNMENT_V1`; live remains fail-closed; multi-future unauthorized;
 numeric max-age non-enforcing; Cap 4.1 readiness is not activation.
@@ -264,7 +276,7 @@ numeric max-age non-enforcing; Cap 4.1 readiness is not activation.
 2. Productive reconciliation host binding — **closed by Capability 1.1**; live activation still forbidden
 3. Futures accounting runtime wiring — **closed by Capability 3.1**
 4. Canonical runtime pre-activation closure — **closed by Capability 4.1** as `READY_FOR_ACTIVATION` (`RUNTIME_ACTIVATED=false`); live activation still forbidden
-5. Canonical runtime activation / shadow-paper evidence program — still open (Phase 5+; separate Owner-GO)
+5. Canonical stateful no-order activation — **closed by Capability 7.2** (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true`); public-MD network sessions remain separate (Phase 9.2 Owner-GO)
 6. Strategy registry full productive binding
 7. Config truth alignment for `max_open_positions` effective consumers — **closed by Capability 0.3** (`CONFIG_TRUTH_ALIGNMENT_V1`)
 8. Active-set rotation policy — **registered by Capability 0.4** as `DEFERRED_REQUIRED_CAPABILITY` in `PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1` / `docs/governance/deferred_work_recovery_register_v1.json` (Phase 6; not productive Top-5; implementation/activation unauthorized; prior reminder remains `REMINDER_ONLY`)
