@@ -1,0 +1,27 @@
+{
+  "ADDITIVE_OR_EXPLICITLY_VERSIONED": true,
+  "BACKWARD_VERIFICATION_SUPPORTED": true,
+  "DIGEST_CANONICALIZATION_EXPLICIT": true,
+  "ENUM_VALUES_VERSIONED": true,
+  "HARD_STOP": true,
+  "OLD_S03_EVIDENCE_REMAINS_VALID": true,
+  "READY_FOR_POLICY_ENFORCEMENT": false,
+  "READY_FOR_POLICY_IMPLEMENTATION": false,
+  "READY_FOR_POLICY_SELECTION": false,
+  "UNKNOWN_FIELDS_FAIL_POLICY_EXPLICIT": true,
+  "capability_id": "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_MULTI_SESSION_NATURAL_AGE_TYPED_VOLATILITY_AND_ACTIONABLE_STRATA_EVIDENCE_V1",
+  "numeric_max_age_selected": false,
+  "owner": "research.canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_v1",
+  "policy_enforcement_added": false,
+  "productive_session_execution_in_default_import": false,
+  "review_mode": "MULTI_SESSION_NATURAL_AGE_TYPED_VOLATILITY_AND_ACTIONABLE_STRATA_EVIDENCE_V1",
+  "schema_name": "canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_contract",
+  "schema_version": "v1",
+  "schemas": {
+    "campaign_aggregation": "canonical_volatility_numeric_max_age_multi_session_campaign_aggregation/v1",
+    "full_alpha_counterfactual": "canonical_volatility_numeric_max_age_full_alpha_counterfactual/v1",
+    "opportunity_strata": "canonical_volatility_numeric_max_age_opportunity_strata/v1",
+    "readiness": "canonical_volatility_numeric_max_age_multi_session_typed_vol_readiness/v1",
+    "typed_volatility_comparison": "canonical_volatility_numeric_max_age_typed_volatility_comparison/v1"
+  }
+}

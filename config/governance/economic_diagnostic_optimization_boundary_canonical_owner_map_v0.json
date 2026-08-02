@@ -1820,6 +1820,16 @@
         "config/research/canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_contract_v1.json",
         "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
       ]
+    },
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_MULTI_SESSION_NATURAL_AGE_TYPED_VOLATILITY_AND_ACTIONABLE_STRATA_EVIDENCE_V1": {
+      "note": "Evidence-foundation capability closing S03 synthetic vol/age scaffolds: typed aged/fresh lifecycle join, full-alpha counterfactual DI harness, opportunity strata, multi-session campaign aggregation, early-age density support, readiness verifier; no session execution, authorization, numeric max-age selection/enforcement, or Master-V2/Double-Play/Bull/Bear/entry-exit/risk/safety mutation.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_v1/",
+        "src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1/orchestrator_v1.py",
+        "tests/research/test_canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_MULTI_SESSION_NATURAL_AGE_TYPED_VOLATILITY_AND_ACTIONABLE_STRATA_EVIDENCE_V1.md",
+        "config/research/canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_contract_v1.json"
+      ]
     }
   },
   "forbidden_mutation_surfaces": {

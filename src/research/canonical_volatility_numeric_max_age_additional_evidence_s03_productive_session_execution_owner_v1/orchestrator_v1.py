@@ -36,22 +36,7 @@ from research.canonical_volatility_numeric_max_age_additional_evidence_s03_produ
     MonotonicDurationAuthorityV1,
 )
 from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.evidence_v1 import (
-    append_jsonl_v1,
-    build_counterfactual_record_v1,
-    build_decision_sensitivity_v1,
-    build_drift_comparison_v1,
-    build_heartbeat_v1,
-    build_market_sample_record_v1,
-    build_session_metadata_v1,
-    build_volatility_record_v1,
-    classify_sample_ordering_v1,
-    evidence_file_map_v1,
     resolve_s03_session_dir_v1,
-    write_json_v1,
-)
-from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.independence_v1 import (
-    assert_exit_precedence_preserved_v1,
-    build_exit_risk_safety_independence_record_v1,
 )
 from research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1.models_v1 import (
     AdditionalEvidenceS03SessionExecutionOwnerError,
@@ -177,133 +162,18 @@ def _write_session_cycle_evidence_v1(
     samples: Sequence[MarketSampleV1],
     duration: MonotonicDurationAuthorityV1,
 ) -> dict[str, Any]:
-    files = evidence_file_map_v1(session_dir)
-    write_json_v1(
-        files["session_metadata"],
-        build_session_metadata_v1(bindings=bindings, mode="orchestrated"),
+    """Delegate to typed-vol + full-alpha evidence cycle (no synthetic scaffolds)."""
+    # Lazy import avoids S03 package <-> typed-evidence cycle circular import.
+    from research.canonical_volatility_numeric_max_age_multi_session_natural_age_typed_volatility_and_actionable_strata_evidence_v1.s03_typed_evidence_cycle_v1 import (
+        write_typed_s03_session_cycle_evidence_v1,
     )
-    seen: set[str] = set()
-    last_event: Optional[float] = None
-    first_as_of: Optional[float] = None
-    hb = 0
-    vol_count = 0
-    for sample in samples:
-        elapsed = (
-            duration.elapsed_seconds()
-            if duration.started
-            else float(sample.monotonic_elapsed_seconds)
-        )
-        hb += 1
-        append_jsonl_v1(
-            files["heartbeat"],
-            build_heartbeat_v1(
-                bindings=bindings,
-                monotonic_elapsed_seconds=elapsed,
-                receive_time_unix_seconds=sample.receive_time_unix_seconds,
-                seq=hb,
-            ),
-        )
-        duplicate, out_of_order, advances = classify_sample_ordering_v1(
-            sample=sample,
-            seen_identities=seen,
-            last_event_time=last_event,
-        )
-        append_jsonl_v1(
-            files["market_samples"],
-            build_market_sample_record_v1(
-                bindings=bindings,
-                sample=sample,
-                duplicate=duplicate,
-                out_of_order=out_of_order,
-            ),
-        )
-        seen.add(sample.sample_identity)
-        if advances:
-            if first_as_of is None:
-                first_as_of = float(sample.event_time_unix_seconds)
-                age = 0
-                as_of = first_as_of
-            else:
-                as_of = float(first_as_of)
-                age = int(max(0.0, float(sample.event_time_unix_seconds) - as_of))
-            last_event = float(sample.event_time_unix_seconds)
-            old_vol = 0.12
-            fresh_vol = 0.12 + (0.0001 * vol_count)
-            source_digest = sample.sample_identity
-            vol = build_volatility_record_v1(
-                bindings=bindings,
-                monotonic_elapsed_seconds=elapsed,
-                receive_time_unix_seconds=sample.receive_time_unix_seconds,
-                old_volatility=old_vol,
-                old_age_seconds=age,
-                old_as_of_event_time=as_of,
-                estimator="canonical_research_estimator_v1",
-                unit="decimal",
-                horizon="PT60M",
-                annualized=True,
-                observation_count=vol_count + 1,
-                source_digest=source_digest,
-                fresh_volatility=fresh_vol,
-                recomputation_input_digest=f"recompute:{source_digest}",
-                consuming_decision_context="ALPHA_OBSERVATIONAL_ONLY",
-            )
-            append_jsonl_v1(files["volatility_records"], vol)
-            append_jsonl_v1(
-                files["volatility_drift_comparisons"],
-                build_drift_comparison_v1(bindings=bindings, volatility_record=vol),
-            )
-            old_decision = "HOLD"
-            fresh_decision = "HOLD" if age < 3600 else "BLOCK_ALPHA_AGE_ONLY"
-            append_jsonl_v1(
-                files["decision_sensitivity"],
-                build_decision_sensitivity_v1(
-                    bindings=bindings,
-                    other_inputs_digest="other_inputs_constant_v1",
-                    old_decision=old_decision,
-                    fresh_counterfactual_decision=fresh_decision,
-                    monotonic_elapsed_seconds=elapsed,
-                    receive_time_unix_seconds=sample.receive_time_unix_seconds,
-                ),
-            )
-            append_jsonl_v1(
-                files["counterfactual_decisions"],
-                build_counterfactual_record_v1(
-                    bindings=bindings,
-                    runtime_decision=old_decision,
-                    counterfactual_decision=fresh_decision,
-                    monotonic_elapsed_seconds=elapsed,
-                    receive_time_unix_seconds=sample.receive_time_unix_seconds,
-                ),
-            )
-            indep = build_exit_risk_safety_independence_record_v1(
-                bindings=bindings,
-                alpha_gate_blocked=(fresh_decision != old_decision),
-                monotonic_elapsed_seconds=elapsed,
-                receive_time_unix_seconds=sample.receive_time_unix_seconds,
-            )
-            assert_exit_precedence_preserved_v1(indep)
-            append_jsonl_v1(files["exit_risk_safety_independence"], indep)
-            vol_count += 1
-        append_jsonl_v1(
-            files["connectivity_events"],
-            {
-                "schema": (
-                    "canonical_volatility_numeric_max_age_additional_evidence_s03_connectivity/v1"
-                ),
-                **bindings.to_dict(),
-                "event": "SAMPLE_INGESTED",
-                "duplicate": duplicate,
-                "out_of_order": out_of_order,
-                "monotonic_elapsed_seconds": elapsed,
-                "receive_time": sample.receive_time_unix_seconds,
-            },
-        )
-    return {
-        "heartbeat_count": hb,
-        "volatility_record_count": vol_count,
-        "market_sample_count": len(samples),
-        "distinct_market_sample_count": len(seen),
-    }
+
+    return write_typed_s03_session_cycle_evidence_v1(
+        session_dir=session_dir,
+        bindings=bindings,
+        samples=samples,
+        duration=duration,
+    )
 
 
 def run_additional_evidence_s03_productive_session_v1(
