@@ -1,0 +1,13 @@
+{
+  "config_mismatch_rejected": true,
+  "consumed_rejected": true,
+  "fixture_auth_rejected": true,
+  "ok": true,
+  "parallel_lock_rejected": true,
+  "post_without_checkpoint_rejected": true,
+  "post_wrong_checkpoint_rejected": true,
+  "revoked_rejected": true,
+  "segment_mismatch_rejected": true,
+  "session_mismatch_rejected": true,
+  "sha_mismatch_rejected": true
+}

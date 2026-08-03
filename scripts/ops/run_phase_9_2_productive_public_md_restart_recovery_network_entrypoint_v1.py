@@ -1,0 +1,224 @@
+#!/usr/bin/env python3
+"""CLI for Phase 9.2 productive public-MD restart/recovery network entrypoint.
+
+Commands:
+  preflight              — offline readiness / segment plan / boundary proof
+  offline-integration    — fake public-MD transport + PR#5665 harness/verifier
+  materialize-evidence   — write capability evidence fixtures
+  productive-session     — fail-closed unless a later Owner session GO exists
+
+Confirm tokens are never accepted as argv plaintext. Use --confirm-token-file,
+env PEAK_TRADE_PSO_CONFIRM_TOKEN, or stdin only when a later session GO authorizes
+issuance/consumption.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+for _p in (_REPO_ROOT, _REPO_ROOT / "src"):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
+
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (  # noqa: E402
+    EeaPublicMdTransportV1,
+)
+from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (  # noqa: E402
+    redact_mapping_for_logs,
+)
+from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.constants_v1 import (  # noqa: E402
+    CAPABILITY_ID,
+    CONTROLLED_RESTART_EXIT_CODE,
+    DEFAULT_POST_SEGMENT_MAX_DURATION_SECONDS,
+    DEFAULT_PRE_SEGMENT_MAX_DURATION_SECONDS,
+    EXIT_CODE_82_CLASSIFICATION,
+    RESTART_CAMPAIGN_ID,
+    SEGMENT_PLAN,
+    SEGMENT_POST_ID,
+    SEGMENT_PRE_ID,
+    SEGMENT_ROLE_POST,
+    SEGMENT_ROLE_PRE,
+    TARGET_SESSION_ID,
+)
+from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.evidence_v1 import (  # noqa: E402
+    materialize_capability_evidence_v1,
+)
+from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.fake_public_md_v1 import (  # noqa: E402
+    build_fake_ticker_fetcher_v1,
+)
+from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.network_boundary_v1 import (  # noqa: E402
+    prove_public_md_network_boundary_v1,
+)
+from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.orchestrator_v1 import (  # noqa: E402
+    reject_productive_session_start_v1,
+    run_offline_productive_restart_orchestration_v1,
+)
+from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.parity_v1 import (  # noqa: E402
+    prove_phase92_productive_entrypoint_parity_v1,
+)
+from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.segment_authorization_v1 import (  # noqa: E402
+    build_segment_authorization_envelope_v1,
+)
+from src.ops.single_future_stateful_no_order_runtime_activation_v1.config_v1 import (  # noqa: E402
+    load_activation_config_v1,
+)
+
+
+class _Clock:
+    def __init__(self, start: float = 1_700_000_000.0) -> None:
+        self._t = float(start)
+
+    def time(self) -> float:
+        return self._t
+
+    def sleep(self, seconds: float) -> None:
+        self._t += float(seconds)
+
+
+def _repo_sha() -> str:
+    return subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=str(_REPO_ROOT), text=True
+    ).strip()
+
+
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument(
+        "command",
+        choices=("preflight", "offline-integration", "materialize-evidence", "productive-session"),
+    )
+    p.add_argument("--persistence-root", type=Path, default=None)
+    p.add_argument("--evidence-root", type=Path, default=None)
+    p.add_argument("--expected-repository-sha", default=None)
+    p.add_argument("--confirm-token-file", type=Path, default=None)
+    p.add_argument("--real-network", action="store_true")
+    p.add_argument("--json", action="store_true")
+    return p
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    sha = args.expected_repository_sha or _repo_sha()
+
+    if args.command == "preflight":
+        boundary = prove_public_md_network_boundary_v1(environ={})
+        parity = prove_phase92_productive_entrypoint_parity_v1()
+        payload = {
+            "ok": bool(boundary.get("ok") and parity.get("ok")),
+            "capability_id": CAPABILITY_ID,
+            "session_id": TARGET_SESSION_ID,
+            "segment_plan": list(SEGMENT_PLAN),
+            "controlled_restart_exit_code": CONTROLLED_RESTART_EXIT_CODE,
+            "exit_code_82_classification": EXIT_CODE_82_CLASSIFICATION,
+            "network_boundary": boundary,
+            "parity": parity,
+            "productive_session_authorized": False,
+            "notes": [
+                "OFFLINE_HARNESS_FROM_PR5665_REUSED",
+                "NO_SESSION_STARTED",
+                "NO_AUTHORIZATION_ISSUED",
+            ],
+        }
+        print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
+        return 0 if payload["ok"] else 1
+
+    if args.command == "materialize-evidence":
+        summary = materialize_capability_evidence_v1(
+            repository_sha=sha,
+            evidence_root=args.evidence_root,
+            repo_root=_REPO_ROOT,
+        )
+        print(json.dumps(redact_mapping_for_logs(summary), sort_keys=True, indent=2))
+        return 0 if summary.get("ok") else 1
+
+    if args.command == "productive-session":
+        # Explicitly refuse real session execution in this capability.
+        _ = args.confirm_token_file  # accepted only for future session GO wiring
+        payload = reject_productive_session_start_v1(
+            use_real_network=bool(args.real_network),
+            environ=os.environ,
+        )
+        print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
+        return 2
+
+    # offline-integration
+    if args.persistence_root is None:
+        print(
+            json.dumps(
+                {"ok": False, "blockers": ["PERSISTENCE_ROOT_REQUIRED"]},
+                sort_keys=True,
+                indent=2,
+            )
+        )
+        return 2
+    cfg = str(
+        load_activation_config_v1(
+            config_path=_REPO_ROOT
+            / "config/runtime/single_future_stateful_no_order_runtime_activation_v1.json"
+        ).config_digest
+    )
+    now = 1_700_000_000.0
+    clock = _Clock(now)
+    calls: list[tuple[str, str]] = []
+    transport = EeaPublicMdTransportV1(
+        fetcher=build_fake_ticker_fetcher_v1(calls=calls, clock=clock),
+        sleep=clock.sleep,
+        environ={},
+    )
+    pre = build_segment_authorization_envelope_v1(
+        segment_role=SEGMENT_ROLE_PRE,
+        segment_id=SEGMENT_PRE_ID,
+        repository_sha=sha,
+        config_digest=cfg,
+        authorization_id="phase92_cli_pre_auth_v1",
+        restart_campaign_id=RESTART_CAMPAIGN_ID,
+        runtime_session_id=f"{TARGET_SESSION_ID}:pre",
+        expires_at=now + 3600,
+        max_segment_duration_seconds=DEFAULT_PRE_SEGMENT_MAX_DURATION_SECONDS,
+        expected_successor_state="CHECKPOINT_MATERIALIZED",
+    )
+
+    def _post_builder(**kwargs):
+        return build_segment_authorization_envelope_v1(
+            segment_role=SEGMENT_ROLE_POST,
+            segment_id=SEGMENT_POST_ID,
+            repository_sha=sha,
+            config_digest=kwargs["config_digest"],
+            authorization_id="phase92_cli_post_auth_v1",
+            restart_campaign_id=RESTART_CAMPAIGN_ID,
+            runtime_session_id=f"{TARGET_SESSION_ID}:post",
+            expires_at=now + 3600,
+            max_segment_duration_seconds=DEFAULT_POST_SEGMENT_MAX_DURATION_SECONDS,
+            expected_successor_state="RECOVERED_CONTINUOUS",
+            predecessor_checkpoint_digest=kwargs["predecessor_checkpoint_digest"],
+        )
+
+    result = run_offline_productive_restart_orchestration_v1(
+        persistence_root=args.persistence_root,
+        repository_sha=sha,
+        pre_envelope=pre,
+        post_envelope_builder=_post_builder,
+        transport=transport,
+        now_unix=now,
+        repo_root=_REPO_ROOT,
+        applied_confirmation_ids=["conf_cli_001"],
+        candidate_observation_id="conf_cli_001",
+    )
+    payload = result.to_dict()
+    payload["fake_md_get_count"] = len(calls)
+    payload["fake_md_methods"] = sorted({m for m, _u in calls})
+    print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
+    if result.ok and result.controlled_restart_exit_code == CONTROLLED_RESTART_EXIT_CODE:
+        # Controlled segment transition classification (not a generic failure).
+        return int(CONTROLLED_RESTART_EXIT_CODE)
+    return 0 if result.ok else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

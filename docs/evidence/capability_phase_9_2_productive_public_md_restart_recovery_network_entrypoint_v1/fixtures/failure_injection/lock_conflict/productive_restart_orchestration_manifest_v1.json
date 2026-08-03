@@ -1,0 +1,31 @@
+{
+  "blockers": [
+    "ORPHAN_OR_DUPLICATE_LOCK_FAIL_CLOSED"
+  ],
+  "claims": {
+    "PARALLEL_AUTHORITY_ADDED": false
+  },
+  "controlled_restart_exit_code": null,
+  "network_session_started": false,
+  "notes": [
+    "MODE=OFFLINE_FAKE_PUBLIC_MD_TRANSPORT",
+    "REUSES_PR5665_HARNESS_AND_VERIFIER",
+    "REUSES_WALLCLOCK_NETWORK_BOUNDARY",
+    "NO_REAL_NETWORK",
+    "NO_REAL_SESSION_ACTIVATION",
+    "EXIT_CODE_82_CLASSIFICATION=CONTROLLED_SEGMENT_TRANSITION",
+    "ALPHA_OR_ORCHESTRATION_BLOCKED=true"
+  ],
+  "ok": false,
+  "post": null,
+  "pre": null,
+  "real_authorization_consumed": false,
+  "real_authorization_issued": false,
+  "runtime_started": false,
+  "segment_plan": [
+    "PRE_RESTART",
+    "POST_RESTART"
+  ],
+  "session_id": "phase_9_2_public_md_restart_recovery_session_v1",
+  "verifier": null
+}
