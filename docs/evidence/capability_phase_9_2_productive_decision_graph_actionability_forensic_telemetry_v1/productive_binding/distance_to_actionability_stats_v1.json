@@ -1,0 +1,16 @@
+{
+  "diagnostic_only": true,
+  "fields_observed": {
+    "actual_directional_measure": 19,
+    "candidate_threshold": 19,
+    "confirm_threshold": 19,
+    "confirmation_epochs_required": 19,
+    "current_price": 19,
+    "distance_to_candidate": 19,
+    "distance_to_confirm": 19,
+    "observe_threshold": 19,
+    "safety_state": 19
+  },
+  "no_threshold_recommendation_in_runtime": true,
+  "sample_count": 19
+}

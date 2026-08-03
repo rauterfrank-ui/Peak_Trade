@@ -16,6 +16,10 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
+from src.ops.phase_9_2_productive_decision_graph_actionability_forensic_telemetry_v1.host_binding_v1 import (
+    ActionabilityTelemetryBindingV1,
+    record_productive_cycle_telemetry_v1,
+)
 from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1 import (
     SimulatedFillV1,
     SimulatedPortfolioEconomicsModelV1,
@@ -397,6 +401,11 @@ class BridgeSessionStateV1:
     activation_binding: HostActivationBindingV1 = field(default_factory=HostActivationBindingV1)
     activation_state_root: Optional[str] = None
     activation_config_path: Optional[str] = None
+    # Phase 9.2 — actionability forensic telemetry (observe-only; never decision authority).
+    actionability_telemetry_binding: ActionabilityTelemetryBindingV1 = field(
+        default_factory=ActionabilityTelemetryBindingV1
+    )
+    last_actionability_telemetry: Optional[dict[str, Any]] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -1632,6 +1641,52 @@ def run_bridge_cycle_v1(
     if cycle.execution_eligible:
         # Hard fail-closed: bridge must never claim broker execution eligibility.
         raise RuntimeError("EXECUTION_ELIGIBLE_MUST_REMAIN_FALSE")
+
+    # Phase 9.2 — observe-only actionability forensic telemetry.
+    # TELEMETRY_FAILURE_CHANGES_DECISION=false: never alter the already-computed cycle.
+    try:
+        exit_signal_maps: dict[str, Any] = {}
+        for _k, _sig in (exit_signals or {}).items():
+            if _sig is None:
+                continue
+            if hasattr(_sig, "to_dict"):
+                exit_signal_maps[str(_k)] = dict(_sig.to_dict())
+            elif isinstance(_sig, Mapping):
+                exit_signal_maps[str(_k)] = dict(_sig)
+            else:
+                exit_signal_maps[str(_k)] = {"triggered": bool(getattr(_sig, "triggered", False))}
+        state.last_actionability_telemetry = dict(
+            record_productive_cycle_telemetry_v1(
+                state.actionability_telemetry_binding,
+                repository_sha=repository_sha,
+                config_digest=str(decision_cfg.config_digest()),
+                runtime_session_id=session_id,
+                decision_cycle_id=f"{session_id}:cycle:{state.cycle_index}",
+                instrument_id=state.instrument_id,
+                market_event_time=float(event_ts_unix),
+                observation_acceptance_result=observation_acceptance_result,
+                observation_cycle_kind=str(kind.value if hasattr(kind, "value") else kind),
+                confirmation_binding=state.confirmation_binding,
+                features=features,
+                replay=replay,
+                intended=intended,
+                fill=fill_dict,
+                exit_signals=exit_signal_maps,
+                has_open_position=not bool(state.venue_flat),
+                position_state=str(state.position_state),
+                scope_state=str(state.scope_direction_state),
+                safety_result=safety_result,
+                risk_sizing_result=sizing_result,
+                decision_cfg=decision_cfg,
+                fail_closed=False,
+            )
+        )
+    except Exception as _telemetry_exc:  # noqa: BLE001
+        state.last_actionability_telemetry = {
+            "ok": False,
+            "error": f"{type(_telemetry_exc).__name__}:{_telemetry_exc}",
+            "decision_unchanged": True,
+        }
 
     state.cycle_ledger.append(cycle.to_dict())
     return cycle
