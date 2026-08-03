@@ -18,9 +18,6 @@ from src.ops.simulated_entry_reduce_exit_actionability_evidence_v1.constants_v1 
     CALL_GRAPH_V1,
     CORE_LOGIC_CHANGE,
 )
-from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1 import (
-    CALL_GRAPH_V1 as HOST_CALL_GRAPH,
-)
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     ENTRY_EXIT_POLICY_VERSION,
     DecisionPrecedenceStage,
@@ -30,6 +27,11 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
 
 
 def prove_trading_logic_parity_v1() -> dict[str, Any]:
+    # Lazy import: avoid circular import through bridge_v1 ↔ phase_9_2 ↔ Cap7.1 parity.
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1 import (
+        CALL_GRAPH_V1 as HOST_CALL_GRAPH,
+    )
+
     entry_exit = DoublePlayEntryExitPolicyV0(policy_version=ENTRY_EXIT_POLICY_VERSION)
     code_precedence = [s.value for s in DecisionPrecedenceStage]
     expected = list(CANONICAL_EXIT_PRECEDENCE)

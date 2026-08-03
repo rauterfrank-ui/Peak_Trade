@@ -92,6 +92,9 @@ from trading.master_v2.canonical_volatility_hot_path_contract_closure_v1 import 
 from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
     CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
 )
+from trading.master_v2.canonical_volatility_pt1m_mark_observation_finalizer_v1 import (
+    CanonicalVolatilityPt1mMarkObservationFinalizerV1,
+)
 from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
     demote_trading_gate_for_typed_presence_failure_v1,
     evaluate_double_play_runtime_typed_volatility_presence_gate_v1,
@@ -192,6 +195,38 @@ def _ensure_typed_volatility_binding_host_v1(
             )
         )
     return state.typed_volatility_cmc_binding_host
+
+
+def ensure_pt1m_mark_observation_finalizer_v1(
+    state: "HardenedBridgeSessionStateV2",
+) -> CanonicalVolatilityPt1mMarkObservationFinalizerV1:
+    """Session-local PT1M finalizer for productive wallclock → typed-vol wiring."""
+    expected_venue = _DEFAULT_VOL_TYPED_BINDING_VENUE
+    expected_canon = str(state.instrument_id)
+    expected_venue_inst = _DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID
+    if state.pt1m_mark_observation_finalizer is None:
+        state.pt1m_mark_observation_finalizer = (
+            CanonicalVolatilityPt1mMarkObservationFinalizerV1.create(
+                venue=expected_venue,
+                canonical_instrument_id=expected_canon,
+                venue_instrument_id=expected_venue_inst,
+            )
+        )
+        return state.pt1m_mark_observation_finalizer
+    finalizer = state.pt1m_mark_observation_finalizer
+    if (
+        finalizer.venue != expected_venue
+        or finalizer.canonical_instrument_id != expected_canon
+        or finalizer.venue_instrument_id != expected_venue_inst
+    ):
+        # Instrument/venue identity change: isolate state (no cross-instrument history).
+        finalizer.reset_for_instrument_v1(
+            venue=expected_venue,
+            canonical_instrument_id=expected_canon,
+            venue_instrument_id=expected_venue_inst,
+        )
+        state.typed_volatility_cmc_binding_host = None
+    return finalizer
 
 
 def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
@@ -329,6 +364,7 @@ class HardenedBridgeSessionStateV2:
     ) = None
     typed_volatility_persistence_path: Path | None = None
     last_typed_volatility_binding_telemetry: dict[str, Any] | None = None
+    pt1m_mark_observation_finalizer: CanonicalVolatilityPt1mMarkObservationFinalizerV1 | None = None
     # Non-enforcing research evidence accumulation (threshold remains unresolved).
     max_age_research_evidence_ledger: list[dict[str, Any]] = field(default_factory=list)
     max_age_research_evidence_ledger_path: Path | None = None
