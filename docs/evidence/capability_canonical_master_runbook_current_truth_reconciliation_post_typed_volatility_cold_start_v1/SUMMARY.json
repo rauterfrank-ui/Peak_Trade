@@ -1,0 +1,50 @@
+{
+  "capability_id": "CANONICAL_MASTER_RUNBOOK_CURRENT_TRUTH_RECONCILIATION_POST_TYPED_VOLATILITY_COLD_START_V1",
+  "claims": {
+    "C1_PRODUCTIVELY_BOUND": true,
+    "C2_PRODUCTIVELY_BOUND": true,
+    "C3_PRODUCTIVELY_BOUND": true,
+    "CAP72_OFFLINE_NO_ORDER_ACTIVATED": true,
+    "DECISION_PATH_RESTART_PROVEN": true,
+    "DETERMINISTIC_LIFECYCLE_PROVEN": true,
+    "DOCUMENTATION_RUNTIME_DRIFT_UNTIL_MERGE": true,
+    "DYNAMIC_SCOPE_STATE_PERSISTED": true,
+    "EXIT_POLICY_PRODUCERS_BOUND": true,
+    "PHASE_9_2_CURRENT_CRITICAL_PATH": true,
+    "PHASE_9_2_SESSION_LADDER_COMPLETE": false,
+    "PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE": false,
+    "REGIME_UNCLASSIFIED_EXPECTED_FAIL_CLOSED_NO_DEFECT": true,
+    "TYPED_VOLATILITY_COLD_START_PROVEN": true
+  },
+  "config_changed": false,
+  "core_logic_changed": false,
+  "current_forensic_truth_sha": "beacc35d754fd8ab0a37190b882f71b8fb78cb38",
+  "docs_token_policy_fix": "encoded_slash_in_closed_status_tokens",
+  "expected_origin_main_sha": "beacc35d754fd8ab0a37190b882f71b8fb78cb38",
+  "immediate_next_capability_after": "PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1",
+  "ok": true,
+  "owner_go": true,
+  "regime_thresholds_changed": false,
+  "residuals_documented_not_fixed": [
+    "PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE",
+    "PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_OPEN",
+    "WALLCLOCK_HARDENING_V2_CALL_GRAPH_OMITS_EXPLICIT_C1_C2_STAGES_VS_CAP72_HOST",
+    "HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63"
+  ],
+  "review_mode": "DOCUMENTATION_ONLY_EXACT_EVIDENCE_RECONCILIATION",
+  "runbook_baseline_sha_historical": "a8653d520ba3563dddb41aa175445d14725ac9b9",
+  "runbook_path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+  "runbook_sha256_after": "718c79d9139be3088388533d7068cfec410f3620f8a1fb8bf6bd81137a68e259",
+  "runtime_code_changed": false,
+  "stale_claims_removed": [
+    "C1_PRODUCTIVELY_BOUND=false",
+    "C2_PRODUCTIVELY_BOUND=false",
+    "CONFIRMATION_STATE_PERSISTED=false",
+    "DYNAMIC_SCOPE_STATE_PERSISTED=false",
+    "ENTRY_FILL_EVIDENCE_PROVEN=false_unqualified",
+    "Immediate Next = CAPABILITY_6_1",
+    "G17 open/unbound as current truth"
+  ],
+  "task": "MASTER_RUNBOOK_TRUTH_RECONCILIATION_POST_TYPED_VOLATILITY_COLD_START_V1",
+  "verified_at": "2026-08-03T09:33:10Z"
+}
