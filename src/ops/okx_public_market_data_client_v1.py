@@ -7,12 +7,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import ssl
 import time
 import urllib.error
 import urllib.request
 from dataclasses import asdict, dataclass
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Mapping, Optional
 from urllib.parse import urlencode, urlparse
+from urllib.request import HTTPSHandler, OpenerDirector, Request
 
 from src.ops.okx_captured_at_freshness_policy_v1 import (
     build_okx_capture_clocks_v1,
@@ -71,6 +73,16 @@ class OkxPublicCaptureEnvelopeV1:
 HttpFetcher = Callable[[str, float], tuple[int, bytes]]
 
 
+def _build_proxy_free_https_opener_v1() -> OpenerDirector:
+    """HTTPS opener without ProxyHandler — blocks implicit urllib proxy inheritance."""
+    ctx = ssl.create_default_context()
+    opener = OpenerDirector()
+    opener.add_handler(HTTPSHandler(context=ctx))
+    opener.add_handler(urllib.request.HTTPErrorProcessor())
+    opener.add_handler(urllib.request.HTTPDefaultErrorHandler())
+    return opener
+
+
 def _assert_public_url(url: str) -> tuple[str, dict[str, str]]:
     parsed = urlparse(url)
     if parsed.scheme != "https" or parsed.netloc != ALLOWED_HOST:
@@ -92,16 +104,27 @@ def _assert_public_url(url: str) -> tuple[str, dict[str, str]]:
     return parsed.path, query
 
 
-def default_public_get(url: str, timeout_seconds: float) -> tuple[int, bytes]:
+def default_public_get(
+    url: str,
+    timeout_seconds: float,
+    *,
+    environ: Optional[Mapping[str, str]] = None,
+) -> tuple[int, bytes]:
+    from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
+        assert_http_client_proxy_env_clean_v1,
+    )
+
+    assert_http_client_proxy_env_clean_v1(environ=environ)
     _assert_public_url(url)
-    req = urllib.request.Request(
+    req = Request(
         url,
         method="GET",
         headers={"Accept": "application/json", "User-Agent": USER_AGENT},
     )
+    opener = _build_proxy_free_https_opener_v1()
     try:
-        with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:
-            status = int(getattr(resp, "status", 200))
+        with opener.open(req, timeout=timeout_seconds) as resp:
+            status = int(getattr(resp, "status", 200) or resp.getcode())
             body = resp.read(DEFAULT_MAX_RESPONSE_BYTES + 1)
             return status, body
     except urllib.error.HTTPError as exc:
@@ -117,11 +140,27 @@ class OkxPublicMarketDataClientV1:
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         max_retries: int = DEFAULT_MAX_RETRIES,
         sleep: Callable[[float], None] = time.sleep,
+        environ: Optional[Mapping[str, str]] = None,
+        enforce_proxy_preflight: bool = True,
     ) -> None:
-        self.fetcher = fetcher or default_public_get
+        from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
+            assert_http_client_proxy_env_clean_v1,
+        )
+
+        if enforce_proxy_preflight and fetcher is None:
+            assert_http_client_proxy_env_clean_v1(environ=environ)
+        if fetcher is None:
+
+            def _bound_default(url: str, timeout_seconds: float) -> tuple[int, bytes]:
+                return default_public_get(url, timeout_seconds, environ=environ)
+
+            self.fetcher: HttpFetcher = _bound_default
+        else:
+            self.fetcher = fetcher
         self.timeout_seconds = timeout_seconds
         self.max_retries = max_retries
         self.sleep = sleep
+        self.environ = environ
 
     def get_json(self, path: str, params: Mapping[str, str]) -> OkxPublicCaptureEnvelopeV1:
         if path not in ALLOWED_PATHS:

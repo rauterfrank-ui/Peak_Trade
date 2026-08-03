@@ -124,6 +124,21 @@ def assert_productive_run_preconditions_v1(
             blockers.append("REAL_NETWORK_ENV_REQUIRED_AS_ADDITIONAL_GATE")
         if blockers:
             blockers.append("REAL_NETWORK_REQUIRES_VERIFIED_PRODUCTIVE_AUTH")
+        from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
+            collect_proxy_no_proxy_blockers_v1,
+        )
+
+        # O1: proxy/NO_PROXY fail-closed BEFORE authorization consumption proceeds.
+        blockers.extend(collect_proxy_no_proxy_blockers_v1(env))
+    else:
+        # Even offline productive gates must not carry proxy inheritance into later network bind.
+        env = environ if environ is not None else {}
+        if env:
+            from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
+                collect_proxy_no_proxy_blockers_v1,
+            )
+
+            blockers.extend(collect_proxy_no_proxy_blockers_v1(env))
     # Keep previously_seen_fingerprints for API compatibility; replay is enforced in gatekeeper.
     _ = (
         confirm_token,
@@ -170,6 +185,20 @@ def run_productive_wallclock_session_v1(
         return ProductiveRunGateResultV1(
             ok=False, blockers=[AUTHORIZATION_SCHEMA_REJECTED_LEGACY], notes=notes
         )
+    # O1 canonical environment preflight stage marker: before any auth consumption side effects.
+    from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
+        collect_proxy_no_proxy_blockers_v1,
+    )
+
+    pre_auth_env = environ if environ is not None else (os.environ if use_real_network else {})
+    pre_auth_blockers = collect_proxy_no_proxy_blockers_v1(pre_auth_env) if pre_auth_env else []
+    if pre_auth_blockers:
+        return ProductiveRunGateResultV1(
+            ok=False,
+            blockers=sorted(set(pre_auth_blockers)),
+            notes=notes + ["O1_PREFLIGHT_BEFORE_AUTHORIZATION_CONSUMPTION"],
+        )
+    notes.append("O1_PREFLIGHT_BEFORE_AUTHORIZATION_CONSUMPTION")
     blockers = assert_productive_run_preconditions_v1(
         prereg=prereg,
         go=go,
