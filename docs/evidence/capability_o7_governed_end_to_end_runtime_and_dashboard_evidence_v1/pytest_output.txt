@@ -8,4 +8,4 @@ collected 3 items
 tests/ops/test_governed_end_to_end_runtime_and_dashboard_evidence_v1.py . [ 33%]
 ..                                                                       [100%]
 
-============================== 3 passed in 1.63s ===============================
+============================== 3 passed in 1.70s ===============================

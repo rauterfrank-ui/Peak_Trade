@@ -16,7 +16,7 @@
       "canonical_read_model_and_market_dashboard_rebuild_v1",
       "runtime_health_recovery_and_failure_injection_closure_v1"
     ],
-    "repository_sha_bound": "a1ceea76e81a047162af9e350c5efc98e5586b71",
+    "repository_sha_bound": "fe3e2f65aa0c4c84ceac46fabc7b2587fd6f3d10",
     "safety_invariants": {
       "AUTHORIZATION_CONSUMPTION_ALLOWED": false,
       "CONFIG_CHANGE_ALLOWED": false,
@@ -46,7 +46,7 @@
     "dashboard_after": "HEALTHY",
     "dashboard_before": "HEALTHY",
     "dashboard_mid": "DISCONNECTED",
-    "scaffold_pid": 11565,
+    "scaffold_pid": 12232,
     "scaffold_pid_unchanged": true,
     "trading_authority": false
   },
@@ -60,16 +60,16 @@
     "lifecycle_state": "RUNNING",
     "mode": "dashboard-only",
     "ok": true,
-    "scaffold_pid": 11565,
-    "session_id": "o7-smoke-db31a78131",
+    "scaffold_pid": 12232,
+    "session_id": "o7-smoke-583816fac0",
     "supervision_backend": "repository_owned_supervisor"
   },
   "multi_session": {
     "duplicate_blocked": true,
     "sequential_continuity": true,
-    "session_a": "o7-ms-a-314691d4",
+    "session_a": "o7-ms-a-2b934e4c",
     "session_a_started": true,
-    "session_b": "o7-ms-b-92f2d80c"
+    "session_b": "o7-ms-b-32d4c648"
   },
   "process_crash_recovery": {
     "launcher_recover_action": "CLEARED_STALE_PID",
@@ -80,8 +80,8 @@
     "unexpected_exit_detected": true
   },
   "scaffold_restart_with_read_model_recovery": {
-    "new_pid": 11616,
-    "old_pid": 11565,
+    "new_pid": 12286,
+    "old_pid": 12232,
     "read_model_classification": "DERIVED",
     "read_model_digest_match": true,
     "read_model_ssot": false

@@ -13,12 +13,12 @@
   "read_model_commit_count": 2,
   "read_model_replay_count": 1,
   "recovery_success": true,
-  "session_elapsed_seconds": 1.593,
+  "session_elapsed_seconds": 1.597,
   "startup_attempt_count": 5,
   "startup_failure_count": 1,
-  "startup_latency_ms": 168,
+  "startup_latency_ms": 162,
   "startup_latency_ms_samples": [
-    168
+    162
   ],
   "startup_success_count": 4,
   "unexpected_process_exit_count": 1

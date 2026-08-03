@@ -50,12 +50,12 @@
     "read_model_commit_count": 2,
     "read_model_replay_count": 1,
     "recovery_success": true,
-    "session_elapsed_seconds": 1.593,
+    "session_elapsed_seconds": 1.597,
     "startup_attempt_count": 5,
     "startup_failure_count": 1,
-    "startup_latency_ms": 168,
+    "startup_latency_ms": 162,
     "startup_latency_ms_samples": [
-      168
+      162
     ],
     "startup_success_count": 4,
     "unexpected_process_exit_count": 1
@@ -78,11 +78,11 @@
   "SCHEMA_VERSION": "o7_governed_end_to_end_runtime_and_dashboard_evidence_v1",
   "SECOND_SSOT_CREATED": false,
   "SEPARATE_NETWORK_SESSION_OWNER_GO_REQUIRED": true,
-  "generated_at": "2026-08-03T15:47:24Z",
+  "generated_at": "2026-08-03T15:47:49Z",
   "implementation_base_sha": "a1ceea76e81a047162af9e350c5efc98e5586b71",
-  "local_commit_sha": null,
+  "local_commit_sha": "fe3e2f65aa0c4c84ceac46fabc7b2587fd6f3d10",
   "ok": true,
-  "repository_sha": "a1ceea76e81a047162af9e350c5efc98e5586b71",
+  "repository_sha": "fe3e2f65aa0c4c84ceac46fabc7b2587fd6f3d10",
   "test_count": 3,
   "test_result": "PASS"
 }

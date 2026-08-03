@@ -15,7 +15,7 @@
     "canonical_read_model_and_market_dashboard_rebuild_v1",
     "runtime_health_recovery_and_failure_injection_closure_v1"
   ],
-  "repository_sha_bound": "a1ceea76e81a047162af9e350c5efc98e5586b71",
+  "repository_sha_bound": "fe3e2f65aa0c4c84ceac46fabc7b2587fd6f3d10",
   "safety_invariants": {
     "AUTHORIZATION_CONSUMPTION_ALLOWED": false,
     "CONFIG_CHANGE_ALLOWED": false,
