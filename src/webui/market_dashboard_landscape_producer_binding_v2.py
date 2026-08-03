@@ -3,9 +3,10 @@
 Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity,
 regime_bull_bear_switch (explicit injection; PR #5577), canonical_decision
 evidence (injection or durable presentation projection auto-bind),
-double_play display projection, safety authority KillSwitch/boundary
-field projection, risk/sizing/capital field projection, execution/reconciliation
-field projection, and economic summary EconomicViabilityEvidenceV1 field
+double_play display projection (injection or durable presentation projection
+auto-bind), safety authority KillSwitch/boundary field projection,
+risk/sizing/capital field projection, execution/reconciliation field
+projection, and economic summary EconomicViabilityEvidenceV1 field
 projection.
 Lives outside market_dashboard_landscape_v2 so that package stays free of
 trading/webui producer imports (architecture guard).
@@ -70,6 +71,10 @@ from .workflow_dashboard_archive_root_v1 import (
 from .workflow_dashboard_readmodel_v1.canonical_decision_presentation_projection_v1 import (
     LOAD_ERROR_ABSENT as DECISION_PROJECTION_ABSENT,
     try_load_canonical_decision_presentation_projection_v1,
+)
+from .workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
+    LOAD_ERROR_ABSENT as DOUBLE_PLAY_PROJECTION_ABSENT,
+    try_load_double_play_presentation_projection_v1,
 )
 from .workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     FORBIDDEN_SELECTED_SYMBOLS,
@@ -1009,19 +1014,45 @@ def _bind_double_play_display(
     as_of: datetime,
     git_sha: str | None,
     double_play_fields: Mapping[str, Any] | None,
+    archive_root: Path | None = None,
 ) -> Any:
-    """Project injected DoublePlayDashboardDisplaySnapshot-compatible fields.
+    """Project DoublePlayDashboardDisplaySnapshot-compatible fields.
 
-    No durable dashboard Double Play readmodel. Without injection → MISSING_SOURCE.
-    Never calls compose_double_play_decision or build_dashboard_display_snapshot.
+    Injection remains supported for tests. Productive auto-bind loads the
+    non-authoritative presentation projection from the Workflow Dashboard
+    archive root when injection is absent. Never calls
+    compose_double_play_decision or build_dashboard_display_snapshot.
     Pending/Armed are not on the display snapshot — remain unbound elsewhere.
     """
     if double_play_fields is None:
-        return unavailable_double_play(
-            availability=Availability.MISSING_SOURCE,
-            generated_at=as_of,
-            reason=REASON_DOUBLE_PLAY_NOT_PERSISTED,
-        )
+        if archive_root is None:
+            return unavailable_double_play(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_DOUBLE_PLAY_NOT_PERSISTED,
+            )
+        loaded = try_load_double_play_presentation_projection_v1(archive_root)
+        if not loaded.loaded or loaded.binder_fields is None:
+            reason = REASON_DOUBLE_PLAY_NOT_PERSISTED
+            if loaded.load_errors:
+                first = str(loaded.load_errors[0])
+                if first != DOUBLE_PLAY_PROJECTION_ABSENT:
+                    reason = first
+            availability = (
+                Availability.MISSING_SOURCE
+                if reason == REASON_DOUBLE_PLAY_NOT_PERSISTED
+                or reason == DOUBLE_PLAY_PROJECTION_ABSENT
+                else Availability.INVALID
+            )
+            if reason == DOUBLE_PLAY_PROJECTION_ABSENT:
+                reason = REASON_DOUBLE_PLAY_NOT_PERSISTED
+                availability = Availability.MISSING_SOURCE
+            return unavailable_double_play(
+                availability=availability,
+                generated_at=as_of,
+                reason=reason,
+            )
+        double_play_fields = loaded.binder_fields
 
     if "overall_status" not in double_play_fields:
         raise KeyError("double_play_fields missing required keys: ['overall_status']")
@@ -1861,8 +1892,10 @@ def bind_market_universe_slots(
 
     double_play_fields accepts already-computed
     DoublePlayDashboardDisplaySnapshot-compatible fields plus producer
-    wall-clock timestamps. Without injection, double_play is MISSING_SOURCE.
-    Never calls compose/build Double Play owners.
+    wall-clock timestamps. Without injection, double_play auto-binds from the
+    durable non-authoritative presentation projection under the archive root;
+    absent/invalid projection → MISSING_SOURCE / INVALID. Never calls
+    compose/build Double Play owners.
 
     safety_authority_fields accepts already-computed KillSwitch / boundary-
     compatible fields (kill_switch_state, veto_active, reason_codes) plus
@@ -1915,6 +1948,7 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         double_play_fields=double_play_fields,
+        archive_root=root,
     )
     safety = _bind_safety_authority(
         as_of=as_of,

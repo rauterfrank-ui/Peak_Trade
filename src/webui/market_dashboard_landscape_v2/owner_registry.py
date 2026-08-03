@@ -97,10 +97,14 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         authority_class="double_play",
         reuse_status="REUSED",
         notes=(
-            "Phase 4.3B: Landscape projects DoublePlayDashboardDisplaySnapshot "
+            "Phase 4.3B + CAPABILITY_PRESENTATION_DOUBLE_PLAY_AUTOBIND_V1: "
+            "Landscape projects DoublePlayDashboardDisplaySnapshot "
             "field-for-field (overall_status/panel_summaries/blockers); "
             "display_only=True; live_authorization=False; no compose/build calls; "
-            "pending/armed remain unbound (not on display snapshot)."
+            "pending/armed remain unbound (not on display snapshot). "
+            "Durable auto-bind via non-authoritative "
+            "double_play_presentation_projection.v1 under archive root; "
+            "injection remains test-compatible; AUTHORITY_EFFECT=NONE."
         ),
     ),
     CanonicalOwnerRefV1(
