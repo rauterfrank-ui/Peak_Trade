@@ -483,6 +483,150 @@ valid typed volatility is expected fail-closed behavior when no regime
 rule matches; it is not by itself a core-logic defect and does not
 authorize threshold auto-tuning.
 
+## 4.7 Canonical Presentation Architecture
+
+``` text
+CAPABILITY_ID=CAPABILITY_CANONICAL_PRESENTATION_ARCHITECTURE_V1
+DOCUMENT_EFFECT=NORMATIVE_ARCHITECTURE_EXTENSION_ONLY
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+DASHBOARD_AUTHORITY_EFFECT=NONE
+TRADING_AUTHORITY_EFFECT=NONE
+RISK_AUTHORITY_EFFECT=NONE
+DECISION_AUTHORITY_EFFECT=NONE
+READ_MODEL_POLICY_MUTATION=false
+CORE_LOGIC_CHANGE=false
+GOVERNANCE_PRESERVED=true
+```
+
+This section ratifies the canonical presentation architecture for all
+Dashboard and Landscape surfaces. It extends section 4.4 without
+replacing Runtime, Decision, Risk, Safety, Universe, Ranking, Selection
+or Volatility authority. Presentation is subordinate observation only.
+
+### 4.7.1 Term definitions
+
+``` text
+Presentation Surface
+  = any Dashboard, Landscape, chart, panel, widget or operator view
+    that renders system state for human observation
+
+Canonical Producer
+  = Owner-ratified runtime or persistence producer that emits durable
+    or derived truth consumed by a canonical Read Model
+
+Canonical Read Model
+  = rebuildable projection of canonical producer truth for read-only
+    consumption; never SSOT; never trading input
+
+Presentation Binding
+  = explicit path from named Presentation Surface
+    → named Canonical Read Model
+    → named Canonical Producer
+
+NOT_BOUND
+  = truthful fail-closed presentation state when no canonical binding
+    exists or the bound source is unavailable; must not fabricate data
+
+Fallback / Placeholder
+  = explicit non-productive presentation state that discloses absence,
+    staleness or unbound status; must never simulate productive market,
+    decision, risk, scope or timeline truth
+```
+
+### 4.7.2 Architecture diagram
+
+``` text
+Canonical Runtime / Persistence SSOT
+        │
+        ▼
+Canonical Producer (named owner)
+        │
+        ▼
+Canonical Read Model (rebuildable, non-authority)
+        │
+        ▼
+Presentation Binding (one strategy for all surfaces)
+        │
+        ├─ Dashboard Surface (read-only render)
+        └─ Landscape Surface (read-only render)
+
+Forbidden reverse paths:
+Presentation → Decision
+Presentation → Risk
+Presentation → Trading Intent / Order
+Presentation → Canonical Producer mutation
+Presentation → Read Model semantic mutation
+```
+
+### 4.7.3 Ratified architecture rules
+
+1. Dashboard and Landscape surfaces are pure Presentation Layer and own
+   no domain authority. They may observe and display; they may not
+   decide, authorize, mutate or override canonical system truth.
+
+2. Canonical Read Models and system logic must never be adapted for UI
+   convenience. UI requirements do not authorize schema, semantic,
+   producer or decision-path changes.
+
+3. Presentation adapts to the system — never the reverse. Missing,
+   delayed or unbound canonical truth must surface as truthful
+   presentation state, not as pressure to alter producers.
+
+4. All Presentation bindings occur exclusively through canonical
+   Producers and canonical Read Models. Parallel paths, ad-hoc fetches,
+   reconstructed trading truth and shadow projections are forbidden.
+
+5. No data fabrication. Artificial OHLCV, Decision, Risk, Scope or
+   Timeline data must not be invented to fill charts, panels or
+   landscapes.
+
+6. Fallback, Placeholder and `NOT_BOUND` states must be truthful and
+   fail-closed. They must disclose absence or unbound status and must
+   never simulate productive market, decision, risk, scope or timeline
+   data.
+
+7. Every Presentation Surface uses the same canonical binding strategy.
+   Differences may affect layout, density and visual scope only — never
+   data truth, authority or producer selection semantics.
+
+8. Presentation must never assume Trading Authority, Risk Authority or
+   Decision Authority. Section 4.2 and section 4.4 remain controlling.
+
+9. Visual improvements must never force semantic changes to canonical
+   data. Styling, chrome and composition are presentation-only.
+
+10. Every new Dashboard or Landscape component requires an explicitly
+    named canonical Owner, canonical Producer and canonical Binding
+    path before implementation or merge.
+
+### 4.7.4 Mandatory negative controls
+
+``` text
+PRESENTATION_IS_SSOT=false
+PRESENTATION_IS_TRADING_INPUT=false
+PRESENTATION_MAY_MUTATE_READ_MODEL_SEMANTICS=false
+PRESENTATION_MAY_MUTATE_PRODUCER_LOGIC=false
+PRESENTATION_PARALLEL_DATA_PATH_ALLOWED=false
+PRESENTATION_DATA_FABRICATION_ALLOWED=false
+PRESENTATION_FAKE_OHLCV_ALLOWED=false
+PRESENTATION_FAKE_DECISION_ALLOWED=false
+PRESENTATION_FAKE_RISK_ALLOWED=false
+PRESENTATION_FAKE_SCOPE_ALLOWED=false
+PRESENTATION_FAKE_TIMELINE_ALLOWED=false
+PRESENTATION_FALLBACK_MAY_SIMULATE_PRODUCTIVE_DATA=false
+PRESENTATION_NOT_BOUND_MUST_BE_FAIL_CLOSED=true
+PRESENTATION_BINDING_STRATEGY_IS_UNIFORM=true
+NEW_COMPONENT_REQUIRES_NAMED_OWNER_PRODUCER_BINDING=true
+```
+
+### 4.7.5 Closure implication
+
+A Presentation change is merge-eligible only when it preserves the
+rules above, leaves Trading / Risk / Decision authority unchanged, and
+binds exclusively through named canonical Producer and Read Model
+paths. Visual completeness is never a justification to weaken fail-closed
+`NOT_BOUND`, Fallback or Placeholder truth.
+
 ------------------------------------------------------------------------
 
 # 5. Current Forensic Runtime Truth
