@@ -117,9 +117,11 @@ def _minimal_allowlist_parent(
     evidence_root: str,
     mode: str,
 ) -> dict[str, str]:
+    repo_root = Path(__file__).resolve().parents[3]
+    pythonpath = f"{repo_root}:{repo_root / 'src'}"
     return {
         "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
-        "PYTHONPATH": str(Path(__file__).resolve().parents[3]),
+        "PYTHONPATH": pythonpath,
         "PYTHONUNBUFFERED": "1",
         "MPLCONFIGDIR": str(Path(state_root) / "mpl"),
         "HOME": os.environ.get("HOME", str(Path(state_root) / "home")),
@@ -142,6 +144,9 @@ def _minimal_allowlist_parent(
         "PEAK_TRADE_STATE_ROOT": state_root,
         "PEAK_TRADE_EVIDENCE_ROOT": evidence_root,
         "PEAK_TRADE_ENVIRONMENT_POLICY_ID": ENVIRONMENT_POLICY_ID,
+        "PEAK_TRADE_DASHBOARD_HTTP_HOST": "127.0.0.1",
+        "PEAK_TRADE_DASHBOARD_HTTP_PORT": "0",
+        "PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED": "0",
     }
 
 
@@ -293,6 +298,15 @@ class CanonicalLocalLauncherV1:
             log_dir.mkdir(parents=True, exist_ok=True)
             heartbeat_path = session_dir / HEARTBEAT_FILENAME
             marker_path = session_dir / SCAFFOLD_MARKER_FILENAME
+            # Clear prior worker markers so readiness wait cannot race with stale files.
+            for stale in (heartbeat_path, marker_path):
+                try:
+                    stale.unlink(missing_ok=True)
+                except TypeError:
+                    if stale.exists():
+                        stale.unlink()
+                except OSError:
+                    pass
 
             created_at = float(existing_same.created_at_unix) if existing_same is not None else now
             record = SessionRecordV1(
@@ -364,8 +378,16 @@ class CanonicalLocalLauncherV1:
                 reason_code=str(auth_boundary["reason_code"]),
             )
             self.registry.transition(
-                record, new_state="STARTING", reason_code="SPAWN_DASHBOARD_SCAFFOLD"
+                record, new_state="STARTING", reason_code="SPAWN_DASHBOARD_HTTP_HOST"
             )
+            # Ensure loopback HTTP host env is present before O1 effective build.
+            o1_parent["PEAK_TRADE_DASHBOARD_HTTP_HOST"] = str(
+                o1_parent.get("PEAK_TRADE_DASHBOARD_HTTP_HOST") or "127.0.0.1"
+            )
+            o1_parent["PEAK_TRADE_DASHBOARD_HTTP_PORT"] = str(
+                o1_parent.get("PEAK_TRADE_DASHBOARD_HTTP_PORT") or "0"
+            )
+            o1_parent.setdefault("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", "0")
             o1_full = run_canonical_environment_preflight_v1(
                 o1_parent,
                 stage="O2_CHILD_ENV_BUILD",
@@ -382,19 +404,40 @@ class CanonicalLocalLauncherV1:
             )
 
             effective_environ = build_or_raise_effective_runtime_environment_v1(o1_parent)
+            http_host = str(o1_parent["PEAK_TRADE_DASHBOARD_HTTP_HOST"])
+            http_port = str(o1_parent["PEAK_TRADE_DASHBOARD_HTTP_PORT"])
             argv = [
                 python_executable(),
                 "-m",
-                "src.ops.canonical_local_launcher_and_process_supervision_v1.dashboard_scaffold_worker_v1",
+                "src.ops.canonical_local_launcher_and_process_supervision_v1.dashboard_http_worker_v1",
                 "--session-id",
                 sid,
                 "--heartbeat-path",
                 str(heartbeat_path),
                 "--marker-path",
                 str(marker_path),
+                "--state-root",
+                str(self.paths.state_root),
+                "--http-host",
+                http_host,
+                "--http-port",
+                http_port,
             ]
             if force_ignore_sigterm_for_test:
-                argv.append("--ignore-sigterm")
+                # Escalation proof remains heartbeat-only (no HTTP bind required).
+                argv = [
+                    python_executable(),
+                    "-m",
+                    "src.ops.canonical_local_launcher_and_process_supervision_v1.dashboard_http_worker_v1",
+                    "--session-id",
+                    sid,
+                    "--heartbeat-path",
+                    str(heartbeat_path),
+                    "--marker-path",
+                    str(marker_path),
+                    "--heartbeat-only",
+                    "--ignore-sigterm",
+                ]
 
             try:
                 identity = spawn_detached_process_group(
@@ -413,8 +456,8 @@ class CanonicalLocalLauncherV1:
 
             record.process_identity = identity
             self.registry.write_session(record)
-            # Wait briefly for heartbeat/marker
-            deadline = time.time() + 3.0
+            # Wait for heartbeat/marker (HTTP bind may take longer than scaffold-only).
+            deadline = time.time() + 8.0
             while time.time() < deadline:
                 if heartbeat_path.is_file() and marker_path.is_file():
                     break
@@ -447,6 +490,16 @@ class CanonicalLocalLauncherV1:
             except ProcessIdentityMismatchError as exc:
                 identity_error = str(exc)
                 alive = process_alive(record.process_identity.pid)
+        http_host = None
+        http_port = None
+        marker_path = self.registry.session_dir(session_id) / SCAFFOLD_MARKER_FILENAME
+        if marker_path.is_file():
+            try:
+                marker = json.loads(marker_path.read_text(encoding="utf-8"))
+                http_host = marker.get("http_host")
+                http_port = marker.get("http_port")
+            except json.JSONDecodeError:
+                pass
         return {
             "ok": True,
             "session_id": session_id,
@@ -462,6 +515,11 @@ class CanonicalLocalLauncherV1:
             ),
             "supervision_backend": record.supervision_backend,
             "safety_invariants": dict(record.safety_invariants),
+            "http_host": http_host,
+            "http_port": http_port,
+            "http_base_url": (
+                f"http://{http_host}:{http_port}" if http_host and http_port else None
+            ),
         }
 
     def health(

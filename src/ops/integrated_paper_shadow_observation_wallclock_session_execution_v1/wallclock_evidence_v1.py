@@ -66,6 +66,7 @@ APPEND_ONLY = (
     "bridge_cycle_ledger.jsonl",
     "bridge_fill_ledger.jsonl",
     "simulated_fills.jsonl",
+    "o7_o4_o5_bridge_trace.jsonl",
 )
 
 

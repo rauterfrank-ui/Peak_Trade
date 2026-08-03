@@ -200,6 +200,36 @@ class WallclockSessionRuntimeV1:
         self.bridge_state = HardenedBridgeSessionStateV2(instrument_id=CANONICAL_INSTRUMENT_ID)
         self.session_id: str = ""
         self._session_side_effects_allowed = False
+        self._o7_live_ohlcv_bridge = None
+
+    def _maybe_init_o7_live_ohlcv_bridge_v1(
+        self,
+        *,
+        session_id: str,
+        repository_sha: str,
+        config_digest: str,
+    ) -> None:
+        """Optional PSO→O4→O5 bridge (env-gated; no config mutation)."""
+        import os
+
+        if str(os.environ.get("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED") or "0") != "1":
+            self._o7_live_ohlcv_bridge = None
+            return
+        state_root = Path(str(os.environ.get("PEAK_TRADE_STATE_ROOT") or "")).expanduser()
+        if not str(state_root):
+            self.blockers.append("O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_REQUIRED")
+            self._o7_live_ohlcv_bridge = None
+            return
+        from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.pso_to_o4_o5_live_bridge_v1 import (
+            PsoToO4O5LiveBridgeV1,
+        )
+
+        self._o7_live_ohlcv_bridge = PsoToO4O5LiveBridgeV1(
+            session_id=session_id,
+            repository_sha=repository_sha,
+            config_digest=config_digest,
+            state_root=state_root,
+        )
 
     def _transition(self, to_state: WallclockSessionState) -> None:
         assert_transition_allowed(from_state=self.state, to_state=to_state)
@@ -333,6 +363,22 @@ class WallclockSessionRuntimeV1:
             self._transition(WallclockSessionState.CONSUMED)
         except WallclockStateMachineError as exc:
             self._abort("ABORT_AFTER_CONSUMPTION", str(exc))
+            return self._finalize_result(session_id=session_id, incomplete=True)
+
+        import os
+
+        self.session_id = session_id
+        self._maybe_init_o7_live_ohlcv_bridge_v1(
+            session_id=session_id,
+            repository_sha=str(expected_repository_sha),
+            config_digest=str(
+                os.environ.get("PEAK_TRADE_CONFIG_DIGEST")
+                or (config_snapshot or {}).get("config_digest")
+                or "unspecified_config_digest"
+            ),
+        )
+        if "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_REQUIRED" in self.blockers:
+            self._abort("O7_LIVE_OHLCV_BRIDGE_MISCONFIGURED", "STATE_ROOT_REQUIRED")
             return self._finalize_result(session_id=session_id, incomplete=True)
 
         # Write remaining immutable snapshots.
@@ -531,6 +577,26 @@ class WallclockSessionRuntimeV1:
                             "mapping_digest": normalized.mapping_digest,
                         },
                     )
+                    if self._o7_live_ohlcv_bridge is not None:
+                        bridge_out = self._o7_live_ohlcv_bridge.ingest_normalized_event(
+                            normalized,
+                            runtime_cycle_index=int(self.cycle_count),
+                            projection_time_unix=now_wall,
+                        )
+                        self.writer.append_event(
+                            "o7_o4_o5_bridge_trace.jsonl",
+                            {
+                                "sequence": tick.sequence,
+                                "accepted": bridge_out.get("accepted"),
+                                "advance": bridge_out.get("advance"),
+                                "classification": bridge_out.get("classification"),
+                                "timestamp_chain": bridge_out.get("timestamp_chain"),
+                                "connection_state": (bridge_out.get("read_model") or {}).get(
+                                    "connection_state"
+                                ),
+                                "bar_count": (bridge_out.get("read_model") or {}).get("bar_count"),
+                            },
+                        )
                     status, kill = staleness.observe(
                         receive_ts=receive_ts, wall_now=now_wall, mono_ts=now_mono
                     )
