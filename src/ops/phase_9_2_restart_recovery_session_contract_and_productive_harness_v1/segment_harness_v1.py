@@ -69,6 +69,7 @@ def run_pre_restart_segment_v1(
     persistence_root: Path,
     checkpoint: RestartCheckpointV1,
     request_controlled_restart: bool = True,
+    authorization_preconsumed: bool = False,
 ) -> SegmentRunResultV1:
     root = Path(persistence_root)
     root.mkdir(parents=True, exist_ok=True)
@@ -92,6 +93,7 @@ def run_pre_restart_segment_v1(
     exit_code: int | None = None
 
     try:
+        consumed_ids = load_consumed_authorization_ids_v1(ledger_path_for_root_v1(root))
         validate_restart_session_contract_v1(
             contract.to_dict(),
             repository_sha=contract.expected_repository_sha,
@@ -100,23 +102,29 @@ def run_pre_restart_segment_v1(
             confirmation_session_id=contract.expected_confirmation_session_id,
             durable_state_lineage_id=contract.durable_state_lineage_id,
             restart_campaign_id=contract.restart_campaign_id,
-            consumed_authorization_ids=load_consumed_authorization_ids_v1(
-                ledger_path_for_root_v1(root)
-            ),
+            # When the productive orchestrator already consumed the auth once,
+            # skip reuse rejection for this same id and skip a second consume.
+            consumed_authorization_ids=(set() if authorization_preconsumed else consumed_ids),
         )
         if contract.segment_role != SEGMENT_ROLE_PRE:
             raise RestartSegmentError("segment_role_must_be_pre_restart")
+        if authorization_preconsumed and contract.authorization_id not in consumed_ids:
+            raise RestartSegmentError("authorization_preconsumed_not_recorded")
 
         lock.acquire()
-        consume_authorization_once_v1(
-            ledger_path=ledger_path_for_root_v1(root),
-            authorization_id=contract.authorization_id,
-            authorization_digest=contract.authorization_digest,
-            segment_id=contract.segment_id,
-            segment_role=contract.segment_role,
-            runtime_session_id=contract.runtime_session_id,
-        )
-        auth_consumed = True
+        if authorization_preconsumed:
+            auth_consumed = True
+            notes.append("AUTHORIZATION_PRECONSUMED_BY_PRODUCTIVE_ORCHESTRATOR=true")
+        else:
+            consume_authorization_once_v1(
+                ledger_path=ledger_path_for_root_v1(root),
+                authorization_id=contract.authorization_id,
+                authorization_digest=contract.authorization_digest,
+                segment_id=contract.segment_id,
+                segment_role=contract.segment_role,
+                runtime_session_id=contract.runtime_session_id,
+            )
+            auth_consumed = True
         runtime_started = True
         alpha_blocked = False
 
@@ -284,6 +292,7 @@ def run_post_restart_segment_v1(
     persistence_root: Path,
     candidate_observation_id: str | None = None,
     candidate_fill_id: str | None = None,
+    authorization_preconsumed: bool = False,
 ) -> SegmentRunResultV1:
     root = Path(persistence_root)
     blockers: list[str] = []
@@ -308,6 +317,7 @@ def run_post_restart_segment_v1(
             raise RestartSegmentError("segment_role_must_be_post_restart")
 
         # Validate and consume new authorization before any alpha.
+        consumed_ids = load_consumed_authorization_ids_v1(ledger_path_for_root_v1(root))
         validate_restart_session_contract_v1(
             contract.to_dict(),
             repository_sha=contract.expected_repository_sha,
@@ -316,20 +326,24 @@ def run_post_restart_segment_v1(
             confirmation_session_id=contract.expected_confirmation_session_id,
             durable_state_lineage_id=contract.durable_state_lineage_id,
             restart_campaign_id=contract.restart_campaign_id,
-            consumed_authorization_ids=load_consumed_authorization_ids_v1(
-                ledger_path_for_root_v1(root)
-            ),
+            consumed_authorization_ids=(set() if authorization_preconsumed else consumed_ids),
         )
+        if authorization_preconsumed and contract.authorization_id not in consumed_ids:
+            raise RestartSegmentError("authorization_preconsumed_not_recorded")
         lock.acquire()
-        consume_authorization_once_v1(
-            ledger_path=ledger_path_for_root_v1(root),
-            authorization_id=contract.authorization_id,
-            authorization_digest=contract.authorization_digest,
-            segment_id=contract.segment_id,
-            segment_role=contract.segment_role,
-            runtime_session_id=contract.runtime_session_id,
-        )
-        auth_consumed = True
+        if authorization_preconsumed:
+            auth_consumed = True
+            notes.append("AUTHORIZATION_PRECONSUMED_BY_PRODUCTIVE_ORCHESTRATOR=true")
+        else:
+            consume_authorization_once_v1(
+                ledger_path=ledger_path_for_root_v1(root),
+                authorization_id=contract.authorization_id,
+                authorization_digest=contract.authorization_digest,
+                segment_id=contract.segment_id,
+                segment_role=contract.segment_role,
+                runtime_session_id=contract.runtime_session_id,
+            )
+            auth_consumed = True
 
         pre_path = root / PRE_TERMINAL_MANIFEST_FILENAME
         if not pre_path.is_file():

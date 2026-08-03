@@ -162,3 +162,15 @@ phase_9_2_public_md_restart_recovery_session_v1
 Requires a separate session Owner-GO. This capability only closes the contract,
 harness, evidence fixtures and verifier gap identified by
 `PHASE_9_2_RESTART_RECOVERY_SESSION_READINESS_AND_GAP_AUDIT_V1`.
+
+The productive Public-MD/wallclock orchestration entrypoint that consumes this
+offline contract is implemented by:
+
+```text
+PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_NETWORK_ENTRYPOINT_V1
+scripts/ops/run_phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.py
+```
+
+That successor entrypoint does not replace this offline harness. Actual session
+activation still requires a separate Owner session GO and remains unauthorized
+by documentation or merge alone.

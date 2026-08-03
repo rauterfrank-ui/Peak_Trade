@@ -1,0 +1,52 @@
+{
+  "schema_version": "phase_9_2_productive_public_md_restart_recovery_network_entrypoint.v1",
+  "capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_NETWORK_ENTRYPOINT_V1",
+  "session_id": "phase_9_2_public_md_restart_recovery_session_v1",
+  "predecessor_capability_id": "PHASE_9_2_RESTART_RECOVERY_SESSION_CONTRACT_AND_PRODUCTIVE_HARNESS_V1",
+  "predecessor_pr": 5665,
+  "predecessor_merge_sha": "a2b131c518df013d2498f9b312d3c64631f59e16",
+  "segment_plan": [
+    "PRE_RESTART",
+    "POST_RESTART"
+  ],
+  "segment_purposes": {
+    "PRE_RESTART": "INITIAL_RUN_AND_CHECKPOINT",
+    "POST_RESTART": "CONTROLLED_RESTART_AND_RECOVERY"
+  },
+  "controlled_restart_exit_code": 82,
+  "exit_code_82_classification": "CONTROLLED_SEGMENT_TRANSITION",
+  "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+  "confirmation_session_id": "phase_9_2_restart_confirmation_session_v1",
+  "minimum_pre_restart_distinct_observations": 30,
+  "required_reconciliation_before_alpha": true,
+  "network_session_authorized": false,
+  "authorization_issuance_authorized": false,
+  "authorization_consumption_authorized": false,
+  "productive_network_session_execution_authorized": false,
+  "reuses": {
+    "wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1",
+    "offline_harness": "src.ops.phase_9_2_restart_recovery_session_contract_and_productive_harness_v1",
+    "authorization_path": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1",
+    "checkpoint_contract": "src.ops.phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.state_root_adapter_v1",
+    "bundle_verifier": "src.ops.phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.verifier_v1",
+    "network_boundary": "src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1"
+  },
+  "entrypoint_scripts": {
+    "cli": "scripts/ops/run_phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.py"
+  },
+  "later_real_session_requires": [
+    "SEPARATE_OWNER_SESSION_GO",
+    "NEW_SINGLE_USE_AUTHORIZATION_PER_SEGMENT",
+    "NETWORK_SESSION_ALLOWED_TRUE_ONLY_IN_SESSION_GO",
+    "CONFIRM_TOKEN_VIA_CANONICAL_SECURE_PATH"
+  ],
+  "no_order_boundary_assertions": [
+    "NO_LIVE_ORDERS",
+    "NO_TESTNET_ORDERS",
+    "NO_PAPER_EXCHANGE_ORDERS",
+    "NO_EXCHANGE_CREDENTIAL_USE",
+    "NO_REAL_CAPITAL_MOVEMENT",
+    "NO_PRIVATE_ENDPOINT_ACCESS",
+    "NO_AUTH_HEADER_TRANSMISSION"
+  ]
+}
