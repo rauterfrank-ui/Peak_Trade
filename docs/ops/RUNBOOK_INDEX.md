@@ -33,6 +33,13 @@
 | **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; Caps 1–7 technical + Cap8 docs/ownership + PR #5568 daily observation + PR #5577 regime/bull-bear/switch; Operator Product Review PASS on `88f2241819dcc160c3ce688a9c7397e7cc8becec`; `OPERATOR_PRODUCT_GATE=true`; `MARKET_DASHBOARD_PHASE_5_PASS=true`; `DAILY_OBSERVATION_USABLE=true`; `INTRABAR_CAPABILITY=PASS`; `REGIME_BULL_BEAR_SWITCH_BINDING=COMPLETE`; `CONFIDENCE_FIELD_STATE=NOT_AVAILABLE_NO_CANONICAL_FIELD`; `WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE`; `NEXT_CANONICAL_ACTION=STOP_IDLE`; **keine** Trading-/Runtime-/Order-Authority; Capability-PR-only; Documentation Anchor = documentary index only |
 | **Removed product tombstone** | [../webui/MARKET_DASHBOARD_REMOVED.md](../webui/MARKET_DASHBOARD_REMOVED.md) | Legacy product tombstone; Landscape V2 `GET &#47;market` is the authorized read-only replacement surface |
 
+## Canonical Runtime Operations / Dashboard / Process Supervision V2.4 (derived domain authority only; non-SSOT)
+
+| Artefakt | Pfad | Rolle |
+|----------|------|-------|
+| **Canonical Runtime Operations runbook V2.4** | [../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md) | Domain-specific operational reference for local runtime execution, process supervision, dashboard lifecycle and OHLCV transport; `AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `RUNTIME_OPERATIONS_RUNBOOK_IS_SSOT=false`; Master Runbook remains the only SSOT with absolute precedence; **no** runtime, trading, testnet, live, order or credential authorization effect |
+| **Ratification manifest** | [../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json) | Local docs-only ratification binding (pre-commit); digest authority for the V2.4 canonical document bytes |
+
 ---
 
 ## Runbooks
