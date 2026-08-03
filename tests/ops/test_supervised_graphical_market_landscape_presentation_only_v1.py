@@ -278,6 +278,24 @@ def test_js_accepts_canonical_without_browser_payload() -> None:
     assert 'marketPath !== "/market"' in js
 
 
+def test_js_connection_state_poll_arm_fail_closed_presentation_contract() -> None:
+    """Presentation-only: poll arm / payload must not invent HEALTHY."""
+    js = JS_SRC.read_text(encoding="utf-8")
+    assert "readExistingConnectionState" in js
+    assert "resolveConnectionStateForPollPayload" in js
+    assert 'readExistingConnectionState() || "MISSING_SOURCE"' in js
+    assert "resolveConnectionStateForPollPayload(body)" in js
+    # Honest presentation: arming must not promote arbitrary availability to HEALTHY.
+    arm_idx = js.index('data-mdl-ohlcv-poll-armed", "true"')
+    arm_block = js[arm_idx : arm_idx + 450]
+    assert 'setConnectionState(readExistingConnectionState() || "MISSING_SOURCE")' in arm_block
+    assert ': "HEALTHY"' not in arm_block
+    assert "DEGRADED" in js
+    assert "DISCONNECTED" in js
+    assert "MISSING_SOURCE" in js
+    assert "HEALTHY" in js  # explicit canonical HEALTHY still in vocabulary
+
+
 def test_template_and_host_forbid_legacy_hot_path_wiring() -> None:
     host = HOST_SRC.read_text(encoding="utf-8")
     template = TEMPLATE_SRC.read_text(encoding="utf-8")

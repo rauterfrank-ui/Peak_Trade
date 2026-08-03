@@ -69,6 +69,53 @@
     root.setAttribute("data-mdl-data-connection-state", state);
   }
 
+  // --- connection-state fail-closed helpers (begin) ---
+  // Poll arming and poll payloads must never invent HEALTHY from availability,
+  // timer start, or missing payload fields. Preserve existing DOM truth or
+  // fail closed to MISSING_SOURCE.
+  function normalizeConnectionStateToken(raw) {
+    var state = String(raw || "").trim();
+    if (!state) return "";
+    if (state === "LIVE_DATA") return "HEALTHY";
+    if (
+      state === "HEALTHY" ||
+      state === "DEGRADED" ||
+      state === "DISCONNECTED" ||
+      state === "MISSING_SOURCE" ||
+      state === "STALE"
+    ) {
+      return state;
+    }
+    return "";
+  }
+
+  function readExistingConnectionState() {
+    var node = root.querySelector(
+      ".mdl-v2-chart__chrome [data-mdl-data-connection-state]"
+    );
+    var fromNode = "";
+    if (node) {
+      fromNode = node.getAttribute("data-connection-state") || "";
+      if (!fromNode && node.textContent) fromNode = String(node.textContent);
+    }
+    var fromRoot = root.getAttribute("data-mdl-data-connection-state") || "";
+    return (
+      normalizeConnectionStateToken(fromNode) ||
+      normalizeConnectionStateToken(fromRoot)
+    );
+  }
+
+  function resolveConnectionStateForPollPayload(body) {
+    var payloadRaw =
+      (body && (body.connection_state || body.data_connection_state)) || "";
+    var fromPayload = normalizeConnectionStateToken(payloadRaw);
+    if (fromPayload) return fromPayload;
+    var existing = readExistingConnectionState();
+    if (existing) return existing;
+    return "MISSING_SOURCE";
+  }
+  // --- connection-state fail-closed helpers (end) ---
+
   function setUpdateClass(kind) {
     root.setAttribute("data-mdl-ohlcv-update-class", kind);
   }
@@ -734,14 +781,8 @@
     if (availability) {
       chart.setAttribute("data-availability", availability);
     }
-    var connectionState =
-      body.connection_state ||
-      body.data_connection_state ||
-      (availability === "MISSING_SOURCE"
-        ? "MISSING_SOURCE"
-        : availability === "STALE"
-          ? "STALE"
-          : "HEALTHY");
+    // Fallback: payload → existing DOM → MISSING_SOURCE (never invent HEALTHY).
+    var connectionState = resolveConnectionStateForPollPayload(body);
     // Fail-closed: never promote stale/disconnected/missing to HEALTHY.
     if (
       availability === "STALE" ||
@@ -928,13 +969,9 @@
     }
 
     root.setAttribute("data-mdl-ohlcv-poll-armed", "true");
-    setConnectionState(
-      chart.getAttribute("data-availability") === "MISSING_SOURCE"
-        ? "MISSING_SOURCE"
-        : chart.getAttribute("data-availability") === "STALE"
-          ? "STALE"
-          : "HEALTHY"
-    );
+    // Preserve existing DOM connection truth; never invent HEALTHY from
+    // data-availability, bootstrap success, or poll-timer arming alone.
+    setConnectionState(readExistingConnectionState() || "MISSING_SOURCE");
     scheduleNext();
   }
 

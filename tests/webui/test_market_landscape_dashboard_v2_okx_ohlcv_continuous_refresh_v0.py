@@ -1112,3 +1112,162 @@ def test_stale_and_missing_source_fail_closed(
     assert poll["availability"] == "STALE"
     assert poll["is_stale"] is True
     assert poll["browser_payload"] is not None
+
+
+def _extract_connection_state_fail_closed_helpers(js: str) -> str:
+    begin = "// --- connection-state fail-closed helpers (begin) ---"
+    end = "// --- connection-state fail-closed helpers (end) ---"
+    assert begin in js
+    assert end in js
+    return js.split(begin, 1)[1].split(end, 1)[0]
+
+
+def test_js_connection_state_poll_arm_and_payload_fail_closed_contracts() -> None:
+    """Static proof: poll arm / payload never invent HEALTHY without canonical truth."""
+    js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
+    assert "readExistingConnectionState" in js
+    assert "resolveConnectionStateForPollPayload" in js
+    assert "normalizeConnectionStateToken" in js
+    # Arming preserves DOM or fails closed — never availability→HEALTHY.
+    assert 'readExistingConnectionState() || "MISSING_SOURCE"' in js
+    assert "data-mdl-ohlcv-poll-armed" in js
+    # Forbidden: invent HEALTHY from non-MISSING/STALE availability at arming.
+    arm_idx = js.index('data-mdl-ohlcv-poll-armed", "true"')
+    arm_tail = js[arm_idx : arm_idx + 450]
+    assert ': "HEALTHY"' not in arm_tail
+    assert '=== "MISSING_SOURCE"' not in arm_tail or "readExistingConnectionState" in arm_tail
+    assert 'setConnectionState(readExistingConnectionState() || "MISSING_SOURCE")' in arm_tail
+    # Payload resolution order is payload → DOM → MISSING_SOURCE.
+    assert "resolveConnectionStateForPollPayload(body)" in js
+    assert 'return "MISSING_SOURCE"' in js
+    # Explicit canonical HEALTHY remains representable.
+    assert 'state === "HEALTHY"' in js
+    assert "never invent HEALTHY" in js.lower() or "never invent HEALTHY" in js
+    # Prior inventing availability ternary must be gone from applyPollPayload.
+    assert 'availability === "STALE"\n          ? "STALE"\n          : "HEALTHY"' not in js
+    assert (
+        'availability === "MISSING_SOURCE"\n        ? "MISSING_SOURCE"\n'
+        '        : availability === "STALE"'
+    ) not in js
+
+
+def test_js_connection_state_fail_closed_behavioral_regressions_a_through_f() -> None:
+    """A–F behavioral regressions against production helper source (Node)."""
+    import subprocess
+    import tempfile
+
+    js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
+    helpers = _extract_connection_state_fail_closed_helpers(js)
+    harness = f"""
+'use strict';
+function makeRoot(attrs) {{
+  attrs = attrs || {{}};
+  var chromeState = attrs.chrome || '';
+  var rootState = attrs.root || '';
+  var chromeNode = {{
+    textContent: chromeState,
+    getAttribute: function (name) {{
+      if (name === 'data-connection-state') return chromeState;
+      return null;
+    }},
+    setAttribute: function (name, value) {{
+      if (name === 'data-connection-state') chromeState = String(value);
+    }},
+  }};
+  var root = {{
+    _rootState: rootState,
+    querySelector: function (sel) {{
+      if (sel.indexOf('data-mdl-data-connection-state') !== -1) {{
+        return chromeState || rootState || attrs.forceChrome ? chromeNode : null;
+      }}
+      return null;
+    }},
+    getAttribute: function (name) {{
+      if (name === 'data-mdl-data-connection-state') return root._rootState;
+      return null;
+    }},
+    setAttribute: function (name, value) {{
+      if (name === 'data-mdl-data-connection-state') root._rootState = String(value);
+    }},
+  }};
+  return root;
+}}
+
+var root;
+{helpers}
+
+function armPoll() {{
+  return readExistingConnectionState() || 'MISSING_SOURCE';
+}}
+
+function assertEq(label, actual, expected) {{
+  if (actual !== expected) {{
+    throw new Error(label + ': expected ' + JSON.stringify(expected) + ' got ' + JSON.stringify(actual));
+  }}
+}}
+
+// A. POLL ARM PRESERVES DEGRADED
+root = makeRoot({{ chrome: 'DEGRADED', root: 'DEGRADED', forceChrome: true }});
+assertEq('A_arm_preserves_degraded', armPoll(), 'DEGRADED');
+
+// B. POLL ARM DOES NOT INVENT HEALTHY FOR NOT_BOUND
+root = makeRoot({{ chrome: '', root: '' }});
+assertEq('B_not_bound_no_healthy', armPoll(), 'MISSING_SOURCE');
+assertEq('B_not_healthy', armPoll() === 'HEALTHY', false);
+
+// C. POLL ARM DOES NOT INVENT HEALTHY FOR INVALID
+root = makeRoot({{ chrome: 'bogus', root: 'INVALID' }});
+assertEq('C_invalid_no_healthy', armPoll(), 'MISSING_SOURCE');
+
+// D. PAYLOAD WITHOUT CONNECTION_STATE PRESERVES DOM STATE
+root = makeRoot({{ chrome: 'DEGRADED', root: 'DEGRADED', forceChrome: true }});
+assertEq(
+  'D_preserve_degraded',
+  resolveConnectionStateForPollPayload({{ availability: 'AVAILABLE' }}),
+  'DEGRADED'
+);
+root = makeRoot({{ chrome: 'DISCONNECTED', root: 'DISCONNECTED', forceChrome: true }});
+assertEq(
+  'D_preserve_disconnected',
+  resolveConnectionStateForPollPayload({{ availability: 'AVAILABLE' }}),
+  'DISCONNECTED'
+);
+
+// E. PAYLOAD WITHOUT STATE FAILS CLOSED
+root = makeRoot({{ chrome: '', root: '' }});
+assertEq(
+  'E_fail_closed_missing_source',
+  resolveConnectionStateForPollPayload({{ availability: 'AVAILABLE' }}),
+  'MISSING_SOURCE'
+);
+assertEq(
+  'E_never_healthy',
+  resolveConnectionStateForPollPayload({{}}) === 'HEALTHY',
+  false
+);
+
+// F. EXPLICIT CANONICAL HEALTHY REMAINS ALLOWED
+root = makeRoot({{ chrome: 'DEGRADED', root: 'DEGRADED', forceChrome: true }});
+assertEq(
+  'F_explicit_healthy',
+  resolveConnectionStateForPollPayload({{ connection_state: 'HEALTHY' }}),
+  'HEALTHY'
+);
+
+console.log('CONNECTION_STATE_FAIL_CLOSED_REGRESSIONS_PASS');
+"""
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write(harness)
+        harness_path = Path(handle.name)
+    try:
+        completed = subprocess.run(
+            ["node", str(harness_path)],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+    finally:
+        harness_path.unlink(missing_ok=True)
+    assert completed.returncode == 0, completed.stderr or completed.stdout
+    assert "CONNECTION_STATE_FAIL_CLOSED_REGRESSIONS_PASS" in completed.stdout
