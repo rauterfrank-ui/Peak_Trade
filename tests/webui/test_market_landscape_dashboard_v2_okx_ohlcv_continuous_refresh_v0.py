@@ -1144,9 +1144,7 @@ def test_js_connection_state_poll_arm_and_payload_fail_closed_contracts() -> Non
     assert 'state === "HEALTHY"' in js
     assert "never invent HEALTHY" in js.lower() or "never invent HEALTHY" in js
     # Prior inventing availability ternary must be gone from applyPollPayload.
-    assert (
-        'availability === "STALE"\n          ? "STALE"\n          : "HEALTHY"' not in js
-    )
+    assert 'availability === "STALE"\n          ? "STALE"\n          : "HEALTHY"' not in js
     assert (
         'availability === "MISSING_SOURCE"\n        ? "MISSING_SOURCE"\n'
         '        : availability === "STALE"'

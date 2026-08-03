@@ -311,7 +311,15 @@ def test_playwright_owner_route_supervised_landscape_acceptance(
             assert preserved == "DEGRADED"
             assert preserved != "HEALTHY"
         else:
-            assert conn in {None, "", "MISSING_SOURCE", "DEGRADED", "DISCONNECTED", "STALE", "HEALTHY"}
+            assert conn in {
+                None,
+                "",
+                "MISSING_SOURCE",
+                "DEGRADED",
+                "DISCONNECTED",
+                "STALE",
+                "HEALTHY",
+            }
 
         context.close()
         browser.close()
@@ -324,7 +332,4 @@ def test_playwright_js_source_connection_state_fail_closed_contract() -> None:
     arm_idx = js_text.index('data-mdl-ohlcv-poll-armed", "true"')
     arm_block = js_text[arm_idx : arm_idx + 450]
     assert ': "HEALTHY"' not in arm_block
-    assert (
-        'availability === "STALE"\n          ? "STALE"\n          : "HEALTHY"'
-        not in js_text
-    )
+    assert 'availability === "STALE"\n          ? "STALE"\n          : "HEALTHY"' not in js_text
