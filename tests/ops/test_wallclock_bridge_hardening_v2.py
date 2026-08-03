@@ -57,9 +57,28 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 def test_fill_ledger_contract_canonical_attr() -> None:
     assert CANONICAL_FILL_LEDGER_ATTR == "fill_ledger"
-    state, cycles = run_hardened_bridge_cycles_from_mids_v2(
-        [3500.0, 3510.0, 3520.0, 3550.0, 3600.0, 3650.0, 3700.0, 3750.0],
-        session_id="fill-ledger-contract",
+    # Natural mid-path entry is blocked by typed-volatility presence gate after
+    # productive CMC typed cutover; prove fill-ledger contract via explicit
+    # forced_actionable fixture path (wallclock unreachable; economic excluded).
+    state = HardenedBridgeSessionStateV2()
+    cycles: list[dict] = []
+    for i, mid in enumerate([3500.0, 3510.0, 3520.0]):
+        cycles.append(
+            run_hardened_bridge_cycle_v2(
+                state,
+                mid_price=float(mid),
+                event_ts_unix=1_700_000_000.0 + float(i),
+                session_id="fill-ledger-contract",
+            )
+        )
+    cycles.append(
+        run_hardened_bridge_cycle_v2(
+            state,
+            mid_price=3600.0,
+            event_ts_unix=1_700_000_003.0,
+            session_id="fill-ledger-contract",
+            forced_actionable={"intended_side": "BUY", "intended_quantity": "0.1"},
+        )
     )
     assert hasattr(state, "fill_ledger")
     assert not hasattr(state, "fills_ledger")
@@ -309,3 +328,242 @@ def test_observation_adapter_no_default_hold() -> None:
     assert 'intended_side: str = "HOLD"' not in adapter
     assert 'intended_quantity: Decimal = Decimal("0")' not in adapter
     assert "INTENDED_SIDE_REQUIRED_NO_DEFAULT_HOLD" in adapter
+
+
+@pytest.mark.parametrize(
+    ("warmup_complete", "features_ok", "expected"),
+    [
+        (False, False, False),
+        (False, True, False),
+        (True, True, True),
+        (True, False, True),
+    ],
+)
+def test_required_window_complete_boolean_matrix_decoupled_from_features_ok(
+    warmup_complete: bool,
+    features_ok: bool,
+    expected: bool,
+) -> None:
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        derive_required_window_complete_v2,
+    )
+
+    assert (
+        derive_required_window_complete_v2(
+            warmup_complete=warmup_complete,
+            features_ok=features_ok,
+        )
+        is expected
+    )
+
+
+def test_required_window_complete_bridge_v1_v2_semantic_parity_source() -> None:
+    """Bridge-v1 and Hardening-v2 must both bind required_window_complete to warmup only."""
+    v1 = (
+        REPO_ROOT
+        / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/"
+        "decision_economics_cycle_bridge_v1.py"
+    ).read_text(encoding="utf-8")
+    v2 = (
+        REPO_ROOT
+        / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/"
+        "hardening_cycle_bridge_v2.py"
+    ).read_text(encoding="utf-8")
+    assert "required_window_complete=features.warmup_complete," in v1
+    assert "features.warmup_complete and features.ok" not in v2
+    assert "derive_required_window_complete_v2(" in v2
+
+
+def test_warmup_complete_true_features_ok_false_no_required_window_incomplete() -> None:
+    """Productive call-graph regression for REGIME_UNCLASSIFIED after feature warmup."""
+    from trading.master_v2.canonical_scope_initialization_v1 import (
+        CanonicalScopeBlockReason,
+        CanonicalScopeInitializationPolicyV1,
+        SCOPE_INITIALIZATION_POLICY_VERSION,
+        ScopeInitializationPrerequisitesV1,
+        initialize_canonical_scope,
+    )
+    from trading.master_v2.canonical_market_context_v1 import (
+        FEATURE_CONTRACT_VERSION,
+        BarFinalityStatus,
+        CanonicalMarketContextV1,
+        ClockTrustStatus,
+        DataIntegrityStatus,
+        WarmupStatus,
+        with_computed_input_digest,
+    )
+    from trading.master_v2.double_play_futures_input import FuturesMarketType
+
+    # Flat path → warmup complete, regime unclassified fail-closed.
+    features = compute_feature_regime_from_mid_prices_v2([3500.0, 3500.01, 3500.02])
+    assert features.warmup_complete is True
+    assert features.ok is False
+    assert features.regime_id == "unclassified"
+    assert "REGIME_UNCLASSIFIED_FAIL_CLOSED" in features.blockers
+
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        derive_required_window_complete_v2,
+    )
+
+    required = derive_required_window_complete_v2(
+        warmup_complete=features.warmup_complete,
+        features_ok=features.ok,
+    )
+    assert required is True
+
+    ctx = with_computed_input_digest(
+        CanonicalMarketContextV1(
+            context_id="ctx-required-window-decouple",
+            instrument_id="ETH-USD_UM_XPERP-310404",
+            market_type=FuturesMarketType.PERPETUAL,
+            trading_epoch=1,
+            market_event_time="2026-08-03T00:00:00+00:00",
+            decision_time="2026-08-03T00:00:00.001+00:00",
+            bar_interval="tick",
+            bar_finality_status=BarFinalityStatus.FINALIZED,
+            mark_price=float(features.mark_price),
+            index_price=float(features.mark_price),
+            best_bid=float(features.mark_price),
+            best_ask=float(features.mark_price),
+            spread=0.0,
+            volume=1_000_000.0,
+            open_interest=50_000_000.0,
+            funding_rate=0.0001,
+            volatility_estimate=0.0,
+            trend_feature_set=dict(features.trend_features),
+            momentum_feature_set=dict(features.momentum_features),
+            liquidity_feature_set=dict(features.liquidity_features),
+            market_structure_feature_set=dict(features.market_structure_features),
+            data_integrity_status=DataIntegrityStatus.TRUSTED,
+            clock_trust_status=ClockTrustStatus.TRUSTED,
+            warmup_status=WarmupStatus.WARMUP_COMPLETE,
+            feature_contract_version=FEATURE_CONTRACT_VERSION,
+            input_digest="",
+        )
+    )
+    scope = initialize_canonical_scope(
+        ctx,
+        CanonicalScopeInitializationPolicyV1(
+            min_scope_band=50.0,
+            max_scope_band=500.0,
+            policy_version=SCOPE_INITIALIZATION_POLICY_VERSION,
+        ),
+        ScopeInitializationPrerequisitesV1(
+            required_window_complete=required,
+            instrument_metadata_valid=True,
+            finalized_market_context=True,
+        ),
+    )
+    assert CanonicalScopeBlockReason.REQUIRED_WINDOW_INCOMPLETE not in scope.block_reasons
+    assert scope.scope is not None
+
+    state, cycles = run_hardened_bridge_cycles_from_mids_v2(
+        [3500.0, 3500.01, 3500.02],
+        session_id="required-window-decouple-unclassified",
+    )
+    assert len(state.mid_prices) == 3
+    last = cycles[-1]
+    assert last["required_window_complete"] is True
+    assert last["required_window_complete_inputs"]["warmup_complete"] is True
+    assert last["required_window_complete_inputs"]["features_ok"] is False
+    assert last["mid_prices_len"] == 3
+    assert last["feature_window_min"] == 3
+    assert last["regime_id"] == "unclassified"
+    assert "REGIME_UNCLASSIFIED_FAIL_CLOSED" in last["feature_blockers"]
+    assert "required_window_incomplete" not in list(last.get("reason_codes") or [])
+    assert "required_window_incomplete" not in list(
+        (last.get("intended_action") or {}).get("reason_codes") or []
+    )
+    assert last["intended_action"]["intended_quantity"] == "0"
+    assert last["intended_action"]["intended_side"] == "HOLD"
+    assert last["intended_action"]["intent_action"] in {"NONE", "HOLD", "OBSERVE"}
+    entry_intents = [
+        c
+        for c in cycles
+        if str((c.get("intended_action") or {}).get("intent_action", "")).startswith("ENTER")
+    ]
+    assert entry_intents == []
+    assert all(Decimal(str(c["intended_action"]["intended_quantity"])) == 0 for c in cycles)
+
+
+def test_required_window_incomplete_still_emitted_when_warmup_incomplete() -> None:
+    from trading.master_v2.canonical_scope_initialization_v1 import (
+        CanonicalScopeBlockReason,
+        CanonicalScopeInitializationPolicyV1,
+        SCOPE_INITIALIZATION_POLICY_VERSION,
+        ScopeInitializationPrerequisitesV1,
+        initialize_canonical_scope,
+    )
+    from trading.master_v2.canonical_market_context_v1 import (
+        FEATURE_CONTRACT_VERSION,
+        BarFinalityStatus,
+        CanonicalMarketContextV1,
+        ClockTrustStatus,
+        DataIntegrityStatus,
+        WarmupStatus,
+        with_computed_input_digest,
+    )
+    from trading.master_v2.double_play_futures_input import FuturesMarketType
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        derive_required_window_complete_v2,
+    )
+
+    features = compute_feature_regime_from_mid_prices_v2([3500.0])
+    assert features.warmup_complete is False
+    required = derive_required_window_complete_v2(
+        warmup_complete=features.warmup_complete,
+        features_ok=True,  # even if ok were true, window incomplete must remain false
+    )
+    assert required is False
+    ctx = with_computed_input_digest(
+        CanonicalMarketContextV1(
+            context_id="ctx-window-incomplete",
+            instrument_id="ETH-USD_UM_XPERP-310404",
+            market_type=FuturesMarketType.PERPETUAL,
+            trading_epoch=1,
+            market_event_time="2026-08-03T00:00:00+00:00",
+            decision_time="2026-08-03T00:00:00.001+00:00",
+            bar_interval="tick",
+            bar_finality_status=BarFinalityStatus.FINALIZED,
+            mark_price=3500.0,
+            index_price=3500.0,
+            best_bid=3500.0,
+            best_ask=3500.0,
+            spread=0.0,
+            volume=1.0,
+            open_interest=1.0,
+            funding_rate=0.0,
+            volatility_estimate=0.0,
+            trend_feature_set={"slope": 0.0, "strength": 0.0},
+            momentum_feature_set={"rsi": 50.0, "roc": 0.0},
+            liquidity_feature_set={"depth_score": 0.0},
+            market_structure_feature_set={"range_ratio": 0.0},
+            data_integrity_status=DataIntegrityStatus.TRUSTED,
+            clock_trust_status=ClockTrustStatus.TRUSTED,
+            warmup_status=WarmupStatus.WARMUP_REQUIRED,
+            feature_contract_version=FEATURE_CONTRACT_VERSION,
+            input_digest="",
+        )
+    )
+    scope = initialize_canonical_scope(
+        ctx,
+        CanonicalScopeInitializationPolicyV1(
+            min_scope_band=50.0,
+            max_scope_band=500.0,
+            policy_version=SCOPE_INITIALIZATION_POLICY_VERSION,
+        ),
+        ScopeInitializationPrerequisitesV1(
+            required_window_complete=required,
+            instrument_metadata_valid=True,
+            finalized_market_context=True,
+        ),
+    )
+    assert CanonicalScopeBlockReason.REQUIRED_WINDOW_INCOMPLETE in scope.block_reasons
+
+    state, cycles = run_hardened_bridge_cycles_from_mids_v2(
+        [3500.0],
+        session_id="required-window-still-incomplete",
+    )
+    assert cycles[0]["required_window_complete"] is False
+    assert cycles[0]["mid_prices_len"] == 1
+    assert state.cycle_index == 1

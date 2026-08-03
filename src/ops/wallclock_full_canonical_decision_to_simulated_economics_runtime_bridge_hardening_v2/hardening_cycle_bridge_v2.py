@@ -161,6 +161,17 @@ from trading.master_v2.survival_assessment_v1 import (
     SurvivalAssessmentPolicyV1,
 )
 
+
+def derive_required_window_complete_v2(*, warmup_complete: bool, features_ok: bool) -> bool:
+    """Window-length completeness only; ``features_ok`` must not affect this flag.
+
+    Matches Bridge-v1: ``required_window_complete = features.warmup_complete``.
+    ``REGIME_UNCLASSIFIED_FAIL_CLOSED`` / ``features.ok`` remain a separate fail-closed path.
+    """
+    _ = features_ok  # intentional non-consumption (WIRING_GAP repair)
+    return bool(warmup_complete)
+
+
 CALL_GRAPH_V2: tuple[str, ...] = (
     "okx_public_market_data",
     "feature_pipeline",
@@ -603,6 +614,12 @@ def run_hardened_bridge_cycle_v2(
             safety.trading_gate_enum
         )
 
+    # Window completeness ≠ regime acceptance. Keep features.ok / unclassified separate.
+    required_window_complete = derive_required_window_complete_v2(
+        warmup_complete=features.warmup_complete,
+        features_ok=features.ok,
+    )
+
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"{session_id}-{cycle_id}",
         instrument_id=state.instrument_id,
@@ -610,7 +627,7 @@ def run_hardened_bridge_cycle_v2(
         canonical_market_context=market_context,
         market_context_binding_state=CanonicalMarketContextBindingStateV1(),
         scope_prerequisites=ScopeInitializationPrerequisitesV1(
-            required_window_complete=features.warmup_complete and features.ok,
+            required_window_complete=required_window_complete,
             instrument_metadata_valid=True,
             finalized_market_context=True,
         ),
@@ -795,6 +812,16 @@ def run_hardened_bridge_cycle_v2(
         "feature_regime": features.to_dict(),
         "feature_digest": features.feature_digest,
         "regime_digest": features.regime_digest,
+        # Diagnostic only: no decision/config/persistence/timing effect.
+        "mid_prices_len": len(state.mid_prices),
+        "feature_window_min": int(FEATURE_WINDOW_MIN),
+        "required_window_complete": bool(required_window_complete),
+        "required_window_complete_inputs": {
+            "warmup_complete": bool(features.warmup_complete),
+            "features_ok": bool(features.ok),
+        },
+        "regime_id": str(features.regime_id),
+        "feature_blockers": list(features.blockers),
         "canonical_volatility_typed_binding": dict(
             state.last_typed_volatility_binding_telemetry or {}
         ),

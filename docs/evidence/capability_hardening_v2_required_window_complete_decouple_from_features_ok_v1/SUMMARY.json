@@ -1,0 +1,35 @@
+{
+  "capability_id": "HARDENING_V2_REQUIRED_WINDOW_COMPLETE_DECOUPLE_FROM_FEATURES_OK_V1",
+  "ok": true,
+  "CORE_LOGIC_CHANGE": false,
+  "FORENSIC_PREDECESSOR_CAPABILITY": "FORENSIC_REQUIRED_WINDOW_INCOMPLETE_PRODUCTIVE_BLOCKER_TRACE_V1",
+  "FORENSIC_ROOT_CAUSE_CLASSIFICATION": "WIRING_GAP",
+  "REQUIRED_WINDOW_COMPLETE_BEFORE": "features.warmup_complete and features.ok",
+  "REQUIRED_WINDOW_COMPLETE_AFTER": "features.warmup_complete",
+  "REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK": true,
+  "FEATURES_OK_SEMANTICS_CHANGED": false,
+  "REGIME_SEMANTICS_CHANGED": false,
+  "REGIME_UNCLASSIFIED_FAIL_CLOSED_PRESERVED": true,
+  "REQUIRED_WINDOW_INCOMPLETE_FALSE_POSITIVE_REMOVED": true,
+  "ALTERNATIVE_FAIL_CLOSED_REASON_PRESERVED": true,
+  "FEATURE_WINDOW_MIN_CHANGED": false,
+  "PRICE_PATH_MAX_LEN_CHANGED": false,
+  "REGIME_THRESHOLDS_CHANGED": false,
+  "NO_ALPHA_BYPASS": true,
+  "NO_SAFETY_BYPASS": true,
+  "NO_FORCED_QUANTITY": true,
+  "NO_FORCED_INTENT": true,
+  "claims": {
+    "REQUIRED_WINDOW_COMPLETE_MEANS_WINDOW_LENGTH_COMPLETE": true,
+    "REQUIRED_WINDOW_COMPLETE_DEPENDS_ON_FEATURES_OK": false,
+    "REGIME_CLASSIFICATION_REMAINS_SEPARATE": true,
+    "CORE_LOGIC_CHANGE": false,
+    "DIAGNOSTIC_TELEMETRY_ONLY": true
+  },
+  "productive_files": [
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py"
+  ],
+  "test_files": [
+    "tests/ops/test_wallclock_bridge_hardening_v2.py"
+  ]
+}
