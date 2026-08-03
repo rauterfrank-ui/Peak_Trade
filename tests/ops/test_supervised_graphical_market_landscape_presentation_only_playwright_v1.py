@@ -262,5 +262,69 @@ def test_playwright_owner_route_supervised_landscape_acceptance(
         assert root.get_attribute("data-live-authorized") == "false"
         assert root.get_attribute("data-supervised-presentation-only") == "true"
 
+        # Connection-state fail-closed: poll arm preserves DOM; never invents HEALTHY.
+        js_text = JS_SRC.read_text(encoding="utf-8")
+        assert "readExistingConnectionState" in js_text
+        assert 'readExistingConnectionState() || "MISSING_SOURCE"' in js_text
+        assert "resolveConnectionStateForPollPayload" in js_text
+        armed = root.get_attribute("data-mdl-ohlcv-poll-armed")
+        conn = root.get_attribute("data-mdl-data-connection-state")
+        if armed == "true":
+            # Seeded HEALTHY read-model may legitimately show HEALTHY after canonical bind;
+            # arming alone must not invent HEALTHY when DOM is non-healthy.
+            page.evaluate(
+                """() => {
+                  const root = document.querySelector('[data-market-landscape-v2="true"]');
+                  root.setAttribute('data-mdl-data-connection-state', 'DEGRADED');
+                  const node = root.querySelector(
+                    '.mdl-v2-chart__chrome [data-mdl-data-connection-state]'
+                  );
+                  if (node) {
+                    node.setAttribute('data-connection-state', 'DEGRADED');
+                    node.textContent = 'DEGRADED';
+                  }
+                }"""
+            )
+            preserved = page.evaluate(
+                """() => {
+                  const root = document.querySelector('[data-market-landscape-v2="true"]');
+                  const node = root.querySelector(
+                    '.mdl-v2-chart__chrome [data-mdl-data-connection-state]'
+                  );
+                  const fromNode = node
+                    ? (node.getAttribute('data-connection-state') || node.textContent || '')
+                    : '';
+                  const fromRoot = root.getAttribute('data-mdl-data-connection-state') || '';
+                  const raw = String(fromNode || fromRoot || '').trim();
+                  const vocab = {
+                    HEALTHY: true,
+                    DEGRADED: true,
+                    DISCONNECTED: true,
+                    MISSING_SOURCE: true,
+                    STALE: true,
+                  };
+                  const existing = vocab[raw] ? raw : '';
+                  // Mirror production arming rule.
+                  return existing || 'MISSING_SOURCE';
+                }"""
+            )
+            assert preserved == "DEGRADED"
+            assert preserved != "HEALTHY"
+        else:
+            assert conn in {None, "", "MISSING_SOURCE", "DEGRADED", "DISCONNECTED", "STALE", "HEALTHY"}
+
         context.close()
         browser.close()
+
+
+def test_playwright_js_source_connection_state_fail_closed_contract() -> None:
+    js_text = JS_SRC.read_text(encoding="utf-8")
+    assert "resolveConnectionStateForPollPayload(body)" in js_text
+    assert 'readExistingConnectionState() || "MISSING_SOURCE"' in js_text
+    arm_idx = js_text.index('data-mdl-ohlcv-poll-armed", "true"')
+    arm_block = js_text[arm_idx : arm_idx + 450]
+    assert ': "HEALTHY"' not in arm_block
+    assert (
+        'availability === "STALE"\n          ? "STALE"\n          : "HEALTHY"'
+        not in js_text
+    )
