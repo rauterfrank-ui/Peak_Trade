@@ -260,15 +260,18 @@
   overflow: hidden;
 }
 
+.mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="HEALTHY"],
 .mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="LIVE_DATA"] {
   color: #34d399;
 }
 
+.mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="DEGRADED"],
 .mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="RECONNECTING"] {
   color: #fbbf24;
 }
 
 .mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="STALE"],
+.mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="DISCONNECTED"],
 .mdl-v2-chart__chrome .mdl-v2-state[data-connection-state="MISSING_SOURCE"] {
   color: #f87171;
 }

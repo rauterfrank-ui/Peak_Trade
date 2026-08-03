@@ -539,16 +539,32 @@
       chart.setAttribute("data-availability", availability);
     }
     var connectionState =
+      body.connection_state ||
       body.data_connection_state ||
       (availability === "MISSING_SOURCE"
         ? "MISSING_SOURCE"
         : availability === "STALE"
           ? "STALE"
-          : "LIVE_DATA");
+          : "HEALTHY");
+    // Fail-closed: never promote stale/disconnected/missing to HEALTHY.
+    if (
+      availability === "STALE" ||
+      availability === "MISSING_SOURCE" ||
+      connectionState === "STALE" ||
+      connectionState === "DISCONNECTED" ||
+      connectionState === "MISSING_SOURCE"
+    ) {
+      if (connectionState === "HEALTHY" || connectionState === "LIVE_DATA") {
+        connectionState =
+          availability === "MISSING_SOURCE" ? "MISSING_SOURCE" : "STALE";
+      }
+    }
+    if (connectionState === "LIVE_DATA") connectionState = "HEALTHY";
     var payload = body.browser_payload;
     if (!payload || !payload.bars) {
       updateMetaFromPayload(body, availability, connectionState);
       if (availability === "MISSING_SOURCE") setConnectionState("MISSING_SOURCE");
+      else setConnectionState(connectionState);
       return;
     }
 
@@ -648,7 +664,7 @@
       }
       inFlight = true;
       root.setAttribute("data-mdl-ohlcv-poll-in-flight", "true");
-      if (failStreak > 0) setConnectionState("RECONNECTING");
+      if (failStreak > 0) setConnectionState("DEGRADED");
       fetch(pollPath, {
         method: "GET",
         credentials: "same-origin",
@@ -689,7 +705,7 @@
             String(backoffSeconds)
           );
           setConnectionState(
-            failStreak >= STALE_AFTER_FAILURES ? "STALE" : "RECONNECTING"
+            failStreak >= STALE_AFTER_FAILURES ? "DISCONNECTED" : "DEGRADED"
           );
         })
         .then(function () {
@@ -705,7 +721,7 @@
         ? "MISSING_SOURCE"
         : chart.getAttribute("data-availability") === "STALE"
           ? "STALE"
-          : "LIVE_DATA"
+          : "HEALTHY"
     );
     scheduleNext();
   }

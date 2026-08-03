@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "proofs": [
+    {
+      "mixed_projection_blocked": true,
+      "o4_proof": "NO_INSTRUMENT_CROSS_CONTAMINATION",
+      "ok": true,
+      "proof": "INSTRUMENT_ISOLATION"
+    },
+    {
+      "interval": "PT1H",
+      "mixed_projection_blocked": true,
+      "o4_proof": "NO_INTERVAL_CROSS_CONTAMINATION",
+      "ok": true,
+      "proof": "INTERVAL_ISOLATION"
+    }
+  ]
+}

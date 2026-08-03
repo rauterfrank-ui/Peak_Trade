@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "test_count": 28,
+  "test_result": "PASS",
+  "tests_run": [
+    "tests/ops/test_canonical_read_model_and_market_dashboard_rebuild_v1.py",
+    "tests/webui/test_market_landscape_dashboard_v2_okx_ohlcv_continuous_refresh_v0.py"
+  ]
+}

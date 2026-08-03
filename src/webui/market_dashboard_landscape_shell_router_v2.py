@@ -13,6 +13,9 @@ Phase 4.3B binds double_play display fail-closed (injection only).
 OHLCV binds from materialized okx_selected_instrument_ohlcv_readmodel.v1 only.
 CAPABILITY_O4: that readmodel is DERIVED (HTTP_JSON_POLL); authoritative bars are
 owned by CanonicalPublicMdBarProducerV1 — no independent authoritative recomputation.
+CAPABILITY_O5: dashboard backend binds the versioned canonical derived read model
+(canonical_market_dashboard_read_model.v1) for connection/freshness chrome; no
+parallel OHLCV producer; no trading/risk/order/runtime-mutation authority.
 Continuous refresh: GET /api/market/landscape/ohlcv rate-limits rematerialization
 via the OKX OHLCV readmodel owner; browser polls read-only JSON only.
 """
@@ -96,6 +99,18 @@ def build_ohlcv_poll_response_v1(
         "refresh_error": None,
     }
     if archive_root is None:
+        from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
+            adapt_derived_ohlcv_payload_to_o5_read_model_v1,
+        )
+        from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 import (
+            bind_dashboard_backend_to_read_model_v1,
+        )
+
+        missing_rm = adapt_derived_ohlcv_payload_to_o5_read_model_v1(
+            None,
+            projection_time_unix=generated_at.timestamp(),
+            availability=Availability.MISSING_SOURCE.value,
+        )
         return {
             "schema_name": "market_landscape_ohlcv_poll_response.v1",
             "schema_version": 1,
@@ -111,6 +126,19 @@ def build_ohlcv_poll_response_v1(
             "orders": False,
             "runtime_activation": False,
             "direct_browser_okx": False,
+            "data_connection_state": "MISSING_SOURCE",
+            "connection_state": "MISSING_SOURCE",
+            "source_session_id": None,
+            "repository_sha": None,
+            "config_digest": None,
+            "last_event_time": None,
+            "last_projection_time": missing_rm.get("last_projection_time"),
+            "freshness_age_seconds": None,
+            "o5_read_model": missing_rm,
+            "o5_backend_binding": bind_dashboard_backend_to_read_model_v1(missing_rm),
+            "trading_authority": False,
+            "risk_authority": False,
+            "runtime_mutation": False,
         }
 
     try:
@@ -166,6 +194,43 @@ def build_ohlcv_poll_response_v1(
             Availability.STALE if availability is Availability.AVAILABLE else availability
         )
 
+    from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
+        adapt_derived_ohlcv_payload_to_o5_read_model_v1,
+    )
+    from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 import (
+        bind_dashboard_backend_to_read_model_v1,
+    )
+
+    projection_unix = generated_at.timestamp()
+    o5_read_model = adapt_derived_ohlcv_payload_to_o5_read_model_v1(
+        ohlcv,
+        projection_time_unix=projection_unix,
+        availability=availability.value,
+        disconnected=False,
+    )
+    if availability is Availability.STALE or status in {"REFRESH_FAILED", "INVALID"}:
+        # Cached/failed refresh must never render HEALTHY.
+        o5_read_model = dict(o5_read_model)
+        if o5_read_model.get("connection_state") == "HEALTHY":
+            o5_read_model["connection_state"] = "STALE"
+            o5_read_model["is_stale"] = True
+    backend_binding = bind_dashboard_backend_to_read_model_v1(o5_read_model)
+    data_connection_state = (
+        "STALE"
+        if availability is Availability.STALE or status in {"REFRESH_FAILED", "INVALID"}
+        else _ohlcv_data_connection_state(
+            browser_payload=browser_payload,
+            ohlcv_payload=ohlcv,
+            chart_availability=availability,
+            projection_time_unix=projection_unix,
+        )
+    )
+    if data_connection_state == "HEALTHY":
+        # Authentic live evidence wins; keep O5 chrome aligned and never demote to age-STALE.
+        o5_read_model = dict(o5_read_model)
+        o5_read_model["connection_state"] = "HEALTHY"
+        o5_read_model["is_stale"] = False
+
     return {
         "schema_name": "market_landscape_ohlcv_poll_response.v1",
         "schema_version": 1,
@@ -210,15 +275,19 @@ def build_ohlcv_poll_response_v1(
         "orders": False,
         "runtime_activation": False,
         "direct_browser_okx": False,
-        "data_connection_state": (
-            "STALE"
-            if availability is Availability.STALE or status in {"REFRESH_FAILED", "INVALID"}
-            else _ohlcv_data_connection_state(
-                browser_payload=browser_payload,
-                ohlcv_payload=ohlcv,
-                chart_availability=availability,
-            )
-        ),
+        "data_connection_state": data_connection_state,
+        "connection_state": data_connection_state,
+        "source_session_id": o5_read_model.get("source_session_id"),
+        "repository_sha": o5_read_model.get("repository_sha"),
+        "config_digest": o5_read_model.get("config_digest"),
+        "last_event_time": o5_read_model.get("last_event_time"),
+        "last_projection_time": o5_read_model.get("last_projection_time"),
+        "freshness_age_seconds": o5_read_model.get("freshness_age_seconds"),
+        "o5_read_model": o5_read_model,
+        "o5_backend_binding": backend_binding,
+        "trading_authority": False,
+        "risk_authority": False,
+        "runtime_mutation": False,
     }
 
 
