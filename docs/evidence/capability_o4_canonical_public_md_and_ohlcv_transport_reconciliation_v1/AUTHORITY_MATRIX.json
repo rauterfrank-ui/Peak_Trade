@@ -1,0 +1,160 @@
+{
+  "authoritative_bar_producer": "CanonicalPublicMdBarProducerV1",
+  "authoritative_bar_producer_path_ids": [
+    "canonical_public_md_bar_producer_v1"
+  ],
+  "canonical_normalized_event_path": "NormalizedPublicMarketDataV1+ObservationIdentityV1+DistinctMarketObservationAcceptorV1",
+  "capability_id": "CAPABILITY_O4_CANONICAL_PUBLIC_MD_AND_OHLCV_TRANSPORT_RECONCILIATION_V1",
+  "counts_by_classification": {
+    "AUTHORITATIVE": 7,
+    "DERIVED": 4,
+    "FORBIDDEN": 4,
+    "LEGACY": 5
+  },
+  "dashboard_ohlcv_classification": "DERIVED",
+  "dashboard_transport": "HTTP_JSON_POLL",
+  "exactly_one_authoritative_bar_producer": true,
+  "ok": true,
+  "rows": [
+    {
+      "classification": "AUTHORITATIVE",
+      "notes": "Single normalized public-MD event schema; no parallel SSOT.",
+      "path_id": "normalized_public_market_data_v1",
+      "role": "normalized_event_schema",
+      "surface": "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/normalized_market_data_v1.py"
+    },
+    {
+      "classification": "AUTHORITATIVE",
+      "notes": "Distinctness identity derived from NormalizedPublicMarketDataV1.",
+      "path_id": "observation_identity_v1",
+      "role": "observation_identity",
+      "surface": "src/trading/market_state/observation_identity_v1.py"
+    },
+    {
+      "classification": "AUTHORITATIVE",
+      "notes": "Only DISTINCT advances observation epoch; duplicates are no-ops.",
+      "path_id": "distinct_market_observation_acceptor_v1",
+      "role": "observation_acceptor",
+      "surface": "src/trading/market_state/distinct_market_observation_acceptor_v1.py"
+    },
+    {
+      "classification": "AUTHORITATIVE",
+      "notes": "Productive fetch \u2192 NormalizedPublicMarketDataV1.",
+      "path_id": "productive_md_fetch_v1",
+      "role": "normalized_event_producer",
+      "surface": "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/productive_md_fetch_v1.py"
+    },
+    {
+      "classification": "AUTHORITATIVE",
+      "notes": "Canonical public REST client; must consume O1 proxy/env contract.",
+      "path_id": "okx_public_market_data_client_v1",
+      "role": "public_md_http_client",
+      "surface": "src/ops/okx_public_market_data_client_v1.py"
+    },
+    {
+      "classification": "AUTHORITATIVE",
+      "notes": "Wallclock EEA transport; network-boundary guard + O1 proxy policy.",
+      "path_id": "eea_public_md_transport_v1",
+      "role": "public_md_http_client",
+      "surface": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/eea_public_md_transport_v1.py"
+    },
+    {
+      "classification": "AUTHORITATIVE",
+      "notes": "Sole authoritative bar producer: CanonicalPublicMdBarProducerV1.",
+      "path_id": "canonical_public_md_bar_producer_v1",
+      "role": "bar_producer",
+      "surface": "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/canonical_bar_producer_v1.py"
+    },
+    {
+      "classification": "DERIVED",
+      "notes": "Dashboard candles/trades materializer demoted to DERIVED projection; transport remains HTTP_JSON_POLL.",
+      "path_id": "okx_selected_instrument_ohlcv_readmodel_v1",
+      "role": "ohlcv_materializer",
+      "surface": "src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py"
+    },
+    {
+      "classification": "DERIVED",
+      "notes": "Projects canonical bar envelopes into dashboard OHLCV readmodel shape.",
+      "path_id": "dashboard_ohlcv_projection_v1",
+      "role": "dashboard_projection",
+      "surface": "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/dashboard_ohlcv_projection_v1.py"
+    },
+    {
+      "classification": "DERIVED",
+      "notes": "HTTP_JSON_POLL consumer only; authority_effect=NONE; class=DERIVED.",
+      "path_id": "market_landscape_ohlcv_http_json_poll",
+      "role": "dashboard_consumer",
+      "surface": "src/webui/market_dashboard_landscape_shell_router_v2.py"
+    },
+    {
+      "classification": "DERIVED",
+      "notes": "Operator refresh helper for derived dashboard readmodel.",
+      "path_id": "refresh_okx_market_dashboard_v1",
+      "role": "operator_refresh",
+      "surface": "scripts/ops/refresh_okx_market_dashboard_v1.py"
+    },
+    {
+      "classification": "LEGACY",
+      "notes": "Legacy shadow tick\u2192bar builder; non-authoritative.",
+      "path_id": "shadow_ohlcv_builder",
+      "role": "bar_producer",
+      "surface": "src/data/shadow/ohlcv_builder.py"
+    },
+    {
+      "classification": "LEGACY",
+      "notes": "Shadow/evidence capture family; non-authoritative for live OHLCV truth.",
+      "path_id": "single_future_public_md_shadow_capture",
+      "role": "ingress_shadow_capture",
+      "surface": "src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/public_md_capture_v1.py"
+    },
+    {
+      "classification": "LEGACY",
+      "notes": "Evidence-session telemetry; non-authoritative bar ownership.",
+      "path_id": "pre_economic_okx_readonly_telemetry",
+      "role": "ingress_telemetry",
+      "surface": "src/ops/pre_economic_zero_order_evidence_session_okx_readonly_telemetry_v1.py"
+    },
+    {
+      "classification": "LEGACY",
+      "notes": "Research OHLCV proxy naming only; must not conflate with HTTP egress proxy.",
+      "path_id": "bouchaud_ohlcv_proxy_research",
+      "role": "research_producer",
+      "surface": "src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py"
+    },
+    {
+      "classification": "LEGACY",
+      "notes": "Research/PIT panel dataset; non-authoritative runtime producer.",
+      "path_id": "pit_okx_pt1h_panel_ohlcv_dataset",
+      "role": "research_dataset",
+      "surface": "src/research/pit_okx_pt1h_panel_ohlcv_dataset_v1.py"
+    },
+    {
+      "classification": "FORBIDDEN",
+      "notes": "Browser must not call OKX directly.",
+      "path_id": "browser_direct_okx_access",
+      "role": "forbidden_transport",
+      "surface": "dashboard_frontend_direct_venue"
+    },
+    {
+      "classification": "FORBIDDEN",
+      "notes": "No second NormalizedPublicMarketData SSOT may be introduced.",
+      "path_id": "parallel_normalized_event_ssot",
+      "role": "forbidden_ssot",
+      "surface": "forbidden_parallel_normalized_ssot"
+    },
+    {
+      "classification": "FORBIDDEN",
+      "notes": "Silent gap fill / fabricated live state is forbidden.",
+      "path_id": "silent_gap_fill_fabrication",
+      "role": "forbidden_behavior",
+      "surface": "forbidden_silent_gap_fill"
+    },
+    {
+      "classification": "FORBIDDEN",
+      "notes": "Dashboard must not independently recompute authoritative bars.",
+      "path_id": "dashboard_authoritative_independent_recompute",
+      "role": "forbidden_behavior",
+      "surface": "forbidden_dashboard_authoritative_recompute"
+    }
+  ]
+}

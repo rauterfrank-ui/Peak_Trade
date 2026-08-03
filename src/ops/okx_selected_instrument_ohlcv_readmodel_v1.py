@@ -22,6 +22,12 @@ from src.ops.okx_captured_at_freshness_policy_v1 import (
 from src.ops.okx_public_market_data_client_v1 import OkxPublicMarketDataClientV1
 
 PACKAGE_MARKER = "OKX_SELECTED_INSTRUMENT_OHLCV_READMODEL_V1=true"
+# CAPABILITY_O4: demoted from authoritative bar ownership to DERIVED projection/materializer.
+# Authoritative bars are owned by CanonicalPublicMdBarProducerV1. Transport remains HTTP_JSON_POLL.
+AUTHORITY_CLASSIFICATION = "DERIVED"
+AUTHORITATIVE_BAR_PRODUCER_REF = "CanonicalPublicMdBarProducerV1"
+DASHBOARD_TRANSPORT = "HTTP_JSON_POLL"
+INDEPENDENT_AUTHORITATIVE_RECOMPUTE_ALLOWED = False
 OHLCV_SCHEMA = "okx_selected_instrument_ohlcv_readmodel.v1"
 OHLCV_RELATIVE_PATH = "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
 UNIVERSE_SELECTION_RELATIVE_PATH = "readmodels/universe_selection_readmodel.v1.json"
@@ -41,6 +47,16 @@ OPEN_CANDLE_LIVE_SOURCE_V1 = "okx_public_trades_into_pt1h_v1"
 TRADE_VOLUME_UNIT = "contracts"
 # Bounded dashboard refresh: visible intrabar feedback ≤5s under normal availability.
 DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS = 3
+
+
+def o4_derived_authority_stamp_v1() -> dict[str, object]:
+    """O4 demotion stamp — dashboard materializer is never authoritative."""
+    return {
+        "authority_classification": AUTHORITY_CLASSIFICATION,
+        "authoritative_bar_producer": AUTHORITATIVE_BAR_PRODUCER_REF,
+        "dashboard_transport": DASHBOARD_TRANSPORT,
+        "independent_authoritative_recompute": INDEPENDENT_AUTHORITATIVE_RECOMPUTE_ALLOWED,
+    }
 
 
 class OkxOhlcvReadmodelError(ValueError):
@@ -752,6 +768,7 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
         "schema_name": OHLCV_SCHEMA,
         "schema_version": 1,
         "non_authorizing": True,
+        **o4_derived_authority_stamp_v1(),
         "fixture_only": False,
         "venue": "okx",
         "market_type": "perpetual",

@@ -1,0 +1,24 @@
+{
+  "files": [
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/__init__.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/authority_envelope_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/authority_matrix_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/bar_state_contract_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/canonical_bar_producer_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/constants_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/correction_revision_contract_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/dashboard_ohlcv_projection_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/deduplication_contract_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/finalization_contract_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/interval_contract_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/isolation_proofs_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/missing_stale_contract_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/network_boundary_coverage_matrix_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/normalized_event_path_v1.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/out_of_order_contract_v1.py",
+    "src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py",
+    "src/webui/market_dashboard_landscape_shell_router_v2.py",
+    "tests/ops/test_canonical_public_md_and_ohlcv_transport_reconciliation_v1.py"
+  ],
+  "implementation_base_sha": "63a62353a8b5a1cf2775d5c33537371be299e202"
+}
