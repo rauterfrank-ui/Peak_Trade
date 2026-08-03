@@ -38,8 +38,9 @@
   "SCHEMA_VERSION": "o4_canonical_public_md_and_ohlcv_transport_reconciliation_v1",
   "generated_at": "2026-08-03T14:39:15Z",
   "implementation_base_sha": "63a62353a8b5a1cf2775d5c33537371be299e202",
+  "local_commit_sha": "9ed13a0fac657c6e52ca7814fcba0f285f016ad9",
   "ok": true,
-  "repository_sha": "63a62353a8b5a1cf2775d5c33537371be299e202",
+  "repository_sha": "9ed13a0fac657c6e52ca7814fcba0f285f016ad9",
   "test_count": 17,
   "test_result": "PASS"
 }
