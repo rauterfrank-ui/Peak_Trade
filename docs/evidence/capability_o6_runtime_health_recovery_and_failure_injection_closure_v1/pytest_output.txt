@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: <REPOSITORY_ROOT>
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 12 items
+
+tests/ops/test_runtime_health_recovery_and_failure_injection_closure_v1.py . [  8%]
+...........                                                              [100%]
+
+============================== 12 passed in 0.21s ==============================

@@ -1,0 +1,27 @@
+{
+  "composite_keys": [
+    "HOST_HEALTH",
+    "MARKET_DATA_HEALTH",
+    "RUNTIME_HEALTH",
+    "PERSISTENCE_HEALTH",
+    "READ_MODEL_HEALTH",
+    "DASHBOARD_BACKEND_HEALTH",
+    "END_TO_END_DATA_HEALTH"
+  ],
+  "derived_not_guessed": true,
+  "severity": {
+    "DEGRADED": 2,
+    "DISCONNECTED": 4,
+    "HEALTHY": 1,
+    "MISSING_SOURCE": 5,
+    "STALE": 3
+  },
+  "stale_dashboard_cannot_be_green": true,
+  "states": [
+    "DEGRADED",
+    "DISCONNECTED",
+    "HEALTHY",
+    "MISSING_SOURCE",
+    "STALE"
+  ]
+}
