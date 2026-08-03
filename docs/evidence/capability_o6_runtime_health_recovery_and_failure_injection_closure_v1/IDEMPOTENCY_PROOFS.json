@@ -1,0 +1,71 @@
+{
+  "bar_finalization": {
+    "cursor": {
+      "advanced": false,
+      "duplicate_blocked": true,
+      "field": "bar_finalization_count",
+      "ok": true,
+      "value": 1
+    },
+    "duplicate_finalization_blocked": true,
+    "first_finalization": true,
+    "no_duplicate_bar_finalization": true,
+    "ok": true
+  },
+  "market_observation": {
+    "cursor": {
+      "advanced": false,
+      "duplicate_blocked": true,
+      "field": "market_observation_epoch",
+      "ok": true,
+      "value": 1
+    },
+    "epoch_after_duplicate": 1,
+    "epoch_after_first": 1,
+    "first_advance": true,
+    "no_duplicate_market_observation_advance": true,
+    "ok": true,
+    "second": {
+      "accepted": false,
+      "advance": false,
+      "classification": "duplicate"
+    }
+  },
+  "ok": true,
+  "read_model_commit": {
+    "commits": [
+      {
+        "advanced": false,
+        "duplicate_blocked": true,
+        "field": "read_model_commit_count",
+        "ok": true,
+        "value": 1
+      },
+      {
+        "advanced": true,
+        "duplicate_blocked": false,
+        "field": "read_model_commit_count",
+        "ok": true,
+        "value": 2
+      },
+      {
+        "advanced": false,
+        "duplicate_blocked": true,
+        "field": "read_model_commit_count",
+        "ok": true,
+        "value": 2
+      }
+    ],
+    "no_duplicate_read_model_commit": true,
+    "ok": true,
+    "projection_deterministic": true
+  },
+  "reconciliation_before_resume": true,
+  "session_fenced_before_recovery": true,
+  "stale_dashboard": {
+    "disconnected_state": "DISCONNECTED",
+    "no_stale_dashboard_green_state": true,
+    "ok": true,
+    "stale_state": "STALE"
+  }
+}
