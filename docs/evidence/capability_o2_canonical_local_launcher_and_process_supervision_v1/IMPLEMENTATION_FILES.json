@@ -1,0 +1,18 @@
+{
+  "files": [
+    "scripts/ops/peak_trade_runtime.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/__init__.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/cli_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/constants_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/dashboard_scaffold_worker_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/errors_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/models_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/process_group_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/process_identity_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/session_registry_v1.py",
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/single_writer_v1.py",
+    "tests/ops/test_canonical_local_launcher_and_process_supervision_v1.py"
+  ],
+  "repository_sha": "0967d1c5888e656e961d3621faf50273f9f38bfc"
+}
