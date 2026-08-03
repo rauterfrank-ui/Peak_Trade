@@ -1,0 +1,13 @@
+{
+  "AUTHORIZATION_CONSUMED": false,
+  "CONFIRM_TOKEN_MINTED": false,
+  "CONFIRM_TOKEN_MINTED_false_in_dashboard_only_path": true,
+  "CORE_LOGIC_CHANGED": false,
+  "CREDENTIALS_USED": false,
+  "LIVE_TRADING_ACTIVATED": false,
+  "NETWORK_SESSION_STARTED": false,
+  "O1_POLICY_CHANGED": false,
+  "O2_SUPERVISION_SEMANTICS_CHANGED": false,
+  "ORDERS_SUBMITTED": false,
+  "TESTNET_ACTIVATED": false
+}
