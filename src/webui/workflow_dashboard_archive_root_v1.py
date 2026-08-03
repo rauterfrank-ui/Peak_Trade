@@ -4,7 +4,8 @@ Sole owner of archive-root *location* resolution for dashboard consumers.
 Does not create directories, does not write readmodels, and does not authorize
 trading. GET /market consumers may resolve this root (explicit → Env →
 canonical default → discovered governed OKX sibling) to read-only-load
-universe_selection_readmodel.v1 and okx_selected_instrument_ohlcv_readmodel.v1.
+universe_selection_readmodel.v1 and okx_selected_instrument_ohlcv_readmodel.v1,
+and (when present) canonical_decision_presentation_projection.v1.
 """
 
 from __future__ import annotations
@@ -39,6 +40,9 @@ PRECEDENCE_CHAIN: tuple[str, ...] = (
 
 UNIVERSE_SELECTION_READMODEL_RELATIVE = "readmodels/universe_selection_readmodel.v1.json"
 OKX_OHLCV_READMODEL_RELATIVE = "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+CANONICAL_DECISION_PRESENTATION_PROJECTION_RELATIVE = (
+    "readmodels/canonical_decision_presentation_projection.v1.json"
+)
 _DISCOVER_NAME_PREFIX = "workflow_dashboard_v1"
 
 
