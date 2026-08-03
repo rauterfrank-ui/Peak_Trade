@@ -1929,6 +1929,8 @@ Owner ratification.
 CAPABILITY_STATUS=CURRENT_CRITICAL_PATH_PARTIALLY_COMPLETE
 ACTUAL_NEXT_CAPABILITY=PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1
 PHASE_9_2_PUBLIC_MD_SMOKE_SESSION_PASS=true
+PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
+PHASE_9_2_LADDER_NEXT_STEP=RESTART_RECOVERY_SESSION
 TYPED_VOLATILITY_COLD_START_PROVEN=true
 REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
 REGIME_UNCLASSIFIED_OBSERVED_AS_EXPECTED_FAIL_CLOSED=true
@@ -1949,8 +1951,11 @@ using public market data and internal simulated execution only.
 ## Session ladder
 
 1.  short smoke session --- completed / PASS;
-2.  one-hour governed session --- not fully closed as current-truth ladder;
-3.  restart/recovery session --- harness/contracts exist; full ladder not closed;
+2.  one-hour governed session --- completed / PASS on current
+    truth SHA `b0e882b9714a615f633fb09b8ee4f9a19f54d470`
+    (`phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a`);
+3.  restart/recovery session --- next ladder step; harness/contracts
+    exist; full ladder not closed;
 4.  rate-limit and reconnect session --- open;
 5.  prolonged natural-market session --- open;
 6.  adverse/stale-data session --- open;
@@ -3376,7 +3381,9 @@ EVIDENCE_CLAIMS_MATCH_TELEMETRY=true_for_corrected_capability_claims
 FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true_offline_no_order_cap72_scope_only
 SIMULATED_EXECUTION_ACTIVE=true_offline_no_order_cap72_scope_only
 PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=false
+PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
 PHASE_9_2_SESSION_LADDER_COMPLETE=false
+PHASE_9_2_LADDER_NEXT_STEP=RESTART_RECOVERY_SESSION
 TYPED_VOLATILITY_PRODUCER_TO_CMC_BINDING=CLOSED_AND_COLD_START_PROVEN
 REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
 REGIME_UNCLASSIFIED_ALONE_IS_NOT_A_DEFECT=true
@@ -3403,6 +3410,8 @@ reconciliation is:
 
 ``` text
 ACTUAL_NEXT_CAPABILITY=PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1
+PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
+PHASE_9_2_LADDER_NEXT_STEP=RESTART_RECOVERY_SESSION
 ```
 
 Mandatory dependencies / freezes:

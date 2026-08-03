@@ -1,6 +1,10 @@
 {
   "SESSION_LADDER_DEFINED": true,
-  "current_allowed_step": "SMOKE_SESSION",
+  "closed_steps": {
+    "ONE_HOUR_GOVERNED_SESSION": true,
+    "SMOKE_SESSION": true
+  },
+  "current_allowed_step": "RESTART_RECOVERY_SESSION",
   "ladder": [
     "SMOKE_SESSION",
     "ONE_HOUR_GOVERNED_SESSION",
@@ -10,6 +14,7 @@
     "ADVERSE_STALE_DATA_SESSION",
     "MULTI_SESSION_CONTINUITY_CAMPAIGN"
   ],
-  "note": "Only smoke-session preparation is authorized by this preflight task.",
-  "ok": true
+  "note": "Smoke and one-hour governed session are closed on current truth SHA b0e882b9714a615f633fb09b8ee4f9a19f54d470. Next ladder step is restart/recovery; separate Owner-GO required before network session.",
+  "ok": true,
+  "one_hour_authoritative_session_id": "phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a"
 }
