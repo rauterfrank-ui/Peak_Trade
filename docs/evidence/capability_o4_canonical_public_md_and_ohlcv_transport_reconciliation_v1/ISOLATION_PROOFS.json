@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "proofs": [
+    {
+      "bar_keys": [
+        "ETH-USDT-SWAP|PT1H|1699999200",
+        "SOL-USDT-SWAP|PT1H|1699999200"
+      ],
+      "foreign_classification": "identity_conflict",
+      "ok": true,
+      "proof": "NO_INSTRUMENT_CROSS_CONTAMINATION"
+    },
+    {
+      "interval": "PT1H",
+      "ok": true,
+      "proof": "NO_INTERVAL_CROSS_CONTAMINATION"
+    },
+    {
+      "ok": true,
+      "proof": "NO_DUPLICATE_FINALIZATION"
+    },
+    {
+      "explicit_missing": true,
+      "ok": true,
+      "proof": "NO_SILENT_GAP_FILL"
+    },
+    {
+      "declaration": {
+        "authoritative_bar_producer": "CanonicalPublicMdBarProducerV1",
+        "authority_classification": "DERIVED",
+        "dashboard_transport": "HTTP_JSON_POLL",
+        "independent_authoritative_recompute_allowed": false,
+        "supervisor_binding_deferred_to_o5": true,
+        "ui_rebuild_deferred_to_o5": true
+      },
+      "ok": true,
+      "proof": "NO_DASHBOARD_AUTHORITATIVE_INDEPENDENT_RECOMPUTATION"
+    }
+  ]
+}

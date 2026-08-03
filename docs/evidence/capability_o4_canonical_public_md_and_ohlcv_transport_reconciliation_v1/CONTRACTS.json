@@ -1,0 +1,113 @@
+{
+  "authority_envelope_fields": {
+    "default_quality_state": "IN_PROGRESS_BAR",
+    "field_count": 17,
+    "required_fields": [
+      "canonical_instrument_id",
+      "venue_instrument_id",
+      "venue",
+      "interval",
+      "bar_open_time",
+      "bar_close_time",
+      "event_time",
+      "receive_time",
+      "first_observation_identity",
+      "last_observation_identity",
+      "session_id",
+      "repository_sha",
+      "config_digest",
+      "transport_lag",
+      "quality_state",
+      "finalization_state",
+      "revision"
+    ]
+  },
+  "bar_state_contract": {
+    "correction_increments_revision": true,
+    "fabricated_live_state_forbidden": true,
+    "finalized_immutable_unless_correction": true,
+    "in_progress_can_update": true,
+    "missing_is_explicit": true,
+    "silent_gap_fill_forbidden": true,
+    "stale_is_explicit": true,
+    "states": [
+      "CORRECTED_BAR",
+      "FINALIZED_BAR",
+      "IN_PROGRESS_BAR",
+      "MISSING_BAR",
+      "STALE_BAR"
+    ]
+  },
+  "correction_contract": {
+    "correction_increments_revision": true,
+    "correction_requires_finalized_or_corrected": true,
+    "revision_monotonic_non_decreasing": true,
+    "revision_starts_at_zero": true
+  },
+  "dashboard_declaration": {
+    "authoritative_bar_producer": "CanonicalPublicMdBarProducerV1",
+    "authority_classification": "DERIVED",
+    "dashboard_transport": "HTTP_JSON_POLL",
+    "independent_authoritative_recompute_allowed": false,
+    "supervisor_binding_deferred_to_o5": true,
+    "ui_rebuild_deferred_to_o5": true
+  },
+  "deduplication_contract": {
+    "duplicate_events_do_not_advance_authoritative_state": true,
+    "invariant": true,
+    "reuses_distinct_market_observation_acceptor": true,
+    "transport_only_duplicate_is_non_advancing": true
+  },
+  "finalization_contract": {
+    "duplicate_finalization_forbidden": true,
+    "finalize_binds_bar_close_time": true,
+    "finalize_requires_in_progress": true,
+    "finalized_immutable_unless_correction_contract": true
+  },
+  "interval_contract": {
+    "cross_interval_contamination_forbidden": true,
+    "input_aliases": {
+      "1H": "PT1H",
+      "60M": "PT1H"
+    },
+    "supported_intervals": [
+      "PT1H"
+    ]
+  },
+  "missing_bar_contract": {
+    "expected_missing_source_semantics_deferred_to_o5": true,
+    "fabricated_live_state_forbidden": true,
+    "missing_is_explicit_state": true,
+    "silent_gap_fill_forbidden": true
+  },
+  "normalized_event_path": {
+    "acceptor_type": "DistinctMarketObservationAcceptorV1",
+    "capability_id": "CAPABILITY_O4_CANONICAL_PUBLIC_MD_AND_OHLCV_TRANSPORT_RECONCILIATION_V1",
+    "identity_type": "ObservationIdentityV1",
+    "modules": {
+      "acceptor": "trading.market_state.distinct_market_observation_acceptor_v1",
+      "identity": "trading.market_state.observation_identity_v1",
+      "normalized": "src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.normalized_market_data_v1"
+    },
+    "normalized_event_type": "NormalizedPublicMarketDataV1",
+    "parallel_normalized_event_ssot_allowed": false,
+    "path": "NormalizedPublicMarketDataV1+ObservationIdentityV1+DistinctMarketObservationAcceptorV1"
+  },
+  "out_of_order_contract": {
+    "invariant": true,
+    "out_of_order_must_be_explicitly_classified": true,
+    "out_of_order_must_not_silently_mutate_finalized_truth": true,
+    "reuses_distinct_market_observation_acceptor": true
+  },
+  "revision_contract": {
+    "correction_increments_revision": true,
+    "correction_requires_finalized_or_corrected": true,
+    "revision_monotonic_non_decreasing": true,
+    "revision_starts_at_zero": true
+  },
+  "stale_bar_contract": {
+    "dashboard_chrome_deferred_to_o5": true,
+    "stale_does_not_imply_finalized": true,
+    "stale_is_explicit_state": true
+  }
+}
