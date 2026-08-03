@@ -87,7 +87,9 @@ Commands:
 - `preflight`
 - `offline-integration`
 - `materialize-evidence`
-- `productive-session` (fail-closed in this capability)
+- `productive-session` (gate evaluation only; no runner side effects)
+- `execute-post-unlock` (explicit `--execute` required; invokes preexisting
+  canonical restart orchestration runner after Session-GO unlock)
 
 ## Authorization / confirm-token
 
@@ -100,20 +102,29 @@ Commands:
 
 ```text
 ENTRYPOINT_IMPLEMENTED=true
+POST_UNLOCK_RUNTIME_INVOCATION_ADDED=true
+PRODUCTIVE_EXECUTE_MODE_EXPLICIT=true
 SESSION_ACTIVATED=false
 NETWORK_SESSION_STARTED=false
 ```
 
-Documentation and merge do not authorize a session. Unlock requires the separate
-Session-GO capability:
+Documentation and merge do not authorize a productive real-network session.
+Unlock still requires:
 
 ```text
 PHASE_9_2_PRODUCTIVE_RESTART_RECOVERY_SESSION_GO_CAPABILITY_V1
 ```
 
 bound ACTIVE Session-GO artifact + Owner-GO + Owner-Session-GO + single-use
-authorization + confirm token. The permanent config flag
-`productive_network_session_execution_authorized` remains `false`.
+authorization + confirm token, then explicit `execute-post-unlock --execute`.
+The permanent config flag `productive_network_session_execution_authorized`
+remains `false`.
+
+Post-unlock handoff owner:
+
+```text
+PHASE_9_2_PRODUCTIVE_RESTART_RECOVERY_POST_UNLOCK_RUNTIME_INVOCATION_V1
+```
 
 ## Rollback
 

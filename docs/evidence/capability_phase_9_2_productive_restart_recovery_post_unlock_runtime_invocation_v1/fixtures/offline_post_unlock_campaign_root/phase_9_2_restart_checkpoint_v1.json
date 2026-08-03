@@ -1,0 +1,136 @@
+{
+  "accounting_digest": "d9381dbd8672f40fd5650a9c618cc6556ef0d2e6d38e8ee9b8444e7607402ce9",
+  "applied_confirmation_ids": [
+    "conf_post_unlock_001"
+  ],
+  "applied_fill_ids": [],
+  "atomic_commit_position": "3d41425c5d5b1ece6760009ade64b0f7c2d1daaef5e0bc63bbcabfd57359da46",
+  "confirmation_session_id": "phase_9_2_restart_confirmation_session_v1",
+  "distinct_observation_count": 30,
+  "durable_state_lineage_id": "phase_9_2_restart_durable_state_lineage_v1",
+  "evidence_cursor": "fa1184f92b711a0fd8c4ed8e07685c2110d58f3fa0d891b12a974d1314079356",
+  "observation_epoch": 30,
+  "observation_identity": "07b5824120ad914bccbef26828f86bd400c94359dd9b00feaf5a64aacb618cc2",
+  "open_position_present": false,
+  "open_position_quantity": 0.0,
+  "portfolio_digest": "2f6009a51797d0cb67d51a45d886bb75d3582b2be78cbc8de641509d2623573d",
+  "reconciliation_reference": "0d0887772b470c624838ca735b973a286b8528c598cfb2593ca74c894395adb7",
+  "restart_campaign_id": "phase_9_2_restart_recovery_campaign_v1",
+  "runtime_state_digest": "61dc6e1dc2c4578e72334c94576af8ede7f3852eea3a18e7c134487df5a75b57",
+  "scope_digest": "824cc05e51d529e2d553f214a1f244ce67a76d5dde01cd8395c3b15f220d578f",
+  "selected_instrument_reference": "ETH-USD_UM_XPERP-310404",
+  "state_roots": [
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "febf5ca77137eeacc4d7951640c465dd376140b3741c8eeaa9e1cb9490def4a5",
+      "field_name": "confirmation_state",
+      "owner_capability": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+      "reason": "Cap 6.1 confirmation carrier continuity",
+      "value": {
+        "confirmation_session_id": "phase_9_2_restart_confirmation_session_v1",
+        "observation_epoch": 30,
+        "observation_identity": "07b5824120ad914bccbef26828f86bd400c94359dd9b00feaf5a64aacb618cc2"
+      }
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "042b8b4053fdbb5c12801c96baba91b961b897fc71700464c1aed0ce461a2b18",
+      "field_name": "confirmation_session_id",
+      "owner_capability": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+      "reason": "stable confirmation identity across process restart",
+      "value": "phase_9_2_restart_confirmation_session_v1"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "e28824bc93f4d62480d95281177a20e74c87af6af3afb16d2a4cff6e55da0c9c",
+      "field_name": "observation_identity_epoch",
+      "owner_capability": "CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1",
+      "reason": "C1 epoch continuity; no rollback",
+      "value": {
+        "observation_epoch": 30,
+        "observation_identity": "07b5824120ad914bccbef26828f86bd400c94359dd9b00feaf5a64aacb618cc2"
+      }
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "a0e25d4d2a7c27bd1edd9df10234dbbd56c8f8e6ec33fb07a43af58274fd521a",
+      "field_name": "dynamic_scope_state",
+      "owner_capability": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+      "reason": "Cap 6.2 RuntimeScopeState continuity",
+      "value": {
+        "scope_digest": "824cc05e51d529e2d553f214a1f244ce67a76d5dde01cd8395c3b15f220d578f"
+      }
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "b9134b23b6d8bcefb3a34514a8a2ba82f0278cbd6a2e34d551ae3d2eb3807ce0",
+      "field_name": "required_decision_path_carrier_state",
+      "owner_capability": "CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1",
+      "reason": "only required carrier via Cap 6.2; no new MV2 domain",
+      "value": {
+        "runtime_state_digest": "61dc6e1dc2c4578e72334c94576af8ede7f3852eea3a18e7c134487df5a75b57"
+      }
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "088c6e9e19957d2c823e8d4ba6daf08f3a34c7867e667ad17114008bbaebe801",
+      "field_name": "portfolio_state",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "Cap 3.1/7.2 portfolio continuity",
+      "value": {
+        "portfolio_digest": "2f6009a51797d0cb67d51a45d886bb75d3582b2be78cbc8de641509d2623573d"
+      }
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "9483d952a62e7b2296b3546cd72d4e7cb337de135e3111ef22d4fb42107ff29b",
+      "field_name": "accounting_state",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "futures accounting continuity",
+      "value": {
+        "accounting_digest": "d9381dbd8672f40fd5650a9c618cc6556ef0d2e6d38e8ee9b8444e7607402ce9"
+      }
+    },
+    {
+      "classification": "REFERENCE_ONLY",
+      "digest": "44044e0257443dabfe708422915c8d14688c6b0df3ec6be1891e78f0493d7cce",
+      "field_name": "reconciliation_state_reference",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "reconciliation-before-alpha gate reference",
+      "value": "0d0887772b470c624838ca735b973a286b8528c598cfb2593ca74c894395adb7"
+    },
+    {
+      "classification": "REFERENCE_ONLY",
+      "digest": "42d2845586a945af57eeb045d60337f2cb0920c99e4ff3cc2bd045b5bb89cc23",
+      "field_name": "selected_instrument_reference",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "Cap 2.4 selection remains sole authority",
+      "value": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "classification": "REFERENCE_ONLY",
+      "digest": "1063833c48dc44d0734eee26f2e65b78ac5c584655db07d2a07f957eccc9490e",
+      "field_name": "typed_volatility_reference",
+      "owner_capability": "CAPABILITY_7_2_SINGLE_FUTURE_STATEFUL_NO_ORDER_RUNTIME_ACTIVATION_V1",
+      "reason": "typed presence reference only; no policy mutation",
+      "value": "6c9969031c2a77ec93fa7f9d59d1c9afb2f71b8a09b0c9cecd20e9dd7e742616"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "99de3f10cb68ef57ab96b33cdd8252549914190bbdffc1fe016d6f01b698161a",
+      "field_name": "evidence_cursor",
+      "owner_capability": "CAPABILITY_6_4_FULL_DECISION_PATH_ATOMIC_RESTART_CLOSURE_V1",
+      "reason": "Cap 6.4 pending evidence cursor continuity",
+      "value": "fa1184f92b711a0fd8c4ed8e07685c2110d58f3fa0d891b12a974d1314079356"
+    },
+    {
+      "classification": "PERSIST_DIRECTLY",
+      "digest": "5330ead84a73979423f7e672749aafe89ee87077f76b8824c6fc17a32b0eeb5f",
+      "field_name": "atomic_decision_path_commit_position",
+      "owner_capability": "CAPABILITY_6_4_FULL_DECISION_PATH_ATOMIC_RESTART_CLOSURE_V1",
+      "reason": "Cap 6.4 commit marker continuity",
+      "value": "3d41425c5d5b1ece6760009ade64b0f7c2d1daaef5e0bc63bbcabfd57359da46"
+    }
+  ],
+  "typed_volatility_reference": "6c9969031c2a77ec93fa7f9d59d1c9afb2f71b8a09b0c9cecd20e9dd7e742616"
+}
