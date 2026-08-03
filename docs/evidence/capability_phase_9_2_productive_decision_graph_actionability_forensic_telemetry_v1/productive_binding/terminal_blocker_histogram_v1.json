@@ -1,0 +1,15 @@
+{
+  "primary_reasons": {
+    "BLOCKED_BY_DUPLICATE_OBSERVATION": 1,
+    "BLOCKED_BY_MISSING_MARKET_TRUTH": 1,
+    "HOLD_BY_CANONICAL_DECISION": 9
+  },
+  "terminal_outcomes": {
+    "DUPLICATE_SAMPLE": 1,
+    "ENTRY_INTENT": 5,
+    "EXIT_INTENT": 1,
+    "HOLD": 9,
+    "NO_SAMPLE": 1,
+    "REDUCE_INTENT": 2
+  }
+}

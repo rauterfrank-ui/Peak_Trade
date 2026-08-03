@@ -1,0 +1,13 @@
+{
+  "ACTIONABILITY_FUNNEL_COMPLETE": true,
+  "FIRST_ZERO_OR_MAJOR_DROP_STAGE": "entry_actionable_count",
+  "PRIMARY_ACTIONABILITY_BOTTLENECK": "HOLD_BY_CANONICAL_DECISION",
+  "PRIMARY_ACTIONABILITY_BOTTLENECK_COUNT": 9,
+  "PRIMARY_ACTIONABILITY_BOTTLENECK_PERCENT": 47.3684,
+  "SECONDARY_ACTIONABILITY_BOTTLENECKS": [
+    "BLOCKED_BY_DUPLICATE_OBSERVATION",
+    "BLOCKED_BY_MISSING_MARKET_TRUTH"
+  ],
+  "forbidden_claims_emitted": false,
+  "interpretation": "Der produktive Decision Graph wurde beobachtet und der tats\u00e4chliche prim\u00e4re Actionability-Blocker wurde quantifiziert."
+}
