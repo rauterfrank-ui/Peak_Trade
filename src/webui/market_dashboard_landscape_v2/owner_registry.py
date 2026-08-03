@@ -80,10 +80,14 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         authority_class="decision",
         reuse_status="REUSED",
         notes=(
-            "Phase 4.3A: Landscape projects CanonicalTradingDecisionEvidenceV1 "
+            "Phase 4.3A + CAPABILITY_PRESENTATION_CANONICAL_DECISION_AUTOBIND_V1: "
+            "Landscape projects CanonicalTradingDecisionEvidenceV1 "
             "field-for-field (decision_outcome/next_direction_state/reason_codes/"
             "decision_id); blockers remain empty (no direct evidence field); "
-            "no recomputation; Double Play is a separate Phase 4.3B slot."
+            "no recomputation; Double Play is a separate Phase 4.3B slot. "
+            "Durable auto-bind via non-authoritative "
+            "canonical_decision_presentation_projection.v1 under archive root; "
+            "injection remains test-compatible; AUTHORITY_EFFECT=NONE."
         ),
     ),
     CanonicalOwnerRefV1(

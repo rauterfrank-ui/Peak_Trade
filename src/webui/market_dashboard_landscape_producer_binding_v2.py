@@ -2,7 +2,8 @@
 
 Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity,
 regime_bull_bear_switch (explicit injection; PR #5577), canonical_decision
-evidence, double_play display projection, safety authority KillSwitch/boundary
+evidence (injection or durable presentation projection auto-bind),
+double_play display projection, safety authority KillSwitch/boundary
 field projection, risk/sizing/capital field projection, execution/reconciliation
 field projection, and economic summary EconomicViabilityEvidenceV1 field
 projection.
@@ -65,6 +66,10 @@ from .workflow_dashboard_archive_root_v1 import (
     ENV_ARCHIVE_ROOT,
     WorkflowDashboardArchiveRootError,
     resolve_workflow_dashboard_archive_root,
+)
+from .workflow_dashboard_readmodel_v1.canonical_decision_presentation_projection_v1 import (
+    LOAD_ERROR_ABSENT as DECISION_PROJECTION_ABSENT,
+    try_load_canonical_decision_presentation_projection_v1,
 )
 from .workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     FORBIDDEN_SELECTED_SYMBOLS,
@@ -852,19 +857,44 @@ def _bind_canonical_decision(
     as_of: datetime,
     git_sha: str | None,
     canonical_decision_fields: Mapping[str, Any] | None,
+    archive_root: Path | None = None,
 ) -> Any:
-    """Project injected CanonicalTradingDecisionEvidenceV1-compatible fields.
+    """Project CanonicalTradingDecisionEvidenceV1-compatible fields.
 
-    No durable dashboard decision readmodel. Without injection → MISSING_SOURCE.
-    Never runs decision producers, Double Play composers, or switch owners.
-    Blockers remain empty — evidence has no direct blockers field.
+    Injection remains supported for tests. Productive auto-bind loads the
+    non-authoritative presentation projection from the Workflow Dashboard
+    archive root when injection is absent. Never runs decision producers,
+    Double Play composers, or switch owners. Blockers remain empty — evidence
+    has no direct blockers field.
     """
     if canonical_decision_fields is None:
-        return unavailable_canonical_decision(
-            availability=Availability.MISSING_SOURCE,
-            generated_at=as_of,
-            reason=REASON_DECISION_NOT_PERSISTED,
-        )
+        if archive_root is None:
+            return unavailable_canonical_decision(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_DECISION_NOT_PERSISTED,
+            )
+        loaded = try_load_canonical_decision_presentation_projection_v1(archive_root)
+        if not loaded.loaded or loaded.binder_fields is None:
+            reason = REASON_DECISION_NOT_PERSISTED
+            if loaded.load_errors:
+                first = str(loaded.load_errors[0])
+                if first != DECISION_PROJECTION_ABSENT:
+                    reason = first
+            availability = (
+                Availability.MISSING_SOURCE
+                if reason == REASON_DECISION_NOT_PERSISTED or reason == DECISION_PROJECTION_ABSENT
+                else Availability.INVALID
+            )
+            if reason == DECISION_PROJECTION_ABSENT:
+                reason = REASON_DECISION_NOT_PERSISTED
+                availability = Availability.MISSING_SOURCE
+            return unavailable_canonical_decision(
+                availability=availability,
+                generated_at=as_of,
+                reason=reason,
+            )
+        canonical_decision_fields = loaded.binder_fields
 
     required = (
         "instrument_id",
@@ -1825,8 +1855,9 @@ def bind_market_universe_slots(
 
     canonical_decision_fields accepts already-computed
     CanonicalTradingDecisionEvidenceV1-compatible fields plus producer
-    wall-clock timestamps. Without injection, canonical_decision is
-    MISSING_SOURCE (no durable readmodel).
+    wall-clock timestamps. Without injection, canonical_decision auto-binds
+    from the durable non-authoritative presentation projection under the
+    archive root; absent/invalid projection → MISSING_SOURCE / INVALID.
 
     double_play_fields accepts already-computed
     DoublePlayDashboardDisplaySnapshot-compatible fields plus producer
@@ -1878,6 +1909,7 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         canonical_decision_fields=canonical_decision_fields,
+        archive_root=root,
     )
     double_play = _bind_double_play_display(
         as_of=as_of,

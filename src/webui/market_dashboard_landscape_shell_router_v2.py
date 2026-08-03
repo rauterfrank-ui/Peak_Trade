@@ -8,7 +8,8 @@ via universe_selection_readmodel.v1 — no Env required when the default exists.
 Phase 4.2 binds dynamic_scope lifecycle identity fail-closed (injection only).
 Phase 4.2B binds regime_bull_bear_switch fail-closed (explicit injection only;
 PR #5577 — no transition_state calls).
-Phase 4.3A binds canonical_decision fail-closed (injection only).
+Phase 4.3A binds canonical_decision fail-closed (injection or durable
+presentation projection auto-bind; AUTHORITY_EFFECT=NONE).
 Phase 4.3B binds double_play display fail-closed (injection only).
 OHLCV binds from materialized okx_selected_instrument_ohlcv_readmodel.v1 only.
 CAPABILITY_O4: that readmodel is DERIVED (HTTP_JSON_POLL); authoritative bars are
