@@ -99,7 +99,9 @@ def validate_activation_contract_v1(contract: Mapping[str, Any]) -> dict[str, An
         )
     legacy = contract.get("legacy_path_policy")
     if not isinstance(legacy, dict):
-        raise ActivationContractError("ACTIVATION_CONTRACT_LEGACY_POLICY_INVALID", type(legacy).__name__)
+        raise ActivationContractError(
+            "ACTIVATION_CONTRACT_LEGACY_POLICY_INVALID", type(legacy).__name__
+        )
     if legacy.get("deletion_allowed") is not False:
         raise ActivationContractError("ACTIVATION_CONTRACT_LEGACY_DELETION_NOT_FAIL_CLOSED", "")
     if legacy.get("functional_change_allowed") is not False:
@@ -108,7 +110,9 @@ def validate_activation_contract_v1(contract: Mapping[str, Any]) -> dict[str, An
         raise ActivationContractError("ACTIVATION_CONTRACT_UNKNOWN_DEPENDENCY_NOT_FAIL_CLOSED", "")
     rollback = contract.get("rollback_policy")
     if not isinstance(rollback, dict):
-        raise ActivationContractError("ACTIVATION_CONTRACT_ROLLBACK_INVALID", type(rollback).__name__)
+        raise ActivationContractError(
+            "ACTIVATION_CONTRACT_ROLLBACK_INVALID", type(rollback).__name__
+        )
     if rollback.get("preserves_o7_evidence") is not True:
         raise ActivationContractError("ACTIVATION_CONTRACT_ROLLBACK_O7_UNSAFE", "")
     return dict(contract)

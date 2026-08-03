@@ -85,7 +85,9 @@ def test_activation_contract_valid_in_repository(repo_root: Path) -> None:
         assert cmd in contract["canonical_subcommands"]
 
 
-def test_activation_contract_rejects_authority_and_second_ssot(tmp_path: Path, repo_root: Path) -> None:
+def test_activation_contract_rejects_authority_and_second_ssot(
+    tmp_path: Path, repo_root: Path
+) -> None:
     good = load_activation_contract_v1(default_activation_contract_path(repo_root))
     bad = dict(good)
     bad["live_trading_authorized"] = True
@@ -204,12 +206,10 @@ def test_verify_missing_registry_and_health_artifact(launcher_env, repo_root: Pa
     assert missing["ok"] is False
     assert any("SESSION" in b for b in missing["blockers"])
 
-    actual_sha = (
-        __import__(
-            "src.ops.canonical_local_launcher_and_process_supervision_v1.lifecycle_v1",
-            fromlist=["resolve_repository_sha"],
-        ).resolve_repository_sha(repo_root)
-    )
+    actual_sha = __import__(
+        "src.ops.canonical_local_launcher_and_process_supervision_v1.lifecycle_v1",
+        fromlist=["resolve_repository_sha"],
+    ).resolve_repository_sha(repo_root)
     started = _start(launcher, cfg, session_id="o8-health-req", repository_sha=actual_sha)
     hb = Path(started["session"]["heartbeat_path"])
     if hb.exists():

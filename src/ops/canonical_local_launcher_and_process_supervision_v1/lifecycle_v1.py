@@ -722,9 +722,7 @@ class CanonicalLocalLauncherV1:
             else default_activation_contract_path(self.paths.repository_root)
         )
         try:
-            contract = validate_activation_contract_v1(
-                load_activation_contract_v1(contract_path)
-            )
+            contract = validate_activation_contract_v1(load_activation_contract_v1(contract_path))
             checks["activation_contract"] = {
                 "ok": True,
                 "path": str(contract_path),
