@@ -53,6 +53,7 @@ from src.ops.governed_end_to_end_runtime_and_dashboard_evidence_v1.constants_v1 
     LADDER_DEFERRED_ITEMS,
     LADDER_PROVEN_ITEMS,
     PRODUCTION_SURFACES_REUSED,
+    PRODUCTIVE_WIRING_IMPLEMENTED,
     REQUIRED_TRUTH_CLASSIFICATIONS,
     SAFETY_INVARIANTS,
 )
@@ -553,6 +554,7 @@ def run_o7_offline_governed_evidence_harness_v1(
         "DEFERRED_CLASSIFICATIONS": dict(DEFERRED_CLASSIFICATIONS),
         "REQUIRED_TRUTH_CLASSIFICATIONS": dict(REQUIRED_TRUTH_CLASSIFICATIONS),
         "SAFETY_INVARIANTS": dict(SAFETY_INVARIANTS),
+        "PRODUCTIVE_WIRING_IMPLEMENTED": dict(PRODUCTIVE_WIRING_IMPLEMENTED),
         "OPERATIONAL_METRICS": metrics,
         "PROOFS": proofs,
         "repository_sha": repository_sha,
