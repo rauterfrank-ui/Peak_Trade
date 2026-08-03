@@ -1,0 +1,20 @@
+{
+  "legacy_paths_deauthorized": [
+    "operator_recommendation:ad-hoc_nohup_setsid_script_launch_fragments",
+    "operator_recommendation:non_canonical_live_web_hosts_as_primary_entry"
+  ],
+  "legacy_paths_deauthorized_count": 2,
+  "legacy_paths_deleted": false,
+  "legacy_paths_functionally_changed": false,
+  "non_canonical_observers_preserved": [
+    "scripts/serve_live_dashboard.py",
+    "scripts/live_web_server.py",
+    "src/live/web/app.py"
+  ],
+  "required_compatibility_paths_preserved": [
+    "scripts/run_web_dashboard.py",
+    "scripts/ops/refresh_okx_market_dashboard_v1.py"
+  ],
+  "unknown_dependency_count": 0,
+  "unknown_dependency_fail_closed": true
+}

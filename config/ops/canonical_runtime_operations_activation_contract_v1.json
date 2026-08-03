@@ -1,0 +1,60 @@
+{
+  "activation_version": "v1",
+  "authorization_consumption_authorized_by_this_contract": false,
+  "canonical_dashboard_mode": "dashboard-only",
+  "canonical_dashboard_path": "src/webui/app.py",
+  "canonical_health_model": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1",
+  "canonical_ohlcv_path": "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1",
+  "canonical_operator_entrypoint": "scripts/ops/peak_trade_runtime.py",
+  "canonical_read_model": "canonical_market_dashboard_read_model.v1",
+  "canonical_subcommands": [
+    "preflight",
+    "start",
+    "status",
+    "health",
+    "logs",
+    "stop",
+    "restart",
+    "recover",
+    "verify"
+  ],
+  "canonical_supervision_backend": "repository_owned_supervisor",
+  "canonical_supervisor": "src/ops/canonical_local_launcher_and_process_supervision_v1",
+  "capability_id": "CAPABILITY_O8_CANONICAL_RUNTIME_OPERATIONS_ACTIVATION_V1",
+  "core_logic_changed": false,
+  "credentials_authorized": false,
+  "dashboard_trading_authority": false,
+  "document_class": "DERIVED_DOMAIN_ACTIVATION_METADATA_ONLY",
+  "legacy_path_policy": {
+    "deletion_allowed": false,
+    "functional_change_allowed": false,
+    "non_canonical_observers": [
+      "scripts/serve_live_dashboard.py",
+      "scripts/live_web_server.py",
+      "src/live/web/app.py"
+    ],
+    "operator_recommendation_deauthorization_allowed": true,
+    "required_compatibility_paths": [
+      "scripts/run_web_dashboard.py",
+      "scripts/ops/refresh_okx_market_dashboard_v1.py"
+    ],
+    "unknown_dependency_fail_closed": true
+  },
+  "live_trading_authorized": false,
+  "master_runbook_is_only_ssot": true,
+  "network_session_authorized_by_this_contract": false,
+  "paper_exchange_orders_authorized": false,
+  "read_model_authority_effect": "NONE",
+  "read_model_classification": "DERIVED",
+  "repository_sha_binding_role": "CONSUMER_OF_ORIGIN_MAIN_AT_ACTIVATION",
+  "rollback_policy": {
+    "marker_path": "config/ops/canonical_runtime_operations_activation_contract_v1.json",
+    "method": "revert_activation_contract_and_operator_docs_pointers",
+    "preserves_legacy_callability": true,
+    "preserves_o1_o7_code": true,
+    "preserves_o7_evidence": true
+  },
+  "schema_id": "ops.canonical_runtime_operations_activation_contract_v1",
+  "second_ssot_allowed": false,
+  "testnet_authorized": false
+}

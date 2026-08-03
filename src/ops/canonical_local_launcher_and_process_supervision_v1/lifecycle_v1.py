@@ -1,11 +1,13 @@
-"""O2 lifecycle control plane: preflight/start/status/health/stop/restart/recover."""
+"""O2 lifecycle control plane: preflight/start/status/health/logs/stop/restart/recover/verify."""
 
 from __future__ import annotations
 
 import hashlib
 import json
 import os
+import re
 import shutil
+import subprocess
 import time
 import uuid
 from dataclasses import dataclass
@@ -58,6 +60,19 @@ from src.ops.canonical_runtime_environment_contract_v1 import (
     ENVIRONMENT_POLICY_ID,
     run_canonical_environment_preflight_v1,
 )
+from src.ops.canonical_runtime_operations_activation_v1.constants_v1 import (
+    CANONICAL_OPERATOR_ENTRYPOINT,
+    CANONICAL_SUBCOMMANDS,
+    CAPABILITY_ID as O8_CAPABILITY_ID,
+    FORBIDDEN_TOKEN_BASENAMES,
+    SECRET_NAME_FRAGMENTS,
+)
+from src.ops.canonical_runtime_operations_activation_v1.contract_v1 import (
+    ActivationContractError,
+    default_activation_contract_path,
+    load_activation_contract_v1,
+    validate_activation_contract_v1,
+)
 
 
 @dataclass(frozen=True)
@@ -73,12 +88,61 @@ def compute_config_digest_v1(config_path: Path) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _tracked_worktree_dirty(repository_root: Path) -> bool:
+    """Return True when tracked files differ from HEAD (read-only git status)."""
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain=v1"],
+            cwd=str(repository_root),
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):
+        raise CanonicalLauncherError("GIT_STATUS_UNAVAILABLE", str(repository_root))
+    if result.returncode != 0:
+        raise CanonicalLauncherError(
+            "GIT_STATUS_FAILED",
+            (result.stderr or result.stdout or "").strip()[:200],
+        )
+    for line in result.stdout.splitlines():
+        if not line.strip():
+            continue
+        if line.startswith("??"):
+            continue
+        return True
+    return False
+
+
 def resolve_repository_sha(repository_root: Path, explicit: Optional[str] = None) -> str:
     if explicit:
         return str(explicit).strip()
+
+    def _sha_from_gitdir(gitdir: Path) -> Optional[str]:
+        head2 = gitdir / "HEAD"
+        if not head2.is_file():
+            return None
+        content = head2.read_text(encoding="utf-8").strip()
+        if content.startswith("ref:"):
+            ref = content.split(" ", 1)[1].strip()
+            candidates = [gitdir / ref]
+            common = gitdir / "commondir"
+            if common.is_file():
+                common_rel = common.read_text(encoding="utf-8").strip()
+                common_path = (gitdir / common_rel).resolve()
+                candidates.append(common_path / ref)
+            for ref_path in candidates:
+                if ref_path.is_file():
+                    return ref_path.read_text(encoding="utf-8").strip()
+            return None
+        if len(content) >= 40:
+            return content
+        return None
+
     head = repository_root / ".git" / "HEAD"
     if head.is_file():
-        # Worktree .git may be a file pointing elsewhere; prefer git via env-free read.
+        # Standard repository .git directory.
         content = head.read_text(encoding="utf-8").strip()
         if content.startswith("ref:"):
             ref = content.split(" ", 1)[1].strip()
@@ -93,16 +157,9 @@ def resolve_repository_sha(repository_root: Path, explicit: Optional[str] = None
         line = git_file.read_text(encoding="utf-8").strip()
         if line.startswith("gitdir:"):
             gitdir = Path(line.split(":", 1)[1].strip())
-            head2 = gitdir / "HEAD"
-            if head2.is_file():
-                content = head2.read_text(encoding="utf-8").strip()
-                if content.startswith("ref:"):
-                    ref = content.split(" ", 1)[1].strip()
-                    ref_path = gitdir / ref
-                    if ref_path.is_file():
-                        return ref_path.read_text(encoding="utf-8").strip()
-                elif len(content) >= 40:
-                    return content
+            sha = _sha_from_gitdir(gitdir)
+            if sha:
+                return sha
     raise CanonicalLauncherError("REPOSITORY_SHA_UNRESOLVED", str(repository_root))
 
 
@@ -549,6 +606,186 @@ class CanonicalLocalLauncherV1:
             "fresh_heartbeat": fresh,
             "heartbeat": heartbeat,
             "status": status,
+        }
+
+    def logs(
+        self,
+        session_id: str,
+        *,
+        log_name: Optional[str] = None,
+        tail_lines: int = 200,
+    ) -> dict[str, Any]:
+        """Read-only session log inspection (O8). Never starts processes or reads tokens."""
+        sid = str(session_id or "").strip()
+        if not sid or "/" in sid or "\\" in sid or sid in {".", ".."}:
+            raise CanonicalLauncherError("INVALID_SESSION_ID", sid)
+        record = self.registry.require_session(sid)
+        session_log_dir = (Path(self.paths.log_root) / sid).resolve()
+        root = Path(self.paths.log_root).resolve()
+        try:
+            session_log_dir.relative_to(root)
+        except ValueError as exc:
+            raise CanonicalLauncherError(
+                "LOG_PATH_OUTSIDE_ROOT",
+                str(session_log_dir),
+            ) from exc
+        if not session_log_dir.is_dir():
+            raise CanonicalLauncherError("SESSION_LOG_DIR_MISSING", str(session_log_dir))
+
+        allowed = sorted(
+            p
+            for p in session_log_dir.iterdir()
+            if p.is_file()
+            and p.name.lower() not in FORBIDDEN_TOKEN_BASENAMES
+            and not any(frag in p.name.lower() for frag in SECRET_NAME_FRAGMENTS)
+        )
+        if log_name is not None:
+            name = Path(str(log_name)).name
+            if name != str(log_name) or "/" in str(log_name) or "\\" in str(log_name):
+                raise CanonicalLauncherError("LOG_NAME_PATH_TRAVERSAL_BLOCKED", str(log_name))
+            if name.lower() in FORBIDDEN_TOKEN_BASENAMES or any(
+                frag in name.lower() for frag in SECRET_NAME_FRAGMENTS
+            ):
+                raise CanonicalLauncherError("LOG_NAME_SECRET_PATH_BLOCKED", name)
+            selected = [p for p in allowed if p.name == name]
+            if not selected:
+                raise CanonicalLauncherError("LOG_FILE_NOT_FOUND", name)
+            targets = selected
+        else:
+            targets = allowed
+
+        redact = re.compile(
+            r"(?i)(token|secret|password|credential|passphrase|api[_-]?key)\s*[:=]\s*\S+"
+        )
+        files_out: list[dict[str, Any]] = []
+        n = max(1, min(int(tail_lines), 5000))
+        for path in targets:
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError as exc:
+                raise CanonicalLauncherError("LOG_READ_FAILED", f"{path.name}:{exc}") from exc
+            lines = text.splitlines()
+            tail = lines[-n:]
+            redacted = [redact.sub(r"\1=<redacted>", ln) for ln in tail]
+            files_out.append(
+                {
+                    "name": path.name,
+                    "bytes": path.stat().st_size,
+                    "tail_line_count": len(redacted),
+                    "tail": redacted,
+                }
+            )
+        return {
+            "ok": True,
+            "read_only": True,
+            "mutated": False,
+            "network_accessed": False,
+            "process_started": False,
+            "authorization_consumed": False,
+            "session_id": sid,
+            "repository_sha": record.repository_sha,
+            "log_dir": str(session_log_dir),
+            "files": files_out,
+            "capability_id": O8_CAPABILITY_ID,
+        }
+
+    def verify(
+        self,
+        *,
+        session_id: Optional[str] = None,
+        expected_repository_sha: Optional[str] = None,
+        require_clean_tracked_worktree: bool = False,
+        require_health_artifact: bool = False,
+        activation_contract_path: Optional[Path] = None,
+    ) -> dict[str, Any]:
+        """Read-only activation/session binding verification (O8)."""
+        checks: dict[str, Any] = {}
+        blockers: list[str] = []
+
+        actual_sha = resolve_repository_sha(self.paths.repository_root)
+        checks["repository_sha"] = actual_sha
+        if expected_repository_sha is not None:
+            expected = str(expected_repository_sha).strip()
+            checks["expected_repository_sha"] = expected
+            if actual_sha != expected:
+                blockers.append("REPOSITORY_SHA_MISMATCH")
+
+        if require_clean_tracked_worktree:
+            dirty = _tracked_worktree_dirty(self.paths.repository_root)
+            checks["tracked_worktree_dirty"] = dirty
+            if dirty:
+                blockers.append("TRACKED_WORKTREE_DIRTY")
+
+        contract_path = (
+            Path(activation_contract_path)
+            if activation_contract_path is not None
+            else default_activation_contract_path(self.paths.repository_root)
+        )
+        try:
+            contract = validate_activation_contract_v1(
+                load_activation_contract_v1(contract_path)
+            )
+            checks["activation_contract"] = {
+                "ok": True,
+                "path": str(contract_path),
+                "capability_id": contract["capability_id"],
+                "canonical_operator_entrypoint": contract["canonical_operator_entrypoint"],
+                "canonical_subcommands": list(contract["canonical_subcommands"]),
+            }
+            entry = self.paths.repository_root / CANONICAL_OPERATOR_ENTRYPOINT
+            checks["canonical_entrypoint_exists"] = entry.is_file()
+            if not entry.is_file():
+                blockers.append("CANONICAL_ENTRYPOINT_MISSING")
+            for cmd in CANONICAL_SUBCOMMANDS:
+                if cmd not in contract["canonical_subcommands"]:
+                    blockers.append(f"SUBCOMMAND_MISSING_IN_CONTRACT:{cmd}")
+        except ActivationContractError as exc:
+            checks["activation_contract"] = {
+                "ok": False,
+                "code": exc.code,
+                "detail": exc.detail,
+                "path": str(contract_path),
+            }
+            blockers.append(exc.code)
+
+        if session_id is not None:
+            sid = str(session_id).strip()
+            try:
+                record = self.registry.require_session(sid)
+            except CanonicalLauncherError as exc:
+                checks["session_registry"] = {"ok": False, "code": exc.code, "detail": exc.detail}
+                blockers.append(exc.code)
+            else:
+                checks["session_registry"] = {
+                    "ok": True,
+                    "session_id": sid,
+                    "lifecycle_state": record.lifecycle_state,
+                    "repository_sha": record.repository_sha,
+                    "config_digest": record.config_digest,
+                }
+                if record.repository_sha != actual_sha:
+                    blockers.append("SESSION_REPOSITORY_SHA_MISMATCH")
+                heartbeat_path = Path(record.heartbeat_path)
+                checks["health_artifact_present"] = heartbeat_path.is_file()
+                if require_health_artifact and not heartbeat_path.is_file():
+                    blockers.append("HEALTH_ARTIFACT_MISSING")
+                # Read-model / dashboard binding references remain non-authoritative.
+                checks["read_model_authority_effect"] = "NONE"
+                checks["dashboard_trading_authority"] = False
+
+        ok = not blockers
+        return {
+            "ok": ok,
+            "read_only": True,
+            "mutated": False,
+            "network_accessed": False,
+            "process_started": False,
+            "process_stopped": False,
+            "authorization_consumed": False,
+            "blockers": blockers,
+            "checks": checks,
+            "capability_id": O8_CAPABILITY_ID,
+            "canonical_operator_entrypoint": CANONICAL_OPERATOR_ENTRYPOINT,
         }
 
     def stop(

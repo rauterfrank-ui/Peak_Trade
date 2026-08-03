@@ -1,0 +1,8 @@
+{
+  "actual_head_sha": "4e0e1d48dfd3bbccc110cb98cef9f76d49759e57",
+  "actual_origin_main_sha": "4e0e1d48dfd3bbccc110cb98cef9f76d49759e57",
+  "branch": "capability/o8-canonical-runtime-operations-activation-v1",
+  "expected_origin_main_sha": "4e0e1d48dfd3bbccc110cb98cef9f76d49759e57",
+  "head_equals_origin_main_at_activation_base": true,
+  "tracked_worktree_was_clean_before_implementation": true
+}

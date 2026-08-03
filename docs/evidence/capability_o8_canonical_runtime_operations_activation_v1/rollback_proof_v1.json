@@ -1,0 +1,8 @@
+{
+  "method": "revert_activation_contract_and_operator_docs_pointers",
+  "preserves_legacy_callability": true,
+  "preserves_o1_o7_code": true,
+  "preserves_o7_evidence": true,
+  "rollback_boundary_defined": true,
+  "rollback_proof_pass": true
+}
