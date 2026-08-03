@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -288,3 +289,83 @@ def test_failure_injection_matrix_offline(tmp_path: Path) -> None:
         assert "state_divergence_possible" in failure
         assert "recovery_eligibility" in failure
         assert "owner_action_required" in failure
+
+
+def test_path_sanitization_repo_relative_and_external_temp(tmp_path: Path) -> None:
+    from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.path_sanitization_v1 import (
+        contains_absolute_local_path_v1,
+        sanitize_evidence_payload_v1,
+        sanitize_path_value_v1,
+        sanitize_pytest_output_v1,
+    )
+
+    repo = tmp_path / "repo"
+    (repo / "docs" / "evidence").mkdir(parents=True)
+    internal = repo / "docs" / "evidence" / "capability_o6" / "session.json"
+    internal.parent.mkdir(parents=True, exist_ok=True)
+    internal.write_text("{}\n", encoding="utf-8")
+
+    relative = sanitize_path_value_v1(str(internal), repository_root=repo)
+    assert relative == "docs/evidence/capability_o6/session.json"
+    assert not relative.startswith("/")
+    assert "Users" not in relative
+
+    external = sanitize_path_value_v1(
+        "/var/folders/xx/tmp_o6_harness/cursor.json",
+        repository_root=repo,
+    )
+    assert external.startswith("o6://external-temp/")
+    assert not contains_absolute_local_path_v1(external)
+
+    nested = sanitize_evidence_payload_v1(
+        {
+            "detail": f"tmp={internal}",
+            "session": {"config_path": str(internal), "log_root": "/tmp/o6-log"},
+            "ok": True,
+        },
+        repository_root=repo,
+    )
+    assert nested["ok"] is True
+    assert nested["session"]["config_path"] == "docs/evidence/capability_o6/session.json"
+    assert nested["session"]["log_root"].startswith("o6://external-temp/")
+    assert "tmp=" in nested["detail"]
+    assert not contains_absolute_local_path_v1(json.dumps(nested))
+
+    pytest_raw = (
+        "============================= test session starts ==============================\n"
+        f"rootdir: {repo}\n"
+        "collected 10 items\n"
+        "10 passed in 0.17s\n"
+    )
+    hygienic = sanitize_pytest_output_v1(pytest_raw, repository_root=repo)
+    assert "rootdir: <REPOSITORY_ROOT>" in hygienic
+    assert "10 passed" in hygienic
+    assert not contains_absolute_local_path_v1(hygienic)
+
+
+def test_failure_injection_sanitized_for_publication(tmp_path: Path) -> None:
+    import json as _json
+
+    from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.path_sanitization_v1 import (
+        contains_absolute_local_path_v1,
+    )
+
+    repo = tmp_path / "repo"
+    fi_root = repo / "docs" / "evidence" / "capability_o6" / "_tmp_failure_injection"
+    fi_root.mkdir(parents=True)
+    matrix = run_failure_injection_matrix_v1(fi_root, repository_root=repo)
+    assert matrix["ok"] is True
+    assert matrix["FAILURE_INJECTION_PROVEN"] is True
+    blob = _json.dumps(matrix, sort_keys=True)
+    assert not contains_absolute_local_path_v1(blob)
+    detail = matrix["results"]["GRACEFUL_SHUTDOWN_TIMEOUT"]["failure"]["detail"]
+    assert detail.startswith("tmp=o6://external-temp/")
+    stale_session = matrix["results"]["STALE_PID_OR_SESSION_REGISTRY"]["evidence"]["recover"][
+        "session"
+    ]
+    for key in ("config_path", "evidence_root", "heartbeat_path", "log_root", "state_root"):
+        value = str(stale_session[key])
+        assert not value.startswith("/Users/")
+        assert not value.startswith("/private/")
+        assert not value.startswith("/var/folders/")
+        assert not value.startswith("/tmp/")

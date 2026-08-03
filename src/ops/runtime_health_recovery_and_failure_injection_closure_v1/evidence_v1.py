@@ -46,6 +46,11 @@ from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.failure_ta
 from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.idempotency_proofs_v1 import (
     prove_recovery_idempotency_bundle_v1,
 )
+from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.path_sanitization_v1 import (
+    assert_no_absolute_local_paths_in_tree_v1,
+    sanitize_evidence_payload_v1,
+    sanitize_pytest_output_v1,
+)
 from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.recovery_v1 import (
     assert_single_writer_enforced_v1,
 )
@@ -158,13 +163,25 @@ def materialize_capability_o6_evidence_v1(
     }
     composite = derive_composite_health_v1(reports)
     idempotency = prove_recovery_idempotency_bundle_v1()
+    repo_root = Path(repository_root).resolve()
     single_writer = assert_single_writer_enforced_v1(
         evidence_root / "_tmp_writer_proof",
         "o6-evidence-writer",
     )
-    failures = run_failure_injection_matrix_v1(evidence_root / "_tmp_failure_injection")
+    failures = run_failure_injection_matrix_v1(
+        evidence_root / "_tmp_failure_injection",
+        repository_root=repo_root,
+    )
+    failures = sanitize_evidence_payload_v1(failures, repository_root=repo_root)
+    idempotency = sanitize_evidence_payload_v1(idempotency, repository_root=repo_root)
+    process_alive_proof = sanitize_evidence_payload_v1(
+        process_alive_proof, repository_root=repo_root
+    )
+    single_writer = sanitize_evidence_payload_v1(single_writer, repository_root=repo_root)
+    composite = sanitize_evidence_payload_v1(composite, repository_root=repo_root)
 
     component_health = {name: reports[name].to_dict() for name in HEALTH_COMPONENTS}
+    component_health = sanitize_evidence_payload_v1(component_health, repository_root=repo_root)
     write_json(evidence_root / "COMPONENT_HEALTH.json", component_health)
     write_json(evidence_root / "COMPOSITE_HEALTH.json", composite)
     write_json(
@@ -216,7 +233,8 @@ def materialize_capability_o6_evidence_v1(
         },
     )
     if pytest_output:
-        _atomic_write_text(evidence_root / "pytest_output.txt", pytest_output)
+        hygienic_pytest = sanitize_pytest_output_v1(pytest_output, repository_root=repo_root)
+        _atomic_write_text(evidence_root / "pytest_output.txt", hygienic_pytest)
 
     summary = {
         "ok": bool(
@@ -275,6 +293,11 @@ def materialize_capability_o6_evidence_v1(
     # Do not include ephemeral tmp dirs in MANIFEST.
     write_manifest(evidence_root, relative_files)
     verification = verify_manifest(evidence_root)
+    path_hygiene = assert_no_absolute_local_paths_in_tree_v1(evidence_root)
+    if not path_hygiene["ok"]:
+        raise ValueError(
+            "O6_EVIDENCE_ABSOLUTE_LOCAL_PATH_LEAK:" + ",".join(path_hygiene["files_with_hits"])
+        )
 
     # Cleanup ephemeral harness dirs from evidence tree (keep MANIFEST clean).
     for name in ("_tmp_failure_injection", "_tmp_writer_proof"):
@@ -284,11 +307,21 @@ def materialize_capability_o6_evidence_v1(
 
             shutil.rmtree(path, ignore_errors=True)
 
+    # Re-verify after tmp cleanup that published files remain hygienic.
+    path_hygiene_final = assert_no_absolute_local_paths_in_tree_v1(evidence_root)
+    verification_final = verify_manifest(evidence_root)
+
     return {
-        "ok": bool(summary["ok"] and verification["ok"]),
-        "evidence_root": str(evidence_root),
+        "ok": bool(
+            summary["ok"]
+            and verification["ok"]
+            and verification_final["ok"]
+            and path_hygiene_final["ok"]
+        ),
+        "evidence_root": "docs/evidence/" + EVIDENCE_DIRNAME,
         "summary": summary,
-        "manifest_verification": verification,
+        "manifest_verification": verification_final,
+        "path_hygiene": path_hygiene_final,
         "failure_injection": failures,
     }
 

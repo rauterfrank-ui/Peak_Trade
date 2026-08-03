@@ -888,6 +888,8 @@ def scenario_missed_or_stale_ohlcv_interval(tmp: Path) -> dict[str, Any]:
 
 def scenario_graceful_shutdown_timeout(tmp: Path) -> dict[str, Any]:
     # Offline classification of graceful vs escalated stop without requiring a hang.
+    # Harness root must not be serialized into published evidence.
+    _ = tmp
     outcome = graceful_shutdown_timeout_outcome_v1(stopped=True, escalated=True)
     failure = _failure(
         root_cause_class="GRACEFUL_SHUTDOWN_TIMEOUT",
@@ -901,7 +903,7 @@ def scenario_graceful_shutdown_timeout(tmp: Path) -> dict[str, Any]:
         automatic_recovery_allowed=True,
         owner_action_required=False,
         recovery_eligibility="ELIGIBLE",
-        detail=f"tmp={tmp}",
+        detail="tmp=o6://external-temp/graceful_shutdown",
     )
     return _scenario_result(
         name="GRACEFUL_SHUTDOWN_TIMEOUT",
@@ -1013,7 +1015,11 @@ SCENARIO_RUNNERS: dict[str, Callable[[Path], dict[str, Any]]] = {
 }
 
 
-def run_failure_injection_matrix_v1(tmp_root: Path) -> dict[str, Any]:
+def run_failure_injection_matrix_v1(
+    tmp_root: Path,
+    *,
+    repository_root: Path | None = None,
+) -> dict[str, Any]:
     """Run all bounded offline failure-injection scenarios deterministically."""
     tmp_root.mkdir(parents=True, exist_ok=True)
     results: dict[str, Any] = {}
@@ -1021,7 +1027,7 @@ def run_failure_injection_matrix_v1(tmp_root: Path) -> dict[str, Any]:
         runner = SCENARIO_RUNNERS[name]
         results[name] = runner(tmp_root / name.lower())
     all_ok = all(bool(results[name]["ok"]) for name in BOUNDED_FAILURE_CLASSES)
-    return {
+    payload: dict[str, Any] = {
         "ok": all_ok,
         "scenario_count": len(BOUNDED_FAILURE_CLASSES),
         "scenarios": list(BOUNDED_FAILURE_CLASSES),
@@ -1033,3 +1039,24 @@ def run_failure_injection_matrix_v1(tmp_root: Path) -> dict[str, Any]:
         "credentials_used": False,
         "FAILURE_INJECTION_PROVEN": all_ok,
     }
+    if repository_root is not None:
+        from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.path_sanitization_v1 import (
+            sanitize_evidence_payload_v1,
+        )
+
+        payload = sanitize_evidence_payload_v1(payload, repository_root=Path(repository_root))
+        # Preserve boolean semantics after sanitization (strings only changed).
+        payload["ok"] = all_ok
+        payload["FAILURE_INJECTION_PROVEN"] = all_ok
+        payload["network_session_started"] = False
+        payload["authorization_consumed"] = False
+        payload["confirm_token_minted"] = False
+        payload["orders_submitted"] = False
+        payload["credentials_used"] = False
+        # Re-attach sanitized results while keeping ok flags from original runs.
+        for name in BOUNDED_FAILURE_CLASSES:
+            payload["results"][name]["ok"] = bool(results[name]["ok"])
+            payload["results"][name]["network_session_started"] = False
+            payload["results"][name]["authorization_consumed"] = False
+            payload["results"][name]["orders_submitted"] = False
+    return payload
