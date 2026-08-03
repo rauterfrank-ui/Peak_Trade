@@ -19,6 +19,7 @@
   "config_changed": false,
   "core_logic_changed": false,
   "current_forensic_truth_sha": "beacc35d754fd8ab0a37190b882f71b8fb78cb38",
+  "docs_token_policy_fix": "encoded_slash_in_closed_status_tokens",
   "expected_origin_main_sha": "beacc35d754fd8ab0a37190b882f71b8fb78cb38",
   "immediate_next_capability_after": "PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1",
   "ok": true,
@@ -33,7 +34,7 @@
   "review_mode": "DOCUMENTATION_ONLY_EXACT_EVIDENCE_RECONCILIATION",
   "runbook_baseline_sha_historical": "a8653d520ba3563dddb41aa175445d14725ac9b9",
   "runbook_path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-  "runbook_sha256_after": "80ebf6916f2c52eaa5d8e02ca56c587bdd215bde90a7735d7acfdf7a52fd206a",
+  "runbook_sha256_after": "718c79d9139be3088388533d7068cfec410f3620f8a1fb8bf6bd81137a68e259",
   "runtime_code_changed": false,
   "stale_claims_removed": [
     "C1_PRODUCTIVELY_BOUND=false",
@@ -45,5 +46,5 @@
     "G17 open/unbound as current truth"
   ],
   "task": "MASTER_RUNBOOK_TRUTH_RECONCILIATION_POST_TYPED_VOLATILITY_COLD_START_V1",
-  "verified_at": "2026-08-03T09:32:18Z"
+  "verified_at": "2026-08-03T09:33:10Z"
 }

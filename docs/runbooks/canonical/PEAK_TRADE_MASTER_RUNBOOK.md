@@ -1069,13 +1069,13 @@ INTENTIONAL_* = intentional non-blocking current phase
   -------------------------------------------------------------------------------------------------------------------------------------
   Gap                       Status / Classification                   Severity Resolution / residual              Blocks now
   ------------------------- -------------------------------- ----------------- ---------------------------------- ---------------------
-  `G01` C1 not productively `CLOSED / EVIDENCE_PROVEN`                   n/a Cap 6.1 Distinct Observation        Historical only
+  `G01` C1 not productively `CLOSED &#47; EVIDENCE_PROVEN`                   n/a Cap 6.1 Distinct Observation        Historical only
   bound                     was `WIRING_GAP`                                  Acceptor productively bound.        
 
-  `G02` C2 carrier not      `CLOSED / PERSISTED_AND_RESTART_PROVEN`        n/a Cap 6.1 confirmation carrier        Historical only
+  `G02` C2 carrier not      `CLOSED &#47; PERSISTED_AND_RESTART_PROVEN`        n/a Cap 6.1 confirmation carrier        Historical only
   persisted                 was `STATE_PERSISTENCE_GAP`                       persisted and restart-proven.       
 
-  `G03` C3 receives         `CLOSED / PRODUCTIVELY_BOUND`                  n/a Cap 6.1 passes actual C1           Historical only
+  `G03` C3 receives         `CLOSED &#47; PRODUCTIVELY_BOUND`                  n/a Cap 6.1 passes actual C1           Historical only
   non-advancing placeholder was `WIRING_GAP`                                  acceptance into C3.                 
 
   `G04` Confirmation        `CLOSED`                                       n/a Cap 6.1 stable confirmation         Historical only
