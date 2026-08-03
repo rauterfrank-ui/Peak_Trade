@@ -44,7 +44,6 @@ JS_SRC = REPO / "static/js/market_dashboard_landscape_v2.js"
 TEMPLATE_SRC = REPO / "templates/peak_trade_dashboard/market_landscape_v2.html"
 
 
-
 def _free_port() -> int:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.bind(("127.0.0.1", 0))
