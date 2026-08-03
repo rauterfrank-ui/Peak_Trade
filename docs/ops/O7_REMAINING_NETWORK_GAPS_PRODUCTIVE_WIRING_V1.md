@@ -7,9 +7,9 @@
 ## What this change closes (offline / local)
 
 - O2 `dashboard-only` now supervises a loopback-only FastAPI host serving:
-  - `GET /market`
-  - `GET /api/market/landscape/ohlcv`
-  - `GET /health`
+  - `GET &#47;market`
+  - `GET &#47;api&#47;market&#47;landscape&#47;ohlcv`
+  - `GET &#47;health`
 - Productive PSO normalized MD can feed `CanonicalPublicMdBarProducerV1` (PT1H) via
   `PsoToO4O5LiveBridgeV1` into the durable O5 read model.
 - Joined timestamp provenance is stamped without fabrication.
