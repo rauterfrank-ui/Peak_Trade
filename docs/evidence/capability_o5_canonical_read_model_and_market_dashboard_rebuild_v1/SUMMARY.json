@@ -36,7 +36,9 @@
   "STALE_STATE_IMPLEMENTED": true,
   "generated_at": "2026-08-03T14:58:40Z",
   "implementation_base_sha": "3b9d2ff3dcfb7d1dddb053ee39c7c928bdbd44ca",
+  "local_commit_sha": "8fbb57902d8de75ecc1887dbe29819a2190d5c09",
   "ok": true,
+  "repository_sha": "8fbb57902d8de75ecc1887dbe29819a2190d5c09",
   "test_count": 28,
   "test_result": "PASS"
 }
