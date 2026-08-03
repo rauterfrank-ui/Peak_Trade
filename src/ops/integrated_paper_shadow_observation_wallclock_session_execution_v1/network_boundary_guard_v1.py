@@ -51,12 +51,15 @@ class NetworkBoundaryAttestationV1:
 
 
 def assert_proxy_policy_fail_closed_v1(*, environ: Optional[Mapping[str, str]] = None) -> list[str]:
-    env = environ if environ is not None else os.environ
-    blockers: list[str] = []
-    for key in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy"):
-        if str(env.get(key) or "").strip():
-            blockers.append(f"PROXY_EGRESS_FORBIDDEN:{key}")
-    return blockers
+    """Fail-closed proxy / NO_PROXY policy (O1 expanded key set).
+
+    Delegates to the canonical O1 owner so wallclock and OHLCV paths share one policy.
+    """
+    from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
+        assert_proxy_and_no_proxy_policy_fail_closed_v1,
+    )
+
+    return assert_proxy_and_no_proxy_policy_fail_closed_v1(environ=environ)
 
 
 def assert_no_okx_credentials_in_env_v1(

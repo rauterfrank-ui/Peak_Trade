@@ -116,6 +116,11 @@ def make_real_eea_public_md_fetcher_v1(
     resolve_private_check: bool = True,
 ) -> tuple[HttpFetcher, RealHttpFetcherTelemetryV1]:
     """Return a boundary-enforcing HTTPS GET fetcher for eea.okx.com only."""
+    from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
+        assert_http_client_proxy_env_clean_v1,
+    )
+
+    assert_http_client_proxy_env_clean_v1(environ=environ)
     del sleep  # retries handled by EeaPublicMdTransportV1
     telemetry = RealHttpFetcherTelemetryV1()
     opener = _build_no_redirect_opener()

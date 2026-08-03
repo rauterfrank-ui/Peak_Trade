@@ -1,0 +1,17 @@
+{
+  "blockers": [],
+  "launch_backend_deferred_to_o2": true,
+  "notes": [
+    "SETSID_CLI_REQUIRED=false",
+    "PYTHON_OS_SETSID_OR_START_NEW_SESSION_ALLOWED=true",
+    "LAUNCH_BACKEND_DEFERRED_TO_O2=true",
+    "NO_PROCESS_SUPERVISOR_IN_O1",
+    "NO_CANONICAL_LAUNCHER_IN_O1"
+  ],
+  "ok": true,
+  "platform": "Darwin",
+  "python_os_setsid_available": true,
+  "setsid_cli_present": false,
+  "setsid_cli_required": false,
+  "start_new_session_allowed": true
+}

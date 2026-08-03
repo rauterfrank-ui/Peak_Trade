@@ -11,7 +11,7 @@ import fcntl
 import json
 import sys
 from pathlib import Path
-from typing import Any, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 for _p in (_REPO_ROOT, _REPO_ROOT / "src"):
@@ -59,7 +59,20 @@ def refresh_okx_market_dashboard_v1(
     verify_manifest: bool,
     materialize_readmodels: bool,
     dry_run: bool,
+    environ: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
+    from src.ops.canonical_runtime_environment_contract_v1.builder_v1 import (
+        CanonicalEnvironmentContractError,
+    )
+    from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
+        assert_http_client_proxy_env_clean_v1,
+    )
+
+    try:
+        assert_http_client_proxy_env_clean_v1(environ=environ)
+    except CanonicalEnvironmentContractError as exc:
+        _die(f"ERR: O1_PROXY_POLICY_FAILURE:{','.join(exc.blockers)}")
+
     if archive_root is not None:
         resolved_root = archive_root.expanduser().resolve()
     else:
