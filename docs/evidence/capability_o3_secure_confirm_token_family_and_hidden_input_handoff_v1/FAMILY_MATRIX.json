@@ -1,0 +1,111 @@
+{
+  "capability_id": "CAPABILITY_O3_SECURE_CONFIRM_TOKEN_FAMILY_AND_HIDDEN_INPUT_HANDOFF_V1",
+  "cross_family_substitution_blocked": true,
+  "families": {
+    "FAMILY_LEGACY_LITERAL_V1": {
+      "accepted_input_channels": [
+        "FORBIDDEN_ARGV_PLAINTEXT"
+      ],
+      "allowed_consumers": [
+        "legacy_ops_one_shot_scripts"
+      ],
+      "cross_family_interchangeable": false,
+      "expiry_or_single_use_policy": "REUSABLE_STATIC_UNDER_INACTIVE_CONTRACT",
+      "family_id": "FAMILY_LEGACY_LITERAL_V1",
+      "mint_path": "STATIC_LEGACY_LITERAL_NOT_MINTED_BY_O3",
+      "notes": [
+        "O3_MUST_NOT_ACTIVATE",
+        "LEGACY_ARGV_EXPOSURE_OUT_OF_O3_SCOPE"
+      ],
+      "o3_activatable": false,
+      "purpose": "PURPOSE_LEGACY_ONE_SHOT_INACTIVE_V1",
+      "storage_policy": "STATIC_LITERAL_INACTIVE"
+    },
+    "FAMILY_LIVE_ARMED_V1": {
+      "accepted_input_channels": [
+        "FORBIDDEN_GENERIC_ENV_PLAINTEXT"
+      ],
+      "allowed_consumers": [
+        "src.core.environment",
+        "src.execution.live_session"
+      ],
+      "cross_family_interchangeable": false,
+      "expiry_or_single_use_policy": "REUSABLE_STATIC_UNDER_INACTIVE_CONTRACT",
+      "family_id": "FAMILY_LIVE_ARMED_V1",
+      "mint_path": "STATIC_LIVE_CONFIRM_TOKEN_NOT_MINTED_BY_O3",
+      "notes": [
+        "O3_MUST_NOT_ACTIVATE",
+        "PT_LIVE_CONFIRM_TOKEN_ISOLATED"
+      ],
+      "o3_activatable": false,
+      "purpose": "PURPOSE_LIVE_BOUNDED_PILOT_INACTIVE_V1",
+      "storage_policy": "STATIC_LITERAL_INACTIVE"
+    },
+    "FAMILY_PSO_GOVERNED_PUBLIC_MD_V1": {
+      "accepted_input_channels": [
+        "SECURE_EPHEMERAL_IN_PROCESS_HANDLE",
+        "SECURE_TOKEN_FILE_EXCEPTION_0600"
+      ],
+      "allowed_consumers": [
+        "ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1",
+        "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1",
+        "ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1"
+      ],
+      "cross_family_interchangeable": false,
+      "expiry_or_single_use_policy": "TTL_BOUNDED_PLUS_FINGERPRINT_REPLAY_LEDGER",
+      "family_id": "FAMILY_PSO_GOVERNED_PUBLIC_MD_V1",
+      "mint_path": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_confirm_token_producer_v1.mint_productive_confirm_token_v1",
+      "notes": [
+        "PREFIX_MAY_OVERLAP_S03_BODY_FORMAT",
+        "FAMILY_BINDING_REQUIRED_TO_BLOCK_SUBSTITUTION",
+        "GENERIC_ENV_AND_ARGV_FORBIDDEN_UNDER_O3"
+      ],
+      "o3_activatable": true,
+      "purpose": "PURPOSE_PSO_WALLCLOCK_PUBLIC_MD_OBSERVE_V1",
+      "storage_policy": "TOKEN_FILE_EXCEPTION_EXPLICIT_AND_EPHEMERAL"
+    },
+    "FAMILY_RESEARCH_S03_V1": {
+      "accepted_input_channels": [
+        "SECURE_EPHEMERAL_IN_PROCESS_HANDLE",
+        "HIDDEN_GETPASS_OPERATOR_TERMINAL"
+      ],
+      "allowed_consumers": [
+        "research.canonical_volatility_numeric_max_age_additional_evidence_s03_productive_session_execution_owner_v1",
+        "research.canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_v1"
+      ],
+      "cross_family_interchangeable": false,
+      "expiry_or_single_use_policy": "SINGLE_USE_HANDLE_CLEAR_PLUS_REPLAY_SET",
+      "family_id": "FAMILY_RESEARCH_S03_V1",
+      "mint_path": "research.canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_v1.ephemeral_token_v1.EphemeralConfirmTokenHandleV1.mint_canonical_v1",
+      "notes": [
+        "SHARES_PSO_TOKEN_BODY_FORMAT",
+        "MUST_NOT_ACCEPT_PSO_FAMILY_BINDING",
+        "GETPASS_ALLOWED_ONLY_WHEN_EPHEMERAL_HANDLE_UNAVAILABLE"
+      ],
+      "o3_activatable": true,
+      "purpose": "PURPOSE_S03_ADDITIONAL_EVIDENCE_SESSION_V1",
+      "storage_policy": "PLAINTEXT_TOKEN_IN_MEMORY_ONLY"
+    },
+    "FAMILY_TESTNET_HARNESS_V1": {
+      "accepted_input_channels": [
+        "FORBIDDEN_ARGV_PLAINTEXT"
+      ],
+      "allowed_consumers": [
+        "scripts.ops.archive_futures_testnet_harness_v0"
+      ],
+      "cross_family_interchangeable": false,
+      "expiry_or_single_use_policy": "REUSABLE_STATIC_UNDER_INACTIVE_CONTRACT",
+      "family_id": "FAMILY_TESTNET_HARNESS_V1",
+      "mint_path": "STATIC_HARNESS_LITERAL_NOT_MINTED_BY_O3",
+      "notes": [
+        "O3_MUST_NOT_ACTIVATE",
+        "ISOLATED_INACTIVE_FAMILY"
+      ],
+      "o3_activatable": false,
+      "purpose": "PURPOSE_TESTNET_REACHABILITY_INACTIVE_V1",
+      "storage_policy": "STATIC_LITERAL_INACTIVE"
+    }
+  },
+  "schema_version": "o3_confirm_token_family_matrix_v1",
+  "token_family_matrix_complete": true
+}

@@ -70,16 +70,29 @@ def mint_productive_confirm_token_v1() -> str:
 
 
 def _atomic_write_token_file(path: Path, token: str) -> None:
+    """Delegate to O3 hardened exclusive create when roots are inferable; else legacy-safe.
+
+    Prefer ``create_confirm_token_file_exclusive_v1`` via issue_* callers that pass
+    repository/evidence roots. This helper remains for internal issuance when only
+    a path is known: still enforces 0600, rejects existing targets and symlinks.
+    """
+    if path.exists() or path.is_symlink():
+        raise ProductiveConfirmTokenError("TOKEN_FILE_EXISTING_TARGET_REJECTED")
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC
-    fd = os.open(str(tmp), flags, 0o600)
+    try:
+        os.chmod(path.parent, 0o700)
+    except OSError:
+        pass
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    try:
+        fd = os.open(str(path), flags, 0o600)
+    except FileExistsError as exc:
+        raise ProductiveConfirmTokenError("TOKEN_FILE_EXISTING_TARGET_REJECTED") from exc
     try:
         os.write(fd, (token + "\n").encode("utf-8"))
         os.fsync(fd)
     finally:
         os.close(fd)
-    os.replace(tmp, path)
     os.chmod(path, 0o600)
 
 
@@ -153,8 +166,17 @@ def issue_productive_confirm_token_v1(
 
 
 def load_confirm_token_from_file_v1(path: Path) -> str:
+    if path.is_symlink():
+        raise ProductiveConfirmTokenError("TOKEN_FILE_SYMLINK_FOLLOW_FORBIDDEN")
     if not path.is_file():
         raise ProductiveConfirmTokenError("CONFIRM_TOKEN_FILE_MISSING")
+    st = os.lstat(path)
+    import stat as _stat
+
+    if not _stat.S_ISREG(st.st_mode):
+        raise ProductiveConfirmTokenError("TOKEN_FILE_NOT_REGULAR")
+    if st.st_uid != os.getuid():
+        raise ProductiveConfirmTokenError("TOKEN_FILE_OWNER_UID_MISMATCH")
     lines = [ln.strip() for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
     if len(lines) != 1:
         raise ProductiveConfirmTokenError("CONFIRM_TOKEN_FILE_INVALID")

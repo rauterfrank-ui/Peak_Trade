@@ -1,0 +1,18 @@
+{
+  "files": [
+    "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_confirm_token_producer_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/__init__.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/constants_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/ephemeral_handle_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/errors_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/family_binding_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/family_matrix_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/handoff_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/o2_integration_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/secure_input_v1.py",
+    "src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/token_file_v1.py",
+    "tests/ops/test_secure_confirm_token_family_and_hidden_input_handoff_v1.py"
+  ],
+  "repository_sha": "02f32fb6533efeb191320571b0b288c1878c6486"
+}

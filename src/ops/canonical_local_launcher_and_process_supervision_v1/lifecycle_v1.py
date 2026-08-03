@@ -330,10 +330,6 @@ class CanonicalLocalLauncherV1:
             self.registry.transition(
                 record, new_state="ENV_VALIDATED", reason_code="O1_ENV_VALIDATED"
             )
-            # O2 MVP does not consume authorization; skip AUTH_VALIDATED as pass-through note.
-            self.registry.transition(
-                record, new_state="STARTING", reason_code="SPAWN_DASHBOARD_SCAFFOLD"
-            )
 
             # Rebuild effective env via O1 for the child (values not in preflight dict).
             o1_parent = (
@@ -349,6 +345,26 @@ class CanonicalLocalLauncherV1:
                     evidence_root=str(self.paths.evidence_root),
                     mode=mode,
                 )
+            )
+
+            # O3 reserved AUTH_VALIDATED boundary: dashboard-only never mints/consumes tokens.
+            from src.ops.secure_confirm_token_family_and_hidden_input_handoff_v1.o2_integration_v1 import (  # noqa: E501
+                assert_dashboard_only_auth_boundary_v1,
+            )
+
+            auth_boundary = assert_dashboard_only_auth_boundary_v1(
+                mode=mode,
+                parent_environ=o1_parent,
+                mint_requested=False,
+                consume_requested=False,
+            )
+            self.registry.transition(
+                record,
+                new_state="AUTH_VALIDATED",
+                reason_code=str(auth_boundary["reason_code"]),
+            )
+            self.registry.transition(
+                record, new_state="STARTING", reason_code="SPAWN_DASHBOARD_SCAFFOLD"
             )
             o1_full = run_canonical_environment_preflight_v1(
                 o1_parent,
