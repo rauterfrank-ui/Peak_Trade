@@ -1,0 +1,13 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/.peak_trade_worktrees/o5-canonical-read-model-and-market-dashboard-rebuild-v1
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 28 items
+
+tests/ops/test_canonical_read_model_and_market_dashboard_rebuild_v1.py . [  3%]
+..........                                                               [ 39%]
+tests/webui/test_market_landscape_dashboard_v2_okx_ohlcv_continuous_refresh_v0.py . [ 42%]
+................                                                         [100%]
+
+============================== 28 passed in 1.96s ==============================

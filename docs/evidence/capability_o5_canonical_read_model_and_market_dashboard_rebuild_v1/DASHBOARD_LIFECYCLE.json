@@ -1,0 +1,21 @@
+{
+  "canonical_market_route": "GET /market",
+  "canonical_ohlcv_api": "GET /api/market/landscape/ohlcv",
+  "components": [
+    "DASHBOARD_BACKEND",
+    "DASHBOARD_FRONTEND",
+    "STREAM_OR_POLL_TRANSPORT",
+    "READ_MODEL_STORE",
+    "HEALTH_ENDPOINT"
+  ],
+  "independent_component_status_required": true,
+  "orders_allowed": false,
+  "read_model_schema": "canonical_market_dashboard_read_model.v1",
+  "risk_authority": false,
+  "runtime_mutation_allowed": false,
+  "sse_required": false,
+  "supervisor_binding": "O2_DASHBOARD_ONLY_SCAFFOLD_COMPATIBLE",
+  "trading_authority": false,
+  "transport": "HTTP_JSON_POLL",
+  "websocket_required": false
+}

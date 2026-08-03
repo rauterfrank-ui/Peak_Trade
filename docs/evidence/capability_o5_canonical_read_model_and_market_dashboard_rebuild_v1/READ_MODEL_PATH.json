@@ -1,0 +1,14 @@
+{
+  "authoritative_bar_producer": "CanonicalPublicMdBarProducerV1",
+  "authority_effect": "NONE",
+  "canonical_market_route": "GET /market",
+  "canonical_normalized_event_path": "NormalizedPublicMarketDataV1+ObservationIdentityV1+DistinctMarketObservationAcceptorV1",
+  "canonical_ohlcv_api": "GET /api/market/landscape/ohlcv",
+  "classification": "DERIVED",
+  "dashboard_transport": "HTTP_JSON_POLL",
+  "independent_authoritative_recompute_allowed": false,
+  "parallel_ohlcv_producer_allowed": false,
+  "relative_path": "readmodels/canonical_market_dashboard_read_model.v1.json",
+  "schema_name": "canonical_market_dashboard_read_model.v1",
+  "ssot": false
+}

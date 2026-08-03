@@ -193,10 +193,11 @@ class _FailingOkxClient:
 def _write_universe(archive_root: Path, *, symbol: str = INSTRUMENT) -> Path:
     readmodels = archive_root / "readmodels"
     readmodels.mkdir(parents=True, exist_ok=True)
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     universe = {
         "schema_name": "universe_selection_readmodel.v1",
         "schema_version": 1,
-        "generated_at": "2026-07-24T21:48:23Z",
+        "generated_at": generated_at,
         "source_run_id": "okx_continuous_refresh_v1",
         "source_stage": "paper",
         "non_authorizing": True,
@@ -673,7 +674,7 @@ def test_market_page_exposes_poll_contract_and_no_order_controls(
     assert 'data-mdl-field="ohlcv_live_mark"' in html
     assert "data-mdl-data-connection-state" in html
     assert 'data-mdl-decision-strip="true"' in html
-    assert "LIVE_DATA" in html or "MISSING_SOURCE" in html or "STALE" in html
+    assert "HEALTHY" in html or "LIVE_DATA" in html or "MISSING_SOURCE" in html or "STALE" in html
     assert "OKX" in html
     assert INSTRUMENT in html
     assert "www.okx.com" not in html
@@ -790,7 +791,7 @@ def test_open_candle_mark_update_same_timestamp_is_mark_only_not_geometry(
         _skip,
     )
     poll = build_ohlcv_poll_response_v1(force_refresh=False)
-    assert poll["data_connection_state"] == "LIVE_DATA"
+    assert poll["data_connection_state"] == "HEALTHY"
     assert poll["direct_browser_okx"] is False
     assert poll["orders"] is False
 
@@ -924,7 +925,7 @@ def test_js_layout_stability_and_update_classification_contracts() -> None:
     assert "www.okx.com" not in js
     assert "wss://ws.okx.com" not in js
     assert "kraken" not in js.lower()
-    assert "RECONNECTING" in js
+    assert "DEGRADED" in js or "RECONNECTING" in js or "DISCONNECTED" in js
     assert "MAX_BACKOFF_SECONDS" in js
     # CSS owns fixed stage/meta bands; chart must not flex-grow the Decision strip away.
     assert "--mdl-stage-height" in css
@@ -969,9 +970,9 @@ def test_live_data_requires_fresh_ohlcv_source_not_mark_cosmetics(
             ohlcv_payload=doc,
             chart_availability=Availability.AVAILABLE,
         )
-        == "LIVE_DATA"
+        == "HEALTHY"
     )
-    # Stale OHLCV source must not claim LIVE_DATA even if captured_at text exists.
+    # Stale OHLCV source must not claim HEALTHY even if captured_at text exists.
     stale = dict(doc)
     stale["freshness_state"] = "stale"
     stale["is_stale"] = True
@@ -983,18 +984,17 @@ def test_live_data_requires_fresh_ohlcv_source_not_mark_cosmetics(
         )
         == "STALE"
     )
-    # Missing candle capture clock → not LIVE_DATA.
+    # Missing candle capture clock → not HEALTHY (O5 age/degraded path; never invent healthy).
     no_cap = dict(doc)
     no_cap.pop("candle_captured_at", None)
     no_cap["captured_at"] = None
-    assert (
-        _ohlcv_data_connection_state(
-            browser_payload=payload,
-            ohlcv_payload=no_cap,
-            chart_availability=Availability.AVAILABLE,
-        )
-        == "MISSING_SOURCE"
+    no_cap_state = _ohlcv_data_connection_state(
+        browser_payload=payload,
+        ohlcv_payload=no_cap,
+        chart_availability=Availability.AVAILABLE,
     )
+    assert no_cap_state != "HEALTHY"
+    assert no_cap_state in {"DEGRADED", "STALE", "MISSING_SOURCE"}
 
 
 def test_js_uses_chart_digest_alias_and_never_okx_host() -> None:

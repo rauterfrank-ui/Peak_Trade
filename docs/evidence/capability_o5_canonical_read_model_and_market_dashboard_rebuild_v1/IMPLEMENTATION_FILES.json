@@ -1,0 +1,19 @@
+{
+  "files": [
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/__init__.py",
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/authority_declaration_v1.py",
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/connection_state_v1.py",
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py",
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/dashboard_lifecycle_v1.py",
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/isolation_proofs_v1.py",
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/ohlcv_adapter_v1.py",
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/read_model_v1.py",
+    "src/webui/market_dashboard_landscape_shell_router_v2.py",
+    "src/webui/market_dashboard_landscape_v2/presenter.py",
+    "static/css/market_dashboard_landscape_v2.css",
+    "static/js/market_dashboard_landscape_v2.js",
+    "tests/ops/test_canonical_read_model_and_market_dashboard_rebuild_v1.py",
+    "tests/webui/test_market_landscape_dashboard_v2_okx_ohlcv_continuous_refresh_v0.py"
+  ],
+  "implementation_base_sha": "3b9d2ff3dcfb7d1dddb053ee39c7c928bdbd44ca"
+}

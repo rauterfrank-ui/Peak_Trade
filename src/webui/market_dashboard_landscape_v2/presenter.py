@@ -667,9 +667,10 @@ def _ohlcv_source_feed_is_live(
     ohlcv_payload: Mapping[str, Any] | None,
     chart_availability: Availability,
 ) -> bool:
-    """LIVE_DATA only when authentic open-candle intrabar evidence is AVAILABLE.
+    """HEALTHY feed only when authentic open-candle intrabar evidence is AVAILABLE.
 
-    Mark-price / captured_at / freshness cosmetics alone must never claim LIVE.
+    Mark-price / captured_at / freshness cosmetics alone must never claim HEALTHY.
+    CAPABILITY_O5: LIVE_DATA is an alias of HEALTHY (pre-O5 chrome).
     """
     if browser_payload is None or chart_availability is not Availability.AVAILABLE:
         return False
@@ -689,20 +690,54 @@ def _ohlcv_data_connection_state(
     browser_payload: Mapping[str, Any] | None,
     ohlcv_payload: Mapping[str, Any] | None,
     chart_availability: Availability,
+    disconnected: bool = False,
+    projection_time_unix: float | None = None,
 ) -> str:
-    if chart_availability is Availability.STALE:
-        return "STALE"
+    """O5 connection vocabulary: HEALTHY/DEGRADED/STALE/DISCONNECTED/MISSING_SOURCE.
+
+    Stale or disconnected cached data must never classify as HEALTHY.
+    """
+    from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
+        adapt_derived_ohlcv_payload_to_o5_read_model_v1,
+    )
+
     if chart_availability is Availability.MISSING_SOURCE:
         return "MISSING_SOURCE"
+    if chart_availability in (Availability.INVALID, Availability.NOT_BOUND):
+        return "MISSING_SOURCE"
+    if disconnected:
+        return "DISCONNECTED"
+    if chart_availability is Availability.STALE:
+        return "STALE"
+    source = ohlcv_payload or {}
+    if bool(source.get("is_stale")) or str(source.get("freshness_state") or "").lower() == "stale":
+        return "STALE"
+
+    now = projection_time_unix
+    if now is None:
+        from datetime import datetime, timezone
+
+        now = datetime.now(timezone.utc).timestamp()
+
     if _ohlcv_source_feed_is_live(
         browser_payload=browser_payload,
         ohlcv_payload=ohlcv_payload,
         chart_availability=chart_availability,
     ):
-        return "LIVE_DATA"
-    if chart_availability in (Availability.INVALID, Availability.NOT_BOUND):
-        return "MISSING_SOURCE"
-    return "MISSING_SOURCE"
+        # Authentic open-candle evidence → HEALTHY (explicit stale/disconnected already excluded).
+        return "HEALTHY"
+
+    adapted = adapt_derived_ohlcv_payload_to_o5_read_model_v1(
+        ohlcv_payload,
+        projection_time_unix=float(now),
+        availability=chart_availability.value,
+        disconnected=False,
+    )
+    state = str(adapted.get("connection_state") or "DEGRADED")
+    # Source present without authentic live evidence must never invent HEALTHY.
+    if state == "HEALTHY":
+        return "DEGRADED"
+    return state
 
 
 def _regime_context_views(snap: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
