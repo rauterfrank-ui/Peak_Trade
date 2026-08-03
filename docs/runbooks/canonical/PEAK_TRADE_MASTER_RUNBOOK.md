@@ -9,8 +9,13 @@
 **AUTHORITY:** Repository Owner / Operator\
 **SYSTEM:** Peak_Trade Futures-only, Master V2 / Double Play\
 **FORENSIC_BASELINE_SHA:** `a8653d520ba3563dddb41aa175445d14725ac9b9`\
+**FORENSIC_BASELINE_ROLE:** `HISTORICAL_BASELINE_ONLY`\
 **FORENSIC_BASELINE_SOURCE:**
 `FULL_SYSTEM_CANONICAL_RUNTIME_COMPLETENESS_AND_RUNBOOK_INPUT_AUDIT_V1`\
+**CURRENT_FORENSIC_TRUTH_SHA:** `beacc35d754fd8ab0a37190b882f71b8fb78cb38`\
+**CURRENT_TRUTH_RECONCILIATION_CAPABILITY:**
+`CANONICAL_MASTER_RUNBOOK_CURRENT_TRUTH_RECONCILIATION_POST_TYPED_VOLATILITY_COLD_START_V1`\
+**CURRENT_TRUTH_RECONCILED_AT:** `2026-08-03T09:27:00Z`\
 **PREVIOUS_RUNBOOK_BASELINE:**
 `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`\
 **SUPERSEDES:**
@@ -28,6 +33,8 @@ exchange-credential use, no real-capital movement\
 **RATIFICATION_STATE:**
 `OWNER_RATIFIED_AND_MERGE_SHA_BOUND`\
 **REPOSITORY_SHA:** `830441674cd931484e3a88ec441f2e08562c42d2`\
+**REPOSITORY_SHA_ROLE:**
+`HISTORICAL_OWNER_RATIFICATION_MERGE_BINDING_ONLY`\
 **DOCUMENT_SHA256_AUTHORITY:** `RATIFICATION_MANIFEST_CANONICAL_DOCUMENT_SHA256`\
 **DOCUMENT_SHA256_LOCATION:** `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json`\
 **VERIFIED_AT:** `2026-08-02T12:25:09Z`\
@@ -449,96 +456,150 @@ TOP_N_ACTIVE_SET = future multi-future authority, currently unauthorized
 Typed volatility presence may participate in already-ratified Alpha
 gating.
 
-Numeric volatility max-age remains non-enforcing at the forensic
-baseline.
-
-Until a separate evidence-based Owner-ratified capability changes this
-policy:
-
 ``` text
+TYPED_VOLATILITY_PRODUCER_TO_CMC_BINDING=CLOSED_AND_COLD_START_PROVEN
+TYPED_VOLATILITY_PRESENCE_GATE_PASS=true
+TYPED_VOLATILITY_IS_NOT_REGIME_CLASSIFIER_AUTHORITY=true
+VOLATILITY_NUMERIC_MAX_AGE_ENFORCING=false
 NUMERIC_MAX_AGE_EFFECT=DIAGNOSTIC_ONLY
 ENFORCEMENT_ENABLED=false
 ALPHA_MUTATION=false
 RISK_MUTATION=false
 SAFETY_MUTATION=false
+REGIME_UNCLASSIFIED_MAY_OCCUR_WITH_FINITE_VALID_FEATURES=true
+REGIME_UNCLASSIFIED_FAIL_CLOSED_IS_EXPECTED_WHEN_NO_RULE_MATCHES=true
+REGIME_UNCLASSIFIED_ALONE_IS_NOT_A_DEFECT=true
+REGIME_THRESHOLD_AUTO_TUNING_AUTHORIZED=false
 ```
 
-Numeric max-age must not block the finish of the stateful runtime unless
-a separate, evidence-based Owner-ratified capability changes this
-policy.
+Numeric volatility max-age remains non-enforcing. Until a separate
+evidence-based Owner-ratified capability changes this policy, numeric
+max-age must not block the finish of the stateful runtime.
+
+Typed volatility is not an input authority for
+`bridge_regime_classifier_v2`. A market-conditioned
+`REGIME_UNCLASSIFIED_FAIL_CLOSED` after required-window completion and
+valid typed volatility is expected fail-closed behavior when no regime
+rule matches; it is not by itself a core-logic defect and does not
+authorize threshold auto-tuning.
 
 ------------------------------------------------------------------------
 
-# 5. Current Forensic Runtime Truth at Baseline SHA
+# 5. Current Forensic Runtime Truth
 
-## 5.1 Baseline
+## 5.1 Baseline and current truth reconciliation
 
 ``` text
 FORENSIC_BASELINE_SHA=a8653d520ba3563dddb41aa175445d14725ac9b9
+FORENSIC_BASELINE_ROLE=HISTORICAL_BASELINE_ONLY
+CURRENT_FORENSIC_TRUTH_SHA=beacc35d754fd8ab0a37190b882f71b8fb78cb38
+CURRENT_TRUTH_RECONCILIATION_CAPABILITY=CANONICAL_MASTER_RUNBOOK_CURRENT_TRUTH_RECONCILIATION_POST_TYPED_VOLATILITY_COLD_START_V1
 BRANCH=main
 HEAD_EQUALS_ORIGIN_MAIN=true
-TRACKED_WORKTREE_CLEAN=true
+STALE_IF_HEAD_DIFFERS=true
 UNTRACKED_EVIDENCE_PRESERVED=true
+OLDER_CAPABILITY_EVIDENCE_ROLE=HISTORICAL_PREDECESSOR_EVIDENCE
 ```
 
-The baseline is an evidence snapshot, not a timeless constant. Every
-implementation capability must revalidate the actual `origin/main` SHA.
+`FORENSIC_BASELINE_SHA` remains the historical baseline snapshot used for
+program inception. It is not the current runtime truth. Current-truth
+claims in this section are reconciled against
+`CURRENT_FORENSIC_TRUTH_SHA`. Every later implementation capability must
+still revalidate the actual `origin/main` SHA. Older Cap 6.1--7.2 and
+typed-volatility evidence packages remain historical predecessor
+evidence for their merge SHAs and must not be silently rewritten.
 
 ## 5.2 Current host and activation truth
 
 ``` text
-CANONICAL_RUNTIME_ENTRYPOINT_STATUS=READY_FOR_ACTIVATION
-FULL_CANONICAL_CALL_GRAPH_PROVEN=true_for_single_future_no_order_host_graph_only
-FULL_CANONICAL_STATEFUL_RUNTIME_CURRENTLY_EXISTS=false
-FULL_CANONICAL_STATEFUL_RUNTIME_CURRENTLY_ACTIVATED=false
-SIMULATED_EXECUTION_FULLY_REACHABLE=BOUND_NOT_ACTIVATED_ZERO_FILL_EVIDENCE
+CANONICAL_RUNTIME_ENTRYPOINT_STATUS=FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE_OFFLINE_NO_ORDER_CAP72
+FULL_CANONICAL_CALL_GRAPH_PROVEN=true_for_cap72_stateful_no_order_host
+FULL_CANONICAL_STATEFUL_RUNTIME_CURRENTLY_EXISTS=true
+FULL_CANONICAL_STATEFUL_RUNTIME_CURRENTLY_ACTIVATED=true_offline_no_order_cap72_scope_only
+SIMULATED_EXECUTION_ACTIVE=true_offline_no_order_cap72_scope_only
+PUBLIC_MD_RUNTIME_CAPABLE=true
+PUBLIC_MD_NETWORK_SESSION_OBSERVED_IN_CAP72_ACTIVATION=false
+PHASE_9_2_PUBLIC_MD_LONG_RUNNING_LADDER_CLOSED=false
 CURRENT_CAP52_AUTHORIZATION_VALID_FOR_NEW_RUN=NOT_PROVEN
-REAUTHORIZATION_REQUIRED_BEFORE_NEW_RUN=true
+REAUTHORIZATION_REQUIRED_BEFORE_NEW_PUBLIC_MD_NETWORK_SESSION=true
 TESTNET_REACHABLE=false
 LIVE_REACHABLE=false
+ORDERS_AUTHORIZED=false
+EXCHANGE_CREDENTIAL_USE=false
+REAL_CAPITAL_MOVEMENT=false
 ```
 
 Interpretation:
 
--   The single-future no-order host graph is largely assembled.
--   The complete stateful decision runtime is not yet closed.
--   Host readiness must not be treated as stateful-runtime readiness.
--   Activation must not occur until Capabilities 6.1--7.1 satisfy their
-    gates.
+-   Cap 7.2 activated the single-future stateful no-order runtime in an
+    offline/no-order activation scope.
+-   `FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` and
+    `SIMULATED_EXECUTION_ACTIVE=true` apply only inside that offline
+    no-order scope.
+-   Offline activation must not be equated with Public-MD long-running
+    ladder completion or with Live/Testnet/order/credential
+    authorization.
+-   Phase 9.2 remains the open Public-MD continuity critical path.
+-   Live, Testnet, exchange orders and credentials remain false and
+    unreachable under this program boundary.
 
 ## 5.3 Canonical productive no-order call graph
 
+Dual-host documentation residual (not a second decision-authority stack;
+not a proven core-logic defect):
+
 ``` text
-Authorization validation / consumption
-→ Session lock
-→ Governed futures universe
-→ Productive ranking
-→ Persisted single selected future
-→ Native instrument binding
-→ Reconciliation
-→ OKX public market data capture
-→ Public-MD no-order shadow replay
-→ Features
-→ Typed volatility presence
-→ Master V2
-→ Double Play
-→ cycle-local Survival / Suitability / Composition where reached
-→ Risk
-→ Safety
-→ Intent
-→ Simulated fill
-→ Canonical futures accounting
-→ Portfolio and risk persistence
-→ Evidence
-→ Verifier
+CAP7_2_STATEFUL_HOST_GRAPH=
+  Authorization / session / selection / native binding / reconciliation
+  → OKX public market data
+  → DistinctMarketObservationAcceptor (C1)
+  → ObservationAcceptanceResult
+  → Features / regime pipeline
+  → Directional Confirmation Progress (C2)
+  → Directional Assessment Integration (C3)
+  → previous RuntimeScopeState / Dynamic Scope transition
+  → Exit-policy producer evaluation
+  → Master V2 / Double Play integrated offline replay
+  → confirmation / scope / decision-path atomic commits
+  → Risk → Safety → Intent
+  → Simulated execution / fill / accounting / portfolio
+  → Evidence → Verifier
+
+WALLCLOCK_HARDENING_V2_GRAPH=
+  okx_public_market_data
+  → feature_pipeline
+  → regime_pipeline
+  → canonical_volatility_productive_runtime_cmc_typed_binding
+  → master_v2_double_play_integrated_offline_replay
+  → risk_position_sizing
+  → safety_kernel
+  → intended_side_quantity
+  → analytical_simulated_execution
+  → simulated_fill_fee_slippage
+  → session_persistent_portfolio
+  → evidence
+  → full_economic_reconstruction_verifier
 ```
+
+``` text
+ONE_DECISION_AUTHORITY_CHAIN=true
+NO_PARALLEL_DECISION_AUTHORITY_STACK=true
+HOST_CALL_GRAPH_DOCUMENTATION_RESIDUAL=
+  WALLCLOCK_HARDENING_V2_CALL_GRAPH_OMITS_EXPLICIT_C1_C2_STAGES_VS_CAP72_HOST
+HOST_CALL_GRAPH_RESIDUAL_IS_CORE_LOGIC_DEFECT=false
+```
+
+The Cap 7.2 stateful host remains the authoritative full decision-path
+graph for stateful no-order activation. The wallclock hardening_v2 graph
+is an abbreviated public-MD bridge/host surface that includes the typed
+volatility CMC edge and does not republish every Cap 7.2 stage label.
 
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:
 
   -----------------------------------------------------------------------
-  Capability area                     Baseline state
+  Capability area                     Current evidence state
   ----------------------------------- -----------------------------------
   Productive reconciliation           Bound, persisted, restart proven
                                       for its current scope.
@@ -557,49 +618,93 @@ The following are no longer to be treated as missing greenfield work:
 
   Public-MD no-order host             Bound and evidence-producing.
 
-  Master V2 / Double Play             Runtime reachable and
-                                      parity-proven.
+  Cap 6.1 C1/C2/C3 binding            Productively bound; confirmation
+                                      persisted and restart-proven.
 
-  Live/Testnet blocking               Fail-closed and outside Cap5 host.
+  Cap 6.2 Dynamic Scope               Productively bound, persisted,
+                                      restart-proven.
+
+  Cap 6.3 confirmed config keys       Migrated without numeric change;
+                                      residual hardening_v2 host-consumer
+                                      literals remain documented.
+
+  Cap 6.4 decision-path restart       Deterministic stateful no-order
+                                      restart proven.
+
+  Cap 6.5 exit-policy producers       Bound.
+
+  Cap 7.1 deterministic lifecycle     Entry/Exit/Fee/Slippage nonzero
+                                      evidence proven on governed path.
+
+  Cap 7.2 offline no-order activation Stateful runtime and simulated
+                                      execution active in offline scope.
+
+  G17 typed volatility→CMC            Produced, CMC-bound, cold-start
+                                      presence-gate PASS proven.
+
+  required_window_complete            Decoupled from features_ok;
+                                      proven.
+
+  Master V2 / Double Play             Runtime reachable and
+                                      parity-proven; core logic
+                                      unchanged by wiring capabilities.
+
+  Live/Testnet blocking               Fail-closed.
   -----------------------------------------------------------------------
 
-These components must still be revalidated after relevant changes, but
-they are not the active critical-path starting point.
+These components must still be revalidated after relevant changes. The
+active critical-path starting point is Phase 9.2 Public-MD ladder
+continuation, not Cap 6.1.
 
-## 5.5 Current critical state gaps
-
-``` text
-C1_PRODUCTIVELY_BOUND=false
-C2_PRODUCTIVELY_BOUND=false
-C3_PRODUCTIVELY_BOUND=partial
-CONFIRMATION_STATE_PERSISTED=false
-CONFIRMATION_SESSION_ID_STABLE=false
-DYNAMIC_SCOPE_STATE_PERSISTED=false
-MASTER_V2_STATE_PERSISTED=false
-DOUBLE_PLAY_STATE_PERSISTED=false
-RESTART_END_TO_END_PROVEN=partial
-```
-
-## 5.6 Current evidence gaps
+## 5.5 Current critical state status
 
 ``` text
-ENTRY_FILL_EVIDENCE_PROVEN=false
-EXIT_FILL_EVIDENCE_PROVEN=false
-FEE_EVIDENCE_PROVEN=false
-SLIPPAGE_EVIDENCE_PROVEN=false
-NONZERO_SIMULATED_ECONOMICS_EVIDENCE=false
+C1_PRODUCTIVELY_BOUND=true
+C2_PRODUCTIVELY_BOUND=true
+C3_PRODUCTIVELY_BOUND=true
+CONFIRMATION_STATE_PERSISTED=true
+CONFIRMATION_SESSION_ID_STABLE=true
+DYNAMIC_SCOPE_STATE_PERSISTED=true
+MASTER_V2_REQUIRED_STATE_CONTINUITY_PROVEN=true_as_defined_by_Cap6_4
+DOUBLE_PLAY_REQUIRED_STATE_CONTINUITY_PROVEN=true_as_defined_by_Cap6_4
+RESTART_END_TO_END_PROVEN=true_for_deterministic_stateful_no_order_scope
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_PROVEN=false
+PHASE_9_2_OWNS_PUBLIC_MD_NATURAL_LIFECYCLE=true
 ```
+
+Public-MD natural-market lifecycle evidence remains Phase 9.2 work and
+is not claimed by Cap 6.4/7.1/7.2 offline or deterministic scopes.
+
+## 5.6 Current evidence status
+
+``` text
+ENTRY_FILL_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+EXIT_FILL_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+FEE_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+SLIPPAGE_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+NONZERO_SIMULATED_ECONOMICS_EVIDENCE=true_for_deterministic_governed_path
+PUBLIC_MD_NATURAL_ENTRY_EXIT_EVIDENCE_PROVEN=false
+```
+
+No overclaim for natural Public-MD market phases. Zero Entry/Fill on
+typed-volatility cold-start Public-MD observation does not reopen Cap
+7.1 deterministic lifecycle proof.
 
 ## 5.7 Current known defects and drifts
 
 ``` text
 CORE_LOGIC_DEFECT_DETECTED=false
-WIRING_DEFECTS_DETECTED=true
-STATE_PERSISTENCE_DEFECTS_DETECTED=true
-CONFIG_DRIFT_DETECTED=true
-DOCUMENTATION_DRIFT_DETECTED=true
-EVIDENCE_CLAIM_DEFECTS_DETECTED=true
-LEGACY_PARALLEL_AUTHORITY_DETECTED=false_on_productive_Cap2x_to_Cap5x_hosts
+WIRING_DEFECTS_DETECTED=false_for_closed_Cap6_1_to_6_5_scope
+STATE_PERSISTENCE_DEFECTS_DETECTED=false_for_closed_Cap6_1_to_6_4_scope
+CONFIG_DRIFT_DETECTED=partial_residual_host_consumer_literals
+DOCUMENTATION_DRIFT_DETECTED=true_until_this_reconciliation_merges
+EVIDENCE_CLAIM_DEFECTS_DETECTED=false_for_corrected_capability_claims
+PUBLIC_MD_NATURAL_LIFECYCLE_EVIDENCE_GAP=true
+PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE=true
+WALLCLOCK_HARDENING_V2_CALL_GRAPH_OMITS_EXPLICIT_C1_C2_STAGES_VS_CAP72_HOST=true
+HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=true
+LEGACY_PARALLEL_AUTHORITY_DETECTED=false
+REGIME_UNCLASSIFIED_FAIL_CLOSED_IS_DEFECT=false
 ```
 
 ------------------------------------------------------------------------
@@ -856,14 +961,30 @@ that merely require ownership review.
 ### Confirmed config drift
 
 ``` text
+STATUS=CLOSED_BY_CAPABILITY_6_3_FOR_CONFIRMED_KEYS
 confirmation_epochs=2
 up_distance=200.0
 adverse_exit_distance=80.0
 reversal_distance=120.0
+EFFECTIVE_NUMERIC_VALUES_UNCHANGED=true
 ```
 
-These values are runtime-relevant and locally owned in the bridge rather
-than consumed from a canonical typed configuration surface.
+Cap 6.3 migrated these four confirmed keys to the canonical typed
+decision-config ownership surface without changing numeric values.
+
+### Residual host-consumer review item after Cap 6.3
+
+``` text
+HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=true
+RESIDUAL_CLASSIFICATION=HOST_CONSUMER_DOCUMENTATION_RESIDUAL
+THRESHOLD_OR_DISTANCE_MUTATION_AUTHORIZED=false
+```
+
+The wallclock hardening_v2 bridge still embeds local distance /
+confirmation literals at the same numeric values. This residual must be
+documented and may later be reviewed under a separate Owner-GO. It does
+not authorize any threshold, distance or core-logic change in this
+truth-reconciliation.
 
 ### Config ownership review required
 
@@ -873,8 +994,9 @@ fee_rate_bps=2.0
 slippage_bps=1.0
 ```
 
-These values are hardcoded or locally owned, but the forensic baseline
-does not by itself prove that they are semantically incorrect.
+These values remain review-only unless repository evidence requires
+migration. The forensic truth does not by itself prove that they are
+semantically incorrect.
 
 Before migration, classify each value as exactly one of:
 
@@ -935,47 +1057,62 @@ SILENT_DYNAMIC_SCOPE_REINITIALIZATION=false
 
 # 10. Known Gap Register
 
+Status vocabulary for this register:
+
+``` text
+CLOSED / EVIDENCE_PROVEN / HISTORICAL_COMPLETED = closed, gap ID retained
+PARTIALLY_CLOSED = residual documented, no silent deletion
+OPEN = still blocks current critical path
+INTENTIONAL_* = intentional non-blocking current phase
+```
+
   -------------------------------------------------------------------------------------------------------------------------------------
-  Gap                       Classification                            Severity Required resolution                Blocks
+  Gap                       Status / Classification                   Severity Resolution / residual              Blocks now
   ------------------------- -------------------------------- ----------------- ---------------------------------- ---------------------
-  `G01` C1 not productively `WIRING_GAP`                                  HIGH Bind real Distinct Observation     Stateful runtime,
-  bound                                                                        Acceptor in canonical host.        actionability
+  `G01` C1 not productively `CLOSED / EVIDENCE_PROVEN`                   n/a Cap 6.1 Distinct Observation        Historical only
+  bound                     was `WIRING_GAP`                                  Acceptor productively bound.        
 
-  `G02` C2 carrier not      `STATE_PERSISTENCE_GAP`                       HIGH Persist directional confirmation   Confirmation, restart
-  persisted                                                                    state by stable session/instrument 
-                                                                               key.                               
+  `G02` C2 carrier not      `CLOSED / PERSISTED_AND_RESTART_PROVEN`        n/a Cap 6.1 confirmation carrier        Historical only
+  persisted                 was `STATE_PERSISTENCE_GAP`                       persisted and restart-proven.       
 
-  `G03` C3 receives         `WIRING_GAP`                                  HIGH Pass actual C1 acceptance result.  Candidate/Confirmed
-  non-advancing placeholder                                                                                       progression
+  `G03` C3 receives         `CLOSED / PRODUCTIVELY_BOUND`                  n/a Cap 6.1 passes actual C1           Historical only
+  non-advancing placeholder was `WIRING_GAP`                                  acceptance into C3.                 
 
-  `G04` Confirmation        `STATE_IDENTITY_GAP`                          HIGH Stable session identity across     Confirmation
-  session ID unstable                                                          cycles and restart.                correctness
+  `G04` Confirmation        `CLOSED`                                       n/a Cap 6.1 stable confirmation         Historical only
+  session ID unstable       was `STATE_IDENTITY_GAP`                          session identity.                   
 
-  `G05` Dynamic Scope       `STATE_PERSISTENCE_GAP`                       HIGH Persist and reload                 Scope continuity,
-  reinitialized                                                                `RuntimeScopeState`.               Entry/Exit
+  `G05` Dynamic Scope       `CLOSED`                                       n/a Cap 6.2 RuntimeScopeState           Historical only
+  reinitialized             was `STATE_PERSISTENCE_GAP`                       persisted and restart-proven.       
 
-  `G06` Decision restart    `RESTART_GAP`                                 HIGH Recover C1/C2/Scope/required       Full runtime
-  incomplete                                                                   MV2-DP state.                      activation
+  `G06` Decision restart    `CLOSED`                                       n/a Cap 6.4 deterministic stateful      Historical only
+  incomplete                was `RESTART_GAP`                                 no-order decision-path restart      
+                                                                               proven.                            
 
-  `G07` Bridge parameters   `CONFIG_DRIFT`                              MEDIUM Move to canonical typed config     Reproducibility
-  hardcoded                                                                    without changing values.           
+  `G07` Bridge parameters   `PARTIALLY_CLOSED`                          MEDIUM Cap 6.3 closed confirmed keys       Residual host
+  hardcoded                 was `CONFIG_DRIFT`                                without numeric change. Residual:   consumer review
+                                                                               hardening_v2 local distance        
+                                                                               literals at unchanged values.      
+                                                                               No threshold mutation authorized.  
 
-  `G08` Exit-policy         `WIRING_GAP`                           MEDIUM/HIGH Bind real                          Lifecycle proof
-  producers stubbed false                                                      adverse/profit/time/invalidation   
-                                                                               producers.                         
+  `G08` Exit-policy         `CLOSED`                                       n/a Cap 6.5 exit-policy producers       Historical only
+  producers stubbed false   was `WIRING_GAP`                                  bound.                              
 
-  `G09` Zero                `EVIDENCE_GAP`                                HIGH Governed simulated actionability   Activation
-  Entry/Exit/Fee/Slippage                                                      and full lifecycle evidence.       
-  evidence                                                                                                        
+  `G09` Zero                `CLOSED_FOR_DETERMINISTIC_LIFECYCLE`          HIGH Cap 7.1 nonzero Entry/Exit/Fee/     Public-MD natural
+  Entry/Exit/Fee/Slippage   was `EVIDENCE_GAP`                                Slippage proven on governed         outcome remains
+  evidence                                                                    deterministic path. Public-MD       Phase 9.2
+                                                                               natural outcome remains open.      
 
-  `G10` Exit claim          `EVIDENCE_CLAIM_DEFECT`                     MEDIUM Split reachability, independence   Trustworthy evidence
-  overstates evidence                                                          and observed fill claims.          
+  `G10` Exit claim          `CLOSED`                                    MEDIUM Claim semantics split:             Historical only
+  overstates evidence       was `EVIDENCE_CLAIM_DEFECT`                       reachability / independence /       
+                                                                               observed fill claims.              
 
-  `G11` Runtime not         `ACTIVATION_GAP`                            MEDIUM Separate activation after state    Target runtime
-  activated                                                                    and evidence closure.              
+  `G11` Runtime not         `CLOSED_FOR_OFFLINE_NO_ORDER_ACTIVATION`    MEDIUM Cap 7.2 offline no-order           Phase 9.2 Public-MD
+  activated                 was `ACTIVATION_GAP`                              activation complete. Public-MD      continuity ladder
+                                                                               continuity ladder remains open.    
 
-  `G12` Numeric max-age     `INTENTIONAL_CURRENT_PHASE`                    LOW Keep watchdog unless later         Does not block finish
-  non-enforcing                                                                ratified.                          
+  `G12` Numeric max-age     `INTENTIONAL_CURRENT_PHASE`                    LOW Keep diagnostic-only /             Does not block
+  non-enforcing                                                               non-enforcing unless later          finish
+                                                                               Owner-ratified.                    
 
   `G13` Multi-future        `INTENTIONAL_SAFETY_BARRIER`               LOW now Future program only.               Multi-future only
   unauthorized                                                                                                    
@@ -989,20 +1126,25 @@ SILENT_DYNAMIC_SCOPE_REINITIALIZATION=false
   `G16` Funding proof       `INSUFFICIENT_EVIDENCE`                        LOW Dedicated accounting evidence if   Funding claims only
   incomplete                                                                   funding enters scope.              
 
-  `G17` Productive typed    `WIRING_GAP`                                  HIGH Wire wallclock observations →      Confirmation /
-  volatility producer→CMC                                                      PT1M finalizer → typed producer →  Market State /
-  hot-path unbound                                                             CMC bind; no proxy promotion.      Actionability alpha
-                                                                               Root cause: wallclock binding       entry (not Exit/
-                                                                               omitted `finalized_pt1m_*`, so       Risk/Safety)
-                                                                               `producer_outcome=WARMUP` remained  
-                                                                               permanent after feature warmup.    
-                                                                               Closed by                           
-                                                                               `PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1`
-                                                                               (wiring only;                     
-                                                                               `CORE_LOGIC_CHANGE=false`;         
-                                                                               Numeric Max-Age remains            
-                                                                               non-enforcing).                    
+  `G17` Productive typed    `CLOSED_AND_COLD_START_PROVEN`                 n/a `PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1`
+  volatility producer→CMC   was `WIRING_GAP`                                  closed producer→CMC wiring.         
+  hot-path                  HISTORICAL_COMPLETED                              Cold-start Public-MD validation     
+                                                                               PASS.                              
+                                                                               `TYPED_VOLATILITY_PRODUCER_TO_CMC_BINDING=CLOSED_AND_COLD_START_PROVEN`
+                                                                               `NUMERIC_MAX_AGE_ENFORCEMENT=false`
+                                                                               Typed vol is not regime-classifier 
+                                                                               authority.                         
   -------------------------------------------------------------------------------------------------------------------------------------
+
+Additional current-truth notes retained with the register:
+
+``` text
+REGIME_UNCLASSIFIED_FAIL_CLOSED=EXPECTED_MARKET_RULE_MISS_FAIL_CLOSED_NO_DEFECT
+REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
+PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE=true
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_OPEN=true
+NO_GAP_ID_SILENTLY_DELETED=true
+```
 
 ------------------------------------------------------------------------
 
@@ -1082,6 +1224,21 @@ bypass an unresolved earlier gate.
 ------------------------------------------------------------------------
 
 # PHASE 6.1 --- Stateful Confirmation and C1 Productive Binding
+
+## Capability status
+
+``` text
+CAPABILITY_STATUS=HISTORICAL_COMPLETED_EVIDENCE_PROVEN
+C1_PRODUCTIVELY_BOUND=true
+C2_PRODUCTIVELY_BOUND=true
+C3_PRODUCTIVELY_BOUND=true
+CONFIRMATION_STATE_PERSISTED=true
+CONFIRMATION_SESSION_ID_STABLE=true
+DO_NOT_REOPEN_AS_IMMEDIATE_NEXT=true
+```
+
+The capability contract below remains the normative specification and
+historical completion record. It is not the current Immediate Next.
 
 ## Capability ID
 
@@ -1178,6 +1335,15 @@ LIVE_TESTNET_ORDERS=false
 
 # PHASE 6.2 --- Dynamic Scope Persistence Binding
 
+## Capability status
+
+``` text
+CAPABILITY_STATUS=HISTORICAL_COMPLETED_EVIDENCE_PROVEN
+DYNAMIC_SCOPE_PRODUCTIVELY_BOUND=true
+DYNAMIC_SCOPE_STATE_PERSISTED=true
+DYNAMIC_SCOPE_RESTART_PROVEN=true
+```
+
 ## Capability ID
 
 ``` text
@@ -1253,6 +1419,16 @@ CORE_LOGIC_CHANGE=false
 
 # PHASE 6.3 --- Decision Config Ownership and Consumer Closure
 
+## Capability status
+
+``` text
+CAPABILITY_STATUS=COMPLETED_FOR_CONFIRMED_KEYS_WITH_RESIDUAL_HOST_CONSUMER_REVIEW_ITEM
+CONFIRMED_KEYS_MIGRATED=confirmation_epochs,up_distance,adverse_exit_distance,reversal_distance
+EFFECTIVE_NUMERIC_VALUES_UNCHANGED=true
+HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=true
+THRESHOLD_OR_DISTANCE_MUTATION_AUTHORIZED=false
+```
+
 ## Capability ID
 
 ``` text
@@ -1309,6 +1485,13 @@ CORE_LOGIC_CHANGE=false
 ------------------------------------------------------------------------
 
 # PHASE 6.4 --- Full Decision-Path Restart and Atomic Checkpoint Closure
+
+## Capability status
+
+``` text
+CAPABILITY_STATUS=HISTORICAL_COMPLETED_EVIDENCE_PROVEN
+DECISION_PATH_RESTART_PROVEN=true_for_deterministic_stateful_no_order_scope
+```
 
 ## Capability ID
 
@@ -1383,6 +1566,13 @@ CORE_LOGIC_CHANGE=false
 
 # PHASE 6.5 --- Exit Policy Producer Binding
 
+## Capability status
+
+``` text
+CAPABILITY_STATUS=HISTORICAL_COMPLETED_EVIDENCE_PROVEN
+EXIT_POLICY_PRODUCERS_BOUND=true
+```
+
 ## Capability ID
 
 ``` text
@@ -1448,6 +1638,17 @@ CORE_LOGIC_CHANGE=false
 ------------------------------------------------------------------------
 
 # PHASE 7.1 --- Simulated Entry, Reduce and Exit Actionability Evidence
+
+## Capability status
+
+``` text
+CAPABILITY_STATUS=HISTORICAL_COMPLETED_EVIDENCE_PROVEN
+ENTRY_END_TO_END_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+EXIT_END_TO_END_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+NONZERO_FEE_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+NONZERO_SLIPPAGE_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+PUBLIC_MD_NATURAL_ENTRY_EXIT_EVIDENCE_PROVEN=false
+```
 
 ## Capability ID
 
@@ -1537,6 +1738,18 @@ LIVE_TESTNET_ORDER_BOUNDARY_PRESERVED=true
 ------------------------------------------------------------------------
 
 # PHASE 7.2 --- Single-Future Canonical Stateful Runtime Activation
+
+## Capability status
+
+``` text
+CAPABILITY_STATUS=HISTORICAL_COMPLETED_EVIDENCE_PROVEN_OFFLINE_NO_ORDER_SCOPE
+FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true_offline_no_order_cap72_scope_only
+SIMULATED_EXECUTION_ACTIVE=true_offline_no_order_cap72_scope_only
+PUBLIC_MD_NETWORK_SESSION_OBSERVED_IN_CAP72_ACTIVATION=false
+PHASE_9_2_OWNS_PUBLIC_MD_NETWORK_LADDER=true
+LIVE_ORDERS=false
+TESTNET_ORDERS=false
+```
 
 ## Capability ID
 
@@ -1710,6 +1923,24 @@ Owner ratification.
 
 # PHASE 9.2 --- Long-Running Stateful Public-MD Simulation Evidence
 
+## Capability status --- current critical path
+
+``` text
+CAPABILITY_STATUS=CURRENT_CRITICAL_PATH_PARTIALLY_COMPLETE
+ACTUAL_NEXT_CAPABILITY=PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1
+PHASE_9_2_PUBLIC_MD_SMOKE_SESSION_PASS=true
+TYPED_VOLATILITY_COLD_START_PROVEN=true
+REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
+REGIME_UNCLASSIFIED_OBSERVED_AS_EXPECTED_FAIL_CLOSED=true
+ONE_HOUR_RESTART_RECONNECT_PROLONGED_ADVERSE_REPEATED_LADDER_FULLY_CLOSED=false
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=false
+PHASE_9_2_SESSION_LADDER_COMPLETE=false
+REGIME_THRESHOLD_MUTATION_ALLOWED=false
+CORE_LOGIC_CHANGE_ALLOWED=false
+SEPARATE_OWNER_GO_REQUIRED_FOR_PUBLIC_MD_NETWORK_SESSION=true
+THIS_DOCUMENTATION_RECONCILIATION_DOES_NOT_AUTHORIZE_PHASE_9_2_NETWORK_SESSION=true
+```
+
 ## Goal
 
 Prove runtime continuity over natural market phases after activation,
@@ -1717,13 +1948,20 @@ using public market data and internal simulated execution only.
 
 ## Session ladder
 
-1.  short smoke session;
-2.  one-hour governed session;
-3.  restart/recovery session;
-4.  rate-limit and reconnect session;
-5.  prolonged natural-market session;
-6.  adverse/stale-data session;
-7.  repeated multi-session continuity campaign.
+1.  short smoke session --- completed / PASS;
+2.  one-hour governed session --- not fully closed as current-truth ladder;
+3.  restart/recovery session --- harness/contracts exist; full ladder not closed;
+4.  rate-limit and reconnect session --- open;
+5.  prolonged natural-market session --- open;
+6.  adverse/stale-data session --- open;
+7.  repeated multi-session continuity campaign --- open.
+
+Related proven predecessors that do not close this ladder:
+
+-   typed-volatility cold-start Public-MD validation PASS;
+-   required_window_complete decoupled from features_ok;
+-   REGIME_UNCLASSIFIED observed as expected fail-closed market-rule miss
+    (not a defect; no threshold auto-tuning).
 
 ## Operational requirements
 
@@ -3053,7 +3291,11 @@ capability.
 
 # 21. Program Definition of Done
 
-The no-order system finish program is complete only when:
+## 21.1 FINAL_PROGRAM_DOD_REQUIRED_STATE
+
+The no-order system finish program is complete only when all of the
+following required states are true. This normative program DoD is not
+weakened by current partial progress:
 
 ``` text
 DOCUMENTATION_RUNTIME_DRIFT=false
@@ -3086,6 +3328,58 @@ EVIDENCE_VERIFIED=true
 EVIDENCE_CLAIMS_MATCH_TELEMETRY=true
 FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true
 SIMULATED_EXECUTION_ACTIVE=true
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=true
+PHASE_9_2_SESSION_LADDER_COMPLETE=true
+VOL_MAX_AGE_ENFORCEMENT=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+LIVE_ORDERS=false
+TESTNET_ORDERS=false
+PAPER_EXCHANGE_ORDERS=false
+EXCHANGE_CREDENTIAL_USE=false
+REAL_CAPITAL_MOVEMENT=false
+```
+
+## 21.2 CURRENT_EVIDENCE_STATUS at CURRENT_FORENSIC_TRUTH_SHA
+
+Evidence-reconciled current status against
+`beacc35d754fd8ab0a37190b882f71b8fb78cb38`:
+
+``` text
+DOCUMENTATION_RUNTIME_DRIFT=true_until_this_reconciliation_merges
+CONFIG_RUNTIME_DRIFT=partial_residual_host_consumer_literals
+DASHBOARD_AUTHORITY=false
+UNIVERSE_TRADING_AUTHORITY_EXPLICIT=true
+SINGLE_SELECTED_FUTURE_RUNTIME_CLOSED=true
+RECONCILIATION_PRODUCTIVE=true
+RECONCILIATION_BEFORE_ALPHA=true
+C1_PRODUCTIVELY_BOUND=true
+C2_PRODUCTIVELY_BOUND=true
+C3_PRODUCTIVELY_BOUND=true
+CONFIRMATION_STATE_PERSISTED=true
+CONFIRMATION_SESSION_ID_STABLE=true
+DYNAMIC_SCOPE_PRODUCTIVELY_BOUND=true
+DYNAMIC_SCOPE_STATE_PERSISTED=true
+DECISION_PATH_RESTART_PROVEN=true_for_deterministic_stateful_no_order_scope
+MASTER_V2_RUNTIME_REACHABLE=true
+DOUBLE_PLAY_AUTHORITY_UNAMBIGUOUS=true
+RISK_BOUND=true
+SAFETY_BOUND=true
+EXIT_POLICY_PRODUCERS_BOUND=true
+ENTRY_END_TO_END_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+EXIT_END_TO_END_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+NONZERO_FEE_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+NONZERO_SLIPPAGE_EVIDENCE_PROVEN=true_for_deterministic_governed_path
+FUTURES_ACCOUNTING_RECONSTRUCTION_PROVEN=true
+PORTFOLIO_STATE_PERSISTED=true
+EVIDENCE_VERIFIED=true_for_closed_capability_packages
+EVIDENCE_CLAIMS_MATCH_TELEMETRY=true_for_corrected_capability_claims
+FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true_offline_no_order_cap72_scope_only
+SIMULATED_EXECUTION_ACTIVE=true_offline_no_order_cap72_scope_only
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=false
+PHASE_9_2_SESSION_LADDER_COMPLETE=false
+TYPED_VOLATILITY_PRODUCER_TO_CMC_BINDING=CLOSED_AND_COLD_START_PROVEN
+REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
+REGIME_UNCLASSIFIED_ALONE_IS_NOT_A_DEFECT=true
 VOL_MAX_AGE_ENFORCEMENT=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 LIVE_ORDERS=false
@@ -3104,34 +3398,52 @@ no-order closure standard.
 
 # 22. Immediate Next Capability
 
-The next implementation step after repository placement, exact-SHA
-validation and Owner ratification of this runbook is:
+The next implementation step after this documentation truth
+reconciliation is:
 
 ``` text
-CAPABILITY_6_1_STATEFUL_CONFIRMATION_AND_C1_PRODUCTIVE_BINDING_V1
+ACTUAL_NEXT_CAPABILITY=PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1
 ```
 
-The dependency order is mandatory:
+Mandatory dependencies / freezes:
 
 ``` text
-6.1 = C1/C2/C3 productive binding + stable confirmation persistence
-6.2 = Dynamic Scope persistence
-6.3 = Decision config ownership and consumer closure
-6.4 = Full decision-path atomic restart closure
-6.5 = Exit-policy producer binding
-7.1 = Deterministic simulated lifecycle evidence + separate public-MD continuity evidence
-7.2 = Single-future stateful no-order activation
+CAP72_ACTIVATED_STATEFUL_NO_ORDER_RUNTIME=true
+G17_TYPED_VOL_HOT_PATH_CLOSED=true
+TYPED_VOLATILITY_COLD_START_PROVEN=true
+REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
+REGIME_THRESHOLD_MUTATION_ALLOWED=false
+CORE_LOGIC_CHANGE_ALLOWED=false
+SEPARATE_OWNER_GO_REQUIRED_FOR_PUBLIC_MD_NETWORK_SESSION=true
+THIS_DOCUMENTATION_RECONCILIATION_DOES_NOT_AUTHORIZE_PHASE_9_2_NETWORK_SESSION=true
+DO_NOT_REOPEN_CAPABILITY_6_1=true
+DO_NOT_FORCE_ENTRY_OR_FILL=true
+LIVE_TESTNET_ORDER_CREDENTIAL_PATH=false
 ```
 
-Confirmation and Dynamic Scope must remain separate capabilities unless
-a new forensic design proves that a combined transaction is smaller,
-safer and independently verifiable.
+Historical completed finish-sequence record (not Immediate Next):
 
-No implementation may begin by activating the current Cap5 host.
+``` text
+6.1 = C1/C2/C3 productive binding + stable confirmation persistence = HISTORICAL_COMPLETED
+6.2 = Dynamic Scope persistence = HISTORICAL_COMPLETED
+6.3 = Decision config ownership for confirmed keys = COMPLETED_WITH_RESIDUAL_HOST_CONSUMER_REVIEW_ITEM
+6.4 = Full decision-path atomic restart closure = HISTORICAL_COMPLETED
+6.5 = Exit-policy producer binding = HISTORICAL_COMPLETED
+7.1 = Deterministic simulated lifecycle evidence = HISTORICAL_COMPLETED
+7.2 = Single-future stateful offline no-order activation = HISTORICAL_COMPLETED
+9.2 = Long-running Public-MD simulation evidence ladder = CURRENT_CRITICAL_PATH
+```
+
+Confirmation and Dynamic Scope remain separate historical capabilities.
+Cap 6.1 must not be reopened as Immediate Next.
 
 No threshold, scope distance, Master V2 rule, Double Play rule,
-Bull/Bear rule, Risk rule or Safety rule may be changed as part of the
-binding work.
+Bull/Bear rule, Risk rule, Safety rule or regime-classifier threshold
+may be changed as part of Phase 9.2 continuation unless a separate
+Owner-authorized capability explicitly changes them.
+
+No artificial forcing of Entry/Fill is authorized to manufacture natural
+Public-MD lifecycle evidence.
 
 ------------------------------------------------------------------------
 
@@ -3173,31 +3485,35 @@ CORE_LOGIC_CHANGE=false
 
 A capability may not be considered closed when its tests pass in isolation but its output is not consumed by the productive successor path.
 
-The effective implementation sequence is therefore:
+The effective historical completion sequence through Cap 7.2, and the
+current critical path, is:
 
 ``` text
-Read-only Preflight 6.0
-→ 6.1 Confirmation/C1 binding
-→ 6.2 Dynamic Scope persistence
-→ 6.3 Config ownership
-→ 6.4 Atomic restart closure
-→ 6.5 Exit-policy producer binding
-→ 7.1 Simulated lifecycle evidence
-→ 7.2 Stateful no-order activation
+Read-only Preflight 6.0 = HISTORICAL_COMPLETED
+→ 6.1 Confirmation/C1 binding = HISTORICAL_COMPLETED
+→ 6.2 Dynamic Scope persistence = HISTORICAL_COMPLETED
+→ 6.3 Config ownership = COMPLETED_FOR_CONFIRMED_KEYS_WITH_RESIDUAL
+→ 6.4 Atomic restart closure = HISTORICAL_COMPLETED
+→ 6.5 Exit-policy producer binding = HISTORICAL_COMPLETED
+→ 7.1 Simulated lifecycle evidence = HISTORICAL_COMPLETED
+→ 7.2 Stateful offline no-order activation = HISTORICAL_COMPLETED
+→ 9.2 Long-running Public-MD simulation evidence continuation = CURRENT_CRITICAL_PATH
 ```
 
-The read-only Preflight 6.0 is preparation for 6.1 and is not a separate blocking program phase.
+The read-only Preflight 6.0 remains historical preparation for 6.1 and
+is not a separate blocking program phase.
 
 ------------------------------------------------------------------------
 
 # 22.2 Productive typed volatility hot-path binding (G17)
 
 Forensic public-MD wallclock sessions confirmed a blocking wiring gap
-before Confirmation / Market-State progression:
+before Confirmation / Market-State progression. That gap is now closed:
 
 ``` text
 GAP_ID=G17
-CLASSIFICATION=WIRING_GAP
+STATUS=CLOSED_AND_COLD_START_PROVEN
+CLASSIFICATION_WAS=WIRING_GAP
 ROOT_CAUSE_CALL_GRAPH_EDGE=
   run_hardened_wallclock_bridge_observation_cycle_v2
   -> run_hardened_bridge_cycle_v2(missing finalized_pt1m_*)
@@ -3205,18 +3521,23 @@ ROOT_CAUSE_CALL_GRAPH_EDGE=
   -> on_runtime_cycle_without_sample_v1
   -> producer_outcome=WARMUP permanent
 CAPABILITY_ID=PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1
-DEPENDENCY_POSITION=before Confirmation/Actionability alpha progression;
-  does not replace Cap 6.1--7.2 finish sequence authority
+TYPED_VOLATILITY_PRODUCER_TO_CMC_BINDING=CLOSED_AND_COLD_START_PROVEN
+TYPED_VOLATILITY_PRESENCE_GATE_PASS=true
+TYPED_VOLATILITY_IS_NOT_REGIME_CLASSIFIER_AUTHORITY=true
 CORE_LOGIC_CHANGE=false
 VOLATILITY_NUMERIC_MAX_AGE_ENFORCING=false
 NUMERIC_MAX_AGE_EFFECT=DIAGNOSTIC_ONLY
 ACTIVATION_CLAIMED=false
 NO_PROXY_PROMOTION=true
+REGIME_UNCLASSIFIED_FAIL_CLOSED_IS_EXPECTED_WHEN_NO_RULE_MATCHES=true
+REGIME_UNCLASSIFIED_ALONE_IS_NOT_A_DEFECT=true
+REGIME_THRESHOLD_AUTO_TUNING_AUTHORIZED=false
 ```
 
-This capability closes only the missing Producer→State→CMC→Consumer
-wiring edge. It does not authorize runtime activation, Live/Testnet,
-orders, credentials, or Numeric Max-Age enforcement.
+This capability closed only the missing Producer→State→CMC→Consumer
+wiring edge and was cold-start validated. It does not authorize runtime
+activation beyond Cap 7.2 offline scope, Live/Testnet, orders,
+credentials, Numeric Max-Age enforcement, or regime-threshold mutation.
 
 
 # 23. Canonical Closing Principle
