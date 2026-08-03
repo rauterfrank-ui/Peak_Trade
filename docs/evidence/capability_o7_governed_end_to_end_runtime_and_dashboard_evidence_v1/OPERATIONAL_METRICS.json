@@ -1,0 +1,25 @@
+{
+  "authorization_consumed": false,
+  "confirm_token_minted": false,
+  "credentials_used": 0,
+  "dashboard_connection_count": 2,
+  "dashboard_reconnect_count": 1,
+  "dashboard_stale_transition_count": 1,
+  "graceful_shutdown_success": true,
+  "network_session_started": false,
+  "orders_submitted": 0,
+  "orphan_process_count": 0,
+  "process_restart_count": 2,
+  "read_model_commit_count": 2,
+  "read_model_replay_count": 1,
+  "recovery_success": true,
+  "session_elapsed_seconds": 1.597,
+  "startup_attempt_count": 5,
+  "startup_failure_count": 1,
+  "startup_latency_ms": 162,
+  "startup_latency_ms_samples": [
+    162
+  ],
+  "startup_success_count": 4,
+  "unexpected_process_exit_count": 1
+}
