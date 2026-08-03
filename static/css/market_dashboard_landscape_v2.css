@@ -771,3 +771,13 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Supervised presentation: fail-visible when canonical data is unavailable */
+.mdl-v2[data-mdl-canonical-fail="true"] .mdl-v2-chart__message {
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+.mdl-v2[data-mdl-canonical-fail="true"] [data-mdl-data-connection-state] {
+  color: #fca5a5;
+}

@@ -2,7 +2,11 @@
  * Market Dashboard Landscape V2 — presentation-only client helpers.
  * No fetch mutation, no decision/risk/sizing logic, no write endpoints.
  * Renders materialized OHLCV from SSR/poll JSON only (never fabricates candles).
- * Polls local /api/market/landscape/ohlcv only; never calls OKX.
+ * Consumes only local GET /market and GET /api/market/landscape/ohlcv;
+ * never calls OKX or any browser-direct network venue.
+ *
+ * Canonical OHLCV accepted from body.ohlcv and/or body.read_model (and legacy
+ * body.browser_payload when present). Candle close is never used as live mark.
  *
  * Update classification:
  *   NO_CHANGE | METADATA_ONLY | MARK_ONLY | SAME_TIMESTAMP_LAST_CANDLE_CHANGE
@@ -69,6 +73,195 @@
     root.setAttribute("data-mdl-ohlcv-update-class", kind);
   }
 
+  function failVisible(reason) {
+    root.setAttribute("data-mdl-canonical-fail", "true");
+    root.setAttribute("data-mdl-canonical-fail-reason", String(reason || "canonical_unavailable"));
+    setConnectionState("MISSING_SOURCE");
+    var message = root.querySelector("[data-mdl-chart-message]");
+    if (message) {
+      message.textContent = "CANONICAL_DATA_UNAVAILABLE: " + String(reason || "unknown");
+    }
+  }
+
+  function clearFailVisible() {
+    root.removeAttribute("data-mdl-canonical-fail");
+    root.removeAttribute("data-mdl-canonical-fail-reason");
+  }
+
+  function clientDigest(text) {
+    // Client-only FNV-1a 32-bit digest for update classification — not authority.
+    var h = 2166136261;
+    var i;
+    for (i = 0; i < text.length; i += 1) {
+      h ^= text.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return ("00000000" + (h >>> 0).toString(16)).slice(-8);
+  }
+
+  function finiteBarNumber(raw) {
+    if (raw === undefined || raw === null || raw === "") return null;
+    var n = Number(raw);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function normalizeCanonicalBars(rawBars) {
+    if (!Array.isArray(rawBars) || !rawBars.length) return null;
+    var bars = [];
+    var i;
+    for (i = 0; i < rawBars.length; i += 1) {
+      var row = rawBars[i];
+      if (!row || typeof row !== "object") return null;
+      var ts = row.ts;
+      if (typeof ts !== "string" || !ts.trim()) return null;
+      var openV = finiteBarNumber(row.open);
+      var highV = finiteBarNumber(row.high);
+      var lowV = finiteBarNumber(row.low);
+      var closeV = finiteBarNumber(row.close);
+      var volumeV = finiteBarNumber(row.volume);
+      if (openV === null || highV === null || lowV === null || closeV === null || volumeV === null) {
+        return null;
+      }
+      var confirmRaw = row.confirm;
+      var confirm =
+        confirmRaw === undefined || confirmRaw === null
+          ? true
+          : typeof confirmRaw === "boolean"
+            ? confirmRaw
+            : String(confirmRaw) === "1" || String(confirmRaw) === "true";
+      bars.push({
+        ts: ts.trim(),
+        open: openV,
+        high: highV,
+        low: lowV,
+        close: closeV,
+        volume: volumeV,
+        display_close: closeV,
+        display_high: highV,
+        display_low: lowV,
+        confirm: confirm,
+        provisional: !confirm,
+      });
+    }
+    return bars;
+  }
+
+  function pickCanonicalOhlcvSource(body) {
+    if (!body || typeof body !== "object") return null;
+    if (
+      body.browser_payload &&
+      Array.isArray(body.browser_payload.bars) &&
+      body.browser_payload.bars.length
+    ) {
+      return { kind: "browser_payload", source: body.browser_payload };
+    }
+    if (body.ohlcv && Array.isArray(body.ohlcv.bars) && body.ohlcv.bars.length) {
+      return { kind: "ohlcv", source: body.ohlcv };
+    }
+    if (body.read_model && Array.isArray(body.read_model.bars) && body.read_model.bars.length) {
+      return { kind: "read_model", source: body.read_model };
+    }
+    var proj = body.read_model && body.read_model.ohlcv_projection;
+    if (proj && Array.isArray(proj.bars) && proj.bars.length) {
+      return { kind: "ohlcv_projection", source: proj };
+    }
+    return null;
+  }
+
+  function buildClientPayloadFromCanonical(source, body, kind) {
+    // Prefer already-normalized browser_payload bars/digests when present.
+    if (kind === "browser_payload") {
+      var legacy = Object.assign({}, source);
+      // Never invent live mark from candle close.
+      if (legacy.live_mark_price === undefined) {
+        legacy.live_mark_price = null;
+      }
+      if (!legacy.first_timestamp && Array.isArray(legacy.bars) && legacy.bars.length) {
+        legacy.first_timestamp = legacy.bars[0].ts;
+      }
+      if (!legacy.last_timestamp && Array.isArray(legacy.bars) && legacy.bars.length) {
+        legacy.last_timestamp = legacy.bars[legacy.bars.length - 1].ts;
+      }
+      return legacy;
+    }
+    var bars = normalizeCanonicalBars(source.bars);
+    if (!bars) return null;
+    var rm = (body && body.read_model) || {};
+    var seriesKey = bars
+      .map(function (b) {
+        return [b.ts, b.open, b.high, b.low, b.close, b.volume, b.confirm ? 1 : 0].join(",");
+      })
+      .join("|");
+    var markRaw =
+      source.live_mark_price !== undefined && source.live_mark_price !== null
+        ? source.live_mark_price
+        : rm.live_mark_price !== undefined && rm.live_mark_price !== null
+          ? rm.live_mark_price
+          : null;
+    // Explicit: never substitute candle close for live mark price.
+    var liveMark = finiteBarNumber(markRaw);
+    var metaKey = [
+      source.captured_at || rm.captured_at || "",
+      source.candle_captured_at || "",
+      source.freshness_state || rm.freshness_state || "",
+      String(liveMark === null ? "" : liveMark),
+      body && body.repository_sha ? body.repository_sha : rm.repository_sha || "",
+    ].join("|");
+    return {
+      schema_name: "market_landscape_ohlcv_browser_payload.v1",
+      schema_version: 1,
+      instrument_id:
+        source.instrument_id || rm.instrument_id || rm.instrument || null,
+      venue: source.venue || rm.venue || null,
+      interval: source.interval || rm.interval || null,
+      bar_count: bars.length,
+      bars: bars,
+      first_timestamp: bars[0].ts,
+      last_timestamp: bars[bars.length - 1].ts,
+      captured_at: source.captured_at || rm.captured_at || null,
+      candle_captured_at:
+        source.candle_captured_at || source.captured_at || rm.captured_at || null,
+      freshness_state: source.freshness_state || rm.freshness_state || null,
+      is_stale: Boolean(source.is_stale || rm.is_stale),
+      live_mark_price: liveMark,
+      candle_series_digest: clientDigest(seriesKey),
+      metadata_digest: clientDigest(metaKey),
+      chart_digest: clientDigest(seriesKey),
+      canonical_source_kind: kind,
+      non_authoritative_client_derivation: true,
+    };
+  }
+
+  function extractCanonicalOhlcvPayload(body) {
+    var picked = pickCanonicalOhlcvSource(body);
+    if (!picked) return null;
+    return buildClientPayloadFromCanonical(picked.source, body, picked.kind);
+  }
+
+  function bindCanonicalIdentityFromMarket(body) {
+    if (!body || typeof body !== "object") return false;
+    var rm = body.read_model || {};
+    var sessionId = body.session_id || "";
+    var repoSha = rm.repository_sha || body.repository_sha || "";
+    var instrument = rm.instrument_id || rm.instrument || "";
+    var venue = rm.venue || "";
+    var connectionState = body.connection_state || rm.connection_state || "";
+    root.setAttribute("data-session-id", String(sessionId || ""));
+    root.setAttribute("data-repository-sha", String(repoSha || ""));
+    var sessionNode = root.querySelector('[data-mdl-field="session_id"]');
+    if (sessionNode) sessionNode.textContent = sessionId || "—";
+    var shaNode = root.querySelector('[data-mdl-field="repository_sha"]');
+    if (shaNode) shaNode.textContent = repoSha || "—";
+    var instrumentNode = root.querySelector('[data-mdl-field="instrument"]');
+    if (instrumentNode && instrument) instrumentNode.textContent = String(instrument);
+    var selectedNode = root.querySelector('[data-mdl-field="selected_instrument"]');
+    if (selectedNode && instrument) selectedNode.textContent = String(instrument);
+    var venueNode = root.querySelector('[data-mdl-field="venue"]');
+    if (venueNode && venue) venueNode.textContent = String(venue);
+    if (connectionState) setConnectionState(String(connectionState));
+    return true;
+  }
+
   function formatMetaNumber(value) {
     if (value === undefined || value === null || value === "") return "—";
     var n = Number(value);
@@ -106,8 +299,11 @@
         (payload && (payload.candle_captured_at || payload.captured_at)) || "—";
     }
     if (markNode) {
+      // Absent optional mark → em dash. Never substitute candle close.
       var mark =
-        payload && payload.live_mark_price !== undefined && payload.live_mark_price !== null
+        payload &&
+        payload.live_mark_price !== undefined &&
+        payload.live_mark_price !== null
           ? String(payload.live_mark_price)
           : "—";
       markNode.textContent = mark;
@@ -560,13 +756,22 @@
       }
     }
     if (connectionState === "LIVE_DATA") connectionState = "HEALTHY";
-    var payload = body.browser_payload;
-    if (!payload || !payload.bars) {
+    var payload = extractCanonicalOhlcvPayload(body);
+    if (!payload || !payload.bars || !payload.bars.length) {
       updateMetaFromPayload(body, availability, connectionState);
-      if (availability === "MISSING_SOURCE") setConnectionState("MISSING_SOURCE");
-      else setConnectionState(connectionState);
+      if (
+        availability === "MISSING_SOURCE" ||
+        connectionState === "MISSING_SOURCE" ||
+        connectionState === "DISCONNECTED"
+      ) {
+        failVisible(connectionState || availability || "ohlcv_unavailable");
+        setConnectionState(connectionState || "MISSING_SOURCE");
+      } else {
+        setConnectionState(connectionState);
+      }
       return;
     }
+    clearFailVisible();
 
     var seriesDigest = payload.candle_series_digest || payload.chart_digest || "";
     var metaDigest = payload.metadata_digest || "";
@@ -629,11 +834,15 @@
   function startOhlcvPolling() {
     var chart = root.querySelector("[data-mdl-chart]");
     if (!chart) return;
-    var pollPath = chart.getAttribute("data-mdl-ohlcv-poll-path") || "";
+    var pollPath =
+      chart.getAttribute("data-mdl-ohlcv-poll-path") ||
+      root.getAttribute("data-canonical-ohlcv-path") ||
+      "";
     var baseIntervalSeconds = Number(
       chart.getAttribute("data-mdl-ohlcv-poll-interval-seconds") || "0"
     );
     if (!pollPath || !(baseIntervalSeconds > 0)) return;
+    // Only local canonical market API paths — never browser-direct OKX/network.
     if (pollPath.indexOf("/api/market/") !== 0) return;
 
     var inFlight = false;
@@ -704,9 +913,12 @@
             "data-mdl-ohlcv-poll-backoff-seconds",
             String(backoffSeconds)
           );
-          setConnectionState(
-            failStreak >= STALE_AFTER_FAILURES ? "DISCONNECTED" : "DEGRADED"
-          );
+          if (failStreak >= STALE_AFTER_FAILURES) {
+            failVisible(String((err && err.message) || "poll_failed"));
+            setConnectionState("DISCONNECTED");
+          } else {
+            setConnectionState("DEGRADED");
+          }
         })
         .then(function () {
           inFlight = false;
@@ -724,6 +936,76 @@
           : "HEALTHY"
     );
     scheduleNext();
+  }
+
+  function bootstrapFromCanonicalMarket() {
+    var marketPath = root.getAttribute("data-canonical-market-path") || "/market";
+    if (marketPath !== "/market") {
+      failVisible("forbidden_noncanonical_market_path");
+      return Promise.resolve(false);
+    }
+    return fetch(marketPath, {
+      method: "GET",
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    })
+      .then(function (response) {
+        if (!response.ok) throw new Error("market_http_" + response.status);
+        return response.json();
+      })
+      .then(function (body) {
+        if (!body || typeof body !== "object") {
+          throw new Error("market_invalid_body");
+        }
+        if (body.direct_browser_okx) {
+          throw new Error("market_forbidden_direct_okx");
+        }
+        if (body.trading_authority || body.orders) {
+          throw new Error("market_forbidden_trading_authority");
+        }
+        bindCanonicalIdentityFromMarket(body);
+        var rm = body.read_model || {};
+        var bars =
+          (rm.bars && rm.bars.length && rm.bars) ||
+          (rm.ohlcv_projection && rm.ohlcv_projection.bars) ||
+          null;
+        if (bars && bars.length) {
+          applyPollPayload({
+            availability: body.connection_state || rm.connection_state || "",
+            connection_state: body.connection_state || rm.connection_state || "",
+            ohlcv: {
+              bars: bars,
+              bar_count: bars.length,
+              interval: rm.interval,
+              instrument_id: rm.instrument_id || rm.instrument,
+              venue: rm.venue,
+            },
+            read_model: rm,
+            repository_sha: rm.repository_sha,
+            session_id: body.session_id,
+            status: body.connection_state || "OK",
+          });
+        } else if (
+          body.connection_state === "MISSING_SOURCE" ||
+          rm.connection_state === "MISSING_SOURCE"
+        ) {
+          failVisible("MISSING_SOURCE");
+        }
+        root.setAttribute("data-mdl-canonical-market-bound", "true");
+        return true;
+      })
+      .catch(function (err) {
+        failVisible(String((err && err.message) || "market_bootstrap_failed"));
+        return false;
+      });
+  }
+
+  function bootLandscapeClient() {
+    renderOhlcvCanvas();
+    bootstrapFromCanonicalMarket().then(function () {
+      startOhlcvPolling();
+    });
   }
 
   var resizeTimer = null;
@@ -760,12 +1042,10 @@
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {
-      renderOhlcvCanvas();
-      startOhlcvPolling();
+      bootLandscapeClient();
     });
   } else {
-    renderOhlcvCanvas();
-    startOhlcvPolling();
+    bootLandscapeClient();
   }
   window.addEventListener("resize", onViewportResize);
   if (typeof ResizeObserver === "function") {

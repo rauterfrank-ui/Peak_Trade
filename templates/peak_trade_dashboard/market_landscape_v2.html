@@ -28,6 +28,12 @@
   data-runtime-bridge="{{ runtime_bridge_display }}"
   data-mdl-a11y-baseline="task7"
   data-mdl-density="task1"
+  data-canonical-market-path="{{ canonical_market_path|default('/market') }}"
+  data-canonical-ohlcv-path="{{ canonical_ohlcv_path|default('/api/market/landscape/ohlcv') }}"
+  data-supervised-presentation-only="{{ 'true' if supervised_presentation_only|default(false) else 'false' }}"
+  data-non-authoritative-bootstrap="{{ 'true' if non_authoritative_bootstrap|default(false) else 'false' }}"
+  data-session-id="{{ bootstrap_session_id|default('') }}"
+  data-repository-sha="{{ bootstrap_repository_sha|default('') }}"
 >
   <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
     <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">
@@ -39,6 +45,8 @@
         {# Strip = compact ops summary. Scope/Regime live in Context; do not alias availability as Freshness. #}
         <div><dt>Instrument</dt><dd data-mdl-field="instrument">{{ global_strip.instrument }}</dd></div>
         <div><dt>Venue</dt><dd data-mdl-field="venue">{{ global_strip.venue }}</dd></div>
+        <div><dt>Session</dt><dd data-mdl-field="session_id">{% if bootstrap_session_id %}{{ bootstrap_session_id }}{% else %}—{% endif %}</dd></div>
+        <div><dt>Repo SHA</dt><dd data-mdl-field="repository_sha">{% if bootstrap_repository_sha %}{{ bootstrap_repository_sha }}{% else %}—{% endif %}</dd></div>
         <div>
           <dt>Runtime</dt>
           <dd data-mdl-field="runtime" title="{{ shell_authority_class }}">{{ global_strip.runtime_state }}</dd>
@@ -158,8 +166,8 @@
           </dl>
           <div class="mdl-v2-chart__stage" role="img" aria-label="{{ chart.message }}" data-mdl-chart-stage="true">
             <p class="mdl-v2-chart__message" data-mdl-chart-message="true">{{ chart.message }}</p>
-            {% if chart.browser_payload %}
-            <script type="application/json" data-mdl-ohlcv-json="true">{{ chart.browser_payload | tojson }}</script>
+            {# Empty/non-authoritative bootstrap always present so JS can bind canonical OHLCV. #}
+            <script type="application/json" data-mdl-ohlcv-json="true">{% if chart.browser_payload %}{{ chart.browser_payload | tojson }}{% else %}{"schema_name":"market_landscape_ohlcv_browser_payload.v1","schema_version":1,"bars":[],"bar_count":0,"non_authoritative_bootstrap":true}{% endif %}</script>
             <canvas
               class="mdl-v2-chart__canvas"
               data-mdl-chart-canvas="true"
@@ -167,7 +175,6 @@
               data-mdl-chart-geometry="absent"
               aria-hidden="true"
             ></canvas>
-            {% endif %}
           </div>
         </div>
       </section>
