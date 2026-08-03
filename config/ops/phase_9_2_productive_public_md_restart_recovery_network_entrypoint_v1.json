@@ -23,6 +23,9 @@
   "authorization_issuance_authorized": false,
   "authorization_consumption_authorized": false,
   "productive_network_session_execution_authorized": false,
+  "session_go_authority_capability_id": "PHASE_9_2_PRODUCTIVE_RESTART_RECOVERY_SESSION_GO_CAPABILITY_V1",
+  "session_go_authority_config": "config/ops/phase_9_2_productive_restart_recovery_session_go_capability_v1.json",
+  "session_go_authority_consumer": "src.ops.phase_9_2_productive_restart_recovery_session_go_capability_v1.gate_v1",
   "reuses": {
     "wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1",
     "offline_harness": "src.ops.phase_9_2_restart_recovery_session_contract_and_productive_harness_v1",
@@ -36,6 +39,8 @@
   },
   "later_real_session_requires": [
     "SEPARATE_OWNER_SESSION_GO",
+    "PHASE_9_2_PRODUCTIVE_RESTART_RECOVERY_SESSION_GO_CAPABILITY_V1",
+    "BOUND_ACTIVE_SESSION_GO_ARTIFACT",
     "NEW_SINGLE_USE_AUTHORIZATION_PER_SEGMENT",
     "NETWORK_SESSION_ALLOWED_TRUE_ONLY_IN_SESSION_GO",
     "CONFIRM_TOKEN_VIA_CANONICAL_SECURE_PATH"

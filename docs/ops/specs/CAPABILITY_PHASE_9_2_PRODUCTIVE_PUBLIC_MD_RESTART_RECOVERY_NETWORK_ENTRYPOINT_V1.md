@@ -104,7 +104,16 @@ SESSION_ACTIVATED=false
 NETWORK_SESSION_STARTED=false
 ```
 
-Documentation and merge do not authorize a session.
+Documentation and merge do not authorize a session. Unlock requires the separate
+Session-GO capability:
+
+```text
+PHASE_9_2_PRODUCTIVE_RESTART_RECOVERY_SESSION_GO_CAPABILITY_V1
+```
+
+bound ACTIVE Session-GO artifact + Owner-GO + Owner-Session-GO + single-use
+authorization + confirm token. The permanent config flag
+`productive_network_session_execution_authorized` remains `false`.
 
 ## Rollback
 
