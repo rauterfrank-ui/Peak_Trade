@@ -19,6 +19,9 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     APPEND_ONLY,
     REQUIRED_IMMUTABLE,
 )
+from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1.outcome_completeness_verifier_v1 import (
+    verify_wallclock_outcome_completeness_v1,
+)
 
 VERIFIER_ID = "ops.paper_shadow_wallclock_evidence_verifier_v1"
 RESULT_PASS = "WALLCLOCK_OBSERVATION_EVIDENCE_VERIFIED"
@@ -121,6 +124,19 @@ def verify_wallclock_evidence_bundle_v1(
                 blockers.append("SAFETY_ABORT_REMAPPED_TO_FAIL")
             if verdict == TerminalVerdict.PASS.value:
                 blockers.append("SAFETY_EVENTS_WITH_PASS")
+
+    outcome = verify_wallclock_outcome_completeness_v1(evidence_root=root)
+    if not outcome.verified:
+        blockers.extend(f"OUTCOME_COMPLETENESS:{b}" for b in outcome.blockers)
+    else:
+        notes.extend(
+            [
+                "OUTCOME_COMPLETENESS_VERIFIED=true",
+                "VERIFIER_VALIDATES_OUTCOME_COMPLETENESS=true",
+                "VERIFIER_CAN_PASS_WITH_UNACCOUNTED_OUTCOMES=false",
+            ]
+        )
+        notes.extend(outcome.notes)
 
     unique = sorted(set(blockers))
     if unique:

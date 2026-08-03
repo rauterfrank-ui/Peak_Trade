@@ -1,0 +1,98 @@
+"""Constants for wallclock outcome telemetry + verifier completeness binding."""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "PHASE_9_2_WALLCLOCK_OUTCOME_TELEMETRY_AND_VERIFIER_COMPLETENESS_BINDING_V1"
+TASK_ID = "IMPLEMENT_PHASE_9_2_WALLCLOCK_OUTCOME_TELEMETRY_AND_VERIFIER_COMPLETENESS_BINDING_V1"
+OWNER = "ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1"
+PACKAGE_MARKER = "PHASE_9_2_WALLCLOCK_OUTCOME_TELEMETRY_AND_VERIFIER_COMPLETENESS_BINDING_V1=true"
+SCHEMA_VERSION = "phase_9_2_wallclock_outcome_telemetry.v1"
+PRODUCER_VERSION = "phase_9_2_wallclock_outcome_telemetry.v1"
+
+DECISION_AUTHORITY = False
+RUNTIME_BEHAVIOR_EFFECT = False
+ALPHA_EFFECT = False
+RISK_EFFECT = False
+SAFETY_EFFECT = False
+EXECUTION_EFFECT = False
+CORE_LOGIC_CHANGE = False
+
+BRIDGE_CYCLE_LEDGER_FILENAME = "bridge_cycle_ledger.jsonl"
+BRIDGE_FILL_LEDGER_FILENAME = "bridge_fill_ledger.jsonl"
+OBSERVATION_COUNTERS_FILENAME = "observation_cycle_counters.json"
+OPTIONAL_SUMMARY_FILENAME = "wallclock_outcome_telemetry_summary_v1.json"
+TERMINAL_VERDICT_FILENAME = "terminal_verdict.json"
+
+SUMMARY_SOURCE_OF_TRUTH = "bridge_cycle_ledger.jsonl"
+TERMINAL_OUTCOME_PROJECTION_OWNER = (
+    "ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1."
+    "terminal_outcome_projection_v1"
+)
+
+# Exclusive priority order for deterministic projection (first match wins).
+TERMINAL_OUTCOME_PRIORITY: tuple[str, ...] = (
+    "SESSION_WARMUP",
+    "MISSING_VOLATILITY_OBSERVE_ONLY",
+    "ENTRY_FILL",
+    "REDUCE_FILL",
+    "EXIT_FILL",
+    "SIMULATED_FILL_OTHER",
+    "ENTRY_INTENT_NO_FILL",
+    "REDUCE_INTENT_NO_FILL",
+    "EXIT_INTENT_NO_FILL",
+    "HOLD_NO_ACTION",
+    "OBSERVE_OR_HOLD",
+    "BLOCKED_OTHER",
+)
+
+ENTRY_INTENT_ACTIONS = frozenset(
+    {
+        "ENTER_LONG",
+        "ENTER_SHORT",
+        "ENTRY_LONG",
+        "ENTRY_SHORT",
+    }
+)
+REDUCE_INTENT_ACTIONS = frozenset(
+    {
+        "REDUCE",
+        "REDUCE_LONG",
+        "REDUCE_SHORT",
+        "PARTIAL_REDUCE",
+    }
+)
+EXIT_INTENT_ACTIONS = frozenset(
+    {
+        "EXIT",
+        "EXIT_LONG",
+        "EXIT_SHORT",
+        "CLOSE",
+        "FLAT",
+    }
+)
+
+TYPED_VOLATILITY_MISSING_REASON_CODES = frozenset(
+    {
+        "TYPED_VOLATILITY_ESTIMATE_MISSING",
+        "typed_volatility_estimate_missing",
+    }
+)
+WARMUP_REASON_CODES = frozenset(
+    {
+        "warmup_required",
+        "WARMUP_REQUIRED",
+    }
+)
+
+RESULT_PASS = "WALLCLOCK_OUTCOME_TELEMETRY_COMPLETENESS_VERIFIED"
+RESULT_FAIL = "WALLCLOCK_OUTCOME_TELEMETRY_COMPLETENESS_INVALID"
+
+ZERO_CYCLE_PASS_BLOCKER = "ZERO_CYCLE_SESSION_NOT_IMPLICITLY_COMPLETE"
+EMPTY_LEDGER_WITH_CYCLES_BLOCKER = "EMPTY_LEDGER_WITH_POSITIVE_CYCLE_COUNT"
+UNACCOUNTED_CYCLES_BLOCKER = "UNACCOUNTED_CYCLE_COUNT_NONZERO"
+MULTI_CLASSIFIED_CYCLES_BLOCKER = "MULTI_CLASSIFIED_CYCLE_COUNT_NONZERO"
+TERMINAL_SUM_MISMATCH_BLOCKER = "TERMINAL_OUTCOME_SUM_MISMATCH"
+SUMMARY_MISMATCH_BLOCKER = "SUMMARY_COUNTS_MISMATCH_LEDGER"
+FILL_COUNT_MISMATCH_BLOCKER = "FILL_COUNT_SUM_MISMATCH"
+HOLD_COUNT_MISMATCH_BLOCKER = "HOLD_COUNT_MISMATCH_LEDGER"
+NO_ACTION_COUNT_MISMATCH_BLOCKER = "NO_ACTION_COUNT_MISMATCH_LEDGER"
