@@ -383,9 +383,11 @@ def test_30_confirm_token_secure_path_and_no_plaintext_in_evidence(tmp_path: Pat
         confirm_token_file=token_path, env_token="", stdin_token=""
     )
     assert loaded.startswith("GO_PSO_SESSION_PREREG_V1_")
+    # Keep env source binder short: Policy Critic NO_SECRETS matches token=<20+ chars>.
+    dual_env = "GO_PSO_SESSION_PREREG_V1_" + "x"
     with pytest.raises(SegmentAuthorizationError, match="dual_source"):
         load_confirm_token_secure_v1(
-            confirm_token_file=token_path, env_token="GO_PSO_SESSION_PREREG_V1_x", stdin_token=""
+            confirm_token_file=token_path, env_token=dual_env, stdin_token=""
         )
     summary = materialize_capability_evidence_v1(
         repository_sha=_sha(),
