@@ -1,0 +1,5 @@
+{
+  "LOCAL_SUPERVISION_BACKEND": "repository_owned_supervisor",
+  "MACOS_LAUNCH_USES_START_NEW_SESSION": true,
+  "SETSID_CLI_REQUIRED": false
+}
