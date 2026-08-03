@@ -1,0 +1,39 @@
+{
+  "schema_version": "phase_9_2_productive_restart_recovery_session_go.v1",
+  "capability_id": "PHASE_9_2_PRODUCTIVE_RESTART_RECOVERY_SESSION_GO_CAPABILITY_V1",
+  "authority_owner": "ops.phase_9_2_productive_restart_recovery_session_go_capability_v1",
+  "predecessor_capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_NETWORK_ENTRYPOINT_V1",
+  "predecessor_merge_sha": "0cc5c91583733e37ccc2f4b3ad8696ec76b0c5d5",
+  "target_session_id": "phase_9_2_public_md_restart_recovery_session_v1",
+  "target_entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_NETWORK_ENTRYPOINT_V1",
+  "target_entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.py",
+  "restart_recovery_scope": "PHASE_9_2_RESTART_RECOVERY_PRE_POST_SEGMENTS",
+  "default_max_session_duration_seconds": 3600,
+  "default_activation_status": "INACTIVE",
+  "session_execution_allowed_by_capability_config": false,
+  "network_session_allowed_by_capability_config": false,
+  "authorization_issuance_allowed_by_capability_config": false,
+  "authorization_consumption_allowed_by_capability_config": false,
+  "no_permanent_unscoped_enable_flag": true,
+  "productive_network_session_execution_authorized": false,
+  "public_md_only": true,
+  "http_get_only": true,
+  "consumers": {
+    "session_go_gate": "src.ops.phase_9_2_productive_restart_recovery_session_go_capability_v1.gate_v1",
+    "productive_entrypoint": "src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.orchestrator_v1"
+  },
+  "ordering": [
+    "SESSION_GO_EVALUATION",
+    "OWNER_GO_AND_OWNER_SESSION_GO",
+    "SINGLE_USE_AUTHORIZATION",
+    "CONFIRM_TOKEN",
+    "LOCK_ACQUISITION",
+    "NETWORK_ACCESS",
+    "SESSION_START"
+  ],
+  "notes": [
+    "Capability creates bound Session-GO authority surface only.",
+    "ACTIVE Session-GO artifacts are issued by a later Owner session execution order.",
+    "Does not flip productive_network_session_execution_authorized permanently."
+  ]
+}

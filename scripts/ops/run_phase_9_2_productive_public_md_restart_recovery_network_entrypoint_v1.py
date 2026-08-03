@@ -5,11 +5,11 @@ Commands:
   preflight              — offline readiness / segment plan / boundary proof
   offline-integration    — fake public-MD transport + PR#5665 harness/verifier
   materialize-evidence   — write capability evidence fixtures
-  productive-session     — fail-closed unless a later Owner session GO exists
+  productive-session     — Session-GO gated; no side effects without full unlock
 
 Confirm tokens are never accepted as argv plaintext. Use --confirm-token-file,
-env PEAK_TRADE_PSO_CONFIRM_TOKEN, or stdin only when a later session GO authorizes
-issuance/consumption.
+env PEAK_TRADE_PSO_CONFIRM_TOKEN, or stdin only when a bound ACTIVE Session-GO
+plus Owner flags authorize later execution.
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -97,6 +98,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--evidence-root", type=Path, default=None)
     p.add_argument("--expected-repository-sha", default=None)
     p.add_argument("--confirm-token-file", type=Path, default=None)
+    p.add_argument("--session-go-file", type=Path, default=None)
+    p.add_argument("--owner-go", action="store_true")
+    p.add_argument("--owner-session-go", action="store_true")
+    p.add_argument("--authorization-present", action="store_true")
+    p.add_argument("--confirm-token-present", action="store_true")
     p.add_argument("--real-network", action="store_true")
     p.add_argument("--json", action="store_true")
     return p
@@ -138,14 +144,47 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if summary.get("ok") else 1
 
     if args.command == "productive-session":
-        # Explicitly refuse real session execution in this capability.
-        _ = args.confirm_token_file  # accepted only for future session GO wiring
+        # Gate-only evaluation: never issue/consume auth, lock, network, or start.
+        cfg_digest = str(
+            load_activation_config_v1(
+                config_path=_REPO_ROOT
+                / "config/runtime/single_future_stateful_no_order_runtime_activation_v1.json"
+            ).config_digest
+        )
+        confirm_present = bool(args.confirm_token_present) or bool(args.confirm_token_file)
         payload = reject_productive_session_start_v1(
             use_real_network=bool(args.real_network),
             environ=os.environ,
+            expected_repository_sha=sha,
+            expected_config_digest=cfg_digest,
+            now_unix=float(time.time()),
+            owner_go=bool(args.owner_go),
+            owner_session_go=bool(args.owner_session_go),
+            session_go_path=args.session_go_file,
+            authorization_present=bool(args.authorization_present),
+            confirm_token_present=confirm_present,
+            repo_root=_REPO_ROOT,
         )
+        notes = list(payload.get("notes") or [])
+        notes.extend(
+            [
+                "PRODUCTIVE_SESSION_COMMAND_IS_GATE_EVALUATION_ONLY",
+                "NO_AUTHORIZATION_ISSUED",
+                "NO_AUTHORIZATION_CONSUMED",
+                "NO_SESSION_LOCK",
+                "NO_NETWORK_REQUEST",
+                "NO_SESSION_START",
+            ]
+        )
+        payload = dict(payload)
+        payload["notes"] = notes
+        payload["network_session_started"] = False
+        payload["authorization_consumed"] = False
+        payload["session_started"] = False
+        payload["network_request_count"] = 0
         print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
-        return 2
+        # Exit 0 only means Session-GO unlock evaluation passed; session is not started.
+        return 0 if payload.get("productive_session_execution_permitted") else 2
 
     # offline-integration
     if args.persistence_root is None:

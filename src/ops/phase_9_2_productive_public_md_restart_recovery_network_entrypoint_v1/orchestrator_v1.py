@@ -110,6 +110,11 @@ def assert_real_session_gates_closed_v1(
     use_real_network: bool,
     environ: Mapping[str, str] | None = None,
 ) -> list[str]:
+    """Offline/default gates: permanent unscoped enable remains false.
+
+    Env flags alone never unlock productive execution. Unlock requires a bound
+    ACTIVE Session-GO artifact evaluated by evaluate_productive_session_start_gates_v1.
+    """
     env = environ if environ is not None else os.environ
     blockers: list[str] = []
     if use_real_network:
@@ -117,12 +122,10 @@ def assert_real_session_gates_closed_v1(
     if PRODUCTIVE_NETWORK_SESSION_EXECUTION_ALLOWED:
         blockers.append("PRODUCTIVE_NETWORK_SESSION_EXECUTION_ALLOWED_MUST_REMAIN_FALSE_HERE")
     if str(env.get(PRODUCTIVE_SESSION_GO_ENV) or "") == "1":
-        # Session GO alone is insufficient without a later dedicated session capability run.
-        blockers.append(
-            "PRODUCTIVE_SESSION_GO_ENV_SET_BUT_ENTRYPOINT_IMPLEMENTATION_BLOCKS_EXECUTION"
-        )
+        # Env alone remains insufficient; bound Session-GO capability is required.
+        blockers.append("PRODUCTIVE_SESSION_GO_ENV_INSUFFICIENT_WITHOUT_BOUND_SESSION_GO_ARTIFACT")
     if str(env.get(REAL_NETWORK_ENV) or "") == "1" and use_real_network:
-        blockers.append("REAL_NETWORK_ENV_INSUFFICIENT_WITHOUT_SEPARATE_SESSION_GO_CAPABILITY")
+        blockers.append("REAL_NETWORK_ENV_INSUFFICIENT_WITHOUT_BOUND_SESSION_GO_ARTIFACT")
     return blockers
 
 
@@ -441,28 +444,171 @@ def run_offline_productive_restart_orchestration_v1(
                 pass
 
 
-def reject_productive_session_start_v1(
+def evaluate_productive_session_start_gates_v1(
     *,
+    expected_repository_sha: str,
+    expected_config_digest: str,
+    now_unix: float,
+    owner_go: bool = False,
+    owner_session_go: bool = False,
+    session_go_path: Path | None = None,
+    session_go_payload: Mapping[str, Any] | None = None,
+    authorization_present: bool = False,
+    confirm_token_present: bool = False,
     use_real_network: bool = False,
     environ: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
-    """Fail-closed gate used by CLI productive-session command during this capability."""
-    blockers = assert_real_session_gates_closed_v1(
-        use_real_network=use_real_network, environ=environ
+    """Fail-closed productive-session gate ordered before auth/lock/network/start.
+
+    Permanent PRODUCTIVE_NETWORK_SESSION_EXECUTION_ALLOWED stays false. Unlock is
+    only via a bound ACTIVE Session-GO plus Owner flags, auth, and confirm token.
+    This function never issues/consumes authorization, acquires locks, opens
+    network, or starts a session.
+    """
+    from src.ops.phase_9_2_productive_restart_recovery_session_go_capability_v1.constants_v1 import (  # noqa: E501
+        TARGET_ENTRYPOINT_ID,
+        TARGET_ENTRYPOINT_PATH,
     )
-    blockers.append("PRODUCTIVE_SESSION_EXECUTION_REQUIRES_SEPARATE_OWNER_SESSION_GO")
+    from src.ops.phase_9_2_productive_restart_recovery_session_go_capability_v1.gate_v1 import (
+        evaluate_session_go_gate_v1,
+    )
+
+    env = environ if environ is not None else os.environ
+    notes = [
+        "ENTRYPOINT_IMPLEMENTED",
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG=true",
+        f"PRODUCTIVE_NETWORK_SESSION_EXECUTION_ALLOWED_CONSTANT={PRODUCTIVE_NETWORK_SESSION_EXECUTION_ALLOWED}",
+        "SESSION_GO_REQUIRED_BEFORE_AUTHORIZATION_CONSUMPTION=true",
+        "SESSION_GO_REQUIRED_BEFORE_LOCK_ACQUISITION=true",
+        "SESSION_GO_REQUIRED_BEFORE_NETWORK_ACCESS=true",
+        "SESSION_GO_REQUIRED_BEFORE_SESSION_START=true",
+    ]
+    blockers: list[str] = []
+
+    # Permanent package constant must remain false; Session-GO is the unlock surface.
+    if PRODUCTIVE_NETWORK_SESSION_EXECUTION_ALLOWED:
+        blockers.append("PRODUCTIVE_NETWORK_SESSION_EXECUTION_ALLOWED_MUST_REMAIN_FALSE_HERE")
+
+    # Env alone never unlocks.
+    if (
+        str(env.get(PRODUCTIVE_SESSION_GO_ENV) or "") == "1"
+        and session_go_path is None
+        and session_go_payload is None
+    ):
+        blockers.append("PRODUCTIVE_SESSION_GO_ENV_INSUFFICIENT_WITHOUT_BOUND_SESSION_GO_ARTIFACT")
+    if (
+        use_real_network
+        and str(env.get(REAL_NETWORK_ENV) or "") == "1"
+        and session_go_path is None
+        and session_go_payload is None
+    ):
+        blockers.append("REAL_NETWORK_ENV_INSUFFICIENT_WITHOUT_BOUND_SESSION_GO_ARTIFACT")
+
+    gate = evaluate_session_go_gate_v1(
+        expected_repository_sha=expected_repository_sha,
+        expected_config_digest=expected_config_digest,
+        expected_session_id=TARGET_SESSION_ID,
+        expected_entrypoint_id=TARGET_ENTRYPOINT_ID,
+        expected_entrypoint_path=TARGET_ENTRYPOINT_PATH,
+        now_unix=now_unix,
+        owner_go=owner_go,
+        owner_session_go=owner_session_go,
+        session_go_path=session_go_path,
+        session_go_payload=session_go_payload,
+        authorization_present=authorization_present,
+        confirm_token_present=confirm_token_present,
+    )
+    blockers.extend(gate.blockers)
+    notes.extend(gate.notes)
+
+    ok = (not blockers) and bool(gate.ok) and bool(gate.productive_session_execution_permitted)
     return {
-        "ok": False,
+        "ok": ok,
         "blockers": sorted(set(blockers)),
+        "notes": notes,
         "network_session_started": False,
         "authorization_issued": False,
         "authorization_consumed": False,
         "runtime_started": False,
-        "notes": [
-            "ENTRYPOINT_IMPLEMENTED",
-            "SESSION_ACTIVATION_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
-        ],
+        "session_lock_acquired": False,
+        "session_started": False,
+        "network_request_count": 0,
+        "session_go_authority_satisfied": bool(gate.session_go_authority_satisfied),
+        "productive_session_execution_permitted": bool(gate.productive_session_execution_permitted),
+        "authorization_may_proceed": bool(gate.authorization_may_proceed),
+        "lock_may_proceed": bool(gate.lock_may_proceed),
+        "network_may_proceed": bool(gate.network_may_proceed),
+        "session_start_may_proceed": bool(gate.session_start_may_proceed),
+        "session_go_gate": gate.to_dict(),
     }
+
+
+def reject_productive_session_start_v1(
+    *,
+    use_real_network: bool = False,
+    environ: Mapping[str, str] | None = None,
+    expected_repository_sha: str | None = None,
+    expected_config_digest: str | None = None,
+    now_unix: float | None = None,
+    owner_go: bool = False,
+    owner_session_go: bool = False,
+    session_go_path: Path | None = None,
+    session_go_payload: Mapping[str, Any] | None = None,
+    authorization_present: bool = False,
+    confirm_token_present: bool = False,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
+    """CLI/compatible gate: Session-GO first; never starts a session here."""
+    root = Path(repo_root) if repo_root is not None else repo_root_v1()
+    sha = expected_repository_sha or ""
+    cfg = expected_config_digest or ""
+    if not sha or not cfg:
+        # Without bindings, fail closed before any side effect.
+        return {
+            "ok": False,
+            "blockers": sorted(
+                {
+                    *(
+                        ["SESSION_GO_MISSING"]
+                        if session_go_path is None and session_go_payload is None
+                        else []
+                    ),
+                    *(["EXPECTED_REPOSITORY_SHA_REQUIRED"] if not sha else []),
+                    *(["EXPECTED_CONFIG_DIGEST_REQUIRED"] if not cfg else []),
+                }
+            ),
+            "network_session_started": False,
+            "authorization_issued": False,
+            "authorization_consumed": False,
+            "runtime_started": False,
+            "session_lock_acquired": False,
+            "session_started": False,
+            "network_request_count": 0,
+            "session_go_authority_satisfied": False,
+            "productive_session_execution_permitted": False,
+            "notes": [
+                "ENTRYPOINT_IMPLEMENTED",
+                "SESSION_GO_BINDINGS_REQUIRED_FOR_UNLOCK_EVALUATION",
+            ],
+        }
+    if now_unix is None:
+        import time
+
+        now_unix = float(time.time())
+    _ = root  # repo_root reserved for future digest helpers; gate is pure evaluation
+    return evaluate_productive_session_start_gates_v1(
+        expected_repository_sha=sha,
+        expected_config_digest=cfg,
+        now_unix=float(now_unix),
+        owner_go=owner_go,
+        owner_session_go=owner_session_go,
+        session_go_path=session_go_path,
+        session_go_payload=session_go_payload,
+        authorization_present=authorization_present,
+        confirm_token_present=confirm_token_present,
+        use_real_network=use_real_network,
+        environ=environ,
+    )
 
 
 def orchestration_identity_digest_v1() -> str:
