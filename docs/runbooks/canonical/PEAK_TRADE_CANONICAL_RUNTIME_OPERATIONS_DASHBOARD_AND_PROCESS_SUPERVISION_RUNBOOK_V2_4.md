@@ -373,23 +373,24 @@ Venue adapter → Decision mutation
 
 # 5. Canonical Launcher Contract
 
-## 5.1 Current host and target launcher
+## 5.1 Current host and canonical operator launcher
 
-The current Market Landscape V2 host is:
+The Market Landscape V2 HTTP application host remains:
 
 ```text
 scripts/run_web_dashboard.py
 ```
 
-It is the sole current Market Dashboard host for `/market`, but it is not yet a complete process-supervision control plane. The future repository-owned launcher must become the supported lifecycle entrypoint for all canonical long-running components.
+It remains a required compatibility host for `/market` application serving
+semantics, but it is no longer the recommended operator lifecycle entrypoint.
 
-Target canonical surface:
+**O8 activated canonical operator surface:**
 
 ```text
 scripts/ops/peak_trade_runtime.py
 ```
 
-Proposed subcommands:
+Canonical operator subcommands (activated):
 
 ```text
 preflight
@@ -403,11 +404,23 @@ recover
 verify
 ```
 
-Proposed modes:
+Operator guidance:
+
+```text
+docs/ops/CANONICAL_RUNTIME_OPERATOR_ENTRYPOINT_O8_V1.md
+config/ops/canonical_runtime_operations_activation_contract_v1.json
+```
+
+Authorized mode under current activation:
+
+```text
+dashboard-only
+```
+
+Deferred/future modes remain unauthorized until separately ratified:
 
 ```text
 public-md-no-order
-dashboard-only
 runtime-and-dashboard
 shadow
 internal-simulated
@@ -1306,7 +1319,17 @@ multi-session continuity
 CAPABILITY_O8_CANONICAL_RUNTIME_OPERATIONS_ACTIVATION_V1
 ```
 
-Only this phase may deauthorize the old launch paths and mark the new operating path canonical.
+Only this phase may deauthorize old operator recommendations and mark the
+new operating path canonical. Bounded O8 activation:
+
+```text
+CANONICAL_OPERATOR_ENTRYPOINT=scripts/ops/peak_trade_runtime.py
+LEGACY_PATH_DELETION=false
+LEGACY_PATH_FUNCTIONAL_CHANGE=false
+OPERATOR_RECOMMENDATION_DEAUTHORIZATION=documentation_and_pointer_only
+MASTER_RUNBOOK_REMAINS_ONLY_SSOT=true
+O8_CONTRACT_IS_DERIVED_DOMAIN_METADATA_ONLY=true
+```
 
 ---
 

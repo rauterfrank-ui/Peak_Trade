@@ -20,6 +20,9 @@ from src.ops.canonical_local_launcher_and_process_supervision_v1.lifecycle_v1 im
     CanonicalLocalLauncherV1,
     LauncherPathsV1,
 )
+from src.ops.canonical_runtime_operations_activation_v1.constants_v1 import (
+    CAPABILITY_ID as O8_CAPABILITY_ID,
+)
 
 
 def _repo_root_from_here() -> Path:
@@ -29,7 +32,10 @@ def _repo_root_from_here() -> Path:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="peak_trade_runtime",
-        description=(f"{CAPABILITY_ID} — canonical local launcher (backend={SUPERVISION_BACKEND})"),
+        description=(
+            f"{CAPABILITY_ID}/{O8_CAPABILITY_ID} — canonical local launcher "
+            f"(backend={SUPERVISION_BACKEND})"
+        ),
     )
     parser.add_argument(
         "--repository-root",
@@ -81,6 +87,46 @@ def build_parser() -> argparse.ArgumentParser:
         p = sub.add_parser(name, help=help_text)
         p.add_argument("--session-id", required=True)
 
+    p_logs = sub.add_parser(
+        "logs",
+        help="Read-only session log inspection (no process start, no token reads).",
+    )
+    p_logs.add_argument("--session-id", required=True)
+    p_logs.add_argument(
+        "--name",
+        default=None,
+        help="Optional basename under the session log dir (no path separators).",
+    )
+    p_logs.add_argument(
+        "--tail",
+        type=int,
+        default=200,
+        help="Max trailing lines per file (default 200, max 5000).",
+    )
+
+    p_verify = sub.add_parser(
+        "verify",
+        help="Read-only activation/session binding verification (no mutation/network).",
+    )
+    p_verify.add_argument("--session-id", default=None)
+    p_verify.add_argument("--expected-repository-sha", default=None)
+    p_verify.add_argument(
+        "--require-clean-tracked-worktree",
+        action="store_true",
+        default=False,
+    )
+    p_verify.add_argument(
+        "--require-health-artifact",
+        action="store_true",
+        default=False,
+    )
+    p_verify.add_argument(
+        "--activation-contract-path",
+        type=Path,
+        default=None,
+        help="Optional override path for the O8 activation contract.",
+    )
+
     return parser
 
 
@@ -128,12 +174,28 @@ def dispatch(argv: Optional[Sequence[str]] = None) -> int:
             result = launcher.status(str(args.session_id))
         elif args.command == "health":
             result = launcher.health(str(args.session_id))
+        elif args.command == "logs":
+            result = launcher.logs(
+                str(args.session_id),
+                log_name=args.name,
+                tail_lines=int(args.tail),
+            )
         elif args.command == "stop":
             result = launcher.stop(str(args.session_id))
         elif args.command == "restart":
             result = launcher.restart(str(args.session_id))
         elif args.command == "recover":
             result = launcher.recover(str(args.session_id))
+        elif args.command == "verify":
+            result = launcher.verify(
+                session_id=args.session_id,
+                expected_repository_sha=args.expected_repository_sha,
+                require_clean_tracked_worktree=bool(args.require_clean_tracked_worktree),
+                require_health_artifact=bool(args.require_health_artifact),
+                activation_contract_path=args.activation_contract_path,
+            )
+            print(json.dumps(result, sort_keys=True, indent=2))
+            return 0 if result.get("ok") is True else 1
         else:
             parser.error(f"unknown command: {args.command}")
             return 2

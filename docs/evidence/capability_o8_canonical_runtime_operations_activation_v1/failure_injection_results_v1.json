@@ -1,0 +1,14 @@
+{
+  "all_fail_closed": true,
+  "cases": [
+    "wrong_repository_sha",
+    "dirty_tracked_worktree_optional_gate",
+    "unknown_session_id_for_logs",
+    "missing_session_registry",
+    "missing_health_artifact",
+    "contradictory_activation_contract",
+    "legacy_deauth_without_dependency_fail_closed",
+    "forbidden_authority_activation_in_contract"
+  ],
+  "pass": true
+}
