@@ -131,8 +131,8 @@
         "automatic_recovery_allowed": false,
         "data_loss_possible": false,
         "detail": "",
-        "first_failure_time": 1785770216.557724,
-        "last_good_time": 1785770216.557724,
+        "first_failure_time": 1785770244.199422,
+        "last_good_time": 1785770244.199422,
         "owner_action_required": true,
         "reason_code": "DUPLICATE_SESSION_BLOCKED",
         "recovery_eligibility": "BLOCKED",
@@ -398,7 +398,7 @@
             "capability_id": "CAPABILITY_O2_CANONICAL_LOCAL_LAUNCHER_AND_PROCESS_SUPERVISION_V1",
             "config_digest": "cfg-stale",
             "config_path": "/Users/frnkhrz/.peak_trade_worktrees/o6-runtime-health-recovery-and-failure-injection-closure-v1/docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/_tmp_failure_injection/stale_pid_or_session_registry/stale_pid/config/o6.json",
-            "created_at_unix": 1785770216.539587,
+            "created_at_unix": 1785770244.180544,
             "evidence_root": "/Users/frnkhrz/.peak_trade_worktrees/o6-runtime-health-recovery-and-failure-injection-closure-v1/docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/_tmp_failure_injection/stale_pid_or_session_registry/stale_pid/evidence",
             "heartbeat_path": "/Users/frnkhrz/.peak_trade_worktrees/o6-runtime-health-recovery-and-failure-injection-closure-v1/docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/_tmp_failure_injection/stale_pid_or_session_registry/stale_pid/state/canonical_local_launcher_v1/sessions/o6-stale-pid/heartbeat_v1.json",
             "last_reason_code": "RECOVER_STALE_PID",
@@ -419,7 +419,7 @@
             "supervision_backend": "repository_owned_supervisor",
             "supervisor_identity": "peak_trade.canonical_local_launcher_supervisor_v1",
             "supervisor_instance_id": "o6-stale",
-            "updated_at_unix": 1785770216.5558982
+            "updated_at_unix": 1785770244.197547
           }
         },
         "stale_pid_file_safe": true
@@ -429,8 +429,8 @@
         "automatic_recovery_allowed": true,
         "data_loss_possible": false,
         "detail": "CLEARED_STALE_PID",
-        "first_failure_time": 1785770216.539587,
-        "last_good_time": 1785770206.539587,
+        "first_failure_time": 1785770244.180544,
+        "last_good_time": 1785770234.180544,
         "owner_action_required": false,
         "reason_code": "STALE_PID_CLEARED",
         "recovery_eligibility": "ELIGIBLE",
