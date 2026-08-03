@@ -1,0 +1,24 @@
+{
+  "cases": {
+    "A_GATE_FALSE": {
+      "blockers": [
+        "SESSION_GO_ARTIFACT_MISSING"
+      ],
+      "ok": true
+    },
+    "B_AUTH_MISSING": {
+      "blockers": [
+        "SESSION_GO_VALID_BUT_AUTHORIZATION_REQUIRED"
+      ],
+      "ok": true
+    },
+    "E_RUNNER_EXCEPTION": {
+      "blockers": [
+        "RUNNER_EXCEPTION:RuntimeError:INJECTED_RUNNER_FAILURE"
+      ],
+      "ok": true,
+      "terminal_state": "ABORT"
+    }
+  },
+  "ok": true
+}

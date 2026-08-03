@@ -5,11 +5,12 @@ Commands:
   preflight              — offline readiness / segment plan / boundary proof
   offline-integration    — fake public-MD transport + PR#5665 harness/verifier
   materialize-evidence   — write capability evidence fixtures
-  productive-session     — Session-GO gated; no side effects without full unlock
+  productive-session     — Session-GO gate evaluation only (no runner side effects)
+  execute-post-unlock    — explicit execute mode: after unlock, invoke canonical runner
 
 Confirm tokens are never accepted as argv plaintext. Use --confirm-token-file,
 env PEAK_TRADE_PSO_CONFIRM_TOKEN, or stdin only when a bound ACTIVE Session-GO
-plus Owner flags authorize later execution.
+plus Owner flags authorize later execution. Real network remains forbidden here.
 """
 
 from __future__ import annotations
@@ -66,6 +67,9 @@ from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_
 from src.ops.phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.segment_authorization_v1 import (  # noqa: E402
     build_segment_authorization_envelope_v1,
 )
+from src.ops.phase_9_2_productive_restart_recovery_post_unlock_runtime_invocation_v1.invocation_v1 import (  # noqa: E402
+    invoke_post_unlock_canonical_runtime_v1,
+)
 from src.ops.single_future_stateful_no_order_runtime_activation_v1.config_v1 import (  # noqa: E402
     load_activation_config_v1,
 )
@@ -92,7 +96,13 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "command",
-        choices=("preflight", "offline-integration", "materialize-evidence", "productive-session"),
+        choices=(
+            "preflight",
+            "offline-integration",
+            "materialize-evidence",
+            "productive-session",
+            "execute-post-unlock",
+        ),
     )
     p.add_argument("--persistence-root", type=Path, default=None)
     p.add_argument("--evidence-root", type=Path, default=None)
@@ -104,6 +114,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--authorization-present", action="store_true")
     p.add_argument("--confirm-token-present", action="store_true")
     p.add_argument("--real-network", action="store_true")
+    p.add_argument(
+        "--execute",
+        action="store_true",
+        help="Required for execute-post-unlock; keeps preflight/productive-session side-effect free.",
+    )
     p.add_argument("--json", action="store_true")
     return p
 
@@ -185,6 +200,106 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
         # Exit 0 only means Session-GO unlock evaluation passed; session is not started.
         return 0 if payload.get("productive_session_execution_permitted") else 2
+
+    if args.command == "execute-post-unlock":
+        # Explicit execute mode: unlock → consume → lock → canonical offline runner.
+        # Real network remains forbidden in this capability step.
+        if args.real_network:
+            print(
+                json.dumps(
+                    {
+                        "ok": False,
+                        "blockers": ["REAL_NETWORK_FORBIDDEN_IN_POST_UNLOCK_CAPABILITY_DEFAULT"],
+                        "canonical_runner_invoked": False,
+                        "network_session_started": False,
+                    },
+                    sort_keys=True,
+                    indent=2,
+                )
+            )
+            return 2
+        if args.persistence_root is None or args.session_go_file is None:
+            print(
+                json.dumps(
+                    {
+                        "ok": False,
+                        "blockers": ["PERSISTENCE_ROOT_AND_SESSION_GO_FILE_REQUIRED"],
+                        "canonical_runner_invoked": False,
+                    },
+                    sort_keys=True,
+                    indent=2,
+                )
+            )
+            return 2
+        cfg = str(
+            load_activation_config_v1(
+                config_path=_REPO_ROOT
+                / "config/runtime/single_future_stateful_no_order_runtime_activation_v1.json"
+            ).config_digest
+        )
+        now = float(time.time())
+        clock = _Clock(now)
+        calls: list[tuple[str, str]] = []
+        transport = EeaPublicMdTransportV1(
+            fetcher=build_fake_ticker_fetcher_v1(calls=calls, clock=clock),
+            sleep=clock.sleep,
+            environ={},
+        )
+        pre = build_segment_authorization_envelope_v1(
+            segment_role=SEGMENT_ROLE_PRE,
+            segment_id=SEGMENT_PRE_ID,
+            repository_sha=sha,
+            config_digest=cfg,
+            authorization_id="phase92_cli_execute_pre_auth_v1",
+            restart_campaign_id=RESTART_CAMPAIGN_ID,
+            runtime_session_id=f"{TARGET_SESSION_ID}:pre",
+            expires_at=now + 3600,
+            max_segment_duration_seconds=DEFAULT_PRE_SEGMENT_MAX_DURATION_SECONDS,
+            expected_successor_state="CHECKPOINT_MATERIALIZED",
+        )
+
+        def _post_builder(**kwargs):
+            return build_segment_authorization_envelope_v1(
+                segment_role=SEGMENT_ROLE_POST,
+                segment_id=SEGMENT_POST_ID,
+                repository_sha=sha,
+                config_digest=kwargs["config_digest"],
+                authorization_id="phase92_cli_execute_post_auth_v1",
+                restart_campaign_id=RESTART_CAMPAIGN_ID,
+                runtime_session_id=f"{TARGET_SESSION_ID}:post",
+                expires_at=now + 3600,
+                max_segment_duration_seconds=DEFAULT_POST_SEGMENT_MAX_DURATION_SECONDS,
+                expected_successor_state="RECOVERED_CONTINUOUS",
+                predecessor_checkpoint_digest=kwargs["predecessor_checkpoint_digest"],
+            )
+
+        confirm_present = bool(args.confirm_token_present) or bool(args.confirm_token_file)
+        result = invoke_post_unlock_canonical_runtime_v1(
+            persistence_root=args.persistence_root,
+            repository_sha=sha,
+            config_digest=cfg,
+            now_unix=now,
+            owner_go=bool(args.owner_go),
+            owner_session_go=bool(args.owner_session_go),
+            session_go_path=args.session_go_file,
+            pre_envelope=pre,
+            post_envelope_builder=_post_builder,
+            transport=transport,
+            confirm_token_present=confirm_present,
+            authorization_present=True,
+            execute=bool(args.execute),
+            allow_real_network=False,
+            environ=os.environ,
+            repo_root=_REPO_ROOT,
+            applied_confirmation_ids=["conf_cli_execute_001"],
+            candidate_observation_id="conf_cli_execute_001",
+        )
+        payload = result.to_dict()
+        payload["fake_md_get_count"] = len(calls)
+        payload["fake_md_methods"] = sorted({m for m, _u in calls})
+        payload["network_session_started"] = False
+        print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
+        return 0 if result.ok else 2
 
     # offline-integration
     if args.persistence_root is None:
