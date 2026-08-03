@@ -988,6 +988,20 @@ SILENT_DYNAMIC_SCOPE_REINITIALIZATION=false
 
   `G16` Funding proof       `INSUFFICIENT_EVIDENCE`                        LOW Dedicated accounting evidence if   Funding claims only
   incomplete                                                                   funding enters scope.              
+
+  `G17` Productive typed    `WIRING_GAP`                                  HIGH Wire wallclock observations →      Confirmation /
+  volatility producer→CMC                                                      PT1M finalizer → typed producer →  Market State /
+  hot-path unbound                                                             CMC bind; no proxy promotion.      Actionability alpha
+                                                                               Root cause: wallclock binding       entry (not Exit/
+                                                                               omitted `finalized_pt1m_*`, so       Risk/Safety)
+                                                                               `producer_outcome=WARMUP` remained  
+                                                                               permanent after feature warmup.    
+                                                                               Closed by                           
+                                                                               `PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1`
+                                                                               (wiring only;                     
+                                                                               `CORE_LOGIC_CHANGE=false`;         
+                                                                               Numeric Max-Age remains            
+                                                                               non-enforcing).                    
   -------------------------------------------------------------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
@@ -3173,6 +3187,36 @@ Read-only Preflight 6.0
 ```
 
 The read-only Preflight 6.0 is preparation for 6.1 and is not a separate blocking program phase.
+
+------------------------------------------------------------------------
+
+# 22.2 Productive typed volatility hot-path binding (G17)
+
+Forensic public-MD wallclock sessions confirmed a blocking wiring gap
+before Confirmation / Market-State progression:
+
+``` text
+GAP_ID=G17
+CLASSIFICATION=WIRING_GAP
+ROOT_CAUSE_CALL_GRAPH_EDGE=
+  run_hardened_wallclock_bridge_observation_cycle_v2
+  -> run_hardened_bridge_cycle_v2(missing finalized_pt1m_*)
+  -> apply_to_market_context_v1(ingest_sample=false)
+  -> on_runtime_cycle_without_sample_v1
+  -> producer_outcome=WARMUP permanent
+CAPABILITY_ID=PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1
+DEPENDENCY_POSITION=before Confirmation/Actionability alpha progression;
+  does not replace Cap 6.1--7.2 finish sequence authority
+CORE_LOGIC_CHANGE=false
+VOLATILITY_NUMERIC_MAX_AGE_ENFORCING=false
+NUMERIC_MAX_AGE_EFFECT=DIAGNOSTIC_ONLY
+ACTIVATION_CLAIMED=false
+NO_PROXY_PROMOTION=true
+```
+
+This capability closes only the missing Producer→State→CMC→Consumer
+wiring edge. It does not authorize runtime activation, Live/Testnet,
+orders, credentials, or Numeric Max-Age enforcement.
 
 
 # 23. Canonical Closing Principle
