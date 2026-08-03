@@ -8,7 +8,7 @@
   "o3_owner_passed": 20,
   "ok": true,
   "passed": 36,
-  "repository_sha": "79103660fb5917c71dbdcbbafee529677613441c",
+  "repository_sha": "02f32fb6533efeb191320571b0b288c1878c6486",
   "tests_run": [
     "tests/ops/test_secure_confirm_token_family_and_hidden_input_handoff_v1.py",
     "tests/ops/test_canonical_local_launcher_and_process_supervision_v1.py",
