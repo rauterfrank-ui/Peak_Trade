@@ -2,8 +2,11 @@
  * Market Dashboard Landscape V2 — presentation-only client helpers.
  * No fetch mutation, no decision/risk/sizing logic, no write endpoints.
  * Renders materialized OHLCV from SSR/poll JSON only (never fabricates candles).
- * Consumes only local GET /market and GET /api/market/landscape/ohlcv;
- * never calls OKX or any browser-direct network venue.
+ * Canonical Landscape shell host: GET /market is HTML SSR — do not JSON-bootstrap
+ * that document. Continuous refresh uses GET /api/market/landscape/ohlcv only.
+ * Optional supervised hosts may expose JSON at GET /market from a non-shell page;
+ * that host must not be required for the canonical shell contract.
+ * Never calls OKX or any browser-direct network venue.
  *
  * Canonical OHLCV accepted from body.ohlcv and/or body.read_model (and legacy
  * body.browser_payload when present). Candle close is never used as live mark.
@@ -133,6 +136,14 @@
   function clearFailVisible() {
     root.removeAttribute("data-mdl-canonical-fail");
     root.removeAttribute("data-mdl-canonical-fail-reason");
+    var message = root.querySelector("[data-mdl-chart-message]");
+    if (message) {
+      var text = String(message.textContent || "");
+      if (text.indexOf("CANONICAL_DATA_UNAVAILABLE:") === 0) {
+        // Successful poll / SSR recovery must fully clear the fail-visible text.
+        message.textContent = "";
+      }
+    }
   }
 
   function clientDigest(text) {
@@ -975,12 +986,33 @@
     scheduleNext();
   }
 
+  function isCanonicalHtmlShellHostDocument() {
+    // Canonical Landscape shell serves HTML at GET /market. JSON-fetching that
+    // document causes response.json() to fail and falsely paints
+    // CANONICAL_DATA_UNAVAILABLE over working SSR/OHLCV presentation.
+    var pathname =
+      typeof window !== "undefined" && window.location
+        ? String(window.location.pathname || "")
+        : "";
+    if (pathname === "/market") return true;
+    // Non-supervised documents already carry SSR shell truth.
+    return root.getAttribute("data-supervised-presentation-only") !== "true";
+  }
+
   function bootstrapFromCanonicalMarket() {
     var marketPath = root.getAttribute("data-canonical-market-path") || "/market";
     if (marketPath !== "/market") {
       failVisible("forbidden_noncanonical_market_path");
       return Promise.resolve(false);
     }
+    if (isCanonicalHtmlShellHostDocument()) {
+      // Host contract: rely on SSR DOM + /api/market/landscape/ohlcv polling.
+      // Do not presuppose a separate O2 JSON /market host.
+      root.setAttribute("data-mdl-canonical-market-bound", "true");
+      root.setAttribute("data-mdl-canonical-bootstrap-mode", "ssr_html_shell");
+      return Promise.resolve(true);
+    }
+    // Optional supervised host only: JSON /market from a non-shell page.
     return fetch(marketPath, {
       method: "GET",
       credentials: "same-origin",
@@ -989,6 +1021,11 @@
     })
       .then(function (response) {
         if (!response.ok) throw new Error("market_http_" + response.status);
+        var contentType = String(response.headers.get("content-type") || "");
+        if (contentType.indexOf("application/json") === -1) {
+          // Fail closed without JSON-parsing HTML; do not overwrite SSR truth.
+          throw new Error("market_non_json_content_type");
+        }
         return response.json();
       })
       .then(function (body) {
@@ -1030,6 +1067,7 @@
           failVisible("MISSING_SOURCE");
         }
         root.setAttribute("data-mdl-canonical-market-bound", "true");
+        root.setAttribute("data-mdl-canonical-bootstrap-mode", "optional_json_market");
         return true;
       })
       .catch(function (err) {

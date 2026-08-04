@@ -276,6 +276,8 @@ def test_js_accepts_canonical_without_browser_payload() -> None:
     assert "CANONICAL_DATA_UNAVAILABLE" in js
     assert "bootstrapFromCanonicalMarket" in js
     assert 'marketPath !== "/market"' in js
+    assert "isCanonicalHtmlShellHostDocument" in js
+    assert "ssr_html_shell" in js
 
 
 def test_js_connection_state_poll_arm_fail_closed_presentation_contract() -> None:
