@@ -3,6 +3,10 @@
 
 Explicit arguments only. No archive discovery. No implicit clock.
 Does not invent family inputs. Exit nonzero only for contract/CLI errors.
+
+PR-C adds an optional source-sibling exporter mode that dispatches only the
+integrated exporter family (dynamic_scope) via the existing exporter CLI.
+Default remains dry-run; write requires --no-dry-run and --write-authorized.
 """
 
 from __future__ import annotations
@@ -14,7 +18,12 @@ from pathlib import Path
 from typing import Any
 
 from src.ops.presentation_projection_octet_orchestrator_v1.constants_v1 import (
+    DEFAULT_DRY_RUN,
+    EXPORTER_INTEGRATED_FAMILIES,
     FAMILY_ORDER,
+)
+from src.ops.presentation_projection_octet_orchestrator_v1.family_exporter_dispatch_v1 import (
+    run_octet_family_exporters_v1,
 )
 from src.ops.presentation_projection_octet_orchestrator_v1.orchestrator_v1 import (
     run_presentation_projection_octet_orchestrator_v1,
@@ -32,7 +41,9 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "Manual one-shot presentation projection octet orchestrator. "
-            "Requires explicit --archive-root and --generated-at. "
+            "Requires explicit --archive-root. Materializer mode also requires "
+            "--generated-at. Optional --export-source-siblings dispatches the "
+            "integrated exporter family (dynamic_scope) via its CLI only. "
             "Does not discover archives, latest artifacts, or invent timestamps."
         )
     )
@@ -43,15 +54,20 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--generated-at",
-        required=True,
-        help="Caller-provided ISO-8601 timestamp (never invented by this CLI).",
+        default=None,
+        help=(
+            "Caller-provided ISO-8601 timestamp for materializer mode "
+            "(required unless --export-source-siblings)."
+        ),
     )
     parser.add_argument(
         "--families",
         default=None,
         help=(
-            "Optional comma-separated family ids. Default: all eight octet families. "
-            f"Known: {','.join(FAMILY_ORDER)}"
+            "Optional comma-separated family ids. "
+            f"Materializer default: all eight octet families ({','.join(FAMILY_ORDER)}). "
+            "Exporter mode default: integrated exporter families only "
+            f"({','.join(EXPORTER_INTEGRATED_FAMILIES)})."
         ),
     )
     parser.add_argument("--effective-at", default=None)
@@ -69,6 +85,35 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional JSON object mapping family_id -> override object.",
     )
+    parser.add_argument(
+        "--export-source-siblings",
+        action="store_true",
+        default=False,
+        help=(
+            "Dispatch integrated source-sibling exporter families via their CLIs "
+            "(PR-C: dynamic_scope only). Does not run materializers."
+        ),
+    )
+    parser.add_argument(
+        "--dynamic-scope-state-root",
+        default=None,
+        help=(
+            "Required for dynamic_scope exporter dispatch: durable Dynamic Scope "
+            "state root (no discovery)."
+        ),
+    )
+    parser.add_argument(
+        "--dry-run",
+        action=argparse.BooleanOptionalAction,
+        default=DEFAULT_DRY_RUN,
+        help=f"Exporter dry-run mode (default: {str(DEFAULT_DRY_RUN).lower()}).",
+    )
+    parser.add_argument(
+        "--write-authorized",
+        action="store_true",
+        default=False,
+        help="Exporter write authorization; required together with --no-dry-run.",
+    )
     return parser
 
 
@@ -81,6 +126,42 @@ def main(argv: list[str] | None = None) -> int:
         families = [part.strip() for part in str(args.families).split(",") if part.strip()]
 
     try:
+        if args.export_source_siblings:
+            results = run_octet_family_exporters_v1(
+                archive_root=args.archive_root,
+                families=families,
+                dynamic_scope_state_root=args.dynamic_scope_state_root,
+                dry_run=bool(args.dry_run),
+                write_authorized=bool(args.write_authorized),
+            )
+            ok = all(item.ok for item in results)
+            payload = {
+                "mode": "export_source_siblings",
+                "archive_root": str(Path(args.archive_root).expanduser()),
+                "dry_run": bool(args.dry_run),
+                "write_authorized": bool(args.write_authorized),
+                "default_dry_run": DEFAULT_DRY_RUN,
+                "integrated_families": list(EXPORTER_INTEGRATED_FAMILIES),
+                "family_results": [item.to_dict() for item in results],
+                "ok": ok,
+                "contract_ok": ok,
+            }
+            print(json.dumps(payload, sort_keys=True, ensure_ascii=False, indent=2))
+            return 0 if ok else 1
+
+        if args.generated_at is None or not str(args.generated_at).strip():
+            print(
+                json.dumps(
+                    {
+                        "contract_ok": False,
+                        "error": "generated_at_required_unless_export_source_siblings",
+                    },
+                    sort_keys=True,
+                ),
+                file=sys.stderr,
+            )
+            return 2
+
         overrides = _load_json_object(args.per_family_overrides_json)
         if overrides is not None and not isinstance(overrides, dict):
             print(
