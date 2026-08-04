@@ -1,0 +1,77 @@
+"""Constants for CAPABILITY_PRESENTATION_PROJECTION_OCTET_ORCHESTRATOR_V1.
+
+AUTHORITY_EFFECT=NONE
+ORCHESTRATOR_AUTHORITY_EFFECT=NONE
+DASHBOARD_ROLE=PURE_CONSUMER
+TRADING_SEMANTIC_CHANGE=false
+RUNTIME_HOOK_ADDED=false
+AUTOMATIC_CALLER_ADDED=false
+"""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "CAPABILITY_PRESENTATION_PROJECTION_OCTET_ORCHESTRATOR_V1"
+PACKAGE_MARKER = "PRESENTATION_PROJECTION_OCTET_ORCHESTRATOR_V1=true"
+OWNER = "ops.presentation_projection_octet_orchestrator_v1"
+AUTHORITY_EFFECT = "NONE"
+ORCHESTRATOR_AUTHORITY_EFFECT = "NONE"
+DASHBOARD_ROLE = "PURE_CONSUMER"
+
+FAMILY_DYNAMIC_SCOPE = "dynamic_scope"
+FAMILY_REGIME_BULL_BEAR_SWITCH = "regime_bull_bear_switch"
+FAMILY_CANONICAL_DECISION = "canonical_decision"
+FAMILY_DOUBLE_PLAY = "double_play"
+FAMILY_SAFETY_AUTHORITY = "safety_authority"
+FAMILY_RISK_SIZING_CAPITAL = "risk_sizing_capital"
+FAMILY_EXECUTION_RECONCILIATION = "execution_reconciliation"
+FAMILY_ECONOMIC_SUMMARY = "economic_summary"
+
+FAMILY_ORDER: tuple[str, ...] = (
+    FAMILY_DYNAMIC_SCOPE,
+    FAMILY_REGIME_BULL_BEAR_SWITCH,
+    FAMILY_CANONICAL_DECISION,
+    FAMILY_DOUBLE_PLAY,
+    FAMILY_SAFETY_AUTHORITY,
+    FAMILY_RISK_SIZING_CAPITAL,
+    FAMILY_EXECUTION_RECONCILIATION,
+    FAMILY_ECONOMIC_SUMMARY,
+)
+
+STATUS_WRITTEN = "WRITTEN"
+STATUS_SKIPPED = "SKIPPED"
+STATUS_MISSING_SOURCE = "MISSING_SOURCE"
+STATUS_FAIL_CLOSED = "FAIL_CLOSED"
+STATUS_BLOCKED = "BLOCKED"
+
+ERROR_GENERATED_AT_REQUIRED = "OCTET_ORCHESTRATOR_GENERATED_AT_REQUIRED"
+ERROR_UNKNOWN_FAMILY = "OCTET_ORCHESTRATOR_UNKNOWN_FAMILY"
+ERROR_SAFETY_CALLER_OBJECT_REQUIRED = "OCTET_ORCHESTRATOR_SAFETY_CALLER_OBJECT_REQUIRED"
+ERROR_INVALID_OVERRIDE = "OCTET_ORCHESTRATOR_INVALID_OVERRIDE"
+ERROR_ARCHIVE_ROOT_REQUIRED = "OCTET_ORCHESTRATOR_ARCHIVE_ROOT_REQUIRED"
+
+# Ratified well-known relative paths under archive_root (no discovery).
+SIBLING_PATH_BY_FAMILY: dict[str, str | None] = {
+    FAMILY_DYNAMIC_SCOPE: "readmodels/dynamic_scope_state_v1.json",
+    FAMILY_REGIME_BULL_BEAR_SWITCH: "readmodels/regime_bull_bear_switch.v1.json",
+    FAMILY_CANONICAL_DECISION: "readmodels/canonical_trading_decision_evidence.v1.json",
+    FAMILY_DOUBLE_PLAY: "readmodels/double_play_dashboard_display.v1.json",
+    FAMILY_SAFETY_AUTHORITY: None,
+    FAMILY_RISK_SIZING_CAPITAL: "readmodels/risk_sizing_capital.v1.json",
+    FAMILY_EXECUTION_RECONCILIATION: "readmodels/execution_reconciliation.v1.json",
+    FAMILY_ECONOMIC_SUMMARY: "readmodels/economic_summary.v1.json",
+}
+
+PROJECTION_PATH_BY_FAMILY: dict[str, str] = {
+    FAMILY_DYNAMIC_SCOPE: "readmodels/dynamic_scope_presentation_projection.v1.json",
+    FAMILY_REGIME_BULL_BEAR_SWITCH: ("readmodels/bull_bear_regime_presentation_projection.v1.json"),
+    FAMILY_CANONICAL_DECISION: "readmodels/canonical_decision_presentation_projection.v1.json",
+    FAMILY_DOUBLE_PLAY: "readmodels/double_play_presentation_projection.v1.json",
+    FAMILY_SAFETY_AUTHORITY: "readmodels/safety_authority.v1.json",
+    FAMILY_RISK_SIZING_CAPITAL: ("readmodels/risk_sizing_capital_presentation_projection.v1.json"),
+    FAMILY_EXECUTION_RECONCILIATION: (
+        "readmodels/execution_reconciliation_presentation_projection.v1.json"
+    ),
+    FAMILY_ECONOMIC_SUMMARY: "readmodels/economic_summary_presentation_projection.v1.json",
+}
+
+ALLOWED_PROJECTION_RELATIVE_PATHS: frozenset[str] = frozenset(PROJECTION_PATH_BY_FAMILY.values())
