@@ -41,6 +41,7 @@ from .market_dashboard_landscape_v2.availability import Availability
 from .market_dashboard_landscape_v2.page_aggregate import MarketDashboardReadServiceV1
 from .market_dashboard_landscape_v2.presenter import (
     OHLCV_POLL_PATH,
+    _chart_availability_for_ohlcv,
     _ohlcv_data_connection_state,
     present_market_landscape_v2,
     serialize_ohlcv_browser_payload_v1,
@@ -63,15 +64,6 @@ def get_templates() -> Jinja2Templates:
             "Market landscape shell not configured. Call set_market_landscape_shell_config()."
         )
     return _TEMPLATES
-
-
-def _chart_availability_for_ohlcv(ohlcv: dict[str, Any] | None) -> Availability:
-    if ohlcv is None:
-        return Availability.MISSING_SOURCE
-    freshness = str(ohlcv.get("freshness_state") or "").lower()
-    if freshness == "stale" or bool(ohlcv.get("is_stale")):
-        return Availability.STALE
-    return Availability.AVAILABLE
 
 
 def build_ohlcv_poll_response_v1(
@@ -319,13 +311,8 @@ async def market_landscape_dashboard(request: Request) -> Any:
         adapt_derived_ohlcv_payload_to_o5_read_model_v1,
     )
 
-    chart_availability = page.market_instrument.availability
-    if isinstance(ohlcv, dict) and ohlcv.get("bar_count"):
-        freshness = str(ohlcv.get("freshness_state") or "")
-        if freshness == "stale" or bool(ohlcv.get("is_stale")):
-            chart_availability = Availability.STALE
-        elif chart_availability not in (Availability.AVAILABLE, Availability.STALE):
-            chart_availability = Availability.AVAILABLE
+    # SSR connection chrome from OHLCV/O5 only — never inherit instrument identity STALE.
+    chart_availability = _chart_availability_for_ohlcv(ohlcv)
     o5_chrome = adapt_derived_ohlcv_payload_to_o5_read_model_v1(
         ohlcv,
         projection_time_unix=generated_at.timestamp(),

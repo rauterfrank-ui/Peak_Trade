@@ -748,6 +748,21 @@ def _open_candle_projection_is_valid(
     return (not confirm) and bool(provisional)
 
 
+def _chart_availability_for_ohlcv(ohlcv: Mapping[str, Any] | None) -> Availability:
+    """Derive chart/OHLCV availability from the OHLCV readmodel only.
+
+    Instrument-identity freshness (market_instrument / universe_selection) must
+    never flow into chart connection chrome. Missing or empty OHLCV stays
+    MISSING_SOURCE; stale OHLCV stays STALE; fresh bars are AVAILABLE.
+    """
+    if not isinstance(ohlcv, Mapping) or not ohlcv.get("bar_count"):
+        return Availability.MISSING_SOURCE
+    freshness = str(ohlcv.get("freshness_state") or "").lower()
+    if freshness == "stale" or bool(ohlcv.get("is_stale")):
+        return Availability.STALE
+    return Availability.AVAILABLE
+
+
 def _ohlcv_source_feed_is_live(
     *,
     browser_payload: Mapping[str, Any] | None,
@@ -910,17 +925,14 @@ def present_market_landscape_v2(
     diagnostics = _slot_view(page.diagnostics_summary)
     health = page.source_health
 
-    chart_availability = page.market_instrument.availability
+    # Chart chrome availability is OHLCV-only — never inherit instrument identity STALE.
+    chart_availability = _chart_availability_for_ohlcv(ohlcv_readmodel)
+    instrument_availability = page.market_instrument.availability
     ohlcv_bound = False
     ohlcv_payload: dict[str, Any] | None = None
     browser_payload = serialize_ohlcv_browser_payload_v1(ohlcv_readmodel)
     if isinstance(ohlcv_readmodel, Mapping) and ohlcv_readmodel.get("bar_count"):
         ohlcv_payload = dict(ohlcv_readmodel)
-        freshness = str(ohlcv_readmodel.get("freshness_state") or "")
-        if freshness == "stale":
-            chart_availability = Availability.STALE
-        elif chart_availability not in (Availability.AVAILABLE, Availability.STALE):
-            chart_availability = Availability.AVAILABLE
         if browser_payload is None:
             ohlcv_bound = False
             chart_message = (
@@ -934,17 +946,17 @@ def present_market_landscape_v2(
                 f"(bars={browser_payload.get('bar_count')}, interval="
                 f"{ohlcv_readmodel.get('interval')})."
             )
-    elif chart_availability in (Availability.AVAILABLE, Availability.STALE):
+    elif instrument_availability in (Availability.AVAILABLE, Availability.STALE):
         chart_message = (
             "Primary chart market instrument bound; OHLCV producer still unbound "
             "(no fabricated candles)."
         )
-    elif chart_availability is Availability.MISSING_SOURCE:
+    elif instrument_availability is Availability.MISSING_SOURCE:
         chart_message = (
             "Primary chart MISSING_SOURCE — market identity / OHLCV not persisted "
             "for dashboard; no OHLCV fabricated."
         )
-    elif chart_availability is Availability.INVALID:
+    elif instrument_availability is Availability.INVALID:
         chart_message = (
             "Primary chart INVALID — market producer output rejected; no OHLCV fabricated."
         )
