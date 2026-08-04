@@ -19,7 +19,7 @@
 | Import base SHA / origin/main SHA | `6a9a3f10b81ab8d870245dc10ea74433e1f5365b` |
 | Family-plan discovery SHA | `6a9a3f10b81ab8d870245dc10ea74433e1f5365b` |
 | Import date (UTC) | `2026-08-04T20:18:40Z` |
-| Imported content digest SHA-256 | `61a052d5bf9616768a1dd92e2bf3d3bb45cc106ed2e7ebf83f91ea308215c640` |
+| Imported content digest SHA-256 | `7bbf035ec8dac90cf3db675bfdd81165ca93a57cd2582302d91a9c9237d2db3e` |
 | Prior family-matrix HEAD (historical) | `8c02f8793411939149eb7f33d6877a68a23a727f` (`#5710`) |
 | Durable inventory artifact | `docs/ops/market_dashboard/market_dashboard_missing_source_not_bound_inventory_v1/INVENTORY.json` |
 | Inventory generated at | `2026-08-04T18:30:57.619368Z` |
@@ -433,7 +433,7 @@ For the eight projection families, archive verification is complete at Discovery
 
 **Authority:** `CanonicalMarketContextV1`, with authorized Dashboard identity projection from Universe `selected_future`.
 
-**Authorized direct source:** `readmodels/universe_selection_readmodel.v1.json` for the selected identity.
+**Authorized direct source:** `readmodels&#47;universe_selection_readmodel.v1.json` for the selected identity.
 
 **Projection/binding evidence:**
 
@@ -449,7 +449,7 @@ For the eight projection families, archive verification is complete at Discovery
 
 **Purpose:** Watchlist count, selected rank, selection reason, session/source run identity.
 
-**Canonical source:** `readmodels/universe_selection_readmodel.v1.json`.
+**Canonical source:** `readmodels&#47;universe_selection_readmodel.v1.json`.
 
 **Binding evidence:**
 
@@ -465,7 +465,7 @@ For the eight projection families, archive verification is complete at Discovery
 
 **Purpose:** Candles, volume, live mark, connection state, interval, revision, timestamps, and chart chrome.
 
-**Canonical source:** `readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json`.
+**Canonical source:** `readmodels&#47;okx_selected_instrument_ohlcv_readmodel.v1.json`.
 
 **Binding evidence:**
 
@@ -482,9 +482,9 @@ For the eight projection families, archive verification is complete at Discovery
 
 **Authority:** `CanonicalScopeLifecycleState`.
 
-**Source sibling:** `readmodels/dynamic_scope_state_v1.json`.
+**Source sibling:** `readmodels&#47;dynamic_scope_state_v1.json`.
 
-**Authorized durable projection:** `readmodels/dynamic_scope_presentation_projection.v1.json`.
+**Authorized durable projection:** `readmodels&#47;dynamic_scope_presentation_projection.v1.json`.
 
 **Implementation evidence:** materializer, loader, autobind, owner-registry slot, tests, PR `#5692`.
 
@@ -503,13 +503,13 @@ For the eight projection families, archive verification is complete at Discovery
 
 **Authority:** `SideState`, `TransitionDecision`, and authorized regime fields.
 
-**Authorized durable projection:** `readmodels/bull_bear_regime_presentation_projection.v1.json`.
+**Authorized durable projection:** `readmodels&#47;bull_bear_regime_presentation_projection.v1.json`.
 
 **Implementation evidence:** materializer, loader, autobind, owner-registry slot, tests, PR `#5691`.
 
 **Archive / activation state (ratified at Discovery SHA `6a9a3f10b81ab8d870245dc10ea74433e1f5365b`):**
 
-- source sibling: **absent** (`readmodels/regime_bull_bear_switch.v1.json`)
+- source sibling: **absent** (`readmodels&#47;regime_bull_bear_switch.v1.json`)
 - projection: **absent** (`RUNTIME_ARTIFACT_ABSENT`)
 - materializer invocation: `TEST_ONLY_PATH`
 - candidate classification: `BLOCKED_MISSING_CANONICAL_SOURCE`
@@ -523,13 +523,13 @@ For the eight projection families, archive verification is complete at Discovery
 
 **Authority:** `CanonicalTradingDecisionEvidenceV1`.
 
-**Authorized durable projection:** `readmodels/canonical_decision_presentation_projection.v1.json`.
+**Authorized durable projection:** `readmodels&#47;canonical_decision_presentation_projection.v1.json`.
 
 **Implementation evidence:** materializer, loader, autobind, owner-registry slot, tests, PRs `#5687` and `#5689`.
 
 **Archive / activation state (ratified at Discovery SHA `6a9a3f10b81ab8d870245dc10ea74433e1f5365b`):**
 
-- source sibling: **absent** (`readmodels/canonical_trading_decision_evidence.v1.json`)
+- source sibling: **absent** (`readmodels&#47;canonical_trading_decision_evidence.v1.json`)
 - projection: **absent** (`RUNTIME_ARTIFACT_ABSENT`)
 - materializer invocation: `TEST_ONLY_PATH`
 - candidate classification: `BLOCKED_MISSING_CANONICAL_SOURCE`
@@ -543,13 +543,13 @@ For the eight projection families, archive verification is complete at Discovery
 
 **Authority:** `DoublePlayDashboardDisplaySnapshot`.
 
-**Authorized durable projection:** `readmodels/double_play_presentation_projection.v1.json`.
+**Authorized durable projection:** `readmodels&#47;double_play_presentation_projection.v1.json`.
 
 **Implementation evidence:** materializer, loader, autobind, owner-registry slot, tests, PRs `#5688` and `#5690`.
 
 **Archive / activation state (ratified at Discovery SHA `6a9a3f10b81ab8d870245dc10ea74433e1f5365b`):**
 
-- source sibling: **absent** (`readmodels/double_play_dashboard_display.v1.json`)
+- source sibling: **absent** (`readmodels&#47;double_play_dashboard_display.v1.json`)
 - projection: **absent** (`RUNTIME_ARTIFACT_ABSENT`)
 - materializer invocation: `TEST_ONLY_PATH`
 - candidate classification: `BLOCKED_MISSING_CANONICAL_SOURCE`
@@ -581,7 +581,7 @@ No percentage, score, probability, model confidence, strength, or heuristic prox
 
 **Authority:** `src.risk_layer.kill_switch::KillSwitch`.
 
-**Authorized presentation persistence:** `readmodels/safety_authority.v1.json`.
+**Authorized presentation persistence:** `readmodels&#47;safety_authority.v1.json`.
 
 **Implementation evidence:** materializer, projection loader, autobind, tests, commit `737dac557`.
 
@@ -600,9 +600,9 @@ No percentage, score, probability, model confidence, strength, or heuristic prox
 
 **Authority:** `src.governance.capital_risk_sizing_v1`.
 
-**Source sibling:** `readmodels/risk_sizing_capital.v1.json`.
+**Source sibling:** `readmodels&#47;risk_sizing_capital.v1.json`.
 
-**Authorized durable projection:** `readmodels/risk_sizing_capital_presentation_projection.v1.json`.
+**Authorized durable projection:** `readmodels&#47;risk_sizing_capital_presentation_projection.v1.json`.
 
 **Implementation evidence:** materializer, loader, autobind, tests, PR `#5693`.
 
@@ -622,9 +622,9 @@ No percentage, score, probability, model confidence, strength, or heuristic prox
 
 **Authority:** `src.governance.canonical_order_intent_v1`.
 
-**Source sibling:** `readmodels/execution_reconciliation.v1.json`.
+**Source sibling:** `readmodels&#47;execution_reconciliation.v1.json`.
 
-**Authorized durable projection:** `readmodels/execution_reconciliation_presentation_projection.v1.json`.
+**Authorized durable projection:** `readmodels&#47;execution_reconciliation_presentation_projection.v1.json`.
 
 **Implementation evidence:** materializer, loader, autobind, tests, PR `#5694`.
 
@@ -644,9 +644,9 @@ No percentage, score, probability, model confidence, strength, or heuristic prox
 
 **Authority:** `EconomicViabilityEvidenceV1`.
 
-**Source sibling:** `readmodels/economic_summary.v1.json`.
+**Source sibling:** `readmodels&#47;economic_summary.v1.json`.
 
-**Authorized durable projection:** `readmodels/economic_summary_presentation_projection.v1.json`.
+**Authorized durable projection:** `readmodels&#47;economic_summary_presentation_projection.v1.json`.
 
 **Implementation evidence:** materializer, loader, autobind, tests, PR `#5697`.
 
