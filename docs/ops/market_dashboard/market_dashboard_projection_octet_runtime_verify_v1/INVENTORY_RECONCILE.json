@@ -1,0 +1,61 @@
+{
+  "schema_name": "market_dashboard_inventory_reconcile.v1",
+  "schema_version": 1,
+  "generated_at": "2026-08-04T19:43:33.462472Z",
+  "origin_main_sha": "8c02f8793411939149eb7f33d6877a68a23a727f",
+  "dashboard_url": "http://127.0.0.1:8000/market",
+  "archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "method": "live_dom_data_availability_recount",
+  "old_baseline": {
+    "artifact": "docs/ops/market_dashboard/market_dashboard_missing_source_not_bound_inventory_v1/INVENTORY.json",
+    "generated_at": "2026-08-04T18:30:57.619368Z",
+    "origin_main_sha": "0a3df4827e675c41b8c51cea3d2baea34ef52eee",
+    "MISSING_SOURCE_count": 50,
+    "NOT_BOUND_count": 18,
+    "TOTAL_PRESENTATION_ELEMENTS_INVENTORIED": 73
+  },
+  "new_live_dom": {
+    "MISSING_SOURCE_count": 50,
+    "NOT_BOUND_count": 17,
+    "elements_with_data_availability": 77,
+    "availability_counts": {
+      "STALE": 9,
+      "MISSING_SOURCE": 50,
+      "AVAILABLE": 1,
+      "NOT_BOUND": 17
+    },
+    "html_bytes": 92081
+  },
+  "delta": {
+    "MISSING_SOURCE_delta": 0,
+    "NOT_BOUND_delta": -1,
+    "explanation": "MISSING_SOURCE unchanged at 50 because all eight B2 projection families remain RUNTIME_ARTIFACT_ABSENT. NOT_BOUND decreased 18\u219217 in live DOM recount at HEAD 8c02f879 after universe-selection rail bind (#5710); intentional/blocked unbound surfaces remain; no B2 presentation compensation applied."
+  },
+  "projection_octet": {
+    "families_verified": [
+      "dynamic_scope",
+      "regime_bull_bear_switch",
+      "canonical_decision",
+      "double_play",
+      "safety_authority",
+      "risk_sizing_capital",
+      "execution_reconciliation",
+      "economic_summary"
+    ],
+    "artifacts_present": [],
+    "artifacts_missing": [
+      "dynamic_scope",
+      "regime_bull_bear_switch",
+      "canonical_decision",
+      "double_play",
+      "safety_authority",
+      "risk_sizing_capital",
+      "execution_reconciliation",
+      "economic_summary"
+    ],
+    "schema_invalid_count": 0,
+    "loader_resolved_count": 0
+  },
+  "b3_blockers_mapping_authorized": false,
+  "b3_authorization_reason": "ACTIVE_DOUBLE_PLAY_PROJECTION_ABSENT:readmodels/double_play_presentation_projection.v1.json;DOUBLE_PLAY_LOADER_UNRESOLVED:DOUBLE_PLAY_PRESENTATION_PROJECTION_ABSENT;BLOCKER_FIELD_CONTRACT_NOT_PROVEN_WITHOUT_ACTIVE_ARTIFACT;TEMPLATE_BLOCKERS_STILL_HARDCODED_NOT_BOUND"
+}

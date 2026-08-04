@@ -1,0 +1,470 @@
+{
+  "schema_name": "market_dashboard_projection_octet_runtime_verify.v1",
+  "batch_id": "B2_PROJECTION_OCTET_RUNTIME_VERIFY",
+  "generated_at": "2026-08-04T19:43:33.462472Z",
+  "origin_main_sha": "8c02f8793411939149eb7f33d6877a68a23a727f",
+  "repository_head_sha": "8c02f8793411939149eb7f33d6877a68a23a727f",
+  "dashboard_url": "http://127.0.0.1:8000/market",
+  "dashboard_http_status": 200,
+  "archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "read_only": true,
+  "materializer_executed": false,
+  "producer_changed": false,
+  "trading_logic_changed": false,
+  "runtime_changed": false,
+  "canonical_readmodel_changed": false,
+  "dashboard_authority_effect": "NONE",
+  "dashboard_role": "PURE_CONSUMER",
+  "kill_switch_live_autoload_used": false,
+  "latest_evidence_auto_selected": false,
+  "presenter_available": true,
+  "presenter_error": null,
+  "serializer_available": true,
+  "serializer_error": null,
+  "presenter_carries_blockers": true,
+  "families": [
+    {
+      "family_id": "dynamic_scope",
+      "authorized_artifact_relative_path": "readmodels/dynamic_scope_presentation_projection.v1.json",
+      "authorized_artifact_absolute_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/dynamic_scope_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_id_expected": "dynamic_scope_presentation_projection.v1",
+      "schema_id_observed": null,
+      "family_id_observed": null,
+      "revision": null,
+      "digest": null,
+      "schema_invalid": false,
+      "loader_name": "try_load_dynamic_scope_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "DYNAMIC_SCOPE_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "loader_source_path": null,
+      "payload_meta": {},
+      "presenter_available": true,
+      "serializer_available": true,
+      "fallback_or_substitution_used": false,
+      "kill_switch_live_autoload_used": false,
+      "latest_evidence_auto_selected": false,
+      "expected_dom_availability": "MISSING_SOURCE",
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "rendered_dom_states": [
+        {
+          "field": "scope_lifecycle",
+          "slot": null,
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        },
+        {
+          "field": "current_scope_ref",
+          "slot": null,
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        },
+        {
+          "field": "next_scope_ref",
+          "slot": null,
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        },
+        {
+          "field": null,
+          "slot": "dynamic_scope",
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        }
+      ],
+      "dom_has_missing_source": true,
+      "dom_has_not_bound": false
+    },
+    {
+      "family_id": "regime_bull_bear_switch",
+      "authorized_artifact_relative_path": "readmodels/bull_bear_regime_presentation_projection.v1.json",
+      "authorized_artifact_absolute_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/bull_bear_regime_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_id_expected": "bull_bear_regime_presentation_projection.v1",
+      "schema_id_observed": null,
+      "family_id_observed": null,
+      "revision": null,
+      "digest": null,
+      "schema_invalid": false,
+      "loader_name": "try_load_bull_bear_regime_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "BULL_BEAR_REGIME_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "loader_source_path": null,
+      "payload_meta": {},
+      "presenter_available": true,
+      "serializer_available": true,
+      "fallback_or_substitution_used": false,
+      "kill_switch_live_autoload_used": false,
+      "latest_evidence_auto_selected": false,
+      "expected_dom_availability": "MISSING_SOURCE",
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "rendered_dom_states": [
+        {
+          "field": "regime",
+          "slot": null,
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        },
+        {
+          "field": "bull_bear",
+          "slot": null,
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        },
+        {
+          "field": "switch",
+          "slot": null,
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        },
+        {
+          "field": null,
+          "slot": "regime_bull_bear_switch",
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        }
+      ],
+      "dom_has_missing_source": true,
+      "dom_has_not_bound": false
+    },
+    {
+      "family_id": "canonical_decision",
+      "authorized_artifact_relative_path": "readmodels/canonical_decision_presentation_projection.v1.json",
+      "authorized_artifact_absolute_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/canonical_decision_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_id_expected": "canonical_decision_presentation_projection.v1",
+      "schema_id_observed": null,
+      "family_id_observed": null,
+      "revision": null,
+      "digest": null,
+      "schema_invalid": false,
+      "loader_name": "try_load_canonical_decision_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "CANONICAL_DECISION_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "loader_source_path": null,
+      "payload_meta": {},
+      "presenter_available": true,
+      "serializer_available": true,
+      "fallback_or_substitution_used": false,
+      "kill_switch_live_autoload_used": false,
+      "latest_evidence_auto_selected": false,
+      "expected_dom_availability": "MISSING_SOURCE",
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "rendered_dom_states": [
+        {
+          "field": null,
+          "slot": "canonical_decision",
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        },
+        {
+          "field": "decision",
+          "slot": null,
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        }
+      ],
+      "dom_has_missing_source": true,
+      "dom_has_not_bound": false
+    },
+    {
+      "family_id": "double_play",
+      "authorized_artifact_relative_path": "readmodels/double_play_presentation_projection.v1.json",
+      "authorized_artifact_absolute_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/double_play_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_id_expected": "double_play_presentation_projection.v1",
+      "schema_id_observed": null,
+      "family_id_observed": null,
+      "revision": null,
+      "digest": null,
+      "schema_invalid": false,
+      "loader_name": "try_load_double_play_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "DOUBLE_PLAY_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "loader_source_path": null,
+      "payload_meta": {},
+      "presenter_available": true,
+      "serializer_available": true,
+      "fallback_or_substitution_used": false,
+      "kill_switch_live_autoload_used": false,
+      "latest_evidence_auto_selected": false,
+      "expected_dom_availability": "MISSING_SOURCE",
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "rendered_dom_states": [
+        {
+          "field": null,
+          "slot": "double_play",
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        }
+      ],
+      "dom_has_missing_source": true,
+      "dom_has_not_bound": false
+    },
+    {
+      "family_id": "safety_authority",
+      "authorized_artifact_relative_path": "readmodels/safety_authority.v1.json",
+      "authorized_artifact_absolute_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/safety_authority.v1.json",
+      "artifact_present": false,
+      "schema_id_expected": "safety_authority_presentation_projection.v1",
+      "schema_id_observed": null,
+      "family_id_observed": null,
+      "revision": null,
+      "digest": null,
+      "schema_invalid": false,
+      "loader_name": "try_load_safety_authority_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "SAFETY_AUTHORITY_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "loader_source_path": null,
+      "payload_meta": {},
+      "presenter_available": true,
+      "serializer_available": true,
+      "fallback_or_substitution_used": false,
+      "kill_switch_live_autoload_used": false,
+      "latest_evidence_auto_selected": false,
+      "expected_dom_availability": "MISSING_SOURCE",
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "rendered_dom_states": [
+        {
+          "field": "safety",
+          "slot": null,
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": "CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD"
+        },
+        {
+          "field": null,
+          "slot": "safety_authority",
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        }
+      ],
+      "dom_has_missing_source": true,
+      "dom_has_not_bound": false
+    },
+    {
+      "family_id": "risk_sizing_capital",
+      "authorized_artifact_relative_path": "readmodels/risk_sizing_capital_presentation_projection.v1.json",
+      "authorized_artifact_absolute_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/risk_sizing_capital_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_id_expected": "risk_sizing_capital_presentation_projection.v1",
+      "schema_id_observed": null,
+      "family_id_observed": null,
+      "revision": null,
+      "digest": null,
+      "schema_invalid": false,
+      "loader_name": "try_load_risk_sizing_capital_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "RISK_SIZING_CAPITAL_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "loader_source_path": null,
+      "payload_meta": {},
+      "presenter_available": true,
+      "serializer_available": true,
+      "fallback_or_substitution_used": false,
+      "kill_switch_live_autoload_used": false,
+      "latest_evidence_auto_selected": false,
+      "expected_dom_availability": "MISSING_SOURCE",
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "rendered_dom_states": [
+        {
+          "field": null,
+          "slot": "risk_sizing_capital",
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        }
+      ],
+      "dom_has_missing_source": true,
+      "dom_has_not_bound": false
+    },
+    {
+      "family_id": "execution_reconciliation",
+      "authorized_artifact_relative_path": "readmodels/execution_reconciliation_presentation_projection.v1.json",
+      "authorized_artifact_absolute_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/execution_reconciliation_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_id_expected": "execution_reconciliation_presentation_projection.v1",
+      "schema_id_observed": null,
+      "family_id_observed": null,
+      "revision": null,
+      "digest": null,
+      "schema_invalid": false,
+      "loader_name": "try_load_execution_reconciliation_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "EXECUTION_RECONCILIATION_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "loader_source_path": null,
+      "payload_meta": {},
+      "presenter_available": true,
+      "serializer_available": true,
+      "fallback_or_substitution_used": false,
+      "kill_switch_live_autoload_used": false,
+      "latest_evidence_auto_selected": false,
+      "expected_dom_availability": "MISSING_SOURCE",
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "rendered_dom_states": [
+        {
+          "field": null,
+          "slot": "execution_reconciliation",
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        }
+      ],
+      "dom_has_missing_source": true,
+      "dom_has_not_bound": false
+    },
+    {
+      "family_id": "economic_summary",
+      "authorized_artifact_relative_path": "readmodels/economic_summary_presentation_projection.v1.json",
+      "authorized_artifact_absolute_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/economic_summary_presentation_projection.v1.json",
+      "artifact_present": false,
+      "schema_id_expected": "economic_summary_presentation_projection.v1",
+      "schema_id_observed": null,
+      "family_id_observed": null,
+      "revision": null,
+      "digest": null,
+      "schema_invalid": false,
+      "loader_name": "try_load_economic_summary_presentation_projection_v1",
+      "loader_result_loaded": false,
+      "loader_errors": [
+        "ECONOMIC_SUMMARY_PRESENTATION_PROJECTION_ABSENT"
+      ],
+      "loader_source_path": null,
+      "payload_meta": {},
+      "presenter_available": true,
+      "serializer_available": true,
+      "fallback_or_substitution_used": false,
+      "kill_switch_live_autoload_used": false,
+      "latest_evidence_auto_selected": false,
+      "expected_dom_availability": "MISSING_SOURCE",
+      "runtime_artifact_state": "RUNTIME_ARTIFACT_ABSENT",
+      "rendered_dom_states": [
+        {
+          "field": null,
+          "slot": "economic_summary",
+          "eng": null,
+          "availability": "MISSING_SOURCE",
+          "title": null
+        }
+      ],
+      "dom_has_missing_source": true,
+      "dom_has_not_bound": false
+    }
+  ],
+  "summary": {
+    "families_verified": [
+      "dynamic_scope",
+      "regime_bull_bear_switch",
+      "canonical_decision",
+      "double_play",
+      "safety_authority",
+      "risk_sizing_capital",
+      "execution_reconciliation",
+      "economic_summary"
+    ],
+    "artifacts_present": [],
+    "artifacts_missing": [
+      "dynamic_scope",
+      "regime_bull_bear_switch",
+      "canonical_decision",
+      "double_play",
+      "safety_authority",
+      "risk_sizing_capital",
+      "execution_reconciliation",
+      "economic_summary"
+    ],
+    "schema_invalid_count": 0,
+    "loader_resolved_count": 0
+  },
+  "live_dom": {
+    "html_bytes": 92081,
+    "elements_with_data_availability": 77,
+    "availability_counts": {
+      "STALE": 9,
+      "MISSING_SOURCE": 50,
+      "AVAILABLE": 1,
+      "NOT_BOUND": 17
+    },
+    "MISSING_SOURCE_count": 50,
+    "NOT_BOUND_count": 17,
+    "old_baseline_MISSING_SOURCE": 50,
+    "old_baseline_NOT_BOUND": 18,
+    "blockers_dom": [
+      {
+        "tag": "dd",
+        "availability": "NOT_BOUND",
+        "field": "blockers",
+        "slot": null,
+        "eng": null,
+        "region": null,
+        "title": null
+      }
+    ]
+  },
+  "inventory_reconcile": {
+    "method": "live_dom_data_availability_recount_at_origin_main_head",
+    "old_MISSING_SOURCE_count": 50,
+    "new_MISSING_SOURCE_count": 50,
+    "old_NOT_BOUND_count": 18,
+    "new_NOT_BOUND_count": 17,
+    "prior_inventory_artifact": "docs/ops/market_dashboard/market_dashboard_missing_source_not_bound_inventory_v1/INVENTORY.json",
+    "prior_inventory_generated_at": "2026-08-04T18:30:57.619368Z",
+    "prior_inventory_origin_main_sha": "0a3df4827e675c41b8c51cea3d2baea34ef52eee",
+    "note": "Baseline 50/18 remains the ratified inventory snapshot; new counts are post-#5710 live-DOM remeasure at HEAD 8c02f879."
+  },
+  "b1_progress": {
+    "batch_id": "B1_ALREADY_BOUND_CLOSEOUT",
+    "status": "CLOSED_UNCHANGED",
+    "families": [
+      "market_instrument",
+      "universe_selection_rail_facts",
+      "okx_selected_instrument_ohlcv"
+    ]
+  },
+  "b4_progress": {
+    "batch_id": "B4_INTENTIONAL_AND_BLOCKED_FREEZE",
+    "status": "CLOSED_UNCHANGED",
+    "families": [
+      "decision_strip_confidence_intentional_unbound",
+      "diagnostics_summary_intentional_unbound",
+      "autonomy_stage_intentional_unbound",
+      "timeline_intentional_unbound",
+      "repository_sha_no_canonical_payload_field"
+    ]
+  },
+  "b3_authorization": {
+    "batch_id": "B3_CONDITIONAL_MAPPING_DUO",
+    "decision_strip_blockers_mapping_authorized": false,
+    "reason": "ACTIVE_DOUBLE_PLAY_PROJECTION_ABSENT:readmodels/double_play_presentation_projection.v1.json;DOUBLE_PLAY_LOADER_UNRESOLVED:DOUBLE_PLAY_PRESENTATION_PROJECTION_ABSENT;BLOCKER_FIELD_CONTRACT_NOT_PROVEN_WITHOUT_ACTIVE_ARTIFACT;TEMPLATE_BLOCKERS_STILL_HARDCODED_NOT_BOUND",
+    "double_play_artifact_present": false,
+    "double_play_schema_valid": false,
+    "blocker_contract_proven": false,
+    "presenter_carries_blockers": true,
+    "blocker_template_hits": []
+  }
+}

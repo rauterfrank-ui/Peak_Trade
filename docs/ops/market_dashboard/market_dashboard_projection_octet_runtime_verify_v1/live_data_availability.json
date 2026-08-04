@@ -1,0 +1,605 @@
+[
+  {
+    "state": "MISSING_SOURCE",
+    "field": "safety",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"safety\" data-availability=\"MISSING_SOURCE\"",
+    "title": "CANONICAL_SAFETY_AUTHORITY_NOT_PERSISTED_FOR_DASHBOARD"
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "scope_lifecycle",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"scope_lifecycle\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "current_scope_ref",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"current_scope_ref\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "next_scope_ref",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"next_scope_ref\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "regime",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"regime\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "bull_bear",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"bull_bear\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "switch",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"switch\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "source_health",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"source_health\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": null,
+    "slot": "autonomy_stage",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"autonomy_stage\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": "canonical_decision",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"canonical_decision\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": null,
+    "slot": "diagnostics_summary",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"diagnostics_summary\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": "double_play",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"double_play\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": "dynamic_scope",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"dynamic_scope\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": "economic_summary",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"economic_summary\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": "execution_reconciliation",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"execution_reconciliation\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": "regime_bull_bear_switch",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"regime_bull_bear_switch\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": "risk_sizing_capital",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"risk_sizing_capital\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": "safety_authority",
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "li data-mdl-source-slot=\"safety_authority\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "decision",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"decision\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "reason_codes",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"reason_codes\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "blockers",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"blockers\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "direction",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"direction\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "double_play",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"double_play\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "confidence",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"confidence\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "risk_summary",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "p data-mdl-field=\"risk_summary\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "risk_status",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"risk_status\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "sizing_status",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"sizing_status\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "capital_status",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"capital_status\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "risk_quantity",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"risk_quantity\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "risk_reasons",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"risk_reasons\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "execution_summary",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "p data-mdl-field=\"execution_summary\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "execution_status",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"execution_status\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "reconciliation_status",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"reconciliation_status\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "order_intent_ref",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"order_intent_ref\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "execution_reasons",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"execution_reasons\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "p data-mdl-field=\"economic\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_validity",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_validity\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_policy_threshold",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_policy_threshold\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_profit_factor",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_profit_factor\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_net_return",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_net_return\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_max_drawdown",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_max_drawdown\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_funding_drag",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_funding_drag\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_trade_count",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_trade_count\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_evidence_ref",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_evidence_ref\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_evidence_digest",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_evidence_digest\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": "economic_reasons",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"economic_reasons\" data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "diagnostics_status",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "p data-mdl-field=\"diagnostics_status\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "diagnostics_authority",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"diagnostics_authority\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "diagnostics_owner",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"diagnostics_owner\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "governance_summary",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "p data-mdl-field=\"governance_summary\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "autonomy_stage",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"autonomy_stage\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "promotion_eligibility",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"promotion_eligibility\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "activation_eligibility",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"activation_eligibility\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "runtime_bridge_lock",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"runtime_bridge_lock\" data-availability=\"NOT_BOUND\"",
+    "title": "product_shell_constant_non_authoritative \u00b7 intentional lock \u00b7 not autonomy-stage source"
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "operator_go_required",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"operator_go_required\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": "governance_lock_class",
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "dd data-mdl-field=\"governance_lock_class\" data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "span data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "NOT_BOUND",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"NOT_BOUND\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  },
+  {
+    "state": "MISSING_SOURCE",
+    "field": null,
+    "slot": null,
+    "eng": null,
+    "section_attr": null,
+    "tag_snip": "article data-availability=\"MISSING_SOURCE\"",
+    "title": null
+  }
+]
