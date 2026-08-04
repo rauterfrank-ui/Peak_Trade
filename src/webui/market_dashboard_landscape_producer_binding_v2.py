@@ -8,7 +8,8 @@ evidence (injection or durable presentation projection auto-bind),
 double_play display projection (injection or durable presentation projection
 auto-bind), safety authority KillSwitch/boundary field projection,
 risk/sizing/capital field projection (injection or durable presentation
-projection auto-bind), execution/reconciliation field projection, and
+projection auto-bind), execution/reconciliation field projection (injection
+or durable presentation projection auto-bind), and
 economic summary EconomicViabilityEvidenceV1 field projection.
 Lives outside market_dashboard_landscape_v2 so that package stays free of
 trading/webui producer imports (architecture guard).
@@ -89,6 +90,10 @@ from .workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projection_v1 i
 from .workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_v1 import (
     LOAD_ERROR_ABSENT as RISK_SIZING_CAPITAL_PROJECTION_ABSENT,
     try_load_risk_sizing_capital_presentation_projection_v1,
+)
+from .workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_projection_v1 import (
+    LOAD_ERROR_ABSENT as EXECUTION_RECONCILIATION_PROJECTION_ABSENT,
+    try_load_execution_reconciliation_presentation_projection_v1,
 )
 from .workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     FORBIDDEN_SELECTED_SYMBOLS,
@@ -1823,19 +1828,45 @@ def _bind_execution_reconciliation(
     as_of: datetime,
     git_sha: str | None,
     execution_reconciliation_fields: Mapping[str, Any] | None,
+    archive_root: Path | None = None,
 ) -> Any:
-    """Project injected Execution/Reconciliation fields.
+    """Project already-selected Execution/Reconciliation fields.
 
-    No durable dashboard Execution readmodel. Without injection → MISSING_SOURCE.
-    Never builds order intents, never calls execution/order APIs, never mutates
-    reconciliation. reconciliation_status / order_intent_ref may be absent.
+    Injection remains supported for tests. Productive auto-bind loads the
+    non-authoritative presentation projection from the Workflow Dashboard
+    archive root when injection is absent. Never builds order intents, never
+    calls execution/order APIs, never mutates reconciliation.
+    reconciliation_status / order_intent_ref may be absent.
     """
     if execution_reconciliation_fields is None:
-        return unavailable_execution_reconciliation(
-            availability=Availability.MISSING_SOURCE,
-            generated_at=as_of,
-            reason=REASON_EXECUTION_NOT_PERSISTED,
-        )
+        if archive_root is None:
+            return unavailable_execution_reconciliation(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_EXECUTION_NOT_PERSISTED,
+            )
+        loaded = try_load_execution_reconciliation_presentation_projection_v1(archive_root)
+        if not loaded.loaded or loaded.binder_fields is None:
+            reason = REASON_EXECUTION_NOT_PERSISTED
+            if loaded.load_errors:
+                first = str(loaded.load_errors[0])
+                if first != EXECUTION_RECONCILIATION_PROJECTION_ABSENT:
+                    reason = first
+            availability = (
+                Availability.MISSING_SOURCE
+                if reason == REASON_EXECUTION_NOT_PERSISTED
+                or reason == EXECUTION_RECONCILIATION_PROJECTION_ABSENT
+                else Availability.INVALID
+            )
+            if reason == EXECUTION_RECONCILIATION_PROJECTION_ABSENT:
+                reason = REASON_EXECUTION_NOT_PERSISTED
+                availability = Availability.MISSING_SOURCE
+            return unavailable_execution_reconciliation(
+                availability=availability,
+                generated_at=as_of,
+                reason=reason,
+            )
+        execution_reconciliation_fields = loaded.binder_fields
 
     schema_version = execution_reconciliation_fields.get("schema_version")
     if schema_version is not None and str(schema_version) != LANDSCAPE_PROJECTION_SCHEMA_VERSION:
@@ -2005,7 +2036,9 @@ def bind_market_universe_slots(
     execution_reconciliation_fields accepts already-selected Execution/
     Reconciliation display fields (execution_status[/reconciliation_status]/
     order_intent_ref]) plus producer wall-clock timestamps. Without injection,
-    execution_reconciliation is MISSING_SOURCE. Never builds intents or calls
+    productive auto-bind loads
+    execution_reconciliation_presentation_projection.v1 when present;
+    otherwise MISSING_SOURCE. Never builds intents or calls
     execution/order/reconciliation mutation APIs.
 
     economic_viability_evidence_fields accepts already-selected
@@ -2062,6 +2095,7 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         execution_reconciliation_fields=execution_reconciliation_fields,
+        archive_root=root,
     )
     economic = _bind_economic_summary(
         as_of=as_of,

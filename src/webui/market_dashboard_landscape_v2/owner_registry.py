@@ -162,15 +162,19 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         authority_class="execution_intent",
         reuse_status="REUSED",
         notes=(
-            "Phase 4.5: Landscape projects injected Execution/Reconciliation "
-            "fields field-for-field (execution_status/reconciliation_status/"
-            "order_intent_ref/reason_codes); authority owner remains "
-            "src.governance.canonical_order_intent_v1; offline replay adapter is "
-            "non-authority wiring/parity only; dashboard AUTHORITY_EFFECT=NONE; "
-            "explicit injection only; without injection MISSING_SOURCE; "
-            "reconciliation_status may be absent (partial) and must not be "
-            "invented; never import order/execution mutation APIs or call "
-            "build_canonical_order_intent_v1 / evaluate_offline_reconciliation_*."
+            "Phase 4.5 + CAPABILITY_PRESENTATION_EXECUTION_RECONCILIATION_"
+            "PROJECTION_MATERIALIZER_AUTOBIND_V1: Landscape projects "
+            "Execution/Reconciliation fields field-for-field "
+            "(execution_status/reconciliation_status/order_intent_ref/reason_codes); "
+            "authority owner remains src.governance.canonical_order_intent_v1; "
+            "offline replay adapter is non-authority wiring/parity only; "
+            "dashboard AUTHORITY_EFFECT=NONE; durable auto-bind via "
+            "non-authoritative execution_reconciliation_presentation_projection.v1 "
+            "under archive root; injection remains test-compatible; without "
+            "injection/projection MISSING_SOURCE; reconciliation_status may be "
+            "absent (partial) and must not be invented; never import "
+            "order/execution mutation APIs or call build_canonical_order_intent_v1 "
+            "/ evaluate_offline_reconciliation_*."
         ),
     ),
     CanonicalOwnerRefV1(
