@@ -1,6 +1,7 @@
 """Phase 4.1–4.5 + 4.2B + 4.6B read-only producer binding for Market Landscape V2.
 
-Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity,
+Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity
+(injection or durable presentation projection auto-bind),
 regime_bull_bear_switch (injection or durable presentation projection
 auto-bind; PR #5577 field contract), canonical_decision
 evidence (injection or durable presentation projection auto-bind),
@@ -80,6 +81,10 @@ from .workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v
 from .workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
     LOAD_ERROR_ABSENT as DOUBLE_PLAY_PROJECTION_ABSENT,
     try_load_double_play_presentation_projection_v1,
+)
+from .workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projection_v1 import (
+    LOAD_ERROR_ABSENT as DYNAMIC_SCOPE_PROJECTION_ABSENT,
+    try_load_dynamic_scope_presentation_projection_v1,
 )
 from .workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     FORBIDDEN_SELECTED_SYMBOLS,
@@ -565,18 +570,43 @@ def _bind_dynamic_scope_lifecycle(
     as_of: datetime,
     git_sha: str | None,
     dynamic_scope_fields: Mapping[str, Any] | None,
+    archive_root: Path | None = None,
 ) -> Any:
-    """Project injected CanonicalScopeSnapshotV1-compatible lifecycle fields.
+    """Project CanonicalScopeSnapshotV1-compatible lifecycle identity fields.
 
-    No durable dashboard scope readmodel. Without injection → MISSING_SOURCE.
-    Never runs canonical scope initialization or switch-transition owners.
+    Injection remains supported for tests. Productive auto-bind loads the
+    non-authoritative presentation projection from the Workflow Dashboard
+    archive root when injection is absent. Never runs canonical scope
+    initialization or switch-transition owners.
     """
     if dynamic_scope_fields is None:
-        return unavailable_dynamic_scope(
-            availability=Availability.MISSING_SOURCE,
-            generated_at=as_of,
-            reason=REASON_SCOPE_NOT_PERSISTED,
-        )
+        if archive_root is None:
+            return unavailable_dynamic_scope(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_SCOPE_NOT_PERSISTED,
+            )
+        loaded = try_load_dynamic_scope_presentation_projection_v1(archive_root)
+        if not loaded.loaded or loaded.binder_fields is None:
+            reason = REASON_SCOPE_NOT_PERSISTED
+            if loaded.load_errors:
+                first = str(loaded.load_errors[0])
+                if first != DYNAMIC_SCOPE_PROJECTION_ABSENT:
+                    reason = first
+            availability = (
+                Availability.MISSING_SOURCE
+                if reason == REASON_SCOPE_NOT_PERSISTED or reason == DYNAMIC_SCOPE_PROJECTION_ABSENT
+                else Availability.INVALID
+            )
+            if reason == DYNAMIC_SCOPE_PROJECTION_ABSENT:
+                reason = REASON_SCOPE_NOT_PERSISTED
+                availability = Availability.MISSING_SOURCE
+            return unavailable_dynamic_scope(
+                availability=availability,
+                generated_at=as_of,
+                reason=reason,
+            )
+        dynamic_scope_fields = loaded.binder_fields
 
     if "scope_state" in dynamic_scope_fields and dynamic_scope_fields["scope_state"] is not None:
         scope_state = _enum_or_str(dynamic_scope_fields["scope_state"])
@@ -1908,7 +1938,9 @@ def bind_market_universe_slots(
 
     dynamic_scope_fields accepts already-computed CanonicalScopeSnapshotV1-
     compatible lifecycle identity fields plus producer wall-clock timestamps.
-    Without injection, dynamic_scope is MISSING_SOURCE (no durable readmodel).
+    Without injection, productive auto-bind loads
+    dynamic_scope_presentation_projection.v1 when present; otherwise
+    MISSING_SOURCE. Never calls scope initializers or invents next_scope_ref.
 
     regime_bull_bear_switch_fields accepts already-computed Regime /
     SideState / StateSwitchEvidenceV1-compatible fields plus producer
@@ -1964,6 +1996,7 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         dynamic_scope_fields=dynamic_scope_fields,
+        archive_root=root,
     )
     regime_bbs = _bind_regime_bull_bear_switch(
         as_of=as_of,
