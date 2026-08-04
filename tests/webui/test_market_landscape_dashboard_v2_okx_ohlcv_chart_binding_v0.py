@@ -200,8 +200,9 @@ def test_route_presenter_receives_100_canonical_ohlcv_bars(
     response = client.get("/market")
     assert response.status_code == 200
     html = response.text
-    assert "Primary chart bound to materialized OKX OHLCV readmodel" in html
-    assert f"(bars={BAR_COUNT}" in html
+    assert "Primary chart bound to materialized OKX OHLCV readmodel" not in html
+    assert f"(bars={BAR_COUNT}" not in html
+    assert ctx["chart"]["message"] == ""
     assert 'data-mdl-field="venue">OKX</dd>' in html
     assert 'data-mdl-ohlcv-json="true"' in html
     assert 'data-mdl-chart-canvas="true"' in html
@@ -262,8 +263,9 @@ def test_real_chrome_visible_chart_geometry_and_venue_guard(
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
     client = TestClient(create_app())
     html = client.get("/market").text
-    assert "chart bound" in html.lower()
+    assert "Primary chart bound to materialized OKX OHLCV readmodel" not in html
     assert 'data-mdl-ohlcv-json="true"' in html
+    assert 'data-mdl-chart-has-series="true"' in html
 
     console_errors: list[str] = []
     page_errors: list[str] = []
@@ -355,7 +357,8 @@ def test_real_chrome_visible_chart_geometry_and_venue_guard(
                 assert metrics["first_ts"] == FIRST_TS
                 assert metrics["last_ts"] == LAST_TS
                 assert metrics["width"] > 0 and metrics["height"] > 0
-                assert "chart bound" in metrics["message"].lower()
+                assert metrics["message"].strip() == ""
+                assert "Primary chart bound" not in metrics["message"]
                 assert metrics["bound_without_geometry"] == "false"
                 assert metrics["overflow"] is False
                 context.close()
@@ -371,12 +374,12 @@ def test_chart_bound_text_cannot_pass_without_embedded_series(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Static guard: bound message requires browser payload embedding."""
+    """Static guard: bound OHLCV requires browser payload embedding, not status text."""
     archive = _write_okx_universe_and_ohlcv(tmp_path / "archive")
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
     html = TestClient(create_app()).get("/market").text
-    assert "chart bound" in html.lower()
+    assert "Primary chart bound to materialized OKX OHLCV readmodel" not in html
     assert 'data-mdl-ohlcv-json="true"' in html
     assert 'data-mdl-chart-canvas="true"' in html
-    # Message alone is insufficient without series mount points.
+    # Series mount points remain the productive bound proof — not a status line.
     assert 'data-mdl-chart-has-series="true"' in html

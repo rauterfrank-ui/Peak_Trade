@@ -168,7 +168,7 @@
               <dd data-mdl-field="ohlcv_volume">{% if chart.volume is not none %}{{ chart.volume }}{% else %}—{% endif %}</dd>
             </div>
           </dl>
-          <div class="mdl-v2-chart__stage" role="img" aria-label="{{ chart.message }}" data-mdl-chart-stage="true">
+          <div class="mdl-v2-chart__stage" role="img" aria-label="{% if chart.message %}{{ chart.message }}{% else %}OHLCV chart{% endif %}" data-mdl-chart-stage="true">
             <p class="mdl-v2-chart__message" data-mdl-chart-message="true">{{ chart.message }}</p>
             {# Empty/non-authoritative bootstrap always present so JS can bind canonical OHLCV. #}
             <script type="application/json" data-mdl-ohlcv-json="true">{% if chart.browser_payload %}{{ chart.browser_payload | tojson }}{% else %}{"schema_name":"market_landscape_ohlcv_browser_payload.v1","schema_version":1,"bars":[],"bar_count":0,"non_authoritative_bootstrap":true}{% endif %}</script>
