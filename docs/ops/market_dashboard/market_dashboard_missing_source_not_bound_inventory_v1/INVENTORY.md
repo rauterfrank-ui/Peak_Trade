@@ -17,7 +17,7 @@ Dashboard: http://127.0.0.1:8000/market
 
 `universe_selection_rail_facts`
 
-Canonical source: `readmodels/universe_selection_readmodel.v1.json` (PRESENT)
+Canonical source: `readmodels&#47;universe_selection_readmodel.v1.json` (PRESENT)
 
 Members to bind from existing fields only:
 - Watchlist ← universe row count
