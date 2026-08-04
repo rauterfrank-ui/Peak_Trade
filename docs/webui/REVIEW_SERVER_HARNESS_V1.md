@@ -85,8 +85,8 @@ Both paths share the same ASGI target, localhost bind, no `--reload`, and proces
 - Headed Playwright sessions must use `managed_chrome_channel` /
   `ChromeChannelHandle` (guaranteed idempotent `close()`, optional
   SIGINT/SIGTERM cleanup). Approved keepalive entrypoint:
-  `scripts/webui/headed_playwright_keepalive_v1.py <url>`.
-- Normal operator browser open remains `./scripts/webui/review_server.sh open`
+  `scripts&#47;webui&#47;headed_playwright_keepalive_v1.py <url>`.
+- Normal operator browser open remains `./scripts&#47;webui&#47;review_server.sh open`
   → `open -a "Google Chrome"` (not Playwright-managed).
 - Do not create ad-hoc keepalive scripts without a close path
   (`browser.close()` + owned `playwright.stop()` / Handle `__exit__`).
