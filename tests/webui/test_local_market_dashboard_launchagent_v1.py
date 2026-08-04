@@ -28,7 +28,7 @@ def test_local_market_dashboard_controller_surface_contract() -> None:
     assert "status) cmd_status" in text
     assert "open) cmd_open" in text
     assert "logs) cmd_logs" in text
-    assert '_run) cmd_run' in text
+    assert "_run) cmd_run" in text
     assert "SURVIVES_CURSOR_AND_TERMINAL_CLOSE=true" in text
     assert "UNKNOWN_PORT_OWNER_FAIL_CLOSED" in text
     assert "LIVE_AUTHORIZED" in text
@@ -38,17 +38,17 @@ def test_local_market_dashboard_controller_surface_contract() -> None:
 def test_local_market_dashboard_chrome_open_is_regular_chrome_with_tab_reuse() -> None:
     text = CONTROLLER.read_text(encoding="utf-8")
     assert "chrome_open_reuse_tab" in text
-    assert 'Google Chrome' in text
+    assert "Google Chrome" in text
     assert "REUSED_EXISTING_TAB" in text
     assert "OPENED_NEW_TAB_IN_EXISTING_WINDOW" in text
     assert "starts with targetPrefix" in text
     assert "http://127.0.0.1" in text
     assert "/market" in text
     # Forbidden operator command patterns must not be invoked.
-    assert not re.search(r'(^|[^#\n])\s*open\s+-na\b', text, re.M)
-    assert not re.search(r'(^|[^#\n])[^\n]*--user-data-dir', text, re.M)
-    assert not re.search(r'(^|[^#\n])[^\n]*--incognito\b', text, re.M)
-    assert not re.search(r'(^|[^#\n])\s*(killall|pkill)\b', text, re.M)
+    assert not re.search(r"(^|[^#\n])\s*open\s+-na\b", text, re.M)
+    assert not re.search(r"(^|[^#\n])[^\n]*--user-data-dir", text, re.M)
+    assert not re.search(r"(^|[^#\n])[^\n]*--incognito\b", text, re.M)
+    assert not re.search(r"(^|[^#\n])\s*(killall|pkill)\b", text, re.M)
     assert "headless=False" not in text
     assert "PLAYWRIGHT_USED=false" in text
     assert "TEMP_PROFILE_USED=false" in text
@@ -59,7 +59,7 @@ def test_local_market_dashboard_chrome_open_is_regular_chrome_with_tab_reuse() -
 def test_local_market_dashboard_launchd_uses_foreground_run_not_nohup() -> None:
     text = CONTROLLER.read_text(encoding="utf-8")
     assert "cmd_run()" in text
-    assert "exec \"$py\" -m uvicorn" in text
+    assert 'exec "$py" -m uvicorn' in text
     # Durable path must not rely on nohup for the LaunchAgent child.
     run_fn = text.split("cmd_run()")[1].split("stop_conflicting_review_harness")[0]
     assert "nohup" not in run_fn
