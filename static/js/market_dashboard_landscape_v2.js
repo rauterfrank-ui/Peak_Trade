@@ -25,6 +25,7 @@
   if (!root) return;
 
   var chartLayout = null;
+  var volumeLayout = null;
   var lastBars = null;
   var lastCandleSeriesDigest = "";
   var lastMetadataDigest = "";
@@ -61,6 +62,41 @@
     canvas.setAttribute("data-mdl-chart-blank", "true");
     canvas.setAttribute("data-mdl-chart-bar-count", "0");
     if (reason) canvas.setAttribute("data-mdl-chart-error", reason);
+    markVolumeBlank(reason || "chart_blank");
+  }
+
+  function markVolumeBlank(reason) {
+    var panel = root.querySelector("[data-mdl-volume-panel]");
+    var canvas = root.querySelector("[data-mdl-volume-canvas]");
+    volumeLayout = null;
+    if (panel) {
+      panel.setAttribute("data-mdl-volume-synced-with-chart", "false");
+    }
+    if (canvas) {
+      canvas.setAttribute("data-mdl-volume-geometry", "absent");
+      canvas.setAttribute("data-mdl-volume-bar-count", "0");
+      if (reason) canvas.setAttribute("data-mdl-volume-error", reason);
+      var ctx = canvas.getContext("2d");
+      if (ctx) {
+        var box = resolveCssBox(canvas, canvas.parentElement);
+        syncBackingStore(canvas, box.cssWidth, box.cssHeight);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  }
+
+  function setVolumePanelState(state, message) {
+    var panel = root.querySelector("[data-mdl-volume-panel]");
+    var label = root.querySelector("[data-mdl-volume-state-label]");
+    var msg = root.querySelector("[data-mdl-volume-message]");
+    var token = String(state || "MISSING_SOURCE");
+    if (panel) panel.setAttribute("data-mdl-volume-state", token);
+    if (label) {
+      label.textContent = token;
+      label.setAttribute("data-mdl-volume-state", token);
+    }
+    if (msg && message) msg.textContent = String(message);
   }
 
   function setConnectionState(state) {
@@ -127,6 +163,11 @@
     root.setAttribute("data-mdl-canonical-fail", "true");
     root.setAttribute("data-mdl-canonical-fail-reason", String(reason || "canonical_unavailable"));
     setConnectionState("MISSING_SOURCE");
+    setVolumePanelState(
+      "MISSING_SOURCE",
+      "Volume MISSING_SOURCE — canonical OHLCV unavailable; no fabricated volume bars."
+    );
+    markVolumeBlank(String(reason || "canonical_unavailable"));
     var message = root.querySelector("[data-mdl-chart-message]");
     if (message) {
       message.textContent = "CANONICAL_DATA_UNAVAILABLE: " + String(reason || "unknown");
@@ -161,6 +202,79 @@
     if (raw === undefined || raw === null || raw === "") return null;
     var n = Number(raw);
     return Number.isFinite(n) ? n : null;
+  }
+
+  function usableVolumeValue(raw) {
+    // Finite non-negative only — never invent zeros for missing/invalid volume.
+    var n = finiteBarNumber(raw);
+    if (n === null || n < 0) return null;
+    return n;
+  }
+
+  function classifyVolumeBarDirection(openV, closeV) {
+    // Candle direction for volume styling — not buy/sell volume semantics.
+    if (closeV > openV) return "up";
+    if (closeV < openV) return "down";
+    return "neutral";
+  }
+
+  function volumeDirectionColor(direction) {
+    if (direction === "up") return "#34d399";
+    if (direction === "down") return "#f87171";
+    return "#94a3b8";
+  }
+
+  function resolveVolumePanelState(payload, bars) {
+    if (!payload || !Array.isArray(bars) || !bars.length) {
+      return {
+        state: "MISSING_SOURCE",
+        message: "Volume MISSING_SOURCE — no OHLCV volume field in existing payload.",
+      };
+    }
+    var usable = 0;
+    var missing = 0;
+    var invalid = 0;
+    var i;
+    for (i = 0; i < bars.length; i += 1) {
+      var row = bars[i] || {};
+      var raw = row.volume;
+      if (raw === undefined || raw === null || raw === "") {
+        missing += 1;
+        continue;
+      }
+      if (usableVolumeValue(raw) === null) {
+        invalid += 1;
+        continue;
+      }
+      usable += 1;
+    }
+    if (usable === 0 && missing === bars.length) {
+      return {
+        state: "MISSING_SOURCE",
+        message: "Volume MISSING_SOURCE — volume field absent on all bars.",
+      };
+    }
+    if (usable === 0) {
+      return {
+        state: "NOT_BOUND",
+        message:
+          "Volume NOT_BOUND — volume present but not usable in presentation binding.",
+      };
+    }
+    var freshness = String(payload.freshness_state || "").toLowerCase();
+    var isStale = payload.is_stale === true || freshness === "stale";
+    if (isStale) {
+      return {
+        state: "STALE",
+        message:
+          "Volume STALE — canonical OHLCV freshness reports stale; bars retained.",
+      };
+    }
+    return {
+      state: "AVAILABLE",
+      message:
+        "Volume bound to authentic OHLCV bar volume (contracts); not buy/sell delta.",
+    };
   }
 
   function normalizeCanonicalBars(rawBars) {
@@ -684,6 +798,167 @@
     return true;
   }
 
+  function paintVolumeFullSeries(payload, bars, sharedLayout, fullClear) {
+    var panel = root.querySelector("[data-mdl-volume-panel]");
+    var canvas = root.querySelector("[data-mdl-volume-canvas]");
+    if (!panel || !canvas || !sharedLayout) {
+      markVolumeBlank("volume_panel_absent");
+      return false;
+    }
+    var stateInfo = resolveVolumePanelState(payload, bars);
+    setVolumePanelState(stateInfo.state, stateInfo.message);
+    if (stateInfo.state === "MISSING_SOURCE" || stateInfo.state === "NOT_BOUND") {
+      markVolumeBlank(stateInfo.state.toLowerCase());
+      panel.setAttribute("data-mdl-volume-synced-with-chart", "false");
+      return false;
+    }
+
+    var box = resolveCssBox(canvas, canvas.parentElement);
+    var store = syncBackingStore(canvas, box.cssWidth, box.cssHeight);
+    var ctx = canvas.getContext("2d");
+    if (!ctx) {
+      markVolumeBlank("no_2d_context");
+      return false;
+    }
+    ctx.setTransform(store.dpr, 0, 0, store.dpr, 0, 0);
+    ctx.clearRect(0, 0, box.cssWidth, box.cssHeight);
+
+    var padL = sharedLayout.padL;
+    var padR = sharedLayout.padR;
+    var padT = 4;
+    var padB = 4;
+    var plotW = Math.max(1, box.cssWidth - padL - padR);
+    var plotH = Math.max(1, box.cssHeight - padT - padB);
+    var n = bars.length;
+    var slot = plotW / n;
+    var bodyW = sharedLayout.bodyW;
+    var volumes = [];
+    var directions = [];
+    var maxV = 0;
+    var i;
+    for (i = 0; i < n; i += 1) {
+      var vol = usableVolumeValue(bars[i].volume);
+      volumes.push(vol);
+      directions.push(
+        classifyVolumeBarDirection(Number(bars[i].open), Number(bars[i].close))
+      );
+      if (vol !== null && vol > maxV) maxV = vol;
+    }
+    if (!(maxV > 0)) {
+      // Authentic all-zero volume: sync geometry but draw no invented bars.
+      maxV = 1;
+    }
+
+    for (i = 0; i < n; i += 1) {
+      if (volumes[i] === null) continue;
+      var xCenter = padL + slot * (i + 0.5);
+      var barH = Math.max(volumes[i] > 0 ? 1 : 0, (volumes[i] / maxV) * plotH);
+      var y = padT + plotH - barH;
+      ctx.fillStyle = volumeDirectionColor(directions[i]);
+      ctx.fillRect(xCenter - bodyW / 2, y, bodyW, Math.max(0, barH));
+    }
+
+    volumeLayout = {
+      cssWidth: box.cssWidth,
+      cssHeight: box.cssHeight,
+      padL: padL,
+      padR: padR,
+      padT: padT,
+      padB: padB,
+      plotW: plotW,
+      plotH: plotH,
+      n: n,
+      slot: slot,
+      bodyW: bodyW,
+      maxV: maxV,
+      dpr: store.dpr,
+      instanceId: sharedLayout.instanceId,
+    };
+
+    canvas.setAttribute("data-mdl-volume-geometry", "nonzero");
+    canvas.setAttribute("data-mdl-volume-bar-count", String(n));
+    canvas.setAttribute("data-mdl-volume-first-ts", String(bars[0].ts || ""));
+    canvas.setAttribute("data-mdl-volume-last-ts", String(bars[n - 1].ts || ""));
+    canvas.setAttribute("data-mdl-volume-slot", String(slot));
+    canvas.setAttribute("data-mdl-volume-pad-l", String(padL));
+    canvas.setAttribute("data-mdl-volume-pad-r", String(padR));
+    canvas.setAttribute("data-mdl-volume-body-w", String(bodyW));
+    canvas.setAttribute(
+      "data-mdl-volume-full-series-clearrect",
+      fullClear ? "true" : "false"
+    );
+    if (volumes[n - 1] !== null) {
+      canvas.setAttribute("data-mdl-volume-last", String(volumes[n - 1]));
+      canvas.setAttribute(
+        "data-mdl-volume-last-direction",
+        String(directions[n - 1])
+      );
+    } else {
+      canvas.removeAttribute("data-mdl-volume-last");
+      canvas.removeAttribute("data-mdl-volume-last-direction");
+    }
+    panel.setAttribute("data-mdl-volume-synced-with-chart", "true");
+    panel.setAttribute("data-mdl-volume-bar-count", String(n));
+    return true;
+  }
+
+  function paintLastVolumeBarInPlace(payload, bars, sharedLayout) {
+    if (
+      !volumeLayout ||
+      !sharedLayout ||
+      volumeLayout.n !== bars.length ||
+      volumeLayout.n !== sharedLayout.n ||
+      volumeLayout.slot !== sharedLayout.slot ||
+      volumeLayout.padL !== sharedLayout.padL ||
+      volumeLayout.bodyW !== sharedLayout.bodyW
+    ) {
+      return paintVolumeFullSeries(payload, bars, sharedLayout, true);
+    }
+    var canvas = root.querySelector("[data-mdl-volume-canvas]");
+    if (!canvas) return false;
+    var stateInfo = resolveVolumePanelState(payload, bars);
+    setVolumePanelState(stateInfo.state, stateInfo.message);
+    if (stateInfo.state === "MISSING_SOURCE" || stateInfo.state === "NOT_BOUND") {
+      markVolumeBlank(stateInfo.state.toLowerCase());
+      return false;
+    }
+    var last = bars.length - 1;
+    var vol = usableVolumeValue(bars[last].volume);
+    if (vol === null) {
+      return paintVolumeFullSeries(payload, bars, sharedLayout, true);
+    }
+    if (vol > volumeLayout.maxV) {
+      return paintVolumeFullSeries(payload, bars, sharedLayout, true);
+    }
+    var ctx = canvas.getContext("2d");
+    if (!ctx) {
+      markVolumeBlank("no_2d_context");
+      return false;
+    }
+    var L = volumeLayout;
+    ctx.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
+    var clearX = Math.max(0, L.padL + L.slot * (last - 0.15));
+    var clearW = Math.min(L.cssWidth - clearX, L.slot * 1.3);
+    ctx.clearRect(clearX, 0, clearW, L.cssHeight);
+    var xCenter = L.padL + L.slot * (last + 0.5);
+    var barH = Math.max(vol > 0 ? 1 : 0, (vol / L.maxV) * L.plotH);
+    var y = L.padT + L.plotH - barH;
+    var direction = classifyVolumeBarDirection(
+      Number(bars[last].open),
+      Number(bars[last].close)
+    );
+    ctx.fillStyle = volumeDirectionColor(direction);
+    ctx.fillRect(xCenter - L.bodyW / 2, y, L.bodyW, Math.max(0, barH));
+    canvas.setAttribute("data-mdl-volume-last", String(vol));
+    canvas.setAttribute("data-mdl-volume-last-direction", direction);
+    canvas.setAttribute("data-mdl-volume-full-series-clearrect", "false");
+    canvas.setAttribute("data-mdl-volume-bar-count", String(bars.length));
+    canvas.setAttribute("data-mdl-volume-last-ts", String(bars[last].ts || ""));
+    var panel = root.querySelector("[data-mdl-volume-panel]");
+    if (panel) panel.setAttribute("data-mdl-volume-synced-with-chart", "true");
+    return true;
+  }
+
   function classifyUpdate(prevBars, nextBars, prevSeriesDigest, nextSeriesDigest, prevMark, nextMark, prevMeta, nextMeta) {
     if (!nextBars || !nextBars.length) return "NO_CHANGE";
     if (!prevBars || !prevBars.length) return "NEW_CANDLE_APPEND";
@@ -762,8 +1037,16 @@
     var ok;
     if (mode === "LAST_CANDLE_IN_PLACE") {
       ok = paintLastCandleInPlace(canvas, payload, bars, arrays);
+      if (ok && chartLayout) {
+        paintLastVolumeBarInPlace(payload, bars, chartLayout);
+      }
     } else {
       ok = paintFullSeries(canvas, payload, bars, arrays, true);
+      if (ok && chartLayout) {
+        paintVolumeFullSeries(payload, bars, chartLayout, true);
+      } else {
+        markVolumeBlank(ok ? "missing_chart_layout" : "candle_paint_failed");
+      }
     }
     if (ok) {
       lastBars = bars.map(function (b) {
@@ -820,6 +1103,21 @@
         setConnectionState(connectionState || "MISSING_SOURCE");
       } else {
         setConnectionState(connectionState);
+        var volState =
+          availability === "STALE" || connectionState === "STALE"
+            ? "STALE"
+            : availability === "NOT_BOUND"
+              ? "NOT_BOUND"
+              : "MISSING_SOURCE";
+        setVolumePanelState(
+          volState,
+          volState === "STALE"
+            ? "Volume STALE — canonical OHLCV freshness reports stale; no bars."
+            : volState === "NOT_BOUND"
+              ? "Volume NOT_BOUND — OHLCV present but not browser-serializable for volume."
+              : "Volume MISSING_SOURCE — no OHLCV volume field in existing payload."
+        );
+        markVolumeBlank(volState.toLowerCase());
       }
       return;
     }

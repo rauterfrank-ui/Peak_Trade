@@ -176,6 +176,30 @@
               aria-hidden="true"
             ></canvas>
           </div>
+          {# Compact volume histogram — same X window as candle canvas; no buy/sell delta. #}
+          <div
+            class="mdl-v2-volume"
+            data-mdl-volume-panel="true"
+            data-mdl-volume-state="{{ chart.volume_panel_state }}"
+            data-mdl-volume-synced-with-chart="false"
+          >
+            <div class="mdl-v2-volume__chrome">
+              <span class="mdl-v2-volume__label">Volume</span>
+              <span
+                class="mdl-v2-state"
+                data-mdl-volume-state-label="true"
+                data-mdl-volume-state="{{ chart.volume_panel_state }}"
+              >{{ chart.volume_panel_state }}</span>
+            </div>
+            <p class="mdl-v2-volume__message" data-mdl-volume-message="true">{{ chart.volume_panel_message }}</p>
+            <canvas
+              class="mdl-v2-volume__canvas"
+              data-mdl-volume-canvas="true"
+              data-mdl-volume-bar-count="0"
+              data-mdl-volume-geometry="absent"
+              aria-hidden="true"
+            ></canvas>
+          </div>
         </div>
       </section>
 

@@ -934,10 +934,13 @@ def test_js_layout_stability_and_update_classification_contracts() -> None:
     # CSS owns fixed stage/meta bands; chart must not flex-grow the Decision strip away.
     assert "--mdl-stage-height" in css
     assert "max-height: var(--mdl-stage-height)" in css
+    assert "--mdl-volume-height" in css
+    assert "max-height: var(--mdl-volume-height)" in css
     assert "--mdl-chart-meta-band" in css
     assert "flex: 0 0 auto" in css
     assert "min(56vh, 580px)" not in css
     assert 'data-mdl-decision-strip="true"' in html
+    assert 'data-mdl-volume-panel="true"' in html
     assert "text-overflow: ellipsis" in css
 
 

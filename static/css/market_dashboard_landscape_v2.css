@@ -57,6 +57,10 @@
   --mdl-warn: #fbbf24;
   /* Stable primary chart band — leaves room for Decision strip in 982px viewport. */
   --mdl-stage-height: 300px;
+  /* Compact volume histogram under candles; must not displace candle stage height. */
+  --mdl-volume-height: 64px;
+  --mdl-volume-chrome-band: 1rem;
+  --mdl-volume-message-band: 1rem;
   --mdl-chart-chrome-band: 1.5rem;
   --mdl-chart-meta-band: 5.5rem;
   --mdl-chart-message-band: 1.25rem;
@@ -191,8 +195,9 @@
 .mdl-v2-rail--right {
   /* Context rail must not stretch the primary chart column height. */
   max-height: calc(
-    var(--mdl-stage-height) + var(--mdl-chart-meta-band) + var(--mdl-chart-chrome-band) +
-      var(--mdl-chart-message-band) + 24px
+    var(--mdl-stage-height) + var(--mdl-volume-height) + var(--mdl-volume-chrome-band) +
+      var(--mdl-volume-message-band) + var(--mdl-chart-meta-band) +
+      var(--mdl-chart-chrome-band) + var(--mdl-chart-message-band) + 24px
   );
   overflow: auto;
 }
@@ -367,6 +372,66 @@
   height: auto;
   max-width: 100%;
   max-height: 100%;
+}
+
+.mdl-v2-volume {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 0;
+  min-height: 0;
+  height: calc(
+    var(--mdl-volume-height) + var(--mdl-volume-chrome-band) + var(--mdl-volume-message-band)
+  );
+  max-height: calc(
+    var(--mdl-volume-height) + var(--mdl-volume-chrome-band) + var(--mdl-volume-message-band)
+  );
+  overflow: hidden;
+}
+
+.mdl-v2-volume__chrome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  height: var(--mdl-volume-chrome-band);
+  min-height: var(--mdl-volume-chrome-band);
+  max-height: var(--mdl-volume-chrome-band);
+  overflow: hidden;
+}
+
+.mdl-v2-volume__label {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mdl-muted);
+  font-weight: 600;
+}
+
+.mdl-v2-volume__message {
+  margin: 0;
+  height: var(--mdl-volume-message-band);
+  min-height: var(--mdl-volume-message-band);
+  max-height: var(--mdl-volume-message-band);
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mdl-v2-volume__canvas {
+  display: block;
+  width: 100%;
+  height: var(--mdl-volume-height);
+  min-height: var(--mdl-volume-height);
+  max-height: var(--mdl-volume-height);
+  max-width: 100%;
+}
+
+.mdl-v2-volume[data-mdl-volume-state="MISSING_SOURCE"] .mdl-v2-volume__canvas,
+.mdl-v2-volume[data-mdl-volume-state="NOT_BOUND"] .mdl-v2-volume__canvas {
+  opacity: 0.35;
 }
 
 .mdl-v2-state {
