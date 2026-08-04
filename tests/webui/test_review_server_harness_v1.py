@@ -682,7 +682,10 @@ def test_headed_keepalive_entrypoint_cli_contract() -> None:
         raise AssertionError("browser must not start in CLI contract test")
 
     stub.managed_chrome_channel = _unused_managed  # type: ignore[attr-defined]
-    sys.modules["review_server_playwright_webserver_v1"] = stub
+    module_key = "review_server_playwright_webserver_v1"
+    previous_module = sys.modules.get(module_key)
+    had_previous_module = module_key in sys.modules
+    sys.modules[module_key] = stub
     try:
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
@@ -691,7 +694,10 @@ def test_headed_keepalive_entrypoint_cli_contract() -> None:
         assert ns.url == "http://127.0.0.1:8000/"
         assert ns.goto_timeout_ms == 60_000
     finally:
-        sys.modules.pop("review_server_playwright_webserver_v1", None)
+        if had_previous_module:
+            sys.modules[module_key] = previous_module
+        else:
+            sys.modules.pop(module_key, None)
 
 
 def test_playwright_webserver_smoke_and_no_external_network(
