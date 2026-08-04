@@ -3943,7 +3943,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 |---------|-------|
 | Tape SSR spec + operator enablement | `docs/webui/MARKET_DASHBOARD_REMOVED.md` (product removed; historical tape SSR notes only) |
 | Tape SSR product tests | deleted with Market Dashboard product — live guard: `tests/webui/test_market_dashboard_tombstone_v1.py` |
-| Tape env/schema boundary guard | deleted with Market Dashboard product — see tombstone |
+| Tape env/schema boundary guard | deleted with Market Dashboard product — see `docs/webui/MARKET_DASHBOARD_REMOVED.md` (`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`) |
 | DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
 
 ```text
@@ -3975,8 +3975,8 @@ PREFLIGHT_REMAINS_BLOCKED=true
 |---------|-------|
 | Operator Overview IA v1 spec + display-only markers | `docs/webui/MARKET_DASHBOARD_REMOVED.md` (product removed) |
 | Operator Overview product structure tests | deleted with Market Dashboard product — live guard: `tests/webui/test_market_dashboard_tombstone_v1.py` |
-| Operator Overview env boundary guard | deleted with Market Dashboard product — see tombstone |
-| Display-only operator overview wiring (historical) | removed with Market Dashboard product — see tombstone |
+| Operator Overview env boundary guard | deleted with Market Dashboard product — see `docs/webui/MARKET_DASHBOARD_REMOVED.md` (`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`) |
+| Display-only operator overview wiring (historical) | removed with Market Dashboard product — see `docs/webui/MARKET_DASHBOARD_REMOVED.md` (`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`) |
 | DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
 
 ```text

@@ -230,7 +230,12 @@ OTHER_OBSERVER_SURFACES:
   health and CI/ops surfaces
 ```
 
-The former legacy Market Dashboard product is tombstoned and must not be resurrected without explicit Owner authorization.
+The former legacy Market Dashboard product / `market_surface` is fully removed
+(`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`) and is not an architectural
+component. Negative non-regression guards exist solely to prevent
+reintroduction. No tombstone route, module, presenter, template, source, slot,
+fallback, compatibility path, authority, producer, read model, or runtime path
+exists. Do not resurrect it without explicit Owner authorization.
 
 ## 3A.2 Runtime launch families
 

@@ -82,11 +82,13 @@ def test_chartjs_vendor_primary_r_and_d_charts_v1(client: TestClient) -> None:
 
 
 def test_market_surface_docs_removed_for_chartjs_contract() -> None:
-    tombstone = project_root / "docs/webui/MARKET_DASHBOARD_REMOVED.md"
-    assert tombstone.is_file()
+    removal_notice = project_root / "docs/webui/MARKET_DASHBOARD_REMOVED.md"
+    assert removal_notice.is_file()
     assert not (project_root / "docs/webui/MARKET_SURFACE_V0.md").exists()
-    text = tombstone.read_text(encoding="utf-8")
+    text = removal_notice.read_text(encoding="utf-8")
     assert "intentionally removed" in text.lower() or "intentionally absent" in text.lower()
+    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" in text
+    assert "No tombstone route" in text
 
 
 def test_docs_truth_map_chartjs_phase_1b_vendor_primary_v1() -> None:

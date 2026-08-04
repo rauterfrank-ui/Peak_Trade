@@ -27,7 +27,7 @@ A prior in-progress attempt treated Grafana as an expected monitoring component.
 | Surface | Treatment in this audit |
 |---|---|
 | Grafana | **Not expected.** Not inventarized as live/deploy target. Status=`REMOVED_AS_DESIGNED`. Only stale string references counted. |
-| Market Dashboard | Product removed (tombstone). Only stale string references counted. |
+| Market Dashboard | Product removed (`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`; no tombstone route/module/path exists). Only stale string references counted. |
 | Historical priorities plan / Phase-62 plans | Hints only — not automatic SSOT for topology. |
 
 ## 2. Canonical topology (repo-resolved)
@@ -80,7 +80,7 @@ No notification/test-alert sent.
 | Grafana | `REMOVED_AS_DESIGNED` | No provisioning tree; not audited for reachability |
 | Alertmanager | `REMOVED_AS_DESIGNED` | No `alertmanager.yml`; not expected |
 | CloudWatch Peak_Trade monitoring | `REMOVED_AS_DESIGNED` | Not a Peak_Trade monitoring deploy SSOT |
-| Market Dashboard product | `REMOVED_AS_DESIGNED` | Tombstone `docs/webui/MARKET_DASHBOARD_REMOVED.md` |
+| Market Dashboard product | `REMOVED_AS_DESIGNED` | Removal notice `docs/webui/MARKET_DASHBOARD_REMOVED.md` (`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`; no active tombstone surface) |
 
 ## 5. Stale references only (excl. `evidence/`)
 

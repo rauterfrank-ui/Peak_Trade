@@ -1,7 +1,7 @@
 {
   "authority_classification": "DERIVED_DOMAIN_AUTHORITY_ONLY",
   "canonical_document_path": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md",
-  "canonical_document_sha256": "d71b84a02490607f80132d72e6723acdbfd6cd75e5d2203d3e9a7283774d060c",
+  "canonical_document_sha256": "cbb1c83d0f3f767ac27d684637fc7536502480d551d9a7017a5df832d57fd768",
   "core_logic_changed": false,
   "credentials_used": false,
   "document_class": "CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK",
