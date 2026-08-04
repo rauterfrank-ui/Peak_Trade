@@ -1,0 +1,93 @@
+{
+  "schema_name": "market_dashboard_projection_octet_materialization_path_discovery.v1",
+  "schema_version": 1,
+  "batch_id": "PROJECTION_OCTET_MATERIALIZATION_PATH_DISCOVERY_V1",
+  "generated_at": "2026-08-04T19:54:24Z",
+  "repo_root": "/Users/frnkhrz/Peak_Trade",
+  "initial_branch_or_detached_head": "HEAD (detached)",
+  "initial_head_sha": "8aa5606fc08419d5e436a1e4db414deb680e9f71",
+  "origin_main_sha": "8aa5606fc08419d5e436a1e4db414deb680e9f71",
+  "prior_verify_batch": {
+    "path": "docs/ops/market_dashboard/market_dashboard_projection_octet_runtime_verify_v1/VERIFY.json",
+    "artifacts_present": 0,
+    "artifacts_missing": 8,
+    "materializer_executed": false,
+    "archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z"
+  },
+  "scope": {
+    "read_only_discovery": true,
+    "materializer_execution_authorized": false,
+    "active_archive_write_authorized": false,
+    "b3_authorized": false,
+    "dashboard_mutation_authorized": false,
+    "producer_mutation_authorized": false,
+    "trading_logic_mutation_authorized": false
+  },
+  "methods": [
+    "static_source_inspection_of_eight_materializer_and_projection_modules",
+    "owner_registry_and_archive_root_contract_inspection",
+    "rg_search_for_scripts_launchagents_ops_orchestration_invocation",
+    "ast_call_site_scan_over_src_scripts_tests",
+    "read_only_ls_of_active_archive_readmodels"
+  ],
+  "active_archive_readmodels_observed": [
+    "MANIFEST.sha256",
+    "MANIFEST_VERIFY.log",
+    "okx_selected_instrument_ohlcv_readmodel.v1.json",
+    "universe_selection_readmodel.v1.json"
+  ],
+  "families_analyzed": [
+    "dynamic_scope",
+    "regime_bull_bear_switch",
+    "canonical_decision",
+    "double_play",
+    "safety_authority",
+    "risk_sizing_capital",
+    "execution_reconciliation",
+    "economic_summary"
+  ],
+  "counts": {
+    "families_analyzed": 8,
+    "materializers_proven": 8,
+    "source_siblings_present": 0,
+    "source_siblings_missing_with_defined_path": 7,
+    "safety_authority_without_durable_sibling_loader": 1,
+    "presentation_projections_present_in_active_archive": 0,
+    "existing_automatic_paths": 0,
+    "existing_manual_paths": 0,
+    "test_only_paths": 8,
+    "implemented_not_invoked_operationally": 8,
+    "config_or_gate_blocked": 0,
+    "no_invocation_path_proven": 0,
+    "ast_non_test_call_sites": 0
+  },
+  "octet_path_classification": "EIGHT_INDEPENDENT_PATHS_PROVEN",
+  "operational_reachability_classification": "NO_OPERATIONAL_PATH_PROVEN",
+  "owner_decision_recommendation": "D",
+  "owner_decision_recommendation_label": "MIXED_BLOCKERS_REQUIRE_BOUNDED_FAMILY_PLAN",
+  "semantic_mutation_assessment": {
+    "conclusion": "Existing materializer library paths, if later separately authorized and invoked, write only non-authoritative presentation projection JSON under archive readmodels with AUTHORITY_EFFECT=NONE. Repository evidence shows they do not alter trading SSOT, producers, canonical decision/double-play/risk/safety/execution/economic evaluation logic, or dashboard consumer semantics. No existing operational path currently reaches them.",
+    "would_any_existing_path_mutate_trading_logic": false,
+    "would_any_existing_path_mutate_runtime_process": false,
+    "would_any_existing_path_mutate_producer_code": false,
+    "would_any_existing_path_mutate_canonical_readmodels": false,
+    "would_authorized_materialize_write_presentation_artifacts": true
+  },
+  "artifact_paths": {
+    "family_matrix": "docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json",
+    "invocation_graph": "docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/INVOCATION_GRAPH.json",
+    "owner_decision_input": "docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/OWNER_DECISION_INPUT.json",
+    "discovery_md": "docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/DISCOVERY.md"
+  },
+  "invariants": {
+    "B3_AUTHORIZED": false,
+    "MATERIALIZER_EXECUTED": false,
+    "ACTIVE_ARCHIVE_WRITTEN": false,
+    "RUNTIME_CHANGED": false,
+    "PRODUCER_CHANGED": false,
+    "CANONICAL_READMODEL_CHANGED": false,
+    "TRADING_LOGIC_CHANGED": false,
+    "DASHBOARD_ROLE": "PURE_CONSUMER",
+    "DASHBOARD_AUTHORITY_EFFECT": "NONE"
+  }
+}
