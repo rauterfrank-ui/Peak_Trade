@@ -100,7 +100,7 @@
       label.textContent = token;
       label.setAttribute("data-mdl-volume-state", token);
     }
-    if (msg && message) msg.textContent = String(message);
+    if (msg) msg.textContent = message ? String(message) : "";
   }
 
   function setConnectionState(state) {
@@ -276,8 +276,7 @@
     }
     return {
       state: "AVAILABLE",
-      message:
-        "Volume bound to authentic OHLCV bar volume (contracts); not buy/sell delta.",
+      message: "",
     };
   }
 
@@ -438,12 +437,122 @@
     return true;
   }
 
-  function formatMetaNumber(value) {
-    if (value === undefined || value === null || value === "") return "—";
+  function resolvePresentationTickSize(payload) {
+    var fromRoot = root.getAttribute("data-mdl-tick-size");
+    if (fromRoot && String(fromRoot).trim()) return String(fromRoot).trim();
+    if (payload && payload.tick_size != null && String(payload.tick_size).trim()) {
+      return String(payload.tick_size).trim();
+    }
+    if (payload && payload.tickSz != null && String(payload.tickSz).trim()) {
+      return String(payload.tickSz).trim();
+    }
+    return null;
+  }
+
+  function tickFractionDigits(tickSize) {
+    if (tickSize === undefined || tickSize === null || tickSize === "") return null;
+    var raw = String(tickSize).trim();
+    if (!raw) return null;
+    var n = Number(raw);
+    if (!Number.isFinite(n) || n <= 0) return null;
+    if (raw.indexOf("e") >= 0 || raw.indexOf("E") >= 0) {
+      var expanded = expandScientificToPlain(raw);
+      if (!expanded) return null;
+      raw = expanded;
+    }
+    var dot = raw.indexOf(".");
+    if (dot < 0) return 0;
+    return raw.length - dot - 1;
+  }
+
+  function expandScientificToPlain(raw) {
+    var s = String(raw).trim();
+    var match = /^([+-]?)(\d+)(?:\.(\d+))?e([+-]?\d+)$/i.exec(s);
+    if (!match) return null;
+    var sign = match[1] === "-" ? "-" : "";
+    var intPart = match[2];
+    var fracPart = match[3] || "";
+    var exp = parseInt(match[4], 10);
+    if (!Number.isFinite(exp)) return null;
+    var digits = intPart + fracPart;
+    var exponent = exp - fracPart.length;
+    if (exponent >= 0) {
+      return sign + digits + new Array(exponent + 1).join("0");
+    }
+    var pointAt = digits.length + exponent;
+    if (pointAt <= 0) {
+      return sign + "0." + new Array(1 - pointAt).join("0") + digits;
+    }
+    return sign + digits.slice(0, pointAt) + "." + digits.slice(pointAt);
+  }
+
+  function decimalSafePlainFromInput(value) {
+    if (value === undefined || value === null || value === "") return null;
+    if (typeof value === "string") {
+      var trimmed = value.trim();
+      if (!trimmed) return null;
+      if (/[eE]/.test(trimmed)) {
+        return expandScientificToPlain(trimmed);
+      }
+      if (!Number.isFinite(Number(trimmed))) return null;
+      return trimmed;
+    }
     var n = Number(value);
-    if (!Number.isFinite(n)) return String(value);
-    if (Math.abs(n) > 0 && Math.abs(n) < 1e-4) return n.toExponential(3);
-    return String(n);
+    if (!Number.isFinite(n)) return null;
+    var asString = String(n);
+    if (/[eE]/.test(asString)) {
+      return expandScientificToPlain(asString);
+    }
+    return asString;
+  }
+
+  function formatMarketPriceDisplay(value, tickSize) {
+    // Presentation-only plain decimal; never toExponential. Prefer tick decimals.
+    var plain = decimalSafePlainFromInput(value);
+    if (plain === null) {
+      if (value === undefined || value === null || value === "") return "—";
+      return String(value);
+    }
+    var digits = tickFractionDigits(tickSize);
+    if (digits !== null) {
+      var num = Number(plain);
+      if (!Number.isFinite(num)) return plain;
+      // Display-only fixed digits from tick; avoid scientific via plain expansion.
+      var fixed = num.toFixed(digits);
+      if (/[eE]/.test(fixed)) {
+        var expandedFixed = expandScientificToPlain(fixed);
+        return expandedFixed || plain;
+      }
+      return fixed;
+    }
+    // Documented fallback when tick/precision metadata is absent.
+    return plain;
+  }
+
+  function formatMarketVolumeDisplay(value) {
+    var plain = decimalSafePlainFromInput(value);
+    if (plain === null) {
+      if (value === undefined || value === null || value === "") return "—";
+      return String(value);
+    }
+    var num = Number(plain);
+    if (Number.isFinite(num) && Number.isInteger(num)) return String(num);
+    return plain;
+  }
+
+  function formatMarketChangePctDisplay(openV, closeV) {
+    var o = Number(openV);
+    var c = Number(closeV);
+    if (!Number.isFinite(o) || !Number.isFinite(c) || o === 0) return "—";
+    var pct = ((c - o) / o) * 100;
+    if (!Number.isFinite(pct)) return "—";
+    var plain = pct.toFixed(4);
+    if (pct > 0) return "+" + plain + "%";
+    return plain + "%";
+  }
+
+  function formatMetaNumber(value, tickSize) {
+    return formatMarketPriceDisplay(value, tickSize);
   }
 
   /**
@@ -475,11 +584,12 @@
   }
 
   function formatLastPriceMarkerLabel(close, delta, deltaPct) {
+    // Retained for contract tests; in-chart text box is intentionally unused.
     if (!Number.isFinite(close)) return "";
-    var parts = ["close " + formatMetaNumber(close)];
+    var parts = ["Close " + formatMetaNumber(close)];
     if (Number.isFinite(delta)) {
       var sign = delta > 0 ? "+" : "";
-      parts.push("Δ " + sign + formatMetaNumber(delta));
+      parts.push("Change " + sign + formatMetaNumber(delta));
     }
     if (Number.isFinite(deltaPct)) {
       var pctSign = deltaPct > 0 ? "+" : "";
@@ -500,11 +610,10 @@
     el.setAttribute("aria-hidden", "true");
     el.setAttribute(
       "title",
-      "Presentation observation of last candle close and poll delta; not a trading signal."
+      "Presentation observation of last candle close; not a trading signal."
     );
     el.innerHTML =
-      '<div class="mdl-v2-last-price-marker__line" data-mdl-last-price-line="true"></div>' +
-      '<div class="mdl-v2-last-price-marker__label" data-mdl-last-price-label="true"></div>';
+      '<div class="mdl-v2-last-price-marker__line" data-mdl-last-price-line="true"></div>';
     stage.appendChild(el);
     return el;
   }
@@ -574,14 +683,9 @@
     );
     el.setAttribute("data-mdl-last-price-y", String(yCss));
     el.setAttribute("data-mdl-last-price-ts", resolved.ts);
+    // No in-chart close/Δ text box — authentic values stay in the meta row.
     var label = el.querySelector("[data-mdl-last-price-label]");
-    if (label) {
-      label.textContent = formatLastPriceMarkerLabel(
-        resolved.close,
-        resolved.delta,
-        resolved.deltaPct
-      );
-    }
+    if (label) label.textContent = "";
     canvas.setAttribute("data-mdl-last-price-close", String(resolved.close));
     canvas.setAttribute("data-mdl-last-price-delta", String(resolved.delta));
     canvas.setAttribute(
@@ -610,9 +714,11 @@
     var highNode = root.querySelector('[data-mdl-field="ohlcv_high"]');
     var lowNode = root.querySelector('[data-mdl-field="ohlcv_low"]');
     var closeNode = root.querySelector('[data-mdl-field="ohlcv_close"]');
+    var changeNode = root.querySelector('[data-mdl-field="ohlcv_change"]');
     var volumeNode = root.querySelector('[data-mdl-field="ohlcv_volume"]');
     var availNode = root.querySelector("[data-mdl-chart-availability]");
     var last = lastBarFromPayload(payload);
+    var tickSize = resolvePresentationTickSize(payload);
     if (intervalNode) {
       intervalNode.textContent = (payload && payload.interval) || "—";
     }
@@ -625,13 +731,15 @@
     }
     if (markNode) {
       // Absent optional mark → em dash. Never substitute candle close.
-      var mark =
+      if (
         payload &&
         payload.live_mark_price !== undefined &&
         payload.live_mark_price !== null
-          ? String(payload.live_mark_price)
-          : "—";
-      markNode.textContent = mark;
+      ) {
+        markNode.textContent = formatMarketPriceDisplay(payload.live_mark_price, tickSize);
+      } else {
+        markNode.textContent = "—";
+      }
     }
     if (revisionNode) {
       revisionNode.textContent =
@@ -639,11 +747,26 @@
         root.getAttribute("data-mdl-ohlcv-update-class") ||
         "—";
     }
-    if (openNode) openNode.textContent = last ? formatMetaNumber(last.open) : "—";
-    if (highNode) highNode.textContent = last ? formatMetaNumber(last.high) : "—";
-    if (lowNode) lowNode.textContent = last ? formatMetaNumber(last.low) : "—";
-    if (closeNode) closeNode.textContent = last ? formatMetaNumber(last.close) : "—";
-    if (volumeNode) volumeNode.textContent = last ? formatMetaNumber(last.volume) : "—";
+    if (openNode) {
+      openNode.textContent = last ? formatMarketPriceDisplay(last.open, tickSize) : "—";
+    }
+    if (highNode) {
+      highNode.textContent = last ? formatMarketPriceDisplay(last.high, tickSize) : "—";
+    }
+    if (lowNode) {
+      lowNode.textContent = last ? formatMarketPriceDisplay(last.low, tickSize) : "—";
+    }
+    if (closeNode) {
+      closeNode.textContent = last ? formatMarketPriceDisplay(last.close, tickSize) : "—";
+    }
+    if (changeNode) {
+      changeNode.textContent = last
+        ? formatMarketChangePctDisplay(last.open, last.close)
+        : "—";
+    }
+    if (volumeNode) {
+      volumeNode.textContent = last ? formatMarketVolumeDisplay(last.volume) : "—";
+    }
     if (availNode && availability) {
       availNode.textContent = availability;
       availNode.setAttribute("data-availability", availability);
