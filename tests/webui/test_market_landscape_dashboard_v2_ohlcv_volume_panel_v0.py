@@ -158,6 +158,11 @@ def test_html_css_js_volume_panel_sync_contracts() -> None:
     assert "not buy/sell volume semantics" in js
     assert "CVD" not in js
     assert "orderbook" not in js.lower()
+    # Live price marker must not alter volume geometry owners.
+    assert "paintVolumeFullSeries" in js
+    assert "sharedLayout.padL" in js
+    assert "sharedLayout.bodyW" in js
+    assert "mdl-v2-last-price-marker" in css or "syncLastPriceMarker" in js
     # Poll cadence must remain presentation-mirrored; do not invent a second timer.
     assert 'data-mdl-ohlcv-poll-interval-seconds"' in html or "poll_interval_seconds" in html
 
@@ -247,3 +252,14 @@ def test_existing_live_candle_path_preserved() -> None:
     # Volume in-place mirrors live candle path; no second poll loop.
     assert js.count("function startOhlcvPolling()") == 1
     assert "www.okx.com" not in js
+    # Marker is presentation overlay; candle/volume geometry functions remain independent.
+    assert "syncLastPriceMarker" in js
+    assert "function domainFor(highs, lows)" in js
+    paint_last = js.split("function paintLastCandleInPlace", 1)[1].split(
+        "function paintVolumeFullSeries", 1
+    )[0]
+    assert "Math.max(1, Math.abs(yC - yO))" in paint_last
+    assert "syncLastPriceMarker(canvas, bars, L)" in paint_last
+    # Marker must not rewrite OHLC arrays or invent closes into candle bodies.
+    assert "arrays.closes[last] =" not in paint_last
+    assert "bars[last].close =" not in paint_last
