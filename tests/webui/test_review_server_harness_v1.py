@@ -452,6 +452,248 @@ def test_playwright_webserver_module_contracts() -> None:
             os.environ["CI"] = old_ci
 
 
+def _load_playwright_webserver_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "review_server_playwright_webserver_v1", PLAYWRIGHT_WEBSERVER
+    )
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+class _FakeBrowser:
+    def __init__(self) -> None:
+        self.close_calls = 0
+        self.close_error: Exception | None = None
+
+    def close(self) -> None:
+        self.close_calls += 1
+        if self.close_error is not None:
+            raise self.close_error
+
+
+class _FakePlaywright:
+    def __init__(self) -> None:
+        self.stop_calls = 0
+        self.stop_error: Exception | None = None
+        self.chromium = self
+
+    def launch(self, *args: object, **kwargs: object) -> _FakeBrowser:
+        return _FakeBrowser()
+
+    def stop(self) -> None:
+        self.stop_calls += 1
+        if self.stop_error is not None:
+            raise self.stop_error
+
+
+def test_chrome_channel_handle_context_manager_closes_browser() -> None:
+    mod = _load_playwright_webserver_module()
+    browser = _FakeBrowser()
+    with mod.ChromeChannelHandle(browser, {"ok": True}, owns_playwright=False) as handle:
+        assert handle.browser is browser
+        assert handle.closed is False
+    assert browser.close_calls == 1
+    assert handle.closed is True
+
+
+def test_chrome_channel_handle_close_is_idempotent() -> None:
+    mod = _load_playwright_webserver_module()
+    browser = _FakeBrowser()
+    handle = mod.ChromeChannelHandle(browser, {}, owns_playwright=False)
+    handle.close()
+    handle.close()
+    assert browser.close_calls == 1
+    assert handle.closed is True
+
+
+def test_chrome_channel_handle_closes_on_with_block_exception() -> None:
+    mod = _load_playwright_webserver_module()
+    browser = _FakeBrowser()
+    with pytest.raises(RuntimeError, match="boom"):
+        with mod.ChromeChannelHandle(browser, {}, owns_playwright=False):
+            raise RuntimeError("boom")
+    assert browser.close_calls == 1
+
+
+def test_chrome_channel_handle_stops_playwright_only_when_owned() -> None:
+    mod = _load_playwright_webserver_module()
+    owned_browser = _FakeBrowser()
+    owned_pw = _FakePlaywright()
+    with mod.ChromeChannelHandle(owned_browser, {}, playwright=owned_pw, owns_playwright=True):
+        pass
+    assert owned_browser.close_calls == 1
+    assert owned_pw.stop_calls == 1
+
+    external_browser = _FakeBrowser()
+    external_pw = _FakePlaywright()
+    with mod.ChromeChannelHandle(
+        external_browser, {}, playwright=external_pw, owns_playwright=False
+    ):
+        pass
+    assert external_browser.close_calls == 1
+    assert external_pw.stop_calls == 0
+
+
+def test_chrome_channel_handle_browser_close_error_still_stops_owned_playwright() -> None:
+    mod = _load_playwright_webserver_module()
+    browser = _FakeBrowser()
+    browser.close_error = RuntimeError("browser-close-failed")
+    pw = _FakePlaywright()
+    handle = mod.ChromeChannelHandle(browser, {}, playwright=pw, owns_playwright=True)
+    with pytest.raises(RuntimeError, match="browser-close-failed"):
+        handle.close()
+    assert browser.close_calls == 1
+    assert pw.stop_calls == 1
+    assert handle.closed is True
+
+
+def test_chrome_channel_signal_handlers_opt_in_only() -> None:
+    import signal
+
+    mod = _load_playwright_webserver_module()
+    browser = _FakeBrowser()
+    prev_int = signal.getsignal(signal.SIGINT)
+    prev_term = signal.getsignal(signal.SIGTERM)
+    handle = mod.ChromeChannelHandle(
+        browser, {}, owns_playwright=False, install_termination_handlers=False
+    )
+    assert signal.getsignal(signal.SIGINT) is prev_int
+    assert signal.getsignal(signal.SIGTERM) is prev_term
+    handle.close()
+
+    handle2 = mod.ChromeChannelHandle(
+        browser, {}, owns_playwright=False, install_termination_handlers=True
+    )
+    assert signal.getsignal(signal.SIGINT) is not prev_int
+    assert signal.getsignal(signal.SIGTERM) is not prev_term
+    handle2.close()
+    assert signal.getsignal(signal.SIGINT) is prev_int
+    assert signal.getsignal(signal.SIGTERM) is prev_term
+
+
+def test_chrome_channel_signal_handlers_call_close() -> None:
+    import signal
+
+    mod = _load_playwright_webserver_module()
+    browser = _FakeBrowser()
+    handle = mod.ChromeChannelHandle(
+        browser, {}, owns_playwright=False, install_termination_handlers=True
+    )
+    assert browser.close_calls == 0
+    signal.getsignal(signal.SIGINT)(signal.SIGINT, None)  # type: ignore[misc, operator]
+    assert browser.close_calls == 1
+    assert handle.closed is True
+
+    browser2 = _FakeBrowser()
+    handle2 = mod.ChromeChannelHandle(
+        browser2, {}, owns_playwright=False, install_termination_handlers=True
+    )
+    signal.getsignal(signal.SIGTERM)(signal.SIGTERM, None)  # type: ignore[misc, operator]
+    assert browser2.close_calls == 1
+    assert handle2.closed is True
+
+
+def test_launch_chrome_channel_remains_tuple_unpackable(monkeypatch: pytest.MonkeyPatch) -> None:
+    mod = _load_playwright_webserver_module()
+    fake_browser = _FakeBrowser()
+
+    class _Chromium:
+        def launch(self, *args: object, **kwargs: object) -> _FakeBrowser:
+            return fake_browser
+
+    class _Pw:
+        chromium = _Chromium()
+
+    browser, report = mod.launch_chrome_channel(_Pw(), headless=True)
+    assert browser is fake_browser
+    assert isinstance(report, dict)
+    assert report["PRIMARY_PLAYWRIGHT_CHANNEL"] == "chrome"
+    assert report["PRIMARY_BROWSER"] == "GOOGLE_CHROME"
+    assert isinstance((browser, report), tuple)
+    assert len((browser, report)) == 2
+
+
+def test_managed_chrome_channel_wraps_external_playwright(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_playwright_webserver_module()
+    fake_browser = _FakeBrowser()
+    fake_pw = _FakePlaywright()
+
+    def _fake_launch(playwright: object, *, headless: bool = True):
+        return fake_browser, {
+            "PRIMARY_BROWSER": "GOOGLE_CHROME",
+            "PRIMARY_PLAYWRIGHT_CHANNEL": "chrome",
+            "BROWSER_ACTUAL": "GOOGLE_CHROME",
+            "CHROMIUM_FALLBACK_USED": False,
+            "REAL_CHROME_VERIFIED": True,
+            "headless": headless,
+        }
+
+    monkeypatch.setattr(mod, "launch_chrome_channel", _fake_launch)
+    with mod.managed_chrome_channel(fake_pw, headless=True) as handle:
+        assert handle.browser is fake_browser
+        assert handle.playwright is fake_pw
+        assert handle.owns_playwright is False
+        assert handle.report["PRIMARY_PLAYWRIGHT_CHANNEL"] == "chrome"
+    assert fake_browser.close_calls == 1
+    assert fake_pw.stop_calls == 0
+
+
+def test_headed_keepalive_entrypoint_cli_contract() -> None:
+    keepalive = REPO_ROOT / "scripts" / "webui" / "headed_playwright_keepalive_v1.py"
+    assert keepalive.is_file()
+    text = keepalive.read_text(encoding="utf-8")
+    assert "managed_chrome_channel" in text
+    assert "install_termination_handlers=True" in text
+    assert "headless=False" in text
+    assert "sync_playwright().start()" not in text
+    assert "while True" not in text
+    assert "chrome_open(" not in text
+    assert "def chrome_open" not in text
+    assert "wait_until_closed" in text
+
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("headed_playwright_keepalive_v1", keepalive)
+    assert spec and spec.loader
+    # Import without executing main; only validate parser wiring.
+    # Avoid importing review helper side effects beyond module load.
+    module_source = text
+    assert "def build_parser()" in module_source
+    assert "def main(" in module_source
+
+    # Lightweight argparse contract without launching a browser.
+    sys_path_scripts = str(REPO_ROOT / "scripts" / "webui")
+    if sys_path_scripts not in sys.path:
+        sys.path.insert(0, sys_path_scripts)
+    # Parse via a tiny exec of build_parser only after stubbing managed import.
+    import types
+
+    stub = types.ModuleType("review_server_playwright_webserver_v1")
+    stub.PRIMARY_BROWSER = "GOOGLE_CHROME"  # type: ignore[attr-defined]
+    stub.PRIMARY_PLAYWRIGHT_CHANNEL = "chrome"  # type: ignore[attr-defined]
+
+    def _unused_managed(*args: object, **kwargs: object):  # pragma: no cover
+        raise AssertionError("browser must not start in CLI contract test")
+
+    stub.managed_chrome_channel = _unused_managed  # type: ignore[attr-defined]
+    sys.modules["review_server_playwright_webserver_v1"] = stub
+    try:
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        parser = mod.build_parser()
+        ns = parser.parse_args(["http://127.0.0.1:8000/"])
+        assert ns.url == "http://127.0.0.1:8000/"
+        assert ns.goto_timeout_ms == 60_000
+    finally:
+        sys.modules.pop("review_server_playwright_webserver_v1", None)
+
+
 def test_playwright_webserver_smoke_and_no_external_network(
     tmp_path: Path, isolated_port: int
 ) -> None:
