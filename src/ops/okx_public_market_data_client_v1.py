@@ -32,7 +32,7 @@ ALLOWED_PATHS = frozenset(
         "/api/v5/market/history-candles",
         "/api/v5/market/candles",
         # Public recent trades (no auth). Used server-side only to revise the
-        # selected instrument's open PT1H candle from authentic prints.
+        # selected instrument's open candle tip from authentic prints (PT1H/PT1M).
         "/api/v5/market/trades",
     }
 )
