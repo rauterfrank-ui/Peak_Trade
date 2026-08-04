@@ -12,7 +12,8 @@ KillSwitch state-file autoload),
 risk/sizing/capital field projection (injection or durable presentation
 projection auto-bind), execution/reconciliation field projection (injection
 or durable presentation projection auto-bind), and
-economic summary EconomicViabilityEvidenceV1 field projection.
+economic summary EconomicViabilityEvidenceV1 field projection (injection or
+durable presentation projection auto-bind).
 Lives outside market_dashboard_landscape_v2 so that package stays free of
 trading/webui producer imports (architecture guard).
 
@@ -32,7 +33,8 @@ Fail-closed:
 - Never call capital/risk/sizing evaluators, order-intent builders,
   or offline reconciliation evaluators; no order/execution mutation imports
 - Never discover/select EconomicViabilityEvidenceV1 instances (no filesystem,
-  registry, latest-file, or environment selector)
+  registry, latest-file, or environment selector); durable auto-bind uses only
+  the single well-known presentation projection path under archive root
 - Never bind promotion_economic_gate_v1 or infer lifecycle labels
 """
 
@@ -100,6 +102,10 @@ from .workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_proj
 from .workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_v1 import (
     LOAD_ERROR_ABSENT as SAFETY_AUTHORITY_PROJECTION_ABSENT,
     try_load_safety_authority_presentation_projection_v1,
+)
+from .workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_v1 import (
+    LOAD_ERROR_ABSENT as ECONOMIC_SUMMARY_PROJECTION_ABSENT,
+    try_load_economic_summary_presentation_projection_v1,
 )
 from .workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     FORBIDDEN_SELECTED_SYMBOLS,
@@ -1502,19 +1508,47 @@ def _bind_economic_summary(
     as_of: datetime,
     git_sha: str | None,
     economic_viability_evidence_fields: Mapping[str, Any] | None,
+    archive_root: Path | None = None,
 ) -> Any:
-    """Project injected EconomicViabilityEvidenceV1-compatible fields.
+    """Project EconomicViabilityEvidenceV1-compatible fields.
 
-    No durable dashboard economic readmodel. Without injection → MISSING_SOURCE.
-    Never discovers evidence files, never binds promotion_economic_gate_v1,
-    and never infers DEVELOPMENT/HOLDOUT/SEALED from paths.
+    Injection remains supported and strictly preferred. Productive auto-bind
+    loads the non-authoritative presentation projection from the Workflow
+    Dashboard archive root when injection is absent. Without injection and
+    without a valid persisted projection → MISSING_SOURCE.
+    Never discovers evidence packs via latest/registry selectors, never binds
+    promotion_economic_gate_v1, and never infers DEVELOPMENT/HOLDOUT/SEALED
+    from paths.
     """
     if economic_viability_evidence_fields is None:
-        return unavailable_economic_summary(
-            availability=Availability.MISSING_SOURCE,
-            generated_at=as_of,
-            reason=REASON_ECONOMIC_NOT_PERSISTED,
-        )
+        if archive_root is None:
+            return unavailable_economic_summary(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_ECONOMIC_NOT_PERSISTED,
+            )
+        loaded = try_load_economic_summary_presentation_projection_v1(archive_root)
+        if not loaded.loaded or loaded.binder_fields is None:
+            reason = REASON_ECONOMIC_NOT_PERSISTED
+            if loaded.load_errors:
+                first = str(loaded.load_errors[0])
+                if first != ECONOMIC_SUMMARY_PROJECTION_ABSENT:
+                    reason = first
+            availability = (
+                Availability.MISSING_SOURCE
+                if reason == REASON_ECONOMIC_NOT_PERSISTED
+                or reason == ECONOMIC_SUMMARY_PROJECTION_ABSENT
+                else Availability.INVALID
+            )
+            if reason == ECONOMIC_SUMMARY_PROJECTION_ABSENT:
+                reason = REASON_ECONOMIC_NOT_PERSISTED
+                availability = Availability.MISSING_SOURCE
+            return unavailable_economic_summary(
+                availability=availability,
+                generated_at=as_of,
+                reason=reason,
+            )
+        economic_viability_evidence_fields = loaded.binder_fields
 
     required = (
         "status",
@@ -2082,8 +2116,11 @@ def bind_market_universe_slots(
 
     economic_viability_evidence_fields accepts already-selected
     EconomicViabilityEvidenceV1-compatible fields plus producer wall-clock
-    timestamps. Without injection, economic_summary is MISSING_SOURCE.
-    Never discovers evidence artifacts or binds promotion_economic_gate_v1.
+    timestamps. Without injection, productive auto-bind loads
+    economic_summary_presentation_projection.v1 when present;
+    otherwise MISSING_SOURCE. Explicit injection remains priority over
+    archive autobind. Never discovers evidence artifacts via latest/registry
+    selectors or binds promotion_economic_gate_v1.
     """
     if generated_at.tzinfo is None:
         raise ValueError("generated_at must be timezone-aware")
@@ -2141,6 +2178,7 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         economic_viability_evidence_fields=economic_viability_evidence_fields,
+        archive_root=root,
     )
 
     if market_instrument_fields is not None:

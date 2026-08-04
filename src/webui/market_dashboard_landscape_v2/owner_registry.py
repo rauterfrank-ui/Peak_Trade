@@ -193,11 +193,16 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         authority_class="economic_evidence",
         reuse_status="REUSED",
         notes=(
-            "Phase 4.6B: Landscape projects injected EconomicViabilityEvidenceV1 "
-            "field-for-field (economic_viability_status=status enum value; "
+            "Phase 4.6B + CAPABILITY_PRESENTATION_ECONOMIC_SUMMARY_"
+            "PROJECTION_MATERIALIZER_AUTOBIND_V1: Landscape projects "
+            "EconomicViabilityEvidenceV1 field-for-field "
+            "(economic_viability_status=status enum value; "
             "economic_validity_proven/policy_threshold_status/metrics/digests); "
-            "AUTHORITY_EFFECT=NONE; explicit injection only; without injection "
-            "MISSING_SOURCE; no filesystem/registry/latest selector; "
+            "AUTHORITY_EFFECT=NONE; durable auto-bind via non-authoritative "
+            "economic_summary_presentation_projection.v1 under archive root; "
+            "explicit injection only remains priority over archive autobind; "
+            "without injection/projection MISSING_SOURCE; "
+            "no filesystem/registry/latest selector; "
             "promotion_economic_gate_v1 remains a separate owner; lifecycle "
             "labels ABSENT (not inferred)."
         ),
