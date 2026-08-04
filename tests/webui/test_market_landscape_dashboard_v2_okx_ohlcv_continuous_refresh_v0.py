@@ -1106,6 +1106,9 @@ def test_js_last_price_marker_presentation_contracts() -> None:
     assert "mdl-v2-last-price-marker" in css
     assert "mdl-v2-last-price-marker__line" in css
     assert "mdl-v2-last-price-marker__label" in css
+    assert "display: none" in css
+    # In-chart close/Δ text box must stay cleared; meta row owns OHLC telemetry.
+    assert "No in-chart close/Δ text box" in js or 'label.textContent = ""' in js
     # Geometry owners must remain untouched by this presentation overlay.
     assert "minP -= span * 0.04" in js
     assert "maxP += span * 0.04" in js
@@ -1133,7 +1136,11 @@ def test_js_last_price_poll_delta_behavioral_contracts() -> None:
 
     helpers = "\n".join(
         [
-            _extract("function formatMetaNumber(value)"),
+            _extract("function expandScientificToPlain(raw)"),
+            _extract("function decimalSafePlainFromInput(value)"),
+            _extract("function tickFractionDigits(tickSize)"),
+            _extract("function formatMarketPriceDisplay(value, tickSize)"),
+            _extract("function formatMetaNumber(value, tickSize)"),
             _extract("function resolveLastPricePollDelta(prevClose, prevTs, nextClose, nextTs)"),
             _extract("function formatLastPriceMarkerLabel(close, delta, deltaPct)"),
         ]
@@ -1163,8 +1170,8 @@ assert(bad.close === null && bad.delta === null, 'nonfinite');
 var missingTs = resolveLastPricePollDelta(100, 't1', 101, '');
 assert(missingTs.close === null && missingTs.delta === null, 'empty ts');
 var label = formatLastPriceMarkerLabel(100.5, 0.5, 0.5);
-assert(label.indexOf('close') === 0, 'label close');
-assert(label.indexOf('Δ') >= 0, 'label delta');
+assert(label.indexOf('Close') === 0, 'label close');
+assert(label.indexOf('Change') >= 0, 'label change');
 assert(label.indexOf('%') >= 0, 'label pct');
 // yFor contract: marker Y uses authentic close against frozen layout domain.
 var layout = {{ padT: 16, minP: 90, span: 20, plotH: 200 }};

@@ -143,23 +143,27 @@
               <dt>Revision</dt>
               <dd data-mdl-field="ohlcv_revision">{% if chart.ohlcv_revision_kind %}{{ chart.ohlcv_revision_kind }}{% else %}—{% endif %}</dd>
             </div>
-            <div>
+            <div class="mdl-v2-chart__meta-ohlc">
               <dt>Open</dt>
               <dd data-mdl-field="ohlcv_open">{% if chart.open_price is not none %}{{ chart.open_price }}{% else %}—{% endif %}</dd>
             </div>
-            <div>
+            <div class="mdl-v2-chart__meta-ohlc">
               <dt>High</dt>
               <dd data-mdl-field="ohlcv_high">{% if chart.high_price is not none %}{{ chart.high_price }}{% else %}—{% endif %}</dd>
             </div>
-            <div>
+            <div class="mdl-v2-chart__meta-ohlc">
               <dt>Low</dt>
               <dd data-mdl-field="ohlcv_low">{% if chart.low_price is not none %}{{ chart.low_price }}{% else %}—{% endif %}</dd>
             </div>
-            <div>
+            <div class="mdl-v2-chart__meta-ohlc">
               <dt>Close</dt>
               <dd data-mdl-field="ohlcv_close">{% if chart.close_price is not none %}{{ chart.close_price }}{% else %}—{% endif %}</dd>
             </div>
-            <div>
+            <div class="mdl-v2-chart__meta-ohlc">
+              <dt>Change</dt>
+              <dd data-mdl-field="ohlcv_change">{% if chart.change_pct is not none %}{{ chart.change_pct }}{% else %}—{% endif %}</dd>
+            </div>
+            <div class="mdl-v2-chart__meta-ohlc">
               <dt>Volume</dt>
               <dd data-mdl-field="ohlcv_volume">{% if chart.volume is not none %}{{ chart.volume }}{% else %}—{% endif %}</dd>
             </div>
@@ -183,15 +187,6 @@
             data-mdl-volume-state="{{ chart.volume_panel_state }}"
             data-mdl-volume-synced-with-chart="false"
           >
-            <div class="mdl-v2-volume__chrome">
-              <span class="mdl-v2-volume__label">Volume</span>
-              <span
-                class="mdl-v2-state"
-                data-mdl-volume-state-label="true"
-                data-mdl-volume-state="{{ chart.volume_panel_state }}"
-              >{{ chart.volume_panel_state }}</span>
-            </div>
-            <p class="mdl-v2-volume__message" data-mdl-volume-message="true">{{ chart.volume_panel_message }}</p>
             <canvas
               class="mdl-v2-volume__canvas"
               data-mdl-volume-canvas="true"

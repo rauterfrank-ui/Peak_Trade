@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping
 
 from .availability import Availability
@@ -27,6 +28,94 @@ OHLCV_POLL_INTERVAL_SECONDS = 1
 def _ohlcv_poll_interval_seconds() -> int:
     """Presentation mirror of the canonical OKX OHLCV poll cadence."""
     return int(OHLCV_POLL_INTERVAL_SECONDS)
+
+
+def _tick_fraction_digits(tick_size: Decimal) -> int | None:
+    """Derive display fraction digits from a positive tick size (presentation only)."""
+    if tick_size <= 0 or not tick_size.is_finite():
+        return None
+    exp = tick_size.normalize().as_tuple().exponent
+    if isinstance(exp, int) and exp < 0:
+        return -exp
+    if isinstance(exp, int):
+        return 0
+    return None
+
+
+def format_market_price_display_v1(
+    value: Any,
+    *,
+    tick_size: Any | None = None,
+) -> str:
+    """Plain-decimal market price for Landscape chrome — never scientific notation.
+
+    Prefer instrument tick_size decimals when available. Otherwise use a
+    documented normalize()/fixed-point fallback. Display string only; does not
+    mutate OHLCV / readmodel / producer values.
+    """
+    if value is None or value == "":
+        return "—"
+    try:
+        decimal_value = Decimal(str(value))
+    except (InvalidOperation, ValueError, TypeError):
+        return "—"
+    if not decimal_value.is_finite():
+        return "—"
+
+    tick_digits: int | None = None
+    if tick_size is not None and tick_size != "":
+        try:
+            tick = Decimal(str(tick_size))
+        except (InvalidOperation, ValueError, TypeError):
+            tick = None
+        if tick is not None:
+            tick_digits = _tick_fraction_digits(tick)
+
+    if tick_digits is not None:
+        quant = Decimal(1).scaleb(-tick_digits)
+        return format(decimal_value.quantize(quant), "f")
+
+    # Documented fallback when tick/precision metadata is absent on this surface.
+    plain = format(decimal_value.normalize(), "f")
+    if plain in {"-0", "-0.0"}:
+        return "0"
+    return plain
+
+
+def format_market_volume_display_v1(value: Any) -> str:
+    """Plain-decimal volume for Landscape chrome — never scientific notation."""
+    if value is None or value == "":
+        return "—"
+    try:
+        decimal_value = Decimal(str(value))
+    except (InvalidOperation, ValueError, TypeError):
+        return "—"
+    if not decimal_value.is_finite() or decimal_value < 0:
+        return "—"
+    if decimal_value == decimal_value.to_integral_value():
+        return format(decimal_value.to_integral_value(), "f")
+    plain = format(decimal_value.normalize(), "f")
+    if plain in {"-0", "-0.0"}:
+        return "0"
+    return plain
+
+
+def format_market_change_pct_display_v1(open_v: Any, close_v: Any) -> str:
+    """Authentic last-candle open→close percent change for meta chrome only."""
+    if open_v is None or open_v == "" or close_v is None or close_v == "":
+        return "—"
+    try:
+        open_d = Decimal(str(open_v))
+        close_d = Decimal(str(close_v))
+    except (InvalidOperation, ValueError, TypeError):
+        return "—"
+    if not open_d.is_finite() or not close_d.is_finite() or open_d == 0:
+        return "—"
+    pct = (close_d - open_d) / open_d * Decimal(100)
+    plain = format(pct.quantize(Decimal("0.0001")), "f")
+    if pct > 0:
+        return f"+{plain}%"
+    return f"{plain}%"
 
 
 AVAILABILITY_LABELS: Mapping[Availability, str] = {
@@ -190,7 +279,7 @@ def resolve_volume_panel_state_v1(
         )
     return (
         "AVAILABLE",
-        "Volume bound to authentic OHLCV bar volume (contracts); not buy/sell delta.",
+        "",
     )
 
 
@@ -968,6 +1057,37 @@ def present_market_landscape_v2(
         ohlcv_payload=ohlcv_payload,
     )
 
+    # Prefer authentic readmodel decimal strings for chrome display when present.
+    last_display_bar: Mapping[str, Any] | None = None
+    if isinstance(ohlcv_payload, Mapping):
+        bars_for_display = ohlcv_payload.get("bars")
+        if isinstance(bars_for_display, list) and bars_for_display:
+            candidate = bars_for_display[-1]
+            if isinstance(candidate, Mapping):
+                last_display_bar = candidate
+    if last_display_bar is None and isinstance(browser_payload, Mapping):
+        bars_for_display = browser_payload.get("bars")
+        if isinstance(bars_for_display, list) and bars_for_display:
+            candidate = bars_for_display[-1]
+            if isinstance(candidate, Mapping):
+                last_display_bar = candidate
+
+    # Optional tick_size may appear on future presentation bindings; never invent.
+    tick_size_raw = None
+    if isinstance(ohlcv_payload, Mapping):
+        tick_size_raw = ohlcv_payload.get("tick_size") or ohlcv_payload.get("tickSz")
+    if tick_size_raw in (None, "") and isinstance(browser_payload, Mapping):
+        tick_size_raw = browser_payload.get("tick_size") or browser_payload.get("tickSz")
+
+    open_raw = None if last_display_bar is None else last_display_bar.get("open")
+    high_raw = None if last_display_bar is None else last_display_bar.get("high")
+    low_raw = None if last_display_bar is None else last_display_bar.get("low")
+    close_raw = None if last_display_bar is None else last_display_bar.get("close")
+    volume_raw = None if last_display_bar is None else last_display_bar.get("volume")
+    live_mark_raw = (browser_payload or {}).get("live_mark_price")
+    if live_mark_raw is None and isinstance(ohlcv_payload, Mapping):
+        live_mark_raw = ohlcv_payload.get("live_mark_price")
+
     ranking_rows: list[dict[str, Any]] = []
     universe_rows: list[dict[str, Any]] = []
     selected_instrument_id = None
@@ -1127,26 +1247,29 @@ def present_market_landscape_v2(
             "chart_digest": (browser_payload or {}).get("chart_digest"),
             "candle_series_digest": (browser_payload or {}).get("candle_series_digest"),
             "metadata_digest": (browser_payload or {}).get("metadata_digest"),
-            "live_mark_price": (browser_payload or {}).get("live_mark_price"),
+            "live_mark_price": None
+            if live_mark_raw is None
+            else format_market_price_display_v1(live_mark_raw, tick_size=tick_size_raw),
             "live_price_kind": (browser_payload or {}).get("live_price_kind"),
             "ohlcv_revision_kind": (browser_payload or ohlcv_payload or {}).get(
                 "ohlcv_revision_kind"
             ),
             "open_price": None
-            if not browser_payload or not browser_payload.get("bars")
-            else browser_payload["bars"][-1].get("open"),
+            if open_raw is None
+            else format_market_price_display_v1(open_raw, tick_size=tick_size_raw),
             "high_price": None
-            if not browser_payload or not browser_payload.get("bars")
-            else browser_payload["bars"][-1].get("high"),
+            if high_raw is None
+            else format_market_price_display_v1(high_raw, tick_size=tick_size_raw),
             "low_price": None
-            if not browser_payload or not browser_payload.get("bars")
-            else browser_payload["bars"][-1].get("low"),
+            if low_raw is None
+            else format_market_price_display_v1(low_raw, tick_size=tick_size_raw),
             "close_price": None
-            if not browser_payload or not browser_payload.get("bars")
-            else browser_payload["bars"][-1].get("close"),
-            "volume": None
-            if not browser_payload or not browser_payload.get("bars")
-            else browser_payload["bars"][-1].get("volume"),
+            if close_raw is None
+            else format_market_price_display_v1(close_raw, tick_size=tick_size_raw),
+            "change_pct": None
+            if open_raw is None or close_raw is None
+            else format_market_change_pct_display_v1(open_raw, close_raw),
+            "volume": None if volume_raw is None else format_market_volume_display_v1(volume_raw),
             "volume_panel_state": volume_panel_state,
             "volume_panel_message": volume_panel_message,
             "is_stale": bool((ohlcv_payload or {}).get("is_stale")),

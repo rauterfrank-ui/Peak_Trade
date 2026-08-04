@@ -131,7 +131,9 @@ def test_volume_panel_state_missing_not_bound_stale_available() -> None:
     }
     ok_state, ok_msg = resolve_volume_panel_state_v1(browser_payload=ok_payload)
     assert ok_state == "AVAILABLE"
-    assert "buy/sell" not in ok_msg.lower() or "not buy/sell" in ok_msg.lower()
+    assert ok_msg == ""
+    assert "Volume bound to authentic" not in ok_msg
+    assert "buy/sell" not in ok_msg.lower()
 
 
 def test_html_css_js_volume_panel_sync_contracts() -> None:
