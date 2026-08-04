@@ -1271,3 +1271,131 @@ console.log('CONNECTION_STATE_FAIL_CLOSED_REGRESSIONS_PASS');
         harness_path.unlink(missing_ok=True)
     assert completed.returncode == 0, completed.stderr or completed.stdout
     assert "CONNECTION_STATE_FAIL_CLOSED_REGRESSIONS_PASS" in completed.stdout
+
+
+def test_js_canonical_shell_bootstrap_host_contract_skips_html_json_parse() -> None:
+    """Canonical shell GET /market is HTML; bootstrap must not response.json() it."""
+    js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
+    assert "isCanonicalHtmlShellHostDocument" in js
+    assert 'data-mdl-canonical-bootstrap-mode", "ssr_html_shell"' in js
+    assert "ssr_html_shell" in js
+    assert "optional_json_market" in js
+    assert "market_non_json_content_type" in js
+    # Shell-host short-circuit must precede unconditional response.json() on /market.
+    shell_idx = js.index("isCanonicalHtmlShellHostDocument()")
+    bootstrap_idx = js.index("function bootstrapFromCanonicalMarket()")
+    assert bootstrap_idx < shell_idx or "if (isCanonicalHtmlShellHostDocument())" in js
+    boot_fn = js.split("function bootstrapFromCanonicalMarket()", 1)[1].split(
+        "function bootLandscapeClient()", 1
+    )[0]
+    assert "ssr_html_shell" in boot_fn
+    assert "startOhlcvPolling" not in boot_fn  # polling remains in bootLandscapeClient
+    assert 'cache: "no-store"' in js
+    assert "/api/market/landscape/ohlcv" in js
+    assert "SAME_TIMESTAMP_LAST_CANDLE_CHANGE" in js
+    assert "LAST_CANDLE_IN_PLACE" in js
+    assert "FULL_SERIES" in js
+    # clearFailVisible must fully remove CANONICAL_DATA_UNAVAILABLE text.
+    clear_fn = js.split("function clearFailVisible()", 1)[1].split("function ", 1)[0]
+    assert "CANONICAL_DATA_UNAVAILABLE:" in clear_fn
+    assert 'message.textContent = ""' in clear_fn
+
+
+def test_js_canonical_shell_bootstrap_behavioral_no_json_parse_on_html_shell() -> None:
+    """Node proof: shell host bootstrap binds without fetching /market as JSON."""
+    import subprocess
+    import tempfile
+
+    js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
+    helpers = _extract_bootstrap_host_contract_helpers(js)
+    harness = f"""
+'use strict';
+var fetchCalls = [];
+var attrs = {{
+  'data-market-landscape-v2': 'true',
+  'data-supervised-presentation-only': 'false',
+  'data-canonical-market-path': '/market',
+  'data-mdl-data-connection-state': 'HEALTHY',
+}};
+var message = {{ textContent: 'Primary chart bound to materialized OKX OHLCV readmodel.' }};
+var root = {{
+  getAttribute: function (name) {{
+    return Object.prototype.hasOwnProperty.call(attrs, name) ? attrs[name] : null;
+  }},
+  setAttribute: function (name, value) {{ attrs[name] = String(value); }},
+  removeAttribute: function (name) {{ delete attrs[name]; }},
+  querySelector: function (sel) {{
+    if (sel === '[data-mdl-chart-message]') return message;
+    return null;
+  }},
+}};
+var window = {{ location: {{ pathname: '/market' }} }};
+function fetch(url, opts) {{
+  fetchCalls.push({{ url: url, opts: opts }});
+  return Promise.reject(new Error('fetch_must_not_run_on_html_shell'));
+}}
+{helpers}
+function assert(cond, msg) {{
+  if (!cond) throw new Error(msg || 'assert failed');
+}}
+assert(isCanonicalHtmlShellHostDocument() === true, 'shell pathname must detect HTML host');
+bootstrapFromCanonicalMarket().then(function (ok) {{
+  assert(ok === true, 'bootstrap must succeed');
+  assert(fetchCalls.length === 0, 'must not fetch /market JSON on HTML shell');
+  assert(attrs['data-mdl-canonical-market-bound'] === 'true', 'must mark bound');
+  assert(attrs['data-mdl-canonical-bootstrap-mode'] === 'ssr_html_shell', 'mode');
+  assert(!Object.prototype.hasOwnProperty.call(attrs, 'data-mdl-canonical-fail'), 'no fail');
+  assert(message.textContent.indexOf('CANONICAL_DATA_UNAVAILABLE') === -1, 'ssr msg');
+  message.textContent = 'CANONICAL_DATA_UNAVAILABLE: market_bootstrap_failed';
+  root.setAttribute('data-mdl-canonical-fail', 'true');
+  clearFailVisible();
+  assert(!Object.prototype.hasOwnProperty.call(attrs, 'data-mdl-canonical-fail'), 'cleared');
+  assert(message.textContent === '', 'error text fully cleared');
+  // Supervised optional path still allowed to fetch JSON /market.
+  attrs['data-supervised-presentation-only'] = 'true';
+  delete attrs['data-mdl-canonical-market-bound'];
+  delete attrs['data-mdl-canonical-bootstrap-mode'];
+  window.location.pathname = '/landscape';
+  assert(isCanonicalHtmlShellHostDocument() === false, 'supervised landscape may JSON bootstrap');
+  console.log('BOOTSTRAP_HOST_CONTRACT_BEHAVIORAL_PASS');
+}}).catch(function (err) {{
+  console.error(String(err && err.stack || err));
+  process.exit(1);
+}});
+"""
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write(harness)
+        harness_path = Path(handle.name)
+    try:
+        completed = subprocess.run(
+            ["node", str(harness_path)],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+    finally:
+        harness_path.unlink(missing_ok=True)
+    assert completed.returncode == 0, completed.stderr or completed.stdout
+    assert "BOOTSTRAP_HOST_CONTRACT_BEHAVIORAL_PASS" in completed.stdout
+
+
+def _extract_bootstrap_host_contract_helpers(js: str) -> str:
+    """Extract clear/detect/bootstrap helpers for Node behavioral proof."""
+    chunks: list[str] = []
+    for name in (
+        "function clearFailVisible()",
+        "function isCanonicalHtmlShellHostDocument()",
+        "function bootstrapFromCanonicalMarket()",
+    ):
+        assert name in js, name
+        start = js.index(name)
+        rest = js[start + len(name) :]
+        end_rel = rest.find("\n  function ")
+        assert end_rel > 0, name
+        chunks.append(js[start : start + len(name) + end_rel].rstrip() + "\n")
+    stubs = """
+function bindCanonicalIdentityFromMarket() { return false; }
+function applyPollPayload() { return; }
+"""
+    return stubs + "\n".join(chunks)

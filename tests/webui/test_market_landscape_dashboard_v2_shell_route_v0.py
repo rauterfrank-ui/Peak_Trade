@@ -51,8 +51,10 @@ def client() -> TestClient:
 def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     response = client.get("/market")
     assert response.status_code == 200
+    assert "text/html" in response.headers.get("content-type", "")
     html = response.text
     assert 'data-market-landscape-v2="true"' in html
+    assert "application/json" not in response.headers.get("content-type", "")
     for landmark in LANDMARKS:
         assert landmark in html, landmark
     assert "PHASE_5_CAPABILITY_7_PRODUCT_MATURITY_TECHNICAL" in html
