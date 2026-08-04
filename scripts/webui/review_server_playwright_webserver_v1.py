@@ -22,8 +22,10 @@ from scripts/webui/_dashboard_chrome_playwright_harness_v1.py.
 from __future__ import annotations
 
 import os
+import signal
 import socket
 import subprocess
+import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -263,3 +265,150 @@ def launch_chrome_channel(playwright: Any, *, headless: bool = True) -> tuple[An
         report["REAL_CHROME_VERIFIED"] = False
         report["launch_error"] = f"{type(exc).__name__}: {exc}"
         return browser, report
+
+
+class ChromeChannelHandle:
+    """Idempotent lifecycle owner for a Playwright chrome-channel browser.
+
+    Does not change launch_chrome_channel's (browser, report) contract.
+    Signal handlers are opt-in via install_termination_handlers=True only.
+    """
+
+    def __init__(
+        self,
+        browser: Any,
+        report: dict[str, Any],
+        *,
+        playwright: Any | None = None,
+        owns_playwright: bool = False,
+        install_termination_handlers: bool = False,
+    ) -> None:
+        self.browser = browser
+        self.report = report
+        self.playwright = playwright
+        self.owns_playwright = bool(owns_playwright)
+        self._closed = False
+        self._closing = False
+        self._stop_event = threading.Event()
+        self._handlers_installed = False
+        self._prev_sigint: Any = None
+        self._prev_sigterm: Any = None
+        if install_termination_handlers:
+            self._install_termination_handlers()
+
+    @property
+    def closed(self) -> bool:
+        return self._closed
+
+    def close(self) -> None:
+        """Close browser (and owned playwright) idempotently."""
+        if self._closed or self._closing:
+            return
+        self._closing = True
+        errors: list[BaseException] = []
+        try:
+            try:
+                if self.browser is not None:
+                    self.browser.close()
+            except BaseException as exc:  # noqa: BLE001 — continue to playwright stop
+                errors.append(exc)
+            try:
+                if self.owns_playwright and self.playwright is not None:
+                    self.playwright.stop()
+            except BaseException as exc:  # noqa: BLE001 — collect after browser close
+                errors.append(exc)
+        finally:
+            self._restore_termination_handlers()
+            self._closed = True
+            self._closing = False
+            self._stop_event.set()
+        if errors:
+            raise errors[0]
+
+    def wait_until_closed(self, timeout: float | None = None) -> bool:
+        """Block until close() runs (e.g. via SIGINT/SIGTERM). Returns True if closed."""
+        return self._stop_event.wait(timeout)
+
+    def __enter__(self) -> ChromeChannelHandle:
+        return self
+
+    def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> bool:
+        try:
+            self.close()
+        except BaseException:
+            if exc_type is None:
+                raise
+            # Prefer the original with-block exception; do not swallow it.
+        return False
+
+    def _install_termination_handlers(self) -> None:
+        if self._handlers_installed:
+            return
+        self._prev_sigint = signal.getsignal(signal.SIGINT)
+        self._prev_sigterm = signal.getsignal(signal.SIGTERM)
+
+        def _handler(signum: int, frame: Any) -> None:
+            # Close restores previous handlers so later signals use the prior
+            # disposition. Do not invoke previous handlers here: that would
+            # re-enter pytest/default KeyboardInterrupt paths and can skip a
+            # clean wait_until_closed() exit.
+            try:
+                self.close()
+            except BaseException:  # noqa: BLE001 — signal path must stay non-fatal
+                pass
+
+        signal.signal(signal.SIGINT, _handler)
+        signal.signal(signal.SIGTERM, _handler)
+        self._handlers_installed = True
+
+    def _restore_termination_handlers(self) -> None:
+        if not self._handlers_installed:
+            return
+        try:
+            if self._prev_sigint is not None:
+                signal.signal(signal.SIGINT, self._prev_sigint)
+            if self._prev_sigterm is not None:
+                signal.signal(signal.SIGTERM, self._prev_sigterm)
+        finally:
+            self._handlers_installed = False
+
+
+def managed_chrome_channel(
+    playwright: Any | None = None,
+    *,
+    headless: bool = True,
+    owns_playwright: bool | None = None,
+    install_termination_handlers: bool = False,
+) -> ChromeChannelHandle:
+    """Launch chrome-channel browser wrapped in ChromeChannelHandle.
+
+    Defaults preserve existing test/CI behavior:
+      - headless=True
+      - install_termination_handlers=False
+      - when playwright is provided: owns_playwright=False
+      - when playwright is omitted: starts sync_playwright() and owns_playwright=True
+    """
+    started_here = False
+    pw = playwright
+    if pw is None:
+        from playwright.sync_api import sync_playwright
+
+        pw = sync_playwright().start()
+        started_here = True
+
+    if owns_playwright is None:
+        owned = started_here
+    else:
+        owned = bool(owns_playwright)
+        if started_here:
+            # A playwright we started must always be stopped by this handle.
+            owned = True
+
+    browser, report = launch_chrome_channel(pw, headless=headless)
+    return ChromeChannelHandle(
+        browser,
+        report,
+        playwright=pw,
+        owns_playwright=owned,
+        install_termination_handlers=install_termination_handlers,
+    )
