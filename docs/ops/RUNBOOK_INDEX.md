@@ -31,7 +31,7 @@
 | Artefakt | Pfad | Rolle |
 |----------|------|-------|
 | **Canonical Landscape V2 master runbook** | [market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md](market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Planning/Übergabe/Ausführung für Landscape V2; Caps 1–7 technical + Cap8 docs/ownership + PR #5568 daily observation + PR #5577 regime/bull-bear/switch; Operator Product Review PASS on `88f2241819dcc160c3ce688a9c7397e7cc8becec`; `OPERATOR_PRODUCT_GATE=true`; `MARKET_DASHBOARD_PHASE_5_PASS=true`; `DAILY_OBSERVATION_USABLE=true`; `INTRABAR_CAPABILITY=PASS`; `REGIME_BULL_BEAR_SWITCH_BINDING=COMPLETE`; `CONFIDENCE_FIELD_STATE=NOT_AVAILABLE_NO_CANONICAL_FIELD`; `WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE`; `NEXT_CANONICAL_ACTION=STOP_IDLE`; **keine** Trading-/Runtime-/Order-Authority; Capability-PR-only; Documentation Anchor = documentary index only |
-| **Removed product tombstone** | [../webui/MARKET_DASHBOARD_REMOVED.md](../webui/MARKET_DASHBOARD_REMOVED.md) | Legacy product tombstone; Landscape V2 `GET &#47;market` is the authorized read-only replacement surface |
+| **Legacy product removal notice** | [../webui/MARKET_DASHBOARD_REMOVED.md](../webui/MARKET_DASHBOARD_REMOVED.md) | `REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`; legacy `market_surface` fully removed — not an architectural component; no tombstone route/module/path exists; Landscape V2 `GET &#47;market` is the authorized read-only replacement surface |
 
 ## Canonical Runtime Operations / Dashboard / Process Supervision V2.4 (derived domain authority only; non-SSOT)
 

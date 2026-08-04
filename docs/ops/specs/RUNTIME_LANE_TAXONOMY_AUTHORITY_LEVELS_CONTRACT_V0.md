@@ -211,7 +211,7 @@ Non-goals:
 | Generic Evidence Run Registry v1 | [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) |
 | Vocabulary forbidden equalities | [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md) |
 | OPS Cockpit non-authority | [OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) |
-| F5 read-only market dashboard (display) — **legacy product removed**; Landscape V2 successor `GET &#47;market` is the authorized read-only consumer (see tombstone) | [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) |
+| F5 read-only market dashboard (display) — **legacy product removed** (`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`; no tombstone route/module/path exists); Landscape V2 successor `GET &#47;market` is the authorized read-only consumer | [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) |
 | Readiness Evidence Ledger v0 | [build_readiness_evidence_ledger_v0.py](../../../scripts/ops/build_readiness_evidence_ledger_v0.py) |
 | Readiness Ledger Preflight Mirror v0 | [report_readiness_ledger_preflight_mirror_v0.py](../../../scripts/ops/report_readiness_ledger_preflight_mirror_v0.py) |
 | Readiness Gate Snapshot v0 | [report_readiness_gate_snapshot_v0.py](../../../scripts/ops/report_readiness_gate_snapshot_v0.py) |
@@ -1363,7 +1363,7 @@ Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test
 
 Cross-reference: Preflight §2a.1 primary evidence hard gate; §2b.1 mandatory durable closeout; Preflight **§2b.3** durable closeout adapter validation (PR #4127/#4128; `BLOCKER_HINT`; `--durable-closeout-force`; authoritative hierarchy); [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py); [test_post_closeout_automation_hook_owner_precheck_v0.py](../../../tests/ops/test_post_closeout_automation_hook_owner_precheck_v0.py).
 
-Cross-reference: [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) (Market Dashboard product tombstone; registry overlay consumer §6a.2 remains ops-only); §6a.0.9 payload builder planning; [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout; Preflight §2b.3 adapter closeout validation SSOT.
+Cross-reference: [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) (legacy Market Dashboard / `market_surface` fully removed — `REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`; no tombstone route/module/path exists; registry overlay consumer §6a.2 remains ops-only); §6a.0.9 payload builder planning; [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout; Preflight §2b.3 adapter closeout validation SSOT.
 
 ### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)
 
@@ -1741,7 +1741,7 @@ Composition records: include `child_lane_refs` / `child_lane_status` pointers on
 
 #### Surface boundaries (legacy product removed; Landscape V2 successor; ops projection fields preserved)
 
-- **Legacy Market Dashboard product removed:** [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) is the tombstone chronicle. Legacy aliases remain intentionally absent (normal HTTP 404; no redirect). Landscape V2 `GET &#47;market` is the authorized read-only successor shell and does **not** enable §6a.2 Registry run projection (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false`).
+- **Legacy Market Dashboard product removed:** [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) is the removal notice (`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`). Legacy `market_surface` is fully removed and is not an architectural component; no tombstone route, module, presenter, template, source, slot, fallback, compatibility path, authority, producer, read model, or runtime path exists. Legacy aliases remain intentionally absent (normal HTTP 404; no redirect). Landscape V2 `GET &#47;market` is the authorized read-only successor shell and does **not** enable §6a.2 Registry run projection (`MARKET_DASHBOARD_RUN_PROJECTION_ENABLED=false`).
 - **Registry v1 projection fields preserved:** `market_dashboard_projection` / `market_dashboard_projection_allowed` remain ops-only disabled-by-default consumer eligibility markers (this §6a.2).
 - **Master V2 / Double Play domain preserved (not a Market route):** composition **authority** and non-authority boundaries remain unchanged (§9). The surviving read-only display JSON is `GET &#47;api&#47;master-v2&#47;double-play&#47;dashboard-display.json` — independent of the removed legacy Market Dashboard product and of Landscape V2 authority. Registry projection must **not** embed Double Play decision or selection authority.
 
@@ -2259,7 +2259,7 @@ MARKET_DASHBOARD_NO_LIVE_BROKER_EXCHANGE_AUTHORITY=true
 Normative state (post Market Dashboard product removal):
 
 - F5 read-only market dashboard surfaces map to lane_id `dashboard` with authority level `review_input_only` (see §3).
-- Detail owner: [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) — product tombstone; historical F5 / Market Surface contracts deleted.
+- Detail owner: [MARKET_DASHBOARD_REMOVED.md](../../webui/MARKET_DASHBOARD_REMOVED.md) — `REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`; historical F5 / Market Surface contracts deleted; no reactivatable tombstone surface exists.
 - Registry v1 `market_dashboard_projection` consumer fields remain ops-only (§6a.2); `MARKET_DASHBOARD_AUTHORITY=false`.
 - Dashboard display, SSR read models, registry rows, and test status **do not** grant approval, gate clearance, Live/Testnet/broker/exchange permission, scheduler activation, or runtime start.
 - `FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL` applies (see §5).

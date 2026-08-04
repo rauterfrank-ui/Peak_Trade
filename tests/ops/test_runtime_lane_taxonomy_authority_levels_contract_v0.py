@@ -28,7 +28,9 @@ MARKET_DASHBOARD_SPEC = (
     REPO_ROOT / "docs" / "ops" / "specs" / "FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md"
 )
 MARKET_SURFACE_V0 = REPO_ROOT / "docs" / "webui" / "MARKET_SURFACE_V0.md"
-MARKET_DASHBOARD_TOMBSTONE = REPO_ROOT / "docs" / "webui" / "MARKET_DASHBOARD_REMOVED.md"
+MARKET_DASHBOARD_REMOVAL_NOTICE = REPO_ROOT / "docs" / "webui" / "MARKET_DASHBOARD_REMOVED.md"
+# Historical alias retained for guard-name stability.
+MARKET_DASHBOARD_TOMBSTONE = MARKET_DASHBOARD_REMOVAL_NOTICE
 READINESS_LEDGER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "build_readiness_evidence_ledger_v0.py"
 READINESS_MIRROR_SCRIPT = (
     REPO_ROOT / "scripts" / "ops" / "report_readiness_ledger_preflight_mirror_v0.py"
@@ -689,16 +691,23 @@ def test_post_stop_pack_wrapper_marker_aligned() -> None:
     assert "non-authorizing" in preflight.lower()
 
 
-def test_market_dashboard_product_tombstone_present_deleted_surfaces_absent() -> None:
-    assert MARKET_DASHBOARD_TOMBSTONE.is_file()
+def test_market_dashboard_product_removal_notice_present_deleted_surfaces_absent() -> None:
+    assert MARKET_DASHBOARD_REMOVAL_NOTICE.is_file()
     assert not MARKET_DASHBOARD_SPEC.is_file()
     assert not MARKET_SURFACE_V0.is_file()
-    tombstone = MARKET_DASHBOARD_TOMBSTONE.read_text(encoding="utf-8")
-    assert "Market Dashboard" in tombstone
-    assert "removed" in tombstone.lower()
+    notice = MARKET_DASHBOARD_REMOVAL_NOTICE.read_text(encoding="utf-8")
+    assert "Market Dashboard" in notice
+    assert "removed" in notice.lower()
+    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" in notice
+    assert "No tombstone route" in notice
     # Docs token policy requires illustrative path encoding (GET &#47;market).
-    assert "GET &#47;market" in tombstone
-    assert "GET /market" not in tombstone
+    assert "GET &#47;market" in notice
+    assert "GET /market" not in notice
+
+
+def test_market_dashboard_product_tombstone_present_deleted_surfaces_absent() -> None:
+    """Historical name retained; asserts removal notice + deleted surfaces."""
+    test_market_dashboard_product_removal_notice_present_deleted_surfaces_absent()
 
 
 def test_market_dashboard_f5_non_authority_taxonomy_cross_ref_aligned() -> None:
@@ -721,12 +730,12 @@ def test_market_dashboard_f5_non_authority_taxonomy_cross_ref_aligned() -> None:
     assert "broker" in taxonomy.lower() or "exchange" in taxonomy.lower()
 
 
-def test_market_dashboard_tombstone_taxonomy_cross_ref_aligned() -> None:
-    assert MARKET_DASHBOARD_TOMBSTONE.is_file()
+def test_market_dashboard_removal_notice_taxonomy_cross_ref_aligned() -> None:
+    assert MARKET_DASHBOARD_REMOVAL_NOTICE.is_file()
     assert not MARKET_SURFACE_V0.is_file()
-    tombstone = MARKET_DASHBOARD_TOMBSTONE.read_text(encoding="utf-8")
+    notice = MARKET_DASHBOARD_REMOVAL_NOTICE.read_text(encoding="utf-8")
     taxonomy = _spec_text()
-    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" not in tombstone
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" not in notice
     assert "MARKET_DASHBOARD_REMOVED.md" in taxonomy
     assert "`dashboard`" in taxonomy
     assert "review_input_only" in taxonomy
@@ -734,10 +743,18 @@ def test_market_dashboard_tombstone_taxonomy_cross_ref_aligned() -> None:
     assert "FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL" in taxonomy
     assert "non-authorizing" in taxonomy.lower()
     assert "does not" in taxonomy.lower() or "do not" in taxonomy.lower()
+    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" in taxonomy
+    assert "product tombstone" not in taxonomy.lower()
+    assert "is the tombstone" not in taxonomy.lower()
+
+
+def test_market_dashboard_tombstone_taxonomy_cross_ref_aligned() -> None:
+    """Historical name retained; asserts removal-notice / taxonomy alignment."""
+    test_market_dashboard_removal_notice_taxonomy_cross_ref_aligned()
 
 
 def test_market_dashboard_section_6a2_preserves_registry_projection_fields() -> None:
-    """§6a.2 ops consumer field docs remain; product UI surfaces are tombstoned."""
+    """§6a.2 ops consumer field docs remain; legacy product UI surfaces are fully removed."""
     taxonomy = _spec_text()
     assert "### 6a.2 Market Dashboard read-only run projection contract v0" in taxonomy
     assert "market_dashboard_projection" in taxonomy
@@ -745,6 +762,7 @@ def test_market_dashboard_section_6a2_preserves_registry_projection_fields() -> 
     assert "MARKET_DASHBOARD_REMOVED.md" in taxonomy
     assert not MARKET_SURFACE_V0.is_file()
     assert not MARKET_DASHBOARD_SPEC.is_file()
+    assert "are tombstoned" not in taxonomy.lower()
 
 
 def test_autonomy_stage_authority_crosswalk_section_present() -> None:

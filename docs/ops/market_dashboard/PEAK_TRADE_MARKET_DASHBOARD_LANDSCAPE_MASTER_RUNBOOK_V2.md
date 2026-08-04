@@ -1258,7 +1258,7 @@ STALE_PID_ONLY_BLOCKER=true
 **Tests / evidence**
 
 - Relevant shell / architecture / accessibility / chrome-evidence / contracts /
-  tombstone suites green (67 passed).
+  negative non-regression removal-guard suites green (67 passed).
 - Evidence pack: `evidence/market_dashboard_v2/phase5/task8_performance/`
 
 **Unresolved / still open for Phase 5**
@@ -1924,7 +1924,10 @@ CANONICAL_STATIC_SURFACES=[
 CANONICAL_READ_AGGREGATE=MarketDashboardReadServiceV1+present_market_landscape_v2
 CANONICAL_SHELL_ROUTER=src/webui/market_dashboard_landscape_shell_router_v2.py
 CANONICAL_PRODUCER_BINDING=src/webui/market_dashboard_landscape_producer_binding_v2.py
-LEGACY_PRODUCT_TOMBSTONE=docs/webui/MARKET_DASHBOARD_REMOVED.md
+LEGACY_PRODUCT_REMOVAL_NOTICE=docs/webui/MARKET_DASHBOARD_REMOVED.md
+LEGACY_MARKET_SURFACE_STATUS=REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS
+LEGACY_MARKET_SURFACE_IS_ARCHITECTURAL_COMPONENT=false
+ACTIVE_TOMBSTONE_SURFACE=false
 
 MASTER_V2_CANONICAL=true
 DOUBLE_PLAY_CANONICAL=true

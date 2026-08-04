@@ -44,7 +44,7 @@ This closeout updates **status / residual-gap / Definition-of-Done** only. It do
 | Item | Status | Evidence |
 |---|---|---|
 | P1 GitHub-SSOT | **DONE** | PR `#5291` — required checks SSOT synced to live main protection |
-| P1 Tombstone documentation | **DONE** | PR `#5292` — market path tombstone normalization |
+| P1 Tombstone documentation | **DONE** | PR `#5292` — market path removal-notice normalization (`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`; no active tombstone surface; historical campaign key `p1_tombstone_documentation`) |
 | P1 Surface-P contract drift | **DONE** | PR `#5293` — Surface P status contract alignment |
 
 ### 1.2 P2 — Governance inventories
