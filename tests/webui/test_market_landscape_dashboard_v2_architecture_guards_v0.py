@@ -139,6 +139,7 @@ def test_landscape_package_stdlib_and_relative_only() -> None:
     allowed_external = {
         "dataclasses",
         "datetime",
+        "decimal",
         "enum",
         "hashlib",
         "json",

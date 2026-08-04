@@ -45,7 +45,13 @@
         {# Strip = compact ops summary. Scope/Regime live in Context; do not alias availability as Freshness. #}
         <div><dt>Instrument</dt><dd data-mdl-field="instrument">{{ global_strip.instrument }}</dd></div>
         <div><dt>Venue</dt><dd data-mdl-field="venue">{{ global_strip.venue }}</dd></div>
-        <div><dt>Session</dt><dd data-mdl-field="session_id">{% if bootstrap_session_id %}{{ bootstrap_session_id }}{% else %}—{% endif %}</dd></div>
+        <div>
+          <dt>Session</dt>
+          <dd
+            data-mdl-field="session_id"
+            data-availability="{{ universe_rail.session_availability }}"
+          >{% if universe_rail.session_label %}{{ universe_rail.session_label }}{% elif bootstrap_session_id %}{{ bootstrap_session_id }}{% else %}—{% endif %}</dd>
+        </div>
         <div><dt>Repo SHA</dt><dd data-mdl-field="repository_sha">{% if bootstrap_repository_sha %}{{ bootstrap_repository_sha }}{% else %}—{% endif %}</dd></div>
         <div>
           <dt>Runtime</dt>
@@ -78,11 +84,19 @@
           </li>
           <li>
             <span class="mdl-v2-rail-rows__label">Membership</span>
-            <span class="mdl-v2-state" data-mdl-field="universe_membership">{{ universe_rail.membership_label }}</span>
+            <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="universe_membership">{{ universe_rail.membership_label }}</span>
           </li>
           <li>
             <span class="mdl-v2-rail-rows__label">Rank</span>
-            <span class="mdl-v2-state" data-mdl-field="rank_status">{{ universe_rail.rank_label }}</span>
+            <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="rank_status">{{ universe_rail.rank_label }}</span>
+          </li>
+          <li>
+            <span class="mdl-v2-rail-rows__label">Selection Reason</span>
+            <span
+              class="mdl-v2-state"
+              data-availability="{{ universe_rail.selection_reason_availability }}"
+              data-mdl-field="selection_reason"
+            >{{ universe_rail.selection_reason_label }}</span>
           </li>
         </ul>
         {% if universe_ranking_rows %}

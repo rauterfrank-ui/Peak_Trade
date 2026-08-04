@@ -1089,13 +1089,32 @@ def present_market_landscape_v2(
     universe_rows: list[dict[str, Any]] = []
     selected_instrument_id = None
     membership_label = AVAILABILITY_LABELS[page.universe_ranking.availability]
+    # Exact producer facts when present; never reuse availability tokens as values.
+    watchlist_label = AVAILABILITY_LABELS[page.universe_ranking.availability]
     ranking_label = AVAILABILITY_LABELS[page.universe_ranking.availability]
+    selection_reason_label = AVAILABILITY_LABELS[page.universe_ranking.availability]
+    source_run_id = None
     if page.universe_ranking.availability in (Availability.AVAILABLE, Availability.STALE):
         ranking_rows = [dict(row) for row in page.universe_ranking.ranking]
         universe_rows = [dict(row) for row in page.universe_ranking.universe]
         selected_instrument_id = page.universe_ranking.selected_instrument_id
-        if not ranking_rows:
+        source_run_id = page.universe_ranking.source_run_id
+        if universe_rows:
+            watchlist_label = str(len(universe_rows))
+        else:
+            watchlist_label = "NOT_AVAILABLE"
+        selected_rank = page.universe_ranking.selected_rank
+        if selected_rank is not None:
+            ranking_label = f"#{selected_rank}"
+        elif selected_instrument_id is not None:
             ranking_label = "NOT_AVAILABLE"
+        elif not ranking_rows:
+            ranking_label = "NOT_AVAILABLE"
+        reason = page.universe_ranking.selection_reason
+        if isinstance(reason, str) and reason.strip():
+            selection_reason_label = reason.strip()
+        else:
+            selection_reason_label = "—"
         if selected_instrument_id and universe_rows:
             membership = {str(row.get("symbol")) for row in universe_rows}
             membership_label = (
@@ -1161,14 +1180,38 @@ def present_market_landscape_v2(
         "selected_instrument_id": selected_instrument_id,
         "universe_rail": {
             "watchlist_availability": page.universe_ranking.availability.value,
-            "watchlist_label": AVAILABILITY_LABELS[page.universe_ranking.availability],
+            "watchlist_label": watchlist_label,
             # Membership of selected in projected universe rows — not a separate
             # eligibility producer / ranking recomputation.
             "membership_label": membership_label,
             "eligibility_label": membership_label,
             "rank_label": ranking_label,
             "selected_instrument_id": selected_instrument_id,
+            "selection_reason_availability": page.universe_ranking.availability.value,
+            "selection_reason_label": selection_reason_label,
+            "source_run_id": source_run_id,
+            "session_availability": (
+                page.universe_ranking.availability.value
+                if source_run_id
+                else (
+                    Availability.MISSING_SOURCE.value
+                    if page.universe_ranking.availability
+                    in (Availability.AVAILABLE, Availability.STALE)
+                    else page.universe_ranking.availability.value
+                )
+            ),
+            "session_label": (
+                source_run_id
+                if source_run_id
+                else (
+                    "—"
+                    if page.universe_ranking.availability
+                    in (Availability.AVAILABLE, Availability.STALE)
+                    else AVAILABILITY_LABELS[page.universe_ranking.availability]
+                )
+            ),
         },
+        "bootstrap_session_id": source_run_id or "",
         "scope": {
             **scope,
             "lifecycle_display": scope_lifecycle_display,

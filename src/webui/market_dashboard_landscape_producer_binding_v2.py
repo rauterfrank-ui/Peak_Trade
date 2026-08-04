@@ -344,8 +344,20 @@ def _bind_universe_ranking(
     ranking_rows = [_row_dict(row) for row in slice_v1.ranking]
     universe_rows = [_row_dict(row) for row in slice_v1.universe]
     selected_id = None
+    selection_reason: str | None = None
+    selected_rank: int | None = None
     if slice_v1.selected_future is not None:
         selected_id = slice_v1.selected_future.symbol
+        # Exact selected_future fields only — never invent reason/rank.
+        reason_raw = slice_v1.selected_future.selection_reason
+        if isinstance(reason_raw, str) and reason_raw.strip():
+            selection_reason = reason_raw.strip()
+        rank_raw = slice_v1.selected_future.rank
+        if isinstance(rank_raw, int) and not isinstance(rank_raw, bool):
+            selected_rank = rank_raw
+    source_run_id: str | None = None
+    if isinstance(slice_v1.source_run_id, str) and slice_v1.source_run_id.strip():
+        source_run_id = slice_v1.source_run_id.strip()
 
     if selected_id is not None and selected_id in FORBIDDEN_SELECTED_SYMBOLS:
         return (
@@ -420,6 +432,9 @@ def _bind_universe_ranking(
             max_age_seconds=LANDSCAPE_PHASE41_MAX_AGE_SECONDS,
             is_stale=is_stale,
             stale_reason=stale_reason,
+            source_run_id=source_run_id,
+            selection_reason=selection_reason,
+            selected_rank=selected_rank,
         ),
         slice_v1,
     )
