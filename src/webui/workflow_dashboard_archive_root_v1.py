@@ -7,9 +7,11 @@ canonical default → discovered governed OKX sibling) to read-only-load
 universe_selection_readmodel.v1 and okx_selected_instrument_ohlcv_readmodel.v1,
 and (when present) canonical_decision_presentation_projection.v1,
 double_play_presentation_projection.v1,
-bull_bear_regime_presentation_projection.v1, and
+bull_bear_regime_presentation_projection.v1,
 dynamic_scope_presentation_projection.v1 (plus its durable source sibling
-dynamic_scope_state_v1.json under the same archive root).
+dynamic_scope_state_v1.json under the same archive root), and
+risk_sizing_capital_presentation_projection.v1 (plus its durable source sibling
+risk_sizing_capital.v1.json under the same archive root).
 """
 
 from __future__ import annotations
@@ -56,6 +58,10 @@ BULL_BEAR_REGIME_PRESENTATION_PROJECTION_RELATIVE = (
 DYNAMIC_SCOPE_STATE_RELATIVE = "readmodels/dynamic_scope_state_v1.json"
 DYNAMIC_SCOPE_PRESENTATION_PROJECTION_RELATIVE = (
     "readmodels/dynamic_scope_presentation_projection.v1.json"
+)
+RISK_SIZING_CAPITAL_FIELDS_RELATIVE = "readmodels/risk_sizing_capital.v1.json"
+RISK_SIZING_CAPITAL_PRESENTATION_PROJECTION_RELATIVE = (
+    "readmodels/risk_sizing_capital_presentation_projection.v1.json"
 )
 _DISCOVER_NAME_PREFIX = "workflow_dashboard_v1"
 
@@ -425,6 +431,8 @@ __all__ = [
     "OWNER_SYMBOL",
     "PRECEDENCE_CHAIN",
     "PRECEDENCE_DISCOVERED_GOVERNED_OKX",
+    "RISK_SIZING_CAPITAL_FIELDS_RELATIVE",
+    "RISK_SIZING_CAPITAL_PRESENTATION_PROJECTION_RELATIVE",
     "UNIVERSE_SELECTION_READMODEL_RELATIVE",
     "WorkflowDashboardArchiveRootError",
     "archive_root_has_governed_okx_futures_readmodels",
