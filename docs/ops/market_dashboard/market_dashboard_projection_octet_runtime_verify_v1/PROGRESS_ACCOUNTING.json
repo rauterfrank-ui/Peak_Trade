@@ -1,0 +1,96 @@
+{
+  "schema_name": "market_dashboard_presentation_progress_accounting.v1",
+  "schema_version": 1,
+  "generated_at": "2026-08-04T19:43:33.462472Z",
+  "repository_head_sha": "8c02f8793411939149eb7f33d6877a68a23a727f",
+  "batch_executed": "B2_PROJECTION_OCTET_RUNTIME_VERIFY",
+  "dashboard_role": "PURE_CONSUMER",
+  "authority_effect": "NONE",
+  "trading_logic_changed": false,
+  "runtime_changed": false,
+  "producer_changed": false,
+  "materializer_executed": false,
+  "canonical_readmodel_changed": false,
+  "family_count_ratified": 18,
+  "batches": {
+    "B1_ALREADY_BOUND_CLOSEOUT": {
+      "status": "CLOSED_UNCHANGED",
+      "families": [
+        "market_instrument",
+        "universe_selection_rail_facts",
+        "okx_selected_instrument_ohlcv"
+      ],
+      "note": "Phase-1 presentation paths already complete at/before #5710; no B2 mutation."
+    },
+    "B2_PROJECTION_OCTET_RUNTIME_VERIFY": {
+      "status": "COMPLETE_READ_ONLY_VERIFY",
+      "families": [
+        "dynamic_scope",
+        "regime_bull_bear_switch",
+        "canonical_decision",
+        "double_play",
+        "safety_authority",
+        "risk_sizing_capital",
+        "execution_reconciliation",
+        "economic_summary"
+      ],
+      "artifacts_present": [],
+      "artifacts_missing": [
+        "dynamic_scope",
+        "regime_bull_bear_switch",
+        "canonical_decision",
+        "double_play",
+        "safety_authority",
+        "risk_sizing_capital",
+        "execution_reconciliation",
+        "economic_summary"
+      ],
+      "schema_invalid_count": 0,
+      "runtime_artifact_states": {
+        "dynamic_scope": "RUNTIME_ARTIFACT_ABSENT",
+        "regime_bull_bear_switch": "RUNTIME_ARTIFACT_ABSENT",
+        "canonical_decision": "RUNTIME_ARTIFACT_ABSENT",
+        "double_play": "RUNTIME_ARTIFACT_ABSENT",
+        "safety_authority": "RUNTIME_ARTIFACT_ABSENT",
+        "risk_sizing_capital": "RUNTIME_ARTIFACT_ABSENT",
+        "execution_reconciliation": "RUNTIME_ARTIFACT_ABSENT",
+        "economic_summary": "RUNTIME_ARTIFACT_ABSENT"
+      }
+    },
+    "B3_CONDITIONAL_MAPPING_DUO": {
+      "status": "NOT_AUTHORIZED",
+      "decision_strip_blockers_mapping_authorized": false,
+      "reason": "ACTIVE_DOUBLE_PLAY_PROJECTION_ABSENT:readmodels/double_play_presentation_projection.v1.json;DOUBLE_PLAY_LOADER_UNRESOLVED:DOUBLE_PLAY_PRESENTATION_PROJECTION_ABSENT;BLOCKER_FIELD_CONTRACT_NOT_PROVEN_WITHOUT_ACTIVE_ARTIFACT;TEMPLATE_BLOCKERS_STILL_HARDCODED_NOT_BOUND",
+      "families": [
+        "decision_strip_blockers_unbound",
+        "source_health_aggregate"
+      ]
+    },
+    "B4_INTENTIONAL_AND_BLOCKED_FREEZE": {
+      "status": "CLOSED_UNCHANGED",
+      "families": [
+        "decision_strip_confidence_intentional_unbound",
+        "diagnostics_summary_intentional_unbound",
+        "autonomy_stage_intentional_unbound",
+        "timeline_intentional_unbound",
+        "repository_sha_no_canonical_payload_field"
+      ],
+      "note": "Remain intentionally unavailable / blocked; no reduction authorized."
+    }
+  },
+  "counts": {
+    "old_MISSING_SOURCE_count": 50,
+    "new_MISSING_SOURCE_count": 50,
+    "old_NOT_BOUND_count": 18,
+    "new_NOT_BOUND_count": 17
+  },
+  "remaining_bounded_presentation_objectives": [
+    "B3 decision_strip_blockers_unbound \u2014 blocked until active Double Play projection present+schema-valid and blocker contract proven",
+    "B3 source_health_aggregate \u2014 reconcile only after required member-slot runtime availability"
+  ],
+  "unresolved_evidence": [
+    "Active archive lacks all eight authorized durable presentation projections",
+    "Safety Authority GitHub PR number for commit 737dac557 remains unresolved",
+    "Unnamed timeline chrome element stable mapping remains unresolved"
+  ]
+}
