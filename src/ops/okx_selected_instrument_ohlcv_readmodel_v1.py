@@ -199,7 +199,11 @@ def reduce_okx_ohlcv_bars_v1(
     - AUTHENTIC_FULL_REPLACE: longer authentic window / bootstrap alignment from OKX
 
     Open-candle invariants for SAME_TIMESTAMP_REVISION:
-    open fixed; high may only increase; low may only decrease; close/volume follow source.
+    - PT1M (interval_seconds=60): authentic full tip replacement of O/H/L/C/V is
+      allowed while the youngest tip remains unconfirmed.
+    - Other intervals: open fixed; high may only increase; low may only decrease;
+      close/volume follow source (legacy fail-closed tip geometry).
+    Sealed / non-youngest candles remain immutable under same-timestamp revision.
     """
     if not incoming:
         raise OkxOhlcvReadmodelError("OHLCV_REDUCE_EMPTY_INCOMING")
@@ -227,26 +231,35 @@ def reduce_okx_ohlcv_bars_v1(
             # only when historical prefixes for the overlapping closed range are unchanged.
             return nxt, "AUTHENTIC_FULL_REPLACE"
         for older_p, older_n in zip(prev[:-1], nxt[:-1]):
-            if older_p.ts != older_n.ts or _bar_ohlcv_tuple(older_p) != _bar_ohlcv_tuple(older_n):
-                # Authentic upstream correction of sealed history → accept OKX window.
+            if older_p.ts != older_n.ts:
                 return nxt, "AUTHENTIC_FULL_REPLACE"
+            if _bar_ohlcv_tuple(older_p) != _bar_ohlcv_tuple(older_n):
+                # Historical / non-youngest same-timestamp deviation stays fail-closed.
+                raise OkxOhlcvReadmodelError(f"HISTORICAL_REGRESSION:{older_p.ts}")
         if _bar_ohlcv_tuple(prev_last) == _bar_ohlcv_tuple(next_last):
             # Identical OHLCV at same timestamp is a no-op (preserve prior confirm/metadata).
             return prev, "NO_OP"
-        # Open-candle revision rules.
+        if prev_last.confirm or next_last.confirm:
+            # Sealed tip (or attempt to re-open) must not revise in place.
+            raise OkxOhlcvReadmodelError(f"SEALED_TIP_REGRESSION:{prev_last.ts}")
+        if _dec(next_last.volume, field="volume") < 0:
+            raise OkxOhlcvReadmodelError(f"NEGATIVE_VOLUME:{prev_last.ts}")
+        # PT1M open tip: accept authentic full OHLCV replacement from upstream.
+        if interval_seconds == 60:
+            reduced = list(prev[:-1]) + [next_last]
+            return reduced, "SAME_TIMESTAMP_REVISION"
+        # Legacy open-candle revision rules (non-PT1M).
         if _dec(next_last.open, field="open") != _dec(prev_last.open, field="open"):
             raise OkxOhlcvReadmodelError(f"OPEN_REGRESSION:{prev_last.ts}")
         if _dec(next_last.high, field="high") < _dec(prev_last.high, field="high"):
             raise OkxOhlcvReadmodelError(f"HIGH_REGRESSION:{prev_last.ts}")
         if _dec(next_last.low, field="low") > _dec(prev_last.low, field="low"):
             raise OkxOhlcvReadmodelError(f"LOW_REGRESSION:{prev_last.ts}")
-        if _dec(next_last.volume, field="volume") < 0:
-            raise OkxOhlcvReadmodelError(f"NEGATIVE_VOLUME:{prev_last.ts}")
         # Open tip volume is monotonic non-decreasing across authentic revisions
         # (candles + prior trade aggregation must never regress volume).
         prev_vol = _dec(prev_last.volume, field="volume")
         next_vol = _dec(next_last.volume, field="volume")
-        if (not prev_last.confirm) and (not next_last.confirm) and next_vol < prev_vol:
+        if next_vol < prev_vol:
             next_last = OhlcvBarV1(
                 ts=next_last.ts,
                 open=next_last.open,
@@ -313,12 +326,19 @@ def reduce_okx_ohlcv_bars_v1(
 def merge_open_tip_cumulative_interval_volume_v1(
     previous_bars: Sequence[Mapping[str, Any] | OhlcvBarV1] | None,
     next_bars: Sequence[Mapping[str, Any] | OhlcvBarV1],
+    *,
+    interval_seconds: int = 3600,
 ) -> tuple[list[OhlcvBarV1], dict[str, Any]]:
     """MODEL_A: cumulative open-tip volume is monotonic non-decreasing.
 
     OKX ``/market/candles`` tip volume may temporarily under-report relative to a
     prior trade-augmented cumulative tip (AUTHENTIC_FULL_REPLACE / window churn).
     Closed historical candles are never rewritten.
+
+    PT1M (interval_seconds=60): authentic open-tip full replacement may revise
+    O/H/L/C while keeping a cumulative volume floor (max(prev, next)) so trade
+    augmentation cannot block a later authentic tip via false HIGH/LOW/OPEN
+    regressions and cannot double-count volume.
     """
     nxt = [_as_ohlcv_bar(b) for b in next_bars]
     meta: dict[str, Any] = {
@@ -326,6 +346,7 @@ def merge_open_tip_cumulative_interval_volume_v1(
         "open_tip_volume_preserved": False,
         "open_tip_high_merged": False,
         "open_tip_low_merged": False,
+        "open_tip_authentic_replaced": False,
     }
     if not previous_bars or not nxt:
         return nxt, meta
@@ -339,8 +360,6 @@ def merge_open_tip_cumulative_interval_volume_v1(
     if prev_tip.confirm or next_tip.confirm:
         # Sealed tip must remain immutable; do not re-open or rewrite.
         return nxt, meta
-    if _dec(next_tip.open, field="open") != _dec(prev_tip.open, field="open"):
-        raise OkxOhlcvReadmodelError(f"OPEN_REGRESSION:{prev_tip.ts}")
 
     prev_high = _dec(prev_tip.high, field="high")
     next_high = _dec(next_tip.high, field="high")
@@ -348,6 +367,45 @@ def merge_open_tip_cumulative_interval_volume_v1(
     next_low = _dec(next_tip.low, field="low")
     prev_vol = _dec(prev_tip.volume, field="volume")
     next_vol = _dec(next_tip.volume, field="volume")
+    if next_vol < 0:
+        raise OkxOhlcvReadmodelError(f"NEGATIVE_VOLUME:{prev_tip.ts}")
+
+    if interval_seconds == 60:
+        # Authentic PT1M open-tip replacement: take upstream tip geometry; floor volume.
+        merged_vol = max(prev_vol, next_vol)
+        meta["open_tip_volume_preserved"] = merged_vol != next_vol
+        meta["open_tip_authentic_replaced"] = (
+            _dec(next_tip.open, field="open") != _dec(prev_tip.open, field="open")
+            or next_high != prev_high
+            or next_low != prev_low
+            or next_tip.close != prev_tip.close
+            or merged_vol != prev_vol
+        )
+        if (
+            next_tip.open == prev_tip.open
+            and next_high == prev_high
+            and next_low == prev_low
+            and next_tip.close == prev_tip.close
+            and merged_vol == next_vol
+            and merged_vol == prev_vol
+        ):
+            return nxt, meta
+        merged_tip = OhlcvBarV1(
+            ts=next_tip.ts,
+            open=next_tip.open,
+            high=next_tip.high,
+            low=next_tip.low,
+            close=next_tip.close,
+            volume=format(merged_vol, "f"),
+            volume_ccy=next_tip.volume_ccy or prev_tip.volume_ccy,
+            confirm=False,
+            provider_ts_ms=next_tip.provider_ts_ms or prev_tip.provider_ts_ms,
+        )
+        return list(nxt[:-1]) + [merged_tip], meta
+
+    # Legacy non-PT1M: open fixed; expand high/low; floor volume.
+    if _dec(next_tip.open, field="open") != _dec(prev_tip.open, field="open"):
+        raise OkxOhlcvReadmodelError(f"OPEN_REGRESSION:{prev_tip.ts}")
 
     merged_high = max(prev_high, next_high)
     merged_low = min(prev_low, next_low)
@@ -739,7 +797,9 @@ def materialize_selected_okx_ohlcv_readmodel_v1(
             }
             stale_overwrite_rejected = True
 
-    bars, cumulative_meta = merge_open_tip_cumulative_interval_volume_v1(previous_bars, bars)
+    bars, cumulative_meta = merge_open_tip_cumulative_interval_volume_v1(
+        previous_bars, bars, interval_seconds=interval_seconds
+    )
     if trade_revision_kind in {"SAME_TIMESTAMP_REVISION", "NEW_INTERVAL_APPEND"}:
         revision_kind = trade_revision_kind
     elif stale_overwrite_rejected:
