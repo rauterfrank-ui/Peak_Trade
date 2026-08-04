@@ -11,9 +11,12 @@ bull_bear_regime_presentation_projection.v1,
 dynamic_scope_presentation_projection.v1 (plus its durable source sibling
 dynamic_scope_state_v1.json under the same archive root), and
 risk_sizing_capital_presentation_projection.v1 (plus its durable source sibling
-risk_sizing_capital.v1.json under the same archive root), and
+risk_sizing_capital.v1.json under the same archive root),
 execution_reconciliation_presentation_projection.v1 (plus its durable source sibling
-execution_reconciliation.v1.json under the same archive root).
+execution_reconciliation.v1.json under the same archive root), and
+safety_authority_presentation_projection.v1 persisted at
+safety_authority.v1.json under the same archive root (presentation-only;
+never a productive KillSwitch state file).
 """
 
 from __future__ import annotations
@@ -69,6 +72,7 @@ EXECUTION_RECONCILIATION_FIELDS_RELATIVE = "readmodels/execution_reconciliation.
 EXECUTION_RECONCILIATION_PRESENTATION_PROJECTION_RELATIVE = (
     "readmodels/execution_reconciliation_presentation_projection.v1.json"
 )
+SAFETY_AUTHORITY_PRESENTATION_PROJECTION_RELATIVE = "readmodels/safety_authority.v1.json"
 _DISCOVER_NAME_PREFIX = "workflow_dashboard_v1"
 
 
@@ -441,6 +445,7 @@ __all__ = [
     "PRECEDENCE_DISCOVERED_GOVERNED_OKX",
     "RISK_SIZING_CAPITAL_FIELDS_RELATIVE",
     "RISK_SIZING_CAPITAL_PRESENTATION_PROJECTION_RELATIVE",
+    "SAFETY_AUTHORITY_PRESENTATION_PROJECTION_RELATIVE",
     "UNIVERSE_SELECTION_READMODEL_RELATIVE",
     "WorkflowDashboardArchiveRootError",
     "archive_root_has_governed_okx_futures_readmodels",

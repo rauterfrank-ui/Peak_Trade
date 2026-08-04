@@ -6,7 +6,9 @@ regime_bull_bear_switch (injection or durable presentation projection
 auto-bind; PR #5577 field contract), canonical_decision
 evidence (injection or durable presentation projection auto-bind),
 double_play display projection (injection or durable presentation projection
-auto-bind), safety authority KillSwitch/boundary field projection,
+auto-bind), safety authority KillSwitch/boundary field projection
+(injection or durable presentation projection auto-bind; never productive
+KillSwitch state-file autoload),
 risk/sizing/capital field projection (injection or durable presentation
 projection auto-bind), execution/reconciliation field projection (injection
 or durable presentation projection auto-bind), and
@@ -94,6 +96,10 @@ from .workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projectio
 from .workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_projection_v1 import (
     LOAD_ERROR_ABSENT as EXECUTION_RECONCILIATION_PROJECTION_ABSENT,
     try_load_execution_reconciliation_presentation_projection_v1,
+)
+from .workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_v1 import (
+    LOAD_ERROR_ABSENT as SAFETY_AUTHORITY_PROJECTION_ABSENT,
+    try_load_safety_authority_presentation_projection_v1,
 )
 from .workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     FORBIDDEN_SELECTED_SYMBOLS,
@@ -1248,20 +1254,49 @@ def _bind_safety_authority(
     as_of: datetime,
     git_sha: str | None,
     safety_authority_fields: Mapping[str, Any] | None,
+    archive_root: Path | None = None,
 ) -> Any:
-    """Project injected KillSwitch / boundary-compatible Safety fields.
+    """Project KillSwitch / boundary-compatible Safety fields.
 
-    No durable dashboard Safety readmodel. Without injection → MISSING_SOURCE.
+    Injection remains supported and strictly preferred. Productive auto-bind
+    loads the non-authoritative presentation projection from the Workflow
+    Dashboard archive root when injection is absent. Without injection and
+    without a valid persisted projection → MISSING_SOURCE.
     Never instantiates KillSwitch, never calls trigger/recover, never calls
     evaluate_offline_killswitch_boundary_v0 or bind_* Safety evaluators, and
-    never auto-loads a live state file.
+    never auto-loads a productive/live KillSwitch state file.
     """
     if safety_authority_fields is None:
-        return unavailable_safety_authority(
-            availability=Availability.MISSING_SOURCE,
-            generated_at=as_of,
-            reason=REASON_SAFETY_NOT_PERSISTED,
-        )
+        if archive_root is None:
+            return unavailable_safety_authority(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_SAFETY_NOT_PERSISTED,
+            )
+        try:
+            loaded = try_load_safety_authority_presentation_projection_v1(archive_root)
+        except Exception:
+            return unavailable_safety_authority(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_SAFETY_NOT_PERSISTED,
+            )
+        if not loaded.loaded or loaded.binder_fields is None:
+            reason = REASON_SAFETY_NOT_PERSISTED
+            if loaded.load_errors:
+                first = str(loaded.load_errors[0])
+                if first != SAFETY_AUTHORITY_PROJECTION_ABSENT:
+                    reason = first
+            # Fail-closed presentation autobind: absent/invalid/wrong-version/
+            # schema errors remain honest MISSING_SOURCE (no invented Safety).
+            if reason == SAFETY_AUTHORITY_PROJECTION_ABSENT:
+                reason = REASON_SAFETY_NOT_PERSISTED
+            return unavailable_safety_authority(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=reason,
+            )
+        safety_authority_fields = loaded.binder_fields
 
     if "kill_switch_state" not in safety_authority_fields:
         raise KeyError("safety_authority_fields missing required keys: ['kill_switch_state']")
@@ -2024,8 +2059,12 @@ def bind_market_universe_slots(
 
     safety_authority_fields accepts already-computed KillSwitch / boundary-
     compatible fields (kill_switch_state, veto_active, reason_codes) plus
-    producer wall-clock timestamps. Without injection, safety_authority is
-    MISSING_SOURCE. Never calls KillSwitch.trigger/recover or offline evaluators.
+    producer wall-clock timestamps. Without injection, productive auto-bind
+    loads safety_authority_presentation_projection.v1 from
+    readmodels/safety_authority.v1.json when present; otherwise
+    MISSING_SOURCE. Explicit injection remains priority over archive autobind.
+    Never calls KillSwitch.trigger/recover or offline evaluators; never
+    auto-loads productive/live KillSwitch state files.
 
     risk_sizing_capital_fields accepts already-selected Risk/Sizing/Capital
     display fields (risk_status/sizing_status/capital_status[/quantity]) plus
@@ -2084,6 +2123,7 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         safety_authority_fields=safety_authority_fields,
+        archive_root=root,
     )
     risk = _bind_risk_sizing_capital(
         as_of=as_of,
