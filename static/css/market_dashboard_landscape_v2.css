@@ -578,10 +578,30 @@
   padding: 6px 0 6px;
   background: transparent;
   flex: 0 0 auto;
+  min-width: 0;
 }
 
 .mdl-v2-ops__col {
+  /* Contain long monospace reason codes inside the OPS grid track. */
   padding: 0;
+  min-width: 0;
+}
+
+.mdl-v2-ops .mdl-v2-kv > div {
+  min-width: 0;
+}
+
+.mdl-v2-ops .mdl-v2-kv dt {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.mdl-v2-ops .mdl-v2-kv dd {
+  /* Presentation-only: wrap inside column — do not bleed into adjacent OPS cols. */
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .mdl-v2-ops__note {
@@ -758,6 +778,10 @@
   }
 
   .mdl-v2-decision__secondary {
+    column-gap: 18px;
+  }
+
+  .mdl-v2-ops {
     column-gap: 18px;
   }
 }
