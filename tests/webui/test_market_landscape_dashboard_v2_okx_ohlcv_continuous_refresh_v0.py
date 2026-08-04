@@ -140,10 +140,13 @@ class _FakeOkxClient:
             )
         assert path == "/api/v5/market/candles"
         assert params["instId"] == INSTRUMENT
+        okx_bar = str(params.get("bar") or "1m")
+        assert okx_bar in {"1m", "1H"}
         start = datetime(2026, 7, 20, 18, 0, 0, tzinfo=timezone.utc)
+        step = timedelta(minutes=1) if okx_bar == "1m" else timedelta(hours=1)
         rows: list[list[str]] = []
         for i in range(100):
-            ts = start + timedelta(hours=i)
+            ts = start + (step * i)
             ms = str(int(ts.timestamp() * 1000))
             confirm = "0" if i == 99 else "1"
             if i == 99:
@@ -165,7 +168,7 @@ class _FakeOkxClient:
                 rows.append([ms, close, close, close, close, "10", "10", "10", confirm])
         body = json.dumps({"code": "0", "msg": "", "data": rows})
         return OkxPublicCaptureEnvelopeV1(
-            request_url=f"https://www.okx.com{path}?instId={INSTRUMENT}",
+            request_url=f"https://www.okx.com{path}?instId={INSTRUMENT}&bar={okx_bar}",
             request_path=path,
             query_parameters=dict(params),
             http_status=200,
@@ -370,7 +373,7 @@ def test_volume_revision_moves_candle_series_digest(
     assert second_doc.get("ohlcv_revision_kind") == "SAME_TIMESTAMP_REVISION"
     assert second.get("close_source_semantics") == ("okx_market_candles_close_plus_public_trades")
     assert second.get("mark_source_semantics") == ("okx_public_mark_price_markPx_metadata_only")
-    assert second.get("open_candle_live_source") == "okx_public_trades_into_pt1h_v1"
+    assert second.get("open_candle_live_source") == "okx_public_trades_into_pt1m_v1"
     assert second.get("trades_endpoint") == "/api/v5/market/trades"
 
 
@@ -426,7 +429,7 @@ def test_authentic_okx_maps_and_newer_snapshot_advances(
     assert "/api/v5/market/trades" in client_b.paths
     assert "/api/v5/public/mark-price" in client_b.paths
     assert client_b.calls == 3
-    assert second["ohlcv"].get("open_candle_live_source") == "okx_public_trades_into_pt1h_v1"
+    assert second["ohlcv"].get("open_candle_live_source") == "okx_public_trades_into_pt1m_v1"
     assert second["ohlcv"].get("trades_endpoint") == "/api/v5/market/trades"
 
 
@@ -437,9 +440,9 @@ def test_public_trades_revise_open_candle_when_candles_static(
     archive = tmp_path / "archive"
     selection = _write_universe(archive)
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
-    tip_ms = "1784926800000"  # FakeOkx open tip 2026-07-24T21:00:00Z
-    seed_ms = "1784926900000"
-    new_ms = "1784927400000"
+    tip_ms = "1784576340000"  # FakeOkx open tip 2026-07-20T19:39:00Z (PT1M)
+    seed_ms = "1784576350000"  # +10s within open minute
+    new_ms = "1784576380000"  # +40s within open minute
     seed_trades = [
         {
             "instId": INSTRUMENT,
@@ -458,7 +461,7 @@ def test_public_trades_revise_open_candle_when_candles_static(
         selection_bundle_id="bundle-a",
         selection_path=selection,
         client=_FakeOkxClient(  # type: ignore[arg-type]
-            captured_at="2026-07-24T21:05:00Z",
+            captured_at="2026-07-20T19:39:10Z",
             open_px="0.000000009100",
             high_px="0.000000009100",
             low_px="0.000000009100",
@@ -469,7 +472,8 @@ def test_public_trades_revise_open_candle_when_candles_static(
     )
     path = archive / "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
     first = json.loads(path.read_text(encoding="utf-8"))
-    assert first["last_timestamp"].startswith("2026-07-24T21:00:00")
+    assert first["interval"] == "PT1M"
+    assert first["last_timestamp"].startswith("2026-07-20T19:39:00")
     assert first["applied_trade_ids"] == ["seed-1"]
     assert first["bars"][-1]["close"] == "0.000000009100"
     assert first["bars"][-1]["volume"] == "10"
@@ -487,7 +491,7 @@ def test_public_trades_revise_open_candle_when_candles_static(
     second = refresh_selected_okx_ohlcv_readmodel_from_archive_v1(
         archive_root=archive,
         client=_FakeOkxClient(  # type: ignore[arg-type]
-            captured_at="2026-07-24T21:10:00Z",
+            captured_at="2026-07-20T19:39:40Z",
             open_px="0.000000009100",
             high_px="0.000000009100",
             low_px="0.000000009100",
@@ -499,7 +503,7 @@ def test_public_trades_revise_open_candle_when_candles_static(
     )
     assert second["status"] == "OK"
     tip = second["ohlcv"]["bars"][-1]
-    assert tip["ts"].startswith("2026-07-24T21:00:00")
+    assert tip["ts"].startswith("2026-07-20T19:39:00")
     assert tip["open"] == "0.000000009100"
     assert tip["high"] == "0.000000009250"
     assert tip["low"] == "0.000000009100"
@@ -1010,9 +1014,10 @@ def test_poll_interval_targets_visible_intrabar_feedback() -> None:
         OHLCV_POLL_INTERVAL_SECONDS,
     )
 
+    assert DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS == 1
+    assert OHLCV_POLL_INTERVAL_SECONDS == DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS
     assert DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS <= 5
     assert DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS >= 1
-    assert OHLCV_POLL_INTERVAL_SECONDS == DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS
 
 
 def test_ohlcv_refresh_preserves_universe_selection_manifest_binding(

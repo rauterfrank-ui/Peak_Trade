@@ -218,7 +218,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--market-type", default="swap")
     parser.add_argument("--settle-ccy", default="USDT")
     parser.add_argument("--exclude-underlying", default="BTC")
-    parser.add_argument("--bar", default="1H")
+    parser.add_argument("--bar", default="PT1M")
     parser.add_argument("--verify-manifest", action="store_true", default=True)
     parser.add_argument("--no-verify-manifest", action="store_false", dest="verify_manifest")
     parser.add_argument("--materialize-readmodels", action="store_true", default=True)

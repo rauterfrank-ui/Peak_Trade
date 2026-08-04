@@ -21,7 +21,7 @@ OHLCV_BROWSER_PAYLOAD_SCHEMA = "market_landscape_ohlcv_browser_payload.v1"
 # Must stay equal to DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS in
 # src.ops.okx_selected_instrument_ohlcv_readmodel_v1 (contract-tested).
 # Landscape package must not import ops owners (architecture guard).
-OHLCV_POLL_INTERVAL_SECONDS = 3
+OHLCV_POLL_INTERVAL_SECONDS = 1
 
 
 def _ohlcv_poll_interval_seconds() -> int:
