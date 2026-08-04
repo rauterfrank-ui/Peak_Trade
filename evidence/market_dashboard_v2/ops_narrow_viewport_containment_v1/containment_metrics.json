@@ -1,0 +1,73 @@
+{
+  "capability_id": "CAPABILITY_PRESENTATION_LANDSCAPE_OPS_NARROW_VIEWPORT_CONTAINMENT_V1",
+  "channel_metrics": {
+    "ops_containment_1200x807.png": {
+      "viewport": [
+        1200,
+        807
+      ],
+      "channel": "chrome",
+      "ops_overlaps": [],
+      "doc_overflow_x": 0,
+      "workspace_columns": "160px 792px 180px",
+      "rail_right_width": 180,
+      "ops_col_min_width": "0px",
+      "ops_dd_wrap": {
+        "minWidth": "0px",
+        "overflowWrap": "anywhere",
+        "wordBreak": "break-word"
+      },
+      "chart_meta_ellipsis": {
+        "whiteSpace": "nowrap",
+        "textOverflow": "ellipsis",
+        "overflow": "hidden"
+      }
+    },
+    "ops_containment_1512x982.png": {
+      "viewport": [
+        1512,
+        982
+      ],
+      "channel": "chrome",
+      "ops_overlaps": [],
+      "doc_overflow_x": 0,
+      "workspace_columns": "190px 1032px 210px",
+      "rail_right_width": 210,
+      "ops_col_min_width": "0px",
+      "ops_dd_wrap": {
+        "minWidth": "0px",
+        "overflowWrap": "anywhere",
+        "wordBreak": "break-word"
+      },
+      "chart_meta_ellipsis": {
+        "whiteSpace": "nowrap",
+        "textOverflow": "ellipsis",
+        "overflow": "hidden"
+      }
+    },
+    "ops_containment_1920x1080.png": {
+      "viewport": [
+        1920,
+        1080
+      ],
+      "channel": "chrome",
+      "ops_overlaps": [],
+      "doc_overflow_x": 0,
+      "workspace_columns": "190px 1440px 210px",
+      "rail_right_width": 210,
+      "ops_col_min_width": "0px",
+      "ops_dd_wrap": {
+        "minWidth": "0px",
+        "overflowWrap": "anywhere",
+        "wordBreak": "break-word"
+      },
+      "chart_meta_ellipsis": {
+        "whiteSpace": "nowrap",
+        "textOverflow": "ellipsis",
+        "overflow": "hidden"
+      }
+    }
+  },
+  "console_errors": [],
+  "page_errors": []
+}
