@@ -6,8 +6,10 @@ trading. GET /market consumers may resolve this root (explicit → Env →
 canonical default → discovered governed OKX sibling) to read-only-load
 universe_selection_readmodel.v1 and okx_selected_instrument_ohlcv_readmodel.v1,
 and (when present) canonical_decision_presentation_projection.v1,
-double_play_presentation_projection.v1, and
-bull_bear_regime_presentation_projection.v1.
+double_play_presentation_projection.v1,
+bull_bear_regime_presentation_projection.v1, and
+dynamic_scope_presentation_projection.v1 (plus its durable source sibling
+dynamic_scope_state_v1.json under the same archive root).
 """
 
 from __future__ import annotations
@@ -50,6 +52,10 @@ DOUBLE_PLAY_PRESENTATION_PROJECTION_RELATIVE = (
 )
 BULL_BEAR_REGIME_PRESENTATION_PROJECTION_RELATIVE = (
     "readmodels/bull_bear_regime_presentation_projection.v1.json"
+)
+DYNAMIC_SCOPE_STATE_RELATIVE = "readmodels/dynamic_scope_state_v1.json"
+DYNAMIC_SCOPE_PRESENTATION_PROJECTION_RELATIVE = (
+    "readmodels/dynamic_scope_presentation_projection.v1.json"
 )
 _DISCOVER_NAME_PREFIX = "workflow_dashboard_v1"
 
@@ -405,9 +411,14 @@ def resolve_workflow_dashboard_archive_root(
 
 
 __all__ = [
+    "BULL_BEAR_REGIME_PRESENTATION_PROJECTION_RELATIVE",
+    "CANONICAL_DECISION_PRESENTATION_PROJECTION_RELATIVE",
     "CONFIG_CONTRACT_RELATIVE_PATH",
     "CONTRACT_ID",
     "CONTRACT_SCHEMA_VERSION",
+    "DOUBLE_PLAY_PRESENTATION_PROJECTION_RELATIVE",
+    "DYNAMIC_SCOPE_PRESENTATION_PROJECTION_RELATIVE",
+    "DYNAMIC_SCOPE_STATE_RELATIVE",
     "ENV_ARCHIVE_ROOT",
     "OKX_OHLCV_READMODEL_RELATIVE",
     "OWNER_MODULE",

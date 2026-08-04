@@ -52,9 +52,17 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         authority_class="dynamic_scope",
         reuse_status="REUSED",
         notes=(
-            "Phase 4.2: Landscape projects CanonicalScopeSnapshotV1 lifecycle "
-            "identity only (scope_state/current_scope_ref). Regime/Bull-Bear/"
-            "Switch bind via separate slot regime_bull_bear_switch."
+            "Phase 4.2 + CAPABILITY_PRESENTATION_DYNAMIC_SCOPE_PROJECTION_"
+            "MATERIALIZER_AUTOBIND_V1: Landscape projects "
+            "CanonicalScopeSnapshotV1 lifecycle identity only "
+            "(scope_state/current_scope_ref[/next_scope_ref]); no scope "
+            "initializer or transition calls; no invented next_scope_ref. "
+            "Durable auto-bind via non-authoritative "
+            "dynamic_scope_presentation_projection.v1 under archive root "
+            "(materialized from durable dynamic_scope_state_v1.json); "
+            "injection remains test-compatible; AUTHORITY_EFFECT=NONE. "
+            "Regime/Bull-Bear/Switch bind via separate slot "
+            "regime_bull_bear_switch."
         ),
     ),
     CanonicalOwnerRefV1(
