@@ -19,7 +19,7 @@
 | Import base SHA / origin/main SHA | `6a9a3f10b81ab8d870245dc10ea74433e1f5365b` |
 | Family-plan discovery SHA | `6a9a3f10b81ab8d870245dc10ea74433e1f5365b` |
 | Import date (UTC) | `2026-08-04T20:18:40Z` |
-| Imported content digest SHA-256 | `5a5521c247d78001a6a85a3b8812e46f9278b4ce36ea18d4d93160d2aca721ac` |
+| Imported content digest SHA-256 | `61a052d5bf9616768a1dd92e2bf3d3bb45cc106ed2e7ebf83f91ea308215c640` |
 | Prior family-matrix HEAD (historical) | `8c02f8793411939149eb7f33d6877a68a23a727f` (`#5710`) |
 | Durable inventory artifact | `docs/ops/market_dashboard/market_dashboard_missing_source_not_bound_inventory_v1/INVENTORY.json` |
 | Inventory generated at | `2026-08-04T18:30:57.619368Z` |
@@ -472,7 +472,7 @@ For the eight projection families, archive verification is complete at Discovery
 - `load_bound_okx_ohlcv_readmodel_v1`
 - `build_ohlcv_poll_response_v1`
 - `serialize_ohlcv_browser_payload_v1`
-- `GET /api/market/landscape/ohlcv`
+- `GET &#47;api&#47;market&#47;landscape&#47;ohlcv`
 - `static/js/market_dashboard_landscape_v2.js`
 - PRs `#5702`, `#5703`, `#5704`, `#5705`, `#5707`, `#5708`
 
