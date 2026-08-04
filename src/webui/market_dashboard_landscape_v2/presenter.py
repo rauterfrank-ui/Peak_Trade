@@ -107,6 +107,93 @@ def _finite_ohlc_float(raw: Any) -> float | None:
     return value
 
 
+def classify_volume_bar_direction_v1(*, open_v: float, close_v: float) -> str:
+    """Candle-direction class for volume bars — not buy/sell volume semantics."""
+    if close_v > open_v:
+        return "up"
+    if close_v < open_v:
+        return "down"
+    return "neutral"
+
+
+def usable_volume_value_v1(raw: Any) -> float | None:
+    """Accept finite non-negative volume only; never invent zeros for missing/invalid."""
+    value = _finite_ohlc_float(raw)
+    if value is None or value < 0:
+        return None
+    return value
+
+
+def resolve_volume_panel_state_v1(
+    *,
+    browser_payload: Mapping[str, Any] | None,
+    ohlcv_payload: Mapping[str, Any] | None = None,
+) -> tuple[str, str]:
+    """Honest volume-panel availability from existing OHLCV payload facts only."""
+    source = ohlcv_payload if isinstance(ohlcv_payload, Mapping) else None
+    payload = browser_payload if isinstance(browser_payload, Mapping) else None
+    if payload is None and source is None:
+        return (
+            "MISSING_SOURCE",
+            "Volume MISSING_SOURCE — no OHLCV volume field in existing payload.",
+        )
+    if payload is None:
+        return (
+            "NOT_BOUND",
+            "Volume NOT_BOUND — OHLCV present but not browser-serializable for volume.",
+        )
+    bars = payload.get("bars")
+    if not isinstance(bars, list) or not bars:
+        return (
+            "MISSING_SOURCE",
+            "Volume MISSING_SOURCE — empty OHLCV series; no fabricated volume bars.",
+        )
+    usable = 0
+    missing = 0
+    invalid = 0
+    for row in bars:
+        if not isinstance(row, Mapping):
+            invalid += 1
+            continue
+        raw = row.get("volume")
+        if raw is None or raw == "":
+            missing += 1
+            continue
+        if usable_volume_value_v1(raw) is None:
+            invalid += 1
+            continue
+        usable += 1
+    if usable == 0 and missing == len(bars):
+        return (
+            "MISSING_SOURCE",
+            "Volume MISSING_SOURCE — volume field absent on all bars.",
+        )
+    if usable == 0:
+        return (
+            "NOT_BOUND",
+            "Volume NOT_BOUND — volume present but not usable in presentation binding.",
+        )
+    freshness_raw = ""
+    if isinstance(source, Mapping):
+        freshness_raw = str(source.get("freshness_state") or "")
+    if not freshness_raw:
+        freshness_raw = str(payload.get("freshness_state") or "")
+    is_stale = False
+    if isinstance(source, Mapping):
+        is_stale = bool(source.get("is_stale"))
+    if not is_stale:
+        is_stale = bool(payload.get("is_stale"))
+    if freshness_raw.lower() == "stale" or is_stale:
+        return (
+            "STALE",
+            "Volume STALE — canonical OHLCV freshness reports stale; bars retained.",
+        )
+    return (
+        "AVAILABLE",
+        "Volume bound to authentic OHLCV bar volume (contracts); not buy/sell delta.",
+    )
+
+
 def serialize_ohlcv_browser_payload_v1(
     ohlcv_readmodel: Mapping[str, Any] | None,
 ) -> dict[str, Any] | None:
@@ -864,6 +951,11 @@ def present_market_landscape_v2(
     else:
         chart_message = "Primary chart NOT_BOUND — no OHLCV fabricated for Landscape shell."
 
+    volume_panel_state, volume_panel_message = resolve_volume_panel_state_v1(
+        browser_payload=browser_payload,
+        ohlcv_payload=ohlcv_payload,
+    )
+
     ranking_rows: list[dict[str, Any]] = []
     universe_rows: list[dict[str, Any]] = []
     selected_instrument_id = None
@@ -1043,6 +1135,8 @@ def present_market_landscape_v2(
             "volume": None
             if not browser_payload or not browser_payload.get("bars")
             else browser_payload["bars"][-1].get("volume"),
+            "volume_panel_state": volume_panel_state,
+            "volume_panel_message": volume_panel_message,
             "is_stale": bool((ohlcv_payload or {}).get("is_stale")),
             "poll_path": OHLCV_POLL_PATH,
             "poll_interval_seconds": _ohlcv_poll_interval_seconds(),
