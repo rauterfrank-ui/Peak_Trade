@@ -30,6 +30,9 @@
   var lastCandleSeriesDigest = "";
   var lastMetadataDigest = "";
   var lastMark = null;
+  // Presentation-only poll-close baseline for authentic last-price delta (not a signal).
+  var lastPricePollClose = null;
+  var lastPricePollTs = null;
   var chartInstanceId = "mdl-chart-" + String(Date.now());
 
   var engineering = root.querySelector("[data-mdl-engineering]");
@@ -62,6 +65,7 @@
     canvas.setAttribute("data-mdl-chart-blank", "true");
     canvas.setAttribute("data-mdl-chart-bar-count", "0");
     if (reason) canvas.setAttribute("data-mdl-chart-error", reason);
+    clearLastPriceMarker(canvas);
     markVolumeBlank(reason || "chart_blank");
   }
 
@@ -442,6 +446,155 @@
     return String(n);
   }
 
+  /**
+   * Authentic poll-to-poll close delta for the active candle only.
+   * Same ts: delta = nextClose - prevClose.
+   * New ts / missing prev: baseline reset → delta 0 (not inventing cross-candle motion).
+   * Never fabricates closes; returns nulls when inputs are non-finite.
+   */
+  function resolveLastPricePollDelta(prevClose, prevTs, nextClose, nextTs) {
+    var close = Number(nextClose);
+    var ts = nextTs === undefined || nextTs === null ? "" : String(nextTs);
+    if (!Number.isFinite(close) || !ts) {
+      return { close: null, ts: "", delta: null, deltaPct: null, baselineReset: true };
+    }
+    var prevC = Number(prevClose);
+    var prevT = prevTs === undefined || prevTs === null ? "" : String(prevTs);
+    if (Number.isFinite(prevC) && prevT && prevT === ts) {
+      var delta = close - prevC;
+      var deltaPct = prevC !== 0 ? (delta / prevC) * 100 : null;
+      return {
+        close: close,
+        ts: ts,
+        delta: delta,
+        deltaPct: deltaPct,
+        baselineReset: false,
+      };
+    }
+    return { close: close, ts: ts, delta: 0, deltaPct: 0, baselineReset: true };
+  }
+
+  function formatLastPriceMarkerLabel(close, delta, deltaPct) {
+    if (!Number.isFinite(close)) return "";
+    var parts = ["close " + formatMetaNumber(close)];
+    if (Number.isFinite(delta)) {
+      var sign = delta > 0 ? "+" : "";
+      parts.push("Δ " + sign + formatMetaNumber(delta));
+    }
+    if (Number.isFinite(deltaPct)) {
+      var pctSign = deltaPct > 0 ? "+" : "";
+      parts.push("(" + pctSign + formatMetaNumber(deltaPct) + "%)");
+    }
+    return parts.join(" · ");
+  }
+
+  function ensureLastPriceMarkerEl() {
+    var stage = root.querySelector("[data-mdl-chart-stage]");
+    if (!stage) return null;
+    var el = stage.querySelector("[data-mdl-last-price-marker]");
+    if (el) return el;
+    el = document.createElement("div");
+    el.className = "mdl-v2-last-price-marker";
+    el.setAttribute("data-mdl-last-price-marker", "true");
+    el.setAttribute("data-mdl-last-price-visible", "false");
+    el.setAttribute("aria-hidden", "true");
+    el.setAttribute(
+      "title",
+      "Presentation observation of last candle close and poll delta; not a trading signal."
+    );
+    el.innerHTML =
+      '<div class="mdl-v2-last-price-marker__line" data-mdl-last-price-line="true"></div>' +
+      '<div class="mdl-v2-last-price-marker__label" data-mdl-last-price-label="true"></div>';
+    stage.appendChild(el);
+    return el;
+  }
+
+  function clearLastPriceMarker(canvas) {
+    lastPricePollClose = null;
+    lastPricePollTs = null;
+    var el = root.querySelector("[data-mdl-last-price-marker]");
+    if (el) {
+      el.setAttribute("data-mdl-last-price-visible", "false");
+      el.removeAttribute("data-mdl-last-price-close");
+      el.removeAttribute("data-mdl-last-price-delta");
+      el.removeAttribute("data-mdl-last-price-delta-pct");
+      el.removeAttribute("data-mdl-last-price-y");
+      el.removeAttribute("data-mdl-last-price-ts");
+      var label = el.querySelector("[data-mdl-last-price-label]");
+      if (label) label.textContent = "";
+    }
+    if (canvas) {
+      canvas.removeAttribute("data-mdl-last-price-close");
+      canvas.removeAttribute("data-mdl-last-price-delta");
+      canvas.removeAttribute("data-mdl-last-price-delta-pct");
+      canvas.removeAttribute("data-mdl-last-price-y");
+      canvas.removeAttribute("data-mdl-last-price-ts");
+    }
+  }
+
+  function syncLastPriceMarker(canvas, bars, layout) {
+    if (!canvas || !layout || !Array.isArray(bars) || !bars.length) {
+      clearLastPriceMarker(canvas);
+      return false;
+    }
+    var last = bars[bars.length - 1];
+    var resolved = resolveLastPricePollDelta(
+      lastPricePollClose,
+      lastPricePollTs,
+      last && last.close,
+      last && last.ts
+    );
+    if (resolved.close === null) {
+      clearLastPriceMarker(canvas);
+      return false;
+    }
+    var yCss =
+      layout.padT +
+      (1 - (resolved.close - layout.minP) / layout.span) * layout.plotH;
+    if (!Number.isFinite(yCss)) {
+      clearLastPriceMarker(canvas);
+      return false;
+    }
+    var el = ensureLastPriceMarkerEl();
+    if (!el) return false;
+    var stage = root.querySelector("[data-mdl-chart-stage]");
+    if (!stage) return false;
+    var canvasTop = canvas.offsetTop;
+    var canvasLeft = canvas.offsetLeft;
+    el.style.display = "block";
+    el.style.top = canvasTop + yCss + "px";
+    el.style.left = canvasLeft + layout.padL + "px";
+    el.style.width = Math.max(1, layout.plotW) + "px";
+    el.setAttribute("data-mdl-last-price-visible", "true");
+    el.setAttribute("data-mdl-last-price-close", String(resolved.close));
+    el.setAttribute("data-mdl-last-price-delta", String(resolved.delta));
+    el.setAttribute(
+      "data-mdl-last-price-delta-pct",
+      resolved.deltaPct === null ? "" : String(resolved.deltaPct)
+    );
+    el.setAttribute("data-mdl-last-price-y", String(yCss));
+    el.setAttribute("data-mdl-last-price-ts", resolved.ts);
+    var label = el.querySelector("[data-mdl-last-price-label]");
+    if (label) {
+      label.textContent = formatLastPriceMarkerLabel(
+        resolved.close,
+        resolved.delta,
+        resolved.deltaPct
+      );
+    }
+    canvas.setAttribute("data-mdl-last-price-close", String(resolved.close));
+    canvas.setAttribute("data-mdl-last-price-delta", String(resolved.delta));
+    canvas.setAttribute(
+      "data-mdl-last-price-delta-pct",
+      resolved.deltaPct === null ? "" : String(resolved.deltaPct)
+    );
+    canvas.setAttribute("data-mdl-last-price-y", String(yCss));
+    canvas.setAttribute("data-mdl-last-price-ts", resolved.ts);
+    lastPricePollClose = resolved.close;
+    lastPricePollTs = resolved.ts;
+    return true;
+  }
+
   function lastBarFromPayload(payload) {
     if (!payload || !Array.isArray(payload.bars) || !payload.bars.length) return null;
     return payload.bars[payload.bars.length - 1];
@@ -658,6 +811,11 @@
 
     var geometryOk = drawnPixels > 0 && canvas.width > 0 && canvas.height > 0;
     finishCanvasAttrs(canvas, payload, bars, arrays.closes[n - 1], geometryOk, forceResize);
+    if (geometryOk) {
+      syncLastPriceMarker(canvas, bars, chartLayout);
+    } else {
+      clearLastPriceMarker(canvas);
+    }
     return geometryOk;
   }
 
@@ -795,6 +953,7 @@
     }
 
     finishCanvasAttrs(canvas, payload, bars, arrays.closes[last], true, false);
+    syncLastPriceMarker(canvas, bars, L);
     return true;
   }
 

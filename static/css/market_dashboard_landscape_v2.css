@@ -374,6 +374,49 @@
   max-height: 100%;
 }
 
+/* Presentation-only last close marker — not a signal/authority cue. */
+.mdl-v2-last-price-marker {
+  position: absolute;
+  z-index: 2;
+  height: 0;
+  pointer-events: none;
+  display: none;
+  margin: 0;
+  padding: 0;
+  transform: translateY(-0.5px);
+}
+
+.mdl-v2-last-price-marker[data-mdl-last-price-visible="true"] {
+  display: block;
+}
+
+.mdl-v2-last-price-marker__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 0;
+  border-top: 1px dashed #94a3b8;
+  opacity: 0.85;
+}
+
+.mdl-v2-last-price-marker__label {
+  position: absolute;
+  right: 0;
+  top: 2px;
+  max-width: 100%;
+  padding: 0 4px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
 .mdl-v2-volume {
   flex: 0 0 auto;
   display: flex;

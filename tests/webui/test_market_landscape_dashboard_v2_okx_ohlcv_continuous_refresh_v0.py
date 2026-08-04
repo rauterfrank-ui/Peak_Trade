@@ -944,6 +944,111 @@ def test_js_layout_stability_and_update_classification_contracts() -> None:
     assert "text-overflow: ellipsis" in css
 
 
+def test_js_last_price_marker_presentation_contracts() -> None:
+    """Presentation-only last-price marker: authentic close line + poll delta."""
+    js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
+    css = (REPO / "static/css/market_dashboard_landscape_v2.css").read_text(encoding="utf-8")
+
+    assert "function resolveLastPricePollDelta(" in js
+    assert "function formatLastPriceMarkerLabel(" in js
+    assert "function syncLastPriceMarker(" in js
+    assert "function clearLastPriceMarker(" in js
+    assert "data-mdl-last-price-marker" in js
+    assert "data-mdl-last-price-line" in js
+    assert "data-mdl-last-price-close" in js
+    assert "data-mdl-last-price-delta" in js
+    assert "data-mdl-last-price-y" in js
+    assert "syncLastPriceMarker(canvas, bars, chartLayout)" in js
+    assert "syncLastPriceMarker(canvas, bars, L)" in js
+    # Line Y must derive from layout yFor(last.close) math — no candle body inflation.
+    assert "(1 - (resolved.close - layout.minP) / layout.span) * layout.plotH" in js
+    assert "not a trading signal" in js
+    assert "mdl-v2-last-price-marker" in css
+    assert "mdl-v2-last-price-marker__line" in css
+    assert "mdl-v2-last-price-marker__label" in css
+    # Geometry owners must remain untouched by this presentation overlay.
+    assert "minP -= span * 0.04" in js
+    assert "maxP += span * 0.04" in js
+    assert "function domainFor(highs, lows)" in js
+    assert "Math.max(1, Math.abs(yC - yO))" in js
+    assert "paintLastVolumeBarInPlace" in js
+
+
+def test_js_last_price_poll_delta_behavioral_contracts() -> None:
+    """Node proof: poll delta from authentic closes; minute reset; identical → 0."""
+    import subprocess
+    import tempfile
+
+    js = (REPO / "static/js/market_dashboard_landscape_v2.js").read_text(encoding="utf-8")
+    assert "function resolveLastPricePollDelta(" in js
+    assert "function formatLastPriceMarkerLabel(" in js
+    assert "function formatMetaNumber(" in js
+
+    def _extract(name: str) -> str:
+        start = js.index(name)
+        rest = js[start + len(name) :]
+        end_rel = rest.find("\n  function ")
+        assert end_rel > 0, name
+        return js[start : start + len(name) + end_rel].rstrip() + "\n"
+
+    helpers = "\n".join(
+        [
+            _extract("function formatMetaNumber(value)"),
+            _extract("function resolveLastPricePollDelta(prevClose, prevTs, nextClose, nextTs)"),
+            _extract("function formatLastPriceMarkerLabel(close, delta, deltaPct)"),
+        ]
+    )
+    harness = f"""
+'use strict';
+{helpers}
+function assert(cond, msg) {{
+  if (!cond) throw new Error(msg || 'assert failed');
+}}
+// First observation / new candle baseline reset → delta 0.
+var first = resolveLastPricePollDelta(null, null, 100, 't1');
+assert(first.close === 100 && first.delta === 0 && first.baselineReset === true, 'first');
+// In-place same-ts close change → authentic poll delta.
+var moved = resolveLastPricePollDelta(100, 't1', 100.5, 't1');
+assert(moved.delta === 0.5, 'same-ts delta');
+assert(Math.abs(moved.deltaPct - 0.5) < 1e-12, 'pct');
+// Identical successive closes → zero delta (no false motion).
+var same = resolveLastPricePollDelta(100.5, 't1', 100.5, 't1');
+assert(same.delta === 0 && same.deltaPct === 0, 'identical');
+// Minute / ts change resets baseline deterministically (no cross-candle invent).
+var minute = resolveLastPricePollDelta(100.5, 't1', 101, 't2');
+assert(minute.delta === 0 && minute.baselineReset === true, 'minute reset');
+// Missing/non-finite close fails closed without invented values.
+var bad = resolveLastPricePollDelta(100, 't1', Number.NaN, 't1');
+assert(bad.close === null && bad.delta === null, 'nonfinite');
+var missingTs = resolveLastPricePollDelta(100, 't1', 101, '');
+assert(missingTs.close === null && missingTs.delta === null, 'empty ts');
+var label = formatLastPriceMarkerLabel(100.5, 0.5, 0.5);
+assert(label.indexOf('close') === 0, 'label close');
+assert(label.indexOf('Δ') >= 0, 'label delta');
+assert(label.indexOf('%') >= 0, 'label pct');
+// yFor contract: marker Y uses authentic close against frozen layout domain.
+var layout = {{ padT: 16, minP: 90, span: 20, plotH: 200 }};
+var y = layout.padT + (1 - (100.5 - layout.minP) / layout.span) * layout.plotH;
+assert(Math.abs(y - (16 + (1 - 10.5 / 20) * 200)) < 1e-9, 'yFor close');
+console.log('LAST_PRICE_MARKER_BEHAVIORAL_PASS');
+"""
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write(harness)
+        harness_path = Path(handle.name)
+    try:
+        completed = subprocess.run(
+            ["node", str(harness_path)],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+    finally:
+        harness_path.unlink(missing_ok=True)
+    assert completed.returncode == 0, completed.stderr or completed.stdout
+    assert "LAST_PRICE_MARKER_BEHAVIORAL_PASS" in completed.stdout
+
+
 def test_live_data_requires_fresh_ohlcv_source_not_mark_cosmetics(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
