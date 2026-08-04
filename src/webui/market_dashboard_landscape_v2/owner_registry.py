@@ -64,13 +64,17 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         authority_class="regime_bull_bear_switch",
         reuse_status="REUSED",
         notes=(
-            "Explicit injection only. Regime fields project from "
+            "Phase 4.2B + CAPABILITY_PRESENTATION_BULL_BEAR_REGIME_PROJECTION_"
+            "MATERIALIZER_V1: Regime fields project from "
             "suitability_binding_v1 (regime_id/regime_status). Bull/Bear "
             "projects SideState exactly. Switch projects "
             "StateSwitchEvidenceV1 / TransitionDecision fields "
             "(previous/next side, scope_event_type, transition_allowed, "
             "transition_reason_code). No transition_state calls; no "
-            "SideState derivation; contradictory side fields fail closed."
+            "SideState derivation; contradictory side fields fail closed. "
+            "Durable auto-bind via non-authoritative "
+            "bull_bear_regime_presentation_projection.v1 under archive root; "
+            "injection remains test-compatible; AUTHORITY_EFFECT=NONE."
         ),
     ),
     CanonicalOwnerRefV1(

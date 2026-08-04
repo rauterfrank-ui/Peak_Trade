@@ -1,7 +1,8 @@
 """Phase 4.1–4.5 + 4.2B + 4.6B read-only producer binding for Market Landscape V2.
 
 Binds market_instrument, universe_ranking, dynamic_scope lifecycle identity,
-regime_bull_bear_switch (explicit injection; PR #5577), canonical_decision
+regime_bull_bear_switch (injection or durable presentation projection
+auto-bind; PR #5577 field contract), canonical_decision
 evidence (injection or durable presentation projection auto-bind),
 double_play display projection (injection or durable presentation projection
 auto-bind), safety authority KillSwitch/boundary field projection,
@@ -71,6 +72,10 @@ from .workflow_dashboard_archive_root_v1 import (
 from .workflow_dashboard_readmodel_v1.canonical_decision_presentation_projection_v1 import (
     LOAD_ERROR_ABSENT as DECISION_PROJECTION_ABSENT,
     try_load_canonical_decision_presentation_projection_v1,
+)
+from .workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v1 import (
+    LOAD_ERROR_ABSENT as BULL_BEAR_REGIME_PROJECTION_ABSENT,
+    try_load_bull_bear_regime_presentation_projection_v1,
 )
 from .workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
     LOAD_ERROR_ABSENT as DOUBLE_PLAY_PROJECTION_ABSENT,
@@ -675,18 +680,44 @@ def _bind_regime_bull_bear_switch(
     as_of: datetime,
     git_sha: str | None,
     regime_bull_bear_switch_fields: Mapping[str, Any] | None,
+    archive_root: Path | None = None,
 ) -> Any:
-    """Project injected Regime / SideState / Switch evidence fields.
+    """Project Regime / SideState / Switch evidence fields.
 
-    No durable dashboard readmodel. Without injection → MISSING_SOURCE.
-    Never calls transition_state, suitability evaluators, or invents SideState.
+    Injection remains supported for tests. Productive auto-bind loads the
+    non-authoritative presentation projection from the Workflow Dashboard
+    archive root when injection is absent. Never calls transition_state,
+    suitability evaluators, or invents SideState.
     """
     if regime_bull_bear_switch_fields is None:
-        return unavailable_regime_bull_bear_switch(
-            availability=Availability.MISSING_SOURCE,
-            generated_at=as_of,
-            reason=REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED,
-        )
+        if archive_root is None:
+            return unavailable_regime_bull_bear_switch(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED,
+            )
+        loaded = try_load_bull_bear_regime_presentation_projection_v1(archive_root)
+        if not loaded.loaded or loaded.binder_fields is None:
+            reason = REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED
+            if loaded.load_errors:
+                first = str(loaded.load_errors[0])
+                if first != BULL_BEAR_REGIME_PROJECTION_ABSENT:
+                    reason = first
+            availability = (
+                Availability.MISSING_SOURCE
+                if reason == REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED
+                or reason == BULL_BEAR_REGIME_PROJECTION_ABSENT
+                else Availability.INVALID
+            )
+            if reason == BULL_BEAR_REGIME_PROJECTION_ABSENT:
+                reason = REASON_REGIME_BULL_BEAR_SWITCH_NOT_PERSISTED
+                availability = Availability.MISSING_SOURCE
+            return unavailable_regime_bull_bear_switch(
+                availability=availability,
+                generated_at=as_of,
+                reason=reason,
+            )
+        regime_bull_bear_switch_fields = loaded.binder_fields
 
     schema_version = regime_bull_bear_switch_fields.get("schema_version")
     if schema_version is not None and str(schema_version) != LANDSCAPE_PROJECTION_SCHEMA_VERSION:
@@ -1881,7 +1912,8 @@ def bind_market_universe_slots(
 
     regime_bull_bear_switch_fields accepts already-computed Regime /
     SideState / StateSwitchEvidenceV1-compatible fields plus producer
-    wall-clock timestamps. Without injection, regime_bull_bear_switch is
+    wall-clock timestamps. Without injection, productive auto-bind loads
+    bull_bear_regime_presentation_projection.v1 when present; otherwise
     MISSING_SOURCE. Never calls transition_state or invents SideState.
 
     canonical_decision_fields accepts already-computed
@@ -1937,6 +1969,7 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         regime_bull_bear_switch_fields=regime_bull_bear_switch_fields,
+        archive_root=root,
     )
     decision = _bind_canonical_decision(
         as_of=as_of,
