@@ -192,6 +192,25 @@ def build_state_root_classification_matrix_v1() -> list[dict[str, Any]]:
             "reason": "claims/manifests; not trading-state authority",
         },
         {
+            "field": "regime_bull_bear_switch_evidence_readmodel",
+            "state_root": "evidence",
+            "owner": "trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1",
+            "writer": (
+                "trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1."
+                "persistence_v1.write_regime_bull_bear_switch_evidence_readmodel_v1"
+            ),
+            "classification": "EVIDENCE_ONLY",
+            "reason": (
+                "NON_RESTART_AUTHORITY NON_TRADING_INPUT; "
+                "SideState restart remains MEMBER_DYNAMIC_SCOPE "
+                "(CanonicalDynamicScopeStateV1.side_state); "
+                "parallel_domain=false"
+            ),
+            "restart_authority": False,
+            "trading_input": False,
+            "parallel_domain": False,
+        },
+        {
             "field": "master_v2_full_decision_blob",
             "state_root": "forbidden",
             "owner": "none",
