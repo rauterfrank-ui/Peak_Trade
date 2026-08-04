@@ -692,14 +692,18 @@ def _ohlcv_data_connection_state(
     chart_availability: Availability,
     disconnected: bool = False,
     projection_time_unix: float | None = None,
+    adapted_connection_state: str | None = None,
 ) -> str:
     """O5 connection vocabulary: HEALTHY/DEGRADED/STALE/DISCONNECTED/MISSING_SOURCE.
 
     Stale or disconnected cached data must never classify as HEALTHY.
+
+    Age/freshness chrome is owned by the O5 ops adapter at the shell boundary.
+    Landscape presentation accepts an optional adapted_connection_state and must
+    not import ops owners (architecture guard: stdlib + relative only).
     """
-    from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
-        adapt_derived_ohlcv_payload_to_o5_read_model_v1,
-    )
+    # Retained for call-site compatibility; age chrome arrives via adapted_connection_state.
+    _ = projection_time_unix
 
     if chart_availability is Availability.MISSING_SOURCE:
         return "MISSING_SOURCE"
@@ -713,12 +717,6 @@ def _ohlcv_data_connection_state(
     if bool(source.get("is_stale")) or str(source.get("freshness_state") or "").lower() == "stale":
         return "STALE"
 
-    now = projection_time_unix
-    if now is None:
-        from datetime import datetime, timezone
-
-        now = datetime.now(timezone.utc).timestamp()
-
     if _ohlcv_source_feed_is_live(
         browser_payload=browser_payload,
         ohlcv_payload=ohlcv_payload,
@@ -727,17 +725,18 @@ def _ohlcv_data_connection_state(
         # Authentic open-candle evidence → HEALTHY (explicit stale/disconnected already excluded).
         return "HEALTHY"
 
-    adapted = adapt_derived_ohlcv_payload_to_o5_read_model_v1(
-        ohlcv_payload,
-        projection_time_unix=float(now),
-        availability=chart_availability.value,
-        disconnected=False,
-    )
-    state = str(adapted.get("connection_state") or "DEGRADED")
-    # Source present without authentic live evidence must never invent HEALTHY.
-    if state == "HEALTHY":
-        return "DEGRADED"
-    return state
+    # Prefer O5-adapted chrome injected by the shell / producer boundary.
+    if adapted_connection_state is not None:
+        state = str(adapted_connection_state or "DEGRADED")
+        # Source present without authentic live evidence must never invent HEALTHY.
+        if state == "HEALTHY":
+            return "DEGRADED"
+        return state
+
+    # Presentation without boundary injection: fail-closed, never invent HEALTHY.
+    if ohlcv_payload is None:
+        return "MISSING_SOURCE"
+    return "DEGRADED"
 
 
 def _regime_context_views(snap: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -802,8 +801,13 @@ def present_market_landscape_v2(
     page: MarketDashboardPageSnapshotV1,
     *,
     ohlcv_readmodel: Mapping[str, Any] | None = None,
+    adapted_ohlcv_connection_state: str | None = None,
 ) -> dict[str, Any]:
-    """Format page snapshot for SSR template context (presentation only)."""
+    """Format page snapshot for SSR template context (presentation only).
+
+    adapted_ohlcv_connection_state: optional O5 connection chrome from the shell
+    boundary (ops adapter). Landscape must not import the ops owner itself.
+    """
     market = _slot_view(page.market_instrument)
     universe = _slot_view(page.universe_ranking)
     scope = _slot_view(page.dynamic_scope)
@@ -1046,6 +1050,7 @@ def present_market_landscape_v2(
                 browser_payload=browser_payload,
                 ohlcv_payload=ohlcv_payload,
                 chart_availability=chart_availability,
+                adapted_connection_state=adapted_ohlcv_connection_state,
             ),
         },
         "timeline": {

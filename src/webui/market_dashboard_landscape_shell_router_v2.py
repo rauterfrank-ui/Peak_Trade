@@ -226,6 +226,7 @@ def build_ohlcv_poll_response_v1(
             ohlcv_payload=ohlcv,
             chart_availability=availability,
             projection_time_unix=projection_unix,
+            adapted_connection_state=str(o5_read_model.get("connection_state") or "DEGRADED"),
         )
     )
     if data_connection_state == "HEALTHY":
@@ -313,7 +314,28 @@ async def market_landscape_dashboard(request: Request) -> Any:
         or page.universe_ranking.selected_instrument_id,
         selected_venue=page.market_instrument.venue,
     )
-    context = present_market_landscape_v2(page, ohlcv_readmodel=ohlcv)
+    # O5 chrome stays at the shell boundary — Landscape package must not import ops.
+    from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
+        adapt_derived_ohlcv_payload_to_o5_read_model_v1,
+    )
+
+    chart_availability = page.market_instrument.availability
+    if isinstance(ohlcv, dict) and ohlcv.get("bar_count"):
+        freshness = str(ohlcv.get("freshness_state") or "")
+        if freshness == "stale" or bool(ohlcv.get("is_stale")):
+            chart_availability = Availability.STALE
+        elif chart_availability not in (Availability.AVAILABLE, Availability.STALE):
+            chart_availability = Availability.AVAILABLE
+    o5_chrome = adapt_derived_ohlcv_payload_to_o5_read_model_v1(
+        ohlcv,
+        projection_time_unix=generated_at.timestamp(),
+        availability=chart_availability.value,
+    )
+    context = present_market_landscape_v2(
+        page,
+        ohlcv_readmodel=ohlcv,
+        adapted_ohlcv_connection_state=str(o5_chrome.get("connection_state") or "DEGRADED"),
+    )
     if ohlcv is not None:
         eng = context.setdefault("engineering", {})
         eng["okx_ohlcv"] = {
