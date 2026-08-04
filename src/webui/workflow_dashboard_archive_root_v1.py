@@ -13,10 +13,13 @@ dynamic_scope_state_v1.json under the same archive root), and
 risk_sizing_capital_presentation_projection.v1 (plus its durable source sibling
 risk_sizing_capital.v1.json under the same archive root),
 execution_reconciliation_presentation_projection.v1 (plus its durable source sibling
-execution_reconciliation.v1.json under the same archive root), and
+execution_reconciliation.v1.json under the same archive root),
 safety_authority_presentation_projection.v1 persisted at
 safety_authority.v1.json under the same archive root (presentation-only;
-never a productive KillSwitch state file).
+never a productive KillSwitch state file), and
+economic_summary_presentation_projection.v1 (plus its durable source sibling
+economic_summary.v1.json under the same archive root; presentation-only;
+never discovers latest EconomicViabilityEvidence packs).
 """
 
 from __future__ import annotations
@@ -73,6 +76,10 @@ EXECUTION_RECONCILIATION_PRESENTATION_PROJECTION_RELATIVE = (
     "readmodels/execution_reconciliation_presentation_projection.v1.json"
 )
 SAFETY_AUTHORITY_PRESENTATION_PROJECTION_RELATIVE = "readmodels/safety_authority.v1.json"
+ECONOMIC_SUMMARY_FIELDS_RELATIVE = "readmodels/economic_summary.v1.json"
+ECONOMIC_SUMMARY_PRESENTATION_PROJECTION_RELATIVE = (
+    "readmodels/economic_summary_presentation_projection.v1.json"
+)
 _DISCOVER_NAME_PREFIX = "workflow_dashboard_v1"
 
 
@@ -435,6 +442,8 @@ __all__ = [
     "DOUBLE_PLAY_PRESENTATION_PROJECTION_RELATIVE",
     "DYNAMIC_SCOPE_PRESENTATION_PROJECTION_RELATIVE",
     "DYNAMIC_SCOPE_STATE_RELATIVE",
+    "ECONOMIC_SUMMARY_FIELDS_RELATIVE",
+    "ECONOMIC_SUMMARY_PRESENTATION_PROJECTION_RELATIVE",
     "ENV_ARCHIVE_ROOT",
     "EXECUTION_RECONCILIATION_FIELDS_RELATIVE",
     "EXECUTION_RECONCILIATION_PRESENTATION_PROJECTION_RELATIVE",
