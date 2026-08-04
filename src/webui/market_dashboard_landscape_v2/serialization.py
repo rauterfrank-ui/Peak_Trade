@@ -48,6 +48,9 @@ def serialize_projection(snapshot: Any) -> dict[str, Any]:
                 "universe": [dict(row) for row in snapshot.universe],
                 "selected_instrument_id": snapshot.selected_instrument_id,
                 "reason_codes": list(snapshot.reason_codes),
+                "source_run_id": snapshot.source_run_id,
+                "selection_reason": snapshot.selection_reason,
+                "selected_rank": snapshot.selected_rank,
             }
         )
         return payload

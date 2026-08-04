@@ -78,12 +78,28 @@ class UniverseRankingSnapshotV1(_ProjectionBase):
     selected_instrument_id: str | None
     reason_codes: tuple[str, ...]
     universe: tuple[Mapping[str, Any], ...] = ()
+    # Exact fields from universe_selection_readmodel.v1 — presentation projection only.
+    source_run_id: str | None = None
+    selection_reason: str | None = None
+    selected_rank: int | None = None
 
     def __post_init__(self) -> None:
         super().__post_init__()
         object.__setattr__(self, "ranking", tuple(dict(row) for row in self.ranking))
         object.__setattr__(self, "universe", tuple(dict(row) for row in self.universe))
         object.__setattr__(self, "reason_codes", tuple(self.reason_codes))
+        if self.source_run_id is not None and (
+            not isinstance(self.source_run_id, str) or not self.source_run_id.strip()
+        ):
+            raise ValueError("source_run_id must be a non-empty str when set")
+        if self.selection_reason is not None and (
+            not isinstance(self.selection_reason, str) or not self.selection_reason.strip()
+        ):
+            raise ValueError("selection_reason must be a non-empty str when set")
+        if self.selected_rank is not None and (
+            not isinstance(self.selected_rank, int) or isinstance(self.selected_rank, bool)
+        ):
+            raise ValueError("selected_rank must be an int when set")
 
 
 @dataclass(frozen=True)

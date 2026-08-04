@@ -106,12 +106,17 @@ def project_universe_ranking_snapshot_v1(
     max_age_seconds: int | None = None,
     is_stale: bool = False,
     stale_reason: str | None = None,
+    source_run_id: str | None = None,
+    selection_reason: str | None = None,
+    selected_rank: int | None = None,
 ) -> UniverseRankingSnapshotV1:
     """Project an existing universe_selection ranking into Landscape form.
 
     Forbidden: recomputing ranks, inventing selected instruments, or enriching
     rows with decision/risk/sizing semantics.
     generated_at/effective_at must be producer timestamps — never page-assembly time.
+    Optional source_run_id / selection_reason / selected_rank are exact producer
+    fields only — never synthesized.
     """
     ranking_rows = tuple(dict(row) for row in ranking)
     universe_rows = tuple(dict(row) for row in universe)
@@ -154,6 +159,9 @@ def project_universe_ranking_snapshot_v1(
         universe=universe_rows,
         selected_instrument_id=selected_instrument_id,
         reason_codes=tuple(str(code) for code in reason_codes),
+        source_run_id=source_run_id,
+        selection_reason=selection_reason,
+        selected_rank=selected_rank,
     )
 
 

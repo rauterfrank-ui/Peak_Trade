@@ -416,8 +416,18 @@
   function bindCanonicalIdentityFromMarket(body) {
     if (!body || typeof body !== "object") return false;
     var rm = body.read_model || {};
-    var sessionId = body.session_id || "";
-    var repoSha = rm.repository_sha || body.repository_sha || "";
+    // Prefer explicit session_id; fall back to O5 source_session_id / selection bundle.
+    var sessionId =
+      body.session_id ||
+      body.source_session_id ||
+      (rm && rm.source_session_id) ||
+      (body.o5_read_model && body.o5_read_model.source_session_id) ||
+      "";
+    var repoSha =
+      rm.repository_sha ||
+      body.repository_sha ||
+      (body.o5_read_model && body.o5_read_model.repository_sha) ||
+      "";
     var instrument = rm.instrument_id || rm.instrument || "";
     var venue = rm.venue || "";
     var connectionState = body.connection_state || rm.connection_state || "";
