@@ -11,7 +11,9 @@ bull_bear_regime_presentation_projection.v1,
 dynamic_scope_presentation_projection.v1 (plus its durable source sibling
 dynamic_scope_state_v1.json under the same archive root), and
 risk_sizing_capital_presentation_projection.v1 (plus its durable source sibling
-risk_sizing_capital.v1.json under the same archive root).
+risk_sizing_capital.v1.json under the same archive root), and
+execution_reconciliation_presentation_projection.v1 (plus its durable source sibling
+execution_reconciliation.v1.json under the same archive root).
 """
 
 from __future__ import annotations
@@ -62,6 +64,10 @@ DYNAMIC_SCOPE_PRESENTATION_PROJECTION_RELATIVE = (
 RISK_SIZING_CAPITAL_FIELDS_RELATIVE = "readmodels/risk_sizing_capital.v1.json"
 RISK_SIZING_CAPITAL_PRESENTATION_PROJECTION_RELATIVE = (
     "readmodels/risk_sizing_capital_presentation_projection.v1.json"
+)
+EXECUTION_RECONCILIATION_FIELDS_RELATIVE = "readmodels/execution_reconciliation.v1.json"
+EXECUTION_RECONCILIATION_PRESENTATION_PROJECTION_RELATIVE = (
+    "readmodels/execution_reconciliation_presentation_projection.v1.json"
 )
 _DISCOVER_NAME_PREFIX = "workflow_dashboard_v1"
 
@@ -426,6 +432,8 @@ __all__ = [
     "DYNAMIC_SCOPE_PRESENTATION_PROJECTION_RELATIVE",
     "DYNAMIC_SCOPE_STATE_RELATIVE",
     "ENV_ARCHIVE_ROOT",
+    "EXECUTION_RECONCILIATION_FIELDS_RELATIVE",
+    "EXECUTION_RECONCILIATION_PRESENTATION_PROJECTION_RELATIVE",
     "OKX_OHLCV_READMODEL_RELATIVE",
     "OWNER_MODULE",
     "OWNER_SYMBOL",
