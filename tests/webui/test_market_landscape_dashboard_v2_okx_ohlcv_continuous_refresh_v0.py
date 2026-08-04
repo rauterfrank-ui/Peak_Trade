@@ -19,6 +19,7 @@ from src.ops.okx_selected_instrument_ohlcv_readmodel_v1 import (
     OhlcvBarV1,
     OkxOhlcvReadmodelError,
     materialize_selected_okx_ohlcv_readmodel_v1,
+    merge_open_tip_cumulative_interval_volume_v1,
     reduce_okx_ohlcv_bars_v1,
     refresh_selected_okx_ohlcv_readmodel_from_archive_v1,
 )
@@ -302,7 +303,7 @@ def test_open_candle_reducer_same_timestamp_revisions_then_append() -> None:
     assert bars_d[1].ts == t1
     assert bars_d[1].close == "101"
 
-    # Open regression and high/low regressions fail closed.
+    # Non-PT1M (default interval): open regression and high/low regressions fail closed.
     with pytest.raises(OkxOhlcvReadmodelError, match="OPEN_REGRESSION"):
         reduce_okx_ohlcv_bars_v1(
             bars_c,
@@ -318,6 +319,145 @@ def test_open_candle_reducer_same_timestamp_revisions_then_append() -> None:
             bars_c,
             [_bar(ts=t0, o="100", h="103", l="99", c="98", v="3", confirm=False)],
         )
+
+
+def test_pt1m_open_tip_accepts_authentic_full_ohlcv_replacement() -> None:
+    """PT1M open tip: authentic same-ts full O/H/L/C/V replacement is accepted."""
+    t0 = "2026-07-25T00:00:00Z"
+    t1 = "2026-07-25T00:01:00Z"
+    bootstrap = [_bar(ts=t0, o="100", h="100", l="100", c="100", v="1", confirm=False)]
+    bars_a, kind_a = reduce_okx_ohlcv_bars_v1(None, bootstrap, interval_seconds=60)
+    assert kind_a == "BOOTSTRAP"
+
+    # A: open/high/low/close/volume may all change on the open tip.
+    replaced = [_bar(ts=t0, o="99", h="104", l="97", c="101", v="9", confirm=False)]
+    bars_b, kind_b = reduce_okx_ohlcv_bars_v1(bars_a, replaced, interval_seconds=60)
+    assert kind_b == "SAME_TIMESTAMP_REVISION"
+    assert len(bars_b) == 1
+    assert bars_b[0].open == "99"
+    assert bars_b[0].high == "104"
+    assert bars_b[0].low == "97"
+    assert bars_b[0].close == "101"
+    assert bars_b[0].volume == "9"
+
+    # Trade-augmented tip then authentic narrower/lower volume tip: no HIGH/LOW false positive.
+    trade_aug = [_bar(ts=t0, o="99", h="110", l="90", c="105", v="50", confirm=False)]
+    bars_c, kind_c = reduce_okx_ohlcv_bars_v1(bars_b, trade_aug, interval_seconds=60)
+    assert kind_c == "SAME_TIMESTAMP_REVISION"
+    authentic = [_bar(ts=t0, o="98", h="103", l="95", c="102", v="40", confirm=False)]
+    bars_d, kind_d = reduce_okx_ohlcv_bars_v1(bars_c, authentic, interval_seconds=60)
+    assert kind_d == "SAME_TIMESTAMP_REVISION"
+    assert bars_d[0].open == "98"
+    assert bars_d[0].high == "103"
+    assert bars_d[0].low == "95"
+    assert bars_d[0].close == "102"
+    assert bars_d[0].volume == "40"
+    merged, meta = merge_open_tip_cumulative_interval_volume_v1(bars_c, bars_d, interval_seconds=60)
+    assert meta.get("open_tip_authentic_replaced") is True
+    assert merged[-1].open == "98"
+    assert merged[-1].high == "103"
+    assert merged[-1].low == "95"
+    assert merged[-1].close == "102"
+    # Volume floor preserves prior trade-augmented cumulative without double-count.
+    assert merged[-1].volume == "50"
+    assert meta["open_tip_volume_preserved"] is True
+
+    # C: next minute append seals prior tip; sealed tip then immutable.
+    sealed = _bar(ts=t0, o="98", h="103", l="95", c="102", v="50", confirm=True)
+    nxt = _bar(ts=t1, o="102", h="102", l="102", c="102", v="1", confirm=False)
+    bars_e, kind_e = reduce_okx_ohlcv_bars_v1(merged, [sealed, nxt], interval_seconds=60)
+    assert kind_e == "NEW_INTERVAL_APPEND"
+    assert len(bars_e) == 2
+    assert bars_e[0].confirm is True
+    assert bars_e[1].ts == t1
+    with pytest.raises(OkxOhlcvReadmodelError, match="HISTORICAL_REGRESSION"):
+        reduce_okx_ohlcv_bars_v1(
+            bars_e,
+            [
+                _bar(ts=t0, o="97", h="103", l="95", c="102", v="50", confirm=True),
+                nxt,
+            ],
+            interval_seconds=60,
+        )
+    with pytest.raises(OkxOhlcvReadmodelError, match="HISTORICAL_REGRESSION"):
+        reduce_okx_ohlcv_bars_v1(
+            bars_e,
+            [
+                _bar(ts=t0, o="98", h="999", l="95", c="102", v="50", confirm=True),
+                nxt,
+            ],
+            interval_seconds=60,
+        )
+    with pytest.raises(OkxOhlcvReadmodelError, match="SEALED_TIP_REGRESSION"):
+        reduce_okx_ohlcv_bars_v1(
+            [sealed],
+            [_bar(ts=t0, o="97", h="103", l="95", c="102", v="50", confirm=True)],
+            interval_seconds=60,
+        )
+    # Timestamp regression / rewind is accepted only as AUTHENTIC_FULL_REPLACE window.
+    rewind = [_bar(ts="2026-07-24T23:59:00Z", o="1", h="1", l="1", c="1", v="1", confirm=True)]
+    bars_rw, kind_rw = reduce_okx_ohlcv_bars_v1(bars_e, rewind, interval_seconds=60)
+    assert kind_rw == "AUTHENTIC_FULL_REPLACE"
+    assert bars_rw[0].ts == "2026-07-24T23:59:00Z"
+
+
+def test_pt1m_open_tip_replacement_refresh_does_not_fail(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Same-ts PT1M tip open revision rematerializes without REFRESH_FAILED."""
+    archive = tmp_path / "archive"
+    selection = _write_universe(archive)
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive))
+    materialize_selected_okx_ohlcv_readmodel_v1(
+        archive_root=archive,
+        selected_instrument=INSTRUMENT,
+        selected_provider_instrument_id=INSTRUMENT,
+        selected_venue="okx",
+        selection_bundle_id="bundle-a",
+        selection_path=selection,
+        bar="PT1M",
+        client=_FakeOkxClient(  # type: ignore[arg-type]
+            captured_at="2026-07-25T00:00:00Z",
+            open_px="0.000000009100",
+            high_px="0.000000009100",
+            low_px="0.000000009100",
+            close_px="0.000000009100",
+            volume="10",
+            mark_px="0.000000009100",
+        ),
+    )
+    path = archive / "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json"
+    first = json.loads(path.read_text(encoding="utf-8"))
+    assert first["interval"] == "PT1M"
+    assert len(first["bars"]) >= 1
+    tip_ts = first["bars"][-1]["ts"]
+    result = refresh_selected_okx_ohlcv_readmodel_from_archive_v1(
+        archive_root=archive,
+        bar="PT1M",
+        force=True,
+        client=_FakeOkxClient(  # type: ignore[arg-type]
+            captured_at="2026-07-25T00:00:03Z",
+            open_px="0.000000009050",
+            high_px="0.000000009200",
+            low_px="0.000000009000",
+            close_px="0.000000009150",
+            volume="25",
+            mark_px="0.000000009150",
+        ),
+    )
+    assert result["status"] == "OK"
+    assert result.get("refresh_error") is None
+    second = json.loads(path.read_text(encoding="utf-8"))
+    assert len(second["bars"]) == len(first["bars"])
+    assert second["bars"][-1]["ts"] == tip_ts
+    assert second["bars"][-1]["open"] == "0.000000009050"
+    assert second["bars"][-1]["high"] == "0.000000009200"
+    assert second["bars"][-1]["low"] == "0.000000009000"
+    assert second["bars"][-1]["close"] == "0.000000009150"
+    assert second["bars"][-1]["volume"] == "25"
+    # No duplicate tip timestamps after replacement.
+    tip_times = [b["ts"] for b in second["bars"]]
+    assert len(tip_times) == len(set(tip_times))
 
 
 def test_volume_revision_moves_candle_series_digest(
