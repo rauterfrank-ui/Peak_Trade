@@ -7,9 +7,9 @@ auto-bind; PR #5577 field contract), canonical_decision
 evidence (injection or durable presentation projection auto-bind),
 double_play display projection (injection or durable presentation projection
 auto-bind), safety authority KillSwitch/boundary field projection,
-risk/sizing/capital field projection, execution/reconciliation field
-projection, and economic summary EconomicViabilityEvidenceV1 field
-projection.
+risk/sizing/capital field projection (injection or durable presentation
+projection auto-bind), execution/reconciliation field projection, and
+economic summary EconomicViabilityEvidenceV1 field projection.
 Lives outside market_dashboard_landscape_v2 so that package stays free of
 trading/webui producer imports (architecture guard).
 
@@ -85,6 +85,10 @@ from .workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 imp
 from .workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projection_v1 import (
     LOAD_ERROR_ABSENT as DYNAMIC_SCOPE_PROJECTION_ABSENT,
     try_load_dynamic_scope_presentation_projection_v1,
+)
+from .workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_v1 import (
+    LOAD_ERROR_ABSENT as RISK_SIZING_CAPITAL_PROJECTION_ABSENT,
+    try_load_risk_sizing_capital_presentation_projection_v1,
 )
 from .workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     FORBIDDEN_SELECTED_SYMBOLS,
@@ -1653,18 +1657,44 @@ def _bind_risk_sizing_capital(
     as_of: datetime,
     git_sha: str | None,
     risk_sizing_capital_fields: Mapping[str, Any] | None,
+    archive_root: Path | None = None,
 ) -> Any:
-    """Project injected Risk/Sizing/Capital fields.
+    """Project already-selected Risk/Sizing/Capital fields.
 
-    No durable dashboard Risk readmodel. Without injection → MISSING_SOURCE.
-    Never calls capital/risk/sizing evaluators or invents quantity/limits.
+    Injection remains supported for tests. Productive auto-bind loads the
+    non-authoritative presentation projection from the Workflow Dashboard
+    archive root when injection is absent. Never calls capital/risk/sizing
+    evaluators or invents quantity/limits.
     """
     if risk_sizing_capital_fields is None:
-        return unavailable_risk_sizing_capital(
-            availability=Availability.MISSING_SOURCE,
-            generated_at=as_of,
-            reason=REASON_RISK_SIZING_NOT_PERSISTED,
-        )
+        if archive_root is None:
+            return unavailable_risk_sizing_capital(
+                availability=Availability.MISSING_SOURCE,
+                generated_at=as_of,
+                reason=REASON_RISK_SIZING_NOT_PERSISTED,
+            )
+        loaded = try_load_risk_sizing_capital_presentation_projection_v1(archive_root)
+        if not loaded.loaded or loaded.binder_fields is None:
+            reason = REASON_RISK_SIZING_NOT_PERSISTED
+            if loaded.load_errors:
+                first = str(loaded.load_errors[0])
+                if first != RISK_SIZING_CAPITAL_PROJECTION_ABSENT:
+                    reason = first
+            availability = (
+                Availability.MISSING_SOURCE
+                if reason == REASON_RISK_SIZING_NOT_PERSISTED
+                or reason == RISK_SIZING_CAPITAL_PROJECTION_ABSENT
+                else Availability.INVALID
+            )
+            if reason == RISK_SIZING_CAPITAL_PROJECTION_ABSENT:
+                reason = REASON_RISK_SIZING_NOT_PERSISTED
+                availability = Availability.MISSING_SOURCE
+            return unavailable_risk_sizing_capital(
+                availability=availability,
+                generated_at=as_of,
+                reason=reason,
+            )
+        risk_sizing_capital_fields = loaded.binder_fields
 
     schema_version = risk_sizing_capital_fields.get("schema_version")
     if schema_version is not None and str(schema_version) != LANDSCAPE_PROJECTION_SCHEMA_VERSION:
@@ -1968,8 +1998,9 @@ def bind_market_universe_slots(
 
     risk_sizing_capital_fields accepts already-selected Risk/Sizing/Capital
     display fields (risk_status/sizing_status/capital_status[/quantity]) plus
-    producer wall-clock timestamps. Without injection, risk_sizing_capital is
-    MISSING_SOURCE. Never calls capital/risk/sizing evaluators.
+    producer wall-clock timestamps. Without injection, productive auto-bind
+    loads risk_sizing_capital_presentation_projection.v1 when present;
+    otherwise MISSING_SOURCE. Never calls capital/risk/sizing evaluators.
 
     execution_reconciliation_fields accepts already-selected Execution/
     Reconciliation display fields (execution_status[/reconciliation_status]/
@@ -2025,6 +2056,7 @@ def bind_market_universe_slots(
         as_of=as_of,
         git_sha=git_sha,
         risk_sizing_capital_fields=risk_sizing_capital_fields,
+        archive_root=root,
     )
     execution = _bind_execution_reconciliation(
         as_of=as_of,

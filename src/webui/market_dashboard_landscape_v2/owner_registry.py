@@ -126,13 +126,17 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         authority_class="risk_sizing",
         reuse_status="REUSED",
         notes=(
-            "Phase 4.4B: Landscape projects injected Risk/Sizing/Capital fields "
-            "field-for-field (risk_status/sizing_status/capital_status/quantity/"
-            "reason_codes); authority owner remains "
-            "src.governance.capital_risk_sizing_v1; offline replay adapter is "
-            "non-authority wiring/parity only; dashboard AUTHORITY_EFFECT=NONE; "
-            "explicit injection only; without injection MISSING_SOURCE; "
-            "never call capital/risk/sizing evaluators or invent quantity."
+            "Phase 4.4B + CAPABILITY_PRESENTATION_RISK_SIZING_CAPITAL_"
+            "PROJECTION_MATERIALIZER_AUTOBIND_V1: Landscape projects "
+            "Risk/Sizing/Capital fields field-for-field "
+            "(risk_status/sizing_status/capital_status/quantity/reason_codes); "
+            "authority owner remains src.governance.capital_risk_sizing_v1; "
+            "offline replay adapter is non-authority wiring/parity only; "
+            "dashboard AUTHORITY_EFFECT=NONE; durable auto-bind via "
+            "non-authoritative risk_sizing_capital_presentation_projection.v1 "
+            "under archive root; injection remains test-compatible; without "
+            "injection/projection MISSING_SOURCE; never call capital/risk/"
+            "sizing evaluators or invent quantity."
         ),
     ),
     CanonicalOwnerRefV1(
