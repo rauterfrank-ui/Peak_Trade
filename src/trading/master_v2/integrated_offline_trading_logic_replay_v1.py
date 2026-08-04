@@ -309,6 +309,9 @@ class IntegratedOfflineReplayInputV1:
     productive_typed_volatility_binding_eligibility: Optional[
         CanonicalMarketContextEligibilityV1
     ] = None
+    # Optional explicit path for EVIDENCE_ONLY regime/bull-bear/switch capture.
+    # Never a trading state root; unused by decision evaluation.
+    regime_bull_bear_switch_evidence_path: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -364,6 +367,8 @@ class IntegratedOfflineReplayResultV1:
     fail_reasons: Tuple[str, ...]
     evidence: CanonicalTradingDecisionEvidenceV1
     intermediate: Optional[IntegratedOfflineReplayIntermediateV1] = None
+    # EVIDENCE_ONLY capture; never restart/trading input authority.
+    regime_bull_bear_switch_evidence_readmodel: Optional[object] = None
 
 
 def _valid_sha256_hex(value: str) -> bool:
@@ -1232,6 +1237,7 @@ def run_integrated_offline_trading_logic_replay_v1(
 ) -> IntegratedOfflineReplayResultV1:
     """Execute the canonical STEP 29B–29H offline replay chain fail-closed."""
     fail_reasons: list[str] = []
+    regime_bull_bear_switch_evidence_readmodel: Optional[object] = None
 
     if not _instrument_allowed(inp.instrument_id):
         fail_reasons.append("instrument_kind_forbidden")
@@ -1563,6 +1569,26 @@ def run_integrated_offline_trading_logic_replay_v1(
         envelope=_DEFAULT_RUNTIME_ENVELOPE,
         now_tick=inp.now_tick,
     )
+    # EVIDENCE_ONLY capture immediately after transition_state (non-restart).
+    # Failures never alter trading outcomes.
+    from trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.capture_v1 import (
+        try_capture_regime_bull_bear_switch_evidence_readmodel_v1,
+    )
+
+    regime_bull_bear_switch_evidence_readmodel = (
+        try_capture_regime_bull_bear_switch_evidence_readmodel_v1(
+            regime_id=inp.regime_id,
+            regime_status=inp.regime_status,
+            previous_side_state=inp.side_state,
+            next_side_state=next_side_state,
+            # ScopeEvent actually consumed by transition_state (not canonical generator enum).
+            scope_event_type=mapped_event,
+            transition=transition,
+            instrument_id=inp.instrument_id,
+            trading_epoch=inp.trading_epoch,
+            evidence_path=inp.regime_bull_bear_switch_evidence_path,
+        )
+    )
     runtime_scope_after = update_dynamic_boundaries(
         mark_price=float(inp.current_price),
         side=derive_active_side(next_side_state),
@@ -1865,4 +1891,5 @@ def run_integrated_offline_trading_logic_replay_v1(
         fail_reasons=tuple(fail_reasons),
         evidence=evidence,
         intermediate=intermediate,
+        regime_bull_bear_switch_evidence_readmodel=regime_bull_bear_switch_evidence_readmodel,
     )
