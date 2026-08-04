@@ -6,8 +6,9 @@ Phase 4.1 binds market_instrument / universe_ranking fail-closed from the
 canonical Workflow Dashboard archive root (explicit → Env → platform default)
 via universe_selection_readmodel.v1 — no Env required when the default exists.
 Phase 4.2 binds dynamic_scope lifecycle identity fail-closed (injection only).
-Phase 4.2B binds regime_bull_bear_switch fail-closed (explicit injection only;
-PR #5577 — no transition_state calls).
+Phase 4.2B binds regime_bull_bear_switch fail-closed (injection or durable
+presentation projection auto-bind; PR #5577 field contract — no transition_state
+calls; AUTHORITY_EFFECT=NONE).
 Phase 4.3A binds canonical_decision fail-closed (injection or durable
 presentation projection auto-bind; AUTHORITY_EFFECT=NONE).
 Phase 4.3B binds double_play display fail-closed (injection or durable

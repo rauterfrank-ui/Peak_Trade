@@ -5,8 +5,9 @@ Does not create directories, does not write readmodels, and does not authorize
 trading. GET /market consumers may resolve this root (explicit → Env →
 canonical default → discovered governed OKX sibling) to read-only-load
 universe_selection_readmodel.v1 and okx_selected_instrument_ohlcv_readmodel.v1,
-and (when present) canonical_decision_presentation_projection.v1 and
-double_play_presentation_projection.v1.
+and (when present) canonical_decision_presentation_projection.v1,
+double_play_presentation_projection.v1, and
+bull_bear_regime_presentation_projection.v1.
 """
 
 from __future__ import annotations
@@ -46,6 +47,9 @@ CANONICAL_DECISION_PRESENTATION_PROJECTION_RELATIVE = (
 )
 DOUBLE_PLAY_PRESENTATION_PROJECTION_RELATIVE = (
     "readmodels/double_play_presentation_projection.v1.json"
+)
+BULL_BEAR_REGIME_PRESENTATION_PROJECTION_RELATIVE = (
+    "readmodels/bull_bear_regime_presentation_projection.v1.json"
 )
 _DISCOVER_NAME_PREFIX = "workflow_dashboard_v1"
 
