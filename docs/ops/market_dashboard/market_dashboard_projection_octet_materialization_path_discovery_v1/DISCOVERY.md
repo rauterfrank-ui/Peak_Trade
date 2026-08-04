@@ -30,7 +30,7 @@ Archive root (from B2 VERIFY):
 
 `/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z`
 
-Present under `readmodels/`:
+Present under `readmodels&#47;`:
 
 - `okx_selected_instrument_ohlcv_readmodel.v1.json`
 - `universe_selection_readmodel.v1.json`
@@ -42,14 +42,14 @@ Absent: all seven defined source siblings and all eight presentation projections
 
 | family_id | materializer_symbol | source_sibling | source present | output | schema_id | invocation_mode |
 |---|---|---|---|---|---|---|
-| dynamic_scope | `materialize_dynamic_scope_presentation_projection_v1` | `readmodels/dynamic_scope_state_v1.json` | NO | `readmodels/dynamic_scope_presentation_projection.v1.json` | `dynamic_scope_presentation_projection.v1` | TEST_ONLY_PATH |
-| regime_bull_bear_switch | `materialize_bull_bear_regime_presentation_projection_v1` | `readmodels/regime_bull_bear_switch.v1.json` | NO | `readmodels/bull_bear_regime_presentation_projection.v1.json` | `bull_bear_regime_presentation_projection.v1` | TEST_ONLY_PATH |
-| canonical_decision | `materialize_canonical_decision_presentation_projection_v1` | `readmodels/canonical_trading_decision_evidence.v1.json` | NO | `readmodels/canonical_decision_presentation_projection.v1.json` | `canonical_decision_presentation_projection.v1` | TEST_ONLY_PATH |
-| double_play | `materialize_double_play_presentation_projection_v1` | `readmodels/double_play_dashboard_display.v1.json` | NO | `readmodels/double_play_presentation_projection.v1.json` | `double_play_presentation_projection.v1` | TEST_ONLY_PATH |
-| safety_authority | `materialize_safety_authority_presentation_projection_v1` | *none (caller object required)* | N/A | `readmodels/safety_authority.v1.json` | `safety_authority_presentation_projection.v1` | TEST_ONLY_PATH |
-| risk_sizing_capital | `materialize_risk_sizing_capital_presentation_projection_v1` | `readmodels/risk_sizing_capital.v1.json` | NO | `readmodels/risk_sizing_capital_presentation_projection.v1.json` | `risk_sizing_capital_presentation_projection.v1` | TEST_ONLY_PATH |
-| execution_reconciliation | `materialize_execution_reconciliation_presentation_projection_v1` | `readmodels/execution_reconciliation.v1.json` | NO | `readmodels/execution_reconciliation_presentation_projection.v1.json` | `execution_reconciliation_presentation_projection.v1` | TEST_ONLY_PATH |
-| economic_summary | `materialize_economic_summary_presentation_projection_v1` | `readmodels/economic_summary.v1.json` | NO | `readmodels/economic_summary_presentation_projection.v1.json` | `economic_summary_presentation_projection.v1` | TEST_ONLY_PATH |
+| dynamic_scope | `materialize_dynamic_scope_presentation_projection_v1` | `readmodels&#47;dynamic_scope_state_v1.json` | NO | `readmodels&#47;dynamic_scope_presentation_projection.v1.json` | `dynamic_scope_presentation_projection.v1` | TEST_ONLY_PATH |
+| regime_bull_bear_switch | `materialize_bull_bear_regime_presentation_projection_v1` | `readmodels&#47;regime_bull_bear_switch.v1.json` | NO | `readmodels&#47;bull_bear_regime_presentation_projection.v1.json` | `bull_bear_regime_presentation_projection.v1` | TEST_ONLY_PATH |
+| canonical_decision | `materialize_canonical_decision_presentation_projection_v1` | `readmodels&#47;canonical_trading_decision_evidence.v1.json` | NO | `readmodels&#47;canonical_decision_presentation_projection.v1.json` | `canonical_decision_presentation_projection.v1` | TEST_ONLY_PATH |
+| double_play | `materialize_double_play_presentation_projection_v1` | `readmodels&#47;double_play_dashboard_display.v1.json` | NO | `readmodels&#47;double_play_presentation_projection.v1.json` | `double_play_presentation_projection.v1` | TEST_ONLY_PATH |
+| safety_authority | `materialize_safety_authority_presentation_projection_v1` | *none (caller object required)* | N/A | `readmodels&#47;safety_authority.v1.json` | `safety_authority_presentation_projection.v1` | TEST_ONLY_PATH |
+| risk_sizing_capital | `materialize_risk_sizing_capital_presentation_projection_v1` | `readmodels&#47;risk_sizing_capital.v1.json` | NO | `readmodels&#47;risk_sizing_capital_presentation_projection.v1.json` | `risk_sizing_capital_presentation_projection.v1` | TEST_ONLY_PATH |
+| execution_reconciliation | `materialize_execution_reconciliation_presentation_projection_v1` | `readmodels&#47;execution_reconciliation.v1.json` | NO | `readmodels&#47;execution_reconciliation_presentation_projection.v1.json` | `execution_reconciliation_presentation_projection.v1` | TEST_ONLY_PATH |
+| economic_summary | `materialize_economic_summary_presentation_projection_v1` | `readmodels&#47;economic_summary.v1.json` | NO | `readmodels&#47;economic_summary_presentation_projection.v1.json` | `economic_summary_presentation_projection.v1` | TEST_ONLY_PATH |
 
 Full machine-readable rows: `FAMILY_MATRIX.json`.
 
