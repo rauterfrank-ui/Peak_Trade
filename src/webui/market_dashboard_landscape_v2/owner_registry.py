@@ -146,13 +146,22 @@ CANONICAL_OWNER_REGISTRY_V1: tuple[CanonicalOwnerRefV1, ...] = (
         authority_class="safety_veto",
         reuse_status="REUSED",
         notes=(
-            "Phase 4.4A: Landscape projects injected KillSwitch/boundary fields "
-            "field-for-field (kill_switch_state/veto_active/reason_codes); "
+            "Phase 4.4A + CAPABILITY_PRESENTATION_SAFETY_AUTHORITY_"
+            "PROJECTION_MATERIALIZER_AUTOBIND_V1: Landscape projects "
+            "KillSwitch/boundary fields field-for-field "
+            "(kill_switch_state/veto_active/reason_codes); "
             "authority owner remains src.risk_layer.kill_switch; "
             "projection/evidence source "
             "trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 "
             "is non-authority wiring/parity only; dashboard AUTHORITY_EFFECT=NONE; "
-            "no trigger/recover; no offline evaluator; no live state-file autoload."
+            "durable auto-bind via non-authoritative "
+            "safety_authority_presentation_projection.v1 persisted at "
+            "readmodels/safety_authority.v1.json under archive root; "
+            "explicit injection remains priority over archive autobind; "
+            "without injection/projection MISSING_SOURCE; "
+            "no trigger/recover; no offline evaluator; "
+            "no productive KillSwitch state-file autoload "
+            "(never live data/kill_switch/state.json)."
         ),
     ),
     CanonicalOwnerRefV1(
