@@ -62,7 +62,10 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert (
         "no ohlcv fabricated" in html.lower()
         or "ohlcv producer still unbound" in html.lower()
-        or "primary chart bound to materialized okx ohlcv readmodel" in html.lower()
+        or (
+            'data-mdl-chart-has-series="true"' in html
+            and "primary chart bound to materialized okx ohlcv readmodel" not in html.lower()
+        )
     )
     assert "BTC/USD" not in html
     assert "btc_usd_dummy" not in html.lower()

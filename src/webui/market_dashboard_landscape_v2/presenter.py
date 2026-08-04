@@ -1030,11 +1030,8 @@ def present_market_landscape_v2(
             )
         else:
             ohlcv_bound = True
-            chart_message = (
-                "Primary chart bound to materialized OKX OHLCV readmodel "
-                f"(bars={browser_payload.get('bar_count')}, interval="
-                f"{ohlcv_readmodel.get('interval')})."
-            )
+            # Success path: no technical status line above the live chart.
+            chart_message = ""
     elif instrument_availability in (Availability.AVAILABLE, Availability.STALE):
         chart_message = (
             "Primary chart market instrument bound; OHLCV producer still unbound "
