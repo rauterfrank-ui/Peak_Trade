@@ -1,0 +1,87 @@
+{
+  "as_of_event_time_epoch_s": 1785934680,
+  "bar_count": 299,
+  "campaign_id": null,
+  "campaign_start": false,
+  "canonical_binding_ok": true,
+  "dashboard_authority_effect": "NONE",
+  "dashboard_logic_change": false,
+  "document_type": "SURFACE_B_REGIME_COVERAGE_AND_DASHBOARD_INPUT_GAP_CLOSEOUT_PROOF",
+  "execute_regime_coverage_producer": true,
+  "input_authority_flip": false,
+  "instrument_id": "inst-eth-usdt-perp",
+  "label_histogram": {
+    "missing": 299
+  },
+  "next_step_id": "EXECUTE_SURFACE_B_REGIME_COVERAGE_AND_CLOSE_DASHBOARD_INPUT_GAP_V1",
+  "observation_count": 299,
+  "observation_pack_digest": "268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676",
+  "observation_pack_rel": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_v1/observation_pack.json",
+  "orders_testnet_live": false,
+  "owner_go_base_sha": "13d9a12ed45cdf82ed93c38154a425a9fd8ca752",
+  "producer_digest": "952b7b63c369dccfc01d5ee2802473c12911da18b1df57be8a91ba566ffe9d57",
+  "productive_emission": false,
+  "regime_coverage_counts": {
+    "missing": 299,
+    "unknown": 0
+  },
+  "regime_coverage_instance": {
+    "as_of_event_time_epoch_s": 1785934680,
+    "canonical_binding": {
+      "eth_usdt_swap_compatibility": {
+        "compatibility": "provable_eth_usdt_swap_compatibility",
+        "instrument_binding": {
+          "canonical_instrument_id": "inst-eth-usdt-perp",
+          "contract_type": "perpetual",
+          "market_type": "futures",
+          "quote_currency": "USDT",
+          "settlement_currency": "USDT",
+          "venue": "okx",
+          "venue_instrument_id": "ETH-USDT-SWAP"
+        },
+        "ok": true,
+        "string_name_similarity_inference": false
+      },
+      "instrument_binding": {
+        "canonical_instrument_id": "inst-eth-usdt-perp",
+        "contract_type": "perpetual",
+        "market_type": "futures",
+        "quote_currency": "USDT",
+        "settlement_currency": "USDT",
+        "venue": "okx",
+        "venue_instrument_id": "ETH-USDT-SWAP"
+      },
+      "observation_pack_digest": "268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676",
+      "producer_digest": "952b7b63c369dccfc01d5ee2802473c12911da18b1df57be8a91ba566ffe9d57"
+    },
+    "instrument_id": "inst-eth-usdt-perp",
+    "lookback_window_authority_ref": "OWNER_NUMERIC_LOOKBACK_AUTHORITY_UNSET_V1",
+    "observation_count": 299,
+    "observation_pack_digest": "268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676",
+    "partition_id": "surface_b_regime_coverage_structural_partition_v1",
+    "producer_digest": "952b7b63c369dccfc01d5ee2802473c12911da18b1df57be8a91ba566ffe9d57",
+    "productive_emission": false,
+    "regime_coverage_counts": {
+      "missing": 299,
+      "unknown": 0
+    },
+    "regime_coverage_producer_available": false,
+    "regime_coverage_status": "SEMANTICALLY_UNRESOLVED",
+    "taxonomy_sink_labels": [
+      "low",
+      "mid",
+      "high",
+      "unknown",
+      "missing"
+    ],
+    "threshold_authority_ref": "OWNER_NUMERIC_THRESHOLD_AUTHORITY_UNSET_V1",
+    "versioned_producer_id": "productive_pure_stack_stage2_surface_b_regime_coverage_producer/v1"
+  },
+  "regime_coverage_producer_available": false,
+  "regime_coverage_status": "SEMANTICALLY_UNRESOLVED",
+  "runtime_implemented_flip": false,
+  "schema_version": "productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout/v1",
+  "trading_logic_change": false,
+  "use_canonical_merged_pack": true,
+  "versioned_producer_id": "productive_pure_stack_stage2_surface_b_regime_coverage_producer/v1"
+}
