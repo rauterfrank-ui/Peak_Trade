@@ -29,13 +29,16 @@ SCHEMA_VERSION = (
 DOCUMENT_TYPE = "OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISIONS_MANIFEST"
 STATUS_SURFACE_OPEN = "OWNER_STA_DECISION_SURFACE_OPEN"
 STATUS_OWNER_VALUE_RECORDED = "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN"
+STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED = (
+    "OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN"
+)
 
 DECISION_ID = "DEC_RAW_INPUT_PACK_MATERIALIZATION"
 DECISION_STATUS_OPEN = "OPEN"
 DECISION_STATUS_RATIFIED = "RATIFIED"
 
 BASELINE_ORIGIN_MAIN_SHA = "56721ad0666fac5627d2dedbf33a22b59cd5996e"
-OWNER_GO_BASE_SHA = "59bda81aec59b149d52e5cc863691fd7ac16de02"
+OWNER_GO_BASE_SHA = "61d9abb07d4d88a0f1be19b9476db8ca0d3ba135"
 AUTHORITY_SURFACE = "B"
 SOLE_TRADING_AUTHORITY = "run_integrated_offline_trading_logic_replay_v1"
 
@@ -62,6 +65,8 @@ O4_PT1H_AS_PT1M_FORBIDDEN = True
 TRADING_LOGIC_CHANGED = False
 ORDERS_TESTNET_LIVE_PAPER_EFFECTS = False
 EXCHANGE_CREDENTIAL_EFFECTS = False
+AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED = True
+AUTHORIZE_DETAIL_FIELDS_COMPLETE = False
 
 OWNER_DECISION_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
@@ -114,6 +119,43 @@ AUTHORIZE_DETAIL_FIELDS: tuple[str, ...] = (
     "bootstrap_seeds",
     "regime_coverage_binding_ref",
 )
+
+AUTHORIZE_DETAIL_PROVABLE_FIELDS: tuple[str, ...] = (
+    "instrument_binding_ref",
+    "candle_authority_source_ref",
+    "mark_price_authority_source_ref",
+    "regime_coverage_binding_ref",
+)
+
+AUTHORIZE_DETAIL_INSTANCE_NULL_FIELDS: tuple[str, ...] = (
+    "campaign_id",
+    "dataset_id",
+    "scenario_id",
+    "observation_pack_digest",
+    "raw_source_digest",
+    "seed",
+    "event_time_epoch_s",
+    "partition_boundaries_event_time_epoch_s",
+    "fold_ids",
+    "bootstrap_seeds",
+)
+
+AUTHORIZE_DETAIL_PROVABLE_FIELD_VALUES: dict[str, str] = {
+    "instrument_binding_ref": (
+        "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
+        "CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding"
+    ),
+    "candle_authority_source_ref": (
+        "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1"
+    ),
+    "mark_price_authority_source_ref": (
+        "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1"
+    ),
+    "regime_coverage_binding_ref": (
+        "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
+        "REGIME_COVERAGE_PRODUCER_DECISION_V1.md"
+    ),
+}
 
 STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = (
     "non_invented_campaign_instance_identity",
