@@ -1,0 +1,10 @@
+{
+  "post_restart_new_process_required": true,
+  "pre_authorization_id": "phase92_binding_fake_pre_auth_v1",
+  "pre_process_pid": 4397,
+  "pre_terminal_manifest_digest": "34f883602aa358180ac8a33a78e75b67bf47eea4c2abdfc0ab271141b1dc183b",
+  "restart_campaign_id": "phase_9_2_restart_recovery_campaign_v1",
+  "same_session_resume_allowed": false,
+  "schema_version": "phase_9_2_pre_restart_process_marker.v1",
+  "session_id": "phase_9_2_public_md_restart_recovery_session_v1"
+}
