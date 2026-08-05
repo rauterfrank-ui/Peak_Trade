@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions_v1.schema.json",
+  "title": "Stage-2 Surface B Owner/STA Raw Input Pack Materialization Decisions v1",
+  "description": "Machine-readable Owner/STA decision surface for DEC_RAW_INPUT_PACK_MATERIALIZATION. Does not authorize pack materialization execution, campaign start, INPUT_AUTHORITY, runtime, productive numeric values, or fixture/demo/dashboard substitution.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "baseline_origin_main_sha",
+    "authority_surface",
+    "decision_id",
+    "decision_status",
+    "owner_value",
+    "allowed_owner_values",
+    "authorize_detail_fields",
+    "sta_open_external_inputs",
+    "parent_authority_refs",
+    "forbidden_sources",
+    "reject_semantics",
+    "authorize_semantics",
+    "input_authority",
+    "runtime_implemented",
+    "campaign_start_authorized",
+    "raw_input_pack_materialization_authorized",
+    "raw_input_pack_created",
+    "campaign_started",
+    "pack_materialization",
+    "producer_reimplementation",
+    "consumer_wiring",
+    "pt1m_adapter",
+    "productive_numeric_values_set",
+    "productive_thresholds_lookbacks",
+    "regime_coverage_producer_available",
+    "regime_coverage_status",
+    "dashboard_authority_effect",
+    "notion_ssot",
+    "repository_is_ssot",
+    "open_null_instance_fields",
+    "decisions"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions/v1"
+    },
+    "document_type": {
+      "const": "OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISIONS_MANIFEST"
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION"
+    },
+    "status": {
+      "const": "OWNER_STA_DECISION_SURFACE_OPEN"
+    },
+    "authority_surface": {
+      "const": "B"
+    },
+    "decision_id": {
+      "const": "DEC_RAW_INPUT_PACK_MATERIALIZATION"
+    },
+    "decision_status": {
+      "const": "OPEN"
+    },
+    "owner_value": {
+      "type": "null"
+    },
+    "allowed_owner_values": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "const": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION"
+        },
+        {
+          "const": "EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION"
+        }
+      ],
+      "items": false
+    },
+    "authorize_detail_fields": {
+      "type": "object",
+      "required": [
+        "campaign_id",
+        "dataset_id",
+        "scenario_id",
+        "instrument_binding_ref",
+        "candle_authority_source_ref",
+        "mark_price_authority_source_ref",
+        "observation_pack_digest",
+        "raw_source_digest",
+        "seed",
+        "event_time_epoch_s",
+        "partition_boundaries_event_time_epoch_s",
+        "fold_ids",
+        "bootstrap_seeds",
+        "regime_coverage_binding_ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "campaign_id": {
+          "type": "null"
+        },
+        "dataset_id": {
+          "type": "null"
+        },
+        "scenario_id": {
+          "type": "null"
+        },
+        "instrument_binding_ref": {
+          "type": "null"
+        },
+        "candle_authority_source_ref": {
+          "type": "null"
+        },
+        "mark_price_authority_source_ref": {
+          "type": "null"
+        },
+        "observation_pack_digest": {
+          "type": "null"
+        },
+        "raw_source_digest": {
+          "type": "null"
+        },
+        "seed": {
+          "type": "null"
+        },
+        "event_time_epoch_s": {
+          "type": "null"
+        },
+        "partition_boundaries_event_time_epoch_s": {
+          "type": "null"
+        },
+        "fold_ids": {
+          "type": "null"
+        },
+        "bootstrap_seeds": {
+          "type": "null"
+        },
+        "regime_coverage_binding_ref": {
+          "type": "null"
+        }
+      }
+    },
+    "input_authority": {
+      "const": false
+    },
+    "runtime_implemented": {
+      "const": false
+    },
+    "campaign_start_authorized": {
+      "const": false
+    },
+    "raw_input_pack_materialization_authorized": {
+      "const": false
+    },
+    "raw_input_pack_created": {
+      "const": false
+    },
+    "campaign_started": {
+      "const": false
+    },
+    "pack_materialization": {
+      "const": false
+    },
+    "producer_reimplementation": {
+      "const": false
+    },
+    "consumer_wiring": {
+      "const": false
+    },
+    "pt1m_adapter": {
+      "const": false
+    },
+    "productive_numeric_values_set": {
+      "const": 0
+    },
+    "productive_thresholds_lookbacks": {
+      "const": false
+    },
+    "regime_coverage_producer_available": {
+      "const": false
+    },
+    "regime_coverage_status": {
+      "const": "SEMANTICALLY_UNRESOLVED"
+    },
+    "dashboard_authority_effect": {
+      "const": "NONE"
+    },
+    "notion_ssot": {
+      "const": false
+    },
+    "repository_is_ssot": {
+      "const": true
+    },
+    "open_null_instance_fields": {
+      "type": "object",
+      "required": [
+        "campaign_id",
+        "dataset_id",
+        "scenario_id",
+        "instrument_binding",
+        "seed",
+        "event_time_epoch_s",
+        "partition_boundaries",
+        "fold_ids",
+        "bootstrap_seeds",
+        "purge",
+        "embargo",
+        "fold_sizes",
+        "regime_coverage_counts",
+        "regime_coverage_instance",
+        "observation_pack_digest",
+        "raw_source_digest"
+      ],
+      "properties": {
+        "campaign_id": {
+          "type": "null"
+        },
+        "dataset_id": {
+          "type": "null"
+        },
+        "scenario_id": {
+          "type": "null"
+        },
+        "instrument_binding": {
+          "type": "null"
+        },
+        "seed": {
+          "type": "null"
+        },
+        "event_time_epoch_s": {
+          "type": "null"
+        },
+        "partition_boundaries": {
+          "type": "null"
+        },
+        "fold_ids": {
+          "type": "null"
+        },
+        "bootstrap_seeds": {
+          "type": "null"
+        },
+        "purge": {
+          "type": "null"
+        },
+        "embargo": {
+          "type": "null"
+        },
+        "fold_sizes": {
+          "type": "null"
+        },
+        "regime_coverage_counts": {
+          "type": "null"
+        },
+        "regime_coverage_instance": {
+          "type": "null"
+        },
+        "observation_pack_digest": {
+          "type": "null"
+        },
+        "raw_source_digest": {
+          "type": "null"
+        }
+      }
+    },
+    "decisions": {
+      "type": "object"
+    }
+  }
+}

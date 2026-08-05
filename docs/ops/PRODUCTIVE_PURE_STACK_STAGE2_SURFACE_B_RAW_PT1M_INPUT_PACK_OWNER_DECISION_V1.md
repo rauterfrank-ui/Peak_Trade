@@ -374,6 +374,8 @@ SURFACE_B_COLLECTOR_SEMANTICS_CHANGED=false
   `docs/ops/schemas/productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_decisions_v1.schema.json`
 - Validator package:
   `src/ops/productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_owner_decision_v1/`
+- Owner/STA materialization decision surface:
+  `docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`
 - Existing Surface-B producer/collector (unchanged semantics):
   `src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/`
 - Shadow campaign runner:

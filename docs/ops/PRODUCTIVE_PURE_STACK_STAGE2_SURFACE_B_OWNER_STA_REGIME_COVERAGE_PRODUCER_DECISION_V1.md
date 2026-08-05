@@ -310,8 +310,10 @@ and the remaining STA open inputs
 closed under
 `docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1.md`.
 `REGIME_COVERAGE_PRODUCER_AVAILABLE` remains `false` and
-`REGIME_COVERAGE_STATUS` remains `SEMANTICALLY_UNRESOLVED`. A **separate**
-explicit Owner GO is still required before consumer wiring, PT1M adapter
-binding, raw-input-pack materialization, campaign start, input-authority
-flips, or productive threshold/lookback ratification. Availability may flip
-only under that later explicit Owner GO.
+`REGIME_COVERAGE_STATUS` remains `SEMANTICALLY_UNRESOLVED`. The dedicated
+Owner/STA decision surface for raw input-pack materialization is
+`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`.
+A **separate** explicit Owner GO is still required before consumer wiring, PT1M
+adapter binding, raw-input-pack materialization execution, campaign start,
+input-authority flips, or productive threshold/lookback ratification.
+Availability may flip only under that later explicit Owner GO.

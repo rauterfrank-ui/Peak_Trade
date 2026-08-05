@@ -181,7 +181,12 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 ## 5. Canonical next step
 
 STA open external inputs for `DEC_REGIME_COVERAGE_PRODUCER` are empty after this
-closeout. A **separate** explicit Owner GO is still required before consumer
-wiring, PT1M adapter binding, pack materialization, campaign start, input
+closeout. The dedicated Owner/STA decision surface for raw input-pack
+materialization is:
+
+`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`
+
+A **separate** explicit Owner GO is still required before consumer wiring, PT1M
+adapter binding, pack materialization execution, campaign start, input
 authority / runtime flips, productive threshold/lookback ratification, or any
 flip of `REGIME_COVERAGE_PRODUCER_AVAILABLE` away from false.
