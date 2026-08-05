@@ -90,14 +90,38 @@ def _has_complete_inputs(cycle_outputs: Mapping[str, Any] | None) -> bool:
 def try_extract_double_play_decision_inputs_from_replay_intermediate_v1(
     intermediate: object | None,
 ) -> Optional[dict[str, Any]]:
-    """Return Decision-typed inputs only when already present — never invent mapping."""
+    """Return Decision-typed inputs only when already present — never invent mapping.
+
+    Supports:
+    - attributes named exactly as required keys on the intermediate, or
+    - a complete ``display_decision_bundle`` / ``pure_stack_display_decision_bundle``
+      exposing ``as_decision_mapping()``.
+
+    TransitionDecision may appear as ``transition_decision`` (passthrough) but a
+    partial set still fail-closes — no partial composition / no ResultV1 rebuild.
+    """
     if intermediate is None:
         return None
-    # Productive intermediate uses ResultV1 types; without exact Decision instances,
-    # return None (fail-closed for this family).
+
+    bundle = getattr(intermediate, "display_decision_bundle", None)
+    if bundle is None:
+        bundle = getattr(intermediate, "pure_stack_display_decision_bundle", None)
+    if bundle is not None and hasattr(bundle, "as_decision_mapping"):
+        mapping = bundle.as_decision_mapping()
+        if isinstance(mapping, Mapping):
+            candidate_from_bundle: dict[str, Any] = {}
+            for key, typ in _REQUIRED_DECISION_TYPES:
+                value = mapping.get(key)
+                if value is None or not isinstance(value, typ):
+                    return None
+                candidate_from_bundle[key] = value
+            return candidate_from_bundle
+
     candidate: dict[str, Any] = {}
     for key, typ in _REQUIRED_DECISION_TYPES:
         value = getattr(intermediate, key, None)
+        if key == "transition" and value is None:
+            value = getattr(intermediate, "transition_decision", None)
         if value is None or not isinstance(value, typ):
             return None
         candidate[key] = value

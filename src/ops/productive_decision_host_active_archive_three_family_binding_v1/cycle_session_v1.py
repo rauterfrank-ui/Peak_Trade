@@ -146,6 +146,9 @@ def run_productive_host_smoke_session_v1(
         f"PRODUCTIVE_HOST_SYMBOL={PRODUCTIVE_HOST_SYMBOL}",
         "SMOKE_USES_ANALYTICAL_MIDS_NOT_PHASE_9_2",
         "DOUBLE_PLAY_HARD_STOP_WITHOUT_DECISION_TYPED_INPUTS",
+        "BLOCKED_CANONICAL_INPUT_AUTHORITY_ABSENT",
+        "TRANSITION_DECISION_PASSTHROUGH_WIRED",
+        "EXPORT_REPLAY_INTERMEDIATE_FROM_HOST_STATE",
     ]
 
     try:
@@ -283,7 +286,7 @@ def run_productive_host_smoke_session_v1(
                     evidence_payload=(
                         dict(evidence_payload) if isinstance(evidence_payload, Mapping) else None
                     ),
-                    replay_intermediate=None,
+                    replay_intermediate=getattr(state, "last_replay_intermediate", None),
                 )
                 last_ds = families.get("dynamic_scope")
                 last_cd = families.get("canonical_decision")

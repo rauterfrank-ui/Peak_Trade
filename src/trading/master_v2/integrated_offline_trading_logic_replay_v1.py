@@ -359,6 +359,9 @@ class IntegratedOfflineReplayIntermediateV1:
     post_confirmation_binding_capability_id: str = (
         POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID
     )
+    # Pure-Stack display passthrough: identical TransitionDecision from transition_state.
+    # Not reconstructed from StateSwitchEvidenceV1. Optional for additive V1 compatibility.
+    transition_decision: Optional[TransitionDecision] = None
 
 
 @dataclass(frozen=True)
@@ -1866,6 +1869,8 @@ def run_integrated_offline_trading_logic_replay_v1(
         post_confirmation_binding_capability_id=(
             POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID
         ),
+        # Identical object from transition_state — display passthrough only.
+        transition_decision=transition,
     )
 
     boundary_ok = (

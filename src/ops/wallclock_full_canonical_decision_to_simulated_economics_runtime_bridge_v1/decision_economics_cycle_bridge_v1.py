@@ -409,6 +409,15 @@ class BridgeSessionStateV1:
     # Productive archive-binding capture: last cycle CanonicalTradingDecisionEvidenceV1
     # export payload (wiring only; no decision recomputation).
     last_canonical_decision_evidence: Optional[dict[str, Any]] = None
+    # Pure-Stack display Decision host binding: last integrated replay intermediate
+    # (TransitionDecision passthrough; full seven-Decision bundle requires Owner-
+    # ratified input authorities — absent authorities fail closed).
+    last_replay_intermediate: Optional[Any] = None
+    last_pure_stack_display_decision_result: Optional[dict[str, Any]] = None
+    # Capital-slot display state: no ratified init authority → remains unbound.
+    capital_slot_config_bound: bool = False
+    capital_slot_state_bound: bool = False
+    capital_slot_authority_status: str = "BLOCKED_CANONICAL_INPUT_AUTHORITY_ABSENT"
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -1340,6 +1349,36 @@ def run_bridge_cycle_v1(
     )
     _evidence_payload["semantic_digest"] = str(replay.evidence.semantic_digest or "")
     state.last_canonical_decision_evidence = dict(_evidence_payload)
+    # Retain intermediate for Pure-Stack display Decision passthrough/export wiring.
+    # Does not alter trading authority or ResultV1 Decision path.
+    state.last_replay_intermediate = replay.intermediate
+    try:
+        from src.ops.productive_pure_stack_display_decision_host_binding_v1.host_cycle_v1 import (
+            run_pure_stack_display_decision_host_cycle_v1,
+        )
+
+        _ps_result = run_pure_stack_display_decision_host_cycle_v1(
+            replay_intermediate=replay.intermediate,
+            cycle_id=f"{session_id}:cycle:{state.cycle_index}",
+            cycle_index=int(state.cycle_index),
+            instrument_id=str(state.instrument_id),
+            trading_epoch=int(state.trading_epoch),
+            state_root=(
+                Path(state.decision_path_atomic_state_root)
+                if state.decision_path_atomic_state_root
+                else None
+            ),
+            allow_runtime_mutation=False,
+        )
+        state.last_pure_stack_display_decision_result = _ps_result.to_dict()
+    except Exception as _ps_exc:  # noqa: BLE001
+        state.last_pure_stack_display_decision_result = {
+            "ok": False,
+            "status": "BLOCKED_CANONICAL_INPUT_AUTHORITY_ABSENT",
+            "error": f"{type(_ps_exc).__name__}:{_ps_exc}",
+            "runtime_mutated": False,
+            "archive_mutated": False,
+        }
     intended = map_replay_result_to_intended_analytical_action_v1(
         replay,
         instrument_id=state.instrument_id,
