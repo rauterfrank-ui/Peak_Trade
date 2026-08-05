@@ -233,22 +233,22 @@ REGIME_COVERAGE_PRODUCER_AVAILABLE=false
 REGIME_COVERAGE_STATUS=SEMANTICALLY_UNRESOLVED
 ```
 
-No canonical Surface-B regime recorder producer is selected on this triad
-surface. The dedicated Owner/STA decision surface for
-`DEC_REGIME_COVERAGE_PRODUCER` is:
+The dedicated Owner/STA decision surface for `DEC_REGIME_COVERAGE_PRODUCER` is:
 
 `docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md`
 
-Allowed Owner alternatives there are exclusively:
+Owner value recorded there (mirrored in this triad table):
 
 ```text
-AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER
-EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER
+OWNER_VALUE=AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER
+DECISION_STATUS=RATIFIED
 ```
 
-Structural label slots exist under parent Surface B, but counts/labels must not
-be invented, existing producers must not be elevated, and no new classifier is
-implemented by this triad surface.
+`REGIME_COVERAGE_PRODUCER_AVAILABLE` remains `false` and
+`REGIME_COVERAGE_STATUS` remains `SEMANTICALLY_UNRESOLVED` until authorize-detail
+fields and STA proofs are separately ratified. Structural label slots exist under
+parent Surface B, but counts/labels must not be invented, existing producers must
+not be elevated, and no new classifier is implemented by this triad surface.
 
 ## 7. E. Owner decision table
 
@@ -265,8 +265,8 @@ Each row has:
 - `recommended_option` (only when repo-side uniquely justifiable; instrument IDs intentionally `null`)
 - `rationale`
 - `safety_semantic_consequences`
-- `owner_value` (Owner-filled for triad + semantic candle/mark rows; regime remains null)
-- `status` (`RATIFIED` for triad/semantic authority rows; `OPEN` for `DEC_REGIME_COVERAGE_PRODUCER`)
+- `owner_value` (Owner-filled for triad + semantic candle/mark rows and for `DEC_REGIME_COVERAGE_PRODUCER`)
+- `status` (`RATIFIED` for triad/semantic authority rows and for `DEC_REGIME_COVERAGE_PRODUCER`)
 
 ## 8. Explicitly null instance / numeric fields
 

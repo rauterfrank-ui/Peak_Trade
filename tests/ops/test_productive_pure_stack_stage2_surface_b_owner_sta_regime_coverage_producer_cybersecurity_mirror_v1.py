@@ -17,8 +17,9 @@ REQUIRED_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=CYBERSECURITY_MIRROR_NOTE",
     "CAPABILITY_SCOPE=SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION",
     "DECISION_ID=DEC_REGIME_COVERAGE_PRODUCER",
-    "DECISION_STATUS=OPEN",
-    "OWNER_VALUE=null",
+    "DECISION_STATUS=RATIFIED",
+    "OWNER_VALUE=AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
+    "OWNER_GO_BASE_SHA=9f4974824bb647b6f9dec5509ace990c2678188a",
     "BASELINE_ORIGIN_MAIN_SHA=42e8527c929264c702d8f7d59a80fc38f850baff",
     "INPUT_AUTHORITY=false",
     "RUNTIME_IMPLEMENTED=false",
@@ -64,7 +65,8 @@ def test_security_notes_mirrors_regime_coverage_producer_decision_v1() -> None:
     ) in notes
     assert "### 6.5 Stage-2 Surface B Owner/STA regime-coverage producer" in notes
     assert "DEC_REGIME_COVERAGE_PRODUCER" in notes
-    assert "DECISION_STATUS=OPEN" in notes or "`OPEN`" in notes
+    assert "DECISION_STATUS=RATIFIED" in notes or "`RATIFIED`" in notes
+    assert "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER" in notes
     assert "EXISTING_PRODUCERS_ELEVATED=false" in notes
     assert "NOTION_SSOT=false" in notes
     assert "REPOSITORY_IS_SSOT=true" in notes

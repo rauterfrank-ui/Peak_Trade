@@ -19,10 +19,12 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_pr
     DECISIONS_MANIFEST_REL,
     FORBIDDEN_EXISTING_PRODUCER_TOKENS,
     OWNER_DECISION_REL,
+    OWNER_GO_BASE_SHA,
     PARENT_TRIAD_MANIFEST_REL,
+    RECORDED_OWNER_VALUE,
     REJECT_OWNER_VALUE,
     SCHEMA_REL,
-    STATUS_SURFACE_OPEN,
+    STATUS_OWNER_VALUE_RECORDED,
     TAXONOMY_SINK_LABELS,
 )
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decision_v1.validator_v1 import (
@@ -37,10 +39,11 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_SURFACE_OPEN}",
+    f"STATUS={STATUS_OWNER_VALUE_RECORDED}",
     f"DECISION_ID={DECISION_ID}",
-    "DECISION_STATUS=OPEN",
-    "OWNER_VALUE=null",
+    "DECISION_STATUS=RATIFIED",
+    f"OWNER_VALUE={RECORDED_OWNER_VALUE}",
+    f"OWNER_GO_BASE_SHA={OWNER_GO_BASE_SHA}",
     f"BASELINE_ORIGIN_MAIN_SHA={BASELINE_ORIGIN_MAIN_SHA}",
     "INPUT_AUTHORITY=false",
     "RUNTIME_IMPLEMENTED=false",
@@ -87,14 +90,14 @@ def test_regime_coverage_document_markers_v1() -> None:
         assert claim not in text, claim
 
 
-def test_canonical_manifest_open_and_null_v1() -> None:
+def test_canonical_manifest_owner_value_recorded_v1() -> None:
     manifest = load_canonical_regime_coverage_producer_decisions_manifest_v1(REPO_ROOT)
     result = validate_regime_coverage_producer_manifest_v1(manifest)
     assert result["ok"] is True
     assert result["decision_id"] == DECISION_ID
-    assert result["status"] == STATUS_SURFACE_OPEN
-    assert result["decision_status"] == "OPEN"
-    assert result["owner_value"] is None
+    assert result["status"] == STATUS_OWNER_VALUE_RECORDED
+    assert result["decision_status"] == "RATIFIED"
+    assert result["owner_value"] == RECORDED_OWNER_VALUE
     assert result["allowed_owner_values"] == list(ALLOWED_OWNER_VALUES)
     assert result["authorize_detail_fields_null"] is True
     assert result["existing_producers_elevated"] is False
@@ -107,8 +110,9 @@ def test_canonical_manifest_open_and_null_v1() -> None:
     assert result["productive_numeric_values_set"] == 0
     assert result["regime_coverage_status"] == "SEMANTICALLY_UNRESOLVED"
     assert result["dashboard_authority_effect"] == "NONE"
-    assert manifest["owner_value"] is None
-    assert manifest["decision_status"] == "OPEN"
+    assert manifest["owner_value"] == RECORDED_OWNER_VALUE
+    assert manifest["decision_status"] == "RATIFIED"
+    assert manifest["owner_go_base_sha"] == OWNER_GO_BASE_SHA
     assert tuple(manifest["allowed_owner_values"]) == ALLOWED_OWNER_VALUES
     assert tuple(manifest["taxonomy_sink_labels"]) == TAXONOMY_SINK_LABELS
     for field in AUTHORIZE_DETAIL_FIELDS:
@@ -117,6 +121,8 @@ def test_canonical_manifest_open_and_null_v1() -> None:
         assert value is None, key
     assert manifest["open_null_instance_fields"]["regime_coverage_counts"] is None
     assert manifest["decisions"]["REGIME_COVERAGE_PRODUCER"]["coverage_counts"] is None
+    assert manifest["decisions"]["REGIME_COVERAGE_PRODUCER"]["owner_value"] == RECORDED_OWNER_VALUE
+    assert manifest["decisions"]["REGIME_COVERAGE_PRODUCER"]["status"] == "RATIFIED"
 
 
 def test_schema_required_keys_present_v1() -> None:
@@ -140,8 +146,8 @@ def test_markdown_json_semantic_consistency_v1() -> None:
     manifest = load_canonical_regime_coverage_producer_decisions_manifest_v1(REPO_ROOT)
     assert f"DECISION_ID={manifest['decision_id']}" in md
     assert f"DECISION_STATUS={manifest['decision_status']}" in md
-    assert "OWNER_VALUE=null" in md
-    assert manifest["owner_value"] is None
+    assert f"OWNER_VALUE={RECORDED_OWNER_VALUE}" in md
+    assert manifest["owner_value"] == RECORDED_OWNER_VALUE
     for value in ALLOWED_OWNER_VALUES:
         assert value in md
         assert value in manifest["allowed_owner_values"]
@@ -243,7 +249,7 @@ def test_reject_dashboard_authority_and_runtime_authorization_v1() -> None:
         )
 
 
-def test_authorize_detail_fields_must_remain_null_on_open_surface_v1() -> None:
+def test_authorize_detail_fields_must_remain_null_after_owner_value_v1() -> None:
     manifest = copy.deepcopy(
         load_canonical_regime_coverage_producer_decisions_manifest_v1(REPO_ROOT)
     )
@@ -257,11 +263,11 @@ def test_authorize_detail_fields_must_remain_null_on_open_surface_v1() -> None:
         )
 
 
-def test_parent_triad_still_keeps_regime_open_v1() -> None:
+def test_parent_triad_mirrors_recorded_owner_value_v1() -> None:
     triad = json.loads((REPO_ROOT / PARENT_TRIAD_MANIFEST_REL).read_text(encoding="utf-8"))
     row = next(r for r in triad["owner_decision_table"] if r["decision_id"] == DECISION_ID)
-    assert row["status"] == "OPEN"
-    assert row["owner_value"] is None
+    assert row["status"] == "RATIFIED"
+    assert row["owner_value"] == RECORDED_OWNER_VALUE
     assert triad["regime_coverage_status"] == "SEMANTICALLY_UNRESOLVED"
     assert triad["regime_coverage_producer_available"] is False
     assert set(ALLOWED_OWNER_VALUES).issubset(set(row["allowed_options"]))
