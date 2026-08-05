@@ -575,14 +575,15 @@
       "decision_id": "DEC_REGIME_COVERAGE_PRODUCER",
       "field": "regime_coverage.producer_availability",
       "allowed_options": [
-        "SEMANTICALLY_UNRESOLVED",
-        "REJECT_IF_INVENTED_COUNTS_OR_LABELS"
+        "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
+        "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER"
       ],
-      "recommended_option": "SEMANTICALLY_UNRESOLVED",
-      "rationale": "No canonical Surface-B regime recorder producer found; only structural regime_coverage label slots exist. Counts/labels must not be invented.",
-      "safety_semantic_consequences": "Invented regime coverage would fake campaign readiness.",
+      "recommended_option": null,
+      "rationale": "Canonical Owner/STA decision surface is docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md. No existing producer may be elevated; counts/labels must not be invented.",
+      "safety_semantic_consequences": "Invented regime coverage or silent producer elevation would fake campaign readiness.",
       "owner_value": null,
-      "status": "OPEN"
+      "status": "OPEN",
+      "canonical_decision_surface": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md"
     }
   ],
   "open_null_instance_fields": {

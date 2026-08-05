@@ -1,0 +1,159 @@
+{
+  "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions/v1",
+  "document_type": "OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISIONS_MANIFEST",
+  "capability_scope": "SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION",
+  "status": "OWNER_STA_DECISION_SURFACE_OPEN",
+  "baseline_origin_main_sha": "42e8527c929264c702d8f7d59a80fc38f850baff",
+  "authority_surface": "B",
+  "decision_id": "DEC_REGIME_COVERAGE_PRODUCER",
+  "decision_status": "OPEN",
+  "owner_value": null,
+  "allowed_owner_values": [
+    "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
+    "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER"
+  ],
+  "authorize_detail_fields": {
+    "canonical_producer_name": null,
+    "canonical_producer_version": null,
+    "versioned_producer_id": null,
+    "taxonomy_binding": null,
+    "threshold_authority_ref": null,
+    "lookback_window_authority_ref": null,
+    "time_basis": null,
+    "PIT_no_lookahead_rules_ref": null,
+    "candle_join_acceptance_ref": null,
+    "mark_join_acceptance_ref": null,
+    "instrument_binding_acceptance_ref": null,
+    "determinism_contract_ref": null,
+    "reproducibility_contract_ref": null,
+    "producer_digest_contract_ref": null,
+    "missing_label_semantics_ref": null,
+    "unknown_label_semantics_ref": null
+  },
+  "taxonomy_sink_labels": [
+    "low",
+    "mid",
+    "high",
+    "unknown",
+    "missing"
+  ],
+  "sta_open_external_inputs": [
+    "dedicated_surface_b_regime_recorder_under_sta",
+    "ratified_taxonomy_mapping",
+    "non_invented_coverage_counts",
+    "producer_version_and_digest_contract",
+    "provable_eth_usdt_swap_compatibility",
+    "ratified_pt1m_candle_authority_join",
+    "ratified_pt1m_mark_authority_join",
+    "pit_no_lookahead_proof",
+    "deterministic_reproducible_computation"
+  ],
+  "forbidden_existing_producers": [
+    "analytics.regimes",
+    "regime.detectors",
+    "feature_regime_pipeline_v2",
+    "ai.switch_layer",
+    "research max-age regime map",
+    "bull/bear evidence readmodel",
+    "reporting regime buckets",
+    "Dashboard projections",
+    "Test fixtures"
+  ],
+  "reject_semantics": {
+    "regime_coverage_materializable": false,
+    "surface_b_campaign_startable_while_regime_coverage_required": false,
+    "existing_observability_research_bridge_dashboard_may_substitute_authority": false,
+    "instance_fields_and_coverage_counts_remain_null_or_absent": true
+  },
+  "authorize_semantics": {
+    "input_authority": false,
+    "runtime_implemented": false,
+    "raw_input_pack_created": false,
+    "campaign_started": false,
+    "separate_explicit_implementation_order_required": true,
+    "owner_fields_and_sta_proofs_must_be_fully_ratified_before_input_authority": true
+  },
+  "input_authority": false,
+  "runtime_implemented": false,
+  "campaign_start_authorized": false,
+  "raw_input_pack_materialization_authorized": false,
+  "raw_input_pack_created": false,
+  "campaign_started": false,
+  "productive_numeric_values_set": 0,
+  "regime_coverage_producer_available": false,
+  "regime_coverage_status": "SEMANTICALLY_UNRESOLVED",
+  "existing_producers_elevated": false,
+  "dashboard_authority_effect": "NONE",
+  "notion_ssot": false,
+  "repository_is_ssot": true,
+  "o4_unchanged": true,
+  "o4_pt1h_as_pt1m_forbidden": true,
+  "trading_logic_changed": false,
+  "orders_testnet_live_paper_effects": false,
+  "exchange_credential_effects": false,
+  "open_null_instance_fields": {
+    "campaign_id": null,
+    "dataset_id": null,
+    "scenario_id": null,
+    "seed": null,
+    "partition_boundaries": null,
+    "fold_ids": null,
+    "bootstrap_seeds": null,
+    "purge": null,
+    "embargo": null,
+    "fold_sizes": null,
+    "regime_coverage_counts": null,
+    "regime_coverage_instance": null
+  },
+  "decisions": {
+    "REGIME_COVERAGE_PRODUCER": {
+      "decision_id": "DEC_REGIME_COVERAGE_PRODUCER",
+      "status": "OPEN",
+      "owner_value": null,
+      "allowed_owner_values": [
+        "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
+        "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER"
+      ],
+      "taxonomy_sink_labels": [
+        "low",
+        "mid",
+        "high",
+        "unknown",
+        "missing"
+      ],
+      "producer_available": false,
+      "invent_counts_or_labels": false,
+      "new_classifier_implemented": false,
+      "coverage_counts": null,
+      "thresholds": null,
+      "lookbacks": null,
+      "label_magnitudes": null
+    },
+    "FORBIDDEN_EXISTING_PRODUCERS": [
+      "analytics.regimes",
+      "regime.detectors",
+      "feature_regime_pipeline_v2",
+      "ai.switch_layer",
+      "research max-age regime map",
+      "bull/bear evidence readmodel",
+      "reporting regime buckets",
+      "Dashboard projections",
+      "Test fixtures"
+    ],
+    "NON_EFFECTS": {
+      "input_authority": false,
+      "runtime_implemented": false,
+      "raw_input_pack_created": false,
+      "raw_input_pack_materialization_authorized": false,
+      "campaign_started": false,
+      "campaign_start_authorized": false,
+      "existing_producers_elevated": false,
+      "productive_numeric_values_set": 0,
+      "regime_coverage_status": "SEMANTICALLY_UNRESOLVED",
+      "trading_logic_changed": false,
+      "dashboard_authority_effect": "NONE",
+      "orders_testnet_live_paper_effects": false,
+      "exchange_credential_effects": false
+    }
+  }
+}
