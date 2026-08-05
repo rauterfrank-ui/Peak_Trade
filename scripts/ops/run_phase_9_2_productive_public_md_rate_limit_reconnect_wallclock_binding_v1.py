@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""CLI for Phase 9.2 rate-limit/reconnect wallclock binding.
+"""CLI for Phase 9.2 rate-limit/reconnect wallclock binding + productive executor wiring.
 
 Commands:
-  preflight            — reuse/authority matrix + parity (no session)
-  materialize-evidence — offline implementation evidence only
-  gate                 — Session-GO binding gate evaluation only
-  prove-fault-path     — offline deterministic 429/reconnect/stale proofs
+  preflight / prove-binding — reuse/authority matrix + parity (no session)
+  materialize-evidence      — offline implementation evidence only
+  gate                      — Session-GO binding gate evaluation only
+  prove-fault-path          — offline deterministic 429/reconnect/stale proofs
+  execute-productive-session
+      — bind productive executor call graph after Gate PASS (no real network)
 
 Confirm tokens: --confirm-token-file | PEAK_TRADE_PSO_CONFIRM_TOKEN | present flag.
 Plaintext --confirm-token argv is rejected.
@@ -40,6 +42,7 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.constants_v1 import (  # noqa: E402
     CAPABILITY_ID,
     TARGET_SESSION_ID,
+    WIRING_CAPABILITY_ID,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.evidence_v1 import (  # noqa: E402
     materialize_capability_evidence_v1,
@@ -49,6 +52,9 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.parity_v1 import (  # noqa: E402
     prove_phase92_rate_limit_reconnect_wallclock_binding_parity_v1,
+)
+from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.productive_executor_v1 import (  # noqa: E402
+    execute_productive_rate_limit_reconnect_session_wiring_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_contract_v1 import (  # noqa: E402
     load_and_validate_session_contract_v1,
@@ -68,7 +74,14 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "command",
-        choices=("preflight", "materialize-evidence", "gate", "prove-fault-path"),
+        choices=(
+            "preflight",
+            "prove-binding",
+            "materialize-evidence",
+            "gate",
+            "prove-fault-path",
+            "execute-productive-session",
+        ),
     )
     p.add_argument("--evidence-root", type=Path, default=None)
     p.add_argument("--session-go-file", type=Path, default=None)
@@ -78,6 +91,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--authorization-present", action="store_true")
     p.add_argument("--confirm-token-present", action="store_true")
     p.add_argument("--request-real-network", action="store_true")
+    p.add_argument(
+        "--execute",
+        action="store_true",
+        help="Required for execute-productive-session; keeps other commands side-effect free.",
+    )
     p.add_argument("--expected-repository-sha", default=None)
     p.add_argument("--json", action="store_true")
     return p
@@ -91,7 +109,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     args = build_parser().parse_args(raw_argv)
-    if args.request_real_network and args.command != "gate":
+    if args.request_real_network and args.command not in {"gate", "execute-productive-session"}:
         print(
             json.dumps(
                 {
@@ -117,7 +135,7 @@ def main(argv: list[str] | None = None) -> int:
         ).config_digest
     )
 
-    if args.command == "preflight":
+    if args.command in {"preflight", "prove-binding"}:
         parity = prove_phase92_rate_limit_reconnect_wallclock_binding_parity_v1()
         authority = assert_no_parallel_productive_authority_v1()
         try:
@@ -131,6 +149,7 @@ def main(argv: list[str] | None = None) -> int:
         payload = {
             "ok": bool(parity.get("ok") and authority.get("ok") and contract_ok),
             "capability_id": CAPABILITY_ID,
+            "wiring_capability_id": WIRING_CAPABILITY_ID,
             "session_id": TARGET_SESSION_ID,
             "parity": parity,
             "authority_reuse": authority,
@@ -162,6 +181,25 @@ def main(argv: list[str] | None = None) -> int:
         fault = prove_governed_fault_path_offline_v1()
         print(json.dumps(redact_mapping_for_logs(fault), sort_keys=True, indent=2))
         return 0 if fault.get("ok") else 1
+
+    if args.command == "execute-productive-session":
+        result = execute_productive_rate_limit_reconnect_session_wiring_v1(
+            expected_repository_sha=sha,
+            expected_config_digest=cfg,
+            now_unix=float(time.time()),
+            owner_go=bool(args.owner_go),
+            owner_session_go=bool(args.owner_session_go),
+            session_go_path=args.session_go_file,
+            authorization_present=bool(args.authorization_present),
+            confirm_token_file=args.confirm_token_file,
+            confirm_token_present_flag=bool(args.confirm_token_present),
+            execute=bool(args.execute),
+            allow_real_network=bool(args.request_real_network),
+            argv=raw_argv,
+            environ=os.environ,
+        )
+        print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))
+        return 0 if result.ok else 2
 
     # gate
     gate = evaluate_rate_limit_reconnect_wallclock_binding_gate_v1(

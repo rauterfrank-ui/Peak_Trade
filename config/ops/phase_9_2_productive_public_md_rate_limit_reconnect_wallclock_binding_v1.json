@@ -30,8 +30,9 @@
     "confirm_token": "src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1"
   },
   "notes": [
-    "Implements productive binding + offline governed fault-path proofs only; does not start a real Public-MD or fault session.",
-    "Real network unlock requires bound ACTIVE Session-GO + Owner-GO + Owner-Session-GO + single-use auth + confirm-token.",
+    "Implements productive binding + offline governed fault-path proofs + productive executor wiring.",
+    "execute-productive-session binds Gate→Wallclock-Runner call graph without starting network.",
+    "Real network unlock requires later separate Owner-Session-GO after this wiring merges.",
     "Ladder step RATE_LIMIT_RECONNECT_SESSION remains OPEN until a later governed session verifier PASS."
   ]
 }
