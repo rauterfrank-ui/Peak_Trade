@@ -2102,7 +2102,9 @@ using public market data and internal simulated execution only.
     and real Public-MD wallclock binding exist
     (`PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_REAL_NETWORK_WALLCLOCK_BINDING_V1`);
     full ladder not closed until a later governed real session verifier PASS;
-4.  rate-limit and reconnect session --- open;
+4.  rate-limit and reconnect session --- wallclock binding exists
+    (`PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RATE_LIMIT_RECONNECT_WALLCLOCK_BINDING_V1`);
+    ladder step remains open until a later governed real session verifier PASS;
 5.  prolonged natural-market session --- open;
 6.  adverse/stale-data session --- open;
 7.  repeated multi-session continuity campaign --- open.
