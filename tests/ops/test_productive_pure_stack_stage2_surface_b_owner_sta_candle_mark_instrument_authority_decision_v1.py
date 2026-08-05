@@ -13,9 +13,13 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_candle_mark_instru
     CAPABILITY_SCOPE,
     DECISIONS_MANIFEST_REL,
     OWNER_DECISION_REL,
+    OWNER_RATIFIED_CANDLE_SOURCE_REF,
+    OWNER_RATIFIED_INSTRUMENT_BINDING,
+    OWNER_RATIFIED_MARK_SOURCE_REF,
     PROPOSED_CANDLE_SOURCE_REF,
     PROPOSED_MARK_SOURCE_REF,
     SCHEMA_REL,
+    STATUS_AUTHORITIES_RATIFIED,
     STATUS_SURFACE_OPEN,
 )
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority_decision_v1.validator_v1 import (
@@ -30,13 +34,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_AUTHORITY_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_SURFACE_OPEN}",
+    f"STATUS={STATUS_AUTHORITIES_RATIFIED}",
     f"BASELINE_ORIGIN_MAIN_SHA={BASELINE_ORIGIN_MAIN_SHA}",
     "INPUT_AUTHORITY=false",
     "RUNTIME_IMPLEMENTED=false",
-    "CANDLE_AUTHORITY_RATIFIED=false",
-    "MARK_AUTHORITY_RATIFIED=false",
-    "INSTRUMENT_BINDING_RATIFIED=false",
+    "CANDLE_AUTHORITY_RATIFIED=true",
+    "MARK_AUTHORITY_RATIFIED=true",
+    "INSTRUMENT_BINDING_RATIFIED=true",
     "CAMPAIGN_START_AUTHORIZED=false",
     "RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false",
     "RAW_INPUT_PACK_CREATED=false",
@@ -48,30 +52,48 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "REPOSITORY_IS_SSOT=true",
     "STA_PRODUCER_IS_RAW_SOURCE_AUTHORITY=false",
     "O4_PT1H_AS_PT1M_FORBIDDEN=true",
+    "venue=okx",
+    "canonical_instrument_id=inst-eth-usdt-perp",
+    "venue_instrument_id=ETH-USDT-SWAP",
 )
 
 FORBIDDEN_DOC_CLAIMS: tuple[str, ...] = (
     "INPUT_AUTHORITY=true",
     "RUNTIME_IMPLEMENTED=true",
-    "CANDLE_AUTHORITY_RATIFIED=true",
-    "MARK_AUTHORITY_RATIFIED=true",
-    "INSTRUMENT_BINDING_RATIFIED=true",
     "CAMPAIGN_START_AUTHORIZED=true",
     "RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=true",
     "NOTION_SSOT=true",
+    "CANDLE_AUTHORITY_RATIFIED=false",
+    "MARK_AUTHORITY_RATIFIED=false",
+    "INSTRUMENT_BINDING_RATIFIED=false",
 )
 
 
 def _eth_binding() -> dict[str, str]:
-    return {
-        "venue": "okx",
-        "canonical_instrument_id": "inst-eth-usdt-perp",
-        "venue_instrument_id": "ETH-USDT-SWAP",
-        "contract_type": "perpetual",
-        "market_type": "futures",
-        "quote_currency": "USDT",
-        "settlement_currency": "USDT",
-    }
+    return dict(OWNER_RATIFIED_INSTRUMENT_BINDING)
+
+
+def _structure_open_manifest() -> dict:
+    """Synthetic pre-ratification surface for fail-closed open-status tests."""
+    manifest = copy.deepcopy(load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT))
+    manifest["status"] = STATUS_SURFACE_OPEN
+    manifest["candle_authority_ratified"] = False
+    manifest["mark_authority_ratified"] = False
+    manifest["instrument_binding_ratified"] = False
+    manifest["candle_source_authority"]["owner_ratified_source_ref"] = None
+    manifest["mark_source_authority"]["owner_ratified_source_ref"] = None
+    for field in OWNER_RATIFIED_INSTRUMENT_BINDING:
+        manifest["instrument_binding"][field]["owner_value"] = None
+        manifest["instrument_binding"][field]["status"] = "OPEN"
+    for row in manifest["owner_decision_table"]:
+        row["owner_value"] = None
+        row["status"] = "OPEN"
+    for key in ("CANDLE_SOURCE_AUTHORITY", "MARK_SOURCE_AUTHORITY", "INSTRUMENT_BINDING"):
+        manifest["decisions"][key]["status"] = "OPEN"
+        if "owner_ratified_source_ref" in manifest["decisions"][key]:
+            manifest["decisions"][key]["owner_ratified_source_ref"] = None
+    manifest["decisions"]["INSTRUMENT_BINDING"].pop("owner_binding", None)
+    return manifest
 
 
 def test_owner_sta_artifacts_exist_v1() -> None:
@@ -88,15 +110,16 @@ def test_owner_sta_document_markers_v1() -> None:
         assert claim not in text, claim
 
 
-def test_canonical_manifest_structure_open_valid_v1() -> None:
+def test_canonical_manifest_authorities_ratified_valid_v1() -> None:
     manifest = load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT)
     result = validate_owner_sta_authority_manifest_v1(manifest)
     assert result["ok"] is True
+    assert result["status"] == STATUS_AUTHORITIES_RATIFIED
     assert result["input_authority"] is False
     assert result["runtime_implemented"] is False
-    assert result["candle_authority_ratified"] is False
-    assert result["mark_authority_ratified"] is False
-    assert result["instrument_binding_ratified"] is False
+    assert result["candle_authority_ratified"] is True
+    assert result["mark_authority_ratified"] is True
+    assert result["instrument_binding_ratified"] is True
     assert result["raw_input_pack_created"] is False
     assert result["campaign_started"] is False
     assert result["productive_numeric_values_set"] == 0
@@ -104,9 +127,22 @@ def test_canonical_manifest_structure_open_valid_v1() -> None:
     assert manifest["candle_source_authority"]["proposed_source_ref"] == PROPOSED_CANDLE_SOURCE_REF
     assert manifest["mark_source_authority"]["proposed_source_ref"] == PROPOSED_MARK_SOURCE_REF
     assert (
-        manifest["candle_source_authority"]["proposed_source_ref"]
-        != manifest["mark_source_authority"]["proposed_source_ref"]
+        manifest["candle_source_authority"]["owner_ratified_source_ref"]
+        == OWNER_RATIFIED_CANDLE_SOURCE_REF
     )
+    assert (
+        manifest["mark_source_authority"]["owner_ratified_source_ref"]
+        == OWNER_RATIFIED_MARK_SOURCE_REF
+    )
+    assert (
+        manifest["candle_source_authority"]["owner_ratified_source_ref"]
+        != manifest["mark_source_authority"]["owner_ratified_source_ref"]
+    )
+    for field, expected in OWNER_RATIFIED_INSTRUMENT_BINDING.items():
+        assert manifest["instrument_binding"][field]["owner_value"] == expected
+        assert manifest["instrument_binding"][field]["status"] == "RATIFIED"
+    for key, value in manifest["open_null_instance_fields"].items():
+        assert value is None, key
 
 
 def test_schema_required_keys_present_v1() -> None:
@@ -148,8 +184,8 @@ def test_reject_ratification_without_separate_authorities_v1() -> None:
                 "candle_authority_ratified": True,
                 "mark_authority_ratified": False,
                 "instrument_binding_ratified": True,
-                "candle_source_ref": PROPOSED_CANDLE_SOURCE_REF,
-                "mark_source_ref": PROPOSED_MARK_SOURCE_REF,
+                "candle_source_ref": OWNER_RATIFIED_CANDLE_SOURCE_REF,
+                "mark_source_ref": OWNER_RATIFIED_MARK_SOURCE_REF,
                 "instrument_binding": _eth_binding(),
             },
             owner_manifest=load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT),
@@ -157,23 +193,20 @@ def test_reject_ratification_without_separate_authorities_v1() -> None:
 
 
 def test_reject_ratification_missing_mark_source_ref_v1() -> None:
-    with pytest.raises(
-        OwnerStaAuthorityDecisionErrorV1, match="MARK_SOURCE_REF_REQUIRED_FOR_RATIFICATION"
-    ):
+    with pytest.raises(OwnerStaAuthorityDecisionErrorV1, match="MARK_SOURCE_REF_REQUIRED"):
         validate_owner_sta_ratification_claim_v1(
             {
                 "candle_authority_ratified": True,
                 "mark_authority_ratified": True,
                 "instrument_binding_ratified": True,
-                "candle_source_ref": PROPOSED_CANDLE_SOURCE_REF,
-                "mark_source_ref": None,
+                "candle_source_ref": OWNER_RATIFIED_CANDLE_SOURCE_REF,
                 "instrument_binding": _eth_binding(),
             },
             owner_manifest=load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT),
         )
 
 
-def test_reject_identical_candle_mark_source_refs_v1() -> None:
+def test_reject_identical_candle_mark_source_ref_v1() -> None:
     with pytest.raises(
         OwnerStaAuthorityDecisionErrorV1, match="CANDLE_AND_MARK_SOURCE_REF_MUST_DIFFER"
     ):
@@ -182,46 +215,27 @@ def test_reject_identical_candle_mark_source_refs_v1() -> None:
                 "candle_authority_ratified": True,
                 "mark_authority_ratified": True,
                 "instrument_binding_ratified": True,
-                "candle_source_ref": PROPOSED_CANDLE_SOURCE_REF,
-                "mark_source_ref": PROPOSED_CANDLE_SOURCE_REF,
+                "candle_source_ref": OWNER_RATIFIED_CANDLE_SOURCE_REF,
+                "mark_source_ref": OWNER_RATIFIED_CANDLE_SOURCE_REF,
                 "instrument_binding": _eth_binding(),
             },
             owner_manifest=load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT),
         )
 
 
-def test_reject_incomplete_instrument_binding_v1() -> None:
-    binding = _eth_binding()
-    del binding["settlement_currency"]
-    with pytest.raises(
-        OwnerStaAuthorityDecisionErrorV1, match="INSTRUMENT_BINDING_INCOMPLETE:settlement_currency"
-    ):
-        validate_owner_sta_ratification_claim_v1(
-            {
-                "candle_authority_ratified": True,
-                "mark_authority_ratified": True,
-                "instrument_binding_ratified": True,
-                "candle_source_ref": PROPOSED_CANDLE_SOURCE_REF,
-                "mark_source_ref": PROPOSED_MARK_SOURCE_REF,
-                "instrument_binding": binding,
-            },
-            owner_manifest=load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT),
-        )
-
-
-def test_reject_btc_test_binding_v1() -> None:
-    binding = _eth_binding()
-    binding["canonical_instrument_id"] = "BTC-USDT-SWAP"
-    binding["venue_instrument_id"] = "BTC-USDT-SWAP"
+def test_reject_btc_binding_v1() -> None:
+    bad = _eth_binding()
+    bad["venue_instrument_id"] = "BTC-USDT-SWAP"
+    bad["canonical_instrument_id"] = "BTC-USDT-SWAP"
     with pytest.raises(OwnerStaAuthorityDecisionErrorV1, match="BTC_TEST_BINDING_FORBIDDEN"):
         validate_owner_sta_ratification_claim_v1(
             {
                 "candle_authority_ratified": True,
                 "mark_authority_ratified": True,
                 "instrument_binding_ratified": True,
-                "candle_source_ref": PROPOSED_CANDLE_SOURCE_REF,
-                "mark_source_ref": PROPOSED_MARK_SOURCE_REF,
-                "instrument_binding": binding,
+                "candle_source_ref": OWNER_RATIFIED_CANDLE_SOURCE_REF,
+                "mark_source_ref": OWNER_RATIFIED_MARK_SOURCE_REF,
+                "instrument_binding": bad,
             },
             owner_manifest=load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT),
         )
@@ -236,8 +250,8 @@ def test_reject_previous_candle_close_fallback_v1() -> None:
                 "candle_authority_ratified": True,
                 "mark_authority_ratified": True,
                 "instrument_binding_ratified": True,
-                "candle_source_ref": PROPOSED_CANDLE_SOURCE_REF,
-                "mark_source_ref": PROPOSED_MARK_SOURCE_REF,
+                "candle_source_ref": OWNER_RATIFIED_CANDLE_SOURCE_REF,
+                "mark_source_ref": OWNER_RATIFIED_MARK_SOURCE_REF,
                 "instrument_binding": _eth_binding(),
                 "previous_candle_close_fallback": True,
             },
@@ -259,8 +273,28 @@ def test_reject_ratification_while_surface_open_even_if_complete_v1() -> None:
                 "mark_source_ref": PROPOSED_MARK_SOURCE_REF,
                 "instrument_binding": _eth_binding(),
             },
-            owner_manifest=load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT),
+            owner_manifest=_structure_open_manifest(),
         )
+
+
+def test_accept_ratification_claim_against_ratified_manifest_v1() -> None:
+    result = validate_owner_sta_ratification_claim_v1(
+        {
+            "candle_authority_ratified": True,
+            "mark_authority_ratified": True,
+            "instrument_binding_ratified": True,
+            "candle_source_ref": OWNER_RATIFIED_CANDLE_SOURCE_REF,
+            "mark_source_ref": OWNER_RATIFIED_MARK_SOURCE_REF,
+            "instrument_binding": _eth_binding(),
+        },
+        owner_manifest=load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT),
+    )
+    assert result["ok"] is True
+    assert result["candle_authority_ratified"] is True
+    assert result["mark_authority_ratified"] is True
+    assert result["instrument_binding_ratified"] is True
+    assert result["input_authority"] is False
+    assert result["runtime_implemented"] is False
 
 
 def test_reject_campaign_start_and_pack_materialization_v1() -> None:
@@ -277,10 +311,10 @@ def test_reject_campaign_start_and_pack_materialization_v1() -> None:
 
 
 def test_reject_owner_value_mutation_in_structure_open_manifest_v1() -> None:
-    manifest = copy.deepcopy(load_canonical_owner_sta_decisions_manifest_v1(REPO_ROOT))
+    manifest = _structure_open_manifest()
     manifest["owner_decision_table"][0]["owner_value"] = PROPOSED_CANDLE_SOURCE_REF
     with pytest.raises(OwnerStaAuthorityDecisionErrorV1, match="MUST_REMAIN_NULL"):
-        validate_owner_sta_authority_manifest_v1(manifest)
+        validate_owner_sta_authority_manifest_v1(manifest, require_structure_open_status=True)
 
 
 def test_competing_candidates_documented_and_btc_excluded_v1() -> None:

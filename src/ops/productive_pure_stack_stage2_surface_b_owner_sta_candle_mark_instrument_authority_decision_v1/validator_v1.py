@@ -65,9 +65,13 @@ def load_canonical_owner_sta_decisions_manifest_v1(
 def validate_owner_sta_authority_manifest_v1(
     manifest: Mapping[str, Any],
     *,
-    require_structure_open_status: bool = True,
+    require_structure_open_status: bool | None = None,
 ) -> dict[str, Any]:
-    """Validate the canonical Owner/STA decision surface (structure-open by default)."""
+    """Validate the canonical Owner/STA decision surface.
+
+    When ``require_structure_open_status`` is None, mode is inferred from
+    ``manifest["status"]`` (open vs authorities-ratified).
+    """
     for key in C.REQUIRED_MANIFEST_TOP_KEYS:
         if key not in manifest:
             raise OwnerStaAuthorityDecisionErrorV1(f"MANIFEST_MISSING_KEY:{key}")
@@ -159,8 +163,12 @@ def validate_owner_sta_authority_manifest_v1(
             "DECISION_PREVIOUS_CANDLE_CLOSE_FALLBACK_MUST_REMAIN_FORBIDDEN"
         )
 
+    status = manifest.get("status")
+    if require_structure_open_status is None:
+        require_structure_open_status = status == C.STATUS_SURFACE_OPEN
+
     if require_structure_open_status:
-        if manifest.get("status") != C.STATUS_SURFACE_OPEN:
+        if status != C.STATUS_SURFACE_OPEN:
             raise OwnerStaAuthorityDecisionErrorV1("STATUS_MUST_REMAIN_SURFACE_OPEN")
         _assert_false(manifest.get("candle_authority_ratified"), label="candle_authority_ratified")
         _assert_false(manifest.get("mark_authority_ratified"), label="mark_authority_ratified")
@@ -190,16 +198,106 @@ def validate_owner_sta_authority_manifest_v1(
                 raise OwnerStaAuthorityDecisionErrorV1(
                     f"DECISION_STATUS_MUST_REMAIN_OPEN:{row_map.get('decision_id')}"
                 )
+        candle_ratified = False
+        mark_ratified = False
+        binding_ratified = False
+    else:
+        if status != C.STATUS_AUTHORITIES_RATIFIED:
+            raise OwnerStaAuthorityDecisionErrorV1("STATUS_MUST_BE_AUTHORITIES_RATIFIED")
+        if manifest.get("candle_authority_ratified") is not True:
+            raise OwnerStaAuthorityDecisionErrorV1("CANDLE_AUTHORITY_MUST_BE_RATIFIED")
+        if manifest.get("mark_authority_ratified") is not True:
+            raise OwnerStaAuthorityDecisionErrorV1("MARK_AUTHORITY_MUST_BE_RATIFIED")
+        if manifest.get("instrument_binding_ratified") is not True:
+            raise OwnerStaAuthorityDecisionErrorV1("INSTRUMENT_BINDING_MUST_BE_RATIFIED")
+
+        candle_ref = candle.get("owner_ratified_source_ref")
+        mark_ref = mark.get("owner_ratified_source_ref")
+        if not isinstance(candle_ref, str) or not candle_ref.strip():
+            raise OwnerStaAuthorityDecisionErrorV1("CANDLE_OWNER_RATIFIED_SOURCE_REF_REQUIRED")
+        if not isinstance(mark_ref, str) or not mark_ref.strip():
+            raise OwnerStaAuthorityDecisionErrorV1("MARK_OWNER_RATIFIED_SOURCE_REF_REQUIRED")
+        if candle_ref.strip() == mark_ref.strip():
+            raise OwnerStaAuthorityDecisionErrorV1("CANDLE_AND_MARK_SOURCE_REF_MUST_DIFFER")
+        if candle_ref not in C.ALLOWED_CANDLE_SOURCE_REF_CANDIDATES:
+            raise OwnerStaAuthorityDecisionErrorV1("CANDLE_SOURCE_REF_NOT_IN_ALLOWED_CANDIDATES")
+        if mark_ref not in C.ALLOWED_MARK_SOURCE_REF_CANDIDATES:
+            raise OwnerStaAuthorityDecisionErrorV1("MARK_SOURCE_REF_NOT_IN_ALLOWED_CANDIDATES")
+        _reject_forbidden_candle_ref(str(candle_ref))
+        _reject_forbidden_mark_ref(str(mark_ref))
+
+        for field in C.REQUIRED_INSTRUMENT_FIELDS:
+            field_obj = _require_mapping(binding.get(field), label=f"instrument_binding.{field}")
+            value = field_obj.get("owner_value")
+            if not isinstance(value, str) or not value.strip():
+                raise OwnerStaAuthorityDecisionErrorV1(f"INSTRUMENT_BINDING_INCOMPLETE:{field}")
+            if field_obj.get("status") != "RATIFIED":
+                raise OwnerStaAuthorityDecisionErrorV1(
+                    f"INSTRUMENT_FIELD_STATUS_MUST_BE_RATIFIED:{field}"
+                )
+            expected = C.OWNER_RATIFIED_INSTRUMENT_BINDING[field]
+            if value != expected:
+                raise OwnerStaAuthorityDecisionErrorV1(
+                    f"INSTRUMENT_BINDING_OWNER_VALUE_MISMATCH:{field}"
+                )
+            _assert_source_token_allowed(value)
+
+        venue_id = str(C.OWNER_RATIFIED_INSTRUMENT_BINDING["venue_instrument_id"]).upper()
+        canonical_id = str(C.OWNER_RATIFIED_INSTRUMENT_BINDING["canonical_instrument_id"]).upper()
+        if "BTC" in venue_id or "BTC" in canonical_id or "XBT" in venue_id or "XBT" in canonical_id:
+            raise OwnerStaAuthorityDecisionErrorV1("BTC_TEST_BINDING_FORBIDDEN")
+        if venue_id != "ETH-USDT-SWAP":
+            raise OwnerStaAuthorityDecisionErrorV1("ETH_USDT_SWAP_CONSISTENCY_REQUIRED")
+
+        for row in table:
+            row_map = _require_mapping(row, label="owner_decision_table.row")
+            decision_id = str(row_map.get("decision_id") or "")
+            if decision_id == "DEC_REGIME_COVERAGE_PRODUCER":
+                _assert_null(row_map.get("owner_value"), label="DEC_REGIME_COVERAGE_PRODUCER")
+                if row_map.get("status") != "OPEN":
+                    raise OwnerStaAuthorityDecisionErrorV1(
+                        "REGIME_COVERAGE_DECISION_MUST_REMAIN_OPEN"
+                    )
+                continue
+            if row_map.get("status") != "RATIFIED":
+                raise OwnerStaAuthorityDecisionErrorV1(
+                    f"DECISION_STATUS_MUST_BE_RATIFIED:{decision_id}"
+                )
+            if row_map.get("owner_value") is None:
+                raise OwnerStaAuthorityDecisionErrorV1(
+                    f"DECISION_OWNER_VALUE_REQUIRED:{decision_id}"
+                )
+
+        candle_dec = _require_mapping(
+            decisions.get("CANDLE_SOURCE_AUTHORITY"), label="CANDLE_SOURCE_AUTHORITY"
+        )
+        binding_dec = _require_mapping(
+            decisions.get("INSTRUMENT_BINDING"), label="INSTRUMENT_BINDING"
+        )
+        if candle_dec.get("status") != "RATIFIED":
+            raise OwnerStaAuthorityDecisionErrorV1("DECISIONS_CANDLE_MUST_BE_RATIFIED")
+        if mark_dec.get("status") != "RATIFIED":
+            raise OwnerStaAuthorityDecisionErrorV1("DECISIONS_MARK_MUST_BE_RATIFIED")
+        if binding_dec.get("status") != "RATIFIED":
+            raise OwnerStaAuthorityDecisionErrorV1("DECISIONS_BINDING_MUST_BE_RATIFIED")
+        if candle_dec.get("owner_ratified_source_ref") != candle_ref:
+            raise OwnerStaAuthorityDecisionErrorV1("DECISIONS_CANDLE_REF_MISMATCH")
+        if mark_dec.get("owner_ratified_source_ref") != mark_ref:
+            raise OwnerStaAuthorityDecisionErrorV1("DECISIONS_MARK_REF_MISMATCH")
+
+        candle_ratified = True
+        mark_ratified = True
+        binding_ratified = True
 
     return {
         "ok": True,
         "capability_scope": C.CAPABILITY_SCOPE,
-        "status": manifest.get("status"),
+        "status": status,
         "input_authority": False,
         "runtime_implemented": False,
-        "candle_authority_ratified": False,
-        "mark_authority_ratified": False,
-        "instrument_binding_ratified": False,
+        "candle_authority_ratified": candle_ratified,
+        "mark_authority_ratified": mark_ratified,
+        "instrument_binding_ratified": binding_ratified,
         "campaign_start_authorized": False,
         "raw_input_pack_materialization_authorized": False,
         "raw_input_pack_created": False,
@@ -224,7 +322,7 @@ def validate_owner_sta_ratification_claim_v1(
     explicit Owner values. Does not authorize pack materialization or campaign start.
     """
     manifest = owner_manifest or load_canonical_owner_sta_decisions_manifest_v1()
-    validate_owner_sta_authority_manifest_v1(manifest, require_structure_open_status=True)
+    validate_owner_sta_authority_manifest_v1(manifest, require_structure_open_status=None)
 
     _assert_false(claim.get("input_authority"), label="claim.input_authority")
     _assert_false(claim.get("runtime_implemented"), label="claim.runtime_implemented")
@@ -312,6 +410,9 @@ def validate_owner_sta_ratification_claim_v1(
     # silently treat the open surface as ratified without a separate Owner GO artifact.
     if manifest.get("status") == C.STATUS_SURFACE_OPEN:
         raise OwnerStaAuthorityDecisionErrorV1("OWNER_STA_RATIFICATION_BLOCKED_WHILE_SURFACE_OPEN")
+
+    if manifest.get("status") != C.STATUS_AUTHORITIES_RATIFIED:
+        raise OwnerStaAuthorityDecisionErrorV1("OWNER_STA_RATIFICATION_REQUIRES_RATIFIED_STATUS")
 
     return {
         "ok": True,
