@@ -32,13 +32,16 @@ STATUS_OWNER_VALUE_RECORDED = "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_F
 STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED = (
     "OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN"
 )
+STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED = (
+    "OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN"
+)
 
 DECISION_ID = "DEC_RAW_INPUT_PACK_MATERIALIZATION"
 DECISION_STATUS_OPEN = "OPEN"
 DECISION_STATUS_RATIFIED = "RATIFIED"
 
 BASELINE_ORIGIN_MAIN_SHA = "56721ad0666fac5627d2dedbf33a22b59cd5996e"
-OWNER_GO_BASE_SHA = "61d9abb07d4d88a0f1be19b9476db8ca0d3ba135"
+OWNER_GO_BASE_SHA = "ac8b1e67baf361156c6f666a2c4cddbe49362400"
 AUTHORITY_SURFACE = "B"
 SOLE_TRADING_AUTHORITY = "run_integrated_offline_trading_logic_replay_v1"
 
@@ -67,6 +70,9 @@ ORDERS_TESTNET_LIVE_PAPER_EFFECTS = False
 EXCHANGE_CREDENTIAL_EFFECTS = False
 AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED = True
 AUTHORIZE_DETAIL_FIELDS_COMPLETE = False
+PROVABLE_INSTANCE_FIELDS_CLOSED = True
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS = True
+SILENT_DEFAULTS = False
 
 OWNER_DECISION_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
@@ -157,15 +163,51 @@ AUTHORIZE_DETAIL_PROVABLE_FIELD_VALUES: dict[str, str] = {
     ),
 }
 
-STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = (
-    "non_invented_campaign_instance_identity",
+PROVABLE_INSTANCE_FIELDS: tuple[str, ...] = ("instrument_binding",)
+
+PROVABLE_INSTANCE_FIELD_VALUES: dict[str, dict[str, str]] = {
+    "instrument_binding": {
+        "venue": "okx",
+        "canonical_instrument_id": "inst-eth-usdt-perp",
+        "venue_instrument_id": "ETH-USDT-SWAP",
+        "contract_type": "perpetual",
+        "market_type": "futures",
+        "quote_currency": "USDT",
+        "settlement_currency": "USDT",
+    },
+}
+
+CLOSED_STA_EXTERNAL_INPUTS: tuple[str, ...] = (
     "venue_native_candle_source_identity",
     "venue_native_mark_source_identity",
+)
+
+STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = (
+    "non_invented_campaign_instance_identity",
     "immutable_pack_provenance_digests",
     "deterministic_campaign_seed",
     "exclusive_tip_event_time_epoch_s",
     "partition_fold_bootstrap_structure",
     "regime_coverage_materialization_readiness",
+)
+
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR: tuple[str, ...] = (
+    "campaign_id",
+    "dataset_id",
+    "scenario_id",
+    "observation_pack_digest",
+    "raw_source_digest",
+    "seed",
+    "event_time_epoch_s",
+    "partition_boundaries",
+    "partition_boundaries_event_time_epoch_s",
+    "fold_ids",
+    "bootstrap_seeds",
+    "purge",
+    "embargo",
+    "fold_sizes",
+    "regime_coverage_counts",
+    "regime_coverage_instance",
 )
 
 NULL_INSTANCE_KEYS: tuple[str, ...] = (
@@ -187,6 +229,10 @@ NULL_INSTANCE_KEYS: tuple[str, ...] = (
     "raw_source_digest",
 )
 
+REMAINING_NULL_INSTANCE_KEYS: tuple[str, ...] = tuple(
+    k for k in NULL_INSTANCE_KEYS if k not in PROVABLE_INSTANCE_FIELDS
+)
+
 REQUIRED_MANIFEST_TOP_KEYS: tuple[str, ...] = (
     "schema_version",
     "document_type",
@@ -201,6 +247,8 @@ REQUIRED_MANIFEST_TOP_KEYS: tuple[str, ...] = (
     "allowed_owner_values",
     "authorize_detail_fields",
     "sta_open_external_inputs",
+    "closed_sta_external_inputs",
+    "require_explicit_owner_values_for",
     "parent_authority_refs",
     "forbidden_sources",
     "reject_semantics",

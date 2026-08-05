@@ -18,6 +18,8 @@
     "allowed_owner_values",
     "authorize_detail_fields",
     "sta_open_external_inputs",
+    "closed_sta_external_inputs",
+    "require_explicit_owner_values_for",
     "parent_authority_refs",
     "forbidden_sources",
     "reject_semantics",
@@ -58,7 +60,8 @@
       "enum": [
         "OWNER_STA_DECISION_SURFACE_OPEN",
         "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN",
-        "OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN"
+        "OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN",
+        "OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN"
       ]
     },
     "authority_surface": {
@@ -193,6 +196,18 @@
         }
       }
     },
+    "closed_sta_external_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "require_explicit_owner_values_for": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "input_authority": {
       "const": false
     },
@@ -275,7 +290,47 @@
           "type": "null"
         },
         "instrument_binding": {
-          "type": "null"
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "venue",
+                "canonical_instrument_id",
+                "venue_instrument_id",
+                "contract_type",
+                "market_type",
+                "quote_currency",
+                "settlement_currency"
+              ],
+              "properties": {
+                "venue": {
+                  "const": "okx"
+                },
+                "canonical_instrument_id": {
+                  "const": "inst-eth-usdt-perp"
+                },
+                "venue_instrument_id": {
+                  "const": "ETH-USDT-SWAP"
+                },
+                "contract_type": {
+                  "const": "perpetual"
+                },
+                "market_type": {
+                  "const": "futures"
+                },
+                "quote_currency": {
+                  "const": "USDT"
+                },
+                "settlement_currency": {
+                  "const": "USDT"
+                }
+              }
+            }
+          ]
         },
         "seed": {
           "type": "null"

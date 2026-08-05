@@ -4,11 +4,11 @@
 DOCUMENT_TYPE=OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION
 DOCUMENT_VERSION=1
 CAPABILITY_SCOPE=SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION
-STATUS=OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN
+STATUS=OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN
 DECISION_ID=DEC_RAW_INPUT_PACK_MATERIALIZATION
 DECISION_STATUS=RATIFIED
 OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
-OWNER_GO_BASE_SHA=61d9abb07d4d88a0f1be19b9476db8ca0d3ba135
+OWNER_GO_BASE_SHA=ac8b1e67baf361156c6f666a2c4cddbe49362400
 BASELINE_ORIGIN_MAIN_SHA=56721ad0666fac5627d2dedbf33a22b59cd5996e
 SCOPE=DOCS_MANIFEST_SCHEMA_VALIDATOR_ONLY
 PARENT_RAW_INPUT_PACK=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md
@@ -50,6 +50,9 @@ ORDERS_TESTNET_LIVE=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
 AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
+PROVABLE_INSTANCE_FIELDS_CLOSED=true
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS=true
+SILENT_DEFAULTS=false
 ```
 
 ## 0. Binding effect
@@ -63,10 +66,13 @@ The Owner has recorded:
 ```text
 OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
 DECISION_STATUS=RATIFIED
-OWNER_GO_BASE_SHA=61d9abb07d4d88a0f1be19b9476db8ca0d3ba135
-STATUS=OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN
+OWNER_GO_BASE_SHA=ac8b1e67baf361156c6f666a2c4cddbe49362400
+STATUS=OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN
 AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
 AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
+PROVABLE_INSTANCE_FIELDS_CLOSED=true
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS=true
+SILENT_DEFAULTS=false
 ```
 
 The only allowed alternatives remain:
@@ -77,10 +83,15 @@ The only allowed alternatives remain:
 It:
 
 1. records the Owner authorize choice;
-2. closes only provable, non-invented authorize-detail refs from parent triad and
+2. keeps authorize-detail provable refs closed from parent triad and
    regime-coverage authorities;
-3. keeps instance/pack identity fields null;
-4. keeps `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false`,
+3. closes only the provable, non-invented instance field
+   `instrument_binding` from the Owner-ratified InstrumentBindingV1;
+4. closes STA venue-native candle/mark source-identity inputs proven by
+   already-closed authorize-detail refs;
+5. keeps all non-provable instance/pack identity fields null and requires
+   explicit Owner values for them (`SILENT_DEFAULTS=false`);
+6. keeps `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false`,
    `PACK_MATERIALIZATION=false`, `RAW_INPUT_PACK_CREATED=false`,
    `CAMPAIGN_START_AUTHORIZED=false`, `INPUT_AUTHORITY=false`, and
    `RUNTIME_IMPLEMENTED=false`.
@@ -89,6 +100,7 @@ It does **not**:
 
 - invent campaign/instance identity, digests, seeds, partitions, folds, or
   bootstrap seeds;
+- silently default any non-provable field;
 - authorize or execute pack materialization;
 - start a Surface-B campaign;
 - reimplement producers, wire consumers, or bind a PT1M adapter;
@@ -100,11 +112,14 @@ It does **not**:
 - make Dashboard or Notion an authority.
 
 ```text
-OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN=true
+OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN=true
 DECISION_STATUS=RATIFIED
 OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
 AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
 AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
+PROVABLE_INSTANCE_FIELDS_CLOSED=true
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS=true
+SILENT_DEFAULTS=false
 PACK_MATERIALIZATION=false
 RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false
 RAW_INPUT_PACK_CREATED=false
@@ -118,7 +133,9 @@ INV_AUTHORITY_SURFACE_B_ONLY=true
 INV_ONLY_TWO_OWNER_ALTERNATIVES=true
 INV_OWNER_VALUE_RECORDED_AUTHORIZE=true
 INV_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
-INV_AUTHORIZE_DETAIL_INSTANCE_FIELDS_REMAIN_NULL=true
+INV_PROVABLE_INSTANCE_FIELDS_CLOSED=true
+INV_NON_PROVABLE_INSTANCE_FIELDS_REQUIRE_EXPLICIT_OWNER_VALUES=true
+INV_SILENT_DEFAULTS_FORBIDDEN=true
 INV_NO_INVENTED_INSTANCE_OR_PACK_VALUES=true
 INV_NO_FIXTURE_DEMO_DASHBOARD_SUBSTITUTION=true
 INV_PACK_MATERIALIZATION_REMAINS_FALSE=true
@@ -135,7 +152,7 @@ INV_DASHBOARD_CONSUMER_ONLY=true
 | Field | Value |
 |-------|-------|
 | `decision_id` | `DEC_RAW_INPUT_PACK_MATERIALIZATION` |
-| `status` | `OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN` |
+| `status` | `OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN` |
 | `decision_status` | `RATIFIED` |
 | `owner_value` | `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` |
 | Allowed owner values | exactly the two alternatives below |
@@ -149,9 +166,9 @@ EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION
 
 No other owner value is accepted by the fail-closed validator.
 
-## 3. Authorize detail fields (provable refs closed; instance null)
+## 3. Authorize detail fields (provable refs closed; non-provable instance null)
 
-Provable, non-invented authorize-detail refs closed from parent authorities:
+Provable, non-invented authorize-detail refs remain closed from parent authorities:
 
 ```text
 instrument_binding_ref=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding
@@ -160,7 +177,7 @@ mark_price_authority_source_ref=venue://okx/public/rest/v5/market/history-mark-p
 regime_coverage_binding_ref=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md
 ```
 
-Instance / pack identity fields remain `null`:
+Authorize-detail instance / pack identity fields remain `null`:
 
 ```text
 campaign_id=null
@@ -175,62 +192,40 @@ fold_ids=null
 bootstrap_seeds=null
 ```
 
-No fixture, demo, dashboard, Notion, O4-as-PT1M, candle-close-as-mark, or
-trade-as-mark token may be written into these fields.
+## 4. Provable instance field closed
 
-## 4. STA open external inputs
-
-The following remain open external STA inputs (not satisfied by this surface):
+Exactly one open-null instance field is closed from Owner-ratified parent
+InstrumentBindingV1 (exact field match; no invention; no silent default):
 
 ```text
-non_invented_campaign_instance_identity
-venue_native_candle_source_identity
-venue_native_mark_source_identity
-immutable_pack_provenance_digests
-deterministic_campaign_seed
-exclusive_tip_event_time_epoch_s
-partition_fold_bootstrap_structure
-regime_coverage_materialization_readiness
+instrument_binding:
+venue=okx
+canonical_instrument_id=inst-eth-usdt-perp
+venue_instrument_id=ETH-USDT-SWAP
+contract_type=perpetual
+market_type=futures
+quote_currency=USDT
+settlement_currency=USDT
 ```
 
-Parent triad and regime-coverage closeout authorities remain prerequisites by
-reference only. Binding refs do **not** invent pack instance values or authorize
-pack materialization on this surface.
-
-## 5. REJECT semantics
-
-If Owner chooses `EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION`:
+Authority refs for this binding:
 
 ```text
-raw input pack remains not materializable
-Surface-B campaign remains not startable
-no fixture/demo/dashboard/Notion component may become substitute authority
-instance fields remain null or absent
+instrument_binding_authority_ref=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding
+sta_open_inputs_closeout_ref=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1.md
+compatibility_mode=EXACT_OWNER_RATIFIED_INSTRUMENTBINDINGV1_FIELD_MATCH
 ```
 
-## 6. AUTHORIZE semantics
+## 5. Non-provable instance fields (explicit Owner values required)
 
-Even after Owner chooses `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` and closes provable refs:
-
-```text
-AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
-AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
-RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false until instance fields and STA proofs are fully ratified
-PACK_MATERIALIZATION=false until a separate explicit materialization-execution Owner GO
-RAW_INPUT_PACK_CREATED=false
-CAMPAIGN_STARTED=false
-INPUT_AUTHORITY=false
-RUNTIME_IMPLEMENTED=false
-separate explicit pack-materialization execution order required later
-```
-
-## 7. Explicitly null instance / policy fields
+These fields remain `null`. They must not be invented or silently defaulted.
+A separate explicit Owner GO with explicit values is required before they may
+be set:
 
 ```text
 campaign_id=null
 dataset_id=null
 scenario_id=null
-instrument_binding=null
 seed=null
 event_time_epoch_s=null
 partition_boundaries=null
@@ -243,10 +238,65 @@ regime_coverage_counts=null
 regime_coverage_instance=null
 observation_pack_digest=null
 raw_source_digest=null
-all_productive_numeric_calibration_values=unset
 ```
 
-## 8. Fail-closed guards
+```text
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS=true
+SILENT_DEFAULTS=false
+```
+
+## 6. STA external inputs
+
+Closed by this closeout (proven by authorize-detail venue-native refs):
+
+```text
+venue_native_candle_source_identity
+venue_native_mark_source_identity
+```
+
+Remaining open external STA inputs (not satisfied by this surface):
+
+```text
+non_invented_campaign_instance_identity
+immutable_pack_provenance_digests
+deterministic_campaign_seed
+exclusive_tip_event_time_epoch_s
+partition_fold_bootstrap_structure
+regime_coverage_materialization_readiness
+```
+
+## 7. REJECT semantics
+
+If Owner chooses `EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION`:
+
+```text
+raw input pack remains not materializable
+Surface-B campaign remains not startable
+no fixture/demo/dashboard/Notion component may become substitute authority
+non-provable instance fields remain null or absent
+```
+
+## 8. AUTHORIZE semantics
+
+Even after Owner chooses `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION`,
+closes provable refs, and closes the provable instance binding:
+
+```text
+AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
+PROVABLE_INSTANCE_FIELDS_CLOSED=true
+AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS=true
+SILENT_DEFAULTS=false
+RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false until remaining instance fields and STA proofs are fully ratified
+PACK_MATERIALIZATION=false until a separate explicit materialization-execution Owner GO
+RAW_INPUT_PACK_CREATED=false
+CAMPAIGN_STARTED=false
+INPUT_AUTHORITY=false
+RUNTIME_IMPLEMENTED=false
+separate explicit pack-materialization execution order required later
+```
+
+## 9. Fail-closed guards
 
 Validator package
 `src/ops/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decision_v1/`
@@ -255,12 +305,14 @@ rejects:
 - any owner value outside the two allowed alternatives;
 - invented instance/pack values or productive numeric policy values;
 - any authorize-detail value outside the exact provable parent refs or null;
+- any instrument_binding value outside the exact Owner-ratified InstrumentBindingV1;
+- silent defaults for non-provable fields;
 - fixture / demo / dashboard / Notion / candle-close-as-mark sources;
 - Dashboard authority other than `NONE`;
 - pack materialization, campaign start, input-authority or runtime flips from
   this surface alone.
 
-## 9. Explicit non-effects
+## 10. Explicit non-effects
 
 ```text
 PRODUCER_REIMPLEMENTATION=false
@@ -285,13 +337,16 @@ ORDERS_TESTNET_LIVE=false
 EXCHANGE_CREDENTIAL_EFFECTS=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
+SILENT_DEFAULTS=false
 ```
 
-## 10. Canonical next step
+## 11. Canonical next step
 
-Provable authorize-detail refs are closed under `OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN`.
-Instance authorize-detail fields remain null. A **separate** explicit Owner GO
-remains required before pack materialization execution
-(`PACK_MATERIALIZATION` / `RAW_INPUT_PACK_CREATED`), campaign start,
-input-authority/runtime flips, consumer wiring, PT1M adapter binding, or
-productive threshold/lookback ratification.
+Provable instance field `instrument_binding` is closed under
+`OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN`.
+Non-provable instance fields remain null and require explicit Owner values.
+A **separate** explicit Owner GO remains required before remaining instance
+fields, pack materialization execution (`PACK_MATERIALIZATION` /
+`RAW_INPUT_PACK_CREATED`), campaign start, input-authority/runtime flips,
+consumer wiring, PT1M adapter binding, or productive threshold/lookback
+ratification.
