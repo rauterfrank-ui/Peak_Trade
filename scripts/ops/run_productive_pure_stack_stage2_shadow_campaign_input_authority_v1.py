@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""CLI: Stage-2 Shadow Campaign Input Authority Surface-B export v1.
+"""CLI: Stage-2 Shadow Campaign Input Authority Surface-B export + collector v1.
 
 No-order / offline / non-authorizing. Builds immutable observation packs,
 structural COMPLETE manifests, and a ShadowCampaignRequestV1 binder payload.
+Optional --start-evidence-collection invokes the Surface-B collector to start
+an isolated evidence-collection shadow campaign.
+
 Does not set productive numbers, flip INPUT_AUTHORITY_*, mutate O4/dashboards,
 or touch order/testnet/live paths.
 """
@@ -20,6 +23,12 @@ from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.constants_v
 )
 from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.reproducibility_v1 import (
     sha256_file,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.evidence_emitter_v1 import (
+    ShadowCampaignEmitError,
+)
+from src.ops.productive_pure_stack_stage2_shadow_campaign_input_authority_v1.evidence_collection_collector_v1 import (
+    start_evidence_collection_shadow_campaign_from_surface_b_v1,
 )
 from src.ops.productive_pure_stack_stage2_shadow_campaign_input_authority_v1.export_api_v1 import (
     export_surface_b_shadow_campaign_input_v1,
@@ -44,7 +53,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Export Stage-2 Surface-B PT1M finalized-OHLCV observation pack and "
-            "structural manifests bound to ShadowCampaignRequestV1 "
+            "structural manifests bound to ShadowCampaignRequestV1; optionally "
+            "start evidence-collection shadow campaign "
             "(no productive numbers; no authority flips)."
         )
     )
@@ -54,7 +64,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dataset-id", required=True)
     parser.add_argument("--scenario-id", required=True)
     parser.add_argument("--seed", type=int, required=True)
-    parser.add_argument("--event-time-epoch-s", type=int, required=True)
+    parser.add_argument(
+        "--event-time-epoch-s",
+        type=int,
+        required=True,
+        help="as_of event time; must equal pack exclusive tip (last_bar_open + 60)",
+    )
     parser.add_argument("--binding-json", type=Path, required=True)
     parser.add_argument("--candles-json", type=Path, required=True)
     parser.add_argument("--marks-json", type=Path, required=True)
@@ -64,6 +79,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--regime-coverage-json", type=Path, required=True)
     parser.add_argument("--export-json-out", type=Path, required=True)
     parser.add_argument("--repo-root", type=Path, default=None)
+    parser.add_argument(
+        "--start-evidence-collection",
+        action="store_true",
+        help="Start isolated evidence-collection shadow campaign from Surface-B export",
+    )
     args = parser.parse_args(argv)
 
     repo_root = (args.repo_root or _repo_root()).resolve()
@@ -99,7 +119,21 @@ def main(argv: list[str] | None = None) -> int:
             stage1_manifest_digest=stage1,
             calibration_protocol_digest=protocol,
         )
-    except (InputAuthorityErrorV1, TypeError, KeyError, ValueError, OSError) as exc:
+        collection_payload = None
+        if args.start_evidence_collection:
+            collection = start_evidence_collection_shadow_campaign_from_surface_b_v1(
+                pack=result.observation_pack,
+                request=result.shadow_campaign_request,
+            )
+            collection_payload = collection.to_dict()
+    except (
+        InputAuthorityErrorV1,
+        ShadowCampaignEmitError,
+        TypeError,
+        KeyError,
+        ValueError,
+        OSError,
+    ) as exc:
         print(
             json.dumps(
                 {
@@ -108,6 +142,7 @@ def main(argv: list[str] | None = None) -> int:
                     "non_authorizing": True,
                     "productive_activation": False,
                     "input_authority": False,
+                    "runtime_implemented": False,
                     "o4_unchanged": True,
                 },
                 indent=2,
@@ -136,12 +171,14 @@ def main(argv: list[str] | None = None) -> int:
         "stress_manifest_status": request.stress_pack_manifest.status,
         "input_authority": False,
         "runtime_implemented": False,
+        "shadow_campaign_startable": True,
         "productive_numeric_values_set": 0,
         "productive_activation": False,
         "o4_unchanged": True,
         "dashboard_authority_effect": "NONE",
         "boundary_guard": dict(result.boundary_guard),
         "non_authorizing": True,
+        "evidence_collection": collection_payload,
         "observation_pack": result.observation_pack.to_dict(),
     }
     args.export_json_out.parent.mkdir(parents=True, exist_ok=True)
@@ -153,6 +190,8 @@ def main(argv: list[str] | None = None) -> int:
             {k: payload[k] for k in payload if k != "observation_pack"}, indent=2, sort_keys=True
         )
     )
+    if collection_payload and collection_payload.get("rejection_reasons"):
+        return 2
     return 0
 
 

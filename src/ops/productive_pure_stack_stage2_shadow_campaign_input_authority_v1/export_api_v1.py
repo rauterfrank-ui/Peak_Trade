@@ -29,7 +29,11 @@ from src.ops.productive_pure_stack_stage2_shadow_campaign_input_authority_v1.git
 from src.ops.productive_pure_stack_stage2_shadow_campaign_input_authority_v1.manifest_builders_v1 import (
     build_structural_manifest_set_v1,
 )
+from src.ops.productive_pure_stack_stage2_shadow_campaign_input_authority_v1.authority_consumption_guards_v1 import (
+    assert_surface_b_authority_consumable_v1,
+)
 from src.ops.productive_pure_stack_stage2_shadow_campaign_input_authority_v1.models_v1 import (
+    InputAuthorityErrorV1,
     InstrumentBindingV1,
     MarkPriceInputV1,
     ObservationPackV1,
@@ -102,6 +106,14 @@ def export_surface_b_shadow_campaign_input_v1(
         raw_source_digest=raw_digest,
         ingestion_timestamp=now,
         finalization_timestamp=now,
+    )
+    # as_of must equal pack exclusive tip (PIT / no-lookahead / coverage).
+    if int(event_time_epoch_s) != int(pack.provenance.event_time_range.end_epoch_s_exclusive):
+        raise InputAuthorityErrorV1("AS_OF_MUST_EQUAL_PACK_EXCLUSIVE_TIP")
+    assert_surface_b_authority_consumable_v1(
+        pack=pack,
+        as_of_event_time_epoch_s=int(event_time_epoch_s),
+        productive_max_age_seconds=None,
     )
     manifests = build_structural_manifest_set_v1(
         pack=pack,
