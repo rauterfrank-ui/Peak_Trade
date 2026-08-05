@@ -1,10 +1,10 @@
 # Security Notes — Peak_Trade Cybersecurity Baseline Pointers
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
-**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02)
-**Last Reviewed (repo-static):** 2026-08-02 (Post-Capability-7.2 cybersecurity review against `origin&#47;main@08b19c8c83f76ab29d99c8c03b8f34504d2b0021`; prior supply-chain/baseline overlays unchanged)
+**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02); `STAGE2_SURFACE_B_CYBERSECURITY_MIRROR_SYNC_V1` (2026-08-05)
+**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B cybersecurity mirror sync against `origin&#47;main@6db2d4920ace92cab8fc2bab834b75446808d1a1` after PRs #5729/#5730/#5731; Cap-7.2 review and prior supply-chain/baseline overlays unchanged)
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
-**Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, start a public-MD network session, consume authorization, or claim unverified scanner results.
+**Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, start a public-MD network session, consume authorization, flip productive input authority, set productive numeric Owner values, or claim unverified scanner results.
 
 ---
 
@@ -29,6 +29,7 @@
 | Dependency audit workflow | [`.github/workflows/audit.yml`](.github/workflows/audit.yml) |
 | Manual full audit + optional SBOM export | [`.github/workflows/full_audit_weekly.yml`](.github/workflows/full_audit_weekly.yml) + [`scripts/ops/run_full_audit.sh`](scripts/ops/run_full_audit.sh) |
 | Post-Capability-7.2 no-order runtime cybersecurity review | [`docs/evidence/post_capability_7_2_cybersecurity_review_v1/`](docs/evidence/post_capability_7_2_cybersecurity_review_v1/) + Truth Map `CYBERSECURITY_REVIEW_CURRENT` in [`docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) |
+| Stage-2 Surface B cybersecurity mirror sync (post #5731) | [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_CYBERSECURITY_MIRROR_SYNC_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_CYBERSECURITY_MIRROR_SYNC_V1.md) + Owner ratification [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md) |
 
 **Docs ≠ Approval. AI ≠ Authority. Secret names ≠ secret values.**
 
@@ -118,7 +119,7 @@ Do **not** treat this file as live authorization. Relevant gates live in Master 
 
 - `LIVE_AUTHORIZED=false`
 - `ORDERS=false`
-- `SHADOW=false`
+- `SHADOW=false` (agent trading-shadow arming remains false; see §6.2 for evidence-only `SHADOW_CAMPAIGN_STARTABLE`)
 - `TESTNET=false`
 
 Docs live-enable pattern guard: [`scripts/ci/check_docs_no_live_enable_patterns.sh`](scripts/ci/check_docs_no_live_enable_patterns.sh).
@@ -144,6 +145,24 @@ Read-only security review of the activated single-future stateful no-order runti
 
 Durable evidence: [`docs/evidence/post_capability_7_2_cybersecurity_review_v1/`](docs/evidence/post_capability_7_2_cybersecurity_review_v1/). Residual low hardening note only: PSO `confirm_token` log-redaction helper is token-key focused; Cap 7.2 never constructs auth headers, and canonical `scripts/security/secret_hygiene_redaction_v1.py` redacts Authorization headers for logging/evidence export.
 
+### 6.2 Stage-2 Surface B cybersecurity mirror sync (2026-08-05)
+
+Documentary cybersecurity-mirror sync after Owner-ratified Stage-2 Authority Surface **B** (PRs #5729/#5730) and Notion mirror attestation (#5731), bound to `origin&#47;main@6db2d4920ace92cab8fc2bab834b75446808d1a1`.
+
+| Boundary | Required security reading |
+|----------|---------------------------|
+| Surface B | Ratified **input-authority structure** only — not active productive input authority |
+| `INPUT_AUTHORITY` | `false` |
+| `RUNTIME_IMPLEMENTED` | `false` (no authorized runtime producer / productive emission) |
+| `PRODUCTIVE_NUMERIC_VALUES_SET` | `0` |
+| `SHADOW_CAMPAIGN_STARTABLE` | `true` = evidence-collection startability only; **not** order, paper, testnet, live, credential, or real-capital release |
+| Dashboard | `DASHBOARD_AUTHORITY_EFFECT=NONE` — consumer only; no authority / semantics / decision logic |
+| Notion | Mirror/consumer only (`NOTION_SSOT=false`); no authority / semantics / decision logic |
+| Repository | Sole technical SSOT (`REPOSITORY_IS_SSOT=true`) |
+| Exchange credentials / order adapters | Unauthorized / unreachable under this sync |
+
+Attestation owner: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_CYBERSECURITY_MIRROR_SYNC_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_CYBERSECURITY_MIRROR_SYNC_V1.md). This section does **not** authorize Stage-2 productive calibration, input-authority flips, runtime activation, or any exchange side effect.
+
 ---
 
 ## 7. Residual risks & follow-ups (owner: ops)
@@ -168,8 +187,12 @@ This document and the baseline refresh **must not** be read as proof that:
 - secrets were rotated,
 - Dependabot / CodeQL / private vulnerability reporting were enabled,
 - external org policies changed,
-- live/testnet/orders/shadow were armed,
+- live/testnet/orders/trading-shadow were armed,
+- productive `INPUT_AUTHORITY` or runtime producers were activated,
+- productive numeric Owner values were set,
 - or a full dependency CVE sweep was executed in this change.
+
+`SHADOW_CAMPAIGN_STARTABLE=true` (Stage-2 evidence-collection) must **not** be conflated with arming trading shadow, orders, credentials, or capital movement.
 
 ---
 
