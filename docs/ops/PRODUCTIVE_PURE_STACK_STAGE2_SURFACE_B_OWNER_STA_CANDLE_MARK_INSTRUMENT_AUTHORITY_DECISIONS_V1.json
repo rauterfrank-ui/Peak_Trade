@@ -1,0 +1,659 @@
+{
+  "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority_decisions/v1",
+  "document_type": "OWNER_STA_AUTHORITY_DECISIONS_MANIFEST",
+  "capability_scope": "SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION",
+  "status": "OWNER_STA_DECISION_SURFACE_OPEN_INSTANCE_VALUES_NULL",
+  "baseline_origin_main_sha": "3b6b75bc4fa4b3ba6887ed055fa7fb88dd3d87b7",
+  "owner_decision_document": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md",
+  "parent_raw_input_pack_owner_decision": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md",
+  "parent_surface_b_ratification": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md",
+  "sole_trading_authority": "run_integrated_offline_trading_logic_replay_v1",
+  "sta_producer_id": "sta_pt1m_finalized_ohlcv_shadow_calibration_producer_v1",
+  "sta_producer_is_raw_source_authority": false,
+  "authority_surface": "B",
+  "o4_unchanged": true,
+  "o4_pt1h_as_pt1m_forbidden": true,
+  "dashboard_authority_effect": "NONE",
+  "dashboard_role": "READ_ONLY_CONSUMER",
+  "notion_ssot": false,
+  "repository_is_ssot": true,
+  "input_authority": false,
+  "runtime_implemented": false,
+  "candle_authority_ratified": false,
+  "mark_authority_ratified": false,
+  "instrument_binding_ratified": false,
+  "campaign_start_authorized": false,
+  "raw_input_pack_materialization_authorized": false,
+  "raw_input_pack_created": false,
+  "campaign_started": false,
+  "productive_numeric_values_set": 0,
+  "productive_calibration_authorized": false,
+  "orders_authorized": false,
+  "testnet_authorized": false,
+  "live_authorized": false,
+  "paper_exchange_orders": false,
+  "exchange_credential_use": false,
+  "real_capital_movement": false,
+  "core_logic_change": false,
+  "regime_coverage_producer_available": false,
+  "regime_coverage_status": "SEMANTICALLY_UNRESOLVED",
+  "candle_source_authority": {
+    "authority_class": "VENUE_NATIVE_FINALIZED_PT1M_CANDLES",
+    "proposed_source_ref": "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1",
+    "owner_ratified_source_ref": null,
+    "venue": "okx",
+    "endpoint": "/api/v5/market/history-candles",
+    "dataset_semantics": "venue_native_historical_finalized_trade_ohlcv_candles",
+    "timeframe": "PT1M",
+    "bar_param": "1m",
+    "event_time_semantics": "PT1M_BUCKET_OPEN_EVENT_TIME",
+    "venue_finalized_mapping": "okx_confirm_1_maps_to_venue_finalized_true",
+    "open_tip_bars": false,
+    "venue_finalized_required": true,
+    "pagination_rule": "after_cursor_oldest_ts",
+    "dedup_rule": "dedup_by_ts_last_wins",
+    "ordering_rule": "ascending_event_time",
+    "gap_rule": "FAIL_CLOSED",
+    "pit_no_lookahead": true,
+    "immutable_raw_source_provenance": true,
+    "rebuild_requires_new_dataset_id_and_digest": true,
+    "o4_pt1h_as_pt1m": false,
+    "technical_producer_is_raw_source_authority": false,
+    "fixtures_demo_dashboard_notion_forbidden": true,
+    "candles": null,
+    "raw_rows": null,
+    "rejection_conditions": [
+      "missing_source_ref",
+      "open_tip_or_confirm_ne_1",
+      "event_time_not_bucket_open",
+      "duplicate_bucket",
+      "gap_when_contiguous_required",
+      "bar_after_as_of",
+      "o4_pt1h_substitution",
+      "fixture_demo_dashboard_notion_source",
+      "sta_producer_claimed_as_raw_source_authority"
+    ]
+  },
+  "mark_source_authority": {
+    "authority_class": "VENUE_NATIVE_PT1M_BUCKET_MARK_SERIES",
+    "proposed_source_ref": "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1",
+    "owner_ratified_source_ref": null,
+    "venue": "okx",
+    "endpoint": "/api/v5/market/history-mark-price-candles",
+    "dataset_semantics": "venue_native_historical_mark_price_candle_series",
+    "timeframe": "PT1M",
+    "bar_param": "1m",
+    "join_key": "PT1M_BUCKET_OPEN_EVENT_TIME",
+    "bucket_semantics": "PT1M_BUCKET_OPEN_EVENT_TIME_JOIN_REQUIRED",
+    "candle_mark_trade_equivalence": "FORBIDDEN",
+    "previous_candle_close_fallback": "FORBIDDEN",
+    "snapshot_mark_price_endpoint_as_historical_authority": false,
+    "missing_mark_for_bucket": "FAIL_CLOSED",
+    "duplicate_mark_for_bucket": "FAIL_CLOSED",
+    "late_mark_policy": "EXPLICIT_CORRECTED_REVISION_OR_REJECT",
+    "non_final_mark_policy": "REJECT",
+    "pit_no_lookahead": true,
+    "immutable_raw_source_provenance": true,
+    "marks": null,
+    "raw_rows": null,
+    "rejection_conditions": [
+      "missing_separate_mark_source_ref",
+      "mark_source_ref_equals_candle_source_ref",
+      "previous_candle_close_fallback",
+      "candle_close_as_mark",
+      "snapshot_mark_price_as_historical_series",
+      "missing_mark_bucket",
+      "duplicate_mark_bucket",
+      "non_final_mark",
+      "mark_after_as_of",
+      "fixture_demo_dashboard_notion_source"
+    ]
+  },
+  "instrument_binding": {
+    "mode": "SINGLE_SELECTED_FUTURE_VENUE_NATIVE",
+    "multi_instrument_pooling": false,
+    "instrument_change_policy": "NEW_DATASET_ID_OR_SEGMENT_SPLIT",
+    "required_fields": [
+      "venue",
+      "canonical_instrument_id",
+      "venue_instrument_id",
+      "contract_type",
+      "market_type",
+      "quote_currency",
+      "settlement_currency"
+    ],
+    "competing_candidates": [
+      {
+        "candidate_id": "CAND_ETH_USDT_SWAP_RESEARCH_STAGING",
+        "venue": "okx",
+        "canonical_instrument_id": "inst-eth-usdt-perp",
+        "venue_instrument_id": "ETH-USDT-SWAP",
+        "contract_type": "perpetual",
+        "market_type": "futures",
+        "quote_currency": "USDT",
+        "settlement_currency": "USDT",
+        "discovered_in": [
+          "scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py",
+          "config/ops/step29m_okx_inst_eth_usdt_perp_*"
+        ],
+        "trade_offs": "Strongest public PT1M history-candles/mark-candles staging alignment; not automatically Single-Selected-Future runtime selection authority.",
+        "eligibility": "CANDIDATE",
+        "selected": false,
+        "status": "OPEN"
+      },
+      {
+        "candidate_id": "CAND_ADA_USDT_SWAP_CAP24_EVIDENCE",
+        "venue": "okx",
+        "canonical_instrument_id": "ADA-USDT-SWAP",
+        "venue_instrument_id": "ADA-USDT-SWAP",
+        "contract_type": "swap",
+        "market_type": "futures",
+        "quote_currency": "USDT",
+        "settlement_currency": "USDT",
+        "discovered_in": [
+          "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/"
+        ],
+        "trade_offs": "Appears in Cap-2.4 evidence selection snapshots; evidence artifacts are not productive raw-input authority.",
+        "eligibility": "CANDIDATE",
+        "selected": false,
+        "status": "OPEN"
+      },
+      {
+        "candidate_id": "CAND_SOL_USDT_SWAP_RANKING_EVIDENCE",
+        "venue": "okx",
+        "canonical_instrument_id": "SOL-USDT-SWAP",
+        "venue_instrument_id": "SOL-USDT-SWAP",
+        "contract_type": "swap",
+        "market_type": "futures",
+        "quote_currency": "USDT",
+        "settlement_currency": "USDT",
+        "discovered_in": [
+          "docs/evidence/capability_4_1_single_future_canonical_runtime_pre_activation_closure_v1/"
+        ],
+        "trade_offs": "Appears in ranking/pre-activation evidence; not Owner-ratified Surface-B pack instrument.",
+        "eligibility": "CANDIDATE",
+        "selected": false,
+        "status": "OPEN"
+      },
+      {
+        "candidate_id": "CAND_ETH_USD_XPERP_OKX_EUROPE_BINDING",
+        "venue": "okx_europe",
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "contract_type": "xperp",
+        "market_type": "futures",
+        "quote_currency": "USD",
+        "settlement_currency": "USD",
+        "discovered_in": [
+          "src/ops/bounded_futures_testnet_venue_binding_v0.py",
+          "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/"
+        ],
+        "trade_offs": "Canonical OKX Europe XPERP production binding; different contract family and endpoint allowlist from public history-candles staging; not silently interchangeable with ETH-USDT-SWAP.",
+        "eligibility": "CANDIDATE",
+        "selected": false,
+        "status": "OPEN"
+      },
+      {
+        "candidate_id": "EXCL_BTC_USDT_SWAP_TEST_FIXTURE",
+        "venue": "okx",
+        "canonical_instrument_id": "BTC-USDT-SWAP",
+        "venue_instrument_id": "BTC-USDT-SWAP",
+        "contract_type": "swap",
+        "market_type": "futures",
+        "quote_currency": "USDT",
+        "settlement_currency": "USDT",
+        "discovered_in": [
+          "tests/ops/test_productive_pure_stack_stage2_shadow_campaign_input_authority_v1.py",
+          "tests/ops/test_productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_owner_decision_v1.py"
+        ],
+        "trade_offs": "Test-only binding; BTC/XBT test bindings remain excluded from Owner ratification candidates.",
+        "eligibility": "EXCLUDED",
+        "selected": false,
+        "status": "EXCLUDED"
+      }
+    ],
+    "venue": {
+      "allowed_options": [
+        "okx",
+        "okx_eea",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    "canonical_instrument_id": {
+      "allowed_options": [
+        "inst-eth-usdt-perp",
+        "ADA-USDT-SWAP",
+        "SOL-USDT-SWAP",
+        "ETH-USD_UM_XPERP-310404",
+        "REJECT_AND_SUPPLY_OWNER_ID"
+      ],
+      "recommended_option": null,
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    "venue_instrument_id": {
+      "allowed_options": [
+        "ETH-USDT-SWAP",
+        "ADA-USDT-SWAP",
+        "SOL-USDT-SWAP",
+        "ETH-USD_UM_XPERP-310404",
+        "REJECT_AND_SUPPLY_OWNER_ID"
+      ],
+      "recommended_option": null,
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    "contract_type": {
+      "allowed_options": [
+        "swap",
+        "perpetual",
+        "xperp",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    "market_type": {
+      "allowed_options": [
+        "futures",
+        "swap",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    "quote_currency": {
+      "allowed_options": [
+        "USDT",
+        "USD",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    "settlement_currency": {
+      "allowed_options": [
+        "USDT",
+        "USD",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "owner_value": null,
+      "status": "OPEN"
+    }
+  },
+  "owner_decision_table": [
+    {
+      "decision_id": "DEC_CANDLE_SOURCE_REF",
+      "field": "candle_source_authority.source_ref",
+      "allowed_options": [
+        "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1",
+        "REJECT_AND_REQUIRE_NEW_VENUE_NATIVE_HISTORY_CANDLE_CANDIDATE"
+      ],
+      "recommended_option": "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1",
+      "rationale": "Repo allowlisted public OKX history-candles path with bar=1m and confirm=1 is the only discovered venue-native historical finalized PT1M candle ingest surface; /market/candles may include open tip; O4/PT1H forbidden for this Surface-B decision.",
+      "safety_semantic_consequences": "Wrong source_ref would bind open-tip, PT1H substitution, dashboard/fixture, or non-venue authority into STA raw inputs.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_CANDLE_EVENT_TIME_SEMANTICS",
+      "field": "candle_source_authority.event_time_semantics",
+      "allowed_options": [
+        "PT1M_BUCKET_OPEN_EVENT_TIME",
+        "REJECT"
+      ],
+      "recommended_option": "PT1M_BUCKET_OPEN_EVENT_TIME",
+      "rationale": "Surface-B producer requires event_time_epoch_s == minute-aligned bucket open; OKX candle ts maps to bucket-open epoch seconds.",
+      "safety_semantic_consequences": "Non-bucket-open event times break join identity and PIT tip semantics.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_CANDLE_VENUE_FINALIZED_MAPPING",
+      "field": "candle_source_authority.venue_finalized_mapping",
+      "allowed_options": [
+        "okx_confirm_1_maps_to_venue_finalized_true",
+        "REJECT"
+      ],
+      "recommended_option": "okx_confirm_1_maps_to_venue_finalized_true",
+      "rationale": "Existing OKX public ingest staging uses confirm=1_only / row confirm field as is_final; maps directly to venue_finalized=true.",
+      "safety_semantic_consequences": "Accepting confirm!=1 invents finalized bars and violates exclusive-tip finality.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_CANDLE_OPEN_TIP_EXCLUSION",
+      "field": "candle_source_authority.open_tip_bars",
+      "allowed_options": [
+        false,
+        "REJECT_IF_TRUE"
+      ],
+      "recommended_option": false,
+      "rationale": "Parent Surface-B ratification and producer reject open_tip bars fail-closed.",
+      "safety_semantic_consequences": "Open tip introduces lookahead into unfinished buckets.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_CANDLE_PAGINATION_DEDUP_ORDER_GAP",
+      "field": "candle_source_authority.pagination_dedup_ordering_gap_rules",
+      "allowed_options": [
+        "after_cursor_oldest_ts__dedup_by_ts_last_wins__order_asc_event_time__gap_fail_closed",
+        "REJECT"
+      ],
+      "recommended_option": "after_cursor_oldest_ts__dedup_by_ts_last_wins__order_asc_event_time__gap_fail_closed",
+      "rationale": "Matches existing OKX history-candles pagination/dedup pattern in scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py; gaps must fail closed for Surface-B continuity.",
+      "safety_semantic_consequences": "Silent gap fill or unordered pages create non-reproducible packs.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_CANDLE_PIT_NO_LOOKAHEAD",
+      "field": "candle_source_authority.pit_no_lookahead",
+      "allowed_options": [
+        "as_of_equals_pack_exclusive_tip__no_bar_after_as_of__no_open_bucket",
+        "REJECT"
+      ],
+      "recommended_option": "as_of_equals_pack_exclusive_tip__no_bar_after_as_of__no_open_bucket",
+      "rationale": "Parent raw-input Owner Decision binds PIT/no-lookahead and exclusive tip.",
+      "safety_semantic_consequences": "Lookahead bars invalidate shadow calibration evidence.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_CANDLE_RAW_PROVENANCE_REBUILD",
+      "field": "candle_source_authority.immutable_raw_provenance_and_rebuild",
+      "allowed_options": [
+        "immutable_raw_source_digest__rebuild_requires_new_dataset_id_and_digest",
+        "REJECT"
+      ],
+      "recommended_option": "immutable_raw_source_digest__rebuild_requires_new_dataset_id_and_digest",
+      "rationale": "Surface-B dataset identity forbids silent rewrites; rebuilds need new dataset_id/digest.",
+      "safety_semantic_consequences": "Mutable raw provenance would make ObservationPack digests non-authoritative.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_MARK_SOURCE_REF",
+      "field": "mark_source_authority.source_ref",
+      "allowed_options": [
+        "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1",
+        "REJECT_AND_REQUIRE_NEW_VENUE_NATIVE_HISTORY_MARK_CANDIDATE"
+      ],
+      "recommended_option": "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1",
+      "rationale": "Repo allowlisted /api/v5/market/history-mark-price-candles is the only discovered historical venue-native mark series path separate from trade candles; /public/mark-price is snapshot-only and not historical authority.",
+      "safety_semantic_consequences": "Using candle close, trade, index, snapshot mark, or O4 as mark collapses authorities.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_MARK_BUCKET_SEMANTICS",
+      "field": "mark_source_authority.bucket_semantics",
+      "allowed_options": [
+        "PT1M_BUCKET_OPEN_EVENT_TIME_JOIN_REQUIRED",
+        "REJECT"
+      ],
+      "recommended_option": "PT1M_BUCKET_OPEN_EVENT_TIME_JOIN_REQUIRED",
+      "rationale": "Producer joins marks to candles on identical PT1M bucket-open event time.",
+      "safety_semantic_consequences": "Misaligned mark buckets cause missing-mark fail-closed or silent substitution risk.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_MARK_NO_CANDLE_CLOSE_FALLBACK",
+      "field": "mark_source_authority.previous_candle_close_fallback",
+      "allowed_options": [
+        "FORBIDDEN",
+        "REJECT_IF_ALLOWED"
+      ],
+      "recommended_option": "FORBIDDEN",
+      "rationale": "Parent Surface-B forbids candle/mark/trade equivalence; ingest staging MARK_INDEX_ASOF_RULE previous_finalized_candle_close is explicitly non-authority for Surface B.",
+      "safety_semantic_consequences": "Candle-close-as-mark falsifies mark series and bypasses missing-mark fail-closed.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_MARK_MISSING_DUPLICATE_LATE_NONFINAL",
+      "field": "mark_source_authority.missing_duplicate_late_nonfinal_rules",
+      "allowed_options": [
+        "missing_fail_closed__duplicate_fail_closed__late_requires_explicit_revision_or_reject__nonfinal_reject",
+        "REJECT"
+      ],
+      "recommended_option": "missing_fail_closed__duplicate_fail_closed__late_requires_explicit_revision_or_reject__nonfinal_reject",
+      "rationale": "Matches Surface-B producer duplicate/missing mark rejection and correction-revision policy.",
+      "safety_semantic_consequences": "Filling missing/late/non-final marks invents observations.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_MARK_PIT_NO_LOOKAHEAD",
+      "field": "mark_source_authority.pit_no_lookahead",
+      "allowed_options": [
+        "same_as_candle_exclusive_tip_rules",
+        "REJECT"
+      ],
+      "recommended_option": "same_as_candle_exclusive_tip_rules",
+      "rationale": "Mark series must obey identical PIT/exclusive-tip bounds as candle pack tip.",
+      "safety_semantic_consequences": "Mark lookahead after as-of invalidates calibration.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_MARK_RAW_PROVENANCE",
+      "field": "mark_source_authority.immutable_raw_provenance",
+      "allowed_options": [
+        "separate_raw_mark_digest_bound_into_pack_raw_source_digest__immutable",
+        "REJECT"
+      ],
+      "recommended_option": "separate_raw_mark_digest_bound_into_pack_raw_source_digest__immutable",
+      "rationale": "Mark raw rows remain a separate authority stream inside the combined raw_source_digest.",
+      "safety_semantic_consequences": "Omitting mark provenance allows silent candle-only packs.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_INSTRUMENT_BINDING_VENUE",
+      "field": "instrument_binding.venue",
+      "allowed_options": [
+        "okx",
+        "okx_eea",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "rationale": "Competing venue labels exist (okx public REST staging vs okx_eea single-selected-future policy). Owner must choose without silent default.",
+      "safety_semantic_consequences": "Wrong venue label desynchronizes public MD path from binding authority.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_INSTRUMENT_BINDING_CANONICAL_ID",
+      "field": "instrument_binding.canonical_instrument_id",
+      "allowed_options": [
+        "inst-eth-usdt-perp",
+        "ADA-USDT-SWAP",
+        "SOL-USDT-SWAP",
+        "ETH-USD_UM_XPERP-310404",
+        "REJECT_AND_SUPPLY_OWNER_ID"
+      ],
+      "recommended_option": null,
+      "rationale": "Multiple competing canonical IDs found across research staging, Cap-2.4 evidence, ranking evidence, and OKX Europe XPERP binding. No silent selection.",
+      "safety_semantic_consequences": "Silent ID choice would invent Single-Selected-Future authority.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_INSTRUMENT_BINDING_VENUE_ID",
+      "field": "instrument_binding.venue_instrument_id",
+      "allowed_options": [
+        "ETH-USDT-SWAP",
+        "ADA-USDT-SWAP",
+        "SOL-USDT-SWAP",
+        "ETH-USD_UM_XPERP-310404",
+        "REJECT_AND_SUPPLY_OWNER_ID"
+      ],
+      "recommended_option": null,
+      "rationale": "Venue-native IDs compete across USDT-SWAP research/evidence paths and Europe XPERP production binding.",
+      "safety_semantic_consequences": "Mismatched venue_instrument_id breaks public instruments validation and mark/candle fetch identity.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_INSTRUMENT_BINDING_CONTRACT_TYPE",
+      "field": "instrument_binding.contract_type",
+      "allowed_options": [
+        "swap",
+        "perpetual",
+        "xperp",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "rationale": "Research staging uses perpetual/swap language; OKX Europe binding uses xperp. Owner must align contract_type with chosen venue ID.",
+      "safety_semantic_consequences": "Inconsistent contract_type hides cross-family pooling risk.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_INSTRUMENT_BINDING_MARKET_TYPE",
+      "field": "instrument_binding.market_type",
+      "allowed_options": [
+        "futures",
+        "swap",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "rationale": "Repo mixes futures/swap market_type labels; must be Owner-explicit for InstrumentBindingV1 completeness.",
+      "safety_semantic_consequences": "Ambiguous market_type weakens fail-closed inventory checks.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_INSTRUMENT_BINDING_QUOTE_CURRENCY",
+      "field": "instrument_binding.quote_currency",
+      "allowed_options": [
+        "USDT",
+        "USD",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "rationale": "USDT-SWAP candidates quote USDT; XPERP Europe candidate settles/quotes USD family. Depends on selected instrument.",
+      "safety_semantic_consequences": "Wrong quote currency falsifies economic semantics of the pack.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_INSTRUMENT_BINDING_SETTLEMENT_CURRENCY",
+      "field": "instrument_binding.settlement_currency",
+      "allowed_options": [
+        "USDT",
+        "USD",
+        "REJECT"
+      ],
+      "recommended_option": null,
+      "rationale": "USDT-SWAP candidates settle USDT; OKX Europe XPERP binding records USD settlement asset.",
+      "safety_semantic_consequences": "Wrong settlement currency corrupts futures accounting assumptions later.",
+      "owner_value": null,
+      "status": "OPEN"
+    },
+    {
+      "decision_id": "DEC_REGIME_COVERAGE_PRODUCER",
+      "field": "regime_coverage.producer_availability",
+      "allowed_options": [
+        "SEMANTICALLY_UNRESOLVED",
+        "REJECT_IF_INVENTED_COUNTS_OR_LABELS"
+      ],
+      "recommended_option": "SEMANTICALLY_UNRESOLVED",
+      "rationale": "No canonical Surface-B regime recorder producer found; only structural regime_coverage label slots exist. Counts/labels must not be invented.",
+      "safety_semantic_consequences": "Invented regime coverage would fake campaign readiness.",
+      "owner_value": null,
+      "status": "OPEN"
+    }
+  ],
+  "open_null_instance_fields": {
+    "campaign_id": null,
+    "dataset_id": null,
+    "scenario_id": null,
+    "seed": null,
+    "partition_boundaries": null,
+    "fold_ids": null,
+    "bootstrap_seeds": null,
+    "purge": null,
+    "embargo": null,
+    "fold_sizes": null
+  },
+  "decisions": {
+    "CANDLE_SOURCE_AUTHORITY": {
+      "status": "OPEN",
+      "proposed_source_ref": "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1",
+      "owner_ratified_source_ref": null,
+      "timeframe": "PT1M",
+      "open_tip_bars": false,
+      "venue_finalized_required": true,
+      "event_time_semantics": "PT1M_BUCKET_OPEN_EVENT_TIME",
+      "o4_pt1h_as_pt1m": false,
+      "technical_producer_is_raw_source_authority": false
+    },
+    "MARK_SOURCE_AUTHORITY": {
+      "status": "OPEN",
+      "proposed_source_ref": "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1",
+      "owner_ratified_source_ref": null,
+      "join_key": "PT1M_BUCKET_OPEN_EVENT_TIME",
+      "candle_mark_trade_equivalence": "FORBIDDEN",
+      "previous_candle_close_fallback": "FORBIDDEN",
+      "snapshot_mark_price_endpoint_as_historical_authority": false
+    },
+    "INSTRUMENT_BINDING": {
+      "status": "OPEN",
+      "mode": "SINGLE_SELECTED_FUTURE_VENUE_NATIVE",
+      "required_fields": [
+        "venue",
+        "canonical_instrument_id",
+        "venue_instrument_id",
+        "contract_type",
+        "market_type",
+        "quote_currency",
+        "settlement_currency"
+      ],
+      "silent_id_selection": false,
+      "btc_test_bindings": "EXCLUDED"
+    },
+    "REGIME_COVERAGE": {
+      "producer_available": false,
+      "status": "SEMANTICALLY_UNRESOLVED",
+      "invent_counts_or_labels": false,
+      "new_classifier_implemented": false
+    },
+    "FORBIDDEN_SOURCES": [
+      "fixture",
+      "demo",
+      "dashboard_readmodel",
+      "webui",
+      "notion",
+      "o4_pt1h_as_pt1m_authority",
+      "candle_close_as_mark",
+      "previous_candle_close",
+      "trade_as_mark",
+      "snapshot_mark_price_as_historical_series",
+      "sta_producer_as_raw_source_authority",
+      "btc_test_binding"
+    ],
+    "NON_EFFECTS": {
+      "input_authority": false,
+      "runtime_implemented": false,
+      "raw_input_pack_created": false,
+      "raw_input_pack_materialization_authorized": false,
+      "campaign_started": false,
+      "campaign_start_authorized": false,
+      "productive_numeric_values_set": 0,
+      "trading_logic_changed": false,
+      "orders_testnet_live_paper_effects": false,
+      "exchange_credential_effects": false
+    }
+  }
+}

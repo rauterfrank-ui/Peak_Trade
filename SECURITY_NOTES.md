@@ -1,8 +1,8 @@
 # Security Notes — Peak_Trade Cybersecurity Baseline Pointers
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
-**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02); `STAGE2_SURFACE_B_CYBERSECURITY_MIRROR_SYNC_V1` (2026-08-05); `STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1` (2026-08-05)
-**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B raw PT1M input-pack Owner Decision structure against `origin&#47;main@81315806a9501ab7872b9fc0c54bafa82eff5920`; prior Surface B cybersecurity mirror sync and Cap-7.2 overlays unchanged)
+**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02); `STAGE2_SURFACE_B_CYBERSECURITY_MIRROR_SYNC_V1` (2026-08-05); `STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1` (2026-08-05)
+**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B Owner/STA candle-mark-instrument authority decision surface against `origin&#47;main@3b6b75bc4fa4b3ba6887ed055fa7fb88dd3d87b7`; prior raw PT1M input-pack Owner Decision structure and Cap-7.2 overlays unchanged)
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
 **Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, start a public-MD network session, consume authorization, flip productive input authority, set productive numeric Owner values, or claim unverified scanner results.
 
@@ -31,6 +31,7 @@
 | Post-Capability-7.2 no-order runtime cybersecurity review | [`docs/evidence/post_capability_7_2_cybersecurity_review_v1/`](docs/evidence/post_capability_7_2_cybersecurity_review_v1/) + Truth Map `CYBERSECURITY_REVIEW_CURRENT` in [`docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) |
 | Stage-2 Surface B cybersecurity mirror sync (post #5731) | [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_CYBERSECURITY_MIRROR_SYNC_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_CYBERSECURITY_MIRROR_SYNC_V1.md) + Owner ratification [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md) |
 | Stage-2 Surface B raw PT1M input-pack Owner Decision | [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md) + cybersecurity mirror [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_CYBERSECURITY_MIRROR_V1.md) |
+| Stage-2 Surface B Owner/STA candle-mark-instrument authority | [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md) + cybersecurity mirror [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_CYBERSECURITY_MIRROR_V1.md) |
 
 **Docs ≠ Approval. AI ≠ Authority. Secret names ≠ secret values.**
 
@@ -185,6 +186,32 @@ baseline `origin&#47;main@81315806a9501ab7872b9fc0c54bafa82eff5920`.
 | Exchange credentials / order adapters | Unauthorized / unreachable under this decision |
 
 Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_CYBERSECURITY_MIRROR_V1.md). This section does **not** authorize raw-pack materialization, campaign start, productive calibration, input-authority flips, runtime activation, or any exchange side effect.
+
+### 6.4 Stage-2 Surface B Owner/STA candle-mark-instrument authority (2026-08-05)
+
+Documentary cybersecurity mirror of Owner/STA decision surface
+`SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION`, bound to
+baseline `origin&#47;main@3b6b75bc4fa4b3ba6887ed055fa7fb88dd3d87b7`.
+
+| Boundary | Required security reading |
+|----------|---------------------------|
+| Decision surface | Owner/STA fillable authority surface only — instance values remain null |
+| `CANDLE_AUTHORITY_RATIFIED` | `false` (`CANDLE_AUTHORITY_RATIFIED=false`) |
+| `MARK_AUTHORITY_RATIFIED` | `false` (`MARK_AUTHORITY_RATIFIED=false`) |
+| `INSTRUMENT_BINDING_RATIFIED` | `false` (`INSTRUMENT_BINDING_RATIFIED=false`) |
+| Candle/Mark separation | required; candle-close-as-mark forbidden |
+| `INPUT_AUTHORITY` | `false` |
+| `RUNTIME_IMPLEMENTED` | `false` |
+| `CAMPAIGN_START_AUTHORIZED` | `false` |
+| `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED` | `false` |
+| `PRODUCTIVE_NUMERIC_VALUES_SET` | `0` |
+| Dashboard | `DASHBOARD_AUTHORITY_EFFECT=NONE` — consumer only |
+| Notion | Mirror/consumer only (`NOTION_SSOT=false`) |
+| Repository | Sole technical SSOT (`REPOSITORY_IS_SSOT=true`) |
+| Exchange credentials / order adapters | Unauthorized / unreachable under this decision |
+
+Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_CYBERSECURITY_MIRROR_V1.md). This section does **not** authorize raw-pack materialization, campaign start, productive calibration, input-authority flips, runtime activation, or any exchange side effect.
+
 
 ---
 

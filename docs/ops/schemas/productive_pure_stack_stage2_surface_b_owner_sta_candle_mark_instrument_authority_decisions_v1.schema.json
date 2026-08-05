@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "productive_pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority_decisions_v1.schema.json",
+  "title": "Stage-2 Surface B Owner/STA Candle Mark Instrument Authority Decisions v1",
+  "description": "Machine-readable Owner/STA decision surface for venue-native PT1M candle authority, separate mark authority, and InstrumentBindingV1. Does not authorize INPUT_AUTHORITY, runtime, pack materialization, campaign start, or productive numeric values.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "baseline_origin_main_sha",
+    "authority_surface",
+    "input_authority",
+    "runtime_implemented",
+    "candle_authority_ratified",
+    "mark_authority_ratified",
+    "instrument_binding_ratified",
+    "campaign_start_authorized",
+    "raw_input_pack_materialization_authorized",
+    "raw_input_pack_created",
+    "campaign_started",
+    "productive_numeric_values_set",
+    "regime_coverage_producer_available",
+    "regime_coverage_status",
+    "candle_source_authority",
+    "mark_source_authority",
+    "instrument_binding",
+    "owner_decision_table",
+    "open_null_instance_fields",
+    "decisions"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority_decisions/v1"
+    },
+    "document_type": {
+      "const": "OWNER_STA_AUTHORITY_DECISIONS_MANIFEST"
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "OWNER_STA_DECISION_SURFACE_OPEN_INSTANCE_VALUES_NULL",
+        "OWNER_STA_AUTHORITIES_RATIFIED_INSTANCE_FIELDS_STILL_OPEN",
+        "OWNER_STA_AUTHORITIES_REJECTED"
+      ]
+    },
+    "authority_surface": { "const": "B" },
+    "input_authority": { "const": false },
+    "runtime_implemented": { "const": false },
+    "candle_authority_ratified": { "type": "boolean" },
+    "mark_authority_ratified": { "type": "boolean" },
+    "instrument_binding_ratified": { "type": "boolean" },
+    "campaign_start_authorized": { "const": false },
+    "raw_input_pack_materialization_authorized": { "const": false },
+    "raw_input_pack_created": { "const": false },
+    "campaign_started": { "const": false },
+    "productive_numeric_values_set": { "const": 0 },
+    "regime_coverage_producer_available": { "const": false },
+    "regime_coverage_status": { "const": "SEMANTICALLY_UNRESOLVED" },
+    "notion_ssot": { "const": false },
+    "repository_is_ssot": { "const": true },
+    "dashboard_authority_effect": { "const": "NONE" },
+    "candle_source_authority": { "type": "object" },
+    "mark_source_authority": { "type": "object" },
+    "instrument_binding": { "type": "object" },
+    "owner_decision_table": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "decision_id",
+          "field",
+          "allowed_options",
+          "recommended_option",
+          "rationale",
+          "safety_semantic_consequences",
+          "owner_value",
+          "status"
+        ],
+        "properties": {
+          "decision_id": { "type": "string" },
+          "field": { "type": "string" },
+          "allowed_options": { "type": "array" },
+          "recommended_option": {},
+          "rationale": { "type": "string" },
+          "safety_semantic_consequences": { "type": "string" },
+          "owner_value": {},
+          "status": {
+            "type": "string",
+            "enum": ["OPEN", "RATIFIED", "REJECTED"]
+          }
+        }
+      }
+    },
+    "open_null_instance_fields": {
+      "type": "object",
+      "required": [
+        "campaign_id",
+        "dataset_id",
+        "scenario_id",
+        "seed",
+        "partition_boundaries",
+        "fold_ids",
+        "bootstrap_seeds",
+        "purge",
+        "embargo",
+        "fold_sizes"
+      ],
+      "properties": {
+        "campaign_id": { "type": "null" },
+        "dataset_id": { "type": "null" },
+        "scenario_id": { "type": "null" },
+        "seed": { "type": "null" },
+        "partition_boundaries": { "type": "null" },
+        "fold_ids": { "type": "null" },
+        "bootstrap_seeds": { "type": "null" },
+        "purge": { "type": "null" },
+        "embargo": { "type": "null" },
+        "fold_sizes": { "type": "null" }
+      }
+    },
+    "decisions": { "type": "object" }
+  }
+}
