@@ -11,6 +11,9 @@ import pytest
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decision_v1.constants_v1 import (
     ALLOWED_OWNER_VALUES,
     AUTHORIZE_DETAIL_FIELDS,
+    AUTHORIZE_DETAIL_INSTANCE_NULL_FIELDS,
+    AUTHORIZE_DETAIL_PROVABLE_FIELD_VALUES,
+    AUTHORIZE_DETAIL_PROVABLE_FIELDS,
     AUTHORIZE_OWNER_VALUE,
     BASELINE_ORIGIN_MAIN_SHA,
     CAPABILITY_SCOPE,
@@ -28,7 +31,7 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_mat
     REJECT_OWNER_VALUE,
     SCHEMA_REL,
     STA_OPEN_EXTERNAL_INPUTS,
-    STATUS_OWNER_VALUE_RECORDED,
+    STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED,
 )
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decision_v1.validator_v1 import (
     RawInputPackMaterializationDecisionErrorV1,
@@ -42,7 +45,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_OWNER_VALUE_RECORDED}",
+    f"STATUS={STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED}",
     f"DECISION_ID={DECISION_ID}",
     "DECISION_STATUS=RATIFIED",
     f"OWNER_VALUE={RECORDED_OWNER_VALUE}",
@@ -67,6 +70,8 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DASHBOARD_AUTHORITY_EFFECT=NONE",
     "NOTION_SSOT=false",
     "REPOSITORY_IS_SSOT=true",
+    "AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true",
+    "AUTHORIZE_DETAIL_FIELDS_COMPLETE=false",
     "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
     "EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION",
 )
@@ -80,6 +85,7 @@ FORBIDDEN_DOC_CLAIMS: tuple[str, ...] = (
     "NOTION_SSOT=true",
     "DASHBOARD_AUTHORITY_EFFECT=AUTHORITY",
     "REGIME_COVERAGE_PRODUCER_AVAILABLE=true",
+    "AUTHORIZE_DETAIL_FIELDS_COMPLETE=true",
 )
 
 
@@ -101,22 +107,25 @@ def test_materialization_document_markers_v1() -> None:
         assert marker in text, marker
     for claim in FORBIDDEN_DOC_CLAIMS:
         assert claim not in text, claim
-    for field in AUTHORIZE_DETAIL_FIELDS:
+    for field, value in AUTHORIZE_DETAIL_PROVABLE_FIELD_VALUES.items():
+        assert f"{field}={value}" in text, field
+    for field in AUTHORIZE_DETAIL_INSTANCE_NULL_FIELDS:
         assert f"{field}=null" in text, field
     for item in STA_OPEN_EXTERNAL_INPUTS:
         assert item in text, item
 
 
-def test_canonical_manifest_owner_value_recorded_v1() -> None:
+def test_canonical_manifest_provable_refs_closed_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     result = validate_raw_input_pack_materialization_manifest_v1(manifest)
     assert result["ok"] is True
     assert result["decision_id"] == DECISION_ID
-    assert result["status"] == STATUS_OWNER_VALUE_RECORDED
+    assert result["status"] == STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED
     assert result["decision_status"] == "RATIFIED"
     assert result["owner_value"] == RECORDED_OWNER_VALUE
     assert result["allowed_owner_values"] == list(ALLOWED_OWNER_VALUES)
-    assert result["authorize_detail_fields_null"] is True
+    assert result["authorize_detail_provable_refs_closed"] is True
+    assert result["authorize_detail_fields_complete"] is False
     assert result["input_authority"] is False
     assert result["runtime_implemented"] is False
     assert result["raw_input_pack_created"] is False
@@ -125,11 +134,18 @@ def test_canonical_manifest_owner_value_recorded_v1() -> None:
     assert result["campaign_started"] is False
     assert result["productive_numeric_values_set"] == 0
     assert result["dashboard_authority_effect"] == "NONE"
+    for field in AUTHORIZE_DETAIL_PROVABLE_FIELDS:
+        assert (
+            manifest["authorize_detail_fields"][field]
+            == AUTHORIZE_DETAIL_PROVABLE_FIELD_VALUES[field]
+        )
+    for field in AUTHORIZE_DETAIL_INSTANCE_NULL_FIELDS:
+        assert manifest["authorize_detail_fields"][field] is None
 
 
-def test_schema_allows_owner_value_recorded_v1() -> None:
+def test_schema_allows_provable_refs_closed_v1() -> None:
     schema = json.loads((REPO_ROOT / SCHEMA_REL).read_text(encoding="utf-8"))
-    assert STATUS_OWNER_VALUE_RECORDED in schema["properties"]["status"]["enum"]
+    assert STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED in schema["properties"]["status"]["enum"]
     assert "RATIFIED" in schema["properties"]["decision_status"]["enum"]
     assert schema["properties"]["raw_input_pack_materialization_authorized"]["const"] is False
     assert schema["properties"]["pack_materialization"]["const"] is False
@@ -184,11 +200,19 @@ def test_manifest_rejects_authorization_flip_v1() -> None:
         validate_raw_input_pack_materialization_manifest_v1(bad)
 
 
-def test_manifest_rejects_non_null_detail_field_v1() -> None:
+def test_manifest_rejects_invented_instance_detail_field_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     bad = copy.deepcopy(manifest)
     bad["authorize_detail_fields"]["campaign_id"] = "invented-campaign"
     with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="MUST_REMAIN_NULL"):
+        validate_raw_input_pack_materialization_manifest_v1(bad)
+
+
+def test_manifest_rejects_non_exact_provable_ref_v1() -> None:
+    manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
+    bad = copy.deepcopy(manifest)
+    bad["authorize_detail_fields"]["candle_authority_source_ref"] = "venue://invented/source"
+    with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="VALUE_MISMATCH"):
         validate_raw_input_pack_materialization_manifest_v1(bad)
 
 

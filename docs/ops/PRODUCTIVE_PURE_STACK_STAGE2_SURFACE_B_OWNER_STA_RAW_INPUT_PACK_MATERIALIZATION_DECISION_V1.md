@@ -4,11 +4,11 @@
 DOCUMENT_TYPE=OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION
 DOCUMENT_VERSION=1
 CAPABILITY_SCOPE=SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION
-STATUS=OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN
+STATUS=OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN
 DECISION_ID=DEC_RAW_INPUT_PACK_MATERIALIZATION
 DECISION_STATUS=RATIFIED
 OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
-OWNER_GO_BASE_SHA=59bda81aec59b149d52e5cc863691fd7ac16de02
+OWNER_GO_BASE_SHA=61d9abb07d4d88a0f1be19b9476db8ca0d3ba135
 BASELINE_ORIGIN_MAIN_SHA=56721ad0666fac5627d2dedbf33a22b59cd5996e
 SCOPE=DOCS_MANIFEST_SCHEMA_VALIDATOR_ONLY
 PARENT_RAW_INPUT_PACK=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md
@@ -48,6 +48,8 @@ PRODUCTIVE_NUMERIC_VALUES_SET=0
 TRADING_LOGIC_CHANGE=false
 ORDERS_TESTNET_LIVE=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
+AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
 ```
 
 ## 0. Binding effect
@@ -61,8 +63,10 @@ The Owner has recorded:
 ```text
 OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
 DECISION_STATUS=RATIFIED
-OWNER_GO_BASE_SHA=59bda81aec59b149d52e5cc863691fd7ac16de02
-STATUS=OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN
+OWNER_GO_BASE_SHA=61d9abb07d4d88a0f1be19b9476db8ca0d3ba135
+STATUS=OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN
+AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
+AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
 ```
 
 The only allowed alternatives remain:
@@ -72,17 +76,19 @@ The only allowed alternatives remain:
 
 It:
 
-1. records the Owner authorize choice while keeping authorize-detail fields null;
-2. binds STA open external inputs that remain unratified for pack materialization;
-3. keeps `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false`,
+1. records the Owner authorize choice;
+2. closes only provable, non-invented authorize-detail refs from parent triad and
+   regime-coverage authorities;
+3. keeps instance/pack identity fields null;
+4. keeps `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false`,
    `PACK_MATERIALIZATION=false`, `RAW_INPUT_PACK_CREATED=false`,
    `CAMPAIGN_START_AUTHORIZED=false`, `INPUT_AUTHORITY=false`, and
    `RUNTIME_IMPLEMENTED=false`.
 
 It does **not**:
 
-- invent campaign/instance identity, candles, marks, digests, seeds, partitions,
-  folds, bootstrap seeds, or regime-coverage instance values;
+- invent campaign/instance identity, digests, seeds, partitions, folds, or
+  bootstrap seeds;
 - authorize or execute pack materialization;
 - start a Surface-B campaign;
 - reimplement producers, wire consumers, or bind a PT1M adapter;
@@ -94,10 +100,11 @@ It does **not**:
 - make Dashboard or Notion an authority.
 
 ```text
-OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN=true
+OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN=true
 DECISION_STATUS=RATIFIED
 OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
-AUTHORIZE_DETAIL_FIELDS_NULL=true
+AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
+AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
 PACK_MATERIALIZATION=false
 RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false
 RAW_INPUT_PACK_CREATED=false
@@ -110,7 +117,8 @@ CAMPAIGN_STARTED=false
 INV_AUTHORITY_SURFACE_B_ONLY=true
 INV_ONLY_TWO_OWNER_ALTERNATIVES=true
 INV_OWNER_VALUE_RECORDED_AUTHORIZE=true
-INV_AUTHORIZE_DETAIL_FIELDS_INITIALLY_NULL=true
+INV_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
+INV_AUTHORIZE_DETAIL_INSTANCE_FIELDS_REMAIN_NULL=true
 INV_NO_INVENTED_INSTANCE_OR_PACK_VALUES=true
 INV_NO_FIXTURE_DEMO_DASHBOARD_SUBSTITUTION=true
 INV_PACK_MATERIALIZATION_REMAINS_FALSE=true
@@ -124,10 +132,10 @@ INV_DASHBOARD_CONSUMER_ONLY=true
 
 ## 2. Decision identity
 
-| Field | Initial value |
-|-------|---------------|
+| Field | Value |
+|-------|-------|
 | `decision_id` | `DEC_RAW_INPUT_PACK_MATERIALIZATION` |
-| `status` | `OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN` |
+| `status` | `OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN` |
 | `decision_status` | `RATIFIED` |
 | `owner_value` | `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` |
 | Allowed owner values | exactly the two alternatives below |
@@ -141,18 +149,23 @@ EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION
 
 No other owner value is accepted by the fail-closed validator.
 
-## 3. Authorize detail fields (initially null)
+## 3. Authorize detail fields (provable refs closed; instance null)
 
-When the Owner later chooses `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION`, the following fields must exist as
-separate Owner fields. On this open surface they remain `null`:
+Provable, non-invented authorize-detail refs closed from parent authorities:
+
+```text
+instrument_binding_ref=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding
+candle_authority_source_ref=venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1
+mark_price_authority_source_ref=venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1
+regime_coverage_binding_ref=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md
+```
+
+Instance / pack identity fields remain `null`:
 
 ```text
 campaign_id=null
 dataset_id=null
 scenario_id=null
-instrument_binding_ref=null
-candle_authority_source_ref=null
-mark_price_authority_source_ref=null
 observation_pack_digest=null
 raw_source_digest=null
 seed=null
@@ -160,7 +173,6 @@ event_time_epoch_s=null
 partition_boundaries_event_time_epoch_s=null
 fold_ids=null
 bootstrap_seeds=null
-regime_coverage_binding_ref=null
 ```
 
 No fixture, demo, dashboard, Notion, O4-as-PT1M, candle-close-as-mark, or
@@ -182,8 +194,8 @@ regime_coverage_materialization_readiness
 ```
 
 Parent triad and regime-coverage closeout authorities remain prerequisites by
-reference only. They do **not** fill instance values or authorize pack
-materialization on this surface.
+reference only. Binding refs do **not** invent pack instance values or authorize
+pack materialization on this surface.
 
 ## 5. REJECT semantics
 
@@ -198,9 +210,11 @@ instance fields remain null or absent
 
 ## 6. AUTHORIZE semantics
 
-Even after Owner chooses `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION`:
+Even after Owner chooses `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` and closes provable refs:
 
 ```text
+AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true
+AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
 RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false until instance fields and STA proofs are fully ratified
 PACK_MATERIALIZATION=false until a separate explicit materialization-execution Owner GO
 RAW_INPUT_PACK_CREATED=false
@@ -240,6 +254,7 @@ rejects:
 
 - any owner value outside the two allowed alternatives;
 - invented instance/pack values or productive numeric policy values;
+- any authorize-detail value outside the exact provable parent refs or null;
 - fixture / demo / dashboard / Notion / candle-close-as-mark sources;
 - Dashboard authority other than `NONE`;
 - pack materialization, campaign start, input-authority or runtime flips from
@@ -269,16 +284,14 @@ NOTION_SSOT=false
 ORDERS_TESTNET_LIVE=false
 EXCHANGE_CREDENTIAL_EFFECTS=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORIZE_DETAIL_FIELDS_COMPLETE=false
 ```
 
 ## 10. Canonical next step
 
-Owner value is recorded as
-`AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` under
-`OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN`.
-Authorize-detail fields remain null. A **separate** explicit Owner GO is
-required to ratify authorize-detail fields. A further separate explicit Owner
-GO remains required before pack materialization execution
+Provable authorize-detail refs are closed under `OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN`.
+Instance authorize-detail fields remain null. A **separate** explicit Owner GO
+remains required before pack materialization execution
 (`PACK_MATERIALIZATION` / `RAW_INPUT_PACK_CREATED`), campaign start,
 input-authority/runtime flips, consumer wiring, PT1M adapter binding, or
 productive threshold/lookback ratification.

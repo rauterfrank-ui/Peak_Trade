@@ -46,6 +46,11 @@ def _assert_null(value: Any, *, label: str) -> None:
         raise RawInputPackMaterializationDecisionErrorV1(f"MUST_REMAIN_NULL:{label}")
 
 
+def _assert_exact(value: Any, expected: Any, *, label: str) -> None:
+    if value != expected:
+        raise RawInputPackMaterializationDecisionErrorV1(f"VALUE_MISMATCH:{label}")
+
+
 def _assert_no_forbidden_source_token(value: Any, *, label: str) -> None:
     if value is None:
         return
@@ -57,6 +62,36 @@ def _assert_no_forbidden_source_token(value: Any, *, label: str) -> None:
             raise RawInputPackMaterializationDecisionErrorV1(
                 f"FORBIDDEN_SOURCE:{forbidden}:{label}"
             )
+
+
+def _validate_authorize_detail_fields_all_null(detail_fields: Mapping[str, Any]) -> None:
+    for field in C.AUTHORIZE_DETAIL_FIELDS:
+        if field not in detail_fields:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                f"AUTHORIZE_DETAIL_FIELD_MISSING:{field}"
+            )
+        _assert_null(detail_fields.get(field), label=f"authorize_detail_fields.{field}")
+        _assert_no_forbidden_source_token(
+            detail_fields.get(field), label=f"authorize_detail_fields.{field}"
+        )
+
+
+def _validate_authorize_detail_fields_provable_closed(detail_fields: Mapping[str, Any]) -> None:
+    for field in C.AUTHORIZE_DETAIL_FIELDS:
+        if field not in detail_fields:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                f"AUTHORIZE_DETAIL_FIELD_MISSING:{field}"
+            )
+    for field in C.AUTHORIZE_DETAIL_PROVABLE_FIELDS:
+        expected = C.AUTHORIZE_DETAIL_PROVABLE_FIELD_VALUES[field]
+        value = detail_fields.get(field)
+        _assert_exact(value, expected, label=f"authorize_detail_fields.{field}")
+        _assert_no_forbidden_source_token(value, label=f"authorize_detail_fields.{field}")
+    for field in C.AUTHORIZE_DETAIL_INSTANCE_NULL_FIELDS:
+        _assert_null(detail_fields.get(field), label=f"authorize_detail_fields.{field}")
+        _assert_no_forbidden_source_token(
+            detail_fields.get(field), label=f"authorize_detail_fields.{field}"
+        )
 
 
 def load_canonical_raw_input_pack_materialization_decisions_manifest_v1(
@@ -146,16 +181,6 @@ def validate_raw_input_pack_materialization_manifest_v1(
     detail_fields = _require_mapping(
         manifest.get("authorize_detail_fields"), label="authorize_detail_fields"
     )
-    for field in C.AUTHORIZE_DETAIL_FIELDS:
-        if field not in detail_fields:
-            raise RawInputPackMaterializationDecisionErrorV1(
-                f"AUTHORIZE_DETAIL_FIELD_MISSING:{field}"
-            )
-        _assert_null(detail_fields.get(field), label=f"authorize_detail_fields.{field}")
-        _assert_no_forbidden_source_token(
-            detail_fields.get(field), label=f"authorize_detail_fields.{field}"
-        )
-
     open_fields = _require_mapping(
         manifest.get("open_null_instance_fields"), label="open_null_instance_fields"
     )
@@ -280,9 +305,16 @@ def validate_raw_input_pack_materialization_manifest_v1(
     if require_open_status is None:
         require_open_status = surface_status == C.STATUS_SURFACE_OPEN
 
-    if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
-        raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
-
+    authorize_detail_provable_refs_closed = False
+    expected_provable_closed = surface_status == C.STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED
+    if authorize_sem.get("authorize_detail_provable_refs_closed") is not expected_provable_closed:
+        raise RawInputPackMaterializationDecisionErrorV1(
+            "AUTHORIZE_SEMANTICS_INVALID:authorize_detail_provable_refs_closed"
+        )
+    if authorize_sem.get("authorize_detail_fields_complete") is not False:
+        raise RawInputPackMaterializationDecisionErrorV1(
+            "AUTHORIZE_SEMANTICS_INVALID:authorize_detail_fields_complete"
+        )
     if require_open_status:
         if surface_status != C.STATUS_SURFACE_OPEN:
             raise RawInputPackMaterializationDecisionErrorV1("STATUS_MUST_REMAIN_SURFACE_OPEN")
@@ -292,9 +324,10 @@ def validate_raw_input_pack_materialization_manifest_v1(
         _assert_null(mat_dec.get("owner_value"), label="decisions.owner_value")
         if mat_dec.get("status") != C.DECISION_STATUS_OPEN:
             raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_REMAIN_OPEN")
-    else:
-        if surface_status != C.STATUS_OWNER_VALUE_RECORDED:
-            raise RawInputPackMaterializationDecisionErrorV1("STATUS_MUST_BE_OWNER_VALUE_RECORDED")
+        _validate_authorize_detail_fields_all_null(detail_fields)
+    elif surface_status == C.STATUS_OWNER_VALUE_RECORDED:
+        # Historical intermediate status (authorize details still all null).
+        # Canonical surface advances to STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED.
         if decision_status != C.DECISION_STATUS_RATIFIED:
             raise RawInputPackMaterializationDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
         if owner_value != C.RECORDED_OWNER_VALUE:
@@ -306,6 +339,25 @@ def validate_raw_input_pack_materialization_manifest_v1(
         if mat_dec.get("status") != C.DECISION_STATUS_RATIFIED:
             raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
         _assert_no_forbidden_source_token(owner_value, label="owner_value")
+        _validate_authorize_detail_fields_all_null(detail_fields)
+    elif surface_status == C.STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED:
+        if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
+        if decision_status != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
+        if owner_value != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_VALUE_MUST_MATCH_RECORDED")
+        if mat_dec.get("owner_value") != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "DECISIONS_OWNER_VALUE_MUST_MATCH_RECORDED"
+            )
+        if mat_dec.get("status") != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
+        _assert_no_forbidden_source_token(owner_value, label="owner_value")
+        _validate_authorize_detail_fields_provable_closed(detail_fields)
+        authorize_detail_provable_refs_closed = True
+    else:
+        raise RawInputPackMaterializationDecisionErrorV1("STATUS_UNSUPPORTED")
 
     _reject_invented_numeric_payload(manifest)
 
@@ -317,7 +369,9 @@ def validate_raw_input_pack_materialization_manifest_v1(
         "decision_status": decision_status,
         "owner_value": owner_value,
         "allowed_owner_values": list(C.ALLOWED_OWNER_VALUES),
-        "authorize_detail_fields_null": True,
+        "authorize_detail_fields_null": not authorize_detail_provable_refs_closed,
+        "authorize_detail_provable_refs_closed": authorize_detail_provable_refs_closed,
+        "authorize_detail_fields_complete": False,
         "input_authority": False,
         "runtime_implemented": False,
         "raw_input_pack_created": False,
@@ -352,6 +406,8 @@ def validate_raw_input_pack_materialization_owner_choice_v1(
         raise RawInputPackMaterializationDecisionErrorV1("AUTHORIZE_DETAIL_FIELDS_MUST_BE_MAPPING")
 
     if owner_value == C.AUTHORIZE_OWNER_VALUE:
+        # Owner authorize-value recording keeps all detail fields null.
+        # Provable-ref closeout is a separate Owner GO / status transition.
         for field in C.AUTHORIZE_DETAIL_FIELDS:
             value = details.get(field)
             _assert_null(value, label=f"authorize_detail_fields.{field}")

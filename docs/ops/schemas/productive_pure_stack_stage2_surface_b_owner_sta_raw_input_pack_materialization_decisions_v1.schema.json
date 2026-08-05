@@ -57,7 +57,8 @@
       "type": "string",
       "enum": [
         "OWNER_STA_DECISION_SURFACE_OPEN",
-        "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN"
+        "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN",
+        "OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN"
       ]
     },
     "authority_surface": {
@@ -130,13 +131,34 @@
           "type": "null"
         },
         "instrument_binding_ref": {
-          "type": "null"
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding"
+            }
+          ]
         },
         "candle_authority_source_ref": {
-          "type": "null"
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1"
+            }
+          ]
         },
         "mark_price_authority_source_ref": {
-          "type": "null"
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1"
+            }
+          ]
         },
         "observation_pack_digest": {
           "type": "null"
@@ -160,7 +182,14 @@
           "type": "null"
         },
         "regime_coverage_binding_ref": {
-          "type": "null"
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md"
+            }
+          ]
         }
       }
     },
