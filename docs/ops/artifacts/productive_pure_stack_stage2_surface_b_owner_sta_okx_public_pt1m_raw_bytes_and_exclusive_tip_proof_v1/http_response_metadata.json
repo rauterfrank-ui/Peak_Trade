@@ -1,0 +1,42 @@
+[
+  {
+    "endpoint": "/api/v5/market/history-candles",
+    "url_host": "www.okx.com",
+    "query_params": {
+      "instId": "ETH-USDT-SWAP",
+      "bar": "1m",
+      "limit": "300"
+    },
+    "request_time_utc": "2026-08-05T12:58:48Z",
+    "response_time_utc": "2026-08-05T12:58:48Z",
+    "http_status": 200,
+    "response_byte_count": 29172,
+    "raw_response_sha256": "e1da39436377d5c9eeae2470b7b21041e7894276e0fb32d9e96e2a60b826c739",
+    "raw_response_path": "evidence/ops/stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/raw/candle_raw_http_response.json",
+    "content_type": "application/json",
+    "okx_code": "0",
+    "pagination_cursor": "",
+    "page_index": 0,
+    "raw_row_count": 300
+  },
+  {
+    "endpoint": "/api/v5/market/history-mark-price-candles",
+    "url_host": "www.okx.com",
+    "query_params": {
+      "instId": "ETH-USDT-SWAP",
+      "bar": "1m",
+      "limit": "300"
+    },
+    "request_time_utc": "2026-08-05T12:58:48Z",
+    "response_time_utc": "2026-08-05T12:58:49Z",
+    "http_status": 200,
+    "response_byte_count": 18436,
+    "raw_response_sha256": "1a2a9d48dea7fe44663cc9b3f7a422a0ade9e9f19ca4ae6c0c5effab23aec610",
+    "raw_response_path": "evidence/ops/stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/raw/mark_raw_http_response.json",
+    "content_type": "application/json",
+    "okx_code": "0",
+    "pagination_cursor": "",
+    "page_index": 0,
+    "raw_row_count": 300
+  }
+]
