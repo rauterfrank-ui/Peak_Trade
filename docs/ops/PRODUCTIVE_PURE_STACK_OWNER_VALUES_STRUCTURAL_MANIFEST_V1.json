@@ -1,0 +1,262 @@
+{
+  "schema_name": "productive_pure_stack_owner_values_structural_manifest",
+  "schema_version": "productive_pure_stack_owner_values_structural_manifest/v1",
+  "document_class": "OWNER_VALUES_TWO_STAGE_CLASSIFICATION_MANIFEST",
+  "status": "STAGE1_STRUCTURAL_RATIFIED_STAGE2_CALIBRATION_PROTOCOL_ONLY",
+  "baseline_origin_main_sha": "631dca43601e4efad53a35c19ddf9bf70ebfd177",
+  "parent_ratification": "docs/ops/PRODUCTIVE_PURE_STACK_INPUT_AUTHORITIES_OWNER_RATIFICATION_V1.md",
+  "two_stage_ratification_doc": "docs/ops/PRODUCTIVE_PURE_STACK_OWNER_VALUES_TWO_STAGE_RATIFICATION_V1.md",
+  "calibration_protocol_doc": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_CALIBRATION_PROTOCOL_V1.md",
+  "sole_trading_authority": "run_integrated_offline_trading_logic_replay_v1",
+  "dashboard_role": "READ_ONLY_CONSUMER",
+  "resultv1_mapping_authorized": false,
+  "new_trading_authority_authorized": false,
+  "input_authority_all_false": true,
+  "productive_numeric_values_set": 0,
+  "runtime_implemented": false,
+  "cmc_volatility_estimate_as_realized_volatility": false,
+  "fixture_scenario_webui_as_authority": false,
+  "token_count": 34,
+  "category_counts": {
+    "STRUCTURAL_RATIFIED": 15,
+    "MECHANICALLY_COUPLED": 1,
+    "NUMERIC_CALIBRATION_REQUIRED": 18,
+    "DEFERRED_FAIL_CLOSED": 0
+  },
+  "allowed_categories": [
+    "STRUCTURAL_RATIFIED",
+    "MECHANICALLY_COUPLED",
+    "NUMERIC_CALIBRATION_REQUIRED",
+    "DEFERRED_FAIL_CLOSED"
+  ],
+  "tokens": [
+    {
+      "token": "OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "A_FRESHNESS",
+      "productive_numeric_value": null,
+      "notes": "Independent safety/readiness policy; not CMC numeric max-age alpha parameter"
+    },
+    {
+      "token": "OWNER_VALUE_REALIZED_VOLATILITY_HORIZON",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "B_REALIZED_VOL",
+      "structural_value": "PT60M",
+      "productive_numeric_value": null,
+      "bound_definition_id": "fps_realized_volatility.population_stdev_mark_log_returns.v1"
+    },
+    {
+      "token": "OWNER_VALUE_REALIZED_VOLATILITY_UNIT",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "B_REALIZED_VOL",
+      "structural_value": "PER_BAR_DECIMAL_RETURN_VOLATILITY",
+      "productive_numeric_value": null,
+      "bound_definition_id": "fps_realized_volatility.population_stdev_mark_log_returns.v1",
+      "notes": "Unit name is Futures Pure-Stack authority; not CMC.volatility_estimate alias"
+    },
+    {
+      "token": "OWNER_VALUE_REALIZED_VOLATILITY_FORMULA_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "B_REALIZED_VOL",
+      "structural_value": "fps_realized_volatility.population_stdev_mark_log_returns.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_ATR_OR_RANGE_WINDOW",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "C_ATR_RANGE",
+      "structural_value": "14_PT1M_BARS",
+      "productive_numeric_value": null,
+      "bound_definition_id": "fps_atr_or_range.wilder_atr_finalized_ohlcv.v1"
+    },
+    {
+      "token": "OWNER_VALUE_ATR_OR_RANGE_UNIT",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "C_ATR_RANGE",
+      "structural_value": "PRICE_QUOTE_CURRENCY_UNITS",
+      "productive_numeric_value": null,
+      "bound_definition_id": "fps_atr_or_range.wilder_atr_finalized_ohlcv.v1"
+    },
+    {
+      "token": "OWNER_VALUE_ATR_OR_RANGE_FORMULA_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "C_ATR_RANGE",
+      "structural_value": "fps_atr_or_range.wilder_atr_finalized_ohlcv.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_VOLATILITY_REGIME_TAXONOMY_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "D_REGIME",
+      "structural_value": "fps_volatility_regime_taxonomy.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_OPPORTUNITY_SCORE_SCALE",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "E_OPPORTUNITY",
+      "structural_value": "UNIT_INTERVAL_0_1",
+      "productive_numeric_value": null,
+      "bound_definition_id": "fps_opportunity_score.fee_slippage_breakeven_movement.v1"
+    },
+    {
+      "token": "OWNER_VALUE_OPPORTUNITY_SCORE_FORMULA_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "E_OPPORTUNITY",
+      "structural_value": "fps_opportunity_score.fee_slippage_breakeven_movement.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_ACTIVITY_OR_INACTIVITY_SCORE_FORMULA_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "E_OPPORTUNITY",
+      "structural_value": "fps_activity_inactivity_score.range_volume_quiescence.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_LIQUIDITY_SPREAD_SOURCE_FORMULA_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "E_OPPORTUNITY",
+      "structural_value": "fps_liquidity_spread.best_bid_ask_mid_bps.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SEQUENCE_PATH_SURVIVAL_RATIO_DEFINITION_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "F_SEQUENCE",
+      "structural_value": "fps_sequence_path_survival_ratio.prearm_path_fraction.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SEQUENCE_METRIC_SET_DEFINITION_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "F_SEQUENCE",
+      "structural_value": "fps_sequence_metric_set.double_play_survival_envelope_v0_fields.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MIN_PATH_SURVIVAL_RATIO",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_EARLY_LOSS_TOXICITY",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MIN_MARGIN_BUFFER_AT_RISK_99",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_SEQUENCE_FRAGILITY_INDEX",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_LIQUIDATION_NEAR_MISS_RATE",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_GOVERNANCE_BREACH_FREQUENCY",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MIN_CHOP_SWITCH_SURVIVAL_SCORE",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_EFFECTIVE_LEVERAGE",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MIN_LIQUIDATION_BUFFER",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_SURVIVAL_LIMIT_MAX_ADVERSE_FILL_LOSS",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "G_SURVIVAL_LIMITS",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_STRATEGY_SIDE_DECLARATION_SCHEMA_ID",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "H_STRATEGY_SIDE",
+      "structural_value": "strategy_side_declaration.v1",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_PROFIT_STEP_PCT",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "I_CAPITAL_CONFIG",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_CASHFLOW_LOCK_FRACTION",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "I_CAPITAL_CONFIG",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_REINVEST_FRACTION",
+      "category": "MECHANICALLY_COUPLED",
+      "group": "I_CAPITAL_CONFIG",
+      "coupling_rule": "1 - OWNER_VALUE_CAPITAL_SLOT_CASHFLOW_LOCK_FRACTION",
+      "productive_numeric_value": null,
+      "notes": "No independent productive numeric; coupled after lock fraction Owner sign-off"
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_MIN_REALIZED_VOLATILITY",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "I_CAPITAL_CONFIG",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_MIN_ATR_OR_RANGE",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "I_CAPITAL_CONFIG",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_MAX_TIME_WITHOUT_CASHFLOW_STEP",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "I_CAPITAL_CONFIG",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_TIME_QUANTUM",
+      "category": "STRUCTURAL_RATIFIED",
+      "group": "I_CAPITAL_CONFIG",
+      "structural_value": "SOLE_TRADING_AUTHORITY_CYCLE_INDEX",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_MIN_OPPORTUNITY_SCORE",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "I_CAPITAL_CONFIG",
+      "productive_numeric_value": null
+    },
+    {
+      "token": "OWNER_VALUE_CAPITAL_SLOT_INITIAL_SLOT_BASE",
+      "category": "NUMERIC_CALIBRATION_REQUIRED",
+      "group": "J_CAPITAL_STATE",
+      "productive_numeric_value": null
+    }
+  ]
+}
