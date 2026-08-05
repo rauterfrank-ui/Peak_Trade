@@ -18,15 +18,17 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_mat
     DECISION_ID,
     DECISIONS_MANIFEST_REL,
     OWNER_DECISION_REL,
+    OWNER_GO_BASE_SHA,
     PARENT_RAW_INPUT_PACK_OWNER_DECISION_REL,
     PARENT_REGIME_COVERAGE_DECISION_REL,
     PARENT_STA_OPEN_INPUTS_CLOSEOUT_REL,
     PARENT_SURFACE_B_RATIFICATION_REL,
     PARENT_TRIAD_DECISION_REL,
+    RECORDED_OWNER_VALUE,
     REJECT_OWNER_VALUE,
     SCHEMA_REL,
     STA_OPEN_EXTERNAL_INPUTS,
-    STATUS_SURFACE_OPEN,
+    STATUS_OWNER_VALUE_RECORDED,
 )
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decision_v1.validator_v1 import (
     RawInputPackMaterializationDecisionErrorV1,
@@ -40,13 +42,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_SURFACE_OPEN}",
+    f"STATUS={STATUS_OWNER_VALUE_RECORDED}",
     f"DECISION_ID={DECISION_ID}",
-    "DECISION_STATUS=OPEN",
-    "OWNER_VALUE=null",
+    "DECISION_STATUS=RATIFIED",
+    f"OWNER_VALUE={RECORDED_OWNER_VALUE}",
+    f"OWNER_GO_BASE_SHA={OWNER_GO_BASE_SHA}",
     f"BASELINE_ORIGIN_MAIN_SHA={BASELINE_ORIGIN_MAIN_SHA}",
-    "OWNER_GO=OWNER_STA_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1",
-    f"OWNER_GO_BASE_SHA={BASELINE_ORIGIN_MAIN_SHA}",
     "SCOPE=DOCS_MANIFEST_SCHEMA_VALIDATOR_ONLY",
     "PRODUCER_REIMPLEMENTATION=false",
     "CONSUMER_WIRING=false",
@@ -106,14 +107,14 @@ def test_materialization_document_markers_v1() -> None:
         assert item in text, item
 
 
-def test_canonical_manifest_open_surface_v1() -> None:
+def test_canonical_manifest_owner_value_recorded_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     result = validate_raw_input_pack_materialization_manifest_v1(manifest)
     assert result["ok"] is True
     assert result["decision_id"] == DECISION_ID
-    assert result["status"] == STATUS_SURFACE_OPEN
-    assert result["decision_status"] == "OPEN"
-    assert result["owner_value"] is None
+    assert result["status"] == STATUS_OWNER_VALUE_RECORDED
+    assert result["decision_status"] == "RATIFIED"
+    assert result["owner_value"] == RECORDED_OWNER_VALUE
     assert result["allowed_owner_values"] == list(ALLOWED_OWNER_VALUES)
     assert result["authorize_detail_fields_null"] is True
     assert result["input_authority"] is False
@@ -126,11 +127,10 @@ def test_canonical_manifest_open_surface_v1() -> None:
     assert result["dashboard_authority_effect"] == "NONE"
 
 
-def test_schema_marks_open_surface_v1() -> None:
+def test_schema_allows_owner_value_recorded_v1() -> None:
     schema = json.loads((REPO_ROOT / SCHEMA_REL).read_text(encoding="utf-8"))
-    assert schema["properties"]["status"]["const"] == STATUS_SURFACE_OPEN
-    assert schema["properties"]["decision_status"]["const"] == "OPEN"
-    assert schema["properties"]["owner_value"]["type"] == "null"
+    assert STATUS_OWNER_VALUE_RECORDED in schema["properties"]["status"]["enum"]
+    assert "RATIFIED" in schema["properties"]["decision_status"]["enum"]
     assert schema["properties"]["raw_input_pack_materialization_authorized"]["const"] is False
     assert schema["properties"]["pack_materialization"]["const"] is False
 

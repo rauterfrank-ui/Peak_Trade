@@ -14,6 +14,7 @@
     "decision_id",
     "decision_status",
     "owner_value",
+    "owner_go_base_sha",
     "allowed_owner_values",
     "authorize_detail_fields",
     "sta_open_external_inputs",
@@ -53,7 +54,11 @@
       "const": "SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION"
     },
     "status": {
-      "const": "OWNER_STA_DECISION_SURFACE_OPEN"
+      "type": "string",
+      "enum": [
+        "OWNER_STA_DECISION_SURFACE_OPEN",
+        "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN"
+      ]
     },
     "authority_surface": {
       "const": "B"
@@ -62,10 +67,24 @@
       "const": "DEC_RAW_INPUT_PACK_MATERIALIZATION"
     },
     "decision_status": {
-      "const": "OPEN"
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "RATIFIED"
+      ]
     },
     "owner_value": {
-      "type": "null"
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "const": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION"
+        },
+        {
+          "const": "EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION"
+        }
+      ]
     },
     "allowed_owner_values": {
       "type": "array",
@@ -269,6 +288,10 @@
     },
     "decisions": {
       "type": "object"
+    },
+    "owner_go_base_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
     }
   }
 }

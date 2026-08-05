@@ -77,9 +77,12 @@ def load_canonical_raw_input_pack_materialization_decisions_manifest_v1(
 def validate_raw_input_pack_materialization_manifest_v1(
     manifest: Mapping[str, Any],
     *,
-    require_open_status: bool = True,
+    require_open_status: bool | None = None,
 ) -> dict[str, Any]:
-    """Validate the canonical raw input-pack materialization decision surface."""
+    """Validate the canonical raw input-pack materialization decision surface.
+
+    When ``require_open_status`` is None, mode is inferred from ``status``.
+    """
     for key in C.REQUIRED_MANIFEST_TOP_KEYS:
         if key not in manifest:
             raise RawInputPackMaterializationDecisionErrorV1(f"MANIFEST_MISSING_KEY:{key}")
@@ -274,6 +277,12 @@ def validate_raw_input_pack_materialization_manifest_v1(
     decision_status = manifest.get("decision_status")
     surface_status = manifest.get("status")
 
+    if require_open_status is None:
+        require_open_status = surface_status == C.STATUS_SURFACE_OPEN
+
+    if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
+        raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
+
     if require_open_status:
         if surface_status != C.STATUS_SURFACE_OPEN:
             raise RawInputPackMaterializationDecisionErrorV1("STATUS_MUST_REMAIN_SURFACE_OPEN")
@@ -284,10 +293,19 @@ def validate_raw_input_pack_materialization_manifest_v1(
         if mat_dec.get("status") != C.DECISION_STATUS_OPEN:
             raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_REMAIN_OPEN")
     else:
-        if owner_value is not None and owner_value not in C.ALLOWED_OWNER_VALUES:
-            raise RawInputPackMaterializationDecisionErrorV1("OWNER_VALUE_NOT_ALLOWED")
-        if owner_value is not None:
-            _assert_no_forbidden_source_token(owner_value, label="owner_value")
+        if surface_status != C.STATUS_OWNER_VALUE_RECORDED:
+            raise RawInputPackMaterializationDecisionErrorV1("STATUS_MUST_BE_OWNER_VALUE_RECORDED")
+        if decision_status != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
+        if owner_value != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_VALUE_MUST_MATCH_RECORDED")
+        if mat_dec.get("owner_value") != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "DECISIONS_OWNER_VALUE_MUST_MATCH_RECORDED"
+            )
+        if mat_dec.get("status") != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
+        _assert_no_forbidden_source_token(owner_value, label="owner_value")
 
     _reject_invented_numeric_payload(manifest)
 

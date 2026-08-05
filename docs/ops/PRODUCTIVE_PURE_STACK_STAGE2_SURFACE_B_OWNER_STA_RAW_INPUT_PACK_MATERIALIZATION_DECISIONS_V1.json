@@ -2,12 +2,12 @@
   "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions/v1",
   "document_type": "OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISIONS_MANIFEST",
   "capability_scope": "SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION",
-  "status": "OWNER_STA_DECISION_SURFACE_OPEN",
+  "status": "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN",
   "baseline_origin_main_sha": "56721ad0666fac5627d2dedbf33a22b59cd5996e",
   "authority_surface": "B",
   "decision_id": "DEC_RAW_INPUT_PACK_MATERIALIZATION",
-  "decision_status": "OPEN",
-  "owner_value": null,
+  "decision_status": "RATIFIED",
+  "owner_value": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
   "allowed_owner_values": [
     "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
     "EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION"
@@ -115,8 +115,8 @@
   "decisions": {
     "RAW_INPUT_PACK_MATERIALIZATION": {
       "decision_id": "DEC_RAW_INPUT_PACK_MATERIALIZATION",
-      "status": "OPEN",
-      "owner_value": null,
+      "status": "RATIFIED",
+      "owner_value": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
       "allowed_owner_values": [
         "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
         "EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION"
@@ -162,5 +162,6 @@
       "orders_testnet_live_paper_effects": false,
       "exchange_credential_effects": false
     }
-  }
+  },
+  "owner_go_base_sha": "59bda81aec59b149d52e5cc863691fd7ac16de02"
 }

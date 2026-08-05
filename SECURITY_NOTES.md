@@ -2,7 +2,7 @@
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
 **Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02); `STAGE2_SURFACE_B_CYBERSECURITY_MIRROR_SYNC_V1` (2026-08-05); `STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_TRIAD_AUTHORITY_RATIFICATION_ONLY_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_OWNER_VALUE_V1` (2026-08-05); `STAGE2_SURFACE_B_REGIME_COVERAGE_PRODUCER_IMPL_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1` (2026-08-05)
-**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B Owner/STA raw input-pack materialization decision surface against `origin&#47;main@56721ad0666fac5627d2dedbf33a22b59cd5996e`; Cap-7.2 overlays unchanged)
+**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B Owner/STA raw input-pack materialization Owner-value recording against `59bda81aec59b149d52e5cc863691fd7ac16de02`; Cap-7.2 overlays unchanged)
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
 **Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, start a public-MD network session, consume authorization, flip productive input authority, set productive numeric Owner values, or claim unverified scanner results.
 
@@ -253,19 +253,22 @@ Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVER
 
 ### 6.6 Stage-2 Surface B Owner/STA raw input-pack materialization (2026-08-05)
 
-Documentary cybersecurity mirror of open Owner/STA decision surface
+Documentary cybersecurity mirror of Owner/STA decision surface
 `SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION` for
-`DEC_RAW_INPUT_PACK_MATERIALIZATION`, bound to baseline
-`origin&#47;main@56721ad0666fac5627d2dedbf33a22b59cd5996e`.
+`DEC_RAW_INPUT_PACK_MATERIALIZATION` after Owner authorize-value recording,
+bound to Owner-GO baseline
+`59bda81aec59b149d52e5cc863691fd7ac16de02` (open-surface creation baseline
+remains `origin&#47;main@56721ad0666fac5627d2dedbf33a22b59cd5996e`).
 
 | Boundary | Required security reading |
 |----------|---------------------------|
-| Decision surface | Open; Owner choice not yet recorded |
+| Decision surface | Owner value recorded; authorize-detail fields still open/null |
 | `DECISION_ID` | `DEC_RAW_INPUT_PACK_MATERIALIZATION` |
-| `DECISION_STATUS` | `OPEN` (`DECISION_STATUS=OPEN`) |
-| `OWNER_VALUE` | `null` |
+| `DECISION_STATUS` | `RATIFIED` (`DECISION_STATUS=RATIFIED`) |
+| `OWNER_VALUE` | `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` |
+| Status | `OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN` |
 | Allowed owner values | exactly `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` or `EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION` |
-| Authorize detail fields | present and initially `null` |
+| Authorize detail fields | present and still `null` |
 | `PACK_MATERIALIZATION` | `false` |
 | `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED` | `false` |
 | `INPUT_AUTHORITY` | `false` |
@@ -278,7 +281,7 @@ Documentary cybersecurity mirror of open Owner/STA decision surface
 | Repository | Sole technical SSOT (`REPOSITORY_IS_SSOT=true`) |
 | Exchange credentials / order adapters | Unauthorized / unreachable under this decision |
 
-Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md). This section does **not** authorize pack materialization, campaign start, productive calibration, input-authority flips, runtime activation, Dashboard authority, or any exchange side effect.
+Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md). This section records the Owner authorize choice. It does **not** authorize pack materialization execution, campaign start, productive calibration, input-authority flips, runtime activation, Dashboard authority, or any exchange side effect.
 
 
 ---

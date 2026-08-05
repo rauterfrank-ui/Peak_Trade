@@ -4,13 +4,12 @@
 DOCUMENT_TYPE=OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION
 DOCUMENT_VERSION=1
 CAPABILITY_SCOPE=SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION
-STATUS=OWNER_STA_DECISION_SURFACE_OPEN
+STATUS=OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN
 DECISION_ID=DEC_RAW_INPUT_PACK_MATERIALIZATION
-DECISION_STATUS=OPEN
-OWNER_VALUE=null
+DECISION_STATUS=RATIFIED
+OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
+OWNER_GO_BASE_SHA=59bda81aec59b149d52e5cc863691fd7ac16de02
 BASELINE_ORIGIN_MAIN_SHA=56721ad0666fac5627d2dedbf33a22b59cd5996e
-OWNER_GO=OWNER_STA_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1
-OWNER_GO_BASE_SHA=56721ad0666fac5627d2dedbf33a22b59cd5996e
 SCOPE=DOCS_MANIFEST_SCHEMA_VALIDATOR_ONLY
 PARENT_RAW_INPUT_PACK=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md
 PARENT_TRIAD=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md
@@ -53,23 +52,29 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 
 ## 0. Binding effect
 
-This document is the Owner/STA **decision surface** for exactly one open
-decision:
+This document is the Owner/STA **decision surface** for exactly one decision:
 
 `DEC_RAW_INPUT_PACK_MATERIALIZATION`
 
-The Owner must explicitly choose between exactly two alternatives:
+The Owner has recorded:
+
+```text
+OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
+DECISION_STATUS=RATIFIED
+OWNER_GO_BASE_SHA=59bda81aec59b149d52e5cc863691fd7ac16de02
+STATUS=OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN
+```
+
+The only allowed alternatives remain:
 
 1. `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION`
 2. `EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION`
 
 It:
 
-1. freezes the fail-closed decision surface while `status=OPEN` and
-   `owner_value=null`;
-2. binds authorize-detail fields as separately present and initially null;
-3. binds STA open external inputs that remain unratified for pack materialization;
-4. keeps `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false`,
+1. records the Owner authorize choice while keeping authorize-detail fields null;
+2. binds STA open external inputs that remain unratified for pack materialization;
+3. keeps `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false`,
    `PACK_MATERIALIZATION=false`, `RAW_INPUT_PACK_CREATED=false`,
    `CAMPAIGN_START_AUTHORIZED=false`, `INPUT_AUTHORITY=false`, and
    `RUNTIME_IMPLEMENTED=false`.
@@ -89,9 +94,9 @@ It does **not**:
 - make Dashboard or Notion an authority.
 
 ```text
-OWNER_STA_DECISION_SURFACE_OPEN=true
-DECISION_STATUS=OPEN
-OWNER_VALUE=null
+OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN=true
+DECISION_STATUS=RATIFIED
+OWNER_VALUE=AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION
 AUTHORIZE_DETAIL_FIELDS_NULL=true
 PACK_MATERIALIZATION=false
 RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false
@@ -104,7 +109,7 @@ CAMPAIGN_STARTED=false
 ```text
 INV_AUTHORITY_SURFACE_B_ONLY=true
 INV_ONLY_TWO_OWNER_ALTERNATIVES=true
-INV_OWNER_VALUE_INITIALLY_NULL=true
+INV_OWNER_VALUE_RECORDED_AUTHORIZE=true
 INV_AUTHORIZE_DETAIL_FIELDS_INITIALLY_NULL=true
 INV_NO_INVENTED_INSTANCE_OR_PACK_VALUES=true
 INV_NO_FIXTURE_DEMO_DASHBOARD_SUBSTITUTION=true
@@ -122,8 +127,9 @@ INV_DASHBOARD_CONSUMER_ONLY=true
 | Field | Initial value |
 |-------|---------------|
 | `decision_id` | `DEC_RAW_INPUT_PACK_MATERIALIZATION` |
-| `status` / `decision_status` | `OPEN` |
-| `owner_value` | `null` |
+| `status` | `OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN` |
+| `decision_status` | `RATIFIED` |
+| `owner_value` | `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` |
 | Allowed owner values | exactly the two alternatives below |
 
 ### Allowed owner values
@@ -267,9 +273,12 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 
 ## 10. Canonical next step
 
-This surface remains `OWNER_STA_DECISION_SURFACE_OPEN` with `OWNER_VALUE=null`.
-A **separate** explicit Owner GO is required to record an Owner choice and, if
-authorization is chosen, to ratify authorize-detail fields. A further separate
-explicit Owner GO remains required before pack materialization execution,
-campaign start, input-authority/runtime flips, consumer wiring, PT1M adapter
-binding, or productive threshold/lookback ratification.
+Owner value is recorded as
+`AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` under
+`OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN`.
+Authorize-detail fields remain null. A **separate** explicit Owner GO is
+required to ratify authorize-detail fields. A further separate explicit Owner
+GO remains required before pack materialization execution
+(`PACK_MATERIALIZATION` / `RAW_INPUT_PACK_CREATED`), campaign start,
+input-authority/runtime flips, consumer wiring, PT1M adapter binding, or
+productive threshold/lookback ratification.
