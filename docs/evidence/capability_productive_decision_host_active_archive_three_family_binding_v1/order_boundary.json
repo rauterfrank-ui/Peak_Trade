@@ -1,0 +1,8 @@
+{
+  "exchange_credential_use": false,
+  "live_orders": false,
+  "order_path_reachable": false,
+  "paper_exchange_orders": false,
+  "real_capital_movement": false,
+  "testnet_orders": false
+}

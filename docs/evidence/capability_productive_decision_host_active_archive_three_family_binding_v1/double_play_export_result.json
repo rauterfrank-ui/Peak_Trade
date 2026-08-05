@@ -1,0 +1,14 @@
+{
+  "cycle_id": "owner-smoke-1989e7e4:cycle:7",
+  "detail": "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH:IntegratedOfflineReplayIntermediateV1 exposes SurvivalResultV1/SuitabilityResultV1/DoublePlayCompositionResultV1; build_dashboard_display_snapshot requires SurvivalEnvelopeDecision/SuitabilityProjectionDecision/DoublePlayCompositionDecision/TransitionDecision/FuturesInputReadinessDecision/CapitalSlot* without a ratified productive semantics-free adapter",
+  "error_code": "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH",
+  "exportable": false,
+  "exported": false,
+  "family_id": "double_play",
+  "loader_ok": false,
+  "materialized": false,
+  "projection_path": "",
+  "skipped_reason": "canonical_display_inputs_incomplete",
+  "source_digest": "",
+  "target_path": ""
+}
