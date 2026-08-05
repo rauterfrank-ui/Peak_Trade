@@ -38,6 +38,9 @@ STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED = (
 STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY = (
     "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY_FIELDS_STILL_NULL"
 )
+STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED = (
+    "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED_REMAINING_NULL"
+)
 
 DECISION_ID = "DEC_RAW_INPUT_PACK_MATERIALIZATION"
 DECISION_STATUS_OPEN = "OPEN"
@@ -45,13 +48,21 @@ DECISION_STATUS_RATIFIED = "RATIFIED"
 
 BASELINE_ORIGIN_MAIN_SHA = "56721ad0666fac5627d2dedbf33a22b59cd5996e"
 OWNER_GO_BASE_SHA_PROVABLE_INSTANCE_FIELDS_CLOSED = "ac8b1e67baf361156c6f666a2c4cddbe49362400"
-OWNER_GO_BASE_SHA = "6e4abc160c1b2b048a41e92d50003a33c30bb355"
+OWNER_GO_BASE_SHA_DECISION_PACKET_READY = "6e4abc160c1b2b048a41e92d50003a33c30bb355"
+OWNER_GO_BASE_SHA = "037b48fb75f77dbec34468f8de189473d1849568"
 DECISION_PACKET_ID = (
     "OWNER_STA_SURFACE_B_RAW_INPUT_PACK_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_V1"
 )
 DECISION_PACKET_DOCUMENT_TYPE = "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET"
-DECISION_PACKET_STATUS = "PACKET_READY_FIELDS_STILL_NULL"
-DECISION_PACKET_FIELD_STATUS = "OPEN_FILLABLE"
+DECISION_PACKET_STATUS_READY_STILL_NULL = "PACKET_READY_FIELDS_STILL_NULL"
+DECISION_PACKET_STATUS = "PACKET_OWNER_AND_STA_VALUES_FILLED_REMAINING_NULL"
+DECISION_PACKET_FIELD_STATUS_OPEN = "OPEN_FILLABLE"
+DECISION_PACKET_FIELD_STATUS_FILLED_OWNER = "FILLED_OWNER_VALUE"
+DECISION_PACKET_FIELD_STATUS_FILLED_STA = "FILLED_STA_EXTERNAL_INPUT"
+DECISION_PACKET_FIELD_STATUS_EXPLICIT_NULL = "FILLED_EXPLICIT_NULL_RATIFICATION"
+DECISION_PACKET_FIELD_STATUS_LEFT_NULL = "EXPLICITLY_LEFT_NULL_BY_OWNER"
+# Backward-compatible alias used by historical packet-ready path.
+DECISION_PACKET_FIELD_STATUS = DECISION_PACKET_FIELD_STATUS_OPEN
 INPUT_CLASS_OWNER_VALUE = "OWNER_VALUE"
 INPUT_CLASS_STA_EXTERNAL_INPUT = "STA_EXTERNAL_INPUT"
 AUTHORITY_SURFACE = "B"
@@ -84,11 +95,18 @@ AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED = True
 AUTHORIZE_DETAIL_FIELDS_COMPLETE = False
 PROVABLE_INSTANCE_FIELDS_CLOSED = True
 NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY = True
-NON_PROVABLE_INSTANCE_VALUES_STILL_NULL = True
+NON_PROVABLE_INSTANCE_VALUES_STILL_NULL = False
+NON_PROVABLE_INSTANCE_VALUES_PARTIALLY_FILLED = True
 REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS = True
 SILENT_DEFAULTS = False
 PROPOSED_VALUES = False
 INVENTED_VALUES = False
+CAMPAIGN_ID_EXPLICIT_LEAVE_NULL = True
+OBSERVATION_PACK_DIGEST_LEAVE_NULL_UNTIL_COMPUTED = True
+REGIME_COVERAGE_LEAVE_NULL_UNTIL_STA_PRODUCER_PROOF = True
+PURGE_EXPLICIT_NULL_RATIFICATION = True
+EMBARGO_EXPLICIT_NULL_RATIFICATION = True
+FOLD_SIZES_EXPLICIT_NULL_RATIFICATION = True
 
 OWNER_DECISION_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
@@ -114,6 +132,14 @@ PARENT_REGIME_COVERAGE_DECISION_REL = "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SUR
 PARENT_STA_OPEN_INPUTS_CLOSEOUT_REL = "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1.md"
 PARENT_SURFACE_B_RATIFICATION_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md"
+)
+PARENT_OKX_TIP_PROOF_REL = (
+    "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
+    "OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_V1.md"
+)
+SEALED_TIP_PROOF_ARTIFACT_REL = (
+    "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_"
+    "okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/numeric_tip_proof.json"
 )
 
 ALLOWED_OWNER_VALUES: tuple[str, ...] = (
@@ -149,6 +175,7 @@ AUTHORIZE_DETAIL_PROVABLE_FIELDS: tuple[str, ...] = (
     "regime_coverage_binding_ref",
 )
 
+# Historical: all instance authorize-detail fields null (pre-fill).
 AUTHORIZE_DETAIL_INSTANCE_NULL_FIELDS: tuple[str, ...] = (
     "campaign_id",
     "dataset_id",
@@ -179,6 +206,58 @@ AUTHORIZE_DETAIL_PROVABLE_FIELD_VALUES: dict[str, str] = {
     ),
 }
 
+FILLED_DATASET_ID = "surface_b_eth_usdt_swap_pt1m_okx_public_tip1785934680_v1"
+FILLED_SCENARIO_ID = "surface_b_regime_coverage_structural_partition_v1"
+FILLED_SEED = 5745001
+FILLED_RAW_SOURCE_DIGEST = "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57"
+FILLED_EVENT_TIME_EPOCH_S = 1_785_934_680
+FILLED_PARTITION_BOUNDARIES_EVENT_TIME_EPOCH_S: tuple[int, ...] = (
+    1_785_916_740,
+    1_785_921_240,
+    1_785_925_740,
+    1_785_930_240,
+    1_785_934_680,
+)
+FILLED_PARTITION_BOUNDARIES: dict[str, list[int]] = {
+    "train": [1_785_916_740, 1_785_921_240],
+    "calibration": [1_785_921_240, 1_785_925_740],
+    "validation": [1_785_925_740, 1_785_930_240],
+    "holdout": [1_785_930_240, 1_785_934_680],
+}
+FILLED_PARTITION_COUNT = 4
+FILLED_OWNER_PARTITION_SELECTION = "FULL_AUTHORIZED_OBSERVATION_WINDOW_FOUR_CANONICAL_SEGMENTS"
+FILLED_PARTITION_SEGMENTS_RESOLUTION = "EXPLICIT_FOUR_SEGMENT_BOUNDARIES_NO_EXCEPTION"
+FILLED_FOLD_IDS: tuple[str, ...] = (
+    "train",
+    "calibration",
+    "validation",
+    "holdout",
+)
+FILLED_BOOTSTRAP_SEEDS: tuple[int, ...] = (
+    574_500_101,
+    574_500_102,
+    574_500_103,
+    574_500_104,
+)
+AUTHORIZED_OBSERVATION_WINDOW_START_EPOCH_S = 1_785_916_740
+AUTHORIZED_OBSERVATION_WINDOW_EXCLUSIVE_TIP_EPOCH_S = 1_785_934_680
+
+AUTHORIZE_DETAIL_FILLED_FIELD_VALUES: dict[str, object] = {
+    "dataset_id": FILLED_DATASET_ID,
+    "scenario_id": FILLED_SCENARIO_ID,
+    "raw_source_digest": FILLED_RAW_SOURCE_DIGEST,
+    "seed": FILLED_SEED,
+    "event_time_epoch_s": FILLED_EVENT_TIME_EPOCH_S,
+    "partition_boundaries_event_time_epoch_s": list(FILLED_PARTITION_BOUNDARIES_EVENT_TIME_EPOCH_S),
+    "fold_ids": list(FILLED_FOLD_IDS),
+    "bootstrap_seeds": list(FILLED_BOOTSTRAP_SEEDS),
+}
+
+AUTHORIZE_DETAIL_REMAINING_NULL_FIELDS: tuple[str, ...] = (
+    "campaign_id",
+    "observation_pack_digest",
+)
+
 PROVABLE_INSTANCE_FIELDS: tuple[str, ...] = ("instrument_binding",)
 
 PROVABLE_INSTANCE_FIELD_VALUES: dict[str, dict[str, str]] = {
@@ -196,9 +275,13 @@ PROVABLE_INSTANCE_FIELD_VALUES: dict[str, dict[str, str]] = {
 CLOSED_STA_EXTERNAL_INPUTS: tuple[str, ...] = (
     "venue_native_candle_source_identity",
     "venue_native_mark_source_identity",
+    "deterministic_campaign_seed",
+    "exclusive_tip_event_time_epoch_s",
+    "partition_fold_bootstrap_structure",
 )
 
-STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = (
+# Historical open list before fill (used by packet-ready and earlier statuses).
+STA_OPEN_EXTERNAL_INPUTS_PRE_FILL: tuple[str, ...] = (
     "non_invented_campaign_instance_identity",
     "immutable_pack_provenance_digests",
     "deterministic_campaign_seed",
@@ -207,7 +290,14 @@ STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = (
     "regime_coverage_materialization_readiness",
 )
 
-REQUIRE_EXPLICIT_OWNER_VALUES_FOR: tuple[str, ...] = (
+STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = (
+    "non_invented_campaign_instance_identity",
+    "immutable_pack_provenance_digests",
+    "regime_coverage_materialization_readiness",
+)
+
+# Historical full require list (pre-fill / packet-ready).
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR_PRE_FILL: tuple[str, ...] = (
     "campaign_id",
     "dataset_id",
     "scenario_id",
@@ -222,6 +312,13 @@ REQUIRE_EXPLICIT_OWNER_VALUES_FOR: tuple[str, ...] = (
     "purge",
     "embargo",
     "fold_sizes",
+    "regime_coverage_counts",
+    "regime_coverage_instance",
+)
+
+REQUIRE_EXPLICIT_OWNER_VALUES_FOR: tuple[str, ...] = (
+    "campaign_id",
+    "observation_pack_digest",
     "regime_coverage_counts",
     "regime_coverage_instance",
 )
@@ -247,6 +344,32 @@ NULL_INSTANCE_KEYS: tuple[str, ...] = (
 
 REMAINING_NULL_INSTANCE_KEYS: tuple[str, ...] = tuple(
     k for k in NULL_INSTANCE_KEYS if k not in PROVABLE_INSTANCE_FIELDS
+)
+
+OPEN_INSTANCE_FILLED_FIELD_VALUES: dict[str, object] = {
+    "dataset_id": FILLED_DATASET_ID,
+    "scenario_id": FILLED_SCENARIO_ID,
+    "seed": FILLED_SEED,
+    "event_time_epoch_s": FILLED_EVENT_TIME_EPOCH_S,
+    "partition_boundaries": {
+        key: list(bounds) for key, bounds in FILLED_PARTITION_BOUNDARIES.items()
+    },
+    "fold_ids": list(FILLED_FOLD_IDS),
+    "bootstrap_seeds": list(FILLED_BOOTSTRAP_SEEDS),
+    "raw_source_digest": FILLED_RAW_SOURCE_DIGEST,
+}
+
+OPEN_INSTANCE_EXPLICIT_NULL_RATIFIED_FIELDS: tuple[str, ...] = (
+    "purge",
+    "embargo",
+    "fold_sizes",
+)
+
+OPEN_INSTANCE_REMAINING_NULL_FIELDS: tuple[str, ...] = (
+    "campaign_id",
+    "observation_pack_digest",
+    "regime_coverage_counts",
+    "regime_coverage_instance",
 )
 
 NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS: tuple[str, ...] = (
@@ -290,86 +413,145 @@ NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_STA_EXTERNAL_INPUT_FIELDS: tuple[st
     "regime_coverage_instance",
 )
 
+DECISION_PACKET_REMAINING_NULL_FIELDS: tuple[str, ...] = (
+    "campaign_id",
+    "observation_pack_digest",
+    "regime_coverage_counts",
+    "regime_coverage_instance",
+)
+
+DECISION_PACKET_ENUMERATED_REMAINING_NULL_FIELD_COUNT = len(DECISION_PACKET_REMAINING_NULL_FIELDS)
+
 NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELD_SPECS: dict[str, dict[str, object]] = {
     "campaign_id": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "non_invented_campaign_instance_identity",
         "allowed_format": "NON_EMPTY_ASCII_SLUG_STRING",
+        "status": DECISION_PACKET_FIELD_STATUS_LEFT_NULL,
+        "fillable_owner_value": None,
+        "fillable_sta_value": None,
     },
     "dataset_id": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "non_invented_campaign_instance_identity",
         "allowed_format": "NON_EMPTY_ASCII_DATASET_ID_STRING",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_OWNER,
+        "fillable_owner_value": FILLED_DATASET_ID,
+        "fillable_sta_value": None,
     },
     "scenario_id": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "non_invented_campaign_instance_identity",
         "allowed_format": "NON_EMPTY_ASCII_SCENARIO_ID_STRING",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_OWNER,
+        "fillable_owner_value": FILLED_SCENARIO_ID,
+        "fillable_sta_value": None,
     },
     "observation_pack_digest": {
         "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
         "related_sta_open_input": "immutable_pack_provenance_digests",
         "allowed_format": "SHA256_HEX_64",
+        "status": DECISION_PACKET_FIELD_STATUS_OPEN,
+        "fillable_owner_value": None,
+        "fillable_sta_value": None,
     },
     "raw_source_digest": {
         "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
         "related_sta_open_input": "immutable_pack_provenance_digests",
         "allowed_format": "SHA256_HEX_64",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_STA,
+        "fillable_owner_value": None,
+        "fillable_sta_value": FILLED_RAW_SOURCE_DIGEST,
     },
     "seed": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "deterministic_campaign_seed",
         "allowed_format": "DETERMINISTIC_NON_NEGATIVE_INTEGER_OR_EXPLICIT_SEED_STRING",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_OWNER,
+        "fillable_owner_value": FILLED_SEED,
+        "fillable_sta_value": None,
     },
     "event_time_epoch_s": {
         "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
         "related_sta_open_input": "exclusive_tip_event_time_epoch_s",
         "allowed_format": "UNIX_EPOCH_SECONDS_INTEGER",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_STA,
+        "fillable_owner_value": None,
+        "fillable_sta_value": FILLED_EVENT_TIME_EPOCH_S,
     },
     "partition_boundaries": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "partition_fold_bootstrap_structure",
         "allowed_format": "ORDERED_LIST_OF_EVENT_TIME_BOUNDARIES",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_OWNER,
+        "fillable_owner_value": {
+            key: list(bounds) for key, bounds in FILLED_PARTITION_BOUNDARIES.items()
+        },
+        "fillable_sta_value": None,
     },
     "partition_boundaries_event_time_epoch_s": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "partition_fold_bootstrap_structure",
         "allowed_format": "ORDERED_LIST_OF_UNIX_EPOCH_SECONDS_INTEGERS",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_OWNER,
+        "fillable_owner_value": list(FILLED_PARTITION_BOUNDARIES_EVENT_TIME_EPOCH_S),
+        "fillable_sta_value": None,
     },
     "fold_ids": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "partition_fold_bootstrap_structure",
         "allowed_format": "ORDERED_LIST_OF_NON_EMPTY_FOLD_ID_STRINGS",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_OWNER,
+        "fillable_owner_value": list(FILLED_FOLD_IDS),
+        "fillable_sta_value": None,
     },
     "bootstrap_seeds": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "partition_fold_bootstrap_structure",
         "allowed_format": "ORDERED_LIST_OF_DETERMINISTIC_SEEDS",
+        "status": DECISION_PACKET_FIELD_STATUS_FILLED_OWNER,
+        "fillable_owner_value": list(FILLED_BOOTSTRAP_SEEDS),
+        "fillable_sta_value": None,
     },
     "purge": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "partition_fold_bootstrap_structure",
         "allowed_format": "EXPLICIT_OWNER_NUMERIC_OR_EXPLICIT_NULL_RATIFICATION",
+        "status": DECISION_PACKET_FIELD_STATUS_EXPLICIT_NULL,
+        "fillable_owner_value": None,
+        "fillable_sta_value": None,
     },
     "embargo": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "partition_fold_bootstrap_structure",
         "allowed_format": "EXPLICIT_OWNER_NUMERIC_OR_EXPLICIT_NULL_RATIFICATION",
+        "status": DECISION_PACKET_FIELD_STATUS_EXPLICIT_NULL,
+        "fillable_owner_value": None,
+        "fillable_sta_value": None,
     },
     "fold_sizes": {
         "input_class": INPUT_CLASS_OWNER_VALUE,
         "related_sta_open_input": "partition_fold_bootstrap_structure",
         "allowed_format": "EXPLICIT_OWNER_LIST_OF_POSITIVE_INTEGERS_OR_EXPLICIT_NULL_RATIFICATION",
+        "status": DECISION_PACKET_FIELD_STATUS_EXPLICIT_NULL,
+        "fillable_owner_value": None,
+        "fillable_sta_value": None,
     },
     "regime_coverage_counts": {
         "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
         "related_sta_open_input": "regime_coverage_materialization_readiness",
         "allowed_format": "OBSERVATION_DERIVED_COUNT_OBJECT_FROM_AUTHORIZED_PRODUCER_ONLY",
+        "status": DECISION_PACKET_FIELD_STATUS_OPEN,
+        "fillable_owner_value": None,
+        "fillable_sta_value": None,
     },
     "regime_coverage_instance": {
         "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
         "related_sta_open_input": "regime_coverage_materialization_readiness",
         "allowed_format": "PRODUCER_BOUND_REGIME_COVERAGE_INSTANCE_OBJECT",
+        "status": DECISION_PACKET_FIELD_STATUS_OPEN,
+        "fillable_owner_value": None,
+        "fillable_sta_value": None,
     },
 }
 
@@ -434,3 +616,10 @@ PARENT_AUTHORITY_REF_VALUES: dict[str, str] = {
     "sta_open_inputs_closeout": PARENT_STA_OPEN_INPUTS_CLOSEOUT_REL,
     "surface_b_ratification": PARENT_SURFACE_B_RATIFICATION_REL,
 }
+
+PARTITION_SEGMENTS: tuple[str, ...] = (
+    "train",
+    "calibration",
+    "validation",
+    "holdout",
+)

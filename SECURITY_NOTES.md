@@ -258,28 +258,29 @@ Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVER
 Documentary cybersecurity mirror of Owner/STA decision surface
 `SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION` for
 `DEC_RAW_INPUT_PACK_MATERIALIZATION` after Owner authorize-value recording,
-closeout of only provable, non-invented authorize-detail refs, closeout of
-only the provable, non-invented instance field `instrument_binding`, and
-publication of the explicit fillable non-provable-instance-values decision
-packet with all value slots still null, bound to Owner-GO baseline
-`6e4abc160c1b2b048a41e92d50003a33c30bb355` (open-surface creation baseline
+provable-ref / instrument_binding closeout, decision-packet publication, and
+Owner/STA fill of non-provable instance values with remaining nulls for
+`campaign_id` (explicit leave-null), `observation_pack_digest`, and regime
+coverage, bound to Owner-GO baseline
+`037b48fb75f77dbec34468f8de189473d1849568` (open-surface creation baseline
 remains `origin&#47;main@56721ad0666fac5627d2dedbf33a22b59cd5996e`).
 
 | Boundary | Required security reading |
 |----------|---------------------------|
-| Decision surface | Provable refs + instrument_binding closed; fillable decision packet ready; non-provable values still null |
+| Decision surface | Owner/STA instance values partially filled; remaining nulls enumerated |
 | `DECISION_ID` | `DEC_RAW_INPUT_PACK_MATERIALIZATION` |
 | `DECISION_STATUS` | `RATIFIED` (`DECISION_STATUS=RATIFIED`) |
 | `OWNER_VALUE` | `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` |
-| Status | `OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY_FIELDS_STILL_NULL` |
+| Status | `OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED_REMAINING_NULL` |
 | Decision packet | `OWNER_STA_SURFACE_B_RAW_INPUT_PACK_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_V1` |
 | Allowed owner values | exactly `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` or `EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION` |
-| Authorize detail fields | provable refs closed; non-provable authorize-detail instance fields remain `null` |
-| Provable instance field | `instrument_binding` exact Owner-ratified InstrumentBindingV1 |
+| Filled Owner/STA fields | `dataset_id`, `scenario_id`, `seed`, partitions/folds/bootstrap, `raw_source_digest`, `event_time_epoch_s`; purge/embargo/fold_sizes explicit-null |
+| Remaining null | `campaign_id`, `observation_pack_digest`, `regime_coverage_counts`, `regime_coverage_instance` |
 | `AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED` | `true` |
 | `PROVABLE_INSTANCE_FIELDS_CLOSED` | `true` |
 | `NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY` | `true` |
-| `NON_PROVABLE_INSTANCE_VALUES_STILL_NULL` | `true` |
+| `NON_PROVABLE_INSTANCE_VALUES_STILL_NULL` | `false` |
+| `NON_PROVABLE_INSTANCE_VALUES_PARTIALLY_FILLED` | `true` |
 | `AUTHORIZE_DETAIL_FIELDS_COMPLETE` | `false` |
 | `REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS` | `true` |
 | `SILENT_DEFAULTS` | `false` |
@@ -296,7 +297,7 @@ remains `origin&#47;main@56721ad0666fac5627d2dedbf33a22b59cd5996e`).
 | Repository | Sole technical SSOT (`REPOSITORY_IS_SSOT=true`) |
 | Exchange credentials / order adapters | Unauthorized / unreachable under this decision |
 
-Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md). This section records the Owner authorize choice, provable-ref closeout, provable instance-field closeout, and fillable decision-packet publication. It does **not** authorize pack materialization execution, campaign start, productive calibration, input-authority flips, runtime activation, Dashboard authority, or any exchange side effect.
+Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md). This section records the Owner authorize choice, closeouts, decision-packet publication, and Owner/STA instance-value fill. It does **not** authorize pack materialization execution, campaign start, productive calibration, input-authority flips, runtime activation, Dashboard authority, or any exchange side effect.
 
 ### 6.7 Stage-2 Surface B Owner/STA raw PT1M observation-input and exclusive-tip proof
 

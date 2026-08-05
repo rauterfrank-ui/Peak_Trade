@@ -2,7 +2,7 @@
   "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions/v1",
   "document_type": "OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISIONS_MANIFEST",
   "capability_scope": "SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION",
-  "status": "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY_FIELDS_STILL_NULL",
+  "status": "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED_REMAINING_NULL",
   "baseline_origin_main_sha": "56721ad0666fac5627d2dedbf33a22b59cd5996e",
   "authority_surface": "B",
   "decision_id": "DEC_RAW_INPUT_PACK_MATERIALIZATION",
@@ -14,47 +14,51 @@
   ],
   "authorize_detail_fields": {
     "campaign_id": null,
-    "dataset_id": null,
-    "scenario_id": null,
+    "dataset_id": "surface_b_eth_usdt_swap_pt1m_okx_public_tip1785934680_v1",
+    "scenario_id": "surface_b_regime_coverage_structural_partition_v1",
     "instrument_binding_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding",
     "candle_authority_source_ref": "venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1",
     "mark_price_authority_source_ref": "venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1",
     "observation_pack_digest": null,
-    "raw_source_digest": null,
-    "seed": null,
-    "event_time_epoch_s": null,
-    "partition_boundaries_event_time_epoch_s": null,
-    "fold_ids": null,
-    "bootstrap_seeds": null,
+    "raw_source_digest": "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57",
+    "seed": 5745001,
+    "event_time_epoch_s": 1785934680,
+    "partition_boundaries_event_time_epoch_s": [
+      1785916740,
+      1785921240,
+      1785925740,
+      1785930240,
+      1785934680
+    ],
+    "fold_ids": [
+      "train",
+      "calibration",
+      "validation",
+      "holdout"
+    ],
+    "bootstrap_seeds": [
+      574500101,
+      574500102,
+      574500103,
+      574500104
+    ],
     "regime_coverage_binding_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md"
   },
   "sta_open_external_inputs": [
     "non_invented_campaign_instance_identity",
     "immutable_pack_provenance_digests",
-    "deterministic_campaign_seed",
-    "exclusive_tip_event_time_epoch_s",
-    "partition_fold_bootstrap_structure",
     "regime_coverage_materialization_readiness"
   ],
   "closed_sta_external_inputs": [
     "venue_native_candle_source_identity",
-    "venue_native_mark_source_identity"
+    "venue_native_mark_source_identity",
+    "deterministic_campaign_seed",
+    "exclusive_tip_event_time_epoch_s",
+    "partition_fold_bootstrap_structure"
   ],
   "require_explicit_owner_values_for": [
     "campaign_id",
-    "dataset_id",
-    "scenario_id",
     "observation_pack_digest",
-    "raw_source_digest",
-    "seed",
-    "event_time_epoch_s",
-    "partition_boundaries",
-    "partition_boundaries_event_time_epoch_s",
-    "fold_ids",
-    "bootstrap_seeds",
-    "purge",
-    "embargo",
-    "fold_sizes",
     "regime_coverage_counts",
     "regime_coverage_instance"
   ],
@@ -97,7 +101,17 @@
     "require_explicit_owner_values_for_non_provable_fields": true,
     "silent_defaults": false,
     "non_provable_instance_values_decision_packet_ready": true,
-    "non_provable_instance_values_still_null": true
+    "non_provable_instance_values_still_null": false,
+    "non_provable_instance_values_partially_filled": true,
+    "campaign_id_explicit_leave_null": true,
+    "observation_pack_digest_leave_null_until_computed": true,
+    "regime_coverage_leave_null_until_sta_producer_proof": true,
+    "purge_explicit_null_ratification": true,
+    "embargo_explicit_null_ratification": true,
+    "fold_sizes_explicit_null_ratification": true,
+    "owner_partition_selection": "FULL_AUTHORIZED_OBSERVATION_WINDOW_FOUR_CANONICAL_SEGMENTS",
+    "partition_count": 4,
+    "partition_segments_resolution": "EXPLICIT_FOUR_SEGMENT_BOUNDARIES_NO_EXCEPTION"
   },
   "input_authority": false,
   "runtime_implemented": false,
@@ -123,8 +137,8 @@
   "exchange_credential_effects": false,
   "open_null_instance_fields": {
     "campaign_id": null,
-    "dataset_id": null,
-    "scenario_id": null,
+    "dataset_id": "surface_b_eth_usdt_swap_pt1m_okx_public_tip1785934680_v1",
+    "scenario_id": "surface_b_regime_coverage_structural_partition_v1",
     "instrument_binding": {
       "venue": "okx",
       "canonical_instrument_id": "inst-eth-usdt-perp",
@@ -134,18 +148,45 @@
       "quote_currency": "USDT",
       "settlement_currency": "USDT"
     },
-    "seed": null,
-    "event_time_epoch_s": null,
-    "partition_boundaries": null,
-    "fold_ids": null,
-    "bootstrap_seeds": null,
+    "seed": 5745001,
+    "event_time_epoch_s": 1785934680,
+    "partition_boundaries": {
+      "train": [
+        1785916740,
+        1785921240
+      ],
+      "calibration": [
+        1785921240,
+        1785925740
+      ],
+      "validation": [
+        1785925740,
+        1785930240
+      ],
+      "holdout": [
+        1785930240,
+        1785934680
+      ]
+    },
+    "fold_ids": [
+      "train",
+      "calibration",
+      "validation",
+      "holdout"
+    ],
+    "bootstrap_seeds": [
+      574500101,
+      574500102,
+      574500103,
+      574500104
+    ],
     "purge": null,
     "embargo": null,
     "fold_sizes": null,
     "regime_coverage_counts": null,
     "regime_coverage_instance": null,
     "observation_pack_digest": null,
-    "raw_source_digest": null
+    "raw_source_digest": "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57"
   },
   "decisions": {
     "RAW_INPUT_PACK_MATERIALIZATION": {
@@ -198,12 +239,12 @@
       "exchange_credential_effects": false
     }
   },
-  "owner_go_base_sha": "6e4abc160c1b2b048a41e92d50003a33c30bb355",
+  "owner_go_base_sha": "037b48fb75f77dbec34468f8de189473d1849568",
   "non_provable_instance_values_decision_packet": {
     "packet_id": "OWNER_STA_SURFACE_B_RAW_INPUT_PACK_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_V1",
     "decision_id": "DEC_RAW_INPUT_PACK_MATERIALIZATION",
     "document_type": "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET",
-    "status": "PACKET_READY_FIELDS_STILL_NULL",
+    "status": "PACKET_OWNER_AND_STA_VALUES_FILLED_REMAINING_NULL",
     "owner_value_recorded": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
     "proposed_values": false,
     "silent_defaults": false,
@@ -214,7 +255,7 @@
     "campaign_start": false,
     "input_authority": false,
     "runtime_implemented": false,
-    "enumerated_remaining_null_field_count": 16,
+    "enumerated_remaining_null_field_count": 4,
     "fields": [
       {
         "field": "campaign_id",
@@ -239,7 +280,7 @@
         "fillable_owner_value": null,
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "EXPLICITLY_LEFT_NULL_BY_OWNER",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -264,10 +305,10 @@
           "MUST_BIND_IMMUTABLE_PACK_IDENTITY",
           "MUST_REMAIN_CONSISTENT_WITH_RAW_SOURCE_AND_OBSERVATION_PACK_DIGESTS"
         ],
-        "fillable_owner_value": null,
+        "fillable_owner_value": "surface_b_eth_usdt_swap_pt1m_okx_public_tip1785934680_v1",
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_OWNER_VALUE",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -292,10 +333,10 @@
           "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
           "MUST_REMAIN_CONSISTENT_WITH_CAMPAIGN_ID_AND_DATASET_ID"
         ],
-        "fillable_owner_value": null,
+        "fillable_owner_value": "surface_b_regime_coverage_structural_partition_v1",
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_OWNER_VALUE",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -349,9 +390,9 @@
           "REBUILD_REQUIRES_NEW_DATASET_ID_AND_DIGEST"
         ],
         "fillable_owner_value": null,
-        "fillable_sta_value": null,
+        "fillable_sta_value": "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57",
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_STA_EXTERNAL_INPUT",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -375,10 +416,10 @@
           "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
           "MUST_MAKE_BOOTSTRAP_AND_PARTITION_REPLAY_DETERMINISTIC"
         ],
-        "fillable_owner_value": null,
+        "fillable_owner_value": 5745001,
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_OWNER_VALUE",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -406,9 +447,9 @@
           "AS_OF_EQUALS_PACK_EXCLUSIVE_TIP"
         ],
         "fillable_owner_value": null,
-        "fillable_sta_value": null,
+        "fillable_sta_value": 1785934680,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_STA_EXTERNAL_INPUT",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -431,10 +472,27 @@
           "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
           "MUST_REMAIN_CONSISTENT_WITH_PARTITION_BOUNDARIES_EVENT_TIME_EPOCH_S"
         ],
-        "fillable_owner_value": null,
+        "fillable_owner_value": {
+          "train": [
+            1785916740,
+            1785921240
+          ],
+          "calibration": [
+            1785921240,
+            1785925740
+          ],
+          "validation": [
+            1785925740,
+            1785930240
+          ],
+          "holdout": [
+            1785930240,
+            1785934680
+          ]
+        },
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_OWNER_VALUE",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -457,10 +515,16 @@
           "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
           "MUST_REMAIN_CONSISTENT_WITH_PARTITION_BOUNDARIES_AND_EXCLUSIVE_TIP"
         ],
-        "fillable_owner_value": null,
+        "fillable_owner_value": [
+          1785916740,
+          1785921240,
+          1785925740,
+          1785930240,
+          1785934680
+        ],
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_OWNER_VALUE",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -483,10 +547,15 @@
           "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
           "MUST_REMAIN_CONSISTENT_WITH_FOLD_SIZES_WHEN_LATER_AUTHORIZED"
         ],
-        "fillable_owner_value": null,
+        "fillable_owner_value": [
+          "train",
+          "calibration",
+          "validation",
+          "holdout"
+        ],
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_OWNER_VALUE",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -509,10 +578,15 @@
           "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
           "MUST_REMAIN_REPLAYABLE_FROM_CAMPAIGN_SEED_AND_FOLD_STRUCTURE"
         ],
-        "fillable_owner_value": null,
+        "fillable_owner_value": [
+          574500101,
+          574500102,
+          574500103,
+          574500104
+        ],
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_OWNER_VALUE",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -539,7 +613,7 @@
         "fillable_owner_value": null,
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_EXPLICIT_NULL_RATIFICATION",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -566,7 +640,7 @@
         "fillable_owner_value": null,
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_EXPLICIT_NULL_RATIFICATION",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true
@@ -593,7 +667,7 @@
         "fillable_owner_value": null,
         "fillable_sta_value": null,
         "proposed_value": null,
-        "status": "OPEN_FILLABLE",
+        "status": "FILLED_EXPLICIT_NULL_RATIFICATION",
         "proposed_values_forbidden": true,
         "silent_defaults_forbidden": true,
         "invented_values_forbidden": true

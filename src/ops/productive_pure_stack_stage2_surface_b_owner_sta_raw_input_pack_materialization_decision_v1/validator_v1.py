@@ -122,6 +122,80 @@ def _validate_open_null_instance_fields_provable_closed(
         _assert_null(open_fields.get(key), label=f"open_null_instance_fields.{key}")
 
 
+def _validate_authorize_detail_fields_owner_sta_fill(detail_fields: Mapping[str, Any]) -> None:
+    for field in C.AUTHORIZE_DETAIL_FIELDS:
+        if field not in detail_fields:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                f"AUTHORIZE_DETAIL_FIELD_MISSING:{field}"
+            )
+    for field in C.AUTHORIZE_DETAIL_PROVABLE_FIELDS:
+        expected = C.AUTHORIZE_DETAIL_PROVABLE_FIELD_VALUES[field]
+        value = detail_fields.get(field)
+        _assert_exact(value, expected, label=f"authorize_detail_fields.{field}")
+        _assert_no_forbidden_source_token(value, label=f"authorize_detail_fields.{field}")
+    for field, expected in C.AUTHORIZE_DETAIL_FILLED_FIELD_VALUES.items():
+        value = detail_fields.get(field)
+        _assert_exact(value, expected, label=f"authorize_detail_fields.{field}")
+        if isinstance(value, str):
+            _assert_no_forbidden_source_token(value, label=f"authorize_detail_fields.{field}")
+        elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
+            for item in value:
+                _assert_no_forbidden_source_token(item, label=f"authorize_detail_fields.{field}")
+    for field in C.AUTHORIZE_DETAIL_REMAINING_NULL_FIELDS:
+        _assert_null(detail_fields.get(field), label=f"authorize_detail_fields.{field}")
+
+
+def _validate_open_null_instance_fields_owner_sta_fill(open_fields: Mapping[str, Any]) -> None:
+    for key in C.NULL_INSTANCE_KEYS:
+        if key not in open_fields:
+            raise RawInputPackMaterializationDecisionErrorV1(f"OPEN_NULL_FIELD_MISSING:{key}")
+    for field in C.PROVABLE_INSTANCE_FIELDS:
+        expected = C.PROVABLE_INSTANCE_FIELD_VALUES[field]
+        value = open_fields.get(field)
+        _assert_exact(value, expected, label=f"open_null_instance_fields.{field}")
+    for field, expected in C.OPEN_INSTANCE_FILLED_FIELD_VALUES.items():
+        value = open_fields.get(field)
+        _assert_exact(value, expected, label=f"open_null_instance_fields.{field}")
+        if isinstance(value, str):
+            _assert_no_forbidden_source_token(value, label=f"open_null_instance_fields.{field}")
+        elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
+            for item in value:
+                _assert_no_forbidden_source_token(item, label=f"open_null_instance_fields.{field}")
+    for field in C.OPEN_INSTANCE_EXPLICIT_NULL_RATIFIED_FIELDS:
+        _assert_null(open_fields.get(field), label=f"open_null_instance_fields.{field}")
+    for field in C.OPEN_INSTANCE_REMAINING_NULL_FIELDS:
+        _assert_null(open_fields.get(field), label=f"open_null_instance_fields.{field}")
+
+
+def _validate_partition_geometry_v1() -> None:
+    bounds = list(C.FILLED_PARTITION_BOUNDARIES_EVENT_TIME_EPOCH_S)
+    if bounds != sorted(bounds):
+        raise RawInputPackMaterializationDecisionErrorV1("PARTITION_BOUNDS_NOT_STRICTLY_ORDERED")
+    if any(int(b) % 60 != 0 for b in bounds):
+        raise RawInputPackMaterializationDecisionErrorV1("PARTITION_BOUNDS_NOT_PT1M_ALIGNED")
+    if bounds[0] != C.AUTHORIZED_OBSERVATION_WINDOW_START_EPOCH_S:
+        raise RawInputPackMaterializationDecisionErrorV1("PARTITION_BOUNDS_START_MISMATCH")
+    if bounds[-1] != C.AUTHORIZED_OBSERVATION_WINDOW_EXCLUSIVE_TIP_EPOCH_S:
+        raise RawInputPackMaterializationDecisionErrorV1("PARTITION_BOUNDS_TIP_MISMATCH")
+    if tuple(C.FILLED_FOLD_IDS) != C.PARTITION_SEGMENTS:
+        raise RawInputPackMaterializationDecisionErrorV1("FOLD_IDS_MUST_MATCH_PARTITION_SEGMENTS")
+    if len(C.FILLED_BOOTSTRAP_SEEDS) != len(C.FILLED_FOLD_IDS):
+        raise RawInputPackMaterializationDecisionErrorV1("BOOTSTRAP_SEEDS_MUST_MAP_1_1_TO_FOLDS")
+    for segment in C.PARTITION_SEGMENTS:
+        pair = C.FILLED_PARTITION_BOUNDARIES[segment]
+        if len(pair) != 2 or int(pair[0]) >= int(pair[1]):
+            raise RawInputPackMaterializationDecisionErrorV1(f"PARTITION_SEGMENT_INVALID:{segment}")
+    reconstructed = [
+        C.FILLED_PARTITION_BOUNDARIES["train"][0],
+        C.FILLED_PARTITION_BOUNDARIES["train"][1],
+        C.FILLED_PARTITION_BOUNDARIES["calibration"][1],
+        C.FILLED_PARTITION_BOUNDARIES["validation"][1],
+        C.FILLED_PARTITION_BOUNDARIES["holdout"][1],
+    ]
+    if reconstructed != bounds:
+        raise RawInputPackMaterializationDecisionErrorV1("PARTITION_SEGMENTS_BOUNDS_INCONSISTENT")
+
+
 def load_canonical_raw_input_pack_materialization_decisions_manifest_v1(
     repo_root: Path | str | None = None,
 ) -> dict[str, Any]:
@@ -321,17 +395,27 @@ def validate_raw_input_pack_materialization_manifest_v1(
     authorize_detail_provable_refs_closed = False
     provable_instance_fields_closed = False
     decision_packet_ready = False
+    owner_sta_fill_recorded = False
     expected_provable_refs_closed = surface_status in (
         C.STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED,
         C.STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED,
         C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY,
+        C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED,
     )
     expected_provable_instance_closed = surface_status in (
         C.STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED,
         C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY,
+        C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED,
     )
-    expected_decision_packet_ready = (
+    expected_decision_packet_ready = surface_status in (
+        C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY,
+        C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED,
+    )
+    expected_still_null = (
         surface_status == C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY
+    )
+    expected_partial_fill = (
+        surface_status == C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED
     )
     if (
         authorize_sem.get("authorize_detail_provable_refs_closed")
@@ -369,12 +453,42 @@ def validate_raw_input_pack_materialization_manifest_v1(
         raise RawInputPackMaterializationDecisionErrorV1(
             "AUTHORIZE_SEMANTICS_INVALID:non_provable_instance_values_decision_packet_ready"
         )
-    if expected_decision_packet_ready and (
+    if expected_still_null and (
         authorize_sem.get("non_provable_instance_values_still_null") is not True
     ):
         raise RawInputPackMaterializationDecisionErrorV1(
             "AUTHORIZE_SEMANTICS_INVALID:non_provable_instance_values_still_null"
         )
+    if expected_partial_fill:
+        if authorize_sem.get("non_provable_instance_values_still_null") is not False:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "AUTHORIZE_SEMANTICS_INVALID:non_provable_instance_values_still_null"
+            )
+        if authorize_sem.get("non_provable_instance_values_partially_filled") is not True:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "AUTHORIZE_SEMANTICS_INVALID:non_provable_instance_values_partially_filled"
+            )
+        if authorize_sem.get("campaign_id_explicit_leave_null") is not True:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "AUTHORIZE_SEMANTICS_INVALID:campaign_id_explicit_leave_null"
+            )
+        if authorize_sem.get("observation_pack_digest_leave_null_until_computed") is not True:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "AUTHORIZE_SEMANTICS_INVALID:observation_pack_digest_leave_null_until_computed"
+            )
+        if authorize_sem.get("regime_coverage_leave_null_until_sta_producer_proof") is not True:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "AUTHORIZE_SEMANTICS_INVALID:regime_coverage_leave_null_until_sta_producer_proof"
+            )
+        for key in (
+            "purge_explicit_null_ratification",
+            "embargo_explicit_null_ratification",
+            "fold_sizes_explicit_null_ratification",
+        ):
+            if authorize_sem.get(key) is not True:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"AUTHORIZE_SEMANTICS_INVALID:{key}"
+                )
 
     closed_sta = manifest.get("closed_sta_external_inputs")
     if not isinstance(closed_sta, Sequence) or isinstance(closed_sta, (str, bytes)):
@@ -413,7 +527,7 @@ def validate_raw_input_pack_materialization_manifest_v1(
                 "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MUST_BE_EMPTY_WHILE_OPEN"
             )
         # Historical open surface listed all eight STA inputs.
-        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS + C.STA_OPEN_EXTERNAL_INPUTS
+        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS[:2] + C.STA_OPEN_EXTERNAL_INPUTS_PRE_FILL
         for required in historical_open_sta:
             if required not in sta_inputs:
                 raise RawInputPackMaterializationDecisionErrorV1(
@@ -442,7 +556,7 @@ def validate_raw_input_pack_materialization_manifest_v1(
             raise RawInputPackMaterializationDecisionErrorV1(
                 "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MUST_BE_EMPTY_WHILE_OWNER_VALUE_ONLY"
             )
-        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS + C.STA_OPEN_EXTERNAL_INPUTS
+        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS[:2] + C.STA_OPEN_EXTERNAL_INPUTS_PRE_FILL
         for required in historical_open_sta:
             if required not in sta_inputs:
                 raise RawInputPackMaterializationDecisionErrorV1(
@@ -477,7 +591,7 @@ def validate_raw_input_pack_materialization_manifest_v1(
             raise RawInputPackMaterializationDecisionErrorV1(
                 "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MUST_BE_EMPTY_WHILE_REFS_ONLY"
             )
-        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS + C.STA_OPEN_EXTERNAL_INPUTS
+        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS[:2] + C.STA_OPEN_EXTERNAL_INPUTS_PRE_FILL
         for required in historical_open_sta:
             if required not in sta_inputs:
                 raise RawInputPackMaterializationDecisionErrorV1(
@@ -504,24 +618,27 @@ def validate_raw_input_pack_materialization_manifest_v1(
         _validate_open_null_instance_fields_provable_closed(open_fields)
         authorize_detail_provable_refs_closed = True
         provable_instance_fields_closed = True
-        if tuple(closed_sta) != C.CLOSED_STA_EXTERNAL_INPUTS:
+        if tuple(closed_sta) != C.CLOSED_STA_EXTERNAL_INPUTS[:2]:
             raise RawInputPackMaterializationDecisionErrorV1("CLOSED_STA_EXTERNAL_INPUTS_MISMATCH")
-        if tuple(require_owner) != C.REQUIRE_EXPLICIT_OWNER_VALUES_FOR:
+        if tuple(require_owner) != C.REQUIRE_EXPLICIT_OWNER_VALUES_FOR_PRE_FILL:
             raise RawInputPackMaterializationDecisionErrorV1(
                 "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MISMATCH"
             )
-        for required in C.STA_OPEN_EXTERNAL_INPUTS:
+        for required in C.STA_OPEN_EXTERNAL_INPUTS_PRE_FILL:
             if required not in sta_inputs:
                 raise RawInputPackMaterializationDecisionErrorV1(
                     f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
                 )
-        for closed in C.CLOSED_STA_EXTERNAL_INPUTS:
+        for closed in C.CLOSED_STA_EXTERNAL_INPUTS[:2]:
             if closed in sta_inputs:
                 raise RawInputPackMaterializationDecisionErrorV1(
                     f"STA_OPEN_EXTERNAL_INPUT_MUST_BE_CLOSED:{closed}"
                 )
     elif surface_status == C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY:
-        if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
+        if (
+            str(manifest.get("owner_go_base_sha") or "")
+            != C.OWNER_GO_BASE_SHA_DECISION_PACKET_READY
+        ):
             raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
         if decision_status != C.DECISION_STATUS_RATIFIED:
             raise RawInputPackMaterializationDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
@@ -538,6 +655,47 @@ def validate_raw_input_pack_materialization_manifest_v1(
         _validate_open_null_instance_fields_provable_closed(open_fields)
         authorize_detail_provable_refs_closed = True
         provable_instance_fields_closed = True
+        if tuple(closed_sta) != C.CLOSED_STA_EXTERNAL_INPUTS[:2]:
+            raise RawInputPackMaterializationDecisionErrorV1("CLOSED_STA_EXTERNAL_INPUTS_MISMATCH")
+        if tuple(require_owner) != C.REQUIRE_EXPLICIT_OWNER_VALUES_FOR_PRE_FILL:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MISMATCH"
+            )
+        for required in C.STA_OPEN_EXTERNAL_INPUTS_PRE_FILL:
+            if required not in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
+                )
+        for closed in C.CLOSED_STA_EXTERNAL_INPUTS[:2]:
+            if closed in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MUST_BE_CLOSED:{closed}"
+                )
+        _validate_non_provable_instance_values_decision_packet(
+            manifest.get("non_provable_instance_values_decision_packet"),
+            mode="packet_ready_still_null",
+        )
+        decision_packet_ready = True
+    elif surface_status == C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED:
+        if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
+        if decision_status != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
+        if owner_value != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_VALUE_MUST_MATCH_RECORDED")
+        if mat_dec.get("owner_value") != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "DECISIONS_OWNER_VALUE_MUST_MATCH_RECORDED"
+            )
+        if mat_dec.get("status") != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
+        _assert_no_forbidden_source_token(owner_value, label="owner_value")
+        _validate_partition_geometry_v1()
+        _validate_authorize_detail_fields_owner_sta_fill(detail_fields)
+        _validate_open_null_instance_fields_owner_sta_fill(open_fields)
+        authorize_detail_provable_refs_closed = True
+        provable_instance_fields_closed = True
+        owner_sta_fill_recorded = True
         if tuple(closed_sta) != C.CLOSED_STA_EXTERNAL_INPUTS:
             raise RawInputPackMaterializationDecisionErrorV1("CLOSED_STA_EXTERNAL_INPUTS_MISMATCH")
         if tuple(require_owner) != C.REQUIRE_EXPLICIT_OWNER_VALUES_FOR:
@@ -555,7 +713,8 @@ def validate_raw_input_pack_materialization_manifest_v1(
                     f"STA_OPEN_EXTERNAL_INPUT_MUST_BE_CLOSED:{closed}"
                 )
         _validate_non_provable_instance_values_decision_packet(
-            manifest.get("non_provable_instance_values_decision_packet")
+            manifest.get("non_provable_instance_values_decision_packet"),
+            mode="owner_sta_fill_recorded",
         )
         decision_packet_ready = True
     else:
@@ -576,7 +735,10 @@ def validate_raw_input_pack_materialization_manifest_v1(
         "authorize_detail_fields_complete": False,
         "provable_instance_fields_closed": provable_instance_fields_closed,
         "non_provable_instance_values_decision_packet_ready": decision_packet_ready,
-        "non_provable_instance_values_still_null": decision_packet_ready,
+        "non_provable_instance_values_still_null": (
+            decision_packet_ready and not owner_sta_fill_recorded
+        ),
+        "non_provable_instance_values_partially_filled": owner_sta_fill_recorded,
         "require_explicit_owner_values_for_non_provable_fields": (provable_instance_fields_closed),
         "silent_defaults": False,
         "proposed_values": False,
@@ -659,7 +821,11 @@ def validate_raw_input_pack_materialization_owner_choice_v1(
     }
 
 
-def _validate_non_provable_instance_values_decision_packet(raw: Any) -> None:
+def _validate_non_provable_instance_values_decision_packet(
+    raw: Any,
+    *,
+    mode: str,
+) -> None:
     packet = _require_mapping(raw, label="non_provable_instance_values_decision_packet")
     _assert_exact(packet.get("packet_id"), C.DECISION_PACKET_ID, label="decision_packet.packet_id")
     _assert_exact(packet.get("decision_id"), C.DECISION_ID, label="decision_packet.decision_id")
@@ -668,7 +834,19 @@ def _validate_non_provable_instance_values_decision_packet(raw: Any) -> None:
         C.DECISION_PACKET_DOCUMENT_TYPE,
         label="decision_packet.document_type",
     )
-    _assert_exact(packet.get("status"), C.DECISION_PACKET_STATUS, label="decision_packet.status")
+    if mode == "packet_ready_still_null":
+        expected_packet_status = C.DECISION_PACKET_STATUS_READY_STILL_NULL
+        expected_count = len(C.NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS)
+    elif mode == "owner_sta_fill_recorded":
+        expected_packet_status = C.DECISION_PACKET_STATUS
+        expected_count = C.DECISION_PACKET_ENUMERATED_REMAINING_NULL_FIELD_COUNT
+    else:
+        raise RawInputPackMaterializationDecisionErrorV1("DECISION_PACKET_MODE_UNSUPPORTED")
+    _assert_exact(
+        packet.get("status"),
+        expected_packet_status,
+        label="decision_packet.status",
+    )
     _assert_exact(
         packet.get("owner_value_recorded"),
         C.RECORDED_OWNER_VALUE,
@@ -692,9 +870,7 @@ def _validate_non_provable_instance_values_decision_packet(raw: Any) -> None:
         raise RawInputPackMaterializationDecisionErrorV1("DECISION_PACKET_FIELDS_MUST_BE_SEQUENCE")
     if len(fields) != len(C.NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS):
         raise RawInputPackMaterializationDecisionErrorV1("DECISION_PACKET_FIELD_COUNT_MISMATCH")
-    if packet.get("enumerated_remaining_null_field_count") != len(
-        C.NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS
-    ):
+    if packet.get("enumerated_remaining_null_field_count") != expected_count:
         raise RawInputPackMaterializationDecisionErrorV1(
             "DECISION_PACKET_ENUMERATED_COUNT_MISMATCH"
         )
@@ -728,17 +904,38 @@ def _validate_non_provable_instance_values_decision_packet(raw: Any) -> None:
             expected["allowed_format"],
             label=f"decision_packet.fields[{field}].allowed_format",
         )
-        for key in (
-            "fillable_owner_value",
-            "fillable_sta_value",
-            "proposed_value",
-        ):
-            _assert_null(row.get(key), label=f"decision_packet.fields[{field}].{key}")
-        _assert_exact(
-            row.get("status"),
-            C.DECISION_PACKET_FIELD_STATUS,
-            label=f"decision_packet.fields[{field}].status",
-        )
+        if mode == "packet_ready_still_null":
+            for key in (
+                "fillable_owner_value",
+                "fillable_sta_value",
+                "proposed_value",
+            ):
+                _assert_null(row.get(key), label=f"decision_packet.fields[{field}].{key}")
+            _assert_exact(
+                row.get("status"),
+                C.DECISION_PACKET_FIELD_STATUS_OPEN,
+                label=f"decision_packet.fields[{field}].status",
+            )
+        else:
+            _assert_null(
+                row.get("proposed_value"),
+                label=f"decision_packet.fields[{field}].proposed_value",
+            )
+            _assert_exact(
+                row.get("status"),
+                expected["status"],
+                label=f"decision_packet.fields[{field}].status",
+            )
+            _assert_exact(
+                row.get("fillable_owner_value"),
+                expected["fillable_owner_value"],
+                label=f"decision_packet.fields[{field}].fillable_owner_value",
+            )
+            _assert_exact(
+                row.get("fillable_sta_value"),
+                expected["fillable_sta_value"],
+                label=f"decision_packet.fields[{field}].fillable_sta_value",
+            )
         for key in (
             "proposed_values_forbidden",
             "silent_defaults_forbidden",
