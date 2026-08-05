@@ -1,0 +1,2 @@
+tests/ops/test_phase_9_2_step_4_productive_session_request_cli_operator_adapter_v1.py
+tests/ops/test_phase_9_2_step_4_productive_session_activation_runner_signature_and_owner_permit_wiring_v1.py

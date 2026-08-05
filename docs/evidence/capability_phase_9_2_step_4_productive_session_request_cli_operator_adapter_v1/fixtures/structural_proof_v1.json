@@ -1,0 +1,14 @@
+{
+  "adapter_module": "src/ops/phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1/session_request_cli_adapter_v1.py",
+  "cli": "scripts/ops/run_phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.py",
+  "ok": true,
+  "required_runner_kwargs": [
+    "prereg",
+    "go",
+    "confirm_token",
+    "artifact_path",
+    "evidence_root",
+    "expected_repository_sha",
+    "fingerprint_ledger_path"
+  ]
+}
