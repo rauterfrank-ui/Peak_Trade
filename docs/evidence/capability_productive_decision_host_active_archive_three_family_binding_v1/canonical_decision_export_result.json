@@ -1,0 +1,14 @@
+{
+  "cycle_id": "owner-smoke-1989e7e4:cycle:7",
+  "detail": "",
+  "error_code": "",
+  "exportable": true,
+  "exported": true,
+  "family_id": "canonical_decision",
+  "loader_ok": true,
+  "materialized": true,
+  "projection_path": "",
+  "skipped_reason": "",
+  "source_digest": "b44ccf956258ea8b081fa5216286537cf712e546584fed4fc04ebdef87431cab",
+  "target_path": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z/readmodels/canonical_trading_decision_evidence.v1.json"
+}

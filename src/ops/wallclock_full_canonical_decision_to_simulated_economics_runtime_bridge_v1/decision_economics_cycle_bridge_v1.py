@@ -406,6 +406,9 @@ class BridgeSessionStateV1:
         default_factory=ActionabilityTelemetryBindingV1
     )
     last_actionability_telemetry: Optional[dict[str, Any]] = None
+    # Productive archive-binding capture: last cycle CanonicalTradingDecisionEvidenceV1
+    # export payload (wiring only; no decision recomputation).
+    last_canonical_decision_evidence: Optional[dict[str, Any]] = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -1327,6 +1330,16 @@ def run_bridge_cycle_v1(
     )
 
     replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
+    # Durable source capture for archive sibling export (semantics-free serialization).
+    from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+        serialize_canonical_trading_decision_evidence_canonical,
+    )
+
+    _evidence_payload = json.loads(
+        serialize_canonical_trading_decision_evidence_canonical(replay.evidence)
+    )
+    _evidence_payload["semantic_digest"] = str(replay.evidence.semantic_digest or "")
+    state.last_canonical_decision_evidence = dict(_evidence_payload)
     intended = map_replay_result_to_intended_analytical_action_v1(
         replay,
         instrument_id=state.instrument_id,

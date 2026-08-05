@@ -1,0 +1,24 @@
+{
+  "capability_id": "CAPABILITY_PRODUCTIVE_DECISION_HOST_ACTIVE_ARCHIVE_THREE_FAMILY_BINDING_V1",
+  "files": {
+    "REPORT.md": "5815ac40830d7021cae21e4483b4dc0c0405cda9c94b27338316027d20134182",
+    "archive_binding.json": "79906ec6307933171f1a6e67503d3c55132b978b269f3b97900f11dc71afc0c0",
+    "authority_and_callgraph.json": "480aeb670ad13adedd9850b49e3fe5b1e1bd366de293d65b67c88b31239d26b6",
+    "canonical_decision_export_result.json": "3eec7306312034a4487bde8f424e8715ff6ddaeeed1a8634917437bd177b5ec8",
+    "claims.json": "0bca40334fef217d30cb6715f5486cddbe3592b01cec4d98f8f7c5707878389f",
+    "cycle_commit_trace.json": "e941f19823ca7b1cd2cb9536210124e630424895409a77ef2b79d9734a9923bd",
+    "dashboard_process_immutability.json": "c9be0b599f2e05d6c301e2fd8a7fc502f40b5cb4c475751deb838c0dae27954f",
+    "double_play_export_result.json": "61d06a6e7aa2abd2344cd7c28ea34d7c71d58edd41c888fafa35b6cc6fb0e62c",
+    "dynamic_scope_export_result.json": "5e96df5980f81c1914249d82ec0527fe38f4afcbd3960fa01a8942f98840e77f",
+    "launcher_contract.json": "1254ec57989b1e95461b5940edbf98f88d1429ad723401a004201249c5bbb97b",
+    "loader_verification.json": "da477591fb0c207a445074bc7ce515f98e8e93d64123446fc8f0b99baf8bd1dc",
+    "network_boundary.json": "1ed59fd232568de8a5800c7b080e87eaa07991c3ada7f2ccc918b8322d539476",
+    "order_boundary.json": "a7635478c7dbd4e2691c1d16728cbdcd544fba8855d51e649a53c83c25e991ee",
+    "preflight.json": "ba9136547c01373a81a45ac17810fd724d7107ee039213274a73d1989c485391",
+    "smoke_session.json": "1281eaa87bba97329f5a9ec65c82dac95dcbcbb4365dbe0c457d516c2cf04fea",
+    "state_root_binding.json": "98d0c3c34b825ba4fde69010d5ed7566d86a802db4464ac81488993a35d5b5f2",
+    "tests.json": "2eb5733c66000ad13ffe80282bcb10eb1a8201a976a3ae1fefd5e76cec1357f1"
+  },
+  "generated_at": "2026-08-05T01:35:10.294567+00:00",
+  "repository_sha": "1989e7e4dc0697d049a25c4b3d84baf27016ecf5"
+}
