@@ -1,45 +1,44 @@
-"""Hermetic tests for Stage-1 shadow formula producers."""
+"""Hermetic tests for Stage-1 shadow formula producers (ops-isolated)."""
 
 from __future__ import annotations
 
 import math
 
-from trading.master_v2.fps_atr_or_range_wilder_atr_finalized_ohlcv_v1 import (
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_atr_or_range_wilder_atr_finalized_ohlcv_v1 import (
     FORMULA_ID as ATR_ID,
     PRODUCTIVE_ACTIVATION as ATR_PA,
     compute_fps_atr_or_range_wilder_atr_finalized_ohlcv_v1,
 )
-from trading.master_v2.fps_opportunity_score_fee_slippage_breakeven_movement_v1 import (
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_opportunity_score_fee_slippage_breakeven_movement_v1 import (
     FORMULA_ID as OPP_ID,
     PRODUCTIVE_ACTIVATION as OPP_PA,
     compute_fps_opportunity_score_fee_slippage_breakeven_movement_v1,
 )
-from trading.master_v2.fps_realized_volatility_population_stdev_mark_log_returns_v1 import (
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_realized_volatility_population_stdev_mark_log_returns_v1 import (
     FORMULA_ID as RV_ID,
     PRODUCTIVE_ACTIVATION as RV_PA,
     compute_fps_realized_volatility_population_stdev_mark_log_returns_v1,
 )
-from trading.master_v2.fps_sequence_path_survival_ratio_prearm_path_fraction_v1 import (
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_sequence_path_survival_ratio_prearm_path_fraction_v1 import (
     FORMULA_ID as PATH_ID,
     PRODUCTIVE_ACTIVATION as PATH_PA,
     compute_fps_sequence_path_survival_ratio_prearm_path_fraction_v1,
 )
-from trading.master_v2.shadow_futures_input_freshness_age_collector_v1 import (
-    PRODUCTIVE_ACTIVATION as AGE_PA,
-    collect_shadow_futures_input_freshness_age_v1,
-)
-from trading.master_v2.shadow_sequence_survival_metrics_producer_v1 import (
-    PRODUCTIVE_ACTIVATION as SEQ_PA,
-    produce_shadow_sequence_survival_metrics_v1,
-)
-from trading.master_v2.shadow_survival_envelope_assembler_v1 import (
-    PRODUCTIVE_ACTIVATION as ENV_PA,
-    assemble_shadow_survival_envelope_v1,
-)
-
 from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.models_v1 import (
     FinalizedBarV1,
     ShadowAvailabilityV1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.shadow_futures_input_freshness_age_collector_v1 import (
+    PRODUCTIVE_ACTIVATION as AGE_PA,
+    collect_shadow_futures_input_freshness_age_v1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.shadow_sequence_survival_metrics_producer_v1 import (
+    PRODUCTIVE_ACTIVATION as SEQ_PA,
+    produce_shadow_sequence_survival_metrics_v1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.shadow_survival_envelope_assembler_v1 import (
+    PRODUCTIVE_ACTIVATION as ENV_PA,
+    assemble_shadow_survival_envelope_v1,
 )
 
 

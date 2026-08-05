@@ -9,12 +9,12 @@ from __future__ import annotations
 
 from typing import Mapping, Optional
 
-from trading.master_v2.fps_sequence_path_survival_ratio_prearm_path_fraction_v1 import (
+from trading.master_v2.double_play_survival import SequenceSurvivalMetrics
+
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_sequence_path_survival_ratio_prearm_path_fraction_v1 import (
     FORMULA_ID as PATH_SURVIVAL_FORMULA_ID,
     compute_fps_sequence_path_survival_ratio_prearm_path_fraction_v1,
 )
-from trading.master_v2.double_play_survival import SequenceSurvivalMetrics
-
 from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.models_v1 import (
     ShadowAvailabilityV1,
     ShadowSequenceMetricsObservationV1,

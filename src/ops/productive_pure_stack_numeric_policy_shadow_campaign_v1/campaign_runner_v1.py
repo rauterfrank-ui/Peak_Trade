@@ -7,32 +7,6 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
-from trading.master_v2.fps_atr_or_range_wilder_atr_finalized_ohlcv_v1 import (
-    FORMULA_ID as ATR_FORMULA_ID,
-    compute_fps_atr_or_range_wilder_atr_finalized_ohlcv_v1,
-)
-from trading.master_v2.fps_opportunity_score_fee_slippage_breakeven_movement_v1 import (
-    FORMULA_ID as OPP_FORMULA_ID,
-    compute_fps_opportunity_score_fee_slippage_breakeven_movement_v1,
-)
-from trading.master_v2.fps_realized_volatility_population_stdev_mark_log_returns_v1 import (
-    FORMULA_ID as RV_FORMULA_ID,
-    compute_fps_realized_volatility_population_stdev_mark_log_returns_v1,
-)
-from trading.master_v2.fps_sequence_path_survival_ratio_prearm_path_fraction_v1 import (
-    FORMULA_ID as PATH_FORMULA_ID,
-    compute_fps_sequence_path_survival_ratio_prearm_path_fraction_v1,
-)
-from trading.master_v2.shadow_futures_input_freshness_age_collector_v1 import (
-    collect_shadow_futures_input_freshness_age_v1,
-)
-from trading.master_v2.shadow_sequence_survival_metrics_producer_v1 import (
-    produce_shadow_sequence_survival_metrics_v1,
-)
-from trading.master_v2.shadow_survival_envelope_assembler_v1 import (
-    assemble_shadow_survival_envelope_v1,
-)
-
 from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.constants_v1 import (
     CALIBRATION_PROTOCOL_REL,
     CAMPAIGN_SCAFFOLD_REL,
@@ -47,6 +21,31 @@ from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.constants_v
     SOLE_TRADING_AUTHORITY,
     STAGE1_MANIFEST_REL,
     STAGE2_TOKENS,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_atr_or_range_wilder_atr_finalized_ohlcv_v1 import (
+    FORMULA_ID as ATR_FORMULA_ID,
+    compute_fps_atr_or_range_wilder_atr_finalized_ohlcv_v1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_opportunity_score_fee_slippage_breakeven_movement_v1 import (
+    FORMULA_ID as OPP_FORMULA_ID,
+    compute_fps_opportunity_score_fee_slippage_breakeven_movement_v1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_realized_volatility_population_stdev_mark_log_returns_v1 import (
+    FORMULA_ID as RV_FORMULA_ID,
+    compute_fps_realized_volatility_population_stdev_mark_log_returns_v1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.fps_sequence_path_survival_ratio_prearm_path_fraction_v1 import (
+    FORMULA_ID as PATH_FORMULA_ID,
+    compute_fps_sequence_path_survival_ratio_prearm_path_fraction_v1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.shadow_futures_input_freshness_age_collector_v1 import (
+    collect_shadow_futures_input_freshness_age_v1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.shadow_sequence_survival_metrics_producer_v1 import (
+    produce_shadow_sequence_survival_metrics_v1,
+)
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.shadow_survival_envelope_assembler_v1 import (
+    assemble_shadow_survival_envelope_v1,
 )
 from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.evidence_emitter_v1 import (
     ShadowCampaignEmitError,

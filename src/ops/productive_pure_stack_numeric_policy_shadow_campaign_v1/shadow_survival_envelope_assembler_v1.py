@@ -17,7 +17,7 @@ from trading.master_v2.double_play_survival import (
     LayerArithmeticStatus,
     SequenceSurvivalMetrics,
 )
-from trading.master_v2.shadow_sequence_survival_metrics_producer_v1 import (
+from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.shadow_sequence_survival_metrics_producer_v1 import (
     produce_shadow_sequence_survival_metrics_v1,
     to_sequence_survival_metrics_dto,
 )

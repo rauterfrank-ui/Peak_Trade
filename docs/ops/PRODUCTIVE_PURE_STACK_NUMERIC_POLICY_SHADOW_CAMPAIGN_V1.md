@@ -129,7 +129,8 @@ Group auto-ratification is forbidden.
 
 ## 7. Owners / references
 
-- Runner package:
+- Runner package + Stage-1 shadow formulas (ops-isolated; not under
+  `src/trading/master_v2/`):
   `src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/`
 - CLI:
   `scripts/ops/run_productive_pure_stack_numeric_policy_shadow_campaign_v1.py`
@@ -141,3 +142,7 @@ Group auto-ratification is forbidden.
   `scripts/ops/validate_productive_pure_stack_numeric_policy_evidence_pack_v1.py`
 - Calibration protocol:
   `docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_CALIBRATION_PROTOCOL_V1.md`
+
+Shadow formula modules remain outside MASTER_V2 mutation surfaces so the
+economic/diagnostic optimization boundary guard stays fail-closed without
+technical-wiring exceptions.
