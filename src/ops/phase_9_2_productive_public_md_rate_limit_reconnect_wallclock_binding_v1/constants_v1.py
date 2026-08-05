@@ -94,6 +94,12 @@ OWNER_PERMIT_WIRING_CAPABILITY_ID = (
 SESSION_REQUEST_ADAPTER_CAPABILITY_ID = (
     "PHASE_9_2_STEP_4_PRODUCTIVE_SESSION_REQUEST_CLI_OPERATOR_ADAPTER_V1"
 )
+# Governed real-network execution binding: session_request + auth-derived network_allowed
+# + Hidden-PTY confirm handoff. Does not start a real network session.
+GOVERNED_EXECUTION_BINDING_CAPABILITY_ID = (
+    "PHASE_9_2_STEP_4_GOVERNED_REAL_NETWORK_EXECUTION_CAPABILITY_BINDING_"
+    "SESSION_REQUEST_PLUS_NETWORK_ALLOWED_WITH_CANONICAL_HIDDEN_PTY_CONFIRM_HANDOFF_V1"
+)
 NETWORK_SESSION_ALLOWED = False
 FAULT_SESSION_ALLOWED = False
 PRODUCTIVE_SESSION_REACHABLE = True
@@ -103,9 +109,25 @@ PRODUCTIVE_STEP_4_SESSION_PATH_RUNTIME_REACHABLE = True
 # Structural reachability after owner-permit + signature wiring (still no network).
 PRODUCTIVE_SESSION_PATH_STRUCTURALLY_RUNTIME_REACHABLE = True
 RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED = False
+# This binding capability never authorizes productive real-network side effects.
+GOVERNED_EXECUTION_BINDING_REAL_NETWORK_SIDE_EFFECTS_AUTHORIZED = False
 # Explicit CLI owner-session permit for canonical runner invoke (default false).
 CLI_OWNER_SESSION_PERMIT_DEFAULT = False
 CLI_OWNER_SESSION_PERMIT_FLAG = "--permit-canonical-runner-invoke"
+CLI_GOVERNED_EXECUTION_BINDING_ONLY_FLAG = "--governed-execution-binding-only"
+# Canonical public-MD network scope reused from Operator-GO / productive issuance.
+GOVERNED_PUBLIC_MD_NETWORK_SCOPE = "okx_eea_futures_public_md_observe_v1"
+GOVERNED_PUBLIC_MD_SESSION_EXECUTION_SCOPE = "paper_shadow_observation_wallclock_v1"
+SESSION_LOCK_OWNER = (
+    "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_lock_v1"
+)
+HIDDEN_PTY_CONFIRM_HANDOFF_OWNER = (
+    "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1."
+    "hidden_pty_confirm_handoff_v1"
+)
+NETWORK_ALLOWED_AUTHORITY_SOURCE = (
+    "issuance.operator_go.network_authorized+network_scope+authorization_artifact.bindings"
+)
 AUTHORIZATION_LEDGER_FILENAME = "activation_authorization_consumption_ledger_v1.jsonl"
 CONFIRM_TOKEN_LEDGER_FILENAME = "activation_confirm_token_consumption_ledger_v1.jsonl"
 EEA_PUBLIC_MD_HOST = "eea.okx.com"

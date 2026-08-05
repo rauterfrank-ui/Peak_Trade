@@ -330,7 +330,7 @@ def test_cli_dry_probe_integration_no_network_no_consume(tmp_path: Path) -> None
     assert claims.get("PRODUCTIVE_SESSION_PATH_DRY_PROBE_REACHABLE") is True
 
 
-def test_cli_forbids_network_with_adapter(tmp_path: Path) -> None:
+def test_cli_network_requires_governed_binding_only_flag(tmp_path: Path) -> None:
     sha = _sha()
     paths = _write_issuance_bundle(tmp_path, sha=sha)
     proc = subprocess.run(
@@ -358,7 +358,7 @@ def test_cli_forbids_network_with_adapter(tmp_path: Path) -> None:
     )
     assert proc.returncode == 2
     payload = json.loads(proc.stdout)
-    assert "SESSION_REQUEST_ADAPTER_CAPABILITY_FORBIDS_NETWORK_SESSION" in payload["blockers"]
+    assert "GOVERNED_EXECUTION_BINDING_ONLY_REQUIRED" in payload["blockers"]
     assert payload["network_session_started"] is False
     assert payload["authorization_consumed"] is False
 
