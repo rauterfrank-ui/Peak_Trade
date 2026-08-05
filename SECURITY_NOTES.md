@@ -1,8 +1,8 @@
 # Security Notes — Peak_Trade Cybersecurity Baseline Pointers
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
-**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02); `STAGE2_SURFACE_B_CYBERSECURITY_MIRROR_SYNC_V1` (2026-08-05); `STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_TRIAD_AUTHORITY_RATIFICATION_ONLY_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1` (2026-08-05)
-**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B Owner/STA regime-coverage producer decision surface against `origin&#47;main@42e8527c929264c702d8f7d59a80fc38f850baff`; Cap-7.2 overlays unchanged)
+**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02); `STAGE2_SURFACE_B_CYBERSECURITY_MIRROR_SYNC_V1` (2026-08-05); `STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_TRIAD_AUTHORITY_RATIFICATION_ONLY_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_OWNER_VALUE_V1` (2026-08-05)
+**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B Owner/STA regime-coverage producer owner-value recording against `origin&#47;main@9f4974824bb647b6f9dec5509ace990c2678188a`; Cap-7.2 overlays unchanged)
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
 **Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, start a public-MD network session, consume authorization, flip productive input authority, set productive numeric Owner values, or claim unverified scanner results.
 
@@ -217,19 +217,20 @@ Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_
 
 ### 6.5 Stage-2 Surface B Owner/STA regime-coverage producer (2026-08-05)
 
-Documentary cybersecurity mirror of open Owner/STA decision surface
+Documentary cybersecurity mirror of Owner/STA decision surface
 `SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION` for
-`DEC_REGIME_COVERAGE_PRODUCER`, bound to baseline
-`origin&#47;main@42e8527c929264c702d8f7d59a80fc38f850baff`.
+`DEC_REGIME_COVERAGE_PRODUCER`, bound to Owner-GO baseline
+`origin&#47;main@9f4974824bb647b6f9dec5509ace990c2678188a` (open-surface creation
+baseline remains `42e8527c929264c702d8f7d59a80fc38f850baff`).
 
 | Boundary | Required security reading |
 |----------|---------------------------|
-| Decision surface | Open; Owner choice not yet recorded |
+| Decision surface | Owner value recorded; authorize-detail fields still null |
 | `DECISION_ID` | `DEC_REGIME_COVERAGE_PRODUCER` |
-| `DECISION_STATUS` | `OPEN` (`DECISION_STATUS=OPEN`) |
-| `OWNER_VALUE` | `null` |
+| `DECISION_STATUS` | `RATIFIED` (`DECISION_STATUS=RATIFIED`) |
+| `OWNER_VALUE` | `AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER` |
 | Allowed owner values | exactly `AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER` or `EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER` |
-| Authorize detail fields | present and initially `null` |
+| Authorize detail fields | present and still `null` |
 | Existing producers | not elevated (`EXISTING_PRODUCERS_ELEVATED=false`) |
 | `INPUT_AUTHORITY` | `false` |
 | `RUNTIME_IMPLEMENTED` | `false` |

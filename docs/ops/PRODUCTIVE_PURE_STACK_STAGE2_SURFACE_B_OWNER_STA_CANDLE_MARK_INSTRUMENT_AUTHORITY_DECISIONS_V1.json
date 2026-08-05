@@ -581,8 +581,8 @@
       "recommended_option": null,
       "rationale": "Canonical Owner/STA decision surface is docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md. No existing producer may be elevated; counts/labels must not be invented.",
       "safety_semantic_consequences": "Invented regime coverage or silent producer elevation would fake campaign readiness.",
-      "owner_value": null,
-      "status": "OPEN",
+      "owner_value": "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
+      "status": "RATIFIED",
       "canonical_decision_surface": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md"
     }
   ],

@@ -2,12 +2,12 @@
   "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions/v1",
   "document_type": "OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISIONS_MANIFEST",
   "capability_scope": "SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION",
-  "status": "OWNER_STA_DECISION_SURFACE_OPEN",
+  "status": "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN",
   "baseline_origin_main_sha": "42e8527c929264c702d8f7d59a80fc38f850baff",
   "authority_surface": "B",
   "decision_id": "DEC_REGIME_COVERAGE_PRODUCER",
-  "decision_status": "OPEN",
-  "owner_value": null,
+  "decision_status": "RATIFIED",
+  "owner_value": "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
   "allowed_owner_values": [
     "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
     "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER"
@@ -108,8 +108,8 @@
   "decisions": {
     "REGIME_COVERAGE_PRODUCER": {
       "decision_id": "DEC_REGIME_COVERAGE_PRODUCER",
-      "status": "OPEN",
-      "owner_value": null,
+      "status": "RATIFIED",
+      "owner_value": "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
       "allowed_owner_values": [
         "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
         "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER"
@@ -155,5 +155,6 @@
       "orders_testnet_live_paper_effects": false,
       "exchange_credential_effects": false
     }
-  }
+  },
+  "owner_go_base_sha": "9f4974824bb647b6f9dec5509ace990c2678188a"
 }

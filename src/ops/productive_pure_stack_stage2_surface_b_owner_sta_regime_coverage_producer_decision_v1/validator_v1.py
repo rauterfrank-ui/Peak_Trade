@@ -1,8 +1,9 @@
 """Fail-closed validator for Surface-B Owner/STA regime-coverage producer decision.
 
 Creates no producer authority, invents no coverage counts, and elevates no
-existing observability/research/bridge/dashboard components. Structure-open
-surface keeps owner_value and authorize detail fields null.
+existing observability/research/bridge/dashboard components. Owner-value
+recording leaves authorize detail fields null and all pack/campaign/runtime
+gates closed.
 """
 
 from __future__ import annotations
@@ -76,9 +77,12 @@ def load_canonical_regime_coverage_producer_decisions_manifest_v1(
 def validate_regime_coverage_producer_manifest_v1(
     manifest: Mapping[str, Any],
     *,
-    require_open_status: bool = True,
+    require_open_status: bool | None = None,
 ) -> dict[str, Any]:
-    """Validate the canonical regime-coverage producer decision surface."""
+    """Validate the canonical regime-coverage producer decision surface.
+
+    When ``require_open_status`` is None, mode is inferred from ``status``.
+    """
     for key in C.REQUIRED_MANIFEST_TOP_KEYS:
         if key not in manifest:
             raise RegimeCoverageProducerDecisionErrorV1(f"MANIFEST_MISSING_KEY:{key}")
@@ -246,6 +250,9 @@ def validate_regime_coverage_producer_manifest_v1(
     decision_status = manifest.get("decision_status")
     surface_status = manifest.get("status")
 
+    if require_open_status is None:
+        require_open_status = surface_status == C.STATUS_SURFACE_OPEN
+
     if require_open_status:
         if surface_status != C.STATUS_SURFACE_OPEN:
             raise RegimeCoverageProducerDecisionErrorV1("STATUS_MUST_REMAIN_SURFACE_OPEN")
@@ -256,10 +263,19 @@ def validate_regime_coverage_producer_manifest_v1(
         if producer_dec.get("status") != C.DECISION_STATUS_OPEN:
             raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_STATUS_MUST_REMAIN_OPEN")
     else:
-        if owner_value is not None and owner_value not in C.ALLOWED_OWNER_VALUES:
-            raise RegimeCoverageProducerDecisionErrorV1("OWNER_VALUE_NOT_ALLOWED")
-        if owner_value is not None:
-            _assert_no_forbidden_producer_token(owner_value, label="owner_value")
+        if surface_status != C.STATUS_OWNER_VALUE_RECORDED:
+            raise RegimeCoverageProducerDecisionErrorV1("STATUS_MUST_BE_OWNER_VALUE_RECORDED")
+        if decision_status != C.DECISION_STATUS_RATIFIED:
+            raise RegimeCoverageProducerDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
+        if owner_value != C.RECORDED_OWNER_VALUE:
+            raise RegimeCoverageProducerDecisionErrorV1("OWNER_VALUE_MISMATCH")
+        if producer_dec.get("owner_value") != C.RECORDED_OWNER_VALUE:
+            raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_OWNER_VALUE_MISMATCH")
+        if producer_dec.get("status") != C.DECISION_STATUS_RATIFIED:
+            raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
+        if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
+            raise RegimeCoverageProducerDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
+        _assert_no_forbidden_producer_token(owner_value, label="owner_value")
 
     _reject_invented_numeric_payload(manifest)
 
@@ -293,7 +309,7 @@ def validate_regime_coverage_owner_choice_v1(
     authorize_detail_fields: Mapping[str, Any] | None = None,
     claim: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Fail-closed gate for an Owner choice against the open surface.
+    """Fail-closed gate for an Owner choice against the decision surface.
 
     Accepts only the two allowed owner values. Does not flip input authority,
     implement runtime, invent counts, elevate existing producers, or authorize
@@ -308,7 +324,7 @@ def validate_regime_coverage_owner_choice_v1(
 
     if owner_value == C.AUTHORIZE_OWNER_VALUE:
         for field in C.AUTHORIZE_DETAIL_FIELDS:
-            # Initial authorize choice still leaves detail fields null until
+            # Authorize choice still leaves detail fields null until
             # a separate Owner/STA ratification fills them.
             value = details.get(field)
             _assert_null(value, label=f"authorize_detail_fields.{field}")

@@ -4,10 +4,11 @@
 DOCUMENT_TYPE=OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION
 DOCUMENT_VERSION=1
 CAPABILITY_SCOPE=SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION
-STATUS=OWNER_STA_DECISION_SURFACE_OPEN
+STATUS=OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN
 DECISION_ID=DEC_REGIME_COVERAGE_PRODUCER
-DECISION_STATUS=OPEN
-OWNER_VALUE=null
+DECISION_STATUS=RATIFIED
+OWNER_VALUE=AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER
+OWNER_GO_BASE_SHA=9f4974824bb647b6f9dec5509ace990c2678188a
 BASELINE_ORIGIN_MAIN_SHA=42e8527c929264c702d8f7d59a80fc38f850baff
 PARENT_TRIAD=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md
 PARENT_RAW_INPUT_PACK=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md
@@ -49,26 +50,31 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 
 ## 0. Binding effect
 
-This document is the Owner/STA **decision surface** for exactly one open
-decision:
+This document is the Owner/STA **decision surface** for exactly one decision:
 
 `DEC_REGIME_COVERAGE_PRODUCER`
 
-The Owner must explicitly choose between exactly two alternatives:
+The Owner has recorded:
+
+```text
+OWNER_VALUE=AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER
+DECISION_STATUS=RATIFIED
+OWNER_GO_BASE_SHA=9f4974824bb647b6f9dec5509ace990c2678188a
+```
+
+The only allowed alternatives remain:
 
 1. `AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER`
 2. `EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER`
 
 It:
 
-1. freezes the fail-closed decision surface while `status=OPEN` and
-   `owner_value=null`;
-2. binds authorize-detail fields as separately present and initially null;
-3. binds the sole taxonomy sink
+1. records the Owner authorize choice while keeping authorize-detail fields null;
+2. binds the sole taxonomy sink
    `low | mid | high | unknown | missing` without inventing thresholds or
    label magnitudes;
-4. documents STA open external inputs that remain unratified;
-5. keeps `INPUT_AUTHORITY=false`, `RUNTIME_IMPLEMENTED=false`,
+3. documents STA open external inputs that remain unratified;
+4. keeps `INPUT_AUTHORITY=false`, `RUNTIME_IMPLEMENTED=false`,
    `RAW_INPUT_PACK_CREATED=false`, and `CAMPAIGN_STARTED=false`.
 
 It does **not**:
@@ -83,12 +89,13 @@ It does **not**:
 - authorize orders, credentials, testnet, live, paper exchange, or capital
   movement;
 - change trading logic or existing runtime producers;
-- make Dashboard an authority (`DASHBOARD_AUTHORITY_EFFECT=NONE`).
+- make Dashboard an authority (`DASHBOARD_AUTHORITY_EFFECT=NONE`);
+- fill authorize-detail fields (separate Owner/STA ratification required).
 
 ```text
-OWNER_STA_DECISION_SURFACE_OPEN=true
-DECISION_STATUS=OPEN
-OWNER_VALUE=null
+OWNER_STA_OWNER_VALUE_RECORDED=true
+DECISION_STATUS=RATIFIED
+OWNER_VALUE=AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER
 AUTHORIZE_DETAIL_FIELDS_NULL=true
 EXISTING_PRODUCERS_ELEVATED=false
 RAW_INPUT_PACK_CREATED=false
@@ -100,8 +107,8 @@ CAMPAIGN_STARTED=false
 ```text
 INV_AUTHORITY_SURFACE_B_ONLY=true
 INV_ONLY_TWO_OWNER_ALTERNATIVES=true
-INV_OWNER_VALUE_INITIALLY_NULL=true
-INV_AUTHORIZE_DETAIL_FIELDS_INITIALLY_NULL=true
+INV_OWNER_VALUE_RECORDED=true
+INV_AUTHORIZE_DETAIL_FIELDS_STILL_NULL=true
 INV_TAXONOMY_SINK_EXCLUSIVE=low|mid|high|unknown|missing
 INV_NO_FOREIGN_TAXONOMY_DERIVATION=true
 INV_NO_INVENTED_THRESHOLDS_LOOKBACKS_COUNTS=true
@@ -115,11 +122,11 @@ INV_NO_ORDERS_TESTNET_LIVE=true
 
 ## 2. Decision identity
 
-| Field | Initial value |
-|-------|---------------|
+| Field | Recorded value |
+|-------|----------------|
 | `decision_id` | `DEC_REGIME_COVERAGE_PRODUCER` |
-| `status` / `decision_status` | `OPEN` |
-| `owner_value` | `null` |
+| `status` / `decision_status` | `RATIFIED` |
+| `owner_value` | `AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER` |
 | Allowed owner values | exactly the two alternatives below |
 
 ### Allowed owner values
@@ -131,11 +138,11 @@ EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER
 
 No other owner value is accepted by the fail-closed validator.
 
-## 3. Authorize detail fields (initially null)
+## 3. Authorize detail fields (still null)
 
-When the Owner later chooses
-`AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER`, the following fields
-must exist as separate Owner fields. On this open surface they remain `null`:
+Owner chose `AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER`. The
+following fields must exist as separate Owner fields and remain `null` until a
+further explicit Owner/STA ratification fills them:
 
 ```text
 canonical_producer_name=null
@@ -190,7 +197,7 @@ deterministic_reproducible_computation
 
 ## 6. REJECT semantics
 
-If Owner chooses `EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER`:
+If Owner had chosen `EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER`:
 
 ```text
 regime_coverage remains not materializable
@@ -199,10 +206,9 @@ no observability/research/bridge/dashboard component may become substitute autho
 instance fields and coverage counts remain null or absent
 ```
 
-## 7. AUTHORIZE semantics
+## 7. AUTHORIZE semantics (current Owner choice)
 
-Even after Owner chooses
-`AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER`:
+Owner chose `AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER`:
 
 ```text
 INPUT_AUTHORITY=false until all Owner fields and STA proofs are fully ratified
@@ -210,6 +216,7 @@ RUNTIME_IMPLEMENTED=false
 RAW_INPUT_PACK_CREATED=false
 CAMPAIGN_STARTED=false
 separate explicit implementation order required later
+authorize_detail_fields remain null until separate Owner/STA ratification
 ```
 
 ## 8. Explicitly null instance / coverage fields
@@ -241,7 +248,8 @@ rejects:
 - invented productive numeric values, thresholds, lookbacks, or coverage counts;
 - Dashboard authority other than `NONE`;
 - pack materialization, campaign start, input-authority or runtime flips from
-  this surface alone.
+  this surface alone;
+- non-null authorize-detail fields until a separate Owner/STA order fills them.
 
 ## 10. Explicit non-effects
 
@@ -264,7 +272,8 @@ NOTION_CHANGED=false
 
 ## 11. Canonical next step
 
-This surface remains `OPEN` with `owner_value=null`. A **separate** explicit
-Owner GO is required to fill `owner_value` with one of the two allowed
-alternatives. A further separate explicit order is required before any
-implementation, raw-pack materialization, or campaign start.
+Owner value is recorded as
+`AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER`. A **separate**
+explicit Owner/STA order is required to fill authorize-detail fields. A further
+separate explicit order is required before any implementation, raw-pack
+materialization, or campaign start.

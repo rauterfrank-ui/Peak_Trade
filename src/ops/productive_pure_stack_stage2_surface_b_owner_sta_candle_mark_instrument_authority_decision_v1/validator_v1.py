@@ -253,11 +253,15 @@ def validate_owner_sta_authority_manifest_v1(
             row_map = _require_mapping(row, label="owner_decision_table.row")
             decision_id = str(row_map.get("decision_id") or "")
             if decision_id == "DEC_REGIME_COVERAGE_PRODUCER":
-                _assert_null(row_map.get("owner_value"), label="DEC_REGIME_COVERAGE_PRODUCER")
-                if row_map.get("status") != "OPEN":
+                if row_map.get("status") != "RATIFIED":
                     raise OwnerStaAuthorityDecisionErrorV1(
-                        "REGIME_COVERAGE_DECISION_MUST_REMAIN_OPEN"
+                        "REGIME_COVERAGE_DECISION_MUST_BE_RATIFIED"
                     )
+                if (
+                    row_map.get("owner_value")
+                    != "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER"
+                ):
+                    raise OwnerStaAuthorityDecisionErrorV1("REGIME_COVERAGE_OWNER_VALUE_MISMATCH")
                 continue
             if row_map.get("status") != "RATIFIED":
                 raise OwnerStaAuthorityDecisionErrorV1(

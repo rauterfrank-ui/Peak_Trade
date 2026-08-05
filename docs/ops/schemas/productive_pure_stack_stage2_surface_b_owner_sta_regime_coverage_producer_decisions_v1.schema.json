@@ -49,12 +49,34 @@
       "const": "SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION"
     },
     "status": {
-      "const": "OWNER_STA_DECISION_SURFACE_OPEN"
+      "type": "string",
+      "enum": [
+        "OWNER_STA_DECISION_SURFACE_OPEN",
+        "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN"
+      ]
     },
     "authority_surface": { "const": "B" },
     "decision_id": { "const": "DEC_REGIME_COVERAGE_PRODUCER" },
-    "decision_status": { "const": "OPEN" },
-    "owner_value": { "type": "null" },
+    "decision_status": {
+      "type": "string",
+      "enum": ["OPEN", "RATIFIED"]
+    },
+    "owner_value": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "string",
+          "enum": [
+            "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
+            "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER"
+          ]
+        }
+      ]
+    },
+    "owner_go_base_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
     "allowed_owner_values": {
       "type": "array",
       "minItems": 2,
