@@ -9,7 +9,7 @@ DASHBOARD_AUTHORITY_EFFECT=NONE
 NON_RUNTIME_AUTHORIZING=true
 STALE_IF_HEAD_DIFFERS=true
 FORENSIC_REPOSITORY_SHA=b9038bacf09b59de81a0a73d6e49575a0f05f242
-DOCUMENT_SHA256=f9ad6572e646d13daa613c801be63648c86745891f75182ec60bce8e62d675f8
+DOCUMENT_SHA256=e35c811c5e1d4d4602b0cddb1283ce5d5ec879a6990120df2f2e73f0c3a1eff5
 VERIFIED_AT=2026-08-05T17:03:44Z
 DOCUMENT_SHA256_MODEL=SHA256_OF_FILE_BYTES_WITH_PENDING_PLACEHOLDER_BEFORE_STAMP
 CAPABILITY_ID=PEAK_TRADE_CANONICAL_END_STATE_WIRING_MAP_MATERIALIZATION_V1
@@ -650,7 +650,7 @@ positions, balances, …) — `TARGET_BINDING` only; unauthorized here.
 | Cap 7.1 actionability evidence | `ops.simulated_entry_reduce_exit_actionability_evidence_v1` | Deterministic lifecycle |
 | Full economic reconstruction verifier | `full_economic_reconstruction_verifier_v1` | Accounting reconstruction |
 | Phase 9.2 preflight evidence | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/preflight/` | Ladder definition, pacing proof, network boundary |
-| Smoke / one-hour session evidence | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1`, `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a` | Closed steps on historical session SHA `b0e882b9714a…` |
+| Smoke / one-hour session evidence | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1/MANIFEST.sha256`, `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a/MANIFEST.sha256` | Closed steps on historical session SHA `b0e882b9714a…` |
 | Phase 9.2 actionability forensic telemetry | `ops.phase_9_2_productive_decision_graph_actionability_forensic_telemetry_v1` | Funnel/telemetry; not ladder closure alone |
 | Phase 9.2 restart bundle verifier | `phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.verifier_v1` | PRE/POST identity + commit continuity |
 | Step 3 binding evidence materializer | `phase_9_2_productive_public_md_restart_recovery_real_network_wallclock_binding_v1` | Binding readiness; not real-session PASS |
@@ -689,7 +689,7 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 | AUTHORIZATION_SCOPE | Historical smoke authorization artifacts under evidence package |
 | STATE_ROOTS | Cap 6.x confirmation/scope/atomic roots via stateful runtime |
 | FAULT_OR_SESSION_MECHANISM | Short duration; pacing/stale budgets in smoke contract |
-| EVIDENCE_BUNDLE | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1/` |
+| EVIDENCE_BUNDLE | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1/MANIFEST.sha256` |
 | VERIFIER | Session completion / economic verifier artifacts in bundle |
 | PREDECESSOR | Cap 7.2 + Phase 9.2 preflight |
 | SUCCESSOR | One-hour governed |
@@ -706,7 +706,7 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 | AUTHORIZATION_SCOPE | Evidence `authorization&#47;` + consumption records |
 | STATE_ROOTS | Full Cap 6.x / portfolio / evidence cursors |
 | FAULT_OR_SESSION_MECHANISM | Natural wallclock; reconnect/stale telemetry incidental |
-| EVIDENCE_BUNDLE | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a/` |
+| EVIDENCE_BUNDLE | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a/MANIFEST.sha256` |
 | VERIFIER | `full_economic_reconstruction_verifier.json`, completion/terminal verdicts |
 | PREDECESSOR | Smoke |
 | SUCCESSOR | Restart/Recovery |
