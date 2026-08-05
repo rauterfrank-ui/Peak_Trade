@@ -22,13 +22,15 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_pr
     OWNER_DECISION_REL,
     OWNER_GO_BASE_SHA,
     OWNER_IMPL_GO_BASE_SHA,
+    OWNER_STA_OPEN_INPUTS_CLOSEOUT_GO_BASE_SHA,
     PARENT_TRIAD_MANIFEST_REL,
     PRODUCER_PACKAGE_REL,
     PRODUCER_SPEC_REL,
     RECORDED_OWNER_VALUE,
     REJECT_OWNER_VALUE,
     SCHEMA_REL,
-    STATUS_AUTHORIZE_DETAILS_COMPLETE,
+    STA_CLOSED_BY_OPEN_INPUTS_CLOSEOUT,
+    STATUS_STA_OPEN_INPUTS_CLOSED,
     TAXONOMY_SINK_LABELS,
 )
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decision_v1.validator_v1 import (
@@ -43,12 +45,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_AUTHORIZE_DETAILS_COMPLETE}",
+    f"STATUS={STATUS_STA_OPEN_INPUTS_CLOSED}",
     f"DECISION_ID={DECISION_ID}",
     "DECISION_STATUS=RATIFIED",
     f"OWNER_VALUE={RECORDED_OWNER_VALUE}",
     f"OWNER_GO_BASE_SHA={OWNER_GO_BASE_SHA}",
     f"OWNER_IMPL_GO_BASE_SHA={OWNER_IMPL_GO_BASE_SHA}",
+    f"OWNER_STA_OPEN_INPUTS_CLOSEOUT_GO_BASE_SHA={OWNER_STA_OPEN_INPUTS_CLOSEOUT_GO_BASE_SHA}",
     f"BASELINE_ORIGIN_MAIN_SHA={BASELINE_ORIGIN_MAIN_SHA}",
     "INPUT_AUTHORITY=false",
     "RUNTIME_IMPLEMENTED=false",
@@ -65,6 +68,7 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "REPOSITORY_IS_SSOT=true",
     "AUTHORIZE_DETAIL_FIELDS_COMPLETE=true",
     "DEDICATED_PRODUCER_IMPLEMENTED=true",
+    "STA_OPEN_INPUTS_CLOSED=true",
     "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
     "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER",
     "low | mid | high | unknown | missing",
@@ -106,7 +110,7 @@ def test_canonical_manifest_authorize_details_complete_v1() -> None:
     result = validate_regime_coverage_producer_manifest_v1(manifest)
     assert result["ok"] is True
     assert result["decision_id"] == DECISION_ID
-    assert result["status"] == STATUS_AUTHORIZE_DETAILS_COMPLETE
+    assert result["status"] == STATUS_STA_OPEN_INPUTS_CLOSED
     assert result["decision_status"] == "RATIFIED"
     assert result["owner_value"] == RECORDED_OWNER_VALUE
     assert result["allowed_owner_values"] == list(ALLOWED_OWNER_VALUES)
@@ -126,8 +130,16 @@ def test_canonical_manifest_authorize_details_complete_v1() -> None:
     assert manifest["decision_status"] == "RATIFIED"
     assert manifest["owner_go_base_sha"] == OWNER_GO_BASE_SHA
     assert manifest["owner_impl_go_base_sha"] == OWNER_IMPL_GO_BASE_SHA
+    assert (
+        manifest["owner_sta_open_inputs_closeout_go_base_sha"]
+        == OWNER_STA_OPEN_INPUTS_CLOSEOUT_GO_BASE_SHA
+    )
     assert tuple(manifest["allowed_owner_values"]) == ALLOWED_OWNER_VALUES
     assert tuple(manifest["taxonomy_sink_labels"]) == TAXONOMY_SINK_LABELS
+    assert tuple(manifest["sta_open_external_inputs"]) == ()
+    assert tuple(manifest["sta_closed_by_open_inputs_closeout"]) == (
+        STA_CLOSED_BY_OPEN_INPUTS_CLOSEOUT
+    )
     for field in AUTHORIZE_DETAIL_FIELDS:
         assert manifest["authorize_detail_fields"][field] == AUTHORIZE_DETAIL_FIELD_VALUES[field], (
             field

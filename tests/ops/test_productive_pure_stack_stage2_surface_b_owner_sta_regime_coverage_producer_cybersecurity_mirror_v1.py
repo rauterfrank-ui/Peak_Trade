@@ -21,9 +21,11 @@ REQUIRED_MARKERS: tuple[str, ...] = (
     "OWNER_VALUE=AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
     "OWNER_GO_BASE_SHA=9f4974824bb647b6f9dec5509ace990c2678188a",
     "OWNER_IMPL_GO_BASE_SHA=52af83870a775ee9a4647107273964fa4857322b",
+    "OWNER_STA_OPEN_INPUTS_CLOSEOUT_GO_BASE_SHA=75ea4dc594a7f27b1fb490477e824a8c0a66d779",
     "BASELINE_ORIGIN_MAIN_SHA=42e8527c929264c702d8f7d59a80fc38f850baff",
     "AUTHORIZE_DETAIL_FIELDS_COMPLETE=true",
     "DEDICATED_PRODUCER_IMPLEMENTED=true",
+    "STA_OPEN_INPUTS_CLOSED=true",
     "INPUT_AUTHORITY=false",
     "RUNTIME_IMPLEMENTED=false",
     "CAMPAIGN_START_AUTHORIZED=false",
@@ -71,6 +73,10 @@ def test_security_notes_mirrors_regime_coverage_producer_decision_v1() -> None:
     assert "DECISION_STATUS=RATIFIED" in notes or "`RATIFIED`" in notes
     assert "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER" in notes
     assert "STAGE2_SURFACE_B_REGIME_COVERAGE_PRODUCER_IMPL_V1" in notes
+    assert "STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1" in notes
     assert "EXISTING_PRODUCERS_ELEVATED=false" in notes
     assert "NOTION_SSOT=false" in notes
     assert "REPOSITORY_IS_SSOT=true" in notes
+    assert "authorize-detail fields complete" in notes
+    assert "non_invented_coverage_counts" in notes
+    assert "provable_eth_usdt_swap_compatibility" in notes

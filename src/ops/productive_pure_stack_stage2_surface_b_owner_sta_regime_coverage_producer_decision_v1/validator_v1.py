@@ -180,11 +180,16 @@ def validate_regime_coverage_producer_manifest_v1(
     sta_inputs = manifest.get("sta_open_external_inputs")
     if not isinstance(sta_inputs, Sequence) or isinstance(sta_inputs, (str, bytes)):
         raise RegimeCoverageProducerDecisionErrorV1("STA_OPEN_EXTERNAL_INPUTS_MUST_BE_SEQUENCE")
-    for required in C.STA_OPEN_EXTERNAL_INPUTS:
-        if required not in sta_inputs:
-            raise RegimeCoverageProducerDecisionErrorV1(
-                f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
-            )
+    if tuple(sta_inputs) != C.STA_OPEN_EXTERNAL_INPUTS:
+        raise RegimeCoverageProducerDecisionErrorV1("STA_OPEN_EXTERNAL_INPUTS_MISMATCH")
+
+    sta_closed = manifest.get("sta_closed_by_open_inputs_closeout")
+    if not isinstance(sta_closed, Sequence) or isinstance(sta_closed, (str, bytes)):
+        raise RegimeCoverageProducerDecisionErrorV1(
+            "STA_CLOSED_BY_OPEN_INPUTS_CLOSEOUT_MUST_BE_SEQUENCE"
+        )
+    if tuple(sta_closed) != C.STA_CLOSED_BY_OPEN_INPUTS_CLOSEOUT:
+        raise RegimeCoverageProducerDecisionErrorV1("STA_CLOSED_BY_OPEN_INPUTS_CLOSEOUT_MISMATCH")
 
     sta_satisfied = manifest.get("sta_satisfied_by_producer_impl")
     if not isinstance(sta_satisfied, Sequence) or isinstance(sta_satisfied, (str, bytes)):
@@ -305,9 +310,12 @@ def validate_regime_coverage_producer_manifest_v1(
             _assert_null(detail_fields.get(field), label=f"authorize_detail_fields.{field}")
         _assert_no_forbidden_producer_token(owner_value, label="owner_value")
     else:
-        if surface_status != C.STATUS_AUTHORIZE_DETAILS_COMPLETE:
+        if surface_status not in (
+            C.STATUS_AUTHORIZE_DETAILS_COMPLETE,
+            C.STATUS_STA_OPEN_INPUTS_CLOSED,
+        ):
             raise RegimeCoverageProducerDecisionErrorV1(
-                "STATUS_MUST_BE_AUTHORIZE_DETAIL_FIELDS_COMPLETE"
+                "STATUS_MUST_BE_AUTHORIZE_DETAIL_FIELDS_COMPLETE_OR_STA_OPEN_INPUTS_CLOSED"
             )
         if decision_status != C.DECISION_STATUS_RATIFIED:
             raise RegimeCoverageProducerDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
@@ -321,6 +329,24 @@ def validate_regime_coverage_producer_manifest_v1(
             raise RegimeCoverageProducerDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
         if str(manifest.get("owner_impl_go_base_sha") or "") != C.OWNER_IMPL_GO_BASE_SHA:
             raise RegimeCoverageProducerDecisionErrorV1("OWNER_IMPL_GO_BASE_SHA_MISMATCH")
+        if surface_status == C.STATUS_STA_OPEN_INPUTS_CLOSED:
+            if (
+                str(manifest.get("owner_sta_open_inputs_closeout_go_base_sha") or "")
+                != C.OWNER_STA_OPEN_INPUTS_CLOSEOUT_GO_BASE_SHA
+            ):
+                raise RegimeCoverageProducerDecisionErrorV1(
+                    "OWNER_STA_OPEN_INPUTS_CLOSEOUT_GO_BASE_SHA_MISMATCH"
+                )
+            if tuple(manifest.get("sta_open_external_inputs") or ()) != ():
+                raise RegimeCoverageProducerDecisionErrorV1(
+                    "STA_OPEN_EXTERNAL_INPUTS_MUST_BE_EMPTY_AFTER_CLOSEOUT"
+                )
+            if tuple(manifest.get("sta_closed_by_open_inputs_closeout") or ()) != (
+                C.STA_CLOSED_BY_OPEN_INPUTS_CLOSEOUT
+            ):
+                raise RegimeCoverageProducerDecisionErrorV1(
+                    "STA_CLOSED_BY_OPEN_INPUTS_CLOSEOUT_MISMATCH"
+                )
         _validate_authorize_detail_fields_complete(detail_fields)
         authorize_details_complete = True
         _assert_no_forbidden_producer_token(owner_value, label="owner_value")
