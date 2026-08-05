@@ -19,9 +19,9 @@ REQUIRED_MARKERS: tuple[str, ...] = (
     "BASELINE_ORIGIN_MAIN_SHA=3b6b75bc4fa4b3ba6887ed055fa7fb88dd3d87b7",
     "INPUT_AUTHORITY=false",
     "RUNTIME_IMPLEMENTED=false",
-    "CANDLE_AUTHORITY_RATIFIED=false",
-    "MARK_AUTHORITY_RATIFIED=false",
-    "INSTRUMENT_BINDING_RATIFIED=false",
+    "CANDLE_AUTHORITY_RATIFIED=true",
+    "MARK_AUTHORITY_RATIFIED=true",
+    "INSTRUMENT_BINDING_RATIFIED=true",
     "CAMPAIGN_START_AUTHORIZED=false",
     "RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false",
     "PRODUCTIVE_NUMERIC_VALUES_SET=0",
@@ -35,7 +35,9 @@ REQUIRED_MARKERS: tuple[str, ...] = (
 FORBIDDEN_CLAIMS: tuple[str, ...] = (
     "INPUT_AUTHORITY=true",
     "RUNTIME_IMPLEMENTED=true",
-    "CANDLE_AUTHORITY_RATIFIED=true",
+    "CANDLE_AUTHORITY_RATIFIED=false",
+    "MARK_AUTHORITY_RATIFIED=false",
+    "INSTRUMENT_BINDING_RATIFIED=false",
     "CAMPAIGN_START_AUTHORIZED=true",
     "NOTION_SSOT=true",
     "ORDERS_TESTNET_LIVE_PAPER_EFFECTS=true",
@@ -62,8 +64,9 @@ def test_security_notes_mirrors_owner_sta_authority_decision_v1() -> None:
         "CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md"
     ) in notes
     assert "### 6.4 Stage-2 Surface B Owner/STA candle-mark-instrument authority" in notes
-    assert "CANDLE_AUTHORITY_RATIFIED=false" in notes
-    assert "MARK_AUTHORITY_RATIFIED=false" in notes
-    assert "INSTRUMENT_BINDING_RATIFIED=false" in notes
+    assert "CANDLE_AUTHORITY_RATIFIED=true" in notes
+    assert "MARK_AUTHORITY_RATIFIED=true" in notes
+    assert "INSTRUMENT_BINDING_RATIFIED=true" in notes
+    assert "OWNER_STA_AUTHORITIES_RATIFIED_INSTANCE_FIELDS_STILL_OPEN" in notes
     assert "NOTION_SSOT=false" in notes
     assert "REPOSITORY_IS_SSOT=true" in notes

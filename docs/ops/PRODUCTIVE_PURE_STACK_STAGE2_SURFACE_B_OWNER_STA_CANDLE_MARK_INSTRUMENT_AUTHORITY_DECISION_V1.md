@@ -4,7 +4,7 @@
 DOCUMENT_TYPE=OWNER_STA_AUTHORITY_DECISION
 DOCUMENT_VERSION=1
 CAPABILITY_SCOPE=SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION
-STATUS=OWNER_STA_DECISION_SURFACE_OPEN_INSTANCE_VALUES_NULL
+STATUS=OWNER_STA_AUTHORITIES_RATIFIED_INSTANCE_FIELDS_STILL_OPEN
 BASELINE_ORIGIN_MAIN_SHA=3b6b75bc4fa4b3ba6887ed055fa7fb88dd3d87b7
 PARENT_RAW_INPUT_PACK=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md
 PARENT_SURFACE_B=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md
@@ -26,9 +26,9 @@ REPOSITORY_IS_SSOT=true
 
 INPUT_AUTHORITY=false
 RUNTIME_IMPLEMENTED=false
-CANDLE_AUTHORITY_RATIFIED=false
-MARK_AUTHORITY_RATIFIED=false
-INSTRUMENT_BINDING_RATIFIED=false
+CANDLE_AUTHORITY_RATIFIED=true
+MARK_AUTHORITY_RATIFIED=true
+INSTRUMENT_BINDING_RATIFIED=true
 CAMPAIGN_START_AUTHORIZED=false
 RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false
 RAW_INPUT_PACK_CREATED=false
@@ -62,9 +62,11 @@ It:
    finality semantics, competing instrument IDs, and join rules;
 2. proposes fail-closed candidate `source_ref` values and an Owner decision
    table;
-3. keeps all Owner values `null` / `OPEN` until explicit Owner ratification;
-4. keeps `INPUT_AUTHORITY=false`, `RUNTIME_IMPLEMENTED=false`,
-   `RAW_INPUT_PACK_CREATED=false`, and `CAMPAIGN_STARTED=false`.
+3. records explicit Owner-ratified candle/mark source refs and complete
+   `InstrumentBindingV1` under Owner GO;
+4. keeps instance/policy fields null and keeps `INPUT_AUTHORITY=false`,
+   `RUNTIME_IMPLEMENTED=false`, `RAW_INPUT_PACK_CREATED=false`, and
+   `CAMPAIGN_STARTED=false`.
 
 It does **not**:
 
@@ -78,10 +80,10 @@ It does **not**:
 - set productive numeric calibration values.
 
 ```text
-OWNER_STA_DECISION_SURFACE_CREATED=true
-CANDLE_AUTHORITY_RATIFIED=false
-MARK_AUTHORITY_RATIFIED=false
-INSTRUMENT_BINDING_RATIFIED=false
+OWNER_STA_AUTHORITIES_RATIFIED_INSTANCE_FIELDS_STILL_OPEN=true
+CANDLE_AUTHORITY_RATIFIED=true
+MARK_AUTHORITY_RATIFIED=true
+INSTRUMENT_BINDING_RATIFIED=true
 INSTANCE_FIELD_VALUES_INVENTED=false
 RAW_INPUT_PACK_CREATED=false
 CAMPAIGN_STARTED=false
@@ -145,9 +147,9 @@ See machine manifest `instrument_binding.competing_candidates`:
 - `CAND_ETH_USD_XPERP_OKX_EUROPE_BINDING` — `ETH-USD_UM_XPERP-310404`
 - `EXCL_BTC_USDT_SWAP_TEST_FIXTURE` — excluded test binding (`BTC=FORBIDDEN`)
 
-## 3. A. Candle Source Authority (structure)
+## 3. A. Candle Source Authority (Owner-ratified)
 
-Proposed (not ratified) `source_ref`:
+Owner-ratified `source_ref`:
 
 ```text
 venue://okx/public/rest/v5/market/history-candles?bar=1m&confirm=1
@@ -169,11 +171,22 @@ Bound semantics:
 - Immutable raw provenance + rebuild requires new `dataset_id` + digest
 - Rejection conditions: listed in machine manifest
 
-`owner_ratified_source_ref=null` until Owner fills the decision table.
+`owner_ratified_source_ref` is set to the Owner-ratified URI above.
 
-## 4. B. Mark Source Authority (structure)
+Owner semantic decisions (fail-closed; `confirm=1` is **not** treated as an OKX
+server-side filter — consumers must accept only rows whose finality field is
+exactly `"1"`, candle confirm at row index 8):
 
-Proposed (not ratified) `source_ref` — **must differ** from candle:
+- `DEC_CANDLE_EVENT_TIME_SEMANTICS=PT1M_BUCKET_OPEN_EVENT_TIME`
+- `DEC_CANDLE_VENUE_FINALIZED_MAPPING=row_index_8_equals_string_1`
+- `DEC_CANDLE_OPEN_TIP_EXCLUSION=REQUIRED_FAIL_CLOSED`
+- `DEC_CANDLE_PAGINATION_DEDUP_ORDER_GAP=REQUIRED_FAIL_CLOSED`
+- `DEC_CANDLE_PIT_NO_LOOKAHEAD=REQUIRED`
+- `DEC_CANDLE_RAW_PROVENANCE_REBUILD=REQUIRED`
+
+## 4. B. Mark Source Authority (Owner-ratified)
+
+Owner-ratified `source_ref` — **must differ** from candle:
 
 ```text
 venue://okx/public/rest/v5/market/history-mark-price-candles?bar=1m&confirm=1
@@ -189,23 +202,29 @@ Bound semantics:
 - Immutable separate raw mark provenance bound into pack digest
 - Rejection conditions: listed in machine manifest
 
-## 5. C. InstrumentBindingV1 (structure)
+Owner semantic decisions:
 
-All seven required fields remain Owner-open:
+- `DEC_MARK_BUCKET_SEMANTICS=PT1M_BUCKET_OPEN_EVENT_TIME_EXACT_JOIN`
+- `DEC_MARK_NO_CANDLE_CLOSE_FALLBACK=REQUIRED`
+- `DEC_MARK_MISSING_DUPLICATE_LATE_NONFINAL=FAIL_CLOSED`
+- `DEC_MARK_PIT_NO_LOOKAHEAD=REQUIRED`
+- `DEC_MARK_RAW_PROVENANCE=REQUIRED_SEPARATE_FROM_CANDLE`
+
+## 5. C. InstrumentBindingV1 (Owner-ratified)
+
+Owner-ratified complete seven-field binding (ETH-USDT-SWAP / research-staging
+identity; competing candidate rows remain `selected=false` — binding is via
+explicit Owner field values only; BTC/XBT excluded):
 
 ```text
-venue
-canonical_instrument_id
-venue_instrument_id
-contract_type
-market_type
-quote_currency
-settlement_currency
+venue=okx
+canonical_instrument_id=inst-eth-usdt-perp
+venue_instrument_id=ETH-USDT-SWAP
+contract_type=perpetual
+market_type=futures
+quote_currency=USDT
+settlement_currency=USDT
 ```
-
-Owner must select from documented competing candidates or explicitly reject and
-supply a new Owner ID. Silent defaulting is forbidden. BTC test bindings remain
-excluded.
 
 ## 6. D. Regime Coverage
 
@@ -233,8 +252,8 @@ Each row has:
 - `recommended_option` (only when repo-side uniquely justifiable; instrument IDs intentionally `null`)
 - `rationale`
 - `safety_semantic_consequences`
-- `owner_value` (null)
-- `status` (`OPEN` | later `RATIFIED` / `REJECTED`)
+- `owner_value` (Owner-filled for triad + semantic candle/mark rows; regime remains null)
+- `status` (`RATIFIED` for triad/semantic authority rows; `OPEN` for `DEC_REGIME_COVERAGE_PRODUCER`)
 
 ## 8. Explicitly null instance / numeric fields
 
@@ -270,14 +289,15 @@ rejects ratification claims that lack:
 ```text
 INPUT_AUTHORITY=false
 RUNTIME_IMPLEMENTED=false
-CANDLE_AUTHORITY_RATIFIED=false
-MARK_AUTHORITY_RATIFIED=false
-INSTRUMENT_BINDING_RATIFIED=false
+CANDLE_AUTHORITY_RATIFIED=true
+MARK_AUTHORITY_RATIFIED=true
+INSTRUMENT_BINDING_RATIFIED=true
 RAW_INPUT_PACK_CREATED=false
 RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false
 CAMPAIGN_STARTED=false
 CAMPAIGN_START_AUTHORIZED=false
 PRODUCTIVE_NUMERIC_VALUES_SET=0
+REGIME_COVERAGE_STATUS=SEMANTICALLY_UNRESOLVED
 TRADING_LOGIC_CHANGED=false
 ORDERS_TESTNET_LIVE_PAPER_EFFECTS=false
 EXCHANGE_CREDENTIAL_EFFECTS=false
@@ -286,8 +306,8 @@ NOTION_CHANGED=false
 
 ## 11. Canonical next step
 
-Owner fills `owner_decision_table[].owner_value` and the seven
-`InstrumentBindingV1` fields, then issues a **separate** Owner GO to move status
-from `OWNER_STA_DECISION_SURFACE_OPEN_INSTANCE_VALUES_NULL` to an
-authorities-ratified state — still without pack materialization or campaign
-start unless an additional explicit GO is issued.
+Authorities are Owner-ratified under
+`OWNER_STA_AUTHORITIES_RATIFIED_INSTANCE_FIELDS_STILL_OPEN`. Instance/policy
+fields (`campaign_id`, `dataset_id`, `scenario_id`, `seed`, partitions, folds,
+bootstrap, purge, embargo, fold_sizes) remain null. A **separate** Owner GO is
+still required before raw-input-pack materialization or campaign start.

@@ -12,9 +12,9 @@ MACHINE_MANIFEST=docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDL
 AUTHORITY_SURFACE=B
 INPUT_AUTHORITY=false
 RUNTIME_IMPLEMENTED=false
-CANDLE_AUTHORITY_RATIFIED=false
-MARK_AUTHORITY_RATIFIED=false
-INSTRUMENT_BINDING_RATIFIED=false
+CANDLE_AUTHORITY_RATIFIED=true
+MARK_AUTHORITY_RATIFIED=true
+INSTRUMENT_BINDING_RATIFIED=true
 CAMPAIGN_START_AUTHORIZED=false
 RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false
 RAW_INPUT_PACK_CREATED=false
@@ -30,8 +30,9 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 
 ## 0. Binding effect
 
-Documentary cybersecurity mirror of the Owner/STA decision surface that prepares
-separate candle/mark authorities and complete InstrumentBindingV1 for Surface B.
+Documentary cybersecurity mirror of the Owner/STA decision surface after Owner
+ratification of separate candle/mark authorities and complete InstrumentBindingV1
+for Surface B (instance fields remain open/null).
 
 It does not authorize pack materialization, campaign start, input authority,
 runtime implementation, orders, credentials, or capital movement.
@@ -42,9 +43,9 @@ runtime implementation, orders, credentials, or capital movement.
 AUTHORITY_SURFACE=B
 INPUT_AUTHORITY=false
 RUNTIME_IMPLEMENTED=false
-CANDLE_AUTHORITY_RATIFIED=false
-MARK_AUTHORITY_RATIFIED=false
-INSTRUMENT_BINDING_RATIFIED=false
+CANDLE_AUTHORITY_RATIFIED=true
+MARK_AUTHORITY_RATIFIED=true
+INSTRUMENT_BINDING_RATIFIED=true
 CAMPAIGN_START_AUTHORIZED=false
 RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false
 PRODUCTIVE_NUMERIC_VALUES_SET=0
