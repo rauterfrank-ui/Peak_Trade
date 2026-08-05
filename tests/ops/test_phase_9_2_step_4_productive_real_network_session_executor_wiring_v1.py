@@ -206,7 +206,7 @@ def test_executor_gate_rejects_wrong_sha_cfg_auth_token_expiry(tmp_path: Path) -
     assert no_auth.ok is False
     assert "AUTHORIZATION_REQUIRED" in no_auth.blockers
 
-    no_token = execute_productive_rate_limit_reconnect_session_wiring_v1(
+    missing_confirm = execute_productive_rate_limit_reconnect_session_wiring_v1(
         expected_repository_sha=sha,
         expected_config_digest=cfg,
         now_unix=NOW,
@@ -217,8 +217,8 @@ def test_executor_gate_rejects_wrong_sha_cfg_auth_token_expiry(tmp_path: Path) -
         confirm_token_present_flag=False,
         execute=True,
     )
-    assert no_token.ok is False
-    assert "CONFIRM_TOKEN_REQUIRED" in no_token.blockers
+    assert missing_confirm.ok is False
+    assert "CONFIRM_TOKEN_REQUIRED" in missing_confirm.blockers
 
     expired = tmp_path / "expired.json"
     auth = build_session_go_authority_v1(
