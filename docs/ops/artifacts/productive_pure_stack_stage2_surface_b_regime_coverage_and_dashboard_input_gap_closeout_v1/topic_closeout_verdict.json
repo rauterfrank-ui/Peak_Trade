@@ -1,0 +1,29 @@
+{
+  "campaign_start": false,
+  "document_type": "TOPIC_CLOSEOUT_VERDICT",
+  "input_authority_flip": false,
+  "next_step_id": "EXECUTE_SURFACE_B_REGIME_COVERAGE_AND_CLOSE_DASHBOARD_INPUT_GAP_V1",
+  "overall_topic_closeout_verdict": "SURFACE_B_REGIME_COVERAGE_INPUT_GAP_CLOSED_DASHBOARD_PRESENTATION_GAP_UNCHANGED",
+  "runtime_implemented_flip": false,
+  "schema_version": "surface_b_regime_coverage_dashboard_input_gap_topic_closeout/v1",
+  "topics": [
+    {
+      "evidence": [
+        "regime_coverage_counts sealed from authorized producer observations",
+        "regime_coverage_instance producer-bound and digest-bound",
+        "canonical instrument binding proven"
+      ],
+      "topic_id": "SURFACE_B_REGIME_COVERAGE_PACK_INPUT_GAP",
+      "verdict": "CLOSED"
+    },
+    {
+      "evidence": [
+        "DASHBOARD_LOGIC_CHANGE=false",
+        "DASHBOARD_AUTHORITY_EFFECT=NONE",
+        "missing_source_delta TOTAL_MISSING_SOURCE_COUNT_DELTA=0"
+      ],
+      "topic_id": "DASHBOARD_REGIME_BULL_BEAR_SWITCH_MISSING_SOURCE",
+      "verdict": "REMAINS_BLOCKED_OUT_OF_SCOPE"
+    }
+  ]
+}

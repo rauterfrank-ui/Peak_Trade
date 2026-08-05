@@ -1,0 +1,26 @@
+{
+  "after": {
+    "TOTAL_MISSING_SOURCE_COUNT": 50,
+    "TOTAL_NOT_BOUND_COUNT": 18,
+    "regime_bull_bear_switch_affected_presentation_element_count": 5,
+    "regime_bull_bear_switch_family_status": "BLOCKED"
+  },
+  "before": {
+    "TOTAL_MISSING_SOURCE_COUNT": 50,
+    "TOTAL_NOT_BOUND_COUNT": 18,
+    "regime_bull_bear_switch_affected_presentation_element_count": 5,
+    "regime_bull_bear_switch_family_status": "BLOCKED"
+  },
+  "dashboard_authority_effect": "NONE",
+  "dashboard_logic_change": false,
+  "delta": {
+    "TOTAL_MISSING_SOURCE_COUNT_DELTA": 0,
+    "TOTAL_NOT_BOUND_COUNT_DELTA": 0,
+    "regime_bull_bear_switch_affected_presentation_element_count_delta": 0
+  },
+  "document_type": "MISSING_SOURCE_DELTA_REPORT",
+  "interpretation": "Surface-B regime-coverage STA pack input gap closed via producer proof; dashboard regime_bull_bear_switch MISSING_SOURCE remains unchanged because DASHBOARD_LOGIC_CHANGE=false and DASHBOARD_AUTHORITY_EFFECT=NONE.",
+  "inventory_rel": "docs/ops/market_dashboard/market_dashboard_missing_source_not_bound_inventory_v1/INVENTORY.json",
+  "next_step_id": "EXECUTE_SURFACE_B_REGIME_COVERAGE_AND_CLOSE_DASHBOARD_INPUT_GAP_V1",
+  "schema_version": "market_dashboard_missing_source_delta_report/v1"
+}

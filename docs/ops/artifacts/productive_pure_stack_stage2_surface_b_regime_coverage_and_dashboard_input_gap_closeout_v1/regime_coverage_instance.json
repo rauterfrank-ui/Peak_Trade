@@ -1,0 +1,52 @@
+{
+  "as_of_event_time_epoch_s": 1785934680,
+  "canonical_binding": {
+    "eth_usdt_swap_compatibility": {
+      "compatibility": "provable_eth_usdt_swap_compatibility",
+      "instrument_binding": {
+        "canonical_instrument_id": "inst-eth-usdt-perp",
+        "contract_type": "perpetual",
+        "market_type": "futures",
+        "quote_currency": "USDT",
+        "settlement_currency": "USDT",
+        "venue": "okx",
+        "venue_instrument_id": "ETH-USDT-SWAP"
+      },
+      "ok": true,
+      "string_name_similarity_inference": false
+    },
+    "instrument_binding": {
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "contract_type": "perpetual",
+      "market_type": "futures",
+      "quote_currency": "USDT",
+      "settlement_currency": "USDT",
+      "venue": "okx",
+      "venue_instrument_id": "ETH-USDT-SWAP"
+    },
+    "observation_pack_digest": "268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676",
+    "producer_digest": "952b7b63c369dccfc01d5ee2802473c12911da18b1df57be8a91ba566ffe9d57"
+  },
+  "instrument_id": "inst-eth-usdt-perp",
+  "lookback_window_authority_ref": "OWNER_NUMERIC_LOOKBACK_AUTHORITY_UNSET_V1",
+  "observation_count": 299,
+  "observation_pack_digest": "268b2e67b350bfa0cf2310a75b1d2710a45dca277b182205dfe12692131a0676",
+  "partition_id": "surface_b_regime_coverage_structural_partition_v1",
+  "producer_digest": "952b7b63c369dccfc01d5ee2802473c12911da18b1df57be8a91ba566ffe9d57",
+  "productive_emission": false,
+  "regime_coverage_counts": {
+    "missing": 299,
+    "unknown": 0
+  },
+  "regime_coverage_producer_available": false,
+  "regime_coverage_status": "SEMANTICALLY_UNRESOLVED",
+  "taxonomy_sink_labels": [
+    "low",
+    "mid",
+    "high",
+    "unknown",
+    "missing"
+  ],
+  "threshold_authority_ref": "OWNER_NUMERIC_THRESHOLD_AUTHORITY_UNSET_V1",
+  "versioned_producer_id": "productive_pure_stack_stage2_surface_b_regime_coverage_producer/v1"
+}
