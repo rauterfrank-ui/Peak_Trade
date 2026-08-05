@@ -35,7 +35,9 @@
     "notion_ssot",
     "repository_is_ssot",
     "open_null_instance_fields",
-    "decisions"
+    "decisions",
+    "owner_impl_go_base_sha",
+    "sta_satisfied_by_producer_impl"
   ],
   "additionalProperties": true,
   "properties": {
@@ -52,18 +54,28 @@
       "type": "string",
       "enum": [
         "OWNER_STA_DECISION_SURFACE_OPEN",
-        "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN"
+        "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN",
+        "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED"
       ]
     },
-    "authority_surface": { "const": "B" },
-    "decision_id": { "const": "DEC_REGIME_COVERAGE_PRODUCER" },
+    "authority_surface": {
+      "const": "B"
+    },
+    "decision_id": {
+      "const": "DEC_REGIME_COVERAGE_PRODUCER"
+    },
     "decision_status": {
       "type": "string",
-      "enum": ["OPEN", "RATIFIED"]
+      "enum": [
+        "OPEN",
+        "RATIFIED"
+      ]
     },
     "owner_value": {
       "oneOf": [
-        { "type": "null" },
+        {
+          "type": "null"
+        },
         {
           "type": "string",
           "enum": [
@@ -82,8 +94,12 @@
       "minItems": 2,
       "maxItems": 2,
       "prefixItems": [
-        { "const": "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER" },
-        { "const": "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER" }
+        {
+          "const": "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER"
+        },
+        {
+          "const": "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER"
+        }
       ],
       "items": false
     },
@@ -109,22 +125,166 @@
       ],
       "additionalProperties": false,
       "properties": {
-        "canonical_producer_name": { "type": "null" },
-        "canonical_producer_version": { "type": "null" },
-        "versioned_producer_id": { "type": "null" },
-        "taxonomy_binding": { "type": "null" },
-        "threshold_authority_ref": { "type": "null" },
-        "lookback_window_authority_ref": { "type": "null" },
-        "time_basis": { "type": "null" },
-        "PIT_no_lookahead_rules_ref": { "type": "null" },
-        "candle_join_acceptance_ref": { "type": "null" },
-        "mark_join_acceptance_ref": { "type": "null" },
-        "instrument_binding_acceptance_ref": { "type": "null" },
-        "determinism_contract_ref": { "type": "null" },
-        "reproducibility_contract_ref": { "type": "null" },
-        "producer_digest_contract_ref": { "type": "null" },
-        "missing_label_semantics_ref": { "type": "null" },
-        "unknown_label_semantics_ref": { "type": "null" }
+        "canonical_producer_name": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "surface_b_regime_coverage_producer_v1"
+            }
+          ]
+        },
+        "canonical_producer_version": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "v1"
+            }
+          ]
+        },
+        "versioned_producer_id": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "productive_pure_stack_stage2_surface_b_regime_coverage_producer/v1"
+            }
+          ]
+        },
+        "taxonomy_binding": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "TAXONOMY_SINK_EXCLUSIVE:low|mid|high|unknown|missing"
+            }
+          ]
+        },
+        "threshold_authority_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "OWNER_NUMERIC_THRESHOLD_AUTHORITY_UNSET_V1"
+            }
+          ]
+        },
+        "lookback_window_authority_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "OWNER_NUMERIC_LOOKBACK_AUTHORITY_UNSET_V1"
+            }
+          ]
+        },
+        "time_basis": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "EVENT_TIME_PT1M_FINALIZED_BAR_CLOSE_UTC"
+            }
+          ]
+        },
+        "PIT_no_lookahead_rules_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/pit_rules_v1.py"
+            }
+          ]
+        },
+        "candle_join_acceptance_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#candle_source_authority"
+            }
+          ]
+        },
+        "mark_join_acceptance_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#mark_source_authority"
+            }
+          ]
+        },
+        "instrument_binding_acceptance_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding"
+            }
+          ]
+        },
+        "determinism_contract_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/determinism_contract_v1.py"
+            }
+          ]
+        },
+        "reproducibility_contract_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/reproducibility_contract_v1.py"
+            }
+          ]
+        },
+        "producer_digest_contract_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/digest_contract_v1.py"
+            }
+          ]
+        },
+        "missing_label_semantics_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/label_semantics_v1.py#missing"
+            }
+          ]
+        },
+        "unknown_label_semantics_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "const": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/label_semantics_v1.py#unknown"
+            }
+          ]
+        }
       }
     },
     "taxonomy_sink_labels": {
@@ -132,27 +292,63 @@
       "minItems": 5,
       "maxItems": 5,
       "prefixItems": [
-        { "const": "low" },
-        { "const": "mid" },
-        { "const": "high" },
-        { "const": "unknown" },
-        { "const": "missing" }
+        {
+          "const": "low"
+        },
+        {
+          "const": "mid"
+        },
+        {
+          "const": "high"
+        },
+        {
+          "const": "unknown"
+        },
+        {
+          "const": "missing"
+        }
       ],
       "items": false
     },
-    "input_authority": { "const": false },
-    "runtime_implemented": { "const": false },
-    "campaign_start_authorized": { "const": false },
-    "raw_input_pack_materialization_authorized": { "const": false },
-    "raw_input_pack_created": { "const": false },
-    "campaign_started": { "const": false },
-    "productive_numeric_values_set": { "const": 0 },
-    "regime_coverage_producer_available": { "const": false },
-    "regime_coverage_status": { "const": "SEMANTICALLY_UNRESOLVED" },
-    "existing_producers_elevated": { "const": false },
-    "dashboard_authority_effect": { "const": "NONE" },
-    "notion_ssot": { "const": false },
-    "repository_is_ssot": { "const": true },
+    "input_authority": {
+      "const": false
+    },
+    "runtime_implemented": {
+      "const": false
+    },
+    "campaign_start_authorized": {
+      "const": false
+    },
+    "raw_input_pack_materialization_authorized": {
+      "const": false
+    },
+    "raw_input_pack_created": {
+      "const": false
+    },
+    "campaign_started": {
+      "const": false
+    },
+    "productive_numeric_values_set": {
+      "const": 0
+    },
+    "regime_coverage_producer_available": {
+      "const": false
+    },
+    "regime_coverage_status": {
+      "const": "SEMANTICALLY_UNRESOLVED"
+    },
+    "existing_producers_elevated": {
+      "const": false
+    },
+    "dashboard_authority_effect": {
+      "const": "NONE"
+    },
+    "notion_ssot": {
+      "const": false
+    },
+    "repository_is_ssot": {
+      "const": true
+    },
     "open_null_instance_fields": {
       "type": "object",
       "required": [
@@ -170,20 +366,79 @@
         "regime_coverage_instance"
       ],
       "properties": {
-        "campaign_id": { "type": "null" },
-        "dataset_id": { "type": "null" },
-        "scenario_id": { "type": "null" },
-        "seed": { "type": "null" },
-        "partition_boundaries": { "type": "null" },
-        "fold_ids": { "type": "null" },
-        "bootstrap_seeds": { "type": "null" },
-        "purge": { "type": "null" },
-        "embargo": { "type": "null" },
-        "fold_sizes": { "type": "null" },
-        "regime_coverage_counts": { "type": "null" },
-        "regime_coverage_instance": { "type": "null" }
+        "campaign_id": {
+          "type": "null"
+        },
+        "dataset_id": {
+          "type": "null"
+        },
+        "scenario_id": {
+          "type": "null"
+        },
+        "seed": {
+          "type": "null"
+        },
+        "partition_boundaries": {
+          "type": "null"
+        },
+        "fold_ids": {
+          "type": "null"
+        },
+        "bootstrap_seeds": {
+          "type": "null"
+        },
+        "purge": {
+          "type": "null"
+        },
+        "embargo": {
+          "type": "null"
+        },
+        "fold_sizes": {
+          "type": "null"
+        },
+        "regime_coverage_counts": {
+          "type": "null"
+        },
+        "regime_coverage_instance": {
+          "type": "null"
+        }
       }
     },
-    "decisions": { "type": "object" }
+    "decisions": {
+      "type": "object"
+    },
+    "owner_impl_go_base_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sta_satisfied_by_producer_impl": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "prefixItems": [
+        {
+          "const": "dedicated_surface_b_regime_recorder_under_sta"
+        },
+        {
+          "const": "ratified_taxonomy_mapping"
+        },
+        {
+          "const": "producer_version_and_digest_contract"
+        },
+        {
+          "const": "ratified_pt1m_candle_authority_join"
+        },
+        {
+          "const": "ratified_pt1m_mark_authority_join"
+        },
+        {
+          "const": "pit_no_lookahead_proof"
+        },
+        {
+          "const": "deterministic_reproducible_computation"
+        }
+      ],
+      "items": false
+    }
   }
 }

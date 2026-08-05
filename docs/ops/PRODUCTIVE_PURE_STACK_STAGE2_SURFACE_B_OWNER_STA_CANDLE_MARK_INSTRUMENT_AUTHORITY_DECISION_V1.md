@@ -245,10 +245,11 @@ DECISION_STATUS=RATIFIED
 ```
 
 `REGIME_COVERAGE_PRODUCER_AVAILABLE` remains `false` and
-`REGIME_COVERAGE_STATUS` remains `SEMANTICALLY_UNRESOLVED` until authorize-detail
-fields and STA proofs are separately ratified. Structural label slots exist under
-parent Surface B, but counts/labels must not be invented, existing producers must
-not be elevated, and no new classifier is implemented by this triad surface.
+`REGIME_COVERAGE_STATUS` remains `SEMANTICALLY_UNRESOLVED` even after the dedicated
+producer package and authorize-detail fields are completed under
+`DEC_REGIME_COVERAGE_PRODUCER`. Structural label slots exist under parent Surface B,
+but counts/labels must not be invented, existing producers must not be elevated,
+and no threshold-inventing classifier is implemented by this triad surface.
 
 ## 7. E. Owner decision table
 

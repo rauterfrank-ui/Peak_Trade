@@ -1,9 +1,8 @@
 """Fail-closed validator for Surface-B Owner/STA regime-coverage producer decision.
 
-Creates no producer authority, invents no coverage counts, and elevates no
-existing observability/research/bridge/dashboard components. Owner-value
-recording leaves authorize detail fields null and all pack/campaign/runtime
-gates closed.
+Records authorize-detail completion and dedicated producer implementation while
+keeping INPUT_AUTHORITY, pack materialization, campaign start, productive
+numeric invention, and existing-producer elevation closed.
 """
 
 from __future__ import annotations
@@ -74,6 +73,21 @@ def load_canonical_regime_coverage_producer_decisions_manifest_v1(
     return payload
 
 
+def _validate_authorize_detail_fields_complete(detail_fields: Mapping[str, Any]) -> None:
+    for field in C.AUTHORIZE_DETAIL_FIELDS:
+        if field not in detail_fields:
+            raise RegimeCoverageProducerDecisionErrorV1(f"AUTHORIZE_DETAIL_FIELD_MISSING:{field}")
+        expected = C.AUTHORIZE_DETAIL_FIELD_VALUES[field]
+        value = detail_fields.get(field)
+        if value != expected:
+            raise RegimeCoverageProducerDecisionErrorV1(f"AUTHORIZE_DETAIL_FIELD_MISMATCH:{field}")
+        if not isinstance(value, str) or not value.strip():
+            raise RegimeCoverageProducerDecisionErrorV1(
+                f"AUTHORIZE_DETAIL_FIELD_MUST_BE_NONEMPTY_STRING:{field}"
+            )
+        _assert_no_forbidden_producer_token(value, label=f"authorize_detail_fields.{field}")
+
+
 def validate_regime_coverage_producer_manifest_v1(
     manifest: Mapping[str, Any],
     *,
@@ -82,6 +96,7 @@ def validate_regime_coverage_producer_manifest_v1(
     """Validate the canonical regime-coverage producer decision surface.
 
     When ``require_open_status`` is None, mode is inferred from ``status``.
+    Canonical HEAD mode after this capability is authorize-details-complete.
     """
     for key in C.REQUIRED_MANIFEST_TOP_KEYS:
         if key not in manifest:
@@ -145,14 +160,6 @@ def validate_regime_coverage_producer_manifest_v1(
     detail_fields = _require_mapping(
         manifest.get("authorize_detail_fields"), label="authorize_detail_fields"
     )
-    for field in C.AUTHORIZE_DETAIL_FIELDS:
-        if field not in detail_fields:
-            raise RegimeCoverageProducerDecisionErrorV1(f"AUTHORIZE_DETAIL_FIELD_MISSING:{field}")
-        _assert_null(detail_fields.get(field), label=f"authorize_detail_fields.{field}")
-        _assert_no_forbidden_producer_token(
-            detail_fields.get(field), label=f"authorize_detail_fields.{field}"
-        )
-
     open_fields = _require_mapping(
         manifest.get("open_null_instance_fields"), label="open_null_instance_fields"
     )
@@ -179,6 +186,14 @@ def validate_regime_coverage_producer_manifest_v1(
                 f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
             )
 
+    sta_satisfied = manifest.get("sta_satisfied_by_producer_impl")
+    if not isinstance(sta_satisfied, Sequence) or isinstance(sta_satisfied, (str, bytes)):
+        raise RegimeCoverageProducerDecisionErrorV1(
+            "STA_SATISFIED_BY_PRODUCER_IMPL_MUST_BE_SEQUENCE"
+        )
+    if tuple(sta_satisfied) != C.STA_SATISFIED_BY_PRODUCER_IMPL:
+        raise RegimeCoverageProducerDecisionErrorV1("STA_SATISFIED_BY_PRODUCER_IMPL_MISMATCH")
+
     reject_sem = _require_mapping(manifest.get("reject_semantics"), label="reject_semantics")
     for key, expected in (
         ("regime_coverage_materializable", False),
@@ -197,7 +212,9 @@ def validate_regime_coverage_producer_manifest_v1(
         ("runtime_implemented", False),
         ("raw_input_pack_created", False),
         ("campaign_started", False),
-        ("separate_explicit_implementation_order_required", True),
+        ("separate_explicit_implementation_order_required", False),
+        ("authorize_detail_fields_complete", True),
+        ("dedicated_producer_implemented", True),
         ("owner_fields_and_sta_proofs_must_be_fully_ratified_before_input_authority", True),
     ):
         if authorize_sem.get(key) is not expected:
@@ -221,6 +238,14 @@ def validate_regime_coverage_producer_manifest_v1(
         raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_ALLOWED_OWNER_VALUES_MISMATCH")
     if tuple(producer_dec.get("taxonomy_sink_labels") or ()) != C.TAXONOMY_SINK_LABELS:
         raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_TAXONOMY_SINK_MISMATCH")
+    if producer_dec.get("dedicated_producer_package") != C.PRODUCER_PACKAGE_REL:
+        raise RegimeCoverageProducerDecisionErrorV1("DEDICATED_PRODUCER_PACKAGE_MISMATCH")
+    if producer_dec.get("invent_counts_or_labels") is not False:
+        raise RegimeCoverageProducerDecisionErrorV1("INVENT_COUNTS_OR_LABELS_MUST_REMAIN_FALSE")
+    if producer_dec.get("new_classifier_implemented") is not False:
+        raise RegimeCoverageProducerDecisionErrorV1(
+            "NEW_CLASSIFIER_WITH_THRESHOLDS_MUST_REMAIN_FALSE"
+        )
 
     non_effects = _require_mapping(decisions.get("NON_EFFECTS"), label="NON_EFFECTS")
     for key in (
@@ -253,6 +278,7 @@ def validate_regime_coverage_producer_manifest_v1(
     if require_open_status is None:
         require_open_status = surface_status == C.STATUS_SURFACE_OPEN
 
+    authorize_details_complete = False
     if require_open_status:
         if surface_status != C.STATUS_SURFACE_OPEN:
             raise RegimeCoverageProducerDecisionErrorV1("STATUS_MUST_REMAIN_SURFACE_OPEN")
@@ -262,9 +288,9 @@ def validate_regime_coverage_producer_manifest_v1(
         _assert_null(producer_dec.get("owner_value"), label="decisions.owner_value")
         if producer_dec.get("status") != C.DECISION_STATUS_OPEN:
             raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_STATUS_MUST_REMAIN_OPEN")
-    else:
-        if surface_status != C.STATUS_OWNER_VALUE_RECORDED:
-            raise RegimeCoverageProducerDecisionErrorV1("STATUS_MUST_BE_OWNER_VALUE_RECORDED")
+        for field in C.AUTHORIZE_DETAIL_FIELDS:
+            _assert_null(detail_fields.get(field), label=f"authorize_detail_fields.{field}")
+    elif surface_status == C.STATUS_OWNER_VALUE_RECORDED:
         if decision_status != C.DECISION_STATUS_RATIFIED:
             raise RegimeCoverageProducerDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
         if owner_value != C.RECORDED_OWNER_VALUE:
@@ -275,6 +301,28 @@ def validate_regime_coverage_producer_manifest_v1(
             raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
         if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
             raise RegimeCoverageProducerDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
+        for field in C.AUTHORIZE_DETAIL_FIELDS:
+            _assert_null(detail_fields.get(field), label=f"authorize_detail_fields.{field}")
+        _assert_no_forbidden_producer_token(owner_value, label="owner_value")
+    else:
+        if surface_status != C.STATUS_AUTHORIZE_DETAILS_COMPLETE:
+            raise RegimeCoverageProducerDecisionErrorV1(
+                "STATUS_MUST_BE_AUTHORIZE_DETAIL_FIELDS_COMPLETE"
+            )
+        if decision_status != C.DECISION_STATUS_RATIFIED:
+            raise RegimeCoverageProducerDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
+        if owner_value != C.RECORDED_OWNER_VALUE:
+            raise RegimeCoverageProducerDecisionErrorV1("OWNER_VALUE_MISMATCH")
+        if producer_dec.get("owner_value") != C.RECORDED_OWNER_VALUE:
+            raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_OWNER_VALUE_MISMATCH")
+        if producer_dec.get("status") != C.DECISION_STATUS_RATIFIED:
+            raise RegimeCoverageProducerDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
+        if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
+            raise RegimeCoverageProducerDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
+        if str(manifest.get("owner_impl_go_base_sha") or "") != C.OWNER_IMPL_GO_BASE_SHA:
+            raise RegimeCoverageProducerDecisionErrorV1("OWNER_IMPL_GO_BASE_SHA_MISMATCH")
+        _validate_authorize_detail_fields_complete(detail_fields)
+        authorize_details_complete = True
         _assert_no_forbidden_producer_token(owner_value, label="owner_value")
 
     _reject_invented_numeric_payload(manifest)
@@ -287,7 +335,8 @@ def validate_regime_coverage_producer_manifest_v1(
         "decision_status": decision_status,
         "owner_value": owner_value,
         "allowed_owner_values": list(C.ALLOWED_OWNER_VALUES),
-        "authorize_detail_fields_null": True,
+        "authorize_detail_fields_null": not authorize_details_complete,
+        "authorize_detail_fields_complete": authorize_details_complete,
         "existing_producers_elevated": False,
         "input_authority": False,
         "runtime_implemented": False,
@@ -323,12 +372,12 @@ def validate_regime_coverage_owner_choice_v1(
         raise RegimeCoverageProducerDecisionErrorV1("AUTHORIZE_DETAIL_FIELDS_MUST_BE_MAPPING")
 
     if owner_value == C.AUTHORIZE_OWNER_VALUE:
-        for field in C.AUTHORIZE_DETAIL_FIELDS:
-            # Authorize choice still leaves detail fields null until
-            # a separate Owner/STA ratification fills them.
-            value = details.get(field)
-            _assert_null(value, label=f"authorize_detail_fields.{field}")
-            _assert_no_forbidden_producer_token(value, label=f"authorize_detail_fields.{field}")
+        if details:
+            _validate_authorize_detail_fields_complete(details)
+        else:
+            for field in C.AUTHORIZE_DETAIL_FIELDS:
+                value = details.get(field)
+                _assert_null(value, label=f"authorize_detail_fields.{field}")
     else:
         for field, value in details.items():
             _assert_null(value, label=f"reject.authorize_detail_fields.{field}")

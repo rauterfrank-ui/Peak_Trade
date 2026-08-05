@@ -11,6 +11,7 @@ import pytest
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decision_v1.constants_v1 import (
     ALLOWED_OWNER_VALUES,
     AUTHORIZE_DETAIL_FIELDS,
+    AUTHORIZE_DETAIL_FIELD_VALUES,
     AUTHORIZE_OWNER_VALUE,
     BASELINE_ORIGIN_MAIN_SHA,
     CAPABILITY_SCOPE,
@@ -20,11 +21,14 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_pr
     FORBIDDEN_EXISTING_PRODUCER_TOKENS,
     OWNER_DECISION_REL,
     OWNER_GO_BASE_SHA,
+    OWNER_IMPL_GO_BASE_SHA,
     PARENT_TRIAD_MANIFEST_REL,
+    PRODUCER_PACKAGE_REL,
+    PRODUCER_SPEC_REL,
     RECORDED_OWNER_VALUE,
     REJECT_OWNER_VALUE,
     SCHEMA_REL,
-    STATUS_OWNER_VALUE_RECORDED,
+    STATUS_AUTHORIZE_DETAILS_COMPLETE,
     TAXONOMY_SINK_LABELS,
 )
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decision_v1.validator_v1 import (
@@ -39,11 +43,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_OWNER_VALUE_RECORDED}",
+    f"STATUS={STATUS_AUTHORIZE_DETAILS_COMPLETE}",
     f"DECISION_ID={DECISION_ID}",
     "DECISION_STATUS=RATIFIED",
     f"OWNER_VALUE={RECORDED_OWNER_VALUE}",
     f"OWNER_GO_BASE_SHA={OWNER_GO_BASE_SHA}",
+    f"OWNER_IMPL_GO_BASE_SHA={OWNER_IMPL_GO_BASE_SHA}",
     f"BASELINE_ORIGIN_MAIN_SHA={BASELINE_ORIGIN_MAIN_SHA}",
     "INPUT_AUTHORITY=false",
     "RUNTIME_IMPLEMENTED=false",
@@ -53,14 +58,15 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "CAMPAIGN_STARTED=false",
     "PRODUCTIVE_NUMERIC_VALUES_SET=0",
     "REGIME_COVERAGE_STATUS=SEMANTICALLY_UNRESOLVED",
+    "REGIME_COVERAGE_PRODUCER_AVAILABLE=false",
     "EXISTING_PRODUCERS_ELEVATED=false",
     "DASHBOARD_AUTHORITY_EFFECT=NONE",
     "NOTION_SSOT=false",
     "REPOSITORY_IS_SSOT=true",
+    "AUTHORIZE_DETAIL_FIELDS_COMPLETE=true",
+    "DEDICATED_PRODUCER_IMPLEMENTED=true",
     "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER",
     "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER",
-    "canonical_producer_name=null",
-    "PIT_no_lookahead_rules_ref=null",
     "low | mid | high | unknown | missing",
 )
 
@@ -72,6 +78,7 @@ FORBIDDEN_DOC_CLAIMS: tuple[str, ...] = (
     "NOTION_SSOT=true",
     "EXISTING_PRODUCERS_ELEVATED=true",
     "DASHBOARD_AUTHORITY_EFFECT=AUTHORITY",
+    "REGIME_COVERAGE_PRODUCER_AVAILABLE=true",
 )
 
 
@@ -80,6 +87,8 @@ def test_regime_coverage_artifacts_exist_v1() -> None:
     assert (REPO_ROOT / DECISIONS_MANIFEST_REL).is_file()
     assert (REPO_ROOT / SCHEMA_REL).is_file()
     assert (REPO_ROOT / CYBERSECURITY_MIRROR_REL).is_file()
+    assert (REPO_ROOT / PRODUCER_SPEC_REL).is_file()
+    assert (REPO_ROOT / PRODUCER_PACKAGE_REL).is_dir()
 
 
 def test_regime_coverage_document_markers_v1() -> None:
@@ -88,18 +97,21 @@ def test_regime_coverage_document_markers_v1() -> None:
         assert marker in text, marker
     for claim in FORBIDDEN_DOC_CLAIMS:
         assert claim not in text, claim
+    for field, value in AUTHORIZE_DETAIL_FIELD_VALUES.items():
+        assert f"{field}={value}" in text, field
 
 
-def test_canonical_manifest_owner_value_recorded_v1() -> None:
+def test_canonical_manifest_authorize_details_complete_v1() -> None:
     manifest = load_canonical_regime_coverage_producer_decisions_manifest_v1(REPO_ROOT)
     result = validate_regime_coverage_producer_manifest_v1(manifest)
     assert result["ok"] is True
     assert result["decision_id"] == DECISION_ID
-    assert result["status"] == STATUS_OWNER_VALUE_RECORDED
+    assert result["status"] == STATUS_AUTHORIZE_DETAILS_COMPLETE
     assert result["decision_status"] == "RATIFIED"
     assert result["owner_value"] == RECORDED_OWNER_VALUE
     assert result["allowed_owner_values"] == list(ALLOWED_OWNER_VALUES)
-    assert result["authorize_detail_fields_null"] is True
+    assert result["authorize_detail_fields_null"] is False
+    assert result["authorize_detail_fields_complete"] is True
     assert result["existing_producers_elevated"] is False
     assert result["input_authority"] is False
     assert result["runtime_implemented"] is False
@@ -113,16 +125,23 @@ def test_canonical_manifest_owner_value_recorded_v1() -> None:
     assert manifest["owner_value"] == RECORDED_OWNER_VALUE
     assert manifest["decision_status"] == "RATIFIED"
     assert manifest["owner_go_base_sha"] == OWNER_GO_BASE_SHA
+    assert manifest["owner_impl_go_base_sha"] == OWNER_IMPL_GO_BASE_SHA
     assert tuple(manifest["allowed_owner_values"]) == ALLOWED_OWNER_VALUES
     assert tuple(manifest["taxonomy_sink_labels"]) == TAXONOMY_SINK_LABELS
     for field in AUTHORIZE_DETAIL_FIELDS:
-        assert manifest["authorize_detail_fields"][field] is None, field
+        assert manifest["authorize_detail_fields"][field] == AUTHORIZE_DETAIL_FIELD_VALUES[field], (
+            field
+        )
     for key, value in manifest["open_null_instance_fields"].items():
         assert value is None, key
     assert manifest["open_null_instance_fields"]["regime_coverage_counts"] is None
     assert manifest["decisions"]["REGIME_COVERAGE_PRODUCER"]["coverage_counts"] is None
     assert manifest["decisions"]["REGIME_COVERAGE_PRODUCER"]["owner_value"] == RECORDED_OWNER_VALUE
     assert manifest["decisions"]["REGIME_COVERAGE_PRODUCER"]["status"] == "RATIFIED"
+    assert (
+        manifest["decisions"]["REGIME_COVERAGE_PRODUCER"]["dedicated_producer_package"]
+        == PRODUCER_PACKAGE_REL
+    )
 
 
 def test_schema_required_keys_present_v1() -> None:
@@ -134,6 +153,8 @@ def test_schema_required_keys_present_v1() -> None:
         "owner_value",
         "allowed_owner_values",
         "authorize_detail_fields",
+        "owner_impl_go_base_sha",
+        "sta_satisfied_by_producer_impl",
         "regime_coverage_status",
         "existing_producers_elevated",
         "dashboard_authority_effect",
@@ -151,9 +172,9 @@ def test_markdown_json_semantic_consistency_v1() -> None:
     for value in ALLOWED_OWNER_VALUES:
         assert value in md
         assert value in manifest["allowed_owner_values"]
-    for field in AUTHORIZE_DETAIL_FIELDS:
-        assert f"{field}=null" in md
-        assert manifest["authorize_detail_fields"][field] is None
+    for field, value in AUTHORIZE_DETAIL_FIELD_VALUES.items():
+        assert f"{field}={value}" in md
+        assert manifest["authorize_detail_fields"][field] == value
     assert "REGIME_COVERAGE_STATUS=SEMANTICALLY_UNRESOLVED" in md
     assert manifest["regime_coverage_status"] == "SEMANTICALLY_UNRESOLVED"
     assert "DASHBOARD_AUTHORITY_EFFECT=NONE" in md
@@ -249,18 +270,21 @@ def test_reject_dashboard_authority_and_runtime_authorization_v1() -> None:
         )
 
 
-def test_authorize_detail_fields_must_remain_null_after_owner_value_v1() -> None:
+def test_authorize_detail_fields_must_match_dedicated_producer_v1() -> None:
     manifest = copy.deepcopy(
         load_canonical_regime_coverage_producer_decisions_manifest_v1(REPO_ROOT)
     )
     manifest["authorize_detail_fields"]["canonical_producer_name"] = "analytics.regimes"
-    with pytest.raises(RegimeCoverageProducerDecisionErrorV1, match="MUST_REMAIN_NULL"):
+    with pytest.raises(
+        RegimeCoverageProducerDecisionErrorV1,
+        match="AUTHORIZE_DETAIL_FIELD_MISMATCH|EXISTING_PRODUCER_ELEVATION_FORBIDDEN",
+    ):
         validate_regime_coverage_producer_manifest_v1(manifest)
-    with pytest.raises(RegimeCoverageProducerDecisionErrorV1, match="MUST_REMAIN_NULL"):
-        validate_regime_coverage_owner_choice_v1(
-            AUTHORIZE_OWNER_VALUE,
-            authorize_detail_fields={"canonical_producer_name": "feature_regime_pipeline_v2"},
-        )
+    result = validate_regime_coverage_owner_choice_v1(
+        AUTHORIZE_OWNER_VALUE,
+        authorize_detail_fields=AUTHORIZE_DETAIL_FIELD_VALUES,
+    )
+    assert result["ok"] is True
 
 
 def test_parent_triad_mirrors_recorded_owner_value_v1() -> None:
