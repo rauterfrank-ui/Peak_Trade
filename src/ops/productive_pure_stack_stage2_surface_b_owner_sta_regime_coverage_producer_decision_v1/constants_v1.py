@@ -36,6 +36,9 @@ STATUS_OWNER_VALUE_RECORDED = "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_F
 STATUS_AUTHORIZE_DETAILS_COMPLETE = (
     "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED"
 )
+STATUS_STA_OPEN_INPUTS_CLOSED = (
+    "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED_STA_OPEN_INPUTS_CLOSED"
+)
 
 DECISION_ID = "DEC_REGIME_COVERAGE_PRODUCER"
 DECISION_STATUS_OPEN = "OPEN"
@@ -44,6 +47,7 @@ DECISION_STATUS_RATIFIED = "RATIFIED"
 BASELINE_ORIGIN_MAIN_SHA = "42e8527c929264c702d8f7d59a80fc38f850baff"
 OWNER_GO_BASE_SHA = "9f4974824bb647b6f9dec5509ace990c2678188a"
 OWNER_IMPL_GO_BASE_SHA = "52af83870a775ee9a4647107273964fa4857322b"
+OWNER_STA_OPEN_INPUTS_CLOSEOUT_GO_BASE_SHA = "75ea4dc594a7f27b1fb490477e824a8c0a66d779"
 AUTHORITY_SURFACE = "B"
 SOLE_TRADING_AUTHORITY = "run_integrated_offline_trading_logic_replay_v1"
 
@@ -67,6 +71,7 @@ TRADING_LOGIC_CHANGED = False
 ORDERS_TESTNET_LIVE_PAPER_EFFECTS = False
 EXCHANGE_CREDENTIAL_EFFECTS = False
 AUTHORIZE_DETAIL_FIELDS_COMPLETE = True
+STA_OPEN_INPUTS_CLOSED = True
 
 OWNER_DECISION_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
@@ -83,6 +88,10 @@ SCHEMA_REL = (
 CYBERSECURITY_MIRROR_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
     "REGIME_COVERAGE_PRODUCER_CYBERSECURITY_MIRROR_V1.md"
+)
+STA_OPEN_INPUTS_CLOSEOUT_DECISION_REL = (
+    "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
+    "REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1.md"
 )
 PRODUCER_PACKAGE_REL = "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/"
 PRODUCER_SPEC_REL = "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_REGIME_COVERAGE_PRODUCER_V1.md"
@@ -157,7 +166,9 @@ FORBIDDEN_EXISTING_PRODUCER_TOKENS: tuple[str, ...] = (
     "fixture",
 )
 
-STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = (
+STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = ()
+
+STA_CLOSED_BY_OPEN_INPUTS_CLOSEOUT: tuple[str, ...] = (
     "non_invented_coverage_counts",
     "provable_eth_usdt_swap_compatibility",
 )
@@ -201,6 +212,7 @@ REQUIRED_MANIFEST_TOP_KEYS: tuple[str, ...] = (
     "authorize_detail_fields",
     "taxonomy_sink_labels",
     "sta_open_external_inputs",
+    "sta_closed_by_open_inputs_closeout",
     "sta_satisfied_by_producer_impl",
     "forbidden_existing_producers",
     "reject_semantics",
@@ -220,6 +232,7 @@ REQUIRED_MANIFEST_TOP_KEYS: tuple[str, ...] = (
     "repository_is_ssot",
     "open_null_instance_fields",
     "decisions",
+    "owner_sta_open_inputs_closeout_go_base_sha",
 )
 
 FORBIDDEN_SOURCE_TOKENS: tuple[str, ...] = (

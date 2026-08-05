@@ -18,6 +18,7 @@
     "authorize_detail_fields",
     "taxonomy_sink_labels",
     "sta_open_external_inputs",
+    "sta_closed_by_open_inputs_closeout",
     "forbidden_existing_producers",
     "reject_semantics",
     "authorize_semantics",
@@ -37,6 +38,7 @@
     "open_null_instance_fields",
     "decisions",
     "owner_impl_go_base_sha",
+    "owner_sta_open_inputs_closeout_go_base_sha",
     "sta_satisfied_by_producer_impl"
   ],
   "additionalProperties": true,
@@ -55,7 +57,8 @@
       "enum": [
         "OWNER_STA_DECISION_SURFACE_OPEN",
         "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN",
-        "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED"
+        "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED",
+        "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED_STA_OPEN_INPUTS_CLOSED"
       ]
     },
     "authority_surface": {
@@ -410,6 +413,29 @@
     "owner_impl_go_base_sha": {
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
+    },
+    "owner_sta_open_inputs_closeout_go_base_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sta_open_external_inputs": {
+      "type": "array",
+      "maxItems": 0,
+      "items": false
+    },
+    "sta_closed_by_open_inputs_closeout": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "const": "non_invented_coverage_counts"
+        },
+        {
+          "const": "provable_eth_usdt_swap_compatibility"
+        }
+      ],
+      "items": false
     },
     "sta_satisfied_by_producer_impl": {
       "type": "array",

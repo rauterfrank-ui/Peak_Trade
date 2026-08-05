@@ -2,7 +2,7 @@
   "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions/v1",
   "document_type": "OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISIONS_MANIFEST",
   "capability_scope": "SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION",
-  "status": "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED",
+  "status": "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED_STA_OPEN_INPUTS_CLOSED",
   "baseline_origin_main_sha": "42e8527c929264c702d8f7d59a80fc38f850baff",
   "authority_surface": "B",
   "decision_id": "DEC_REGIME_COVERAGE_PRODUCER",
@@ -37,7 +37,8 @@
     "unknown",
     "missing"
   ],
-  "sta_open_external_inputs": [
+  "sta_open_external_inputs": [],
+  "sta_closed_by_open_inputs_closeout": [
     "non_invented_coverage_counts",
     "provable_eth_usdt_swap_compatibility"
   ],
@@ -155,6 +156,7 @@
   },
   "owner_go_base_sha": "9f4974824bb647b6f9dec5509ace990c2678188a",
   "owner_impl_go_base_sha": "52af83870a775ee9a4647107273964fa4857322b",
+  "owner_sta_open_inputs_closeout_go_base_sha": "75ea4dc594a7f27b1fb490477e824a8c0a66d779",
   "sta_satisfied_by_producer_impl": [
     "dedicated_surface_b_regime_recorder_under_sta",
     "ratified_taxonomy_mapping",

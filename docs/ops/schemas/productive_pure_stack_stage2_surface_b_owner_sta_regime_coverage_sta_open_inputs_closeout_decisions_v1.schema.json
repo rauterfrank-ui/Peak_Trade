@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout_decisions_v1.schema.json",
+  "title": "Stage-2 Surface B Owner/STA Regime Coverage STA Open Inputs Closeout Decisions v1",
+  "description": "Machine-readable Owner/STA closeout for non_invented_coverage_counts and provable_eth_usdt_swap_compatibility. Docs/manifest/schema/validator only. Does not authorize producer reimplementation, consumer wiring, pack materialization, campaign start, input authority, runtime, productive thresholds, or orders.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "decision_id",
+    "decision_status",
+    "owner_go",
+    "owner_go_base_sha",
+    "authority_surface",
+    "closed_inputs",
+    "sta_open_external_inputs_remaining",
+    "non_invented_coverage_counts",
+    "provable_eth_usdt_swap_compatibility",
+    "authority_refs",
+    "non_effects",
+    "decisions"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout_decisions/v1"
+    },
+    "document_type": {
+      "const": "OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_DECISIONS_MANIFEST"
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT"
+    },
+    "status": {
+      "const": "OWNER_STA_STA_OPEN_INPUTS_CLOSEOUT_RATIFIED"
+    },
+    "decision_id": {
+      "const": "DEC_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT"
+    },
+    "decision_status": {
+      "const": "RATIFIED"
+    },
+    "owner_go": {
+      "const": "OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1"
+    },
+    "owner_go_base_sha": {
+      "const": "75ea4dc594a7f27b1fb490477e824a8c0a66d779"
+    },
+    "authority_surface": {
+      "const": "B"
+    },
+    "closed_inputs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        { "const": "non_invented_coverage_counts" },
+        { "const": "provable_eth_usdt_swap_compatibility" }
+      ],
+      "items": false
+    },
+    "sta_open_external_inputs_remaining": {
+      "type": "array",
+      "maxItems": 0,
+      "items": false
+    },
+    "non_invented_coverage_counts": {
+      "type": "object",
+      "required": [
+        "status",
+        "authority_ref",
+        "producer_authority_ref",
+        "versioned_producer_id",
+        "provenance_ref",
+        "digest_ref",
+        "pit_ref",
+        "partition_ref",
+        "threshold_authority_ref",
+        "lookback_authority_ref",
+        "countable_labels_while_thresholds_lookbacks_unset",
+        "forbidden_labels_while_thresholds_lookbacks_unset",
+        "derivation_rule",
+        "caller_supplied_or_invented_counts",
+        "deterministic",
+        "partition_bounded",
+        "pit_no_lookahead_conformant",
+        "digest_bound",
+        "campaign_instance_regime_coverage_counts",
+        "campaign_instance_regime_coverage_instance"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "const": "CLOSED" },
+        "authority_ref": { "type": "string", "minLength": 1 },
+        "producer_authority_ref": { "type": "string", "minLength": 1 },
+        "versioned_producer_id": {
+          "const": "productive_pure_stack_stage2_surface_b_regime_coverage_producer/v1"
+        },
+        "provenance_ref": { "type": "string", "minLength": 1 },
+        "digest_ref": { "type": "string", "minLength": 1 },
+        "pit_ref": { "type": "string", "minLength": 1 },
+        "partition_ref": { "type": "string", "minLength": 1 },
+        "threshold_authority_ref": {
+          "const": "OWNER_NUMERIC_THRESHOLD_AUTHORITY_UNSET_V1"
+        },
+        "lookback_authority_ref": {
+          "const": "OWNER_NUMERIC_LOOKBACK_AUTHORITY_UNSET_V1"
+        },
+        "countable_labels_while_thresholds_lookbacks_unset": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [
+            { "const": "missing" },
+            { "const": "unknown" }
+          ],
+          "items": false
+        },
+        "forbidden_labels_while_thresholds_lookbacks_unset": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "prefixItems": [
+            { "const": "low" },
+            { "const": "mid" },
+            { "const": "high" }
+          ],
+          "items": false
+        },
+        "derivation_rule": {
+          "const": "COUNTS_FROM_AUTHORIZED_PRODUCER_LABEL_OBSERVATIONS_ONLY"
+        },
+        "caller_supplied_or_invented_counts": { "const": "FAIL_CLOSED" },
+        "deterministic": { "const": true },
+        "partition_bounded": { "const": true },
+        "pit_no_lookahead_conformant": { "const": true },
+        "digest_bound": { "const": true },
+        "campaign_instance_regime_coverage_counts": { "type": "null" },
+        "campaign_instance_regime_coverage_instance": { "type": "null" }
+      }
+    },
+    "provable_eth_usdt_swap_compatibility": {
+      "type": "object",
+      "required": [
+        "status",
+        "instrument_binding_authority_ref",
+        "triad_manifest_ref",
+        "candle_join_ref",
+        "mark_join_ref",
+        "raw_pt1m_pack_ref",
+        "compatibility_mode",
+        "string_name_similarity_inference",
+        "required_instrument_binding_v1",
+        "incomplete_contradictory_or_unprovable_bindings"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "const": "CLOSED" },
+        "instrument_binding_authority_ref": { "type": "string", "minLength": 1 },
+        "triad_manifest_ref": { "type": "string", "minLength": 1 },
+        "candle_join_ref": { "type": "string", "minLength": 1 },
+        "mark_join_ref": { "type": "string", "minLength": 1 },
+        "raw_pt1m_pack_ref": { "type": "string", "minLength": 1 },
+        "compatibility_mode": {
+          "const": "EXACT_OWNER_RATIFIED_INSTRUMENTBINDINGV1_FIELD_MATCH"
+        },
+        "string_name_similarity_inference": { "const": false },
+        "required_instrument_binding_v1": {
+          "type": "object",
+          "required": [
+            "venue",
+            "canonical_instrument_id",
+            "venue_instrument_id",
+            "contract_type",
+            "market_type",
+            "quote_currency",
+            "settlement_currency"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "venue": { "const": "okx" },
+            "canonical_instrument_id": { "const": "inst-eth-usdt-perp" },
+            "venue_instrument_id": { "const": "ETH-USDT-SWAP" },
+            "contract_type": { "const": "perpetual" },
+            "market_type": { "const": "futures" },
+            "quote_currency": { "const": "USDT" },
+            "settlement_currency": { "const": "USDT" }
+          }
+        },
+        "incomplete_contradictory_or_unprovable_bindings": {
+          "const": "FAIL_CLOSED"
+        }
+      }
+    },
+    "authority_refs": {
+      "type": "object",
+      "required": [
+        "parent_regime_coverage_decision",
+        "parent_triad",
+        "parent_raw_input_pack",
+        "producer_package",
+        "digest_contract",
+        "pit_rules",
+        "label_semantics"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "parent_regime_coverage_decision": { "type": "string", "minLength": 1 },
+        "parent_triad": { "type": "string", "minLength": 1 },
+        "parent_raw_input_pack": { "type": "string", "minLength": 1 },
+        "producer_package": { "type": "string", "minLength": 1 },
+        "digest_contract": { "type": "string", "minLength": 1 },
+        "pit_rules": { "type": "string", "minLength": 1 },
+        "label_semantics": { "type": "string", "minLength": 1 }
+      }
+    },
+    "non_effects": {
+      "type": "object",
+      "required": [
+        "producer_reimplementation",
+        "consumer_wiring",
+        "pt1m_adapter",
+        "pack_materialization",
+        "campaign_start",
+        "input_authority",
+        "runtime_implemented",
+        "regime_coverage_producer_available",
+        "productive_numeric_values_set",
+        "productive_thresholds_lookbacks",
+        "trading_logic_change",
+        "dashboard_authority_effect",
+        "orders_authorized",
+        "testnet_authorized",
+        "live_authorized",
+        "runtime_authorization_effect"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "producer_reimplementation": { "const": false },
+        "consumer_wiring": { "const": false },
+        "pt1m_adapter": { "const": false },
+        "pack_materialization": { "const": false },
+        "campaign_start": { "const": false },
+        "input_authority": { "const": false },
+        "runtime_implemented": { "const": false },
+        "regime_coverage_producer_available": { "const": false },
+        "productive_numeric_values_set": { "const": 0 },
+        "productive_thresholds_lookbacks": { "const": false },
+        "trading_logic_change": { "const": false },
+        "dashboard_authority_effect": { "const": "NONE" },
+        "orders_authorized": { "const": false },
+        "testnet_authorized": { "const": false },
+        "live_authorized": { "const": false },
+        "runtime_authorization_effect": { "const": "NONE" }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "required": ["CLOSED_INPUTS", "NON_EFFECTS"],
+      "additionalProperties": false,
+      "properties": {
+        "CLOSED_INPUTS": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [
+            { "const": "non_invented_coverage_counts" },
+            { "const": "provable_eth_usdt_swap_compatibility" }
+          ],
+          "items": false
+        },
+        "NON_EFFECTS": {
+          "type": "object",
+          "required": [
+            "producer_reimplementation",
+            "consumer_wiring",
+            "pt1m_adapter",
+            "pack_materialization",
+            "campaign_start",
+            "input_authority",
+            "runtime_implemented",
+            "regime_coverage_producer_available",
+            "productive_numeric_values_set",
+            "productive_thresholds_lookbacks",
+            "trading_logic_change",
+            "dashboard_authority_effect",
+            "orders_authorized",
+            "testnet_authorized",
+            "live_authorized"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "producer_reimplementation": { "const": false },
+            "consumer_wiring": { "const": false },
+            "pt1m_adapter": { "const": false },
+            "pack_materialization": { "const": false },
+            "campaign_start": { "const": false },
+            "input_authority": { "const": false },
+            "runtime_implemented": { "const": false },
+            "regime_coverage_producer_available": { "const": false },
+            "productive_numeric_values_set": { "const": 0 },
+            "productive_thresholds_lookbacks": { "const": false },
+            "trading_logic_change": { "const": false },
+            "dashboard_authority_effect": { "const": "NONE" },
+            "orders_authorized": { "const": false },
+            "testnet_authorized": { "const": false },
+            "live_authorized": { "const": false }
+          }
+        }
+      }
+    }
+  }
+}
