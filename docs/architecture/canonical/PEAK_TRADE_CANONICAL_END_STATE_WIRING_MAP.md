@@ -9,7 +9,7 @@ DASHBOARD_AUTHORITY_EFFECT=NONE
 NON_RUNTIME_AUTHORIZING=true
 STALE_IF_HEAD_DIFFERS=true
 FORENSIC_REPOSITORY_SHA=b9038bacf09b59de81a0a73d6e49575a0f05f242
-DOCUMENT_SHA256=d6080e518b1271897820ad1bca6846ece5e7d46392c1cc1350edb92e64644a01
+DOCUMENT_SHA256=f9ad6572e646d13daa613c801be63648c86745891f75182ec60bce8e62d675f8
 VERIFIED_AT=2026-08-05T17:03:44Z
 DOCUMENT_SHA256_MODEL=SHA256_OF_FILE_BYTES_WITH_PENDING_PLACEHOLDER_BEFORE_STAMP
 CAPABILITY_ID=PEAK_TRADE_CANONICAL_END_STATE_WIRING_MAP_MATERIALIZATION_V1
@@ -343,7 +343,7 @@ Closed Cap 6.1–6.5 / 7.1–7.2 / G17 items remain historical; do not reopen as
 | Atomic restart / pending evidence | `ops.full_decision_path_atomic_restart_closure_v1` | `RESTART_PROVEN` deterministic scope | Cap 6.4 |
 | Public-MD wallclock runner | `run_productive_wallclock_session_v1` | `RUNTIME_REACHABLE` when separately authorized | Paper-shadow productive issuance package |
 | Phase 9.2 Step 3 binding | `ops.phase_9_2_productive_public_md_restart_recovery_real_network_wallclock_binding_v1` | `BOUND` binding-only; outcome open | Does not start network session |
-| Dashboard / Landscape | `src/webui/*` read models | `DOCUMENTED` read-only | `AUTHORITY_EFFECT=NONE` |
+| Dashboard / Landscape | `src&#47;webui&#47;*` read models | `DOCUMENTED` read-only | `AUTHORITY_EFFECT=NONE` |
 | Live / Testnet / credentials | Explicitly unreachable under Cap 7.2 / Phase 9.2 contracts | `INTENTIONAL_SAFETY_BARRIER` | Hard-stop if reachable |
 
 ------------------------------------------------------------------------
@@ -487,7 +487,7 @@ PUBLIC_MD_PRIVATE_ENDPOINT_REACHABLE=false_under_cap72_contracts
 | Heartbeat / staleness | `heartbeat_staleness_v1.StalenessTrackerV1` | Bound on wallclock session; killstate `STALE_DATA` |
 | HTTP 429 budget abort | `session_runtime_v1` / killstate `HTTP_429_BUDGET_EXCEEDED` | Bound on wallclock session |
 | Smoke reconnect budgets | Phase 9.2 preflight constants | Contractual for smoke; not Step-4 campaign |
-| Generic rate limiters | `src/core/rate_limiter.py`, `src/execution/networked/limits/*` | Execution-domain; not Phase 9.2 Step-4 owner |
+| Generic rate limiters | `src/core/rate_limiter.py`, `src&#47;execution&#47;networked&#47;limits&#47;*` | Execution-domain; not Phase 9.2 Step-4 owner |
 | Bounded reconnect policy (AWS/testnet contract) | `aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0` | Separate domain; not Phase 9.2 Step-4 binding |
 
 ## Phase 9.2 Step 4 forensic verdict
@@ -650,7 +650,7 @@ positions, balances, …) — `TARGET_BINDING` only; unauthorized here.
 | Cap 7.1 actionability evidence | `ops.simulated_entry_reduce_exit_actionability_evidence_v1` | Deterministic lifecycle |
 | Full economic reconstruction verifier | `full_economic_reconstruction_verifier_v1` | Accounting reconstruction |
 | Phase 9.2 preflight evidence | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/preflight/` | Ladder definition, pacing proof, network boundary |
-| Smoke / one-hour session evidence | `.../sessions/phase_9_2_public_md_smoke_session_v1`, `.../one_hour_governed_session_noproxy_b0e882b9714a` | Closed steps on historical session SHA `b0e882b9714a…` |
+| Smoke / one-hour session evidence | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1`, `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a` | Closed steps on historical session SHA `b0e882b9714a…` |
 | Phase 9.2 actionability forensic telemetry | `ops.phase_9_2_productive_decision_graph_actionability_forensic_telemetry_v1` | Funnel/telemetry; not ladder closure alone |
 | Phase 9.2 restart bundle verifier | `phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.verifier_v1` | PRE/POST identity + commit continuity |
 | Step 3 binding evidence materializer | `phase_9_2_productive_public_md_restart_recovery_real_network_wallclock_binding_v1` | Binding readiness; not real-session PASS |
@@ -689,7 +689,7 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 | AUTHORIZATION_SCOPE | Historical smoke authorization artifacts under evidence package |
 | STATE_ROOTS | Cap 6.x confirmation/scope/atomic roots via stateful runtime |
 | FAULT_OR_SESSION_MECHANISM | Short duration; pacing/stale budgets in smoke contract |
-| EVIDENCE_BUNDLE | `docs/evidence/.../sessions/phase_9_2_public_md_smoke_session_v1/` |
+| EVIDENCE_BUNDLE | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_smoke_session_v1/` |
 | VERIFIER | Session completion / economic verifier artifacts in bundle |
 | PREDECESSOR | Cap 7.2 + Phase 9.2 preflight |
 | SUCCESSOR | One-hour governed |
@@ -703,10 +703,10 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 | CURRENT_STATUS | `EVIDENCE_PROVEN` on session truth SHA `b0e882b9714a615f633fb09b8ee4f9a19f54d470` |
 | PRODUCTIVE_ENTRYPOINT | Wallclock productive runner |
 | SESSION_SPEC | `phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a` |
-| AUTHORIZATION_SCOPE | Evidence `authorization/` + consumption records |
+| AUTHORIZATION_SCOPE | Evidence `authorization&#47;` + consumption records |
 | STATE_ROOTS | Full Cap 6.x / portfolio / evidence cursors |
 | FAULT_OR_SESSION_MECHANISM | Natural wallclock; reconnect/stale telemetry incidental |
-| EVIDENCE_BUNDLE | `docs/evidence/.../sessions/phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a/` |
+| EVIDENCE_BUNDLE | `docs/evidence/capability_phase_9_2_long_running_stateful_public_md_simulation_evidence_v1/sessions/phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a/` |
 | VERIFIER | `full_economic_reconstruction_verifier.json`, completion/terminal verdicts |
 | PREDECESSOR | Smoke |
 | SUCCESSOR | Restart/Recovery |
@@ -719,7 +719,7 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 | --- | --- |
 | CURRENT_STATUS | Binding `BOUND` / `CODE_EXISTS` / `TESTED_*`; real outcome **OPEN** (`RESTART_RECOVERY_LADDER_STEP_CLOSED=false`) |
 | PRODUCTIVE_ENTRYPOINT | `run_phase_9_2_productive_public_md_restart_recovery_network_entrypoint_v1.py` + wallclock binding CLI |
-| SESSION_SPEC | `phase_9_2_public_md_restart_recovery_session_v1` / restart contracts under `config/ops/phase_9_2_*` |
+| SESSION_SPEC | `phase_9_2_public_md_restart_recovery_session_v1` / restart contracts under `config&#47;ops&#47;phase_9_2_*` |
 | AUTHORIZATION_SCOPE | Session-GO + Owner-GO + Owner-Session-GO + per-segment single-use auth + confirm-token (required later; not started by binding merge) |
 | STATE_ROOTS | Cap 6.4 adapter fields including `confirmation_session_id`, atomic commit position |
 | FAULT_OR_SESSION_MECHANISM | PRE → controlled exit 82 → POST new process; same-process POST rejected |
@@ -833,7 +833,7 @@ Repository surfaces:
 - Master Runbook §4.4 / §4.7 Canonical Presentation Architecture
 - `docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md`
 - `docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md`
-- `src/webui/market_dashboard_landscape_v2/*` projections / presenters
+- `src&#47;webui&#47;market_dashboard_landscape_v2&#47;*` projections / presenters
 
 ```text
 DASHBOARD_READ_ONLY_CONSUMER=true
