@@ -68,12 +68,15 @@ class ProductiveExecutorResultV1:
     blockers: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
     wiring_capability_id: str = ""
+    activation_capability_id: str = ""
     session_id: str = ""
     executor_code_exists: bool = True
     executor_productively_bound: bool = False
     productive_session_reachable: bool = False
     productive_session_authorized: bool = False
     ready_for_productive_session_execution: bool = False
+    productive_step_4_session_path_runtime_reachable: bool = False
+    productive_call_graph_complete: bool = False
     canonical_wallclock_runner_bound: bool = False
     rate_limit_owner_reused: bool = False
     reconnect_owner_reused: bool = False
@@ -90,6 +93,17 @@ class ProductiveExecutorResultV1:
     order_side_effect_occurred: bool = False
     confirm_token_plaintext_exposed: bool = False
     wallclock_runner_invoked: bool = False
+    wallclock_runner_invocation_count: int = 0
+    network_request_count: int = 0
+    authorization_consumed: bool = False
+    confirm_token_consumed: bool = False
+    authorization_valid: bool = False
+    confirm_token_valid: bool = False
+    request_real_network: bool = False
+    network_session_allowed: bool = False
+    session_request_forwarded: Optional[dict[str, Any]] = None
+    runner_result: Optional[dict[str, Any]] = None
+    ladder_step_remains_open: bool = True
     call_graph: list[str] = field(default_factory=list)
     claims: dict[str, Any] = field(default_factory=dict)
     gate: Optional[dict[str, Any]] = None

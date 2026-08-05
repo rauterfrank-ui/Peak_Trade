@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI for Phase 9.2 rate-limit/reconnect wallclock binding + productive executor wiring.
+"""CLI for Phase 9.2 rate-limit/reconnect wallclock binding + productive activation.
 
 Commands:
   preflight / prove-binding — reuse/authority matrix + parity (no session)
@@ -7,11 +7,12 @@ Commands:
   gate                      — Session-GO binding gate evaluation only
   prove-fault-path          — offline deterministic 429/reconnect/stale proofs
   execute-productive-session
-      — bind productive executor call graph after Gate PASS (no real network)
+      — without --request-real-network: wiring bind (no runner invoke)
+      — with --request-real-network: activation gates (runner only via API injection
+        or later separate Owner permit; CLI never starts a real network session)
 
 Confirm tokens: --confirm-token-file | PEAK_TRADE_PSO_CONFIRM_TOKEN | present flag.
 Plaintext --confirm-token argv is rejected.
-This capability does not start a real network or fault session.
 """
 
 from __future__ import annotations
@@ -40,7 +41,9 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
     reject_confirm_token_argv_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.constants_v1 import (  # noqa: E402
+    ACTIVATION_CAPABILITY_ID,
     CAPABILITY_ID,
+    NETWORK_SESSION_ALLOWED,
     TARGET_SESSION_ID,
     WIRING_CAPABILITY_ID,
 )
@@ -54,10 +57,14 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
     prove_phase92_rate_limit_reconnect_wallclock_binding_parity_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.productive_executor_v1 import (  # noqa: E402
+    execute_productive_rate_limit_reconnect_session_activation_v1,
     execute_productive_rate_limit_reconnect_session_wiring_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_contract_v1 import (  # noqa: E402
     load_and_validate_session_contract_v1,
+)
+from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_go_v1 import (  # noqa: E402
+    load_session_go_authority_v1,
 )
 from src.ops.single_future_stateful_no_order_runtime_activation_v1.config_v1 import (  # noqa: E402
     load_activation_config_v1,
@@ -86,11 +93,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--evidence-root", type=Path, default=None)
     p.add_argument("--session-go-file", type=Path, default=None)
     p.add_argument("--confirm-token-file", type=Path, default=None)
+    p.add_argument("--persistence-root", type=Path, default=None)
+    p.add_argument("--authorization-id", default="")
+    p.add_argument("--authorization-digest", default="")
+    p.add_argument("--confirm-token-binding-sha256", default="")
     p.add_argument("--owner-go", action="store_true")
     p.add_argument("--owner-session-go", action="store_true")
     p.add_argument("--authorization-present", action="store_true")
     p.add_argument("--confirm-token-present", action="store_true")
     p.add_argument("--request-real-network", action="store_true")
+    p.add_argument(
+        "--network-session-allowed",
+        action="store_true",
+        help="Explicit runtime network-session allow for activation (default false).",
+    )
     p.add_argument(
         "--execute",
         action="store_true",
@@ -150,6 +166,7 @@ def main(argv: list[str] | None = None) -> int:
             "ok": bool(parity.get("ok") and authority.get("ok") and contract_ok),
             "capability_id": CAPABILITY_ID,
             "wiring_capability_id": WIRING_CAPABILITY_ID,
+            "activation_capability_id": ACTIVATION_CAPABILITY_ID,
             "session_id": TARGET_SESSION_ID,
             "parity": parity,
             "authority_reuse": authority,
@@ -158,8 +175,10 @@ def main(argv: list[str] | None = None) -> int:
             "session_contract_id": (contract or {}).get("session_id"),
             "network_session_started": False,
             "fault_session_started": False,
+            "default_network_session_allowed": NETWORK_SESSION_ALLOWED,
             "notes": [
                 "BINDING_IMPLEMENTED",
+                "ACTIVATION_PATH_BOUND",
                 "NO_REAL_NETWORK_SESSION_STARTED",
                 "NO_FAULT_SESSION_STARTED",
                 "LADDER_STEP_REMAINS_OPEN",
@@ -183,6 +202,42 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if fault.get("ok") else 1
 
     if args.command == "execute-productive-session":
+        if args.request_real_network:
+            network_allowed = bool(args.network_session_allowed)
+            if args.session_go_file is not None and args.session_go_file.is_file():
+                try:
+                    sgo = load_session_go_authority_v1(args.session_go_file)
+                    network_allowed = bool(
+                        network_allowed and sgo.network_session_execution_authorized_by_this_go
+                    )
+                except Exception:  # noqa: BLE001
+                    network_allowed = False
+            result = execute_productive_rate_limit_reconnect_session_activation_v1(
+                expected_repository_sha=sha,
+                expected_config_digest=cfg,
+                now_unix=float(time.time()),
+                owner_go=bool(args.owner_go),
+                owner_session_go=bool(args.owner_session_go),
+                session_go_path=args.session_go_file,
+                authorization_present=bool(args.authorization_present),
+                request_real_network=True,
+                network_session_allowed=network_allowed,
+                confirm_token_file=args.confirm_token_file,
+                confirm_token_present_flag=bool(args.confirm_token_present),
+                authorization_id=str(args.authorization_id or ""),
+                authorization_digest=str(args.authorization_digest or ""),
+                confirm_token_binding_sha256=str(args.confirm_token_binding_sha256 or ""),
+                persistence_root=args.persistence_root,
+                execute=bool(args.execute),
+                argv=raw_argv,
+                environ=os.environ,
+                # CLI never permits uninjected canonical runner (no network session).
+                permit_canonical_runner_invoke=False,
+                wallclock_runner=None,
+            )
+            print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))
+            return 0 if result.ok else 2
+
         result = execute_productive_rate_limit_reconnect_session_wiring_v1(
             expected_repository_sha=sha,
             expected_config_digest=cfg,
@@ -194,14 +249,13 @@ def main(argv: list[str] | None = None) -> int:
             confirm_token_file=args.confirm_token_file,
             confirm_token_present_flag=bool(args.confirm_token_present),
             execute=bool(args.execute),
-            allow_real_network=bool(args.request_real_network),
+            allow_real_network=False,
             argv=raw_argv,
             environ=os.environ,
         )
         print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))
         return 0 if result.ok else 2
 
-    # gate
     gate = evaluate_rate_limit_reconnect_wallclock_binding_gate_v1(
         expected_repository_sha=sha,
         expected_config_digest=cfg,

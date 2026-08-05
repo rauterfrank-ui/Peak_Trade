@@ -159,8 +159,16 @@ def materialize_capability_evidence_v1(
         "EXECUTOR_PRODUCTIVELY_BOUND": bool(executor.executor_productively_bound),
         "PRODUCTIVE_SESSION_REACHABLE": bool(executor.productive_session_reachable),
         "PRODUCTIVE_SESSION_AUTHORIZED": bool(executor.productive_session_authorized),
+        "PRODUCTIVE_CALL_GRAPH_COMPLETE": bool(executor.productive_call_graph_complete),
+        "PRODUCTIVE_STEP_4_SESSION_PATH_RUNTIME_REACHABLE": bool(
+            executor.productive_step_4_session_path_runtime_reachable
+        ),
         "REAL_NETWORK_REQUIRES_BOUND_SESSION_GO": True,
         "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
+        "WALLCLOCK_RUNNER_INVOKED": False,
+        "AUTHORIZATION_CONSUMED": False,
+        "CONFIRM_TOKEN_CONSUMED": False,
+        "DEFAULT_NETWORK_SESSION_ALLOWED": False,
         "CORE_LOGIC_CHANGE": False,
         "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": True,
         "DASHBOARD_AUTHORITY_EFFECT": "NONE",

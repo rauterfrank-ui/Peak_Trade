@@ -48,6 +48,12 @@ def verify_binding_manifest_v1(manifest: Mapping[str, Any]) -> dict[str, Any]:
             blockers.append("EXECUTOR_PRODUCTIVELY_BOUND_REQUIRED")
         if not bool(claims.get("PRODUCTIVE_SESSION_REACHABLE")):
             blockers.append("PRODUCTIVE_SESSION_REACHABLE_REQUIRED")
+        if "PRODUCTIVE_STEP_4_SESSION_PATH_RUNTIME_REACHABLE" in claims:
+            if not bool(claims.get("PRODUCTIVE_STEP_4_SESSION_PATH_RUNTIME_REACHABLE")):
+                blockers.append("PRODUCTIVE_STEP_4_SESSION_PATH_RUNTIME_REACHABLE_REQUIRED")
+        if "PRODUCTIVE_CALL_GRAPH_COMPLETE" in claims:
+            if not bool(claims.get("PRODUCTIVE_CALL_GRAPH_COMPLETE")):
+                blockers.append("PRODUCTIVE_CALL_GRAPH_COMPLETE_REQUIRED")
     return {
         "ok": not blockers,
         "blockers": blockers,
