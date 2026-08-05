@@ -39,7 +39,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.sta
 )
 
 
-REPO_SHA = "1989e7e4dc0697d049a25c4b3d84baf27016ecf5"
+REPO_SHA = "41f1c2d1ac4d82cb665935eb90029dfd8ef2d5fd"
 
 
 def _universe_payload(symbol: str = "SATS-USDT-SWAP") -> dict[str, object]:

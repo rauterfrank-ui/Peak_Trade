@@ -65,12 +65,13 @@ DOUBLE_PLAY_SIBLING_RELATIVE = "readmodels/double_play_dashboard_display.v1.json
 HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH = True
 DOUBLE_PLAY_BLOCK_REASON = (
     "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH:"
-    "IntegratedOfflineReplayIntermediateV1 exposes SurvivalResultV1/"
-    "SuitabilityResultV1/DoublePlayCompositionResultV1; "
-    "build_dashboard_display_snapshot requires SurvivalEnvelopeDecision/"
-    "SuitabilityProjectionDecision/DoublePlayCompositionDecision/"
-    "TransitionDecision/FuturesInputReadinessDecision/CapitalSlot* without "
-    "a ratified productive semantics-free adapter"
+    "BLOCKED_CANONICAL_INPUT_AUTHORITY_ABSENT:"
+    "TransitionDecision passthrough available on Intermediate.transition_decision; "
+    "FuturesInputSnapshot/DoublePlaySurvivalEnvelope/SuitabilityProjectionInput/"
+    "CapitalSlotConfig/CapitalSlotState lack ratified productive input authorities; "
+    "ResultV1→Decision mapping unauthorized; fixture/scenario fallbacks forbidden; "
+    "build_dashboard_display_snapshot remains fail-closed until Owner ratifies "
+    "Pure-Stack input authorities and complete PureStackDisplayDecisionBundleV1"
 )
 
 DEFAULT_MIN_CYCLE_INTERVAL_SECONDS = 1.0
