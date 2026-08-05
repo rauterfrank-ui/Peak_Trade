@@ -8,8 +8,10 @@ Commands:
   prove-fault-path          — offline deterministic 429/reconnect/stale proofs
   execute-productive-session
       — without --request-real-network: wiring bind (no runner invoke)
-      — with --request-real-network: activation gates (runner only via API injection
-        or later separate Owner permit; CLI never starts a real network session)
+      — with --request-real-network: activation path
+        * --permit-canonical-runner-invoke transports explicit Owner Session Permit
+        * NETWORK_SESSION_ALLOWED remains false by default (dry / no consume)
+        * real runner invoke requires network_session_allowed + full gates
 
 Confirm tokens: --confirm-token-file | PEAK_TRADE_PSO_CONFIRM_TOKEN | present flag.
 Plaintext --confirm-token argv is rejected.
@@ -43,7 +45,9 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.constants_v1 import (  # noqa: E402
     ACTIVATION_CAPABILITY_ID,
     CAPABILITY_ID,
+    CLI_OWNER_SESSION_PERMIT_DEFAULT,
     NETWORK_SESSION_ALLOWED,
+    OWNER_PERMIT_WIRING_CAPABILITY_ID,
     TARGET_SESSION_ID,
     WIRING_CAPABILITY_ID,
 )
@@ -108,6 +112,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Explicit runtime network-session allow for activation (default false).",
     )
     p.add_argument(
+        "--permit-canonical-runner-invoke",
+        action="store_true",
+        default=CLI_OWNER_SESSION_PERMIT_DEFAULT,
+        help=(
+            "Explicit Owner Session Permit to bind/invoke the canonical wallclock "
+            "runner. Distinct from --owner-go / --owner-session-go / "
+            "--network-session-allowed. Default false (fail-closed)."
+        ),
+    )
+    p.add_argument(
         "--execute",
         action="store_true",
         help="Required for execute-productive-session; keeps other commands side-effect free.",
@@ -167,6 +181,7 @@ def main(argv: list[str] | None = None) -> int:
             "capability_id": CAPABILITY_ID,
             "wiring_capability_id": WIRING_CAPABILITY_ID,
             "activation_capability_id": ACTIVATION_CAPABILITY_ID,
+            "owner_permit_wiring_capability_id": OWNER_PERMIT_WIRING_CAPABILITY_ID,
             "session_id": TARGET_SESSION_ID,
             "parity": parity,
             "authority_reuse": authority,
@@ -176,9 +191,11 @@ def main(argv: list[str] | None = None) -> int:
             "network_session_started": False,
             "fault_session_started": False,
             "default_network_session_allowed": NETWORK_SESSION_ALLOWED,
+            "cli_owner_session_permit_default": CLI_OWNER_SESSION_PERMIT_DEFAULT,
             "notes": [
                 "BINDING_IMPLEMENTED",
                 "ACTIVATION_PATH_BOUND",
+                "OWNER_SESSION_PERMIT_EXPLICIT_FLAG_BOUND",
                 "NO_REAL_NETWORK_SESSION_STARTED",
                 "NO_FAULT_SESSION_STARTED",
                 "LADDER_STEP_REMAINS_OPEN",
@@ -212,6 +229,8 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 except Exception:  # noqa: BLE001
                     network_allowed = False
+            # Explicit typed Owner Session Permit — never silently forced false/true.
+            owner_session_permit = bool(args.permit_canonical_runner_invoke)
             result = execute_productive_rate_limit_reconnect_session_activation_v1(
                 expected_repository_sha=sha,
                 expected_config_digest=cfg,
@@ -231,8 +250,7 @@ def main(argv: list[str] | None = None) -> int:
                 execute=bool(args.execute),
                 argv=raw_argv,
                 environ=os.environ,
-                # CLI never permits uninjected canonical runner (no network session).
-                permit_canonical_runner_invoke=False,
+                permit_canonical_runner_invoke=owner_session_permit,
                 wallclock_runner=None,
             )
             print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))

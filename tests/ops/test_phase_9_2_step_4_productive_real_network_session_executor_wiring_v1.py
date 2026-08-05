@@ -399,10 +399,13 @@ def test_cli_execute_productive_session_and_request_real_network_refuse(tmp_path
     )
     assert refused.returncode == 2
     refused_payload = json.loads(refused.stdout)
-    # Activation path: without network_session_allowed / auth artifacts, fail closed.
+    # Activation path: without explicit owner-session permit, fail closed before network.
     assert refused_payload["network_session_started"] is False
     assert refused_payload.get("wallclock_runner_invoked") is False
-    assert "NETWORK_SESSION_ALLOWED_REQUIRED" in refused_payload["blockers"]
+    assert "OWNER_SESSION_PERMIT_REQUIRED" in refused_payload["blockers"]
+    assert refused_payload.get("authorization_consumed") is False
+    assert (refused_payload.get("claims") or {}).get("AUTHORIZATION_CONSUMED") is False
+    assert refused_payload.get("wallclock_runner_invoked") is False
 
     no_execute = subprocess.run(
         [
