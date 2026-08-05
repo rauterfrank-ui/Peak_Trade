@@ -61,7 +61,8 @@
         "OWNER_STA_DECISION_SURFACE_OPEN",
         "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN",
         "OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN",
-        "OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN"
+        "OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN",
+        "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY_FIELDS_STILL_NULL"
       ]
     },
     "authority_surface": {
@@ -372,6 +373,160 @@
     },
     "decisions": {
       "type": "object"
+    },
+    "non_provable_instance_values_decision_packet": {
+      "type": "object",
+      "required": [
+        "packet_id",
+        "decision_id",
+        "document_type",
+        "status",
+        "owner_value_recorded",
+        "proposed_values",
+        "silent_defaults",
+        "invented_values",
+        "pack_materialization",
+        "raw_input_pack_created",
+        "raw_input_pack_materialization_authorized",
+        "campaign_start",
+        "input_authority",
+        "runtime_implemented",
+        "enumerated_remaining_null_field_count",
+        "fields"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "packet_id": {
+          "const": "OWNER_STA_SURFACE_B_RAW_INPUT_PACK_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_V1"
+        },
+        "decision_id": {
+          "const": "DEC_RAW_INPUT_PACK_MATERIALIZATION"
+        },
+        "document_type": {
+          "const": "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET"
+        },
+        "status": {
+          "const": "PACKET_READY_FIELDS_STILL_NULL"
+        },
+        "owner_value_recorded": {
+          "const": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION"
+        },
+        "proposed_values": {
+          "const": false
+        },
+        "silent_defaults": {
+          "const": false
+        },
+        "invented_values": {
+          "const": false
+        },
+        "pack_materialization": {
+          "const": false
+        },
+        "raw_input_pack_created": {
+          "const": false
+        },
+        "raw_input_pack_materialization_authorized": {
+          "const": false
+        },
+        "campaign_start": {
+          "const": false
+        },
+        "input_authority": {
+          "const": false
+        },
+        "runtime_implemented": {
+          "const": false
+        },
+        "enumerated_remaining_null_field_count": {
+          "const": 16
+        },
+        "fields": {
+          "type": "array",
+          "minItems": 16,
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "required": [
+              "field",
+              "input_class",
+              "related_sta_open_input",
+              "manifest_locations",
+              "allowed_format",
+              "constraints",
+              "provenance_requirements",
+              "fillable_owner_value",
+              "fillable_sta_value",
+              "proposed_value",
+              "status",
+              "proposed_values_forbidden",
+              "silent_defaults_forbidden",
+              "invented_values_forbidden"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "field": {
+                "type": "string"
+              },
+              "input_class": {
+                "type": "string",
+                "enum": [
+                  "OWNER_VALUE",
+                  "STA_EXTERNAL_INPUT"
+                ]
+              },
+              "related_sta_open_input": {
+                "type": "string"
+              },
+              "manifest_locations": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "allowed_format": {
+                "type": "string"
+              },
+              "constraints": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "provenance_requirements": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "fillable_owner_value": {
+                "type": "null"
+              },
+              "fillable_sta_value": {
+                "type": "null"
+              },
+              "proposed_value": {
+                "type": "null"
+              },
+              "status": {
+                "const": "OPEN_FILLABLE"
+              },
+              "proposed_values_forbidden": {
+                "const": true
+              },
+              "silent_defaults_forbidden": {
+                "const": true
+              },
+              "invented_values_forbidden": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
     },
     "owner_go_base_sha": {
       "type": "string",

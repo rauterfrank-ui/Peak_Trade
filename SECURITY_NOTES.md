@@ -1,8 +1,8 @@
 # Security Notes — Peak_Trade Cybersecurity Baseline Pointers
 
 **Scope ID:** `PEAK_TRADE_CYBERSECURITY_BASELINE_REFRESH_V1`
-**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02); `STAGE2_SURFACE_B_CYBERSECURITY_MIRROR_SYNC_V1` (2026-08-05); `STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_TRIAD_AUTHORITY_RATIFICATION_ONLY_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_OWNER_VALUE_V1` (2026-08-05); `STAGE2_SURFACE_B_REGIME_COVERAGE_PRODUCER_IMPL_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZE_DETAIL_CLOSEOUT_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_INSTANCE_FIELDS_CLOSEOUT_V1` (2026-08-05)
-**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B raw input-pack provable instance-fields closeout against `ac8b1e67baf361156c6f666a2c4cddbe49362400`; Cap-7.2 overlays unchanged)
+**Capability overlay:** `CYBER_CI_SUPPLY_CHAIN_HARDENING_V1` (2026-07-26); `SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1` (2026-07-26); `SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1` (2026-07-26); `BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1` (2026-07-26); `WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1` (2026-07-26); `POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1` (2026-08-02); `STAGE2_SURFACE_B_CYBERSECURITY_MIRROR_SYNC_V1` (2026-08-05); `STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_TRIAD_AUTHORITY_RATIFICATION_ONLY_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_OWNER_VALUE_V1` (2026-08-05); `STAGE2_SURFACE_B_REGIME_COVERAGE_PRODUCER_IMPL_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZE_DETAIL_CLOSEOUT_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_INSTANCE_FIELDS_CLOSEOUT_V1` (2026-08-05); `STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_V1` (2026-08-05)
+**Last Reviewed (repo-static):** 2026-08-05 (Stage-2 Surface B raw input-pack non-provable instance-values decision packet against `6e4abc160c1b2b048a41e92d50003a33c30bb355`; Cap-7.2 overlays unchanged)
 **Mode:** Documentation + pointers to existing SSOT owners. **Non-authorizing.**
 **Does not:** rotate secrets, change GitHub org/repo security toggles, enable live/testnet/orders, start a public-MD network session, consume authorization, flip productive input authority, set productive numeric Owner values, or claim unverified scanner results.
 
@@ -256,26 +256,33 @@ Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVER
 Documentary cybersecurity mirror of Owner/STA decision surface
 `SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION` for
 `DEC_RAW_INPUT_PACK_MATERIALIZATION` after Owner authorize-value recording,
-closeout of only provable, non-invented authorize-detail refs, and closeout of
-only the provable, non-invented instance field `instrument_binding`, bound to
-Owner-GO baseline `ac8b1e67baf361156c6f666a2c4cddbe49362400` (open-surface creation baseline
+closeout of only provable, non-invented authorize-detail refs, closeout of
+only the provable, non-invented instance field `instrument_binding`, and
+publication of the explicit fillable non-provable-instance-values decision
+packet with all value slots still null, bound to Owner-GO baseline
+`6e4abc160c1b2b048a41e92d50003a33c30bb355` (open-surface creation baseline
 remains `origin&#47;main@56721ad0666fac5627d2dedbf33a22b59cd5996e`).
 
 | Boundary | Required security reading |
 |----------|---------------------------|
-| Decision surface | Provable refs + provable instrument_binding closed; non-provable instance fields still null |
+| Decision surface | Provable refs + instrument_binding closed; fillable decision packet ready; non-provable values still null |
 | `DECISION_ID` | `DEC_RAW_INPUT_PACK_MATERIALIZATION` |
 | `DECISION_STATUS` | `RATIFIED` (`DECISION_STATUS=RATIFIED`) |
 | `OWNER_VALUE` | `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` |
-| Status | `OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN` |
+| Status | `OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY_FIELDS_STILL_NULL` |
+| Decision packet | `OWNER_STA_SURFACE_B_RAW_INPUT_PACK_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_V1` |
 | Allowed owner values | exactly `AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION` or `EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION` |
 | Authorize detail fields | provable refs closed; non-provable authorize-detail instance fields remain `null` |
 | Provable instance field | `instrument_binding` exact Owner-ratified InstrumentBindingV1 |
 | `AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED` | `true` |
 | `PROVABLE_INSTANCE_FIELDS_CLOSED` | `true` |
+| `NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY` | `true` |
+| `NON_PROVABLE_INSTANCE_VALUES_STILL_NULL` | `true` |
 | `AUTHORIZE_DETAIL_FIELDS_COMPLETE` | `false` |
 | `REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS` | `true` |
 | `SILENT_DEFAULTS` | `false` |
+| `PROPOSED_VALUES` | `false` |
+| `INVENTED_VALUES` | `false` |
 | `PACK_MATERIALIZATION` | `false` |
 | `RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED` | `false` |
 | `INPUT_AUTHORITY` | `false` |
@@ -287,7 +294,7 @@ remains `origin&#47;main@56721ad0666fac5627d2dedbf33a22b59cd5996e`).
 | Repository | Sole technical SSOT (`REPOSITORY_IS_SSOT=true`) |
 | Exchange credentials / order adapters | Unauthorized / unreachable under this decision |
 
-Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md). This section records the Owner authorize choice, provable-ref closeout, and provable instance-field closeout. It does **not** authorize pack materialization execution, campaign start, productive calibration, input-authority flips, runtime activation, Dashboard authority, or any exchange side effect.
+Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md). This section records the Owner authorize choice, provable-ref closeout, provable instance-field closeout, and fillable decision-packet publication. It does **not** authorize pack materialization execution, campaign start, productive calibration, input-authority flips, runtime activation, Dashboard authority, or any exchange side effect.
 
 
 

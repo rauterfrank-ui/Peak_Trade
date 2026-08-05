@@ -35,13 +35,25 @@ STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED = (
 STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED = (
     "OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN"
 )
+STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY = (
+    "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY_FIELDS_STILL_NULL"
+)
 
 DECISION_ID = "DEC_RAW_INPUT_PACK_MATERIALIZATION"
 DECISION_STATUS_OPEN = "OPEN"
 DECISION_STATUS_RATIFIED = "RATIFIED"
 
 BASELINE_ORIGIN_MAIN_SHA = "56721ad0666fac5627d2dedbf33a22b59cd5996e"
-OWNER_GO_BASE_SHA = "ac8b1e67baf361156c6f666a2c4cddbe49362400"
+OWNER_GO_BASE_SHA_PROVABLE_INSTANCE_FIELDS_CLOSED = "ac8b1e67baf361156c6f666a2c4cddbe49362400"
+OWNER_GO_BASE_SHA = "6e4abc160c1b2b048a41e92d50003a33c30bb355"
+DECISION_PACKET_ID = (
+    "OWNER_STA_SURFACE_B_RAW_INPUT_PACK_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_V1"
+)
+DECISION_PACKET_DOCUMENT_TYPE = "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET"
+DECISION_PACKET_STATUS = "PACKET_READY_FIELDS_STILL_NULL"
+DECISION_PACKET_FIELD_STATUS = "OPEN_FILLABLE"
+INPUT_CLASS_OWNER_VALUE = "OWNER_VALUE"
+INPUT_CLASS_STA_EXTERNAL_INPUT = "STA_EXTERNAL_INPUT"
 AUTHORITY_SURFACE = "B"
 SOLE_TRADING_AUTHORITY = "run_integrated_offline_trading_logic_replay_v1"
 
@@ -71,8 +83,12 @@ EXCHANGE_CREDENTIAL_EFFECTS = False
 AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED = True
 AUTHORIZE_DETAIL_FIELDS_COMPLETE = False
 PROVABLE_INSTANCE_FIELDS_CLOSED = True
+NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY = True
+NON_PROVABLE_INSTANCE_VALUES_STILL_NULL = True
 REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS = True
 SILENT_DEFAULTS = False
+PROPOSED_VALUES = False
+INVENTED_VALUES = False
 
 OWNER_DECISION_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
@@ -232,6 +248,130 @@ NULL_INSTANCE_KEYS: tuple[str, ...] = (
 REMAINING_NULL_INSTANCE_KEYS: tuple[str, ...] = tuple(
     k for k in NULL_INSTANCE_KEYS if k not in PROVABLE_INSTANCE_FIELDS
 )
+
+NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS: tuple[str, ...] = (
+    "campaign_id",
+    "dataset_id",
+    "scenario_id",
+    "observation_pack_digest",
+    "raw_source_digest",
+    "seed",
+    "event_time_epoch_s",
+    "partition_boundaries",
+    "partition_boundaries_event_time_epoch_s",
+    "fold_ids",
+    "bootstrap_seeds",
+    "purge",
+    "embargo",
+    "fold_sizes",
+    "regime_coverage_counts",
+    "regime_coverage_instance",
+)
+
+NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_OWNER_VALUE_FIELDS: tuple[str, ...] = (
+    "campaign_id",
+    "dataset_id",
+    "scenario_id",
+    "seed",
+    "partition_boundaries",
+    "partition_boundaries_event_time_epoch_s",
+    "fold_ids",
+    "bootstrap_seeds",
+    "purge",
+    "embargo",
+    "fold_sizes",
+)
+
+NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_STA_EXTERNAL_INPUT_FIELDS: tuple[str, ...] = (
+    "observation_pack_digest",
+    "raw_source_digest",
+    "event_time_epoch_s",
+    "regime_coverage_counts",
+    "regime_coverage_instance",
+)
+
+NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELD_SPECS: dict[str, dict[str, object]] = {
+    "campaign_id": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "non_invented_campaign_instance_identity",
+        "allowed_format": "NON_EMPTY_ASCII_SLUG_STRING",
+    },
+    "dataset_id": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "non_invented_campaign_instance_identity",
+        "allowed_format": "NON_EMPTY_ASCII_DATASET_ID_STRING",
+    },
+    "scenario_id": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "non_invented_campaign_instance_identity",
+        "allowed_format": "NON_EMPTY_ASCII_SCENARIO_ID_STRING",
+    },
+    "observation_pack_digest": {
+        "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
+        "related_sta_open_input": "immutable_pack_provenance_digests",
+        "allowed_format": "SHA256_HEX_64",
+    },
+    "raw_source_digest": {
+        "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
+        "related_sta_open_input": "immutable_pack_provenance_digests",
+        "allowed_format": "SHA256_HEX_64",
+    },
+    "seed": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "deterministic_campaign_seed",
+        "allowed_format": "DETERMINISTIC_NON_NEGATIVE_INTEGER_OR_EXPLICIT_SEED_STRING",
+    },
+    "event_time_epoch_s": {
+        "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
+        "related_sta_open_input": "exclusive_tip_event_time_epoch_s",
+        "allowed_format": "UNIX_EPOCH_SECONDS_INTEGER",
+    },
+    "partition_boundaries": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "allowed_format": "ORDERED_LIST_OF_EVENT_TIME_BOUNDARIES",
+    },
+    "partition_boundaries_event_time_epoch_s": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "allowed_format": "ORDERED_LIST_OF_UNIX_EPOCH_SECONDS_INTEGERS",
+    },
+    "fold_ids": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "allowed_format": "ORDERED_LIST_OF_NON_EMPTY_FOLD_ID_STRINGS",
+    },
+    "bootstrap_seeds": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "allowed_format": "ORDERED_LIST_OF_DETERMINISTIC_SEEDS",
+    },
+    "purge": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "allowed_format": "EXPLICIT_OWNER_NUMERIC_OR_EXPLICIT_NULL_RATIFICATION",
+    },
+    "embargo": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "allowed_format": "EXPLICIT_OWNER_NUMERIC_OR_EXPLICIT_NULL_RATIFICATION",
+    },
+    "fold_sizes": {
+        "input_class": INPUT_CLASS_OWNER_VALUE,
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "allowed_format": "EXPLICIT_OWNER_LIST_OF_POSITIVE_INTEGERS_OR_EXPLICIT_NULL_RATIFICATION",
+    },
+    "regime_coverage_counts": {
+        "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
+        "related_sta_open_input": "regime_coverage_materialization_readiness",
+        "allowed_format": "OBSERVATION_DERIVED_COUNT_OBJECT_FROM_AUTHORIZED_PRODUCER_ONLY",
+    },
+    "regime_coverage_instance": {
+        "input_class": INPUT_CLASS_STA_EXTERNAL_INPUT,
+        "related_sta_open_input": "regime_coverage_materialization_readiness",
+        "allowed_format": "PRODUCER_BOUND_REGIME_COVERAGE_INSTANCE_OBJECT",
+    },
+}
 
 REQUIRED_MANIFEST_TOP_KEYS: tuple[str, ...] = (
     "schema_version",
