@@ -13,12 +13,12 @@ AUTHORITY_SURFACE=B
 O4_UNCHANGED=true
 INPUT_AUTHORITY=false
 RUNTIME_IMPLEMENTED=false
+SHADOW_CAMPAIGN_STARTABLE=true
 PRODUCTIVE_NUMERIC_VALUES_SET=0
 ORDERS=false
 TESTNET=false
 LIVE=false
 ```
-
 ## 1. Goal
 
 Deliver the Owner-ratified Surface-B PT1M finalized-OHLCV shadow-calibration
@@ -34,16 +34,14 @@ src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/
   constants_v1.py
   models_v1.py
   boundary_guards_v1.py
+  authority_consumption_guards_v1.py
   git_sha_loader_v1.py
   pt1m_finalized_ohlcv_producer_v1.py
   observation_pack_v1.py
   campaign_binder_v1.py
-  dataset_manifest_builder_v1.py
-  partition_manifest_builder_v1.py
-  walk_forward_manifest_builder_v1.py
-  bootstrap_manifest_builder_v1.py
-  stress_manifest_builder_v1.py
+  manifest_builders_v1.py
   export_api_v1.py
+  evidence_collection_collector_v1.py
 ```
 
 Reuse (no parallel models):
@@ -103,7 +101,22 @@ Reuse (no parallel models):
 BOUNDED_SCAFFOLDING_AND_EXPORT=true
 PRODUCTIVE_EMISSION=false
 SHADOW_CAMPAIGN_MAY_CONSUME_BOUND_PACKS=true
+SHADOW_CAMPAIGN_STARTABLE=true
 INPUT_AUTHORITY=false
 RUNTIME_IMPLEMENTED=false
 PRODUCTIVE_NUMERIC_VALUES_SET=0
 ```
+
+Evidence-collection start path (Surface B collector):
+
+```text
+produce_pt1m_finalized_ohlcv_bars_v1
+→ build_observation_pack_v1
+→ structural manifests + ShadowCampaignRequestV1 binder
+→ start_evidence_collection_shadow_campaign_from_surface_b_v1
+→ run_shadow_campaign_v1 (evidence only)
+```
+
+Fail-closed consumption requires finalized PT1M only, complete provenance,
+PIT/no-lookahead coverage (as_of == pack exclusive tip), and rejects productive
+max-age magnitudes / dashboard authority / authority flips.
