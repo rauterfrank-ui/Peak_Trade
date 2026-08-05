@@ -87,7 +87,7 @@ LOOKBACK_AUTHORITY_REF=OWNER_NUMERIC_LOOKBACK_AUTHORITY_UNSET_V1
 
 - Counts may be derived **only** from label observations emitted by the
   authorized dedicated Surface-B regime-coverage producer
-  (`versioned_producer_id=productive_pure_stack_stage2_surface_b_regime_coverage_producer/v1`).
+  (`versioned_producer_id=productive_pure_stack_stage2_surface_b_regime_coverage_producer&#47;v1`).
 - While `OWNER_NUMERIC_THRESHOLD_AUTHORITY_UNSET_V1` and
   `OWNER_NUMERIC_LOOKBACK_AUTHORITY_UNSET_V1` remain in force, only actually
   observed `missing` and `unknown` labels may be counted.
