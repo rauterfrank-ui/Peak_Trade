@@ -48,7 +48,8 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_mat
     REQUIRE_EXPLICIT_OWNER_VALUES_FOR,
     SCHEMA_REL,
     STA_OPEN_EXTERNAL_INPUTS,
-    STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED,
+    FILLED_OBSERVATION_PACK_DIGEST,
+    STATUS_RAW_INPUT_PACK_MATERIALIZED,
 )
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decision_v1.validator_v1 import (
     RawInputPackMaterializationDecisionErrorV1,
@@ -62,24 +63,24 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED}",
+    f"STATUS={STATUS_RAW_INPUT_PACK_MATERIALIZED}",
     f"DECISION_ID={DECISION_ID}",
     "DECISION_STATUS=RATIFIED",
     f"OWNER_VALUE={RECORDED_OWNER_VALUE}",
     f"OWNER_GO_BASE_SHA={OWNER_GO_BASE_SHA}",
     f"BASELINE_ORIGIN_MAIN_SHA={BASELINE_ORIGIN_MAIN_SHA}",
-    "SCOPE=FILL_NON_PROVABLE_INSTANCE_VALUES_ONLY",
+    "SCOPE=RAW_INPUT_PACK_MATERIALIZATION_ONLY",
     f"DECISION_PACKET_ID={DECISION_PACKET_ID}",
     "PRODUCER_REIMPLEMENTATION=false",
     "CONSUMER_WIRING=false",
     "PT1M_ADAPTER=false",
-    "PACK_MATERIALIZATION=false",
+    "PACK_MATERIALIZATION=true",
     "CAMPAIGN_START=false",
     "INPUT_AUTHORITY=false",
     "RUNTIME_IMPLEMENTED=false",
     "CAMPAIGN_START_AUTHORIZED=false",
-    "RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false",
-    "RAW_INPUT_PACK_CREATED=false",
+    "RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=true",
+    "RAW_INPUT_PACK_CREATED=true",
     "CAMPAIGN_STARTED=false",
     "PRODUCTIVE_NUMERIC_VALUES_SET=0",
     "PRODUCTIVE_THRESHOLDS_LOOKBACKS=false",
@@ -100,6 +101,7 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "INVENTED_VALUES=false",
     f"dataset_id={FILLED_DATASET_ID}",
     f"scenario_id={FILLED_SCENARIO_ID}",
+    f"observation_pack_digest={FILLED_OBSERVATION_PACK_DIGEST}",
     "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
     "EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION",
 )
@@ -108,8 +110,6 @@ FORBIDDEN_DOC_CLAIMS: tuple[str, ...] = (
     "INPUT_AUTHORITY=true",
     "RUNTIME_IMPLEMENTED=true",
     "CAMPAIGN_START_AUTHORIZED=true",
-    "RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=true",
-    "PACK_MATERIALIZATION=true",
     "NOTION_SSOT=true",
     "DASHBOARD_AUTHORITY_EFFECT=AUTHORITY",
     "REGIME_COVERAGE_PRODUCER_AVAILABLE=true",
@@ -148,12 +148,12 @@ def test_materialization_document_markers_v1() -> None:
         assert f"`{field}`" in text or f"{field}=" in text, field
 
 
-def test_canonical_manifest_owner_sta_fill_recorded_v1() -> None:
+def test_canonical_manifest_raw_input_pack_materialized_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     result = validate_raw_input_pack_materialization_manifest_v1(manifest)
     assert result["ok"] is True
     assert result["decision_id"] == DECISION_ID
-    assert result["status"] == STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED
+    assert result["status"] == STATUS_RAW_INPUT_PACK_MATERIALIZED
     assert result["decision_status"] == "RATIFIED"
     assert result["owner_value"] == RECORDED_OWNER_VALUE
     assert result["allowed_owner_values"] == list(ALLOWED_OWNER_VALUES)
@@ -169,9 +169,9 @@ def test_canonical_manifest_owner_sta_fill_recorded_v1() -> None:
     assert result["invented_values"] is False
     assert result["input_authority"] is False
     assert result["runtime_implemented"] is False
-    assert result["raw_input_pack_created"] is False
-    assert result["raw_input_pack_materialization_authorized"] is False
-    assert result["pack_materialization"] is False
+    assert result["raw_input_pack_created"] is True
+    assert result["raw_input_pack_materialization_authorized"] is True
+    assert result["pack_materialization"] is True
     assert result["campaign_started"] is False
     assert result["productive_numeric_values_set"] == 0
     assert result["dashboard_authority_effect"] == "NONE"
@@ -228,15 +228,12 @@ def test_canonical_manifest_owner_sta_fill_recorded_v1() -> None:
     assert set(DECISION_PACKET_REMAINING_NULL_FIELDS).issubset(remaining)
 
 
-def test_schema_allows_owner_sta_fill_recorded_v1() -> None:
+def test_schema_allows_raw_input_pack_materialized_v1() -> None:
     schema = json.loads((REPO_ROOT / SCHEMA_REL).read_text(encoding="utf-8"))
-    assert (
-        STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED
-        in schema["properties"]["status"]["enum"]
-    )
+    assert STATUS_RAW_INPUT_PACK_MATERIALIZED in schema["properties"]["status"]["enum"]
     assert "RATIFIED" in schema["properties"]["decision_status"]["enum"]
-    assert schema["properties"]["raw_input_pack_materialization_authorized"]["const"] is False
-    assert schema["properties"]["pack_materialization"]["const"] is False
+    assert schema["properties"]["raw_input_pack_materialization_authorized"]["type"] == "boolean"
+    assert schema["properties"]["pack_materialization"]["type"] == "boolean"
     packet_schema = schema["properties"]["non_provable_instance_values_decision_packet"]
     assert packet_schema["properties"]["packet_id"]["const"] == DECISION_PACKET_ID
     assert packet_schema["properties"]["proposed_values"]["const"] is False
@@ -279,11 +276,19 @@ def test_owner_choice_rejects_foreign_value_v1() -> None:
         validate_raw_input_pack_materialization_owner_choice_v1("AUTHORIZE_SOMETHING_ELSE")
 
 
-def test_manifest_rejects_materialization_flip_v1() -> None:
+def test_manifest_rejects_campaign_start_flip_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     mutated = copy.deepcopy(manifest)
-    mutated["pack_materialization"] = True
+    mutated["campaign_start_authorized"] = True
     with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="MUST_REMAIN_FALSE"):
+        validate_raw_input_pack_materialization_manifest_v1(mutated)
+
+
+def test_manifest_rejects_pack_materialization_false_after_execution_v1() -> None:
+    manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
+    mutated = copy.deepcopy(manifest)
+    mutated["pack_materialization"] = False
+    with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="MUST_BE_TRUE"):
         validate_raw_input_pack_materialization_manifest_v1(mutated)
 
 

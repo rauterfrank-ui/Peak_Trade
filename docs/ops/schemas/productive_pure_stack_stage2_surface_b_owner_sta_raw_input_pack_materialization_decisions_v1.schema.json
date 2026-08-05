@@ -63,7 +63,8 @@
         "OWNER_STA_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED_INSTANCE_FIELDS_STILL_OPEN",
         "OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN",
         "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY_FIELDS_STILL_NULL",
-        "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED_REMAINING_NULL"
+        "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED_REMAINING_NULL",
+        "OWNER_STA_RAW_INPUT_PACK_MATERIALIZED_OBSERVATION_DIGEST_COMPUTED_REMAINING_NULL"
       ]
     },
     "authority_surface": {
@@ -180,7 +181,15 @@
           ]
         },
         "observation_pack_digest": {
-          "type": "null"
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          ]
         },
         "raw_source_digest": {
           "anyOf": [
@@ -330,16 +339,16 @@
       "const": false
     },
     "raw_input_pack_materialization_authorized": {
-      "const": false
+      "type": "boolean"
     },
     "raw_input_pack_created": {
-      "const": false
+      "type": "boolean"
     },
     "campaign_started": {
       "const": false
     },
     "pack_materialization": {
-      "const": false
+      "type": "boolean"
     },
     "producer_reimplementation": {
       "const": false
@@ -623,7 +632,15 @@
           "type": "null"
         },
         "observation_pack_digest": {
-          "type": "null"
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          ]
         },
         "raw_source_digest": {
           "anyOf": [
@@ -694,13 +711,13 @@
           "const": false
         },
         "pack_materialization": {
-          "const": false
+          "type": "boolean"
         },
         "raw_input_pack_created": {
-          "const": false
+          "type": "boolean"
         },
         "raw_input_pack_materialization_authorized": {
-          "const": false
+          "type": "boolean"
         },
         "campaign_start": {
           "const": false
