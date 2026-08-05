@@ -11,6 +11,8 @@ Commands:
       — with --request-real-network: activation path
         * --permit-canonical-runner-invoke transports explicit Owner Session Permit
         * NETWORK_SESSION_ALLOWED remains false by default (dry / no consume)
+        * when issuance artifact paths are provided, builds canonical session_request
+          via session_request_cli_adapter_v1 (no mint, no consume)
         * real runner invoke requires network_session_allowed + full gates
 
 Confirm tokens: --confirm-token-file | PEAK_TRADE_PSO_CONFIRM_TOKEN | present flag.
@@ -48,6 +50,7 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
     CLI_OWNER_SESSION_PERMIT_DEFAULT,
     NETWORK_SESSION_ALLOWED,
     OWNER_PERMIT_WIRING_CAPABILITY_ID,
+    SESSION_REQUEST_ADAPTER_CAPABILITY_ID,
     TARGET_SESSION_ID,
     WIRING_CAPABILITY_ID,
 )
@@ -70,6 +73,9 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_go_v1 import (  # noqa: E402
     load_session_go_authority_v1,
 )
+from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_request_cli_adapter_v1 import (  # noqa: E402
+    build_canonical_session_request_from_issuance_artifacts_v1,
+)
 from src.ops.single_future_stateful_no_order_runtime_activation_v1.config_v1 import (  # noqa: E402
     load_activation_config_v1,
 )
@@ -79,6 +85,18 @@ def _repo_sha() -> str:
     return subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=str(_REPO_ROOT), text=True
     ).strip()
+
+
+def _issuance_paths_requested(args: argparse.Namespace) -> bool:
+    return any(
+        getattr(args, name, None) is not None
+        for name in (
+            "preregistration",
+            "operator_go",
+            "authorization_artifact",
+            "fingerprint_ledger",
+        )
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -120,6 +138,30 @@ def build_parser() -> argparse.ArgumentParser:
             "runner. Distinct from --owner-go / --owner-session-go / "
             "--network-session-allowed. Default false (fail-closed)."
         ),
+    )
+    p.add_argument(
+        "--preregistration",
+        type=Path,
+        default=None,
+        help="Canonical issuance preregistration.json path (session_request adapter).",
+    )
+    p.add_argument(
+        "--operator-go",
+        type=Path,
+        default=None,
+        help="Canonical issuance operator_go.json path (session_request adapter).",
+    )
+    p.add_argument(
+        "--authorization-artifact",
+        type=Path,
+        default=None,
+        help="Canonical issuance authorization artifact path (session_request adapter).",
+    )
+    p.add_argument(
+        "--fingerprint-ledger",
+        type=Path,
+        default=None,
+        help="Canonical fingerprint ledger path bound for the session (required with adapter).",
     )
     p.add_argument(
         "--execute",
@@ -182,6 +224,7 @@ def main(argv: list[str] | None = None) -> int:
             "wiring_capability_id": WIRING_CAPABILITY_ID,
             "activation_capability_id": ACTIVATION_CAPABILITY_ID,
             "owner_permit_wiring_capability_id": OWNER_PERMIT_WIRING_CAPABILITY_ID,
+            "session_request_adapter_capability_id": SESSION_REQUEST_ADAPTER_CAPABILITY_ID,
             "session_id": TARGET_SESSION_ID,
             "parity": parity,
             "authority_reuse": authority,
@@ -196,6 +239,7 @@ def main(argv: list[str] | None = None) -> int:
                 "BINDING_IMPLEMENTED",
                 "ACTIVATION_PATH_BOUND",
                 "OWNER_SESSION_PERMIT_EXPLICIT_FLAG_BOUND",
+                "SESSION_REQUEST_CLI_ADAPTER_BOUND",
                 "NO_REAL_NETWORK_SESSION_STARTED",
                 "NO_FAULT_SESSION_STARTED",
                 "LADDER_STEP_REMAINS_OPEN",
@@ -229,8 +273,57 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 except Exception:  # noqa: BLE001
                     network_allowed = False
-            # Explicit typed Owner Session Permit — never silently forced false/true.
             owner_session_permit = bool(args.permit_canonical_runner_invoke)
+
+            session_request = None
+            adapter_payload: dict | None = None
+            if _issuance_paths_requested(args) or args.confirm_token_file is not None:
+                # This capability forbids productive network; adapter always dry.
+                if network_allowed:
+                    print(
+                        json.dumps(
+                            {
+                                "ok": False,
+                                "blockers": [
+                                    "SESSION_REQUEST_ADAPTER_CAPABILITY_FORBIDS_NETWORK_SESSION",
+                                    "NETWORK_SESSION_ALLOWED_MUST_REMAIN_FALSE",
+                                ],
+                                "network_session_started": False,
+                                "authorization_consumed": False,
+                                "confirm_token_consumed": False,
+                                "session_request_adapter_capability_id": (
+                                    SESSION_REQUEST_ADAPTER_CAPABILITY_ID
+                                ),
+                            },
+                            sort_keys=True,
+                            indent=2,
+                        )
+                    )
+                    return 2
+                adapter = build_canonical_session_request_from_issuance_artifacts_v1(
+                    preregistration_path=args.preregistration,
+                    operator_go_path=args.operator_go,
+                    authorization_artifact_path=args.authorization_artifact,
+                    confirm_token_file=args.confirm_token_file,
+                    fingerprint_ledger_path=args.fingerprint_ledger,
+                    expected_repository_sha=str(args.expected_repository_sha)
+                    if args.expected_repository_sha
+                    else None,
+                    evidence_root_override=args.evidence_root,
+                    permit_canonical_runner_invoke=owner_session_permit,
+                    use_real_network=False,
+                    environ=os.environ,
+                )
+                adapter_payload = adapter.to_dict()
+                if not adapter.ok:
+                    print(
+                        json.dumps(
+                            redact_mapping_for_logs(adapter_payload), sort_keys=True, indent=2
+                        )
+                    )
+                    return 2
+                session_request = adapter.session_request
+
             result = execute_productive_rate_limit_reconnect_session_activation_v1(
                 expected_repository_sha=sha,
                 expected_config_digest=cfg,
@@ -252,8 +345,23 @@ def main(argv: list[str] | None = None) -> int:
                 environ=os.environ,
                 permit_canonical_runner_invoke=owner_session_permit,
                 wallclock_runner=None,
+                session_request=session_request,
             )
-            print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))
+            out = result.to_dict()
+            # Never serialize live session_request (token plaintext / Path objects).
+            if out.get("session_request_forwarded") is not None:
+                forwarded_keys = sorted(dict(out["session_request_forwarded"]).keys())
+                out["session_request_forwarded"] = {
+                    "redacted": True,
+                    "keys": forwarded_keys,
+                    "confirm_token": "[REDACTED]",
+                }
+            if adapter_payload is not None:
+                out["session_request_adapter"] = adapter_payload
+                out["session_request_adapter_capability_id"] = SESSION_REQUEST_ADAPTER_CAPABILITY_ID
+                out["claims"] = dict(out.get("claims") or {})
+                out["claims"].update(dict(adapter_payload.get("claims") or {}))
+            print(json.dumps(redact_mapping_for_logs(out), sort_keys=True, indent=2))
             return 0 if result.ok else 2
 
         result = execute_productive_rate_limit_reconnect_session_wiring_v1(

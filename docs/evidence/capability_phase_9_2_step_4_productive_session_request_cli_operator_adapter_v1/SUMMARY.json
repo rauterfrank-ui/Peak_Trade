@@ -1,0 +1,51 @@
+{
+  "call_graph_after": [
+    "Canonical issuance artifacts",
+    "Productive CLI argument resolution",
+    "canonical session_request adapter",
+    "canonical session_request validation",
+    "execute_productive_rate_limit_reconnect_session_activation_v1",
+    "existing canonical runner signature",
+    "controlled no-network dry-probe boundary"
+  ],
+  "capability_id": "PHASE_9_2_STEP_4_PRODUCTIVE_SESSION_REQUEST_CLI_OPERATOR_ADAPTER_V1",
+  "claims": {
+    "AUTHORIZATION_CONSUMED": false,
+    "AUTHORIZATION_ISSUED": false,
+    "CANONICAL_SESSION_REQUEST_TYPE_REUSED": true,
+    "CLI_OWNER_SESSION_PERMIT_EXPLICIT": true,
+    "CLI_SESSION_REQUEST_ADAPTER_EXISTS": true,
+    "CONFIG_CHANGED": false,
+    "CONFIRM_TOKEN_ARTIFACT_CANONICALLY_SOURCED": true,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": false,
+    "CORE_LOGIC_CHANGED": false,
+    "DASHBOARD_FILES_CHANGED": false,
+    "EXPECTED_REPOSITORY_SHA_BOUND": true,
+    "FINGERPRINT_LEDGER_BOUND": true,
+    "NETWORK_SESSION_STARTED": false,
+    "PARALLEL_SESSION_REQUEST_MODEL_CREATED": false,
+    "PREREG_GO_CANONICALLY_SOURCED": true,
+    "PRESENTATION_LAYER_CHANGED": false,
+    "PRODUCTIVE_SESSION_PATH_DRY_PROBE_REACHABLE": true,
+    "PRODUCTIVE_SESSION_PATH_STRUCTURALLY_RUNTIME_REACHABLE": true,
+    "PUBLIC_MARKET_DATA_REQUEST_OCCURRED": false,
+    "RUNNER_SIGNATURE_MATCH": true,
+    "SESSION_REQUEST_ARTIFACT_BINDINGS_PROVEN": true,
+    "SESSION_REQUEST_REQUIRED_FIELDS_COMPLETE": true
+  },
+  "field_source_map": {
+    "artifact_path": "issuance.authorization_artifact",
+    "confirm_token": "issuance.confirm_token_file (memory only)",
+    "evidence_root": "prereg.evidence_root",
+    "expected_repository_sha": "prereg.expected_repository_sha",
+    "fingerprint_ledger_path": "cli.--fingerprint-ledger",
+    "go": "issuance.operator_go.json",
+    "prereg": "issuance.preregistration.json",
+    "use_real_network": "adapter.constant_false"
+  },
+  "predecessor_closed": "PHASE_9_2_STEP_4_PRODUCTIVE_SESSION_ACTIVATION_RUNNER_SIGNATURE_AND_OWNER_PERMIT_WIRING_V1",
+  "repository_sha": "62f715d806071adbd2a52923f86d3967cd06be17",
+  "schema_version": "phase_9_2_step_4_productive_session_request_cli_operator_adapter_evidence.v1",
+  "written_at_unix": 1785960488.795939
+}
