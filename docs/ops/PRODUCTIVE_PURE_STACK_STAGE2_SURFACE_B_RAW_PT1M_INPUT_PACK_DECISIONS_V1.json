@@ -1,0 +1,147 @@
+{
+  "schema_version": "productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_decisions/v1",
+  "document_type": "OWNER_AUTHORITY_DECISIONS_MANIFEST",
+  "capability_scope": "SURFACE_B_RAW_PT1M_CANDLE_MARK_INPUT_PACK_AND_CAMPAIGN_INSTANCE_BINDING",
+  "status": "OWNER_DECISION_STRUCTURE_RATIFIED_INSTANCE_FIELDS_OPEN",
+  "baseline_origin_main_sha": "81315806a9501ab7872b9fc0c54bafa82eff5920",
+  "owner_decision_document": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md",
+  "parent_surface_b_ratification": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md",
+  "parent_surface_b_decisions": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_DECISIONS_V1.json",
+  "sole_trading_authority": "run_integrated_offline_trading_logic_replay_v1",
+  "authority_surface": "B",
+  "o4_unchanged": true,
+  "dashboard_authority_effect": "NONE",
+  "dashboard_role": "READ_ONLY_CONSUMER",
+  "notion_ssot": false,
+  "repository_is_ssot": true,
+  "input_authority": false,
+  "runtime_implemented": false,
+  "campaign_start_authorized": false,
+  "raw_input_pack_materialization_authorized": false,
+  "raw_input_pack_created": false,
+  "campaign_started": false,
+  "productive_numeric_values_set": 0,
+  "productive_calibration_authorized": false,
+  "orders_authorized": false,
+  "testnet_authorized": false,
+  "live_authorized": false,
+  "paper_exchange_orders": false,
+  "exchange_credential_use": false,
+  "real_capital_movement": false,
+  "core_logic_change": false,
+  "surface_b_collector_semantics_changed": false,
+  "purge": null,
+  "embargo": null,
+  "fold_sizes": null,
+  "instance_fields_open": true,
+  "campaign_instance": {
+    "campaign_id": null,
+    "dataset_id": null,
+    "scenario_id": null,
+    "instrument_binding": null,
+    "candle_authority": {
+      "authority_class": "VENUE_NATIVE_FINALIZED_CANDLES",
+      "producer": "sta_pt1m_finalized_ohlcv_shadow_calibration_producer_v1",
+      "timeframe": "PT1M",
+      "open_tip_bars": false,
+      "venue_finalized_required": true,
+      "source_ref": null,
+      "candles": null
+    },
+    "mark_price_authority": {
+      "authority_class": "VENUE_NATIVE_MARK_OBSERVATION_SEPARATE_FROM_CANDLE",
+      "candle_mark_trade_equivalence": "FORBIDDEN",
+      "join_key": "PT1M_BUCKET_OPEN_EVENT_TIME",
+      "source_ref": null,
+      "marks": null
+    },
+    "pack_provenance": {
+      "observation_pack_digest": null,
+      "raw_source_digest": null,
+      "repository_sha": null,
+      "config_digest": null,
+      "ingestion_timestamp": null,
+      "finalization_timestamp": null,
+      "event_time_range": null
+    },
+    "seed": null,
+    "event_time_epoch_s": null,
+    "partition_boundaries_event_time_epoch_s": null,
+    "fold_ids": null,
+    "bootstrap_seeds": null,
+    "regime_coverage": null
+  },
+  "decisions": {
+    "INSTRUMENT_BINDING": {
+      "mode": "SINGLE_SELECTED_FUTURE_VENUE_NATIVE",
+      "required_fields": [
+        "venue",
+        "canonical_instrument_id",
+        "venue_instrument_id",
+        "contract_type",
+        "market_type",
+        "quote_currency",
+        "settlement_currency"
+      ],
+      "multi_instrument_pooling": false,
+      "instrument_change_policy": "NEW_DATASET_ID_OR_SEGMENT_SPLIT"
+    },
+    "CANDLE_AUTHORITY": {
+      "ohlcv_source": "VENUE_NATIVE_FINALIZED_CANDLES",
+      "candle_role": "RAW_OHLCV_INPUT_BEHIND_DEDICATED_PRODUCER_ONLY",
+      "producer": "sta_pt1m_finalized_ohlcv_shadow_calibration_producer_v1",
+      "timeframe": "PT1M",
+      "open_tip_bars": false,
+      "venue_finalized_required": true,
+      "event_time_must_be_bucket_open": true,
+      "silent_rewrites": false
+    },
+    "MARK_PRICE_AUTHORITY": {
+      "mark_price": "REQUIRED_SEPARATE_FIELD",
+      "mark_source": "VENUE_NATIVE_MARK_OBSERVATION_SEPARATE_FROM_CANDLE",
+      "candle_mark_trade_equivalence": "FORBIDDEN",
+      "join_key": "PT1M_BUCKET_OPEN_EVENT_TIME",
+      "missing_mark_for_bucket": "FAIL_CLOSED"
+    },
+    "PIT_NO_LOOKAHEAD": {
+      "point_in_time_only": true,
+      "no_lookahead": true,
+      "as_of_equals_pack_exclusive_tip": true,
+      "event_time_epoch_s_semantics": "PACK_EXCLUSIVE_TIP",
+      "open_bucket_at_as_of": false,
+      "bar_after_as_of": false,
+      "productive_max_age_must_remain_unset": true
+    },
+    "PACK_IDENTITY": {
+      "snapshots_immutable": true,
+      "rebuild_requires_new_dataset_id_and_digest": true,
+      "evidence_pack_future_mutation": false,
+      "source_id": "sta_pt1m_finalized_ohlcv_shadow_calibration_producer_v1"
+    },
+    "CAMPAIGN_INSTANCE_BINDING": {
+      "cardinality": "ONE_PACK_TO_ONE_CAMPAIGN_INSTANCE",
+      "campaign_start_authorized": false,
+      "raw_input_pack_materialization_authorized": false,
+      "purge": null,
+      "embargo": null,
+      "fold_sizes": null
+    },
+    "FORBIDDEN_SOURCES": [
+      "fixture",
+      "demo",
+      "scenario_scalar",
+      "dashboard_readmodel",
+      "webui",
+      "notion",
+      "cmc_volatility",
+      "ResultV1",
+      "SurvivalResultV1",
+      "SuitabilityResultV1",
+      "o4_pt1h_as_pt1m_authority",
+      "candle_close_as_mark",
+      "trade_as_mark",
+      "parallel_arithmetic_kernel",
+      "parallel_survival_kernel"
+    ]
+  }
+}
