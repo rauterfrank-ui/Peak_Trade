@@ -114,6 +114,7 @@ Aus der kanonischen SSOT (Authority-Grenzen dort, nicht hier):
 Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 
 - [`docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md`](../architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md) — historisches strategisches Zielbild v2.6
+- [`docs/architecture/canonical/PEAK_TRADE_CANONICAL_END_STATE_WIRING_MAP.md`](../architecture/canonical/PEAK_TRADE_CANONICAL_END_STATE_WIRING_MAP.md) — derived end-state wiring map (non-SSOT; non-runtime-authorizing; forensic SHA-bound)
 - [`docs/ARCHITECTURE_OVERVIEW.md`](../ARCHITECTURE_OVERVIEW.md)
 - [`docs/PEAK_TRADE_OVERVIEW.md`](../PEAK_TRADE_OVERVIEW.md)
 
@@ -146,6 +147,7 @@ Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 | [`docs/ops/README.md`](../ops/README.md) | Ops Operator Center |
 | [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](../LIVE_OPERATIONAL_RUNBOOKS.md) | Live-Ops-Übersicht (non-authorizing) |
 | [`docs/architecture/TREND_FOLLOWING_V2_CANONICAL_WIRING.md`](../architecture/TREND_FOLLOWING_V2_CANONICAL_WIRING.md) | Canonical Wiring-Hinweis (keine zweite Trading-SSOT) |
+| [`docs/architecture/canonical/PEAK_TRADE_CANONICAL_END_STATE_WIRING_MAP.md`](../architecture/canonical/PEAK_TRADE_CANONICAL_END_STATE_WIRING_MAP.md) | Canonical End-State Wiring Map (derived; `RUNTIME_AUTHORITY_EFFECT=NONE`; keine zweite Trading-SSOT) |
 
 ---
 
