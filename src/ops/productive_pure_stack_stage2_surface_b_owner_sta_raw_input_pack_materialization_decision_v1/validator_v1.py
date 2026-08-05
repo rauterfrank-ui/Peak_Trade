@@ -41,6 +41,11 @@ def _assert_false(value: Any, *, label: str) -> None:
             raise RawInputPackMaterializationDecisionErrorV1(f"MUST_REMAIN_FALSE:{label}")
 
 
+def _assert_true(value: Any, *, label: str) -> None:
+    if value is not True:
+        raise RawInputPackMaterializationDecisionErrorV1(f"MUST_BE_TRUE:{label}")
+
+
 def _assert_null(value: Any, *, label: str) -> None:
     if value is not None:
         raise RawInputPackMaterializationDecisionErrorV1(f"MUST_REMAIN_NULL:{label}")
@@ -246,13 +251,22 @@ def validate_raw_input_pack_materialization_manifest_v1(
     _assert_false(manifest.get("input_authority"), label="input_authority")
     _assert_false(manifest.get("runtime_implemented"), label="runtime_implemented")
     _assert_false(manifest.get("campaign_start_authorized"), label="campaign_start_authorized")
-    _assert_false(
-        manifest.get("raw_input_pack_materialization_authorized"),
-        label="raw_input_pack_materialization_authorized",
-    )
-    _assert_false(manifest.get("raw_input_pack_created"), label="raw_input_pack_created")
     _assert_false(manifest.get("campaign_started"), label="campaign_started")
-    _assert_false(manifest.get("pack_materialization"), label="pack_materialization")
+    _surface_status_early = manifest.get("status")
+    if _surface_status_early == C.STATUS_RAW_INPUT_PACK_MATERIALIZED:
+        _assert_true(
+            manifest.get("raw_input_pack_materialization_authorized"),
+            label="raw_input_pack_materialization_authorized",
+        )
+        _assert_true(manifest.get("raw_input_pack_created"), label="raw_input_pack_created")
+        _assert_true(manifest.get("pack_materialization"), label="pack_materialization")
+    else:
+        _assert_false(
+            manifest.get("raw_input_pack_materialization_authorized"),
+            label="raw_input_pack_materialization_authorized",
+        )
+        _assert_false(manifest.get("raw_input_pack_created"), label="raw_input_pack_created")
+        _assert_false(manifest.get("pack_materialization"), label="pack_materialization")
     _assert_false(manifest.get("producer_reimplementation"), label="producer_reimplementation")
     _assert_false(manifest.get("consumer_wiring"), label="consumer_wiring")
     _assert_false(manifest.get("pt1m_adapter"), label="pt1m_adapter")
@@ -316,15 +330,16 @@ def validate_raw_input_pack_materialization_manifest_v1(
     authorize_sem = _require_mapping(
         manifest.get("authorize_semantics"), label="authorize_semantics"
     )
+    _materialized = _surface_status_early == C.STATUS_RAW_INPUT_PACK_MATERIALIZED
     for key, expected in (
         ("input_authority", False),
         ("runtime_implemented", False),
-        ("raw_input_pack_created", False),
+        ("raw_input_pack_created", _materialized),
         ("campaign_started", False),
-        ("pack_materialization_execution_requires_separate_explicit_go", True),
+        ("pack_materialization_execution_requires_separate_explicit_go", not _materialized),
         (
             "raw_input_pack_materialization_authorized_remains_false_until_instance_fields_ratified",
-            True,
+            not _materialized,
         ),
         (
             "owner_fields_and_sta_proofs_must_be_fully_ratified_before_materialization_authorized",
@@ -333,6 +348,11 @@ def validate_raw_input_pack_materialization_manifest_v1(
     ):
         if authorize_sem.get(key) is not expected:
             raise RawInputPackMaterializationDecisionErrorV1(f"AUTHORIZE_SEMANTICS_INVALID:{key}")
+    if _materialized:
+        if authorize_sem.get("pack_materialization_executed") is not True:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "AUTHORIZE_SEMANTICS_INVALID:pack_materialization_executed"
+            )
 
     decisions = _require_mapping(manifest.get("decisions"), label="decisions")
     for key in (
@@ -356,11 +376,8 @@ def validate_raw_input_pack_materialization_manifest_v1(
     for key in (
         "input_authority",
         "runtime_implemented",
-        "raw_input_pack_created",
-        "raw_input_pack_materialization_authorized",
         "campaign_started",
         "campaign_start_authorized",
-        "pack_materialization",
         "producer_reimplementation",
         "consumer_wiring",
         "pt1m_adapter",
@@ -372,6 +389,16 @@ def validate_raw_input_pack_materialization_manifest_v1(
     ):
         if non_effects.get(key) is not False:
             raise RawInputPackMaterializationDecisionErrorV1(f"NON_EFFECTS_MUST_BE_FALSE:{key}")
+    _pack_expected = True if _materialized else False
+    for key in (
+        "raw_input_pack_created",
+        "raw_input_pack_materialization_authorized",
+        "pack_materialization",
+    ):
+        if non_effects.get(key) is not _pack_expected:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                f"NON_EFFECTS_PACK_FLAG_MISMATCH:{key}"
+            )
     if non_effects.get("productive_numeric_values_set") != 0:
         raise RawInputPackMaterializationDecisionErrorV1(
             "NON_EFFECTS_PRODUCTIVE_NUMERIC_VALUES_MUST_BE_ZERO"
@@ -401,21 +428,25 @@ def validate_raw_input_pack_materialization_manifest_v1(
         C.STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED,
         C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY,
         C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED,
+        C.STATUS_RAW_INPUT_PACK_MATERIALIZED,
     )
     expected_provable_instance_closed = surface_status in (
         C.STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED,
         C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY,
         C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED,
+        C.STATUS_RAW_INPUT_PACK_MATERIALIZED,
     )
     expected_decision_packet_ready = surface_status in (
         C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY,
         C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED,
+        C.STATUS_RAW_INPUT_PACK_MATERIALIZED,
     )
     expected_still_null = (
         surface_status == C.STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY
     )
-    expected_partial_fill = (
-        surface_status == C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED
+    expected_partial_fill = surface_status in (
+        C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED,
+        C.STATUS_RAW_INPUT_PACK_MATERIALIZED,
     )
     if (
         authorize_sem.get("authorize_detail_provable_refs_closed")
@@ -472,7 +503,11 @@ def validate_raw_input_pack_materialization_manifest_v1(
             raise RawInputPackMaterializationDecisionErrorV1(
                 "AUTHORIZE_SEMANTICS_INVALID:campaign_id_explicit_leave_null"
             )
-        if authorize_sem.get("observation_pack_digest_leave_null_until_computed") is not True:
+        expected_digest_leave_null = surface_status != C.STATUS_RAW_INPUT_PACK_MATERIALIZED
+        if (
+            authorize_sem.get("observation_pack_digest_leave_null_until_computed")
+            is not expected_digest_leave_null
+        ):
             raise RawInputPackMaterializationDecisionErrorV1(
                 "AUTHORIZE_SEMANTICS_INVALID:observation_pack_digest_leave_null_until_computed"
             )
@@ -677,6 +712,47 @@ def validate_raw_input_pack_materialization_manifest_v1(
         )
         decision_packet_ready = True
     elif surface_status == C.STATUS_NON_PROVABLE_INSTANCE_VALUES_OWNER_AND_STA_FILL_RECORDED:
+        if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA_INSTANCE_VALUES_FILL:
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
+        if decision_status != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
+        if owner_value != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_VALUE_MUST_MATCH_RECORDED")
+        if mat_dec.get("owner_value") != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "DECISIONS_OWNER_VALUE_MUST_MATCH_RECORDED"
+            )
+        if mat_dec.get("status") != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
+        _assert_no_forbidden_source_token(owner_value, label="owner_value")
+        _validate_partition_geometry_v1()
+        _validate_authorize_detail_fields_owner_sta_fill(detail_fields)
+        _validate_open_null_instance_fields_owner_sta_fill(open_fields)
+        authorize_detail_provable_refs_closed = True
+        provable_instance_fields_closed = True
+        owner_sta_fill_recorded = True
+        if tuple(closed_sta) != C.CLOSED_STA_EXTERNAL_INPUTS:
+            raise RawInputPackMaterializationDecisionErrorV1("CLOSED_STA_EXTERNAL_INPUTS_MISMATCH")
+        if tuple(require_owner) != C.REQUIRE_EXPLICIT_OWNER_VALUES_FOR:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MISMATCH"
+            )
+        for required in C.STA_OPEN_EXTERNAL_INPUTS:
+            if required not in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
+                )
+        for closed in C.CLOSED_STA_EXTERNAL_INPUTS:
+            if closed in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MUST_BE_CLOSED:{closed}"
+                )
+        _validate_non_provable_instance_values_decision_packet(
+            manifest.get("non_provable_instance_values_decision_packet"),
+            mode="owner_sta_fill_recorded",
+        )
+        decision_packet_ready = True
+    elif surface_status == C.STATUS_RAW_INPUT_PACK_MATERIALIZED:
         if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
             raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
         if decision_status != C.DECISION_STATUS_RATIFIED:
@@ -745,9 +821,10 @@ def validate_raw_input_pack_materialization_manifest_v1(
         "invented_values": False,
         "input_authority": False,
         "runtime_implemented": False,
-        "raw_input_pack_created": False,
-        "raw_input_pack_materialization_authorized": False,
-        "pack_materialization": False,
+        "raw_input_pack_created": surface_status == C.STATUS_RAW_INPUT_PACK_MATERIALIZED,
+        "raw_input_pack_materialization_authorized": surface_status
+        == C.STATUS_RAW_INPUT_PACK_MATERIALIZED,
+        "pack_materialization": surface_status == C.STATUS_RAW_INPUT_PACK_MATERIALIZED,
         "campaign_started": False,
         "campaign_start_authorized": False,
         "productive_numeric_values_set": 0,
@@ -856,14 +933,26 @@ def _validate_non_provable_instance_values_decision_packet(
         "proposed_values",
         "silent_defaults",
         "invented_values",
-        "pack_materialization",
-        "raw_input_pack_created",
-        "raw_input_pack_materialization_authorized",
         "campaign_start",
         "input_authority",
         "runtime_implemented",
     ):
         _assert_false(packet.get(key), label=f"decision_packet.{key}")
+    # After materialization, packet status includes PACK_MATERIALIZED and pack flags are true.
+    if "PACK_MATERIALIZED" in str(packet.get("status") or ""):
+        for key in (
+            "pack_materialization",
+            "raw_input_pack_created",
+            "raw_input_pack_materialization_authorized",
+        ):
+            _assert_true(packet.get(key), label=f"decision_packet.{key}")
+    else:
+        for key in (
+            "pack_materialization",
+            "raw_input_pack_created",
+            "raw_input_pack_materialization_authorized",
+        ):
+            _assert_false(packet.get(key), label=f"decision_packet.{key}")
 
     fields = packet.get("fields")
     if not isinstance(fields, Sequence) or isinstance(fields, (str, bytes)):
