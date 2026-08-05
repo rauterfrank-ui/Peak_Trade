@@ -2,7 +2,7 @@
   "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions/v1",
   "document_type": "OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISIONS_MANIFEST",
   "capability_scope": "SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION",
-  "status": "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN",
+  "status": "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED",
   "baseline_origin_main_sha": "42e8527c929264c702d8f7d59a80fc38f850baff",
   "authority_surface": "B",
   "decision_id": "DEC_REGIME_COVERAGE_PRODUCER",
@@ -13,22 +13,22 @@
     "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER"
   ],
   "authorize_detail_fields": {
-    "canonical_producer_name": null,
-    "canonical_producer_version": null,
-    "versioned_producer_id": null,
-    "taxonomy_binding": null,
-    "threshold_authority_ref": null,
-    "lookback_window_authority_ref": null,
-    "time_basis": null,
-    "PIT_no_lookahead_rules_ref": null,
-    "candle_join_acceptance_ref": null,
-    "mark_join_acceptance_ref": null,
-    "instrument_binding_acceptance_ref": null,
-    "determinism_contract_ref": null,
-    "reproducibility_contract_ref": null,
-    "producer_digest_contract_ref": null,
-    "missing_label_semantics_ref": null,
-    "unknown_label_semantics_ref": null
+    "canonical_producer_name": "surface_b_regime_coverage_producer_v1",
+    "canonical_producer_version": "v1",
+    "versioned_producer_id": "productive_pure_stack_stage2_surface_b_regime_coverage_producer/v1",
+    "taxonomy_binding": "TAXONOMY_SINK_EXCLUSIVE:low|mid|high|unknown|missing",
+    "threshold_authority_ref": "OWNER_NUMERIC_THRESHOLD_AUTHORITY_UNSET_V1",
+    "lookback_window_authority_ref": "OWNER_NUMERIC_LOOKBACK_AUTHORITY_UNSET_V1",
+    "time_basis": "EVENT_TIME_PT1M_FINALIZED_BAR_CLOSE_UTC",
+    "PIT_no_lookahead_rules_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/pit_rules_v1.py",
+    "candle_join_acceptance_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#candle_source_authority",
+    "mark_join_acceptance_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#mark_source_authority",
+    "instrument_binding_acceptance_ref": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md#instrument_binding",
+    "determinism_contract_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/determinism_contract_v1.py",
+    "reproducibility_contract_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/reproducibility_contract_v1.py",
+    "producer_digest_contract_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/digest_contract_v1.py",
+    "missing_label_semantics_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/label_semantics_v1.py#missing",
+    "unknown_label_semantics_ref": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/label_semantics_v1.py#unknown"
   },
   "taxonomy_sink_labels": [
     "low",
@@ -38,15 +38,8 @@
     "missing"
   ],
   "sta_open_external_inputs": [
-    "dedicated_surface_b_regime_recorder_under_sta",
-    "ratified_taxonomy_mapping",
     "non_invented_coverage_counts",
-    "producer_version_and_digest_contract",
-    "provable_eth_usdt_swap_compatibility",
-    "ratified_pt1m_candle_authority_join",
-    "ratified_pt1m_mark_authority_join",
-    "pit_no_lookahead_proof",
-    "deterministic_reproducible_computation"
+    "provable_eth_usdt_swap_compatibility"
   ],
   "forbidden_existing_producers": [
     "analytics.regimes",
@@ -70,7 +63,9 @@
     "runtime_implemented": false,
     "raw_input_pack_created": false,
     "campaign_started": false,
-    "separate_explicit_implementation_order_required": true,
+    "separate_explicit_implementation_order_required": false,
+    "authorize_detail_fields_complete": true,
+    "dedicated_producer_implemented": true,
     "owner_fields_and_sta_proofs_must_be_fully_ratified_before_input_authority": true
   },
   "input_authority": false,
@@ -127,7 +122,9 @@
       "coverage_counts": null,
       "thresholds": null,
       "lookbacks": null,
-      "label_magnitudes": null
+      "label_magnitudes": null,
+      "dedicated_producer_package": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/",
+      "dedicated_producer_spec": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_REGIME_COVERAGE_PRODUCER_V1.md"
     },
     "FORBIDDEN_EXISTING_PRODUCERS": [
       "analytics.regimes",
@@ -156,5 +153,15 @@
       "exchange_credential_effects": false
     }
   },
-  "owner_go_base_sha": "9f4974824bb647b6f9dec5509ace990c2678188a"
+  "owner_go_base_sha": "9f4974824bb647b6f9dec5509ace990c2678188a",
+  "owner_impl_go_base_sha": "52af83870a775ee9a4647107273964fa4857322b",
+  "sta_satisfied_by_producer_impl": [
+    "dedicated_surface_b_regime_recorder_under_sta",
+    "ratified_taxonomy_mapping",
+    "producer_version_and_digest_contract",
+    "ratified_pt1m_candle_authority_join",
+    "ratified_pt1m_mark_authority_join",
+    "pit_no_lookahead_proof",
+    "deterministic_reproducible_computation"
+  ]
 }

@@ -6,11 +6,17 @@ RAW_INPUT_PACK_MATERIALIZATION_AUTHORIZED=false
 CAMPAIGN_START_AUTHORIZED=false
 PRODUCTIVE_NUMERIC_VALUES_SET=0
 REGIME_COVERAGE_STATUS=SEMANTICALLY_UNRESOLVED
+REGIME_COVERAGE_PRODUCER_AVAILABLE=false
 DASHBOARD_AUTHORITY_EFFECT=NONE
 NOTION_SSOT=false
+AUTHORIZE_DETAIL_FIELDS_COMPLETE=true
 """
 
 from __future__ import annotations
+
+from src.ops.productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1.constants_v1 import (
+    AUTHORIZE_DETAIL_FIELD_VALUES as PRODUCER_AUTHORIZE_DETAIL_FIELD_VALUES,
+)
 
 CAPABILITY_ID = (
     "CAPABILITY_PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
@@ -27,6 +33,9 @@ SCHEMA_VERSION = (
 DOCUMENT_TYPE = "OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISIONS_MANIFEST"
 STATUS_SURFACE_OPEN = "OWNER_STA_DECISION_SURFACE_OPEN"
 STATUS_OWNER_VALUE_RECORDED = "OWNER_STA_OWNER_VALUE_RECORDED_AUTHORIZE_DETAIL_FIELDS_STILL_OPEN"
+STATUS_AUTHORIZE_DETAILS_COMPLETE = (
+    "OWNER_STA_AUTHORIZE_DETAIL_FIELDS_COMPLETE_PRODUCER_IMPLEMENTED"
+)
 
 DECISION_ID = "DEC_REGIME_COVERAGE_PRODUCER"
 DECISION_STATUS_OPEN = "OPEN"
@@ -34,6 +43,7 @@ DECISION_STATUS_RATIFIED = "RATIFIED"
 
 BASELINE_ORIGIN_MAIN_SHA = "42e8527c929264c702d8f7d59a80fc38f850baff"
 OWNER_GO_BASE_SHA = "9f4974824bb647b6f9dec5509ace990c2678188a"
+OWNER_IMPL_GO_BASE_SHA = "52af83870a775ee9a4647107273964fa4857322b"
 AUTHORITY_SURFACE = "B"
 SOLE_TRADING_AUTHORITY = "run_integrated_offline_trading_logic_replay_v1"
 
@@ -56,6 +66,7 @@ EXISTING_PRODUCERS_ELEVATED = False
 TRADING_LOGIC_CHANGED = False
 ORDERS_TESTNET_LIVE_PAPER_EFFECTS = False
 EXCHANGE_CREDENTIAL_EFFECTS = False
+AUTHORIZE_DETAIL_FIELDS_COMPLETE = True
 
 OWNER_DECISION_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
@@ -73,6 +84,8 @@ CYBERSECURITY_MIRROR_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
     "REGIME_COVERAGE_PRODUCER_CYBERSECURITY_MIRROR_V1.md"
 )
+PRODUCER_PACKAGE_REL = "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/"
+PRODUCER_SPEC_REL = "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_REGIME_COVERAGE_PRODUCER_V1.md"
 PARENT_TRIAD_DECISION_REL = (
     "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_"
     "CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md"
@@ -124,6 +137,8 @@ AUTHORIZE_DETAIL_FIELDS: tuple[str, ...] = (
     "unknown_label_semantics_ref",
 )
 
+AUTHORIZE_DETAIL_FIELD_VALUES: dict[str, str] = dict(PRODUCER_AUTHORIZE_DETAIL_FIELD_VALUES)
+
 FORBIDDEN_EXISTING_PRODUCER_TOKENS: tuple[str, ...] = (
     "analytics.regimes",
     "regime.detectors",
@@ -143,11 +158,14 @@ FORBIDDEN_EXISTING_PRODUCER_TOKENS: tuple[str, ...] = (
 )
 
 STA_OPEN_EXTERNAL_INPUTS: tuple[str, ...] = (
+    "non_invented_coverage_counts",
+    "provable_eth_usdt_swap_compatibility",
+)
+
+STA_SATISFIED_BY_PRODUCER_IMPL: tuple[str, ...] = (
     "dedicated_surface_b_regime_recorder_under_sta",
     "ratified_taxonomy_mapping",
-    "non_invented_coverage_counts",
     "producer_version_and_digest_contract",
-    "provable_eth_usdt_swap_compatibility",
     "ratified_pt1m_candle_authority_join",
     "ratified_pt1m_mark_authority_join",
     "pit_no_lookahead_proof",
@@ -183,6 +201,7 @@ REQUIRED_MANIFEST_TOP_KEYS: tuple[str, ...] = (
     "authorize_detail_fields",
     "taxonomy_sink_labels",
     "sta_open_external_inputs",
+    "sta_satisfied_by_producer_impl",
     "forbidden_existing_producers",
     "reject_semantics",
     "authorize_semantics",
