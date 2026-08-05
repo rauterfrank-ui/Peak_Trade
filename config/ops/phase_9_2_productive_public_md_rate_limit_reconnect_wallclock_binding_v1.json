@@ -1,0 +1,37 @@
+{
+  "schema_version": "phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding.v1",
+  "capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RATE_LIMIT_RECONNECT_WALLCLOCK_BINDING_V1",
+  "authority_owner": "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1",
+  "predecessor_capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_REAL_NETWORK_WALLCLOCK_BINDING_V1",
+  "target_session_id": "phase_9_2_public_md_rate_limit_reconnect_session_v1",
+  "target_session_ladder_step": "RATE_LIMIT_RECONNECT_SESSION",
+  "target_entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RATE_LIMIT_RECONNECT_WALLCLOCK_BINDING_V1",
+  "target_entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.py",
+  "canonical_wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+  "session_scope": "PHASE_9_2_RATE_LIMIT_RECONNECT_SESSION",
+  "session_contract_path": "config/ops/phase_9_2_public_md_rate_limit_reconnect_session_contract_v1.json",
+  "network_session_allowed_by_capability_config": false,
+  "authorization_issuance_allowed_by_capability_config": false,
+  "authorization_consumption_allowed_by_capability_config": false,
+  "productive_network_session_execution_authorized": false,
+  "fault_session_execution_authorized": false,
+  "no_permanent_unscoped_enable_flag": true,
+  "core_logic_change": false,
+  "dashboard_authority_effect": "NONE",
+  "dashboard_read_only_consumer": true,
+  "reuses": {
+    "pacing_policy": "research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+    "eea_transport": "src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1",
+    "session_runtime": "src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1",
+    "staleness": "src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1",
+    "rate_limit_metric": "src.ops.phase_9_2_public_md_session_preflight_v1.rate_limit_metric_v1",
+    "wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+    "bundle_verifier": "src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1",
+    "confirm_token": "src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1"
+  },
+  "notes": [
+    "Implements productive binding + offline governed fault-path proofs only; does not start a real Public-MD or fault session.",
+    "Real network unlock requires bound ACTIVE Session-GO + Owner-GO + Owner-Session-GO + single-use auth + confirm-token.",
+    "Ladder step RATE_LIMIT_RECONNECT_SESSION remains OPEN until a later governed session verifier PASS."
+  ]
+}
