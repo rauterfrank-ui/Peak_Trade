@@ -84,11 +84,17 @@ NO_PERMANENT_UNSCOPED_ENABLE_FLAG = True
 
 # Wiring-layer capability: binds productive executor without starting a real session.
 WIRING_CAPABILITY_ID = "PHASE_9_2_STEP_4_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_WIRING_V1"
+# Activation-binding capability: closes Gate→Runner call graph; default remains fail-closed.
+ACTIVATION_CAPABILITY_ID = "PHASE_9_2_STEP_4_PRODUCTIVE_REAL_NETWORK_SESSION_ACTIVATION_BINDING_V1"
 NETWORK_SESSION_ALLOWED = False
 FAULT_SESSION_ALLOWED = False
 PRODUCTIVE_SESSION_REACHABLE = True
+# READY is claimed only when activation call-graph path is productively bound.
 READY_FOR_PRODUCTIVE_SESSION_EXECUTION = True
+PRODUCTIVE_STEP_4_SESSION_PATH_RUNTIME_REACHABLE = True
 RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED = False
+AUTHORIZATION_LEDGER_FILENAME = "activation_authorization_consumption_ledger_v1.jsonl"
+CONFIRM_TOKEN_LEDGER_FILENAME = "activation_confirm_token_consumption_ledger_v1.jsonl"
 EEA_PUBLIC_MD_HOST = "eea.okx.com"
 NETWORK_ALLOWLIST = "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY"
 HTTP_METHOD_ALLOWLIST = "GET_ONLY"

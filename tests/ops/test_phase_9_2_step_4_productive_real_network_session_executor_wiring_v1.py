@@ -277,6 +277,8 @@ def test_executor_happy_path_binds_without_starting_network(tmp_path: Path) -> N
     assert result.reconnect_path_productively_observed is False
     assert result.rate_limit_reconnect_ladder_step_closed is False
     assert result.wallclock_runner_invoked is False
+    assert result.productive_step_4_session_path_runtime_reachable is True
+    assert result.productive_call_graph_complete is True
     assert "run_productive_wallclock_session_v1" in result.call_graph
     assert result.claims["PARALLEL_SESSION_RUNTIME_CREATED"] is False
 
@@ -397,7 +399,10 @@ def test_cli_execute_productive_session_and_request_real_network_refuse(tmp_path
     )
     assert refused.returncode == 2
     refused_payload = json.loads(refused.stdout)
-    assert "REAL_NETWORK_FORBIDDEN_IN_WIRING_CAPABILITY" in refused_payload["blockers"]
+    # Activation path: without network_session_allowed / auth artifacts, fail closed.
+    assert refused_payload["network_session_started"] is False
+    assert refused_payload.get("wallclock_runner_invoked") is False
+    assert "NETWORK_SESSION_ALLOWED_REQUIRED" in refused_payload["blockers"]
 
     no_execute = subprocess.run(
         [
