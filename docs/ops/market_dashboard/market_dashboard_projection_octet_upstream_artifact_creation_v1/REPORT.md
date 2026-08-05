@@ -7,10 +7,10 @@
 ## Baseline
 
 - Repository HEAD / origin/main: `6da94325e56e88648fd54371c15ca277ad7c4ad3`
-- Source runbook: `/Users/frnkhrz/Desktop/Presentation_Implementation_Runbook_Canonical_v7_Active_Archive_Verified.md`
+- Source runbook: `&#47;Users&#47;frnkhrz&#47;Desktop&#47;Presentation_Implementation_Runbook_Canonical_v7_Active_Archive_Verified.md`
 - Source runbook SHA-256: `350b0c1fa8ef79164a57e54efebf8ad03a09228e1f07a048ba7eb86db70a341c`
-- Active archive root: `/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z`
-- Prior runtime verify evidence: `docs/ops/market_dashboard/market_dashboard_projection_octet_runtime_verify_v1/VERIFY.json`
+- Active archive root: `&#47;Users&#47;frnkhrz&#47;Library&#47;Application Support&#47;Peak_Trade&#47;workflow_dashboard_v1_okx_fresh_20260724T214822Z`
+- Prior runtime verify evidence: `docs&#47;ops&#47;market_dashboard&#47;market_dashboard_projection_octet_runtime_verify_v1&#47;VERIFY.json`
 
 ## Verdict
 
@@ -49,9 +49,9 @@ completeness for three families does **not** authorize inventing sources.
 
 ### `dynamic_scope`
 
-- Projection: `readmodels/dynamic_scope_presentation_projection.v1.json`
+- Projection: `readmodels&#47;dynamic_scope_presentation_projection.v1.json`
 - Authorized source: CanonicalDynamicScopeStateV1 / dynamic_scope_state_v1.json
-- Expected source path: `readmodels/dynamic_scope_state_v1.json`
+- Expected source path: `readmodels&#47;dynamic_scope_state_v1.json`
 - Exporter classification: `EXPORTER_COMPLETE_ON_MAIN`
 - Decision: `BLOCKED_MISSING_CANONICAL_SOURCE`
 - Reason: Exporter/materializer implementation exists, but authorized source readmodels/dynamic_scope_state_v1.json is absent from ACTIVE_ARCHIVE_ROOT and no exact provenance-unique source path was found. Exporter existence alone is insufficient.
@@ -59,9 +59,9 @@ completeness for three families does **not** authorize inventing sources.
 
 ### `regime_bull_bear_switch`
 
-- Projection: `readmodels/bull_bear_regime_presentation_projection.v1.json`
+- Projection: `readmodels&#47;bull_bear_regime_presentation_projection.v1.json`
 - Authorized source: SideState/TransitionDecision via sibling readmodels/regime_bull_bear_switch.v1.json
-- Expected source path: `readmodels/regime_bull_bear_switch.v1.json`
+- Expected source path: `readmodels&#47;regime_bull_bear_switch.v1.json`
 - Exporter classification: `EXPORTER_ABSENT_NO_CANONICAL_SOURCE_ROOT`
 - Decision: `BLOCKED_MISSING_CANONICAL_SOURCE`
 - Secondary: `BLOCKED_CONTRACT_PROHIBITS_EXPORTER`
@@ -70,9 +70,9 @@ completeness for three families does **not** authorize inventing sources.
 
 ### `canonical_decision`
 
-- Projection: `readmodels/canonical_decision_presentation_projection.v1.json`
+- Projection: `readmodels&#47;canonical_decision_presentation_projection.v1.json`
 - Authorized source: CanonicalTradingDecisionEvidenceV1
-- Expected source path: `readmodels/canonical_trading_decision_evidence.v1.json`
+- Expected source path: `readmodels&#47;canonical_trading_decision_evidence.v1.json`
 - Exporter classification: `EXPORTER_COMPLETE_ON_MAIN`
 - Decision: `BLOCKED_MISSING_CANONICAL_SOURCE`
 - Reason: Exporter/materializer implementation exists, but authorized source readmodels/canonical_trading_decision_evidence.v1.json is absent from ACTIVE_ARCHIVE_ROOT and no exact provenance-unique source path was found. Exporter existence alone is insufficient.
@@ -80,9 +80,9 @@ completeness for three families does **not** authorize inventing sources.
 
 ### `double_play`
 
-- Projection: `readmodels/double_play_presentation_projection.v1.json`
+- Projection: `readmodels&#47;double_play_presentation_projection.v1.json`
 - Authorized source: DoublePlayDashboardDisplay / DoublePlayDashboardDisplaySnapshot
-- Expected source path: `readmodels/double_play_dashboard_display.v1.json`
+- Expected source path: `readmodels&#47;double_play_dashboard_display.v1.json`
 - Exporter classification: `EXPORTER_COMPLETE_ON_MAIN`
 - Decision: `BLOCKED_MISSING_CANONICAL_SOURCE`
 - Reason: Exporter/materializer implementation exists, but authorized source readmodels/double_play_dashboard_display.v1.json is absent from ACTIVE_ARCHIVE_ROOT and no exact provenance-unique source path was found. Exporter existence alone is insufficient.
@@ -90,7 +90,7 @@ completeness for three families does **not** authorize inventing sources.
 
 ### `safety_authority`
 
-- Projection: `readmodels/safety_authority.v1.json`
+- Projection: `readmodels&#47;safety_authority.v1.json`
 - Authorized source: caller-provided binder-compatible safety_authority object only (no durable sibling)
 - Expected source path: `None`
 - Exporter classification: `EXPORTER_NOT_REQUIRED_BY_CONTRACT`
@@ -101,9 +101,9 @@ completeness for three families does **not** authorize inventing sources.
 
 ### `risk_sizing_capital`
 
-- Projection: `readmodels/risk_sizing_capital_presentation_projection.v1.json`
+- Projection: `readmodels&#47;risk_sizing_capital_presentation_projection.v1.json`
 - Authorized source: capital_risk_sizing fields via sibling readmodels/risk_sizing_capital.v1.json
-- Expected source path: `readmodels/risk_sizing_capital.v1.json`
+- Expected source path: `readmodels&#47;risk_sizing_capital.v1.json`
 - Exporter classification: `EXPORTER_ABSENT_NO_CANONICAL_SOURCE_ROOT`
 - Decision: `BLOCKED_MISSING_CANONICAL_SOURCE`
 - Secondary: `BLOCKED_CONTRACT_PROHIBITS_EXPORTER`
@@ -112,9 +112,9 @@ completeness for three families does **not** authorize inventing sources.
 
 ### `execution_reconciliation`
 
-- Projection: `readmodels/execution_reconciliation_presentation_projection.v1.json`
+- Projection: `readmodels&#47;execution_reconciliation_presentation_projection.v1.json`
 - Authorized source: canonical_order_intent fields via sibling readmodels/execution_reconciliation.v1.json
-- Expected source path: `readmodels/execution_reconciliation.v1.json`
+- Expected source path: `readmodels&#47;execution_reconciliation.v1.json`
 - Exporter classification: `EXPORTER_ABSENT_NO_CANONICAL_SOURCE_ROOT`
 - Decision: `BLOCKED_MISSING_CANONICAL_SOURCE`
 - Secondary: `BLOCKED_CONTRACT_PROHIBITS_EXPORTER`
@@ -123,9 +123,9 @@ completeness for three families does **not** authorize inventing sources.
 
 ### `economic_summary`
 
-- Projection: `readmodels/economic_summary_presentation_projection.v1.json`
+- Projection: `readmodels&#47;economic_summary_presentation_projection.v1.json`
 - Authorized source: EconomicViabilityEvidence fields via sibling readmodels/economic_summary.v1.json
-- Expected source path: `readmodels/economic_summary.v1.json`
+- Expected source path: `readmodels&#47;economic_summary.v1.json`
 - Exporter classification: `EXPORTER_ABSENT_NO_CANONICAL_SOURCE_ROOT`
 - Decision: `BLOCKED_MISSING_CANONICAL_SOURCE`
 - Secondary: `BLOCKED_CONTRACT_PROHIBITS_EXPORTER`
@@ -135,7 +135,7 @@ completeness for three families does **not** authorize inventing sources.
 ## Commands executed
 
 1. Authorized octet orchestrator materializer attempt (no write authorization; written_count=0):
-   `python3 scripts/ops/run_presentation_projection_octet_orchestrator_v1.py --archive-root <ACTIVE_ARCHIVE_ROOT> --generated-at 2026-08-05T00:19:43Z`
+   `python3 scripts&#47;ops&#47;run_presentation_projection_octet_orchestrator_v1.py --archive-root <ACTIVE_ARCHIVE_ROOT> --generated-at 2026-08-05T00:19:43Z`
 
 No exporter `--no-dry-run --write-authorized` invocations were performed because no
 family reached `EXECUTABLE_EXISTING_AUTHORIZED_PATH`.
