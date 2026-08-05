@@ -1,0 +1,281 @@
+{
+  "schema_name": "market_dashboard_projection_octet_upstream_artifact_creation_execution.v1",
+  "generated_at": "2026-08-05T00:21:11Z",
+  "owner_go": "UPSTREAM_PRESENTATION_PROJECTION_ARTIFACT_CREATION_V1",
+  "phase2_policy": "Execute write paths only for EXECUTABLE_EXISTING_AUTHORIZED_PATH",
+  "executable_family_count": 0,
+  "commands_executed": [
+    {
+      "purpose": "authorized_orchestrator_materialize_attempt_expecting_missing_source_no_writes",
+      "command": [
+        "python3",
+        "scripts/ops/run_presentation_projection_octet_orchestrator_v1.py",
+        "--archive-root",
+        "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+        "--generated-at",
+        "2026-08-05T00:19:43Z"
+      ],
+      "write_authorized": false,
+      "artifacts_written": 0,
+      "result_summary": {
+        "contract_ok": true,
+        "written_count": 0,
+        "missing_source_count": 7,
+        "skipped_count": 1,
+        "fail_closed_count": 0,
+        "blocked_count": 0
+      },
+      "stdout_artifact": "orchestrator_materialize_attempt.json",
+      "stderr_artifact": "orchestrator_materialize_attempt.stderr.txt"
+    }
+  ],
+  "exporter_write_invocations": [],
+  "materializer_write_invocations": [],
+  "artifacts_created": [],
+  "blocked_families": [
+    {
+      "family_id": "dynamic_scope",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE",
+      "secondary_blockers": [],
+      "reason": "Exporter/materializer implementation exists, but authorized source readmodels/dynamic_scope_state_v1.json is absent from ACTIVE_ARCHIVE_ROOT and no exact provenance-unique source path was found. Exporter existence alone is insufficient."
+    },
+    {
+      "family_id": "regime_bull_bear_switch",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE",
+      "secondary_blockers": [
+        "BLOCKED_CONTRACT_PROHIBITS_EXPORTER"
+      ],
+      "reason": "Authorized source sibling readmodels/regime_bull_bear_switch.v1.json absent from ACTIVE_ARCHIVE_ROOT; zero exact-filename candidates found under Application Support / Documents. Exporter classified NO_CANONICAL_SOURCE_ROOT / not inventable. Materializer cannot write without source or explicit caller object."
+    },
+    {
+      "family_id": "canonical_decision",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE",
+      "secondary_blockers": [],
+      "reason": "Exporter/materializer implementation exists, but authorized source readmodels/canonical_trading_decision_evidence.v1.json is absent from ACTIVE_ARCHIVE_ROOT and no exact provenance-unique source path was found. Exporter existence alone is insufficient."
+    },
+    {
+      "family_id": "double_play",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE",
+      "secondary_blockers": [],
+      "reason": "Exporter/materializer implementation exists, but authorized source readmodels/double_play_dashboard_display.v1.json is absent from ACTIVE_ARCHIVE_ROOT and no exact provenance-unique source path was found. Exporter existence alone is insufficient."
+    },
+    {
+      "family_id": "safety_authority",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE",
+      "secondary_blockers": [
+        "BLOCKED_NO_AUTHORIZED_EXECUTION_PATH",
+        "BLOCKED_CONTRACT_PROHIBITS_EXPORTER"
+      ],
+      "reason": "No durable source sibling exists by contract; materializer requires explicit caller-provided safety_authority object. No Owner-provided caller object path was supplied. Live KillSwitch autoload is forbidden. Exporter not required/not to be invented."
+    },
+    {
+      "family_id": "risk_sizing_capital",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE",
+      "secondary_blockers": [
+        "BLOCKED_CONTRACT_PROHIBITS_EXPORTER"
+      ],
+      "reason": "Authorized source sibling readmodels/risk_sizing_capital.v1.json absent from ACTIVE_ARCHIVE_ROOT; zero exact-filename candidates found under Application Support / Documents. Exporter classified NO_CANONICAL_SOURCE_ROOT / not inventable. Materializer cannot write without source or explicit caller object."
+    },
+    {
+      "family_id": "execution_reconciliation",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE",
+      "secondary_blockers": [
+        "BLOCKED_CONTRACT_PROHIBITS_EXPORTER"
+      ],
+      "reason": "Authorized source sibling readmodels/execution_reconciliation.v1.json absent from ACTIVE_ARCHIVE_ROOT; zero exact-filename candidates found under Application Support / Documents. Exporter classified NO_CANONICAL_SOURCE_ROOT / not inventable. Materializer cannot write without source or explicit caller object."
+    },
+    {
+      "family_id": "economic_summary",
+      "execution_decision": "BLOCKED_MISSING_CANONICAL_SOURCE",
+      "secondary_blockers": [
+        "BLOCKED_CONTRACT_PROHIBITS_EXPORTER"
+      ],
+      "reason": "Authorized source sibling readmodels/economic_summary.v1.json absent from ACTIVE_ARCHIVE_ROOT; zero exact-filename candidates found under Application Support / Documents. Exporter classified NO_CANONICAL_SOURCE_ROOT / not inventable. Materializer cannot write without source or explicit caller object."
+    }
+  ],
+  "archive_inventory_before": [
+    {
+      "relative_path": ".okx_market_dashboard_refresh.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative_path": ".okx_selected_instrument_ohlcv_refresh.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/MANIFEST.sha256",
+      "sha256": "d6725b44861eb4397fb53da85b26331e3fefca360b92fdc9c0090cddb16ac3f9"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/MANIFEST_VERIFY.log",
+      "sha256": "fcd0190d2720946458d4ceb2b5797d77d821ed5aa7511287d80f68fd5a734438"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/README.md",
+      "sha256": "16051ced5cead3b17d1953d2757235703e354d799ae87fc45c11c159b9e8fbb1"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/capture_provenance_v1.json",
+      "sha256": "1b51caac79e1723061efb9164485ccd888c3f33061e780e6cd7680a60dfc4705"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/futures_producer_packet_governed.v1.json",
+      "sha256": "af6882235ae5adb7881169288ef55350740dd93475dacb65a8f988511e9b1290"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/metadata_table_snapshot.v1.json",
+      "sha256": "963e0a5fe125004396ab597e0f8ba1ce1c99cf65618565f9b9ab41ad9a2f57de"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/min_notional_mapping_table_v1.json",
+      "sha256": "b31105a82ca9723838cad580a4ff294f20da1f36cf7987b6a905f687bbd55926"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/producer_summary.json",
+      "sha256": "4f34ca3658ab9b642d7c0162449d490cd81768652a7c143c689171e783dea0ab"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/raw_okx_instruments_swap.json",
+      "sha256": "57b32a24599d654dba08b057408e833dc40bd95de2940a45b2060f80e5dbd1da"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/raw_okx_mark_price_swap.json",
+      "sha256": "ac4b4cdc2251178649850b527e17ab9792f01bd5d72b91f84708a7039d89c750"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/raw_okx_tickers_swap.json",
+      "sha256": "9d227f5d715f0c19202f186adde38631e48478bf336897e17748f0c89bf821e4"
+    },
+    {
+      "relative_path": "raw/okx_mark_price/SATS-USDT-SWAP.json",
+      "sha256": "1ff763b48f4436a49322a78109b45c18cc410f308126887bf84e6001c0804454"
+    },
+    {
+      "relative_path": "raw/okx_ohlcv/SATS-USDT-SWAP_1H.json",
+      "sha256": "18e0fd95479136eb33d762f03a7acd7d0d32df1cdbbcc3979473b3b8efb16521"
+    },
+    {
+      "relative_path": "raw/okx_ohlcv/SATS-USDT-SWAP_1m.json",
+      "sha256": "3709c17e9b53c15c5f15edd67e7bcec8c7e460e3073b57c15183582310ff5679"
+    },
+    {
+      "relative_path": "raw/okx_trades/SATS-USDT-SWAP.json",
+      "sha256": "667f16d5cfe9308cf3a682053589b16adba0ff8154d798ca4c38e8a94a37eec3"
+    },
+    {
+      "relative_path": "readmodels/MANIFEST.sha256",
+      "sha256": "f1f3c8cfe8dfd69df46bb97f95e42659b8353a9d39f6a0a1ce5942ed016b1f95"
+    },
+    {
+      "relative_path": "readmodels/MANIFEST_VERIFY.log",
+      "sha256": "fcd0190d2720946458d4ceb2b5797d77d821ed5aa7511287d80f68fd5a734438"
+    },
+    {
+      "relative_path": "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json",
+      "sha256": "9ecd95c89c0fefeda7f3554de9df7db6c2474645faf2cef8e62841067513c226"
+    },
+    {
+      "relative_path": "readmodels/universe_selection_readmodel.v1.json",
+      "sha256": "e736e1a3710a6c5fd7ed30b589c8fbf99412c66586c9b7eaf749977fe7876513"
+    }
+  ],
+  "archive_inventory_after": [
+    {
+      "relative_path": ".okx_market_dashboard_refresh.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative_path": ".okx_selected_instrument_ohlcv_refresh.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/MANIFEST.sha256",
+      "sha256": "d6725b44861eb4397fb53da85b26331e3fefca360b92fdc9c0090cddb16ac3f9"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/MANIFEST_VERIFY.log",
+      "sha256": "fcd0190d2720946458d4ceb2b5797d77d821ed5aa7511287d80f68fd5a734438"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/README.md",
+      "sha256": "16051ced5cead3b17d1953d2757235703e354d799ae87fc45c11c159b9e8fbb1"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/capture_provenance_v1.json",
+      "sha256": "1b51caac79e1723061efb9164485ccd888c3f33061e780e6cd7680a60dfc4705"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/futures_producer_packet_governed.v1.json",
+      "sha256": "af6882235ae5adb7881169288ef55350740dd93475dacb65a8f988511e9b1290"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/metadata_table_snapshot.v1.json",
+      "sha256": "963e0a5fe125004396ab597e0f8ba1ce1c99cf65618565f9b9ab41ad9a2f57de"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/min_notional_mapping_table_v1.json",
+      "sha256": "b31105a82ca9723838cad580a4ff294f20da1f36cf7987b6a905f687bbd55926"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/producer_summary.json",
+      "sha256": "4f34ca3658ab9b642d7c0162449d490cd81768652a7c143c689171e783dea0ab"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/raw_okx_instruments_swap.json",
+      "sha256": "57b32a24599d654dba08b057408e833dc40bd95de2940a45b2060f80e5dbd1da"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/raw_okx_mark_price_swap.json",
+      "sha256": "ac4b4cdc2251178649850b527e17ab9792f01bd5d72b91f84708a7039d89c750"
+    },
+    {
+      "relative_path": "governed_metadata/okx_governed_20260724T214823Z_57b32a24599d/raw_okx_tickers_swap.json",
+      "sha256": "9d227f5d715f0c19202f186adde38631e48478bf336897e17748f0c89bf821e4"
+    },
+    {
+      "relative_path": "raw/okx_mark_price/SATS-USDT-SWAP.json",
+      "sha256": "1ff763b48f4436a49322a78109b45c18cc410f308126887bf84e6001c0804454"
+    },
+    {
+      "relative_path": "raw/okx_ohlcv/SATS-USDT-SWAP_1H.json",
+      "sha256": "18e0fd95479136eb33d762f03a7acd7d0d32df1cdbbcc3979473b3b8efb16521"
+    },
+    {
+      "relative_path": "raw/okx_ohlcv/SATS-USDT-SWAP_1m.json",
+      "sha256": "3709c17e9b53c15c5f15edd67e7bcec8c7e460e3073b57c15183582310ff5679"
+    },
+    {
+      "relative_path": "raw/okx_trades/SATS-USDT-SWAP.json",
+      "sha256": "667f16d5cfe9308cf3a682053589b16adba0ff8154d798ca4c38e8a94a37eec3"
+    },
+    {
+      "relative_path": "readmodels/MANIFEST.sha256",
+      "sha256": "f1f3c8cfe8dfd69df46bb97f95e42659b8353a9d39f6a0a1ce5942ed016b1f95"
+    },
+    {
+      "relative_path": "readmodels/MANIFEST_VERIFY.log",
+      "sha256": "fcd0190d2720946458d4ceb2b5797d77d821ed5aa7511287d80f68fd5a734438"
+    },
+    {
+      "relative_path": "readmodels/okx_selected_instrument_ohlcv_readmodel.v1.json",
+      "sha256": "9ecd95c89c0fefeda7f3554de9df7db6c2474645faf2cef8e62841067513c226"
+    },
+    {
+      "relative_path": "readmodels/universe_selection_readmodel.v1.json",
+      "sha256": "e736e1a3710a6c5fd7ed30b589c8fbf99412c66586c9b7eaf749977fe7876513"
+    }
+  ],
+  "archive_files_created": [],
+  "archive_files_modified": [],
+  "archive_mutation_observed": false,
+  "mutation_summary": {
+    "repository_src_changed": false,
+    "repository_scripts_changed": false,
+    "repository_tests_changed": false,
+    "trading_logic_changed": false,
+    "canonical_readmodel_semantics_changed": false,
+    "dashboard_code_changed": false,
+    "archive_projection_artifacts_created": 0,
+    "evidence_docs_created": true
+  }
+}
