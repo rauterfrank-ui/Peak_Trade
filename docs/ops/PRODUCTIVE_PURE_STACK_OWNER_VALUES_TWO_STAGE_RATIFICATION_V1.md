@@ -128,7 +128,7 @@ OWNER_VALUE_REALIZED_VOLATILITY_HORIZON=PT60M
 **Definition (versioned):**
 
 - Price field: venue `mark_price` on finalized PT1M bars only.
-- Return: `ln(mark_price_t / mark_price_t_minus_1)`.
+- Return: `ln(mark_price_t &#47; mark_price_t_minus_1)`.
 - Estimator: population standard deviation of the last 60 contiguous log returns
   (`ddof=0`) ending at observation `t`.
 - Warmup: 61 valid prices / 60 returns; else `NULL` fail-closed.
@@ -214,7 +214,8 @@ OWNER_VALUE_LIQUIDITY_SPREAD_SOURCE_FORMULA_ID=fps_liquidity_spread.best_bid_ask
 
 **Liquidity spread (`fps_liquidity_spread.best_bid_ask_mid_bps.v1`):**
 
-- `spread_bps = 1e4 * (best_ask - best_bid) / mid` with `mid = (best_bid + best_ask) / 2`.
+- `spread_bps = 1e4 * (best_ask - best_bid) &#47; mid` with
+  `mid = (best_bid + best_ask) &#47; 2`.
 - Requires explicit best bid/ask observation identity and freshness.
 - Invalid/crossed/missing book → fail-closed incomplete liquidity profile.
 - Not a dashboard ticker label authority.
