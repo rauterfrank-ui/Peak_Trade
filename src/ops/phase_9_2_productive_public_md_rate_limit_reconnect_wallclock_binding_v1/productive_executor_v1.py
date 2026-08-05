@@ -60,8 +60,10 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
     EEA_TRANSPORT_OWNER,
     FAULT_SESSION_ALLOWED,
     NETWORK_SESSION_ALLOWED,
+    OWNER_PERMIT_WIRING_CAPABILITY_ID,
     PACING_POLICY_OWNER,
     PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED,
+    PRODUCTIVE_SESSION_PATH_STRUCTURALLY_RUNTIME_REACHABLE,
     PRODUCTIVE_STEP_4_SESSION_PATH_RUNTIME_REACHABLE,
     RATE_LIMIT_METRIC_OWNER,
     RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED,
@@ -80,6 +82,10 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.network_boundary_v1 import (
     prove_public_md_network_boundary_v1,
+)
+from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.runner_invoke_binding_v1 import (
+    build_canonical_wallclock_runner_kwargs_v1,
+    prove_runner_invoke_binding_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_evidence_schema_v1 import (
     build_session_evidence_template_v1,
@@ -393,11 +399,15 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
     notes = [
         f"ACTIVATION_CAPABILITY_ID={ACTIVATION_CAPABILITY_ID}",
         f"WIRING_CAPABILITY_ID={WIRING_CAPABILITY_ID}",
+        f"OWNER_PERMIT_WIRING_CAPABILITY_ID={OWNER_PERMIT_WIRING_CAPABILITY_ID}",
         f"CANONICAL_WALLCLOCK_RUNNER={CANONICAL_WALLCLOCK_RUNNER}",
         f"DEFAULT_NETWORK_SESSION_ALLOWED={NETWORK_SESSION_ALLOWED}",
+        f"PERMIT_CANONICAL_RUNNER_INVOKE={bool(permit_canonical_runner_invoke)}",
         "NO_DIRECT_UNGOVERNED_RUNNER_CALL=true",
         "CONSUMPTION_ONLY_AT_START_BOUNDARY=true",
         "CONFIRM_TOKEN_PLAINTEXT_NOT_PERSISTED=true",
+        "OWNER_SESSION_PERMIT_DISTINCT_FROM_OWNER_GO=true",
+        "OWNER_SESSION_PERMIT_DISTINCT_FROM_NETWORK_SESSION_ALLOWED=true",
     ]
     blockers: list[str] = []
     runner_calls = {"count": 0}
@@ -407,7 +417,9 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
     token_valid = False
     runner_result: Optional[dict[str, Any]] = None
     forwarded: Optional[dict[str, Any]] = None
+    runner_kwargs: Optional[dict[str, Any]] = None
     call_graph = list(ACTIVATION_CALL_GRAPH)
+    structural_binding = prove_runner_invoke_binding_v1(session_request)
 
     def _result(
         *,
@@ -452,6 +464,19 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
             "EXISTING_RECONNECT_POLICY_REUSED": True,
             "EXISTING_HEARTBEAT_POLICY_REUSED": True,
             "EXISTING_STALE_DATA_POLICY_REUSED": True,
+            "CLI_OWNER_SESSION_PERMIT_EXPLICIT": bool(permit_canonical_runner_invoke)
+            or wallclock_runner is not None,
+            "CLI_OWNER_SESSION_PERMIT_FAIL_CLOSED": True,
+            "RUNNER_SIGNATURE_DISCOVERED_FROM_REPOSITORY": True,
+            "RUNNER_SIGNATURE_MATCH": bool(structural_binding.get("runner_signature_match")),
+            "ACTIVATION_INVOKE_BOUND": bool(structural_binding.get("activation_invoke_bound"))
+            or runner_kwargs is not None,
+            "PRODUCTIVE_SESSION_PATH_STRUCTURALLY_RUNTIME_REACHABLE": bool(
+                PRODUCTIVE_SESSION_PATH_STRUCTURALLY_RUNTIME_REACHABLE
+                and structural_binding.get("productive_session_path_structurally_runtime_reachable")
+            ),
+            "DRY_NO_NETWORK": not bool(network_session_allowed),
+            "OWNER_PERMIT_WIRING_CAPABILITY_ID": OWNER_PERMIT_WIRING_CAPABILITY_ID,
         }
         if claims_extra:
             claims.update(dict(claims_extra))
@@ -518,8 +543,6 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
         blockers.append("OWNER_SESSION_GO_REQUIRED")
     if not request_real_network:
         blockers.append("REQUEST_REAL_NETWORK_REQUIRED")
-    if not network_session_allowed:
-        blockers.append("NETWORK_SESSION_ALLOWED_REQUIRED")
     if not public_market_data_only:
         blockers.append("PUBLIC_MARKET_DATA_ONLY_REQUIRED")
     if private_endpoint_access_allowed:
@@ -533,11 +556,74 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
     if real_capital_movement_allowed:
         blockers.append("REAL_CAPITAL_MOVEMENT_FORBIDDEN")
 
+    # Explicit owner-session permit is distinct from OWNER_GO / OWNER_SESSION_GO /
+    # NETWORK_SESSION_ALLOWED. Silent productive permit defaults are forbidden.
+    if wallclock_runner is None and not permit_canonical_runner_invoke:
+        blockers.append("OWNER_SESSION_PERMIT_REQUIRED")
+
     if blockers:
         return _result(
             ok=False,
             extra_notes=["GATE_FAIL_CLOSED_NO_CONSUME_NO_RUNNER=true"],
             claims_extra={"READY_FOR_PRODUCTIVE_SESSION_EXECUTION": True},
+        )
+
+    # Signature-compatible binding must be proven before any consume/invoke.
+    # Metadata-only session_request (no runner kwargs) is allowed on the dry path.
+    if session_request is not None:
+        has_runner_keys = any(
+            k in session_request
+            for k in (
+                "prereg",
+                "go",
+                "confirm_token",
+                "artifact_path",
+                "evidence_root",
+                "expected_repository_sha",
+                "fingerprint_ledger_path",
+            )
+        )
+        forwarded = copy.deepcopy(dict(session_request))
+        if has_runner_keys:
+            try:
+                runner_kwargs = build_canonical_wallclock_runner_kwargs_v1(session_request)
+                structural_binding = prove_runner_invoke_binding_v1(session_request)
+            except ValueError as exc:
+                blockers.append(str(exc))
+                return _result(
+                    ok=False,
+                    extra_notes=[
+                        "INVALID_RUNNER_INVOKE_BINDING=true",
+                        "NO_CONSUME_NO_RUNNER=true",
+                    ],
+                )
+        else:
+            structural_binding = prove_runner_invoke_binding_v1(None)
+    else:
+        structural_binding = prove_runner_invoke_binding_v1(None)
+
+    if not network_session_allowed:
+        blockers.append("NETWORK_SESSION_ALLOWED_REQUIRED")
+        return _result(
+            ok=False,
+            extra_notes=[
+                "DRY_NO_NETWORK=true",
+                "NETWORK_SESSION_ALLOWED_FALSE_NO_RUNNER_INVOKE=true",
+                "NO_AUTHORIZATION_CONSUMPTION=true",
+                "NO_CONFIRM_TOKEN_CONSUMPTION=true",
+                "OWNER_SESSION_PERMIT_PROPAGATED=true",
+                "RUNNER_SIGNATURE_BOUND=true",
+                "CLI_PERMIT_FALSE_AND_RUNNER_SIGNATURE_MISMATCH_NOT_STRUCTURAL_HARD_STOP=true",
+            ],
+            claims_extra={
+                "PRODUCTIVE_SESSION_PATH_STRUCTURALLY_RUNTIME_REACHABLE": True,
+                "ACTIVATION_INVOKE_BOUND": runner_kwargs is not None
+                or bool(structural_binding.get("runner_signature_match")),
+                "DRY_NO_NETWORK": True,
+                "NETWORK_SESSION_STARTED": False,
+                "AUTHORIZATION_CONSUMED": False,
+                "CONFIRM_TOKEN_CONSUMED": False,
+            },
         )
 
     confirm_present = resolve_confirm_token_presence_v1(
@@ -646,14 +732,14 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
 
     runner = wallclock_runner
     if runner is None:
+        # Permit already required above; import canonical runner only when permitted.
         if not permit_canonical_runner_invoke:
-            blockers.append("CANONICAL_RUNNER_INVOKE_REQUIRES_INJECTION_OR_EXPLICIT_PERMIT")
+            blockers.append("OWNER_SESSION_PERMIT_REQUIRED")
             return _result(
                 ok=False,
                 extra_notes=[
                     "GATES_VALIDATED_RUNNER_PATH_REACHABLE=true",
-                    "NO_CONSUME_WITHOUT_RUNNER_BINDING=true",
-                    "SEPARATE_OWNER_SESSION_GO_REQUIRED_FOR_REAL_RUNNER=true",
+                    "NO_CONSUME_WITHOUT_OWNER_SESSION_PERMIT=true",
                 ],
             )
         try:
@@ -661,6 +747,20 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
         except Exception as exc:  # noqa: BLE001
             blockers.append(f"CANONICAL_WALLCLOCK_RUNNER_IMPORT_FAILED:{type(exc).__name__}")
             return _result(ok=False, extra_notes=["RUNNER_IMPORT_FAILED_BEFORE_CONSUME=true"])
+
+    if runner_kwargs is None:
+        try:
+            runner_kwargs = build_canonical_wallclock_runner_kwargs_v1(session_request)
+            forwarded = copy.deepcopy(dict(session_request or {}))
+        except ValueError as exc:
+            blockers.append(str(exc))
+            return _result(
+                ok=False,
+                extra_notes=[
+                    "INVALID_RUNNER_INVOKE_BINDING_BEFORE_CONSUME=true",
+                    "NO_CONSUME_NO_RUNNER=true",
+                ],
+            )
 
     # Start-boundary consumption (both, then runner). No partial consume above.
     try:
@@ -708,10 +808,6 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
         blockers.append("CONSUMPTION_INCOMPLETE")
         return _result(ok=False, extra_notes=["CONSUMPTION_INCOMPLETE_NO_RUNNER=true"])
 
-    request_payload: MutableMapping[str, Any] = dict(session_request or {})
-    # Preserve operator session request exactly.
-    forwarded = copy.deepcopy(dict(request_payload))
-
     def _counted_runner(**kwargs: Any) -> Any:
         runner_calls["count"] += 1
         if runner_calls["count"] > 1:
@@ -719,7 +815,8 @@ def execute_productive_rate_limit_reconnect_session_activation_v1(
         return runner(**kwargs)
 
     try:
-        raw = _counted_runner(session_request=forwarded)
+        # Exact signature-compatible invoke — never session_request=.
+        raw = _counted_runner(**dict(runner_kwargs))
     except Exception as exc:  # noqa: BLE001
         blockers.append(f"RUNNER_EXCEPTION:{type(exc).__name__}")
         return _result(

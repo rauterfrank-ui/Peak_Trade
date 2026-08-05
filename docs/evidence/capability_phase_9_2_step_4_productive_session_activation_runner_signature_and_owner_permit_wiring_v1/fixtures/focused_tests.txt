@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/.peak_trade_worktrees/canonical-main
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 42 items
+
+tests/ops/test_phase_9_2_step_4_productive_session_activation_runner_signature_and_owner_permit_wiring_v1.py . [  2%]
+........                                                                 [ 21%]
+tests/ops/test_phase_9_2_step_4_productive_real_network_session_activation_binding_v1.py . [ 23%]
+..............                                                           [ 57%]
+tests/ops/test_phase_9_2_step_4_productive_real_network_session_executor_wiring_v1.py . [ 59%]
+.........                                                                [ 80%]
+tests/ops/test_phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.py . [ 83%]
+.......                                                                  [100%]
+
+============================= 42 passed in 21.91s ==============================

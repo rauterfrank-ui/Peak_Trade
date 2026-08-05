@@ -1,0 +1,155 @@
+{
+  "forbidden_legacy_keys": [
+    "session_request"
+  ],
+  "keyword_only": true,
+  "ok": true,
+  "optional_kwargs": [
+    "artifact",
+    "transport",
+    "use_real_network",
+    "runtime_config",
+    "clock_wall",
+    "clock_mono",
+    "sleep",
+    "repo_root",
+    "known_session_ids",
+    "environ",
+    "previously_seen_fingerprints",
+    "stop_flag",
+    "runtime_overrides"
+  ],
+  "parameters": [
+    {
+      "has_default": false,
+      "kind": "KEYWORD_ONLY",
+      "name": "prereg",
+      "required": true
+    },
+    {
+      "has_default": false,
+      "kind": "KEYWORD_ONLY",
+      "name": "go",
+      "required": true
+    },
+    {
+      "has_default": false,
+      "kind": "KEYWORD_ONLY",
+      "name": "confirm_token",
+      "required": true
+    },
+    {
+      "has_default": false,
+      "kind": "KEYWORD_ONLY",
+      "name": "artifact_path",
+      "required": true
+    },
+    {
+      "has_default": false,
+      "kind": "KEYWORD_ONLY",
+      "name": "evidence_root",
+      "required": true
+    },
+    {
+      "has_default": false,
+      "kind": "KEYWORD_ONLY",
+      "name": "expected_repository_sha",
+      "required": true
+    },
+    {
+      "has_default": false,
+      "kind": "KEYWORD_ONLY",
+      "name": "fingerprint_ledger_path",
+      "required": true
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "artifact",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "transport",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "use_real_network",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "runtime_config",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "clock_wall",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "clock_mono",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "sleep",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "repo_root",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "known_session_ids",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "environ",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "previously_seen_fingerprints",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "stop_flag",
+      "required": false
+    },
+    {
+      "has_default": true,
+      "kind": "KEYWORD_ONLY",
+      "name": "runtime_overrides",
+      "required": false
+    }
+  ],
+  "required_kwargs": [
+    "prereg",
+    "go",
+    "confirm_token",
+    "artifact_path",
+    "evidence_root",
+    "expected_repository_sha",
+    "fingerprint_ledger_path"
+  ],
+  "return_annotation": "ProductiveRunGateResultV1",
+  "runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1"
+}

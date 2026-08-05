@@ -88,6 +88,24 @@ def _binding(sha: str) -> str:
     )
 
 
+def _runner_binding(tmp_path: Path, *, sha: str) -> dict[str, Any]:
+    """Minimal signature-compatible session_request for the canonical runner."""
+    return {
+        "session_id": TARGET_SESSION_ID,
+        "instrument": "ETH-USD",
+        "prereg": {"test_double": "prereg"},
+        "go": {"test_double": "go"},
+        "confirm_token": "IN_MEMORY_TEST_TOKEN_NOT_FOR_PRODUCTION",
+        "artifact_path": str(tmp_path / "authorization_artifact_v2.json"),
+        "evidence_root": str(tmp_path / "evidence"),
+        "expected_repository_sha": sha,
+        "fingerprint_ledger_path": str(tmp_path / "fingerprint_ledger.txt"),
+        "use_real_network": False,
+        "artifact": None,
+        "transport": None,
+    }
+
+
 def _base_kwargs(tmp_path: Path, *, sha: str, cfg: str) -> dict[str, Any]:
     sgo = tmp_path / "sgo.json"
     _issue_sgo(sgo, sha=sha, cfg=cfg)
@@ -110,7 +128,8 @@ def _base_kwargs(tmp_path: Path, *, sha: str, cfg: str) -> dict[str, Any]:
         "confirm_token_expires_at": NOW + 3600,
         "persistence_root": tmp_path / "persist",
         "execute": True,
-        "session_request": {"session_id": TARGET_SESSION_ID, "instrument": "ETH-USD"},
+        "session_request": _runner_binding(tmp_path, sha=sha),
+        "permit_canonical_runner_invoke": False,
     }
 
 
@@ -287,8 +306,8 @@ def test_h_full_gate_pass_injected_runner_consumes_once(tmp_path: Path) -> None:
     kwargs = _base_kwargs(tmp_path, sha=sha, cfg=cfg)
     seen: list[dict[str, Any]] = []
 
-    def runner(*, session_request: dict[str, Any]) -> dict[str, Any]:
-        seen.append(dict(session_request))
+    def runner(**runner_kwargs: Any) -> dict[str, Any]:
+        seen.append(dict(runner_kwargs))
         return {"ok": True, "network_opened": False}
 
     result = execute_productive_rate_limit_reconnect_session_activation_v1(
@@ -300,10 +319,14 @@ def test_h_full_gate_pass_injected_runner_consumes_once(tmp_path: Path) -> None:
     assert result.wallclock_runner_invoked is True
     assert result.wallclock_runner_invocation_count == 1
     assert len(seen) == 1
-    assert seen[0] == {"session_id": TARGET_SESSION_ID, "instrument": "ETH-USD"}
+    assert "session_request" not in seen[0]
+    assert seen[0]["expected_repository_sha"] == sha
+    assert seen[0]["use_real_network"] is False
     assert result.network_session_started is False
     assert result.network_request_count == 0
     assert result.ladder_step_remains_open is True
+    assert result.claims.get("RUNNER_SIGNATURE_MATCH") is True
+    assert result.claims.get("ACTIVATION_INVOKE_BOUND") is True
 
 
 def test_i_runner_throws_before_start_no_false_pass(tmp_path: Path) -> None:
@@ -451,4 +474,5 @@ def test_cli_request_real_network_does_not_start_session(tmp_path: Path) -> None
     payload = json.loads(refused.stdout)
     assert payload.get("network_session_started") is False
     assert payload.get("wallclock_runner_invoked") is False
+    assert "OWNER_SESSION_PERMIT_REQUIRED" in payload.get("blockers", [])
     assert TOKEN not in refused.stdout
