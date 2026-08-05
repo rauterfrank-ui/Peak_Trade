@@ -60,3 +60,42 @@ class BindingGateResultV1:
         if self.authority is not None:
             payload["authority"] = self.authority.to_dict()
         return payload
+
+
+@dataclass
+class ProductiveExecutorResultV1:
+    ok: bool
+    blockers: list[str] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+    wiring_capability_id: str = ""
+    session_id: str = ""
+    executor_code_exists: bool = True
+    executor_productively_bound: bool = False
+    productive_session_reachable: bool = False
+    productive_session_authorized: bool = False
+    ready_for_productive_session_execution: bool = False
+    canonical_wallclock_runner_bound: bool = False
+    rate_limit_owner_reused: bool = False
+    reconnect_owner_reused: bool = False
+    heartbeat_staleness_owner_reused: bool = False
+    fault_owner_reused: bool = False
+    network_session_started: bool = False
+    fault_session_started: bool = False
+    rate_limit_path_productively_observed: bool = False
+    reconnect_path_productively_observed: bool = False
+    rate_limit_reconnect_ladder_step_closed: bool = False
+    private_endpoint_reachable: bool = False
+    auth_header_present: bool = False
+    exchange_credential_access_reachable: bool = False
+    order_side_effect_occurred: bool = False
+    confirm_token_plaintext_exposed: bool = False
+    wallclock_runner_invoked: bool = False
+    call_graph: list[str] = field(default_factory=list)
+    claims: dict[str, Any] = field(default_factory=dict)
+    gate: Optional[dict[str, Any]] = None
+    network_boundary: Optional[dict[str, Any]] = None
+    fault_binding: Optional[dict[str, Any]] = None
+    evidence_schema: Optional[dict[str, Any]] = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)

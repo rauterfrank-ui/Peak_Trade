@@ -32,8 +32,14 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.parity_v1 import (
     prove_phase92_rate_limit_reconnect_wallclock_binding_parity_v1,
 )
+from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.productive_executor_v1 import (
+    execute_productive_rate_limit_reconnect_session_wiring_v1,
+)
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_contract_v1 import (
     load_and_validate_session_contract_v1,
+)
+from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_evidence_schema_v1 import (
+    build_session_evidence_template_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.session_go_v1 import (
     build_session_go_authority_v1,
@@ -113,6 +119,26 @@ def materialize_capability_evidence_v1(
     write_json_atomic_v1(fixtures / "parity_proof_v1.json", parity)
     write_json_atomic_v1(fixtures / "authority_reuse_matrix_v1.json", authority)
 
+    executor = execute_productive_rate_limit_reconnect_session_wiring_v1(
+        expected_repository_sha=repository_sha,
+        expected_config_digest=cfg,
+        now_unix=now,
+        owner_go=True,
+        owner_session_go=True,
+        session_go_path=sgo_path,
+        authorization_present=True,
+        confirm_token_present_flag=True,
+        execute=True,
+        allow_real_network=False,
+    )
+    write_json_atomic_v1(fixtures / "productive_executor_result_v1.json", executor.to_dict())
+    evidence_template = build_session_evidence_template_v1(
+        repository_sha=repository_sha,
+        config_digest=cfg,
+        authorization_id_or_digest="wiring_evidence_auth_placeholder_digest_v1",
+    )
+    write_json_atomic_v1(fixtures / "session_evidence_template_v1.json", evidence_template)
+
     claims = {
         "IMPLEMENTATION_REQUIRED": False,
         "RATE_LIMIT_RECONNECT_BINDING_IMPLEMENTED": True,
@@ -123,7 +149,16 @@ def materialize_capability_evidence_v1(
         "RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED": False,
         "PHASE_9_2_COMPLETE": False,
         "REAL_RATE_LIMIT_OBSERVED": False,
+        "RATE_LIMIT_PATH_PRODUCTIVELY_OBSERVED": False,
+        "RECONNECT_PATH_PRODUCTIVELY_OBSERVED": False,
         "READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION": True,
+        "READY_FOR_PRODUCTIVE_SESSION_EXECUTION": bool(
+            executor.ready_for_productive_session_execution
+        ),
+        "EXECUTOR_CODE_EXISTS": True,
+        "EXECUTOR_PRODUCTIVELY_BOUND": bool(executor.executor_productively_bound),
+        "PRODUCTIVE_SESSION_REACHABLE": bool(executor.productive_session_reachable),
+        "PRODUCTIVE_SESSION_AUTHORIZED": bool(executor.productive_session_authorized),
         "REAL_NETWORK_REQUIRES_BOUND_SESSION_GO": True,
         "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
         "CORE_LOGIC_CHANGE": False,
@@ -139,6 +174,7 @@ def materialize_capability_evidence_v1(
             and fi.get("ok")
             and parity.get("ok")
             and authority.get("ok")
+            and executor.ok
         ),
         "capability_id": CAPABILITY_ID,
         "owner": OWNER,
@@ -151,6 +187,7 @@ def materialize_capability_evidence_v1(
         "fault_path_ok": bool(fault.get("ok")),
         "failure_injection_ok": bool(fi.get("ok")),
         "parity_ok": bool(parity.get("ok")),
+        "executor_ok": bool(executor.ok),
         "network_session_started": False,
         "fault_session_started": False,
     }

@@ -188,6 +188,8 @@ def test_materialize_evidence(tmp_path: Path) -> None:
     assert summary["claims"]["RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED"] is False
     assert summary["claims"]["NETWORK_SESSION_STARTED"] is False
     assert summary["claims"]["FAULT_SESSION_STARTED"] is False
+    assert summary["claims"]["READY_FOR_PRODUCTIVE_SESSION_EXECUTION"] is True
+    assert summary["claims"]["PRODUCTIVE_SESSION_REACHABLE"] is True
     assert (tmp_path / "evidence" / "SUMMARY.json").is_file()
     assert (tmp_path / "evidence" / "MANIFEST.sha256").is_file()
 

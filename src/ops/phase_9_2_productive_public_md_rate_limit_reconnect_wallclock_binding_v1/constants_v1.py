@@ -82,6 +82,52 @@ PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED = False
 FAULT_SESSION_EXECUTION_AUTHORIZED = False
 NO_PERMANENT_UNSCOPED_ENABLE_FLAG = True
 
+# Wiring-layer capability: binds productive executor without starting a real session.
+WIRING_CAPABILITY_ID = "PHASE_9_2_STEP_4_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_WIRING_V1"
+NETWORK_SESSION_ALLOWED = False
+FAULT_SESSION_ALLOWED = False
+PRODUCTIVE_SESSION_REACHABLE = True
+READY_FOR_PRODUCTIVE_SESSION_EXECUTION = True
+RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED = False
+EEA_PUBLIC_MD_HOST = "eea.okx.com"
+NETWORK_ALLOWLIST = "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY"
+HTTP_METHOD_ALLOWLIST = "GET_ONLY"
+SESSION_EVIDENCE_SCHEMA_VERSION = "phase_9_2_rate_limit_reconnect_session_evidence.v1"
+SESSION_EVIDENCE_REQUIRED_FIELDS = (
+    "repository_sha",
+    "config_digest",
+    "authorization_id_or_digest",
+    "session_id",
+    "runtime_session_id",
+    "confirmation_session_id",
+    "started_at",
+    "ended_at",
+    "public_endpoint_classification",
+    "request_count",
+    "request_interval_distribution",
+    "rate_limit_event_count",
+    "rate_limit_classifications",
+    "retry_count",
+    "backoff_timeline",
+    "reconnect_count",
+    "reconnect_timeline",
+    "stale_state_transitions",
+    "heartbeat_state_transitions",
+    "duplicate_observation_count",
+    "confirmation_advance_count",
+    "fill_count",
+    "process_health_before",
+    "process_health_after",
+    "state_digest_before",
+    "state_digest_after",
+    "private_endpoint_reachable",
+    "auth_header_present",
+    "credential_access_reachable",
+    "order_side_effect_occurred",
+    "manifest_digest",
+    "verifier_result",
+)
+
 BINDING_MANIFEST_FILENAME = "rate_limit_reconnect_wallclock_binding_manifest_v1.json"
 
 CORE_LOGIC_CHANGE = False

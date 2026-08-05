@@ -1,4 +1,10 @@
-"""Verifier for binding manifests (implementation evidence only)."""
+"""Verifier for binding + productive executor wiring manifests.
+
+Strictly separates:
+  READY_FOR_PRODUCTIVE_SESSION_EXECUTION=true
+from:
+  RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED=true
+"""
 
 from __future__ import annotations
 
@@ -11,6 +17,8 @@ FORBIDDEN_TRUE_CLAIMS = {
     "RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED",
     "PHASE_9_2_COMPLETE",
     "REAL_RATE_LIMIT_OBSERVED",
+    "RATE_LIMIT_PATH_PRODUCTIVELY_OBSERVED",
+    "RECONNECT_PATH_PRODUCTIVELY_OBSERVED",
 }
 
 
@@ -28,9 +36,29 @@ def verify_binding_manifest_v1(manifest: Mapping[str, Any]) -> dict[str, Any]:
         blockers.append("MISSING_READY_FOR_SEPARATE_SESSION_CLAIM")
     if not bool(claims.get("GOVERNED_FAULT_PATH_BOUND")):
         blockers.append("MISSING_GOVERNED_FAULT_PATH_BOUND_CLAIM")
+    # Wiring readiness is required once executor evidence is present.
+    if "READY_FOR_PRODUCTIVE_SESSION_EXECUTION" in claims:
+        if not bool(claims.get("READY_FOR_PRODUCTIVE_SESSION_EXECUTION")):
+            blockers.append("READY_FOR_PRODUCTIVE_SESSION_EXECUTION_MUST_BE_TRUE")
+        if bool(claims.get("RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED")):
+            blockers.append("LADDER_STEP_MUST_REMAIN_OPEN_IN_WIRING")
+        if not bool(claims.get("EXECUTOR_CODE_EXISTS", True)):
+            blockers.append("EXECUTOR_CODE_EXISTS_REQUIRED")
+        if not bool(claims.get("EXECUTOR_PRODUCTIVELY_BOUND")):
+            blockers.append("EXECUTOR_PRODUCTIVELY_BOUND_REQUIRED")
+        if not bool(claims.get("PRODUCTIVE_SESSION_REACHABLE")):
+            blockers.append("PRODUCTIVE_SESSION_REACHABLE_REQUIRED")
     return {
         "ok": not blockers,
         "blockers": blockers,
         "verified": not blockers,
         "claims": claims,
+        "readiness_vs_closure": {
+            "READY_FOR_PRODUCTIVE_SESSION_EXECUTION": bool(
+                claims.get("READY_FOR_PRODUCTIVE_SESSION_EXECUTION")
+            ),
+            "RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED": bool(
+                claims.get("RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED")
+            ),
+        },
     }
