@@ -2,7 +2,7 @@
   "schema_version": "productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions/v1",
   "document_type": "OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISIONS_MANIFEST",
   "capability_scope": "SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION",
-  "status": "OWNER_STA_PROVABLE_INSTANCE_FIELDS_CLOSED_NON_PROVABLE_INSTANCE_FIELDS_STILL_OPEN",
+  "status": "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY_FIELDS_STILL_NULL",
   "baseline_origin_main_sha": "56721ad0666fac5627d2dedbf33a22b59cd5996e",
   "authority_surface": "B",
   "decision_id": "DEC_RAW_INPUT_PACK_MATERIALIZATION",
@@ -95,7 +95,9 @@
     "authorize_detail_fields_complete": false,
     "provable_instance_fields_closed": true,
     "require_explicit_owner_values_for_non_provable_fields": true,
-    "silent_defaults": false
+    "silent_defaults": false,
+    "non_provable_instance_values_decision_packet_ready": true,
+    "non_provable_instance_values_still_null": true
   },
   "input_authority": false,
   "runtime_implemented": false,
@@ -196,5 +198,462 @@
       "exchange_credential_effects": false
     }
   },
-  "owner_go_base_sha": "ac8b1e67baf361156c6f666a2c4cddbe49362400"
+  "owner_go_base_sha": "6e4abc160c1b2b048a41e92d50003a33c30bb355",
+  "non_provable_instance_values_decision_packet": {
+    "packet_id": "OWNER_STA_SURFACE_B_RAW_INPUT_PACK_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_V1",
+    "decision_id": "DEC_RAW_INPUT_PACK_MATERIALIZATION",
+    "document_type": "OWNER_STA_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET",
+    "status": "PACKET_READY_FIELDS_STILL_NULL",
+    "owner_value_recorded": "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
+    "proposed_values": false,
+    "silent_defaults": false,
+    "invented_values": false,
+    "pack_materialization": false,
+    "raw_input_pack_created": false,
+    "raw_input_pack_materialization_authorized": false,
+    "campaign_start": false,
+    "input_authority": false,
+    "runtime_implemented": false,
+    "enumerated_remaining_null_field_count": 16,
+    "fields": [
+      {
+        "field": "campaign_id",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "non_invented_campaign_instance_identity",
+        "manifest_locations": [
+          "authorize_detail_fields.campaign_id",
+          "open_null_instance_fields.campaign_id"
+        ],
+        "allowed_format": "NON_EMPTY_ASCII_SLUG_STRING",
+        "constraints": [
+          "MUST_IDENTIFY_EXACTLY_ONE_STAGE2_SHADOW_CAMPAIGN_INSTANCE",
+          "FORBIDDEN_FIXTURE_DEMO_DASHBOARD_NOTION_TOKENS",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PLACEHOLDER"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "MUST_BIND_TO_FUTURE_EVIDENCE_PATH_SEGMENT_evidence/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/<campaign_id>/",
+          "MUST_REMAIN_CONSISTENT_WITH_DATASET_ID_AND_SCENARIO_ID"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "dataset_id",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "non_invented_campaign_instance_identity",
+        "manifest_locations": [
+          "authorize_detail_fields.dataset_id",
+          "open_null_instance_fields.dataset_id"
+        ],
+        "allowed_format": "NON_EMPTY_ASCII_DATASET_ID_STRING",
+        "constraints": [
+          "REBUILD_REQUIRES_NEW_DATASET_ID_AND_DIGEST",
+          "FORBIDDEN_FIXTURE_DEMO_DASHBOARD_NOTION_TOKENS",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PLACEHOLDER"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "MUST_BIND_IMMUTABLE_PACK_IDENTITY",
+          "MUST_REMAIN_CONSISTENT_WITH_RAW_SOURCE_AND_OBSERVATION_PACK_DIGESTS"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "scenario_id",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "non_invented_campaign_instance_identity",
+        "manifest_locations": [
+          "authorize_detail_fields.scenario_id",
+          "open_null_instance_fields.scenario_id"
+        ],
+        "allowed_format": "NON_EMPTY_ASCII_SCENARIO_ID_STRING",
+        "constraints": [
+          "MUST_IDENTIFY_EXACTLY_ONE_CAMPAIGN_SCENARIO_BINDING",
+          "FORBIDDEN_SCENARIO_SCALAR_AS_AUTHORITY",
+          "FORBIDDEN_FIXTURE_DEMO_DASHBOARD_NOTION_TOKENS",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PLACEHOLDER"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "MUST_REMAIN_CONSISTENT_WITH_CAMPAIGN_ID_AND_DATASET_ID"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "observation_pack_digest",
+        "input_class": "STA_EXTERNAL_INPUT",
+        "related_sta_open_input": "immutable_pack_provenance_digests",
+        "manifest_locations": [
+          "authorize_detail_fields.observation_pack_digest",
+          "open_null_instance_fields.observation_pack_digest"
+        ],
+        "allowed_format": "SHA256_HEX_64",
+        "constraints": [
+          "MUST_BE_IMMUTABLE_OBSERVATION_PACK_DIGEST",
+          "FORBIDDEN_FIXTURE_DEMO_DASHBOARD_NOTION_DIGESTS",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_DIGEST"
+        ],
+        "provenance_requirements": [
+          "STA_PROVEN_FROM_IMMUTABLE_OBSERVATION_PACK_BYTES",
+          "OWNER_RATIFICATION_REQUIRED_BEFORE_MATERIALIZATION_AUTHORIZED",
+          "REBUILD_REQUIRES_NEW_DATASET_ID_AND_DIGEST"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "raw_source_digest",
+        "input_class": "STA_EXTERNAL_INPUT",
+        "related_sta_open_input": "immutable_pack_provenance_digests",
+        "manifest_locations": [
+          "authorize_detail_fields.raw_source_digest",
+          "open_null_instance_fields.raw_source_digest"
+        ],
+        "allowed_format": "SHA256_HEX_64",
+        "constraints": [
+          "MUST_BE_IMMUTABLE_RAW_SOURCE_DIGEST",
+          "FORBIDDEN_FIXTURE_DEMO_DASHBOARD_NOTION_DIGESTS",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_DIGEST"
+        ],
+        "provenance_requirements": [
+          "STA_PROVEN_FROM_IMMUTABLE_RAW_SOURCE_BYTES",
+          "OWNER_RATIFICATION_REQUIRED_BEFORE_MATERIALIZATION_AUTHORIZED",
+          "REBUILD_REQUIRES_NEW_DATASET_ID_AND_DIGEST"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "seed",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "deterministic_campaign_seed",
+        "manifest_locations": [
+          "authorize_detail_fields.seed",
+          "open_null_instance_fields.seed"
+        ],
+        "allowed_format": "DETERMINISTIC_NON_NEGATIVE_INTEGER_OR_EXPLICIT_SEED_STRING",
+        "constraints": [
+          "MUST_BE_DETERMINISTIC_FOR_CAMPAIGN_INSTANCE",
+          "FORBIDDEN_RANDOM_UNSEEDED_RUNTIME_DRAW",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PLACEHOLDER"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "MUST_MAKE_BOOTSTRAP_AND_PARTITION_REPLAY_DETERMINISTIC"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "event_time_epoch_s",
+        "input_class": "STA_EXTERNAL_INPUT",
+        "related_sta_open_input": "exclusive_tip_event_time_epoch_s",
+        "manifest_locations": [
+          "authorize_detail_fields.event_time_epoch_s",
+          "open_null_instance_fields.event_time_epoch_s"
+        ],
+        "allowed_format": "UNIX_EPOCH_SECONDS_INTEGER",
+        "constraints": [
+          "SEMANTICS_PACK_EXCLUSIVE_TIP",
+          "MUST_EQUAL_LAST_FINALIZED_BAR_OPEN_PLUS_60",
+          "OPEN_BUCKET_AT_AS_OF_FORBIDDEN",
+          "BAR_AFTER_AS_OF_FORBIDDEN",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_TIP"
+        ],
+        "provenance_requirements": [
+          "STA_PROVEN_FROM_VENUE_NATIVE_FINALIZED_PT1M_PACK_TIP",
+          "OWNER_RATIFICATION_REQUIRED_BEFORE_MATERIALIZATION_AUTHORIZED",
+          "AS_OF_EQUALS_PACK_EXCLUSIVE_TIP"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "partition_boundaries",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "manifest_locations": [
+          "open_null_instance_fields.partition_boundaries"
+        ],
+        "allowed_format": "ORDERED_LIST_OF_EVENT_TIME_BOUNDARIES",
+        "constraints": [
+          "MUST_BE_STRICTLY_ORDERED",
+          "MUST_COVER_AND_ONLY_COVER_AUTHORIZED_OBSERVATION_WINDOW",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PARTITION_GEOMETRY"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "MUST_REMAIN_CONSISTENT_WITH_PARTITION_BOUNDARIES_EVENT_TIME_EPOCH_S"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "partition_boundaries_event_time_epoch_s",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "manifest_locations": [
+          "authorize_detail_fields.partition_boundaries_event_time_epoch_s"
+        ],
+        "allowed_format": "ORDERED_LIST_OF_UNIX_EPOCH_SECONDS_INTEGERS",
+        "constraints": [
+          "MUST_BE_STRICTLY_ORDERED_EPOCH_SECONDS",
+          "MUST_ALIGN_TO_PT1M_BUCKET_OPEN_EVENT_TIME",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PARTITION_GEOMETRY"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "MUST_REMAIN_CONSISTENT_WITH_PARTITION_BOUNDARIES_AND_EXCLUSIVE_TIP"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "fold_ids",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "manifest_locations": [
+          "authorize_detail_fields.fold_ids",
+          "open_null_instance_fields.fold_ids"
+        ],
+        "allowed_format": "ORDERED_LIST_OF_NON_EMPTY_FOLD_ID_STRINGS",
+        "constraints": [
+          "MUST_MAP_1_1_TO_PARTITION_STRUCTURE",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_FOLD_IDS"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "MUST_REMAIN_CONSISTENT_WITH_FOLD_SIZES_WHEN_LATER_AUTHORIZED"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "bootstrap_seeds",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "manifest_locations": [
+          "authorize_detail_fields.bootstrap_seeds",
+          "open_null_instance_fields.bootstrap_seeds"
+        ],
+        "allowed_format": "ORDERED_LIST_OF_DETERMINISTIC_SEEDS",
+        "constraints": [
+          "MUST_BE_DETERMINISTIC_GIVEN_CAMPAIGN_SEED",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_BOOTSTRAP_SEEDS"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "MUST_REMAIN_REPLAYABLE_FROM_CAMPAIGN_SEED_AND_FOLD_STRUCTURE"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "purge",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "manifest_locations": [
+          "open_null_instance_fields.purge",
+          "decisions.RAW_INPUT_PACK_MATERIALIZATION.purge"
+        ],
+        "allowed_format": "EXPLICIT_OWNER_NUMERIC_OR_EXPLICIT_NULL_RATIFICATION",
+        "constraints": [
+          "PRODUCTIVE_NUMERIC_VALUES_SET_MUST_REMAIN_0_ON_THIS_PACKET",
+          "PRODUCTIVE_THRESHOLDS_LOOKBACKS_FORBIDDEN_ON_THIS_PACKET",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PRODUCTIVE_MAGNITUDE"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "SEPARATE_PRODUCTIVE_NUMERIC_POLICY_AUTHORITY_REQUIRED_BEFORE_NON_NULL_USE"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "embargo",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "manifest_locations": [
+          "open_null_instance_fields.embargo",
+          "decisions.RAW_INPUT_PACK_MATERIALIZATION.embargo"
+        ],
+        "allowed_format": "EXPLICIT_OWNER_NUMERIC_OR_EXPLICIT_NULL_RATIFICATION",
+        "constraints": [
+          "PRODUCTIVE_NUMERIC_VALUES_SET_MUST_REMAIN_0_ON_THIS_PACKET",
+          "PRODUCTIVE_THRESHOLDS_LOOKBACKS_FORBIDDEN_ON_THIS_PACKET",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PRODUCTIVE_MAGNITUDE"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "SEPARATE_PRODUCTIVE_NUMERIC_POLICY_AUTHORITY_REQUIRED_BEFORE_NON_NULL_USE"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "fold_sizes",
+        "input_class": "OWNER_VALUE",
+        "related_sta_open_input": "partition_fold_bootstrap_structure",
+        "manifest_locations": [
+          "open_null_instance_fields.fold_sizes",
+          "decisions.RAW_INPUT_PACK_MATERIALIZATION.fold_sizes"
+        ],
+        "allowed_format": "EXPLICIT_OWNER_LIST_OF_POSITIVE_INTEGERS_OR_EXPLICIT_NULL_RATIFICATION",
+        "constraints": [
+          "PRODUCTIVE_NUMERIC_VALUES_SET_MUST_REMAIN_0_ON_THIS_PACKET",
+          "PRODUCTIVE_THRESHOLDS_LOOKBACKS_FORBIDDEN_ON_THIS_PACKET",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_PRODUCTIVE_MAGNITUDE"
+        ],
+        "provenance_requirements": [
+          "OWNER_EXPLICIT_VALUE_ON_SEPARATE_FILL_GO",
+          "SEPARATE_PRODUCTIVE_NUMERIC_POLICY_AUTHORITY_REQUIRED_BEFORE_NON_NULL_USE"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "regime_coverage_counts",
+        "input_class": "STA_EXTERNAL_INPUT",
+        "related_sta_open_input": "regime_coverage_materialization_readiness",
+        "manifest_locations": [
+          "open_null_instance_fields.regime_coverage_counts"
+        ],
+        "allowed_format": "OBSERVATION_DERIVED_COUNT_OBJECT_FROM_AUTHORIZED_PRODUCER_ONLY",
+        "constraints": [
+          "COUNTS_ONLY_FROM_AUTHORIZED_DEDICATED_SURFACE_B_PRODUCER_OBSERVATIONS",
+          "WHILE_THRESHOLDS_UNSET_ONLY_MISSING_UNKNOWN_MAY_BE_COUNTED",
+          "LOW_MID_HIGH_FORBIDDEN_WITHOUT_THRESHOLD_LOOKBACK_AUTHORITY",
+          "CALLER_SUPPLIED_INVENTED_COUNTS_FAIL_CLOSED",
+          "NO_SILENT_DEFAULT"
+        ],
+        "provenance_requirements": [
+          "STA_PROVEN_VIA_REGIME_COVERAGE_PRODUCER_AND_STA_OPEN_INPUTS_CLOSEOUT",
+          "OWNER_RATIFICATION_REQUIRED_BEFORE_MATERIALIZATION_AUTHORIZED",
+          "REGIME_COVERAGE_STATUS_REMAINS_SEMANTICALLY_UNRESOLVED_ON_THIS_PACKET"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      },
+      {
+        "field": "regime_coverage_instance",
+        "input_class": "STA_EXTERNAL_INPUT",
+        "related_sta_open_input": "regime_coverage_materialization_readiness",
+        "manifest_locations": [
+          "open_null_instance_fields.regime_coverage_instance"
+        ],
+        "allowed_format": "PRODUCER_BOUND_REGIME_COVERAGE_INSTANCE_OBJECT",
+        "constraints": [
+          "MUST_BIND_TO_AUTHORIZED_DEDICATED_SURFACE_B_PRODUCER",
+          "MUST_REMAIN_CONSISTENT_WITH_REGIME_COVERAGE_COUNTS",
+          "REGIME_COVERAGE_PRODUCER_AVAILABLE_REMAINS_FALSE_ON_THIS_PACKET",
+          "NO_SILENT_DEFAULT",
+          "NO_INVENTED_INSTANCE"
+        ],
+        "provenance_requirements": [
+          "STA_PROVEN_VIA_REGIME_COVERAGE_PRODUCER_AND_STA_OPEN_INPUTS_CLOSEOUT",
+          "OWNER_RATIFICATION_REQUIRED_BEFORE_MATERIALIZATION_AUTHORIZED",
+          "REGIME_COVERAGE_STATUS_REMAINS_SEMANTICALLY_UNRESOLVED_ON_THIS_PACKET"
+        ],
+        "fillable_owner_value": null,
+        "fillable_sta_value": null,
+        "proposed_value": null,
+        "status": "OPEN_FILLABLE",
+        "proposed_values_forbidden": true,
+        "silent_defaults_forbidden": true,
+        "invented_values_forbidden": true
+      }
+    ]
+  }
 }

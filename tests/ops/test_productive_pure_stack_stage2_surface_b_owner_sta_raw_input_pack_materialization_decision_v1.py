@@ -20,7 +20,11 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_mat
     CLOSED_STA_EXTERNAL_INPUTS,
     CYBERSECURITY_MIRROR_REL,
     DECISION_ID,
+    DECISION_PACKET_ID,
     DECISIONS_MANIFEST_REL,
+    NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS,
+    NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_OWNER_VALUE_FIELDS,
+    NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_STA_EXTERNAL_INPUT_FIELDS,
     OWNER_DECISION_REL,
     OWNER_GO_BASE_SHA,
     PARENT_RAW_INPUT_PACK_OWNER_DECISION_REL,
@@ -36,8 +40,9 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_mat
     REQUIRE_EXPLICIT_OWNER_VALUES_FOR,
     SCHEMA_REL,
     STA_OPEN_EXTERNAL_INPUTS,
-    STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED,
+    STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY,
 )
+
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decision_v1.validator_v1 import (
     RawInputPackMaterializationDecisionErrorV1,
     load_canonical_raw_input_pack_materialization_decisions_manifest_v1,
@@ -50,13 +55,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED}",
+    f"STATUS={STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY}",
     f"DECISION_ID={DECISION_ID}",
     "DECISION_STATUS=RATIFIED",
     f"OWNER_VALUE={RECORDED_OWNER_VALUE}",
     f"OWNER_GO_BASE_SHA={OWNER_GO_BASE_SHA}",
     f"BASELINE_ORIGIN_MAIN_SHA={BASELINE_ORIGIN_MAIN_SHA}",
     "SCOPE=DOCS_MANIFEST_SCHEMA_VALIDATOR_ONLY",
+    f"DECISION_PACKET_ID={DECISION_PACKET_ID}",
     "PRODUCER_REIMPLEMENTATION=false",
     "CONSUMER_WIRING=false",
     "PT1M_ADAPTER=false",
@@ -78,8 +84,12 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true",
     "AUTHORIZE_DETAIL_FIELDS_COMPLETE=false",
     "PROVABLE_INSTANCE_FIELDS_CLOSED=true",
+    "NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY=true",
+    "NON_PROVABLE_INSTANCE_VALUES_STILL_NULL=true",
     "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS=true",
     "SILENT_DEFAULTS=false",
+    "PROPOSED_VALUES=false",
+    "INVENTED_VALUES=false",
     "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
     "EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION",
 )
@@ -94,6 +104,9 @@ FORBIDDEN_DOC_CLAIMS: tuple[str, ...] = (
     "DASHBOARD_AUTHORITY_EFFECT=AUTHORITY",
     "REGIME_COVERAGE_PRODUCER_AVAILABLE=true",
     "AUTHORIZE_DETAIL_FIELDS_COMPLETE=true",
+    "PROPOSED_VALUES=true",
+    "INVENTED_VALUES=true",
+    "SILENT_DEFAULTS=true",
 )
 
 
@@ -125,22 +138,28 @@ def test_materialization_document_markers_v1() -> None:
         assert item in text, item
     for item in CLOSED_STA_EXTERNAL_INPUTS:
         assert item in text, item
+    for field in NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS:
+        assert f"`{field}`" in text, field
 
 
-def test_canonical_manifest_provable_instance_fields_closed_v1() -> None:
+def test_canonical_manifest_decision_packet_ready_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     result = validate_raw_input_pack_materialization_manifest_v1(manifest)
     assert result["ok"] is True
     assert result["decision_id"] == DECISION_ID
-    assert result["status"] == STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED
+    assert result["status"] == STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY
     assert result["decision_status"] == "RATIFIED"
     assert result["owner_value"] == RECORDED_OWNER_VALUE
     assert result["allowed_owner_values"] == list(ALLOWED_OWNER_VALUES)
     assert result["authorize_detail_provable_refs_closed"] is True
     assert result["authorize_detail_fields_complete"] is False
     assert result["provable_instance_fields_closed"] is True
+    assert result["non_provable_instance_values_decision_packet_ready"] is True
+    assert result["non_provable_instance_values_still_null"] is True
     assert result["require_explicit_owner_values_for_non_provable_fields"] is True
     assert result["silent_defaults"] is False
+    assert result["proposed_values"] is False
+    assert result["invented_values"] is False
     assert result["input_authority"] is False
     assert result["runtime_implemented"] is False
     assert result["raw_input_pack_created"] is False
@@ -163,14 +182,41 @@ def test_canonical_manifest_provable_instance_fields_closed_v1() -> None:
     assert tuple(manifest["closed_sta_external_inputs"]) == CLOSED_STA_EXTERNAL_INPUTS
     assert tuple(manifest["sta_open_external_inputs"]) == STA_OPEN_EXTERNAL_INPUTS
     assert tuple(manifest["require_explicit_owner_values_for"]) == REQUIRE_EXPLICIT_OWNER_VALUES_FOR
+    packet = manifest["non_provable_instance_values_decision_packet"]
+    assert packet["packet_id"] == DECISION_PACKET_ID
+    assert packet["enumerated_remaining_null_field_count"] == len(
+        NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS
+    )
+    fields = [row["field"] for row in packet["fields"]]
+    assert tuple(fields) == NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_FIELDS
+    owner_fields = {row["field"] for row in packet["fields"] if row["input_class"] == "OWNER_VALUE"}
+    sta_fields = {
+        row["field"] for row in packet["fields"] if row["input_class"] == "STA_EXTERNAL_INPUT"
+    }
+    assert owner_fields == set(NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_OWNER_VALUE_FIELDS)
+    assert sta_fields == set(NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_STA_EXTERNAL_INPUT_FIELDS)
+    for row in packet["fields"]:
+        assert row["fillable_owner_value"] is None
+        assert row["fillable_sta_value"] is None
+        assert row["proposed_value"] is None
+        assert row["status"] == "OPEN_FILLABLE"
+        assert row["constraints"]
+        assert row["provenance_requirements"]
+        assert row["allowed_format"]
 
 
-def test_schema_allows_provable_instance_fields_closed_v1() -> None:
+def test_schema_allows_decision_packet_ready_v1() -> None:
     schema = json.loads((REPO_ROOT / SCHEMA_REL).read_text(encoding="utf-8"))
-    assert STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED in schema["properties"]["status"]["enum"]
+    assert (
+        STATUS_NON_PROVABLE_INSTANCE_VALUES_DECISION_PACKET_READY
+        in schema["properties"]["status"]["enum"]
+    )
     assert "RATIFIED" in schema["properties"]["decision_status"]["enum"]
     assert schema["properties"]["raw_input_pack_materialization_authorized"]["const"] is False
     assert schema["properties"]["pack_materialization"]["const"] is False
+    packet_schema = schema["properties"]["non_provable_instance_values_decision_packet"]
+    assert packet_schema["properties"]["packet_id"]["const"] == DECISION_PACKET_ID
+    assert packet_schema["properties"]["proposed_values"]["const"] is False
 
 
 def test_owner_choice_authorize_keeps_effects_false_v1() -> None:
@@ -245,6 +291,16 @@ def test_manifest_rejects_silent_default_seed_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     bad = copy.deepcopy(manifest)
     bad["open_null_instance_fields"]["seed"] = 0
+    with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="MUST_REMAIN_NULL"):
+        validate_raw_input_pack_materialization_manifest_v1(bad)
+
+
+def test_manifest_rejects_proposed_packet_value_v1() -> None:
+    manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
+    bad = copy.deepcopy(manifest)
+    bad["non_provable_instance_values_decision_packet"]["fields"][0]["fillable_owner_value"] = (
+        "proposed-campaign"
+    )
     with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="MUST_REMAIN_NULL"):
         validate_raw_input_pack_materialization_manifest_v1(bad)
 
