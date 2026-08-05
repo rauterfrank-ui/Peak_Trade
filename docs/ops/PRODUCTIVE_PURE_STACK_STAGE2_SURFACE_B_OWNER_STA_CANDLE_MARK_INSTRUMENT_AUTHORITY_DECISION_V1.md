@@ -233,9 +233,22 @@ REGIME_COVERAGE_PRODUCER_AVAILABLE=false
 REGIME_COVERAGE_STATUS=SEMANTICALLY_UNRESOLVED
 ```
 
-No canonical Surface-B regime recorder producer was found. Structural label
-slots exist under parent Surface B, but counts/labels must not be invented and
-no new classifier is implemented by this decision surface.
+No canonical Surface-B regime recorder producer is selected on this triad
+surface. The dedicated Owner/STA decision surface for
+`DEC_REGIME_COVERAGE_PRODUCER` is:
+
+`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md`
+
+Allowed Owner alternatives there are exclusively:
+
+```text
+AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER
+EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER
+```
+
+Structural label slots exist under parent Surface B, but counts/labels must not
+be invented, existing producers must not be elevated, and no new classifier is
+implemented by this triad surface.
 
 ## 7. E. Owner decision table
 

@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions_v1.schema.json",
+  "title": "Stage-2 Surface B Owner/STA Regime Coverage Producer Decisions v1",
+  "description": "Machine-readable Owner/STA decision surface for DEC_REGIME_COVERAGE_PRODUCER. Does not authorize INPUT_AUTHORITY, runtime, pack materialization, campaign start, productive numeric values, or elevation of existing producers.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "document_type",
+    "capability_scope",
+    "status",
+    "baseline_origin_main_sha",
+    "authority_surface",
+    "decision_id",
+    "decision_status",
+    "owner_value",
+    "allowed_owner_values",
+    "authorize_detail_fields",
+    "taxonomy_sink_labels",
+    "sta_open_external_inputs",
+    "forbidden_existing_producers",
+    "reject_semantics",
+    "authorize_semantics",
+    "input_authority",
+    "runtime_implemented",
+    "campaign_start_authorized",
+    "raw_input_pack_materialization_authorized",
+    "raw_input_pack_created",
+    "campaign_started",
+    "productive_numeric_values_set",
+    "regime_coverage_producer_available",
+    "regime_coverage_status",
+    "existing_producers_elevated",
+    "dashboard_authority_effect",
+    "notion_ssot",
+    "repository_is_ssot",
+    "open_null_instance_fields",
+    "decisions"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": "productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions/v1"
+    },
+    "document_type": {
+      "const": "OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISIONS_MANIFEST"
+    },
+    "capability_scope": {
+      "const": "SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION"
+    },
+    "status": {
+      "const": "OWNER_STA_DECISION_SURFACE_OPEN"
+    },
+    "authority_surface": { "const": "B" },
+    "decision_id": { "const": "DEC_REGIME_COVERAGE_PRODUCER" },
+    "decision_status": { "const": "OPEN" },
+    "owner_value": { "type": "null" },
+    "allowed_owner_values": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        { "const": "AUTHORIZE_DEDICATED_SURFACE_B_REGIME_COVERAGE_PRODUCER" },
+        { "const": "EXPLICITLY_REJECT_REGIME_COVERAGE_PRODUCER" }
+      ],
+      "items": false
+    },
+    "authorize_detail_fields": {
+      "type": "object",
+      "required": [
+        "canonical_producer_name",
+        "canonical_producer_version",
+        "versioned_producer_id",
+        "taxonomy_binding",
+        "threshold_authority_ref",
+        "lookback_window_authority_ref",
+        "time_basis",
+        "PIT_no_lookahead_rules_ref",
+        "candle_join_acceptance_ref",
+        "mark_join_acceptance_ref",
+        "instrument_binding_acceptance_ref",
+        "determinism_contract_ref",
+        "reproducibility_contract_ref",
+        "producer_digest_contract_ref",
+        "missing_label_semantics_ref",
+        "unknown_label_semantics_ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "canonical_producer_name": { "type": "null" },
+        "canonical_producer_version": { "type": "null" },
+        "versioned_producer_id": { "type": "null" },
+        "taxonomy_binding": { "type": "null" },
+        "threshold_authority_ref": { "type": "null" },
+        "lookback_window_authority_ref": { "type": "null" },
+        "time_basis": { "type": "null" },
+        "PIT_no_lookahead_rules_ref": { "type": "null" },
+        "candle_join_acceptance_ref": { "type": "null" },
+        "mark_join_acceptance_ref": { "type": "null" },
+        "instrument_binding_acceptance_ref": { "type": "null" },
+        "determinism_contract_ref": { "type": "null" },
+        "reproducibility_contract_ref": { "type": "null" },
+        "producer_digest_contract_ref": { "type": "null" },
+        "missing_label_semantics_ref": { "type": "null" },
+        "unknown_label_semantics_ref": { "type": "null" }
+      }
+    },
+    "taxonomy_sink_labels": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "prefixItems": [
+        { "const": "low" },
+        { "const": "mid" },
+        { "const": "high" },
+        { "const": "unknown" },
+        { "const": "missing" }
+      ],
+      "items": false
+    },
+    "input_authority": { "const": false },
+    "runtime_implemented": { "const": false },
+    "campaign_start_authorized": { "const": false },
+    "raw_input_pack_materialization_authorized": { "const": false },
+    "raw_input_pack_created": { "const": false },
+    "campaign_started": { "const": false },
+    "productive_numeric_values_set": { "const": 0 },
+    "regime_coverage_producer_available": { "const": false },
+    "regime_coverage_status": { "const": "SEMANTICALLY_UNRESOLVED" },
+    "existing_producers_elevated": { "const": false },
+    "dashboard_authority_effect": { "const": "NONE" },
+    "notion_ssot": { "const": false },
+    "repository_is_ssot": { "const": true },
+    "open_null_instance_fields": {
+      "type": "object",
+      "required": [
+        "campaign_id",
+        "dataset_id",
+        "scenario_id",
+        "seed",
+        "partition_boundaries",
+        "fold_ids",
+        "bootstrap_seeds",
+        "purge",
+        "embargo",
+        "fold_sizes",
+        "regime_coverage_counts",
+        "regime_coverage_instance"
+      ],
+      "properties": {
+        "campaign_id": { "type": "null" },
+        "dataset_id": { "type": "null" },
+        "scenario_id": { "type": "null" },
+        "seed": { "type": "null" },
+        "partition_boundaries": { "type": "null" },
+        "fold_ids": { "type": "null" },
+        "bootstrap_seeds": { "type": "null" },
+        "purge": { "type": "null" },
+        "embargo": { "type": "null" },
+        "fold_sizes": { "type": "null" },
+        "regime_coverage_counts": { "type": "null" },
+        "regime_coverage_instance": { "type": "null" }
+      }
+    },
+    "decisions": { "type": "object" }
+  }
+}
