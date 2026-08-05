@@ -1,0 +1,419 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "docs/ops/schemas/productive_pure_stack_numeric_policy_evidence_pack_v1.schema.json",
+  "title": "ProductivePureStackNumericPolicyEvidencePackV1",
+  "description": "Fail-closed Stage-2 Evidence Pack for Pure-Stack numeric Owner Values. Scaffolding and shadow calibration only. Does not authorize INPUT_AUTHORITY_*, productive numbers, runtime binding, orders, Live, Testnet, or dashboard authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "campaign_id",
+    "campaign_status",
+    "origin_main_sha",
+    "stage1_manifest_digest",
+    "calibration_protocol_digest",
+    "sole_trading_authority_symbol",
+    "observation_identity",
+    "producer_identity",
+    "dataset_manifest",
+    "train_calibration_validation_partition_manifest",
+    "walk_forward_manifest",
+    "bootstrap_monte_carlo_manifest",
+    "stress_pack_manifest",
+    "metric_definition_digests",
+    "per_token_evidence",
+    "acceptance_gate_results",
+    "rejection_reasons",
+    "owner_ratification_status",
+    "productive_numeric_values_set",
+    "evidence_complete",
+    "owner_ratified",
+    "input_authority",
+    "runtime_implemented",
+    "dashboard_role",
+    "forbidden_authority_declarations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "productive_pure_stack_numeric_policy_evidence_pack/v1"
+    },
+    "campaign_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "campaign_status": {
+      "type": "string",
+      "enum": [
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "EVIDENCE_COMPLETE_PENDING_OWNER",
+        "OWNER_RATIFIED_PER_TOKEN",
+        "REJECTED_FAIL_CLOSED"
+      ]
+    },
+    "origin_main_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "stage1_manifest_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of docs/ops/PRODUCTIVE_PURE_STACK_OWNER_VALUES_STRUCTURAL_MANIFEST_V1.json"
+    },
+    "calibration_protocol_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_CALIBRATION_PROTOCOL_V1.md"
+    },
+    "sole_trading_authority_symbol": {
+      "const": "run_integrated_offline_trading_logic_replay_v1"
+    },
+    "observation_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_family",
+        "bar_interval",
+        "point_in_time_only",
+        "no_lookahead",
+        "no_implicit_fill",
+        "provenance_required",
+        "sole_consumer_authority"
+      ],
+      "properties": {
+        "observation_family": {
+          "const": "PUBLIC_MARKET_FINALIZED_BARS"
+        },
+        "bar_interval": {
+          "const": "PT1M"
+        },
+        "point_in_time_only": {
+          "const": true
+        },
+        "no_lookahead": {
+          "const": true
+        },
+        "no_implicit_fill": {
+          "const": true
+        },
+        "provenance_required": {
+          "const": true
+        },
+        "sole_consumer_authority": {
+          "const": "run_integrated_offline_trading_logic_replay_v1"
+        }
+      }
+    },
+    "producer_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "productive_activation",
+        "allowed_producer_classes",
+        "forbidden_producer_classes"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SCAFFOLD_ONLY", "SHADOW_DECLARED", "BOUND"]
+        },
+        "productive_activation": {
+          "const": false
+        },
+        "allowed_producer_classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_producer_classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dataset_manifest": {
+      "$ref": "#/$defs/EmptyCapableManifest"
+    },
+    "train_calibration_validation_partition_manifest": {
+      "$ref": "#/$defs/EmptyCapableManifest"
+    },
+    "walk_forward_manifest": {
+      "$ref": "#/$defs/EmptyCapableManifest"
+    },
+    "bootstrap_monte_carlo_manifest": {
+      "$ref": "#/$defs/EmptyCapableManifest"
+    },
+    "stress_pack_manifest": {
+      "$ref": "#/$defs/EmptyCapableManifest"
+    },
+    "metric_definition_digests": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "null"]
+      }
+    },
+    "per_token_evidence": {
+      "type": "array",
+      "minItems": 18,
+      "maxItems": 18,
+      "items": {
+        "$ref": "#/$defs/PerTokenEvidence"
+      }
+    },
+    "acceptance_gate_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate_id", "status"],
+        "properties": {
+          "gate_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": ["NOT_EVALUATED", "PASS", "FAIL", "REJECTED_FAIL_CLOSED"]
+          },
+          "notes": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "rejection_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "owner_ratification_status": {
+      "type": "string",
+      "enum": [
+        "NOT_RATIFIED",
+        "PARTIAL_PER_TOKEN",
+        "ALL_TOKENS_RATIFIED",
+        "REJECTED"
+      ]
+    },
+    "productive_numeric_values_set": {
+      "const": 0
+    },
+    "evidence_complete": {
+      "type": "boolean"
+    },
+    "owner_ratified": {
+      "type": "boolean"
+    },
+    "input_authority": {
+      "const": false
+    },
+    "runtime_implemented": {
+      "const": false
+    },
+    "dashboard_role": {
+      "const": "READ_ONLY_CONSUMER"
+    },
+    "forbidden_authority_declarations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_scenario_webui_as_authority",
+        "cmc_volatility_estimate_as_realized_volatility",
+        "survival_result_v1_as_numeric_authority",
+        "suitability_result_v1_as_numeric_authority",
+        "dashboard_as_authority",
+        "archive_as_authority",
+        "reinvest_fraction_independent_numeric",
+        "capital_slot_time_quantum_wallclock_seconds",
+        "initial_slot_base_from_account_equity"
+      ],
+      "properties": {
+        "fixture_scenario_webui_as_authority": {
+          "const": false
+        },
+        "cmc_volatility_estimate_as_realized_volatility": {
+          "const": false
+        },
+        "survival_result_v1_as_numeric_authority": {
+          "const": false
+        },
+        "suitability_result_v1_as_numeric_authority": {
+          "const": false
+        },
+        "dashboard_as_authority": {
+          "const": false
+        },
+        "archive_as_authority": {
+          "const": false
+        },
+        "reinvest_fraction_independent_numeric": {
+          "const": false
+        },
+        "capital_slot_time_quantum_wallclock_seconds": {
+          "const": false
+        },
+        "initial_slot_base_from_account_equity": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$defs": {
+    "EmptyCapableManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "populated", "entries"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["EMPTY_SCAFFOLD", "DECLARED", "COMPLETE"]
+        },
+        "populated": {
+          "type": "boolean"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "digest": {
+          "type": ["string", "null"]
+        },
+        "notes": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "PerTokenEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "token",
+        "semantic_role",
+        "required_producer",
+        "required_observations",
+        "required_stratification",
+        "required_stress_families",
+        "primary_safety_metrics",
+        "secondary_metrics",
+        "mandatory_rejection_criteria",
+        "dependency_tokens",
+        "allowed_calibration_output_type",
+        "productive_numeric_value",
+        "input_authority",
+        "runtime_implemented",
+        "owner_ratification_status",
+        "authority_source",
+        "derivation_source",
+        "acceptance_gate_results",
+        "rejection_reasons"
+      ],
+      "properties": {
+        "token": {
+          "type": "string",
+          "pattern": "^OWNER_VALUE_[A-Z0-9_]+$"
+        },
+        "semantic_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_observations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_stratification": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_stress_families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "primary_safety_metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "secondary_metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mandatory_rejection_criteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dependency_tokens": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowed_calibration_output_type": {
+          "type": "string",
+          "enum": [
+            "THRESHOLD_SECONDS",
+            "THRESHOLD_RATIO_UNIT_INTERVAL",
+            "THRESHOLD_NONNEGATIVE_REAL",
+            "THRESHOLD_INTEGER_CYCLE_QUANTA",
+            "THRESHOLD_PRICE_QUOTE_UNITS",
+            "THRESHOLD_SCORE_UNIT_INTERVAL",
+            "THRESHOLD_FRACTION_UNIT_INTERVAL",
+            "THRESHOLD_PERCENT_FRACTION"
+          ]
+        },
+        "productive_numeric_value": {
+          "type": "null"
+        },
+        "input_authority": {
+          "const": false
+        },
+        "runtime_implemented": {
+          "const": false
+        },
+        "owner_ratification_status": {
+          "type": "string",
+          "enum": ["NOT_RATIFIED", "RATIFIED", "REJECTED"]
+        },
+        "authority_source": {
+          "type": ["string", "null"]
+        },
+        "derivation_source": {
+          "type": ["string", "null"]
+        },
+        "acceptance_gate_results": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "rejection_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
